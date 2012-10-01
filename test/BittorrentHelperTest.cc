@@ -560,7 +560,7 @@ void BittorrentHelperTest::testGetNodes()
     CPPUNIT_ASSERT_EQUAL((uint16_t)6882, attrs->nodes[0].second);
   }
   {
-    // bad port 
+    // bad port
     std::string memory =
       "d5:nodesl"
       "l11:192.168.0.11:xe"
@@ -815,7 +815,7 @@ void BittorrentHelperTest::testTorrent2Magnet()
 {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   load(A2_TEST_DIR"/test.torrent", dctx, option_);
-  
+
   CPPUNIT_ASSERT_EQUAL
     (std::string("magnet:?xt=urn:btih:248D0A1CD08284299DE78D5C1ED359BB46717D8C"
                  "&dn=aria2-test"
@@ -935,7 +935,7 @@ void BittorrentHelperTest::testRemoveAnnounceUri()
   tier2.push_back("http://host3/announce");
   attrs->announceList.push_back(tier1);
   attrs->announceList.push_back(tier2);
-  
+
   std::vector<std::string> removeUris;
   removeUris.push_back(tier1[0]);
   removeUris.push_back(tier2[0]);

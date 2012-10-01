@@ -56,7 +56,7 @@ private:
   std::string transactionID_;
 
   std::string messageType_;
-  
+
   SharedHandle<DHTMessageCallback> callback_;
 
   Timer dispatchedTime_;
@@ -89,7 +89,7 @@ public:
   const SharedHandle<DHTMessageCallback>& getCallback() const
   {
     return callback_;
-  }  
+  }
 
   int64_t getElapsedMillis() const;
 };

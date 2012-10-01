@@ -92,7 +92,7 @@ DHTPeerAnnounceStorage::addPeerAnnounce(const unsigned char* infoHash,
 bool DHTPeerAnnounceStorage::contains(const unsigned char* infoHash) const
 {
   SharedHandle<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(infoHash));
-  return 
+  return
     std::binary_search(entries_.begin(), entries_.end(), entry, InfoHashLess());
 }
 

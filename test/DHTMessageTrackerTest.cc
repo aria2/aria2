@@ -63,7 +63,7 @@ void DHTMessageTrackerTest::testMessageArrived()
   {
     Dict resDict;
     resDict.put("t", m2->getTransactionID());
-    
+
     std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p =
       tracker.messageArrived(&resDict, m2->getRemoteNode()->getIPAddress(),
                              m2->getRemoteNode()->getPort());

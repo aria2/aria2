@@ -34,7 +34,7 @@ public:
   {
     return SharedHandle<DHTTask>();
   }
-  
+
   virtual SharedHandle<DHTTask>
   createPeerAnnounceTask(const unsigned char* infoHash)
   {

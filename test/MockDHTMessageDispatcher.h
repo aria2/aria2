@@ -46,7 +46,7 @@ public:
   {
     messageQueue_.push_back(Entry(message, DHT_MESSAGE_TIMEOUT, callback));
   }
-  
+
   virtual void sendMessages() {}
 
   virtual size_t countMessageInQueue() const

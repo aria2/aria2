@@ -80,7 +80,7 @@ public:
   virtual void allocate(int64_t offset, int64_t length);
 
   virtual int64_t size();
-  
+
   virtual void enableReadOnly();
 
   virtual void disableReadOnly();

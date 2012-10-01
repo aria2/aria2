@@ -31,7 +31,7 @@ public:
                  const std::string& messageType = "mock",
                  const std::string& transactionID = ""):
     DHTMessage(localNode, remoteNode, transactionID), isReply_(false), messageType_(messageType) {}
-  
+
   virtual ~MockDHTMessage() {}
 
   virtual void doReceivedAction() {}
@@ -63,7 +63,7 @@ public:
                       const std::string& transactionID = ""):
     DHTQueryMessage(localNode, remoteNode, transactionID),
     messageType_(messageType) {}
-  
+
   virtual ~MockDHTQueryMessage() {}
 
   virtual void doReceivedAction() {}
@@ -95,7 +95,7 @@ public:
                          const std::string& transactionID = ""):
     DHTResponseMessage(localNode, remoteNode, transactionID),
     messageType_(messageType) {}
-  
+
   virtual ~MockDHTResponseMessage() {}
 
   virtual void doReceivedAction() {}

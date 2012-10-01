@@ -61,7 +61,7 @@ public:
    * given, the socket is associated to the address.
    */
   bool bind(uint16_t& port, const std::string& addr, SegList<int>& sgl);
-  
+
   /**
    * Binds port. The port number specified by port is used to bind.
    * If successful, the binded port is assigned to port and returns

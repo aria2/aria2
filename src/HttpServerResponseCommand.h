@@ -52,6 +52,6 @@ public:
   virtual ~HttpServerResponseCommand();
 };
 
-} // namespace aria2 
+} // namespace aria2
 
 #endif // D_HTTP_SERVER_RESPONSE_COMMAND_H

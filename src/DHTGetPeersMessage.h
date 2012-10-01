@@ -64,7 +64,7 @@ public:
   virtual void doReceivedAction();
 
   virtual SharedHandle<Dict> getArgument();
-  
+
   virtual const std::string& getMessageType() const;
 
   const unsigned char* getInfoHash() const

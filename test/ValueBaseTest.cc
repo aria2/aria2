@@ -121,7 +121,7 @@ void ValueBaseTest::testDictIter()
   dict["alpha"] = String::g("alpha");
 
   Dict::ValueType::iterator i = dict.begin();
-  CPPUNIT_ASSERT_EQUAL(std::string("alpha"), (*i++).first); 
+  CPPUNIT_ASSERT_EQUAL(std::string("alpha"), (*i++).first);
   CPPUNIT_ASSERT_EQUAL(std::string("alpha2"), (*i++).first);
   CPPUNIT_ASSERT_EQUAL(std::string("bravo"), (*i++).first);
   CPPUNIT_ASSERT_EQUAL(std::string("charlie"), (*i++).first);

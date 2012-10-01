@@ -142,7 +142,7 @@ void AbstractDiskWriter::createFile(int addFlags)
            filename_.c_str(),
            util::safeStrerror(errNum).c_str()),
        error_code::FILE_CREATE_ERROR);
-  }  
+  }
 }
 
 ssize_t AbstractDiskWriter::writeDataInternal(const unsigned char* data,

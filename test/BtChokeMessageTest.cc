@@ -126,7 +126,7 @@ void BtChokeMessageTest::testOnSendComplete() {
   msg.onSendComplete();
 
   CPPUNIT_ASSERT(dispatcher->doChokingActionCalled);
-  CPPUNIT_ASSERT(peer->amChoking());  
+  CPPUNIT_ASSERT(peer->amChoking());
 }
 
 void BtChokeMessageTest::testToString() {

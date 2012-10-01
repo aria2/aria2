@@ -91,7 +91,7 @@ public:
   void reorderResourcesByPriority();
 
   void reorderMetaurlsByPriority();
-  
+
   bool containsLanguage(const std::string& lang) const;
 
   bool containsOS(const std::string& os) const;

@@ -55,7 +55,7 @@ public:
   virtual ~XmlRpcDiskWriter();
 
   virtual void initAndOpenFile(int64_t totalLength = 0);
-  
+
   virtual void openFile(int64_t totalLength = 0)
   {
     initAndOpenFile(totalLength);

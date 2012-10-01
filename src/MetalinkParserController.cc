@@ -368,7 +368,7 @@ void MetalinkParserController::addHashOfChunkChecksumV4(const std::string& md)
   } else {
     cancelChunkChecksumTransactionV4();
   }
-#endif // ENABLE_MESSAGE_DIGEST  
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::commitChunkChecksumTransactionV4()

@@ -174,13 +174,13 @@ BtSeederStateChoke::executeChoke
 
   std::transform(peerSet.begin(), peerSet.end(),
                  std::back_inserter(peerEntries), GenPeerEntry());
-              
+
   peerEntries.erase(std::remove_if(peerEntries.begin(), peerEntries.end(),
                                    NotInterestedPeer()),
                     peerEntries.end());
 
   unchoke(peerEntries);
-  
+
   if(++round_ == 3) {
     round_ = 0;
   }

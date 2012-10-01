@@ -225,7 +225,7 @@ public:
 
   void createNextCommand(std::vector<Command*>& commands,
                          DownloadEngine* e, int numCommand);
-  
+
   void createNextCommand(std::vector<Command*>& commands, DownloadEngine* e);
 
   bool downloadFinished() const;

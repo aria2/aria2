@@ -115,7 +115,7 @@ private:
 
   // key = IP address:port, value = SocketPoolEntry
   std::multimap<std::string, SocketPoolEntry> socketPool_;
- 
+
   Timer lastSocketPoolScan_;
 
   bool noWait_;
@@ -151,7 +151,7 @@ private:
   void onEndOfRun();
 
   void afterEachIteration();
-  
+
   void poolSocket(const std::string& key, const SocketPoolEntry& entry);
 
   std::multimap<std::string, SocketPoolEntry>::iterator
@@ -162,7 +162,7 @@ private:
   SharedHandle<FileAllocationMan> fileAllocationMan_;
   SharedHandle<CheckIntegrityMan> checkIntegrityMan_;
   Option* option_;
-public:  
+public:
   DownloadEngine(const SharedHandle<EventPoll>& eventPoll);
 
   ~DownloadEngine();

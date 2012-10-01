@@ -76,7 +76,7 @@ bool ServerStatMan::add(const SharedHandle<ServerStat>& serverStat)
   } else {
     serverStats_.insert(i, serverStat);
     return true;
-  } 
+  }
 }
 
 bool ServerStatMan::save(const std::string& filename) const

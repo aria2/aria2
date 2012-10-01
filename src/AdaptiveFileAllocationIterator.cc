@@ -86,7 +86,7 @@ void AdaptiveFileAllocationIterator::allocateChunk()
     allocator_->allocateChunk();
   }
 }
-  
+
 bool AdaptiveFileAllocationIterator::finished()
 {
   if(!allocator_) {

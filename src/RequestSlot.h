@@ -68,7 +68,7 @@ private:
     piece_ = requestSlot.piece_;
   }
 public:
-  
+
   RequestSlot(size_t index, int32_t begin, int32_t length, size_t blockIndex,
               const SharedHandle<Piece>& piece = SharedHandle<Piece>()):
     dispatchedTime_(global::wallclock()),
@@ -107,7 +107,7 @@ public:
   {
     return !(*this == requestSlot);
   }
-  
+
   bool operator<(const RequestSlot& requestSlot) const
   {
     if(index_ == requestSlot.index_) {

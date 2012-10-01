@@ -108,7 +108,7 @@ public:
 
     bool isDoCancelActionCalled() const {
       return doCancelActionCalled;
-    }  
+    }
   };
 
   class MockPieceStorage2 : public MockPieceStorage {
@@ -220,7 +220,7 @@ void DefaultBtMessageDispatcherTest::testSendMessages_underUploadLimit() {
 // TODO Because we no longer directly use PeerStorage::calculateStat()
 // and Neither RequestGroup nor RequestGroupMan can be stubbed, this
 // test is commented out for now.
-// 
+//
 // void DefaultBtMessageDispatcherTest::testSendMessages_overUploadLimit() {
 //   btMessageDispatcher->setMaxUploadSpeedLimit(100);
 //   TransferStat stat;
@@ -293,14 +293,14 @@ int MY_PIECE_LENGTH = 16*1024;
 void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing() {
   SharedHandle<Piece> piece(new Piece(0, MY_PIECE_LENGTH));
   RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0, piece);
-  
+
   size_t index;
   CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(index));
   CPPUNIT_ASSERT_EQUAL((size_t)0, index);
 
   SharedHandle<MockPieceStorage2> pieceStorage(new MockPieceStorage2());
   pieceStorage->setPiece(piece);
-  
+
   btMessageDispatcher->setRequestTimeout(60);
   btMessageDispatcher->setPieceStorage(pieceStorage);
   btMessageDispatcher->addOutstandingRequest(slot);
@@ -345,7 +345,7 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_com
   piece->completeBlock(0);
 
   RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0, piece);
-  
+
   SharedHandle<MockPieceStorage2> pieceStorage(new MockPieceStorage2());
   pieceStorage->setPiece(piece);
 
@@ -384,8 +384,8 @@ void DefaultBtMessageDispatcherTest::testIsOutstandingRequest() {
 
   CPPUNIT_ASSERT(btMessageDispatcher->isOutstandingRequest(0, 0));
   CPPUNIT_ASSERT(!btMessageDispatcher->isOutstandingRequest(0, 1));
-  CPPUNIT_ASSERT(!btMessageDispatcher->isOutstandingRequest(1, 0));  
-  CPPUNIT_ASSERT(!btMessageDispatcher->isOutstandingRequest(1, 1));  
+  CPPUNIT_ASSERT(!btMessageDispatcher->isOutstandingRequest(1, 0));
+  CPPUNIT_ASSERT(!btMessageDispatcher->isOutstandingRequest(1, 1));
 }
 
 void DefaultBtMessageDispatcherTest::testGetOutstandingRequest() {
@@ -424,7 +424,7 @@ void DefaultBtMessageDispatcherTest::testRemoveOutstandingRequest() {
 
   RequestSlot s3 = btMessageDispatcher->getOutstandingRequest
     (piece->getIndex(), begin, length);
-  CPPUNIT_ASSERT(RequestSlot::isNull(s3));  
+  CPPUNIT_ASSERT(RequestSlot::isNull(s3));
   CPPUNIT_ASSERT(!piece->isBlockUsed(blockIndex));
 }
 

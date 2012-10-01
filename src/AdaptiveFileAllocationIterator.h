@@ -58,7 +58,7 @@ public:
   virtual ~AdaptiveFileAllocationIterator();
 
   virtual void allocateChunk();
-  
+
   virtual bool finished();
 
   virtual int64_t getCurrentLength();

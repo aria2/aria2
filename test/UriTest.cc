@@ -37,7 +37,7 @@ class UriTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSwap);
   CPPUNIT_TEST(testJoinUri);
   CPPUNIT_TEST_SUITE_END();
-  
+
 public:
   void testSetUri1();
   void testSetUri2();
@@ -207,7 +207,7 @@ void UriTest::testSetUri12()
 {
   UriStruct us;
   bool v = parse(us, "http://host?query");
-  
+
   CPPUNIT_ASSERT(v);
   CPPUNIT_ASSERT_EQUAL(std::string("http"), us.protocol);
   CPPUNIT_ASSERT_EQUAL(std::string("host"), us.host);
@@ -220,7 +220,7 @@ void UriTest::testSetUri13()
 {
   UriStruct us;
   bool v = parse(us, "http://host/?query");
-  
+
   CPPUNIT_ASSERT(v);
   CPPUNIT_ASSERT_EQUAL(std::string("http"), us.protocol);
   CPPUNIT_ASSERT_EQUAL(std::string("host"), us.host);
@@ -233,7 +233,7 @@ void UriTest::testSetUri14()
 {
   UriStruct us;
   bool v = parse(us, "http://host:8080/abc?query");
-  
+
   CPPUNIT_ASSERT(v);
   CPPUNIT_ASSERT_EQUAL(std::string("http"), us.protocol);
   CPPUNIT_ASSERT_EQUAL(std::string("host"), us.host);
@@ -298,7 +298,7 @@ void UriTest::testSetUri20()
   v = parse(us, "http://localhost:-80");
   CPPUNIT_ASSERT(!v);
 }
-  
+
 void UriTest::testSetUri_zeroUsername()
 {
   UriStruct us;

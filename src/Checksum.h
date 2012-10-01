@@ -58,7 +58,7 @@ public:
   {
     return digest_;
   }
-  
+
   void setHashType(const std::string& type);
   const std::string& getHashType() const
   {

@@ -60,7 +60,7 @@ private:
   SharedHandle<HttpHeader> httpHeader_;
 public:
   HttpResponse();
-  
+
   ~HttpResponse();
 
   void validateResponse() const;

@@ -126,7 +126,7 @@ public:
                const Option* op);
 
   ~MSEHandshake();
-  
+
   HANDSHAKE_TYPE identifyHandshakeType();
 
   void initEncryptionFacility(bool initiator);

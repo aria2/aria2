@@ -95,7 +95,7 @@ void DHTRoutingTableSerializer::serialize(const std::string& filename)
   // version
   header[6] = 0;
   header[7] = 0x03u;
-  
+
   char zero[18];
   memset(zero, 0, sizeof(zero));
 

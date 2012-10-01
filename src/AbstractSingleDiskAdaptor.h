@@ -70,7 +70,7 @@ public:
   virtual int64_t size();
 
   virtual void truncate(int64_t length);
-  
+
   virtual SharedHandle<FileAllocationIterator> fileAllocationIterator();
 
   // Make sure that DiskWriter is set before calling this function.
@@ -78,11 +78,11 @@ public:
 
   // Make sure that DiskWriter is set before calling this function.
   virtual void disableReadOnly();
-    
+
   virtual bool isReadOnlyEnabled() const { return readOnly_; }
 
   virtual void enableMmap();
-  
+
   virtual void cutTrailingGarbage();
 
   virtual const std::string& getFilePath() = 0;

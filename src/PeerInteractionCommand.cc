@@ -113,7 +113,7 @@ PeerInteractionCommand::PeerInteractionCommand
   } else {
     family = AF_INET;
   }
- 
+
   SharedHandle<TorrentAttribute> torrentAttrs =
     bittorrent::getTorrentAttrs(requestGroup_->getDownloadContext());
   bool metadataGetMode = torrentAttrs->metadata.empty();

@@ -74,7 +74,7 @@ public:
   void setUploading(bool flag) {
     this->uploading = flag;
   }
-  
+
   virtual void doReceivedAction() {
   }
 
@@ -100,7 +100,7 @@ template<typename T>
 class WrapBtMessage:public MockBtMessage {
 public:
   SharedHandle<T> m_;
-  
+
   WrapBtMessage(const SharedHandle<T>& m):m_(m) {}
 };
 

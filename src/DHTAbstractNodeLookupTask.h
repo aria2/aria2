@@ -68,9 +68,9 @@ private:
   unsigned char targetID_[DHT_ID_LENGTH];
 
   std::deque<SharedHandle<DHTNodeLookupEntry> > entries_;
-  
+
   size_t inFlightMessage_;
-  
+
   template<typename Container>
   void toEntries
   (Container& entries, const std::vector<SharedHandle<DHTNode> >& nodes) const
@@ -130,12 +130,12 @@ protected:
   virtual void getNodesFromMessage
   (std::vector<SharedHandle<DHTNode> >& nodes,
    const ResponseMessage* message) = 0;
-  
+
   virtual void onReceivedInternal
   (const ResponseMessage* message) {}
-  
+
   virtual bool needsAdditionalOutgoingMessage() { return true; }
-  
+
   virtual void onFinish() {}
 
   virtual SharedHandle<DHTMessage> createMessage

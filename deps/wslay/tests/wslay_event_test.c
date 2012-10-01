@@ -190,7 +190,7 @@ void test_wslay_event_send_fragmented_msg_with_ctrl(void)
   memset(&acc, 0, sizeof(acc));
   ud.acc = &acc;
   wslay_event_context_server_init(&ctx, &callbacks, &ud);
-  
+
   memset(&arg, 0, sizeof(arg));
   arg.opcode = WSLAY_TEXT_FRAME;
   arg.source.data = &df;
@@ -231,7 +231,7 @@ void test_wslay_event_send_ctrl_msg_first(void)
   memset(&acc, 0, sizeof(acc));
   ud.acc = &acc;
   wslay_event_context_server_init(&ctx, &callbacks, &ud);
-  
+
   memset(&arg, 0, sizeof(arg));
   arg.opcode = WSLAY_PING;
   arg.msg_length = 0;

@@ -150,7 +150,7 @@ public:
                   size_t maxSegments);
 
   /**
-   * Returns a segment whose index is index. 
+   * Returns a segment whose index is index.
    * If it has already assigned
    * to another cuid or has been downloaded, then returns a segment instance
    * whose isNull call is true.
@@ -228,7 +228,7 @@ public:
   }
 
   /**
-   * Returns current download speed in bytes per sec. 
+   * Returns current download speed in bytes per sec.
    */
   int calculateDownloadSpeed();
 

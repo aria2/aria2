@@ -51,7 +51,7 @@ class DHTTaskQueue;
 class DHTAbstractTask:public DHTTask {
 private:
   bool finished_;
-  
+
   SharedHandle<DHTNode> localNode_;
 
   DHTRoutingTable* routingTable_;
@@ -59,7 +59,7 @@ private:
   DHTMessageDispatcher* dispatcher_;
 
   DHTMessageFactory* factory_;
-  
+
   DHTTaskQueue* taskQueue_;
 protected:
   void setFinished(bool f)

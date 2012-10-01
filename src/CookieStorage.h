@@ -157,7 +157,7 @@ public:
   // method returns true.  Otherwise, this method returns false.  now
   // is used as creation time and last access time.
   bool load(const std::string& filename, time_t now);
-  
+
   // Saves Cookies in Netspace format which is used in
   // Firefox1.2/Netscape/Mozilla.  If Cookies are successfully saved,
   // this method returns true, otherwise returns false.
@@ -165,7 +165,7 @@ public:
 
   // Returns the number of cookies this object stores.
   size_t size() const;
-  
+
   // Returns true if this object contains a cookie x where x == cookie
   // satisfies.
   bool contains(const Cookie& cookie) const;

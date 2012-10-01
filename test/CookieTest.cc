@@ -78,7 +78,7 @@ void CookieTest::testMatch()
   CPPUNIT_ASSERT(expireTest.match("www.aria2.org", "/", 999, false));
   CPPUNIT_ASSERT(expireTest.match("www.aria2.org", "/", 1000, false));
   CPPUNIT_ASSERT(!expireTest.match("www.aria2.org", "/", 1001, false));
-  
+
   Cookie fromNumericHost(createCookie("k", "v", "192.168.1.1", true,
                                       "/foo", false));
   CPPUNIT_ASSERT(fromNumericHost.match("192.168.1.1", "/foo", 0, false));

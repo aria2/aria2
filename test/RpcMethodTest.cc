@@ -224,7 +224,7 @@ void RpcMethodTest::testAddUri_withPosition()
   req1.params->append(urisParam1);
   RpcResponse res1 = m.execute(req1, e_.get());
   CPPUNIT_ASSERT_EQUAL(0, res1.code);
-  
+
   RpcRequest req2(AddUriRpcMethod::getMethodName(), List::g());
   SharedHandle<List> urisParam2 = List::g();
   urisParam2->append("http://uri2");
@@ -638,7 +638,7 @@ void RpcMethodTest::testTellWaiting()
                        getString(downcast<Dict>(resParams->get(0)), "gid"));
   CPPUNIT_ASSERT_EQUAL(std::string("3"),
                        getString(downcast<Dict>(resParams->get(1)), "gid"));
-  // waiting.size() == offset+num 
+  // waiting.size() == offset+num
   req = RpcRequest(TellWaitingRpcMethod::getMethodName(), List::g());
   req.params->append(Integer::g(1));
   req.params->append(Integer::g(3));
@@ -646,7 +646,7 @@ void RpcMethodTest::testTellWaiting()
   CPPUNIT_ASSERT_EQUAL(0, res.code);
   resParams = downcast<List>(res.param);
   CPPUNIT_ASSERT_EQUAL((size_t)3, resParams->size());
-  // waiting.size() < offset+num 
+  // waiting.size() < offset+num
   req = RpcRequest(TellWaitingRpcMethod::getMethodName(), List::g());
   req.params->append(Integer::g(1));
   req.params->append(Integer::g(4));
@@ -795,7 +795,7 @@ void RpcMethodTest::testGatherProgressCommon()
   SharedHandle<Dict> entry = Dict::g();
   std::vector<std::string> keys;
   gatherProgressCommon(entry, group, keys);
-  
+
   const List* followedByRes = downcast<List>(entry->get("followedBy"));
   CPPUNIT_ASSERT_EQUAL(util::itos(followedBy[0]->getGID()),
                        downcast<String>(followedByRes->get(0))->s());
@@ -823,7 +823,7 @@ void RpcMethodTest::testGatherProgressCommon()
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, entry->size());
   CPPUNIT_ASSERT(entry->containsKey("gid"));
-  
+
 }
 
 #ifdef ENABLE_BITTORRENT
@@ -1006,30 +1006,30 @@ void RpcMethodTest::testChangeUri_fail()
 
   req.params->set(1, Integer::g(1));
   req.params->set(0, String::g("2"));
-  res = m.execute(req, e_.get());  
+  res = m.execute(req, e_.get());
   // RPC request fails because GID#2 does not exist.
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 
   req.params->set(0, String::g("1"));
   req.params->set(1, Integer::g(4));
-  res = m.execute(req, e_.get());  
+  res = m.execute(req, e_.get());
   // RPC request fails because FileEntry#3 does not exist.
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 
   req.params->set(1, String::g("0"));
-  res = m.execute(req, e_.get());  
+  res = m.execute(req, e_.get());
   // RPC request fails because index of FileEntry is string.
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 
   req.params->set(1, Integer::g(1));
   req.params->set(2, String::g("http://url"));
-  res = m.execute(req, e_.get());  
+  res = m.execute(req, e_.get());
   // RPC request fails because 3rd param is not list.
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 
   req.params->set(2, List::g());
   req.params->set(3, String::g("http://url"));
-  res = m.execute(req, e_.get());  
+  res = m.execute(req, e_.get());
   // RPC request fails because 4th param is not list.
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 }
@@ -1055,7 +1055,7 @@ void RpcMethodTest::testPause()
   option_->put(PREF_FORCE_SEQUENTIAL, A2_V_TRUE);
   std::vector<SharedHandle<RequestGroup> > groups;
   createRequestGroupForUri(groups, option_, uris);
-  CPPUNIT_ASSERT_EQUAL((size_t)3, groups.size());  
+  CPPUNIT_ASSERT_EQUAL((size_t)3, groups.size());
   e_->getRequestGroupMan()->addReservedGroup(groups);
   {
     PauseRpcMethod m;

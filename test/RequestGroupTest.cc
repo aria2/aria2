@@ -55,7 +55,7 @@ void RequestGroupTest::testCreateDownloadResult()
   group.initPieceStorage();
   {
     SharedHandle<DownloadResult> result = group.createDownloadResult();
-  
+
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile"),
                          result->fileEntries[0]->getPath());
     CPPUNIT_ASSERT_EQUAL((int64_t)1024*1024,
@@ -79,7 +79,7 @@ void RequestGroupTest::testCreateDownloadResult()
   }
   {
     group.setLastErrorCode(error_code::RESOURCE_NOT_FOUND);
-  
+
     SharedHandle<DownloadResult> result = group.createDownloadResult();
 
     CPPUNIT_ASSERT_EQUAL(error_code::RESOURCE_NOT_FOUND, result->result);

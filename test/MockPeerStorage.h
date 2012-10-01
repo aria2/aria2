@@ -53,7 +53,7 @@ public:
   virtual bool isPeerAvailable() {
     return false;
   }
-  
+
   void setActivePeers(const std::vector<SharedHandle<Peer> >& activePeers)
   {
     this->activePeers = activePeers;

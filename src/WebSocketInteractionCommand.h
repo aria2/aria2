@@ -60,7 +60,7 @@ public:
                               const SharedHandle<SocketCore>& socket);
 
   virtual ~WebSocketInteractionCommand();
-  
+
   virtual bool execute();
 
   void updateWriteCheck();
@@ -68,6 +68,6 @@ public:
 
 } // namespace rpc
 
-} // namespace aria2 
+} // namespace aria2
 
 #endif // D_WEB_SOCKET_INTERACTION_COMMAND_H

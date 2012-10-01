@@ -83,7 +83,7 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     // In openFile(), resetDiskWriterEntries() are called.
     adaptor->openFile();
-    
+
     std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(entries[0]->getDiskWriter());
@@ -101,7 +101,7 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     // In openFile(), resetDiskWriterEntries() are called.
     adaptor->openFile();
-    
+
     std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
     // Because entries[1] spans entries[0]
@@ -121,7 +121,7 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     // In openFile(), resetDiskWriterEntries() are called.
     adaptor->openFile();
-    
+
     std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(!entries[0]->getDiskWriter());
@@ -141,7 +141,7 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     // In openFile(), resetDiskWriterEntries() are called.
     adaptor->openFile();
-    
+
     std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(entries[0]->getDiskWriter());
@@ -161,7 +161,7 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     // In openFile(), resetDiskWriterEntries() are called.
     adaptor->openFile();
-    
+
     std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(entries[0]->getDiskWriter());
@@ -181,7 +181,7 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     // In openFile(), resetDiskWriterEntries() are called.
     adaptor->openFile();
-    
+
     std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(entries[0]->getDiskWriter());
@@ -201,7 +201,7 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     // In openFile(), resetDiskWriterEntries() are called.
     adaptor->openFile();
-    
+
     std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(entries[0]->getDiskWriter());
@@ -376,12 +376,12 @@ void MultiDiskAdaptorTest::testCutTrailingGarbage()
   }
   std::vector<SharedHandle<FileEntry> > fileEntries
     (vbegin(entries), vend(entries));
-  
+
   MultiDiskAdaptor adaptor;
   adaptor.setFileEntries(fileEntries.begin(), fileEntries.end());
   adaptor.setMaxOpenFiles(1);
   adaptor.setPieceLength(1);
-  
+
   adaptor.openFile();
 
   adaptor.cutTrailingGarbage();
@@ -405,12 +405,12 @@ void MultiDiskAdaptorTest::testSize()
   }
   std::vector<SharedHandle<FileEntry> > fileEntries
     (vbegin(entries), vend(entries));
-  
+
   MultiDiskAdaptor adaptor;
   adaptor.setFileEntries(fileEntries.begin(), fileEntries.end());
   adaptor.setMaxOpenFiles(1);
   adaptor.setPieceLength(1);
-  
+
   adaptor.openFile();
 
   CPPUNIT_ASSERT_EQUAL((int64_t)2, adaptor.size());
@@ -440,9 +440,9 @@ void MultiDiskAdaptorTest::testUtime()
 
   time_t atime = (time_t) 100000;
   time_t mtime = (time_t) 200000;
-  
+
   CPPUNIT_ASSERT_EQUAL((size_t)2, adaptor.utime(Time(atime), Time(mtime)));
-  
+
   CPPUNIT_ASSERT_EQUAL((time_t)mtime,
                        File(entries[0]->getPath()).getModifiedTime().getTime());
 

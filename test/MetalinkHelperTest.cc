@@ -104,9 +104,9 @@ void MetalinkHelperTest::testGroupEntryByMetaurlName()
   CPPUNIT_ASSERT_EQUAL(std::string("http://meta1"), result[0].first);
   CPPUNIT_ASSERT_EQUAL(std::string("1"), result[0].second[0]->version);
   CPPUNIT_ASSERT_EQUAL(std::string(""), result[1].first);
-  CPPUNIT_ASSERT_EQUAL(std::string("2"), result[1].second[0]->version);  
+  CPPUNIT_ASSERT_EQUAL(std::string("2"), result[1].second[0]->version);
   CPPUNIT_ASSERT_EQUAL(std::string("http://meta2"), result[2].first);
-  CPPUNIT_ASSERT_EQUAL(std::string("3"), result[2].second[0]->version);  
+  CPPUNIT_ASSERT_EQUAL(std::string("3"), result[2].second[0]->version);
   CPPUNIT_ASSERT_EQUAL(std::string("http://meta1"), result[3].first);
   CPPUNIT_ASSERT_EQUAL(std::string("4"), result[3].second[0]->version);
   CPPUNIT_ASSERT_EQUAL(std::string("6"), result[3].second[1]->version);

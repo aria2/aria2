@@ -55,7 +55,7 @@ public:
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs)= 0;
-  
+
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
                           const std::string& characters) = 0;

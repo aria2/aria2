@@ -133,7 +133,7 @@ SharedHandle<DiskWriterEntry> createDiskWriterEntry
   SharedHandle<DiskWriterEntry> entry(new DiskWriterEntry(fileEntry));
   entry->needsFileAllocation(needsFileAllocation);
   return entry;
-} 
+}
 } // namespace
 
 void MultiDiskAdaptor::resetDiskWriterEntries()
@@ -243,11 +243,11 @@ void MultiDiskAdaptor::openIfNot
   if(!entry->isOpen()) {
     //     A2_LOG_DEBUG(fmt("DiskWriterEntry: Cache MISS. offset=%s",
     //            util::itos(entry->getFileEntry()->getOffset()).c_str()));
- 
+
     int numOpened = openedDiskWriterEntries_.size();
     (entry.get()->*open)();
     if(numOpened >= maxOpenFiles_) {
-      // Cache is full. 
+      // Cache is full.
       // Choose one DiskWriterEntry randomly and close it.
       size_t index =
         SimpleRandomizer::getInstance()->getRandomNumber(numOpened);
@@ -258,7 +258,7 @@ void MultiDiskAdaptor::openIfNot
       (*i) = entry;
     } else {
       openedDiskWriterEntries_.push_back(entry);
-    } 
+    }
   } else {
     //     A2_LOG_DEBUG(fmt("DiskWriterEntry: Cache HIT. offset=%s",
     //            util::itos(entry->getFileEntry()->getOffset()).c_str()));
@@ -360,7 +360,7 @@ void throwOnDiskWriterNotOpened(const SharedHandle<DiskWriterEntry>& e,
   throw DL_ABORT_EX
     (fmt("DiskWriter for offset=%" PRId64 ", filename=%s is not opened.",
          static_cast<int64_t>(offset),
-         e->getFilePath().c_str()));  
+         e->getFilePath().c_str()));
 }
 } // namespace
 

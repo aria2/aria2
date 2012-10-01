@@ -30,7 +30,7 @@ void DHTTokenTrackerTest::testGenerateToken()
   util::generateRandomData(infohash, DHT_ID_LENGTH);
   std::string ipaddr = "192.168.0.1";
   uint16_t port = 6881;
-  
+
   DHTTokenTracker tracker;
   std::string token = tracker.generateToken(infohash, ipaddr, port);
   CPPUNIT_ASSERT(tracker.validateToken(token, infohash, ipaddr, port));

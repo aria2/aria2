@@ -8,7 +8,7 @@
 namespace aria2 {
 
 class FileEntryTest : public CppUnit::TestFixture {
-  
+
   CPPUNIT_TEST_SUITE(FileEntryTest);
   CPPUNIT_TEST(testRemoveURIWhoseHostnameIs);
   CPPUNIT_TEST(testExtractURIResult);
@@ -24,7 +24,7 @@ class FileEntryTest : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
-  
+
   void testRemoveURIWhoseHostnameIs();
   void testExtractURIResult();
   void testGetRequest();
@@ -116,7 +116,7 @@ void FileEntryTest::testGetRequest()
   CPPUNIT_ASSERT(!req4th);
 
   fileEntry->setMaxConnectionPerServer(2);
-  
+
   SharedHandle<Request> req5th =
     fileEntry->getRequest(selector, true, usedHosts);
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req5th->getHost());

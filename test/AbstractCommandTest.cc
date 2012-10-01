@@ -30,7 +30,7 @@ void AbstractCommandTest::testGetProxyUri()
 {
   Option op;
   CPPUNIT_ASSERT_EQUAL(std::string(), getProxyUri("http", &op));
-  
+
   op.put(PREF_HTTP_PROXY, "http://hu:hp@httpproxy/");
   op.put(PREF_FTP_PROXY, "ftp://fu:fp@ftpproxy/");
   CPPUNIT_ASSERT_EQUAL(std::string("http://hu:hp@httpproxy/"),

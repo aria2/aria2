@@ -61,7 +61,7 @@ void DefaultBtMessageFactoryTest::testCreateBtMessage_BtExtendedMessage()
                                       13, 20);
   msg[5] = 1; // Set dummy extended message ID 1
   memcpy(msg+6, payload.c_str(), payload.size());
-  
+
   SharedHandle<BtExtendedMessage> m
     (dynamic_pointer_cast<BtExtendedMessage>
      (factory_->createBtMessage((const unsigned char*)msg+4, sizeof(msg))));

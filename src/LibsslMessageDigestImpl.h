@@ -63,7 +63,7 @@ public:
 
   static bool supports(const std::string& hashType);
   static size_t getDigestLength(const std::string& hashType);
-  
+
   size_t getDigestLength() const;
   void reset();
   void update(const void* data, size_t length);

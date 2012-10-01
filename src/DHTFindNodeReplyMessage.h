@@ -58,7 +58,7 @@ public:
   virtual void doReceivedAction();
 
   virtual SharedHandle<Dict> getResponse();
-  
+
   virtual const std::string& getMessageType() const;
 
   virtual void accept(DHTMessageCallback* callback);
@@ -72,9 +72,9 @@ public:
   (const std::vector<SharedHandle<DHTNode> >& closestKNodes);
 
   static const std::string FIND_NODE;
-  
+
   static const std::string NODES;
-  
+
   static const std::string NODES6;
 };
 

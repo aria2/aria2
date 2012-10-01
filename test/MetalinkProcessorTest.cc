@@ -37,7 +37,7 @@ class MetalinkProcessorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testBadSize);
   CPPUNIT_TEST(testBadSizeV4);
   CPPUNIT_TEST(testBadMaxConn);
-  CPPUNIT_TEST(testNoName);  
+  CPPUNIT_TEST(testNoName);
   CPPUNIT_TEST(testBadURLPrefs);
   CPPUNIT_TEST(testBadURLMaxConn);
 #ifdef ENABLE_MESSAGE_DIGEST
@@ -145,13 +145,13 @@ void MetalinkProcessorTest::testParseFileV4()
   CPPUNIT_ASSERT_EQUAL(2, mu->priority);
   CPPUNIT_ASSERT_EQUAL(std::string("torrent"), mu->mediatype);
 #else // !ENABLE_BITTORRENT
-  CPPUNIT_ASSERT_EQUAL((size_t)0, e->metaurls.size());  
+  CPPUNIT_ASSERT_EQUAL((size_t)0, e->metaurls.size());
 #endif // !ENABLE_BITTORRENT
 }
 
 void MetalinkProcessorTest::testParseFileV4_attrs()
 {
-  SharedHandle<Metalinker> m;  
+  SharedHandle<Metalinker> m;
   ByteArrayDiskWriter dw;
   {
     // Testing file@name
@@ -613,7 +613,7 @@ void MetalinkProcessorTest::testParseBinaryStream()
   DefaultDiskWriter dw(A2_TEST_DIR"/test.xml");
   dw.enableReadOnly();
   dw.openExistingFile();
-  
+
   try {
     SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
 
@@ -675,7 +675,7 @@ void MetalinkProcessorTest::testBadSizeV4()
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(RecoverableException& e) {}
 }
-  
+
 void MetalinkProcessorTest::testBadSize()
 {
   ByteArrayDiskWriter dw;
@@ -779,7 +779,7 @@ void MetalinkProcessorTest::testBadURLPrefs()
                 "  <resources>"
                 "    <url type=\"ftp\" maxconnections=\"1\" preference=\"xyz\""
                 "         location=\"jp\">ftp://mirror/</url>"
-                "  </resources>"                
+                "  </resources>"
                 "</file>"
                 "</files>"
                 "</metalink>");
@@ -811,7 +811,7 @@ void MetalinkProcessorTest::testBadURLMaxConn()
                 "    <url maxconnections=\"xyz\" type=\"ftp\""
                 "         preference=\"100\""
                 "         location=\"jp\">ftp://mirror/</url>"
-                "  </resources>"                
+                "  </resources>"
                 "</file>"
                 "</files>"
                 "</metalink>");
@@ -844,7 +844,7 @@ void MetalinkProcessorTest::testUnsupportedType()
                 "    <url type=\"ftp\">ftp://mirror/</url>"
                 "    <url type=\"magnet\">magnet:xt=XYZ</url>"
                 "    <url type=\"http\">http://mirror/</url>"
-                "  </resources>"                
+                "  </resources>"
                 "</file>"
                 "</files>"
                 "</metalink>");
@@ -885,7 +885,7 @@ void MetalinkProcessorTest::testMultiplePieces()
     SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
     SharedHandle<MetalinkEntry> e = m->getEntries()[0];
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
- 
+
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c->getHashType());
     CPPUNIT_ASSERT_EQUAL(1024, c->getPieceLength());
   } catch(Exception& e) {
@@ -981,7 +981,7 @@ void MetalinkProcessorTest::testUnsupportedType_piece()
     SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
     SharedHandle<MetalinkEntry> e = m->getEntries()[0];
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
- 
+
     CPPUNIT_ASSERT(c);
     CPPUNIT_ASSERT_EQUAL(1024, c->getPieceLength());
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c->getHashType());
@@ -1023,7 +1023,7 @@ void MetalinkProcessorTest::testXmlPrefixV3()
                 "  <m:size>9223372036854775807</m:size>"
                 "  <m:resources>"
                 "    <m:url type=\"http\">ftp://mirror/</m:url>"
-                "  </m:resources>"                
+                "  </m:resources>"
                 "</m:file>"
                 "</m:files>"
                 "</m:metalink>");

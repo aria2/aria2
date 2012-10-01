@@ -70,7 +70,7 @@ public:
   virtual void doReceivedAction();
 
   virtual SharedHandle<Dict> getArgument();
-  
+
   virtual const std::string& getMessageType() const;
 
   virtual void validate() const;

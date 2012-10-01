@@ -333,7 +333,7 @@ FtpConnection::findEndOfResponse
 
 bool FtpConnection::bulkReceiveResponse(std::pair<int, std::string>& response)
 {
-  char buf[1024];  
+  char buf[1024];
   while(1) {
     size_t size = sizeof(buf);
     socket_->readData(buf, size);

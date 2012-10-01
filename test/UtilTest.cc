@@ -229,7 +229,7 @@ void UtilTest::testLstripIter()
   std::string s = "foo";
   r = util::lstripIter(s.begin(), s.end());
   CPPUNIT_ASSERT_EQUAL(std::string("foo"), std::string(r, s.end()));
-  
+
   s = "  foo bar  ";
   r = util::lstripIter(s.begin(), s.end());
   CPPUNIT_ASSERT_EQUAL(std::string("foo bar  "), std::string(r, s.end()));
@@ -249,7 +249,7 @@ void UtilTest::testLstripIter_char()
   std::string s = "foo";
   r = util::lstripIter(s.begin(), s.end(), '$');
   CPPUNIT_ASSERT_EQUAL(std::string("foo"), std::string(r, s.end()));
-  
+
   s = "$$foo$bar$$";
   r = util::lstripIter(s.begin(), s.end(), '$');
   CPPUNIT_ASSERT_EQUAL(std::string("foo$bar$$"), std::string(r, s.end()));
@@ -784,7 +784,7 @@ void UtilTest::testStartsWith() {
   CPPUNIT_ASSERT(util::startsWith(target.begin(), target.end(),
                                   part.begin(), part.end()));
   CPPUNIT_ASSERT(util::startsWith(target.begin(), target.end(), part.c_str()));
-  
+
   target = "a";
   part = "";
   CPPUNIT_ASSERT(util::startsWith(target.begin(), target.end(),
@@ -1000,7 +1000,7 @@ void UtilTest::testPercentDecode() {
   std::string src4 = "%";
   CPPUNIT_ASSERT_EQUAL(std::string("%"),
                        util::percentDecode(src4.begin(), src4.end()));
-  
+
   std::string src5 = "%3";
   CPPUNIT_ASSERT_EQUAL(std::string("%3"),
                        util::percentDecode(src5.begin(), src5.end()));
@@ -1154,7 +1154,7 @@ void UtilTest::testConvertBitfield()
   srcBitfield.unsetBit(2);// <- range [768, 1152)
   // which corresponds to the index [1,2] in destBitfield
   util::convertBitfield(&destBitfield, &srcBitfield);
-  
+
   CPPUNIT_ASSERT_EQUAL(std::string("9fffffffffffffffffffffffffffffff80"),
                        util::toHex(destBitfield.getBitfield(),
                                    destBitfield.getBitfieldLength()));

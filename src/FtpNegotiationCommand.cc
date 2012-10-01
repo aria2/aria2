@@ -273,7 +273,7 @@ bool FtpNegotiationCommand::recvPwd()
 
 bool FtpNegotiationCommand::sendCwdPrep()
 {
-  // Calling setReadCheckSocket() is needed when the socket is reused, 
+  // Calling setReadCheckSocket() is needed when the socket is reused,
   setReadCheckSocket(getSocket());
   cwdDirs_.push_front(ftp_->getBaseWorkingDir());
   util::split(getRequest()->getDir().begin(), getRequest()->getDir().end(),
@@ -354,7 +354,7 @@ bool FtpNegotiationCommand::recvMdtm()
                     getCuid()));
   }
   sequence_ = SEQ_SEND_SIZE;
-  return true;  
+  return true;
 }
 
 bool FtpNegotiationCommand::sendSize() {
@@ -702,7 +702,7 @@ bool FtpNegotiationCommand::resolveProxy()
   A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
                   getCuid(),
                   proxyAddr_.c_str(), proxyReq->getPort()));
-  dataSocket_.reset(new SocketCore());                  
+  dataSocket_.reset(new SocketCore());
   dataSocket_->establishConnection(proxyAddr_, proxyReq->getPort());
   disableReadCheckSocket();
   setWriteCheckSocket(dataSocket_);
@@ -742,7 +742,7 @@ bool FtpNegotiationCommand::sendTunnelRequest()
           return false;
         }
       }
-    }      
+    }
     SharedHandle<HttpRequest> httpRequest(new HttpRequest());
     httpRequest->setUserAgent(getOption()->get(PREF_USER_AGENT));
     SharedHandle<Request> req(new Request());

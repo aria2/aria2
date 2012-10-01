@@ -122,7 +122,7 @@ public:
   // priority.
   DefaultPieceStorage(const SharedHandle<DownloadContext>& downloadContext,
                       const Option* option);
-                      
+
   virtual ~DefaultPieceStorage();
 
 #ifdef ENABLE_BITTORRENT
@@ -206,7 +206,7 @@ public:
   virtual void initStorage();
 
   virtual void setupFileFilter();
-  
+
   virtual void clearFileFilter();
 
   virtual bool downloadFinished();
@@ -215,7 +215,7 @@ public:
 
   virtual void setBitfield(const unsigned char* bitfield,
                            size_t bitfieldLength);
-  
+
   virtual size_t getBitfieldLength();
 
   virtual const unsigned char* getBitfield();
@@ -234,7 +234,7 @@ public:
   {
     return endGame_;
   }
-  
+
   virtual void enterEndGame()
   {
     endGame_ = true;
@@ -270,7 +270,7 @@ public:
 
   virtual void addPieceStats(const unsigned char* bitfield,
                              size_t bitfieldLength);
-  
+
   virtual void subtractPieceStats(const unsigned char* bitfield,
                                   size_t bitfieldLength);
 

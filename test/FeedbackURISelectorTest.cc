@@ -25,7 +25,7 @@ private:
   SharedHandle<ServerStatMan> ssm;
 
   SharedHandle<FeedbackURISelector> sel;
-  
+
 public:
   void setUp()
   {
@@ -36,7 +36,7 @@ public:
     };
     std::vector<std::string> uris;
     uris.assign(vbegin(urisSrc), vend(urisSrc));
-    
+
     fileEntry_.setUris(uris);
 
     ssm.reset(new ServerStatMan());
@@ -46,7 +46,7 @@ public:
   void tearDown() {}
 
   void testSelect_withoutServerStat();
-  
+
   void testSelect();
 
   void testSelect_withUsedHosts();
@@ -84,7 +84,7 @@ void FeedbackURISelectorTest::testSelect()
   CPPUNIT_ASSERT_EQUAL(std::string("http://bravo/file"),
                        sel->select(&fileEntry_, usedHosts));
   CPPUNIT_ASSERT_EQUAL((size_t)2, fileEntry_.getRemainingUris().size());
-  
+
   CPPUNIT_ASSERT_EQUAL(std::string("ftp://alpha/file"),
                        sel->select(&fileEntry_, usedHosts));
   CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntry_.getRemainingUris().size());

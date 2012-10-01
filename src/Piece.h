@@ -74,7 +74,7 @@ private:
 
   Piece(const Piece& piece);
 
-  Piece& operator=(const Piece& piece);  
+  Piece& operator=(const Piece& piece);
 public:
 
   static const int32_t BLOCK_LENGTH  = 16*1024;

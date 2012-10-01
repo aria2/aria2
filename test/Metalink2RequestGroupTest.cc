@@ -194,7 +194,7 @@ void Metalink2RequestGroupTest::testGenerate_groupByMetaurl()
     CPPUNIT_ASSERT_EQUAL((size_t)1, uris.size());
     CPPUNIT_ASSERT_EQUAL(std::string("http://file3p1"), uris[0]);
   }
-  
+
 #endif // !ENABLE_BITTORRENT
 }
 
@@ -211,7 +211,7 @@ void Metalink2RequestGroupTest::testGenerate_dosDirTraversal()
   SharedHandle<FileEntry> file = rg->getDownloadContext()->getFirstFileEntry();
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/..%5C..%5Cexample.ext"),
                        file->getPath());
-  
+
   rg = groups[2];
   file = rg->getDownloadContext()->getFileEntries()[0];
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/..%5C..%5Cfile1.ext"),

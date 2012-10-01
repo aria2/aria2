@@ -88,7 +88,7 @@ void DHTMessageFactoryImplTest::testCreatePingMessage()
   SharedHandle<Dict> aDict = Dict::g();
   aDict->put("id", String::g(remoteNodeID, DHT_ID_LENGTH));
   dict.put("a", aDict);
-  
+
   SharedHandle<DHTPingMessage> m
     (dynamic_pointer_cast<DHTPingMessage>
      (factory->createQueryMessage(&dict, "192.168.0.1", 6881)));
@@ -114,7 +114,7 @@ void DHTMessageFactoryImplTest::testCreatePingReplyMessage()
   SharedHandle<DHTNode> remoteNode(new DHTNode(remoteNodeID));
   remoteNode->setIPAddress("192.168.0.1");
   remoteNode->setPort(6881);
-  
+
   SharedHandle<DHTPingReplyMessage> m
     (dynamic_pointer_cast<DHTPingReplyMessage>
      (factory->createResponseMessage("ping", &dict,
@@ -139,7 +139,7 @@ void DHTMessageFactoryImplTest::testCreateFindNodeMessage()
   memset(targetNodeID, 0x11, DHT_ID_LENGTH);
   aDict->put("target", String::g(targetNodeID, DHT_ID_LENGTH));
   dict.put("a", aDict);
-  
+
   SharedHandle<DHTFindNodeMessage> m
     (dynamic_pointer_cast<DHTFindNodeMessage>
      (factory->createQueryMessage(&dict, "192.168.0.1", 6881)));
@@ -185,7 +185,7 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage()
     SharedHandle<DHTNode> remoteNode(new DHTNode(remoteNodeID));
     remoteNode->setIPAddress("192.168.0.1");
     remoteNode->setPort(6881);
-  
+
     SharedHandle<DHTFindNodeReplyMessage> m
       (dynamic_pointer_cast<DHTFindNodeReplyMessage>
        (factory->createResponseMessage("find_node", &dict,
@@ -237,7 +237,7 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage6()
     SharedHandle<DHTNode> remoteNode(new DHTNode(remoteNodeID));
     remoteNode->setIPAddress("2001::2001");
     remoteNode->setPort(6881);
-  
+
     SharedHandle<DHTFindNodeReplyMessage> m
       (dynamic_pointer_cast<DHTFindNodeReplyMessage>
        (factory->createResponseMessage("find_node", &dict,
@@ -268,7 +268,7 @@ void DHTMessageFactoryImplTest::testCreateGetPeersMessage()
   memset(infoHash, 0x11, DHT_ID_LENGTH);
   aDict->put("info_hash", String::g(infoHash, DHT_ID_LENGTH));
   dict.put("a", aDict);
-  
+
   SharedHandle<DHTGetPeersMessage> m
     (dynamic_pointer_cast<DHTGetPeersMessage>
      (factory->createQueryMessage(&dict, "192.168.0.1", 6881)));
@@ -330,7 +330,7 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage()
     SharedHandle<DHTNode> remoteNode(new DHTNode(remoteNodeID));
     remoteNode->setIPAddress("192.168.0.1");
     remoteNode->setPort(6881);
-  
+
     SharedHandle<DHTGetPeersReplyMessage> m
       (dynamic_pointer_cast<DHTGetPeersReplyMessage>
        (factory->createResponseMessage("get_peers", &dict,
@@ -402,7 +402,7 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage6()
     SharedHandle<DHTNode> remoteNode(new DHTNode(remoteNodeID));
     remoteNode->setIPAddress("2001::2001");
     remoteNode->setPort(6881);
-  
+
     SharedHandle<DHTGetPeersReplyMessage> m
       (dynamic_pointer_cast<DHTGetPeersReplyMessage>
        (factory->createResponseMessage("get_peers", &dict,
@@ -442,7 +442,7 @@ void DHTMessageFactoryImplTest::testCreateAnnouncePeerMessage()
     aDict->put("port", Integer::g(port));
     aDict->put("token", token);
     dict.put("a", aDict);
-  
+
     SharedHandle<DHTAnnouncePeerMessage> m
       (dynamic_pointer_cast<DHTAnnouncePeerMessage>
        (factory->createQueryMessage(&dict, "192.168.0.1", 6882)));
@@ -475,7 +475,7 @@ void DHTMessageFactoryImplTest::testCreateAnnouncePeerReplyMessage()
   SharedHandle<DHTNode> remoteNode(new DHTNode(remoteNodeID));
   remoteNode->setIPAddress("192.168.0.1");
   remoteNode->setPort(6881);
-  
+
   SharedHandle<DHTAnnouncePeerReplyMessage> m
     (dynamic_pointer_cast<DHTAnnouncePeerReplyMessage>
      (factory->createResponseMessage("announce_peer", &dict,

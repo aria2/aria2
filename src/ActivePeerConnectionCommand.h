@@ -68,7 +68,7 @@ public:
                               time_t interval);
 
   virtual ~ActivePeerConnectionCommand();
-     
+
   virtual bool execute();
 
   void connectToPeer(const SharedHandle<Peer>& peer);

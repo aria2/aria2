@@ -94,7 +94,7 @@ void DefaultPeerStorageTest::testDeleteUnusedPeer() {
   CPPUNIT_ASSERT_EQUAL((size_t)1, ps.countPeer());
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"),
                        ps.getPeer("192.168.0.2", 6889)->getIPAddress());
-  
+
 }
 
 void DefaultPeerStorageTest::testAddPeer() {
@@ -224,7 +224,7 @@ void DefaultPeerStorageTest::testActivatePeer() {
 
     std::vector<SharedHandle<Peer> > activePeers;
     ps.getActivePeers(activePeers);
-    
+
     CPPUNIT_ASSERT_EQUAL((size_t)1, activePeers.size());
   }
 }

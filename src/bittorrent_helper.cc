@@ -265,7 +265,7 @@ void extractFileEntries
         throw DL_ABORT_EX2("Path is empty.",
                            error_code::BITTORRENT_PARSE_ERROR);
       }
-      
+
       std::vector<std::string> pathelem(pathList->size()+1);
       pathelem[0] = utf8Name;
       std::vector<std::string>::iterator pathelemOutItr = pathelem.begin();
@@ -757,7 +757,7 @@ void checkBegin(int32_t begin, int32_t pieceLength)
 {
   if(!(begin < pieceLength)) {
     throw DL_ABORT_EX(fmt("Invalid begin: %d", begin));
-  }  
+  }
 }
 
 void checkLength(int32_t length)

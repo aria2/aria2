@@ -47,7 +47,7 @@ private:
 public:
   UnionSeedCriteria();
   virtual ~UnionSeedCriteria();
-    
+
   virtual void reset();
 
   virtual bool evaluate();
@@ -61,5 +61,5 @@ public:
 };
 
 } // namespace aria2
-      
+
 #endif // D_UNION_SEED_CRITERIA_H

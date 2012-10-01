@@ -133,7 +133,7 @@ void PeerAbstractCommand::disableReadCheckSocket()
     e_->deleteSocketForReadCheck(readCheckTarget_, this);
     checkSocketIsReadable_ = false;
     readCheckTarget_.reset();
-  }  
+  }
 }
 
 void PeerAbstractCommand::setReadCheckSocket(const SharedHandle<SocketCore>& socket)

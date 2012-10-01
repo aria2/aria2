@@ -62,7 +62,7 @@ void MultiFileAllocationIteratorTest::testMakeDiskWriterEntries()
 
   // create empty file4
   createFile(storeDir+std::string("/file4"), 0);
-  
+
   SharedHandle<MultiDiskAdaptor> diskAdaptor(new MultiDiskAdaptor());
   diskAdaptor->setFileEntries(vbegin(fs), vend(fs));
   diskAdaptor->setPieceLength(1024);

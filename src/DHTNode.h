@@ -61,14 +61,14 @@ private:
   Timer lastContact_;
 public:
   DHTNode();
-  
+
   /**
    * id must be 20 bytes length
    */
   DHTNode(const unsigned char* id);
 
   ~DHTNode();
-  
+
   void generateID();
 
   const unsigned char* getID() const

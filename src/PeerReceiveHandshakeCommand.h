@@ -58,7 +58,7 @@ public:
    const SharedHandle<SocketCore>& s,
    const SharedHandle<PeerConnection>& peerConnection =
    SharedHandle<PeerConnection>());
-  
+
   virtual ~PeerReceiveHandshakeCommand();
 };
 

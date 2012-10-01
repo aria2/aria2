@@ -153,9 +153,9 @@ void DownloadHelperTest::testCreateRequestGroupForUri_parameterized()
   option_->put(PREF_PARAMETERIZED_URI, A2_V_TRUE);
   {
     std::vector<SharedHandle<RequestGroup> > result;
-    
+
     createRequestGroupForUri(result, option_, uris);
-    
+
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
     SharedHandle<RequestGroup> group = result[0];
     std::vector<std::string> uris;
@@ -188,9 +188,9 @@ void DownloadHelperTest::testCreateRequestGroupForUri_BitTorrent()
   option_->put(PREF_OUT, "file.out");
   {
     std::vector<SharedHandle<RequestGroup> > result;
-    
+
     createRequestGroupForUri(result, option_, uris);
-    
+
     CPPUNIT_ASSERT_EQUAL((size_t)2, result.size());
     SharedHandle<RequestGroup> group = result[0];
     std::vector<std::string> xuris;
@@ -213,7 +213,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_BitTorrent()
     CPPUNIT_ASSERT_EQUAL(3, torrentGroup->getNumConcurrentCommand());
     SharedHandle<DownloadContext> btctx = torrentGroup->getDownloadContext();
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-test"),
-                         btctx->getBasePath());    
+                         btctx->getBasePath());
   }
 }
 #endif // ENABLE_BITTORRENT
@@ -234,9 +234,9 @@ void DownloadHelperTest::testCreateRequestGroupForUri_Metalink()
   option_->put(PREF_OUT, "file.out");
   {
     std::vector<SharedHandle<RequestGroup> > result;
-    
+
     createRequestGroupForUri(result, option_, uris);
-    
+
     // group1: http://alpha/file, ...
     // group2-7: 6 file entry in Metalink and 1 torrent file download
 #ifdef ENABLE_BITTORRENT
@@ -264,7 +264,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_Metalink()
       aria2052Group->getDownloadContext();
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-0.5.2.tar.bz2"),
                          aria2052Ctx->getBasePath());
-    
+
     SharedHandle<RequestGroup> aria2051Group = result[2];
     CPPUNIT_ASSERT_EQUAL(2, aria2051Group->getNumConcurrentCommand());
   }
@@ -280,7 +280,7 @@ void DownloadHelperTest::testCreateRequestGroupForUriList()
   option_->put(PREF_OUT, "file.out");
 
   std::vector<SharedHandle<RequestGroup> > result;
-  
+
   createRequestGroupForUriList(result, option_);
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, result.size());
@@ -376,7 +376,7 @@ void DownloadHelperTest::testCreateRequestGroupForMetalink()
   option_->put(PREF_OUT, "file.out");
   {
     std::vector<SharedHandle<RequestGroup> > result;
-  
+
     createRequestGroupForMetalink(result, option_);
 
 #ifdef ENABLE_BITTORRENT

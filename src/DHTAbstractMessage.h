@@ -83,7 +83,7 @@ public:
   }
 
   void setMessageDispatcher(DHTMessageDispatcher* dispatcher);
-  
+
   DHTMessageFactory* getMessageFactory() const
   {
     return factory_;

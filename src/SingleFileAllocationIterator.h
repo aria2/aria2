@@ -60,7 +60,7 @@ public:
   virtual ~SingleFileAllocationIterator();
 
   virtual void allocateChunk();
-  
+
   virtual bool finished();
 
   virtual int64_t getCurrentLength()

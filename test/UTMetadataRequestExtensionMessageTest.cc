@@ -54,7 +54,7 @@ public:
     SharedHandle<WrapExtBtMessage> wrapmsg =
       dynamic_pointer_cast<WrapExtBtMessage>
       (dispatcher_->messageQueue.front());
-    
+
     SharedHandle<T> msg = dynamic_pointer_cast<T>(wrapmsg->m_);
     return msg;
   }

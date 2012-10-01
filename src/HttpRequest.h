@@ -56,7 +56,7 @@ class AuthConfig;
 
 class HttpRequest {
 private:
-  
+
   static const std::string USER_AGENT;
 
   SharedHandle<Request> request_;
@@ -117,7 +117,7 @@ public:
   const std::string& getProtocol() const;
 
   const std::string& getCurrentURI() const;
-  
+
   const std::string& getDir() const;
 
   const std::string& getFile() const;
@@ -165,7 +165,7 @@ public:
   void disableContentEncoding();
 
   void setUserAgent(const std::string& userAgent);
-  
+
   // accepts multiline headers, delimited by LF
   void addHeader(const std::string& headers);
 
@@ -193,7 +193,7 @@ public:
    * object.
    */
   void setProxyRequest(const SharedHandle<Request>& proxyRequest);
-  
+
   /*
    * Returns true if non-Null proxy request is set by setProxyRequest().
    * Otherwise, returns false.

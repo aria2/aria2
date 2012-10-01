@@ -12,7 +12,7 @@ class TimeSeedCriteriaTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(TimeSeedCriteriaTest);
   CPPUNIT_TEST(testEvaluate);
   CPPUNIT_TEST_SUITE_END();
-  
+
 public:
   void testEvaluate();
 };

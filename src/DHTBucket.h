@@ -97,7 +97,7 @@ public:
   void cacheNode(const SharedHandle<DHTNode>& node);
 
   bool splitAllowed() const;
-  
+
   size_t getPrefixLength() const
   {
     return prefixLength_;

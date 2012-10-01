@@ -307,7 +307,7 @@ void AnnounceListTest::testMoveToStoppedAllowedTier() {
   CPPUNIT_ASSERT_EQUAL(std::string("tracker3"), announceList.getAnnounce());
   // test wrapped search
   announceList.moveToStoppedAllowedTier();
-  CPPUNIT_ASSERT_EQUAL(std::string("tracker2"), announceList.getAnnounce());  
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker2"), announceList.getAnnounce());
 }
 
 void AnnounceListTest::testMoveToCompletedAllowedTier() {
@@ -333,7 +333,7 @@ void AnnounceListTest::testMoveToCompletedAllowedTier() {
   CPPUNIT_ASSERT_EQUAL(std::string("tracker3"), announceList.getAnnounce());
   // test wrapped search
   announceList.moveToStoppedAllowedTier();
-  CPPUNIT_ASSERT_EQUAL(std::string("tracker2"), announceList.getAnnounce());  
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker2"), announceList.getAnnounce());
 }
 
 } // namespace aria2

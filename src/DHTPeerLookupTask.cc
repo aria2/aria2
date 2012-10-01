@@ -69,7 +69,7 @@ DHTPeerLookupTask::getNodesFromMessage
     message->getClosestKNodes();
   nodes.insert(nodes.end(), knodes.begin(), knodes.end());
 }
-  
+
 void DHTPeerLookupTask::onReceivedInternal
 (const DHTGetPeersReplyMessage* message)
 {
@@ -80,7 +80,7 @@ void DHTPeerLookupTask::onReceivedInternal
   A2_LOG_INFO(fmt("Received %lu peers.",
                   static_cast<unsigned long>(message->getValues().size())));
 }
-  
+
 SharedHandle<DHTMessage> DHTPeerLookupTask::createMessage
 (const SharedHandle<DHTNode>& remoteNode)
 {

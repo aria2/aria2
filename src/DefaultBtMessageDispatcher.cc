@@ -201,7 +201,7 @@ public:
       peer_(peer),
       pieceStorage_(pieceStorage)
   {}
-  
+
   void operator()(const RequestSlot& slot) const
   {
     if(!peer_->isInPeerAllowedIndexSet(slot.getIndex())) {
@@ -225,7 +225,7 @@ private:
 public:
   FindChokedRequestSlot(const SharedHandle<Peer>& peer):
     peer_(peer) {}
-  
+
   bool operator()(const RequestSlot& slot) const
   {
     return !peer_->isInPeerAllowedIndexSet(slot.getIndex());

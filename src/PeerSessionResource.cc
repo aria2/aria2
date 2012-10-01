@@ -89,7 +89,7 @@ void PeerSessionResource::peerInterested(bool b)
 {
   peerInterested_ = b;
 }
-  
+
 void PeerSessionResource::chokingRequired(bool b)
 {
   chokingRequired_ = b;

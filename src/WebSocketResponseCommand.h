@@ -56,6 +56,6 @@ public:
 
 } // namespace rpc
 
-} // namespace aria2 
+} // namespace aria2
 
 #endif // D_WEB_SOCKET_RESPONSE_COMMAND_H

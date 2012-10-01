@@ -59,7 +59,7 @@ private:
     Timer lastAmUnchoking_;
     bool recentUnchoking_;
     int uploadSpeed_;
-    
+
     const static time_t TIME_FRAME = 20;
   public:
     PeerEntry(const SharedHandle<Peer>& peer);

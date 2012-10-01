@@ -157,7 +157,7 @@
   _(" --allow-piece-length-change[=true|false] If false is given, aria2 aborts\n" \
     "                              download when a piece length is different from\n" \
     "                              one in a control file. If true is given, you can\n" \
-    "                              proceed but some download progress will be lost.")  
+    "                              proceed but some download progress will be lost.")
 #define TEXT_FORCE_SEQUENTIAL                                           \
   _(" -Z, --force-sequential[=true|false] Fetch URIs in the command-line sequentially\n" \
     "                              and download each URI in a separate session, like\n" \

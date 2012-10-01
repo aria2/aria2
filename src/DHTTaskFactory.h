@@ -63,7 +63,7 @@ public:
   createPeerLookupTask(const SharedHandle<DownloadContext>& ctx,
                        uint16_t tcpPort,
                        const SharedHandle<PeerStorage>& peerStorage) = 0;
-  
+
   virtual SharedHandle<DHTTask>
   createPeerAnnounceTask(const unsigned char* infoHash) = 0;
 

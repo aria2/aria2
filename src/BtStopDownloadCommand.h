@@ -49,7 +49,7 @@ class BtRuntime;
 class BtStopDownloadCommand:public TimeBasedCommand {
 private:
   RequestGroup* requestGroup_;
-  
+
   time_t timeout_;
 
   Timer checkPoint_;

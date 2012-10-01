@@ -93,7 +93,7 @@ public:
   {
     values_ = peers;
   }
-  
+
   const std::string& getToken() const
   {
     return token_;

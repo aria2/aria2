@@ -73,7 +73,7 @@ bool FileAllocationCommand::executeInternal()
            static_cast<long int>(timer_.difference(global::wallclock())),
            getRequestGroup()->getTotalLength()));
     getDownloadEngine()->getFileAllocationMan()->dropPickedEntry();
-    
+
     std::vector<Command*>* commands = new std::vector<Command*>();
     auto_delete_container<std::vector<Command*> > commandsDel(commands);
     fileAllocationEntry_->prepareForNextAction(*commands, getDownloadEngine());

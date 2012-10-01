@@ -206,7 +206,7 @@ void DefaultBtProgressInfoFile::save()
 // It is assumed that integers are saved as:
 // 1) host byte order if version == 0000
 // 2) network byte order if version == 0001
-void DefaultBtProgressInfoFile::load() 
+void DefaultBtProgressInfoFile::load()
 {
   A2_LOG_INFO(fmt(MSG_LOADING_SEGMENT_FILE, filename_.c_str()));
   BufferedFile fp(filename_.c_str(), BufferedFile::READ);
@@ -356,7 +356,7 @@ void DefaultBtProgressInfoFile::load()
       piece->setHashType(dctx_->getPieceHashType());
 
 #endif // ENABLE_MESSAGE_DIGEST
-        
+
       inFlightPieces.push_back(piece);
     }
     pieceStorage_->addInFlightPiece(inFlightPieces);

@@ -202,7 +202,7 @@ SharedHandle<DHTBucket> DHTBucket::split()
       assert(rBucket->addNode(*i));
     } else {
       lNodes.push_back(*i);
-    }      
+    }
   }
   nodes_ = lNodes;
   // TODO create toString() and use it.
@@ -220,7 +220,7 @@ SharedHandle<DHTBucket> DHTBucket::split()
 void DHTBucket::getGoodNodes
 (std::vector<SharedHandle<DHTNode> >& goodNodes) const
 {
-  goodNodes.insert(goodNodes.end(), nodes_.begin(), nodes_.end());  
+  goodNodes.insert(goodNodes.end(), nodes_.begin(), nodes_.end());
   goodNodes.erase(std::remove_if(goodNodes.begin(), goodNodes.end(),
                                  mem_fun_sh(&DHTNode::isBad)), goodNodes.end());
 }

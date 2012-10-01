@@ -417,7 +417,7 @@ bool CookieStorage::saveNsFormat(const std::string& filename)
     if(fp.close() == EOF) {
       A2_LOG_ERROR(fmt("Failed to save cookies to %s", filename.c_str()));
       return false;
-    }  
+    }
   }
   if(File(tempfilename).renameTo(filename)) {
     return true;

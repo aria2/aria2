@@ -205,7 +205,7 @@ void Netrc::parse(const std::string& path)
           skipMacdef(fp);
         }
         state = GET_TOKEN;
-      } 
+      }
     }
   }
   if(state != GET_TOKEN) {

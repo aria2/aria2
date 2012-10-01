@@ -58,7 +58,7 @@ public:
   virtual void fillMessage(Dict* msgDict);
 
   virtual SharedHandle<Dict> getResponse() = 0;
-  
+
   virtual bool isReply() const;
 
   virtual std::string toString() const;

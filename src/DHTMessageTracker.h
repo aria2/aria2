@@ -56,7 +56,7 @@ class DHTMessageTrackerEntry;
 class DHTMessageTracker {
 private:
   std::deque<SharedHandle<DHTMessageTrackerEntry> > entries_;
-  
+
   SharedHandle<DHTRoutingTable> routingTable_;
 
   SharedHandle<DHTMessageFactory> factory_;

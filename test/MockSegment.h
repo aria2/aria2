@@ -23,7 +23,7 @@ public:
   {
     return 0;
   }
-  
+
   virtual int64_t getPositionToWrite() const
   {
     return 0;

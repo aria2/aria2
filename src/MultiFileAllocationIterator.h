@@ -56,7 +56,7 @@ public:
   virtual ~MultiFileAllocationIterator();
 
   virtual void allocateChunk();
-  
+
   virtual bool finished();
 
   virtual int64_t getCurrentLength();

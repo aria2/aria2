@@ -519,7 +519,7 @@ void MetalinkParserStateMachine::beginElement
 {
   stateStack_.top()->beginElement(this, localname, prefix, nsUri, attrs);
 }
-  
+
 void MetalinkParserStateMachine::endElement
 (const char* localname,
  const char* prefix,

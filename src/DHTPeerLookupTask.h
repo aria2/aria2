@@ -60,9 +60,9 @@ public:
   virtual void getNodesFromMessage
   (std::vector<SharedHandle<DHTNode> >& nodes,
    const DHTGetPeersReplyMessage* message);
-  
+
   virtual void onReceivedInternal(const DHTGetPeersReplyMessage* message);
-  
+
   virtual SharedHandle<DHTMessage> createMessage
   (const SharedHandle<DHTNode>& remoteNode);
 

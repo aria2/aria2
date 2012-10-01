@@ -43,7 +43,7 @@ void PieceTest::testCompleteBlock()
 {
   size_t blockLength = 32*1024;
   Piece p(0, blockLength*10, blockLength);
-  
+
   p.completeBlock(5);
 
   CPPUNIT_ASSERT(p.hasBlock(5));
@@ -53,12 +53,12 @@ void PieceTest::testGetCompletedLength()
 {
   int32_t blockLength = 16*1024;
   Piece p(0, blockLength*10+100, blockLength);
-  
+
   p.completeBlock(1);
   p.completeBlock(2);
   p.completeBlock(9);
   p.completeBlock(10); // <-- 100 bytes
-  
+
   CPPUNIT_ASSERT_EQUAL(blockLength*3+100, p.getCompletedLength());
 }
 
@@ -68,7 +68,7 @@ void PieceTest::testUpdateHash()
 {
   Piece p(0, 16, 2*1024*1024);
   p.setHashType("sha-1");
-  
+
   std::string spam("SPAM!");
   CPPUNIT_ASSERT(p.updateHash
                  (0, reinterpret_cast<const unsigned char*>(spam.c_str()),

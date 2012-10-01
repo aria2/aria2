@@ -38,7 +38,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( OptionTest );
 void OptionTest::testPutAndGet() {
   Option op;
   op.put(PREF_TIMEOUT, "value");
-  
+
   CPPUNIT_ASSERT(op.defined(PREF_TIMEOUT));
   CPPUNIT_ASSERT_EQUAL(std::string("value"), op.get(PREF_TIMEOUT));
 }
@@ -54,7 +54,7 @@ void OptionTest::testPutAndGetAsInt() {
 void OptionTest::testPutAndGetAsDouble() {
   Option op;
   op.put(PREF_TIMEOUT, "10.0");
-  
+
   CPPUNIT_ASSERT_EQUAL(10.0, op.getAsDouble(PREF_TIMEOUT));
 }
 

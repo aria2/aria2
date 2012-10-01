@@ -65,7 +65,7 @@ void RequestGroupManTest::testIsSameFileBeingDownloaded()
 
   gm.addRequestGroup(rg1);
   gm.addRequestGroup(rg2);
-  
+
   CPPUNIT_ASSERT(gm.isSameFileBeingDownloaded(rg1.get()));
 
   dctx2->getFirstFileEntry()->setPath("aria2.tar.gz");
@@ -134,7 +134,7 @@ void RequestGroupManTest::testChangeReservedGroupPosition()
     ((size_t)3, rm.changeReservedGroupPosition(1, 10,RequestGroupMan::POS_SET));
   CPPUNIT_ASSERT_EQUAL
     ((size_t)0, rm.changeReservedGroupPosition(1,-10,RequestGroupMan::POS_SET));
-  
+
   CPPUNIT_ASSERT_EQUAL
     ((size_t)1, rm.changeReservedGroupPosition(2, 0, RequestGroupMan::POS_CUR));
   CPPUNIT_ASSERT_EQUAL

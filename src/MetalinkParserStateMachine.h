@@ -60,7 +60,7 @@ private:
 
   static MetalinkParserState* initialState_;
   static MetalinkParserState* skipTagState_;
-  
+
   // Metalink3
   static MetalinkParserState* metalinkState_;
   static MetalinkParserState* filesState_; // Metalink3Spec
@@ -126,7 +126,7 @@ public:
   void setVersionState();
 
   void setLanguageState();
-  
+
   void setOSState();
 
   void setVerificationState(); // Metalink3Spec

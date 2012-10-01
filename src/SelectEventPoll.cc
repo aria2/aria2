@@ -171,7 +171,7 @@ void SelectEventPoll::poll(const struct timeval& tv)
 {
   fd_set rfds;
   fd_set wfds;
-  
+
   memcpy(&rfds, &rfdset_, sizeof(fd_set));
   memcpy(&wfds, &wfdset_, sizeof(fd_set));
 #ifdef __MINGW32__

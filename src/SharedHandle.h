@@ -41,7 +41,7 @@
 
 // To Use std::tr1::shared_ptr uncomment following few lines and
 // comment out SharedHandle stuff.
-// 
+//
 // #include <tr1/memory>
 // #define SharedHandle std::tr1::shared_ptr
 // #define WeakHandle std::tr1::weak_ptr
@@ -315,7 +315,7 @@ public:
 
   ~WeakHandle() {}
 
-  WeakHandle& operator=(const WeakHandle& t) { 
+  WeakHandle& operator=(const WeakHandle& t) {
     ucount_.reassign(t.ucount_);
     obj_ = t.obj_;
     return *this;
@@ -329,7 +329,7 @@ public:
   }
 
   template<typename S>
-  WeakHandle& operator=(const WeakHandle<S>& t) { 
+  WeakHandle& operator=(const WeakHandle<S>& t) {
     ucount_.reassign(t.ucount_);
     obj_ = t.obj_;
     return *this;

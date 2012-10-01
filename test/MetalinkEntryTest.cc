@@ -78,7 +78,7 @@ void MetalinkEntryTest::testDropUnsupportedResource() {
 #else
   CPPUNIT_ASSERT_EQUAL((size_t)2, entry->resources.size());
 #endif // ENABLE_MESSAGE_DIGEST
-  
+
   std::vector<SharedHandle<MetalinkResource> >::const_iterator itr =
     entry->resources.begin();
   CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP,
@@ -97,7 +97,7 @@ void MetalinkEntryTest::testDropUnsupportedResource() {
 
 void MetalinkEntryTest::testReorderResourcesByPriority() {
   SharedHandle<MetalinkEntry> entry(createTestEntry());
-  
+
   entry->reorderResourcesByPriority();
 
   CPPUNIT_ASSERT_EQUAL(1, entry->resources.at(0)->priority);

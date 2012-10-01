@@ -72,7 +72,7 @@ public:
   {
     return bytesProcessed_;
   }
-  
+
   static const std::string NAME;
 };
 

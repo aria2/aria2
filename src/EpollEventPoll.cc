@@ -159,7 +159,7 @@ int translateEvents(EventPoll::EventType events)
     newEvents |= EPOLLERR;
   }
   if(EventPoll::EVENT_HUP&events) {
-    newEvents |= EPOLLHUP;    
+    newEvents |= EPOLLHUP;
   }
   return newEvents;
 }

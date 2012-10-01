@@ -64,7 +64,7 @@ public:
 
   void onReceived(const DHTPingReplyMessage* message);
 
-  void onTimeout(const SharedHandle<DHTNode>& node);  
+  void onTimeout(const SharedHandle<DHTNode>& node);
 
   void setTimeout(time_t timeout)
   {

@@ -56,7 +56,7 @@ public:
    const char* prefix,
    const char* nsUri,
    const std::vector<XmlAttr>& attrs) {}
-  
+
   virtual void endElement
   (MetalinkParserStateMachine* stm,
    const char* localname,

@@ -204,7 +204,7 @@ error_code::Value RequestGroup::downloadResult() const
     } else {
       return lastErrorCode_;
     }
-  }    
+  }
 }
 
 void RequestGroup::closeFile()
@@ -379,7 +379,7 @@ void RequestGroup::createInitialCommand
         SharedHandle<CheckIntegrityEntry> entry
           (new BtCheckIntegrityEntry(this));
         entry->onDownloadIncomplete(commands, e);
-        
+
         return;
       }
       removeDefunctControlFile(progressInfoFile);
@@ -684,7 +684,7 @@ void RequestGroup::adjustFilename
   if(infoFile->exists()) {
     // Use current filename
   } else {
-    File outfile(getFirstFilePath());    
+    File outfile(getFirstFilePath());
     if(outfile.exists() && option_->getAsBool(PREF_CONTINUE) &&
        outfile.size() <= downloadContext_->getTotalLength()) {
       // File exists but user decided to resume it.
@@ -728,7 +728,7 @@ void RequestGroup::loadAndOpenFile
       progressInfoFile->load();
       pieceStorage_->getDiskAdaptor()->openExistingFile();
     } else {
-      File outfile(getFirstFilePath());    
+      File outfile(getFirstFilePath());
       if(outfile.exists() && option_->getAsBool(PREF_CONTINUE) &&
          outfile.size() <= getTotalLength()) {
         pieceStorage_->getDiskAdaptor()->openExistingFile();

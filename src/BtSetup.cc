@@ -114,7 +114,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
     c->setPieceStorage(pieceStorage);
     c->setBtRuntime(btRuntime);
     c->setBtAnnounce(btAnnounce);
-    
+
     commands.push_back(c);
   }
   if(!metadataGetMode) {
@@ -122,7 +122,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
       new PeerChokeCommand(e->newCUID(), e);
     c->setPeerStorage(peerStorage);
     c->setBtRuntime(btRuntime);
-    
+
     commands.push_back(c);
   }
   {
@@ -133,7 +133,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
     c->setPieceStorage(pieceStorage);
     c->setPeerStorage(peerStorage);
     c->setBtAnnounce(btAnnounce);
-            
+
     commands.push_back(c);
   }
 
@@ -261,7 +261,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
     if(btReg->getLpdMessageReceiver()) {
       const unsigned char* infoHash =
         bittorrent::getInfoHash(requestGroup->getDownloadContext());
-      A2_LOG_INFO("Initializing LpdMessageDispatcher.");      
+      A2_LOG_INFO("Initializing LpdMessageDispatcher.");
       SharedHandle<LpdMessageDispatcher> dispatcher
         (new LpdMessageDispatcher
          (std::string(&infoHash[0], &infoHash[INFO_HASH_LENGTH]),

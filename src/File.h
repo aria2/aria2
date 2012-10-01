@@ -50,7 +50,7 @@ namespace aria2 {
 class File {
 private:
   std::string name_;
-  
+
   /**
    * Returns the return value of stat(...)
    */

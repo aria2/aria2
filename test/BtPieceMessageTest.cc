@@ -170,7 +170,7 @@ void BtPieceMessageTest::testChokingEvent_allowedFastEnabled() {
 
   msg->onChokingEvent(BtChokingEvent());
 
-  CPPUNIT_ASSERT(msg->isInvalidate());  
+  CPPUNIT_ASSERT(msg->isInvalidate());
   CPPUNIT_ASSERT_EQUAL((size_t)1, btMessageDispatcher->messageQueue.size());
   SharedHandle<MockBtMessage2> rej =
     dynamic_pointer_cast<MockBtMessage2>
@@ -191,7 +191,7 @@ void BtPieceMessageTest::testChokingEvent_inAmAllowedIndexSet() {
 
   msg->onChokingEvent(BtChokingEvent());
 
-  CPPUNIT_ASSERT(!msg->isInvalidate());  
+  CPPUNIT_ASSERT(!msg->isInvalidate());
   CPPUNIT_ASSERT_EQUAL((size_t)0, btMessageDispatcher->messageQueue.size());
 }
 
@@ -204,7 +204,7 @@ void BtPieceMessageTest::testChokingEvent_invalidate() {
 
   msg->onChokingEvent(BtChokingEvent());
 
-  CPPUNIT_ASSERT(msg->isInvalidate());  
+  CPPUNIT_ASSERT(msg->isInvalidate());
   CPPUNIT_ASSERT_EQUAL((size_t)0, btMessageDispatcher->messageQueue.size());
 }
 
@@ -217,7 +217,7 @@ void BtPieceMessageTest::testChokingEvent_sendingInProgress() {
 
   msg->onChokingEvent(BtChokingEvent());
 
-  CPPUNIT_ASSERT(!msg->isInvalidate());  
+  CPPUNIT_ASSERT(!msg->isInvalidate());
   CPPUNIT_ASSERT_EQUAL((size_t)0, btMessageDispatcher->messageQueue.size());
 }
 
@@ -239,7 +239,7 @@ void BtPieceMessageTest::testCancelSendingPieceEvent_noMatch() {
   msg->onCancelSendingPieceEvent(BtCancelSendingPieceEvent(0, 1024, 16*1024));
 
   CPPUNIT_ASSERT(!msg->isInvalidate());
-  
+
   msg->onCancelSendingPieceEvent(BtCancelSendingPieceEvent(1, 0, 16*1024));
 
   CPPUNIT_ASSERT(!msg->isInvalidate());

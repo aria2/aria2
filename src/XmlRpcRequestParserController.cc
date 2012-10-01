@@ -102,5 +102,5 @@ void XmlRpcRequestParserController::reset()
 }
 
 } // namespace rpc
-  
+
 } // namespace aria2

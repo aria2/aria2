@@ -78,7 +78,7 @@ public:
   {
     return command_;
   }
-    
+
   void addEvents(int events)
   {
     events_ |= events;
@@ -86,14 +86,14 @@ public:
 
   void removeEvents(int events)
   {
-    events_ &= (~events); 
+    events_ &= (~events);
   }
 
   bool eventsEmpty() const
   {
     return events_ == 0;
   }
-        
+
   bool operator==(const CommandEvent& commandEvent) const
   {
     return command_ == commandEvent.command_;
@@ -134,7 +134,7 @@ public:
     socketEntry->removeCommandEvent(*this);
   }
 };
-  
+
 #ifdef ENABLE_ASYNC_DNS
 
 template<typename SocketEntry, typename EventPoll>
@@ -153,7 +153,7 @@ public:
   {
     return *resolver_ == *event.resolver_;
   }
-    
+
   virtual int getEvents() const
   {
     return events_;
@@ -198,11 +198,11 @@ template<typename CommandEvent, typename ADNSEvent>
 class SocketEntry {
 protected:
   sock_t socket_;
-    
+
   std::deque<CommandEvent> commandEvents_;
-    
+
 #ifdef ENABLE_ASYNC_DNS
-    
+
   std::deque<ADNSEvent> adnsEvents_;
 
 #endif // ENABLE_ASYNC_DNS
@@ -247,7 +247,7 @@ public:
   }
 
 #ifdef ENABLE_ASYNC_DNS
-    
+
   void addADNSEvent(const ADNSEvent& aev)
   {
     typename std::deque<ADNSEvent>::iterator i =
@@ -287,7 +287,7 @@ public:
     return commandEvents_.empty();
 #endif // !ENABLE_ASYNC_DNS)
   }
-    
+
   void processEvents(int events)
   {
     std::for_each(commandEvents_.begin(), commandEvents_.end(),
@@ -313,7 +313,7 @@ private:
   Command* command_;
 
   size_t socketsSize_;
-  
+
   sock_t sockets_[ARES_GETSOCK_MAXNUM];
 
 public:
@@ -358,7 +358,7 @@ public:
     }
     socketsSize_ = i;
   }
-    
+
   void removeSocketEvents(EventPoll* e)
   {
     for(size_t i = 0; i < socketsSize_; ++i) {

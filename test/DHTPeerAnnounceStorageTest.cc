@@ -38,7 +38,7 @@ void DHTPeerAnnounceStorageTest::testAddAnnounce()
   storage.addPeerAnnounce(infohash1, "192.168.0.2", 6882);
   storage.addPeerAnnounce(infohash2, "192.168.0.3", 6883);
   storage.addPeerAnnounce(infohash2, "192.168.0.4", 6884);
-  
+
   std::vector<SharedHandle<Peer> > peers;
   storage.getPeers(peers, infohash2);
 

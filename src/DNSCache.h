@@ -88,7 +88,7 @@ private:
         if((*i).good_) {
           *out++ = (*i).addr_;
         }
-      }      
+      }
     }
 
     void markBad(const std::string& addr);
@@ -109,7 +109,7 @@ public:
   DNSCache& operator=(const DNSCache& c);
 
   const std::string& find(const std::string& hostname, uint16_t port) const;
-  
+
   template<typename OutputIterator>
   void findAll
   (OutputIterator out, const std::string& hostname, uint16_t port) const

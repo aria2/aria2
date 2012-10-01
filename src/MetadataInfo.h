@@ -68,7 +68,7 @@ public:
   {
     return id_;
   }
-  
+
   static int64_t genId();
 };
 

@@ -79,7 +79,7 @@ private:
   private:
     std::string str_;
   };
-    
+
   SharedHandle<SocketCore> socket_;
 
   std::deque<SharedHandle<BufEntry> > bufq_;

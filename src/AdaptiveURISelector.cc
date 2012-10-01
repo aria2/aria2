@@ -58,10 +58,10 @@
 
 namespace aria2 {
 
-/* In that URI Selector, select method returns one of the bests 
- * mirrors for first and reserved connections. For supplementary 
- * ones, it returns mirrors which has not been tested yet, and 
- * if each of them already tested, returns mirrors which has to 
+/* In that URI Selector, select method returns one of the bests
+ * mirrors for first and reserved connections. For supplementary
+ * ones, it returns mirrors which has not been tested yet, and
+ * if each of them already tested, returns mirrors which has to
  * be tested again. Otherwise, it doesn't return anymore mirrors.
  */
 
@@ -87,7 +87,7 @@ std::string AdaptiveURISelector::select
     // failed uris that may succeed with more permissive values
     mayRetryWithIncreasedTimeout(fileEntry);
   }
- 
+
   std::string selected = selectOne(uris);
 
   if(selected != A2STR::NIL)
@@ -128,12 +128,12 @@ std::string AdaptiveURISelector::selectOne(const std::deque<std::string>& uris)
     const size_t numPieces =
       requestGroup_->getDownloadContext()->getNumPieces();
 
-    bool reservedContext = numPieces > 0 && 
+    bool reservedContext = numPieces > 0 &&
       static_cast<size_t>(nbConnections_) > std::min
       (numPieces,
        static_cast<size_t>(requestGroup_->getNumConcurrentCommand()));
     bool selectBest = numPieces == 0 || reservedContext;
-    
+
     if(numPieces > 0)
       ++nbConnections_;
 
@@ -148,7 +148,7 @@ std::string AdaptiveURISelector::selectOne(const std::deque<std::string>& uris)
         return notTested;
       }
     }
-    
+
     if(!selectBest && nbConnections_ > 1 && nbServerToEvaluate_ > 0) {
       nbServerToEvaluate_--;
       std::string notTested = getFirstNotTestedUri(uris);
@@ -184,7 +184,7 @@ std::string AdaptiveURISelector::getBestMirror
   int max = getMaxDownloadSpeed(uris);
   int min = max-(int)(max*0.25);
   std::deque<std::string> bests = getUrisBySpeed(uris, min);
-  
+
   if (bests.size() < 2) {
     std::string uri = getMaxDownloadSpeedUri(uris);
     A2_LOG_DEBUG(fmt("AdaptiveURISelector: choosing the best mirror :"

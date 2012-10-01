@@ -85,7 +85,7 @@ public:
    const SharedHandle<Peer>& peer,
    const std::vector<size_t>& excludedIndexes,
    cuid_t cuid) = 0;
-  
+
   // Stores pieces that the peer has but localhost doesn't.  Only
   // pieces that declared as "fast" are stored.  Those pieces stored
   // will be marked "used" status in order to prevent other command
@@ -188,9 +188,9 @@ public:
   virtual int64_t getFilteredCompletedLength() = 0;
 
   virtual void setupFileFilter() = 0;
-  
+
   virtual void clearFileFilter() = 0;
-  
+
   /**
    * Returns true if download has completed.
    * If file filter is enabled, then returns true if those files have
@@ -214,7 +214,7 @@ public:
 
   virtual void setBitfield(const unsigned char* bitfield,
                            size_t bitfieldLength) = 0;
-  
+
   virtual size_t getBitfieldLength() = 0;
 
   virtual bool isSelectiveDownloadingMode() = 0;
@@ -227,7 +227,7 @@ public:
   virtual void setEndGamePieceNum(size_t num) = 0;
 
   virtual SharedHandle<DiskAdaptor> getDiskAdaptor() = 0;
-  
+
   virtual int32_t getPieceLength(size_t index) = 0;
 
   /**

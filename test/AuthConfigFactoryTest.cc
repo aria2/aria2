@@ -18,7 +18,7 @@ class AuthConfigFactoryTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreateAuthConfig_ftp);
   CPPUNIT_TEST(testUpdateBasicCred);
   CPPUNIT_TEST_SUITE_END();
-  
+
 public:
   void testCreateAuthConfig_http();
   void testCreateAuthConfig_httpNoChallenge();
@@ -83,7 +83,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_http()
   // username and password in URI
   req->setUri("http://aria2user:aria2password@localhost/download/aria2-1.0.0.tar.bz2");
   CPPUNIT_ASSERT_EQUAL(std::string("aria2user:aria2password"),
-                       factory.createAuthConfig(req, &option)->getAuthText());  
+                       factory.createAuthConfig(req, &option)->getAuthText());
 }
 
 void AuthConfigFactoryTest::testCreateAuthConfig_httpNoChallenge()
@@ -129,7 +129,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_httpNoChallenge()
   // username and password in URI
   req->setUri("http://aria2user:aria2password@localhost/download/aria2-1.0.0.tar.bz2");
   CPPUNIT_ASSERT_EQUAL(std::string("aria2user:aria2password"),
-                       factory.createAuthConfig(req, &option)->getAuthText());  
+                       factory.createAuthConfig(req, &option)->getAuthText());
 }
 
 void AuthConfigFactoryTest::testCreateAuthConfig_ftp()

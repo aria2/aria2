@@ -49,9 +49,9 @@ public:
     MockBtRequestMessage(size_t index, size_t blockIndex):
       index(index), blockIndex(blockIndex) {}
   };
-  
+
   typedef SharedHandle<MockBtRequestMessage> MockBtRequestMessageHandle;
-  
+
   class MockBtMessageFactory2 : public MockBtMessageFactory {
   public:
     virtual SharedHandle<BtMessage>
@@ -95,7 +95,7 @@ public:
     messageFactory_.reset(new MockBtMessageFactory2());
 
     dispatcher_.reset(new MockBtMessageDispatcher());
-    
+
     requestFactory_.reset(new DefaultBtRequestFactory());
     requestFactory_->setPieceStorage(pieceStorage_);
     requestFactory_->setPeer(peer_);

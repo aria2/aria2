@@ -94,7 +94,7 @@ void BtExtendedMessageTest::testDoReceivedAction() {
   msg.doReceivedAction();
   CPPUNIT_ASSERT(exmsg->doReceivedActionCalled_);
 }
-  
+
 void BtExtendedMessageTest::testToString() {
   std::string payload = "4:name3:foo";
   uint8_t extendedMessageID = 1;

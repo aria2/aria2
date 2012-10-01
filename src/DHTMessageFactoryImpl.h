@@ -157,7 +157,7 @@ public:
   void setConnection(DHTConnection* connection);
 
   void setMessageDispatcher(DHTMessageDispatcher* dispatcher);
-  
+
   void setPeerAnnounceStorage(DHTPeerAnnounceStorage* storage);
 
   void setTokenTracker(DHTTokenTracker* tokenTracker);

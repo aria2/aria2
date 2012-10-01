@@ -180,7 +180,7 @@ void setShortIntParam(unsigned char* dest, uint16_t param);
 
 // Returns message ID located at first byte:msg[0]
 uint8_t getId(const unsigned char* msg);
-  
+
 void checkIndex(size_t index, size_t pieces);
 void checkBegin(int32_t begin, int32_t pieceLength);
 void checkLength(int32_t length);

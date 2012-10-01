@@ -98,7 +98,7 @@ public:
   {
     return id_ == p.id_;
   }
-  
+
   bool operator!=(const Peer& p)
   {
     return !(*this == p);
@@ -201,7 +201,7 @@ public:
   bool peerInterested() const;
 
   void peerInterested(bool b);
-  
+
   // this peer should be choked
   bool chokingRequired() const;
 
@@ -240,7 +240,7 @@ public:
    * Returns the number of bytes downloaded from the remote host.
    */
   int64_t getSessionDownloadLength() const;
-  
+
   void setBitfield(const unsigned char* bitfield, size_t bitfieldLength);
 
   const unsigned char* getBitfield() const;
@@ -254,7 +254,7 @@ public:
    * operation = 0: set index-th bit to 0
    */
   void updateBitfield(size_t index, int operation);
-  
+
   void setFastExtensionEnabled(bool enabled);
 
   bool isFastExtensionEnabled() const;

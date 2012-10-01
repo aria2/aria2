@@ -195,7 +195,7 @@ Time Time::parse(const std::string& datetime, const std::string& format)
       thetime = INT32_MAX;
     }
   }
-  return Time(thetime);  
+  return Time(thetime);
 }
 
 Time Time::parseRFC1123(const std::string& datetime)

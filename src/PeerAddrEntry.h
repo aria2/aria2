@@ -46,7 +46,7 @@ namespace aria2 {
 class PeerAddrEntry {
 private:
   std::string ipaddr_;
-  
+
   uint16_t port_;
 
   Timer lastUpdated_;

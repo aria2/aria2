@@ -132,7 +132,7 @@ SharedHandle<BtMessage> DefaultBtInteractive::receiveHandshake(bool quickReply) 
   }
 
   peer_->setPeerId(message->getPeerId());
-    
+
   if(message->isFastExtensionSupported()) {
     peer_->setFastExtensionEnabled(true);
     A2_LOG_INFO(fmt(MSG_FAST_EXTENSION_ENABLED, cuid_));
@@ -367,7 +367,7 @@ void DefaultBtInteractive::fillPiece(size_t maxMissingBlock) {
         btRequestFactory_->getTargetPieceIndexes(excludedIndexes);
         pieceStorage_->getMissingPiece
           (pieces, diffMissingBlock, peer_, excludedIndexes, cuid_);
-      } else {        
+      } else {
         pieces.reserve(diffMissingBlock);
         pieceStorage_->getMissingPiece(pieces, diffMissingBlock, peer_, cuid_);
       }
@@ -568,7 +568,7 @@ size_t DefaultBtInteractive::countPendingMessage()
 {
   return dispatcher_->countMessageInQueue();
 }
-  
+
 bool DefaultBtInteractive::isSendingMessageInProgress()
 {
   return dispatcher_->isSendingInProgress();

@@ -66,7 +66,7 @@ public:
   int64_t getAsLLInt(const Pref* pref) const;
   bool getAsBool(const Pref* pref) const;
   double getAsDouble(const Pref* pref) const;
-  
+
   void remove(const Pref* pref);
 
   void clear();

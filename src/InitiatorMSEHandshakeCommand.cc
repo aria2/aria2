@@ -84,7 +84,7 @@ InitiatorMSEHandshakeCommand::~InitiatorMSEHandshakeCommand()
 {
   requestGroup_->decreaseNumCommand();
   btRuntime_->decreaseConnections();
-  
+
   delete mseHandshake_;
 }
 

@@ -119,7 +119,7 @@ public:
   }
 
   void peerInterested(bool b);
-  
+
   // this peer should be choked
   bool chokingRequired() const
   {
@@ -149,7 +149,7 @@ public:
   bool hasAllPieces() const;
 
   void updateBitfield(size_t index, int operation);
-  
+
   void setBitfield(const unsigned char* bitfield, size_t bitfieldLength);
 
   const unsigned char* getBitfield() const;

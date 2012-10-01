@@ -133,7 +133,7 @@ void BtRejectMessageTest::testDoReceivedAction() {
   peer->setFastExtensionEnabled(true);
   RequestSlot slot(1, 16, 32, 2);
   dispatcher->setRequestSlot(slot);
-  
+
   CPPUNIT_ASSERT
     (!RequestSlot::isNull(dispatcher->getOutstandingRequest(1, 16, 32)));
 
@@ -147,21 +147,21 @@ void BtRejectMessageTest::testDoReceivedActionNoMatch() {
   peer->setFastExtensionEnabled(true);
   RequestSlot slot(2, 16, 32, 2);
   dispatcher->setRequestSlot(slot);
-  
+
   CPPUNIT_ASSERT
     (!RequestSlot::isNull(dispatcher->getOutstandingRequest(2, 16, 32)));
 
   msg->doReceivedAction();
 
   CPPUNIT_ASSERT
-    (!RequestSlot::isNull(dispatcher->getOutstandingRequest(2, 16, 32)));  
+    (!RequestSlot::isNull(dispatcher->getOutstandingRequest(2, 16, 32)));
 
 }
 
 void BtRejectMessageTest::testDoReceivedActionFastExtensionDisabled() {
   RequestSlot slot(1, 16, 32, 2);
   dispatcher->setRequestSlot(slot);
-  
+
   CPPUNIT_ASSERT
     (!RequestSlot::isNull(dispatcher->getOutstandingRequest(1, 16, 32)));
   try {

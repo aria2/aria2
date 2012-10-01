@@ -558,7 +558,7 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
   command->installStreamFilter(filter);
   if(getRequestGroup()->isFileAllocationEnabled() &&
      !decideFileAllocation(filter)) {
-    getRequestGroup()->setFileAllocationEnabled(false);    
+    getRequestGroup()->setFileAllocationEnabled(false);
   }
   getRequestGroup()->getURISelector()->tuneDownloadCommand
     (getFileEntry()->getRemainingUris(), command);

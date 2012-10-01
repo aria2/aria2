@@ -95,7 +95,7 @@ void SegmentManTest::testCompleteSegment()
 
   seg->updateWrittenLength(pieceLength);
   segmentMan.completeSegment(1, seg);
-  
+
   std::vector<SharedHandle<Segment> > segments;
   segmentMan.getInFlightSegment(segments, 1);
   CPPUNIT_ASSERT_EQUAL((size_t)2, segments.size());
@@ -122,7 +122,7 @@ void SegmentManTest::testGetSegment_sameFileEntry()
   // See 3 segments are returned, not 4 because the part of file1 is
   // not filled in segment#1
   CPPUNIT_ASSERT_EQUAL((size_t)3, segments.size());
-  
+
   SharedHandle<Segment> segmentNo1 = segman.getSegmentWithIndex(2, 1);
   // Fill the part of file1 in segment#1
   segmentNo1->updateWrittenLength(1);
@@ -151,7 +151,7 @@ void SegmentManTest::testRegisterPeerStat()
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &op));
   SegmentMan segman(&op, dctx, ps);
-  
+
   SharedHandle<PeerStat> p1(new PeerStat(0, "host1", "http"));
   segman.registerPeerStat(p1);
   CPPUNIT_ASSERT_EQUAL((size_t)1, segman.getPeerStats().size());

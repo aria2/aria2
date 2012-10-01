@@ -95,7 +95,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
                       getCuid(), addr.c_str(), port));
       createSocket();
       getSocket()->establishConnection(addr, port);
-      
+
       getRequest()->setConnectedAddrInfo(hostname, addr, port);
       if(proxyMethod == V_GET) {
         // Use GET for FTP via HTTP proxy.
@@ -104,7 +104,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
           (new SocketRecvBuffer(getSocket()));
         SharedHandle<HttpConnection> hc
           (new HttpConnection(getCuid(), getSocket(), socketRecvBuffer));
-        
+
         HttpRequestCommand* c =
           new HttpRequestCommand(getCuid(), getRequest(), getFileEntry(),
                                  getRequestGroup(), hc, getDownloadEngine(),
@@ -138,7 +138,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
           (new SocketRecvBuffer(pooledSocket));
         SharedHandle<HttpConnection> hc
           (new HttpConnection(getCuid(), pooledSocket, socketRecvBuffer));
-        
+
         HttpRequestCommand* c =
           new HttpRequestCommand(getCuid(), getRequest(), getFileEntry(),
                                  getRequestGroup(), hc, getDownloadEngine(),

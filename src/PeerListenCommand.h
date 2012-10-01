@@ -53,7 +53,7 @@ public:
   PeerListenCommand(cuid_t cuid, DownloadEngine* e, int family);
 
   virtual ~PeerListenCommand();
-  
+
   virtual bool execute();
 
   /**
@@ -66,6 +66,6 @@ public:
   uint16_t getPort() const;
 };
 
-} // namespace aria2 
+} // namespace aria2
 
 #endif // D_PEER_LISTEN_COMMAND_H

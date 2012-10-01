@@ -152,7 +152,7 @@ void Peer::peerInterested(bool b)
   assert(res_);
   res_->peerInterested(b);
 }
-  
+
 // this peer should be choked
 bool Peer::chokingRequired() const
 {

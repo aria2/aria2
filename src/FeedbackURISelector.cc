@@ -77,7 +77,7 @@ std::string FeedbackURISelector::select
   if(uri.empty()) {
     A2_LOG_DEBUG("No URI returned from selectFaster()");
     uri = selectRarer(fileEntry->getRemainingUris(), usedHosts);
-  } 
+  }
   if(!uri.empty()) {
     std::deque<std::string>& uris = fileEntry->getRemainingUris();
     uris.erase(std::find(uris.begin(), uris.end(), uri));

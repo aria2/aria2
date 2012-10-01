@@ -46,7 +46,7 @@ public:
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs);
-  
+
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
                           const std::string& characters);
@@ -59,7 +59,7 @@ public:
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs);
-  
+
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
                           const std::string& characters) {}
@@ -72,7 +72,7 @@ public:
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs);
-  
+
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
                           const std::string& characters) {}
@@ -85,7 +85,7 @@ public:
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs);
-  
+
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
                           const std::string& characters);
@@ -97,7 +97,7 @@ class ParamsXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs);
-  
+
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
                           const std::string& characters) {}
@@ -109,7 +109,7 @@ class ParamXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs);
-  
+
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
                           const std::string& characters);
@@ -133,7 +133,7 @@ class IntXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs);
-  
+
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
                           const std::string& characters);
@@ -145,7 +145,7 @@ class StringXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs);
-  
+
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
                           const std::string& characters);
@@ -157,7 +157,7 @@ class Base64XmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs);
-  
+
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
                           const std::string& characters);
@@ -169,7 +169,7 @@ class StructXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs);
-  
+
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
                           const std::string& characters) {}
@@ -181,7 +181,7 @@ class MemberXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs);
-  
+
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
                           const std::string& characters);
@@ -193,7 +193,7 @@ class NameXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs);
-  
+
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
                           const std::string& characters);
@@ -205,7 +205,7 @@ class ArrayXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs);
-  
+
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
                           const std::string& characters) {}
@@ -217,7 +217,7 @@ class DataXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs);
-  
+
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
                           const std::string& characters) {}

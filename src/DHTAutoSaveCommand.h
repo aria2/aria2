@@ -49,7 +49,7 @@ private:
   int family_;
 
   SharedHandle<DHTNode> localNode_;
-  
+
   SharedHandle<DHTRoutingTable> routingTable_;
 
   void save();

@@ -25,7 +25,7 @@ class RequestTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testInnerLinkInReferer);
   CPPUNIT_TEST(testGetURIHost);
   CPPUNIT_TEST_SUITE_END();
-  
+
 public:
   void testSetUri1();
   void testSetUri2();
@@ -97,7 +97,7 @@ void RequestTest::testRedirectUri()
   Request req;
   req.supportsPersistentConnection(false);
   req.setUri("http://aria.rednoah.com:8080/aria2/index.html");
-  
+
   // See port number is preserved.
   CPPUNIT_ASSERT(req.redirectUri("/foo"));
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com:8080/foo"),
@@ -174,7 +174,7 @@ void RequestTest::testRedirectUri2()
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com/"),
                        req.getPreviousUri());
 }
-  
+
 void RequestTest::testResetUri()
 {
   Request req;

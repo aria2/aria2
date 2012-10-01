@@ -215,7 +215,7 @@ bool parse(UriStruct& result, const std::string& uri)
       if(65535 < tempPort) {
         return false;
       }
-      result.port = tempPort;      
+      result.port = tempPort;
     } else {
       return false;
     }

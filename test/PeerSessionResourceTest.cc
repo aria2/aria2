@@ -73,7 +73,7 @@ void PeerSessionResourceTest::testPeerAllowedIndexSetContains()
 void PeerSessionResourceTest::testAmAllowedIndexSetContains()
 {
   PeerSessionResource res(1024, 1024*1024);
-  
+
   res.addAmAllowedIndex(567);
   res.addAmAllowedIndex(789);
 
@@ -100,7 +100,7 @@ void PeerSessionResourceTest::testHasPiece()
   CPPUNIT_ASSERT(res.hasPiece(300));
   res.updateBitfield(300, 0);
   CPPUNIT_ASSERT(!res.hasPiece(300));
-}  
+}
 
 void PeerSessionResourceTest::testUpdateUploadLength()
 {
@@ -123,7 +123,7 @@ void PeerSessionResourceTest::testUpdateDownloadLength()
 }
 
 void PeerSessionResourceTest::testExtendedMessageEnabled()
-{ 
+{
   PeerSessionResource res(1024, 1024*1024);
 
   CPPUNIT_ASSERT(!res.extendedMessagingEnabled());
@@ -241,7 +241,7 @@ void PeerSessionResourceTest::testOptUnchoking()
 void PeerSessionResourceTest::testShouldBeChoking()
 {
   PeerSessionResource res(1024, 1024*1024);
-  
+
   CPPUNIT_ASSERT(res.shouldBeChoking());
   res.chokingRequired(false);
   CPPUNIT_ASSERT(!res.shouldBeChoking());

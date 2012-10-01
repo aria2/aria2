@@ -52,7 +52,7 @@ void XmlRpcDiskWriter::initAndOpenFile(int64_t totalLength)
 {
   parser_.reset();
 }
-  
+
 void XmlRpcDiskWriter::writeData(const unsigned char* data, size_t len,
                                  int64_t offset)
 {

@@ -60,7 +60,7 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
       nodes[i].reset(new DHTNode());
       nodes[i]->setIPAddress("192.168.0."+util::uitos(i+1));
       nodes[i]->setPort(6881+i);
-      
+
       unsigned char buf[COMPACT_LEN_IPV6];
       CPPUNIT_ASSERT_EQUAL
         (COMPACT_LEN_IPV4,
@@ -124,7 +124,7 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage6()
       nodes[i].reset(new DHTNode());
       nodes[i]->setIPAddress("2001::000"+util::uitos(i+1));
       nodes[i]->setPort(6881+i);
-      
+
       unsigned char buf[COMPACT_LEN_IPV6];
       CPPUNIT_ASSERT_EQUAL
         (COMPACT_LEN_IPV6, bittorrent::packcompact

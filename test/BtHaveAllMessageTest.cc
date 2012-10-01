@@ -78,11 +78,11 @@ void BtHaveAllMessageTest::testDoReceivedAction() {
   msg.setPieceStorage(pieceStorage);
 
   msg.doReceivedAction();
-  
+
   CPPUNIT_ASSERT(peer->isSeeder());
-  
+
   peer->setFastExtensionEnabled(false);
-  
+
   try {
     msg.doReceivedAction();
     CPPUNIT_FAIL("exception must be thrown.");

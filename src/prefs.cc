@@ -383,7 +383,7 @@ const Pref* PREF_HTTP_NO_CACHE = makePref("http-no-cache");
 // value: true | false
 const Pref* PREF_HTTP_ACCEPT_GZIP = makePref("http-accept-gzip");
 
-/** 
+/**
  * Proxy related preferences
  */
 const Pref* PREF_HTTP_PROXY = makePref("http-proxy");

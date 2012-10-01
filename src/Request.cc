@@ -162,7 +162,7 @@ void Request::resetRedirectCount()
 {
   redirectCount_ = 0;
 }
-  
+
 void Request::setMaxPipelinedRequest(int num)
 {
   maxPipelinedRequest_ = num;

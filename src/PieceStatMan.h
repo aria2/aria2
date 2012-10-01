@@ -56,7 +56,7 @@ public:
 
   void addPieceStats(const unsigned char* bitfield,
                      size_t bitfieldLength);
-  
+
   void subtractPieceStats(const unsigned char* bitfield,
                           size_t bitfieldLength);
 

@@ -63,7 +63,7 @@ public:
   }
 
   virtual void removeOutstandingRequest(const RequestSlot& slot) {}
-  
+
   virtual void addOutstandingRequest(const RequestSlot& slot) {}
 
   virtual size_t countOutstandingUpload()

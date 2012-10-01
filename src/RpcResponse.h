@@ -49,7 +49,7 @@ namespace rpc {
 struct RpcResponse {
   // 0 for success, non-zero for error
   int code;
-  
+
   SharedHandle<ValueBase> param;
 
   SharedHandle<ValueBase> id;

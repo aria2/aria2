@@ -202,7 +202,7 @@ bool parseDate
       return false;
     }
   }
-        
+
   tm timespec;
   memset(&timespec, 0, sizeof(timespec));
   timespec.tm_sec = second;
@@ -355,7 +355,7 @@ bool parse
   if(cookiePath.empty()) {
     cookiePath = defaultPath;
   }
-  
+
   cookie.setName(cookieName.first, cookieName.second);
   cookie.setValue(cookieValue.first, cookieValue.second);
   cookie.setExpiryTime(expiryTime);

@@ -150,7 +150,7 @@ bool Platform::setUp()
 #ifdef __MINGW32__
   unsigned int _CRT_fmode = _O_BINARY;
 #endif // __MINGW32__
-  
+
   return true;
 }
 
@@ -172,7 +172,7 @@ bool Platform::tearDown()
 #ifdef HAVE_WINSOCK2_H
   WSACleanup();
 #endif // HAVE_WINSOCK2_H
-  
+
   return true;
 }
 

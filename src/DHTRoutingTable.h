@@ -84,13 +84,13 @@ public:
   void moveBucketHead(const SharedHandle<DHTNode>& node);
 
   void moveBucketTail(const SharedHandle<DHTNode>& node);
-  
+
   SharedHandle<DHTBucket> getBucketFor(const unsigned char* nodeID) const;
 
   SharedHandle<DHTBucket> getBucketFor(const SharedHandle<DHTNode>& node) const;
 
   SharedHandle<DHTNode> getNode(const unsigned char* id, const std::string& ipaddr, uint16_t port) const;
-  
+
   void getBuckets(std::vector<SharedHandle<DHTBucket> >& buckets) const;
 
   void setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue);

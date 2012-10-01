@@ -145,7 +145,7 @@ void FileTest::testMkdir() {
     // this test failes because d.mkdir returns false when the directory is
     // already exists.
     CPPUNIT_ASSERT(!d.mkdirs());
-  }  
+  }
 }
 
 void FileTest::testGetDirname()
@@ -244,7 +244,7 @@ void FileTest::testRenameTo()
   // to see renameTo() work even when the destination file exists
   of.open(fname.c_str());
   of.close();
-  
+
   CPPUNIT_ASSERT(f.renameTo(fname));
 }
 
@@ -252,12 +252,12 @@ void FileTest::testUtime()
 {
   File f(A2_TEST_OUT_DIR"/aria2_FileTest_testUTime");
   createFile(f.getPath(), 0);
-  
+
   time_t atime = (time_t) 100000;
   time_t mtime = (time_t) 200000;
-  
+
   CPPUNIT_ASSERT(f.utime(Time(atime), Time(mtime)));
-  
+
   a2_struct_stat buf;
   CPPUNIT_ASSERT(0 == a2stat(utf8ToWChar(f.getPath()).c_str(), &buf));
   CPPUNIT_ASSERT_EQUAL((time_t)atime, (time_t)buf.st_atime);

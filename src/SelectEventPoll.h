@@ -55,12 +55,12 @@ private:
     int events_;
   public:
     CommandEvent(Command* command, int events);
-    
+
     Command* getCommand() const
     {
       return command_;
     }
-    
+
     void addEvents(int events)
     {
       events_ |= events;
@@ -68,14 +68,14 @@ private:
 
     void removeEvents(int events)
     {
-      events_ &= (~events); 
+      events_ &= (~events);
     }
-    
+
     bool eventsEmpty() const
     {
       return events_ == 0;
     }
-        
+
     bool operator==(const CommandEvent& commandEvent) const
     {
       return command_ == commandEvent.command_;
@@ -85,7 +85,7 @@ private:
     {
       return events_;
     }
-    
+
     void processEvents(int events);
   };
 
@@ -97,7 +97,7 @@ private:
     sock_t socket_;
 
     std::deque<CommandEvent> commandEvents_;
-  public: 
+  public:
     SocketEntry(sock_t socket);
 
     bool operator==(const SocketEntry& entry) const
@@ -109,9 +109,9 @@ private:
     {
       return socket_ < entry.socket_;
     }
-    
+
     void addCommandEvent(Command* command, int events);
-    
+
     void removeCommandEvent(Command* command, int events);
 
     int getEvents();
@@ -120,12 +120,12 @@ private:
     {
       return socket_;
     }
-    
+
     bool eventEmpty() const
     {
       return commandEvents_.empty();
     }
-    
+
     void processEvents(int events);
   };
 
@@ -134,9 +134,9 @@ private:
   class AsyncNameResolverEntry {
   private:
     SharedHandle<AsyncNameResolver> nameResolver_;
-    
+
     Command* command_;
-    
+
   public:
     AsyncNameResolverEntry(const SharedHandle<AsyncNameResolver>& nameResolver,
                            Command* command);

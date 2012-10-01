@@ -65,7 +65,7 @@ std::string encode(const std::string& src)
       }
       ret.append(&temp[0], &temp[8]);
       count = 0;
-      buf = 0;      
+      buf = 0;
     }
   }
   size_t r = 0;

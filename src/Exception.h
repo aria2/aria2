@@ -47,7 +47,7 @@ namespace aria2 {
 class Exception:public std::exception {
 private:
   const char* file_;
-  
+
   int line_;
   // This is low-level system error code, typically errno in Linux.
   int errNum_;

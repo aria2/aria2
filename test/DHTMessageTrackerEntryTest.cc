@@ -39,9 +39,9 @@ void DHTMessageTrackerEntryTest::testMatch()
     SharedHandle<MockDHTMessage> msg1(new MockDHTMessage(localNode, node1));
     SharedHandle<DHTNode> node2(new DHTNode());
     SharedHandle<MockDHTMessage> msg2(new MockDHTMessage(localNode, node2));
-    
+
     DHTMessageTrackerEntry entry(msg1, 30);
-    
+
     CPPUNIT_ASSERT(entry.match(msg1->getTransactionID(),
                                msg1->getRemoteNode()->getIPAddress(),
                                msg1->getRemoteNode()->getPort()));

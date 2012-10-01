@@ -87,7 +87,7 @@ public:
   {
     return SharedHandle<DHTResponseMessage>();
   }
-  
+
   virtual SharedHandle<DHTQueryMessage>
   createAnnouncePeerMessage(const SharedHandle<DHTNode>& remoteNode,
                             const unsigned char* infoHash,

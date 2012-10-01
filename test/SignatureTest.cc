@@ -33,7 +33,7 @@ void SignatureTest::testSave()
   File outfile(filepath);
   if(outfile.exists()) {
     outfile.remove();
-  } 
+  }
   CPPUNIT_ASSERT(sig.save(filepath));
   {
     std::ifstream in(filepath.c_str(), std::ios::binary);

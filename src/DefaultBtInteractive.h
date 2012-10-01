@@ -68,7 +68,7 @@ private:
   int keepAliveCount;
 public:
   FloodingStat():chokeUnchokeCount(0), keepAliveCount(0) {}
-  
+
   void incChokeUnchokeCount() {
     if(chokeUnchokeCount < INT_MAX) {
       chokeUnchokeCount++;
@@ -184,7 +184,7 @@ public:
   size_t receiveMessages();
 
   virtual size_t countPendingMessage();
-  
+
   virtual bool isSendingMessageInProgress();
 
   virtual size_t countReceivedMessageInIteration() const;

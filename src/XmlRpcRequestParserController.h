@@ -80,7 +80,7 @@ public:
   // Pops StateFrame p from frameStack_ and add currentFrame_.value_
   // to p and currentFrame_ = p;
   void popArrayFrame();
-  
+
   void setCurrentFrameValue(const SharedHandle<ValueBase>& value);
 
   void setCurrentFrameName(const std::string& name);

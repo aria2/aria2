@@ -149,13 +149,13 @@ public:
   std::string toString() const;
 private:
   std::string hostname_;
-  
+
   std::string protocol_;
 
   int downloadSpeed_;
-  
+
   int singleConnectionAvgSpeed_;
-  
+
   int multiConnectionAvgSpeed_;
 
   int counter_;

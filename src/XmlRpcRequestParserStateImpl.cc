@@ -57,9 +57,9 @@ void InitialXmlRpcRequestParserState::beginElement
     psm->pushMethodCallState();
   } else {
     psm->pushUnknownElementState();
-  }  
+  }
 }
-  
+
 void InitialXmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* psm,
  const char* name,
@@ -90,9 +90,9 @@ void MethodCallXmlRpcRequestParserState::beginElement
     psm->pushParamsState();
   } else {
     psm->pushUnknownElementState();
-  }  
+  }
 }
-  
+
 // MethodNameXmlRpcRequestParserState
 
 void MethodNameXmlRpcRequestParserState::beginElement
@@ -102,7 +102,7 @@ void MethodNameXmlRpcRequestParserState::beginElement
 {
   psm->pushUnknownElementState();
 }
-  
+
 void MethodNameXmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* psm,
  const char* name,
@@ -125,7 +125,7 @@ void ParamsXmlRpcRequestParserState::beginElement
     psm->pushUnknownElementState();
   }
 }
-  
+
 // ParamXmlRpcRequestParserState
 
 void ParamXmlRpcRequestParserState::beginElement
@@ -147,7 +147,7 @@ void ParamXmlRpcRequestParserState::endElement
 {
   psm->popArrayFrame();
 }
- 
+
 // ValueXmlRpcRequestParserState
 
 void ValueXmlRpcRequestParserState::beginElement
@@ -194,7 +194,7 @@ void IntXmlRpcRequestParserState::beginElement
 {
   psm->pushUnknownElementState();
 }
-  
+
 void IntXmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* psm,
  const char* name,
@@ -217,7 +217,7 @@ void StringXmlRpcRequestParserState::beginElement
 {
   psm->pushUnknownElementState();
 }
-  
+
 void StringXmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* psm,
  const char* name,
@@ -235,7 +235,7 @@ void Base64XmlRpcRequestParserState::beginElement
 {
   psm->pushUnknownElementState();
 }
-  
+
 void Base64XmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* psm,
  const char* name,

@@ -78,7 +78,7 @@ void UTMetadataRequestFactory::create
     m->setBtMessageDispatcher(dispatcher_);
     m->setBtMessageFactory(messageFactory_);
     m->setPeer(peer_);
-    
+
     SharedHandle<BtMessage> msg = messageFactory_->createBtExtendedMessage(m);
     msgs.push_back(msg);
     tracker_->add(p->getIndex());

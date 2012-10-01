@@ -21,7 +21,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(SequentialPickerTest);
 void SequentialPickerTest::testPick()
 {
   SequentialPicker<int> picker;
-  
+
   CPPUNIT_ASSERT(!picker.isPicked());
   CPPUNIT_ASSERT(!picker.hasNext());
   CPPUNIT_ASSERT_EQUAL((size_t)0, picker.countEntryInQueue());

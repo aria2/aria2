@@ -72,7 +72,7 @@ public:
   }
 
   void removeStalePeerAddrEntry(time_t timeout);
-  
+
   bool empty() const;
 
   const Timer& getLastUpdated() const

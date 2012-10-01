@@ -51,7 +51,7 @@ const SharedHandle<SimpleRandomizer>& SimpleRandomizer::getInstance()
   }
   return randomizer_;
 }
-  
+
 void SimpleRandomizer::init()
 {
 #ifndef __MINGW32__

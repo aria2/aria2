@@ -76,7 +76,7 @@ private:
   bool knowsTotalLength_;
 
   RequestGroup* ownerRequestGroup_;
-  
+
   std::vector<SharedHandle<ContextAttribute> > attrs_;
 
   Timer downloadStartTime_;
@@ -99,7 +99,7 @@ public:
   ~DownloadContext();
 
   const std::string& getPieceHash(size_t index) const;
-  
+
   const std::vector<std::string>& getPieceHashes() const
   {
     return pieceHashes_;
@@ -219,7 +219,7 @@ public:
   }
 
   int64_t calculateSessionTime() const;
-  
+
   // Returns FileEntry at given offset. SharedHandle<FileEntry>() is
   // returned if no such FileEntry is found.
   SharedHandle<FileEntry> findFileEntryByOffset(int64_t offset) const;

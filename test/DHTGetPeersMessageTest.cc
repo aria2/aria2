@@ -116,7 +116,7 @@ void DHTGetPeersMessageTest::testDoReceivedAction()
     peerAnnounceStorage.addPeerAnnounce(infoHash, "192.168.0.101", 6889);
 
     msg.setPeerAnnounceStorage(&peerAnnounceStorage);
-  
+
     msg.doReceivedAction();
 
     CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher.messageQueue_.size());

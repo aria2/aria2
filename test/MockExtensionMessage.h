@@ -39,7 +39,7 @@ public:
   {
     return extensionMessageID_;
   }
-  
+
   virtual const char* getExtensionName() const
   {
     return extensionName_.c_str();

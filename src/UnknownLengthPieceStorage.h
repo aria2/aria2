@@ -49,7 +49,7 @@ private:
   SharedHandle<DownloadContext> downloadContext_;
 
   const Option* option_;
-  
+
   SharedHandle<DirectDiskAdaptor> diskAdaptor_;
 
   SharedHandle<DiskWriterFactory> diskWriterFactory_;
@@ -172,11 +172,11 @@ public:
   {
     return getCompletedLength();
   }
-  
+
   virtual void setupFileFilter() {}
 
   virtual void clearFileFilter() {}
-  
+
   /**
    * Returns true if download has completed.
    * If file filter is enabled, then returns true if those files have
@@ -209,7 +209,7 @@ public:
 
   virtual void setBitfield(const unsigned char* bitfield,
                            size_t bitfieldLength) {}
-  
+
   virtual size_t getBitfieldLength()
   {
     return 0;
@@ -230,7 +230,7 @@ public:
   virtual void setEndGamePieceNum(size_t num) {}
 
   virtual SharedHandle<DiskAdaptor> getDiskAdaptor();
-  
+
   virtual int32_t getPieceLength(size_t index);
 
   /**

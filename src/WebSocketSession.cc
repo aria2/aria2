@@ -220,7 +220,7 @@ WebSocketSession::WebSocketSession(const SharedHandle<SocketCore>& socket,
   assert(r == 0);
   wslay_event_config_set_no_buffering(wsctx_, 1);
 }
-    
+
 WebSocketSession::~WebSocketSession()
 {
   wslay_event_context_free(wsctx_);

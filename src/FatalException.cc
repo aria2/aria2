@@ -45,7 +45,7 @@ SharedHandle<Exception> FatalException::copy() const
 FatalException::FatalException
 (const char* file, int line, const std::string& msg):
   Exception(file, line, msg) {}
- 
+
 FatalException::FatalException
 (const char* file, int line, const std::string& msg,
  const Exception& cause):

@@ -41,7 +41,7 @@ void ServerStatTest::testSetStatus()
   CPPUNIT_ASSERT_EQUAL(ServerStat::OK, ss.getStatus());
   // See undefined status string will not change current status.
   ss.setStatus("__BADSTATUS");
-  CPPUNIT_ASSERT_EQUAL(ServerStat::OK, ss.getStatus());  
+  CPPUNIT_ASSERT_EQUAL(ServerStat::OK, ss.getStatus());
 }
 
 void ServerStatTest::testToString()

@@ -125,7 +125,7 @@ void DHTRoutingTableDeserializer::deserialize(const std::string& filename)
            filename.c_str(),
            "bad header"));
   }
-  
+
   uint32_t temp32;
   uint64_t temp64;
   // time
@@ -138,7 +138,7 @@ void DHTRoutingTableDeserializer::deserialize(const std::string& filename)
     READ_CHECK(fp, &temp64, sizeof(temp64));
     serializedTime_.setTimeInSec(ntoh64(temp64));
   }
-  
+
   // localnode
   // 8bytes reserved
   readBytes(fp, buf, buf.size(), 8);

@@ -57,7 +57,7 @@ public:
   (const SharedHandle<BinaryStream>& out,
    const SharedHandle<Segment>& segment,
    const unsigned char* inbuf, size_t inlen);
-  
+
   virtual bool finished();
 
   virtual void release();

@@ -70,7 +70,7 @@ void NsCookieParserTest::testParse()
   CPPUNIT_ASSERT_EQUAL(std::string("TAX"), c.getName());
   CPPUNIT_ASSERT_EQUAL(std::string("1000"), c.getValue());
   CPPUNIT_ASSERT((time_t)INT32_MAX <= c.getExpiryTime());
-  CPPUNIT_ASSERT(c.getPersistent());  
+  CPPUNIT_ASSERT(c.getPersistent());
   CPPUNIT_ASSERT_EQUAL(std::string("overflow"), c.getDomain());
   CPPUNIT_ASSERT(c.getHostOnly());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), c.getPath());
@@ -80,7 +80,7 @@ void NsCookieParserTest::testParse()
   CPPUNIT_ASSERT_EQUAL(std::string("novalue"), c.getName());
   CPPUNIT_ASSERT_EQUAL(std::string(""), c.getValue());
   CPPUNIT_ASSERT_EQUAL((time_t)INT32_MAX, c.getExpiryTime());
-  CPPUNIT_ASSERT(c.getPersistent());  
+  CPPUNIT_ASSERT(c.getPersistent());
   CPPUNIT_ASSERT_EQUAL(std::string("example.org"), c.getDomain());
   CPPUNIT_ASSERT(!c.getHostOnly());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), c.getPath());

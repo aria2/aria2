@@ -128,7 +128,7 @@ bool DHTEntryPointNameResolveCommand::execute()
           try {
             std::vector<std::string> addrs;
             res.resolve(addrs, hostname);
-          
+
             std::pair<std::string, uint16_t> p(addrs.front(),
                                                entryPoints_.front().second);
             resolvedEntryPoints_.push_back(p);
@@ -156,7 +156,7 @@ void DHTEntryPointNameResolveCommand::addPingTask
   SharedHandle<DHTNode> entryNode(new DHTNode());
   entryNode->setIPAddress(addr.first);
   entryNode->setPort(addr.second);
-  
+
   taskQueue_->addPeriodicTask1(taskFactory_->createPingTask(entryNode, 10));
 }
 

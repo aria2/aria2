@@ -68,7 +68,7 @@ void RpcHelperTest::testParseMemory()
     "           <data>"
     "             <value><string>pudding</string></value>"
     "             <value><base64>aGVsbG8gd29ybGQ=</base64></value>"
-    "           </data>"                    
+    "           </data>"
     "         </array>"
     "       </value>"
     "     </param>"

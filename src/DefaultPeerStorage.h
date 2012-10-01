@@ -114,7 +114,7 @@ public:
   virtual void executeChoke();
 
   void deleteUnusedPeer(size_t delSize);
-  
+
   void onErasingPeer(const SharedHandle<Peer>& peer);
 
   void onReturningPeer(const SharedHandle<Peer>& peer);

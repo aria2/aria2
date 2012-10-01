@@ -96,7 +96,7 @@ void ServerStat::updateSingleConnectionAvgSpeed(int downloadSpeed)
     return;
   if(counter_ < 5) {
     avgDownloadSpeed =
-      ((((float)counter_-1)/(float)counter_)*(float)singleConnectionAvgSpeed_)+ 
+      ((((float)counter_-1)/(float)counter_)*(float)singleConnectionAvgSpeed_)+
       ((1.0/(float)counter_)*(float)downloadSpeed);
   }
   else {
@@ -130,7 +130,7 @@ void ServerStat::updateMultiConnectionAvgSpeed(int downloadSpeed)
     return;
   if(counter_ < 5) {
     avgDownloadSpeed =
-      ((((float)counter_-1)/(float)counter_)*(float)multiConnectionAvgSpeed_) + 
+      ((((float)counter_-1)/(float)counter_)*(float)multiConnectionAvgSpeed_) +
       ((1.0/(float)counter_)*(float)downloadSpeed);
   }
   else {

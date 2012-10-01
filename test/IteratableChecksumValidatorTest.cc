@@ -64,7 +64,7 @@ void IteratableChecksumValidatorTest::testValidate_fail() {
 
   IteratableChecksumValidator validator(dctx, ps);
   validator.init();
-  
+
   while(!validator.finished()) {
     validator.validateChunk();
   }

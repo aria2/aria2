@@ -47,7 +47,7 @@ void DHTRoutingTableDeserializerTest::testDeserialize()
   }
   nodesSrc[1]->setIPAddress("non-numerical-name");
   std::vector<SharedHandle<DHTNode> > nodes(vbegin(nodesSrc), vend(nodesSrc));
-  
+
   DHTRoutingTableSerializer s(AF_INET);
   s.setLocalNode(localNode);
   s.setNodes(nodes);
@@ -85,7 +85,7 @@ void DHTRoutingTableDeserializerTest::testDeserialize6()
   }
   nodesSrc[1]->setIPAddress("non-numerical-name");
   std::vector<SharedHandle<DHTNode> > nodes(vbegin(nodesSrc), vend(nodesSrc));
-  
+
   DHTRoutingTableSerializer s(AF_INET6);
   s.setLocalNode(localNode);
   s.setNodes(nodes);

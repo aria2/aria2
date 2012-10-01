@@ -55,7 +55,7 @@ public:
   virtual SharedHandle<BtMessage> createUnchokeMessage() {
     return SharedHandle<BtMessage>();
   }
-  
+
   virtual SharedHandle<BtMessage> createInterestedMessage() {
     return SharedHandle<BtMessage>();
   }
@@ -71,7 +71,7 @@ public:
   virtual SharedHandle<BtMessage> createKeepAliveMessage() {
     return SharedHandle<BtMessage>();
   }
-  
+
   virtual SharedHandle<BtMessage> createHaveAllMessage() {
     return SharedHandle<BtMessage>();
   }
@@ -93,7 +93,7 @@ public:
   {
     return SharedHandle<BtMessage>();
   }
-  
+
   virtual SharedHandle<BtMessage>
   createBtExtendedMessage(const SharedHandle<ExtensionMessage>& extmsg)
   {

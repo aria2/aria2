@@ -115,7 +115,7 @@ void gatherOption
         }
       }
     }
-  }  
+  }
 }
 } // namespace
 

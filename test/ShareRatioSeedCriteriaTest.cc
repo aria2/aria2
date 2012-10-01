@@ -14,7 +14,7 @@ class ShareRatioSeedCriteriaTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(ShareRatioSeedCriteriaTest);
   CPPUNIT_TEST(testEvaluate);
   CPPUNIT_TEST_SUITE_END();
-  
+
 public:
   void testEvaluate();
 };
@@ -23,7 +23,7 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(ShareRatioSeedCriteriaTest);
 
 void ShareRatioSeedCriteriaTest::testEvaluate() {
-  SharedHandle<DownloadContext> dctx(new DownloadContext(1024*1024, 1000000));  
+  SharedHandle<DownloadContext> dctx(new DownloadContext(1024*1024, 1000000));
   SharedHandle<MockPeerStorage> peerStorage(new MockPeerStorage());
   TransferStat stat;
   stat.setAllTimeUploadLength(1000000);
@@ -37,7 +37,7 @@ void ShareRatioSeedCriteriaTest::testEvaluate() {
   cri.setPieceStorage(pieceStorage);
 
   CPPUNIT_ASSERT(cri.evaluate());
-  
+
   cri.setRatio(2.0);
   CPPUNIT_ASSERT(!cri.evaluate());
   // check div by zero

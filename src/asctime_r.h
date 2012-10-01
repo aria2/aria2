@@ -39,9 +39,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
-  
+
 #include <time.h>
-  
+
 char * asctime_r (const struct tm*, char*);
 
 #ifdef __cplusplus

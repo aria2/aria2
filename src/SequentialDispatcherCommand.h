@@ -64,7 +64,7 @@ public:
   {
     setStatusRealtime();
   }
-  
+
   virtual bool execute()
   {
     if(e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {

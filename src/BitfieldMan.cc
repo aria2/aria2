@@ -266,7 +266,7 @@ bool getSparseMissingUnusedIndex
       maxRange = currentRange;
     }
     nextIndex = currentRange.endIndex;
-      
+
   }
   if(maxRange.getSize()) {
     if(maxRange.startIndex == 0) {
@@ -897,7 +897,7 @@ BitfieldMan::Range::Range(size_t startIndex, size_t endIndex)
   startIndex(startIndex),
   endIndex(endIndex)
 {}
-  
+
 size_t BitfieldMan::Range::getSize() const
 {
   return endIndex-startIndex;
@@ -912,7 +912,7 @@ bool BitfieldMan::Range::operator<(const Range& range) const
 {
   return getSize() < range.getSize();
 }
-    
+
 bool BitfieldMan::Range::operator==(const Range& range) const
 {
   return getSize() == range.getSize();

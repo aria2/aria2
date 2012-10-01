@@ -122,7 +122,7 @@ void BtHaveMessageTest::testDoReceivedAction_goodByeSeeder()
     // success
   }
 }
-  
+
 void BtHaveMessageTest::testToString() {
   BtHaveMessage msg;
   msg.setIndex(1);

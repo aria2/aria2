@@ -93,7 +93,7 @@ void UTMetadataDataExtensionMessageTest::testDoReceivedAction()
 
   m.setIndex(1);
   m.setData(piece1);
-  
+
   tracker->add(1);
   m.doReceivedAction();
   CPPUNIT_ASSERT(!tracker->tracks(1));

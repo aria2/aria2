@@ -66,7 +66,7 @@ private:
   void onMessageReceived(const SharedHandle<DHTMessage>& message);
 public:
   DHTMessageReceiver(const SharedHandle<DHTMessageTracker>& tracker);
-  
+
   ~DHTMessageReceiver();
 
   SharedHandle<DHTMessage> receiveMessage();

@@ -59,7 +59,7 @@ void Checksum::setDigest(const std::string& digest)
 {
   digest_ = digest;
 }
-  
+
 void Checksum::setHashType(const std::string& hashType)
 {
   hashType_ = hashType;

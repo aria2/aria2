@@ -359,7 +359,7 @@ SharedHandle<ValueBase> AddMetalinkRpcMethod::process
     }
   }
   return gids;
-} 
+}
 #endif // ENABLE_METALINK
 
 namespace {
@@ -513,7 +513,7 @@ SharedHandle<ValueBase> UnpauseRpcMethod::process
     throw DL_ABORT_EX(fmt("GID#%" PRId64 " cannot be unpaused now", gid));
   } else {
     group->setPauseRequested(false);
-    e->getRequestGroupMan()->requestQueueCheck();    
+    e->getRequestGroupMan()->requestQueueCheck();
   }
   return createGIDResponse(gid);
 }
@@ -526,7 +526,7 @@ SharedHandle<ValueBase> UnpauseAllRpcMethod::process
   std::for_each(groups.begin(), groups.end(),
                 std::bind2nd(mem_fun_sh(&RequestGroup::setPauseRequested),
                              false));
-  e->getRequestGroupMan()->requestQueueCheck();    
+  e->getRequestGroupMan()->requestQueueCheck();
   return VLB_OK;
 }
 

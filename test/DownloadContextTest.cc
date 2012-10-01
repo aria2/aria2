@@ -32,8 +32,8 @@ void DownloadContextTest::testFindFileEntryByOffset()
   DownloadContext ctx;
 
   CPPUNIT_ASSERT(!ctx.findFileEntryByOffset(0));
-  
-  const SharedHandle<FileEntry> fileEntries[] = 
+
+  const SharedHandle<FileEntry> fileEntries[] =
     { SharedHandle<FileEntry>(new FileEntry("file1",1000,0)),
       SharedHandle<FileEntry>(new FileEntry("file2",0,1000)),
       SharedHandle<FileEntry>(new FileEntry("file3",0,1000)),

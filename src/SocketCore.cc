@@ -257,7 +257,7 @@ static sock_t bindTo
 {
   struct addrinfo* res;
   int s = callGetaddrinfo(&res, host, util::uitos(port).c_str(),
-                          family, sockType, getaddrinfoFlags, 0);  
+                          family, sockType, getaddrinfoFlags, 0);
   if(s) {
     error = gai_strerror(s);
     return -1;
@@ -482,7 +482,7 @@ void SocketCore::setSockOpt
     int errNum = SOCKET_ERRNO;
     throw DL_ABORT_EX(fmt(EX_SOCKET_SET_OPT, errorMsg(errNum).c_str()));
   }
-}   
+}
 
 void SocketCore::setMulticastInterface(const std::string& localAddr)
 {
@@ -783,7 +783,7 @@ void SocketCore::readData(char* data, size_t& len)
   wantRead_ = false;
   wantWrite_ = false;
 
-  if(!secure_) {    
+  if(!secure_) {
     while((ret = recv(sockfd_, data, len, 0)) == -1 &&
           SOCKET_ERRNO == A2_EINTR);
     int errNum = SOCKET_ERRNO;
@@ -1318,7 +1318,7 @@ void getInterfaceAddress
         // address is not for this machine.
         try {
           SocketCore socket;
-          socket.bind(rp->ai_addr, rp->ai_addrlen);          
+          socket.bind(rp->ai_addr, rp->ai_addrlen);
           sockaddr_union bindAddr;
           memset(&bindAddr, 0, sizeof(bindAddr));
           memcpy(&bindAddr.storage, rp->ai_addr, rp->ai_addrlen);
@@ -1358,7 +1358,7 @@ int callGetaddrinfo
   hints.ai_flags = getDefaultAIFlags();
   hints.ai_flags |= flags;
   hints.ai_protocol = protocol;
-  return getaddrinfo(host, service, &hints, resPtr);  
+  return getaddrinfo(host, service, &hints, resPtr);
 }
 
 int inetNtop(int af, const void* src, char* dst, socklen_t size)

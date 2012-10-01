@@ -47,13 +47,13 @@ public:
 
     int64_t totalLength = 4*1024*1024;
     int32_t pieceLength = 256*1024;
-    
+
     static const unsigned char infoHash[] = {  0x01, 0x23, 0x45, 0x67,
                                                0x89, 0xab, 0xcd, 0xef,
                                                0x01, 0x23, 0x45, 0x67,
                                                0x89, 0xab, 0xcd, 0xef,
                                                0x01, 0x23, 0x45, 0x67 };
-    
+
     std::string peerId = "-aria2-ultrafastdltl";
 
     dctx_.reset(new DownloadContext(pieceLength, totalLength));
@@ -292,10 +292,10 @@ void DefaultBtAnnounceTest::testIsAllAnnounceFailed()
   CPPUNIT_ASSERT(!btAnnounce.isAnnounceReady());
   CPPUNIT_ASSERT_EQUAL(std::string(""), btAnnounce.getAnnounceUrl());
   CPPUNIT_ASSERT(btAnnounce.isAllAnnounceFailed());
-  
+
   btAnnounce.resetAnnounce();
 
-  CPPUNIT_ASSERT(!btAnnounce.isAllAnnounceFailed());  
+  CPPUNIT_ASSERT(!btAnnounce.isAllAnnounceFailed());
 }
 
 void DefaultBtAnnounceTest::testURLOrderInStoppedEvent()
@@ -396,7 +396,7 @@ void DefaultBtAnnounceTest::testProcessAnnounceResponse()
   res += "6:peers618:";
   res += fromHex("100210354527354678541237324732171ae1");
   res += "e";
-  
+
   DefaultBtAnnounce an(dctx_, option_);
   an.setPeerStorage(peerStorage_);
   an.setBtRuntime(btRuntime_);

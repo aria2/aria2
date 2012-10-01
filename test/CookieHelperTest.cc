@@ -70,7 +70,7 @@ void CookieHelperTest::testDomainMatch()
   CPPUNIT_ASSERT(cookie::domainMatch("www.example.org", "example.org"));
   CPPUNIT_ASSERT(!cookie::domainMatch("192.168.0.1", "0.1"));
   CPPUNIT_ASSERT(!cookie::domainMatch("example.org", "example.com"));
-  CPPUNIT_ASSERT(!cookie::domainMatch("example.org", "www.example.org"));  
+  CPPUNIT_ASSERT(!cookie::domainMatch("example.org", "www.example.org"));
 }
 
 void CookieHelperTest::testPathMatch()
@@ -151,7 +151,7 @@ void CookieHelperTest::testParse()
     Cookie c;
     CPPUNIT_ASSERT(cookie::parse(c, str, "localhost", "/", creationDate));
     CPPUNIT_ASSERT_EQUAL((time_t)creationDate+100, c.getExpiryTime());
-    CPPUNIT_ASSERT(c.getPersistent());    
+    CPPUNIT_ASSERT(c.getPersistent());
   }
   {
     // Cookie data cannot be parsed.

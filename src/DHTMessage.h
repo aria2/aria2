@@ -86,7 +86,7 @@ public:
   virtual bool isReply() const = 0;
 
   virtual void validate() const {}
-  
+
   virtual const std::string& getMessageType() const = 0;
 
   virtual std::string toString() const = 0;

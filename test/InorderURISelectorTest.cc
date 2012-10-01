@@ -18,7 +18,7 @@ private:
   FileEntry fileEntry_;
 
   SharedHandle<InorderURISelector> sel;
-  
+
 public:
   void setUp()
   {
@@ -29,7 +29,7 @@ public:
     };
     std::vector<std::string> uris;
     uris.assign(vbegin(urisSrc), vend(urisSrc));
-    
+
     fileEntry_.setUris(uris);
 
     sel.reset(new InorderURISelector());

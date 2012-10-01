@@ -162,7 +162,7 @@ public:
   void setFilteredCompletedLength(int64_t completedLength) {
     this->filteredCompletedLength = completedLength;
   }
-  
+
   virtual void setupFileFilter() {}
 
   virtual void clearFileFilter() {}
@@ -195,7 +195,7 @@ public:
                            size_t bitfieldLength) {
     bitfieldMan->setBitfield(bitfield, bitfieldLength);
   }
-  
+
   virtual size_t getBitfieldLength() {
     return bitfieldMan->getBitfieldLength();
   }
@@ -229,7 +229,7 @@ public:
   void setDiskAdaptor(const SharedHandle<DiskAdaptor>& adaptor) {
     this->diskAdaptor = adaptor;
   }
-  
+
   virtual int32_t getPieceLength(size_t index) {
     return pieceLengthList.at(index);
   }

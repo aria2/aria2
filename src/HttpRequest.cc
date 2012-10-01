@@ -195,13 +195,13 @@ std::string HttpRequest::createRequest()
   if(!request_->isKeepAliveEnabled() && !request_->isPipeliningEnabled()) {
     builtinHds.push_back(std::make_pair("Connection:", "close"));
   }
-  if(segment_ && segment_->getLength() > 0 && 
+  if(segment_ && segment_->getLength() > 0 &&
      (request_->isPipeliningEnabled() || getStartByte() > 0)) {
     std::string rangeHeader(fmt("bytes=%" PRId64 "-", getStartByte()));
     if(request_->isPipeliningEnabled()) {
       rangeHeader += util::itos(getEndByte());
     } else if(getProtocol() != "ftp" && endOffsetOverride_ > 0) {
-      // FTP via http proxy does not support endbytes 
+      // FTP via http proxy does not support endbytes
       rangeHeader += util::itos(endOffsetOverride_-1);
     }
     builtinHds.push_back(std::make_pair("Range:", rangeHeader));
@@ -386,7 +386,7 @@ const std::string& HttpRequest::getCurrentURI() const
 {
   return request_->getCurrentUri();
 }
-  
+
 const std::string& HttpRequest::getDir() const
 {
   return request_->getDir();

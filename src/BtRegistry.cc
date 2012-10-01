@@ -72,7 +72,7 @@ BtRegistry::getDownloadContext(const std::string& infoHash) const
        infoHash) {
       return (*i).second->downloadContext;
     }
-  }      
+  }
   return getNull<DownloadContext>();
 }
 

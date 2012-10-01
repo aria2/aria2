@@ -163,7 +163,7 @@ bool PollEventPoll::addEvents
         break;
       }
     }
-  } else {    
+  } else {
     socketEntries_.insert(i, socketEntry);
     event.addSelf(socketEntry);
     if(pollfdCapacity_ == pollfdNum_) {

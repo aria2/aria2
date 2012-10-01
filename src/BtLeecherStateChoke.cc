@@ -150,7 +150,7 @@ void BtLeecherStateChoke::plannedOptimisticUnchoke
 {
   std::for_each(peerEntries.begin(), peerEntries.end(),
                 std::mem_fun_ref(&PeerEntry::disableOptUnchoking));
-  
+
   std::vector<PeerEntry>::iterator i =
     std::partition(peerEntries.begin(), peerEntries.end(),
                    PeerFilter(true, true));
@@ -168,7 +168,7 @@ void BtLeecherStateChoke::regularUnchoke(std::vector<PeerEntry>& peerEntries)
   std::vector<PeerEntry>::iterator rest =
     std::partition(peerEntries.begin(), peerEntries.end(),
                    std::mem_fun_ref(&PeerEntry::isRegularUnchoker));
-  
+
   std::sort(peerEntries.begin(), rest);
 
   // the number of regular unchokers
@@ -218,7 +218,7 @@ BtLeecherStateChoke::executeChoke
   peerEntries.erase(std::remove_if(peerEntries.begin(), peerEntries.end(),
                                    std::mem_fun_ref(&PeerEntry::isSnubbing)),
                     peerEntries.end());
-              
+
   std::for_each(peerEntries.begin(), peerEntries.end(),
                 std::mem_fun_ref(&PeerEntry::enableChokingRequired));
 

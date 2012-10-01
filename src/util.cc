@@ -365,7 +365,7 @@ bool isUtf8(const std::string& str)
       if(++s == eos || !in(static_cast<unsigned char>(*s), 0x80u, 0x9fu) ||
          ++s == eos || !isUtf8Tail(*s)) {
         return false;
-      } 
+      }
     } else if(0xf0u == firstChar) {
       // UTF8-4
       if(++s == eos || !in(static_cast<unsigned char>(*s), 0x90u, 0xbfu) ||
@@ -1052,9 +1052,9 @@ void usleep(long microseconds) {
     else
       state = SKIP_MICROSECONDS;
   }
-        
+
   long msec = microseconds / 1000;
-  microseconds %= 1000;    
+  microseconds %= 1000;
 
   if (state == GET_MICROSECONDS && microseconds) {
     QueryPerformanceCounter(&end);
@@ -1476,7 +1476,7 @@ void executeHook
   if(!rc) {
     A2_LOG_ERROR("CreateProcess() failed. Cannot execute user command.");
   }
-#endif 
+#endif
 }
 
 } // namespace

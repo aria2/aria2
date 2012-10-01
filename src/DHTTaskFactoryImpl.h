@@ -56,7 +56,7 @@ private:
   DHTMessageDispatcher* dispatcher_;
 
   DHTMessageFactory* factory_;
-  
+
   DHTTaskQueue* taskQueue_;
 
   time_t timeout_;

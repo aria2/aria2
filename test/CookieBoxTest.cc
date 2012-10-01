@@ -57,7 +57,7 @@ void CookieBoxTest::testCriteriaFind() {
   CPPUNIT_ASSERT_EQUAL(1, (int)result1.size());
   itr = result1.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("USER=user"), (*itr).toString());
-  
+
   result1 = box.criteriaFind("rednoah.com", "/downloads", 1181473200, false);
   CPPUNIT_ASSERT_EQUAL(0, (int)result1.size());
 }
