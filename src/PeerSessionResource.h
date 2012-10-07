@@ -52,6 +52,20 @@ class BtMessageDispatcher;
 
 class PeerSessionResource {
 private:
+  BitfieldMan* bitfieldMan_;
+  // fast index set which a peer has sent to localhost.
+  std::set<size_t> peerAllowedIndexSet_;
+  // fast index set which localhost has sent to a peer.
+  std::set<size_t> amAllowedIndexSet_;
+  ExtensionMessageRegistry extreg_;
+  PeerStat peerStat_;
+
+  Timer lastDownloadUpdate_;
+
+  Timer lastAmUnchoking_;
+
+  BtMessageDispatcher* dispatcher_;
+
   // localhost is choking this peer
   bool amChoking_;
   // localhost is interested in this peer
@@ -66,23 +80,9 @@ private:
   bool optUnchoking_;
   // this peer is snubbing.
   bool snubbing_;
-
-  BitfieldMan* bitfieldMan_;
   bool fastExtensionEnabled_;
-  // fast index set which a peer has sent to localhost.
-  std::set<size_t> peerAllowedIndexSet_;
-  // fast index set which localhost has sent to a peer.
-  std::set<size_t> amAllowedIndexSet_;
   bool extendedMessagingEnabled_;
-  ExtensionMessageRegistry extreg_;
   bool dhtEnabled_;
-  PeerStat peerStat_;
-
-  Timer lastDownloadUpdate_;
-
-  Timer lastAmUnchoking_;
-
-  BtMessageDispatcher* dispatcher_;
 public:
   PeerSessionResource(int32_t pieceLength, int64_t totalLength);
 

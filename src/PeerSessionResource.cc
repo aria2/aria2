@@ -46,6 +46,10 @@ namespace aria2 {
 
 PeerSessionResource::PeerSessionResource(int32_t pieceLength, int64_t totalLength)
   :
+  bitfieldMan_(new BitfieldMan(pieceLength, totalLength)),
+  lastDownloadUpdate_(0),
+  lastAmUnchoking_(0),
+  dispatcher_(0),
   amChoking_(true),
   amInterested_(false),
   peerChoking_(true),
@@ -53,13 +57,9 @@ PeerSessionResource::PeerSessionResource(int32_t pieceLength, int64_t totalLengt
   chokingRequired_(true),
   optUnchoking_(false),
   snubbing_(false),
-  bitfieldMan_(new BitfieldMan(pieceLength, totalLength)),
   fastExtensionEnabled_(false),
   extendedMessagingEnabled_(false),
-  dhtEnabled_(false),
-  lastDownloadUpdate_(0),
-  lastAmUnchoking_(0),
-  dispatcher_(0)
+  dhtEnabled_(false)
 {}
 
 PeerSessionResource::~PeerSessionResource()
