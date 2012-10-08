@@ -90,6 +90,8 @@ public:
 
   virtual bool isReadOnlyEnabled() const { return false; }
 
+  // Enables mmap feature. Some derived classes may require that files
+  // have been opened before this method call.
   virtual void enableMmap() {}
 
   // Assumed each file length is stored in fileEntries or DiskAdaptor knows it.

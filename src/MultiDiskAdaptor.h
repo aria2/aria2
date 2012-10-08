@@ -110,7 +110,6 @@ private:
   int maxOpenFiles_;
 
   bool readOnly_;
-  bool enableMmap_;
 
   void resetDiskWriterEntries();
 
@@ -148,6 +147,8 @@ public:
 
   virtual bool isReadOnlyEnabled() const { return readOnly_; }
 
+  // Enables mmap feature. This method must be called after files are
+  // opened.
   virtual void enableMmap();
 
   void setPieceLength(int32_t pieceLength)

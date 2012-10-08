@@ -119,8 +119,7 @@ bool DiskWriterEntry::operator<(const DiskWriterEntry& entry) const
 MultiDiskAdaptor::MultiDiskAdaptor()
   : pieceLength_(0),
     maxOpenFiles_(DEFAULT_MAX_OPEN_FILES),
-    readOnly_(false),
-    enableMmap_(false)
+    readOnly_(false)
 {}
 
 MultiDiskAdaptor::~MultiDiskAdaptor() {}
@@ -230,9 +229,8 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
       if(readOnly_) {
         (*i)->getDiskWriter()->enableReadOnly();
       }
-      if(enableMmap_) {
-        (*i)->getDiskWriter()->enableMmap();
-      }
+      // TODO mmap is not enabled at this moment. Call enableMmap()
+      // after this function call.
     }
   }
 }
@@ -456,7 +454,14 @@ void MultiDiskAdaptor::disableReadOnly()
 
 void MultiDiskAdaptor::enableMmap()
 {
-  enableMmap_ = true;
+  for(std::vector<SharedHandle<DiskWriterEntry> >::const_iterator i =
+        diskWriterEntries_.begin(), eoi = diskWriterEntries_.end();
+      i != eoi; ++i) {
+    const SharedHandle<DiskWriter>& dw = (*i)->getDiskWriter();
+    if(dw) {
+      dw->enableMmap();
+    }
+  }
 }
 
 void MultiDiskAdaptor::cutTrailingGarbage()
