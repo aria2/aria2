@@ -197,6 +197,7 @@ SRCS =  Socket.h\
 	ChunkedDecodingStreamFilter.cc ChunkedDecodingStreamFilter.h\
 	NullSinkStreamFilter.cc NullSinkStreamFilter.h\
 	uri.cc uri.h\
+	uri_split.c uri_split.h\
 	Triplet.h\
 	cookie_helper.cc cookie_helper.h\
 	json.cc json.h\

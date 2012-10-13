@@ -71,6 +71,7 @@ aria2c_SOURCES = AllTest.cc\
 	ValueBaseTest.cc\
 	ChunkedDecodingStreamFilterTest.cc\
 	UriTest.cc\
+	UriSplitTest.cc\
 	MockSegment.h\
 	TripletTest.cc\
 	CookieHelperTest.cc\

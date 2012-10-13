@@ -36,6 +36,7 @@
 #include "A2STR.h"
 #include "FeatureConfig.h"
 #include "util.h"
+#include "uri_split.h"
 
 namespace aria2 {
 
@@ -101,150 +102,69 @@ void swap(UriStruct& lhs, UriStruct& rhs)
 
 bool parse(UriStruct& result, const std::string& uri)
 {
-  // http://user:password@aria2.sourceforge.net:80/dir/file?query#fragment
-  //        |            ||                    || |    |   |     |
-  //        |            ||             hostLast| |    |   |     |
-  //        |            ||              portFirst|    |   |     |
-  //    authorityFirst   ||             authorityLast  |   |     |
-  //                     ||                       |    |   |     |
-  //                   userInfoLast               |    |   |     |
-  //                      |                       |    |   |     |
-  //                     hostPortFirst            |    |   |     |
-  //                                              |    |   |     |
-  //                                       dirFirst dirLast|     |
-  //                                                       |     |
-  //                                                queryFirst fragmentFirst
-
-  // find fragment part
-  std::string::const_iterator fragmentFirst = uri.begin();
-  for(; fragmentFirst != uri.end(); ++fragmentFirst) {
-    if(*fragmentFirst == '#') break;
-  }
-  // find query part
-  std::string::const_iterator queryFirst = uri.begin();
-  for(; queryFirst != fragmentFirst; ++queryFirst) {
-    if(*queryFirst == '?') break;
-  }
-  result.query.assign(queryFirst, fragmentFirst);
-  // find protocol
-  std::string::size_type protocolOffset = uri.find("://");
-  if(protocolOffset == std::string::npos) return false;
-  result.protocol.assign(uri.begin(), uri.begin()+protocolOffset);
-  uint16_t defPort;
-  if((defPort = getDefaultPort(result.protocol)) == 0) {
-    return false;
-  }
-  // find authority
-  std::string::const_iterator authorityFirst = uri.begin()+protocolOffset+3;
-  std::string::const_iterator authorityLast = authorityFirst;
-  for(; authorityLast != queryFirst; ++authorityLast) {
-    if(*authorityLast == '/') break;
-  }
-  if(authorityFirst == authorityLast) {
-    // No authority found
-    return false;
-  }
-  // find userinfo(username and password) in authority if they exist
-  result.username = A2STR::NIL;
-  result.password = A2STR::NIL;
-  result.hasPassword = false;
-  std::string::const_iterator userInfoLast = authorityLast;
-  std::string::const_iterator hostPortFirst = authorityFirst;
-  for(; userInfoLast != authorityFirst-1; --userInfoLast) {
-    if(*userInfoLast == '@') {
-      hostPortFirst = userInfoLast;
-      ++hostPortFirst;
-      std::string::const_iterator userLast = authorityFirst;
-      for(; userLast != userInfoLast; ++userLast) {
-        if(*userLast == ':') {
-          result.password =
-            util::percentDecode(userLast+1,userInfoLast);
-          result.hasPassword = true;
-          break;
-        }
-      }
-      result.username =
-        util::percentDecode(authorityFirst, userLast);
-      break;
-    }
-  }
-  std::string::const_iterator hostLast = hostPortFirst;
-  std::string::const_iterator portFirst = authorityLast;
-  result.ipv6LiteralAddress = false;
-  if(*hostPortFirst == '[') {
-    // Detected IPv6 literal address in square brackets
-    for(; hostLast != authorityLast; ++hostLast) {
-      if(*hostLast == ']') {
-        ++hostLast;
-        if(hostLast == authorityLast) {
-          result.ipv6LiteralAddress = true;
-        } else {
-          if(*hostLast == ':') {
-            portFirst = hostLast;
-            ++portFirst;
-            result.ipv6LiteralAddress = true;
-          }
-        }
-        break;
-      }
-    }
-    if(!result.ipv6LiteralAddress) {
-      return false;
-    }
-  } else {
-    for(; hostLast != authorityLast; ++hostLast) {
-      if(*hostLast == ':') {
-        portFirst = hostLast;
-        ++portFirst;
-        break;
-      }
-    }
-  }
-  if(hostPortFirst == hostLast) {
-    // No host
-    return false;
-  }
-  if(portFirst == authorityLast) {
-    // If port is not specified, then we set it to default port of
-    // its protocol..
-    result.port = defPort;
-  } else {
-    uint32_t tempPort;
-    if(util::parseUIntNoThrow(tempPort,
-                              std::string(portFirst, authorityLast))) {
-      if(65535 < tempPort) {
+  uri_split_result res;
+  int rv;
+  const char* p = uri.c_str();
+  rv = uri_split(&res, p);
+  if(rv == 0) {
+    result.protocol.assign(p + res.fields[USR_SCHEME].off,
+                           res.fields[USR_SCHEME].len);
+    result.host.assign(p + res.fields[USR_HOST].off, res.fields[USR_HOST].len);
+    if(res.port == 0) {
+      uint16_t defPort;
+      if((defPort = getDefaultPort(result.protocol)) == 0) {
         return false;
       }
-      result.port = tempPort;
+      result.port = defPort;
     } else {
-      return false;
+      result.port = res.port;
     }
-  }
-  if(result.ipv6LiteralAddress) {
-    result.host.assign(hostPortFirst+1, hostLast-1);
-  } else {
-    result.host.assign(hostPortFirst, hostLast);
-  }
-  // find directory and file part
-  std::string::const_iterator dirLast = authorityLast;
-  for(std::string::const_iterator i = authorityLast;
-      i != queryFirst; ++i) {
-    if(*i == '/') {
-      dirLast = i+1;
+    if(res.field_set & (1 << USR_PATH)) {
+      if(res.field_set & (1 << USR_BASENAME)) {
+        result.dir.assign(p + res.fields[USR_PATH].off,
+                          res.fields[USR_PATH].len -
+                          res.fields[USR_BASENAME].len);
+        result.file.assign(p + res.fields[USR_BASENAME].off,
+                           res.fields[USR_BASENAME].len);
+      } else {
+        result.dir.assign(p + res.fields[USR_PATH].off,
+                          res.fields[USR_PATH].len);
+        result.file = A2STR::NIL;
+      }
+    } else {
+      result.dir = "/";
+      result.file = A2STR::NIL;
     }
-  }
-  if(dirLast == queryFirst) {
-    result.file = A2STR::NIL;
+    if(res.field_set & (1 << USR_QUERY)) {
+      result.query = "?";
+      result.query.append(p + res.fields[USR_QUERY].off,
+                          res.fields[USR_QUERY].len);
+    } else {
+      result.query = A2STR::NIL;
+    }
+    if(res.field_set & (1 << USR_USER)) {
+      result.username.assign(p + res.fields[USR_USER].off,
+                             res.fields[USR_USER].len);
+      result.username = util::percentDecode(result.username.begin(),
+                                            result.username.end());
+    } else {
+      result.username = A2STR::NIL;
+    }
+    if(res.field_set & (1 << USR_PASSWD)) {
+      result.hasPassword = true;
+      result.password.assign(p + res.fields[USR_PASSWD].off,
+                             res.fields[USR_PASSWD].len);
+      result.password = util::percentDecode(result.password.begin(),
+                                            result.password.end());
+    } else {
+      result.hasPassword = false;
+      result.password = A2STR::NIL;
+    }
+    result.ipv6LiteralAddress = res.flags & USF_IPV6ADDR;
+    return true;
   } else {
-    result.file.assign(dirLast, queryFirst);
+    return false;
   }
-  // dirFirst == authorityLast
-  if(authorityLast == dirLast) {
-    result.dir = "/";
-  } else {
-    result.dir.assign(authorityLast, dirLast);
-  }
-  return true;
 }
 
 std::string construct(const UriStruct& us)
