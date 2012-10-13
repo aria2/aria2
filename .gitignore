@@ -1,5 +1,8 @@
 *~
 *.o
+*.ce
+*.cce
+*.he
 depcomp
 *.m4
 Makefile
