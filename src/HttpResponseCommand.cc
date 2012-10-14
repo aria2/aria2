@@ -239,9 +239,11 @@ bool HttpResponseCommand::executeInternal()
   if(getFileEntry()->isUniqueProtocol()) {
     // Redirection should be considered here. We need to parse
     // original URI to get hostname.
-    uri::UriStruct us;
-    if(uri::parse(us, getRequest()->getUri())) {
-      getFileEntry()->removeURIWhoseHostnameIs(us.host);
+    const std::string& uri = getRequest()->getUri();
+    uri_split_result us;
+    if(uri_split(&us, uri.c_str()) == 0) {
+      std::string host = uri::getFieldString(us, USR_HOST, uri.c_str());
+      getFileEntry()->removeURIWhoseHostnameIs(host);
     }
   }
   if(!getPieceStorage()) {

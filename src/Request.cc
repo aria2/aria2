@@ -172,10 +172,12 @@ const SharedHandle<PeerStat>& Request::initPeerStat()
 {
   // Use host and protocol in original URI, because URI selector
   // selects URI based on original URI, not redirected one.
-  uri::UriStruct us;
-  bool v = uri::parse(us, uri_);
-  assert(v);
-  peerStat_.reset(new PeerStat(0, us.host, us.protocol));
+  uri_split_result us;
+  int v = uri_split(&us, uri_.c_str());
+  assert(v == 0);
+  std::string host = uri::getFieldString(us, USR_HOST, uri_.c_str());
+  std::string protocol = uri::getFieldString(us, USR_SCHEME, uri_.c_str());
+  peerStat_.reset(new PeerStat(0, host, protocol));
   return peerStat_;
 }
 

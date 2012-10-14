@@ -36,7 +36,6 @@
 #include "A2STR.h"
 #include "FeatureConfig.h"
 #include "util.h"
-#include "uri_split.h"
 
 namespace aria2 {
 
@@ -164,6 +163,16 @@ bool parse(UriStruct& result, const std::string& uri)
     return true;
   } else {
     return false;
+  }
+}
+
+std::string getFieldString(const uri_split_result& res, int field,
+                           const char* base)
+{
+  if(res.field_set & (1 << field)) {
+    return std::string(base + res.fields[field].off, res.fields[field].len);
+  } else {
+    return "";
   }
 }
 

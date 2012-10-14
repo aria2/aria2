@@ -106,9 +106,9 @@ bool DefaultBtAnnounce::isAnnounceReady() {
 namespace {
 bool uriHasQuery(const std::string& uri)
 {
-  uri::UriStruct us;
-  if(uri::parse(us, uri)) {
-    return !us.query.empty();
+  uri_split_result us;
+  if(uri_split(&us, uri.c_str()) == 0) {
+    return (us.field_set & (1 << USR_QUERY)) && us.fields[USR_QUERY].len > 0;
   } else {
     return false;
   }

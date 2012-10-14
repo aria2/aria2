@@ -176,11 +176,11 @@ void MetalinkParserController::setURLOfResource(const std::string& url)
     return;
   }
   std::string u = uri::joinUri(baseUri_, url);
-  uri::UriStruct us;
-  if(uri::parse(us, u)) {
+  uri_split_result us;
+  if(uri_split(&us, u.c_str()) == 0) {
     tResource_->url = u;
     if(tResource_->type == MetalinkResource::TYPE_UNKNOWN) {
-      setTypeOfResource(us.protocol);
+      setTypeOfResource(uri::getFieldString(us, USR_SCHEME, u.c_str()));
     }
   } else {
     tResource_->url = url;
@@ -579,8 +579,7 @@ void MetalinkParserController::setURLOfMetaurl(const std::string& url)
 #endif // ENABLE_BITTORRENT
     {
       std::string u = uri::joinUri(baseUri_, url);
-      uri::UriStruct us;
-      if(uri::parse(us, u)) {
+      if(uri_split(NULL, u.c_str()) == 0) {
         tMetaurl_->url = u;
       } else {
         tMetaurl_->url = url;

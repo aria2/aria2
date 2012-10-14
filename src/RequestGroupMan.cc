@@ -1056,22 +1056,26 @@ void RequestGroupMan::getUsedHosts
       (*i)->getDownloadContext()->getFirstFileEntry()->getInFlightRequests();
     for(FileEntry::InFlightRequestSet::iterator j =
           inFlightReqs.begin(), eoj = inFlightReqs.end(); j != eoj; ++j) {
-      uri::UriStruct us;
-      if(uri::parse(us, (*j)->getUri())) {
+      uri_split_result us;
+      if(uri_split(&us, (*j)->getUri().c_str()) == 0) {
         std::vector<Triplet<size_t, int, std::string> >::iterator k;
         std::vector<Triplet<size_t, int, std::string> >::iterator eok =
           tempHosts.end();
+        std::string host = uri::getFieldString(us, USR_HOST,
+                                               (*j)->getUri().c_str());
         for(k =  tempHosts.begin(); k != eok; ++k) {
-          if((*k).third == us.host) {
+          if((*k).third == host) {
             ++(*k).first;
             break;
           }
         }
         if(k == eok) {
-          SharedHandle<ServerStat> ss = findServerStat(us.host, us.protocol);
+          std::string protocol = uri::getFieldString(us, USR_SCHEME,
+                                                     (*j)->getUri().c_str());
+          SharedHandle<ServerStat> ss = findServerStat(host, protocol);
           int invDlSpeed = (ss && ss->isOK()) ?
             -(static_cast<int>(ss->getDownloadSpeed())) : 0;
-          tempHosts.push_back(makeTriplet(1, invDlSpeed, us.host));
+          tempHosts.push_back(makeTriplet(1, invDlSpeed, host));
         }
       }
     }

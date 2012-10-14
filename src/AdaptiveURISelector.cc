@@ -345,9 +345,11 @@ std::string AdaptiveURISelector::getFirstToTestUri
 SharedHandle<ServerStat> AdaptiveURISelector::getServerStats
 (const std::string& uri) const
 {
-  uri::UriStruct us;
-  if(uri::parse(us, uri)) {
-    return serverStatMan_->find(us.host, us.protocol);
+  uri_split_result us;
+  if(uri_split(&us, uri.c_str()) == 0) {
+    std::string host = uri::getFieldString(us, USR_HOST, uri.c_str());
+    std::string protocol = uri::getFieldString(us, USR_SCHEME, uri.c_str());
+    return serverStatMan_->find(host, protocol);
   } else {
     return SharedHandle<ServerStat>();
   }

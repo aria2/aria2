@@ -39,6 +39,8 @@
 
 #include <string>
 
+#include "uri_split.h"
+
 namespace aria2 {
 
 namespace uri {
@@ -69,6 +71,12 @@ void swap(UriStruct& lhs, UriStruct& rhs);
 // success returns true. Otherwise returns false and result is
 // undefined.
 bool parse(UriStruct& result, const std::string& uri);
+
+// Returns string specified by field in res. The base pointer in res
+// is given as base. If the given field is not stored in res, returns
+// empty string.
+std::string getFieldString(const uri_split_result& res, int field,
+                           const char* base);
 
 std::string construct(const UriStruct& us);
 

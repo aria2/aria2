@@ -130,9 +130,9 @@ OutputIterator enumerateInFlightHosts
 (InputIterator first, InputIterator last, OutputIterator out)
 {
   for(; first != last; ++first) {
-    uri::UriStruct us;
-    if(uri::parse(us, (*first)->getUri())) {
-      *out++ = us.host;
+    uri_split_result us;
+    if(uri_split(&us, (*first)->getUri().c_str()) == 0) {
+      *out++ = uri::getFieldString(us, USR_HOST, (*first)->getUri().c_str());
     }
   }
   return out;
@@ -261,23 +261,25 @@ FileEntry::findFasterRequest
   std::vector<std::string> normCands;
   for(std::deque<std::string>::const_iterator i = uris_.begin(),
         eoi = uris_.end(); i != eoi && fastCands.size() < NUM_URI; ++i) {
-    uri::UriStruct us;
-    if(!uri::parse(us, *i)) {
+    uri_split_result us;
+    if(uri_split(&us, (*i).c_str()) == -1) {
       continue;
     }
-    if(std::count(inFlightHosts.begin(), inFlightHosts.end(),us.host)
+    std::string host = uri::getFieldString(us, USR_HOST, (*i).c_str());
+    std::string protocol = uri::getFieldString(us, USR_SCHEME, (*i).c_str());
+    if(std::count(inFlightHosts.begin(), inFlightHosts.end(), host)
        >= maxConnectionPerServer_) {
       A2_LOG_DEBUG(fmt("%s has already used %d times, not considered.",
                        (*i).c_str(),
                        maxConnectionPerServer_));
       continue;
     }
-    if(findSecond(usedHosts.begin(), usedHosts.end(), us.host) !=
+    if(findSecond(usedHosts.begin(), usedHosts.end(), host) !=
        usedHosts.end()) {
       A2_LOG_DEBUG(fmt("%s is in usedHosts, not considered", (*i).c_str()));
       continue;
     }
-    SharedHandle<ServerStat> ss = serverStatMan->find(us.host, us.protocol);
+    SharedHandle<ServerStat> ss = serverStatMan->find(host, protocol);
     if(ss && ss->isOK()) {
       if((basestat &&
           ss->getDownloadSpeed() > basestat->calculateDownloadSpeed()*1.5) ||
@@ -332,11 +334,13 @@ void FileEntry::removeURIWhoseHostnameIs(const std::string& hostname)
   std::deque<std::string> newURIs;
   for(std::deque<std::string>::const_iterator itr = uris_.begin(),
         eoi = uris_.end(); itr != eoi; ++itr) {
-    uri::UriStruct us;
-    if(!uri::parse(us, *itr)) {
+    uri_split_result us;
+    if(uri_split(&us, (*itr).c_str()) == -1) {
       continue;
     }
-    if(us.host != hostname) {
+    if(us.fields[USR_HOST].len != hostname.size() ||
+       memcmp((*itr).c_str()+us.fields[USR_HOST].off, hostname.c_str(),
+              hostname.size()) != 0) {
       newURIs.push_back(*itr);
     }
   }
@@ -411,9 +415,11 @@ void FileEntry::reuseUri(const std::vector<std::string>& ignore)
   std::vector<std::string>::iterator insertionPoint = reusableURIs.begin();
   for(std::vector<std::string>::iterator i = reusableURIs.begin(),
         eoi = reusableURIs.end(); i != eoi; ++i) {
-    uri::UriStruct us;
-    if(uri::parse(us, *i) &&
-       std::find(ignore.begin(), ignore.end(), us.host) == ignore.end()) {
+    uri_split_result us;
+    if(uri_split(&us, (*i).c_str()) == 0 &&
+       std::find(ignore.begin(), ignore.end(),
+                 uri::getFieldString(us, USR_HOST, (*i).c_str()))
+       == ignore.end()) {
       if(i != insertionPoint) {
         *insertionPoint = *i;
       }
@@ -524,9 +530,8 @@ size_t FileEntry::setUris(const std::vector<std::string>& uris)
 
 bool FileEntry::addUri(const std::string& uri)
 {
-  uri::UriStruct us;
   std::string peUri = util::percentEncodeMini(uri);
-  if(uri::parse(us, peUri)) {
+  if(uri_split(NULL, peUri.c_str()) == 0) {
     uris_.push_back(peUri);
     return true;
   } else {
@@ -536,9 +541,8 @@ bool FileEntry::addUri(const std::string& uri)
 
 bool FileEntry::insertUri(const std::string& uri, size_t pos)
 {
-  uri::UriStruct us;
   std::string peUri = util::percentEncodeMini(uri);
-  if(uri::parse(us, peUri)) {
+  if(uri_split(NULL, peUri.c_str()) == 0) {
     pos = std::min(pos, uris_.size());
     uris_.insert(uris_.begin()+pos, peUri);
     return true;

@@ -94,17 +94,18 @@ std::string FeedbackURISelector::selectRarer
   std::vector<std::pair<std::string, std::string> > cands;
   for(std::deque<std::string>::const_iterator i = uris.begin(),
         eoi = uris.end(); i != eoi; ++i) {
-    uri::UriStruct us;
-    if(!uri::parse(us, *i)) {
+    uri_split_result us;
+    if(uri_split(&us, (*i).c_str()) == -1) {
       continue;
     }
-    SharedHandle<ServerStat> ss =
-      serverStatMan_->find(us.host, us.protocol);
+    std::string host = uri::getFieldString(us, USR_HOST, (*i).c_str());
+    std::string protocol = uri::getFieldString(us, USR_SCHEME, (*i).c_str());
+    SharedHandle<ServerStat> ss = serverStatMan_->find(host, protocol);
     if(ss && ss->isError()) {
       A2_LOG_DEBUG(fmt("Error not considered: %s", (*i).c_str()));
       continue;
     }
-    cands.push_back(std::make_pair(us.host, *i));
+    cands.push_back(std::make_pair(host, *i));
   }
   for(std::vector<std::pair<size_t, std::string> >::const_iterator i =
         usedHosts.begin(), eoi = usedHosts.end(); i != eoi; ++i) {
@@ -131,17 +132,18 @@ std::string FeedbackURISelector::selectFaster
   std::vector<std::string> normCands;
   for(std::deque<std::string>::const_iterator i = uris.begin(),
         eoi = uris.end(); i != eoi && fastCands.size() < NUM_URI; ++i) {
-    uri::UriStruct us;
-    if(!uri::parse(us, *i)) {
+    uri_split_result us;
+    if(uri_split(&us, (*i).c_str()) == -1) {
       continue;
     }
-    if(findSecond(usedHosts.begin(), usedHosts.end(), us.host) !=
+    std::string host = uri::getFieldString(us, USR_HOST, (*i).c_str());
+    if(findSecond(usedHosts.begin(), usedHosts.end(), host) !=
        usedHosts.end()) {
       A2_LOG_DEBUG(fmt("%s is in usedHosts, not considered", (*i).c_str()));
       continue;
     }
-    SharedHandle<ServerStat> ss =
-      serverStatMan_->find(us.host, us.protocol);
+    std::string protocol = uri::getFieldString(us, USR_SCHEME, (*i).c_str());
+    SharedHandle<ServerStat> ss = serverStatMan_->find(host, protocol);
     if(!ss) {
       normCands.push_back(*i);
     } else if(ss->isOK()) {
