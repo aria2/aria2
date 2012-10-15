@@ -898,3 +898,14 @@
     "                              scheme. Use --rpc-certificate and\n" \
     "                              --rpc-private-key options to specify the\n" \
     "                              server certificate and private key.")
+#define TEXT_RPC_SAVE_UPLOAD_METADATA                                   \
+  _(" --rpc-save-upload-metadata[=true|false] Save the uploaded torrent or\n" \
+    "                              metalink metadata in the directory specified\n" \
+    "                              by --dir option. The filename consists of\n" \
+    "                              SHA1-hash hex string of metadata plus\n" \
+    "                              extension. For torrent, the extension is\n" \
+    "                              '.torrent'. For metalink, it is '.meta4'.\n" \
+    "                              If false is given to this option, the\n" \
+    "                              downloads added by aria2.addTorrent or\n" \
+    "                              aria2.addMetalink will not be saved by\n" \
+    "                              --save-session option.")

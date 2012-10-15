@@ -265,12 +265,22 @@ void RpcMethodTest::testAddTorrent()
   uris->append("http://localhost/aria2-0.8.2.tar.bz2");
   req.params->append(uris);
   {
+    // Saving upload metadata is disabled by option.
+    RpcResponse res = m.execute(req, e_.get());
+    CPPUNIT_ASSERT
+      (!File(e_->getOption()->get(PREF_DIR)+
+             "/0a3893293e27ac0490424c06de4d09242215f0a6.torrent").exists());
+    CPPUNIT_ASSERT_EQUAL(0, res.code);
+    CPPUNIT_ASSERT_EQUAL(std::string("1"), downcast<String>(res.param)->s());
+  }
+  e_->getOption()->put(PREF_RPC_SAVE_UPLOAD_METADATA, A2_V_TRUE);
+  {
     RpcResponse res = m.execute(req, e_.get());
     CPPUNIT_ASSERT
       (File(e_->getOption()->get(PREF_DIR)+
             "/0a3893293e27ac0490424c06de4d09242215f0a6.torrent").exists());
     CPPUNIT_ASSERT_EQUAL(0, res.code);
-    CPPUNIT_ASSERT_EQUAL(std::string("1"), downcast<String>(res.param)->s());
+    CPPUNIT_ASSERT_EQUAL(std::string("2"), downcast<String>(res.param)->s());
 
     SharedHandle<RequestGroup> group =
       e_->getRequestGroupMan()->findReservedGroup(1);
@@ -296,7 +306,7 @@ void RpcMethodTest::testAddTorrent()
     CPPUNIT_ASSERT_EQUAL(0, res.code);
     CPPUNIT_ASSERT_EQUAL
       (dir+"/aria2-0.8.2.tar.bz2",
-       e_->getRequestGroupMan()->findReservedGroup(2)->getFirstFilePath());
+       e_->getRequestGroupMan()->findReservedGroup(3)->getFirstFilePath());
     CPPUNIT_ASSERT
       (File(dir+"/0a3893293e27ac0490424c06de4d09242215f0a6.torrent").exists());
   }
@@ -352,12 +362,25 @@ void RpcMethodTest::testAddMetalink()
   RpcRequest req(AddMetalinkRpcMethod::getMethodName(), List::g());
   req.params->append(readFile(A2_TEST_DIR"/2files.metalink"));
   {
+    // Saving upload metadata is disabled by option.
     RpcResponse res = m.execute(req, e_.get());
     CPPUNIT_ASSERT_EQUAL(0, res.code);
     const List* resParams = downcast<List>(res.param);
     CPPUNIT_ASSERT_EQUAL((size_t)2, resParams->size());
     CPPUNIT_ASSERT_EQUAL(std::string("1"), downcast<String>(resParams->get(0))->s());
     CPPUNIT_ASSERT_EQUAL(std::string("2"), downcast<String>(resParams->get(1))->s());
+    CPPUNIT_ASSERT
+      (!File(e_->getOption()->get(PREF_DIR)+
+             "/c908634fbc257fd56f0114912c2772aeeb4064f4.meta4").exists());
+  }
+  e_->getOption()->put(PREF_RPC_SAVE_UPLOAD_METADATA, A2_V_TRUE);
+  {
+    RpcResponse res = m.execute(req, e_.get());
+    CPPUNIT_ASSERT_EQUAL(0, res.code);
+    const List* resParams = downcast<List>(res.param);
+    CPPUNIT_ASSERT_EQUAL((size_t)2, resParams->size());
+    CPPUNIT_ASSERT_EQUAL(std::string("3"), downcast<String>(resParams->get(0))->s());
+    CPPUNIT_ASSERT_EQUAL(std::string("4"), downcast<String>(resParams->get(1))->s());
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT
       (File(e_->getOption()->get(PREF_DIR)+
@@ -386,7 +409,7 @@ void RpcMethodTest::testAddMetalink()
     RpcResponse res = m.execute(req, e_.get());
     CPPUNIT_ASSERT_EQUAL(0, res.code);
     CPPUNIT_ASSERT_EQUAL(dir+"/aria2-5.0.0.tar.bz2",
-                         e_->getRequestGroupMan()->findReservedGroup(3)->
+                         e_->getRequestGroupMan()->findReservedGroup(5)->
                          getFirstFilePath());
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT

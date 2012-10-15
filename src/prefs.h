@@ -220,6 +220,8 @@ extern const Pref* PREF_RPC_PRIVATE_KEY;
 // value: true | false
 extern const Pref* PREF_RPC_SECURE;
 // value: true | false
+extern const Pref* PREF_RPC_SAVE_UPLOAD_METADATA;
+// value: true | false
 extern const Pref* PREF_DRY_RUN;
 // value: true | false
 extern const Pref* PREF_REUSE_URI;

@@ -278,19 +278,23 @@ SharedHandle<ValueBase> AddTorrentRpcMethod::process
   bool posGiven = checkPosParam(posParam);
   size_t pos = posGiven ? posParam->i() : 0;
 
-  std::string filename = util::applyDir
-    (requestOption->get(PREF_DIR), getHexSha1(torrentParam->s())+".torrent");
-  std::vector<SharedHandle<RequestGroup> > result;
-  // Save uploaded data in order to save this download in
-  // --save-session file.
-  if(util::saveAs(filename, torrentParam->s(), true)) {
-    A2_LOG_INFO(fmt("Uploaded torrent data was saved as %s", filename.c_str()));
-    requestOption->put(PREF_TORRENT_FILE, filename);
-  } else {
-    A2_LOG_INFO(fmt("Uploaded torrent data was not saved."
-                    " Failed to write file %s", filename.c_str()));
-    filename.clear();
+  std::string filename;
+  if(requestOption->getAsBool(PREF_RPC_SAVE_UPLOAD_METADATA)) {
+    filename = util::applyDir
+      (requestOption->get(PREF_DIR), getHexSha1(torrentParam->s())+".torrent");
+    // Save uploaded data in order to save this download in
+    // --save-session file.
+    if(util::saveAs(filename, torrentParam->s(), true)) {
+      A2_LOG_INFO(fmt("Uploaded torrent data was saved as %s",
+                      filename.c_str()));
+      requestOption->put(PREF_TORRENT_FILE, filename);
+    } else {
+      A2_LOG_INFO(fmt("Uploaded torrent data was not saved."
+                      " Failed to write file %s", filename.c_str()));
+      filename.clear();
+    }
   }
+  std::vector<SharedHandle<RequestGroup> > result;
   createRequestGroupForBitTorrent(result, requestOption, uris, filename,
                                   torrentParam->s());
 
@@ -325,22 +329,27 @@ SharedHandle<ValueBase> AddMetalinkRpcMethod::process
 
   std::vector<SharedHandle<RequestGroup> > result;
 #ifdef ENABLE_MESSAGE_DIGEST
-  // TODO RFC5854 Metalink has the extension .meta4 and Metalink
-  // Version 3 uses .metalink extension. We use .meta4 for both
-  // RFC5854 Metalink and Version 3. aria2 can detect which of which
-  // by reading content rather than extension.
-  std::string filename = util::applyDir
-    (requestOption->get(PREF_DIR), getHexSha1(metalinkParam->s())+".meta4");
-  // Save uploaded data in order to save this download in
-  // --save-session file.
-  if(util::saveAs(filename, metalinkParam->s(), true)) {
-    A2_LOG_INFO(fmt("Uploaded metalink data was saved as %s",
-                    filename.c_str()));
-    requestOption->put(PREF_METALINK_FILE, filename);
-    createRequestGroupForMetalink(result, requestOption);
+  std::string filename;
+  if(requestOption->getAsBool(PREF_RPC_SAVE_UPLOAD_METADATA)) {
+    // TODO RFC5854 Metalink has the extension .meta4 and Metalink
+    // Version 3 uses .metalink extension. We use .meta4 for both
+    // RFC5854 Metalink and Version 3. aria2 can detect which of which
+    // by reading content rather than extension.
+    filename = util::applyDir
+      (requestOption->get(PREF_DIR), getHexSha1(metalinkParam->s())+".meta4");
+    // Save uploaded data in order to save this download in
+    // --save-session file.
+    if(util::saveAs(filename, metalinkParam->s(), true)) {
+      A2_LOG_INFO(fmt("Uploaded metalink data was saved as %s",
+                      filename.c_str()));
+      requestOption->put(PREF_METALINK_FILE, filename);
+      createRequestGroupForMetalink(result, requestOption);
+    } else {
+      A2_LOG_INFO(fmt("Uploaded metalink data was not saved."
+                      " Failed to write file %s", filename.c_str()));
+      createRequestGroupForMetalink(result, requestOption, metalinkParam->s());
+    }
   } else {
-    A2_LOG_INFO(fmt("Uploaded metalink data was not saved."
-                    " Failed to write file %s", filename.c_str()));
     createRequestGroupForMetalink(result, requestOption, metalinkParam->s());
   }
 #else // !ENABLE_MESSAGE_DIGEST

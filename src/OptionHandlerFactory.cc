@@ -794,6 +794,17 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
   }
   {
     OptionHandler* op(new BooleanOptionHandler
+                      (PREF_RPC_SAVE_UPLOAD_METADATA,
+                       TEXT_RPC_SAVE_UPLOAD_METADATA,
+                       A2_V_TRUE,
+                       OptionHandler::OPT_ARG));
+    op->addTag(TAG_RPC);
+    op->setInitialOption(true);
+    op->setChangeGlobalOption(true);
+    handlers.push_back(op);
+  }
+  {
+    OptionHandler* op(new BooleanOptionHandler
                       (PREF_RPC_SECURE,
                        TEXT_RPC_SECURE,
                        A2_V_FALSE,

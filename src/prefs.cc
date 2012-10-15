@@ -277,6 +277,8 @@ const Pref* PREF_RPC_PRIVATE_KEY = makePref("rpc-private-key");
 // value: true | false
 const Pref* PREF_RPC_SECURE = makePref("rpc-secure");
 // value: true | false
+const Pref* PREF_RPC_SAVE_UPLOAD_METADATA = makePref("rpc-save-upload-metadata");
+// value: true | false
 const Pref* PREF_DRY_RUN = makePref("dry-run");
 // value: true | false
 const Pref* PREF_REUSE_URI = makePref("reuse-uri");
