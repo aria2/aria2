@@ -833,32 +833,30 @@ bool AbstractCommand::checkIfConnectionEstablished
  const std::string& connectedAddr,
  uint16_t connectedPort)
 {
-  if(socket->isReadable(0)) {
-    std::string error = socket->getSocketError();
-    if(!error.empty()) {
-      // See also InitiateConnectionCommand::executeInternal()
-      e_->markBadIPAddress(connectedHostname, connectedAddr, connectedPort);
-      if(!e_->findCachedIPAddress(connectedHostname, connectedPort).empty()) {
-        A2_LOG_INFO(fmt(MSG_CONNECT_FAILED_AND_RETRY,
-                        getCuid(),
-                        connectedAddr.c_str(), connectedPort));
-        Command* command =
-          InitiateConnectionCommandFactory::createInitiateConnectionCommand
-          (getCuid(), req_, fileEntry_, requestGroup_, e_);
-        e_->setNoWait(true);
-        e_->addCommand(command);
-        return false;
-      }
-      e_->removeCachedIPAddress(connectedHostname, connectedPort);
-      // Don't set error if proxy server is used and its method is GET.
-      if(resolveProxyMethod(req_->getProtocol()) != V_GET ||
-         !isProxyRequest(req_->getProtocol(), getOption())) {
-        e_->getRequestGroupMan()->getOrCreateServerStat
-          (req_->getHost(), req_->getProtocol())->setError();
-      }
-      throw DL_RETRY_EX
-        (fmt(MSG_ESTABLISHING_CONNECTION_FAILED, error.c_str()));
+  std::string error = socket->getSocketError();
+  if(!error.empty()) {
+    // See also InitiateConnectionCommand::executeInternal()
+    e_->markBadIPAddress(connectedHostname, connectedAddr, connectedPort);
+    if(!e_->findCachedIPAddress(connectedHostname, connectedPort).empty()) {
+      A2_LOG_INFO(fmt(MSG_CONNECT_FAILED_AND_RETRY,
+                      getCuid(),
+                      connectedAddr.c_str(), connectedPort));
+      Command* command =
+        InitiateConnectionCommandFactory::createInitiateConnectionCommand
+        (getCuid(), req_, fileEntry_, requestGroup_, e_);
+      e_->setNoWait(true);
+      e_->addCommand(command);
+      return false;
     }
+    e_->removeCachedIPAddress(connectedHostname, connectedPort);
+    // Don't set error if proxy server is used and its method is GET.
+    if(resolveProxyMethod(req_->getProtocol()) != V_GET ||
+       !isProxyRequest(req_->getProtocol(), getOption())) {
+      e_->getRequestGroupMan()->getOrCreateServerStat
+        (req_->getHost(), req_->getProtocol())->setError();
+    }
+    throw DL_RETRY_EX
+      (fmt(MSG_ESTABLISHING_CONNECTION_FAILED, error.c_str()));
   }
   return true;
 }
