@@ -122,21 +122,20 @@ createHttpRequest(const SharedHandle<Request>& req,
 
 bool HttpRequestCommand::executeInternal() {
   //socket->setBlockingMode();
-  if(getRequest()->getProtocol() == "https") {
-    if(!getSocket()->tlsConnect(getRequest()->getHost())) {
-      setReadCheckSocketIf(getSocket(), getSocket()->wantRead());
-      setWriteCheckSocketIf(getSocket(), getSocket()->wantWrite());
-      getDownloadEngine()->addCommand(this);
-      return false;
-    }
-  }
   if(httpConnection_->sendBufferIsEmpty()) {
     if(!checkIfConnectionEstablished
        (getSocket(), getRequest()->getConnectedHostname(),
         getRequest()->getConnectedAddr(), getRequest()->getConnectedPort())) {
       return true;
     }
-
+    if(getRequest()->getProtocol() == "https") {
+      if(!getSocket()->tlsConnect(getRequest()->getHost())) {
+        setReadCheckSocketIf(getSocket(), getSocket()->wantRead());
+        setWriteCheckSocketIf(getSocket(), getSocket()->wantWrite());
+        getDownloadEngine()->addCommand(this);
+        return false;
+      }
+    }
     if(getSegments().empty()) {
       SharedHandle<HttpRequest> httpRequest
         (createHttpRequest(getRequest(),
