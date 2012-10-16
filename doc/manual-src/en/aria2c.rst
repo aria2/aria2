@@ -944,6 +944,16 @@ RPC Options
   decrypted and in PEM format. Use :option:`--rpc-secure` option to
   enable encryption. See also :option:`--rpc-certificate` option.
 
+.. option:: --rpc-save-upload-metadata[=true|false]
+
+  Save the uploaded torrent or metalink metadata in the directory
+  specified by :option:`--dir` option. The filename consists of SHA-1
+  hash hex string of metadata plus extension. For torrent, the
+  extension is '.torrent'. For metalink, it is '.meta4'.  If false is
+  given to this option, the downloads added by
+  :func:`aria2.addTorrent` or :func:`aria2.addMetalink` will not be
+  saved by :option:`--save-session` option. Default: ``false``
+
 .. option:: --rpc-secure[=true|false]
 
   RPC transport will be encrypted by SSL/TLS.  The RPC clients must
@@ -1760,6 +1770,7 @@ of URIs. These optional lines must start with white space(s).
   * :option:`remove-control-file <--remove-control-file>`
   * :option:`retry-wait <--retry-wait>`
   * :option:`reuse-uri <--reuse-uri>`
+  * :option:`rpc-save-upload-metadata <--rpc-save-upload-metadata>`
   * :option:`seed-ratio <--seed-ratio>`
   * :option:`seed-time <--seed-time>`
   * :option:`select-file <--select-file>`
@@ -1953,26 +1964,28 @@ All code examples come from Python2.7 interpreter.
   
   
   
-  This method adds BitTorrent download by uploading ".torrent" file.  If
-  you want to add BitTorrent Magnet URI, use :func:`aria2.addUri` method
-  instead.  *torrent* is of type base64 which contains Base64-encoded
-  ".torrent" file.  *uris* is of type array and its element is URI which
-  is of type string. *uris* is used for Web-seeding.  For single file
-  torrents, URI can be a complete URI pointing to the resource or if URI
-  ends with /, name in torrent file is added. For multi-file torrents,
-  name and path in torrent are added to form a URI for each file.
-  *options* is of type struct and its members are a pair of option name
-  and value. See :ref:`rpc_options` below for more details.  If *position* is
-  given as an integer starting from 0, the new download is inserted at
+  This method adds BitTorrent download by uploading ".torrent" file.
+  If you want to add BitTorrent Magnet URI, use :func:`aria2.addUri`
+  method instead.  *torrent* is of type base64 which contains
+  Base64-encoded ".torrent" file.  *uris* is of type array and its
+  element is URI which is of type string. *uris* is used for
+  Web-seeding.  For single file torrents, URI can be a complete URI
+  pointing to the resource or if URI ends with /, name in torrent file
+  is added. For multi-file torrents, name and path in torrent are
+  added to form a URI for each file.  *options* is of type struct and
+  its members are a pair of option name and value. See
+  :ref:`rpc_options` below for more details.  If *position* is given
+  as an integer starting from 0, the new download is inserted at
   *position* in the waiting queue. If *position* is not given or
-  *position* is larger than the size of the queue, it is appended at the
-  end of the queue.  This method returns GID of registered download.
-  The uploaded data is saved as a file named hex string of SHA-1 hash of data
-  plus ".torrent" in the directory specified by :option:`--dir <-d>`
-  option.
-  The example of filename is 0a3893293e27ac0490424c06de4d09242215f0a6.torrent.
-  If same file already exists, it is overwritten.
-  If the file cannot be saved successfully,
+  *position* is larger than the size of the queue, it is appended at
+  the end of the queue.  This method returns GID of registered
+  download. If :option:`--rpc-save-upload-metadata` is ``true``, the
+  uploaded data is saved as a file named hex string of SHA-1 hash of
+  data plus ".torrent" in the directory specified by :option:`--dir
+  <-d>` option.  The example of filename is
+  ``0a3893293e27ac0490424c06de4d09242215f0a6.torrent``.  If same file
+  already exists, it is overwritten.  If the file cannot be saved
+  successfully or :option:`--rpc-save-upload-metadata` is ``false``,
   the downloads added by this method are not saved by
   :option:`--save-session`.
   
@@ -2009,20 +2022,21 @@ All code examples come from Python2.7 interpreter.
   
   
   This method adds Metalink download by uploading ".metalink" file.
-  *metalink* is of type base64 which contains Base64-encoded ".metalink"
-  file.  *options* is of type struct and its members are a pair of
-  option name and value. See :ref:`rpc_options` below for more details.  If
-  *position* is given as an integer starting from 0, the new download is
-  inserted at *position* in the waiting queue. If *position* is not
-  given or *position* is larger than the size of the queue, it is
-  appended at the end of the queue.  This method returns array of GID of
-  registered download.
-  The uploaded data is saved as a file named hex string of SHA-1 hash of data
-  plus ".metalink" in the directory specified by :option:`--dir <-d>`
-  option.
-  The example of filename is 0a3893293e27ac0490424c06de4d09242215f0a6.metalink.
-  If same file already exists, it is overwritten.
-  If the file cannot be saved successfully,
+  *metalink* is of type base64 which contains Base64-encoded
+  ".metalink" file.  *options* is of type struct and its members are a
+  pair of option name and value. See :ref:`rpc_options` below for more
+  details.  If *position* is given as an integer starting from 0, the
+  new download is inserted at *position* in the waiting queue. If
+  *position* is not given or *position* is larger than the size of the
+  queue, it is appended at the end of the queue.  This method returns
+  array of GID of registered download.  If
+  :option:`--rpc-save-upload-metadata` is ``true``, the uploaded data
+  is saved as a file named hex string of SHA-1 hash of data plus
+  ".metalink" in the directory specified by :option:`--dir <-d>`
+  option.  The example of filename is
+  ``0a3893293e27ac0490424c06de4d09242215f0a6.metalink``.  If same file
+  already exists, it is overwritten.  If the file cannot be saved
+  successfully or :option:`--rpc-save-upload-metadata` is ``false``,
   the downloads added by this method are not saved by
   :option:`--save-session`.
   
@@ -2896,8 +2910,9 @@ All code examples come from Python2.7 interpreter.
   :option:`dry-run <--dry-run>`,
   :option:`metalink-base-uri <--metalink-base-uri>`,
   :option:`parameterized-uri <-P>`,
-  :option:`pause <--pause>` and
-  :option:`piece-length <--piece-length>`.
+  :option:`pause <--pause>`,
+  :option:`piece-length <--piece-length>` and
+  :option:`rpc-save-upload-metadata <--rpc-save-upload-metadata>` option.
   This method returns ``"OK"`` for success.
   
   **JSON-RPC Example**
