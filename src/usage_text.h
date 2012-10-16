@@ -902,7 +902,7 @@
   _(" --rpc-save-upload-metadata[=true|false] Save the uploaded torrent or\n" \
     "                              metalink metadata in the directory specified\n" \
     "                              by --dir option. The filename consists of\n" \
-    "                              SHA1-hash hex string of metadata plus\n" \
+    "                              SHA-1 hash hex string of metadata plus\n" \
     "                              extension. For torrent, the extension is\n" \
     "                              '.torrent'. For metalink, it is '.meta4'.\n" \
     "                              If false is given to this option, the\n" \
