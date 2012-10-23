@@ -51,13 +51,13 @@ private:
   int64_t accumulatedLength_;
   time_t nextInterval_;
 
-  bool isIntervalOver() const;
-
   bool isIntervalOver(int64_t milliElapsed) const;
 
   void changeSw();
 public:
   SpeedCalc();
+
+  bool isIntervalOver() const;
 
   /**
    * Returns download/upload speed in byte per sec

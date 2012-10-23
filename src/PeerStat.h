@@ -149,6 +149,10 @@ public:
   {
     sessionDownloadLength_ += length;
   }
+
+  // Returns true if the download speed of this object still affects
+  // overall download speed statistics.
+  bool affectsOverallSpeed() const;
 };
 
 } // namespace aria2

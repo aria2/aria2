@@ -157,9 +157,6 @@ void SegmentManTest::testRegisterPeerStat()
   CPPUNIT_ASSERT_EQUAL((size_t)1, segman.getPeerStats().size());
   SharedHandle<PeerStat> p2(new PeerStat(0, "host2", "http"));
   segman.registerPeerStat(p2);
-  CPPUNIT_ASSERT_EQUAL((size_t)1, segman.getPeerStats().size());
-  p2->downloadStart();
-  segman.registerPeerStat(p1);
   CPPUNIT_ASSERT_EQUAL((size_t)2, segman.getPeerStats().size());
 }
 

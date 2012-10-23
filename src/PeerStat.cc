@@ -130,4 +130,9 @@ void PeerStat::downloadStop()
   status_ = PeerStat::IDLE;
 }
 
+bool PeerStat::affectsOverallSpeed() const
+{
+  return !downloadSpeed_.isIntervalOver();
+}
+
 } // namespace aria2

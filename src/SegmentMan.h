@@ -93,13 +93,6 @@ private:
   // Keep track of fastest PeerStat for each server
   std::vector<SharedHandle<PeerStat> > fastestPeerStats_;
 
-  // key: PeerStat's cuid, value: its download speed
-  std::map<cuid_t, int> peerStatDlspdMap_;
-
-  Timer lastPeerStatDlspdMapUpdated_;
-
-  int cachedDlspd_;
-
   BitfieldMan ignoreBitfield_;
 
   SharedHandle<Segment> checkoutSegment(cuid_t cuid,
@@ -231,8 +224,6 @@ public:
    * Returns current download speed in bytes per sec.
    */
   int calculateDownloadSpeed();
-
-  void updateDownloadSpeedFor(const SharedHandle<PeerStat>& pstat);
 
   /**
    * Returns the downloaded bytes in this session.

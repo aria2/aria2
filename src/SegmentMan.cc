@@ -69,8 +69,6 @@ SegmentMan::SegmentMan
   : option_(option),
     downloadContext_(downloadContext),
     pieceStorage_(pieceStorage),
-    lastPeerStatDlspdMapUpdated_(0),
-    cachedDlspd_(0),
     ignoreBitfield_(downloadContext->getPieceLength(),
                     downloadContext->getTotalLength())
 {
@@ -350,13 +348,6 @@ int64_t SegmentMan::getDownloadLength() const {
 
 void SegmentMan::registerPeerStat(const SharedHandle<PeerStat>& peerStat)
 {
-  for(std::vector<SharedHandle<PeerStat> >::iterator i = peerStats_.begin(),
-        eoi = peerStats_.end(); i != eoi; ++i) {
-    if((*i)->getStatus() == PeerStat::IDLE) {
-      *i = peerStat;
-      return;
-    }
-  }
   peerStats_.push_back(peerStat);
 }
 
@@ -407,36 +398,15 @@ void SegmentMan::updateFastestPeerStat(const SharedHandle<PeerStat>& peerStat)
 int SegmentMan::calculateDownloadSpeed()
 {
   int speed = 0;
-  if(lastPeerStatDlspdMapUpdated_.differenceInMillis(global::wallclock())+
-     A2_DELTA_MILLIS >= 250){
-    lastPeerStatDlspdMapUpdated_ = global::wallclock();
-    peerStatDlspdMap_.clear();
-    for(std::vector<SharedHandle<PeerStat> >::const_iterator i =
-          peerStats_.begin(), eoi = peerStats_.end(); i != eoi; ++i) {
-      if((*i)->getStatus() == PeerStat::ACTIVE) {
-        int s = (*i)->calculateDownloadSpeed();
-        peerStatDlspdMap_[(*i)->getCuid()] = s;
-        speed += s;
-      }
+  for(std::vector<SharedHandle<PeerStat> >::const_iterator i =
+        peerStats_.begin(), eoi = peerStats_.end(); i != eoi; ++i) {
+    // PeerStat which is IDLE but its last download speed calculation
+    // interval is not over must be added to the result.
+    if((*i)->getStatus() == PeerStat::ACTIVE || (*i)->affectsOverallSpeed()) {
+      speed += (*i)->calculateDownloadSpeed();
     }
-    cachedDlspd_ = speed;
-  } else {
-    speed = cachedDlspd_;
   }
   return speed;
-}
-
-void SegmentMan::updateDownloadSpeedFor(const SharedHandle<PeerStat>& pstat)
-{
-  int newspd = pstat->calculateDownloadSpeed();
-  int oldSpd = peerStatDlspdMap_[pstat->getCuid()];
-  if(cachedDlspd_ > oldSpd) {
-    cachedDlspd_ -= oldSpd;
-    cachedDlspd_ += newspd;
-  } else {
-    cachedDlspd_ = newspd;
-  }
-  peerStatDlspdMap_[pstat->getCuid()] = newspd;
 }
 
 namespace {
