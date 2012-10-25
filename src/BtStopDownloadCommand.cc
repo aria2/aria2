@@ -42,6 +42,7 @@
 #include "util.h"
 #include "fmt.h"
 #include "DownloadEngine.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 
@@ -72,7 +73,8 @@ void BtStopDownloadCommand::preProcess()
 
 void BtStopDownloadCommand::process()
 {
-  if(requestGroup_->calculateStat().getDownloadSpeed() > 0) {
+  NetStat& stat = requestGroup_->getDownloadContext()->getNetStat();
+  if(stat.calculateDownloadSpeed() > 0) {
     checkPoint_ = global::wallclock();
   }
 }

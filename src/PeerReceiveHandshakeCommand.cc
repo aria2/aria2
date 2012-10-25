@@ -125,8 +125,7 @@ bool PeerReceiveHandshakeCommand::executeInternal()
                    " Dropping connection.");
       return true;
     }
-    TransferStat tstat =
-      downloadContext->getOwnerRequestGroup()->calculateStat();
+    NetStat& stat = downloadContext->getNetStat();
     const int maxDownloadLimit =
       downloadContext->getOwnerRequestGroup()->getMaxDownloadSpeedLimit();
     int thresholdSpeed =
@@ -137,7 +136,7 @@ bool PeerReceiveHandshakeCommand::executeInternal()
     }
 
     if((!pieceStorage->downloadFinished() &&
-        tstat.getDownloadSpeed() < thresholdSpeed) ||
+        stat.calculateDownloadSpeed() < thresholdSpeed) ||
        btRuntime->lessThanMaxPeers()) {
       if(peerStorage->addPeer(getPeer())) {
         getPeer()->usedBy(getCuid());

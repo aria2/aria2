@@ -81,7 +81,7 @@ bool ActivePeerConnectionCommand::execute() {
   }
   if(checkPoint_.difference(global::wallclock()) >= interval_) {
     checkPoint_ = global::wallclock();
-    TransferStat tstat = requestGroup_->calculateStat();
+    NetStat& stat = requestGroup_->getDownloadContext()->getNetStat();
     const int maxDownloadLimit = requestGroup_->getMaxDownloadSpeedLimit();
     const int maxUploadLimit = requestGroup_->getMaxUploadSpeedLimit();
     int thresholdSpeed;
@@ -97,10 +97,11 @@ bool ActivePeerConnectionCommand::execute() {
     }
     if(// for seeder state
        (pieceStorage_->downloadFinished() && btRuntime_->lessThanMaxPeers() &&
-        (maxUploadLimit == 0 || tstat.getUploadSpeed() < maxUploadLimit*0.8)) ||
+        (maxUploadLimit == 0 ||
+         stat.calculateUploadSpeed() < maxUploadLimit*0.8)) ||
        // for leecher state
        (!pieceStorage_->downloadFinished() &&
-        (tstat.getDownloadSpeed() < thresholdSpeed ||
+        (stat.calculateDownloadSpeed() < thresholdSpeed ||
          btRuntime_->lessThanMinPeers()))) {
 
       int numConnection = 0;

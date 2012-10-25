@@ -657,14 +657,14 @@ void gatherProgressCommon
   }
   TransferStat stat = group->calculateStat();
   if(requested_key(keys, KEY_DOWNLOAD_SPEED)) {
-    entryDict->put(KEY_DOWNLOAD_SPEED, util::itos(stat.getDownloadSpeed()));
+    entryDict->put(KEY_DOWNLOAD_SPEED, util::itos(stat.downloadSpeed));
   }
   if(requested_key(keys, KEY_UPLOAD_SPEED)) {
-    entryDict->put(KEY_UPLOAD_SPEED, util::itos(stat.getUploadSpeed()));
+    entryDict->put(KEY_UPLOAD_SPEED, util::itos(stat.uploadSpeed));
   }
   if(requested_key(keys, KEY_UPLOAD_LENGTH)) {
     entryDict->put
-      (KEY_UPLOAD_LENGTH, util::itos(stat.getAllTimeUploadLength()));
+      (KEY_UPLOAD_LENGTH, util::itos(stat.allTimeUploadLength));
   }
   if(requested_key(keys, KEY_CONNECTIONS)) {
     entryDict->put(KEY_CONNECTIONS, util::itos(group->getNumConnection()));

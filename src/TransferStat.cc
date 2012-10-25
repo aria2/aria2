@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,67 +34,46 @@
 /* copyright --> */
 #include "TransferStat.h"
 
+#include <algorithm>
+
 namespace aria2 {
 
 TransferStat operator+(const TransferStat& a, const TransferStat& b)
 {
-  TransferStat c;
-  c.downloadSpeed = a.downloadSpeed+b.downloadSpeed;
-  c.uploadSpeed = a.uploadSpeed+b.uploadSpeed;
-  c.sessionDownloadLength = a.sessionDownloadLength+b.sessionDownloadLength;
-  c.sessionUploadLength = a.sessionUploadLength+b.sessionUploadLength;
+  TransferStat c(a);
+  c += b;
   return c;
 }
 
 TransferStat operator-(const TransferStat& a, const TransferStat& b)
 {
-  TransferStat c;
-  if(a.downloadSpeed > b.downloadSpeed) {
-    c.downloadSpeed = a.downloadSpeed-b.downloadSpeed;
-  }
-  if(a.uploadSpeed > b.uploadSpeed) {
-    c.uploadSpeed = a.uploadSpeed-b.uploadSpeed;
-  }
-  if(a.sessionDownloadLength > b.sessionDownloadLength) {
-    c.sessionDownloadLength = a.sessionDownloadLength-b.sessionDownloadLength;
-  }
-  if(a.sessionUploadLength > b.sessionUploadLength) {
-    c.sessionUploadLength = a.sessionUploadLength-b.sessionUploadLength;
-  }
+  TransferStat c(a);
+  c -= b;
   return c;
 }
 
-TransferStat& TransferStat::operator+=(const TransferStat& stat)
+TransferStat& TransferStat::operator+=(const TransferStat& b)
 {
-  downloadSpeed += stat.downloadSpeed;
-  uploadSpeed += stat.uploadSpeed;
-  sessionDownloadLength += stat.sessionDownloadLength;
-  sessionUploadLength += stat.sessionUploadLength;
+  downloadSpeed += b.downloadSpeed;
+  uploadSpeed += b.uploadSpeed;
+  sessionDownloadLength += b.sessionDownloadLength;
+  sessionUploadLength += b.sessionUploadLength;
   return *this;
 }
 
-TransferStat& TransferStat::operator-=(const TransferStat& stat)
+TransferStat& TransferStat::operator-=(const TransferStat& b)
 {
-  if(downloadSpeed > stat.downloadSpeed) {
-    downloadSpeed -= stat.downloadSpeed;
-  } else {
-    downloadSpeed = 0;
-  }
-  if(uploadSpeed > stat.uploadSpeed) {
-    uploadSpeed -= stat.uploadSpeed;
-  } else {
-    uploadSpeed = 0;
-  }
-  if(sessionDownloadLength > stat.sessionDownloadLength) {
-    sessionDownloadLength -= stat.sessionDownloadLength;
-  } else {
-    sessionDownloadLength = 0;
-  }
-  if(sessionUploadLength > stat.sessionUploadLength) {
-    sessionUploadLength -= stat.sessionUploadLength;
-  } else {
-    sessionUploadLength = 0;
-  }
+  downloadSpeed -= b.downloadSpeed;
+  uploadSpeed -= b.uploadSpeed;
+  sessionDownloadLength -= b.sessionDownloadLength;
+  sessionUploadLength -= b.sessionUploadLength;
+
+  downloadSpeed = std::max(0, downloadSpeed);
+  uploadSpeed = std::max(0, uploadSpeed);
+  sessionDownloadLength = std::max(static_cast<int64_t>(0),
+                                   sessionDownloadLength);
+  sessionUploadLength = std::max(static_cast<int64_t>(0),
+                                 sessionUploadLength);
   return *this;
 }
 

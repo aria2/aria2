@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,93 +36,30 @@
 #define D_TRANSFER_STAT_H
 
 #include "common.h"
-#include <stdint.h>
 
 namespace aria2 {
 
-class TransferStat {
-public:
-  int downloadSpeed;
-  int uploadSpeed;
-  int64_t sessionDownloadLength;
-  int64_t sessionUploadLength;
-  int64_t allTimeUploadLength;
-
-  void copy(const TransferStat& stat)
-  {
-    downloadSpeed = stat.downloadSpeed;
-    uploadSpeed = stat.uploadSpeed;
-    sessionDownloadLength = stat.sessionDownloadLength;
-    sessionUploadLength = stat.sessionUploadLength;
-    allTimeUploadLength = stat.allTimeUploadLength;
-  }
-public:
+struct TransferStat {
   TransferStat():downloadSpeed(0), uploadSpeed(0),
                  sessionDownloadLength(0), sessionUploadLength(0),
                  allTimeUploadLength(0) {}
 
-  TransferStat(const TransferStat& stat)
-  {
-    copy(stat);
-  }
-
-  TransferStat& operator=(const TransferStat& stat)
-  {
-    if(this != &stat) {
-      copy(stat);
-    }
-    return *this;
-  }
-
-  friend TransferStat operator+(const TransferStat& a, const TransferStat& b);
-
-  friend TransferStat operator-(const TransferStat& a, const TransferStat& b);
-
   TransferStat& operator+=(const TransferStat& stat);
-
   TransferStat& operator-=(const TransferStat& stat);
 
-  int getDownloadSpeed() const {
-    return downloadSpeed;
-  }
-
-  void setDownloadSpeed(int s) { downloadSpeed = s; }
-
-  int getUploadSpeed() const {
-    return uploadSpeed;
-  }
-
-  void setUploadSpeed(int s) { uploadSpeed = s; }
-
+  int downloadSpeed;
+  int uploadSpeed;
   /**
    * Returns the number of bytes downloaded since the program started.
    * This is not the total number of bytes downloaded.
    */
-  int64_t getSessionDownloadLength() const {
-    return sessionDownloadLength;
-  }
-
-  void setSessionDownloadLength(int64_t s) { sessionDownloadLength = s; }
-
+  int64_t sessionDownloadLength;
   /**
    * Returns the number of bytes uploaded since the program started.
    * This is not the total number of bytes uploaded.
    */
-  int64_t getSessionUploadLength() const {
-    return sessionUploadLength;
-  }
-
-  void setSessionUploadLength(int64_t s) { sessionUploadLength = s; }
-
-  void setAllTimeUploadLength(int64_t s)
-  {
-    allTimeUploadLength = s;
-  }
-
-  int64_t getAllTimeUploadLength() const
-  {
-    return allTimeUploadLength;
-  }
+  int64_t sessionUploadLength;
+  int64_t allTimeUploadLength;
 };
 
 TransferStat operator+(const TransferStat& a, const TransferStat& b);

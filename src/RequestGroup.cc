@@ -1154,7 +1154,7 @@ SharedHandle<DownloadResult> RequestGroup::createDownloadResult() const
   res->gid = gid_;
   res->fileEntries = downloadContext_->getFileEntries();
   res->inMemoryDownload = inMemoryDownload_;
-  res->sessionDownloadLength = st.getSessionDownloadLength();
+  res->sessionDownloadLength = st.sessionDownloadLength;
   res->sessionTime = downloadContext_->calculateSessionTime();
   res->result = downloadResult();
   res->followedBy = followedByGIDs_;
@@ -1163,7 +1163,7 @@ SharedHandle<DownloadResult> RequestGroup::createDownloadResult() const
   res->metadataInfo = metadataInfo_;
   res->totalLength = getTotalLength();
   res->completedLength = getCompletedLength();
-  res->uploadLength = st.getAllTimeUploadLength();
+  res->uploadLength = st.allTimeUploadLength;
   if(pieceStorage_) {
     if(pieceStorage_->getBitfieldLength() > 0) {
       res->bitfield.assign(pieceStorage_->getBitfield(),
@@ -1193,13 +1193,13 @@ void RequestGroup::reportDownloadFinished()
     TransferStat stat = calculateStat();
     int64_t completedLength = getCompletedLength();
     double shareRatio = completedLength == 0 ? 0.0 :
-      1.0*stat.getAllTimeUploadLength()/completedLength;
+      1.0*stat.allTimeUploadLength/completedLength;
     SharedHandle<TorrentAttribute> attrs =
       bittorrent::getTorrentAttrs(downloadContext_);
     if(!attrs->metadata.empty()) {
       A2_LOG_NOTICE(fmt(MSG_SHARE_RATIO_REPORT,
                         shareRatio,
-                        util::abbrevSize(stat.getAllTimeUploadLength()).c_str(),
+                        util::abbrevSize(stat.allTimeUploadLength).c_str(),
                         util::abbrevSize(completedLength).c_str()));
     }
   }
@@ -1254,14 +1254,14 @@ void RequestGroup::setTimeout(time_t timeout)
 
 bool RequestGroup::doesDownloadSpeedExceed()
 {
-  return maxDownloadSpeedLimit_ > 0 &&
-    maxDownloadSpeedLimit_ < calculateStat().getDownloadSpeed();
+  int spd = downloadContext_->getNetStat().calculateDownloadSpeed();
+  return maxDownloadSpeedLimit_ > 0 && maxDownloadSpeedLimit_ < spd;
 }
 
 bool RequestGroup::doesUploadSpeedExceed()
 {
-  return maxUploadSpeedLimit_ > 0 &&
-    maxUploadSpeedLimit_ < calculateStat().getUploadSpeed();
+  int spd = downloadContext_->getNetStat().calculateUploadSpeed();
+  return maxUploadSpeedLimit_ > 0 && maxUploadSpeedLimit_ < spd;
 }
 
 void RequestGroup::saveControlFile() const
