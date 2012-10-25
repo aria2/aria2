@@ -77,7 +77,7 @@ void Peer::allocateSessionResource(int32_t pieceLength, int64_t totalLength)
 {
   delete res_;
   res_ = new PeerSessionResource(pieceLength, totalLength);
-  res_->getPeerStat().downloadStart();
+  res_->getNetStat().downloadStart();
   updateSeeder();
 }
 
@@ -219,13 +219,13 @@ void Peer::updateBitfield(size_t index, int operation) {
 int Peer::calculateUploadSpeed()
 {
   assert(res_);
-  return res_->getPeerStat().calculateUploadSpeed();
+  return res_->getNetStat().calculateUploadSpeed();
 }
 
 int Peer::calculateDownloadSpeed()
 {
   assert(res_);
-  return res_->getPeerStat().calculateDownloadSpeed();
+  return res_->getNetStat().calculateDownloadSpeed();
 }
 
 int64_t Peer::getSessionUploadLength() const

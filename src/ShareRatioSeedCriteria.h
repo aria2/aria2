@@ -40,14 +40,14 @@
 namespace aria2 {
 
 class DownloadContext;
-class PeerStorage;
+class BtRuntime;
 class PieceStorage;
 
 class ShareRatioSeedCriteria : public SeedCriteria {
 private:
   double ratio_;
   SharedHandle<DownloadContext> downloadContext_;
-  SharedHandle<PeerStorage> peerStorage_;
+  SharedHandle<BtRuntime> btRuntime_;
   SharedHandle<PieceStorage> pieceStorage_;
 public:
   ShareRatioSeedCriteria
@@ -67,7 +67,7 @@ public:
     return ratio_;
   }
 
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
 
   void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
 };

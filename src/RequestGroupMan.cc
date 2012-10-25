@@ -54,7 +54,6 @@
 #include "DownloadContext.h"
 #include "ServerStatMan.h"
 #include "ServerStat.h"
-#include "PeerStat.h"
 #include "SegmentMan.h"
 #include "FeedbackURISelector.h"
 #include "InorderURISelector.h"
@@ -918,12 +917,8 @@ void RequestGroupMan::forceHalt()
 
 TransferStat RequestGroupMan::calculateStat()
 {
-  TransferStat s;
-  for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
-        requestGroups_.begin(), eoi = requestGroups_.end(); i != eoi; ++i) {
-    s += (*i)->calculateStat();
-  }
-  return s;
+  // TODO Currently, all time upload length is not set.
+  return netStat_.toTransferStat();
 }
 
 SharedHandle<DownloadResult>
@@ -1033,13 +1028,13 @@ void RequestGroupMan::removeStaleServerStat(time_t timeout)
 bool RequestGroupMan::doesOverallDownloadSpeedExceed()
 {
   return maxOverallDownloadSpeedLimit_ > 0 &&
-    maxOverallDownloadSpeedLimit_ < calculateStat().getDownloadSpeed();
+    maxOverallDownloadSpeedLimit_ < netStat_.calculateDownloadSpeed();
 }
 
 bool RequestGroupMan::doesOverallUploadSpeedExceed()
 {
   return maxOverallUploadSpeedLimit_ > 0 &&
-    maxOverallUploadSpeedLimit_ < calculateStat().getUploadSpeed();
+    maxOverallUploadSpeedLimit_ < netStat_.calculateUploadSpeed();
 }
 
 void RequestGroupMan::getUsedHosts

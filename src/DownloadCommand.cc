@@ -176,6 +176,7 @@ bool DownloadCommand::executeInternal() {
     }
     getSocketRecvBuffer()->shiftBuffer(bufSize);
     peerStat_->updateDownloadLength(bufSize);
+    getDownloadContext()->updateDownloadLength(bufSize);
   }
   bool segmentPartComplete = false;
   // Note that GrowSegment::complete() always returns false.

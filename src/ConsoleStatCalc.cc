@@ -304,10 +304,8 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
 
   if(e->getRequestGroupMan()->countRequestGroup() > 1 &&
      !e->getRequestGroupMan()->downloadFinished()) {
-    TransferStat stat = e->getRequestGroupMan()->calculateStat();
-    o << " "
-      << "[TOTAL SPD:"
-      << sizeFormatter(stat.getDownloadSpeed()) << "Bs" << "]";
+    int spd = e->getRequestGroupMan()->getNetStat().calculateDownloadSpeed();
+    o << " [TOTAL SPD:" << sizeFormatter(spd) << "Bs" << "]";
   }
 
   {

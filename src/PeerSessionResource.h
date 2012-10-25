@@ -41,7 +41,7 @@
 #include <set>
 
 #include "BtConstants.h"
-#include "PeerStat.h"
+#include "NetStat.h"
 #include "TimerA2.h"
 #include "ExtensionMessageRegistry.h"
 
@@ -58,7 +58,7 @@ private:
   // fast index set which localhost has sent to a peer.
   std::set<size_t> amAllowedIndexSet_;
   ExtensionMessageRegistry extreg_;
-  PeerStat peerStat_;
+  NetStat netStat_;
 
   Timer lastDownloadUpdate_;
 
@@ -206,9 +206,9 @@ public:
 
   void dhtEnabled(bool b);
 
-  PeerStat& getPeerStat()
+  NetStat& getNetStat()
   {
-    return peerStat_;
+    return netStat_;
   }
 
   int64_t uploadLength() const;

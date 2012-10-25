@@ -211,12 +211,11 @@ void DefaultBtProgressInfoFileTest::testSave()
   initializeMembers(1024, 81920);
 
   dctx_->setBasePath(A2_TEST_OUT_DIR"/save-temp");
+  dctx_->getNetStat().updateUploadLength(768);
+  btRuntime_->setUploadLengthAtStartup(256);
   bitfield_->setAllBit();
   bitfield_->unsetBit(79);
   pieceStorage_->setCompletedLength(80896);
-  TransferStat stat;
-  stat.setAllTimeUploadLength(1024);
-  peerStorage_->setStat(stat);
 
   SharedHandle<Piece> p1(new Piece(1, 1024));
   SharedHandle<Piece> p2(new Piece(2, 512));

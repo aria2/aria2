@@ -180,10 +180,6 @@ void DefaultBtMessageDispatcherTest::testAddMessage() {
 }
 
 void DefaultBtMessageDispatcherTest::testSendMessages() {
-  TransferStat stat;
-  stat.setUploadSpeed(0);
-  peerStorage->setStat(stat);
-
   SharedHandle<MockBtMessage2> msg1(new MockBtMessage2());
   msg1->setSendingInProgress(false);
   msg1->setUploading(false);
@@ -199,10 +195,6 @@ void DefaultBtMessageDispatcherTest::testSendMessages() {
 }
 
 void DefaultBtMessageDispatcherTest::testSendMessages_underUploadLimit() {
-  TransferStat stat;
-  stat.setUploadSpeed(0);
-  peerStorage->setStat(stat);
-
   SharedHandle<MockBtMessage2> msg1(new MockBtMessage2());
   msg1->setSendingInProgress(false);
   msg1->setUploading(true);

@@ -963,22 +963,15 @@ void RequestGroup::decreaseNumCommand()
   }
 }
 
-
 TransferStat RequestGroup::calculateStat() const
 {
-  TransferStat stat;
+  TransferStat stat = downloadContext_->getNetStat().toTransferStat();
 #ifdef ENABLE_BITTORRENT
-  if(peerStorage_) {
-    stat = peerStorage_->calculateStat();
+  if(btRuntime_) {
+    stat.allTimeUploadLength = btRuntime_->getUploadLengthAtStartup()+
+      stat.sessionUploadLength;
   }
 #endif // ENABLE_BITTORRENT
-  if(segmentMan_) {
-    stat.setDownloadSpeed
-      (stat.getDownloadSpeed()+segmentMan_->calculateDownloadSpeed());
-    stat.setSessionDownloadLength
-      (stat.getSessionDownloadLength()+
-       segmentMan_->calculateSessionDownloadLength());
-  }
   return stat;
 }
 
@@ -1242,8 +1235,7 @@ void RequestGroup::increaseAndValidateFileNotFoundCount()
   ++fileNotFoundCount_;
   const int maxCount = option_->getAsInt(PREF_MAX_FILE_NOT_FOUND);
   if(maxCount > 0 && fileNotFoundCount_ >= maxCount &&
-     (!segmentMan_ ||
-      segmentMan_->calculateSessionDownloadLength() == 0)) {
+     downloadContext_->getNetStat().getSessionDownloadLength() == 0) {
     throw DOWNLOAD_FAILURE_EXCEPTION2
       (fmt("Reached max-file-not-found count=%d", maxCount),
        error_code::MAX_FILE_NOT_FOUND);

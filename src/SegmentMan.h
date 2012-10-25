@@ -220,16 +220,6 @@ public:
     return fastestPeerStats_;
   }
 
-  /**
-   * Returns current download speed in bytes per sec.
-   */
-  int calculateDownloadSpeed();
-
-  /**
-   * Returns the downloaded bytes in this session.
-   */
-  int64_t calculateSessionDownloadLength() const;
-
   size_t countFreePieceFrom(size_t index) const;
 
   // Excludes segments that fileEntry covers from segment selection.

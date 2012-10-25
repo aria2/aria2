@@ -214,23 +214,22 @@ void PeerSessionResource::dhtEnabled(bool b)
 
 int64_t PeerSessionResource::uploadLength() const
 {
-  return peerStat_.getSessionUploadLength();
+  return netStat_.getSessionUploadLength();
 }
 
 void PeerSessionResource::updateUploadLength(int32_t bytes)
 {
-  peerStat_.updateUploadLength(bytes);
+  netStat_.updateUploadLength(bytes);
 }
 
 int64_t PeerSessionResource::downloadLength() const
 {
-  return peerStat_.getSessionDownloadLength();
+  return netStat_.getSessionDownloadLength();
 }
 
 void PeerSessionResource::updateDownloadLength(int32_t bytes)
 {
-  peerStat_.updateDownloadLength(bytes);
-
+  netStat_.updateDownloadLength(bytes);
   lastDownloadUpdate_ = global::wallclock();
 }
 

@@ -100,6 +100,7 @@ void BtPieceMessage::doReceivedAction()
   RequestSlot slot = getBtMessageDispatcher()->getOutstandingRequest
     (index_, begin_, blockLength_);
   getPeer()->updateDownloadLength(blockLength_);
+  downloadContext_->updateDownloadLength(blockLength_);
   if(!RequestSlot::isNull(slot)) {
     getPeer()->snubbing(false);
     SharedHandle<Piece> piece = getPieceStorage()->getPiece(index_);
@@ -188,6 +189,7 @@ void BtPieceMessage::send()
   }
   writtenLength = getPeerConnection()->sendPendingData();
   getPeer()->updateUploadLength(writtenLength);
+  downloadContext_->updateUploadLength(writtenLength);
   setSendingInProgress(!getPeerConnection()->sendBufferIsEmpty());
 }
 

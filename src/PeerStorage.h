@@ -95,15 +95,6 @@ public:
   virtual void getActivePeers(std::vector<SharedHandle<Peer> >& peers) = 0;
 
   /**
-   * Calculates current download/upload statistics.
-   */
-  virtual TransferStat calculateStat() = 0;
-
-  virtual void updateTransferStatFor(const SharedHandle<Peer>& peer) = 0;
-
-  virtual TransferStat getTransferStatFor(const SharedHandle<Peer>& peer) = 0;
-
-  /**
    * Returns true if peer with ipaddr should be ignored because, for
    * example, it sends bad data.
    */

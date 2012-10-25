@@ -100,9 +100,6 @@ void DefaultBtMessageDispatcher::sendMessages() {
       }
     }
     msg->send();
-    if(msg->isUploading()) {
-      peerStorage_->updateTransferStatFor(peer_);
-    }
     if(msg->isSendingInProgress()) {
       messageQueue_.push_front(msg);
       break;

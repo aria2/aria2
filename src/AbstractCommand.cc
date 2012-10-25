@@ -431,7 +431,7 @@ void AbstractCommand::onAbort() {
     // limitation of current implementation.
     if(!getOption()->getAsBool(PREF_ALWAYS_RESUME) &&
        fileEntry_ &&
-       getSegmentMan()->calculateSessionDownloadLength() == 0 &&
+       getDownloadContext()->getNetStat().getSessionDownloadLength() == 0 &&
        !requestGroup_->p2pInvolved() &&
        getDownloadContext()->getFileEntries().size() == 1) {
       const int maxTries = getOption()->getAsInt(PREF_MAX_RESUME_FAILURE_TRIES);

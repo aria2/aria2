@@ -33,7 +33,6 @@
  */
 /* copyright --> */
 #include "PeerStat.h"
-#include "SharedHandle.h"
 #include "wallclock.h"
 
 namespace aria2 {
@@ -42,22 +41,11 @@ PeerStat::PeerStat
 (cuid_t cuid, const std::string& hostname, const::std::string& protocol)
   : cuid_(cuid),
     hostname_(hostname),
-    protocol_(protocol),
-    downloadStartTime_(global::wallclock()),
-    status_(PeerStat::IDLE),
-    avgDownloadSpeed_(0),
-    avgUploadSpeed_(0),
-    sessionDownloadLength_(0),
-    sessionUploadLength_(0)
+    protocol_(protocol)
 {}
 
 PeerStat::PeerStat(cuid_t cuid)
-  : cuid_(cuid),
-    status_(PeerStat::IDLE),
-    avgDownloadSpeed_(0),
-    avgUploadSpeed_(0),
-    sessionDownloadLength_(0),
-    sessionUploadLength_(0)
+  : cuid_(cuid)
 {}
 
 PeerStat::~PeerStat() {}
@@ -67,72 +55,97 @@ PeerStat::~PeerStat() {}
  */
 int PeerStat::calculateDownloadSpeed()
 {
-  return downloadSpeed_.calculateSpeed();
+  return netStat_.calculateDownloadSpeed();
 }
 
 int PeerStat::calculateAvgDownloadSpeed()
 {
-  avgDownloadSpeed_ = downloadSpeed_.calculateAvgSpeed();
-  return avgDownloadSpeed_;
+  return netStat_.calculateAvgDownloadSpeed();
 }
 
 int PeerStat::calculateUploadSpeed()
 {
-  return uploadSpeed_.calculateSpeed();
+  return netStat_.calculateUploadSpeed();
 }
 
 int PeerStat::calculateAvgUploadSpeed()
 {
-  avgUploadSpeed_ = uploadSpeed_.calculateAvgSpeed();
-  return avgUploadSpeed_;
+  return netStat_.calculateAvgUploadSpeed();
 }
 
 void PeerStat::updateDownloadLength(size_t bytes)
 {
-  downloadSpeed_.update(bytes);
-  sessionDownloadLength_ += bytes;
+  netStat_.updateDownloadLength(bytes);
 }
 
 void PeerStat::updateUploadLength(size_t bytes)
 {
-  uploadSpeed_.update(bytes);
-  sessionUploadLength_ += bytes;
+  netStat_.updateUploadLength(bytes);
 }
 
 int PeerStat::getMaxDownloadSpeed() const
 {
-  return downloadSpeed_.getMaxSpeed();
+  return netStat_.getMaxDownloadSpeed();
 }
 
 int PeerStat::getMaxUploadSpeed() const
 {
-  return uploadSpeed_.getMaxSpeed();
+  return netStat_.getMaxUploadSpeed();
+}
+
+int PeerStat::getAvgDownloadSpeed() const
+{
+  return netStat_.getAvgDownloadSpeed();
+}
+
+int PeerStat::getAvgUploadSpeed() const
+{
+  return netStat_.getAvgUploadSpeed();
+}
+
+uint64_t PeerStat::getSessionDownloadLength() const
+{
+  return netStat_.getSessionDownloadLength();
+}
+
+uint64_t PeerStat::getSessionUploadLength() const
+{
+  return netStat_.getSessionUploadLength();
+}
+
+void PeerStat::addSessionDownloadLength(uint64_t length)
+{
+  netStat_.addSessionDownloadLength(length);
+}
+
+const Timer& PeerStat::getDownloadStartTime() const
+{
+  return netStat_.getDownloadStartTime();
+}
+
+NetStat::STATUS PeerStat::getStatus() const
+{
+  return netStat_.getStatus();
 }
 
 void PeerStat::reset()
 {
-  downloadSpeed_.reset();
-  uploadSpeed_.reset();
-  downloadStartTime_ = global::wallclock();
-  status_ = PeerStat::IDLE;
+  netStat_.reset();
 }
 
 void PeerStat::downloadStart()
 {
-  reset();
-  status_ = PeerStat::ACTIVE;
+  netStat_.downloadStart();
 }
 
 void PeerStat::downloadStop()
 {
-  calculateAvgDownloadSpeed();
-  calculateAvgUploadSpeed();
-  status_ = PeerStat::IDLE;
+  netStat_.downloadStop();
 }
 
-bool PeerStat::affectsOverallSpeed() const
+TransferStat PeerStat::toTransferStat()
 {
-  return !downloadSpeed_.isIntervalOver();
+  return netStat_.toTransferStat();
 }
 
 } // namespace aria2

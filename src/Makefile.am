@@ -58,6 +58,7 @@ SRCS =  Socket.h\
 	DownloadEngineFactory.cc DownloadEngineFactory.h\
 	SpeedCalc.cc SpeedCalc.h\
 	PeerStat.cc PeerStat.h\
+	NetStat.cc NetStat.h\
 	BitfieldMan.cc BitfieldMan.h\
 	Randomizer.h\
 	SimpleRandomizer.cc SimpleRandomizer.h\

@@ -159,8 +159,8 @@ void DefaultBtProgressInfoFile::save()
     uint64_t uploadLengthNL = 0;
 #ifdef ENABLE_BITTORRENT
     if(torrentDownload) {
-      TransferStat stat = peerStorage_->calculateStat();
-      uploadLengthNL = hton64(stat.getAllTimeUploadLength());
+      uploadLengthNL = hton64(btRuntime_->getUploadLengthAtStartup()+
+                              dctx_->getNetStat().getSessionUploadLength());
     }
 #endif // ENABLE_BITTORRENT
     WRITE_CHECK(fp, &uploadLengthNL, sizeof(uploadLengthNL));

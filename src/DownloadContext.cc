@@ -43,6 +43,7 @@
 #include "DlAbortEx.h"
 #include "a2functional.h"
 #include "Signature.h"
+#include "RequestGroupMan.h"
 
 namespace aria2 {
 
@@ -52,8 +53,7 @@ DownloadContext::DownloadContext():
   knowsTotalLength_(true),
   ownerRequestGroup_(0),
   attrs_(MAX_CTX_ATTR),
-  downloadStartTime_(0),
-  downloadStopTime_(downloadStartTime_),
+  downloadStopTime_(0),
   acceptMetalink_(true) {}
 
 DownloadContext::DownloadContext(int32_t pieceLength,
@@ -64,7 +64,6 @@ DownloadContext::DownloadContext(int32_t pieceLength,
   knowsTotalLength_(true),
   ownerRequestGroup_(0),
   attrs_(MAX_CTX_ATTR),
-  downloadStartTime_(0),
   downloadStopTime_(0),
   acceptMetalink_(true)
 {
@@ -76,23 +75,20 @@ DownloadContext::~DownloadContext() {}
 
 void DownloadContext::resetDownloadStartTime()
 {
-  downloadStartTime_ = global::wallclock();
   downloadStopTime_.reset(0);
+  netStat_.downloadStart();
 }
 
 void DownloadContext::resetDownloadStopTime()
 {
   downloadStopTime_ = global::wallclock();
+  netStat_.downloadStop();
 }
 
 int64_t DownloadContext::calculateSessionTime() const
 {
-  if(downloadStopTime_ > downloadStartTime_) {
-    return
-      downloadStartTime_.differenceInMillis(downloadStopTime_);
-  } else {
-    return 0;
-  }
+  const Timer& startTime = netStat_.getDownloadStartTime();
+  return startTime.differenceInMillis(downloadStopTime_);
 }
 
 SharedHandle<FileEntry>
@@ -281,6 +277,24 @@ void DownloadContext::setBasePath(const std::string& basePath)
 void DownloadContext::setSignature(const SharedHandle<Signature>& signature)
 {
   signature_ = signature;
+}
+
+void DownloadContext::updateDownloadLength(size_t bytes)
+{
+  netStat_.updateDownloadLength(bytes);
+  RequestGroupMan* rgman = ownerRequestGroup_->getRequestGroupMan();
+  if(rgman) {
+    rgman->getNetStat().updateDownloadLength(bytes);
+  }
+}
+
+void DownloadContext::updateUploadLength(size_t bytes)
+{
+  netStat_.updateUploadLength(bytes);
+  RequestGroupMan* rgman = ownerRequestGroup_->getRequestGroupMan();
+  if(rgman) {
+    rgman->getNetStat().updateUploadLength(bytes);
+  }
 }
 
 } // namespace aria2

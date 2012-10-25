@@ -239,6 +239,7 @@ error_code::Value MultiUrlRequestInfo::execute()
     util::setGlobalSignalHandler(SIGINT, handler, 0);
     util::setGlobalSignalHandler(SIGTERM, handler, 0);
 
+    e->getRequestGroupMan()->getNetStat().downloadStart();
     e->run();
 
     if(!option_->blank(PREF_SAVE_COOKIES)) {

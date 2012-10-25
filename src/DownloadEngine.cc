@@ -220,7 +220,6 @@ void DownloadEngine::onEndOfRun()
 
 void DownloadEngine::afterEachIteration()
 {
-  requestGroupMan_->calculateStat();
   if(global::globalHaltRequested == 1) {
     A2_LOG_NOTICE(_("Shutdown sequence commencing..."
                     " Press Ctrl-C again for emergency shutdown."));

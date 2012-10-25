@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,30 +32,29 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_PEER_STAT_H
-#define D_PEER_STAT_H
+#ifndef D_NET_STAT_H
+#define D_NET_STAT_H
 
 #include "common.h"
 
-#include <string>
-
-#include "Command.h"
-#include "NetStat.h"
+#include "SpeedCalc.h"
+#include "TransferStat.h"
 
 namespace aria2 {
 
-class PeerStat {
+class NetStat {
 public:
-  PeerStat
-  (cuid_t cuid, const std::string& hostname, const::std::string& protocol);
+  enum STATUS {
+    IDLE,
+    ACTIVE,
+  };
 
-  PeerStat(cuid_t cuid = 0);
-
-  ~PeerStat();
+  NetStat();
+  ~NetStat();
 
   // Don't allow copying
-  PeerStat(const PeerStat&);
-  PeerStat& operator=(const PeerStat&);
+  NetStat(const NetStat&);
+  NetStat& operator=(const NetStat&);
 
   /**
    * Returns current download speed in byte per sec.
@@ -76,9 +75,15 @@ public:
 
   int getMaxUploadSpeed() const;
 
-  int getAvgDownloadSpeed() const;
+  int getAvgDownloadSpeed() const
+  {
+    return avgDownloadSpeed_;
+  }
 
-  int getAvgUploadSpeed() const;
+  int getAvgUploadSpeed() const
+  {
+    return avgUploadSpeed_;
+  }
 
   void reset();
 
@@ -86,39 +91,43 @@ public:
 
   void downloadStop();
 
-  const Timer& getDownloadStartTime() const;
+  const Timer& getDownloadStartTime() const
+  {
+    return downloadStartTime_;
+  }
 
-  NetStat::STATUS getStatus() const;
+  STATUS getStatus() const
+  {
+    return status_;
+  }
 
-  uint64_t getSessionDownloadLength() const;
+  uint64_t getSessionDownloadLength() const
+  {
+    return sessionDownloadLength_;
+  }
 
-  uint64_t getSessionUploadLength() const;
+  uint64_t getSessionUploadLength() const
+  {
+    return sessionUploadLength_;
+  }
 
-  void addSessionDownloadLength(uint64_t length);
+  void addSessionDownloadLength(uint64_t length)
+  {
+    sessionDownloadLength_ += length;
+  }
 
   TransferStat toTransferStat();
-
-  cuid_t getCuid() const
-  {
-    return cuid_;
-  }
-
-  const std::string& getHostname() const
-  {
-    return hostname_;
-  }
-
-  const std::string& getProtocol() const
-  {
-    return protocol_;
-  }
 private:
-  cuid_t cuid_;
-  std::string hostname_;
-  std::string protocol_;
-  NetStat netStat_;
+  SpeedCalc downloadSpeed_;
+  SpeedCalc uploadSpeed_;
+  Timer downloadStartTime_;
+  STATUS status_;
+  int avgDownloadSpeed_;
+  int avgUploadSpeed_;
+  int64_t sessionDownloadLength_;
+  int64_t sessionUploadLength_;
 };
 
 } // namespace aria2
 
-#endif // D_PEER_STAT_H
+#endif // D_NET_STAT_H

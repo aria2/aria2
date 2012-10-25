@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "ShareRatioSeedCriteria.h"
 #include "DownloadContext.h"
-#include "PeerStorage.h"
+#include "BtRuntime.h"
 #include "PieceStorage.h"
 
 namespace aria2 {
@@ -55,15 +55,16 @@ bool ShareRatioSeedCriteria::evaluate()
   if(completedLength == 0) {
     return true;
   }
-  TransferStat stat = peerStorage_->calculateStat();
-  return ratio_ <= 1.0*stat.getAllTimeUploadLength()/completedLength;
+  int64_t uploadLength = btRuntime_->getUploadLengthAtStartup()+
+    downloadContext_->getNetStat().getSessionUploadLength();
+  return ratio_ <= 1.0*uploadLength/completedLength;
 }
 
 
-void ShareRatioSeedCriteria::setPeerStorage
-(const SharedHandle<PeerStorage>& peerStorage)
+void ShareRatioSeedCriteria::setBtRuntime
+(const SharedHandle<BtRuntime>& btRuntime)
 {
-  peerStorage_ = peerStorage;
+  btRuntime_ = btRuntime;
 }
 
 void ShareRatioSeedCriteria::setPieceStorage

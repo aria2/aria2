@@ -514,6 +514,11 @@ public:
     requestGroupMan_ = requestGroupMan;
   }
 
+  RequestGroupMan* getRequestGroupMan()
+  {
+    return requestGroupMan_;
+  }
+
   int getResumeFailureCount() const
   {
     return resumeFailureCount_;

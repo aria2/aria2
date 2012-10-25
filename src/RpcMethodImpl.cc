@@ -796,9 +796,10 @@ void gatherPeer
                    util::toHex((*i)->getBitfield(), (*i)->getBitfieldLength()));
     peerEntry->put(KEY_AM_CHOKING, (*i)->amChoking()?VLB_TRUE:VLB_FALSE);
     peerEntry->put(KEY_PEER_CHOKING, (*i)->peerChoking()?VLB_TRUE:VLB_FALSE);
-    TransferStat stat = ps->getTransferStatFor(*i);
-    peerEntry->put(KEY_DOWNLOAD_SPEED, util::itos(stat.getDownloadSpeed()));
-    peerEntry->put(KEY_UPLOAD_SPEED, util::itos(stat.getUploadSpeed()));
+    peerEntry->put(KEY_DOWNLOAD_SPEED,
+                   util::itos((*i)->calculateDownloadSpeed()));
+    peerEntry->put(KEY_UPLOAD_SPEED,
+                   util::itos((*i)->calculateUploadSpeed()));
     peerEntry->put(KEY_SEEDER, (*i)->isSeeder()?VLB_TRUE:VLB_FALSE);
     peers->append(peerEntry);
   }

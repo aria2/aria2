@@ -171,7 +171,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
           (new ShareRatioSeedCriteria(option->getAsDouble(PREF_SEED_RATIO),
                                       requestGroup->getDownloadContext()));
         cri->setPieceStorage(pieceStorage);
-        cri->setPeerStorage(peerStorage);
+        cri->setBtRuntime(btRuntime);
 
         unionCri->addSeedCriteria(cri);
       }

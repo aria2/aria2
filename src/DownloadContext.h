@@ -47,6 +47,7 @@
 #include "ValueBase.h"
 #include "SegList.h"
 #include "ContextAttribute.h"
+#include "NetStat.h"
 
 namespace aria2 {
 
@@ -79,7 +80,7 @@ private:
 
   std::vector<SharedHandle<ContextAttribute> > attrs_;
 
-  Timer downloadStartTime_;
+  NetStat netStat_;
 
   Timer downloadStopTime_;
 
@@ -234,6 +235,19 @@ public:
   {
     return acceptMetalink_;
   }
+
+  NetStat& getNetStat()
+  {
+    return netStat_;
+  }
+
+  // This method also updates global download length held by
+  // RequestGroupMan via getOwnerRequestGroup().
+  void updateDownloadLength(size_t bytes);
+
+  // This method also updates global upload length held by
+  // RequestGroupMan via getOwnerRequestGroup().
+  void updateUploadLength(size_t bytes);
 };
 
 } // namespace aria2

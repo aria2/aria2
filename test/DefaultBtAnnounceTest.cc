@@ -60,6 +60,8 @@ public:
     SharedHandle<TorrentAttribute> torrentAttrs(new TorrentAttribute());
     torrentAttrs->infoHash = std::string(vbegin(infoHash), vend(infoHash));
     dctx_->setAttribute(CTX_ATTR_BT, torrentAttrs);
+    dctx_->getNetStat().updateDownloadLength(pieceLength*5);
+    dctx_->getNetStat().updateUploadLength(pieceLength*6);
     bittorrent::setStaticPeerId(peerId);
 
     pieceStorage_.reset(new MockPieceStorage());
@@ -67,11 +69,6 @@ public:
     pieceStorage_->setCompletedLength(pieceLength*10);
 
     peerStorage_.reset(new MockPeerStorage());
-    TransferStat stat;
-    stat.setSessionDownloadLength(pieceLength*5);
-    stat.setSessionUploadLength(pieceLength*6);
-    peerStorage_->setStat(stat);
-
     btRuntime_.reset(new BtRuntime());
   }
 

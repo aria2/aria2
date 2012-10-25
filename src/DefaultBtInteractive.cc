@@ -305,8 +305,6 @@ size_t DefaultBtInteractive::receiveMessages() {
       }
       break;
     case BtPieceMessage::ID:
-      peerStorage_->updateTransferStatFor(peer_);
-      // pass through
     case BtRequestMessage::ID:
       inactiveTimer_ = global::wallclock();
       break;

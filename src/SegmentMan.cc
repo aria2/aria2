@@ -237,7 +237,7 @@ SharedHandle<Segment> SegmentMan::getCleanSegmentIfOwnerIsIdle
       }
       cuid_t owner = segmentEntry->cuid;
       SharedHandle<PeerStat> ps = getPeerStat(owner);
-      if(!ps || ps->getStatus() == PeerStat::IDLE) {
+      if(!ps || ps->getStatus() == NetStat::IDLE) {
         cancelSegment(owner);
         return getSegmentWithIndex(cuid, index);
       } else {
@@ -393,36 +393,6 @@ void SegmentMan::updateFastestPeerStat(const SharedHandle<PeerStat>& peerStat)
     // peerStat's SessionDownloadLength must be added to *i
     (*i)->addSessionDownloadLength(peerStat->getSessionDownloadLength());
   }
-}
-
-int SegmentMan::calculateDownloadSpeed()
-{
-  int speed = 0;
-  for(std::vector<SharedHandle<PeerStat> >::const_iterator i =
-        peerStats_.begin(), eoi = peerStats_.end(); i != eoi; ++i) {
-    // PeerStat which is IDLE but its last download speed calculation
-    // interval is not over must be added to the result.
-    if((*i)->getStatus() == PeerStat::ACTIVE || (*i)->affectsOverallSpeed()) {
-      speed += (*i)->calculateDownloadSpeed();
-    }
-  }
-  return speed;
-}
-
-namespace {
-class PeerStatDownloadLengthOperator {
-public:
-  int64_t operator()(int64_t total, const SharedHandle<PeerStat>& ps)
-  {
-    return ps->getSessionDownloadLength()+total;
-  }
-};
-} // namespace
-
-int64_t SegmentMan::calculateSessionDownloadLength() const
-{
-  return std::accumulate(fastestPeerStats_.begin(), fastestPeerStats_.end(),
-                         0LL, PeerStatDownloadLengthOperator());
 }
 
 size_t SegmentMan::countFreePieceFrom(size_t index) const

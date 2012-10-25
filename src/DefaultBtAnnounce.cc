@@ -141,7 +141,7 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
   if(!btRuntime_->lessThanMinPeers() || btRuntime_->isHalt()) {
     numWant = 0;
   }
-  TransferStat stat = peerStorage_->calculateStat();
+  NetStat& stat = downloadContext_->getNetStat();
   int64_t left =
     pieceStorage_->getTotalLength()-pieceStorage_->getCompletedLength();
   // Use last 8 bytes of peer ID as a key
