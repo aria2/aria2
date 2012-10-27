@@ -215,6 +215,15 @@ bool inRFC3986ReservedChars(const char c);
 
 bool inRFC3986UnreservedChars(const char c);
 
+bool inRFC2978MIMECharset(const char c);
+
+bool inRFC2616HttpToken(const char c);
+
+bool inRFC5987AttrChar(const char c);
+
+// Returns true if |c| is in ISO/IEC 8859-1 character set.
+bool isIso8859p1(unsigned char c);
+
 bool isUtf8(const std::string& str);
 
 std::string percentDecode
@@ -285,7 +294,27 @@ void parsePrioritizePieceRange
  int64_t defaultSize = 1048576 /* 1MiB */);
 
 // Converts ISO/IEC 8859-1 string src to utf-8.
-std::string iso8859ToUtf8(const std::string& src);
+std::string iso8859p1ToUtf8(const char* src, size_t len);
+std::string iso8859p1ToUtf8(const std::string& src);
+
+// Parses Content-Disposition header field value |in| with its length
+// |len| in a manner conforming to RFC 6266 and extracts filename
+// value and copies it to the region pointed by |dest|. The |destlen|
+// specifies the capacity of the |dest|. This function does not store
+// NUL character after filename in |dest|. This function does not
+// support RFC 2231 Continuation. If the function sees RFC 2231/5987
+// encoding and charset, it stores its first pointer to |*charsetp|
+// and its length in |*charsetlenp|. Otherwise, they are NULL and 0
+// respectively.  In RFC 2231/5987 encoding, percent-encoded string
+// will be decoded to original form and stored in |dest|.
+//
+// This function returns the number of written bytes in |dest| if it
+// succeeds, or -1. If there is enough room to store filename in
+// |dest|, this function returns -1. If this function returns -1, the
+// |dest|, |*charsetp| and |*charsetlenp| are undefined.
+int parse_content_disposition(char *dest, size_t destlen,
+                              const char **charsetp, size_t *charsetlenp,
+                              const char *in, size_t len);
 
 std::string getContentDispositionFilename(const std::string& header);
 

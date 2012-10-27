@@ -313,6 +313,17 @@ bool inRFC2616HttpToken(const char c)
     std::find(vbegin(chars), vend(chars), c) != vend(chars);
 }
 
+bool inRFC5987AttrChar(const char c)
+{
+  return inRFC2616HttpToken(c) && c != '*' && c != '\'' && c != '%';
+}
+
+// Returns nonzero if |c| is in ISO/IEC 8859-1 character set.
+bool isIso8859p1(unsigned char c)
+{
+  return (0x20u <= c && c <= 0x7eu) || (0xa0u <= c && c <= 0xffu);
+}
+
 bool isLws(const char c)
 {
   return c == ' ' || c == '\t';
@@ -715,12 +726,11 @@ void parsePrioritizePieceRange
 
 // Converts ISO/IEC 8859-1 string to UTF-8 string.  If there is a
 // character not in ISO/IEC 8859-1, returns empty string.
-std::string iso8859ToUtf8(const std::string& src)
+std::string iso8859p1ToUtf8(const char* src, size_t len)
 {
   std::string dest;
-  for(std::string::const_iterator itr = src.begin(), eoi = src.end();
-      itr != eoi; ++itr) {
-    unsigned char c = *itr;
+  for(const char* p = src, *last = src+len; p != last; ++p) {
+    unsigned char c = *p;
     if(0xa0u <= c) {
       if(c <= 0xbfu) {
         dest += 0xc2u;
@@ -729,12 +739,17 @@ std::string iso8859ToUtf8(const std::string& src)
       }
       dest += c&(~0x40u);
     } else if(0x80u <= c && c <= 0x9fu) {
-      return A2STR::NIL;
+      return "";
     } else {
       dest += c;
     }
   }
   return dest;
+}
+
+std::string iso8859p1ToUtf8(const std::string& src)
+{
+  return iso8859p1ToUtf8(src.c_str(), src.size());
 }
 
 namespace {
@@ -778,112 +793,420 @@ void parseParam(OutputIterator out, const std::string& header)
 }
 } // namespace
 
-std::string getContentDispositionFilename(const std::string& header)
+/* Start of utf8 dfa */
+/* Copyright (c) 2008-2010 Bjoern Hoehrmann <bjoern@hoehrmann.de>
+ * See http://bjoern.hoehrmann.de/utf-8/decoder/dfa/ for details.
+ *
+ * Copyright (c) 2008-2009 Bjoern Hoehrmann <bjoern@hoehrmann.de>
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+#define UTF8_ACCEPT 0
+#define UTF8_REJECT 12
+
+static const uint8_t utf8d[] = {
+  /*
+   * The first part of the table maps bytes to character classes that
+   * to reduce the size of the transition table and create bitmasks.
+   */
+   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+   1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,  9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,
+   7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+   8,8,2,2,2,2,2,2,2,2,2,2,2,2,2,2,  2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+  10,3,3,3,3,3,3,3,3,3,3,3,3,4,3,3, 11,6,6,6,5,8,8,8,8,8,8,8,8,8,8,8,
+
+   /*
+    * The second part is a transition table that maps a combination
+    * of a state of the automaton and a character class to a state.
+    */
+   0,12,24,36,60,96,84,12,12,12,48,72, 12,12,12,12,12,12,12,12,12,12,12,12,
+  12, 0,12,12,12,12,12, 0,12, 0,12,12, 12,24,12,12,12,12,12,24,12,24,12,12,
+  12,12,12,12,12,12,12,24,12,12,12,12, 12,24,12,12,12,12,12,12,12,24,12,12,
+  12,12,12,12,12,12,12,36,12,36,12,12, 12,36,12,12,12,12,12,36,12,36,12,12,
+  12,36,12,12,12,12,12,12,12,12,12,12,
+};
+
+static uint32_t
+utf8dfa(uint32_t* state, uint32_t* codep, uint32_t byte) {
+  uint32_t type = utf8d[byte];
+
+  *codep = (*state != UTF8_ACCEPT) ?
+    (byte & 0x3fu) | (*codep << 6) :
+    (0xff >> type) & (byte);
+
+  *state = utf8d[256 + *state + type];
+  return *state;
+}
+
+/* End of utf8 dfa */
+
+typedef enum {
+  CD_BEFORE_DISPOSITION_TYPE,
+  CD_AFTER_DISPOSITION_TYPE,
+  CD_DISPOSITION_TYPE,
+  CD_BEFORE_DISPOSITION_PARM_NAME,
+  CD_AFTER_DISPOSITION_PARM_NAME,
+  CD_DISPOSITION_PARM_NAME,
+  CD_BEFORE_VALUE,
+  CD_AFTER_VALUE,
+  CD_QUOTED_STRING,
+  CD_TOKEN,
+  CD_BEFORE_EXT_VALUE,
+  CD_CHARSET,
+  CD_LANGUAGE,
+  CD_VALUE_CHARS,
+  CD_VALUE_CHARS_PCT_ENCODED1,
+  CD_VALUE_CHARS_PCT_ENCODED2
+} content_disposition_parse_state;
+
+typedef enum {
+  CD_FILENAME_FOUND = 1,
+  CD_EXT_FILENAME_FOUND = 1 << 1
+} content_disposition_parse_flag;
+
+typedef enum {
+  CD_ENC_UNKNOWN,
+  CD_ENC_UTF8,
+  CD_ENC_ISO_8859_1
+} content_disposition_charset;
+
+int parse_content_disposition(char *dest, size_t destlen,
+                              const char **charsetp, size_t *charsetlenp,
+                              const char *in, size_t len)
 {
-  static const char A2_KEYNAME[] = "filename";
-  std::string filename;
-  std::vector<std::string> params;
-  parseParam(std::back_inserter(params), header);
-  for(std::vector<std::string>::const_iterator i = params.begin(),
-        eoi = params.end(); i != eoi; ++i) {
-    const std::string& param = *i;
-    if(!istartsWith(param, A2_KEYNAME) ||
-       param.size() == sizeof(A2_KEYNAME)-1) {
-      continue;
-    }
-    std::string::const_iterator markeritr = param.begin()+sizeof(A2_KEYNAME)-1;
-    if(*markeritr == '*') {
-      // See RFC2231 Section4 and draft-reschke-rfc2231-in-http.
-      // Please note that this function doesn't do charset conversion
-      // except that if iso-8859-1 is specified, it is converted to
-      // utf-8.
-      ++markeritr;
-      for(; markeritr != param.end() && *markeritr == ' '; ++markeritr);
-      if(markeritr == param.end() || *markeritr != '=') {
-        continue;
+  const char *p = in, *mark_first = NULL, *mark_last = NULL;
+  int state = CD_BEFORE_DISPOSITION_TYPE;
+  int in_file_parm = 0;
+  int flags = 0;
+  int quoted_seen = 0;
+  int charset = 0;
+  /* To suppress warnings */
+  char *dp = dest;
+  size_t dlen = destlen;
+  uint32_t dfa_state = 0;
+  uint32_t dfa_code = 0;
+  uint8_t pctval = 0;
+
+  *charsetp = NULL;
+  *charsetlenp = 0;
+
+  for(; *p; ++p) {
+    switch(state) {
+    case CD_BEFORE_DISPOSITION_TYPE:
+      if(inRFC2616HttpToken(*p)) {
+        state = CD_DISPOSITION_TYPE;
+      } else if(!isLws(*p)) {
+        return -1;
       }
-      std::vector<Scip> extValues;
-      splitIter(markeritr+1, param.end(), std::back_inserter(extValues),
-                '\'', true, true);
-      if(extValues.size() != 3) {
-        continue;
+      break;
+    case CD_AFTER_DISPOSITION_TYPE:
+    case CD_DISPOSITION_TYPE:
+      if(*p == ';') {
+        state = CD_BEFORE_DISPOSITION_PARM_NAME;
+      } else if(isLws(*p)) {
+        state = CD_AFTER_DISPOSITION_TYPE;
+      } else if(state == CD_AFTER_DISPOSITION_TYPE ||
+                !inRFC2616HttpToken(*p)) {
+        return -1;
       }
-      bool bad = false;
-      for(std::string::const_iterator j = extValues[0].first,
-            eoj = extValues[0].second; j != eoj; ++j) {
-        // Since we first split parameter by ', we can safely assume
-        // that ' is not included in charset.
-        if(!inRFC2978MIMECharset(*j)) {
-          bad = true;
-          break;
+      break;
+    case CD_BEFORE_DISPOSITION_PARM_NAME:
+      if(inRFC2616HttpToken(*p)) {
+        mark_first = p;
+        state = CD_DISPOSITION_PARM_NAME;
+      } else if(!isLws(*p)) {
+        return -1;
+      }
+      break;
+    case CD_AFTER_DISPOSITION_PARM_NAME:
+    case CD_DISPOSITION_PARM_NAME:
+      if(*p == '=') {
+        if(state == CD_DISPOSITION_PARM_NAME) {
+          mark_last = p;
         }
-      }
-      if(bad) {
-        continue;
-      }
-      bad = false;
-      for(std::string::const_iterator j = extValues[2].first,
-            eoj = extValues[2].second; j != eoj; ++j){
-        if(*j == '%') {
-          if(j+1 != eoj && isHexDigit(*(j+1)) &&
-             j+2 != eoj && isHexDigit(*(j+2))) {
-            j += 2;
+        in_file_parm = 0;
+        if(strieq(mark_first, mark_last, "filename*")) {
+          if((flags & CD_EXT_FILENAME_FOUND) == 0) {
+            in_file_parm = 1;
           } else {
-            bad = true;
-            break;
+            return -1;
           }
+          state = CD_BEFORE_EXT_VALUE;
+        } else if(strieq(mark_first, mark_last, "filename")) {
+          if(flags & CD_FILENAME_FOUND) {
+            return -1;
+          }
+          if((flags & CD_EXT_FILENAME_FOUND) == 0) {
+            in_file_parm = 1;
+          }
+          state = CD_BEFORE_VALUE;
         } else {
-          if(*j == '*' || *j == '\'' || !inRFC2616HttpToken(*j)) {
-            bad = true;
-            break;
+          /* ext-token must be characters in token, followed by "*" */
+          if(mark_first != mark_last-1 && *(mark_last-1) == '*') {
+            state = CD_BEFORE_EXT_VALUE;
+          } else {
+            state = CD_BEFORE_VALUE;
+          }
+        }
+        if(in_file_parm) {
+          dp = dest;
+          dlen = destlen;
+        }
+      } else if(isLws(*p)) {
+        mark_last = p;
+        state = CD_AFTER_DISPOSITION_PARM_NAME;
+      } else if(state == CD_AFTER_DISPOSITION_PARM_NAME ||
+                !inRFC2616HttpToken(*p)) {
+        return -1;
+      }
+      break;
+    case CD_BEFORE_VALUE:
+      if(*p == '"') {
+        quoted_seen = 0;
+        state = CD_QUOTED_STRING;
+      } else if(inRFC2616HttpToken(*p)) {
+        if(in_file_parm) {
+          if(dlen == 0) {
+            return -1;
+          } else {
+            *dp++ = *p;
+            --dlen;
+          }
+        }
+        state = CD_TOKEN;
+      } else if(!isLws(*p)) {
+        return -1;
+      }
+      break;
+    case CD_AFTER_VALUE:
+      if(*p == ';') {
+        state = CD_BEFORE_DISPOSITION_PARM_NAME;
+      } else if(!isLws(*p)) {
+        return -1;
+      }
+      break;
+    case CD_QUOTED_STRING:
+      if(*p == '\\' && quoted_seen == 0) {
+        quoted_seen = 1;
+      } else if(*p == '"' && quoted_seen == 0) {
+        if(in_file_parm) {
+          flags |= CD_FILENAME_FOUND;
+        }
+        state = CD_AFTER_VALUE;
+      } else {
+        /* TEXT which is OCTET except CTLs, but including LWS. We only
+           accept ISO-8859-1 chars. */
+        quoted_seen = 0;
+        if(!isIso8859p1(*p)) {
+          return -1;
+        }
+        if(in_file_parm) {
+          if(dlen == 0) {
+            return -1;
+          } else {
+            *dp++ = *p;
+            --dlen;
           }
         }
       }
-      if(bad) {
-        continue;
-      }
-      std::string value =
-        percentDecode(extValues[2].first, extValues[2].second);
-      if(util::strieq(extValues[0].first, extValues[0].second, "iso-8859-1")) {
-        value = iso8859ToUtf8(value);
-      }
-      if(!detectDirTraversal(value) && value.find("/") == std::string::npos) {
-        filename = value;
-      }
-      if(!filename.empty()) {
-        break;
-      }
-    } else {
-      for(; markeritr != param.end() && *markeritr == ' '; ++markeritr);
-      if(markeritr == param.end() || markeritr+1 == param.end() ||
-         *markeritr != '=') {
-        continue;
-      }
-      Scip p = stripIter(markeritr+1, param.end());
-      if(p.first == p.second) {
-        continue;
-      }
-      std::string value(p.first, p.second);
-      std::string::iterator filenameLast;
-      if(value[0] == '\'' || value[0] == '"') {
-        char qc = *value.begin();
-        for(filenameLast = value.begin()+1;
-            filenameLast != value.end() && *filenameLast != qc;
-            ++filenameLast);
+      break;
+    case CD_TOKEN:
+      if(inRFC2616HttpToken(*p)) {
+        if(in_file_parm) {
+          if(dlen == 0) {
+            return -1;
+          } else {
+            *dp++ = *p;
+            --dlen;
+          }
+        }
+      } else if(*p == ';') {
+        if(in_file_parm) {
+          flags |= CD_FILENAME_FOUND;
+        }
+        state = CD_BEFORE_DISPOSITION_PARM_NAME;
+      } else if(isLws(*p)) {
+        if(in_file_parm) {
+          flags |= CD_FILENAME_FOUND;
+        }
+        state = CD_AFTER_VALUE;
       } else {
-        filenameLast = value.end();
+        return -1;
       }
-      std::pair<std::string::iterator, std::string::iterator> vi =
-        util::stripIter(value.begin(), filenameLast, "\r\n\t '\"");
-      value.assign(vi.first, vi.second);
-      value.erase(std::remove(value.begin(), value.end(), '\\'), value.end());
-      if(!detectDirTraversal(value) && value.find("/") == std::string::npos) {
-        filename = value;
+      break;
+    case CD_BEFORE_EXT_VALUE:
+      if(*p == '\'') {
+        /* Empty charset is not allowed */
+        return -1;
+      } else if(inRFC2978MIMECharset(*p)) {
+        mark_first = p;
+        state = CD_CHARSET;
+      } else if(!isLws(*p)) {
+        return -1;
       }
-      // continue because there is a chance we can find filename*=...
+      break;
+    case CD_CHARSET:
+      if(*p == '\'') {
+        mark_last = p;
+        *charsetp = mark_first;
+        *charsetlenp = mark_last - mark_first;
+        if(strieq(mark_first, mark_last, "utf-8")) {
+          charset = CD_ENC_UTF8;
+          dfa_state = UTF8_ACCEPT;
+          dfa_code = 0;
+        } else if(strieq(mark_first, mark_last, "iso-8859-1")) {
+          charset = CD_ENC_ISO_8859_1;
+        } else {
+          charset = CD_ENC_UNKNOWN;
+        }
+        state = CD_LANGUAGE;
+      } else if(!inRFC2978MIMECharset(*p)) {
+        return -1;
+      }
+      break;
+    case CD_LANGUAGE:
+      if(*p == '\'') {
+        if(in_file_parm) {
+          dp = dest;
+          dlen = destlen;
+        }
+        state = CD_VALUE_CHARS;
+      } else if(*p != '-' && !isAlpha(*p) && !isDigit(*p)) {
+        return -1;
+      }
+      break;
+    case CD_VALUE_CHARS:
+      if(inRFC5987AttrChar(*p)) {
+        if(charset == CD_ENC_UTF8) {
+          if(utf8dfa(&dfa_state, &dfa_code, *p) == UTF8_REJECT) {
+            return -1;
+          }
+        }
+        if(in_file_parm) {
+          if(dlen == 0) {
+            return -1;
+          } else {
+            *dp++ = *p;
+            --dlen;
+          }
+        }
+      } else if(*p == '%') {
+        if(in_file_parm) {
+          if(dlen == 0) {
+            return -1;
+          }
+        }
+        pctval = 0;
+        state = CD_VALUE_CHARS_PCT_ENCODED1;
+      } else if(*p == ';' || isLws(*p)) {
+        if(charset == CD_ENC_UTF8 && dfa_state != UTF8_ACCEPT) {
+          return -1;
+        }
+        if(in_file_parm) {
+          flags |= CD_EXT_FILENAME_FOUND;
+        }
+        if(*p == ';') {
+          state = CD_BEFORE_DISPOSITION_PARM_NAME;
+        } else {
+          state = CD_AFTER_VALUE;
+        }
+      } else if(!inRFC5987AttrChar(*p)) {
+        return -1;
+      }
+      break;
+    case CD_VALUE_CHARS_PCT_ENCODED1:
+      if(isHexDigit(*p)) {
+        pctval |= hexCharToUInt(*p) << 4;
+        state = CD_VALUE_CHARS_PCT_ENCODED2;
+      } else {
+        return -1;
+      }
+      break;
+    case CD_VALUE_CHARS_PCT_ENCODED2:
+      if(isHexDigit(*p)) {
+        pctval |= hexCharToUInt(*p);
+        if(charset == CD_ENC_UTF8) {
+          if(utf8dfa(&dfa_state, &dfa_code, pctval) == UTF8_REJECT) {
+            return -1;
+          }
+        } else if(charset == CD_ENC_ISO_8859_1) {
+          if(!isIso8859p1(pctval)) {
+            return -1;
+          }
+        }
+        if(in_file_parm) {
+          *dp++ = pctval;
+          --dlen;
+        }
+        state = CD_VALUE_CHARS;
+      } else {
+        return -1;
+      }
+      break;
     }
   }
-  return filename;
+  switch(state) {
+  case CD_BEFORE_DISPOSITION_TYPE:
+  case CD_AFTER_DISPOSITION_TYPE:
+  case CD_DISPOSITION_TYPE:
+  case CD_AFTER_VALUE:
+  case CD_TOKEN:
+    return destlen-dlen;
+  case CD_VALUE_CHARS:
+    if(charset == CD_ENC_UTF8 && dfa_state != UTF8_ACCEPT) {
+      return -1;
+    }
+    return destlen - dlen;
+  default:
+    return -1;
+  }
+}
+
+std::string getContentDispositionFilename(const std::string& header)
+{
+  char cdval[1024];
+  size_t cdvallen = sizeof(cdval);
+  const char* charset;
+  size_t charsetlen;
+  int rv = parse_content_disposition(cdval, cdvallen, &charset, &charsetlen,
+                                     header.c_str(), header.size());
+  if(rv == -1) {
+    return "";
+  } else {
+    std::string res;
+    if(!charset || strieq(charset, charset+charsetlen, "iso-8859-1")) {
+      res = iso8859p1ToUtf8(cdval, rv);
+    } else {
+      res.assign(cdval, rv);
+    }
+    if(!detectDirTraversal(res) &&
+       res.find_first_of("/\\") == std::string::npos) {
+      return res;
+    } else {
+      return "";
+    }
+  }
 }
 
 std::string toUpper(const std::string& src) {

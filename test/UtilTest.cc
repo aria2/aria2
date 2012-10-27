@@ -40,6 +40,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testIstartsWith);
   // may be moved to other helper class in the future.
   CPPUNIT_TEST(testGetContentDispositionFilename);
+  CPPUNIT_TEST(testParseContentDisposition);
   CPPUNIT_TEST(testToUpper);
   CPPUNIT_TEST(testToLower);
   CPPUNIT_TEST(testUppercase);
@@ -107,6 +108,7 @@ public:
   void testIstartsWith();
   // may be moved to other helper class in the future.
   void testGetContentDispositionFilename();
+  void testParseContentDisposition();
   void testToUpper();
   void testToLower();
   void testUppercase();
@@ -816,136 +818,636 @@ void UtilTest::testIstartsWith() {
 }
 
 void UtilTest::testGetContentDispositionFilename() {
-  std::string h1 = "attachment; filename=\"aria2.tar.bz2\"";
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"), util::getContentDispositionFilename(h1));
+  std::string val;
 
-  std::string h2 = "attachment; filename=\"\"";
-  CPPUNIT_ASSERT_EQUAL(std::string(""), util::getContentDispositionFilename(h2));
-
-  std::string h3 = "attachment; filename=\"";
-  CPPUNIT_ASSERT_EQUAL(std::string(""), util::getContentDispositionFilename(h3));
-
-  std::string h3_2 = "attachment; filename= \" aria2.tar.bz2 \"";
+  val = "attachment; filename=\"aria2.tar.bz2\"";
   CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"),
-                       util::getContentDispositionFilename(h3_2));
+                       util::getContentDispositionFilename(val));
 
-  std::string h4 = "attachment;";
-  CPPUNIT_ASSERT_EQUAL(std::string(""), util::getContentDispositionFilename(h4));
-
-  std::string h5 = "attachment; filename=aria2.tar.bz2";
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"), util::getContentDispositionFilename(h5));
-
-  std::string h6 = "attachment; filename='aria2.tar.bz2'";
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"), util::getContentDispositionFilename(h6));
-
-  std::string h7 = "attachment; filename='aria2.tar.bz2";
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"), util::getContentDispositionFilename(h7));
-
-  std::string h8 = "attachment; filename=aria2.tar.bz2; creation-date=20 Jun 2007 00:00:00 GMT";
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"), util::getContentDispositionFilename(h8));
-
-  std::string h9 = "attachment; filename=\"aria2.tar.bz2; creation-date=20 Jun 2007 00:00:00 GMT\"";
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2; creation-date=20 Jun 2007 00:00:00 GMT"),
-                       util::getContentDispositionFilename(h9));
-
-  std::string h10 = "attachment; filename=";
-  CPPUNIT_ASSERT_EQUAL(std::string(""), util::getContentDispositionFilename(h10));
-
-  std::string h11 = "attachment; filename=;";
-  CPPUNIT_ASSERT_EQUAL(std::string(""), util::getContentDispositionFilename(h11));
-
-  std::string filenameWithDir = "attachment; filename=dir/file";
+  val = "attachment; filename=\"\"";
   CPPUNIT_ASSERT_EQUAL(std::string(""),
-                       util::getContentDispositionFilename(filenameWithDir));
+                       util::getContentDispositionFilename(val));
 
-  std::string semicolonInside = "attachment; filename=\"foo;bar\"";
-  CPPUNIT_ASSERT_EQUAL(std::string("foo;bar"),
-                       util::getContentDispositionFilename(semicolonInside));
+  val = "attachment; filename=\"";
+  CPPUNIT_ASSERT_EQUAL(std::string(""),
+                       util::getContentDispositionFilename(val));
+
+  val = "attachment; filename= \" aria2.tar.bz2 \"";
+  CPPUNIT_ASSERT_EQUAL(std::string(" aria2.tar.bz2 "),
+                       util::getContentDispositionFilename(val));
+
+  val = "attachment; filename=dir/file";
+  CPPUNIT_ASSERT_EQUAL(std::string(""),
+                       util::getContentDispositionFilename(val));
+
+  val = "attachment; filename=dir\\file";
+  CPPUNIT_ASSERT_EQUAL(std::string(""),
+                       util::getContentDispositionFilename(val));
+
+  val = "attachment; filename=\"dir/file\"";
+  CPPUNIT_ASSERT_EQUAL(std::string(""),
+                       util::getContentDispositionFilename(val));
+
+  val = "attachment; filename=\"dir\\\\file\"";
+  CPPUNIT_ASSERT_EQUAL(std::string(""),
+                       util::getContentDispositionFilename(val));
+
+  val = "attachment; filename=\"/etc/passwd\"";
+  CPPUNIT_ASSERT_EQUAL(std::string(""),
+                       util::getContentDispositionFilename(val));
+
+  val = "attachment; filename=\"..\"";
+  CPPUNIT_ASSERT_EQUAL(std::string(""),
+                       util::getContentDispositionFilename(val));
+
+  val = "attachment; filename=..";
+  CPPUNIT_ASSERT_EQUAL(std::string(""),
+                       util::getContentDispositionFilename(val));
 
   // Unescaping %2E%2E%2F produces "../". But since we won't unescape,
   // we just accept it as is.
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("%2E%2E%2Ffoo.html"),
-     util::getContentDispositionFilename("filename=\"%2E%2E%2Ffoo.html\""));
+  val = "attachment; filename=\"%2E%2E%2Ffoo.html\"";
+  CPPUNIT_ASSERT_EQUAL(std::string("%2E%2E%2Ffoo.html"),
+                       util::getContentDispositionFilename(val));
 
-  // RFC2231 Section4
-  std::string extparam2 = "filename*=''aria2";
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2"),
-                       util::getContentDispositionFilename(extparam2));
-  std::string extparam3 = "filename*='''";
-  CPPUNIT_ASSERT_EQUAL(std::string(""),
-                       util::getContentDispositionFilename(extparam3));
-  std::string extparam4 = "filename*='aria2";
-  CPPUNIT_ASSERT_EQUAL(std::string(""),
-                       util::getContentDispositionFilename(extparam4));
-  std::string extparam5 = "filename*='''aria2";
-  CPPUNIT_ASSERT_EQUAL(std::string(""),
-                       util::getContentDispositionFilename(extparam5));
-  std::string extparam6 = "filename*";
-  CPPUNIT_ASSERT_EQUAL(std::string(""),
-                       util::getContentDispositionFilename(extparam6));
-  std::string extparam7 = "filename*=UTF-8''aria2;filename=hello%20world";
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2"),
-                       util::getContentDispositionFilename(extparam7));
-  std::string extparam8 = "filename=aria2;filename*=UTF-8''hello%20world";
-  CPPUNIT_ASSERT_EQUAL(std::string("hello world"),
-                       util::getContentDispositionFilename(extparam8));
-  std::string extparam9 = "filename*=ISO-8859-1''%A3";
-  std::string extparam9ans;
-  extparam9ans += 0xc2;
-  extparam9ans += 0xa3;
-  CPPUNIT_ASSERT_EQUAL(extparam9ans,
-                       util::getContentDispositionFilename(extparam9));
-  CPPUNIT_ASSERT_EQUAL
-    (std::string(""),
-     util::getContentDispositionFilename("filename*=UTF-8''foo%2F.html"));
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("foo.html"),
-     util::getContentDispositionFilename("filename*=UTF-8'';filename=\"foo.html\""));
-  CPPUNIT_ASSERT_EQUAL
-    (std::string(""),
-     util::getContentDispositionFilename("filename*=UTF-8''%2E%2E%2Ffoo.html"));
+  // iso-8859-1 string will be converted to utf-8.
+  val = "attachment; filename*=iso-8859-1''foo-%E4.html";
+  CPPUNIT_ASSERT_EQUAL(std::string("foo-ä.html"),
+                       util::getContentDispositionFilename(val));
 
-  // Tests from http://greenbytes.de/tech/tc2231/
+  val = "attachment; filename*= UTF-8''foo-%c3%a4.html";
+  CPPUNIT_ASSERT_EQUAL(std::string("foo-ä.html"),
+                       util::getContentDispositionFilename(val));
+
+  // iso-8859-1 string will be converted to utf-8.
+  val = "attachment; filename=\"foo-%E4.html\"";
+  val = util::percentDecode(val.begin(), val.end());
+  CPPUNIT_ASSERT_EQUAL(std::string("foo-ä.html"),
+                       util::getContentDispositionFilename(val));
+}
+
+void UtilTest::testParseContentDisposition() {
+  char dest[1024];
+  size_t destlen = sizeof(dest);
+  const char *cs;
+  size_t cslen;
+  std::string val;
+
+  // test cases from http://greenbytes.de/tech/tc2231/
+  // inlonly
+  val = "inline";
+  CPPUNIT_ASSERT_EQUAL(0, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // inlonlyquoted
+  val = "\"inline\"";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // inlwithasciifilename
+  val = "inline; filename=\"foo.html\"";
+  CPPUNIT_ASSERT_EQUAL(8, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo.html"),
+                       std::string(&dest[0], &dest[8]));
+
+  // inlwithfnattach
+  val = "inline; filename=\"Not an attachment!\"";
+  CPPUNIT_ASSERT_EQUAL(18, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("Not an attachment!"),
+                       std::string(&dest[0], &dest[18]));
+
+  // inlwithasciifilenamepdf
+  val = "inline; filename=\"foo.pdf\"";
+  CPPUNIT_ASSERT_EQUAL(7, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo.pdf"),
+                       std::string(&dest[0], &dest[7]));
+
+  // attwithasciifilename25
+  val = "attachment; filename=\"0000000000111111111122222\"";
+  CPPUNIT_ASSERT_EQUAL(25, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("0000000000111111111122222"),
+                       std::string(&dest[0], &dest[25]));
+
+  // attwithasciifilename35
+  val = "attachment; filename=\"00000000001111111111222222222233333\"";
+  CPPUNIT_ASSERT_EQUAL(35, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("00000000001111111111222222222233333"),
+                       std::string(&dest[0], &dest[35]));
+
   // attwithasciifnescapedchar
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("foo.html"),
-     util::getContentDispositionFilename("filename=\"f\\oo.html\""));
+  val = "attachment; filename=\"f\\oo.html\"";
+  CPPUNIT_ASSERT_EQUAL(8, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo.html"),
+                       std::string(&dest[0], &dest[8]));
+
+  // attwithasciifnescapedquote
+  val = "attachment; filename=\"\\\"quoting\\\" tested.html\"";
+  CPPUNIT_ASSERT_EQUAL(21, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("\"quoting\" tested.html"),
+                       std::string(&dest[0], &dest[21]));
+
+  // attwithquotedsemicolon
+  val = "attachment; filename=\"Here's a semicolon;.html\"";
+  CPPUNIT_ASSERT_EQUAL(24, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("Here's a semicolon;.html"),
+                       std::string(&dest[0], &dest[24]));
+
+  // attwithfilenameandextparam
+  val = "attachment; foo=\"bar\"; filename=\"foo.html\"";
+  CPPUNIT_ASSERT_EQUAL(8, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo.html"),
+                       std::string(&dest[0], &dest[8]));
+
+  // attwithfilenameandextparamescaped
+  val = "attachment; foo=\"\\\"\\\\\";filename=\"foo.html\"";
+  CPPUNIT_ASSERT_EQUAL(8, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo.html"),
+                       std::string(&dest[0], &dest[8]));
+
   // attwithasciifilenameucase
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("foo.html"),
-     util::getContentDispositionFilename("FILENAME=\"foo.html\""));
+  val = "attachment; FILENAME=\"foo.html\"";
+  CPPUNIT_ASSERT_EQUAL(8, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo.html"),
+                       std::string(&dest[0], &dest[8]));
+
+  // attwithasciifilenamenq
+  val = "attachment; filename=foo.html";
+  CPPUNIT_ASSERT_EQUAL(8, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo.html"),
+                       std::string(&dest[0], &dest[8]));
+
+  // attwithtokfncommanq
+  val = "attachment; filename=foo,bar.html";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attwithasciifilenamenqs
+  val = "attachment; filename=foo.html ;";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attemptyparam
+  val = "attachment; ;filename=foo";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attwithasciifilenamenqws
+  val = "attachment; filename=foo bar.html";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attwithfntokensq
+  val = "attachment; filename='foo.bar'";
+  CPPUNIT_ASSERT_EQUAL(9, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("'foo.bar'"),
+                       std::string(&dest[0], &dest[9]));
+
+  // attwithisofnplain
+  // attachment; filename="foo-ä.html"
+  val = "attachment; filename=\"foo-%E4.html\"";
+  val = util::percentDecode(val.begin(), val.end());
+  CPPUNIT_ASSERT_EQUAL(10, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo-ä.html"),
+                       util::iso8859p1ToUtf8(std::string(&dest[0], &dest[10])));
+
+  // attwithutf8fnplain
+  // attachment; filename="foo-Ã¤.html"
+  val = "attachment; filename=\"foo-%C3%A4.html\"";
+  val = util::percentDecode(val.begin(), val.end());
+  CPPUNIT_ASSERT_EQUAL(11, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo-Ã¤.html"),
+                       util::iso8859p1ToUtf8(std::string(&dest[0], &dest[11])));
+
+  // attwithfnrawpctenca
+  val = "attachment; filename=\"foo-%41.html\"";
+  CPPUNIT_ASSERT_EQUAL(12, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo-%41.html"),
+                       std::string(&dest[0], &dest[12]));
+
+  // attwithfnusingpct
+  val = "attachment; filename=\"50%.html\"";
+  CPPUNIT_ASSERT_EQUAL(8, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("50%.html"),
+                       std::string(&dest[0], &dest[8]));
+
+  // attwithfnrawpctencaq
+  val = "attachment; filename=\"foo-%\\41.html\"";
+  CPPUNIT_ASSERT_EQUAL(12, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo-%41.html"),
+                       std::string(&dest[0], &dest[12]));
+
+  // attwithnamepct
+  val = "attachment; name=\"foo-%41.html\"";
+  CPPUNIT_ASSERT_EQUAL(0, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attwithfilenamepctandiso
+  // attachment; filename="ä-%41.html"
+  val = "attachment; filename=\"%E4-%2541.html\"";
+  val = util::percentDecode(val.begin(), val.end());
+  CPPUNIT_ASSERT_EQUAL(10, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("ä-%41.html"),
+                       util::iso8859p1ToUtf8(std::string(&dest[0], &dest[10])));
+
+  // attwithfnrawpctenclong
+  val = "attachment; filename=\"foo-%c3%a4-%e2%82%ac.html\"";
+  CPPUNIT_ASSERT_EQUAL(25, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo-%c3%a4-%e2%82%ac.html"),
+                       std::string(&dest[0], &dest[25]));
+
+  // attwithasciifilenamews1
+  val = "attachment; filename =\"foo.html\"";
+  CPPUNIT_ASSERT_EQUAL(8, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo.html"),
+                       std::string(&dest[0], &dest[8]));
+
+  // attwith2filenames
+  val = "attachment; filename=\"foo.html\"; filename=\"bar.html\"";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attfnbrokentoken
+  val = "attachment; filename=foo[1](2).html";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attfnbrokentokeniso
+  val = "attachment; filename=foo-%E4.html";
+  val = util::percentDecode(val.begin(), val.end());
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attfnbrokentokenutf
+  // attachment; filename=foo-Ã¤.html
+  val = "attachment; filename=foo-ä.html";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attmissingdisposition
+  val = "filename=foo.html";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attmissingdisposition2
+  val = "x=y; filename=foo.html";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attmissingdisposition3
+  val = "\"foo; filename=bar;baz\"; filename=qux";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attmissingdisposition4
+  val = "filename=foo.html, filename=bar.html";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // emptydisposition
+  val = "; filename=foo.html";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // doublecolon
+  val = ": inline; attachment; filename=foo.html";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attandinline
+  val = "inline; attachment; filename=foo.html";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attandinline2
+  val = "attachment; inline; filename=foo.html";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attbrokenquotedfn
+  val = "attachment; filename=\"foo.html\".txt";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attbrokenquotedfn2
+  val = "attachment; filename=\"bar";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attbrokenquotedfn3
+  val = "attachment; filename=foo\"bar;baz\"qux";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attmultinstances
+  val = "attachment; filename=foo.html, attachment; filename=bar.html";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attmissingdelim
+  val = "attachment; foo=foo filename=bar";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attmissingdelim2
+  val = "attachment; filename=bar foo=foo ";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attmissingdelim3
+  val = "attachment filename=bar";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attreversed
+  val = "filename=foo.html; attachment";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attconfusedparam
+  val = "attachment; xfilename=foo.html";
+  CPPUNIT_ASSERT_EQUAL(0, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attabspath
+  val = "attachment; filename=\"/foo.html\"";
+  CPPUNIT_ASSERT_EQUAL(9, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("/foo.html"),
+                       std::string(&dest[0], &dest[9]));
+
+  // attabspathwin
+  val = "attachment; filename=\"\\\\foo.html\"";
+  CPPUNIT_ASSERT_EQUAL(9, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("\\foo.html"),
+                       std::string(&dest[0], &dest[9]));
+
+  // attcdate
+  val = "attachment; creation-date=\"Wed, 12 Feb 1997 16:29:51 -0500\"";
+  CPPUNIT_ASSERT_EQUAL(0, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // dispext
+  val = "foobar";
+  CPPUNIT_ASSERT_EQUAL(0, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // dispextbadfn
+  val = "attachment; example=\"filename=example.txt\"";
+  CPPUNIT_ASSERT_EQUAL(0, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
   // attwithisofn2231iso
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("foo-ä.html"),
-     util::getContentDispositionFilename("filename*=iso-8859-1''foo-%E4.html"));
+  val = "attachment; filename*=iso-8859-1''foo-%E4.html";
+  CPPUNIT_ASSERT_EQUAL(10, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("iso-8859-1"), std::string(cs, cslen));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo-ä.html"),
+                       util::iso8859p1ToUtf8(std::string(&dest[0], &dest[10])));
+
   // attwithfn2231utf8
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("foo-ä-€.html"),
-     util::getContentDispositionFilename
-     ("filename*=UTF-8''foo-%c3%a4-%e2%82%ac.html"));
+  val = "attachment; filename*=UTF-8''foo-%c3%a4-%e2%82%ac.html";
+  CPPUNIT_ASSERT_EQUAL(15, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("UTF-8"), std::string(cs, cslen));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo-ä-€.html"),
+                       std::string(&dest[0], &dest[15]));
+
+  // attwithfn2231noc
+  val = "attachment; filename*=''foo-%c3%a4-%e2%82%ac.html";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attwithfn2231utf8comp
+  val = "attachment; filename*=UTF-8''foo-a%cc%88.html";
+  CPPUNIT_ASSERT_EQUAL(12, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  val = "foo-a%cc%88.html";
+  CPPUNIT_ASSERT_EQUAL(std::string(util::percentDecode(val.begin(),
+                                                       val.end())),
+                       std::string(&dest[0], &dest[12]));
+
   // attwithfn2231utf8-bad
-  CPPUNIT_ASSERT_EQUAL
-    (std::string(""),
-     util::getContentDispositionFilename
-     ("filename*=iso-8859-1''foo-%c3%a4-%e2%82%ac.html"));
+  val = "attachment; filename*=iso-8859-1''foo-%c3%a4-%e2%82%ac.html";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attwithfn2231iso-bad
+  val = "attachment; filename*=utf-8''foo-%E4.html";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
   // attwithfn2231ws1
-  CPPUNIT_ASSERT_EQUAL
-    (std::string(""),
-     util::getContentDispositionFilename("filename *=UTF-8''foo-%c3%a4.html"));
+  val = "attachment; filename *=UTF-8''foo-%c3%a4.html";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
   // attwithfn2231ws2
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("foo-ä.html"),
-     util::getContentDispositionFilename("filename*= UTF-8''foo-%c3%a4.html"));
+  val = "attachment; filename*= UTF-8''foo-%c3%a4.html";
+  CPPUNIT_ASSERT_EQUAL(11, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo-ä.html"),
+                       std::string(&dest[0], &dest[11]));
+
   // attwithfn2231ws3
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("foo-ä.html"),
-     util::getContentDispositionFilename("filename* =UTF-8''foo-%c3%a4.html"));
+  val = "attachment; filename* =UTF-8''foo-%c3%a4.html";
+  CPPUNIT_ASSERT_EQUAL(11, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo-ä.html"),
+                       std::string(&dest[0], &dest[11]));
+
   // attwithfn2231quot
-  CPPUNIT_ASSERT_EQUAL
-    (std::string(""),
-     util::getContentDispositionFilename
-     ("filename*=\"UTF-8''foo-%c3%a4.html\""));
+  val = "attachment; filename*=\"UTF-8''foo-%c3%a4.html\"";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attwithfn2231quot2
+  val = "attachment; filename*=\"foo%20bar.html\"";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attwithfn2231singleqmissing
+  val = "attachment; filename*=UTF-8'foo-%c3%a4.html";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attwithfn2231nbadpct1
+  val = "attachment; filename*=UTF-8''foo%";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attwithfn2231nbadpct2
+  val = "attachment; filename*=UTF-8''f%oo.html";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attwithfn2231dpct
+  val = "attachment; filename*=UTF-8''A-%2541.html";
+  CPPUNIT_ASSERT_EQUAL(10, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("A-%41.html"),
+                       std::string(&dest[0], &dest[10]));
+
+  // attwithfn2231abspathdisguised
+  val = "attachment; filename*=UTF-8''%5cfoo.html";
+  CPPUNIT_ASSERT_EQUAL(9, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("\\foo.html"),
+                       std::string(&dest[0], &dest[9]));
+
+  // attfnboth
+  val = "attachment; filename=\"foo-ae.html\"; filename*=UTF-8''foo-%c3%a4.html";
+  CPPUNIT_ASSERT_EQUAL(11, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo-ä.html"),
+                       std::string(&dest[0], &dest[11]));
+
+  // attfnboth2
+  val = "attachment; filename*=UTF-8''foo-%c3%a4.html; filename=\"foo-ae.html\"";
+  CPPUNIT_ASSERT_EQUAL(11, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo-ä.html"),
+                       std::string(&dest[0], &dest[11]));
+
+  // attfnboth3
+  val = "attachment; filename*0*=ISO-8859-15''euro-sign%3d%a4; filename*=ISO-8859-1''currency-sign%3d%a4";
+  CPPUNIT_ASSERT_EQUAL(15, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("ISO-8859-1"), std::string(cs, cslen));
+  CPPUNIT_ASSERT_EQUAL(std::string("currency-sign=¤"),
+                       util::iso8859p1ToUtf8(std::string(&dest[0], &dest[15])));
+
+  // attnewandfn
+  val = "attachment; foobar=x; filename=\"foo.html\"";
+  CPPUNIT_ASSERT_EQUAL(8, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo.html"),
+                       std::string(&dest[0], &dest[8]));
+
+  // attrfc2047token
+  val = "attachment; filename==?ISO-8859-1?Q?foo-=E4.html?=";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // attrfc2047quoted
+  val = "attachment; filename=\"=?ISO-8859-1?Q?foo-=E4.html?=\"";
+  CPPUNIT_ASSERT_EQUAL(29, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("=?ISO-8859-1?Q?foo-=E4.html?="),
+                       std::string(&dest[0], &dest[29]));
+
+  // aria2 original testcases
+
+  // zero-length filename. token cannot be empty, so this is invalid.
+  val = "attachment; filename=";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // zero-length filename. quoted-string can be empty string, so this
+  // is ok.
+  val = "attachment; filename=\"\"";
+  CPPUNIT_ASSERT_EQUAL(0, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // empty value is not allowed
+  val = "attachment; filename=;";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // / is not valid char in token.
+  val = "attachment; filename=dir/file";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+
+  // value-chars is *(pct-encoded / attr-char), so empty string is
+  // allowed.
+  val = "attachment; filename*=UTF-8''";
+  CPPUNIT_ASSERT_EQUAL(0, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("UTF-8"), std::string(cs, cslen));
+
+  val = "attachment; filename*=UTF-8''; filename=foo";
+  CPPUNIT_ASSERT_EQUAL(0, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("UTF-8"), std::string(cs, cslen));
+
+  val = "attachment; filename*=UTF-8''  ; filename=foo";
+  CPPUNIT_ASSERT_EQUAL(0, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("UTF-8"), std::string(cs, cslen));
+
+  // with language
+  val = "attachment; filename*=UTF-8'japanese'konnichiwa";
+  CPPUNIT_ASSERT_EQUAL(10, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("konnichiwa"),
+                       std::string(&dest[0], &dest[10]));
+
+  // lws before and after "="
+  val = "attachment; filename = foo.html";
+  CPPUNIT_ASSERT_EQUAL(8, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo.html"),
+                       std::string(&dest[0], &dest[8]));
+
+  // lws before and after "=" with quoted-string
+  val = "attachment; filename = \"foo.html\"";
+  CPPUNIT_ASSERT_EQUAL(8, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo.html"),
+                       std::string(&dest[0], &dest[8]));
+
+  // lws after parm
+  val = "attachment; filename=foo.html  ";
+  CPPUNIT_ASSERT_EQUAL(8, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo.html"),
+                       std::string(&dest[0], &dest[8]));
+
+  val = "attachment; filename=foo.html ; hello=world";
+  CPPUNIT_ASSERT_EQUAL(8, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo.html"),
+                       std::string(&dest[0], &dest[8]));
+
+  val = "attachment; filename=\"foo.html\"  ";
+  CPPUNIT_ASSERT_EQUAL(8, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo.html"),
+                       std::string(&dest[0], &dest[8]));
+
+  val = "attachment; filename=\"foo.html\" ; hello=world";
+  CPPUNIT_ASSERT_EQUAL(8, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo.html"),
+                       std::string(&dest[0], &dest[8]));
+
+  val = "attachment; filename*=UTF-8''foo.html  ; hello=world";
+  CPPUNIT_ASSERT_EQUAL(8, util::parse_content_disposition
+                       (dest, destlen, &cs, &cslen, val.c_str(), val.size()));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo.html"),
+                       std::string(&dest[0], &dest[8]));
 }
 
 class Printer {
