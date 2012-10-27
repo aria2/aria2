@@ -1060,6 +1060,17 @@ bool SocketCore::tlsHandshake(TLSContext* tlsctx, const std::string& hostname)
         if(status & GNUTLS_CERT_SIGNER_NOT_FOUND) {
           errors += " `issuer is not known'";
         }
+        // TODO should check GNUTLS_CERT_SIGNER_NOT_CA ?
+        if(status & GNUTLS_CERT_INSECURE_ALGORITHM) {
+          errors += " `insecure algorithm'";
+        }
+        if(status & GNUTLS_CERT_NOT_ACTIVATED) {
+          errors += " `not activated yet'";
+        }
+        if(status & GNUTLS_CERT_EXPIRED) {
+          errors += " `expired'";
+        }
+        // TODO Add GNUTLS_CERT_SIGNATURE_FAILURE here
         if(!errors.empty()) {
           throw DL_ABORT_EX(fmt(MSG_CERT_VERIFICATION_FAILED, errors.c_str()));
         }
