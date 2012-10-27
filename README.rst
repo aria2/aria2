@@ -450,6 +450,7 @@ References
 * `RFC 5854 The Metalink Download Description Format <http://tools.ietf.org/html/rfc5854>`_
 * `RFC 6249 Metalink/HTTP: Mirrors and Hashes <http://tools.ietf.org/html/rfc6249>`_
 * `RFC 6265 HTTP State Management Mechanism <http://tools.ietf.org/html/rfc6265>`_
+* `RFC 6266 Use of the Content-Disposition Header Field in the Hypertext Transfer Protocol (HTTP) <http://tools.ietf.org/html/rfc6266>`_
 * `RFC 6455 The WebSocket Protocol <http://tools.ietf.org/html/rfc6455>`_
 
 * `The BitTorrent Protocol Specification <http://www.bittorrent.org/beps/bep_0003.html>`_
