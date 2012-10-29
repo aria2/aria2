@@ -96,7 +96,8 @@ DefaultBtInteractive::DefaultBtInteractive
     dhtEnabled_(false),
     numReceivedMessage_(0),
     maxOutstandingRequest_(DEFAULT_MAX_OUTSTANDING_REQUEST),
-    requestGroupMan_(0)
+    requestGroupMan_(0),
+    tcpPort_(0)
 {}
 
 DefaultBtInteractive::~DefaultBtInteractive() {}
