@@ -115,8 +115,11 @@ void printProgress
      rg->downloadFinished()) {
     o << "SEEDING" << "(" << "ratio:";
     if(rg->getCompletedLength() > 0) {
+      std::streamsize oldprec = o.precision();
       o << std::fixed << std::setprecision(1)
-        << ((stat.allTimeUploadLength*10)/rg->getCompletedLength())/10.0;
+        << ((stat.allTimeUploadLength*10)/rg->getCompletedLength())/10.0
+        << std::setprecision(oldprec)
+        << std::resetiosflags(std::ios::fixed);
     } else {
       o << "--";
     }
