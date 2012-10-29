@@ -47,11 +47,13 @@ bool parseFile(const std::string& filename, ParserStateMachine* psm)
     fd = STDIN_FILENO;
   } else {
     while((fd = a2open(utf8ToWChar(filename).c_str(),
-                       O_BINARY | O_RDONLY, OPEN_MODE)) == -1 && fd != EINTR);
+                       O_BINARY | O_RDONLY, OPEN_MODE)) == -1
+          && errno != EINTR);
     if(fd == -1) {
       return false;
     }
   }
+  auto_delete_r<int, int> fdDeleter(fd, close);
   XmlParser ps(psm);
   char buf[4096];
   ssize_t nread;

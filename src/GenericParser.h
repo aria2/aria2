@@ -93,10 +93,12 @@ typename Parser::ResultType parseFile(Parser& parser,
   int fd;
   // TODO Overrode a2open(const char*,..) and a2open(const std::wstring&,..)
   while((fd = a2open(utf8ToWChar(filename).c_str(),
-                     O_BINARY | O_RDONLY, OPEN_MODE)) == -1 && fd != EINTR);
+                     O_BINARY | O_RDONLY, OPEN_MODE)) == -1
+        && errno != EINTR);
   if(fd == -1) {
     return Parser::ParserStateMachineType::noResult();
   }
+  auto_delete_r<int, int> fdDeleter(fd, close);
   char buf[4096];
   ssize_t nread;
   ssize_t nproc;
