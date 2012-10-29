@@ -860,8 +860,6 @@ int wslay_event_send(wslay_event_context_ptr ctx)
         ctx->obuflimit = ctx->obuf+r;
         if(eof) {
           ctx->omsg->fin = 1;
-        } else if(r == 0) {
-          break;
         }
         ctx->opayloadlen = r;
         ctx->opayloadoff = 0;
