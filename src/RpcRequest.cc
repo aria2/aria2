@@ -54,7 +54,7 @@ RpcRequest::RpcRequest(const std::string& methodName,
 {}
 
 RpcRequest::RpcRequest(const RpcRequest& c)
-  : methodName(c.methodName), params(c.params), id(c.id)
+  : methodName(c.methodName), params(c.params), id(c.id), jsonRpc(c.jsonRpc)
 {}
 
 RpcRequest::~RpcRequest() {}

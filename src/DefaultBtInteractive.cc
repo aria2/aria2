@@ -79,7 +79,8 @@ namespace aria2 {
 DefaultBtInteractive::DefaultBtInteractive
 (const SharedHandle<DownloadContext>& downloadContext,
  const SharedHandle<Peer>& peer)
-  : downloadContext_(downloadContext),
+  : cuid_(0),
+    downloadContext_(downloadContext),
     peer_(peer),
     metadataGetMode_(false),
     localNode_(0),

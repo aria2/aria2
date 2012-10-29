@@ -57,7 +57,8 @@
 namespace aria2 {
 
 CookieStorage::DomainEntry::DomainEntry(const std::string& domain)
- : key_(util::isNumericHost(domain)?domain:cookie::reverseDomainLevel(domain))
+  : key_(util::isNumericHost(domain)?domain:cookie::reverseDomainLevel(domain)),
+    lastAccessTime_(0)
 {}
 
 CookieStorage::DomainEntry::DomainEntry

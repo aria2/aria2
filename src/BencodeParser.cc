@@ -59,6 +59,7 @@ enum {
 BencodeParser::BencodeParser(StructParserStateMachine* psm)
   : psm_(psm),
     currentState_(BENCODE_INITIAL),
+    strLength_(0),
     numberSign_(1),
     number_(0),
     numConsumed_(0),

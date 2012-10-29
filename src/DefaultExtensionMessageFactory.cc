@@ -67,7 +67,10 @@ DefaultExtensionMessageFactory::DefaultExtensionMessageFactory
 (const SharedHandle<Peer>& peer,
  const SharedHandle<ExtensionMessageRegistry>& registry)
   : peer_(peer),
-    registry_(registry)
+    registry_(registry),
+    messageFactory_(0),
+    dispatcher_(0),
+    tracker_(0)
 {}
 
 DefaultExtensionMessageFactory::~DefaultExtensionMessageFactory() {}

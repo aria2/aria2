@@ -71,7 +71,8 @@ HttpServer::HttpServer
    reqType_(RPC_TYPE_NONE),
    keepAlive_(true),
    gzip_(false),
-   acceptsGZip_(false)
+   acceptsGZip_(false),
+   secure_(false)
 {}
 
 HttpServer::~HttpServer() {}

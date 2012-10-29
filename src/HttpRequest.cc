@@ -60,6 +60,7 @@ const std::string HttpRequest::USER_AGENT("aria2");
 HttpRequest::HttpRequest():contentEncodingEnabled_(true),
                            userAgent_(USER_AGENT),
                            acceptMetalink_(false),
+                           option_(0),
                            noCache_(true),
                            acceptGzip_(false),
                            endOffsetOverride_(0)

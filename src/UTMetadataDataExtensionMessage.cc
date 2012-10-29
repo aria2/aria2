@@ -55,6 +55,7 @@ namespace aria2 {
 UTMetadataDataExtensionMessage::UTMetadataDataExtensionMessage
 (uint8_t extensionMessageID)
   : UTMetadataExtensionMessage(extensionMessageID),
+    totalSize_(0),
     tracker_(0)
 {}
 
