@@ -321,7 +321,7 @@ bool inRFC5987AttrChar(const char c)
 // Returns nonzero if |c| is in ISO/IEC 8859-1 character set.
 bool isIso8859p1(unsigned char c)
 {
-  return (0x20u <= c && c <= 0x7eu) || (0xa0u <= c && c <= 0xffu);
+  return (0x20u <= c && c <= 0x7eu) || 0xa0u <= c;
 }
 
 bool isLws(const char c)
