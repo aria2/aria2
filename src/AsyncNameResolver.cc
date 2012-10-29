@@ -165,6 +165,9 @@ ares_addr_node* parseAsyncDNSServers(const std::string& serversOpt)
       node = 0;
     }
   }
+  if(node) {
+    delete node;
+  }
   return root.next;
 }
 
