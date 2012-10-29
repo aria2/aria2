@@ -181,7 +181,6 @@ void collectUpward
       collectNodes(nodes, parent->getLeft()->getBucket());
     }
     from = parent;
-    parent = parent->getParent();
     if(DHTBucket::K <= nodes.size()) {
       break;
     }
