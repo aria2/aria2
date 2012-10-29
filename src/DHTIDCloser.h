@@ -44,8 +44,6 @@ namespace aria2 {
 
 class DHTIDCloser {
 private:
-  const unsigned char* targetID_;
-
   XORCloser closer_;
 public:
   DHTIDCloser(const unsigned char* targetID):closer_(targetID, DHT_ID_LENGTH) {}

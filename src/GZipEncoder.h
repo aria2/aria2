@@ -46,8 +46,6 @@ class GZipEncoder {
 private:
   z_stream* strm_;
 
-  bool finished_;
-
   // Internal buffer for deflated data.
   std::string internalBuf_;
 
