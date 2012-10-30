@@ -895,7 +895,7 @@ int parse_content_disposition(char *dest, size_t destlen,
                               const char **charsetp, size_t *charsetlenp,
                               const char *in, size_t len)
 {
-  const char *p = in, *mark_first = NULL, *mark_last = NULL;
+  const char *p = in, *eop = in + len, *mark_first = NULL, *mark_last = NULL;
   int state = CD_BEFORE_DISPOSITION_TYPE;
   int in_file_parm = 0;
   int flags = 0;
@@ -911,7 +911,7 @@ int parse_content_disposition(char *dest, size_t destlen,
   *charsetp = NULL;
   *charsetlenp = 0;
 
-  for(; *p; ++p) {
+  for(; p != eop; ++p) {
     switch(state) {
     case CD_BEFORE_DISPOSITION_TYPE:
       if(inRFC2616HttpToken(*p)) {
