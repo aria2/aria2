@@ -1188,7 +1188,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     OptionHandler* op(new BooleanOptionHandler
                       (PREF_HTTP_NO_CACHE,
                        TEXT_HTTP_NO_CACHE,
-                       A2_V_TRUE,
+                       A2_V_FALSE,
                        OptionHandler::OPT_ARG));
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);

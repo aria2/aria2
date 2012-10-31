@@ -379,10 +379,10 @@ HTTP Specific Options
 
 .. option:: --http-no-cache[=true|false]
 
-   Send Cache-Control: no-cache and Pragma: no-cache header to avoid
+   Send ``Cache-Control: no-cache`` and ``Pragma: no-cache`` header to avoid
    cached content.  If ``false`` is given, these headers are not sent
    and you can add Cache-Control header with a directive you like
-   using :option:`--header` option. Default: ``true``
+   using :option:`--header` option. Default: ``false``
 
 .. option:: --http-user=<USER>
 
