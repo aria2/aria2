@@ -1,0 +1,34 @@
+#!/bin/sh -e
+
+VERSION=$1
+PREV_VERSION=$2
+
+git checkout refs/tags/release-$VERSION
+git log --pretty=fuller --date=short refs/tags/release-$PREV_VERSION..HEAD > ChangeLog
+
+./configure && \
+    make dist-bzip2 && make dist-gzip && make dist-xz || echo "error"
+make distclean
+
+# mingw 32bit
+export HOST=i686-w64-mingw32
+export LABEL=win-32bit
+./mingw-config
+make -j3
+./mingw-release
+make distclean
+
+# mingw 64bit
+export HOST=x86_64-w64-mingw32
+export LABEL=win-64bit
+./mingw-config
+make -j3
+./mingw-release
+make distclean
+
+# android
+export ANDROID_HOME=/home/tatsuhiro/workspace/android/android-9-r8b
+./android-config
+./android-make -j3
+./android-release
+make distclean
