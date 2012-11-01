@@ -891,9 +891,9 @@ typedef enum {
   CD_ENC_ISO_8859_1
 } content_disposition_charset;
 
-int parse_content_disposition(char *dest, size_t destlen,
-                              const char **charsetp, size_t *charsetlenp,
-                              const char *in, size_t len)
+ssize_t parse_content_disposition(char *dest, size_t destlen,
+                                  const char **charsetp, size_t *charsetlenp,
+                                  const char *in, size_t len)
 {
   const char *p = in, *eop = in + len, *mark_first = NULL, *mark_last = NULL;
   int state = CD_BEFORE_DISPOSITION_TYPE;
@@ -1189,8 +1189,9 @@ std::string getContentDispositionFilename(const std::string& header)
   size_t cdvallen = sizeof(cdval);
   const char* charset;
   size_t charsetlen;
-  int rv = parse_content_disposition(cdval, cdvallen, &charset, &charsetlen,
-                                     header.c_str(), header.size());
+  ssize_t rv = parse_content_disposition(cdval, cdvallen,
+                                         &charset, &charsetlen,
+                                         header.c_str(), header.size());
   if(rv == -1) {
     return "";
   } else {

@@ -312,9 +312,9 @@ std::string iso8859p1ToUtf8(const std::string& src);
 // succeeds, or -1. If there is enough room to store filename in
 // |dest|, this function returns -1. If this function returns -1, the
 // |dest|, |*charsetp| and |*charsetlenp| are undefined.
-int parse_content_disposition(char *dest, size_t destlen,
-                              const char **charsetp, size_t *charsetlenp,
-                              const char *in, size_t len);
+ssize_t parse_content_disposition(char *dest, size_t destlen,
+                                  const char **charsetp, size_t *charsetlenp,
+                                  const char *in, size_t len);
 
 std::string getContentDispositionFilename(const std::string& header);
 
