@@ -67,6 +67,7 @@ BtPieceMessage::BtPieceMessage
     index_(index),
     begin_(begin),
     blockLength_(blockLength),
+    msgHdrLen_(0),
     data_(0)
 {
   setUploading(true);
@@ -179,17 +180,25 @@ void BtPieceMessage::send()
                     getPeer()->getPort(),
                     toString().c_str()));
     unsigned char* msgHdr = createMessageHeader();
-    size_t msgHdrLen = getMessageHeaderLength();
+    msgHdrLen_ = getMessageHeaderLength();
     A2_LOG_DEBUG(fmt("msglength = %lu bytes",
-                     static_cast<unsigned long>(msgHdrLen+blockLength_)));
-    getPeerConnection()->pushBytes(msgHdr, msgHdrLen);
+                     static_cast<unsigned long>(msgHdrLen_+blockLength_)));
+    getPeerConnection()->pushBytes(msgHdr, msgHdrLen_);
     int64_t pieceDataOffset =
       static_cast<int64_t>(index_)*downloadContext_->getPieceLength()+begin_;
     pushPieceData(pieceDataOffset, blockLength_);
   }
   writtenLength = getPeerConnection()->sendPendingData();
-  getPeer()->updateUploadLength(writtenLength);
-  downloadContext_->updateUploadLength(writtenLength);
+  // Subtract msgHdrLen_ from writtenLength to get the uploaded data
+  // size.
+  if(writtenLength > msgHdrLen_) {
+    writtenLength -= msgHdrLen_;
+    msgHdrLen_ = 0;
+    getPeer()->updateUploadLength(writtenLength);
+    downloadContext_->updateUploadLength(writtenLength);
+  } else {
+    msgHdrLen_ -= writtenLength;
+  }
   setSendingInProgress(!getPeerConnection()->sendBufferIsEmpty());
 }
 
