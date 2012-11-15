@@ -56,6 +56,7 @@
 #include "fmt.h"
 #include "DownloadContext.h"
 #include "PeerStorage.h"
+#include "array_fun.h"
 
 namespace aria2 {
 
@@ -205,16 +206,13 @@ void BtPieceMessage::send()
 void BtPieceMessage::pushPieceData(int64_t offset, int32_t length) const
 {
   assert(length <= 16*1024);
-  unsigned char* buf = new unsigned char[length];
+  array_ptr<unsigned char> buf(new unsigned char[length]);
   ssize_t r;
-  try {
-    r = getPieceStorage()->getDiskAdaptor()->readData(buf, length, offset);
-  } catch(RecoverableException& e) {
-    delete [] buf;
-    throw;
-  }
+  r = getPieceStorage()->getDiskAdaptor()->readData(buf, length, offset);
   if(r == length) {
-    getPeerConnection()->pushBytes(buf, length);
+    unsigned char* dbuf = buf;
+    buf.reset(0);
+    getPeerConnection()->pushBytes(dbuf, length);
   } else {
     throw DL_ABORT_EX(EX_DATA_READ);
   }
