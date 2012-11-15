@@ -287,15 +287,15 @@ void SocketCore::bindWithFamily(uint16_t port, int family, int flags)
 }
 
 void SocketCore::bind
-(const std::string& addr, uint16_t port, int family, int flags)
+(const char* addr, uint16_t port, int family, int flags)
 {
   closeConnection();
   std::string error;
   const char* addrp;
-  if(addr.empty()) {
-    addrp = 0;
+  if(addr && addr[0]) {
+    addrp = addr;
   } else {
-    addrp = addr.c_str();
+    addrp = 0;
   }
   if(!(flags&AI_PASSIVE) || bindAddrs_.empty()) {
     sock_t fd = bindTo(addrp, port, family, sockType_, flags, error);
@@ -332,7 +332,7 @@ void SocketCore::bind
 
 void SocketCore::bind(uint16_t port, int flags)
 {
-  bind(A2STR::NIL, port, protocolFamily_, flags);
+  bind(0, port, protocolFamily_, flags);
 }
 
 void SocketCore::bind(const struct sockaddr* addr, socklen_t addrlen)

@@ -77,11 +77,7 @@ bool DHTConnectionImpl::bind(uint16_t& port, const std::string& addr)
 {
   const int ipv = (family_ == AF_INET) ? 4 : 6;
   try {
-    if(addr.empty()) {
-      socket_->bind(A2STR::NIL, port, family_);
-    } else {
-      socket_->bind(addr, port, family_);
-    }
+    socket_->bind(addr.c_str(), port, family_);
     socket_->setNonBlockingMode();
     std::pair<std::string, uint16_t> svaddr;
     socket_->getAddrInfo(svaddr);

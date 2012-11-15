@@ -153,7 +153,7 @@ public:
   void bind(uint16_t port, int flags = AI_PASSIVE);
 
   void bind
-  (const std::string& addr, uint16_t port, int family, int flags = AI_PASSIVE);
+  (const char* addrp, uint16_t port, int family, int flags = AI_PASSIVE);
 
   /**
    * Listens form connection on it.
