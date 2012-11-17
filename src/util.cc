@@ -752,47 +752,6 @@ std::string iso8859p1ToUtf8(const std::string& src)
   return iso8859p1ToUtf8(src.c_str(), src.size());
 }
 
-namespace {
-template<typename OutputIterator>
-void parseParam(OutputIterator out, const std::string& header)
-{
-  for(std::string::const_iterator i = header.begin(), eoi = header.end();
-      i != eoi;) {
-    std::string::const_iterator paramFirst = i;
-    std::string::const_iterator paramLast = paramFirst;
-    for(; paramLast != eoi && *paramLast != '=' && *paramLast != ';';
-        ++paramLast);
-    std::string param;
-    if(paramLast == eoi || *paramLast == ';') {
-      // No value, parmname only
-      param.assign(paramFirst, paramLast);
-    } else {
-      for(; paramLast != eoi && *paramLast != '"' && *paramLast != ';';
-          ++paramLast);
-      if(paramLast != eoi && *paramLast == '"') {
-        // quoted-string
-        ++paramLast;
-        for(; paramLast != eoi && *paramLast != '"'; ++paramLast);
-        if(paramLast != eoi) {
-          ++paramLast;
-        }
-        param.assign(paramFirst, paramLast);
-        for(; paramLast != eoi && *paramLast != ';'; ++paramLast);
-      } else {
-        param.assign(paramFirst, paramLast);
-      }
-    }
-    param = strip(param);
-    *out++ = param;
-    if(paramLast == eoi) {
-      break;
-    }
-    i = paramLast;
-    ++i;
-  }
-}
-} // namespace
-
 /* Start of utf8 dfa */
 /* Copyright (c) 2008-2010 Bjoern Hoehrmann <bjoern@hoehrmann.de>
  * See http://bjoern.hoehrmann.de/utf-8/decoder/dfa/ for details.
