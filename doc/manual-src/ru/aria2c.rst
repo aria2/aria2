@@ -1199,6 +1199,15 @@ FTP, BitTorrent и Metalink. Для загрузки файла, aria2 може�
   Возможные значения: ``none``, ``prealloc``, ``trunc``, ``falloc``
   По умолчанию: ``prealloc``
 
+
+.. option:: --force-save[=true|false]
+
+  Сохранить загрузку с параметром :option:`--save-session <--save-session>`,
+  даже если загрузка будет завершена или удалена. Это может быть полезно,
+  чтобы сохранить BitTorrent-сидирование, у которого будет распознано
+  состояние как завершенное.
+  По умолчанию: ``false``
+
 .. option:: --hash-check-only[=true|false]
 
   Если задано ``true``, то после проверки хэша, используя параметр
@@ -1828,6 +1837,7 @@ URI. Эти дополнительные строки должны начина�
   * :option:`file-allocation <--file-allocation>`
   * :option:`follow-metalink <--follow-metalink>`
   * :option:`follow-torrent <--follow-torrent>`
+  * :option:`force-save <--force-save>`
   * :option:`ftp-passwd <--ftp-passwd>`
   * :option:`ftp-pasv <-p>`
   * :option:`ftp-proxy <--ftp-proxy>`
@@ -3004,6 +3014,7 @@ GID
   * :option:`bt-max-peers <--bt-max-peers>`
   * :option:`bt-request-peer-speed-limit <--bt-request-peer-speed-limit>`
   * :option:`bt-remove-unselected-file <--bt-remove-unselected-file>`
+  * :option:`force-save <--force-save>`
   * :option:`max-download-limit <--max-download-limit>`
   * :option:`max-upload-limit <-u>`
   
