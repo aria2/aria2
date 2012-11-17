@@ -372,6 +372,19 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
   }
   {
     OptionHandler* op(new BooleanOptionHandler
+                      (PREF_FORCE_SAVE,
+                       TEXT_FORCE_SAVE,
+                       A2_V_FALSE,
+                       OptionHandler::OPT_ARG));
+    op->addTag(TAG_ADVANCED);
+    op->setInitialOption(true);
+    op->setChangeOption(true);
+    op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
+    handlers.push_back(op);
+  }
+  {
+    OptionHandler* op(new BooleanOptionHandler
                       (PREF_FORCE_SEQUENTIAL,
                        TEXT_FORCE_SEQUENTIAL,
                        A2_V_FALSE,

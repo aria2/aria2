@@ -909,3 +909,8 @@
     "                              downloads added by aria2.addTorrent or\n" \
     "                              aria2.addMetalink will not be saved by\n" \
     "                              --save-session option.")
+#define TEXT_FORCE_SAVE                         \
+  _(" --force-save[=true|false]    Save download with --save-session option even\n" \
+    "                              if the download is completed or removed. This\n" \
+    "                              may be useful to save BitTorrent seeding which\n" \
+    "                              is recognized as completed state.")

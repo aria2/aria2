@@ -279,6 +279,8 @@ extern const Pref* PREF_CHECKSUM;
 extern const Pref* PREF_STOP_WITH_PROCESS;
 // value: true | false
 extern const Pref* PREF_ENABLE_MMAP;
+// value: true | false
+extern const Pref* PREF_FORCE_SAVE;
 
 /**
  * FTP related preferences

@@ -159,7 +159,13 @@ bool SessionSerializer::save(BufferedFile& fp) const
         results.begin(), eoi = results.end(); itr != eoi; ++itr) {
     if((*itr)->result == error_code::FINISHED ||
        (*itr)->result == error_code::REMOVED) {
-      continue;
+      if((*itr)->option->getAsBool(PREF_FORCE_SAVE)) {
+        if(!writeDownloadResult(fp, metainfoCache, *itr)) {
+          return false;
+        }
+      } else {
+        continue;
+      }
     } else if((*itr)->result == error_code::IN_PROGRESS) {
       if(saveInProgress_) {
         if(!writeDownloadResult(fp, metainfoCache, *itr)) {
