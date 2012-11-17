@@ -1115,6 +1115,14 @@ Advanced Options
   Possible Values: ``none``, ``prealloc``, ``trunc``, ``falloc``
   Default: ``prealloc``
 
+
+.. option:: --force-save[=true|false]
+
+  Save download with :option:`--save-session <--save-session>` option
+  even if the download is completed or removed. This may be useful to
+  save BitTorrent seeding which is recognized as completed state.
+  Default: ``false``
+
 .. option:: --hash-check-only[=true|false]
 
   If ``true`` is given, after hash check using
@@ -1719,6 +1727,7 @@ of URIs. These optional lines must start with white space(s).
   * :option:`file-allocation <--file-allocation>`
   * :option:`follow-metalink <--follow-metalink>`
   * :option:`follow-torrent <--follow-torrent>`
+  * :option:`force-save <--force-save>`
   * :option:`ftp-passwd <--ftp-passwd>`
   * :option:`ftp-pasv <-p>`
   * :option:`ftp-proxy <--ftp-proxy>`
@@ -2901,6 +2910,7 @@ All code examples come from Python2.7 interpreter.
   * :option:`bt-max-peers <--bt-max-peers>`
   * :option:`bt-request-peer-speed-limit <--bt-request-peer-speed-limit>`
   * :option:`bt-remove-unselected-file <--bt-remove-unselected-file>`
+  * :option:`force-save <--force-save>`
   * :option:`max-download-limit <--max-download-limit>`
   * :option:`max-upload-limit <-u>`
   
