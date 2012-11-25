@@ -412,13 +412,15 @@ AC_PROG_GCC_TRADITIONAL
 
 AC_FUNC_MEMCMP
 AC_FUNC_MKTIME
-AC_FUNC_MMAP
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_STAT
 AC_FUNC_STRFTIME
 AC_FUNC_VPRINTF
 AC_FUNC_FORK
 AC_FUNC_STRTOD
+# Don't use AC_FUNC_MMAP becaue it fails on some platforms (e.g.,
+# OpenWRT) which have mmap and it works in the way we use in aria2.
+# Instead use mmap in AC_CHECK_FUNCS list.
 AC_CHECK_FUNCS([__argz_count \
                 __argz_next \
                 __argz_stringify \
@@ -434,6 +436,7 @@ AC_CHECK_FUNCS([__argz_count \
                 mempcpy \
                 memset \
                 mkdir \
+                mmap \
                 munmap \
                 nl_langinfo \
                 posix_memalign \
