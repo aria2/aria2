@@ -195,9 +195,9 @@ public:
   /**
    * Accepts incoming connection on this socket.
    * You must call beginListen() before calling this method.
-   * @return accepted socket. The caller must delete it after using it.
+   * @return accepted socket.
    */
-  SocketCore* acceptConnection() const;
+  SharedHandle<SocketCore> acceptConnection() const;
 
   /**
    * Connects to the server named host and the destination port is port.

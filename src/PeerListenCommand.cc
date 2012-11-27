@@ -110,11 +110,9 @@ bool PeerListenCommand::execute() {
   for(int i = 0; i < 3 && socket_->isReadable(0); ++i) {
     SharedHandle<SocketCore> peerSocket;
     try {
-      peerSocket.reset(socket_->acceptConnection());
+      peerSocket = socket_->acceptConnection();
       std::pair<std::string, uint16_t> peerInfo;
       peerSocket->getPeerInfo(peerInfo);
-
-      peerSocket->setNonBlockingMode();
 
       SharedHandle<Peer> peer(new Peer(peerInfo.first, peerInfo.second, true));
       cuid_t cuid = e_->newCUID();

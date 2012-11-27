@@ -64,7 +64,8 @@ public:
 
     while(!clientSocket_->isWritable(0));
 
-    serverSocket_.reset(listenSocket->acceptConnection());
+    serverSocket_ = listenSocket->acceptConnection();
+    serverSocket_->setBlockingMode();
     ftp_.reset(new FtpConnection(1, clientSocket_, req_,
                                  authConfigFactory_->createAuthConfig
                                  (req_, option_.get()),

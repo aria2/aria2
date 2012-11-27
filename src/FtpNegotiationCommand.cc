@@ -866,8 +866,7 @@ bool FtpNegotiationCommand::waitConnection()
 {
   disableReadCheckSocket();
   setReadCheckSocket(getSocket());
-  dataSocket_.reset(serverSocket_->acceptConnection());
-  dataSocket_->setNonBlockingMode();
+  dataSocket_ = serverSocket_->acceptConnection();
   sequence_ = SEQ_NEGOTIATION_COMPLETED;
   return false;
 }

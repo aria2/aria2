@@ -355,7 +355,7 @@ void SocketCore::beginListen()
   }
 }
 
-SocketCore* SocketCore::acceptConnection() const
+SharedHandle<SocketCore> SocketCore::acceptConnection() const
 {
   sockaddr_union sockaddr;
   socklen_t len = sizeof(sockaddr);
@@ -366,7 +366,9 @@ SocketCore* SocketCore::acceptConnection() const
   if(fd == (sock_t) -1) {
     throw DL_ABORT_EX(fmt(EX_SOCKET_ACCEPT, errorMsg(errNum).c_str()));
   }
-  return new SocketCore(fd, sockType_);
+  SharedHandle<SocketCore> sock(new SocketCore(fd, sockType_));
+  sock->setNonBlockingMode();
+  return sock;
 }
 
 int SocketCore::getAddrInfo(std::pair<std::string, uint16_t>& addrinfo) const
