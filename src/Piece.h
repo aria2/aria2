@@ -47,6 +47,9 @@
 namespace aria2 {
 
 class BitfieldMan;
+class WrDiskCache;
+class WrDiskCacheEntry;
+class DiskAdaptor;
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
@@ -62,6 +65,7 @@ private:
   BitfieldMan* bitfield_;
   std::vector<cuid_t> users_;
   bool usedBySegment_;
+  WrDiskCacheEntry* wrCache_;
 #ifdef ENABLE_MESSAGE_DIGEST
 
   int32_t nextBegin_;
@@ -172,6 +176,10 @@ public:
 
   void destroyHashContext();
 
+  // Returns raw hash value, not hex digest, which is calculated using
+  // cached data and data on disk.
+  std::string getDigestWithWrCache(size_t pieceLength,
+                                   const SharedHandle<DiskAdaptor>& adaptor);
 #endif // ENABLE_MESSAGE_DIGEST
 
   /**
@@ -193,6 +201,18 @@ public:
   void setUsedBySegment(bool f)
   {
     usedBySegment_ = f;
+  }
+
+  void initWrCache(WrDiskCache* diskCache,
+                   const SharedHandle<DiskAdaptor>& diskAdaptor);
+  void flushWrCache(WrDiskCache* diskCache);
+  void clearWrCache(WrDiskCache* diskCache);
+  void updateWrCache(WrDiskCache* diskCache, unsigned char* data,
+                     size_t offset, size_t len, int64_t goff);
+  void releaseWrCache(WrDiskCache* diskCache);
+  WrDiskCacheEntry* getWrDiskCacheEntry() const
+  {
+    return wrCache_;
   }
 };
 

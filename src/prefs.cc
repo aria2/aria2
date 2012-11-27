@@ -338,6 +338,8 @@ const Pref* PREF_STOP_WITH_PROCESS = makePref("stop-with-process");
 const Pref* PREF_ENABLE_MMAP = makePref("enable-mmap");
 // value: true | false
 const Pref* PREF_FORCE_SAVE = makePref("force-save");
+// value: 1*digit
+const Pref* PREF_DISK_CACHE = makePref("disk-cache");
 
 /**
  * FTP related preferences

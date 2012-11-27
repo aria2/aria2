@@ -78,6 +78,7 @@
 #include "SingletonHolder.h"
 #include "Notifier.h"
 #include "PeerStat.h"
+#include "WrDiskCache.h"
 #ifdef ENABLE_BITTORRENT
 #  include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
@@ -100,12 +101,16 @@ RequestGroupMan::RequestGroupMan
     queueCheck_(true),
     removedErrorResult_(0),
     removedLastErrorResult_(error_code::FINISHED),
-    maxDownloadResult_(option->getAsInt(PREF_MAX_DOWNLOAD_RESULT))
+    maxDownloadResult_(option->getAsInt(PREF_MAX_DOWNLOAD_RESULT)),
+    wrDiskCache_(0)
 {
   addRequestGroupIndex(requestGroups);
 }
 
-RequestGroupMan::~RequestGroupMan() {}
+RequestGroupMan::~RequestGroupMan()
+{
+  delete wrDiskCache_;
+}
 
 bool RequestGroupMan::downloadFinished()
 {
@@ -620,8 +625,8 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       // reference.
       groupToAdd->dropPieceStorage();
       configureRequestGroup(groupToAdd);
-      createInitialCommand(groupToAdd, commands, e);
       groupToAdd->setRequestGroupMan(this);
+      createInitialCommand(groupToAdd, commands, e);
       if(commands.empty()) {
         requestQueueCheck();
       }
@@ -1085,6 +1090,15 @@ void RequestGroupMan::setUriListParser
 (const SharedHandle<UriListParser>& uriListParser)
 {
   uriListParser_ = uriListParser;
+}
+
+void RequestGroupMan::initWrDiskCache()
+{
+  assert(wrDiskCache_ == 0);
+  size_t limit = option_->getAsInt(PREF_DISK_CACHE);
+  if(limit > 0) {
+    wrDiskCache_ = new WrDiskCache(limit);
+  }
 }
 
 } // namespace aria2

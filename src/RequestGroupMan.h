@@ -58,6 +58,7 @@ class ServerStat;
 class Option;
 class OutputFile;
 class UriListParser;
+class WrDiskCache;
 
 class RequestGroupMan {
 private:
@@ -94,6 +95,8 @@ private:
 
   // UriListParser for deferred input.
   SharedHandle<UriListParser> uriListParser_;
+
+  WrDiskCache* wrDiskCache_;
 
   void formatDownloadResultFull
   (OutputFile& out,
@@ -341,6 +344,15 @@ public:
   {
     return netStat_;
   }
+
+  WrDiskCache* getWrDiskCache() const
+  {
+    return wrDiskCache_;
+  }
+
+  // Initializes WrDiskCache according to PREF_DISK_CACHE option.  If
+  // its value is 0, cache storage will not be initialized.
+  void initWrDiskCache();
 };
 
 } // namespace aria2

@@ -205,6 +205,15 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    OptionHandler* op(new UnitNumberOptionHandler
+                      (PREF_DISK_CACHE,
+                       TEXT_DISK_CACHE,
+                       "0",
+                       0));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
     OptionHandler* op(new BooleanOptionHandler
                       (PREF_DEFERRED_INPUT,
                        TEXT_DEFERRED_INPUT,

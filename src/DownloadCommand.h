@@ -67,6 +67,8 @@ private:
 
   void checkLowestDownloadSpeed() const;
 
+  void completeSegment(cuid_t cuid, const SharedHandle<Segment>& segment);
+
   SharedHandle<StreamFilter> streamFilter_;
 
   bool sinkFilterOnly_;

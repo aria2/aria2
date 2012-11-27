@@ -54,9 +54,7 @@ public:
   void setUp()
   {
     writer_.reset(new ByteArrayDiskWriter());
-    sinkFilter_.reset(new SinkStreamFilter());
-    filter_.reset(new SinkStreamFilter(sinkFilter_));
-    sinkFilter_->init();
+    filter_.reset(new SinkStreamFilter());
     filter_->init();
     segment_.reset(new MockSegment2(16));
   }

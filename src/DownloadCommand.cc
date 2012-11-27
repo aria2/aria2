@@ -62,6 +62,9 @@
 #include "SinkStreamFilter.h"
 #include "FileEntry.h"
 #include "SocketRecvBuffer.h"
+#include "Piece.h"
+#include "WrDiskCacheEntry.h"
+#include "DownloadFailureException.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigest.h"
 # include "message_digest_helper.h"
@@ -105,7 +108,9 @@ DownloadCommand::DownloadCommand
   peerStat_->downloadStart();
   getSegmentMan()->registerPeerStat(peerStat_);
 
-  streamFilter_.reset(new SinkStreamFilter(pieceHashValidationEnabled_));
+  WrDiskCache* wrDiskCache = getPieceStorage()->getWrDiskCache();
+  streamFilter_.reset(new SinkStreamFilter(wrDiskCache,
+                                           pieceHashValidationEnabled_));
   streamFilter_->init();
   sinkFilterOnly_ = true;
   checkSocketRecvBuffer();
@@ -115,6 +120,37 @@ DownloadCommand::~DownloadCommand() {
   peerStat_->downloadStop();
   getSegmentMan()->updateFastestPeerStat(peerStat_);
 }
+
+namespace {
+void flushWrDiskCacheEntry(WrDiskCache* wrDiskCache,
+                           const SharedHandle<Segment>& segment)
+{
+  const SharedHandle<Piece>& piece = segment->getPiece();
+  if(piece && piece->getWrDiskCacheEntry()) {
+    piece->flushWrCache(wrDiskCache);
+    if(piece->getWrDiskCacheEntry()->getError() !=
+       WrDiskCacheEntry::CACHE_ERR_SUCCESS) {
+      segment->clear();
+      piece->clearWrCache(wrDiskCache);
+      throw DOWNLOAD_FAILURE_EXCEPTION2
+        (fmt("Write disk cache flush failure index=%lu",
+             static_cast<unsigned long>(piece->getIndex())),
+         piece->getWrDiskCacheEntry()->getErrorCode());
+    }
+  }
+}
+} // namespace
+
+namespace {
+void clearWrDiskCacheEntry(WrDiskCache* wrDiskCache,
+                           const SharedHandle<Segment>& segment)
+{
+  const SharedHandle<Piece>& piece = segment->getPiece();
+  if(piece && piece->getWrDiskCacheEntry()) {
+    piece->clearWrCache(wrDiskCache);
+  }
+}
+} // namespace
 
 bool DownloadCommand::executeInternal() {
   if(getDownloadEngine()->getRequestGroupMan()->doesOverallDownloadSpeedExceed()
@@ -218,6 +254,7 @@ bool DownloadCommand::executeInternal() {
       // completed.
       A2_LOG_INFO(fmt(MSG_SEGMENT_DOWNLOAD_COMPLETED,
                       getCuid()));
+
 #ifdef ENABLE_MESSAGE_DIGEST
 
       {
@@ -226,6 +263,7 @@ bool DownloadCommand::executeInternal() {
         if(pieceHashValidationEnabled_ && !expectedPieceHash.empty()) {
           if(
 #ifdef ENABLE_BITTORRENT
+             // TODO Is this necessary?
              (!getPieceStorage()->isEndGame() ||
               !getDownloadContext()->hasAttribute(CTX_ATTR_BT)) &&
 #endif // ENABLE_BITTORRENT
@@ -235,22 +273,26 @@ bool DownloadCommand::executeInternal() {
             validatePieceHash
               (segment, expectedPieceHash, segment->getDigest());
           } else {
-            messageDigest_->reset();
-            validatePieceHash
-              (segment, expectedPieceHash,
-               message_digest::digest
-               (messageDigest_,
-                getPieceStorage()->getDiskAdaptor(),
-                segment->getPosition(),
-                segment->getLength()));
+            try {
+              std::string actualHash =
+                segment->getPiece()->getDigestWithWrCache
+                (segment->getSegmentLength(), diskAdaptor);
+              validatePieceHash(segment, expectedPieceHash, actualHash);
+            } catch(RecoverableException& e) {
+              segment->clear();
+              clearWrDiskCacheEntry(getPieceStorage()->getWrDiskCache(),
+                                    segment);
+              getSegmentMan()->cancelSegment(getCuid());
+              throw;
+            }
           }
         } else {
-          getSegmentMan()->completeSegment(getCuid(), segment);
+          completeSegment(getCuid(), segment);
         }
       }
 
 #else // !ENABLE_MESSAGE_DIGEST
-      getSegmentMan()->completeSegment(getCuid(), segment);
+      completeSegment(getCuid(), segment);
 #endif // !ENABLE_MESSAGE_DIGEST
     } else {
       // If segment is not canceled here, in the next pipelining
@@ -357,7 +399,7 @@ void DownloadCommand::validatePieceHash(const SharedHandle<Segment>& segment,
 {
   if(actualHash == expectedHash) {
     A2_LOG_INFO(fmt(MSG_GOOD_CHUNK_CHECKSUM, util::toHex(actualHash).c_str()));
-    getSegmentMan()->completeSegment(getCuid(), segment);
+    completeSegment(getCuid(), segment);
   } else {
     A2_LOG_INFO(fmt(EX_INVALID_CHUNK_CHECKSUM,
                     static_cast<unsigned long>(segment->getIndex()),
@@ -365,6 +407,7 @@ void DownloadCommand::validatePieceHash(const SharedHandle<Segment>& segment,
                     util::toHex(expectedHash).c_str(),
                     util::toHex(actualHash).c_str()));
     segment->clear();
+    clearWrDiskCacheEntry(getPieceStorage()->getWrDiskCache(), segment);
     getSegmentMan()->cancelSegment(getCuid());
     throw DL_RETRY_EX
       (fmt("Invalid checksum index=%lu",
@@ -373,6 +416,13 @@ void DownloadCommand::validatePieceHash(const SharedHandle<Segment>& segment,
 }
 
 #endif // ENABLE_MESSAGE_DIGEST
+
+void DownloadCommand::completeSegment(cuid_t cuid,
+                                      const SharedHandle<Segment>& segment)
+{
+  flushWrDiskCacheEntry(getPieceStorage()->getWrDiskCache(), segment);
+  getSegmentMan()->completeSegment(cuid, segment);
+}
 
 void DownloadCommand::installStreamFilter
 (const SharedHandle<StreamFilter>& streamFilter)

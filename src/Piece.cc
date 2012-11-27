@@ -38,6 +38,11 @@
 #include "A2STR.h"
 #include "util.h"
 #include "a2functional.h"
+#include "WrDiskCache.h"
+#include "WrDiskCacheEntry.h"
+#include "LogFactory.h"
+#include "fmt.h"
+#include "DiskAdaptor.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigest.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -45,7 +50,7 @@
 namespace aria2 {
 
 Piece::Piece():index_(0), length_(0), blockLength_(BLOCK_LENGTH), bitfield_(0),
-               usedBySegment_(false)
+               usedBySegment_(false), wrCache_(0)
 #ifdef ENABLE_MESSAGE_DIGEST
               , nextBegin_(0)
 #endif // ENABLE_MESSAGE_DIGEST
@@ -56,7 +61,7 @@ Piece::Piece(size_t index, int32_t length, int32_t blockLength)
    length_(length),
    blockLength_(blockLength),
    bitfield_(new BitfieldMan(blockLength_, length)),
-   usedBySegment_(false)
+   usedBySegment_(false), wrCache_(0)
 #ifdef ENABLE_MESSAGE_DIGEST
  ,nextBegin_(0)
 #endif // ENABLE_MESSAGE_DIGEST
@@ -64,6 +69,7 @@ Piece::Piece(size_t index, int32_t length, int32_t blockLength)
 
 Piece::~Piece()
 {
+  delete wrCache_;
   delete bitfield_;
 }
 
@@ -232,6 +238,56 @@ std::string Piece::getDigest()
   }
 }
 
+namespace {
+void updateHashWithRead(const SharedHandle<MessageDigest>& mdctx,
+                        const SharedHandle<DiskAdaptor>& adaptor,
+                        int64_t offset, size_t len)
+{
+  const size_t BUFSIZE = 4096;
+  unsigned char buf[BUFSIZE];
+  ldiv_t res = ldiv(len, BUFSIZE);
+  for(int j = 0; j < res.quot; ++j) {
+    ssize_t nread = adaptor->readData(buf, BUFSIZE, offset);
+    if((size_t)nread != BUFSIZE) {
+      throw DL_ABORT_EX(fmt(EX_FILE_READ, "n/a", "data is too short"));
+    }
+    mdctx->update(buf, nread);
+    offset += nread;
+  }
+  if(res.rem) {
+    ssize_t nread = adaptor->readData(buf, res.rem, offset);
+    if(nread != res.rem) {
+      throw DL_ABORT_EX(fmt(EX_FILE_READ, "n/a", "data is too short"));
+    }
+    mdctx->update(buf, nread);
+    offset += nread;
+  }
+}
+} // namespace
+
+std::string Piece::getDigestWithWrCache
+(size_t pieceLength, const SharedHandle<DiskAdaptor>& adaptor)
+{
+  SharedHandle<MessageDigest> mdctx(MessageDigest::create(hashType_));
+  int64_t start = static_cast<int64_t>(index_)*pieceLength;
+  int64_t goff = start;
+  if(wrCache_) {
+    const WrDiskCacheEntry::DataCellSet& dataSet = wrCache_->getDataSet();
+    for(WrDiskCacheEntry::DataCellSet::iterator i = dataSet.begin(),
+          eoi = dataSet.end(); i != eoi; ++i) {
+      if(goff < (*i)->goff) {
+        updateHashWithRead(mdctx, adaptor, goff, (*i)->goff - goff);
+      }
+      mdctx->update((*i)->data+(*i)->offset, (*i)->len);
+      goff = (*i)->goff + (*i)->len;
+    }
+    updateHashWithRead(mdctx, adaptor, goff, start+length_-goff);
+  } else {
+    updateHashWithRead(mdctx, adaptor, goff, length_);
+  }
+  return mdctx->digest();
+}
+
 void Piece::destroyHashContext()
 {
   mdctx_.reset();
@@ -255,6 +311,57 @@ void Piece::addUser(cuid_t cuid)
 void Piece::removeUser(cuid_t cuid)
 {
   users_.erase(std::remove(users_.begin(), users_.end(), cuid), users_.end());
+}
+
+void Piece::initWrCache(WrDiskCache* diskCache,
+                        const SharedHandle<DiskAdaptor>& diskAdaptor)
+{
+  assert(wrCache_ == 0);
+  wrCache_ = new WrDiskCacheEntry(diskAdaptor);
+  bool rv = diskCache->add(wrCache_);
+  assert(rv);
+}
+
+void Piece::flushWrCache(WrDiskCache* diskCache)
+{
+  assert(wrCache_);
+  ssize_t size = static_cast<ssize_t>(wrCache_->getSize());
+  diskCache->update(wrCache_, -size);
+  wrCache_->writeToDisk();
+}
+
+void Piece::clearWrCache(WrDiskCache* diskCache)
+{
+  assert(wrCache_);
+  ssize_t size = static_cast<ssize_t>(wrCache_->getSize());
+  diskCache->update(wrCache_, -size);
+  wrCache_->clear();
+}
+
+void Piece::updateWrCache(WrDiskCache* diskCache, unsigned char* data,
+                          size_t offset, size_t len, int64_t goff)
+{
+  A2_LOG_DEBUG(fmt("updateWrCache entry=%p", wrCache_));
+  assert(wrCache_);
+  WrDiskCacheEntry::DataCell* cell = new WrDiskCacheEntry::DataCell();
+  cell->goff = goff;
+  cell->data = data;
+  cell->offset = offset;
+  cell->len = len;
+  bool rv;
+  rv = wrCache_->cacheData(cell);
+  assert(rv);
+  rv = diskCache->update(wrCache_, len);
+  assert(rv);
+}
+
+void Piece::releaseWrCache(WrDiskCache* diskCache)
+{
+  if(wrCache_) {
+    diskCache->remove(wrCache_);
+    delete wrCache_;
+    wrCache_ = 0;
+  }
 }
 
 } // namespace aria2

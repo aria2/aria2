@@ -226,6 +226,12 @@ public:
     return diskAdaptor;
   }
 
+  virtual WrDiskCache* getWrDiskCache() {
+    return 0;
+  }
+
+  virtual void flushWrDiskCacheEntry() {}
+
   void setDiskAdaptor(const SharedHandle<DiskAdaptor>& adaptor) {
     this->diskAdaptor = adaptor;
   }

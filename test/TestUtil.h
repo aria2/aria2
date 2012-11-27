@@ -4,6 +4,7 @@
 
 #include "SharedHandle.h"
 #include "Cookie.h"
+#include "WrDiskCacheEntry.h"
 
 namespace aria2 {
 
@@ -49,5 +50,9 @@ std::string fromHex(const std::string& s);
 std::string fileHexDigest
 (const SharedHandle<MessageDigest>& ctx, const std::string& filename);
 #endif // ENABLE_MESSAGE_DIGEST
+
+WrDiskCacheEntry::DataCell* createDataCell(int64_t goff,
+                                           const char* data,
+                                           size_t offset = 0);
 
 } // namespace aria2

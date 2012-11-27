@@ -57,6 +57,9 @@
 #include "DownloadContext.h"
 #include "PeerStorage.h"
 #include "array_fun.h"
+#include "WrDiskCache.h"
+#include "WrDiskCacheEntry.h"
+#include "DownloadFailureException.h"
 
 namespace aria2 {
 
@@ -119,8 +122,17 @@ void BtPieceMessage::doReceivedAction()
       A2_LOG_DEBUG("Already have this block.");
       return;
     }
-    getPieceStorage()->getDiskAdaptor()->writeData
-      (data_+9, blockLength_, offset);
+    if(piece->getWrDiskCacheEntry()) {
+      // Write Disk Cache enabled. Unfortunately, it incurs extra data
+      // copy.
+      unsigned char* dataCopy = new unsigned char[blockLength_];
+      memcpy(dataCopy, data_+9, blockLength_);
+      piece->updateWrCache(getPieceStorage()->getWrDiskCache(),
+                           dataCopy, 0, blockLength_, offset);
+    } else {
+      getPieceStorage()->getDiskAdaptor()->writeData(data_+9, blockLength_,
+                                                     offset);
+    }
     piece->completeBlock(slot.getBlockIndex());
     A2_LOG_DEBUG(fmt(MSG_PIECE_BITFIELD, getCuid(),
                      util::toHex(piece->getBitfield(),
@@ -234,16 +246,37 @@ bool BtPieceMessage::checkPieceHash(const SharedHandle<Piece>& piece)
     return
       piece->getDigest() == downloadContext_->getPieceHash(piece->getIndex());
   } else {
-    int64_t offset = static_cast<int64_t>(piece->getIndex())
-      *downloadContext_->getPieceLength();
-    return message_digest::staticSHA1Digest
-      (getPieceStorage()->getDiskAdaptor(), offset, piece->getLength())
-      == downloadContext_->getPieceHash(piece->getIndex());
+    A2_LOG_DEBUG(fmt("Calculating hash index=%lu",
+                     static_cast<unsigned long>(piece->getIndex())));
+    try {
+      return piece->getDigestWithWrCache(downloadContext_->getPieceLength(),
+                                         getPieceStorage()->getDiskAdaptor())
+        == downloadContext_->getPieceHash(piece->getIndex());
+    } catch(RecoverableException& e) {
+      piece->clearAllBlock();
+      if(piece->getWrDiskCacheEntry()) {
+        piece->clearWrCache(getPieceStorage()->getWrDiskCache());
+      }
+      throw;
+    }
   }
 }
 
 void BtPieceMessage::onNewPiece(const SharedHandle<Piece>& piece)
 {
+  if(piece->getWrDiskCacheEntry()) {
+    // We flush cached data whenever an whole piece is retrieved.
+     piece->flushWrCache(getPieceStorage()->getWrDiskCache());
+     if(piece->getWrDiskCacheEntry()->getError() !=
+        WrDiskCacheEntry::CACHE_ERR_SUCCESS) {
+       piece->clearAllBlock();
+       piece->clearWrCache(getPieceStorage()->getWrDiskCache());
+       throw DOWNLOAD_FAILURE_EXCEPTION2
+         (fmt("Write disk cache flush failure index=%lu",
+              static_cast<unsigned long>(piece->getIndex())),
+          piece->getWrDiskCacheEntry()->getErrorCode());
+     }
+  }
   A2_LOG_INFO(fmt(MSG_GOT_NEW_PIECE,
                   getCuid(),
                   static_cast<unsigned long>(piece->getIndex())));
@@ -256,27 +289,12 @@ void BtPieceMessage::onWrongPiece(const SharedHandle<Piece>& piece)
   A2_LOG_INFO(fmt(MSG_GOT_WRONG_PIECE,
                   getCuid(),
                   static_cast<unsigned long>(piece->getIndex())));
-  erasePieceOnDisk(piece);
+  if(piece->getWrDiskCacheEntry()) {
+    piece->clearWrCache(getPieceStorage()->getWrDiskCache());
+  }
   piece->clearAllBlock();
   piece->destroyHashContext();
   getBtRequestFactory()->removeTargetPiece(piece);
-}
-
-void BtPieceMessage::erasePieceOnDisk(const SharedHandle<Piece>& piece)
-{
-  size_t BUFSIZE = 4096;
-  unsigned char buf[BUFSIZE];
-  memset(buf, 0, BUFSIZE);
-  int64_t offset =
-    static_cast<int64_t>(piece->getIndex())*downloadContext_->getPieceLength();
-  div_t res = div(piece->getLength(), BUFSIZE);
-  for(int i = 0; i < res.quot; ++i) {
-    getPieceStorage()->getDiskAdaptor()->writeData(buf, BUFSIZE, offset);
-    offset += BUFSIZE;
-  }
-  if(res.rem > 0) {
-    getPieceStorage()->getDiskAdaptor()->writeData(buf, res.rem, offset);
-  }
 }
 
 void BtPieceMessage::onChokingEvent(const BtChokingEvent& event)

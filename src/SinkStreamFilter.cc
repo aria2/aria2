@@ -33,14 +33,20 @@
  */
 /* copyright --> */
 #include "SinkStreamFilter.h"
+
+#include <cstring>
+
 #include "BinaryStream.h"
 #include "Segment.h"
+#include "WrDiskCache.h"
+#include "Piece.h"
 
 namespace aria2 {
 
 const std::string SinkStreamFilter::NAME("SinkStreamFilter");
 
-SinkStreamFilter::SinkStreamFilter(bool hashUpdate):
+SinkStreamFilter::SinkStreamFilter(WrDiskCache* wrDiskCache, bool hashUpdate):
+  wrDiskCache_(wrDiskCache),
   hashUpdate_(hashUpdate),
   bytesProcessed_(0) {}
 
@@ -60,7 +66,16 @@ ssize_t SinkStreamFilter::transform
     } else {
       wlen = inlen;
     }
-    out->writeData(inbuf, wlen, segment->getPositionToWrite());
+    const SharedHandle<Piece>& piece = segment->getPiece();
+    if(piece && piece->getWrDiskCacheEntry()) {
+      assert(wrDiskCache_);
+      unsigned char* dataCopy = new unsigned char[wlen];
+      memcpy(dataCopy, inbuf, wlen);
+      piece->updateWrCache(wrDiskCache_, dataCopy, 0, wlen,
+                           segment->getPositionToWrite());
+    } else {
+      out->writeData(inbuf, wlen, segment->getPositionToWrite());
+    }
 #ifdef ENABLE_MESSAGE_DIGEST
     if(hashUpdate_) {
       segment->updateHash(segment->getWrittenLength(), inbuf, wlen);

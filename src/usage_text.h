@@ -914,3 +914,15 @@
     "                              if the download is completed or removed. This\n" \
     "                              may be useful to save BitTorrent seeding which\n" \
     "                              is recognized as completed state.")
+#define TEXT_DISK_CACHE                         \
+  _(" --disk-cache=SIZE            Enable disk cache. If SIZE is 0, the disk cache\n" \
+    "                              is disabled. This feature caches the downloaded\n" \
+    "                              data in memory, which grows to at most SIZE\n" \
+    "                              bytes. The cache storage is created for aria2\n" \
+    "                              instance and shared by all downloads. The one\n" \
+    "                              advantage of the disk cache is reduce the disk\n" \
+    "                              seek time because the data is written in larger\n" \
+    "                              unit and it is reordered by the offset of the\n" \
+    "                              file. If the underlying file is heavily\n" \
+    "                              fragmented it is not the case.\n"    \
+    "                              SIZE can include K or M(1K = 1024, 1M = 1024K).")

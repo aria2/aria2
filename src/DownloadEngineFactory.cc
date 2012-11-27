@@ -137,6 +137,7 @@ DownloadEngineFactory::newDownloadEngine
   SharedHandle<RequestGroupMan>
     requestGroupMan(new RequestGroupMan(requestGroups, MAX_CONCURRENT_DOWNLOADS,
                                         op));
+  requestGroupMan->initWrDiskCache();
   e->setRequestGroupMan(requestGroupMan);
   e->setFileAllocationMan
     (SharedHandle<FileAllocationMan>(new FileAllocationMan()));

@@ -281,6 +281,8 @@ extern const Pref* PREF_STOP_WITH_PROCESS;
 extern const Pref* PREF_ENABLE_MMAP;
 // value: true | false
 extern const Pref* PREF_FORCE_SAVE;
+// value: 1*digit
+extern const Pref* PREF_DISK_CACHE;
 
 /**
  * FTP related preferences

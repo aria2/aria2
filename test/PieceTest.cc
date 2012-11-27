@@ -5,6 +5,9 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "util.h"
+#include "DirectDiskAdaptor.h"
+#include "ByteArrayDiskWriter.h"
+#include "WrDiskCache.h"
 
 namespace aria2 {
 
@@ -13,24 +16,33 @@ class PieceTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(PieceTest);
   CPPUNIT_TEST(testCompleteBlock);
   CPPUNIT_TEST(testGetCompletedLength);
-
+  CPPUNIT_TEST(testFlushWrCache);
 #ifdef ENABLE_MESSAGE_DIGEST
 
+  CPPUNIT_TEST(testGetDigestWithWrCache);
   CPPUNIT_TEST(testUpdateHash);
 
 #endif // ENABLE_MESSAGE_DIGEST
 
   CPPUNIT_TEST_SUITE_END();
 private:
-
+  SharedHandle<DirectDiskAdaptor> adaptor_;
+  SharedHandle<ByteArrayDiskWriter> writer_;
 public:
-  void setUp() {}
+  void setUp()
+  {
+    adaptor_.reset(new DirectDiskAdaptor());
+    writer_.reset(new ByteArrayDiskWriter());
+    adaptor_->setDiskWriter(writer_);
+  }
 
   void testCompleteBlock();
   void testGetCompletedLength();
+  void testFlushWrCache();
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
+  void testGetDigestWithWrCache();
   void testUpdateHash();
 
 #endif // ENABLE_MESSAGE_DIGEST
@@ -62,7 +74,57 @@ void PieceTest::testGetCompletedLength()
   CPPUNIT_ASSERT_EQUAL(blockLength*3+100, p.getCompletedLength());
 }
 
+void PieceTest::testFlushWrCache()
+{
+  unsigned char* data;
+  Piece p(0, 1024);
+  WrDiskCache dc(64);
+  p.initWrCache(&dc, adaptor_);
+  data = new unsigned char[3];
+  memcpy(data, "foo", 3);
+  p.updateWrCache(&dc, data, 0, 3, 0);
+  data = new unsigned char[4];
+  memcpy(data, " bar", 4);
+  p.updateWrCache(&dc, data, 0, 4, 3);
+  p.flushWrCache(&dc);
+
+  CPPUNIT_ASSERT_EQUAL(std::string("foo bar"), writer_->getString());
+
+  data = new unsigned char[3];
+  memcpy(data, "foo", 3);
+  p.updateWrCache(&dc, data, 0, 3, 0);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, dc.getSize());
+  p.clearWrCache(&dc);
+  CPPUNIT_ASSERT_EQUAL((size_t)0, dc.getSize());
+  p.releaseWrCache(&dc);
+  CPPUNIT_ASSERT(!p.getWrDiskCacheEntry());
+}
+
 #ifdef ENABLE_MESSAGE_DIGEST
+
+void PieceTest::testGetDigestWithWrCache()
+{
+  unsigned char* data;
+  Piece p(0, 26);
+  p.setHashType("sha-1");
+  WrDiskCache dc(64);
+  //                  012345678901234567890123456
+  writer_->setString("abcde...ijklmnopq...uvwx.z");
+  p.initWrCache(&dc, adaptor_);
+  data = new unsigned char[3];
+  memcpy(data, "fgh", 3);
+  p.updateWrCache(&dc, data, 0, 3, 5);
+  data = new unsigned char[3];
+  memcpy(data, "rst", 3);
+  p.updateWrCache(&dc, data, 0, 3, 17);
+  data = new unsigned char[1];
+  memcpy(data, "y", 1);
+  p.updateWrCache(&dc, data, 0, 1, 24);
+
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("32d10c7b8cf96570ca04ce37f2a19d84240d3a89"),
+     util::toHex(p.getDigestWithWrCache(p.getLength(), adaptor_)));
+}
 
 void PieceTest::testUpdateHash()
 {

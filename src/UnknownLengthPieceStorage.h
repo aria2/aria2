@@ -231,6 +231,10 @@ public:
 
   virtual SharedHandle<DiskAdaptor> getDiskAdaptor();
 
+  virtual WrDiskCache* getWrDiskCache() { return 0; }
+
+  virtual void flushWrDiskCacheEntry() {}
+
   virtual int32_t getPieceLength(size_t index);
 
   /**

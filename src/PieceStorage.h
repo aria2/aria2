@@ -51,6 +51,7 @@ class Piece;
 class Peer;
 #endif // ENABLE_BITTORRENT
 class DiskAdaptor;
+class WrDiskCache;
 
 class PieceStorage {
 public:
@@ -227,6 +228,11 @@ public:
   virtual void setEndGamePieceNum(size_t num) = 0;
 
   virtual SharedHandle<DiskAdaptor> getDiskAdaptor() = 0;
+
+  virtual WrDiskCache* getWrDiskCache() = 0;
+
+  // Flushes write disk cache for in-flight piece and evicts them.
+  virtual void flushWrDiskCacheEntry() = 0;
 
   virtual int32_t getPieceLength(size_t index) = 0;
 

@@ -92,6 +92,8 @@ private:
 
   SharedHandle<PieceSelector> pieceSelector_;
   SharedHandle<StreamPieceSelector> streamPieceSelector_;
+
+  WrDiskCache* wrDiskCache_;
 #ifdef ENABLE_BITTORRENT
   void getMissingPiece
   (std::vector<SharedHandle<Piece> >& pieces,
@@ -242,6 +244,10 @@ public:
 
   virtual SharedHandle<DiskAdaptor> getDiskAdaptor();
 
+  virtual WrDiskCache* getWrDiskCache();
+
+  virtual void flushWrDiskCacheEntry();
+
   virtual int32_t getPieceLength(size_t index);
 
   virtual void advertisePiece(cuid_t cuid, size_t index);
@@ -303,6 +309,11 @@ public:
   const SharedHandle<PieceSelector>& getPieceSelector() const
   {
     return pieceSelector_;
+  }
+
+  void setWrDiskCache(WrDiskCache* wrDiskCache)
+  {
+    wrDiskCache_ = wrDiskCache;
   }
 };
 

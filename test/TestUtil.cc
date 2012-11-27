@@ -91,4 +91,18 @@ std::string fileHexDigest
 }
 #endif // ENABLE_MESSAGE_DIGEST
 
+WrDiskCacheEntry::DataCell* createDataCell(int64_t goff,
+                                           const char* data,
+                                           size_t offset)
+{
+  WrDiskCacheEntry::DataCell* cell = new WrDiskCacheEntry::DataCell();
+  cell->goff = goff;
+  size_t len = strlen(data);
+  cell->data = new unsigned char[len];
+  memcpy(cell->data, data, len);
+  cell->offset = offset;
+  cell->len = len;
+  return cell;
+}
+
 } // namespace aria2

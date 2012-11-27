@@ -210,6 +210,7 @@ error_code::Value RequestGroup::downloadResult() const
 void RequestGroup::closeFile()
 {
   if(pieceStorage_) {
+    pieceStorage_->flushWrDiskCacheEntry();
     pieceStorage_->getDiskAdaptor()->closeFile();
   }
 }
@@ -621,6 +622,9 @@ void RequestGroup::initPieceStorage()
       new DefaultPieceStorage(downloadContext_, option_.get());
     SharedHandle<PieceStorage> psHolder(ps);
 #endif // !ENABLE_BITTORRENT
+    if(requestGroupMan_) {
+      ps->setWrDiskCache(requestGroupMan_->getWrDiskCache());
+    }
     if(diskWriterFactory_) {
       ps->setDiskWriterFactory(diskWriterFactory_);
     }

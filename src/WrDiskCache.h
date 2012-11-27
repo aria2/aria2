@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2010 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,55 +32,52 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_SINK_STREAM_FILTER_H
-#define D_SINK_STREAM_FILTER_H
+#ifndef D_WR_DISK_CACHE_H
+#define D_WR_DISK_CACHE_H
 
-#include "StreamFilter.h"
+#include "common.h"
+
+#include <set>
+
+#include "a2functional.h"
 
 namespace aria2 {
 
-class WrDiskCache;
+class WrDiskCacheEntry;
 
-class SinkStreamFilter:public StreamFilter {
-private:
-  WrDiskCache* wrDiskCache_;
-  bool hashUpdate_;
-  size_t bytesProcessed_;
+class WrDiskCache {
 public:
-  SinkStreamFilter(WrDiskCache* wrDiskCache = 0, bool hashUpdate = false);
-
-  virtual void init() {}
-
-  virtual ssize_t transform
-  (const SharedHandle<BinaryStream>& out,
-   const SharedHandle<Segment>& segment,
-   const unsigned char* inbuf, size_t inlen);
-
-  virtual bool finished()
+  WrDiskCache(size_t limit);
+  ~WrDiskCache();
+  // Adds the cache entry |ent| to the storage. The size of cached
+  // data of ent is added to total_.
+  bool add(WrDiskCacheEntry* ent);
+  // Removes the cache entry |ent| from the stroage. The size of
+  // cached data of ent is subtracted from total_.
+  bool remove(WrDiskCacheEntry* ent);
+  // Updates the already added entry |ent|. The |delta| means how many
+  // bytes is increased in this update. If the size is reduced, use
+  // negative value.
+  bool update(WrDiskCacheEntry* ent, ssize_t delta);
+  // Evicts entries from storage so that total size of cache is kept
+  // under the limit.
+  void ensureLimit();
+  size_t getSize() const
   {
-    return true;
+    return total_;
   }
-
-  virtual void release() {}
-
-  virtual const std::string& getName() const
-  {
-    return NAME;
-  }
-
-  static const std::string NAME;
-
-  virtual size_t getBytesProcessed() const
-  {
-    return bytesProcessed_;
-  }
-
-  virtual bool installDelegate(const SharedHandle<StreamFilter>& filter)
-  {
-    return false;
-  }
+private:
+  typedef std::set<WrDiskCacheEntry*,
+                   DerefLess<WrDiskCacheEntry*> > EntrySet;
+  // Maximum number of bytes the storage can cache.
+  size_t limit_;
+  // Current number of bytes cached.
+  size_t total_;
+  EntrySet set_;
+  int64_t clock_;
 };
 
 } // namespace aria2
 
-#endif // D_SINK_STREAM_FILTER_H
+#endif // D_WR_DISK_CACHE_H
+
