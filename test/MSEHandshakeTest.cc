@@ -53,6 +53,7 @@ createSocketPair()
   SocketCore receiverServerSock;
   receiverServerSock.bind(0);
   receiverServerSock.beginListen();
+  receiverServerSock.setBlockingMode();
 
   std::pair<std::string, uint16_t> receiverAddrInfo;
   receiverServerSock.getAddrInfo(receiverAddrInfo);

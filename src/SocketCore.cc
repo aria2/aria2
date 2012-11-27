@@ -353,6 +353,7 @@ void SocketCore::beginListen()
     int errNum = SOCKET_ERRNO;
     throw DL_ABORT_EX(fmt(EX_SOCKET_LISTEN, errorMsg(errNum).c_str()));
   }
+  setNonBlockingMode();
 }
 
 SharedHandle<SocketCore> SocketCore::acceptConnection() const

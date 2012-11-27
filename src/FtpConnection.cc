@@ -206,7 +206,6 @@ SharedHandle<SocketCore> FtpConnection::createServerSocket()
   SharedHandle<SocketCore> serverSocket(new SocketCore());
   serverSocket->bind(addrinfo.first.c_str(), 0, AF_UNSPEC);
   serverSocket->beginListen();
-  serverSocket->setNonBlockingMode();
   return serverSocket;
 }
 
