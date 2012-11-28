@@ -118,6 +118,9 @@ int openFileWithFlags(const std::string& filename, int flags,
                                    util::safeStrerror(errNum).c_str()),
                        errCode);
   }
+#if defined(__APPLE__) && defined(__MACH__)
+  fcntl(fd, F_GLOBAL_NOCACHE, 1);
+#endif // __APPLE__ && __MACH__
   return fd;
 }
 } // namespace
