@@ -104,6 +104,24 @@ void AbstractDiskWriter::closeFile()
   }
 }
 
+namespace {
+int openFileWithFlags(const std::string& filename, int flags,
+                      error_code::Value errCode)
+{
+  int fd;
+  while((fd = a2open(utf8ToWChar(filename).c_str(), flags, OPEN_MODE)) == -1
+        && errno == EINTR);
+  if(fd < 0) {
+    int errNum = errno;
+    throw DL_ABORT_EX3(errNum, fmt(EX_FILE_OPEN,
+                                   filename.c_str(),
+                                   util::safeStrerror(errNum).c_str()),
+                       errCode);
+  }
+  return fd;
+}
+} // namespace
+
 void AbstractDiskWriter::openExistingFile(int64_t totalLength)
 {
   int flags = O_BINARY;
@@ -112,37 +130,15 @@ void AbstractDiskWriter::openExistingFile(int64_t totalLength)
   } else {
     flags |= O_RDWR;
   }
-  while((fd_ = a2open(utf8ToWChar(filename_).c_str(),
-                      flags, OPEN_MODE)) == -1 &&
-        errno == EINTR);
-  if(fd_ < 0) {
-    int errNum = errno;
-    throw DL_ABORT_EX3
-      (errNum,
-       fmt(EX_FILE_OPEN,
-           filename_.c_str(),
-           util::safeStrerror(errNum).c_str()),
-       error_code::FILE_OPEN_ERROR);
-  }
+  fd_ = openFileWithFlags(filename_, flags, error_code::FILE_OPEN_ERROR);
 }
 
 void AbstractDiskWriter::createFile(int addFlags)
 {
   assert(!filename_.empty());
   util::mkdirs(File(filename_).getDirname());
-
-  while((fd_ = a2open(utf8ToWChar(filename_).c_str(),
-                      O_CREAT|O_RDWR|O_TRUNC|O_BINARY|addFlags,
-                      OPEN_MODE)) == -1 && errno == EINTR);
-  if(fd_ < 0) {
-    int errNum = errno;
-    throw DL_ABORT_EX3
-      (errNum,
-       fmt(EX_FILE_OPEN,
-           filename_.c_str(),
-           util::safeStrerror(errNum).c_str()),
-       error_code::FILE_CREATE_ERROR);
-  }
+  fd_ = openFileWithFlags(filename_, O_CREAT|O_RDWR|O_TRUNC|O_BINARY|addFlags,
+                          error_code::FILE_CREATE_ERROR);
 }
 
 ssize_t AbstractDiskWriter::writeDataInternal(const unsigned char* data,
