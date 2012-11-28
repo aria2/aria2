@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: aria2 1.15.2\n"
+"Project-Id-Version: aria2 1.16.0\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2012-10-17 21:33+0900\n"
+"POT-Creation-Date: 2012-11-28 23:45+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,47 +36,47 @@ msgid ""
 "page for details."
 msgstr ""
 
-#: src/MultiUrlRequestInfo.cc:272
+#: src/MultiUrlRequestInfo.cc:273
 #, c-format
 msgid "Serialized session to '%s' successfully."
 msgstr ""
 
-#: src/MultiUrlRequestInfo.cc:275
+#: src/MultiUrlRequestInfo.cc:276
 #, c-format
 msgid "Failed to serialize session to '%s'."
 msgstr ""
 
-#: src/RequestGroupMan.cc:399
+#: src/RequestGroupMan.cc:398
 #, c-format
 msgid "Download GID#%<PRId64> paused"
 msgstr ""
 
-#: src/RequestGroupMan.cc:445
+#: src/RequestGroupMan.cc:444
 #, c-format
 msgid "Download GID#%<PRId64> not complete: %s"
 msgstr ""
 
-#: src/RequestGroupMan.cc:726
+#: src/RequestGroupMan.cc:725
 msgid "Download Results:"
 msgstr ""
 
-#: src/RequestGroupMan.cc:769
+#: src/RequestGroupMan.cc:768
 msgid "Status Legend:"
 msgstr ""
 
-#: src/RequestGroupMan.cc:771
+#: src/RequestGroupMan.cc:770
 msgid "(OK):download completed."
 msgstr ""
 
-#: src/RequestGroupMan.cc:774
+#: src/RequestGroupMan.cc:773
 msgid "(ERR):error occurred."
 msgstr ""
 
-#: src/RequestGroupMan.cc:777
+#: src/RequestGroupMan.cc:776
 msgid "(INPR):download in-progress."
 msgstr ""
 
-#: src/RequestGroupMan.cc:780
+#: src/RequestGroupMan.cc:779
 msgid "(RM):download removed."
 msgstr ""
 
@@ -1705,6 +1705,15 @@ msgid ""
 "                              --save-session option."
 msgstr ""
 
+#: src/usage_text.h:913
+msgid ""
+" --force-save[=true|false]    Save download with --save-session option even\n"
+"                              if the download is completed or removed. This\n"
+"                              may be useful to save BitTorrent seeding "
+"which\n"
+"                              is recognized as completed state."
+msgstr ""
+
 #: src/version_usage.cc:57
 msgid " version "
 msgstr ""
@@ -1898,22 +1907,22 @@ msgid ""
 "%d was:%d)"
 msgstr ""
 
-#: src/BtStopDownloadCommand.cc:64
+#: src/BtStopDownloadCommand.cc:65
 #, c-format
 msgid "GID#%<PRId64> Stop downloading torrent due to --bt-stop-timeout option."
 msgstr ""
 
-#: src/DHTConnectionImpl.cc:89
+#: src/DHTConnectionImpl.cc:85
 #, c-format
 msgid "IPv%d DHT: listening to port %u"
 msgstr ""
 
-#: src/HttpListenCommand.cc:114
+#: src/HttpListenCommand.cc:112
 #, c-format
 msgid "IPv%d RPC: listening to port %u"
 msgstr ""
 
-#: src/PeerListenCommand.cc:83
+#: src/PeerListenCommand.cc:82
 #, c-format
 msgid "IPv%d BitTorrent: listening to port %u"
 msgstr ""
