@@ -43,7 +43,12 @@ namespace aria2 {
 class AbstractDiskWriter : public DiskWriter {
 private:
   std::string filename_;
+
+#ifdef __MINGW32__
+  HANDLE fd_;
+#else // !__MINGW32__
   int fd_;
+#endif // !__MINGW32__
 
   bool readOnly_;
 
