@@ -829,6 +829,8 @@ void SocketCore::readData(char* data, size_t& len)
   len = ret;
 }
 
+#ifdef ENABLE_SSL
+
 bool SocketCore::tlsAccept()
 {
   return tlsHandshake(svTlsContext_.get(), A2STR::NIL);
@@ -1161,6 +1163,8 @@ bool SocketCore::tlsHandshake(TLSContext* tlsctx, const std::string& hostname)
 #endif // HAVE_LIBGNUTLS
   return true;
 }
+
+#endif // ENABLE_SSL
 
 ssize_t SocketCore::writeData(const char* data, size_t len,
                               const std::string& host, uint16_t port)

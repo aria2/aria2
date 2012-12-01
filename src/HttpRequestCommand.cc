@@ -128,6 +128,7 @@ bool HttpRequestCommand::executeInternal() {
         getRequest()->getConnectedAddr(), getRequest()->getConnectedPort())) {
       return true;
     }
+#ifdef ENABLE_SSL
     if(getRequest()->getProtocol() == "https") {
       if(!getSocket()->tlsConnect(getRequest()->getHost())) {
         setReadCheckSocketIf(getSocket(), getSocket()->wantRead());
@@ -136,6 +137,7 @@ bool HttpRequestCommand::executeInternal() {
         return false;
       }
     }
+#endif // ENABLE_SSL
     if(getSegments().empty()) {
       SharedHandle<HttpRequest> httpRequest
         (createHttpRequest(getRequest(),

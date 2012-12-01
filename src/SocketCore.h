@@ -109,14 +109,15 @@ private:
 
   void setSockOpt(int level, int optname, void* optval, socklen_t optlen);
 
+#ifdef ENABLE_SSL
   /**
-   * Makes this socket secure.
-   * If the system has not OpenSSL, then this method do nothing.
-   * connection must be established  before calling this method.
+   * Makes this socket secure. The connection must be established
+   * before calling this method.
    *
    * If you are going to verify peer's certificate, hostname must be supplied.
    */
   bool tlsHandshake(TLSContext* tlsctx, const std::string& hostname);
+#endif // ENABLE_SSL
 
   SocketCore(sock_t sockfd, int sockType);
 public:
@@ -305,6 +306,7 @@ public:
     return readDataFrom(reinterpret_cast<char*>(data), len, sender);
   }
 
+#ifdef ENABLE_SSL
   // Performs TLS server side handshake. If handshake is completed,
   // returns true. If handshake has not been done yet, returns false.
   bool tlsAccept();
@@ -315,6 +317,7 @@ public:
   // If you are going to verify peer's certificate, hostname must be
   // supplied.
   bool tlsConnect(const std::string& hostname);
+#endif // ENABLE_SSL
 
   bool operator==(const SocketCore& s) {
     return sockfd_ == s.sockfd_;

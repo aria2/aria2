@@ -178,6 +178,7 @@ bool HttpServerCommand::execute()
        !httpServer_->getSocketRecvBuffer()->bufferEmpty()) {
       timeoutTimer_ = global::wallclock();
 
+#ifdef ENABLE_SSL
       if(httpServer_->getSecure()) {
         // tlsAccept() just returns true if handshake has already
         // finished.
@@ -187,6 +188,7 @@ bool HttpServerCommand::execute()
           return false;
         }
       }
+#endif // ENABLE_SSL
 
       SharedHandle<HttpHeader> header;
       header = httpServer_->receiveRequest();
