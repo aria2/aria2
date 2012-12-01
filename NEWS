@@ -1,202 +1,128 @@
-aria2 1.15.2
+aria2 1.16.0
 ============
 
 Release Note
 ------------
 
-This release fixes several critical bugs. It also adds new features
-such as TLS SNI and CORS support. The --file--allocation option now
-take another value trunc. The new option --enalbe-mmap was added.
-aria2 now uses system-wide SSL/TLS certificates by default, which
-eliminates the requirement to specify --ca-certificate option.
+This release adds SSL/TLS encryption support in RPC transport. The new
+RPC method aria2.appendUri is added, which is a wrapper to
+aria2.changeUri. The Content-Disposition parser is now RFC 6266
+conformant. The resource leak in XmlParser, JSON and Bencode parser
+was fixed. The uploaded data size calculation bug was fixed. For
+MinGW32 build, files are now opened with read/write shared mode.
 
 Changes
 -------
 
-* Catch exception from Socket::getPeerInfo() when pooling connection.
-  Socket::getPeerInfo() may fail if its TCP connection has already
-  disconnected. In this case, we log this error. The success or
-  failure of pooling connection should not affect the later execution
-  of the program. This bug may cause segmentation fault if
-  Socket::getPeerInfo() throws exception during pooling connection
-  after successful tracker request.
+* mingw32: Open file using _wsopen and added --enable-mmap support
 
-* Fixed assertion error if --retry-wait is used.  In
-  CreateRequestCommand, if Request object returned from getRequest()
-  is still sleeping, CreateRequestCommand pools it back but still
-  holds its reference. This makes assertion error in
-  UnknownLengthPieceStroage::hasMissingUnusedPiece() from
-  AbstractCommand::execute().
+  I tried CreateFile but the subsequent ReadFile fails with Access
+  Denied if sparse file is read on NTFS. I mostly reverted previous
+  changes and use _wsopen with read/write share enabled instead of
+  CreateFile.
 
-* Added new file allocation method called 'trunc'. --file-allocation
-  option can now take new value 'trunc'. 'trunc' uses ftruncate()
-  system call or platform-specific counterpart to truncate a file to a
-  specified length.
+  This change also includes --enable-mmap support for MinGW32
+  build. Memory mapped file may be useful for 64-bits OS and lots of
+  RAM. Currently, FlushViewOfFile is not called during the download,
+  so it is slightly vulnerable against sudden power loss. I found lots
+  of read when resuming download due to page fault. So for now it is
+  useful for the initial download. I recommend not to use
+  --file-allocation=prealloc with --enable-mmap for MinGW32, because
+  it triggers page faults even in the initial download. Anyway, the
+  option is experimental.
 
-* Use int64_t instead of off_t.  Using off_t, at least, in DiskAdaptor
-  layer is problematic because torrent can contain under 2GiB files
-  but total sum of those files may exceed 2GiB limit, which makes
-  off_t overflow in 32 bit system without large file support. So we
-  use int64_t in API. We'll check the file length before download so
-  that it does not exceed max off_t.
+* Removed PO files and generated aria2.pot from repository
 
-* Added TLS SNI support.
+  Currently, message translation is done at launchpad.  All PO files
+  can be exported from there. The merge process from launchpad is done
+  when new release. First download export file from launchpad And use
+  import-po script to import PO files into po directory.
 
-* Rewritten timegm replacement function.  The algorithm is based on
-  Python 2.7 calendar.timegm.
+* Set F_GLOBAL_NOCACHE for Mac OS X
 
-* Use system-wide certificates for SSL.  Use system-wide certificates
-  for SSL.  For GnuTLS it requires the latest version, 3.0.20. OpenSSL
-  had it for longer.  This means that if SSL library is properly
-  configured to locate system-wide certificates store, the user don't
-  have to use --ca-certificate option. Also packagers don't have to
-  use --with-ca-bundle configure option.  Patch from Cristian Morales
-  Vega
+* Enabled TCP_NODELAY
 
-* Fixed base64::decode() return "" if input ends with garbage and no
-  padding.
+* Don't use AC_FUNC_MMAP
 
-* Changed default Peer ID prefix. The new Peer ID prefix is
-  "A2-$MAJOR-$MINOR-$MICRO-", where $MAJOR, $MINOR and $MICRO are the
-  major version, the minor version and the micro version
-  respectively. For instance, 1.15.2 release of aria2 will use
-  "A2-1-15-2-".
+  Don't use AC_FUNC_MMAP becaue it fails on some platforms (e.g.,
+  OpenWRT) which have mmap and it works in the way we use in aria2.
+  Instead use mmap in AC_CHECK_FUNCS list.
 
-* Don't percent-decode filename value in Content-Disposition.  We only
-  percent-decode filename* value in Content-Disposition because the
-  encoding is fully specified. But since filename value is not, so we
-  just accept it as is.
+* Added --force-save option.
 
-* Don't sum in-flight piece which does not intersect filtered ranges.
-  When calculating completed length, don't sum the completed length of
-  piece which does not intersect filtered ranges.
+  --force-save option saves download with --save-session option even
+  if the download is completed or removed. This may be useful to save
+  BitTorrent seeding which is recognized as completed state.  The
+  default value is false.
 
-* Fixed segmentation fault when logger failed to open log file.
+* Get the correct uploaded data size
 
-* Added ARIA2_STATIC precious variable to configure option.  To build
-  statically linked aria2 binary, give ARIA2_STATIC=yes to configure,
-  like this:
-  $ ./configure ARIA2_STATIC=yes
+  Subtract msgHdrLen_ from writtenLength to get the uploaded data
+  size.  Without this correction, the seeder assumes it has uploaded
+  more data than it actually has.
 
-* Use PRId64 for int64_t format specifier
+* Made --http-no-cache false by default
 
-* Handle the case when MINGW32 vsnprintf returns -1. MINGW32 vsnprintf
-  returns -1 if output is truncated.  Increased buffer for vsnprintf
-  in WinConsoleFile and fmt.
+* Fixed memory leak in AsyncNameResolver
 
-* Added --enable-mmap option.  If this option is used, map files into
-  memory using mmap(2).  This option is experimental.
+* Fixed resource leak in XmlParser and GenericParser
 
-* Added CORS preflight request support in RPC interface. This change
-  is based on the patch from binux.
+* Reset iostream format state
 
-
+* gnutls: Added more status checking when verifying peer
 
-aria2 1.15.1
-============
+* Content-Disposition parser conforming to RFC 6266.
 
-Release Note
-------------
+  RFC 2231 Continuation is not supported.
 
-This release fixes the bug that prevents --bt-lpd-interface from
-working. If some options sent by RPC request are not acceptable for
-the download type, they are now simply ignored instead of rejecting
-RPC request entirely. The aria2 RPC server now returns 4XX error code
-if the request is not valid in the HTTP level. To improve packaging,
---with-bashcompletiondir configure option was added. This option
-overrides where the aria2c bash_completion file is going to be
-installed. All manual pages are now generated by Sphinx.
+* Reworked download/upload statistics calculation
 
-Changes
--------
+  The old implementation calculates download/upload statistics for a
+  RequestGroup by summing up all PeerStat objects. For global
+  statistics, those are summed together. This clearly incurs runtime
+  penalty and we introduced some kind of caching which updates
+  statistics every 250ms but it did not work right.
 
-* Return appropriate HTTP status code on RPC failure.  In this change,
-  we return 404 if the request path is neither /json-rpc nor /rpc. If
-  XML feature is not enabled and /rpc is requested, return 404.  If
-  XML parser failed, return 400. JSON parser failure has been handled
-  well in the existing code.
+  This change removes all these aggregation code, and instead makes
+  RequestGroup and RequestGroupMan objects hold NetStat object and
+  download/upload bytes are directly calculated by thier own NetStat.
+  This is far more simplar than the old way and less runtime penalty
+  and brings more accuracy.
 
-* Ignore unacceptable options in RPC request instead of throwing
-  error.  This change allows RPC client to send same options for the
-  different type of downloads.
+* Added --rpc-save-upload-metadata option
 
-* Handle sockaddr_in.sin_len and sockaddr_in6.sin6_len.  Check
-  sockaddr_in.sin_len and sockaddr_in6.sin6_len are available and
-  assign values to them properly.  This change fixes unit test error
-  and most error related to getnameinfo() on netbsd.
+  If true is given, which is default, save the uploaded torrent or
+  metalink metadata in the directory specified by --dir option. The
+  filename consists of SHA1-hash hex string of metadata plus
+  extension. For torrent, the extension is '.torrent'. For metalink,
+  it is '.meta4'.  If false is given to this option, the downloads
+  added by aria2.addTorrent or aria2.addMetalink will not be saved by
+  --save-session option.
 
-* Removed dependency on inet_aton.  Implemented inetPton as a
-  replacement of inet_aton. inetPton is implemented using
-  net::getBinAddr.  This change fixes bug#3525424.
+* Perform SSL/TLS handshake after checking whether connection is established
 
-* Added --with-bashcompletiondir configure option.  By default,
-  bash_completion file named aria2c is installed to the directory
-  $prefix/share/doc/aria2/bash_completion.  To change the install
-  directory of the file, use --with-bashcompletiondir option.
+* Fixed bug that --enable-mmap won't work if MultiDiskAdaptor is used
 
-* Converted README.asciidoc into README.rst
+* RPC over SSL/TLS transport
 
-* Use Sphinx for aria2 manual page documentation.  The source files
-  for manual pages are placed under doc/manual-src.  The manual pages
-  are generated under doc/manual-src/$LANG/_build. The HTML version
-  manual page was dropped from the distribution archive.
+  To enable RPC over SSL/TLS, specify server certificate and private
+  key using --rpc-certificate and --rpc-private-key options and enable
+  --rpc-secure option.  After the encryption is enabled, use https and
+  wss scheme to access RPC server.
 
-* Fixed the bug which prevents --bt-lpd-interface from working.
-  Fixes bug#3520125
+* aria2rpc: Added appendUri command
 
-
+  This command calls aria2.changeUri(GID, fileIndex, [], [URI,...])
+  internally.
 
-aria2 1.15.0
-============
+* Don't send Proxy-Connection header field
 
-Release Note
-------------
+* Don't set SNI hostname if it does not include "." for GNUTLS
 
-This release adds JSON-RPC over WebSocket. It uses the same
-request/response JSON objects with existing JSON-RPC over HTTP and
-adds event notifications from server to client. See manpage for
-details. TLS hostname check is rewritten based on RFC 6125 and it is
-used for both GNUTLS and OpenSSL builds. The
---bt-remove-unselected-file option was added. This option removes the
-unselected files when BitTorrent download is completed.
+* Disable SSL/TLS compression with OpenSSL
 
-Changes
--------
+* Pause download even if download is completed
 
-* Use CreateProcessW instead of CreateProcessA in MinGW build.  This
-  means filename is now passed as wchar string, not UTF-8 encoded char
-  string.
+  This allows to pause and unpause BitTorrent seed.
 
-* Check with pkg-config only: c-ares, openssl, sqlite3 and zlib.
-  Removed --with-*-prefix configure option for c-ares, openssl,
-  sqlite3, zlib and expat. Use CPPFLAGS and/or PKG_CONFIG_PATH
-  instead.
-
-* Fixed compile error with i686-w64-mingw32 and x86_64-w64-mingw32
-  cross compilers.
-
-* Get the home directory of the effective user ID using getpwuid() if
-  $HOME is not defined.
-
-* Don't use locale dependent toupper and tolower.
-
-* Rewritten TLS hostname check based on RFC 6125 for both GNUTLS and
-  OpenSSL builds.
-
-* Added --bt-remove-unselected-file option.  Removes the unselected
-  files when download is completed in BitTorrent. To select files, use
-  --select-file option. If it is not used, all files are assumed to be
-  selected. Please use this option with care because it will actually
-  remove files from your disk.  This option is default to false.
-
-* Fixed compile error on Open Solaris. Fixes bug#3497518
-
-* Added JSON-RPC over WebSocket.
-
-* Fixed assertion failure if Chunked encoding along with
-  Content-Length is used.
-
-* Fixed clang and gcc-4.7 warning and errors.
-
-* Fixed the bug that aria2 cannot read line longer than 4096 bytes
-  from the file specified by --input-file option. Fixes bug#3495336
+* Use execlp() instead of execl()
