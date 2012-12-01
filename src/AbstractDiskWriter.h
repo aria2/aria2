@@ -44,15 +44,18 @@ class AbstractDiskWriter : public DiskWriter {
 private:
   std::string filename_;
 
-#ifdef __MINGW32__
-  HANDLE fd_;
-#else // !__MINGW32__
   int fd_;
-#endif // !__MINGW32__
 
   bool readOnly_;
 
   bool enableMmap_;
+#ifdef __MINGW32__
+  // This handle is retrieved from fd_ using _get_osfhandle(). It is
+  // used for Win32 API functions which only accept HANDLE.
+  HANDLE hn_;
+  // The handle for memory mapped file. mmap equivalent in Windows.
+  HANDLE mapView_;
+#endif // __MINGW32__
   unsigned char* mapaddr_;
   int64_t maplen_;
 

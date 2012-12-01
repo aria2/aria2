@@ -338,7 +338,10 @@ case "$host" in
                 AC_CHECK_HEADERS([windows.h \
 				  winsock2.h \
                                   ws2tcpip.h \
-				  mmsystem.h], [], [],
+				  mmsystem.h \
+                                  io.h \
+                                  winioctl.h \
+                                  share.h], [], [],
 [[#ifdef HAVE_WINDOWS_H
 # include <windows.h>
 #endif
@@ -351,7 +354,6 @@ AC_CHECK_HEADERS([argz.h \
                   fcntl.h \
                   float.h \
                   inttypes.h \
-                  io.h \
                   langinfo.h \
                   libintl.h \
                   limits.h \

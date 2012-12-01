@@ -46,6 +46,12 @@
 #ifdef HAVE_IO_H
 # include <io.h>
 #endif // HAVE_IO_H
+#ifdef HAVE_WINIOCTL_H
+# include <winioctl.h>
+#endif // HAVE_WINIOCTL_H
+#ifdef HAVE_SHARE_H
+# include <share.h>
+#endif // HAVE_SHARE_H
 
 // in some platforms following definitions are missing:
 #ifndef EINPROGRESS
@@ -132,8 +138,9 @@
 # define a2unlink(path) _wunlink(path)
 # define a2rmdir(path) _wrmdir(path)
 # define a2rename(src, dest) _wrename(src, dest)
-# define a2open(path, flags, mode) _wopen(path, flags, mode)
-# define a2fopen(path, mode) _wfopen(path, mode)
+// For Windows, we share files for reading and writing.
+# define a2open(path, flags, mode) _wsopen(path, flags, _SH_DENYNO, mode)
+# define a2fopen(path, mode) _wfsopen(path, mode, _SH_DENYNO)
 #else // !__MINGW32__
 # define a2lseek(fd, offset, origin) lseek(fd, offset, origin)
 # define a2fseek(fp, offset, origin) fseek(fp, offset, origin)

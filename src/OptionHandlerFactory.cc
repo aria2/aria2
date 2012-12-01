@@ -293,7 +293,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_FILE);
     handlers.push_back(op);
   }
-#ifdef HAVE_MMAP
+#if defined HAVE_MMAP || defined __MINGW32__
   {
     OptionHandler* op(new BooleanOptionHandler
                       (PREF_ENABLE_MMAP,
@@ -307,7 +307,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
-#endif // HAVE_MMAP
+#endif // HAVE_MMAP || __MINGW32__
   {
     OptionHandler* op(new BooleanOptionHandler
                       (PREF_ENABLE_RPC,
