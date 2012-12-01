@@ -77,6 +77,7 @@
 #include "UriListParser.h"
 #include "SingletonHolder.h"
 #include "Notifier.h"
+#include "PeerStat.h"
 #ifdef ENABLE_BITTORRENT
 #  include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
