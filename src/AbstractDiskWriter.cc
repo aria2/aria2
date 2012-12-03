@@ -250,14 +250,6 @@ void AbstractDiskWriter::createFile(int addFlags)
                           error_code::FILE_CREATE_ERROR);
 #ifdef __MINGW32__
   hn_ = getWin32Handle(fd_);
-  // According to the documentation, the file is not sparse by default
-  // on NTFS.
-  DWORD bytesReturned;
-  if(!DeviceIoControl(hn_, FSCTL_SET_SPARSE, 0, 0, 0, 0, &bytesReturned, 0)) {
-    int errNum = GetLastError();
-    A2_LOG_WARN(fmt("Making file sparse failed or pending: %s",
-                    fileStrerror(errNum).c_str()));
-  }
 #endif // __MINGW32__
 }
 
