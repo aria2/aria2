@@ -42,7 +42,6 @@ class SinkStreamFilterTest:public CppUnit::TestFixture {
   };
 
   SharedHandle<SinkStreamFilter> filter_;
-  SharedHandle<SinkStreamFilter> sinkFilter_;
   SharedHandle<ByteArrayDiskWriter> writer_;
   SharedHandle<MockSegment2> segment_;
 
