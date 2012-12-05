@@ -112,12 +112,12 @@ void WrDiskCache::ensureLimit()
 {
   while(total_ > limit_) {
     EntrySet::iterator i = set_.begin();
-    total_ -= (*i)->getSize();
-    (*i)->writeToDisk();
     WrDiskCacheEntry* ent = *i;
     A2_LOG_DEBUG(fmt("Force flush cache entry size=%lu, clock=%"PRId64,
                      static_cast<unsigned long>(ent->getSizeKey()),
                      ent->getLastUpdate()));
+    total_ -= ent->getSize();
+    ent->writeToDisk();
     set_.erase(i);
 
     ent->setSizeKey(ent->getSize());
