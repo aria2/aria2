@@ -116,6 +116,7 @@ size_t WrDiskCacheEntry::append(int64_t goff, const unsigned char *data,
     size_t wlen = std::min((*i)->capacity - (*i)->len, len);
     memcpy((*i)->data + (*i)->offset + (*i)->len, data, wlen);
     (*i)->len += wlen;
+    size_ += wlen;
     return wlen;
   } else {
     return 0;

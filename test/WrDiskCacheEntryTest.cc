@@ -61,6 +61,7 @@ void WrDiskCacheEntryTest::testAppend()
   CPPUNIT_ASSERT_EQUAL((size_t)3,
                        e.append(3, (const unsigned char*)"barbaz", 6));
   CPPUNIT_ASSERT_EQUAL((size_t)6, cell->len);
+  CPPUNIT_ASSERT_EQUAL((size_t)6, e.getSize());
 
   CPPUNIT_ASSERT_EQUAL((size_t)0,
                        e.append(7, (const unsigned char*)"FOO", 3));
