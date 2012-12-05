@@ -319,6 +319,9 @@ void Piece::removeUser(cuid_t cuid)
 void Piece::initWrCache(WrDiskCache* diskCache,
                         const SharedHandle<DiskAdaptor>& diskAdaptor)
 {
+  if(!diskCache) {
+    return;
+  }
   assert(wrCache_ == 0);
   wrCache_ = new WrDiskCacheEntry(diskAdaptor);
   bool rv = diskCache->add(wrCache_);
@@ -327,6 +330,9 @@ void Piece::initWrCache(WrDiskCache* diskCache,
 
 void Piece::flushWrCache(WrDiskCache* diskCache)
 {
+  if(!diskCache) {
+    return;
+  }
   assert(wrCache_);
   ssize_t size = static_cast<ssize_t>(wrCache_->getSize());
   diskCache->update(wrCache_, -size);
@@ -335,6 +341,9 @@ void Piece::flushWrCache(WrDiskCache* diskCache)
 
 void Piece::clearWrCache(WrDiskCache* diskCache)
 {
+  if(!diskCache) {
+    return;
+  }
   assert(wrCache_);
   ssize_t size = static_cast<ssize_t>(wrCache_->getSize());
   diskCache->update(wrCache_, -size);
@@ -344,8 +353,11 @@ void Piece::clearWrCache(WrDiskCache* diskCache)
 void Piece::updateWrCache(WrDiskCache* diskCache, unsigned char* data,
                           size_t offset, size_t len, int64_t goff)
 {
-  A2_LOG_DEBUG(fmt("updateWrCache entry=%p", wrCache_));
+  if(!diskCache) {
+    return;
+  }
   assert(wrCache_);
+  A2_LOG_DEBUG(fmt("updateWrCache entry=%p", wrCache_));
   WrDiskCacheEntry::DataCell* cell = new WrDiskCacheEntry::DataCell();
   cell->goff = goff;
   cell->data = data;
@@ -360,7 +372,7 @@ void Piece::updateWrCache(WrDiskCache* diskCache, unsigned char* data,
 
 void Piece::releaseWrCache(WrDiskCache* diskCache)
 {
-  if(wrCache_) {
+  if(diskCache && wrCache_) {
     diskCache->remove(wrCache_);
     delete wrCache_;
     wrCache_ = 0;

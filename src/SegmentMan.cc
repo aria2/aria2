@@ -53,6 +53,8 @@
 #include "FileEntry.h"
 #include "wallclock.h"
 #include "fmt.h"
+#include "WrDiskCacheEntry.h"
+#include "DownloadFailureException.h"
 
 namespace aria2 {
 
@@ -112,6 +114,22 @@ void SegmentMan::setDownloadContext
   downloadContext_ = downloadContext;
 }
 
+namespace {
+void flushWrDiskCache(WrDiskCache* wrDiskCache,
+                      const SharedHandle<Piece>& piece)
+{
+  piece->flushWrCache(wrDiskCache);
+  if(piece->getWrDiskCacheEntry()->getError() !=
+     WrDiskCacheEntry::CACHE_ERR_SUCCESS) {
+    piece->clearAllBlock(wrDiskCache);
+    throw DOWNLOAD_FAILURE_EXCEPTION2
+      (fmt("Write disk cache flush failure index=%lu",
+           static_cast<unsigned long>(piece->getIndex())),
+       piece->getWrDiskCacheEntry()->getErrorCode());
+  }
+}
+} // namespace
+
 SharedHandle<Segment> SegmentMan::checkoutSegment
 (cuid_t cuid, const SharedHandle<Piece>& piece)
 {
@@ -121,6 +139,15 @@ SharedHandle<Segment> SegmentMan::checkoutSegment
   A2_LOG_DEBUG(fmt("Attach segment#%lu to CUID#%" PRId64 ".",
                    static_cast<unsigned long>(piece->getIndex()),
                    cuid));
+
+  if(piece->getWrDiskCacheEntry()) {
+    // Flush cached data here, because the cached data may be overlapped
+    // if BT peers are involved.
+    A2_LOG_DEBUG(fmt("Flushing cached data, size=%lu",
+                     piece->getWrDiskCacheEntry()->getSize()));
+    flushWrDiskCache(pieceStorage_->getWrDiskCache(), piece);
+  }
+
   piece->setUsedBySegment(true);
   SharedHandle<Segment> segment;
   if(piece->getLength() == 0) {
@@ -136,6 +163,7 @@ SharedHandle<Segment> SegmentMan::checkoutSegment
                    segment->getLength(),
                    segment->getSegmentLength(),
                    segment->getWrittenLength()));
+
   if(piece->getLength() > 0) {
     std::map<size_t, int32_t>::iterator positr =
       segmentWrittenLengthMemo_.find(segment->getIndex());
@@ -254,12 +282,24 @@ void SegmentMan::cancelSegmentInternal
 {
   A2_LOG_DEBUG(fmt("Canceling segment#%lu",
                    static_cast<unsigned long>(segment->getIndex())));
-  segment->getPiece()->setUsedBySegment(false);
-  pieceStorage_->cancelPiece(segment->getPiece(), cuid);
+  const SharedHandle<Piece>& piece = segment->getPiece();
+  piece->setUsedBySegment(false);
+  pieceStorage_->cancelPiece(piece, cuid);
   segmentWrittenLengthMemo_[segment->getIndex()] = segment->getWrittenLength();
   A2_LOG_DEBUG(fmt("Memorized segment index=%lu, writtenLength=%d",
                    static_cast<unsigned long>(segment->getIndex()),
                    segment->getWrittenLength()));
+  // TODO In PieceStorage::cancelPiece(), WrDiskCacheEntry may be
+  // released.
+  if(piece->getWrDiskCacheEntry()) {
+    // Flush cached data here, because the cached data may be overlapped
+    // if BT peers are involved.
+    A2_LOG_DEBUG(fmt("Flushing cached data, size=%lu",
+                     piece->getWrDiskCacheEntry()->getSize()));
+    flushWrDiskCache(pieceStorage_->getWrDiskCache(), piece);
+    // TODO Exception may cause some segments (pieces) are not
+    // canceled.
+  }
 }
 
 void SegmentMan::cancelSegment(cuid_t cuid) {

@@ -62,6 +62,7 @@ std::string GrowSegment::getDigest()
 void GrowSegment::clear(WrDiskCache* diskCache)
 {
   writtenLength_ = 0;
+  // cache won't be used in this object.
   piece_->clearAllBlock(0);
 }
 

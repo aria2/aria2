@@ -126,7 +126,7 @@ void flushWrDiskCacheEntry(WrDiskCache* wrDiskCache,
                            const SharedHandle<Segment>& segment)
 {
   const SharedHandle<Piece>& piece = segment->getPiece();
-  if(piece && piece->getWrDiskCacheEntry()) {
+  if(piece->getWrDiskCacheEntry()) {
     piece->flushWrCache(wrDiskCache);
     if(piece->getWrDiskCacheEntry()->getError() !=
        WrDiskCacheEntry::CACHE_ERR_SUCCESS) {
