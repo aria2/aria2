@@ -112,10 +112,10 @@ std::string PiecedSegment::getDigest()
 
 #endif // ENABLE_MESSAGE_DIGEST
 
-void PiecedSegment::clear()
+void PiecedSegment::clear(WrDiskCache* diskCache)
 {
   writtenLength_ = 0;
-  piece_->clearAllBlock();
+  piece_->clearAllBlock(diskCache);
 
 #ifdef ENABLE_MESSAGE_DIGEST
 

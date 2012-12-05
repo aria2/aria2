@@ -147,7 +147,7 @@ public:
 
   size_t getBitfieldLength() const;
 
-  void clearAllBlock();
+  void clearAllBlock(WrDiskCache* diskCache);
   void setAllBlock();
 
   std::string toString() const;

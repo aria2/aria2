@@ -130,24 +130,12 @@ void flushWrDiskCacheEntry(WrDiskCache* wrDiskCache,
     piece->flushWrCache(wrDiskCache);
     if(piece->getWrDiskCacheEntry()->getError() !=
        WrDiskCacheEntry::CACHE_ERR_SUCCESS) {
-      segment->clear();
-      piece->clearWrCache(wrDiskCache);
+      segment->clear(wrDiskCache);
       throw DOWNLOAD_FAILURE_EXCEPTION2
         (fmt("Write disk cache flush failure index=%lu",
              static_cast<unsigned long>(piece->getIndex())),
          piece->getWrDiskCacheEntry()->getErrorCode());
     }
-  }
-}
-} // namespace
-
-namespace {
-void clearWrDiskCacheEntry(WrDiskCache* wrDiskCache,
-                           const SharedHandle<Segment>& segment)
-{
-  const SharedHandle<Piece>& piece = segment->getPiece();
-  if(piece && piece->getWrDiskCacheEntry()) {
-    piece->clearWrCache(wrDiskCache);
   }
 }
 } // namespace
@@ -279,9 +267,7 @@ bool DownloadCommand::executeInternal() {
                 (segment->getSegmentLength(), diskAdaptor);
               validatePieceHash(segment, expectedPieceHash, actualHash);
             } catch(RecoverableException& e) {
-              segment->clear();
-              clearWrDiskCacheEntry(getPieceStorage()->getWrDiskCache(),
-                                    segment);
+              segment->clear(getPieceStorage()->getWrDiskCache());
               getSegmentMan()->cancelSegment(getCuid());
               throw;
             }
@@ -406,8 +392,7 @@ void DownloadCommand::validatePieceHash(const SharedHandle<Segment>& segment,
                     segment->getPosition(),
                     util::toHex(expectedHash).c_str(),
                     util::toHex(actualHash).c_str()));
-    segment->clear();
-    clearWrDiskCacheEntry(getPieceStorage()->getWrDiskCache(), segment);
+    segment->clear(getPieceStorage()->getWrDiskCache());
     getSegmentMan()->cancelSegment(getCuid());
     throw DL_RETRY_EX
       (fmt("Invalid checksum index=%lu",

@@ -37,7 +37,7 @@ void GrowSegmentTest::testClear()
   GrowSegment segment(SharedHandle<Piece>(new Piece()));
   segment.updateWrittenLength(32*1024);
   CPPUNIT_ASSERT_EQUAL(32*1024, segment.getWrittenLength());
-  segment.clear();
+  segment.clear(0);
   CPPUNIT_ASSERT_EQUAL(0, segment.getWrittenLength());
 }
 

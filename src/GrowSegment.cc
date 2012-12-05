@@ -59,10 +59,10 @@ std::string GrowSegment::getDigest()
 
 #endif // ENABLE_MESSAGE_DIGEST
 
-void GrowSegment::clear()
+void GrowSegment::clear(WrDiskCache* diskCache)
 {
   writtenLength_ = 0;
-  piece_->clearAllBlock();
+  piece_->clearAllBlock(0);
 }
 
 SharedHandle<Piece> GrowSegment::getPiece() const

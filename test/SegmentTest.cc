@@ -68,7 +68,7 @@ void SegmentTest::testClear()
   PiecedSegment s(16*1024*10, p);
   s.updateWrittenLength(16*1024*10);
   CPPUNIT_ASSERT_EQUAL(16*1024*10, s.getWrittenLength());
-  s.clear();
+  s.clear(0);
   CPPUNIT_ASSERT_EQUAL(0, s.getWrittenLength());
 }
 

@@ -45,6 +45,7 @@
 namespace aria2 {
 
 class Piece;
+class WrDiskCache;
 
 class Segment {
 public:
@@ -80,7 +81,7 @@ public:
 
 #endif // ENABLE_MESSAGE_DIGEST
 
-  virtual void clear() = 0;
+  virtual void clear(WrDiskCache* diskCache) = 0;
 
   virtual SharedHandle<Piece> getPiece() const = 0;
 

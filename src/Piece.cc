@@ -78,9 +78,12 @@ void Piece::completeBlock(size_t blockIndex) {
   bitfield_->unsetUseBit(blockIndex);
 }
 
-void Piece::clearAllBlock() {
+void Piece::clearAllBlock(WrDiskCache* diskCache) {
   bitfield_->clearAllBit();
   bitfield_->clearAllUseBit();
+  if(diskCache && wrCache_) {
+    clearWrCache(diskCache);
+  }
 }
 
 void Piece::setAllBlock() {

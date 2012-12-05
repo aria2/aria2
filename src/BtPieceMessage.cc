@@ -253,10 +253,7 @@ bool BtPieceMessage::checkPieceHash(const SharedHandle<Piece>& piece)
                                          getPieceStorage()->getDiskAdaptor())
         == downloadContext_->getPieceHash(piece->getIndex());
     } catch(RecoverableException& e) {
-      piece->clearAllBlock();
-      if(piece->getWrDiskCacheEntry()) {
-        piece->clearWrCache(getPieceStorage()->getWrDiskCache());
-      }
+      piece->clearAllBlock(getPieceStorage()->getWrDiskCache());
       throw;
     }
   }
@@ -269,8 +266,7 @@ void BtPieceMessage::onNewPiece(const SharedHandle<Piece>& piece)
      piece->flushWrCache(getPieceStorage()->getWrDiskCache());
      if(piece->getWrDiskCacheEntry()->getError() !=
         WrDiskCacheEntry::CACHE_ERR_SUCCESS) {
-       piece->clearAllBlock();
-       piece->clearWrCache(getPieceStorage()->getWrDiskCache());
+       piece->clearAllBlock(getPieceStorage()->getWrDiskCache());
        throw DOWNLOAD_FAILURE_EXCEPTION2
          (fmt("Write disk cache flush failure index=%lu",
               static_cast<unsigned long>(piece->getIndex())),
@@ -289,10 +285,7 @@ void BtPieceMessage::onWrongPiece(const SharedHandle<Piece>& piece)
   A2_LOG_INFO(fmt(MSG_GOT_WRONG_PIECE,
                   getCuid(),
                   static_cast<unsigned long>(piece->getIndex())));
-  if(piece->getWrDiskCacheEntry()) {
-    piece->clearWrCache(getPieceStorage()->getWrDiskCache());
-  }
-  piece->clearAllBlock();
+  piece->clearAllBlock(getPieceStorage()->getWrDiskCache());
   piece->destroyHashContext();
   getBtRequestFactory()->removeTargetPiece(piece);
 }
