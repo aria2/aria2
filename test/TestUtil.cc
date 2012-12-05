@@ -101,7 +101,7 @@ WrDiskCacheEntry::DataCell* createDataCell(int64_t goff,
   cell->data = new unsigned char[len];
   memcpy(cell->data, data, len);
   cell->offset = offset;
-  cell->len = len;
+  cell->len = len - offset;
   return cell;
 }
 

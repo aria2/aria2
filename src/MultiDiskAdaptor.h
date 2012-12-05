@@ -135,6 +135,8 @@ public:
 
   virtual ssize_t readData(unsigned char* data, size_t len, int64_t offset);
 
+  virtual void writeCache(const WrDiskCacheEntry* entry);
+
   virtual bool fileExists();
 
   virtual int64_t size();

@@ -38,6 +38,8 @@
 #include "DiskWriter.h"
 #include "FileEntry.h"
 #include "TruncFileAllocationIterator.h"
+#include "WrDiskCacheEntry.h"
+#include "LogFactory.h"
 #ifdef HAVE_SOME_FALLOCATE
 # include "FallocFileAllocationIterator.h"
 #endif // HAVE_SOME_FALLOCATE
@@ -79,6 +81,51 @@ ssize_t AbstractSingleDiskAdaptor::readData
 (unsigned char* data, size_t len, int64_t offset)
 {
   return diskWriter_->readData(data, len, offset);
+}
+
+void AbstractSingleDiskAdaptor::writeCache(const WrDiskCacheEntry* entry)
+{
+  // Write cached data in 4KiB aligned offset. This reduces disk
+  // activity especially on Windows 7 NTFS. In this code, we assume
+  // that maximum length of DataCell data is 16KiB to simplify the
+  // code.
+  unsigned char buf[16*1024];
+  int64_t start = 0;
+  size_t buflen = 0;
+  size_t buffoffset = 0;
+  const WrDiskCacheEntry::DataCellSet& dataSet = entry->getDataSet();
+  for(WrDiskCacheEntry::DataCellSet::const_iterator i = dataSet.begin(),
+        eoi = dataSet.end(); i != eoi; ++i) {
+    if(start+static_cast<ssize_t>(buflen) < (*i)->goff) {
+      A2_LOG_DEBUG(fmt("Cache flush goff=%"PRId64", len=%lu",
+                       start, static_cast<unsigned long>(buflen)));
+      writeData(buf+buffoffset, buflen-buffoffset, start);
+      start = (*i)->goff;
+      buflen = buffoffset = 0;
+    }
+    if(buflen == 0 && ((*i)->goff & 0xfff) == 0 && ((*i)->len & 0xfff) == 0) {
+      // Already aligned. Write it without copy.
+      writeData((*i)->data + (*i)->offset, (*i)->len, start);
+      start += (*i)->len;
+    } else {
+      if(buflen == 0) {
+        buflen = buffoffset = (*i)->goff & 0xfff;
+      }
+      size_t wlen = std::min(sizeof(buf) - buflen, (*i)->len);
+      memcpy(buf+buflen, (*i)->data+(*i)->offset, wlen);
+      buflen += wlen;
+      if(buflen == sizeof(buf)) {
+        A2_LOG_DEBUG(fmt("Cache flush goff=%"PRId64", len=%lu",
+                         start, static_cast<unsigned long>(buflen)));
+        writeData(buf+buffoffset, buflen-buffoffset, start);
+        memcpy(buf, (*i)->data + (*i)->offset + wlen, (*i)->len - wlen);
+        start += sizeof(buf) - buffoffset;
+        buflen = (*i)->len - wlen;
+        buffoffset = 0;
+      }
+    }
+  }
+  writeData(buf+buffoffset, buflen-buffoffset, start);
 }
 
 bool AbstractSingleDiskAdaptor::fileExists()

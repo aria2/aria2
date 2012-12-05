@@ -47,6 +47,7 @@ namespace aria2 {
 
 class FileEntry;
 class FileAllocationIterator;
+class WrDiskCacheEntry;
 
 class DiskAdaptor:public BinaryStream {
 public:
@@ -104,6 +105,9 @@ public:
   // Returns the number of files, the actime and modtime of which are
   // successfully changed.
   virtual size_t utime(const Time& actime, const Time& modtime) = 0;
+
+  // Writes cached data to the underlying disk.
+  virtual void writeCache(const WrDiskCacheEntry* entry) = 0;
 
   void setFileAllocationMethod(FileAllocationMethod method)
   {

@@ -50,6 +50,7 @@
 #include "Logger.h"
 #include "LogFactory.h"
 #include "SimpleRandomizer.h"
+#include "WrDiskCacheEntry.h"
 
 namespace aria2 {
 
@@ -417,6 +418,103 @@ ssize_t MultiDiskAdaptor::readData
     }
   }
   return totalReadLength;
+}
+
+void MultiDiskAdaptor::writeCache(const WrDiskCacheEntry* entry)
+{
+  // Write cached data in 4KiB aligned offset. This reduces disk
+  // activity especially on Windows 7 NTFS.
+  unsigned char buf[16*1024];
+  size_t buflen = 0;
+  size_t buffoffset = 0;
+  const WrDiskCacheEntry::DataCellSet& dataSet = entry->getDataSet();
+  if(dataSet.empty()) {
+    return;
+  }
+  DiskWriterEntries::const_iterator dent =
+    findFirstDiskWriterEntry(diskWriterEntries_, (*dataSet.begin())->goff),
+    eod = diskWriterEntries_.end();
+  WrDiskCacheEntry::DataCellSet::const_iterator i = dataSet.begin(),
+    eoi = dataSet.end();
+  size_t celloff = 0;
+  for(; dent != eod; ++dent) {
+    int64_t lstart = 0, lp = 0;
+    const SharedHandle<FileEntry>& fent = (*dent)->getFileEntry();
+    for(; i != eoi;) {
+      if(std::max(fent->getOffset(),
+                  static_cast<int64_t>((*i)->goff + celloff)) <
+         std::min(fent->getLastOffset(),
+                  static_cast<int64_t>((*i)->goff + (*i)->len))) {
+        openIfNot(*dent, &DiskWriterEntry::openFile);
+        if(!(*dent)->isOpen()) {
+          throwOnDiskWriterNotOpened(*dent, (*i)->goff + celloff);
+        }
+      } else {
+        A2_LOG_DEBUG(fmt("%s Cache flush loff=%"PRId64", len=%lu",
+                         fent->getPath().c_str(),
+                         lstart,
+                         static_cast<unsigned long>(buflen-buffoffset)));
+        (*dent)->getDiskWriter()->
+          writeData(buf + buffoffset, buflen - buffoffset, lstart);
+        buflen = buffoffset = 0;
+        break;
+      }
+      int64_t loff = fent->gtoloff((*i)->goff + celloff);
+      if(static_cast<int64_t>(lstart + buflen) < loff) {
+        A2_LOG_DEBUG(fmt("%s Cache flush loff=%"PRId64", len=%lu",
+                         fent->getPath().c_str(),
+                         lstart,
+                         static_cast<unsigned long>(buflen-buffoffset)));
+        (*dent)->getDiskWriter()->
+          writeData(buf + buffoffset, buflen - buffoffset, lstart);
+        lstart = lp = loff;
+        buflen = buffoffset = 0;
+      }
+      // If the position of the cache data is not aligned, offset
+      // buffer so that next write can be aligned.
+      if(buflen == 0) {
+        buflen = buffoffset = loff & 0xfff;
+      }
+      assert((*i)->len > celloff);
+      for(;;) {
+        size_t wlen = std::min(static_cast<int64_t>((*i)->len - celloff),
+                               fent->getLength() - lp);
+        wlen = std::min(wlen, sizeof(buf) - buflen);
+        memcpy(buf + buflen, (*i)->data + (*i)->offset + celloff, wlen);
+        buflen += wlen;
+        celloff += wlen;
+        lp += wlen;
+        if(lp == fent->getLength() || buflen == sizeof(buf)) {
+          A2_LOG_DEBUG(fmt("%s Cache flush loff=%"PRId64", len=%lu",
+                           fent->getPath().c_str(),
+                           lstart,
+                           static_cast<unsigned long>(buflen-buffoffset)));
+          (*dent)->getDiskWriter()->
+            writeData(buf + buffoffset, buflen - buffoffset, lstart);
+          lstart += buflen - buffoffset;
+          lp = lstart;
+          buflen = buffoffset = 0;
+        }
+        if(lp == fent->getLength() || celloff == (*i)->len) {
+          break;
+        }
+      }
+      if(celloff == (*i)->len) {
+        ++i;
+        celloff = 0;
+      }
+    }
+    if(i == eoi) {
+      A2_LOG_DEBUG(fmt("%s Cache flush loff=%"PRId64", len=%lu",
+                       fent->getPath().c_str(),
+                       lstart,
+                       static_cast<unsigned long>(buflen - buffoffset)));
+      (*dent)->getDiskWriter()->
+        writeData(buf + buffoffset, buflen - buffoffset, lstart);
+      break;
+    }
+  }
+  assert(i == eoi);
 }
 
 bool MultiDiskAdaptor::fileExists()

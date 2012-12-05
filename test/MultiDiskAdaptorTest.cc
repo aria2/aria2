@@ -12,6 +12,7 @@
 #include "array_fun.h"
 #include "TestUtil.h"
 #include "DiskWriter.h"
+#include "WrDiskCacheEntry.h"
 
 namespace aria2 {
 
@@ -24,6 +25,7 @@ class MultiDiskAdaptorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSize);
   CPPUNIT_TEST(testUtime);
   CPPUNIT_TEST(testResetDiskWriterEntries);
+  CPPUNIT_TEST(testWriteCache);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<MultiDiskAdaptor> adaptor;
@@ -39,6 +41,7 @@ public:
   void testSize();
   void testUtime();
   void testResetDiskWriterEntries();
+  void testWriteCache();
 };
 
 
@@ -451,6 +454,48 @@ void MultiDiskAdaptorTest::testUtime()
 
   CPPUNIT_ASSERT((time_t)mtime !=
                  File(entries[2]->getPath()).getModifiedTime().getTime());
+}
+
+void MultiDiskAdaptorTest::testWriteCache()
+{
+  std::string storeDir =
+    A2_TEST_OUT_DIR"/aria2_MultiDiskAdaptorTest_testWriteCache";
+  SharedHandle<FileEntry> entries[] = {
+    SharedHandle<FileEntry>(new FileEntry(storeDir+"/file1", 16385, 0)),
+    SharedHandle<FileEntry>(new FileEntry(storeDir+"/file2", 4098, 16385))
+  };
+  for(int i = 0; i < 2; ++i) {
+    File(entries[i]->getPath()).remove();
+  }
+  SharedHandle<MultiDiskAdaptor> adaptor(new MultiDiskAdaptor());
+  adaptor->setFileEntries(vbegin(entries), vend(entries));
+  WrDiskCacheEntry cache(adaptor);
+  std::string data1(16383, '1'), data2(100, '2'), data3(4000, '3');
+  cache.cacheData(createDataCell(0, data1.c_str()));
+  cache.cacheData(createDataCell(data1.size(), data2.c_str()));
+  cache.cacheData(createDataCell(data1.size()+data2.size(), data3.c_str()));
+  adaptor->openFile();
+  adaptor->writeCache(&cache);
+  for(int i = 0; i < 2; ++i) {
+    CPPUNIT_ASSERT_EQUAL(entries[i]->getLength(),
+                         File(entries[i]->getPath()).size());
+  }
+  CPPUNIT_ASSERT_EQUAL(data1+data2.substr(0, 2),
+                       readFile(entries[0]->getPath()));
+  CPPUNIT_ASSERT_EQUAL(data2.substr(2)+data3,
+                       readFile(entries[1]->getPath()));
+
+  adaptor->closeFile();
+  for(int i = 0; i < 2; ++i) {
+    File(entries[i]->getPath()).remove();
+  }
+  cache.clear();
+  cache.cacheData(createDataCell(123, data2.c_str()));
+  adaptor->openFile();
+  adaptor->writeCache(&cache);
+  CPPUNIT_ASSERT_EQUAL((int64_t)(123+data2.size()),
+                       File(entries[0]->getPath()).size());
+  CPPUNIT_ASSERT_EQUAL(data2, readFile(entries[0]->getPath()).substr(123));
 }
 
 } // namespace aria2

@@ -75,15 +75,9 @@ void WrDiskCacheEntry::writeToDisk()
 {
   DataCellSet::iterator i = set_.begin(), eoi = set_.end();
   try {
-    for(; i != eoi; ++i) {
-      A2_LOG_DEBUG(fmt("WrDiskCacheEntry flush goff=%"PRId64", len=%lu",
-                       (*i)->goff, static_cast<unsigned long>((*i)->len)));
-      diskAdaptor_->writeData((*i)->data+(*i)->offset, (*i)->len,
-                              (*i)->goff);
-    }
+    diskAdaptor_->writeCache(this);
   } catch(RecoverableException& e) {
-    A2_LOG_ERROR(fmt("WrDiskCacheEntry flush error goff=%"PRId64", len=%lu",
-                     (*i)->goff, static_cast<unsigned long>((*i)->len)));
+    A2_LOG_ERROR("WrDiskCacheEntry flush error");
     error_ = CACHE_ERR_ERROR;
     errorCode_ = e.getErrorCode();
   }
