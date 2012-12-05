@@ -208,7 +208,14 @@ public:
   void flushWrCache(WrDiskCache* diskCache);
   void clearWrCache(WrDiskCache* diskCache);
   void updateWrCache(WrDiskCache* diskCache, unsigned char* data,
-                     size_t offset, size_t len, int64_t goff);
+                     size_t offset, size_t len, size_t capacity, int64_t goff);
+  void updateWrCache(WrDiskCache* diskCache, unsigned char* data,
+                     size_t offset, size_t len, int64_t goff)
+  {
+    updateWrCache(diskCache, data, offset, len, len, goff);
+  }
+  size_t appendWrCache(WrDiskCache* diskCache, int64_t goff,
+                       const unsigned char* data, size_t len);
   void releaseWrCache(WrDiskCache* diskCache);
   WrDiskCacheEntry* getWrDiskCacheEntry() const
   {

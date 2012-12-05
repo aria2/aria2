@@ -128,7 +128,7 @@ void BtPieceMessage::doReceivedAction()
       unsigned char* dataCopy = new unsigned char[blockLength_];
       memcpy(dataCopy, data_+9, blockLength_);
       piece->updateWrCache(getPieceStorage()->getWrDiskCache(),
-                           dataCopy, 0, blockLength_, offset);
+                           dataCopy, 0, blockLength_, blockLength_, offset);
     } else {
       getPieceStorage()->getDiskAdaptor()->writeData(data_+9, blockLength_,
                                                      offset);

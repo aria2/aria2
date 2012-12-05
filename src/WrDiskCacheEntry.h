@@ -58,6 +58,8 @@ public:
     unsigned char *data;
     size_t offset;
     size_t len;
+    // valid memory range from data+offset
+    size_t capacity;
     bool operator<(const DataCell& rhs) const
     {
       return goff < rhs.goff;
@@ -76,6 +78,11 @@ public:
 
   // Caches |dataCell|
   bool cacheData(DataCell* dataCell);
+
+  // Appends into last dataCell in set_ if the region is
+  // contagious. Returns the number of copied bytes.
+  size_t append(int64_t goff, const unsigned char *data, size_t len);
+
   size_t getSize() const
   {
     return size_;

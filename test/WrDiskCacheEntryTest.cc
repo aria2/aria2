@@ -14,6 +14,7 @@ class WrDiskCacheEntryTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(WrDiskCacheEntryTest);
   CPPUNIT_TEST(testWriteToDisk);
+  CPPUNIT_TEST(testAppend);
   CPPUNIT_TEST(testClear);
   CPPUNIT_TEST_SUITE_END();
 
@@ -28,6 +29,7 @@ public:
   }
 
   void testWriteToDisk();
+  void testAppend();
   void testClear();
 };
 
@@ -41,6 +43,27 @@ void WrDiskCacheEntryTest::testWriteToDisk()
   e.writeToDisk();
   CPPUNIT_ASSERT_EQUAL((size_t)0, e.getSize());
   CPPUNIT_ASSERT_EQUAL(std::string("01234567890"), writer_->getString());
+}
+
+void WrDiskCacheEntryTest::testAppend()
+{
+  WrDiskCacheEntry e(adaptor_);
+  WrDiskCacheEntry::DataCell* cell = new WrDiskCacheEntry::DataCell();
+  cell->goff = 0;
+  size_t capacity = 6;
+  size_t offset = 2;
+  cell->data = new unsigned char[offset+capacity];
+  memcpy(cell->data, "??foo", 3);
+  cell->offset = offset;
+  cell->len = 3;
+  cell->capacity = capacity;
+  e.cacheData(cell);
+  CPPUNIT_ASSERT_EQUAL((size_t)3,
+                       e.append(3, (const unsigned char*)"barbaz", 6));
+  CPPUNIT_ASSERT_EQUAL((size_t)6, cell->len);
+
+  CPPUNIT_ASSERT_EQUAL((size_t)0,
+                       e.append(7, (const unsigned char*)"FOO", 3));
 }
 
 void WrDiskCacheEntryTest::testClear()

@@ -67,12 +67,23 @@ ssize_t SinkStreamFilter::transform
       wlen = inlen;
     }
     const SharedHandle<Piece>& piece = segment->getPiece();
-    if(piece && piece->getWrDiskCacheEntry()) {
+    if(piece->getWrDiskCacheEntry()) {
       assert(wrDiskCache_);
-      unsigned char* dataCopy = new unsigned char[wlen];
-      memcpy(dataCopy, inbuf, wlen);
-      piece->updateWrCache(wrDiskCache_, dataCopy, 0, wlen,
-                           segment->getPositionToWrite());
+      // If we receive small data (e.g., 1 or 2 bytes), cache entry
+      // becomes a headache. To mitigate this problem, we allocate
+      // cache buffer at least 4KiB and append the data to the
+      // contagious cache data.
+      size_t alen = piece->appendWrCache(wrDiskCache_,
+                                         segment->getPositionToWrite(),
+                                         inbuf, wlen);
+      if(alen < wlen) {
+        size_t len = wlen - alen;
+        size_t capacity = std::max(len, static_cast<size_t>(4096));
+        unsigned char* dataCopy = new unsigned char[capacity];
+        memcpy(dataCopy, inbuf + alen, len);
+        piece->updateWrCache(wrDiskCache_, dataCopy, 0, len, capacity,
+                             segment->getPositionToWrite() + alen);
+      }
     } else {
       out->writeData(inbuf, wlen, segment->getPositionToWrite());
     }

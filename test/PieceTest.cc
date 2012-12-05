@@ -17,6 +17,7 @@ class PieceTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCompleteBlock);
   CPPUNIT_TEST(testGetCompletedLength);
   CPPUNIT_TEST(testFlushWrCache);
+  CPPUNIT_TEST(testAppendWrCache);
 #ifdef ENABLE_MESSAGE_DIGEST
 
   CPPUNIT_TEST(testGetDigestWithWrCache);
@@ -39,6 +40,7 @@ public:
   void testCompleteBlock();
   void testGetCompletedLength();
   void testFlushWrCache();
+  void testAppendWrCache();
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
@@ -98,6 +100,23 @@ void PieceTest::testFlushWrCache()
   CPPUNIT_ASSERT_EQUAL((size_t)0, dc.getSize());
   p.releaseWrCache(&dc);
   CPPUNIT_ASSERT(!p.getWrDiskCacheEntry());
+}
+
+void PieceTest::testAppendWrCache()
+{
+  unsigned char* data;
+  Piece p(0, 1024);
+  WrDiskCache dc(1024);
+  p.initWrCache(&dc, adaptor_);
+  size_t capacity = 6;
+  data = new unsigned char[capacity];
+  memcpy(data, "foo", 3);
+  p.updateWrCache(&dc, data, 0, 3, capacity, 0);
+  size_t alen = p.appendWrCache
+    (&dc, 3, reinterpret_cast<const unsigned char*>("barbaz"), 6);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, alen);
+  p.flushWrCache(&dc);
+  CPPUNIT_ASSERT_EQUAL(std::string("foobar"), writer_->getString());
 }
 
 #ifdef ENABLE_MESSAGE_DIGEST

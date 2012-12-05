@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "WrDiskCacheEntry.h"
+
+#include <cstring>
+
 #include "DiskAdaptor.h"
 #include "RecoverableException.h"
 #include "DownloadFailureException.h"
@@ -98,6 +101,24 @@ bool WrDiskCacheEntry::cacheData(DataCell* dataCell)
     return true;
   } else {
     return false;
+  }
+}
+
+size_t WrDiskCacheEntry::append(int64_t goff, const unsigned char *data,
+                                size_t len)
+{
+  if(set_.empty()) {
+    return 0;
+  }
+  DataCellSet::iterator i = set_.end();
+  --i;
+  if(static_cast<int64_t>((*i)->goff + (*i)->len) == goff) {
+    size_t wlen = std::min((*i)->capacity - (*i)->len, len);
+    memcpy((*i)->data + (*i)->offset + (*i)->len, data, wlen);
+    (*i)->len += wlen;
+    return wlen;
+  } else {
+    return 0;
   }
 }
 

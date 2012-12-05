@@ -71,7 +71,7 @@ public:
 
   virtual SharedHandle<Piece> getPiece() const
   {
-    return SharedHandle<Piece>();
+    return SharedHandle<Piece>(new Piece());
   }
 };
 

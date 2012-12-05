@@ -351,7 +351,8 @@ void Piece::clearWrCache(WrDiskCache* diskCache)
 }
 
 void Piece::updateWrCache(WrDiskCache* diskCache, unsigned char* data,
-                          size_t offset, size_t len, int64_t goff)
+                          size_t offset, size_t len, size_t capacity,
+                          int64_t goff)
 {
   if(!diskCache) {
     return;
@@ -363,11 +364,28 @@ void Piece::updateWrCache(WrDiskCache* diskCache, unsigned char* data,
   cell->data = data;
   cell->offset = offset;
   cell->len = len;
+  cell->capacity = capacity;
   bool rv;
   rv = wrCache_->cacheData(cell);
   assert(rv);
   rv = diskCache->update(wrCache_, len);
   assert(rv);
+}
+
+size_t Piece::appendWrCache(WrDiskCache* diskCache, int64_t goff,
+                            const unsigned char* data, size_t len)
+{
+  if(!diskCache) {
+    return 0;
+  }
+  assert(wrCache_);
+  size_t delta = wrCache_->append(goff, data, len);
+  bool rv;
+  if(delta > 0) {
+    rv = diskCache->update(wrCache_, delta);
+    assert(rv);
+  }
+  return delta;
 }
 
 void Piece::releaseWrCache(WrDiskCache* diskCache)
