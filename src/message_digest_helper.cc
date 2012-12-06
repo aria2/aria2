@@ -48,30 +48,6 @@ namespace aria2 {
 
 namespace message_digest {
 
-namespace {
-
-SharedHandle<MessageDigest> sha1Ctx_;
-
-} // namespace
-
-void staticSHA1DigestInit()
-{
-  staticSHA1DigestFree();
-  sha1Ctx_ = MessageDigest::sha1();
-}
-
-void staticSHA1DigestFree()
-{
-  sha1Ctx_.reset();
-}
-
-std::string staticSHA1Digest
-(const SharedHandle<BinaryStream>& bs, int64_t offset, int64_t length)
-{
-  sha1Ctx_->reset();
-  return digest(sha1Ctx_, bs, offset, length);
-}
-
 std::string digest
 (const SharedHandle<MessageDigest>& ctx,
  const SharedHandle<BinaryStream>& bs,

@@ -49,23 +49,6 @@ class MessageDigest;
 namespace message_digest {
 
 /**
- * staticSHA1DigestInit(), staticSHA1DigestFree(), staticSHA1Digest()
- * use statically declared MessageDigest sha1Ctx_.
- */
-/**
- * Initializes sha1Ctx_
- */
-void staticSHA1DigestInit();
-
-/**
- * Frees allocated resources for sha1Ctx_
- */
-void staticSHA1DigestFree();
-
-std::string staticSHA1Digest
-(const SharedHandle<BinaryStream>& bs, int64_t offset, int64_t length);
-
-/**
  * ctx must be initialized or reseted before calling this function.
  * Returns raw digest string, not hex digest
  */
