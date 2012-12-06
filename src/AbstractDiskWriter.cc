@@ -442,11 +442,6 @@ void AbstractDiskWriter::allocate(int64_t offset, int64_t length)
   }
 #ifdef  HAVE_SOME_FALLOCATE
 # ifdef __MINGW32__
-  // TODO Remove __MINGW32__ code because the current implementation
-  // does not behave like ftruncate or posix_ftruncate. Actually, it
-  // is the same sa ftruncate.
-  A2_LOG_WARN("--file-allocation=falloc is now deprecated for MinGW32 build. "
-              "Consider to use --file-allocation=trunc instead.");
   truncate(offset+length);
 # elif HAVE_FALLOCATE
   // For linux, we use fallocate to detect file system supports
