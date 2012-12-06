@@ -1060,6 +1060,18 @@ Advanced Options
   Disable IPv6. This is useful if you have to use broken DNS and want
   to avoid terribly slow AAAA record lookup. Default: ``false``
 
+.. option:: --disk-cache=<SIZE>
+
+  Enable disk cache. If SIZE is ``0``, the disk cache is
+  disabled. This feature caches the downloaded data in memory, which
+  grows to at most SIZE bytes. The cache storage is created for aria2
+  instance and shared by all downloads. The one advantage of the disk
+  cache is reduce the disk I/O because the data are written in larger
+  unit and it is reordered by the offset of the file.  If hash
+  checking is involved and the data are cached in memory, we don't
+  need to read them from the disk.  SIZE can include ``K`` or ``M``
+  (1K = 1024, 1M = 1024K). Default: ``0``
+
 .. option:: --download-result=<OPT>
 
   This option changes the way ``Download Results`` is formatted. If OPT
