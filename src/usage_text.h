@@ -921,8 +921,9 @@
     "                              bytes. The cache storage is created for aria2\n" \
     "                              instance and shared by all downloads. The one\n" \
     "                              advantage of the disk cache is reduce the disk\n" \
-    "                              seek time because the data is written in larger\n" \
-    "                              unit and it is reordered by the offset of the\n" \
-    "                              file. If the underlying file is heavily\n" \
-    "                              fragmented it is not the case.\n"    \
+    "                              I/O because the data are written in larger unit\n" \
+    "                              and it is reordered by the offset of the file.\n" \
+    "                              If hash checking is involved and the data are\n" \
+    "                              cached in memory, we don't need to read them\n" \
+    "                              from the disk.\n"                    \
     "                              SIZE can include K or M(1K = 1024, 1M = 1024K).")
