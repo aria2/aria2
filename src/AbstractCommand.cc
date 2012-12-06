@@ -170,9 +170,10 @@ bool AbstractCommand::execute() {
         return prepareForRetry(0);
       }
       // TODO it is not needed to check other PeerStats every time.
-      // Find faster Request when no segment is available.
+      // Find faster Request when no segment split is allowed.
       if(req_ && fileEntry_->countPooledRequest() > 0 &&
-         !getPieceStorage()->hasMissingUnusedPiece()) {
+         requestGroup_->getTotalLength()-requestGroup_->getCompletedLength()
+         < calculateMinSplitSize()*2) {
         SharedHandle<Request> fasterRequest = fileEntry_->findFasterRequest(req_);
         if(fasterRequest) {
           useFasterRequest(fasterRequest);
