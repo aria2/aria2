@@ -29,3 +29,5 @@ aria2c.1.html
 intl/
 libtool
 ltmain.sh
+po/aria2.pot
+po/remove-potcdate.sed
