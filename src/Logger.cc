@@ -126,10 +126,16 @@ void writeHeader
   size_t dateLength =
     strftime(datestr, sizeof(datestr), "%Y-%m-%d %H:%M:%S", &tm);
   assert(dateLength <= (size_t)20);
-  fp.printf("%s.%06ld %s - ", datestr, tv.tv_usec, levelToString(level));
-  if(sourceFile) {
-    fp.printf("[%s:%d]", sourceFile, lineNum);
-  }
+  fp.printf("%s.%06ld [%s] [%s:%d] ", datestr, tv.tv_usec, levelToString(level),
+            sourceFile, lineNum);
+}
+} // namespace
+
+namespace {
+template<typename Output>
+void writeHeaderConsole(Output& fp, Logger::LEVEL level)
+{
+  fp.printf("[%s] ", levelToString(level));
 }
 } // namespace
 
@@ -158,7 +164,7 @@ void Logger::writeLog
   }
   if(toConsole) {
     global::cout()->printf("\n");
-    writeHeader(*global::cout(), level, 0, 0);
+    writeHeaderConsole(*global::cout(), level);
     global::cout()->printf("%s\n", msg);
     writeStackTrace(*global::cout(), trace);
     global::cout()->flush();
