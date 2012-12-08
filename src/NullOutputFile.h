@@ -45,6 +45,7 @@ public:
   virtual size_t write(const char* str) { return 0; }
   virtual int printf(const char* format, ...) { return 0; }
   virtual int flush() { return 0; }
+  virtual bool supportsColor() { return false; }
 };
 
 } // namespace aria2

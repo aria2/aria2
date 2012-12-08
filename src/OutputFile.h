@@ -47,6 +47,8 @@ public:
   virtual size_t write(const char* str) = 0;
   virtual int printf(const char* format, ...) = 0;
   virtual int flush() = 0;
+  // Returns true if the output medium supports ANSI color codes.
+  virtual bool supportsColor() = 0;
 };
 
 } // namespace aria2

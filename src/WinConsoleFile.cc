@@ -103,4 +103,9 @@ int WinConsoleFile::flush()
   return 0;
 }
 
+bool WinConsoleFile::supportsColor()
+{
+  return false;
+}
+
 } // namespace aria2

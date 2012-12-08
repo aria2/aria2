@@ -716,6 +716,48 @@ RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
                       lastError);
 }
 
+enum DownloadStatus {
+  A2_STATUS_OK,
+  A2_STATUS_INPR,
+  A2_STATUS_RM,
+  A2_STATUS_ERR
+};
+
+namespace {
+const char* getStatusStr(DownloadStatus status, bool useColor)
+{
+  // status string is formatted in 4 characters wide.
+  switch(status) {
+  case(A2_STATUS_OK):
+    if(useColor) {
+      return "\033[1;32mOK\033[0m  ";
+    } else {
+      return "OK  ";
+    }
+  case(A2_STATUS_INPR):
+    if(useColor) {
+      return "\033[1;34mINPR\033[0m";
+    } else {
+      return "INPR";
+    }
+  case(A2_STATUS_RM):
+    if(useColor) {
+      return "\033[1mRM\033[0m  ";
+    } else {
+      return "RM  ";
+    }
+  case(A2_STATUS_ERR):
+    if(useColor) {
+      return "\033[1;31mERR\033[0m ";
+    } else {
+      return "ERR ";
+    }
+  default:
+    return "";
+  }
+}
+} // namespace
+
 void RequestGroupMan::showDownloadResults(OutputFile& o, bool full) const
 {
 #ifdef __MINGW32__
@@ -739,6 +781,7 @@ void RequestGroupMan::showDownloadResults(OutputFile& o, bool full) const
   }
   std::string line(pathRowSize, '=');
   o.printf("%s\n", line.c_str());
+  bool useColor = o.supportsColor();
   int ok = 0;
   int err = 0;
   int inpr = 0;
@@ -751,16 +794,16 @@ void RequestGroupMan::showDownloadResults(OutputFile& o, bool full) const
     }
     const char* status;
     if((*itr)->result == error_code::FINISHED) {
-      status = "OK";
+      status = getStatusStr(A2_STATUS_OK, useColor);
       ++ok;
     } else if((*itr)->result == error_code::IN_PROGRESS) {
-      status = "INPR";
+      status = getStatusStr(A2_STATUS_INPR, useColor);
       ++inpr;
     } else if((*itr)->result == error_code::REMOVED) {
-      status = "RM";
+      status = getStatusStr(A2_STATUS_RM, useColor);
       ++rm;
     } else {
-      status = "ERR";
+      status = getStatusStr(A2_STATUS_ERR, useColor);
       ++err;
     }
     if(full) {

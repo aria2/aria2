@@ -59,6 +59,7 @@ private:
   LEVEL logLevel_;
   SharedHandle<OutputFile> fpp_;
   int stdoutField_;
+  bool useColor_;
   // Don't allow copying
   Logger(const Logger&);
   Logger& operator=(const Logger&);

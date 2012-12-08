@@ -47,6 +47,7 @@ public:
   virtual size_t write(const char* str);
   virtual int printf(const char* format, ...);
   virtual int flush();
+  virtual bool supportsColor();
 private:
   DWORD stdHandle_;
   // Don't allow copying

@@ -77,6 +77,7 @@ public:
   virtual int printf(const char* format, ...);
   // wrapper for fflush
   virtual int flush();
+  virtual bool supportsColor();
   // Mode for reading
   static const char READ[];
   // Mode for writing
@@ -91,6 +92,7 @@ private:
   FILE* fp_;
   // true when file has been opened.
   bool open_;
+  bool supportsColor_;
 };
 
 } // namespace aria2

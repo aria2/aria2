@@ -54,11 +54,12 @@ BufferedFile::BufferedFile(const char* filename, const char* mode)
 #else // !__MINGW32__
   fp_(a2fopen(filename, mode)),
 #endif // !__MINGW32__
-  open_(fp_)
+  open_(fp_),
+  supportsColor_(isatty(fileno(fp_)))
 {}
 
 BufferedFile::BufferedFile(FILE* fp)
-  : fp_(fp), open_(true)
+  : fp_(fp), open_(true), supportsColor_(isatty(fileno(fp)))
 {}
 
 BufferedFile::~BufferedFile()
@@ -167,6 +168,11 @@ int BufferedFile::printf(const char* format, ...)
 int BufferedFile::flush()
 {
   return fflush(fp_);
+}
+
+bool BufferedFile::supportsColor()
+{
+  return supportsColor_;
 }
 
 } // namespace aria2
