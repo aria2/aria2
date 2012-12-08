@@ -238,7 +238,12 @@ void printProgressSummary
 ConsoleStatCalc::ConsoleStatCalc(time_t summaryInterval, bool humanReadable):
   summaryInterval_(summaryInterval),
   readoutVisibility_(true),
-  truncate_(true)
+  truncate_(true),
+#ifdef __MINGW32__
+  isTTY_(true)
+#else // !__MINGW32__
+  isTTY_(isatty(STDOUT_FILENO) == 1)
+#endif // !__MINGW32__
 {
   if(humanReadable) {
     sizeFormatter_.reset(new AbbrevSizeFormatter());
@@ -257,15 +262,14 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   const SizeFormatter& sizeFormatter = *sizeFormatter_.get();
 
 #ifdef __MINGW32__
-  bool isTTY = true;
-  // Windows terminal cannot handle at the end of line properly.
+  // Windows terminal cannot handle at the end of line (80 columns)
+  // properly.
   unsigned short int cols = 79;
 #else // !__MINGW32__
-  bool isTTY = isatty(STDOUT_FILENO) == 1;
   unsigned short int cols = 80;
 #endif // !__MINGW32__
 
-  if(isTTY) {
+  if(isTTY_) {
 #ifndef __MINGW32__
 #ifdef HAVE_TERMIOS_H
     struct winsize size;
@@ -368,7 +372,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   }
 #endif // ENABLE_MESSAGE_DIGEST
   std::string readout = o.str();
-  if(isTTY) {
+  if(isTTY_) {
     if(truncate_ && readout.size() > cols) {
       readout[cols] = '\0';
     }
