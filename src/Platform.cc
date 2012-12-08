@@ -73,6 +73,8 @@
 #include "message.h"
 #include "fmt.h"
 #include "console.h"
+#include "OptionParser.h"
+#include "prefs.h"
 #ifdef HAVE_LIBGMP
 # include "a2gmp.h"
 #endif // HAVE_LIBGMP
@@ -172,7 +174,11 @@ bool Platform::tearDown()
 #ifdef HAVE_WINSOCK2_H
   WSACleanup();
 #endif // HAVE_WINSOCK2_H
-
+  // Deletes statically allocated resources. This is done to
+  // distinguish memory leak from them. This is handly to use
+  // valgrind.
+  OptionParser::deleteInstance();
+  option::deletePrefResource();
   return true;
 }
 

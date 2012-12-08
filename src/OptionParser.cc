@@ -347,4 +347,9 @@ const SharedHandle<OptionParser>& OptionParser::getInstance()
   return optionParser_;
 }
 
+void OptionParser::deleteInstance()
+{
+  optionParser_.reset();
+}
+
 } // namespace aria2

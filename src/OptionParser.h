@@ -94,6 +94,9 @@ public:
   const OptionHandler* findByShortName(char shortName) const;
 
   static const SharedHandle<OptionParser>& getInstance();
+  // Deletes statically allocated instace. Call this at the end of the
+  // program.
+  static void deleteInstance();
 };
 
 } // namespace aria2

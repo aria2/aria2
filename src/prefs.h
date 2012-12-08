@@ -60,6 +60,10 @@ const Pref* i2p(size_t id);
 // special null Pref whose ID is 0.
 const Pref* k2p(const std::string& k);
 
+// Deletes resources allocated for preferences. Call this function at
+// the end of the program only once.
+void deletePrefResource();
+
 } // namespace option
 
 /**
