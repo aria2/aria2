@@ -106,14 +106,13 @@ void printProgress
     eta = (rg->getTotalLength()-rg->getCompletedLength())/stat.downloadSpeed;
   }
 
-  o << "["
-    << "#" << rg->getGID() << " ";
+  o << "[#" << rg->getGID() << " ";
 
 #ifdef ENABLE_BITTORRENT
   if(rg->getDownloadContext()->hasAttribute(CTX_ATTR_BT) &&
      !bittorrent::getTorrentAttrs(rg->getDownloadContext())->metadata.empty() &&
      rg->downloadFinished()) {
-    o << "SEEDING" << "(" << "ratio:";
+    o << "SEEDING(ratio:";
     if(rg->getCompletedLength() > 0) {
       std::streamsize oldprec = o.precision();
       o << std::fixed << std::setprecision(1)
@@ -129,8 +128,7 @@ void printProgress
     {
       o << "SIZE:"
         << sizeFormatter(rg->getCompletedLength())
-        << "B"
-        << "/"
+        << "B/"
         << sizeFormatter(rg->getTotalLength())
         << "B";
       if(rg->getTotalLength() > 0) {
@@ -139,33 +137,29 @@ void printProgress
           << "%)";
       }
     }
-  o << " "
-    << "CN:"
+  o << " CN:"
     << rg->getNumConnection();
 #ifdef ENABLE_BITTORRENT
   const SharedHandle<BtObject>& btObj = e->getBtRegistry()->get(rg->getGID());
   if(btObj) {
     std::vector<SharedHandle<Peer> > peers;
     btObj->peerStorage->getActivePeers(peers);
-    o << " " << "SEED:"
+    o << " SEED:"
       << countSeeder(peers.begin(), peers.end());
   }
 #endif // ENABLE_BITTORRENT
 
   if(!rg->downloadFinished()) {
-    o << " "
-      << "SPD:"
+    o << " SPD:"
       << sizeFormatter(stat.downloadSpeed) << "Bs";
   }
   if(stat.sessionUploadLength > 0) {
-    o << " "
-      << "UP:"
+    o << " UP:"
       << sizeFormatter(stat.uploadSpeed) << "Bs"
       << "(" << sizeFormatter(stat.allTimeUploadLength) << "B)";
   }
   if(eta > 0) {
-    o << " "
-      << "ETA:"
+    o << " ETA:"
       << util::secfmt(eta);
   }
   o << "]";
@@ -192,8 +186,7 @@ public:
     printProgress(o, rg, e_, sizeFormatter_);
     const std::vector<SharedHandle<FileEntry> >& fileEntries =
       rg->getDownloadContext()->getFileEntries();
-    o << "\n"
-      << "FILE: ";
+    o << "\nFILE: ";
     writeFilePath(fileEntries.begin(), fileEntries.end(),
                   o, rg->inMemoryDownload());
     o << "\n"
@@ -227,7 +220,7 @@ void printProgressSummary
       o << " as of " << buf;
     }
   }
-  o << " *** " << "\n"
+  o << " *** \n"
     << std::setfill(SEP_CHAR) << std::setw(cols) << SEP_CHAR << "\n";
   global::cout()->write(o.str().c_str());
   std::for_each(groups.begin(), groups.end(),
@@ -312,29 +305,25 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   if(e->getRequestGroupMan()->countRequestGroup() > 1 &&
      !e->getRequestGroupMan()->downloadFinished()) {
     int spd = e->getRequestGroupMan()->getNetStat().calculateDownloadSpeed();
-    o << " [TOTAL SPD:" << sizeFormatter(spd) << "Bs" << "]";
+    o << " [TOTAL SPD:" << sizeFormatter(spd) << "Bs]";
   }
 
   {
     SharedHandle<FileAllocationEntry> entry =
       e->getFileAllocationMan()->getPickedEntry();
     if(entry) {
-      o << " "
-        << "[FileAlloc:"
+      o << " [FileAlloc:"
         << "#" << entry->getRequestGroup()->getGID() << " "
         << sizeFormatter(entry->getCurrentLength())
-        << "B"
-        << "/"
+        << "B/"
         << sizeFormatter(entry->getTotalLength())
-        << "B"
-        << "(";
+        << "B(";
       if(entry->getTotalLength() > 0) {
         o << 100LL*entry->getCurrentLength()/entry->getTotalLength();
       } else {
         o << "--";
       }
-      o << "%)"
-        << "]";
+      o << "%)]";
       if(e->getFileAllocationMan()->hasNext()) {
         o << "("
           << e->getFileAllocationMan()->countEntryInQueue()
@@ -347,22 +336,18 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
     SharedHandle<CheckIntegrityEntry> entry =
       e->getCheckIntegrityMan()->getPickedEntry();
     if(entry) {
-      o << " "
-        << "[Checksum:"
-        << "#" << entry->getRequestGroup()->getGID() << " "
+      o << " [Checksum:#"
+        << entry->getRequestGroup()->getGID() << " "
         << sizeFormatter(entry->getCurrentLength())
-        << "B"
-        << "/"
+        << "B/"
         << sizeFormatter(entry->getTotalLength())
-        << "B"
-        << "(";
+        << "B(";
       if(entry->getTotalLength() > 0) {
         o << 100LL*entry->getCurrentLength()/entry->getTotalLength();
       } else {
         o << "--";
       }
-      o << "%)"
-        << "]";
+      o << "%)]";
       if(e->getCheckIntegrityMan()->hasNext()) {
         o << "("
           << e->getCheckIntegrityMan()->countEntryInQueue()
