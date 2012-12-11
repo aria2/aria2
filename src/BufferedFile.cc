@@ -55,11 +55,11 @@ BufferedFile::BufferedFile(const char* filename, const char* mode)
   fp_(a2fopen(filename, mode)),
 #endif // !__MINGW32__
   open_(fp_),
-  supportsColor_(isatty(fileno(fp_)))
+  supportsColor_(fp_ ? isatty(fileno(fp_)) : false)
 {}
 
 BufferedFile::BufferedFile(FILE* fp)
-  : fp_(fp), open_(true), supportsColor_(isatty(fileno(fp)))
+  : fp_(fp), open_(true), supportsColor_(fp_ ? isatty(fileno(fp_)) : false)
 {}
 
 BufferedFile::~BufferedFile()
