@@ -96,6 +96,69 @@ protected:
 } // namespace
 
 namespace {
+void printSeedRatio(std::ostream& o, const SharedHandle<RequestGroup>& rg,
+                    const TransferStat& stat)
+{
+  if(rg->getCompletedLength() > 0) {
+    std::streamsize oldprec = o.precision();
+    o << std::fixed << std::setprecision(1)
+      << ((stat.allTimeUploadLength*10)/rg->getCompletedLength())/10.0
+      << std::setprecision(oldprec)
+      << std::resetiosflags(std::ios::fixed);
+  } else {
+    o << "--";
+  }
+}
+} // namespace
+
+namespace {
+void printProgressCompact(std::ostream& o, const DownloadEngine* e,
+                          const SizeFormatter& sizeFormatter)
+{
+  if(!e->getRequestGroupMan()->downloadFinished()) {
+    NetStat& netstat = e->getRequestGroupMan()->getNetStat();
+    int dl = netstat.calculateDownloadSpeed();
+    int ul = netstat.calculateUploadSpeed();
+    o << "[DL:" << sizeFormatter(dl) << "B UL:" << sizeFormatter(ul) << "B]";
+  }
+
+  const std::deque<SharedHandle<RequestGroup> >& groups =
+    e->getRequestGroupMan()->getRequestGroups();
+  size_t cnt = 0;
+  const size_t MAX_ITEM = 5;
+  for(std::deque<SharedHandle<RequestGroup> >::const_iterator
+        i = groups.begin(), eoi = groups.end(); i != eoi && cnt < MAX_ITEM;
+      ++i, ++cnt) {
+    TransferStat stat = (*i)->calculateStat();
+    o << "[#" << (*i)->getGID() << " ";
+#ifdef ENABLE_BITTORRENT
+    if((*i)->getDownloadContext()->hasAttribute(CTX_ATTR_BT) &&
+       !bittorrent::getTorrentAttrs((*i)->getDownloadContext())
+       ->metadata.empty() && (*i)->downloadFinished()) {
+      o << "SEED(";
+      printSeedRatio(o, *i, stat);
+      o << ")";
+    } else
+#endif // ENABLE_BITTORRENT
+      {
+        o << sizeFormatter((*i)->getCompletedLength()) << "B"
+          << "/"
+          << sizeFormatter((*i)->getTotalLength()) << "B";
+        if((*i)->getTotalLength() > 0) {
+          o << "("
+            << 100*(*i)->getCompletedLength()/(*i)->getTotalLength()
+            << "%)";
+        }
+      }
+    o << "]";
+  }
+  if(cnt < groups.size()) {
+    o << "(" << groups.size()-cnt << "more)";
+  }
+}
+} // namespace
+
+namespace {
 void printProgress
 (std::ostream& o, const SharedHandle<RequestGroup>& rg, const DownloadEngine* e,
  const SizeFormatter& sizeFormatter)
@@ -113,15 +176,7 @@ void printProgress
      !bittorrent::getTorrentAttrs(rg->getDownloadContext())->metadata.empty() &&
      rg->downloadFinished()) {
     o << "SEEDING(ratio:";
-    if(rg->getCompletedLength() > 0) {
-      std::streamsize oldprec = o.precision();
-      o << std::fixed << std::setprecision(1)
-        << ((stat.allTimeUploadLength*10)/rg->getCompletedLength())/10.0
-        << std::setprecision(oldprec)
-        << std::resetiosflags(std::ios::fixed);
-    } else {
-      o << "--";
-    }
+    printSeedRatio(o, rg, stat);
     o << ")";
   } else
 #endif // ENABLE_BITTORRENT
@@ -289,7 +344,8 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   if(!readoutVisibility_) {
     return;
   }
-  if(e->getRequestGroupMan()->countRequestGroup() > 0) {
+  size_t numGroup = e->getRequestGroupMan()->countRequestGroup();
+  if(numGroup == 1) {
     SharedHandle<RequestGroup> firstRequestGroup =
       e->getRequestGroupMan()->getRequestGroup(0);
 
@@ -300,12 +356,9 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
         << e->getRequestGroupMan()->countRequestGroup()-1
         << "more...)";
     }
-  }
-
-  if(e->getRequestGroupMan()->countRequestGroup() > 1 &&
-     !e->getRequestGroupMan()->downloadFinished()) {
-    int spd = e->getRequestGroupMan()->getNetStat().calculateDownloadSpeed();
-    o << " [TOTAL SPD:" << sizeFormatter(spd) << "Bs]";
+  } else if(numGroup > 1) {
+    // For more than 2 RequestGroups, use compact readout form
+    printProgressCompact(o, e, sizeFormatter);
   }
 
   {

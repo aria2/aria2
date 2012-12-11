@@ -1550,13 +1550,16 @@ void UtilTest::testGetRealSize()
 
 void UtilTest::testAbbrevSize()
 {
-  CPPUNIT_ASSERT_EQUAL(std::string("4,096.0Mi"), util::abbrevSize(4294967296LL));
+  CPPUNIT_ASSERT_EQUAL(std::string("8,589,934,591Gi"),
+                       util::abbrevSize(9223372036854775807LL));
+  CPPUNIT_ASSERT_EQUAL(std::string("4.0Gi"), util::abbrevSize(4294967296LL));
   CPPUNIT_ASSERT_EQUAL(std::string("1.0Ki"), util::abbrevSize(1024));
-  CPPUNIT_ASSERT_EQUAL(std::string("1,023"), util::abbrevSize(1023));
+  CPPUNIT_ASSERT_EQUAL(std::string("0.9Ki"), util::abbrevSize(1023));
+  CPPUNIT_ASSERT_EQUAL(std::string("0.5Ki"), util::abbrevSize(512));
+  CPPUNIT_ASSERT_EQUAL(std::string("511"), util::abbrevSize(511));
   CPPUNIT_ASSERT_EQUAL(std::string("0"), util::abbrevSize(0));
   CPPUNIT_ASSERT_EQUAL(std::string("1.1Ki"), util::abbrevSize(1127));
   CPPUNIT_ASSERT_EQUAL(std::string("1.5Mi"), util::abbrevSize(1572864));
-
 }
 
 void UtilTest::testToStream()
@@ -1576,10 +1579,10 @@ void UtilTest::testToStream()
                                    "idx|path/length\n"
                                    "===+===========================================================================\n"
                                    "  1|aria2.tar.bz2\n"
-                                   "   |12.0KiB (12,300)\n"
+                                   "   |12KiB (12,300)\n"
                                    "---+---------------------------------------------------------------------------\n"
                                    "  2|aria2.txt\n"
-                                   "   |556B (556)\n"
+                                   "   |0.5KiB (556)\n"
                                    "---+---------------------------------------------------------------------------\n"),
                        readFile(filename));
 }

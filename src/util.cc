@@ -1292,20 +1292,29 @@ int64_t getRealSize(const std::string& sizeWithUnit)
 
 std::string abbrevSize(int64_t size)
 {
-  if(size < 1024) {
-    return itos(size, true);
+  static const char* UNITS[] = { "", "Ki", "Mi", "Gi" };
+  int64_t t = size;
+  size_t uidx = 0;
+  int r = 0;
+  while(t >= 1024 && uidx+1 < sizeof(UNITS)/sizeof(UNITS[0])) {
+    lldiv_t d = lldiv(t, 1024);
+    t = d.quot;
+    r = d.rem;
+    ++uidx;
   }
-  static const char units[] = { 'K', 'M' };
-  size_t i = 0;
-  int r = size&0x3ffu;
-  size >>= 10;
-  for(; i < sizeof(units)-1 && size >= 1024; ++i) {
-    r = size&0x3ffu;
-    size >>= 10;
+  if(uidx+1 < sizeof(UNITS)/sizeof(UNITS[0]) && t >= 512) {
+    ++uidx;
+    r = t;
+    t = 0;
   }
-  std::string result = itos(size, true);
-  result += fmt(".%d%ci", r*10/1024, units[i]);
-  return result;
+  std::string res;
+  res += itos(t, true);
+  if(t < 10 && uidx > 0) {
+    res += ".";
+    res += itos(r*10/1024);
+  }
+  res += UNITS[uidx];
+  return res;
 }
 
 void sleep(long seconds) {
