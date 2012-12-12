@@ -54,7 +54,7 @@ public:
     return pickedEntry_;
   }
 
-  SharedHandle<T> getPickedEntry() const
+  const SharedHandle<T>& getPickedEntry() const
   {
     return pickedEntry_;
   }

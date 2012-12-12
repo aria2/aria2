@@ -96,18 +96,34 @@ protected:
 } // namespace
 
 namespace {
-void printSeedRatio(std::ostream& o, const SharedHandle<RequestGroup>& rg,
-                    const TransferStat& stat)
+void printSizeProgress(std::ostream& o, const SharedHandle<RequestGroup>& rg,
+                       const TransferStat& stat,
+                       const SizeFormatter& sizeFormatter)
 {
-  if(rg->getCompletedLength() > 0) {
-    std::streamsize oldprec = o.precision();
-    o << std::fixed << std::setprecision(1)
-      << ((stat.allTimeUploadLength*10)/rg->getCompletedLength())/10.0
-      << std::setprecision(oldprec)
-      << std::resetiosflags(std::ios::fixed);
-  } else {
-    o << "--";
-  }
+#ifdef ENABLE_BITTORRENT
+  if(rg->getDownloadContext()->hasAttribute(CTX_ATTR_BT) &&
+     !bittorrent::getTorrentAttrs(rg->getDownloadContext())
+     ->metadata.empty() && rg->downloadFinished()) {
+    o << "SEED(";
+    if(rg->getCompletedLength() > 0) {
+      std::streamsize oldprec = o.precision();
+      o << std::fixed << std::setprecision(1)
+        << ((stat.allTimeUploadLength*10)/rg->getCompletedLength())/10.0
+        << std::setprecision(oldprec)
+        << std::resetiosflags(std::ios::fixed);
+    } else {
+      o << "--";
+    }
+    o << ")";
+  } else
+#endif // ENABLE_BITTORRENT
+    {
+      o << sizeFormatter(rg->getCompletedLength()) << "B/"
+        << sizeFormatter(rg->getTotalLength()) << "B";
+      if(rg->getTotalLength() > 0) {
+        o << "(" << 100*rg->getCompletedLength()/rg->getTotalLength() << "%)";
+      }
+    }
 }
 } // namespace
 
@@ -131,29 +147,11 @@ void printProgressCompact(std::ostream& o, const DownloadEngine* e,
       ++i, ++cnt) {
     TransferStat stat = (*i)->calculateStat();
     o << "[#" << (*i)->getGID() << " ";
-#ifdef ENABLE_BITTORRENT
-    if((*i)->getDownloadContext()->hasAttribute(CTX_ATTR_BT) &&
-       !bittorrent::getTorrentAttrs((*i)->getDownloadContext())
-       ->metadata.empty() && (*i)->downloadFinished()) {
-      o << "SEED(";
-      printSeedRatio(o, *i, stat);
-      o << ")";
-    } else
-#endif // ENABLE_BITTORRENT
-      {
-        o << sizeFormatter((*i)->getCompletedLength()) << "B"
-          << "/"
-          << sizeFormatter((*i)->getTotalLength()) << "B";
-        if((*i)->getTotalLength() > 0) {
-          o << "("
-            << 100*(*i)->getCompletedLength()/(*i)->getTotalLength()
-            << "%)";
-        }
-      }
+    printSizeProgress(o, *i, stat, sizeFormatter);
     o << "]";
   }
   if(cnt < groups.size()) {
-    o << "(" << groups.size()-cnt << "more)";
+    o << "(+" << groups.size()-cnt << ")";
   }
 }
 } // namespace
@@ -168,30 +166,8 @@ void printProgress
   if(rg->getTotalLength() > 0 && stat.downloadSpeed > 0) {
     eta = (rg->getTotalLength()-rg->getCompletedLength())/stat.downloadSpeed;
   }
-
   o << "[#" << rg->getGID() << " ";
-
-#ifdef ENABLE_BITTORRENT
-  if(rg->getDownloadContext()->hasAttribute(CTX_ATTR_BT) &&
-     !bittorrent::getTorrentAttrs(rg->getDownloadContext())->metadata.empty() &&
-     rg->downloadFinished()) {
-    o << "SEEDING(ratio:";
-    printSeedRatio(o, rg, stat);
-    o << ")";
-  } else
-#endif // ENABLE_BITTORRENT
-    {
-      o << "SIZE:"
-        << sizeFormatter(rg->getCompletedLength())
-        << "B/"
-        << sizeFormatter(rg->getTotalLength())
-        << "B";
-      if(rg->getTotalLength() > 0) {
-        o << "("
-          << 100*rg->getCompletedLength()/rg->getTotalLength()
-          << "%)";
-      }
-    }
+  printSizeProgress(o, rg, stat, sizeFormatter);
   o << " CN:"
     << rg->getNumConnection();
 #ifdef ENABLE_BITTORRENT
@@ -199,18 +175,18 @@ void printProgress
   if(btObj) {
     std::vector<SharedHandle<Peer> > peers;
     btObj->peerStorage->getActivePeers(peers);
-    o << " SEED:"
+    o << " SD:"
       << countSeeder(peers.begin(), peers.end());
   }
 #endif // ENABLE_BITTORRENT
 
   if(!rg->downloadFinished()) {
-    o << " SPD:"
-      << sizeFormatter(stat.downloadSpeed) << "Bs";
+    o << " DL:"
+      << sizeFormatter(stat.downloadSpeed) << "B";
   }
   if(stat.sessionUploadLength > 0) {
-    o << " UP:"
-      << sizeFormatter(stat.uploadSpeed) << "Bs"
+    o << " UL:"
+      << sizeFormatter(stat.uploadSpeed) << "B"
       << "(" << sizeFormatter(stat.allTimeUploadLength) << "B)";
   }
   if(eta > 0) {
@@ -309,20 +285,16 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   cp_ = global::wallclock();
   const SizeFormatter& sizeFormatter = *sizeFormatter_.get();
 
-#ifdef __MINGW32__
-  // Windows terminal cannot handle at the end of line (80 columns)
-  // properly.
+  // Some terminals (e.g., Windows terminal) prints next line when the
+  // character reached at the last column.
   unsigned short int cols = 79;
-#else // !__MINGW32__
-  unsigned short int cols = 80;
-#endif // !__MINGW32__
 
   if(isTTY_) {
 #ifndef __MINGW32__
 #ifdef HAVE_TERMIOS_H
     struct winsize size;
     if(ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) == 0) {
-      cols = size.ws_col;
+      cols = std::max(0, (int)size.ws_col-1);
     }
 #endif // HAVE_TERMIOS_H
 #endif // !__MINGW32__
@@ -346,31 +318,21 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   }
   size_t numGroup = e->getRequestGroupMan()->countRequestGroup();
   if(numGroup == 1) {
-    SharedHandle<RequestGroup> firstRequestGroup =
-      e->getRequestGroupMan()->getRequestGroup(0);
-
-    printProgress(o, firstRequestGroup, e, sizeFormatter);
-
-    if(e->getRequestGroupMan()->countRequestGroup() > 1) {
-      o << "("
-        << e->getRequestGroupMan()->countRequestGroup()-1
-        << "more...)";
-    }
+    printProgress(o, e->getRequestGroupMan()->getRequestGroup(0), e,
+                  sizeFormatter);
   } else if(numGroup > 1) {
     // For more than 2 RequestGroups, use compact readout form
     printProgressCompact(o, e, sizeFormatter);
   }
 
   {
-    SharedHandle<FileAllocationEntry> entry =
+    const SharedHandle<FileAllocationEntry>& entry =
       e->getFileAllocationMan()->getPickedEntry();
     if(entry) {
-      o << " [FileAlloc:"
-        << "#" << entry->getRequestGroup()->getGID() << " "
-        << sizeFormatter(entry->getCurrentLength())
-        << "B/"
-        << sizeFormatter(entry->getTotalLength())
-        << "B(";
+      o << " [FileAlloc:#"
+        << entry->getRequestGroup()->getGID() << " "
+        << sizeFormatter(entry->getCurrentLength()) << "B/"
+        << sizeFormatter(entry->getTotalLength()) << "B(";
       if(entry->getTotalLength() > 0) {
         o << 100LL*entry->getCurrentLength()/entry->getTotalLength();
       } else {
@@ -378,23 +340,19 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
       }
       o << "%)]";
       if(e->getFileAllocationMan()->hasNext()) {
-        o << "("
-          << e->getFileAllocationMan()->countEntryInQueue()
-          << "waiting...)";
+        o << "(+" << e->getFileAllocationMan()->countEntryInQueue() << ")";
       }
     }
   }
 #ifdef ENABLE_MESSAGE_DIGEST
   {
-    SharedHandle<CheckIntegrityEntry> entry =
+    const SharedHandle<CheckIntegrityEntry>& entry =
       e->getCheckIntegrityMan()->getPickedEntry();
     if(entry) {
       o << " [Checksum:#"
         << entry->getRequestGroup()->getGID() << " "
-        << sizeFormatter(entry->getCurrentLength())
-        << "B/"
-        << sizeFormatter(entry->getTotalLength())
-        << "B(";
+        << sizeFormatter(entry->getCurrentLength()) << "B/"
+        << sizeFormatter(entry->getTotalLength()) << "B(";
       if(entry->getTotalLength() > 0) {
         o << 100LL*entry->getCurrentLength()/entry->getTotalLength();
       } else {
@@ -402,9 +360,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
       }
       o << "%)]";
       if(e->getCheckIntegrityMan()->hasNext()) {
-        o << "("
-          << e->getCheckIntegrityMan()->countEntryInQueue()
-          << "waiting...)";
+        o << "(+" << e->getCheckIntegrityMan()->countEntryInQueue() << ")";
       }
     }
   }

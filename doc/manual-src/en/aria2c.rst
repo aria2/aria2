@@ -3548,38 +3548,40 @@ Console Readout
 While downloading files, aria2 prints the console readout to tell the
 progress of the downloads. The console readout is like this::
 
-    [#1 SIZE:400.0KiB/33.2MiB(1%) CN:1 SPD:115.7KiBs ETA:4m51s]
+    [#1 400.0KiB/33.2MiB(1%) CN:1 DL:115.7KiB ETA:4m51s]
 
 This section describes what these numbers and strings mean.
 
 ``#N``
   N means GID, which is an unique ID for each download.
 
-``SIZE``
-  Completed length and Total length in bytes. If
+``X/Y(Z%)``
+  Completed length, the total file length and its ratio. If
   :option:`--select-file` is used, this is the sum of selected file.
 
-``SEEDING``
+``SEED``
   Share ratio. The client is now seeding. After BitTorrent download
-  finished, ``SIZE`` is replaced with ``SEEDING``.
+  finished, size information is replaced with this.
 
 ``CN``
   The number of connections the client has established.
 
-``SEED``
-  The number of seeders the client has connected to.
+``SD``
+  The number of seeders the client is now connecting to.
 
-``SPD``
-  Download speed.
+``DL``
+  Download speed (bytes per second).
 
-``UP``
-  Upload speed and the number of uploaded bytes.
+``UL``
+  Upload speed (bytes per second) and the number of uploaded bytes.
 
 ``ETA``
   Expected time to finish.
 
-``TOTAL SPD``
-  The sum of download speed for all parallel downloads.
+When more than 1 download are going on, some of the information
+described above will be omitted in order to show several download
+information. And the overall download and upload speed are shown at
+the beginning of the line.
 
 When aria2 is allocating file space or validating checksum, it
 additionally prints the their progress:
