@@ -40,8 +40,8 @@ Here is a list of features:
 * HTTP Proxy support
 * HTTP BASIC authentication support
 * HTTP Proxy authentication support
-* Well-known environment variables for proxy: http_proxy, https_proxy,
-  ftp_proxy, all_proxy and no_proxy
+* Well-known environment variables for proxy: ``http_proxy``, ``https_proxy``,
+  ``ftp_proxy``, ``all_proxy`` and ``no_proxy``
 * HTTP gzip, deflate content encoding support
 * Verify peer using given trusted CA certificate in HTTPS
 * Client certificate authentication in HTTPS
@@ -72,6 +72,7 @@ Here is a list of features:
   output filename can be specified optionally
 * Parameterized URI support
 * IPv6 support
+* Disk cache to reduce disk activity
 
 How to get source code
 ----------------------
