@@ -101,9 +101,13 @@ void TimeTest::testOperatorLess()
 
 void TimeTest::testToHTTPDate()
 {
+  // This test disabled for MinGW32, because the garbage will be
+  // displayed and it hides real errors.
+#ifndef __MINGW32__
   Time t(1220714793);
   CPPUNIT_ASSERT_EQUAL(std::string("Sat, 06 Sep 2008 15:26:33 GMT"),
                        t.toHTTPDate());
+#endif // !__MINGW32__
 }
 
 void TimeTest::testElapsed()

@@ -57,13 +57,13 @@ namespace aria2 {
 
 AbstractDiskWriter::AbstractDiskWriter(const std::string& filename)
   : filename_(filename),
-    fd_(-1),
+    fd_(A2_BAD_FD),
+#ifdef __MINGW32__
+    mapView_(0),
+#else // !__MINGW32__
+#endif // !__MINGW32__
     readOnly_(false),
     enableMmap_(false),
-#ifdef __MINGW32__
-    hn_(INVALID_HANDLE_VALUE),
-    mapView_(0),
-#endif // __MINGW32__
     mapaddr_(0),
     maplen_(0)
 
@@ -117,7 +117,14 @@ void AbstractDiskWriter::openFile(int64_t totalLength)
   try {
     openExistingFile(totalLength);
   } catch(RecoverableException& e) {
-    if(e.getErrNum() == ENOENT) {
+    if(
+#ifdef __MINGW32__
+       e.getErrNum() == ERROR_FILE_NOT_FOUND ||
+       e.getErrNum() == ERROR_PATH_NOT_FOUND
+#else // !__MINGW32__
+       e.getErrNum() == ENOENT
+#endif // !__MINGW32__
+       ) {
       initAndOpenFile(totalLength);
     } else {
       throw;
@@ -152,53 +159,55 @@ void AbstractDiskWriter::closeFile()
     maplen_ = 0;
   }
 #endif // HAVE_MMAP || defined __MINGW32__
-  if(fd_ != -1) {
+  if(fd_ != A2_BAD_FD) {
+#ifdef __MINGW32__
+    CloseHandle(fd_);
+#else // !__MINGW32__
     close(fd_);
-    fd_ = -1;
+#endif // !__MINGW32__
+    fd_ = A2_BAD_FD;
   }
 }
 
 namespace {
-// TODO I tried CreateFile, but ReadFile fails with "Access Denied"
-// when reading (not fully populated) sparse files on NTFS.
-//
-// HANDLE openFileWithFlags(const std::string& filename, int flags,
-//                          error_code::Value errCode)
-// {
-// HANDLE hn;
-// DWORD desiredAccess = 0;
-// DWORD sharedMode = FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE;
-// DWORD creationDisp = 0;
-// if(flags & O_RDONLY) {
-//   desiredAccess |= GENERIC_READ;
-// } else if(flags & O_RDWR) {
-//   desiredAccess |= GENERIC_READ | GENERIC_WRITE;
-// }
-// if(flags & O_CREAT) {
-//   if(flags & O_TRUNC) {
-//     creationDisp |= CREATE_ALWAYS;
-//   } else {
-//     creationDisp |= CREATE_NEW;
-//   }
-// } else {
-//   creationDisp |= OPEN_EXISTING;
-// }
-// hn = CreateFileW(utf8ToWChar(filename).c_str(),
-//                  desiredAccess, sharedMode, 0, creationDisp,
-//                  FILE_ATTRIBUTE_NORMAL, 0);
-// if(hn == INVALID_HANDLE_VALUE) {
-//   int errNum = GetLastError();
-//   throw DL_ABORT_EX3(errNum, fmt(EX_FILE_OPEN,
-//                                  filename.c_str(),
-//                                  fileStrerror(errNum).c_str()),
-//                      errCode);
-// }
-// DWORD bytesReturned;
-// if(!DeviceIoControl(hn, FSCTL_SET_SPARSE, 0, 0, 0, 0, &bytesReturned, 0)) {
-//   A2_LOG_WARN(fmt("Making file sparse failed or pending: %s",
-//                   fileStrerror(GetLastError()).c_str()));
-// }
-// return hn;
+#ifdef __MINGW32__
+HANDLE openFileWithFlags(const std::string& filename, int flags,
+                         error_code::Value errCode)
+{
+  HANDLE hn;
+  DWORD desiredAccess = 0;
+  DWORD sharedMode = FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE;
+  DWORD creationDisp = 0;
+
+  if(flags & O_RDWR) {
+    desiredAccess = GENERIC_READ | GENERIC_WRITE;
+  } else if(flags & O_WRONLY) {
+    desiredAccess = GENERIC_WRITE;
+  } else {
+    desiredAccess = GENERIC_READ;
+  }
+  if(flags & O_CREAT) {
+    if(flags & O_TRUNC) {
+      creationDisp |= CREATE_ALWAYS;
+    } else {
+      creationDisp |= CREATE_NEW;
+    }
+  } else {
+    creationDisp |= OPEN_EXISTING;
+  }
+  hn = CreateFileW(utf8ToWChar(filename).c_str(), desiredAccess, sharedMode,
+                   /* lpSecurityAttributes */ 0, creationDisp,
+                   FILE_ATTRIBUTE_NORMAL, /* hTemplateFile */ 0);
+  if(hn == INVALID_HANDLE_VALUE) {
+    int errNum = GetLastError();
+    throw DL_ABORT_EX3(errNum, fmt(EX_FILE_OPEN,
+                                   filename.c_str(),
+                                   fileStrerror(errNum).c_str()),
+                       errCode);
+  }
+  return hn;
+}
+#else // !__MINGW32__
 int openFileWithFlags(const std::string& filename, int flags,
                       error_code::Value errCode)
 {
@@ -217,6 +226,7 @@ int openFileWithFlags(const std::string& filename, int flags,
 #endif // __APPLE__ && __MACH__
   return fd;
 }
+#endif // !__MINGW32__
 } // namespace
 
 #ifdef __MINGW32__
@@ -237,9 +247,6 @@ void AbstractDiskWriter::openExistingFile(int64_t totalLength)
     flags |= O_RDWR;
   }
   fd_ = openFileWithFlags(filename_, flags, error_code::FILE_OPEN_ERROR);
-#ifdef __MINGW32__
-  hn_ = getWin32Handle(fd_);
-#endif // __MINGW32__
 }
 
 void AbstractDiskWriter::createFile(int addFlags)
@@ -248,9 +255,6 @@ void AbstractDiskWriter::createFile(int addFlags)
   util::mkdirs(File(filename_).getDirname());
   fd_ = openFileWithFlags(filename_, O_CREAT|O_RDWR|O_TRUNC|O_BINARY|addFlags,
                           error_code::FILE_CREATE_ERROR);
-#ifdef __MINGW32__
-  hn_ = getWin32Handle(fd_);
-#endif // __MINGW32__
 }
 
 ssize_t AbstractDiskWriter::writeDataInternal(const unsigned char* data,
@@ -263,6 +267,14 @@ ssize_t AbstractDiskWriter::writeDataInternal(const unsigned char* data,
     ssize_t writtenLength = 0;
     seek(offset);
     while((size_t)writtenLength < len) {
+#ifdef __MINGW32__
+      DWORD nwrite;
+      if(WriteFile(fd_, data+writtenLength, len-writtenLength, &nwrite, 0)) {
+        writtenLength += nwrite;
+      } else {
+        return -1;
+      }
+#else // !__MINGW32__
       ssize_t ret = 0;
       while((ret = write(fd_, data+writtenLength, len-writtenLength)) == -1 &&
             errno == EINTR);
@@ -270,6 +282,7 @@ ssize_t AbstractDiskWriter::writeDataInternal(const unsigned char* data,
         return -1;
       }
       writtenLength += ret;
+#endif // !__MINGW32__
     }
     return writtenLength;
   }
@@ -289,9 +302,18 @@ ssize_t AbstractDiskWriter::readDataInternal(unsigned char* data, size_t len,
     return readlen;
   } else {
     seek(offset);
+#ifdef __MINGW32__
+    DWORD nread;
+    if(ReadFile(fd_, data, len, &nread, 0)) {
+      return nread;
+    } else {
+      return -1;
+    }
+#else // !__MINGW32__
     ssize_t ret = 0;
     while((ret = read(fd_, data, len)) == -1 && errno == EINTR);
     return ret;
+#endif // !__MINGW32__
   }
 }
 
@@ -300,7 +322,7 @@ void AbstractDiskWriter::seek(int64_t offset)
 #ifdef __MINGW32__
   LARGE_INTEGER fileLength;
   fileLength.QuadPart = offset;
-  if(SetFilePointerEx(hn_, fileLength, 0, FILE_BEGIN) == 0)
+  if(SetFilePointerEx(fd_, fileLength, 0, FILE_BEGIN) == 0)
 #else // !__MINGW32__
   if(a2lseek(fd_, offset, SEEK_SET) == (off_t)-1)
 #endif // !__MINGW32__
@@ -343,7 +365,7 @@ void AbstractDiskWriter::ensureMmapWrite(size_t len, int64_t offset)
       int errNum = 0;
       if(static_cast<int64_t>(len + offset) <= filesize) {
 #ifdef __MINGW32__
-        mapView_ = CreateFileMapping(hn_, 0, PAGE_READWRITE,
+        mapView_ = CreateFileMapping(fd_, 0, PAGE_READWRITE,
                                      filesize >> 32, filesize & 0xffffffffu,
                                      0);
         if(mapView_) {
@@ -384,18 +406,24 @@ void AbstractDiskWriter::writeData(const unsigned char* data, size_t len, int64_
 {
   ensureMmapWrite(len, offset);
   if(writeDataInternal(data, len, offset) < 0) {
-    int errNum = errno;
-    // If errNum is ENOSPC(not enough space in device), throw
-    // DownloadFailureException and abort download instantly.
-    if(errNum == ENOSPC) {
+    int errNum = fileError();
+    if(
+       // If the error indicates disk full situation, throw
+       // DownloadFailureException and abort download instantly.
+#ifdef __MINGW32__
+       errNum == ERROR_DISK_FULL || errNum == ERROR_HANDLE_DISK_FULL
+#else // !__MINGW32__
+       errNum == ENOSPC
+#endif // !__MINGW32__
+       ) {
       throw DOWNLOAD_FAILURE_EXCEPTION3
         (errNum, fmt(EX_FILE_WRITE, filename_.c_str(),
-                     util::safeStrerror(errNum).c_str()),
+                     fileStrerror(errNum).c_str()),
          error_code::NOT_ENOUGH_DISK_SPACE);
     } else {
       throw DL_ABORT_EX3
         (errNum, fmt(EX_FILE_WRITE, filename_.c_str(),
-                     util::safeStrerror(errNum).c_str()),
+                     fileStrerror(errNum).c_str()),
          error_code::FILE_IO_ERROR);
     }
   }
@@ -405,10 +433,10 @@ ssize_t AbstractDiskWriter::readData(unsigned char* data, size_t len, int64_t of
 {
   ssize_t ret;
   if((ret = readDataInternal(data, len, offset)) < 0) {
-    int errNum = errno;
+    int errNum = fileError();
     throw DL_ABORT_EX3
       (errNum, fmt(EX_FILE_READ, filename_.c_str(),
-                   util::safeStrerror(errNum).c_str()),
+                   fileStrerror(errNum).c_str()),
        error_code::FILE_IO_ERROR);
   }
   return ret;
@@ -416,14 +444,14 @@ ssize_t AbstractDiskWriter::readData(unsigned char* data, size_t len, int64_t of
 
 void AbstractDiskWriter::truncate(int64_t length)
 {
-  if(fd_ == -1) {
+  if(fd_ == A2_BAD_FD) {
     throw DL_ABORT_EX("File not yet opened.");
   }
 #ifdef __MINGW32__
   // Since mingw32's ftruncate cannot handle over 2GB files, we use
   // SetEndOfFile instead.
   seek(length);
-  if(SetEndOfFile(hn_) == 0)
+  if(SetEndOfFile(fd_) == 0)
 #else // !__MINGW32__
   if(ftruncate(fd_, length) == -1)
 #endif // !__MINGW32__
@@ -437,7 +465,7 @@ void AbstractDiskWriter::truncate(int64_t length)
 
 void AbstractDiskWriter::allocate(int64_t offset, int64_t length)
 {
-  if(fd_ == -1) {
+  if(fd_ == A2_BAD_FD) {
     throw DL_ABORT_EX("File not yet opened.");
   }
 #ifdef  HAVE_SOME_FALLOCATE

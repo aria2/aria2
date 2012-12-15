@@ -161,4 +161,10 @@
 #define OPEN_MODE S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH
 #define DIR_OPEN_MODE S_IRWXU|S_IRWXG|S_IRWXO
 
+#ifdef __MINGW32__
+# define A2_BAD_FD INVALID_HANDLE_VALUE
+#else // !__MINGW32__
+# define A2_BAD_FD -1
+#endif // !__MINGW32__
+
 #endif // D_A2IO_H

@@ -24,16 +24,9 @@ namespace aria2 {
 void createFile(const std::string& path, size_t length)
 {
   File(File(path).getDirname()).mkdirs();
-  int fd = creat(path.c_str(), OPEN_MODE);
-  if(fd == -1) {
-    throw FATAL_EXCEPTION(fmt("Could not create file=%s. cause:%s",
-                              path.c_str(),
-                              strerror(errno)));
-  }
-  if(-1 == ftruncate(fd, length)) {
-    throw FATAL_EXCEPTION(fmt("ftruncate failed. cause:%s", strerror(errno)));
-  }
-  close(fd);
+  DefaultDiskWriter dw(path);
+  dw.initAndOpenFile();
+  dw.truncate(length);
 }
 
 std::string readFile(const std::string& path)
