@@ -112,7 +112,7 @@ SharedHandle<RequestGroup> createRequestGroup
  bool useOutOption = false)
 {
   SharedHandle<Option> option = util::copy(optionTemplate);
-  SharedHandle<RequestGroup> rg(new RequestGroup(option));
+  SharedHandle<RequestGroup> rg(new RequestGroup(GroupId::create(), option));
   SharedHandle<DownloadContext> dctx
     (new DownloadContext
      (option->getAsInt(PREF_PIECE_LENGTH),
@@ -168,7 +168,7 @@ createBtRequestGroup(const std::string& metaInfoUri,
                      bool adjustAnnounceUri = true)
 {
   SharedHandle<Option> option = util::copy(optionTemplate);
-  SharedHandle<RequestGroup> rg(new RequestGroup(option));
+  SharedHandle<RequestGroup> rg(new RequestGroup(GroupId::create(), option));
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   // may throw exception
   bittorrent::loadFromMemory(torrent, dctx, option, auxUris,
@@ -210,7 +210,7 @@ createBtMagnetRequestGroup
  const SharedHandle<Option>& optionTemplate)
 {
   SharedHandle<Option> option = util::copy(optionTemplate);
-  SharedHandle<RequestGroup> rg(new RequestGroup(option));
+  SharedHandle<RequestGroup> rg(new RequestGroup(GroupId::create(), option));
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(METADATA_PIECE_SIZE, 0,
                          A2STR::NIL));

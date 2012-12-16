@@ -40,7 +40,7 @@ void MetalinkPostDownloadHandlerTest::testCanHandle_extension()
 {
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(0, 0, "test.metalink"));
-  RequestGroup rg(option_);
+  RequestGroup rg(GroupId::create(), option_);
   rg.setDownloadContext(dctx);
 
   MetalinkPostDownloadHandler handler;
@@ -55,7 +55,7 @@ void MetalinkPostDownloadHandlerTest::testCanHandle_contentType()
 {
   SharedHandle<DownloadContext> dctx(new DownloadContext(0, 0, "test"));
   dctx->getFirstFileEntry()->setContentType("application/metalink+xml");
-  RequestGroup rg(option_);
+  RequestGroup rg(GroupId::create(), option_);
   rg.setDownloadContext(dctx);
 
   MetalinkPostDownloadHandler handler;
@@ -70,7 +70,7 @@ void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups()
 {
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(1024, 0, A2_TEST_DIR"/test.xml"));
-  RequestGroup rg(option_);
+  RequestGroup rg(GroupId::create(), option_);
   rg.setDownloadContext(dctx);
   rg.initPieceStorage();
   rg.getPieceStorage()->getDiskAdaptor()->enableReadOnly();
@@ -90,7 +90,7 @@ void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups_withBaseUri()
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(1024, 0, A2_TEST_DIR"/base_uri.xml"));
   dctx->getFirstFileEntry()->addUri("http://base/dir/base_uri.xml");
-  RequestGroup rg(option_);
+  RequestGroup rg(GroupId::create(), option_);
   rg.setDownloadContext(dctx);
   rg.initPieceStorage();
   rg.getPieceStorage()->getDiskAdaptor()->enableReadOnly();

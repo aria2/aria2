@@ -261,7 +261,8 @@ size_t RequestGroupMan::changeReservedGroupPosition
   std::deque<SharedHandle<RequestGroup> >::iterator i =
     findByGID(reservedGroups_.begin(), reservedGroups_.end(), gid);
   if(i == reservedGroups_.end()) {
-    throw DL_ABORT_EX(fmt("GID#%" PRId64 " not found in the waiting queue.", gid));
+    throw DL_ABORT_EX(fmt("GID#%s not found in the waiting queue.",
+                          GroupId::toHex(gid).c_str()));
   }
   SharedHandle<RequestGroup> rg = *i;
   const size_t maxPos = reservedGroups_.size()-1;
@@ -401,7 +402,8 @@ public:
         group->closeFile();
         if(group->isPauseRequested()) {
           A2_LOG_NOTICE
-            (fmt(_("Download GID#%" PRId64 " paused"), group->getGID()));
+            (fmt(_("Download GID#%s paused"),
+                 GroupId::toHex(group->getGID()).c_str()));
           group->saveControlFile();
         } else if(group->downloadFinished() &&
            !group->getDownloadContext()->isChecksumVerificationNeeded()) {
@@ -429,7 +431,8 @@ public:
           if(group->getOption()->getAsBool(PREF_BT_REMOVE_UNSELECTED_FILE) &&
              !group->inMemoryDownload() &&
              dctx->hasAttribute(CTX_ATTR_BT)) {
-            A2_LOG_INFO(fmt(MSG_REMOVING_UNSELECTED_FILE, group->getGID()));
+            A2_LOG_INFO(fmt(MSG_REMOVING_UNSELECTED_FILE,
+                            GroupId::toHex(group->getGID()).c_str()));
             const std::vector<SharedHandle<FileEntry> >& files =
               dctx->getFileEntries();
             for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
@@ -447,8 +450,8 @@ public:
 #endif // ENABLE_BITTORRENT
         } else {
           A2_LOG_NOTICE
-            (fmt(_("Download GID#%" PRId64 " not complete: %s"),
-                 group->getGID(),
+            (fmt(_("Download GID#%s not complete: %s"),
+                 GroupId::toHex(group->getGID()).c_str(),
                  group->getDownloadContext()->getBasePath().c_str()));
           group->saveControlFile();
         }
@@ -760,24 +763,20 @@ const char* getStatusStr(DownloadStatus status, bool useColor)
 
 void RequestGroupMan::showDownloadResults(OutputFile& o, bool full) const
 {
-#ifdef __MINGW32__
-  int pathRowSize = 58;
-#else // !__MINGW32__
-  int pathRowSize = 59;
-#endif // !__MINGW32__
+  int pathRowSize = 55;
   // Download Results:
   // idx|stat|path/length
   // ===+====+=======================================================================
   o.printf("\n%s"
-           "\ngid|stat|avg speed  |",
+           "\ngid   |stat|avg speed  |",
            _("Download Results:"));
   if(full) {
     o.write("  %|path/URI"
-            "\n===+====+===========+===+");
+            "\n======+====+===========+===+");
     pathRowSize -= 4;
   } else {
     o.write("path/URI"
-            "\n===+====+===========+");
+            "\n======+====+===========+");
   }
   std::string line(pathRowSize, '=');
   o.printf("%s\n", line.c_str());
@@ -837,7 +836,7 @@ void formatDownloadResultCommon
  const char* status,
  const SharedHandle<DownloadResult>& downloadResult)
 {
-  o << std::setw(3) << downloadResult->gid << "|"
+  o << std::setw(3) << downloadResult->gid->toAbbrevHex() << "|"
     << std::setw(4) << status << "|"
     << std::setw(11);
   if(downloadResult->sessionTime > 0) {
@@ -975,7 +974,7 @@ RequestGroupMan::findDownloadResult(a2_gid_t gid) const
 {
   for(std::deque<SharedHandle<DownloadResult> >::const_iterator i =
         downloadResults_.begin(), eoi = downloadResults_.end(); i != eoi; ++i) {
-    if((*i)->gid == gid) {
+    if((*i)->gid->getNumericId() == gid) {
       return *i;
     }
   }
@@ -986,7 +985,7 @@ bool RequestGroupMan::removeDownloadResult(a2_gid_t gid)
 {
   for(std::deque<SharedHandle<DownloadResult> >::iterator i =
         downloadResults_.begin(), eoi = downloadResults_.end(); i != eoi; ++i) {
-    if((*i)->gid == gid) {
+    if((*i)->gid->getNumericId() == gid) {
       downloadResults_.erase(i);
       return true;
     }

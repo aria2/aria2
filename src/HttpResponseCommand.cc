@@ -189,7 +189,7 @@ bool HttpResponseCommand::executeInternal()
     getDownloadContext()->setChecksumVerified(true);
     A2_LOG_NOTICE
       (fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
-           getRequestGroup()->getGID(),
+           GroupId::toHex(getRequestGroup()->getGID()).c_str(),
            getRequestGroup()->getFirstFilePath().c_str()));
     poolConnection();
     getFileEntry()->poolRequest(getRequest());
@@ -453,7 +453,7 @@ bool HttpResponseCommand::handleOtherEncoding
         getDownloadContext()->setChecksumVerified(true);
         A2_LOG_NOTICE
           (fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
-               getRequestGroup()->getGID(),
+               GroupId::toHex(getRequestGroup()->getGID()).c_str(),
                getRequestGroup()->getFirstFilePath().c_str()));
       }
     poolConnection();

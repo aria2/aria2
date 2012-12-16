@@ -54,7 +54,7 @@ class MetadataInfo;
 
 struct DownloadResult
 {
-  a2_gid_t gid;
+  SharedHandle<GroupId> gid;
 
   std::vector<SharedHandle<FileEntry> > fileEntries;
 

@@ -32,52 +32,50 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "WebSocketSessionMan.h"
-#include "WebSocketSession.h"
-#include "RequestGroup.h"
-#include "json.h"
-#include "util.h"
-#include "WebSocketInteractionCommand.h"
+#ifndef D_GROUP_ID_H
+#define D_GROUP_ID_H
+
+#include "common.h"
+
+#include <set>
+#include <string>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
-namespace rpc {
+typedef uint64_t a2_gid_t;
 
-WebSocketSessionMan::WebSocketSessionMan() {}
+class GroupId {
+public:
+  static SharedHandle<GroupId> create();
+  static SharedHandle<GroupId> import(a2_gid_t n);
+  static void clear();
+  enum {
+    ERR_NOT_UNIQUE = -1,
+    ERR_NOT_FOUND = -2,
+    ERR_INVALID = -3
+  };
+  static int expandUnique(a2_gid_t& n, const char* hex);
+  static int toNumericId(a2_gid_t& n, const char* hex);
+  static std::string toHex(a2_gid_t n);
+  static std::string toAbbrevHex(a2_gid_t n);
 
-WebSocketSessionMan::~WebSocketSessionMan() {}
-
-void WebSocketSessionMan::addSession
-(const SharedHandle<WebSocketSession>& wsSession)
-{
-  sessions_.insert(wsSession);
-}
-
-void WebSocketSessionMan::removeSession
-(const SharedHandle<WebSocketSession>& wsSession)
-{
-  sessions_.erase(wsSession);
-}
-
-void WebSocketSessionMan::addNotification
-(const std::string& method, const RequestGroup* group)
-{
-  SharedHandle<Dict> dict = Dict::g();
-  dict->put("jsonrpc", "2.0");
-  dict->put("method", method);
-  SharedHandle<Dict> eventSpec = Dict::g();
-  eventSpec->put("gid", GroupId::toHex((group->getGID())));
-  SharedHandle<List> params = List::g();
-  params->append(eventSpec);
-  dict->put("params", params);
-  std::string msg = json::encode(dict);
-  for(WebSocketSessions::const_iterator i = sessions_.begin(),
-        eoi = sessions_.end(); i != eoi; ++i) {
-    (*i)->addTextMessage(msg);
-    (*i)->getCommand()->updateWriteCheck();
+  ~GroupId();
+  a2_gid_t getNumericId() const
+  {
+    return gid_;
   }
-}
+  std::string toHex() const;
+  std::string toAbbrevHex() const;
+private:
+  static std::set<a2_gid_t> set_;
 
-} // namespace rpc
+  GroupId(a2_gid_t gid);
+
+  a2_gid_t gid_;
+};
 
 } // namespace aria2
+
+#endif // D_GROUP_ID_H

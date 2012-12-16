@@ -54,7 +54,7 @@
 #define MSG_GOT_NEW_PIECE "CUID#%" PRId64 " - we got new piece. index=%lu"
 #define MSG_GOT_WRONG_PIECE "CUID#%" PRId64 " - we got wrong piece. index=%lu"
 #define MSG_DOWNLOAD_NOT_COMPLETE "CUID#%" PRId64 " - Download not complete: %s"
-#define MSG_DOWNLOAD_ALREADY_COMPLETED _("GID#%" PRId64 " - Download has already completed: %s")
+#define MSG_DOWNLOAD_ALREADY_COMPLETED _("GID#%s - Download has already completed: %s")
 #define MSG_RESOLVING_HOSTNAME "CUID#%" PRId64 " - Resolving hostname %s"
 #define MSG_NAME_RESOLUTION_COMPLETE                    \
   "CUID#%" PRId64 " - Name resolution complete: %s -> %s"
@@ -197,7 +197,7 @@
 #define MSG_DIR_TRAVERSAL_DETECTED _("Detected directory traversal directive in %s")
 #define MSG_HASH_CHECK_NOT_DONE                                         \
   "File has already been downloaded but hash check has not been done yet."
-#define MSG_REMOVING_UNSELECTED_FILE _("GID#%" PRId64 " - Removing unselected file.")
+#define MSG_REMOVING_UNSELECTED_FILE _("GID#%s - Removing unselected file.")
 #define MSG_FILE_REMOVED _("File %s removed.")
 #define MSG_FILE_COULD_NOT_REMOVED _("File %s could not be removed.")
 

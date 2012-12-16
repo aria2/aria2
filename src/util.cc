@@ -1691,7 +1691,7 @@ void executeHook
  size_t numFiles,
  const std::string& firstFilename)
 {
-  const std::string gidStr = util::itos(gid);
+  const std::string gidStr = GroupId::toHex(gid);
   const std::string numFilesStr = util::uitos(numFiles);
 #ifndef __MINGW32__
   A2_LOG_INFO(fmt("Executing user command: %s %s %s %s",

@@ -35,7 +35,7 @@ public:
     option_.reset(new Option());
     option_->put(PREF_DIR, A2_TEST_OUT_DIR);
     dctx_.reset(new DownloadContext(0, 0, A2_TEST_OUT_DIR"/something"));
-    requestGroup_.reset(new RequestGroup(option_));
+    requestGroup_.reset(new RequestGroup(GroupId::create(), option_));
     requestGroup_->setDownloadContext(dctx_);
   }
 

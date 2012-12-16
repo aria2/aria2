@@ -148,7 +148,7 @@ const std::string KEY_NUM_ACTIVE = "numActive";
 namespace {
 SharedHandle<ValueBase> createGIDResponse(a2_gid_t gid)
 {
-  return String::g(util::itos(gid));
+  return String::g(GroupId::toHex(gid));
 }
 } // namespace
 
@@ -185,12 +185,19 @@ namespace {
 a2_gid_t str2Gid(const String* str)
 {
   assert(str);
-  int64_t gid;
-  if(util::parseLLIntNoThrow(gid, str->s())) {
-    return gid;
-  } else {
-    throw DL_ABORT_EX(fmt("Bad GID %s", str->s().c_str()));
+  if(str->s().size() > sizeof(a2_gid_t)*2) {
+    throw DL_ABORT_EX(fmt("Invalid GID %s", str->s().c_str()));
   }
+  a2_gid_t n;
+  switch(GroupId::expandUnique(n, str->s().c_str())) {
+  case GroupId::ERR_NOT_UNIQUE:
+    throw DL_ABORT_EX(fmt("GID %s is not unique", str->s().c_str()));
+  case GroupId::ERR_NOT_FOUND:
+    throw DL_ABORT_EX(fmt("GID %s is not found", str->s().c_str()));
+  case GroupId::ERR_INVALID:
+    throw DL_ABORT_EX(fmt("Invalid GID %s", str->s().c_str()));
+  }
+  return n;
 }
 } // namespace
 
@@ -364,7 +371,7 @@ SharedHandle<ValueBase> AddMetalinkRpcMethod::process
     }
     for(std::vector<SharedHandle<RequestGroup> >::const_iterator i =
           result.begin(), eoi = result.end(); i != eoi; ++i) {
-      gids->append(util::itos((*i)->getGID()));
+      gids->append(GroupId::toHex((*i)->getGID()));
     }
   }
   return gids;
@@ -391,12 +398,13 @@ SharedHandle<ValueBase> removeDownload
       if(group->isDependencyResolved()) {
         e->getRequestGroupMan()->removeReservedGroup(gid);
       } else {
-        throw DL_ABORT_EX(fmt("GID#%" PRId64 " cannot be removed now", gid));
+        throw DL_ABORT_EX(fmt("GID#%s cannot be removed now",
+                              GroupId::toHex(gid).c_str()));
       }
     }
   } else {
-    throw DL_ABORT_EX(fmt("Active Download not found for GID#%" PRId64,
-                          gid));
+    throw DL_ABORT_EX(fmt("Active Download not found for GID#%s",
+                          GroupId::toHex(gid).c_str()));
   }
   return createGIDResponse(gid);
 }
@@ -455,7 +463,8 @@ SharedHandle<ValueBase> pauseDownload
       return createGIDResponse(gid);
     }
   }
-  throw DL_ABORT_EX(fmt("GID#%" PRId64 " cannot be paused now", gid));
+  throw DL_ABORT_EX(fmt("GID#%s cannot be paused now",
+                        GroupId::toHex(gid).c_str()));
 }
 } // namespace
 
@@ -519,7 +528,8 @@ SharedHandle<ValueBase> UnpauseRpcMethod::process
   if(!group ||
      group->getState() != RequestGroup::STATE_WAITING ||
      !group->isPauseRequested()) {
-    throw DL_ABORT_EX(fmt("GID#%" PRId64 " cannot be unpaused now", gid));
+    throw DL_ABORT_EX(fmt("GID#%s cannot be unpaused now",
+                          GroupId::toHex(gid).c_str()));
   } else {
     group->setPauseRequested(false);
     e->getRequestGroupMan()->requestQueueCheck();
@@ -644,7 +654,7 @@ void gatherProgressCommon
 {
   const SharedHandle<PieceStorage>& ps = group->getPieceStorage();
   if(requested_key(keys, KEY_GID)) {
-    entryDict->put(KEY_GID, util::itos(group->getGID()));
+    entryDict->put(KEY_GID, GroupId::toHex(group->getGID()).c_str());
   }
   if(requested_key(keys, KEY_TOTAL_LENGTH)) {
     // This is "filtered" total length if --select-file is used.
@@ -690,14 +700,14 @@ void gatherProgressCommon
       // The element is GID.
       for(std::vector<a2_gid_t>::const_iterator i = group->followedBy().begin(),
             eoi = group->followedBy().end(); i != eoi; ++i) {
-        list->append(util::itos(*i));
+        list->append(GroupId::toHex(*i));
       }
       entryDict->put(KEY_FOLLOWED_BY, list);
     }
   }
   if(requested_key(keys, KEY_BELONGS_TO)) {
     if(group->belongsTo()) {
-      entryDict->put(KEY_BELONGS_TO, util::itos(group->belongsTo()));
+      entryDict->put(KEY_BELONGS_TO, GroupId::toHex(group->belongsTo()));
     }
   }
   if(requested_key(keys, KEY_FILES)) {
@@ -832,7 +842,7 @@ void gatherStoppedDownload
  const std::vector<std::string>& keys)
 {
   if(requested_key(keys, KEY_GID)) {
-    entryDict->put(KEY_GID, util::itos(ds->gid));
+    entryDict->put(KEY_GID, ds->gid->toHex());
   }
   if(requested_key(keys, KEY_ERROR_CODE)) {
     entryDict->put(KEY_ERROR_CODE, util::itos(static_cast<int>(ds->result)));
@@ -852,14 +862,14 @@ void gatherStoppedDownload
       // The element is GID.
       for(std::vector<a2_gid_t>::const_iterator i = ds->followedBy.begin(),
             eoi = ds->followedBy.end(); i != eoi; ++i) {
-        list->append(util::itos(*i));
+        list->append(GroupId::toHex(*i));
       }
       entryDict->put(KEY_FOLLOWED_BY, list);
     }
   }
   if(requested_key(keys, KEY_BELONGS_TO)) {
     if(ds->belongsTo) {
-      entryDict->put(KEY_BELONGS_TO, util::itos(ds->belongsTo));
+      entryDict->put(KEY_BELONGS_TO, GroupId::toHex(ds->belongsTo));
     }
   }
   if(requested_key(keys, KEY_FILES)) {
@@ -922,8 +932,8 @@ SharedHandle<ValueBase> GetFilesRpcMethod::process
     SharedHandle<DownloadResult> dr =
       e->getRequestGroupMan()->findDownloadResult(gid);
     if(!dr) {
-      throw DL_ABORT_EX(fmt("No file data is available for GID#%" PRId64 "",
-                            gid));
+      throw DL_ABORT_EX(fmt("No file data is available for GID#%s",
+                            GroupId::toHex(gid).c_str()));
     } else {
       createFileEntry(files, dr->fileEntries.begin(), dr->fileEntries.end(),
                       dr->totalLength, dr->pieceLength, dr->bitfield);
@@ -949,7 +959,8 @@ SharedHandle<ValueBase> GetUrisRpcMethod::process
   a2_gid_t gid = str2Gid(gidParam);
   SharedHandle<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
   if(!group) {
-    throw DL_ABORT_EX(fmt("No URI data is available for GID#%" PRId64, gid));
+    throw DL_ABORT_EX(fmt("No URI data is available for GID#%s",
+                          GroupId::toHex(gid).c_str()));
   }
   SharedHandle<List> uriList = List::g();
   // TODO Current implementation just returns first FileEntry's URIs.
@@ -968,7 +979,8 @@ SharedHandle<ValueBase> GetPeersRpcMethod::process
   a2_gid_t gid = str2Gid(gidParam);
   SharedHandle<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
   if(!group) {
-    throw DL_ABORT_EX(fmt("No peer data is available for GID#%" PRId64, gid));
+    throw DL_ABORT_EX(fmt("No peer data is available for GID#%s",
+                          GroupId::toHex(gid).c_str()));
   }
   SharedHandle<List> peers = List::g();
   const SharedHandle<BtObject>& btObject =
@@ -998,7 +1010,8 @@ SharedHandle<ValueBase> TellStatusRpcMethod::process
     SharedHandle<DownloadResult> ds =
       e->getRequestGroupMan()->findDownloadResult(gid);
     if(!ds) {
-      throw DL_ABORT_EX(fmt("No such download for GID#%" PRId64 "", gid));
+      throw DL_ABORT_EX(fmt("No such download for GID#%s",
+                            GroupId::toHex(gid).c_str()));
     }
     gatherStoppedDownload(entryDict, ds, keys);
   } else {
@@ -1090,7 +1103,8 @@ SharedHandle<ValueBase> RemoveDownloadResultRpcMethod::process
 
   a2_gid_t gid = str2Gid(gidParam);
   if(!e->getRequestGroupMan()->removeDownloadResult(gid)) {
-    throw DL_ABORT_EX(fmt("Could not remove download result of GID#%" PRId64 "", gid));
+    throw DL_ABORT_EX(fmt("Could not remove download result of GID#%s",
+                          GroupId::toHex(gid).c_str()));
   }
   return VLB_OK;
 }
@@ -1191,7 +1205,8 @@ SharedHandle<ValueBase> ChangeOptionRpcMethod::process
     }
     changeOption(group, option, e);
   } else {
-    throw DL_ABORT_EX(fmt("Cannot change option for GID#%" PRId64, gid));
+    throw DL_ABORT_EX(fmt("Cannot change option for GID#%s",
+                          GroupId::toHex(gid).c_str()));
   }
   return VLB_OK;
 }
@@ -1277,7 +1292,8 @@ SharedHandle<ValueBase> GetOptionRpcMethod::process
   a2_gid_t gid = str2Gid(gidParam);
   SharedHandle<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
   if(!group) {
-    throw DL_ABORT_EX(fmt("Cannot get option for GID#%" PRId64 "", gid));
+    throw DL_ABORT_EX(fmt("Cannot get option for GID#%s",
+                          GroupId::toHex(gid).c_str()));
   }
   SharedHandle<Dict> result = Dict::g();
   SharedHandle<Option> option = group->getOption();
@@ -1344,7 +1360,8 @@ SharedHandle<ValueBase> GetServersRpcMethod::process
   a2_gid_t gid = str2Gid(gidParam);
   SharedHandle<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
   if(!group || group->getState() != RequestGroup::STATE_ACTIVE) {
-    throw DL_ABORT_EX(fmt("No active download for GID#%" PRId64, gid));
+    throw DL_ABORT_EX(fmt("No active download for GID#%s",
+                          GroupId::toHex(gid).c_str()));
   }
   const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
   const std::vector<SharedHandle<FileEntry> >& files = dctx->getFileEntries();
@@ -1390,7 +1407,8 @@ SharedHandle<ValueBase> ChangeUriRpcMethod::process
   size_t index = indexParam->i()-1;
   SharedHandle<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
   if(!group) {
-    throw DL_ABORT_EX(fmt("Cannot remove URIs from GID#%" PRId64 "", gid));
+    throw DL_ABORT_EX(fmt("Cannot remove URIs from GID#%s",
+                          GroupId::toHex(gid).c_str()));
   }
   const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
   const std::vector<SharedHandle<FileEntry> >& files = dctx->getFileEntries();

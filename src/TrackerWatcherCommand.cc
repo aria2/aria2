@@ -221,7 +221,7 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   std::vector<std::string> uris;
   uris.push_back(uri);
   SharedHandle<Option> option = util::copy(getOption());
-  SharedHandle<RequestGroup> rg(new RequestGroup(option));
+  SharedHandle<RequestGroup> rg(new RequestGroup(GroupId::create(), option));
   if(backupTrackerIsAvailable(requestGroup_->getDownloadContext())) {
     A2_LOG_DEBUG("This is multi-tracker announce.");
   } else {
@@ -255,7 +255,8 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   rg->clearPreDownloadHandler();
   rg->clearPostDownloadHandler();
   dctx->setAcceptMetalink(false);
-  A2_LOG_INFO(fmt("Creating tracker request group GID#%" PRId64 "", rg->getGID()));
+  A2_LOG_INFO(fmt("Creating tracker request group GID#%s",
+                  GroupId::toHex(rg->getGID()).c_str()));
   return rg;
 }
 

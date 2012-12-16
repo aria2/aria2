@@ -241,7 +241,7 @@ Metalink2RequestGroup::createRequestGroup
     }
 #endif // ENABLE_BITTORRENT
     SharedHandle<Option> option = util::copy(optionTemplate);
-    SharedHandle<RequestGroup> rg(new RequestGroup(option));
+    SharedHandle<RequestGroup> rg(new RequestGroup(GroupId::create(), option));
     SharedHandle<DownloadContext> dctx;
     int numSplit = option->getAsInt(PREF_SPLIT);
     int maxConn = option->getAsInt(PREF_MAX_CONNECTION_PER_SERVER);

@@ -47,6 +47,7 @@
 #include "Request.h"
 #include "error_code.h"
 #include "MetadataInfo.h"
+#include "GroupId.h"
 
 namespace aria2 {
 
@@ -73,8 +74,6 @@ class BtRuntime;
 class PeerStorage;
 #endif // ENABLE_BITTORRENT
 
-typedef int64_t a2_gid_t;
-
 class RequestGroup {
 public:
   enum HaltReason {
@@ -89,9 +88,7 @@ public:
     STATE_ACTIVE
   };
 private:
-  static a2_gid_t gidCounter_;
-
-  a2_gid_t gid_;
+  SharedHandle<GroupId> gid_;
 
   int state_;
 
@@ -201,7 +198,8 @@ private:
   (const SharedHandle<BtProgressInfoFile>& progressInfoFile);
 
 public:
-  RequestGroup(const SharedHandle<Option>& option);
+  RequestGroup(const SharedHandle<GroupId>& gid,
+               const SharedHandle<Option>& option);
 
   ~RequestGroup();
 
@@ -264,7 +262,7 @@ public:
 
   a2_gid_t getGID() const
   {
-    return gid_;
+    return gid_->getNumericId();
   }
 
   TransferStat calculateStat() const;
@@ -550,10 +548,6 @@ public:
   {
     state_ = state;
   }
-
-  static void resetGIDCounter() { gidCounter_ = 0; }
-
-  static a2_gid_t newGID();
 };
 
 } // namespace aria2

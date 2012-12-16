@@ -146,7 +146,7 @@ void printProgressCompact(std::ostream& o, const DownloadEngine* e,
         i = groups.begin(), eoi = groups.end(); i != eoi && cnt < MAX_ITEM;
       ++i, ++cnt) {
     TransferStat stat = (*i)->calculateStat();
-    o << "[#" << (*i)->getGID() << " ";
+    o << "[#" << GroupId::toAbbrevHex((*i)->getGID()) << " ";
     printSizeProgress(o, *i, stat, sizeFormatter);
     o << "]";
   }
@@ -166,7 +166,7 @@ void printProgress
   if(rg->getTotalLength() > 0 && stat.downloadSpeed > 0) {
     eta = (rg->getTotalLength()-rg->getCompletedLength())/stat.downloadSpeed;
   }
-  o << "[#" << rg->getGID() << " ";
+  o << "[#" << GroupId::toAbbrevHex(rg->getGID()) << " ";
   printSizeProgress(o, rg, stat, sizeFormatter);
   o << " CN:"
     << rg->getNumConnection();
@@ -330,7 +330,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
       e->getFileAllocationMan()->getPickedEntry();
     if(entry) {
       o << " [FileAlloc:#"
-        << entry->getRequestGroup()->getGID() << " "
+        << GroupId::toAbbrevHex(entry->getRequestGroup()->getGID()) << " "
         << sizeFormatter(entry->getCurrentLength()) << "B/"
         << sizeFormatter(entry->getTotalLength()) << "B(";
       if(entry->getTotalLength() > 0) {
@@ -350,7 +350,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
       e->getCheckIntegrityMan()->getPickedEntry();
     if(entry) {
       o << " [Checksum:#"
-        << entry->getRequestGroup()->getGID() << " "
+        << GroupId::toAbbrevHex(entry->getRequestGroup()->getGID()) << " "
         << sizeFormatter(entry->getCurrentLength()) << "B/"
         << sizeFormatter(entry->getTotalLength()) << "B(";
       if(entry->getTotalLength() > 0) {

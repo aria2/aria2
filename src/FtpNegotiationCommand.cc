@@ -423,7 +423,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
           sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
           A2_LOG_NOTICE
             (fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                 getRequestGroup()->getGID(),
+                 GroupId::toHex(getRequestGroup()->getGID()).c_str(),
                  getRequestGroup()->getFirstFilePath().c_str()));
         }
       poolConnection();

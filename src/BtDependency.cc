@@ -155,20 +155,20 @@ bool BtDependency::resolve()
       }
     } catch(RecoverableException& e) {
       A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
-      A2_LOG_INFO(fmt("BtDependency for GID#%" PRId64 " failed. Go without Bt.",
-                      dependant_->getGID()));
+      A2_LOG_INFO(fmt("BtDependency for GID#%s failed. Go without Bt.",
+                      GroupId::toHex(dependant_->getGID()).c_str()));
       return true;
     }
-    A2_LOG_INFO(fmt("Dependency resolved for GID#%" PRId64 "",
-                    dependant_->getGID()));
+    A2_LOG_INFO(fmt("Dependency resolved for GID#%s",
+                    GroupId::toHex(dependant_->getGID()).c_str()));
     dependant_->setDownloadContext(context);
     return true;
   } else if(dependee_->getNumCommand() == 0) {
     // dependee_'s download failed.
     // cut reference here
     dependee_.reset();
-    A2_LOG_INFO(fmt("BtDependency for GID#%" PRId64 " failed. Go without Bt.",
-                    dependant_->getGID()));
+    A2_LOG_INFO(fmt("BtDependency for GID#%s failed. Go without Bt.",
+                    GroupId::toHex(dependant_->getGID()).c_str()));
     return true;
   } else {
     return false;

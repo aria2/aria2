@@ -64,7 +64,7 @@ public:
     dctx_.reset(new DownloadContext());
 
     SharedHandle<Option> option(new Option());
-    requestGroup_.reset(new RequestGroup(option));
+    requestGroup_.reset(new RequestGroup(GroupId::create(), option));
     requestGroup_->setDownloadContext(dctx_);
 
     factory_.reset(new DefaultExtensionMessageFactory());

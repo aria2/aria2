@@ -38,7 +38,8 @@ class BtDependencyTest:public CppUnit::TestFixture {
 
   SharedHandle<RequestGroup> createDependant(const SharedHandle<Option>& option)
   {
-    SharedHandle<RequestGroup> dependant(new RequestGroup(util::copy(option)));
+    SharedHandle<RequestGroup> dependant(new RequestGroup(GroupId::create(),
+                                                          util::copy(option)));
     SharedHandle<DownloadContext> dctx
       (new DownloadContext(0, 0, "/tmp/outfile.path"));
     std::vector<std::string> uris;
@@ -56,7 +57,8 @@ class BtDependencyTest:public CppUnit::TestFixture {
    const std::string& torrentFile,
    int64_t length)
   {
-    SharedHandle<RequestGroup> dependee(new RequestGroup(util::copy(option)));
+    SharedHandle<RequestGroup> dependee(new RequestGroup(GroupId::create(),
+                                                         util::copy(option)));
     SharedHandle<DownloadContext> dctx
       (new DownloadContext(1024*1024, length, torrentFile));
     dependee->setDownloadContext(dctx);

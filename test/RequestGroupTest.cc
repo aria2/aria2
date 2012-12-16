@@ -36,7 +36,7 @@ void RequestGroupTest::testGetFirstFilePath()
   SharedHandle<DownloadContext> ctx
     (new DownloadContext(1024, 1024, "/tmp/myfile"));
 
-  RequestGroup group(option_);
+  RequestGroup group(GroupId::create(), option_);
   group.setDownloadContext(ctx);
 
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile"), group.getFirstFilePath());
@@ -50,7 +50,7 @@ void RequestGroupTest::testCreateDownloadResult()
 {
   SharedHandle<DownloadContext> ctx
     (new DownloadContext(1024, 1024*1024, "/tmp/myfile"));
-  RequestGroup group(option_);
+  RequestGroup group(GroupId::create(), option_);
   group.setDownloadContext(ctx);
   group.initPieceStorage();
   {

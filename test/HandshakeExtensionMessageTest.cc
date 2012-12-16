@@ -94,7 +94,7 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(METADATA_PIECE_SIZE, 0));
   SharedHandle<Option> op(new Option());
-  RequestGroup rg(op);
+  RequestGroup rg(GroupId::create(), op);
   rg.setDownloadContext(dctx);
 
   SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());

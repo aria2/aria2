@@ -39,7 +39,7 @@ void BtPostDownloadHandlerTest::testCanHandle_extension()
 {
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(0, 0, A2_TEST_DIR"/test.torrent"));
-  RequestGroup rg(option_);
+  RequestGroup rg(GroupId::create(), option_);
   rg.setDownloadContext(dctx);
 
   BtPostDownloadHandler handler;
@@ -54,7 +54,7 @@ void BtPostDownloadHandlerTest::testCanHandle_contentType()
 {
   SharedHandle<DownloadContext> dctx(new DownloadContext(0, 0, "test"));
   dctx->getFirstFileEntry()->setContentType("application/x-bittorrent");
-  RequestGroup rg(option_);
+  RequestGroup rg(GroupId::create(), option_);
   rg.setDownloadContext(dctx);
 
   BtPostDownloadHandler handler;
@@ -69,7 +69,7 @@ void BtPostDownloadHandlerTest::testGetNextRequestGroups()
 {
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(1024, 0, A2_TEST_DIR"/test.torrent"));
-  RequestGroup rg(option_);
+  RequestGroup rg(GroupId::create(), option_);
   rg.setDownloadContext(dctx);
   rg.initPieceStorage();
   rg.getPieceStorage()->getDiskAdaptor()->enableReadOnly();
