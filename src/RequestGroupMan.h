@@ -67,6 +67,9 @@ private:
   // GID => RequestGroup index for faster retrieval.
   std::map<a2_gid_t, SharedHandle<RequestGroup> > groupIndex_;
   std::deque<SharedHandle<DownloadResult> > downloadResults_;
+  // GID => DownloadResult index for faster retrieval.
+  std::map<a2_gid_t, SharedHandle<DownloadResult> > drIndex_;
+
   int maxSimultaneousDownloads_;
 
   const Option* option_;
@@ -113,6 +116,9 @@ private:
   void addRequestGroupIndex(const SharedHandle<RequestGroup>& group);
   void addRequestGroupIndex
   (const std::vector<SharedHandle<RequestGroup> >& groups);
+
+  void addDownloadResultIndex(const SharedHandle<DownloadResult>& dr);
+  void removeDownloadResultIndex(const SharedHandle<DownloadResult>& dr);
 public:
   RequestGroupMan(const std::vector<SharedHandle<RequestGroup> >& requestGroups,
                   int maxSimultaneousDownloads,

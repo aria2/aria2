@@ -187,6 +187,20 @@ void removeRequestGroupIndex
 }
 } // namespace
 
+void RequestGroupMan::addDownloadResultIndex
+(const SharedHandle<DownloadResult>& dr)
+{
+  assert(drIndex_.count(dr->gid->getNumericId()) == 0);
+  drIndex_[dr->gid->getNumericId()] = dr;
+}
+
+void RequestGroupMan::removeDownloadResultIndex
+(const SharedHandle<DownloadResult>& dr)
+{
+  assert(drIndex_.count(dr->gid->getNumericId()) == 1);
+  drIndex_.erase(dr->gid->getNumericId());
+}
+
 size_t RequestGroupMan::countRequestGroup() const
 {
   return requestGroups_.size();
@@ -972,13 +986,13 @@ TransferStat RequestGroupMan::calculateStat()
 SharedHandle<DownloadResult>
 RequestGroupMan::findDownloadResult(a2_gid_t gid) const
 {
-  for(std::deque<SharedHandle<DownloadResult> >::const_iterator i =
-        downloadResults_.begin(), eoi = downloadResults_.end(); i != eoi; ++i) {
-    if((*i)->gid->getNumericId() == gid) {
-      return *i;
-    }
+  std::map<a2_gid_t, SharedHandle<DownloadResult> >::const_iterator i =
+    drIndex_.find(gid);
+  if(i != drIndex_.end()) {
+    return (*i).second;
+  } else {
+    return SharedHandle<DownloadResult>();
   }
-  return SharedHandle<DownloadResult>();
 }
 
 bool RequestGroupMan::removeDownloadResult(a2_gid_t gid)
@@ -987,6 +1001,7 @@ bool RequestGroupMan::removeDownloadResult(a2_gid_t gid)
         downloadResults_.begin(), eoi = downloadResults_.end(); i != eoi; ++i) {
     if((*i)->gid->getNumericId() == gid) {
       downloadResults_.erase(i);
+      removeDownloadResultIndex(*i);
       return true;
     }
   }
@@ -1005,6 +1020,7 @@ void RequestGroupMan::addDownloadResult(const SharedHandle<DownloadResult>& dr)
           ++removedErrorResult_;
         }
       }
+      drIndex_.clear();
       downloadResults_.clear();
     }
     if(dr->belongsTo == 0 && dr->result != error_code::FINISHED) {
@@ -1022,16 +1038,19 @@ void RequestGroupMan::addDownloadResult(const SharedHandle<DownloadResult>& dr)
           removedLastErrorResult_ = (*i)->result;
           ++removedErrorResult_;
         }
+        removeDownloadResultIndex(*i);
       }
       downloadResults_.erase(downloadResults_.begin(), last);
     }
     downloadResults_.push_back(dr);
+    addDownloadResultIndex(dr);
   }
 }
 
 void RequestGroupMan::purgeDownloadResult()
 {
   downloadResults_.clear();
+  drIndex_.clear();
 }
 
 SharedHandle<ServerStat>

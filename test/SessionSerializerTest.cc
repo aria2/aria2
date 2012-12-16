@@ -37,6 +37,7 @@ SharedHandle<DownloadResult> createDownloadResult
   std::vector<SharedHandle<FileEntry> > entries;
   entries.push_back(entry);
   SharedHandle<DownloadResult> dr(new DownloadResult());
+  dr->gid = GroupId::create();
   dr->fileEntries = entries;
   dr->result = result;
   dr->belongsTo = 0;
