@@ -352,6 +352,8 @@ const Pref* PREF_ENABLE_MMAP = makePref("enable-mmap");
 const Pref* PREF_FORCE_SAVE = makePref("force-save");
 // value: 1*digit
 const Pref* PREF_DISK_CACHE = makePref("disk-cache");
+// value: string
+const Pref* PREF_GID = makePref("gid");
 
 /**
  * FTP related preferences

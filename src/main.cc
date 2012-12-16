@@ -272,6 +272,7 @@ error_code::Value main(int argc, char* argv[])
   op->remove(PREF_SELECT_FILE);
   op->remove(PREF_PAUSE);
   op->remove(PREF_CHECKSUM);
+  op->remove(PREF_GID);
   if(!op->getAsBool(PREF_ENABLE_RPC) && requestGroups.empty() &&
      !uriListParser) {
     global::cout()->printf("%s\n", MSG_NO_FILES_TO_DOWNLOAD);

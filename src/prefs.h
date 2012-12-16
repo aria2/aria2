@@ -287,6 +287,8 @@ extern const Pref* PREF_ENABLE_MMAP;
 extern const Pref* PREF_FORCE_SAVE;
 // value: 1*digit
 extern const Pref* PREF_DISK_CACHE;
+// value: string
+extern const Pref* PREF_GID;
 
 /**
  * FTP related preferences

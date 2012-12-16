@@ -402,6 +402,15 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BASIC);
     handlers.push_back(op);
   }
+  {
+    OptionHandler* op(new DefaultOptionHandler
+                      (PREF_GID,
+                       TEXT_GID,
+                       NO_DEFAULT_VALUE));
+    op->addTag(TAG_ADVANCED);
+    op->setInitialOption(true);
+    handlers.push_back(op);
+  }
 #ifdef ENABLE_MESSAGE_DIGEST
   {
     OptionHandler* op(new BooleanOptionHandler

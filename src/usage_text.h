@@ -927,3 +927,15 @@
     "                              cached in memory, we don't need to read them\n" \
     "                              from the disk.\n"                    \
     "                              SIZE can include K or M(1K = 1024, 1M = 1024K).")
+#define TEXT_GID                                \
+  _(" --gid=GID                    Set GID manually. aria2 identifies each\n" \
+    "                              download by the ID called GID. The GID must be\n" \
+    "                              hex string of 16 characters, thus [0-9a-zA-Z]\n" \
+    "                              are allowed and leading zeros must not be\n" \
+    "                              stripped. The GID all 0 is reserved and must\n" \
+    "                              not be used. The GID must be unique, otherwise\n" \
+    "                              error is reported and the download is not added.\n" \
+    "                              This option is useful when restoring the\n" \
+    "                              sessions saved using --save-session option. If\n" \
+    "                              this option is not used, new GID is generated\n" \
+    "                              by aria2.")
