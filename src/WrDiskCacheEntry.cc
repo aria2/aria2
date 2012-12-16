@@ -76,7 +76,6 @@ void WrDiskCacheEntry::deleteDataCells()
 
 void WrDiskCacheEntry::writeToDisk()
 {
-  DataCellSet::iterator i = set_.begin(), eoi = set_.end();
   try {
     diskAdaptor_->writeCache(this);
   } catch(RecoverableException& e) {
