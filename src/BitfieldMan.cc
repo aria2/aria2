@@ -863,7 +863,7 @@ int64_t BitfieldMan::getOffsetCompletedLength
     }
   } else {
     if(isBitSet(start)) {
-      res += (start+1)*blockLength_-offset;
+      res += static_cast<int64_t>(start+1)*blockLength_-offset;
     }
     for(size_t i = start+1; i <= end-1; ++i) {
       if(isBitSet(i)) {
@@ -871,7 +871,7 @@ int64_t BitfieldMan::getOffsetCompletedLength
       }
     }
     if(isBitSet(end)) {
-      res += offset+length-end*blockLength_;
+      res += offset+length-static_cast<int64_t>(end)*blockLength_;
     }
   }
   return res;

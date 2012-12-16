@@ -28,6 +28,7 @@ class BitfieldManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetSparseMissingUnusedIndex_withMinSplitSize);
   CPPUNIT_TEST(testIsBitSetOffsetRange);
   CPPUNIT_TEST(testGetOffsetCompletedLength);
+  CPPUNIT_TEST(testGetOffsetCompletedLength_largeFile);
   CPPUNIT_TEST(testGetMissingUnusedLength);
   CPPUNIT_TEST(testSetBitRange);
   CPPUNIT_TEST(testGetAllMissingIndexes);
@@ -62,6 +63,7 @@ public:
   void testGetSparseMissingUnusedIndex_withMinSplitSize();
   void testIsBitSetOffsetRange();
   void testGetOffsetCompletedLength();
+  void testGetOffsetCompletedLength_largeFile();
   void testGetMissingUnusedLength();
   void testSetBitRange();
   void testCountFilteredBlock();
@@ -482,6 +484,26 @@ void BitfieldManTest::testGetOffsetCompletedLength()
   CPPUNIT_ASSERT_EQUAL((int64_t)3072,
                        bt.getOffsetCompletedLength(0, 1024*20+10));
   CPPUNIT_ASSERT_EQUAL((int64_t)0, bt.getOffsetCompletedLength(1024*20, 1));
+}
+
+void BitfieldManTest::testGetOffsetCompletedLength_largeFile()
+{
+  // Test for overflow on 32-bit systems.
+
+  // Total 4TiB, 4MiB block
+  BitfieldMan bt(1 << 22, 1LL << 40);
+  bt.setBit(1 << 11);
+  bt.setBit((1 << 11)+1);
+  bt.setBit((1 << 11)+2);
+
+  // The last piece is missing:
+  CPPUNIT_ASSERT_EQUAL((int64_t)bt.getBlockLength()*3,
+                       bt.getOffsetCompletedLength(1LL << 33, 1 << 24));
+
+  // The first piece is missing:
+  CPPUNIT_ASSERT_EQUAL((int64_t)bt.getBlockLength()*3,
+                       bt.getOffsetCompletedLength
+		       ((1LL << 33) - bt.getBlockLength(), 1 << 24));
 }
 
 void BitfieldManTest::testGetMissingUnusedLength()
