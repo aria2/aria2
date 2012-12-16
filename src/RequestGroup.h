@@ -265,6 +265,11 @@ public:
     return gid_->getNumericId();
   }
 
+  const SharedHandle<GroupId>& getGroupId() const
+  {
+    return gid_;
+  }
+
   TransferStat calculateStat() const;
 
   const SharedHandle<DownloadContext>& getDownloadContext() const

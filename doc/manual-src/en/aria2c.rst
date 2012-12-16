@@ -1334,14 +1334,30 @@ Advanced Options
 .. option:: --save-session=<FILE>
 
   Save error/unfinished downloads to FILE on exit.  You can pass this
-  output file to aria2c with :option:`--input-file <-i>` option on restart. Please note that
-  downloads added by :func:`aria2.addTorrent` and
-  :func:`aria2.addMetalink`
-  RPC method and whose metadata could not be saved as a file are not saved.
-  Downloads removed using
-  :func:`aria2.remove` and
-  :func:`aria2.forceRemove`
-  will not be saved.
+  output file to aria2c with :option:`--input-file <-i>` option on
+  restart. Please note that downloads added by
+  :func:`aria2.addTorrent` and :func:`aria2.addMetalink` RPC method
+  and whose metadata could not be saved as a file are not saved.
+  Downloads removed using :func:`aria2.remove` and
+  :func:`aria2.forceRemove` will not be saved. GID is also saved with
+  :option:`gid <--gid>`, but there are some restrictions, see below.
+
+  .. note::
+
+    Normally, GID of the download itself is saved. But some downloads
+    use metadata (e.g., BitTorrent and Metalink). In this case, there
+    are some restrictions.
+
+    1. magnet URI, and followed by torrent download
+        GID of BitTorrent metadata download is saved.
+    2. URI to torrent file, and followed by torrent download
+        GID of torrent file download is saved.
+    3. URI to metalink file, and followed by file downloads described in metalink file
+        GID of metalink file download is saved.
+    4. local torrent file
+        GID of torrent download is saved.
+    5. local metalink file
+        Any meaningful GID is not saved.
 
 .. option:: --stop=<SEC>
 

@@ -165,9 +165,10 @@ SharedHandle<RequestGroup> createRequestGroup
 
 #if defined ENABLE_BITTORRENT || ENABLE_METALINK
 namespace {
-SharedHandle<MetadataInfo> createMetadataInfo(const std::string& uri)
+SharedHandle<MetadataInfo> createMetadataInfo(const SharedHandle<GroupId>& gid,
+                                              const std::string& uri)
 {
-  return SharedHandle<MetadataInfo>(new MetadataInfo(uri));
+  return SharedHandle<MetadataInfo>(new MetadataInfo(gid, uri));
 }
 } // namespace
 
@@ -190,7 +191,8 @@ createBtRequestGroup(const std::string& metaInfoUri,
                      bool adjustAnnounceUri = true)
 {
   SharedHandle<Option> option = util::copy(optionTemplate);
-  SharedHandle<RequestGroup> rg(new RequestGroup(getGID(option), option));
+  SharedHandle<GroupId> gid = getGID(option);
+  SharedHandle<RequestGroup> rg(new RequestGroup(gid, option));
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   // may throw exception
   bittorrent::loadFromMemory(torrent, dctx, option, auxUris,
@@ -198,7 +200,7 @@ createBtRequestGroup(const std::string& metaInfoUri,
   if(metaInfoUri.empty()) {
     rg->setMetadataInfo(createMetadataInfoDataOnly());
   } else {
-    rg->setMetadataInfo(createMetadataInfo(metaInfoUri));
+    rg->setMetadataInfo(createMetadataInfo(gid, metaInfoUri));
   }
   if(adjustAnnounceUri) {
     bittorrent::adjustAnnounceUri(bittorrent::getTorrentAttrs(dctx), option);
@@ -232,7 +234,8 @@ createBtMagnetRequestGroup
  const SharedHandle<Option>& optionTemplate)
 {
   SharedHandle<Option> option = util::copy(optionTemplate);
-  SharedHandle<RequestGroup> rg(new RequestGroup(getGID(option), option));
+  SharedHandle<GroupId> gid = getGID(option);
+  SharedHandle<RequestGroup> rg(new RequestGroup(gid, option));
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(METADATA_PIECE_SIZE, 0,
                          A2STR::NIL));
@@ -252,7 +255,7 @@ createBtMagnetRequestGroup
   rg->addPostDownloadHandler(utMetadataPostHandler);
   rg->setDiskWriterFactory
     (SharedHandle<DiskWriterFactory>(new ByteArrayDiskWriterFactory()));
-  rg->setMetadataInfo(createMetadataInfo(magnetLink));
+  rg->setMetadataInfo(createMetadataInfo(gid, magnetLink));
   rg->markInMemoryDownload();
   rg->setPauseRequested(option->getAsBool(PREF_PAUSE));
   removeOneshotOption(option);
@@ -535,7 +538,8 @@ void createRequestGroupForUriList
 }
 
 SharedHandle<MetadataInfo>
-createMetadataInfoFromFirstFileEntry(const SharedHandle<DownloadContext>& dctx)
+createMetadataInfoFromFirstFileEntry(const SharedHandle<GroupId>& gid,
+                                     const SharedHandle<DownloadContext>& dctx)
 {
   if(dctx->getFileEntries().empty()) {
     return SharedHandle<MetadataInfo>();
@@ -545,7 +549,7 @@ createMetadataInfoFromFirstFileEntry(const SharedHandle<DownloadContext>& dctx)
     if(uris.empty()) {
       return SharedHandle<MetadataInfo>();
     }
-    return SharedHandle<MetadataInfo>(new MetadataInfo(uris[0]));
+    return SharedHandle<MetadataInfo>(new MetadataInfo(gid, uris[0]));
   }
 }
 

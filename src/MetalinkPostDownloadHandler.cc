@@ -106,7 +106,8 @@ void MetalinkPostDownloadHandler::getNextRequestGroups
                                      requestGroup->getOption(), baseUri);
     requestGroup->followedBy(newRgs.begin(), newRgs.end());
     SharedHandle<MetadataInfo> mi =
-      createMetadataInfoFromFirstFileEntry(requestGroup->getDownloadContext());
+      createMetadataInfoFromFirstFileEntry(requestGroup->getGroupId(),
+                                           requestGroup->getDownloadContext());
     if(mi) {
       setMetadataInfo(newRgs.begin(), newRgs.end(), mi);
     }

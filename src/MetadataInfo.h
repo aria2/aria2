@@ -39,16 +39,17 @@
 
 #include <string>
 
+#include "SharedHandle.h"
+#include "GroupId.h"
+
 namespace aria2 {
 
 class MetadataInfo {
 private:
-  int64_t id_;
+  SharedHandle<GroupId> gid_;
   std::string uri_;
-  bool dataOnly_;
-  static int64_t count_;
 public:
-  MetadataInfo(const std::string& uri);
+  MetadataInfo(const SharedHandle<GroupId>& gid, const std::string& uri);
 
   MetadataInfo();
 
@@ -56,7 +57,7 @@ public:
 
   bool dataOnly() const
   {
-    return dataOnly_;
+    return !gid_;
   }
 
   const std::string& getUri() const
@@ -64,12 +65,11 @@ public:
     return uri_;
   }
 
-  int64_t getId() const
+  a2_gid_t getGID() const
   {
-    return id_;
+    assert(gid_);
+    return gid_->getNumericId();
   }
-
-  static int64_t genId();
 };
 
 } // namespace aria2

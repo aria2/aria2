@@ -66,11 +66,14 @@ void SessionSerializerTest::testSave()
   SharedHandle<RequestGroupMan> rgman
     (new RequestGroupMan(result, 1, option.get()));
   SessionSerializer s(rgman);
-  // REMOVED downloads will not be saved.
-  rgman->addDownloadResult
-    (createDownloadResult(error_code::REMOVED, "http://removed"));
-  rgman->addDownloadResult
-    (createDownloadResult(error_code::TIME_OUT, "http://error"));
+  SharedHandle<DownloadResult> drs[] = {
+    // REMOVED downloads will not be saved.
+    createDownloadResult(error_code::REMOVED, "http://removed"),
+    createDownloadResult(error_code::TIME_OUT, "http://error")
+  };
+  for(size_t i = 0; i < sizeof(drs)/sizeof(drs[0]); ++i) {
+    rgman->addDownloadResult(drs[i]);
+  }
   std::string filename = A2_TEST_OUT_DIR"/aria2_SessionSerializerTest_testSave";
   s.save(filename);
   std::ifstream ss(filename.c_str(), std::ios::binary);
@@ -78,19 +81,38 @@ void SessionSerializerTest::testSave()
   std::getline(ss, line);
   CPPUNIT_ASSERT_EQUAL(std::string("http://error\t"), line);
   std::getline(ss, line);
+  CPPUNIT_ASSERT_EQUAL(fmt(" gid=%s", drs[1]->gid->toHex().c_str()), line);
+  std::getline(ss, line);
   CPPUNIT_ASSERT_EQUAL(uris[0]+"\t"+uris[1]+"\t", line);
+  std::getline(ss, line);
+  CPPUNIT_ASSERT_EQUAL(fmt(" gid=%s",
+                           GroupId::toHex(result[0]->getGID()).c_str()),
+                       line);
   std::getline(ss, line);
   CPPUNIT_ASSERT_EQUAL(std::string(" dir=/tmp"), line);
   std::getline(ss, line);
   CPPUNIT_ASSERT_EQUAL(uris[2], line);
   std::getline(ss, line);
+  CPPUNIT_ASSERT_EQUAL(fmt(" gid=%s",
+                           GroupId::toHex(result[1]->getGID()).c_str()),
+                       line);
+  std::getline(ss, line);
   CPPUNIT_ASSERT_EQUAL(std::string(" dir=/tmp"), line);
   std::getline(ss, line);
   CPPUNIT_ASSERT_EQUAL(uris[3], line);
   std::getline(ss, line);
+  // local metalink download does not save meaningful GID
+  CPPUNIT_ASSERT(fmt(" gid=%s",
+                     GroupId::toHex(result[2]->getGID()).c_str())
+                 != line);
+  std::getline(ss, line);
   CPPUNIT_ASSERT_EQUAL(std::string(" dir=/tmp"), line);
   std::getline(ss, line);
   CPPUNIT_ASSERT_EQUAL(uris[4], line);
+  std::getline(ss, line);
+  CPPUNIT_ASSERT_EQUAL(fmt(" gid=%s",
+                           GroupId::toHex(result[4]->getGID()).c_str()),
+                       line);
   std::getline(ss, line);
   CPPUNIT_ASSERT_EQUAL(std::string(" dir=/tmp"), line);
   std::getline(ss, line);

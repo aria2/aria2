@@ -51,6 +51,7 @@ class MetadataInfo;
 class DownloadContext;
 class UriListParser;
 class ValueBase;
+class GroupId;
 
 #ifdef ENABLE_BITTORRENT
 // Create RequestGroup object using torrent file specified by
@@ -144,7 +145,8 @@ void setMetadataInfo
 }
 
 SharedHandle<MetadataInfo>
-createMetadataInfoFromFirstFileEntry(const SharedHandle<DownloadContext>& dctx);
+createMetadataInfoFromFirstFileEntry(const SharedHandle<GroupId>& gid,
+                                     const SharedHandle<DownloadContext>& dctx);
 
 // Removes option value which is only effective at the first
 // construction time.

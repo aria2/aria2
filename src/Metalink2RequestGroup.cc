@@ -123,7 +123,9 @@ Metalink2RequestGroup::generate
   if(metalinkFile == DEV_STDIN) {
     mi.reset(new MetadataInfo());
   } else {
-    mi.reset(new MetadataInfo(metalinkFile));
+    // TODO Downloads from local metalink file does not save neither
+    // its gid nor MetadataInfo's gid.
+    mi.reset(new MetadataInfo(GroupId::create(), metalinkFile));
   }
   setMetadataInfo(tempgroups.begin(), tempgroups.end(), mi);
   groups.insert(groups.end(), tempgroups.begin(), tempgroups.end());

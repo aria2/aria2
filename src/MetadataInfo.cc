@@ -36,22 +36,13 @@
 
 namespace aria2 {
 
-int64_t MetadataInfo::count_ = 0;
-
-MetadataInfo::MetadataInfo(const std::string& uri)
-  : id_(genId()), uri_(uri), dataOnly_(false)
+MetadataInfo::MetadataInfo(const SharedHandle<GroupId>& gid,
+                           const std::string& uri)
+  : gid_(gid), uri_(uri)
 {}
 
-MetadataInfo::MetadataInfo():id_(genId()), dataOnly_(true) {}
+MetadataInfo::MetadataInfo() {}
 
 MetadataInfo::~MetadataInfo() {}
-
-int64_t MetadataInfo::genId()
-{
-  if(count_ == INT64_MAX) {
-    count_ = 0;
-  }
-  return ++count_;
-}
 
 } // namespace aria2
