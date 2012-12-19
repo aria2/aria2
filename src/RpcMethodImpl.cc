@@ -48,7 +48,6 @@
 #include "RequestGroup.h"
 #include "download_helper.h"
 #include "util.h"
-#include "RequestGroupMan.h"
 #include "fmt.h"
 #include "RpcRequest.h"
 #include "PieceStorage.h"
@@ -486,7 +485,7 @@ void pauseRequestGroups
 (InputIterator first, InputIterator last, bool reserved, bool forcePause)
 {
   for(; first != last; ++first) {
-    pauseRequestGroup(*first, reserved, forcePause);
+    pauseRequestGroup((*first).second, reserved, forcePause);
   }
 }
 } // namespace
@@ -495,10 +494,9 @@ namespace {
 SharedHandle<ValueBase> pauseAllDownloads
 (const RpcRequest& req, DownloadEngine* e, bool forcePause)
 {
-  const std::deque<SharedHandle<RequestGroup> >& groups =
-    e->getRequestGroupMan()->getRequestGroups();
+  const RequestGroupList& groups = e->getRequestGroupMan()->getRequestGroups();
   pauseRequestGroups(groups.begin(), groups.end(), false, forcePause);
-  const std::deque<SharedHandle<RequestGroup> >& reservedGroups =
+  const RequestGroupList& reservedGroups =
     e->getRequestGroupMan()->getReservedGroups();
   pauseRequestGroups(reservedGroups.begin(), reservedGroups.end(),
                      true, forcePause);
@@ -540,11 +538,12 @@ SharedHandle<ValueBase> UnpauseRpcMethod::process
 SharedHandle<ValueBase> UnpauseAllRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  const std::deque<SharedHandle<RequestGroup> >& groups =
+  const RequestGroupList& groups =
     e->getRequestGroupMan()->getReservedGroups();
-  std::for_each(groups.begin(), groups.end(),
-                std::bind2nd(mem_fun_sh(&RequestGroup::setPauseRequested),
-                             false));
+  for(RequestGroupList::SeqType::const_iterator i = groups.begin(),
+        eoi = groups.end(); i != eoi; ++i) {
+    (*i).second->setPauseRequested(false);
+  }
   e->getRequestGroupMan()->requestQueueCheck();
   return VLB_OK;
 }
@@ -1038,21 +1037,20 @@ SharedHandle<ValueBase> TellActiveRpcMethod::process
   std::vector<std::string> keys;
   toStringList(std::back_inserter(keys), keysParam);
   SharedHandle<List> list = List::g();
-  const std::deque<SharedHandle<RequestGroup> >& groups =
-    e->getRequestGroupMan()->getRequestGroups();
-  for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
-        groups.begin(), eoi = groups.end(); i != eoi; ++i) {
+  const RequestGroupList& groups = e->getRequestGroupMan()->getRequestGroups();
+  for(RequestGroupList::SeqType::const_iterator i = groups.begin(),
+        eoi = groups.end(); i != eoi; ++i) {
     SharedHandle<Dict> entryDict = Dict::g();
     if(requested_key(keys, KEY_STATUS)) {
       entryDict->put(KEY_STATUS, VLB_ACTIVE);
     }
-    gatherProgress(entryDict, *i, e, keys);
+    gatherProgress(entryDict, (*i).second, e, keys);
     list->append(entryDict);
   }
   return list;
 }
 
-const std::deque<SharedHandle<RequestGroup> >&
+const RequestGroupList&
 TellWaitingRpcMethod::getItems(DownloadEngine* e) const
 {
   return e->getRequestGroupMan()->getReservedGroups();
@@ -1074,7 +1072,7 @@ void TellWaitingRpcMethod::createEntry
   gatherProgress(entryDict, item, e, keys);
 }
 
-const std::deque<SharedHandle<DownloadResult> >&
+const DownloadResultList&
 TellStoppedRpcMethod::getItems(DownloadEngine* e) const
 {
   return e->getRequestGroupMan()->getDownloadResults();
@@ -1328,13 +1326,13 @@ SharedHandle<ValueBase> ChangePositionRpcMethod::process
   a2_gid_t gid = str2Gid(gidParam);
   int pos = posParam->i();
   const std::string& howStr = howParam->s();
-  RequestGroupMan::HOW how;
+  A2_HOW how;
   if(howStr == "POS_SET") {
-    how = RequestGroupMan::POS_SET;
+    how = A2_POS_SET;
   } else if(howStr == "POS_CUR") {
-    how = RequestGroupMan::POS_CUR;
+    how = A2_POS_CUR;
   } else if(howStr == "POS_END") {
-    how = RequestGroupMan::POS_END;
+    how = A2_POS_END;
   } else {
     throw DL_ABORT_EX("Illegal argument.");
   }

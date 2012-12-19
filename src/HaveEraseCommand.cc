@@ -55,12 +55,11 @@ void HaveEraseCommand::preProcess()
 
 void HaveEraseCommand::process()
 {
-  size_t numLoop =
-    getDownloadEngine()->getRequestGroupMan()->countRequestGroup();
-  for(size_t i = 0; i < numLoop; ++i) {
-    SharedHandle<PieceStorage> ps =
-      getDownloadEngine()->getRequestGroupMan()->getRequestGroup(i)->
-      getPieceStorage();
+  const RequestGroupList& groups =
+    getDownloadEngine()->getRequestGroupMan()->getRequestGroups();
+  for(RequestGroupList::SeqType::const_iterator i = groups.begin(),
+        eoi = groups.end(); i != eoi; ++i) {
+    const SharedHandle<PieceStorage>& ps = (*i).second->getPieceStorage();
     if(ps) {
       ps->removeAdvertisedPiece(5);
     }

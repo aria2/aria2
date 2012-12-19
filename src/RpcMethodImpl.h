@@ -46,6 +46,9 @@
 #include "TorrentAttribute.h"
 #include "DlAbortEx.h"
 #include "fmt.h"
+#include "IndexedList.h"
+#include "GroupId.h"
+#include "RequestGroupMan.h"
 
 namespace aria2 {
 
@@ -371,6 +374,8 @@ private:
     return std::make_pair(first, last);
   }
 protected:
+  typedef IndexedList<a2_gid_t, SharedHandle<T> > ItemListType;
+
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e)
   {
@@ -382,14 +387,14 @@ protected:
     int64_t num = numParam->i();
     std::vector<std::string> keys;
     toStringList(std::back_inserter(keys), keysParam);
-    const std::deque<SharedHandle<T> >& items = getItems(e);
-    std::pair<typename std::deque<SharedHandle<T> >::const_iterator,
-      typename std::deque<SharedHandle<T> >::const_iterator> range =
+    const ItemListType& items = getItems(e);
+    std::pair<typename ItemListType::SeqType::const_iterator,
+              typename ItemListType::SeqType::const_iterator> range =
       getPaginationRange(offset, num, items.begin(), items.end());
     SharedHandle<List> list = List::g();
     for(; range.first != range.second; ++range.first) {
       SharedHandle<Dict> entryDict = Dict::g();
-      createEntry(entryDict, *range.first, e, keys);
+      createEntry(entryDict, (*range.first).second, e, keys);
       list->append(entryDict);
     }
     if(offset < 0) {
@@ -398,8 +403,7 @@ protected:
     return list;
   }
 
-  virtual const std::deque<SharedHandle<T> >&
-  getItems(DownloadEngine* e) const = 0;
+  virtual const ItemListType& getItems(DownloadEngine* e) const = 0;
 
   virtual void createEntry
   (const SharedHandle<Dict>& entryDict,
@@ -411,8 +415,7 @@ protected:
 class TellWaitingRpcMethod:
     public AbstractPaginationRpcMethod<RequestGroup> {
 protected:
-  virtual const std::deque<SharedHandle<RequestGroup> >&
-  getItems(DownloadEngine* e) const;
+  virtual const RequestGroupList& getItems(DownloadEngine* e) const;
 
   virtual void createEntry
   (const SharedHandle<Dict>& entryDict,
@@ -429,8 +432,7 @@ public:
 class TellStoppedRpcMethod:
     public AbstractPaginationRpcMethod<DownloadResult> {
 protected:
-   virtual const std::deque<SharedHandle<DownloadResult> >&
-   getItems(DownloadEngine* e) const;
+  virtual const DownloadResultList& getItems(DownloadEngine* e) const;
 
   virtual void createEntry
   (const SharedHandle<Dict>& entryDict,

@@ -184,46 +184,46 @@ bool writeDownloadResult
 bool SessionSerializer::save(BufferedFile& fp) const
 {
   std::set<a2_gid_t> metainfoCache;
-  const std::deque<SharedHandle<DownloadResult> >& results =
-    rgman_->getDownloadResults();
-  for(std::deque<SharedHandle<DownloadResult> >::const_iterator itr =
-        results.begin(), eoi = results.end(); itr != eoi; ++itr) {
-    if((*itr)->result == error_code::FINISHED ||
-       (*itr)->result == error_code::REMOVED) {
-      if((*itr)->option->getAsBool(PREF_FORCE_SAVE)) {
-        if(!writeDownloadResult(fp, metainfoCache, *itr)) {
+  const DownloadResultList& results = rgman_->getDownloadResults();
+  for(DownloadResultList::SeqType::const_iterator itr = results.begin(),
+        eoi = results.end(); itr != eoi; ++itr) {
+    const SharedHandle<DownloadResult>& dr = (*itr).second;
+    if(dr->result == error_code::FINISHED ||
+       dr->result == error_code::REMOVED) {
+      if(dr->option->getAsBool(PREF_FORCE_SAVE)) {
+        if(!writeDownloadResult(fp, metainfoCache, dr)) {
           return false;
         }
       } else {
         continue;
       }
-    } else if((*itr)->result == error_code::IN_PROGRESS) {
+    } else if(dr->result == error_code::IN_PROGRESS) {
       if(saveInProgress_) {
-        if(!writeDownloadResult(fp, metainfoCache, *itr)) {
+        if(!writeDownloadResult(fp, metainfoCache, dr)) {
           return false;
         }
       }
     } else {
       // error download
       if(saveError_) {
-        if(!writeDownloadResult(fp, metainfoCache, *itr)) {
+        if(!writeDownloadResult(fp, metainfoCache, dr)) {
           return false;
         }
       }
     }
   }
   if(saveWaiting_) {
-    const std::deque<SharedHandle<RequestGroup> >& groups =
-      rgman_->getReservedGroups();
-    for(std::deque<SharedHandle<RequestGroup> >::const_iterator itr =
-          groups.begin(), eoi = groups.end(); itr != eoi; ++itr) {
-      SharedHandle<DownloadResult> result = (*itr)->createDownloadResult();
+    const RequestGroupList& groups = rgman_->getReservedGroups();
+    for(RequestGroupList::SeqType::const_iterator itr = groups.begin(),
+          eoi = groups.end(); itr != eoi; ++itr) {
+      const SharedHandle<RequestGroup>& rg = (*itr).second;
+      SharedHandle<DownloadResult> result = rg->createDownloadResult();
       if(!writeDownloadResult(fp, metainfoCache, result)) {
         return false;
       }
       // PREF_PAUSE was removed from option, so save it here looking
       // property separately.
-      if((*itr)->isPauseRequested()) {
+      if(rg->isPauseRequested()) {
         if(fp.printf(" %s=true\n", PREF_PAUSE->k) < 0) {
           return false;
         }

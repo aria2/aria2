@@ -138,16 +138,16 @@ void printProgressCompact(std::ostream& o, const DownloadEngine* e,
     o << "[DL:" << sizeFormatter(dl) << "B UL:" << sizeFormatter(ul) << "B]";
   }
 
-  const std::deque<SharedHandle<RequestGroup> >& groups =
+  const RequestGroupList& groups =
     e->getRequestGroupMan()->getRequestGroups();
   size_t cnt = 0;
   const size_t MAX_ITEM = 5;
-  for(std::deque<SharedHandle<RequestGroup> >::const_iterator
-        i = groups.begin(), eoi = groups.end(); i != eoi && cnt < MAX_ITEM;
-      ++i, ++cnt) {
-    TransferStat stat = (*i)->calculateStat();
-    o << "[#" << GroupId::toAbbrevHex((*i)->getGID()) << " ";
-    printSizeProgress(o, *i, stat, sizeFormatter);
+  for(RequestGroupList::SeqType::const_iterator i = groups.begin(),
+        eoi = groups.end(); i != eoi && cnt < MAX_ITEM; ++i, ++cnt) {
+    const SharedHandle<RequestGroup>& rg = (*i).second;
+    TransferStat stat = rg->calculateStat();
+    o << "[#" << GroupId::toAbbrevHex(rg->getGID()) << " ";
+    printSizeProgress(o, rg, stat, sizeFormatter);
     o << "]";
   }
   if(cnt < groups.size()) {
@@ -210,8 +210,9 @@ public:
    const SizeFormatter& sizeFormatter):
     cols_(cols), e_(e), sizeFormatter_(sizeFormatter) {}
 
-  void operator()(const SharedHandle<RequestGroup>& rg)
+  void operator()(const RequestGroupList::SeqType::value_type& val)
   {
+    const SharedHandle<RequestGroup>& rg = val.second;
     const char SEP_CHAR = '-';
     std::stringstream o;
     printProgress(o, rg, e_, sizeFormatter_);
@@ -229,8 +230,7 @@ public:
 
 namespace {
 void printProgressSummary
-(const std::deque<SharedHandle<RequestGroup> >& groups, size_t cols,
- const DownloadEngine* e,
+(const RequestGroupList& groups, size_t cols, const DownloadEngine* e,
  const SizeFormatter& sizeFormatter)
 {
   const char SEP_CHAR = '=';
@@ -318,8 +318,9 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   }
   size_t numGroup = e->getRequestGroupMan()->countRequestGroup();
   if(numGroup == 1) {
-    printProgress(o, e->getRequestGroupMan()->getRequestGroup(0), e,
-                  sizeFormatter);
+    const SharedHandle<RequestGroup>& rg =
+      (*e->getRequestGroupMan()->getRequestGroups().begin()).second;
+    printProgress(o, rg, e, sizeFormatter);
   } else if(numGroup > 1) {
     // For more than 2 RequestGroups, use compact readout form
     printProgressCompact(o, e, sizeFormatter);

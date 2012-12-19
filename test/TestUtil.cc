@@ -15,6 +15,8 @@
 #include "DefaultDiskWriter.h"
 #include "fmt.h"
 #include "util.h"
+#include "RequestGroupMan.h"
+#include "RequestGroup.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "message_digest_helper.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -96,6 +98,30 @@ WrDiskCacheEntry::DataCell* createDataCell(int64_t goff,
   cell->offset = offset;
   cell->len = cell->capacity = len - offset;
   return cell;
+}
+
+SharedHandle<RequestGroup> findReservedGroup
+(const SharedHandle<RequestGroupMan>& rgman, a2_gid_t gid)
+{
+  SharedHandle<RequestGroup> rg = rgman->findGroup(gid);
+  if(rg) {
+    if(rg->getState() == RequestGroup::STATE_WAITING) {
+      return rg;
+    } else {
+      rg.reset();
+    }
+  }
+  return rg;
+}
+
+SharedHandle<RequestGroup> getReservedGroup
+(const SharedHandle<RequestGroupMan>& rgman, size_t index)
+{
+  assert(rgman->getReservedGroups().size() > index);
+  RequestGroupList::SeqType::const_iterator i =
+    rgman->getReservedGroups().begin();
+  std::advance(i, index);
+  return (*i).second;
 }
 
 } // namespace aria2

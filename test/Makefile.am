@@ -88,7 +88,8 @@ aria2c_SOURCES = AllTest.cc\
 	SinkStreamFilterTest.cc\
 	WrDiskCacheTest.cc\
 	WrDiskCacheEntryTest.cc\
-	GroupIdTest.cc
+	GroupIdTest.cc\
+	IndexedListTest.cc
 
 if ENABLE_XML_RPC
 aria2c_SOURCES += XmlRpcRequestParserControllerTest.cc
