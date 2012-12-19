@@ -1555,7 +1555,6 @@ void UtilTest::testAbbrevSize()
   CPPUNIT_ASSERT_EQUAL(std::string("4.0Gi"), util::abbrevSize(4294967296LL));
   CPPUNIT_ASSERT_EQUAL(std::string("1.0Ki"), util::abbrevSize(1024));
   CPPUNIT_ASSERT_EQUAL(std::string("0.9Ki"), util::abbrevSize(1023));
-  CPPUNIT_ASSERT_EQUAL(std::string("0.5Ki"), util::abbrevSize(512));
   CPPUNIT_ASSERT_EQUAL(std::string("511"), util::abbrevSize(511));
   CPPUNIT_ASSERT_EQUAL(std::string("0"), util::abbrevSize(0));
   CPPUNIT_ASSERT_EQUAL(std::string("1.1Ki"), util::abbrevSize(1127));
@@ -1582,7 +1581,7 @@ void UtilTest::testToStream()
                                    "   |12KiB (12,300)\n"
                                    "---+---------------------------------------------------------------------------\n"
                                    "  2|aria2.txt\n"
-                                   "   |0.5KiB (556)\n"
+                                   "   |556B (556)\n"
                                    "---+---------------------------------------------------------------------------\n"),
                        readFile(filename));
 }

@@ -1302,7 +1302,7 @@ std::string abbrevSize(int64_t size)
     r = d.rem;
     ++uidx;
   }
-  if(uidx+1 < sizeof(UNITS)/sizeof(UNITS[0]) && t >= 512) {
+  if(uidx+1 < sizeof(UNITS)/sizeof(UNITS[0]) && t >= 922) {
     ++uidx;
     r = t;
     t = 0;
