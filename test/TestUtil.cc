@@ -17,6 +17,9 @@
 #include "util.h"
 #include "RequestGroupMan.h"
 #include "RequestGroup.h"
+#include "DownloadContext.h"
+#include "Option.h"
+#include "FileEntry.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "message_digest_helper.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -122,6 +125,23 @@ SharedHandle<RequestGroup> getReservedGroup
     rgman->getReservedGroups().begin();
   std::advance(i, index);
   return (*i).second;
+}
+
+SharedHandle<RequestGroup> createRequestGroup(int32_t pieceLength,
+                                              int64_t totalLength,
+                                              const std::string& path,
+                                              const std::string& uri,
+                                              const SharedHandle<Option>& opt)
+{
+  SharedHandle<DownloadContext> dctx(new DownloadContext(pieceLength,
+                                                         totalLength,
+                                                         path));
+  std::vector<std::string> uris;
+  uris.push_back(uri);
+  dctx->getFirstFileEntry()->addUris(uris.begin(), uris.end());
+  SharedHandle<RequestGroup> group(new RequestGroup(GroupId::create(), opt));
+  group->setDownloadContext(dctx);
+  return group;
 }
 
 } // namespace aria2

@@ -12,6 +12,7 @@ namespace aria2 {
 class MessageDigest;
 class RequestGroupMan;
 class RequestGroup;
+class Option;
 
 void createFile(const std::string& filename, size_t length);
 
@@ -64,4 +65,9 @@ SharedHandle<RequestGroup> findReservedGroup
 SharedHandle<RequestGroup> getReservedGroup
 (const SharedHandle<RequestGroupMan>& rgman, size_t index);
 
+SharedHandle<RequestGroup> createRequestGroup(int32_t pieceLength,
+                                              int64_t totalLength,
+                                              const std::string& path,
+                                              const std::string& uri,
+                                              const SharedHandle<Option>& opt);
 } // namespace aria2

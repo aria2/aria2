@@ -4,6 +4,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "TestUtil.h"
 #include "prefs.h"
 #include "DownloadContext.h"
 #include "RequestGroup.h"
@@ -16,6 +17,8 @@
 #include "array_fun.h"
 #include "RecoverableException.h"
 #include "util.h"
+#include "DownloadEngine.h"
+#include "SelectEventPoll.h"
 
 namespace aria2 {
 
@@ -27,13 +30,27 @@ class RequestGroupManTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testLoadServerStat);
   CPPUNIT_TEST(testSaveServerStat);
   CPPUNIT_TEST(testChangeReservedGroupPosition);
+  CPPUNIT_TEST(testFillRequestGroupFromReserver);
   CPPUNIT_TEST_SUITE_END();
 private:
+  SharedHandle<DownloadEngine> e_;
   SharedHandle<Option> option_;
+  SharedHandle<RequestGroupMan> rgman_;
 public:
   void setUp()
   {
     option_.reset(new Option());
+    option_->put(PREF_PIECE_LENGTH, "1048576");
+    // To enable paused RequestGroup
+    option_->put(PREF_ENABLE_RPC, A2_V_TRUE);
+    File(option_->get(PREF_DIR)).mkdirs();
+    e_.reset
+      (new DownloadEngine(SharedHandle<EventPoll>(new SelectEventPoll())));
+    e_->setOption(option_.get());
+    rgman_ = SharedHandle<RequestGroupMan>
+      (new RequestGroupMan(std::vector<SharedHandle<RequestGroup> >(),
+                           3, option_.get()));
+    e_->setRequestGroupMan(rgman_);
   }
 
   void testIsSameFileBeingDownloaded();
@@ -41,6 +58,7 @@ public:
   void testLoadServerStat();
   void testSaveServerStat();
   void testChangeReservedGroupPosition();
+  void testFillRequestGroupFromReserver();
 };
 
 
@@ -188,6 +206,27 @@ void RequestGroupManTest::testChangeReservedGroupPosition()
   } catch(RecoverableException& e) {
     // success
   }
+}
+
+void RequestGroupManTest::testFillRequestGroupFromReserver()
+{
+  SharedHandle<RequestGroup> rgs[] = {
+    createRequestGroup(0, 0, "foo1", "http://host/foo1", util::copy(option_)),
+    createRequestGroup(0, 0, "foo2", "http://host/foo2", util::copy(option_)),
+    createRequestGroup(0, 0, "foo3", "http://host/foo3", util::copy(option_)),
+    // Intentionally same path/URI for first RequestGroup and set
+    // length explicitly to do duplicate filename check.
+    createRequestGroup(0, 10, "foo1", "http://host/foo1", util::copy(option_)),
+    createRequestGroup(0, 0, "foo4", "http://host/foo4", util::copy(option_)),
+    createRequestGroup(0, 0, "foo5", "http://host/foo5", util::copy(option_))
+  };
+  rgs[1]->setPauseRequested(true);
+  for(SharedHandle<RequestGroup>* i = vbegin(rgs); i != vend(rgs); ++i) {
+    rgman_->addReservedGroup(*i);
+  }
+  rgman_->fillRequestGroupFromReserver(e_.get());
+
+  CPPUNIT_ASSERT_EQUAL((size_t)2, rgman_->getReservedGroups().size());
 }
 
 } // namespace aria2

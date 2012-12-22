@@ -208,7 +208,11 @@ namespace {
 void notifyDownloadEvent
 (const std::string& event, const SharedHandle<RequestGroup>& group)
 {
-  SingletonHolder<Notifier>::instance()->notifyDownloadEvent(event, group);
+  // Check NULL to make unit test easier.
+  Notifier* notifier = SingletonHolder<Notifier>::instance();
+  if(notifier) {
+    notifier->notifyDownloadEvent(event, group);
+  }
 }
 
 } // namespace
@@ -486,6 +490,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
   while(count < num && (uriListParser_ || resitr != reservedGroups_.end())) {
     if(uriListParser_ && resitr == reservedGroups_.end()) {
       std::vector<SharedHandle<RequestGroup> > groups;
+      // May throw exception
       bool ok = createRequestGroupFromUriListParser(groups, option_,
                                                     uriListParser_.get());
       if(ok) {
@@ -501,28 +506,21 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
     }
     SharedHandle<RequestGroup> groupToAdd = (*resitr).second;
     std::vector<Command*> commands;
-    try {
-      if((rpc_ && groupToAdd->isPauseRequested()) ||
-         !groupToAdd->isDependencyResolved()) {
-        ++resitr;
-        continue;
-      }
+    if((rpc_ && groupToAdd->isPauseRequested()) ||
+       !groupToAdd->isDependencyResolved()) {
       ++resitr;
-      reservedGroups_.erase(groupToAdd->getGID());
-      // Drop pieceStorage here because paused download holds its
-      // reference.
-      groupToAdd->dropPieceStorage();
-      configureRequestGroup(groupToAdd);
-      groupToAdd->setRequestGroupMan(this);
+      continue;
+    }
+    ++resitr;
+    reservedGroups_.erase(groupToAdd->getGID());
+    // Drop pieceStorage here because paused download holds its
+    // reference.
+    groupToAdd->dropPieceStorage();
+    configureRequestGroup(groupToAdd);
+    groupToAdd->setRequestGroupMan(this);
+    try {
       createInitialCommand(groupToAdd, commands, e);
-      if(commands.empty()) {
-        requestQueueCheck();
-      }
-      groupToAdd->setState(RequestGroup::STATE_ACTIVE);
-      requestGroups_.push_back(groupToAdd->getGID(), groupToAdd);
       ++count;
-      e->addCommand(commands);
-      commands.clear();
     } catch(RecoverableException& ex) {
       A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, ex);
       A2_LOG_DEBUG("Deleting temporal commands.");
@@ -530,12 +528,17 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       commands.clear();
       A2_LOG_DEBUG("Commands deleted");
       groupToAdd->setLastErrorCode(ex.getErrorCode());
-      // We add groupToAdd to e in order to it is processed in
+      // We add groupToAdd to e later in order to it is processed in
       // removeStoppedGroup().
-      groupToAdd->setState(RequestGroup::STATE_ACTIVE);
-      requestGroups_.push_back(groupToAdd->getGID(), groupToAdd);
-      requestQueueCheck();
     }
+    if(commands.empty()) {
+      requestQueueCheck();
+    } else {
+      e->addCommand(commands);
+    }
+    groupToAdd->setState(RequestGroup::STATE_ACTIVE);
+    requestGroups_.push_back(groupToAdd->getGID(), groupToAdd);
+
     util::executeHookByOptName(groupToAdd, e->getOption(),
                                PREF_ON_DOWNLOAD_START);
     notifyDownloadEvent(Notifier::ON_DOWNLOAD_START, groupToAdd);
