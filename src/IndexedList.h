@@ -37,8 +37,10 @@
 
 #include "common.h"
 
-#include <list>
+#include <deque>
 #include <map>
+#include <vector>
+#include <algorithm>
 
 namespace aria2 {
 
@@ -48,15 +50,14 @@ enum A2_HOW {
   A2_POS_END
 };
 
-// List with O(logN) look-up using std::map as an index.
 template<typename KeyType, typename ValuePtrType>
 class IndexedList {
 public:
   IndexedList() {}
   ~IndexedList() {}
 
-  typedef std::list<std::pair<KeyType, ValuePtrType> > SeqType;
-  typedef std::map<KeyType, typename SeqType::iterator> IndexType;
+  typedef std::deque<std::pair<KeyType, ValuePtrType> > SeqType;
+  typedef std::map<KeyType, ValuePtrType> IndexType;
 
   // Inserts (|key|, |value|) to the end of the list. If the same key
   // has been already added, this function fails. This function
@@ -65,10 +66,9 @@ public:
   {
     typename IndexType::iterator i = index_.lower_bound(key);
     if(i == index_.end() || (*i).first != key) {
-      seq_.push_back(std::make_pair(key, value));
-      typename SeqType::iterator j = seq_.end();
-      --j;
-      index_.insert(i, std::make_pair(key, j));
+      std::pair<KeyType, ValuePtrType> p(key, value);
+      seq_.push_back(p);
+      index_.insert(i, p);
       return true;
     } else {
       return false;
@@ -82,9 +82,9 @@ public:
   {
     typename IndexType::iterator i = index_.lower_bound(key);
     if(i == index_.end() || (*i).first != key) {
-      seq_.push_front(std::make_pair(key, value));
-      typename SeqType::iterator j = seq_.begin();
-      index_.insert(i, std::make_pair(key, j));
+      std::pair<KeyType, ValuePtrType> p(key, value);
+      seq_.push_front(p);
+      index_.insert(i, p);
       return true;
     } else {
       return false;
@@ -105,8 +105,9 @@ public:
     if(i == index_.end() || (*i).first != key) {
       typename SeqType::iterator j = seq_.begin();
       std::advance(j, dest);
-      j = seq_.insert(j, std::make_pair(key, value));
-      index_.insert(i, std::make_pair(key, j));
+      std::pair<KeyType, ValuePtrType> p(key, value);
+      j = seq_.insert(j, p);
+      index_.insert(i, p);
       return j;
     } else {
       return seq_.end();
@@ -116,32 +117,61 @@ public:
   // Inserts (|key|, |value|) to the position |dest|. If the same key
   // has been already added, this function fails. This function
   // returns the iterator to the newly added element if it is
-  // succeeds, or end(). Complexity: O(logN)
+  // succeeds, or end(). Complexity: O(logN) if inserted to the first
+  // or last, otherwise O(N)
   typename SeqType::iterator insert(typename SeqType::iterator dest,
                                     KeyType key,
                                     ValuePtrType value)
   {
     typename IndexType::iterator i = index_.lower_bound(key);
     if(i == index_.end() || (*i).first != key) {
-      dest = seq_.insert(dest, std::make_pair(key, value));
-      index_.insert(i, std::make_pair(key, dest));
+      std::pair<KeyType, ValuePtrType> p(key, value);
+      dest = seq_.insert(dest, p);
+      index_.insert(i, p);
       return dest;
     } else {
       return seq_.end();
     }
   }
 
+  // Inserts values in iterator range [first, last). The key for each
+  // value is retrieved by functor |keyFunc|. The insertion position
+  // is given by |dest|.
+  template<typename KeyFunc, typename InputIterator>
+  void insert(typename SeqType::iterator dest, KeyFunc keyFunc,
+              InputIterator first, InputIterator last)
+  {
+    std::vector<typename SeqType::value_type> v;
+    v.reserve(std::distance(first, last));
+    for(; first != last; ++first) {
+      KeyType key = keyFunc(*first);
+      typename IndexType::iterator i = index_.lower_bound(key);
+      if(i == index_.end() || (*i).first != key) {
+        std::pair<KeyType, ValuePtrType> p(key, *first);
+        v.push_back(p);
+        index_.insert(i, p);
+      }
+    }
+    seq_.insert(dest, v.begin(), v.end());
+  }
+
   // Removes |key| from the list. If the element is not found, this
   // function fails. This function returns true if it
-  // succeeds. Complexity: O(logN)
+  // succeeds. Complexity: O(N)
   bool erase(KeyType key)
   {
     typename IndexType::iterator i = index_.find(key);
     if(i == index_.end()) {
       return false;
     }
-    seq_.erase((*i).second);
     index_.erase(i);
+    for(typename SeqType::iterator j = seq_.begin(), eoj = seq_.end();
+        j != eoj; ++j) {
+      if((*j).first == key) {
+        seq_.erase(j);
+        break;
+      }
+    }
     return true;
   }
 
@@ -174,40 +204,38 @@ public:
     if(idxent == index_.end()) {
       return -1;
     }
+    typename SeqType::iterator x = seq_.begin(), eseq = seq_.end();
+    for(; x != eseq; ++x) {
+      if((*x).first == key) {
+        break;
+      }
+    }
+    ssize_t xp = std::distance(seq_.begin(), x);
+    ssize_t size = index_.size();
     ssize_t dest;
-    typename SeqType::iterator x = (*idxent).second;
-    typename SeqType::iterator d;
     if(how == A2_POS_CUR) {
-      // Because aria2.changePosition() RPC method must return the
-      // absolute position after move, we have to calculate absolute
-      // position here.
       if(offset > 0) {
-        d = x;
-        for(; offset >= 0 && d != seq_.end(); --offset, ++d);
-        dest = std::distance(seq_.begin(), d)-1;
+        dest = std::min(xp+offset, static_cast<ssize_t>(size-1));
       } else {
-        d = x;
-        for(; offset < 0 && d != seq_.begin(); ++offset, --d);
-        dest = std::distance(seq_.begin(), d);
+        dest = std::max(xp+offset, static_cast<ssize_t>(0));
       }
     } else {
-      ssize_t size = index_.size();
       if(how == A2_POS_END) {
-        dest = std::min(size-1, size-1+offset);
+        dest = std::min(size-1+offset, size-1);
       } else if(how == A2_POS_SET) {
-        dest = std::min(size-1, offset);
+        dest = std::min(offset, size-1);
       } else {
         return -1;
       }
       dest = std::max(dest, static_cast<ssize_t>(0));
-      d = seq_.begin();
-      for(ssize_t i = 0; i < dest; ++i, ++d) {
-        if(d == x) {
-          ++d;
-        }
-      }
     }
-    seq_.splice(d, seq_, x);
+    typename SeqType::iterator d = seq_.begin();
+    std::advance(d, dest);
+    if(xp < dest) {
+      std::rotate(x, x+1, d+1);
+    } else {
+      std::rotate(d, x, x+1);
+    }
     return dest;
   }
 
@@ -218,30 +246,6 @@ public:
     typename IndexType::const_iterator idxent = index_.find(key);
     if(idxent == index_.end()) {
       return ValuePtrType();
-    } else {
-      return (*(*idxent).second).second;
-    }
-  }
-
-  // Returns the iterator to the element associated by |key|. If it is
-  // not found, end() is returned. Complexity: O(logN)
-  typename SeqType::iterator find(KeyType key)
-  {
-    typename IndexType::iterator idxent = index_.find(key);
-    if(idxent == index_.end()) {
-      return seq_.end();
-    } else {
-      return (*idxent).second;
-    }
-  }
-
-  // Returns the iterator to the element associated by |key|. If it is
-  // not found, end() is returned. Complexity: O(logN)
-  typename SeqType::const_iterator find(KeyType key) const
-  {
-    typename IndexType::const_iterator idxent = index_.find(key);
-    if(idxent == index_.end()) {
-      return seq_.end();
     } else {
       return (*idxent).second;
     }

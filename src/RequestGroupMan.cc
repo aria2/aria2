@@ -151,6 +151,15 @@ void RequestGroupMan::addReservedGroup
   reservedGroups_.push_back(group->getGID(), group);
 }
 
+namespace {
+struct RequestGroupKeyFunc {
+  a2_gid_t operator()(const SharedHandle<RequestGroup>& rg) const
+  {
+    return rg->getGID();
+  }
+};
+} // namespace
+
 void RequestGroupMan::insertReservedGroup
 (size_t pos, const std::vector<SharedHandle<RequestGroup> >& groups)
 {
@@ -158,10 +167,8 @@ void RequestGroupMan::insertReservedGroup
   pos = std::min(reservedGroups_.size(), pos);
   RequestGroupList::SeqType::iterator dest =  reservedGroups_.begin();
   std::advance(dest, pos);
-  for(std::vector<SharedHandle<RequestGroup> >::const_iterator i =
-        groups.begin(), eoi = groups.end(); i != eoi; ++i, ++dest) {
-    dest = reservedGroups_.insert(dest, (*i)->getGID(), *i);
-  }
+  reservedGroups_.insert(dest, RequestGroupKeyFunc(),
+                         groups.begin(), groups.end());
 }
 
 void RequestGroupMan::insertReservedGroup
@@ -482,42 +489,36 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
   }
   int count = 0;
   int num = maxSimultaneousDownloads_-requestGroups_.size();
-  // In the following loop, the download which is not ready to start
-  // is kept in reservedGroups_. We use iterator to see if we
-  // evaluated them all. So don't use empty() for this. Compare to
-  // reservedGroups_.end() instead.
-  RequestGroupList::SeqType::iterator resitr = reservedGroups_.begin();
-  while(count < num && (uriListParser_ || resitr != reservedGroups_.end())) {
-    if(uriListParser_ && resitr == reservedGroups_.end()) {
+  std::vector<SharedHandle<RequestGroup> > pending;
+
+  while(count < num && (uriListParser_ || !reservedGroups_.empty())) {
+    if(uriListParser_ && reservedGroups_.empty()) {
       std::vector<SharedHandle<RequestGroup> > groups;
       // May throw exception
       bool ok = createRequestGroupFromUriListParser(groups, option_,
                                                     uriListParser_.get());
       if(ok) {
         appendReservedGroup(reservedGroups_, groups.begin(), groups.end());
-        resitr = reservedGroups_.end();
-        std::advance(resitr, -static_cast<ssize_t>(groups.size()));
       } else {
         uriListParser_.reset();
-        if(resitr == reservedGroups_.end()) {
+        if(reservedGroups_.empty()) {
           break;
         }
       }
     }
-    SharedHandle<RequestGroup> groupToAdd = (*resitr).second;
-    std::vector<Command*> commands;
+    SharedHandle<RequestGroup> groupToAdd = (*reservedGroups_.begin()).second;
+    reservedGroups_.pop_front();
     if((rpc_ && groupToAdd->isPauseRequested()) ||
        !groupToAdd->isDependencyResolved()) {
-      ++resitr;
+      pending.push_back(groupToAdd);
       continue;
     }
-    ++resitr;
-    reservedGroups_.erase(groupToAdd->getGID());
     // Drop pieceStorage here because paused download holds its
     // reference.
     groupToAdd->dropPieceStorage();
     configureRequestGroup(groupToAdd);
     groupToAdd->setRequestGroupMan(this);
+    std::vector<Command*> commands;
     try {
       createInitialCommand(groupToAdd, commands, e);
       ++count;
@@ -542,6 +543,10 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
     util::executeHookByOptName(groupToAdd, e->getOption(),
                                PREF_ON_DOWNLOAD_START);
     notifyDownloadEvent(Notifier::ON_DOWNLOAD_START, groupToAdd);
+  }
+  if(!pending.empty()) {
+    reservedGroups_.insert(reservedGroups_.begin(), RequestGroupKeyFunc(),
+                           pending.begin(), pending.end());
   }
   if(count > 0) {
     e->setNoWait(true);

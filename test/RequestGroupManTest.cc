@@ -19,6 +19,7 @@
 #include "util.h"
 #include "DownloadEngine.h"
 #include "SelectEventPoll.h"
+#include "UriListParser.h"
 
 namespace aria2 {
 
@@ -31,6 +32,8 @@ class RequestGroupManTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testSaveServerStat);
   CPPUNIT_TEST(testChangeReservedGroupPosition);
   CPPUNIT_TEST(testFillRequestGroupFromReserver);
+  CPPUNIT_TEST(testFillRequestGroupFromReserver_uriParser);
+  CPPUNIT_TEST(testInsertReservedGroup);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<DownloadEngine> e_;
@@ -59,6 +62,8 @@ public:
   void testSaveServerStat();
   void testChangeReservedGroupPosition();
   void testFillRequestGroupFromReserver();
+  void testFillRequestGroupFromReserver_uriParser();
+  void testInsertReservedGroup();
 };
 
 
@@ -227,6 +232,61 @@ void RequestGroupManTest::testFillRequestGroupFromReserver()
   rgman_->fillRequestGroupFromReserver(e_.get());
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, rgman_->getReservedGroups().size());
+}
+
+void RequestGroupManTest::testFillRequestGroupFromReserver_uriParser()
+{
+  SharedHandle<RequestGroup> rgs[] = {
+    createRequestGroup(0, 0, "mem1", "http://mem1", util::copy(option_)),
+    createRequestGroup(0, 0, "mem2", "http://mem2", util::copy(option_)),
+  };
+  rgs[0]->setPauseRequested(true);
+  for(SharedHandle<RequestGroup>* i = vbegin(rgs); i != vend(rgs); ++i) {
+    rgman_->addReservedGroup(*i);
+  }
+
+  SharedHandle<UriListParser> flp
+    (new UriListParser(A2_TEST_DIR"/filelist2.txt"));
+  rgman_->setUriListParser(flp);
+
+  rgman_->fillRequestGroupFromReserver(e_.get());
+
+  RequestGroupList::SeqType::const_iterator itr;
+  CPPUNIT_ASSERT_EQUAL((size_t)1, rgman_->getReservedGroups().size());
+  itr = rgman_->getReservedGroups().begin();
+  CPPUNIT_ASSERT_EQUAL(rgs[0]->getGID(), (*itr).second->getGID());
+  CPPUNIT_ASSERT_EQUAL((size_t)3, rgman_->getRequestGroups().size());
+}
+
+void RequestGroupManTest::testInsertReservedGroup()
+{
+  SharedHandle<RequestGroup> rgs1[] = {
+    SharedHandle<RequestGroup>(new RequestGroup(GroupId::create(),
+                                                util::copy(option_))),
+    SharedHandle<RequestGroup>(new RequestGroup(GroupId::create(),
+                                                util::copy(option_)))
+  };
+  SharedHandle<RequestGroup> rgs2[] = {
+    SharedHandle<RequestGroup>(new RequestGroup(GroupId::create(),
+                                                util::copy(option_))),
+    SharedHandle<RequestGroup>(new RequestGroup(GroupId::create(),
+                                                util::copy(option_)))
+  };
+  std::vector<SharedHandle<RequestGroup> > groups(vbegin(rgs1), vend(rgs1));
+  rgman_->insertReservedGroup(0, groups);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, rgman_->getReservedGroups().size());
+  RequestGroupList::SeqType::const_iterator itr;
+  itr = rgman_->getReservedGroups().begin();
+  CPPUNIT_ASSERT_EQUAL(rgs1[0]->getGID(), (*itr++).second->getGID());
+  CPPUNIT_ASSERT_EQUAL(rgs1[1]->getGID(), (*itr++).second->getGID());
+
+  groups.assign(vbegin(rgs2), vend(rgs2));
+  rgman_->insertReservedGroup(1, groups);
+  CPPUNIT_ASSERT_EQUAL((size_t)4, rgman_->getReservedGroups().size());
+  itr = rgman_->getReservedGroups().begin();
+  ++itr;
+  CPPUNIT_ASSERT_EQUAL(rgs2[0]->getGID(), (*itr++).second->getGID());
+  CPPUNIT_ASSERT_EQUAL(rgs2[1]->getGID(), (*itr++).second->getGID());
 }
 
 } // namespace aria2
