@@ -243,7 +243,8 @@ SRCS =  SocketCore.cc SocketCore.h\
 	XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\
 	WrDiskCache.cc WrDiskCache.h\
 	WrDiskCacheEntry.cc WrDiskCacheEntry.h\
-	GroupId.cc GroupId.h
+	GroupId.cc GroupId.h\
+	IndexedList.h
 
 if MINGW_BUILD
 SRCS += WinConsoleFile.cc WinConsoleFile.h
