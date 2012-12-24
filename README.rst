@@ -299,11 +299,19 @@ libraries statically.
 We use zlib which comes with Android NDK, so we don't have to build it
 by ourselves.
 
-``android-config`` assumes following points:
+``android-config`` assumes the existence of ``$ANDROID_HOME``
+environment variable which must fulfill the following conditions:
 
-* Android NDK toolchain is installed under ``$ANDROID_HOME``.  Refer
-  to "3/ Invoking the compiler (the easy way):" section in Android NDK
+* Android NDK toolchain is installed under
+  ``$ANDROID_HOME/toolchain``.  Refer to "3/ Invoking the compiler
+  (the easy way):" section in Android NDK
   ``docs/STANDALONE-TOOLCHAIN.html`` to install custom toolchain.
+
+  For example, to install toolchain under ``$ANDROID_HOME/toolchain``,
+  do this::
+
+      $NDK/build/tools/make-standalone-toolchain.sh --platform=android-9 --install-dir=$ANDROID_HOME/toolchain
+
 * The dependant libraries must be installed under
   ``$ANDROID_HOME/usr/local``.
 
