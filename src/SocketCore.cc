@@ -109,7 +109,7 @@ std::string errorMsg(int errNum)
                     FORMAT_MESSAGE_IGNORE_INSERTS,
                     NULL,
                     errNum,
-                    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+                    MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),
                     (LPTSTR) &buf,
                     sizeof(buf),
                     NULL
