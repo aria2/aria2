@@ -144,7 +144,8 @@ SharedHandle<Segment> SegmentMan::checkoutSegment
     // Flush cached data here, because the cached data may be overlapped
     // if BT peers are involved.
     A2_LOG_DEBUG(fmt("Flushing cached data, size=%lu",
-                     piece->getWrDiskCacheEntry()->getSize()));
+                     static_cast<unsigned long>(piece->getWrDiskCacheEntry()->
+                                                getSize())));
     flushWrDiskCache(pieceStorage_->getWrDiskCache(), piece);
   }
 
@@ -295,7 +296,8 @@ void SegmentMan::cancelSegmentInternal
     // Flush cached data here, because the cached data may be overlapped
     // if BT peers are involved.
     A2_LOG_DEBUG(fmt("Flushing cached data, size=%lu",
-                     piece->getWrDiskCacheEntry()->getSize()));
+                     static_cast<unsigned long>(piece->getWrDiskCacheEntry()
+                                                ->getSize())));
     flushWrDiskCache(pieceStorage_->getWrDiskCache(), piece);
     // TODO Exception may cause some segments (pieces) are not
     // canceled.
