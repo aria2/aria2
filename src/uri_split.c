@@ -268,7 +268,7 @@ int uri_split(uri_split_result *res, const char *uri)
         state = URI_BEFORE_PORT;
         break;
       case '/':
-        host_last = path_first = p;
+        host_last = path_first = last_slash = p;
         state = URI_PATH;
         break;
       case '?':
@@ -301,7 +301,7 @@ int uri_split(uri_split_result *res, const char *uri)
         state = URI_BEFORE_PORT;
         break;
       case '/':
-        path_first = p;
+        path_first = last_slash = p;
         state = URI_PATH;
         break;
       case '?':
@@ -325,7 +325,7 @@ int uri_split(uri_split_result *res, const char *uri)
     case URI_PORT:
       switch(*p) {
       case '/':
-        path_first = p;
+        path_first = last_slash = p;
         state = URI_PATH;
         break;
       case '?':
