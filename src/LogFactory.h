@@ -50,6 +50,7 @@ private:
   static SharedHandle<Logger> logger_;
   static bool consoleOutput_;
   static Logger::LEVEL logLevel_;
+  static Logger::LEVEL consoleLogLevel_;
 
   static void openLogger(const SharedHandle<Logger>& logger);
 
@@ -77,15 +78,26 @@ public:
   }
 
   /**
-   * Set log level to output.
+   * Set log level to output to file.
    */
   static void setLogLevel(Logger::LEVEL level);
 
   /**
-   * Set log level to output by string represention of log level.
-   * Possible values are: debug, info, notice, warn, error
+   * Set log level to output to file by string represention of log
+   * level.  Possible values are: debug, info, notice, warn, error
    */
   static void setLogLevel(const std::string& level);
+
+  /**
+   * Set log level to output to console.
+   */
+  static void setConsoleLogLevel(Logger::LEVEL level);
+
+  /**
+   * Set log level to output to console by string represention of log
+   * level.  Possible values are: debug, info, notice, warn, error
+   */
+  static void setConsoleLogLevel(const std::string& level);
 
   /**
    * Releases used resources

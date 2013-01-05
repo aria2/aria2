@@ -56,9 +56,13 @@ public:
     A2_ERROR  = 1 << 4,
   };
 private:
+  // Minimum log level for file log output.
   LEVEL logLevel_;
   SharedHandle<OutputFile> fpp_;
-  int stdoutField_;
+  // Minimum log level for console log output.
+  LEVEL consoleLogLevel_;
+  // true if console log output is enabled.
+  bool consoleOutput_;
   bool useColor_;
   // Don't allow copying
   Logger(const Logger&);
@@ -69,9 +73,14 @@ private:
    const char* sourceFile,
    int lineNum,
    const char* msg,
-   const std::string& trace,
-   bool toStream,
-   bool toConsole);
+   const char* trace);
+
+  // Returns true if message with log level |level| will be outputted
+  // to file.
+  bool fileLogEnabled(LEVEL level);
+  // Returns true if message with log level |level| will be outputted
+  // to console.
+  bool consoleLogEnabled(LEVEL level);
 public:
   Logger();
 
@@ -112,7 +121,12 @@ public:
     logLevel_ = level;
   }
 
-  void setStdoutLogLevel(Logger::LEVEL level, bool enabled);
+  void setConsoleLogLevel(LEVEL level)
+  {
+    consoleLogLevel_ = level;
+  }
+
+  void setConsoleOutput(bool enabled);
 
   // Returns true if this logger actually writes debug log message to
   // either file or stdout.

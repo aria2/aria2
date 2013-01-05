@@ -43,6 +43,7 @@ std::string LogFactory::filename_ = DEV_NULL;
 SharedHandle<Logger> LogFactory::logger_;
 bool LogFactory::consoleOutput_ = true;
 Logger::LEVEL LogFactory::logLevel_ = Logger::A2_DEBUG;
+Logger::LEVEL LogFactory::consoleLogLevel_ = Logger::A2_NOTICE;
 
 void LogFactory::openLogger(const SharedHandle<Logger>& logger)
 {
@@ -52,6 +53,8 @@ void LogFactory::openLogger(const SharedHandle<Logger>& logger)
     logger->openFile(filename_);
   }
   logger->setLogLevel(logLevel_);
+  logger->setConsoleLogLevel(consoleLogLevel_);
+  logger->setConsoleOutput(consoleOutput_);
 }
 
 void LogFactory::reconfigure()
@@ -72,11 +75,6 @@ const SharedHandle<Logger>& LogFactory::getInstance()
   if(!logger_) {
     SharedHandle<Logger> slogger(new Logger());
     openLogger(slogger);
-    if(consoleOutput_) {
-      slogger->setStdoutLogLevel(Logger::A2_NOTICE, true);
-      slogger->setStdoutLogLevel(Logger::A2_WARN, true);
-      slogger->setStdoutLogLevel(Logger::A2_ERROR, true);
-    }
     logger_.swap(slogger);
   }
   return logger_;
@@ -93,6 +91,25 @@ void LogFactory::setLogFile(const std::string& name)
   }
 }
 
+namespace {
+Logger::LEVEL toLogLevel(const std::string& level)
+{
+  if(level == V_DEBUG) {
+    return Logger::A2_DEBUG;
+  } else if(level == V_INFO) {
+    return Logger::A2_INFO;
+  } else if(level == V_NOTICE) {
+    return Logger::A2_NOTICE;
+  } else if(level == V_WARN) {
+    return Logger::A2_WARN;
+  } else if(level == V_ERROR) {
+    return Logger::A2_ERROR;
+  } else {
+    return Logger::A2_NOTICE;
+  }
+}
+} // namespace
+
 void LogFactory::setLogLevel(Logger::LEVEL level)
 {
   logLevel_ = level;
@@ -100,17 +117,17 @@ void LogFactory::setLogLevel(Logger::LEVEL level)
 
 void LogFactory::setLogLevel(const std::string& level)
 {
-  if(level == V_DEBUG) {
-    logLevel_ = Logger::A2_DEBUG;
-  } else if(level == V_INFO) {
-    logLevel_ = Logger::A2_INFO;
-  } else if(level == V_NOTICE) {
-    logLevel_ = Logger::A2_NOTICE;
-  } else if(level == V_WARN) {
-    logLevel_ = Logger::A2_WARN;
-  } else if(level == V_ERROR) {
-    logLevel_ = Logger::A2_ERROR;
-  }
+  logLevel_ = toLogLevel(level);
+}
+
+void LogFactory::setConsoleLogLevel(Logger::LEVEL level)
+{
+  consoleLogLevel_ = level;
+}
+
+void LogFactory::setConsoleLogLevel(const std::string& level)
+{
+  consoleLogLevel_ = toLogLevel(level);
 }
 
 void LogFactory::release() {

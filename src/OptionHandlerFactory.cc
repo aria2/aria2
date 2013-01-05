@@ -48,6 +48,8 @@ namespace aria2 {
 std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
 {
   std::vector<OptionHandler*> handlers;
+  static const std::string logLevels[] =
+    { V_DEBUG, V_INFO, V_NOTICE, V_WARN, V_ERROR };
   // General Options
   {
     OptionHandler* op(new BooleanOptionHandler
@@ -210,6 +212,16 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
                        TEXT_DISK_CACHE,
                        "0",
                        0));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
+    OptionHandler* op(new ParameterOptionHandler
+                      (PREF_CONSOLE_LOG_LEVEL,
+                       TEXT_CONSOLE_LOG_LEVEL,
+                       V_NOTICE,
+                       std::vector<std::string>
+                       (vbegin(logLevels), vend(logLevels))));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
@@ -472,13 +484,12 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    const std::string params[] = { V_DEBUG, V_INFO, V_NOTICE, V_WARN, V_ERROR };
     OptionHandler* op(new ParameterOptionHandler
                       (PREF_LOG_LEVEL,
                        TEXT_LOG_LEVEL,
                        V_DEBUG,
                        std::vector<std::string>
-                       (vbegin(params), vend(params))));
+                       (vbegin(logLevels), vend(logLevels))));
     op->addTag(TAG_ADVANCED);
     op->setChangeGlobalOption(true);
     handlers.push_back(op);

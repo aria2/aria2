@@ -254,6 +254,8 @@ const Pref* PREF_ASYNC_DNS = makePref("async-dns");
 const Pref* PREF_SUMMARY_INTERVAL = makePref("summary-interval");
 // value: debug, info, notice, warn, error
 const Pref* PREF_LOG_LEVEL = makePref("log-level");
+// value: debug, info, notice, warn, error
+const Pref* PREF_CONSOLE_LOG_LEVEL = makePref("console-log-level");
 // value: inorder | feedback | adaptive
 const Pref* PREF_URI_SELECTOR = makePref("uri-selector");
 // value: 1*digit

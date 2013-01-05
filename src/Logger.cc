@@ -51,7 +51,8 @@ namespace aria2 {
 
 Logger::Logger()
   : logLevel_(Logger::A2_DEBUG),
-    stdoutField_(0),
+    consoleLogLevel_(Logger::A2_NOTICE),
+    consoleOutput_(true),
 #ifdef __MINGW32__
     // Windows DOS prompt does not handle ANSI color code, so make
     // this false.
@@ -85,18 +86,24 @@ void Logger::closeFile()
   }
 }
 
-void Logger::setStdoutLogLevel(Logger::LEVEL level, bool enabled)
+void Logger::setConsoleOutput(bool enabled)
 {
-  if(enabled) {
-    stdoutField_ |= level;
-  } else {
-    stdoutField_ &= ~level;
-  }
+  consoleOutput_ = enabled;
+}
+
+bool Logger::fileLogEnabled(LEVEL level)
+{
+  return level >= logLevel_ && fpp_;
+}
+
+bool Logger::consoleLogEnabled(LEVEL level)
+{
+  return consoleOutput_ && level >= consoleLogLevel_;
 }
 
 bool Logger::levelEnabled(LEVEL level)
 {
-  return (level >= logLevel_ && fpp_) || stdoutField_&level;
+  return fileLogEnabled(level) || consoleLogEnabled(level);
 }
 
 namespace {
@@ -144,9 +151,9 @@ const char* levelColor(Logger::LEVEL level)
 {
   switch(level) {
   case Logger::A2_DEBUG:
+    return "\033[1;37m";
   case Logger::A2_INFO:
-    // We don't print these levels in console
-    return "";
+    return "\033[1;36m";
   case Logger::A2_NOTICE:
     return "\033[1;32m";
   case Logger::A2_WARN:
@@ -173,9 +180,9 @@ void writeHeaderConsole(Output& fp, Logger::LEVEL level, bool useColor)
 
 namespace {
 template<typename Output>
-void writeStackTrace(Output& fp, const std::string& stackTrace)
+void writeStackTrace(Output& fp, const char* stackTrace)
 {
-  fp.write(stackTrace.c_str());
+  fp.write(stackTrace);
 }
 } // namespace
 
@@ -184,17 +191,15 @@ void Logger::writeLog
  const char* sourceFile,
  int lineNum,
  const char* msg,
- const std::string& trace,
- bool toStream,
- bool toConsole)
+ const char* trace)
 {
-  if(toStream) {
+  if(fileLogEnabled(level)) {
     writeHeader(*fpp_, level, sourceFile, lineNum);
     fpp_->printf("%s\n", msg);
     writeStackTrace(*fpp_, trace);
     fpp_->flush();
   }
-  if(toConsole) {
+  if(consoleLogEnabled(level)) {
     global::cout()->printf("\n");
     writeHeaderConsole(*global::cout(), level, useColor_);
     global::cout()->printf("%s\n", msg);
@@ -209,9 +214,7 @@ void Logger::log
  int lineNum,
  const char* msg)
 {
-  writeLog(level, sourceFile, lineNum, msg, A2STR::NIL,
-           level >= logLevel_ && fpp_,
-           stdoutField_&level);
+  writeLog(level, sourceFile, lineNum, msg, "");
 }
 
 void Logger::log
@@ -230,9 +233,7 @@ void Logger::log
  const char* msg,
  const Exception& ex)
 {
-  writeLog(level, sourceFile, lineNum, msg, ex.stackTrace(),
-           level >= logLevel_ && fpp_,
-           stdoutField_&level);
+  writeLog(level, sourceFile, lineNum, msg, ex.stackTrace().c_str());
 }
 
 void Logger::log

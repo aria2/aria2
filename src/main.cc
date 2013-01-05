@@ -190,6 +190,7 @@ error_code::Value main(int argc, char* argv[])
 #endif // ENABLE_BITTORRENT
   LogFactory::setLogFile(op->get(PREF_LOG));
   LogFactory::setLogLevel(op->get(PREF_LOG_LEVEL));
+  LogFactory::setConsoleLogLevel(op->get(PREF_CONSOLE_LOG_LEVEL));
   if(op->getAsBool(PREF_QUIET)) {
     LogFactory::setConsoleOutput(false);
   }

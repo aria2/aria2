@@ -189,6 +189,8 @@ extern const Pref* PREF_ASYNC_DNS;
 extern const Pref* PREF_SUMMARY_INTERVAL;
 // value: debug, info, notice, warn, error
 extern const Pref* PREF_LOG_LEVEL;
+// value: debug, info, notice, warn, error
+extern const Pref* PREF_CONSOLE_LOG_LEVEL;
 // value: inorder | feedback | adaptive
 extern const Pref* PREF_URI_SELECTOR;
 // value: 1*digit

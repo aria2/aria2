@@ -422,7 +422,8 @@
   _(" --summary-interval=SEC       Set interval to output download progress summary.\n" \
     "                              Setting 0 suppresses the output.")
 #define TEXT_LOG_LEVEL                                          \
-  _(" --log-level=LEVEL            Set log level to output.")
+  _(" --log-level=LEVEL            Set log level to output to file specified using\n" \
+    "                             --log option.")
 #define TEXT_REMOTE_TIME                                                \
   _(" -R, --remote-time[=true|false] Retrieve timestamp of the remote file from the\n" \
     "                              remote HTTP/FTP server and if it is available,\n" \
@@ -939,3 +940,5 @@
     "                              sessions saved using --save-session option. If\n" \
     "                              this option is not used, new GID is generated\n" \
     "                              by aria2.")
+#define TEXT_CONSOLE_LOG_LEVEL                                          \
+  _(" --console-log-level=LEVEL    Set log level to output to console.")
