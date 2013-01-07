@@ -52,6 +52,8 @@
 #include "error_code.h"
 #include "prefs.h"
 #include "UnknownOptionException.h"
+#include "LogFactory.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -237,6 +239,8 @@ void OptionParser::parse(Option& option, std::istream& is) const
     const OptionHandler* handler = find(pref);
     if(handler) {
       handler->parse(option, std::string(nv.second.first, nv.second.second));
+    } else {
+      A2_LOG_WARN(fmt("Unknown option: %s", line.c_str()));
     }
   }
 }
