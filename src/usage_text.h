@@ -94,7 +94,9 @@
 #define TEXT_PROXY_METHOD                                               \
   _(" --proxy-method=METHOD        Set the method to use in proxy request.")
 #define TEXT_REFERER                                                    \
-  _(" --referer=REFERER            Set Referer. This affects all URLs.")
+  _(" --referer=REFERER            Set Referer. This affects all URLs. If \"*\" is\n" \
+    "                              given, each request URI is used as a referer.\n" \
+    "                              This may be useful when used with -P option.")
 #define TEXT_FTP_USER                                                   \
   _(" --ftp-user=USER              Set FTP user. This affects all URLs.")
 #define TEXT_FTP_PASSWD                                                 \

@@ -170,7 +170,12 @@ FileEntry::getRequest
             req.reset();
             continue;
           }
-          req->setReferer(util::percentEncodeMini(referer));
+          if(referer == "*") {
+            // Assuming uri has already been percent-encoded.
+            req->setReferer(uri);
+          } else {
+            req->setReferer(util::percentEncodeMini(referer));
+          }
           req->setMethod(method);
           spentUris_.push_back(uri);
           inFlightRequests_.insert(req);

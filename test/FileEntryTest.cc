@@ -15,6 +15,7 @@ class FileEntryTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetRequest);
   CPPUNIT_TEST(testGetRequest_withoutUriReuse);
   CPPUNIT_TEST(testGetRequest_withUniqueProtocol);
+  CPPUNIT_TEST(testGetRequest_withReferer);
   CPPUNIT_TEST(testReuseUri);
   CPPUNIT_TEST(testAddUri);
   CPPUNIT_TEST(testAddUris);
@@ -30,6 +31,7 @@ public:
   void testGetRequest();
   void testGetRequest_withoutUriReuse();
   void testGetRequest_withUniqueProtocol();
+  void testGetRequest_withReferer();
   void testReuseUri();
   void testAddUri();
   void testAddUris();
@@ -182,6 +184,19 @@ void FileEntryTest::testGetRequest_withUniqueProtocol()
                        fileEntry->getRemainingUris()[0]);
   CPPUNIT_ASSERT_EQUAL(std::string("http://mirror/aria2.zip"),
                        fileEntry->getRemainingUris()[1]);
+}
+
+void FileEntryTest::testGetRequest_withReferer()
+{
+  SharedHandle<FileEntry> fileEntry = createFileEntry();
+  SharedHandle<InorderURISelector> selector(new InorderURISelector());
+  std::vector<std::pair<size_t, std::string> > usedHosts;
+  SharedHandle<Request> req =
+    fileEntry->getRequest(selector, true, usedHosts, "http://referer");
+  CPPUNIT_ASSERT_EQUAL(std::string("http://referer"), req->getReferer());
+  // URI is used as referer if "*" is given.
+  req = fileEntry->getRequest(selector, true, usedHosts, "*");
+  CPPUNIT_ASSERT_EQUAL(req->getUri(), req->getReferer());
 }
 
 void FileEntryTest::testReuseUri()
