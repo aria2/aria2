@@ -1039,6 +1039,11 @@ Advanced Options
   Change the configuration file path to PATH.
   Default: ``$HOME/.aria2/aria2.conf``
 
+.. option:: --console-log-level=<LEVEL>
+
+  Set log level to output to console.  LEVEL is either ``debug``,
+  ``info``, ``notice``, ``warn`` or ``error``.  Default: ``notice``
+
 .. option:: -D, --daemon[=true|false]
 
   Run as daemon. The current working directory will be changed to ``/``
