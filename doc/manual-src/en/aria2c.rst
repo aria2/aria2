@@ -429,7 +429,9 @@ HTTP Specific Options
 
 .. option:: --referer=<REFERER>
 
-  Set Referer. This affects all URIs.
+  Set Referer. This affects all URIs.  If ``*`` is given, each request
+  URI is used as a referer.  This may be useful when used with
+  :option:`--parameterized-uri <-P>` option.
 
 .. option:: --enable-http-keep-alive[=true|false]
 
