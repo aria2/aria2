@@ -1366,6 +1366,12 @@ Advanced Options
     5. local metalink file
         Any meaningful GID is not saved.
 
+.. option:: --save-session-interval=<SEC>
+
+  Save error/unfinished downloads to a file specified by
+  :option:`--save-session` option every SEC seconds. If ``0`` is
+  given, file will be saved only when aria2 exits. Default: ``0``
+
 .. option:: --stop=<SEC>
 
   Stop application after SEC seconds has passed.
