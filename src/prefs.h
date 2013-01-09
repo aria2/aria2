@@ -291,6 +291,8 @@ extern const Pref* PREF_FORCE_SAVE;
 extern const Pref* PREF_DISK_CACHE;
 // value: string
 extern const Pref* PREF_GID;
+// values: 1*digit
+extern const Pref* PREF_SAVE_SESSION_INTERVAL;
 
 /**
  * FTP related preferences

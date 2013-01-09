@@ -944,3 +944,8 @@
     "                              by aria2.")
 #define TEXT_CONSOLE_LOG_LEVEL                                          \
   _(" --console-log-level=LEVEL    Set log level to output to console.")
+#define TEXT_SAVE_SESSION_INTERVAL                                      \
+  _(" --save-session-interval=SEC  Save error/unfinished downloads to a file\n" \
+    "                              specified by --save-session option every SEC\n" \
+    "                              seconds. If 0 is given, file will be saved only\n" \
+    "                              when aria2 exits.")

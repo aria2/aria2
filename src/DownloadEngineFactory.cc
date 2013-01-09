@@ -50,6 +50,7 @@
 #include "FillRequestGroupCommand.h"
 #include "FileAllocationDispatcherCommand.h"
 #include "AutoSaveCommand.h"
+#include "SaveSessionCommand.h"
 #include "HaveEraseCommand.h"
 #include "TimedHaltCommand.h"
 #include "WatchProcessCommand.h"
@@ -157,6 +158,11 @@ DownloadEngineFactory::newDownloadEngine
     e->addRoutineCommand
       (new AutoSaveCommand(e->newCUID(), e.get(),
                            op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
+  }
+  if(op->getAsInt(PREF_SAVE_SESSION_INTERVAL) > 0) {
+    e->addRoutineCommand
+      (new SaveSessionCommand(e->newCUID(), e.get(),
+                              op->getAsInt(PREF_SAVE_SESSION_INTERVAL)));
   }
   e->addRoutineCommand(new HaveEraseCommand(e->newCUID(), e.get(), 10));
   {

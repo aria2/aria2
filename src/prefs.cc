@@ -356,6 +356,8 @@ const Pref* PREF_FORCE_SAVE = makePref("force-save");
 const Pref* PREF_DISK_CACHE = makePref("disk-cache");
 // value: string
 const Pref* PREF_GID = makePref("gid");
+// values: 1*digit
+const Pref* PREF_SAVE_SESSION_INTERVAL = makePref("save-session-interval");
 
 /**
  * FTP related preferences
