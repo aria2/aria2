@@ -44,7 +44,7 @@ FallocFileAllocationIterator::FallocFileAllocationIterator
 void FallocFileAllocationIterator::allocateChunk()
 {
   if(offset_ < totalLength_) {
-    stream_->allocate(offset_, totalLength_-offset_);
+    stream_->allocate(offset_, totalLength_-offset_, false);
     offset_ = totalLength_;
   } else {
     stream_->truncate(totalLength_);

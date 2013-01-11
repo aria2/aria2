@@ -62,7 +62,7 @@ void AdaptiveFileAllocationIterator::allocateChunk()
       if(offset_ < totalLength_) {
         int64_t len = std::min(totalLength_-offset_,
                                static_cast<int64_t>(4096));
-        stream_->allocate(offset_, len);
+        stream_->allocate(offset_, len, false);
         offset_ += len;
       }
       A2_LOG_DEBUG("File system supports fallocate.");

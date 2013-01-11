@@ -84,7 +84,7 @@ public:
   virtual void truncate(int64_t length);
 
   // File must be opened before calling this function.
-  virtual void allocate(int64_t offset, int64_t length);
+  virtual void allocate(int64_t offset, int64_t length, bool sparse);
 
   virtual int64_t size();
 

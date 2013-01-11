@@ -46,7 +46,7 @@ TruncFileAllocationIterator::TruncFileAllocationIterator
 
 void TruncFileAllocationIterator::allocateChunk()
 {
-  stream_->truncate(totalLength_);
+  stream_->allocate(0, totalLength_, true);
   offset_ = totalLength_;
 }
 

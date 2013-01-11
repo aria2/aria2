@@ -55,8 +55,9 @@ public:
   virtual void truncate(int64_t length) {}
 
   // Allocates given length bytes of disk space from given offset. The
-  // default implementation does nothing.
-  virtual void allocate(int64_t offset, int64_t length) {}
+  // default implementation does nothing. If sparse is true, the
+  // implementation may create sparse file (with holes).
+  virtual void allocate(int64_t offset, int64_t length, bool sparse) {}
 };
 
 } // namespace aria2
