@@ -253,6 +253,11 @@ bool PeerConnection::sendBufferIsEmpty() const
   return socketBuffer_.sendBufferIsEmpty();
 }
 
+size_t PeerConnection::getBufferEntrySize() const
+{
+  return socketBuffer_.getBufferEntrySize();
+}
+
 ssize_t PeerConnection::sendPendingData()
 {
   ssize_t writtenLength = socketBuffer_.send();

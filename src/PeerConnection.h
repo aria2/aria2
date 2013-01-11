@@ -119,6 +119,8 @@ public:
 
   bool sendBufferIsEmpty() const;
 
+  size_t getBufferEntrySize() const;
+
   ssize_t sendPendingData();
 
   const unsigned char* getBuffer() const

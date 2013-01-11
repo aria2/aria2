@@ -144,6 +144,10 @@ public:
   // Returns true if queue is empty.
   bool sendBufferIsEmpty() const;
 
+  size_t getBufferEntrySize() const
+  {
+    return bufq_.size();
+  }
 };
 
 } // namespace aria2

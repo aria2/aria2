@@ -116,13 +116,11 @@ void DefaultBtMessageDispatcher::sendMessagesInternal()
   }
 }
 
-void DefaultBtMessageDispatcher::sendMessages() {
-  // First flush any pending data in the buffer.
-  peerConnection_->sendPendingData();
-  if(!peerConnection_->sendBufferIsEmpty()) {
-    return;
+void DefaultBtMessageDispatcher::sendMessages()
+{
+  if(peerConnection_->getBufferEntrySize() < A2_IOV_MAX) {
+    sendMessagesInternal();
   }
-  sendMessagesInternal();
   peerConnection_->sendPendingData();
 }
 
