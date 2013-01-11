@@ -279,23 +279,11 @@ public:
    * @param len the maximum size data can store. This method assigns
    * the number of bytes read to len.
    */
-  void readData(char* data, size_t& len);
+  void readData(void* data, size_t& len);
 
-  void readData(unsigned char* data, size_t& len)
-  {
-    readData(reinterpret_cast<char*>(data), len);
-  }
-
-  ssize_t readDataFrom(char* data, size_t len,
+  ssize_t readDataFrom(void* data, size_t len,
                        std::pair<std::string /* numerichost */,
                        uint16_t /* port */>& sender);
-
-  ssize_t readDataFrom(unsigned char* data, size_t len,
-                       std::pair<std::string /* numerichost */,
-                       uint16_t /* port */>& sender)
-  {
-    return readDataFrom(reinterpret_cast<char*>(data), len, sender);
-  }
 
 #ifdef ENABLE_SSL
   // Performs TLS server side handshake. If handshake is completed,

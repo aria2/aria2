@@ -825,14 +825,15 @@ ssize_t SocketCore::writeData(const void* data, size_t len)
   return ret;
 }
 
-void SocketCore::readData(char* data, size_t& len)
+void SocketCore::readData(void* data, size_t& len)
 {
   ssize_t ret = 0;
   wantRead_ = false;
   wantWrite_ = false;
 
   if(!secure_) {
-    while((ret = recv(sockfd_, data, len, 0)) == -1 &&
+    // Cast for Windows recv()
+    while((ret = recv(sockfd_, reinterpret_cast<char*>(data), len, 0)) == -1 &&
           SOCKET_ERRNO == A2_EINTR);
     int errNum = SOCKET_ERRNO;
     if(ret == -1) {
@@ -1247,7 +1248,7 @@ ssize_t SocketCore::writeData(const void* data, size_t len,
   return r;
 }
 
-ssize_t SocketCore::readDataFrom(char* data, size_t len,
+ssize_t SocketCore::readDataFrom(void* data, size_t len,
                                  std::pair<std::string /* numerichost */,
                                  uint16_t /* port */>& sender)
 {
@@ -1256,7 +1257,9 @@ ssize_t SocketCore::readDataFrom(char* data, size_t len,
   sockaddr_union sockaddr;
   socklen_t sockaddrlen = sizeof(sockaddr);
   ssize_t r;
-  while((r = recvfrom(sockfd_, data, len, 0, &sockaddr.sa, &sockaddrlen)) == -1
+  // Cast for Windows recvfrom()
+  while((r = recvfrom(sockfd_, reinterpret_cast<char*>(data), len, 0,
+                      &sockaddr.sa, &sockaddrlen)) == -1
         && A2_EINTR == SOCKET_ERRNO);
   int errNum = SOCKET_ERRNO;
   if(r == -1) {
