@@ -35,7 +35,6 @@ class DefaultBtMessageDispatcherTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCheckRequestSlotAndDoNecessaryThing);
   CPPUNIT_TEST(testCheckRequestSlotAndDoNecessaryThing_timeout);
   CPPUNIT_TEST(testCheckRequestSlotAndDoNecessaryThing_completeBlock);
-  CPPUNIT_TEST(testIsSendingInProgress);
   CPPUNIT_TEST(testCountOutstandingRequest);
   CPPUNIT_TEST(testIsOutstandingRequest);
   CPPUNIT_TEST(testGetOutstandingRequest);
@@ -62,7 +61,6 @@ public:
   void testCheckRequestSlotAndDoNecessaryThing();
   void testCheckRequestSlotAndDoNecessaryThing_timeout();
   void testCheckRequestSlotAndDoNecessaryThing_completeBlock();
-  void testIsSendingInProgress();
   void testCountOutstandingRequest();
   void testIsOutstandingRequest();
   void testGetOutstandingRequest();
@@ -180,10 +178,8 @@ void DefaultBtMessageDispatcherTest::testAddMessage() {
 
 void DefaultBtMessageDispatcherTest::testSendMessages() {
   SharedHandle<MockBtMessage2> msg1(new MockBtMessage2());
-  msg1->setSendingInProgress(false);
   msg1->setUploading(false);
   SharedHandle<MockBtMessage2> msg2(new MockBtMessage2());
-  msg2->setSendingInProgress(false);
   msg2->setUploading(false);
   btMessageDispatcher->addMessageToQueue(msg1);
   btMessageDispatcher->addMessageToQueue(msg2);
@@ -195,10 +191,8 @@ void DefaultBtMessageDispatcherTest::testSendMessages() {
 
 void DefaultBtMessageDispatcherTest::testSendMessages_underUploadLimit() {
   SharedHandle<MockBtMessage2> msg1(new MockBtMessage2());
-  msg1->setSendingInProgress(false);
   msg1->setUploading(true);
   SharedHandle<MockBtMessage2> msg2(new MockBtMessage2());
-  msg2->setSendingInProgress(false);
   msg2->setUploading(true);
   btMessageDispatcher->addMessageToQueue(msg1);
   btMessageDispatcher->addMessageToQueue(msg2);
@@ -219,13 +213,10 @@ void DefaultBtMessageDispatcherTest::testSendMessages_underUploadLimit() {
 //   peerStorage->setStat(stat);
 
 //   SharedHandle<MockBtMessage2> msg1(new MockBtMessage2());
-//   msg1->setSendingInProgress(false);
 //   msg1->setUploading(true);
 //   SharedHandle<MockBtMessage2> msg2(new MockBtMessage2());
-//   msg2->setSendingInProgress(false);
 //   msg2->setUploading(true);
 //   SharedHandle<MockBtMessage2> msg3(new MockBtMessage2());
-//   msg3->setSendingInProgress(false);
 //   msg3->setUploading(false);
 
 //   btMessageDispatcher->addMessageToQueue(msg1);
@@ -325,16 +316,6 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_com
                        btMessageDispatcher->getMessageQueue().size());
   CPPUNIT_ASSERT_EQUAL((size_t)0,
                        btMessageDispatcher->getRequestSlots().size());
-}
-
-void DefaultBtMessageDispatcherTest::testIsSendingInProgress() {
-  CPPUNIT_ASSERT(!btMessageDispatcher->isSendingInProgress());
-  SharedHandle<MockBtMessage2> msg(new MockBtMessage2());
-  msg->setSendingInProgress(false);
-  btMessageDispatcher->addMessageToQueue(msg);
-  CPPUNIT_ASSERT(!btMessageDispatcher->isSendingInProgress());
-  msg->setSendingInProgress(true);
-  CPPUNIT_ASSERT(btMessageDispatcher->isSendingInProgress());
 }
 
 void DefaultBtMessageDispatcherTest::testCountOutstandingRequest() {

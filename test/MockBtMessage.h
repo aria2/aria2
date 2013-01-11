@@ -41,7 +41,6 @@ namespace aria2 {
 
 class MockBtMessage : public BtMessage {
 private:
-  bool sendingInProgress;
   bool invalidate;
   bool uploading;
 public:
@@ -50,14 +49,6 @@ public:
   MockBtMessage(uint8_t id):BtMessage(id) {}
 
   virtual ~MockBtMessage() {}
-
-  virtual bool isSendingInProgress() {
-    return sendingInProgress;
-  }
-
-  void setSendingInProgress(bool flag) {
-    this->sendingInProgress = flag;
-  }
 
   virtual bool isInvalidate() {
     return invalidate;

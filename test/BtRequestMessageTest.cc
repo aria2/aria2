@@ -31,7 +31,6 @@ class BtRequestMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testHandleAbortRequestEvent);
   CPPUNIT_TEST(testHandleAbortRequestEvent_indexNoMatch);
   CPPUNIT_TEST(testHandleAbortRequestEvent_alreadyInvalidated);
-  CPPUNIT_TEST(testHandleAbortRequestEvent_sendingInProgress);
   CPPUNIT_TEST(testToString);
   CPPUNIT_TEST(testValidate);
   CPPUNIT_TEST(testValidate_lengthTooLong);
@@ -49,7 +48,6 @@ public:
   void testHandleAbortRequestEvent();
   void testHandleAbortRequestEvent_indexNoMatch();
   void testHandleAbortRequestEvent_alreadyInvalidated();
-  void testHandleAbortRequestEvent_sendingInProgress();
   void testToString();
   void testValidate();
   void testValidate_lengthTooLong();
@@ -238,7 +236,6 @@ void BtRequestMessageTest::testHandleAbortRequestEvent() {
 void BtRequestMessageTest::testHandleAbortRequestEvent_indexNoMatch() {
   SharedHandle<Piece> piece(new Piece(2, 16*1024));
   CPPUNIT_ASSERT(!msg->isInvalidate());
-  CPPUNIT_ASSERT(!msg->isSendingInProgress());
   msg->onAbortOutstandingRequestEvent(BtAbortOutstandingRequestEvent(piece));
   CPPUNIT_ASSERT(!msg->isInvalidate());
 }
@@ -247,18 +244,8 @@ void BtRequestMessageTest::testHandleAbortRequestEvent_alreadyInvalidated() {
   SharedHandle<Piece> piece(new Piece(1, 16*1024));
   msg->setInvalidate(true);
   CPPUNIT_ASSERT(msg->isInvalidate());
-  CPPUNIT_ASSERT(!msg->isSendingInProgress());
   msg->onAbortOutstandingRequestEvent(BtAbortOutstandingRequestEvent(piece));
   CPPUNIT_ASSERT(msg->isInvalidate());
-}
-
-void BtRequestMessageTest::testHandleAbortRequestEvent_sendingInProgress() {
-  SharedHandle<Piece> piece(new Piece(1, 16*1024));
-  msg->setSendingInProgress(true);
-  CPPUNIT_ASSERT(!msg->isInvalidate());
-  CPPUNIT_ASSERT(msg->isSendingInProgress());
-  msg->onAbortOutstandingRequestEvent(BtAbortOutstandingRequestEvent(piece));
-  CPPUNIT_ASSERT(!msg->isInvalidate());
 }
 
 void BtRequestMessageTest::testToString() {

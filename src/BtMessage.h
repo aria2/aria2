@@ -55,8 +55,6 @@ public:
 
   virtual ~BtMessage() {}
 
-  virtual bool isSendingInProgress() = 0;
-
   virtual bool isInvalidate() = 0;
 
   virtual bool isUploading() = 0;

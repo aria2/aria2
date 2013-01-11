@@ -50,7 +50,6 @@ class BtMessageValidator;
 
 class AbstractBtMessage : public BtMessage {
 private:
-  bool sendingInProgress_;
   bool invalidate_;
   bool uploading_;
   cuid_t cuid_;
@@ -106,14 +105,6 @@ public:
   AbstractBtMessage(uint8_t id, const char* name);
 
   virtual ~AbstractBtMessage();
-
-  virtual bool isSendingInProgress() {
-    return sendingInProgress_;
-  }
-
-  void setSendingInProgress(bool sendingInProgress) {
-    sendingInProgress_ = sendingInProgress;
-  }
 
   virtual bool isInvalidate() {
     return invalidate_;

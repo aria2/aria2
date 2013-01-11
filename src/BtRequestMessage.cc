@@ -87,8 +87,7 @@ void BtRequestMessage::onQueued()
 void BtRequestMessage::onAbortOutstandingRequestEvent
 (const BtAbortOutstandingRequestEvent& event)
 {
-  if(getIndex() == event.getPiece()->getIndex() &&
-     !isInvalidate() && !isSendingInProgress()) {
+  if(getIndex() == event.getPiece()->getIndex() && !isInvalidate()) {
     setInvalidate(true);
   }
 }

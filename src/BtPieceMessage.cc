@@ -290,7 +290,6 @@ void BtPieceMessage::onWrongPiece(const SharedHandle<Piece>& piece)
 void BtPieceMessage::onChokingEvent(const BtChokingEvent& event)
 {
   if(!isInvalidate() &&
-     !isSendingInProgress() &&
      !getPeer()->isInAmAllowedIndexSet(index_)) {
     A2_LOG_DEBUG(fmt(MSG_REJECT_PIECE_CHOKED,
                      getCuid(),
@@ -311,7 +310,6 @@ void BtPieceMessage::onCancelSendingPieceEvent
 (const BtCancelSendingPieceEvent& event)
 {
   if(!isInvalidate() &&
-     !isSendingInProgress() &&
      index_ == event.getIndex() &&
      begin_ == event.getBegin() &&
      blockLength_ == event.getLength()) {
