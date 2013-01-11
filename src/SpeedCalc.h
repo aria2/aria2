@@ -36,28 +36,24 @@
 #define D_SPEED_CALC_H
 
 #include "common.h"
+
+#include <deque>
+
 #include "TimerA2.h"
 
 namespace aria2 {
 
 class SpeedCalc {
 private:
-  int64_t lengthArray_[2];
-  int sw_;
-  Timer cpArray_[2];
-  int maxSpeed_;
-  int prevSpeed_;
+  std::deque<std::pair<int64_t, size_t> > timeSlots_;
   Timer start_;
   int64_t accumulatedLength_;
-  time_t nextInterval_;
+  int64_t bytesWindow_;
+  int maxSpeed_;
 
-  bool isIntervalOver(int64_t milliElapsed) const;
-
-  void changeSw();
+  void removeStaleTimeSlot(int64_t now);
 public:
   SpeedCalc();
-
-  bool isIntervalOver() const;
 
   /**
    * Returns download/upload speed in byte per sec
