@@ -39,6 +39,8 @@
 
 namespace aria2 {
 
+class ProgressUpdate;
+
 class SimpleBtMessage : public AbstractBtMessage {
 public:
   SimpleBtMessage(uint8_t id, const char* name);
@@ -49,7 +51,7 @@ public:
 
   virtual size_t getMessageLength() = 0;
 
-  virtual void onSendComplete() {};
+  virtual ProgressUpdate* getProgressUpdate() { return 0; };
 
   virtual bool sendPredicate() const { return true; };
 

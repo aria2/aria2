@@ -46,23 +46,46 @@ namespace aria2 {
 
 class SocketCore;
 
+struct ProgressUpdate {
+  virtual ~ProgressUpdate() {}
+  virtual void update(size_t length, bool complete) = 0;
+};
+
 class SocketBuffer {
 private:
   class BufEntry {
   public:
-    virtual ~BufEntry() {}
+    BufEntry(ProgressUpdate* progressUpdate)
+    : progressUpdate_(progressUpdate) {}
+    virtual ~BufEntry()
+    {
+      delete progressUpdate_;
+    }
     virtual ssize_t send
     (const SharedHandle<SocketCore>& socket, size_t offset) = 0;
     virtual bool final(size_t offset) const = 0;
+    virtual size_t getLength() const = 0;
+    virtual const unsigned char* getData() const = 0;
+    void progressUpdate(size_t length, bool complete)
+    {
+      if(progressUpdate_) {
+        progressUpdate_->update(length, complete);
+      }
+    }
+  private:
+    ProgressUpdate* progressUpdate_;
   };
 
   class ByteArrayBufEntry:public BufEntry {
   public:
-    ByteArrayBufEntry(unsigned char* bytes, size_t length);
+    ByteArrayBufEntry(unsigned char* bytes, size_t length,
+                      ProgressUpdate* progressUpdate);
     virtual ~ByteArrayBufEntry();
     virtual ssize_t send
     (const SharedHandle<SocketCore>& socket, size_t offset);
     virtual bool final(size_t offset) const;
+    virtual size_t getLength() const;
+    virtual const unsigned char* getData() const;
   private:
     unsigned char* bytes_;
     size_t length_;
@@ -70,11 +93,14 @@ private:
 
   class StringBufEntry:public BufEntry {
   public:
-    StringBufEntry(const std::string& s);
+    StringBufEntry(const std::string& s,
+                   ProgressUpdate* progressUpdate);
     StringBufEntry();
     virtual ssize_t send
     (const SharedHandle<SocketCore>& socket, size_t offset);
     virtual bool final(size_t offset) const;
+    virtual size_t getLength() const;
+    virtual const unsigned char* getData() const;
     void swap(std::string& s);
   private:
     std::string str_;
@@ -99,11 +125,18 @@ public:
 
   // Feeds data pointered by bytes with length len into queue.  This
   // object gets ownership of bytes, so caller must not delete or
-  // later bytes after this call. This function doesn't send data.
-  void pushBytes(unsigned char* bytes, size_t len);
+  // later bytes after this call. This function doesn't send data.  If
+  // progressUpdate is not null, its update() function will be called
+  // each time the data is sent. It will be deleted by this object. It
+  // can be null.
+  void pushBytes(unsigned char* bytes, size_t len,
+                 ProgressUpdate* progressUpdate = 0);
 
-  // Feeds data into queue. This function doesn't send data.
-  void pushStr(const std::string& data);
+  // Feeds data into queue. This function doesn't send data.  If
+  // progressUpdate is not null, its update() function will be called
+  // each time the data is sent. It will be deleted by this object. It
+  // can be null.
+  void pushStr(const std::string& data, ProgressUpdate* progressUpdate = 0);
 
   // Sends data in queue.  Returns the number of bytes sent.
   ssize_t send();

@@ -7,6 +7,7 @@
 #include "bittorrent_helper.h"
 #include "Peer.h"
 #include "MockPeerStorage.h"
+#include "SocketBuffer.h"
 
 namespace aria2 {
 
@@ -90,7 +91,8 @@ void BtInterestedMessageTest::testOnSendComplete() {
   peer->allocateSessionResource(1024, 1024*1024);
   msg.setPeer(peer);
   CPPUNIT_ASSERT(!peer->amInterested());
-  msg.onSendComplete();
+  SharedHandle<ProgressUpdate> pu(msg.getProgressUpdate());
+  pu->update(0, true);
   CPPUNIT_ASSERT(peer->amInterested());
 }
 

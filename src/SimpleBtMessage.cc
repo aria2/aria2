@@ -48,29 +48,19 @@ SimpleBtMessage::SimpleBtMessage(uint8_t id, const char* name)
 {}
 
 void SimpleBtMessage::send() {
-  if(isInvalidate()) {
+  if(isInvalidate() || !sendPredicate()) {
     return;
   }
-  if(!sendPredicate() && !isSendingInProgress()) {
-    return;
-  }
-  if(!isSendingInProgress()) {
-    A2_LOG_INFO(fmt(MSG_SEND_PEER_MESSAGE,
-                    getCuid(),
-                    getPeer()->getIPAddress().c_str(),
-                    getPeer()->getPort(),
-                    toString().c_str()));
-    unsigned char* msg = createMessage();
-    size_t msgLength = getMessageLength();
-    A2_LOG_DEBUG(fmt("msglength = %lu bytes",
-                     static_cast<unsigned long>(msgLength)));
-    getPeerConnection()->pushBytes(msg, msgLength);
-  }
-  getPeerConnection()->sendPendingData();
-  setSendingInProgress(!getPeerConnection()->sendBufferIsEmpty());
-  if(!isSendingInProgress()) {
-    onSendComplete();
-  }
+  A2_LOG_INFO(fmt(MSG_SEND_PEER_MESSAGE,
+                  getCuid(),
+                  getPeer()->getIPAddress().c_str(),
+                  getPeer()->getPort(),
+                  toString().c_str()));
+  unsigned char* msg = createMessage();
+  size_t msgLength = getMessageLength();
+  A2_LOG_DEBUG(fmt("msglength = %lu bytes",
+                   static_cast<unsigned long>(msgLength)));
+  getPeerConnection()->pushBytes(msg, msgLength, getProgressUpdate());
 }
 
 } // namespace aria2

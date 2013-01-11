@@ -52,8 +52,7 @@ public:
 
   virtual void doReceivedAction();
 
-  virtual void onSendComplete();
-
+  virtual ProgressUpdate* getProgressUpdate();
 };
 
 } // namespace aria2

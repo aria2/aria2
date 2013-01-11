@@ -36,6 +36,7 @@
 #include "Peer.h"
 #include "BtMessageDispatcher.h"
 #include "BtRequestFactory.h"
+#include "SocketBuffer.h"
 
 namespace aria2 {
 
@@ -64,10 +65,26 @@ bool BtChokeMessage::sendPredicate() const
   return !getPeer()->amChoking();
 }
 
-void BtChokeMessage::onSendComplete()
+namespace {
+struct ThisProgressUpdate : public ProgressUpdate {
+  ThisProgressUpdate(const SharedHandle<Peer>& peer,
+                     BtMessageDispatcher* disp)
+    : peer(peer), disp(disp) {}
+  virtual void update(size_t length, bool complete)
+  {
+    if(complete) {
+      peer->amChoking(true);
+      disp->doChokingAction();
+    }
+  }
+  SharedHandle<Peer> peer;
+  BtMessageDispatcher* disp;
+};
+} // namespace
+
+ProgressUpdate* BtChokeMessage::getProgressUpdate()
 {
-  getPeer()->amChoking(true);
-  getBtMessageDispatcher()->doChokingAction();
+  return new ThisProgressUpdate(getPeer(), getBtMessageDispatcher());
 }
 
 } // namespace aria2

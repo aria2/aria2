@@ -322,7 +322,7 @@ void DefaultPeerStorage::returnPeer(const SharedHandle<Peer>& peer)
 
 bool DefaultPeerStorage::chokeRoundIntervalElapsed()
 {
-  const time_t CHOKE_ROUND_INTERVAL = 10;
+  const time_t CHOKE_ROUND_INTERVAL = 1;//10;
   if(pieceStorage_->downloadFinished()) {
     return seederStateChoke_->getLastRound().
       difference(global::wallclock()) >= CHOKE_ROUND_INTERVAL;

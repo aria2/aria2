@@ -85,12 +85,13 @@ PeerConnection::~PeerConnection()
   delete [] resbuf_;
 }
 
-void PeerConnection::pushBytes(unsigned char* data, size_t len)
+void PeerConnection::pushBytes(unsigned char* data, size_t len,
+                               ProgressUpdate* progressUpdate)
 {
   if(encryptionEnabled_) {
     encryptor_->encrypt(len, data, data);
   }
-  socketBuffer_.pushBytes(data, len);
+  socketBuffer_.pushBytes(data, len, progressUpdate);
 }
 
 bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength)

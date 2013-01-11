@@ -36,6 +36,7 @@
 #include "DlAbortEx.h"
 #include "Peer.h"
 #include "fmt.h"
+#include "SocketBuffer.h"
 
 namespace aria2 {
 
@@ -62,8 +63,24 @@ void BtAllowedFastMessage::doReceivedAction() {
   getPeer()->addPeerAllowedIndex(getIndex());
 }
 
-void BtAllowedFastMessage::onSendComplete() {
-  getPeer()->addAmAllowedIndex(getIndex());
+namespace {
+struct ThisProgressUpdate : public ProgressUpdate {
+  ThisProgressUpdate(const SharedHandle<Peer>& peer, size_t index)
+    : peer(peer), index(index) {}
+  virtual void update(size_t length, bool complete)
+  {
+    if(complete) {
+      peer->addAmAllowedIndex(index);
+    }
+  }
+  SharedHandle<Peer> peer;
+  size_t index;
+};
+} // namespace
+
+ProgressUpdate* BtAllowedFastMessage::getProgressUpdate()
+{
+  return new ThisProgressUpdate(getPeer(), getIndex());
 }
 
 } // namespace aria2

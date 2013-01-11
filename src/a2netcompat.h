@@ -87,6 +87,10 @@
 # include <netinet/in.h>
 #endif // HAVE_NETINET_IN_H
 
+#ifdef HAVE_SYS_UIO_H
+# include <sys/uio.h>
+#endif // HAVE_SYS_UIO_H
+
 #ifndef HAVE_GETADDRINFO
 # include "getaddrinfo.h"
 # define HAVE_GAI_STRERROR
@@ -140,5 +144,23 @@ union sockaddr_union {
   sockaddr_in6 in6;
   sockaddr_in in;
 };
+
+#define A2_DEFAULT_IOV_MAX 128
+
+#if defined(IOV_MAX) && IOV_MAX < A2_DEFAULT_IOV_MAX
+#  define A2_IOV_MAX IOV_MAX
+#else
+#  define A2_IOV_MAX A2_DEFAULT_IOV_MAX
+#endif
+
+#ifdef __MINGW32__
+typedef WSABUF a2iovec;
+#  define A2IOVEC_BASE buf
+#  define A2IOVEC_LEN len
+#else // !__MINGW32__
+typedef struct iovec a2iovec;
+#  define A2IOVEC_BASE iov_base
+#  define A2IOVEC_LEN iov_len
+#endif // !__MINGW32__
 
 #endif // D_A2NETCOMPAT_H

@@ -252,25 +252,16 @@ public:
    * @param data data to write
    * @param len length of data
    */
-  ssize_t writeData(const char* data, size_t len);
+  ssize_t writeData(const void* data, size_t len);
   ssize_t writeData(const std::string& msg)
   {
     return writeData(msg.c_str(), msg.size());
   }
-  ssize_t writeData(const unsigned char* data, size_t len)
-  {
-    return writeData(reinterpret_cast<const char*>(data), len);
-  }
 
-  ssize_t writeData(const char* data, size_t len,
+  ssize_t writeData(const void* data, size_t len,
                     const std::string& host, uint16_t port);
 
-  ssize_t writeData(const unsigned char* data, size_t len,
-                    const std::string& host,
-                    uint16_t port)
-  {
-    return writeData(reinterpret_cast<const char*>(data), len, host, port);
-  }
+  ssize_t writeVector(a2iovec *iov, size_t iovcnt);
 
   /**
    * Reads up to len bytes from this socket.

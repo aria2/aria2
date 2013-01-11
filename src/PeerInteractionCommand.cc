@@ -200,6 +200,7 @@ PeerInteractionCommand::PeerInteractionCommand
   dispatcherPtr->setBtMessageFactory(factoryPtr);
   dispatcherPtr->setRequestGroupMan
     (getDownloadEngine()->getRequestGroupMan().get());
+  dispatcherPtr->setPeerConnection(peerConnection);
   SharedHandle<BtMessageDispatcher> dispatcher(dispatcherPtr);
 
   DefaultBtMessageReceiver* receiverPtr(new DefaultBtMessageReceiver());

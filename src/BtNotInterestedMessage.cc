@@ -35,6 +35,7 @@
 #include "BtNotInterestedMessage.h"
 #include "Peer.h"
 #include "PeerStorage.h"
+#include "SocketBuffer.h"
 
 namespace aria2 {
 
@@ -66,8 +67,23 @@ bool BtNotInterestedMessage::sendPredicate() const
   return getPeer()->amInterested();
 }
 
-void BtNotInterestedMessage::onSendComplete() {
-  getPeer()->amInterested(false);
+namespace {
+struct ThisProgressUpdate : public ProgressUpdate {
+  ThisProgressUpdate(const SharedHandle<Peer>& peer)
+    : peer(peer) {}
+  virtual void update(size_t length, bool complete)
+  {
+    if(complete) {
+      peer->amInterested(false);
+    }
+  }
+  SharedHandle<Peer> peer;
+};
+} // namespace
+
+ProgressUpdate* BtNotInterestedMessage::getProgressUpdate()
+{
+  return new ThisProgressUpdate(getPeer());
 }
 
 void BtNotInterestedMessage::setPeerStorage

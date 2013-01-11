@@ -60,7 +60,7 @@ public:
 
   virtual bool sendPredicate() const;
 
-  virtual void onSendComplete();
+  virtual ProgressUpdate* getProgressUpdate();
 
   void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
 };

@@ -56,6 +56,7 @@
 #include "RequestGroup.h"
 #include "util.h"
 #include "fmt.h"
+#include "PeerConnection.h"
 
 namespace aria2 {
 
@@ -87,7 +88,8 @@ void DefaultBtMessageDispatcher::addMessageToQueue
   }
 }
 
-void DefaultBtMessageDispatcher::sendMessages() {
+void DefaultBtMessageDispatcher::sendMessagesInternal()
+{
   std::vector<SharedHandle<BtMessage> > tempQueue;
   while(!messageQueue_.empty()) {
     SharedHandle<BtMessage> msg = messageQueue_.front();
@@ -100,10 +102,6 @@ void DefaultBtMessageDispatcher::sendMessages() {
       }
     }
     msg->send();
-    if(msg->isSendingInProgress()) {
-      messageQueue_.push_front(msg);
-      break;
-    }
   }
   if(!tempQueue.empty()) {
     // Insert pending message to the front, so that message is likely sent in
@@ -116,6 +114,16 @@ void DefaultBtMessageDispatcher::sendMessages() {
                            tempQueue.begin(), tempQueue.end());
     }
   }
+}
+
+void DefaultBtMessageDispatcher::sendMessages() {
+  // First flush any pending data in the buffer.
+  peerConnection_->sendPendingData();
+  if(!peerConnection_->sendBufferIsEmpty()) {
+    return;
+  }
+  sendMessagesInternal();
+  peerConnection_->sendPendingData();
 }
 
 // Cancel sending piece message to peer.

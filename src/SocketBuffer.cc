@@ -41,12 +41,13 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "fmt.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
 SocketBuffer::ByteArrayBufEntry::ByteArrayBufEntry
-(unsigned char* bytes, size_t length)
-  : bytes_(bytes), length_(length)
+(unsigned char* bytes, size_t length, ProgressUpdate* progressUpdate)
+  : BufEntry(progressUpdate), bytes_(bytes), length_(length)
 {}
 
 SocketBuffer::ByteArrayBufEntry::~ByteArrayBufEntry()
@@ -65,11 +66,22 @@ bool SocketBuffer::ByteArrayBufEntry::final(size_t offset) const
   return length_ <= offset;
 }
 
-SocketBuffer::StringBufEntry::StringBufEntry(const std::string& s)
-  : str_(s)
+size_t SocketBuffer::ByteArrayBufEntry::getLength() const
+{
+  return length_;
+}
+
+const unsigned char* SocketBuffer::ByteArrayBufEntry::getData() const
+{
+  return bytes_;
+}
+
+SocketBuffer::StringBufEntry::StringBufEntry(const std::string& s,
+                                             ProgressUpdate* progressUpdate)
+  : BufEntry(progressUpdate), str_(s)
 {}
 
-SocketBuffer::StringBufEntry::StringBufEntry() {}
+// SocketBuffer::StringBufEntry::StringBufEntry() {}
 
 ssize_t SocketBuffer::StringBufEntry::send
 (const SharedHandle<SocketCore>& socket, size_t offset)
@@ -82,6 +94,16 @@ bool SocketBuffer::StringBufEntry::final(size_t offset) const
   return str_.size() <= offset;
 }
 
+size_t SocketBuffer::StringBufEntry::getLength() const
+{
+  return str_.size();
+}
+
+const unsigned char* SocketBuffer::StringBufEntry::getData() const
+{
+  return reinterpret_cast<const unsigned char*>(str_.c_str());
+}
+
 void SocketBuffer::StringBufEntry::swap(std::string& s)
 {
   str_.swap(s);
@@ -92,38 +114,82 @@ SocketBuffer::SocketBuffer(const SharedHandle<SocketCore>& socket):
 
 SocketBuffer::~SocketBuffer() {}
 
-void SocketBuffer::pushBytes(unsigned char* bytes, size_t len)
+void SocketBuffer::pushBytes(unsigned char* bytes, size_t len,
+                             ProgressUpdate* progressUpdate)
 {
   if(len > 0) {
-    bufq_.push_back(SharedHandle<BufEntry>(new ByteArrayBufEntry(bytes, len)));
+    bufq_.push_back(SharedHandle<BufEntry>
+                    (new ByteArrayBufEntry(bytes, len, progressUpdate)));
   }
 }
 
-void SocketBuffer::pushStr(const std::string& data)
+void SocketBuffer::pushStr(const std::string& data,
+                           ProgressUpdate* progressUpdate)
 {
   if(data.size() > 0) {
-    bufq_.push_back(SharedHandle<BufEntry>(new StringBufEntry(data)));
+    bufq_.push_back(SharedHandle<BufEntry>
+                    (new StringBufEntry(data, progressUpdate)));
   }
 }
 
 ssize_t SocketBuffer::send()
 {
+  a2iovec iov[A2_IOV_MAX];
   size_t totalslen = 0;
   while(!bufq_.empty()) {
-    const SharedHandle<BufEntry>& buf = bufq_[0];
-    ssize_t slen = buf->send(socket_, offset_);
+    size_t num;
+    ssize_t amount = 16*1024;
+    ssize_t firstlen = bufq_[0]->getLength() - offset_;
+    amount -= firstlen;
+    iov[0].A2IOVEC_BASE =
+      reinterpret_cast<char*>(const_cast<unsigned char*>
+                              (bufq_[0]->getData() + offset_));
+    iov[0].A2IOVEC_LEN = firstlen;
+
+    for(num = 1; num < A2_IOV_MAX && num < bufq_.size() && amount > 0; ++num) {
+      const SharedHandle<BufEntry>& buf = bufq_[num];
+      ssize_t len = buf->getLength();
+      if(amount >= len) {
+        amount -= len;
+        iov[num].A2IOVEC_BASE =
+          reinterpret_cast<char*>(const_cast<unsigned char*>(buf->getData()));
+        iov[num].A2IOVEC_LEN = len;
+      } else {
+        break;
+      }
+    }
+    ssize_t slen = socket_->writeVector(iov, num);
     if(slen == 0 && !socket_->wantRead() && !socket_->wantWrite()) {
       throw DL_ABORT_EX(fmt(EX_SOCKET_SEND, "Connection closed."));
     }
+    //A2_LOG_NOTICE(fmt("SEND=%d", slen));
     totalslen += slen;
-    offset_ += slen;
-    if(buf->final(offset_)) {
+
+    if(firstlen > slen) {
+      offset_ += slen;
+      bufq_[0]->progressUpdate(slen, false);
+    } else {
+      slen -= firstlen;
+      bufq_[0]->progressUpdate(firstlen, true);
       bufq_.pop_front();
       offset_ = 0;
-    } else {
-      break;
+      for(size_t i = 1; i < num; ++i) {
+        const SharedHandle<BufEntry>& buf = bufq_[0];
+        ssize_t len = buf->getLength();
+        if(len > slen) {
+          offset_ = slen;
+          bufq_[0]->progressUpdate(slen, false);
+          goto fin;
+          break;
+        } else {
+          slen -= len;
+          bufq_[0]->progressUpdate(len, true);
+          bufq_.pop_front();
+        }
+      }
     }
   }
+ fin:
   return totalslen;
 }
 

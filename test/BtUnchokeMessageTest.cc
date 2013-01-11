@@ -1,8 +1,11 @@
 #include "BtUnchokeMessage.h"
-#include "bittorrent_helper.h"
-#include "Peer.h"
+
 #include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
+
+#include "bittorrent_helper.h"
+#include "Peer.h"
+#include "SocketBuffer.h"
 
 namespace aria2 {
 
@@ -83,7 +86,8 @@ void BtUnchokeMessageTest::testOnSendComplete() {
   msg.setPeer(peer);
 
   CPPUNIT_ASSERT(peer->amChoking());
-  msg.onSendComplete();
+  SharedHandle<ProgressUpdate> pu(msg.getProgressUpdate());
+  pu->update(0, true);
   CPPUNIT_ASSERT(!peer->amChoking());
 }
 

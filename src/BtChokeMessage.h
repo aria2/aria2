@@ -53,7 +53,7 @@ public:
 
   virtual bool sendPredicate() const;
 
-  virtual void onSendComplete();
+  virtual ProgressUpdate* getProgressUpdate();
 };
 
 } // namespace aria2

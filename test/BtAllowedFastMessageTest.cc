@@ -6,6 +6,7 @@
 #include "bittorrent_helper.h"
 #include "util.h"
 #include "Peer.h"
+#include "SocketBuffer.h"
 
 namespace aria2 {
 
@@ -98,7 +99,8 @@ void BtAllowedFastMessageTest::testOnSendComplete() {
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
   CPPUNIT_ASSERT(!peer->isInAmAllowedIndexSet(1));
-  msg.onSendComplete();
+  SharedHandle<ProgressUpdate> pu(msg.getProgressUpdate());
+  pu->update(0, true);
   CPPUNIT_ASSERT(peer->isInAmAllowedIndexSet(1));
 }
 

@@ -52,6 +52,7 @@ class BtMessageFactory;
 class Peer;
 class Piece;
 class RequestGroupMan;
+class PeerConnection;
 
 class DefaultBtMessageDispatcher : public BtMessageDispatcher {
 private:
@@ -61,6 +62,7 @@ private:
   SharedHandle<DownloadContext> downloadContext_;
   SharedHandle<PeerStorage> peerStorage_;
   SharedHandle<PieceStorage> pieceStorage_;
+  SharedHandle<PeerConnection> peerConnection_;
   BtMessageFactory* messageFactory_;
   SharedHandle<Peer> peer_;
   RequestGroupMan* requestGroupMan_;
@@ -76,6 +78,9 @@ public:
   (const std::vector<SharedHandle<BtMessage> >& btMessages);
 
   virtual void sendMessages();
+
+  // For unit tests without PeerConnection
+  void sendMessagesInternal();
 
   virtual void doCancelSendingPieceAction
   (size_t index, int32_t begin, int32_t length);
@@ -142,6 +147,11 @@ public:
   void setRequestTimeout(time_t requestTimeout)
   {
     requestTimeout_ = requestTimeout;
+  }
+
+  void setPeerConnection(const SharedHandle<PeerConnection>& peerConnection)
+  {
+    peerConnection_ = peerConnection;
   }
 };
 

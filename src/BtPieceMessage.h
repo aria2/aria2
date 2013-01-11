@@ -48,7 +48,6 @@ private:
   size_t index_;
   int32_t begin_;
   int32_t blockLength_;
-  size_t msgHdrLen_;
   const unsigned char* data_;
   SharedHandle<DownloadContext> downloadContext_;
   SharedHandle<PeerStorage> peerStorage_;

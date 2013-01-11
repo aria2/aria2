@@ -96,7 +96,8 @@ public:
 
   // Pushes data into send buffer. After this call, this object gets
   // ownership of data, so caller must not delete or alter it.
-  void pushBytes(unsigned char* data, size_t len);
+  void pushBytes(unsigned char* data, size_t len,
+                 ProgressUpdate* progressUpdate = 0);
 
   void pushStr(const std::string& data);
 

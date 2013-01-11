@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "BtUnchokeMessage.h"
 #include "Peer.h"
+#include "SocketBuffer.h"
 
 namespace aria2 {
 
@@ -60,8 +61,23 @@ bool BtUnchokeMessage::sendPredicate() const
   return getPeer()->amChoking();
 }
 
-void BtUnchokeMessage::onSendComplete() {
-  getPeer()->amChoking(false);
+namespace {
+struct ThisProgressUpdate : public ProgressUpdate {
+  ThisProgressUpdate(const SharedHandle<Peer>& peer)
+    : peer(peer) {}
+  virtual void update(size_t length, bool complete)
+  {
+    if(complete) {
+      peer->amChoking(false);
+    }
+  }
+  SharedHandle<Peer> peer;
+};
+} // namespace
+
+ProgressUpdate* BtUnchokeMessage::getProgressUpdate()
+{
+  return new ThisProgressUpdate(getPeer());
 }
 
 } // namespace aria2

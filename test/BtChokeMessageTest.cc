@@ -9,6 +9,7 @@
 #include "MockBtRequestFactory.h"
 #include "Peer.h"
 #include "FileEntry.h"
+#include "SocketBuffer.h"
 
 namespace aria2 {
 
@@ -123,7 +124,8 @@ void BtChokeMessageTest::testOnSendComplete() {
   SharedHandle<MockBtMessageDispatcher2> dispatcher(new MockBtMessageDispatcher2());
   msg.setBtMessageDispatcher(dispatcher.get());
 
-  msg.onSendComplete();
+  SharedHandle<ProgressUpdate> pu(msg.getProgressUpdate());
+  pu->update(0, true);
 
   CPPUNIT_ASSERT(dispatcher->doChokingActionCalled);
   CPPUNIT_ASSERT(peer->amChoking());
