@@ -139,9 +139,9 @@ void BtPieceMessageTest::testCreateMessageHeader() {
   bittorrent::createPeerMessageString(data, sizeof(data), 9+1024, 7);
   bittorrent::setIntParam(&data[5], 12345);
   bittorrent::setIntParam(&data[9], 256);
-  unsigned char* rawmsg = msg.createMessageHeader();
+  unsigned char rawmsg[13];
+  msg.createMessageHeader(rawmsg);
   CPPUNIT_ASSERT(memcmp(rawmsg, data, 13) == 0);
-  delete [] rawmsg;
 }
 
 void BtPieceMessageTest::testChokingEvent() {
