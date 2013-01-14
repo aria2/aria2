@@ -37,7 +37,8 @@
 
 #include "BtInteractive.h"
 
-#include  <limits.h>
+#include <limits.h>
+#include <vector>
 
 #include "TimerA2.h"
 #include "Command.h"
@@ -144,6 +145,9 @@ private:
   RequestGroupMan* requestGroupMan_;
 
   uint16_t tcpPort_;
+
+  std::vector<size_t> haveIndexes_;
+  Timer haveLastSent_;
 
   static const time_t FLOODING_CHECK_INTERVAL = 5;
 

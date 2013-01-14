@@ -97,7 +97,8 @@ DefaultBtInteractive::DefaultBtInteractive
     numReceivedMessage_(0),
     maxOutstandingRequest_(DEFAULT_MAX_OUTSTANDING_REQUEST),
     requestGroupMan_(0),
-    tcpPort_(0)
+    tcpPort_(0),
+    haveLastSent_(global::wallclock())
 {}
 
 DefaultBtInteractive::~DefaultBtInteractive() {}
@@ -247,20 +248,28 @@ void DefaultBtInteractive::decideChoking() {
 }
 
 void DefaultBtInteractive::checkHave() {
-  std::vector<size_t> indexes;
-  pieceStorage_->getAdvertisedPieceIndexes(indexes, cuid_, haveTimer_);
+  const size_t MIN_HAVE_PACK_SIZE = 20;
+  const time_t MAX_HAVE_DELAY_SEC = 10;
+  pieceStorage_->getAdvertisedPieceIndexes(haveIndexes_, cuid_, haveTimer_);
   haveTimer_ = global::wallclock();
-  if(indexes.size() >= 20) {
+  if(haveIndexes_.size() >= MIN_HAVE_PACK_SIZE) {
     if(peer_->isFastExtensionEnabled() &&
        pieceStorage_->allDownloadFinished()) {
       dispatcher_->addMessageToQueue(messageFactory_->createHaveAllMessage());
     } else {
       dispatcher_->addMessageToQueue(messageFactory_->createBitfieldMessage());
     }
+    haveIndexes_.clear();
   } else {
-    for(std::vector<size_t>::const_iterator itr = indexes.begin(),
-          eoi = indexes.end(); itr != eoi; ++itr) {
-      dispatcher_->addMessageToQueue(messageFactory_->createHaveMessage(*itr));
+    if(haveIndexes_.size() >= MIN_HAVE_PACK_SIZE ||
+       haveLastSent_.difference(global::wallclock()) >= MAX_HAVE_DELAY_SEC) {
+      haveLastSent_ = global::wallclock();
+      for(std::vector<size_t>::const_iterator itr = haveIndexes_.begin(),
+            eoi = haveIndexes_.end(); itr != eoi; ++itr) {
+        dispatcher_->addMessageToQueue(messageFactory_->
+                                       createHaveMessage(*itr));
+      }
+      haveIndexes_.clear();
     }
   }
 }
@@ -313,8 +322,9 @@ size_t DefaultBtInteractive::receiveMessages() {
     }
   }
   if(!pieceStorage_->isEndGame() &&
-     countOldOutstandingRequest >= maxOutstandingRequest_ &&
-     dispatcher_->countOutstandingRequest()*2 <= maxOutstandingRequest_){
+     countOldOutstandingRequest > dispatcher_->countOutstandingRequest() &&
+     (countOldOutstandingRequest - dispatcher_->countOutstandingRequest())*2 >=
+     maxOutstandingRequest_) {
     maxOutstandingRequest_ =
       std::min((size_t)UB_MAX_OUTSTANDING_REQUEST,
                maxOutstandingRequest_+OUTSTANDING_REQUEST_STEP);
@@ -383,13 +393,17 @@ void DefaultBtInteractive::addRequests() {
   if(!pieceStorage_->isEndGame() && !pieceStorage_->hasMissingUnusedPiece()) {
     pieceStorage_->enterEndGame();
   }
-  if(pieceStorage_->isEndGame()) {
-    maxOutstandingRequest_ = 2;
-  }
   fillPiece(maxOutstandingRequest_);
   size_t reqNumToCreate =
     maxOutstandingRequest_ <= dispatcher_->countOutstandingRequest() ?
     0 : maxOutstandingRequest_-dispatcher_->countOutstandingRequest();
+
+  if(dispatcher_->countOutstandingRequest() != 0 &&
+     reqNumToCreate*2 < maxOutstandingRequest_) {
+    // Avoid small number of Requests.
+    return;
+  }
+
   if(reqNumToCreate > 0) {
     std::vector<SharedHandle<BtMessage> > requests;
     requests.reserve(reqNumToCreate);
