@@ -149,6 +149,8 @@ private:
   std::vector<size_t> haveIndexes_;
   Timer haveLastSent_;
 
+  int baseSpeed_;
+
   static const time_t FLOODING_CHECK_INTERVAL = 5;
 
   void addBitfieldMessageToQueue();
