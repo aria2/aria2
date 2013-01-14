@@ -53,7 +53,7 @@
 #define OUTSTANDING_REQUEST_STEP 6
 
 // Upper Bound of the number of outstanding request
-#define UB_MAX_OUTSTANDING_REQUEST 512
+#define UB_MAX_OUTSTANDING_REQUEST 256
 
 #define METADATA_PIECE_SIZE (16*1024)
 
