@@ -96,7 +96,7 @@ public:
 
   virtual void doReceivedAction();
 
-  unsigned char* createMessageHeader();
+  void createMessageHeader(unsigned char* msgHeader) const;
 
   size_t getMessageHeaderLength();
 
