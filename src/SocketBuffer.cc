@@ -138,7 +138,7 @@ ssize_t SocketBuffer::send()
   size_t totalslen = 0;
   while(!bufq_.empty()) {
     size_t num;
-    ssize_t amount = 16*1024;
+    ssize_t amount = 24*1024;
     ssize_t firstlen = bufq_[0]->getLength() - offset_;
     amount -= firstlen;
     iov[0].A2IOVEC_BASE =
@@ -162,12 +162,14 @@ ssize_t SocketBuffer::send()
     if(slen == 0 && !socket_->wantRead() && !socket_->wantWrite()) {
       throw DL_ABORT_EX(fmt(EX_SOCKET_SEND, "Connection closed."));
     }
-    //A2_LOG_NOTICE(fmt("SEND=%d", slen));
+    // A2_LOG_NOTICE(fmt("num=%zu, amount=%d, bufq.size()=%zu, SEND=%d",
+    //                   num, amount, bufq_.size(), slen));
     totalslen += slen;
 
     if(firstlen > slen) {
       offset_ += slen;
       bufq_[0]->progressUpdate(slen, false);
+      goto fin;
     } else {
       slen -= firstlen;
       bufq_[0]->progressUpdate(firstlen, true);
