@@ -1516,6 +1516,8 @@ void UtilTest::testGetRealSize()
 {
   CPPUNIT_ASSERT_EQUAL((int64_t)4294967296LL, util::getRealSize("4096M"));
   CPPUNIT_ASSERT_EQUAL((int64_t)1024, util::getRealSize("1K"));
+  CPPUNIT_ASSERT_EQUAL((int64_t)4294967296LL, util::getRealSize("4096m"));
+  CPPUNIT_ASSERT_EQUAL((int64_t)1024, util::getRealSize("1k"));
   try {
     util::getRealSize("");
     CPPUNIT_FAIL("exception must be thrown.");

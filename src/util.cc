@@ -1266,16 +1266,21 @@ std::string getHomeDir()
 
 int64_t getRealSize(const std::string& sizeWithUnit)
 {
-  std::string::size_type p = sizeWithUnit.find_first_of("KM");
+  std::string::size_type p = sizeWithUnit.find_first_of("KMkm");
   std::string size;
   int32_t mult = 1;
   if(p == std::string::npos) {
     size = sizeWithUnit;
   } else {
-    if(sizeWithUnit[p] == 'K') {
+    switch(sizeWithUnit[p]) {
+    case 'K':
+    case 'k':
       mult = 1024;
-    } else if(sizeWithUnit[p] == 'M') {
+      break;
+    case 'M':
+    case 'm':
       mult = 1024*1024;
+      break;
     }
     size.assign(sizeWithUnit.begin(), sizeWithUnit.begin()+p);
   }
