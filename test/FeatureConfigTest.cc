@@ -79,11 +79,7 @@ void FeatureConfigTest::testFeatureSummary() {
 
   };
 
-  std::string featuresString;
-  std::for_each(vbegin(features), vend(features),
-                StringAppend(featuresString, ", "));
-  featuresString = util::strip(featuresString, ", ");
-
+  std::string featuresString = strjoin(vbegin(features), vend(features), ", ");
   CPPUNIT_ASSERT_EQUAL(featuresString, featureSummary());
 }
 

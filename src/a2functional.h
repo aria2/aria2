@@ -178,23 +178,6 @@ public:
 };
 
 template<typename T>
-class Append {
-private:
-  T& to_;
-  T delim_;
-public:
-  template<typename S>
-  Append(T& to, const S& delim):to_(to), delim_(delim) {}
-
-  template<typename S>
-  void operator()(const S& s) {
-    to_ += s+delim_;
-  }
-};
-
-typedef Append<std::string> StringAppend;
-
-template<typename T>
 class auto_delete {
 private:
   T obj_;
