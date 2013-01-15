@@ -683,6 +683,7 @@ bool FtpNegotiationCommand::preparePasvConnect() {
                     pasvPort_));
     dataSocket_.reset(new SocketCore());
     dataSocket_->establishConnection(dataAddr.first, pasvPort_);
+    dataSocket_->setTcpNodelay(true);
     disableReadCheckSocket();
     setWriteCheckSocket(dataSocket_);
     sequence_ = SEQ_SEND_REST_PASV;
@@ -704,6 +705,7 @@ bool FtpNegotiationCommand::resolveProxy()
                   proxyAddr_.c_str(), proxyReq->getPort()));
   dataSocket_.reset(new SocketCore());
   dataSocket_->establishConnection(proxyAddr_, proxyReq->getPort());
+  dataSocket_->setTcpNodelay(true);
   disableReadCheckSocket();
   setWriteCheckSocket(dataSocket_);
   SharedHandle<SocketRecvBuffer> socketRecvBuffer
@@ -739,6 +741,7 @@ bool FtpNegotiationCommand::sendTunnelRequest()
                           getCuid(),
                           proxyAddr_.c_str(), proxyReq->getPort()));
           dataSocket_->establishConnection(proxyAddr_, proxyReq->getPort());
+          dataSocket_->setTcpNodelay(true);
           return false;
         }
       }
@@ -867,6 +870,7 @@ bool FtpNegotiationCommand::waitConnection()
   disableReadCheckSocket();
   setReadCheckSocket(getSocket());
   dataSocket_ = serverSocket_->acceptConnection();
+  dataSocket_->setTcpNodelay(true);
   sequence_ = SEQ_NEGOTIATION_COMPLETED;
   return false;
 }

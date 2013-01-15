@@ -369,7 +369,6 @@ SharedHandle<SocketCore> SocketCore::acceptConnection() const
   }
   SharedHandle<SocketCore> sock(new SocketCore(fd, sockType_));
   sock->setNonBlockingMode();
-  sock->setTcpNodelay(true);
   return sock;
 }
 
@@ -462,7 +461,6 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
     sockfd_ = fd;
     // make socket non-blocking mode
     setNonBlockingMode();
-    setTcpNodelay(true);
     if(connect(fd, rp->ai_addr, rp->ai_addrlen) == -1 &&
        SOCKET_ERRNO != A2_EINPROGRESS) {
       errNum = SOCKET_ERRNO;
