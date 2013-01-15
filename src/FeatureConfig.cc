@@ -54,14 +54,19 @@ uint16_t getDefaultPort(const std::string& protocol)
 std::string featureSummary()
 {
   std::string s;
-  for(int i = 0; i < MAX_FEATURE; ++i) {
-    const char* name = strSupportedFeature(i);
-    if(name) {
-      s += name;
-      s += ", ";
+  int first;
+  for(first = 0; first < MAX_FEATURE && !strSupportedFeature(first); ++first);
+  if(first < MAX_FEATURE) {
+    s += strSupportedFeature(first);
+    for(int i = first+1; i < MAX_FEATURE; ++i) {
+      const char* name = strSupportedFeature(i);
+      if(name) {
+        s += ", ";
+        s += name;
+      }
     }
   }
-  return util::strip(s, ", ");
+  return s;
 }
 
 const char* strSupportedFeature(int feature)
