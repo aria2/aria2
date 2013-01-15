@@ -411,12 +411,6 @@ void DefaultBtInteractive::addRequests() {
     maxOutstandingRequest_ <= dispatcher_->countOutstandingRequest() ?
     0 : maxOutstandingRequest_-dispatcher_->countOutstandingRequest();
 
-  if(dispatcher_->countOutstandingRequest() != 0 &&
-     reqNumToCreate*2 < maxOutstandingRequest_) {
-    // Avoid small number of Requests.
-    return;
-  }
-
   if(reqNumToCreate > 0) {
     std::vector<SharedHandle<BtMessage> > requests;
     requests.reserve(reqNumToCreate);
