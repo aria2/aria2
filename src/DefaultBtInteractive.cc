@@ -98,8 +98,7 @@ DefaultBtInteractive::DefaultBtInteractive
     maxOutstandingRequest_(DEFAULT_MAX_OUTSTANDING_REQUEST),
     requestGroupMan_(0),
     tcpPort_(0),
-    haveLastSent_(global::wallclock()),
-    baseSpeed_(0)
+    haveLastSent_(global::wallclock())
 {}
 
 DefaultBtInteractive::~DefaultBtInteractive() {}
@@ -323,24 +322,13 @@ size_t DefaultBtInteractive::receiveMessages() {
     }
   }
 
-  if(!pieceStorage_->isEndGame() && !pieceStorage_->downloadFinished()) {
-    if(baseSpeed_ == 0) {
-      if(countOldOutstandingRequest &&
-         dispatcher_->countOutstandingRequest() == 0) {
-        baseSpeed_ = peer_->calculateDownloadSpeed();
-        maxOutstandingRequest_ *= 2;
-      }
-    } else {
-      int speed = peer_->calculateDownloadSpeed();
-      // Double the number of outstanding request if 20% download rate
-      // increase is observed.
-      if(baseSpeed_*12 <= speed*10) {
-        maxOutstandingRequest_ =
-          std::min((size_t)UB_MAX_OUTSTANDING_REQUEST,
-                   maxOutstandingRequest_*2);
-        baseSpeed_ = speed;
-      }
-    }
+  if(!pieceStorage_->isEndGame() &&
+     countOldOutstandingRequest > dispatcher_->countOutstandingRequest() &&
+     (countOldOutstandingRequest - dispatcher_->countOutstandingRequest())*4 >=
+     maxOutstandingRequest_) {
+    maxOutstandingRequest_ =
+      std::min((size_t)UB_MAX_OUTSTANDING_REQUEST,
+               maxOutstandingRequest_*2);
   }
   return msgcount;
 }
