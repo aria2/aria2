@@ -172,25 +172,28 @@ void divide
 }
 
 template<typename T>
-std::string uitos(T value, bool comma = false)
+std::string uitos(T n, bool comma = false)
 {
-  std::string str;
-  if(value == 0) {
-    str = "0";
-    return str;
+  std::string res;
+  if(n == 0) {
+    res = "0";
+    return res;
   }
-  int count = 0;
-  while(value) {
-    ++count;
-    char digit = value%10+'0';
-    if(comma && count > 3 && count%3 == 1) {
-      str += ",";
+  int i = 0;
+  T t = n;
+  for(; t; t /= 10, ++i);
+  if(comma) {
+    i += (i-1)/3;
+  }
+  res.resize(i);
+  --i;
+  for(int j = 0; n; --i, ++j, n /= 10) {
+    res[i] = (n%10) + '0';
+    if(comma && (j+1)%3 == 0) {
+      res[--i] = ',';
     }
-    str += digit;
-    value /= 10;
   }
-  std::reverse(str.begin(), str.end());
-  return str;
+  return res;
 }
 
 std::string itos(int64_t value, bool comma = false);
