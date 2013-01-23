@@ -115,9 +115,11 @@ bool ActivePeerConnectionCommand::execute() {
         numConnection = numNewConnection_;
       }
 
-      for(int numAdd = numConnection;
-          numAdd > 0 && peerStorage_->isPeerAvailable(); --numAdd) {
+      for(; numConnection > 0; --numConnection) {
         SharedHandle<Peer> peer = peerStorage_->getUnusedPeer();
+        if(!peer) {
+          break;
+        }
         connectToPeer(peer);
       }
       if(btRuntime_->getConnections() == 0 &&
@@ -132,9 +134,6 @@ bool ActivePeerConnectionCommand::execute() {
 
 void ActivePeerConnectionCommand::connectToPeer(const SharedHandle<Peer>& peer)
 {
-  if(!peer) {
-    return;
-  }
   peer->usedBy(e_->newCUID());
   PeerInitiateConnectionCommand* command =
     new PeerInitiateConnectionCommand(peer->usedBy(), requestGroup_, peer, e_,
