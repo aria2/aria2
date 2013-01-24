@@ -138,7 +138,7 @@ void DefaultPeerStorage::addPeer(const std::vector<SharedHandle<Peer> >& peers)
     ++added;
   }
   const size_t peerListSize = peers_.size();
-  if(peerListSize >= maxPeerListSize_) {
+  if(peerListSize > maxPeerListSize_) {
     deleteUnusedPeer(peerListSize-maxPeerListSize_);
   }
   A2_LOG_DEBUG(fmt("Now peer list contains %lu peers",
