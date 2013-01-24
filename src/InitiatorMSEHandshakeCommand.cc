@@ -238,7 +238,8 @@ bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
 
 void InitiatorMSEHandshakeCommand::onAbort()
 {
-  if(getOption()->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
+  if(sequence_ == INITIATOR_SEND_KEY ||
+     getOption()->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
     peerStorage_->returnPeer(getPeer());
   }
 }
