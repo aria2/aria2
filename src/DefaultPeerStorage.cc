@@ -193,7 +193,7 @@ void DefaultPeerStorage::addBadPeer(const std::string& ipaddr)
       if(global::wallclock().getTime() >= (*i).second) {
         A2_LOG_DEBUG(fmt("Purge %s from bad peer", (*i).first.c_str()));
         badPeers_.erase(i++);
-        eoi = badPeers_.end();
+        // badPeers_.end() will not be invalidated.
       } else {
         ++i;
       }
