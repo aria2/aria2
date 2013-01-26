@@ -71,7 +71,7 @@ private:
 
   Timer firstContactTime_;
 
-  Timer badConditionStartTime_;
+  Timer dropStartTime_;
 
   bool seeder_;
 
@@ -145,7 +145,7 @@ public:
     return seeder_;
   }
 
-  void startBadCondition();
+  void startDrop();
 
   void allocateSessionResource(int32_t pieceLength, int64_t totalLength);
 
@@ -160,9 +160,9 @@ public:
 
   void setFirstContactTime(const Timer& time);
 
-  const Timer& getBadConditionStartTime() const
+  const Timer& getDropStartTime() const
   {
-    return badConditionStartTime_;
+    return dropStartTime_;
   }
 
   // Before calling following member functions,  make sure that

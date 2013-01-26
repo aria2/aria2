@@ -77,17 +77,17 @@ void UTPexExtensionMessageTest::testGetBencodedData()
   SharedHandle<Peer> p2(new Peer("10.1.1.2", 9999));
   CPPUNIT_ASSERT(msg.addFreshPeer(p2));
   SharedHandle<Peer> p3(new Peer("192.168.0.2", 6882));
-  p3->startBadCondition();
+  p3->startDrop();
   CPPUNIT_ASSERT(msg.addDroppedPeer(p3));
   SharedHandle<Peer> p4(new Peer("10.1.1.3", 10000));
-  p4->startBadCondition();
+  p4->startDrop();
   CPPUNIT_ASSERT(msg.addDroppedPeer(p4));
 
   SharedHandle<Peer> p5(new Peer("1002:1035:4527:3546:7854:1237:3247:3217",
                                  6881));
   CPPUNIT_ASSERT(msg.addFreshPeer(p5));
   SharedHandle<Peer> p6(new Peer("2001:db8:bd05:1d2:288a:1fc0:1:10ee", 6882));
-  p6->startBadCondition();
+  p6->startDrop();
   CPPUNIT_ASSERT(msg.addDroppedPeer(p6));
 
   unsigned char c1[COMPACT_LEN_IPV6];
@@ -126,10 +126,10 @@ void UTPexExtensionMessageTest::testToString()
   SharedHandle<Peer> p2(new Peer("10.1.1.2", 9999));
   msg.addFreshPeer(p2);
   SharedHandle<Peer> p3(new Peer("192.168.0.2", 6882));
-  p3->startBadCondition();
+  p3->startDrop();
   msg.addDroppedPeer(p3);
   SharedHandle<Peer> p4(new Peer("10.1.1.3", 10000));
-  p4->startBadCondition();
+  p4->startDrop();
   msg.addDroppedPeer(p4);
   CPPUNIT_ASSERT_EQUAL(std::string("ut_pex added=2, dropped=2"), msg.toString());
 }
@@ -145,10 +145,10 @@ void UTPexExtensionMessageTest::testDoReceivedAction()
                                  9999));
   msg.addFreshPeer(p2);
   SharedHandle<Peer> p3(new Peer("192.168.0.2", 6882));
-  p3->startBadCondition();
+  p3->startDrop();
   msg.addDroppedPeer(p3);
   SharedHandle<Peer> p4(new Peer("2001:db8:bd05:1d2:288a:1fc0:1:10ee", 10000));
-  p4->startBadCondition();
+  p4->startDrop();
   msg.addDroppedPeer(p4);
   msg.setPeerStorage(peerStorage_);
 
@@ -259,10 +259,10 @@ void UTPexExtensionMessageTest::testAddDroppedPeer()
   SharedHandle<Peer> p1(new Peer("192.168.0.1", 6881));
   CPPUNIT_ASSERT(!msg.addDroppedPeer(p1));
   SharedHandle<Peer> p2(new Peer("10.1.1.2", 9999));
-  p2->startBadCondition();
+  p2->startDrop();
   CPPUNIT_ASSERT(msg.addFreshPeer(p2));
   SharedHandle<Peer> p3(new Peer("10.1.1.3", 9999, true));
-  p3->startBadCondition();
+  p3->startDrop();
   CPPUNIT_ASSERT(!msg.addDroppedPeer(p3));
 }
 
@@ -288,15 +288,15 @@ void UTPexExtensionMessageTest::testDroppedPeersAreFull()
   CPPUNIT_ASSERT_EQUAL((size_t)50, msg.getMaxDroppedPeer());
   msg.setMaxDroppedPeer(2);
   SharedHandle<Peer> p1(new Peer("192.168.0.1", 6881));
-  p1->startBadCondition();
+  p1->startDrop();
   CPPUNIT_ASSERT(msg.addDroppedPeer(p1));
   CPPUNIT_ASSERT(!msg.droppedPeersAreFull());
   SharedHandle<Peer> p2(new Peer("10.1.1.2", 9999));
-  p2->startBadCondition();
+  p2->startDrop();
   CPPUNIT_ASSERT(msg.addDroppedPeer(p2));
   CPPUNIT_ASSERT(msg.droppedPeersAreFull());
   SharedHandle<Peer> p3(new Peer("10.1.1.3", 9999));
-  p3->startBadCondition();
+  p3->startDrop();
   CPPUNIT_ASSERT(msg.addDroppedPeer(p3));
   CPPUNIT_ASSERT(msg.droppedPeersAreFull());
 }

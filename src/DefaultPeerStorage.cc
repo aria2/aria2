@@ -238,7 +238,7 @@ void DefaultPeerStorage::onReturningPeer(const SharedHandle<Peer>& peer)
 {
   if(peer->isActive()) {
     if(peer->isDisconnectedGracefully() && !peer->isIncomingPeer()) {
-      peer->startBadCondition();
+      peer->startDrop();
       addDroppedPeer(peer);
     }
     // Execute choking algorithm if unchoked and interested peer is

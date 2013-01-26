@@ -51,7 +51,7 @@ Peer::Peer(std::string ipaddr, uint16_t port, bool incoming):
   origPort_(port),
   cuid_(0),
   firstContactTime_(global::wallclock()),
-  badConditionStartTime_(0),
+  dropStartTime_(0),
   seeder_(false),
   res_(0),
   incoming_(incoming),
@@ -317,9 +317,9 @@ void Peer::setAllBitfield() {
   updateSeeder();
 }
 
-void Peer::startBadCondition()
+void Peer::startDrop()
 {
-  badConditionStartTime_ = global::wallclock();
+  dropStartTime_ = global::wallclock();
 }
 
 uint8_t Peer::getExtensionMessageID(int key) const

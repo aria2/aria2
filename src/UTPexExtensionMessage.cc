@@ -151,8 +151,7 @@ bool UTPexExtensionMessage::freshPeersAreFull() const
 bool UTPexExtensionMessage::addDroppedPeer(const SharedHandle<Peer>& peer)
 {
   if(!peer->isIncomingPeer() &&
-     peer->getBadConditionStartTime().
-     difference(global::wallclock()) < interval_) {
+     peer->getDropStartTime().difference(global::wallclock()) < interval_) {
     droppedPeers_.push_back(peer);
     return true;
   } else {
