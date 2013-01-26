@@ -41,6 +41,7 @@
 
 #include "SharedHandle.h"
 #include "TimerA2.h"
+#include "PeerStorage.h"
 
 namespace aria2 {
 
@@ -74,8 +75,6 @@ private:
 
     bool isRegularUnchoker() const;
 
-    bool isSnubbing() const;
-
     void enableChokingRequired();
 
     void disableChokingRequired();
@@ -100,20 +99,12 @@ private:
 
     bool operator()(const PeerEntry& peerEntry) const;
   };
-
-  class BtLeecherStateChokeGenPeerEntry {
-  public:
-    PeerEntry operator()(const SharedHandle<Peer>& peer) const
-    {
-      return PeerEntry(peer);
-    }
-  };
 public:
   BtLeecherStateChoke();
 
   ~BtLeecherStateChoke();
 
-  void executeChoke(const std::vector<SharedHandle<Peer> >& peerSet);
+  void executeChoke(const PeerSet& peerSet);
 
   const Timer& getLastRound() const;
 

@@ -117,12 +117,6 @@ void BtSeederStateChoke::PeerEntry::disableOptUnchoking()
   peer_->optUnchoking(false);
 }
 
-bool BtSeederStateChoke::NotInterestedPeer::operator()
-  (const PeerEntry& peerEntry) const
-{
-  return !peerEntry.getPeer()->peerInterested();
-}
-
 void BtSeederStateChoke::unchoke
 (std::vector<BtSeederStateChoke::PeerEntry>& peers)
 {
@@ -151,33 +145,19 @@ void BtSeederStateChoke::unchoke
   }
 }
 
-namespace {
-class ChokingRequired {
-public:
-  void operator()(const SharedHandle<Peer>& peer) const
-  {
-    peer->chokingRequired(true);
-  }
-};
-} // namespace
-
-void
-BtSeederStateChoke::executeChoke
-(const std::vector<SharedHandle<Peer> >& peerSet)
+void BtSeederStateChoke::executeChoke(const PeerSet& peerSet)
 {
   A2_LOG_INFO(fmt("Seeder state, %d choke round started", round_));
   lastRound_ = global::wallclock();
 
   std::vector<PeerEntry> peerEntries;
-
-  std::for_each(peerSet.begin(), peerSet.end(), ChokingRequired());
-
-  std::transform(peerSet.begin(), peerSet.end(),
-                 std::back_inserter(peerEntries), GenPeerEntry());
-
-  peerEntries.erase(std::remove_if(peerEntries.begin(), peerEntries.end(),
-                                   NotInterestedPeer()),
-                    peerEntries.end());
+  for(PeerSet::const_iterator i = peerSet.begin(), eoi = peerSet.end();
+      i != eoi; ++i) {
+    if((*i)->isActive() && (*i)->peerInterested()) {
+      (*i)->chokingRequired(true);
+      peerEntries.push_back(PeerEntry(*i));
+    }
+  }
 
   unchoke(peerEntries);
 

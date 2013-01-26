@@ -39,10 +39,8 @@
 
 #include <string>
 #include <map>
-#include <set>
 
 #include "TimerA2.h"
-#include "a2functional.h"
 
 namespace aria2 {
 
@@ -50,8 +48,6 @@ class BtRuntime;
 class BtSeederStateChoke;
 class BtLeecherStateChoke;
 class PieceStorage;
-
-typedef std::set<SharedHandle<Peer>, RefLess<Peer> > PeerSet;
 
 class DefaultPeerStorage : public PeerStorage {
 private:
@@ -98,13 +94,11 @@ public:
 
   const std::deque<SharedHandle<Peer> >& getUnusedPeers();
 
-  const PeerSet& getUsedPeers();
+  virtual const PeerSet& getUsedPeers();
 
   virtual const std::deque<SharedHandle<Peer> >& getDroppedPeers();
 
   virtual bool isPeerAvailable();
-
-  virtual void getActivePeers(std::vector<SharedHandle<Peer> >& peers);
 
   virtual bool isBadPeer(const std::string& ipaddr);
 

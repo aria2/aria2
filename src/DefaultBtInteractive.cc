@@ -123,11 +123,11 @@ SharedHandle<BtMessage> DefaultBtInteractive::receiveHandshake(bool quickReply) 
       (fmt("CUID#%" PRId64 " - Drop connection from the same Peer ID",
            cuid_));
   }
-  std::vector<SharedHandle<Peer> > activePeers;
-  peerStorage_->getActivePeers(activePeers);
-  for(std::vector<SharedHandle<Peer> >::const_iterator i = activePeers.begin(),
-        eoi = activePeers.end(); i != eoi; ++i) {
-    if(memcmp((*i)->getPeerId(), message->getPeerId(), PEER_ID_LENGTH) == 0) {
+  const PeerSet& usedPeers = peerStorage_->getUsedPeers();
+  for(PeerSet::const_iterator i = usedPeers.begin(), eoi = usedPeers.end();
+      i != eoi; ++i) {
+    if((*i)->isActive() &&
+       memcmp((*i)->getPeerId(), message->getPeerId(), PEER_ID_LENGTH) == 0) {
       throw DL_ABORT_EX
         (fmt("CUID#%" PRId64 " - Same Peer ID has been already seen.",
              cuid_));
@@ -485,12 +485,10 @@ void DefaultBtInteractive::addPeerExchangeMessage()
       (new UTPexExtensionMessage(peer_->getExtensionMessageID
                                  (ExtensionMessageRegistry::UT_PEX)));
 
-    std::vector<SharedHandle<Peer> > activePeers;
-    peerStorage_->getActivePeers(activePeers);
-    for(std::vector<SharedHandle<Peer> >::const_iterator i =
-          activePeers.begin(), eoi = activePeers.end();
+    const PeerSet& usedPeers = peerStorage_->getUsedPeers();
+    for(PeerSet::const_iterator i = usedPeers.begin(), eoi = usedPeers.end();
         i != eoi && !m->freshPeersAreFull(); ++i) {
-      if(peer_->getIPAddress() != (*i)->getIPAddress()) {
+      if((*i)->isActive() && peer_->getIPAddress() != (*i)->getIPAddress()) {
         m->addFreshPeer(*i);
       }
     }

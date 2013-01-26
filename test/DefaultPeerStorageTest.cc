@@ -20,7 +20,6 @@ class DefaultPeerStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testDeleteUnusedPeer);
   CPPUNIT_TEST(testAddPeer);
   CPPUNIT_TEST(testIsPeerAvailable);
-  CPPUNIT_TEST(testGetActivePeers);
   CPPUNIT_TEST(testCheckoutPeer);
   CPPUNIT_TEST(testReturnPeer);
   CPPUNIT_TEST(testOnErasingPeer);
@@ -43,7 +42,6 @@ public:
   void testDeleteUnusedPeer();
   void testAddPeer();
   void testIsPeerAvailable();
-  void testGetActivePeers();
   void testCheckoutPeer();
   void testReturnPeer();
   void testOnErasingPeer();
@@ -133,33 +131,6 @@ void DefaultPeerStorageTest::testIsPeerAvailable() {
   CPPUNIT_ASSERT(ps.isPeerAvailable());
   CPPUNIT_ASSERT(ps.checkoutPeer(1));
   CPPUNIT_ASSERT(!ps.isPeerAvailable());
-}
-
-void DefaultPeerStorageTest::testGetActivePeers()
-{
-  DefaultPeerStorage ps;
-  {
-    std::vector<SharedHandle<Peer> > peers;
-    ps.getActivePeers(peers);
-    CPPUNIT_ASSERT_EQUAL((size_t)0, peers.size());
-  }
-
-  SharedHandle<Peer> peer1(new Peer("192.168.0.1", 6889));
-  ps.addPeer(peer1);
-  {
-    std::vector<SharedHandle<Peer> > activePeers;
-    ps.getActivePeers(activePeers);
-    CPPUNIT_ASSERT_EQUAL((size_t)0, activePeers.size());
-  }
-  CPPUNIT_ASSERT(ps.checkoutPeer(1));
-  {
-    peer1->allocateSessionResource(1024*1024, 1024*1024*10);
-
-    std::vector<SharedHandle<Peer> > activePeers;
-    ps.getActivePeers(activePeers);
-
-    CPPUNIT_ASSERT_EQUAL((size_t)1, activePeers.size());
-  }
 }
 
 void DefaultPeerStorageTest::testCheckoutPeer()

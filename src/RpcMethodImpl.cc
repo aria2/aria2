@@ -775,8 +775,7 @@ void gatherProgressBitTorrent
     } else {
       const SharedHandle<PeerStorage>& peerStorage = btObject->peerStorage;
       assert(peerStorage);
-      std::vector<SharedHandle<Peer> > peers;
-      peerStorage->getActivePeers(peers);
+      const PeerSet& peers = peerStorage->getUsedPeers();
       entryDict->put(KEY_NUM_SEEDERS,
                      util::uitos(countSeeder(peers.begin(), peers.end())));
     }
@@ -788,10 +787,12 @@ namespace {
 void gatherPeer
 (const SharedHandle<List>& peers, const SharedHandle<PeerStorage>& ps)
 {
-  std::vector<SharedHandle<Peer> > activePeers;
-  ps->getActivePeers(activePeers);
-  for(std::vector<SharedHandle<Peer> >::const_iterator i =
-        activePeers.begin(), eoi = activePeers.end(); i != eoi; ++i) {
+  const PeerSet& usedPeers = ps->getUsedPeers();
+  for(PeerSet::const_iterator i = usedPeers.begin(), eoi = usedPeers.end();
+      i != eoi; ++i) {
+    if(!(*i)->isActive()) {
+      continue;
+    }
     SharedHandle<Dict> peerEntry = Dict::g();
     peerEntry->put(KEY_PEER_ID, util::torrentPercentEncode((*i)->getPeerId(),
                                                            PEER_ID_LENGTH));

@@ -121,11 +121,6 @@ void BtLeecherStateChoke::PeerEntry::disableOptUnchoking()
   peer_->optUnchoking(false);
 }
 
-bool BtLeecherStateChoke::PeerEntry::isSnubbing() const
-{
-  return peer_->snubbing();
-}
-
 bool BtLeecherStateChoke::PeerEntry::operator<(const PeerEntry& peerEntry) const
 {
   return downloadSpeed_ > peerEntry.downloadSpeed_;
@@ -203,24 +198,19 @@ void BtLeecherStateChoke::regularUnchoke(std::vector<PeerEntry>& peerEntries)
   }
 }
 
-void
-BtLeecherStateChoke::executeChoke
-(const std::vector<SharedHandle<Peer> >& peerSet)
+void BtLeecherStateChoke::executeChoke(const PeerSet& peerSet)
 {
   A2_LOG_INFO(fmt("Leecher state, %d choke round started", round_));
   lastRound_ = global::wallclock();
 
   std::vector<PeerEntry> peerEntries;
-  std::transform(peerSet.begin(), peerSet.end(),
-                 std::back_inserter(peerEntries),
-                 BtLeecherStateChokeGenPeerEntry());
-
-  peerEntries.erase(std::remove_if(peerEntries.begin(), peerEntries.end(),
-                                   std::mem_fun_ref(&PeerEntry::isSnubbing)),
-                    peerEntries.end());
-
-  std::for_each(peerEntries.begin(), peerEntries.end(),
-                std::mem_fun_ref(&PeerEntry::enableChokingRequired));
+  for(PeerSet::const_iterator i = peerSet.begin(), eoi = peerSet.end();
+      i != eoi; ++i) {
+    if((*i)->isActive() && !(*i)->snubbing()) {
+      (*i)->chokingRequired(true);
+      peerEntries.push_back(PeerEntry(*i));
+    }
+  }
 
   // planned optimistic unchoke
   if(round_ == 0) {

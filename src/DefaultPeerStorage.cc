@@ -172,30 +172,6 @@ bool DefaultPeerStorage::isPeerAvailable() {
   return !unusedPeers_.empty();
 }
 
-namespace {
-class CollectActivePeer {
-private:
-  std::vector<SharedHandle<Peer> >& activePeers_;
-public:
-  CollectActivePeer(std::vector<SharedHandle<Peer> >& activePeers):
-    activePeers_(activePeers) {}
-
-  void operator()(const SharedHandle<Peer>& peer)
-  {
-    if(peer->isActive()) {
-      activePeers_.push_back(peer);
-    }
-  }
-};
-} // namespace
-
-void DefaultPeerStorage::getActivePeers
-(std::vector<SharedHandle<Peer> >& activePeers)
-{
-  std::for_each(usedPeers_.begin(), usedPeers_.end(),
-                CollectActivePeer(activePeers));
-}
-
 bool DefaultPeerStorage::isBadPeer(const std::string& ipaddr)
 {
   std::map<std::string, time_t>::iterator i = badPeers_.find(ipaddr);
@@ -302,12 +278,10 @@ bool DefaultPeerStorage::chokeRoundIntervalElapsed()
 
 void DefaultPeerStorage::executeChoke()
 {
-  std::vector<SharedHandle<Peer> > activePeers;
-  getActivePeers(activePeers);
   if(pieceStorage_->downloadFinished()) {
-    return seederStateChoke_->executeChoke(activePeers);
+    return seederStateChoke_->executeChoke(usedPeers_);
   } else {
-    return leecherStateChoke_->executeChoke(activePeers);
+    return leecherStateChoke_->executeChoke(usedPeers_);
   }
 }
 

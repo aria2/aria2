@@ -317,7 +317,13 @@ public:
 template<typename InputIterator>
 size_t countSeeder(InputIterator first, InputIterator last)
 {
-  return std::count_if(first, last, mem_fun_sh(&Peer::isSeeder));
+  size_t res = 0;
+  for(; first != last; ++first) {
+    if((*first)->isActive() && (*first)->isSeeder()) {
+      ++res;
+    }
+  }
+  return res;
 }
 
 } // namespace aria2

@@ -12,7 +12,7 @@ namespace aria2 {
 class MockPeerStorage : public PeerStorage {
 private:
   std::deque<SharedHandle<Peer> > unusedPeers;
-  std::deque<SharedHandle<Peer> > usedPeers;
+  PeerSet usedPeers;
   std::deque<SharedHandle<Peer> > droppedPeers;
   std::vector<SharedHandle<Peer> > activePeers;
   int numChokeExecuted_;
@@ -57,8 +57,13 @@ public:
     this->activePeers = activePeers;
   }
 
-  virtual void getActivePeers(std::vector<SharedHandle<Peer> >& peers) {
+  void getActivePeers(std::vector<SharedHandle<Peer> >& peers) {
     peers.insert(peers.end(), activePeers.begin(), activePeers.end());
+  }
+
+  virtual const PeerSet& getUsedPeers()
+  {
+    return usedPeers;
   }
 
   virtual bool isBadPeer(const std::string& ipaddr)

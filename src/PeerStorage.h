@@ -39,14 +39,18 @@
 
 #include <deque>
 #include <vector>
+#include <set>
 
 #include "SharedHandle.h"
 #include "TransferStat.h"
 #include "Command.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
 class Peer;
+
+typedef std::set<SharedHandle<Peer>, RefLess<Peer> > PeerSet;
 
 class PeerStorage {
 public:
@@ -80,9 +84,9 @@ public:
   virtual bool isPeerAvailable() = 0;
 
   /**
-   * Returns the list of peers which are currently connected from localhost.
+   * Returns used peer set.
    */
-  virtual void getActivePeers(std::vector<SharedHandle<Peer> >& peers) = 0;
+  virtual const PeerSet& getUsedPeers() = 0;
 
   /**
    * Returns true if peer with ipaddr should be ignored because, for
