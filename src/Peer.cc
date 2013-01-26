@@ -45,12 +45,11 @@
 
 namespace aria2 {
 
-#define BAD_CONDITION_INTERVAL 10
-
 Peer::Peer(std::string ipaddr, uint16_t port, bool incoming):
   ipaddr_(ipaddr),
   port_(port),
-  id_(fmt("%s(%u)", ipaddr_.c_str(), port_)),
+  origPort_(port),
+  cuid_(0),
   firstContactTime_(global::wallclock()),
   badConditionStartTime_(0),
   seeder_(false),
@@ -60,7 +59,6 @@ Peer::Peer(std::string ipaddr, uint16_t port, bool incoming):
   disconnectedGracefully_(false)
 {
   memset(peerId_, 0, PEER_ID_LENGTH);
-  resetStatus();
 }
 
 Peer::~Peer()
@@ -96,10 +94,6 @@ void Peer::releaseSessionResource()
 void Peer::setPeerId(const unsigned char* peerId)
 {
   memcpy(peerId_, peerId, PEER_ID_LENGTH);
-}
-
-void Peer::resetStatus() {
-  cuid_ = 0;
 }
 
 bool Peer::amChoking() const
@@ -326,12 +320,6 @@ void Peer::setAllBitfield() {
 void Peer::startBadCondition()
 {
   badConditionStartTime_ = global::wallclock();
-}
-
-bool Peer::isGood() const
-{
-  return badConditionStartTime_.
-    difference(global::wallclock()) >= BAD_CONDITION_INTERVAL;
 }
 
 uint8_t Peer::getExtensionMessageID(int key) const

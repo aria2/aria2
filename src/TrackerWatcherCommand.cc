@@ -170,14 +170,18 @@ void TrackerWatcherCommand::processTrackerResponse
     (reinterpret_cast<const unsigned char*>(trackerResponse.c_str()),
      trackerResponse.size());
   while(!btRuntime_->isHalt() && btRuntime_->lessThanMinPeers()) {
-    SharedHandle<Peer> peer = peerStorage_->getUnusedPeer();
+    if(!peerStorage_->isPeerAvailable()) {
+      break;
+    }
+    cuid_t ncuid = e_->newCUID();
+    SharedHandle<Peer> peer = peerStorage_->checkoutPeer(ncuid);
+    // sanity check
     if(!peer) {
       break;
     }
-    peer->usedBy(e_->newCUID());
-    PeerInitiateConnectionCommand* command =
-      new PeerInitiateConnectionCommand
-      (peer->usedBy(), requestGroup_, peer, e_, btRuntime_);
+    PeerInitiateConnectionCommand* command;
+    command = new PeerInitiateConnectionCommand(ncuid, requestGroup_, peer, e_,
+                                                btRuntime_);
     command->setPeerStorage(peerStorage_);
     command->setPieceStorage(pieceStorage_);
     e_->addCommand(command);

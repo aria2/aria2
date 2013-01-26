@@ -39,8 +39,10 @@
 
 #include <string>
 #include <map>
+#include <set>
 
 #include "TimerA2.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -49,12 +51,23 @@ class BtSeederStateChoke;
 class BtLeecherStateChoke;
 class PieceStorage;
 
+typedef std::set<SharedHandle<Peer>, RefLess<Peer> > PeerSet;
+
 class DefaultPeerStorage : public PeerStorage {
 private:
   SharedHandle<BtRuntime> btRuntime_;
   SharedHandle<PieceStorage> pieceStorage_;
   size_t maxPeerListSize_;
-  std::deque<SharedHandle<Peer> > peers_;
+
+  // This contains ip address and port pair and is used to ensure that
+  // no duplicate peers are stored.
+  std::set<std::pair<std::string, uint16_t> > uniqPeers_;
+  // Unused (not connected) peers, sorted by last added.
+  std::deque<SharedHandle<Peer> > unusedPeers_;
+  // The set of used peers. Some of them are not connected yet. To
+  // know it is connected or not, call Peer::isActive().
+  PeerSet usedPeers_;
+
   std::deque<SharedHandle<Peer> > droppedPeers_;
 
   BtSeederStateChoke* seederStateChoke_;
@@ -66,6 +79,7 @@ private:
   Timer lastBadPeerCleaned_;
 
   bool isPeerAlreadyAdded(const SharedHandle<Peer>& peer);
+  void addUniqPeer(const SharedHandle<Peer>& peer);
 
   void addDroppedPeer(const SharedHandle<Peer>& peer);
 public:
@@ -73,17 +87,18 @@ public:
 
   virtual ~DefaultPeerStorage();
 
+  // TODO We need addAndCheckoutPeer for incoming peers
   virtual bool addPeer(const SharedHandle<Peer>& peer);
 
-  virtual size_t countPeer() const;
-
-  virtual SharedHandle<Peer> getUnusedPeer();
+  virtual size_t countAllPeer() const;
 
   SharedHandle<Peer> getPeer(const std::string& ipaddr, uint16_t port) const;
 
   virtual void addPeer(const std::vector<SharedHandle<Peer> >& peers);
 
-  virtual const std::deque<SharedHandle<Peer> >& getPeers();
+  const std::deque<SharedHandle<Peer> >& getUnusedPeers();
+
+  const PeerSet& getUsedPeers();
 
   virtual const std::deque<SharedHandle<Peer> >& getDroppedPeers();
 
@@ -94,6 +109,8 @@ public:
   virtual bool isBadPeer(const std::string& ipaddr);
 
   virtual void addBadPeer(const std::string& ipaddr);
+
+  virtual SharedHandle<Peer> checkoutPeer(cuid_t cuid);
 
   virtual void returnPeer(const SharedHandle<Peer>& peer);
 

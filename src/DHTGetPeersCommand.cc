@@ -112,11 +112,11 @@ bool DHTGetPeersCommand::execute()
     lastGetPeerTime_ = global::wallclock();
     if(numRetry_ < MAX_RETRIES &&
        (btRuntime_->getMaxPeers() == 0 ||
-        btRuntime_->getMaxPeers() > peerStorage_->countPeer())) {
+        btRuntime_->getMaxPeers() > peerStorage_->countAllPeer())) {
       ++numRetry_;
       A2_LOG_DEBUG(fmt("Too few peers. peers=%lu, max_peers=%d."
                        " Try again(%d)",
-                       static_cast<unsigned long>(peerStorage_->countPeer()),
+                       static_cast<unsigned long>(peerStorage_->countAllPeer()),
                        btRuntime_->getMaxPeers(),
                        numRetry_));
     } else {

@@ -344,8 +344,11 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage()
     CPPUNIT_ASSERT(*nodes[0] == *m->getClosestKNodes()[0]);
     CPPUNIT_ASSERT(*nodes[7] == *m->getClosestKNodes()[7]);
     CPPUNIT_ASSERT_EQUAL((size_t)4, m->getValues().size());
-    CPPUNIT_ASSERT(*peers[0] == *m->getValues()[0]);
-    CPPUNIT_ASSERT(*peers[3] == *m->getValues()[3]);
+    for(int i = 0; i < 4; ++i) {
+      CPPUNIT_ASSERT_EQUAL(peers[i]->getIPAddress(),
+                           m->getValues()[i]->getIPAddress());
+      CPPUNIT_ASSERT_EQUAL(peers[i]->getPort(), m->getValues()[i]->getPort());
+    }
     CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
                          util::toHex(m->getTransactionID()));
   } catch(Exception& e) {
@@ -416,8 +419,11 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage6()
     CPPUNIT_ASSERT(*nodes[0] == *m->getClosestKNodes()[0]);
     CPPUNIT_ASSERT(*nodes[7] == *m->getClosestKNodes()[7]);
     CPPUNIT_ASSERT_EQUAL((size_t)4, m->getValues().size());
-    CPPUNIT_ASSERT(*peers[0] == *m->getValues()[0]);
-    CPPUNIT_ASSERT(*peers[3] == *m->getValues()[3]);
+    for(int i = 0; i < 4; ++i) {
+      CPPUNIT_ASSERT_EQUAL(peers[i]->getIPAddress(),
+                           m->getValues()[i]->getIPAddress());
+      CPPUNIT_ASSERT_EQUAL(peers[i]->getPort(), m->getValues()[i]->getPort());
+    }
     CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
                          util::toHex(m->getTransactionID()));
   } catch(Exception& e) {

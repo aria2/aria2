@@ -8,8 +8,6 @@ class PeerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(PeerTest);
   CPPUNIT_TEST(testPeerAllowedIndexSet);
   CPPUNIT_TEST(testAmAllowedIndexSet);
-  CPPUNIT_TEST(testGetId);
-  CPPUNIT_TEST(testOperatorEqual);
   CPPUNIT_TEST(testCountSeeder);
   CPPUNIT_TEST_SUITE_END();
 private:
@@ -22,8 +20,6 @@ public:
 
   void testPeerAllowedIndexSet();
   void testAmAllowedIndexSet();
-  void testGetId();
-  void testOperatorEqual();
   void testCountSeeder();
 };
 
@@ -40,22 +36,6 @@ void PeerTest::testAmAllowedIndexSet() {
   CPPUNIT_ASSERT(!peer->isInAmAllowedIndexSet(0));
   peer->addAmAllowedIndex(0);
   CPPUNIT_ASSERT(peer->isInAmAllowedIndexSet(0));
-}
-
-void PeerTest::testGetId() {
-  CPPUNIT_ASSERT_EQUAL(std::string("localhost(6969)"), peer->getID());
-}
-
-void PeerTest::testOperatorEqual()
-{
-  CPPUNIT_ASSERT(Peer("localhost", 6881) == Peer("localhost", 6881));
-
-  {
-    Peer p1("localhost", 6881);
-    Peer p2("localhsot", 0);
-    p2.setPort(6881);
-    CPPUNIT_ASSERT(p1 != p2);
-  }
 }
 
 void PeerTest::testCountSeeder()

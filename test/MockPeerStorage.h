@@ -11,7 +11,8 @@ namespace aria2 {
 
 class MockPeerStorage : public PeerStorage {
 private:
-  std::deque<SharedHandle<Peer> > peers;
+  std::deque<SharedHandle<Peer> > unusedPeers;
+  std::deque<SharedHandle<Peer> > usedPeers;
   std::deque<SharedHandle<Peer> > droppedPeers;
   std::vector<SharedHandle<Peer> > activePeers;
   int numChokeExecuted_;
@@ -19,22 +20,24 @@ public:
   MockPeerStorage():numChokeExecuted_(0) {}
   virtual ~MockPeerStorage() {}
 
-  virtual bool addPeer(const SharedHandle<Peer>& peer) {
-    peers.push_back(peer);
+  virtual bool addPeer(const SharedHandle<Peer>& peer)
+  {
+    unusedPeers.push_back(peer);
     return true;
   }
 
   virtual void addPeer(const std::vector<SharedHandle<Peer> >& peers) {
-    std::copy(peers.begin(), peers.end(), back_inserter(this->peers));
+    unusedPeers.insert(unusedPeers.end(), peers.begin(), peers.end());
   }
 
-  virtual const std::deque<SharedHandle<Peer> >& getPeers() {
-    return peers;
-  }
-
-  virtual size_t countPeer() const
+  const std::deque<SharedHandle<Peer> >& getUnusedPeers()
   {
-    return peers.size();
+    return unusedPeers;
+  }
+
+  virtual size_t countAllPeer() const
+  {
+    return unusedPeers.size() + usedPeers.size();
   }
 
   virtual const std::deque<SharedHandle<Peer> >& getDroppedPeers() {
@@ -43,10 +46,6 @@ public:
 
   void addDroppedPeer(const SharedHandle<Peer>& peer) {
     droppedPeers.push_back(peer);
-  }
-
-  virtual SharedHandle<Peer> getUnusedPeer() {
-    return SharedHandle<Peer>();
   }
 
   virtual bool isPeerAvailable() {
@@ -69,6 +68,11 @@ public:
 
   virtual void addBadPeer(const std::string& ipaddr)
   {
+  }
+
+  virtual SharedHandle<Peer> checkoutPeer(cuid_t cuid)
+  {
+    return SharedHandle<Peer>();
   }
 
   virtual void returnPeer(const SharedHandle<Peer>& peer)

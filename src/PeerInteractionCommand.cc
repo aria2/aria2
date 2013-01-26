@@ -391,14 +391,18 @@ bool PeerInteractionCommand::executeInternal() {
 // TODO this method removed when PeerBalancerCommand is implemented
 bool PeerInteractionCommand::prepareForNextPeer(time_t wait) {
   if(peerStorage_->isPeerAvailable() && btRuntime_->lessThanEqMinPeers()) {
-    SharedHandle<Peer> peer = peerStorage_->getUnusedPeer();
-    peer->usedBy(getDownloadEngine()->newCUID());
-    PeerInitiateConnectionCommand* command =
-      new PeerInitiateConnectionCommand
-      (peer->usedBy(), requestGroup_, peer, getDownloadEngine(), btRuntime_);
-    command->setPeerStorage(peerStorage_);
-    command->setPieceStorage(pieceStorage_);
-    getDownloadEngine()->addCommand(command);
+    cuid_t ncuid = getDownloadEngine()->newCUID();
+    SharedHandle<Peer> peer = peerStorage_->checkoutPeer(ncuid);
+    // sanity check
+    if(peer) {
+      PeerInitiateConnectionCommand* command;
+      command = new PeerInitiateConnectionCommand(ncuid, requestGroup_, peer,
+                                                  getDownloadEngine(),
+                                                  btRuntime_);
+      command->setPeerStorage(peerStorage_);
+      command->setPieceStorage(pieceStorage_);
+      getDownloadEngine()->addCommand(command);
+    }
   }
   return true;
 }

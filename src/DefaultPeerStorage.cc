@@ -53,7 +53,7 @@ namespace aria2 {
 
 namespace {
 
-const size_t MAX_PEER_LIST_SIZE = 1024;
+const size_t MAX_PEER_LIST_SIZE = 128;
 const size_t MAX_PEER_LIST_UPDATE = 100;
 
 } // namespace
@@ -69,30 +69,27 @@ DefaultPeerStorage::~DefaultPeerStorage()
 {
   delete seederStateChoke_;
   delete leecherStateChoke_;
+  assert(uniqPeers_.size() == unusedPeers_.size() + usedPeers_.size());
 }
 
-namespace {
-class FindIdenticalPeer {
-private:
-  SharedHandle<Peer> peer_;
-public:
-  FindIdenticalPeer(const SharedHandle<Peer>& peer):peer_(peer) {}
-
-  bool operator()(const SharedHandle<Peer>& peer) const {
-    return (*peer_ == *peer) ||
-      ((peer_->getIPAddress() == peer->getIPAddress()) &&
-       (peer_->getPort() == peer->getPort()));
-  }
-};
-} // namespace
+size_t DefaultPeerStorage::countAllPeer() const
+{
+  return unusedPeers_.size() + usedPeers_.size();
+}
 
 bool DefaultPeerStorage::isPeerAlreadyAdded(const SharedHandle<Peer>& peer)
 {
-  return std::find_if(peers_.begin(), peers_.end(),
-                      FindIdenticalPeer(peer)) != peers_.end();
+  return uniqPeers_.count(std::make_pair(peer->getIPAddress(),
+                                         peer->getOrigPort()));
 }
 
-bool DefaultPeerStorage::addPeer(const SharedHandle<Peer>& peer) {
+void DefaultPeerStorage::addUniqPeer(const SharedHandle<Peer>& peer)
+{
+  uniqPeers_.insert(std::make_pair(peer->getIPAddress(), peer->getOrigPort()));
+}
+
+bool DefaultPeerStorage::addPeer(const SharedHandle<Peer>& peer)
+{
   if(isPeerAlreadyAdded(peer)) {
     A2_LOG_DEBUG(fmt("Adding %s:%u is rejected because it has been already"
                      " added.",
@@ -104,13 +101,14 @@ bool DefaultPeerStorage::addPeer(const SharedHandle<Peer>& peer) {
                      peer->getIPAddress().c_str(), peer->getPort()));
     return false;
   }
-  const size_t peerListSize = peers_.size();
+  const size_t peerListSize = unusedPeers_.size();
   if(peerListSize >= maxPeerListSize_) {
     deleteUnusedPeer(peerListSize-maxPeerListSize_+1);
   }
-  peers_.push_front(peer);
-  A2_LOG_DEBUG(fmt("Now peer list contains %lu peers",
-                   static_cast<unsigned long>(peers_.size())));
+  unusedPeers_.push_front(peer);
+  addUniqPeer(peer);
+  A2_LOG_DEBUG(fmt("Now unused peer list contains %lu peers",
+                   static_cast<unsigned long>(unusedPeers_.size())));
   return true;
 }
 
@@ -134,28 +132,35 @@ void DefaultPeerStorage::addPeer(const std::vector<SharedHandle<Peer> >& peers)
       A2_LOG_DEBUG(fmt(MSG_ADDING_PEER,
                        peer->getIPAddress().c_str(), peer->getPort()));
     }
-    peers_.push_front(peer);
+    unusedPeers_.push_front(peer);
+    addUniqPeer(peer);
     ++added;
   }
-  const size_t peerListSize = peers_.size();
+  const size_t peerListSize = unusedPeers_.size();
   if(peerListSize > maxPeerListSize_) {
     deleteUnusedPeer(peerListSize-maxPeerListSize_);
   }
-  A2_LOG_DEBUG(fmt("Now peer list contains %lu peers",
-                   static_cast<unsigned long>(peers_.size())));
+  A2_LOG_DEBUG(fmt("Now unused peer list contains %lu peers",
+                   static_cast<unsigned long>(unusedPeers_.size())));
 }
 
 void DefaultPeerStorage::addDroppedPeer(const SharedHandle<Peer>& peer)
 {
+  // TODO Make unique
   droppedPeers_.push_front(peer);
   if(droppedPeers_.size() > 50) {
     droppedPeers_.pop_back();
   }
 }
 
-const std::deque<SharedHandle<Peer> >& DefaultPeerStorage::getPeers()
+const std::deque<SharedHandle<Peer> >& DefaultPeerStorage::getUnusedPeers()
 {
-  return peers_;
+  return unusedPeers_;
+}
+
+const PeerSet& DefaultPeerStorage::getUsedPeers()
+{
+  return usedPeers_;
 }
 
 const std::deque<SharedHandle<Peer> >& DefaultPeerStorage::getDroppedPeers()
@@ -163,57 +168,8 @@ const std::deque<SharedHandle<Peer> >& DefaultPeerStorage::getDroppedPeers()
   return droppedPeers_;
 }
 
-namespace {
-class FindFinePeer {
-public:
-  bool operator()(const SharedHandle<Peer>& peer) const {
-    return peer->unused() && peer->isGood();
-  }
-};
-} // namespace
-
-SharedHandle<Peer> DefaultPeerStorage::getUnusedPeer() {
-  std::deque<SharedHandle<Peer> >::const_iterator itr =
-    std::find_if(peers_.begin(), peers_.end(), FindFinePeer());
-  if(itr == peers_.end()) {
-    return SharedHandle<Peer>();
-  } else {
-    return *itr;
-  }
-}
-
-namespace {
-class FindPeer {
-private:
-  std::string ipaddr;
-  uint16_t port;
-public:
-  FindPeer(const std::string& ipaddr, uint16_t port):
-    ipaddr(ipaddr), port(port) {}
-
-  bool operator()(const SharedHandle<Peer>& peer) const {
-    return ipaddr == peer->getIPAddress() && port == peer->getPort();
-  }
-};
-} // namespace
-
-SharedHandle<Peer> DefaultPeerStorage::getPeer(const std::string& ipaddr,
-                                               uint16_t port) const {
-  std::deque<SharedHandle<Peer> >::const_iterator itr =
-    std::find_if(peers_.begin(), peers_.end(), FindPeer(ipaddr, port));
-  if(itr == peers_.end()) {
-    return SharedHandle<Peer>();
-  } else {
-    return *itr;
-  }
-}
-
-size_t DefaultPeerStorage::countPeer() const {
-  return peers_.size();
-}
-
 bool DefaultPeerStorage::isPeerAvailable() {
-  return getUnusedPeer();
+  return !unusedPeers_.empty();
 }
 
 namespace {
@@ -236,7 +192,8 @@ public:
 void DefaultPeerStorage::getActivePeers
 (std::vector<SharedHandle<Peer> >& activePeers)
 {
-  std::for_each(peers_.begin(), peers_.end(), CollectActivePeer(activePeers));
+  std::for_each(usedPeers_.begin(), usedPeers_.end(),
+                CollectActivePeer(activePeers));
 }
 
 bool DefaultPeerStorage::isBadPeer(const std::string& ipaddr)
@@ -274,21 +231,32 @@ void DefaultPeerStorage::addBadPeer(const std::string& ipaddr)
 }
 
 void DefaultPeerStorage::deleteUnusedPeer(size_t delSize) {
-  std::deque<SharedHandle<Peer> > temp;
-  for(std::deque<SharedHandle<Peer> >::const_reverse_iterator itr =
-        peers_.rbegin(), eoi = peers_.rend(); itr != eoi; ++itr) {
-    const SharedHandle<Peer>& p = *itr;
-    if(p->unused() && delSize > 0) {
-      onErasingPeer(p);
-      --delSize;
-    } else {
-      temp.push_front(p);
-    }
+  for(; delSize > 0 && !unusedPeers_.empty(); --delSize) {
+    onErasingPeer(unusedPeers_.back());
+    unusedPeers_.pop_back();
   }
-  peers_.swap(temp);
 }
 
-void DefaultPeerStorage::onErasingPeer(const SharedHandle<Peer>& peer) {}
+SharedHandle<Peer> DefaultPeerStorage::checkoutPeer(cuid_t cuid)
+{
+  if(!isPeerAvailable()) {
+    return SharedHandle<Peer>();
+  }
+  SharedHandle<Peer> peer = unusedPeers_.front();
+  unusedPeers_.pop_front();
+  peer->usedBy(cuid);
+  usedPeers_.insert(peer);
+  A2_LOG_DEBUG(fmt("Checkout peer %s:%u to CUID#%"PRId64,
+                   peer->getIPAddress().c_str(), peer->getPort(),
+                   peer->usedBy()));
+  return peer;
+}
+
+void DefaultPeerStorage::onErasingPeer(const SharedHandle<Peer>& peer)
+{
+  uniqPeers_.erase(std::make_pair(peer->getIPAddress(),
+                                  peer->getOrigPort()));
+}
 
 void DefaultPeerStorage::onReturningPeer(const SharedHandle<Peer>& peer)
 {
@@ -303,20 +271,20 @@ void DefaultPeerStorage::onReturningPeer(const SharedHandle<Peer>& peer)
       executeChoke();
     }
   }
+  peer->usedBy(0);
 }
 
 void DefaultPeerStorage::returnPeer(const SharedHandle<Peer>& peer)
 {
-  std::deque<SharedHandle<Peer> >::iterator itr =
-    std::find_if(peers_.begin(), peers_.end(), derefEqual(peer));
-  if(itr == peers_.end()) {
-    A2_LOG_DEBUG(fmt("Cannot find peer %s:%u in PeerStorage.",
-                     peer->getIPAddress().c_str(), peer->getPort()));
-  } else {
-    peers_.erase(itr);
-
+  A2_LOG_DEBUG(fmt("Peer %s:%u returned from CUID#%"PRId64,
+                   peer->getIPAddress().c_str(), peer->getPort(),
+                   peer->usedBy()));
+  if(usedPeers_.erase(peer)) {
     onReturningPeer(peer);
     onErasingPeer(peer);
+  } else {
+    A2_LOG_DEBUG(fmt("Cannot find peer %s:%u in usedPeers_",
+                     peer->getIPAddress().c_str(), peer->getPort()));
   }
 }
 

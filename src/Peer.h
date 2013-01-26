@@ -61,8 +61,9 @@ private:
   // true, then this port is not a port the peer is listening to and
   // we cannot connect to it.
   uint16_t port_;
-
-  std::string id_;
+  // This is the port number passed in the constructor arguments. This
+  // is used to distinguish peer identity.
+  uint16_t origPort_;
 
   cuid_t cuid_;
 
@@ -94,18 +95,6 @@ public:
 
   ~Peer();
 
-  bool operator==(const Peer& p)
-  {
-    return id_ == p.id_;
-  }
-
-  bool operator!=(const Peer& p)
-  {
-    return !(*this == p);
-  }
-
-  void resetStatus();
-
   const std::string& getIPAddress() const
   {
     return ipaddr_;
@@ -119,6 +108,11 @@ public:
   void setPort(uint16_t port)
   {
     port_ = port;
+  }
+
+  uint16_t getOrigPort() const
+  {
+    return origPort_;
   }
 
   void usedBy(cuid_t cuid);
@@ -151,14 +145,7 @@ public:
     return seeder_;
   }
 
-  const std::string& getID() const
-  {
-    return id_;
-  }
-
   void startBadCondition();
-
-  bool isGood() const;
 
   void allocateSessionResource(int32_t pieceLength, int64_t totalLength);
 

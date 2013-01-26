@@ -115,13 +115,8 @@ bool ActivePeerConnectionCommand::execute() {
         numConnection = numNewConnection_;
       }
 
-      for(; numConnection > 0; --numConnection) {
-        SharedHandle<Peer> peer = peerStorage_->getUnusedPeer();
-        if(!peer) {
-          break;
-        }
-        connectToPeer(peer);
-      }
+      makeNewConnections(numConnection);
+
       if(btRuntime_->getConnections() == 0 &&
          !pieceStorage_->downloadFinished()) {
         btAnnounce_->overrideMinInterval(BtAnnounce::DEFAULT_ANNOUNCE_INTERVAL);
@@ -132,18 +127,24 @@ bool ActivePeerConnectionCommand::execute() {
   return false;
 }
 
-void ActivePeerConnectionCommand::connectToPeer(const SharedHandle<Peer>& peer)
+void ActivePeerConnectionCommand::makeNewConnections(int num)
 {
-  peer->usedBy(e_->newCUID());
-  PeerInitiateConnectionCommand* command =
-    new PeerInitiateConnectionCommand(peer->usedBy(), requestGroup_, peer, e_,
-                                      btRuntime_);
-  command->setPeerStorage(peerStorage_);
-  command->setPieceStorage(pieceStorage_);
-  e_->addCommand(command);
-  A2_LOG_INFO(fmt(MSG_CONNECTING_TO_PEER,
-                  getCuid(),
-                  peer->getIPAddress().c_str()));
+  for(; num && peerStorage_->isPeerAvailable(); --num) {
+    cuid_t ncuid = e_->newCUID();
+    SharedHandle<Peer> peer = peerStorage_->checkoutPeer(ncuid);
+    // sanity check
+    if(!peer) {
+      break;
+    }
+    PeerInitiateConnectionCommand* command;
+    command = new PeerInitiateConnectionCommand(ncuid, requestGroup_, peer, e_,
+                                                btRuntime_);
+    command->setPeerStorage(peerStorage_);
+    command->setPieceStorage(pieceStorage_);
+    e_->addCommand(command);
+    A2_LOG_INFO(fmt(MSG_CONNECTING_TO_PEER, getCuid(),
+                    peer->getIPAddress().c_str()));
+  }
 }
 
 void ActivePeerConnectionCommand::setBtRuntime

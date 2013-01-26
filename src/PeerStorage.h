@@ -42,6 +42,7 @@
 
 #include "SharedHandle.h"
 #include "TransferStat.h"
+#include "Command.h"
 
 namespace aria2 {
 
@@ -63,25 +64,14 @@ public:
   virtual void addPeer(const std::vector<SharedHandle<Peer> >& peers) = 0;
 
   /**
-   * Returns internal peer list.
+   * Returns the number of peers, including used and unused ones.
    */
-  virtual const std::deque<SharedHandle<Peer> >& getPeers() = 0;
-
-
-  /**
-   * Returns the number of peers.
-   */
-  virtual size_t countPeer() const = 0;
+  virtual size_t countAllPeer() const = 0;
 
   /**
    * Returns internal dropped peer list.
    */
   virtual const std::deque<SharedHandle<Peer> >& getDroppedPeers() = 0;
-
-  /**
-   * Returns one of the unused peers.
-   */
-  virtual SharedHandle<Peer> getUnusedPeer() = 0;
 
   /**
    * Returns true if at least one unused peer exists.
@@ -104,6 +94,13 @@ public:
    * Adds peer with ipaddr in bad peer set.
    */
   virtual void addBadPeer(const std::string& ipaddr) = 0;
+
+  /**
+   * Moves first peer in unused peer list to used peer set and calls
+   * Peer::usedBy(cuid). If there is no peer available, returns
+   * SharedHandle<Peer>().
+   */
+  virtual SharedHandle<Peer> checkoutPeer(cuid_t cuid) = 0;
 
   /**
    * Tells PeerStorage object that peer is no longer used in the session.

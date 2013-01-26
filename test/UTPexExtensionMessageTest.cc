@@ -154,24 +154,24 @@ void UTPexExtensionMessageTest::testDoReceivedAction()
 
   msg.doReceivedAction();
 
-  CPPUNIT_ASSERT_EQUAL((size_t)4, peerStorage_->getPeers().size());
+  CPPUNIT_ASSERT_EQUAL((size_t)4, peerStorage_->getUnusedPeers().size());
   {
-    SharedHandle<Peer> p = peerStorage_->getPeers()[0];
+    SharedHandle<Peer> p = peerStorage_->getUnusedPeers()[0];
     CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), p->getIPAddress());
     CPPUNIT_ASSERT_EQUAL((uint16_t)6881, p->getPort());
   }
   {
-    SharedHandle<Peer> p = peerStorage_->getPeers()[1];
+    SharedHandle<Peer> p = peerStorage_->getUnusedPeers()[1];
     CPPUNIT_ASSERT_EQUAL(std::string("1002:1035:4527:3546:7854:1237:3247:3217"),
                          p->getIPAddress());
     CPPUNIT_ASSERT_EQUAL((uint16_t)9999, p->getPort());
   }
   {
-    SharedHandle<Peer> p = peerStorage_->getPeers()[2];
+    SharedHandle<Peer> p = peerStorage_->getUnusedPeers()[2];
     CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), p->getIPAddress());
   }
   {
-    SharedHandle<Peer> p = peerStorage_->getPeers()[3];
+    SharedHandle<Peer> p = peerStorage_->getUnusedPeers()[3];
     CPPUNIT_ASSERT_EQUAL(std::string("2001:db8:bd05:1d2:288a:1fc0:1:10ee"),
                          p->getIPAddress());
   }

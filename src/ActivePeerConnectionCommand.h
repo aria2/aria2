@@ -71,7 +71,7 @@ public:
 
   virtual bool execute();
 
-  void connectToPeer(const SharedHandle<Peer>& peer);
+  void makeNewConnections(int num);
 
   void setNumNewConnection(int numNewConnection)
   {

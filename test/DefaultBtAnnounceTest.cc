@@ -403,10 +403,10 @@ void DefaultBtAnnounceTest::testProcessAnnounceResponse()
   CPPUNIT_ASSERT_EQUAL((time_t)1800, an.getMinInterval());
   CPPUNIT_ASSERT_EQUAL(100, an.getComplete());
   CPPUNIT_ASSERT_EQUAL(200, an.getIncomplete());
-  CPPUNIT_ASSERT_EQUAL((size_t)2, peerStorage_->getPeers().size());
-  SharedHandle<Peer> peer = peerStorage_->getPeers()[0];
+  CPPUNIT_ASSERT_EQUAL((size_t)2, peerStorage_->getUnusedPeers().size());
+  SharedHandle<Peer> peer = peerStorage_->getUnusedPeers()[0];
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->getIPAddress());
-  peer = peerStorage_->getPeers()[1];
+  peer = peerStorage_->getUnusedPeers()[1];
   CPPUNIT_ASSERT_EQUAL(std::string("1002:1035:4527:3546:7854:1237:3247:3217"),
                        peer->getIPAddress());
 }

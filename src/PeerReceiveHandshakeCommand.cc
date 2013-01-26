@@ -138,8 +138,10 @@ bool PeerReceiveHandshakeCommand::executeInternal()
     if((!pieceStorage->downloadFinished() &&
         stat.calculateDownloadSpeed() < thresholdSpeed) ||
        btRuntime->lessThanMaxPeers()) {
-      if(peerStorage->addPeer(getPeer())) {
-        getPeer()->usedBy(getCuid());
+      // TODO addPeer and checkoutPeer must be "atomic", in a sense
+      // that the added peer must be checked out.
+      if(peerStorage->addPeer(getPeer()) &&
+         peerStorage->checkoutPeer(getCuid())) {
         PeerInteractionCommand* command =
           new PeerInteractionCommand
           (getCuid(),
