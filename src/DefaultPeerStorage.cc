@@ -146,7 +146,16 @@ void DefaultPeerStorage::addPeer(const std::vector<SharedHandle<Peer> >& peers)
 
 void DefaultPeerStorage::addDroppedPeer(const SharedHandle<Peer>& peer)
 {
-  // TODO Make unique
+  // Make sure that duplicated peers exist in droppedPeers_. If
+  // exists, erase older one.
+  for(std::deque<SharedHandle<Peer> >::iterator i = droppedPeers_.begin(),
+        eoi = droppedPeers_.end(); i != eoi; ++i) {
+    if((*i)->getIPAddress() == peer->getIPAddress() &&
+       (*i)->getPort() == peer->getPort()) {
+      droppedPeers_.erase(i);
+      break;
+    }
+  }
   droppedPeers_.push_front(peer);
   if(droppedPeers_.size() > 50) {
     droppedPeers_.pop_back();
