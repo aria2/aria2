@@ -1395,14 +1395,26 @@ Advanced Options
   Print the version number, copyright and the configuration information and
   exit.
 
-Options That Take An Optional Argument
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Notes for Options
+~~~~~~~~~~~~~~~~~
+
+Optional arguments
+^^^^^^^^^^^^^^^^^^
+
 The options that have its argument surrounded by square brackets([])
 take an optional argument. Usually omiting the argument is evaluated to ``true``.
 If you use short form of these options(such as ``-V``) and give
 an argument, then the option name and its argument should be concatenated(e.g.
 ``-Vfalse``). If any spaces are inserted between the option name and the argument,
 the argument will be treated as URI and usually this is not what you expect.
+
+Units (K and M)
+^^^^^^^^^^^^^^^
+
+Some options takes ``K`` and ``M`` to conveniently represent 1024 and
+1048576 respectively.  aria2 detects these characters in
+case-insensitive way. In other words, ``k`` and ``m`` can be used as
+well as ``K`` and ``M`` respectively.
 
 URI, MAGNET, TORRENT_FILE, METALINK_FILE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
