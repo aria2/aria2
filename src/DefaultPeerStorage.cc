@@ -53,7 +53,7 @@ namespace aria2 {
 
 namespace {
 
-const size_t MAX_PEER_LIST_SIZE = 128;
+const size_t MAX_PEER_LIST_SIZE = 512;
 const size_t MAX_PEER_LIST_UPDATE = 100;
 
 } // namespace
