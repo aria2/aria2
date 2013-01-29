@@ -1,3 +1,45 @@
+aria2 1.16.2
+============
+
+Release Note
+------------
+
+This release fixes the bug which causes long running BitTorrent
+download to stall. The several new options have been added.
+
+Changes
+-------
+
+* Check SSL_OP_NO_COMPRESSION is available before using it
+
+* Fix bug returnPeer is not called if sequence_ == INITIATOR_SEND_KEY
+
+  In InitiatorMSEHandshakeCommand, when aborting connection, we must
+  return peer to the PeerStorage. But it is not done if sequence_ is
+  INITIATOR_SEND_KEY. This causes stale Peer objects whose usedBy()
+  returns true eventually occupies peer list and aria2 cannot make any
+  connections.
+
+* Accept k and m as well as K and M in util::getRealSize()
+
+* mingw32: Make NTFS sparse file on --file-allocation=trunc
+
+* Added --save-session-interval option
+
+  --save-session-interval option saves error/unfinished downloads to a
+  file specified by --save-session option every SEC seconds. If 0 is
+  given, file will be saved only when aria2 exits.
+
+* Use request URI as referer if --referer="*" is given
+
+* Log warn if unknown option is found in config file or -i file
+
+* Added --console-log-level option
+
+  --console-log-level option sets log level to output to console.
+
+
+
 aria2 1.16.1
 ============
 
