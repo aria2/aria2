@@ -1,5 +1,10 @@
 #!/bin/sh -e
 
+if [ -z "$ANDROID_HOME" ]; then
+    echo 'No $ANDROID_HOME specified.'
+    exit 1
+fi
+
 VERSION=$1
 PREV_VERSION=$2
 
@@ -27,7 +32,6 @@ make -j3
 make distclean
 
 # android
-export ANDROID_HOME=/home/tatsuhiro/workspace/android/android-9-r8b
 ./android-config
 ./android-make -j3
 ./android-release
