@@ -254,6 +254,7 @@ EXTRA_DIST = 4096chunk.txt\
 	file2r.txt\
 	file3r.txt\
 	filelist1.txt\
+	filelist2.txt\
 	gzip_decode_test.gz\
 	load-nonBt.aria2\
 	load-nonBt-v0001.aria2\
