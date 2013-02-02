@@ -105,6 +105,8 @@ void AbstractSingleDiskAdaptor::writeCache(const WrDiskCacheEntry* entry)
     }
     if(buflen == 0 && ((*i)->goff & 0xfff) == 0 && ((*i)->len & 0xfff) == 0) {
       // Already aligned. Write it without copy.
+      A2_LOG_DEBUG(fmt("Cache flush goff=%"PRId64", len=%lu",
+                       start, static_cast<unsigned long>((*i)->len)));
       writeData((*i)->data + (*i)->offset, (*i)->len, start);
       start += (*i)->len;
     } else {
