@@ -14,7 +14,7 @@ ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 # Configurations for aria2.
 mandir = @mandir@/ru
 man_MANS = $(BUILDDIR)/man/aria2c.1
-EXTRA_DIST = $(man_MANS) aria2c.rst index.rst
+EXTRA_DIST = $(man_MANS) aria2c.rst index.rst _static/default2.css
 
 $(man_MANS): aria2c.rst
 	$(MAKE) man
