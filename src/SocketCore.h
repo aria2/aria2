@@ -207,8 +207,10 @@ public:
    * the connection is established.
    * @param host hostname or ip address to connect to
    * @param port service port number to connect to
+   * @param tcpNodelay true to disable Nagle algorithm
    */
-  void establishConnection(const std::string& host, uint16_t port);
+  void establishConnection(const std::string& host, uint16_t port,
+                           bool tcpNodelay = true);
 
   void setNonBlockingMode();
 

@@ -82,7 +82,7 @@ bool PeerInitiateConnectionCommand::executeInternal() {
                   getPeer()->getPort()));
   createSocket();
   getSocket()->establishConnection(getPeer()->getIPAddress(),
-                                   getPeer()->getPort());
+                                   getPeer()->getPort(), false);
   if(mseHandshakeEnabled_) {
     InitiatorMSEHandshakeCommand* c =
       new InitiatorMSEHandshakeCommand(getCuid(), requestGroup_, getPeer(),

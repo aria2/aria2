@@ -95,7 +95,6 @@ Command* FtpInitiateConnectionCommand::createNextCommand
                       getCuid(), addr.c_str(), port));
       createSocket();
       getSocket()->establishConnection(addr, port);
-      getSocket()->setTcpNodelay(true);
 
       getRequest()->setConnectedAddrInfo(hostname, addr, port);
       if(proxyMethod == V_GET) {
@@ -164,7 +163,6 @@ Command* FtpInitiateConnectionCommand::createNextCommand
                       getCuid(), addr.c_str(), port));
       createSocket();
       getSocket()->establishConnection(addr, port);
-      getSocket()->setTcpNodelay(true);
       FtpNegotiationCommand* c =
         new FtpNegotiationCommand(getCuid(), getRequest(), getFileEntry(),
                                   getRequestGroup(), getDownloadEngine(),

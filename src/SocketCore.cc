@@ -409,7 +409,8 @@ int SocketCore::getPeerInfo(std::pair<std::string, uint16_t>& peerinfo) const
   return sockaddr.storage.ss_family;
 }
 
-void SocketCore::establishConnection(const std::string& host, uint16_t port)
+void SocketCore::establishConnection(const std::string& host, uint16_t port,
+                                     bool tcpNodelay)
 {
   closeConnection();
   std::string error;
@@ -461,6 +462,9 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
     sockfd_ = fd;
     // make socket non-blocking mode
     setNonBlockingMode();
+    if(tcpNodelay) {
+      setTcpNodelay(true);
+    }
     if(connect(fd, rp->ai_addr, rp->ai_addrlen) == -1 &&
        SOCKET_ERRNO != A2_EINPROGRESS) {
       errNum = SOCKET_ERRNO;
