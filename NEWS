@@ -1,3 +1,24 @@
+aria2 1.16.3
+============
+
+Release Note
+------------
+
+This release fixes the bug which causes random crash. It also fixes
+socket option setting failure on Windows platform.
+
+Changes
+-------
+
+* Fix failure to set TCP_NODELAY on Windows
+
+  On Windows setting TCP_NODELAY after non-blocking connect fails at
+  least on Windows 7.
+
+* Fix invalid iterator handling when deleting RequestGroup
+
+
+
 aria2 1.16.2
 ============
 
