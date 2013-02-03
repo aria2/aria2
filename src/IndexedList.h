@@ -158,7 +158,7 @@ public:
   // Removes |key| from the list. If the element is not found, this
   // function fails. This function returns true if it
   // succeeds. Complexity: O(N)
-  bool erase(KeyType key)
+  bool remove(KeyType key)
   {
     typename IndexType::iterator i = index_.find(key);
     if(i == index_.end()) {
@@ -173,6 +173,16 @@ public:
       }
     }
     return true;
+  }
+
+  // Removes element pointed by iterator |k| from the list. If the
+  // iterator must be valid. This function returns the iterator
+  // pointing to the element following the erased element. Complexity:
+  // O(N)
+  typename SeqType::iterator erase(typename SeqType::iterator k)
+  {
+    index_.erase((*k).first);
+    return seq_.erase(k);
   }
 
   // Removes element at the front of the list. If the list is empty,

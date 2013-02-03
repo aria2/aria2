@@ -17,6 +17,7 @@ class IndexedListTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(IndexedListTest);
   CPPUNIT_TEST(testPushBack);
   CPPUNIT_TEST(testPushFront);
+  CPPUNIT_TEST(testRemove);
   CPPUNIT_TEST(testErase);
   CPPUNIT_TEST(testPopFront);
   CPPUNIT_TEST(testMove);
@@ -30,6 +31,7 @@ public:
 
   void testPushBack();
   void testPushFront();
+  void testRemove();
   void testErase();
   void testPopFront();
   void testMove();
@@ -74,7 +76,7 @@ void IndexedListTest::testPushFront()
   }
 }
 
-void IndexedListTest::testErase()
+void IndexedListTest::testRemove()
 {
   int a[] = {1,2,3,4,5};
   IndexedList<int, int*> list;
@@ -82,10 +84,31 @@ void IndexedListTest::testErase()
     list.push_back(i, &a[i]);
   }
   for(int i = 0; i < 5; ++i) {
-    CPPUNIT_ASSERT(list.erase(i));
+    CPPUNIT_ASSERT(list.remove(i));
     CPPUNIT_ASSERT_EQUAL((size_t)5-i-1, list.size());
     for(int j = i+1; j < 5; ++j) {
       CPPUNIT_ASSERT_EQUAL(a[j], *list.get(j));
+    }
+  }
+}
+
+void IndexedListTest::testErase()
+{
+  int a[] = {1,2,3,4,5};
+  IndexedList<int, int*> list;
+  for(int i = 0; i < 5; ++i) {
+    list.push_back(i, &a[i]);
+  }
+  int* p = a;
+  for(IndexedList<int, int*>::SeqType::iterator i = list.begin();
+      i != list.end();) {
+    i = list.erase(i);
+    CPPUNIT_ASSERT_EQUAL((size_t)(std::distance(i, list.end())), list.size());
+
+    int* pp = ++p;
+    for(IndexedList<int, int*>::SeqType::iterator j = list.begin();
+        j != list.end(); ++j, ++pp) {
+      CPPUNIT_ASSERT_EQUAL(*pp, *(*j).second);
     }
   }
 }

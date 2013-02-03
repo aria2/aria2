@@ -207,7 +207,7 @@ size_t RequestGroupMan::changeReservedGroupPosition
 
 bool RequestGroupMan::removeReservedGroup(a2_gid_t gid)
 {
-  return reservedGroups_.erase(gid);
+  return reservedGroups_.remove(gid);
 }
 
 namespace {
@@ -440,9 +440,8 @@ void RequestGroupMan::removeStoppedGroup(DownloadEngine* e)
         eoi = requestGroups_.end(); i != eoi;) {
     const SharedHandle<RequestGroup>& rg = (*i).second;
     if(rg->getNumCommand() == 0) {
-      ++i;
-      requestGroups_.erase(rg->getGID());
-      // rg is invalid here.
+      i = requestGroups_.erase(i);
+      eoi = requestGroups_.end();
     } else {
       ++i;
     }
@@ -875,7 +874,7 @@ RequestGroupMan::findDownloadResult(a2_gid_t gid) const
 
 bool RequestGroupMan::removeDownloadResult(a2_gid_t gid)
 {
-  return downloadResults_.erase(gid);
+  return downloadResults_.remove(gid);
 }
 
 void RequestGroupMan::addDownloadResult(const SharedHandle<DownloadResult>& dr)
