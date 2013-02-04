@@ -212,6 +212,23 @@ bool SessionSerializer::save(BufferedFile& fp) const
       }
     }
   }
+  {
+    // Save active downloads.
+    const RequestGroupList& groups = rgman_->getRequestGroups();
+    for(RequestGroupList::SeqType::const_iterator itr = groups.begin(),
+          eoi = groups.end(); itr != eoi; ++itr) {
+      const SharedHandle<RequestGroup>& rg = (*itr).second;
+      SharedHandle<DownloadResult> dr = rg->createDownloadResult();
+      bool stopped = dr->result == error_code::FINISHED ||
+        dr->result == error_code::REMOVED;
+      if((!stopped && saveInProgress_) ||
+         (stopped && dr->option->getAsBool(PREF_FORCE_SAVE))) {
+        if(!writeDownloadResult(fp, metainfoCache, dr)) {
+          return false;
+        }
+      }
+    }
+  }
   if(saveWaiting_) {
     const RequestGroupList& groups = rgman_->getReservedGroups();
     for(RequestGroupList::SeqType::const_iterator itr = groups.begin(),

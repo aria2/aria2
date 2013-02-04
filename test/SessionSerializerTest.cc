@@ -12,6 +12,8 @@
 #include "Option.h"
 #include "a2functional.h"
 #include "FileEntry.h"
+#include "SelectEventPoll.h"
+#include "DownloadEngine.h"
 
 namespace aria2 {
 
@@ -74,6 +76,13 @@ void SessionSerializerTest::testSave()
   for(size_t i = 0; i < sizeof(drs)/sizeof(drs[0]); ++i) {
     rgman->addDownloadResult(drs[i]);
   }
+
+
+  DownloadEngine e(SharedHandle<EventPoll>(new SelectEventPoll()));
+  e.setOption(option.get());
+  rgman->fillRequestGroupFromReserver(&e);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, rgman->getRequestGroups().size());
+
   std::string filename = A2_TEST_OUT_DIR"/aria2_SessionSerializerTest_testSave";
   s.save(filename);
   std::ifstream ss(filename.c_str(), std::ios::binary);
@@ -82,6 +91,7 @@ void SessionSerializerTest::testSave()
   CPPUNIT_ASSERT_EQUAL(std::string("http://error\t"), line);
   std::getline(ss, line);
   CPPUNIT_ASSERT_EQUAL(fmt(" gid=%s", drs[1]->gid->toHex().c_str()), line);
+  // Check active download is also saved
   std::getline(ss, line);
   CPPUNIT_ASSERT_EQUAL(uris[0]+"\t"+uris[1]+"\t", line);
   std::getline(ss, line);
