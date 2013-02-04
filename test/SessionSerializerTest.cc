@@ -71,12 +71,14 @@ void SessionSerializerTest::testSave()
   SharedHandle<DownloadResult> drs[] = {
     // REMOVED downloads will not be saved.
     createDownloadResult(error_code::REMOVED, "http://removed"),
-    createDownloadResult(error_code::TIME_OUT, "http://error")
+    createDownloadResult(error_code::TIME_OUT, "http://error"),
+    createDownloadResult(error_code::FINISHED, "http://finished"),
+    createDownloadResult(error_code::FINISHED, "http://force-save")
   };
+  drs[3]->option->put(PREF_FORCE_SAVE, A2_V_TRUE);
   for(size_t i = 0; i < sizeof(drs)/sizeof(drs[0]); ++i) {
     rgman->addDownloadResult(drs[i]);
   }
-
 
   DownloadEngine e(SharedHandle<EventPoll>(new SelectEventPoll()));
   e.setOption(option.get());
@@ -91,6 +93,13 @@ void SessionSerializerTest::testSave()
   CPPUNIT_ASSERT_EQUAL(std::string("http://error\t"), line);
   std::getline(ss, line);
   CPPUNIT_ASSERT_EQUAL(fmt(" gid=%s", drs[1]->gid->toHex().c_str()), line);
+  std::getline(ss, line);
+  // finished and force-save option
+  CPPUNIT_ASSERT_EQUAL(std::string("http://force-save\t"), line);
+  std::getline(ss, line);
+  CPPUNIT_ASSERT_EQUAL(fmt(" gid=%s", drs[3]->gid->toHex().c_str()), line);
+  std::getline(ss, line);
+  CPPUNIT_ASSERT_EQUAL(std::string(" force-save=true"), line);
   // Check active download is also saved
   std::getline(ss, line);
   CPPUNIT_ASSERT_EQUAL(uris[0]+"\t"+uris[1]+"\t", line);
