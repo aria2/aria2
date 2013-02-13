@@ -1715,7 +1715,7 @@ void executeHook
            firstFilename.c_str(),
            reinterpret_cast<char*>(0));
     perror(("Could not execute user command: "+command).c_str());
-    exit(EXIT_FAILURE);
+    _exit(EXIT_FAILURE);
   }
 #else
   PROCESS_INFORMATION pi;

@@ -48,7 +48,7 @@ int daemon(int nochdir, int noclose)
   if(pid == -1) {
     return -1;
   } else if(pid > 0) {
-    exit(EXIT_SUCCESS);
+    _exit(EXIT_SUCCESS);
   }
   if(setsid() == -1) {
     return -1;
@@ -57,7 +57,7 @@ int daemon(int nochdir, int noclose)
   if(pid == -1) {
     return -1;
   } else if(pid > 0) {
-    exit(EXIT_SUCCESS);
+    _exit(EXIT_SUCCESS);
   }
   if(nochdir == 0) {
     if(chdir("/") == -1) {
