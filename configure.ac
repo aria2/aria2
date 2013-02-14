@@ -646,6 +646,8 @@ AC_CONFIG_FILES([Makefile
 		doc/manual-src/en/conf.py
 		doc/manual-src/ru/Makefile
 		doc/manual-src/ru/conf.py
+		doc/manual-src/pt/Makefile
+		doc/manual-src/pt/conf.py
 		deps/Makefile])
 AC_OUTPUT
 
