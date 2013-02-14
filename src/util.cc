@@ -1221,12 +1221,13 @@ bool isNumericHost(const std::string& name)
   return true;
 }
 
-void setGlobalSignalHandler(int sig, void (*handler)(int), int flags) {
+void setGlobalSignalHandler(int sig, sigset_t* mask, void (*handler)(int),
+                            int flags) {
 #ifdef HAVE_SIGACTION
   struct sigaction sigact;
   sigact.sa_handler = handler;
   sigact.sa_flags = flags;
-  sigemptyset(&sigact.sa_mask);
+  sigact.sa_mask = *mask;
   sigaction(sig, &sigact, NULL);
 #else
   signal(sig, handler);

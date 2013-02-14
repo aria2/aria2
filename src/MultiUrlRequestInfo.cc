@@ -129,6 +129,7 @@ void MultiUrlRequestInfo::printMessageForContinue()
 error_code::Value MultiUrlRequestInfo::execute()
 {
   error_code::Value returnValue = error_code::FINISHED;
+  sigset_t mask;
   try {
     SharedHandle<rpc::WebSocketSessionMan> wsSessionMan;
     if(option_->getAsBool(PREF_ENABLE_RPC)) {
@@ -233,11 +234,22 @@ error_code::Value MultiUrlRequestInfo::execute()
     if(uriListParser_) {
       e->getRequestGroupMan()->setUriListParser(uriListParser_);
     }
+#ifdef HAVE_SIGACTION
+    sigemptyset(&mask);
+    sigaddset(&mask, SIGINT);
+    sigaddset(&mask, SIGTERM);
 #ifdef SIGHUP
-    util::setGlobalSignalHandler(SIGHUP, handler, 0);
+    sigaddset(&mask, SIGHUP);
 #endif // SIGHUP
-    util::setGlobalSignalHandler(SIGINT, handler, 0);
-    util::setGlobalSignalHandler(SIGTERM, handler, 0);
+#else // !HAVE_SIGACTION
+    mask = 0;
+#endif // !HAVE_SIGACTION
+
+#ifdef SIGHUP
+    util::setGlobalSignalHandler(SIGHUP, &mask, handler, 0);
+#endif // SIGHUP
+    util::setGlobalSignalHandler(SIGINT, &mask, handler, 0);
+    util::setGlobalSignalHandler(SIGTERM, &mask, handler, 0);
 
     e->getRequestGroupMan()->getNetStat().downloadStart();
     e->run();
@@ -284,11 +296,15 @@ error_code::Value MultiUrlRequestInfo::execute()
     A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
   }
   SingletonHolder<Notifier>::instance(0);
+
+#ifdef HAVE_SIGACTION
+  sigemptyset(&mask);
+#endif // HAVE_SIGACTION
 #ifdef SIGHUP
-  util::setGlobalSignalHandler(SIGHUP, SIG_DFL, 0);
+  util::setGlobalSignalHandler(SIGHUP, &mask, SIG_DFL, 0);
 #endif // SIGHUP
-  util::setGlobalSignalHandler(SIGINT, SIG_DFL, 0);
-  util::setGlobalSignalHandler(SIGTERM, SIG_DFL, 0);
+  util::setGlobalSignalHandler(SIGINT, &mask, SIG_DFL, 0);
+  util::setGlobalSignalHandler(SIGTERM, &mask, SIG_DFL, 0);
   return returnValue;
 }
 

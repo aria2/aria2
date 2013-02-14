@@ -63,6 +63,10 @@
 #include "DlAbortEx.h"
 #include "fmt.h"
 
+#ifndef HAVE_SIGACTION
+#  define sigset_t int
+#endif // HAVE_SIGACTION
+
 namespace aria2 {
 
 class Randomizer;
@@ -335,7 +339,8 @@ char toLowerChar(char c);
 
 bool isNumericHost(const std::string& name);
 
-void setGlobalSignalHandler(int signal, void (*handler)(int), int flags);
+void setGlobalSignalHandler(int signal, sigset_t* mask, void (*handler)(int),
+                            int flags);
 
 std::string getHomeDir();
 
