@@ -402,18 +402,28 @@ bool pathMatch(const std::string& requestPath, const std::string& path)
 std::string reverseDomainLevel(const std::string& domain)
 {
   std::string r;
-  for(std::string::const_iterator i = domain.begin(), eoi = domain.end();
-      i != eoi;) {
-    std::string::const_iterator j = std::find(i, eoi, '.');
-    r.insert(r.begin(), '.');
-    r.insert(r.begin(), i, j);
-    i = j;
-    if(j != eoi) {
-      ++i;
+  if(domain.empty()) {
+    return r;
+  }
+  r.reserve(domain.size());
+  // Cut trailing dots
+  std::string::const_iterator s = domain.end() - 1;
+  for(; *s == '.'; --s) {
+    if(s == domain.begin()) {
+      return r;
     }
   }
-  if(!r.empty()) {
-    r.erase(r.size()-1, 1);
+  std::string::const_iterator t = s + 1;
+  for(; ; --s) {
+    if(*s == '.') {
+      r.append(s + 1, t);
+      r += '.';
+      t = s;
+    }
+    if(s == domain.begin()) {
+      r.append(s, t);
+      break;
+    }
   }
   return r;
 }
