@@ -4,8 +4,8 @@ Technical Notes
 This document describes additional technical information of aria2. The
 expected audience is developers.
 
-Control File (*.aria2) Format
------------------------------
+Control File (\*.aria2) Format
+------------------------------
 
 The control file uses a binary format to store progress information of
 a download. Here is the diagram for each field::

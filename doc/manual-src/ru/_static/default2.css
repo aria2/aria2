@@ -3,3 +3,7 @@
 pre, tt {
     font-family:  monospace, sans-serif;
 }
+
+tt {
+    font-size: 100%;
+}
