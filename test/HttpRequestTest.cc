@@ -683,10 +683,17 @@ void HttpRequestTest::testIsRangeSatisfied()
 
   CPPUNIT_ASSERT(httpRequest.isRangeSatisfied(range));
 
+  range = Range(segment->getPosition(),
+                segment->getPosition()+segment->getLength()-1,
+                0);
+
+  CPPUNIT_ASSERT(!httpRequest.isRangeSatisfied(range));
+
   range = Range(0, segment->getPosition()+segment->getLength()-1,
                 entityLength);
 
   CPPUNIT_ASSERT(!httpRequest.isRangeSatisfied(range));
+
 }
 
 void HttpRequestTest::testUserAgent()
