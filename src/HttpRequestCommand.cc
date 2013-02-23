@@ -115,7 +115,9 @@ createHttpRequest(const SharedHandle<Request>& req,
   } else {
     httpRequest->disableNoCache();
   }
-  httpRequest->setEndOffsetOverride(endOffset);
+  if(endOffset > 0) {
+    httpRequest->setEndOffsetOverride(endOffset);
+  }
   return httpRequest;
 }
 } // namespace
@@ -181,7 +183,9 @@ bool HttpRequestCommand::executeInternal() {
         const SharedHandle<Segment>& segment = *itr;
         if(!httpConnection_->isIssued(segment)) {
           int64_t endOffset = 0;
-          if(getRequestGroup()->getTotalLength() > 0 && getPieceStorage()) {
+          // FTP via HTTP proxy does not support end byte marker
+          if(getRequest()->getProtocol() != "ftp" &&
+             getRequestGroup()->getTotalLength() > 0 && getPieceStorage()) {
             size_t nextIndex =
               getPieceStorage()->getNextUsedIndex(segment->getIndex());
             endOffset = std::min

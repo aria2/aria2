@@ -88,6 +88,13 @@ private:
 
   bool acceptGzip_;
 
+  // Historically, aria2 did not specify end byte marker unless http
+  // pipelining is enabled. Sometimes end byte is known because the
+  // segment/piece ahead of this request was already acquired. In this
+  // case, specifying end byte enables to reuse connection. To achieve
+  // this, if endOffsetOverride_ is more than 0, its value - 1 is used
+  // as an end byte. Please note that FTP protocol cannot specify end
+  // bytes and it is also true if it is used via HTTP proxy.
   int64_t endOffsetOverride_;
 
   std::string ifModSinceHeader_;
