@@ -50,6 +50,50 @@ class PieceStorage;
 class BtRuntime;
 class BtAnnounce;
 class Option;
+class UDPTrackerRequest;
+class UDPTrackerClient;
+
+class AnnRequest {
+public:
+  virtual ~AnnRequest() {}
+  // Returns true if tracker request is finished, regardless of the
+  // outcome.
+  virtual bool stopped() const = 0;
+  // Returns true if tracker request is successful.
+  virtual bool success() const = 0;
+  // Returns true if issuing request is successful.
+  virtual bool issue(DownloadEngine* e) = 0;
+  // Stop this request.
+  virtual void stop(DownloadEngine* e) = 0;
+  // Returns true if processing tracker response is successful.
+  virtual bool processResponse(const SharedHandle<BtAnnounce>& btAnnounce) = 0;
+};
+
+class HTTPAnnRequest:public AnnRequest {
+public:
+  HTTPAnnRequest(const SharedHandle<RequestGroup>& rg);
+  virtual ~HTTPAnnRequest();
+  virtual bool stopped() const;
+  virtual bool success() const;
+  virtual bool issue(DownloadEngine* e);
+  virtual void stop(DownloadEngine* e);
+  virtual bool processResponse(const SharedHandle<BtAnnounce>& btAnnounce);
+private:
+  SharedHandle<RequestGroup> rg_;
+};
+
+class UDPAnnRequest:public AnnRequest {
+public:
+  UDPAnnRequest(const SharedHandle<UDPTrackerRequest>& req);
+  virtual ~UDPAnnRequest();
+  virtual bool stopped() const;
+  virtual bool success() const;
+  virtual bool issue(DownloadEngine* e);
+  virtual void stop(DownloadEngine* e);
+  virtual bool processResponse(const SharedHandle<BtAnnounce>& btAnnounce);
+private:
+  SharedHandle<UDPTrackerRequest> req_;
+};
 
 class TrackerWatcherCommand : public Command
 {
@@ -57,6 +101,8 @@ private:
   RequestGroup* requestGroup_;
 
   DownloadEngine* e_;
+
+  SharedHandle<UDPTrackerClient> udpTrackerClient_;
 
   SharedHandle<PeerStorage> peerStorage_;
 
@@ -66,16 +112,20 @@ private:
 
   SharedHandle<BtAnnounce> btAnnounce_;
 
-  SharedHandle<RequestGroup> trackerRequestGroup_;
+  SharedHandle<AnnRequest> trackerRequest_;
+
   /**
    * Returns a command for announce request. Returns 0 if no announce request
    * is needed.
    */
-  SharedHandle<RequestGroup> createRequestGroup(const std::string& url);
+  SharedHandle<AnnRequest>
+  createHTTPAnnRequest(const std::string& uri);
 
-  std::string getTrackerResponse(const SharedHandle<RequestGroup>& requestGroup);
+  SharedHandle<AnnRequest>
+  createUDPAnnRequest(const std::string& host, uint16_t port,
+                      uint16_t localPort);
 
-  void processTrackerResponse(const std::string& response);
+  void addConnection();
 
   const SharedHandle<Option>& getOption() const;
 public:
@@ -85,7 +135,7 @@ public:
 
   virtual ~TrackerWatcherCommand();
 
-  SharedHandle<RequestGroup> createAnnounce();
+  SharedHandle<AnnRequest> createAnnounce(DownloadEngine* e);
 
   virtual bool execute();
 

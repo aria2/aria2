@@ -79,7 +79,7 @@ private:
 
   SharedHandle<StatCalc> statCalc_;
 
-  bool haltRequested_;
+  int haltRequested_;
 
   class SocketPoolEntry {
   private:
@@ -228,6 +228,11 @@ public:
   bool isHaltRequested() const
   {
     return haltRequested_;
+  }
+
+  bool isForceHaltRequested() const
+  {
+    return haltRequested_ >= 2;
   }
 
   void requestHalt();

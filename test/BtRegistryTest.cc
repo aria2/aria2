@@ -11,6 +11,7 @@
 #include "BtRuntime.h"
 #include "FileEntry.h"
 #include "bittorrent_helper.h"
+#include "UDPTrackerRequest.h"
 
 namespace aria2 {
 

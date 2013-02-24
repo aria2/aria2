@@ -522,7 +522,10 @@ SRCS += PeerAbstractCommand.cc PeerAbstractCommand.h\
 	ValueBaseBencodeParser.h\
 	BencodeDiskWriter.h\
 	BencodeDiskWriterFactory.h\
-	MemoryBencodePreDownloadHandler.h
+	MemoryBencodePreDownloadHandler.h\
+	UDPTrackerClient.cc UDPTrackerClient.h\
+	UDPTrackerRequest.cc UDPTrackerRequest.h\
+	NameResolveCommand.cc NameResolveCommand.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

@@ -52,6 +52,8 @@
 #include "bittorrent_helper.h"
 #include "wallclock.h"
 #include "uri.h"
+#include "UDPTrackerRequest.h"
+#include "SocketCore.h"
 
 namespace aria2 {
 
@@ -115,7 +117,7 @@ bool uriHasQuery(const std::string& uri)
 }
 } // namespace
 
-std::string DefaultBtAnnounce::getAnnounceUrl() {
+bool DefaultBtAnnounce::adjustAnnounceList() {
   if(isStoppedAnnounceReady()) {
     if(!announceList_.currentTierAcceptsStoppedEvent()) {
       announceList_.moveToStoppedAllowedTier();
@@ -135,6 +137,13 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
       announceList_.setEvent(AnnounceTier::STARTED_AFTER_COMPLETION);
     }
   } else {
+    return false;
+  }
+  return true;
+}
+
+std::string DefaultBtAnnounce::getAnnounceUrl() {
+  if(!adjustAnnounceList()) {
     return A2STR::NIL;
   }
   int numWant = 50;
@@ -191,6 +200,60 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
     uri += option_->get(PREF_BT_EXTERNAL_IP);
   }
   return uri;
+}
+
+SharedHandle<UDPTrackerRequest> DefaultBtAnnounce::createUDPTrackerRequest
+(const std::string& remoteAddr, uint16_t remotePort, uint16_t localPort)
+{
+  if(!adjustAnnounceList()) {
+    return SharedHandle<UDPTrackerRequest>();
+  }
+  NetStat& stat = downloadContext_->getNetStat();
+  int64_t left =
+    pieceStorage_->getTotalLength()-pieceStorage_->getCompletedLength();
+  SharedHandle<UDPTrackerRequest> req(new UDPTrackerRequest());
+  req->remoteAddr = remoteAddr;
+  req->remotePort = remotePort;
+  req->action = UDPT_ACT_ANNOUNCE;
+  req->infohash = bittorrent::getTorrentAttrs(downloadContext_)->infoHash;
+  const unsigned char* peerId = bittorrent::getStaticPeerId();
+  req->peerId.assign(peerId, peerId + PEER_ID_LENGTH);
+  req->downloaded = stat.getSessionDownloadLength();
+  req->left = left;
+  req->uploaded = stat.getSessionUploadLength();
+  switch(announceList_.getEvent()) {
+  case AnnounceTier::STARTED:
+  case AnnounceTier::STARTED_AFTER_COMPLETION:
+    req->event = UDPT_EVT_STARTED;
+    break;
+  case AnnounceTier::STOPPED:
+    req->event = UDPT_EVT_STOPPED;
+    break;
+  case AnnounceTier::COMPLETED:
+    req->event = UDPT_EVT_COMPLETED;
+    break;
+  default:
+    req->event = 0;
+  }
+  if(!option_->blank(PREF_BT_EXTERNAL_IP)) {
+    unsigned char dest[16];
+    if(net::getBinAddr(dest, option_->get(PREF_BT_EXTERNAL_IP)) == 4) {
+      memcpy(&req->ip, dest, 4);
+    } else {
+      req->ip = 0;
+    }
+  } else {
+    req->ip = 0;
+  }
+  req->key = randomizer_->getRandomNumber(INT32_MAX);
+  int numWant = 50;
+  if(!btRuntime_->lessThanMinPeers() || btRuntime_->isHalt()) {
+    numWant = 0;
+  }
+  req->numWant = numWant;
+  req->port = localPort;
+  req->extensions = 0;
+  return req;
 }
 
 void DefaultBtAnnounce::announceStart() {
@@ -283,6 +346,30 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
       std::vector<SharedHandle<Peer> > peers;
       bittorrent::extractPeer(peer6Data, AF_INET6, std::back_inserter(peers));
       peerStorage_->addPeer(peers);
+    }
+  }
+}
+
+void DefaultBtAnnounce::processUDPTrackerResponse
+(const SharedHandle<UDPTrackerRequest>& req)
+{
+  const SharedHandle<UDPTrackerReply>& reply = req->reply;
+  A2_LOG_DEBUG("Now processing UDP tracker response.");
+  if(reply->interval > 0) {
+    minInterval_ = reply->interval;
+    A2_LOG_DEBUG(fmt("Min interval:%ld", static_cast<long int>(minInterval_)));
+    interval_ = minInterval_;
+  }
+  complete_ = reply->seeders;
+  A2_LOG_DEBUG(fmt("Complete:%d", reply->seeders));
+  incomplete_ = reply->leechers;
+  A2_LOG_DEBUG(fmt("Incomplete:%d", reply->leechers));
+  if(!btRuntime_->isHalt() && btRuntime_->lessThanMinPeers()) {
+    for(std::vector<std::pair<std::string, uint16_t> >::iterator i =
+          reply->peers.begin(), eoi = reply->peers.end(); i != eoi;
+        ++i) {
+      peerStorage_->addPeer(SharedHandle<Peer>(new Peer((*i).first,
+                                                        (*i).second)));
     }
   }
 }

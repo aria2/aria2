@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,54 +32,81 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_DHT_INTERACTION_COMMAND_H
-#define D_DHT_INTERACTION_COMMAND_H
+#ifndef D_UDP_TRACKER_REQUEST_H
+#define D_UDP_TRACKER_REQUEST_H
 
-#include "Command.h"
+#include "common.h"
+
+#include <string>
+#include <vector>
+
 #include "SharedHandle.h"
+#include "TimerA2.h"
 
 namespace aria2 {
 
-class DHTMessageDispatcher;
-class DHTMessageReceiver;
-class DHTTaskQueue;
-class DownloadEngine;
-class SocketCore;
-class DHTConnection;
-class UDPTrackerClient;
+enum UDPTrackerAction {
+  UDPT_ACT_CONNECT = 0,
+  UDPT_ACT_ANNOUNCE = 1,
+  UDPT_ACT_SCRAPE = 2,
+  UDPT_ACT_ERROR = 3
+};
 
-class DHTInteractionCommand:public Command {
-private:
-  DownloadEngine* e_;
-  SharedHandle<DHTMessageDispatcher> dispatcher_;
-  SharedHandle<DHTMessageReceiver> receiver_;
-  SharedHandle<DHTTaskQueue> taskQueue_;
-  SharedHandle<SocketCore> readCheckSocket_;
-  SharedHandle<DHTConnection> connection_;
-  SharedHandle<UDPTrackerClient> udpTrackerClient_;
-public:
-  DHTInteractionCommand(cuid_t cuid, DownloadEngine* e);
+enum UDPTrackerError {
+  UDPT_ERR_SUCCESS,
+  UDPT_ERR_TRACKER,
+  UDPT_ERR_TIMEOUT,
+  UDPT_ERR_NETWORK,
+  UDPT_ERR_SHUTDOWN
+};
 
-  virtual ~DHTInteractionCommand();
+enum UDPTrackerState {
+  UDPT_STA_PENDING,
+  UDPT_STA_COMPLETE
+};
 
-  virtual bool execute();
+enum UDPTrackerEvent {
+  UDPT_EVT_NONE = 0,
+  UDPT_EVT_COMPLETED = 1,
+  UDPT_EVT_STARTED = 2,
+  UDPT_EVT_STOPPED = 3
+};
 
-  void setReadCheckSocket(const SharedHandle<SocketCore>& socket);
+struct UDPTrackerReply {
+  int32_t action;
+  int32_t transactionId;
+  int32_t interval;
+  int32_t leechers;
+  int32_t seeders;
+  std::vector<std::pair<std::string, uint16_t> > peers;
+  UDPTrackerReply();
+};
 
-  void disableReadCheckSocket(const SharedHandle<SocketCore>& socket);
-
-  void setMessageDispatcher(const SharedHandle<DHTMessageDispatcher>& dispatcher);
-
-  void setMessageReceiver(const SharedHandle<DHTMessageReceiver>& receiver);
-
-  void setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue);
-
-  void setConnection(const SharedHandle<DHTConnection>& connection);
-
-  void setUDPTrackerClient
-  (const SharedHandle<UDPTrackerClient>& udpTrackerClient);
+struct UDPTrackerRequest {
+  std::string remoteAddr;
+  uint16_t remotePort;
+  int64_t connectionId;
+  int32_t action;
+  int32_t transactionId;
+  std::string infohash;
+  std::string peerId;
+  int64_t downloaded;
+  int64_t left;
+  int64_t uploaded;
+  int32_t event;
+  uint32_t ip;
+  uint32_t key;
+  int32_t numWant;
+  uint16_t port;
+  uint16_t extensions;
+  int state;
+  int error;
+  Timer dispatched;
+  int failCount;
+  SharedHandle<UDPTrackerReply> reply;
+  UDPTrackerRequest();
 };
 
 } // namespace aria2
 
-#endif // D_DHT_INTERACTION_COMMAND_H
+#endif // D_UDP_TRACKER_REQUEST_H

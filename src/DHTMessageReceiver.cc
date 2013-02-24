@@ -63,18 +63,11 @@ DHTMessageReceiver::DHTMessageReceiver
 
 DHTMessageReceiver::~DHTMessageReceiver() {}
 
-SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
+SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage
+(const std::string& remoteAddr, uint16_t remotePort, unsigned char *data,
+ size_t length)
 {
-  std::string remoteAddr;
-  uint16_t remotePort;
-  unsigned char data[64*1024];
   try {
-    ssize_t length = connection_->receiveMessage(data, sizeof(data),
-                                                 remoteAddr,
-                                                 remotePort);
-    if(length <= 0) {
-      return SharedHandle<DHTMessage>();
-    }
     bool isReply = false;
     SharedHandle<ValueBase> decoded = bencode2::decode(data, length);
     const Dict* dict = downcast<Dict>(decoded);
@@ -87,13 +80,13 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
       } else {
         A2_LOG_INFO(fmt("Malformed DHT message. Missing 'y' key. From:%s:%u",
                         remoteAddr.c_str(), remotePort));
-        return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
+        return handleUnknownMessage(data, length, remoteAddr, remotePort);
       }
     } else {
       A2_LOG_INFO(fmt("Malformed DHT message. This is not a bencoded directory."
                       " From:%s:%u",
                       remoteAddr.c_str(), remotePort));
-      return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
+      return handleUnknownMessage(data, length, remoteAddr, remotePort);
     }
     if(isReply) {
       std::pair<SharedHandle<DHTResponseMessage>,
@@ -101,7 +94,7 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
         tracker_->messageArrived(dict, remoteAddr, remotePort);
       if(!p.first) {
         // timeout or malicious? message
-        return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
+        return handleUnknownMessage(data, length, remoteAddr, remotePort);
       }
       onMessageReceived(p.first);
       if(p.second) {
@@ -114,14 +107,14 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
       if(*message->getLocalNode() == *message->getRemoteNode()) {
         // drop message from localnode
         A2_LOG_INFO("Received DHT message from localnode.");
-        return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
+        return handleUnknownMessage(data, length, remoteAddr, remotePort);
       }
       onMessageReceived(message);
       return message;
     }
   } catch(RecoverableException& e) {
     A2_LOG_INFO_EX("Exception thrown while receiving DHT message.", e);
-    return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
+    return handleUnknownMessage(data, length, remoteAddr, remotePort);
   }
 }
 

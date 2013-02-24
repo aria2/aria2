@@ -66,6 +66,8 @@ private:
   SharedHandle<PieceStorage> pieceStorage_;
   SharedHandle<PeerStorage> peerStorage_;
   uint16_t tcpPort_;
+
+  bool adjustAnnounceList();
 public:
   DefaultBtAnnounce(const SharedHandle<DownloadContext>& downloadContext,
                     const Option* option);
@@ -103,6 +105,10 @@ public:
 
   virtual std::string getAnnounceUrl();
 
+  virtual SharedHandle<UDPTrackerRequest>
+  createUDPTrackerRequest(const std::string& remoteAddr, uint16_t remotePort,
+                          uint16_t localPort);
+
   virtual void announceStart();
 
   virtual void announceSuccess();
@@ -115,6 +121,9 @@ public:
 
   virtual void processAnnounceResponse(const unsigned char* trackerResponse,
                                        size_t trackerResponseLength);
+
+  virtual void processUDPTrackerResponse
+  (const SharedHandle<UDPTrackerRequest>& req);
 
   virtual bool noMoreAnnounce();
 

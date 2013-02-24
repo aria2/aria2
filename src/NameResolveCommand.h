@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,54 +32,56 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_DHT_INTERACTION_COMMAND_H
-#define D_DHT_INTERACTION_COMMAND_H
+#ifndef D_NAME_RESOLVE_COMMAND_H
+#define D_NAME_RESOLVE_COMMAND_H
 
 #include "Command.h"
+
+#include <string>
+#include <vector>
+
 #include "SharedHandle.h"
 
+// TODO Make this class generic.
 namespace aria2 {
 
-class DHTMessageDispatcher;
-class DHTMessageReceiver;
-class DHTTaskQueue;
 class DownloadEngine;
-class SocketCore;
-class DHTConnection;
-class UDPTrackerClient;
+#ifdef ENABLE_ASYNC_DNS
+class AsyncNameResolver;
+#endif // ENABLE_ASYNC_DNS
+class UDPTrackerRequest;
 
-class DHTInteractionCommand:public Command {
+class NameResolveCommand:public Command {
 private:
   DownloadEngine* e_;
-  SharedHandle<DHTMessageDispatcher> dispatcher_;
-  SharedHandle<DHTMessageReceiver> receiver_;
-  SharedHandle<DHTTaskQueue> taskQueue_;
-  SharedHandle<SocketCore> readCheckSocket_;
-  SharedHandle<DHTConnection> connection_;
-  SharedHandle<UDPTrackerClient> udpTrackerClient_;
-public:
-  DHTInteractionCommand(cuid_t cuid, DownloadEngine* e);
 
-  virtual ~DHTInteractionCommand();
+#ifdef ENABLE_ASYNC_DNS
+  SharedHandle<AsyncNameResolver> resolver_;
+#endif // ENABLE_ASYNC_DNS
+
+#ifdef ENABLE_ASYNC_DNS
+  bool resolveHostname(const std::string& hostname,
+                       const SharedHandle<AsyncNameResolver>& resolver);
+
+  void setNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver);
+
+  void disableNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver);
+#endif // ENABLE_ASYNC_DNS
+
+  SharedHandle<UDPTrackerRequest> req_;
+  void onShutdown();
+  void onFailure();
+  void onSuccess
+  (const std::vector<std::string>& addrs, DownloadEngine* e);
+public:
+  NameResolveCommand(cuid_t cuid, DownloadEngine* e,
+                     const SharedHandle<UDPTrackerRequest>& req);
+
+  virtual ~NameResolveCommand();
 
   virtual bool execute();
-
-  void setReadCheckSocket(const SharedHandle<SocketCore>& socket);
-
-  void disableReadCheckSocket(const SharedHandle<SocketCore>& socket);
-
-  void setMessageDispatcher(const SharedHandle<DHTMessageDispatcher>& dispatcher);
-
-  void setMessageReceiver(const SharedHandle<DHTMessageReceiver>& receiver);
-
-  void setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue);
-
-  void setConnection(const SharedHandle<DHTConnection>& connection);
-
-  void setUDPTrackerClient
-  (const SharedHandle<UDPTrackerClient>& udpTrackerClient);
 };
 
 } // namespace aria2
 
-#endif // D_DHT_INTERACTION_COMMAND_H
+#endif // D_NAME_RESOVE_COMMAND_H

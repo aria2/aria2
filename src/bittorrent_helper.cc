@@ -731,6 +731,13 @@ uint8_t getId(const unsigned char* msg)
   return msg[0];
 }
 
+uint64_t getLLIntParam(const unsigned char* msg, size_t pos)
+{
+  uint64_t nParam;
+  memcpy(&nParam, msg+pos, sizeof(nParam));
+  return ntoh64(nParam);
+}
+
 uint32_t getIntParam(const unsigned char* msg, size_t pos)
 {
   uint32_t nParam;
@@ -796,6 +803,12 @@ void checkBitfield
   if(bitfield[bitfieldLength-1]&~bitfield::lastByteMask(pieces)) {
     throw DL_ABORT_EX("Invalid bitfield");
   }
+}
+
+void setLLIntParam(unsigned char* dest, uint64_t param)
+{
+  uint64_t nParam = hton64(param);
+  memcpy(dest, &nParam, sizeof(nParam));
 }
 
 void setIntParam(unsigned char* dest, uint32_t param)

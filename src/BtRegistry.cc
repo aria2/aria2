@@ -42,12 +42,14 @@
 #include "BtProgressInfoFile.h"
 #include "bittorrent_helper.h"
 #include "LpdMessageReceiver.h"
+#include "UDPTrackerClient.h"
 #include "NullHandle.h"
 
 namespace aria2 {
 
 BtRegistry::BtRegistry()
-  : tcpPort_(0)
+  : tcpPort_(0),
+    udpPort_(0)
 {}
 
 BtRegistry::~BtRegistry() {}
@@ -105,6 +107,12 @@ void BtRegistry::setLpdMessageReceiver
 (const SharedHandle<LpdMessageReceiver>& receiver)
 {
   lpdMessageReceiver_ = receiver;
+}
+
+void BtRegistry::setUDPTrackerClient
+(const SharedHandle<UDPTrackerClient>& tracker)
+{
+  udpTrackerClient_ = tracker;
 }
 
 BtObject::BtObject

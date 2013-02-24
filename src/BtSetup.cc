@@ -67,6 +67,7 @@
 #include "DHTMessageReceiver.h"
 #include "DHTMessageFactory.h"
 #include "DHTMessageCallback.h"
+#include "UDPTrackerClient.h"
 #include "BtProgressInfoFile.h"
 #include "BtAnnounce.h"
 #include "BtRuntime.h"

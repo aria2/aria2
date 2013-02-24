@@ -85,7 +85,7 @@ volatile sig_atomic_t globalHaltRequested = 0;
 
 DownloadEngine::DownloadEngine(const SharedHandle<EventPoll>& eventPoll)
   : eventPoll_(eventPoll),
-    haltRequested_(false),
+    haltRequested_(0),
     noWait_(false),
     refreshInterval_(DEFAULT_REFRESH_INTERVAL),
     cookieStorage_(new CookieStorage()),
@@ -239,13 +239,13 @@ void DownloadEngine::afterEachIteration()
 
 void DownloadEngine::requestHalt()
 {
-  haltRequested_ = true;
+  haltRequested_ = std::max(haltRequested_, 1);
   requestGroupMan_->halt();
 }
 
 void DownloadEngine::requestForceHalt()
 {
-  haltRequested_ = true;
+  haltRequested_ = std::max(haltRequested_, 2);
   requestGroupMan_->forceHalt();
 }
 

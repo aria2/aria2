@@ -63,32 +63,156 @@
 #include "a2functional.h"
 #include "util.h"
 #include "fmt.h"
+#include "UDPTrackerRequest.h"
+#include "UDPTrackerClient.h"
+#include "BtRegistry.h"
+#include "NameResolveCommand.h"
 
 namespace aria2 {
+
+HTTPAnnRequest::HTTPAnnRequest(const SharedHandle<RequestGroup>& rg)
+  : rg_(rg)
+{}
+
+HTTPAnnRequest::~HTTPAnnRequest()
+{}
+
+bool HTTPAnnRequest::stopped() const
+{
+  return rg_->getNumCommand() == 0;
+}
+
+bool HTTPAnnRequest::success() const
+{
+  return rg_->downloadFinished();
+}
+
+void HTTPAnnRequest::stop(DownloadEngine* e)
+{
+  rg_->setForceHaltRequested(true);
+}
+
+bool HTTPAnnRequest::issue(DownloadEngine* e)
+{
+  try {
+    std::vector<Command*>* commands = new std::vector<Command*>();
+    auto_delete_container<std::vector<Command*> > commandsDel(commands);
+    rg_->createInitialCommand(*commands, e);
+    e->addCommand(*commands);
+    e->setNoWait(true);
+    commands->clear();
+    A2_LOG_DEBUG("added tracker request command");
+    return true;
+  } catch(RecoverableException& ex) {
+    A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, ex);
+    return false;
+  }
+}
+
+bool HTTPAnnRequest::processResponse
+(const SharedHandle<BtAnnounce>& btAnnounce)
+{
+  try {
+    std::stringstream strm;
+    unsigned char data[2048];
+    rg_->getPieceStorage()->getDiskAdaptor()->openFile();
+    while(1) {
+      ssize_t dataLength = rg_->getPieceStorage()->
+        getDiskAdaptor()->readData(data, sizeof(data), strm.tellp());
+      if(dataLength == 0) {
+        break;
+      }
+      strm.write(reinterpret_cast<const char*>(data), dataLength);
+    }
+    std::string res = strm.str();
+    btAnnounce->processAnnounceResponse
+      (reinterpret_cast<const unsigned char*>(res.c_str()), res.size());
+    return true;
+  } catch(RecoverableException& e) {
+    A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
+    return false;
+  }
+}
+
+UDPAnnRequest::UDPAnnRequest(const SharedHandle<UDPTrackerRequest>& req)
+  : req_(req)
+{}
+
+UDPAnnRequest::~UDPAnnRequest()
+{}
+
+bool UDPAnnRequest::stopped() const
+{
+  return !req_ || req_->state == UDPT_STA_COMPLETE;
+}
+
+bool UDPAnnRequest::success() const
+{
+  return req_ && req_->state == UDPT_STA_COMPLETE &&
+    req_->error == UDPT_ERR_SUCCESS;
+}
+
+void UDPAnnRequest::stop(DownloadEngine* e)
+{
+  if(req_) {
+    req_.reset();
+  }
+}
+
+bool UDPAnnRequest::issue(DownloadEngine* e)
+{
+  if(req_) {
+    NameResolveCommand* command = new NameResolveCommand
+      (e->newCUID(), e, req_);
+    e->addCommand(command);
+    e->setNoWait(true);
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool UDPAnnRequest::processResponse
+(const SharedHandle<BtAnnounce>& btAnnounce)
+{
+  if(req_) {
+    btAnnounce->processUDPTrackerResponse(req_);
+    return true;
+  } else {
+    return false;
+  }
+}
 
 TrackerWatcherCommand::TrackerWatcherCommand
 (cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e)
   : Command(cuid),
     requestGroup_(requestGroup),
-    e_(e)
+    e_(e),
+    udpTrackerClient_(e_->getBtRegistry()->getUDPTrackerClient())
 {
   requestGroup_->increaseNumCommand();
+  if(udpTrackerClient_) {
+    udpTrackerClient_->increaseWatchers();
+  }
 }
 
 TrackerWatcherCommand::~TrackerWatcherCommand()
 {
   requestGroup_->decreaseNumCommand();
+  if(udpTrackerClient_) {
+    udpTrackerClient_->decreaseWatchers();
+  }
 }
 
 bool TrackerWatcherCommand::execute() {
   if(requestGroup_->isForceHaltRequested()) {
-    if(!trackerRequestGroup_) {
+    if(!trackerRequest_) {
       return true;
-    } else if(trackerRequestGroup_->getNumCommand() == 0 ||
-              trackerRequestGroup_->downloadFinished()) {
+    } else if(trackerRequest_->stopped() ||
+              trackerRequest_->success()) {
       return true;
     } else {
-      trackerRequestGroup_->setForceHaltRequested(true);
+      trackerRequest_->stop(e_);
       e_->setRefreshInterval(0);
       e_->addCommand(this);
       return false;
@@ -98,44 +222,32 @@ bool TrackerWatcherCommand::execute() {
     A2_LOG_DEBUG("no more announce");
     return true;
   }
-  if(!trackerRequestGroup_) {
-    trackerRequestGroup_ = createAnnounce();
-    if(trackerRequestGroup_) {
-      try {
-        std::vector<Command*>* commands = new std::vector<Command*>();
-        auto_delete_container<std::vector<Command*> > commandsDel(commands);
-        trackerRequestGroup_->createInitialCommand(*commands, e_);
-        e_->addCommand(*commands);
-        commands->clear();
-        A2_LOG_DEBUG("added tracker request command");
-      } catch(RecoverableException& ex) {
-        A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, ex);
-      }
+  if(!trackerRequest_) {
+    trackerRequest_ = createAnnounce(e_);
+    if(trackerRequest_) {
+      trackerRequest_->issue(e_);
     }
-  } else if(trackerRequestGroup_->getNumCommand() == 0) {
+  } else if(trackerRequest_->stopped()) {
     // We really want to make sure that tracker request has finished
     // by checking getNumCommand() == 0. Because we reset
     // trackerRequestGroup_, if it is still used in other Command, we
     // will get Segmentation fault.
-    if(trackerRequestGroup_->downloadFinished()) {
-      try {
-        std::string trackerResponse = getTrackerResponse(trackerRequestGroup_);
-
-        processTrackerResponse(trackerResponse);
+    if(trackerRequest_->success()) {
+      if(trackerRequest_->processResponse(btAnnounce_)) {
         btAnnounce_->announceSuccess();
         btAnnounce_->resetAnnounce();
-      } catch(RecoverableException& ex) {
-        A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, ex);
+        addConnection();
+      } else {
         btAnnounce_->announceFailure();
         if(btAnnounce_->isAllAnnounceFailed()) {
           btAnnounce_->resetAnnounce();
         }
       }
-      trackerRequestGroup_.reset();
+      trackerRequest_.reset();
     } else {
       // handle errors here
       btAnnounce_->announceFailure(); // inside it, trackers = 0.
-      trackerRequestGroup_.reset();
+      trackerRequest_.reset();
       if(btAnnounce_->isAllAnnounceFailed()) {
         btAnnounce_->resetAnnounce();
       }
@@ -145,30 +257,8 @@ bool TrackerWatcherCommand::execute() {
   return false;
 }
 
-std::string TrackerWatcherCommand::getTrackerResponse
-(const SharedHandle<RequestGroup>& requestGroup)
+void TrackerWatcherCommand::addConnection()
 {
-  std::stringstream strm;
-  unsigned char data[2048];
-  requestGroup->getPieceStorage()->getDiskAdaptor()->openFile();
-  while(1) {
-    ssize_t dataLength = requestGroup->getPieceStorage()->
-      getDiskAdaptor()->readData(data, sizeof(data), strm.tellp());
-    if(dataLength == 0) {
-      break;
-    }
-    strm.write(reinterpret_cast<const char*>(data), dataLength);
-  }
-  return strm.str();
-}
-
-// TODO we have to deal with the exception thrown By BtAnnounce
-void TrackerWatcherCommand::processTrackerResponse
-(const std::string& trackerResponse)
-{
-  btAnnounce_->processAnnounceResponse
-    (reinterpret_cast<const unsigned char*>(trackerResponse.c_str()),
-     trackerResponse.size());
   while(!btRuntime_->isHalt() && btRuntime_->lessThanMinPeers()) {
     if(!peerStorage_->isPeerAvailable()) {
       break;
@@ -180,8 +270,8 @@ void TrackerWatcherCommand::processTrackerResponse
       break;
     }
     PeerInitiateConnectionCommand* command;
-    command = new PeerInitiateConnectionCommand(ncuid, requestGroup_, peer, e_,
-                                                btRuntime_);
+    command = new PeerInitiateConnectionCommand(ncuid, requestGroup_, peer,
+                                                e_, btRuntime_);
     command->setPeerStorage(peerStorage_);
     command->setPieceStorage(pieceStorage_);
     e_->addCommand(command);
@@ -190,13 +280,48 @@ void TrackerWatcherCommand::processTrackerResponse
   }
 }
 
-SharedHandle<RequestGroup> TrackerWatcherCommand::createAnnounce() {
-  SharedHandle<RequestGroup> rg;
-  if(btAnnounce_->isAnnounceReady()) {
-    rg = createRequestGroup(btAnnounce_->getAnnounceUrl());
-    btAnnounce_->announceStart(); // inside it, trackers++.
+SharedHandle<AnnRequest>
+TrackerWatcherCommand::createAnnounce(DownloadEngine* e)
+{
+  SharedHandle<AnnRequest> treq;
+  while(!btAnnounce_->isAllAnnounceFailed() &&
+        btAnnounce_->isAnnounceReady()) {
+    std::string uri = btAnnounce_->getAnnounceUrl();
+    uri_split_result res;
+    memset(&res, 0, sizeof(res));
+    if(uri_split(&res, uri.c_str()) == 0) {
+      // Without UDP tracker support, send it to normal tracker flow
+      // and make it fail.
+      if(udpTrackerClient_ &&
+         uri::getFieldString(res, USR_SCHEME, uri.c_str()) == "udp") {
+        uint16_t localPort;
+        localPort = e->getBtRegistry()->getUdpPort();
+        treq = createUDPAnnRequest
+          (uri::getFieldString(res, USR_HOST, uri.c_str()), res.port,
+           localPort);
+      } else {
+        treq = createHTTPAnnRequest(btAnnounce_->getAnnounceUrl());
+      }
+      btAnnounce_->announceStart(); // inside it, trackers++.
+      break;
+    } else {
+      btAnnounce_->announceFailure();
+    }
   }
-  return rg;
+  if(btAnnounce_->isAllAnnounceFailed()) {
+    btAnnounce_->resetAnnounce();
+  }
+  return treq;
+}
+
+SharedHandle<AnnRequest>
+TrackerWatcherCommand::createUDPAnnRequest(const std::string& host,
+                                           uint16_t port,
+                                           uint16_t localPort)
+{
+  SharedHandle<UDPTrackerRequest> req =
+    btAnnounce_->createUDPTrackerRequest(host, port, localPort);
+  return SharedHandle<AnnRequest>(new UDPAnnRequest(req));
 }
 
 namespace {
@@ -219,8 +344,8 @@ bool backupTrackerIsAvailable
 }
 } // namespace
 
-SharedHandle<RequestGroup>
-TrackerWatcherCommand::createRequestGroup(const std::string& uri)
+SharedHandle<AnnRequest>
+TrackerWatcherCommand::createHTTPAnnRequest(const std::string& uri)
 {
   std::vector<std::string> uris;
   uris.push_back(uri);
@@ -261,7 +386,7 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   dctx->setAcceptMetalink(false);
   A2_LOG_INFO(fmt("Creating tracker request group GID#%s",
                   GroupId::toHex(rg->getGID()).c_str()));
-  return rg;
+  return SharedHandle<AnnRequest>(new HTTPAnnRequest(rg));
 }
 
 void TrackerWatcherCommand::setBtRuntime

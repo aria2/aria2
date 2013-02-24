@@ -61,6 +61,8 @@
 #include "DHTRegistry.h"
 #include "DHTBucketRefreshTask.h"
 #include "DHTMessageCallback.h"
+#include "UDPTrackerClient.h"
+#include "BtRegistry.h"
 #include "prefs.h"
 #include "Option.h"
 #include "SocketCore.h"
@@ -176,6 +178,8 @@ void DHTSetup::setup
     factory->setTokenTracker(tokenTracker.get());
     factory->setLocalNode(localNode);
 
+    // For now, UDPTrackerClient was enabled along with DHT
+    SharedHandle<UDPTrackerClient> udpTrackerClient(new UDPTrackerClient());
     // assign them into DHTRegistry
     if(family == AF_INET) {
       DHTRegistry::getMutableData().localNode = localNode;
@@ -187,6 +191,8 @@ void DHTSetup::setup
       DHTRegistry::getMutableData().messageDispatcher = dispatcher;
       DHTRegistry::getMutableData().messageReceiver = receiver;
       DHTRegistry::getMutableData().messageFactory = factory;
+      e->getBtRegistry()->setUDPTrackerClient(udpTrackerClient);
+      e->getBtRegistry()->setUdpPort(localNode->getPort());
     } else {
       DHTRegistry::getMutableData6().localNode = localNode;
       DHTRegistry::getMutableData6().routingTable = routingTable;
@@ -244,6 +250,8 @@ void DHTSetup::setup
       command->setMessageReceiver(receiver);
       command->setTaskQueue(taskQueue);
       command->setReadCheckSocket(connection->getSocket());
+      command->setConnection(connection);
+      command->setUDPTrackerClient(udpTrackerClient);
       tempCommands->push_back(command);
     }
     {
@@ -282,12 +290,15 @@ void DHTSetup::setup
     }
     commands.insert(commands.end(), tempCommands->begin(), tempCommands->end());
     tempCommands->clear();
-  } catch(RecoverableException& e) {
+  } catch(RecoverableException& ex) {
     A2_LOG_ERROR_EX(fmt("Exception caught while initializing DHT functionality."
                         " DHT is disabled."),
-                    e);
+                    ex);
     if(family == AF_INET) {
       DHTRegistry::clearData();
+      e->getBtRegistry()->setUDPTrackerClient
+        (SharedHandle<UDPTrackerClient>());
+      e->getBtRegistry()->setUdpPort(0);
     } else {
       DHTRegistry::clearData6();
     }

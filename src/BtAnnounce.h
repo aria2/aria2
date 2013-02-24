@@ -40,8 +40,11 @@
 #include <string>
 
 #include "a2time.h"
+#include "SharedHandle.h"
 
 namespace aria2 {
+
+class UDPTrackerRequest;
 
 class BtAnnounce {
 public:
@@ -64,6 +67,10 @@ public:
    * Returns announe URL with all necessary parameters included.
    */
   virtual std::string getAnnounceUrl() = 0;
+
+  virtual SharedHandle<UDPTrackerRequest>
+  createUDPTrackerRequest(const std::string& remoteAddr, uint16_t remotePort,
+                          uint16_t localPort) = 0;
 
   /**
    * Tells that the announce process has just started.
@@ -95,6 +102,9 @@ public:
    */
   virtual void processAnnounceResponse(const unsigned char* trackerResponse,
                                        size_t trackerResponseLength) = 0;
+
+  virtual void processUDPTrackerResponse
+  (const SharedHandle<UDPTrackerRequest>& req) = 0;
 
   /**
    * Returns true if no more announce is needed.

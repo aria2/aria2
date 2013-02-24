@@ -69,7 +69,9 @@ public:
 
   ~DHTMessageReceiver();
 
-  SharedHandle<DHTMessage> receiveMessage();
+  SharedHandle<DHTMessage> receiveMessage
+  (const std::string& remoteAddr, uint16_t remotePort, unsigned char *data,
+   size_t length);
 
   void handleTimeout();
 

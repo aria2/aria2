@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,54 +32,20 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_DHT_INTERACTION_COMMAND_H
-#define D_DHT_INTERACTION_COMMAND_H
-
-#include "Command.h"
-#include "SharedHandle.h"
+#include "UDPTrackerRequest.h"
 
 namespace aria2 {
 
-class DHTMessageDispatcher;
-class DHTMessageReceiver;
-class DHTTaskQueue;
-class DownloadEngine;
-class SocketCore;
-class DHTConnection;
-class UDPTrackerClient;
+UDPTrackerReply::UDPTrackerReply()
+  : action(0), transactionId(0), interval(0), leechers(0), seeders(0)
+{}
 
-class DHTInteractionCommand:public Command {
-private:
-  DownloadEngine* e_;
-  SharedHandle<DHTMessageDispatcher> dispatcher_;
-  SharedHandle<DHTMessageReceiver> receiver_;
-  SharedHandle<DHTTaskQueue> taskQueue_;
-  SharedHandle<SocketCore> readCheckSocket_;
-  SharedHandle<DHTConnection> connection_;
-  SharedHandle<UDPTrackerClient> udpTrackerClient_;
-public:
-  DHTInteractionCommand(cuid_t cuid, DownloadEngine* e);
-
-  virtual ~DHTInteractionCommand();
-
-  virtual bool execute();
-
-  void setReadCheckSocket(const SharedHandle<SocketCore>& socket);
-
-  void disableReadCheckSocket(const SharedHandle<SocketCore>& socket);
-
-  void setMessageDispatcher(const SharedHandle<DHTMessageDispatcher>& dispatcher);
-
-  void setMessageReceiver(const SharedHandle<DHTMessageReceiver>& receiver);
-
-  void setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue);
-
-  void setConnection(const SharedHandle<DHTConnection>& connection);
-
-  void setUDPTrackerClient
-  (const SharedHandle<UDPTrackerClient>& udpTrackerClient);
-};
+UDPTrackerRequest::UDPTrackerRequest()
+  : remotePort(0), action(UDPT_ACT_CONNECT), transactionId(0), downloaded(0),
+    left(0), uploaded(0), event(UDPT_EVT_NONE), ip(0), key(0), numWant(0),
+    port(0), extensions(0), state(UDPT_STA_PENDING), error(UDPT_ERR_SUCCESS),
+    dispatched(0),
+    failCount(0)
+{}
 
 } // namespace aria2
-
-#endif // D_DHT_INTERACTION_COMMAND_H
