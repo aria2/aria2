@@ -235,10 +235,12 @@ int UDPTrackerClient::receiveReply
     break;
   }
   case UDPT_ACT_SCRAPE:
-    A2_LOG_INFO("unexpected scrape action reply");
+    A2_LOG_INFO(fmt("unexpected scrape action reply from %s:%u",
+                    remoteAddr.c_str(), remotePort));
     return -1;
   default:
-    A2_LOG_INFO("unknown action reply");
+    A2_LOG_INFO(fmt("unknown action reply from %s:%u",
+                    remoteAddr.c_str(), remotePort));
     return -1;
   }
   return 0;
