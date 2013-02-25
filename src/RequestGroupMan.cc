@@ -881,12 +881,43 @@ void RequestGroupMan::addDownloadResult(const SharedHandle<DownloadResult>& dr)
 {
   bool rv = downloadResults_.push_back(dr->gid->getNumericId(), dr);
   assert(rv);
-  while(downloadResults_.size() > maxDownloadResult_){
-    DownloadResultList::SeqType::iterator i = downloadResults_.begin();
-    const SharedHandle<DownloadResult>& dr = (*i).second;
-    if(dr->belongsTo == 0 && dr->result != error_code::FINISHED) {
-      removedLastErrorResult_ = dr->result;
-      ++removedErrorResult_;
+
+  DownloadResultList::SeqType::iterator i, e;
+  DownloadResultList::SeqType::iterator last = downloadResults_.begin();
+
+restart:
+  if (downloadResults_.size() > maxDownloadResult_) {
+    for (i = last, e = downloadResults_.end(); i != e; ++i) {
+      const SharedHandle<DownloadResult>& dr = (*i).second;
+
+      if (dr->belongsTo == 0 && dr->result != error_code::FINISHED) {
+        // Cache last, so that we don't have to re-traverse the whole
+        // container again and again
+        last = i;
+        continue;
+      }
+
+      downloadResults_.erase(i); // Might invalidate container iters...
+      goto restart;              // hence restart
+    }
+  }
+
+  last = downloadResults_.begin();
+restartErr:
+  if (downloadResults_.size() > maxDownloadResult_) {
+    for (i = last, e = downloadResults_.end(); i != e; ++i) {
+      const SharedHandle<DownloadResult>& dr = (*i).second;
+
+      if (dr->belongsTo == 0 && dr->result != error_code::FINISHED) {
+        removedLastErrorResult_ = dr->result;
+        ++removedErrorResult_;
+        downloadResults_.erase(i); // Might invalidate container iters...
+        goto restartErr;           // hence restart
+      }
+
+      // Cache last, so that we don't have to re-traverse the whole
+      // container again and again
+      last = i;
     }
   }
 }
