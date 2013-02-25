@@ -883,11 +883,14 @@ void RequestGroupMan::addDownloadResult(const SharedHandle<DownloadResult>& dr)
   assert(rv);
   while(downloadResults_.size() > maxDownloadResult_){
     DownloadResultList::SeqType::iterator i = downloadResults_.begin();
+    // Save last encountered error code so that we can report it
+    // later.
     const SharedHandle<DownloadResult>& dr = (*i).second;
     if(dr->belongsTo == 0 && dr->result != error_code::FINISHED) {
       removedLastErrorResult_ = dr->result;
       ++removedErrorResult_;
     }
+    downloadResults_.pop_front();
   }
 }
 

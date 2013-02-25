@@ -20,6 +20,7 @@
 #include "DownloadContext.h"
 #include "Option.h"
 #include "FileEntry.h"
+#include "DownloadResult.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "message_digest_helper.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -142,6 +143,24 @@ SharedHandle<RequestGroup> createRequestGroup(int32_t pieceLength,
   SharedHandle<RequestGroup> group(new RequestGroup(GroupId::create(), opt));
   group->setDownloadContext(dctx);
   return group;
+}
+
+SharedHandle<DownloadResult> createDownloadResult
+(error_code::Value result, const std::string& uri)
+{
+  std::vector<std::string> uris;
+  uris.push_back(uri);
+  SharedHandle<FileEntry> entry(new FileEntry("/tmp/path", 1, 0, uris));
+  std::vector<SharedHandle<FileEntry> > entries;
+  entries.push_back(entry);
+  SharedHandle<DownloadResult> dr(new DownloadResult());
+  dr->gid = GroupId::create();
+  dr->fileEntries = entries;
+  dr->result = result;
+  dr->belongsTo = 0;
+  dr->inMemoryDownload = false;
+  dr->option = SharedHandle<Option>(new Option());
+  return dr;
 }
 
 } // namespace aria2

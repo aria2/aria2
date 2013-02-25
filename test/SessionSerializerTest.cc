@@ -5,6 +5,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "TestUtil.h"
 #include "RequestGroupMan.h"
 #include "array_fun.h"
 #include "download_helper.h"
@@ -28,26 +29,6 @@ public:
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION(SessionSerializerTest);
-
-namespace {
-SharedHandle<DownloadResult> createDownloadResult
-(error_code::Value result, const std::string& uri)
-{
-  std::vector<std::string> uris;
-  uris.push_back(uri);
-  SharedHandle<FileEntry> entry(new FileEntry("/tmp/path", 1, 0, uris));
-  std::vector<SharedHandle<FileEntry> > entries;
-  entries.push_back(entry);
-  SharedHandle<DownloadResult> dr(new DownloadResult());
-  dr->gid = GroupId::create();
-  dr->fileEntries = entries;
-  dr->result = result;
-  dr->belongsTo = 0;
-  dr->inMemoryDownload = false;
-  dr->option = SharedHandle<Option>(new Option());
-  return dr;
-}
-} // namespace
 
 void SessionSerializerTest::testSave()
 {

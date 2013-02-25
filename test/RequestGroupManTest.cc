@@ -34,6 +34,7 @@ class RequestGroupManTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testFillRequestGroupFromReserver);
   CPPUNIT_TEST(testFillRequestGroupFromReserver_uriParser);
   CPPUNIT_TEST(testInsertReservedGroup);
+  CPPUNIT_TEST(testAddDownloadResult);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<DownloadEngine> e_;
@@ -64,6 +65,7 @@ public:
   void testFillRequestGroupFromReserver();
   void testFillRequestGroupFromReserver_uriParser();
   void testInsertReservedGroup();
+  void testAddDownloadResult();
 };
 
 
@@ -287,6 +289,19 @@ void RequestGroupManTest::testInsertReservedGroup()
   ++itr;
   CPPUNIT_ASSERT_EQUAL(rgs2[0]->getGID(), (*itr++).second->getGID());
   CPPUNIT_ASSERT_EQUAL(rgs2[1]->getGID(), (*itr++).second->getGID());
+}
+
+void RequestGroupManTest::testAddDownloadResult()
+{
+  std::string uri = "http://example.org";
+  rgman_->setMaxDownloadResult(3);
+  rgman_->addDownloadResult(createDownloadResult(error_code::TIME_OUT, uri));
+  rgman_->addDownloadResult(createDownloadResult(error_code::FINISHED, uri));
+  rgman_->addDownloadResult(createDownloadResult(error_code::FINISHED, uri));
+  rgman_->addDownloadResult(createDownloadResult(error_code::FINISHED, uri));
+  rgman_->addDownloadResult(createDownloadResult(error_code::FINISHED, uri));
+  CPPUNIT_ASSERT_EQUAL(error_code::TIME_OUT,
+                       rgman_->getDownloadStat().getLastErrorResult());
 }
 
 } // namespace aria2

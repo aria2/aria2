@@ -13,6 +13,7 @@ class MessageDigest;
 class RequestGroupMan;
 class RequestGroup;
 class Option;
+class DownloadResult;
 
 void createFile(const std::string& filename, size_t length);
 
@@ -70,4 +71,8 @@ SharedHandle<RequestGroup> createRequestGroup(int32_t pieceLength,
                                               const std::string& path,
                                               const std::string& uri,
                                               const SharedHandle<Option>& opt);
+
+SharedHandle<DownloadResult> createDownloadResult
+(error_code::Value result, const std::string& uri);
+
 } // namespace aria2
