@@ -81,7 +81,8 @@ class BtRegistry {
 private:
   std::map<a2_gid_t, SharedHandle<BtObject> > pool_;
   uint16_t tcpPort_;
-  // This is IPv4 port for DHT and UDP tracker. No IPv6 udpPort atm.
+  // This is UDP port for DHT and UDP tracker. But currently UDP
+  // tracker is not supported in IPv6.
   uint16_t udpPort_;
   SharedHandle<LpdMessageReceiver> lpdMessageReceiver_;
   SharedHandle<UDPTrackerClient> udpTrackerClient_;
