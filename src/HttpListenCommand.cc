@@ -109,10 +109,10 @@ bool HttpListenCommand::bindPort(uint16_t port)
     A2_LOG_INFO(fmt(MSG_LISTENING_PORT,
                     getCuid(), port));
     e_->addSocketForReadCheck(serverSocket_, this);
-    A2_LOG_NOTICE(fmt(_("IPv%d RPC: listening to port %u"), ipv, port));
+    A2_LOG_NOTICE(fmt(_("IPv%d RPC: listening on TCP port %u"), ipv, port));
     return true;
   } catch(RecoverableException& e) {
-    A2_LOG_ERROR_EX(fmt("IPv%d RPC: failed to bind port %u", ipv, port), e);
+    A2_LOG_ERROR_EX(fmt("IPv%d RPC: failed to bind TCP port %u", ipv, port), e);
     serverSocket_->closeConnection();
   }
   return false;

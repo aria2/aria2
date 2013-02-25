@@ -122,7 +122,7 @@ void DHTSetup::setup
         e->getOption()->get(family == AF_INET?PREF_DHT_LISTEN_ADDR:
                             PREF_DHT_LISTEN_ADDR6);
       if(!connection->bind(port, addr, sgl)) {
-        throw DL_ABORT_EX("Error occurred while binding port for DHT");
+        throw DL_ABORT_EX("Error occurred while binding UDP port for DHT");
       }
       localNode->setPort(port);
     }
