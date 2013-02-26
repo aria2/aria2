@@ -65,22 +65,34 @@ void UTMetadataRequestTracker::remove(size_t index)
   }
 }
 
+namespace {
+struct RemoveTimeoutEntry {
+  RemoveTimeoutEntry(std::vector<size_t>& indexes)
+    : indexes(indexes)
+  {}
+  bool operator()(const UTMetadataRequestTracker::RequestEntry& ent) const
+  {
+    if(ent.elapsed(TIMEOUT)) {
+      A2_LOG_DEBUG(fmt("ut_metadata request timeout. index=%lu",
+                       static_cast<unsigned long>(ent.index_)));
+      indexes.push_back(ent.index_);
+      return true;
+    } else {
+      return false;
+    }
+  }
+  std::vector<size_t>& indexes;
+  static const time_t TIMEOUT = 20;
+};
+} // namespace
+
 std::vector<size_t> UTMetadataRequestTracker::removeTimeoutEntry()
 {
   std::vector<size_t> indexes;
-  const time_t TIMEOUT = 20;
-  for(std::vector<RequestEntry>::iterator i = trackedRequests_.begin(),
-        eoi = trackedRequests_.end(); i != eoi;) {
-    if((*i).elapsed(TIMEOUT)) {
-      A2_LOG_DEBUG(fmt("ut_metadata request timeout. index=%lu",
-                       static_cast<unsigned long>((*i).index_)));
-      indexes.push_back((*i).index_);
-      i = trackedRequests_.erase(i);
-      eoi = trackedRequests_.end();
-    } else {
-      ++i;
-    }
-  }
+  trackedRequests_.erase(std::remove_if(trackedRequests_.begin(),
+                                        trackedRequests_.end(),
+                                        RemoveTimeoutEntry(indexes)),
+                         trackedRequests_.end());
   return indexes;
 }
 

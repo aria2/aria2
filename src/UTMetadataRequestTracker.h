@@ -45,7 +45,8 @@
 namespace aria2 {
 
 class UTMetadataRequestTracker {
-private:
+public:
+  // Made public so that unnamed functor can access it
   struct RequestEntry {
     size_t index_;
     Timer dispatchedTime_;
@@ -62,7 +63,7 @@ private:
       return index_ == e.index_;
     }
   };
-
+private:
   std::vector<RequestEntry> trackedRequests_;
 public:
   UTMetadataRequestTracker();
