@@ -76,7 +76,7 @@ public:
 
   void handleTimeout();
 
-  // Made public to make unnamed functor can access it
+  // Made public so that unnamed functor can access this
   void handleTimeoutEntry(const SharedHandle<DHTMessageTrackerEntry>& entry);
 
   SharedHandle<DHTMessageTrackerEntry> getEntryFor

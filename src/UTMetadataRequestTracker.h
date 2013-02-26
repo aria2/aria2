@@ -46,7 +46,7 @@ namespace aria2 {
 
 class UTMetadataRequestTracker {
 public:
-  // Made public so that unnamed functor can access it
+  // Made public so that unnamed functor can access this
   struct RequestEntry {
     size_t index_;
     Timer dispatchedTime_;
