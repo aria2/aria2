@@ -60,8 +60,6 @@ private:
   SharedHandle<DHTRoutingTable> routingTable_;
 
   SharedHandle<DHTMessageFactory> factory_;
-
-  void handleTimeoutEntry(const SharedHandle<DHTMessageTrackerEntry>& entry);
 public:
   DHTMessageTracker();
 
@@ -77,6 +75,9 @@ public:
                  const std::string& ipaddr, uint16_t port);
 
   void handleTimeout();
+
+  // Made public to make unnamed functor can access it
+  void handleTimeoutEntry(const SharedHandle<DHTMessageTrackerEntry>& entry);
 
   SharedHandle<DHTMessageTrackerEntry> getEntryFor
   (const SharedHandle<DHTMessage>& message) const;

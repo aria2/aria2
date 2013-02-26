@@ -135,19 +135,29 @@ void DHTMessageTracker::handleTimeoutEntry
   }
 }
 
-void DHTMessageTracker::handleTimeout()
-{
-  for(std::deque<SharedHandle<DHTMessageTrackerEntry> >::iterator i =
-        entries_.begin(), eoi = entries_.end(); i != eoi;) {
-    if((*i)->isTimeout()) {
-        SharedHandle<DHTMessageTrackerEntry> entry = *i;
-        i = entries_.erase(i);
-        eoi = entries_.end();
-        handleTimeoutEntry(entry);
+namespace {
+struct HandleTimeout {
+  HandleTimeout(DHTMessageTracker* tracker)
+  : tracker(tracker)
+  {}
+  bool operator()(const SharedHandle<DHTMessageTrackerEntry>& ent) const
+  {
+    if(ent->isTimeout()) {
+      tracker->handleTimeoutEntry(ent);
+      return true;
     } else {
-      ++i;
+      return false;
     }
   }
+  DHTMessageTracker* tracker;
+};
+} // namespace
+
+void DHTMessageTracker::handleTimeout()
+{
+  entries_.erase(std::remove_if(entries_.begin(), entries_.end(),
+                                HandleTimeout(this)),
+                 entries_.end());
 }
 
 SharedHandle<DHTMessageTrackerEntry>
