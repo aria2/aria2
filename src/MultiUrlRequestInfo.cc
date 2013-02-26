@@ -104,7 +104,7 @@ void handler(int signal) {
 } // namespace
 
 MultiUrlRequestInfo::MultiUrlRequestInfo
-(const std::vector<SharedHandle<RequestGroup> >& requestGroups,
+(std::vector<SharedHandle<RequestGroup> >& requestGroups,
  const SharedHandle<Option>& op,
  const SharedHandle<StatCalc>& statCalc,
  const SharedHandle<OutputFile>& summaryOut,
@@ -158,6 +158,8 @@ error_code::Value MultiUrlRequestInfo::execute()
 
     SharedHandle<DownloadEngine> e =
       DownloadEngineFactory().newDownloadEngine(option_.get(), requestGroups_);
+    // Avoid keeping RequestGroups alive longer than necessary
+    requestGroups_.clear();
 
     if(!option_->blank(PREF_LOAD_COOKIES)) {
       File cookieFile(option_->get(PREF_LOAD_COOKIES));

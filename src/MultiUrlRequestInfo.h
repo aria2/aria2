@@ -52,7 +52,7 @@ class UriListParser;
 
 class MultiUrlRequestInfo {
 private:
-  std::vector<SharedHandle<RequestGroup> > requestGroups_;
+  std::vector<SharedHandle<RequestGroup> >& requestGroups_;
 
   SharedHandle<Option> option_;
 
@@ -64,8 +64,12 @@ private:
 
   void printMessageForContinue();
 public:
+  /*
+   * MultiRequestInfo effectively takes ownership of the
+   * requestGroups.
+   */
   MultiUrlRequestInfo
-  (const std::vector<SharedHandle<RequestGroup> >& requestGroups,
+  (std::vector<SharedHandle<RequestGroup> >& requestGroups,
    const SharedHandle<Option>& op,
    const SharedHandle<StatCalc>& statCalc,
    const SharedHandle<OutputFile>& summaryOut,
