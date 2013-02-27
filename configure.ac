@@ -35,6 +35,8 @@ ARIA2_ARG_WITHOUT([libxml2])
 ARIA2_ARG_WITHOUT([libexpat])
 ARIA2_ARG_WITHOUT([libcares])
 ARIA2_ARG_WITHOUT([libz])
+ARIA2_ARG_WITH([tcmalloc])
+ARIA2_ARG_WITH([jemalloc])
 
 ARIA2_ARG_DISABLE([bittorrent])
 ARIA2_ARG_DISABLE([metalink])
@@ -523,6 +525,57 @@ AC_CHECK_FUNCS([__argz_count \
                 usleep \
 		utime \
 		utimes])
+
+dnl Put tcmalloc/jemalloc checks after the posix_memalign check.
+dnl These libraries may implement posix_memalign, while the usual CRT may not
+dnl (e.g. mingw). Since we aren't including the corresponding library headers
+dnl this will lead to undefined posix_memalign() errors when compiling
+if test "x$with_tcmalloc_requested" = "xyes" &&
+   test "x$with_jemalloc_requested" = "xyes"; then
+  AC_MSG_FAILURE([Cannot use both, tcmalloc and jemalloc!])
+fi
+
+if test "x$with_tcmalloc" = "xyes"; then
+  dnl Important: put malloc libs at the very end.
+  dnl Only newish versions have a .pc, thus try CHECK_LIB as well.
+  PKG_CHECK_MODULES([TCMALLOC], [libtcmalloc_minimal], [have_tcmalloc=yes], [have_tcmalloc=no])
+  if test "x$have_tcmalloc" = "xyes"; then
+    CPPFLAGS="$TCMALLOC_CFLAGS $CPPFLAGS"
+    LDFLAGS="$TCMALLOC_LDFLAGS $CPPFLAGS"
+    LIBS="$LIBS $TCMALLOC_LIBS"
+  else
+    AC_CHECK_LIB([tcmalloc_minimal], [malloc], [have_tcmalloc=yes], [have_tcmalloc=no])
+    if test "x$have_tcmalloc" = "xyes"; then
+      LIBS="$LIBS -ltcmalloc_minimal"
+    else
+      if test "x$with_tcmalloc_requested" = "xyes"; then
+        ARIA2_DEP_NOT_MET([tcmalloc_minimal])
+      fi
+    fi
+  fi
+fi
+
+if test "x$have_tcmalloc" != "xyes" && test "x$with_jemalloc" = "xyes"; then
+  dnl Important: put malloc libs at the very end.
+  dnl Usually jemalloc does not come with a .pc, as the official source does not
+  dnl generate one.
+  PKG_CHECK_MODULES([JEMALLOC], [jemalloc], [have_jemalloc=yes], [have_jemalloc=no])
+  if test "x$have_jemalloc" = "xyes"; then
+    CPPFLAGS="$JEMALLOC_CFLAGS $CPPFLAGS"
+    LDFLAGS="$JEMALLOC_LDFLAGS $CPPFLAGS"
+    LIBS="$LIBS $JEMALLOC_LIBS"
+  else
+    AC_CHECK_LIB([jemalloc], [malloc], [have_jemalloc=yes], [have_jemalloc=no])
+    if test "x$have_jemalloc" = "xyes"; then
+      LIBS="$LIBS -ljemalloc"
+    else
+      if test "x$with_jemalloc_requested" = "xyes"; then
+        ARIA2_DEP_NOT_MET([jemalloc (unprefixed)])
+      fi
+    fi
+  fi
+fi
+
 
 if test "x$enable_epoll" = "xyes"; then
   AC_CHECK_FUNCS([epoll_create], [have_epoll=yes])
