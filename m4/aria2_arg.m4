@@ -1,18 +1,34 @@
 dnl ARIA2_ARG_WITH(PACKAGE)
-dnl wrapper for AC_ARG_WITH with default value 'yes'.
+dnl wrapper for AC_ARG_WITH with default value 'no'.
 dnl If --with-$1 is given explicitly, set with_$1_requested to given value.
 AC_DEFUN([ARIA2_ARG_WITH],
 [AC_ARG_WITH([$1],
-	AS_HELP_STRING([--with-$1], [Use $1 if it is installed.]),
+	AS_HELP_STRING([--with-$1], [Use $1.]),
+	[with_$1_requested=$withval with_$1=$withval], [with_$1=no])]
+)
+dnl ARIA2_ARG_WITH(PACKAGE)
+dnl wrapper for AC_ARG_WITH with default value 'yes'.
+dnl If --with-$1 is given explicitly, set with_$1_requested to given value.
+AC_DEFUN([ARIA2_ARG_WITHOUT],
+[AC_ARG_WITH([$1],
+	AS_HELP_STRING([--without-$1], [Do not use $1. [default=check]]),
 	[with_$1_requested=$withval with_$1=$withval], [with_$1=yes])]
 )
 
 dnl ARIA2_ARG_ENABLE(FEATURE)
-dnl wrapper for AC_ARG_ENABLE with default value 'yes'.
+dnl wrapper for AC_ARG_ENABLE with default value 'no'.
 dnl If --enable-$1 is given explicitly, set enable_$1_requested to given value.
 AC_DEFUN([ARIA2_ARG_ENABLE],
 [AC_ARG_ENABLE([$1],
 	AS_HELP_STRING([--enable-$1], [Enable $1 support.]),
+	[enable_$1_requested=$enableval enable_$1=$enableval], [enable_$1=no])]
+)
+dnl ARIA2_ARG_DISABLE(FEATURE)
+dnl wrapper for AC_ARG_ENABLE with default value 'yes'.
+dnl If --enable-$1 is given explicitly, set enable_$1_requested to given value.
+AC_DEFUN([ARIA2_ARG_DISABLE],
+[AC_ARG_ENABLE([$1],
+  AS_HELP_STRING([--disable-$1], [Disable $1 support. [default=check]]),
 	[enable_$1_requested=$enableval enable_$1=$enableval], [enable_$1=yes])]
 )
 

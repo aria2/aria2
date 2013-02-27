@@ -24,20 +24,20 @@ esac
 AC_DEFINE_UNQUOTED([TARGET], ["$target"], [Define target-type])
 
 # Checks for arguments.
-ARIA2_ARG_WITH([gnutls])
-ARIA2_ARG_WITH([libnettle])
-ARIA2_ARG_WITH([libgmp])
-ARIA2_ARG_WITH([libgcrypt])
-ARIA2_ARG_WITH([openssl])
-ARIA2_ARG_WITH([sqlite3])
-ARIA2_ARG_WITH([libxml2])
-ARIA2_ARG_WITH([libexpat])
-ARIA2_ARG_WITH([libcares])
-ARIA2_ARG_WITH([libz])
+ARIA2_ARG_WITHOUT([gnutls])
+ARIA2_ARG_WITHOUT([libnettle])
+ARIA2_ARG_WITHOUT([libgmp])
+ARIA2_ARG_WITHOUT([libgcrypt])
+ARIA2_ARG_WITHOUT([openssl])
+ARIA2_ARG_WITHOUT([sqlite3])
+ARIA2_ARG_WITHOUT([libxml2])
+ARIA2_ARG_WITHOUT([libexpat])
+ARIA2_ARG_WITHOUT([libcares])
+ARIA2_ARG_WITHOUT([libz])
 
-ARIA2_ARG_ENABLE([bittorrent])
-ARIA2_ARG_ENABLE([metalink])
-ARIA2_ARG_ENABLE([epoll])
+ARIA2_ARG_DISABLE([bittorrent])
+ARIA2_ARG_DISABLE([metalink])
+ARIA2_ARG_DISABLE([epoll])
 
 AC_ARG_WITH([ca-bundle],
   AS_HELP_STRING([--with-ca-bundle=FILE],[Use FILE as default CA bundle.]),
@@ -48,7 +48,7 @@ AC_ARG_WITH([bashcompletiondir],
                  [Directory to install bash_completion file]),
   [bashcompletiondir=$withval], [bashcompletiondir=$docdir/bash_completion])
 
-AC_ARG_VAR([ARIA2_STATIC], [Set `yes' to build a statically linked aria2])
+AC_ARG_VAR([ARIA2_STATIC], [Set 'yes' to build a statically linked aria2])
 
 # Checks for programs.
 AC_PROG_CXX
