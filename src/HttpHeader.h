@@ -45,7 +45,7 @@
 
 namespace aria2 {
 
-class Range;
+struct Range;
 
 class HttpHeader {
 private:

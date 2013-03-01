@@ -49,7 +49,7 @@ class DownloadEngine;
 #ifdef ENABLE_ASYNC_DNS
 class AsyncNameResolver;
 #endif // ENABLE_ASYNC_DNS
-class UDPTrackerRequest;
+struct UDPTrackerRequest;
 
 class NameResolveCommand:public Command {
 private:

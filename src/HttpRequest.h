@@ -48,7 +48,7 @@ namespace aria2 {
 
 class Request;
 class Segment;
-class Range;
+struct Range;
 class Option;
 class CookieStorage;
 class AuthConfigFactory;

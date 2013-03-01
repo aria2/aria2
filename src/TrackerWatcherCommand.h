@@ -50,7 +50,7 @@ class PieceStorage;
 class BtRuntime;
 class BtAnnounce;
 class Option;
-class UDPTrackerRequest;
+struct UDPTrackerRequest;
 class UDPTrackerClient;
 
 class AnnRequest {

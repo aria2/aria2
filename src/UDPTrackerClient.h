@@ -48,7 +48,7 @@ namespace aria2 {
 
 #define UDPT_INITIAL_CONNECTION_ID 0x41727101980LL
 
-class UDPTrackerRequest;
+struct UDPTrackerRequest;
 
 enum UDPTrackerConnectionState {
   UDPT_CST_CONNECTING,

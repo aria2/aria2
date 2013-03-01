@@ -65,11 +65,9 @@ SegmentEntry::SegmentEntry(cuid_t cuid, const SharedHandle<Segment>& segment)
 SegmentEntry::~SegmentEntry() {}
 
 SegmentMan::SegmentMan
-(const Option* option,
- const SharedHandle<DownloadContext>& downloadContext,
+(const SharedHandle<DownloadContext>& downloadContext,
  const SharedHandle<PieceStorage>& pieceStorage)
-  : option_(option),
-    downloadContext_(downloadContext),
+  : downloadContext_(downloadContext),
     pieceStorage_(pieceStorage),
     ignoreBitfield_(downloadContext->getPieceLength(),
                     downloadContext->getTotalLength())

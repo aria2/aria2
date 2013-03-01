@@ -57,13 +57,10 @@
 
 namespace aria2 {
 
-HttpServer::HttpServer
-(const SharedHandle<SocketCore>& socket,
- DownloadEngine* e)
+HttpServer::HttpServer(const SharedHandle<SocketCore>& socket)
  : socket_(socket),
    socketRecvBuffer_(new SocketRecvBuffer(socket_)),
    socketBuffer_(socket),
-   e_(e),
    headerProcessor_(new HttpHeaderProcessor
                     (HttpHeaderProcessor::SERVER_PARSER)),
    lastContentLength_(0),

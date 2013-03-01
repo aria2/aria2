@@ -44,7 +44,7 @@
 
 namespace aria2 {
 
-class UDPTrackerRequest;
+struct UDPTrackerRequest;
 
 class BtAnnounce {
 public:

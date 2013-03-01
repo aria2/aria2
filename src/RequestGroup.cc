@@ -631,7 +631,7 @@ void RequestGroup::initPieceStorage()
     tempPieceStorage.swap(psHolder);
   } else {
     UnknownLengthPieceStorage* ps =
-      new UnknownLengthPieceStorage(downloadContext_, option_.get());
+      new UnknownLengthPieceStorage(downloadContext_);
     SharedHandle<PieceStorage> psHolder(ps);
     if(diskWriterFactory_) {
       ps->setDiskWriterFactory(diskWriterFactory_);
@@ -639,8 +639,8 @@ void RequestGroup::initPieceStorage()
     tempPieceStorage.swap(psHolder);
   }
   tempPieceStorage->initStorage();
-  SharedHandle<SegmentMan> tempSegmentMan
-    (new SegmentMan(option_.get(), downloadContext_, tempPieceStorage));
+  SharedHandle<SegmentMan> tempSegmentMan(new SegmentMan(downloadContext_,
+                                                         tempPieceStorage));
 
   pieceStorage_.swap(tempPieceStorage);
   segmentMan_.swap(tempSegmentMan);

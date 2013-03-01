@@ -191,24 +191,18 @@ public:
 
   class DownloadStat {
   private:
-    int completed_;
     int error_;
     int inProgress_;
-    int removed_;
     int waiting_;
     error_code::Value lastErrorResult_;
   public:
-    DownloadStat(int completed,
-                 int error,
+    DownloadStat(int error,
                  int inProgress,
-                 int removed,
                  int waiting,
                  error_code::Value lastErrorResult =
                  error_code::FINISHED):
-      completed_(completed),
       error_(error),
       inProgress_(inProgress),
-      removed_(removed),
       waiting_(waiting),
       lastErrorResult_(lastErrorResult) {}
 

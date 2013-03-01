@@ -75,8 +75,6 @@ typedef std::deque<SharedHandle<SegmentEntry> > SegmentEntries;
  */
 class SegmentMan {
 private:
-  const Option* option_;
-
   SharedHandle<DownloadContext> downloadContext_;
 
   SharedHandle<PieceStorage> pieceStorage_;
@@ -100,8 +98,7 @@ private:
 
   void cancelSegmentInternal(cuid_t cuid, const SharedHandle<Segment>& segment);
 public:
-  SegmentMan(const Option* option,
-             const SharedHandle<DownloadContext>& downloadContext,
+  SegmentMan(const SharedHandle<DownloadContext>& downloadContext,
              const SharedHandle<PieceStorage>& pieceStorage);
 
   ~SegmentMan();

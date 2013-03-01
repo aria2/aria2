@@ -48,8 +48,7 @@ MultiFileAllocationIterator::MultiFileAllocationIterator
 (MultiDiskAdaptor* diskAdaptor):
   diskAdaptor_(diskAdaptor),
   entries_(diskAdaptor_->diskWriterEntries_.begin(),
-           diskAdaptor_->diskWriterEntries_.end()),
-  offset_(0)
+           diskAdaptor_->diskWriterEntries_.end())
 {}
 
 MultiFileAllocationIterator::~MultiFileAllocationIterator() {}

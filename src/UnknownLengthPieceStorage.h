@@ -48,8 +48,6 @@ class UnknownLengthPieceStorage:public PieceStorage {
 private:
   SharedHandle<DownloadContext> downloadContext_;
 
-  const Option* option_;
-
   SharedHandle<DirectDiskAdaptor> diskAdaptor_;
 
   SharedHandle<DiskWriterFactory> diskWriterFactory_;
@@ -60,8 +58,7 @@ private:
 
   SharedHandle<Piece> piece_;
 public:
-  UnknownLengthPieceStorage(const SharedHandle<DownloadContext>& downloadContext,
-                            const Option* option);
+  UnknownLengthPieceStorage(const SharedHandle<DownloadContext>& downloadContext);
 
   virtual ~UnknownLengthPieceStorage();
 

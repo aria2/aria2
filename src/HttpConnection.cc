@@ -76,8 +76,7 @@ HttpConnection::HttpConnection
   : cuid_(cuid),
     socket_(socket),
     socketRecvBuffer_(socketRecvBuffer),
-    socketBuffer_(socket),
-    option_(0)
+    socketBuffer_(socket)
 {}
 
 HttpConnection::~HttpConnection() {}
