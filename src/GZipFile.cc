@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Nils Maier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,36 +32,102 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_URI_LIST_PARSER_H
-#define D_URI_LIST_PARSER_H
 
-#include "common.h"
+#include "GZipFile.h"
 
-#include <string>
-#include <deque>
-#include <iosfwd>
-
-#include "Option.h"
-#include "BufferedFile.h"
-#include "SharedHandle.h"
+#include "a2io.h"
+#include "util.h"
 
 namespace aria2 {
 
-class UriListParser {
-private:
-  SharedHandle<BufferedFile> fp_;
+GZipFile::GZipFile(const char* filename, const char* mode)
+  : BufferedFile(0), fp_(0), open_(false)
+{
+  FILE* fp =
+#ifdef __MINGW32__
+  a2fopen(utf8ToWChar(filename).c_str(), utf8ToWChar(mode).c_str());
+#else // !__MINGW32__
+  a2fopen(filename, mode);
+#endif // !__MINGW32__
 
-  std::string line_;
-public:
-  UriListParser(const std::string& filename);
+  open_  = fp;
+  if (open_) {
+    int fd = dup(fileno(fp));
+    if ((open_ = fd) >= 0) {
+      open_ = (fp_ = gzdopen(fd, mode));
+      if (!open_) {
+        ::close(fd);
+      }
+    }
+    if (open_) {
+#if HAVE_GZBUFFER
+      gzbuffer(fp_, 1<<17);
+#endif
+#if HAVE_GZSETPARAMS
+      gzsetparams(fp_, 2, Z_DEFAULT_STRATEGY);
+#endif
+    }
+    fclose(fp);
+  }
+}
 
-  ~UriListParser();
+int GZipFile::close()
+{
+  if (open_) {
+    open_ = false;
+    return gzclose(fp_);
+  }
+  return 0;
+}
 
-  void parseNext(std::vector<std::string>& uris, Option& op);
+bool GZipFile::isError() const
+{
+  int rv = 0;
+  const char *e = gzerror(fp_, &rv);
+  return (e != 0 && *e != 0) || rv != 0;
+}
 
-  bool hasNext();
-};
+size_t GZipFile::read(void* ptr, size_t count)
+{
+  return gzread(fp_, ptr, count);
+}
+
+size_t GZipFile::write(const void* ptr, size_t count)
+{
+  return gzwrite(fp_, ptr, count);
+}
+
+char* GZipFile::gets(char* s, int size)
+{
+  return gzgets(fp_, s, size);
+}
+
+int GZipFile::flush()
+{
+  return gzflush(fp_, 0);
+}
+
+int GZipFile::vprintf(const char* format, va_list va)
+{
+  char *buf = 0;
+  size_t len;
+
+  int rv = ::vasprintf(&buf, format, va);
+  if (rv <= 0) {
+    goto out;
+  }
+
+  len = strlen(buf);
+  if (len) {
+    rv = gzwrite(fp_, buf, len);
+  }
+
+out:
+  if (buf) {
+    free(buf);
+  }
+  return rv;
+}
+
 
 } // namespace aria2
-
-#endif // D_URI_LIST_PARSER_H

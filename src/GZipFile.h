@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2011 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Nils Maier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,74 +32,40 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_BUFFERED_FILE_H
-#define D_BUFFERED_FILE_H
 
-#include "OutputFile.h"
+#ifndef D_GZIP_FILE_H
+#define D_GZIP_FILE_H
 
-#include <cstdio>
-#include <string>
-#include <iosfwd>
+#include <zlib.h>
+
+#include "BufferedFile.h"
 
 namespace aria2 {
 
-// This is a wrapper class for fopen/fclose/fread/fwrite/fgets.
-class BufferedFile:public OutputFile {
-private:
-  typedef void (BufferedFile::*unspecified_bool_type)() const;
-  void good_state() const {}
+class GZipFile: public BufferedFile {
 public:
-  BufferedFile(const char* filename, const char* mode);
-  BufferedFile(FILE* fp);
-  virtual ~BufferedFile();
-  // Returns true if file is opened and ferror returns 0. Otherwise
-  // returns false.
-  operator unspecified_bool_type() const;
-  // wrapper for fread. Using 1 for 2nd argument of fread.
-  virtual size_t read(void* ptr, size_t count);
-  // wrapper for fwrite. Using 1 for 2nd argument of fwrite.
-  virtual size_t write(const void* ptr, size_t count);
-  virtual size_t write(const char* str);
-  // wrapper for fgets
-  virtual char* gets(char* s, int size);
-  // wrapper for fgets, but trailing '\n' is replaced with '\0'.
-  char* getsn(char* s, int size);
-  // Reads one line and returns it. The last '\n' is removed.
-  std::string getLine();
-  // wrapper for fclose
+  GZipFile(const char* filename, const char* mode);
+  virtual ~GZipFile() {}
   virtual int close();
-  // Return true if open_ && feof(fp_) != 0. Otherwise returns false.
-  bool eof();
-  // Convenient method. Read data to end of file and write them into
-  // given stream. Returns written size.
-  size_t transfer(std::ostream& out);
+  virtual size_t read(void* ptr, size_t count);
+  virtual size_t write(const void* ptr, size_t count);
+  virtual char* gets(char* s, int size);
   virtual int vprintf(const char* format, va_list va);
-  // wrapper for fflush
   virtual int flush();
-  virtual bool supportsColor();
-  // Mode for reading
-  static const char READ[];
-  // Mode for writing
-  static const char WRITE[];
-  // Mode for append
-  static const char APPEND[];
-
 private:
   // Don't allow copying
-  BufferedFile(const BufferedFile&);
-  BufferedFile& operator=(const BufferedFile&);
+  GZipFile(const GZipFile&);
+  GZipFile& operator=(const GZipFile&);
 
-  FILE* fp_;
+  gzFile fp_;
   bool open_;
-  bool supportsColor_;
 
 protected:
-  virtual bool isError() const { return ferror(fp_); }
-  virtual bool isEOF() const { return feof(fp_); }
+  virtual bool isError() const;
+  virtual bool isEOF() const { return gzeof(fp_); }
   virtual bool isOpen() const { return open_; }
-
 };
 
 } // namespace aria2
 
-#endif // D_BUFFERED_FILE_H
+#endif // D_GZIP_FILE_H
