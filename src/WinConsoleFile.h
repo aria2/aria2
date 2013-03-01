@@ -45,7 +45,7 @@ public:
   WinConsoleFile(DWORD stdHandle);
   virtual ~WinConsoleFile();
   virtual size_t write(const char* str);
-  virtual int printf(const char* format, ...);
+  virtual int vprintf(const char* format, va_list va);
   virtual int flush();
   virtual bool supportsColor();
 private:

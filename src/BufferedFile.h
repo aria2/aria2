@@ -73,8 +73,7 @@ public:
   // Convenient method. Read data to end of file and write them into
   // given stream. Returns written size.
   size_t transfer(std::ostream& out);
-  // wrapper for fprintf
-  virtual int printf(const char* format, ...);
+  virtual int vprintf(const char* format, va_list va);
   // wrapper for fflush
   virtual int flush();
   virtual bool supportsColor();
