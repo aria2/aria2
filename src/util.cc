@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "util.h"
 
-#include <signal.h>
+#include <sys/signal.h>
 #include <sys/types.h>
 #ifdef HAVE_PWD_H
 #  include <pwd.h>
