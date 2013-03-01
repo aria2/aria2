@@ -34,6 +34,7 @@ Basic Options
   Additionally, options can be specified after each line of
   URI. This optional line must start with one or more white spaces and have
   one option per single line.
+  The input file can use gzip compression.
   See `Input File`_ subsection for details.
   See also :option:`--deferred-input` option.
 
@@ -1342,7 +1343,9 @@ Advanced Options
 
   Save error/unfinished downloads to FILE on exit.  You can pass this
   output file to aria2c with :option:`--input-file <-i>` option on
-  restart. Please note that downloads added by
+  restart. If you like the output to be gzipped append a .gz extension to
+  the file name.
+  Please note that downloads added by
   :func:`aria2.addTorrent` and :func:`aria2.addMetalink` RPC method
   and whose metadata could not be saved as a file are not saved.
   Downloads removed using :func:`aria2.remove` and
