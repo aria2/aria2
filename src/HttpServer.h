@@ -67,7 +67,6 @@ private:
   SharedHandle<SocketCore> socket_;
   SharedHandle<SocketRecvBuffer> socketRecvBuffer_;
   SocketBuffer socketBuffer_;
-  DownloadEngine* e_;
   SharedHandle<HttpHeaderProcessor> headerProcessor_;
   SharedHandle<HttpHeader> lastRequestHeader_;
   int64_t lastContentLength_;
@@ -84,7 +83,7 @@ private:
   std::string allowOrigin_;
   bool secure_;
 public:
-  HttpServer(const SharedHandle<SocketCore>& socket, DownloadEngine* e);
+  HttpServer(const SharedHandle<SocketCore>& socket);
 
   ~HttpServer();
 

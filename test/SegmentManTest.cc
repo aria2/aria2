@@ -38,7 +38,7 @@ public:
     dctx_.reset
       (new DownloadContext(pieceLength, totalLength, "aria2.tar.bz2"));
     pieceStorage_.reset(new DefaultPieceStorage(dctx_, option_.get()));
-    segmentMan_.reset(new SegmentMan(option_.get(), dctx_, pieceStorage_));
+    segmentMan_.reset(new SegmentMan(dctx_, pieceStorage_));
   }
 
   void testNullBitfield();
@@ -59,8 +59,8 @@ void SegmentManTest::testNullBitfield()
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(0, 0, "aria2.tar.bz2"));
   SharedHandle<UnknownLengthPieceStorage> ps
-    (new UnknownLengthPieceStorage(dctx, &op));
-  SegmentMan segmentMan(&op, dctx, ps);
+    (new UnknownLengthPieceStorage(dctx));
+  SegmentMan segmentMan(dctx, ps);
   size_t minSplitSize = dctx->getPieceLength();
 
   SharedHandle<Segment> segment = segmentMan.getSegment(1, minSplitSize);
@@ -86,7 +86,7 @@ void SegmentManTest::testCompleteSegment()
     (new DownloadContext(pieceLength, totalLength, "aria2.tar.bz2"));
   SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &op));
 
-  SegmentMan segmentMan(&op, dctx, ps);
+  SegmentMan segmentMan(dctx, ps);
 
   CPPUNIT_ASSERT(segmentMan.getSegmentWithIndex(1, 0));
   SharedHandle<Segment> seg = segmentMan.getSegmentWithIndex(1, 1);
@@ -115,7 +115,7 @@ void SegmentManTest::testGetSegment_sameFileEntry()
   };
   dctx->setFileEntries(&fileEntries[0], &fileEntries[3]);
   SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &op));
-  SegmentMan segman(&op, dctx, ps);
+  SegmentMan segman(dctx, ps);
   size_t minSplitSize =dctx->getPieceLength();
   std::vector<SharedHandle<Segment> > segments;
   segman.getSegment(segments, 1, minSplitSize, fileEntries[1], 4);
@@ -150,7 +150,7 @@ void SegmentManTest::testRegisterPeerStat()
   Option op;
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &op));
-  SegmentMan segman(&op, dctx, ps);
+  SegmentMan segman(dctx, ps);
 
   SharedHandle<PeerStat> p1(new PeerStat(0, "host1", "http"));
   segman.registerPeerStat(p1);

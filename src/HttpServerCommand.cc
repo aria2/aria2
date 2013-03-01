@@ -69,7 +69,7 @@ HttpServerCommand::HttpServerCommand
   : Command(cuid),
     e_(e),
     socket_(socket),
-    httpServer_(new HttpServer(socket, e)),
+    httpServer_(new HttpServer(socket)),
     writeCheck_(false)
 {
   setStatus(Command::STATUS_ONESHOT_REALTIME);

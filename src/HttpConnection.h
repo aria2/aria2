@@ -82,7 +82,6 @@ private:
   SharedHandle<SocketCore> socket_;
   SharedHandle<SocketRecvBuffer> socketRecvBuffer_;
   SocketBuffer socketBuffer_;
-  const Option* option_;
 
   HttpRequestEntries outstandingHttpRequests_;
 

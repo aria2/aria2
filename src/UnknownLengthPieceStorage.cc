@@ -47,10 +47,8 @@
 namespace aria2 {
 
 UnknownLengthPieceStorage::UnknownLengthPieceStorage
-(const SharedHandle<DownloadContext>& downloadContext,
- const Option* option):
-  downloadContext_(downloadContext),
-  option_(option),
+(const SharedHandle<DownloadContext>& downloadContext)
+  : downloadContext_(downloadContext),
   diskWriterFactory_(new DefaultDiskWriterFactory()),
   totalLength_(0),
   downloadFinished_(false) {}

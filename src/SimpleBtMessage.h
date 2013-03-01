@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-class ProgressUpdate;
+struct ProgressUpdate;
 
 class SimpleBtMessage : public AbstractBtMessage {
 public:

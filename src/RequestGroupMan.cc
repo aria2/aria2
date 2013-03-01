@@ -605,7 +605,7 @@ RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
       lastError = dr->result;
     }
   }
-  return DownloadStat(finished, error, inprogress, removed,
+  return DownloadStat(error, inprogress,
                       reservedGroups_.size(),
                       lastError);
 }

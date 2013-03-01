@@ -49,7 +49,6 @@ private:
   MultiDiskAdaptor* diskAdaptor_;
   std::deque<SharedHandle<DiskWriterEntry> > entries_;
   SharedHandle<FileAllocationIterator> fileAllocationIterator_;
-  int64_t offset_;
 public:
   MultiFileAllocationIterator(MultiDiskAdaptor* diskAdaptor);
 

@@ -13,7 +13,7 @@ class MessageDigest;
 class RequestGroupMan;
 class RequestGroup;
 class Option;
-class DownloadResult;
+struct DownloadResult;
 
 void createFile(const std::string& filename, size_t length);
 
