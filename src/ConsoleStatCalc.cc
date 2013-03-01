@@ -142,9 +142,9 @@ void printProgressCompact(std::ostream& o, const DownloadEngine* e,
     e->getRequestGroupMan()->getRequestGroups();
   size_t cnt = 0;
   const size_t MAX_ITEM = 5;
-  for(RequestGroupList::SeqType::const_iterator i = groups.begin(),
+  for(RequestGroupList::const_iterator i = groups.begin(),
         eoi = groups.end(); i != eoi && cnt < MAX_ITEM; ++i, ++cnt) {
-    const SharedHandle<RequestGroup>& rg = (*i).second;
+    const SharedHandle<RequestGroup>& rg = *i;
     TransferStat stat = rg->calculateStat();
     o << "[#" << GroupId::toAbbrevHex(rg->getGID()) << " ";
     printSizeProgress(o, rg, stat, sizeFormatter);
@@ -209,9 +209,8 @@ public:
    const SizeFormatter& sizeFormatter):
     cols_(cols), e_(e), sizeFormatter_(sizeFormatter) {}
 
-  void operator()(const RequestGroupList::SeqType::value_type& val)
+  void operator()(const RequestGroupList::value_type& rg)
   {
-    const SharedHandle<RequestGroup>& rg = val.second;
     const char SEP_CHAR = '-';
     std::stringstream o;
     printProgress(o, rg, e_, sizeFormatter_);
@@ -323,7 +322,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   size_t numGroup = e->getRequestGroupMan()->countRequestGroup();
   if(numGroup == 1) {
     const SharedHandle<RequestGroup>& rg =
-      (*e->getRequestGroupMan()->getRequestGroups().begin()).second;
+      *e->getRequestGroupMan()->getRequestGroups().begin();
     printProgress(o, rg, e, sizeFormatter);
   } else if(numGroup > 1) {
     // For more than 2 RequestGroups, use compact readout form

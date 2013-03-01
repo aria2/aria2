@@ -57,9 +57,9 @@ void HaveEraseCommand::process()
 {
   const RequestGroupList& groups =
     getDownloadEngine()->getRequestGroupMan()->getRequestGroups();
-  for(RequestGroupList::SeqType::const_iterator i = groups.begin(),
+  for(RequestGroupList::const_iterator i = groups.begin(),
         eoi = groups.end(); i != eoi; ++i) {
-    const SharedHandle<PieceStorage>& ps = (*i).second->getPieceStorage();
+    const SharedHandle<PieceStorage>& ps = (*i)->getPieceStorage();
     if(ps) {
       ps->removeAdvertisedPiece(5);
     }

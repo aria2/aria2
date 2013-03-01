@@ -24,6 +24,8 @@ class IndexedListTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGet);
   CPPUNIT_TEST(testInsert);
   CPPUNIT_TEST(testInsert_keyFunc);
+  CPPUNIT_TEST(testIterator);
+  CPPUNIT_TEST(testRemoveIf);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp()
@@ -38,6 +40,8 @@ public:
   void testGet();
   void testInsert();
   void testInsert_keyFunc();
+  void testIterator();
+  void testRemoveIf();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( IndexedListTest );
@@ -53,9 +57,9 @@ void IndexedListTest::testPushBack()
     CPPUNIT_ASSERT_EQUAL(a[i], *list.get(i));
   }
   int ai = 0;
-  for(IndexedList<int, int*>::SeqType::iterator i = list.begin();
+  for(IndexedList<int, int*>::iterator i = list.begin();
       i != list.end(); ++i) {
-    CPPUNIT_ASSERT_EQUAL(a[ai++], *((*i).second));
+    CPPUNIT_ASSERT_EQUAL(a[ai++], **i);
   }
 }
 
@@ -70,9 +74,9 @@ void IndexedListTest::testPushFront()
     CPPUNIT_ASSERT_EQUAL(a[i], *list.get(i));
   }
   int ai = 4;
-  for(IndexedList<int, int*>::SeqType::iterator i = list.begin();
+  for(IndexedList<int, int*>::iterator i = list.begin();
       i != list.end(); ++i) {
-    CPPUNIT_ASSERT_EQUAL(a[ai--], *((*i).second));
+    CPPUNIT_ASSERT_EQUAL(a[ai--], **i);
   }
 }
 
@@ -100,15 +104,14 @@ void IndexedListTest::testErase()
     list.push_back(i, &a[i]);
   }
   int* p = a;
-  for(IndexedList<int, int*>::SeqType::iterator i = list.begin();
-      i != list.end();) {
+  for(IndexedList<int, int*>::iterator i = list.begin(); i != list.end();) {
     i = list.erase(i);
     CPPUNIT_ASSERT_EQUAL((size_t)(std::distance(i, list.end())), list.size());
 
     int* pp = ++p;
-    for(IndexedList<int, int*>::SeqType::iterator j = list.begin();
+    for(IndexedList<int, int*>::iterator j = list.begin();
         j != list.end(); ++j, ++pp) {
-      CPPUNIT_ASSERT_EQUAL(*pp, *(*j).second);
+      CPPUNIT_ASSERT_EQUAL(*pp, **j);
     }
   }
 }
@@ -132,9 +135,9 @@ void IndexedListTest::testPopFront()
 #define LIST_CHECK(a, list)                                             \
   {                                                                     \
     int ai = 0;                                                         \
-    for(IndexedList<int, int*>::SeqType::iterator i = list.begin();     \
+    for(IndexedList<int, int*>::iterator i = list.begin();              \
         i != list.end(); ++i) {                                         \
-      CPPUNIT_ASSERT_EQUAL(a[ai++], *((*i).second));                    \
+      CPPUNIT_ASSERT_EQUAL(a[ai++], **i);                               \
     }                                                                   \
   }
 
@@ -261,53 +264,167 @@ void IndexedListTest::testInsert_keyFunc()
   for(size_t i = slen; i < slen*2; ++i) {
     CPPUNIT_ASSERT_EQUAL(*s[i - slen], *list.get(i));
   }
-  IndexedList<int, SharedHandle<std::string> >::SeqType::iterator itr;
+  IndexedList<int, SharedHandle<std::string> >::iterator itr;
   itr = list.begin();
-  CPPUNIT_ASSERT_EQUAL(std::string("a"), *(*itr++).second);
-  CPPUNIT_ASSERT_EQUAL(std::string("b"), *(*itr++).second);
-  CPPUNIT_ASSERT_EQUAL(std::string("a"), *(*itr++).second);
-  CPPUNIT_ASSERT_EQUAL(std::string("b"), *(*itr++).second);
-  CPPUNIT_ASSERT_EQUAL(std::string("c"), *(*itr++).second);
-  CPPUNIT_ASSERT_EQUAL(std::string("d"), *(*itr++).second);
-  CPPUNIT_ASSERT_EQUAL(std::string("c"), *(*itr++).second);
-  CPPUNIT_ASSERT_EQUAL(std::string("d"), *(*itr++).second);
+  CPPUNIT_ASSERT_EQUAL(std::string("a"), *(*itr++));
+  CPPUNIT_ASSERT_EQUAL(std::string("b"), *(*itr++));
+  CPPUNIT_ASSERT_EQUAL(std::string("a"), *(*itr++));
+  CPPUNIT_ASSERT_EQUAL(std::string("b"), *(*itr++));
+  CPPUNIT_ASSERT_EQUAL(std::string("c"), *(*itr++));
+  CPPUNIT_ASSERT_EQUAL(std::string("d"), *(*itr++));
+  CPPUNIT_ASSERT_EQUAL(std::string("c"), *(*itr++));
+  CPPUNIT_ASSERT_EQUAL(std::string("d"), *(*itr++));
 
   list.insert(list.begin(), KeyFunc(2*slen-1), vbegin(s), vend(s));
   CPPUNIT_ASSERT_EQUAL((size_t)slen*3-1, list.size());
   itr = list.begin();
-  CPPUNIT_ASSERT_EQUAL(std::string("b"), *(*itr++).second);
-  CPPUNIT_ASSERT_EQUAL(std::string("c"), *(*itr++).second);
-  CPPUNIT_ASSERT_EQUAL(std::string("d"), *(*itr++).second);
-  CPPUNIT_ASSERT_EQUAL(std::string("a"), *(*itr++).second);
+  CPPUNIT_ASSERT_EQUAL(std::string("b"), *(*itr++));
+  CPPUNIT_ASSERT_EQUAL(std::string("c"), *(*itr++));
+  CPPUNIT_ASSERT_EQUAL(std::string("d"), *(*itr++));
+  CPPUNIT_ASSERT_EQUAL(std::string("a"), *(*itr++));
 }
 
 void IndexedListTest::testInsert()
 {
   int a[] = {0,1,2,3,4,5,6,7,8,9};
   IndexedList<int, int*> list;
-  IndexedList<int, int*>::SeqType::iterator itr;
+  IndexedList<int, int*>::iterator itr;
   CPPUNIT_ASSERT(list.end() == list.insert(1, 0, &a[5]));
   itr = list.insert(0, 5, &a[5]);
-  CPPUNIT_ASSERT_EQUAL(5, *(*itr).second);
+  CPPUNIT_ASSERT_EQUAL(5, **itr);
   itr = list.insert(1, 3, &a[3]);
-  CPPUNIT_ASSERT_EQUAL(3, *(*itr).second);
+  CPPUNIT_ASSERT_EQUAL(3, **itr);
   itr = list.insert(1, 4, &a[4]);
-  CPPUNIT_ASSERT_EQUAL(4, *(*itr).second);
+  CPPUNIT_ASSERT_EQUAL(4, **itr);
   itr = list.insert(0, 9, &a[9]);
-  CPPUNIT_ASSERT_EQUAL(9, *(*itr).second);
+  CPPUNIT_ASSERT_EQUAL(9, **itr);
   int a1[] = { 9,5,4,3 };
   LIST_CHECK(a1, list);
 
   // use iterator to insert
   itr = list.insert(itr, 2, &a[2]);
-  CPPUNIT_ASSERT_EQUAL(2, *(*itr).second);
+  CPPUNIT_ASSERT_EQUAL(2, **itr);
   itr = list.insert(list.end(), 1, &a[1]);
-  CPPUNIT_ASSERT_EQUAL(1, *(*itr).second);
+  CPPUNIT_ASSERT_EQUAL(1, **itr);
   int a2[] = { 2,9,5,4,3,1 };
   LIST_CHECK(a2, list);
 
   // 2 has been already added.
   CPPUNIT_ASSERT(list.end() == list.insert(list.end(), 2, &a[2]));
+}
+
+void IndexedListTest::testIterator()
+{
+  int a[] = {0,1,2,3,4,5,6,7,8,9};
+  IndexedList<int, int*> list;
+  IndexedList<int, int*>::iterator itr;
+  IndexedList<int, int*>::const_iterator citr;
+  for(int *i = vbegin(a); i < vend(a); ++i) {
+    CPPUNIT_ASSERT(list.push_back(*i, i));
+  }
+  CPPUNIT_ASSERT(list.begin() == list.begin());
+  itr = list.begin();
+  citr = list.begin();
+  // operator*()
+  CPPUNIT_ASSERT_EQUAL(&a[0], *itr);
+  CPPUNIT_ASSERT_EQUAL(&a[0], *citr);
+  // operator==(iterator, iterator)
+  CPPUNIT_ASSERT(itr == list.begin());
+  CPPUNIT_ASSERT(!(itr == list.end()));
+  CPPUNIT_ASSERT(citr == list.begin());
+  CPPUNIT_ASSERT(!(citr == list.end()));
+  // operator++()
+  ++itr;
+  ++citr;
+  // operator!=(iterator, iterator)
+  CPPUNIT_ASSERT(itr != list.begin());
+  CPPUNIT_ASSERT(!(itr != itr));
+  CPPUNIT_ASSERT(citr != list.begin());
+  CPPUNIT_ASSERT(!(citr != citr));
+  // operator+(difference_type)
+  CPPUNIT_ASSERT(itr == list.begin() + 1);
+  CPPUNIT_ASSERT(citr == list.begin() + 1);
+  // operator-(difference_type)
+  CPPUNIT_ASSERT(itr - 1 == list.begin());
+  CPPUNIT_ASSERT(citr - 1 == list.begin());
+  // operator++(int)
+  IndexedList<int, int*>::iterator itr2 = itr++;
+  IndexedList<int, int*>::const_iterator citr2 = citr++;
+  CPPUNIT_ASSERT(itr2 + 1 == itr);
+  CPPUNIT_ASSERT(citr2 + 1 == citr);
+  // operator+(difference_type, iterator)
+  CPPUNIT_ASSERT(-1 + itr == itr2);
+  CPPUNIT_ASSERT(-1 + citr == citr2);
+  // operator<(iterator, iterator)
+  CPPUNIT_ASSERT(list.begin() < itr);
+  CPPUNIT_ASSERT(!(itr < list.begin()));
+  CPPUNIT_ASSERT(list.begin() < citr);
+  CPPUNIT_ASSERT(!(citr < list.begin()));
+  // operator>(iterator, iterator)
+  CPPUNIT_ASSERT(itr > list.begin());
+  CPPUNIT_ASSERT(!(list.begin() > itr));
+  CPPUNIT_ASSERT(citr > list.begin());
+  CPPUNIT_ASSERT(!(list.begin() > citr));
+  // operator<=(iterator, iterator)
+  CPPUNIT_ASSERT(itr <= itr);
+  CPPUNIT_ASSERT(list.begin() <= itr);
+  CPPUNIT_ASSERT(!(itr <= list.begin()));
+  CPPUNIT_ASSERT(citr <= citr);
+  CPPUNIT_ASSERT(list.begin() <= citr);
+  CPPUNIT_ASSERT(!(citr <= list.begin()));
+  // operator>=(iterator, iterator)
+  CPPUNIT_ASSERT(itr >= itr);
+  CPPUNIT_ASSERT(itr >= list.begin());
+  CPPUNIT_ASSERT(!(list.begin() >= itr));
+  CPPUNIT_ASSERT(citr >= citr);
+  CPPUNIT_ASSERT(citr >= list.begin());
+  CPPUNIT_ASSERT(!(list.begin() >= citr));
+  // operator-(iterator, iterator)
+  CPPUNIT_ASSERT(2 == itr - list.begin());
+  CPPUNIT_ASSERT(-2 == list.begin() - itr);
+  CPPUNIT_ASSERT(2 == citr - list.begin());
+  CPPUNIT_ASSERT(-2 == list.begin() - citr);
+  // operator+=(difference_type)
+  itr = list.begin();
+  itr += 2;
+  CPPUNIT_ASSERT(itr == list.begin() + 2);
+  citr = list.begin();
+  citr += 2;
+  CPPUNIT_ASSERT(citr == list.begin() + 2);
+  // operator-=(difference_type)
+  itr -= 2;
+  CPPUNIT_ASSERT(itr == list.begin());
+  citr -= 2;
+  CPPUNIT_ASSERT(citr == list.begin());
+  // operator[](size_type)
+  itr = list.begin();
+  itr += 3;
+  CPPUNIT_ASSERT_EQUAL(*(itr[1]), a[4]);
+  citr = list.begin();
+  citr += 3;
+  CPPUNIT_ASSERT_EQUAL(*(citr[1]), a[4]);
+}
+
+namespace {
+struct RemoveOdd {
+  bool operator()(int* p) const
+  {
+    return *p % 2 == 1;
+  }
+};
+}
+void IndexedListTest::testRemoveIf()
+{
+  int a[] = {0,1,2,3,4,5,6,7,8,9};
+  IndexedList<int, int*> list;
+  for(int *i = vbegin(a); i < vend(a); ++i) {
+    CPPUNIT_ASSERT(list.push_back(*i, i));
+  }
+  list.remove_if(RemoveOdd());
+  CPPUNIT_ASSERT_EQUAL((size_t)5, list.size());
+  for(int i = 0; i < 5; ++i) {
+    CPPUNIT_ASSERT_EQUAL(i*2, *list[i]);
+  }
 }
 
 } // namespace aria2

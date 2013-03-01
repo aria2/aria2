@@ -122,10 +122,9 @@ SharedHandle<RequestGroup> getReservedGroup
 (const SharedHandle<RequestGroupMan>& rgman, size_t index)
 {
   assert(rgman->getReservedGroups().size() > index);
-  RequestGroupList::SeqType::const_iterator i =
-    rgman->getReservedGroups().begin();
+  RequestGroupList::const_iterator i = rgman->getReservedGroups().begin();
   std::advance(i, index);
-  return (*i).second;
+  return *i;
 }
 
 SharedHandle<RequestGroup> createRequestGroup(int32_t pieceLength,

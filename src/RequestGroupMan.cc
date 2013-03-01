@@ -165,9 +165,7 @@ void RequestGroupMan::insertReservedGroup
 {
   requestQueueCheck();
   pos = std::min(reservedGroups_.size(), pos);
-  RequestGroupList::SeqType::iterator dest =  reservedGroups_.begin();
-  std::advance(dest, pos);
-  reservedGroups_.insert(dest, RequestGroupKeyFunc(),
+  reservedGroups_.insert(pos, RequestGroupKeyFunc(),
                          groups.begin(), groups.end());
 }
 
@@ -282,9 +280,8 @@ public:
       reservedGroups_(reservedGroups)
   {}
 
-  void operator()(const RequestGroupList::SeqType::value_type& val)
+  void operator()(const RequestGroupList::value_type& group)
   {
-    const SharedHandle<RequestGroup>& group = val.second;
     if(group->getNumCommand() == 0) {
       const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
       // DownloadContext::resetDownloadStopTime() is only called when
@@ -385,9 +382,8 @@ public:
   CollectServerStat(RequestGroupMan* requestGroupMan):
     requestGroupMan_(requestGroupMan) {}
 
-  void operator()(const RequestGroupList::SeqType::value_type& val)
+  void operator()(const RequestGroupList::value_type& group)
   {
-    const SharedHandle<RequestGroup>& group = val.second;
     if(group->getNumCommand() == 0) {
       // Collect statistics during download in PeerStats and update/register
       // ServerStatMan
@@ -436,9 +432,9 @@ void RequestGroupMan::removeStoppedGroup(DownloadEngine* e)
 
   std::for_each(requestGroups_.begin(), requestGroups_.end(),
                 ProcessStoppedRequestGroup(e, reservedGroups_));
-  for(RequestGroupList::SeqType::iterator i = requestGroups_.begin(),
+  for(RequestGroupList::iterator i = requestGroups_.begin(),
         eoi = requestGroups_.end(); i != eoi;) {
-    const SharedHandle<RequestGroup>& rg = (*i).second;
+    const SharedHandle<RequestGroup>& rg = *i;
     if(rg->getNumCommand() == 0) {
       i = requestGroups_.erase(i);
       eoi = requestGroups_.end();
@@ -505,7 +501,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
         }
       }
     }
-    SharedHandle<RequestGroup> groupToAdd = (*reservedGroups_.begin()).second;
+    SharedHandle<RequestGroup> groupToAdd = *reservedGroups_.begin();
     reservedGroups_.pop_front();
     if((rpc_ && groupToAdd->isPauseRequested()) ||
        !groupToAdd->isDependencyResolved()) {
@@ -556,9 +552,9 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
 
 void RequestGroupMan::save()
 {
-  for(RequestGroupList::SeqType::iterator itr = requestGroups_.begin(),
+  for(RequestGroupList::iterator itr = requestGroups_.begin(),
         eoi = requestGroups_.end(); itr != eoi; ++itr) {
-    const SharedHandle<RequestGroup>& rg = (*itr).second;
+    const SharedHandle<RequestGroup>& rg = *itr;
     if(rg->allDownloadFinished() &&
        !rg->getDownloadContext()->isChecksumVerificationNeeded()) {
       rg->removeControlFile();
@@ -574,9 +570,9 @@ void RequestGroupMan::save()
 
 void RequestGroupMan::closeFile()
 {
-  for(RequestGroupList::SeqType::iterator itr = requestGroups_.begin(),
+  for(RequestGroupList::iterator itr = requestGroups_.begin(),
         eoi = requestGroups_.end(); itr != eoi; ++itr) {
-    (*itr).second->closeFile();
+    (*itr)->closeFile();
   }
 }
 
@@ -587,10 +583,10 @@ RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
   int inprogress = 0;
   int removed = 0;
   error_code::Value lastError = removedLastErrorResult_;
-  for(DownloadResultList::SeqType::const_iterator itr =
+  for(DownloadResultList::const_iterator itr =
         downloadResults_.begin(), eoi = downloadResults_.end(); itr != eoi;
       ++itr) {
-    const SharedHandle<DownloadResult>& dr = (*itr).second;
+    const SharedHandle<DownloadResult>& dr = *itr;
     if(dr->belongsTo != 0) {
       continue;
     }
@@ -676,10 +672,10 @@ void RequestGroupMan::showDownloadResults(OutputFile& o, bool full) const
   int err = 0;
   int inpr = 0;
   int rm = 0;
-  for(DownloadResultList::SeqType::const_iterator itr =
+  for(DownloadResultList::const_iterator itr =
         downloadResults_.begin(), eoi = downloadResults_.end(); itr != eoi;
       ++itr) {
-    const SharedHandle<DownloadResult>& dr = (*itr).second;
+    const SharedHandle<DownloadResult>& dr = *itr;
     if(dr->belongsTo != 0) {
       continue;
     }
@@ -826,9 +822,9 @@ bool RequestGroupMan::isSameFileBeingDownloaded(RequestGroup* requestGroup) cons
     return false;
   }
   std::vector<std::string> files;
-  for(RequestGroupList::SeqType::const_iterator itr = requestGroups_.begin(),
+  for(RequestGroupList::const_iterator itr = requestGroups_.begin(),
         eoi = requestGroups_.end(); itr != eoi; ++itr) {
-    const SharedHandle<RequestGroup>& rg = (*itr).second;
+    const SharedHandle<RequestGroup>& rg = *itr;
     if(rg.get() != requestGroup) {
       const std::vector<SharedHandle<FileEntry> >& entries =
         rg->getDownloadContext()->getFileEntries();
@@ -846,17 +842,17 @@ bool RequestGroupMan::isSameFileBeingDownloaded(RequestGroup* requestGroup) cons
 
 void RequestGroupMan::halt()
 {
-  for(RequestGroupList::SeqType::const_iterator i = requestGroups_.begin(),
+  for(RequestGroupList::const_iterator i = requestGroups_.begin(),
         eoi = requestGroups_.end(); i != eoi; ++i) {
-    (*i).second->setHaltRequested(true);
+    (*i)->setHaltRequested(true);
   }
 }
 
 void RequestGroupMan::forceHalt()
 {
-  for(RequestGroupList::SeqType::const_iterator i = requestGroups_.begin(),
+  for(RequestGroupList::const_iterator i = requestGroups_.begin(),
         eoi = requestGroups_.end(); i != eoi; ++i) {
-    (*i).second->setForceHaltRequested(true);
+    (*i)->setForceHaltRequested(true);
   }
 }
 
@@ -882,10 +878,10 @@ void RequestGroupMan::addDownloadResult(const SharedHandle<DownloadResult>& dr)
   bool rv = downloadResults_.push_back(dr->gid->getNumericId(), dr);
   assert(rv);
   while(downloadResults_.size() > maxDownloadResult_){
-    DownloadResultList::SeqType::iterator i = downloadResults_.begin();
+    DownloadResultList::iterator i = downloadResults_.begin();
     // Save last encountered error code so that we can report it
     // later.
-    const SharedHandle<DownloadResult>& dr = (*i).second;
+    const SharedHandle<DownloadResult>& dr = *i;
     if(dr->belongsTo == 0 && dr->result != error_code::FINISHED) {
       removedLastErrorResult_ = dr->result;
       ++removedErrorResult_;
@@ -958,9 +954,9 @@ void RequestGroupMan::getUsedHosts
   // speed. We use -download speed so that we can sort them using
   // operator<().
   std::vector<Triplet<size_t, int, std::string> > tempHosts;
-  for(RequestGroupList::SeqType::const_iterator i = requestGroups_.begin(),
+  for(RequestGroupList::const_iterator i = requestGroups_.begin(),
         eoi = requestGroups_.end(); i != eoi; ++i) {
-    const SharedHandle<RequestGroup>& rg = (*i).second;
+    const SharedHandle<RequestGroup>& rg = *i;
     const FileEntry::InFlightRequestSet& inFlightReqs =
       rg->getDownloadContext()->getFirstFileEntry()->getInFlightRequests();
     for(FileEntry::InFlightRequestSet::iterator j =

@@ -485,7 +485,7 @@ void pauseRequestGroups
 (InputIterator first, InputIterator last, bool reserved, bool forcePause)
 {
   for(; first != last; ++first) {
-    pauseRequestGroup((*first).second, reserved, forcePause);
+    pauseRequestGroup(*first, reserved, forcePause);
   }
 }
 } // namespace
@@ -540,9 +540,9 @@ SharedHandle<ValueBase> UnpauseAllRpcMethod::process
 {
   const RequestGroupList& groups =
     e->getRequestGroupMan()->getReservedGroups();
-  for(RequestGroupList::SeqType::const_iterator i = groups.begin(),
+  for(RequestGroupList::const_iterator i = groups.begin(),
         eoi = groups.end(); i != eoi; ++i) {
-    (*i).second->setPauseRequested(false);
+    (*i)->setPauseRequested(false);
   }
   e->getRequestGroupMan()->requestQueueCheck();
   return VLB_OK;
@@ -1039,13 +1039,13 @@ SharedHandle<ValueBase> TellActiveRpcMethod::process
   toStringList(std::back_inserter(keys), keysParam);
   SharedHandle<List> list = List::g();
   const RequestGroupList& groups = e->getRequestGroupMan()->getRequestGroups();
-  for(RequestGroupList::SeqType::const_iterator i = groups.begin(),
+  for(RequestGroupList::const_iterator i = groups.begin(),
         eoi = groups.end(); i != eoi; ++i) {
     SharedHandle<Dict> entryDict = Dict::g();
     if(requested_key(keys, KEY_STATUS)) {
       entryDict->put(KEY_STATUS, VLB_ACTIVE);
     }
-    gatherProgress(entryDict, (*i).second, e, keys);
+    gatherProgress(entryDict, *i, e, keys);
     list->append(entryDict);
   }
   return list;

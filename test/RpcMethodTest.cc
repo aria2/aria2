@@ -165,7 +165,7 @@ void RpcMethodTest::testAddUri()
       e_->getRequestGroupMan()->getReservedGroups();
     CPPUNIT_ASSERT_EQUAL((size_t)1, rgs.size());
     CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/"),
-                         (*rgs.begin()).second->getDownloadContext()->
+                         (*rgs.begin())->getDownloadContext()->
                          getFirstFileEntry()->getRemainingUris().front());
   }
   // with options

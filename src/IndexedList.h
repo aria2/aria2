@@ -50,14 +50,319 @@ enum A2_HOW {
   A2_POS_END
 };
 
+template<typename SeqType, typename ValueType, typename ReferenceType,
+         typename PointerType, typename SeqIteratorType>
+struct IndexedListIterator {
+  typedef IndexedListIterator<SeqType,
+                              ValueType,
+                              ValueType&,
+                              ValueType*,
+                              typename SeqType::iterator> iterator;
+  typedef IndexedListIterator<SeqType,
+                              ValueType,
+                              const ValueType&,
+                              const ValueType*,
+                              typename SeqType::const_iterator> const_iterator;
+
+  typedef typename SeqIteratorType::iterator_category iterator_category;
+  typedef ValueType value_type;
+  typedef PointerType pointer;
+  typedef ReferenceType reference;
+  typedef typename SeqIteratorType::size_type size_type;
+  typedef typename SeqIteratorType::difference_type difference_type;
+  typedef IndexedListIterator SelfType;
+
+  IndexedListIterator() {}
+  IndexedListIterator(const iterator& other)
+    : p(other.p) {}
+  IndexedListIterator(const SeqIteratorType& p)
+    : p(p) {}
+
+  reference operator*() const
+  {
+    return (*p).second;
+  }
+
+  pointer operator->() const
+  {
+    return &(*p).second;
+  }
+
+  SelfType& operator++()
+  {
+    ++p;
+    return *this;
+  }
+
+  SelfType operator++(int)
+  {
+    SelfType copy = *this;
+    ++*this;
+    return copy;
+  }
+
+  SelfType& operator--()
+  {
+    --p;
+    return *this;
+  }
+
+  SelfType& operator--(int)
+  {
+    SelfType copy = *this;
+    --*this;
+    return copy;
+  }
+
+  SelfType& operator+=(difference_type n)
+  {
+    std::advance(p, n);
+    return *this;
+  }
+
+  SelfType operator+(difference_type n) const
+  {
+    SelfType copy = *this;
+    return copy += n;
+  }
+
+  SelfType& operator-=(difference_type n)
+  {
+    std::advance(p, -n);
+    return *this;
+  }
+
+  SelfType operator-(difference_type n) const
+  {
+    SelfType copy = *this;
+    return copy -= n;
+  }
+
+  reference operator[](size_type n) const
+  {
+    return p[n].second;
+  }
+
+  SeqIteratorType p;
+};
+
+template<typename SeqType, typename ValueType, typename ReferenceType,
+         typename PointerType, typename SeqIteratorType>
+bool operator==(const IndexedListIterator<SeqType, ValueType, ReferenceType,
+                PointerType, SeqIteratorType>& lhs,
+                const IndexedListIterator<SeqType, ValueType, ReferenceType,
+                PointerType, SeqIteratorType>& rhs)
+{
+  return lhs.p == rhs.p;
+}
+
+template<typename SeqType, typename ValueType,
+         typename ReferenceTypeL, typename PointerTypeL,
+         typename SeqIteratorTypeL,
+         typename ReferenceTypeR, typename PointerTypeR,
+         typename SeqIteratorTypeR>
+bool operator==(const IndexedListIterator<SeqType, ValueType, ReferenceTypeL,
+                PointerTypeL, SeqIteratorTypeL>& lhs,
+                const IndexedListIterator<SeqType, ValueType, ReferenceTypeR,
+                PointerTypeR, SeqIteratorTypeR>& rhs)
+{
+  return lhs.p == rhs.p;
+}
+
+template<typename SeqType, typename ValueType, typename ReferenceType,
+         typename PointerType, typename SeqIteratorType>
+bool operator!=(const IndexedListIterator<SeqType, ValueType, ReferenceType,
+                PointerType, SeqIteratorType>& lhs,
+                const IndexedListIterator<SeqType, ValueType, ReferenceType,
+                PointerType, SeqIteratorType>& rhs)
+{
+  return lhs.p != rhs.p;
+}
+
+template<typename SeqType, typename ValueType,
+         typename ReferenceTypeL, typename PointerTypeL,
+         typename SeqIteratorTypeL,
+         typename ReferenceTypeR, typename PointerTypeR,
+         typename SeqIteratorTypeR>
+bool operator!=(const IndexedListIterator<SeqType, ValueType, ReferenceTypeL,
+                PointerTypeL, SeqIteratorTypeL>& lhs,
+                const IndexedListIterator<SeqType, ValueType, ReferenceTypeR,
+                PointerTypeR, SeqIteratorTypeR>& rhs)
+{
+  return lhs.p != rhs.p;
+}
+
+template<typename SeqType, typename ValueType, typename ReferenceType,
+         typename PointerType, typename SeqIteratorType>
+bool operator<(const IndexedListIterator<SeqType, ValueType, ReferenceType,
+                                         PointerType, SeqIteratorType>& lhs,
+               const IndexedListIterator<SeqType, ValueType, ReferenceType,
+                                         PointerType, SeqIteratorType>& rhs)
+{
+  return lhs.p < rhs.p;
+}
+
+template<typename SeqType, typename ValueType,
+         typename ReferenceTypeL, typename PointerTypeL,
+         typename SeqIteratorTypeL,
+         typename ReferenceTypeR, typename PointerTypeR,
+         typename SeqIteratorTypeR>
+bool operator<(const IndexedListIterator<SeqType, ValueType, ReferenceTypeL,
+                                         PointerTypeL, SeqIteratorTypeL>& lhs,
+               const IndexedListIterator<SeqType, ValueType, ReferenceTypeR,
+                                         PointerTypeR, SeqIteratorTypeR>& rhs)
+{
+  return lhs.p < rhs.p;
+}
+
+template<typename SeqType, typename ValueType, typename ReferenceType,
+         typename PointerType, typename SeqIteratorType>
+bool operator>(const IndexedListIterator<SeqType, ValueType, ReferenceType,
+                                         PointerType, SeqIteratorType>& lhs,
+               const IndexedListIterator<SeqType, ValueType, ReferenceType,
+                                         PointerType, SeqIteratorType>& rhs)
+{
+  return lhs.p > rhs.p;
+}
+
+template<typename SeqType, typename ValueType,
+         typename ReferenceTypeL, typename PointerTypeL,
+         typename SeqIteratorTypeL,
+         typename ReferenceTypeR, typename PointerTypeR,
+         typename SeqIteratorTypeR>
+bool operator>(const IndexedListIterator<SeqType, ValueType, ReferenceTypeL,
+                                         PointerTypeL, SeqIteratorTypeL>& lhs,
+               const IndexedListIterator<SeqType, ValueType, ReferenceTypeR,
+                                         PointerTypeR, SeqIteratorTypeR>& rhs)
+{
+  return lhs.p > rhs.p;
+}
+
+template<typename SeqType, typename ValueType, typename ReferenceType,
+         typename PointerType, typename SeqIteratorType>
+bool operator<=(const IndexedListIterator<SeqType, ValueType, ReferenceType,
+                                          PointerType, SeqIteratorType>& lhs,
+                const IndexedListIterator<SeqType, ValueType, ReferenceType,
+                                          PointerType, SeqIteratorType>& rhs)
+{
+  return lhs.p <= rhs.p;
+}
+
+template<typename SeqType, typename ValueType,
+         typename ReferenceTypeL, typename PointerTypeL,
+         typename SeqIteratorTypeL,
+         typename ReferenceTypeR, typename PointerTypeR,
+         typename SeqIteratorTypeR>
+bool operator<=(const IndexedListIterator<SeqType, ValueType, ReferenceTypeL,
+                                          PointerTypeL, SeqIteratorTypeL>& lhs,
+                const IndexedListIterator<SeqType, ValueType, ReferenceTypeR,
+                                          PointerTypeR, SeqIteratorTypeR>& rhs)
+{
+  return lhs.p <= rhs.p;
+}
+
+template<typename SeqType, typename ValueType, typename ReferenceType,
+         typename PointerType, typename SeqIteratorType>
+bool operator>=(const IndexedListIterator<SeqType, ValueType, ReferenceType,
+                                          PointerType, SeqIteratorType>& lhs,
+                const IndexedListIterator<SeqType, ValueType, ReferenceType,
+                                          PointerType, SeqIteratorType>& rhs)
+{
+  return lhs.p >= rhs.p;
+}
+
+template<typename SeqType, typename ValueType,
+         typename ReferenceTypeL, typename PointerTypeL,
+         typename SeqIteratorTypeL,
+         typename ReferenceTypeR, typename PointerTypeR,
+         typename SeqIteratorTypeR>
+bool operator>=(const IndexedListIterator<SeqType, ValueType, ReferenceTypeL,
+                                          PointerTypeL, SeqIteratorTypeL>& lhs,
+                const IndexedListIterator<SeqType, ValueType, ReferenceTypeR,
+                                          PointerTypeR, SeqIteratorTypeR>& rhs)
+{
+  return lhs.p >= rhs.p;
+}
+
+template<typename SeqType, typename ValueType, typename ReferenceType,
+         typename PointerType, typename SeqIteratorType>
+IndexedListIterator<SeqType, ValueType, ReferenceType, PointerType,
+                    SeqIteratorType>
+operator+(typename IndexedListIterator<SeqType, ValueType, ReferenceType,
+          PointerType, SeqIteratorType>::difference_type n,
+          const IndexedListIterator<SeqType, ValueType, ReferenceType,
+                                    PointerType, SeqIteratorType>& lhs)
+{
+  return lhs + n;
+}
+
+template<typename SeqType, typename ValueType, typename ReferenceType,
+         typename PointerType, typename SeqIteratorType>
+typename IndexedListIterator<SeqType, ValueType, ReferenceType, PointerType,
+                             SeqIteratorType>::difference_type
+operator-(const IndexedListIterator<SeqType, ValueType, ReferenceType,
+                                    PointerType, SeqIteratorType>& lhs,
+          const IndexedListIterator<SeqType, ValueType, ReferenceType,
+                                    PointerType, SeqIteratorType>& rhs)
+{
+  return typename IndexedListIterator<SeqType, ValueType, ReferenceType,
+                                      PointerType,
+                                      SeqIteratorType>::difference_type
+    (lhs.p - rhs.p);
+}
+
+template<typename SeqType, typename ValueType,
+         typename ReferenceTypeL, typename PointerTypeL,
+         typename SeqIteratorTypeL,
+         typename ReferenceTypeR, typename PointerTypeR,
+         typename SeqIteratorTypeR>
+typename IndexedListIterator<SeqType, ValueType, ReferenceTypeL, PointerTypeL,
+                             SeqIteratorTypeL>::difference_type
+operator-(const IndexedListIterator<SeqType, ValueType, ReferenceTypeL,
+                                    PointerTypeL, SeqIteratorTypeL>& lhs,
+          const IndexedListIterator<SeqType, ValueType, ReferenceTypeR,
+                                    PointerTypeR, SeqIteratorTypeR>& rhs)
+{
+  return typename IndexedListIterator<SeqType, ValueType, ReferenceTypeL,
+                                      PointerTypeL,
+                                      SeqIteratorTypeL>::difference_type
+    (lhs.p - rhs.p);
+}
+
 template<typename KeyType, typename ValuePtrType>
 class IndexedList {
 public:
   IndexedList() {}
   ~IndexedList() {}
 
-  typedef std::deque<std::pair<KeyType, ValuePtrType> > SeqType;
+  typedef KeyType key_type;
+  typedef ValuePtrType value_type;
   typedef std::map<KeyType, ValuePtrType> IndexType;
+  typedef std::deque<std::pair<typename IndexType::iterator,
+                               ValuePtrType> > SeqType;
+
+
+
+  typedef IndexedListIterator<SeqType,
+                              ValuePtrType,
+                              ValuePtrType&,
+                              ValuePtrType*,
+                              typename SeqType::iterator> iterator;
+  typedef IndexedListIterator<SeqType,
+                              ValuePtrType,
+                              const ValuePtrType&,
+                              const ValuePtrType*,
+                              typename SeqType::const_iterator> const_iterator;
+
+  ValuePtrType& operator[](size_t n)
+  {
+    return seq_[n].second;
+  }
+
+  const ValuePtrType& operator[](size_t n) const
+  {
+    return seq_[n].second;
+  }
 
   // Inserts (|key|, |value|) to the end of the list. If the same key
   // has been already added, this function fails. This function
@@ -66,9 +371,8 @@ public:
   {
     typename IndexType::iterator i = index_.lower_bound(key);
     if(i == index_.end() || (*i).first != key) {
-      std::pair<KeyType, ValuePtrType> p(key, value);
-      seq_.push_back(p);
-      index_.insert(i, p);
+      i = index_.insert(i, std::make_pair(key, value));
+      seq_.push_back(std::make_pair(i, value));
       return true;
     } else {
       return false;
@@ -82,9 +386,8 @@ public:
   {
     typename IndexType::iterator i = index_.lower_bound(key);
     if(i == index_.end() || (*i).first != key) {
-      std::pair<KeyType, ValuePtrType> p(key, value);
-      seq_.push_front(p);
-      index_.insert(i, p);
+      i = index_.insert(i, std::make_pair(key, value));
+      seq_.push_front(std::make_pair(i, value));
       return true;
     } else {
       return false;
@@ -95,8 +398,7 @@ public:
   // has been already added, this function fails. This function
   // returns the iterator to the newly added element if it is
   // succeeds, or end(). Complexity: O(N)
-  typename SeqType::iterator insert(size_t dest, KeyType key,
-                                    ValuePtrType value)
+  iterator insert(size_t dest, KeyType key, ValuePtrType value)
   {
     if(dest > size()) {
       return seq_.end();
@@ -105,12 +407,11 @@ public:
     if(i == index_.end() || (*i).first != key) {
       typename SeqType::iterator j = seq_.begin();
       std::advance(j, dest);
-      std::pair<KeyType, ValuePtrType> p(key, value);
-      j = seq_.insert(j, p);
-      index_.insert(i, p);
-      return j;
+      i = index_.insert(i, std::make_pair(key, value));
+      j = seq_.insert(j, std::make_pair(i, value));
+      return iterator(j);
     } else {
-      return seq_.end();
+      return iterator(seq_.end());
     }
   }
 
@@ -119,18 +420,14 @@ public:
   // returns the iterator to the newly added element if it is
   // succeeds, or end(). Complexity: O(logN) if inserted to the first
   // or last, otherwise O(N)
-  typename SeqType::iterator insert(typename SeqType::iterator dest,
-                                    KeyType key,
-                                    ValuePtrType value)
+  iterator insert(iterator dest, KeyType key, ValuePtrType value)
   {
     typename IndexType::iterator i = index_.lower_bound(key);
     if(i == index_.end() || (*i).first != key) {
-      std::pair<KeyType, ValuePtrType> p(key, value);
-      dest = seq_.insert(dest, p);
-      index_.insert(i, p);
-      return dest;
+      i = index_.insert(i, std::make_pair(key, value));
+      return iterator(seq_.insert(dest.p, std::make_pair(i, value)));
     } else {
-      return seq_.end();
+      return iterator(seq_.end());
     }
   }
 
@@ -138,7 +435,7 @@ public:
   // value is retrieved by functor |keyFunc|. The insertion position
   // is given by |dest|.
   template<typename KeyFunc, typename InputIterator>
-  void insert(typename SeqType::iterator dest, KeyFunc keyFunc,
+  void insert(iterator dest, KeyFunc keyFunc,
               InputIterator first, InputIterator last)
   {
     std::vector<typename SeqType::value_type> v;
@@ -147,12 +444,31 @@ public:
       KeyType key = keyFunc(*first);
       typename IndexType::iterator i = index_.lower_bound(key);
       if(i == index_.end() || (*i).first != key) {
-        std::pair<KeyType, ValuePtrType> p(key, *first);
-        v.push_back(p);
-        index_.insert(i, p);
+        i = index_.insert(i, std::make_pair(key, *first));
+        v.push_back(std::make_pair(i, *first));
       }
     }
-    seq_.insert(dest, v.begin(), v.end());
+    seq_.insert(dest.p, v.begin(), v.end());
+  }
+
+  template<typename KeyFunc, typename InputIterator>
+  void insert(size_t pos, KeyFunc keyFunc,
+              InputIterator first, InputIterator last)
+  {
+    if(pos > size()) {
+      return;
+    }
+    std::vector<typename SeqType::value_type> v;
+    v.reserve(std::distance(first, last));
+    for(; first != last; ++first) {
+      KeyType key = keyFunc(*first);
+      typename IndexType::iterator i = index_.lower_bound(key);
+      if(i == index_.end() || (*i).first != key) {
+        i = index_.insert(i, std::make_pair(key, *first));
+        v.push_back(std::make_pair(i, *first));
+      }
+    }
+    seq_.insert(seq_.begin() + pos, v.begin(), v.end());
   }
 
   // Removes |key| from the list. If the element is not found, this
@@ -164,14 +480,14 @@ public:
     if(i == index_.end()) {
       return false;
     }
-    index_.erase(i);
     for(typename SeqType::iterator j = seq_.begin(), eoj = seq_.end();
         j != eoj; ++j) {
-      if((*j).first == key) {
+      if((*j).first == i) {
         seq_.erase(j);
         break;
       }
     }
+    index_.erase(i);
     return true;
   }
 
@@ -179,10 +495,33 @@ public:
   // iterator must be valid. This function returns the iterator
   // pointing to the element following the erased element. Complexity:
   // O(N)
-  typename SeqType::iterator erase(typename SeqType::iterator k)
+  iterator erase(iterator k)
   {
-    index_.erase((*k).first);
-    return seq_.erase(k);
+    index_.erase((*k.p).first);
+    return iterator(seq_.erase(k.p));
+  }
+
+  // Removes elements for which Pred returns true. The pred is called
+  // against each each element once per each.
+  template<typename Pred>
+  void remove_if(Pred pred)
+  {
+    typename SeqType::iterator first = seq_.begin(), last = seq_.end();
+    for(; first != last && !pred((*first).second); ++first);
+    if(first == last) {
+      return;
+    }
+    index_.erase((*first).first);
+    typename SeqType::iterator store = first;
+    ++first;
+    for(; first != last; ++first) {
+      if(pred((*first).second)) {
+        index_.erase((*first).first);
+      } else {
+        *store++ = *first;
+      }
+    }
+    seq_.erase(store, last);
   }
 
   // Removes element at the front of the list. If the list is empty,
@@ -193,8 +532,8 @@ public:
     if(seq_.empty()) {
       return false;
     }
-    KeyType key = seq_.front().first;
-    index_.erase(key);
+    typename IndexType::iterator i = seq_.front().first;
+    index_.erase(i);
     seq_.pop_front();
     return true;
   }
@@ -216,7 +555,7 @@ public:
     }
     typename SeqType::iterator x = seq_.begin(), eseq = seq_.end();
     for(; x != eseq; ++x) {
-      if((*x).first == key) {
+      if((*x).first == idxent) {
         break;
       }
     }
@@ -271,24 +610,24 @@ public:
     return index_.empty();
   }
 
-  typename SeqType::iterator begin()
+  iterator begin()
   {
-    return seq_.begin();
+    return iterator(seq_.begin());
   }
 
-  typename SeqType::iterator end()
+  iterator end()
   {
-    return seq_.end();
+    return iterator(seq_.end());
   }
 
-  typename SeqType::const_iterator begin() const
+  const_iterator begin() const
   {
-    return seq_.begin();
+    return const_iterator(seq_.begin());
   }
 
-  typename SeqType::const_iterator end() const
+  const_iterator end() const
   {
-    return seq_.end();
+    return const_iterator(seq_.end());
   }
 
   // Removes all elements from the list.

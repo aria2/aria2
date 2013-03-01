@@ -216,9 +216,9 @@ bool SessionSerializer::save(BufferedFile& fp) const
 {
   std::set<a2_gid_t> metainfoCache;
   const DownloadResultList& results = rgman_->getDownloadResults();
-  for(DownloadResultList::SeqType::const_iterator itr = results.begin(),
+  for(DownloadResultList::const_iterator itr = results.begin(),
         eoi = results.end(); itr != eoi; ++itr) {
-    const SharedHandle<DownloadResult>& dr = (*itr).second;
+    const SharedHandle<DownloadResult>& dr = *itr;
     if(dr->result == error_code::FINISHED ||
        dr->result == error_code::REMOVED) {
       if(dr->option->getAsBool(PREF_FORCE_SAVE)) {
@@ -246,9 +246,9 @@ bool SessionSerializer::save(BufferedFile& fp) const
   {
     // Save active downloads.
     const RequestGroupList& groups = rgman_->getRequestGroups();
-    for(RequestGroupList::SeqType::const_iterator itr = groups.begin(),
+    for(RequestGroupList::const_iterator itr = groups.begin(),
           eoi = groups.end(); itr != eoi; ++itr) {
-      const SharedHandle<RequestGroup>& rg = (*itr).second;
+      const SharedHandle<RequestGroup>& rg = *itr;
       SharedHandle<DownloadResult> dr = rg->createDownloadResult();
       bool stopped = dr->result == error_code::FINISHED ||
         dr->result == error_code::REMOVED;
@@ -262,9 +262,9 @@ bool SessionSerializer::save(BufferedFile& fp) const
   }
   if(saveWaiting_) {
     const RequestGroupList& groups = rgman_->getReservedGroups();
-    for(RequestGroupList::SeqType::const_iterator itr = groups.begin(),
+    for(RequestGroupList::const_iterator itr = groups.begin(),
           eoi = groups.end(); itr != eoi; ++itr) {
-      const SharedHandle<RequestGroup>& rg = (*itr).second;
+      const SharedHandle<RequestGroup>& rg = *itr;
       SharedHandle<DownloadResult> result = rg->createDownloadResult();
       if(!writeDownloadResult(fp, metainfoCache, result)) {
         return false;

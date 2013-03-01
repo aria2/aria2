@@ -253,10 +253,10 @@ void RequestGroupManTest::testFillRequestGroupFromReserver_uriParser()
 
   rgman_->fillRequestGroupFromReserver(e_.get());
 
-  RequestGroupList::SeqType::const_iterator itr;
+  RequestGroupList::const_iterator itr;
   CPPUNIT_ASSERT_EQUAL((size_t)1, rgman_->getReservedGroups().size());
   itr = rgman_->getReservedGroups().begin();
-  CPPUNIT_ASSERT_EQUAL(rgs[0]->getGID(), (*itr).second->getGID());
+  CPPUNIT_ASSERT_EQUAL(rgs[0]->getGID(), (*itr)->getGID());
   CPPUNIT_ASSERT_EQUAL((size_t)3, rgman_->getRequestGroups().size());
 }
 
@@ -277,18 +277,18 @@ void RequestGroupManTest::testInsertReservedGroup()
   std::vector<SharedHandle<RequestGroup> > groups(vbegin(rgs1), vend(rgs1));
   rgman_->insertReservedGroup(0, groups);
   CPPUNIT_ASSERT_EQUAL((size_t)2, rgman_->getReservedGroups().size());
-  RequestGroupList::SeqType::const_iterator itr;
+  RequestGroupList::const_iterator itr;
   itr = rgman_->getReservedGroups().begin();
-  CPPUNIT_ASSERT_EQUAL(rgs1[0]->getGID(), (*itr++).second->getGID());
-  CPPUNIT_ASSERT_EQUAL(rgs1[1]->getGID(), (*itr++).second->getGID());
+  CPPUNIT_ASSERT_EQUAL(rgs1[0]->getGID(), (*itr++)->getGID());
+  CPPUNIT_ASSERT_EQUAL(rgs1[1]->getGID(), (*itr++)->getGID());
 
   groups.assign(vbegin(rgs2), vend(rgs2));
   rgman_->insertReservedGroup(1, groups);
   CPPUNIT_ASSERT_EQUAL((size_t)4, rgman_->getReservedGroups().size());
   itr = rgman_->getReservedGroups().begin();
   ++itr;
-  CPPUNIT_ASSERT_EQUAL(rgs2[0]->getGID(), (*itr++).second->getGID());
-  CPPUNIT_ASSERT_EQUAL(rgs2[1]->getGID(), (*itr++).second->getGID());
+  CPPUNIT_ASSERT_EQUAL(rgs2[0]->getGID(), (*itr++)->getGID());
+  CPPUNIT_ASSERT_EQUAL(rgs2[1]->getGID(), (*itr++)->getGID());
 }
 
 void RequestGroupManTest::testAddDownloadResult()
