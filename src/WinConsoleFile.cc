@@ -72,18 +72,16 @@ size_t WinConsoleFile::write(const char* str)
   return written;
 }
 
-int WinConsoleFile::printf(const char* format, ...)
+int WinConsoleFile::vprintf(const char* format, va_list va)
 {
-  char buf[2048];
-  va_list ap;
-  va_start(ap, format);
-  int r = vsnprintf(buf, sizeof(buf), format, ap);
-  va_end(ap);
-  if(r == -1) {
-    // MINGW32 vsnprintf returns -1 if output is truncated.
-    r = strlen(buf);
-  } else if(r < 0) {
-    // Reachable?
+  ssize_t r = _vscprintf(format, va);
+  if (r <= 0) {
+    return 0;
+  }
+  char *buf = new char[++r];
+  r = vsnprintf(buf, r, format, va);
+  if (r < 0) {
+    delete [] buf;
     return 0;
   }
   DWORD written;
@@ -95,6 +93,7 @@ int WinConsoleFile::printf(const char* format, ...)
     WriteFile(GetStdHandle(stdHandle_),
               buf, r, &written, 0);
   }
+  delete [] buf;
   return written;
 }
 

@@ -156,13 +156,9 @@ size_t BufferedFile::transfer(std::ostream& out)
   return count;
 }
 
-int BufferedFile::printf(const char* format, ...)
+int BufferedFile::vprintf(const char* format, va_list va)
 {
-  va_list ap;
-  va_start(ap, format);
-  int r = vfprintf(fp_, format, ap);
-  va_end(ap);
-  return r;
+  return vfprintf(fp_, format, va);
 }
 
 int BufferedFile::flush()

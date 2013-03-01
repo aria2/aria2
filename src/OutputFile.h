@@ -38,6 +38,7 @@
 #include "common.h"
 
 #include <cstdlib>
+#include <cstdarg>
 
 namespace aria2 {
 
@@ -45,8 +46,15 @@ class OutputFile {
 public:
   virtual ~OutputFile() {}
   virtual size_t write(const char* str) = 0;
-  virtual int printf(const char* format, ...) = 0;
   virtual int flush() = 0;
+  virtual int vprintf(const char* format, va_list va) = 0;
+  inline int printf(const char *format, ...) {
+    va_list va;
+    va_start(va, format);
+    int rv = vprintf(format, va);
+    va_end(va);
+    return rv;
+  }
   // Returns true if the output medium supports ANSI color codes.
   virtual bool supportsColor() = 0;
 };
