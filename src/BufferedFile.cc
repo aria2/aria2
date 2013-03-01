@@ -59,7 +59,7 @@ BufferedFile::BufferedFile(const char* filename, const char* mode)
 {}
 
 BufferedFile::BufferedFile(FILE* fp)
-  : fp_(fp), open_(true), supportsColor_(fp_ ? isatty(fileno(fp_)) : false)
+  : fp_(fp), open_(fp_), supportsColor_(fp_ ? isatty(fileno(fp_)) : false)
 {}
 
 BufferedFile::~BufferedFile()
@@ -69,7 +69,8 @@ BufferedFile::~BufferedFile()
 
 BufferedFile::operator unspecified_bool_type() const
 {
-  return (!open_ || ferror(fp_)) ? 0 : &BufferedFile::good_state;
+  bool ok = isOpen() && !isError();
+  return ok ? &BufferedFile::good_state : 0;
 }
 
 size_t BufferedFile::read(void* ptr, size_t count)
@@ -94,7 +95,7 @@ char* BufferedFile::gets(char* s, int size)
 
 char* BufferedFile::getsn(char* s, int size)
 {
-  char* ptr = fgets(s, size, fp_);
+  char* ptr = gets(s, size);
   if(ptr) {
     int len = strlen(ptr);
     if(ptr[len-1] == '\n') {
@@ -128,17 +129,16 @@ std::string BufferedFile::getLine()
 
 int BufferedFile::close()
 {
-  if(open_) {
+  if (open_) {
     open_ = false;
     return fclose(fp_);
-  } else {
-    return 0;
   }
+  return 0;
 }
 
 bool BufferedFile::eof()
 {
-  return open_ && feof(fp_);
+  return !isOpen()|| isEOF();
 }
 
 size_t BufferedFile::transfer(std::ostream& out)

@@ -100,6 +100,7 @@ if test "x$with_libz" = "xyes"; then
     AC_DEFINE([HAVE_ZLIB], [1], [Define to 1 if you have zlib.])
     LIBS="$ZLIB_LIBS $LIBS"
     CPPFLAGS="$ZLIB_CFLAGS $CPPFLAGS"
+    AC_CHECK_FUNCS([gzbuffer gzsetparams])
   else
     AC_MSG_WARN([$ZLIB_PKG_ERRORS])
     if test "x$with_libz_requested" = "xyes"; then

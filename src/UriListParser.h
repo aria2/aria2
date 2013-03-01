@@ -43,12 +43,13 @@
 
 #include "Option.h"
 #include "BufferedFile.h"
+#include "SharedHandle.h"
 
 namespace aria2 {
 
 class UriListParser {
 private:
-  BufferedFile fp_;
+  SharedHandle<BufferedFile> fp_;
 
   std::string line_;
 public:

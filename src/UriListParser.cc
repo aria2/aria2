@@ -45,10 +45,18 @@
 #include "BufferedFile.h"
 #include "OptionParser.h"
 
+#if HAVE_ZLIB
+#include "GZipFile.h"
+#endif
+
 namespace aria2 {
 
 UriListParser::UriListParser(const std::string& filename)
-  : fp_(filename.c_str(), BufferedFile::READ)
+#if HAVE_ZLIB
+  : fp_(new GZipFile(filename.c_str(), BufferedFile::READ))
+#else
+  : fp_(new BufferedFile(filename.c_str(), BufferedFile::READ))
+#endif
 {}
 
 UriListParser::~UriListParser() {}
@@ -63,9 +71,9 @@ void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
       // Read options
       std::stringstream ss;
       while(1) {
-        line_ = fp_.getLine();
+        line_ = fp_->getLine();
         if(line_.empty()) {
-          if(fp_.eof()) {
+          if(fp_->eof()) {
             break;
           } else if(!fp_) {
             throw DL_ABORT_EX("UriListParser:I/O error.");
@@ -84,9 +92,9 @@ void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
       optparser->parse(op, ss);
       return;
     }
-    line_ = fp_.getLine();
+    line_ = fp_->getLine();
     if(line_.empty()) {
-      if(fp_.eof()) {
+      if(fp_->eof()) {
         return;
       } else if(!fp_) {
         throw DL_ABORT_EX("UriListParser:I/O error.");
@@ -97,7 +105,11 @@ void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
 
 bool UriListParser::hasNext()
 {
-  return !line_.empty() || (fp_ && !fp_.eof());
+  bool rv = !line_.empty() || (fp_ && *fp_ && !fp_->eof());
+  if (!rv) {
+    fp_->close();
+  }
+  return rv;
 }
 
 } // namespace aria2
