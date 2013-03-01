@@ -56,25 +56,24 @@ public:
   // returns false.
   operator unspecified_bool_type() const;
   // wrapper for fread. Using 1 for 2nd argument of fread.
-  size_t read(void* ptr, size_t count);
+  virtual size_t read(void* ptr, size_t count);
   // wrapper for fwrite. Using 1 for 2nd argument of fwrite.
-  size_t write(const void* ptr, size_t count);
+  virtual size_t write(const void* ptr, size_t count);
   virtual size_t write(const char* str);
   // wrapper for fgets
-  char* gets(char* s, int size);
+  virtual char* gets(char* s, int size);
   // wrapper for fgets, but trailing '\n' is replaced with '\0'.
   char* getsn(char* s, int size);
   // Reads one line and returns it. The last '\n' is removed.
   std::string getLine();
   // wrapper for fclose
-  int close();
+  virtual int close();
   // Return true if open_ && feof(fp_) != 0. Otherwise returns false.
   bool eof();
   // Convenient method. Read data to end of file and write them into
   // given stream. Returns written size.
   size_t transfer(std::ostream& out);
-  // wrapper for fprintf
-  virtual int printf(const char* format, ...);
+  virtual int vprintf(const char* format, va_list va);
   // wrapper for fflush
   virtual int flush();
   virtual bool supportsColor();
@@ -84,15 +83,21 @@ public:
   static const char WRITE[];
   // Mode for append
   static const char APPEND[];
+
 private:
   // Don't allow copying
   BufferedFile(const BufferedFile&);
   BufferedFile& operator=(const BufferedFile&);
 
   FILE* fp_;
-  // true when file has been opened.
   bool open_;
   bool supportsColor_;
+
+protected:
+  virtual bool isError() const { return ferror(fp_); }
+  virtual bool isEOF() const { return feof(fp_); }
+  virtual bool isOpen() const { return open_; }
+
 };
 
 } // namespace aria2
