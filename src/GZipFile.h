@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2011 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Nils Maier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,79 +32,40 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "WinConsoleFile.h"
 
-#include <cstring>
-#include <cstdio>
-#include <cstdarg>
-#include <string>
+#ifndef D_GZIP_FILE_H
+#define D_GZIP_FILE_H
 
-#include "a2io.h"
-#include "util.h"
+#include <zlib.h>
+
+#include "BufferedFile.h"
 
 namespace aria2 {
 
-WinConsoleFile::WinConsoleFile(DWORD stdHandle)
-  : stdHandle_(stdHandle)
-{}
+class GZipFile: public BufferedFile {
+public:
+  GZipFile(const char* filename, const char* mode);
+  virtual ~GZipFile() {}
+  virtual int close();
+  virtual size_t read(void* ptr, size_t count);
+  virtual size_t write(const void* ptr, size_t count);
+  virtual char* gets(char* s, int size);
+  virtual int vprintf(const char* format, va_list va);
+  virtual int flush();
+private:
+  // Don't allow copying
+  GZipFile(const GZipFile&);
+  GZipFile& operator=(const GZipFile&);
 
-WinConsoleFile::~WinConsoleFile() {}
+  gzFile fp_;
+  bool open_;
 
-namespace {
-bool console(DWORD stdHandle)
-{
-  DWORD mode;
-  return GetConsoleMode(GetStdHandle(stdHandle), &mode);
-}
-} // namespace
-
-size_t WinConsoleFile::write(const char* str)
-{
-  DWORD written;
-  if(console(stdHandle_)) {
-    std::wstring msg = utf8ToWChar(str);
-    WriteConsoleW(GetStdHandle(stdHandle_),
-                  msg.c_str(), msg.size(), &written, 0);
-  } else {
-    WriteFile(GetStdHandle(stdHandle_),
-              str, strlen(str), &written, 0);
-  }
-  return written;
-}
-
-int WinConsoleFile::vprintf(const char* format, va_list va)
-{
-  ssize_t r = _vscprintf(format, va);
-  if (r <= 0) {
-    return 0;
-  }
-  char *buf = new char[++r];
-  r = vsnprintf(buf, r, format, va);
-  if (r < 0) {
-    delete [] buf;
-    return 0;
-  }
-  DWORD written;
-  if(console(stdHandle_)) {
-    std::wstring msg = utf8ToWChar(buf);
-    WriteConsoleW(GetStdHandle(stdHandle_),
-                  msg.c_str(), msg.size(), &written, 0);
-  } else {
-    WriteFile(GetStdHandle(stdHandle_),
-              buf, r, &written, 0);
-  }
-  delete [] buf;
-  return written;
-}
-
-int WinConsoleFile::flush()
-{
-  return 0;
-}
-
-bool WinConsoleFile::supportsColor()
-{
-  return false;
-}
+protected:
+  virtual bool isError() const;
+  virtual bool isEOF() const { return gzeof(fp_); }
+  virtual bool isOpen() const { return open_; }
+};
 
 } // namespace aria2
+
+#endif // D_GZIP_FILE_H
