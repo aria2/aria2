@@ -228,7 +228,15 @@ SharedHandle<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
     // infoFile exists.
     loadAndOpenFile(infoFile);
     checkEntry.reset(new StreamCheckIntegrityEntry(this));
-  } else if(isPreLocalFileCheckEnabled() && infoFile->exists()) {
+  } else if(isPreLocalFileCheckEnabled() &&
+            (infoFile->exists() ||
+             (File(getFirstFilePath()).exists() &&
+              option_->getAsBool(PREF_CONTINUE)))) {
+    // If infoFile exists or -c option is given, we need to check
+    // download has been completed (which is determined after
+    // loadAndOpenFile()). If so, use ChecksumCheckIntegrityEntry when
+    // verification is enabled, because CreateRequestCommand does not
+    // issue checksum verification and download fails without it.
     loadAndOpenFile(infoFile);
     if(downloadFinished()) {
 #ifdef ENABLE_MESSAGE_DIGEST
