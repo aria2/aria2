@@ -34,7 +34,13 @@
 /* copyright --> */
 #include "MultiUrlRequestInfo.h"
 
-#include <signal.h>
+#ifdef HAVE_SYS_SIGNAL_H
+#  include <sys/signal.h>
+#else // HAVE_SYS_SIGNAL_H
+#  ifdef HAVE_SIGNAL_H
+#    include <signal.h>
+#  endif // HAVE_SIGNAL_H
+#endif // HAVE_SYS_SIGNAL_H
 
 #include <cstring>
 #include <ostream>
