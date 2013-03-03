@@ -102,7 +102,8 @@ if HAVE_ZLIB
 aria2c_SOURCES += \
 	GZipDecoder.cc GZipDecoder.h\
 	GZipDecoderTest.cc GZipEncoderTest.cc\
-	GZipDecodingStreamFilterTest.cc
+	GZipDecodingStreamFilterTest.cc\
+	GZipFileTest.cc
 endif # HAVE_ZLIB
 
 if HAVE_SQLITE3
