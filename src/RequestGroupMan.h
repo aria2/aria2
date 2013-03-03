@@ -248,8 +248,6 @@ public:
 
   bool addServerStat(const SharedHandle<ServerStat>& serverStat);
 
-  void updateServerStat();
-
   bool loadServerStat(const std::string& filename);
 
   bool saveServerStat(const std::string& filename) const;

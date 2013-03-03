@@ -272,6 +272,38 @@ private:
       }
     }
   }
+
+  // Collect statistics during download in PeerStats and update/register
+  // ServerStatMan
+  void collectStat(const SharedHandle<RequestGroup>& group)
+  {
+    if(group->getSegmentMan()) {
+      bool singleConnection =
+        group->getSegmentMan()->getPeerStats().size() == 1;
+      const std::vector<SharedHandle<PeerStat> >& peerStats =
+        group->getSegmentMan()->getFastestPeerStats();
+      for(std::vector<SharedHandle<PeerStat> >::const_iterator i =
+            peerStats.begin(), eoi = peerStats.end(); i != eoi; ++i) {
+        if((*i)->getHostname().empty() || (*i)->getProtocol().empty()) {
+          continue;
+        }
+        int speed = (*i)->getAvgDownloadSpeed();
+        if (speed == 0) continue;
+
+        SharedHandle<ServerStat> ss =
+          e_->getRequestGroupMan()->getOrCreateServerStat((*i)->getHostname(),
+                                                          (*i)->getProtocol());
+        ss->increaseCounter();
+        ss->updateDownloadSpeed(speed);
+        if(singleConnection) {
+          ss->updateSingleConnectionAvgSpeed(speed);
+        }
+        else {
+          ss->updateMultiConnectionAvgSpeed(speed);
+        }
+      }
+    }
+  }
 public:
   ProcessStoppedRequestGroup
   (DownloadEngine* e,
@@ -280,9 +312,10 @@ public:
       reservedGroups_(reservedGroups)
   {}
 
-  void operator()(const RequestGroupList::value_type& group)
+  bool operator()(const RequestGroupList::value_type& group)
   {
     if(group->getNumCommand() == 0) {
+      collectStat(group);
       const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
       // DownloadContext::resetDownloadStopTime() is only called when
       // download completed. If
@@ -369,79 +402,18 @@ public:
         executeStopHook(group, e_->getOption(), dr->result);
         group->releaseRuntimeResource(e_);
       }
+      return true;
+    } else {
+      return false;
     }
   }
 };
 } // namespace
-
-namespace {
-class CollectServerStat {
-private:
-  RequestGroupMan* requestGroupMan_;
-public:
-  CollectServerStat(RequestGroupMan* requestGroupMan):
-    requestGroupMan_(requestGroupMan) {}
-
-  void operator()(const RequestGroupList::value_type& group)
-  {
-    if(group->getNumCommand() == 0) {
-      // Collect statistics during download in PeerStats and update/register
-      // ServerStatMan
-      if(group->getSegmentMan()) {
-        bool singleConnection =
-          group->getSegmentMan()->getPeerStats().size() == 1;
-        const std::vector<SharedHandle<PeerStat> >& peerStats =
-          group->getSegmentMan()->getFastestPeerStats();
-        for(std::vector<SharedHandle<PeerStat> >::const_iterator i =
-              peerStats.begin(), eoi = peerStats.end(); i != eoi; ++i) {
-          if((*i)->getHostname().empty() || (*i)->getProtocol().empty()) {
-            continue;
-          }
-          int speed = (*i)->getAvgDownloadSpeed();
-          if (speed == 0) continue;
-
-          SharedHandle<ServerStat> ss =
-            requestGroupMan_->getOrCreateServerStat((*i)->getHostname(),
-                                                    (*i)->getProtocol());
-          ss->increaseCounter();
-          ss->updateDownloadSpeed(speed);
-          if(singleConnection) {
-            ss->updateSingleConnectionAvgSpeed(speed);
-          }
-          else {
-            ss->updateMultiConnectionAvgSpeed(speed);
-          }
-        }
-      }
-    }
-  }
-};
-} // namespace
-
-void RequestGroupMan::updateServerStat()
-{
-  std::for_each(requestGroups_.begin(), requestGroups_.end(),
-                CollectServerStat(this));
-}
 
 void RequestGroupMan::removeStoppedGroup(DownloadEngine* e)
 {
   size_t numPrev = requestGroups_.size();
-
-  updateServerStat();
-
-  std::for_each(requestGroups_.begin(), requestGroups_.end(),
-                ProcessStoppedRequestGroup(e, reservedGroups_));
-  for(RequestGroupList::iterator i = requestGroups_.begin(),
-        eoi = requestGroups_.end(); i != eoi;) {
-    const SharedHandle<RequestGroup>& rg = *i;
-    if(rg->getNumCommand() == 0) {
-      i = requestGroups_.erase(i);
-      eoi = requestGroups_.end();
-    } else {
-      ++i;
-    }
-  }
+  requestGroups_.remove_if(ProcessStoppedRequestGroup(e, reservedGroups_));
   size_t numRemoved = numPrev-requestGroups_.size();
   if(numRemoved > 0) {
     A2_LOG_DEBUG(fmt("%lu RequestGroup(s) deleted.",
