@@ -72,7 +72,7 @@ bool SessionSerializer::save(const std::string& filename) const
   {
     SharedHandle<BufferedFile> fp;
 #if HAVE_ZLIB
-    if (filename.compare(filename.length() - 3, 3, ".gz") == 0) {
+    if (util::endsWith(filename, ".gz")) {
       fp.reset(new GZipFile(tempFilename.c_str(), BufferedFile::WRITE));
     }
     else
