@@ -170,10 +170,21 @@ namespace {
 template<typename Output>
 void writeHeaderConsole(Output& fp, Logger::LEVEL level, bool useColor)
 {
+  struct timeval tv;
+  gettimeofday(&tv, 0);
+  char datestr[15]; // 'MM/DD hh:mm:ss'+'\0' = 15 bytes
+  struct tm tm;
+  //tv.tv_sec may not be of type time_t.
+  time_t timesec = tv.tv_sec;
+  localtime_r(&timesec, &tm);
+  size_t dateLength =
+    strftime(datestr, sizeof(datestr), "%m/%d %H:%M:%S", &tm);
+  assert(dateLength <= (size_t)15);
   if(useColor) {
-    fp.printf("[%s%s\033[0m] ", levelColor(level), levelToString(level));
+    fp.printf("%s [%s%s\033[0m] ", datestr, levelColor(level),
+              levelToString(level));
   } else {
-    fp.printf("[%s] ", levelToString(level));
+    fp.printf("%s [%s] ", datestr, levelToString(level));
   }
 }
 } // namespace
