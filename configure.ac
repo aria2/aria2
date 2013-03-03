@@ -365,6 +365,7 @@ AC_CHECK_HEADERS([argz.h \
                   netinet/tcp.h \
 		  poll.h \
 		  port.h \
+                  signal.h \
                   stddef.h \
                   stdint.h \
                   stdio_ext.h \
@@ -373,6 +374,7 @@ AC_CHECK_HEADERS([argz.h \
                   strings.h \
                   sys/ioctl.h \
                   sys/param.h \
+                  sys/signal.h \
                   sys/socket.h \
                   sys/time.h \
                   sys/types.h \
