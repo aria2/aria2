@@ -727,10 +727,10 @@ BitTorrent Specific Options
 
 .. option:: --dht-listen-port=<PORT>...
 
-  Set UDP listening port for both IPv4 and IPv6 DHT.
-  Multiple ports can be specified by using ``,``, for example: ``6881,6885``.
-  You can also use ``-`` to specify a range: ``6881-6999``. ``,`` and ``-`` can be used
-  together.
+  Set UDP listening port used by DHT(IPv4, IPv6) and UDP tracker.
+  Multiple ports can be specified by using ``,``, for example:
+  ``6881,6885``.  You can also use ``-`` to specify a range:
+  ``6881-6999``. ``,`` and ``-`` can be used together.
   Default: ``6881-6999``
 
   .. note::
@@ -743,9 +743,9 @@ BitTorrent Specific Options
 
 .. option:: --enable-dht[=true|false]
 
-  Enable IPv4 DHT functionality. If a private flag is set in a
-  torrent, aria2 doesn't use DHT for that download even if ``true`` is
-  given.  Default: ``true``
+  Enable IPv4 DHT functionality. It also enables UDP tracker
+  support. If a private flag is set in a torrent, aria2 doesn't use
+  DHT for that download even if ``true`` is given.  Default: ``true``
 
 .. option:: --enable-dht6[=true|false]
 

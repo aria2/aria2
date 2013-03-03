@@ -54,7 +54,8 @@ Here is a list of features:
 * Persistent Connections support
 * FTP through HTTP Proxy
 * Download/Upload speed throttling
-* BitTorrent extensions: Fast extension, DHT, PEX, MSE/PSE, Multi-Tracker
+* BitTorrent extensions: Fast extension, DHT, PEX, MSE/PSE,
+  Multi-Tracker, UDP tracker
 * BitTorrent `WEB-Seeding <http://getright.com/seedtorrent.html>`_. aria2
   requests chunks more than piece size to reduce the request
   overhead. It also supports pipelined requests with piece size.
@@ -364,6 +365,13 @@ aria2 supports mainline compatible DHT. By default, the routing table
 for IPv4 DHT is saved to ``$HOME/.aria2/dht.dat`` and the routing
 table for IPv6 DHT is saved to ``$HOME/.aria2/dht6.dat``. aria2 uses
 same port number to listen on for both IPv4 and IPv6 DHT.
+
+UDP tracker
+~~~~~~~~~~~
+
+UDP tracker support is enabled when IPv4 DHT is enabled.  The port
+number of UDP tracker is shared with DHT. Use ``--dht-listen-port``
+option to change the port number.
 
 Other things should be noted
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~

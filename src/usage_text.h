@@ -309,13 +309,16 @@
 #define TEXT_ENABLE_PEER_EXCHANGE                                       \
   _(" --enable-peer-exchange[=true|false] Enable Peer Exchange extension.")
 #define TEXT_ENABLE_DHT                                         \
-  _(" --enable-dht[=true|false]    Enable IPv4 DHT functionality.")
+  _(" --enable-dht[=true|false]    Enable IPv4 DHT functionality. It also enables\n" \
+    "                              UDP tracker support. If a private flag is set\n" \
+    "                              in a torrent, aria2 doesn't use DHT for that\n" \
+    "                              download even if ``true`` is given.")
 #define TEXT_DHT_LISTEN_PORT                                            \
-  _(" --dht-listen-port=PORT...    Set UDP listening port for both IPv4 and IPv6\n"   \
-    "                              DHT. Multiple ports can be specified by using\n" \
-    "                              ',', for example: \"6881,6885\". You can also\n" \
-    "                              use '-' to specify a range: \"6881-6999\". ','\n" \
-    "                              and '-' can be used together.")
+  _(" --dht-listen-port=PORT...    Set UDP listening port used by DHT(IPv4, IPv6)\n"   \
+    "                              and UDP tracker. Multiple ports can be specified\n" \
+    "                              by using ',', for example: \"6881,6885\". You can\n" \
+    "                              also use '-' to specify a range: \"6881-6999\".\n" \
+    "                              ',' and '-' can be used together.")
 #define TEXT_DHT_ENTRY_POINT                                            \
   _(" --dht-entry-point=HOST:PORT  Set host and port as an entry point to IPv4 DHT\n" \
     "                              network.")
