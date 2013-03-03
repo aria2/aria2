@@ -44,7 +44,8 @@
 namespace aria2 {
 
 GZipFile::GZipFile(const char* filename, const char* mode)
-  : BufferedFile(0), fp_(0), open_(false)
+  : BufferedFile(0), fp_(0), open_(false),
+    buflen_(1024), buf_(reinterpret_cast<char*>(malloc(buflen_)))
 {
   FILE* fp =
 #ifdef __MINGW32__
@@ -72,8 +73,6 @@ GZipFile::GZipFile(const char* filename, const char* mode)
     }
     fclose(fp);
   }
-  buflen_ = 1024;
-  buf_ = reinterpret_cast<char*>(malloc(buflen_));
 }
 
 GZipFile::~GZipFile()

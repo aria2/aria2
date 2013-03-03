@@ -60,8 +60,8 @@ private:
   gzFile fp_;
   bool open_;
 
-  char* buf_;
   size_t buflen_;
+  char* buf_;
 protected:
   virtual bool isError() const;
   virtual bool isEOF() const { return gzeof(fp_); }
