@@ -80,7 +80,7 @@ bool SessionSerializer::save(const std::string& filename) const
     {
      fp.reset(new BufferedFile(tempFilename.c_str(), BufferedFile::WRITE));
     }
-    if(!fp || !*fp) {
+    if(!*fp) {
       return false;
     }
     if(!save(*fp) || fp->close() == EOF) {
