@@ -45,7 +45,7 @@ namespace aria2 {
 class GZipFile: public BufferedFile {
 public:
   GZipFile(const char* filename, const char* mode);
-  virtual ~GZipFile() {}
+  virtual ~GZipFile();
   virtual int close();
   virtual size_t read(void* ptr, size_t count);
   virtual size_t write(const void* ptr, size_t count);
@@ -60,6 +60,8 @@ private:
   gzFile fp_;
   bool open_;
 
+  char* buf_;
+  size_t buflen_;
 protected:
   virtual bool isError() const;
   virtual bool isEOF() const { return gzeof(fp_); }

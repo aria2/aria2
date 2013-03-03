@@ -72,6 +72,13 @@ GZipFile::GZipFile(const char* filename, const char* mode)
     }
     fclose(fp);
   }
+  buflen_ = 1024;
+  buf_ = reinterpret_cast<char*>(malloc(buflen_));
+}
+
+GZipFile::~GZipFile()
+{
+  free(buf_);
 }
 
 int GZipFile::close()
@@ -136,26 +143,46 @@ int GZipFile::flush()
 
 int GZipFile::vprintf(const char* format, va_list va)
 {
-  char *buf = 0;
-  size_t len;
-
-  int rv = ::vasprintf(&buf, format, va);
-  if (rv <= 0) {
-    // buf is undefined at this point
-    // do not attempt to free it
-    return rv;
+  ssize_t len;
+#ifdef __MINGW32__
+  // Windows vsnprintf returns -1 when output is truncated, so we
+  // cannot use same logic in non-MINGW32 code.
+  len = _vscprintf(format, va);
+  if(len == 0) {
+    return 0;
   }
-
-  len = strlen(buf);
-  if (len) {
-    rv = gzwrite(fp_, buf, len);
+  // Include terminate null
+  ++len;
+  if(len > static_cast<ssize_t>(buflen_)) {
+    while(static_cast<ssize_t>(buflen_) < len) {
+      buflen_ *= 2;
+    }
+    buf_ = reinterpret_cast<char*>(realloc(buf_, buflen_));
   }
-
-  if (buf) {
-    free(buf);
+  len = vsnprintf(buf_, buflen_, format, va);
+  if(len < 0) {
+    return len;
   }
-  return rv;
+#else // !__MINGW32__
+  for(;;) {
+    len = vsnprintf(buf_, buflen_, format, va);
+    // len does not include terminating null
+    if(len >= static_cast<ssize_t>(buflen_)) {
+      // Include terminate null
+      ++len;
+      // truncated; reallocate buf and try again
+      while(static_cast<ssize_t>(buflen_) < len) {
+        buflen_ *= 2;
+      }
+      buf_ = reinterpret_cast<char*>(realloc(buf_, buflen_));
+    } else if(len < 0) {
+      return len;
+    } else {
+      break;
+    }
+  }
+#endif // !__MINGW32__
+  return gzwrite(fp_, buf_, len);
 }
-
 
 } // namespace aria2
