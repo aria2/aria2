@@ -281,7 +281,8 @@ bool SessionSerializer::save(BufferedFile& fp) const
       // PREF_PAUSE was removed from option, so save it here looking
       // property separately.
       if(rg->isPauseRequested()) {
-        if (fp.write(" ", 1) != 1 || fp.write(PREF_PAUSE->k) == 0 || fp.write("\n", 1) != 1) {
+        if (fp.write(" ", 1) != 1 || fp.write(PREF_PAUSE->k) == 0 ||
+            fp.write("=true\n", 6) != 6) {
           return false;
         }
       }

@@ -45,6 +45,7 @@ void SessionSerializerTest::testSave()
   option->put(PREF_DIR, "/tmp");
   createRequestGroupForUri(result, option, uris);
   CPPUNIT_ASSERT_EQUAL((size_t)5, result.size());
+  result[4]->getOption()->put(PREF_PAUSE, A2_V_TRUE);
   option->put(PREF_MAX_DOWNLOAD_RESULT, "10");
   SharedHandle<RequestGroupMan> rgman
     (new RequestGroupMan(result, 1, option.get()));
@@ -115,6 +116,8 @@ void SessionSerializerTest::testSave()
                        line);
   std::getline(ss, line);
   CPPUNIT_ASSERT_EQUAL(std::string(" dir=/tmp"), line);
+  std::getline(ss, line);
+  CPPUNIT_ASSERT_EQUAL(std::string(" pause=true"), line);
   std::getline(ss, line);
   CPPUNIT_ASSERT(!ss);
 #endif // defined(ENABLE_BITTORRENT) && defined(ENABLE_METALINK)
