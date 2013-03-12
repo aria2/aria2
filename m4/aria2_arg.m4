@@ -6,7 +6,7 @@ AC_DEFUN([ARIA2_ARG_WITH],
 	AS_HELP_STRING([--with-$1], [Use $1.]),
 	[with_$1_requested=$withval with_$1=$withval], [with_$1=no])]
 )
-dnl ARIA2_ARG_WITH(PACKAGE)
+dnl ARIA2_ARG_WITHOUT(PACKAGE)
 dnl wrapper for AC_ARG_WITH with default value 'yes'.
 dnl If --with-$1 is given explicitly, set with_$1_requested to given value.
 AC_DEFUN([ARIA2_ARG_WITHOUT],
