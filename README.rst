@@ -155,6 +155,7 @@ distribution you use):
 * libxml2-dev      (Required for Metalink support)
 * zlib1g-dev       (Required for gzip, deflate decoding support in HTTP)
 * libsqlite3-dev   (Required for Firefox3/Chromium cookie support)
+* pkg-config       (Required to detect installed libraries)
 
 You can use libgcrypt-dev instead of nettle-dev and libgmp-dev:
 
@@ -169,8 +170,6 @@ libgnutls-dev, nettle-dev, libgmp-dev, libgpg-error-dev and libgcrypt-dev:
 You can use libexpat1-dev instead of libxml2-dev:
 
 * libexpat1-dev    (Required for Metalink support)
-
-You may also need pkg-config to detect the above mentioned libraries.
 
 On Fedora you need the following packages: gcc, gcc-c++, kernel-devel,
 libgcrypt-devel, libgcrypt-devel, libxml2-devel, openssl-devel
