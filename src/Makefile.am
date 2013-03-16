@@ -326,7 +326,7 @@ endif # HAVE_OPENSSL
 if HAVE_ZLIB
 SRCS += GZipEncoder.cc GZipEncoder.h\
 	GZipDecodingStreamFilter.cc GZipDecodingStreamFilter.h\
-	GZipFile.cc GzipFile.h
+	GZipFile.cc GZipFile.h
 endif # HAVE_ZLIB
 
 if HAVE_SQLITE3
