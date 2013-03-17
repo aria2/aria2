@@ -21,9 +21,13 @@ downloading a file like BitTorrent.
 
 The project page is located at http://aria2.sourceforge.net/.
 
-See `aria2 Online Manual <http://aria2.sourceforge.net/manual/en/html/>`_
-(`Russian translation <http://aria2.sourceforge.net/manual/ru/html/>`_)
-and `the usage examples <http://sourceforge.net/apps/trac/aria2/wiki/UsageExample>`_ to learn how to use aria2.
+See `aria2 Online Manual
+<http://aria2.sourceforge.net/manual/en/html/>`_ (`Russian translation
+<http://aria2.sourceforge.net/manual/ru/html/>`_, `Portuguese
+translation (1.15.2 based)
+<http://aria2.sourceforge.net/manual/pt/html/>`_) and `the usage
+examples <http://sourceforge.net/apps/trac/aria2/wiki/UsageExample>`_
+to learn how to use aria2.
 
 Features
 --------
@@ -329,7 +333,9 @@ documentation. aria2 man pages will be build when you run ``make`` if
 they are not up-to-date.  You can also build HTML version of aria2 man
 page by ``make html``. The HTML version manual is also available at
 `online <http://aria2.sourceforge.net/manual/en/html/>`_ (`Russian
-translation <http://aria2.sourceforge.net/manual/ru/html/>`_).
+translation <http://aria2.sourceforge.net/manual/ru/html/>`_,
+`Portuguese translation (1.15.2 based)
+<http://aria2.sourceforge.net/manual/pt/html/>`_).
 
 BitTorrrent
 -----------
