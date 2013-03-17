@@ -34,13 +34,7 @@
 /* copyright --> */
 #include "common.h"
 
-#ifdef HAVE_SYS_SIGNAL_H
-#  include <sys/signal.h>
-#else // HAVE_SYS_SIGNAL_H
-#  ifdef HAVE_SIGNAL_H
-#    include <signal.h>
-#  endif // HAVE_SIGNAL_H
-#endif // HAVE_SYS_SIGNAL_H
+#include <signal.h>
 #include <unistd.h>
 #include <getopt.h>
 
