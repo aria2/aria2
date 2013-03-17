@@ -1,3 +1,125 @@
+aria2 1.16.4
+============
+
+Release Note
+------------
+
+This release fixes the bug that active downloads are not saved with
+--save-session-interval and the bug that aria2 hangs when size of
+download result exceeds its maximum. BitTorrent UDP tracker support
+was added. If the filename specified using --save-session ends with
+".gz", aria2 stores the session file in gzipped form. The -i option
+can handle this gzipped file as well as plain text file. 1.15.2 based
+Portuguese translated manual was added.
+
+Changes
+-------
+
+* Make configure argument meaning more consistent and obvious.
+
+  Most other software uses --disable/--without for features it does
+  build or at least check by default.
+
+  Change aria2 configure options so that:
+
+  * --enable-*: do not build by default, unless --enable specified
+  * --disable-*: check and build by default, unless --disable specified
+  * --with-*: do not use by default, unless --with specified
+  * --without-*: check and use by default, unless without specified
+
+  Contributed by Nils Maier
+
+* Allow for out-of-tree Sphinx builds
+
+  Contributed by Nils Maier
+
+* Bring back datetime in console log
+
+* Run checksum check if -V and -c are used and file is completed
+
+  With -c option, aria2 can continue download after the existing file
+  position. If it is not completed, then after completion aria2 runs
+  checksum checking if available. But if existing file has already
+  been completed, then CreateRequestCommand exits without issuing
+  checksum checking. And aria2 treats it download error because it
+  needs checksum verification but it has not been done. This change
+  fixes this by properly checking download state and issue checksum
+  checking before CreateRequestCommand.
+
+* Support for gzipped -i and --save-session
+
+  Saved sessions may very large, as in hundreds and even thousands of
+  megabyte when dealing with large queues.  Add support to save and
+  reload sessions to gzipped files, when libz is available.
+
+  The session serializer will output gzipped contents when the file
+  ends with .gz, while the input file reader (UriListParser) will
+  accept whatever is thrown at it.
+
+  Document -i/--save-session gzip behaviour
+
+  Contributed by Nils Maier
+
+* Do not use a virtual varargs function
+
+  This stuff breaks in some compiler (configurations)
+
+  Contributed by Nils Maier
+
+* Check for sys/signal.h and/or signal.h
+
+  mingw-w64 does not actually have sys/signal.h, while OSX currently
+  has a broken signal.h Better check the presence of both and use
+  sys/signal.h if present, else signal.h
+
+  Contributed by Nils Maier
+
+* Hygiene: Fix some clang warnings, mostly unused private members.
+
+  Contributed by Nils Maier
+
+* Fix bustage on OSX with ./configure CC=cc CXX=c++ (clang)
+
+  Contributed by Nils Maier
+
+* Do not reference RequestGroups longer than necessary
+
+  There is an initial vector of SharedHandle<RequestGroup> to seed the
+  DownloadEngine. This vector was however kept alive via main.cc ->
+  MultiUrlRequestInfo up until the program exits, hence effetively
+  leaking all initial RequestGroups and associated object instances.
+
+  Hence, as a matter of dirty-workaround, drop the contents of that
+  initial vector as soon as it is not required any longer.
+
+  Contributed by Nils Maier
+
+* Detect console with on Windows
+
+  Contributed by Nils Maier
+
+* Fix infinite loop when size of downloadResults_ exceeds maxDownloadResult_
+
+* Support BitTorrent UDP tracker
+
+  It shares UDP listening port with IPv4 DHT. At the moment, in order
+  to enable UDP tracker support, enable IPv4 DHT.
+
+* Show correct end byte in error message when HTTP response range is not ok
+
+  Previously, unless HTTP pipelining is enabled, end byte in that
+  message is always 0. With this change, it shows correct end byte
+  sent to the HTTP server.
+
+* Add Portuguese manual
+
+  This translation is based on aria2 version 1.15.2 manual.
+  Contributed by Gilberto dos Santos Alves
+
+* Fix bug that active downloads are not saved with --save-session-interval
+
+
+
 aria2 1.16.3
 ============
 
