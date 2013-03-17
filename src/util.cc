@@ -34,6 +34,12 @@
 /* copyright --> */
 #include "util.h"
 
+#ifdef __sun
+// For opensolaris, just include signal.h which includes sys/signal.h
+#ifdef HAVE_SIGNAL_H
+#  include <signal.h>
+#endif // HAVE_SIGNAL_H
+#else // !__sun
 #ifdef HAVE_SYS_SIGNAL_H
 #  include <sys/signal.h>
 #else // HAVE_SYS_SIGNAL_H
@@ -41,6 +47,7 @@
 #    include <signal.h>
 #  endif // HAVE_SIGNAL_H
 #endif // HAVE_SYS_SIGNAL_H
+#endif // !__sun
 
 #include <sys/types.h>
 #ifdef HAVE_PWD_H
