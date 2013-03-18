@@ -202,10 +202,10 @@ std::string HttpRequest::createRequest()
      (request_->isPipeliningEnabled() || getStartByte() > 0 ||
       getEndByte() > 0)) {
     std::string rangeHeader(fmt("bytes=%" PRId64 "-", getStartByte()));
-    if(request_->isPipeliningEnabled()) {
-      rangeHeader += util::itos(getEndByte());
-    } else if(getEndByte() > 0) {
-      // FTP via http proxy does not support endbytes
+    if(request_->isPipeliningEnabled() || getEndByte() > 0) {
+      // FTP via http proxy does not support endbytes, but in that
+      // case, request_->isPipeliningEnabled() is false and
+      // getEndByte() is 0.
       rangeHeader += util::itos(getEndByte());
     }
     builtinHds.push_back(std::make_pair("Range:", rangeHeader));
