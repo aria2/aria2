@@ -541,7 +541,7 @@ void HttpRequestTest::testCreateRequest_endOffsetOverride()
   SharedHandle<FileEntry> fileEntry
     (new FileEntry("file", 1024*1024*1024*10LL, 0));
   httpRequest.setFileEntry(fileEntry);
-  // End byte is not passed if start byte is 0.
+  // End byte is passed if it is not 0
   std::string expectedText =
     "GET /myfile HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -550,6 +550,7 @@ void HttpRequestTest::testCreateRequest_endOffsetOverride()
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
     "Connection: close\r\n"
+    "Range: bytes=0-1073741823\r\n"
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
