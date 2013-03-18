@@ -199,7 +199,8 @@ std::string HttpRequest::createRequest()
     builtinHds.push_back(std::make_pair("Connection:", "close"));
   }
   if(segment_ && segment_->getLength() > 0 &&
-     (request_->isPipeliningEnabled() || getStartByte() > 0)) {
+     (request_->isPipeliningEnabled() || getStartByte() > 0 ||
+      getEndByte() > 0)) {
     std::string rangeHeader(fmt("bytes=%" PRId64 "-", getStartByte()));
     if(request_->isPipeliningEnabled()) {
       rangeHeader += util::itos(getEndByte());
