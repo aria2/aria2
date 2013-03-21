@@ -50,6 +50,7 @@ void LpdMessageDispatcherTest::testSendMessage()
   recvsock->bind(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT, AF_INET);
 #endif // !__MINGW32__
   recvsock->joinMulticastGroup(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT, "");
+  recvsock->setNonBlockingMode();
 
   LpdMessageDispatcher d("cd41c7fdddfd034a15a04d7ff881216e01c4ceaf", 6000,
                          LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
@@ -60,7 +61,19 @@ void LpdMessageDispatcherTest::testSendMessage()
   unsigned char buf[200];
 
   std::pair<std::string, uint16_t> peer;
-  ssize_t nbytes = recvsock->readDataFrom(buf, sizeof(buf), peer);
+  ssize_t nbytes;
+  int trycnt;
+  for(trycnt = 0; trycnt < 5; ++trycnt) {
+    nbytes = recvsock->readDataFrom(buf, sizeof(buf), peer);
+    if(nbytes == 0) {
+      sleep(1);
+    } else {
+      break;
+    }
+  }
+  if(trycnt == 5) {
+    CPPUNIT_FAIL("[TIMEOUT] No Multicast packet received.");
+  }
   buf[nbytes] = '\0';
   std::stringstream temp;
   temp << "BT-SEARCH * HTTP/1.1\r\n"
