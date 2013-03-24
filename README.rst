@@ -316,6 +316,9 @@ environment variable which must fulfill the following conditions:
 
       $NDK/build/tools/make-standalone-toolchain.sh --platform=android-9 --install-dir=$ANDROID_HOME/toolchain
 
+  You may need to add ``--system=linux-x86_64`` to the above
+  command-line for x86_64 Linux host.
+
 * The dependant libraries must be installed under
   ``$ANDROID_HOME/usr/local``.
 
