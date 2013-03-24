@@ -1,3 +1,26 @@
+aria2 1.16.5
+============
+
+Release Note
+------------
+
+This release fixes the bug that invalid range error is thrown when
+requesting range starts from 0 in HTTP download.
+
+Changes
+-------
+
+* Fix bug that invalid range error when requesting range starting 0
+
+  Since the change b782a56b, we use endOffsetOverride_ as the return
+  value of getEndByte(). But aria2 does not send Range header field
+  when range starts 0 (this is because some server returns error if it
+  received Range: 0-), and the HttpRequest::isRangeSatisfied() checks
+  the equality of getEndByte() and the end byte in response header and
+  fails. The fix is send Range header if getEndByte() is set.
+
+
+
 aria2 1.16.4
 ============
 
