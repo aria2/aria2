@@ -58,7 +58,7 @@ void callback(void* arg, int status, int timeouts, struct hostent* host)
     }
   }
   if(resolverPtr->resolvedAddresses_.empty()) {
-    resolverPtr->error_ = "address conversion failed";
+    resolverPtr->error_ = "no address returned or address conversion failed";
     resolverPtr->status_ = AsyncNameResolver::STATUS_ERROR;
   } else {
     resolverPtr->status_ = AsyncNameResolver::STATUS_SUCCESS;

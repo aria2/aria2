@@ -335,7 +335,8 @@ SRCS += Sqlite3CookieParser.cc Sqlite3CookieParser.h\
 endif # HAVE_SQLITE3
 
 if ENABLE_ASYNC_DNS
-SRCS += AsyncNameResolver.cc AsyncNameResolver.h
+SRCS += AsyncNameResolver.cc AsyncNameResolver.h\
+	AsyncNameResolverMan.cc AsyncNameResolverMan.h
 endif # ENABLE_ASYNC_DNS
 
 if ENABLE_MESSAGE_DIGEST

@@ -59,6 +59,7 @@ class Option;
 class SocketRecvBuffer;
 #ifdef ENABLE_ASYNC_DNS
 class AsyncNameResolver;
+class AsyncNameResolverMan;
 #endif // ENABLE_ASYNC_DNS
 
 class AbstractCommand : public Command {
@@ -75,28 +76,19 @@ private:
   std::vector<SharedHandle<Segment> > segments_;
 
 #ifdef ENABLE_ASYNC_DNS
-  SharedHandle<AsyncNameResolver> asyncNameResolver_;
+  SharedHandle<AsyncNameResolverMan> asyncNameResolverMan_;
 #endif // ENABLE_ASYNC_DNS
 
   bool checkSocketIsReadable_;
   bool checkSocketIsWritable_;
   SharedHandle<SocketCore> readCheckTarget_;
   SharedHandle<SocketCore> writeCheckTarget_;
-  bool nameResolverCheck_;
 
   bool incNumConnection_;
   Timer serverStatTimer_;
 
   int32_t calculateMinSplitSize() const;
   void useFasterRequest(const SharedHandle<Request>& fasterRequest);
-#ifdef ENABLE_ASYNC_DNS
-  void setNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver);
-
-  void disableNameResolverCheck
-  (const SharedHandle<AsyncNameResolver>& resolver);
-
-  bool nameResolveFinished() const;
-#endif // ENABLE_ASYNC_DNS
 protected:
   RequestGroup* getRequestGroup() const
   {
@@ -144,16 +136,6 @@ protected:
   {
     return segments_;
   }
-
-#ifdef ENABLE_ASYNC_DNS
-  bool isAsyncNameResolverInitialized() const;
-
-  void initAsyncNameResolver(const std::string& hostname);
-
-  bool asyncResolveHostname();
-
-  const std::vector<std::string>& getResolvedAddresses();
-#endif // ENABLE_ASYNC_DNS
 
   // Resolves hostname.  The resolved addresses are stored in addrs
   // and first element is returned.  If resolve is not finished,
