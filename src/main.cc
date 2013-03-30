@@ -208,6 +208,7 @@ error_code::Value main(int argc, char* argv[])
     // when none of network interface has IPv4 address.
     setDefaultAIFlags(0);
   }
+  net::checkAddrconfig();
   // Bind interface
   if(!op->get(PREF_INTERFACE).empty()) {
     std::string iface = op->get(PREF_INTERFACE);

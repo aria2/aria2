@@ -1546,6 +1546,86 @@ bool verifyHostname(const std::string& hostname,
   return false;
 }
 
+namespace {
+bool ipv4AddrConfigured = true;
+bool ipv6AddrConfigured = true;
+} // namespace
+
+void checkAddrconfig()
+{
+  // TODO Use GetAdaptersAddresses() for Mingw
+#ifdef HAVE_GETIFADDRS
+  A2_LOG_INFO("Checking configured addresses");
+  ipv4AddrConfigured = false;
+  ipv6AddrConfigured = false;
+  ifaddrs* ifaddr = 0;
+  int rv;
+  rv = getifaddrs(&ifaddr);
+  if(rv == -1) {
+    int errNum = SOCKET_ERRNO;
+    A2_LOG_INFO(fmt("getifaddrs failed. Cause: %s", errorMsg(errNum).c_str()));
+    return;
+  }
+  auto_delete<ifaddrs*> ifaddrDeleter(ifaddr, freeifaddrs);
+  char host[NI_MAXHOST];
+  sockaddr_union ad;
+  for(ifaddrs* ifa = ifaddr; ifa; ifa = ifa->ifa_next) {
+    if(!ifa->ifa_addr) {
+      continue;
+    }
+    bool found = false;
+    size_t addrlen = 0;
+    switch(ifa->ifa_addr->sa_family) {
+    case AF_INET: {
+      addrlen = sizeof(sockaddr_in);
+      memcpy(&ad.storage, ifa->ifa_addr, addrlen);
+      if(ad.in.sin_addr.s_addr != htonl(INADDR_LOOPBACK)) {
+        ipv4AddrConfigured = true;
+        found = true;
+      }
+      break;
+    }
+    case AF_INET6: {
+      addrlen = sizeof(sockaddr_in6);
+      memcpy(&ad.storage, ifa->ifa_addr, addrlen);
+      if(!IN6_IS_ADDR_LOOPBACK(&ad.in6.sin6_addr) &&
+         !IN6_IS_ADDR_LINKLOCAL(&ad.in6.sin6_addr)) {
+        ipv6AddrConfigured = true;
+        found = true;
+      }
+      break;
+    }
+    default:
+      continue;
+    }
+    rv = getnameinfo(ifa->ifa_addr, addrlen, host, NI_MAXHOST, 0, 0,
+                     NI_NUMERICHOST);
+    if(rv == 0) {
+      if(found) {
+        A2_LOG_INFO(fmt("Found configured address: %s", host));
+      } else {
+        A2_LOG_INFO(fmt("Not considered: %s", host));
+      }
+    }
+  }
+  A2_LOG_INFO(fmt("IPv4 configured=%d, IPv6 configured=%d",
+                  ipv4AddrConfigured, ipv6AddrConfigured));
+#else // !HAVE_GETIFADDRS
+  A2_LOG_INFO("getifaddrs is not available. Assume IPv4 and IPv6 addresses"
+              " are configured.");
+#endif // !HAVE_GETIFADDRS
+}
+
+bool getIPv4AddrConfigured()
+{
+  return ipv4AddrConfigured;
+}
+
+bool getIPv6AddrConfigured()
+{
+  return ipv6AddrConfigured;
+}
+
 } // namespace net
 
 } // namespace aria2

@@ -401,6 +401,12 @@ bool verifyHostname(const std::string& hostname,
                     const std::vector<std::string>& dnsNames,
                     const std::vector<std::string>& ipAddrs,
                     const std::string& commonName);
+// Checks public IP address are configured for each family: IPv4 and
+// IPv6. The result can be obtained using getIpv4AddrConfigured() and
+// getIpv6AddrConfigured() respectively.
+void checkAddrconfig();
+bool getIPv4AddrConfigured();
+bool getIPv6AddrConfigured();
 
 } // namespace net
 

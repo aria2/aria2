@@ -69,12 +69,14 @@ void AsyncNameResolverMan::startAsync(const std::string& hostname,
                                       Command* command)
 {
   numResolver_ = 0;
-  if(ipv4_) {
-    startAsyncFamily(hostname, AF_INET, e, command);
-    ++numResolver_;
-  }
+  // Set IPv6 resolver first, so that we can push IPv6 address in
+  // front of IPv6 address in getResolvedAddress().
   if(ipv6_) {
     startAsyncFamily(hostname, AF_INET6, e, command);
+    ++numResolver_;
+  }
+  if(ipv4_) {
+    startAsyncFamily(hostname, AF_INET, e, command);
     ++numResolver_;
   }
   A2_LOG_INFO(fmt(MSG_RESOLVING_HOSTNAME, command->getCuid(),
@@ -150,11 +152,13 @@ void AsyncNameResolverMan::disableNameResolverCheck(size_t index,
 
 int AsyncNameResolverMan::getStatus() const
 {
+  size_t success = 0;
   size_t error = 0;
   for(size_t i = 0; i < numResolver_; ++i) {
     switch(asyncNameResolver_[i]->getStatus()) {
     case AsyncNameResolver::STATUS_SUCCESS:
-      return 1;
+      ++success;
+      break;
     case AsyncNameResolver::STATUS_ERROR:
       ++error;
       break;
@@ -162,7 +166,13 @@ int AsyncNameResolverMan::getStatus() const
       break;
     }
   }
-  return error == numResolver_ ? -1 : 0;
+  if(success == numResolver_) {
+    return 1;
+  } else if(error == numResolver_) {
+    return -1;
+  } else {
+    return 0;
+  }
 }
 
 const std::string& AsyncNameResolverMan::getLastError() const
