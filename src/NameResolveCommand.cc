@@ -47,7 +47,7 @@
 #include "UDPTrackerClient.h"
 #include "BtRegistry.h"
 #ifdef ENABLE_ASYNC_DNS
-#include "AsyncNameResolver.h"
+#include "AsyncNameResolverMan.h"
 #endif // ENABLE_ASYNC_DNS
 
 namespace aria2 {
@@ -57,15 +57,21 @@ NameResolveCommand::NameResolveCommand
  const SharedHandle<UDPTrackerRequest>& req)
   : Command(cuid),
     e_(e),
+    asyncNameResolverMan_(new AsyncNameResolverMan()),
     req_(req)
 {
+#ifdef ENABLE_ASYNC_DNS
+  configureAsyncNameResolverMan(asyncNameResolverMan_.get(), e_->getOption());
+  // Currently we only utilize IPv4 DHT for UDP tracker
+  asyncNameResolverMan_->setIPv6(false);
+#endif // ENABLE_ASYNC_DNS
   setStatus(Command::STATUS_ONESHOT_REALTIME);
 }
 
 NameResolveCommand::~NameResolveCommand()
 {
 #ifdef ENABLE_ASYNC_DNS
-  disableNameResolverCheck(resolver_);
+  asyncNameResolverMan_->disableNameResolverCheck(e_, this);
 #endif // ENABLE_ASYNC_DNS
 }
 
@@ -79,32 +85,16 @@ bool NameResolveCommand::execute()
     onShutdown();
     return true;
   }
-#ifdef ENABLE_ASYNC_DNS
-  if(!resolver_) {
-    int family = AF_INET;
-    resolver_.reset(new AsyncNameResolver(family
-#ifdef HAVE_ARES_ADDR_NODE
-                                          , e_->getAsyncDNSServers()
-#endif // HAVE_ARES_ADDR_NODE
-                                          ));
-  }
-#endif // ENABLE_ASYNC_DNS
-  std::string hostname = req_->remoteAddr;
+  const std::string& hostname = req_->remoteAddr;
   std::vector<std::string> res;
   if(util::isNumericHost(hostname)) {
     res.push_back(hostname);
   } else {
 #ifdef ENABLE_ASYNC_DNS
     if(e_->getOption()->getAsBool(PREF_ASYNC_DNS)) {
-      try {
-        if(resolveHostname(hostname, resolver_)) {
-          res = resolver_->getResolvedAddresses();
-        } else {
-          e_->addCommand(this);
-          return false;
-        }
-      } catch(RecoverableException& e) {
-        A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
+      if(resolveHostname(res, hostname) == 0) {
+        e_->addCommand(this);
+        return false;
       }
     } else
 #endif // ENABLE_ASYNC_DNS
@@ -147,47 +137,39 @@ void NameResolveCommand::onSuccess
 
 #ifdef ENABLE_ASYNC_DNS
 
-bool NameResolveCommand::resolveHostname
-(const std::string& hostname,
- const SharedHandle<AsyncNameResolver>& resolver)
+int NameResolveCommand::resolveHostname
+(std::vector<std::string>& res, const std::string& hostname)
 {
-  switch(resolver->getStatus()) {
-  case AsyncNameResolver::STATUS_READY:
-      A2_LOG_INFO(fmt(MSG_RESOLVING_HOSTNAME,
-                      getCuid(),
-                      hostname.c_str()));
-    resolver->resolve(hostname);
-    setNameResolverCheck(resolver);
-    return false;
-  case AsyncNameResolver::STATUS_SUCCESS:
-    A2_LOG_INFO(fmt(MSG_NAME_RESOLUTION_COMPLETE,
-                    getCuid(),
-                    resolver->getHostname().c_str(),
-                    resolver->getResolvedAddresses().front().c_str()));
-    return true;
-    break;
-  case AsyncNameResolver::STATUS_ERROR:
-    throw DL_ABORT_EX
-      (fmt(MSG_NAME_RESOLUTION_FAILED,
-           getCuid(),
-           hostname.c_str(),
-           resolver->getError().c_str()));
-  default:
-    return false;
+  if(!asyncNameResolverMan_->started()) {
+    asyncNameResolverMan_->startAsync(hostname, e_, this);
+    return 0;
+  } else {
+    switch(asyncNameResolverMan_->getStatus()) {
+    case -1:
+      A2_LOG_INFO
+        (fmt(MSG_NAME_RESOLUTION_FAILED, getCuid(), hostname.c_str(),
+             asyncNameResolverMan_->getLastError().c_str()));
+      return -1;
+    case 0:
+      return 0;
+    case 1:
+      asyncNameResolverMan_->getResolvedAddress(res);
+      if(res.empty()) {
+        A2_LOG_INFO
+          (fmt(MSG_NAME_RESOLUTION_FAILED, getCuid(), hostname.c_str(),
+               "No address returned"));
+        return -1;
+      } else {
+        A2_LOG_INFO(fmt(MSG_NAME_RESOLUTION_COMPLETE,
+                        getCuid(), hostname.c_str(), res.front().c_str()));
+        return 1;
+      }
+    }
   }
+  // Unreachable
+  return 0;
 }
 
-void NameResolveCommand::setNameResolverCheck
-(const SharedHandle<AsyncNameResolver>& resolver)
-{
-  e_->addNameResolverCheck(resolver, this);
-}
-
-void NameResolveCommand::disableNameResolverCheck
-(const SharedHandle<AsyncNameResolver>& resolver)
-{
-  e_->deleteNameResolverCheck(resolver, this);
-}
 #endif // ENABLE_ASYNC_DNS
 
 } // namespace aria2

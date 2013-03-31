@@ -47,7 +47,7 @@ namespace aria2 {
 
 class DownloadEngine;
 #ifdef ENABLE_ASYNC_DNS
-class AsyncNameResolver;
+class AsyncNameResolverMan;
 #endif // ENABLE_ASYNC_DNS
 struct UDPTrackerRequest;
 
@@ -56,16 +56,12 @@ private:
   DownloadEngine* e_;
 
 #ifdef ENABLE_ASYNC_DNS
-  SharedHandle<AsyncNameResolver> resolver_;
+  SharedHandle<AsyncNameResolverMan> asyncNameResolverMan_;
 #endif // ENABLE_ASYNC_DNS
 
 #ifdef ENABLE_ASYNC_DNS
-  bool resolveHostname(const std::string& hostname,
-                       const SharedHandle<AsyncNameResolver>& resolver);
-
-  void setNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver);
-
-  void disableNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver);
+  int resolveHostname(std::vector<std::string>& res,
+                      const std::string& hostname);
 #endif // ENABLE_ASYNC_DNS
 
   SharedHandle<UDPTrackerRequest> req_;
