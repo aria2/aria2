@@ -44,6 +44,7 @@
 namespace aria2 {
 
 UDPTrackerClient::UDPTrackerClient()
+  : numWatchers_(0)
 {}
 
 namespace {
