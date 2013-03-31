@@ -80,7 +80,8 @@ private:
   void addPingTask(const std::pair<std::string, uint16_t>& addr);
 
 #ifdef ENABLE_ASYNC_DNS
-  bool resolveHostname(const std::string& hostname);
+  int resolveHostname(std::vector<std::string>& res,
+                      const std::string& hostname);
 #endif // ENABLE_ASYNC_DNS
 
 public:

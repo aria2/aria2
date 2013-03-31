@@ -94,30 +94,20 @@ bool DHTEntryPointNameResolveCommand::execute()
                                              entryPoints_.front().second);
           addPingTask(p);
         } else {
-          try {
-            if(resolveHostname(hostname)) {
-              std::vector<std::string> addrs;
-              asyncNameResolverMan_->getResolvedAddress(addrs);
-              if(addrs.empty()) {
-                A2_LOG_ERROR(fmt("No address returned for %s",
-                                 hostname.c_str()));
-              } else {
-                A2_LOG_INFO(fmt(MSG_NAME_RESOLUTION_COMPLETE,
-                                getCuid(), hostname.c_str(),
-                                addrs.front().c_str()));
-                ++numSuccess_;
-                std::pair<std::string, uint16_t> p
-                  (addrs.front(), entryPoints_.front().second);
-                addPingTask(p);
-              }
-            } else {
-              e_->addCommand(this);
-              return false;
+          std::vector<std::string> res;
+          int rv = resolveHostname(res, hostname);
+          if(rv == 0) {
+            e_->addCommand(this);
+            return false;
+          } else {
+            if(rv == 1) {
+              ++numSuccess_;
+              std::pair<std::string, uint16_t> p
+                (res.front(), entryPoints_.front().second);
+              addPingTask(p);
             }
-          } catch(RecoverableException& e) {
-            A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
+            asyncNameResolverMan_->reset(e_, this);
           }
-          asyncNameResolverMan_->reset(e_, this);
         }
         entryPoints_.pop_front();
       }
@@ -165,25 +155,37 @@ void DHTEntryPointNameResolveCommand::addPingTask
 
 #ifdef ENABLE_ASYNC_DNS
 
-bool DHTEntryPointNameResolveCommand::resolveHostname
-(const std::string& hostname)
+int DHTEntryPointNameResolveCommand::resolveHostname
+(std::vector<std::string>& res, const std::string& hostname)
 {
   if(!asyncNameResolverMan_->started()) {
     asyncNameResolverMan_->startAsync(hostname, e_, this);
+    return 0;
   } else {
     switch(asyncNameResolverMan_->getStatus()) {
     case -1:
-      throw DL_ABORT_EX2
+      A2_LOG_INFO
         (fmt(MSG_NAME_RESOLUTION_FAILED, getCuid(), hostname.c_str(),
-             asyncNameResolverMan_->getLastError().c_str()),
-         error_code::NAME_RESOLVE_ERROR);
+             asyncNameResolverMan_->getLastError().c_str()));
+      return -1;
     case 0:
-      return false;
+      return 0;
     case 1:
-      return true;
+      asyncNameResolverMan_->getResolvedAddress(res);
+      if(res.empty()) {
+        A2_LOG_INFO
+          (fmt(MSG_NAME_RESOLUTION_FAILED, getCuid(), hostname.c_str(),
+               "No address returned"));
+        return -1;
+      } else {
+        A2_LOG_INFO(fmt(MSG_NAME_RESOLUTION_COMPLETE,
+                        getCuid(), hostname.c_str(), res.front().c_str()));
+        return 1;
+      }
     }
   }
-  return false;
+  // Unreachable
+  return 0;
 }
 
 #endif // ENABLE_ASYNC_DNS
