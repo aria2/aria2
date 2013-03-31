@@ -1555,6 +1555,13 @@ bool ipv4AddrConfigured = true;
 bool ipv6AddrConfigured = true;
 } // namespace
 
+#ifdef __MINGW32__
+namespace {
+const uint32_t APIPA_IPV4_BEGIN = 2851995649u; // 169.254.0.1
+const uint32_t APIPA_IPV4_END = 2852061183u; // 169.254.255.255
+} // namespace
+#endif // __MINGW32__
+
 void checkAddrconfig()
 {
 #ifdef __MINGW32__
@@ -1585,19 +1592,27 @@ void checkAddrconfig()
   sockaddr_union ad;
   int rv;
   for(IP_ADAPTER_ADDRESSES* p = buf; p; p = p->Next) {
+    if(p->IfType == IF_TYPE_TUNNEL) {
+      // Skip tunnel interface because Windows7 automatically setup
+      // this for IPv6.
+      continue;
+    }
     PIP_ADAPTER_UNICAST_ADDRESS ucaddr = p->FirstUnicastAddress;
     if(ucaddr) {
       for(PIP_ADAPTER_UNICAST_ADDRESS i = ucaddr; i; i = i->Next) {
         bool found = false;
         switch(i->Address.iSockaddrLength) {
-        case sizeof(sockaddr_in):
+        case sizeof(sockaddr_in): {
           memcpy(&ad.storage, i->Address.lpSockaddr,
                  i->Address.iSockaddrLength);
-          if(ad.in.sin_addr.s_addr != htonl(INADDR_LOOPBACK)) {
+          uint32_t haddr = ntohl(ad.in.sin_addr.s_addr);
+          if(haddr != INADDR_LOOPBACK &&
+             (haddr < APIPA_IPV4_BEGIN || APIPA_IPV4_END <= haddr)) {
             ipv4AddrConfigured = true;
             found = true;
           }
           break;
+        }
         case sizeof(sockaddr_in6):
           memcpy(&ad.storage, i->Address.lpSockaddr,
                  i->Address.iSockaddrLength);
