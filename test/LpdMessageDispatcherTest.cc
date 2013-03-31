@@ -66,7 +66,7 @@ void LpdMessageDispatcherTest::testSendMessage()
   for(trycnt = 0; trycnt < 5; ++trycnt) {
     nbytes = recvsock->readDataFrom(buf, sizeof(buf), peer);
     if(nbytes == 0) {
-      sleep(1);
+      util::sleep(1);
     } else {
       break;
     }
