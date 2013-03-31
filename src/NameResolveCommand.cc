@@ -57,7 +57,9 @@ NameResolveCommand::NameResolveCommand
  const SharedHandle<UDPTrackerRequest>& req)
   : Command(cuid),
     e_(e),
+#ifdef ENABLE_ASYNC_DNS
     asyncNameResolverMan_(new AsyncNameResolverMan()),
+#endif // ENABLE_ASYNC_DNS
     req_(req)
 {
 #ifdef ENABLE_ASYNC_DNS

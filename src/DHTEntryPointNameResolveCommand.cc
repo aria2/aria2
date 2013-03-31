@@ -61,7 +61,9 @@ DHTEntryPointNameResolveCommand::DHTEntryPointNameResolveCommand
  const std::vector<std::pair<std::string, uint16_t> >& entryPoints):
   Command(cuid),
   e_(e),
+#ifdef ENABLE_ASYNC_DNS
   asyncNameResolverMan_(new AsyncNameResolverMan()),
+#endif // ENABLE_ASYNC_DNS
   entryPoints_(entryPoints.begin(), entryPoints.end()),
   numSuccess_(0),
   bootstrapEnabled_(false)
