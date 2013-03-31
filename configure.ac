@@ -17,7 +17,7 @@ AC_CONFIG_HEADERS([config.h])
 case "$host" in
   *mingw*|*cygwin*)
     win_build=yes
-    LIBS="$LIBS -lws2_32 -lwsock32 -lgdi32 -lwinmm"
+    LIBS="$LIBS -lws2_32 -lwsock32 -lgdi32 -lwinmm -liphlpapi"
     ;;
 esac
 
@@ -341,6 +341,7 @@ case "$host" in
                                   ws2tcpip.h \
 				  mmsystem.h \
                                   io.h \
+                                  iphlpapi.h\
                                   winioctl.h \
                                   share.h], [], [],
 [[#ifdef HAVE_WINDOWS_H

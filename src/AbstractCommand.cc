@@ -733,6 +733,12 @@ std::string AbstractCommand::resolveHostname
         return A2STR::NIL;
       case 1:
         asyncNameResolverMan_->getResolvedAddress(addrs);
+        if(addrs.empty()) {
+          throw DL_ABORT_EX2
+            (fmt(MSG_NAME_RESOLUTION_FAILED, getCuid(), hostname.c_str(),
+                 "No address returned"),
+             error_code::NAME_RESOLVE_ERROR);
+        }
         break;
       }
     } else

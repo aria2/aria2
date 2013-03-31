@@ -34,6 +34,10 @@
 /* copyright --> */
 #include "SocketCore.h"
 
+#ifdef HAVE_IPHLPAPI_H
+# include <iphlpapi.h>
+#endif // HAVE_IPHLPAPI_H
+
 #include <unistd.h>
 #ifdef HAVE_IFADDRS_H
 # include <ifaddrs.h>
@@ -1553,8 +1557,73 @@ bool ipv6AddrConfigured = true;
 
 void checkAddrconfig()
 {
-  // TODO Use GetAdaptersAddresses() for Mingw
-#ifdef HAVE_GETIFADDRS
+#ifdef __MINGW32__
+  A2_LOG_INFO("Checking configured addresses");
+  ULONG bufsize = 15*1024;
+  ULONG retval = 0;
+  IP_ADAPTER_ADDRESSES* buf = 0;
+  int numTry = 0;
+  const int MAX_TRY = 3;
+  do {
+    buf = reinterpret_cast<IP_ADAPTER_ADDRESSES*>(malloc(bufsize));
+    retval = GetAdaptersAddresses(AF_UNSPEC, 0, 0, buf, &bufsize);
+    if(retval == ERROR_BUFFER_OVERFLOW) {
+      free(buf);
+      buf = 0;
+    } else {
+      break;
+    }
+  } while(retval == ERROR_BUFFER_OVERFLOW && numTry < MAX_TRY);
+  if(retval != NO_ERROR) {
+    A2_LOG_INFO("GetAdaptersAddresses failed. Assume both IPv4 and IPv6 "
+                " addresses are configured.");
+    return;
+  }
+  ipv4AddrConfigured = false;
+  ipv6AddrConfigured = false;
+  char host[NI_MAXHOST];
+  sockaddr_union ad;
+  int rv;
+  for(IP_ADAPTER_ADDRESSES* p = buf; p; p = p->Next) {
+    PIP_ADAPTER_UNICAST_ADDRESS ucaddr = p->FirstUnicastAddress;
+    if(ucaddr) {
+      for(PIP_ADAPTER_UNICAST_ADDRESS i = ucaddr; i; i = i->Next) {
+        bool found = false;
+        switch(i->Address.iSockaddrLength) {
+        case sizeof(sockaddr_in):
+          memcpy(&ad.storage, i->Address.lpSockaddr,
+                 i->Address.iSockaddrLength);
+          if(ad.in.sin_addr.s_addr != htonl(INADDR_LOOPBACK)) {
+            ipv4AddrConfigured = true;
+            found = true;
+          }
+          break;
+        case sizeof(sockaddr_in6):
+          memcpy(&ad.storage, i->Address.lpSockaddr,
+                 i->Address.iSockaddrLength);
+          if(!IN6_IS_ADDR_LOOPBACK(&ad.in6.sin6_addr) &&
+             !IN6_IS_ADDR_LINKLOCAL(&ad.in6.sin6_addr)) {
+            ipv6AddrConfigured = true;
+            found = true;
+          }
+          break;
+        }
+        rv = getnameinfo(i->Address.lpSockaddr, i->Address.iSockaddrLength,
+                         host, NI_MAXHOST, 0, 0, NI_NUMERICHOST);
+        if(rv == 0) {
+          if(found) {
+            A2_LOG_INFO(fmt("Found configured address: %s", host));
+          } else {
+            A2_LOG_INFO(fmt("Not considered: %s", host));
+          }
+        }
+      }
+    }
+  }
+  free(buf);
+  A2_LOG_INFO(fmt("IPv4 configured=%d, IPv6 configured=%d",
+                  ipv4AddrConfigured, ipv6AddrConfigured));
+#elif defined(HAVE_GETIFADDRS)
   A2_LOG_INFO("Checking configured addresses");
   ipv4AddrConfigured = false;
   ipv6AddrConfigured = false;
