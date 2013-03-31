@@ -39,6 +39,8 @@
 
 namespace aria2 {
 
+class BackupConnectInfo;
+
 class InitiateConnectionCommand : public AbstractCommand {
 protected:
   /**
@@ -64,6 +66,10 @@ protected:
   (const SharedHandle<Request>& req,
    const std::string& hostname,
    const SharedHandle<SocketCore>& socket);
+
+  SharedHandle<BackupConnectInfo> createBackupIPv4ConnectCommand
+  (const std::string& hostname, const std::string& ipaddr, uint16_t port,
+   Command* mainCommand);
 public:
   InitiateConnectionCommand(cuid_t cuid, const SharedHandle<Request>& req,
                             const SharedHandle<FileEntry>& fileEntry,

@@ -63,4 +63,12 @@ Command* FtpTunnelRequestCommand::getNextCommand()
      getHttpConnection(), getDownloadEngine(), getSocket());
 }
 
+Command* FtpTunnelRequestCommand::createSelf
+(const SharedHandle<SocketCore>& socket)
+{
+  return new FtpTunnelRequestCommand(getCuid(), getRequest(), getFileEntry(),
+                                     getRequestGroup(), getDownloadEngine(),
+                                     getProxyRequest(), socket);
+}
+
 } // namespace aria2

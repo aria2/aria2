@@ -51,6 +51,7 @@
 #include "util.h"
 #include "fmt.h"
 #include "SocketRecvBuffer.h"
+#include "BackupIPv4ConnectCommand.h"
 
 namespace aria2 {
 
@@ -93,6 +94,11 @@ Command* HttpInitiateConnectionCommand::createNextCommand
                                       getDownloadEngine(),
                                       proxyRequest,
                                       getSocket());
+        SharedHandle<BackupConnectInfo> backupConnectionInfo
+          = createBackupIPv4ConnectCommand(hostname, addr, port, c);
+        if(backupConnectionInfo) {
+          c->setBackupConnectInfo(backupConnectionInfo);
+        }
         command = c;
       } else if(proxyMethod == V_GET) {
         SharedHandle<SocketRecvBuffer> socketRecvBuffer
@@ -107,6 +113,11 @@ Command* HttpInitiateConnectionCommand::createNextCommand
                                                        getDownloadEngine(),
                                                        getSocket());
         c->setProxyRequest(proxyRequest);
+        SharedHandle<BackupConnectInfo> backupConnectionInfo
+          = createBackupIPv4ConnectCommand(hostname, addr, port, c);
+        if(backupConnectionInfo) {
+          c->setBackupConnectInfo(backupConnectionInfo);
+        }
         command = c;
       } else {
         // TODO
@@ -131,6 +142,7 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       command = c;
     }
   } else {
+    bool connectRequired = false;
     SharedHandle<SocketCore> pooledSocket =
       getDownloadEngine()->popPooledSocket
       (resolvedAddresses, getRequest()->getPort());
@@ -141,6 +153,7 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       getSocket()->establishConnection(addr, port);
 
       getRequest()->setConnectedAddrInfo(hostname, addr, port);
+      connectRequired = true;
     } else {
       setSocket(pooledSocket);
       setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
@@ -155,6 +168,14 @@ Command* HttpInitiateConnectionCommand::createNextCommand
                              httpConnection,
                              getDownloadEngine(),
                              getSocket());
+    if(connectRequired) {
+      SharedHandle<BackupConnectInfo> backupConnectInfo
+        = createBackupIPv4ConnectCommand(hostname, addr, port, c);
+      if(backupConnectInfo) {
+        c->setBackupConnectInfo(backupConnectInfo);
+      }
+    }
+
     command = c;
   }
   return command;

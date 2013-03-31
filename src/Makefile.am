@@ -245,7 +245,8 @@ SRCS =  SocketCore.cc SocketCore.h\
 	WrDiskCacheEntry.cc WrDiskCacheEntry.h\
 	GroupId.cc GroupId.h\
 	IndexedList.h\
-	SaveSessionCommand.h SaveSessionCommand.cc
+	SaveSessionCommand.h SaveSessionCommand.cc\
+	BackupIPv4ConnectCommand.h BackupIPv4ConnectCommand.cc
 
 if MINGW_BUILD
 SRCS += WinConsoleFile.cc WinConsoleFile.h

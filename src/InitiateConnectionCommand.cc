@@ -51,6 +51,7 @@
 #include "RecoverableException.h"
 #include "fmt.h"
 #include "SocketRecvBuffer.h"
+#include "BackupIPv4ConnectCommand.h"
 
 namespace aria2 {
 
@@ -125,6 +126,38 @@ void InitiateConnectionCommand::setConnectedAddrInfo
   std::pair<std::string, uint16_t> peerAddr;
   socket->getPeerInfo(peerAddr);
   req->setConnectedAddrInfo(hostname, peerAddr.first, peerAddr.second);
+}
+
+SharedHandle<BackupConnectInfo>
+InitiateConnectionCommand::createBackupIPv4ConnectCommand
+(const std::string& hostname, const std::string& ipaddr, uint16_t port,
+ Command* mainCommand)
+{
+  // Prepare IPv4 backup connection attemp in "Happy Eyeballs"
+  // fashion.
+  SharedHandle<BackupConnectInfo> info;
+  char buf[sizeof(in6_addr)];
+  if(inetPton(AF_INET6, ipaddr.c_str(), &buf) == -1) {
+    return info;
+  }
+  A2_LOG_INFO("Searching IPv4 address for backup connection attempt");
+  std::vector<std::string> addrs;
+  getDownloadEngine()->findAllCachedIPAddresses(std::back_inserter(addrs),
+                                                hostname, port);
+  for(std::vector<std::string>::const_iterator i = addrs.begin(),
+        eoi = addrs.end(); i != eoi; ++i) {
+    if(inetPton(AF_INET, (*i).c_str(), &buf) == 0) {
+      info.reset(new BackupConnectInfo());
+      BackupIPv4ConnectCommand* command = new BackupIPv4ConnectCommand
+        (getDownloadEngine()->newCUID(), *i, port, info, mainCommand,
+         getRequestGroup(), getDownloadEngine());
+      A2_LOG_INFO(fmt("Issue backup connection command CUID#%"PRId64
+                      ", addr=%s", command->getCuid(), (*i).c_str()));
+      getDownloadEngine()->addCommand(command);
+      return info;
+    }
+  }
+  return info;
 }
 
 } // namespace aria2

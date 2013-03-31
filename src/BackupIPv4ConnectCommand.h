@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,31 +32,58 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_HTTP_PROXY_REQUEST_COMMAND_H
-#define D_HTTP_PROXY_REQUEST_COMMAND_H
+#ifndef BACKUP_IPV4_CONNECT_COMMAND_H
+#define BACKUP_IPV4_CONNECT_COMMAND_H
 
-#include "AbstractProxyRequestCommand.h"
+#include "Command.h"
+
+#include <string>
+
+#include "SharedHandle.h"
+#include "TimerA2.h"
 
 namespace aria2 {
 
+class RequestGroup;
+class DownloadEngine;
 class SocketCore;
 
-class HttpProxyRequestCommand : public AbstractProxyRequestCommand {
+// Used to communicate mainCommand and backup IPv4 connection command.
+// When backup connection succeeds, ipaddr is filled with connected
+// IPv4 address and socket is a socket connected to the ipaddr.  If
+// mainCommand wants to cancel backup connection command, cancel
+// member becomes true.
+struct BackupConnectInfo {
+  std::string ipaddr;
+  SharedHandle<SocketCore> socket;
+  bool cancel;
+  BackupConnectInfo();
+};
+
+// Make backup connection to IPv4 address. This is a simplest RFC 6555
+// "Happy Eyeballs" implementation.
+class BackupIPv4ConnectCommand : public Command {
 public:
-  HttpProxyRequestCommand(cuid_t cuid,
-                          const SharedHandle<Request>& req,
-                          const SharedHandle<FileEntry>& fileEntry,
-                          RequestGroup* requestGroup,
-                          DownloadEngine* e,
-                          const SharedHandle<Request>& proxyRequest,
-                          const SharedHandle<SocketCore>& s);
-  virtual ~HttpProxyRequestCommand();
-
-  virtual Command* getNextCommand();
-
-  virtual Command* createSelf(const SharedHandle<SocketCore>& socket);
+  BackupIPv4ConnectCommand(cuid_t cuid,
+                           const std::string& ipaddr, uint16_t port,
+                           const SharedHandle<BackupConnectInfo>& info,
+                           Command* mainCommand,
+                           RequestGroup* requestGroup, DownloadEngine* e);
+  ~BackupIPv4ConnectCommand();
+  virtual bool execute();
+private:
+  std::string ipaddr_;
+  uint16_t port_;
+  SharedHandle<SocketCore> socket_;
+  SharedHandle<BackupConnectInfo> info_;
+  Command* mainCommand_;
+  RequestGroup* requestGroup_;
+  DownloadEngine* e_;
+  Timer startTime_;
+  Timer timeoutCheck_;
+  time_t timeout_;
 };
 
 } // namespace aria2
 
-#endif // D_HTTP_PROXY_REQUEST_COMMAND_H
+#endif // BACKUP_IPV4_CONNECT_COMMAND_H

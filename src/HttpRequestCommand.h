@@ -41,6 +41,7 @@ namespace aria2 {
 
 class HttpConnection;
 class SocketCore;
+class BackupConnectInfo;
 
 // HttpRequestCommand sends HTTP request header to remote server.
 // Because network I/O is non-blocking, execute() returns false if all
@@ -53,8 +54,11 @@ private:
   SharedHandle<Request> proxyRequest_;
 
   SharedHandle<HttpConnection> httpConnection_;
+
+  SharedHandle<BackupConnectInfo> backupConnectionInfo_;
 protected:
   virtual bool executeInternal();
+  virtual bool noCheck();
 public:
   HttpRequestCommand(cuid_t cuid,
                      const SharedHandle<Request>& req,
@@ -66,6 +70,7 @@ public:
   virtual ~HttpRequestCommand();
 
   void setProxyRequest(const SharedHandle<Request>& proxyRequest);
+  void setBackupConnectInfo(const SharedHandle<BackupConnectInfo>& info);
 };
 
 } // namespace aria2

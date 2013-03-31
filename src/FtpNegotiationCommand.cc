@@ -74,6 +74,7 @@
 #include "CheckIntegrityEntry.h"
 #include "error_code.h"
 #include "SocketRecvBuffer.h"
+#include "BackupIPv4ConnectCommand.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "ChecksumCheckIntegrityEntry.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -105,7 +106,16 @@ FtpNegotiationCommand::FtpNegotiationCommand
   setWriteCheckSocket(getSocket());
 }
 
-FtpNegotiationCommand::~FtpNegotiationCommand() {}
+FtpNegotiationCommand::~FtpNegotiationCommand()
+{
+  if(backupConnectionInfo_) {
+    backupConnectionInfo_->cancel = true;
+  }
+}
+
+bool FtpNegotiationCommand::noCheck() {
+  return backupConnectionInfo_ && !backupConnectionInfo_->ipaddr.empty();
+}
 
 bool FtpNegotiationCommand::executeInternal() {
   while(processSequence(getSegments().front()));
@@ -145,11 +155,37 @@ bool FtpNegotiationCommand::executeInternal() {
 }
 
 bool FtpNegotiationCommand::recvGreeting() {
+  if(backupConnectionInfo_ && !backupConnectionInfo_->ipaddr.empty()) {
+    A2_LOG_INFO(fmt("CUID#%"PRId64" - Use backup connection address %s",
+                    getCuid(), backupConnectionInfo_->ipaddr.c_str()));
+    getDownloadEngine()->markBadIPAddress
+      (getRequest()->getConnectedHostname(),
+       getRequest()->getConnectedAddr(),
+       getRequest()->getConnectedPort());
+
+    getRequest()->setConnectedAddrInfo(getRequest()->getConnectedHostname(),
+                                       backupConnectionInfo_->ipaddr,
+                                       getRequest()->getConnectedPort());
+
+    FtpNegotiationCommand* c =
+      new FtpNegotiationCommand(getCuid(), getRequest(), getFileEntry(),
+                                getRequestGroup(), getDownloadEngine(),
+                                backupConnectionInfo_->socket);
+    c->setStatus(STATUS_ONESHOT_REALTIME);
+    getDownloadEngine()->setNoWait(true);
+    getDownloadEngine()->addCommand(c);
+    backupConnectionInfo_.reset();
+    return true;
+  }
   if(!checkIfConnectionEstablished
      (getSocket(), getRequest()->getConnectedHostname(),
       getRequest()->getConnectedAddr(), getRequest()->getConnectedPort())) {
     sequence_ = SEQ_EXIT;
     return false;
+  }
+  if(backupConnectionInfo_) {
+    backupConnectionInfo_->cancel = true;
+    backupConnectionInfo_.reset();
   }
   setTimeout(getRequestGroup()->getTimeout());
   //socket->setBlockingMode();
@@ -971,6 +1007,12 @@ void FtpNegotiationCommand::onDryRunFileFound()
   getDownloadContext()->setChecksumVerified(true);
   poolConnection();
   sequence_ = SEQ_HEAD_OK;
+}
+
+void FtpNegotiationCommand::setBackupConnectInfo
+(const SharedHandle<BackupConnectInfo>& info)
+{
+  backupConnectionInfo_ = info;
 }
 
 } // namespace aria2

@@ -225,7 +225,7 @@ bool AbstractCommand::execute() {
 #ifdef ENABLE_ASYNC_DNS
         && !asyncNameResolverMan_->resolverChecked()
 #endif // ENABLE_ASYNC_DNS
-        )) {
+        ) || noCheck()) {
       checkPoint_ = global::wallclock();
       if(getPieceStorage()) {
         if(!req_ || req_->getMaxPipelinedRequest() == 1 ||

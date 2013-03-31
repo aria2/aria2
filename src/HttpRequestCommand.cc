@@ -59,6 +59,7 @@
 #include "LogFactory.h"
 #include "fmt.h"
 #include "SocketRecvBuffer.h"
+#include "BackupIPv4ConnectCommand.h"
 
 namespace aria2 {
 
@@ -79,7 +80,12 @@ HttpRequestCommand::HttpRequestCommand
   setWriteCheckSocket(getSocket());
 }
 
-HttpRequestCommand::~HttpRequestCommand() {}
+HttpRequestCommand::~HttpRequestCommand()
+{
+  if(backupConnectionInfo_) {
+    backupConnectionInfo_->cancel = true;
+  }
+}
 
 namespace {
 SharedHandle<HttpRequest>
@@ -122,13 +128,51 @@ createHttpRequest(const SharedHandle<Request>& req,
 }
 } // namespace
 
+bool HttpRequestCommand::noCheck() {
+  return backupConnectionInfo_ && !backupConnectionInfo_->ipaddr.empty();
+}
+
 bool HttpRequestCommand::executeInternal() {
   //socket->setBlockingMode();
   if(httpConnection_->sendBufferIsEmpty()) {
+    if(backupConnectionInfo_ && !backupConnectionInfo_->ipaddr.empty()) {
+      A2_LOG_INFO(fmt("CUID#%"PRId64" - Use backup connection address %s",
+                      getCuid(), backupConnectionInfo_->ipaddr.c_str()));
+      getDownloadEngine()->markBadIPAddress
+        (getRequest()->getConnectedHostname(),
+         getRequest()->getConnectedAddr(),
+         getRequest()->getConnectedPort());
+
+      getRequest()->setConnectedAddrInfo(getRequest()->getConnectedHostname(),
+                                         backupConnectionInfo_->ipaddr,
+                                         getRequest()->getConnectedPort());
+
+      SharedHandle<SocketRecvBuffer> socketRecvBuffer
+        (new SocketRecvBuffer(backupConnectionInfo_->socket));
+      SharedHandle<HttpConnection> httpConnection
+        (new HttpConnection(getCuid(), backupConnectionInfo_->socket,
+                            socketRecvBuffer));
+      HttpRequestCommand* c =
+        new HttpRequestCommand(getCuid(), getRequest(), getFileEntry(),
+                               getRequestGroup(),
+                               httpConnection,
+                               getDownloadEngine(),
+                               backupConnectionInfo_->socket);
+      c->setProxyRequest(proxyRequest_);
+      c->setStatus(STATUS_ONESHOT_REALTIME);
+      getDownloadEngine()->setNoWait(true);
+      getDownloadEngine()->addCommand(c);
+      backupConnectionInfo_.reset();
+      return true;
+    }
     if(!checkIfConnectionEstablished
        (getSocket(), getRequest()->getConnectedHostname(),
         getRequest()->getConnectedAddr(), getRequest()->getConnectedPort())) {
       return true;
+    }
+    if(backupConnectionInfo_) {
+      backupConnectionInfo_->cancel = true;
+      backupConnectionInfo_.reset();
     }
 #ifdef ENABLE_SSL
     if(getRequest()->getProtocol() == "https") {
@@ -233,6 +277,12 @@ void HttpRequestCommand::setProxyRequest
 (const SharedHandle<Request>& proxyRequest)
 {
   proxyRequest_ = proxyRequest;
+}
+
+void HttpRequestCommand::setBackupConnectInfo
+(const SharedHandle<BackupConnectInfo>& info)
+{
+  backupConnectionInfo_ = info;
 }
 
 } // namespace aria2

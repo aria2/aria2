@@ -123,6 +123,11 @@ protected:
     return socket_;
   }
 
+  SharedHandle<SocketCore>& getSocket()
+  {
+    return socket_;
+  }
+
   void setSocket(const SharedHandle<SocketCore>& s);
 
   void createSocket();
@@ -215,6 +220,13 @@ protected:
   }
 
   void checkSocketRecvBuffer();
+
+  // Returns true if the derived class wants to execute
+  // executeInternal() unconditionally
+  virtual bool noCheck()
+  {
+    return false;
+  }
 public:
   AbstractCommand
   (cuid_t cuid, const SharedHandle<Request>& req,

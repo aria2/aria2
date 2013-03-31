@@ -44,6 +44,9 @@
 #include "SocketCore.h"
 #include "DownloadContext.h"
 #include "SocketRecvBuffer.h"
+#include "BackupIPv4ConnectCommand.h"
+#include "fmt.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
@@ -67,15 +70,47 @@ AbstractProxyRequestCommand::AbstractProxyRequestCommand
   setWriteCheckSocket(getSocket());
 }
 
-AbstractProxyRequestCommand::~AbstractProxyRequestCommand() {}
+AbstractProxyRequestCommand::~AbstractProxyRequestCommand()
+{
+  if(backupConnectionInfo_) {
+    backupConnectionInfo_->cancel = true;
+  }
+}
+
+bool AbstractProxyRequestCommand::noCheck() {
+  return backupConnectionInfo_ && !backupConnectionInfo_->ipaddr.empty();
+}
 
 bool AbstractProxyRequestCommand::executeInternal() {
   //socket->setBlockingMode();
   if(httpConnection_->sendBufferIsEmpty()) {
+    if(backupConnectionInfo_ && !backupConnectionInfo_->ipaddr.empty()) {
+      A2_LOG_INFO(fmt("CUID#%"PRId64" - Use backup connection address %s",
+                      getCuid(), backupConnectionInfo_->ipaddr.c_str()));
+      getDownloadEngine()->markBadIPAddress
+        (getRequest()->getConnectedHostname(),
+         getRequest()->getConnectedAddr(),
+         getRequest()->getConnectedPort());
+
+      getRequest()->setConnectedAddrInfo(getRequest()->getConnectedHostname(),
+                                         backupConnectionInfo_->ipaddr,
+                                         getRequest()->getConnectedPort());
+
+      Command* c = createSelf(backupConnectionInfo_->socket);
+      c->setStatus(STATUS_ONESHOT_REALTIME);
+      getDownloadEngine()->setNoWait(true);
+      getDownloadEngine()->addCommand(c);
+      backupConnectionInfo_.reset();
+      return true;
+    }
     if(!checkIfConnectionEstablished
        (getSocket(), getRequest()->getConnectedHostname(),
         getRequest()->getConnectedAddr(), getRequest()->getConnectedPort())) {
       return true;
+    }
+    if(backupConnectionInfo_) {
+      backupConnectionInfo_->cancel = true;
+      backupConnectionInfo_.reset();
     }
     SharedHandle<HttpRequest> httpRequest(new HttpRequest());
     httpRequest->setUserAgent(getOption()->get(PREF_USER_AGENT));
@@ -94,6 +129,12 @@ bool AbstractProxyRequestCommand::executeInternal() {
     getDownloadEngine()->addCommand(this);
     return false;
   }
+}
+
+void AbstractProxyRequestCommand::setBackupConnectInfo
+(const SharedHandle<BackupConnectInfo>& info)
+{
+  backupConnectionInfo_ = info;
 }
 
 } // namespace aria2

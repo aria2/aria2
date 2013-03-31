@@ -56,6 +56,7 @@
 #include "AuthConfig.h"
 #include "fmt.h"
 #include "SocketRecvBuffer.h"
+#include "BackupIPv4ConnectCommand.h"
 
 namespace aria2 {
 
@@ -110,12 +111,22 @@ Command* FtpInitiateConnectionCommand::createNextCommand
                                  getRequestGroup(), hc, getDownloadEngine(),
                                  getSocket());
         c->setProxyRequest(proxyRequest);
+        SharedHandle<BackupConnectInfo> backupConnectInfo
+          = createBackupIPv4ConnectCommand(hostname, addr, port, c);
+        if(backupConnectInfo) {
+          c->setBackupConnectInfo(backupConnectInfo);
+        }
         command = c;
       } else if(proxyMethod == V_TUNNEL) {
         FtpTunnelRequestCommand* c =
           new FtpTunnelRequestCommand(getCuid(), getRequest(), getFileEntry(),
                                       getRequestGroup(), getDownloadEngine(),
                                       proxyRequest, getSocket());
+        SharedHandle<BackupConnectInfo> backupConnectInfo
+          = createBackupIPv4ConnectCommand(hostname, addr, port, c);
+        if(backupConnectInfo) {
+          c->setBackupConnectInfo(backupConnectInfo);
+        }
         command = c;
       } else {
         // TODO
@@ -163,11 +174,16 @@ Command* FtpInitiateConnectionCommand::createNextCommand
                       getCuid(), addr.c_str(), port));
       createSocket();
       getSocket()->establishConnection(addr, port);
+      getRequest()->setConnectedAddrInfo(hostname, addr, port);
       FtpNegotiationCommand* c =
         new FtpNegotiationCommand(getCuid(), getRequest(), getFileEntry(),
                                   getRequestGroup(), getDownloadEngine(),
                                   getSocket());
-      getRequest()->setConnectedAddrInfo(hostname, addr, port);
+      SharedHandle<BackupConnectInfo> backupConnectInfo
+        = createBackupIPv4ConnectCommand(hostname, addr, port, c);
+      if(backupConnectInfo) {
+        c->setBackupConnectInfo(backupConnectInfo);
+      }
       command = c;
     } else {
       // options contains "baseWorkingDir"
