@@ -107,13 +107,7 @@ AbstractCommand::AbstractCommand
   requestGroup_->increaseStreamCommand();
   requestGroup_->increaseNumCommand();
 #ifdef ENABLE_ASYNC_DNS
-  if(!net::getIPv4AddrConfigured()) {
-    asyncNameResolverMan_->setIPv4(false);
-  }
-  if(!net::getIPv6AddrConfigured() ||
-     e_->getOption()->getAsBool(PREF_DISABLE_IPV6)) {
-    asyncNameResolverMan_->setIPv6(false);
-  }
+  configureAsyncNameResolverMan(asyncNameResolverMan_.get(), e_->getOption());
 #endif // ENABLE_ASYNC_DNS
 }
 

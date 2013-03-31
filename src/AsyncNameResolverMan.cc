@@ -39,6 +39,9 @@
 #include "message.h"
 #include "fmt.h"
 #include "LogFactory.h"
+#include "Option.h"
+#include "SocketCore.h"
+#include "prefs.h"
 
 namespace aria2 {
 
@@ -186,5 +189,26 @@ const std::string& AsyncNameResolverMan::getLastError() const
   return A2STR::NIL;
 }
 
-} // namespace aria2
+void AsyncNameResolverMan::reset(DownloadEngine* e, Command* command)
+{
+  disableNameResolverCheck(e, command);
+  assert(resolverCheck_ == 0);
+  for(size_t i = 0; i < numResolver_; ++i) {
+    asyncNameResolver_[i].reset();
+  }
+  numResolver_ = 0;
+}
 
+void configureAsyncNameResolverMan(AsyncNameResolverMan* asyncNameResolverMan,
+                                   Option* option)
+{
+  if(!net::getIPv4AddrConfigured()) {
+    asyncNameResolverMan->setIPv4(false);
+  }
+  if(!net::getIPv6AddrConfigured() ||
+     option->getAsBool(PREF_DISABLE_IPV6)) {
+    asyncNameResolverMan->setIPv6(false);
+  }
+}
+
+} // namespace aria2

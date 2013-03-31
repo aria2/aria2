@@ -47,6 +47,7 @@ namespace aria2 {
 class AsyncNameResolver;
 class DownloadEngine;
 class Command;
+class Option;
 
 class AsyncNameResolverMan {
 public:
@@ -85,6 +86,8 @@ public:
   int getStatus() const;
   // Returns last error string
   const std::string& getLastError() const;
+  // Resets state. Also removes resolvers from DownloadEngine.
+  void reset(DownloadEngine* e, Command* command);
 private:
   void startAsyncFamily(const std::string& hostname,
                         int family,
@@ -100,6 +103,9 @@ private:
   bool ipv4_;
   bool ipv6_;
 };
+
+void configureAsyncNameResolverMan(AsyncNameResolverMan* asyncNameResolverMan,
+                                   Option* option);
 
 } // namespace aria2
 
