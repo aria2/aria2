@@ -89,7 +89,7 @@ private:
 
   int32_t calculateMinSplitSize() const;
   void useFasterRequest(const SharedHandle<Request>& fasterRequest);
-protected:
+public:
   RequestGroup* getRequestGroup() const
   {
     return requestGroup_;
@@ -151,9 +151,6 @@ protected:
   (std::vector<std::string>& addrs, const std::string& hostname, uint16_t port);
 
   void tryReserved();
-  virtual bool prepareForRetry(time_t wait);
-  virtual void onAbort();
-  virtual bool executeInternal() = 0;
 
   void setReadCheckSocket(const SharedHandle<SocketCore>& socket);
   void setWriteCheckSocket(const SharedHandle<SocketCore>& socket);
@@ -170,6 +167,10 @@ protected:
    * disableWriteCheckSocket().
    */
   void setWriteCheckSocketIf(const SharedHandle<SocketCore>& socket, bool pred);
+
+  // Swaps socket_ with socket. This disables current read and write
+  // check.
+  void swapSocket(SharedHandle<SocketCore>& socket);
 
   time_t getTimeout() const
   {
@@ -221,12 +222,17 @@ protected:
 
   void checkSocketRecvBuffer();
 
+protected:
+  virtual bool prepareForRetry(time_t wait);
+  virtual void onAbort();
+  virtual bool executeInternal() = 0;
   // Returns true if the derived class wants to execute
   // executeInternal() unconditionally
   virtual bool noCheck()
   {
     return false;
   }
+
 public:
   AbstractCommand
   (cuid_t cuid, const SharedHandle<Request>& req,

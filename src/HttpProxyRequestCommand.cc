@@ -62,16 +62,4 @@ Command* HttpProxyRequestCommand::getNextCommand()
      getHttpConnection(), getDownloadEngine(), getSocket());
 }
 
-Command* HttpProxyRequestCommand::createSelf
-(const SharedHandle<SocketCore>& socket)
-{
-  return new HttpProxyRequestCommand(getCuid(),
-                                     getRequest(),
-                                     getFileEntry(),
-                                     getRequestGroup(),
-                                     getDownloadEngine(),
-                                     getProxyRequest(),
-                                     socket);
-}
-
 } // namespace aria2

@@ -57,6 +57,9 @@
 #include "fmt.h"
 #include "SocketRecvBuffer.h"
 #include "BackupIPv4ConnectCommand.h"
+#include "FtpNegotiationConnectChain.h"
+#include "FtpTunnelRequestConnectChain.h"
+#include "HttpRequestConnectChain.h"
 
 namespace aria2 {
 
@@ -98,50 +101,43 @@ Command* FtpInitiateConnectionCommand::createNextCommand
       getSocket()->establishConnection(addr, port);
 
       getRequest()->setConnectedAddrInfo(hostname, addr, port);
+
+      ConnectCommand* c = new ConnectCommand(getCuid(),
+                                             getRequest(),
+                                             proxyRequest,
+                                             getFileEntry(),
+                                             getRequestGroup(),
+                                             getDownloadEngine(),
+                                             getSocket());
       if(proxyMethod == V_GET) {
         // Use GET for FTP via HTTP proxy.
         getRequest()->setMethod(Request::METHOD_GET);
-        SharedHandle<SocketRecvBuffer> socketRecvBuffer
-          (new SocketRecvBuffer(getSocket()));
-        SharedHandle<HttpConnection> hc
-          (new HttpConnection(getCuid(), getSocket(), socketRecvBuffer));
-
-        HttpRequestCommand* c =
-          new HttpRequestCommand(getCuid(), getRequest(), getFileEntry(),
-                                 getRequestGroup(), hc, getDownloadEngine(),
-                                 getSocket());
-        c->setProxyRequest(proxyRequest);
-        SharedHandle<BackupConnectInfo> backupConnectInfo
-          = createBackupIPv4ConnectCommand(hostname, addr, port, c);
-        if(backupConnectInfo) {
-          c->setBackupConnectInfo(backupConnectInfo);
-        }
-        command = c;
+        SharedHandle<HttpRequestConnectChain> chain
+          (new HttpRequestConnectChain());
+        c->setControlChain(chain);
       } else if(proxyMethod == V_TUNNEL) {
-        FtpTunnelRequestCommand* c =
-          new FtpTunnelRequestCommand(getCuid(), getRequest(), getFileEntry(),
-                                      getRequestGroup(), getDownloadEngine(),
-                                      proxyRequest, getSocket());
-        SharedHandle<BackupConnectInfo> backupConnectInfo
-          = createBackupIPv4ConnectCommand(hostname, addr, port, c);
-        if(backupConnectInfo) {
-          c->setBackupConnectInfo(backupConnectInfo);
-        }
-        command = c;
+        SharedHandle<FtpTunnelRequestConnectChain> chain
+          (new FtpTunnelRequestConnectChain());
+        c->setControlChain(chain);
       } else {
-        // TODO
-        throw DL_ABORT_EX("ERROR");
+        // Unreachable
+        assert(0);
       }
+      setupBackupConnection(hostname, addr, port, c);
+      command = c;
     } else {
       setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
       if(proxyMethod == V_TUNNEL) {
         // options contains "baseWorkingDir"
-        command =
-          new FtpNegotiationCommand(getCuid(), getRequest(), getFileEntry(),
-                                    getRequestGroup(), getDownloadEngine(),
-                                    pooledSocket,
-                                    FtpNegotiationCommand::SEQ_SEND_CWD_PREP,
-                                    options);
+        command = new FtpNegotiationCommand
+          (getCuid(),
+           getRequest(),
+           getFileEntry(),
+           getRequestGroup(),
+           getDownloadEngine(),
+           pooledSocket,
+           FtpNegotiationCommand::SEQ_SEND_CWD_PREP,
+           options);
       } else if(proxyMethod == V_GET) {
         // Use GET for FTP via HTTP proxy.
         getRequest()->setMethod(Request::METHOD_GET);
@@ -150,15 +146,18 @@ Command* FtpInitiateConnectionCommand::createNextCommand
         SharedHandle<HttpConnection> hc
           (new HttpConnection(getCuid(), pooledSocket, socketRecvBuffer));
 
-        HttpRequestCommand* c =
-          new HttpRequestCommand(getCuid(), getRequest(), getFileEntry(),
-                                 getRequestGroup(), hc, getDownloadEngine(),
-                                 pooledSocket);
+        HttpRequestCommand* c = new HttpRequestCommand(getCuid(),
+                                                       getRequest(),
+                                                       getFileEntry(),
+                                                       getRequestGroup(),
+                                                       hc,
+                                                       getDownloadEngine(),
+                                                       pooledSocket);
         c->setProxyRequest(proxyRequest);
         command = c;
       } else {
-        // TODO
-        throw DL_ABORT_EX("ERROR");
+        // Unreachable
+        assert(0);
       }
     }
   } else {
@@ -175,24 +174,29 @@ Command* FtpInitiateConnectionCommand::createNextCommand
       createSocket();
       getSocket()->establishConnection(addr, port);
       getRequest()->setConnectedAddrInfo(hostname, addr, port);
-      FtpNegotiationCommand* c =
-        new FtpNegotiationCommand(getCuid(), getRequest(), getFileEntry(),
-                                  getRequestGroup(), getDownloadEngine(),
-                                  getSocket());
-      SharedHandle<BackupConnectInfo> backupConnectInfo
-        = createBackupIPv4ConnectCommand(hostname, addr, port, c);
-      if(backupConnectInfo) {
-        c->setBackupConnectInfo(backupConnectInfo);
-      }
+      ConnectCommand* c = new ConnectCommand(getCuid(),
+                                             getRequest(),
+                                             proxyRequest, // must be null
+                                             getFileEntry(),
+                                             getRequestGroup(),
+                                             getDownloadEngine(),
+                                             getSocket());
+      SharedHandle<FtpNegotiationConnectChain> chain
+        (new FtpNegotiationConnectChain());
+      c->setControlChain(chain);
+      setupBackupConnection(hostname, addr, port, c);
       command = c;
     } else {
       // options contains "baseWorkingDir"
-      command =
-        new FtpNegotiationCommand(getCuid(), getRequest(), getFileEntry(),
-                                  getRequestGroup(), getDownloadEngine(),
-                                  pooledSocket,
-                                  FtpNegotiationCommand::SEQ_SEND_CWD_PREP,
-                                  options);
+      command = new FtpNegotiationCommand
+        (getCuid(),
+         getRequest(),
+         getFileEntry(),
+         getRequestGroup(),
+         getDownloadEngine(),
+         pooledSocket,
+         FtpNegotiationCommand::SEQ_SEND_CWD_PREP,
+         options);
       setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
     }
   }

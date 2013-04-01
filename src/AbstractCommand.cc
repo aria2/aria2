@@ -555,6 +555,13 @@ void AbstractCommand::setWriteCheckSocketIf
   }
 }
 
+void AbstractCommand::swapSocket(SharedHandle<SocketCore>& socket)
+{
+  disableReadCheckSocket();
+  disableWriteCheckSocket();
+  socket_.swap(socket);
+}
+
 namespace {
 // Constructs proxy URI, merging username and password if they are
 // defined.

@@ -44,7 +44,6 @@ namespace aria2 {
 class FtpConnection;
 class SocketCore;
 class HttpConnection;
-class BackupConnectInfo;
 
 class FtpNegotiationCommand : public AbstractCommand {
 public:
@@ -154,11 +153,8 @@ private:
   std::string proxyAddr_;
 
   std::deque<std::string> cwdDirs_;
-
-  SharedHandle<BackupConnectInfo> backupConnectionInfo_;
 protected:
   virtual bool executeInternal();
-  virtual bool noCheck();
 public:
   FtpNegotiationCommand(cuid_t cuid,
                         const SharedHandle<Request>& req,
@@ -169,7 +165,6 @@ public:
                         Seq seq = SEQ_RECV_GREETING,
                         const std::string& baseWorkingDir = "/");
   virtual ~FtpNegotiationCommand();
-  void setBackupConnectInfo(const SharedHandle<BackupConnectInfo>& info);
 };
 
 } // namespace aria2

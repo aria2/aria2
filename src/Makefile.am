@@ -246,7 +246,12 @@ SRCS =  SocketCore.cc SocketCore.h\
 	GroupId.cc GroupId.h\
 	IndexedList.h\
 	SaveSessionCommand.h SaveSessionCommand.cc\
-	BackupIPv4ConnectCommand.h BackupIPv4ConnectCommand.cc
+	BackupIPv4ConnectCommand.h BackupIPv4ConnectCommand.cc\
+	ConnectCommand.cc ConnectCommand.h\
+	HttpRequestConnectChain.h\
+	HttpProxyRequestConnectChain.h\
+	FtpNegotiationConnectChain.h\
+	FtpTunnelRequestConnectChain.h
 
 if MINGW_BUILD
 SRCS += WinConsoleFile.cc WinConsoleFile.h

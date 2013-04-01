@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,35 +32,21 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "FtpTunnelRequestCommand.h"
-#include "FtpTunnelResponseCommand.h"
-#include "Request.h"
-#include "SocketCore.h"
-#include "DownloadContext.h"
-#include "SocketRecvBuffer.h"
+#ifndef CONTROL_CHAIN_H
+#define CONTROL_CHAIN_H
 
 namespace aria2 {
 
-FtpTunnelRequestCommand::FtpTunnelRequestCommand
-(cuid_t cuid,
- const SharedHandle<Request>& req,
- const SharedHandle<FileEntry>& fileEntry,
- RequestGroup* requestGroup,
- DownloadEngine* e,
- const SharedHandle<Request>& proxyRequest,
- const SharedHandle<SocketCore>& s)
-  :
-  AbstractProxyRequestCommand(cuid, req, fileEntry, requestGroup, e,
-                              proxyRequest, s)
-{}
-
-FtpTunnelRequestCommand::~FtpTunnelRequestCommand() {}
-
-Command* FtpTunnelRequestCommand::getNextCommand()
-{
-  return new FtpTunnelResponseCommand
-    (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
-     getHttpConnection(), getDownloadEngine(), getSocket());
-}
+// This class template is used to transit to the next state using
+// T. The main application is embed to the Command classes and get
+// next Command from the previous Command.
+template<typename T>
+struct ControlChain {
+  virtual ~ControlChain() {}
+  // Currently, the implementation must returns 0.
+  virtual int run(T t, DownloadEngine* e) = 0;
+};
 
 } // namespace aria2
+
+#endif // CONTROL_CHAIN_H

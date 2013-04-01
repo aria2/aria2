@@ -52,6 +52,7 @@
 #include "fmt.h"
 #include "SocketRecvBuffer.h"
 #include "BackupIPv4ConnectCommand.h"
+#include "ConnectCommand.h"
 
 namespace aria2 {
 
@@ -158,6 +159,17 @@ InitiateConnectionCommand::createBackupIPv4ConnectCommand
     }
   }
   return info;
+}
+
+void InitiateConnectionCommand::setupBackupConnection
+(const std::string& hostname, const std::string& addr, uint16_t port,
+ ConnectCommand* c)
+{
+  SharedHandle<BackupConnectInfo> backupConnectInfo
+    = createBackupIPv4ConnectCommand(hostname, addr, port, c);
+  if(backupConnectInfo) {
+    c->setBackupConnectInfo(backupConnectInfo);
+  }
 }
 
 } // namespace aria2

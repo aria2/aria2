@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,35 +32,39 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "FtpTunnelRequestCommand.h"
-#include "FtpTunnelResponseCommand.h"
-#include "Request.h"
-#include "SocketCore.h"
-#include "DownloadContext.h"
-#include "SocketRecvBuffer.h"
+#ifndef CONNECT_COMMAND_H
+#define CONNECT_COMMAND_H
+
+#include "AbstractCommand.h"
+#include "ControlChain.h"
 
 namespace aria2 {
 
-FtpTunnelRequestCommand::FtpTunnelRequestCommand
-(cuid_t cuid,
- const SharedHandle<Request>& req,
- const SharedHandle<FileEntry>& fileEntry,
- RequestGroup* requestGroup,
- DownloadEngine* e,
- const SharedHandle<Request>& proxyRequest,
- const SharedHandle<SocketCore>& s)
-  :
-  AbstractProxyRequestCommand(cuid, req, fileEntry, requestGroup, e,
-                              proxyRequest, s)
-{}
+class BackupConnectInfo;
 
-FtpTunnelRequestCommand::~FtpTunnelRequestCommand() {}
-
-Command* FtpTunnelRequestCommand::getNextCommand()
-{
-  return new FtpTunnelResponseCommand
-    (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
-     getHttpConnection(), getDownloadEngine(), getSocket());
-}
+class ConnectCommand : public AbstractCommand {
+public:
+  ConnectCommand(cuid_t cuid,
+                 const SharedHandle<Request>& req,
+                 const SharedHandle<Request>& proxyRequest,
+                 const SharedHandle<FileEntry>& fileEntry,
+                 RequestGroup* requestGroup,
+                 DownloadEngine* e,
+                 const SharedHandle<SocketCore>& s);
+  virtual ~ConnectCommand();
+  void setControlChain
+  (const SharedHandle<ControlChain<ConnectCommand*> >& chain);
+  void setBackupConnectInfo(const SharedHandle<BackupConnectInfo>& info);
+  const SharedHandle<Request>& getProxyRequest() const;
+protected:
+  virtual bool executeInternal();
+  virtual bool noCheck();
+private:
+  SharedHandle<Request> proxyRequest_;
+  SharedHandle<BackupConnectInfo> backupConnectionInfo_;
+  SharedHandle<ControlChain<ConnectCommand*> > chain_;
+};
 
 } // namespace aria2
+
+#endif // CONNECT_COMMAND_H

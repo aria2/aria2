@@ -41,18 +41,14 @@ namespace aria2 {
 
 class HttpConnection;
 class SocketCore;
-class BackupConnectInfo;
 
 class AbstractProxyRequestCommand : public AbstractCommand {
 private:
   SharedHandle<Request> proxyRequest_;
 
   SharedHandle<HttpConnection> httpConnection_;
-
-  SharedHandle<BackupConnectInfo> backupConnectionInfo_;
 protected:
   virtual bool executeInternal();
-  virtual bool noCheck();
 
   const SharedHandle<HttpConnection>& getHttpConnection() const
   {
@@ -75,8 +71,6 @@ public:
   virtual ~AbstractProxyRequestCommand();
 
   virtual Command* getNextCommand() = 0;
-  virtual Command* createSelf(const SharedHandle<SocketCore>& socket) = 0;
-  void setBackupConnectInfo(const SharedHandle<BackupConnectInfo>& info);
 };
 
 } // namespace aria2

@@ -53,8 +53,6 @@ public:
   virtual ~HttpProxyRequestCommand();
 
   virtual Command* getNextCommand();
-
-  virtual Command* createSelf(const SharedHandle<SocketCore>& socket);
 };
 
 } // namespace aria2

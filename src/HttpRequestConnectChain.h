@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,35 +32,42 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "FtpTunnelRequestCommand.h"
-#include "FtpTunnelResponseCommand.h"
-#include "Request.h"
-#include "SocketCore.h"
-#include "DownloadContext.h"
+#ifndef HTTP_REQUEST_CONNECT_CHAIN_H
+#define HTTP_REQUEST_CONNECT_CHAIN_H
+
+#include "ControlChain.h"
+#include "ConnectCommand.h"
+#include "DownloadEngine.h"
 #include "SocketRecvBuffer.h"
+#include "HttpConnection.h"
+#include "HttpRequestCommand.h"
 
 namespace aria2 {
 
-FtpTunnelRequestCommand::FtpTunnelRequestCommand
-(cuid_t cuid,
- const SharedHandle<Request>& req,
- const SharedHandle<FileEntry>& fileEntry,
- RequestGroup* requestGroup,
- DownloadEngine* e,
- const SharedHandle<Request>& proxyRequest,
- const SharedHandle<SocketCore>& s)
-  :
-  AbstractProxyRequestCommand(cuid, req, fileEntry, requestGroup, e,
-                              proxyRequest, s)
-{}
-
-FtpTunnelRequestCommand::~FtpTunnelRequestCommand() {}
-
-Command* FtpTunnelRequestCommand::getNextCommand()
-{
-  return new FtpTunnelResponseCommand
-    (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
-     getHttpConnection(), getDownloadEngine(), getSocket());
-}
+struct HttpRequestConnectChain : public ControlChain<ConnectCommand*> {
+  HttpRequestConnectChain() {}
+  virtual ~HttpRequestConnectChain() {}
+  virtual int run(ConnectCommand* t, DownloadEngine* e)
+  {
+    SharedHandle<SocketRecvBuffer> socketRecvBuffer
+      (new SocketRecvBuffer(t->getSocket()));
+    SharedHandle<HttpConnection> httpConnection
+      (new HttpConnection(t->getCuid(), t->getSocket(), socketRecvBuffer));
+    HttpRequestCommand* c = new HttpRequestCommand(t->getCuid(),
+                                                   t->getRequest(),
+                                                   t->getFileEntry(),
+                                                   t->getRequestGroup(),
+                                                   httpConnection,
+                                                   e,
+                                                   t->getSocket());
+    c->setProxyRequest(t->getProxyRequest());
+    c->setStatus(Command::STATUS_ONESHOT_REALTIME);
+    e->setNoWait(true);
+    e->addCommand(c);
+    return 0;
+  }
+};
 
 } // namespace aria2
+
+#endif // HTTP_REQUEST_CONNECT_CHAIN_H
