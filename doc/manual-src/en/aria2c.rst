@@ -1091,12 +1091,6 @@ Advanced Options
   printed for each requested file in each row.
   Default: ``default``
 
-.. option:: --enable-async-dns6[=true|false]
-
-  Enable IPv6 name resolution in asynchronous DNS resolver. This
-  option will be ignored when :option:`--async-dns=false. <--async-dns>`
-  Default: ``false``
-
 .. option:: --enable-mmap[=true|false]
 
    Map files into memory. This option may not work if the file space
@@ -1786,7 +1780,6 @@ of URIs. These optional lines must start with white space(s).
   * :option:`continue <-c>`
   * :option:`dir <-d>`
   * :option:`dry-run <--dry-run>`
-  * :option:`enable-async-dns6 <--enable-async-dns6>`
   * :option:`enable-http-keep-alive <--enable-http-keep-alive>`
   * :option:`enable-http-pipelining <--enable-http-pipelining>`
   * :option:`enable-mmap <--enable-mmap>`
@@ -3710,12 +3703,11 @@ Enable IPv6 DHT
 ^^^^^^^^^^^^^^^
 .. code-block:: console
 
-  $ aria2c --enable-dht6 --dht-listen-port=6881 --dht-listen-addr6=YOUR_GLOBAL_UNICAST_IPV6_ADDR --enable-async-dns6
+  $ aria2c --enable-dht6 --dht-listen-port=6881 --dht-listen-addr6=YOUR_GLOBAL_UNICAST_IPV6_ADDR
 
 .. note::
 
-  If aria2c is not built with c-ares, :option:`--enable-async-dns6` is
-  unnecessary. aria2 shares same port between IPv4 and IPv6 DHT.
+  aria2 shares same port between IPv4 and IPv6 DHT.
 
 Add and remove tracker URI
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
