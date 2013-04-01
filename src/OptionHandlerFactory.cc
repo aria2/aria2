@@ -303,18 +303,6 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
 #endif // ENABLE_ASYNC_DNS
-  {
-    // TODO Deprecated
-    OptionHandler* op(new DeprecatedOptionHandler(new BooleanOptionHandler
-                                                  (PREF_ENABLE_DIRECT_IO,
-                                                   TEXT_ENABLE_DIRECT_IO,
-                                                   NO_DEFAULT_VALUE,
-                                                   OptionHandler::OPT_ARG)));
-    op->addTag(TAG_DEPRECATED);
-    op->addTag(TAG_ADVANCED);
-    op->addTag(TAG_FILE);
-    handlers.push_back(op);
-  }
 #if defined HAVE_MMAP || defined __MINGW32__
   {
     OptionHandler* op(new BooleanOptionHandler
@@ -2218,20 +2206,6 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
     op->setChangeOptionForReserved(true);
-    handlers.push_back(op);
-  }
-  {
-    OptionHandler* op
-      (new DeprecatedOptionHandler(new NumberOptionHandler
-                                   (PREF_METALINK_SERVERS,
-                                    TEXT_METALINK_SERVERS,
-                                    NO_DEFAULT_VALUE,
-                                    1, -1,
-                                    'C'),
-                                   splitHandler));
-    op->addTag(TAG_DEPRECATED);
-    op->addTag(TAG_METALINK);
-    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {

@@ -237,8 +237,6 @@ const Pref* PREF_AUTO_FILE_RENAMING = makePref("auto-file-renaming");
 // value: true | false
 const Pref* PREF_PARAMETERIZED_URI = makePref("parameterized-uri");
 // value: true | false
-const Pref* PREF_ENABLE_DIRECT_IO = makePref("enable-direct-io");
-// value: true | false
 const Pref* PREF_ALLOW_PIECE_LENGTH_CHANGE = makePref("allow-piece-length-change");
 // value: true | false
 const Pref* PREF_NO_CONF = makePref("no-conf");
@@ -547,8 +545,6 @@ const Pref* PREF_METALINK_LANGUAGE = makePref("metalink-language");
 const Pref* PREF_METALINK_OS = makePref("metalink-os");
 // values: a string
 const Pref* PREF_METALINK_LOCATION = makePref("metalink-location");
-// values: 1*digit
-const Pref* PREF_METALINK_SERVERS = makePref("metalink-servers");
 // values: true | false | mem
 const Pref* PREF_FOLLOW_METALINK = makePref("follow-metalink");
 // values: http | https | ftp | none

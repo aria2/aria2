@@ -172,8 +172,6 @@ extern const Pref* PREF_AUTO_FILE_RENAMING;
 // value: true | false
 extern const Pref* PREF_PARAMETERIZED_URI;
 // value: true | false
-extern const Pref* PREF_ENABLE_DIRECT_IO;
-// value: true | false
 extern const Pref* PREF_ALLOW_PIECE_LENGTH_CHANGE;
 // value: true | false
 extern const Pref* PREF_NO_CONF;
@@ -481,8 +479,6 @@ extern const Pref* PREF_METALINK_LANGUAGE;
 extern const Pref* PREF_METALINK_OS;
 // values: a string
 extern const Pref* PREF_METALINK_LOCATION;
-// values: 1*digit
-extern const Pref* PREF_METALINK_SERVERS;
 // values: true | false | mem
 extern const Pref* PREF_FOLLOW_METALINK;
 // values: http | https | ftp | none
