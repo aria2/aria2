@@ -76,7 +76,7 @@ Here is a list of features:
 * Download URIs found in a text file or stdin and the destination directory and
   output filename can be specified optionally
 * Parameterized URI support
-* IPv6 support
+* IPv6 support with Happy Eyeballs
 * Disk cache to reduce disk activity
 
 How to get source code
@@ -477,6 +477,7 @@ References
 * `RFC 6265 HTTP State Management Mechanism <http://tools.ietf.org/html/rfc6265>`_
 * `RFC 6266 Use of the Content-Disposition Header Field in the Hypertext Transfer Protocol (HTTP) <http://tools.ietf.org/html/rfc6266>`_
 * `RFC 6455 The WebSocket Protocol <http://tools.ietf.org/html/rfc6455>`_
+* `RFC 6555 Happy Eyeballs: Success with Dual-Stack Hosts <http://tools.ietf.org/html/rfc6555>`_
 
 * `The BitTorrent Protocol Specification <http://www.bittorrent.org/beps/bep_0003.html>`_
 * `BitTorrent: DHT Protocol <http://www.bittorrent.org/beps/bep_0005.html>`_
