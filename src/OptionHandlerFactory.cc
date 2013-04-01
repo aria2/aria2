@@ -290,11 +290,12 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
   }
 #ifdef ENABLE_ASYNC_DNS
   {
-    OptionHandler* op(new BooleanOptionHandler
-                      (PREF_ENABLE_ASYNC_DNS6,
-                       TEXT_ENABLE_ASYNC_DNS6,
-                       A2_V_FALSE,
-                       OptionHandler::OPT_ARG));
+    // TODO Deprecated
+    OptionHandler* op(new DeprecatedOptionHandler(new BooleanOptionHandler
+                                                  (PREF_ENABLE_ASYNC_DNS6,
+                                                   TEXT_ENABLE_ASYNC_DNS6,
+                                                   A2_V_FALSE,
+                                                   OptionHandler::OPT_ARG)));
     op->addTag(TAG_ADVANCED);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
