@@ -46,15 +46,6 @@
 #include <cerrno>
 #include <cstring>
 
-#ifdef HAVE_OPENSSL
-# include <openssl/x509.h>
-# include <openssl/x509v3.h>
-#endif // HAVE_OPENSSL
-
-#ifdef HAVE_LIBGNUTLS
-# include <gnutls/x509.h>
-#endif // HAVE_LIBGNUTLS
-
 #include "message.h"
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
@@ -66,6 +57,7 @@
 #include "A2STR.h"
 #ifdef ENABLE_SSL
 # include "TLSContext.h"
+# include "TLSSession.h"
 #endif // ENABLE_SSL
 
 namespace aria2 {
@@ -179,14 +171,6 @@ void SocketCore::init()
 
   wantRead_ = false;
   wantWrite_ = false;
-
-#ifdef HAVE_OPENSSL
-  // for SSL
-  ssl = NULL;
-#endif // HAVE_OPENSSL
-#ifdef HAVE_LIBGNUTLS
-  sslSession_ = 0;
-#endif //HAVE_LIBGNUTLS
 }
 
 SocketCore::~SocketCore() {
@@ -586,33 +570,15 @@ void SocketCore::setBlockingMode()
 
 void SocketCore::closeConnection()
 {
-#ifdef HAVE_OPENSSL
-  // for SSL
-  if(secure_) {
-    SSL_shutdown(ssl);
+  if(tlsSession_) {
+    tlsSession_->closeConnection();
+    tlsSession_.reset();
   }
-#endif // HAVE_OPENSSL
-#ifdef HAVE_LIBGNUTLS
-  if(secure_) {
-    gnutls_bye(sslSession_, GNUTLS_SHUT_WR);
-  }
-#endif // HAVE_LIBGNUTLS
   if(sockfd_ != (sock_t) -1) {
     shutdown(sockfd_, SHUT_WR);
     CLOSE(sockfd_);
     sockfd_ = -1;
   }
-#ifdef HAVE_OPENSSL
-  // for SSL
-  if(secure_) {
-    SSL_free(ssl);
-  }
-#endif // HAVE_OPENSSL
-#ifdef HAVE_LIBGNUTLS
-  if(secure_) {
-    gnutls_deinit(sslSession_);
-  }
-#endif // HAVE_LIBGNUTLS
 }
 
 #ifndef __MINGW32__
@@ -716,34 +682,6 @@ bool SocketCore::isReadable(time_t timeout)
 #endif // !HAVE_POLL
 }
 
-#ifdef HAVE_OPENSSL
-int SocketCore::sslHandleEAGAIN(int ret)
-{
-  int error = SSL_get_error(ssl, ret);
-  if(error == SSL_ERROR_WANT_READ || error == SSL_ERROR_WANT_WRITE) {
-    ret = 0;
-    if(error == SSL_ERROR_WANT_READ) {
-      wantRead_ = true;
-    } else {
-      wantWrite_ = true;
-    }
-  }
-  return ret;
-}
-#endif // HAVE_OPENSSL
-
-#ifdef HAVE_LIBGNUTLS
-void SocketCore::gnutlsRecordCheckDirection()
-{
-  int direction = gnutls_record_get_direction(sslSession_);
-  if(direction == 0) {
-    wantRead_ = true;
-  } else { // if(direction == 1) {
-    wantWrite_ = true;
-  }
-}
-#endif // HAVE_LIBGNUTLS
-
 ssize_t SocketCore::writeVector(a2iovec *iov, size_t iovcnt)
 {
   ssize_t ret = 0;
@@ -805,29 +743,21 @@ ssize_t SocketCore::writeData(const void* data, size_t len)
       }
     }
   } else {
-#ifdef HAVE_OPENSSL
-    ERR_clear_error();
-    ret = SSL_write(ssl, data, len);
+    ret = tlsSession_->writeData(data, len);
     if(ret < 0) {
-      ret = sslHandleEAGAIN(ret);
+      if(ret == TLS_ERR_WOULDBLOCK) {
+        if(tlsSession_->checkDirection() == TLS_WANT_READ) {
+          wantRead_ = true;
+        } else {
+          wantWrite_ = true;
+        }
+        ret = 0;
+      } else {
+        throw DL_RETRY_EX(fmt(EX_SOCKET_SEND,
+                              tlsSession_->getLastErrorString().c_str()));
+      }
     }
-    if(ret < 0) {
-      throw DL_RETRY_EX
-        (fmt(EX_SOCKET_SEND, ERR_error_string(ERR_get_error(), 0)));
-    }
-#endif // HAVE_OPENSSL
-#ifdef HAVE_LIBGNUTLS
-    while((ret = gnutls_record_send(sslSession_, data, len)) ==
-          GNUTLS_E_INTERRUPTED);
-    if(ret == GNUTLS_E_AGAIN) {
-      gnutlsRecordCheckDirection();
-      ret = 0;
-    } else if(ret < 0) {
-      throw DL_RETRY_EX(fmt(EX_SOCKET_SEND, gnutls_strerror(ret)));
-    }
-#endif // HAVE_LIBGNUTLS
   }
-
   return ret;
 }
 
@@ -851,31 +781,21 @@ void SocketCore::readData(void* data, size_t& len)
       }
     }
   } else {
-#ifdef HAVE_OPENSSL
-    // for SSL
-    // TODO handling len == 0 case required
-    ERR_clear_error();
-    ret = SSL_read(ssl, data, len);
+    ret = tlsSession_->readData(data, len);
     if(ret < 0) {
-      ret = sslHandleEAGAIN(ret);
+      if(ret == TLS_ERR_WOULDBLOCK) {
+        if(tlsSession_->checkDirection() == TLS_WANT_READ) {
+          wantRead_ = true;
+        } else {
+          wantWrite_ = true;
+        }
+        ret = 0;
+      } else {
+        throw DL_RETRY_EX(fmt(EX_SOCKET_SEND,
+                              tlsSession_->getLastErrorString().c_str()));
+      }
     }
-    if(ret < 0) {
-      throw DL_RETRY_EX
-        (fmt(EX_SOCKET_RECV, ERR_error_string(ERR_get_error(), 0)));
-    }
-#endif // HAVE_OPENSSL
-#ifdef HAVE_LIBGNUTLS
-    while((ret = gnutls_record_recv(sslSession_, data, len)) ==
-          GNUTLS_E_INTERRUPTED);
-    if(ret == GNUTLS_E_AGAIN) {
-      gnutlsRecordCheckDirection();
-      ret = 0;
-    } else if(ret < 0) {
-      throw DL_RETRY_EX(fmt(EX_SOCKET_RECV, gnutls_strerror(ret)));
-    }
-#endif // HAVE_LIBGNUTLS
   }
-
   len = ret;
 }
 
@@ -893,324 +813,57 @@ bool SocketCore::tlsConnect(const std::string& hostname)
 
 bool SocketCore::tlsHandshake(TLSContext* tlsctx, const std::string& hostname)
 {
+  int rv = 0;
+  std::string handshakeError;
   wantRead_ = false;
   wantWrite_ = false;
-#ifdef HAVE_OPENSSL
   switch(secure_) {
   case A2_TLS_NONE:
-    ssl = SSL_new(tlsctx->getSSLCtx());
-    if(!ssl) {
-      throw DL_ABORT_EX
-        (fmt(EX_SSL_INIT_FAILURE, ERR_error_string(ERR_get_error(), 0)));
+    tlsSession_.reset(new TLSSession(tlsctx));
+    rv = tlsSession_->init(sockfd_);
+    if(rv != TLS_ERR_OK) {
+      std::string error = tlsSession_->getLastErrorString();
+      tlsSession_.reset();
+      throw DL_ABORT_EX(fmt(EX_SSL_INIT_FAILURE, error.c_str()));
     }
-    if(SSL_set_fd(ssl, sockfd_) == 0) {
-      throw DL_ABORT_EX
-        (fmt(EX_SSL_INIT_FAILURE, ERR_error_string(ERR_get_error(), 0)));
-    }
-    // Fall through
-#ifdef SSL_CTRL_SET_TLSEXT_HOSTNAME
-    if(tlsctx->getSide() == TLS_CLIENT && !util::isNumericHost(hostname)) {
-      // TLS extensions: SNI.  There is not documentation about the
-      // return code for this function (actually this is macro
-      // wrapping SSL_ctrl at the time of this writing).
-      SSL_set_tlsext_host_name(ssl, hostname.c_str());
-    }
-#endif // SSL_CTRL_SET_TLSEXT_HOSTNAME
-    secure_ = A2_TLS_HANDSHAKING;
-    // Fall through
-  case A2_TLS_HANDSHAKING: {
-    ERR_clear_error();
-    int e;
-    if(tlsctx->getSide() == TLS_CLIENT) {
-      e = SSL_connect(ssl);
-    } else {
-      e = SSL_accept(ssl);
-    }
-
-    if (e <= 0) {
-      int ssl_error = SSL_get_error(ssl, e);
-      switch(ssl_error) {
-      case SSL_ERROR_NONE:
-        break;
-      case SSL_ERROR_WANT_READ:
-        wantRead_ = true;
-        return false;
-      case SSL_ERROR_WANT_WRITE:
-        wantWrite_ = true;
-        return false;
-      case SSL_ERROR_WANT_X509_LOOKUP:
-      case SSL_ERROR_ZERO_RETURN:
-        if (blocking_) {
-          throw DL_ABORT_EX(fmt(EX_SSL_CONNECT_ERROR, ssl_error));
-        }
-        break;
-
-      case SSL_ERROR_SYSCALL: {
-        int sslErr = ERR_get_error();
-        if(sslErr == 0) {
-          if(e == 0) {
-            throw DL_ABORT_EX("Got EOF in SSL handshake");
-          } else if(e == -1) {
-            throw DL_ABORT_EX(fmt("SSL I/O error: %s", strerror(errno)));
-          } else {
-            throw DL_ABORT_EX(EX_SSL_IO_ERROR);
-          }
-        } else {
-          throw DL_ABORT_EX(fmt("SSL I/O error: %s",
-                                ERR_error_string(sslErr, 0)));
-        }
-      }
-      case SSL_ERROR_SSL:
-        throw DL_ABORT_EX(EX_SSL_PROTOCOL_ERROR);
-
-      default:
-        throw DL_ABORT_EX(fmt(EX_SSL_UNKNOWN_ERROR, ssl_error));
-      }
-    }
+    // Check hostname is not numeric and it includes ".". Setting
+    // "localhost" will produce TLS alert with GNUTLS.
     if(tlsctx->getSide() == TLS_CLIENT &&
-       tlsctx->peerVerificationEnabled()) {
-      // verify peer
-      X509* peerCert = SSL_get_peer_certificate(ssl);
-      if(!peerCert) {
-        throw DL_ABORT_EX(MSG_NO_CERT_FOUND);
-      }
-      auto_delete<X509*> certDeleter(peerCert, X509_free);
-
-      long verifyResult = SSL_get_verify_result(ssl);
-      if(verifyResult != X509_V_OK) {
-        throw DL_ABORT_EX
-          (fmt(MSG_CERT_VERIFICATION_FAILED,
-               X509_verify_cert_error_string(verifyResult)));
-      }
-      std::string commonName;
-      std::vector<std::string> dnsNames;
-      std::vector<std::string> ipAddrs;
-      GENERAL_NAMES* altNames;
-      altNames = reinterpret_cast<GENERAL_NAMES*>
-        (X509_get_ext_d2i(peerCert, NID_subject_alt_name, NULL, NULL));
-      if(altNames) {
-        auto_delete<GENERAL_NAMES*> altNamesDeleter
-          (altNames, GENERAL_NAMES_free);
-        size_t n = sk_GENERAL_NAME_num(altNames);
-        for(size_t i = 0; i < n; ++i) {
-          const GENERAL_NAME* altName = sk_GENERAL_NAME_value(altNames, i);
-          if(altName->type == GEN_DNS) {
-            const char* name =
-              reinterpret_cast<char*>(ASN1_STRING_data(altName->d.ia5));
-            if(!name) {
-              continue;
-            }
-            size_t len = ASN1_STRING_length(altName->d.ia5);
-            dnsNames.push_back(std::string(name, len));
-          } else if(altName->type == GEN_IPADD) {
-            const unsigned char* ipAddr = altName->d.iPAddress->data;
-            if(!ipAddr) {
-              continue;
-            }
-            size_t len = altName->d.iPAddress->length;
-            ipAddrs.push_back(std::string(reinterpret_cast<const char*>(ipAddr),
-                                          len));
-          }
-        }
-      }
-      X509_NAME* subjectName = X509_get_subject_name(peerCert);
-      if(!subjectName) {
-        throw DL_ABORT_EX
-          ("Could not get X509 name object from the certificate.");
-      }
-      int lastpos = -1;
-      while(1) {
-        lastpos = X509_NAME_get_index_by_NID(subjectName, NID_commonName,
-                                             lastpos);
-        if(lastpos == -1) {
-          break;
-        }
-        X509_NAME_ENTRY* entry = X509_NAME_get_entry(subjectName, lastpos);
-        unsigned char* out;
-        int outlen = ASN1_STRING_to_UTF8(&out,
-                                         X509_NAME_ENTRY_get_data(entry));
-        if(outlen < 0) {
-          continue;
-        }
-        commonName.assign(&out[0], &out[outlen]);
-        OPENSSL_free(out);
-        break;
-      }
-      if(!net::verifyHostname(hostname, dnsNames, ipAddrs, commonName)) {
-        throw DL_ABORT_EX(MSG_HOSTNAME_NOT_MATCH);
-      }
-    }
-    secure_ = A2_TLS_CONNECTED;
-    break;
-  }
-  default:
-    break;
-  }
-#endif // HAVE_OPENSSL
-#ifdef HAVE_LIBGNUTLS
-  switch(secure_) {
-  case A2_TLS_NONE:
-    int r;
-    gnutls_init(&sslSession_,
-                tlsctx->getSide() == TLS_CLIENT ?
-                GNUTLS_CLIENT : GNUTLS_SERVER);
-    // It seems err is not error message, but the argument string
-    // which causes syntax error.
-    const char* err;
-    // For client side, disables TLS1.1 here because there are servers
-    // that don't understand TLS1.1.  TODO Is this still necessary?
-    r = gnutls_priority_set_direct(sslSession_,
-                                   tlsctx->getSide() == TLS_CLIENT ?
-                                   "NORMAL:-VERS-TLS1.1" :
-                                   "NORMAL",
-                                   &err);
-    if(r != GNUTLS_E_SUCCESS) {
-      throw DL_ABORT_EX(fmt(EX_SSL_INIT_FAILURE, gnutls_strerror(r)));
-    }
-    // put the x509 credentials to the current session
-    gnutls_credentials_set(sslSession_, GNUTLS_CRD_CERTIFICATE,
-                           tlsctx->getCertCred());
-    gnutls_transport_set_ptr(sslSession_, (gnutls_transport_ptr_t)sockfd_);
-    if(tlsctx->getSide() == TLS_CLIENT) {
-      // Check hostname is not numeric and it includes ".". Setting
-      // "localhost" will produce TLS alert.
-      if(!util::isNumericHost(hostname) &&
-         hostname.find(".") != std::string::npos) {
-        // TLS extensions: SNI
-        int ret = gnutls_server_name_set(sslSession_, GNUTLS_NAME_DNS,
-                                         hostname.c_str(), hostname.size());
-        if(ret < 0) {
-          A2_LOG_WARN(fmt
-                      ("Setting hostname in SNI extension failed. Cause: %s",
-                       gnutls_strerror(ret)));
-        }
+       !util::isNumericHost(hostname) &&
+       hostname.find(".") != std::string::npos) {
+      rv = tlsSession_->setSNIHostname(hostname);
+      if(rv != TLS_ERR_OK) {
+        throw DL_ABORT_EX(fmt(EX_SSL_INIT_FAILURE,
+                              tlsSession_->getLastErrorString().c_str()));
       }
     }
     secure_ = A2_TLS_HANDSHAKING;
     // Fall through
-  case A2_TLS_HANDSHAKING: {
-    int ret = gnutls_handshake(sslSession_);
-    if(ret == GNUTLS_E_AGAIN) {
-      gnutlsRecordCheckDirection();
+  case A2_TLS_HANDSHAKING:
+    if(tlsctx->getSide() == TLS_CLIENT) {
+      rv = tlsSession_->tlsConnect(hostname, handshakeError);
+    } else {
+      rv = tlsSession_->tlsAccept();
+    }
+    if(rv == TLS_ERR_OK) {
+      secure_ = A2_TLS_CONNECTED;
+    } else if(rv == TLS_ERR_WOULDBLOCK) {
+      if(tlsSession_->checkDirection() == TLS_WANT_READ) {
+        wantRead_ = true;
+      } else {
+        wantWrite_ = true;
+      }
       return false;
-    } else if(ret < 0) {
-      throw DL_ABORT_EX(fmt(EX_SSL_INIT_FAILURE, gnutls_strerror(ret)));
+    } else {
+      throw DL_ABORT_EX(fmt("SSL/TLS handshake failure: %s",
+                            handshakeError.empty() ?
+                            tlsSession_->getLastErrorString().c_str() :
+                            handshakeError.c_str()));
     }
-
-    if(tlsctx->getSide() == TLS_CLIENT && tlsctx->peerVerificationEnabled()) {
-      // verify peer
-      unsigned int status;
-      ret = gnutls_certificate_verify_peers2(sslSession_, &status);
-      if(ret < 0) {
-        throw DL_ABORT_EX
-          (fmt("gnutls_certificate_verify_peer2() failed. Cause: %s",
-               gnutls_strerror(ret)));
-      }
-      if(status) {
-        std::string errors;
-        if(status & GNUTLS_CERT_INVALID) {
-          errors += " `not signed by known authorities or invalid'";
-        }
-        if(status & GNUTLS_CERT_REVOKED) {
-          errors += " `revoked by its CA'";
-        }
-        if(status & GNUTLS_CERT_SIGNER_NOT_FOUND) {
-          errors += " `issuer is not known'";
-        }
-        // TODO should check GNUTLS_CERT_SIGNER_NOT_CA ?
-        if(status & GNUTLS_CERT_INSECURE_ALGORITHM) {
-          errors += " `insecure algorithm'";
-        }
-        if(status & GNUTLS_CERT_NOT_ACTIVATED) {
-          errors += " `not activated yet'";
-        }
-        if(status & GNUTLS_CERT_EXPIRED) {
-          errors += " `expired'";
-        }
-        // TODO Add GNUTLS_CERT_SIGNATURE_FAILURE here
-        if(!errors.empty()) {
-          throw DL_ABORT_EX(fmt(MSG_CERT_VERIFICATION_FAILED, errors.c_str()));
-        }
-      }
-      // certificate type: only X509 is allowed.
-      if(gnutls_certificate_type_get(sslSession_) != GNUTLS_CRT_X509) {
-        throw DL_ABORT_EX("Certificate type is not X509.");
-      }
-
-      unsigned int peerCertsLength;
-      const gnutls_datum_t* peerCerts = gnutls_certificate_get_peers
-        (sslSession_, &peerCertsLength);
-      if(!peerCerts || peerCertsLength == 0 ) {
-        throw DL_ABORT_EX(MSG_NO_CERT_FOUND);
-      }
-      Time now;
-      for(unsigned int i = 0; i < peerCertsLength; ++i) {
-        gnutls_x509_crt_t cert;
-        ret = gnutls_x509_crt_init(&cert);
-        if(ret < 0) {
-          throw DL_ABORT_EX
-            (fmt("gnutls_x509_crt_init() failed. Cause: %s",
-                 gnutls_strerror(ret)));
-        }
-        auto_delete<gnutls_x509_crt_t> certDeleter
-          (cert, gnutls_x509_crt_deinit);
-        ret = gnutls_x509_crt_import(cert, &peerCerts[i], GNUTLS_X509_FMT_DER);
-        if(ret < 0) {
-          throw DL_ABORT_EX
-            (fmt("gnutls_x509_crt_import() failed. Cause: %s",
-                 gnutls_strerror(ret)));
-        }
-        if(i == 0) {
-          std::string commonName;
-          std::vector<std::string> dnsNames;
-          std::vector<std::string> ipAddrs;
-          int ret = 0;
-          char altName[256];
-          size_t altNameLen;
-          for(int j = 0; !(ret < 0); ++j) {
-            altNameLen = sizeof(altName);
-            ret = gnutls_x509_crt_get_subject_alt_name(cert, j, altName,
-                                                       &altNameLen, 0);
-            if(ret == GNUTLS_SAN_DNSNAME) {
-              dnsNames.push_back(std::string(altName, altNameLen));
-            } else if(ret == GNUTLS_SAN_IPADDRESS) {
-              ipAddrs.push_back(std::string(altName, altNameLen));
-            }
-          }
-          altNameLen = sizeof(altName);
-          ret = gnutls_x509_crt_get_dn_by_oid(cert,
-                                              GNUTLS_OID_X520_COMMON_NAME, 0, 0,
-                                              altName, &altNameLen);
-          if(ret == 0) {
-            commonName.assign(altName, altNameLen);
-          }
-          if(!net::verifyHostname(hostname, dnsNames, ipAddrs, commonName)) {
-            throw DL_ABORT_EX(MSG_HOSTNAME_NOT_MATCH);
-          }
-        }
-        time_t activationTime = gnutls_x509_crt_get_activation_time(cert);
-        if(activationTime == -1) {
-          throw DL_ABORT_EX("Could not get activation time from certificate.");
-        }
-        if(now.getTime() < activationTime) {
-          throw DL_ABORT_EX("Certificate is not activated yet.");
-        }
-        time_t expirationTime = gnutls_x509_crt_get_expiration_time(cert);
-        if(expirationTime == -1) {
-          throw DL_ABORT_EX("Could not get expiration time from certificate.");
-        }
-        if(expirationTime < now.getTime()) {
-          throw DL_ABORT_EX("Certificate has expired.");
-        }
-      }
-    }
-    secure_ = A2_TLS_CONNECTED;
     break;
-  }
   default:
     break;
   }
-#endif // HAVE_LIBGNUTLS
   return true;
 }
 

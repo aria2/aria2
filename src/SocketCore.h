@@ -43,16 +43,6 @@
 #include <vector>
 
 #include "a2netcompat.h"
-
-#ifdef HAVE_OPENSSL
-// for SSL
-# include <openssl/ssl.h>
-# include <openssl/err.h>
-#endif // HAVE_OPENSSL
-#ifdef HAVE_LIBGNUTLS
-# include <gnutls/gnutls.h>
-#endif // HAVE_LIBGNUTLS
-
 #include "SharedHandle.h"
 #include "a2io.h"
 #include "a2netcompat.h"
@@ -62,6 +52,7 @@ namespace aria2 {
 
 #ifdef ENABLE_SSL
 class TLSContext;
+class TLSSession;
 #endif // ENABLE_SSL
 
 class SocketCore {
@@ -89,27 +80,9 @@ private:
   static SharedHandle<TLSContext> clTlsContext_;
   // TLS context for server side
   static SharedHandle<TLSContext> svTlsContext_;
-#endif // ENABLE_SSL
 
-#ifdef HAVE_OPENSSL
-  // for SSL
-  SSL* ssl;
+  SharedHandle<TLSSession> tlsSession_;
 
-  int sslHandleEAGAIN(int ret);
-#endif // HAVE_OPENSSL
-#ifdef HAVE_LIBGNUTLS
-  gnutls_session_t sslSession_;
-
-  void gnutlsRecordCheckDirection();
-#endif // HAVE_LIBGNUTLS
-
-  void init();
-
-  void bind(const struct sockaddr* addr, socklen_t addrlen);
-
-  void setSockOpt(int level, int optname, void* optval, socklen_t optlen);
-
-#ifdef ENABLE_SSL
   /**
    * Makes this socket secure. The connection must be established
    * before calling this method.
@@ -118,6 +91,12 @@ private:
    */
   bool tlsHandshake(TLSContext* tlsctx, const std::string& hostname);
 #endif // ENABLE_SSL
+
+  void init();
+
+  void bind(const struct sockaddr* addr, socklen_t addrlen);
+
+  void setSockOpt(int level, int optname, void* optval, socklen_t optlen);
 
   SocketCore(sock_t sockfd, int sockType);
 public:

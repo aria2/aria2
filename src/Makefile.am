@@ -299,11 +299,14 @@ SRCS += EpollEventPoll.cc EpollEventPoll.h
 endif # HAVE_EPOLL
 
 if ENABLE_SSL
-SRCS += TLSContext.h
+SRCS += TLSContext.h\
+	TLSSession.h\
+	TLSSessionConst.h
 endif # ENABLE_SSL
 
 if HAVE_LIBGNUTLS
-SRCS += LibgnutlsTLSContext.cc LibgnutlsTLSContext.h
+SRCS += LibgnutlsTLSContext.cc LibgnutlsTLSContext.h\
+	LibgnutlsTLSSession.cc LibgnutlsTLSSession.h
 endif # HAVE_LIBGNUTLS
 
 if HAVE_LIBGCRYPT
@@ -324,6 +327,7 @@ endif # HAVE_LIBGMP
 
 if HAVE_OPENSSL
 SRCS += LibsslTLSContext.cc LibsslTLSContext.h\
+	LibsslTLSSession.cc LibsslTLSSession.h\
 	LibsslMessageDigestImpl.cc LibsslMessageDigestImpl.h\
 	LibsslARC4Encryptor.cc LibsslARC4Encryptor.h\
 	LibsslDHKeyExchange.cc LibsslDHKeyExchange.h
