@@ -294,7 +294,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     OptionHandler* op(new DeprecatedOptionHandler(new BooleanOptionHandler
                                                   (PREF_ENABLE_ASYNC_DNS6,
                                                    TEXT_ENABLE_ASYNC_DNS6,
-                                                   A2_V_FALSE,
+                                                   NO_DEFAULT_VALUE,
                                                    OptionHandler::OPT_ARG)));
     op->addTag(TAG_ADVANCED);
     op->setInitialOption(true);
