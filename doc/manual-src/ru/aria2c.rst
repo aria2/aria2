@@ -1176,13 +1176,6 @@ FTP, BitTorrent и Metalink. Для загрузки файла, aria2 може�
   запрашиваемого файла в отдельной строке.
   По умолчанию: ``default``
 
-.. option:: --enable-async-dns6[=true|false]
-
-  Включить IPv6 разрешение имен в асинхронном DNS-преобразователе.
-  Этот параметр будет игнорироваться, если
-  :option:`--async-dns=false. <--async-dns>`
-  По умолчанию: ``false``
-
 .. option:: --enable-mmap[=true|false]
 
    Отображение файлов в память. Этот параметр может не работать,
@@ -1902,7 +1895,6 @@ URI. Эти дополнительные строки должны начина�
   * :option:`continue <-c>`
   * :option:`dir <-d>`
   * :option:`dry-run <--dry-run>`
-  * :option:`enable-async-dns6 <--enable-async-dns6>`
   * :option:`enable-http-keep-alive <--enable-http-keep-alive>`
   * :option:`enable-http-pipelining <--enable-http-pipelining>`
   * :option:`enable-mmap <--enable-mmap>`
@@ -3818,13 +3810,11 @@ Checksum
 ^^^^^^^^^^^^^^^^^
 .. code-block:: console
 
-  $ aria2c --enable-dht6 --dht-listen-port=6881
-  --dht-listen-addr6=YOUR_GLOBAL_UNICAST_IPV6_ADDR --enable-async-dns6
+  $ aria2c --enable-dht6 --dht-listen-port=6881 --dht-listen-addr6=YOUR_GLOBAL_UNICAST_IPV6_ADDR
 
 .. note::
 
-  Если aria2c собрана без c-ares, то :option:`--enable-async-dns6`
-  не нужен. aria2 разделяет один и тот же порт между IPv4 и IPv6 DHT.
+  aria2 совместно использует один и тот же порт между IPv4 и IPv6 DHT.
 
 Добавить и удалить URI трекера
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
