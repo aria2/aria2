@@ -15,7 +15,7 @@ AC_CONFIG_SRCDIR([src/a2io.h])
 AC_CONFIG_HEADERS([config.h])
 
 case "$host" in
-  *mingw*|*cygwin*)
+  *mingw*)
     win_build=yes
     LIBS="$LIBS -lws2_32 -lwsock32 -lgdi32 -lwinmm -liphlpapi"
     ;;
