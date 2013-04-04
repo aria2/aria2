@@ -106,8 +106,8 @@ bool TLSContext::addSystemTrustedCACerts()
 #ifdef HAVE_GNUTLS_CERTIFICATE_SET_X509_SYSTEM_TRUST
   int ret = gnutls_certificate_set_x509_system_trust(certCred_);
   if(ret < 0) {
-    A2_LOG_ERROR(fmt(MSG_LOADING_SYSTEM_TRUSTED_CA_CERTS_FAILED,
-                     gnutls_strerror(ret)));
+    A2_LOG_INFO(fmt(MSG_LOADING_SYSTEM_TRUSTED_CA_CERTS_FAILED,
+                    gnutls_strerror(ret)));
     return false;
   } else {
     A2_LOG_INFO(fmt("%d certificate(s) were imported.", ret));

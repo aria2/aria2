@@ -110,8 +110,8 @@ bool TLSContext::addCredentialFile(const std::string& certfile,
 bool TLSContext::addSystemTrustedCACerts()
 {
   if(SSL_CTX_set_default_verify_paths(sslCtx_) != 1) {
-    A2_LOG_ERROR(fmt(MSG_LOADING_SYSTEM_TRUSTED_CA_CERTS_FAILED,
-                     ERR_error_string(ERR_get_error(), 0)));
+    A2_LOG_INFO(fmt(MSG_LOADING_SYSTEM_TRUSTED_CA_CERTS_FAILED,
+                    ERR_error_string(ERR_get_error(), 0)));
     return false;
   } else {
     A2_LOG_INFO("System trusted CA certificates were successfully added.");
