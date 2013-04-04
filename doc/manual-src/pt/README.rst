@@ -1,8 +1,25 @@
+.. _README:
+
+.. meta::
+   :description lang=pt: Manual Aria2 em português
+   :keywords: programa para download gratuito, download android, download
+              bittorrent, download linha de comando, download de músicas,
+              download de ftp, download http, download https, mac OS/X,
+              windows, linux, manual download aria2, torrent, download stream,
+              como compilar programa no android, como executar download no
+              android
+   :author: t-tujikawa_at_users_dot_sourceforge_dot_net english version
+   :author: gsavix@gmail.com tradução para português do brasil
+
+
 aria2 - Utilitário para Download Super Ultra Rápido
 ===================================================
 :Author:     Tatsuhiro Tsujikawa
 :Email:      t-tujikawa_at_users_dot_sourceforge_dot_net
-:translator: tradução Portuguese gsavix@gmail.com
+:translator: pt_BR Portuguese, tradutor: gsavix@gmail.com
+
+.. index:: double: author; t-tujikawa_at_users_dot_sourceforge_dot_net
+.. index:: triple: tradutor; tradução; gsavix@gmail.com;
 
 Renúncia
 --------
@@ -45,24 +62,30 @@ Lista de Configurações:
 * Suporte autenticação HTTP Proxy
 * Váriavéis de ambiente (conjunto abrangente) para proxy: http_proxy, https_proxy,
   ftp_proxy, all_proxy e no_proxy
+ 
 * HTTP com gzip, suporte a codificação de conteúdo (deflate)
 * Verificação de peer usando Certificados Acreditados informado em HTTPS
 * Processamento de autenticação Cliente usando Certificado Acreditado HTTPS
 * Suporte a transferência (Chunked) codificada
 * Carga de Cookies a partir de arquivos formato Firefox 3, Chromium/Google Chrome
   e Mozilla / Firefox / IcedWeasel / (1.x/2.x) / Netscape.
-* Salvar Cookies em arquivo formato Mozilla 3, Firefox (1.x/2.x), Chromium, Netscape.
+  
+* Salvar Cookies em arquivo formato Mozilla 3, Firefox (1.x/2.x), Chromium,
+  Netscape.
+ 
 * Suporte a Cabeçalho HTTP modificado ou personalizado
 * Suporte a Conexões Persistentes
 * FTP através de Proxy HTTP
 * Controle de velocidade Download e Upload (utilização da Banda Rede)
 * Extensões BitTorrent: Conexão rápida, DHT, PEX, MSE/PSE, Multi-Tracker
 * BitTorrent `WEB-Seeding <http://getright.com/seedtorrent.html>`_. aria2
-  faz requisições de mais de uma parte de um (chunk) para reduzir sobreposições de
-  requisições. Também permite requisições pipeline com tamanho especificado
+  faz requisições de mais de uma parte de um (chunk) para reduzir sobreposições
+  de requisições. Também permite requisições pipeline com tamanho especificado
+ 
 * BitTorrent Local Peer Discovery
 * Atualização ou Modificação (Rename) de estrutura de diretórios de downloads
   BitTorrent já finalizados
+ 
 * Interface JSON-RPC (sobre HTTP e WebSocket) / XML-RPC
 * Execução em modo daemon
 * Download Seletivosem múltiplos arquivos torrent/Metalink
@@ -71,10 +94,11 @@ Lista de Configurações:
 * Suporte a Netrc
 * Suporte a arquivo de Configuração
 * Download de URIs a partir de arquivo texto ou entrada padrão com especificação
-  opçional de arquivo de saída
+  opcional de arquivo de saída
+ 
 * Suporte a URI parametrizadas (intervalos, etc)
 * Suporte a IPv6
-
+ 
 Como obter o código fonte
 -------------------------
 
@@ -103,7 +127,7 @@ gzip, deflate em HTTP    zlib
 Async DNS                C-Ares
 Firefox3/Chromium cookie libsqlite3
 XML-RPC                  libxml2 ou Expat.
-JSON-RPC sobre WebSocket  libnettle ou libgcrypt ou OpenSSL
+JSON-RPC sobre WebSocket libnettle ou libgcrypt ou OpenSSL
 ======================== ========================================
 
 
@@ -114,18 +138,18 @@ JSON-RPC sobre WebSocket  libnettle ou libgcrypt ou OpenSSL
 
 .. note::
 
-  GnuTLS tem precedência sobre OpenSSL se ambas bibliotecas instaladas.
-  Caso prefira OpenSSL, execute configure com ``--without-gnutls``
-  ``--with-openssl``.
+  GnuTLS tem precedência sobre OpenSSL se ambas bibliotecas estiverem
+  instaladas. Caso prefira OpenSSL, execute configure com 
+  ``--without-gnutls`` ``--with-openssl``.
 
 .. note::
 
   libnettle tem precedência sobre libgcrypt se ambas bibliotecas instaladas.
   Caso prefira libgcrypt, execute configure com 
-  `--without-libnettle --with-libgcrypt``. Se OpenSSL é selecionada em
+  ``--without-libnettle --with-libgcrypt``. Se OpenSSL é selecionada em
   detrimento de GnuTLS, nem libnettle nem libgcrypt poderão ser usadas.
 
-São necessárias as seguintes configurações de bibliotecas SSl e cruypto:
+São necessárias as seguintes configurações de bibliotecas SSl e crypto:
 
 * libgcrypt
 * libnettle
@@ -133,8 +157,9 @@ São necessárias as seguintes configurações de bibliotecas SSl e cruypto:
 * GnuTLS + libgcrypt
 * GnuTLS + libnettle
 
-BitTorrent e Metalink podem ser desabilitados fornecendo as opções
-``--disable-bittorrent`` e ``--disable-metalink`` ao executar o script configure.
+BitTorrent e Metalink podem ser desabilitados fornecendo-se as opções
+``--disable-bittorrent`` e ``--disable-metalink`` ao executar o script 
+./configure.
 
 
 Para habilitar DNS assíncrono é necessário c-ares.
@@ -145,6 +170,7 @@ Como fazer o build
 ------------------
 Para fazer o build do aria2 a partir dos fontes, instalar antes
 pacotes de desenvolvimento ( o nome pode variar nas distribuições):
+
 * libgnutls-dev    (Requerido para suporte HTTPS, BitTorrent, Checksum)
 * nettle-dev       (Requerido para suporte BitTorrent, Checksum)
 * libgmp-dev       (Requerido para suporte BitTorrent)
@@ -286,6 +312,9 @@ Por exemplo, para construir um binário para 64bits utilize::
 
     $ HOST=x86_64-w64-mingw32 ./mingw-config
 
+.. index:: triple:  compilação cross; android; aria2c;
+           pair:    configuração; compilação android
+
 Compilação Cross Android binário
 --------------------------------
 
@@ -305,7 +334,7 @@ esteja desabilitado e confirme que somente biblioteca estática está habilitado
 A compilação será feita somente com bibliotecas estáticas.
 
 A bibliteca zlib que vem com o Android NDK, portanto não é necessário
-compilar uma zlib nossa.
+compilar uma zlib nova.
 
 ``android-config`` assume os seguintes pontos:
 
@@ -321,24 +350,129 @@ Antes executar ``android-config`` e ``android-make``, a variável de ambiente
 
 Após ``android-config``, executar ``android-make`` para compilar os fontes.
 
+.. index::	triple:    instalação; aria2; android;
+                triple:    execução; aria2; android;
+                triple:    aria2; emulador terminal; android;
+                triple:    jackpal; emulador terminal; android;
+                triple:    script; execução aria2; android;
+
+
+aria2 para dispositivos Android
+===============================
+
+aria2 é utilitário para download leve e multi-protocolo bem como
+multi-fontes operado através da linha de comando de um emulador de terminal
+que é executado no android. Há Suporte para downloads do tipo HTTP, HTTPS, FTP,
+BitTorrent e Metalink.
+
+Instalando aria2 no Android
+---------------------------
+
+aria2 não é uma aplicação Android Java. aria2 é uma aplicação escrita
+em C++ nativo e opera em modo linha de comando.  Não é necessário ter
+acesso ao usuário 'root' para usar aria2.  Como já dito, aria2 é um
+programa de linha de comando e por isso é necessário um emulador
+de terminal, portanto antes instale um emulador de Terminal Android a
+partir do Android Market (ou compile a partir da fonte e instale). Veja
+`Github jackpal <https://github.com/jackpal/Android-Terminal-Emulator/>`_.
+
+1. Copiar o executável do aria2c para ``/mnt/sdcard`` do seu dispositivo.
+2. Executar Emulador Terminal Android.
+3. Criar diretório ``mkdir /data/data/jackpal.androidterm/aria2``
+4. Anexar aplicação 
+   ``cat /mnt/sdcard/aria2c > /data/data/jackpal.androidterm/aria2/aria2c``
+5. Habilitar modo execução 
+   ``chmod 744 /data/data/jackpal.androidterm/aria2/aria2c``
+6. Adicionar o seguintes comandos ao Emulador de Terminal Android
+   Terminal Emulator::
+
+       export HOME=/data/data/jackpal.androidterm/aria2; cd $HOME
+
+7. Sair do Emulador de Terminal Android.
+8. Executar novamente o Emulador de Terminal Android.
+9. Execute aria2c chamando o comando ``./aria2c -v``
+
+Como usar comandos do aria2 no Android
+--------------------------------------
+
+Ver o manual do aria2 online nos seguintes idiomas:
+`Tradução em Português <http://aria2.sourceforge.net/manual/pt/html/>`_.
+`Original em Inglês    <http://aria2.sourceforge.net/manual/en/html/>`_.
+`Tradução em Russo     <http://aria2.sourceforge.net/manual/ru/html/>`_.
+
+Notas sobre uso do aria2 no Android
+-----------------------------------
+
+O executável aria2c foi gerado usando android-ndk-r8d.
+
+As seguintes bibliotecas foram ligadas estaticamente.
+
+ * openssl 1.0.1e
+ * expat 2.1.0
+ * c-ares 1.9.1
+
+Como o Android não possuem ``/etc/resolv.conf``, c-ares (resolvedor
+assíncrono de DNS) é desabilitado por padrão. Muitas vezes a resolução
+de nomes é lenta, recomenda-se habilitar c-ares. Para desabilitar use
+:option:``--async-dns`` e especifique os servidores DNS usando
+opção :option:``--async-dns-server``, como abaixo::
+
+  --async-dns --async-dns-server=`getprop meu.dns1`,`getprop meu.dns2`
+
+.. index::       double; servidor dns; android;
+
+Para não se entediar digitando estes parâmetros, toda vez que usar aria2c,
+o seguinte script shell pode ser útil::
+
+    #!/system/bin/sh
+    /data/data/jackpal.androidterm/aria2c \
+      --async-dns \
+      --async-dns-server=`getprop meu.dns1`,`getprop meu.dns2` \
+      "$@"
+
+Lembrar de tornar este script executável, através do comando chmod.
+Também substitua meu.dns1 e meu.dns2 pelos DNS reais que você quer.
+Exemplo: (``chmod 744 /path-para-o/scriptSCRIPT``)
+
+Problemas Conhecidos com o aria2c no Android
+--------------------------------------------
+
+* Como Android não tem ``/dev/stdout``, ``-l-`` não funciona.
+
+* Em alguns casos o Emulador de Terminal Android, para de atualizar a console.
+  É como se o aria2c congelasse, mas o aria2c continua executando normalmente.
+
 Para Gerar a documentação
--------------------------
+=========================
 
 `Sphinx <http://sphinx.pocoo.org/>`_ é usado para construir a
-documentação. As páginas (man) da documentação são criadas se através do
-comando  ``make`` caso estas páginas estejam desatualizadas. Tambem
-pode ser construida a versão em HTML da documentação do aria2 através
-do comando ``make html``. A versão HTML também está disponível em:
+documentação. As páginas (man) da documentação também são criadas
+através do comando ``make man`` caso estas páginas estejam desatualizadas.
+Também podem ser construídas a documentação em diversos formatos como
+html, latexpdf, epub, devhelp, latex, htmlhelp. Exemplo: Para construir
+a documentação aria2 em HTML use o comando ``make html``.
+O resultado será criado na subpasta _build dentro da pasta onde baixou
+o fonte do aria2. Ex: se baixou e descompactou o aria2 no local
+/home/usuario/aria2/ então a documentação gerada está em::
+
+/home/usuario/aria2/doc/manual-src/pt/_build/
+
+A pasta ``pt`` indica o idioma que atualmente pode ser
+(en,pt,ru). Para gerar documento PDF use a opção ``make latexpdf``
+certifique-se de que os pré-requisitos de fontes usados pelo latex 
+estejam presentes.
+
+A versão online HTML também está disponível em:
 `Original em Inglês <http://aria2.sourceforge.net/manual/en/html/>`_ 
 e nas traduções em:
 (`Português <http://aria2.sourceforge.net/manual/pt/html/>`_ e
 `Russo <http://aria2.sourceforge.net/manual/ru/html/>`_).
 
 BitTorrrent
------------
+===========
 
 Sobre Nome de arquivos
-~~~~~~~~~~~~~~~~~~~~~~
+----------------------
 O nome do arquivo que será baixado é determinado da seguinte maneira:
 
 modo arquivo simples
@@ -352,16 +486,17 @@ modo arquivo simples
 
 modo arquivos múltiplos
     A estrutura completa diretório/arquivo mencionada no arquivo .torrent será
-    creada. O diretório base que conterá toda estrutura de diretórios e arquivos
-    baixados, pode ser especificado através da opção -d.
+    creada. O diretório base que conterá toda estrutura de diretórios e 
+    arquivos baixados, pode ser especificado através da opção -d.
     Antes do download iniciar a estrutura completa dos diretórios necessários
     ao download será criada. Por padrão aria2 abre no mínimo 100 arquivos 
-    mencionados no arquivo .torrent e diretamente executa gravação e leitura desses
-    arquivos. O número máximo de arquivos para serem abertos simultaneamente pode
-    ser controlado através da opção ``--bt-max-open-files``.
+    mencionados no arquivo .torrent e diretamente executa gravação e leitura 
+    desses arquivos. O número máximo de arquivos para serem abertos 
+    simultaneamente pode ser controlado através da opção
+    :option:``--bt-max-open-files``.
 
 DHT
-~~~
+---
 
 aria2 suporte DHT. Por padrão, a tabela de roteamento	
 para IPv4 DHT é salva em ``$HOME/.aria2/dht.dat`` e a tabela de
@@ -369,25 +504,32 @@ roteamento para IPv6 DHT é salva em ``$HOME/.aria2/dht6.dat``.
 aria2 utiliza o mesmo número de porta para ouvir ambos
 IPv4 e IPv6 DHT.
 
+Rastreador UDP
+--------------
+ 
+Rastreador UDP é habilitado quando DHT IPv4 é habilitado. O número
+da porta do rastreador UDP é compartilhado com DHT. Usar opção
+:option:``--dht-listen-port`` para modificar o número da porta.
+
 Outras informações importantes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------------
 
 * Se a opção -o é usada para mudar o nome do arquivo de saida
   .torrent não o nome do arquivo dentro do arquivo .torrent.
-  Para esta finalidade utilizar opção ``--index-out``.
+  Para esta finalidade utilizar opção :option:``--index-out``.
 * Os números de portas padrões que o aria2 utiliza para TCP e UDP
   estão no intervalo de 6881 até 6999 (6881-6999).
 * aria2 não configura automaticamente port-forwarding.
   Por favor configurar manualmente seu roteador ou firewall.
 * O número máximo de é 55. Este limite pode ser excedido quando
   a taxa de download é muito baixa. Esta taxa de download pode ser
-  ajustada com a opção ``--bt-request-peer-speed-limit``.
+  ajustada com a opção :option:``--bt-request-peer-speed-limit``.
 * Desde a versão 0.10.0, aria2 parou de enviar mensagem de
   requisição após o download seletivo completar-se.
 
 
 Metalink
---------
+========
 
 A implementação atual suporte HTTP, HTTPS, FTP e BitTorrent.  Outros
 protocolos P2P são ignorados. São suportados documentos das versões
@@ -428,8 +570,8 @@ arquivo Metalink que é lido do disco local, aria2 usa o valor da
 opção ``--metalink-base-uri`` como URI base.  Se essa opção não é
 especificada a URI relativa será ignorada.
 
-Metalink/HTTP
--------------
+Metalink / HTTP
+===============
 
 Esta versão utiliza links rel=duplicate. aria2 interpreta
 os campos do cabeçalho do Digest e verifica onde o valor do digest
@@ -440,49 +582,85 @@ Para sobrepor o valor de sua preferência utilize a opção
 ``--metalink-location``.
 
 netrc
------
-O suporte netrc é habilitado por padrão para HTTP, HTTPS e FTP.  Para desabilitar
-especificar opção -n na linha de comando. Seu arquivo .netrc precisa possuir
-permissões corretas (600).
+=====
+O suporte netrc é habilitado por padrão para HTTP, HTTPS e FTP.  Para 
+desabilitar especificar opção -n na linha de comando. 
+Seu arquivo .netrc precisa possuir permissões corretas (600).
 
 WebSocket
----------
+=========
 
 O servidor WebSocket intrínseco no aria2 implementa a especificação
 definida na RFC 6455. O protocolo suportado refere-se a versão 13.
 
 Referências
------------
+===========
 
-* `aria2 Manual Inglês <http://aria2.sourceforge.net/manual/en/html/>`_ versão inglês
-* `aria2 Manual Russo <http://aria2.sourceforge.net/manual/ru/html/>`_ versão russo
-* `aria2 Manual Português <http://aria2.sourceforce.net/manual/pt/html/>`_ versão portugues
+* `aria2 Manual Inglês 
+  <http://aria2.sourceforge.net/manual/en/html/>`_ original inglês
+  
+* `aria2 Manual Russo 
+  <http://aria2.sourceforge.net/manual/ru/html/>`_ versão russo
+  
+* `aria2 Manual Português 
+  <http://aria2.sourceforce.net/manual/pt/html/>`_ versão português
+  
 * http://aria2.sourceforge.net/
 * http://sourceforge.net/apps/trac/aria2/wiki
 * https://github.com/tatsuhiro-t/aria2
-* `RFC 959 FILE TRANSFER PROTOCOL (FTP) <http://tools.ietf.org/html/rfc959>`_
-* `RFC 1738 Uniform Resource Locators (URL) <http://tools.ietf.org/html/rfc1738>`_
-* `RFC 2428 FTP Extensions for IPv6 and NATs <http://tools.ietf.org/html/rfc2428>`_
-* `RFC 2616 Hypertext Transfer Protocol -- HTTP/1.1 <http://tools.ietf.org/html/rfc2616>`_
+* `RFC 959 FILE TRANSFER PROTOCOL (FTP) 
+  <http://tools.ietf.org/html/rfc959>`_
+* `RFC 1738 Uniform Resource Locators (URL) 
+  <http://tools.ietf.org/html/rfc1738>`_
+* `RFC 2428 FTP Extensions for IPv6 and NATs 
+  <http://tools.ietf.org/html/rfc2428>`_
+* `RFC 2616 Hypertext Transfer Protocol -- HTTP/1.1 
+  <http://tools.ietf.org/html/rfc2616>`_
 * `RFC 3659 Extensions to FTP <http://tools.ietf.org/html/rfc3659>`_
-* `RFC 3986 Uniform Resource Identifier (URI): Generic Syntax <http://tools.ietf.org/html/rfc3986>`_
-* `RFC 4038 Application Aspects of IPv6 Transition <http://tools.ietf.org/html/rfc4038>`_
-* `RFC 5854 The Metalink Download Description Format <http://tools.ietf.org/html/rfc5854>`_
-* `RFC 6249 Metalink/HTTP: Mirrors and Hashes <http://tools.ietf.org/html/rfc6249>`_
-* `RFC 6265 HTTP State Management Mechanism <http://tools.ietf.org/html/rfc6265>`_
+* `RFC 3986 Uniform Resource Identifier (URI): Generic Syntax 
+  <http://tools.ietf.org/html/rfc3986>`_
+* `RFC 4038 Application Aspects of IPv6 Transition
+  <http://tools.ietf.org/html/rfc4038>`_
+* `RFC 5854 The Metalink Download Description Format 
+  <http://tools.ietf.org/html/rfc5854>`_
+* `RFC 6249 Metalink/HTTP: Mirrors and Hashes 
+  <http://tools.ietf.org/html/rfc6249>`_
+* `RFC 6265 HTTP State Management Mechanism 
+  <http://tools.ietf.org/html/rfc6265>`_
 * `RFC 6455 The WebSocket Protocol <http://tools.ietf.org/html/rfc6455>`_
 
-* `The BitTorrent Protocol Specification <http://www.bittorrent.org/beps/bep_0003.html>`_
-* `BitTorrent: DHT Protocol <http://www.bittorrent.org/beps/bep_0005.html>`_
-* `BitTorrent: Fast Extension <http://www.bittorrent.org/beps/bep_0006.html>`_
-* `BitTorrent: IPv6 Tracker Extension <http://www.bittorrent.org/beps/bep_0007.html>`_
-* `BitTorrent: Extension for Peers to Send Metadata Files <http://www.bittorrent.org/beps/bep_0009.html>`_
-* `BitTorrent: Extension Protocol <http://www.bittorrent.org/beps/bep_0010.html>`_
-* `BitTorrent: Multitracker Metadata Extension <http://www.bittorrent.org/beps/bep_0012.html>`_
-* `BitTorrent: WebSeed - HTTP/FTP Seeding (GetRight style) <http://www.bittorrent.org/beps/bep_0019.html>`_
-* `BitTorrent: Private Torrents <http://www.bittorrent.org/beps/bep_0027.html>`_
-* `BitTorrent: BitTorrent DHT Extensions for IPv6 <http://www.bittorrent.org/beps/bep_0032.html>`_
-* `BitTorrent: Message Stream Encryption <http://wiki.vuze.com/w/Message_Stream_Encryption>`_
-* `Kademlia: A Peer-to-peer Information System Based on the  XOR Metric <http://pdos.csail.mit.edu/~petar/papers/maymounkov-kademlia-lncs.pdf>`_
+* `The BitTorrent Protocol Specification 
+  <http://www.bittorrent.org/beps/bep_0003.html>`_
+* `BitTorrent: DHT Protocol 
+  <http://www.bittorrent.org/beps/bep_0005.html>`_
+* `BitTorrent: Fast Extension 
+  <http://www.bittorrent.org/beps/bep_0006.html>`_
+* `BitTorrent: IPv6 Tracker Extension 
+  <http://www.bittorrent.org/beps/bep_0007.html>`_
+* `BitTorrent: Extension for Peers to Send Metadata Files 
+  <http://www.bittorrent.org/beps/bep_0009.html>`_
+* `BitTorrent: Extension Protocol 
+  <http://www.bittorrent.org/beps/bep_0010.html>`_
+* `BitTorrent: Multitracker Metadata Extension 
+  <http://www.bittorrent.org/beps/bep_0012.html>`_
+* `BitTorrent: WebSeed - HTTP/FTP Seeding (GetRight style) 
+  <http://www.bittorrent.org/beps/bep_0019.html>`_
+* `BitTorrent: Private Torrents 
+  <http://www.bittorrent.org/beps/bep_0027.html>`_
+* `BitTorrent: BitTorrent DHT Extensions for IPv6 
+  <http://www.bittorrent.org/beps/bep_0032.html>`_
+  
+* `BitTorrent: Message Stream Encryption 
+  <http://wiki.vuze.com/w/Message_Stream_Encryption>`_
+  
+* `Kademlia: A Peer-to-peer Information System Based on the  XOR Metric
+  <http://pdos.csail.mit.edu/~petar/papers/maymounkov-kademlia-lncs.pdf>`_
 
-versão atualizada em 26.novembro.2012 por gsavix@gmail.com
+versão revisada  em 30.março.2013    por gsavix@gmail.com
+
+Anotação sobre divergência entre Manual e o aria2:
+
+Esta página de manual pode não necessariamente conter a última informação.
+Caso haja discrepância entre alguma informação do manual e o aria2, por
+favor refira-se a versão em inglês resultante do comando ``man aria2c``
+

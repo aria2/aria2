@@ -1,32 +1,50 @@
+.. _aria2c:
+
+.. meta::
+   :description lang=pt: Manual Aria2 em português
+   :keyword: programa para download gratuito, download android, download
+             bittorrent, download linha de comando, download de músicas,
+             download de ftp, download http, download https, mac OS/X,
+             windows, linux, manual download aria2, torrent, download stream
+   :author: t-tujikawa_at_users_dot_sourceforge_dot_net english version
+   :author: gsavix@gmail.com tradução para português do brasil
+
 aria2c(1)
 =========
 
-Linha de COMANDO
-----------------
+SINOPSE
+-------
 
 **aria2c** [<OPÇÕES>] [<URI>|<MAGNET>|<ARQUIVO_TORRENT>|<ARQUIVO_METALINK>] ...
+
+.. index::   double:  Descrição; Sumário
+             double: Resumo; Executivo
+             triple: O que; Por que; Porque
+    	        
 
 DESCRIÇÃO
 ---------
 
-Observação: Para executar o aria2 em um terminal ou prompt do dos utilize
-o comando aria2c
+Observação: Para executar o aria2 em um terminal ou no prompt da
+linha de comando do windows, utilize o comando aria2c.
 
 aria2 é um utilitário para download de arquivos. Os protocolos suportados são
 HTTP, HTTPS, FTP, BitTorrent e Metalink. aria2 pode efetuar download de arquivos
 a partir de múltiplas fontes e protocolos e tenta utilizar a máxima capacidade
 de banda. Há suporte para download de arquivos que tem origem em HTTP, HTTPS,
-FTP, BitTorrent e Metalink  enquanto que os dados baixados podem ser
-compartilhados pelo BitTorrent. Usando conferência / aferição (checksum) nos
-Metalinks aria2 automaticamente valida o conteúdo dos dados enquanto faz
+FTP, BitTorrent e Metalink ao mesmo tempo, enquanto os dados baixados podem ser
+(uploaded) e compartilhados pelo BitTorrent. Usando conferência / aferição (checksum) nos
+Metalinks, aria2 automaticamente valida o conteúdo dos dados enquanto faz
 o download do arquivo como BitTorrent.
 
+.. index::   double: Opções; Básicas;
 
-OPÇÕES para Uso no aria2
-------------------------
+Opções Básicas do aria2
+-----------------------
 
-Básicas
-~~~~~~~
+Opções Comuns
+~~~~~~~~~~~~~
+
 .. option:: -d, --dir=<DIR>
 
   O diretório onde será armazenado o arquivo baixado.
@@ -38,8 +56,8 @@ Básicas
   um caracter TAB (tabulação).
   Quando desejar ler a entrada padrão (stdin) especificar ``-`` (hífen).
   Adicionalmente, diversas opções podem ser especificadas após cada linha de URI.
-  Esta(s) linha(s) opcional(s) deve(m) começar(em) com um ou mais espaços em
-  branco e possuir(em) apenas uma opção em cada linha.
+  Esta(s) linha(s) opcional(is) deve(m) começar(em) com um ou mais espaços em
+  branco e possuir(em) apenas uma opção por linha.
   Ver subseção `Arquivo de Entrada`_ para mais detalhes.
   Ver também opção :option:`--deferred-input`.
 
@@ -79,18 +97,22 @@ Básicas
 
 .. option:: -h, --help[=<TÓPICO>|<PALAVRA-CHAVE>]
 
-   As mensagens de Ajuda são classificadas em tópicos. Um tópico inicia com
-   ``#``. Por exemplo, digitar ``--help=#http`` para obter o uso das opções
-   do tópico ``#http``. Se digitar um termo que não é tópico, haverá exibição
+   As mensagens de Ajuda são classificadas em temas. Um tema se inicia com
+   ``#``. Por exemplo, digitar ``--help=#http`` para obter a explicação do uso das
+   opções do tema ``#http``. Se digitar um termo que não é tema, haverá exibição
    das opções que incluem o termo informado.
-   Valores disponíveis para tópicos podem ser: ``#basic``, ``#advanced``, 
+   Valores disponíveis para temas podem ser: ``#basic``, ``#advanced``, 
    ``#http``, ``#https``, ``#ftp``, 
    ``#metalink``, ``#bittorrent``, ``#cookie``, ``#hook``, ``#file``, ``#rpc``,
    ``#checksum``, ``#experimental``, ``#deprecated``, ``#help``, ``#all``
    Padrão: ``#basic``
 
-HTTP/FTP
-~~~~~~~~
+Opções HTTP / FTP
+~~~~~~~~~~~~~~~~~
+
+.. index::	double: proxy; servidor;
+		triple: usuário; senha; proxy;
+
 .. option:: --all-proxy=<PROXY>
 
   Usar este servidor proxy para todos protocolos.  Para limpar proxy
@@ -106,21 +128,23 @@ HTTP/FTP
     Se usuário e senha são embutidos na URI do proxy eles também podem ser
     especificados através das opções
     *--{http,https,ftp,all}-proxy-{usuário,senha}*, 
-    aqueles que aparecerem por último assumem a precedência. Por exemplo, 
-    quando temos ``http-proxy-user=meunome``, ``http-proxy-passwd=minhasenha`` 
+    aqueles que aparecerem por último assumem a precedência.
+    Por exemplo, quando temos: 
+    ``http-proxy-user=meunome``, ``http-proxy-passwd=minhasenha`` 
     em aria2.conf e especificamos ``--http-proxy="http://svrproxy"`` na
     linha de comando, então obtemos como proxy HTTP ``http://svrproxy`` 
     com o usuário ``meunome`` e senha ``minhasenha``.
 
-    Outro exemplo: quando especificamos na linha de comando
-    ``--http-proxy="http://usuário:senha@svrproxy" --http-proxy-user="meunome"
+    Outro exemplo: quando especificamos na linha de comando:
+    ``--http-proxy="http://usuário:senha@svrproxy" --http-proxy-user="meunome" 
     --http-proxy-passwd="minhasenha"``, então obtemos proxy HTTP 
     ``http://svrproxy`` com usuário ``meunome`` e senha ``minhasenha``.
 
-    Mais um exemplo: se especificamos na linha de comando
+    Mais um exemplo: se especificamos na linha de comando:
     ``--http-proxy-user="meunome" --http-proxy-passwd="minhasenha" 
-    --http-proxy="http://utilizador:acesso@svrproxy"``, então obtemos o proxy HTTP
-    ``http://svrproxy`` com o usuário ``utilizador`` e a senha ``acesso``.
+    --http-proxy="http://utilizador:acesso@svrproxy"``, então obtemos 
+    o proxy HTTP ``http://svrproxy`` com o usuário ``utilizador``
+    e a senha ``acesso``.
 
 .. option:: --all-proxy-passwd=<SENHA>
 
@@ -150,7 +174,7 @@ HTTP/FTP
 
   Se ``true`` é informado, aria2 apenas verifica se o arquivo remoto está 
   disponível para download dos dados. Esta opção tem efeito em downloads de
-  servidores HTTP, HTTPS e FTP.  Downloads BitTorrent serão cancelados se for 
+  servidores HTTP, HTTPS e FTP.  Downloads de BitTorrent serão cancelados se for 
   especificado ``true``.
   Padrão: ``false``
 
@@ -351,8 +375,11 @@ HTTP/FTP
   mirrors. Like ``feedback``, it uses a performance profile of servers.
   Padrão: ``feedback``
 
-Específicas de HTTP
-~~~~~~~~~~~~~~~~~~~
+Opções Específicas de HTTP e HTTPS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. index:	triple: hhtp; http; opções
+
 .. option:: --ca-certificate=<ARQUIVO>
 
   Utilizar o certificado do ARQUIVO FILE para verificar os Servidores.
@@ -365,7 +392,7 @@ Específicas de HTTP
 
     Se aria2 foi compilado com OpenSSL ou versão mais recente de GnuTLS a qual
     tem a função ``gnutls_certificate_set_x509_system_trust()`` e a biblioteca
-    foi adequadamente configurada para localizar o certificado CA existente
+    foi adequadamente configurada para localizar o certificado CA existente,
     aria2 irá carregar automaticamente estes certificados no início.
 
 .. option:: --certificate=<ARQUIVO>
@@ -377,7 +404,7 @@ Específicas de HTTP
 
 .. option:: --check-certificate[=true|false]
 
-  Verifica o se o peer esta usando o certificado especificado na opção
+  Verifica se o peer esta usando o certificado especificado na opção
   :option:`--ca-certificate`.
   Padrão: ``true``
 
@@ -435,24 +462,26 @@ Específicas de HTTP
   use "".  Ver também opção :option:`--all-proxy`.  Isto afeta todas URIs.  O
   formato de PROXY é ``[https://][USUÁRIO:SENHA@]SERVIDOR[:PORTA]``
 
-.. option:: --https-proxy-passwd=<PASSWD>
+.. option:: --https-proxy-passwd=<SENHA>
 
-  Set password for :option:`--https-proxy` option.
+  Define senha para a opção :option:`--https-proxy`.
 
 .. option:: --https-proxy-user=<USUÁRIO>
 
-  Set user for :option:`--https-proxy` option.
+  Define usuário para a opção :option:`--https-proxy`.
 
 .. option:: --private-key=<ARQUIVO>
 
-  Use the private key in FILE.
-  The private key must be decrypted and in PEM format.
-  The behavior when encrypted one is given is undefined.
-  See also :option:`--certificate` option.
+  Define o arquivo de chave particular que será usado.
+  A chave particular deve estar no formato PEM e não pode estar criptografada.
+  O comportamento quando estiver criptografada é indefinido.
+  Ver também a opção :option:`--certificate`.
 
 .. option:: --referer=<REFERER>
 
-  Set Referer. This affects all URIs.
+  Define a referência. Afeta todas URIs. Se ``*`` é usado, cada URI requisitada é usada
+  como referência (referer). Pode ser útil quando usado em conjunto com a opção
+  :option:`--parameterized-uri`. 
 
 .. option:: --enable-http-keep-alive[=true|false]
 
@@ -470,44 +499,47 @@ Específicas de HTTP
 
 .. option:: --header=<HEADER>
 
-  Append HEADER to HTTP request header.
-  You can use this option repeatedly to specify more than one header:
+  Anexa CABEÇALHOao ao cabeçalho HTTP requisitado.
+  Pode usar esta opção várias vezes para especificar múltiplos cabeçalhos:
 
   .. code-block:: console
 
-        $ aria2c --header="X-A: b78" --header="X-B: 9J1" "http://host/file"
+        $ aria2c --header="X-A: b78" --header="X-B: 9J1" "http://servidor/arquivo"
+
+.. index::	triple: cookies; load; save;
 
 .. option:: --load-cookies=<ARQUIVO>
 
-  Load Cookies from FILE using the Firefox3 format (SQLite3),
-  Chromium/Google Chrome (SQLite3) and the
-  Mozilla/Firefox(1.x/2.x)/Netscape format.
+  Carregar Cookies do ARQUIVO usando formato Firefox3 format (SQLite3),
+  Chromium / Google Chrome (SQLite3) e formato
+  Mozilla / Firefox(1.x/2.x) / Netscape.
 
   .. note::
 
-    If aria2 is built without libsqlite3, then it doesn't support Firefox3
-    and Chromium/Google Chrome cookie format.
+    Se aria2 é compilado sem libsqlite3, então não havera suporte aos formatos 
+    de cookie Firefox3 e Chromium / Google Chrome.
 
 .. option:: --save-cookies=<ARQUIVO>
 
-  Save Cookies to FILE in Mozilla/Firefox(1.x/2.x)/ Netscape
-  format. If FILE already exists, it is overwritten. Session Cookies
-  are also saved and their expiry values are treated as 0.  Possible
-  Values: ``/path/to/file``
+  Salva Cookies para o ARQUIVO no formato Mozilla / Firefox(1.x/2.x) / 
+  Netscape.  Se ARQUIVO já existe, será sobreposto.  Cookies da Sessão também
+  serão salvos e seus valores de expiração serão tratados como 0.  
+  Valores Possíveis: ``/caminho/do/arquivo``
 
 .. option:: --use-head[=true|false]
 
-  Use HEAD method for the first request to the HTTP server.
+  Usar método HEAD para a primeira requisição ao servidor HTTP.
   Padrão: ``false``
 
 
 .. option:: -U, --user-agent=<AGENTE_USUÁRIO>
 
-  Set user agent for HTTP, HTTPS,  downloads.
-  Padrão: ``aria2/$VERSION``, $VERSION is replaced by package version.
+  Define usuário agente para download HTTP, HTTPS.
+  Padrão: ``aria2/$VERSION``, $VERSION é substituída pela versão do aria2.
 
-Específicas de FTP
-~~~~~~~~~~~~~~~~~~
+Opções Específicas de FTP
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
 .. option:: --ftp-user=<USUÁRIO>
 
   Definir o usuário FTP. Isto afeta todas as URIs.
@@ -523,315 +555,336 @@ Específicas de FTP
 
 .. option:: -p, --ftp-pasv[=true|false]
 
-  Use the passive mode in FTP.
-  If ``false`` is given, the active mode will be used.
+  Usar modo passivo no FTP.
+  Se ``false`` é informado, o modo ativo será usado.
   Padrão: ``true``
 
 .. option:: --ftp-proxy=<PROXY>
 
-  Use this proxy server for FTP.  To erase previously defined proxy,
-  use "".  See also :option:`--all-proxy` option.  This affects all URIs.  The
-  format of PROXY is ``[http://][USER:PASSWORD@]HOST[:PORT]``
+  Usar este servidor proxy para FTP.  Para limpar definição proxy previamente
+  definido, use "".  Ver também opção :option:`--all-proxy`.
+  Isto afeta todas URIs.  O formato do PROXY é
+  ``[http://][USUÁRIO:SENHA@]SERVIDOR[:PORTA]``
 
 .. option:: --ftp-proxy-passwd=<PASSWD>
 
-  Set password for :option:`--ftp-proxy` option.
+  Define senha para a opção :option:`--ftp-proxy`.
 
 .. option:: --ftp-proxy-user=<USUÁRIO>
 
-  Set user for :option:`--ftp-proxy` option.
+  Define senha para opção :option:`--ftp-proxy`.
 
 .. option:: --ftp-type=<TYPE>
 
-  Set FTP transfer type. TYPE is either ``binary`` or ``ascii``.
+  Define tipo de transferência FTP. Que pode ser: ``binary`` ou ``ascii``.
   Padrão: ``binary``
 
 .. option:: --ftp-reuse-connection[=true|false]
 
-  Reuse connection in FTP.
+  Reutilizar conexão FTP.
   Padrão: ``true``
 
-Comuns de BitTorrent / Metalink
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Opções Comuns de BitTorrent / Metalink
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 .. option:: --select-file=<INDEX>...
 
-  Set file to download by specifying its index.
-  You can find the file index using the :option:`--show-files <-S>` option.
-  Multiple indexes can be specified by using ``,``, for example: ``3,6``.
-  You can also use ``-`` to specify a range: ``1-5``.
-  ``,`` and ``-`` can be used together: ``1-5,8,9``.
-  When used with the -M option, index may vary depending on the query
-  (see *--metalink-\** options).
+  Define arquivo para download através da especificação de seu index.
+  Para achar o index do arquivo use a opção :option:`--show-files <-S>`.
+  Múltiplos indíces podem ser especificados usando-se ``,``, por exemplo:
+  ``3,6``.  Também pode ser usado ``-`` para especificar intervalos:
+  ``1-5``.  Ambos podem ser usados juntos ``,`` e ``-`` exemplo:
+  ``1-5,8,9``.  Quando usados com a opção -M, o índice pode variar dependendo
+  das opções da query. Ver opções (*--metalink-\ **).
 
   .. note::
 
-    In multi file torrent, the adjacent files specified by this option may
-    also be downloaded. This is by design, not a bug.
-    A single piece may include several files or part of files, and aria2
-    writes the piece to the appropriate files.
+    Em torrent de múltiplos arquivos, os arquivos adjacentes especificados
+    por essa opção também podem ser baixados. Esse é o comportamento esperado
+    não é um bug/erro.  Um simples pedaço pode incluir diversos arquivos ou
+    partes de arquivos, e aria2 grava o pedaço(s) no(s) arquivo(s)
+    apropriado(s).
 
 .. option:: -S, --show-files[=true|false]
 
-  Print file listing of ".torrent", ".meta4" and ".metalink" file and exit.
-  In case of ".torrent" file, additional information
-  (infohash, piece length, etc) is also printed.
-
-Específicas de BitTorrent
-~~~~~~~~~~~~~~~~~~~~~~~~~
+  Imprimir a lista de arquivos do ".torrent", ".meta4" e ".metalink" e termina.
+  No caso de arquivo ".torrent", informações adicionais são impressas.
+  (infohash, tamanho pedaço, etc).
+  
+Opções Específicas de BitTorrent
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. option:: --bt-enable-lpd[=true|false]
 
-  Enable Local Peer Discovery.  If a private flag is set in a torrent,
-  aria2 doesn't use this feature for that download even if ``true`` is
-  given.  Padrão: ``false``
+  Habilita Descobrir Peer Local.  Se indicador particular é configurado 
+  no torrent, aria2 não usa esta funcionalidade mesmo que ``true`` foi
+  informato.
+  Padrão: ``false``
 
 .. option:: --bt-exclude-tracker=<URI>[,...]
 
-  Comma separated list of BitTorrent tracker's announce URI to
-  remove. You can use special value ``*`` which matches all URIs, thus
-  removes all announce URIs. When specifying ``*`` in shell
-  command-line, don't forget to escape or quote it.  See also
-  :option:`--bt-tracker` option.
+  Lista separada por vírgulas, de trackers de URI BitTorrent que devem ser
+  removidas.  Pode ser usado o valor especial ``*`` para especificar todas
+  URIs; isso irá excluir todas URIs de "announce".  Quando especificar ``*`` 
+  em uma linha de comando do shell, lembre-se de forçar o escape or delimite
+  com aspas, apóstrofo ou em linux com crase caracter `.
+  Ver também opção :option: `--bt-tracker`.
 
-.. option:: --bt-external-ip=<IPADDRESS>
+.. option:: --bt-external-ip=<ENDEREÇO-IP>
 
-  Specify the external IP address to report to a BitTorrent
-  tracker. Although this function is named ``external``, it can accept
-  any kind of IP addresses. IPADDRESS must be a numeric IP address.
+  Especificar o IP externo para reportar um track BitTorrent.  Mesmo que esta
+  função tenha o nome ``external``, ela pode aceitar qualquer tipo de endereço
+  IP.  ENDEREÇO-IP deve ser um endereço IP numérico.
 
 .. option:: --bt-hash-check-seed[=true|false]
 
- If ``true`` is given, after hash check using :option:`--check-integrity <-V>`
- option and file is complete, continue to seed file. If you want to check file
- and download it only when it is damaged or incomplete, set this
- option to ``false``.  This option has effect only on BitTorrent download.
+ Se ``true`` é informado, após o check do hash usando a opção :option: 
+ `--check-integrity <-V>` e o arquivo esta completo, continue o arquivo seed.
+ Se desejar verificar o arquivo e efetuar o download somente quando ele estiver
+ imcompleto ou danificado, defina esta opção para ``false``.  Esta opção
+ só tem efeito para download de BitTorrent.
  Padrão: ``true``
 
 .. option:: --bt-lpd-interface=<INTERFACE>
 
-  Use given interface for Local Peer Discovery. If this option is not
-  specified, the default interface is chosen. You can specify
-  interface name and IP address.  Possible Values: interface, IP
-  addres
+  Use o interface de rede informado para Descobrir o Peer Local. Se esta opção
+  não é especificada, o interface padrão é usado. Pode ser especificado o nome
+  do interface e o endereço IP.
+  Valores possíveis: interface, endereço IP
 
 .. option:: --bt-max-open-files=<NÚMERO>
 
-  Specify maximum number of files to open in each BitTorrent download.
+  Especificar o número máximo de arquivos para abrir para cada download
+  BitTorrent.
   Padrão: ``100``
 
 .. option:: --bt-max-peers=<NÚMERO>
 
-  Specify the maximum number of peers per torrent.  ``0`` means
-  unlimited.  See also :option:`--bt-request-peer-speed-limit` option.
+  Especificar o número máximo de peers para cada torrent.  ``0`` significa
+  ilimitado.  Ver também a opção :option: `--bt-request-peer-speed-limit`.
   Padrão: ``55``
 
 .. option:: --bt-metadata-only[=true|false]
 
-  Download metadata only. The file(s) described in metadata will not
-  be downloaded. This option has effect only when BitTorrent Magnet
-  URI is used. See also :option:`--bt-save-metadata` option.  Padrão: ``false``
+  Download somente os metadados. O(s) arquivo(s) descrito(s) no(s) metadado(s)
+  não será(ão) baixado(s). Esta opção só tem efeito para URI BitTorrent Magnet.
+  Ver também a opção :option: `--bt-save-metadata`.
+  Padrão: ``false``
 
 .. option:: --bt-min-crypto-level=plain|arc4
 
-  Set minimum level of encryption method.
-  If several encryption methods are provided by a peer, aria2 chooses the lowest
-  one which satisfies the given level.
+  Define o nível mínimo do método de critografia.
+  Se existem diversos métodos são fornecidos por um peer, aria2 escolhe o que
+  satisfaz o menor nível especificado.
   Padrão: ``plain``
 
 .. option:: --bt-prioritize-piece=head[=<TAMANHO>],tail[=<TAMANHO>]
 
-  Try to download first and last pieces of each file first. This is
-  useful for previewing files. The argument can contain 2 keywords:
-  ``head`` and ``tail``. To include both keywords, they must be separated
-  by comma. These keywords can take one parameter, SIZE. For example,
-  if ``head=<TAMANHO>`` is specified, pieces in the range of first SIZE bytes
-  of each file get higher priority.  ``tail=<TAMANHO>`` means the range of
-  last SIZE bytes of each file. SIZE can include ``K`` or ``M`` (1K = 1024,
-  1M = 1024K). If SIZE is omitted, SIZE=1M is used.
+  Tentar primeiramente o download do primeiro e último pedaço de cada arquivo
+  Isto é útil para ver antecipadamente os arquivos. O argumento pode conter
+  duas palavras chave:
+  ``head`` e ``tail``. Para incluir ambos, devem estar separados por vírgula.
+  Estas palavras chave possuem um parâmetro tamanho. Por examplo,
+  se ``head=<TAMANHO>`` é especificado, pedaço no intervalo do número de bytes
+  iniciais de cada arquivo terão prioridade.    ``tail=<TAMANHO>`` significa
+  que o intervalo final no TAMANHO informado de cada arquivo. TAMANHO pode
+  incluir ``K`` ou ``M`` (1K = 1024, 1M = 1024K). Se TAMANHO é omitido,
+  TAMNHA de 1M será usado.
 
 .. option:: --bt-remove-unselected-file[=true|false]
 
-   Removes the unselected files when download is completed in
-   BitTorrent. To select files, use
-   :option:`--select-file` option. If it is
-   not used, all files are assumed to be selected. Please use this
-   option with care because it will actually remove files from your
-   disk.
+   Remove os arquivos não selecionados quando o download do BitTorrent estiver
+   completo. Para selecionar arquivo(s) use a opção :option:`--select-file`.
+   Se não for usada esta opção, é assumido que todos os arquivos serão 
+   selecionados. Use esta opção com critério pois ela realmente remove 
+   arquivo(s) do seu disco.
    Padrão: ``false``
 
 .. option:: --bt-require-crypto[=true|false]
 
-  If true is given, aria2 doesn't accept and establish connection with legacy
-  BitTorrent handshake(\19BitTorrent protocol).
-  Thus aria2 always uses Obfuscation handshake.
+  Se true é informado, aria2 não aceita nem estabelece conexão com handshake de
+  BitTorrent (protocolo \19BitTorrent). Em vez disso aria2 usa 
+  (Obfuscation handshake.
   Padrão: ``false`` 
 
-.. option:: --bt-request-peer-speed-limit=<SPEED>
+.. option:: --bt-request-peer-speed-limit=<VELOCIDADE>
 
-  If the whole download speed of every torrent is lower than SPEED,
-  aria2 temporarily increases the number of peers to try for more
-  download speed. Configuring this option with your preferred download
-  speed can increase your download speed in some cases.
-  You can append ``K`` or ``M`` (1K = 1024, 1M = 1024K).
+  Se a velocidade total de download do torrent é menor que a <VELOCIDADE>,
+  aria2 temporariamente incrementa o número de peers para tentar maior
+  velocidade de download.  Configurando esta opção com sua velocidade 
+  preferida pode incrementar a velocidade de download em alguns casos. Pode
+  ser anexado ``K`` ou ``M`` (1K = 1024, 1M = 1024K).
   Padrão: ``50K``
 
 .. option:: --bt-save-metadata[=true|false]
 
-  Save metadata as ".torrent" file. This option has effect only when
-  BitTorrent Magnet URI is used.  The filename is hex encoded info
-  hash with suffix ".torrent". The directory to be saved is the same
-  directory where download file is saved. If the same file already
-  exists, metadata is not saved. See also :option:`--bt-metadata-only`
-  option. Padrão: ``false``
+  Salvar metadados como arquivo ".torrent" file. Esta opção tem efeito somente
+  se URI usada é de BitTorrent Magnet.  O nome do arquivo é codificado em hash
+  em hexadecimal com sufixo de ".torrent". O diretório onde será salvo o
+  o metadado, é o mesmo onde aponta o download do arquivo. Se o arquivo já
+  existe, o metadado não será salvo. Ver tambémn a opção :option: 
+  `--bt-metadata-only`.
+  Padrão: ``false``
 
 .. option:: --bt-seed-unverified[=true|false]
 
-  Seed previously downloaded files without verifying piece hashes.
+  Faz Seed do arquivo previamente baixado sem verificar os hashes dos pedaços.
   Padrão: ``false``
 
 .. option:: --bt-stop-timeout=<SEGUNDOS>
 
-  Stop BitTorrent download if download speed is 0 in consecutive SEC
-  seconds. If ``0`` is given, this feature is disabled.  Padrão: ``0``
+  Interrompe o download do BitTorrent se a velocidade do for zero por 
+  consecutivos SEGUNDOS. Se ``0`` é informado, esta funcionalidade é 
+  desabilitada.  
+  Padrão: ``0``
 
 .. option:: --bt-tracker=<URI>[,...]
 
-  Comma separated list of additional BitTorrent tracker's announce
-  URI. These URIs are not affected by :option:`--bt-exclude-tracker` option
-  because they are added after URIs in :option:`--bt-exclude-tracker` option are
-  removed.
+  Lista URI, separada por vírgulas, dos rastreadores BitTorrent. Estas URIs não
+  são afetadas pela opção :option:`--bt-exclude-tracker`, porque elas são
+  adicionadas após as URIs da opção :option:`--bt-exclude-tracker` serem
+  removidas.
 
 .. option:: --bt-tracker-connect-timeout=<SEGUNDOS>
 
-  Set the connect timeout in seconds to establish connection to
-  tracker. After the connection is established, this option makes no
-  effect and :option:`--bt-tracker-timeout` option is used instead.  Padrão:
-  ``60``
+  Define o tempo de conexão em segundos para estabelecera conexão com o tracker.
+  Após a conexão ser estabelecida, esta opção não tem mais efeito e a opção
+  :option:`--bt-tracker-timeout` é usada.
+  Padrão: ``60``
 
 .. option:: --bt-tracker-interval=<SEGUNDOS>
 
-  Set the interval in seconds between tracker requests. This
-  completely overrides interval value and aria2 just uses this value
-  and ignores the min interval and interval value in the response of
-  tracker. If ``0`` is set, aria2 determines interval based on the
-  response of tracker and the download progress.  Padrão: ``0``
+  Define o intervalo em segundos, entre as requisições ao tracker / rastreador.
+  Isso sobrepõe o valor do intervalo e aria2 passa a usá-los e ignorar o
+  valor mínimo de resposta do tracker / rastreador. Se ``0`` é definido, aria2
+  assume que o intervalo será baseado no tracker / rastreador e o download
+  irá prosseguir.
+  Padrão: ``0``
 
 .. option:: --bt-tracker-timeout=<SEGUNDOS>
 
-  Set timeout in seconds. Padrão: ``60``
+  Define em segundos o intervalo do timeout.
+  Padrão: ``60``
 
-.. option:: --dht-entry-point=<HOST>:<PORT>
+.. option:: --dht-entry-point=<SERVIDOR>:<PORTA>
 
-  Set host and port as an entry point to IPv4 DHT network.
+  Define servidor e a porta da rede DHT IPv4.
 
-.. option:: --dht-entry-point6=<HOST>:<PORT>
+.. option:: --dht-entry-point6=<SERVIDOR>:<PORTA>
 
-  Set host and port as an entry point to IPv6 DHT network.
+  Define servidor e a porta da rede DHT IPv6.
 
-.. option:: --dht-file-path=<PATH>
+.. option:: --dht-file-path=<CAMINHO>
 
-  Change the IPv4 DHT routing table file to PATH.
+  Modifica o caminho (CAMINHO) para o arquivo da tabela de roteamento DHT IPv4.
   Padrão: ``$HOME/.aria2/dht.dat``
 
 .. option:: --dht-file-path6=<PATH>
 
-  Change the IPv6 DHT routing table file to PATH.
+  Modifica o caminho (CAMINHO) para o arquivo da tabela de roteamento DHT IPv6.
   Padrão: ``$HOME/.aria2/dht6.dat``
 
 .. option:: --dht-listen-addr6=<ADDR>
 
-  Specify address to bind socket for IPv6 DHT.  It should be a global
-  unicast IPv6 address of the host.
+  Define o endereço para o bind do socket para DHT IPv6.  Deve ser endereço
+  global IPv6 do servidor.
 
 .. option:: --dht-listen-port=<PORT>...
 
-  Set UDP listening port for both IPv4 and IPv6 DHT.
-  Multiple ports can be specified by using ``,``, for example: ``6881,6885``.
-  You can also use ``-`` to specify a range: ``6881-6999``. ``,`` and ``-`` 
-  can be used together.
+  Define portas UDP para ouvir para DHT (IPv4 e IPv6) e rastreador UDP.
+  Múltiplas portas podem ser especificadas através do uso de ``,``,
+  por exemplo: ``6881,6885``.  Também pode ser usado ``-`` para especificar
+  intervalo, exemplo: ``6881-6999``.  Ambos ``,`` and ``-`` podem ser
+  usados em conjunto.
   Padrão: ``6881-6999``
 
   .. note::
 
-    Make sure that the specified ports are open for incoming UDP traffic.
+    Cerfifique-se que as portas especificadas estão disponíveis para tráfego UDP
+    de entrada.
 
 .. option:: --dht-message-timeout=<SEGUNDOS>
 
-  Set timeout in seconds. Padrão: ``10``
+  Define timeout em segundos.
+  Padrão: ``10``
 
 .. option:: --enable-dht[=true|false]
 
-  Enable IPv4 DHT functionality. If a private flag is set in a
-  torrent, aria2 doesn't use DHT for that download even if ``true`` is
-  given.  Padrão: ``true``
+  Habilita funcionalidade DHT IPv4. Tambem habilita suporte a rastreador UDP.
+  Se um identificador particular é usado em um torrente, aria2 não usa DHT
+  para aquele download, mesmo que ``true`` foi informado.
+  Padrão: ``true``
 
 .. option:: --enable-dht6[=true|false]
 
-   Enable IPv6 DHT functionality. If a private flag is set in a
-   torrent, aria2 doesn't use DHT for that download even if ``true`` is
-   given. Use :option:`--dht-listen-port` option to specify port number to
-   listen on. See also :option:`--dht-listen-addr6` option.
+   Habilita funcionalidade DHT IPv6. Se identificador particular é usado em um
+   torrent, aria2 não usa DHT para aquele download mesmo que ``true`` foi  
+   informado. Usar opção :option:`--dht-listen-port` para especificar número(s)
+   de porta(s) para ser(em) ouvida(s). Ver também opção :option:`
+   --dht-listen-addr6`
+   Padrão: ``true``
 
 .. option:: --enable-peer-exchange[=true|false]
 
-  Enable Peer Exchange extension. If a private flag is set in a torrent, this
-  feature is disabled for that download even if ``true`` is given.
+  Habilita extensão Peer Exchange.  Se um indicador particular é usado nesse 
+  torrent, essa funcionalidade será desabilitada para o download, mesmo que
+  ``true`` foi informado.
   Padrão: ``true``
 
 .. option:: --follow-torrent=true|false|mem
 
-  If ``true`` or ``mem`` is specified, when a file whose suffix is ``.torrent`` or content
-  type is ``application/x-bittorrent`` is downloaded, aria2 parses it as a torrent
-  file and downloads files mentioned in it.
-  If ``mem`` is specified, a torrent file is not written to the disk, but is just
-  kept in memory.
-  If ``false`` is specified, the action mentioned above is not taken.
+  Se ``true`` ou ``mem`` é especificado, quando um arquivo cujo sufixo é 
+  ``.torrent`` ou o tipo de conteúdo é ``application/x-bittorrent`` é baixado,
+  aria2 faz o parse como arquivo torrent e executa o download dos arquivos
+  mencionados nele.
+  Se ``mem`` é especificado, o arquivo torrent não será gravado em disco, apenas
+  será mantido em memória.
+  Se ``false`` é especificado, a ação acima descrita não será executada.
   Padrão: ``true``
 
 .. option:: -O, --index-out=<INDEX>=<PATH>
 
-  Set file path for file with index=INDEX. You can find the file index
-  using the :option:`--show-files <-S>` option.  PATH is a relative path to the
-  path specified in :option:`--dir <-d>` option. You can use this option multiple
-  times. Using this option, you can specify the output filenames of
-  BitTorrent downloads.
+  Define o caminho do arquivo com índice=INDEX. O arquivo índice pode ser
+  localizado usando-se a opção :option:`--show-files <-S>`. PATH é o caminho
+  relativo ao caminho especificado na opção :option:`--dir <-d>`. 
+  Esta opção pode ser usada múltiplas vezes. Com esta opção pode-se especificar
+  o nome dos arquivos que serão baixados pelo BitTorrent.
 
 .. option:: --listen-port=<PORT>...
 
-  Set TCP port number for BitTorrent downloads.
-  Multiple ports can be specified by using ``,``,  for example: ``6881,6885``.
-  You can also use ``-`` to specify a range: ``6881-6999``.
-  ``,`` and ``-`` can be used together: ``6881-6889,6999``.
+  Define o número das portas TCP para download de BitTorrent.
+  Multiplas portas são especificadas usando ``,``,  por exemplo: ``6881,6885``.
+  Também pode usar ``-`` para especificar intervalos: ``6881-6999``.
+  Ambos ``,`` and ``-`` podem ser usados em conjunto: ``6881-6889,6999``.
   Padrão: ``6881-6999``
 
   .. note::
 
-    Make sure that the specified ports are open for incoming TCP traffic.
+    Certifique-se que as portas estejam habilitadas para tráfego TCP de entrada.
 
-.. option:: --max-overall-upload-limit=<SPEED>
+.. option:: --max-overall-upload-limit=<VELOCIDADE>
 
-  Set max overall upload speed in bytes/sec.  ``0`` means unrestricted.
-  You can append ``K`` or ``M`` (1K = 1024, 1M = 1024K).
-  Para limitar a velocidade de upload por torrent, usar opção
+  Define a velocidade máxima geral de upload em bytes/seg.  ``0`` significa
+  irrestrito.  Pode anexar ``K`` ou ``M`` (1K = 1024, 1M = 1024K).  Para 
+  limitar a velocidade de upload por torrent, usar opção
   :option:`--max-upload-limit <-u>`.
   Padrão: ``0``
 
-.. option:: -u, --max-upload-limit=<SPEED>
+.. option:: -u, --max-upload-limit=<VELOCIDADE>
 
-  Set max upload speed per each torrent in bytes/sec.
-  ``0`` means unrestricted.
-  You can append ``K`` or ``M`` (1K = 1024, 1M = 1024K).
-  To limit the overall upload speed, use :option:`--max-overall-upload-limit` option.
+  Define a velocidade máxima para cada torrent em bytes/seg.  ``0`` significa
+  irrestrito.  Pode anexar ``K`` ou ``M`` (1K = 1024, 1M = 1024K).  Para 
+  limitar a velocidade global de upload de torrent, usar opção
+  :option:`--max-overall-upload-limit`.
   Padrão: ``0``
 
 .. option:: --peer-id-prefix=<PEER_ID_PREFIX>
 
-  Specify the prefix of peer ID. The peer ID in
-  BitTorrent is 20 byte length. If more than 20
-  bytes are specified, only first 20 bytes are
-  used. If less than 20 bytes are specified, random
-  byte data are added to make its length 20 bytes.
-  Padrão: ``aria2/$VERSION-``, $VERSION is replaced by package version.
+  Especifica o prefixo para ID do peer. O ID do peer em um BitTorrent tem o
+  tamanho de 20 bytes. Se mais de 20 bytes são especificados, somente os 20
+  bytes iniciais serão usados. Se menos de 20 bytes são especificados, dados
+  randomicos serão adicionados para completar o tamanho de 20 bytes.
+  Padrão: ``aria2/$VERSÃO-``, $VERSÃO é a versão do pacote aria2.
 
 .. option:: --seed-ratio=<RATIO>
 
@@ -845,27 +898,31 @@ Específicas de BitTorrent
 
 .. option:: --seed-time=<MINUTES>
 
-  Specify seeding time in minutes. Also see the :option:`--seed-ratio` option.
+  Especificar o tempo de (seeding) em minutos. Ver também a opção
+  :option:`--seed-ratio`.
 
   .. note::
     
-    Specifying :option:`--seed-time=0 <--seed-time>` disables seeding 
-    after download completed.
+    Especificando :option:`--seed-time=0 <--seed-time>` desabilita o (seeding) 
+    após o download ter sido completado.
 
 .. option:: -T, --torrent-file=<TORRENT_FILE>
 
-  The path to the ".torrent" file.  You are not required to use this
-  option because you can specify ".torrent" files without :option:`--torrent-file <-T>`.
+  O caminho para o arquivo ".torrent".  Não é obrigatório usar esta opção pois
+  pode ser especificado arquivo ".torrent" sem a opção
+  :option:`--torrent-file <-T>`.
 
-Específicas de Metalink
-~~~~~~~~~~~~~~~~~~~~~~~
+Opções Específicas de Metalink
+~~~~~~~-------~~~~~~~~~~~~~~~~
+
 .. option:: --follow-metalink=true|false|mem
 
-  If ``true`` or ``mem`` is specified, when a file whose suffix is ``.meta4`` or ``.metalink`` or content
-  type of ``application/metalink4+xml`` or ``application/metalink+xml`` is downloaded, aria2 parses it as a metalink
+  If ``true`` or ``mem`` is specified, when a file whose suffix is ``.meta4`` 
+  or ``.metalink`` or content type of ``application/metalink4+xml`` or 
+  ``application/metalink+xml`` is downloaded, aria2 parses it as a metalink
   file and downloads files mentioned in it.
-  If ``mem`` is specified, a metalink file is not written to the disk, but is just
-  kept in memory.
+  If ``mem`` is specified, a metalink file is not written to the disk, 
+  but is just kept in memory.
   If ``false`` is specified, the action mentioned above is not taken.
   Padrão: ``true``
 
@@ -877,8 +934,8 @@ Específicas de Metalink
 
 .. option:: -M, --metalink-file=<METALINK_FILE>
 
-  The file path to ".meta4" and ".metalink" file. Reads input from stdin when ``-`` is
-  specified.  You are not required to use this option because you can
+  The file path to ".meta4" and ".metalink" file. Reads input from stdin when 
+  ``-`` is specified.  You are not required to use this option because you can
   specify ".metalink" files without :option:`--metalink-file <-M>`.
 
 .. option:: --metalink-language=<LANGUAGE>
@@ -909,12 +966,12 @@ Específicas de Metalink
 
   If ``true`` is given and several protocols are available for a mirror in a
   metalink file, aria2 uses one of them.
-  Use :option:`--metalink-preferred-protocol` option to specify the preference of
-  protocol.
+  Use :option:`--metalink-preferred-protocol` option to specify
+  the preference of protocol.
   Padrão: ``true``
 
-De RPC
-~~~~~~
+Opções específicas de RPC
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. option:: --enable-rpc[=true|false]
 
@@ -928,12 +985,17 @@ De RPC
   :option:`--enable-rpc=true <--enable-rpc>` is given.
   Padrão: ``false``
 
-
 .. option:: --rpc-allow-origin-all[=true|false]
 
   Add Access-Control-Allow-Origin header field with value ``*`` to the
   RPC response.
   Padrão: ``false``
+
+.. option:: --rpc-certificate=<FILE>
+
+  Use the certificate in FILE for RPC server. The certificate must be
+  in PEM format. Use :option:`--rpc-private-key` option to specify the
+  private key. Use :option:`--rpc-secure` option to enable encryption.
 
 .. option:: --rpc-listen-all[=true|false]
 
@@ -954,63 +1016,89 @@ De RPC
 
   Set JSON-RPC/XML-RPC password.
 
+.. option:: --rpc-private-key=<FILE>
+
+  Use the private key in FILE for RPC server.  The private key must be
+  decrypted and in PEM format. Use :option:`--rpc-secure` option to
+  enable encryption. See also :option:`--rpc-certificate` option.
+
+.. option:: --rpc-save-upload-metadata[=true|false]
+
+  Save the uploaded torrent or metalink metadata in the directory
+  specified by :option:`--dir` option. The filename consists of SHA-1
+  hash hex string of metadata plus extension. For torrent, the
+  extension is '.torrent'. For metalink, it is '.meta4'.  If false is
+  given to this option, the downloads added by
+  :func:`aria2.addTorrent` or :func:`aria2.addMetalink` will not be
+  saved by :option:`--save-session` option. Default: ``false``
+
+.. option:: --rpc-secure[=true|false]
+
+  RPC transport will be encrypted by SSL/TLS.  The RPC clients must
+  use https scheme to access the server. For WebSocket client, use wss
+  scheme. Use :option:`--rpc-certificate` and
+  :option:`--rpc-private-key` options to specify the server
+  certificate and private key.
+
 .. option:: --rpc-user=<USUÁRIO>
 
   Set JSON-RPC/XML-RPC user.
 
-Avançadas
-~~~~~~~~~
+Opções Avançadas
+~~~~~~~~~~~~~~~~
 .. option:: --allow-overwrite[=true|false]
 
-  Restart download from scratch if the corresponding control file
-  doesn't exist.  See also :option:`--auto-file-renaming` option.  Padrão:
-  ``false``
+  Reiniciar o download desde o início se o correspondente arquivo de controle
+  não existir.  Ver também a opção :option:`--auto-file-renaming`.  
+  Padrão: ``false``
 
 .. option:: --allow-piece-length-change[=true|false]
 
-  If false is given, aria2 aborts download when a piece length is different
-  from one in a control file.
-  If true is given, you can proceed but some download progress will be lost.
+  Se ``false`` é informado, aria2 interrompe o download quando o tamanho de um
+  pedaço for diferente do especificado no arquivo controle. Se ``true``
+  é informado, o download prossegue mas o progresso será perdido.
   Padrão: ``false``
 
 .. option:: --always-resume[=true|false]
 
-  Always resume download. If ``true`` is given, aria2 always tries to
-  resume download and if resume is not possible, aborts download.  If
-  ``false`` is given, when all given URIs do not support resume or aria2
-  encounters ``N`` URIs which does not support resume (``N`` is the value
-  specified using :option:`--max-resume-failure-tries` option), aria2
-  downloads file from scratch.  See :option:`--max-resume-failure-tries`
-  option. Padrão: ``true``
+  Sempre continuar. Se If ``true`` é informado, aria2 sempre tentará
+  retomar o download do ponto interrompido e se não for possivel o download
+  será interrompido.  Se ``false`` é informado, quando todas URIs fornecidas
+  não suportarem a continuidade do download ou aria2 encontrar ``N`` URIs as
+  quais não suportem retomar o download (``N`` é o valor especificado na
+  opção :option:`--max-resume-failure-tries`), aria2 irá iniciar o download
+  do início.  Ver opção :option:`--max-resume-failure-tries`
+  Padrão: ``true``
 
 .. option:: --async-dns[=true|false]
 
-  Enable asynchronous DNS.
+  Habilita DNS assíncrono.
   Padrão: ``true``
 
-.. option:: --async-dns-server=<IPADDRESS>[,...]
+.. option:: --async-dns-server=<ENDEREÇO-IP>[,...]
 
-  Comma separated list of DNS server address used in asynchronous DNS
-  resolver. Usually asynchronous DNS resolver reads DNS server
-  addresses from ``/etc/resolv.conf``. When this option is used, it uses
-  DNS servers specified in this option instead of ones in
-  ``/etc/resolv.conf``. You can specify both IPv4 and IPv6 address. This
-  option is useful when the system does not have ``/etc/resolv.conf`` and
-  user does not have the permission to create it.
+  Lista separada por vírgulas, dos endereços dos servidores DNS assíncronos
+  usados pelo resolvedor. Normalmente o resolvedor de DNS assíncronos faz a
+  leitura dos endereços a partir do arquivo ``/etc/resolv.conf``.
+  Quando essa opção é usada é feito uso dos servidores DNS especificados na
+  opção em detrimento do conteúdo do arquivo ``/etc/resolv.conf``. 
+  Podem ser usados ambos endereços IPv4 e IPv6. Essa opção é útil
+  quando o sistema não possui ``/etc/resolv.conf`` e o usuário não tem
+  permissão para criá-lo.
 
 .. option:: --auto-file-renaming[=true|false]
 
-  Rename file name if the same file already exists.
-  This option works only in HTTP, HTTPS e FTP download.
-  The new file name has a dot and a number(1..9999) appended.
+  Renomear o arquivo se o mesmo já existir.
+  Essa opção só funciona em download HTTP, HTTPS e FTP.
+  O novo nome do arquivo terá um ponto e uma sequência (1..9999) como sufixo.
   Padrão: ``true``
 
 .. option:: --auto-save-interval=<SEGUNDOS>
 
-  Save a control file(\*.aria2) every SEC seconds.
-  If ``0`` is given, a control file is not saved during download. aria2 saves a
-  control file when it stops regardless of the value.
-  The possible values are between ``0`` to ``600``.
+  Salvar o arquivo de controle (\*.aria2) a cada intervalo de SEGUNDOS.
+  Se ``0`` é informado, o arquivo de controle não será salvo durante o
+  download. aria2 salva o arquivo de controle quando parar, independentemente
+  do valor. As possibilidades vão desde ``0`` até ``600``.
   Padrão: ``60``
 
 .. option:: --conditional-get[=true|false]
@@ -1030,6 +1118,11 @@ Avançadas
 
   Change the configuration file path to PATH.
   Padrão: ``$HOME/.aria2/aria2.conf``
+
+.. option:: --console-log-level=<LEVEL>
+
+  Set log level to output to console.  LEVEL is either ``debug``,
+  ``info``, ``notice``, ``warn`` or ``error``.  Default: ``notice``
 
 .. option:: -D, --daemon[=true|false]
 
@@ -1051,6 +1144,18 @@ Avançadas
 
   Disable IPv6. This is useful if you have to use broken DNS and want
   to avoid terribly slow AAAA record lookup. Padrão: ``false``
+
+.. option:: --disk-cache=<SIZE>
+
+  Enable disk cache. If SIZE is ``0``, the disk cache is
+  disabled. This feature caches the downloaded data in memory, which
+  grows to at most SIZE bytes. The cache storage is created for aria2
+  instance and shared by all downloads. The one advantage of the disk
+  cache is reduce the disk I/O because the data are written in larger
+  unit and it is reordered by the offset of the file.  If hash
+  checking is involved and the data are cached in memory, we don't
+  need to read them from the disk.  SIZE can include ``K`` or ``M``
+  (1K = 1024, 1M = 1024K). Default: ``0``
 
 .. option:: --download-result=<OPT>
 
@@ -1106,6 +1211,24 @@ Avançadas
 
   Possible Values: ``none``, ``prealloc``, ``trunc``, ``falloc``
   Padrão: ``prealloc``
+
+.. option:: --force-save[=true|false]
+
+  Save download with :option:`--save-session <--save-session>` option
+  even if the download is completed or removed. This may be useful to
+  save BitTorrent seeding which is recognized as completed state.
+  Default: ``false``
+
+.. option:: --gid=<GID>
+
+  Set GID manually. aria2 identifies each download by the ID called
+  GID. The GID must be hex string of 16 characters, thus [0-9a-zA-Z]
+  are allowed and leading zeros must not be stripped. The GID all 0 is
+  reserved and must not be used. The GID must be unique, otherwise
+  error is reported and the download is not added.  This option is
+  useful when restoring the sessions saved using
+  :option:`--save-session <--save-session>` option. If this option is
+  not used, new GID is generated by aria2.
 
 .. option:: --hash-check-only[=true|false]
 
@@ -1238,14 +1361,14 @@ Avançadas
   separate session, like the usual command-line download utilities.
   Padrão: ``false``
 
-.. option:: --max-overall-download-limit=<SPEED>
+.. option:: --max-overall-download-limit=<VELOCIDADE>
 
   Set max overall download speed in bytes/sec.  ``0`` means
   unrestricted.  You can append ``K`` or ``M`` (1K = 1024, 1M = 1024K).  To
   limit the download speed per download, use :option:`--max-download-limit`
   option.  Padrão: ``0``
 
-.. option:: --max-download-limit=<SPEED>
+.. option:: --max-download-limit=<VELOCIDADE>
 
   Set max download speed per each download in bytes/sec. ``0`` means
   unrestricted.  You can append ``K`` or ``M`` (1K = 1024, 1M = 1024K).  To
@@ -1294,52 +1417,67 @@ Avançadas
 
 .. option:: --save-session=<ARQUIVO>
 
-  Save error/unfinished downloads to FILE on exit.  You can pass this
-  output file to aria2c with :option:`--input-file <-i>` option on restart. Please note that
-  downloads added by :func:`aria2.addTorrent` and
-  :func:`aria2.addMetalink`
-  RPC method and whose metadata could not be saved as a file are not saved.
-  Downloads removed using
-  :func:`aria2.remove` and
-  :func:`aria2.forceRemove`
-  will not be saved.
+  Salvar downloads não concluídos ou com erro, para um ARQUIVO quando sair.
+  Pode ser informado o nome do arquivo para o aria2 com a opção
+  :option:`--input-file <-i>` no restart.  Note que downloads adicionados
+  pela função :func:`aria2.addTorrent` e pela função
+  :func:`aria2.addMetalink` método RPC e seus respectivos metadados não podem
+  ser salvos. Downloads removidos usando a função :func:`aria2.remove` e
+  :func:`aria2.forceRemove` não serão salvos.
+
+.. option:: --save-session-interval=<SEC>
+
+  Save error/unfinished downloads to a file specified by
+  :option:`--save-session` option every SEC seconds. If ``0`` is
+  given, file will be saved only when aria2 exits. Default: ``0``
 
 .. option:: --stop=<SEGUNDOS>
 
-  Stop application after SEC seconds has passed.
-  If ``0`` is given, this feature is disabled.
+  Finaliza a aplicação após SEGUNDOS se passarem.
+  Se ``0`` é informado, essa funcionalidade é desabilitada.
   Padrão: ``0``
 
 .. option:: --stop-with-process=<PID>
 
-  Stop application when process PID is not running.  This is useful if
-  aria2 process is forked from a parent process. The parent process
-  can fork aria2 with its own pid and when parent process exits for
-  some reason, aria2 can detect it and shutdown itself.
+  Finaliza a aplicação quando o processo de número PID não estiver executando.
+  Isso é útil se o processo aria2 foi derivado de um processo precursor.
+  O processo precursor pode ter criado o processo aria2 com seu próprio pid
+  e quando o processo precursor terminar por alguma razão, aria2 pode
+  detectar por ele mesmo, essa situação e executar ele mesmo o shutdown.
+  Este recurso evita que um processo gere subprocessos que ficam no
+  limbo.
 
 .. option:: --truncate-console-readout[=true|false]
 
-  Truncate console readout to fit in a single line.
+  Truncar a linha da console para ajustar-se a uma linha.
   Padrão: ``true``
  
 .. option:: -v, --version
 
-  Print the version number, copyright and the configuration information and
-  exit.
+  Exibe o número da versão, copyright e informação da configuração e sai.
 
 Argumento(s) Opcional(is)
 ~~~~~~~~~~~~~~~~~~~~~~~~~
-The options that have its argument surrounded by square brackets([])
-take an optional argument. Usually omiting the argument is evaluated to ``true``.
-If you use short form of these options(such as ``-V``) and give
-an argument, then the option name and its argument should be concatenated(e.g.
-``-Vfalse``). If any spaces are inserted between the option name and the argument,
-the argument will be treated as URI and usually this is not what you expect.
+As opções que possuem seus argumentos delimitados por colchetes ([]), são
+opcionais. Normalmente omitindo o argumento, ele será assumido como ``true``
+(verdadeiro).
+Se for usada a forma abreviada dessas opções (como em ``-V``) e informado
+um argumento, estão o nome da opção e seu argumento devem ser concatenados,
+por exemplo: (``-Vfalse``). Se houver espaços entre a opção e o argumento o
+argumento será tratado como URI e normalmente não é isto o esperado.
+
+Unidades (K and M)
+^^^^^^^^^^^^^^^^^^
+
+Algumas opções usam ``K`` e ``M`` para convenientemente representar
+1.024 e 1.048.576 respectivamente.  aria2 detecta estas caracteres de maneira
+transparente (maiúsculas e minúsculas), portanto podem ser usados
+`k`` ou ``K`` e ``m`` ou ``M``.
 
 URI, MAGNET, TORRENT_FILE, METALINK_FILE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Pode-se especificar múltiplas URIs em uma linha de comando.  A menos que seja
+Podemos especificar múltiplas URIs em uma linha de comando.  A menos que seja
 especificada a opção :option:`--force-sequential <-Z>`, todas as URIs devem
 apontar para o mesmo arquivo que será baixado ou o download falhará.
 
@@ -1401,7 +1539,7 @@ arquivos.  Para downloads HTTP, HTTPS e FTP normalmente o número de arquivos é
 BitTorrent podem conter múltiplos arquivos. Se o número de arquivos é maior
 que 1, o caminho do arquivo é o primeiro.  Em outras palavras, este é o valor
 da chave path da primeira estrutura se aquela chave for verdadeira como 
-resposta do método da função :func:`aria2.getFiles` RPC .
+resposta do método da função :func:`aria2.getFiles` RPC.
 Se for necessário todos os caminhos dos arquivos, considere usar o método
 JSON-RPC/XML-RPC.  Lembre-se que o caminho do arquivo pode ser modificado 
 durante o download no HTTP por causa do redirecionamento ou Disposição do
@@ -1418,8 +1556,8 @@ Observemos um exemplo de como são passados argumentos para um comando:
   chamado com [1] [1] [/caminho/para/arquivo.iso]
 
 
-CÓDIGO DE RETORNO
------------------
+CÓDIGO DE RETORNO ou SAÍDA
+--------------------------
 
 Como aria2 pode manipular múltiplos downloads concomitantemente, podem ser
 encontrados vários erros durante uma sessão.  aria2 retorna os códigos de
@@ -1530,7 +1668,9 @@ retorno ou saída com base no último erro encontrado.
 .. note::
 
   Um erro ocorrido em um download completado não será reportado como um 
-  status de saida (exit status).
+  status de saida nem como código de retorno (exit status).
+
+.. index:: double: Variáveis; Ambiente
 
 VARIÁVEIS DE AMBIENTE
 ---------------------
@@ -1569,8 +1709,11 @@ aria2 reconhece as seguintes variáveis de ambiente.
   Sobrepõe o valor no-proxy do arquivo de configuração.
   A opção linha de comando :option:`--no-proxy` sobrepõe este valor.
 
-ARQUIVOS
---------
+Arquivos de configuração
+------------------------
+
+.. index:: triple:   aria2.conf; arquivo; configuração
+
 aria2.conf
 ~~~~~~~~~~
 
@@ -1599,11 +1742,15 @@ Linhas que começam com ``#`` são tratados como comentários::
   (por exemplo: ``chmod 600 aria2.conf``), dessa maneira nenhum outro usuário
   consegue ver o conteúdo desse arquivo de configuração.
 
+.. index:: triple:   dht.dat; arquivo; configuração
+
 dht.dat
-~~~~~~~~
+~~~~~~~
 
 Por padrão, a tabela de rota do IPv4 DHT está em ``$HOME/.aria2/dht.dat`` e a
-tabela de rota do IPv6 DHT existe está em ``$HOME/.aria2/dht6.dat``.
+tabela de rota do IPv6 DHT está em ``$HOME/.aria2/dht6.dat``.
+
+.. index:: triple:   netrc; arquivo; configuração
 
 Netrc
 ~~~~~
@@ -1626,6 +1773,8 @@ Mais exemplos de pesquisa domínio: ``nobrasil.net`` não executa pesquisa
 domínio ``.nobrasil.net``. ``dobrasil.org`` não faz pesquisa domínio ``.dobrasil.org``
 pois tem maior amplitude hierárquica por causa do ponto precedente ``.``.  Se 
 desejar utilizar ``dobrasil.org``, especificar ``dobrasil.org``.
+
+.. index:: triple:   aria2; arquivo; controle
 
 Arquivo de Controle
 ~~~~~~~~~~~~~~~~~~~
@@ -1650,6 +1799,8 @@ ponto onde estava. Mas se há um torrent ou metalink com checksum (verificação
 arquivo, poderá ser retomado do último ponto especificando a opção -V na linha
 de comando.
 
+.. index:: triple:   aria2; arquivo; entrada
+
 Arquivo de Entrada
 ~~~~~~~~~~~~~~~~~~
 
@@ -1673,7 +1824,7 @@ URI. Estas linhas opcionais precisam iniciar com um ou mais espaços.
 
 .. hlist::
   :columns: 3
-
+ 
   * :option:`all-proxy <--all-proxy>`
   * :option:`all-proxy-passwd <--all-proxy-passwd>`
   * :option:`all-proxy-user <--all-proxy-user>`
@@ -1716,6 +1867,7 @@ URI. Estas linhas opcionais precisam iniciar com um ou mais espaços.
   * :option:`file-allocation <--file-allocation>`
   * :option:`follow-metalink <--follow-metalink>`
   * :option:`follow-torrent <--follow-torrent>`
+  * :option:`force-save <--force-save>`
   * :option:`ftp-passwd <--ftp-passwd>`
   * :option:`ftp-pasv <-p>`
   * :option:`ftp-proxy <--ftp-proxy>`
@@ -1767,6 +1919,7 @@ URI. Estas linhas opcionais precisam iniciar com um ou mais espaços.
   * :option:`remove-control-file <--remove-control-file>`
   * :option:`retry-wait <--retry-wait>`
   * :option:`reuse-uri <--reuse-uri>`
+  * :option:`rpc-save-upload-metadata <--rpc-save-upload-metadata>`
   * :option:`seed-ratio <--seed-ratio>`
   * :option:`seed-time <--seed-time>`
   * :option:`select-file <--select-file>`
@@ -1781,7 +1934,7 @@ Estas opções possuem exatamente o mesmo significado das opções existentes na
 linha de comando, mas aplicam-se apenas a URI a que pertencem.
 Por favor perceba que dentro de um arquivo, elas não terão o prefixo ``--``.
 
-Por exemplo, o conteúdo do arquivo uri.txt é::
+Por exemplo, o conteúdo do arquivo de entrada uri.txt é::
 
   http://servidor/arquivo.iso http://espelho/arquivo.iso
     dir=/imagens_iso
@@ -1789,13 +1942,16 @@ Por exemplo, o conteúdo do arquivo uri.txt é::
   http://fu/ba
 
 
-Se aria2 é executado com as opções ``-i uri.txt -d /tmp``, então
+Se aria2 é executado com as opções ``-i uri.txt -d /tmp``, então o
 ``arquivo.iso`` será salvo como ``/imagens_iso/arquivo.img`` e será baixado
-de  \http://servidor/arquivo.iso e \http://espelho/arquivo.iso.  O arquivo
-``ba`` e baixado de \http://fu/ba e salvo como ``/tmp/ba``.
+dos servidores ``http://servidor/arquivo.iso`` e  
+``http://espelho/arquivo.iso``.
+O arquivo ``ba`` e baixado de ``http://fu/ba`` e salvo como ``/tmp/ba``.
 
 Em alguns casos, o parâmetro :option:`out <-o>` não tem efeito.
 Ver nota da opção :option:`--out <-o>` para entender as restrições.
+
+.. index:: triple: Servidor; performance; Perfil;
 
 Perfil Performance Servidor
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1838,66 +1994,78 @@ delimitados por virgula. Atualmente esta é a lista de nomes reconhecidos:
   ERROR is set when server cannot be reached or out-of-service or
   timeout occurred. Otherwise, OK is set.
 
-Those fields must exist in one line. The order of the fields is not
-significant. You can put pairs other than the above; they are simply
-ignored.
+Estes campos devem existir em uma linha. A ordem dos campos não importa.
+Podem ser colocados pares; eles serão simplesmente ignorados.
 
-An example follows::
+Um exemplo abaixo::
 
-  host=localhost, protocol=http, dl_speed=32000, last_updated=1222491640, status=OK
-  host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR
+  host=localhost, protocol=http, dl_speed=32000, last_updated=1222491640,
+  status=OK
+  host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632,
+  status=ERROR
 
+
+.. index:: double: interface; rpc;
 
 INTERFACE RPC
 -------------
 
 aria2 provê o serviço JSON-RPC sobre HTTP e XML-RPC sobre HTTP e eles
 basicamente possuem a mesma funcionalidade.  aria2 também provê JSON-RPC
-sobre WebSocket o qual utiliza o mesmo formato do método e assinatura e 
-resposta do formato JSON-RPC sobre HTTP, mas adicionalmente possui notificações
-iniciadas pelo servidor. Ver detalhes na seção `JSON-RPC sobre WebSocket`_ .
+sobre WebSocket que utiliza o mesmo formato, do método e assinatura e 
+de resposta do formato JSON-RPC sobre HTTP, mas adicionalmente possui 
+notificações iniciadas pelo servidor. 
+Ver detalhes na seção `JSON-RPC sobre WebSocket`_ .
 
-O caminho requisitado do interface JSON-RPC (para ambos sobre HTTP e sobre
+O caminho requisitado do interface JSON-RPC (sobre HTTP e sobre
 WebSocket) é ``/jsonrpc``.  O caminho requisitado do interface  XML-RPC é
 ``/rpc``.
 
 A URI WebSocket para JSON-RPC sobre WebSocket é ``ws://HOST:PORT/jsonrpc``.
 
 A implementação JSON-RPC é baseada na especificação
-JSON-RPC 2.0 <http://jsonrpc.org/specification>, e suporta
-HTTP POST e GET (JSONP). Usando WebSocket como transporte é uma extensão
+``JSON-RPC 2.0 <http://jsonrpc.org/specification>`` e suporta
+HTTP POST e GET (JSONP). Usando WebSocket como transporte, é uma extensão
 original do aria2.
 
 A interface JSON-RPC não suporta notificação em HTTP, mas o servidor RPC irá
-RPC enviar a notificação no WebSocket. Não é suportado número ponto flutuante
+enviar a notificação no WebSocket. Não é suportado número de ponto flutuante
 O codificação de página deve ser UTF-8.
 
 Quanto a seguinte documentação do JSON-RPC, entenda estrutura JSON como objeto.
 
+.. index::   single: terminologia
 
 Terminologia
 ~~~~~~~~~~~~
 
 GID
   GID(or gid) é a chave para gerenciar cada download. Cada download tem um
-  único GID. Atualmente GID é um inteiro, mas não trate como inteiro pois
-  isto pode ser modificado em versões futuras.
-  Note que o GID é uma sessão local e o GID não será persistido quando o 
-  aria2 for encerrado.
+  único GID. Atualmente GID é armazenado em 64 bits como dado binário no
+  aria2. Para acesso RPG, isso é representado em uma string hexadecimal
+  de 16 caracteres (exemplo: ``2089b05ecca3d829``). Normalmente, aria2
+  gera esse GID para cada download, mas o usuário pode especificar
+  o GID manualmente usando a opção :option:`--gid <--gid>`. Quando
+  consultando um download por GID, pode ser especificado o prefixo
+  do GID como um prefixo único e exclusivo entre outros.
+
+.. index:: double: exemplos; métodos
 
 Métodos
 ~~~~~~~
 
-São descritos em torno de 20 exemplos utilizando código fonte
-com exemplos que usam interpretador Python2.7.
+São descritos em torno de 35 exemplos, os quais serão numerados
+utilizando código fonte com exemplos que usam a linguagem
+Python versão 2.7.
 
+.. index::   triple:     exemplo; json-rpc; xml-rpc;
 
 .. function:: aria2.addUri(uris[, options[, position]])
 
-  Esse método adiciona nova URI HTTP, HTTPS, FTP, BitTorrent Magnet.  *uris* é
-  do tipo array e seus elementos são URI que são do tipo string.  Para
-  BitTorrent Magnet URI, *uris* precisa ter só um elemente e deve ser
-  BitTorrent Magnet URI.  URIs em *uris* precisam apontar para o mesmo arquivo.
+  This method adds new HTTP(S)/FTP/BitTorrent Magnet URI.  *uris* is of
+  type array and its element is URI which is of type string.  For
+  BitTorrent Magnet URI, *uris* must have only one element and it should
+  be BitTorrent Magnet URI.  URIs in *uris* must point to the same file.
   If you mix other URIs which point to another file, aria2 does not
   complain but download may fail.  *options* is of type struct and its
   members are a pair of option name and value. See :ref:`rpc_options` below for
@@ -1907,336 +2075,272 @@ com exemplos que usam interpretador Python2.7.
   queue, it is appended at the end of the queue.  This method returns
   GID of registered download.
 
-  
-  **Exemplo 0 JSON-RPC**
-  
-  
-  The following example adds \http://example.org/file to aria2::
-  
+  **JSON-RPC EXEMPLO M010**
+
+  The following example adds ``http://example.org/file``::
+
     >>> import urllib2, json
     >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
     ...                       'method':'aria2.addUri',
     ...                       'params':[['http://example.org/file']]})
     >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
     >>> c.read()
-    '{"id":"qwer","jsonrpc":"2.0","result":"1"}'
-  
-  
-  **Exemplo 0 XML-RPC**
-  
-  
-  The following example adds \http://example.org/file to aria2::
-  
+    '{"id":"qwer","jsonrpc":"2.0","result":"2089b05ecca3d829"}'
+
+  **XML-RPC EXEMPLO M020**
+
+  The following example adds ``http://example.org/file``::
+
     >>> import xmlrpclib
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
     >>> s.aria2.addUri(['http://example.org/file'])
-    '1'
-  
-  
+    '2089b05ecca3d829'
+
   The following example adds 2 sources and some options::
-  
+
     >>> s.aria2.addUri(['http://example.org/file', 'http://mirror/file'],
                         dict(dir="/tmp"))
-    '2'
-  
-  
+    'd2703803b52216d1'
+
   The following example adds a download and insert it to the front of
   waiting downloads::
-  
+
     >>> s.aria2.addUri(['http://example.org/file'], {}, 0)
-    '3'
-  
-  
+    'ca3d829cee549a4d'
 
 .. function:: aria2.addTorrent(torrent[, uris[, options[, position]]])
 
-  
-  
-  
-  
-  This method adds BitTorrent download by uploading ".torrent" file.  If
-  you want to add BitTorrent Magnet URI, use :func:`aria2.addUri` method
-  instead.  *torrent* is of type base64 which contains Base64-encoded
-  ".torrent" file.  *uris* is of type array and its element is URI which
-  is of type string. *uris* is used for Web-seeding.  For single file
-  torrents, URI can be a complete URI pointing to the resource or if URI
-  ends with /, name in torrent file is added. For multi-file torrents,
-  name and path in torrent are added to form a URI for each file.
-  *options* is of type struct and its members are a pair of option name
-  and value. See :ref:`rpc_options` below for more details.  If *position* is
-  given as an integer starting from 0, the new download is inserted at
+  This method adds BitTorrent download by uploading ".torrent" file.
+  If you want to add BitTorrent Magnet URI, use :func:`aria2.addUri`
+  method instead.  *torrent* is of type base64 which contains
+  Base64-encoded ".torrent" file.  *uris* is of type array and its
+  element is URI which is of type string. *uris* is used for
+  Web-seeding.  For single file torrents, URI can be a complete URI
+  pointing to the resource or if URI ends with /, name in torrent file
+  is added. For multi-file torrents, name and path in torrent are
+  added to form a URI for each file.  *options* is of type struct and
+  its members are a pair of option name and value. See
+  :ref:`rpc_options` below for more details.  If *position* is given
+  as an integer starting from 0, the new download is inserted at
   *position* in the waiting queue. If *position* is not given or
-  *position* is larger than the size of the queue, it is appended at the
-  end of the queue.  This method returns GID of registered download.
-  The uploaded data is saved as a file named hex string of SHA-1 hash of data
-  plus ".torrent" in the directory specified by :option:`--dir <-d>`
-  option.
-  The example of filename is 0a3893293e27ac0490424c06de4d09242215f0a6.torrent.
-  If same file already exists, it is overwritten.
-  If the file cannot be saved successfully,
+  *position* is larger than the size of the queue, it is appended at
+  the end of the queue.  This method returns GID of registered
+  download. If :option:`--rpc-save-upload-metadata` is ``true``, the
+  uploaded data is saved as a file named hex string of SHA-1 hash of
+  data plus ".torrent" in the directory specified by :option:`--dir
+  <-d>` option.  The example of filename is
+  ``0a3893293e27ac0490424c06de4d09242215f0a6.torrent``.  If same file
+  already exists, it is overwritten.  If the file cannot be saved
+  successfully or :option:`--rpc-save-upload-metadata` is ``false``,
   the downloads added by this method are not saved by
   :option:`--save-session`.
-  
 
-  **Exemplo 1 JSON-RPC**
-  
-  
-  The following example adds local file file.torrent to aria2::
-  
+  The following examples add local file ``file.torrent``.
+
+  **JSON-RPC EXEMPLO M030**
+
+  ::
+
     >>> import urllib2, json, base64
     >>> torrent = base64.b64encode(open('file.torrent').read())
     >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'asdf',
     ...                       'method':'aria2.addTorrent', 'params':[torrent]})
     >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
     >>> c.read()
-    '{"id":"asdf","jsonrpc":"2.0","result":"6"}'
-  
-  
-  **Exemplo 1 XML-RPC**
-  
-  
-  The following example adds local file file.torrent to aria2::
-  
+    '{"id":"asdf","jsonrpc":"2.0","result":"2089b05ecca3d829"}'
+
+  **XML-RPC EXEMPLO M040**
+
+  ::
+
     >>> import xmlrpclib
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
     >>> s.aria2.addTorrent(xmlrpclib.Binary(open('file.torrent').read()))
-    '6'
-  
-  
+    '2089b05ecca3d829'
 
 .. function:: aria2.addMetalink(metalink[, options[, position]])
 
-  
-  
-  
-  
   This method adds Metalink download by uploading ".metalink" file.
-  *metalink* is of type base64 which contains Base64-encoded ".metalink"
-  file.  *options* is of type struct and its members are a pair of
-  option name and value. See :ref:`rpc_options` below for more details.  If
-  *position* is given as an integer starting from 0, the new download is
-  inserted at *position* in the waiting queue. If *position* is not
-  given or *position* is larger than the size of the queue, it is
-  appended at the end of the queue.  This method returns array of GID of
-  registered download.
-  The uploaded data is saved as a file named hex string of SHA-1 hash of data
-  plus ".metalink" in the directory specified by :option:`--dir <-d>`
-  option.
-  The example of filename is 0a3893293e27ac0490424c06de4d09242215f0a6.metalink.
-  If same file already exists, it is overwritten.
-  If the file cannot be saved successfully,
+  *metalink* is of type base64 which contains Base64-encoded
+  ".metalink" file.  *options* is of type struct and its members are a
+  pair of option name and value. See :ref:`rpc_options` below for more
+  details.  If *position* is given as an integer starting from 0, the
+  new download is inserted at *position* in the waiting queue. If
+  *position* is not given or *position* is larger than the size of the
+  queue, it is appended at the end of the queue.  This method returns
+  array of GID of registered download.  If
+  :option:`--rpc-save-upload-metadata` is ``true``, the uploaded data
+  is saved as a file named hex string of SHA-1 hash of data plus
+  ".metalink" in the directory specified by :option:`--dir <-d>`
+  option.  The example of filename is
+  ``0a3893293e27ac0490424c06de4d09242215f0a6.metalink``.  If same file
+  already exists, it is overwritten.  If the file cannot be saved
+  successfully or :option:`--rpc-save-upload-metadata` is ``false``,
   the downloads added by this method are not saved by
   :option:`--save-session`.
-  
-  **Exemplo 2 JSON-RPC**
-  
-  
-  The following example adds local file file.meta4 to aria2::
-  
+
+  The following examples add local file file.meta4.
+
+  **JSON-RPC EXEMPLO M050**
+
+  ::
+
     >>> import urllib2, json, base64
     >>> metalink = base64.b64encode(open('file.meta4').read())
     >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-    ...                       'method':'aria2.addMetalink', 'params':[metalink]})
+    ...                       'method':'aria2.addMetalink',
+    ...                       'params':[metalink]})
     >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
     >>> c.read()
-    '{"id":"qwer","jsonrpc":"2.0","result":["8"]}'
-  
-  
-  **Exemplo 2  XML-RPC**
-  
-  
-  The following example adds local file file.meta4 to aria2::
-  
+    '{"id":"qwer","jsonrpc":"2.0","result":["2089b05ecca3d829"]}'
+
+  **XML-RPC EXEMPLO M060**
+
+  ::
+
     >>> import xmlrpclib
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
     >>> s.aria2.addMetalink(xmlrpclib.Binary(open('file.meta4').read()))
-    ['8']
-  
-  
+    ['2089b05ecca3d829']
 
 .. function:: aria2.remove(gid)
 
-  
-  
-  
-  
   This method removes the download denoted by *gid*. *gid* is of type
   string. If specified download is in progress, it is stopped at
-  first. The status of removed download becomes ``"removed"``.  This method
+  first. The status of removed download becomes ``removed``.  This method
   returns GID of removed download.
-  
-  **Exemplo 3 JSON-RPC**
-  
-  
-  The following example removes download whose GID is "3"::
-  
+
+  The following examples remove download GID#2089b05ecca3d829.
+
+  **JSON-RPC EXEMPLO M070**
+
+  ::
+
     >>> import urllib2, json
     >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-    ...                       'method':'aria2.remove', 'params':['3']})
+    ...                       'method':'aria2.remove',
+    ...                       'params':['2089b05ecca3d829']})
     >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
     >>> c.read()
-    '{"id":"qwer","jsonrpc":"2.0","result":"3"}'
-  
-  
-  **Exemplo 3 XML-RPC**
-  
-  
-  The following example removes download whose GID is "3"::
-  
+    '{"id":"qwer","jsonrpc":"2.0","result":"2089b05ecca3d829"}'
+
+  **XML-RPC EXEMPLO M080**
+
+  ::
+
     >>> import xmlrpclib
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
-    >>> s.aria2.remove('3')
-    '3'
-  
-  
+    >>> s.aria2.remove('2089b05ecca3d829')
+    '2089b05ecca3d829'
 
 .. function:: aria2.forceRemove(gid)
 
-  
-  
-  
-  
   This method removes the download denoted by *gid*.  This method
   behaves just like :func:`aria2.remove` except that this method removes
   download without any action which takes time such as contacting
   BitTorrent tracker.
-  
 
 .. function:: aria2.pause(gid)
 
-  
-  
-  
-  
   This method pauses the download denoted by *gid*. *gid* is of type
-  string. The status of paused download becomes ``"paused"``.  If the
+  string. The status of paused download becomes ``paused``.  If the
   download is active, the download is placed on the first position of
-  waiting queue.  As long as the status is ``"paused"``, the download is not
-  started.  To change status to ``"waiting"``, use :func:`aria2.unpause` method.
+  waiting queue.  As long as the status is ``paused``, the download is not
+  started.  To change status to ``waiting``, use :func:`aria2.unpause` method.
   This method returns GID of paused download.
-  
 
 .. function:: aria2.pauseAll()
 
-  
-  
-  
-  
   This method is equal to calling :func:`aria2.pause` for every active/waiting
-  download. This methods returns ``"OK"`` for success.
-  
+  download. This methods returns ``OK`` for success.
 
 .. function:: aria2.forcePause(pid)
 
-  
-  
-  
-  
   This method pauses the download denoted by *gid*.  This method
   behaves just like :func:`aria2.pause` except that this method pauses
   download without any action which takes time such as contacting
   BitTorrent tracker.
-  
 
 .. function:: aria2.forcePauseAll()
 
-  
-  
-  
-  
   This method is equal to calling :func:`aria2.forcePause` for every
-  active/waiting download. This methods returns ``"OK"`` for success.
-  
+  active/waiting download. This methods returns ``OK`` for success.
 
 .. function:: aria2.unpause(gid)
 
-  
-  
-  
-  
   This method changes the status of the download denoted by *gid* from
-  ``"paused"`` to ``"waiting"``. This makes the download eligible to restart.
+  ``paused`` to ``waiting``. This makes the download eligible to restart.
   *gid* is of type string.  This method returns GID of unpaused
   download.
-  
 
 .. function:: aria2.unpauseAll()
 
-  
-  
-  
-  
   This method is equal to calling :func:`aria2.unpause` for every active/waiting
-  download. This methods returns ``"OK"`` for success.
-  
+  download. This methods returns ``OK`` for success.
 
 .. function:: aria2.tellStatus(gid[, keys])
 
-  
-  
-  
-  
   This method returns download progress of the download denoted by
   *gid*. *gid* is of type string. *keys* is array of string. If it is
   specified, the response contains only keys in *keys* array. If *keys*
   is empty or not specified, the response contains all keys.  This is
   useful when you just want specific keys and avoid unnecessary
-  transfers. For example, ``aria2.tellStatus("1", ["gid", "status"])``
+  transfers. For example, ``aria2.tellStatus("2089b05ecca3d829", ["gid", "status"])``
   returns *gid* and 'status' key.  The response is of type struct and it
   contains following keys. The value type is string.
-  
+
   ``gid``
     GID of this download.
-  
+
   ``status``
-    ``"active"`` for currently downloading/seeding entry. ``"waiting"`` for the
-    entry in the queue; download is not started.  ``"paused"`` for the
-    paused entry.  ``"error"`` for the stopped download because of
-    error. ``"complete"`` for the stopped and completed download. ``"removed"``
+    ``active`` for currently downloading/seeding entry. ``waiting`` for the
+    entry in the queue; download is not started.  ``paused`` for the
+    paused entry.  ``error`` for the stopped download because of
+    error. ``complete`` for the stopped and completed download. ``removed``
     for the download removed by user.
-  
+
   ``totalLength``
     Total length of this download in bytes.
-  
+
   ``completedLength``
     Completed length of this download in bytes.
-  
+
   ``uploadLength``
     Uploaded length of this download in bytes.
-  
+
   ``bitfield``
     Hexadecimal representation of the download progress. The highest bit
     corresponds to piece index 0. The set bits indicate the piece is
     available and unset bits indicate the piece is missing. The spare
     bits at the end are set to zero.  When download has not started yet,
     this key will not be included in the response.
-  
+
   ``downloadSpeed``
     Download speed of this download measured in bytes/sec.
-  
+
   ``uploadSpeed``
     Upload speed of this download measured in bytes/sec.
-  
+
   ``infoHash``
     InfoHash. BitTorrent only.
-  
+
   ``numSeeders``
     The number of seeders the client has connected to. BitTorrent only.
-  
+
   ``pieceLength``
     Piece length in bytes.
-  
+
   ``numPieces``
     The number of pieces.
-  
+
   ``connections``
     The number of peers/servers the client has connected to.
-  
+
   ``errorCode``
     The last error code occurred in this download. The value is of type
-    string. The error codes are defined in `CÓDIGO DE RETORNO`_ section.
-    This value is only available for stopped/completed downloads.
-  
+    string. The error codes are defined in `CÓDIGO DE RETORNO ou SAÍDA`_ 
+    section. This value is only available for stopped/completed downloads.
+
   ``followedBy``
     List of GIDs which are generated by the consequence of this
     download. For example, when aria2 downloaded Metalink file, it
@@ -2244,59 +2348,57 @@ com exemplos que usam interpretador Python2.7.
     option). This value is useful to track these auto generated
     downloads. If there is no such downloads, this key will not
     be included in the response.
-  
+
   ``belongsTo``
     GID of a parent download. Some downloads are a part of another
     download.  For example, if a file in Metalink has BitTorrent
     resource, the download of ".torrent" is a part of that file.  If this
     download has no parent, this key will not be included in the
     response.
-  
+
   ``dir``
     Directory to save files. This key is not available for stopped
     downloads.
-  
+
   ``files``
     Returns the list of files. The element of list is the same struct
     used in :func:`aria2.getFiles` method.
-  
-  
+
   ``bittorrent``
     Struct which contains information retrieved from .torrent
     file. BitTorrent only. It contains following keys.
-  
+
     ``announceList``
       List of lists of announce URI. If ".torrent" file contains announce
       and no announce-list, announce is converted to announce-list
       format.
-  
+
     ``comment``
-      The comment for the torrent. comment.utf-8 is used if available.
-  
+      The comment for the torrent. ``comment.utf-8`` is used if available.
+
     ``creationDate``
       The creation time of the torrent. The value is an integer since
       the Epoch, measured in seconds.
-  
+
     ``mode``
-      File mode of the torrent. The value is either 'single' or 'multi'.
-  
+      File mode of the torrent. The value is either ``single`` or ``multi``.
+
     ``info``
       Struct which contains data from Info dictionary. It contains
       following keys.
-  
+
       ``name``
-        name in info dictionary. name.utf-8 is used if available.
-  
-  **Exemplo 4 JSON-RPC**
-  
-  
-  The following example gets information about download whose GID is
-  "1"::
-  
+        name in info dictionary. ``name.utf-8`` is used if available.
+
+  **JSON-RPC EXEMPLO M090**
+
+  The following example gets information about download GID#2089b05ecca3d829::
+
     >>> import urllib2, json
     >>> from pprint import pprint
     >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-    ...                       'method':'aria2.tellStatus', 'params':['1']})
+    ...                       'method':'aria2.tellStatus',
+    ...                       'params':['2089b05ecca3d829']})
     >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
     >>> pprint(json.loads(c.read()))
     {u'id': u'qwer',
@@ -2313,42 +2415,39 @@ com exemplos que usam interpretador Python2.7.
                              u'selected': u'true',
                              u'uris': [{u'status': u'used',
                                         u'uri': u'http://example.org/file'}]}],
-                 u'gid': u'1',
+                 u'gid': u'2089b05ecca3d829',
                  u'numPieces': u'34',
                  u'pieceLength': u'1048576',
                  u'status': u'active',
                  u'totalLength': u'34896138',
                  u'uploadLength': u'0',
                  u'uploadSpeed': u'0'}}
-  
-  
+
   The following example gets information specifying keys you are
   interested in::
-  
+
     >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
     ...                       'method':'aria2.tellStatus',
-    ...                       'params':['1', ['gid',
-    ...                                       'totalLength',
-    ...                                       'completedLength']]})
+    ...                       'params':['2089b05ecca3d829',
+    ...                                 ['gid',
+    ...                                  'totalLength',
+    ...                                  'completedLength']]})
     >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
     >>> pprint(json.loads(c.read()))
     {u'id': u'qwer',
      u'jsonrpc': u'2.0',
      u'result': {u'completedLength': u'5701632',
-                 u'gid': u'1',
+                 u'gid': u'2089b05ecca3d829',
                  u'totalLength': u'34896138'}}
-  
-  
-  **Exemplo 4 XML-RPC**
-  
-  
-  The following example gets information about download whose GID is
-  "1"::
-  
+
+  **XML-RPC EXEMPLO M100**
+
+  The following example gets information about download GID#2089b05ecca3d829::
+
     >>> import xmlrpclib
     >>> from pprint import pprint
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
-    >>> r = s.aria2.tellStatus('1')
+    >>> r = s.aria2.tellStatus('2089b05ecca3d829')
     >>> pprint(r)
     {'bitfield': 'ffff80',
      'completedLength': '34896138',
@@ -2363,88 +2462,75 @@ com exemplos que usam interpretador Python2.7.
                 'selected': 'true',
                 'uris': [{'status': 'used',
                           'uri': 'http://example.org/file'}]}],
-     'gid': '1',
+     'gid': '2089b05ecca3d829',
      'numPieces': '17',
      'pieceLength': '2097152',
      'status': 'complete',
      'totalLength': '34896138',
      'uploadLength': '0',
      'uploadSpeed': '0'}
-  
-  
+
   The following example gets information specifying keys you are
   interested in::
-  
-    >>> r = s.aria2.tellStatus('1', ['gid', 'totalLength', 'completedLength'])
+
+    >>> r = s.aria2.tellStatus('2089b05ecca3d829', ['gid', 'totalLength', 'completedLength'])
     >>> pprint(r)
-    {'completedLength': '34896138', 'gid': '1', 'totalLength': '34896138'}
-  
-  
+    {'completedLength': '34896138', 'gid': '2089b05ecca3d829', 'totalLength': '34896138'}
 
 .. function:: aria2.getUris(gid)
 
-  
-  
-  
-  
   This method returns URIs used in the download denoted by *gid*.  *gid*
   is of type string. The response is of type array and its element is of
   type struct and it contains following keys. The value type is string.
-  
+
   ``uri``
     URI
-  
+
   ``status``
     'used' if the URI is already used. 'waiting' if the URI is waiting
     in the queue.
-  
-  **Exemplo 5 JSON-RPC**
+
+  **JSON-RPC EXEMPLO M110**
   ::
-  
+
     >>> import urllib2, json
     >>> from pprint import pprint
     >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-    ...                       'method':'aria2.getUris', 'params':['1']})
+    ...                       'method':'aria2.getUris',
+    ...                       'params':['2089b05ecca3d829']})
     >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
     >>> pprint(json.loads(c.read()))
     {u'id': u'qwer',
      u'jsonrpc': u'2.0',
      u'result': [{u'status': u'used',
                   u'uri': u'http://example.org/file'}]}
-  
-  
-  **Exemplo 5 XML-RPC**
+
+  **XML-RPC EXEMPLO M120**
   ::
-  
+
     >>> import xmlrpclib
     >>> from pprint import pprint
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
-    >>> r = s.aria2.getUris('1')
+    >>> r = s.aria2.getUris('2089b05ecca3d829')
     >>> pprint(r)
     [{'status': 'used', 'uri': 'http://example.org/file'}]
-  
-  
 
 .. function:: aria2.getFiles(gid)
 
-  
-  
-  
-  
   This method returns file list of the download denoted by *gid*. *gid*
   is of type string. The response is of type array and its element is of
   type struct and it contains following keys. The value type is string.
-  
+
   ``index``
     Index of file. Starting with 1. This is the same order with the
     files in multi-file torrent.
-  
+
   ``path``
     File path.
-  
+
   ``length``
     File size in bytes.
-  
+
   ``completedLength``
     Completed length of this file in bytes.  Please note that it is
     possible that sum of completedLength is less than completedLength in
@@ -2455,23 +2541,24 @@ com exemplos que usam interpretador Python2.7.
     in
     :func:`aria2.tellStatus` takes into account
     of partially completed piece.
-  
+
   ``selected``
-    ``"true"`` if this file is selected by :option:`--select-file` option. If
+    ``true`` if this file is selected by :option:`--select-file` option. If
     :option:`--select-file` is not specified or this is single torrent or no
-    torrent download, this value is always ``"true"``. Otherwise ``"false"``.
-  
+    torrent download, this value is always ``true``. Otherwise ``false``.
+
   ``uris``
     Returns the list of URI for this file. The element of list is the
     same struct used in :func:`aria2.getUris` method.
-  
-  **Exemplo 6 JSON-RPC**
+
+  **JSON-RPC EXEMPLO M130**
   ::
-  
+
     >>> import urllib2, json
     >>> from pprint import pprint
     >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-    ...                       'method':'aria2.getFiles', 'params':['1']})
+    ...                       'method':'aria2.getFiles',
+    ...                       'params':['2089b05ecca3d829']})
     >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
     >>> pprint(json.loads(c.read()))
     {u'id': u'qwer',
@@ -2483,15 +2570,14 @@ com exemplos que usam interpretador Python2.7.
                   u'selected': u'true',
                   u'uris': [{u'status': u'used',
                              u'uri': u'http://example.org/file'}]}]}
-  
-  
-  **Exemplo 6 XML-RPC**
+
+  **XML-RPC EXEMPLO M140**
   ::
-  
+
     >>> import xmlrpclib
     >>> from pprint import pprint
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
-    >>> r = s.aria2.getFiles('1')
+    >>> r = s.aria2.getFiles('2089b05ecca3d829')
     >>> pprint(r)
     [{'index': '1',
       'length': '34896138',
@@ -2500,57 +2586,52 @@ com exemplos que usam interpretador Python2.7.
       'selected': 'true',
       'uris': [{'status': 'used',
                 'uri': 'http://example.org/file'}]}]
-  
-  
 
 .. function:: aria2.getPeers(gid)
 
-  
-  
-  
-  
   This method returns peer list of the download denoted by *gid*. *gid*
   is of type string. This method is for BitTorrent only.  The response
   is of type array and its element is of type struct and it contains
   following keys. The value type is string.
-  
+
   ``peerId``
     Percent-encoded peer ID.
-  
+
   ``ip``
     IP address of the peer.
-  
+
   ``port``
     Port number of the peer.
-  
+
   ``bitfield``
     Hexadecimal representation of the download progress of the peer. The
     highest bit corresponds to piece index 0. The set bits indicate the
     piece is available and unset bits indicate the piece is missing. The
     spare bits at the end are set to zero.
-  
+
   ``amChoking``
-    ``"true"`` if this client is choking the peer. Otherwise ``"false"``.
-  
+    ``true`` if this client is choking the peer. Otherwise ``false``.
+
   ``peerChoking``
-    ``"true"`` if the peer is choking this client. Otherwise ``"false"``.
-  
+    ``true`` if the peer is choking this client. Otherwise ``false``.
+
   ``downloadSpeed``
     Download speed (byte/sec) that this client obtains from the peer.
-  
+
   ``uploadSpeed``
-    Upload speed(byte/sec) that this client uploads to the peer. 
-  
+    Upload speed(byte/sec) that this client uploads to the peer.
+
   ``seeder``
-    ``"true"`` is this client is a seeder. Otherwise ``"false"``.
-  
-  **Exemplo 7 JSON-RPC**
+    ``true`` is this client is a seeder. Otherwise ``false``.
+
+  **JSON-RPC EXEMPLO M150**
   ::
-  
+
     >>> import urllib2, json
     >>> from pprint import pprint
     >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-    ...                       'method':'aria2.getPeers', 'params':['1']})
+    ...                       'method':'aria2.getPeers',
+    ...                       'params':['2089b05ecca3d829']})
     >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
     >>> pprint(json.loads(c.read()))
     {u'id': u'qwer',
@@ -2573,15 +2654,14 @@ com exemplos que usam interpretador Python2.7.
                   u'port': u'37842',
                   u'seeder': u'false',
                   u'uploadSpeed': u'6890'}]}
-  
-  
-  **Exemplo 7 XML-RPC**
+
+  **XML-RPC EXEMPLO M160**
   ::
-  
+
     >>> import xmlrpclib
     >>> from pprint import pprint
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
-    >>> r = s.aria2.getPeers('1')
+    >>> r = s.aria2.getPeers('2089b05ecca3d829')
     >>> pprint(r)
     [{'amChoking': 'true',
       'bitfield': 'ffffffffffffffffffffffffffffffffffffffff',
@@ -2601,43 +2681,39 @@ com exemplos que usam interpretador Python2.7.
       'port': '37842',
       'seeder': 'false,
       'uploadSpeed': '6890'}]
-  
-  
 
 .. function:: aria2.getServers(gid)
 
-  
-  
-  
-  
-  This method returns currently connected HTTP, HTTPS e FTP servers of the download denoted by *gid*. *gid* is of type string. The response
+  This method returns currently connected HTTP, HTTPS, FTP servers of the 
+  download denoted by *gid*. *gid* is of type string. The response
   is of type array and its element is of type struct and it contains
   following keys. The value type is string.
-  
+
   ``index``
     Index of file. Starting with 1. This is the same order with the
     files in multi-file torrent.
-  
+
   ``servers``
     The list of struct which contains following keys.
-  
+
     ``uri``
       URI originally added.
-  
+
     ``currentUri``
       This is the URI currently used for downloading. If redirection is
       involved, currentUri and uri may differ.
-  
+
     ``downloadSpeed``
       Download speed (byte/sec)
-  
-  **Exemplo 8 JSON-RPC**
+
+  **JSON-RPC EXEMPLO M170**
   ::
-  
+
     >>> import urllib2, json
     >>> from pprint import pprint
     >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-    ...                       'method':'aria2.getServers', 'params':['1']})
+    ...                       'method':'aria2.getServers',
+    ...                       'params':['2089b05ecca3d829']})
     >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
     >>> pprint(json.loads(c.read()))
     {u'id': u'qwer',
@@ -2646,139 +2722,113 @@ com exemplos que usam interpretador Python2.7.
                   u'servers': [{u'currentUri': u'http://example.org/file',
                                 u'downloadSpeed': u'10467',
                                 u'uri': u'http://example.org/file'}]}]}
-  
-  
-  **Exemplo 8 XML-RPC**
+
+  **XML-RPC EXEMPLO M180**
   ::
-  
+
     >>> import xmlrpclib
     >>> from pprint import pprint
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
-    >>> r = s.aria2.getServers('1')
+    >>> r = s.aria2.getServers('2089b05ecca3d829')
     >>> pprint(r)
     [{'index': '1',
       'servers': [{'currentUri': 'http://example.org/dl/file',
                    'downloadSpeed': '20285',
                    'uri': 'http://example.org/file'}]}]
-  
-  
 
 .. function:: aria2.tellActive([keys])
 
-  
-  
-  
-  
   This method returns the list of active downloads.  The response is of
   type array and its element is the same struct returned by
   :func:`aria2.tellStatus` method. For *keys* parameter, please refer to
   :func:`aria2.tellStatus` method.
-  
 
 .. function:: aria2.tellWaiting(offset, num, [keys])
 
-  
-  
-  
-  
   This method returns the list of waiting download, including paused
   downloads. *offset* is of type integer and specifies the offset from
   the download waiting at the front. *num* is of type integer and
   specifies the number of downloads to be returned.  For *keys*
   parameter, please refer to :func:`aria2.tellStatus` method.
-  
+
   If *offset* is a positive integer, this method returns downloads in the
   range of [*offset*, *offset* + *num*).
-  
+
   *offset* can be a negative integer. *offset* == -1 points last
   download in the waiting queue and *offset* == -2 points the download
   before the last download, and so on. The downloads in the response are
   in reversed order.
-  
+
   For example, imagine that three downloads "A","B" and "C" are waiting
-  in this order. aria2.tellWaiting(0, 1) returns
-  ["A"]. aria2.tellWaiting(1, 2) returns ["B", "C"].
-  aria2.tellWaiting(-1, 2) returns ["C", "B"].
-  
+  in this order. ``aria2.tellWaiting(0, 1)`` returns
+  ``["A"]``. ``aria2.tellWaiting(1, 2)`` returns ``["B", "C"]``.
+  ``aria2.tellWaiting(-1, 2)`` returns ``["C", "B"]``.
+
   The response is of type array and its element is the same struct
   returned by :func:`aria2.tellStatus` method.
-  
 
 .. function:: aria2.tellStopped(offset, num, [keys])
 
-  
-  
-  
-  
   This method returns the list of stopped download.  *offset* is of type
   integer and specifies the offset from the oldest download. *num* is of
   type integer and specifies the number of downloads to be returned.
   For *keys* parameter, please refer to :func:`aria2.tellStatus` method.
-  
+
   *offset* and *num* have the same semantics as :func:`aria2.tellWaiting`
   method.
-  
+
   The response is of type array and its element is the same struct
   returned by :func:`aria2.tellStatus` method.
-  
 
 .. function:: aria2.changePosition(gid, pos, how)
 
-  
-  
-  
-  
   This method changes the position of the download denoted by
   *gid*. *pos* is of type integer. *how* is of type string. If *how* is
-  ``"POS_SET"``, it moves the download to a position relative to the
-  beginning of the queue.  If *how* is ``"POS_CUR"``, it moves the download
-  to a position relative to the current position. If *how* is ``"POS_END"``,
+  ``POS_SET``, it moves the download to a position relative to the
+  beginning of the queue.  If *how* is ``POS_CUR``, it moves the download
+  to a position relative to the current position. If *how* is ``POS_END``,
   it moves the download to a position relative to the end of the
   queue. If the destination position is less than 0 or beyond the end of
   the queue, it moves the download to the beginning or the end of the
   queue respectively. The response is of type integer and it is the
   destination position.
-  
-  For example, if GID#1 is placed in position 3, ``aria2.changePosition('1',
-  -1, 'POS_CUR')`` will change its position to 2. Additional
-  ``aria2.changePosition('1', 0, 'POS_SET')`` will change its position to 0(the
-  beginning of the queue).
-  
-  **Exemplo 9 JSON-RPC**
-  
-  
-  The following example moves the download whose GID is "3" to the
-  front of the waiting queue::
-  
+
+  For example, if GID#2089b05ecca3d829 is placed in position 3,
+  ``aria2.changePosition('2089b05ecca3d829', -1, 'POS_CUR')`` will
+  change its position to 2. Additional
+  ``aria2.changePosition('2089b05ecca3d829', 0, 'POS_SET')`` will
+  change its position to 0(the beginning of the queue).
+
+  The following examples move the download GID#2089b05ecca3d829 to the
+  front of the waiting queue.
+
+  **JSON-RPC EXEMPLO M190**
+
+  ::
+
     >>> import urllib2, json
     >>> from pprint import pprint
     >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
     ...                       'method':'aria2.changePosition',
-    ...                       'params':['3', 0, 'POS_SET']})
+    ...                       'params':['2089b05ecca3d829', 0, 'POS_SET']})
     >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
     >>> pprint(json.loads(c.read()))
     {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': 0}
-  
-  
-  **Exemplo 9 XML-RPC**
-  
-  
-  The following example moves the download whose GID is "3" to the
-  front of the waiting queue::
-  
+
+  **XML-RPC EXEMPLO M200**
+
+  ::
+
     >>> import xmlrpclib
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
-    >>> s.aria2.changePosition('3', 0, 'POS_SET')
+    >>> s.aria2.changePosition('2089b05ecca3d829', 0, 'POS_SET')
     0
-  
-  
+
+.. index::   triple:     exemplo; json-rpc; xml-rpc;
+             double:     python;  proxy-server;
 
 .. function:: aria2.changeUri(gid, fileIndex, delUris, addUris[, position])
 
-  
-  
-  
-  
   This method removes URIs in *delUris* from and appends URIs in
   *addUris* to download denoted by *gid*. *delUris* and *addUris* are
   list of string. A download can contain multiple files and URIs are
@@ -2796,57 +2846,55 @@ com exemplos que usam interpretador Python2.7.
   method returns a list which contains 2 integers. The first integer is
   the number of URIs deleted. The second integer is the number of URIs
   added.
-  
-  **Exemplo 10 JSON-RPC**
-  
-  
-  The following example adds 1 URI \http://example.org/file to the file
-  whose index is "1" and belongs to the download whose GID is "2"::
-  
+
+  The following examples add 1 URI ``http://example.org/file`` to the
+  file whose index is ``1`` and belongs to the download
+  GID#2089b05ecca3d829.
+
+  **JSON-RPC EXEMPLO M210**
+
+  ::
+
     >>> import urllib2, json
     >>> from pprint import pprint
     >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
     ...                       'method':'aria2.changeUri',
-    ...                       'params':['2', 1, [], ['http://example.org/file']]})
+    ...                       'params':['2089b05ecca3d829', 1, [],
+                                        ['http://example.org/file']]})
     >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
     >>> pprint(json.loads(c.read()))
     {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': [0, 1]}
-  
-  
-  **Exemplo 10 XML-RPC**
-  
-  
-  The following example adds 1 URI \http://example.org/file to the file
-  whose index is "1" and belongs to the download whose GID is "2"::
-  
+
+  **XML-RPC EXEMPLO M220**
+
+  ::
+
     >>> import xmlrpclib
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
-    >>> s.aria2.changeUri('2', 1, [], ['http://example.org/file'])
+    >>> s.aria2.changeUri('2089b05ecca3d829', 1, [],
+                          ['http://example.org/file'])
     [0, 1]
-  
-  
 
 .. function:: aria2.getOption(gid)
 
-  
-  
-  
-  
   This method returns options of the download denoted by *gid*.  The
   response is of type struct. Its key is the name of option.  The value
   type is string. Note that this method does not return options which
   have no default value and have not been set by the command-line
   options, configuration files or RPC methods.
-  
-  **Exemplo 11 JSON-RPC**
-  
-  
-  The following example gets options of the download whose GID is "1"::
-  
+
+  The following examples get options of the download
+  GID#2089b05ecca3d829.
+
+  **JSON-RPC EXEMPLO M230**
+
+  ::
+
     >>> import urllib2, json
     >>> from pprint import pprint
     >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-    ...                       'method':'aria2.getOption', 'params':['1']})
+    ...                       'method':'aria2.getOption',
+    ...                       'params':['2089b05ecca3d829']})
     >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
     >>> pprint(json.loads(c.read()))
     {u'id': u'qwer',
@@ -2856,89 +2904,75 @@ com exemplos que usam interpretador Python2.7.
                  u'always-resume': u'true',
                  u'async-dns': u'true',
      ...
-  
-  
-  **Exemplo 11 XML-RPC**
-  
-  
-  The following example gets options of the download whose GID is "1"::
-  
+
+  **XML-RPC EXEMPLO M240**
+
+  ::
+
     >>> import xmlrpclib
     >>> from pprint import pprint
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
-    >>> r = s.aria2.getOption('1')
+    >>> r = s.aria2.getOption('2089b05ecca3d829')
     >>> pprint(r)
     {'allow-overwrite': 'false',
      'allow-piece-length-change': 'false',
      'always-resume': 'true',
      'async-dns': 'true',
      ....
-  
-  
 
 .. function:: aria2.changeOption(gid, options)
 
-  
-  
-  
-  
   This method changes options of the download denoted by *gid*
   dynamically.  *gid* is of type string.  *options* is of type struct.
   The following options are available for active downloads:
-  
+
   * :option:`bt-max-peers <--bt-max-peers>`
   * :option:`bt-request-peer-speed-limit <--bt-request-peer-speed-limit>`
   * :option:`bt-remove-unselected-file <--bt-remove-unselected-file>`
+  * :option:`force-save <--force-save>`
   * :option:`max-download-limit <--max-download-limit>`
   * :option:`max-upload-limit <-u>`
-  
+
   For waiting or paused downloads, in addition to the above options,
   options listed in `Arquivo de Entrada`_ subsection are available,
   except for following options:
   :option:`dry-run <--dry-run>`,
   :option:`metalink-base-uri <--metalink-base-uri>`,
   :option:`parameterized-uri <-P>`,
-  :option:`pause <--pause>` and
-  :option:`piece-length <--piece-length>`.
-  This method returns ``"OK"`` for success.
-  
-  **Exemplo 12 JSON-RPC**
-  
-  
-  The following example sets
-  :option:`max-download-limit <--max-download-limit>` option to ``"20K"`` for
-  the download whose GID is "1"::
-  
+  :option:`pause <--pause>`,
+  :option:`piece-length <--piece-length>` and
+  :option:`rpc-save-upload-metadata <--rpc-save-upload-metadata>` option.
+  This method returns ``OK`` for success.
+
+  The following examples set :option:`max-download-limit
+  <--max-download-limit>` option to ``20K`` for the download
+  GID#2089b05ecca3d829.
+
+  **JSON-RPC EXEMPLO M250**
+
+  ::
+
     >>> import urllib2, json
     >>> from pprint import pprint
     >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
     ...                       'method':'aria2.changeOption',
-    ...                       'params':['1', {'max-download-limit':'10K'}]})
+    ...                       'params':['2089b05ecca3d829',
+    ...                                 {'max-download-limit':'10K'}]})
     >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
     >>> pprint(json.loads(c.read()))
     {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': u'OK'}
-  
-  
-  **Exemplo 12 XML-RPC**
-  
-  
-  The following example sets
-  :option:`max-download-limit <--max-download-limit>` option to ``"20K"`` for
-  the download whose GID is "1"::
-  
+
+  **XML-RPC EXEMPLO M260**
+
+  ::
+
     >>> import xmlrpclib
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
-    >>> s.aria2.changeOption('1', {'max-download-limit':'20K'})
+    >>> s.aria2.changeOption('2089b05ecca3d829', {'max-download-limit':'20K'})
     'OK'
-  
-  
 
 .. function:: aria2.getGlobalOption()
 
-  
-  
-  
-  
   This method returns global options.  The response is of type
   struct. Its key is the name of option.  The value type is string.
   Note that this method does not return options which have no default
@@ -2946,18 +2980,13 @@ com exemplos que usam interpretador Python2.7.
   files or RPC methods. Because global options are used as a template
   for the options of newly added download, the response contains keys
   returned by :func:`aria2.getOption` method.
-  
 
 .. function:: aria2.changeGlobalOption(options)
 
-  
-  
-  
-  
   This method changes global options dynamically.  *options* is of type
   struct.
   The following options are available:
-  
+
   * :option:`download-result <--download-result>`
   * :option:`log <-l>`
   * :option:`log-level <--log-level>`
@@ -2968,7 +2997,7 @@ com exemplos que usam interpretador Python2.7.
   * :option:`save-cookies <--save-cookies>`
   * :option:`save-session <--save-session>`
   * :option:`server-stat-of <--server-stat-of>`
-  
+
   In addition to them, options listed in `Arquivo de Entrada`_ subsection
   are available, except for following options:
   :option:`checksum <--checksum>`,
@@ -2976,41 +3005,36 @@ com exemplos que usam interpretador Python2.7.
   :option:`out <-o>`,
   :option:`pause <--pause>` and
   :option:`select-file <--select-file>`.
-  
+
   Using :option:`log <-l>` option, you can dynamically start logging or
   change log file. To stop logging, give empty string("") as a parameter
   value. Note that log file is always opened in append mode. This method
-  returns ``"OK"`` for success.
-  
+  returns ``OK`` for success.
 
 .. function:: aria2.getGlobalStat()
 
-  
-  
-  
-  
   This method returns global statistics such as overall download and
   upload speed. The response is of type struct and contains following
   keys. The value type is string.
-  
+
   ``downloadSpeed``
     Overall download speed (byte/sec).
-  
+
   ``uploadSpeed``
     Overall upload speed(byte/sec).
-  
+
   ``numActive``
     The number of active downloads.
-  
+
   ``numWaiting``
     The number of waiting downloads.
-  
+
   ``numStopped``
     The number of stopped downloads.
-  
-  **Exemplo 13 JSON-RPC**
+
+  **JSON-RPC EXEMPLO M270**
   ::
-  
+
     >>> import urllib2, json
     >>> from pprint import pprint
     >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
@@ -3024,11 +3048,10 @@ com exemplos que usam interpretador Python2.7.
                  u'numStopped': u'0',
                  u'numWaiting': u'0',
                  u'uploadSpeed': u'0'}}
-  
-  
-  **Exemplo 13 XML-RPC**
+
+  **XML-RPC EXEMPLO M280**
   ::
-  
+
     >>> import xmlrpclib
     >>> from pprint import pprint
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
@@ -3039,75 +3062,56 @@ com exemplos que usam interpretador Python2.7.
      'numStopped': '0',
      'numWaiting': '0',
      'uploadSpeed': '0'}
-  
-  
 
 .. function:: aria2.purgeDownloadResult()
 
-  
-  
-  
-  
   This method purges completed/error/removed downloads to free memory.
-  This method returns ``"OK"``.
-  
+  This method returns ``OK``.
 
 .. function:: aria2.removeDownloadResult(gid)
 
-  
-  
-  
-  
   This method removes completed/error/removed download denoted by *gid*
-  from memory. This method returns ``"OK"`` for success.
-  
-  **Exemplo 14 JSON-RPC**
-  
-  
-  The following example removes the download result of the download
-  whose GID is "1"::
-  
+  from memory. This method returns ``OK`` for success.
+
+  The following examples remove the download result of the download
+  GID#2089b05ecca3d829.
+
+  **JSON-RPC EXEMPLO M290**
+
+  ::
+
     >>> import urllib2, json
     >>> from pprint import pprint
     >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
     ...                       'method':'aria2.removeDownloadResult',
-    ...                       'params':['1']})
+    ...                       'params':['2089b05ecca3d829']})
     >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
     >>> pprint(json.loads(c.read()))
     {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': u'OK'}
-  
-  
-  **Exemplo 14 XML-RPC**
-  
-  
-  The following example removes the download result of the download
-  whose GID is "1"::
-  
+
+  **XML-RPC EXEMPLO M300**
+
+  ::
+
     >>> import xmlrpclib
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
-    >>> s.aria2.removeDownloadResult('1')
+    >>> s.aria2.removeDownloadResult('2089b05ecca3d829')
     'OK'
-  
-  
 
 .. function:: aria2.getVersion()
 
-  
-  
-  
-  
   This method returns version of the program and the list of enabled
   features. The response is of type struct and contains following keys.
-  
+
   ``version``
     Version number of the program in string.
-  
+
   ``enabledFeatures``
     List of enabled features. Each feature name is of type string.
-  
-  **Exemplo 15 JSON-RPC**
+
+  **JSON-RPC EXEMPLO M310**
   ::
-  
+
     >>> import urllib2, json
     >>> from pprint import pprint
     >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
@@ -3125,11 +3129,10 @@ com exemplos que usam interpretador Python2.7.
                                       u'Metalink',
                                       u'XML-RPC'],
                  u'version': u'1.11.0'}}
-  
-  
-  **Exemplo 15 XML-RPC**
+
+  **XML-RPC EXEMPLO M320**
   ::
-  
+
     >>> import xmlrpclib
     >>> from pprint import pprint
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
@@ -3144,24 +3147,18 @@ com exemplos que usam interpretador Python2.7.
                          'Metalink',
                          'XML-RPC'],
      'version': '1.11.0'}
-  
-  
 
 .. function:: aria2.getSessionInfo()
 
-  
-  
-  
-  
   This method returns session information.
   The response is of type struct and contains following key.
-  
+
   ``sessionId``
     Session ID, which is generated each time when aria2 is invoked.
-  
-  **Exemplo 16 JSON-RPC**
+
+  **JSON-RPC EXEMPLO M330**
   ::
-  
+
     >>> import urllib2, json
     >>> from pprint import pprint
     >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
@@ -3171,44 +3168,27 @@ com exemplos que usam interpretador Python2.7.
     {u'id': u'qwer',
      u'jsonrpc': u'2.0',
      u'result': {u'sessionId': u'cd6a3bc6a1de28eb5bfa181e5f6b916d44af31a9'}}
-  
-  
-  **Exemplo 16 XML-RPC**
+
+  **XML-RPC EXEMPLO M340**
   ::
-  
+
     >>> import xmlrpclib
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
     >>> s.aria2.getSessionInfo()
     {'sessionId': 'cd6a3bc6a1de28eb5bfa181e5f6b916d44af31a9'}
-  
-  
 
 .. function:: aria2.shutdown()
 
-  
-  
-  
-  
-  This method shutdowns aria2.  This method returns ``"OK"``.
-  
+  This method shutdowns aria2.  This method returns ``OK``.
 
 .. function:: aria2.forceShutdown()
 
-  
-  
-  
-  
   This method shutdowns :func:`aria2. This method behaves like  aria2.shutdown`
   except that any actions which takes time such as contacting BitTorrent
-  tracker are skipped. This method returns ``"OK"``.
-  
+  tracker are skipped. This method returns ``OK``.
 
 .. function:: system.multicall(methods)
 
-  
-  
-  
-  
   This methods encapsulates multiple method calls in a single request.
   *methods* is of type array and its element is struct.  The struct
   contains two keys: ``methodName`` and ``params``.  ``methodName`` is the
@@ -3217,13 +3197,13 @@ com exemplos que usam interpretador Python2.7.
   will either be a one-item array containing the return value of each
   method call or struct of fault element if an encapsulated method call
   fails.
-  
-  **Exemplo 17 JSON-RPC**
-  
-  
-  In the following example, we add 2 downloads. First one is
-  \http://example.org/file and second one is file.torrent::
-  
+
+  In the following examples, we add 2 downloads. First one is
+  ``http://example.org/file`` and second one is ``file.torrent``.
+
+  **JSON-RPC EXEMPLO M350**
+  ::
+
     >>> import urllib2, json, base64
     >>> from pprint import pprint
     >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
@@ -3234,11 +3214,10 @@ com exemplos que usam interpretador Python2.7.
     ...                                   'params':[base64.b64encode(open('file.torrent').read())]}]]})
     >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
     >>> pprint(json.loads(c.read()))
-    {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': [[u'1'], [u'2']]}
-  
-  
+    {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': [[u'2089b05ecca3d829'], [u'd2703803b52216d1']]}
+
   JSON-RPC also supports Batch request described in JSON-RPC 2.0 Specification::
-  
+
     >>> jsonreq = json.dumps([{'jsonrpc':'2.0', 'id':'qwer',
     ...                        'method':'aria2.addUri',
     ...                        'params':[['http://example.org']]},
@@ -3247,16 +3226,12 @@ com exemplos que usam interpretador Python2.7.
     ...                        'params':[base64.b64encode(open('file.torrent').read())]}])
     >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
     >>> pprint(json.loads(c.read()))
-    [{u'id': u'qwer', u'jsonrpc': u'2.0', u'result': u'1'},
-     {u'id': u'asdf', u'jsonrpc': u'2.0', u'result': u'2'}]
-  
-  
-  **Exemplo 17 XML-RPC**
-  
-  
-  In the following example, we add 2 downloads. First one is
-  \http://example.org/file and second one is file.torrent::
-  
+    [{u'id': u'qwer', u'jsonrpc': u'2.0', u'result': u'2089b05ecca3d829'},
+     {u'id': u'asdf', u'jsonrpc': u'2.0', u'result': u'd2703803b52216d1'}]
+
+  **XML-RPC EXEMPLO M360**
+  ::
+
     >>> import xmlrpclib
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
     >>> mc = xmlrpclib.MultiCall(s)
@@ -3264,37 +3239,37 @@ com exemplos que usam interpretador Python2.7.
     >>> mc.aria2.addTorrent(xmlrpclib.Binary(open('file.torrent').read()))
     >>> r = mc()
     >>> tuple(r)
-    ('2', '3')
-  
-  
+    ('2089b05ecca3d829', 'd2703803b52216d1')
+
 Tratamento de Erros
 ~~~~~~~~~~~~~~~~~~~
 
-In JSON-RPC, aria2 returns JSON object which contains error code in
-code and the error message in message.
+Usando JSON-RPC, aria2 retorna objeto JSON que contém código de erro
+no código e a mensagem de erro na mensagem.
 
-In XML-RPC, aria2 returns faultCode=1 and the error message in
-faultString.
+Usando XML-RPC, aria2 retorna código de falha (faultCode=1) e a mensagem
+de erro em (faultString).
 
 .. _rpc_options:
 
-Options
-~~~~~~~
+Opções
+~~~~~~
 
-Same options for :option:`--input-file <-i>` list are available. See `Arquivo de Entrada`_ subsection for complete list of options.
+Same options for :option:`--input-file <-i>` list are available. 
+Ver subseção `Arquivo de Entrada`_ para lista completa de opções.
 
 In the option struct, name element is option name(without preceding
 ``--``) and value element is argument as string.
 
-Exemplo JSON-RPC
-^^^^^^^^^^^^^^^^
+EXEMPLO JSON-RPC M370
+^^^^^^^^^^^^^^^^^^^^^
 ::
 
   {'split':'1', 'http-proxy':'http://proxy/'}
 
 
-Exemplo XML-RPC
-^^^^^^^^^^^^^^^
+EXEMPLO XML-RPC M380
+^^^^^^^^^^^^^^^^^^^^
 .. code-block:: xml
 
   <struct>
@@ -3316,15 +3291,15 @@ library implementation uses hash or dict for struct), single string is
 not enough. To overcome this situation, they can take array as value
 as well as string.
 
-Exemplos JSON-RPC
-^^^^^^^^^^^^^^^^^
+EXEMPLO JSON-RPC M390
+^^^^^^^^^^^^^^^^^^^^^
 ::
 
   {'header':['Accept-Language: ja', 'Accept-Charset: utf-8']}
 
 
-Exemplos XML-RPC
-^^^^^^^^^^^^^^^^^
+EXEMPLO XML-RPC M400
+^^^^^^^^^^^^^^^^^^^^
 .. code-block:: xml
 
   <struct>
@@ -3358,8 +3333,8 @@ JSON-RPC usando HTTP GET
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 The JSON-RPC interface also supports request via HTTP GET.
-The encoding scheme in GET parameters is based on JSON-RPC over HTTP Specification [2008-1-15(RC1)].
-The encoding of GET parameters are follows::
+The encoding scheme in GET parameters is based on JSON-RPC over HTTP 
+Specification [2008-1-15(RC1)]. The encoding of GET parameters are follows::
 
   /jsonrpc?method=METHOD_NAME&id=ID&params=BASE64_ENCODED_PARAMS
 
@@ -3367,24 +3342,25 @@ The encoding of GET parameters are follows::
 The ``method`` and ``id`` are always treated as JSON string and their
 encoding must be UTF-8.
 
-For example, The encoded string of aria2.tellStatus('3') with id='foo'
-looks like this::
+For example, The encoded string of
+``aria2.tellStatus('2089b05ecca3d829')`` with ``id='foo'`` looks like
+this::
 
-  /jsonrpc?method=aria2.tellStatus&id=foo&params=WyIzIl0%3D
+  /jsonrpc?method=aria2.tellStatus&id=foo&params=WyIyMDg5YjA1ZWNjYTNkODI5Il0%3D
 
 
 The ``params`` parameter is Base64-encoded JSON array which usually
 appears in ``params`` attribute in JSON-RPC request object.  In the
-above example, the params is ['3'], therefore::
+above example, the params is ``["2089b05ecca3d829"]``, therefore::
 
-  ['3'] --(Base64)--> WyIzIl0= --(Percent Encode)--> WyIzIl0%3D
+  ["2089b05ecca3d829"] --(Base64)--> WyIyMDg5YjA1ZWNjYTNkODI5Il0=
+               --(Percent Encode)--> WyIyMDg5YjA1ZWNjYTNkODI5Il0%3D
 
 
 The JSON-RPC interface supports JSONP. You can specify the callback
-function in 'jsoncallback' parameter::
+function in ``jsoncallback`` parameter::
 
-  /jsonrpc?method=aria2.tellStatus&id=foo&params=WyIzIl0%3D&jsoncallback=cb
-
+  /jsonrpc?method=aria2.tellStatus&id=foo&params=WyIyMDg5YjA1ZWNjYTNkODI5Il0%3D&jsoncallback=cb
 
 For Batch request, ``method`` and ``id`` parameter must not be specified.
 Whole request must be specified in ``params`` parameter. For example,
@@ -3398,6 +3374,7 @@ will be encoded like this::
 
   /jsonrpc?params=W3sianNvbnJwYyI6ICIyLjAiLCAiaWQiOiAicXdlciIsICJtZXRob2QiOiAiYXJpYTIuZ2V0VmVyc2lvbiJ9LCB7Impzb25ycGMiOiAiMi4wIiwgImlkIjogImFzZGYiLCAibWV0aG9kIjogImFyaWEyLnRlbGxBY3RpdmUifV0%3D
 
+.. index:: double: json; websocket;
 
 JSON-RPC sobre WebSocket
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3471,8 +3448,8 @@ são definidos:
   BitTorrent (mas o seeding pode não ter sido concluído).  O *event* tem a 
   mesma estrutura do *event* do método da função :func:`aria2.onDownloadStart`.
   
-Exemplo Código Cliente XML-RPC
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Exemplo Cliente XML-RPC Ruby
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 O seguinte script Ruby script adiciona ``http://localhost/aria2.tar.bz2`` em
 aria2c no servidor em localhost com a opção :option:`--dir=/downloads <-d>` e
@@ -3502,6 +3479,8 @@ interagir com aria2::
   s = xmlrpclib.ServerProxy("http://localhost:6800/rpc")
   r = s.aria2.addUri(["http://localhost/aria2.tar.bz2"], {"dir":"/downloads"})
   pprint(r)
+
+.. index:: double: mensagens; console;
 
 DIVERSOS
 --------
@@ -3633,16 +3612,19 @@ Para FTP:
   :option:`--all-proxy` e :option:`--no-proxy` para detalhes.  Proxy pode ser
   especificado nas variáveis de ambiente. Ver seção `VARIÁVEIS DE AMBIENTE`_ .
 
-Proxy com autenticação / authorização
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Proxy com autenticação / autorização
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code-block:: console
 
-  $ aria2c --http-proxy="http://usuário:senha@svrproxy:8080" "http://servidor/arquivo"
+  $ aria2c --http-proxy="http://usuário:senha@svrproxy:8080" 
+  "http://servidor/arquivo"
 
 
 .. code-block:: console
 
-  $ aria2c --http-proxy="http://svrproxy:8080" --http-proxy-user="usuário" --http-proxy-passwd="senha" "http://servidor/arquivo"
+  $ aria2c --http-proxy="http://svrproxy:8080" 
+  --http-proxy-user="usuário" --http-proxy-passwd="senha" 
+  "http://servidor/arquivo"
 
 
 Download Metalink
@@ -3778,8 +3760,8 @@ Para salvar 'dist/base-2.6.18.iso' em '/tmp/meudir/base.iso' e
   $ aria2c --dir=/tmp --index-out=1=meudir/base.iso --index-out=2=dir/driver.iso arquivo.torrent
 
 
-Modificando porta escuta para peer de entrada
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Modificar porta escuta para peer de entrada
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code-block:: console
 
   $ aria2c --listen-port=7000-7001,8000 arquivo.torrent
@@ -3945,8 +3927,8 @@ Especificar incrementos para contador:
   $ aria2c -Z -P "http://servidor/imagem[A-Z:2].png"
 
 
-Vericar validação checksum
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Verificar validação checksum
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code-block:: console
 
   $ aria2c --checksum=sha-1=0192ba11326fe2298c8cb4de616f4d4140213837 
@@ -3983,9 +3965,10 @@ Descrição do Formato Download Metalink: :rfc:`5854`
 COPYRIGHT
 ---------
 
-Copyright (C) 2006, 2012 Tatsuhiro Tsujikawa
-Tradução para Português do Brasil 2012, Gilberto dos Santos Alves
+Copyright (C) 2006, 2013 Tatsuhiro Tsujikawa
+Tradução para Português do Brasil 2013, Gilberto dos Santos Alves
 utilizando editor kate e gedit no Debian squeeze 6.0.6 novembro de 2012
+revisado em março de 2013 usando editor kate e gedit no ubuntu 12.04 LTS
 
 Esse programa é software livre; pode ser redistribuido e/ou modificado
 sob os termos da Licença GNU General Public License como publicada por
@@ -4012,9 +3995,8 @@ isto não é obrigatório.  Se não houver esta intenção exclua esta declaraç
 de exceção da sua versão.  Caso sejam excluídas as declarações de todos
 os arquivos fontes, exclua também esta declaração daqui.
 
-NOTE
-----
+Anotação sobre divergência entre Manual e o aria2:
 
-This manual page may not necessarily contain the latest information.
-If there are some contradictions between this manual page and actual
-software, please refer to English version of man page.
+Esta página de manual pode não necessariamente conter a última informação.
+Caso haja discrepância entre alguma informação do manual e o aria2, por
+favor refira-se a versão em inglês resultante do comando man aria2c
