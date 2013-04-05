@@ -819,7 +819,7 @@ bool SocketCore::tlsHandshake(TLSContext* tlsctx, const std::string& hostname)
   wantWrite_ = false;
   switch(secure_) {
   case A2_TLS_NONE:
-    tlsSession_.reset(new TLSSession(tlsctx));
+    tlsSession_.reset(TLSSession::make(tlsctx));
     rv = tlsSession_->init(sockfd_);
     if(rv != TLS_ERR_OK) {
       std::string error = tlsSession_->getLastErrorString();

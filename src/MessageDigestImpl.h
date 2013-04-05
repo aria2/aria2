@@ -35,12 +35,15 @@
 #ifndef D_MESSAGE_DIGEST_IMPL_H
 #define D_MESSAGE_DIGEST_IMPL_H
 
-#ifdef HAVE_LIBNETTLE
+
+#ifdef USE_APPLE_MD
+# include "AppleMessageDigestImpl.h"
+#elif defined(USE_LIBNETTLE_MD)
 # include "LibnettleMessageDigestImpl.h"
-#elif HAVE_LIBGCRYPT
+#elif defined(USE_LIBGCRYPT_MD)
 # include "LibgcryptMessageDigestImpl.h"
-#elif HAVE_OPENSSL
+#elif defined(USE_OPENSSL_MD)
 # include "LibsslMessageDigestImpl.h"
-#endif // HAVE_OPENSSL
+#endif
 
 #endif // D_MESSAGE_DIGEST_IMPL_H

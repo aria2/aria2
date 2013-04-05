@@ -35,6 +35,8 @@
 #ifndef D_TLS_CONTEXT_H
 #define D_TLS_CONTEXT_H
 
+#include <string>
+
 #include "common.h"
 
 namespace aria2 {
@@ -44,12 +46,27 @@ enum TLSSessionSide {
   TLS_SERVER
 };
 
-} // namespace aria2
+class TLSContext {
+public:
+  static TLSContext* make(TLSSessionSide side);
+  virtual ~TLSContext() {}
 
-#ifdef HAVE_OPENSSL
-# include "LibsslTLSContext.h"
-#elif HAVE_LIBGNUTLS
-# include "LibgnutlsTLSContext.h"
-#endif // HAVE_LIBGNUTLS
+  // private key `keyfile' must be decrypted.
+  virtual bool addCredentialFile(const std::string& certfile,
+                                 const std::string& keyfile) = 0;
+
+  virtual bool addSystemTrustedCACerts() = 0;
+
+  // certfile can contain multiple certificates.
+  virtual bool addTrustedCACertFile(const std::string& certfile) = 0;
+
+  virtual bool good() const = 0;
+
+  virtual TLSSessionSide getSide() const = 0;
+  virtual bool getVerifyPeer() const = 0;
+  virtual void setVerifyPeer(bool) = 0;
+};
+
+} // namespace aria2
 
 #endif // D_TLS_CONTEXT_H

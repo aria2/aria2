@@ -24,6 +24,7 @@ esac
 AC_DEFINE_UNQUOTED([TARGET], ["$target"], [Define target-type])
 
 # Checks for arguments.
+ARIA2_ARG_WITHOUT([appletls])
 ARIA2_ARG_WITHOUT([gnutls])
 ARIA2_ARG_WITHOUT([libnettle])
 ARIA2_ARG_WITHOUT([libgmp])
@@ -145,7 +146,28 @@ if test "x$with_sqlite3" = "xyes"; then
   fi
 fi
 
-if test "x$with_gnutls" = "xyes"; then
+case "$host" in
+  *darwin*)
+    have_osx="yes"
+  ;;
+esac
+
+if test "x$with_appletls" = "xyes"; then
+  AC_MSG_CHECKING([whether to enable Mac OS X native SSL/TLS])
+  if test "x$have_osx" = "xyes"; then
+    AC_DEFINE([HAVE_APPLETLS], [1], [Define to 1 if you have Apple TLS])
+    LDFLAGS="$LDFLAGS -framework CoreFoundation -framework Security"
+    have_appletls="yes"
+    AC_MSG_RESULT(yes)
+  else
+    AC_MSG_RESULT(no)
+    if test "x$with_appletls_requested" = "xyes"; then
+      ARIA2_DEP_NOT_MET([appletls])
+    fi
+  fi
+fi
+
+if test "x$with_gnutls" = "xyes" && test "x$have_appletls" != "xyes"; then
   # gnutls >= 2.8 doesn't have libgnutls-config anymore. We require
   # 2.2.0 because we use gnutls_priority_set_direct()
   PKG_CHECK_MODULES([LIBGNUTLS], [gnutls >= 2.2.0],
@@ -163,7 +185,7 @@ if test "x$with_gnutls" = "xyes"; then
   fi
 fi
 
-if test "x$with_openssl" = "xyes" && test "x$have_libgnutls" != "xyes"; then
+if test "x$with_openssl" = "xyes" && test "x$have_appletls" != "xyes" && test "x$have_libgnutls" != "xyes"; then
   PKG_CHECK_MODULES([OPENSSL], [openssl >= 0.9.8],
                     [have_openssl=yes], [have_openssl=no])
   if test "x$have_openssl" = "xyes"; then
@@ -235,8 +257,30 @@ if test "x$with_libcares" = "xyes"; then
   fi
 fi
 
+use_md=""
+if test "x$have_osx" == "xyes"; then
+  use_md="apple"
+  AC_DEFINE([USE_APPLE_MD], [1], [What message digest implementation to use])
+else
+  if test "x$have_libnettle" = "xyes"; then
+    AC_DEFINE([USE_LIBNETTLE_MD], [1], [What message digest implementation to use])
+    use_md="libnettle"
+  else
+    if test "x$have_libgcrypt" = "xyes"; then
+      AC_DEFINE([USE_LIBGCRYPT_MD], [1], [What message digest implementation to use])
+      use_md="libgcrypt"
+    else
+      if test = "x$have_openssl" = "xyes"; then
+        AC_DEFINE([USE_OPENSSL_MD], [1], [What message digest implementation to use])
+        use_md="openssl"
+      fi
+    fi
+  fi
+fi
+
 # Define variables based on the result of the checks for libraries.
-if test "x$have_libgnutls" = "xyes" || test "x$have_openssl" = "xyes"; then
+if test "x$have_appletls" = "xyes" || test "x$have_libgnutls" = "xyes" || test "x$have_openssl" = "xyes"; then
+  have_ssl="yes"
   AC_DEFINE([ENABLE_SSL], [1], [Define to 1 if ssl support is enabled.])
   AM_CONDITIONAL([ENABLE_SSL], true)
   AC_SUBST([ca_bundle])
@@ -244,14 +288,20 @@ else
   AM_CONDITIONAL([ENABLE_SSL], false)
 fi
 
+
+AM_CONDITIONAL([HAVE_OSX], [ test "x$have_osx" = "xyes" ])
+AM_CONDITIONAL([HAVE_APPLETLS], [ test "x$have_appletls" = "xyes" ])
+AM_CONDITIONAL([USE_APPLE_MD], [ test "x$use_md" = "xapple" ])
 AM_CONDITIONAL([HAVE_LIBGNUTLS], [ test "x$have_libgnutls" = "xyes" ])
 AM_CONDITIONAL([HAVE_LIBNETTLE], [ test "x$have_libnettle" = "xyes" ])
+AM_CONDITIONAL([USE_LIBNETTLE_MD], [ test "x$use_md" = "xlibnettle"])
 AM_CONDITIONAL([HAVE_LIBGMP], [ test "x$have_libgmp" = "xyes" ])
 AM_CONDITIONAL([HAVE_LIBGCRYPT], [ test "x$have_libgcrypt" = "xyes" ])
+AM_CONDITIONAL([USE_LIBGCRYPT_MD], [ test "x$use_md" = "xlibgcrypt"])
 AM_CONDITIONAL([HAVE_OPENSSL], [ test "x$have_openssl" = "xyes" ])
+AM_CONDITIONAL([USE_OPENSSL_MD], [ test "x$use_md" = "xopenssl"])
 
-if test "x$have_libnettle" = "xyes" || test "x$have_libgcrypt" = "xyes" ||
-   test "x$have_openssl" = "xyes"; then
+if test "x$use_md" != "x"; then
   AC_DEFINE([ENABLE_MESSAGE_DIGEST], [1],
             [Define to 1 if message digest support is enabled.])
   AM_CONDITIONAL([ENABLE_MESSAGE_DIGEST], true)
@@ -325,9 +375,9 @@ AM_CONDITIONAL([HAVE_SQLITE3], [test "x$have_sqlite3" = "xyes"])
 AC_SEARCH_LIBS([clock_gettime], [rt])
 
 case "$host" in
-	*solaris*)
-                AC_SEARCH_LIBS([getaddrinfo], [nsl socket])
-		;;
+  *solaris*)
+    AC_SEARCH_LIBS([getaddrinfo], [nsl socket])
+    ;;
 esac
 
 # Checks for header files.
@@ -670,6 +720,8 @@ echo "LDFLAGS:        $LDFLAGS"
 echo "LIBS:           $LIBS"
 echo "DEFS:           $DEFS"
 echo "SQLite3:        $have_sqlite3"
+echo "SSL Support:    $have_ssl"
+echo "AppleTLS:       $have_appletls"
 echo "GnuTLS:         $have_libgnutls"
 echo "OpenSSL:        $have_openssl"
 echo "CA Bundle:      $ca_bundle"

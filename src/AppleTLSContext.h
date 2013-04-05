@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2013 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Nils Maier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,24 +32,59 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef TLS_SESSION_CONST_H
-#define TLS_SESSION_CONST_H
+#ifndef D_APPLE_TLS_CONTEXT_H
+#define D_APPLE_TLS_CONTEXT_H
 
 #include "common.h"
 
+#include <string>
+#include <Security/Security.h>
+#include <Security/SecureTransport.h>
+
+#include "TLSContext.h"
+#include "DlAbortEx.h"
+
 namespace aria2 {
 
-enum TLSDirection {
-  TLS_WANT_READ = 1,
-  TLS_WANT_WRITE
-};
+class AppleTLSContext : public TLSContext {
+public:
+  AppleTLSContext(TLSSessionSide side)
+    : side_(side),
+      verifyPeer_(true)
+  {}
 
-enum TLSErrorCode {
-  TLS_ERR_OK = 0,
-  TLS_ERR_ERROR = -1,
-  TLS_ERR_WOULDBLOCK = -2
+  virtual ~AppleTLSContext() {}
+
+  // private key `keyfile' must be decrypted.
+  virtual bool addCredentialFile(const std::string& certfile,
+                                 const std::string& keyfile);
+
+  virtual bool addSystemTrustedCACerts() {
+    return true;
+  }
+
+  // certfile can contain multiple certificates.
+  virtual bool addTrustedCACertFile(const std::string& certfile);
+
+  virtual bool good() const {
+    return true;
+  }
+  virtual TLSSessionSide getSide() const {
+    return side_;
+  }
+
+  virtual bool getVerifyPeer() const {
+    return verifyPeer_;
+  }
+  virtual void setVerifyPeer(bool verify) {
+    verifyPeer_ = verify;
+  }
+
+private:
+  TLSSessionSide side_;
+  bool verifyPeer_;
 };
 
 } // namespace aria2
 
-#endif // TLS_SESSION_CONST_H
+#endif // D_LIBSSL_TLS_CONTEXT_H

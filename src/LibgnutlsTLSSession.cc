@@ -42,20 +42,25 @@
 
 namespace aria2 {
 
-TLSSession::TLSSession(TLSContext* tlsContext)
+TLSSession* TLSSession::make(TLSContext* ctx)
+{
+  return new GnuTLSSession(static_cast<GnuTLSContext*>(ctx));
+}
+
+GnuTLSSession::GnuTLSSession(GnuTLSContext* tlsContext)
   : sslSession_(0),
     tlsContext_(tlsContext),
     rv_(0)
 {}
 
-TLSSession::~TLSSession()
+GnuTLSSession::~GnuTLSSession()
 {
   if(sslSession_) {
     gnutls_deinit(sslSession_);
   }
 }
 
-int TLSSession::init(sock_t sockfd)
+int GnuTLSSession::init(sock_t sockfd)
 {
   rv_ = gnutls_init(&sslSession_,
                     tlsContext_->getSide() == TLS_CLIENT ?
@@ -89,7 +94,7 @@ int TLSSession::init(sock_t sockfd)
   return TLS_ERR_OK;
 }
 
-int TLSSession::setSNIHostname(const std::string& hostname)
+int GnuTLSSession::setSNIHostname(const std::string& hostname)
 {
   // TLS extensions: SNI
   rv_ = gnutls_server_name_set(sslSession_, GNUTLS_NAME_DNS,
@@ -100,7 +105,7 @@ int TLSSession::setSNIHostname(const std::string& hostname)
   return TLS_ERR_OK;
 }
 
-int TLSSession::closeConnection()
+int GnuTLSSession::closeConnection()
 {
   rv_ = gnutls_bye(sslSession_, GNUTLS_SHUT_WR);
   if(rv_ == GNUTLS_E_SUCCESS) {
@@ -112,13 +117,13 @@ int TLSSession::closeConnection()
   }
 }
 
-int TLSSession::checkDirection()
+int GnuTLSSession::checkDirection()
 {
   int direction = gnutls_record_get_direction(sslSession_);
   return direction == 0 ? TLS_WANT_READ : TLS_WANT_WRITE;
 }
 
-ssize_t TLSSession::writeData(const void* data, size_t len)
+ssize_t GnuTLSSession::writeData(const void* data, size_t len)
 {
   while((rv_ = gnutls_record_send(sslSession_, data, len)) ==
         GNUTLS_E_INTERRUPTED);
@@ -133,7 +138,7 @@ ssize_t TLSSession::writeData(const void* data, size_t len)
   }
 }
 
-ssize_t TLSSession::readData(void* data, size_t len)
+ssize_t GnuTLSSession::readData(void* data, size_t len)
 {
   while((rv_ = gnutls_record_recv(sslSession_, data, len)) ==
         GNUTLS_E_INTERRUPTED);
@@ -148,7 +153,7 @@ ssize_t TLSSession::readData(void* data, size_t len)
   }
 }
 
-int TLSSession::tlsConnect(const std::string& hostname,
+int GnuTLSSession::tlsConnect(const std::string& hostname,
                            std::string& handshakeErr)
 {
   handshakeErr = "";
@@ -160,7 +165,7 @@ int TLSSession::tlsConnect(const std::string& hostname,
       return TLS_ERR_ERROR;
     }
   }
-  if(tlsContext_->peerVerificationEnabled()) {
+  if(tlsContext_->getVerifyPeer()) {
     // verify peer
     unsigned int status;
     rv_ = gnutls_certificate_verify_peers2(sslSession_, &status);
@@ -246,7 +251,7 @@ int TLSSession::tlsConnect(const std::string& hostname,
   return TLS_ERR_OK;
 }
 
-int TLSSession::tlsAccept()
+int GnuTLSSession::tlsAccept()
 {
   rv_ = gnutls_handshake(sslSession_);
   if(rv_ == GNUTLS_E_SUCCESS) {
@@ -258,7 +263,7 @@ int TLSSession::tlsAccept()
   }
 }
 
-std::string TLSSession::getLastErrorString()
+std::string GnuTLSSession::getLastErrorString()
 {
   return gnutls_strerror(rv_);
 }

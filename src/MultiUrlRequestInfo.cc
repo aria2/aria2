@@ -145,7 +145,7 @@ error_code::Value MultiUrlRequestInfo::execute()
          !option_->blank(PREF_RPC_PRIVATE_KEY)) {
         // We set server TLS context to the SocketCore before creating
         // DownloadEngine instance.
-        SharedHandle<TLSContext> svTlsContext(new TLSContext(TLS_SERVER));
+        SharedHandle<TLSContext> svTlsContext(TLSContext::make(TLS_SERVER));
         svTlsContext->addCredentialFile(option_->get(PREF_RPC_CERTIFICATE),
                                         option_->get(PREF_RPC_PRIVATE_KEY));
         SocketCore::setServerTLSContext(svTlsContext);
@@ -194,7 +194,7 @@ error_code::Value MultiUrlRequestInfo::execute()
     e->setAuthConfigFactory(authConfigFactory);
 
 #ifdef ENABLE_SSL
-    SharedHandle<TLSContext> clTlsContext(new TLSContext(TLS_CLIENT));
+    SharedHandle<TLSContext> clTlsContext(TLSContext::make(TLS_CLIENT));
     if(!option_->blank(PREF_CERTIFICATE) &&
        !option_->blank(PREF_PRIVATE_KEY)) {
       clTlsContext->addCredentialFile(option_->get(PREF_CERTIFICATE),
@@ -211,9 +211,7 @@ error_code::Value MultiUrlRequestInfo::execute()
         A2_LOG_INFO(MSG_WARN_NO_CA_CERT);
       }
     }
-    if(option_->getAsBool(PREF_CHECK_CERTIFICATE)) {
-      clTlsContext->enablePeerVerification();
-    }
+    clTlsContext->setVerifyPeer(option_->getAsBool(PREF_CHECK_CERTIFICATE));
     SocketCore::setClientTLSContext(clTlsContext);
 #endif
 #ifdef HAVE_ARES_ADDR_NODE
