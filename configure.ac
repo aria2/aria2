@@ -177,6 +177,8 @@ if test "x$with_gnutls" = "xyes" && test "x$have_appletls" != "xyes"; then
     LIBS="$LIBGNUTLS_LIBS $LIBS"
     CPPFLAGS="$LIBGNUTLS_CFLAGS $CPPFLAGS"
     AC_CHECK_FUNCS([gnutls_certificate_set_x509_system_trust])
+    AC_CHECK_FUNCS([gnutls_certificate_verify_peers3])
+    AC_CHECK_FUNCS([gnutls_x509_crt_check_hostname])
   else
     AC_MSG_WARN([$LIBGNUTLS_PKG_ERRORS])
     if test "x$with_gnutls_requested" = "xyes"; then
