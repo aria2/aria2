@@ -35,6 +35,8 @@
 
 #include "AppleTLSSession.h"
 
+#include <vector>
+
 #include <CoreFoundation/CoreFoundation.h>
 
 #include "fmt.h"
@@ -45,8 +47,220 @@
 #define errSSLServerAuthCompleted -9841
 
 namespace {
-  static const SSLProtocol kTLSProtocol11_h = (SSLProtocol)(kSSLProtocolAll + 1);
-  static const SSLProtocol kTLSProtocol12_h = (SSLProtocol)(kSSLProtocolAll + 2);
+#if !defined(__MAC_10_8)
+  static const SSLProtocol kTLSProtocol11 = (SSLProtocol)(kSSLProtocolAll + 1);
+  static const SSLProtocol kTLSProtocol12 = (SSLProtocol)(kSSLProtocolAll + 2);
+#endif
+
+  static inline const char *protoToString(SSLProtocol proto) {
+    switch (proto) {
+      case kSSLProtocol2:
+        return "SSLv2 (!)";
+      case kSSLProtocol3:
+        return "SSLv3";
+      case kTLSProtocol1:
+        return "TLSv1";
+      case kTLSProtocol11:
+        return "TLSv1.1";
+      case kTLSProtocol12:
+        return "TLSv1.2";
+      default:
+        return "Unknown";
+    }
+  }
+
+#define SUITE(s) { s, #s }
+  static struct {
+    SSLCipherSuite suite;
+    const char *name;
+  } kSuites[] = {
+    SUITE(SSL_NULL_WITH_NULL_NULL),
+    SUITE(SSL_RSA_WITH_NULL_MD5),
+    SUITE(SSL_RSA_WITH_NULL_SHA),
+    SUITE(SSL_RSA_EXPORT_WITH_RC4_40_MD5),
+    SUITE(SSL_RSA_WITH_RC4_128_MD5),
+    SUITE(SSL_RSA_WITH_RC4_128_SHA),
+    SUITE(SSL_RSA_EXPORT_WITH_RC2_CBC_40_MD5),
+    SUITE(SSL_RSA_WITH_IDEA_CBC_SHA),
+    SUITE(SSL_RSA_EXPORT_WITH_DES40_CBC_SHA),
+    SUITE(SSL_RSA_WITH_DES_CBC_SHA),
+    SUITE(SSL_RSA_WITH_3DES_EDE_CBC_SHA),
+    SUITE(SSL_DH_DSS_EXPORT_WITH_DES40_CBC_SHA),
+    SUITE(SSL_DH_DSS_WITH_DES_CBC_SHA),
+    SUITE(SSL_DH_DSS_WITH_3DES_EDE_CBC_SHA),
+    SUITE(SSL_DH_RSA_EXPORT_WITH_DES40_CBC_SHA),
+    SUITE(SSL_DH_RSA_WITH_DES_CBC_SHA),
+    SUITE(SSL_DH_RSA_WITH_3DES_EDE_CBC_SHA),
+    SUITE(SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA),
+    SUITE(SSL_DHE_DSS_WITH_DES_CBC_SHA),
+    SUITE(SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA),
+    SUITE(SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA),
+    SUITE(SSL_DHE_RSA_WITH_DES_CBC_SHA),
+    SUITE(SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA),
+    SUITE(SSL_DH_anon_EXPORT_WITH_RC4_40_MD5),
+    SUITE(SSL_DH_anon_WITH_RC4_128_MD5),
+    SUITE(SSL_DH_anon_EXPORT_WITH_DES40_CBC_SHA),
+    SUITE(SSL_DH_anon_WITH_DES_CBC_SHA),
+    SUITE(SSL_DH_anon_WITH_3DES_EDE_CBC_SHA),
+    SUITE(SSL_FORTEZZA_DMS_WITH_NULL_SHA),
+    SUITE(SSL_FORTEZZA_DMS_WITH_FORTEZZA_CBC_SHA),
+    SUITE(TLS_RSA_WITH_AES_128_CBC_SHA),
+    SUITE(TLS_DH_DSS_WITH_AES_128_CBC_SHA),
+    SUITE(TLS_DH_RSA_WITH_AES_128_CBC_SHA),
+    SUITE(TLS_DHE_DSS_WITH_AES_128_CBC_SHA),
+    SUITE(TLS_DHE_RSA_WITH_AES_128_CBC_SHA),
+    SUITE(TLS_DH_anon_WITH_AES_128_CBC_SHA),
+    SUITE(TLS_RSA_WITH_AES_256_CBC_SHA),
+    SUITE(TLS_DH_DSS_WITH_AES_256_CBC_SHA),
+    SUITE(TLS_DH_RSA_WITH_AES_256_CBC_SHA),
+    SUITE(TLS_DHE_DSS_WITH_AES_256_CBC_SHA),
+    SUITE(TLS_DHE_RSA_WITH_AES_256_CBC_SHA),
+    SUITE(TLS_DH_anon_WITH_AES_256_CBC_SHA),
+    SUITE(TLS_ECDH_ECDSA_WITH_NULL_SHA),
+    SUITE(TLS_ECDH_ECDSA_WITH_RC4_128_SHA),
+    SUITE(TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA),
+    SUITE(TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA),
+    SUITE(TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA),
+    SUITE(TLS_ECDHE_ECDSA_WITH_NULL_SHA),
+    SUITE(TLS_ECDHE_ECDSA_WITH_RC4_128_SHA),
+    SUITE(TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA),
+    SUITE(TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA),
+    SUITE(TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA),
+    SUITE(TLS_ECDH_RSA_WITH_NULL_SHA),
+    SUITE(TLS_ECDH_RSA_WITH_RC4_128_SHA),
+    SUITE(TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA),
+    SUITE(TLS_ECDH_RSA_WITH_AES_128_CBC_SHA),
+    SUITE(TLS_ECDH_RSA_WITH_AES_256_CBC_SHA),
+    SUITE(TLS_ECDHE_RSA_WITH_NULL_SHA),
+    SUITE(TLS_ECDHE_RSA_WITH_RC4_128_SHA),
+    SUITE(TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA),
+    SUITE(TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA),
+    SUITE(TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA),
+    SUITE(TLS_ECDH_anon_WITH_NULL_SHA),
+    SUITE(TLS_ECDH_anon_WITH_RC4_128_SHA),
+    SUITE(SSL_RSA_WITH_RC2_CBC_MD5),
+    SUITE(SSL_RSA_WITH_IDEA_CBC_MD5),
+    SUITE(SSL_RSA_WITH_DES_CBC_MD5),
+    SUITE(SSL_RSA_WITH_3DES_EDE_CBC_MD5),
+
+#if defined(__MAC_10_8)
+    SUITE(TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA),
+    SUITE(TLS_DHE_DSS_WITH_AES_128_CBC_SHA256),
+    SUITE(TLS_DHE_DSS_WITH_AES_128_GCM_SHA256),
+    SUITE(TLS_DHE_DSS_WITH_AES_256_CBC_SHA256),
+    SUITE(TLS_DHE_DSS_WITH_AES_256_GCM_SHA384),
+    SUITE(TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA),
+    SUITE(TLS_DHE_RSA_WITH_AES_128_CBC_SHA256),
+    SUITE(TLS_DHE_RSA_WITH_AES_128_GCM_SHA256),
+    SUITE(TLS_DHE_RSA_WITH_AES_256_CBC_SHA256),
+    SUITE(TLS_DHE_RSA_WITH_AES_256_GCM_SHA384),
+    SUITE(TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA),
+    SUITE(TLS_DH_DSS_WITH_AES_128_CBC_SHA256),
+    SUITE(TLS_DH_DSS_WITH_AES_128_GCM_SHA256),
+    SUITE(TLS_DH_DSS_WITH_AES_256_CBC_SHA256),
+    SUITE(TLS_DH_DSS_WITH_AES_256_GCM_SHA384),
+    SUITE(TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA),
+    SUITE(TLS_DH_RSA_WITH_AES_128_CBC_SHA256),
+    SUITE(TLS_DH_RSA_WITH_AES_128_GCM_SHA256),
+    SUITE(TLS_DH_RSA_WITH_AES_256_CBC_SHA256),
+    SUITE(TLS_DH_RSA_WITH_AES_256_GCM_SHA384),
+    SUITE(TLS_DH_anon_WITH_3DES_EDE_CBC_SHA),
+    SUITE(TLS_DH_anon_WITH_AES_128_CBC_SHA256),
+    SUITE(TLS_DH_anon_WITH_AES_128_GCM_SHA256),
+    SUITE(TLS_DH_anon_WITH_AES_256_CBC_SHA256),
+    SUITE(TLS_DH_anon_WITH_AES_256_GCM_SHA384),
+    SUITE(TLS_DH_anon_WITH_RC4_128_MD5),
+    SUITE(TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256),
+    SUITE(TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256),
+    SUITE(TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384),
+    SUITE(TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384),
+    SUITE(TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256),
+    SUITE(TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256),
+    SUITE(TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384),
+    SUITE(TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384),
+    SUITE(TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256),
+    SUITE(TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256),
+    SUITE(TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384),
+    SUITE(TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384),
+    SUITE(TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256),
+    SUITE(TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256),
+    SUITE(TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384),
+    SUITE(TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384),
+    SUITE(TLS_EMPTY_RENEGOTIATION_INFO_SCSV),
+    SUITE(TLS_NULL_WITH_NULL_NULL),
+    SUITE(TLS_RSA_WITH_3DES_EDE_CBC_SHA),
+    SUITE(TLS_RSA_WITH_AES_128_CBC_SHA256),
+    SUITE(TLS_RSA_WITH_AES_128_GCM_SHA256),
+    SUITE(TLS_RSA_WITH_AES_256_CBC_SHA256),
+    SUITE(TLS_RSA_WITH_AES_256_GCM_SHA384),
+    SUITE(TLS_RSA_WITH_NULL_MD5),
+    SUITE(TLS_RSA_WITH_NULL_SHA),
+    SUITE(TLS_RSA_WITH_NULL_SHA256),
+    SUITE(TLS_RSA_WITH_RC4_128_MD5),
+    SUITE(TLS_RSA_WITH_RC4_128_SHA),
+#endif
+
+    SUITE(SSL_NO_SUCH_CIPHERSUITE)
+  };
+  static const size_t nSuites = sizeof(kSuites) / sizeof(*kSuites);
+#undef SUITE
+
+  static inline const char* suiteToString(const SSLCipherSuite suite)
+  {
+    for (size_t i = 0; i < nSuites; ++i) {
+      if (kSuites[i].suite == suite) {
+        return kSuites[i].name;
+      }
+    }
+    return "Unknown suite";
+  }
+
+  static const char* kBlocked[] = {
+    "NULL", "anon", "MD5", "EXPORT", "DES", "IDEA", "NO_SUCH", "EMPTY"
+  };
+  static const size_t nBlocked = sizeof(kBlocked) / sizeof(*kBlocked);
+
+  static inline bool isBlockedSuite(SSLCipherSuite suite)
+  {
+    const char* name = suiteToString(suite);
+    for (size_t i = 0; i < nBlocked; ++i) {
+      if (strstr(name, kBlocked[i])) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  typedef std::vector<SSLCipherSuite> SSLCipherSuiteList;
+  static SSLCipherSuiteList constructEnabledSuites(SSLContextRef ctx)
+  {
+#ifndef CIPHER_CONSTRUCT_ALWAYS
+    static
+#endif
+    SSLCipherSuiteList rv(0);
+
+#ifndef CIPHER_CONSTRUCT_ALWAYS
+    if (!rv.empty()) {
+      return rv;
+    }
+#endif
+
+    size_t supported = 0;
+    OSStatus err = SSLGetNumberSupportedCiphers(ctx, &supported);
+    if (err != noErr || !supported) {
+      return rv;
+    }
+
+    rv.resize(supported, SSL_NO_SUCH_CIPHERSUITE);
+    err = SSLGetSupportedCiphers(ctx, &rv[0], &supported);
+    if (err != noErr || !supported) {
+      rv.clear();
+      return rv;
+    }
+
+    rv.erase(std::remove_if(rv.begin(), rv.end(), isBlockedSuite), rv.end());
+    return rv;
+  }
 }
 
 namespace aria2 {
@@ -76,10 +290,27 @@ AppleTLSSession::AppleTLSSession(AppleTLSContext* ctx)
   (void)SSLSetProtocolVersionEnabled(sslCtx_, kSSLProtocolAll, false);
   (void)SSLSetProtocolVersionEnabled(sslCtx_, kSSLProtocol3, true);
   (void)SSLSetProtocolVersionEnabled(sslCtx_, kTLSProtocol1, true);
-  (void)SSLSetProtocolVersionEnabled(sslCtx_, kTLSProtocol11_h, true);
-  (void)SSLSetProtocolVersionEnabled(sslCtx_, kTLSProtocol12_h, true);
+  (void)SSLSetProtocolVersionEnabled(sslCtx_, kTLSProtocol11, true);
+  (void)SSLSetProtocolVersionEnabled(sslCtx_, kTLSProtocol12, true);
 #endif
+
   (void)SSLSetEnableCertVerify(sslCtx_, ctx->getVerifyPeer());
+
+#ifndef CIPHER_ENABLE_ALL
+  SSLCipherSuiteList enabled = constructEnabledSuites(sslCtx_);
+  if (enabled.empty()) {
+    A2_LOG_ERROR("AppleTLS: Failed to construct enabled ciphers list");
+    state_ = st_error;
+    return;
+  }
+  for (SSLCipherSuiteList::iterator i = enabled.begin(), e = enabled.end(); i != e; ++i) {
+    A2_LOG_INFO(fmt("AppleTLS: Enabled suite %s", suiteToString(*i)));
+  }
+  if (SSLSetEnabledCiphers(sslCtx_, &enabled[0], enabled.size()) != noErr) {
+    A2_LOG_ERROR("AppleTLS: Failed to set enabled ciphers list");
+    state_ = st_error;
+  }
+#endif
 }
 
 AppleTLSSession::~AppleTLSSession()
@@ -280,8 +511,7 @@ int AppleTLSSession::tlsConnect(const std::string& hostname, std::string& handsh
   lastError_ = SSLHandshake(sslCtx_);
   switch (lastError_) {
     case noErr:
-      state_ = st_connected;
-      return TLS_ERR_OK;
+      break;
     case errSSLWouldBlock:
       return TLS_ERR_WOULDBLOCK;
     case errSSLServerAuthCompleted:
@@ -290,6 +520,18 @@ int AppleTLSSession::tlsConnect(const std::string& hostname, std::string& handsh
       handshakeErr = getLastErrorString();
       return TLS_ERR_ERROR;
   }
+  state_ = st_connected;
+
+  SSLProtocol proto = kSSLProtocolUnknown;
+  (void)SSLGetNegotiatedProtocolVersion(sslCtx_, &proto);
+  SSLCipherSuite suite = SSL_NO_SUCH_CIPHERSUITE;
+  (void)SSLGetNegotiatedCipher(sslCtx_, &suite);
+  A2_LOG_INFO(fmt("AppleTLS: Connected to %s with %s (%s)",
+                  hostname.c_str(),
+                  protoToString(proto),
+                  suiteToString(suite)));
+
+  return TLS_ERR_OK;
 }
 
 int AppleTLSSession::tlsAccept()
