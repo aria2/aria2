@@ -38,26 +38,31 @@
 #include <openssl/x509.h>
 #include <openssl/x509v3.h>
 
-#include "TLSContext.h"
+#include "LogFactory.h"
 #include "util.h"
 #include "SocketCore.h"
 
 namespace aria2 {
 
-TLSSession::TLSSession(TLSContext* tlsContext)
+TLSSession* TLSSession::make(TLSContext* ctx)
+{
+  return new OpenSSLTLSSession(static_cast<OpenSSLTLSContext*>(ctx));
+}
+
+OpenSSLTLSSession::OpenSSLTLSSession(OpenSSLTLSContext* tlsContext)
   : ssl_(0),
     tlsContext_(tlsContext),
     rv_(1)
 {}
 
-TLSSession::~TLSSession()
+OpenSSLTLSSession::~OpenSSLTLSSession()
 {
   if(ssl_) {
     SSL_shutdown(ssl_);
   }
 }
 
-int TLSSession::init(sock_t sockfd)
+int OpenSSLTLSSession::init(sock_t sockfd)
 {
   ERR_clear_error();
   ssl_ = SSL_new(tlsContext_->getSSLCtx());
@@ -71,7 +76,7 @@ int TLSSession::init(sock_t sockfd)
   return TLS_ERR_OK;
 }
 
-int TLSSession::setSNIHostname(const std::string& hostname)
+int OpenSSLTLSSession::setSNIHostname(const std::string& hostname)
 {
 #ifdef SSL_CTRL_SET_TLSEXT_HOSTNAME
   ERR_clear_error();
@@ -83,7 +88,7 @@ int TLSSession::setSNIHostname(const std::string& hostname)
   return TLS_ERR_OK;
 }
 
-int TLSSession::closeConnection()
+int OpenSSLTLSSession::closeConnection()
 {
   ERR_clear_error();
   SSL_shutdown(ssl_);
@@ -91,7 +96,7 @@ int TLSSession::closeConnection()
   return TLS_ERR_OK;
 }
 
-int TLSSession::checkDirection()
+int OpenSSLTLSSession::checkDirection()
 {
   int error = SSL_get_error(ssl_, rv_);
   if(error == SSL_ERROR_WANT_WRITE) {
@@ -110,7 +115,7 @@ bool wouldblock(SSL* ssl, int rv)
 }
 } // namespace
 
-ssize_t TLSSession::writeData(const void* data, size_t len)
+ssize_t OpenSSLTLSSession::writeData(const void* data, size_t len)
 {
   ERR_clear_error();
   rv_ = SSL_write(ssl_, data, len);
@@ -127,7 +132,7 @@ ssize_t TLSSession::writeData(const void* data, size_t len)
   }
 }
 
-ssize_t TLSSession::readData(void* data, size_t len)
+ssize_t OpenSSLTLSSession::readData(void* data, size_t len)
 {
   ERR_clear_error();
   rv_ = SSL_read(ssl_, data, len);
@@ -144,7 +149,7 @@ ssize_t TLSSession::readData(void* data, size_t len)
   }
 }
 
-int TLSSession::handshake()
+int OpenSSLTLSSession::handshake()
 {
   ERR_clear_error();
   if(tlsContext_->getSide() == TLS_CLIENT) {
@@ -171,7 +176,7 @@ int TLSSession::handshake()
   return TLS_ERR_OK;
 }
 
-int TLSSession::tlsConnect(const std::string& hostname,
+int OpenSSLTLSSession::tlsConnect(const std::string& hostname,
                            std::string& handshakeErr)
 {
   handshakeErr = "";
@@ -181,7 +186,7 @@ int TLSSession::tlsConnect(const std::string& hostname,
     return ret;
   }
   if(tlsContext_->getSide() == TLS_CLIENT &&
-     tlsContext_->peerVerificationEnabled()) {
+     tlsContext_->getVerifyPeer()) {
     // verify peer
     X509* peerCert = SSL_get_peer_certificate(ssl_);
     if(!peerCert) {
@@ -256,12 +261,12 @@ int TLSSession::tlsConnect(const std::string& hostname,
   return TLS_ERR_OK;
 }
 
-int TLSSession::tlsAccept()
+int OpenSSLTLSSession::tlsAccept()
 {
   return handshake();
 }
 
-std::string TLSSession::getLastErrorString()
+std::string OpenSSLTLSSession::getLastErrorString()
 {
   if(rv_ <= 0) {
     int sslError = SSL_get_error(ssl_, rv_);

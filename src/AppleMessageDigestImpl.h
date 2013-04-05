@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Nils Maier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,59 +32,40 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_LIBSSL_TLS_CONTEXT_H
-#define D_LIBSSL_TLS_CONTEXT_H
+#ifndef D_APPLE_MESSAGE_DIGEST_IMPL_H
+#define D_APPLE_MESSAGE_DIGEST_IMPL_H
 
 #include "common.h"
 
 #include <string>
 
-# include <openssl/ssl.h>
-
-#include "TLSContext.h"
-#include "DlAbortEx.h"
+#include "SharedHandle.h"
 
 namespace aria2 {
 
-class OpenSSLTLSContext : public TLSContext {
+class MessageDigestImpl {
 public:
-  OpenSSLTLSContext(TLSSessionSide side);
+  static SharedHandle<MessageDigestImpl> sha1();
+  static SharedHandle<MessageDigestImpl> create(const std::string& hashType);
 
-  ~OpenSSLTLSContext();
+  static bool supports(const std::string& hashType);
+  static size_t getDigestLength(const std::string& hashType);
 
-  // private key `keyfile' must be decrypted.
-  virtual bool addCredentialFile(const std::string& certfile,
-                                 const std::string& keyfile);
+public:
+  virtual size_t getDigestLength() const = 0;
+  virtual void reset() = 0;
+  virtual void update(const void* data, size_t length) = 0;
+  virtual void digest(unsigned char* md) = 0;
 
-  virtual bool addSystemTrustedCACerts();
-
-  // certfile can contain multiple certificates.
-  virtual bool addTrustedCACertFile(const std::string& certfile);
-
-  virtual bool good() const;
-
-  virtual TLSSessionSide getSide() const {
-    return side_;
-  }
-
-  virtual bool getVerifyPeer() const {
-    return verifyPeer_;
-  }
-  virtual void setVerifyPeer(bool verify) {
-    verifyPeer_ = verify;
-  }
-
-  SSL_CTX* getSSLCtx() const {
-    return sslCtx_;
-  }
+protected:
+  MessageDigestImpl() {}
 
 private:
-  SSL_CTX* sslCtx_;
-  TLSSessionSide side_;
-  bool good_;
-  bool verifyPeer_;
+  MessageDigestImpl(const MessageDigestImpl&);
+  MessageDigestImpl& operator=(const MessageDigestImpl&);
+
 };
 
 } // namespace aria2
 
-#endif // D_LIBSSL_TLS_CONTEXT_H
+#endif // D_APPLE_MESSAGE_DIGEST_IMPL_H

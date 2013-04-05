@@ -37,8 +37,6 @@
 
 #include "common.h"
 
-#include <string>
-
 #include <gnutls/gnutls.h>
 
 #include "TLSContext.h"
@@ -46,45 +44,41 @@
 
 namespace aria2 {
 
-class TLSContext {
-private:
-  gnutls_certificate_credentials_t certCred_;
-
-  TLSSessionSide side_;
-
-  bool good_;
-
-  bool peerVerificationEnabled_;
+class GnuTLSContext : public TLSContext {
 public:
-  TLSContext(TLSSessionSide side);
+  GnuTLSContext(TLSSessionSide side);
 
-  ~TLSContext();
+  virtual ~GnuTLSContext();
 
   // private key `keyfile' must be decrypted.
-  bool addCredentialFile(const std::string& certfile,
-                         const std::string& keyfile);
+  virtual bool addCredentialFile(const std::string& certfile,
+                                 const std::string& keyfile);
 
-  bool addSystemTrustedCACerts();
+  virtual bool addSystemTrustedCACerts();
 
   // certfile can contain multiple certificates.
-  bool addTrustedCACertFile(const std::string& certfile);
+  virtual bool addTrustedCACertFile(const std::string& certfile);
 
-  bool good() const;
+  virtual bool good() const;
 
-  bool bad() const;
-
-  gnutls_certificate_credentials_t getCertCred() const;
-
-  TLSSessionSide getSide() const
-  {
+  virtual TLSSessionSide getSide() const {
     return side_;
   }
 
-  void enablePeerVerification();
+  virtual bool getVerifyPeer() const {
+    return verifyPeer_;
+  }
+  virtual void setVerifyPeer(bool verify) {
+    verifyPeer_ = verify;
+  }
 
-  void disablePeerVerification();
+  gnutls_certificate_credentials_t getCertCred() const;
 
-  bool peerVerificationEnabled() const;
+private:
+  gnutls_certificate_credentials_t certCred_;
+  TLSSessionSide side_;
+  bool good_;
+  bool verifyPeer_;
 };
 
 } // namespace aria2

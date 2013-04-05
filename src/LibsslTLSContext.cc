@@ -43,10 +43,15 @@
 
 namespace aria2 {
 
-TLSContext::TLSContext(TLSSessionSide side)
+TLSContext* TLSContext::make(TLSSessionSide side)
+{
+  return new OpenSSLTLSContext(side);
+}
+
+OpenSSLTLSContext::OpenSSLTLSContext(TLSSessionSide side)
   : sslCtx_(0),
     side_(side),
-    peerVerificationEnabled_(false)
+    verifyPeer_(true)
 {
   sslCtx_ = SSL_CTX_new(SSLv23_method());
   if(sslCtx_) {
@@ -70,22 +75,17 @@ TLSContext::TLSContext(TLSSessionSide side)
   #endif
 }
 
-TLSContext::~TLSContext()
+OpenSSLTLSContext::~OpenSSLTLSContext()
 {
   SSL_CTX_free(sslCtx_);
 }
 
-bool TLSContext::good() const
+bool OpenSSLTLSContext::good() const
 {
   return good_;
 }
 
-bool TLSContext::bad() const
-{
-  return !good_;
-}
-
-bool TLSContext::addCredentialFile(const std::string& certfile,
+bool OpenSSLTLSContext::addCredentialFile(const std::string& certfile,
                                    const std::string& keyfile)
 {
   if(SSL_CTX_use_PrivateKey_file(sslCtx_, keyfile.c_str(),
@@ -107,7 +107,7 @@ bool TLSContext::addCredentialFile(const std::string& certfile,
   return true;
 }
 
-bool TLSContext::addSystemTrustedCACerts()
+bool OpenSSLTLSContext::addSystemTrustedCACerts()
 {
   if(SSL_CTX_set_default_verify_paths(sslCtx_) != 1) {
     A2_LOG_INFO(fmt(MSG_LOADING_SYSTEM_TRUSTED_CA_CERTS_FAILED,
@@ -119,7 +119,7 @@ bool TLSContext::addSystemTrustedCACerts()
   }
 }
 
-bool TLSContext::addTrustedCACertFile(const std::string& certfile)
+bool OpenSSLTLSContext::addTrustedCACertFile(const std::string& certfile)
 {
   if(SSL_CTX_load_verify_locations(sslCtx_, certfile.c_str(), 0) != 1) {
     A2_LOG_ERROR(fmt(MSG_LOADING_TRUSTED_CA_CERT_FAILED,
@@ -130,16 +130,6 @@ bool TLSContext::addTrustedCACertFile(const std::string& certfile)
     A2_LOG_INFO("Trusted CA certificates were successfully added.");
     return true;
   }
-}
-
-void TLSContext::enablePeerVerification()
-{
-  peerVerificationEnabled_ = true;
-}
-
-void TLSContext::disablePeerVerification()
-{
-  peerVerificationEnabled_ = false;
 }
 
 } // namespace aria2

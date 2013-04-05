@@ -39,32 +39,29 @@
 
 #include <openssl/ssl.h>
 
-#include <string>
-
-#include "TLSSessionConst.h"
+#include "LibsslTLSContext.h"
+#include "TLSSession.h"
 #include "a2netcompat.h"
 
 namespace aria2 {
 
-class TLSContext;
-
-class TLSSession {
+class OpenSSLTLSSession : public TLSSession {
 public:
-  TLSSession(TLSContext* tlsContext);
-  ~TLSSession();
-  int init(sock_t sockfd);
-  int setSNIHostname(const std::string& hostname);
-  int closeConnection();
-  int checkDirection();
-  ssize_t writeData(const void* data, size_t len);
-  ssize_t readData(void* data, size_t len);
-  int tlsConnect(const std::string& hostname, std::string& handshakeErr);
-  int tlsAccept();
-  std::string getLastErrorString();
+  OpenSSLTLSSession(OpenSSLTLSContext* tlsContext);
+  virtual ~OpenSSLTLSSession();
+  virtual int init(sock_t sockfd);
+  virtual int setSNIHostname(const std::string& hostname);
+  virtual int closeConnection();
+  virtual int checkDirection();
+  virtual ssize_t writeData(const void* data, size_t len);
+  virtual ssize_t readData(void* data, size_t len);
+  virtual int tlsConnect(const std::string& hostname, std::string& handshakeErr);
+  virtual int tlsAccept();
+  virtual std::string getLastErrorString();
 private:
   int handshake();
   SSL* ssl_;
-  TLSContext* tlsContext_;
+  OpenSSLTLSContext* tlsContext_;
   // Last error code from openSSL library functions
   int rv_;
 };

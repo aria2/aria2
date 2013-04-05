@@ -299,38 +299,53 @@ SRCS += EpollEventPoll.cc EpollEventPoll.h
 endif # HAVE_EPOLL
 
 if ENABLE_SSL
-SRCS += TLSContext.h\
-	TLSSession.h\
-	TLSSessionConst.h
+SRCS += TLSSession.h TLSSessionConst.h
 endif # ENABLE_SSL
 
+if USE_APPLE_MD
+SRCS += AppleMessageDigestImpl.cc AppleMessageDigestImpl.h
+endif
+
+if HAVE_APPLETLS
+SRCS += AppleTLSContext.cc AppleTLSContext.h \
+        AppleTLSSession.cc AppleTLSSession.h
+endif
+
 if HAVE_LIBGNUTLS
-SRCS += LibgnutlsTLSContext.cc LibgnutlsTLSContext.h\
-	LibgnutlsTLSSession.cc LibgnutlsTLSSession.h
+SRCS += LibgnutlsTLSContext.cc LibgnutlsTLSContext.h \
+        LibgnutlsTLSSession.cc LibgnutlsTLSSession.h
 endif # HAVE_LIBGNUTLS
 
 if HAVE_LIBGCRYPT
-SRCS += LibgcryptMessageDigestImpl.cc LibgcryptMessageDigestImpl.h\
-	LibgcryptARC4Encryptor.cc LibgcryptARC4Encryptor.h\
-	LibgcryptDHKeyExchange.cc LibgcryptDHKeyExchange.h
+SRCS += LibgcryptARC4Encryptor.cc LibgcryptARC4Encryptor.h \
+        LibgcryptDHKeyExchange.cc LibgcryptDHKeyExchange.h
+if USE_LIBGCRYPT_MD
+SRCS += LibgcryptMessageDigestImpl.cc LibgcryptMessageDigestImpl.h
+endif
 endif # HAVE_LIBGCRYPT
 
 if HAVE_LIBNETTLE
-SRCS += LibnettleMessageDigestImpl.cc LibnettleMessageDigestImpl.h\
-	LibnettleARC4Encryptor.cc LibnettleARC4Encryptor.h
+SRCS += LibnettleARC4Encryptor.cc LibnettleARC4Encryptor.h
+if USE_LIBNETTLE_MD
+SRCS += LibnettleMessageDigestImpl.cc LibnettleMessageDigestImpl.h
+endif
 endif # HAVE_LIBNETTLE
 
 if HAVE_LIBGMP
-SRCS += a2gmp.cc a2gmp.h\
-	LibgmpDHKeyExchange.cc LibgmpDHKeyExchange.h
+SRCS += a2gmp.cc a2gmp.h \
+        LibgmpDHKeyExchange.cc LibgmpDHKeyExchange.h
 endif # HAVE_LIBGMP
 
 if HAVE_OPENSSL
-SRCS += LibsslTLSContext.cc LibsslTLSContext.h\
-	LibsslTLSSession.cc LibsslTLSSession.h\
-	LibsslMessageDigestImpl.cc LibsslMessageDigestImpl.h\
-	LibsslARC4Encryptor.cc LibsslARC4Encryptor.h\
-	LibsslDHKeyExchange.cc LibsslDHKeyExchange.h
+SRCS += LibsslARC4Encryptor.cc LibsslARC4Encryptor.h \
+        LibsslDHKeyExchange.cc LibsslDHKeyExchange.h
+if !HAVE_APPLETLS
+SRCS += LibsslTLSContext.cc LibsslTLSContext.h \
+        LibsslTLSSession.cc LibsslTLSSession.h
+endif
+if USE_OPENSSL_MD
+SRCS += LibsslMessageDigestImpl.cc LibsslMessageDigestImpl.h
+endif
 endif # HAVE_OPENSSL
 
 if HAVE_ZLIB

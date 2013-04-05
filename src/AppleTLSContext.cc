@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Nils Maier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,59 +32,31 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_LIBSSL_TLS_CONTEXT_H
-#define D_LIBSSL_TLS_CONTEXT_H
+#include "AppleTLSContext.h"
 
-#include "common.h"
-
-#include <string>
-
-# include <openssl/ssl.h>
-
-#include "TLSContext.h"
-#include "DlAbortEx.h"
+#include "LogFactory.h"
+#include "Logger.h"
+#include "fmt.h"
+#include "message.h"
 
 namespace aria2 {
 
-class OpenSSLTLSContext : public TLSContext {
-public:
-  OpenSSLTLSContext(TLSSessionSide side);
+TLSContext* TLSContext::make(TLSSessionSide side) {
+  return new AppleTLSContext(side);
+}
 
-  ~OpenSSLTLSContext();
+bool AppleTLSContext::addCredentialFile(const std::string& certfile,
+                                        const std::string& keyfile)
+{
+  A2_LOG_WARN("TLS credential files are not supported. Use the KeyChain to manage your certificates.");
+  return false;
+}
 
-  // private key `keyfile' must be decrypted.
-  virtual bool addCredentialFile(const std::string& certfile,
-                                 const std::string& keyfile);
+bool AppleTLSContext::addTrustedCACertFile(const std::string& certfile)
+{
+  A2_LOG_WARN("TLS CA bundle files are not supported. Use the KeyChain to manage your certificates.");
+  return false;
+}
 
-  virtual bool addSystemTrustedCACerts();
-
-  // certfile can contain multiple certificates.
-  virtual bool addTrustedCACertFile(const std::string& certfile);
-
-  virtual bool good() const;
-
-  virtual TLSSessionSide getSide() const {
-    return side_;
-  }
-
-  virtual bool getVerifyPeer() const {
-    return verifyPeer_;
-  }
-  virtual void setVerifyPeer(bool verify) {
-    verifyPeer_ = verify;
-  }
-
-  SSL_CTX* getSSLCtx() const {
-    return sslCtx_;
-  }
-
-private:
-  SSL_CTX* sslCtx_;
-  TLSSessionSide side_;
-  bool good_;
-  bool verifyPeer_;
-};
 
 } // namespace aria2
-
-#endif // D_LIBSSL_TLS_CONTEXT_H

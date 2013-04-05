@@ -45,10 +45,15 @@
 
 namespace aria2 {
 
-TLSContext::TLSContext(TLSSessionSide side)
+TLSContext* TLSContext::make(TLSSessionSide side)
+{
+  return new GnuTLSContext(side);
+}
+
+GnuTLSContext::GnuTLSContext(TLSSessionSide side)
   : certCred_(0),
     side_(side),
-    peerVerificationEnabled_(false)
+    verifyPeer_(true)
 {
   int r = gnutls_certificate_allocate_credentials(&certCred_);
   if(r == GNUTLS_E_SUCCESS) {
@@ -63,24 +68,19 @@ TLSContext::TLSContext(TLSSessionSide side)
   }
 }
 
-TLSContext::~TLSContext()
+GnuTLSContext::~GnuTLSContext()
 {
   if(certCred_) {
     gnutls_certificate_free_credentials(certCred_);
   }
 }
 
-bool TLSContext::good() const
+bool GnuTLSContext::good() const
 {
   return good_;
 }
 
-bool TLSContext::bad() const
-{
-  return !good_;
-}
-
-bool TLSContext::addCredentialFile(const std::string& certfile,
+bool GnuTLSContext::addCredentialFile(const std::string& certfile,
                                    const std::string& keyfile)
 {
   int ret = gnutls_certificate_set_x509_key_file(certCred_,
@@ -101,7 +101,7 @@ bool TLSContext::addCredentialFile(const std::string& certfile,
   }
 }
 
-bool TLSContext::addSystemTrustedCACerts()
+bool GnuTLSContext::addSystemTrustedCACerts()
 {
 #ifdef HAVE_GNUTLS_CERTIFICATE_SET_X509_SYSTEM_TRUST
   int ret = gnutls_certificate_set_x509_system_trust(certCred_);
@@ -114,11 +114,12 @@ bool TLSContext::addSystemTrustedCACerts()
     return true;
   }
 #else
+  A2_LOG_WARN("System certificates not supported");
   return false;
 #endif
 }
 
-bool TLSContext::addTrustedCACertFile(const std::string& certfile)
+bool GnuTLSContext::addTrustedCACertFile(const std::string& certfile)
 {
   int ret = gnutls_certificate_set_x509_trust_file(certCred_,
                                                    certfile.c_str(),
@@ -133,24 +134,9 @@ bool TLSContext::addTrustedCACertFile(const std::string& certfile)
   }
 }
 
-gnutls_certificate_credentials_t TLSContext::getCertCred() const
+gnutls_certificate_credentials_t GnuTLSContext::getCertCred() const
 {
   return certCred_;
-}
-
-void TLSContext::enablePeerVerification()
-{
-  peerVerificationEnabled_ = true;
-}
-
-void TLSContext::disablePeerVerification()
-{
-  peerVerificationEnabled_ = false;
-}
-
-bool TLSContext::peerVerificationEnabled() const
-{
-  return peerVerificationEnabled_;
 }
 
 } // namespace aria2
