@@ -203,6 +203,7 @@ if test "x$with_openssl" = "xyes" && test "x$have_appletls" != "xyes" && test "x
     AC_CHECK_FUNCS([EVP_sha256])
     AC_CHECK_FUNCS([EVP_sha384])
     AC_CHECK_FUNCS([EVP_sha512])
+    AC_CHECK_FUNCS([X509_check_host])
   else
     AC_MSG_WARN([$OPENSSL_PKG_ERRORS])
     if test "x$with_openssl_requested" = "xyes"; then
