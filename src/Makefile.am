@@ -248,6 +248,7 @@ SRCS =  SocketCore.cc SocketCore.h\
 	SaveSessionCommand.h SaveSessionCommand.cc\
 	BackupIPv4ConnectCommand.h BackupIPv4ConnectCommand.cc\
 	ConnectCommand.cc ConnectCommand.h\
+	ControlChain.h\
 	HttpRequestConnectChain.h\
 	HttpProxyRequestConnectChain.h\
 	FtpNegotiationConnectChain.h\
@@ -299,7 +300,7 @@ SRCS += EpollEventPoll.cc EpollEventPoll.h
 endif # HAVE_EPOLL
 
 if ENABLE_SSL
-SRCS += TLSSession.h TLSSessionConst.h
+SRCS += TLSContext.h TLSSession.h
 endif # ENABLE_SSL
 
 if USE_APPLE_MD
@@ -312,7 +313,7 @@ SRCS += AppleTLSContext.cc AppleTLSContext.h \
 endif
 
 if HAVE_LIBGNUTLS
-SRCS += LibgnutlsTLSContext.cc LibgnutlsTLSContext.h \
+SRCS += LibgnutlsTLSContext.cc LibgnutlsTLSContext.h \
         LibgnutlsTLSSession.cc LibgnutlsTLSSession.h
 endif # HAVE_LIBGNUTLS
 
