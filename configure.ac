@@ -270,7 +270,7 @@ else
       AC_DEFINE([USE_LIBGCRYPT_MD], [1], [What message digest implementation to use])
       use_md="libgcrypt"
     else
-      if test = "x$have_openssl" = "xyes"; then
+      if test "x$have_openssl" = "xyes"; then
         AC_DEFINE([USE_OPENSSL_MD], [1], [What message digest implementation to use])
         use_md="openssl"
       fi
