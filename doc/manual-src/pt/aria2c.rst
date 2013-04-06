@@ -1,14 +1,5 @@
 .. _aria2c:
 
-.. meta::
-   :description lang=pt: Manual Aria2 em português
-   :keyword: programa para download gratuito, download android, download
-             bittorrent, download linha de comando, download de músicas,
-             download de ftp, download http, download https, mac OS/X,
-             windows, linux, manual download aria2, torrent, download stream
-   :author: t-tujikawa_at_users_dot_sourceforge_dot_net english version
-   :author: gsavix@gmail.com tradução para português do brasil
-
 aria2c(1)
 =========
 
