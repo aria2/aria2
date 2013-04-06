@@ -114,7 +114,7 @@ bool GnuTLSContext::addSystemTrustedCACerts()
     return true;
   }
 #else
-  A2_LOG_WARN("System certificates not supported");
+  A2_LOG_INFO("System certificates not supported");
   return false;
 #endif
 }

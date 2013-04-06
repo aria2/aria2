@@ -54,7 +54,7 @@ bool AppleTLSContext::addCredentialFile(const std::string& certfile,
 
 bool AppleTLSContext::addTrustedCACertFile(const std::string& certfile)
 {
-  A2_LOG_WARN("TLS CA bundle files are not supported. Use the KeyChain to manage your certificates.");
+  A2_LOG_INFO("TLS CA bundle files are not supported. Use the KeyChain to manage your certificates.");
   return false;
 }
 
