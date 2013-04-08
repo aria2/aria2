@@ -50,10 +50,11 @@ class AppleTLSContext : public TLSContext {
 public:
   AppleTLSContext(TLSSessionSide side)
     : side_(side),
-      verifyPeer_(true)
+      verifyPeer_(true),
+      credentials_(0)
   {}
 
-  virtual ~AppleTLSContext() {}
+  virtual ~AppleTLSContext();
 
   // private key `keyfile' must be decrypted.
   virtual bool addCredentialFile(const std::string& certfile,
@@ -80,9 +81,14 @@ public:
     verifyPeer_ = verify;
   }
 
+  SecIdentityRef getCredentials();
+
 private:
   TLSSessionSide side_;
   bool verifyPeer_;
+  SecIdentityRef credentials_;
+
+  bool tryAsFingerprint(const std::string& fingerprint);
 };
 
 } // namespace aria2

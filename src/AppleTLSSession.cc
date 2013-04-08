@@ -39,8 +39,9 @@
 
 #include <CoreFoundation/CoreFoundation.h>
 
-#include "fmt.h"
 #include "LogFactory.h"
+#include "a2functional.h"
+#include "fmt.h"
 
 #define ioErr -36
 #define paramErr -50
@@ -51,6 +52,28 @@ namespace {
   static const SSLProtocol kTLSProtocol11 = (SSLProtocol)(kSSLProtocolAll + 1);
   static const SSLProtocol kTLSProtocol12 = (SSLProtocol)(kSSLProtocolAll + 2);
 #endif
+
+#ifndef CIPHER_NO_DHPARAM
+  // Diffie-Hellman params, to seed the engine instead of having it spend up
+  // to 30 seconds on generating them. It should be save to share these. :p
+  // This was generated using: openssl dhparam -outform DER 2048
+  static const uint8_t dhparam[] =
+    "\x30\x82\x01\x08\x02\x82\x01\x01\x00\x97\xea\xd0\x46\xf7\xae\xa7\x76\x80"
+    "\x9c\x74\x56\x98\xd8\x56\x97\x2b\x20\x6c\x77\xe2\x82\xbb\xc8\x84\xbe\xe7"
+    "\x63\xaf\xcc\x30\xd0\x67\x97\x7d\x1b\xab\x59\x30\xa9\x13\x67\x21\xd7\xd4"
+    "\x0e\x46\xcf\xe5\x80\xdf\xc9\xb9\xba\x54\x9b\x46\x2f\x3b\x45\xfc\x2f\xaf"
+    "\xad\xc0\x17\x56\xdd\x52\x42\x57\x45\x70\x14\xe5\xbe\x67\xaa\xde\x69\x75"
+    "\x30\x0d\xf9\xa2\xc4\x63\x4d\x7a\x39\xef\x14\x62\x18\x33\x44\xa1\xf9\xc1"
+    "\x52\xd1\xb6\x72\x21\x98\xf8\xab\x16\x1b\x7b\x37\x65\xe3\xc5\x11\x00\xf6"
+    "\x36\x1f\xd8\x5f\xd8\x9f\x43\xa8\xce\x9d\xbf\x5e\xd6\x2d\xfa\x0a\xc2\x01"
+    "\x54\xc2\xd9\x81\x54\x55\xb5\x26\xf8\x88\x37\xf5\xfe\xe0\xef\x4a\x34\x81"
+    "\xdc\x5a\xb3\x71\x46\x27\xe3\xcd\x24\xf6\x1b\xf1\xe2\x0f\xc2\xa1\x39\x53"
+    "\x5b\xc5\x38\x46\x8e\x67\x4c\xd9\xdd\xe4\x37\x06\x03\x16\xf1\x1d\x7a\xba"
+    "\x2d\xc1\xe4\x03\x1a\x58\xe5\x29\x5a\x29\x06\x69\x61\x7a\xd8\xa9\x05\x9f"
+    "\xc1\xa2\x45\x9c\x17\xad\x52\x69\x33\xdc\x18\x8d\x15\xa6\x5e\xcd\x94\xf4"
+    "\x45\xbb\x9f\xc2\x7b\x85\x00\x61\xb0\x1a\xdc\x3c\x86\xaa\x9f\x5c\x04\xb3"
+    "\x90\x0b\x35\x64\xff\xd9\xe3\xac\xf2\xf2\xeb\x3a\x63\x02\x01\x02";
+#endif // CIPHER_NO_DHPARAM
 
   static inline const char *protoToString(SSLProtocol proto) {
     switch (proto) {
@@ -309,8 +332,41 @@ AppleTLSSession::AppleTLSSession(AppleTLSContext* ctx)
   if (SSLSetEnabledCiphers(sslCtx_, &enabled[0], enabled.size()) != noErr) {
     A2_LOG_ERROR("AppleTLS: Failed to set enabled ciphers list");
     state_ = st_error;
+    return;
   }
 #endif
+
+  if (ctx->getSide() == TLS_SERVER) {
+    SecIdentityRef creds = ctx->getCredentials();
+    if (!creds) {
+      A2_LOG_ERROR("AppleTLS: No credentials");
+      state_ = st_error;
+      return;
+    }
+    CFArrayRef certs = CFArrayCreate(0, (const void**)&creds, 1, 0);
+    if (!certs) {
+      A2_LOG_ERROR("AppleTLS: Failed to setup credentials");
+      state_ = st_error;
+      return;
+    }
+    auto_delete<const void*> del_certs(certs, CFRelease);
+    lastError_ = SSLSetCertificate(sslCtx_, certs);
+    if (lastError_ != noErr) {
+      A2_LOG_ERROR(fmt("AppleTLS: Failed to set credentials: %s", getLastErrorString().c_str()));
+      state_ = st_error;
+      return;
+    }
+
+#ifndef CIPHER_NO_DHPARAM
+    lastError_ = SSLSetDiffieHellmanParams(sslCtx_, dhparam, sizeof(dhparam));
+    if (lastError_ != noErr) {
+      A2_LOG_WARN(fmt("AppleTLS: Failed to set DHParams: %s", getLastErrorString().c_str()));
+      // Engine will still generate some for us, so this is no problem, except
+      // it will take longer.
+    }
+#endif // CIPHER_NO_DHPARAM
+
+  }
 }
 
 AppleTLSSession::~AppleTLSSession()
