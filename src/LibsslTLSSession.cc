@@ -199,6 +199,16 @@ int OpenSSLTLSSession::tlsConnect(const std::string& hostname,
       handshakeErr = X509_verify_cert_error_string(verifyResult);
       return TLS_ERR_ERROR;
     }
+#if HAVE_X509_CHECK_HOST
+    if (!X509_check_host(peerCert,
+                         reinterpret_cast<const unsigned char*>(hostname.c_str()),
+                         hostname.length(),
+                         0)) {
+      handshakeErr = "hostname does not match";
+      return TLS_ERR_ERROR;
+    }
+#else // HAVE_X509_CHECK_HOST
+    // Legacy custom implementation
     std::string commonName;
     std::vector<std::string> dnsNames;
     std::vector<std::string> ipAddrs;
@@ -257,6 +267,7 @@ int OpenSSLTLSSession::tlsConnect(const std::string& hostname,
       handshakeErr = "hostname does not match";
       return TLS_ERR_ERROR;
     }
+#endif // HAVE_X509_CHECK_HOST
   }
   return TLS_ERR_OK;
 }

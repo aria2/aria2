@@ -40,6 +40,38 @@
 #include "util.h"
 #include "SocketCore.h"
 
+namespace {
+  static const char* statusToString(unsigned int status)
+  {
+    if (status & GNUTLS_CERT_REVOKED) {
+      return "Certificate is revoked";
+    }
+    if (status & GNUTLS_CERT_SIGNER_NOT_FOUND) {
+      return "Certificate is self-signed and untrusted";
+    }
+    if (status & GNUTLS_CERT_SIGNER_NOT_CA) {
+      return "Certifcate last CA signature";
+    }
+    if (status & GNUTLS_CERT_INSECURE_ALGORITHM) {
+      return "Certifcate uses insecure algorithm";
+    }
+    if (status & GNUTLS_CERT_NOT_ACTIVATED) {
+      return "Certificate not yet valid";
+    }
+    if (status & GNUTLS_CERT_EXPIRED) {
+      return "Certificate expired";
+    }
+    if (status & GNUTLS_CERT_SIGNATURE_FAILURE) {
+      return "Certificate signature mismatched";
+    }
+    if (status & GNUTLS_CERT_MISMATCH) {
+      return "Certificate does not match host";
+    }
+    return "Certificate invalid or corrupt";
+  }
+}
+
+
 namespace aria2 {
 
 TLSSession* TLSSession::make(TLSContext* ctx)
@@ -162,45 +194,41 @@ int GnuTLSSession::tlsConnect(const std::string& hostname,
     if(rv_ == GNUTLS_E_AGAIN) {
       return TLS_ERR_WOULDBLOCK;
     } else {
+      handshakeErr = getLastErrorString();
       return TLS_ERR_ERROR;
     }
   }
   if(tlsContext_->getVerifyPeer()) {
     // verify peer
-    unsigned int status;
-    rv_ = gnutls_certificate_verify_peers2(sslSession_, &status);
-    if(rv_ != GNUTLS_E_SUCCESS) {
-      return TLS_ERR_ERROR;
-    }
-    if(status) {
-      handshakeErr = "";
-      if(status & GNUTLS_CERT_INVALID) {
-        handshakeErr += " `not signed by known authorities or invalid'";
-      }
-      if(status & GNUTLS_CERT_REVOKED) {
-        handshakeErr += " `revoked by its CA'";
-      }
-      if(status & GNUTLS_CERT_SIGNER_NOT_FOUND) {
-        handshakeErr += " `issuer is not known'";
-      }
-      // TODO should check GNUTLS_CERT_SIGNER_NOT_CA ?
-      if(status & GNUTLS_CERT_INSECURE_ALGORITHM) {
-        handshakeErr += " `insecure algorithm'";
-      }
-      if(status & GNUTLS_CERT_NOT_ACTIVATED) {
-        handshakeErr += " `not activated yet'";
-      }
-      if(status & GNUTLS_CERT_EXPIRED) {
-        handshakeErr += " `expired'";
-      }
-      // TODO Add GNUTLS_CERT_SIGNATURE_FAILURE here
-      if(!handshakeErr.empty()) {
-        return TLS_ERR_ERROR;
-      }
-    }
+
     // certificate type: only X509 is allowed.
     if(gnutls_certificate_type_get(sslSession_) != GNUTLS_CRT_X509) {
-      handshakeErr = "certificate type must be X509";
+      handshakeErr = "Not an X509 certificate";
+      return TLS_ERR_ERROR;
+    }
+
+#ifdef HAVE_GNUTLS_CERTIFICATE_VERIFY_PEERS3
+    // Up-to-date implementation using verify_peers3 (3.1.4+)
+    unsigned int status;
+    rv_ = gnutls_certificate_verify_peers3(sslSession_, hostname.c_str(), &status);
+    if (rv_ != GNUTLS_E_SUCCESS) {
+      handshakeErr = "Internal GnuTLS error";
+      return TLS_ERR_ERROR;
+    }
+    if (status != 0) {
+      handshakeErr = statusToString(status);
+      return TLS_ERR_ERROR;
+    }
+#else // HAVE_GNUTLS_CERTIFICATE_VERIFY_PEERS3
+    // Legacy implementations without verify_peers3
+    unsigned int status;
+    rv_ = gnutls_certificate_verify_peers2(sslSession_, &status);
+    if (rv_ != GNUTLS_E_SUCCESS) {
+      handshakeErr = "Internal GnuTLS error";
+      return TLS_ERR_ERROR;
+    }
+    if (status != 0) {
+      handshakeErr = statusToString(status);
       return TLS_ERR_ERROR;
     }
     unsigned int peerCertsLength;
@@ -220,6 +248,15 @@ int GnuTLSSession::tlsConnect(const std::string& hostname,
     if(rv_ != GNUTLS_E_SUCCESS) {
       return TLS_ERR_ERROR;
     }
+#ifdef HAVE_GNUTLS_X509_CERT_CHECK_HOSTNAME
+    // Somewhat legacy implementation using check_hostname
+    int ret = gnutls_x509_crt_check_hostname(cert, hostname.c_str());
+    if (ret == 0) {
+      handshakeError = statusToString(GNUTLS_CERT_MISMATCH);
+      return TLS_ERR_ERROR;
+    }
+#else // HAVE_GNUTLS_X509_CERT_CHECK_HOSTNAME
+    // Very legacy custom implementation.
     std::string commonName;
     std::vector<std::string> dnsNames;
     std::vector<std::string> ipAddrs;
@@ -244,9 +281,11 @@ int GnuTLSSession::tlsConnect(const std::string& hostname,
       commonName.assign(altName, altNameLen);
     }
     if(!net::verifyHostname(hostname, dnsNames, ipAddrs, commonName)) {
-      handshakeErr = "hostname does not match";
+      handshakeErr = statusToString(GNUTLS_CERT_MISMATCH);
       return TLS_ERR_ERROR;
     }
+#endif // HAVE_GNUTLS_X509_CERT_CHECK_HOSTNAME
+#endif // HAVE_GNUTLS_CERTIFICATE_VERIFY_PEERS3
   }
   return TLS_ERR_OK;
 }
