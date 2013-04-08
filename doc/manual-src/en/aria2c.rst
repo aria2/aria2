@@ -922,6 +922,14 @@ RPC Options
   in PEM format. Use :option:`--rpc-private-key` option to specify the
   private key. Use :option:`--rpc-secure` option to enable encryption.
 
+  *AppleTLS* users should use the Keychain Access utility to first generate a
+  self-signed SSL-Server certificate, e.g. using the wizard, and get the
+  SHA-1 fingerprint from the Information dialog corresponding to that new
+  certificate.
+  To start aria2c with :option:`--rpc-secure` use
+  `--rpc-certificate=<SHA-1>` and just omit the :option:`--rpc-private-key`
+  option.
+
 .. option:: --rpc-listen-all[=true|false]
 
   Listen incoming JSON-RPC/XML-RPC requests on all network interfaces. If false
