@@ -38,6 +38,7 @@
 #include "common.h"
 
 #include <string>
+#include <vector>
 
 #include "SharedHandle.h"
 
@@ -68,6 +69,9 @@ public:
   // Returns true if hashType is supported. Otherwise returns false.
   static bool supports(const std::string& hashType);
 
+  // Returns a vector containing supported hash function textual names.
+  static std::vector<std::string> getSupportedHashTypes();
+
   // Returns string containing supported hash function textual names
   // joined with ','.
   static std::string getSupportedHashTypeString();
@@ -93,7 +97,7 @@ public:
   // Resets this object so that it can be reused.
   void reset();
 
-  void update(const void* data, size_t length);
+  MessageDigest& update(const void* data, size_t length);
 
   // Stores digest in the region pointed by md. It is caller's
   // responsibility to allocate memory at least getDigestLength().

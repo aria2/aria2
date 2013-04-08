@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "MessageDigest.h"
+
+#include <sstream>
+
 #include "MessageDigestImpl.h"
 #include "util.h"
 #include "array_fun.h"
@@ -84,19 +87,24 @@ bool MessageDigest::supports(const std::string& hashType)
   return MessageDigestImpl::supports(hashType);
 }
 
+std::vector<std::string> MessageDigest::getSupportedHashTypes()
+{
+  std::vector<std::string> rv;
+  for (HashTypeEntry *i = vbegin(hashTypes), *eoi = vend(hashTypes);
+       i != eoi; ++i) {
+      if (MessageDigestImpl::supports(i->hashType)) {
+        rv.push_back(i->hashType);
+      }
+  }
+  return rv;
+}
+
 std::string MessageDigest::getSupportedHashTypeString()
 {
-  std::string s;
-  for(HashTypeEntry* i = vbegin(hashTypes), *eoi = vend(hashTypes); i != eoi;
-      ++i) {
-    if(MessageDigestImpl::supports(i->hashType)) {
-      if(!s.empty()) {
-        s += ", ";
-      }
-      s += i->hashType;
-    }
-  }
-  return s;
+  std::vector<std::string> ht = getSupportedHashTypes();
+  std::stringstream ss;
+  std::copy(ht.begin(), ht.end(), std::ostream_iterator<std::string>(ss, ", "));
+  return ss.str().substr(ss.str().length() - 2);
 }
 
 size_t MessageDigest::getDigestLength(const std::string& hashType)
@@ -162,9 +170,10 @@ void MessageDigest::reset()
   pImpl_->reset();
 }
 
-void MessageDigest::update(const void* data, size_t length)
+MessageDigest& MessageDigest::update(const void* data, size_t length)
 {
   pImpl_->update(data, length);
+  return *this;
 }
 
 void MessageDigest::digest(unsigned char* md)

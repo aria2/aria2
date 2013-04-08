@@ -141,8 +141,11 @@ error_code::Value MultiUrlRequestInfo::execute()
 #ifdef ENABLE_SSL
     if(option_->getAsBool(PREF_ENABLE_RPC) &&
        option_->getAsBool(PREF_RPC_SECURE)) {
-      if(!option_->blank(PREF_RPC_CERTIFICATE) &&
-         !option_->blank(PREF_RPC_PRIVATE_KEY)) {
+      if(!option_->blank(PREF_RPC_CERTIFICATE)
+#ifndef HAVE_APPLETLS
+         && !option_->blank(PREF_RPC_PRIVATE_KEY)
+#endif // HAVE_APPLETLS
+         ) {
         // We set server TLS context to the SocketCore before creating
         // DownloadEngine instance.
         SharedHandle<TLSContext> svTlsContext(TLSContext::make(TLS_SERVER));
