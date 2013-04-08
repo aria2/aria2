@@ -79,8 +79,8 @@ public:
   // Returns TLS_WANT_READ if SSL/TLS session needs more data from
   // remote endpoint to proceed, or TLS_WANT_WRITE if SSL/TLS session
   // needs to write more data to proceed. If SSL/TLS session needs
-  // neither read nor write data at the moment, return value is
-  // undefined.
+  // neither read nor write data at the moment, TLS_WANT_READ must be
+  // returned.
   virtual int checkDirection() = 0;
 
   // Sends |data| with length |len|. This function returns the number
