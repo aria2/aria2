@@ -93,9 +93,9 @@ std::vector<std::string> MessageDigest::getSupportedHashTypes()
   std::vector<std::string> rv;
   for (HashTypeEntry *i = vbegin(hashTypes), *eoi = vend(hashTypes);
        i != eoi; ++i) {
-      if (MessageDigestImpl::supports(i->hashType)) {
-        rv.push_back(i->hashType);
-      }
+    if (MessageDigestImpl::supports(i->hashType)) {
+      rv.push_back(i->hashType);
+    }
   }
   return rv;
 }
