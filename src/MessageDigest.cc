@@ -35,6 +35,7 @@
 #include "MessageDigest.h"
 
 #include <sstream>
+#include <iterator>
 
 #include "MessageDigestImpl.h"
 #include "util.h"
@@ -104,7 +105,11 @@ std::string MessageDigest::getSupportedHashTypeString()
   std::vector<std::string> ht = getSupportedHashTypes();
   std::stringstream ss;
   std::copy(ht.begin(), ht.end(), std::ostream_iterator<std::string>(ss, ", "));
-  return ss.str().substr(ss.str().length() - 2);
+  std::string res = ss.str();
+  if(!res.empty()) {
+    res.erase(ss.str().length()-2);
+  }
+  return res;
 }
 
 size_t MessageDigest::getDigestLength(const std::string& hashType)
