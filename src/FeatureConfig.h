@@ -63,6 +63,10 @@ std::string featureSummary();
 // available in the build. If it is not available, returns NULL.
 const char* strSupportedFeature(int feature);
 
+// Returns summary string of 3rd party libraries directly used by
+// aria2.
+std::string usedLibs();
+
 } // namespace aria2
 
 #endif // D_FEATURE_CONFIG_H

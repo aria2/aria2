@@ -75,6 +75,8 @@ void showVersion() {
             << _("Hash Algorithms") << ": "
             << MessageDigest::getSupportedHashTypeString() << "\n"
 #endif // ENABLE_MESSAGE_DIGEST
+            << _("Libraries") << ": "
+            << usedLibs() << "\n"
             << "\n"
             << fmt(_("Report bugs to %s"), PACKAGE_BUGREPORT) << "\n"
             << _("Visit") << " " << PACKAGE_URL << std::endl;
