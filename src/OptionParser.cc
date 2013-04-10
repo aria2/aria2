@@ -240,7 +240,7 @@ void OptionParser::parse(Option& option, std::istream& is) const
     if(handler) {
       handler->parse(option, std::string(nv.second.first, nv.second.second));
     } else {
-      A2_LOG_WARN(fmt("Unknown option: %s", line.c_str()));
+      //A2_LOG_WARN(fmt("Unknown option: %s", line.c_str()));
     }
   }
 }

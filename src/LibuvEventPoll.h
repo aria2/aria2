@@ -71,13 +71,20 @@ private:
   friend int accumulateEvent(int events, const KEvent& event);
 
 private:
-  uv_loop_t* loop;
+  uv_loop_t* loop_;
 
   typedef std::set<SharedHandle<KSocketEntry>,
                    DerefLess<SharedHandle<KSocketEntry> > > KSocketEntrySet;
   KSocketEntrySet socketEntries_;
 
-  typedef std::map<sock_t, uv_poll_t*> KPolls;
+  typedef struct {
+    uv_poll_t p;
+    KSocketEntry *entry;
+    LibuvEventPoll *eventer;
+    int events;
+  } poll_t;
+
+  typedef std::map<sock_t, poll_t*> KPolls;
   KPolls polls_;
 
 #ifdef ENABLE_ASYNC_DNS
@@ -98,14 +105,21 @@ private:
 #endif
 
   static int translateEvents(EventPoll::EventType events);
-  static void poll_callback(uv_poll_t* handle, int status, int events);
+  static void close_poll_callback(uv_handle_t* handle) {
+    delete static_cast<poll_t*>(handle->data);
+  }
+  static void poll_callback(uv_poll_t* handle, int status, int events) {
+    poll_t* poll = static_cast<poll_t*>(handle->data);
+    poll->eventer->pollCallback(handle, poll, status, events);
+  }
+  void pollCallback(uv_poll_t* handle, poll_t *poll, int status, int events);
 
 public:
   LibuvEventPoll();
 
   virtual ~LibuvEventPoll();
 
-  bool good() const { return loop; }
+  bool good() const { return loop_; }
 
   virtual void poll(const struct timeval& tv);
 
