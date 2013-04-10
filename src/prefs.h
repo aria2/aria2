@@ -88,6 +88,7 @@ extern const std::string V_ERROR;
 extern const std::string V_INORDER;
 extern const std::string V_FEEDBACK;
 extern const std::string V_ADAPTIVE;
+extern const std::string V_LIBUV;
 extern const std::string V_EPOLL;
 extern const std::string V_KQUEUE;
 extern const std::string V_PORT;
