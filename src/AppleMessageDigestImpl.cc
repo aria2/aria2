@@ -49,6 +49,7 @@ template<size_t dlen,
 class MessageDigestBase : public MessageDigestImpl {
 public:
   MessageDigestBase() { reset(); }
+  virtual ~MessageDigestBase() {}
 
   virtual size_t getDigestLength() const {
     return dlen;

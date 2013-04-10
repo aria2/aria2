@@ -45,6 +45,7 @@ namespace aria2 {
 
 class MessageDigestImpl {
 public:
+  virtual ~MessageDigestImpl() {}
   static SharedHandle<MessageDigestImpl> sha1();
   static SharedHandle<MessageDigestImpl> create(const std::string& hashType);
 
