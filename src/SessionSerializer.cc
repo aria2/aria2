@@ -173,13 +173,12 @@ bool writeDownloadResult
       return true;
     }
     const SharedHandle<FileEntry>& file = dr->fileEntries[0];
-    std::vector<std::string> uris;
-    file->getUris(uris);
-    if(uris.empty()) {
+    if(file->getRemainingUris().empty()) {
       return true;
     }
-    for(std::vector<std::string>::const_iterator i = uris.begin(),
-          eoi = uris.end(); i != eoi; ++i) {
+    for(std::deque<std::string>::const_iterator i =
+          file->getRemainingUris().begin(),
+          eoi = file->getRemainingUris().end(); i != eoi; ++i) {
       if (fp.write((*i).c_str(), (*i).size()) != (*i).size() ||
           fp.write("\t", 1) != 1) {
         return false;
