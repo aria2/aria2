@@ -59,43 +59,74 @@ private:
   typedef CommandEvent<KSocketEntry, LibuvEventPoll> KCommandEvent;
   typedef ADNSEvent<KSocketEntry, LibuvEventPoll> KADNSEvent;
   typedef AsyncNameResolverEntry<LibuvEventPoll> KAsyncNameResolverEntry;
+
   friend class AsyncNameResolverEntry<LibuvEventPoll>;
-
-  class KSocketEntry:
-    public SocketEntry<KCommandEvent, KADNSEvent> {
-  public:
-    KSocketEntry(sock_t socket);
-    int getEvents();
-  };
-
   friend int accumulateEvent(int events, const KEvent& event);
 
-private:
-  uv_loop_t* loop_;
+  class KSocketEntry: public SocketEntry<KCommandEvent, KADNSEvent> {
+  public:
+    KSocketEntry(sock_t socket);
+    int getEvents() const;
+  };
+
+  class KPoll {
+  private:
+    LibuvEventPoll *eventer_;
+    KSocketEntry *entry_;
+    uv_poll_t handle_;
+
+    static void poll_callback(uv_poll_t* handle, int status, int events) {
+      KPoll* poll = static_cast<KPoll*>(handle->data);
+      poll->eventer_->pollCallback(poll, status, events);
+    }
+    static void close_callback(uv_handle_t* handle) {
+      delete static_cast<KPoll*>(handle->data);
+    }
+
+  public:
+    inline KPoll(LibuvEventPoll* eventer, KSocketEntry* entry, sock_t sock)
+      : eventer_(eventer), entry_(entry)
+    {
+        uv_poll_init_socket(eventer->loop_, &handle_, sock);
+        handle_.data = this;
+    }
+    inline void start() {
+      uv_poll_start(&handle_, entry_->getEvents() & IEV_RW, poll_callback);
+    }
+    inline void stop() {
+      uv_poll_stop(&handle_);
+    }
+    inline void processEvents(int events) {
+      entry_->processEvents(events);
+    }
+    inline void close() {
+      stop();
+      uv_close((uv_handle_t*)&handle_, close_callback);
+    }
+  };
 
   typedef std::set<SharedHandle<KSocketEntry>,
                    DerefLess<SharedHandle<KSocketEntry> > > KSocketEntrySet;
-  KSocketEntrySet socketEntries_;
 
-  typedef struct {
-    uv_poll_t p;
-    KSocketEntry *entry;
-    LibuvEventPoll *eventer;
-    int events;
-  } poll_t;
-
-  typedef std::map<sock_t, poll_t*> KPolls;
-  KPolls polls_;
+  typedef std::map<sock_t, KPoll*> KPolls;
 
 #ifdef ENABLE_ASYNC_DNS
   typedef std::set<SharedHandle<KAsyncNameResolverEntry>,
                    DerefLess<SharedHandle<KAsyncNameResolverEntry> > >
   KAsyncNameResolverEntrySet;
+#endif // ENABLE_ASYNC_DNS
+
+  uv_loop_t* loop_;
+  KSocketEntrySet socketEntries_;
+  KPolls polls_;
+
+#ifdef ENABLE_ASYNC_DNS
   KAsyncNameResolverEntrySet nameResolverEntries_;
 #endif // ENABLE_ASYNC_DNS
 
   bool addEvents(sock_t socket, const KEvent& event);
   bool deleteEvents(sock_t socket, const KEvent& event);
+  void pollCallback(KPoll *poll, int status, int events);
 
 #ifdef ENABLE_ASYNC_DNS
   bool addEvents(sock_t socket, Command* command, int events,
@@ -105,18 +136,9 @@ private:
 #endif
 
   static int translateEvents(EventPoll::EventType events);
-  static void close_poll_callback(uv_handle_t* handle) {
-    delete static_cast<poll_t*>(handle->data);
-  }
-  static void poll_callback(uv_poll_t* handle, int status, int events) {
-    poll_t* poll = static_cast<poll_t*>(handle->data);
-    poll->eventer->pollCallback(handle, poll, status, events);
-  }
-  void pollCallback(uv_poll_t* handle, poll_t *poll, int status, int events);
 
 public:
   LibuvEventPoll();
-
   virtual ~LibuvEventPoll();
 
   bool good() const { return loop_; }
@@ -125,19 +147,21 @@ public:
 
   virtual bool addEvents(sock_t socket,
                          Command* command, EventPoll::EventType events);
-
   virtual bool deleteEvents(sock_t socket,
                             Command* command, EventPoll::EventType events);
-#ifdef ENABLE_ASYNC_DNS
 
+#ifdef ENABLE_ASYNC_DNS
   virtual bool addNameResolver(const SharedHandle<AsyncNameResolver>& resolver,
                                Command* command);
-  virtual bool deleteNameResolver
-  (const SharedHandle<AsyncNameResolver>& resolver, Command* command);
+  virtual bool deleteNameResolver(
+      const SharedHandle<AsyncNameResolver>& resolver, Command* command);
 #endif // ENABLE_ASYNC_DNS
 
   static const int IEV_READ = UV_READABLE;
   static const int IEV_WRITE = UV_WRITABLE;
+  static const int IEV_RW = UV_READABLE | UV_WRITABLE;
+
+  // Make sure these do not interfere with the uv_poll API later.
   static const int IEV_ERROR = 128;
   static const int IEV_HUP = 255;
 };
