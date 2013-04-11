@@ -51,7 +51,8 @@ Option::~Option() {}
 
 Option::Option(const Option& option)
   : table_(option.table_),
-    use_(option.use_)
+    use_(option.use_),
+    parent_(option.parent_)
 {}
 
 Option& Option::operator=(const Option& option)
@@ -59,6 +60,7 @@ Option& Option::operator=(const Option& option)
   if(this != &option) {
     table_ = option.table_;
     use_ = option.use_;
+    parent_ = option.parent_;
   }
   return *this;
 }
@@ -86,17 +88,33 @@ void Option::put(const Pref* pref, const std::string& value) {
 
 bool Option::defined(const Pref* pref) const
 {
+  return bitfield::test(use_, use_.size()*8, pref->i) ||
+    (parent_ && parent_->defined(pref));
+}
+
+bool Option::definedLocal(const Pref* pref) const
+{
   return bitfield::test(use_, use_.size()*8, pref->i);
 }
 
 bool Option::blank(const Pref* pref) const
 {
-  return !defined(pref) || table_[pref->i].empty();
+  if(bitfield::test(use_, use_.size()*8, pref->i)) {
+    return table_[pref->i].empty();
+  } else {
+    return !parent_ || parent_->blank(pref);
+  }
 }
 
 const std::string& Option::get(const Pref* pref) const
 {
-  return table_[pref->i];
+  if(bitfield::test(use_, use_.size()*8, pref->i)) {
+    return table_[pref->i];
+  } else if(parent_) {
+    return parent_->get(pref);
+  } else {
+    return A2STR::NIL;
+  }
 }
 
 int32_t Option::getAsInt(const Pref* pref) const {
@@ -151,6 +169,16 @@ void Option::merge(const Option& option)
       table_[i] = option.table_[i];
     }
   }
+}
+
+void Option::setParent(const SharedHandle<Option>& parent)
+{
+  parent_ = parent;
+}
+
+const SharedHandle<Option>& Option::getParent() const
+{
+  return parent_;
 }
 
 } // namespace aria2

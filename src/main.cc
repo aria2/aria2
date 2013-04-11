@@ -272,14 +272,16 @@ error_code::Value main(int argc, char* argv[])
   // command-line. If they are left, because op is used as a template
   // for new RequestGroup(such as created in RPC command), they causes
   // unintentional effect.
-  op->remove(PREF_OUT);
-  op->remove(PREF_FORCE_SEQUENTIAL);
-  op->remove(PREF_INPUT_FILE);
-  op->remove(PREF_INDEX_OUT);
-  op->remove(PREF_SELECT_FILE);
-  op->remove(PREF_PAUSE);
-  op->remove(PREF_CHECKSUM);
-  op->remove(PREF_GID);
+  for(SharedHandle<Option> i = op; i; i = i->getParent()) {
+    i->remove(PREF_OUT);
+    i->remove(PREF_FORCE_SEQUENTIAL);
+    i->remove(PREF_INPUT_FILE);
+    i->remove(PREF_INDEX_OUT);
+    i->remove(PREF_SELECT_FILE);
+    i->remove(PREF_PAUSE);
+    i->remove(PREF_CHECKSUM);
+    i->remove(PREF_GID);
+  }
   if(!op->getAsBool(PREF_ENABLE_RPC) && requestGroups.empty() &&
      !uriListParser) {
     global::cout()->printf("%s\n", MSG_NO_FILES_TO_DOWNLOAD);

@@ -175,6 +175,20 @@ void showCandidates
 
 } // namespace
 
+#ifdef __MINGW32__
+namespace {
+void optionNativeToUtf8(Option& op)
+{
+  for(size_t i = 1, len = option::countOption(); i < len; ++i) {
+    const Pref* pref = option::i2p(i);
+    if(op.definedLocal(pref) && !util::isUtf8(op.get(pref))) {
+      op.put(pref, nativeToUtf8(op.get(pref)));
+    }
+  }
+}
+} // namespace
+#endif // __MINGW32__
+
 void option_processing(Option& op, std::vector<std::string>& uris,
                        int argc, char* argv[])
 {
@@ -213,9 +227,8 @@ void option_processing(Option& op, std::vector<std::string>& uris,
         exit(error_code::FINISHED);
       }
     }
-
-    oparser->parseDefaultValues(op);
-
+    SharedHandle<Option> confOption(new Option());
+    oparser->parseDefaultValues(*confOption);
     if(!noConf) {
       std::string cfname =
         ucfname.empty() ?
@@ -230,7 +243,7 @@ void option_processing(Option& op, std::vector<std::string>& uris,
           }
         }
         try {
-          oparser->parse(op, ss);
+          oparser->parse(*confOption, ss);
         } catch(OptionHandlerException& e) {
           global::cerr()->printf(_("Parse error in %s"), cfname.c_str());
           global::cerr()->printf("\n%s", e.stackTrace().c_str());
@@ -254,24 +267,21 @@ void option_processing(Option& op, std::vector<std::string>& uris,
       }
     }
     // Override configuration with environment variables.
-    overrideWithEnv(op, oparser, PREF_HTTP_PROXY, "http_proxy");
-    overrideWithEnv(op, oparser, PREF_HTTPS_PROXY, "https_proxy");
-    overrideWithEnv(op, oparser, PREF_FTP_PROXY, "ftp_proxy");
-    overrideWithEnv(op, oparser, PREF_ALL_PROXY, "all_proxy");
-    overrideWithEnv(op, oparser, PREF_NO_PROXY, "no_proxy");
+    overrideWithEnv(*confOption, oparser, PREF_HTTP_PROXY, "http_proxy");
+    overrideWithEnv(*confOption, oparser, PREF_HTTPS_PROXY, "https_proxy");
+    overrideWithEnv(*confOption, oparser, PREF_FTP_PROXY, "ftp_proxy");
+    overrideWithEnv(*confOption, oparser, PREF_ALL_PROXY, "all_proxy");
+    overrideWithEnv(*confOption, oparser, PREF_NO_PROXY, "no_proxy");
 
     // we must clear eof bit and seek to the beginning of the buffer.
     cmdstream.clear();
     cmdstream.seekg(0, std::ios::beg);
     // finaly let's parse and store command-iine options.
+    op.setParent(confOption);
     oparser->parse(op, cmdstream);
 #ifdef __MINGW32__
-    for(size_t i = 1, len = option::countOption(); i < len; ++i) {
-      const Pref* pref = option::i2p(i);
-      if(op.defined(pref) && !util::isUtf8(op.get(pref))) {
-        op.put(pref, nativeToUtf8(op.get(pref)));
-      }
-    }
+    optionNativeToUtf8(op);
+    optionNativeToUtf8(*confOption);
 #endif // __MINGW32__
   } catch(OptionHandlerException& e) {
     global::cerr()->printf("%s", e.stackTrace().c_str());
