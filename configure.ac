@@ -87,6 +87,8 @@ if test "x$ARIA2_STATIC" = "xyes"; then
       CPPFLAGS="-D_USE_32BIT_TIME_T $CPPFLAGS"
     ;;
   esac
+  # Make pkg-config produce static linking variables
+  PKG_CONFIG="$PKG_CONFIG --static"
 else
   dnl Make variable empty to avoid confusion
   ARIA2_STATIC=
