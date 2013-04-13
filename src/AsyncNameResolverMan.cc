@@ -202,6 +202,15 @@ void AsyncNameResolverMan::reset(DownloadEngine* e, Command* command)
 void configureAsyncNameResolverMan(AsyncNameResolverMan* asyncNameResolverMan,
                                    Option* option)
 {
+  // Currently, aria2 checks configured addresses at the startup. But
+  // there are chances that interfaces are not setup at that
+  // moment. For example, if aria2 is used as daemon, it may start
+  // before network interfaces up. To workaround this, we check
+  // addresses again if both addresses are not configured at the
+  // startup.
+  if(!net::getIPv4AddrConfigured() && !net::getIPv6AddrConfigured()) {
+    net::checkAddrconfig();
+  }
   if(!net::getIPv4AddrConfigured()) {
     asyncNameResolverMan->setIPv4(false);
   }
