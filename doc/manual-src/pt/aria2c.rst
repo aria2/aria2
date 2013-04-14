@@ -904,7 +904,7 @@ Opções Específicas de BitTorrent
   :option:`--torrent-file <-T>`.
 
 Opções Específicas de Metalink
-~~~~~~~-------~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. option:: --follow-metalink=true|false|mem
 
