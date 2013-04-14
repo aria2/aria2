@@ -570,10 +570,12 @@ void SocketCore::setBlockingMode()
 
 void SocketCore::closeConnection()
 {
+#ifdef ENABLE_SSL
   if(tlsSession_) {
     tlsSession_->closeConnection();
     tlsSession_.reset();
   }
+#endif // ENABLE_SSL
   if(sockfd_ != (sock_t) -1) {
     shutdown(sockfd_, SHUT_WR);
     CLOSE(sockfd_);
@@ -743,6 +745,7 @@ ssize_t SocketCore::writeData(const void* data, size_t len)
       }
     }
   } else {
+#ifdef ENABLE_SSL
     ret = tlsSession_->writeData(data, len);
     if(ret < 0) {
       if(ret == TLS_ERR_WOULDBLOCK) {
@@ -757,6 +760,7 @@ ssize_t SocketCore::writeData(const void* data, size_t len)
                               tlsSession_->getLastErrorString().c_str()));
       }
     }
+#endif // ENABLE_SSL
   }
   return ret;
 }
@@ -781,6 +785,7 @@ void SocketCore::readData(void* data, size_t& len)
       }
     }
   } else {
+#ifdef ENABLE_SSL
     ret = tlsSession_->readData(data, len);
     if(ret < 0) {
       if(ret == TLS_ERR_WOULDBLOCK) {
@@ -795,6 +800,7 @@ void SocketCore::readData(void* data, size_t& len)
                               tlsSession_->getLastErrorString().c_str()));
       }
     }
+#endif // ENABLE_SSL
   }
   len = ret;
 }
