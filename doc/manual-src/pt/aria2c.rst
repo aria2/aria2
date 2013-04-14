@@ -972,21 +972,29 @@ Opções específicas de RPC
 
 .. option:: --pause[=true|false]
 
-  Pause download after added. This option is effective only when
-  :option:`--enable-rpc=true <--enable-rpc>` is given.
+  Pause o download após adicionado.  Está opção só é efetiva quando
+  a opção :option:`--enable-rpc=true <--enable-rpc>` é informada.
   Padrão: ``false``
 
 .. option:: --rpc-allow-origin-all[=true|false]
 
-  Add Access-Control-Allow-Origin header field with value ``*`` to the
-  RPC response.
+  Adiciona o campo de cabeçalho,  ``Access-Control-Allow-Origin``,
+   com o valor ``*`` á resposta RPC.
   Padrão: ``false``
 
-.. option:: --rpc-certificate=<FILE>
+.. option:: --rpc-certificate=<ARQUIVO>
 
-  Use the certificate in FILE for RPC server. The certificate must be
-  in PEM format. Use :option:`--rpc-private-key` option to specify the
-  private key. Use :option:`--rpc-secure` option to enable encryption.
+  Usar o certificado no ARQUIVO para servidor RPC. O certificado
+  deve estar no formato PEM.  Usar opção :option:`--rpc-private-key`
+  para especificar chave particular. Usar a opção
+  :option:`--rpc-secure` para habilitar criptografia.
+  Usuários de *AppleTLS* precisam antes gerar o certificado próprio
+  auto-assinado através do utilitário ``Keychain Access``, por ex:
+  usando o assistente e tomando nota da identificação SHA-1 do
+  certificado gerado.
+  Para executar o aria2c com a opção :option:`--rpc-secure` usar
+  `--rpc-certificate=<SHA-1>` e apenas omitir a opção
+  : option:`--rpc-private-key`
 
 .. option:: --rpc-listen-all[=true|false]
 
