@@ -96,6 +96,10 @@ public:
 
   void process(fd_set* rfdsPtr, fd_set* wfdsPtr);
 
+  int getFamily() const
+  {
+    return family_;
+  }
 #ifdef HAVE_LIBCARES
 
   int getsock(sock_t* sockets) const;

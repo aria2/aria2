@@ -157,10 +157,14 @@ int AsyncNameResolverMan::getStatus() const
 {
   size_t success = 0;
   size_t error = 0;
+  bool ipv4Success = false;
   for(size_t i = 0; i < numResolver_; ++i) {
     switch(asyncNameResolver_[i]->getStatus()) {
     case AsyncNameResolver::STATUS_SUCCESS:
       ++success;
+      if(asyncNameResolver_[i]->getFamily() == AF_INET) {
+        ipv4Success = true;
+      }
       break;
     case AsyncNameResolver::STATUS_ERROR:
       ++error;
@@ -169,7 +173,12 @@ int AsyncNameResolverMan::getStatus() const
       break;
     }
   }
-  if(success == numResolver_) {
+  // If we got IPv4 lookup response, we don't wait for IPv6 lookup
+  // response. This is because DNS server may drop AAAA query and we
+  // have to wait for the long time before timeout. We don't do the
+  // inverse, because, based on todays deployment of DNS server,
+  // almost all of them can respond A query just fine.
+  if((success && ipv4Success) || success == numResolver_) {
     return 1;
   } else if(error == numResolver_) {
     return -1;
