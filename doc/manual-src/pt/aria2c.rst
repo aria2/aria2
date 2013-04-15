@@ -979,7 +979,7 @@ Opções específicas de RPC
 .. option:: --rpc-allow-origin-all[=true|false]
 
   Adiciona o campo de cabeçalho,  ``Access-Control-Allow-Origin``,
-   com o valor ``*`` á resposta RPC.
+  com o valor ``*`` á resposta RPC.
   Padrão: ``false``
 
 .. option:: --rpc-certificate=<ARQUIVO>
@@ -994,7 +994,7 @@ Opções específicas de RPC
   certificado gerado.
   Para executar o aria2c com a opção :option:`--rpc-secure` usar
   `--rpc-certificate=<SHA-1>` e apenas omitir a opção
-  : option:`--rpc-private-key`
+  :option:`--rpc-private-key`
 
 .. option:: --rpc-listen-all[=true|false]
 
