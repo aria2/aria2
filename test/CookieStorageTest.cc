@@ -198,6 +198,10 @@ void CookieStorageTest::testCriteriaFind()
   CPPUNIT_ASSERT_EQUAL((size_t)1, dlAria2.size());
   CPPUNIT_ASSERT_EQUAL(std::string("alpha"), dlAria2[0].getName());
 
+  std::vector<Cookie> tailmatchAria2 = st.criteriaFind("myaria2.org", "/", 0,
+                                                       false);
+  CPPUNIT_ASSERT(tailmatchAria2.empty());
+
   std::vector<Cookie> numericHostCookies = st.criteriaFind("192.168.1.1", "/",0,
                                                            false);
   CPPUNIT_ASSERT_EQUAL((size_t)1, numericHostCookies.size());
