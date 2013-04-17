@@ -112,29 +112,63 @@ if test "x$with_libz" = "xyes"; then
 fi
 
 if test "x$with_libuv" = "xyes"; then
-  if test "x$win_build" = "xyes"; then
-    old_CPPFLAGS=$CPPFLAGS
-    CPPFLAGS="$CPPFLAGS -D_WIN32_WINNT=0x0600"
-    AC_SEARCH_LIBS([uv_poll_init_socket], [uv], [
-                    AC_CHECK_HEADER([uv.h], [have_libuv=yes], [have_libuv=no])
-                    break;
-                    ], [have_libuv=no])
-    if test "x$have_libuv" = "xyes"; then
-      AC_DEFINE([HAVE_LIBUV], [1], [Define to 1 if you have libuv.])
-    else
-      CPPFLAGS=$old_CPPFLAGS
-    fi
-  else
-    AC_SEARCH_LIBS([uv_poll_init_socket], [uv], [
-                    AC_CHECK_HEADER([uv.h], [have_libuv=yes], [have_libuv=no])
-                    break;
-                    ], [have_libuv=no])
-    if test "x$have_libuv" = "xyes"; then
-      AC_DEFINE([HAVE_LIBUV], [1], [Define to 1 if you have libuv.])
-    fi
-  fi
+  case "$host" in
+    *mingw*|*msvc*)
+      old_CPPFLAGS=$CPPFLAGS
+      CPPFLAGS="$CPPFLAGS -D_WIN32_WINNT=0x0600"
+      AC_SEARCH_LIBS([uv_poll_init_socket], [uv], [
+                      AC_CHECK_HEADER([uv.h], [have_libuv=yes], [have_libuv=no])
+                      break;
+                      ], [have_libuv=no])
+      if test "x$have_libuv" != "xyes"; then
+        CPPFLAGS=$old_CPPFLAGS
+      fi
+    ;;
 
-  if test "x$with_libuv_requested" = "xyes"; then
+    *darwin*)
+      old_LDFLAGS=$LDFLAGS
+      LDFLAGS="$LDFLAGS -framework Foundation -framework CoreServices -framework ApplicationServices"
+      old_LIBS=$LIBS
+      LIBS="$LIBS -lm"
+      AC_SEARCH_LIBS([uv_poll_init_socket], [uv], [
+                      AC_CHECK_HEADER([uv.h], [have_libuv=yes], [have_libuv=no])
+                      break;
+                      ], [have_libuv=no])
+      if test "x$have_libuv" != "xyes"; then
+        LDFLAGS=$old_LDFLAGS
+        LIBS=$old_LIBS
+      fi
+      ;;
+
+    *)
+      dnl Yeah, sucks that luv does not bring a pkg-config or config-tool
+      AC_MSG_CHECKING([for libuv])
+      for combo in "" "-lrt" "-ldl -lrt" "-ldl -lrt -lpthread" "-lkvm"; do
+        old_LIBS=$LIBS
+        LIBS="-luv $combo $LIBS -lm"
+        AC_LINK_IFELSE([AC_LANG_SOURCE([
+extern "C" int uv_poll_init_socket(void);
+int main() { return uv_poll_init_socket(); }
+                       ])], [
+                        AC_MSG_RESULT(-luv $combo -lm)
+                        AC_CHECK_HEADER([uv.h], [have_libuv=yes], [have_libuv=no])
+                        break;
+                        ], [have_libuv=no])
+        if test "x$have_libuv" = "xyes"; then
+          break;
+        else
+          LIBS=$old_LIBS
+        fi
+      done
+      if test "x$have_libuv" != "xyes"; then
+        AC_MSG_RESULT("no")
+      fi
+    ;;
+  esac
+
+  if test "x$have_libuv" = "xyes"; then
+    AC_DEFINE([HAVE_LIBUV], [1], [Define to 1 if you have libuv.])
+  elif test "x$with_libuv_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([libuv])
   fi
 fi
