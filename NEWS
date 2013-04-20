@@ -1,446 +1,81 @@
-aria2 1.16.5
+aria2 1.17.0
 ============
 
 Release Note
 ------------
 
-This release fixes the bug that invalid range error is thrown when
-requesting range starts from 0 in HTTP download.
+This release adds Mac OS X native SSL/TLS library support.  The IPv6
+asynchronous DNS is enabled by default and A/AAAA lookups are done in
+parallel. The simple Happy Eyeballs algorithm was implemented to
+mitigate long timeout when connecting to IPv6 host on dual-stack host.
+--save-session option only saves the options specified by command-line
+or RPC.
 
 Changes
 -------
 
-* Fix bug that invalid range error when requesting range starting 0
+* Updated Russian manual
 
-  Since the change b782a56b, we use endOffsetOverride_ as the return
-  value of getEndByte(). But aria2 does not send Range header field
-  when range starts 0 (this is because some server returns error if it
-  received Range: 0-), and the HttpRequest::isRangeSatisfied() checks
-  the equality of getEndByte() and the end byte in response header and
-  fails. The fix is send Range header if getEndByte() is set.
+  Contributed by ITriskTI
 
-
+* Updated Portuguese manual
 
-aria2 1.16.4
-============
-
-Release Note
-------------
-
-This release fixes the bug that active downloads are not saved with
---save-session-interval and the bug that aria2 hangs when size of
-download result exceeds its maximum. BitTorrent UDP tracker support
-was added. If the filename specified using --save-session ends with
-".gz", aria2 stores the session file in gzipped form. The -i option
-can handle this gzipped file as well as plain text file. 1.15.2 based
-Portuguese translated manual was added.
-
-Changes
--------
-
-* Make configure argument meaning more consistent and obvious.
-
-  Most other software uses --disable/--without for features it does
-  build or at least check by default.
-
-  Change aria2 configure options so that:
-
-  * --enable-*: do not build by default, unless --enable specified
-  * --disable-*: check and build by default, unless --disable specified
-  * --with-*: do not use by default, unless --with specified
-  * --without-*: check and use by default, unless without specified
-
-  Contributed by Nils Maier
-
-* Allow for out-of-tree Sphinx builds
-
-  Contributed by Nils Maier
-
-* Bring back datetime in console log
-
-* Run checksum check if -V and -c are used and file is completed
-
-  With -c option, aria2 can continue download after the existing file
-  position. If it is not completed, then after completion aria2 runs
-  checksum checking if available. But if existing file has already
-  been completed, then CreateRequestCommand exits without issuing
-  checksum checking. And aria2 treats it download error because it
-  needs checksum verification but it has not been done. This change
-  fixes this by properly checking download state and issue checksum
-  checking before CreateRequestCommand.
-
-* Support for gzipped -i and --save-session
-
-  Saved sessions may very large, as in hundreds and even thousands of
-  megabyte when dealing with large queues.  Add support to save and
-  reload sessions to gzipped files, when libz is available.
-
-  The session serializer will output gzipped contents when the file
-  ends with .gz, while the input file reader (UriListParser) will
-  accept whatever is thrown at it.
-
-  Document -i/--save-session gzip behaviour
-
-  Contributed by Nils Maier
-
-* Do not use a virtual varargs function
-
-  This stuff breaks in some compiler (configurations)
-
-  Contributed by Nils Maier
-
-* Check for sys/signal.h and/or signal.h
-
-  mingw-w64 does not actually have sys/signal.h, while OSX currently
-  has a broken signal.h Better check the presence of both and use
-  sys/signal.h if present, else signal.h
-
-  Contributed by Nils Maier
-
-* Hygiene: Fix some clang warnings, mostly unused private members.
-
-  Contributed by Nils Maier
-
-* Fix bustage on OSX with ./configure CC=cc CXX=c++ (clang)
-
-  Contributed by Nils Maier
-
-* Do not reference RequestGroups longer than necessary
-
-  There is an initial vector of SharedHandle<RequestGroup> to seed the
-  DownloadEngine. This vector was however kept alive via main.cc ->
-  MultiUrlRequestInfo up until the program exits, hence effetively
-  leaking all initial RequestGroups and associated object instances.
-
-  Hence, as a matter of dirty-workaround, drop the contents of that
-  initial vector as soon as it is not required any longer.
-
-  Contributed by Nils Maier
-
-* Detect console with on Windows
-
-  Contributed by Nils Maier
-
-* Fix infinite loop when size of downloadResults_ exceeds maxDownloadResult_
-
-* Support BitTorrent UDP tracker
-
-  It shares UDP listening port with IPv4 DHT. At the moment, in order
-  to enable UDP tracker support, enable IPv4 DHT.
-
-* Show correct end byte in error message when HTTP response range is not ok
-
-  Previously, unless HTTP pipelining is enabled, end byte in that
-  message is always 0. With this change, it shows correct end byte
-  sent to the HTTP server.
-
-* Add Portuguese manual
-
-  This translation is based on aria2 version 1.15.2 manual.
   Contributed by Gilberto dos Santos Alves
 
-* Fix bug that active downloads are not saved with --save-session-interval
+* Append --static to pkg-config arguments when ARIA2_STATIC=yes
 
-
+* Save options directly specified for download in --save-session
 
-aria2 1.16.3
-============
+  This change makes --save-session save only options specified for
+  download, more specifically, options in command-line, -i file and
+  via RPC. The other options from conf file and default values are not
+  saved.  This will drastically decrease the size of session file.
 
-Release Note
-------------
+* Save URI returned only from FileEntry::getRemainingUris()
 
-This release fixes the bug which causes random crash. It also fixes
-socket option setting failure on Windows platform.
+  The currently used URIs are inserted back into remaining URI list in
+  FileEntry::putBackRequest(), which overlaps to some of the URIs in
+  spentUris_. If we save spent URIs, each time save is performed, the
+  number of URIs are increased due to this overlap. This change fixes
+  this bug.
 
-Changes
--------
+* Print linked 3rd party libraries with version in `aria2c -v` output
 
-* Fix failure to set TCP_NODELAY on Windows
+* AppleTLS: Support credentials via KeyChain fingerprints
 
-  On Windows setting TCP_NODELAY after non-blocking connect fails at
-  least on Windows 7.
+  Contributed by Nils Maier
 
-* Fix invalid iterator handling when deleting RequestGroup
+* AppleTLS: Implement AppleTLS and Apple Message Digest
 
-
+  Contributed by Nils Maier
 
-aria2 1.16.2
-============
+* Use info level log for system trusted ca imports failure
 
-Release Note
-------------
+  This is because on some platforms (gnutls on cygwin for example),
+  library always fails for this function and getting ERROR every time
+  aria2c invoked is too hard.
 
-This release fixes the bug which causes long running BitTorrent
-download to stall. The several new options have been added.
+* Don't add Windows native DLLs for Cygwin build
 
-Changes
--------
+* Remove deprecated options: --enable-direct-io and --metalink-servers
 
-* Check SSL_OP_NO_COMPRESSION is available before using it
+* Deprecate --enable-async-dns6
 
-* Fix bug returnPeer is not called if sequence_ == INITIATOR_SEND_KEY
+  The IPv6 asynchronous name resolver is enabled if the host has at
+  least one interface with IPv6 address configured (the loopback
+  address will not be counted), which is roughly the same behaviour of
+  the standard getaddrinfo(3). To disable IPv6 asynchronous name
+  resolver, use --disable-ipv6.
 
-  In InitiatorMSEHandshakeCommand, when aborting connection, we must
-  return peer to the PeerStorage. But it is not done if sequence_ is
-  INITIATOR_SEND_KEY. This causes stale Peer objects whose usedBy()
-  returns true eventually occupies peer list and aria2 cannot make any
-  connections.
+* Fix uninitialized UDPTrackerClient::numWatchers_
 
-* Accept k and m as well as K and M in util::getRealSize()
+* Implement simple Happy Eyeballs for HTTP/FTP downloads
 
-* mingw32: Make NTFS sparse file on --file-allocation=trunc
+* Parallel A and AAAA record lookups with c-ares
 
-* Added --save-session-interval option
-
-  --save-session-interval option saves error/unfinished downloads to a
-  file specified by --save-session option every SEC seconds. If 0 is
-  given, file will be saved only when aria2 exits.
-
-* Use request URI as referer if --referer="*" is given
-
-* Log warn if unknown option is found in config file or -i file
-
-* Added --console-log-level option
-
-  --console-log-level option sets log level to output to console.
-
-
-
-aria2 1.16.1
-============
-
-Release Note
-------------
-
-This release adds the ability to persist GID across sessions. The GID
-will be saved with --save-session. There are several restrictions how
-GID is persisted. See the manual for details. For this change, now GID
-is 64 bits binary data and represented by 16 characters hex string in
-RPC query.  The disk cache feature was added, which may reduce disk
-activity. The console readout was redesigned. The warning displayed
-when --file-allocation=falloc is used on MinGW32 build was removed as
-a bug.
-
-Changes
--------
-
-* mingw32: Re-open files with read-only mode enabled on seeding
-
-  On Mingw32 build, if aria2 opens file with GENERIC_WRITE access
-  right, some programs cannot open the file aria2 is seeding. To avoid
-  this situation, re-open files with read-only enabled when seeding is
-  about to begin.
-
-* Save gid option with --save-session option
-
-* Added --gid option
-
-  This option sets GID manually. aria2 identifies each download by the
-  ID called GID. The GID must be hex string of 16 characters, thus
-  [0-9a-zA-Z] are allowed and leading zeros must not be stripped. The
-  GID all 0 is reserved and must not be used. The GID must be unique,
-  otherwise error is reported and the download is not added.  This
-  option is useful when restoring the sessions saved using
-  --save-session option. If this option is not used, new GID is
-  generated by aria2.
-
-* Use 64 bits random bytes as GID
-
-  This change replaces the current 64 bit sequential GID with 64 bits
-  random bytes GID in an attempt to support persistent
-  GID. Internally, the GID is stored as uint64_t. For human
-  representation and RPC interface, GID is represented as 16 bytes hex
-  string. For console readout, 16 bytes are too long, so it is
-  abbreviated to first 6 bytes.  When querying GID in RPC calls, user
-  can speicfy the prefix of GID as long as the prefix is shared by
-  more than 1 GID entries.
-
-* Fixed BitfieldMan::getOffsetCompletedLength overflow on 32-bit systems
-
-* mingw32: Use HANDLE only for MinGW32 build
-
-* Changed console readout, making it more compact
-
-  "SIZE:" is removed because it is obvious. SEEDING, SEED, SPD and UP
-  are now replaced with SEED, SD, DL and UL respectively.
-
-* Compact readout when more than 1 simultaneous downloads are going on
-
-  If more than 1 simultaneous downloads are going on, use more compact
-  format in readout. Currently, at most 5 download stats are
-  displayed.
-
-  util::abbrevSize() is rewritten to support "Gi" unit and provides
-  more compact abbreviation.
-
-* Console color output
-
-  Log level and download result string is now colored.
-
-* Logger: Simplified console output and change level format in log
-
-  The date and time are now removed from console output.  The log
-  level is now formatted as "[LEVEL]".
-
-* Start to find faster host before the number of missing segments becomes 1
-
-  The old implementation starts to find faster host when the number of
-  missing segment becomes 1. Because of --min-split-size option,
-  before the number of missing segment becomes 1, the number of
-  connection becomes 1 and it can be slow. In this case, we have to
-  wait until the last segment is reached. The new implementation
-  starts to find faster host when the remaining length is less than
-  --min-split-size * 2, to mitigate the problem stated above.
-
-* Removed warning when --file-allocation=falloc is used in MinGW32 build
-
-  The warning was just a mistake. SetFilePointerEx + SetEndOfFile
-  actually allocate disk space.
-
-* Write data in 4K aligned offset in write with disk cache enabled
-
-  This greatly reduces disk activity especially on Win + NTFS.  Not so
-  much difference on Linux.
-
-* mingw32: Removed FSCTL_SET_SPARSE set
-
-* Added --disk-cache option
-
-  This option enables disk cache. If SIZE is 0, the disk cache is
-  disabled. This feature caches the downloaded data in memory, which
-  grows to at most SIZE bytes. The cache storage is created for aria2
-  instance and shared by all downloads. The one advantage of the disk
-  cache is reduce the disk seek time because the data is written in
-  larger unit and it is reordered by the offset of the file. If the
-  underlying file is heavily fragmented it is not the case.
-
-
-
-aria2 1.16.0
-============
-
-Release Note
-------------
-
-This release adds SSL/TLS encryption support in RPC transport. The new
-RPC method aria2.appendUri is added, which is a wrapper to
-aria2.changeUri. The Content-Disposition parser is now RFC 6266
-conformant. The resource leak in XmlParser, JSON and Bencode parser
-was fixed. The uploaded data size calculation bug was fixed. For
-MinGW32 build, files are now opened with read/write shared mode.
-
-Changes
--------
-
-* mingw32: Open file using _wsopen and added --enable-mmap support
-
-  I tried CreateFile but the subsequent ReadFile fails with Access
-  Denied if sparse file is read on NTFS. I mostly reverted previous
-  changes and use _wsopen with read/write share enabled instead of
-  CreateFile.
-
-  This change also includes --enable-mmap support for MinGW32
-  build. Memory mapped file may be useful for 64-bits OS and lots of
-  RAM. Currently, FlushViewOfFile is not called during the download,
-  so it is slightly vulnerable against sudden power loss. I found lots
-  of read when resuming download due to page fault. So for now it is
-  useful for the initial download. I recommend not to use
-  --file-allocation=prealloc with --enable-mmap for MinGW32, because
-  it triggers page faults even in the initial download. Anyway, the
-  option is experimental.
-
-* Removed PO files and generated aria2.pot from repository
-
-  Currently, message translation is done at launchpad.  All PO files
-  can be exported from there. The merge process from launchpad is done
-  when new release. First download export file from launchpad And use
-  import-po script to import PO files into po directory.
-
-* Set F_GLOBAL_NOCACHE for Mac OS X
-
-* Enabled TCP_NODELAY
-
-* Don't use AC_FUNC_MMAP
-
-  Don't use AC_FUNC_MMAP becaue it fails on some platforms (e.g.,
-  OpenWRT) which have mmap and it works in the way we use in aria2.
-  Instead use mmap in AC_CHECK_FUNCS list.
-
-* Added --force-save option.
-
-  --force-save option saves download with --save-session option even
-  if the download is completed or removed. This may be useful to save
-  BitTorrent seeding which is recognized as completed state.  The
-  default value is false.
-
-* Get the correct uploaded data size
-
-  Subtract msgHdrLen_ from writtenLength to get the uploaded data
-  size.  Without this correction, the seeder assumes it has uploaded
-  more data than it actually has.
-
-* Made --http-no-cache false by default
-
-* Fixed memory leak in AsyncNameResolver
-
-* Fixed resource leak in XmlParser and GenericParser
-
-* Reset iostream format state
-
-* gnutls: Added more status checking when verifying peer
-
-* Content-Disposition parser conforming to RFC 6266.
-
-  RFC 2231 Continuation is not supported.
-
-* Reworked download/upload statistics calculation
-
-  The old implementation calculates download/upload statistics for a
-  RequestGroup by summing up all PeerStat objects. For global
-  statistics, those are summed together. This clearly incurs runtime
-  penalty and we introduced some kind of caching which updates
-  statistics every 250ms but it did not work right.
-
-  This change removes all these aggregation code, and instead makes
-  RequestGroup and RequestGroupMan objects hold NetStat object and
-  download/upload bytes are directly calculated by thier own NetStat.
-  This is far more simplar than the old way and less runtime penalty
-  and brings more accuracy.
-
-* Added --rpc-save-upload-metadata option
-
-  If true is given, which is default, save the uploaded torrent or
-  metalink metadata in the directory specified by --dir option. The
-  filename consists of SHA1-hash hex string of metadata plus
-  extension. For torrent, the extension is '.torrent'. For metalink,
-  it is '.meta4'.  If false is given to this option, the downloads
-  added by aria2.addTorrent or aria2.addMetalink will not be saved by
-  --save-session option.
-
-* Perform SSL/TLS handshake after checking whether connection is established
-
-* Fixed bug that --enable-mmap won't work if MultiDiskAdaptor is used
-
-* RPC over SSL/TLS transport
-
-  To enable RPC over SSL/TLS, specify server certificate and private
-  key using --rpc-certificate and --rpc-private-key options and enable
-  --rpc-secure option.  After the encryption is enabled, use https and
-  wss scheme to access RPC server.
-
-* aria2rpc: Added appendUri command
-
-  This command calls aria2.changeUri(GID, fileIndex, [], [URI,...])
-  internally.
-
-* Don't send Proxy-Connection header field
-
-* Don't set SNI hostname if it does not include "." for GNUTLS
-
-* Disable SSL/TLS compression with OpenSSL
-
-* Pause download even if download is completed
-
-  This allows to pause and unpause BitTorrent seed.
-
-* Use execlp() instead of execl()
+  But we don't wait for AAAA query response if A query response has
+  been received.  If we got IPv4 lookup response, we don't wait for
+  IPv6 lookup response. This is because DNS server may drop AAAA query
+  and we have to wait for the long time before timeout. We don't do
+  the inverse, because, based on todays deployment of DNS server,
+  almost all of them can respond A query just fine.
