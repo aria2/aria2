@@ -124,10 +124,10 @@ void PortEventPoll::poll(const struct timeval& tv)
                              p->getEvents().events, p);
       int errNum = errno;
       if(r == -1) {
-        A2_LOG_ERROR(fmt("port_associate failed for file descriptor %d:"
-                         " cause %s",
-                         pev.portev_object,
-                         util::safeStrerror(errNum).c_str()));
+        A2_LOG_INFO(fmt("port_associate failed for file descriptor %d:"
+                        " cause %s",
+                        pev.portev_object,
+                        util::safeStrerror(errNum).c_str()));
       }
     }
   } else if(res == -1) {
