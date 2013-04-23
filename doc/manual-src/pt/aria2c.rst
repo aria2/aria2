@@ -540,8 +540,8 @@ Opções Específicas de FTP
 
   Definir senha FTP. Isto afeta todas as URIs.
   Se o nome existe, mas a senha esta ausente, para login em uma URI, aria2
-  tenta obter a senha usando o arquivo .netrc, caso exista senha declarada no
-  .netrc. Se não existir será utilizada a senha declarada nesta opção.
+  tenta obter a senha usando o arquivo .netrc, caso exista senha declarada
+  no .netrc. Se não existir será utilizada a senha declarada nesta opção.
   Padrão: ``ARIA2USER@``
 
 .. option:: -p, --ftp-pasv[=true|false]
