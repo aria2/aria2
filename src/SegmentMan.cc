@@ -282,14 +282,8 @@ void SegmentMan::cancelSegmentInternal
   A2_LOG_DEBUG(fmt("Canceling segment#%lu",
                    static_cast<unsigned long>(segment->getIndex())));
   const SharedHandle<Piece>& piece = segment->getPiece();
-  piece->setUsedBySegment(false);
-  pieceStorage_->cancelPiece(piece, cuid);
-  segmentWrittenLengthMemo_[segment->getIndex()] = segment->getWrittenLength();
-  A2_LOG_DEBUG(fmt("Memorized segment index=%lu, writtenLength=%d",
-                   static_cast<unsigned long>(segment->getIndex()),
-                   segment->getWrittenLength()));
   // TODO In PieceStorage::cancelPiece(), WrDiskCacheEntry may be
-  // released.
+  // released. Flush first.
   if(piece->getWrDiskCacheEntry()) {
     // Flush cached data here, because the cached data may be overlapped
     // if BT peers are involved.
@@ -300,6 +294,12 @@ void SegmentMan::cancelSegmentInternal
     // TODO Exception may cause some segments (pieces) are not
     // canceled.
   }
+  piece->setUsedBySegment(false);
+  pieceStorage_->cancelPiece(piece, cuid);
+  segmentWrittenLengthMemo_[segment->getIndex()] = segment->getWrittenLength();
+  A2_LOG_DEBUG(fmt("Memorized segment index=%lu, writtenLength=%d",
+                   static_cast<unsigned long>(segment->getIndex()),
+                   segment->getWrittenLength()));
 }
 
 void SegmentMan::cancelSegment(cuid_t cuid) {
