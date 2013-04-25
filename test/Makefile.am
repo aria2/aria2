@@ -237,7 +237,7 @@ if !HAVE_TIMEGM
 aria2c_SOURCES += TimegmTest.cc
 endif # !HAVE_TIMEGM
 
-aria2c_LDADD = ../src/libaria2c.a @LIBINTL@ @CPPUNIT_LIBS@
+aria2c_LDADD = ../src/libaria2c.la @LIBINTL@ @CPPUNIT_LIBS@
 AM_CPPFLAGS =  -Wall\
 	-I$(top_srcdir)/src\
 	-I$(top_srcdir)/lib -I$(top_srcdir)/intl\

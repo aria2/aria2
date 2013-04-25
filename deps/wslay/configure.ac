@@ -23,7 +23,7 @@ dnl WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 AC_PREREQ(2.61)
 AC_INIT([wslay], [0.1.1], [t-tujikawa@users.sourceforge.net])
 LT_PREREQ([2.2.6])
-LT_INIT([disable-shared])
+LT_INIT()
 AC_CONFIG_AUX_DIR([.])
 dnl See versioning rule:
 dnl  http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html

@@ -1,3 +1,4 @@
+SUBDIRS = includes
 bin_PROGRAMS = aria2c
 aria2c_SOURCES = main.cc\
 	option_processing.cc\
@@ -630,10 +631,15 @@ SRCS += KqueueEventPoll.cc KqueueEventPoll.h
 endif # HAVE_KQUEUE
 
 AR = @AR@
-noinst_LIBRARIES = libaria2c.a
-libaria2c_a_SOURCES = $(SRCS)
-aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ #-lprofiler
+noinst_LTLIBRARIES = libaria2c.la
+libaria2c_la_SOURCES = $(SRCS)
+libaria2c_la_LIBADD = @WSLAY_LIBS@
+aria2c_LDADD = libaria2c.la @LIBINTL@ @ALLOCA@ #-lprofiler
 #aria2c_LDFLAGS = -pg
 AM_CPPFLAGS =  -Wall\
 	-I$(top_srcdir)/lib -I$(top_srcdir)/intl\
 	-DLOCALEDIR=\"@localedir@\" -DCA_BUNDLE=\"$(ca_bundle)\" @DEFS@ #-pg
+
+lib_LTLIBRARIES = libaria2.la
+libaria2_la_SOURCES =
+libaria2_la_LIBADD = libaria2c.la

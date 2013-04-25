@@ -1,5 +1,7 @@
 *~
 *.o
+*.lo
+*.la
 *.ce
 *.cce
 *.he
@@ -31,3 +33,4 @@ libtool
 ltmain.sh
 po/aria2.pot
 po/remove-potcdate.sed
+src/libaria2.pc
