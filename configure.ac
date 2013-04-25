@@ -504,6 +504,7 @@ AC_CHECK_FUNCS([__argz_count \
                 rmdir \
                 select \
                 setlocale \
+                sigaction \
                 sleep \
                 socket \
                 stpcpy \
