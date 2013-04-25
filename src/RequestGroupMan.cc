@@ -214,9 +214,8 @@ void notifyDownloadEvent
 (const std::string& event, const SharedHandle<RequestGroup>& group)
 {
   // Check NULL to make unit test easier.
-  Notifier* notifier = SingletonHolder<Notifier>::instance();
-  if(notifier) {
-    notifier->notifyDownloadEvent(event, group);
+  if(SingletonHolder<Notifier>::instance()) {
+    SingletonHolder<Notifier>::instance()->notifyDownloadEvent(event, group);
   }
 }
 

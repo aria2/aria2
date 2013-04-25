@@ -167,7 +167,11 @@ public:
 
   ~DownloadEngine();
 
-  void run();
+  // If oneshot is true, this function returns after one event polling
+  // and performing action for them. This function returns 1 when
+  // oneshot is true and there are still downloads to be
+  // processed. Otherwise, returns 0.
+  int run(bool oneshot=false);
 
   void cleanQueue();
 

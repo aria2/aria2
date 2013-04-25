@@ -1,9 +1,10 @@
 SUBDIRS = includes
 bin_PROGRAMS = aria2c
 aria2c_SOURCES = main.cc\
-	option_processing.cc\
 	version_usage.cc
-SRCS =  SocketCore.cc SocketCore.h\
+SRCS =  option_processing.cc\
+	Context.cc Context.h\
+	SocketCore.cc SocketCore.h\
 	BinaryStream.h\
 	Command.cc Command.h\
 	AbstractCommand.cc AbstractCommand.h\

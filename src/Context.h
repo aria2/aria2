@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,75 +32,22 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_MULTI_URL_REQUEST_INFO_H
-#define D_MULTI_URL_REQUEST_INFO_H
+#ifndef CONTEXT_H
+#define CONTEXT_H
 
 #include "common.h"
-
-#include <signal.h>
-
-#include <vector>
-
 #include "SharedHandle.h"
-#include "DownloadResult.h"
-#include "util.h"
 
 namespace aria2 {
 
-class RequestGroup;
-class Option;
-class StatCalc;
-class OutputFile;
-class UriListParser;
-class DownloadEngine;
+class MultiUrlRequestInfo;
 
-class MultiUrlRequestInfo {
-private:
-  std::vector<SharedHandle<RequestGroup> > requestGroups_;
-
-  SharedHandle<Option> option_;
-
-  SharedHandle<StatCalc> statCalc_;
-
-  SharedHandle<OutputFile> summaryOut_;
-
-  SharedHandle<UriListParser> uriListParser_;
-
-  SharedHandle<DownloadEngine> e_;
-
-  sigset_t mask_;
-
-  void printMessageForContinue();
-  void resetSignalHandlers();
-public:
-  /*
-   * MultiRequestInfo effectively takes ownership of the
-   * requestGroups.
-   */
-  MultiUrlRequestInfo
-  (std::vector<SharedHandle<RequestGroup> >& requestGroups,
-   const SharedHandle<Option>& op,
-   const SharedHandle<StatCalc>& statCalc,
-   const SharedHandle<OutputFile>& summaryOut,
-   const SharedHandle<UriListParser>& uriListParser);
-
-  virtual ~MultiUrlRequestInfo();
-
-  /**
-   * Returns FINISHED if all downloads have completed, otherwise returns the
-   * last download result.
-   */
-  error_code::Value execute();
-
-  error_code::Value prepare();
-  error_code::Value getResult();
-  // Returns 1 if the caller needs to call this function one or more
-  // time. Returns 0 if the function succeeds. Returns -1 on error.
-  // For return value 0 and -1, the caller must call tearDown() to get
-  // final error code.
-  int run();
+struct Context {
+  Context(int argc, char** argv);
+  ~Context();
+  SharedHandle<MultiUrlRequestInfo> reqinfo;
 };
 
 } // namespace aria2
 
-#endif // D_MULTI_URL_REQUEST_INFO_H
+#endif // CONTEXT_H

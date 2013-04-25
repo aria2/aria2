@@ -86,7 +86,7 @@ volatile sig_atomic_t globalHaltRequested = 0;
 DownloadEngine::DownloadEngine(const SharedHandle<EventPoll>& eventPoll)
   : eventPoll_(eventPoll),
     haltRequested_(0),
-    noWait_(false),
+    noWait_(true),
     refreshInterval_(DEFAULT_REFRESH_INTERVAL),
     cookieStorage_(new CookieStorage()),
 #ifdef ENABLE_BITTORRENT
@@ -139,11 +139,15 @@ void executeCommand(std::deque<Command*>& commands,
 }
 } // namespace
 
-void DownloadEngine::run()
+int DownloadEngine::run(bool oneshot)
 {
   Timer cp;
   cp.reset(0);
   while(!commands_.empty() || !routineCommands_.empty()) {
+    if(!commands_.empty()) {
+      waitData();
+    }
+    noWait_ = false;
     global::wallclock().reset();
     calculateStatistics();
     if(cp.differenceInMillis(global::wallclock())+A2_DELTA_MILLIS >=
@@ -156,12 +160,14 @@ void DownloadEngine::run()
     }
     executeCommand(routineCommands_, Command::STATUS_ALL);
     afterEachIteration();
-    if(!commands_.empty()) {
-      waitData();
+    if(oneshot) {
+      return 1;
     }
-    noWait_ = false;
   }
-  onEndOfRun();
+  if(!oneshot) {
+    onEndOfRun();
+  }
+  return 0;
 }
 
 void DownloadEngine::waitData()
