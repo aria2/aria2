@@ -42,6 +42,15 @@
 #include <string>
 #include <vector>
 
+// Libaria2: The aim of this library is provide same functionality
+// available in RPC methods. The function signatures are not
+// necessarily the same, because we can take advantage of the direct,
+// no latency, access to the aria2 core.
+//
+// Therefore, this library is not meant to be the fine-grained,
+// customizable, complete HTTP/FTP/BitTorrent library. If you are
+// looking for such library for HTTP/FTP access, consider libcurl.
+
 namespace aria2 {
 
 struct Session;
@@ -49,10 +58,14 @@ struct Session;
 // Initializes the global data. It also initializes
 // underlying libraries libaria2 depends on. This function returns 0
 // if it succeeds, or -1.
+//
+// Call this function only once before calling any other API functions.
 int libraryInit();
 
 // Releases the global data. This function returns 0 if
 // it succeeds, or -1.
+//
+// Call this function only once at the end of the application.
 int libraryDeinit();
 
 // type of GID
@@ -65,6 +78,9 @@ typedef std::vector<std::pair<std::string, std::string> > KeyVals;
 // parameters. The |options| is treated as if they are specified in
 // command-line to aria2c(1). This function returns the pointer to the
 // newly created Session object if it succeeds, or NULL.
+//
+// Please note that only one Session object can be created per
+// process.
 Session* sessionNew(const KeyVals& options);
 
 // Performs post-download action, including saving sessions etc and
@@ -107,6 +123,36 @@ int addUri(Session* session,
            const std::vector<std::string>& uris,
            const KeyVals& options,
            int position = -1);
+
+// Query download
+enum DOWNLOAD_STATUS {
+  DOWNLOAD_ACTIVE,
+  DOWNLOAD_WAITING,
+  DOWNLOAD_PAUSED,
+  DOWNLOAD_COMPLETE,
+  DOWNLOAD_ERROR,
+  DOWNLOAD_REMOVED
+};
+
+struct DownloadHandle;
+
+// Returns handle for the download denoted by the |gid|. The caller
+// can retrieve various information of the download via returned
+// handle. The lifetime of the returned handle is before the next call
+// of run() or sessionFinal(). This function returns NULL if no
+// download denoted by the |gid| is present. The caller must call
+// deleteDownloadHandle() to delete the acquired handle.
+DownloadHandle* getDownloadHandle(Session* session, const A2Gid& gid);
+
+// Deallocates the |dh|. Calling this function with NULL is safe.
+void deleteDownloadHandle(DownloadHandle* dh);
+
+DOWNLOAD_STATUS downloadGetStatus(DownloadHandle* dh);
+int64_t downloadGetTotalLength(DownloadHandle* dh);
+int64_t downloadGetCompletedLength(DownloadHandle* dh);
+int64_t downloadGetUploadLength(DownloadHandle* dh);
+int downloadGetDownloadSpeed(DownloadHandle* dh);
+int downloadGetUploadSpeed(DownloadHandle* dh);
 
 } // namespace aria2
 

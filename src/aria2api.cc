@@ -182,4 +182,141 @@ int addUri(Session* session,
   return 0;
 }
 
+namespace {
+struct RequestGroupDH : public DownloadHandle {
+  RequestGroupDH(const SharedHandle<RequestGroup>& group)
+    : group(group),
+      ts(group->calculateStat())
+  {}
+  virtual ~RequestGroupDH() {}
+  virtual DOWNLOAD_STATUS getStatus()
+  {
+    if(group->getState() == RequestGroup::STATE_ACTIVE) {
+      return DOWNLOAD_ACTIVE;
+    } else {
+      if(group->isPauseRequested()) {
+        return DOWNLOAD_PAUSED;
+      } else {
+        return DOWNLOAD_WAITING;
+      }
+    }
+  }
+  virtual int64_t getTotalLength()
+  {
+    return group->getTotalLength();
+  }
+  virtual int64_t getCompletedLength()
+  {
+    return group->getCompletedLength();
+  }
+  virtual int64_t getUploadLength()
+  {
+    return ts.allTimeUploadLength;
+  }
+  virtual int getDownloadSpeed()
+  {
+    return ts.downloadSpeed;
+  }
+  virtual int getUploadSpeed()
+  {
+    return ts.uploadSpeed;
+  }
+  SharedHandle<RequestGroup> group;
+  TransferStat ts;
+};
+} // namespace
+
+namespace {
+struct DownloadResultDH : public DownloadHandle {
+  DownloadResultDH(const SharedHandle<DownloadResult>& dr)
+    : dr(dr)
+  {}
+  virtual ~DownloadResultDH() {}
+  virtual DOWNLOAD_STATUS getStatus()
+  {
+    switch(dr->result) {
+    case error_code::FINISHED:
+      return DOWNLOAD_COMPLETE;
+    case error_code::REMOVED:
+      return DOWNLOAD_REMOVED;
+    default:
+      return DOWNLOAD_ERROR;
+    }
+  }
+  virtual int64_t getTotalLength()
+  {
+    return dr->totalLength;
+  }
+  virtual int64_t getCompletedLength()
+  {
+    return dr->completedLength;
+  }
+  virtual int64_t getUploadLength()
+  {
+    return dr->uploadLength;
+  }
+  virtual int getDownloadSpeed()
+  {
+    return 0;
+  }
+  virtual int getUploadSpeed()
+  {
+    return 0;
+  }
+  SharedHandle<DownloadResult> dr;
+};
+} // namespace
+
+DownloadHandle* getDownloadHandle(Session* session, const A2Gid& gid)
+{
+  const SharedHandle<DownloadEngine>& e =
+    session->context->reqinfo->getDownloadEngine();
+  const SharedHandle<RequestGroupMan>& rgman = e->getRequestGroupMan();
+  SharedHandle<RequestGroup> group = rgman->findGroup(gid);
+  if(group) {
+    return new RequestGroupDH(group);
+  } else {
+    SharedHandle<DownloadResult> ds = rgman->findDownloadResult(gid);
+    if(ds) {
+      return new DownloadResultDH(ds);
+    }
+  }
+  return 0;
+}
+
+void deleteDownloadHandle(DownloadHandle* dh)
+{
+  delete dh;
+}
+
+DOWNLOAD_STATUS downloadGetStatus(DownloadHandle* dh)
+{
+  return dh->getStatus();
+}
+
+int64_t downloadGetTotalLength(DownloadHandle* dh)
+{
+  return dh->getTotalLength();
+}
+
+int64_t downloadGetCompletedLength(DownloadHandle* dh)
+{
+  return dh->getCompletedLength();
+}
+
+int64_t downloadGetUploadLength(DownloadHandle* dh)
+{
+  return dh->getUploadLength();
+}
+
+int downloadGetDownloadSpeed(DownloadHandle* dh)
+{
+  return dh->getDownloadSpeed();
+}
+
+int downloadGetUploadSpeed(DownloadHandle* dh)
+{
+  return dh->getUploadSpeed();
+}
+
 } // namespace aria2

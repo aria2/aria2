@@ -50,6 +50,16 @@ struct Session {
   SharedHandle<Context> context;
 };
 
+struct DownloadHandle {
+  virtual ~DownloadHandle() {}
+  virtual DOWNLOAD_STATUS getStatus() = 0;
+  virtual int64_t getTotalLength() = 0;
+  virtual int64_t getCompletedLength() = 0;
+  virtual int64_t getUploadLength() = 0;
+  virtual int getDownloadSpeed() = 0;
+  virtual int getUploadSpeed() = 0;
+};
+
 } // namespace aria2
 
 #endif // ARIA2_API_H
