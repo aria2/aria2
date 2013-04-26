@@ -163,9 +163,7 @@ int DownloadEngine::run(bool oneshot)
       return 1;
     }
   }
-  if(!oneshot) {
-    onEndOfRun();
-  }
+  onEndOfRun();
   return 0;
 }
 
