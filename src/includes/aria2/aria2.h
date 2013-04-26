@@ -106,6 +106,9 @@ enum RUN_MODE {
 // function one or more time to complete downloads.
 int run(Session* session, RUN_MODE mode);
 
+// Returns textual representation of the |gid|.
+std::string gidToString(const A2Gid& gid);
+
 // This method adds new HTTP(S)/FTP/BitTorrent Magnet URI.  On
 // successful return, the |gid| includes the GID of newly added
 // download.  The |uris| includes URI to be downloaded.  For
@@ -124,7 +127,9 @@ int addUri(Session* session,
            const KeyVals& options,
            int position = -1);
 
-// Query download
+// Returns the array of active download GID.
+std::vector<A2Gid> getActiveDownload(Session* session);
+
 enum DOWNLOAD_STATUS {
   DOWNLOAD_ACTIVE,
   DOWNLOAD_WAITING,

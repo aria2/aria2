@@ -107,6 +107,11 @@ int run(Session* session, RUN_MODE mode)
   return e->run(mode == RUN_ONCE);
 }
 
+std::string gidToString(const A2Gid& gid)
+{
+  return GroupId::toHex(gid);
+}
+
 namespace {
 template<typename InputIterator, typename Pred>
 void apiGatherOption
@@ -180,6 +185,19 @@ int addUri(Session* session,
     addRequestGroup(result.front(), e, position);
   }
   return 0;
+}
+
+std::vector<A2Gid> getActiveDownload(Session* session)
+{
+  const SharedHandle<DownloadEngine>& e =
+    session->context->reqinfo->getDownloadEngine();
+  const RequestGroupList& groups = e->getRequestGroupMan()->getRequestGroups();
+  std::vector<A2Gid> res;
+  for(RequestGroupList::const_iterator i = groups.begin(),
+        eoi = groups.end(); i != eoi; ++i) {
+    res.push_back((*i)->getGID());
+  }
+  return res;
 }
 
 namespace {
