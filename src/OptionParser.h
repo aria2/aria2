@@ -41,6 +41,7 @@
 #include <vector>
 #include <iosfwd>
 
+#include <aria2/aria2.h>
 #include "SharedHandle.h"
 
 namespace aria2 {
@@ -66,6 +67,8 @@ public:
                 int argc, char* argv[]) const;
 
   void parse(Option& option, std::istream& ios) const;
+
+  void parse(Option& option, const KeyVals& options) const;
 
   void parseDefaultValues(Option& option) const;
 

@@ -128,7 +128,7 @@ void MultiUrlRequestInfo::printMessageForContinue()
      _("If there are any errors, then see the log file. See '-l' option in help/man page for details."));
 }
 
-error_code::Value MultiUrlRequestInfo::prepare()
+int MultiUrlRequestInfo::prepare()
 {
   try {
     SharedHandle<rpc::WebSocketSessionMan> wsSessionMan;
@@ -259,9 +259,9 @@ error_code::Value MultiUrlRequestInfo::prepare()
   } catch(RecoverableException& e) {
     SingletonHolder<Notifier>::clear();
     resetSignalHandlers();
-    return error_code::UNKNOWN_ERROR;
+    return -1;
   }
-  return error_code::FINISHED;
+  return 0;
 }
 
 error_code::Value MultiUrlRequestInfo::getResult()
@@ -306,30 +306,19 @@ error_code::Value MultiUrlRequestInfo::getResult()
   return returnValue;
 }
 
-int MultiUrlRequestInfo::run()
-{
-  int rv;
-  try {
-    rv = e_->run(true);
-  } catch(RecoverableException& e) {
-    rv = -1;
-  }
-  return rv;
-}
-
 error_code::Value MultiUrlRequestInfo::execute()
 {
-  error_code::Value returnValue;
-  returnValue = prepare();
-  if(returnValue != error_code::FINISHED) {
-    return returnValue;
+  if(prepare() != 0) {
+    return error_code::UNKNOWN_ERROR;
   }
+  // TODO Enclosed in try..catch block for just in case. Really need
+  // this?
   try {
     e_->run();
   } catch(RecoverableException& e) {
     A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
   }
-  returnValue = getResult();
+  error_code::Value returnValue = getResult();
   resetSignalHandlers();
   return returnValue;
 }
@@ -344,6 +333,12 @@ void MultiUrlRequestInfo::resetSignalHandlers()
 #endif // SIGHUP
   util::setGlobalSignalHandler(SIGINT, &mask_, SIG_DFL, 0);
   util::setGlobalSignalHandler(SIGTERM, &mask_, SIG_DFL, 0);
+}
+
+const SharedHandle<DownloadEngine>&
+MultiUrlRequestInfo::getDownloadEngine() const
+{
+  return e_;
 }
 
 } // namespace aria2

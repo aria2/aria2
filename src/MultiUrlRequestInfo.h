@@ -86,19 +86,25 @@ public:
 
   virtual ~MultiUrlRequestInfo();
 
-  /**
-   * Returns FINISHED if all downloads have completed, otherwise returns the
-   * last download result.
-   */
+  // Returns FINISHED if all downloads have completed, otherwise returns the
+  // last download result.
+  //
+  // This method actually calls prepare() and
+  // getDownloadEngine()->run(true) and getResult().
   error_code::Value execute();
 
-  error_code::Value prepare();
+  // Performs preparations for downloads, including creating
+  // DownloadEngine instance. This function returns 0 if it succeeds,
+  // or -1.
+  int prepare();
+
+  // Performs finalization of download process, including saving
+  // sessions. This function returns last error code in this session,
+  // in particular, this function returns FINISHED if all downloads
+  // have completed.
   error_code::Value getResult();
-  // Returns 1 if the caller needs to call this function one or more
-  // time. Returns 0 if the function succeeds. Returns -1 on error.
-  // For return value 0 and -1, the caller must call tearDown() to get
-  // final error code.
-  int run();
+
+  const SharedHandle<DownloadEngine>& getDownloadEngine() const;
 };
 
 } // namespace aria2

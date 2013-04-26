@@ -1,9 +1,10 @@
 SUBDIRS = includes
 bin_PROGRAMS = aria2c
-aria2c_SOURCES = main.cc\
-	version_usage.cc
+aria2c_SOURCES = main.cc
 SRCS =  option_processing.cc\
+	version_usage.cc\
 	Context.cc Context.h\
+	aria2api.cc aria2api.h\
 	SocketCore.cc SocketCore.h\
 	BinaryStream.h\
 	Command.cc Command.h\
@@ -632,15 +633,18 @@ SRCS += KqueueEventPoll.cc KqueueEventPoll.h
 endif # HAVE_KQUEUE
 
 AR = @AR@
-noinst_LTLIBRARIES = libaria2c.la
-libaria2c_la_SOURCES = $(SRCS)
-libaria2c_la_LIBADD = @WSLAY_LIBS@
-aria2c_LDADD = libaria2c.la @LIBINTL@ @ALLOCA@ #-lprofiler
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libaria2.pc
+DISTCLEANFILES = $(pkgconfig_DATA)
+
+lib_LTLIBRARIES = libaria2.la
+libaria2_la_SOURCES = $(SRCS)
+libaria2_la_LIBADD = @WSLAY_LIBS@
+
+LDADD = libaria2.la @LIBINTL@ @ALLOCA@ #-lprofiler
 #aria2c_LDFLAGS = -pg
 AM_CPPFLAGS =  -Wall\
 	-I$(top_srcdir)/lib -I$(top_srcdir)/intl\
+	-I$(srcdir)/includes -I$(builddir)/includes\
 	-DLOCALEDIR=\"@localedir@\" -DCA_BUNDLE=\"$(ca_bundle)\" @DEFS@ #-pg
-
-lib_LTLIBRARIES = libaria2.la
-libaria2_la_SOURCES =
-libaria2_la_LIBADD = libaria2c.la

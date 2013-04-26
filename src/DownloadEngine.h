@@ -124,6 +124,7 @@ private:
 
   // Milliseconds
   int64_t refreshInterval_;
+  Timer lastRefresh_;
 
   std::deque<Command*> routineCommands_;
 

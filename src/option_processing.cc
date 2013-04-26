@@ -38,6 +38,7 @@
 #include <cstring>
 #include <sstream>
 
+#include <aria2/aria2.h>
 #include "Option.h"
 #include "prefs.h"
 #include "OptionParser.h"
@@ -189,8 +190,9 @@ void optionNativeToUtf8(Option& op)
 } // namespace
 #endif // __MINGW32__
 
-void option_processing(Option& op, std::vector<std::string>& uris,
-                       int argc, char* argv[])
+void option_processing(Option& op, bool standalone,
+                       std::vector<std::string>& uris,
+                       int argc, char** argv, const KeyVals& options)
 {
   const SharedHandle<OptionParser>& oparser = OptionParser::getInstance();
   try {
@@ -279,6 +281,7 @@ void option_processing(Option& op, std::vector<std::string>& uris,
     // finaly let's parse and store command-iine options.
     op.setParent(confOption);
     oparser->parse(op, cmdstream);
+    oparser->parse(op, options);
 #ifdef __MINGW32__
     optionNativeToUtf8(op);
     optionNativeToUtf8(*confOption);
@@ -301,7 +304,8 @@ void option_processing(Option& op, std::vector<std::string>& uris,
     showUsage("", oparser, global::cerr());
     exit(e.getErrorCode());
   }
-  if(!op.getAsBool(PREF_ENABLE_RPC) &&
+  if(standalone &&
+     !op.getAsBool(PREF_ENABLE_RPC) &&
 #ifdef ENABLE_BITTORRENT
      op.blank(PREF_TORRENT_FILE) &&
 #endif // ENABLE_BITTORRENT

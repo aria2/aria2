@@ -32,28 +32,24 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef CONTEXT_H
-#define CONTEXT_H
+#ifndef ARIA2_API_H
+#define ARIA2_API_H
 
 #include "common.h"
+
 #include <aria2/aria2.h>
 #include "SharedHandle.h"
 
 namespace aria2 {
 
-class MultiUrlRequestInfo;
+struct Context;
 
-struct Context {
-  // Set the |standalone| false if the context is created via libaria2
-  // API. The |argc| and |argv| is expected to the command-line
-  // arguments, which will be passed to getopt_long(3) in the end.
-  // The |options| is the additional option values and is considered
-  // as a part of command-line arguments.
-  Context(bool standalone, int argc, char** argv, const KeyVals& options);
-  ~Context();
-  SharedHandle<MultiUrlRequestInfo> reqinfo;
+struct Session {
+  Session(const KeyVals& options);
+  ~Session();
+  SharedHandle<Context> context;
 };
 
 } // namespace aria2
 
-#endif // CONTEXT_H
+#endif // ARIA2_API_H

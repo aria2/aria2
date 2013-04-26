@@ -36,6 +36,7 @@
 
 #include <unistd.h>
 
+#include <aria2/aria2.h>
 #include "SharedHandle.h"
 #include "Context.h"
 #include "MultiUrlRequestInfo.h"
@@ -48,7 +49,7 @@ namespace aria2 {
 
 error_code::Value main(int argc, char** argv)
 {
-  Context context(argc, argv);
+  Context context(true, argc, argv, KeyVals());
   error_code::Value exitStatus = error_code::FINISHED;
   if(context.reqinfo) {
     exitStatus = context.reqinfo->execute();

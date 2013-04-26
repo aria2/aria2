@@ -175,14 +175,16 @@ void showFiles
 } // namespace
 #endif // ENABLE_BITTORRENT || ENABLE_METALINK
 
-extern void option_processing(Option& option, std::vector<std::string>& uris,
-                              int argc, char* argv[]);
+extern void option_processing(Option& option, bool standalone,
+                              std::vector<std::string>& uris,
+                              int argc, char** argv, const KeyVals& options);
 
-Context::Context(int argc, char** argv)
+Context::Context(bool standalone,
+                 int argc, char** argv, const KeyVals& options)
 {
   std::vector<std::string> args;
   SharedHandle<Option> op(new Option());
-  option_processing(*op.get(), args, argc, argv);
+  option_processing(*op.get(), standalone, args, argc, argv, options);
 
   SimpleRandomizer::init();
 #ifdef ENABLE_BITTORRENT
@@ -281,7 +283,8 @@ Context::Context(int argc, char** argv)
     i->remove(PREF_CHECKSUM);
     i->remove(PREF_GID);
   }
-  if(!op->getAsBool(PREF_ENABLE_RPC) && requestGroups.empty() &&
+  if(standalone &&
+     !op->getAsBool(PREF_ENABLE_RPC) && requestGroups.empty() &&
      !uriListParser) {
     global::cout()->printf("%s\n", MSG_NO_FILES_TO_DOWNLOAD);
   } else {
