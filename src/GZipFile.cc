@@ -77,6 +77,7 @@ GZipFile::GZipFile(const char* filename, const char* mode)
 
 GZipFile::~GZipFile()
 {
+  close();
   free(buf_);
 }
 
