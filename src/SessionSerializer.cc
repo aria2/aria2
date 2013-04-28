@@ -137,24 +137,41 @@ bool writeOption(IOFile& fp, const SharedHandle<Option>& op)
 } // namespace
 
 namespace {
-bool writeUri(IOFile& fp, const std::string& uri)
-{
-  return fp.write(uri.c_str(), uri.size()) == uri.size() &&
-    fp.write("\t", 1) == 1;
-}
-} // namespace
-
-namespace {
-template<typename InputIterator>
-bool writeUri(IOFile& fp, InputIterator first, InputIterator last)
-{
-  for(; first != last; ++first) {
-    if(!writeUri(fp, *first)) {
-      return false;
+  template<typename T>
+  class Unique {
+    typedef T type;
+    struct PointerCmp {
+      inline bool operator()(const type* x, const type* y) {
+        return *x < *y;
+      }
+    };
+    std::set<const type*, PointerCmp> known;
+  public:
+    inline bool operator()(const type& v) {
+      return known.insert(&v).second;
     }
+  };
+
+  bool writeUri(IOFile& fp, const std::string& uri)
+  {
+    return fp.write(uri.c_str(), uri.size()) == uri.size() &&
+      fp.write("\t", 1) == 1;
   }
-  return true;
-}
+
+  template<typename InputIterator, class UnaryPredicate>
+  bool writeUri(IOFile& fp, InputIterator first, InputIterator last,
+                UnaryPredicate& filter)
+  {
+    for(; first != last; ++first) {
+      if (!filter(*first)) {
+        continue;
+      }
+      if(!writeUri(fp, *first)) {
+        return false;
+      }
+    }
+    return true;
+  }
 } // namespace
 
 // The downloads whose followedBy() is empty is persisited with its
@@ -196,28 +213,26 @@ bool writeDownloadResult
     }
     const SharedHandle<FileEntry>& file = dr->fileEntries[0];
     // Don't save download if there are no URIs.
-    if(file->getRemainingUris().empty() &&
-       file->getSpentUris().empty()) {
+    const bool hasRemaining = !file->getRemainingUris().empty();
+    const bool hasSpent = !file->getSpentUris().empty();
+    if (!hasRemaining && !hasSpent) {
       return true;
     }
+
     // Save spent URIs + remaining URIs. Remove URI in spent URI which
     // also exists in remaining URIs.
-    std::set<std::string> uriSet(file->getRemainingUris().begin(),
-                                 file->getRemainingUris().end());
-    for(std::deque<std::string>::const_iterator i =
-          file->getSpentUris().begin(), eoi = file->getSpentUris().end();
-        i != eoi; ++i) {
-      if(uriSet.count(*i)) {
-        continue;
-      }
-      uriSet.insert(*i);
-      if(!writeUri(fp, *i)) {
+    {
+      Unique<std::string> unique;
+      if (hasRemaining && !writeUri(fp, file->getRemainingUris().begin(),
+                                    file->getRemainingUris().end(),
+                                    unique)) {
         return false;
       }
-    }
-    if(!writeUri(fp, file->getRemainingUris().begin(),
-                 file->getRemainingUris().end())) {
-      return false;
+      if (hasSpent && !writeUri(fp, file->getSpentUris().begin(),
+                                file->getSpentUris().end(),
+                                unique)) {
+        return false;
+      }
     }
     if(fp.write("\n", 1) != 1) {
       return false;

@@ -61,8 +61,19 @@ void SessionSerializerTest::testSave()
   };
   // This URI will be discarded because same URI exists in remaining
   // URIs.
+  drs[1]->fileEntries[0]->getRemainingUris().push_back("http://error");
+  drs[1]->fileEntries[0]->getRemainingUris().push_back("http://error3");
+  // This URI will be discarded because same URI exists in remaining
+  // URIs.
+  drs[1]->fileEntries[0]->getRemainingUris().push_back("http://error");
+  //
+  // This URI will be discarded because same URI exists in remaining
+  // URIs.
   drs[1]->fileEntries[0]->getSpentUris().push_back("http://error");
   drs[1]->fileEntries[0]->getSpentUris().push_back("http://error2");
+  // This URI will be discarded because same URI exists in remaining
+  // URIs.
+  drs[1]->fileEntries[0]->getSpentUris().push_back("http://error");
 
   drs[3]->option->put(PREF_FORCE_SAVE, A2_V_TRUE);
   for(size_t i = 0; i < sizeof(drs)/sizeof(drs[0]); ++i) {
@@ -79,7 +90,7 @@ void SessionSerializerTest::testSave()
   std::ifstream ss(filename.c_str(), std::ios::binary);
   std::string line;
   std::getline(ss, line);
-  CPPUNIT_ASSERT_EQUAL(std::string("http://error2\thttp://error\t"), line);
+  CPPUNIT_ASSERT_EQUAL(std::string("http://error\thttp://error3\thttp://error2\t"), line);
   std::getline(ss, line);
   CPPUNIT_ASSERT_EQUAL(fmt(" gid=%s", drs[1]->gid->toHex().c_str()), line);
   std::getline(ss, line);
