@@ -193,7 +193,7 @@ std::string uitos(T n, bool comma = false)
   --i;
   for(int j = 0; n; --i, ++j, n /= 10) {
     res[i] = (n%10) + '0';
-    if(comma && (j+1)%3 == 0) {
+    if(comma && i > 1 && (j+1)%3 == 0) {
       res[--i] = ',';
     }
   }
