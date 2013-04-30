@@ -17,13 +17,14 @@ AC_CONFIG_HEADERS([config.h])
 case "$host" in
   *mingw*)
     win_build=yes
-    LIBS="$LIBS -lws2_32 -lwsock32 -lgdi32 -lwinmm -liphlpapi"
+    LIBS="$LIBS -lws2_32 -lwsock32 -lgdi32 -lwinmm -liphlpapi -lpsapi"
     ;;
 esac
 
 AC_DEFINE_UNQUOTED([TARGET], ["$target"], [Define target-type])
 
 # Checks for arguments.
+ARIA2_ARG_WITHOUT([libuv])
 ARIA2_ARG_WITHOUT([appletls])
 ARIA2_ARG_WITHOUT([gnutls])
 ARIA2_ARG_WITHOUT([libnettle])
@@ -111,6 +112,69 @@ if test "x$with_libz" = "xyes"; then
     fi
   fi
 fi
+
+if test "x$with_libuv" = "xyes"; then
+  case "$host" in
+    *mingw*|*msvc*)
+      old_CPPFLAGS=$CPPFLAGS
+      CPPFLAGS="$CPPFLAGS -D_WIN32_WINNT=0x0600"
+      AC_SEARCH_LIBS([uv_poll_init_socket], [uv], [
+                      AC_CHECK_HEADER([uv.h], [have_libuv=yes], [have_libuv=no])
+                      break;
+                      ], [have_libuv=no])
+      if test "x$have_libuv" != "xyes"; then
+        CPPFLAGS=$old_CPPFLAGS
+      fi
+    ;;
+
+    *darwin*)
+      old_LDFLAGS=$LDFLAGS
+      LDFLAGS="$LDFLAGS -framework Foundation -framework CoreServices -framework ApplicationServices"
+      old_LIBS=$LIBS
+      LIBS="$LIBS -lm"
+      AC_SEARCH_LIBS([uv_poll_init_socket], [uv], [
+                      AC_CHECK_HEADER([uv.h], [have_libuv=yes], [have_libuv=no])
+                      break;
+                      ], [have_libuv=no])
+      if test "x$have_libuv" != "xyes"; then
+        LDFLAGS=$old_LDFLAGS
+        LIBS=$old_LIBS
+      fi
+      ;;
+
+    *)
+      dnl Yeah, sucks that luv does not bring a pkg-config or config-tool
+      AC_MSG_CHECKING([for libuv])
+      for combo in "" "-lrt" "-ldl -lrt" "-ldl -lrt -lpthread" "-lkvm"; do
+        old_LIBS=$LIBS
+        LIBS="-luv $combo $LIBS -lm"
+        AC_LINK_IFELSE([AC_LANG_SOURCE([
+extern "C" int uv_poll_init_socket(void);
+int main() { return uv_poll_init_socket(); }
+                       ])], [
+                        AC_MSG_RESULT(-luv $combo -lm)
+                        AC_CHECK_HEADER([uv.h], [have_libuv=yes], [have_libuv=no])
+                        break;
+                        ], [have_libuv=no])
+        if test "x$have_libuv" = "xyes"; then
+          break;
+        else
+          LIBS=$old_LIBS
+        fi
+      done
+      if test "x$have_libuv" != "xyes"; then
+        AC_MSG_RESULT("no")
+      fi
+    ;;
+  esac
+
+  if test "x$have_libuv" = "xyes"; then
+    AC_DEFINE([HAVE_LIBUV], [1], [Define to 1 if you have libuv.])
+  elif test "x$with_libuv_requested" = "xyes"; then
+    ARIA2_DEP_NOT_MET([libuv])
+  fi
+fi
+AM_CONDITIONAL([HAVE_LIBUV], [test "x$have_libuv" = "xyes"])
 
 if test "x$with_libxml2" = "xyes"; then
   AM_PATH_XML2([2.6.24], [have_libxml2=yes])
@@ -388,18 +452,25 @@ AC_HEADER_STDC
 
 case "$host" in
 	*mingw*)
-                AC_CHECK_HEADERS([windows.h \
-				  winsock2.h \
-                                  ws2tcpip.h \
-				  mmsystem.h \
-                                  io.h \
-                                  iphlpapi.h\
-                                  winioctl.h \
-                                  share.h], [], [],
-[[#ifdef HAVE_WINDOWS_H
+    AC_CHECK_HEADERS([windows.h \
+                      winsock2.h \
+                      ws2tcpip.h \
+                      mmsystem.h \
+                      io.h \
+                      iphlpapi.h\
+                      winioctl.h \
+                      share.h], [], [],
+                      [[
+#ifdef HAVE_WS2TCPIP_H
+# include <ws2tcpip.h>
+#endif
+#ifdef HAVE_WINSOCK2_H
+# include <winsock2.h>
+#endif
+#ifdef HAVE_WINDOWS_H
 # include <windows.h>
 #endif
-]])
+                      ]])
 		;;
 esac
 
@@ -416,8 +487,8 @@ AC_CHECK_HEADERS([argz.h \
                   netdb.h \
                   netinet/in.h \
                   netinet/tcp.h \
-		  poll.h \
-		  port.h \
+                  poll.h \
+                  port.h \
                   signal.h \
                   stddef.h \
                   stdint.h \
@@ -434,10 +505,10 @@ AC_CHECK_HEADERS([argz.h \
                   sys/uio.h \
                   termios.h \
                   unistd.h \
-		  utime.h \
+                  utime.h \
                   wchar.h \
-		  ifaddrs.h \
-		  pwd.h])
+                  ifaddrs.h \
+                  pwd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
@@ -722,6 +793,7 @@ echo "CPPFLAGS:       $CPPFLAGS"
 echo "LDFLAGS:        $LDFLAGS"
 echo "LIBS:           $LIBS"
 echo "DEFS:           $DEFS"
+echo "LibUV:          $have_libuv"
 echo "SQLite3:        $have_sqlite3"
 echo "SSL Support:    $have_ssl"
 echo "AppleTLS:       $have_appletls"
