@@ -153,6 +153,7 @@ const std::string V_ERROR("error");
 const std::string V_INORDER("inorder");
 const std::string V_FEEDBACK("feedback");
 const std::string V_ADAPTIVE("adaptive");
+const std::string V_LIBUV("libuv");
 const std::string V_EPOLL("epoll");
 const std::string V_KQUEUE("kqueue");
 const std::string V_PORT("port");

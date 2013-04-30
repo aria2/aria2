@@ -1223,7 +1223,7 @@ const uint32_t APIPA_IPV4_END = 2852061183u; // 169.254.255.255
 
 void checkAddrconfig()
 {
-#ifdef __MINGW32__
+#ifdef HAVE_IPHLPAPI_H
   A2_LOG_INFO("Checking configured addresses");
   ULONG bufsize = 15*1024;
   ULONG retval = 0;

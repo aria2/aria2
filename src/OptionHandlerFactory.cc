@@ -338,6 +338,9 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
 #ifdef HAVE_PORT_ASSOCIATE
       V_PORT,
 #endif // HAVE_PORT_ASSOCIATE
+#ifdef HAVE_LIBUV
+      V_LIBUV,
+#endif // HAVE_LIBUV
 #ifdef HAVE_POLL
       V_POLL,
 #endif // HAVE_POLL
@@ -346,15 +349,19 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     OptionHandler* op(new ParameterOptionHandler
                       (PREF_EVENT_POLL,
                        TEXT_EVENT_POLL,
-#ifdef HAVE_EPOLL
+#if defined(HAVE_EPOLL)
                        V_EPOLL,
-#elif HAVE_KQUEUE
+#elif defined(HAVE_KQUEUE)
                        V_KQUEUE,
-#elif HAVE_PORT_ASSOCIATE
+#elif defined(HAVE_PORT_ASSOCIATE)
                        V_PORT,
-#else
+#elif defined(HAVE_LIBUV)
+                       V_LIBUV,
+#elif defined(HAVE_POLL)
+                       V_POLL,
+#else // defined(HAVE_EPOLL)
                        V_SELECT,
-#endif // !HAVE_EPOLL
+#endif // defined(HAVE_EPOLL)
                        std::vector<std::string>
                        (vbegin(params), vend(params))));
     op->addTag(TAG_ADVANCED);
