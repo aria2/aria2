@@ -4,7 +4,6 @@ aria2c_SOURCES = main.cc
 SRCS =  option_processing.cc\
 	version_usage.cc\
 	Context.cc Context.h\
-	aria2api.cc aria2api.h\
 	SocketCore.cc SocketCore.h\
 	BinaryStream.h\
 	Command.cc Command.h\
@@ -639,7 +638,8 @@ pkgconfig_DATA = libaria2.pc
 DISTCLEANFILES = $(pkgconfig_DATA)
 
 lib_LTLIBRARIES = libaria2.la
-libaria2_la_SOURCES = $(SRCS)
+libaria2_la_SOURCES = $(SRCS) \
+	aria2api.cc aria2api.h
 libaria2_la_LIBADD = @WSLAY_LIBS@
 
 LDADD = libaria2.la @LIBINTL@ @ALLOCA@ #-lprofiler
