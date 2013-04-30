@@ -109,9 +109,24 @@ int run(Session* session, RUN_MODE mode)
   return e->run(mode == RUN_ONCE);
 }
 
-std::string gidToString(const A2Gid& gid)
+std::string gidToHex(const A2Gid& gid)
 {
   return GroupId::toHex(gid);
+}
+
+A2Gid hexToGid(const std::string& hex)
+{
+  A2Gid gid;
+  if(GroupId::toNumericId(gid, hex.c_str()) == 0) {
+    return gid;
+  } else {
+    return 0;
+  }
+}
+
+bool isNull(const A2Gid& gid)
+{
+  return gid == 0;
 }
 
 namespace {

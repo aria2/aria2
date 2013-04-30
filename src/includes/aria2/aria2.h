@@ -107,7 +107,11 @@ enum RUN_MODE {
 int run(Session* session, RUN_MODE mode);
 
 // Returns textual representation of the |gid|.
-std::string gidToString(const A2Gid& gid);
+std::string gidToHex(const A2Gid& gid);
+// Returns GID converted from the textual representation |hex|.
+A2Gid hexToGid(const std::string& hex);
+// Returns true if the |gid| is invalid.
+bool isNull(const A2Gid& gid);
 
 // This method adds new HTTP(S)/FTP/BitTorrent Magnet URI.  On
 // successful return, the |gid| includes the GID of newly added
