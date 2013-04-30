@@ -50,6 +50,8 @@
 #include "prefs.h"
 #include "download_helper.h"
 #include "LogFactory.h"
+#include "PieceStorage.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 
@@ -231,6 +233,16 @@ struct RequestGroupDH : public DownloadHandle {
   {
     return ts.allTimeUploadLength;
   }
+  virtual std::string getBitfield()
+  {
+    const SharedHandle<PieceStorage>& ps = group->getPieceStorage();
+    if(ps) {
+      return std::string(reinterpret_cast<const char*>(ps->getBitfield()),
+                         ps->getBitfieldLength());
+    } else {
+      return "";
+    }
+  }
   virtual int getDownloadSpeed()
   {
     return ts.downloadSpeed;
@@ -238,6 +250,30 @@ struct RequestGroupDH : public DownloadHandle {
   virtual int getUploadSpeed()
   {
     return ts.uploadSpeed;
+  }
+  virtual size_t getNumPieces()
+  {
+    return group->getDownloadContext()->getNumPieces();
+  }
+  virtual int getConnections()
+  {
+    return group->getNumConnection();
+  }
+  virtual int getErrorCode()
+  {
+    return 0;
+  }
+  virtual const std::vector<A2Gid>& getFollowedBy()
+  {
+    return group->followedBy();
+  }
+  virtual A2Gid getBelongsTo()
+  {
+    return group->belongsTo();
+  }
+  virtual const std::string& getDir()
+  {
+    return group->getOption()->get(PREF_DIR);
   }
   SharedHandle<RequestGroup> group;
   TransferStat ts;
@@ -273,6 +309,10 @@ struct DownloadResultDH : public DownloadHandle {
   {
     return dr->uploadLength;
   }
+  virtual std::string getBitfield()
+  {
+    return dr->bitfield;
+  }
   virtual int getDownloadSpeed()
   {
     return 0;
@@ -280,6 +320,30 @@ struct DownloadResultDH : public DownloadHandle {
   virtual int getUploadSpeed()
   {
     return 0;
+  }
+  virtual size_t getNumPieces()
+  {
+    return dr->numPieces;
+  }
+  virtual int getConnections()
+  {
+    return 0;
+  }
+  virtual int getErrorCode()
+  {
+    return dr->result;
+  }
+  virtual const std::vector<A2Gid>& getFollowedBy()
+  {
+    return dr->followedBy;
+  }
+  virtual A2Gid getBelongsTo()
+  {
+    return dr->belongsTo;
+  }
+  virtual const std::string& getDir()
+  {
+    return dr->dir;
   }
   SharedHandle<DownloadResult> dr;
 };
@@ -327,6 +391,11 @@ int64_t downloadGetUploadLength(DownloadHandle* dh)
   return dh->getUploadLength();
 }
 
+std::string downloadGetBitfield(DownloadHandle* dh)
+{
+  return dh->getBitfield();
+}
+
 int downloadGetDownloadSpeed(DownloadHandle* dh)
 {
   return dh->getDownloadSpeed();
@@ -335,6 +404,36 @@ int downloadGetDownloadSpeed(DownloadHandle* dh)
 int downloadGetUploadSpeed(DownloadHandle* dh)
 {
   return dh->getUploadSpeed();
+}
+
+size_t downloadGetNumPieces(DownloadHandle* dh)
+{
+  return dh->getNumPieces();
+}
+
+int downloadGetConnections(DownloadHandle* dh)
+{
+  return dh->getConnections();
+}
+
+int downloadGetErrorCode(DownloadHandle* dh)
+{
+  return dh->getErrorCode();
+}
+
+const std::vector<A2Gid>& downloadGetFollowedBy(DownloadHandle* dh)
+{
+  return dh->getFollowedBy();
+}
+
+A2Gid downloadGetBelongsTo(DownloadHandle* dh)
+{
+  return dh->getBelongsTo();
+}
+
+const std::string& downloadGetDir(DownloadHandle* dh)
+{
+  return dh->getDir();
 }
 
 } // namespace aria2

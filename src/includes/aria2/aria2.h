@@ -156,8 +156,15 @@ DOWNLOAD_STATUS downloadGetStatus(DownloadHandle* dh);
 int64_t downloadGetTotalLength(DownloadHandle* dh);
 int64_t downloadGetCompletedLength(DownloadHandle* dh);
 int64_t downloadGetUploadLength(DownloadHandle* dh);
+std::string downloadGetBitfield(DownloadHandle* dh);
 int downloadGetDownloadSpeed(DownloadHandle* dh);
 int downloadGetUploadSpeed(DownloadHandle* dh);
+size_t downloadGetNumPieces(DownloadHandle* dh);
+int downloadGetConnections(DownloadHandle* dh);
+int downloadGetErrorCode(DownloadHandle* dh);
+const std::vector<A2Gid>& downloadGetFollowedBy(DownloadHandle* dh);
+A2Gid downloadGetBelongsTo(DownloadHandle* dh);
+const std::string& downloadGetDir(DownloadHandle* dh);
 
 } // namespace aria2
 

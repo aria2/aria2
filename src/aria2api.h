@@ -56,8 +56,15 @@ struct DownloadHandle {
   virtual int64_t getTotalLength() = 0;
   virtual int64_t getCompletedLength() = 0;
   virtual int64_t getUploadLength() = 0;
+  virtual std::string getBitfield() = 0;
   virtual int getDownloadSpeed() = 0;
   virtual int getUploadSpeed() = 0;
+  virtual size_t getNumPieces() = 0;
+  virtual int getConnections() = 0;
+  virtual int getErrorCode() = 0;
+  virtual const std::vector<A2Gid>& getFollowedBy() = 0;
+  virtual A2Gid getBelongsTo() = 0;
+  virtual const std::string& getDir() = 0;
 };
 
 } // namespace aria2
