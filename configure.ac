@@ -541,7 +541,6 @@ if test "x$with_tcmalloc" = "xyes"; then
   PKG_CHECK_MODULES([TCMALLOC], [libtcmalloc_minimal], [have_tcmalloc=yes], [have_tcmalloc=no])
   if test "x$have_tcmalloc" = "xyes"; then
     CPPFLAGS="$TCMALLOC_CFLAGS $CPPFLAGS"
-    LDFLAGS="$TCMALLOC_LDFLAGS $CPPFLAGS"
     LIBS="$LIBS $TCMALLOC_LIBS"
   else
     AC_CHECK_LIB([tcmalloc_minimal], [malloc], [have_tcmalloc=yes], [have_tcmalloc=no])
@@ -562,7 +561,6 @@ if test "x$have_tcmalloc" != "xyes" && test "x$with_jemalloc" = "xyes"; then
   PKG_CHECK_MODULES([JEMALLOC], [jemalloc], [have_jemalloc=yes], [have_jemalloc=no])
   if test "x$have_jemalloc" = "xyes"; then
     CPPFLAGS="$JEMALLOC_CFLAGS $CPPFLAGS"
-    LDFLAGS="$JEMALLOC_LDFLAGS $CPPFLAGS"
     LIBS="$LIBS $JEMALLOC_LIBS"
   else
     AC_CHECK_LIB([jemalloc], [malloc], [have_jemalloc=yes], [have_jemalloc=no])
