@@ -55,6 +55,7 @@
 #include "FileEntry.h"
 #include "BitfieldMan.h"
 #include "DownloadContext.h"
+#include "RpcMethodImpl.h"
 
 namespace aria2 {
 
@@ -203,6 +204,63 @@ int addUri(Session* session,
   if(!result.empty()) {
     gid = result.front()->getGID();
     addRequestGroup(result.front(), e, position);
+  }
+  return 0;
+}
+
+int removeDownload(Session* session, const A2Gid& gid, bool force)
+{
+  const SharedHandle<DownloadEngine>& e =
+    session->context->reqinfo->getDownloadEngine();
+  SharedHandle<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
+  if(group) {
+    if(group->getState() == RequestGroup::STATE_ACTIVE) {
+      if(force) {
+        group->setForceHaltRequested(true, RequestGroup::USER_REQUEST);
+      } else {
+        group->setHaltRequested(true, RequestGroup::USER_REQUEST);
+      }
+      e->setRefreshInterval(0);
+    } else {
+      if(group->isDependencyResolved()) {
+        e->getRequestGroupMan()->removeReservedGroup(gid);
+      } else {
+        return -1;
+      }
+    }
+  } else {
+    return -1;
+  }
+  return 0;
+}
+
+int pauseDownload(Session* session, const A2Gid& gid, bool force)
+{
+  const SharedHandle<DownloadEngine>& e =
+    session->context->reqinfo->getDownloadEngine();
+  SharedHandle<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
+  if(group) {
+    bool reserved = group->getState() == RequestGroup::STATE_WAITING;
+    if(pauseRequestGroup(group, reserved, force)) {
+      e->setRefreshInterval(0);
+      return 0;
+    }
+  }
+  return -1;
+}
+
+int unpauseDownload(Session* session, const A2Gid& gid)
+{
+  const SharedHandle<DownloadEngine>& e =
+    session->context->reqinfo->getDownloadEngine();
+  SharedHandle<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
+  if(!group ||
+     group->getState() != RequestGroup::STATE_WAITING ||
+     !group->isPauseRequested()) {
+    return -1;
+  } else {
+    group->setPauseRequested(false);
+    e->getRequestGroupMan()->requestQueueCheck();
   }
   return 0;
 }

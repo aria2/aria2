@@ -605,6 +605,9 @@ void gatherBitTorrentMetadata
 
 } // namespace rpc
 
+bool pauseRequestGroup
+(const SharedHandle<RequestGroup>& group, bool reserved,  bool forcePause);
+
 } // namespace aria2
 
 #endif // D_RPC_METHOD_IMPL_H

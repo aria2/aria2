@@ -134,6 +134,12 @@ int addUri(Session* session,
 // Returns the array of active download GID.
 std::vector<A2Gid> getActiveDownload(Session* session);
 
+int removeDownload(Session* session, const A2Gid& gid, bool force = false);
+
+int pauseDownload(Session* session, const A2Gid& gid, bool force = false);
+
+int unpauseDownload(Session* session, const A2Gid& gid);
+
 enum UriStatus {
   URI_USED,
   URI_WAITING
