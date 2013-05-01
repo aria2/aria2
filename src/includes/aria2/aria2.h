@@ -134,6 +134,25 @@ int addUri(Session* session,
 // Returns the array of active download GID.
 std::vector<A2Gid> getActiveDownload(Session* session);
 
+enum UriStatus {
+  URI_USED,
+  URI_WAITING
+};
+
+struct UriData {
+  std::string uri;
+  UriStatus status;
+};
+
+struct FileData {
+  int index;
+  std::string path;
+  int64_t length;
+  int64_t completedLength;
+  bool selected;
+  std::vector<UriData> uris;
+};
+
 enum DOWNLOAD_STATUS {
   DOWNLOAD_ACTIVE,
   DOWNLOAD_WAITING,
@@ -158,6 +177,7 @@ struct DownloadHandle {
   virtual const std::vector<A2Gid>& getFollowedBy() = 0;
   virtual A2Gid getBelongsTo() = 0;
   virtual const std::string& getDir() = 0;
+  virtual std::vector<FileData> getFiles() = 0;
 };
 
 // Returns handle for the download denoted by the |gid|. The caller

@@ -52,6 +52,9 @@
 #include "LogFactory.h"
 #include "PieceStorage.h"
 #include "DownloadContext.h"
+#include "FileEntry.h"
+#include "BitfieldMan.h"
+#include "DownloadContext.h"
 
 namespace aria2 {
 
@@ -218,6 +221,93 @@ std::vector<A2Gid> getActiveDownload(Session* session)
 }
 
 namespace {
+template<typename OutputIterator, typename InputIterator>
+void createUriEntry
+(OutputIterator out,
+ InputIterator first, InputIterator last,
+ UriStatus status)
+{
+  for(; first != last; ++first) {
+    UriData uriData;
+    uriData.uri = *first;
+    uriData.status = status;
+    out++ = uriData;
+  }
+}
+} // namespace
+
+namespace {
+template<typename OutputIterator>
+void createUriEntry
+(OutputIterator out, const SharedHandle<FileEntry>& file)
+{
+  createUriEntry(out,
+                 file->getSpentUris().begin(),
+                 file->getSpentUris().end(),
+                 URI_USED);
+  createUriEntry(out,
+                 file->getRemainingUris().begin(),
+                 file->getRemainingUris().end(),
+                 URI_WAITING);
+}
+} // namespace
+
+namespace {
+template<typename OutputIterator, typename InputIterator>
+void createFileEntry
+(OutputIterator out,
+ InputIterator first, InputIterator last,
+ const BitfieldMan* bf)
+{
+  size_t index = 1;
+  for(; first != last; ++first) {
+    FileData file;
+    file.index = index++;
+    file.path = (*first)->getPath();
+    file.length = (*first)->getLength();
+    file.completedLength = bf->getOffsetCompletedLength
+      ((*first)->getOffset(), (*first)->getLength());
+    file.selected = (*first)->isRequested();
+    createUriEntry(std::back_inserter(file.uris), *first);
+    out++ = file;
+  }
+}
+} // namespace
+
+namespace {
+template<typename OutputIterator, typename InputIterator>
+void createFileEntry
+(OutputIterator out,
+ InputIterator first, InputIterator last,
+ int64_t totalLength,
+ int32_t pieceLength,
+ const std::string& bitfield)
+{
+  BitfieldMan bf(pieceLength, totalLength);
+  bf.setBitfield(reinterpret_cast<const unsigned char*>(bitfield.data()),
+                 bitfield.size());
+  createFileEntry(out, first, last, &bf);
+}
+} // namespace
+
+namespace {
+template<typename OutputIterator, typename InputIterator>
+void createFileEntry
+(OutputIterator out,
+ InputIterator first, InputIterator last,
+ int64_t totalLength,
+ int32_t pieceLength,
+ const SharedHandle<PieceStorage>& ps)
+{
+  BitfieldMan bf(pieceLength, totalLength);
+  if(ps) {
+    bf.setBitfield(ps->getBitfield(), ps->getBitfieldLength());
+  }
+  createFileEntry(out, first, last, &bf);
+}
+} // namespace
+
+namespace {
 struct RequestGroupDH : public DownloadHandle {
   RequestGroupDH(const SharedHandle<RequestGroup>& group)
     : group(group),
@@ -290,6 +380,17 @@ struct RequestGroupDH : public DownloadHandle {
   {
     return group->getOption()->get(PREF_DIR);
   }
+  virtual std::vector<FileData> getFiles()
+  {
+    std::vector<FileData> res;
+    const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
+    createFileEntry(std::back_inserter(res),
+                    dctx->getFileEntries().begin(),
+                    dctx->getFileEntries().end(),
+                    dctx->getTotalLength(), dctx->getPieceLength(),
+                    group->getPieceStorage());
+    return res;
+  }
   SharedHandle<RequestGroup> group;
   TransferStat ts;
 };
@@ -359,6 +460,14 @@ struct DownloadResultDH : public DownloadHandle {
   virtual const std::string& getDir()
   {
     return dr->dir;
+  }
+  virtual std::vector<FileData> getFiles()
+  {
+    std::vector<FileData> res;
+    createFileEntry(std::back_inserter(res),
+                    dr->fileEntries.begin(), dr->fileEntries.end(),
+                    dr->totalLength, dr->pieceLength, dr->bitfield);
+    return res;
   }
   SharedHandle<DownloadResult> dr;
 };
