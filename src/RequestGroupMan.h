@@ -84,8 +84,9 @@ private:
 
   NetStat netStat_;
 
-  // true if JSON-RPC/XML-RPC is enabled.
-  bool rpc_;
+  // true if download engine should keep running even if there is no
+  // download to perform.
+  bool keepRunning_;
 
   bool queueCheck_;
 
@@ -335,6 +336,11 @@ public:
   // Initializes WrDiskCache according to PREF_DISK_CACHE option.  If
   // its value is 0, cache storage will not be initialized.
   void initWrDiskCache();
+
+  void setKeepRunning(bool flag)
+  {
+    keepRunning_ = flag;
+  }
 };
 
 } // namespace aria2

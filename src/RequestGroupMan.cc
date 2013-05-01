@@ -107,7 +107,7 @@ RequestGroupMan::RequestGroupMan
     (option->getAsInt(PREF_MAX_OVERALL_DOWNLOAD_LIMIT)),
     maxOverallUploadSpeedLimit_(option->getAsInt
                                 (PREF_MAX_OVERALL_UPLOAD_LIMIT)),
-    rpc_(option->getAsBool(PREF_ENABLE_RPC)),
+    keepRunning_(option->getAsBool(PREF_ENABLE_RPC)),
     queueCheck_(true),
     removedErrorResult_(0),
     removedLastErrorResult_(error_code::FINISHED),
@@ -125,7 +125,7 @@ RequestGroupMan::~RequestGroupMan()
 
 bool RequestGroupMan::downloadFinished()
 {
-  if(rpc_) {
+  if(keepRunning_) {
     return false;
   }
   return requestGroups_.empty() && reservedGroups_.empty();
@@ -474,7 +474,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
     }
     SharedHandle<RequestGroup> groupToAdd = *reservedGroups_.begin();
     reservedGroups_.pop_front();
-    if((rpc_ && groupToAdd->isPauseRequested()) ||
+    if((keepRunning_ && groupToAdd->isPauseRequested()) ||
        !groupToAdd->isDependencyResolved()) {
       pending.push_back(groupToAdd);
       continue;

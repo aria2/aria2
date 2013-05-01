@@ -94,6 +94,13 @@ enum RUN_MODE {
   RUN_ONCE
 };
 
+// If the |flag| is true, run(session, RUN_ONCE) will return 1 even if
+// there are no download to perform. The behavior is very similar to
+// RPC server, except that this option does not enable RPC
+// functionality. To stop aria2, use shutdown() function.  This
+// function returns 0 if it succeeds, or -1.
+int sessionConfigSetKeepRunning(Session* session, bool flag);
+
 // Performs event polling and actions for them. If the |mode| is
 // RUN_DEFAULT, this function returns when no downloads are left to be
 // processed. In this case, this function returns 0.
@@ -147,15 +154,26 @@ int removeDownload(Session* session, const A2Gid& gid, bool force = false);
 // download is placed on the first position of waiting queue. As long
 // as the status is DOWNLOAD_PAUSED, the download will not start. To
 // change status to DOWNLOAD_WAITING, use unpauseDownload() function.
-// If the |force| is true, removal will take place without any action
+// If the |force| is true, pause will take place without any action
 // which takes time such as contacting BitTorrent tracker. This
-// function returns 0 if it succeeds, or -1.
+// function returns 0 if it succeeds, or -1.  Please note that, to
+// make pause work, the application must call
+// sessionConfigSetKeepRunning() function with the |flag| argument to
+// true. Without this call, download may be paused at first, but it
+// will be restarted automatically.
 int pauseDownload(Session* session, const A2Gid& gid, bool force = false);
 
 // Changes the status of the download denoted by the |gid| from
 // DOWNLOAD_PAUSED to DOWNLOAD_WAITING. This makes the download
 // eligible to restart. This function returns 0 if it succeeds, or -1.
 int unpauseDownload(Session* session, const A2Gid& gid);
+
+// Schedules shutdown. If the |force| is true, shutdown will take
+// place without any action which takes time such as contacting
+// BitTorrent tracker. After this call, the application must keep
+// calling run() method until it returns 0.  This function returns 0
+// if it succeeds, or -1.
+int shutdown(Session* session, bool force = false);
 
 enum UriStatus {
   URI_USED,

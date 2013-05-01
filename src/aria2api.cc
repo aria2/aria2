@@ -106,11 +106,30 @@ int sessionFinal(Session* session)
   return rv;
 }
 
+int sessionConfigSetKeepRunning(Session* session, bool flag)
+{
+  session->context->reqinfo->getDownloadEngine()->getRequestGroupMan()
+    ->setKeepRunning(flag);
+  return 0;
+}
+
 int run(Session* session, RUN_MODE mode)
 {
   const SharedHandle<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
   return e->run(mode == RUN_ONCE);
+}
+
+int shutdown(Session* session, bool force)
+{
+  const SharedHandle<DownloadEngine>& e =
+    session->context->reqinfo->getDownloadEngine();
+  if(force) {
+    e->requestForceHalt();
+  } else {
+    e->requestHalt();
+  }
+  return 0;
 }
 
 std::string gidToHex(const A2Gid& gid)
