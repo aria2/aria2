@@ -314,7 +314,7 @@ struct RequestGroupDH : public DownloadHandle {
       ts(group->calculateStat())
   {}
   virtual ~RequestGroupDH() {}
-  virtual DOWNLOAD_STATUS getStatus()
+  virtual DownloadStatus getStatus()
   {
     if(group->getState() == RequestGroup::STATE_ACTIVE) {
       return DOWNLOAD_ACTIVE;
@@ -402,7 +402,7 @@ struct DownloadResultDH : public DownloadHandle {
     : dr(dr)
   {}
   virtual ~DownloadResultDH() {}
-  virtual DOWNLOAD_STATUS getStatus()
+  virtual DownloadStatus getStatus()
   {
     switch(dr->result) {
     case error_code::FINISHED:

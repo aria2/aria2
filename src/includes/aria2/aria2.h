@@ -153,7 +153,7 @@ struct FileData {
   std::vector<UriData> uris;
 };
 
-enum DOWNLOAD_STATUS {
+enum DownloadStatus {
   DOWNLOAD_ACTIVE,
   DOWNLOAD_WAITING,
   DOWNLOAD_PAUSED,
@@ -164,7 +164,7 @@ enum DOWNLOAD_STATUS {
 
 struct DownloadHandle {
   virtual ~DownloadHandle() {}
-  virtual DOWNLOAD_STATUS getStatus() = 0;
+  virtual DownloadStatus getStatus() = 0;
   virtual int64_t getTotalLength() = 0;
   virtual int64_t getCompletedLength() = 0;
   virtual int64_t getUploadLength() = 0;
