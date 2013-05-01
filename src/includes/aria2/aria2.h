@@ -143,7 +143,22 @@ enum DOWNLOAD_STATUS {
   DOWNLOAD_REMOVED
 };
 
-struct DownloadHandle;
+struct DownloadHandle {
+  virtual ~DownloadHandle() {}
+  virtual DOWNLOAD_STATUS getStatus() = 0;
+  virtual int64_t getTotalLength() = 0;
+  virtual int64_t getCompletedLength() = 0;
+  virtual int64_t getUploadLength() = 0;
+  virtual std::string getBitfield() = 0;
+  virtual int getDownloadSpeed() = 0;
+  virtual int getUploadSpeed() = 0;
+  virtual size_t getNumPieces() = 0;
+  virtual int getConnections() = 0;
+  virtual int getErrorCode() = 0;
+  virtual const std::vector<A2Gid>& getFollowedBy() = 0;
+  virtual A2Gid getBelongsTo() = 0;
+  virtual const std::string& getDir() = 0;
+};
 
 // Returns handle for the download denoted by the |gid|. The caller
 // can retrieve various information of the download via returned
@@ -155,20 +170,6 @@ DownloadHandle* getDownloadHandle(Session* session, const A2Gid& gid);
 
 // Deallocates the |dh|. Calling this function with NULL is safe.
 void deleteDownloadHandle(DownloadHandle* dh);
-
-DOWNLOAD_STATUS downloadGetStatus(DownloadHandle* dh);
-int64_t downloadGetTotalLength(DownloadHandle* dh);
-int64_t downloadGetCompletedLength(DownloadHandle* dh);
-int64_t downloadGetUploadLength(DownloadHandle* dh);
-std::string downloadGetBitfield(DownloadHandle* dh);
-int downloadGetDownloadSpeed(DownloadHandle* dh);
-int downloadGetUploadSpeed(DownloadHandle* dh);
-size_t downloadGetNumPieces(DownloadHandle* dh);
-int downloadGetConnections(DownloadHandle* dh);
-int downloadGetErrorCode(DownloadHandle* dh);
-const std::vector<A2Gid>& downloadGetFollowedBy(DownloadHandle* dh);
-A2Gid downloadGetBelongsTo(DownloadHandle* dh);
-const std::string& downloadGetDir(DownloadHandle* dh);
 
 } // namespace aria2
 
