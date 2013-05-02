@@ -175,17 +175,25 @@ void showFiles
 } // namespace
 #endif // ENABLE_BITTORRENT || ENABLE_METALINK
 
-extern void option_processing(Option& option, bool standalone,
-                              std::vector<std::string>& uris,
-                              int argc, char** argv, const KeyVals& options);
+extern error_code::Value option_processing(Option& option, bool standalone,
+                                           std::vector<std::string>& uris,
+                                           int argc, char** argv,
+                                           const KeyVals& options);
 
 Context::Context(bool standalone,
                  int argc, char** argv, const KeyVals& options)
 {
   std::vector<std::string> args;
   SharedHandle<Option> op(new Option());
-  option_processing(*op.get(), standalone, args, argc, argv, options);
-
+  error_code::Value rv;
+  rv = option_processing(*op.get(), standalone, args, argc, argv, options);
+  if(rv != error_code::FINISHED) {
+    if(standalone) {
+      exit(rv);
+    } else {
+      throw DL_ABORT_EX("Option processing failed");
+    }
+  }
   SimpleRandomizer::init();
 #ifdef ENABLE_BITTORRENT
   bittorrent::generateStaticPeerId(op->get(PREF_PEER_ID_PREFIX));

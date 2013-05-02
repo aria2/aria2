@@ -85,7 +85,12 @@ int libraryDeinit()
 Session* sessionNew(const KeyVals& options)
 {
   int rv;
-  Session* session = new Session(options);
+  Session* session;
+  try {
+    session = new Session(options);
+  } catch(RecoverableException& e) {
+    return 0;
+  }
   if(session->context->reqinfo) {
     rv = session->context->reqinfo->prepare();
     if(rv != 0) {

@@ -190,9 +190,10 @@ void optionNativeToUtf8(Option& op)
 } // namespace
 #endif // __MINGW32__
 
-void option_processing(Option& op, bool standalone,
-                       std::vector<std::string>& uris,
-                       int argc, char** argv, const KeyVals& options)
+error_code::Value option_processing(Option& op, bool standalone,
+                                    std::vector<std::string>& uris,
+                                    int argc, char** argv,
+                                    const KeyVals& options)
 {
   const SharedHandle<OptionParser>& oparser = OptionParser::getInstance();
   try {
@@ -206,27 +207,28 @@ void option_processing(Option& op, bool standalone,
       oparser->parse(op, cmdstream);
       noConf = op.getAsBool(PREF_NO_CONF);
       ucfname = op.get(PREF_CONF_PATH);
-
-      if(op.defined(PREF_VERSION)) {
-        showVersion();
-        exit(error_code::FINISHED);
-      }
-      if(op.defined(PREF_HELP)) {
-        std::string keyword;
-        if(op.get(PREF_HELP).empty()) {
-          keyword = strHelpTag(TAG_BASIC);
-        } else {
-          keyword = op.get(PREF_HELP);
-          if(util::startsWith(keyword, "--")) {
-            keyword.erase(keyword.begin(), keyword.begin()+2);
-          }
-          std::string::size_type eqpos = keyword.find("=");
-          if(eqpos != std::string::npos) {
-            keyword.erase(keyword.begin()+eqpos, keyword.end());
-          }
+      if(standalone) {
+        if(op.defined(PREF_VERSION)) {
+          showVersion();
+          exit(error_code::FINISHED);
         }
-        showUsage(keyword, oparser, global::cout());
-        exit(error_code::FINISHED);
+        if(op.defined(PREF_HELP)) {
+          std::string keyword;
+          if(op.get(PREF_HELP).empty()) {
+            keyword = strHelpTag(TAG_BASIC);
+          } else {
+            keyword = op.get(PREF_HELP);
+            if(util::startsWith(keyword, "--")) {
+              keyword.erase(keyword.begin(), keyword.begin()+2);
+            }
+            std::string::size_type eqpos = keyword.find("=");
+            if(eqpos != std::string::npos) {
+              keyword.erase(keyword.begin()+eqpos, keyword.end());
+            }
+          }
+          showUsage(keyword, oparser, global::cout());
+          exit(error_code::FINISHED);
+        }
       }
     }
     SharedHandle<Option> confOption(new Option());
@@ -254,18 +256,18 @@ void option_processing(Option& op, bool standalone,
             global::cerr()->printf(_("Usage:"));
             global::cerr()->printf("\n%s\n", h->getDescription());
           }
-          exit(e.getErrorCode());
+          return e.getErrorCode();
         } catch(Exception& e) {
           global::cerr()->printf(_("Parse error in %s"), cfname.c_str());
           global::cerr()->printf("\n%s", e.stackTrace().c_str());
-          exit(e.getErrorCode());
+          return e.getErrorCode();
         }
       } else if(!ucfname.empty()) {
         global::cerr()->printf(_("Configuration file %s is not found."),
                                cfname.c_str());
         global::cerr()->printf("\n");
         showUsage(strHelpTag(TAG_HELP), oparser, global::cerr());
-        exit(error_code::UNKNOWN_ERROR);
+        return error_code::UNKNOWN_ERROR;
       }
     }
     // Override configuration with environment variables.
@@ -298,15 +300,15 @@ void option_processing(Option& op, bool standalone,
       global::cerr()->printf("\n");
       write(global::cerr(), *h);
     }
-    exit(e.getErrorCode());
+    return e.getErrorCode();
   } catch(UnknownOptionException& e) {
     showUsage("", oparser, global::cerr());
     showCandidates(e.getUnknownOption(), oparser);
-    exit(e.getErrorCode());
+    return e.getErrorCode();
   } catch(Exception& e) {
     global::cerr()->printf("%s", e.stackTrace().c_str());
     showUsage("", oparser, global::cerr());
-    exit(e.getErrorCode());
+    return e.getErrorCode();
   }
   if(standalone &&
      !op.getAsBool(PREF_ENABLE_RPC) &&
@@ -321,15 +323,16 @@ void option_processing(Option& op, bool standalone,
       global::cerr()->printf(MSG_URI_REQUIRED);
       global::cerr()->printf("\n");
       showUsage("", oparser, global::cerr());
-      exit(error_code::UNKNOWN_ERROR);
+      return error_code::UNKNOWN_ERROR;
     }
   }
   if(op.getAsBool(PREF_DAEMON)) {
     if(daemon(0, 0) < 0) {
       perror(MSG_DAEMON_FAILED);
-      exit(error_code::UNKNOWN_ERROR);
+      return error_code::UNKNOWN_ERROR;
     }
   }
+  return error_code::FINISHED;
 }
 
 } // namespace aria2
