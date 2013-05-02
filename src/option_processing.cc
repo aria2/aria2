@@ -326,7 +326,7 @@ error_code::Value option_processing(Option& op, bool standalone,
       return error_code::UNKNOWN_ERROR;
     }
   }
-  if(op.getAsBool(PREF_DAEMON)) {
+  if(standalone && op.getAsBool(PREF_DAEMON)) {
     if(daemon(0, 0) < 0) {
       perror(MSG_DAEMON_FAILED);
       return error_code::UNKNOWN_ERROR;
