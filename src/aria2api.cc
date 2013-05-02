@@ -227,6 +227,43 @@ int addUri(Session* session,
   return 0;
 }
 
+int addMetalink(Session* session,
+                std::vector<A2Gid>& gids,
+                const std::string& metalinkFile,
+                const KeyVals& options,
+                int position)
+{
+#ifdef ENABLE_METALINK
+  const SharedHandle<DownloadEngine>& e =
+    session->context->reqinfo->getDownloadEngine();
+  SharedHandle<Option> requestOption(new Option(*e->getOption()));
+  std::vector<SharedHandle<RequestGroup> > result;
+  try {
+    apiGatherRequestOption(requestOption.get(), options,
+                           OptionParser::getInstance());
+    requestOption->put(PREF_METALINK_FILE, metalinkFile);
+    createRequestGroupForMetalink(result, requestOption);
+  } catch(RecoverableException& e) {
+    A2_LOG_INFO_EX(EX_EXCEPTION_CAUGHT, e);
+    return -1;
+  }
+  if(!result.empty()) {
+    if(position >= 0) {
+      e->getRequestGroupMan()->insertReservedGroup(position, result);
+    } else {
+      e->getRequestGroupMan()->addReservedGroup(result);
+    }
+    for(std::vector<SharedHandle<RequestGroup> >::const_iterator i =
+          result.begin(), eoi = result.end(); i != eoi; ++i) {
+      gids.push_back((*i)->getGID());
+    }
+  }
+  return 0;
+#else // !ENABLE_METALINK
+  return -1;
+#endif // !ENABLE_METALINK
+}
+
 int removeDownload(Session* session, const A2Gid& gid, bool force)
 {
   const SharedHandle<DownloadEngine>& e =

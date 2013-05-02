@@ -138,6 +138,20 @@ int addUri(Session* session,
            const KeyVals& options,
            int position = -1);
 
+// Adds Metalink download. The path to Metalink file is specified by
+// the |metalinkFile|.  On successful return, the GID of added
+// download is appended to the |gids|. The |options| is a pair of
+// option name and value. If the |position| is not negative integer,
+// the new download is inserted at position in the waiting queue. If
+// the |position| is negative or the |position| is larger than the
+// size of the queue, it is appended at the end of the queue. This
+// function returns 0 if it succeeds, or -1.
+int addMetalink(Session* session,
+                std::vector<A2Gid>& gids,
+                const std::string& metalinkFile,
+                const KeyVals& options,
+                int position = -1);
+
 // Returns the array of active download GID.
 std::vector<A2Gid> getActiveDownload(Session* session);
 
