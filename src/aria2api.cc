@@ -56,6 +56,7 @@
 #include "BitfieldMan.h"
 #include "DownloadContext.h"
 #include "RpcMethodImpl.h"
+#include "console.h"
 
 namespace aria2 {
 
@@ -72,6 +73,7 @@ Platform* platform = 0;
 
 int libraryInit()
 {
+  global::initConsole(true);
   try {
     platform = new Platform();
   } catch(RecoverableException& e) {

@@ -33,38 +33,47 @@
  */
 /* copyright --> */
 #include "console.h"
+#include "NullOutputFile.h"
+#ifdef __MINGW32__
+# include "WinConsoleFile.h"
+#else // !__MINGW32__
+# include "BufferedFile.h"
+#endif // !__MINGW32__
 
 namespace aria2 {
 
 namespace global {
 
-#ifdef __MINGW32__
-const SharedHandle<WinConsoleFile>& cout()
-{
-  static SharedHandle<WinConsoleFile> f(new WinConsoleFile(STD_OUTPUT_HANDLE));
-  return f;
-}
-#else // !__MINGW32__
-const SharedHandle<BufferedFile>& cout()
-{
-  static SharedHandle<BufferedFile> f(new BufferedFile(stdout));
-  return f;
-}
-#endif // !__MINGW32__
+namespace {
+Console consoleCout;
+Console consoleCerr;
+};
 
+void initConsole(bool suppress)
+{
+  if(suppress) {
+    consoleCerr.reset(new NullOutputFile());
+    consoleCout.reset(new NullOutputFile());
+  } else {
 #ifdef __MINGW32__
-const SharedHandle<WinConsoleFile>& cerr()
-{
-  static SharedHandle<WinConsoleFile> f(new WinConsoleFile(STD_ERROR_HANDLE));
-  return f;
-}
+    consoleCout.reset(new WinConsoleFile(STD_OUTPUT_HANDLE));
+    consoleCerr.reset(new WinConsoleFile(STD_ERROR_HANDLE));
 #else // !__MINGW32__
-const SharedHandle<BufferedFile>& cerr()
-{
-  static SharedHandle<BufferedFile> f(new BufferedFile(stderr));
-  return f;
-}
+    consoleCout.reset(new BufferedFile(stdout));
+    consoleCerr.reset(new BufferedFile(stderr));
 #endif // !__MINGW32__
+  }
+}
+
+const Console& cout()
+{
+  return consoleCout;
+}
+
+const Console& cerr()
+{
+  return consoleCerr;
+}
 
 } // namespace global
 

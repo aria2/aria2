@@ -62,6 +62,7 @@ error_code::Value main(int argc, char** argv)
 int main(int argc, char** argv)
 {
   aria2::error_code::Value r;
+  aria2::global::initConsole(false);
   try {
     aria2::Platform platform;
     r = aria2::main(argc, argv);

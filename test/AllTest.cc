@@ -9,8 +9,10 @@
 #include "Platform.h"
 #include "SocketCore.h"
 #include "util.h"
+#include "console.h"
 
 int main(int argc, char* argv[]) {
+  aria2::global::initConsole(false);
   aria2::Platform platform;
 
 #ifdef ENABLE_NLS

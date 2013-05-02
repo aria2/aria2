@@ -37,21 +37,17 @@
 
 #include "common.h"
 #include "SharedHandle.h"
-#ifdef __MINGW32__
-# include "WinConsoleFile.h"
-#else // !__MINGW32__
-# include "BufferedFile.h"
-#endif // !__MINGW32__
+#include "OutputFile.h"
 
 namespace aria2 {
 
-#ifdef __MINGW32__
-typedef SharedHandle<WinConsoleFile> Console;
-#else // !__MINGW32__
-typedef SharedHandle<BufferedFile> Console;
-#endif // !__MINGW32__
+typedef SharedHandle<OutputFile> Console;
 
 namespace global {
+
+// Initialize console output facility. If the |suppress| is true, all
+// output sent to the console objects are discarded.
+void initConsole(bool suppress);
 
 const Console& cout();
 const Console& cerr();
