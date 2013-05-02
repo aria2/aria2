@@ -57,6 +57,7 @@
 #include "DownloadContext.h"
 #include "RpcMethodImpl.h"
 #include "console.h"
+#include "KeepRunningCommand.h"
 
 namespace aria2 {
 
@@ -105,6 +106,11 @@ Session* sessionNew(const KeyVals& options)
       delete session;
       session = 0;
     }
+    const SharedHandle<DownloadEngine>& e =
+      session->context->reqinfo->getDownloadEngine();
+    // Add command to make aria2 keep event polling if
+    // sessionConfigSetKeepRunning is set to true.
+    e->addCommand(new KeepRunningCommand(e->newCUID(), e.get()));
   } else {
     delete session;
     session = 0;
@@ -142,6 +148,9 @@ int shutdown(Session* session, bool force)
   } else {
     e->requestHalt();
   }
+  // Skip next polling timeout. This avoids 1 second delay when there
+  // is no Command other than KeepRunningCommand in the queue.
+  e->setNoWait(true);
   return 0;
 }
 

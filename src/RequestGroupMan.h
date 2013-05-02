@@ -341,6 +341,11 @@ public:
   {
     keepRunning_ = flag;
   }
+
+  bool getKeepRunning() const
+  {
+    return keepRunning_;
+  }
 };
 
 } // namespace aria2

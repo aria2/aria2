@@ -639,7 +639,8 @@ DISTCLEANFILES = $(pkgconfig_DATA)
 
 lib_LTLIBRARIES = libaria2.la
 libaria2_la_SOURCES = $(SRCS) \
-	aria2api.cc aria2api.h
+	aria2api.cc aria2api.h \
+	KeepRunningCommand.cc KeepRunningCommand.h
 libaria2_la_LIBADD = @WSLAY_LIBS@
 
 LDADD = libaria2.la @LIBINTL@ @ALLOCA@ #-lprofiler
