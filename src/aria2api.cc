@@ -72,7 +72,13 @@ Platform* platform = 0;
 
 int libraryInit()
 {
-  platform = new Platform();
+  try {
+    platform = new Platform();
+  } catch(RecoverableException& e) {
+    A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
+    return -1;
+  }
+  LogFactory::setConsoleOutput(false);
   return 0;
 }
 
