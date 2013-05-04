@@ -6,6 +6,12 @@ LT_PREREQ([2.2.6])
 AC_INIT([aria2],[1.17.0],[t-tujikawa@users.sourceforge.net],[aria2],[http://aria2.sourceforge.net/])
 AC_USE_SYSTEM_EXTENSIONS
 LT_INIT()
+dnl See versioning rule:
+dnl  http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
+AC_SUBST(LT_CURRENT, 0)
+AC_SUBST(LT_REVISION, 0)
+AC_SUBST(LT_AGE, 0)
+
 AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
@@ -789,7 +795,8 @@ if test "x$enable_message_digest" = "xyes"; then
   enable_websocket=yes
   AC_DEFINE([ENABLE_WEBSOCKET], [1],
             [Define 1 if WebSocket support is enabled.])
-  LIBS="\$(top_builddir)/deps/wslay/lib/libwslay.la $LIBS"
+  WSLAY_LIBS="\$(top_builddir)/deps/wslay/lib/libwslay.la"
+  AC_SUBST([WSLAY_LIBS])
   # $(top_srcdir) for `make distcheck`
   CPPFLAGS="-I\$(top_builddir)/deps/wslay/lib/includes -I\$(top_srcdir)/deps/wslay/lib/includes $CPPFLAGS"
 fi
@@ -815,6 +822,8 @@ fi
 
 AC_CONFIG_FILES([Makefile
 		src/Makefile
+		src/libaria2.pc
+		src/includes/Makefile
 		test/Makefile
 		po/Makefile.in
 		intl/Makefile

@@ -40,8 +40,8 @@ public:
 
 void SingletonHolderTest::testInstance()
 {
-  M m("Hello world.");
-  SingletonHolder<M>::instance(&m);
+  SharedHandle<M> m(new M("Hello world."));
+  SingletonHolder<M>::instance(m);
   CPPUNIT_ASSERT_EQUAL(std::string("Hello world."),
                        SingletonHolder<M>::instance()->greeting());
 

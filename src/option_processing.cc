@@ -38,6 +38,7 @@
 #include <cstring>
 #include <sstream>
 
+#include <aria2/aria2.h>
 #include "Option.h"
 #include "prefs.h"
 #include "OptionParser.h"
@@ -189,8 +190,10 @@ void optionNativeToUtf8(Option& op)
 } // namespace
 #endif // __MINGW32__
 
-void option_processing(Option& op, std::vector<std::string>& uris,
-                       int argc, char* argv[])
+error_code::Value option_processing(Option& op, bool standalone,
+                                    std::vector<std::string>& uris,
+                                    int argc, char** argv,
+                                    const KeyVals& options)
 {
   const SharedHandle<OptionParser>& oparser = OptionParser::getInstance();
   try {
@@ -204,27 +207,28 @@ void option_processing(Option& op, std::vector<std::string>& uris,
       oparser->parse(op, cmdstream);
       noConf = op.getAsBool(PREF_NO_CONF);
       ucfname = op.get(PREF_CONF_PATH);
-
-      if(op.defined(PREF_VERSION)) {
-        showVersion();
-        exit(error_code::FINISHED);
-      }
-      if(op.defined(PREF_HELP)) {
-        std::string keyword;
-        if(op.get(PREF_HELP).empty()) {
-          keyword = strHelpTag(TAG_BASIC);
-        } else {
-          keyword = op.get(PREF_HELP);
-          if(util::startsWith(keyword, "--")) {
-            keyword.erase(keyword.begin(), keyword.begin()+2);
-          }
-          std::string::size_type eqpos = keyword.find("=");
-          if(eqpos != std::string::npos) {
-            keyword.erase(keyword.begin()+eqpos, keyword.end());
-          }
+      if(standalone) {
+        if(op.defined(PREF_VERSION)) {
+          showVersion();
+          exit(error_code::FINISHED);
         }
-        showUsage(keyword, oparser, global::cout());
-        exit(error_code::FINISHED);
+        if(op.defined(PREF_HELP)) {
+          std::string keyword;
+          if(op.get(PREF_HELP).empty()) {
+            keyword = strHelpTag(TAG_BASIC);
+          } else {
+            keyword = op.get(PREF_HELP);
+            if(util::startsWith(keyword, "--")) {
+              keyword.erase(keyword.begin(), keyword.begin()+2);
+            }
+            std::string::size_type eqpos = keyword.find("=");
+            if(eqpos != std::string::npos) {
+              keyword.erase(keyword.begin()+eqpos, keyword.end());
+            }
+          }
+          showUsage(keyword, oparser, global::cout());
+          exit(error_code::FINISHED);
+        }
       }
     }
     SharedHandle<Option> confOption(new Option());
@@ -252,18 +256,18 @@ void option_processing(Option& op, std::vector<std::string>& uris,
             global::cerr()->printf(_("Usage:"));
             global::cerr()->printf("\n%s\n", h->getDescription());
           }
-          exit(e.getErrorCode());
+          return e.getErrorCode();
         } catch(Exception& e) {
           global::cerr()->printf(_("Parse error in %s"), cfname.c_str());
           global::cerr()->printf("\n%s", e.stackTrace().c_str());
-          exit(e.getErrorCode());
+          return e.getErrorCode();
         }
       } else if(!ucfname.empty()) {
         global::cerr()->printf(_("Configuration file %s is not found."),
                                cfname.c_str());
         global::cerr()->printf("\n");
         showUsage(strHelpTag(TAG_HELP), oparser, global::cerr());
-        exit(error_code::UNKNOWN_ERROR);
+        return error_code::UNKNOWN_ERROR;
       }
     }
     // Override configuration with environment variables.
@@ -272,6 +276,12 @@ void option_processing(Option& op, std::vector<std::string>& uris,
     overrideWithEnv(*confOption, oparser, PREF_FTP_PROXY, "ftp_proxy");
     overrideWithEnv(*confOption, oparser, PREF_ALL_PROXY, "all_proxy");
     overrideWithEnv(*confOption, oparser, PREF_NO_PROXY, "no_proxy");
+    if(!standalone) {
+      // For non-standalone mode, set PREF_QUIET to true to suppress
+      // output. The caller can override this by including PREF_QUIET
+      // in options argument.
+      confOption->put(PREF_QUIET, A2_V_TRUE);
+    }
 
     // we must clear eof bit and seek to the beginning of the buffer.
     cmdstream.clear();
@@ -279,6 +289,7 @@ void option_processing(Option& op, std::vector<std::string>& uris,
     // finaly let's parse and store command-iine options.
     op.setParent(confOption);
     oparser->parse(op, cmdstream);
+    oparser->parse(op, options);
 #ifdef __MINGW32__
     optionNativeToUtf8(op);
     optionNativeToUtf8(*confOption);
@@ -291,17 +302,18 @@ void option_processing(Option& op, std::vector<std::string>& uris,
       global::cerr()->printf("\n");
       write(global::cerr(), *h);
     }
-    exit(e.getErrorCode());
+    return e.getErrorCode();
   } catch(UnknownOptionException& e) {
     showUsage("", oparser, global::cerr());
     showCandidates(e.getUnknownOption(), oparser);
-    exit(e.getErrorCode());
+    return e.getErrorCode();
   } catch(Exception& e) {
     global::cerr()->printf("%s", e.stackTrace().c_str());
     showUsage("", oparser, global::cerr());
-    exit(e.getErrorCode());
+    return e.getErrorCode();
   }
-  if(!op.getAsBool(PREF_ENABLE_RPC) &&
+  if(standalone &&
+     !op.getAsBool(PREF_ENABLE_RPC) &&
 #ifdef ENABLE_BITTORRENT
      op.blank(PREF_TORRENT_FILE) &&
 #endif // ENABLE_BITTORRENT
@@ -313,15 +325,16 @@ void option_processing(Option& op, std::vector<std::string>& uris,
       global::cerr()->printf(MSG_URI_REQUIRED);
       global::cerr()->printf("\n");
       showUsage("", oparser, global::cerr());
-      exit(error_code::UNKNOWN_ERROR);
+      return error_code::UNKNOWN_ERROR;
     }
   }
-  if(op.getAsBool(PREF_DAEMON)) {
+  if(standalone && op.getAsBool(PREF_DAEMON)) {
     if(daemon(0, 0) < 0) {
       perror(MSG_DAEMON_FAILED);
-      exit(error_code::UNKNOWN_ERROR);
+      return error_code::UNKNOWN_ERROR;
     }
   }
+  return error_code::FINISHED;
 }
 
 } // namespace aria2

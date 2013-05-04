@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2011 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,49 +32,28 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "console.h"
-#include "NullOutputFile.h"
-#ifdef __MINGW32__
-# include "WinConsoleFile.h"
-#else // !__MINGW32__
-# include "BufferedFile.h"
-#endif // !__MINGW32__
+#include "KeepRunningCommand.h"
+#include "DownloadEngine.h"
+#include "RequestGroupMan.h"
 
 namespace aria2 {
 
-namespace global {
-
-namespace {
-Console consoleCout;
-Console consoleCerr;
-};
-
-void initConsole(bool suppress)
+KeepRunningCommand::KeepRunningCommand(cuid_t cuid, DownloadEngine* e)
+  : Command(cuid),
+    e_(e)
 {
-  if(suppress) {
-    consoleCerr.reset(new NullOutputFile());
-    consoleCout.reset(new NullOutputFile());
-  } else {
-#ifdef __MINGW32__
-    consoleCout.reset(new WinConsoleFile(STD_OUTPUT_HANDLE));
-    consoleCerr.reset(new WinConsoleFile(STD_ERROR_HANDLE));
-#else // !__MINGW32__
-    consoleCout.reset(new BufferedFile(stdout));
-    consoleCerr.reset(new BufferedFile(stderr));
-#endif // !__MINGW32__
+  setStatusRealtime();
+}
+
+KeepRunningCommand::~KeepRunningCommand() {}
+
+bool KeepRunningCommand::execute()
+{
+  if(e_->isHaltRequested()) {
+    return true;
   }
+  e_->addCommand(this);
+  return false;
 }
-
-const Console& cout()
-{
-  return consoleCout;
-}
-
-const Console& cerr()
-{
-  return consoleCerr;
-}
-
-} // namespace global
 
 } // namespace aria2

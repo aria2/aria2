@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2011 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,49 +32,28 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "console.h"
-#include "NullOutputFile.h"
-#ifdef __MINGW32__
-# include "WinConsoleFile.h"
-#else // !__MINGW32__
-# include "BufferedFile.h"
-#endif // !__MINGW32__
+#ifndef CONTEXT_H
+#define CONTEXT_H
+
+#include "common.h"
+#include <aria2/aria2.h>
+#include "SharedHandle.h"
 
 namespace aria2 {
 
-namespace global {
+class MultiUrlRequestInfo;
 
-namespace {
-Console consoleCout;
-Console consoleCerr;
+struct Context {
+  // Set the |standalone| false if the context is created via libaria2
+  // API. The |argc| and |argv| is expected to the command-line
+  // arguments, which will be passed to getopt_long(3) in the end.
+  // The |options| is the additional option values and is considered
+  // as a part of command-line arguments.
+  Context(bool standalone, int argc, char** argv, const KeyVals& options);
+  ~Context();
+  SharedHandle<MultiUrlRequestInfo> reqinfo;
 };
 
-void initConsole(bool suppress)
-{
-  if(suppress) {
-    consoleCerr.reset(new NullOutputFile());
-    consoleCout.reset(new NullOutputFile());
-  } else {
-#ifdef __MINGW32__
-    consoleCout.reset(new WinConsoleFile(STD_OUTPUT_HANDLE));
-    consoleCerr.reset(new WinConsoleFile(STD_ERROR_HANDLE));
-#else // !__MINGW32__
-    consoleCout.reset(new BufferedFile(stdout));
-    consoleCerr.reset(new BufferedFile(stderr));
-#endif // !__MINGW32__
-  }
-}
-
-const Console& cout()
-{
-  return consoleCout;
-}
-
-const Console& cerr()
-{
-  return consoleCerr;
-}
-
-} // namespace global
-
 } // namespace aria2
+
+#endif // CONTEXT_H

@@ -37,10 +37,13 @@
 
 #include "common.h"
 
+#include <signal.h>
+
 #include <vector>
 
 #include "SharedHandle.h"
 #include "DownloadResult.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -49,10 +52,11 @@ class Option;
 class StatCalc;
 class OutputFile;
 class UriListParser;
+class DownloadEngine;
 
 class MultiUrlRequestInfo {
 private:
-  std::vector<SharedHandle<RequestGroup> >& requestGroups_;
+  std::vector<SharedHandle<RequestGroup> > requestGroups_;
 
   SharedHandle<Option> option_;
 
@@ -62,7 +66,15 @@ private:
 
   SharedHandle<UriListParser> uriListParser_;
 
+  SharedHandle<DownloadEngine> e_;
+
+  sigset_t mask_;
+
+  bool useSignalHandler_;
+
   void printMessageForContinue();
+  void setupSignalHandlers();
+  void resetSignalHandlers();
 public:
   /*
    * MultiRequestInfo effectively takes ownership of the
@@ -77,11 +89,31 @@ public:
 
   virtual ~MultiUrlRequestInfo();
 
-  /**
-   * Returns FINISHED if all downloads have completed, otherwise returns the
-   * last download result.
-   */
+  // Returns FINISHED if all downloads have completed, otherwise returns the
+  // last download result.
+  //
+  // This method actually calls prepare() and
+  // getDownloadEngine()->run(true) and getResult().
   error_code::Value execute();
+
+  // Performs preparations for downloads, including creating
+  // DownloadEngine instance. This function returns 0 if it succeeds,
+  // or -1.
+  int prepare();
+
+  // Performs finalization of download process, including saving
+  // sessions. This function returns last error code in this session,
+  // in particular, this function returns FINISHED if all downloads
+  // have completed.
+  error_code::Value getResult();
+
+  const SharedHandle<DownloadEngine>& getDownloadEngine() const;
+
+  // Signal handlers are not prepared if false is given.
+  void setUseSignalHandler(bool useSignalHandler)
+  {
+    useSignalHandler_ = useSignalHandler;
+  }
 };
 
 } // namespace aria2

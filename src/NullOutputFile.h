@@ -43,8 +43,8 @@ class NullOutputFile:public OutputFile {
 public:
   virtual ~NullOutputFile() {}
   virtual size_t write(const char* str) { return 0; }
-  virtual int vprintf(const char* format, va_list va) { return 0; }
   virtual int flush() { return 0; }
+  virtual int vprintf(const char* format, va_list va) { return 0; }
   virtual bool supportsColor() { return false; }
 };
 

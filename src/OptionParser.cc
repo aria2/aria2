@@ -245,6 +245,20 @@ void OptionParser::parse(Option& option, std::istream& is) const
   }
 }
 
+void OptionParser::parse(Option& option, const KeyVals& options) const
+{
+  for(KeyVals::const_iterator i = options.begin(), eoi = options.end();
+      i != eoi; ++i) {
+    const Pref* pref = option::k2p((*i).first);
+    const OptionHandler* handler = find(pref);
+    if(handler) {
+      handler->parse(option, (*i).second);
+    } else {
+      A2_LOG_WARN(fmt("Unknown option: %s", (*i).first.c_str()));
+    }
+  }
+}
+
 void OptionParser::setOptionHandlers
 (const std::vector<OptionHandler*>& handlers)
 {

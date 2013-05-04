@@ -422,32 +422,6 @@ SharedHandle<ValueBase> ForceRemoveRpcMethod::process
 }
 
 namespace {
-bool pauseRequestGroup
-(const SharedHandle<RequestGroup>& group, bool reserved,  bool forcePause)
-{
-  if((reserved && !group->isPauseRequested()) ||
-     (!reserved &&
-      !group->isForceHaltRequested() &&
-      ((forcePause && group->isHaltRequested() && group->isPauseRequested()) ||
-       (!group->isHaltRequested() && !group->isPauseRequested())))) {
-    if(!reserved) {
-      // Call setHaltRequested before setPauseRequested because
-      // setHaltRequested calls setPauseRequested(false) internally.
-      if(forcePause) {
-        group->setForceHaltRequested(true, RequestGroup::NONE);
-      } else {
-        group->setHaltRequested(true, RequestGroup::NONE);
-      }
-    }
-    group->setPauseRequested(true);
-    return true;
-  } else {
-    return false;
-  }
-}
-} // namespace
-
-namespace {
 SharedHandle<ValueBase> pauseDownload
 (const RpcRequest& req, DownloadEngine* e, bool forcePause)
 {
@@ -1545,5 +1519,29 @@ SharedHandle<ValueBase> NoSuchMethodRpcMethod::process
 }
 
 } // namespace rpc
+
+bool pauseRequestGroup
+(const SharedHandle<RequestGroup>& group, bool reserved,  bool forcePause)
+{
+  if((reserved && !group->isPauseRequested()) ||
+     (!reserved &&
+      !group->isForceHaltRequested() &&
+      ((forcePause && group->isHaltRequested() && group->isPauseRequested()) ||
+       (!group->isHaltRequested() && !group->isPauseRequested())))) {
+    if(!reserved) {
+      // Call setHaltRequested before setPauseRequested because
+      // setHaltRequested calls setPauseRequested(false) internally.
+      if(forcePause) {
+        group->setForceHaltRequested(true, RequestGroup::NONE);
+      } else {
+        group->setHaltRequested(true, RequestGroup::NONE);
+      }
+    }
+    group->setPauseRequested(true);
+    return true;
+  } else {
+    return false;
+  }
+}
 
 } // namespace aria2

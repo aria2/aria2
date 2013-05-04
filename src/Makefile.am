@@ -1,8 +1,10 @@
+SUBDIRS = includes
 bin_PROGRAMS = aria2c
-aria2c_SOURCES = main.cc\
-	option_processing.cc\
-	version_usage.cc
-SRCS =  SocketCore.cc SocketCore.h\
+aria2c_SOURCES = main.cc
+SRCS =  option_processing.cc\
+	version_usage.cc\
+	Context.cc Context.h\
+	SocketCore.cc SocketCore.h\
 	BinaryStream.h\
 	Command.cc Command.h\
 	AbstractCommand.cc AbstractCommand.h\
@@ -634,10 +636,20 @@ SRCS += LibuvEventPoll.cc LibuvEventPoll.h
 endif # HAVE_LIBUV
 
 AR = @AR@
-noinst_LIBRARIES = libaria2c.a
-libaria2c_a_SOURCES = $(SRCS)
-aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ #-lprofiler
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libaria2.pc
+DISTCLEANFILES = $(pkgconfig_DATA)
+
+lib_LTLIBRARIES = libaria2.la
+libaria2_la_SOURCES = $(SRCS) \
+	aria2api.cc aria2api.h \
+	KeepRunningCommand.cc KeepRunningCommand.h
+libaria2_la_LIBADD = @WSLAY_LIBS@
+
+LDADD = libaria2.la @LIBINTL@ @ALLOCA@ #-lprofiler
 #aria2c_LDFLAGS = -pg
 AM_CPPFLAGS =  -Wall\
 	-I$(top_srcdir)/lib -I$(top_srcdir)/intl\
+	-I$(srcdir)/includes -I$(builddir)/includes\
 	-DLOCALEDIR=\"@localedir@\" -DCA_BUNDLE=\"$(ca_bundle)\" @DEFS@ #-pg

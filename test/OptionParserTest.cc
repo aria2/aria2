@@ -27,6 +27,7 @@ class OptionParserTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testParseDefaultValues);
   CPPUNIT_TEST(testParseArg);
   CPPUNIT_TEST(testParse);
+  CPPUNIT_TEST(testParseKeyVals);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<OptionParser> oparser_;
@@ -73,6 +74,7 @@ public:
   void testParseDefaultValues();
   void testParseArg();
   void testParse();
+  void testParseKeyVals();
 };
 
 
@@ -191,6 +193,18 @@ void OptionParserTest::testParse()
                         "\n"
                         "dir=World");
   oparser_->parse(option, in);
+  CPPUNIT_ASSERT_EQUAL(std::string("Hello"), option.get(PREF_TIMEOUT));
+  CPPUNIT_ASSERT_EQUAL(std::string("World"), option.get(PREF_DIR));
+}
+
+void OptionParserTest::testParseKeyVals()
+{
+  Option option;
+  KeyVals kv;
+  kv.push_back(std::make_pair("timeout", "Hello"));
+  kv.push_back(std::make_pair("UNKNOWN", "x"));
+  kv.push_back(std::make_pair("dir", "World"));
+  oparser_->parse(option, kv);
   CPPUNIT_ASSERT_EQUAL(std::string("Hello"), option.get(PREF_TIMEOUT));
   CPPUNIT_ASSERT_EQUAL(std::string("World"), option.get(PREF_DIR));
 }
