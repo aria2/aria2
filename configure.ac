@@ -5,7 +5,7 @@ AC_PREREQ([2.67])
 LT_PREREQ([2.2.6])
 AC_INIT([aria2],[1.17.0],[t-tujikawa@users.sourceforge.net],[aria2],[http://aria2.sourceforge.net/])
 AC_USE_SYSTEM_EXTENSIONS
-LT_INIT()
+LT_INIT([disable-static])
 dnl See versioning rule:
 dnl  http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
 AC_SUBST(LT_CURRENT, 0)
@@ -48,6 +48,7 @@ ARIA2_ARG_WITH([jemalloc])
 ARIA2_ARG_DISABLE([bittorrent])
 ARIA2_ARG_DISABLE([metalink])
 ARIA2_ARG_DISABLE([epoll])
+ARIA2_ARG_ENABLE([libaria2])
 
 AC_ARG_WITH([ca-bundle],
   AS_HELP_STRING([--with-ca-bundle=FILE],[Use FILE as default CA bundle.]),
@@ -802,6 +803,8 @@ if test "x$enable_message_digest" = "xyes"; then
 fi
 AM_CONDITIONAL([ENABLE_WEBSOCKET], [test "x$enable_websocket" = "xyes"])
 
+AM_CONDITIONAL([ENABLE_LIBARIA2], [test "x$enable_libaria2" = "xyes"])
+
 AC_SUBST([bashcompletiondir])
 
 case "$host" in
@@ -870,5 +873,9 @@ echo "Metalink:       $enable_metalink"
 echo "XML-RPC:        $enable_xml_rpc"
 echo "Message Digest: $enable_message_digest"
 echo "WebSocket:      $enable_websocket"
+echo "Libaria2:       $enable_libaria2"
+if test "x$enable_libaria2" = "xyes"; then
+  echo "Library types:  Shared=${enable_shared}, Static=${enable_static}"
+fi
 echo "bash_completion dir: $bashcompletiondir"
 echo "Static build:   $ARIA2_STATIC"

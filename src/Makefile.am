@@ -641,10 +641,16 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libaria2.pc
 DISTCLEANFILES = $(pkgconfig_DATA)
 
+if ENABLE_LIBARIA2
 lib_LTLIBRARIES = libaria2.la
 libaria2_la_SOURCES = $(SRCS) \
 	aria2api.cc aria2api.h \
 	KeepRunningCommand.cc KeepRunningCommand.h
+else # !ENABLE_LIBARIA2
+noinst_LTLIBRARIES = libaria2.la
+libaria2_la_SOURCES = $(SRCS)
+endif # !ENABLE_LIBARIA2
+
 libaria2_la_LIBADD = @WSLAY_LIBS@
 
 LDADD = libaria2.la @LIBINTL@ @ALLOCA@ #-lprofiler
