@@ -148,13 +148,17 @@ bool HttpSkipResponseCommand::executeInternal()
     return processResponse();
   }
 
+  if(eof) {
+    // we may get EOF before non-sink streamFilter reports its
+    // completion. There are some broken servers to prevent
+    // streamFilter from completion. Since we just discard the
+    // response body anyway, so we assume that the response is
+    // completed.
+    return processResponse();
+  }
   bool finished = false;
   if(sinkFilterOnly_) {
-    if(eof) {
-      return processResponse();
-    } else {
-      finished = (totalLength_ == receivedBytes_);
-    }
+    finished = (totalLength_ == receivedBytes_);
   } else {
     finished = streamFilter_->finished();
   }
