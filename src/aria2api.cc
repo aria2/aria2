@@ -68,6 +68,11 @@ Session::Session(const KeyVals& options)
 Session::~Session()
 {}
 
+SessionConfig::SessionConfig()
+  : keepRunning(false),
+    useSignalHandler(true)
+{}
+
 namespace {
 Platform* platform = 0;
 } // namespace
@@ -91,7 +96,7 @@ int libraryDeinit()
   return 0;
 }
 
-Session* sessionNew(const KeyVals& options)
+Session* sessionNew(const KeyVals& options, const SessionConfig& config)
 {
   int rv;
   Session* session;
@@ -101,6 +106,9 @@ Session* sessionNew(const KeyVals& options)
     return 0;
   }
   if(session->context->reqinfo) {
+    if(!config.useSignalHandler) {
+      session->context->reqinfo->setUseSignalHandler(false);
+    }
     rv = session->context->reqinfo->prepare();
     if(rv != 0) {
       delete session;
@@ -108,9 +116,11 @@ Session* sessionNew(const KeyVals& options)
     }
     const SharedHandle<DownloadEngine>& e =
       session->context->reqinfo->getDownloadEngine();
-    // Add command to make aria2 keep event polling if
-    // sessionConfigSetKeepRunning is set to true.
-    e->addCommand(new KeepRunningCommand(e->newCUID(), e.get()));
+    if(config.keepRunning) {
+      e->getRequestGroupMan()->setKeepRunning(true);
+      // Add command to make aria2 keep event polling
+      e->addCommand(new KeepRunningCommand(e->newCUID(), e.get()));
+    }
   } else {
     delete session;
     session = 0;
@@ -123,13 +133,6 @@ int sessionFinal(Session* session)
   error_code::Value rv = session->context->reqinfo->getResult();
   delete session;
   return rv;
-}
-
-int sessionConfigSetKeepRunning(Session* session, bool flag)
-{
-  session->context->reqinfo->getDownloadEngine()->getRequestGroupMan()
-    ->setKeepRunning(flag);
-  return 0;
 }
 
 int run(Session* session, RUN_MODE mode)

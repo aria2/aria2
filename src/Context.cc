@@ -34,7 +34,6 @@
 /* copyright --> */
 #include "Context.h"
 
-#include <signal.h>
 #include <unistd.h>
 #include <getopt.h>
 
@@ -223,20 +222,6 @@ Context::Context(bool standalone,
     std::string iface = op->get(PREF_INTERFACE);
     SocketCore::bindAddress(iface);
   }
-  sigset_t mask;
-#ifdef HAVE_SIGACTION
-  sigemptyset(&mask);
-#else // !HAVE_SIGACTION
-  mask = 0;
-#endif // !HAVE_SIGACTION
-#ifdef SIGPIPE
-  util::setGlobalSignalHandler(SIGPIPE, &mask, SIG_IGN, 0);
-#endif
-#ifdef SIGCHLD
-  // Avoid to create zombie process when forked child processes are
-  // died.
-  util::setGlobalSignalHandler(SIGCHLD, &mask, SIG_IGN, 0);
-#endif // SIGCHILD
   std::vector<SharedHandle<RequestGroup> > requestGroups;
   SharedHandle<UriListParser> uriListParser;
 #ifdef ENABLE_BITTORRENT

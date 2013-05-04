@@ -112,8 +112,9 @@ MultiUrlRequestInfo::MultiUrlRequestInfo
   : option_(op),
     statCalc_(statCalc),
     summaryOut_(summaryOut),
-    uriListParser_(uriListParser)
+    uriListParser_(uriListParser),
     // TODO init mask_
+    useSignalHandler_(true)
 {
   requestGroups_.swap(requestGroups);
 }
@@ -238,27 +239,15 @@ int MultiUrlRequestInfo::prepare()
     if(uriListParser_) {
       e_->getRequestGroupMan()->setUriListParser(uriListParser_);
     }
-#ifdef HAVE_SIGACTION
-    sigemptyset(&mask_);
-    sigaddset(&mask_, SIGINT);
-    sigaddset(&mask_, SIGTERM);
-#ifdef SIGHUP
-    sigaddset(&mask_, SIGHUP);
-#endif // SIGHUP
-#else // !HAVE_SIGACTION
-    mask_ = 0;
-#endif // !HAVE_SIGACTION
-
-#ifdef SIGHUP
-    util::setGlobalSignalHandler(SIGHUP, &mask_, handler, 0);
-#endif // SIGHUP
-    util::setGlobalSignalHandler(SIGINT, &mask_, handler, 0);
-    util::setGlobalSignalHandler(SIGTERM, &mask_, handler, 0);
-
+    if(useSignalHandler_) {
+      setupSignalHandlers();
+    }
     e_->getRequestGroupMan()->getNetStat().downloadStart();
   } catch(RecoverableException& e) {
     SingletonHolder<Notifier>::clear();
-    resetSignalHandlers();
+    if(useSignalHandler_) {
+      resetSignalHandlers();
+    }
     return -1;
   }
   return 0;
@@ -319,8 +308,41 @@ error_code::Value MultiUrlRequestInfo::execute()
     A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
   }
   error_code::Value returnValue = getResult();
-  resetSignalHandlers();
+  if(useSignalHandler_) {
+    resetSignalHandlers();
+  }
   return returnValue;
+}
+
+void MultiUrlRequestInfo::setupSignalHandlers()
+{
+#ifdef HAVE_SIGACTION
+    sigemptyset(&mask_);
+#else // !HAVE_SIGACTION
+    mask_ = 0;
+#endif // !HAVE_SIGACTION
+#ifdef SIGPIPE
+    util::setGlobalSignalHandler(SIGPIPE, &mask_, SIG_IGN, 0);
+#endif // SIGPIPE
+#ifdef SIGCHLD
+    // Avoid to create zombie process when forked child processes are
+    // died.
+    util::setGlobalSignalHandler(SIGCHLD, &mask_, SIG_IGN, 0);
+#endif // SIGCHILD
+
+#ifdef HAVE_SIGACTION
+    sigaddset(&mask_, SIGINT);
+    sigaddset(&mask_, SIGTERM);
+# ifdef SIGHUP
+    sigaddset(&mask_, SIGHUP);
+# endif // SIGHUP
+#endif // HAVE_SIGACTION
+
+#ifdef SIGHUP
+    util::setGlobalSignalHandler(SIGHUP, &mask_, handler, 0);
+#endif // SIGHUP
+    util::setGlobalSignalHandler(SIGINT, &mask_, handler, 0);
+    util::setGlobalSignalHandler(SIGTERM, &mask_, handler, 0);
 }
 
 void MultiUrlRequestInfo::resetSignalHandlers()
@@ -333,6 +355,13 @@ void MultiUrlRequestInfo::resetSignalHandlers()
 #endif // SIGHUP
   util::setGlobalSignalHandler(SIGINT, &mask_, SIG_DFL, 0);
   util::setGlobalSignalHandler(SIGTERM, &mask_, SIG_DFL, 0);
+
+#ifdef SIGCHLD
+    util::setGlobalSignalHandler(SIGCHLD, &mask_, SIG_DFL, 0);
+#endif // SIGCHILD
+#ifdef SIGPIPE
+    util::setGlobalSignalHandler(SIGPIPE, &mask_, SIG_DFL, 0);
+#endif // SIGPIPE
 }
 
 const SharedHandle<DownloadEngine>&

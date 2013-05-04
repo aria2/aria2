@@ -74,6 +74,30 @@ typedef uint64_t A2Gid;
 // type of Key/Value pairs
 typedef std::vector<std::pair<std::string, std::string> > KeyVals;
 
+struct SessionConfig {
+  // The constructor fills default values for all members.
+  SessionConfig();
+  // If the |keepRunning| member is true, run(session, RUN_ONCE) will
+  // return 1 even if there are no download to perform. The behavior
+  // is very similar to RPC server, except that this option does not
+  // enable RPC functionality. To stop aria2, use shutdown() function.
+  // The default value is false.
+  bool keepRunning;
+  // If the |useSignalHandler| is true, the library setups following
+  // signal handlers in sessionNew(). These signal handlers are
+  // removed in sessionFinal(). The default value is true. If the
+  // application sets this member to false, it must handle these
+  // signals and ensure that run() is repeatedly called until it
+  // returns 0 and sessionFinal() is called after that. Failing these
+  // steps will lead to not saving .aria2 control file and no session
+  // serialization.
+  //
+  // SIGPIPE, SIGCHLD: ignored
+  // SIGHUP, SIGTERM: handled like shutdown(session, true) is called.
+  // SIGINT: handled like shutdown(session, false) is called.
+  bool useSignalHandler;
+};
+
 // Creates new Session object using the |options| as additional
 // parameters. The |options| is treated as if they are specified in
 // command-line to aria2c(1). This function returns the pointer to the
@@ -81,7 +105,7 @@ typedef std::vector<std::pair<std::string, std::string> > KeyVals;
 //
 // Please note that only one Session object can be created per
 // process.
-Session* sessionNew(const KeyVals& options);
+Session* sessionNew(const KeyVals& options, const SessionConfig& config);
 
 // Performs post-download action, including saving sessions etc and
 // destroys the |session| object, releasing the allocated resources
@@ -93,13 +117,6 @@ enum RUN_MODE {
   RUN_DEFAULT,
   RUN_ONCE
 };
-
-// If the |flag| is true, run(session, RUN_ONCE) will return 1 even if
-// there are no download to perform. The behavior is very similar to
-// RPC server, except that this option does not enable RPC
-// functionality. To stop aria2, use shutdown() function.  This
-// function returns 0 if it succeeds, or -1.
-int sessionConfigSetKeepRunning(Session* session, bool flag);
 
 // Performs event polling and actions for them. If the |mode| is
 // RUN_DEFAULT, this function returns when no downloads are left to be

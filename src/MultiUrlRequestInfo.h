@@ -70,7 +70,10 @@ private:
 
   sigset_t mask_;
 
+  bool useSignalHandler_;
+
   void printMessageForContinue();
+  void setupSignalHandlers();
   void resetSignalHandlers();
 public:
   /*
@@ -105,6 +108,12 @@ public:
   error_code::Value getResult();
 
   const SharedHandle<DownloadEngine>& getDownloadEngine() const;
+
+  // Signal handlers are not prepared if false is given.
+  void setUseSignalHandler(bool useSignalHandler)
+  {
+    useSignalHandler_ = useSignalHandler;
+  }
 };
 
 } // namespace aria2

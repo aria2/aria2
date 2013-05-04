@@ -49,8 +49,7 @@ KeepRunningCommand::~KeepRunningCommand() {}
 
 bool KeepRunningCommand::execute()
 {
-  if(!e_->getRequestGroupMan()->getKeepRunning() ||
-     e_->isHaltRequested()) {
+  if(e_->isHaltRequested()) {
     return true;
   }
   e_->addCommand(this);
