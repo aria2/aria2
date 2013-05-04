@@ -276,10 +276,12 @@ error_code::Value option_processing(Option& op, bool standalone,
     overrideWithEnv(*confOption, oparser, PREF_FTP_PROXY, "ftp_proxy");
     overrideWithEnv(*confOption, oparser, PREF_ALL_PROXY, "all_proxy");
     overrideWithEnv(*confOption, oparser, PREF_NO_PROXY, "no_proxy");
-    // For non-standalone mode, set PREF_QUIET to true to suppress
-    // output. The caller can override this by including PREF_QUIET in
-    // options argument.
-    confOption->put(PREF_QUIET, A2_V_TRUE);
+    if(!standalone) {
+      // For non-standalone mode, set PREF_QUIET to true to suppress
+      // output. The caller can override this by including PREF_QUIET
+      // in options argument.
+      confOption->put(PREF_QUIET, A2_V_TRUE);
+    }
 
     // we must clear eof bit and seek to the beginning of the buffer.
     cmdstream.clear();
