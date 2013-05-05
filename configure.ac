@@ -110,15 +110,20 @@ fi
 if test "x$with_libz" = "xyes"; then
   PKG_CHECK_MODULES([ZLIB], [zlib >= 1.2.3], [have_zlib=yes], [have_zlib=no])
   if test "x$have_zlib" = "xyes"; then
-    AC_DEFINE([HAVE_ZLIB], [1], [Define to 1 if you have zlib.])
     LIBS="$ZLIB_LIBS $LIBS"
     CPPFLAGS="$ZLIB_CFLAGS $CPPFLAGS"
-    AC_CHECK_FUNCS([gzbuffer gzsetparams])
   else
     AC_MSG_WARN([$ZLIB_PKG_ERRORS])
-    if test "x$with_libz_requested" = "xyes"; then
+    AC_CHECK_LIB([z], [zlibVersion], [have_zlib=yes], [have_zlib=no])
+    if test "x$have_zlib" = "xyes"; then
+      LIBS="-lz $LIBS"
+    elif test "x$with_libz_requested" = "xyes"; then
       ARIA2_DEP_NOT_MET([libz])
     fi
+  fi
+  if test "x$have_zlib" = "xyes"; then
+    AC_DEFINE([HAVE_ZLIB], [1], [Define to 1 if you have zlib.])
+    AC_CHECK_FUNCS([gzbuffer gzsetparams])
   fi
 fi
 
