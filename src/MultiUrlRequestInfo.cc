@@ -131,6 +131,7 @@ void MultiUrlRequestInfo::printMessageForContinue()
 
 int MultiUrlRequestInfo::prepare()
 {
+  global::globalHaltRequested = 0;
   try {
     SharedHandle<rpc::WebSocketSessionMan> wsSessionMan;
     if(option_->getAsBool(PREF_ENABLE_RPC)) {
