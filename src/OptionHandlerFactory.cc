@@ -376,7 +376,12 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     OptionHandler* op(new ParameterOptionHandler
                       (PREF_FILE_ALLOCATION,
                        TEXT_FILE_ALLOCATION,
+#if defined(__ANDROID__) || defined(ANDROID)
+                       // V_PREALLOC is too slow for Android device
+                       V_TRUNC,
+#else // !(defined(__ANDROID__) || defined(ANDROID))
                        V_PREALLOC,
+#endif // !(defined(__ANDROID__) || defined(ANDROID))
                        std::vector<std::string>
                        (vbegin(params), vend(params)),
                        'a'));
