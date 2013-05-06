@@ -60,6 +60,7 @@
 #include "uri.h"
 #include "SegList.h"
 #include "array_fun.h"
+#include "help_tags.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigest.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -623,7 +624,9 @@ DeprecatedOptionHandler::DeprecatedOptionHandler
 (OptionHandler* depOptHandler,
  const OptionHandler* repOptHandler)
   : depOptHandler_(depOptHandler), repOptHandler_(repOptHandler)
-{}
+{
+  depOptHandler_->addTag(TAG_DEPRECATED);
+}
 
 DeprecatedOptionHandler::~DeprecatedOptionHandler()
 {
