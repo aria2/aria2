@@ -100,7 +100,7 @@ Range HttpHeader::getRange() const
       if(!util::parseLLIntNoThrow(contentLength, clenStr) ||
          contentLength < 0) {
         throw DL_ABORT_EX("Content-Length must be positive integer");
-      } else if(contentLength > std::numeric_limits<off_t>::max()) {
+      } else if(contentLength > std::numeric_limits<a2_off_t>::max()) {
         throw DOWNLOAD_FAILURE_EXCEPTION
           (fmt(EX_TOO_LARGE_FILE, contentLength));
       } else if(contentLength == 0) {
@@ -146,13 +146,13 @@ Range HttpHeader::getRange() const
      startByte < 0 || endByte < 0 || entityLength < 0) {
     throw DL_ABORT_EX("byte-range-spec must be positive");
   }
-  if(startByte > std::numeric_limits<off_t>::max()) {
+  if(startByte > std::numeric_limits<a2_off_t>::max()) {
     throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, startByte));
   }
-  if(endByte > std::numeric_limits<off_t>::max()) {
+  if(endByte > std::numeric_limits<a2_off_t>::max()) {
     throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, endByte));
   }
-  if(entityLength > std::numeric_limits<off_t>::max()) {
+  if(entityLength > std::numeric_limits<a2_off_t>::max()) {
     throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, entityLength));
   }
   return Range(startByte, endByte, entityLength);

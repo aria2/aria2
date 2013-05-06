@@ -255,7 +255,7 @@ void SizeMetalinkParserStateV4::endElement
 {
   int64_t size;
   if(util::parseLLIntNoThrow(size, characters) && size >= 0 &&
-     size <= std::numeric_limits<off_t>::max()) {
+     size <= std::numeric_limits<a2_off_t>::max()) {
     psm->setFileLengthOfEntry(size);
   } else {
     psm->cancelEntryTransaction();

@@ -251,7 +251,7 @@ void extractFileEntries
         throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, length));
       }
       length += fileLengthData->i();
-      if(fileLengthData->i() > std::numeric_limits<off_t>::max()) {
+      if(fileLengthData->i() > std::numeric_limits<a2_off_t>::max()) {
         throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, length));
       }
       std::string pathKey;
@@ -310,7 +310,7 @@ void extractFileEntries
                          error_code::BITTORRENT_PARSE_ERROR);
     }
     int64_t totalLength = lengthData->i();
-    if(totalLength > std::numeric_limits<off_t>::max()) {
+    if(totalLength > std::numeric_limits<a2_off_t>::max()) {
       throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, totalLength));
     }
     // For each uri in urlList, if it ends with '/', then

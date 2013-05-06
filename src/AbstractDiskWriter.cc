@@ -324,7 +324,7 @@ void AbstractDiskWriter::seek(int64_t offset)
   fileLength.QuadPart = offset;
   if(SetFilePointerEx(fd_, fileLength, 0, FILE_BEGIN) == 0)
 #else // !__MINGW32__
-  if(a2lseek(fd_, offset, SEEK_SET) == (off_t)-1)
+  if(a2lseek(fd_, offset, SEEK_SET) == (a2_off_t)-1)
 #endif // !__MINGW32__
     {
       int errNum = fileError();
@@ -453,7 +453,7 @@ void AbstractDiskWriter::truncate(int64_t length)
   seek(length);
   if(SetEndOfFile(fd_) == 0)
 #else // !__MINGW32__
-  if(ftruncate(fd_, length) == -1)
+  if(a2ftruncate(fd_, length) == -1)
 #endif // !__MINGW32__
     {
       int errNum = fileError();

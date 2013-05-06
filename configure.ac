@@ -67,6 +67,7 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_MKDIR_P
 AC_PROG_YACC
+AM_PROG_AS
 
 AC_CHECK_TOOL([AR], [ar], [:])
 if test "x$AR" = "x:"; then
@@ -123,7 +124,14 @@ if test "x$with_libz" = "xyes"; then
   fi
   if test "x$have_zlib" = "xyes"; then
     AC_DEFINE([HAVE_ZLIB], [1], [Define to 1 if you have zlib.])
-    AC_CHECK_FUNCS([gzbuffer gzsetparams])
+    # Android NDK arch-mips contains gzbuffer symbol but it is missing
+    # in zlib.h
+    AC_CHECK_DECL([gzbuffer], [have_decl_gzbuffer=yes], [],
+                  [[#include <zlib.h>]])
+    if test "x$have_decl_gzbuffer" = "xyes"; then
+      AC_CHECK_FUNC([gzbuffer])
+    fi
+    AC_CHECK_FUNCS([gzsetparams])
   fi
 fi
 
@@ -815,10 +823,25 @@ AC_SUBST([bashcompletiondir])
 case "$host" in
   *android*)
     LIBS="$LIBS -lstdc++ -lsupc++"
+    case "$host" in
+      arm-*)
+        android_arm=yes
+        ;;
+      mipsel-*)
+        android_mips=yes
+        ;;
+      i686-*)
+        android_x86=yes
+        ;;
+    esac
     ;;
   *)
     ;;
 esac
+
+AM_CONDITIONAL([ANDROID_ARM], [test "x$android_arm" = "xyes"])
+AM_CONDITIONAL([ANDROID_MIPS], [test "x$android_mips" = "xyes"])
+AM_CONDITIONAL([ANDROID_X86], [test "x$android_x86" = "xyes"])
 
 if test "x$ARIA2_STATIC" = "xyes"; then
   LDFLAGS="$LDFLAGS -all-static -static-libgcc -static-libstdc++"

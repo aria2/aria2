@@ -493,7 +493,7 @@ bool FtpNegotiationCommand::recvSize() {
     return false;
   }
   if(status == 213) {
-    if(size > std::numeric_limits<off_t>::max()) {
+    if(size > std::numeric_limits<a2_off_t>::max()) {
       throw DL_ABORT_EX2(fmt(EX_TOO_LARGE_FILE, size),
                          error_code::FTP_PROTOCOL_ERROR);
     }
