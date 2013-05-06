@@ -1078,7 +1078,6 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     handlers.push_back(op);
   }
-  OptionHandler* splitHandler;
   {
     OptionHandler* op(new NumberOptionHandler
                       (PREF_SPLIT,
@@ -1092,7 +1091,6 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
     op->setChangeOptionForReserved(true);
-    splitHandler = op;
     handlers.push_back(op);
   }
   {
