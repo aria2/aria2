@@ -217,6 +217,7 @@ struct UriData {
 };
 
 struct FileData {
+  // 1-based index
   int index;
   std::string path;
   int64_t length;
@@ -265,6 +266,12 @@ struct DownloadHandle {
   virtual A2Gid getBelongsTo() = 0;
   virtual const std::string& getDir() = 0;
   virtual std::vector<FileData> getFiles() = 0;
+  // Returns the number of files. The return value is equivalent to
+  // getFiles().size().
+  virtual int getNumFiles() = 0;
+  // Returns the FileData of the file at the specified |index|. Please
+  // note that the index is 1-based.
+  virtual FileData getFile(int index) = 0;
 };
 
 // Returns handle for the download denoted by the |gid|. The caller

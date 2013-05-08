@@ -392,6 +392,22 @@ void createUriEntry
 } // namespace
 
 namespace {
+FileData createFileData
+(const SharedHandle<FileEntry>& fe, int index, const BitfieldMan* bf)
+{
+  FileData file;
+  file.index = index;
+  file.path = fe->getPath();
+  file.length = fe->getLength();
+  file.completedLength = bf->getOffsetCompletedLength
+    (fe->getOffset(), fe->getLength());
+  file.selected = fe->isRequested();
+  createUriEntry(std::back_inserter(file.uris), fe);
+  return file;
+}
+} // namespace
+
+namespace {
 template<typename OutputIterator, typename InputIterator>
 void createFileEntry
 (OutputIterator out,
@@ -400,15 +416,7 @@ void createFileEntry
 {
   size_t index = 1;
   for(; first != last; ++first) {
-    FileData file;
-    file.index = index++;
-    file.path = (*first)->getPath();
-    file.length = (*first)->getLength();
-    file.completedLength = bf->getOffsetCompletedLength
-      ((*first)->getOffset(), (*first)->getLength());
-    file.selected = (*first)->isRequested();
-    createUriEntry(std::back_inserter(file.uris), *first);
-    out++ = file;
+    out++ = createFileData(*first, index++, bf);
   }
 }
 } // namespace
@@ -530,6 +538,21 @@ struct RequestGroupDH : public DownloadHandle {
                     group->getPieceStorage());
     return res;
   }
+  virtual int getNumFiles()
+  {
+    const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
+    return dctx->getFileEntries().size();
+  }
+  virtual FileData getFile(int index)
+  {
+    const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
+    BitfieldMan bf(dctx->getPieceLength(), dctx->getTotalLength());
+    const SharedHandle<PieceStorage>& ps = group->getPieceStorage();
+    if(ps) {
+      bf.setBitfield(ps->getBitfield(), ps->getBitfieldLength());
+    }
+    return createFileData(dctx->getFileEntries()[index-1], index, &bf);
+  }
   SharedHandle<RequestGroup> group;
   TransferStat ts;
 };
@@ -607,6 +630,17 @@ struct DownloadResultDH : public DownloadHandle {
                     dr->fileEntries.begin(), dr->fileEntries.end(),
                     dr->totalLength, dr->pieceLength, dr->bitfield);
     return res;
+  }
+  virtual int getNumFiles()
+  {
+    return dr->fileEntries.size();
+  }
+  virtual FileData getFile(int index)
+  {
+    BitfieldMan bf(dr->pieceLength, dr->totalLength);
+    bf.setBitfield(reinterpret_cast<const unsigned char*>(dr->bitfield.data()),
+                   dr->bitfield.size());
+    return createFileData(dr->fileEntries[index-1], index, &bf);
   }
   SharedHandle<DownloadResult> dr;
 };
