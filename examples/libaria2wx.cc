@@ -432,9 +432,9 @@ int downloaderJob(JobQueue& jobq, NotifyQueue& notifyq)
           st.completedLength = dh->getCompletedLength();
           st.downloadSpeed = dh->getDownloadSpeed();
           st.uploadSpeed = dh->getUploadSpeed();
-          std::vector<aria2::FileData> files = dh->getFiles();
-          if(!files.empty()) {
-            st.filename = files[0].path;
+          if(dh->getNumFiles() > 0) {
+            aria2::FileData file = dh->getFile(1);
+            st.filename = file.path;
           }
           v.push_back(std::move(st));
           aria2::deleteDownloadHandle(dh);
