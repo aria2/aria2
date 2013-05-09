@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+#
 # aria2 - The high speed download utility
 #
 # Copyright (C) 2013 Tatsuhiro Tsujikawa
@@ -107,7 +109,7 @@ def make_api_ref(infiles):
                     functions.append(process_function('function', infile))
                 elif doctype == '@typedef':
                     types.append(process_typedef(infile))
-                elif doctype in ['@struct', '@union']:
+                elif doctype in ['@class', '@struct', '@union']:
                     types.append(process_struct(infile))
                 elif doctype == '@enum':
                     enums.append(process_enum(infile))
@@ -115,7 +117,7 @@ def make_api_ref(infiles):
                     macros.append(process_macro(infile))
     alldocs = [('Macros', macros),
                ('Enums', enums),
-               ('Types (structs, unions and typedefs)', types),
+               ('Types (classes, structs, unions and typedefs)', types),
                ('Functions', functions)]
     for title, docs in alldocs:
         if not docs:
