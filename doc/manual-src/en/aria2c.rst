@@ -2276,8 +2276,7 @@ All code examples come from Python2.7 interpreter.
     response.
 
   ``dir``
-    Directory to save files. This key is not available for stopped
-    downloads.
+    Directory to save files.
 
   ``files``
     Returns the list of files. The element of list is the same struct
