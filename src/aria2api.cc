@@ -226,7 +226,7 @@ void addRequestGroup(const SharedHandle<RequestGroup>& group,
 } // namespace
 
 int addUri(Session* session,
-           A2Gid& gid,
+           A2Gid* gid,
            const std::vector<std::string>& uris,
            const KeyVals& options,
            int position)
@@ -246,14 +246,16 @@ int addUri(Session* session,
                            /* ignoreForceSeq = */ true,
                            /* ignoreLocalPath = */ true);
   if(!result.empty()) {
-    gid = result.front()->getGID();
     addRequestGroup(result.front(), e, position);
+    if(gid) {
+      *gid = result.front()->getGID();
+    }
   }
   return 0;
 }
 
 int addMetalink(Session* session,
-                std::vector<A2Gid>& gids,
+                std::vector<A2Gid>* gids,
                 const std::string& metalinkFile,
                 const KeyVals& options,
                 int position)
@@ -278,9 +280,11 @@ int addMetalink(Session* session,
     } else {
       e->getRequestGroupMan()->addReservedGroup(result);
     }
-    for(std::vector<SharedHandle<RequestGroup> >::const_iterator i =
-          result.begin(), eoi = result.end(); i != eoi; ++i) {
-      gids.push_back((*i)->getGID());
+    if(gids) {
+      for(std::vector<SharedHandle<RequestGroup> >::const_iterator i =
+            result.begin(), eoi = result.end(); i != eoi; ++i) {
+        (*gids).push_back((*i)->getGID());
+      }
     }
   }
   return 0;

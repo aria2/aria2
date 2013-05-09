@@ -138,33 +138,33 @@ A2Gid hexToGid(const std::string& hex);
 bool isNull(const A2Gid& gid);
 
 // Adds new HTTP(S)/FTP/BitTorrent Magnet URI.  On successful return,
-// the |gid| includes the GID of newly added download.  The |uris|
-// includes URI to be downloaded.  For BitTorrent Magnet URI, the
-// |uris| must have only one element and it should be BitTorrent
-// Magnet URI. URIs in uris must point to the same file. If you mix
-// other URIs which point to another file, aria2 does not complain but
-// download may fail. The |options| is a pair of option name and
-// value. If the |position| is not negative integer, the new download
-// is inserted at position in the waiting queue. If the |position| is
-// negative or the |position| is larger than the size of the queue, it
-// is appended at the end of the queue.  This function returns 0 if it
-// succeeds, or -1.
+// if the |gid| is not NULL, the GID of added download will be
+// assigned to the |*gid|.  The |uris| includes URI to be downloaded.
+// For BitTorrent Magnet URI, the |uris| must have only one element
+// and it should be BitTorrent Magnet URI. URIs in uris must point to
+// the same file. If you mix other URIs which point to another file,
+// aria2 does not complain but download may fail. The |options| is a
+// pair of option name and value. If the |position| is not negative
+// integer, the new download is inserted at position in the waiting
+// queue. If the |position| is negative or the |position| is larger
+// than the size of the queue, it is appended at the end of the queue.
+// This function returns 0 if it succeeds, or -1.
 int addUri(Session* session,
-           A2Gid& gid,
+           A2Gid* gid,
            const std::vector<std::string>& uris,
            const KeyVals& options,
            int position = -1);
 
 // Adds Metalink download. The path to Metalink file is specified by
-// the |metalinkFile|.  On successful return, the GID of added
-// download is appended to the |gids|. The |options| is a pair of
-// option name and value. If the |position| is not negative integer,
-// the new download is inserted at position in the waiting queue. If
-// the |position| is negative or the |position| is larger than the
-// size of the queue, it is appended at the end of the queue. This
-// function returns 0 if it succeeds, or -1.
+// the |metalinkFile|.  On successful return, if the |gids| is not
+// NULL, the GIDs of added downloads are appended to the |*gids|. The
+// |options| is a pair of option name and value. If the |position| is
+// not negative integer, the new download is inserted at position in
+// the waiting queue. If the |position| is negative or the |position|
+// is larger than the size of the queue, it is appended at the end of
+// the queue. This function returns 0 if it succeeds, or -1.
 int addMetalink(Session* session,
-                std::vector<A2Gid>& gids,
+                std::vector<A2Gid>* gids,
                 const std::string& metalinkFile,
                 const KeyVals& options,
                 int position = -1);

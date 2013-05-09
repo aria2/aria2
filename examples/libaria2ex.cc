@@ -54,8 +54,7 @@ int main()
   // Download files are stored in the current directory
   aria2::KeyVals options = { std::make_pair("dir", ".") };
   // Add URI
-  aria2::A2Gid gid;
-  aria2::addUri(session, gid, uris, options);
+  aria2::addUri(session, 0, uris, options);
   auto start = std::chrono::steady_clock::now();
   for(;;) {
     int rv = aria2::run(session, aria2::RUN_ONCE);

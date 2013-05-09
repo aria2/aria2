@@ -113,9 +113,8 @@ struct AddUriJob : public Job {
   {}
   virtual void execute(aria2::Session* session)
   {
-    aria2::A2Gid gid;
     // TODO check return value
-    aria2::addUri(session, gid, uris, options);
+    aria2::addUri(session, 0, uris, options);
   }
   std::vector<std::string> uris;
   aria2::KeyVals options;
