@@ -71,13 +71,7 @@ int GnuTLSSession::init(sock_t sockfd)
   // It seems err is not error message, but the argument string
   // which causes syntax error.
   const char* err;
-  // For client side, disables TLS1.1 here because there are servers
-  // that don't understand TLS1.1.  TODO Is this still necessary?
-  rv_ = gnutls_priority_set_direct(sslSession_,
-                                   tlsContext_->getSide() == TLS_CLIENT ?
-                                   "NORMAL:-VERS-TLS1.1" :
-                                   "NORMAL",
-                                   &err);
+  rv_ = gnutls_priority_set_direct(sslSession_, "NORMAL", &err);
   if(rv_ != GNUTLS_E_SUCCESS) {
     return TLS_ERR_ERROR;
   }
