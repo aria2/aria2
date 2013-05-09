@@ -53,236 +53,484 @@
 
 namespace aria2 {
 
+/**
+ * @struct
+ *
+ * This object identifies aria2 session. To create session, use
+ * :func:`sessionNew()` function.
+ */
 struct Session;
 
-// Initializes the global data. It also initializes
-// underlying libraries libaria2 depends on. This function returns 0
-// if it succeeds, or -1.
-//
-// Call this function only once before calling any other API functions.
+/**
+ * @function
+ *
+ * Initializes the global data. It also initializes underlying
+ * libraries libaria2 depends on. This function returns 0 if it
+ * succeeds, or -1.
+ *
+ * Call this function only once before calling any other API
+ * functions.
+ */
 int libraryInit();
 
-// Releases the global data. This function returns 0 if
-// it succeeds, or -1.
-//
-// Call this function only once at the end of the application.
+/**
+ * @function
+ *
+ * Releases the global data. This function returns 0 if it succeeds,
+ * or -1.
+ *
+ * Call this function only once at the end of the application.
+ */
 int libraryDeinit();
 
-// type of GID
+/**
+ * @typedef
+ *
+ * The type of GID, persistent identifier of each download.
+ */
 typedef uint64_t A2Gid;
 
-// type of Key/Value pairs
+/**
+ * @typedef
+ *
+ * The type of Key/Value pairs.
+ */
 typedef std::vector<std::pair<std::string, std::string> > KeyVals;
 
+/**
+ * @struct
+ *
+ * The configuration for the session.
+ */
 struct SessionConfig {
-  // The constructor fills default values for all members.
+  /**
+   * The constructor fills default values for all members.
+   */
   SessionConfig();
-  // If the |keepRunning| member is true, run(session, RUN_ONCE) will
-  // return 1 even if there are no download to perform. The behavior
-  // is very similar to RPC server, except that this option does not
-  // enable RPC functionality. To stop aria2, use shutdown() function.
-  // The default value is false.
+  /**
+   * If the |keepRunning| member is true, ``run(session, RUN_ONCE)``
+   * will return 1 even if there are no download to perform. The
+   * behavior is very similar to RPC server, except that this option
+   * does not enable RPC functionality. To stop aria2, use
+   * :func:`shutdown()` function.  The default value is false.
+   */
   bool keepRunning;
-  // If the |useSignalHandler| is true, the library setups following
-  // signal handlers in sessionNew(). These signal handlers are
-  // removed in sessionFinal(). The default value is true. If the
-  // application sets this member to false, it must handle these
-  // signals and ensure that run() is repeatedly called until it
-  // returns 0 and sessionFinal() is called after that. Failing these
-  // steps will lead to not saving .aria2 control file and no session
-  // serialization.
-  //
-  // SIGPIPE, SIGCHLD: ignored
-  // SIGHUP, SIGTERM: handled like shutdown(session, true) is called.
-  // SIGINT: handled like shutdown(session, false) is called.
+  /**
+   * If the |useSignalHandler| is true, the library setups following
+   * signal handlers in :func:`sessionNew()`. These signal handlers
+   * are removed in :func:`sessionFinal()`. The default value is
+   * true. If the application sets this member to false, it must
+   * handle these signals and ensure that run() is repeatedly called
+   * until it returns 0 and :func:`sessionFinal()` is called after
+   * that. Failing these steps will lead to not saving .aria2 control
+   * file and no session serialization.
+   *
+   * ``SIGPIPE``, ``SIGCHLD``:
+   *   ignored
+   * ``SIGHUP``, ``SIGTERM``:
+   *   handled like shutdown(session, true) is called.
+   * ``SIGINT``:
+   *   handled like shutdown(session, false) is called.
+   */
   bool useSignalHandler;
 };
 
-// Creates new Session object using the |options| as additional
-// parameters. The |options| is treated as if they are specified in
-// command-line to aria2c(1). This function returns the pointer to the
-// newly created Session object if it succeeds, or NULL.
-//
-// Please note that only one Session object can be created per
-// process.
+/**
+ * @function
+ *
+ * Creates new Session object using the |options| as additional
+ * parameters. The |options| is treated as if they are specified in
+ * command-line to :manpage:`aria2c(1)`. This function returns the
+ * pointer to the created Session object if it succeeds, or ``NULL``.
+ *
+ * Please note that only one Session object can be created per
+ * process.
+ */
 Session* sessionNew(const KeyVals& options, const SessionConfig& config);
 
-// Performs post-download action, including saving sessions etc and
-// destroys the |session| object, releasing the allocated resources
-// for it. This function returns the last error code and it is the
-// equivalent to the exit status of aria2c(1).
+/**
+ * @function
+ *
+ * Performs post-download action, including saving sessions etc and
+ * destroys the |session| object, releasing the allocated resources
+ * for it. This function returns the last error code and it is the
+ * equivalent to the exit status of :manpage:`aria2c(1)`.
+ */
 int sessionFinal(Session* session);
 
+/**
+ * @enum
+ *
+ * Execution mode for :func:`run()`
+ */
 enum RUN_MODE {
+  /**
+   * :func:`run()` returns when no downloads are left.
+   */
   RUN_DEFAULT,
+  /**
+   * :func:`run()` returns after one event polling.
+   */
   RUN_ONCE
 };
 
-// Performs event polling and actions for them. If the |mode| is
-// RUN_DEFAULT, this function returns when no downloads are left to be
-// processed. In this case, this function returns 0.
-//
-// If the |mode| is RUN_ONCE, this function returns after one event
-// polling. In the current implementation, event polling timeouts in 1
-// second, so this function returns at most 1 second. On return, when
-// no downloads are left to be processed, this function returns
-// 0. Otherwise, returns 1, indicating that the caller must call this
-// function one or more time to complete downloads.
+/**
+ * @function
+ *
+ * Performs event polling and actions for them. If the |mode| is
+ * :c:macro:`RUN_DEFAULT`, this function returns when no downloads are
+ * left to be processed. In this case, this function returns 0.
+ *
+ * If the |mode| is :c:macro:`RUN_ONCE`, this function returns after
+ * one event polling. In the current implementation, event polling
+ * timeouts in 1 second, so this function returns at most 1 second. On
+ * return, when no downloads are left to be processed, this function
+ * returns 0. Otherwise, returns 1, indicating that the caller must
+ * call this function one or more time to complete downloads.
+ */
 int run(Session* session, RUN_MODE mode);
 
-// Returns textual representation of the |gid|.
+/**
+ * @function
+ *
+ * Returns textual representation of the |gid|.
+ */
 std::string gidToHex(const A2Gid& gid);
-// Returns GID converted from the textual representation |hex|.
+
+/**
+ * @function
+ *
+ * Returns GID converted from the textual representation |hex|.
+ */
 A2Gid hexToGid(const std::string& hex);
-// Returns true if the |gid| is invalid.
+
+/**
+ * @function
+ *
+ * Returns true if the |gid| is invalid.
+ */
 bool isNull(const A2Gid& gid);
 
-// Adds new HTTP(S)/FTP/BitTorrent Magnet URI.  On successful return,
-// if the |gid| is not NULL, the GID of added download will be
-// assigned to the |*gid|.  The |uris| includes URI to be downloaded.
-// For BitTorrent Magnet URI, the |uris| must have only one element
-// and it should be BitTorrent Magnet URI. URIs in uris must point to
-// the same file. If you mix other URIs which point to another file,
-// aria2 does not complain but download may fail. The |options| is a
-// pair of option name and value. If the |position| is not negative
-// integer, the new download is inserted at position in the waiting
-// queue. If the |position| is negative or the |position| is larger
-// than the size of the queue, it is appended at the end of the queue.
-// This function returns 0 if it succeeds, or -1.
+/**
+ * @function
+ *
+ * Adds new HTTP(S)/FTP/BitTorrent Magnet URI.  On successful return,
+ * if the |gid| is not ``NULL``, the GID of added download will be
+ * assigned to the |*gid|.  The |uris| includes URI to be downloaded.
+ * For BitTorrent Magnet URI, the |uris| must have only one element
+ * and it should be BitTorrent Magnet URI. URIs in the |uris| must
+ * point to the same file. If you mix other URIs which point to
+ * another file, aria2 does not complain but download may fail. The
+ * |options| is an array of a pair of option name and value. If the
+ * |position| is not negative integer, the new download is inserted at
+ * position in the waiting queue. If the |position| is negative or the
+ * |position| is larger than the size of the queue, it is appended at
+ * the end of the queue.  This function returns 0 if it succeeds, or
+ * -1.
+ */
 int addUri(Session* session,
            A2Gid* gid,
            const std::vector<std::string>& uris,
            const KeyVals& options,
            int position = -1);
 
-// Adds Metalink download. The path to Metalink file is specified by
-// the |metalinkFile|.  On successful return, if the |gids| is not
-// NULL, the GIDs of added downloads are appended to the |*gids|. The
-// |options| is a pair of option name and value. If the |position| is
-// not negative integer, the new download is inserted at position in
-// the waiting queue. If the |position| is negative or the |position|
-// is larger than the size of the queue, it is appended at the end of
-// the queue. This function returns 0 if it succeeds, or -1.
+/**
+ * @function
+ *
+ * Adds Metalink download. The path to Metalink file is specified by
+ * the |metalinkFile|.  On successful return, if the |gids| is not
+ * ``NULL``, the GIDs of added downloads are appended to the
+ * |*gids|. The |options| is an array of a pair of option name and
+ * value. If the |position| is not negative integer, the new download
+ * is inserted at position in the waiting queue. If the |position| is
+ * negative or the |position| is larger than the size of the queue, it
+ * is appended at the end of the queue. This function returns 0 if it
+ * succeeds, or -1.
+ */
 int addMetalink(Session* session,
                 std::vector<A2Gid>* gids,
                 const std::string& metalinkFile,
                 const KeyVals& options,
                 int position = -1);
 
-// Returns the array of active download GID.
+/**
+ * @function
+ *
+ * Returns the array of active download GID.
+ */
 std::vector<A2Gid> getActiveDownload(Session* session);
 
-// Removes the download denoted by the |gid|. If the specified
-// download is in progress, it is stopped at first. The status of
-// removed download becomes DOWNLOAD_REMOVED. If the |force| is true,
-// removal will take place without any action which takes time such as
-// contacting BitTorrent tracker. This function returns 0 if it
-// succeeds, or -1.
+/**
+ * @function
+ *
+ * Removes the download denoted by the |gid|. If the specified
+ * download is in progress, it is stopped at first. The status of
+ * removed download becomes :c:macro:`DOWNLOAD_REMOVED`. If the
+ * |force| is true, removal will take place without any action which
+ * takes time such as contacting BitTorrent tracker. This function
+ * returns 0 if it succeeds, or -1.
+ */
 int removeDownload(Session* session, const A2Gid& gid, bool force = false);
 
-// Pauses the download denoted by the |gid|. The status of paused
-// download becomes DOWNLOAD_PAUSED. If the download is active, the
-// download is placed on the first position of waiting queue. As long
-// as the status is DOWNLOAD_PAUSED, the download will not start. To
-// change status to DOWNLOAD_WAITING, use unpauseDownload() function.
-// If the |force| is true, pause will take place without any action
-// which takes time such as contacting BitTorrent tracker. This
-// function returns 0 if it succeeds, or -1.  Please note that, to
-// make pause work, the application must call
-// sessionConfigSetKeepRunning() function with the |flag| argument to
-// true. Without this call, download may be paused at first, but it
-// will be restarted automatically.
+/**
+ * @function
+ *
+ * Pauses the download denoted by the |gid|. The status of paused
+ * download becomes :c:macro:`DOWNLOAD_PAUSED`. If the download is
+ * active, the download is placed on the first position of waiting
+ * queue. As long as the status is :c:macro:`DOWNLOAD_PAUSED`, the
+ * download will not start. To change status to
+ * :c:macro:`DOWNLOAD_WAITING`, use :func:`unpauseDownload()`
+ * function.  If the |force| is true, pause will take place without
+ * any action which takes time such as contacting BitTorrent
+ * tracker. This function returns 0 if it succeeds, or -1.
+ *
+ * Please note that, to make pause work, the application must set
+ * :member:`SessionConfig::keepRunning` to true. Otherwise, the
+ * behavior is undefined.
+ */
 int pauseDownload(Session* session, const A2Gid& gid, bool force = false);
 
-// Changes the status of the download denoted by the |gid| from
-// DOWNLOAD_PAUSED to DOWNLOAD_WAITING. This makes the download
-// eligible to restart. This function returns 0 if it succeeds, or -1.
+/**
+ * @function
+ *
+ * Changes the status of the download denoted by the |gid| from
+ * :c:macro:`DOWNLOAD_PAUSED` to :c:macro:`DOWNLOAD_WAITING`. This
+ * makes the download eligible to restart. This function returns 0 if
+ * it succeeds, or -1.
+ */
 int unpauseDownload(Session* session, const A2Gid& gid);
 
-// Schedules shutdown. If the |force| is true, shutdown will take
-// place without any action which takes time such as contacting
-// BitTorrent tracker. After this call, the application must keep
-// calling run() method until it returns 0.  This function returns 0
-// if it succeeds, or -1.
+/**
+ * @function
+ *
+ * Schedules shutdown. If the |force| is true, shutdown will take
+ * place without any action which takes time such as contacting
+ * BitTorrent tracker. After this call, the application must keep
+ * calling :func:`run()` function until it returns 0.  This function
+ * returns 0 if it succeeds, or -1.
+ */
 int shutdown(Session* session, bool force = false);
 
+/**
+ * @enum
+ *
+ * The status of URI.
+ */
 enum UriStatus {
+  /**
+   * Indicating the URI has been used.
+   */
   URI_USED,
+  /**
+   * Indicating the URI has not been used.
+   */
   URI_WAITING
 };
 
+/**
+ * @struct
+ *
+ * This object contains URI and its status.
+ */
 struct UriData {
+  /**
+   * URI
+   */
   std::string uri;
+  /**
+   * The status of URI
+   */
   UriStatus status;
 };
 
+/**
+ * @struct
+ *
+ * This object contains information of file to download.
+ */
 struct FileData {
-  // 1-based index
+  /**
+   * 1-based index of the file in the download. This is the same order
+   * with the files in multi-file torrent. This index is used to get
+   * this object using :func:`DownloadHandle::getFile()` function.
+   */
   int index;
+  /**
+   * The local file path to this file when downloaded.
+   */
   std::string path;
+  /**
+   * The file size in bytes. This is not the current size of the local
+   * file.
+   */
   int64_t length;
+  /**
+   * The completed length of this file in bytes. Please note that it
+   * is possible that sum of |completedLength| is less than the return
+   * value of :func:`DownloadHandle::getCompletedLength()`
+   * function. This is because the |completedLength| only calculates
+   * completed pieces. On the other hand,
+   * :func:`DownloadHandle::getCompletedLength()` takes into account
+   * of partially completed piece.
+   */
   int64_t completedLength;
+  /**
+   * true if this file is selected by ``select-file`` option. If
+   * ``select-file`` is not specified or this is single torrent or no
+   * torrent download, this value is always true.
+   */
   bool selected;
+  /**
+   * Returns the list of URI for this file.
+   */
   std::vector<UriData> uris;
 };
 
+/**
+ * @enum
+ *
+ * The status of download item.
+ */
 enum DownloadStatus {
+  /**
+   * Indicating currently downloading/seeding.
+   */
   DOWNLOAD_ACTIVE,
+  /**
+   * Indicating in the queue; download is not started.
+   */
   DOWNLOAD_WAITING,
+  /**
+   * Indicating the download is paused.
+   */
   DOWNLOAD_PAUSED,
+  /**
+   * Indicating stopped and completed download.
+   */
   DOWNLOAD_COMPLETE,
+  /**
+   * Indicating stopped download because of error.
+   */
   DOWNLOAD_ERROR,
+  /**
+   * Indicating removed by user's discretion.
+   */
   DOWNLOAD_REMOVED
 };
 
+/**
+ * @struct
+ *
+ * The interface to get information of download item.
+ */
 struct DownloadHandle {
   virtual ~DownloadHandle() {}
+  /**
+   * Returns status of this download.
+   */
   virtual DownloadStatus getStatus() = 0;
+  /**
+   * Returns the total length of this download in bytes.
+   */
   virtual int64_t getTotalLength() = 0;
+  /**
+   * Returns the completed length of this download in bytes.
+   */
   virtual int64_t getCompletedLength() = 0;
+  /**
+   * Returns the uploaded length of this download in bytes.
+   */
   virtual int64_t getUploadLength() = 0;
+  /**
+   * Returns the download progress in byte-string. The highest bit
+   * corresponds to piece index 0. The set bits indicate the piece is
+   * available and unset bits indicate the piece is missing. The spare
+   * bits at the end are set to zero. When download has not started
+   * yet, returns empty string.
+   */
   virtual std::string getBitfield() = 0;
+  /**
+   * Returns download speed of this download measured in bytes/sec.
+   */
   virtual int getDownloadSpeed() = 0;
+  /**
+   * Returns upload speed of this download measured in bytes/sec.
+   */
   virtual int getUploadSpeed() = 0;
+  /**
+   * Returns the number of pieces.
+   */
   virtual size_t getNumPieces() = 0;
+  /**
+   * Returns the number of peers/servers the client has connected to.
+   */
   virtual int getConnections() = 0;
-  // Returns the last error code occurred in this download. The error
-  // codes are defined in EXIT STATUS section of aria2c(1) man
-  // page. This value is only available for stopped/completed
-  // downloads.
+  /**
+   * Returns the last error code occurred in this download. The error
+   * codes are defined in EXIT STATUS section of
+   * :manpage:`aria2c(1)`. This value has its meaning only for
+   * stopped/completed downloads.
+   */
   virtual int getErrorCode() = 0;
-  // Returns array of GIDs which are generated by the consequence of
-  // this download. For example, when aria2 downloaded Metalink file,
-  // it generates downloads described in it (see --follow-metalink
-  // option). This value is useful to track these auto generated
-  // downloads. If there is no such downloads, this function returns
-  // empty array.
+  /**
+   * Returns array of GIDs which are generated by the consequence of
+   * this download. For example, when aria2 downloaded Metalink file,
+   * it generates downloads described in it (see
+   * :option:`--follow-metalink` option). This value is useful to
+   * track these auto generated downloads. If there is no such
+   * downloads, this function returns empty array.
+   */
   virtual const std::vector<A2Gid>& getFollowedBy() = 0;
-  // Returns the GID of a parent download. Some downloads are a part
-  // of another download. For example, if a file in Metalink has
-  // BitTorrent resource, the download of ".torrent" is a part of that
-  // file. If this download has no parent, the invalid GID is returned
-  // (isNull(gid) is true).
+  /**
+   * Returns the GID of a parent download. Some downloads are a part
+   * of another download. For example, if a file in Metalink has
+   * BitTorrent resource, the download of ".torrent" is a part of that
+   * file. If this download has no parent, the invalid GID is returned
+   * (``isNull(gid)`` is true).
+   */
   virtual A2Gid getBelongsTo() = 0;
+  /**
+   * Returns the directory to save files.
+   */
   virtual const std::string& getDir() = 0;
+  /**
+   * Returns the array of files this download contains.
+   */
   virtual std::vector<FileData> getFiles() = 0;
-  // Returns the number of files. The return value is equivalent to
-  // getFiles().size().
+  /**
+   * Returns the number of files. The return value is equivalent to
+   * ``DownloadHandle::getFiles().size()``.
+   */
   virtual int getNumFiles() = 0;
-  // Returns the FileData of the file at the specified |index|. Please
-  // note that the index is 1-based.
+  /**
+   * Returns the FileData of the file at the specified |index|. Please
+   * note that the index is 1-based. It is undefined when the |index|
+   * is out-of-bound.
+   */
   virtual FileData getFile(int index) = 0;
 };
 
-// Returns handle for the download denoted by the |gid|. The caller
-// can retrieve various information of the download via returned
-// handle. The lifetime of the returned handle is before the next call
-// of run() or sessionFinal(). This function returns NULL if no
-// download denoted by the |gid| is present. The caller must call
-// deleteDownloadHandle() to delete the acquired handle.
+/**
+ * @function
+ *
+ * Returns handle for the download denoted by the |gid|. The caller
+ * can retrieve various information of the download via returned
+ * handle's member functions. The lifetime of the returned handle is
+ * before the next call of :func:`run()` or
+ * :func:`sessionFinal()`. The caller must call
+ * :func:`deleteDownloadHandle()` before that. This function returns
+ * ``NULL`` if no download denoted by the |gid| is present. It is the
+ * responsibility of the caller to call :func:`deleteDownloadHandle()`
+ * to delete handle object.
+ */
 DownloadHandle* getDownloadHandle(Session* session, const A2Gid& gid);
 
-// Deallocates the |dh|. Calling this function with NULL is safe.
+/**
+ * @function
+ *
+ * Deallocates the |dh|. Calling this function with ``NULL`` is safe.
+ */
 void deleteDownloadHandle(DownloadHandle* dh);
 
 } // namespace aria2

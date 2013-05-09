@@ -13,4 +13,5 @@ Contents:
 
    aria2c
    README
+   libaria2
    technical-notes
