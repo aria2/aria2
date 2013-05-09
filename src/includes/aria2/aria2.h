@@ -420,11 +420,12 @@ enum DownloadStatus {
 };
 
 /**
- * @struct
+ * @class
  *
  * The interface to get information of download item.
  */
-struct DownloadHandle {
+class DownloadHandle {
+public:
   virtual ~DownloadHandle() {}
   /**
    * Returns status of this download.
