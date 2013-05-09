@@ -66,7 +66,7 @@ struct Session;
  *
  * Initializes the global data. It also initializes underlying
  * libraries libaria2 depends on. This function returns 0 if it
- * succeeds, or -1.
+ * succeeds, or negative error code.
  *
  * Call this function only once before calling any other API
  * functions.
@@ -77,7 +77,7 @@ int libraryInit();
  * @function
  *
  * Releases the global data. This function returns 0 if it succeeds,
- * or -1.
+ * or negative error code.
  *
  * Call this function only once at the end of the application.
  */
@@ -226,7 +226,7 @@ bool isNull(const A2Gid& gid);
  * position in the waiting queue. If the |position| is negative or the
  * |position| is larger than the size of the queue, it is appended at
  * the end of the queue.  This function returns 0 if it succeeds, or
- * -1.
+ * negative error code.
  */
 int addUri(Session* session,
            A2Gid* gid,
@@ -245,7 +245,7 @@ int addUri(Session* session,
  * is inserted at position in the waiting queue. If the |position| is
  * negative or the |position| is larger than the size of the queue, it
  * is appended at the end of the queue. This function returns 0 if it
- * succeeds, or -1.
+ * succeeds, or negative error code.
  */
 int addMetalink(Session* session,
                 std::vector<A2Gid>* gids,
@@ -268,7 +268,7 @@ std::vector<A2Gid> getActiveDownload(Session* session);
  * removed download becomes :c:macro:`DOWNLOAD_REMOVED`. If the
  * |force| is true, removal will take place without any action which
  * takes time such as contacting BitTorrent tracker. This function
- * returns 0 if it succeeds, or -1.
+ * returns 0 if it succeeds, or negative error code.
  */
 int removeDownload(Session* session, const A2Gid& gid, bool force = false);
 
@@ -283,7 +283,8 @@ int removeDownload(Session* session, const A2Gid& gid, bool force = false);
  * :c:macro:`DOWNLOAD_WAITING`, use :func:`unpauseDownload()`
  * function.  If the |force| is true, pause will take place without
  * any action which takes time such as contacting BitTorrent
- * tracker. This function returns 0 if it succeeds, or -1.
+ * tracker. This function returns 0 if it succeeds, or negative error
+ * code.
  *
  * Please note that, to make pause work, the application must set
  * :member:`SessionConfig::keepRunning` to true. Otherwise, the
@@ -297,7 +298,7 @@ int pauseDownload(Session* session, const A2Gid& gid, bool force = false);
  * Changes the status of the download denoted by the |gid| from
  * :c:macro:`DOWNLOAD_PAUSED` to :c:macro:`DOWNLOAD_WAITING`. This
  * makes the download eligible to restart. This function returns 0 if
- * it succeeds, or -1.
+ * it succeeds, or negative error code.
  */
 int unpauseDownload(Session* session, const A2Gid& gid);
 
@@ -308,7 +309,7 @@ int unpauseDownload(Session* session, const A2Gid& gid);
  * place without any action which takes time such as contacting
  * BitTorrent tracker. After this call, the application must keep
  * calling :func:`run()` function until it returns 0.  This function
- * returns 0 if it succeeds, or -1.
+ * returns 0 if it succeeds, or negative error code.
  */
 int shutdown(Session* session, bool force = false);
 
