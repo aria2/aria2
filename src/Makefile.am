@@ -651,11 +651,11 @@ endif # HAVE_LIBUV
 
 AR = @AR@
 
+if ENABLE_LIBARIA2
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libaria2.pc
 DISTCLEANFILES = $(pkgconfig_DATA)
 
-if ENABLE_LIBARIA2
 lib_LTLIBRARIES = libaria2.la
 libaria2_la_SOURCES = $(SRCS) \
 	aria2api.cc aria2api.h \
