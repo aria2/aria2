@@ -472,7 +472,7 @@ public:
   /**
    * Returns the number of pieces.
    */
-  virtual size_t getNumPieces() = 0;
+  virtual int getNumPieces() = 0;
   /**
    * Returns the number of peers/servers the client has connected to.
    */

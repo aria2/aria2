@@ -527,7 +527,7 @@ struct RequestGroupDH : public DownloadHandle {
     const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
     return dctx->getPieceLength();
   }
-  virtual size_t getNumPieces()
+  virtual int getNumPieces()
   {
     return group->getDownloadContext()->getNumPieces();
   }
@@ -631,7 +631,7 @@ struct DownloadResultDH : public DownloadHandle {
   {
     return dr->pieceLength;
   }
-  virtual size_t getNumPieces()
+  virtual int getNumPieces()
   {
     return dr->numPieces;
   }
