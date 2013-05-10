@@ -461,6 +461,15 @@ public:
    */
   virtual int getUploadSpeed() = 0;
   /**
+   * Returns 20 bytes InfoHash if BitTorrent transfer is
+   * involved. Otherwise the empty string is returned.
+   */
+  virtual const std::string& getInfoHash() = 0;
+  /**
+   * Returns piece length in bytes.
+   */
+  virtual size_t getPieceLength() = 0;
+  /**
    * Returns the number of pieces.
    */
   virtual size_t getNumPieces() = 0;

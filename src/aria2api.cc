@@ -58,6 +58,10 @@
 #include "RpcMethodImpl.h"
 #include "console.h"
 #include "KeepRunningCommand.h"
+#include "A2STR.h"
+#ifdef ENABLE_BITTORRENT
+# include "bittorrent_helper.h"
+#endif // ENABLE_BITTORRENT
 
 namespace aria2 {
 
@@ -507,6 +511,22 @@ struct RequestGroupDH : public DownloadHandle {
   {
     return ts.uploadSpeed;
   }
+  virtual const std::string& getInfoHash()
+  {
+#ifdef ENABLE_BITTORRENT
+    if(group->getDownloadContext()->hasAttribute(CTX_ATTR_BT)) {
+      SharedHandle<TorrentAttribute> torrentAttrs =
+        bittorrent::getTorrentAttrs(group->getDownloadContext());
+      return torrentAttrs->infoHash;
+    }
+#endif // ENABLE_BITTORRENT
+    return A2STR::NIL;
+  }
+  virtual size_t getPieceLength()
+  {
+    const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
+    return dctx->getPieceLength();
+  }
   virtual size_t getNumPieces()
   {
     return group->getDownloadContext()->getNumPieces();
@@ -602,6 +622,14 @@ struct DownloadResultDH : public DownloadHandle {
   virtual int getUploadSpeed()
   {
     return 0;
+  }
+  virtual const std::string& getInfoHash()
+  {
+    return dr->infoHash;
+  }
+  virtual size_t getPieceLength()
+  {
+    return dr->pieceLength;
   }
   virtual size_t getNumPieces()
   {
