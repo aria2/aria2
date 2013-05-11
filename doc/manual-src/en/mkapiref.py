@@ -107,6 +107,8 @@ def make_api_ref(infiles):
                 doctype = line.split()[1]
                 if doctype == '@function':
                     functions.append(process_function('function', infile))
+                if doctype == '@functypedef':
+                    types.append(process_function('c:type', infile))
                 elif doctype == '@typedef':
                     types.append(process_typedef(infile))
                 elif doctype in ['@class', '@struct', '@union']:

@@ -659,7 +659,8 @@ DISTCLEANFILES = $(pkgconfig_DATA)
 lib_LTLIBRARIES = libaria2.la
 libaria2_la_SOURCES = $(SRCS) \
 	aria2api.cc aria2api.h \
-	KeepRunningCommand.cc KeepRunningCommand.h
+	KeepRunningCommand.cc KeepRunningCommand.h \
+	ApiCallbackDownloadEventListener.cc ApiCallbackDownloadEventListener.h
 else # !ENABLE_LIBARIA2
 noinst_LTLIBRARIES = libaria2.la
 libaria2_la_SOURCES = $(SRCS)

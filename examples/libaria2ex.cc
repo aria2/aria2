@@ -40,13 +40,43 @@
 
 #include <aria2/aria2.h>
 
+int downloadEventCallback(aria2::Session* session, aria2::DownloadEvent event,
+                          const aria2::A2Gid& gid, void* userData)
+{
+  std::cout << "Download Event: ";
+  switch(event) {
+  case aria2::EVENT_ON_DOWNLOAD_START:
+    std::cout << "START";
+    break;
+  case aria2::EVENT_ON_DOWNLOAD_PAUSE:
+    std::cout << "PAUSE";
+    break;
+  case aria2::EVENT_ON_DOWNLOAD_STOP:
+    std::cout << "STOP";
+    break;
+  case aria2::EVENT_ON_DOWNLOAD_COMPLETE:
+    std::cout << "COMPLETE";
+    break;
+  case aria2::EVENT_ON_DOWNLOAD_ERROR:
+    std::cout << "ERROR";
+    break;
+  case aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE:
+    std::cout << "COMPLETE";
+    break;
+  }
+  std::cout << " for [" << aria2::gidToHex(gid) << "]" << std::endl;
+  return 0;
+}
+
 int main()
 {
   aria2::libraryInit();
   // session is actually singleton: 1 session per process
   aria2::Session* session;
-  // Use default configuration
+  // Create default configuration
   aria2::SessionConfig config;
+  // Add event callback
+  config.downloadEventCallback = downloadEventCallback;
   session = aria2::sessionNew(aria2::KeyVals(), config);
   std::vector<std::string> uris = {
     "http://localhost/"

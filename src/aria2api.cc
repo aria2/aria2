@@ -59,6 +59,9 @@
 #include "console.h"
 #include "KeepRunningCommand.h"
 #include "A2STR.h"
+#include "SingletonHolder.h"
+#include "Notifier.h"
+#include "ApiCallbackDownloadEventListener.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
@@ -74,7 +77,9 @@ Session::~Session()
 
 SessionConfig::SessionConfig()
   : keepRunning(false),
-    useSignalHandler(true)
+    useSignalHandler(true),
+    downloadEventCallback(0),
+    userData(0)
 {}
 
 namespace {
@@ -116,7 +121,7 @@ Session* sessionNew(const KeyVals& options, const SessionConfig& config)
     rv = session->context->reqinfo->prepare();
     if(rv != 0) {
       delete session;
-      session = 0;
+      return 0;
     }
     const SharedHandle<DownloadEngine>& e =
       session->context->reqinfo->getDownloadEngine();
@@ -125,9 +130,17 @@ Session* sessionNew(const KeyVals& options, const SessionConfig& config)
       // Add command to make aria2 keep event polling
       e->addCommand(new KeepRunningCommand(e->newCUID(), e.get()));
     }
+    if(config.downloadEventCallback) {
+      SharedHandle<DownloadEventListener> listener
+        (new ApiCallbackDownloadEventListener(session,
+                                              config.downloadEventCallback,
+                                              config.userData));
+      SingletonHolder<Notifier>::instance()
+        ->addDownloadEventListener(listener);
+    }
   } else {
     delete session;
-    session = 0;
+    return 0;
   }
   return session;
 }

@@ -131,6 +131,21 @@ enum DownloadEvent {
 };
 
 /**
+ * @functypedef
+ *
+ * Callback function invoked when download event occurred. The |event|
+ * indicates the event. See :type:`DownloadEvent` for events. The
+ * |gid| refers to the download which this event was fired on. The
+ * |userData| is a pointer specified in
+ * :member:`SessionConfig::userData`.
+ *
+ * At the moment, the return value is ignored, but the implementation
+ * of this callback should return 0 for compatibility.
+ */
+typedef int (*DownloadEventCallback)(Session* session, DownloadEvent event,
+                                     const A2Gid& gid, void* userData);
+
+/**
  * @struct
  *
  * The configuration for the session.
@@ -166,6 +181,17 @@ struct SessionConfig {
    *   handled like shutdown(session, false) is called.
    */
   bool useSignalHandler;
+  /**
+   * Specify the callback function which will be invoked when download
+   * event occurred. See :type:`DownloadEvent` about the download
+   * event. The default value is ``NULL``.
+   */
+  DownloadEventCallback downloadEventCallback;
+  /**
+   * Pointer to user defined data. libaria2 treats this as opaque
+   * pointer and will not free it. The default value is ``NULL``.
+   */
+  void* userData;
 };
 
 /**
