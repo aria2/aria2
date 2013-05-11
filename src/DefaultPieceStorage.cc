@@ -494,7 +494,7 @@ void DefaultPieceStorage::completePiece(const SharedHandle<Piece>& piece)
         util::executeHookByOptName(downloadContext_->getOwnerRequestGroup(),
                                    option_, PREF_ON_BT_DOWNLOAD_COMPLETE);
         SingletonHolder<Notifier>::instance()->
-          notifyDownloadEvent(Notifier::ON_BT_DOWNLOAD_COMPLETE,
+          notifyDownloadEvent(EVENT_ON_BT_DOWNLOAD_COMPLETE,
                               downloadContext_->getOwnerRequestGroup());
       }
     }

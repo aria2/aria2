@@ -38,6 +38,7 @@
 #include "json.h"
 #include "util.h"
 #include "WebSocketInteractionCommand.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
@@ -50,12 +51,14 @@ WebSocketSessionMan::~WebSocketSessionMan() {}
 void WebSocketSessionMan::addSession
 (const SharedHandle<WebSocketSession>& wsSession)
 {
+  A2_LOG_DEBUG("WebSocket session added.");
   sessions_.insert(wsSession);
 }
 
 void WebSocketSessionMan::removeSession
 (const SharedHandle<WebSocketSession>& wsSession)
 {
+  A2_LOG_DEBUG("WebSocket session removed.");
   sessions_.erase(wsSession);
 }
 
@@ -76,6 +79,48 @@ void WebSocketSessionMan::addNotification
     (*i)->addTextMessage(msg);
     (*i)->getCommand()->updateWriteCheck();
   }
+}
+
+
+namespace {
+// The string constants for download events.
+const std::string ON_DOWNLOAD_START = "aria2.onDownloadStart";
+const std::string ON_DOWNLOAD_PAUSE = "aria2.onDownloadPause";
+const std::string ON_DOWNLOAD_STOP = "aria2.onDownloadStop";
+const std::string ON_DOWNLOAD_COMPLETE = "aria2.onDownloadComplete";
+const std::string ON_DOWNLOAD_ERROR = "aria2.onDownloadError";
+const std::string ON_BT_DOWNLOAD_COMPLETE = "aria2.onBtDownloadComplete";
+} // namespace
+
+namespace {
+const std::string& getMethodName(DownloadEvent event)
+{
+  switch(event) {
+  case EVENT_ON_DOWNLOAD_START:
+    return ON_DOWNLOAD_START;
+  case EVENT_ON_DOWNLOAD_PAUSE:
+    return ON_DOWNLOAD_PAUSE;
+  case EVENT_ON_DOWNLOAD_STOP:
+    return ON_DOWNLOAD_STOP;
+  case EVENT_ON_DOWNLOAD_COMPLETE:
+    return ON_DOWNLOAD_COMPLETE;
+  case EVENT_ON_DOWNLOAD_ERROR:
+    return ON_DOWNLOAD_ERROR;
+  case EVENT_ON_BT_DOWNLOAD_COMPLETE:
+    return ON_BT_DOWNLOAD_COMPLETE;
+  default:
+    // Not reachable
+    assert(0);
+    // For suppress compiler warning
+    return A2STR::NIL;
+  }
+}
+} // namespace
+
+void WebSocketSessionMan::onEvent(DownloadEvent event,
+                                  const RequestGroup* group)
+{
+  addNotification(getMethodName(event), group);
 }
 
 } // namespace rpc

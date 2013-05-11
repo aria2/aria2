@@ -68,6 +68,11 @@ class Command;
 #ifdef ENABLE_BITTORRENT
 class BtRegistry;
 #endif // ENABLE_BITTORRENT
+#ifdef ENABLE_WEBSOCKET
+namespace rpc {
+class WebSocketSessionMan;
+} // namespace rpc
+#endif // ENABLE_WEBSOCKET
 
 class DownloadEngine {
 private:
@@ -143,6 +148,10 @@ private:
   SharedHandle<DNSCache> dnsCache_;
 
   SharedHandle<AuthConfigFactory> authConfigFactory_;
+
+#ifdef ENABLE_WEBSOCKET
+  SharedHandle<rpc::WebSocketSessionMan> webSocketSessionMan_;
+#endif // ENABLE_WEBSOCKET
 
   /**
    * Delegates to StatCalc
@@ -349,6 +358,15 @@ public:
     return asyncDNSServers_;
   }
 #endif // HAVE_ARES_ADDR_NODE
+
+#ifdef ENABLE_WEBSOCKET
+  void setWebSocketSessionMan
+  (const SharedHandle<rpc::WebSocketSessionMan>& wsman);
+  const SharedHandle<rpc::WebSocketSessionMan>& getWebSocketSessionMan() const
+  {
+    return webSocketSessionMan_;
+  }
+#endif // ENABLE_WEBSOCKET
 };
 
 } // namespace aria2

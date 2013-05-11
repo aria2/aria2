@@ -69,6 +69,9 @@
 #ifdef ENABLE_BITTORRENT
 # include "BtRegistry.h"
 #endif // ENABLE_BITTORRENT
+#ifdef ENABLE_WEBSOCKET
+# include "WebSocketSessionMan.h"
+#endif // ENABLE_WEBSOCKET
 
 namespace aria2 {
 
@@ -595,5 +598,13 @@ void DownloadEngine::setAsyncDNSServers(ares_addr_node* asyncDNSServers)
   asyncDNSServers_ = asyncDNSServers;
 }
 #endif // HAVE_ARES_ADDR_NODE
+
+#ifdef ENABLE_WEBSOCKET
+void DownloadEngine::setWebSocketSessionMan
+(const SharedHandle<rpc::WebSocketSessionMan>& wsman)
+{
+  webSocketSessionMan_ = wsman;
+}
+#endif // ENABLE_WEBSOCKET
 
 } // namespace aria2

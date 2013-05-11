@@ -42,6 +42,7 @@
 #include "fmt.h"
 #include "SingletonHolder.h"
 #include "Notifier.h"
+#include "WebSocketSessionMan.h"
 
 namespace aria2 {
 
@@ -58,7 +59,7 @@ WebSocketInteractionCommand::WebSocketInteractionCommand
    writeCheck_(false),
    wsSession_(wsSession)
 {
-  SingletonHolder<Notifier>::instance()->addWebSocketSession(wsSession_);
+  e_->getWebSocketSessionMan()->addSession(wsSession_);
   e_->addSocketForReadCheck(socket_, this);
 }
 
@@ -68,7 +69,7 @@ WebSocketInteractionCommand::~WebSocketInteractionCommand()
   if(writeCheck_) {
     e_->deleteSocketForWriteCheck(socket_, this);
   }
-  SingletonHolder<Notifier>::instance()->removeWebSocketSession(wsSession_);
+  e_->getWebSocketSessionMan()->removeSession(wsSession_);
 }
 
 void WebSocketInteractionCommand::updateWriteCheck()

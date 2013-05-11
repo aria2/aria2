@@ -36,45 +36,37 @@
 #define D_NOTIFIER_H
 
 #include "common.h"
+
+#include <vector>
+
+#include <aria2/aria2.h>
 #include "SharedHandle.h"
 
 namespace aria2 {
 
 class RequestGroup;
-class Option;
-struct Pref;
 
-namespace rpc {
-
-class WebSocketSessionMan;
-class WebSocketSession;
-
-} // namespace rpc
+struct DownloadEventListener {
+  virtual ~DownloadEventListener() {}
+  virtual void onEvent(DownloadEvent event, const RequestGroup* group) = 0;
+};
 
 class Notifier {
 public:
-  // The string constants for download events.
-  static const std::string ON_DOWNLOAD_START;
-  static const std::string ON_DOWNLOAD_PAUSE;
-  static const std::string ON_DOWNLOAD_STOP;
-  static const std::string ON_DOWNLOAD_COMPLETE;
-  static const std::string ON_DOWNLOAD_ERROR;
-  static const std::string ON_BT_DOWNLOAD_COMPLETE;
-
-  Notifier(const SharedHandle<rpc::WebSocketSessionMan>& wsSessionMan);
+  Notifier();
   ~Notifier();
-  void addWebSocketSession(const SharedHandle<rpc::WebSocketSession>& wsSes);
-  void removeWebSocketSession(const SharedHandle<rpc::WebSocketSession>& wsSes);
+  void addDownloadEventListener
+  (const SharedHandle<DownloadEventListener>& listener);
   // Notifies the download event to all listeners.
-  void notifyDownloadEvent(const std::string& event, const RequestGroup* group);
+  void notifyDownloadEvent(DownloadEvent event, const RequestGroup* group);
 
-  void notifyDownloadEvent(const std::string& event,
+  void notifyDownloadEvent(DownloadEvent event,
                            const SharedHandle<RequestGroup>& group)
   {
     notifyDownloadEvent(event, group.get());
   }
 private:
-  SharedHandle<rpc::WebSocketSessionMan> wsSessionMan_;
+  std::vector<SharedHandle<DownloadEventListener> > listeners_;
 };
 
 } // namespace aria2

@@ -35,47 +35,25 @@
 #include "Notifier.h"
 #include "RequestGroup.h"
 #include "LogFactory.h"
-#ifdef ENABLE_WEBSOCKET
-#  include "WebSocketSessionMan.h"
-#else // !ENABLE_WEBSOCKET
-#  include "NullWebSocketSessionMan.h"
-#endif // !ENABLE_WEBSOCKET
 
 namespace aria2 {
 
-Notifier::Notifier(const SharedHandle<rpc::WebSocketSessionMan>& wsSessionMan)
-  : wsSessionMan_(wsSessionMan)
-{}
+Notifier::Notifier() {}
 
 Notifier::~Notifier() {}
 
-void Notifier::addWebSocketSession
-(const SharedHandle<rpc::WebSocketSession>& wsSession)
+void Notifier::addDownloadEventListener
+(const SharedHandle<DownloadEventListener>& listener)
 {
-  A2_LOG_DEBUG("WebSocket session added.");
-  wsSessionMan_->addSession(wsSession);
+  listeners_.push_back(listener);
 }
-
-void Notifier::removeWebSocketSession
-(const SharedHandle<rpc::WebSocketSession>& wsSession)
-{
-  A2_LOG_DEBUG("WebSocket session removed.");
-  wsSessionMan_->removeSession(wsSession);
-}
-
-const std::string Notifier::ON_DOWNLOAD_START = "aria2.onDownloadStart";
-const std::string Notifier::ON_DOWNLOAD_PAUSE = "aria2.onDownloadPause";
-const std::string Notifier::ON_DOWNLOAD_STOP = "aria2.onDownloadStop";
-const std::string Notifier::ON_DOWNLOAD_COMPLETE = "aria2.onDownloadComplete";
-const std::string Notifier::ON_DOWNLOAD_ERROR = "aria2.onDownloadError";
-const std::string Notifier::ON_BT_DOWNLOAD_COMPLETE =
-  "aria2.onBtDownloadComplete";
 
 void Notifier::notifyDownloadEvent
-(const std::string& event, const RequestGroup* group)
+(DownloadEvent event, const RequestGroup* group)
 {
-  if(wsSessionMan_) {
-    wsSessionMan_->addNotification(event, group);
+  for(std::vector<SharedHandle<DownloadEventListener> >::const_iterator i =
+        listeners_.begin(), eoi = listeners_.end(); i != eoi; ++i) {
+    (*i)->onEvent(event, group);
   }
 }
 

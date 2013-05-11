@@ -35,7 +35,7 @@
 #ifndef D_WEB_SOCKET_SESSION_MAN_H
 #define D_WEB_SOCKET_SESSION_MAN_H
 
-#include "common.h"
+#include "Notifier.h"
 
 #include <set>
 #include <string>
@@ -51,7 +51,7 @@ namespace rpc {
 
 class WebSocketSession;
 
-class WebSocketSessionMan {
+class WebSocketSessionMan : public DownloadEventListener {
 public:
   typedef std::set<SharedHandle<WebSocketSession>,
                    RefLess<WebSocketSession> > WebSocketSessions;
@@ -60,6 +60,7 @@ public:
   void addSession(const SharedHandle<WebSocketSession>& wsSession);
   void removeSession(const SharedHandle<WebSocketSession>& wsSession);
   void addNotification(const std::string& method, const RequestGroup* group);
+  virtual void onEvent(DownloadEvent event, const RequestGroup* group);
 private:
   WebSocketSessions sessions_;
 };

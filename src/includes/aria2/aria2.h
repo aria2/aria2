@@ -98,6 +98,39 @@ typedef uint64_t A2Gid;
 typedef std::vector<std::pair<std::string, std::string> > KeyVals;
 
 /**
+ * @enum
+ *
+ * Download event constants
+ */
+enum DownloadEvent {
+  /**
+   * Indicating download has started.
+   */
+  EVENT_ON_DOWNLOAD_START = 1,
+  /**
+   * Indicating download has paused.
+   */
+  EVENT_ON_DOWNLOAD_PAUSE,
+  /**
+   * Indicating download has stopped.
+   */
+  EVENT_ON_DOWNLOAD_STOP,
+  /**
+   * Indicating download has completed.
+   */
+  EVENT_ON_DOWNLOAD_COMPLETE,
+  /**
+   * Indicating download has stopped becauseof the error.
+   */
+  EVENT_ON_DOWNLOAD_ERROR,
+  /**
+   * Indicating BitTorrent download has completed, but it may still
+   * continue to perform seeding.
+   */
+  EVENT_ON_BT_DOWNLOAD_COMPLETE
+};
+
+/**
  * @struct
  *
  * The configuration for the session.

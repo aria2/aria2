@@ -133,11 +133,7 @@ int MultiUrlRequestInfo::prepare()
 {
   global::globalHaltRequested = 0;
   try {
-    SharedHandle<rpc::WebSocketSessionMan> wsSessionMan;
-    if(option_->getAsBool(PREF_ENABLE_RPC)) {
-      wsSessionMan.reset(new rpc::WebSocketSessionMan());
-    }
-    SharedHandle<Notifier> notifier(new Notifier(wsSessionMan));
+    SharedHandle<Notifier> notifier(new Notifier());
     SingletonHolder<Notifier>::instance(notifier);
 
 #ifdef ENABLE_SSL
@@ -165,6 +161,14 @@ int MultiUrlRequestInfo::prepare()
                                                    requestGroups_);
     // Avoid keeping RequestGroups alive longer than necessary
     requestGroups_.clear();
+
+    if(option_->getAsBool(PREF_ENABLE_RPC)) {
+      SharedHandle<rpc::WebSocketSessionMan> wsSessionMan
+        (new rpc::WebSocketSessionMan());
+      e_->setWebSocketSessionMan(wsSessionMan);
+      SingletonHolder<Notifier>::instance()->addDownloadEventListener
+        (wsSessionMan);
+    }
 
     if(!option_->blank(PREF_LOAD_COOKIES)) {
       File cookieFile(option_->get(PREF_LOAD_COOKIES));
