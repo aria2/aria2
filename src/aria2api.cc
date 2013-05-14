@@ -590,6 +590,26 @@ struct RequestGroupDH : public DownloadHandle {
     }
     return createFileData(dctx->getFileEntries()[index-1], index, &bf);
   }
+  virtual BtMetaInfoData getBtMetaInfo()
+  {
+    BtMetaInfoData res;
+#ifdef ENABLE_BITTORRENT
+    if(group->getDownloadContext()->hasAttribute(CTX_ATTR_BT)) {
+      SharedHandle<TorrentAttribute> torrentAttrs =
+        bittorrent::getTorrentAttrs(group->getDownloadContext());
+      res.announceList = torrentAttrs->announceList;
+      res.comment = torrentAttrs->comment;
+      res.creationDate = torrentAttrs->creationDate;
+      // TODO Use BtFileMode for torrentAttrs->mode
+      res.mode = torrentAttrs->mode == "single" ?
+        BT_FILE_MODE_SINGLE : BT_FILE_MODE_MULTI;
+      if(!torrentAttrs->metadata.empty()) {
+        res.name = torrentAttrs->name;
+      }
+    }
+#endif // ENABLE_BITTORRENT
+    return res;
+  }
   SharedHandle<RequestGroup> group;
   TransferStat ts;
 };
@@ -686,6 +706,10 @@ struct DownloadResultDH : public DownloadHandle {
     bf.setBitfield(reinterpret_cast<const unsigned char*>(dr->bitfield.data()),
                    dr->bitfield.size());
     return createFileData(dr->fileEntries[index-1], index, &bf);
+  }
+  virtual BtMetaInfoData getBtMetaInfo()
+  {
+    return BtMetaInfoData();
   }
   SharedHandle<DownloadResult> dr;
 };

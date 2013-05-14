@@ -450,6 +450,55 @@ struct FileData {
 /**
  * @enum
  *
+ * BitTorrent file mode
+ */
+enum BtFileMode {
+  /**
+   * Indicating single file torrent
+   */
+  BT_FILE_MODE_SINGLE,
+  /**
+   * Indicating multi file torrent
+   */
+  BT_FILE_MODE_MULTI
+};
+
+/**
+ * @struct
+ *
+ * BitTorrent metainfo data retrieved from ".torrent" file.
+ */
+struct BtMetaInfoData {
+  /**
+   * List of lists of announce URI. If ".torrent" file contains
+   * ``announce`` and no ``announce-list``, ``announce`` is converted
+   * to ``announce-list`` format.
+   */
+  std::vector<std::vector<std::string> > announceList;
+  /**
+   * ``comment`` for the torrent. ``comment.utf-8`` is used if
+   * available.
+   */
+  std::string comment;
+  /**
+   * The creation time of the torrent. The value is an integer since
+   * the Epoch, measured in seconds.
+   */
+  time_t creationDate;
+  /**
+   * File mode of the torrent.
+   */
+  BtFileMode mode;
+  /**
+   * ``name`` in ``info`` dictionary. ``name.utf-8`` is used if
+   * available.
+   */
+  std::string name;
+};
+
+/**
+ * @enum
+ *
  * The status of download item.
  */
 enum DownloadStatus {
@@ -579,6 +628,13 @@ public:
    * is out-of-bound.
    */
   virtual FileData getFile(int index) = 0;
+  /**
+   * Returns the information retrieved from ".torrent" file. This
+   * function is only meaningful only when BitTorrent transfer is
+   * involved in the download and the download is not
+   * stopped/completed.
+   */
+  virtual BtMetaInfoData getBtMetaInfo() = 0;
 };
 
 /**
