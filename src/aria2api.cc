@@ -367,6 +367,18 @@ int unpauseDownload(Session* session, const A2Gid& gid)
   return 0;
 }
 
+int changePosition(Session* session, const A2Gid& gid, int pos, OffsetMode how)
+{
+  const SharedHandle<DownloadEngine>& e =
+    session->context->reqinfo->getDownloadEngine();
+  try {
+    return e->getRequestGroupMan()->changeReservedGroupPosition(gid, pos, how);
+  } catch(RecoverableException& e) {
+    A2_LOG_INFO_EX(EX_EXCEPTION_CAUGHT, e);
+    return -1;
+  }
+}
+
 std::vector<A2Gid> getActiveDownload(Session* session)
 {
   const SharedHandle<DownloadEngine>& e =

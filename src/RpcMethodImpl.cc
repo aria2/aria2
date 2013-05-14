@@ -1301,13 +1301,13 @@ SharedHandle<ValueBase> ChangePositionRpcMethod::process
   a2_gid_t gid = str2Gid(gidParam);
   int pos = posParam->i();
   const std::string& howStr = howParam->s();
-  A2_HOW how;
+  OffsetMode how;
   if(howStr == "POS_SET") {
-    how = A2_POS_SET;
+    how = OFFSET_MODE_SET;
   } else if(howStr == "POS_CUR") {
-    how = A2_POS_CUR;
+    how = OFFSET_MODE_CUR;
   } else if(howStr == "POS_END") {
-    how = A2_POS_END;
+    how = OFFSET_MODE_END;
   } else {
     throw DL_ABORT_EX("Illegal argument.");
   }

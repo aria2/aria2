@@ -42,13 +42,9 @@
 #include <vector>
 #include <algorithm>
 
-namespace aria2 {
+#include <aria2/aria2.h>
 
-enum A2_HOW {
-  A2_POS_SET,
-  A2_POS_CUR,
-  A2_POS_END
-};
+namespace aria2 {
 
 template<typename SeqType, typename ValueType, typename ReferenceType,
          typename PointerType, typename SeqIteratorType>
@@ -539,15 +535,15 @@ public:
   }
 
   // Moves element with |key| to the specified position. If |how| is
-  // A2_POS_CUR, the element is moved to the position |offset|
-  // relative to the current position. If |how| is A2_POS_SET, the
-  // element is moved to the position |offset|. If |how| is
-  // A2_POS_END, the element is moved to the position |offset|
+  // OFFSET_MODE_CUR, the element is moved to the position |offset|
+  // relative to the current position. If |how| is OFFSET_MODE_SET,
+  // the element is moved to the position |offset|. If |how| is
+  // OFFSET_MODE_END, the element is moved to the position |offset|
   // relative to the end of the list.  This function returns the
   // position the elment is moved to if it succeeds, or -1 if no
   // element with |key| is found or |how| is invalid.  Complexity:
   // O(N)
-  ssize_t move(KeyType key, ssize_t offset, A2_HOW how)
+  ssize_t move(KeyType key, ssize_t offset, OffsetMode how)
   {
     typename IndexType::iterator idxent = index_.find(key);
     if(idxent == index_.end()) {
@@ -562,16 +558,16 @@ public:
     ssize_t xp = std::distance(seq_.begin(), x);
     ssize_t size = index_.size();
     ssize_t dest;
-    if(how == A2_POS_CUR) {
+    if(how == OFFSET_MODE_CUR) {
       if(offset > 0) {
         dest = std::min(xp+offset, static_cast<ssize_t>(size-1));
       } else {
         dest = std::max(xp+offset, static_cast<ssize_t>(0));
       }
     } else {
-      if(how == A2_POS_END) {
+      if(how == OFFSET_MODE_END) {
         dest = std::min(size-1+offset, size-1);
-      } else if(how == A2_POS_SET) {
+      } else if(how == OFFSET_MODE_SET) {
         dest = std::min(offset, size-1);
       } else {
         return -1;

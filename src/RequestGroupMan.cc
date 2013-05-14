@@ -192,7 +192,7 @@ SharedHandle<RequestGroup> RequestGroupMan::findGroup(a2_gid_t gid) const
 }
 
 size_t RequestGroupMan::changeReservedGroupPosition
-(a2_gid_t gid, int pos, A2_HOW how)
+(a2_gid_t gid, int pos, OffsetMode how)
 {
   ssize_t dest = reservedGroups_.move(gid, pos, how);
   if(dest == -1) {

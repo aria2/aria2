@@ -148,77 +148,77 @@ void IndexedListTest::testMove()
   for(int i = 0; i < 5; ++i) {
     list.push_back(i, &a[i]);
   }
-  CPPUNIT_ASSERT_EQUAL((ssize_t)-1, list.move(100, 0, A2_POS_SET));
+  CPPUNIT_ASSERT_EQUAL((ssize_t)-1, list.move(100, 0, OFFSET_MODE_SET));
   int a0[] = {0,1,2,3,4};
-  CPPUNIT_ASSERT_EQUAL((ssize_t)0, list.move(0, 0, A2_POS_SET));
+  CPPUNIT_ASSERT_EQUAL((ssize_t)0, list.move(0, 0, OFFSET_MODE_SET));
   LIST_CHECK(a0, list);
 
   int a1[] = {0,2,3,4,1};
-  CPPUNIT_ASSERT_EQUAL((ssize_t)4, list.move(1, 4, A2_POS_SET));
+  CPPUNIT_ASSERT_EQUAL((ssize_t)4, list.move(1, 4, OFFSET_MODE_SET));
   LIST_CHECK(a1, list);
 
   int a2[] = {0,3,4,2,1};
-  CPPUNIT_ASSERT_EQUAL((ssize_t)3, list.move(2, 3, A2_POS_SET));
+  CPPUNIT_ASSERT_EQUAL((ssize_t)3, list.move(2, 3, OFFSET_MODE_SET));
   LIST_CHECK(a2, list);
 
   int a3[] = {0,2,3,4,1};
-  CPPUNIT_ASSERT_EQUAL((ssize_t)1, list.move(2, 1, A2_POS_SET));
+  CPPUNIT_ASSERT_EQUAL((ssize_t)1, list.move(2, 1, OFFSET_MODE_SET));
   LIST_CHECK(a3, list);
 
   int a4[] = {1,0,2,3,4};
-  CPPUNIT_ASSERT_EQUAL((ssize_t)0, list.move(1, 0, A2_POS_SET));
+  CPPUNIT_ASSERT_EQUAL((ssize_t)0, list.move(1, 0, OFFSET_MODE_SET));
   LIST_CHECK(a4, list);
 
   int a5[] = {1,0,3,2,4};
-  CPPUNIT_ASSERT_EQUAL((ssize_t)2, list.move(3, 2, A2_POS_SET));
+  CPPUNIT_ASSERT_EQUAL((ssize_t)2, list.move(3, 2, OFFSET_MODE_SET));
   LIST_CHECK(a5, list);
 
   int a6[] = {1,3,2,4,0};
-  CPPUNIT_ASSERT_EQUAL((ssize_t)4, list.move(0, 5, A2_POS_SET));
+  CPPUNIT_ASSERT_EQUAL((ssize_t)4, list.move(0, 5, OFFSET_MODE_SET));
   LIST_CHECK(a6, list);
 
   int a7[] = {3,1,2,4,0};
-  CPPUNIT_ASSERT_EQUAL((ssize_t)1, list.move(1, 1, A2_POS_CUR));
+  CPPUNIT_ASSERT_EQUAL((ssize_t)1, list.move(1, 1, OFFSET_MODE_CUR));
   LIST_CHECK(a7, list);
 
   int a8[] = {3,2,4,1,0};
-  CPPUNIT_ASSERT_EQUAL((ssize_t)3, list.move(1, 2, A2_POS_CUR));
+  CPPUNIT_ASSERT_EQUAL((ssize_t)3, list.move(1, 2, OFFSET_MODE_CUR));
   LIST_CHECK(a8, list);
 
   int a9[] = {3,2,1,4,0};
-  CPPUNIT_ASSERT_EQUAL((ssize_t)2, list.move(1, -1, A2_POS_CUR));
+  CPPUNIT_ASSERT_EQUAL((ssize_t)2, list.move(1, -1, OFFSET_MODE_CUR));
   LIST_CHECK(a9, list);
 
   int a10[] = {1,3,2,4,0};
-  CPPUNIT_ASSERT_EQUAL((ssize_t)0, list.move(1, -1233, A2_POS_CUR));
+  CPPUNIT_ASSERT_EQUAL((ssize_t)0, list.move(1, -1233, OFFSET_MODE_CUR));
   LIST_CHECK(a10, list);
 
   int a11[] = {3,2,4,0,1};
-  CPPUNIT_ASSERT_EQUAL((ssize_t)4, list.move(1, 8733, A2_POS_CUR));
+  CPPUNIT_ASSERT_EQUAL((ssize_t)4, list.move(1, 8733, OFFSET_MODE_CUR));
   LIST_CHECK(a11, list);
 
   int a12[] = {3,2,4,0,1};
-  CPPUNIT_ASSERT_EQUAL((ssize_t)3, list.move(0, -1, A2_POS_END));
+  CPPUNIT_ASSERT_EQUAL((ssize_t)3, list.move(0, -1, OFFSET_MODE_END));
   LIST_CHECK(a12, list);
 
   int a13[] = {3,2,0,4,1};
-  CPPUNIT_ASSERT_EQUAL((ssize_t)2, list.move(0, -2, A2_POS_END));
+  CPPUNIT_ASSERT_EQUAL((ssize_t)2, list.move(0, -2, OFFSET_MODE_END));
   LIST_CHECK(a13, list);
 
   int a14[] = {0,3,2,4,1};
-  CPPUNIT_ASSERT_EQUAL((ssize_t)0, list.move(0, -8733, A2_POS_END));
+  CPPUNIT_ASSERT_EQUAL((ssize_t)0, list.move(0, -8733, OFFSET_MODE_END));
   LIST_CHECK(a14, list);
 
   int a15[] = {0,2,4,1,3};
-  CPPUNIT_ASSERT_EQUAL((ssize_t)4, list.move(3, 0, A2_POS_END));
+  CPPUNIT_ASSERT_EQUAL((ssize_t)4, list.move(3, 0, OFFSET_MODE_END));
   LIST_CHECK(a15, list);
 
   int a16[] = {2,4,1,3,0};
-  CPPUNIT_ASSERT_EQUAL((ssize_t)4, list.move(0, 1000, A2_POS_END));
+  CPPUNIT_ASSERT_EQUAL((ssize_t)4, list.move(0, 1000, OFFSET_MODE_END));
   LIST_CHECK(a16, list);
 
   int a17[] = {2,1,4,3,0};
-  CPPUNIT_ASSERT_EQUAL((ssize_t)2, list.move(4, 2, A2_POS_SET));
+  CPPUNIT_ASSERT_EQUAL((ssize_t)2, list.move(4, 2, OFFSET_MODE_SET));
   LIST_CHECK(a17, list);
 }
 

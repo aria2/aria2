@@ -362,6 +362,56 @@ int pauseDownload(Session* session, const A2Gid& gid, bool force = false);
 int unpauseDownload(Session* session, const A2Gid& gid);
 
 /**
+ * @enum
+ *
+ * Constants how to re-position a download.
+ */
+enum OffsetMode {
+  /**
+   * Moves the download to a position relative to the beginning of the
+   * queue.
+   */
+  OFFSET_MODE_SET,
+  /**
+   * Moves the download to a position relative to the current
+   * position.
+   */
+  OFFSET_MODE_CUR,
+  /**
+   * Moves the download to a position relative to the end of the
+   * queue.
+   */
+  OFFSET_MODE_END
+};
+
+/**
+ * @function
+ *
+ * Changes the position of the download denoted by the |gid|. if it is
+ * in :c:macro:`DOWNLOAD_WAITING` or :c:macro:`DOWNLOAD_PAUSED` state.
+ * If the |how| is :c:macro:`OFFSET_MODE_SET`, it moves the download
+ * to a position |pos| relative to the beginning of the queue. If the
+ * |how| is :c:macro:`OFFSET_MODE_CUR`, it moves the download to a
+ * position |pos| relative to the current position. If the |how| is
+ * :c:macro:`OFFSET_MODE_END`, it moves the download to a position
+ * |pos| relative to the end of the queue. If the destination position
+ * is less than 0 or beyond the end of the queue, it moves the
+ * download to the beginning or the end of the queue respectively. The
+ * response is the destination position on success.
+ *
+ * For example, if the download having GID gid is placed in position
+ * 3, ``changePosition(gid, -1, OFFSET_MODE_CUR)`` will change its
+ * position to 2. Additional call ``changePosition(gid, 0,
+ * OFFSET_MODE_SET)`` will change its position to 0 (the beginning of
+ * the queue).
+ *
+ * This function returns the final destination position of this
+ * download, or negative error code.
+ */
+int changePosition(Session* session, const A2Gid& gid, int pos,
+                   OffsetMode how);
+
+/**
  * @function
  *
  * Schedules shutdown. If the |force| is true, shutdown will take

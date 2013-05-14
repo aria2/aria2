@@ -158,57 +158,57 @@ void RequestGroupManTest::testChangeReservedGroupPosition()
 
   CPPUNIT_ASSERT_EQUAL
     ((size_t)0, rm.changeReservedGroupPosition(gs[0]->getGID(),
-                                               0, A2_POS_SET));
+                                               0, OFFSET_MODE_SET));
   CPPUNIT_ASSERT_EQUAL
     ((size_t)1, rm.changeReservedGroupPosition(gs[0]->getGID(),
-                                               1, A2_POS_SET));
+                                               1, OFFSET_MODE_SET));
   CPPUNIT_ASSERT_EQUAL
     ((size_t)3, rm.changeReservedGroupPosition(gs[0]->getGID(),
-                                               10,A2_POS_SET));
+                                               10,OFFSET_MODE_SET));
   CPPUNIT_ASSERT_EQUAL
     ((size_t)0, rm.changeReservedGroupPosition(gs[0]->getGID(),
-                                               -10, A2_POS_SET));
+                                               -10, OFFSET_MODE_SET));
 
   CPPUNIT_ASSERT_EQUAL
     ((size_t)1, rm.changeReservedGroupPosition(gs[1]->getGID(),
-                                               0, A2_POS_CUR));
+                                               0, OFFSET_MODE_CUR));
   CPPUNIT_ASSERT_EQUAL
     ((size_t)2, rm.changeReservedGroupPosition(gs[1]->getGID(),
-                                               1, A2_POS_CUR));
+                                               1, OFFSET_MODE_CUR));
   CPPUNIT_ASSERT_EQUAL
     ((size_t)1, rm.changeReservedGroupPosition(gs[1]->getGID(),
-                                               -1,A2_POS_CUR));
+                                               -1,OFFSET_MODE_CUR));
   CPPUNIT_ASSERT_EQUAL
     ((size_t)0, rm.changeReservedGroupPosition(gs[1]->getGID(),
-                                               -10, A2_POS_CUR));
+                                               -10, OFFSET_MODE_CUR));
   CPPUNIT_ASSERT_EQUAL
     ((size_t)1, rm.changeReservedGroupPosition(gs[1]->getGID(),
-                                               1, A2_POS_CUR));
+                                               1, OFFSET_MODE_CUR));
   CPPUNIT_ASSERT_EQUAL
     ((size_t)3, rm.changeReservedGroupPosition(gs[1]->getGID(),
-                                               10, A2_POS_CUR));
+                                               10, OFFSET_MODE_CUR));
   CPPUNIT_ASSERT_EQUAL
     ((size_t)1, rm.changeReservedGroupPosition(gs[1]->getGID(),
-                                               -2,A2_POS_CUR));
+                                               -2,OFFSET_MODE_CUR));
 
   CPPUNIT_ASSERT_EQUAL
     ((size_t)3, rm.changeReservedGroupPosition(gs[3]->getGID(),
-                                               0, A2_POS_END));
+                                               0, OFFSET_MODE_END));
   CPPUNIT_ASSERT_EQUAL
     ((size_t)2, rm.changeReservedGroupPosition(gs[3]->getGID(),
-                                               -1,A2_POS_END));
+                                               -1,OFFSET_MODE_END));
   CPPUNIT_ASSERT_EQUAL
     ((size_t)0, rm.changeReservedGroupPosition(gs[3]->getGID(),
-                                               -10, A2_POS_END));
+                                               -10, OFFSET_MODE_END));
   CPPUNIT_ASSERT_EQUAL
     ((size_t)3, rm.changeReservedGroupPosition(gs[3]->getGID(),
-                                               10, A2_POS_END));
+                                               10, OFFSET_MODE_END));
 
   CPPUNIT_ASSERT_EQUAL((size_t)4, rm.getReservedGroups().size());
 
   try {
     rm.changeReservedGroupPosition(GroupId::create()->getNumericId(),
-                                   0, A2_POS_CUR);
+                                   0, OFFSET_MODE_CUR);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(RecoverableException& e) {
     // success

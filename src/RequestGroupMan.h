@@ -180,7 +180,7 @@ public:
   // beginning or the end of the queue respectively.  Returns the
   // destination position.
   size_t changeReservedGroupPosition(a2_gid_t gid, int pos,
-                                     A2_HOW how);
+                                     OffsetMode how);
 
   bool removeReservedGroup(a2_gid_t gid);
 
