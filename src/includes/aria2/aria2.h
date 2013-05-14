@@ -454,6 +454,11 @@ struct FileData {
  */
 enum BtFileMode {
   /**
+   * Indicating no mode. This value is used when file mode is not
+   * available.
+   */
+  BT_FILE_MODE_NONE,
+  /**
    * Indicating single file torrent
    */
   BT_FILE_MODE_SINGLE,

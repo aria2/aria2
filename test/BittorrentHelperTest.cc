@@ -219,14 +219,14 @@ void BittorrentHelperTest::testGetFileModeMulti() {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   load(A2_TEST_DIR"/test.torrent", dctx, option_);
 
-  CPPUNIT_ASSERT_EQUAL(MULTI, getTorrentAttrs(dctx)->mode);
+  CPPUNIT_ASSERT_EQUAL(BT_FILE_MODE_MULTI, getTorrentAttrs(dctx)->mode);
 }
 
 void BittorrentHelperTest::testGetFileModeSingle() {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   load(A2_TEST_DIR"/single.torrent", dctx, option_);
 
-  CPPUNIT_ASSERT_EQUAL(SINGLE, getTorrentAttrs(dctx)->mode);
+  CPPUNIT_ASSERT_EQUAL(BT_FILE_MODE_SINGLE, getTorrentAttrs(dctx)->mode);
 }
 
 void BittorrentHelperTest::testGetNameMulti() {

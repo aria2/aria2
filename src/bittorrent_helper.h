@@ -336,6 +336,9 @@ void extractPeer
 
 int getCompactLength(int family);
 
+// Returns textual representation of the |mode|.
+const char* getModeString(BtFileMode mode);
+
 // Writes the detailed information about torrent loaded in dctx.
 template<typename Output>
 void print(Output& o, const SharedHandle<DownloadContext>& dctx)
@@ -352,7 +355,7 @@ void print(Output& o, const SharedHandle<DownloadContext>& dctx)
   if(!torrentAttrs->createdBy.empty()) {
     o.printf("Created By: %s\n", torrentAttrs->createdBy.c_str());
   }
-  o.printf("Mode: %s\n", torrentAttrs->mode.c_str());
+  o.printf("Mode: %s\n", getModeString(torrentAttrs->mode));
   o.write("Announce:\n");
   for(std::vector<std::vector<std::string> >::const_iterator tierIter =
         torrentAttrs->announceList.begin(),

@@ -706,8 +706,8 @@ void gatherBitTorrentMetadata
   if(torrentAttrs->creationDate) {
     btDict->put(KEY_CREATION_DATE, Integer::g(torrentAttrs->creationDate));
   }
-  if(!torrentAttrs->mode.empty()) {
-    btDict->put(KEY_MODE, torrentAttrs->mode);
+  if(torrentAttrs->mode) {
+    btDict->put(KEY_MODE, bittorrent::getModeString(torrentAttrs->mode));
   }
   SharedHandle<List> destAnnounceList = List::g();
   for(std::vector<std::vector<std::string> >::const_iterator l =

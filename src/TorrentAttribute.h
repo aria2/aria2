@@ -40,13 +40,14 @@
 #include <string>
 #include <vector>
 
+#include <aria2/aria2.h>
 #include "a2time.h"
 
 namespace aria2 {
 
 struct TorrentAttribute:public ContextAttribute {
   std::string name;
-  std::string mode;
+  BtFileMode mode;
   std::vector<std::vector<std::string> > announceList;
   std::vector<std::pair<std::string, uint16_t> > nodes;
   // raw hash value 20 bytes.

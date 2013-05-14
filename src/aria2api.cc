@@ -600,9 +600,7 @@ struct RequestGroupDH : public DownloadHandle {
       res.announceList = torrentAttrs->announceList;
       res.comment = torrentAttrs->comment;
       res.creationDate = torrentAttrs->creationDate;
-      // TODO Use BtFileMode for torrentAttrs->mode
-      res.mode = torrentAttrs->mode == "single" ?
-        BT_FILE_MODE_SINGLE : BT_FILE_MODE_MULTI;
+      res.mode = torrentAttrs->mode;
       if(!torrentAttrs->metadata.empty()) {
         res.name = torrentAttrs->name;
       }

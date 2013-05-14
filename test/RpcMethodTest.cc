@@ -915,7 +915,7 @@ void RpcMethodTest::testGatherBitTorrentMetadata()
   SharedHandle<TorrentAttribute> modBtAttrs = bittorrent::getTorrentAttrs(dctx);
   modBtAttrs->comment.clear();
   modBtAttrs->creationDate = 0;
-  modBtAttrs->mode.clear();
+  modBtAttrs->mode = BT_FILE_MODE_NONE;
   modBtAttrs->metadata.clear();
   btDict = Dict::g();
   gatherBitTorrentMetadata(btDict, modBtAttrs);
