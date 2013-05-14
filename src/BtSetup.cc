@@ -269,7 +269,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
           btReg->getTcpPort(),
           LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT));
       if(dispatcher->init(btReg->getLpdMessageReceiver()->getLocalAddress(),
-                          /*ttl*/1, /*loop*/0)) {
+                          /*ttl*/1, /*loop*/1)) {
         A2_LOG_INFO("LpdMessageDispatcher initialized.");
         LpdDispatchMessageCommand* cmd =
           new LpdDispatchMessageCommand(e->newCUID(), dispatcher, e);
