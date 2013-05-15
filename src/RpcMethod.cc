@@ -90,10 +90,6 @@ void gatherOption
   for(; first != last; ++first) {
     const std::string& optionName = (*first).first;
     const Pref* pref = option::k2p(optionName);
-    if(!pref) {
-      throw DL_ABORT_EX
-        (fmt("We don't know how to deal with %s option", optionName.c_str()));
-    }
     const OptionHandler* handler = optionParser->find(pref);
     if(!handler || !pred(handler)) {
       // Just ignore the unacceptable options in this context.
