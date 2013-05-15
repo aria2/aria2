@@ -280,12 +280,13 @@ bool isNull(const A2Gid& gid);
  * and it should be BitTorrent Magnet URI. URIs in the |uris| must
  * point to the same file. If you mix other URIs which point to
  * another file, aria2 does not complain but download may fail. The
- * |options| is an array of a pair of option name and value. If the
- * |position| is not negative integer, the new download is inserted at
- * position in the waiting queue. If the |position| is negative or the
- * |position| is larger than the size of the queue, it is appended at
- * the end of the queue.  This function returns 0 if it succeeds, or
- * negative error code.
+ * |options| is an array of a pair of option name and value. If
+ * unknown options are included in |options|, they are simply
+ * ignored. If the |position| is not negative integer, the new
+ * download is inserted at position in the waiting queue. If the
+ * |position| is negative or the |position| is larger than the size of
+ * the queue, it is appended at the end of the queue.  This function
+ * returns 0 if it succeeds, or negative error code.
  */
 int addUri(Session* session,
            A2Gid* gid,
@@ -300,11 +301,12 @@ int addUri(Session* session,
  * the |metalinkFile|.  On successful return, if the |gids| is not
  * ``NULL``, the GIDs of added downloads are appended to the
  * |*gids|. The |options| is an array of a pair of option name and
- * value. If the |position| is not negative integer, the new download
- * is inserted at position in the waiting queue. If the |position| is
- * negative or the |position| is larger than the size of the queue, it
- * is appended at the end of the queue. This function returns 0 if it
- * succeeds, or negative error code.
+ * value. If unknown options are included in |options|, they are
+ * simply ignored. If the |position| is not negative integer, the new
+ * download is inserted at position in the waiting queue. If the
+ * |position| is negative or the |position| is larger than the size of
+ * the queue, it is appended at the end of the queue. This function
+ * returns 0 if it succeeds, or negative error code.
  */
 int addMetalink(Session* session,
                 std::vector<A2Gid>* gids,
