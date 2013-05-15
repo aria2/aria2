@@ -9,6 +9,7 @@ class Aria2ApiTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(Aria2ApiTest);
   CPPUNIT_TEST(testAddUri);
   CPPUNIT_TEST(testAddMetalink);
+  CPPUNIT_TEST(testAddTorrent);
   CPPUNIT_TEST(testRemovePause);
   CPPUNIT_TEST(testChangePosition);
   CPPUNIT_TEST_SUITE_END();
@@ -29,6 +30,7 @@ public:
 
   void testAddUri();
   void testAddMetalink();
+  void testAddTorrent();
   void testRemovePause();
   void testChangePosition();
 };
@@ -68,6 +70,18 @@ void Aria2ApiTest::testAddMetalink()
   options.push_back(KeyVals::value_type("file-allocation", "foo"));
   CPPUNIT_ASSERT_EQUAL(-1, addMetalink(session_, &gids, metalinkPath,
                                        options));
+}
+
+void Aria2ApiTest::testAddTorrent()
+{
+  std::string torrentPath = A2_TEST_DIR"/test.torrent";
+  A2Gid gid;
+  KeyVals options;
+  CPPUNIT_ASSERT_EQUAL(0, addTorrent(session_, &gid, torrentPath, options));
+  CPPUNIT_ASSERT(!isNull(gid));
+
+  options.push_back(KeyVals::value_type("file-allocation", "foo"));
+  CPPUNIT_ASSERT_EQUAL(-1, addTorrent(session_, &gid, torrentPath, options));
 }
 
 void Aria2ApiTest::testRemovePause()

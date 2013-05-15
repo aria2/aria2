@@ -306,6 +306,50 @@ int addMetalink(Session* session,
 #endif // !ENABLE_METALINK
 }
 
+int addTorrent(Session* session,
+               A2Gid* gid,
+               const std::string& torrentFile,
+               const std::vector<std::string>& webSeedUris,
+               const KeyVals& options,
+               int position)
+{
+#ifdef ENABLE_BITTORRENT
+  const SharedHandle<DownloadEngine>& e =
+    session->context->reqinfo->getDownloadEngine();
+  SharedHandle<Option> requestOption(new Option(*e->getOption()));
+  std::vector<SharedHandle<RequestGroup> > result;
+  try {
+    apiGatherRequestOption(requestOption.get(), options,
+                           OptionParser::getInstance());
+    requestOption->put(PREF_TORRENT_FILE, torrentFile);
+    createRequestGroupForBitTorrent(result, requestOption, webSeedUris,
+                                    torrentFile);
+  } catch(RecoverableException& e) {
+    A2_LOG_INFO_EX(EX_EXCEPTION_CAUGHT, e);
+    return -1;
+  }
+  if(!result.empty()) {
+    addRequestGroup(result.front(), e, position);
+    if(gid) {
+      *gid = result.front()->getGID();
+    }
+  }
+  return 0;
+#else // !ENABLE_BITTORRENT
+  return -1;
+#endif // !ENABLE_BITTORRENT
+}
+
+int addTorrent(Session* session,
+               A2Gid* gid,
+               const std::string& torrentFile,
+               const KeyVals& options,
+               int position)
+{
+  return addTorrent(session, gid, torrentFile, std::vector<std::string>(),
+                    options, position);
+}
+
 int removeDownload(Session* session, const A2Gid& gid, bool force)
 {
   const SharedHandle<DownloadEngine>& e =

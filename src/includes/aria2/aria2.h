@@ -317,6 +317,47 @@ int addMetalink(Session* session,
 /**
  * @function
  *
+ * Adds BitTorrent download. On successful return, if the |gid| is not
+ * ``NULL``, the GID of added download will be assigned to the
+ * |*gid|. The path to ".torrent" file is specified by the
+ * |torrentFile|. BitTorrent Magnet URI cannot be used with this
+ * function. Use :func:`addUri()` instead. The |webSeedUris| contains
+ * URIs used for Web-seeding. For single file torrents, URI can be a
+ * complete URI pointing to the resource or if URI ends with /, name
+ * in torrent file is added. For multi-file torrents, name and path in
+ * torrent are added to form a URI for each file. The |options| is an
+ * array of a pair of option name and value.  If unknown options are
+ * included in |options|, they are simply ignored. If the |position|
+ * is not negative integer, the new download is inserted at position
+ * in the waiting queue. If the |position| is negative or the
+ * |position| is larger than the size of the queue, it is appended at
+ * the end of the queue.
+ *
+ * This function returns 0 if it succeeds, or negative error code.
+ *
+ */
+int addTorrent(Session* session,
+               A2Gid* gid,
+               const std::string& torrentFile,
+               const std::vector<std::string>& webSeedUris,
+               const KeyVals& options,
+               int position = -1);
+
+/**
+ * @function
+ *
+ * Same as :func:`addTorrent()` with an empty vector as the
+ * |webSeedUris|.
+ */
+int addTorrent(Session* session,
+               A2Gid* gid,
+               const std::string& torrentFile,
+               const KeyVals& options,
+               int position = -1);
+
+/**
+ * @function
+ *
  * Returns the array of active download GID.
  */
 std::vector<A2Gid> getActiveDownload(Session* session);
