@@ -183,8 +183,6 @@ public:
   // processed. Otherwise, returns 0.
   int run(bool oneshot=false);
 
-  void cleanQueue();
-
   bool addSocketForReadCheck(const SharedHandle<SocketCore>& socket,
                              Command* command);
   bool deleteSocketForReadCheck(const SharedHandle<SocketCore>& socket,

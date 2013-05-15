@@ -107,16 +107,19 @@ DownloadEngine::DownloadEngine(const SharedHandle<EventPoll>& eventPoll)
   sessionId_.assign(&sessionId[0], & sessionId[sizeof(sessionId)]);
 }
 
+namespace {
+void cleanQueue(std::deque<Command*>& commands) {
+  std::for_each(commands.begin(), commands.end(), Deleter());
+  commands.clear();
+}
+} // namespace
+
 DownloadEngine::~DownloadEngine() {
-  cleanQueue();
+  cleanQueue(commands_);
+  cleanQueue(routineCommands_);
 #ifdef HAVE_ARES_ADDR_NODE
   setAsyncDNSServers(0);
 #endif // HAVE_ARES_ADDR_NODE
-}
-
-void DownloadEngine::cleanQueue() {
-  std::for_each(commands_.begin(), commands_.end(), Deleter());
-  commands_.clear();
 }
 
 namespace {
