@@ -1082,85 +1082,6 @@ SharedHandle<ValueBase> RemoveDownloadResultRpcMethod::process
   return VLB_OK;
 }
 
-namespace {
-void changeOption
-(const SharedHandle<RequestGroup>& group,
- const Option& option,
- DownloadEngine* e)
-{
-  const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
-  const SharedHandle<Option>& grOption = group->getOption();
-  grOption->merge(option);
-  if(option.defined(PREF_CHECKSUM)) {
-    const std::string& checksum = grOption->get(PREF_CHECKSUM);
-    std::pair<Scip, Scip> p;
-    util::divide(p, checksum.begin(), checksum.end(), '=');
-    std::string hashType(p.first.first, p.first.second);
-    util::lowercase(hashType);
-    dctx->setDigest(hashType, util::fromHex(p.second.first, p.second.second));
-  }
-  if(option.defined(PREF_SELECT_FILE)) {
-    SegList<int> sgl;
-    util::parseIntSegments(sgl, grOption->get(PREF_SELECT_FILE));
-    sgl.normalize();
-    dctx->setFileFilter(sgl);
-  }
-  if(option.defined(PREF_SPLIT)) {
-    group->setNumConcurrentCommand(grOption->getAsInt(PREF_SPLIT));
-  }
-  if(option.defined(PREF_MAX_CONNECTION_PER_SERVER)) {
-    int maxConn = grOption->getAsInt(PREF_MAX_CONNECTION_PER_SERVER);
-    const std::vector<SharedHandle<FileEntry> >& files = dctx->getFileEntries();
-    for(std::vector<SharedHandle<FileEntry> >::const_iterator i = files.begin(),
-          eoi = files.end(); i != eoi; ++i) {
-      (*i)->setMaxConnectionPerServer(maxConn);
-    }
-  }
-  if(option.defined(PREF_DIR) || option.defined(PREF_OUT)) {
-    if(dctx->getFileEntries().size() == 1
-#ifdef ENABLE_BITTORRENT
-       && !dctx->hasAttribute(CTX_ATTR_BT)
-#endif // ENABLE_BITTORRENT
-       ) {
-      dctx->getFirstFileEntry()->setPath
-        (grOption->blank(PREF_OUT) ? A2STR::NIL :
-         util::applyDir(grOption->get(PREF_DIR), grOption->get(PREF_OUT)));
-    }
-  }
-#ifdef ENABLE_BITTORRENT
-  if(option.defined(PREF_DIR) || option.defined(PREF_INDEX_OUT)) {
-    if(dctx->hasAttribute(CTX_ATTR_BT)) {
-      std::istringstream indexOutIn(grOption->get(PREF_INDEX_OUT));
-      std::vector<std::pair<size_t, std::string> > indexPaths =
-        util::createIndexPaths(indexOutIn);
-      for(std::vector<std::pair<size_t, std::string> >::const_iterator i =
-            indexPaths.begin(), eoi = indexPaths.end(); i != eoi; ++i) {
-        dctx->setFilePathWithIndex
-          ((*i).first,
-           util::applyDir(grOption->get(PREF_DIR), (*i).second));
-      }
-    }
-  }
-#endif // ENABLE_BITTORRENT
-  if(option.defined(PREF_MAX_DOWNLOAD_LIMIT)) {
-    group->setMaxDownloadSpeedLimit
-      (grOption->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
-  }
-  if(option.defined(PREF_MAX_UPLOAD_LIMIT)) {
-    group->setMaxUploadSpeedLimit(grOption->getAsInt(PREF_MAX_UPLOAD_LIMIT));
-  }
-#ifdef ENABLE_BITTORRENT
-  const SharedHandle<BtObject>& btObject =
-    e->getBtRegistry()->get(group->getGID());
-  if(btObject) {
-    if(option.defined(PREF_BT_MAX_PEERS)) {
-      btObject->btRuntime->setMaxPeers(grOption->getAsInt(PREF_BT_MAX_PEERS));
-    }
-  }
-#endif // ENABLE_BITTORRENT
-}
-} // namespace
-
 SharedHandle<ValueBase> ChangeOptionRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
@@ -1542,6 +1463,83 @@ bool pauseRequestGroup
   } else {
     return false;
   }
+}
+
+void changeOption
+(const SharedHandle<RequestGroup>& group,
+ const Option& option,
+ DownloadEngine* e)
+{
+  const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
+  const SharedHandle<Option>& grOption = group->getOption();
+  grOption->merge(option);
+  if(option.defined(PREF_CHECKSUM)) {
+    const std::string& checksum = grOption->get(PREF_CHECKSUM);
+    std::pair<Scip, Scip> p;
+    util::divide(p, checksum.begin(), checksum.end(), '=');
+    std::string hashType(p.first.first, p.first.second);
+    util::lowercase(hashType);
+    dctx->setDigest(hashType, util::fromHex(p.second.first, p.second.second));
+  }
+  if(option.defined(PREF_SELECT_FILE)) {
+    SegList<int> sgl;
+    util::parseIntSegments(sgl, grOption->get(PREF_SELECT_FILE));
+    sgl.normalize();
+    dctx->setFileFilter(sgl);
+  }
+  if(option.defined(PREF_SPLIT)) {
+    group->setNumConcurrentCommand(grOption->getAsInt(PREF_SPLIT));
+  }
+  if(option.defined(PREF_MAX_CONNECTION_PER_SERVER)) {
+    int maxConn = grOption->getAsInt(PREF_MAX_CONNECTION_PER_SERVER);
+    const std::vector<SharedHandle<FileEntry> >& files = dctx->getFileEntries();
+    for(std::vector<SharedHandle<FileEntry> >::const_iterator i = files.begin(),
+          eoi = files.end(); i != eoi; ++i) {
+      (*i)->setMaxConnectionPerServer(maxConn);
+    }
+  }
+  if(option.defined(PREF_DIR) || option.defined(PREF_OUT)) {
+    if(dctx->getFileEntries().size() == 1
+#ifdef ENABLE_BITTORRENT
+       && !dctx->hasAttribute(CTX_ATTR_BT)
+#endif // ENABLE_BITTORRENT
+       ) {
+      dctx->getFirstFileEntry()->setPath
+        (grOption->blank(PREF_OUT) ? A2STR::NIL :
+         util::applyDir(grOption->get(PREF_DIR), grOption->get(PREF_OUT)));
+    }
+  }
+#ifdef ENABLE_BITTORRENT
+  if(option.defined(PREF_DIR) || option.defined(PREF_INDEX_OUT)) {
+    if(dctx->hasAttribute(CTX_ATTR_BT)) {
+      std::istringstream indexOutIn(grOption->get(PREF_INDEX_OUT));
+      std::vector<std::pair<size_t, std::string> > indexPaths =
+        util::createIndexPaths(indexOutIn);
+      for(std::vector<std::pair<size_t, std::string> >::const_iterator i =
+            indexPaths.begin(), eoi = indexPaths.end(); i != eoi; ++i) {
+        dctx->setFilePathWithIndex
+          ((*i).first,
+           util::applyDir(grOption->get(PREF_DIR), (*i).second));
+      }
+    }
+  }
+#endif // ENABLE_BITTORRENT
+  if(option.defined(PREF_MAX_DOWNLOAD_LIMIT)) {
+    group->setMaxDownloadSpeedLimit
+      (grOption->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
+  }
+  if(option.defined(PREF_MAX_UPLOAD_LIMIT)) {
+    group->setMaxUploadSpeedLimit(grOption->getAsInt(PREF_MAX_UPLOAD_LIMIT));
+  }
+#ifdef ENABLE_BITTORRENT
+  const SharedHandle<BtObject>& btObject =
+    e->getBtRegistry()->get(group->getGID());
+  if(btObject) {
+    if(option.defined(PREF_BT_MAX_PEERS)) {
+      btObject->btRuntime->setMaxPeers(grOption->getAsInt(PREF_BT_MAX_PEERS));
+    }
+  }
+#endif // ENABLE_BITTORRENT
 }
 
 } // namespace aria2

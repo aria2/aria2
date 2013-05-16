@@ -226,6 +226,27 @@ void apiGatherRequestOption(Option* option, const KeyVals& options,
 } // namespace
 
 namespace {
+void apiGatherChangeableOption(Option* option, const KeyVals& options,
+                               const SharedHandle<OptionParser>& optionParser)
+{
+  apiGatherOption(options.begin(), options.end(),
+                  std::mem_fun(&OptionHandler::getChangeOption),
+                  option, optionParser);
+}
+} // namespace
+
+namespace {
+void apiGatherChangeableOptionForReserved
+(Option* option, const KeyVals& options,
+ const SharedHandle<OptionParser>& optionParser)
+{
+  apiGatherOption(options.begin(), options.end(),
+                  std::mem_fun(&OptionHandler::getChangeOptionForReserved),
+                  option, optionParser);
+}
+} // namespace
+
+namespace {
 void addRequestGroup(const SharedHandle<RequestGroup>& group,
                      const SharedHandle<DownloadEngine>& e,
                      int position)
@@ -419,6 +440,32 @@ int changePosition(Session* session, const A2Gid& gid, int pos, OffsetMode how)
   }
 }
 
+int changeOption(Session* session, const A2Gid& gid, const KeyVals& options)
+{
+  const SharedHandle<DownloadEngine>& e =
+    session->context->reqinfo->getDownloadEngine();
+  SharedHandle<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
+  if(group) {
+    Option option;
+    try {
+      if(group->getState() == RequestGroup::STATE_ACTIVE) {
+        apiGatherChangeableOption(&option, options,
+                                  OptionParser::getInstance());
+      } else {
+        apiGatherChangeableOptionForReserved(&option, options,
+                                             OptionParser::getInstance());
+      }
+    } catch(RecoverableException& err) {
+      A2_LOG_INFO_EX(EX_EXCEPTION_CAUGHT, err);
+      return -1;
+    }
+    changeOption(group, option, e.get());
+    return 0;
+  } else {
+    return -1;
+  }
+}
+
 std::vector<A2Gid> getActiveDownload(Session* session)
 {
   const SharedHandle<DownloadEngine>& e =
@@ -524,6 +571,23 @@ void createFileEntry
     bf.setBitfield(ps->getBitfield(), ps->getBitfieldLength());
   }
   createFileEntry(out, first, last, &bf);
+}
+} // namespace
+
+namespace {
+template<typename OutputIterator>
+void pushRequestOption
+(OutputIterator out,
+ const SharedHandle<Option>& option,
+ const SharedHandle<OptionParser>& oparser)
+{
+  for(size_t i = 1, len = option::countOption(); i < len; ++i) {
+    const Pref* pref = option::i2p(i);
+    const OptionHandler* h = oparser->find(pref);
+    if(h && h->getInitialOption() && option->defined(pref)) {
+      out++ = KeyVals::value_type(pref->k, option->get(pref));
+    }
+  }
 }
 } // namespace
 
@@ -660,6 +724,17 @@ struct RequestGroupDH : public DownloadHandle {
 #endif // ENABLE_BITTORRENT
     return res;
   }
+  virtual const std::string& getOption(const std::string& name)
+  {
+    return group->getOption()->get(option::k2p(name));
+  }
+  virtual KeyVals getOption()
+  {
+    KeyVals res;
+    pushRequestOption(std::back_inserter(res), group->getOption(),
+                      OptionParser::getInstance());
+    return res;
+  }
   SharedHandle<RequestGroup> group;
   TransferStat ts;
 };
@@ -760,6 +835,14 @@ struct DownloadResultDH : public DownloadHandle {
   virtual BtMetaInfoData getBtMetaInfo()
   {
     return BtMetaInfoData();
+  }
+  virtual const std::string& getOption(const std::string& name)
+  {
+    return A2STR::NIL;
+  }
+  virtual KeyVals getOption()
+  {
+    return KeyVals();
   }
   SharedHandle<DownloadResult> dr;
 };

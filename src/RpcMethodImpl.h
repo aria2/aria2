@@ -608,6 +608,11 @@ void gatherBitTorrentMetadata
 bool pauseRequestGroup
 (const SharedHandle<RequestGroup>& group, bool reserved,  bool forcePause);
 
+void changeOption
+(const SharedHandle<RequestGroup>& group,
+ const Option& option,
+ DownloadEngine* e);
+
 } // namespace aria2
 
 #endif // D_RPC_METHOD_IMPL_H

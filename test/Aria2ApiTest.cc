@@ -12,6 +12,7 @@ class Aria2ApiTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testAddTorrent);
   CPPUNIT_TEST(testRemovePause);
   CPPUNIT_TEST(testChangePosition);
+  CPPUNIT_TEST(testChangeOption);
   CPPUNIT_TEST_SUITE_END();
 
   Session* session_;
@@ -33,6 +34,7 @@ public:
   void testAddTorrent();
   void testRemovePause();
   void testChangePosition();
+  void testChangeOption();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(Aria2ApiTest);
@@ -148,5 +150,44 @@ void Aria2ApiTest::testChangePosition()
                                          OFFSET_MODE_END));
 
 }
+
+void Aria2ApiTest::testChangeOption()
+{
+  A2Gid gid;
+  std::vector<std::string> uris(1);
+  KeyVals options;
+  uris[0] = "http://localhost/1";
+  options.push_back(KeyVals::value_type("dir", "mydownload"));
+  CPPUNIT_ASSERT_EQUAL(0, addUri(session_, &gid, uris, options));
+
+  DownloadHandle* hd = getDownloadHandle(session_, gid);
+  CPPUNIT_ASSERT(hd);
+  CPPUNIT_ASSERT_EQUAL(1, hd->getNumFiles());
+  FileData file = hd->getFile(1);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, file.uris.size());
+  CPPUNIT_ASSERT_EQUAL(uris[0], file.uris[0].uri);
+
+  CPPUNIT_ASSERT_EQUAL(std::string("mydownload"), hd->getOption("dir"));
+  CPPUNIT_ASSERT(hd->getOption("unknown").empty());
+  KeyVals retopts = hd->getOption();
+  CPPUNIT_ASSERT(std::find(retopts.begin(), retopts.end(),
+                           KeyVals::value_type("dir", "mydownload"))
+                 != retopts.end());
+  deleteDownloadHandle(hd);
+  // failure with null gid
+  CPPUNIT_ASSERT_EQUAL(-1, changeOption(session_, (A2Gid)0, options));
+  // change option
+  options.clear();
+  options.push_back(KeyVals::value_type("dir", "newlocation"));
+  CPPUNIT_ASSERT_EQUAL(0, changeOption(session_, gid, options));
+  hd = getDownloadHandle(session_, gid);
+  CPPUNIT_ASSERT_EQUAL(std::string("newlocation"), hd->getOption("dir"));
+  deleteDownloadHandle(hd);
+  // failure with bad option value
+  options.clear();
+  options.push_back(KeyVals::value_type("file-allocation", "foo"));
+  CPPUNIT_ASSERT_EQUAL(-1, changeOption(session_, gid, options));
+}
+
 
 } // namespace aria2

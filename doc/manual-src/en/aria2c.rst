@@ -1733,6 +1733,8 @@ if you have a torrent or metalink with chunk checksums for the file,
 you can resume the download without a control file by giving -V option
 to aria2c in command-line.
 
+.. _input-file:
+
 Input File
 ~~~~~~~~~~
 

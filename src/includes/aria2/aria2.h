@@ -405,6 +405,38 @@ int pauseDownload(Session* session, const A2Gid& gid, bool force = false);
 int unpauseDownload(Session* session, const A2Gid& gid);
 
 /**
+ * @function
+ *
+ * Apply options in the |options| to the download denoted by the |gid|
+ * dynamically. The following options can be changed for downloads in
+ * :c:macro:`DOWNLOAD_ACTIVE` status:
+ *
+ * * :option:`bt-max-peers <--bt-max-peers>`
+ * * :option:`bt-request-peer-speed-limit <--bt-request-peer-speed-limit>`
+ * * :option:`bt-remove-unselected-file <--bt-remove-unselected-file>`
+ * * :option:`force-save <--force-save>`
+ * * :option:`max-download-limit <--max-download-limit>`
+ * * :option:`max-upload-limit <-u>`
+ *
+ * For downloads in :c:macro:`DOWNLOAD_WAITING` or
+ * :c:macro:`DOWNLOAD_PAUSED` status, in addition to the above
+ * options, options listed in :ref:`input-file` subsection are available,
+ * except for following options:
+ * :option:`dry-run <--dry-run>`,
+ * :option:`metalink-base-uri <--metalink-base-uri>`,
+ * :option:`parameterized-uri <-P>`,
+ * :option:`pause <--pause>`,
+ * :option:`piece-length <--piece-length>` and
+ * :option:`rpc-save-upload-metadata <--rpc-save-upload-metadata>` option.
+ *
+ * The options which are not applicable or unknown, they are just
+ * ignored.
+ *
+ * This function returns 0 if it succeeds, or negative error code.
+ */
+int changeOption(Session* session, const A2Gid& gid, const KeyVals& options);
+
+/**
  * @enum
  *
  * Constants how to re-position a download.
@@ -733,6 +765,26 @@ public:
    * stopped/completed.
    */
   virtual BtMetaInfoData getBtMetaInfo() = 0;
+  /**
+   * Returns the option value denoted by the |name|.  If the option
+   * denoted by the |name| is not available, returns empty string.
+   *
+   * Calling this function for the download which is not in
+   * :c:macro:`DOWNLOAD_ACTIVE`, :c:macro:`DOWNLOAD_PAUSED` or
+   * :c:macro:`DOWNLOAD_WAITING` will return empty string.
+   */
+  virtual const std::string& getOption(const std::string& name) = 0;
+  /**
+   * Returns options for this download. Note that this function does
+   * not return options which have no default value and have not been
+   * set by :func:`sessionNew()`, configuration files or API
+   * functions.
+   *
+   * Calling this function for the download which is not in
+   * :c:macro:`DOWNLOAD_ACTIVE`, :c:macro:`DOWNLOAD_PAUSED` or
+   * :c:macro:`DOWNLOAD_WAITING` will return empty array.
+   */
+  virtual KeyVals getOption() = 0;
 };
 
 /**
