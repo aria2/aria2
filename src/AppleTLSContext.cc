@@ -48,12 +48,15 @@ namespace {
   using namespace aria2;
 
 #if defined(__MAC_10_6)
+
+#if defined(__MAC_10_7)
   static const void *query_keys[] = {
     kSecClass,
     kSecReturnRef,
     kSecMatchPolicy,
     kSecMatchLimit
   };
+#endif // defined(__MAC_10_7)
 
   class cfrelease {
     const void *ptr_;
@@ -112,6 +115,31 @@ namespace {
     return rv;
   }
 
+  bool checkIdentity(const SecIdentityRef id, const std::string& fingerPrint,
+                     const std::vector<std::string> supported)
+  {
+    SecCertificateRef ref = 0;
+    if (SecIdentityCopyCertificate(id, &ref) != errSecSuccess) {
+      A2_LOG_ERROR("Failed to get a certref!");
+      return false;
+    }
+    cfrelease del_ref(ref);
+    CFDataRef data = SecCertificateCopyData(ref);
+    if (!data) {
+      A2_LOG_ERROR("Failed to get a data!");
+      return false;
+    }
+    cfrelease del_data(data);
+
+    // Do try all supported hash algorithms.
+    // Usually the fingerprint would be sha1 or md5, however this is more
+    // future-proof. Also "usually" doesn't cut it; there is already software
+    // using SHA-2 class algos, and SHA-3 is standardized and potential users
+    // cannot be far.
+    return std::find_if(supported.begin(), supported.end(),
+                        hash_finder(data, fingerPrint)) != supported.end();
+  }
+
 #endif // defined(__MAC_10_6)
 
 }
@@ -166,7 +194,7 @@ bool AppleTLSContext::tryAsFingerprint(const std::string& fingerprint)
     return false;
   }
 
-#if defined(__MAC_10_6)
+#if defined(__MAC_10_7)
   A2_LOG_DEBUG(fmt("Looking for cert with fingerprint %s", fp.c_str()));
 
   // Build and run the KeyChain the query.
@@ -204,30 +232,37 @@ bool AppleTLSContext::tryAsFingerprint(const std::string& fingerprint)
       A2_LOG_ERROR("Failed to get a value!");
       continue;
     }
-    SecCertificateRef ref = 0;
-    if (SecIdentityCopyCertificate(id, &ref) != errSecSuccess) {
-      A2_LOG_ERROR("Failed to get a certref!");
-      continue;
-    }
-    cfrelease del_ref(ref);
-    CFDataRef data = SecCertificateCopyData(ref);
-    if (!data) {
-      A2_LOG_ERROR("Failed to get a data!");
-      continue;
-    }
-    cfrelease del_data(data);
-
-    // Do try all supported hash algorithms.
-    // Usually the fingerprint would be sha1 or md5, however this is more
-    // future-proof. Also "usually" doesn't cut it; there is already software
-    // using SHA-2 class algos, and SHA-3 is standardized and potential users
-    // cannot be far.
-    if (std::find_if(ht.begin(), ht.end(), hash_finder(data, fp)) == ht.end()) {
+    if (!checkIdentity(id, fp, ht)) {
       continue;
     }
     A2_LOG_INFO("Found cert with matching fingerprint");
     credentials_ = id;
     CFRetain(id);
+    return true;
+  }
+
+  A2_LOG_ERROR(fmt("Failed to lookup %s in your KeyChain", fingerprint.c_str()));
+  return false;
+
+#else // defined(__MAC_10_7)
+#if defined(__MAC_10_6)
+
+  SecIdentitySearchRef search;
+
+  // Deprecated as of 10.7
+  OSStatus err = SecIdentitySearchCreate(0, CSSM_KEYUSE_SIGN, &search);
+  if (err != errSecSuccess) {
+    A2_LOG_ERROR("Certificate search failed: " + errToString(err));
+  }
+  cfrelease del_search(search);
+
+  SecIdentityRef id;
+  while (SecIdentitySearchCopyNext(search, &id) == errSecSuccess) {
+    if (!checkIdentity(id, fp, ht)) {
+      continue;
+    }
+    A2_LOG_INFO("Found cert with matching fingerprint");
+    credentials_ = id;
     return true;
   }
 
@@ -240,6 +275,7 @@ bool AppleTLSContext::tryAsFingerprint(const std::string& fingerprint)
   return false;
 
 #endif // defined(__MAC_10_6)
+#endif // defined(__MAC_10_7)
 }
 
 } // namespace aria2
