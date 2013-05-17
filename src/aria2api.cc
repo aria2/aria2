@@ -778,7 +778,7 @@ struct RequestGroupDH : public DownloadHandle {
   {
     return group->getOption()->get(option::k2p(name));
   }
-  virtual KeyVals getOption()
+  virtual KeyVals getOptions()
   {
     KeyVals res;
     pushRequestOption(std::back_inserter(res), group->getOption(),
@@ -890,7 +890,7 @@ struct DownloadResultDH : public DownloadHandle {
   {
     return A2STR::NIL;
   }
-  virtual KeyVals getOption()
+  virtual KeyVals getOptions()
   {
     return KeyVals();
   }

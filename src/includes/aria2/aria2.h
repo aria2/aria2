@@ -833,7 +833,7 @@ public:
    * :c:macro:`DOWNLOAD_ACTIVE`, :c:macro:`DOWNLOAD_PAUSED` or
    * :c:macro:`DOWNLOAD_WAITING` will return empty array.
    */
-  virtual KeyVals getOption() = 0;
+  virtual KeyVals getOptions() = 0;
 };
 
 /**

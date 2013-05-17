@@ -175,7 +175,7 @@ void Aria2ApiTest::testChangeOption()
 
   CPPUNIT_ASSERT_EQUAL(std::string("mydownload"), hd->getOption("dir"));
   CPPUNIT_ASSERT(hd->getOption("unknown").empty());
-  KeyVals retopts = hd->getOption();
+  KeyVals retopts = hd->getOptions();
   CPPUNIT_ASSERT(std::find(retopts.begin(), retopts.end(),
                            KeyVals::value_type("dir", "mydownload"))
                  != retopts.end());
