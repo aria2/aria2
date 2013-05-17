@@ -83,6 +83,10 @@ AC_PATH_PROG([ASCIIDOC], [asciidoc])
 AC_SUBST([ASCIIDOC])
 AM_CONDITIONAL([HAVE_ASCIIDOC], [ test "x$ASCIIDOC" != "x" ])
 
+AC_PATH_PROGS([RST2HTML], [rst2html.py rst2html])
+AC_SUBST([RST2HTML])
+AM_CONDITIONAL([HAVE_RST2HTML], [ test "x$RST2HTML" != "x" ])
+
 # Setting language choice
 AC_LANG([C++])
 
