@@ -481,7 +481,12 @@ const std::string& getGlobalOption(Session* session, const std::string& name)
 {
   const SharedHandle<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
-  return e->getOption()->get(option::k2p(name));
+  const Pref* pref = option::k2p(name);
+  if(OptionParser::getInstance()->find(pref)) {
+    return e->getOption()->get(pref);
+  } else {
+    return A2STR::NIL;
+  }
 }
 
 KeyVals getGlobalOptions(Session* session)
@@ -776,7 +781,12 @@ struct RequestGroupDH : public DownloadHandle {
   }
   virtual const std::string& getOption(const std::string& name)
   {
-    return group->getOption()->get(option::k2p(name));
+    const Pref* pref = option::k2p(name);
+    if(OptionParser::getInstance()->find(pref)) {
+      return group->getOption()->get(pref);
+    } else {
+      return A2STR::NIL;
+    }
   }
   virtual KeyVals getOptions()
   {

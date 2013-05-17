@@ -179,6 +179,8 @@ void Aria2ApiTest::testChangeOption()
   CPPUNIT_ASSERT(std::find(retopts.begin(), retopts.end(),
                            KeyVals::value_type("dir", "mydownload"))
                  != retopts.end());
+  // Don't return hidden option
+  CPPUNIT_ASSERT(hd->getOption(PREF_STARTUP_IDLE_TIME->k).empty());
   deleteDownloadHandle(hd);
   // failure with null gid
   CPPUNIT_ASSERT_EQUAL(-1, changeOption(session_, (A2Gid)0, options));
@@ -205,7 +207,8 @@ void Aria2ApiTest::testChangeGlobalOption()
   CPPUNIT_ASSERT_EQUAL(0, changeGlobalOption(session_, options));
   CPPUNIT_ASSERT_EQUAL(std::string("none"),
                        getGlobalOption(session_, PREF_FILE_ALLOCATION->k));
-
+  // Don't return hidden option
+  CPPUNIT_ASSERT(getGlobalOption(session_, PREF_STARTUP_IDLE_TIME->k).empty());
   // failure with bad option value
   options.clear();
   options.push_back(KeyVals::value_type(PREF_FILE_ALLOCATION->k, "foo"));
