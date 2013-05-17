@@ -437,6 +437,55 @@ int unpauseDownload(Session* session, const A2Gid& gid);
 int changeOption(Session* session, const A2Gid& gid, const KeyVals& options);
 
 /**
+ * @function
+ *
+ * Returns global option denoted by the |name|. If such option is not
+ * available, returns empty string.
+ */
+const std::string& getGlobalOption(Session* session, const std::string& name);
+
+/**
+ * @function
+ *
+ * Returns global options. Note that this function does not return
+ * options which have no default value and have not been set by
+ * :func:`sessionNew()`, configuration files or API functions.
+ */
+KeyVals getGlobalOptions(Session* session);
+
+/**
+ * @function
+ *
+ * Apply global options in the |options| dynamically.  The following
+ * options are available:
+ *
+ * * :option:`download-result <--download-result>`
+ * * :option:`log <-l>`
+ * * :option:`log-level <--log-level>`
+ * * :option:`max-concurrent-downloads <-j>`
+ * * :option:`max-download-result <--max-download-result>`
+ * * :option:`max-overall-download-limit <--max-overall-download-limit>`
+ * * :option:`max-overall-upload-limit <--max-overall-upload-limit>`
+ * * :option:`save-cookies <--save-cookies>`
+ * * :option:`save-session <--save-session>`
+ * * :option:`server-stat-of <--server-stat-of>`
+ *
+ * In addition to them, options listed in :ref:`input-file` subsection
+ * are available, except for following options:
+ * :option:`checksum <--checksum>`,
+ * :option:`index-out <-O>`,
+ * :option:`out <-o>`,
+ * :option:`pause <--pause>` and
+ * :option:`select-file <--select-file>`.
+ *
+ * The options which are not applicable or unknown, they are just
+ * ignored.
+ *
+ * This function returns 0 if it succeeds, or negative error code.
+ */
+int changeGlobalOption(Session* session, const KeyVals& options);
+
+/**
  * @enum
  *
  * Constants how to re-position a download.

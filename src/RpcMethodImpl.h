@@ -613,6 +613,8 @@ void changeOption
  const Option& option,
  DownloadEngine* e);
 
+void changeGlobalOption(const Option& option, DownloadEngine* e);
+
 } // namespace aria2
 
 #endif // D_RPC_METHOD_IMPL_H

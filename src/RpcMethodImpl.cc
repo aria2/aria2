@@ -1112,37 +1112,7 @@ SharedHandle<ValueBase> ChangeGlobalOptionRpcMethod::process
 
   Option option;
   gatherChangeableGlobalOption(&option, optsParam);
-  e->getOption()->merge(option);
-
-  if(option.defined(PREF_MAX_OVERALL_DOWNLOAD_LIMIT)) {
-    e->getRequestGroupMan()->setMaxOverallDownloadSpeedLimit
-      (option.getAsInt(PREF_MAX_OVERALL_DOWNLOAD_LIMIT));
-  }
-  if(option.defined(PREF_MAX_OVERALL_UPLOAD_LIMIT)) {
-    e->getRequestGroupMan()->setMaxOverallUploadSpeedLimit
-      (option.getAsInt(PREF_MAX_OVERALL_UPLOAD_LIMIT));
-  }
-  if(option.defined(PREF_MAX_CONCURRENT_DOWNLOADS)) {
-    e->getRequestGroupMan()->setMaxSimultaneousDownloads
-      (option.getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS));
-    e->getRequestGroupMan()->requestQueueCheck();
-  }
-  if(option.defined(PREF_MAX_DOWNLOAD_RESULT)) {
-    e->getRequestGroupMan()->setMaxDownloadResult
-      (option.getAsInt(PREF_MAX_DOWNLOAD_RESULT));
-  }
-  if(option.defined(PREF_LOG_LEVEL)) {
-    LogFactory::setLogLevel(option.get(PREF_LOG_LEVEL));
-  }
-  if(option.defined(PREF_LOG)) {
-    LogFactory::setLogFile(option.get(PREF_LOG));
-    try {
-      LogFactory::reconfigure();
-    } catch(RecoverableException& e) {
-      // TODO no exception handling
-    }
-  }
-
+  changeGlobalOption(option, e);
   return VLB_OK;
 }
 
@@ -1540,6 +1510,39 @@ void changeOption
     }
   }
 #endif // ENABLE_BITTORRENT
+}
+
+void changeGlobalOption(const Option& option, DownloadEngine* e)
+{
+  e->getOption()->merge(option);
+  if(option.defined(PREF_MAX_OVERALL_DOWNLOAD_LIMIT)) {
+    e->getRequestGroupMan()->setMaxOverallDownloadSpeedLimit
+      (option.getAsInt(PREF_MAX_OVERALL_DOWNLOAD_LIMIT));
+  }
+  if(option.defined(PREF_MAX_OVERALL_UPLOAD_LIMIT)) {
+    e->getRequestGroupMan()->setMaxOverallUploadSpeedLimit
+      (option.getAsInt(PREF_MAX_OVERALL_UPLOAD_LIMIT));
+  }
+  if(option.defined(PREF_MAX_CONCURRENT_DOWNLOADS)) {
+    e->getRequestGroupMan()->setMaxSimultaneousDownloads
+      (option.getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS));
+    e->getRequestGroupMan()->requestQueueCheck();
+  }
+  if(option.defined(PREF_MAX_DOWNLOAD_RESULT)) {
+    e->getRequestGroupMan()->setMaxDownloadResult
+      (option.getAsInt(PREF_MAX_DOWNLOAD_RESULT));
+  }
+  if(option.defined(PREF_LOG_LEVEL)) {
+    LogFactory::setLogLevel(option.get(PREF_LOG_LEVEL));
+  }
+  if(option.defined(PREF_LOG)) {
+    LogFactory::setLogFile(option.get(PREF_LOG));
+    try {
+      LogFactory::reconfigure();
+    } catch(RecoverableException& e) {
+      // TODO no exception handling
+    }
+  }
 }
 
 } // namespace aria2

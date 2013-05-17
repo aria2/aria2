@@ -2,6 +2,10 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "prefs.h"
+#include "OptionParser.h"
+#include "OptionHandler.h"
+
 namespace aria2 {
 
 class Aria2ApiTest:public CppUnit::TestFixture {
@@ -13,6 +17,7 @@ class Aria2ApiTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testRemovePause);
   CPPUNIT_TEST(testChangePosition);
   CPPUNIT_TEST(testChangeOption);
+  CPPUNIT_TEST(testChangeGlobalOption);
   CPPUNIT_TEST_SUITE_END();
 
   Session* session_;
@@ -35,6 +40,7 @@ public:
   void testRemovePause();
   void testChangePosition();
   void testChangeOption();
+  void testChangeGlobalOption();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(Aria2ApiTest);
@@ -189,5 +195,21 @@ void Aria2ApiTest::testChangeOption()
   CPPUNIT_ASSERT_EQUAL(-1, changeOption(session_, gid, options));
 }
 
+void Aria2ApiTest::testChangeGlobalOption()
+{
+  CPPUNIT_ASSERT_EQUAL(OptionParser::getInstance()->find(PREF_FILE_ALLOCATION)
+                       ->getDefaultValue(),
+                       getGlobalOption(session_, PREF_FILE_ALLOCATION->k));
+  KeyVals options;
+  options.push_back(KeyVals::value_type(PREF_FILE_ALLOCATION->k, "none"));
+  CPPUNIT_ASSERT_EQUAL(0, changeGlobalOption(session_, options));
+  CPPUNIT_ASSERT_EQUAL(std::string("none"),
+                       getGlobalOption(session_, PREF_FILE_ALLOCATION->k));
+
+  // failure with bad option value
+  options.clear();
+  options.push_back(KeyVals::value_type(PREF_FILE_ALLOCATION->k, "foo"));
+  CPPUNIT_ASSERT_EQUAL(-1, changeGlobalOption(session_, options));
+}
 
 } // namespace aria2

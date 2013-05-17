@@ -247,6 +247,17 @@ void apiGatherChangeableOptionForReserved
 } // namespace
 
 namespace {
+void apiGatherChangeableGlobalOption
+(Option* option, const KeyVals& options,
+ const SharedHandle<OptionParser>& optionParser)
+{
+  apiGatherOption(options.begin(), options.end(),
+                  std::mem_fun(&OptionHandler::getChangeGlobalOption),
+                  option, optionParser);
+}
+} // namespace
+
+namespace {
 void addRequestGroup(const SharedHandle<RequestGroup>& group,
                      const SharedHandle<DownloadEngine>& e,
                      int position)
@@ -464,6 +475,45 @@ int changeOption(Session* session, const A2Gid& gid, const KeyVals& options)
   } else {
     return -1;
   }
+}
+
+const std::string& getGlobalOption(Session* session, const std::string& name)
+{
+  const SharedHandle<DownloadEngine>& e =
+    session->context->reqinfo->getDownloadEngine();
+  return e->getOption()->get(option::k2p(name));
+}
+
+KeyVals getGlobalOptions(Session* session)
+{
+  const SharedHandle<DownloadEngine>& e =
+    session->context->reqinfo->getDownloadEngine();
+  const SharedHandle<OptionParser>& optionParser = OptionParser::getInstance();
+  const Option* option = e->getOption();
+  KeyVals options;
+  for(size_t i = 1, len = option::countOption(); i < len; ++i) {
+    const Pref* pref = option::i2p(i);
+    if(option->defined(pref) && optionParser->find(pref)) {
+      options.push_back(KeyVals::value_type(pref->k, option->get(pref)));
+    }
+  }
+  return options;
+}
+
+int changeGlobalOption(Session* session, const KeyVals& options)
+{
+  const SharedHandle<DownloadEngine>& e =
+    session->context->reqinfo->getDownloadEngine();
+  Option option;
+  try {
+    apiGatherChangeableGlobalOption(&option, options,
+                                    OptionParser::getInstance());
+  } catch(RecoverableException& err) {
+    A2_LOG_INFO_EX(EX_EXCEPTION_CAUGHT, err);
+    return -1;
+  }
+  changeGlobalOption(option, e.get());
+  return 0;
 }
 
 std::vector<A2Gid> getActiveDownload(Session* session)
