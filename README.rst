@@ -458,6 +458,16 @@ WebSocket
 The WebSocket server embedded in aria2 implements the specification
 defined in RFC 6455. The supported protocol version is 13.
 
+libaria2
+--------
+
+The libaria2 is a C++ library which offers aria2 functionality to the
+client code. Currently, libaria2 is not built by default. To enable
+libaria2, use ``--enable-libaria2`` configure option.  By default,
+only the shared library is built. To build static library, use
+``--enable-static`` configure option as well. See libaria2
+documentation to know how to use API.
+
 References
 ----------
 
