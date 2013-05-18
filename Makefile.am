@@ -4,7 +4,8 @@ ACLOCAL_AMFLAGS = -I m4 --install
 RST2HTML = @RST2HTML@
 
 EXTRA_DIST = config.rpath mingw-config android-config android-make\
-	build_osx_release.sh
+	build_osx_release.sh \
+	examples/libaria2ex.cc examples/libaria2wx.cc
 
 dist_doc_DATA = README README.rst
 
