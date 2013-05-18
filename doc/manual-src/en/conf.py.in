@@ -98,7 +98,7 @@ html_theme = 'default'
 # documentation.
 html_theme_options = {'bodyfont':'roboto, sans-serif',
                       'headfont':'roboto, "Trebuchet MS", sans-serif',
-                      'relbarbgcolor':'#fff',
+                      'relbarbgcolor':'#ddd',
                       'relbartextcolor':'#444',
                       'relbarlinkcolor':'#444',
                       'sidebarbgcolor':'#eee',
