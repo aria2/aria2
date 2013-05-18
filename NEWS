@@ -1,3 +1,104 @@
+aria2 1.17.1
+============
+
+Release Note
+------------
+
+This release adds large file support for Android build and libuv
+support for event polling mechanism. AppleTLS now supports Snow
+Leopard (10.6). The experimental libaria2 C++ library API was added.
+
+Changes
+-------
+
+* Add code to detect rst2html.py or rst2html
+
+* AppleTLS: Properly support Snow Leopard (10.6)
+
+  Tested on 10.6.8 + XCode 4.2 (llvm-gcc-4.2, clang)
+
+  Contributed by Nils Maier
+
+* Enable multicast loopback in BitTorrent local peer discovery
+
+* Enable TLS1.1 with gnutls build
+
+* Support off64_t for Android build
+
+  Android NDK R8e does not provide ftruncate64, but bionic has the
+  assembler code to access kernel function. We borrowed those
+  ftruncate64.S files from android source code repository.  It turns
+  out that x86 asm.h in NDK R8e is also broken, so latest asm.h was
+  also borrowed.
+
+* Check zlib availability usin AC_CHECK_LIB
+
+  This is workaround for zlib 1.2.3 which does not come with
+  pkg-config file.
+
+* Treat response is completed if EOF is received before streamFilter
+  completes
+
+  This fixes the error with web server which has buggy chunked
+  encoding.
+
+* uitos: Fix off-by-one error bug
+
+* Add configure support for linking tcmalloc_minimal and/or jemalloc
+
+  Both tcmalloc_minimal and jemalloc outperform the native malloc
+  implemention on Windows (MSVCRT) in terms of committed memory
+  consumption (~-30%) and performance (e.g. far less page faults,
+  ~-60%), depending, of course, on the actual workload.  The longer
+  the download queue, the bigger the impact ;)
+
+  On *nix the picture is a little different... tcmalloc usually still
+  outperforms the native malloc implementation, but not that
+  significantly than on Windows. jemalloc however is only marginally
+  better than recent native Linux implementations, while it is already
+  used by some BSD as the native allocator.
+
+  tcmalloc is part of gperftools and very mature and tested by now. It
+  doesn't work on OSX in the default configuration, however.
+  http://code.google.com/p/gperftools/
+
+  jemalloc is the default allocator at least on FreeBSD and NetBSD and
+  used in Firefox.  http://www.canonware.com/jemalloc/index.html
+
+  Contributed by Nils Maier
+
+* Close GZipFiles in the d'tor
+
+  Contributed by Nils Maier
+
+* Add libaria2, C++ library interface to aria2
+
+  The libaria2 is a C++ library and offers the core functionality of
+  aria2. The library takes care of all networking and downloading
+  stuff, so its usage is very straight forward right now. See
+  libaria2ex.cc in examples directory to see how to use API. By
+  default, libaria2 is not built. See libaria2 section in README to
+  how to enable it.
+
+  The APIs in this release is considered experimental.
+
+* Add missing check for sigaction
+
+* Fix cached data is not flushed when downloaded data is less than
+  16KiB
+
+* LibUV: Implement LibuvEventPoll
+
+  LibUV event will use the best available polling method on a system,
+  kind of like aria2 does already with the different *EventPoll
+  implementations.  However, libuv may support different/newer polling
+  mechanisms; for example on Windows it will use IO Completion Ports
+  which are superior to select() ;)
+
+  Contributed by Nils Maier
+
+
+
 aria2 1.17.0
 ============
 
