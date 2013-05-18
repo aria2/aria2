@@ -486,6 +486,42 @@ KeyVals getGlobalOptions(Session* session);
 int changeGlobalOption(Session* session, const KeyVals& options);
 
 /**
+ * @struct
+ *
+ * Global statistics of current aria2 session.
+ */
+struct GlobalStat {
+  /**
+   * Overall download speed (byte/sec).
+   */
+  int downloadSpeed;
+  /**
+   * Overall upload speed(byte/sec).
+   */
+  int uploadSpeed;
+  /**
+   * The number of active downloads.
+   */
+  int numActive;
+  /**
+   * The number of waiting downloads.
+   */
+  int numWaiting;
+  /**
+   * The number of stopped downloads.
+   */
+  int numStopped;
+};
+
+/**
+ * @function
+ *
+ * Returns global statistics such as overall download and upload
+ * speed.
+ */
+GlobalStat getGlobalStat(Session* session);
+
+/**
  * @enum
  *
  * Constants how to re-position a download.

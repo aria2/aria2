@@ -521,6 +521,21 @@ int changeGlobalOption(Session* session, const KeyVals& options)
   return 0;
 }
 
+GlobalStat getGlobalStat(Session* session)
+{
+  const SharedHandle<DownloadEngine>& e =
+    session->context->reqinfo->getDownloadEngine();
+  const SharedHandle<RequestGroupMan>& rgman = e->getRequestGroupMan();
+  TransferStat ts = rgman->calculateStat();
+  GlobalStat res;
+  res.downloadSpeed = ts.downloadSpeed;
+  res.uploadSpeed = ts.uploadSpeed;
+  res.numActive = rgman->getRequestGroups().size();
+  res.numWaiting = rgman->getReservedGroups().size();
+  res.numStopped = rgman->getDownloadResults().size();
+  return res;
+}
+
 std::vector<A2Gid> getActiveDownload(Session* session)
 {
   const SharedHandle<DownloadEngine>& e =
