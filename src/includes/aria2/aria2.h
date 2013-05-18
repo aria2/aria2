@@ -213,7 +213,7 @@ Session* sessionNew(const KeyVals& options, const SessionConfig& config);
  * Performs post-download action, including saving sessions etc and
  * destroys the |session| object, releasing the allocated resources
  * for it. This function returns the last error code and it is the
- * equivalent to the exit status of :manpage:`aria2c(1)`.
+ * equivalent to the :ref:`exit-status` of :manpage:`aria2c(1)`.
  */
 int sessionFinal(Session* session);
 
@@ -802,7 +802,7 @@ public:
   virtual int getConnections() = 0;
   /**
    * Returns the last error code occurred in this download. The error
-   * codes are defined in EXIT STATUS section of
+   * codes are defined in :ref:`exit-status` section of
    * :manpage:`aria2c(1)`. This value has its meaning only for
    * stopped/completed downloads.
    */
