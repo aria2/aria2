@@ -1,4 +1,5 @@
 .. default-domain:: cpp
+.. highlight:: cpp
 
 libaria2: C++ library interface to aria2
 ========================================
@@ -16,6 +17,12 @@ in *examples* directory to see how to use API.
 API Reference
 -------------
 
-All enums, types and functions are under ``aria2`` namespace.
+To use the API function, include ``aria2/aria2.h``::
+
+    #include <aria2/aria2.h>
+
+All enums, types and functions are under ``aria2`` namespace. To link
+with libaria2, use linker flag ``-laria2``.
+
 
 .. include:: libaria2api
