@@ -85,7 +85,8 @@ int main(int argc, char** argv)
   aria2::libraryInit();
   // session is actually singleton: 1 session per process
   aria2::Session* session;
-  // Create default configuration
+  // Create default configuration. The libaria2 takes care of signal
+  // handling.
   aria2::SessionConfig config;
   // Add event callback
   config.downloadEventCallback = downloadEventCallback;
