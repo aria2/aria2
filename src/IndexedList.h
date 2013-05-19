@@ -103,7 +103,7 @@ struct IndexedListIterator {
     return *this;
   }
 
-  SelfType& operator--(int)
+  SelfType operator--(int)
   {
     SelfType copy = *this;
     --*this;
