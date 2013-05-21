@@ -95,7 +95,7 @@ int main(int argc, char** argv)
   for(int i = 1; i < argc; ++i) {
     std::vector<std::string> uris = {argv[i]};
     aria2::KeyVals options;
-    rv = aria2::addUri(session, 0, uris, options);
+    rv = aria2::addUri(session, nullptr, uris, options);
     if(rv < 0) {
       std::cerr << "Failed to add download " << uris[0] << std::endl;
     }
