@@ -57,7 +57,7 @@ GZipFile::GZipFile(const char* filename, const char* mode)
   open_  = fp;
   if (open_) {
     int fd = dup(fileno(fp));
-    if ((open_ = fd) >= 0) {
+    if ((open_ = (fd >= 0))) {
       open_ = (fp_ = gzdopen(fd, mode));
       if (!open_) {
         ::close(fd);
