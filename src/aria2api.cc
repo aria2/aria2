@@ -790,8 +790,12 @@ struct RequestGroupDH : public DownloadHandle {
       if(!torrentAttrs->metadata.empty()) {
         res.name = torrentAttrs->name;
       }
-    }
+    } else
 #endif // ENABLE_BITTORRENT
+      {
+        res.creationDate = 0;
+        res.mode = BT_FILE_MODE_NONE;
+      }
     return res;
   }
   virtual const std::string& getOption(const std::string& name)

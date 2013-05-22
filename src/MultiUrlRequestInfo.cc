@@ -113,9 +113,13 @@ MultiUrlRequestInfo::MultiUrlRequestInfo
     statCalc_(statCalc),
     summaryOut_(summaryOut),
     uriListParser_(uriListParser),
-    // TODO init mask_
     useSignalHandler_(true)
 {
+#ifdef HAVE_SIGACTION
+  sigemptyset(&mask_);
+#else // !HAVE_SIGACTION
+  mask_ = 0;
+#endif // !HAVE_SIGACTION
   requestGroups_.swap(requestGroups);
 }
 
