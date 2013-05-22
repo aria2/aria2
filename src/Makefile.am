@@ -131,8 +131,6 @@ SRCS =  option_processing.cc\
 	AbstractSingleDiskAdaptor.cc AbstractSingleDiskAdaptor.h\
 	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
 	MultiDiskAdaptor.cc MultiDiskAdaptor.h\
-	PeerSessionResource.cc PeerSessionResource.h\
-	BtRegistry.cc BtRegistry.h\
 	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h\
 	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
 	ByteArrayDiskWriterFactory.h\
@@ -400,8 +398,10 @@ SRCS += PeerAbstractCommand.cc PeerAbstractCommand.h\
 	PeerInitiateConnectionCommand.cc PeerInitiateConnectionCommand.h\
 	PeerInteractionCommand.cc PeerInteractionCommand.h\
 	Peer.cc Peer.h\
+	PeerSessionResource.cc PeerSessionResource.h\
 	PeerConnection.cc PeerConnection.h\
 	PeerListenCommand.cc PeerListenCommand.h\
+	BtRegistry.cc BtRegistry.h\
 	RequestSlot.cc RequestSlot.h\
 	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
 	PeerChokeCommand.cc PeerChokeCommand.h\
