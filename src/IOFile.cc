@@ -32,7 +32,7 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "BufferedFile.h"
+#include "IOFile.h"
 
 #include <cstring>
 #include <cstdarg>
@@ -43,78 +43,108 @@
 
 namespace aria2 {
 
-BufferedFile::BufferedFile(const char* filename, const char* mode)
-  :
-#ifdef __MINGW32__
-  fp_(a2fopen(utf8ToWChar(filename).c_str(), utf8ToWChar(mode).c_str())),
-#else // !__MINGW32__
-  fp_(a2fopen(filename, mode)),
-#endif // !__MINGW32__
-  open_(fp_),
-  supportsColor_(fp_ ? isatty(fileno(fp_)) : false)
-{}
+const char IOFile::READ[] = "rb";
+const char IOFile::WRITE[] = "wb";
+const char IOFile::APPEND[] = "ab";
 
-BufferedFile::BufferedFile(FILE* fp)
-  : fp_(fp), open_(fp_), supportsColor_(fp_ ? isatty(fileno(fp_)) : false)
-{}
-
-BufferedFile::~BufferedFile()
+IOFile::operator unspecified_bool_type() const
 {
-  close();
+  bool ok = isOpen() && !isError();
+  return ok ? &IOFile::goodState : 0;
 }
 
-size_t BufferedFile::onRead(void* ptr, size_t count)
+size_t IOFile::read(void* ptr, size_t count)
 {
-  return fread(ptr, 1, count, fp_);
+  return onRead(ptr, count);
 }
 
-size_t BufferedFile::onWrite(const void* ptr, size_t count)
+size_t IOFile::write(const void* ptr, size_t count)
 {
-  return fwrite(ptr, 1, count, fp_);
+  return onWrite(ptr, count);
 }
 
-char* BufferedFile::onGets(char* s, int size)
+size_t IOFile::write(const char* str)
 {
-  return fgets(s, size, fp_);
+  return write(str, strlen(str));
 }
 
-int BufferedFile::onClose()
+char* IOFile::gets(char* s, int size)
 {
-  if (open_) {
-    open_ = false;
-    return fclose(fp_);
+  return onGets(s, size);
+}
+
+char* IOFile::getsn(char* s, int size)
+{
+  char* ptr = gets(s, size);
+  if(ptr) {
+    int len = strlen(ptr);
+    if(ptr[len-1] == '\n') {
+      ptr[len-1] = '\0';
+    }
   }
-  return 0;
+  return ptr;
 }
 
-int BufferedFile::onVprintf(const char* format, va_list va)
+std::string IOFile::getLine()
 {
-  return vfprintf(fp_, format, va);
+  std::string res;
+  if(eof()) {
+    return res;
+  }
+  char buf[4096];
+  while(gets(buf, sizeof(buf))) {
+    size_t len = strlen(buf);
+    bool lineBreak = false;
+    if(buf[len-1] == '\n') {
+      --len;
+      lineBreak = true;
+    }
+    res.append(buf, len);
+    if(lineBreak) {
+      break;
+    }
+  }
+  return res;
 }
 
-int BufferedFile::onFlush()
+int IOFile::close()
 {
-  return fflush(fp_);
+  return onClose();
 }
 
-bool BufferedFile::onSupportsColor()
+bool IOFile::eof()
 {
-  return supportsColor_;
+  return !isOpen() || isEOF();
 }
 
-bool BufferedFile::isError() const
+size_t IOFile::transfer(std::ostream& out)
 {
-  return ferror(fp_);
+  size_t count = 0;
+  char buf[4096];
+  while(1) {
+    size_t r = this->read(buf, sizeof(buf));
+    out.write(buf, r);
+    count += r;
+    if(r < sizeof(buf)) {
+      break;
+    }
+  }
+  return count;
 }
 
-bool BufferedFile::isEOF() const
+int IOFile::vprintf(const char* format, va_list va)
 {
-  return feof(fp_);
+  return onVprintf(format, va);
 }
 
-bool BufferedFile::isOpen() const
+int IOFile::flush()
 {
-  return open_;
+  return onFlush();
+}
+
+bool IOFile::supportsColor()
+{
+  return onSupportsColor();
 }
 
 } // namespace aria2

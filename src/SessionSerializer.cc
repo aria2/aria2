@@ -70,15 +70,15 @@ bool SessionSerializer::save(const std::string& filename) const
   std::string tempFilename = filename;
   tempFilename += "__temp";
   {
-    SharedHandle<BufferedFile> fp;
+    SharedHandle<IOFile> fp;
 #if HAVE_ZLIB
     if (util::endsWith(filename, ".gz")) {
-      fp.reset(new GZipFile(tempFilename.c_str(), BufferedFile::WRITE));
+      fp.reset(new GZipFile(tempFilename.c_str(), IOFile::WRITE));
     }
     else
 #endif
     {
-     fp.reset(new BufferedFile(tempFilename.c_str(), BufferedFile::WRITE));
+     fp.reset(new BufferedFile(tempFilename.c_str(), IOFile::WRITE));
     }
     if(!*fp) {
       return false;
@@ -93,7 +93,7 @@ bool SessionSerializer::save(const std::string& filename) const
 namespace {
 // Write 1 line of option name/value pair. This function returns true
 // if it succeeds, or false.
-bool writeOptionLine(BufferedFile& fp, const Pref* pref,
+bool writeOptionLine(IOFile& fp, const Pref* pref,
                      const std::string& val)
 {
   size_t prefLen = strlen(pref->k);
@@ -106,7 +106,7 @@ bool writeOptionLine(BufferedFile& fp, const Pref* pref,
 } // namespace
 
 namespace {
-bool writeOption(BufferedFile& fp, const SharedHandle<Option>& op)
+bool writeOption(IOFile& fp, const SharedHandle<Option>& op)
 {
   const SharedHandle<OptionParser>& oparser = OptionParser::getInstance();
   for(size_t i = 1, len = option::countOption(); i < len; ++i) {
@@ -151,7 +151,7 @@ bool writeOption(BufferedFile& fp, const SharedHandle<Option>& op)
 
 namespace {
 bool writeDownloadResult
-(BufferedFile& fp, std::set<a2_gid_t>& metainfoCache,
+(IOFile& fp, std::set<a2_gid_t>& metainfoCache,
  const SharedHandle<DownloadResult>& dr)
 {
   const SharedHandle<MetadataInfo>& mi = dr->metadataInfo;
@@ -211,7 +211,7 @@ bool writeDownloadResult
 }
 } // namespace
 
-bool SessionSerializer::save(BufferedFile& fp) const
+bool SessionSerializer::save(IOFile& fp) const
 {
   std::set<a2_gid_t> metainfoCache;
   const DownloadResultList& results = rgman_->getDownloadResults();

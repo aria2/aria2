@@ -229,6 +229,7 @@ SRCS =  option_processing.cc\
 	OutputFile.h\
 	NullOutputFile.h\
 	console.cc console.h\
+	IOFile.cc IOFile.h\
 	BufferedFile.cc BufferedFile.h\
 	SegList.h\
 	NullHandle.h\

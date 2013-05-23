@@ -38,20 +38,25 @@
 
 #include <zlib.h>
 
-#include "BufferedFile.h"
+#include "IOFile.h"
 
 namespace aria2 {
 
-class GZipFile: public BufferedFile {
+class GZipFile: public IOFile {
 public:
   GZipFile(const char* filename, const char* mode);
   virtual ~GZipFile();
-  virtual int close();
-  virtual size_t read(void* ptr, size_t count);
-  virtual size_t write(const void* ptr, size_t count);
-  virtual char* gets(char* s, int size);
-  virtual int vprintf(const char* format, va_list va);
-  virtual int flush();
+protected:
+  virtual size_t onRead(void* ptr, size_t count);
+  virtual size_t onWrite(const void* ptr, size_t count);
+  virtual char* onGets(char* s, int size);
+  virtual int onVprintf(const char* format, va_list va);
+  virtual int onFlush();
+  virtual int onClose();
+  virtual bool onSupportsColor();
+  virtual bool isError() const;
+  virtual bool isEOF() const;
+  virtual bool isOpen() const;
 private:
   // Don't allow copying
   GZipFile(const GZipFile&);
@@ -62,10 +67,6 @@ private:
 
   size_t buflen_;
   char* buf_;
-protected:
-  virtual bool isError() const;
-  virtual bool isEOF() const { return gzeof(fp_); }
-  virtual bool isOpen() const { return open_; }
 };
 
 } // namespace aria2

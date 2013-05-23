@@ -42,14 +42,14 @@
 #include <iosfwd>
 
 #include "Option.h"
-#include "BufferedFile.h"
+#include "IOFile.h"
 #include "SharedHandle.h"
 
 namespace aria2 {
 
 class UriListParser {
 private:
-  SharedHandle<BufferedFile> fp_;
+  SharedHandle<IOFile> fp_;
 
   std::string line_;
 public:
