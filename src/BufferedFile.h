@@ -69,7 +69,6 @@ private:
   BufferedFile& operator=(const BufferedFile&);
 
   FILE* fp_;
-  bool open_;
   bool supportsColor_;
 };
 

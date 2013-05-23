@@ -44,7 +44,7 @@
 namespace aria2 {
 
 GZipFile::GZipFile(const char* filename, const char* mode)
-  : fp_(0), open_(false),
+  : fp_(0),
     buflen_(1024), buf_(reinterpret_cast<char*>(malloc(buflen_)))
 {
   FILE* fp =
@@ -54,22 +54,21 @@ GZipFile::GZipFile(const char* filename, const char* mode)
   a2fopen(filename, mode);
 #endif // !__MINGW32__
 
-  open_  = fp;
-  if (open_) {
+  if (fp) {
     int fd = dup(fileno(fp));
-    if ((open_ = (fd >= 0))) {
-      open_ = (fp_ = gzdopen(fd, mode));
-      if (!open_) {
-        ::close(fd);
-      }
-    }
-    if (open_) {
+    if (fd != -1) {
+      fp_ = gzdopen(fd, mode);
+      if (fp_) {
+        // fp_ retains fd and gzclose() will close fd as well.
 #if HAVE_GZBUFFER
-      gzbuffer(fp_, 1<<17);
+        gzbuffer(fp_, 1<<17);
 #endif
 #if HAVE_GZSETPARAMS
-      gzsetparams(fp_, 2, Z_DEFAULT_STRATEGY);
+        gzsetparams(fp_, 2, Z_DEFAULT_STRATEGY);
 #endif
+      } else {
+        ::close(fd);
+      }
     }
     fclose(fp);
   }
@@ -83,11 +82,12 @@ GZipFile::~GZipFile()
 
 int GZipFile::onClose()
 {
-  if (open_) {
-    open_ = false;
-    return gzclose(fp_);
+  int rv = 0;
+  if (fp_) {
+    rv = gzclose(fp_);
+    fp_ = 0;
   }
-  return 0;
+  return rv;
 }
 
 bool GZipFile::onSupportsColor()
@@ -109,7 +109,7 @@ bool GZipFile::isEOF() const
 
 bool GZipFile::isOpen() const
 {
-  return open_;
+  return fp_;
 }
 
 size_t GZipFile::onRead(void* ptr, size_t count)

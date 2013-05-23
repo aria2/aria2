@@ -63,8 +63,6 @@ private:
   GZipFile& operator=(const GZipFile&);
 
   gzFile fp_;
-  bool open_;
-
   size_t buflen_;
   char* buf_;
 };

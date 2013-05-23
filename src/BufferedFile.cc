@@ -50,12 +50,11 @@ BufferedFile::BufferedFile(const char* filename, const char* mode)
 #else // !__MINGW32__
   fp_(a2fopen(filename, mode)),
 #endif // !__MINGW32__
-  open_(fp_),
   supportsColor_(fp_ ? isatty(fileno(fp_)) : false)
 {}
 
 BufferedFile::BufferedFile(FILE* fp)
-  : fp_(fp), open_(fp_), supportsColor_(fp_ ? isatty(fileno(fp_)) : false)
+  : fp_(fp), supportsColor_(fp_ ? isatty(fileno(fp_)) : false)
 {}
 
 BufferedFile::~BufferedFile()
@@ -80,11 +79,12 @@ char* BufferedFile::onGets(char* s, int size)
 
 int BufferedFile::onClose()
 {
-  if (open_) {
-    open_ = false;
-    return fclose(fp_);
+  int rv = 0;
+  if (fp_) {
+    rv = fclose(fp_);
+    fp_ = 0;
   }
-  return 0;
+  return rv;
 }
 
 int BufferedFile::onVprintf(const char* format, va_list va)
@@ -114,7 +114,7 @@ bool BufferedFile::isEOF() const
 
 bool BufferedFile::isOpen() const
 {
-  return open_;
+  return fp_;
 }
 
 } // namespace aria2
