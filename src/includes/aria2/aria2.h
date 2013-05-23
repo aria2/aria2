@@ -242,10 +242,13 @@ enum RUN_MODE {
  *
  * If the |mode| is :c:macro:`RUN_ONCE`, this function returns after
  * one event polling. In the current implementation, event polling
- * timeouts in 1 second, so this function returns at most 1 second. On
- * return, when no downloads are left to be processed, this function
- * returns 0. Otherwise, returns 1, indicating that the caller must
- * call this function one or more time to complete downloads.
+ * timeouts in 1 second. This function also returns on each
+ * timeout. On return, when no downloads are left to be processed,
+ * this function returns 0. Otherwise, returns 1, indicating that the
+ * caller must call this function one or more time to complete
+ * downloads.
+ *
+ * In either case, this function returns negative error code on error.
  */
 int run(Session* session, RUN_MODE mode);
 
