@@ -192,7 +192,7 @@ std::string usedLibs()
   res += "GnuTLS/"GNUTLS_VERSION" ";
 #endif // HAVE_LIBGNUTLS
 #ifdef HAVE_OPENSSL
-  res += fmt("OpenSSL/%d.%d.%d",
+  res += fmt("OpenSSL/%ld.%ld.%ld",
              OPENSSL_VERSION_NUMBER >> 28,
              (OPENSSL_VERSION_NUMBER >> 20) & 0xff,
              (OPENSSL_VERSION_NUMBER >> 12) & 0xff);
