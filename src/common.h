@@ -51,8 +51,18 @@
 #ifdef __MINGW32__
 # define WIN32_LEAN_AND_MEAN
 # ifndef WINVER
-#  define WINVER 0x501u
-# endif // WINVER
+#  define WINVER 0x501
+# endif // !WINVER
+# ifndef _WIN32_WINNT
+#  define _WIN32_WINNT 0x501
+# endif // _WIN32_WINNT
+# ifdef HAVE_WINSOCK2_H
+#  ifndef FD_SETSIZE
+#    define FD_SETSIZE 1024
+#  endif // !FD_SETSIZE
+#  include <winsock2.h>
+#  undef ERROR
+# endif // HAVE_WINSOCK2_H
 # include <windows.h>
 #endif // __MINGW32__
 

@@ -41,19 +41,6 @@
 
 #include <iostream>
 
-#ifdef HAVE_WINSOCK2_H
-
-#ifndef _WIN32_WINNT
-# define _WIN32_WINNT 0x501u
-#endif // _WIN32_WINNT
-#include <winsock2.h>
-#undef ERROR
-#ifdef HAVE_WS2TCPIP_H
-# include <ws2tcpip.h>
-#endif // HAVE_WS2TCPIP_H
-
-#endif // HAVE_WINSOCK2_H
-
 #ifdef HAVE_OPENSSL
 # include <openssl/err.h>
 # include <openssl/ssl.h>
@@ -69,6 +56,7 @@
 # include <ares.h>
 #endif // ENABLE_ASYNC_DNS
 
+#include "a2netcompat.h"
 #include "DlAbortEx.h"
 #include "message.h"
 #include "fmt.h"
