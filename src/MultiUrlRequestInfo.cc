@@ -166,6 +166,7 @@ int MultiUrlRequestInfo::prepare()
     // Avoid keeping RequestGroups alive longer than necessary
     requestGroups_.clear();
 
+#ifdef ENABLE_WEBSOCKET
     if(option_->getAsBool(PREF_ENABLE_RPC)) {
       SharedHandle<rpc::WebSocketSessionMan> wsSessionMan
         (new rpc::WebSocketSessionMan());
@@ -173,6 +174,7 @@ int MultiUrlRequestInfo::prepare()
       SingletonHolder<Notifier>::instance()->addDownloadEventListener
         (wsSessionMan);
     }
+#endif // ENABLE_WEBSOCKET
 
     if(!option_->blank(PREF_LOAD_COOKIES)) {
       File cookieFile(option_->get(PREF_LOAD_COOKIES));
