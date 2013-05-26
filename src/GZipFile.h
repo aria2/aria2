@@ -36,9 +36,9 @@
 #ifndef D_GZIP_FILE_H
 #define D_GZIP_FILE_H
 
-#include <zlib.h>
-
 #include "IOFile.h"
+
+#include <zlib.h>
 
 namespace aria2 {
 
