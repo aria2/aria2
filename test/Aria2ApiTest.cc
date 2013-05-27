@@ -2,9 +2,15 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "TestUtil.h"
 #include "prefs.h"
 #include "OptionParser.h"
 #include "OptionHandler.h"
+#include "RequestGroupMan.h"
+#include "Context.h"
+#include "MultiUrlRequestInfo.h"
+#include "DownloadEngine.h"
+#include "Option.h"
 
 namespace aria2 {
 
@@ -18,6 +24,7 @@ class Aria2ApiTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testChangePosition);
   CPPUNIT_TEST(testChangeOption);
   CPPUNIT_TEST(testChangeGlobalOption);
+  CPPUNIT_TEST(testDownloadResultDH);
   CPPUNIT_TEST_SUITE_END();
 
   Session* session_;
@@ -41,6 +48,7 @@ public:
   void testChangePosition();
   void testChangeOption();
   void testChangeGlobalOption();
+  void testDownloadResultDH();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(Aria2ApiTest);
@@ -217,6 +225,33 @@ void Aria2ApiTest::testChangeGlobalOption()
   options.clear();
   options.push_back(KeyVals::value_type(PREF_FILE_ALLOCATION->k, "foo"));
   CPPUNIT_ASSERT_EQUAL(-1, changeGlobalOption(session_, options));
+}
+
+void Aria2ApiTest::testDownloadResultDH()
+{
+  SharedHandle<DownloadResult> dr1 =
+    createDownloadResult(error_code::TIME_OUT, "http://example.org/timeout");
+  dr1->option->put(PREF_DIR, "mydownload");
+  SharedHandle<DownloadResult> dr2 =
+    createDownloadResult(error_code::NETWORK_PROBLEM,
+                         "http://example.org/network");
+  SharedHandle<RequestGroupMan> gman =
+    session_->context->reqinfo->getDownloadEngine()->getRequestGroupMan();
+  gman->addDownloadResult(dr1);
+  gman->addDownloadResult(dr2);
+
+  DownloadHandle* hd = getDownloadHandle(session_, dr1->gid->getNumericId());
+  CPPUNIT_ASSERT_EQUAL(DOWNLOAD_ERROR, hd->getStatus());
+  CPPUNIT_ASSERT_EQUAL((int)error_code::TIME_OUT, hd->getErrorCode());
+  CPPUNIT_ASSERT_EQUAL(std::string("mydownload"),
+                       hd->getOption(PREF_DIR->k));
+  // Don't return hidden option
+  CPPUNIT_ASSERT(hd->getOption(PREF_STARTUP_IDLE_TIME->k).empty());
+  KeyVals retopts = hd->getOptions();
+  CPPUNIT_ASSERT(std::find(retopts.begin(), retopts.end(),
+                           KeyVals::value_type(PREF_DIR->k, "mydownload"))
+                 != retopts.end());
+  deleteDownloadHandle(hd);
 }
 
 } // namespace aria2
