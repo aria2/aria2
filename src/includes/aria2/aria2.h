@@ -867,10 +867,6 @@ public:
    * not return options which have no default value and have not been
    * set by :func:`sessionNew()`, configuration files or API
    * functions.
-   *
-   * Calling this function for the download which is not in
-   * :c:macro:`DOWNLOAD_ACTIVE`, :c:macro:`DOWNLOAD_PAUSED` or
-   * :c:macro:`DOWNLOAD_WAITING` will return empty array.
    */
   virtual KeyVals getOptions() = 0;
 };

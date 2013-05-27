@@ -662,6 +662,29 @@ void pushRequestOption
 } // namespace
 
 namespace {
+const std::string& getRequestOption(const SharedHandle<Option>& option,
+                                    const std::string& name)
+{
+  const Pref* pref = option::k2p(name);
+  if(OptionParser::getInstance()->find(pref)) {
+    return option->get(pref);
+  } else {
+    return A2STR::NIL;
+  }
+}
+} // namespace
+
+namespace {
+KeyVals getRequestOptions(const SharedHandle<Option>& option)
+{
+  KeyVals res;
+  pushRequestOption(std::back_inserter(res), option,
+                    OptionParser::getInstance());
+  return res;
+}
+} // namespace
+
+namespace {
 struct RequestGroupDH : public DownloadHandle {
   RequestGroupDH(const SharedHandle<RequestGroup>& group)
     : group(group),
@@ -800,19 +823,11 @@ struct RequestGroupDH : public DownloadHandle {
   }
   virtual const std::string& getOption(const std::string& name)
   {
-    const Pref* pref = option::k2p(name);
-    if(OptionParser::getInstance()->find(pref)) {
-      return group->getOption()->get(pref);
-    } else {
-      return A2STR::NIL;
-    }
+    return getRequestOption(group->getOption(), name);
   }
   virtual KeyVals getOptions()
   {
-    KeyVals res;
-    pushRequestOption(std::back_inserter(res), group->getOption(),
-                      OptionParser::getInstance());
-    return res;
+    return getRequestOptions(group->getOption());
   }
   SharedHandle<RequestGroup> group;
   TransferStat ts;
@@ -917,11 +932,11 @@ struct DownloadResultDH : public DownloadHandle {
   }
   virtual const std::string& getOption(const std::string& name)
   {
-    return A2STR::NIL;
+    return getRequestOption(dr->option, name);
   }
   virtual KeyVals getOptions()
   {
-    return KeyVals();
+    return getRequestOptions(dr->option);
   }
   SharedHandle<DownloadResult> dr;
 };
