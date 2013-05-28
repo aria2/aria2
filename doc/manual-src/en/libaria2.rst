@@ -87,8 +87,8 @@ information::
   }
 
 The ``userData`` object is specified by
-:member:`SessionConfig::userData`. In this example, we does not
-specify it, so it is ``nullptr``.
+:member:`SessionConfig::userData`. In this example, we don't specify
+it, so it is ``nullptr``.
 
 The first argument to :func:`sessionNew()` is ``aria2::KeyVals()``.
 This type is used in API to specify vector of key/value pairs, mostly
@@ -125,7 +125,7 @@ so pass the empty vector as options. The second argument of
 this example code, we have no interest for it, so just pass
 ``nullptr``.
 
-We setup everything at this stage. So let's start download.  To
+We have set up everything at this stage. So let's start download.  To
 perform the download, call :func:`run()` repeatedly until it returns
 the value other than ``1``::
 
