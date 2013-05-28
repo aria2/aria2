@@ -51,6 +51,7 @@ class RpcMethodTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testAddMetalink_notBase64Metalink);
   CPPUNIT_TEST(testAddMetalink_withPosition);
 #endif // ENABLE_METALINK
+  CPPUNIT_TEST(testGetOption);
   CPPUNIT_TEST(testChangeOption);
   CPPUNIT_TEST(testChangeOption_withBadOption);
   CPPUNIT_TEST(testChangeOption_withNotAllowedOption);
@@ -86,6 +87,7 @@ public:
     option_.reset(new Option());
     option_->put(PREF_DIR, A2_TEST_OUT_DIR"/aria2_RpcMethodTest");
     option_->put(PREF_PIECE_LENGTH, "1048576");
+    option_->put(PREF_MAX_DOWNLOAD_RESULT, "10");
     File(option_->get(PREF_DIR)).mkdirs();
     e_.reset
       (new DownloadEngine(SharedHandle<EventPoll>(new SelectEventPoll())));
@@ -114,6 +116,7 @@ public:
   void testAddMetalink_notBase64Metalink();
   void testAddMetalink_withPosition();
 #endif // ENABLE_METALINK
+  void testGetOption();
   void testChangeOption();
   void testChangeOption_withBadOption();
   void testChangeOption_withNotAllowedOption();
@@ -483,6 +486,40 @@ void RpcMethodTest::testAddMetalink_withPosition()
 }
 
 #endif // ENABLE_METALINK
+
+void RpcMethodTest::testGetOption()
+{
+  SharedHandle<RequestGroup> group(new RequestGroup(GroupId::create(),
+                                                    option_));
+  group->getOption()->put(PREF_DIR, "alpha");
+  e_->getRequestGroupMan()->addReservedGroup(group);
+  SharedHandle<DownloadResult> dr = createDownloadResult(error_code::FINISHED,
+                                                         "http://host/fin");
+  dr->option->put(PREF_DIR, "bravo");
+  e_->getRequestGroupMan()->addDownloadResult(dr);
+
+  GetOptionRpcMethod m;
+  RpcRequest req(GetOptionRpcMethod::getMethodName(), List::g());
+  req.params->append(GroupId::toHex(group->getGID()));
+  RpcResponse res = m.execute(req, e_.get());
+  CPPUNIT_ASSERT_EQUAL(0, res.code);
+  const Dict* resopt = downcast<Dict>(res.param);
+  CPPUNIT_ASSERT_EQUAL(std::string("alpha"),
+                       downcast<String>(resopt->get(PREF_DIR->k))->s());
+
+  req.params = List::g();
+  req.params->append(dr->gid->toHex());
+  res = m.execute(req, e_.get());
+  CPPUNIT_ASSERT_EQUAL(0, res.code);
+  resopt = downcast<Dict>(res.param);
+  CPPUNIT_ASSERT_EQUAL(std::string("bravo"),
+                       downcast<String>(resopt->get(PREF_DIR->k))->s());
+  // Invalid GID
+  req.params = List::g();
+  req.params->append(GroupId::create()->toHex());
+  res = m.execute(req, e_.get());
+  CPPUNIT_ASSERT_EQUAL(1, res.code);
+}
 
 void RpcMethodTest::testChangeOption()
 {

@@ -1155,13 +1155,18 @@ SharedHandle<ValueBase> GetOptionRpcMethod::process
 
   a2_gid_t gid = str2Gid(gidParam);
   SharedHandle<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
-  if(!group) {
-    throw DL_ABORT_EX(fmt("Cannot get option for GID#%s",
-                          GroupId::toHex(gid).c_str()));
-  }
   SharedHandle<Dict> result = Dict::g();
-  SharedHandle<Option> option = group->getOption();
-  pushRequestOption(result, option, getOptionParser());
+  if(!group) {
+    SharedHandle<DownloadResult> dr =
+      e->getRequestGroupMan()->findDownloadResult(gid);
+    if(!dr) {
+      throw DL_ABORT_EX(fmt("Cannot get option for GID#%s",
+                            GroupId::toHex(gid).c_str()));
+    }
+    pushRequestOption(result, dr->option, getOptionParser());
+  } else {
+    pushRequestOption(result, group->getOption(), getOptionParser());
+  }
   return result;
 }
 
