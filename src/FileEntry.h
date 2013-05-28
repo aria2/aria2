@@ -136,6 +136,12 @@ public:
     return spentUris_;
   }
 
+  // Exposed for unitest
+  std::deque<std::string>& getSpentUris()
+  {
+    return spentUris_;
+  }
+
   size_t setUris(const std::vector<std::string>& uris);
 
   template<typename InputIterator>

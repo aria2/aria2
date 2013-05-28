@@ -36,6 +36,7 @@
 
 #include <cstdio>
 #include <iterator>
+#include <set>
 
 #include "RequestGroupMan.h"
 #include "a2functional.h"
@@ -135,6 +136,27 @@ bool writeOption(IOFile& fp, const SharedHandle<Option>& op)
 }
 } // namespace
 
+namespace {
+bool writeUri(IOFile& fp, const std::string& uri)
+{
+  return fp.write(uri.c_str(), uri.size()) == uri.size() &&
+    fp.write("\t", 1) == 1;
+}
+} // namespace
+
+namespace {
+template<typename InputIterator>
+bool writeUri(IOFile& fp, InputIterator first, InputIterator last)
+{
+  for(; first != last; ++first) {
+    if(!writeUri(fp, *first)) {
+      return false;
+    }
+  }
+  return true;
+}
+} // namespace
+
 // The downloads whose followedBy() is empty is persisited with its
 // GID without no problem. For other cases, there are several patterns.
 //
@@ -173,16 +195,29 @@ bool writeDownloadResult
       return true;
     }
     const SharedHandle<FileEntry>& file = dr->fileEntries[0];
-    if(file->getRemainingUris().empty()) {
+    // Don't save download if there are no URIs.
+    if(file->getRemainingUris().empty() &&
+       file->getSpentUris().empty()) {
       return true;
     }
+    // Save spent URIs + remaining URIs. Remove URI in spent URI which
+    // also exists in remaining URIs.
+    std::set<std::string> uriSet(file->getRemainingUris().begin(),
+                                 file->getRemainingUris().end());
     for(std::deque<std::string>::const_iterator i =
-          file->getRemainingUris().begin(),
-          eoi = file->getRemainingUris().end(); i != eoi; ++i) {
-      if (fp.write((*i).c_str(), (*i).size()) != (*i).size() ||
-          fp.write("\t", 1) != 1) {
+          file->getSpentUris().begin(), eoi = file->getSpentUris().end();
+        i != eoi; ++i) {
+      if(uriSet.count(*i)) {
+        continue;
+      }
+      uriSet.insert(*i);
+      if(!writeUri(fp, *i)) {
         return false;
       }
+    }
+    if(!writeUri(fp, file->getRemainingUris().begin(),
+                 file->getRemainingUris().end())) {
+      return false;
     }
     if(fp.write("\n", 1) != 1) {
       return false;

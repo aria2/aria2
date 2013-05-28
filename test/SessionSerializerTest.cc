@@ -22,9 +22,11 @@ class SessionSerializerTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(SessionSerializerTest);
   CPPUNIT_TEST(testSave);
+  CPPUNIT_TEST(testSaveErrorDownload);
   CPPUNIT_TEST_SUITE_END();
 public:
   void testSave();
+  void testSaveErrorDownload();
 };
 
 
@@ -121,6 +123,28 @@ void SessionSerializerTest::testSave()
   std::getline(ss, line);
   CPPUNIT_ASSERT(!ss);
 #endif // defined(ENABLE_BITTORRENT) && defined(ENABLE_METALINK)
+}
+
+void SessionSerializerTest::testSaveErrorDownload()
+{
+  SharedHandle<DownloadResult> dr = createDownloadResult(error_code::TIME_OUT,
+                                                         "http://error");
+  dr->fileEntries[0]->getSpentUris().swap
+    (dr->fileEntries[0]->getRemainingUris());
+  SharedHandle<Option> option(new Option());
+  option->put(PREF_MAX_DOWNLOAD_RESULT, "10");
+  SharedHandle<RequestGroupMan> rgman
+    (new RequestGroupMan(std::vector<SharedHandle<RequestGroup> >(), 1,
+                         option.get()));
+  rgman->addDownloadResult(dr);
+  SessionSerializer s(rgman);
+  std::string filename =
+    A2_TEST_OUT_DIR"/aria2_SessionSerializerTest_testSaveErrorDownload";
+  CPPUNIT_ASSERT(s.save(filename));
+  std::ifstream ss(filename.c_str(), std::ios::binary);
+  std::string line;
+  std::getline(ss, line);
+  CPPUNIT_ASSERT_EQUAL(std::string("http://error\t"), line);
 }
 
 } // namespace aria2
