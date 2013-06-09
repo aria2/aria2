@@ -24,10 +24,10 @@ The project page is located at http://aria2.sourceforge.net/.
 See `aria2 Online Manual
 <http://aria2.sourceforge.net/manual/en/html/>`_ (`Russian translation
 <http://aria2.sourceforge.net/manual/ru/html/>`_, `Portuguese
-translation (1.15.2 based)
-<http://aria2.sourceforge.net/manual/pt/html/>`_) and `the usage
-examples <http://sourceforge.net/apps/trac/aria2/wiki/UsageExample>`_
-to learn how to use aria2.
+translation <http://aria2.sourceforge.net/manual/pt/html/>`_) and `the
+usage examples
+<http://sourceforge.net/apps/trac/aria2/wiki/UsageExample>`_ to learn
+how to use aria2.
 
 Features
 --------
@@ -337,7 +337,7 @@ they are not up-to-date.  You can also build HTML version of aria2 man
 page by ``make html``. The HTML version manual is also available at
 `online <http://aria2.sourceforge.net/manual/en/html/>`_ (`Russian
 translation <http://aria2.sourceforge.net/manual/ru/html/>`_,
-`Portuguese translation (1.15.2 based)
+`Portuguese translation
 <http://aria2.sourceforge.net/manual/pt/html/>`_).
 
 BitTorrrent
