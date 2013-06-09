@@ -384,7 +384,7 @@ option to change the port number.
 Other things should be noted
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* -o option is used to change the filename of .torrent file itself,
+* ``-o`` option is used to change the filename of .torrent file itself,
   not a filename of a file in .torrent file. For this purpose, use
   ``--index-out`` option instead.
 * The port numbers that aria2 uses by default are 6881-6999 for TCP
