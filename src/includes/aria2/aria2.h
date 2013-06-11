@@ -143,7 +143,7 @@ enum DownloadEvent {
  * of this callback should return 0 for compatibility.
  */
 typedef int (*DownloadEventCallback)(Session* session, DownloadEvent event,
-                                     const A2Gid& gid, void* userData);
+                                     A2Gid gid, void* userData);
 
 /**
  * @struct
@@ -257,7 +257,7 @@ int run(Session* session, RUN_MODE mode);
  *
  * Returns textual representation of the |gid|.
  */
-std::string gidToHex(const A2Gid& gid);
+std::string gidToHex(A2Gid gid);
 
 /**
  * @function
@@ -271,7 +271,7 @@ A2Gid hexToGid(const std::string& hex);
  *
  * Returns true if the |gid| is invalid.
  */
-bool isNull(const A2Gid& gid);
+bool isNull(A2Gid gid);
 
 /**
  * @function
@@ -375,7 +375,7 @@ std::vector<A2Gid> getActiveDownload(Session* session);
  * takes time such as contacting BitTorrent tracker. This function
  * returns 0 if it succeeds, or negative error code.
  */
-int removeDownload(Session* session, const A2Gid& gid, bool force = false);
+int removeDownload(Session* session, A2Gid gid, bool force = false);
 
 /**
  * @function
@@ -395,7 +395,7 @@ int removeDownload(Session* session, const A2Gid& gid, bool force = false);
  * :member:`SessionConfig::keepRunning` to true. Otherwise, the
  * behavior is undefined.
  */
-int pauseDownload(Session* session, const A2Gid& gid, bool force = false);
+int pauseDownload(Session* session, A2Gid gid, bool force = false);
 
 /**
  * @function
@@ -405,7 +405,7 @@ int pauseDownload(Session* session, const A2Gid& gid, bool force = false);
  * makes the download eligible to restart. This function returns 0 if
  * it succeeds, or negative error code.
  */
-int unpauseDownload(Session* session, const A2Gid& gid);
+int unpauseDownload(Session* session, A2Gid gid);
 
 /**
  * @function
@@ -437,7 +437,7 @@ int unpauseDownload(Session* session, const A2Gid& gid);
  *
  * This function returns 0 if it succeeds, or negative error code.
  */
-int changeOption(Session* session, const A2Gid& gid, const KeyVals& options);
+int changeOption(Session* session, A2Gid gid, const KeyVals& options);
 
 /**
  * @function
@@ -571,8 +571,7 @@ enum OffsetMode {
  * This function returns the final destination position of this
  * download, or negative error code.
  */
-int changePosition(Session* session, const A2Gid& gid, int pos,
-                   OffsetMode how);
+int changePosition(Session* session, A2Gid gid, int pos, OffsetMode how);
 
 /**
  * @function
@@ -884,7 +883,7 @@ public:
  * responsibility of the caller to call :func:`deleteDownloadHandle()`
  * to delete handle object.
  */
-DownloadHandle* getDownloadHandle(Session* session, const A2Gid& gid);
+DownloadHandle* getDownloadHandle(Session* session, A2Gid gid);
 
 /**
  * @function

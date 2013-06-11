@@ -174,7 +174,7 @@ int shutdown(Session* session, bool force)
   return 0;
 }
 
-std::string gidToHex(const A2Gid& gid)
+std::string gidToHex(A2Gid gid)
 {
   return GroupId::toHex(gid);
 }
@@ -189,7 +189,7 @@ A2Gid hexToGid(const std::string& hex)
   }
 }
 
-bool isNull(const A2Gid& gid)
+bool isNull(A2Gid gid)
 {
   return gid == 0;
 }
@@ -382,7 +382,7 @@ int addTorrent(Session* session,
                     options, position);
 }
 
-int removeDownload(Session* session, const A2Gid& gid, bool force)
+int removeDownload(Session* session, A2Gid gid, bool force)
 {
   const SharedHandle<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
@@ -408,7 +408,7 @@ int removeDownload(Session* session, const A2Gid& gid, bool force)
   return 0;
 }
 
-int pauseDownload(Session* session, const A2Gid& gid, bool force)
+int pauseDownload(Session* session, A2Gid gid, bool force)
 {
   const SharedHandle<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
@@ -423,7 +423,7 @@ int pauseDownload(Session* session, const A2Gid& gid, bool force)
   return -1;
 }
 
-int unpauseDownload(Session* session, const A2Gid& gid)
+int unpauseDownload(Session* session, A2Gid gid)
 {
   const SharedHandle<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
@@ -439,7 +439,7 @@ int unpauseDownload(Session* session, const A2Gid& gid)
   return 0;
 }
 
-int changePosition(Session* session, const A2Gid& gid, int pos, OffsetMode how)
+int changePosition(Session* session, A2Gid gid, int pos, OffsetMode how)
 {
   const SharedHandle<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
@@ -451,7 +451,7 @@ int changePosition(Session* session, const A2Gid& gid, int pos, OffsetMode how)
   }
 }
 
-int changeOption(Session* session, const A2Gid& gid, const KeyVals& options)
+int changeOption(Session* session, A2Gid gid, const KeyVals& options)
 {
   const SharedHandle<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
@@ -942,7 +942,7 @@ struct DownloadResultDH : public DownloadHandle {
 };
 } // namespace
 
-DownloadHandle* getDownloadHandle(Session* session, const A2Gid& gid)
+DownloadHandle* getDownloadHandle(Session* session, A2Gid gid)
 {
   const SharedHandle<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
