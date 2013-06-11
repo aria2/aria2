@@ -767,7 +767,8 @@ BitTorrent Specific Options
   file and downloads files mentioned in it.
   If ``mem`` is specified, a torrent file is not written to the disk, but is just
   kept in memory.
-  If ``false`` is specified, the action mentioned above is not taken.
+  If ``false`` is specified, the ``.torrent`` file is downloaded to the disk, but
+  is not parsed as a torrent and its contents are not downloaded.
   Default: ``true``
 
 .. option:: -O, --index-out=<INDEX>=<PATH>
@@ -3643,6 +3644,12 @@ Download only selected files using index(usually called "selectable download")
 .. note::
 
   The index is printed to the console using -S option.
+
+Download .torrent file, but do not download its contents
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. code-block:: console
+
+  $ aria2c --follow-torrent=false "http://host/file.torrent"
 
 Specify output filename
 ^^^^^^^^^^^^^^^^^^^^^^^
