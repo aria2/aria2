@@ -55,10 +55,13 @@ void BtHaveMessage::doReceivedAction()
   if(isMetadataGetMode()) {
     return;
   }
-  getPeer()->updateBitfield(getIndex(), 1);
-  getPieceStorage()->addPieceStats(getIndex());
-  if(getPeer()->isSeeder() && getPieceStorage()->downloadFinished()) {
-    throw DL_ABORT_EX(MSG_GOOD_BYE_SEEDER);
+  size_t index = getIndex();
+  if(!getPeer()->hasPiece(index)) {
+    getPeer()->updateBitfield(index, 1);
+    getPieceStorage()->addPieceStats(index);
+    if(getPeer()->isSeeder() && getPieceStorage()->downloadFinished()) {
+      throw DL_ABORT_EX(MSG_GOOD_BYE_SEEDER);
+    }
   }
 }
 

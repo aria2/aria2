@@ -179,8 +179,10 @@ size_t BtPieceMessage::getMessageHeaderLength()
 
 namespace {
 struct PieceSendUpdate : public ProgressUpdate {
-  PieceSendUpdate(const SharedHandle<Peer>& peer, size_t headerLength)
-    : peer(peer), headerLength(headerLength) {}
+  PieceSendUpdate(const SharedHandle<Peer>& peer, size_t headerLength,
+                  size_t index, const SharedHandle<PieceStorage>& pieceStorage)
+    : peer(peer), headerLength(headerLength), index(index),
+      pieceStorage(pieceStorage) {}
   virtual void update(size_t length, bool complete)
   {
     if(headerLength > 0) {
@@ -189,9 +191,17 @@ struct PieceSendUpdate : public ProgressUpdate {
       length -= m;
     }
     peer->updateUploadLength(length);
+    if(complete && !peer->hasPiece(index)) {
+      // Update peer's bitfield because peer may not send HAVE message
+      // to us.
+      peer->updateBitfield(index, 1);
+      pieceStorage->addPieceStats(index);
+    }
   }
   SharedHandle<Peer> peer;
   size_t headerLength;
+  size_t index;
+  SharedHandle<PieceStorage> pieceStorage;
 };
 } // namespace
 
@@ -224,7 +234,9 @@ void BtPieceMessage::pushPieceData(int64_t offset, int32_t length) const
     buf.reset(0);
     getPeerConnection()->pushBytes(dbuf, length+MESSAGE_HEADER_LENGTH,
                                    new PieceSendUpdate(getPeer(),
-                                                       MESSAGE_HEADER_LENGTH));
+                                                       MESSAGE_HEADER_LENGTH,
+                                                       index_,
+                                                       getPieceStorage()));
     // To avoid upload rate overflow, we update the length here at
     // once.
     downloadContext_->updateUploadLength(length);

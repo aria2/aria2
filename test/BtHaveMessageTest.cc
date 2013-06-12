@@ -115,6 +115,7 @@ void BtHaveMessageTest::testDoReceivedAction_goodByeSeeder()
   msg.doReceivedAction();
 
   pieceStorage->setDownloadFinished(true);
+  peer->updateBitfield(1, 0);
   try {
     msg.doReceivedAction();
     CPPUNIT_FAIL("exception must be thrown.");
