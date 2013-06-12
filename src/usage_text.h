@@ -388,8 +388,10 @@
     "                              mentioned in it.\n"                  \
     "                              If mem is specified, a metalink file is not\n" \
     "                              written to the disk, but is just kept in memory.\n" \
-    "                              If false is specified, the action mentioned above\n" \
-    "                              is not taken.")
+    "                              If false is specified, the .metalink file is\n" \
+    "                              downloaded to the disk, but is not parsed as a\n" \
+    "                              metalink file and its contents are not\n" \
+    "                              downloaded.")
 #define TEXT_METALINK_ENABLE_UNIQUE_PROTOCOL                            \
   _(" --metalink-enable-unique-protocol[=true|false] If true is given and several\n" \
     "                              protocols are available for a mirror in a metalink\n" \

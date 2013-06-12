@@ -848,7 +848,9 @@ Metalink Specific Options
   file and downloads files mentioned in it.
   If ``mem`` is specified, a metalink file is not written to the disk, but is just
   kept in memory.
-  If ``false`` is specified, the action mentioned above is not taken.
+  If ``false`` is specified, the ``.metalink`` file is downloaded to
+  the disk, but is not parsed as a metalink file and its contents are not
+  downloaded.
   Default: ``true``
 
 .. option:: --metalink-base-uri=<URI>
