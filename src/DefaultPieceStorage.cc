@@ -725,9 +725,6 @@ DefaultPieceStorage::getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
   for(std::deque<HaveEntry>::const_iterator itr = haves_.begin(),
         eoi = haves_.end(); itr != eoi; ++itr) {
     const HaveEntry& have = *itr;
-    if(have.getCuid() == myCuid) {
-      continue;
-    }
     if(lastCheckTime > have.getRegisteredTime()) {
       break;
     }
