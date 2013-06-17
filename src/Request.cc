@@ -131,17 +131,7 @@ bool Request::redirectUri(const std::string& uri) {
       // rfc2616 requires absolute URI should be provided by Location header
       // field, but some servers don't obey this rule.
       // UPDATE: draft-ietf-httpbis-p2-semantics-18 now allows this.
-      uri::UriStruct rus(us_);
-      rus.query.clear();
-      rus.file.clear();
-      size_t offset = 0;
-      if(uri[0] == '/') {
-        // abosulute path
-        rus.dir.clear();
-        offset = 1;
-      }
-      redirectedUri = uri::construct(rus);
-      redirectedUri.append(uri.begin()+offset, uri.end());
+      redirectedUri = uri::joinUri(currentUri_, uri);
     }
   }
   return parseUri(redirectedUri);

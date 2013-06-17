@@ -19,6 +19,7 @@ class RequestTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testRedirectUri);
   CPPUNIT_TEST(testRedirectUri2);
   CPPUNIT_TEST(testRedirectUri_supportsPersistentConnection);
+  CPPUNIT_TEST(testRedirectUri_uriNormalization);
   CPPUNIT_TEST(testResetUri);
   CPPUNIT_TEST(testResetUri_supportsPersistentConnection);
   CPPUNIT_TEST(testInnerLink);
@@ -34,6 +35,7 @@ public:
   void testRedirectUri();
   void testRedirectUri2();
   void testRedirectUri_supportsPersistentConnection();
+  void testRedirectUri_uriNormalization();
   void testResetUri();
   void testResetUri_supportsPersistentConnection();
   void testInnerLink();
@@ -253,6 +255,31 @@ void RequestTest::testRedirectUri_supportsPersistentConnection()
   CPPUNIT_ASSERT(!req.supportsPersistentConnection());
   req.redirectUri("http://host/file");
   CPPUNIT_ASSERT(req.supportsPersistentConnection());
+}
+
+void RequestTest::testRedirectUri_uriNormalization()
+{
+  Request req;
+  CPPUNIT_ASSERT(req.setUri("http://host/file?a"));
+
+  CPPUNIT_ASSERT(req.redirectUri("/redir1"));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host/redir1"), req.getCurrentUri());
+
+  CPPUNIT_ASSERT(req.redirectUri("/redir2?b"));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host/redir2?b"),
+                       req.getCurrentUri());
+
+  CPPUNIT_ASSERT(req.redirectUri("/redir3?c#d"));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host/redir3?c"),
+                       req.getCurrentUri());
+
+  CPPUNIT_ASSERT(req.redirectUri("/redir4/gone/.././2nd/foo?a"));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host/redir4/2nd/foo?a"),
+                       req.getCurrentUri());
+
+  CPPUNIT_ASSERT(req.redirectUri("../new2nd/bar?b"));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host/redir4/new2nd/bar?b"),
+                       req.getCurrentUri());
 }
 
 void RequestTest::testGetURIHost()
