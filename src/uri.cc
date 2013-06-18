@@ -209,6 +209,148 @@ std::string construct(const UriStruct& us)
   return res;
 }
 
+enum {
+  NPATH_START,
+  NPATH_SLASH,
+  NPATH_SDOT,
+  NPATH_DDOT,
+  NPATH_PATHCOMP
+};
+
+std::string normalizePath(std::string path)
+{
+  std::string::iterator begin = path.begin(), out = begin;
+  int state = NPATH_START;
+  bool startWithSlash = false;
+  std::vector<int> range;
+  // 32 is arbitrary
+  range.reserve(32);
+  for(std::string::iterator in = begin, eoi = path.end(); in != eoi; ++in) {
+    switch(state) {
+    case NPATH_START:
+      switch(*in) {
+      case '.':
+        state = NPATH_SDOT;
+        range.push_back(in-begin);
+        break;
+      case '/':
+        startWithSlash = true;
+        state = NPATH_SLASH;
+        break;
+      default:
+        state = NPATH_PATHCOMP;
+        range.push_back(in-begin);
+        break;
+      }
+      break;
+    case NPATH_SLASH:
+      switch(*in) {
+      case '.':
+        state = NPATH_SDOT;
+        range.push_back(in-begin);
+        break;
+      case '/':
+        // drop duplicate '/'
+        break;
+      default:
+        state = NPATH_PATHCOMP;
+        range.push_back(in-begin);
+        break;
+      }
+      break;
+    case NPATH_SDOT:
+      switch(*in) {
+      case '.':
+        state = NPATH_DDOT;
+        break;
+      case '/':
+        // drop path component '.'
+        state = NPATH_SLASH;
+        range.pop_back();
+        break;
+      default:
+        state = NPATH_PATHCOMP;
+        break;
+      }
+      break;
+    case NPATH_DDOT:
+      switch(*in) {
+      case '/':
+        // drop previous path component before '..'
+        for(int i = 0; i < 3 && !range.empty(); ++i) {
+          range.pop_back();
+        }
+        state = NPATH_SLASH;
+        break;
+      default:
+        state = NPATH_PATHCOMP;
+        break;
+      }
+      break;
+    case NPATH_PATHCOMP:
+      if(*in == '/') {
+        range.push_back(in+1-begin);
+        state = NPATH_SLASH;
+      }
+      break;
+    }
+  }
+  switch(state) {
+  case NPATH_SDOT:
+    range.pop_back();
+    break;
+  case NPATH_DDOT:
+    for(int i = 0; i < 3 && !range.empty(); ++i) {
+      range.pop_back();
+    }
+    break;
+  case NPATH_PATHCOMP:
+    range.push_back(path.end()-begin);
+    break;
+  default:
+    break;
+  }
+  if(startWithSlash) {
+    ++out;
+  }
+  for(int i = 0; i < (int)range.size(); i += 2) {
+    std::string::iterator a = begin+range[i];
+    std::string::iterator b = begin+range[i+1];
+    if(a == out) {
+      out = b;
+    } else {
+      out = std::copy(a, b, out);
+    }
+  }
+  path.erase(out, path.end());
+  return path;
+}
+
+namespace {
+std::string joinPath(std::string basePath,
+                     std::string::const_iterator newPathFirst,
+                     std::string::const_iterator newPathLast)
+{
+  if(newPathFirst == newPathLast) {
+    return basePath;
+  } else if(basePath.empty() || *newPathFirst == '/') {
+    return normalizePath(std::string(newPathFirst, newPathLast));
+  } else if(basePath[basePath.size()-1] == '/') {
+    basePath.append(newPathFirst, newPathLast);
+    return normalizePath(basePath);
+  } else {
+    basePath += "/";
+    basePath.append(newPathFirst, newPathLast);
+    return normalizePath(basePath);
+  }
+}
+} // namespace
+
+std::string joinPath(const std::string& basePath, const std::string& newPath)
+{
+  return joinPath(basePath, newPath.begin(), newPath.end());
+}
+
 std::string joinUri(const std::string& baseUri, const std::string& uri)
 {
   UriStruct us;
@@ -218,11 +360,6 @@ std::string joinUri(const std::string& baseUri, const std::string& uri)
     UriStruct bus;
     if(!parse(bus, baseUri)) {
       return uri;
-    }
-    std::vector<std::string> parts;
-    if(uri.empty() || uri[0] != '/') {
-      util::split(bus.dir.begin(), bus.dir.end(), std::back_inserter(parts),
-                  '/');
     }
     std::string::const_iterator qend;
     for(qend = uri.begin(); qend != uri.end(); ++qend) {
@@ -236,14 +373,15 @@ std::string joinUri(const std::string& baseUri, const std::string& uri)
         break;
       }
     }
-    util::split(uri.begin(), end, std::back_inserter(parts), '/');
+    std::string newpath = joinPath(bus.dir, uri.begin(), end);
     bus.dir.clear();
     bus.file.clear();
     bus.query.clear();
     std::string res = construct(bus);
-    res += util::joinPath(parts.begin(), parts.end());
-    if((uri.begin() == end || *(end-1) == '/') && *(res.end()-1) != '/') {
-      res += "/";
+    if(!newpath.empty()) {
+      // res always ends with '/'. Since bus.dir also starts with '/',
+      // regardless of uri, newpath always starts with '/'.
+      res.append(newpath.begin()+1, newpath.end());
     }
     res.append(end, qend);
     return res;

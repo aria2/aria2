@@ -36,6 +36,7 @@ class UriTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testConstruct);
   CPPUNIT_TEST(testSwap);
   CPPUNIT_TEST(testJoinUri);
+  CPPUNIT_TEST(testJoinPath);
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -66,6 +67,7 @@ public:
   void testConstruct();
   void testSwap();
   void testJoinUri();
+  void testJoinPath();
 };
 
 
@@ -525,6 +527,40 @@ void UriTest::testJoinUri()
   CPPUNIT_ASSERT_EQUAL(std::string("http://base/file"),
                        joinUri("http://base/",
                                "/file#a?q=x"));
+}
+
+void UriTest::testJoinPath()
+{
+  CPPUNIT_ASSERT_EQUAL(std::string("/b"), joinPath("/a", "/b"));
+  CPPUNIT_ASSERT_EQUAL(std::string("/alpha/bravo"),
+                       joinPath("/alpha", "bravo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("/bravo"),
+                       joinPath("/a", "/alpha/../bravo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("/alpha/charlie/"),
+                       joinPath("/a", "/alpha/bravo/../charlie/"));
+  CPPUNIT_ASSERT_EQUAL(std::string("/alpha/bravo/"),
+                       joinPath("/a", "/alpha////bravo//"));
+  CPPUNIT_ASSERT_EQUAL(std::string("/alpha/bravo/"),
+                       joinPath("/a", "/alpha/././bravo/"));
+  CPPUNIT_ASSERT_EQUAL(std::string("/alpha/bravo/"),
+                       joinPath("/a", "/alpha/bravo/./"));
+  CPPUNIT_ASSERT_EQUAL(std::string("/alpha/bravo/"),
+                       joinPath("/a", "/alpha/bravo/."));
+  CPPUNIT_ASSERT_EQUAL(std::string("/alpha/"),
+                       joinPath("/a", "/alpha/bravo/.."));
+  CPPUNIT_ASSERT_EQUAL(std::string("/alpha/"),
+                       joinPath("/", "../alpha/"));
+  CPPUNIT_ASSERT_EQUAL(std::string("/bravo/"),
+                       joinPath("/alpha", "../bravo/"));
+  CPPUNIT_ASSERT_EQUAL(std::string("/bravo/"),
+                       joinPath("/alpha", "../../bravo/"));
+  // If neither paths do not start with '/', the resulting path also
+  // does not start with '/'.
+  CPPUNIT_ASSERT_EQUAL(std::string("alpha/bravo"),
+                       joinPath("alpha", "bravo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("bravo/"),
+                       joinPath("alpha", "../../bravo/"));
+
 }
 
 } // namespace uri
