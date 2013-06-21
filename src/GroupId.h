@@ -39,8 +39,7 @@
 
 #include <set>
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -48,8 +47,8 @@ typedef uint64_t a2_gid_t;
 
 class GroupId {
 public:
-  static SharedHandle<GroupId> create();
-  static SharedHandle<GroupId> import(a2_gid_t n);
+  static std::shared_ptr<GroupId> create();
+  static std::shared_ptr<GroupId> import(a2_gid_t n);
   static void clear();
   enum {
     ERR_NOT_UNIQUE = -1,

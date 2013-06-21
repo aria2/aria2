@@ -43,7 +43,7 @@ Notifier::Notifier() {}
 Notifier::~Notifier() {}
 
 void Notifier::addDownloadEventListener
-(const SharedHandle<DownloadEventListener>& listener)
+(const std::shared_ptr<DownloadEventListener>& listener)
 {
   listeners_.push_back(listener);
 }
@@ -51,7 +51,7 @@ void Notifier::addDownloadEventListener
 void Notifier::notifyDownloadEvent
 (DownloadEvent event, const RequestGroup* group)
 {
-  for(std::vector<SharedHandle<DownloadEventListener> >::const_iterator i =
+  for(std::vector<std::shared_ptr<DownloadEventListener> >::const_iterator i =
         listeners_.begin(), eoi = listeners_.end(); i != eoi; ++i) {
     (*i)->onEvent(event, group);
   }

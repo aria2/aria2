@@ -36,7 +36,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BtUnchokeMessageTest);
 void BtUnchokeMessageTest::testCreate() {
   unsigned char msg[5];
   bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 1);
-  SharedHandle<BtUnchokeMessage> pm(BtUnchokeMessage::create(&msg[4], 1));
+  std::shared_ptr<BtUnchokeMessage> pm(BtUnchokeMessage::create(&msg[4], 1));
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, pm->getId());
 
   // case: payload size is wrong
@@ -67,7 +67,7 @@ void BtUnchokeMessageTest::testCreateMessage() {
 }
 
 void BtUnchokeMessageTest::testDoReceivedAction() {
-  SharedHandle<Peer> peer(new Peer("host", 6969));
+  std::shared_ptr<Peer> peer(new Peer("host", 6969));
   peer->allocateSessionResource(1024, 1024*1024);
   peer->peerChoking(true);
   BtUnchokeMessage msg;
@@ -79,14 +79,14 @@ void BtUnchokeMessageTest::testDoReceivedAction() {
 }
 
 void BtUnchokeMessageTest::testOnSendComplete() {
-  SharedHandle<Peer> peer(new Peer("host", 6969));
+  std::shared_ptr<Peer> peer(new Peer("host", 6969));
   peer->allocateSessionResource(1024, 1024*1024);
   peer->amChoking(true);
   BtUnchokeMessage msg;
   msg.setPeer(peer);
 
   CPPUNIT_ASSERT(peer->amChoking());
-  SharedHandle<ProgressUpdate> pu(msg.getProgressUpdate());
+  std::shared_ptr<ProgressUpdate> pu(msg.getProgressUpdate());
   pu->update(0, true);
   CPPUNIT_ASSERT(!peer->amChoking());
 }

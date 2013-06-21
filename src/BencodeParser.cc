@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "BencodeParser.h"
+
+#include <cassert>
+
 #include "StructParserStateMachine.h"
 #include "util.h"
 

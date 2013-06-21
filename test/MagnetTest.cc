@@ -21,7 +21,7 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(MagnetTest);
 
 namespace {
-const std::string& nthStr(const SharedHandle<ValueBase>& v, size_t index)
+const std::string& nthStr(const std::shared_ptr<ValueBase>& v, size_t index)
 {
   return downcast<String>(downcast<List>(v)->get(index))->s();
 }
@@ -29,7 +29,7 @@ const std::string& nthStr(const SharedHandle<ValueBase>& v, size_t index)
 
 void MagnetTest::testParse()
 {
-  SharedHandle<Dict> r = parse
+  std::shared_ptr<Dict> r = parse
     ("magnet:?xt=urn:btih:248d0a1cd08284299de78d5c1ed359bb46717d8c&dn=aria2"
      "&tr=http%3A%2F%2Ftracker1&tr=http://tracker2");
   CPPUNIT_ASSERT_EQUAL

@@ -31,29 +31,29 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkEntryTest );
 
-SharedHandle<MetalinkEntry> createTestEntry() {
-  SharedHandle<MetalinkEntry> entry(new MetalinkEntry());
-  SharedHandle<MetalinkResource> res1(new MetalinkResource());
+std::shared_ptr<MetalinkEntry> createTestEntry() {
+  std::shared_ptr<MetalinkEntry> entry(new MetalinkEntry());
+  std::shared_ptr<MetalinkResource> res1(new MetalinkResource());
   res1->url = "ftp://myhost/aria2.tar.bz2";
   res1->type = MetalinkResource::TYPE_FTP;
   res1->location = "ro";
   res1->priority = 50;
-  SharedHandle<MetalinkResource> res2(new MetalinkResource());
+  std::shared_ptr<MetalinkResource> res2(new MetalinkResource());
   res2->url = "http://myhost/aria2.tar.bz2";
   res2->type = MetalinkResource::TYPE_HTTP;
   res2->location = "at";
   res2->priority = 1;
-  SharedHandle<MetalinkResource> res3(new MetalinkResource());
+  std::shared_ptr<MetalinkResource> res3(new MetalinkResource());
   res3->url = "http://myhost/aria2.torrent";
   res3->type = MetalinkResource::TYPE_BITTORRENT;
   res3->location = "al";
   res3->priority = 40;
-  SharedHandle<MetalinkResource> res4(new MetalinkResource());
+  std::shared_ptr<MetalinkResource> res4(new MetalinkResource());
   res4->url = "http://myhost/aria2.ext";
   res4->type = MetalinkResource::TYPE_NOT_SUPPORTED;
   res4->location = "ad";
   res4->priority = 90;
-  SharedHandle<MetalinkResource> res5(new MetalinkResource());
+  std::shared_ptr<MetalinkResource> res5(new MetalinkResource());
   res5->url = "https://myhost/aria2.tar.bz2";
   res5->type = MetalinkResource::TYPE_HTTPS;
   res5->location = "jp";
@@ -68,7 +68,7 @@ SharedHandle<MetalinkEntry> createTestEntry() {
 }
 
 void MetalinkEntryTest::testDropUnsupportedResource() {
-  SharedHandle<MetalinkEntry> entry(createTestEntry());
+  std::shared_ptr<MetalinkEntry> entry(createTestEntry());
 
   entry->dropUnsupportedResource();
 #if defined ENABLE_SSL && defined ENABLE_BITTORRENT
@@ -79,7 +79,7 @@ void MetalinkEntryTest::testDropUnsupportedResource() {
   CPPUNIT_ASSERT_EQUAL((size_t)2, entry->resources.size());
 #endif // ENABLE_MESSAGE_DIGEST
 
-  std::vector<SharedHandle<MetalinkResource> >::const_iterator itr =
+  std::vector<std::shared_ptr<MetalinkResource> >::const_iterator itr =
     entry->resources.begin();
   CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP,
                        (*itr++)->type);
@@ -96,7 +96,7 @@ void MetalinkEntryTest::testDropUnsupportedResource() {
 }
 
 void MetalinkEntryTest::testReorderResourcesByPriority() {
-  SharedHandle<MetalinkEntry> entry(createTestEntry());
+  std::shared_ptr<MetalinkEntry> entry(createTestEntry());
 
   entry->reorderResourcesByPriority();
 
@@ -109,7 +109,7 @@ void MetalinkEntryTest::testReorderResourcesByPriority() {
 
 void MetalinkEntryTest::testSetLocationPriority()
 {
-  SharedHandle<MetalinkEntry> entry(createTestEntry());
+  std::shared_ptr<MetalinkEntry> entry(createTestEntry());
 
   const char* locationsSrc[] = { "jp", "al", "ro" };
 
@@ -131,7 +131,7 @@ void MetalinkEntryTest::testSetLocationPriority()
 
 void MetalinkEntryTest::testSetProtocolPriority()
 {
-  SharedHandle<MetalinkEntry> entry(createTestEntry());
+  std::shared_ptr<MetalinkEntry> entry(createTestEntry());
   entry->setProtocolPriority("http", -1);
   CPPUNIT_ASSERT_EQUAL(50, entry->resources[0]->priority); // ftp
   CPPUNIT_ASSERT_EQUAL(0, entry->resources[1]->priority); // http, -1

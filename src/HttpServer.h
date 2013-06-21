@@ -40,8 +40,8 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "SocketBuffer.h"
 
 namespace aria2 {
@@ -64,17 +64,17 @@ enum RequestType {
 // intended to be a generic HTTP server.
 class HttpServer {
 private:
-  SharedHandle<SocketCore> socket_;
-  SharedHandle<SocketRecvBuffer> socketRecvBuffer_;
+  std::shared_ptr<SocketCore> socket_;
+  std::shared_ptr<SocketRecvBuffer> socketRecvBuffer_;
   SocketBuffer socketBuffer_;
-  SharedHandle<HttpHeaderProcessor> headerProcessor_;
-  SharedHandle<HttpHeader> lastRequestHeader_;
+  std::shared_ptr<HttpHeaderProcessor> headerProcessor_;
+  std::shared_ptr<HttpHeader> lastRequestHeader_;
   int64_t lastContentLength_;
   // How many bytes are consumed. The total number of bytes is
   // lastContentLength_.
   int64_t bodyConsumed_;
   RequestType reqType_;
-  SharedHandle<DiskWriter> lastBody_;
+  std::shared_ptr<DiskWriter> lastBody_;
   bool keepAlive_;
   bool gzip_;
   std::string username_;
@@ -83,11 +83,11 @@ private:
   std::string allowOrigin_;
   bool secure_;
 public:
-  HttpServer(const SharedHandle<SocketCore>& socket);
+  HttpServer(const std::shared_ptr<SocketCore>& socket);
 
   ~HttpServer();
 
-  SharedHandle<HttpHeader> receiveRequest();
+  std::shared_ptr<HttpHeader> receiveRequest();
 
   bool receiveBody();
 
@@ -101,7 +101,7 @@ public:
 
   std::string createQuery() const;
 
-  const SharedHandle<DiskWriter>& getBody() const
+  const std::shared_ptr<DiskWriter>& getBody() const
   {
     return lastBody_;
   }
@@ -154,7 +154,7 @@ public:
 
   int64_t getContentLength() const { return lastContentLength_; }
 
-  const SharedHandle<SocketRecvBuffer>& getSocketRecvBuffer() const
+  const std::shared_ptr<SocketRecvBuffer>& getSocketRecvBuffer() const
   {
     return socketRecvBuffer_;
   }
@@ -169,12 +169,12 @@ public:
     allowOrigin_ = allowOrigin;
   }
 
-  const SharedHandle<SocketCore>& getSocket() const
+  const std::shared_ptr<SocketCore>& getSocket() const
   {
     return socket_;
   }
 
-  const SharedHandle<HttpHeader>& getRequestHeader() const
+  const std::shared_ptr<HttpHeader>& getRequestHeader() const
   {
     return lastRequestHeader_;
   }

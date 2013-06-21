@@ -39,8 +39,7 @@
 
 #include <string>
 #include <stack>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -56,8 +55,8 @@ class ValueBaseStructParserState;
 // value holder.
 class ValueBaseStructParserStateMachine : public StructParserStateMachine {
 public:
-  typedef SharedHandle<ValueBase> ResultType;
-  static const SharedHandle<ValueBase>& noResult();
+  typedef std::shared_ptr<ValueBase> ResultType;
+  static const std::shared_ptr<ValueBase>& noResult();
 
   struct NumberData {
     int64_t number;
@@ -81,7 +80,7 @@ public:
   virtual void numberCallback(int64_t number, int frac, int exp);
   virtual void boolCallback(bool bval);
 
-  SharedHandle<ValueBase> getResult() const;
+  std::shared_ptr<ValueBase> getResult() const;
 
   virtual void reset();
 
@@ -92,8 +91,8 @@ public:
   void popArrayFrame();
   void popDictFrame();
   void pushFrame();
-  void setCurrentFrameValue(const SharedHandle<ValueBase>& value);
-  const SharedHandle<ValueBase>& getCurrentFrameValue() const;
+  void setCurrentFrameValue(const std::shared_ptr<ValueBase>& value);
+  const std::shared_ptr<ValueBase>& getCurrentFrameValue() const;
   void setCurrentFrameName(const std::string& name);
 
   void pushDictState();

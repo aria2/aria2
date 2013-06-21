@@ -51,20 +51,20 @@ class Piece;
 
 class DefaultBtRequestFactory : public BtRequestFactory {
 private:
-  SharedHandle<PieceStorage> pieceStorage_;
-  SharedHandle<Peer> peer_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
+  std::shared_ptr<Peer> peer_;
   BtMessageDispatcher* dispatcher_;
   BtMessageFactory* messageFactory_;
-  std::deque<SharedHandle<Piece> > pieces_;
+  std::deque<std::shared_ptr<Piece> > pieces_;
   cuid_t cuid_;
 public:
   DefaultBtRequestFactory();
 
   virtual ~DefaultBtRequestFactory();
 
-  virtual void addTargetPiece(const SharedHandle<Piece>& piece);
+  virtual void addTargetPiece(const std::shared_ptr<Piece>& piece);
 
-  virtual void removeTargetPiece(const SharedHandle<Piece>& piece);
+  virtual void removeTargetPiece(const std::shared_ptr<Piece>& piece);
 
   virtual void removeAllTargetPiece();
 
@@ -79,21 +79,21 @@ public:
   virtual void doChokedAction();
 
   virtual void createRequestMessages
-  (std::vector<SharedHandle<BtMessage> >& requests, size_t max);
+  (std::vector<std::shared_ptr<BtMessage> >& requests, size_t max);
 
   virtual void createRequestMessagesOnEndGame
-  (std::vector<SharedHandle<BtMessage> >& requests, size_t max);
+  (std::vector<std::shared_ptr<BtMessage> >& requests, size_t max);
 
   virtual void getTargetPieceIndexes(std::vector<size_t>& indexes) const;
 
-  std::deque<SharedHandle<Piece> >& getTargetPieces()
+  std::deque<std::shared_ptr<Piece> >& getTargetPieces()
   {
     return pieces_;
   }
 
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+  void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage);
 
-  void setPeer(const SharedHandle<Peer>& peer);
+  void setPeer(const std::shared_ptr<Peer>& peer);
 
   void setBtMessageDispatcher(BtMessageDispatcher* dispatcher);
 

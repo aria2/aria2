@@ -55,8 +55,8 @@ const std::string DHTFindNodeReplyMessage::NODES6("nodes6");
 
 DHTFindNodeReplyMessage::DHTFindNodeReplyMessage
 (int family,
- const SharedHandle<DHTNode>& localNode,
- const SharedHandle<DHTNode>& remoteNode,
+ const std::shared_ptr<DHTNode>& localNode,
+ const std::shared_ptr<DHTNode>& remoteNode,
  const std::string& transactionID):
   DHTResponseMessage(localNode, remoteNode, transactionID),
   family_(family) {}
@@ -65,7 +65,7 @@ DHTFindNodeReplyMessage::~DHTFindNodeReplyMessage() {}
 
 void DHTFindNodeReplyMessage::doReceivedAction()
 {
-  for(std::vector<SharedHandle<DHTNode> >::iterator i = closestKNodes_.begin(),
+  for(std::vector<std::shared_ptr<DHTNode> >::iterator i = closestKNodes_.begin(),
         eoi = closestKNodes_.end(); i != eoi; ++i) {
     if(memcmp((*i)->getID(), getLocalNode()->getID(), DHT_ID_LENGTH) != 0) {
       getRoutingTable()->addNode(*i);
@@ -73,9 +73,9 @@ void DHTFindNodeReplyMessage::doReceivedAction()
   }
 }
 
-SharedHandle<Dict> DHTFindNodeReplyMessage::getResponse()
+std::shared_ptr<Dict> DHTFindNodeReplyMessage::getResponse()
 {
-  SharedHandle<Dict> aDict = Dict::g();
+  std::shared_ptr<Dict> aDict = Dict::g();
   aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
   unsigned char buffer[DHTBucket::K*38];
   const int clen = bittorrent::getCompactLength(family_);
@@ -83,10 +83,10 @@ SharedHandle<Dict> DHTFindNodeReplyMessage::getResponse()
   assert(unit <= 38);
   size_t offset = 0;
   size_t k = 0;
-  for(std::vector<SharedHandle<DHTNode> >::const_iterator i =
+  for(std::vector<std::shared_ptr<DHTNode> >::const_iterator i =
         closestKNodes_.begin(), eoi = closestKNodes_.end();
       i != eoi && k < DHTBucket::K; ++i) {
-    SharedHandle<DHTNode> node = *i;
+    std::shared_ptr<DHTNode> node = *i;
     memcpy(buffer+offset, node->getID(), DHT_ID_LENGTH);
     unsigned char compact[COMPACT_LEN_IPV6];
     int compactlen = bittorrent::packcompact
@@ -112,7 +112,7 @@ void DHTFindNodeReplyMessage::accept(DHTMessageCallback* callback)
 }
 
 void DHTFindNodeReplyMessage::setClosestKNodes
-(const std::vector<SharedHandle<DHTNode> >& closestKNodes)
+(const std::vector<std::shared_ptr<DHTNode> >& closestKNodes)
 {
   closestKNodes_ = closestKNodes;
 }

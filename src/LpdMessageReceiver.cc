@@ -77,9 +77,9 @@ bool LpdMessageReceiver::init(const std::string& localAddr)
   return false;
 }
 
-SharedHandle<LpdMessage> LpdMessageReceiver::receiveMessage()
+std::shared_ptr<LpdMessage> LpdMessageReceiver::receiveMessage()
 {
-  SharedHandle<LpdMessage> msg;
+  std::shared_ptr<LpdMessage> msg;
   while(1) {
     unsigned char buf[200];
     std::pair<std::string, uint16_t> peerAddr;
@@ -103,7 +103,7 @@ SharedHandle<LpdMessage> LpdMessageReceiver::receiveMessage()
       A2_LOG_INFO_EX("Failed to parse LPD message.", e);
       continue;
     }
-    const SharedHandle<HttpHeader>& header = proc.getResult();
+    const std::shared_ptr<HttpHeader>& header = proc.getResult();
     const std::string& infoHashString = header->find(HttpHeader::INFOHASH);
     uint32_t port = 0;
     if(!util::parseUIntNoThrow(port, header->find(HttpHeader::PORT)) ||
@@ -123,7 +123,7 @@ SharedHandle<LpdMessage> LpdMessageReceiver::receiveMessage()
                       infoHashString.c_str()));
       continue;
     }
-    SharedHandle<Peer> peer(new Peer(peerAddr.first, port, false));
+    std::shared_ptr<Peer> peer(new Peer(peerAddr.first, port, false));
     if(util::inPrivateAddress(peerAddr.first)) {
       peer->setLocalPeer(true);
     }

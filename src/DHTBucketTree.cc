@@ -52,7 +52,7 @@ DHTBucketTreeNode::DHTBucketTreeNode
   resetRelation();
 }
 
-DHTBucketTreeNode::DHTBucketTreeNode(const SharedHandle<DHTBucket>& bucket)
+DHTBucketTreeNode::DHTBucketTreeNode(const std::shared_ptr<DHTBucket>& bucket)
   : parent_(0),
     left_(0),
     right_(0),
@@ -99,7 +99,7 @@ bool DHTBucketTreeNode::isInRange(const unsigned char* key) const
 
 void DHTBucketTreeNode::split()
 {
-  SharedHandle<DHTBucket> leftBucket = bucket_->split();
+  std::shared_ptr<DHTBucket> leftBucket = bucket_->split();
   left_ = new DHTBucketTreeNode(leftBucket);
   right_ = new DHTBucketTreeNode(bucket_);
   bucket_.reset();
@@ -118,7 +118,7 @@ DHTBucketTreeNode* findTreeNodeFor
   }
 }
 
-SharedHandle<DHTBucket> findBucketFor
+std::shared_ptr<DHTBucket> findBucketFor
 (DHTBucketTreeNode* root, const unsigned char* key)
 {
   DHTBucketTreeNode* leaf = findTreeNodeFor(root, key);
@@ -127,10 +127,10 @@ SharedHandle<DHTBucket> findBucketFor
 
 namespace {
 void collectNodes
-(std::vector<SharedHandle<DHTNode> >& nodes,
- const SharedHandle<DHTBucket>& bucket)
+(std::vector<std::shared_ptr<DHTNode> >& nodes,
+ const std::shared_ptr<DHTBucket>& bucket)
 {
-  std::vector<SharedHandle<DHTNode> > goodNodes;
+  std::vector<std::shared_ptr<DHTNode> > goodNodes;
   bucket->getGoodNodes(goodNodes);
   nodes.insert(nodes.end(), goodNodes.begin(), goodNodes.end());
 }
@@ -138,7 +138,7 @@ void collectNodes
 
 namespace {
 void collectDownwardLeftFirst
-(std::vector<SharedHandle<DHTNode> >& nodes,  DHTBucketTreeNode* tnode)
+(std::vector<std::shared_ptr<DHTNode> >& nodes,  DHTBucketTreeNode* tnode)
 {
   if(tnode->leaf()) {
     collectNodes(nodes, tnode->getBucket());
@@ -153,7 +153,7 @@ void collectDownwardLeftFirst
 
 namespace {
 void collectDownwardRightFirst
-(std::vector<SharedHandle<DHTNode> >& nodes,  DHTBucketTreeNode* tnode)
+(std::vector<std::shared_ptr<DHTNode> >& nodes,  DHTBucketTreeNode* tnode)
 {
   if(tnode->leaf()) {
     collectNodes(nodes, tnode->getBucket());
@@ -168,7 +168,7 @@ void collectDownwardRightFirst
 
 namespace {
 void collectUpward
-(std::vector<SharedHandle<DHTNode> >& nodes, DHTBucketTreeNode* from)
+(std::vector<std::shared_ptr<DHTNode> >& nodes, DHTBucketTreeNode* from)
 {
   while(1) {
     DHTBucketTreeNode* parent = from->getParent();
@@ -189,7 +189,7 @@ void collectUpward
 } // namespace
 
 void findClosestKNodes
-(std::vector<SharedHandle<DHTNode> >& nodes,
+(std::vector<std::shared_ptr<DHTNode> >& nodes,
  DHTBucketTreeNode* root,
  const unsigned char* key)
 {
@@ -217,7 +217,7 @@ void findClosestKNodes
 }
 
 void enumerateBucket
-(std::vector<SharedHandle<DHTBucket> >& buckets,  DHTBucketTreeNode* root)
+(std::vector<std::shared_ptr<DHTBucket> >& buckets,  DHTBucketTreeNode* root)
 {
   if(root->leaf()) {
     buckets.push_back(root->getBucket());

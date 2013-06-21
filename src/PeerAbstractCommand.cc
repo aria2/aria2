@@ -51,9 +51,9 @@ namespace aria2 {
 
 PeerAbstractCommand::PeerAbstractCommand
 (cuid_t cuid,
- const SharedHandle<Peer>& peer,
+ const std::shared_ptr<Peer>& peer,
  DownloadEngine* e,
- const SharedHandle<SocketCore>& s)
+ const std::shared_ptr<SocketCore>& s)
  : Command(cuid),
    checkPoint_(global::wallclock()),
    // TODO referring global option
@@ -136,7 +136,7 @@ void PeerAbstractCommand::disableReadCheckSocket()
   }
 }
 
-void PeerAbstractCommand::setReadCheckSocket(const SharedHandle<SocketCore>& socket)
+void PeerAbstractCommand::setReadCheckSocket(const std::shared_ptr<SocketCore>& socket)
 {
   if(!socket->isOpen()) {
     disableReadCheckSocket();
@@ -164,7 +164,7 @@ void PeerAbstractCommand::disableWriteCheckSocket()
   }
 }
 
-void PeerAbstractCommand::setWriteCheckSocket(const SharedHandle<SocketCore>& socket)
+void PeerAbstractCommand::setWriteCheckSocket(const std::shared_ptr<SocketCore>& socket)
 {
   if(!socket->isOpen()) {
     disableWriteCheckSocket();

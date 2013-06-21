@@ -54,7 +54,7 @@ namespace aria2 {
 
 FileAllocationCommand::FileAllocationCommand
 (cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e,
- const SharedHandle<FileAllocationEntry>& fileAllocationEntry):
+ const std::shared_ptr<FileAllocationEntry>& fileAllocationEntry):
   RealtimeCommand(cuid, requestGroup, e),
   fileAllocationEntry_(fileAllocationEntry) {}
 

@@ -61,17 +61,17 @@ void DHTTaskQueueImpl::executeTask()
   immediateTaskQueue_.update();
 }
 
-void DHTTaskQueueImpl::addPeriodicTask1(const SharedHandle<DHTTask>& task)
+void DHTTaskQueueImpl::addPeriodicTask1(const std::shared_ptr<DHTTask>& task)
 {
   periodicTaskQueue1_.addTask(task);
 }
 
-void DHTTaskQueueImpl::addPeriodicTask2(const SharedHandle<DHTTask>& task)
+void DHTTaskQueueImpl::addPeriodicTask2(const std::shared_ptr<DHTTask>& task)
 {
   periodicTaskQueue2_.addTask(task);
 }
 
-void DHTTaskQueueImpl::addImmediateTask(const SharedHandle<DHTTask>& task)
+void DHTTaskQueueImpl::addImmediateTask(const std::shared_ptr<DHTTask>& task)
 {
   immediateTaskQueue_.addTask(task);
 }

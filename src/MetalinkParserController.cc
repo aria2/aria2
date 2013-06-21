@@ -237,7 +237,7 @@ void MetalinkParserController::commitResourceTransaction()
   }
 #ifdef ENABLE_BITTORRENT
   if(tResource_->type == MetalinkResource::TYPE_BITTORRENT) {
-    SharedHandle<MetalinkMetaurl> metaurl(new MetalinkMetaurl());
+    std::shared_ptr<MetalinkMetaurl> metaurl(new MetalinkMetaurl());
     metaurl->url = tResource_->url;
     metaurl->priority = tResource_->priority;
     metaurl->mediatype = MetalinkMetaurl::MEDIATYPE_TORRENT;

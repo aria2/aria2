@@ -22,9 +22,9 @@ class FeedbackURISelectorTest:public CppUnit::TestFixture {
 private:
   FileEntry fileEntry_;
 
-  SharedHandle<ServerStatMan> ssm;
+  std::shared_ptr<ServerStatMan> ssm;
 
-  SharedHandle<FeedbackURISelector> sel;
+  std::shared_ptr<FeedbackURISelector> sel;
 
 public:
   void setUp()
@@ -68,11 +68,11 @@ void FeedbackURISelectorTest::testSelect_withoutServerStat()
 
 void FeedbackURISelectorTest::testSelect()
 {
-  SharedHandle<ServerStat> bravo(new ServerStat("bravo", "http"));
+  std::shared_ptr<ServerStat> bravo(new ServerStat("bravo", "http"));
   bravo->updateDownloadSpeed(100000);
-  SharedHandle<ServerStat> alphaFTP(new ServerStat("alpha", "ftp"));
+  std::shared_ptr<ServerStat> alphaFTP(new ServerStat("alpha", "ftp"));
   alphaFTP->updateDownloadSpeed(80000);
-  SharedHandle<ServerStat> alphaHTTP(new ServerStat("alpha", "http"));
+  std::shared_ptr<ServerStat> alphaHTTP(new ServerStat("alpha", "http"));
   alphaHTTP->updateDownloadSpeed(180000);
   alphaHTTP->setError();
   std::vector<std::pair<size_t, std::string> > usedHosts;
@@ -111,9 +111,9 @@ void FeedbackURISelectorTest::testSelect_withUsedHosts()
 
 void FeedbackURISelectorTest::testSelect_skipErrorHost()
 {
-  SharedHandle<ServerStat> alphaHTTP(new ServerStat("alpha", "http"));
+  std::shared_ptr<ServerStat> alphaHTTP(new ServerStat("alpha", "http"));
   alphaHTTP->setError();
-  SharedHandle<ServerStat> alphaFTP(new ServerStat("alpha", "ftp"));
+  std::shared_ptr<ServerStat> alphaFTP(new ServerStat("alpha", "ftp"));
   alphaFTP->setError();
   std::vector<std::pair<size_t, std::string> > usedHosts;
 

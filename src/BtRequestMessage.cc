@@ -63,13 +63,13 @@ void BtRequestMessage::doReceivedAction()
      (!getPeer()->amChoking() ||
       (getPeer()->amChoking() &&
        getPeer()->isInAmAllowedIndexSet(getIndex())))) {
-    SharedHandle<BtMessage> msg =
+    std::shared_ptr<BtMessage> msg =
       getBtMessageFactory()->createPieceMessage
       (getIndex(), getBegin(), getLength());
     getBtMessageDispatcher()->addMessageToQueue(msg);
   } else {
     if(getPeer()->isFastExtensionEnabled()) {
-      SharedHandle<BtMessage> msg =
+      std::shared_ptr<BtMessage> msg =
         getBtMessageFactory()->createRejectMessage
         (getIndex(), getBegin(), getLength());
       getBtMessageDispatcher()->addMessageToQueue(msg);

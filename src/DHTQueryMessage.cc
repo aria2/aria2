@@ -43,8 +43,8 @@ const std::string DHTQueryMessage::Q("q");
 
 const std::string DHTQueryMessage::A("a");
 
-DHTQueryMessage::DHTQueryMessage(const SharedHandle<DHTNode>& localNode,
-                                 const SharedHandle<DHTNode>& remoteNode,
+DHTQueryMessage::DHTQueryMessage(const std::shared_ptr<DHTNode>& localNode,
+                                 const std::shared_ptr<DHTNode>& remoteNode,
                                  const std::string& transactionID):
   DHTAbstractMessage(localNode, remoteNode, transactionID) {}
 

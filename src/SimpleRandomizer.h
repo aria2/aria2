@@ -37,17 +37,17 @@
 
 #include "Randomizer.h"
 
+#include <memory>
+
 #ifdef __MINGW32__
 # include <wincrypt.h>
 #endif // __MINGW32__
-
-#include "SharedHandle.h"
 
 namespace aria2 {
 
 class SimpleRandomizer : public Randomizer {
 private:
-  static SharedHandle<SimpleRandomizer> randomizer_;
+  static std::shared_ptr<SimpleRandomizer> randomizer_;
 
 #ifdef __MINGW32__
   HCRYPTPROV cryProvider_;
@@ -56,7 +56,7 @@ private:
   SimpleRandomizer();
 public:
 
-  static const SharedHandle<SimpleRandomizer>& getInstance();
+  static const std::shared_ptr<SimpleRandomizer>& getInstance();
 
   static void init();
 

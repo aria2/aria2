@@ -98,8 +98,8 @@ private:
     bool operator==(const CacheEntry& e) const;
   };
 
-  typedef std::set<SharedHandle<CacheEntry>,
-                   DerefLess<SharedHandle<CacheEntry> > > CacheEntrySet;
+  typedef std::set<std::shared_ptr<CacheEntry>,
+                   DerefLess<std::shared_ptr<CacheEntry> > > CacheEntrySet;
   CacheEntrySet entries_;
 public:
   DNSCache();
@@ -114,7 +114,7 @@ public:
   void findAll
   (OutputIterator out, const std::string& hostname, uint16_t port) const
   {
-    SharedHandle<CacheEntry> target(new CacheEntry(hostname, port));
+    std::shared_ptr<CacheEntry> target(new CacheEntry(hostname, port));
     CacheEntrySet::iterator i = entries_.find(target);
     if(i != entries_.end()) {
       (*i)->getAllGoodAddrs(out);

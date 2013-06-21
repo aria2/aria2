@@ -56,7 +56,7 @@ SocketBuffer::ByteArrayBufEntry::~ByteArrayBufEntry()
 }
 
 ssize_t SocketBuffer::ByteArrayBufEntry::send
-(const SharedHandle<SocketCore>& socket, size_t offset)
+(const std::shared_ptr<SocketCore>& socket, size_t offset)
 {
   return socket->writeData(bytes_+offset, length_-offset);
 }
@@ -84,7 +84,7 @@ SocketBuffer::StringBufEntry::StringBufEntry(const std::string& s,
 // SocketBuffer::StringBufEntry::StringBufEntry() {}
 
 ssize_t SocketBuffer::StringBufEntry::send
-(const SharedHandle<SocketCore>& socket, size_t offset)
+(const std::shared_ptr<SocketCore>& socket, size_t offset)
 {
   return socket->writeData(str_.data()+offset, str_.size()-offset);
 }
@@ -109,7 +109,7 @@ void SocketBuffer::StringBufEntry::swap(std::string& s)
   str_.swap(s);
 }
 
-SocketBuffer::SocketBuffer(const SharedHandle<SocketCore>& socket):
+SocketBuffer::SocketBuffer(const std::shared_ptr<SocketCore>& socket):
   socket_(socket), offset_(0) {}
 
 SocketBuffer::~SocketBuffer() {}
@@ -118,7 +118,7 @@ void SocketBuffer::pushBytes(unsigned char* bytes, size_t len,
                              ProgressUpdate* progressUpdate)
 {
   if(len > 0) {
-    bufq_.push_back(SharedHandle<BufEntry>
+    bufq_.push_back(std::shared_ptr<BufEntry>
                     (new ByteArrayBufEntry(bytes, len, progressUpdate)));
   }
 }
@@ -127,7 +127,7 @@ void SocketBuffer::pushStr(const std::string& data,
                            ProgressUpdate* progressUpdate)
 {
   if(data.size() > 0) {
-    bufq_.push_back(SharedHandle<BufEntry>
+    bufq_.push_back(std::shared_ptr<BufEntry>
                     (new StringBufEntry(data, progressUpdate)));
   }
 }
@@ -147,7 +147,7 @@ ssize_t SocketBuffer::send()
     iov[0].A2IOVEC_LEN = firstlen;
 
     for(num = 1; num < A2_IOV_MAX && num < bufq_.size() && amount > 0; ++num) {
-      const SharedHandle<BufEntry>& buf = bufq_[num];
+      const std::shared_ptr<BufEntry>& buf = bufq_[num];
       ssize_t len = buf->getLength();
       if(amount >= len) {
         amount -= len;
@@ -176,7 +176,7 @@ ssize_t SocketBuffer::send()
       bufq_.pop_front();
       offset_ = 0;
       for(size_t i = 1; i < num; ++i) {
-        const SharedHandle<BufEntry>& buf = bufq_[0];
+        const std::shared_ptr<BufEntry>& buf = bufq_[0];
         ssize_t len = buf->getLength();
         if(len > slen) {
           offset_ = slen;

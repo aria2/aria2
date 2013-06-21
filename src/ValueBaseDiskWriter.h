@@ -92,7 +92,7 @@ public:
     return parser_.parseFinal(0, 0);
   }
 
-  SharedHandle<ValueBase> getResult() const
+  std::shared_ptr<ValueBase> getResult() const
   {
     return psm_.getResult();
   }

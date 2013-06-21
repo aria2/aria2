@@ -28,17 +28,17 @@ public:
   public:
     std::deque<size_t> missingIndexes;
 
-    virtual SharedHandle<Piece> getMissingPiece
-    (const SharedHandle<Peer>& peer,
+    virtual std::shared_ptr<Piece> getMissingPiece
+    (const std::shared_ptr<Peer>& peer,
      const std::vector<size_t>& exlucdedIndexes,
      cuid_t cuid)
     {
       if(missingIndexes.empty()) {
-        return SharedHandle<Piece>();
+        return std::shared_ptr<Piece>();
       } else {
         size_t index = missingIndexes.front();
         missingIndexes.pop_front();
-        return SharedHandle<Piece>(new Piece(index, 0));
+        return std::shared_ptr<Piece>(new Piece(index, 0));
       }
     }
   };
@@ -50,23 +50,23 @@ CPPUNIT_TEST_SUITE_REGISTRATION(UTMetadataRequestFactoryTest);
 void UTMetadataRequestFactoryTest::testCreate()
 {
   UTMetadataRequestFactory factory;
-  SharedHandle<DownloadContext> dctx
+  std::shared_ptr<DownloadContext> dctx
     (new DownloadContext(METADATA_PIECE_SIZE, METADATA_PIECE_SIZE*2));
   factory.setDownloadContext(dctx);
-  SharedHandle<MockPieceStorage2> ps(new MockPieceStorage2());
+  std::shared_ptr<MockPieceStorage2> ps(new MockPieceStorage2());
   ps->missingIndexes.push_back(0);
   ps->missingIndexes.push_back(1);
-  SharedHandle<WrapExtBtMessageFactory> messageFactory
+  std::shared_ptr<WrapExtBtMessageFactory> messageFactory
     (new WrapExtBtMessageFactory());
   factory.setBtMessageFactory(messageFactory.get());
-  SharedHandle<Peer> peer(new Peer("peer", 6880));
+  std::shared_ptr<Peer> peer(new Peer("peer", 6880));
   peer->allocateSessionResource(0, 0);
   factory.setPeer(peer);
-  SharedHandle<UTMetadataRequestTracker> tracker
+  std::shared_ptr<UTMetadataRequestTracker> tracker
     (new UTMetadataRequestTracker());
   factory.setUTMetadataRequestTracker(tracker.get());
 
-  std::vector<SharedHandle<BtMessage> > msgs;
+  std::vector<std::shared_ptr<BtMessage> > msgs;
 
   factory.create(msgs, 1, ps);
   CPPUNIT_ASSERT_EQUAL((size_t)1, msgs.size());

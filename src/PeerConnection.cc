@@ -64,7 +64,7 @@ enum {
 } // namespace
 
 PeerConnection::PeerConnection
-(cuid_t cuid, const SharedHandle<Peer>& peer, const SharedHandle<SocketCore>& socket)
+(cuid_t cuid, const std::shared_ptr<Peer>& peer, const std::shared_ptr<SocketCore>& socket)
   : cuid_(cuid),
     peer_(peer),
     socket_(socket),
@@ -232,8 +232,8 @@ void PeerConnection::readData
 }
 
 void PeerConnection::enableEncryption
-(const SharedHandle<ARC4Encryptor>& encryptor,
- const SharedHandle<ARC4Encryptor>& decryptor)
+(const std::shared_ptr<ARC4Encryptor>& encryptor,
+ const std::shared_ptr<ARC4Encryptor>& decryptor)
 {
   encryptor_ = encryptor;
   decryptor_ = decryptor;

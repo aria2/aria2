@@ -56,12 +56,12 @@ namespace aria2 {
 
 FtpFinishDownloadCommand::FtpFinishDownloadCommand
 (cuid_t cuid,
- const SharedHandle<Request>& req,
- const SharedHandle<FileEntry>& fileEntry,
+ const std::shared_ptr<Request>& req,
+ const std::shared_ptr<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
- const SharedHandle<FtpConnection>& ftpConnection,
+ const std::shared_ptr<FtpConnection>& ftpConnection,
  DownloadEngine* e,
- const SharedHandle<SocketCore>& socket)
+ const std::shared_ptr<SocketCore>& socket)
   :AbstractCommand(cuid, req, fileEntry, requestGroup, e, socket),
    ftpConnection_(ftpConnection)
 {}

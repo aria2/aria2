@@ -65,13 +65,13 @@ namespace aria2 {
 
 HttpSkipResponseCommand::HttpSkipResponseCommand
 (cuid_t cuid,
- const SharedHandle<Request>& req,
- const SharedHandle<FileEntry>& fileEntry,
+ const std::shared_ptr<Request>& req,
+ const std::shared_ptr<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
- const SharedHandle<HttpConnection>& httpConnection,
- const SharedHandle<HttpResponse>& httpResponse,
+ const std::shared_ptr<HttpConnection>& httpConnection,
+ const std::shared_ptr<HttpResponse>& httpResponse,
  DownloadEngine* e,
- const SharedHandle<SocketCore>& s)
+ const std::shared_ptr<SocketCore>& s)
   : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s,
                     httpConnection->getSocketRecvBuffer()),
     httpConnection_(httpConnection),
@@ -87,7 +87,7 @@ HttpSkipResponseCommand::HttpSkipResponseCommand
 HttpSkipResponseCommand::~HttpSkipResponseCommand() {}
 
 void HttpSkipResponseCommand::installStreamFilter
-(const SharedHandle<StreamFilter>& streamFilter)
+(const std::shared_ptr<StreamFilter>& streamFilter)
 {
   if(!streamFilter) {
     return;
@@ -132,8 +132,8 @@ bool HttpSkipResponseCommand::executeInternal()
       } else {
         // receivedBytes_ is not updated if transferEncoding is set.
         // The return value is safely ignored here.
-        streamFilter_->transform(SharedHandle<BinaryStream>(),
-                                 SharedHandle<Segment>(),
+        streamFilter_->transform(std::shared_ptr<BinaryStream>(),
+                                 std::shared_ptr<Segment>(),
                                  getSocketRecvBuffer()->getBuffer(),
                                  getSocketRecvBuffer()->getBufferLength());
         bufSize = streamFilter_->getBytesProcessed();

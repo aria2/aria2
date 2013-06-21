@@ -75,10 +75,10 @@ void BtHandshakeMessage::init() {
   reserved_[5] |= 0x10u;
 }
 
-SharedHandle<BtHandshakeMessage>
+std::shared_ptr<BtHandshakeMessage>
 BtHandshakeMessage::create(const unsigned char* data, size_t dataLength)
 {
-  SharedHandle<BtHandshakeMessage> message(new BtHandshakeMessage());
+  std::shared_ptr<BtHandshakeMessage> message(new BtHandshakeMessage());
   message->pstrlen_ = data[0];
   memcpy(message->pstr_, &data[1], PSTR_LENGTH);
   memcpy(message->reserved_, &data[20], RESERVED_LENGTH);

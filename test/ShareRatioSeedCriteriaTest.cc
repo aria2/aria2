@@ -23,11 +23,11 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(ShareRatioSeedCriteriaTest);
 
 void ShareRatioSeedCriteriaTest::testEvaluate() {
-  SharedHandle<DownloadContext> dctx(new DownloadContext(1024*1024, 1000000));
-  SharedHandle<BtRuntime> btRuntime(new BtRuntime());
+  std::shared_ptr<DownloadContext> dctx(new DownloadContext(1024*1024, 1000000));
+  std::shared_ptr<BtRuntime> btRuntime(new BtRuntime());
   btRuntime->setUploadLengthAtStartup(1000000);
 
-  SharedHandle<MockPieceStorage> pieceStorage(new MockPieceStorage());
+  std::shared_ptr<MockPieceStorage> pieceStorage(new MockPieceStorage());
   pieceStorage->setCompletedLength(1000000);
 
   ShareRatioSeedCriteria cri(1.0, dctx);

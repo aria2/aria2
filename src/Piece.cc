@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "Piece.h"
+
+#include <cassert>
+
 #include "util.h"
 #include "BitfieldMan.h"
 #include "A2STR.h"
@@ -242,8 +245,8 @@ std::string Piece::getDigest()
 }
 
 namespace {
-void updateHashWithRead(const SharedHandle<MessageDigest>& mdctx,
-                        const SharedHandle<DiskAdaptor>& adaptor,
+void updateHashWithRead(const std::shared_ptr<MessageDigest>& mdctx,
+                        const std::shared_ptr<DiskAdaptor>& adaptor,
                         int64_t offset, size_t len)
 {
   const size_t BUFSIZE = 4096;
@@ -269,9 +272,9 @@ void updateHashWithRead(const SharedHandle<MessageDigest>& mdctx,
 } // namespace
 
 std::string Piece::getDigestWithWrCache
-(size_t pieceLength, const SharedHandle<DiskAdaptor>& adaptor)
+(size_t pieceLength, const std::shared_ptr<DiskAdaptor>& adaptor)
 {
-  SharedHandle<MessageDigest> mdctx(MessageDigest::create(hashType_));
+  std::shared_ptr<MessageDigest> mdctx(MessageDigest::create(hashType_));
   int64_t start = static_cast<int64_t>(index_)*pieceLength;
   int64_t goff = start;
   if(wrCache_) {
@@ -317,7 +320,7 @@ void Piece::removeUser(cuid_t cuid)
 }
 
 void Piece::initWrCache(WrDiskCache* diskCache,
-                        const SharedHandle<DiskAdaptor>& diskAdaptor)
+                        const std::shared_ptr<DiskAdaptor>& diskAdaptor)
 {
   if(!diskCache) {
     return;

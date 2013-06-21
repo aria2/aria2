@@ -41,8 +41,8 @@ namespace aria2 {
 const std::string DHTAnnouncePeerReplyMessage::ANNOUNCE_PEER("announce_peer");
 
 DHTAnnouncePeerReplyMessage::DHTAnnouncePeerReplyMessage
-(const SharedHandle<DHTNode>& localNode,
- const SharedHandle<DHTNode>& remoteNode,
+(const std::shared_ptr<DHTNode>& localNode,
+ const std::shared_ptr<DHTNode>& remoteNode,
  const std::string& transactionID):
   DHTResponseMessage(localNode, remoteNode, transactionID) {}
 
@@ -50,9 +50,9 @@ DHTAnnouncePeerReplyMessage::~DHTAnnouncePeerReplyMessage() {}
 
 void DHTAnnouncePeerReplyMessage::doReceivedAction() {}
 
-SharedHandle<Dict> DHTAnnouncePeerReplyMessage::getResponse()
+std::shared_ptr<Dict> DHTAnnouncePeerReplyMessage::getResponse()
 {
-  SharedHandle<Dict> rDict = Dict::g();
+  std::shared_ptr<Dict> rDict = Dict::g();
   rDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
   return rDict;
 }

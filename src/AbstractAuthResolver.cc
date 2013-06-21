@@ -42,13 +42,13 @@ AbstractAuthResolver::AbstractAuthResolver() {}
 AbstractAuthResolver::~AbstractAuthResolver() {}
 
 void AbstractAuthResolver::setUserDefinedAuthConfig
-(const SharedHandle<AuthConfig>& authConfig)
+(const std::shared_ptr<AuthConfig>& authConfig)
 {
   userDefinedAuthConfig_ = authConfig;
 }
 
 void AbstractAuthResolver::setDefaultAuthConfig
-(const SharedHandle<AuthConfig>& authConfig)
+(const std::shared_ptr<AuthConfig>& authConfig)
 {
   defaultAuthConfig_ = authConfig;
 }

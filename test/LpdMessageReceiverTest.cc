@@ -33,7 +33,7 @@ void LpdMessageReceiverTest::testReceiveMessage()
   LpdMessageReceiver rcv(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
   CPPUNIT_ASSERT(rcv.init(""));
 
-  SharedHandle<SocketCore> sendsock(new SocketCore(SOCK_DGRAM));
+  std::shared_ptr<SocketCore> sendsock(new SocketCore(SOCK_DGRAM));
   sendsock->create(AF_INET);
   // Mingw32 build needs to set interface explicitly.
   sendsock->setMulticastInterface("");
@@ -50,7 +50,7 @@ void LpdMessageReceiverTest::testReceiveMessage()
                       LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
 
   rcv.getSocket()->isReadable(5);
-  SharedHandle<LpdMessage> msg = rcv.receiveMessage();
+  std::shared_ptr<LpdMessage> msg = rcv.receiveMessage();
   CPPUNIT_ASSERT(msg);
   CPPUNIT_ASSERT_EQUAL(std::string("cd41c7fdddfd034a15a04d7ff881216e01c4ceaf"),
                        util::toHex(msg->infoHash));

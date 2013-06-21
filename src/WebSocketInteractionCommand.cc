@@ -50,9 +50,9 @@ namespace rpc {
 
 WebSocketInteractionCommand::WebSocketInteractionCommand
 (cuid_t cuid,
- const SharedHandle<WebSocketSession>& wsSession,
+ const std::shared_ptr<WebSocketSession>& wsSession,
  DownloadEngine* e,
- const SharedHandle<SocketCore>& socket)
+ const std::shared_ptr<SocketCore>& socket)
  : Command(cuid),
    e_(e),
    socket_(socket),
@@ -92,10 +92,10 @@ bool WebSocketInteractionCommand::execute()
   }
   if(wsSession_->onReadEvent() == -1 || wsSession_->onWriteEvent() == -1) {
     if(wsSession_->closeSent() || wsSession_->closeReceived()) {
-      A2_LOG_INFO(fmt("CUID#%"PRId64" - WebSocket session terminated.",
+      A2_LOG_INFO(fmt("CUID#%" PRId64 " - WebSocket session terminated.",
                       getCuid()));
     } else {
-      A2_LOG_INFO(fmt("CUID#%"PRId64" - WebSocket session terminated"
+      A2_LOG_INFO(fmt("CUID#%" PRId64 " - WebSocket session terminated"
                       " (Possibly due to EOF).", getCuid()));
     }
     return true;

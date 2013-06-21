@@ -38,8 +38,7 @@
 #include "common.h"
 
 #include <vector>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -51,9 +50,9 @@ class DownloadEngineFactory {
 public:
   DownloadEngineFactory();
 
-  SharedHandle<DownloadEngine>
+  std::shared_ptr<DownloadEngine>
   newDownloadEngine
-  (Option* op, const std::vector<SharedHandle<RequestGroup> >& requestGroups);
+  (Option* op, const std::vector<std::shared_ptr<RequestGroup> >& requestGroups);
 };
 
 } // namespace aria2

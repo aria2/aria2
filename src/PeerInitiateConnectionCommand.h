@@ -48,11 +48,11 @@ class PeerInitiateConnectionCommand : public PeerAbstractCommand {
 private:
   RequestGroup* requestGroup_;
 
-  SharedHandle<BtRuntime> btRuntime_;
+  std::shared_ptr<BtRuntime> btRuntime_;
 
-  SharedHandle<PeerStorage> peerStorage_;
+  std::shared_ptr<PeerStorage> peerStorage_;
 
-  SharedHandle<PieceStorage> pieceStorage_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
 
   bool mseHandshakeEnabled_;
 protected:
@@ -64,16 +64,16 @@ protected:
 public:
   PeerInitiateConnectionCommand(cuid_t cuid,
                                 RequestGroup* requestGroup,
-                                const SharedHandle<Peer>& peer,
+                                const std::shared_ptr<Peer>& peer,
                                 DownloadEngine* e,
-                                const SharedHandle<BtRuntime>& btRuntime,
+                                const std::shared_ptr<BtRuntime>& btRuntime,
                                 bool mseHandshakeEnabled = true);
 
   virtual ~PeerInitiateConnectionCommand();
 
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
 
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+  void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage);
 };
 
 } // namespace aria2

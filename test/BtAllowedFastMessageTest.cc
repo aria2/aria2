@@ -39,7 +39,7 @@ void BtAllowedFastMessageTest::testCreate() {
   unsigned char msg[9];
   bittorrent::createPeerMessageString(msg, sizeof(msg), 5, 17);
   bittorrent::setIntParam(&msg[5], 12345);
-  SharedHandle<BtAllowedFastMessage> pm
+  std::shared_ptr<BtAllowedFastMessage> pm
     (BtAllowedFastMessage::create(&msg[4], 5));
   CPPUNIT_ASSERT_EQUAL((uint8_t)17, pm->getId());
   CPPUNIT_ASSERT_EQUAL((size_t)12345, pm->getIndex());
@@ -76,7 +76,7 @@ void BtAllowedFastMessageTest::testCreateMessage() {
 void BtAllowedFastMessageTest::testDoReceivedAction() {
   BtAllowedFastMessage msg;
   msg.setIndex(1);
-  SharedHandle<Peer> peer(new Peer("localhost", 6969));
+  std::shared_ptr<Peer> peer(new Peer("localhost", 6969));
   peer->allocateSessionResource(1024, 1024*1024);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
@@ -94,12 +94,12 @@ void BtAllowedFastMessageTest::testDoReceivedAction() {
 void BtAllowedFastMessageTest::testOnSendComplete() {
   BtAllowedFastMessage msg;
   msg.setIndex(1);
-  SharedHandle<Peer> peer(new Peer("localhost", 6969));
+  std::shared_ptr<Peer> peer(new Peer("localhost", 6969));
   peer->allocateSessionResource(1024, 1024*1024);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
   CPPUNIT_ASSERT(!peer->isInAmAllowedIndexSet(1));
-  SharedHandle<ProgressUpdate> pu(msg.getProgressUpdate());
+  std::shared_ptr<ProgressUpdate> pu(msg.getProgressUpdate());
   pu->update(0, true);
   CPPUNIT_ASSERT(peer->isInAmAllowedIndexSet(1));
 }

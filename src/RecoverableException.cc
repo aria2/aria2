@@ -36,9 +36,9 @@
 
 namespace aria2 {
 
-SharedHandle<Exception> RecoverableException::copy() const
+std::shared_ptr<Exception> RecoverableException::copy() const
 {
-  SharedHandle<Exception> e(new RecoverableException(*this));
+  std::shared_ptr<Exception> e(new RecoverableException(*this));
   return e;
 }
 

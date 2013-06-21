@@ -41,10 +41,10 @@ namespace aria2 {
 
 class GrowSegment:public Segment {
 private:
-  SharedHandle<Piece> piece_;
+  std::shared_ptr<Piece> piece_;
   int32_t writtenLength_;
 public:
-  GrowSegment(const SharedHandle<Piece>& piece);
+  GrowSegment(const std::shared_ptr<Piece>& piece);
 
   virtual ~GrowSegment();
 
@@ -106,7 +106,7 @@ public:
 
   virtual void clear(WrDiskCache* diskCache);
 
-  virtual SharedHandle<Piece> getPiece() const;
+  virtual std::shared_ptr<Piece> getPiece() const;
 };
 
 } // namespace aria2

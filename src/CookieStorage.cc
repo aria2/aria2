@@ -192,7 +192,7 @@ const double DOMAIN_EVICTION_RATE = 0.1;
 bool CookieStorage::store(const Cookie& cookie, time_t now)
 {
   if(domains_.size() >= DOMAIN_EVICTION_TRIGGER) {
-    std::vector<SharedHandle<DomainEntry> > evictions(domains_.begin(),
+    std::vector<std::shared_ptr<DomainEntry> > evictions(domains_.begin(),
                                                       domains_.end());
     std::sort(evictions.begin(), evictions.end(),
               LeastRecentAccess<DomainEntry>());
@@ -200,7 +200,7 @@ bool CookieStorage::store(const Cookie& cookie, time_t now)
     domains_.clear();
     domains_.insert(evictions.begin()+delnum, evictions.end());
   }
-  SharedHandle<DomainEntry> v(new DomainEntry(cookie.getDomain()));
+  std::shared_ptr<DomainEntry> v(new DomainEntry(cookie.getDomain()));
   DomainEntrySet::iterator i = domains_.lower_bound(v);
   bool added = false;
   if(i != domains_.end() && *(*i) == *v) {
@@ -292,7 +292,7 @@ void CookieStorage::searchCookieByDomainSuffix
  const std::string& requestPath,
  time_t now, bool secure)
 {
-  SharedHandle<DomainEntry> v(new DomainEntry(domain));
+  std::shared_ptr<DomainEntry> v(new DomainEntry(domain));
   DomainEntrySet::iterator i = domains_.lower_bound(v);
   if(i != domains_.end() && *(*i) == *v) {
     (*i)->setLastAccessTime(now);
@@ -302,7 +302,7 @@ void CookieStorage::searchCookieByDomainSuffix
 
 bool CookieStorage::contains(const Cookie& cookie) const
 {
-  SharedHandle<DomainEntry> v(new DomainEntry(cookie.getDomain()));
+  std::shared_ptr<DomainEntry> v(new DomainEntry(cookie.getDomain()));
   DomainEntrySet::iterator i = domains_.find(v);
   if(i != domains_.end()) {
     return (*i)->contains(cookie);

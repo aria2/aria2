@@ -60,8 +60,8 @@ namespace aria2 {
 
 HttpInitiateConnectionCommand::HttpInitiateConnectionCommand
 (cuid_t cuid,
- const SharedHandle<Request>& req,
- const SharedHandle<FileEntry>& fileEntry,
+ const std::shared_ptr<Request>& req,
+ const std::shared_ptr<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  DownloadEngine* e)
   : InitiateConnectionCommand(cuid, req, fileEntry, requestGroup, e)
@@ -72,11 +72,11 @@ HttpInitiateConnectionCommand::~HttpInitiateConnectionCommand() {}
 Command* HttpInitiateConnectionCommand::createNextCommand
 (const std::string& hostname, const std::string& addr, uint16_t port,
  const std::vector<std::string>& resolvedAddresses,
- const SharedHandle<Request>& proxyRequest)
+ const std::shared_ptr<Request>& proxyRequest)
 {
   Command* command;
   if(proxyRequest) {
-    SharedHandle<SocketCore> pooledSocket =
+    std::shared_ptr<SocketCore> pooledSocket =
       getDownloadEngine()->popPooledSocket
       (getRequest()->getHost(), getRequest()->getPort(),
        proxyRequest->getHost(), proxyRequest->getPort());
@@ -96,11 +96,11 @@ Command* HttpInitiateConnectionCommand::createNextCommand
                                              getDownloadEngine(),
                                              getSocket());
       if(proxyMethod == V_TUNNEL) {
-        SharedHandle<HttpProxyRequestConnectChain> chain
+        std::shared_ptr<HttpProxyRequestConnectChain> chain
           (new HttpProxyRequestConnectChain());
         c->setControlChain(chain);
       } else if(proxyMethod == V_GET) {
-        SharedHandle<HttpRequestConnectChain> chain
+        std::shared_ptr<HttpRequestConnectChain> chain
           (new HttpRequestConnectChain());
         c->setControlChain(chain);
       } else {
@@ -111,9 +111,9 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       command = c;
     } else {
       setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
-      SharedHandle<SocketRecvBuffer> socketRecvBuffer
+      std::shared_ptr<SocketRecvBuffer> socketRecvBuffer
         (new SocketRecvBuffer(pooledSocket));
-      SharedHandle<HttpConnection> httpConnection
+      std::shared_ptr<HttpConnection> httpConnection
         (new HttpConnection(getCuid(), pooledSocket, socketRecvBuffer));
       HttpRequestCommand* c = new HttpRequestCommand(getCuid(),
                                                      getRequest(),
@@ -128,7 +128,7 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       command = c;
     }
   } else {
-    SharedHandle<SocketCore> pooledSocket =
+    std::shared_ptr<SocketCore> pooledSocket =
       getDownloadEngine()->popPooledSocket
       (resolvedAddresses, getRequest()->getPort());
     if(!pooledSocket) {
@@ -145,7 +145,7 @@ Command* HttpInitiateConnectionCommand::createNextCommand
                                              getRequestGroup(),
                                              getDownloadEngine(),
                                              getSocket());
-      SharedHandle<HttpRequestConnectChain> chain
+      std::shared_ptr<HttpRequestConnectChain> chain
         (new HttpRequestConnectChain());
       c->setControlChain(chain);
       setupBackupConnection(hostname, addr, port, c);
@@ -154,9 +154,9 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       setSocket(pooledSocket);
       setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
 
-      SharedHandle<SocketRecvBuffer> socketRecvBuffer
+      std::shared_ptr<SocketRecvBuffer> socketRecvBuffer
         (new SocketRecvBuffer(getSocket()));
-      SharedHandle<HttpConnection> httpConnection
+      std::shared_ptr<HttpConnection> httpConnection
         (new HttpConnection(getCuid(), getSocket(), socketRecvBuffer));
       command = new HttpRequestCommand(getCuid(),
                                        getRequest(),

@@ -36,7 +36,9 @@
 #define D_PEER_LISTEN_COMMAND_H
 
 #include "Command.h"
-#include "SharedHandle.h"
+
+#include <memory>
+
 #include "SegList.h"
 
 namespace aria2 {
@@ -48,7 +50,7 @@ class PeerListenCommand : public Command {
 private:
   DownloadEngine* e_;
   int family_;
-  SharedHandle<SocketCore> socket_;
+  std::shared_ptr<SocketCore> socket_;
 public:
   PeerListenCommand(cuid_t cuid, DownloadEngine* e, int family);
 

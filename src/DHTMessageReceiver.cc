@@ -57,19 +57,19 @@
 namespace aria2 {
 
 DHTMessageReceiver::DHTMessageReceiver
-(const SharedHandle<DHTMessageTracker>& tracker)
+(const std::shared_ptr<DHTMessageTracker>& tracker)
   : tracker_(tracker)
 {}
 
 DHTMessageReceiver::~DHTMessageReceiver() {}
 
-SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage
+std::shared_ptr<DHTMessage> DHTMessageReceiver::receiveMessage
 (const std::string& remoteAddr, uint16_t remotePort, unsigned char *data,
  size_t length)
 {
   try {
     bool isReply = false;
-    SharedHandle<ValueBase> decoded = bencode2::decode(data, length);
+    std::shared_ptr<ValueBase> decoded = bencode2::decode(data, length);
     const Dict* dict = downcast<Dict>(decoded);
     if(dict) {
       const String* y = downcast<String>(dict->get(DHTMessage::Y));
@@ -89,8 +89,8 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage
       return handleUnknownMessage(data, length, remoteAddr, remotePort);
     }
     if(isReply) {
-      std::pair<SharedHandle<DHTResponseMessage>,
-                SharedHandle<DHTMessageCallback> > p =
+      std::pair<std::shared_ptr<DHTResponseMessage>,
+                std::shared_ptr<DHTMessageCallback> > p =
         tracker_->messageArrived(dict, remoteAddr, remotePort);
       if(!p.first) {
         // timeout or malicious? message
@@ -102,7 +102,7 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage
       }
       return p.first;
     } else {
-      SharedHandle<DHTQueryMessage> message =
+      std::shared_ptr<DHTQueryMessage> message =
         factory_->createQueryMessage(dict, remoteAddr, remotePort);
       if(*message->getLocalNode() == *message->getRemoteNode()) {
         // drop message from localnode
@@ -119,7 +119,7 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage
 }
 
 void DHTMessageReceiver::onMessageReceived
-(const SharedHandle<DHTMessage>& message)
+(const std::shared_ptr<DHTMessage>& message)
 {
   A2_LOG_INFO(fmt("Message received: %s", message->toString().c_str()));
   message->validate();
@@ -134,29 +134,29 @@ void DHTMessageReceiver::handleTimeout()
   tracker_->handleTimeout();
 }
 
-SharedHandle<DHTMessage>
+std::shared_ptr<DHTMessage>
 DHTMessageReceiver::handleUnknownMessage(const unsigned char* data,
                                          size_t length,
                                          const std::string& remoteAddr,
                                          uint16_t remotePort)
 {
-  SharedHandle<DHTMessage> m =
+  std::shared_ptr<DHTMessage> m =
     factory_->createUnknownMessage(data, length, remoteAddr, remotePort);
   A2_LOG_INFO(fmt("Message received: %s", m->toString().c_str()));
   return m;
 }
 
-void DHTMessageReceiver::setConnection(const SharedHandle<DHTConnection>& connection)
+void DHTMessageReceiver::setConnection(const std::shared_ptr<DHTConnection>& connection)
 {
   connection_ = connection;
 }
 
-void DHTMessageReceiver::setMessageFactory(const SharedHandle<DHTMessageFactory>& factory)
+void DHTMessageReceiver::setMessageFactory(const std::shared_ptr<DHTMessageFactory>& factory)
 {
   factory_ = factory;
 }
 
-void DHTMessageReceiver::setRoutingTable(const SharedHandle<DHTRoutingTable>& routingTable)
+void DHTMessageReceiver::setRoutingTable(const std::shared_ptr<DHTRoutingTable>& routingTable)
 {
   routingTable_ = routingTable;
 }

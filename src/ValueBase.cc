@@ -36,7 +36,7 @@
 
 namespace aria2 {
 
-const SharedHandle<ValueBase> ValueBase::none;
+const std::shared_ptr<ValueBase> ValueBase::none;
 
 String::String(const ValueType& string):str_(string) {}
 
@@ -61,14 +61,14 @@ const unsigned char* String::uc() const
   return reinterpret_cast<const unsigned char*>(str_.data());
 }
 
-SharedHandle<String> String::g(const ValueType& string)
+std::shared_ptr<String> String::g(const ValueType& string)
 {
-  return SharedHandle<String>(new String(string));
+  return std::shared_ptr<String>(new String(string));
 }
 
-SharedHandle<String> String::g(const unsigned char* data, size_t length)
+std::shared_ptr<String> String::g(const unsigned char* data, size_t length)
 {
-  return SharedHandle<String>(new String(data, length));
+  return std::shared_ptr<String>(new String(data, length));
 }
 
 void String::accept(ValueBaseVisitor& v) const
@@ -87,9 +87,9 @@ Integer::ValueType Integer::i() const
   return integer_;
 }
 
-SharedHandle<Integer> Integer::g(ValueType integer)
+std::shared_ptr<Integer> Integer::g(ValueType integer)
 {
-  return SharedHandle<Integer>(new Integer(integer));
+  return std::shared_ptr<Integer>(new Integer(integer));
 }
 
 void Integer::accept(ValueBaseVisitor& v) const
@@ -97,15 +97,15 @@ void Integer::accept(ValueBaseVisitor& v) const
   v.visit(*this);
 }
 
-const SharedHandle<Bool> Bool::trueValue_(new Bool(true));
-const SharedHandle<Bool> Bool::falseValue_(new Bool(false));
+const std::shared_ptr<Bool> Bool::trueValue_(new Bool(true));
+const std::shared_ptr<Bool> Bool::falseValue_(new Bool(false));
 
-SharedHandle<Bool> Bool::gTrue()
+std::shared_ptr<Bool> Bool::gTrue()
 {
   return trueValue_;
 }
 
-SharedHandle<Bool> Bool::gFalse()
+std::shared_ptr<Bool> Bool::gFalse()
 {
   return falseValue_;
 }
@@ -122,9 +122,9 @@ void Bool::accept(ValueBaseVisitor& v) const
 
 Bool::Bool(bool val):val_(val) {}
 
-const SharedHandle<Null> Null::nullValue_(new Null());
+const std::shared_ptr<Null> Null::nullValue_(new Null());
 
-SharedHandle<Null> Null::g()
+std::shared_ptr<Null> Null::g()
 {
   return nullValue_;
 }
@@ -140,17 +140,17 @@ List::List() {}
 
 List::~List() {}
 
-const SharedHandle<ValueBase>& List::get(size_t index) const
+const std::shared_ptr<ValueBase>& List::get(size_t index) const
 {
   return list_[index];
 }
 
-void List::set(size_t index, const SharedHandle<ValueBase>& v)
+void List::set(size_t index, const std::shared_ptr<ValueBase>& v)
 {
   list_[index] = v;
 }
 
-void List::append(const SharedHandle<ValueBase>& v)
+void List::append(const std::shared_ptr<ValueBase>& v)
 {
   list_.push_back(v);
 }
@@ -160,13 +160,13 @@ void List::append(const String::ValueType& string)
   list_.push_back(String::g(string));
 }
 
-List& List::operator<<(const SharedHandle<ValueBase>& v)
+List& List::operator<<(const std::shared_ptr<ValueBase>& v)
 {
   list_.push_back(v);
   return *this;
 }
 
-const SharedHandle<ValueBase>& List::operator[](size_t index) const
+const std::shared_ptr<ValueBase>& List::operator[](size_t index) const
 {
   return list_[index];
 }
@@ -201,9 +201,9 @@ bool List::empty() const
   return list_.empty();
 }
 
-SharedHandle<List> List::g()
+std::shared_ptr<List> List::g()
 {
-  return SharedHandle<List>(new List());
+  return std::shared_ptr<List>(new List());
 }
 
 void List::accept(ValueBaseVisitor& v) const
@@ -215,7 +215,7 @@ Dict::Dict() {}
 
 Dict::~Dict() {}
 
-void Dict::put(const std::string& key, const SharedHandle<ValueBase>& vlb)
+void Dict::put(const std::string& key, const std::shared_ptr<ValueBase>& vlb)
 {
   ValueType::value_type p = std::make_pair(key, vlb);
   std::pair<ValueType::iterator, bool> r = dict_.insert(p);
@@ -229,7 +229,7 @@ void Dict::put(const std::string& key, const String::ValueType& string)
   put(key, String::g(string));
 }
 
-const SharedHandle<ValueBase>& Dict::get(const std::string& key) const
+const std::shared_ptr<ValueBase>& Dict::get(const std::string& key) const
 {
   ValueType::const_iterator itr = dict_.find(key);
   if(itr == dict_.end()) {
@@ -239,7 +239,7 @@ const SharedHandle<ValueBase>& Dict::get(const std::string& key) const
   }
 }
 
-SharedHandle<ValueBase>& Dict::get(const std::string& key)
+std::shared_ptr<ValueBase>& Dict::get(const std::string& key)
 {
   ValueType::iterator itr = dict_.find(key);
   if(itr == dict_.end()) {
@@ -249,12 +249,12 @@ SharedHandle<ValueBase>& Dict::get(const std::string& key)
   }
 }
 
-SharedHandle<ValueBase>& Dict::operator[](const std::string& key)
+std::shared_ptr<ValueBase>& Dict::operator[](const std::string& key)
 {
   return get(key);
 }
 
-const SharedHandle<ValueBase>& Dict::operator[](const std::string& key) const
+const std::shared_ptr<ValueBase>& Dict::operator[](const std::string& key) const
 {
   return get(key);
 }
@@ -299,9 +299,9 @@ bool Dict::empty() const
   return dict_.empty();
 }
 
-SharedHandle<Dict> Dict::g()
+std::shared_ptr<Dict> Dict::g()
 {
-  return SharedHandle<Dict>(new Dict());
+  return std::shared_ptr<Dict>(new Dict());
 }
 void Dict::accept(ValueBaseVisitor& v) const
 {

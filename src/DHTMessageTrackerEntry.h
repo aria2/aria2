@@ -38,8 +38,8 @@
 #include "common.h"
 
 #include <string>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "DHTConstants.h"
 #include "TimerA2.h"
 
@@ -51,22 +51,22 @@ class DHTMessageCallback;
 
 class DHTMessageTrackerEntry {
 private:
-  SharedHandle<DHTNode> targetNode_;
+  std::shared_ptr<DHTNode> targetNode_;
 
   std::string transactionID_;
 
   std::string messageType_;
 
-  SharedHandle<DHTMessageCallback> callback_;
+  std::shared_ptr<DHTMessageCallback> callback_;
 
   Timer dispatchedTime_;
 
   time_t timeout_;
 public:
-  DHTMessageTrackerEntry(const SharedHandle<DHTMessage>& sentMessage,
+  DHTMessageTrackerEntry(const std::shared_ptr<DHTMessage>& sentMessage,
                          time_t timeout,
-                         const SharedHandle<DHTMessageCallback>& callback =
-                         SharedHandle<DHTMessageCallback>());
+                         const std::shared_ptr<DHTMessageCallback>& callback =
+                         std::shared_ptr<DHTMessageCallback>());
 
   ~DHTMessageTrackerEntry();
 
@@ -76,7 +76,7 @@ public:
 
   bool match(const std::string& transactionID, const std::string& ipaddr, uint16_t port) const;
 
-  const SharedHandle<DHTNode>& getTargetNode() const
+  const std::shared_ptr<DHTNode>& getTargetNode() const
   {
     return targetNode_;
   }
@@ -86,7 +86,7 @@ public:
     return messageType_;
   }
 
-  const SharedHandle<DHTMessageCallback>& getCallback() const
+  const std::shared_ptr<DHTMessageCallback>& getCallback() const
   {
     return callback_;
   }

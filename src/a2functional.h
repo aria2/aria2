@@ -40,15 +40,15 @@
 #include <functional>
 #include <string>
 #include <algorithm>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "A2STR.h"
 
 namespace aria2 {
 
 // mem_fun_t for SharedHandle
 template <class ReturnType, typename ClassType>
-class mem_fun_sh_t:public std::unary_function< SharedHandle<ClassType>, ReturnType>
+class mem_fun_sh_t:public std::unary_function< std::shared_ptr<ClassType>, ReturnType>
 {
 private:
   ReturnType (ClassType::*f)();
@@ -56,7 +56,7 @@ private:
 public:
   mem_fun_sh_t(ReturnType (ClassType::*f)()):f(f) {}
 
-  ReturnType operator()(const SharedHandle<ClassType>& x) const
+  ReturnType operator()(const std::shared_ptr<ClassType>& x) const
   {
     return (x.get()->*f)();
   }
@@ -64,7 +64,7 @@ public:
 
 // const_mem_fun_t for SharedHandle
 template <class ReturnType, typename ClassType>
-class const_mem_fun_sh_t:public std::unary_function< SharedHandle<ClassType>, ReturnType>
+class const_mem_fun_sh_t:public std::unary_function< std::shared_ptr<ClassType>, ReturnType>
 {
 private:
   ReturnType (ClassType::*f)() const;
@@ -72,7 +72,7 @@ private:
 public:
   const_mem_fun_sh_t(ReturnType (ClassType::*f)() const):f(f) {}
 
-  ReturnType operator()(const SharedHandle<ClassType>& x) const
+  ReturnType operator()(const std::shared_ptr<ClassType>& x) const
   {
     return (x.get()->*f)();
   }
@@ -94,7 +94,7 @@ mem_fun_sh(ReturnType (ClassType::*f)() const)
 
 // mem_fun1_t for SharedHandle
 template<typename ReturnType, typename ClassType, typename ArgType>
-class mem_fun1_sh_t:public std::binary_function<SharedHandle<ClassType>,
+class mem_fun1_sh_t:public std::binary_function<std::shared_ptr<ClassType>,
                                                 ArgType,
                                                 ReturnType>
 {
@@ -104,7 +104,7 @@ private:
 public:
   mem_fun1_sh_t(ReturnType (ClassType::*f)(ArgType)):f(f) {}
 
-  ReturnType operator()(const SharedHandle<ClassType>& x, ArgType a) const
+  ReturnType operator()(const std::shared_ptr<ClassType>& x, ArgType a) const
   {
     return (x.get()->*f)(a);
   }
@@ -271,8 +271,8 @@ std::string strjoin(InputIterator first, InputIterator last,
 template<typename T>
 class LeastRecentAccess:public std::binary_function<T, T, bool> {
 public:
-  bool operator()(const SharedHandle<T>& lhs,
-                  const SharedHandle<T>& rhs) const
+  bool operator()(const std::shared_ptr<T>& lhs,
+                  const std::shared_ptr<T>& rhs) const
   {
     return lhs->getLastAccessTime() < rhs->getLastAccessTime();
   }
@@ -324,7 +324,7 @@ struct DerefEqual<T> derefEqual(const T& t)
 
 template<typename T>
 struct RefLess {
-  bool operator()(const SharedHandle<T>& lhs, const SharedHandle<T>& rhs) const
+  bool operator()(const std::shared_ptr<T>& lhs, const std::shared_ptr<T>& rhs) const
   {
     return lhs.get() < rhs.get();
   }

@@ -78,7 +78,7 @@ void DHTAbstractTask::setTaskQueue(DHTTaskQueue* taskQueue)
   taskQueue_ = taskQueue;
 }
 
-void DHTAbstractTask::setLocalNode(const SharedHandle<DHTNode>& localNode)
+void DHTAbstractTask::setLocalNode(const std::shared_ptr<DHTNode>& localNode)
 {
   localNode_ = localNode;
 }

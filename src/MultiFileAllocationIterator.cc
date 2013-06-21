@@ -60,9 +60,9 @@ void MultiFileAllocationIterator::allocateChunk()
     if(entries_.empty()) {
       break;
     }
-    SharedHandle<DiskWriterEntry> entry = entries_.front();
+    std::shared_ptr<DiskWriterEntry> entry = entries_.front();
     entries_.pop_front();
-    SharedHandle<FileEntry> fileEntry = entry->getFileEntry();
+    std::shared_ptr<FileEntry> fileEntry = entry->getFileEntry();
     // Open file before calling DiskWriterEntry::size()
     diskAdaptor_->openIfNot(entry, &DiskWriterEntry::openFile);
     if(entry->needsFileAllocation() && entry->size() < fileEntry->getLength()) {
@@ -121,7 +121,7 @@ int64_t MultiFileAllocationIterator::getTotalLength()
   }
 }
 
-const std::deque<SharedHandle<DiskWriterEntry> >&
+const std::deque<std::shared_ptr<DiskWriterEntry> >&
 MultiFileAllocationIterator::getDiskWriterEntries() const
 {
   return entries_;

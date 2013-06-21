@@ -82,14 +82,14 @@ namespace aria2 {
 PeerInteractionCommand::PeerInteractionCommand
 (cuid_t cuid,
  RequestGroup* requestGroup,
- const SharedHandle<Peer>& p,
+ const std::shared_ptr<Peer>& p,
  DownloadEngine* e,
- const SharedHandle<BtRuntime>& btRuntime,
- const SharedHandle<PieceStorage>& pieceStorage,
- const SharedHandle<PeerStorage>& peerStorage,
- const SharedHandle<SocketCore>& s,
+ const std::shared_ptr<BtRuntime>& btRuntime,
+ const std::shared_ptr<PieceStorage>& pieceStorage,
+ const std::shared_ptr<PeerStorage>& peerStorage,
+ const std::shared_ptr<SocketCore>& s,
  Seq sequence,
- const SharedHandle<PeerConnection>& passedPeerConnection)
+ const std::shared_ptr<PeerConnection>& passedPeerConnection)
   :PeerAbstractCommand(cuid, p, e, s),
    requestGroup_(requestGroup),
    btRuntime_(btRuntime),
@@ -114,19 +114,19 @@ PeerInteractionCommand::PeerInteractionCommand
     family = AF_INET;
   }
 
-  SharedHandle<TorrentAttribute> torrentAttrs =
+  std::shared_ptr<TorrentAttribute> torrentAttrs =
     bittorrent::getTorrentAttrs(requestGroup_->getDownloadContext());
   bool metadataGetMode = torrentAttrs->metadata.empty();
 
-  SharedHandle<ExtensionMessageRegistry> exMsgRegistry
+  std::shared_ptr<ExtensionMessageRegistry> exMsgRegistry
     (new ExtensionMessageRegistry());
   exMsgRegistry->setExtensionMessageID(ExtensionMessageRegistry::UT_PEX, 8);
   // http://www.bittorrent.org/beps/bep_0009.html
   exMsgRegistry->setExtensionMessageID(ExtensionMessageRegistry::UT_METADATA,
                                        9);
 
-  SharedHandle<UTMetadataRequestFactory> utMetadataRequestFactory;
-  SharedHandle<UTMetadataRequestTracker> utMetadataRequestTracker;
+  std::shared_ptr<UTMetadataRequestFactory> utMetadataRequestFactory;
+  std::shared_ptr<UTMetadataRequestTracker> utMetadataRequestTracker;
   if(metadataGetMode) {
     utMetadataRequestFactory.reset(new UTMetadataRequestFactory());
     utMetadataRequestTracker.reset(new UTMetadataRequestTracker());
@@ -140,7 +140,7 @@ PeerInteractionCommand::PeerInteractionCommand
   extensionMessageFactoryPtr->setUTMetadataRequestTracker
     (utMetadataRequestTracker.get());
   // PieceStorage will be set later.
-  SharedHandle<ExtensionMessageFactory> extensionMessageFactory
+  std::shared_ptr<ExtensionMessageFactory> extensionMessageFactory
     (extensionMessageFactoryPtr);
 
 
@@ -166,10 +166,10 @@ PeerInteractionCommand::PeerInteractionCommand
   if(metadataGetMode) {
     factoryPtr->enableMetadataGetMode();
   }
-  SharedHandle<BtMessageFactory> factory(factoryPtr);
+  std::shared_ptr<BtMessageFactory> factory(factoryPtr);
 
 
-  SharedHandle<PeerConnection> peerConnection;
+  std::shared_ptr<PeerConnection> peerConnection;
   if(!passedPeerConnection) {
     peerConnection.reset(new PeerConnection(cuid, getPeer(), getSocket()));
   } else {
@@ -201,14 +201,14 @@ PeerInteractionCommand::PeerInteractionCommand
   dispatcherPtr->setRequestGroupMan
     (getDownloadEngine()->getRequestGroupMan().get());
   dispatcherPtr->setPeerConnection(peerConnection);
-  SharedHandle<BtMessageDispatcher> dispatcher(dispatcherPtr);
+  std::shared_ptr<BtMessageDispatcher> dispatcher(dispatcherPtr);
 
   DefaultBtMessageReceiver* receiverPtr(new DefaultBtMessageReceiver());
   receiverPtr->setDownloadContext(requestGroup_->getDownloadContext());
   receiverPtr->setPeerConnection(peerConnection.get());
   receiverPtr->setDispatcher(dispatcherPtr);
   receiverPtr->setBtMessageFactory(factoryPtr);
-  SharedHandle<BtMessageReceiver> receiver(receiverPtr);
+  std::shared_ptr<BtMessageReceiver> receiver(receiverPtr);
 
   DefaultBtRequestFactory* reqFactoryPtr(new DefaultBtRequestFactory());
   reqFactoryPtr->setPeer(getPeer());
@@ -216,7 +216,7 @@ PeerInteractionCommand::PeerInteractionCommand
   reqFactoryPtr->setBtMessageDispatcher(dispatcherPtr);
   reqFactoryPtr->setBtMessageFactory(factoryPtr);
   reqFactoryPtr->setCuid(cuid);
-  SharedHandle<BtRequestFactory> reqFactory(reqFactoryPtr);
+  std::shared_ptr<BtRequestFactory> reqFactory(reqFactoryPtr);
 
   DefaultBtInteractive* btInteractivePtr
     (new DefaultBtInteractive(requestGroup_->getDownloadContext(), getPeer()));
@@ -260,7 +260,7 @@ PeerInteractionCommand::PeerInteractionCommand
   if(metadataGetMode) {
     btInteractivePtr->enableMetadataGetMode();
   }
-  SharedHandle<BtInteractive> btInteractive(btInteractivePtr);
+  std::shared_ptr<BtInteractive> btInteractive(btInteractivePtr);
 
   btInteractive_ = btInteractive;
 
@@ -328,7 +328,7 @@ bool PeerInteractionCommand::executeInternal() {
           break;
         }
       }
-      SharedHandle<BtMessage> handshakeMessage =
+      std::shared_ptr<BtMessage> handshakeMessage =
         btInteractive_->receiveHandshake();
       if(!handshakeMessage) {
         done = true;
@@ -339,7 +339,7 @@ bool PeerInteractionCommand::executeInternal() {
       break;
     }
     case RECEIVER_WAIT_HANDSHAKE: {
-      SharedHandle<BtMessage> handshakeMessage =
+      std::shared_ptr<BtMessage> handshakeMessage =
         btInteractive_->receiveAndSendHandshake();
       if(!handshakeMessage) {
         done = true;
@@ -392,7 +392,7 @@ bool PeerInteractionCommand::executeInternal() {
 bool PeerInteractionCommand::prepareForNextPeer(time_t wait) {
   if(peerStorage_->isPeerAvailable() && btRuntime_->lessThanEqMinPeers()) {
     cuid_t ncuid = getDownloadEngine()->newCUID();
-    SharedHandle<Peer> peer = peerStorage_->checkoutPeer(ncuid);
+    std::shared_ptr<Peer> peer = peerStorage_->checkoutPeer(ncuid);
     // sanity check
     if(peer) {
       PeerInitiateConnectionCommand* command;
@@ -424,7 +424,7 @@ bool PeerInteractionCommand::exitBeforeExecute()
   return btRuntime_->isHalt();
 }
 
-const SharedHandle<Option>& PeerInteractionCommand::getOption() const
+const std::shared_ptr<Option>& PeerInteractionCommand::getOption() const
 {
   return requestGroup_->getOption();
 }

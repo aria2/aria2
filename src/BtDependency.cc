@@ -54,7 +54,7 @@ namespace aria2 {
 
 BtDependency::BtDependency
 (RequestGroup* dependant,
- const SharedHandle<RequestGroup>& dependee)
+ const std::shared_ptr<RequestGroup>& dependee)
   : dependant_(dependant),
     dependee_(dependee)
 {}
@@ -62,8 +62,8 @@ BtDependency::BtDependency
 BtDependency::~BtDependency() {}
 
 namespace {
-void copyValues(const SharedHandle<FileEntry>& d,
-                const SharedHandle<FileEntry>& s)
+void copyValues(const std::shared_ptr<FileEntry>& d,
+                const std::shared_ptr<FileEntry>& s)
 {
   d->setRequested(true);
   d->setPath(s->getPath());
@@ -77,8 +77,8 @@ void copyValues(const SharedHandle<FileEntry>& d,
 namespace {
 struct EntryCmp {
   bool operator()
-  (const SharedHandle<FileEntry>& lhs,
-   const SharedHandle<FileEntry>& rhs) const
+  (const std::shared_ptr<FileEntry>& lhs,
+   const std::shared_ptr<FileEntry>& rhs) const
   {
     return lhs->getOriginalName() < rhs->getOriginalName();
   }
@@ -91,17 +91,17 @@ bool BtDependency::resolve()
     return true;
   }
   if(dependee_->getNumCommand() == 0 && dependee_->downloadFinished()) {
-    SharedHandle<RequestGroup> dependee = dependee_;
+    std::shared_ptr<RequestGroup> dependee = dependee_;
     // cut reference here
     dependee_.reset();
-    SharedHandle<DownloadContext> context(new DownloadContext());
+    std::shared_ptr<DownloadContext> context(new DownloadContext());
     try {
-      SharedHandle<DiskAdaptor> diskAdaptor =
+      std::shared_ptr<DiskAdaptor> diskAdaptor =
         dependee->getPieceStorage()->getDiskAdaptor();
       diskAdaptor->openExistingFile();
       std::string content = util::toString(diskAdaptor);
       if(dependee->getDownloadContext()->hasAttribute(CTX_ATTR_BT)) {
-        SharedHandle<TorrentAttribute> attrs =
+        std::shared_ptr<TorrentAttribute> attrs =
           bittorrent::getTorrentAttrs(dependee->getDownloadContext());
         bittorrent::loadFromMemory
           (bittorrent::metadata2Torrent(content, attrs), context,
@@ -115,9 +115,9 @@ bool BtDependency::resolve()
         bittorrent::adjustAnnounceUri(bittorrent::getTorrentAttrs(context),
                                       dependant_->getOption());
       }
-      const std::vector<SharedHandle<FileEntry> >& fileEntries =
+      const std::vector<std::shared_ptr<FileEntry> >& fileEntries =
         context->getFileEntries();
-      const std::vector<SharedHandle<FileEntry> >& dependantFileEntries =
+      const std::vector<std::shared_ptr<FileEntry> >& dependantFileEntries =
         dependant_->getDownloadContext()->getFileEntries();
       // If dependant's FileEntry::getOriginalName() is empty, we
       // assume that torrent is single file. In Metalink3, this is
@@ -126,9 +126,9 @@ bool BtDependency::resolve()
          dependantFileEntries[0]->getOriginalName().empty()) {
         copyValues(fileEntries[0], dependantFileEntries[0]);
       } else {
-        std::vector<SharedHandle<FileEntry> > destFiles;
+        std::vector<std::shared_ptr<FileEntry> > destFiles;
         destFiles.reserve(fileEntries.size());
-        for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
+        for(std::vector<std::shared_ptr<FileEntry> >::const_iterator i =
               fileEntries.begin(), eoi = fileEntries.end(); i != eoi; ++i) {
           (*i)->setRequested(false);
           destFiles.push_back(*i);
@@ -137,10 +137,10 @@ bool BtDependency::resolve()
         // Copy file path in dependant_'s FileEntries to newly created
         // context's FileEntries to endorse the path structure of
         // dependant_.  URIs and singleHostMultiConnection are also copied.
-        for(std::vector<SharedHandle<FileEntry> >::const_iterator s =
+        for(std::vector<std::shared_ptr<FileEntry> >::const_iterator s =
               dependantFileEntries.begin(), eoi = dependantFileEntries.end();
             s != eoi; ++s){
-          std::vector<SharedHandle<FileEntry> >::const_iterator d =
+          std::vector<std::shared_ptr<FileEntry> >::const_iterator d =
             std::lower_bound(destFiles.begin(), destFiles.end(), *s,
                              EntryCmp());
           if(d == destFiles.end() ||

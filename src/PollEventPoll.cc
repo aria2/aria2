@@ -96,7 +96,7 @@ void PollEventPoll::poll(const struct timeval& tv)
   while((res = ::poll(pollfds_, pollfdNum_, timeout)) == -1 &&
         errno == EINTR);
   if(res > 0) {
-    SharedHandle<KSocketEntry> se(new KSocketEntry(0));
+    std::shared_ptr<KSocketEntry> se(new KSocketEntry(0));
     for(struct pollfd* first = pollfds_, *last = pollfds_+pollfdNum_;
         first != last; ++first) {
       if(first->revents) {
@@ -152,7 +152,7 @@ int PollEventPoll::translateEvents(EventPoll::EventType events)
 bool PollEventPoll::addEvents
 (sock_t socket, const PollEventPoll::KEvent& event)
 {
-  SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
+  std::shared_ptr<KSocketEntry> socketEntry(new KSocketEntry(socket));
   KSocketEntrySet::iterator i = socketEntries_.lower_bound(socketEntry);
   if(i != socketEntries_.end() && *(*i) == *socketEntry) {
     event.addSelf(*i);
@@ -189,7 +189,7 @@ bool PollEventPoll::addEvents
 #ifdef ENABLE_ASYNC_DNS
 bool PollEventPoll::addEvents
 (sock_t socket, Command* command, int events,
- const SharedHandle<AsyncNameResolver>& rs)
+ const std::shared_ptr<AsyncNameResolver>& rs)
 {
   return addEvents(socket, KADNSEvent(rs, command, socket, events));
 }
@@ -198,7 +198,7 @@ bool PollEventPoll::addEvents
 bool PollEventPoll::deleteEvents
 (sock_t socket, const PollEventPoll::KEvent& event)
 {
-  SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
+  std::shared_ptr<KSocketEntry> socketEntry(new KSocketEntry(socket));
   KSocketEntrySet::iterator i = socketEntries_.find(socketEntry);
   if(i == socketEntries_.end()) {
     A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
@@ -226,7 +226,7 @@ bool PollEventPoll::deleteEvents
 
 #ifdef ENABLE_ASYNC_DNS
 bool PollEventPoll::deleteEvents
-(sock_t socket, Command* command, const SharedHandle<AsyncNameResolver>& rs)
+(sock_t socket, Command* command, const std::shared_ptr<AsyncNameResolver>& rs)
 {
   return deleteEvents(socket, KADNSEvent(rs, command, socket, 0));
 }
@@ -241,9 +241,9 @@ bool PollEventPoll::deleteEvents
 
 #ifdef ENABLE_ASYNC_DNS
 bool PollEventPoll::addNameResolver
-(const SharedHandle<AsyncNameResolver>& resolver, Command* command)
+(const std::shared_ptr<AsyncNameResolver>& resolver, Command* command)
 {
-  SharedHandle<KAsyncNameResolverEntry> entry
+  std::shared_ptr<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
   KAsyncNameResolverEntrySet::iterator itr =
     nameResolverEntries_.lower_bound(entry);
@@ -257,9 +257,9 @@ bool PollEventPoll::addNameResolver
 }
 
 bool PollEventPoll::deleteNameResolver
-(const SharedHandle<AsyncNameResolver>& resolver, Command* command)
+(const std::shared_ptr<AsyncNameResolver>& resolver, Command* command)
 {
-  SharedHandle<KAsyncNameResolverEntry> entry
+  std::shared_ptr<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
   KAsyncNameResolverEntrySet::iterator itr = nameResolverEntries_.find(entry);
   if(itr == nameResolverEntries_.end()) {

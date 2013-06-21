@@ -36,7 +36,8 @@
 #define D_DHT_AUTO_SAVE_COMMAND_H
 
 #include "TimeBasedCommand.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -48,9 +49,9 @@ class DHTAutoSaveCommand : public TimeBasedCommand
 private:
   int family_;
 
-  SharedHandle<DHTNode> localNode_;
+  std::shared_ptr<DHTNode> localNode_;
 
-  SharedHandle<DHTRoutingTable> routingTable_;
+  std::shared_ptr<DHTRoutingTable> routingTable_;
 
   void save();
 public:
@@ -63,9 +64,9 @@ public:
 
   virtual void process();
 
-  void setLocalNode(const SharedHandle<DHTNode>& localNode);
+  void setLocalNode(const std::shared_ptr<DHTNode>& localNode);
 
-  void setRoutingTable(const SharedHandle<DHTRoutingTable>& routingTable);
+  void setRoutingTable(const std::shared_ptr<DHTRoutingTable>& routingTable);
 };
 
 } // namespace aria2

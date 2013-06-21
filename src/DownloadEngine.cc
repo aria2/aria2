@@ -86,7 +86,7 @@ volatile sig_atomic_t globalHaltRequested = 0;
 
 } // namespace global
 
-DownloadEngine::DownloadEngine(const SharedHandle<EventPoll>& eventPoll)
+DownloadEngine::DownloadEngine(const std::shared_ptr<EventPoll>& eventPoll)
   : eventPoll_(eventPoll),
     haltRequested_(0),
     noWait_(true),
@@ -186,28 +186,28 @@ void DownloadEngine::waitData()
   eventPoll_->poll(tv);
 }
 
-bool DownloadEngine::addSocketForReadCheck(const SharedHandle<SocketCore>& socket,
+bool DownloadEngine::addSocketForReadCheck(const std::shared_ptr<SocketCore>& socket,
                                            Command* command)
 {
   return eventPoll_->addEvents(socket->getSockfd(), command,
                                EventPoll::EVENT_READ);
 }
 
-bool DownloadEngine::deleteSocketForReadCheck(const SharedHandle<SocketCore>& socket,
+bool DownloadEngine::deleteSocketForReadCheck(const std::shared_ptr<SocketCore>& socket,
                                               Command* command)
 {
   return eventPoll_->deleteEvents(socket->getSockfd(), command,
                                   EventPoll::EVENT_READ);
 }
 
-bool DownloadEngine::addSocketForWriteCheck(const SharedHandle<SocketCore>& socket,
+bool DownloadEngine::addSocketForWriteCheck(const std::shared_ptr<SocketCore>& socket,
                                             Command* command)
 {
   return eventPoll_->addEvents(socket->getSockfd(), command,
                                EventPoll::EVENT_WRITE);
 }
 
-bool DownloadEngine::deleteSocketForWriteCheck(const SharedHandle<SocketCore>& socket,
+bool DownloadEngine::deleteSocketForWriteCheck(const std::shared_ptr<SocketCore>& socket,
                                                Command* command)
 {
   return eventPoll_->deleteEvents(socket->getSockfd(), command,
@@ -258,20 +258,20 @@ void DownloadEngine::requestForceHalt()
   requestGroupMan_->forceHalt();
 }
 
-void DownloadEngine::setStatCalc(const SharedHandle<StatCalc>& statCalc)
+void DownloadEngine::setStatCalc(const std::shared_ptr<StatCalc>& statCalc)
 {
   statCalc_ = statCalc;
 }
 
 #ifdef ENABLE_ASYNC_DNS
 bool DownloadEngine::addNameResolverCheck
-(const SharedHandle<AsyncNameResolver>& resolver, Command* command)
+(const std::shared_ptr<AsyncNameResolver>& resolver, Command* command)
 {
   return eventPoll_->addNameResolver(resolver, command);
 }
 
 bool DownloadEngine::deleteNameResolverCheck
-(const SharedHandle<AsyncNameResolver>& resolver, Command* command)
+(const std::shared_ptr<AsyncNameResolver>& resolver, Command* command)
 {
   return eventPoll_->deleteNameResolver(resolver, command);
 }
@@ -336,7 +336,7 @@ void DownloadEngine::poolSocket
  const std::string& username,
  const std::string& proxyhost,
  uint16_t proxyport,
- const SharedHandle<SocketCore>& sock,
+ const std::shared_ptr<SocketCore>& sock,
  const std::string& options,
  time_t timeout)
 {
@@ -349,7 +349,7 @@ void DownloadEngine::poolSocket
  uint16_t port,
  const std::string& proxyhost,
  uint16_t proxyport,
- const SharedHandle<SocketCore>& sock,
+ const std::shared_ptr<SocketCore>& sock,
  time_t timeout)
 {
   SocketPoolEntry e(sock, timeout);
@@ -358,7 +358,7 @@ void DownloadEngine::poolSocket
 
 namespace {
 bool getPeerInfo(std::pair<std::string, uint16_t>& res,
-                 const SharedHandle<SocketCore>& socket)
+                 const std::shared_ptr<SocketCore>& socket)
 {
   try {
     socket->getPeerInfo(res);
@@ -372,9 +372,9 @@ bool getPeerInfo(std::pair<std::string, uint16_t>& res,
 }
 } // namespace
 
-void DownloadEngine::poolSocket(const SharedHandle<Request>& request,
-                                const SharedHandle<Request>& proxyRequest,
-                                const SharedHandle<SocketCore>& socket,
+void DownloadEngine::poolSocket(const std::shared_ptr<Request>& request,
+                                const std::shared_ptr<Request>& proxyRequest,
+                                const std::shared_ptr<SocketCore>& socket,
                                 time_t timeout)
 {
   if(!proxyRequest) {
@@ -392,10 +392,10 @@ void DownloadEngine::poolSocket(const SharedHandle<Request>& request,
 }
 
 void DownloadEngine::poolSocket
-(const SharedHandle<Request>& request,
+(const std::shared_ptr<Request>& request,
  const std::string& username,
- const SharedHandle<Request>& proxyRequest,
- const SharedHandle<SocketCore>& socket,
+ const std::shared_ptr<Request>& proxyRequest,
+ const std::shared_ptr<SocketCore>& socket,
  const std::string& options,
  time_t timeout)
 {
@@ -432,12 +432,12 @@ DownloadEngine::findSocketPoolEntry(const std::string& key)
   return socketPool_.end();
 }
 
-SharedHandle<SocketCore>
+std::shared_ptr<SocketCore>
 DownloadEngine::popPooledSocket
 (const std::string& ipaddr, uint16_t port,
  const std::string& proxyhost, uint16_t proxyport)
 {
-  SharedHandle<SocketCore> s;
+  std::shared_ptr<SocketCore> s;
   std::multimap<std::string, SocketPoolEntry>::iterator i =
     findSocketPoolEntry
     (createSockPoolKey(ipaddr, port, A2STR::NIL, proxyhost, proxyport));
@@ -448,14 +448,14 @@ DownloadEngine::popPooledSocket
   return s;
 }
 
-SharedHandle<SocketCore>
+std::shared_ptr<SocketCore>
 DownloadEngine::popPooledSocket
 (std::string& options,
  const std::string& ipaddr, uint16_t port,
  const std::string& username,
  const std::string& proxyhost, uint16_t proxyport)
 {
-  SharedHandle<SocketCore> s;
+  std::shared_ptr<SocketCore> s;
   std::multimap<std::string, SocketPoolEntry>::iterator i =
     findSocketPoolEntry
     (createSockPoolKey(ipaddr, port, username, proxyhost, proxyport));
@@ -467,11 +467,11 @@ DownloadEngine::popPooledSocket
   return s;
 }
 
-SharedHandle<SocketCore>
+std::shared_ptr<SocketCore>
 DownloadEngine::popPooledSocket
 (const std::vector<std::string>& ipaddrs, uint16_t port)
 {
-  SharedHandle<SocketCore> s;
+  std::shared_ptr<SocketCore> s;
   for(std::vector<std::string>::const_iterator i = ipaddrs.begin(),
         eoi = ipaddrs.end(); i != eoi; ++i) {
     s = popPooledSocket(*i, port, A2STR::NIL, 0);
@@ -482,13 +482,13 @@ DownloadEngine::popPooledSocket
   return s;
 }
 
-SharedHandle<SocketCore>
+std::shared_ptr<SocketCore>
 DownloadEngine::popPooledSocket
 (std::string& options,
  const std::vector<std::string>& ipaddrs, uint16_t port,
  const std::string& username)
 {
-  SharedHandle<SocketCore> s;
+  std::shared_ptr<SocketCore> s;
   for(std::vector<std::string>::const_iterator i = ipaddrs.begin(),
         eoi = ipaddrs.end(); i != eoi; ++i) {
     s = popPooledSocket(options, *i, port, username, A2STR::NIL, 0);
@@ -500,7 +500,7 @@ DownloadEngine::popPooledSocket
 }
 
 DownloadEngine::SocketPoolEntry::SocketPoolEntry
-(const SharedHandle<SocketCore>& socket,
+(const std::shared_ptr<SocketCore>& socket,
  const std::string& options,
  time_t timeout)
   : socket_(socket),
@@ -509,7 +509,7 @@ DownloadEngine::SocketPoolEntry::SocketPoolEntry
 {}
 
 DownloadEngine::SocketPoolEntry::SocketPoolEntry
-(const SharedHandle<SocketCore>& socket, time_t timeout)
+(const std::shared_ptr<SocketCore>& socket, time_t timeout)
   : socket_(socket),
     timeout_(timeout)
 {}
@@ -551,7 +551,7 @@ void DownloadEngine::removeCachedIPAddress
 }
 
 void DownloadEngine::setAuthConfigFactory
-(const SharedHandle<AuthConfigFactory>& factory)
+(const std::shared_ptr<AuthConfigFactory>& factory)
 {
   authConfigFactory_ = factory;
 }
@@ -572,19 +572,19 @@ void DownloadEngine::addCommand(Command* command)
 }
 
 void DownloadEngine::setRequestGroupMan
-(const SharedHandle<RequestGroupMan>& rgman)
+(const std::shared_ptr<RequestGroupMan>& rgman)
 {
   requestGroupMan_ = rgman;
 }
 
 void DownloadEngine::setFileAllocationMan
-(const SharedHandle<FileAllocationMan>& faman)
+(const std::shared_ptr<FileAllocationMan>& faman)
 {
   fileAllocationMan_ = faman;
 }
 
 void DownloadEngine::setCheckIntegrityMan
-(const SharedHandle<CheckIntegrityMan>& ciman)
+(const std::shared_ptr<CheckIntegrityMan>& ciman)
 {
   checkIntegrityMan_ = ciman;
 }
@@ -604,7 +604,7 @@ void DownloadEngine::setAsyncDNSServers(ares_addr_node* asyncDNSServers)
 
 #ifdef ENABLE_WEBSOCKET
 void DownloadEngine::setWebSocketSessionMan
-(const SharedHandle<rpc::WebSocketSessionMan>& wsman)
+(const std::shared_ptr<rpc::WebSocketSessionMan>& wsman)
 {
   webSocketSessionMan_ = wsman;
 }

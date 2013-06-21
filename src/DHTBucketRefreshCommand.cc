@@ -62,19 +62,19 @@ void DHTBucketRefreshCommand::process()
 }
 
 void DHTBucketRefreshCommand::setRoutingTable
-(const SharedHandle<DHTRoutingTable>& routingTable)
+(const std::shared_ptr<DHTRoutingTable>& routingTable)
 {
   routingTable_ = routingTable;
 }
 
 void DHTBucketRefreshCommand::setTaskQueue
-(const SharedHandle<DHTTaskQueue>& taskQueue)
+(const std::shared_ptr<DHTTaskQueue>& taskQueue)
 {
   taskQueue_ = taskQueue;
 }
 
 void DHTBucketRefreshCommand::setTaskFactory
-(const SharedHandle<DHTTaskFactory>& taskFactory)
+(const std::shared_ptr<DHTTaskFactory>& taskFactory)
 {
   taskFactory_ = taskFactory;
 }

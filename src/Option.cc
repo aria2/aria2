@@ -171,12 +171,12 @@ void Option::merge(const Option& option)
   }
 }
 
-void Option::setParent(const SharedHandle<Option>& parent)
+void Option::setParent(const std::shared_ptr<Option>& parent)
 {
   parent_ = parent;
 }
 
-const SharedHandle<Option>& Option::getParent() const
+const std::shared_ptr<Option>& Option::getParent() const
 {
   return parent_;
 }

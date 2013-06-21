@@ -91,17 +91,17 @@ void HandshakeExtensionMessageTest::testToString()
 
 void HandshakeExtensionMessageTest::testDoReceivedAction()
 {
-  SharedHandle<DownloadContext> dctx
+  std::shared_ptr<DownloadContext> dctx
     (new DownloadContext(METADATA_PIECE_SIZE, 0));
-  SharedHandle<Option> op(new Option());
+  std::shared_ptr<Option> op(new Option());
   RequestGroup rg(GroupId::create(), op);
   rg.setDownloadContext(dctx);
 
-  SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
+  std::shared_ptr<TorrentAttribute> attrs(new TorrentAttribute());
   dctx->setAttribute(CTX_ATTR_BT, attrs);
   dctx->markTotalLengthIsUnknown();
 
-  SharedHandle<Peer> peer(new Peer("192.168.0.1", 0));
+  std::shared_ptr<Peer> peer(new Peer("192.168.0.1", 0));
   peer->allocateSessionResource(1024, 1024*1024);
   HandshakeExtensionMessage msg;
   msg.setClientVersion("aria2");
@@ -138,7 +138,7 @@ void HandshakeExtensionMessageTest::testCreate()
 {
   std::string in =
     "0d1:pi6881e1:v5:aria21:md5:a2dhti2e6:ut_pexi1ee13:metadata_sizei1024ee";
-  SharedHandle<HandshakeExtensionMessage> m
+  std::shared_ptr<HandshakeExtensionMessage> m
     (HandshakeExtensionMessage::create
      (reinterpret_cast<const unsigned char*>(in.c_str()),
       in.size()));
@@ -180,7 +180,7 @@ void HandshakeExtensionMessageTest::testCreate()
 void HandshakeExtensionMessageTest::testCreate_stringnum()
 {
   std::string in = "0d1:p4:68811:v5:aria21:md6:ut_pex1:1ee";
-  SharedHandle<HandshakeExtensionMessage> m
+  std::shared_ptr<HandshakeExtensionMessage> m
     (HandshakeExtensionMessage::create
      (reinterpret_cast<const unsigned char*>(in.c_str()),
       in.size()));

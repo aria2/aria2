@@ -35,15 +35,15 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTRoutingTableTest);
 
 void DHTRoutingTableTest::testAddNode()
 {
-  SharedHandle<DHTNode> localNode(new DHTNode());
+  std::shared_ptr<DHTNode> localNode(new DHTNode());
   DHTRoutingTable table(localNode);
-  SharedHandle<MockDHTTaskFactory> taskFactory(new MockDHTTaskFactory());
+  std::shared_ptr<MockDHTTaskFactory> taskFactory(new MockDHTTaskFactory());
   table.setTaskFactory(taskFactory);
-  SharedHandle<MockDHTTaskQueue> taskQueue(new MockDHTTaskQueue());
+  std::shared_ptr<MockDHTTaskQueue> taskQueue(new MockDHTTaskQueue());
   table.setTaskQueue(taskQueue);
   uint32_t count = 0;
   for(int i = 0; i < 100; ++i) {
-    SharedHandle<DHTNode> node(new DHTNode());
+    std::shared_ptr<DHTNode> node(new DHTNode());
     if(table.addNode(node)) {
       ++count;
     }
@@ -53,14 +53,14 @@ void DHTRoutingTableTest::testAddNode()
 
 void DHTRoutingTableTest::testAddNode_localNode()
 {
-  SharedHandle<DHTNode> localNode(new DHTNode());
+  std::shared_ptr<DHTNode> localNode(new DHTNode());
   DHTRoutingTable table(localNode);
-  SharedHandle<MockDHTTaskFactory> taskFactory(new MockDHTTaskFactory());
+  std::shared_ptr<MockDHTTaskFactory> taskFactory(new MockDHTTaskFactory());
   table.setTaskFactory(taskFactory);
-  SharedHandle<MockDHTTaskQueue> taskQueue(new MockDHTTaskQueue());
+  std::shared_ptr<MockDHTTaskQueue> taskQueue(new MockDHTTaskQueue());
   table.setTaskQueue(taskQueue);
 
-  SharedHandle<DHTNode> newNode(new DHTNode(localNode->getID()));
+  std::shared_ptr<DHTNode> newNode(new DHTNode(localNode->getID()));
   CPPUNIT_ASSERT(!table.addNode(newNode));
 }
 
@@ -77,13 +77,13 @@ void DHTRoutingTableTest::testGetClosestKNodes()
 {
   unsigned char id[DHT_ID_LENGTH];
   createID(id, 0x81, 0);
-  SharedHandle<DHTNode> localNode(new DHTNode(id));
+  std::shared_ptr<DHTNode> localNode(new DHTNode(id));
 
   DHTRoutingTable table(localNode);
 
-  SharedHandle<DHTNode> nodes1[8];
-  SharedHandle<DHTNode> nodes2[8];
-  SharedHandle<DHTNode> nodes3[8];
+  std::shared_ptr<DHTNode> nodes1[8];
+  std::shared_ptr<DHTNode> nodes2[8];
+  std::shared_ptr<DHTNode> nodes3[8];
   for(size_t i = 0; i < DHTBucket::K; ++i) {
     createID(id, 0xf0, i);
     nodes1[i].reset(new DHTNode(id));
@@ -101,7 +101,7 @@ void DHTRoutingTableTest::testGetClosestKNodes()
   }
   {
     createID(id, 0x80, 0x10);
-    std::vector<SharedHandle<DHTNode> > nodes;
+    std::vector<std::shared_ptr<DHTNode> > nodes;
     table.getClosestKNodes(nodes, id);
     CPPUNIT_ASSERT_EQUAL((size_t)8, nodes.size());
     for(size_t i = 0; i < nodes.size(); ++i) {

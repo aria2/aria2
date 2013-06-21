@@ -56,9 +56,9 @@ namespace aria2 {
 PeerInitiateConnectionCommand::PeerInitiateConnectionCommand
 (cuid_t cuid,
  RequestGroup* requestGroup,
- const SharedHandle<Peer>& peer,
+ const std::shared_ptr<Peer>& peer,
  DownloadEngine* e,
- const SharedHandle<BtRuntime>& btRuntime,
+ const std::shared_ptr<BtRuntime>& btRuntime,
  bool mseHandshakeEnabled)
   : PeerAbstractCommand(cuid, peer, e),
     requestGroup_(requestGroup),
@@ -106,7 +106,7 @@ bool PeerInitiateConnectionCommand::executeInternal() {
 bool PeerInitiateConnectionCommand::prepareForNextPeer(time_t wait) {
   if(peerStorage_->isPeerAvailable() && btRuntime_->lessThanEqMinPeers()) {
     cuid_t ncuid = getDownloadEngine()->newCUID();
-    SharedHandle<Peer> peer = peerStorage_->checkoutPeer(ncuid);
+    std::shared_ptr<Peer> peer = peerStorage_->checkoutPeer(ncuid);
     // sanity check
     if(peer) {
       PeerInitiateConnectionCommand* command;
@@ -131,13 +131,13 @@ bool PeerInitiateConnectionCommand::exitBeforeExecute()
 }
 
 void PeerInitiateConnectionCommand::setPeerStorage
-(const SharedHandle<PeerStorage>& peerStorage)
+(const std::shared_ptr<PeerStorage>& peerStorage)
 {
   peerStorage_ = peerStorage;
 }
 
 void PeerInitiateConnectionCommand::setPieceStorage
-(const SharedHandle<PieceStorage>& pieceStorage)
+(const std::shared_ptr<PieceStorage>& pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }

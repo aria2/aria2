@@ -69,9 +69,9 @@ public:
 
   virtual void clear(WrDiskCache* diskCache) {}
 
-  virtual SharedHandle<Piece> getPiece() const
+  virtual std::shared_ptr<Piece> getPiece() const
   {
-    return SharedHandle<Piece>(new Piece());
+    return std::shared_ptr<Piece>(new Piece());
   }
 };
 

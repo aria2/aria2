@@ -36,7 +36,8 @@
 #define D_BT_MESSAGE_FACTORY_H
 
 #include "common.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -49,52 +50,52 @@ class BtMessageFactory {
 public:
   virtual ~BtMessageFactory() {}
 
-  virtual SharedHandle<BtMessage>
+  virtual std::shared_ptr<BtMessage>
   createBtMessage(const unsigned char* msg, size_t msgLength) = 0;
 
-  virtual SharedHandle<BtHandshakeMessage>
+  virtual std::shared_ptr<BtHandshakeMessage>
   createHandshakeMessage(const unsigned char* msg, size_t msgLength) = 0;
 
-  virtual SharedHandle<BtHandshakeMessage>
+  virtual std::shared_ptr<BtHandshakeMessage>
   createHandshakeMessage(const unsigned char* infoHash,
                          const unsigned char* peerId) = 0;
 
-  virtual SharedHandle<BtMessage>
-  createRequestMessage(const SharedHandle<Piece>& piece, size_t blockIndex) = 0;
+  virtual std::shared_ptr<BtMessage>
+  createRequestMessage(const std::shared_ptr<Piece>& piece, size_t blockIndex) = 0;
 
-  virtual SharedHandle<BtMessage>
+  virtual std::shared_ptr<BtMessage>
   createCancelMessage(size_t index, int32_t begin, int32_t length) = 0;
 
-  virtual SharedHandle<BtMessage>
+  virtual std::shared_ptr<BtMessage>
   createPieceMessage(size_t index, int32_t begin, int32_t length) = 0;
 
-  virtual SharedHandle<BtMessage> createHaveMessage(size_t index) = 0;
+  virtual std::shared_ptr<BtMessage> createHaveMessage(size_t index) = 0;
 
-  virtual SharedHandle<BtMessage> createChokeMessage() = 0;
+  virtual std::shared_ptr<BtMessage> createChokeMessage() = 0;
 
-  virtual SharedHandle<BtMessage> createUnchokeMessage() = 0;
+  virtual std::shared_ptr<BtMessage> createUnchokeMessage() = 0;
 
-  virtual SharedHandle<BtMessage> createInterestedMessage() = 0;
+  virtual std::shared_ptr<BtMessage> createInterestedMessage() = 0;
 
-  virtual SharedHandle<BtMessage> createNotInterestedMessage() = 0;
+  virtual std::shared_ptr<BtMessage> createNotInterestedMessage() = 0;
 
-  virtual SharedHandle<BtMessage> createBitfieldMessage() = 0;
+  virtual std::shared_ptr<BtMessage> createBitfieldMessage() = 0;
 
-  virtual SharedHandle<BtMessage> createKeepAliveMessage() = 0;
+  virtual std::shared_ptr<BtMessage> createKeepAliveMessage() = 0;
 
-  virtual SharedHandle<BtMessage> createHaveAllMessage() = 0;
+  virtual std::shared_ptr<BtMessage> createHaveAllMessage() = 0;
 
-  virtual SharedHandle<BtMessage> createHaveNoneMessage() = 0;
+  virtual std::shared_ptr<BtMessage> createHaveNoneMessage() = 0;
 
-  virtual SharedHandle<BtMessage>
+  virtual std::shared_ptr<BtMessage>
   createRejectMessage(size_t index, int32_t begin, int32_t length) = 0;
 
-  virtual SharedHandle<BtMessage> createAllowedFastMessage(size_t index) = 0;
+  virtual std::shared_ptr<BtMessage> createAllowedFastMessage(size_t index) = 0;
 
-  virtual SharedHandle<BtMessage> createPortMessage(uint16_t port) = 0;
+  virtual std::shared_ptr<BtMessage> createPortMessage(uint16_t port) = 0;
 
-  virtual SharedHandle<BtMessage>
-  createBtExtendedMessage(const SharedHandle<ExtensionMessage>& msg) = 0;
+  virtual std::shared_ptr<BtMessage>
+  createBtExtendedMessage(const std::shared_ptr<ExtensionMessage>& msg) = 0;
 };
 
 } // namespace aria2

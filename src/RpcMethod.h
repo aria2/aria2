@@ -38,8 +38,8 @@
 #include "common.h"
 
 #include <string>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "ValueBase.h"
 
 namespace aria2 {
@@ -64,12 +64,12 @@ struct RpcResponse;
 // to RpcMethodFactory.
 class RpcMethod {
 private:
-  SharedHandle<OptionParser> optionParser_;
+  std::shared_ptr<OptionParser> optionParser_;
 protected:
   // Subclass must implement this function to fulfil RpcRequest req.
   // The return value of this method is used as a return value of RPC
   // request.
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e) = 0;
 
   void gatherRequestOption(Option* option, const Dict* optionsDict);
@@ -81,10 +81,10 @@ protected:
 
   void gatherChangeableGlobalOption(Option* option, const Dict* optionDict);
 
-  SharedHandle<ValueBase> createErrorResponse
+  std::shared_ptr<ValueBase> createErrorResponse
   (const Exception& e, const RpcRequest& req);
 
-  const SharedHandle<OptionParser>& getOptionParser() const
+  const std::shared_ptr<OptionParser>& getOptionParser() const
   {
     return optionParser_;
   }

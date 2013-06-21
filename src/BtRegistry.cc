@@ -54,10 +54,10 @@ BtRegistry::BtRegistry()
 
 BtRegistry::~BtRegistry() {}
 
-const SharedHandle<DownloadContext>&
+const std::shared_ptr<DownloadContext>&
 BtRegistry::getDownloadContext(a2_gid_t gid) const
 {
-  const SharedHandle<BtObject>& res = get(gid);
+  const std::shared_ptr<BtObject>& res = get(gid);
   if(res) {
     return res->downloadContext;
   } else {
@@ -65,10 +65,10 @@ BtRegistry::getDownloadContext(a2_gid_t gid) const
   }
 }
 
-const SharedHandle<DownloadContext>&
+const std::shared_ptr<DownloadContext>&
 BtRegistry::getDownloadContext(const std::string& infoHash) const
 {
-  for(std::map<a2_gid_t, SharedHandle<BtObject> >::const_iterator i =
+  for(std::map<a2_gid_t, std::shared_ptr<BtObject> >::const_iterator i =
         pool_.begin(), eoi = pool_.end(); i != eoi; ++i) {
     if(bittorrent::getTorrentAttrs((*i).second->downloadContext)->infoHash ==
        infoHash) {
@@ -78,14 +78,14 @@ BtRegistry::getDownloadContext(const std::string& infoHash) const
   return getNull<DownloadContext>();
 }
 
-void BtRegistry::put(a2_gid_t gid, const SharedHandle<BtObject>& obj)
+void BtRegistry::put(a2_gid_t gid, const std::shared_ptr<BtObject>& obj)
 {
   pool_[gid] = obj;
 }
 
-const SharedHandle<BtObject>& BtRegistry::get(a2_gid_t gid) const
+const std::shared_ptr<BtObject>& BtRegistry::get(a2_gid_t gid) const
 {
-  std::map<a2_gid_t, SharedHandle<BtObject> >::const_iterator i =
+  std::map<a2_gid_t, std::shared_ptr<BtObject> >::const_iterator i =
     pool_.find(gid);
   if(i == pool_.end()) {
     return getNull<BtObject>();
@@ -104,24 +104,24 @@ void BtRegistry::removeAll() {
 }
 
 void BtRegistry::setLpdMessageReceiver
-(const SharedHandle<LpdMessageReceiver>& receiver)
+(const std::shared_ptr<LpdMessageReceiver>& receiver)
 {
   lpdMessageReceiver_ = receiver;
 }
 
 void BtRegistry::setUDPTrackerClient
-(const SharedHandle<UDPTrackerClient>& tracker)
+(const std::shared_ptr<UDPTrackerClient>& tracker)
 {
   udpTrackerClient_ = tracker;
 }
 
 BtObject::BtObject
-(const SharedHandle<DownloadContext>& downloadContext,
- const SharedHandle<PieceStorage>& pieceStorage,
- const SharedHandle<PeerStorage>& peerStorage,
- const SharedHandle<BtAnnounce>& btAnnounce,
- const SharedHandle<BtRuntime>& btRuntime,
- const SharedHandle<BtProgressInfoFile>& btProgressInfoFile)
+(const std::shared_ptr<DownloadContext>& downloadContext,
+ const std::shared_ptr<PieceStorage>& pieceStorage,
+ const std::shared_ptr<PeerStorage>& peerStorage,
+ const std::shared_ptr<BtAnnounce>& btAnnounce,
+ const std::shared_ptr<BtRuntime>& btRuntime,
+ const std::shared_ptr<BtProgressInfoFile>& btProgressInfoFile)
   : downloadContext(downloadContext),
     pieceStorage(pieceStorage),
     peerStorage(peerStorage),

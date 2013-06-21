@@ -85,7 +85,7 @@ std::string jsonEscape(const std::string& s)
 }
 
 // Serializes JSON object or array.
-std::string encode(const SharedHandle<ValueBase>& json)
+std::string encode(const std::shared_ptr<ValueBase>& json)
 {
   std::ostringstream out;
   return encode(out, json.get()).str();

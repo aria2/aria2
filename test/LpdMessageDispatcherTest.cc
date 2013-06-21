@@ -43,7 +43,7 @@ void LpdMessageDispatcherTest::testCreateLpdRequest()
 
 void LpdMessageDispatcherTest::testSendMessage()
 {
-  SharedHandle<SocketCore> recvsock(new SocketCore(SOCK_DGRAM));
+  std::shared_ptr<SocketCore> recvsock(new SocketCore(SOCK_DGRAM));
 #ifdef __MINGW32__
   recvsock->bindWithFamily(LPD_MULTICAST_PORT, AF_INET);
 #else // !__MINGW32__

@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "AsyncNameResolverMan.h"
+
+#include <cassert>
+
 #include "AsyncNameResolver.h"
 #include "DownloadEngine.h"
 #include "Command.h"

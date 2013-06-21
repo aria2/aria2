@@ -38,8 +38,7 @@
 #include "IteratableValidator.h"
 
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -51,19 +50,19 @@ class MessageDigest;
 class IteratableChunkChecksumValidator:public IteratableValidator
 {
 private:
-  SharedHandle<DownloadContext> dctx_;
-  SharedHandle<PieceStorage> pieceStorage_;
-  SharedHandle<BitfieldMan> bitfield_;
+  std::shared_ptr<DownloadContext> dctx_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
+  std::shared_ptr<BitfieldMan> bitfield_;
   size_t currentIndex_;
-  SharedHandle<MessageDigest> ctx_;
+  std::shared_ptr<MessageDigest> ctx_;
 
   std::string calculateActualChecksum();
 
   std::string digest(int64_t offset, size_t length);
 
 public:
-  IteratableChunkChecksumValidator(const SharedHandle<DownloadContext>& dctx,
-                                   const SharedHandle<PieceStorage>& pieceStorage);
+  IteratableChunkChecksumValidator(const std::shared_ptr<DownloadContext>& dctx,
+                                   const std::shared_ptr<PieceStorage>& pieceStorage);
 
   virtual ~IteratableChunkChecksumValidator();
 

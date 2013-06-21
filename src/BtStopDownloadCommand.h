@@ -36,7 +36,8 @@
 #define D_BT_STOP_DOWNLOAD_COMMAND_H
 
 #include "TimeBasedCommand.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -54,9 +55,9 @@ private:
 
   Timer checkPoint_;
 
-  SharedHandle<BtRuntime> btRuntime_;
+  std::shared_ptr<BtRuntime> btRuntime_;
 
-  SharedHandle<PieceStorage> pieceStorage_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
 public:
   BtStopDownloadCommand
   (cuid_t cuid,
@@ -68,12 +69,12 @@ public:
 
   virtual void process();
 
-  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
+  void setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime)
   {
     btRuntime_ = btRuntime;
   }
 
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage)
+  void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage)
   {
     pieceStorage_ = pieceStorage;
   }

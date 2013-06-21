@@ -63,7 +63,7 @@ UriListParser::~UriListParser() {}
 
 void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
 {
-  const SharedHandle<OptionParser>& optparser = OptionParser::getInstance();
+  const std::shared_ptr<OptionParser>& optparser = OptionParser::getInstance();
   while(1) {
     if(!line_.empty() && line_[0] != '#') {
       util::split(line_.begin(), line_.end(), std::back_inserter(uris),

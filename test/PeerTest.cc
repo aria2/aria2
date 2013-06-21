@@ -11,7 +11,7 @@ class PeerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCountSeeder);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<Peer> peer;
+  std::shared_ptr<Peer> peer;
 public:
   void setUp() {
     peer.reset(new Peer("localhost", 6969));
@@ -40,13 +40,13 @@ void PeerTest::testAmAllowedIndexSet() {
 
 void PeerTest::testCountSeeder()
 {
-  std::vector<SharedHandle<Peer> > peers(5);
+  std::vector<std::shared_ptr<Peer> > peers(5);
   peers[0].reset(new Peer("192.168.0.1", 7000));
   peers[1].reset(new Peer("192.168.0.2", 7000));
   peers[2].reset(new Peer("192.168.0.3", 7000));
   peers[3].reset(new Peer("192.168.0.4", 7000));
   peers[4].reset(new Peer("192.168.0.5", 7000));
-  for(std::vector<SharedHandle<Peer> >::iterator i = peers.begin();
+  for(std::vector<std::shared_ptr<Peer> >::iterator i = peers.begin();
       i != peers.end(); ++i) {
     (*i)->allocateSessionResource(1024, 1024*8);
   }

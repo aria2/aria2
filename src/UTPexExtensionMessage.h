@@ -39,9 +39,9 @@
 
 #include <utility>
 #include <vector>
+#include <memory>
 
 #include "a2time.h"
-#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -52,11 +52,11 @@ class UTPexExtensionMessage:public ExtensionMessage {
 private:
   uint8_t extensionMessageID_;
 
-  std::vector<SharedHandle<Peer> > freshPeers_;
+  std::vector<std::shared_ptr<Peer> > freshPeers_;
 
-  std::vector<SharedHandle<Peer> > droppedPeers_;
+  std::vector<std::shared_ptr<Peer> > droppedPeers_;
 
-  SharedHandle<PeerStorage> peerStorage_;
+  std::shared_ptr<PeerStorage> peerStorage_;
 
   time_t interval_;
 
@@ -66,7 +66,7 @@ private:
 
   std::pair<std::pair<std::string, std::string>,
             std::pair<std::string, std::string> >
-  createCompactPeerListAndFlag(const std::vector<SharedHandle<Peer> >& peers);
+  createCompactPeerListAndFlag(const std::vector<std::shared_ptr<Peer> >& peers);
 
 public:
   UTPexExtensionMessage(uint8_t extensionMessageID);
@@ -91,25 +91,25 @@ public:
 
   virtual void doReceivedAction();
 
-  bool addFreshPeer(const SharedHandle<Peer>& peer);
+  bool addFreshPeer(const std::shared_ptr<Peer>& peer);
 
-  const std::vector<SharedHandle<Peer> >& getFreshPeers() const
+  const std::vector<std::shared_ptr<Peer> >& getFreshPeers() const
   {
     return freshPeers_;
   }
 
   bool freshPeersAreFull() const;
 
-  bool addDroppedPeer(const SharedHandle<Peer>& peer);
+  bool addDroppedPeer(const std::shared_ptr<Peer>& peer);
 
-  const std::vector<SharedHandle<Peer> >& getDroppedPeers() const
+  const std::vector<std::shared_ptr<Peer> >& getDroppedPeers() const
   {
     return droppedPeers_;
   }
 
   bool droppedPeersAreFull() const;
 
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
 
   static UTPexExtensionMessage*
   create(const unsigned char* data, size_t len);

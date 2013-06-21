@@ -42,9 +42,9 @@
 
 namespace aria2 {
 
-DHTMessageTrackerEntry::DHTMessageTrackerEntry(const SharedHandle<DHTMessage>& sentMessage,
+DHTMessageTrackerEntry::DHTMessageTrackerEntry(const std::shared_ptr<DHTMessage>& sentMessage,
                                                time_t timeout,
-                                               const SharedHandle<DHTMessageCallback>& callback):
+                                               const std::shared_ptr<DHTMessageCallback>& callback):
   targetNode_(sentMessage->getRemoteNode()),
   transactionID_(sentMessage->getTransactionID()),
   messageType_(sentMessage->getMessageType()),

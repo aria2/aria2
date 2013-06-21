@@ -41,7 +41,7 @@ namespace aria2 {
 namespace {
 class Reset {
 public:
-  void operator()(const SharedHandle<SeedCriteria>& cri)
+  void operator()(const std::shared_ptr<SeedCriteria>& cri)
   {
     cri->reset();
   }
@@ -51,7 +51,7 @@ public:
 namespace {
 class Eval {
 public:
-  bool operator()(const SharedHandle<SeedCriteria>& cri)
+  bool operator()(const std::shared_ptr<SeedCriteria>& cri)
   {
     return cri->evaluate();
   }
@@ -68,12 +68,12 @@ void UnionSeedCriteria::reset()
 
 bool UnionSeedCriteria::evaluate()
 {
-  std::vector<SharedHandle<SeedCriteria> >::iterator itr =
+  std::vector<std::shared_ptr<SeedCriteria> >::iterator itr =
     std::find_if(criterion_.begin(), criterion_.end(), Eval());
   return itr != criterion_.end();
 }
 
-void UnionSeedCriteria::addSeedCriteria(const SharedHandle<SeedCriteria>& cri)
+void UnionSeedCriteria::addSeedCriteria(const std::shared_ptr<SeedCriteria>& cri)
 {
   criterion_.push_back(cri);
 }

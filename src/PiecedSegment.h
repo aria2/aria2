@@ -41,7 +41,7 @@ namespace aria2 {
 
 class PiecedSegment:public Segment {
 private:
-  SharedHandle<Piece> piece_;
+  std::shared_ptr<Piece> piece_;
   /**
    * Piece class has length property but it is a actual length of piece.
    * The last piece likely have shorter length than the other length.
@@ -50,7 +50,7 @@ private:
   int32_t writtenLength_;
 
 public:
-  PiecedSegment(int32_t pieceLength, const SharedHandle<Piece>& piece);
+  PiecedSegment(int32_t pieceLength, const std::shared_ptr<Piece>& piece);
 
   virtual ~PiecedSegment();
 
@@ -92,7 +92,7 @@ public:
 
   virtual void clear(WrDiskCache* diskCache);
 
-  virtual SharedHandle<Piece> getPiece() const;
+  virtual std::shared_ptr<Piece> getPiece() const;
 };
 
 } // namespace aria2

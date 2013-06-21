@@ -67,7 +67,7 @@ void DHTTokenUpdateCommand::process()
   }
 }
 
-void DHTTokenUpdateCommand::setTokenTracker(const SharedHandle<DHTTokenTracker>& tokenTracker)
+void DHTTokenUpdateCommand::setTokenTracker(const std::shared_ptr<DHTTokenTracker>& tokenTracker)
 {
   tokenTracker_ = tokenTracker;
 }

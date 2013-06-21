@@ -29,7 +29,7 @@ void PriorityPieceSelectorTest::testSelect()
     bf.setBit(A[i]);
   }
   PriorityPieceSelector selector
-    (SharedHandle<PieceSelector>(new MockPieceSelector()));
+    (std::shared_ptr<PieceSelector>(new MockPieceSelector()));
   selector.setPriorityPiece(vbegin(A), vend(A));
 
   size_t index;

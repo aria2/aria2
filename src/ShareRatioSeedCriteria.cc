@@ -40,7 +40,7 @@
 namespace aria2 {
 
 ShareRatioSeedCriteria::ShareRatioSeedCriteria
-(double ratio, const SharedHandle<DownloadContext>& downloadContext)
+(double ratio, const std::shared_ptr<DownloadContext>& downloadContext)
   : ratio_(ratio),
     downloadContext_(downloadContext)
 {}
@@ -62,13 +62,13 @@ bool ShareRatioSeedCriteria::evaluate()
 
 
 void ShareRatioSeedCriteria::setBtRuntime
-(const SharedHandle<BtRuntime>& btRuntime)
+(const std::shared_ptr<BtRuntime>& btRuntime)
 {
   btRuntime_ = btRuntime;
 }
 
 void ShareRatioSeedCriteria::setPieceStorage
-(const SharedHandle<PieceStorage>& pieceStorage)
+(const std::shared_ptr<PieceStorage>& pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }

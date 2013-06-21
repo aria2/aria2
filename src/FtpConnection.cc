@@ -62,9 +62,9 @@ namespace aria2 {
 
 FtpConnection::FtpConnection
 (cuid_t cuid,
- const SharedHandle<SocketCore>& socket,
- const SharedHandle<Request>& req,
- const SharedHandle<AuthConfig>& authConfig,
+ const std::shared_ptr<SocketCore>& socket,
+ const std::shared_ptr<Request>& req,
+ const std::shared_ptr<AuthConfig>& authConfig,
  const Option* op)
   : cuid_(cuid),
     socket_(socket),
@@ -199,17 +199,17 @@ bool FtpConnection::sendPasv()
   return socketBuffer_.sendBufferIsEmpty();
 }
 
-SharedHandle<SocketCore> FtpConnection::createServerSocket()
+std::shared_ptr<SocketCore> FtpConnection::createServerSocket()
 {
   std::pair<std::string, uint16_t> addrinfo;
   socket_->getAddrInfo(addrinfo);
-  SharedHandle<SocketCore> serverSocket(new SocketCore());
+  std::shared_ptr<SocketCore> serverSocket(new SocketCore());
   serverSocket->bind(addrinfo.first.c_str(), 0, AF_UNSPEC);
   serverSocket->beginListen();
   return serverSocket;
 }
 
-bool FtpConnection::sendEprt(const SharedHandle<SocketCore>& serverSocket)
+bool FtpConnection::sendEprt(const std::shared_ptr<SocketCore>& serverSocket)
 {
   if(socketBuffer_.sendBufferIsEmpty()) {
     sockaddr_union sockaddr;
@@ -229,7 +229,7 @@ bool FtpConnection::sendEprt(const SharedHandle<SocketCore>& serverSocket)
   return socketBuffer_.sendBufferIsEmpty();
 }
 
-bool FtpConnection::sendPort(const SharedHandle<SocketCore>& serverSocket)
+bool FtpConnection::sendPort(const std::shared_ptr<SocketCore>& serverSocket)
 {
   if(socketBuffer_.sendBufferIsEmpty()) {
     std::pair<std::string, uint16_t> addrinfo;
@@ -249,7 +249,7 @@ bool FtpConnection::sendPort(const SharedHandle<SocketCore>& serverSocket)
   return socketBuffer_.sendBufferIsEmpty();
 }
 
-bool FtpConnection::sendRest(const SharedHandle<Segment>& segment)
+bool FtpConnection::sendRest(const std::shared_ptr<Segment>& segment)
 {
   if(socketBuffer_.sendBufferIsEmpty()) {
     std::string request =

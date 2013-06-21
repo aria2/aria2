@@ -37,7 +37,6 @@
 #include <unistd.h>
 
 #include <aria2/aria2.h>
-#include "SharedHandle.h"
 #include "Context.h"
 #include "MultiUrlRequestInfo.h"
 #include "message.h"

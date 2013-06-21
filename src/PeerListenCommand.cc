@@ -107,13 +107,13 @@ bool PeerListenCommand::execute() {
     return true;
   }
   for(int i = 0; i < 3 && socket_->isReadable(0); ++i) {
-    SharedHandle<SocketCore> peerSocket;
+    std::shared_ptr<SocketCore> peerSocket;
     try {
       peerSocket = socket_->acceptConnection();
       std::pair<std::string, uint16_t> peerInfo;
       peerSocket->getPeerInfo(peerInfo);
 
-      SharedHandle<Peer> peer(new Peer(peerInfo.first, peerInfo.second, true));
+      std::shared_ptr<Peer> peer(new Peer(peerInfo.first, peerInfo.second, true));
       cuid_t cuid = e_->newCUID();
       Command* command =
         new ReceiverMSEHandshakeCommand(cuid, peer, e_, peerSocket);

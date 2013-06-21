@@ -45,11 +45,11 @@ class StreamFilter;
 
 class HttpSkipResponseCommand : public AbstractCommand {
 private:
-  SharedHandle<HttpConnection> httpConnection_;
+  std::shared_ptr<HttpConnection> httpConnection_;
 
-  SharedHandle<HttpResponse> httpResponse_;
+  std::shared_ptr<HttpResponse> httpResponse_;
 
-  SharedHandle<StreamFilter> streamFilter_;
+  std::shared_ptr<StreamFilter> streamFilter_;
 
   bool sinkFilterOnly_;
 
@@ -65,17 +65,17 @@ protected:
 public:
   HttpSkipResponseCommand
   (cuid_t cuid,
-   const SharedHandle<Request>& req,
-   const SharedHandle<FileEntry>& fileEntry,
+   const std::shared_ptr<Request>& req,
+   const std::shared_ptr<FileEntry>& fileEntry,
    RequestGroup* requestGroup,
-   const SharedHandle<HttpConnection>& httpConnection,
-   const SharedHandle<HttpResponse>& httpResponse,
+   const std::shared_ptr<HttpConnection>& httpConnection,
+   const std::shared_ptr<HttpResponse>& httpResponse,
    DownloadEngine* e,
-   const SharedHandle<SocketCore>& s);
+   const std::shared_ptr<SocketCore>& s);
 
   virtual ~HttpSkipResponseCommand();
 
-  void installStreamFilter(const SharedHandle<StreamFilter>& streamFilter);
+  void installStreamFilter(const std::shared_ptr<StreamFilter>& streamFilter);
 
   void disableSocketCheck();
 };

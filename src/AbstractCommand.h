@@ -39,8 +39,8 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "TimerA2.h"
 
 namespace aria2 {
@@ -68,76 +68,76 @@ private:
   time_t timeout_;
 
   RequestGroup* requestGroup_;
-  SharedHandle<Request> req_;
-  SharedHandle<FileEntry> fileEntry_;
+  std::shared_ptr<Request> req_;
+  std::shared_ptr<FileEntry> fileEntry_;
   DownloadEngine* e_;
-  SharedHandle<SocketCore> socket_;
-  SharedHandle<SocketRecvBuffer> socketRecvBuffer_;
-  std::vector<SharedHandle<Segment> > segments_;
+  std::shared_ptr<SocketCore> socket_;
+  std::shared_ptr<SocketRecvBuffer> socketRecvBuffer_;
+  std::vector<std::shared_ptr<Segment> > segments_;
 
 #ifdef ENABLE_ASYNC_DNS
-  SharedHandle<AsyncNameResolverMan> asyncNameResolverMan_;
+  std::shared_ptr<AsyncNameResolverMan> asyncNameResolverMan_;
 #endif // ENABLE_ASYNC_DNS
 
   bool checkSocketIsReadable_;
   bool checkSocketIsWritable_;
-  SharedHandle<SocketCore> readCheckTarget_;
-  SharedHandle<SocketCore> writeCheckTarget_;
+  std::shared_ptr<SocketCore> readCheckTarget_;
+  std::shared_ptr<SocketCore> writeCheckTarget_;
 
   bool incNumConnection_;
   Timer serverStatTimer_;
 
   int32_t calculateMinSplitSize() const;
-  void useFasterRequest(const SharedHandle<Request>& fasterRequest);
+  void useFasterRequest(const std::shared_ptr<Request>& fasterRequest);
 public:
   RequestGroup* getRequestGroup() const
   {
     return requestGroup_;
   }
 
-  const SharedHandle<Request>& getRequest() const
+  const std::shared_ptr<Request>& getRequest() const
   {
     return req_;
   }
 
-  void setRequest(const SharedHandle<Request>& request);
+  void setRequest(const std::shared_ptr<Request>& request);
 
   // Resets request_. This method is more efficient than
-  // setRequest(SharedHandle<Request>());
+  // setRequest(std::shared_ptr<Request>());
   void resetRequest();
 
-  const SharedHandle<FileEntry>& getFileEntry() const
+  const std::shared_ptr<FileEntry>& getFileEntry() const
   {
     return fileEntry_;
   }
 
-  void setFileEntry(const SharedHandle<FileEntry>& fileEntry);
+  void setFileEntry(const std::shared_ptr<FileEntry>& fileEntry);
 
   DownloadEngine* getDownloadEngine() const
   {
     return e_;
   }
 
-  const SharedHandle<SocketCore>& getSocket() const
+  const std::shared_ptr<SocketCore>& getSocket() const
   {
     return socket_;
   }
 
-  SharedHandle<SocketCore>& getSocket()
+  std::shared_ptr<SocketCore>& getSocket()
   {
     return socket_;
   }
 
-  void setSocket(const SharedHandle<SocketCore>& s);
+  void setSocket(const std::shared_ptr<SocketCore>& s);
 
   void createSocket();
 
-  const SharedHandle<SocketRecvBuffer>& getSocketRecvBuffer() const
+  const std::shared_ptr<SocketRecvBuffer>& getSocketRecvBuffer() const
   {
     return socketRecvBuffer_;
   }
 
-  const std::vector<SharedHandle<Segment> >& getSegments() const
+  const std::vector<std::shared_ptr<Segment> >& getSegments() const
   {
     return segments_;
   }
@@ -152,8 +152,8 @@ public:
 
   void tryReserved();
 
-  void setReadCheckSocket(const SharedHandle<SocketCore>& socket);
-  void setWriteCheckSocket(const SharedHandle<SocketCore>& socket);
+  void setReadCheckSocket(const std::shared_ptr<SocketCore>& socket);
+  void setWriteCheckSocket(const std::shared_ptr<SocketCore>& socket);
   void disableReadCheckSocket();
   void disableWriteCheckSocket();
 
@@ -161,16 +161,16 @@ public:
    * If pred == true, calls setReadCheckSocket(socket). Otherwise, calls
    * disableReadCheckSocket().
    */
-  void setReadCheckSocketIf(const SharedHandle<SocketCore>& socket, bool pred);
+  void setReadCheckSocketIf(const std::shared_ptr<SocketCore>& socket, bool pred);
   /**
    * If pred == true, calls setWriteCheckSocket(socket). Otherwise, calls
    * disableWriteCheckSocket().
    */
-  void setWriteCheckSocketIf(const SharedHandle<SocketCore>& socket, bool pred);
+  void setWriteCheckSocketIf(const std::shared_ptr<SocketCore>& socket, bool pred);
 
   // Swaps socket_ with socket. This disables current read and write
   // check.
-  void swapSocket(SharedHandle<SocketCore>& socket);
+  void swapSocket(std::shared_ptr<SocketCore>& socket);
 
   time_t getTimeout() const
   {
@@ -180,7 +180,7 @@ public:
   void setTimeout(time_t timeout) { timeout_ = timeout; }
 
   void prepareForNextAction
-  (const SharedHandle<CheckIntegrityEntry>& checkEntry);
+  (const std::shared_ptr<CheckIntegrityEntry>& checkEntry);
 
   // Check if socket is connected. If socket is not connected and
   // there are other addresses to try, command is created using
@@ -188,7 +188,7 @@ public:
   // DownloadEngine and returns false. If no addresses left, DlRetryEx
   // exception is thrown.
   bool checkIfConnectionEstablished
-  (const SharedHandle<SocketCore>& socket,
+  (const std::shared_ptr<SocketCore>& socket,
    const std::string& connectedHostname,
    const std::string& connectedAddr,
    uint16_t connectedPort);
@@ -201,19 +201,19 @@ public:
 
   /*
    * Creates Request object for proxy URI and returns it.
-   * If no valid proxy is defined, then returns SharedHandle<Request>().
+   * If no valid proxy is defined, then returns std::shared_ptr<Request>().
    */
-  SharedHandle<Request> createProxyRequest() const;
+  std::shared_ptr<Request> createProxyRequest() const;
 
   // Returns proxy method for given protocol. Either V_GET or V_TUNNEL
   // is returned.  For HTTPS, always returns V_TUNNEL.
   const std::string& resolveProxyMethod(const std::string& protocol) const;
 
-  const SharedHandle<Option>& getOption() const;
+  const std::shared_ptr<Option>& getOption() const;
 
-  const SharedHandle<DownloadContext>& getDownloadContext() const;
-  const SharedHandle<SegmentMan>& getSegmentMan() const;
-  const SharedHandle<PieceStorage>& getPieceStorage() const;
+  const std::shared_ptr<DownloadContext>& getDownloadContext() const;
+  const std::shared_ptr<SegmentMan>& getSegmentMan() const;
+  const std::shared_ptr<PieceStorage>& getPieceStorage() const;
 
   Timer& getCheckPoint()
   {
@@ -235,12 +235,12 @@ protected:
 
 public:
   AbstractCommand
-  (cuid_t cuid, const SharedHandle<Request>& req,
-   const SharedHandle<FileEntry>& fileEntry,
+  (cuid_t cuid, const std::shared_ptr<Request>& req,
+   const std::shared_ptr<FileEntry>& fileEntry,
    RequestGroup* requestGroup, DownloadEngine* e,
-   const SharedHandle<SocketCore>& s = SharedHandle<SocketCore>(),
-   const SharedHandle<SocketRecvBuffer>& socketRecvBuffer
-   = SharedHandle<SocketRecvBuffer>(),
+   const std::shared_ptr<SocketCore>& s = std::shared_ptr<SocketCore>(),
+   const std::shared_ptr<SocketRecvBuffer>& socketRecvBuffer
+   = std::shared_ptr<SocketRecvBuffer>(),
    bool incNumConnection = true);
 
   virtual ~AbstractCommand();

@@ -96,13 +96,13 @@ std::string UTPexExtensionMessage::getPayload()
 std::pair<std::pair<std::string, std::string>,
           std::pair<std::string, std::string> >
 UTPexExtensionMessage::createCompactPeerListAndFlag
-(const std::vector<SharedHandle<Peer> >& peers)
+(const std::vector<std::shared_ptr<Peer> >& peers)
 {
   std::string addrstring;
   std::string flagstring;
   std::string addrstring6;
   std::string flagstring6;
-  for(std::vector<SharedHandle<Peer> >::const_iterator itr = peers.begin(),
+  for(std::vector<std::shared_ptr<Peer> >::const_iterator itr = peers.begin(),
         eoi = peers.end(); itr != eoi; ++itr) {
     unsigned char compact[COMPACT_LEN_IPV6];
     int compactlen = bittorrent::packcompact
@@ -132,7 +132,7 @@ void UTPexExtensionMessage::doReceivedAction()
   peerStorage_->addPeer(droppedPeers_);
 }
 
-bool UTPexExtensionMessage::addFreshPeer(const SharedHandle<Peer>& peer)
+bool UTPexExtensionMessage::addFreshPeer(const std::shared_ptr<Peer>& peer)
 {
   if(!peer->isIncomingPeer() &&
      peer->getFirstContactTime().difference(global::wallclock()) < interval_) {
@@ -148,7 +148,7 @@ bool UTPexExtensionMessage::freshPeersAreFull() const
   return freshPeers_.size() >= maxFreshPeer_;
 }
 
-bool UTPexExtensionMessage::addDroppedPeer(const SharedHandle<Peer>& peer)
+bool UTPexExtensionMessage::addDroppedPeer(const std::shared_ptr<Peer>& peer)
 {
   if(!peer->isIncomingPeer() &&
      peer->getDropStartTime().difference(global::wallclock()) < interval_) {
@@ -175,7 +175,7 @@ void UTPexExtensionMessage::setMaxDroppedPeer(size_t maxDroppedPeer)
 }
 
 void UTPexExtensionMessage::setPeerStorage
-(const SharedHandle<PeerStorage>& peerStorage)
+(const std::shared_ptr<PeerStorage>& peerStorage)
 {
   peerStorage_ = peerStorage;
 }
@@ -190,7 +190,7 @@ UTPexExtensionMessage::create(const unsigned char* data, size_t len)
   }
   UTPexExtensionMessage* msg(new UTPexExtensionMessage(*data));
 
-  SharedHandle<ValueBase> decoded = bencode2::decode(data+1, len - 1);
+  std::shared_ptr<ValueBase> decoded = bencode2::decode(data+1, len - 1);
   const Dict* dict = downcast<Dict>(decoded);
   if(dict) {
     const String* added = downcast<String>(dict->get("added"));

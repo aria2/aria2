@@ -75,12 +75,12 @@ public:
 
 class DefaultPieceStorage : public PieceStorage {
 private:
-  SharedHandle<DownloadContext> downloadContext_;
+  std::shared_ptr<DownloadContext> downloadContext_;
   BitfieldMan* bitfieldMan_;
-  SharedHandle<DiskAdaptor> diskAdaptor_;
-  SharedHandle<DiskWriterFactory> diskWriterFactory_;
-  typedef std::set<SharedHandle<Piece>,
-                   DerefLess<SharedHandle<Piece> > > UsedPieceSet;
+  std::shared_ptr<DiskAdaptor> diskAdaptor_;
+  std::shared_ptr<DiskWriterFactory> diskWriterFactory_;
+  typedef std::set<std::shared_ptr<Piece>,
+                   DerefLess<std::shared_ptr<Piece> > > UsedPieceSet;
   UsedPieceSet usedPieces_;
 
   bool endGame_;
@@ -88,29 +88,29 @@ private:
   const Option* option_;
   std::deque<HaveEntry> haves_;
 
-  SharedHandle<PieceStatMan> pieceStatMan_;
+  std::shared_ptr<PieceStatMan> pieceStatMan_;
 
-  SharedHandle<PieceSelector> pieceSelector_;
-  SharedHandle<StreamPieceSelector> streamPieceSelector_;
+  std::shared_ptr<PieceSelector> pieceSelector_;
+  std::shared_ptr<StreamPieceSelector> streamPieceSelector_;
 
   WrDiskCache* wrDiskCache_;
 #ifdef ENABLE_BITTORRENT
   void getMissingPiece
-  (std::vector<SharedHandle<Piece> >& pieces,
+  (std::vector<std::shared_ptr<Piece> >& pieces,
    size_t minMissingBlocks,
    const unsigned char* bitfield,
    size_t length,
    cuid_t cuid);
 
   void createFastIndexBitfield(BitfieldMan& bitfield,
-                               const SharedHandle<Peer>& peer);
+                               const std::shared_ptr<Peer>& peer);
 #endif // ENABLE_BITTORRENT
 
-  SharedHandle<Piece> checkOutPiece(size_t index, cuid_t cuid);
+  std::shared_ptr<Piece> checkOutPiece(size_t index, cuid_t cuid);
   //   size_t deleteUsedPiecesByFillRate(int fillRate, size_t toDelete);
   //   void reduceUsedPieces(size_t upperBound);
-  void deleteUsedPiece(const SharedHandle<Piece>& piece);
-  SharedHandle<Piece> findUsedPiece(size_t index) const;
+  void deleteUsedPiece(const std::shared_ptr<Piece>& piece);
+  std::shared_ptr<Piece> findUsedPiece(size_t index) const;
 
   // Returns the sum of completed length of in-flight pieces
   int64_t getInFlightPieceCompletedLength() const;
@@ -122,56 +122,56 @@ public:
   // random when more than 2 pieces has the same rarity.
   // If it is set to false, a piece whose index is smallest has the highest
   // priority.
-  DefaultPieceStorage(const SharedHandle<DownloadContext>& downloadContext,
+  DefaultPieceStorage(const std::shared_ptr<DownloadContext>& downloadContext,
                       const Option* option);
 
   virtual ~DefaultPieceStorage();
 
 #ifdef ENABLE_BITTORRENT
 
-  virtual bool hasMissingPiece(const SharedHandle<Peer>& peer);
+  virtual bool hasMissingPiece(const std::shared_ptr<Peer>& peer);
 
   virtual void getMissingPiece
-  (std::vector<SharedHandle<Piece> >& pieces,
+  (std::vector<std::shared_ptr<Piece> >& pieces,
    size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer,
+   const std::shared_ptr<Peer>& peer,
    cuid_t cuid);
 
   virtual void getMissingPiece
-  (std::vector<SharedHandle<Piece> >& pieces,
+  (std::vector<std::shared_ptr<Piece> >& pieces,
    size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer,
+   const std::shared_ptr<Peer>& peer,
    const std::vector<size_t>& excludedIndexes,
    cuid_t cuid);
 
   virtual void getMissingFastPiece
-  (std::vector<SharedHandle<Piece> >& pieces,
+  (std::vector<std::shared_ptr<Piece> >& pieces,
    size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer,
+   const std::shared_ptr<Peer>& peer,
    cuid_t cuid);
 
   virtual void getMissingFastPiece
-  (std::vector<SharedHandle<Piece> >& pieces,
+  (std::vector<std::shared_ptr<Piece> >& pieces,
    size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer,
+   const std::shared_ptr<Peer>& peer,
    const std::vector<size_t>& excludedIndexes,
    cuid_t cuid);
 
-  virtual SharedHandle<Piece> getMissingPiece
-  (const SharedHandle<Peer>& peer,
+  virtual std::shared_ptr<Piece> getMissingPiece
+  (const std::shared_ptr<Peer>& peer,
    cuid_t cuid);
 
-  virtual  SharedHandle<Piece> getMissingPiece
-  (const SharedHandle<Peer>& peer,
+  virtual  std::shared_ptr<Piece> getMissingPiece
+  (const std::shared_ptr<Peer>& peer,
    const std::vector<size_t>& excludedIndexes,
    cuid_t cuid);
 
-  SharedHandle<Piece> getMissingFastPiece
-  (const SharedHandle<Peer>& peer,
+  std::shared_ptr<Piece> getMissingFastPiece
+  (const std::shared_ptr<Peer>& peer,
    cuid_t cuid);
 
-  SharedHandle<Piece> getMissingFastPiece
-  (const SharedHandle<Peer>& peer,
+  std::shared_ptr<Piece> getMissingFastPiece
+  (const std::shared_ptr<Peer>& peer,
    const std::vector<size_t>& excludedIndexes,
    cuid_t cuid);
 
@@ -179,19 +179,19 @@ public:
 
   virtual bool hasMissingUnusedPiece();
 
-  virtual SharedHandle<Piece> getMissingPiece
+  virtual std::shared_ptr<Piece> getMissingPiece
   (size_t minSplitSize,
    const unsigned char* ignoreBitfield,
    size_t length,
    cuid_t cuid);
 
-  virtual SharedHandle<Piece> getMissingPiece(size_t index, cuid_t cuid);
+  virtual std::shared_ptr<Piece> getMissingPiece(size_t index, cuid_t cuid);
 
-  virtual SharedHandle<Piece> getPiece(size_t index);
+  virtual std::shared_ptr<Piece> getPiece(size_t index);
 
-  virtual void completePiece(const SharedHandle<Piece>& piece);
+  virtual void completePiece(const std::shared_ptr<Piece>& piece);
 
-  virtual void cancelPiece(const SharedHandle<Piece>& piece, cuid_t cuid);
+  virtual void cancelPiece(const std::shared_ptr<Piece>& piece, cuid_t cuid);
 
   virtual bool hasPiece(size_t index);
 
@@ -242,7 +242,7 @@ public:
     endGame_ = true;
   }
 
-  virtual SharedHandle<DiskAdaptor> getDiskAdaptor();
+  virtual std::shared_ptr<DiskAdaptor> getDiskAdaptor();
 
   virtual WrDiskCache* getWrDiskCache();
 
@@ -265,12 +265,12 @@ public:
   virtual void markPieceMissing(size_t index);
 
   virtual void addInFlightPiece
-  (const std::vector<SharedHandle<Piece> >& pieces);
+  (const std::vector<std::shared_ptr<Piece> >& pieces);
 
   virtual size_t countInFlightPiece();
 
   virtual void getInFlightPieces
-  (std::vector<SharedHandle<Piece> >& pieces);
+  (std::vector<std::shared_ptr<Piece> >& pieces);
 
   virtual void addPieceStats(size_t index);
 
@@ -291,22 +291,22 @@ public:
   /**
    * This method is made private for test purpose only.
    */
-  void addUsedPiece(const SharedHandle<Piece>& piece);
+  void addUsedPiece(const std::shared_ptr<Piece>& piece);
 
   void setDiskWriterFactory
-  (const SharedHandle<DiskWriterFactory>& diskWriterFactory);
+  (const std::shared_ptr<DiskWriterFactory>& diskWriterFactory);
 
-  const SharedHandle<PieceStatMan>& getPieceStatMan() const
+  const std::shared_ptr<PieceStatMan>& getPieceStatMan() const
   {
     return pieceStatMan_;
   }
 
-  void setPieceSelector(const SharedHandle<PieceSelector>& pieceSelector)
+  void setPieceSelector(const std::shared_ptr<PieceSelector>& pieceSelector)
   {
     pieceSelector_ = pieceSelector;
   }
 
-  const SharedHandle<PieceSelector>& getPieceSelector() const
+  const std::shared_ptr<PieceSelector>& getPieceSelector() const
   {
     return pieceSelector_;
   }

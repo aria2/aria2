@@ -26,12 +26,12 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkerTest );
 
 void MetalinkerTest::testQueryEntry() {
-  SharedHandle<Metalinker> metalinker(new Metalinker());
-  SharedHandle<MetalinkEntry> entry1(new MetalinkEntry());
+  std::shared_ptr<Metalinker> metalinker(new Metalinker());
+  std::shared_ptr<MetalinkEntry> entry1(new MetalinkEntry());
   entry1->version = "0.5.2";
   entry1->languages.push_back("en-US");
   entry1->oses.push_back("Linux-x86");
-  SharedHandle<MetalinkEntry> entry2(new MetalinkEntry());
+  std::shared_ptr<MetalinkEntry> entry2(new MetalinkEntry());
   entry2->version = "0.5.1";
   entry2->languages.push_back("ja-JP");
   entry2->oses.push_back("Linux-m68k");
@@ -46,7 +46,7 @@ void MetalinkerTest::testQueryEntry() {
   language = "ja-JP";
   os = "Linux-m68k";
   {
-    std::vector<SharedHandle<MetalinkEntry> > result;
+    std::vector<std::shared_ptr<MetalinkEntry> > result;
     metalinker->queryEntry(result, version, language, os);
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
     CPPUNIT_ASSERT_EQUAL(std::string("0.5.1"), result.at(0)->version);
@@ -57,7 +57,7 @@ void MetalinkerTest::testQueryEntry() {
   language = "";
   os = "";
   {
-    std::vector<SharedHandle<MetalinkEntry> > result;
+    std::vector<std::shared_ptr<MetalinkEntry> > result;
     metalinker->queryEntry(result, version, language, os);
     CPPUNIT_ASSERT_EQUAL((size_t)0, result.size());
   }
@@ -66,7 +66,7 @@ void MetalinkerTest::testQueryEntry() {
   language = "";
   os = "";
   {
-    std::vector<SharedHandle<MetalinkEntry> > result;
+    std::vector<std::shared_ptr<MetalinkEntry> > result;
     metalinker->queryEntry(result, version, language, os);
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
     CPPUNIT_ASSERT_EQUAL(std::string("0.5.2"), result.at(0)->version);

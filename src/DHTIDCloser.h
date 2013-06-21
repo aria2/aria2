@@ -48,8 +48,8 @@ private:
 public:
   DHTIDCloser(const unsigned char* targetID):closer_(targetID, DHT_ID_LENGTH) {}
 
-  bool operator()(const SharedHandle<DHTNodeLookupEntry>& m1,
-                  const SharedHandle<DHTNodeLookupEntry>& m2) const
+  bool operator()(const std::shared_ptr<DHTNodeLookupEntry>& m1,
+                  const std::shared_ptr<DHTNodeLookupEntry>& m2) const
   {
     return closer_(m1->node->getID(), m2->node->getID());
   }

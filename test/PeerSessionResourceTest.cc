@@ -253,7 +253,7 @@ void PeerSessionResourceTest::testShouldBeChoking()
 void PeerSessionResourceTest::testCountOutstandingRequest()
 {
   PeerSessionResource res(1024, 1024*1024);
-  SharedHandle<MockBtMessageDispatcher> dispatcher
+  std::shared_ptr<MockBtMessageDispatcher> dispatcher
     (new MockBtMessageDispatcher());
   res.setBtMessageDispatcher(dispatcher.get());
 

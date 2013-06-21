@@ -38,8 +38,8 @@
 
 #include <string>
 #include <set>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "a2time.h"
 #include "a2functional.h"
 
@@ -53,10 +53,10 @@ public:
 
   ~ServerStatMan();
 
-  SharedHandle<ServerStat> find(const std::string& hostname,
+  std::shared_ptr<ServerStat> find(const std::string& hostname,
                                 const std::string& protocol) const;
 
-  bool add(const SharedHandle<ServerStat>& serverStat);
+  bool add(const std::shared_ptr<ServerStat>& serverStat);
 
   bool load(const std::string& filename);
 
@@ -64,8 +64,8 @@ public:
 
   void removeStaleServerStat(time_t timeout);
 private:
-  typedef std::set<SharedHandle<ServerStat>,
-                   DerefLess<SharedHandle<ServerStat> > > ServerStatSet;
+  typedef std::set<std::shared_ptr<ServerStat>,
+                   DerefLess<std::shared_ptr<ServerStat> > > ServerStatSet;
   ServerStatSet serverStats_;
 };
 

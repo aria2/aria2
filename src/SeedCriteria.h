@@ -36,7 +36,6 @@
 #define D_SEED_CRITERIA_H
 
 #include "common.h"
-#include "SharedHandle.h"
 
 namespace aria2 {
 

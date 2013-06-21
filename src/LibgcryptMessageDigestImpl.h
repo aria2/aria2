@@ -38,10 +38,9 @@
 #include "common.h"
 
 #include <string>
+#include <memory>
 
 #include <gcrypt.h>
-
-#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -58,8 +57,8 @@ private:
 public:
   ~MessageDigestImpl();
 
-  static SharedHandle<MessageDigestImpl> sha1();
-  static SharedHandle<MessageDigestImpl> create(const std::string& hashType);
+  static std::shared_ptr<MessageDigestImpl> sha1();
+  static std::shared_ptr<MessageDigestImpl> create(const std::string& hashType);
 
   static bool supports(const std::string& hashType);
   static size_t getDigestLength(const std::string& hashType);

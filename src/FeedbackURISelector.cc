@@ -50,7 +50,7 @@
 namespace aria2 {
 
 FeedbackURISelector::FeedbackURISelector
-(const SharedHandle<ServerStatMan>& serverStatMan)
+(const std::shared_ptr<ServerStatMan>& serverStatMan)
   : serverStatMan_(serverStatMan)
 {}
 
@@ -100,7 +100,7 @@ std::string FeedbackURISelector::selectRarer
     }
     std::string host = uri::getFieldString(us, USR_HOST, (*i).c_str());
     std::string protocol = uri::getFieldString(us, USR_SCHEME, (*i).c_str());
-    SharedHandle<ServerStat> ss = serverStatMan_->find(host, protocol);
+    std::shared_ptr<ServerStat> ss = serverStatMan_->find(host, protocol);
     if(ss && ss->isError()) {
       A2_LOG_DEBUG(fmt("Error not considered: %s", (*i).c_str()));
       continue;
@@ -128,7 +128,7 @@ std::string FeedbackURISelector::selectFaster
   const size_t NUM_URI = 10;
   // Ignore low speed server
   const int SPEED_THRESHOLD = 20*1024;
-  std::vector<std::pair<SharedHandle<ServerStat>, std::string> > fastCands;
+  std::vector<std::pair<std::shared_ptr<ServerStat>, std::string> > fastCands;
   std::vector<std::string> normCands;
   for(std::deque<std::string>::const_iterator i = uris.begin(),
         eoi = uris.end(); i != eoi && fastCands.size() < NUM_URI; ++i) {
@@ -143,7 +143,7 @@ std::string FeedbackURISelector::selectFaster
       continue;
     }
     std::string protocol = uri::getFieldString(us, USR_SCHEME, (*i).c_str());
-    SharedHandle<ServerStat> ss = serverStatMan_->find(host, protocol);
+    std::shared_ptr<ServerStat> ss = serverStatMan_->find(host, protocol);
     if(!ss) {
       normCands.push_back(*i);
     } else if(ss->isOK()) {

@@ -68,9 +68,9 @@ namespace aria2 {
 
 HttpServerBodyCommand::HttpServerBodyCommand
 (cuid_t cuid,
- const SharedHandle<HttpServer>& httpServer,
+ const std::shared_ptr<HttpServer>& httpServer,
  DownloadEngine* e,
- const SharedHandle<SocketCore>& socket)
+ const std::shared_ptr<SocketCore>& socket)
   : Command(cuid),
     e_(e),
     socket_(socket),
@@ -184,7 +184,7 @@ bool HttpServerBodyCommand::execute()
         if(httpServer_->getMethod() == "OPTIONS") {
           // Response to Preflight Request.
           // See http://www.w3.org/TR/cors/
-          const SharedHandle<HttpHeader>& header =
+          const std::shared_ptr<HttpHeader>& header =
             httpServer_->getRequestHeader();
           std::string accessControlHeaders;
           if(!header->find(HttpHeader::ORIGIN).empty() &&
@@ -211,8 +211,8 @@ bool HttpServerBodyCommand::execute()
         switch(httpServer_->getRequestType()) {
         case RPC_TYPE_XML: {
 #ifdef ENABLE_XML_RPC
-          SharedHandle<rpc::XmlRpcDiskWriter> dw =
-            static_pointer_cast<rpc::XmlRpcDiskWriter>(httpServer_->getBody());
+          auto dw = std::static_pointer_cast<rpc::XmlRpcDiskWriter>
+            (httpServer_->getBody());
           int error;
           error = dw->finalize();
           rpc::RpcRequest req;
@@ -228,7 +228,7 @@ bool HttpServerBodyCommand::execute()
             addHttpServerResponseCommand();
             return true;
           }
-          SharedHandle<rpc::RpcMethod> method =
+          std::shared_ptr<rpc::RpcMethod> method =
             rpc::RpcMethodFactory::create(req.methodName);
           A2_LOG_INFO(fmt("Executing RPC method %s", req.methodName.c_str()));
           rpc::RpcResponse res = method->execute(req, e_);
@@ -245,7 +245,7 @@ bool HttpServerBodyCommand::execute()
         case RPC_TYPE_JSON:
         case RPC_TYPE_JSONP: {
           std::string callback;
-          SharedHandle<ValueBase> json;
+          std::shared_ptr<ValueBase> json;
           ssize_t error = 0;
           if(httpServer_->getRequestType() == RPC_TYPE_JSONP) {
             json::JsonGetParam param = json::decodeGetParams(query);
@@ -256,8 +256,8 @@ bool HttpServerBodyCommand::execute()
                param.request.size(),
                error);
           } else {
-            SharedHandle<json::JsonDiskWriter> dw =
-              static_pointer_cast<json::JsonDiskWriter>(httpServer_->getBody());
+            auto dw = std::static_pointer_cast<json::JsonDiskWriter>
+              (httpServer_->getBody());
             error = dw->finalize();
             if(error == 0) {
               json = dw->getResult();

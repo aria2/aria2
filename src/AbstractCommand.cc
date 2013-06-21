@@ -79,12 +79,12 @@ namespace aria2 {
 
 AbstractCommand::AbstractCommand
 (cuid_t cuid,
- const SharedHandle<Request>& req,
- const SharedHandle<FileEntry>& fileEntry,
+ const std::shared_ptr<Request>& req,
+ const std::shared_ptr<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  DownloadEngine* e,
- const SharedHandle<SocketCore>& s,
- const SharedHandle<SocketRecvBuffer>& socketRecvBuffer,
+ const std::shared_ptr<SocketCore>& s,
+ const std::shared_ptr<SocketRecvBuffer>& socketRecvBuffer,
  bool incNumConnection)
   : Command(cuid), checkPoint_(global::wallclock()),
     timeout_(requestGroup->getTimeout()),
@@ -125,7 +125,7 @@ AbstractCommand::~AbstractCommand() {
 }
 
 void AbstractCommand::useFasterRequest
-(const SharedHandle<Request>& fasterRequest)
+(const std::shared_ptr<Request>& fasterRequest)
 {
   A2_LOG_INFO(fmt("CUID#%" PRId64 " - Use faster Request hostname=%s, port=%u",
                   getCuid(),
@@ -180,7 +180,7 @@ bool AbstractCommand::execute() {
       if(req_ && fileEntry_->countPooledRequest() > 0 &&
          requestGroup_->getTotalLength()-requestGroup_->getCompletedLength()
          < calculateMinSplitSize()*2) {
-        SharedHandle<Request> fasterRequest = fileEntry_->findFasterRequest(req_);
+        std::shared_ptr<Request> fasterRequest = fileEntry_->findFasterRequest(req_);
         if(fasterRequest) {
           useFasterRequest(fasterRequest);
           return true;
@@ -197,7 +197,7 @@ bool AbstractCommand::execute() {
         if(getOption()->getAsBool(PREF_SELECT_LEAST_USED_HOST)) {
           getDownloadEngine()->getRequestGroupMan()->getUsedHosts(usedHosts);
         }
-        SharedHandle<Request> fasterRequest =
+        std::shared_ptr<Request> fasterRequest =
           fileEntry_->findFasterRequest
           (req_, usedHosts, e_->getRequestGroupMan()->getServerStatMan());
         if(fasterRequest) {
@@ -230,7 +230,7 @@ bool AbstractCommand::execute() {
           size_t maxSegments = req_?req_->getMaxPipelinedRequest():1;
           size_t minSplitSize = calculateMinSplitSize();
           while(segments_.size() < maxSegments) {
-            SharedHandle<Segment> segment =
+            std::shared_ptr<Segment> segment =
               getSegmentMan()->getSegment(getCuid(), minSplitSize);
             if(!segment) {
               break;
@@ -276,7 +276,7 @@ bool AbstractCommand::execute() {
     } else {
       if(checkPoint_.difference(global::wallclock()) >= timeout_) {
         // timeout triggers ServerStat error state.
-        SharedHandle<ServerStat> ss =
+        std::shared_ptr<ServerStat> ss =
           e_->getRequestGroupMan()->getOrCreateServerStat(req_->getHost(),
                                                           req_->getProtocol());
         ss->setError();
@@ -375,7 +375,7 @@ bool AbstractCommand::execute() {
 
 void AbstractCommand::tryReserved() {
   if(getDownloadContext()->getFileEntries().size() == 1) {
-    const SharedHandle<FileEntry>& entry =
+    const std::shared_ptr<FileEntry>& entry =
       getDownloadContext()->getFirstFileEntry();
     // Don't create new command if currently file length is unknown
     // and there are no URI left. Because file length is unknown, we
@@ -490,7 +490,7 @@ void AbstractCommand::disableReadCheckSocket() {
 }
 
 void AbstractCommand::setReadCheckSocket
-(const SharedHandle<SocketCore>& socket) {
+(const std::shared_ptr<SocketCore>& socket) {
   if(!socket->isOpen()) {
     disableReadCheckSocket();
   } else {
@@ -509,7 +509,7 @@ void AbstractCommand::setReadCheckSocket
 }
 
 void AbstractCommand::setReadCheckSocketIf
-(const SharedHandle<SocketCore>& socket, bool pred)
+(const std::shared_ptr<SocketCore>& socket, bool pred)
 {
   if(pred) {
     setReadCheckSocket(socket);
@@ -527,7 +527,7 @@ void AbstractCommand::disableWriteCheckSocket() {
 }
 
 void AbstractCommand::setWriteCheckSocket
-(const SharedHandle<SocketCore>& socket) {
+(const std::shared_ptr<SocketCore>& socket) {
   if(!socket->isOpen()) {
     disableWriteCheckSocket();
   } else {
@@ -546,7 +546,7 @@ void AbstractCommand::setWriteCheckSocket
 }
 
 void AbstractCommand::setWriteCheckSocketIf
-(const SharedHandle<SocketCore>& socket, bool pred)
+(const std::shared_ptr<SocketCore>& socket, bool pred)
 {
   if(pred) {
     setWriteCheckSocket(socket);
@@ -555,7 +555,7 @@ void AbstractCommand::setWriteCheckSocketIf
   }
 }
 
-void AbstractCommand::swapSocket(SharedHandle<SocketCore>& socket)
+void AbstractCommand::swapSocket(std::shared_ptr<SocketCore>& socket)
 {
   disableReadCheckSocket();
   disableWriteCheckSocket();
@@ -634,7 +634,7 @@ namespace {
 // Returns true if proxy is defined for the given protocol. Otherwise
 // returns false.
 bool isProxyRequest
-(const std::string& protocol, const SharedHandle<Option>& option)
+(const std::string& protocol, const std::shared_ptr<Option>& option)
 {
   std::string proxyUri = getProxyUri(protocol, option.get());
   return !proxyUri.empty();
@@ -642,7 +642,7 @@ bool isProxyRequest
 } // namespace
 
 namespace {
-bool inNoProxy(const SharedHandle<Request>& req,
+bool inNoProxy(const std::shared_ptr<Request>& req,
                const std::string& noProxy)
 {
   std::vector<Scip> entries;
@@ -685,9 +685,9 @@ bool AbstractCommand::isProxyDefined() const
     !inNoProxy(req_, getOption()->get(PREF_NO_PROXY));
 }
 
-SharedHandle<Request> AbstractCommand::createProxyRequest() const
+std::shared_ptr<Request> AbstractCommand::createProxyRequest() const
 {
-  SharedHandle<Request> proxyRequest;
+  std::shared_ptr<Request> proxyRequest;
   if(inNoProxy(req_, getOption()->get(PREF_NO_PROXY))) {
     return proxyRequest;
   }
@@ -772,7 +772,7 @@ std::string AbstractCommand::resolveHostname
 }
 
 void AbstractCommand::prepareForNextAction
-(const SharedHandle<CheckIntegrityEntry>& checkEntry)
+(const std::shared_ptr<CheckIntegrityEntry>& checkEntry)
 {
   std::vector<Command*>* commands = new std::vector<Command*>();
   auto_delete_container<std::vector<Command*> > commandsDel(commands);
@@ -783,7 +783,7 @@ void AbstractCommand::prepareForNextAction
 }
 
 bool AbstractCommand::checkIfConnectionEstablished
-(const SharedHandle<SocketCore>& socket,
+(const std::shared_ptr<SocketCore>& socket,
  const std::string& connectedHostname,
  const std::string& connectedAddr,
  uint16_t connectedPort)
@@ -827,7 +827,7 @@ const std::string& AbstractCommand::resolveProxyMethod
   }
 }
 
-const SharedHandle<Option>& AbstractCommand::getOption() const
+const std::shared_ptr<Option>& AbstractCommand::getOption() const
 {
   return requestGroup_->getOption();
 }
@@ -846,7 +846,7 @@ int32_t AbstractCommand::calculateMinSplitSize() const
   }
 }
 
-void AbstractCommand::setRequest(const SharedHandle<Request>& request)
+void AbstractCommand::setRequest(const std::shared_ptr<Request>& request)
 {
   req_ = request;
 }
@@ -856,27 +856,27 @@ void AbstractCommand::resetRequest()
   req_.reset();
 }
 
-void AbstractCommand::setFileEntry(const SharedHandle<FileEntry>& fileEntry)
+void AbstractCommand::setFileEntry(const std::shared_ptr<FileEntry>& fileEntry)
 {
   fileEntry_ = fileEntry;
 }
 
-void AbstractCommand::setSocket(const SharedHandle<SocketCore>& s)
+void AbstractCommand::setSocket(const std::shared_ptr<SocketCore>& s)
 {
   socket_ = s;
 }
 
-const SharedHandle<DownloadContext>& AbstractCommand::getDownloadContext() const
+const std::shared_ptr<DownloadContext>& AbstractCommand::getDownloadContext() const
 {
   return requestGroup_->getDownloadContext();
 }
 
-const SharedHandle<SegmentMan>& AbstractCommand::getSegmentMan() const
+const std::shared_ptr<SegmentMan>& AbstractCommand::getSegmentMan() const
 {
   return requestGroup_->getSegmentMan();
 }
 
-const SharedHandle<PieceStorage>& AbstractCommand::getPieceStorage() const
+const std::shared_ptr<PieceStorage>& AbstractCommand::getPieceStorage() const
 {
   return requestGroup_->getPieceStorage();
 }

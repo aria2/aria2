@@ -56,9 +56,9 @@ RpcRequest xmlParseMemory(const char* xml, size_t size)
   if(xml::XmlParser(&psm).parseFinal(xml, size) < 0) {
     throw DL_ABORT_EX(MSG_CANNOT_PARSE_XML_RPC_REQUEST);
   }
-  SharedHandle<List> params;
+  std::shared_ptr<List> params;
   if(downcast<List>(psm.getCurrentFrameValue())) {
-    params = static_pointer_cast<List>(psm.getCurrentFrameValue());
+    params = std::static_pointer_cast<List>(psm.getCurrentFrameValue());
   } else {
     params = List::g();
   }
@@ -68,9 +68,9 @@ RpcRequest xmlParseMemory(const char* xml, size_t size)
 
 RpcResponse createJsonRpcErrorResponse(int code,
                                        const std::string& msg,
-                                       const SharedHandle<ValueBase>& id)
+                                       const std::shared_ptr<ValueBase>& id)
 {
-  SharedHandle<Dict> params = Dict::g();
+  std::shared_ptr<Dict> params = Dict::g();
   params->put("code", Integer::g(code));
   params->put("message", msg);
   rpc::RpcResponse res(code, params, id);
@@ -79,7 +79,7 @@ RpcResponse createJsonRpcErrorResponse(int code,
 
 RpcResponse processJsonRpcRequest(const Dict* jsondict, DownloadEngine* e)
 {
-  SharedHandle<ValueBase> id = jsondict->get("id");
+  std::shared_ptr<ValueBase> id = jsondict->get("id");
   if(!id) {
     return createJsonRpcErrorResponse(-32600, "Invalid Request.", Null::g());
   }
@@ -87,10 +87,10 @@ RpcResponse processJsonRpcRequest(const Dict* jsondict, DownloadEngine* e)
   if(!methodName) {
     return createJsonRpcErrorResponse(-32600, "Invalid Request.", id);
   }
-  SharedHandle<List> params;
-  const SharedHandle<ValueBase>& tempParams = jsondict->get("params");
+  std::shared_ptr<List> params;
+  const std::shared_ptr<ValueBase>& tempParams = jsondict->get("params");
   if(downcast<List>(tempParams)) {
-    params = static_pointer_cast<List>(tempParams);
+    params = std::static_pointer_cast<List>(tempParams);
   } else if(!tempParams) {
     params = List::g();
   } else {
@@ -99,7 +99,7 @@ RpcResponse processJsonRpcRequest(const Dict* jsondict, DownloadEngine* e)
   }
   rpc::RpcRequest req(methodName->s(), params, id);
   req.jsonRpc = true;
-  SharedHandle<rpc::RpcMethod> method;
+  std::shared_ptr<rpc::RpcMethod> method;
   try {
     method = rpc::RpcMethodFactory::create(req.methodName);
   } catch(RecoverableException& e) {

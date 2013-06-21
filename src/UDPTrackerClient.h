@@ -40,8 +40,8 @@
 #include <string>
 #include <deque>
 #include <map>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "TimerA2.h"
 
 namespace aria2 {
@@ -96,22 +96,22 @@ public:
   // successfully sent. The |error| should indicate error situation.
   void requestFail(int error);
 
-  void addRequest(const SharedHandle<UDPTrackerRequest>& req);
+  void addRequest(const std::shared_ptr<UDPTrackerRequest>& req);
 
   // Handles timeout for inflight requests.
   void handleTimeout(const Timer& now);
 
-  const std::deque<SharedHandle<UDPTrackerRequest> >&
+  const std::deque<std::shared_ptr<UDPTrackerRequest> >&
   getPendingRequests() const
   {
     return pendingRequests_;
   }
-  const std::deque<SharedHandle<UDPTrackerRequest> >&
+  const std::deque<std::shared_ptr<UDPTrackerRequest> >&
   getConnectRequests() const
   {
     return connectRequests_;
   }
-  const std::deque<SharedHandle<UDPTrackerRequest> >&
+  const std::deque<std::shared_ptr<UDPTrackerRequest> >&
   getInflightRequests() const
   {
     return inflightRequests_;
@@ -139,7 +139,7 @@ public:
   void failConnect(const std::string& remoteAddr, uint16_t remotePort,
                    int error);
 private:
-  SharedHandle<UDPTrackerRequest> findInflightRequest
+  std::shared_ptr<UDPTrackerRequest> findInflightRequest
   (const std::string& remoteAddr, uint16_t remotePort, int32_t transactionId,
    bool remove);
 
@@ -148,19 +148,19 @@ private:
 
   std::map<std::pair<std::string, uint16_t>,
            UDPTrackerConnection> connectionIdCache_;
-  std::deque<SharedHandle<UDPTrackerRequest> > inflightRequests_;
-  std::deque<SharedHandle<UDPTrackerRequest> > pendingRequests_;
-  std::deque<SharedHandle<UDPTrackerRequest> > connectRequests_;
+  std::deque<std::shared_ptr<UDPTrackerRequest> > inflightRequests_;
+  std::deque<std::shared_ptr<UDPTrackerRequest> > pendingRequests_;
+  std::deque<std::shared_ptr<UDPTrackerRequest> > connectRequests_;
   int numWatchers_;
 };
 
 ssize_t createUDPTrackerConnect
 (unsigned char* data, size_t length, std::string& remoteAddr,
- uint16_t& remotePort, const SharedHandle<UDPTrackerRequest>& req);
+ uint16_t& remotePort, const std::shared_ptr<UDPTrackerRequest>& req);
 
 ssize_t createUDPTrackerAnnounce
 (unsigned char* data, size_t length, std::string& remoteAddr,
- uint16_t& remotePort, const SharedHandle<UDPTrackerRequest>& req);
+ uint16_t& remotePort, const std::shared_ptr<UDPTrackerRequest>& req);
 
 const char* getUDPTrackerActionStr(int action);
 

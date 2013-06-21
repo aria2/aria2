@@ -55,9 +55,9 @@ namespace aria2 {
 
 ReceiverMSEHandshakeCommand::ReceiverMSEHandshakeCommand
 (cuid_t cuid,
- const SharedHandle<Peer>& peer,
+ const std::shared_ptr<Peer>& peer,
  DownloadEngine* e,
- const SharedHandle<SocketCore>& s):
+ const std::shared_ptr<SocketCore>& s):
 
   PeerAbstractCommand(cuid, peer, e, s),
   sequence_(RECEIVER_IDENTIFY_HANDSHAKE),
@@ -103,7 +103,7 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
             ("The legacy BitTorrent handshake is not acceptable by the"
              " preference.");
         }
-        SharedHandle<PeerConnection> peerConnection
+        std::shared_ptr<PeerConnection> peerConnection
           (new PeerConnection(getCuid(), getPeer(), getSocket()));
         peerConnection->presetBuffer(mseHandshake_->getBuffer(),
                                      mseHandshake_->getBufferLength());
@@ -145,7 +145,7 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
       break;
     }
     case RECEIVER_RECEIVE_PAD_C_LENGTH: {
-      std::vector<SharedHandle<DownloadContext> > downloadContexts;
+      std::vector<std::shared_ptr<DownloadContext> > downloadContexts;
       getDownloadEngine()->getBtRegistry()->getAllDownloadContext
         (std::back_inserter(downloadContexts));
       if(mseHandshake_->receiveReceiverHashAndPadCLength(downloadContexts)) {
@@ -206,7 +206,7 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
 
 void ReceiverMSEHandshakeCommand::createCommand()
 {
-  SharedHandle<PeerConnection> peerConnection
+  std::shared_ptr<PeerConnection> peerConnection
     (new PeerConnection(getCuid(), getPeer(), getSocket()));
   if(mseHandshake_->getNegotiatedCryptoType() == MSEHandshake::CRYPTO_ARC4) {
     peerConnection->enableEncryption(mseHandshake_->getEncryptor(),

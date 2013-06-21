@@ -67,7 +67,7 @@ std::string HandshakeExtensionMessage::getPayload()
   if(tcpPort_ > 0) {
     dict.put("p", Integer::g(tcpPort_));
   }
-  SharedHandle<Dict> extDict = Dict::g();
+  std::shared_ptr<Dict> extDict = Dict::g();
   for(int i = 0; i < ExtensionMessageRegistry::MAX_EXTENSION; ++i) {
     int id = extreg_.getExtensionMessageID(i);
     if(id) {
@@ -109,7 +109,7 @@ void HandshakeExtensionMessage::doReceivedAction()
       peer_->setExtension(i, id);
     }
   }
-  SharedHandle<TorrentAttribute> attrs = bittorrent::getTorrentAttrs(dctx_);
+  std::shared_ptr<TorrentAttribute> attrs = bittorrent::getTorrentAttrs(dctx_);
   if(attrs->metadata.empty()) {
     if(!peer_->getExtensionMessageID(ExtensionMessageRegistry::UT_METADATA)) {
       // TODO In metadataGetMode, if peer don't support metadata
@@ -128,7 +128,7 @@ void HandshakeExtensionMessage::doReceivedAction()
         dctx_->markTotalLengthIsKnown();
         dctx_->getOwnerRequestGroup()->initPieceStorage();
 
-        SharedHandle<PieceStorage> pieceStorage =
+        std::shared_ptr<PieceStorage> pieceStorage =
           dctx_->getOwnerRequestGroup()->getPieceStorage();
         // We enter 'end game' mode from the start to get metadata
         // quickly.
@@ -144,7 +144,7 @@ void HandshakeExtensionMessage::doReceivedAction()
   }
 }
 
-void HandshakeExtensionMessage::setPeer(const SharedHandle<Peer>& peer)
+void HandshakeExtensionMessage::setPeer(const std::shared_ptr<Peer>& peer)
 {
   peer_ = peer;
 }
@@ -174,7 +174,7 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
   }
   A2_LOG_DEBUG(fmt("Creating HandshakeExtensionMessage from %s",
                    util::percentEncode(data, length).c_str()));
-  SharedHandle<ValueBase> decoded = bencode2::decode(data+1, length - 1);
+  std::shared_ptr<ValueBase> decoded = bencode2::decode(data+1, length - 1);
   const Dict* dict = downcast<Dict>(decoded);
   if(!dict) {
     throw DL_ABORT_EX

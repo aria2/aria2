@@ -12,13 +12,13 @@ namespace aria2 {
 
 class MockDHTTask:public DHTTask {
 public:
-  SharedHandle<DHTNode> remoteNode_;
+  std::shared_ptr<DHTNode> remoteNode_;
 
   unsigned char targetID_[DHT_ID_LENGTH];
 
   bool finished_;
 
-  MockDHTTask(const SharedHandle<DHTNode>& remoteNode):
+  MockDHTTask(const std::shared_ptr<DHTNode>& remoteNode):
     remoteNode_(remoteNode),
     finished_(false) {}
 

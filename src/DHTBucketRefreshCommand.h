@@ -36,7 +36,8 @@
 #define D_DHT_BUCKET_REFRESH_COMMAND_H
 
 #include "TimeBasedCommand.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -46,11 +47,11 @@ class DHTTaskFactory;
 
 class DHTBucketRefreshCommand:public TimeBasedCommand {
 private:
-  SharedHandle<DHTRoutingTable> routingTable_;
+  std::shared_ptr<DHTRoutingTable> routingTable_;
 
-  SharedHandle<DHTTaskQueue> taskQueue_;
+  std::shared_ptr<DHTTaskQueue> taskQueue_;
 
-  SharedHandle<DHTTaskFactory> taskFactory_;
+  std::shared_ptr<DHTTaskFactory> taskFactory_;
 public:
   DHTBucketRefreshCommand(cuid_t cuid, DownloadEngine* e, time_t interval);
 
@@ -60,11 +61,11 @@ public:
 
   virtual void process();
 
-  void setRoutingTable(const SharedHandle<DHTRoutingTable>& routingTable);
+  void setRoutingTable(const std::shared_ptr<DHTRoutingTable>& routingTable);
 
-  void setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue);
+  void setTaskQueue(const std::shared_ptr<DHTTaskQueue>& taskQueue);
 
-  void setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory);
+  void setTaskFactory(const std::shared_ptr<DHTTaskFactory>& taskFactory);
 };
 
 } // namespace aria2

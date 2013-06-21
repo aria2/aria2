@@ -38,8 +38,7 @@
 #include "common.h"
 
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -49,7 +48,7 @@ class RequestGroupCriteria;
 class DownloadHandler
 {
 private:
-  SharedHandle<RequestGroupCriteria> criteria_;
+  std::shared_ptr<RequestGroupCriteria> criteria_;
 public:
   DownloadHandler();
 
@@ -57,7 +56,7 @@ public:
 
   bool canHandle(const RequestGroup* requestGroup) const;
 
-  void setCriteria(const SharedHandle<RequestGroupCriteria>& criteria);
+  void setCriteria(const std::shared_ptr<RequestGroupCriteria>& criteria);
 };
 
 } // namespace aria2

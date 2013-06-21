@@ -39,7 +39,7 @@
 namespace aria2 {
 
 PiecedSegment::PiecedSegment
-(int32_t pieceLength, const SharedHandle<Piece>& piece)
+(int32_t pieceLength, const std::shared_ptr<Piece>& piece)
   : piece_(piece),
     pieceLength_(pieceLength)
 {
@@ -124,7 +124,7 @@ void PiecedSegment::clear(WrDiskCache* diskCache)
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-SharedHandle<Piece> PiecedSegment::getPiece() const
+std::shared_ptr<Piece> PiecedSegment::getPiece() const
 {
   return piece_;
 }

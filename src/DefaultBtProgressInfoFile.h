@@ -36,7 +36,8 @@
 #define D_DEFAULT_BT_PROGRESS_INFO_FILE_H
 
 #include "BtProgressInfoFile.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -48,19 +49,19 @@ class Option;
 
 class DefaultBtProgressInfoFile : public BtProgressInfoFile {
 private:
-  SharedHandle<DownloadContext> dctx_;
-  SharedHandle<PieceStorage> pieceStorage_;
+  std::shared_ptr<DownloadContext> dctx_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
 #ifdef ENABLE_BITTORRENT
-  SharedHandle<PeerStorage> peerStorage_;
-  SharedHandle<BtRuntime> btRuntime_;
+  std::shared_ptr<PeerStorage> peerStorage_;
+  std::shared_ptr<BtRuntime> btRuntime_;
 #endif // ENABLE_BITTORRENT
   const Option* option_;
   std::string filename_;
 
   bool isTorrentDownload();
 public:
-  DefaultBtProgressInfoFile(const SharedHandle<DownloadContext>& btContext,
-                            const SharedHandle<PieceStorage>& pieceStorage,
+  DefaultBtProgressInfoFile(const std::shared_ptr<DownloadContext>& btContext,
+                            const std::shared_ptr<PieceStorage>& pieceStorage,
                             const Option* option);
 
   virtual ~DefaultBtProgressInfoFile();
@@ -80,9 +81,9 @@ public:
 
 #ifdef ENABLE_BITTORRENT
   // for torrents
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
 
-  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
+  void setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime);
 #endif // ENABLE_BITTORRENT
 
   static const std::string& getSuffix()

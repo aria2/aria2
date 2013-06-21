@@ -38,7 +38,7 @@
 namespace aria2 {
 
 PriorityPieceSelector::PriorityPieceSelector
-(const SharedHandle<PieceSelector>& selector):
+(const std::shared_ptr<PieceSelector>& selector):
   selector_(selector) {}
 
 bool PriorityPieceSelector::select

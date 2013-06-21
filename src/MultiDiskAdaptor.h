@@ -45,12 +45,12 @@ class DiskWriter;
 
 class DiskWriterEntry {
 private:
-  SharedHandle<FileEntry> fileEntry_;
-  SharedHandle<DiskWriter> diskWriter_;
+  std::shared_ptr<FileEntry> fileEntry_;
+  std::shared_ptr<DiskWriter> diskWriter_;
   bool open_;
   bool needsFileAllocation_;
 public:
-  DiskWriterEntry(const SharedHandle<FileEntry>& fileEntry);
+  DiskWriterEntry(const std::shared_ptr<FileEntry>& fileEntry);
 
   const std::string& getFilePath() const;
 
@@ -71,14 +71,14 @@ public:
 
   int64_t size() const;
 
-  const SharedHandle<FileEntry>& getFileEntry() const
+  const std::shared_ptr<FileEntry>& getFileEntry() const
   {
     return fileEntry_;
   }
 
-  void setDiskWriter(const SharedHandle<DiskWriter>& diskWriter);
+  void setDiskWriter(const std::shared_ptr<DiskWriter>& diskWriter);
 
-  const SharedHandle<DiskWriter>& getDiskWriter() const
+  const std::shared_ptr<DiskWriter>& getDiskWriter() const
   {
     return diskWriter_;
   }
@@ -97,7 +97,7 @@ public:
 
 };
 
-typedef std::vector<SharedHandle<DiskWriterEntry> > DiskWriterEntries;
+typedef std::vector<std::shared_ptr<DiskWriterEntry> > DiskWriterEntries;
 
 class MultiDiskAdaptor : public DiskAdaptor {
   friend class MultiFileAllocationIterator;
@@ -105,7 +105,7 @@ private:
   int32_t pieceLength_;
   DiskWriterEntries diskWriterEntries_;
 
-  std::vector<SharedHandle<DiskWriterEntry> > openedDiskWriterEntries_;
+  std::vector<std::shared_ptr<DiskWriterEntry> > openedDiskWriterEntries_;
 
   int maxOpenFiles_;
 
@@ -113,7 +113,7 @@ private:
 
   void resetDiskWriterEntries();
 
-  void openIfNot(const SharedHandle<DiskWriterEntry>& entry,
+  void openIfNot(const std::shared_ptr<DiskWriterEntry>& entry,
                  void (DiskWriterEntry::*f)());
 
   static const int DEFAULT_MAX_OPEN_FILES = 100;
@@ -141,7 +141,7 @@ public:
 
   virtual int64_t size();
 
-  virtual SharedHandle<FileAllocationIterator> fileAllocationIterator();
+  virtual std::shared_ptr<FileAllocationIterator> fileAllocationIterator();
 
   virtual void enableReadOnly();
 
@@ -168,7 +168,7 @@ public:
 
   virtual size_t utime(const Time& actime, const Time& modtime);
 
-  const std::vector<SharedHandle<DiskWriterEntry> >&
+  const std::vector<std::shared_ptr<DiskWriterEntry> >&
   getDiskWriterEntries() const
   {
     return diskWriterEntries_;

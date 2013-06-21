@@ -41,8 +41,8 @@ void BtRegistryTest::testGetDownloadContext()
 {
   BtRegistry btRegistry;
   CPPUNIT_ASSERT(!btRegistry.getDownloadContext(1));
-  SharedHandle<DownloadContext> dctx(new DownloadContext());
-  SharedHandle<BtObject> btObject(new BtObject());
+  std::shared_ptr<DownloadContext> dctx(new DownloadContext());
+  std::shared_ptr<BtObject> btObject(new BtObject());
   btObject->downloadContext = dctx;
   btRegistry.put(1, btObject);
   CPPUNIT_ASSERT_EQUAL(dctx.get(), btRegistry.getDownloadContext(1).get());
@@ -51,11 +51,11 @@ void BtRegistryTest::testGetDownloadContext()
 namespace {
 void addTwoDownloadContext(BtRegistry& btRegistry)
 {
-  SharedHandle<DownloadContext> dctx1(new DownloadContext());
-  SharedHandle<DownloadContext> dctx2(new DownloadContext());
-  SharedHandle<BtObject> btObject1(new BtObject());
+  std::shared_ptr<DownloadContext> dctx1(new DownloadContext());
+  std::shared_ptr<DownloadContext> dctx2(new DownloadContext());
+  std::shared_ptr<BtObject> btObject1(new BtObject());
   btObject1->downloadContext = dctx1;
-  SharedHandle<BtObject> btObject2(new BtObject());
+  std::shared_ptr<BtObject> btObject2(new BtObject());
   btObject2->downloadContext = dctx2;
   btRegistry.put(1, btObject1);
   btRegistry.put(2, btObject2);
@@ -66,9 +66,9 @@ void BtRegistryTest::testGetDownloadContext_infoHash()
 {
   BtRegistry btRegistry;
   addTwoDownloadContext(btRegistry);
-  SharedHandle<TorrentAttribute> attrs1(new TorrentAttribute());
+  std::shared_ptr<TorrentAttribute> attrs1(new TorrentAttribute());
   attrs1->infoHash = "hash1";
-  SharedHandle<TorrentAttribute> attrs2(new TorrentAttribute());
+  std::shared_ptr<TorrentAttribute> attrs2(new TorrentAttribute());
   attrs2->infoHash = "hash2";
   btRegistry.getDownloadContext(1)->setAttribute(CTX_ATTR_BT, attrs1);
   btRegistry.getDownloadContext(2)->setAttribute(CTX_ATTR_BT, attrs2);
@@ -84,7 +84,7 @@ void BtRegistryTest::testGetAllDownloadContext()
   BtRegistry btRegistry;
   addTwoDownloadContext(btRegistry);
 
-  std::vector<SharedHandle<DownloadContext> > result;
+  std::vector<std::shared_ptr<DownloadContext> > result;
   btRegistry.getAllDownloadContext(std::back_inserter(result));
   CPPUNIT_ASSERT_EQUAL((size_t)2, result.size());
 }

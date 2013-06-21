@@ -38,8 +38,8 @@
 #include "common.h"
 
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "BtConstants.h"
 #include "SocketBuffer.h"
 #include "Command.h"
@@ -77,7 +77,7 @@ private:
   static const size_t MAX_BUFFER_LENGTH = 636U;
 
   cuid_t cuid_;
-  SharedHandle<SocketCore> socket_;
+  std::shared_ptr<SocketCore> socket_;
   bool wantRead_;
   const Option* option_;
 
@@ -88,8 +88,8 @@ private:
 
   CRYPTO_TYPE negotiatedCryptoType_;
   DHKeyExchange* dh_;
-  SharedHandle<ARC4Encryptor> encryptor_;
-  SharedHandle<ARC4Encryptor> decryptor_;
+  std::shared_ptr<ARC4Encryptor> encryptor_;
+  std::shared_ptr<ARC4Encryptor> decryptor_;
   unsigned char infoHash_[INFO_HASH_LENGTH];
   unsigned char secret_[KEY_LENGTH];
   bool initiator_;
@@ -98,7 +98,7 @@ private:
   uint16_t padLength_;
   uint16_t iaLength_;
   unsigned char* ia_;
-  SharedHandle<MessageDigest> sha1_;
+  std::shared_ptr<MessageDigest> sha1_;
 
   void encryptAndSendData(unsigned char* data, size_t length);
 
@@ -122,7 +122,7 @@ private:
 
   void shiftBuffer(size_t offset);
 public:
-  MSEHandshake(cuid_t cuid, const SharedHandle<SocketCore>& socket,
+  MSEHandshake(cuid_t cuid, const std::shared_ptr<SocketCore>& socket,
                const Option* op);
 
   ~MSEHandshake();
@@ -168,7 +168,7 @@ public:
   bool findReceiverHashMarker();
 
   bool receiveReceiverHashAndPadCLength
-  (const std::vector<SharedHandle<DownloadContext> >& downloadContexts);
+  (const std::vector<std::shared_ptr<DownloadContext> >& downloadContexts);
 
   bool receiveReceiverIALength();
 
@@ -197,12 +197,12 @@ public:
     return negotiatedCryptoType_;
   }
 
-  const SharedHandle<ARC4Encryptor>& getEncryptor() const
+  const std::shared_ptr<ARC4Encryptor>& getEncryptor() const
   {
     return encryptor_;
   }
 
-  const SharedHandle<ARC4Encryptor>& getDecryptor() const
+  const std::shared_ptr<ARC4Encryptor>& getDecryptor() const
   {
     return decryptor_;
   }

@@ -49,7 +49,7 @@ bool DownloadHandler::canHandle(const RequestGroup* requestGroup) const
 }
 
 void DownloadHandler::setCriteria
-(const SharedHandle<RequestGroupCriteria>& criteria)
+(const std::shared_ptr<RequestGroupCriteria>& criteria)
 {
   criteria_ = criteria;
 }

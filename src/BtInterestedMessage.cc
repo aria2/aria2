@@ -69,7 +69,7 @@ bool BtInterestedMessage::sendPredicate() const
 
 namespace {
 struct ThisProgressUpdate : public ProgressUpdate {
-  ThisProgressUpdate(const SharedHandle<Peer>& peer)
+  ThisProgressUpdate(const std::shared_ptr<Peer>& peer)
     : peer(peer) {}
   virtual void update(size_t length, bool complete)
   {
@@ -77,7 +77,7 @@ struct ThisProgressUpdate : public ProgressUpdate {
       peer->amInterested(true);
     }
   }
-  SharedHandle<Peer> peer;
+  std::shared_ptr<Peer> peer;
 };
 } // namespace
 
@@ -87,7 +87,7 @@ ProgressUpdate* BtInterestedMessage::getProgressUpdate()
 }
 
 void BtInterestedMessage::setPeerStorage
-(const SharedHandle<PeerStorage>& peerStorage)
+(const std::shared_ptr<PeerStorage>& peerStorage)
 {
   peerStorage_ = peerStorage;
 }

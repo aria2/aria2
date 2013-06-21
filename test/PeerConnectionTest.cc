@@ -21,7 +21,7 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(PeerConnectionTest);
 
 void PeerConnectionTest::testReserveBuffer() {
-  PeerConnection con(1, SharedHandle<Peer>(), SharedHandle<SocketCore>());
+  PeerConnection con(1, std::shared_ptr<Peer>(), std::shared_ptr<SocketCore>());
   con.presetBuffer((unsigned char*)"foo", 3);
   CPPUNIT_ASSERT_EQUAL((size_t)MAX_BUFFER_CAPACITY, con.getBufferCapacity());
   CPPUNIT_ASSERT_EQUAL((size_t)3, con.getBufferLength());

@@ -49,7 +49,7 @@ class DHTAbstractTask;
 
 class DHTTaskFactoryImpl:public DHTTaskFactory {
 private:
-  SharedHandle<DHTNode> localNode_;
+  std::shared_ptr<DHTNode> localNode_;
 
   DHTRoutingTable* routingTable_;
 
@@ -61,32 +61,32 @@ private:
 
   time_t timeout_;
 
-  void setCommonProperty(const SharedHandle<DHTAbstractTask>& task);
+  void setCommonProperty(const std::shared_ptr<DHTAbstractTask>& task);
 public:
   DHTTaskFactoryImpl();
 
   virtual ~DHTTaskFactoryImpl();
 
-  virtual SharedHandle<DHTTask>
-  createPingTask(const SharedHandle<DHTNode>& remoteNode,
+  virtual std::shared_ptr<DHTTask>
+  createPingTask(const std::shared_ptr<DHTNode>& remoteNode,
                  int numRetry = 0);
 
-  virtual SharedHandle<DHTTask>
+  virtual std::shared_ptr<DHTTask>
   createNodeLookupTask(const unsigned char* targetID);
 
-  virtual SharedHandle<DHTTask> createBucketRefreshTask();
+  virtual std::shared_ptr<DHTTask> createBucketRefreshTask();
 
-  virtual SharedHandle<DHTTask>
-  createPeerLookupTask(const SharedHandle<DownloadContext>& ctx,
+  virtual std::shared_ptr<DHTTask>
+  createPeerLookupTask(const std::shared_ptr<DownloadContext>& ctx,
                        uint16_t tcpPort,
-                       const SharedHandle<PeerStorage>& peerStorage);
+                       const std::shared_ptr<PeerStorage>& peerStorage);
 
-  virtual SharedHandle<DHTTask>
+  virtual std::shared_ptr<DHTTask>
   createPeerAnnounceTask(const unsigned char* infoHash);
 
-  virtual SharedHandle<DHTTask>
-  createReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
-                        const SharedHandle<DHTNode>& newNode);
+  virtual std::shared_ptr<DHTTask>
+  createReplaceNodeTask(const std::shared_ptr<DHTBucket>& bucket,
+                        const std::shared_ptr<DHTNode>& newNode);
 
   void setRoutingTable(DHTRoutingTable* routingTable);
 
@@ -96,7 +96,7 @@ public:
 
   void setTaskQueue(DHTTaskQueue* taskQueue);
 
-  void setLocalNode(const SharedHandle<DHTNode>& localNode);
+  void setLocalNode(const std::shared_ptr<DHTNode>& localNode);
 
   void setTimeout(time_t timeout)
   {

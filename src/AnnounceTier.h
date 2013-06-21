@@ -40,8 +40,6 @@
 #include <string>
 #include <deque>
 
-#include "SharedHandle.h"
-
 namespace aria2 {
 
 class AnnounceTier {

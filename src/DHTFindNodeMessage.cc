@@ -49,8 +49,8 @@ const std::string DHTFindNodeMessage::FIND_NODE("find_node");
 
 const std::string DHTFindNodeMessage::TARGET_NODE("target");
 
-DHTFindNodeMessage::DHTFindNodeMessage(const SharedHandle<DHTNode>& localNode,
-                                       const SharedHandle<DHTNode>& remoteNode,
+DHTFindNodeMessage::DHTFindNodeMessage(const std::shared_ptr<DHTNode>& localNode,
+                                       const std::shared_ptr<DHTNode>& remoteNode,
                                        const unsigned char* targetNodeID,
                                        const std::string& transactionID):
   DHTQueryMessage(localNode, remoteNode, transactionID)
@@ -62,17 +62,17 @@ DHTFindNodeMessage::~DHTFindNodeMessage() {}
 
 void DHTFindNodeMessage::doReceivedAction()
 {
-  std::vector<SharedHandle<DHTNode> > nodes;
+  std::vector<std::shared_ptr<DHTNode> > nodes;
   getRoutingTable()->getClosestKNodes(nodes, targetNodeID_);
-  SharedHandle<DHTMessage> reply =
+  std::shared_ptr<DHTMessage> reply =
     getMessageFactory()->createFindNodeReplyMessage
     (getRemoteNode(), nodes, getTransactionID());
   getMessageDispatcher()->addMessageToQueue(reply);
 }
 
-SharedHandle<Dict> DHTFindNodeMessage::getArgument()
+std::shared_ptr<Dict> DHTFindNodeMessage::getArgument()
 {
-  SharedHandle<Dict> aDict = Dict::g();
+  std::shared_ptr<Dict> aDict = Dict::g();
   aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
   aDict->put(TARGET_NODE, String::g(targetNodeID_, DHT_ID_LENGTH));
   return aDict;

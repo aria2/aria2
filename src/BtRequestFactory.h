@@ -38,8 +38,7 @@
 #include "common.h"
 
 #include <vector>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -50,9 +49,9 @@ class BtRequestFactory {
 public:
   virtual ~BtRequestFactory() {}
 
-  virtual void addTargetPiece(const SharedHandle<Piece>& piece) = 0;
+  virtual void addTargetPiece(const std::shared_ptr<Piece>& piece) = 0;
 
-  virtual void removeTargetPiece(const SharedHandle<Piece>& piece) = 0;
+  virtual void removeTargetPiece(const std::shared_ptr<Piece>& piece) = 0;
 
   virtual void removeAllTargetPiece() = 0;
 
@@ -70,14 +69,14 @@ public:
    * The number of objects returned is capped by max.
    */
   virtual void createRequestMessages
-  (std::vector<SharedHandle<BtMessage> >& requests, size_t max) = 0;
+  (std::vector<std::shared_ptr<BtMessage> >& requests, size_t max) = 0;
 
   /**
    * Use this method in end game mode.
    *
    */
   virtual void createRequestMessagesOnEndGame
-  (std::vector<SharedHandle<BtMessage> >& requests, size_t max) = 0;
+  (std::vector<std::shared_ptr<BtMessage> >& requests, size_t max) = 0;
 
   /**
    * Stores the list of index of pieces added using addTargetPiece() into

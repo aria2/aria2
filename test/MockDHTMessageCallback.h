@@ -19,7 +19,7 @@ public:
 
   virtual void visit(const DHTPingReplyMessage* message) {}
 
-  virtual void onTimeout(const SharedHandle<DHTNode>& remoteNode) {}
+  virtual void onTimeout(const std::shared_ptr<DHTNode>& remoteNode) {}
 };
 
 } // namespace aria2

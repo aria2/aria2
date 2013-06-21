@@ -39,10 +39,10 @@ const std::string IteratableChunkChecksumValidatorTest::csArray[] =
 
 void IteratableChunkChecksumValidatorTest::testValidate() {
   Option option;
-  SharedHandle<DownloadContext> dctx
+  std::shared_ptr<DownloadContext> dctx
     (new DownloadContext(100, 250, A2_TEST_DIR"/chunkChecksumTestFile250.txt"));
   dctx->setPieceHashes("sha-1", &csArray[0], &csArray[3]);
-  SharedHandle<DefaultPieceStorage> ps
+  std::shared_ptr<DefaultPieceStorage> ps
     (new DefaultPieceStorage(dctx, &option));
   ps->initStorage();
   ps->getDiskAdaptor()->enableReadOnly();
@@ -76,13 +76,13 @@ void IteratableChunkChecksumValidatorTest::testValidate() {
 
 void IteratableChunkChecksumValidatorTest::testValidate_readError() {
   Option option;
-  SharedHandle<DownloadContext> dctx
+  std::shared_ptr<DownloadContext> dctx
     (new DownloadContext(100, 500, A2_TEST_DIR"/chunkChecksumTestFile250.txt"));
   std::deque<std::string> hashes(&csArray[0], &csArray[3]);
   hashes.push_back(fromHex("ffffffffffffffffffffffffffffffffffffffff"));
   hashes.push_back(fromHex("ffffffffffffffffffffffffffffffffffffffff"));
   dctx->setPieceHashes("sha-1", hashes.begin(), hashes.end());
-  SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &option));
+  std::shared_ptr<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &option));
   ps->initStorage();
   ps->getDiskAdaptor()->enableReadOnly();
   ps->getDiskAdaptor()->openFile();

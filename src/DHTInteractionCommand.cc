@@ -66,7 +66,7 @@ DHTInteractionCommand::~DHTInteractionCommand()
   disableReadCheckSocket(readCheckSocket_);
 }
 
-void DHTInteractionCommand::setReadCheckSocket(const SharedHandle<SocketCore>& socket)
+void DHTInteractionCommand::setReadCheckSocket(const std::shared_ptr<SocketCore>& socket)
 {
   readCheckSocket_ = socket;
   if(socket) {
@@ -74,7 +74,7 @@ void DHTInteractionCommand::setReadCheckSocket(const SharedHandle<SocketCore>& s
   }
 }
 
-void DHTInteractionCommand::disableReadCheckSocket(const SharedHandle<SocketCore>& socket)
+void DHTInteractionCommand::disableReadCheckSocket(const std::shared_ptr<SocketCore>& socket)
 {
   if(socket) {
     e_->deleteSocketForReadCheck(socket, this);
@@ -142,29 +142,29 @@ bool DHTInteractionCommand::execute()
   return false;
 }
 
-void DHTInteractionCommand::setMessageDispatcher(const SharedHandle<DHTMessageDispatcher>& dispatcher)
+void DHTInteractionCommand::setMessageDispatcher(const std::shared_ptr<DHTMessageDispatcher>& dispatcher)
 {
   dispatcher_ = dispatcher;
 }
 
-void DHTInteractionCommand::setMessageReceiver(const SharedHandle<DHTMessageReceiver>& receiver)
+void DHTInteractionCommand::setMessageReceiver(const std::shared_ptr<DHTMessageReceiver>& receiver)
 {
   receiver_ = receiver;
 }
 
-void DHTInteractionCommand::setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue)
+void DHTInteractionCommand::setTaskQueue(const std::shared_ptr<DHTTaskQueue>& taskQueue)
 {
   taskQueue_ = taskQueue;
 }
 
 void DHTInteractionCommand::setConnection
-(const SharedHandle<DHTConnection>& connection)
+(const std::shared_ptr<DHTConnection>& connection)
 {
   connection_ = connection;
 }
 
 void DHTInteractionCommand::setUDPTrackerClient
-(const SharedHandle<UDPTrackerClient>& udpTrackerClient)
+(const std::shared_ptr<UDPTrackerClient>& udpTrackerClient)
 {
   udpTrackerClient_ = udpTrackerClient;
 }

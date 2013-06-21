@@ -39,8 +39,7 @@
 
 #include <string>
 #include <vector>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -137,9 +136,9 @@ public:
 
 class Netrc {
 private:
-  std::vector<SharedHandle<Authenticator> > authenticators_;
+  std::vector<std::shared_ptr<Authenticator> > authenticators_;
 
-  void storeAuthenticator(const SharedHandle<Authenticator>& authenticator);
+  void storeAuthenticator(const std::shared_ptr<Authenticator>& authenticator);
 public:
   Netrc();
 
@@ -147,15 +146,15 @@ public:
 
   void parse(const std::string& path);
 
-  SharedHandle<Authenticator> findAuthenticator
+  std::shared_ptr<Authenticator> findAuthenticator
   (const std::string& hostname) const;
 
-  const std::vector<SharedHandle<Authenticator> >& getAuthenticators() const
+  const std::vector<std::shared_ptr<Authenticator> >& getAuthenticators() const
   {
     return authenticators_;
   }
 
-  void addAuthenticator(const SharedHandle<Authenticator>& authenticator);
+  void addAuthenticator(const std::shared_ptr<Authenticator>& authenticator);
 };
 
 } // namespace aria2

@@ -36,7 +36,6 @@
 #define D_GENERIC_PARSER_H
 
 #include "common.h"
-#include "SharedHandle.h"
 #include "a2io.h"
 #include "util.h"
 

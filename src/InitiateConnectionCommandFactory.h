@@ -36,7 +36,9 @@
 #define D_INITIATE_CONNECTION_COMMAND_FACTORY_H
 
 #include "common.h"
-#include "SharedHandle.h"
+
+#include <memory>
+
 #include "Command.h"
 
 namespace aria2 {
@@ -50,8 +52,8 @@ class InitiateConnectionCommandFactory {
 public:
   static Command*
   createInitiateConnectionCommand(cuid_t cuid,
-                                  const SharedHandle<Request>& req,
-                                  const SharedHandle<FileEntry>& fileEntry,
+                                  const std::shared_ptr<Request>& req,
+                                  const std::shared_ptr<FileEntry>& fileEntry,
                                   RequestGroup* requestGroup,
                                   DownloadEngine* e);
 };

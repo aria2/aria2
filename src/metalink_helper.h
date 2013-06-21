@@ -39,8 +39,8 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "A2STR.h"
 
 namespace aria2 {
@@ -53,27 +53,27 @@ class Metalinker;
 namespace metalink {
 
 void parseAndQuery
-(std::vector<SharedHandle<MetalinkEntry> >& result,
+(std::vector<std::shared_ptr<MetalinkEntry> >& result,
  const std::string& filename,
  const Option* option,
  const std::string& baseUri = A2STR::NIL);
 
 void parseAndQuery
-(std::vector<SharedHandle<MetalinkEntry> >& result,
+(std::vector<std::shared_ptr<MetalinkEntry> >& result,
  BinaryStream* bs,
  const Option* option,
  const std::string& baseUri = A2STR::NIL);
 
 void groupEntryByMetaurlName
 (std::vector<
-  std::pair<std::string, std::vector<SharedHandle<MetalinkEntry> > > >& result,
- const std::vector<SharedHandle<MetalinkEntry> >& entries);
+  std::pair<std::string, std::vector<std::shared_ptr<MetalinkEntry> > > >& result,
+ const std::vector<std::shared_ptr<MetalinkEntry> >& entries);
 
-SharedHandle<Metalinker> parseFile
+std::shared_ptr<Metalinker> parseFile
 (const std::string& filename,
  const std::string& baseUri = A2STR::NIL);
 
-SharedHandle<Metalinker> parseBinaryStream
+std::shared_ptr<Metalinker> parseBinaryStream
 (BinaryStream* bs,
  const std::string& baseUri = A2STR::NIL);
 

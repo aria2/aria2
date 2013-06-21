@@ -107,7 +107,7 @@ Netrc::Netrc() {}
 
 Netrc::~Netrc() {}
 
-void Netrc::addAuthenticator(const SharedHandle<Authenticator>& authenticator)
+void Netrc::addAuthenticator(const std::shared_ptr<Authenticator>& authenticator)
 {
   authenticators_.push_back(authenticator);
 }
@@ -146,7 +146,7 @@ void Netrc::parse(const std::string& path)
     SET_ACCOUNT,
     SET_MACDEF
   };
-  SharedHandle<Authenticator> authenticator;
+  std::shared_ptr<Authenticator> authenticator;
   STATE state = GET_TOKEN;
   while(1) {
     std::string line = fp.getLine();
@@ -215,7 +215,7 @@ void Netrc::parse(const std::string& path)
   storeAuthenticator(authenticator);
 }
 
-void Netrc::storeAuthenticator(const SharedHandle<Authenticator>& authenticator)
+void Netrc::storeAuthenticator(const std::shared_ptr<Authenticator>& authenticator)
 {
   if(authenticator) {
     authenticators_.push_back(authenticator);
@@ -229,18 +229,18 @@ private:
 public:
   AuthHostMatch(const std::string& hostname):hostname(hostname) {}
 
-  bool operator()(const SharedHandle<Authenticator>& authenticator)
+  bool operator()(const std::shared_ptr<Authenticator>& authenticator)
   {
     return authenticator->match(hostname);
   }
 };
 } // namespace
 
-SharedHandle<Authenticator>
+std::shared_ptr<Authenticator>
 Netrc::findAuthenticator(const std::string& hostname) const
 {
-  SharedHandle<Authenticator> res;
-  std::vector<SharedHandle<Authenticator> >::const_iterator itr =
+  std::shared_ptr<Authenticator> res;
+  std::vector<std::shared_ptr<Authenticator> >::const_iterator itr =
     std::find_if(authenticators_.begin(), authenticators_.end(),
                  AuthHostMatch(hostname));
   if(itr != authenticators_.end()) {

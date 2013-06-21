@@ -97,7 +97,7 @@ void AbstractSingleDiskAdaptor::writeCache(const WrDiskCacheEntry* entry)
   for(WrDiskCacheEntry::DataCellSet::const_iterator i = dataSet.begin(),
         eoi = dataSet.end(); i != eoi; ++i) {
     if(start+static_cast<ssize_t>(buflen) < (*i)->goff) {
-      A2_LOG_DEBUG(fmt("Cache flush goff=%"PRId64", len=%lu",
+      A2_LOG_DEBUG(fmt("Cache flush goff=%" PRId64 ", len=%lu",
                        start, static_cast<unsigned long>(buflen)));
       writeData(buf+buffoffset, buflen-buffoffset, start);
       start = (*i)->goff;
@@ -105,7 +105,7 @@ void AbstractSingleDiskAdaptor::writeCache(const WrDiskCacheEntry* entry)
     }
     if(buflen == 0 && ((*i)->goff & 0xfff) == 0 && ((*i)->len & 0xfff) == 0) {
       // Already aligned. Write it without copy.
-      A2_LOG_DEBUG(fmt("Cache flush goff=%"PRId64", len=%lu",
+      A2_LOG_DEBUG(fmt("Cache flush goff=%" PRId64 ", len=%lu",
                        start, static_cast<unsigned long>((*i)->len)));
       writeData((*i)->data + (*i)->offset, (*i)->len, start);
       start += (*i)->len;
@@ -117,7 +117,7 @@ void AbstractSingleDiskAdaptor::writeCache(const WrDiskCacheEntry* entry)
       memcpy(buf+buflen, (*i)->data+(*i)->offset, wlen);
       buflen += wlen;
       if(buflen == sizeof(buf)) {
-        A2_LOG_DEBUG(fmt("Cache flush goff=%"PRId64", len=%lu",
+        A2_LOG_DEBUG(fmt("Cache flush goff=%" PRId64 ", len=%lu",
                          start, static_cast<unsigned long>(buflen)));
         writeData(buf+buffoffset, buflen-buffoffset, start);
         memcpy(buf, (*i)->data + (*i)->offset + wlen, (*i)->len - wlen);
@@ -145,26 +145,26 @@ void AbstractSingleDiskAdaptor::truncate(int64_t length)
   diskWriter_->truncate(length);
 }
 
-SharedHandle<FileAllocationIterator>
+std::shared_ptr<FileAllocationIterator>
 AbstractSingleDiskAdaptor::fileAllocationIterator()
 {
   switch(getFileAllocationMethod()) {
 #ifdef HAVE_SOME_FALLOCATE
   case(DiskAdaptor::FILE_ALLOC_FALLOC): {
-    SharedHandle<FallocFileAllocationIterator> h
+    std::shared_ptr<FallocFileAllocationIterator> h
       (new FallocFileAllocationIterator
        (diskWriter_.get(), size() ,totalLength_));
     return h;
   }
 #endif // HAVE_SOME_FALLOCATE
   case(DiskAdaptor::FILE_ALLOC_TRUNC): {
-    SharedHandle<TruncFileAllocationIterator> h
+    std::shared_ptr<TruncFileAllocationIterator> h
       (new TruncFileAllocationIterator
        (diskWriter_.get(), size(), totalLength_));
     return h;
   }
   default: {
-    SharedHandle<AdaptiveFileAllocationIterator> h
+    std::shared_ptr<AdaptiveFileAllocationIterator> h
       (new AdaptiveFileAllocationIterator
        (diskWriter_.get(), size(), totalLength_));
     return h;
@@ -197,7 +197,7 @@ void AbstractSingleDiskAdaptor::cutTrailingGarbage()
 }
 
 void AbstractSingleDiskAdaptor::setDiskWriter
-(const SharedHandle<DiskWriter>& diskWriter)
+(const std::shared_ptr<DiskWriter>& diskWriter)
 {
   diskWriter_ = diskWriter;
 }

@@ -68,9 +68,9 @@ protected:
   virtual bool exitBeforeExecute();
 public:
   ReceiverMSEHandshakeCommand(cuid_t cuid,
-                              const SharedHandle<Peer>& peer,
+                              const std::shared_ptr<Peer>& peer,
                               DownloadEngine* e,
-                              const SharedHandle<SocketCore>& s);
+                              const std::shared_ptr<SocketCore>& s);
 
   virtual ~ReceiverMSEHandshakeCommand();
 };

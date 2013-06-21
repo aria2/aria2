@@ -58,13 +58,13 @@ bool PeerChokeCommand::execute() {
 }
 
 void PeerChokeCommand::setBtRuntime
-(const SharedHandle<BtRuntime>& btRuntime)
+(const std::shared_ptr<BtRuntime>& btRuntime)
 {
   btRuntime_ = btRuntime;
 }
 
 void PeerChokeCommand::setPeerStorage
-(const SharedHandle<PeerStorage>& peerStorage)
+(const std::shared_ptr<PeerStorage>& peerStorage)
 {
   peerStorage_ = peerStorage;
 }

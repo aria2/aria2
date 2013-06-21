@@ -40,8 +40,8 @@
 #include <cassert>
 #include <string>
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "FileEntry.h"
 
 namespace aria2 {
@@ -59,11 +59,11 @@ private:
 
   static const std::string USER_AGENT;
 
-  SharedHandle<Request> request_;
+  std::shared_ptr<Request> request_;
 
-  SharedHandle<FileEntry> fileEntry_;
+  std::shared_ptr<FileEntry> fileEntry_;
 
-  SharedHandle<Segment> segment_;
+  std::shared_ptr<Segment> segment_;
 
   bool contentEncodingEnabled_;
 
@@ -74,15 +74,15 @@ private:
   // If true, metalink content types are sent in Accept header field.
   bool acceptMetalink_;
 
-  SharedHandle<CookieStorage> cookieStorage_;
+  std::shared_ptr<CookieStorage> cookieStorage_;
 
-  SharedHandle<AuthConfigFactory> authConfigFactory_;
+  std::shared_ptr<AuthConfigFactory> authConfigFactory_;
 
   const Option* option_;
 
-  SharedHandle<AuthConfig> authConfig_;
+  std::shared_ptr<AuthConfig> authConfig_;
 
-  SharedHandle<Request> proxyRequest_;
+  std::shared_ptr<Request> proxyRequest_;
 
   bool noCache_;
 
@@ -104,14 +104,14 @@ public:
   HttpRequest();
   ~HttpRequest();
 
-  const SharedHandle<Segment>& getSegment() const
+  const std::shared_ptr<Segment>& getSegment() const
   {
     return segment_;
   }
 
-  void setSegment(const SharedHandle<Segment>& segment);
+  void setSegment(const std::shared_ptr<Segment>& segment);
 
-  void setRequest(const SharedHandle<Request>& request);
+  void setRequest(const std::shared_ptr<Request>& request);
 
   int64_t getEntityLength() const;
 
@@ -143,7 +143,7 @@ public:
    */
   bool isRangeSatisfied(const Range& range) const;
 
-  const SharedHandle<Request>& getRequest() const
+  const std::shared_ptr<Request>& getRequest() const
   {
     return request_;
   }
@@ -185,21 +185,21 @@ public:
     acceptMetalink_ = f;
   }
 
-  void setCookieStorage(const SharedHandle<CookieStorage>& cookieStorage);
+  void setCookieStorage(const std::shared_ptr<CookieStorage>& cookieStorage);
 
-  const SharedHandle<CookieStorage>& getCookieStorage() const
+  const std::shared_ptr<CookieStorage>& getCookieStorage() const
   {
     return cookieStorage_;
   }
 
   void setAuthConfigFactory
-  (const SharedHandle<AuthConfigFactory>& factory, const Option* option);
+  (const std::shared_ptr<AuthConfigFactory>& factory, const Option* option);
 
   /*
    * To use proxy, pass proxy string to Request::setUri() and set it this
    * object.
    */
-  void setProxyRequest(const SharedHandle<Request>& proxyRequest);
+  void setProxyRequest(const std::shared_ptr<Request>& proxyRequest);
 
   /*
    * Returns true if non-Null proxy request is set by setProxyRequest().
@@ -213,11 +213,11 @@ public:
 
   // Returns AuthConfig used in the last invocation of
   // createRequest().
-  const SharedHandle<AuthConfig>& getAuthConfig() const;
+  const std::shared_ptr<AuthConfig>& getAuthConfig() const;
 
-  void setFileEntry(const SharedHandle<FileEntry>& fileEntry);
+  void setFileEntry(const std::shared_ptr<FileEntry>& fileEntry);
 
-  const SharedHandle<FileEntry>& getFileEntry() const
+  const std::shared_ptr<FileEntry>& getFileEntry() const
   {
     return fileEntry_;
   }

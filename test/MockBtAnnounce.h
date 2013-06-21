@@ -26,10 +26,10 @@ public:
     return announceUrl;
   }
 
-  virtual SharedHandle<UDPTrackerRequest>
+  virtual std::shared_ptr<UDPTrackerRequest>
   createUDPTrackerRequest(const std::string& remoteAddr, uint16_t remotePort,
                           uint16_t localPort) {
-    return SharedHandle<UDPTrackerRequest>();
+    return std::shared_ptr<UDPTrackerRequest>();
   }
 
   void setAnnounceUrl(const std::string& url) {
@@ -52,7 +52,7 @@ public:
                                        size_t trackerResponseLength) {}
 
   virtual void processUDPTrackerResponse
-  (const SharedHandle<UDPTrackerRequest>& req) {}
+  (const std::shared_ptr<UDPTrackerRequest>& req) {}
 
   virtual bool noMoreAnnounce() {
     return false;

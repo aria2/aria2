@@ -57,14 +57,14 @@ class PeerConnection;
 class DefaultBtMessageDispatcher : public BtMessageDispatcher {
 private:
   cuid_t cuid_;
-  std::deque<SharedHandle<BtMessage> > messageQueue_;
+  std::deque<std::shared_ptr<BtMessage> > messageQueue_;
   std::deque<RequestSlot> requestSlots_;
-  SharedHandle<DownloadContext> downloadContext_;
-  SharedHandle<PeerStorage> peerStorage_;
-  SharedHandle<PieceStorage> pieceStorage_;
-  SharedHandle<PeerConnection> peerConnection_;
+  std::shared_ptr<DownloadContext> downloadContext_;
+  std::shared_ptr<PeerStorage> peerStorage_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
+  std::shared_ptr<PeerConnection> peerConnection_;
   BtMessageFactory* messageFactory_;
-  SharedHandle<Peer> peer_;
+  std::shared_ptr<Peer> peer_;
   RequestGroupMan* requestGroupMan_;
   time_t requestTimeout_;
 public:
@@ -72,10 +72,10 @@ public:
 
   virtual ~DefaultBtMessageDispatcher();
 
-  virtual void addMessageToQueue(const SharedHandle<BtMessage>& btMessage);
+  virtual void addMessageToQueue(const std::shared_ptr<BtMessage>& btMessage);
 
   virtual void addMessageToQueue
-  (const std::vector<SharedHandle<BtMessage> >& btMessages);
+  (const std::vector<std::shared_ptr<BtMessage> >& btMessages);
 
   virtual void sendMessages();
 
@@ -85,9 +85,9 @@ public:
   virtual void doCancelSendingPieceAction
   (size_t index, int32_t begin, int32_t length);
 
-  virtual void doCancelSendingPieceAction(const SharedHandle<Piece>& piece);
+  virtual void doCancelSendingPieceAction(const std::shared_ptr<Piece>& piece);
 
-  virtual void doAbortOutstandingRequestAction(const SharedHandle<Piece>& piece);
+  virtual void doAbortOutstandingRequestAction(const std::shared_ptr<Piece>& piece);
 
   virtual void doChokedAction();
 
@@ -117,7 +117,7 @@ public:
 
   virtual size_t countOutstandingUpload();
 
-  const std::deque<SharedHandle<BtMessage> >& getMessageQueue() const
+  const std::deque<std::shared_ptr<BtMessage> >& getMessageQueue() const
   {
     return messageQueue_;
   }
@@ -127,13 +127,13 @@ public:
     return requestSlots_;
   }
 
-  void setPeer(const SharedHandle<Peer>& peer);
+  void setPeer(const std::shared_ptr<Peer>& peer);
 
-  void setDownloadContext(const SharedHandle<DownloadContext>& downloadContext);
+  void setDownloadContext(const std::shared_ptr<DownloadContext>& downloadContext);
 
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+  void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage);
 
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
 
   void setBtMessageFactory(BtMessageFactory* factory);
 
@@ -149,7 +149,7 @@ public:
     requestTimeout_ = requestTimeout;
   }
 
-  void setPeerConnection(const SharedHandle<PeerConnection>& peerConnection)
+  void setPeerConnection(const std::shared_ptr<PeerConnection>& peerConnection)
   {
     peerConnection_ = peerConnection;
   }

@@ -60,8 +60,8 @@ const std::string DHTAnnouncePeerMessage::PORT("port");
 const std::string DHTAnnouncePeerMessage::TOKEN("token");
 
 DHTAnnouncePeerMessage::DHTAnnouncePeerMessage
-(const SharedHandle<DHTNode>& localNode,
- const SharedHandle<DHTNode>& remoteNode,
+(const std::shared_ptr<DHTNode>& localNode,
+ const std::shared_ptr<DHTNode>& remoteNode,
  const unsigned char* infoHash,
  uint16_t tcpPort,
  const std::string& token,
@@ -82,15 +82,15 @@ void DHTAnnouncePeerMessage::doReceivedAction()
   peerAnnounceStorage_->addPeerAnnounce
     (infoHash_, getRemoteNode()->getIPAddress(), tcpPort_);
 
-  SharedHandle<DHTMessage> reply =
+  std::shared_ptr<DHTMessage> reply =
     getMessageFactory()->createAnnouncePeerReplyMessage
     (getRemoteNode(), getTransactionID());
   getMessageDispatcher()->addMessageToQueue(reply);
 }
 
-SharedHandle<Dict> DHTAnnouncePeerMessage::getArgument()
+std::shared_ptr<Dict> DHTAnnouncePeerMessage::getArgument()
 {
-  SharedHandle<Dict> aDict = Dict::g();
+  std::shared_ptr<Dict> aDict = Dict::g();
   aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
   aDict->put(INFO_HASH, String::g(infoHash_, DHT_ID_LENGTH));
   aDict->put(PORT, Integer::g(tcpPort_));

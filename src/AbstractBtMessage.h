@@ -56,9 +56,9 @@ private:
 
   const char* name_;
 
-  SharedHandle<PieceStorage> pieceStorage_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
 
-  SharedHandle<Peer> peer_;
+  std::shared_ptr<Peer> peer_;
 
   BtMessageDispatcher* dispatcher_;
 
@@ -68,11 +68,11 @@ private:
 
   PeerConnection* peerConnection_;
 
-  SharedHandle<BtMessageValidator> validator_;
+  std::shared_ptr<BtMessageValidator> validator_;
 
   bool metadataGetMode_;
 protected:
-  const SharedHandle<PieceStorage>& getPieceStorage() const
+  const std::shared_ptr<PieceStorage>& getPieceStorage() const
   {
     return pieceStorage_;
   }
@@ -130,12 +130,12 @@ public:
     cuid_ = cuid;
   }
 
-  const SharedHandle<Peer>& getPeer() const
+  const std::shared_ptr<Peer>& getPeer() const
   {
     return peer_;
   }
 
-  void setPeer(const SharedHandle<Peer>& peer);
+  void setPeer(const std::shared_ptr<Peer>& peer);
 
   virtual void doReceivedAction() {}
 
@@ -151,9 +151,9 @@ public:
 
   virtual void onChokingEvent(const BtChokingEvent& event) {}
 
-  void setBtMessageValidator(const SharedHandle<BtMessageValidator>& validator);
+  void setBtMessageValidator(const std::shared_ptr<BtMessageValidator>& validator);
 
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+  void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage);
 
   void setBtMessageDispatcher(BtMessageDispatcher* dispatcher);
 

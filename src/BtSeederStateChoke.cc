@@ -53,7 +53,7 @@ BtSeederStateChoke::BtSeederStateChoke()
 BtSeederStateChoke::~BtSeederStateChoke() {}
 
 BtSeederStateChoke::PeerEntry::PeerEntry
-(const SharedHandle<Peer>& peer):
+(const std::shared_ptr<Peer>& peer):
   peer_(peer),
   outstandingUpload_(peer->countOutstandingUpload()),
   lastAmUnchoking_(peer->getLastAmUnchoking()),

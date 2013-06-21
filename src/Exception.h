@@ -38,8 +38,8 @@
 #include "common.h"
 
 #include <string>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "error_code.h"
 
 namespace aria2 {
@@ -57,9 +57,9 @@ private:
   error_code::Value errorCode_;
   // Exception that this object wraps. Normally this cause_ is the
   // root cause of this exception.
-  SharedHandle<Exception> cause_;
+  std::shared_ptr<Exception> cause_;
 protected:
-  virtual SharedHandle<Exception> copy() const = 0;
+  virtual std::shared_ptr<Exception> copy() const = 0;
 
 public:
   Exception(const char* file, int line, const std::string& msg);

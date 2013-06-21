@@ -47,10 +47,10 @@ const std::string DHTUnknownMessage::E("e");
 
 const std::string DHTUnknownMessage::UNKNOWN("unknown");
 
-DHTUnknownMessage::DHTUnknownMessage(const SharedHandle<DHTNode>& localNode,
+DHTUnknownMessage::DHTUnknownMessage(const std::shared_ptr<DHTNode>& localNode,
                                      const unsigned char* data, size_t length,
                                      const std::string& ipaddr, uint16_t port):
-  DHTMessage(localNode, SharedHandle<DHTNode>()),
+  DHTMessage(localNode, std::shared_ptr<DHTNode>()),
   length_(length),
   ipaddr_(ipaddr),
   port_(port)

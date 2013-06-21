@@ -39,8 +39,8 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "A2STR.h"
 #include "ValueBase.h"
 
@@ -56,60 +56,60 @@ class DHTMessageFactory {
 public:
   virtual ~DHTMessageFactory() {}
 
-  virtual SharedHandle<DHTQueryMessage>
+  virtual std::shared_ptr<DHTQueryMessage>
   createQueryMessage(const Dict* dict,
                      const std::string& ipaddr, uint16_t port) = 0;
 
-  virtual SharedHandle<DHTResponseMessage>
+  virtual std::shared_ptr<DHTResponseMessage>
   createResponseMessage(const std::string& messageType,
                         const Dict* dict,
                         const std::string& ipaddr, uint16_t port) = 0;
 
-  virtual SharedHandle<DHTQueryMessage>
-  createPingMessage(const SharedHandle<DHTNode>& remoteNode,
+  virtual std::shared_ptr<DHTQueryMessage>
+  createPingMessage(const std::shared_ptr<DHTNode>& remoteNode,
                     const std::string& transactionID = A2STR::NIL) = 0;
 
-  virtual SharedHandle<DHTResponseMessage>
-  createPingReplyMessage(const SharedHandle<DHTNode>& remoteNode,
+  virtual std::shared_ptr<DHTResponseMessage>
+  createPingReplyMessage(const std::shared_ptr<DHTNode>& remoteNode,
                          const unsigned char* id,
                          const std::string& transactionID) = 0;
 
-  virtual SharedHandle<DHTQueryMessage>
-  createFindNodeMessage(const SharedHandle<DHTNode>& remoteNode,
+  virtual std::shared_ptr<DHTQueryMessage>
+  createFindNodeMessage(const std::shared_ptr<DHTNode>& remoteNode,
                         const unsigned char* targetNodeID,
                         const std::string& transactionID = A2STR::NIL) = 0;
 
-  virtual SharedHandle<DHTResponseMessage>
+  virtual std::shared_ptr<DHTResponseMessage>
   createFindNodeReplyMessage
-  (const SharedHandle<DHTNode>& remoteNode,
-   const std::vector<SharedHandle<DHTNode> >& closestKNodes,
+  (const std::shared_ptr<DHTNode>& remoteNode,
+   const std::vector<std::shared_ptr<DHTNode> >& closestKNodes,
    const std::string& transactionID) = 0;
 
-  virtual SharedHandle<DHTQueryMessage>
-  createGetPeersMessage(const SharedHandle<DHTNode>& remoteNode,
+  virtual std::shared_ptr<DHTQueryMessage>
+  createGetPeersMessage(const std::shared_ptr<DHTNode>& remoteNode,
                         const unsigned char* infoHash,
                         const std::string& transactionID = A2STR::NIL) = 0;
 
-  virtual SharedHandle<DHTResponseMessage>
+  virtual std::shared_ptr<DHTResponseMessage>
   createGetPeersReplyMessage
-  (const SharedHandle<DHTNode>& remoteNode,
-   const std::vector<SharedHandle<DHTNode> >& closestKNodes,
-   const std::vector<SharedHandle<Peer> >& peers,
+  (const std::shared_ptr<DHTNode>& remoteNode,
+   const std::vector<std::shared_ptr<DHTNode> >& closestKNodes,
+   const std::vector<std::shared_ptr<Peer> >& peers,
    const std::string& token,
    const std::string& transactionID) = 0;
 
-  virtual SharedHandle<DHTQueryMessage>
-  createAnnouncePeerMessage(const SharedHandle<DHTNode>& remoteNode,
+  virtual std::shared_ptr<DHTQueryMessage>
+  createAnnouncePeerMessage(const std::shared_ptr<DHTNode>& remoteNode,
                             const unsigned char* infoHash,
                             uint16_t tcpPort,
                             const std::string& token,
                             const std::string& transactionID = A2STR::NIL) = 0;
 
-  virtual SharedHandle<DHTResponseMessage>
-  createAnnouncePeerReplyMessage(const SharedHandle<DHTNode>& remoteNode,
+  virtual std::shared_ptr<DHTResponseMessage>
+  createAnnouncePeerReplyMessage(const std::shared_ptr<DHTNode>& remoteNode,
                                  const std::string& transactionID) = 0;
 
-  virtual SharedHandle<DHTMessage>
+  virtual std::shared_ptr<DHTMessage>
   createUnknownMessage(const unsigned char* data, size_t length,
                        const std::string& ipaddr, uint16_t port) = 0;
 };

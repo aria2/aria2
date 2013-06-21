@@ -40,8 +40,8 @@
 #include <deque>
 #include <algorithm>
 #include <functional>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "a2netcompat.h"
 #include "Command.h"
 #ifdef ENABLE_ASYNC_DNS
@@ -59,10 +59,10 @@ public:
 
   virtual int getEvents() const = 0;
 
-  virtual void addSelf(const SharedHandle<SocketEntry>& socketEntry) const = 0;
+  virtual void addSelf(const std::shared_ptr<SocketEntry>& socketEntry) const = 0;
 
   virtual void removeSelf
-  (const SharedHandle<SocketEntry>& socketEntry) const = 0;
+  (const std::shared_ptr<SocketEntry>& socketEntry) const = 0;
 };
 
 template<typename SocketEntry, typename EventPoll>
@@ -124,12 +124,12 @@ public:
     }
   }
 
-  virtual void addSelf(const SharedHandle<SocketEntry>& socketEntry) const
+  virtual void addSelf(const std::shared_ptr<SocketEntry>& socketEntry) const
   {
     socketEntry->addCommandEvent(*this);
   }
 
-  virtual void removeSelf(const SharedHandle<SocketEntry>& socketEntry) const
+  virtual void removeSelf(const std::shared_ptr<SocketEntry>& socketEntry) const
   {
     socketEntry->removeCommandEvent(*this);
   }
@@ -140,12 +140,12 @@ public:
 template<typename SocketEntry, typename EventPoll>
 class ADNSEvent : public Event<SocketEntry> {
 private:
-  SharedHandle<AsyncNameResolver> resolver_;
+  std::shared_ptr<AsyncNameResolver> resolver_;
   Command* command_;
   sock_t socket_;
   int events_;
 public:
-  ADNSEvent(const SharedHandle<AsyncNameResolver>& resolver, Command* command,
+  ADNSEvent(const std::shared_ptr<AsyncNameResolver>& resolver, Command* command,
             sock_t socket, int events):
     resolver_(resolver), command_(command), socket_(socket), events_(events) {}
 
@@ -179,12 +179,12 @@ public:
     command_->setStatusActive();
   }
 
-  virtual void addSelf(const SharedHandle<SocketEntry>& socketEntry) const
+  virtual void addSelf(const std::shared_ptr<SocketEntry>& socketEntry) const
   {
     socketEntry->addADNSEvent(*this);
   }
 
-  virtual void removeSelf(const SharedHandle<SocketEntry>& socketEntry) const
+  virtual void removeSelf(const std::shared_ptr<SocketEntry>& socketEntry) const
   {
     socketEntry->removeADNSEvent(*this);
   }
@@ -308,7 +308,7 @@ public:
 template<typename EventPoll>
 class AsyncNameResolverEntry {
 private:
-  SharedHandle<AsyncNameResolver> nameResolver_;
+  std::shared_ptr<AsyncNameResolver> nameResolver_;
 
   Command* command_;
 
@@ -317,7 +317,7 @@ private:
   sock_t sockets_[ARES_GETSOCK_MAXNUM];
 
 public:
-  AsyncNameResolverEntry(const SharedHandle<AsyncNameResolver>& nameResolver,
+  AsyncNameResolverEntry(const std::shared_ptr<AsyncNameResolver>& nameResolver,
                          Command* command):
     nameResolver_(nameResolver), command_(command), socketsSize_(0) {}
 

@@ -47,15 +47,15 @@ private:
   size_t bytesProcessed_;
 public:
   ChunkedDecodingStreamFilter
-  (const SharedHandle<StreamFilter>& delegate = SharedHandle<StreamFilter>());
+  (const std::shared_ptr<StreamFilter>& delegate = std::shared_ptr<StreamFilter>());
 
   virtual ~ChunkedDecodingStreamFilter();
 
   virtual void init();
 
   virtual ssize_t transform
-  (const SharedHandle<BinaryStream>& out,
-   const SharedHandle<Segment>& segment,
+  (const std::shared_ptr<BinaryStream>& out,
+   const std::shared_ptr<Segment>& segment,
    const unsigned char* inbuf, size_t inlen);
 
   virtual bool finished();

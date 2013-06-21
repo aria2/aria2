@@ -84,17 +84,17 @@ namespace aria2 {
 
 DownloadEngineFactory::DownloadEngineFactory() {}
 
-SharedHandle<DownloadEngine>
+std::shared_ptr<DownloadEngine>
 DownloadEngineFactory::newDownloadEngine
-(Option* op, const std::vector<SharedHandle<RequestGroup> >& requestGroups)
+(Option* op, const std::vector<std::shared_ptr<RequestGroup> >& requestGroups)
 {
   const size_t MAX_CONCURRENT_DOWNLOADS =
     op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS);
-  SharedHandle<EventPoll> eventPoll;
+  std::shared_ptr<EventPoll> eventPoll;
   const std::string& pollMethod = op->get(PREF_EVENT_POLL);
 #ifdef HAVE_LIBUV
   if (pollMethod == V_LIBUV) {
-    SharedHandle<LibuvEventPoll> ep(new LibuvEventPoll());
+    std::shared_ptr<LibuvEventPoll> ep(new LibuvEventPoll());
     if (!ep->good()) {
       throw DL_ABORT_EX("Initializing LibuvEventPoll failed."
                         " Try --event-poll=select");
@@ -105,7 +105,7 @@ DownloadEngineFactory::newDownloadEngine
 #endif // HAVE_LIBUV
 #ifdef HAVE_EPOLL
   if(pollMethod == V_EPOLL) {
-    SharedHandle<EpollEventPoll> ep(new EpollEventPoll());
+    std::shared_ptr<EpollEventPoll> ep(new EpollEventPoll());
     if(ep->good()) {
       eventPoll = ep;
     } else {
@@ -116,7 +116,7 @@ DownloadEngineFactory::newDownloadEngine
 #endif // HAVE_EPLL
 #ifdef HAVE_KQUEUE
     if(pollMethod == V_KQUEUE) {
-      SharedHandle<KqueueEventPoll> kp(new KqueueEventPoll());
+      std::shared_ptr<KqueueEventPoll> kp(new KqueueEventPoll());
       if(kp->good()) {
         eventPoll = kp;
       } else {
@@ -127,7 +127,7 @@ DownloadEngineFactory::newDownloadEngine
 #endif // HAVE_KQUEUE
 #ifdef HAVE_PORT_ASSOCIATE
       if(pollMethod == V_PORT) {
-        SharedHandle<PortEventPoll> pp(new PortEventPoll());
+        std::shared_ptr<PortEventPoll> pp(new PortEventPoll());
         if(pp->good()) {
           eventPoll = pp;
         } else {
@@ -146,19 +146,19 @@ DownloadEngineFactory::newDownloadEngine
           } else {
             abort();
           }
-  SharedHandle<DownloadEngine> e(new DownloadEngine(eventPoll));
+  std::shared_ptr<DownloadEngine> e(new DownloadEngine(eventPoll));
   e->setOption(op);
 
-  SharedHandle<RequestGroupMan>
+  std::shared_ptr<RequestGroupMan>
     requestGroupMan(new RequestGroupMan(requestGroups, MAX_CONCURRENT_DOWNLOADS,
                                         op));
   requestGroupMan->initWrDiskCache();
   e->setRequestGroupMan(requestGroupMan);
   e->setFileAllocationMan
-    (SharedHandle<FileAllocationMan>(new FileAllocationMan()));
+    (std::shared_ptr<FileAllocationMan>(new FileAllocationMan()));
 #ifdef ENABLE_MESSAGE_DIGEST
   e->setCheckIntegrityMan
-    (SharedHandle<CheckIntegrityMan>(new CheckIntegrityMan()));
+    (std::shared_ptr<CheckIntegrityMan>(new CheckIntegrityMan()));
 #endif // ENABLE_MESSAGE_DIGEST
   e->addRoutineCommand(new FillRequestGroupCommand(e->newCUID(), e.get()));
   e->addRoutineCommand(new FileAllocationDispatcherCommand

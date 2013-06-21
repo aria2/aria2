@@ -58,7 +58,7 @@
 namespace aria2 {
 
 DefaultBtAnnounce::DefaultBtAnnounce
-(const SharedHandle<DownloadContext>& downloadContext,
+(const std::shared_ptr<DownloadContext>& downloadContext,
  const Option* option)
   : downloadContext_(downloadContext),
     trackers_(0),
@@ -202,16 +202,16 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
   return uri;
 }
 
-SharedHandle<UDPTrackerRequest> DefaultBtAnnounce::createUDPTrackerRequest
+std::shared_ptr<UDPTrackerRequest> DefaultBtAnnounce::createUDPTrackerRequest
 (const std::string& remoteAddr, uint16_t remotePort, uint16_t localPort)
 {
   if(!adjustAnnounceList()) {
-    return SharedHandle<UDPTrackerRequest>();
+    return std::shared_ptr<UDPTrackerRequest>();
   }
   NetStat& stat = downloadContext_->getNetStat();
   int64_t left =
     pieceStorage_->getTotalLength()-pieceStorage_->getCompletedLength();
-  SharedHandle<UDPTrackerRequest> req(new UDPTrackerRequest());
+  std::shared_ptr<UDPTrackerRequest> req(new UDPTrackerRequest());
   req->remoteAddr = remoteAddr;
   req->remotePort = remotePort;
   req->action = UDPT_ACT_ANNOUNCE;
@@ -284,7 +284,7 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
                                            size_t trackerResponseLength)
 {
   A2_LOG_DEBUG("Now processing tracker response.");
-  SharedHandle<ValueBase> decodedValue =
+  std::shared_ptr<ValueBase> decodedValue =
     bencode2::decode(trackerResponse, trackerResponseLength);
   const Dict* dict = downcast<Dict>(decodedValue);
   if(!dict) {
@@ -328,22 +328,22 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
     incomplete_ = incomp->i();
     A2_LOG_DEBUG(fmt("Incomplete:%d", incomplete_));
   }
-  const SharedHandle<ValueBase>& peerData = dict->get(BtAnnounce::PEERS);
+  const std::shared_ptr<ValueBase>& peerData = dict->get(BtAnnounce::PEERS);
   if(!peerData) {
     A2_LOG_INFO(MSG_NO_PEER_LIST_RECEIVED);
   } else {
     if(!btRuntime_->isHalt() && btRuntime_->lessThanMinPeers()) {
-      std::vector<SharedHandle<Peer> > peers;
+      std::vector<std::shared_ptr<Peer> > peers;
       bittorrent::extractPeer(peerData, AF_INET, std::back_inserter(peers));
       peerStorage_->addPeer(peers);
     }
   }
-  const SharedHandle<ValueBase>& peer6Data = dict->get(BtAnnounce::PEERS6);
+  const std::shared_ptr<ValueBase>& peer6Data = dict->get(BtAnnounce::PEERS6);
   if(!peer6Data) {
     A2_LOG_INFO("No peers6 received.");
   } else {
     if(!btRuntime_->isHalt() && btRuntime_->lessThanMinPeers()) {
-      std::vector<SharedHandle<Peer> > peers;
+      std::vector<std::shared_ptr<Peer> > peers;
       bittorrent::extractPeer(peer6Data, AF_INET6, std::back_inserter(peers));
       peerStorage_->addPeer(peers);
     }
@@ -351,9 +351,9 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
 }
 
 void DefaultBtAnnounce::processUDPTrackerResponse
-(const SharedHandle<UDPTrackerRequest>& req)
+(const std::shared_ptr<UDPTrackerRequest>& req)
 {
-  const SharedHandle<UDPTrackerReply>& reply = req->reply;
+  const std::shared_ptr<UDPTrackerReply>& reply = req->reply;
   A2_LOG_DEBUG("Now processing UDP tracker response.");
   if(reply->interval > 0) {
     minInterval_ = reply->interval;
@@ -368,7 +368,7 @@ void DefaultBtAnnounce::processUDPTrackerResponse
     for(std::vector<std::pair<std::string, uint16_t> >::iterator i =
           reply->peers.begin(), eoi = reply->peers.end(); i != eoi;
         ++i) {
-      peerStorage_->addPeer(SharedHandle<Peer>(new Peer((*i).first,
+      peerStorage_->addPeer(std::shared_ptr<Peer>(new Peer((*i).first,
                                                         (*i).second)));
     }
   }
@@ -385,23 +385,23 @@ void DefaultBtAnnounce::shuffleAnnounce() {
 }
 
 void DefaultBtAnnounce::setRandomizer
-(const SharedHandle<Randomizer>& randomizer)
+(const std::shared_ptr<Randomizer>& randomizer)
 {
   randomizer_ = randomizer;
 }
 
-void DefaultBtAnnounce::setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
+void DefaultBtAnnounce::setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime)
 {
   btRuntime_ = btRuntime;
 }
 
-void DefaultBtAnnounce::setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage)
+void DefaultBtAnnounce::setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }
 
 void DefaultBtAnnounce::setPeerStorage
-(const SharedHandle<PeerStorage>& peerStorage)
+(const std::shared_ptr<PeerStorage>& peerStorage)
 {
   peerStorage_ = peerStorage;
 }

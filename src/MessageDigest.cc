@@ -69,16 +69,16 @@ MessageDigest::MessageDigest()
 MessageDigest::~MessageDigest()
 {}
 
-SharedHandle<MessageDigest> MessageDigest::sha1()
+std::shared_ptr<MessageDigest> MessageDigest::sha1()
 {
-  SharedHandle<MessageDigest> md(new MessageDigest());
+  std::shared_ptr<MessageDigest> md(new MessageDigest());
   md->pImpl_ = MessageDigestImpl::sha1();
   return md;
 }
 
-SharedHandle<MessageDigest> MessageDigest::create(const std::string& hashType)
+std::shared_ptr<MessageDigest> MessageDigest::create(const std::string& hashType)
 {
-  SharedHandle<MessageDigest> md(new MessageDigest());
+  std::shared_ptr<MessageDigest> md(new MessageDigest());
   md->pImpl_ = MessageDigestImpl::create(hashType);
   return md;
 }

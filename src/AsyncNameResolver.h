@@ -42,7 +42,6 @@
 
 #include <ares.h>
 
-#include "SharedHandle.h"
 #include "a2netcompat.h"
 
 namespace aria2 {

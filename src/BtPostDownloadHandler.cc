@@ -57,7 +57,7 @@ namespace aria2 {
 
 BtPostDownloadHandler::BtPostDownloadHandler()
 {
-  SharedHandle<RequestGroupCriteria> cri
+  std::shared_ptr<RequestGroupCriteria> cri
     (new ContentTypeRequestGroupCriteria
      (getBtContentTypes(), getBtExtensions()));
   setCriteria(cri);
@@ -66,18 +66,18 @@ BtPostDownloadHandler::BtPostDownloadHandler()
 BtPostDownloadHandler::~BtPostDownloadHandler() {}
 
 void BtPostDownloadHandler::getNextRequestGroups
-(std::vector<SharedHandle<RequestGroup> >& groups,
+(std::vector<std::shared_ptr<RequestGroup> >& groups,
  RequestGroup* requestGroup)
 {
   A2_LOG_INFO(fmt("Generating RequestGroups for Torrent file %s",
                   requestGroup->getFirstFilePath().c_str()));
-  SharedHandle<ValueBase> torrent;
+  std::shared_ptr<ValueBase> torrent;
   if(requestGroup->inMemoryDownload()) {
-    const SharedHandle<DiskWriter>& dw =
-      static_pointer_cast<AbstractSingleDiskAdaptor>
+    const std::shared_ptr<DiskWriter>& dw =
+      std::static_pointer_cast<AbstractSingleDiskAdaptor>
       (requestGroup->getPieceStorage()->getDiskAdaptor())->getDiskWriter();
-    const SharedHandle<bittorrent::BencodeDiskWriter>& bdw =
-      static_pointer_cast<bittorrent::BencodeDiskWriter>(dw);
+    const std::shared_ptr<bittorrent::BencodeDiskWriter>& bdw =
+      std::static_pointer_cast<bittorrent::BencodeDiskWriter>(dw);
     int error = bdw->finalize();
     if(error == 0) {
       torrent = bdw->getResult();
@@ -101,13 +101,13 @@ void BtPostDownloadHandler::getNextRequestGroups
     throw DL_ABORT_EX2("Could not parse BitTorrent metainfo",
                        error_code::BENCODE_PARSE_ERROR);
   }
-  std::vector<SharedHandle<RequestGroup> > newRgs;
+  std::vector<std::shared_ptr<RequestGroup> > newRgs;
   createRequestGroupForBitTorrent(newRgs, requestGroup->getOption(),
                                   std::vector<std::string>(),
                                   "",
                                   torrent);
   requestGroup->followedBy(newRgs.begin(), newRgs.end());
-  SharedHandle<MetadataInfo> mi =
+  std::shared_ptr<MetadataInfo> mi =
     createMetadataInfoFromFirstFileEntry(requestGroup->getGroupId(),
                                          requestGroup->getDownloadContext());
   if(mi) {

@@ -108,33 +108,33 @@ typedef MessageDigestBase<CC_SHA512_DIGEST_LENGTH,
                           CC_SHA512_Final>
 MessageDigestSHA512;
 
-SharedHandle<MessageDigestImpl> MessageDigestImpl::sha1()
+std::shared_ptr<MessageDigestImpl> MessageDigestImpl::sha1()
 {
-  return SharedHandle<MessageDigestImpl>(new MessageDigestSHA1());
+  return std::shared_ptr<MessageDigestImpl>(new MessageDigestSHA1());
 }
 
-SharedHandle<MessageDigestImpl> MessageDigestImpl::create
+std::shared_ptr<MessageDigestImpl> MessageDigestImpl::create
 (const std::string& hashType)
 {
   if (hashType == "sha-1") {
-    return SharedHandle<MessageDigestImpl>(new MessageDigestSHA1());
+    return std::shared_ptr<MessageDigestImpl>(new MessageDigestSHA1());
   }
   if (hashType == "sha-224") {
-    return SharedHandle<MessageDigestImpl>(new MessageDigestSHA224());
+    return std::shared_ptr<MessageDigestImpl>(new MessageDigestSHA224());
   }
   if (hashType == "sha-256") {
-    return SharedHandle<MessageDigestImpl>(new MessageDigestSHA256());
+    return std::shared_ptr<MessageDigestImpl>(new MessageDigestSHA256());
   }
   if (hashType == "sha-384") {
-    return SharedHandle<MessageDigestImpl>(new MessageDigestSHA384());
+    return std::shared_ptr<MessageDigestImpl>(new MessageDigestSHA384());
   }
   if (hashType == "sha-512") {
-    return SharedHandle<MessageDigestImpl>(new MessageDigestSHA512());
+    return std::shared_ptr<MessageDigestImpl>(new MessageDigestSHA512());
   }
   if (hashType == "md5") {
-    return SharedHandle<MessageDigestImpl>(new MessageDigestMD5());
+    return std::shared_ptr<MessageDigestImpl>(new MessageDigestMD5());
   }
-  return SharedHandle<MessageDigestImpl>();
+  return std::shared_ptr<MessageDigestImpl>();
 }
 
 bool MessageDigestImpl::supports(const std::string& hashType)
@@ -144,7 +144,7 @@ bool MessageDigestImpl::supports(const std::string& hashType)
 
 size_t MessageDigestImpl::getDigestLength(const std::string& hashType)
 {
-  SharedHandle<MessageDigestImpl> impl = create(hashType);
+  std::shared_ptr<MessageDigestImpl> impl = create(hashType);
   if (!impl) {
     return 0;
   }

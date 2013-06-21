@@ -36,18 +36,19 @@
 #define D_DHT_NODE_LOOKUP_ENTRY_H
 
 #include "common.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
 class DHTNode;
 
 struct DHTNodeLookupEntry {
-  SharedHandle<DHTNode> node;
+  std::shared_ptr<DHTNode> node;
 
   bool used;
 
-  DHTNodeLookupEntry(const SharedHandle<DHTNode>& node);
+  DHTNodeLookupEntry(const std::shared_ptr<DHTNode>& node);
 
   DHTNodeLookupEntry();
 

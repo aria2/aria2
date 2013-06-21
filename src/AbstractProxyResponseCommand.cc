@@ -52,19 +52,19 @@ namespace aria2 {
 
 AbstractProxyResponseCommand::AbstractProxyResponseCommand
 (cuid_t cuid,
- const SharedHandle<Request>& req,
- const SharedHandle<FileEntry>& fileEntry,
+ const std::shared_ptr<Request>& req,
+ const std::shared_ptr<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
- const SharedHandle<HttpConnection>& httpConnection,
+ const std::shared_ptr<HttpConnection>& httpConnection,
  DownloadEngine* e,
- const SharedHandle<SocketCore>& s)
+ const std::shared_ptr<SocketCore>& s)
   :AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
    httpConnection_(httpConnection) {}
 
 AbstractProxyResponseCommand::~AbstractProxyResponseCommand() {}
 
 bool AbstractProxyResponseCommand::executeInternal() {
-  SharedHandle<HttpResponse> httpResponse = httpConnection_->receiveResponse();
+  std::shared_ptr<HttpResponse> httpResponse = httpConnection_->receiveResponse();
   if(!httpResponse) {
     // the server has not responded our request yet.
     getDownloadEngine()->addCommand(this);

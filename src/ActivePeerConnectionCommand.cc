@@ -131,7 +131,7 @@ void ActivePeerConnectionCommand::makeNewConnections(int num)
 {
   for(; num && peerStorage_->isPeerAvailable(); --num) {
     cuid_t ncuid = e_->newCUID();
-    SharedHandle<Peer> peer = peerStorage_->checkoutPeer(ncuid);
+    std::shared_ptr<Peer> peer = peerStorage_->checkoutPeer(ncuid);
     // sanity check
     if(!peer) {
       break;
@@ -148,25 +148,25 @@ void ActivePeerConnectionCommand::makeNewConnections(int num)
 }
 
 void ActivePeerConnectionCommand::setBtRuntime
-(const SharedHandle<BtRuntime>& btRuntime)
+(const std::shared_ptr<BtRuntime>& btRuntime)
 {
   btRuntime_ = btRuntime;
 }
 
 void ActivePeerConnectionCommand::setPieceStorage
-(const SharedHandle<PieceStorage>& pieceStorage)
+(const std::shared_ptr<PieceStorage>& pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }
 
 void ActivePeerConnectionCommand::setPeerStorage
-(const SharedHandle<PeerStorage>& peerStorage)
+(const std::shared_ptr<PeerStorage>& peerStorage)
 {
   peerStorage_ = peerStorage;
 }
 
 void ActivePeerConnectionCommand::setBtAnnounce
-(const SharedHandle<BtAnnounce>& btAnnounce)
+(const std::shared_ptr<BtAnnounce>& btAnnounce)
 {
   btAnnounce_ = btAnnounce;
 }

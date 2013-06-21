@@ -191,9 +191,9 @@ const std::string& HttpResponse::getTransferEncoding() const
   return httpHeader_->find(HttpHeader::TRANSFER_ENCODING);
 }
 
-SharedHandle<StreamFilter> HttpResponse::getTransferEncodingStreamFilter() const
+std::shared_ptr<StreamFilter> HttpResponse::getTransferEncodingStreamFilter() const
 {
-  SharedHandle<StreamFilter> filter;
+  std::shared_ptr<StreamFilter> filter;
   // TODO Transfer-Encoding header field can contains multiple tokens. We should
   // parse the field and retrieve each token.
   if(isTransferEncodingSpecified()) {
@@ -214,9 +214,9 @@ const std::string& HttpResponse::getContentEncoding() const
   return httpHeader_->find(HttpHeader::CONTENT_ENCODING);
 }
 
-SharedHandle<StreamFilter> HttpResponse::getContentEncodingStreamFilter() const
+std::shared_ptr<StreamFilter> HttpResponse::getContentEncodingStreamFilter() const
 {
-  SharedHandle<StreamFilter> filter;
+  std::shared_ptr<StreamFilter> filter;
 #ifdef HAVE_ZLIB
   if(util::strieq(getContentEncoding(), "gzip") ||
      util::strieq(getContentEncoding(), "deflate")) {
@@ -256,12 +256,12 @@ std::string HttpResponse::getContentType() const
   }
 }
 
-void HttpResponse::setHttpHeader(const SharedHandle<HttpHeader>& httpHeader)
+void HttpResponse::setHttpHeader(const std::shared_ptr<HttpHeader>& httpHeader)
 {
   httpHeader_ = httpHeader;
 }
 
-void HttpResponse::setHttpRequest(const SharedHandle<HttpRequest>& httpRequest)
+void HttpResponse::setHttpRequest(const std::shared_ptr<HttpRequest>& httpRequest)
 {
   httpRequest_ = httpRequest;
 }
@@ -344,7 +344,7 @@ bool parseMetalinkHttpLink(MetalinkHttpEntry& result, const std::string& s)
 // Link header field is defined by http://tools.ietf.org/html/rfc5988.
 void HttpResponse::getMetalinKHttpEntries
 (std::vector<MetalinkHttpEntry>& result,
- const SharedHandle<Option>& option) const
+ const std::shared_ptr<Option>& option) const
 {
   std::pair<std::multimap<int, std::string>::const_iterator,
             std::multimap<int, std::string>::const_iterator> p =

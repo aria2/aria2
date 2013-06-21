@@ -61,14 +61,14 @@ protected:
   virtual Command* createNextCommand
   (const std::string& hostname, const std::string& addr, uint16_t port,
    const std::vector<std::string>& resolvedAddresses,
-   const SharedHandle<Request>& proxyRequest) = 0;
+   const std::shared_ptr<Request>& proxyRequest) = 0;
 
   void setConnectedAddrInfo
-  (const SharedHandle<Request>& req,
+  (const std::shared_ptr<Request>& req,
    const std::string& hostname,
-   const SharedHandle<SocketCore>& socket);
+   const std::shared_ptr<SocketCore>& socket);
 
-  SharedHandle<BackupConnectInfo> createBackupIPv4ConnectCommand
+  std::shared_ptr<BackupConnectInfo> createBackupIPv4ConnectCommand
   (const std::string& hostname, const std::string& ipaddr, uint16_t port,
    Command* mainCommand);
 
@@ -76,8 +76,8 @@ protected:
   (const std::string& hostname, const std::string& addr, uint16_t port,
    ConnectCommand* c);
 public:
-  InitiateConnectionCommand(cuid_t cuid, const SharedHandle<Request>& req,
-                            const SharedHandle<FileEntry>& fileEntry,
+  InitiateConnectionCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
+                            const std::shared_ptr<FileEntry>& fileEntry,
                             RequestGroup* requestGroup,
                             DownloadEngine* e);
 

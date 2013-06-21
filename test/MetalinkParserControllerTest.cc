@@ -64,9 +64,9 @@ void MetalinkParserControllerTest::testEntryTransaction()
   ctrl.setOSOfEntry("Linux");
   ctrl.commitEntryTransaction();
   {
-    SharedHandle<Metalinker> m = ctrl.getResult();
+    std::shared_ptr<Metalinker> m = ctrl.getResult();
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
-    SharedHandle<MetalinkEntry> e = m->getEntries().front();
+    std::shared_ptr<MetalinkEntry> e = m->getEntries().front();
     CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"), e->file->getPath());
     CPPUNIT_ASSERT_EQUAL((int64_t)(1024*1024LL), e->file->getLength());
     CPPUNIT_ASSERT_EQUAL((int64_t)0, e->file->getOffset());
@@ -91,9 +91,9 @@ void MetalinkParserControllerTest::testResourceTransaction()
   ctrl.setMaxConnectionsOfResource(1);
   ctrl.commitEntryTransaction();
   {
-    SharedHandle<Metalinker> m = ctrl.getResult();
+    std::shared_ptr<Metalinker> m = ctrl.getResult();
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().front()->resources.size());
-    SharedHandle<MetalinkResource> res = m->getEntries().front()->resources[0];
+    std::shared_ptr<MetalinkResource> res = m->getEntries().front()->resources[0];
     CPPUNIT_ASSERT_EQUAL(std::string("http://mirror/aria2.tar.bz2"), res->url);
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTP, res->type);
     CPPUNIT_ASSERT_EQUAL(std::string("US"), res->location);
@@ -105,7 +105,7 @@ void MetalinkParserControllerTest::testResourceTransaction()
   ctrl.cancelResourceTransaction();
   ctrl.commitEntryTransaction();
   {
-    SharedHandle<Metalinker> m = ctrl.getResult();
+    std::shared_ptr<Metalinker> m = ctrl.getResult();
     CPPUNIT_ASSERT_EQUAL((size_t)2, m->getEntries().size());
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries()[0]->resources.size());
     CPPUNIT_ASSERT_EQUAL((size_t)0, m->getEntries()[1]->resources.size());
@@ -132,16 +132,16 @@ void MetalinkParserControllerTest::testResourceTransaction_withBaseUri()
 #endif // ENABLE_BITTORRENT
   ctrl.commitEntryTransaction();
   {
-    SharedHandle<Metalinker> m = ctrl.getResult();
+    std::shared_ptr<Metalinker> m = ctrl.getResult();
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries()[0]->resources.size());
-    SharedHandle<MetalinkResource> res = m->getEntries()[0]->resources[0];
+    std::shared_ptr<MetalinkResource> res = m->getEntries()[0]->resources[0];
     CPPUNIT_ASSERT_EQUAL(std::string("http://base/dir/aria2.tar.bz2"),
                          res->url);
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTP, res->type);
 
 #ifdef ENABLE_BITTORRENT
     CPPUNIT_ASSERT_EQUAL((size_t)2, m->getEntries()[0]->metaurls.size());
-    SharedHandle<MetalinkMetaurl> metaurl = m->getEntries()[0]->metaurls[0];
+    std::shared_ptr<MetalinkMetaurl> metaurl = m->getEntries()[0]->metaurls[0];
     CPPUNIT_ASSERT_EQUAL(std::string("http://base/meta/aria2.tar.bz2.torrent"),
                          metaurl->url);
 
@@ -164,10 +164,10 @@ void MetalinkParserControllerTest::testMetaurlTransaction()
   ctrl.commitEntryTransaction();
 #ifdef ENABLE_BITTORRENT
   {
-    SharedHandle<Metalinker> m = ctrl.getResult();
+    std::shared_ptr<Metalinker> m = ctrl.getResult();
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries()[0]->metaurls.size());
-    SharedHandle<MetalinkMetaurl> metaurl = m->getEntries()[0]->metaurls[0];
+    std::shared_ptr<MetalinkMetaurl> metaurl = m->getEntries()[0]->metaurls[0];
     CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/chocolate.torrent"),
                          metaurl->url);
     CPPUNIT_ASSERT_EQUAL(std::string("torrent"), metaurl->mediatype);
@@ -179,14 +179,14 @@ void MetalinkParserControllerTest::testMetaurlTransaction()
   ctrl.cancelMetaurlTransaction();
   ctrl.commitEntryTransaction();
   {
-    SharedHandle<Metalinker> m = ctrl.getResult();
+    std::shared_ptr<Metalinker> m = ctrl.getResult();
     CPPUNIT_ASSERT_EQUAL((size_t)2, ctrl.getResult()->getEntries().size());
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries()[0]->metaurls.size());
     CPPUNIT_ASSERT_EQUAL((size_t)0, m->getEntries()[1]->metaurls.size());
   }
 #else // !ENABLE_BITTORRENT
   {
-    SharedHandle<Metalinker> m = ctrl.getResult();
+    std::shared_ptr<Metalinker> m = ctrl.getResult();
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
     CPPUNIT_ASSERT_EQUAL((size_t)0, m->getEntries()[0]->metaurls.size());
   }
@@ -203,8 +203,8 @@ void MetalinkParserControllerTest::testChecksumTransaction()
   ctrl.setHashOfChecksum("acbd18db4cc2f85cedef654fccc4a4d8");
   ctrl.commitEntryTransaction();
   {
-    SharedHandle<Metalinker> m = ctrl.getResult();
-    SharedHandle<Checksum> md = m->getEntries().front()->checksum;
+    std::shared_ptr<Metalinker> m = ctrl.getResult();
+    std::shared_ptr<Checksum> md = m->getEntries().front()->checksum;
     CPPUNIT_ASSERT_EQUAL(std::string("md5"), md->getHashType());
     CPPUNIT_ASSERT_EQUAL(std::string("acbd18db4cc2f85cedef654fccc4a4d8"),
                          util::toHex(md->getDigest()));
@@ -237,8 +237,8 @@ void MetalinkParserControllerTest::testChunkChecksumTransaction()
   ctrl.addHashOfChunkChecksum(5, "5cbd18db4cc2f85cedef654fccc4a4d8");
   ctrl.commitEntryTransaction();
   {
-    SharedHandle<Metalinker> m = ctrl.getResult();
-    SharedHandle<ChunkChecksum> md = m->getEntries().front()->chunkChecksum;
+    std::shared_ptr<Metalinker> m = ctrl.getResult();
+    std::shared_ptr<ChunkChecksum> md = m->getEntries().front()->chunkChecksum;
     CPPUNIT_ASSERT_EQUAL(std::string("md5"), md->getHashType());
     CPPUNIT_ASSERT_EQUAL(256*1024, md->getPieceLength());
     CPPUNIT_ASSERT_EQUAL((size_t)5, md->countPieceHash());
@@ -281,8 +281,8 @@ void MetalinkParserControllerTest::testChunkChecksumTransactionV4()
   ctrl.addHashOfChunkChecksumV4("44213f9f4d59b557314fadcd233232eebcac8012");
   ctrl.commitEntryTransaction();
   {
-    SharedHandle<Metalinker> m = ctrl.getResult();
-    SharedHandle<ChunkChecksum> md = m->getEntries().front()->chunkChecksum;
+    std::shared_ptr<Metalinker> m = ctrl.getResult();
+    std::shared_ptr<ChunkChecksum> md = m->getEntries().front()->chunkChecksum;
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), md->getHashType());
     CPPUNIT_ASSERT_EQUAL(256*1024, md->getPieceLength());
     CPPUNIT_ASSERT_EQUAL((size_t)3, md->countPieceHash());
@@ -334,9 +334,9 @@ void MetalinkParserControllerTest::testSignatureTransaction()
   // commitEntryTransaction also commits signature transaction.
   ctrl.commitEntryTransaction();
 
-  SharedHandle<Metalinker> m = ctrl.getResult();
+  std::shared_ptr<Metalinker> m = ctrl.getResult();
   CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
-  SharedHandle<Signature> sig = m->getEntries().front()->getSignature();
+  std::shared_ptr<Signature> sig = m->getEntries().front()->getSignature();
   CPPUNIT_ASSERT_EQUAL(std::string("pgp"), sig->getType());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2.sig"), sig->getFile());
   CPPUNIT_ASSERT_EQUAL(pgpSignature, sig->getBody());

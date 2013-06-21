@@ -51,18 +51,18 @@ namespace aria2 {
 
 AbstractProxyRequestCommand::AbstractProxyRequestCommand
 (cuid_t cuid,
- const SharedHandle<Request>& req,
- const SharedHandle<FileEntry>& fileEntry,
+ const std::shared_ptr<Request>& req,
+ const std::shared_ptr<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  DownloadEngine* e,
- const SharedHandle<Request>& proxyRequest,
- const SharedHandle<SocketCore>& s)
+ const std::shared_ptr<Request>& proxyRequest,
+ const std::shared_ptr<SocketCore>& s)
   :
   AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
   proxyRequest_(proxyRequest),
   httpConnection_
   (new HttpConnection
-   (cuid, s, SharedHandle<SocketRecvBuffer>(new SocketRecvBuffer(s))))
+   (cuid, s, std::shared_ptr<SocketRecvBuffer>(new SocketRecvBuffer(s))))
 {
   setTimeout(getOption()->getAsInt(PREF_CONNECT_TIMEOUT));
   disableReadCheckSocket();
@@ -74,7 +74,7 @@ AbstractProxyRequestCommand::~AbstractProxyRequestCommand() {}
 bool AbstractProxyRequestCommand::executeInternal() {
   //socket->setBlockingMode();
   if(httpConnection_->sendBufferIsEmpty()) {
-    SharedHandle<HttpRequest> httpRequest(new HttpRequest());
+    std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
     httpRequest->setUserAgent(getOption()->get(PREF_USER_AGENT));
     httpRequest->setRequest(getRequest());
     httpRequest->setProxyRequest(proxyRequest_);

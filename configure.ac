@@ -93,6 +93,8 @@ AC_LANG([C++])
 # Check pkg-config is available
 PKG_PROG_PKG_CONFIG([0.20])
 
+CXXFLAGS="-std=c++11 $CXXFLAGS"
+
 # Check static build is requested
 if test "x$ARIA2_STATIC" = "xyes"; then
   case "$host" in

@@ -37,7 +37,7 @@
 
 namespace aria2 {
 
-SharedHandle<AuthConfig> DefaultAuthResolver::resolveAuthConfig
+std::shared_ptr<AuthConfig> DefaultAuthResolver::resolveAuthConfig
 (const std::string& hostname)
 {
   if(!getUserDefinedAuthConfig()) {

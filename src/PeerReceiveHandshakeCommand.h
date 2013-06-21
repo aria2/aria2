@@ -46,18 +46,18 @@ class Peer;
 class PeerReceiveHandshakeCommand:public PeerAbstractCommand
 {
 private:
-  SharedHandle<PeerConnection> peerConnection_;
+  std::shared_ptr<PeerConnection> peerConnection_;
 protected:
   virtual bool executeInternal();
   virtual bool exitBeforeExecute();
 public:
   PeerReceiveHandshakeCommand
   (cuid_t cuid,
-   const SharedHandle<Peer>& peer,
+   const std::shared_ptr<Peer>& peer,
    DownloadEngine* e,
-   const SharedHandle<SocketCore>& s,
-   const SharedHandle<PeerConnection>& peerConnection =
-   SharedHandle<PeerConnection>());
+   const std::shared_ptr<SocketCore>& s,
+   const std::shared_ptr<PeerConnection>& peerConnection =
+   std::shared_ptr<PeerConnection>());
 
   virtual ~PeerReceiveHandshakeCommand();
 };

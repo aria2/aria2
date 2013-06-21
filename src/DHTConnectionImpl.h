@@ -36,7 +36,9 @@
 #define D_DHT_CONNECTION_IMPL_H
 
 #include "DHTConnection.h"
-#include "SharedHandle.h"
+
+#include <memory>
+
 #include "SegList.h"
 
 namespace aria2 {
@@ -45,7 +47,7 @@ class SocketCore;
 
 class DHTConnectionImpl:public DHTConnection {
 private:
-  SharedHandle<SocketCore> socket_;
+  std::shared_ptr<SocketCore> socket_;
 
   int family_;
 public:
@@ -80,7 +82,7 @@ public:
   virtual ssize_t sendMessage(const unsigned char* data, size_t len,
                               const std::string& host, uint16_t port);
 
-  const SharedHandle<SocketCore>& getSocket() const
+  const std::shared_ptr<SocketCore>& getSocket() const
   {
     return socket_;
   }

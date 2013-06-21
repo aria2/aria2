@@ -16,8 +16,8 @@ class WrDiskCacheTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testAdd);
   CPPUNIT_TEST_SUITE_END();
 
-  SharedHandle<DirectDiskAdaptor> adaptor_;
-  SharedHandle<ByteArrayDiskWriter> writer_;
+  std::shared_ptr<DirectDiskAdaptor> adaptor_;
+  std::shared_ptr<ByteArrayDiskWriter> writer_;
 public:
   void setUp()
   {

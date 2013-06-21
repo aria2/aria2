@@ -106,7 +106,7 @@ void HttpResponseTest::testGetContentLength_contentLength()
 {
   HttpResponse httpResponse;
 
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
   httpHeader->put(HttpHeader::CONTENT_LENGTH, "4294967296");
 
   httpResponse.setHttpHeader(httpHeader);
@@ -118,7 +118,7 @@ void HttpResponseTest::testGetEntityLength()
 {
   HttpResponse httpResponse;
 
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
   httpHeader->put(HttpHeader::CONTENT_LENGTH, "4294967296");
 
   httpResponse.setHttpHeader(httpHeader);
@@ -134,7 +134,7 @@ void HttpResponseTest::testGetEntityLength()
 void HttpResponseTest::testGetContentType()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
   httpHeader->put(HttpHeader::CONTENT_TYPE,
                   "application/metalink+xml; charset=UTF-8");
   httpResponse.setHttpHeader(httpHeader);
@@ -146,9 +146,9 @@ void HttpResponseTest::testGetContentType()
 void HttpResponseTest::testDeterminFilename_without_ContentDisposition()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
-  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
-  SharedHandle<Request> request(new Request());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
+  std::shared_ptr<Request> request(new Request());
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
 
@@ -163,10 +163,10 @@ void HttpResponseTest::testDeterminFilename_with_ContentDisposition_zero_length
 ()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
   httpHeader->put(HttpHeader::CONTENT_DISPOSITION, "attachment; filename=\"\"");
-  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
-  SharedHandle<Request> request(new Request());
+  std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
+  std::shared_ptr<Request> request(new Request());
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
 
@@ -180,11 +180,11 @@ void HttpResponseTest::testDeterminFilename_with_ContentDisposition_zero_length
 void HttpResponseTest::testDeterminFilename_with_ContentDisposition()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
   httpHeader->put(HttpHeader::CONTENT_DISPOSITION,
                   "attachment; filename=\"aria2-current.tar.bz2\"");
-  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
-  SharedHandle<Request> request(new Request());
+  std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
+  std::shared_ptr<Request> request(new Request());
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
 
@@ -198,7 +198,7 @@ void HttpResponseTest::testDeterminFilename_with_ContentDisposition()
 void HttpResponseTest::testGetRedirectURI_without_Location()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
 
   httpResponse.setHttpHeader(httpHeader);
 
@@ -209,7 +209,7 @@ void HttpResponseTest::testGetRedirectURI_without_Location()
 void HttpResponseTest::testGetRedirectURI_with_Location()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
   httpHeader->put(HttpHeader::LOCATION, "http://localhost/download/aria2-1.0.0.tar.bz2");
   httpResponse.setHttpHeader(httpHeader);
 
@@ -221,7 +221,7 @@ void HttpResponseTest::testGetRedirectURI_with_Location()
 void HttpResponseTest::testIsRedirect()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
   httpHeader->setStatusCode(200);
   httpHeader->put(HttpHeader::LOCATION,
                   "http://localhost/download/aria2-1.0.0.tar.bz2");
@@ -238,7 +238,7 @@ void HttpResponseTest::testIsRedirect()
 void HttpResponseTest::testIsTransferEncodingSpecified()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
 
   httpResponse.setHttpHeader(httpHeader);
 
@@ -252,7 +252,7 @@ void HttpResponseTest::testIsTransferEncodingSpecified()
 void HttpResponseTest::testGetTransferEncoding()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
 
   httpResponse.setHttpHeader(httpHeader);
 
@@ -267,7 +267,7 @@ void HttpResponseTest::testGetTransferEncoding()
 void HttpResponseTest::testGetTransferEncodingStreamFilter()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
 
   httpResponse.setHttpHeader(httpHeader);
 
@@ -281,7 +281,7 @@ void HttpResponseTest::testGetTransferEncodingStreamFilter()
 void HttpResponseTest::testIsContentEncodingSpecified()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
 
   httpResponse.setHttpHeader(httpHeader);
 
@@ -295,7 +295,7 @@ void HttpResponseTest::testIsContentEncodingSpecified()
 void HttpResponseTest::testGetContentEncoding()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
 
   httpResponse.setHttpHeader(httpHeader);
 
@@ -309,7 +309,7 @@ void HttpResponseTest::testGetContentEncoding()
 void HttpResponseTest::testGetContentEncodingStreamFilter()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
 
   httpResponse.setHttpHeader(httpHeader);
 
@@ -318,7 +318,7 @@ void HttpResponseTest::testGetContentEncodingStreamFilter()
 #ifdef HAVE_ZLIB
   httpHeader->put(HttpHeader::CONTENT_ENCODING, "gzip");
   {
-    SharedHandle<StreamFilter> filter =
+    std::shared_ptr<StreamFilter> filter =
       httpResponse.getContentEncodingStreamFilter();
     CPPUNIT_ASSERT(filter);
     CPPUNIT_ASSERT_EQUAL(std::string("GZipDecodingStreamFilter"),
@@ -328,7 +328,7 @@ void HttpResponseTest::testGetContentEncodingStreamFilter()
   httpResponse.setHttpHeader(httpHeader);
   httpHeader->put(HttpHeader::CONTENT_ENCODING, "deflate");
   {
-    SharedHandle<StreamFilter> filter =
+    std::shared_ptr<StreamFilter> filter =
       httpResponse.getContentEncodingStreamFilter();
     CPPUNIT_ASSERT(filter);
     CPPUNIT_ASSERT_EQUAL(std::string("GZipDecodingStreamFilter"),
@@ -339,7 +339,7 @@ void HttpResponseTest::testGetContentEncodingStreamFilter()
   httpResponse.setHttpHeader(httpHeader);
   httpHeader->put(HttpHeader::CONTENT_ENCODING, "bzip2");
   {
-    SharedHandle<StreamFilter> filter =
+    std::shared_ptr<StreamFilter> filter =
       httpResponse.getContentEncodingStreamFilter();
     CPPUNIT_ASSERT(!filter);
   }
@@ -348,7 +348,7 @@ void HttpResponseTest::testGetContentEncodingStreamFilter()
 void HttpResponseTest::testValidateResponse()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
 
   httpHeader->setStatusCode(301);
@@ -371,16 +371,16 @@ void HttpResponseTest::testValidateResponse()
 void HttpResponseTest::testValidateResponse_good_range()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
 
-  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
-  SharedHandle<Piece> p(new Piece(1, 1024*1024));
-  SharedHandle<Segment> segment(new PiecedSegment(1024*1024, p));
+  std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
+  std::shared_ptr<Piece> p(new Piece(1, 1024*1024));
+  std::shared_ptr<Segment> segment(new PiecedSegment(1024*1024, p));
   httpRequest->setSegment(segment);
-  SharedHandle<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
+  std::shared_ptr<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
   httpRequest->setFileEntry(fileEntry);
-  SharedHandle<Request> request(new Request());
+  std::shared_ptr<Request> request(new Request());
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
   httpResponse.setHttpRequest(httpRequest);
@@ -398,16 +398,16 @@ void HttpResponseTest::testValidateResponse_good_range()
 void HttpResponseTest::testValidateResponse_bad_range()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
 
-  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
-  SharedHandle<Piece> p(new Piece(1, 1024*1024));
-  SharedHandle<Segment> segment(new PiecedSegment(1024*1024, p));
+  std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
+  std::shared_ptr<Piece> p(new Piece(1, 1024*1024));
+  std::shared_ptr<Segment> segment(new PiecedSegment(1024*1024, p));
   httpRequest->setSegment(segment);
-  SharedHandle<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
+  std::shared_ptr<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
   httpRequest->setFileEntry(fileEntry);
-  SharedHandle<Request> request(new Request());
+  std::shared_ptr<Request> request(new Request());
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
   httpResponse.setHttpRequest(httpRequest);
@@ -424,16 +424,16 @@ void HttpResponseTest::testValidateResponse_bad_range()
 void HttpResponseTest::testValidateResponse_chunked()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
 
-  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
-  SharedHandle<Piece> p(new Piece(1, 1024*1024));
-  SharedHandle<Segment> segment(new PiecedSegment(1024*1024, p));
+  std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
+  std::shared_ptr<Piece> p(new Piece(1, 1024*1024));
+  std::shared_ptr<Segment> segment(new PiecedSegment(1024*1024, p));
   httpRequest->setSegment(segment);
-  SharedHandle<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
+  std::shared_ptr<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
   httpRequest->setFileEntry(fileEntry);
-  SharedHandle<Request> request(new Request());
+  std::shared_ptr<Request> request(new Request());
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
   httpResponse.setHttpRequest(httpRequest);
@@ -452,10 +452,10 @@ void HttpResponseTest::testValidateResponse_chunked()
 void HttpResponseTest::testValidateResponse_withIfModifiedSince()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
   httpHeader->setStatusCode(304);
-  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
+  std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
   httpResponse.setHttpRequest(httpRequest);
   try {
     httpResponse.validateResponse();
@@ -469,11 +469,11 @@ void HttpResponseTest::testValidateResponse_withIfModifiedSince()
 void HttpResponseTest::testProcessRedirect()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
 
-  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
-  SharedHandle<Request> request(new Request());
+  std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
+  std::shared_ptr<Request> request(new Request());
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
   httpResponse.setHttpRequest(httpRequest);
@@ -507,14 +507,14 @@ void HttpResponseTest::testProcessRedirect()
 void HttpResponseTest::testRetrieveCookie()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
 
-  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
-  SharedHandle<Request> request(new Request());
+  std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
+  std::shared_ptr<Request> request(new Request());
   request->setUri("http://www.aria2.org/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
-  SharedHandle<CookieStorage> st(new CookieStorage());
+  std::shared_ptr<CookieStorage> st(new CookieStorage());
   httpRequest->setCookieStorage(st);
   httpResponse.setHttpRequest(httpRequest);
 
@@ -539,9 +539,9 @@ void HttpResponseTest::testRetrieveCookie()
 void HttpResponseTest::testSupportsPersistentConnection()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
-  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
+  std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
   httpResponse.setHttpRequest(httpRequest);
 
   httpHeader->setVersion("HTTP/1.1");
@@ -563,7 +563,7 @@ void HttpResponseTest::testSupportsPersistentConnection()
   httpHeader->clearField();
 
   // test proxy connection
-  SharedHandle<Request> proxyRequest(new Request());
+  std::shared_ptr<Request> proxyRequest(new Request());
   httpRequest->setProxyRequest(proxyRequest);
 
   httpHeader->setVersion("HTTP/1.1");
@@ -588,9 +588,9 @@ void HttpResponseTest::testSupportsPersistentConnection()
 void HttpResponseTest::testGetMetalinKHttpEntries()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
-  SharedHandle<Option> option(new Option());
+  std::shared_ptr<Option> option(new Option());
 
   httpHeader->put(HttpHeader::LINK,
                   "<http://uri1/>; rel=duplicate; pri=1; pref; geo=JP");
@@ -641,9 +641,9 @@ void HttpResponseTest::testGetMetalinKHttpEntries()
 void HttpResponseTest::testGetDigest()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  std::shared_ptr<HttpHeader> httpHeader(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
-  SharedHandle<Option> option(new Option());
+  std::shared_ptr<Option> option(new Option());
   // Python binascii.hexlify(base64.b64decode(B64ED_HASH)) is handy to
   // retrieve ascii hex hash string.
   httpHeader->put(HttpHeader::DIGEST, "SHA-1=82AD8itGL/oYQ5BTPFANiYnp9oE=");

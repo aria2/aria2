@@ -37,6 +37,7 @@
 #include <unistd.h>
 #include <cstring>
 #include <cstdio>
+#include <cassert>
 
 #include "DlAbortEx.h"
 #include "fmt.h"

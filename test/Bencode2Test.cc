@@ -25,10 +25,10 @@ void Bencode2Test::testEncode()
     Dict dict;
     dict["name"] = String::g("aria2");
     dict["loc"] = Integer::g(80000);
-    SharedHandle<List> files = List::g();
+    std::shared_ptr<List> files = List::g();
     files->append(String::g("aria2c"));
     dict["files"] = files;
-    SharedHandle<Dict> attrs = Dict::g();
+    std::shared_ptr<Dict> attrs = Dict::g();
     attrs->put("license", String::g("GPL"));
     dict["attrs"] = attrs;
 

@@ -33,13 +33,13 @@ void DownloadContextTest::testFindFileEntryByOffset()
 
   CPPUNIT_ASSERT(!ctx.findFileEntryByOffset(0));
 
-  const SharedHandle<FileEntry> fileEntries[] =
-    { SharedHandle<FileEntry>(new FileEntry("file1",1000,0)),
-      SharedHandle<FileEntry>(new FileEntry("file2",0,1000)),
-      SharedHandle<FileEntry>(new FileEntry("file3",0,1000)),
-      SharedHandle<FileEntry>(new FileEntry("file4",2000,1000)),
-      SharedHandle<FileEntry>(new FileEntry("file5",3000,3000)),
-      SharedHandle<FileEntry>(new FileEntry("file6",0,6000))
+  const std::shared_ptr<FileEntry> fileEntries[] =
+    { std::shared_ptr<FileEntry>(new FileEntry("file1",1000,0)),
+      std::shared_ptr<FileEntry>(new FileEntry("file2",0,1000)),
+      std::shared_ptr<FileEntry>(new FileEntry("file3",0,1000)),
+      std::shared_ptr<FileEntry>(new FileEntry("file4",2000,1000)),
+      std::shared_ptr<FileEntry>(new FileEntry("file5",3000,3000)),
+      std::shared_ptr<FileEntry>(new FileEntry("file6",0,6000))
     };
   ctx.setFileEntries(vbegin(fileEntries), vend(fileEntries));
 
@@ -78,16 +78,16 @@ void DownloadContextTest::testGetBasePath()
 void DownloadContextTest::testSetFileFilter()
 {
   DownloadContext ctx;
-  std::vector<SharedHandle<FileEntry> > files;
+  std::vector<std::shared_ptr<FileEntry> > files;
   for(int i = 0; i < 10; ++i) {
-    files.push_back(SharedHandle<FileEntry>(new FileEntry("file", 1, i)));
+    files.push_back(std::shared_ptr<FileEntry>(new FileEntry("file", 1, i)));
   }
   ctx.setFileEntries(files.begin(), files.end());
   SegList<int> sgl;
   util::parseIntSegments(sgl, "6-8,2-4");
   sgl.normalize();
   ctx.setFileFilter(sgl);
-  const std::vector<SharedHandle<FileEntry> >& res = ctx.getFileEntries();
+  const std::vector<std::shared_ptr<FileEntry> >& res = ctx.getFileEntries();
   CPPUNIT_ASSERT(!res[0]->isRequested());
   CPPUNIT_ASSERT(res[1]->isRequested());
   CPPUNIT_ASSERT(res[2]->isRequested());

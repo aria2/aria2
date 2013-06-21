@@ -47,9 +47,9 @@ public:
   AnonDiskWriterFactory() {}
   virtual ~AnonDiskWriterFactory() {}
 
-  virtual SharedHandle<DiskWriter> newDiskWriter(const std::string& filename)
+  virtual std::shared_ptr<DiskWriter> newDiskWriter(const std::string& filename)
   {
-    return SharedHandle<DiskWriter>(new DiskWriterType());
+    return std::shared_ptr<DiskWriter>(new DiskWriterType());
   }
 };
 

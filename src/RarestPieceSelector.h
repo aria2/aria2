@@ -36,7 +36,8 @@
 #define D_RAREST_PIECE_SELECTOR_H
 
 #include "PieceSelector.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -44,9 +45,9 @@ class PieceStatMan;
 
 class RarestPieceSelector:public PieceSelector {
 private:
-  SharedHandle<PieceStatMan> pieceStatMan_;
+  std::shared_ptr<PieceStatMan> pieceStatMan_;
 public:
-  RarestPieceSelector(const SharedHandle<PieceStatMan>& pieceStatMan);
+  RarestPieceSelector(const std::shared_ptr<PieceStatMan>& pieceStatMan);
 
   virtual bool select
   (size_t& index, const unsigned char* bitfield, size_t nbits) const;

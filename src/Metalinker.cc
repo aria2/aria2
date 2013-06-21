@@ -45,7 +45,7 @@ Metalinker::~Metalinker() {}
 
 namespace {
 class EntryQuery:
-    public std::unary_function<SharedHandle<MetalinkEntry>, bool> {
+    public std::unary_function<std::shared_ptr<MetalinkEntry>, bool> {
 private:
   std::string version;
   std::string language;
@@ -58,7 +58,7 @@ public:
     language(language),
     os(os) {}
 
-  bool operator()(const SharedHandle<MetalinkEntry>& entry) const {
+  bool operator()(const std::shared_ptr<MetalinkEntry>& entry) const {
     if(!version.empty()) {
       if(version != entry->version) {
         return false;
@@ -80,7 +80,7 @@ public:
 } // namespace
 
 void Metalinker::queryEntry
-(std::vector<SharedHandle<MetalinkEntry> >& queryResult,
+(std::vector<std::shared_ptr<MetalinkEntry> >& queryResult,
  const std::string& version,
  const std::string& language,
  const std::string& os) const
@@ -90,7 +90,7 @@ void Metalinker::queryEntry
                       std::not1(EntryQuery(version, language, os)));
 }
 
-void Metalinker::addEntry(const SharedHandle<MetalinkEntry>& entry)
+void Metalinker::addEntry(const std::shared_ptr<MetalinkEntry>& entry)
 {
   entries_.push_back(entry);
 }

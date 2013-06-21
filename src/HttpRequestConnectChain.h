@@ -49,9 +49,9 @@ struct HttpRequestConnectChain : public ControlChain<ConnectCommand*> {
   virtual ~HttpRequestConnectChain() {}
   virtual int run(ConnectCommand* t, DownloadEngine* e)
   {
-    SharedHandle<SocketRecvBuffer> socketRecvBuffer
+    std::shared_ptr<SocketRecvBuffer> socketRecvBuffer
       (new SocketRecvBuffer(t->getSocket()));
-    SharedHandle<HttpConnection> httpConnection
+    std::shared_ptr<HttpConnection> httpConnection
       (new HttpConnection(t->getCuid(), t->getSocket(), socketRecvBuffer));
     HttpRequestCommand* c = new HttpRequestCommand(t->getCuid(),
                                                    t->getRequest(),

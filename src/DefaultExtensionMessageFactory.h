@@ -49,13 +49,13 @@ class UTMetadataRequestTracker;
 
 class DefaultExtensionMessageFactory:public ExtensionMessageFactory {
 private:
-  SharedHandle<PeerStorage> peerStorage_;
+  std::shared_ptr<PeerStorage> peerStorage_;
 
-  SharedHandle<Peer> peer_;
+  std::shared_ptr<Peer> peer_;
 
-  SharedHandle<ExtensionMessageRegistry> registry_;
+  std::shared_ptr<ExtensionMessageRegistry> registry_;
 
-  SharedHandle<DownloadContext> dctx_;
+  std::shared_ptr<DownloadContext> dctx_;
 
   BtMessageFactory* messageFactory_;
 
@@ -66,25 +66,25 @@ public:
   DefaultExtensionMessageFactory();
 
   DefaultExtensionMessageFactory
-  (const SharedHandle<Peer>& peer,
-   const SharedHandle<ExtensionMessageRegistry>& registry);
+  (const std::shared_ptr<Peer>& peer,
+   const std::shared_ptr<ExtensionMessageRegistry>& registry);
 
   virtual ~DefaultExtensionMessageFactory();
 
-  virtual SharedHandle<ExtensionMessage>
+  virtual std::shared_ptr<ExtensionMessage>
   createMessage(const unsigned char* data, size_t length);
 
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
 
-  void setPeer(const SharedHandle<Peer>& peer);
+  void setPeer(const std::shared_ptr<Peer>& peer);
 
   void setExtensionMessageRegistry
-  (const SharedHandle<ExtensionMessageRegistry>& registry)
+  (const std::shared_ptr<ExtensionMessageRegistry>& registry)
   {
     registry_ = registry;
   }
 
-  void setDownloadContext(const SharedHandle<DownloadContext>& dctx)
+  void setDownloadContext(const std::shared_ptr<DownloadContext>& dctx)
   {
     dctx_ = dctx;
   }

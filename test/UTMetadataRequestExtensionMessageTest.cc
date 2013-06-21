@@ -31,17 +31,17 @@ class UTMetadataRequestExtensionMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testDoReceivedAction_data);
   CPPUNIT_TEST_SUITE_END();
 public:
-  SharedHandle<DownloadContext> dctx_;
-  SharedHandle<WrapExtBtMessageFactory> messageFactory_;
-  SharedHandle<MockBtMessageDispatcher> dispatcher_;
-  SharedHandle<Peer> peer_;
+  std::shared_ptr<DownloadContext> dctx_;
+  std::shared_ptr<WrapExtBtMessageFactory> messageFactory_;
+  std::shared_ptr<MockBtMessageDispatcher> dispatcher_;
+  std::shared_ptr<Peer> peer_;
 
   void setUp()
   {
     messageFactory_.reset(new WrapExtBtMessageFactory());
     dispatcher_.reset(new MockBtMessageDispatcher());
     dctx_.reset(new DownloadContext());
-    SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
+    std::shared_ptr<TorrentAttribute> attrs(new TorrentAttribute());
     dctx_->setAttribute(CTX_ATTR_BT, attrs);
     peer_.reset(new Peer("host", 6880));
     peer_->allocateSessionResource(0, 0);
@@ -49,14 +49,12 @@ public:
   }
 
   template<typename T>
-  SharedHandle<T> getFirstDispatchedMessage()
+  std::shared_ptr<T> getFirstDispatchedMessage()
   {
-    SharedHandle<WrapExtBtMessage> wrapmsg =
-      dynamic_pointer_cast<WrapExtBtMessage>
+    auto wrapmsg = std::dynamic_pointer_cast<WrapExtBtMessage>
       (dispatcher_->messageQueue.front());
 
-    SharedHandle<T> msg = dynamic_pointer_cast<T>(wrapmsg->m_);
-    return msg;
+    return std::dynamic_pointer_cast<T>(wrapmsg->m_);
   }
 
   void testGetExtensionMessageID();
@@ -109,7 +107,7 @@ void UTMetadataRequestExtensionMessageTest::testDoReceivedAction_reject()
   msg.setBtMessageDispatcher(dispatcher_.get());
   msg.doReceivedAction();
 
-  SharedHandle<UTMetadataRejectExtensionMessage> m =
+  std::shared_ptr<UTMetadataRejectExtensionMessage> m =
     getFirstDispatchedMessage<UTMetadataRejectExtensionMessage>();
 
   CPPUNIT_ASSERT(m);
@@ -127,7 +125,7 @@ void UTMetadataRequestExtensionMessageTest::testDoReceivedAction_data()
   msg.setBtMessageDispatcher(dispatcher_.get());
 
   size_t metadataSize = METADATA_PIECE_SIZE*2;
-  SharedHandle<TorrentAttribute> attrs = bittorrent::getTorrentAttrs(dctx_);
+  std::shared_ptr<TorrentAttribute> attrs = bittorrent::getTorrentAttrs(dctx_);
   std::string first(METADATA_PIECE_SIZE, '0');
   std::string second(METADATA_PIECE_SIZE, '1');
   attrs->metadata = first+second;
@@ -135,7 +133,7 @@ void UTMetadataRequestExtensionMessageTest::testDoReceivedAction_data()
 
   msg.doReceivedAction();
 
-  SharedHandle<UTMetadataDataExtensionMessage> m =
+  std::shared_ptr<UTMetadataDataExtensionMessage> m =
     getFirstDispatchedMessage<UTMetadataDataExtensionMessage>();
 
   CPPUNIT_ASSERT(m);

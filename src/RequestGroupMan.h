@@ -41,8 +41,8 @@
 #include <deque>
 #include <vector>
 #include <map>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "DownloadResult.h"
 #include "TransferStat.h"
 #include "RequestGroup.h"
@@ -62,9 +62,9 @@ class UriListParser;
 class WrDiskCache;
 
 typedef IndexedList<a2_gid_t,
-                    SharedHandle<RequestGroup> > RequestGroupList;
+                    std::shared_ptr<RequestGroup> > RequestGroupList;
 typedef IndexedList<a2_gid_t,
-                    SharedHandle<DownloadResult> > DownloadResultList;
+                    std::shared_ptr<DownloadResult> > DownloadResultList;
 
 class RequestGroupMan {
 private:
@@ -76,7 +76,7 @@ private:
 
   const Option* option_;
 
-  SharedHandle<ServerStatMan> serverStatMan_;
+  std::shared_ptr<ServerStatMan> serverStatMan_;
 
   int maxOverallDownloadSpeedLimit_;
 
@@ -100,27 +100,27 @@ private:
   size_t maxDownloadResult_;
 
   // UriListParser for deferred input.
-  SharedHandle<UriListParser> uriListParser_;
+  std::shared_ptr<UriListParser> uriListParser_;
 
   WrDiskCache* wrDiskCache_;
 
   void formatDownloadResultFull
   (OutputFile& out,
    const char* status,
-   const SharedHandle<DownloadResult>& downloadResult) const;
+   const std::shared_ptr<DownloadResult>& downloadResult) const;
 
   std::string formatDownloadResult
   (const char* status,
-   const SharedHandle<DownloadResult>& downloadResult) const;
+   const std::shared_ptr<DownloadResult>& downloadResult) const;
 
   void configureRequestGroup
-  (const SharedHandle<RequestGroup>& requestGroup) const;
+  (const std::shared_ptr<RequestGroup>& requestGroup) const;
 
-  void addRequestGroupIndex(const SharedHandle<RequestGroup>& group);
+  void addRequestGroupIndex(const std::shared_ptr<RequestGroup>& group);
   void addRequestGroupIndex
-  (const std::vector<SharedHandle<RequestGroup> >& groups);
+  (const std::vector<std::shared_ptr<RequestGroup> >& groups);
 public:
-  RequestGroupMan(const std::vector<SharedHandle<RequestGroup> >& requestGroups,
+  RequestGroupMan(const std::vector<std::shared_ptr<RequestGroup> >& requestGroups,
                   int maxSimultaneousDownloads,
                   const Option* option);
 
@@ -143,16 +143,16 @@ public:
   // Note that this method does not call addRequestGroupIndex(). This
   // method should be considered as private, but exposed for unit
   // testing purpose.
-  void addRequestGroup(const SharedHandle<RequestGroup>& group);
+  void addRequestGroup(const std::shared_ptr<RequestGroup>& group);
 
-  void addReservedGroup(const std::vector<SharedHandle<RequestGroup> >& groups);
+  void addReservedGroup(const std::vector<std::shared_ptr<RequestGroup> >& groups);
 
-  void addReservedGroup(const SharedHandle<RequestGroup>& group);
+  void addReservedGroup(const std::shared_ptr<RequestGroup>& group);
 
   void insertReservedGroup
-  (size_t pos, const std::vector<SharedHandle<RequestGroup> >& groups);
+  (size_t pos, const std::vector<std::shared_ptr<RequestGroup> >& groups);
 
-  void insertReservedGroup(size_t pos, const SharedHandle<RequestGroup>& group);
+  void insertReservedGroup(size_t pos, const std::shared_ptr<RequestGroup>& group);
 
   size_t countRequestGroup() const;
 
@@ -168,7 +168,7 @@ public:
 
   // Returns RequestGroup object whose gid is gid. This method returns
   // RequestGroup either in requestGroups_ or reservedGroups_.
-  SharedHandle<RequestGroup> findGroup(a2_gid_t gid) const;
+  std::shared_ptr<RequestGroup> findGroup(a2_gid_t gid) const;
 
   // Changes the position of download denoted by gid.  If how is
   // POS_SET, it moves the download to a position relative to the
@@ -230,7 +230,7 @@ public:
     return downloadResults_;
   }
 
-  SharedHandle<DownloadResult> findDownloadResult(a2_gid_t gid) const;
+  std::shared_ptr<DownloadResult> findDownloadResult(a2_gid_t gid) const;
 
   // Removes all download results.
   void purgeDownloadResult();
@@ -239,15 +239,15 @@ public:
   // result was removed. Otherwise returns false.
   bool removeDownloadResult(a2_gid_t gid);
 
-  void addDownloadResult(const SharedHandle<DownloadResult>& downloadResult);
+  void addDownloadResult(const std::shared_ptr<DownloadResult>& downloadResult);
 
-  SharedHandle<ServerStat> findServerStat(const std::string& hostname,
+  std::shared_ptr<ServerStat> findServerStat(const std::string& hostname,
                                           const std::string& protocol) const;
 
-  SharedHandle<ServerStat> getOrCreateServerStat(const std::string& hostname,
+  std::shared_ptr<ServerStat> getOrCreateServerStat(const std::string& hostname,
                                                  const std::string& protocol);
 
-  bool addServerStat(const SharedHandle<ServerStat>& serverStat);
+  bool addServerStat(const std::shared_ptr<ServerStat>& serverStat);
 
   bool loadServerStat(const std::string& filename);
 
@@ -311,7 +311,7 @@ public:
   // Returns currently used hosts and its use count.
   void getUsedHosts(std::vector<std::pair<size_t, std::string> >& usedHosts);
 
-  const SharedHandle<ServerStatMan>& getServerStatMan() const
+  const std::shared_ptr<ServerStatMan>& getServerStatMan() const
   {
     return serverStatMan_;
   }
@@ -321,7 +321,7 @@ public:
     maxDownloadResult_ = v;
   }
 
-  void setUriListParser(const SharedHandle<UriListParser>& uriListParser);
+  void setUriListParser(const std::shared_ptr<UriListParser>& uriListParser);
 
   NetStat& getNetStat()
   {

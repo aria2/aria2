@@ -38,8 +38,8 @@
 #include "common.h"
 
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "Command.h"
 
 namespace aria2 {
@@ -54,9 +54,9 @@ class BtMessage;
 
 class UTMetadataRequestFactory {
 private:
-  SharedHandle<DownloadContext> dctx_;
+  std::shared_ptr<DownloadContext> dctx_;
 
-  SharedHandle<Peer> peer_;
+  std::shared_ptr<Peer> peer_;
 
   BtMessageDispatcher* dispatcher_;
 
@@ -69,10 +69,10 @@ public:
 
   // Creates at most num of ut_metadata request message and appends
   // them to msgs. pieceStorage is used to identify missing piece.
-  void create(std::vector<SharedHandle<BtMessage> >& msgs, size_t num,
-              const SharedHandle<PieceStorage>& pieceStorage);
+  void create(std::vector<std::shared_ptr<BtMessage> >& msgs, size_t num,
+              const std::shared_ptr<PieceStorage>& pieceStorage);
 
-  void setDownloadContext(const SharedHandle<DownloadContext>& dctx)
+  void setDownloadContext(const std::shared_ptr<DownloadContext>& dctx)
   {
     dctx_ = dctx;
   }
@@ -87,7 +87,7 @@ public:
     messageFactory_ = factory;
   }
 
-  void setPeer(const SharedHandle<Peer>& peer)
+  void setPeer(const std::shared_ptr<Peer>& peer)
   {
     peer_ = peer;
   }

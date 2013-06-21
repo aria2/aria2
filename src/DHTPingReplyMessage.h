@@ -44,8 +44,8 @@ class DHTPingReplyMessage:public DHTResponseMessage {
 private:
   unsigned char id_[DHT_ID_LENGTH];
 public:
-  DHTPingReplyMessage(const SharedHandle<DHTNode>& localNode,
-                      const SharedHandle<DHTNode>& remoteNode,
+  DHTPingReplyMessage(const std::shared_ptr<DHTNode>& localNode,
+                      const std::shared_ptr<DHTNode>& remoteNode,
                       const unsigned char* id,
                       const std::string& transactionID);
 
@@ -53,7 +53,7 @@ public:
 
   virtual void doReceivedAction();
 
-  virtual SharedHandle<Dict> getResponse();
+  virtual std::shared_ptr<Dict> getResponse();
 
   virtual const std::string& getMessageType() const;
 

@@ -64,7 +64,7 @@ std::vector<std::vector<std::string> > toVector
 
 void AnnounceListTest::testSingleElementList() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  SharedHandle<ValueBase> announcesList =
+  std::shared_ptr<ValueBase> announcesList =
     bencode2::decode(peersString);
 
   // ANNOUNCE_LIST
@@ -111,7 +111,7 @@ void AnnounceListTest::testSingleElementList() {
 
 void AnnounceListTest::testMultiElementList() {
   std::string peersString = "ll8:tracker18:tracker28:tracker3ee";
-  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
+  std::shared_ptr<ValueBase> announcesList = bencode2::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1, tracker2, tracker3 ] ]
@@ -144,7 +144,7 @@ void AnnounceListTest::testMultiElementList() {
 
 void AnnounceListTest::testSingleAndMulti() {
   std::string peersString = "ll8:tracker18:tracker2el8:tracker3ee";
-  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
+  std::shared_ptr<ValueBase> announcesList = bencode2::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1, tracker2 ], [ tracker3 ] ]
@@ -170,14 +170,14 @@ void AnnounceListTest::testSingleAndMulti() {
 
 void AnnounceListTest::testNoGroup() {
   std::string peersString = "llee";
-  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
+  std::shared_ptr<ValueBase> announcesList = bencode2::decode(peersString);
   AnnounceList announceList(toVector(downcast<List>(announcesList)));
   CPPUNIT_ASSERT(announceList.countTier() == 0);
 }
 
 void AnnounceListTest::testNextEventIfAfterStarted() {
   std::string peersString = "ll8:tracker1ee";
-  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
+  std::shared_ptr<ValueBase> announcesList = bencode2::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ] ]
@@ -199,7 +199,7 @@ void AnnounceListTest::testNextEventIfAfterStarted() {
 
 void AnnounceListTest::testEvent() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
+  std::shared_ptr<ValueBase> announcesList = bencode2::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
@@ -226,7 +226,7 @@ void AnnounceListTest::testEvent() {
 
 void AnnounceListTest::testCountStoppedAllowedTier() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
+  std::shared_ptr<ValueBase> announcesList = bencode2::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
@@ -253,7 +253,7 @@ void AnnounceListTest::testCountStoppedAllowedTier() {
 
 void AnnounceListTest::testCountCompletedAllowedTier() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
+  std::shared_ptr<ValueBase> announcesList = bencode2::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
@@ -285,12 +285,12 @@ std::deque<std::string> createUrls(const std::string& url) {
 }
 
 void AnnounceListTest::testMoveToStoppedAllowedTier() {
-  SharedHandle<AnnounceTier> t1(new AnnounceTier(createUrls("tracker1")));
-  SharedHandle<AnnounceTier> t2(new AnnounceTier(createUrls("tracker2")));
+  std::shared_ptr<AnnounceTier> t1(new AnnounceTier(createUrls("tracker1")));
+  std::shared_ptr<AnnounceTier> t2(new AnnounceTier(createUrls("tracker2")));
   t2->event = AnnounceTier::COMPLETED;
-  SharedHandle<AnnounceTier> t3(new AnnounceTier(createUrls("tracker3")));
+  std::shared_ptr<AnnounceTier> t3(new AnnounceTier(createUrls("tracker3")));
 
-  std::deque<SharedHandle<AnnounceTier> > tiers;
+  std::deque<std::shared_ptr<AnnounceTier> > tiers;
   tiers.push_back(t1);
   tiers.push_back(t2);
   tiers.push_back(t3);
@@ -311,12 +311,12 @@ void AnnounceListTest::testMoveToStoppedAllowedTier() {
 }
 
 void AnnounceListTest::testMoveToCompletedAllowedTier() {
-  SharedHandle<AnnounceTier> t1(new AnnounceTier(createUrls("tracker1")));
-  SharedHandle<AnnounceTier> t2(new AnnounceTier(createUrls("tracker2")));
+  std::shared_ptr<AnnounceTier> t1(new AnnounceTier(createUrls("tracker1")));
+  std::shared_ptr<AnnounceTier> t2(new AnnounceTier(createUrls("tracker2")));
   t2->event = AnnounceTier::COMPLETED;
-  SharedHandle<AnnounceTier> t3(new AnnounceTier(createUrls("tracker3")));
+  std::shared_ptr<AnnounceTier> t3(new AnnounceTier(createUrls("tracker3")));
 
-  std::deque<SharedHandle<AnnounceTier> > tiers;
+  std::deque<std::shared_ptr<AnnounceTier> > tiers;
   tiers.push_back(t1);
   tiers.push_back(t2);
   tiers.push_back(t3);

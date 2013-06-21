@@ -109,7 +109,7 @@ UDPTrackerClient::~UDPTrackerClient()
 
 namespace {
 struct CollectAddrPortMatch {
-  bool operator()(const SharedHandle<UDPTrackerRequest>& req) const
+  bool operator()(const std::shared_ptr<UDPTrackerRequest>& req) const
   {
     if(req->remoteAddr == remoteAddr && req->remotePort == remotePort) {
       dest.push_back(req);
@@ -118,10 +118,10 @@ struct CollectAddrPortMatch {
       return false;
     }
   }
-  std::vector<SharedHandle<UDPTrackerRequest> >& dest;
+  std::vector<std::shared_ptr<UDPTrackerRequest> >& dest;
   std::string remoteAddr;
   uint16_t remotePort;
-  CollectAddrPortMatch(std::vector<SharedHandle<UDPTrackerRequest> >& dest,
+  CollectAddrPortMatch(std::vector<std::shared_ptr<UDPTrackerRequest> >& dest,
                        const std::string& remoteAddr, uint16_t remotePort)
     : dest(dest), remoteAddr(remoteAddr), remotePort(remotePort)
   {}
@@ -140,7 +140,7 @@ int UDPTrackerClient::receiveReply
       return -1;
     }
     int32_t transactionId = bittorrent::getIntParam(data, 4);
-    SharedHandle<UDPTrackerRequest> req =
+    std::shared_ptr<UDPTrackerRequest> req =
       findInflightRequest(remoteAddr, remotePort, transactionId, true);
     if(!req) {
       logInvalidTransaction(remoteAddr, remotePort, action, transactionId);
@@ -150,13 +150,13 @@ int UDPTrackerClient::receiveReply
 
     int64_t connectionId = bittorrent::getLLIntParam(data, 8);
     A2_LOG_INFO(fmt("UDPT received CONNECT reply from %s:%u transaction_id=%u,"
-                    "connection_id=%"PRId64, remoteAddr.c_str(), remotePort,
+                    "connection_id=%" PRId64, remoteAddr.c_str(), remotePort,
                     transactionId, connectionId));
     UDPTrackerConnection c(UDPT_CST_CONNECTED, connectionId, now);
     connectionIdCache_[std::make_pair(remoteAddr, remotePort)] = c;
     // Now we have connecion ID, push requests which are waiting for
     // it.
-    std::vector<SharedHandle<UDPTrackerRequest> > reqs;
+    std::vector<std::shared_ptr<UDPTrackerRequest> > reqs;
     connectRequests_.erase(std::remove_if
                            (connectRequests_.begin(), connectRequests_.end(),
                             CollectAddrPortMatch(reqs, remoteAddr, remotePort)),
@@ -171,7 +171,7 @@ int UDPTrackerClient::receiveReply
       return - 1;
     }
     int32_t transactionId = bittorrent::getIntParam(data, 4);
-    SharedHandle<UDPTrackerRequest> req =
+    std::shared_ptr<UDPTrackerRequest> req =
       findInflightRequest(remoteAddr, remotePort, transactionId, true);
     if(!req) {
       logInvalidTransaction(remoteAddr, remotePort, action, transactionId);
@@ -197,7 +197,7 @@ int UDPTrackerClient::receiveReply
     }
 
     A2_LOG_INFO(fmt("UDPT received ANNOUNCE reply from %s:%u transaction_id=%u,"
-                    "connection_id=%"PRId64", event=%s, infohash=%s, "
+                    "connection_id=%" PRId64 ", event=%s, infohash=%s, "
                     "interval=%d, leechers=%d, "
                     "seeders=%d, num_peers=%d", remoteAddr.c_str(), remotePort,
                     transactionId, req->connectionId,
@@ -213,7 +213,7 @@ int UDPTrackerClient::receiveReply
       return -1;
     }
     int32_t transactionId = bittorrent::getIntParam(data, 4);
-    SharedHandle<UDPTrackerRequest> req =
+    std::shared_ptr<UDPTrackerRequest> req =
       findInflightRequest(remoteAddr, remotePort, transactionId, true);
     if(!req) {
       logInvalidTransaction(remoteAddr, remotePort, action, transactionId);
@@ -226,7 +226,7 @@ int UDPTrackerClient::receiveReply
     req->error = UDPT_ERR_TRACKER;
 
     A2_LOG_INFO(fmt("UDPT received ERROR reply from %s:%u transaction_id=%u,"
-                    "connection_id=%"PRId64", action=%d, error_string=%s",
+                    "connection_id=%" PRId64 ", action=%d, error_string=%s",
                     remoteAddr.c_str(),
                     remotePort, transactionId, req->connectionId, action,
                     errorString.c_str()));
@@ -255,7 +255,7 @@ ssize_t UDPTrackerClient::createRequest
     return -1;
   }
   while(!pendingRequests_.empty()) {
-    const SharedHandle<UDPTrackerRequest>& req = pendingRequests_.front();
+    const std::shared_ptr<UDPTrackerRequest>& req = pendingRequests_.front();
     if(req->action == UDPT_ACT_CONNECT) {
       ssize_t rv;
       rv = createUDPTrackerConnect(data, length, remoteAddr, remotePort, req);
@@ -265,7 +265,7 @@ ssize_t UDPTrackerClient::createRequest
                                               req->remotePort,
                                               now);
     if(!c) {
-      SharedHandle<UDPTrackerRequest> creq(new UDPTrackerRequest());
+      std::shared_ptr<UDPTrackerRequest> creq(new UDPTrackerRequest());
       creq->action = UDPT_ACT_CONNECT;
       creq->remoteAddr = req->remoteAddr;
       creq->remotePort = req->remotePort;
@@ -295,7 +295,7 @@ void UDPTrackerClient::requestSent(const Timer& now)
     A2_LOG_WARN("pendingRequests_ is empty");
     return;
   }
-  const SharedHandle<UDPTrackerRequest>& req = pendingRequests_.front();
+  const std::shared_ptr<UDPTrackerRequest>& req = pendingRequests_.front();
   switch(req->action) {
   case UDPT_ACT_CONNECT:
     A2_LOG_INFO(fmt("UDPT sent CONNECT to %s:%u transaction_id=%u",
@@ -304,7 +304,7 @@ void UDPTrackerClient::requestSent(const Timer& now)
     break;
   case UDPT_ACT_ANNOUNCE:
     A2_LOG_INFO(fmt("UDPT sent ANNOUNCE to %s:%u transaction_id=%u, "
-                    "connection_id=%"PRId64", event=%s, infohash=%s",
+                    "connection_id=%" PRId64 ", event=%s, infohash=%s",
                     req->remoteAddr.c_str(), req->remotePort,
                     req->transactionId, req->connectionId,
                     getUDPTrackerEventStr(req->event),
@@ -332,7 +332,7 @@ void UDPTrackerClient::requestFail(int error)
     A2_LOG_WARN("pendingRequests_ is empty");
     return;
   }
-  const SharedHandle<UDPTrackerRequest>& req = pendingRequests_.front();
+  const std::shared_ptr<UDPTrackerRequest>& req = pendingRequests_.front();
   switch(req->action) {
   case UDPT_ACT_CONNECT:
     A2_LOG_INFO(fmt("UDPT fail CONNECT to %s:%u transaction_id=%u",
@@ -342,7 +342,7 @@ void UDPTrackerClient::requestFail(int error)
     break;
   case UDPT_ACT_ANNOUNCE:
     A2_LOG_INFO(fmt("UDPT fail ANNOUNCE to %s:%u transaction_id=%u, "
-                    "connection_id=%"PRId64", event=%s, infohash=%s",
+                    "connection_id=%" PRId64 ", event=%s, infohash=%s",
                     req->remoteAddr.c_str(), req->remotePort,
                     req->transactionId, req->connectionId,
                     getUDPTrackerEventStr(req->event),
@@ -357,7 +357,7 @@ void UDPTrackerClient::requestFail(int error)
   pendingRequests_.pop_front();
 }
 
-void UDPTrackerClient::addRequest(const SharedHandle<UDPTrackerRequest>& req)
+void UDPTrackerClient::addRequest(const std::shared_ptr<UDPTrackerRequest>& req)
 {
   req->state = UDPT_STA_PENDING;
   req->error = UDPT_ERR_SUCCESS;
@@ -366,7 +366,7 @@ void UDPTrackerClient::addRequest(const SharedHandle<UDPTrackerRequest>& req)
 
 namespace {
 struct TimeoutCheck {
-  bool operator()(const SharedHandle<UDPTrackerRequest>& req) const
+  bool operator()(const std::shared_ptr<UDPTrackerRequest>& req) const
   {
     int t = req->dispatched.difference(now);
     if(req->failCount == 0) {
@@ -379,7 +379,7 @@ struct TimeoutCheck {
           break;
         case  UDPT_ACT_ANNOUNCE:
           A2_LOG_INFO(fmt("UDPT resend ANNOUNCE to %s:%u transaction_id=%u, "
-                          "connection_id=%"PRId64", event=%s, infohash=%s",
+                          "connection_id=%" PRId64 ", event=%s, infohash=%s",
                           req->remoteAddr.c_str(), req->remotePort,
                           req->transactionId, req->connectionId,
                           getUDPTrackerEventStr(req->event),
@@ -407,7 +407,7 @@ struct TimeoutCheck {
           break;
         case UDPT_ACT_ANNOUNCE:
           A2_LOG_INFO(fmt("UDPT timeout ANNOUNCE to %s:%u transaction_id=%u, "
-                          "connection_id=%"PRId64", event=%s, infohash=%s",
+                          "connection_id=%" PRId64 ", event=%s, infohash=%s",
                           req->remoteAddr.c_str(), req->remotePort,
                           req->transactionId, req->connectionId,
                           getUDPTrackerEventStr(req->event),
@@ -426,10 +426,10 @@ struct TimeoutCheck {
       }
     }
   }
-  std::vector<SharedHandle<UDPTrackerRequest> >& dest;
+  std::vector<std::shared_ptr<UDPTrackerRequest> >& dest;
   UDPTrackerClient* client;
   const Timer& now;
-  TimeoutCheck(std::vector<SharedHandle<UDPTrackerRequest> >& dest,
+  TimeoutCheck(std::vector<std::shared_ptr<UDPTrackerRequest> >& dest,
                UDPTrackerClient* client,
                const Timer& now)
     : dest(dest), client(client), now(now)
@@ -439,7 +439,7 @@ struct TimeoutCheck {
 
 void UDPTrackerClient::handleTimeout(const Timer& now)
 {
-  std::vector<SharedHandle<UDPTrackerRequest> > dest;
+  std::vector<std::shared_ptr<UDPTrackerRequest> > dest;
   inflightRequests_.erase(std::remove_if(inflightRequests_.begin(),
                                          inflightRequests_.end(),
                                          TimeoutCheck(dest, this, now)),
@@ -447,12 +447,12 @@ void UDPTrackerClient::handleTimeout(const Timer& now)
   pendingRequests_.insert(pendingRequests_.begin(), dest.begin(), dest.end());
 }
 
-SharedHandle<UDPTrackerRequest> UDPTrackerClient::findInflightRequest
+std::shared_ptr<UDPTrackerRequest> UDPTrackerClient::findInflightRequest
 (const std::string& remoteAddr, uint16_t remotePort, int32_t transactionId,
  bool remove)
 {
-  SharedHandle<UDPTrackerRequest> res;
-  for(std::deque<SharedHandle<UDPTrackerRequest> >::iterator i =
+  std::shared_ptr<UDPTrackerRequest> res;
+  for(std::deque<std::shared_ptr<UDPTrackerRequest> >::iterator i =
         inflightRequests_.begin(), eoi = inflightRequests_.end(); i != eoi;
       ++i) {
     if((*i)->remoteAddr == remoteAddr && (*i)->remotePort == remotePort &&
@@ -487,7 +487,7 @@ UDPTrackerConnection* UDPTrackerClient::getConnectionId
 
 namespace {
 struct FailConnectDelete {
-  bool operator()(const SharedHandle<UDPTrackerRequest>& req) const
+  bool operator()(const std::shared_ptr<UDPTrackerRequest>& req) const
   {
     if(req->action == UDPT_ACT_ANNOUNCE &&
        req->remoteAddr == remoteAddr && req->remotePort == remotePort) {
@@ -548,7 +548,7 @@ void UDPTrackerClient::decreaseWatchers()
 ssize_t createUDPTrackerConnect
 (unsigned char* data, size_t length,
  std::string& remoteAddr, uint16_t& remotePort,
- const SharedHandle<UDPTrackerRequest>& req)
+ const std::shared_ptr<UDPTrackerRequest>& req)
 {
   assert(length >= 16);
   remoteAddr = req->remoteAddr;
@@ -562,7 +562,7 @@ ssize_t createUDPTrackerConnect
 ssize_t createUDPTrackerAnnounce
 (unsigned char* data, size_t length,
  std::string& remoteAddr, uint16_t& remotePort,
- const SharedHandle<UDPTrackerRequest>& req)
+ const std::shared_ptr<UDPTrackerRequest>& req)
 {
   assert(length >= 100);
   remoteAddr = req->remoteAddr;

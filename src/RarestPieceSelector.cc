@@ -43,7 +43,7 @@
 namespace aria2 {
 
 RarestPieceSelector::RarestPieceSelector
-(const SharedHandle<PieceStatMan>& pieceStatMan):pieceStatMan_(pieceStatMan) {}
+(const std::shared_ptr<PieceStatMan>& pieceStatMan):pieceStatMan_(pieceStatMan) {}
 
 bool RarestPieceSelector::select
 (size_t& index, const unsigned char* bitfield, size_t nbits) const

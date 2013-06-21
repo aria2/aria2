@@ -49,7 +49,7 @@ namespace rpc {
 
 namespace {
 template<typename OutputStream>
-void encodeValue(const SharedHandle<ValueBase>& value, OutputStream& o)
+void encodeValue(const std::shared_ptr<ValueBase>& value, OutputStream& o)
 {
   class XmlValueBaseVisitor:public ValueBaseVisitor {
   private:
@@ -104,7 +104,7 @@ void encodeValue(const SharedHandle<ValueBase>& value, OutputStream& o)
 namespace {
 template<typename OutputStream>
 std::string encodeAll
-(OutputStream& o, int code, const SharedHandle<ValueBase>& param)
+(OutputStream& o, int code, const std::shared_ptr<ValueBase>& param)
 {
   o << "<?xml version=\"1.0\"?>" << "<methodResponse>";
   if(code == 0) {
@@ -123,8 +123,8 @@ std::string encodeAll
 
 RpcResponse::RpcResponse
 (int code,
- const SharedHandle<ValueBase>& param,
- const SharedHandle<ValueBase>& id)
+ const std::shared_ptr<ValueBase>& param,
+ const std::shared_ptr<ValueBase>& id)
   : code(code), param(param), id(id)
 {}
 
@@ -166,14 +166,14 @@ template<typename OutputStream>
 OutputStream& encodeJsonAll
 (OutputStream& o,
  int code,
- const SharedHandle<ValueBase>& param,
- const SharedHandle<ValueBase>& id,
+ const std::shared_ptr<ValueBase>& param,
+ const std::shared_ptr<ValueBase>& id,
  const std::string& callback = A2STR::NIL)
 {
   if(!callback.empty()) {
     o << callback << "(";
   }
-  SharedHandle<Dict> dict = Dict::g();
+  std::shared_ptr<Dict> dict = Dict::g();
   dict->put("jsonrpc", "2.0");
   dict->put("id", id);
   if(code == 0) {

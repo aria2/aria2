@@ -37,16 +37,16 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTRoutingTableDeserializerTest);
 
 void DHTRoutingTableDeserializerTest::testDeserialize()
 {
-  SharedHandle<DHTNode> localNode(new DHTNode());
+  std::shared_ptr<DHTNode> localNode(new DHTNode());
 
-  SharedHandle<DHTNode> nodesSrc[3];
+  std::shared_ptr<DHTNode> nodesSrc[3];
   for(size_t i = 0; i < A2_ARRAY_LEN(nodesSrc); ++i) {
     nodesSrc[i].reset(new DHTNode());
     nodesSrc[i]->setIPAddress("192.168.0."+util::uitos(i+1));
     nodesSrc[i]->setPort(6881+i);
   }
   nodesSrc[1]->setIPAddress("non-numerical-name");
-  std::vector<SharedHandle<DHTNode> > nodes(vbegin(nodesSrc), vend(nodesSrc));
+  std::vector<std::shared_ptr<DHTNode> > nodes(vbegin(nodesSrc), vend(nodesSrc));
 
   DHTRoutingTableSerializer s(AF_INET);
   s.setLocalNode(localNode);
@@ -64,7 +64,7 @@ void DHTRoutingTableDeserializerTest::testDeserialize()
   std::cout << d.getSerializedTime().getTime() << std::endl;
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, d.getNodes().size());
-  const std::vector<SharedHandle<DHTNode> >& dsnodes = d.getNodes();
+  const std::vector<std::shared_ptr<DHTNode> >& dsnodes = d.getNodes();
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), dsnodes[0]->getIPAddress());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, dsnodes[0]->getPort());
   CPPUNIT_ASSERT(memcmp(nodes[0]->getID(), dsnodes[0]->getID(), DHT_ID_LENGTH) == 0);
@@ -75,16 +75,16 @@ void DHTRoutingTableDeserializerTest::testDeserialize()
 
 void DHTRoutingTableDeserializerTest::testDeserialize6()
 {
-  SharedHandle<DHTNode> localNode(new DHTNode());
+  std::shared_ptr<DHTNode> localNode(new DHTNode());
 
-  SharedHandle<DHTNode> nodesSrc[3];
+  std::shared_ptr<DHTNode> nodesSrc[3];
   for(size_t i = 0; i < A2_ARRAY_LEN(nodesSrc); ++i) {
     nodesSrc[i].reset(new DHTNode());
     nodesSrc[i]->setIPAddress("2001::100"+util::uitos(i+1));
     nodesSrc[i]->setPort(6881+i);
   }
   nodesSrc[1]->setIPAddress("non-numerical-name");
-  std::vector<SharedHandle<DHTNode> > nodes(vbegin(nodesSrc), vend(nodesSrc));
+  std::vector<std::shared_ptr<DHTNode> > nodes(vbegin(nodesSrc), vend(nodesSrc));
 
   DHTRoutingTableSerializer s(AF_INET6);
   s.setLocalNode(localNode);
@@ -102,7 +102,7 @@ void DHTRoutingTableDeserializerTest::testDeserialize6()
   std::cout << d.getSerializedTime().getTime() << std::endl;
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, d.getNodes().size());
-  const std::vector<SharedHandle<DHTNode> >& dsnodes = d.getNodes();
+  const std::vector<std::shared_ptr<DHTNode> >& dsnodes = d.getNodes();
   CPPUNIT_ASSERT_EQUAL(std::string("2001::1001"), dsnodes[0]->getIPAddress());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, dsnodes[0]->getPort());
   CPPUNIT_ASSERT(memcmp(nodes[0]->getID(), dsnodes[0]->getID(),

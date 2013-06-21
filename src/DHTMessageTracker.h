@@ -39,8 +39,8 @@
 
 #include <utility>
 #include <deque>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "a2time.h"
 #include "ValueBase.h"
 
@@ -55,38 +55,38 @@ class DHTMessageTrackerEntry;
 
 class DHTMessageTracker {
 private:
-  std::deque<SharedHandle<DHTMessageTrackerEntry> > entries_;
+  std::deque<std::shared_ptr<DHTMessageTrackerEntry> > entries_;
 
-  SharedHandle<DHTRoutingTable> routingTable_;
+  std::shared_ptr<DHTRoutingTable> routingTable_;
 
-  SharedHandle<DHTMessageFactory> factory_;
+  std::shared_ptr<DHTMessageFactory> factory_;
 public:
   DHTMessageTracker();
 
   ~DHTMessageTracker();
 
-  void addMessage(const SharedHandle<DHTMessage>& message,
+  void addMessage(const std::shared_ptr<DHTMessage>& message,
                   time_t timeout,
-                  const SharedHandle<DHTMessageCallback>& callback =
-                  SharedHandle<DHTMessageCallback>());
+                  const std::shared_ptr<DHTMessageCallback>& callback =
+                  std::shared_ptr<DHTMessageCallback>());
 
-  std::pair<SharedHandle<DHTResponseMessage>, SharedHandle<DHTMessageCallback> >
+  std::pair<std::shared_ptr<DHTResponseMessage>, std::shared_ptr<DHTMessageCallback> >
   messageArrived(const Dict* dict,
                  const std::string& ipaddr, uint16_t port);
 
   void handleTimeout();
 
   // Made public so that unnamed functor can access this
-  void handleTimeoutEntry(const SharedHandle<DHTMessageTrackerEntry>& entry);
+  void handleTimeoutEntry(const std::shared_ptr<DHTMessageTrackerEntry>& entry);
 
-  SharedHandle<DHTMessageTrackerEntry> getEntryFor
-  (const SharedHandle<DHTMessage>& message) const;
+  std::shared_ptr<DHTMessageTrackerEntry> getEntryFor
+  (const std::shared_ptr<DHTMessage>& message) const;
 
   size_t countEntry() const;
 
-  void setRoutingTable(const SharedHandle<DHTRoutingTable>& routingTable);
+  void setRoutingTable(const std::shared_ptr<DHTRoutingTable>& routingTable);
 
-  void setMessageFactory(const SharedHandle<DHTMessageFactory>& factory);
+  void setMessageFactory(const std::shared_ptr<DHTMessageFactory>& factory);
 };
 
 } // namespace aria2

@@ -41,15 +41,15 @@ class DefaultBtMessageDispatcherTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testRemoveOutstandingRequest);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<DownloadContext> dctx_;
-  SharedHandle<Peer> peer;
-  SharedHandle<DefaultBtMessageDispatcher> btMessageDispatcher;
-  SharedHandle<MockPeerStorage> peerStorage;
-  SharedHandle<MockPieceStorage> pieceStorage;
-  SharedHandle<MockBtMessageFactory> messageFactory_;
-  SharedHandle<RequestGroupMan> rgman_;
-  SharedHandle<Option> option_;
-  SharedHandle<RequestGroup> rg_;
+  std::shared_ptr<DownloadContext> dctx_;
+  std::shared_ptr<Peer> peer;
+  std::shared_ptr<DefaultBtMessageDispatcher> btMessageDispatcher;
+  std::shared_ptr<MockPeerStorage> peerStorage;
+  std::shared_ptr<MockPieceStorage> pieceStorage;
+  std::shared_ptr<MockBtMessageFactory> messageFactory_;
+  std::shared_ptr<RequestGroupMan> rgman_;
+  std::shared_ptr<Option> option_;
+  std::shared_ptr<RequestGroup> rg_;
 public:
   void tearDown() {}
 
@@ -110,22 +110,22 @@ public:
 
   class MockPieceStorage2 : public MockPieceStorage {
   private:
-    SharedHandle<Piece> piece;
+    std::shared_ptr<Piece> piece;
   public:
-    virtual SharedHandle<Piece> getPiece(size_t index) {
+    virtual std::shared_ptr<Piece> getPiece(size_t index) {
       return piece;
     }
 
-    void setPiece(const SharedHandle<Piece>& piece) {
+    void setPiece(const std::shared_ptr<Piece>& piece) {
       this->piece = piece;
     }
   };
 
   class MockBtMessageFactory2 : public MockBtMessageFactory {
   public:
-    virtual SharedHandle<BtMessage>
+    virtual std::shared_ptr<BtMessage>
     createCancelMessage(size_t index, int32_t begin, int32_t length) {
-      SharedHandle<MockBtMessage2> btMsg(new MockBtMessage2());
+      std::shared_ptr<MockBtMessage2> btMsg(new MockBtMessage2());
       btMsg->type = "cancel";
       return btMsg;
     }
@@ -150,7 +150,7 @@ public:
 
     messageFactory_.reset(new MockBtMessageFactory2());
 
-    rgman_.reset(new RequestGroupMan(std::vector<SharedHandle<RequestGroup> >(),
+    rgman_.reset(new RequestGroupMan(std::vector<std::shared_ptr<RequestGroup> >(),
                                      0, option_.get()));
 
     btMessageDispatcher.reset(new DefaultBtMessageDispatcher());
@@ -168,7 +168,7 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(DefaultBtMessageDispatcherTest);
 
 void DefaultBtMessageDispatcherTest::testAddMessage() {
-  SharedHandle<MockBtMessage2> msg(new MockBtMessage2());
+  std::shared_ptr<MockBtMessage2> msg(new MockBtMessage2());
   CPPUNIT_ASSERT_EQUAL(false, msg->isOnQueuedCalled());
   btMessageDispatcher->addMessageToQueue(msg);
   CPPUNIT_ASSERT_EQUAL(true, msg->isOnQueuedCalled());
@@ -177,9 +177,9 @@ void DefaultBtMessageDispatcherTest::testAddMessage() {
 }
 
 void DefaultBtMessageDispatcherTest::testSendMessages() {
-  SharedHandle<MockBtMessage2> msg1(new MockBtMessage2());
+  std::shared_ptr<MockBtMessage2> msg1(new MockBtMessage2());
   msg1->setUploading(false);
-  SharedHandle<MockBtMessage2> msg2(new MockBtMessage2());
+  std::shared_ptr<MockBtMessage2> msg2(new MockBtMessage2());
   msg2->setUploading(false);
   btMessageDispatcher->addMessageToQueue(msg1);
   btMessageDispatcher->addMessageToQueue(msg2);
@@ -190,9 +190,9 @@ void DefaultBtMessageDispatcherTest::testSendMessages() {
 }
 
 void DefaultBtMessageDispatcherTest::testSendMessages_underUploadLimit() {
-  SharedHandle<MockBtMessage2> msg1(new MockBtMessage2());
+  std::shared_ptr<MockBtMessage2> msg1(new MockBtMessage2());
   msg1->setUploading(true);
-  SharedHandle<MockBtMessage2> msg2(new MockBtMessage2());
+  std::shared_ptr<MockBtMessage2> msg2(new MockBtMessage2());
   msg2->setUploading(true);
   btMessageDispatcher->addMessageToQueue(msg1);
   btMessageDispatcher->addMessageToQueue(msg2);
@@ -212,11 +212,11 @@ void DefaultBtMessageDispatcherTest::testSendMessages_underUploadLimit() {
 //   stat.setUploadSpeed(150);
 //   peerStorage->setStat(stat);
 
-//   SharedHandle<MockBtMessage2> msg1(new MockBtMessage2());
+//   std::shared_ptr<MockBtMessage2> msg1(new MockBtMessage2());
 //   msg1->setUploading(true);
-//   SharedHandle<MockBtMessage2> msg2(new MockBtMessage2());
+//   std::shared_ptr<MockBtMessage2> msg2(new MockBtMessage2());
 //   msg2->setUploading(true);
-//   SharedHandle<MockBtMessage2> msg3(new MockBtMessage2());
+//   std::shared_ptr<MockBtMessage2> msg3(new MockBtMessage2());
 //   msg3->setUploading(false);
 
 //   btMessageDispatcher->addMessageToQueue(msg1);
@@ -233,8 +233,8 @@ void DefaultBtMessageDispatcherTest::testSendMessages_underUploadLimit() {
 // }
 
 void DefaultBtMessageDispatcherTest::testDoCancelSendingPieceAction() {
-  SharedHandle<MockBtMessage2> msg1(new MockBtMessage2());
-  SharedHandle<MockBtMessage2> msg2(new MockBtMessage2());
+  std::shared_ptr<MockBtMessage2> msg1(new MockBtMessage2());
+  std::shared_ptr<MockBtMessage2> msg2(new MockBtMessage2());
 
   btMessageDispatcher->addMessageToQueue(msg1);
   btMessageDispatcher->addMessageToQueue(msg2);
@@ -248,14 +248,14 @@ void DefaultBtMessageDispatcherTest::testDoCancelSendingPieceAction() {
 int MY_PIECE_LENGTH = 16*1024;
 
 void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing() {
-  SharedHandle<Piece> piece(new Piece(0, MY_PIECE_LENGTH));
+  std::shared_ptr<Piece> piece(new Piece(0, MY_PIECE_LENGTH));
   RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0, piece);
 
   size_t index;
   CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(index));
   CPPUNIT_ASSERT_EQUAL((size_t)0, index);
 
-  SharedHandle<MockPieceStorage2> pieceStorage(new MockPieceStorage2());
+  std::shared_ptr<MockPieceStorage2> pieceStorage(new MockPieceStorage2());
   pieceStorage->setPiece(piece);
 
   btMessageDispatcher->setRequestTimeout(60);
@@ -271,7 +271,7 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing() {
 }
 
 void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_timeout() {
-  SharedHandle<Piece> piece(new Piece(0, MY_PIECE_LENGTH));
+  std::shared_ptr<Piece> piece(new Piece(0, MY_PIECE_LENGTH));
   RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0, piece);
   // make this slot timeout
   slot.setDispatchedTime(0);
@@ -280,7 +280,7 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_tim
   CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(index));
   CPPUNIT_ASSERT_EQUAL((size_t)0, index);
 
-  SharedHandle<MockPieceStorage2> pieceStorage(new MockPieceStorage2());
+  std::shared_ptr<MockPieceStorage2> pieceStorage(new MockPieceStorage2());
   pieceStorage->setPiece(piece);
 
   btMessageDispatcher->setRequestTimeout(60);
@@ -298,12 +298,12 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_tim
 }
 
 void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_completeBlock() {
-  SharedHandle<Piece> piece(new Piece(0, MY_PIECE_LENGTH));
+  std::shared_ptr<Piece> piece(new Piece(0, MY_PIECE_LENGTH));
   piece->completeBlock(0);
 
   RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0, piece);
 
-  SharedHandle<MockPieceStorage2> pieceStorage(new MockPieceStorage2());
+  std::shared_ptr<MockPieceStorage2> pieceStorage(new MockPieceStorage2());
   pieceStorage->setPiece(piece);
 
   btMessageDispatcher->setRequestTimeout(60);
@@ -354,7 +354,7 @@ void DefaultBtMessageDispatcherTest::testGetOutstandingRequest() {
 }
 
 void DefaultBtMessageDispatcherTest::testRemoveOutstandingRequest() {
-  SharedHandle<Piece> piece(new Piece(1, 1024*1024));
+  std::shared_ptr<Piece> piece(new Piece(1, 1024*1024));
   size_t blockIndex = 0;
   CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(blockIndex));
   uint32_t begin = blockIndex*piece->getBlockLength();

@@ -106,9 +106,9 @@ void splitURI(std::vector<std::string>& result,
 } // namespace
 
 namespace {
-SharedHandle<GroupId> getGID(const SharedHandle<Option>& option)
+std::shared_ptr<GroupId> getGID(const std::shared_ptr<Option>& option)
 {
-  SharedHandle<GroupId> gid;
+  std::shared_ptr<GroupId> gid;
   if(option->defined(PREF_GID)) {
     a2_gid_t n;
     if(GroupId::toNumericId(n, option->get(PREF_GID).c_str()) != 0) {
@@ -128,14 +128,14 @@ SharedHandle<GroupId> getGID(const SharedHandle<Option>& option)
 } // namespace
 
 namespace {
-SharedHandle<RequestGroup> createRequestGroup
-(const SharedHandle<Option>& optionTemplate,
+std::shared_ptr<RequestGroup> createRequestGroup
+(const std::shared_ptr<Option>& optionTemplate,
  const std::vector<std::string>& uris,
  bool useOutOption = false)
 {
-  SharedHandle<Option> option = util::copy(optionTemplate);
-  SharedHandle<RequestGroup> rg(new RequestGroup(getGID(option), option));
-  SharedHandle<DownloadContext> dctx
+  std::shared_ptr<Option> option = util::copy(optionTemplate);
+  std::shared_ptr<RequestGroup> rg(new RequestGroup(getGID(option), option));
+  std::shared_ptr<DownloadContext> dctx
     (new DownloadContext
      (option->getAsInt(PREF_PIECE_LENGTH),
       0,
@@ -165,17 +165,17 @@ SharedHandle<RequestGroup> createRequestGroup
 
 #if defined ENABLE_BITTORRENT || ENABLE_METALINK
 namespace {
-SharedHandle<MetadataInfo> createMetadataInfo(const SharedHandle<GroupId>& gid,
+std::shared_ptr<MetadataInfo> createMetadataInfo(const std::shared_ptr<GroupId>& gid,
                                               const std::string& uri)
 {
-  return SharedHandle<MetadataInfo>(new MetadataInfo(gid, uri));
+  return std::shared_ptr<MetadataInfo>(new MetadataInfo(gid, uri));
 }
 } // namespace
 
 namespace {
-SharedHandle<MetadataInfo> createMetadataInfoDataOnly()
+std::shared_ptr<MetadataInfo> createMetadataInfoDataOnly()
 {
-  return SharedHandle<MetadataInfo>(new MetadataInfo());
+  return std::shared_ptr<MetadataInfo>(new MetadataInfo());
 }
 } // namespace
 #endif // ENABLE_BITTORRENT || ENABLE_METALINK
@@ -183,17 +183,17 @@ SharedHandle<MetadataInfo> createMetadataInfoDataOnly()
 #ifdef ENABLE_BITTORRENT
 
 namespace {
-SharedHandle<RequestGroup>
+std::shared_ptr<RequestGroup>
 createBtRequestGroup(const std::string& metaInfoUri,
-                     const SharedHandle<Option>& optionTemplate,
+                     const std::shared_ptr<Option>& optionTemplate,
                      const std::vector<std::string>& auxUris,
-                     const SharedHandle<ValueBase>& torrent,
+                     const std::shared_ptr<ValueBase>& torrent,
                      bool adjustAnnounceUri = true)
 {
-  SharedHandle<Option> option = util::copy(optionTemplate);
-  SharedHandle<GroupId> gid = getGID(option);
-  SharedHandle<RequestGroup> rg(new RequestGroup(gid, option));
-  SharedHandle<DownloadContext> dctx(new DownloadContext());
+  std::shared_ptr<Option> option = util::copy(optionTemplate);
+  std::shared_ptr<GroupId> gid = getGID(option);
+  std::shared_ptr<RequestGroup> rg(new RequestGroup(gid, option));
+  std::shared_ptr<DownloadContext> dctx(new DownloadContext());
   // may throw exception
   bittorrent::loadFromMemory(torrent, dctx, option, auxUris,
                              metaInfoUri.empty() ? "default" : metaInfoUri);
@@ -228,15 +228,15 @@ createBtRequestGroup(const std::string& metaInfoUri,
 } // namespace
 
 namespace {
-SharedHandle<RequestGroup>
+std::shared_ptr<RequestGroup>
 createBtMagnetRequestGroup
 (const std::string& magnetLink,
- const SharedHandle<Option>& optionTemplate)
+ const std::shared_ptr<Option>& optionTemplate)
 {
-  SharedHandle<Option> option = util::copy(optionTemplate);
-  SharedHandle<GroupId> gid = getGID(option);
-  SharedHandle<RequestGroup> rg(new RequestGroup(gid, option));
-  SharedHandle<DownloadContext> dctx
+  std::shared_ptr<Option> option = util::copy(optionTemplate);
+  std::shared_ptr<GroupId> gid = getGID(option);
+  std::shared_ptr<RequestGroup> rg(new RequestGroup(gid, option));
+  std::shared_ptr<DownloadContext> dctx
     (new DownloadContext(METADATA_PIECE_SIZE, 0,
                          A2STR::NIL));
   // We only know info hash. Total Length is unknown at this moment.
@@ -244,17 +244,17 @@ createBtMagnetRequestGroup
   rg->setFileAllocationEnabled(false);
   rg->setPreLocalFileCheckEnabled(false);
   bittorrent::loadMagnet(magnetLink, dctx);
-  SharedHandle<TorrentAttribute> torrentAttrs =
+  std::shared_ptr<TorrentAttribute> torrentAttrs =
     bittorrent::getTorrentAttrs(dctx);
   bittorrent::adjustAnnounceUri(torrentAttrs, option);
   dctx->getFirstFileEntry()->setPath(torrentAttrs->name);
   rg->setDownloadContext(dctx);
   rg->clearPostDownloadHandler();
-  SharedHandle<UTMetadataPostDownloadHandler> utMetadataPostHandler
+  std::shared_ptr<UTMetadataPostDownloadHandler> utMetadataPostHandler
     (new UTMetadataPostDownloadHandler());
   rg->addPostDownloadHandler(utMetadataPostHandler);
   rg->setDiskWriterFactory
-    (SharedHandle<DiskWriterFactory>(new ByteArrayDiskWriterFactory()));
+    (std::shared_ptr<DiskWriterFactory>(new ByteArrayDiskWriterFactory()));
   rg->setMetadataInfo(createMetadataInfo(gid, magnetLink));
   rg->markInMemoryDownload();
   rg->setPauseRequested(option->getAsBool(PREF_PAUSE));
@@ -264,14 +264,14 @@ createBtMagnetRequestGroup
 } // namespace
 
 void createRequestGroupForBitTorrent
-(std::vector<SharedHandle<RequestGroup> >& result,
- const SharedHandle<Option>& option,
+(std::vector<std::shared_ptr<RequestGroup> >& result,
+ const std::shared_ptr<Option>& option,
  const std::vector<std::string>& uris,
  const std::string& metaInfoUri,
  const std::string& torrentData,
  bool adjustAnnounceUri)
 {
-  SharedHandle<ValueBase> torrent;
+  std::shared_ptr<ValueBase> torrent;
   bittorrent::ValueBaseBencodeParser parser;
   if(torrentData.empty()) {
     torrent = parseFile(parser, metaInfoUri);
@@ -288,11 +288,11 @@ void createRequestGroupForBitTorrent
 }
 
 void createRequestGroupForBitTorrent
-(std::vector<SharedHandle<RequestGroup> >& result,
- const SharedHandle<Option>& option,
+(std::vector<std::shared_ptr<RequestGroup> >& result,
+ const std::shared_ptr<Option>& option,
  const std::vector<std::string>& uris,
  const std::string& metaInfoUri,
- const SharedHandle<ValueBase>& torrent,
+ const std::shared_ptr<ValueBase>& torrent,
  bool adjustAnnounceUri)
 {
   std::vector<std::string> nargs;
@@ -303,7 +303,7 @@ void createRequestGroupForBitTorrent
   }
   // we ignore -Z option here
   size_t numSplit = option->getAsInt(PREF_SPLIT);
-  SharedHandle<RequestGroup> rg =
+  std::shared_ptr<RequestGroup> rg =
     createBtRequestGroup(metaInfoUri, option, nargs,
                          torrent, adjustAnnounceUri);
   rg->setNumConcurrentCommand(numSplit);
@@ -314,8 +314,8 @@ void createRequestGroupForBitTorrent
 
 #ifdef ENABLE_METALINK
 void createRequestGroupForMetalink
-(std::vector<SharedHandle<RequestGroup> >& result,
- const SharedHandle<Option>& option,
+(std::vector<std::shared_ptr<RequestGroup> >& result,
+ const std::shared_ptr<Option>& option,
  const std::string& metalinkData)
 {
   if(metalinkData.empty()) {
@@ -324,7 +324,7 @@ void createRequestGroupForMetalink
                                      option,
                                      option->get(PREF_METALINK_BASE_URI));
   } else {
-    SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
+    std::shared_ptr<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
     dw->setString(metalinkData);
     Metalink2RequestGroup().generate(result, dw, option,
                                      option->get(PREF_METALINK_BASE_URI));
@@ -335,14 +335,14 @@ void createRequestGroupForMetalink
 namespace {
 class AccRequestGroup {
 private:
-  std::vector<SharedHandle<RequestGroup> >& requestGroups_;
+  std::vector<std::shared_ptr<RequestGroup> >& requestGroups_;
   ProtocolDetector detector_;
-  SharedHandle<Option> option_;
+  std::shared_ptr<Option> option_;
   bool ignoreLocalPath_;
   bool throwOnError_;
 public:
-  AccRequestGroup(std::vector<SharedHandle<RequestGroup> >& requestGroups,
-                  const SharedHandle<Option>& option,
+  AccRequestGroup(std::vector<std::shared_ptr<RequestGroup> >& requestGroups,
+                  const std::shared_ptr<Option>& option,
                   bool ignoreLocalPath = false,
                   bool throwOnError = false):
     requestGroups_(requestGroups), option_(option),
@@ -361,19 +361,19 @@ public:
       for(size_t i = 0; i < num; ++i) {
         streamURIs.push_back(uri);
       }
-      SharedHandle<RequestGroup> rg = createRequestGroup(option_, streamURIs);
+      std::shared_ptr<RequestGroup> rg = createRequestGroup(option_, streamURIs);
       rg->setNumConcurrentCommand(numSplit);
       requestGroups_.push_back(rg);
     }
 #ifdef ENABLE_BITTORRENT
     else if(detector_.guessTorrentMagnet(uri)) {
-      SharedHandle<RequestGroup> group =
+      std::shared_ptr<RequestGroup> group =
         createBtMagnetRequestGroup(uri, option_);
       requestGroups_.push_back(group);
     } else if(!ignoreLocalPath_ && detector_.guessTorrentFile(uri)) {
       try {
         bittorrent::ValueBaseBencodeParser parser;
-        SharedHandle<ValueBase> torrent = parseFile(parser, uri);
+        std::shared_ptr<ValueBase> torrent = parseFile(parser, uri);
         if(!torrent) {
           throw DL_ABORT_EX2("Bencode decoding failed",
                              error_code::BENCODE_PARSE_ERROR);
@@ -431,8 +431,8 @@ public:
 } // namespace
 
 void createRequestGroupForUri
-(std::vector<SharedHandle<RequestGroup> >& result,
- const SharedHandle<Option>& option,
+(std::vector<std::shared_ptr<RequestGroup> >& result,
+ const std::shared_ptr<Option>& option,
  const std::vector<std::string>& uris,
  bool ignoreForceSequential,
  bool ignoreLocalPath,
@@ -458,7 +458,7 @@ void createRequestGroupForUri
       std::vector<std::string> streamURIs;
       splitURI(streamURIs, nargs.begin(), strmProtoEnd, numSplit, numIter);
       try {
-        SharedHandle<RequestGroup> rg =
+        std::shared_ptr<RequestGroup> rg =
           createRequestGroup(option, streamURIs, true);
         rg->setNumConcurrentCommand(numSplit);
         result.push_back(rg);
@@ -478,7 +478,7 @@ void createRequestGroupForUri
 }
 
 bool createRequestGroupFromUriListParser
-(std::vector<SharedHandle<RequestGroup> >& result,
+(std::vector<std::shared_ptr<RequestGroup> >& result,
  const Option* option,
  UriListParser* uriListParser)
 {
@@ -493,9 +493,9 @@ bool createRequestGroupFromUriListParser
     if(uris.empty()) {
       continue;
     }
-    SharedHandle<Option> requestOption(new Option(*option));
+    std::shared_ptr<Option> requestOption(new Option(*option));
     requestOption->remove(PREF_OUT);
-    const SharedHandle<OptionParser>& oparser = OptionParser::getInstance();
+    const std::shared_ptr<OptionParser>& oparser = OptionParser::getInstance();
     for(size_t i = 1, len = option::countOption(); i < len; ++i) {
       const Pref* pref = option::i2p(i);
       const OptionHandler* h = oparser->find(pref);
@@ -512,7 +512,7 @@ bool createRequestGroupFromUriListParser
   return false;
 }
 
-SharedHandle<UriListParser> openUriListParser(const std::string& filename)
+std::shared_ptr<UriListParser> openUriListParser(const std::string& filename)
 {
   std::string listPath;
   if(filename == "-") {
@@ -524,36 +524,36 @@ SharedHandle<UriListParser> openUriListParser(const std::string& filename)
     }
     listPath = filename;
   }
-  return SharedHandle<UriListParser>(new UriListParser(listPath));
+  return std::shared_ptr<UriListParser>(new UriListParser(listPath));
 }
 
 void createRequestGroupForUriList
-(std::vector<SharedHandle<RequestGroup> >& result,
- const SharedHandle<Option>& option)
+(std::vector<std::shared_ptr<RequestGroup> >& result,
+ const std::shared_ptr<Option>& option)
 {
-  SharedHandle<UriListParser> uriListParser = openUriListParser
+  std::shared_ptr<UriListParser> uriListParser = openUriListParser
     (option->get(PREF_INPUT_FILE));
   while(createRequestGroupFromUriListParser(result, option.get(),
                                             uriListParser.get()));
 }
 
-SharedHandle<MetadataInfo>
-createMetadataInfoFromFirstFileEntry(const SharedHandle<GroupId>& gid,
-                                     const SharedHandle<DownloadContext>& dctx)
+std::shared_ptr<MetadataInfo>
+createMetadataInfoFromFirstFileEntry(const std::shared_ptr<GroupId>& gid,
+                                     const std::shared_ptr<DownloadContext>& dctx)
 {
   if(dctx->getFileEntries().empty()) {
-    return SharedHandle<MetadataInfo>();
+    return std::shared_ptr<MetadataInfo>();
   } else {
     std::vector<std::string> uris;
     dctx->getFileEntries()[0]->getUris(uris);
     if(uris.empty()) {
-      return SharedHandle<MetadataInfo>();
+      return std::shared_ptr<MetadataInfo>();
     }
-    return SharedHandle<MetadataInfo>(new MetadataInfo(gid, uris[0]));
+    return std::shared_ptr<MetadataInfo>(new MetadataInfo(gid, uris[0]));
   }
 }
 
-void removeOneshotOption(const SharedHandle<Option>& option)
+void removeOneshotOption(const std::shared_ptr<Option>& option)
 {
   option->remove(PREF_PAUSE);
   option->remove(PREF_GID);

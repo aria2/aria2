@@ -90,7 +90,7 @@ void DHTPeerAnnounceEntryTest::testGetPeers()
 
   DHTPeerAnnounceEntry entry(infohash);
   {
-    std::vector<SharedHandle<Peer> > peers;
+    std::vector<std::shared_ptr<Peer> > peers;
     entry.getPeers(peers);
     CPPUNIT_ASSERT_EQUAL((size_t)0, peers.size());
   }
@@ -99,7 +99,7 @@ void DHTPeerAnnounceEntryTest::testGetPeers()
   entry.addPeerAddrEntry(PeerAddrEntry("192.168.0.2", 6882));
 
   {
-    std::vector<SharedHandle<Peer> > peers;
+    std::vector<std::shared_ptr<Peer> > peers;
     entry.getPeers(peers);
     CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());
     CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peers[0]->getIPAddress());

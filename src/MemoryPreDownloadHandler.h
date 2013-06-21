@@ -50,7 +50,7 @@ public:
 
   virtual void execute(RequestGroup* requestGroup)
   {
-    SharedHandle<DiskWriterFactory> dwf(new DiskWriterFactoryType());
+    std::shared_ptr<DiskWriterFactory> dwf(new DiskWriterFactoryType());
     requestGroup->setDiskWriterFactory(dwf);
     requestGroup->setFileAllocationEnabled(false);
     requestGroup->setPreLocalFileCheckEnabled(false);

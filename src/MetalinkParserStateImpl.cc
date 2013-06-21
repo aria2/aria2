@@ -35,6 +35,7 @@
 #include "MetalinkParserStateImpl.h"
 
 #include <cstring>
+#include <algorithm>
 
 #include "MetalinkParserStateV3Impl.h"
 #include "MetalinkParserStateV4Impl.h"

@@ -166,12 +166,12 @@ void XmlRpcRequestParserStateMachine::pushFrame()
 }
 
 void XmlRpcRequestParserStateMachine::setCurrentFrameValue
-(const SharedHandle<ValueBase>& value)
+(const std::shared_ptr<ValueBase>& value)
 {
   controller_->setCurrentFrameValue(value);
 }
 
-const SharedHandle<ValueBase>&
+const std::shared_ptr<ValueBase>&
 XmlRpcRequestParserStateMachine::getCurrentFrameValue() const
 {
   return controller_->getCurrentFrameValue();

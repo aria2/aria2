@@ -46,19 +46,19 @@ class DirectDiskAdaptor;
 
 class UnknownLengthPieceStorage:public PieceStorage {
 private:
-  SharedHandle<DownloadContext> downloadContext_;
+  std::shared_ptr<DownloadContext> downloadContext_;
 
-  SharedHandle<DirectDiskAdaptor> diskAdaptor_;
+  std::shared_ptr<DirectDiskAdaptor> diskAdaptor_;
 
-  SharedHandle<DiskWriterFactory> diskWriterFactory_;
+  std::shared_ptr<DiskWriterFactory> diskWriterFactory_;
 
   int64_t totalLength_;
 
   bool downloadFinished_;
 
-  SharedHandle<Piece> piece_;
+  std::shared_ptr<Piece> piece_;
 public:
-  UnknownLengthPieceStorage(const SharedHandle<DownloadContext>& downloadContext);
+  UnknownLengthPieceStorage(const std::shared_ptr<DownloadContext>& downloadContext);
 
   virtual ~UnknownLengthPieceStorage();
 
@@ -68,40 +68,40 @@ public:
    * Returns true if the peer has a piece that localhost doesn't have.
    * Otherwise returns false.
    */
-  virtual bool hasMissingPiece(const SharedHandle<Peer>& peer);
+  virtual bool hasMissingPiece(const std::shared_ptr<Peer>& peer);
 
   virtual void getMissingPiece
-  (std::vector<SharedHandle<Piece> >& pieces,
+  (std::vector<std::shared_ptr<Piece> >& pieces,
    size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer,
+   const std::shared_ptr<Peer>& peer,
    cuid_t cuid);
 
   virtual void getMissingPiece
-  (std::vector<SharedHandle<Piece> >& pieces,
+  (std::vector<std::shared_ptr<Piece> >& pieces,
    size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer,
+   const std::shared_ptr<Peer>& peer,
    const std::vector<size_t>& excludedIndexes,
    cuid_t cuid);
 
   virtual void getMissingFastPiece
-  (std::vector<SharedHandle<Piece> >& pieces,
+  (std::vector<std::shared_ptr<Piece> >& pieces,
    size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer,
+   const std::shared_ptr<Peer>& peer,
    cuid_t cuid);
 
   virtual void getMissingFastPiece
-  (std::vector<SharedHandle<Piece> >& pieces,
+  (std::vector<std::shared_ptr<Piece> >& pieces,
    size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer,
+   const std::shared_ptr<Peer>& peer,
    const std::vector<size_t>& excludedIndexes,
    cuid_t cuid);
 
-  virtual SharedHandle<Piece> getMissingPiece
-  (const SharedHandle<Peer>& peer,
+  virtual std::shared_ptr<Piece> getMissingPiece
+  (const std::shared_ptr<Peer>& peer,
    cuid_t cuid);
 
-  virtual SharedHandle<Piece> getMissingPiece
-  (const SharedHandle<Peer>& peer,
+  virtual std::shared_ptr<Piece> getMissingPiece
+  (const std::shared_ptr<Peer>& peer,
    const std::vector<size_t>& excludedIndexes,
    cuid_t cuid);
 #endif // ENABLE_BITTORRENT
@@ -111,7 +111,7 @@ public:
   /**
    * Returns a missing piece if available. Otherwise returns 0;
    */
-  virtual SharedHandle<Piece> getMissingPiece
+  virtual std::shared_ptr<Piece> getMissingPiece
   (size_t minSplitSize,
    const unsigned char* ignoreBitfield,
    size_t length,
@@ -123,23 +123,23 @@ public:
    * then returns 0.
    * Also returns 0 if any of missing piece is not available.
    */
-  virtual SharedHandle<Piece> getMissingPiece(size_t index, cuid_t cuid);
+  virtual std::shared_ptr<Piece> getMissingPiece(size_t index, cuid_t cuid);
 
   /**
    * Returns the piece denoted by index.
    * No status of the piece is changed in this method.
    */
-  virtual SharedHandle<Piece> getPiece(size_t index);
+  virtual std::shared_ptr<Piece> getPiece(size_t index);
 
   /**
    * Tells that the download of the specfied piece completes.
    */
-  virtual void completePiece(const SharedHandle<Piece>& piece);
+  virtual void completePiece(const std::shared_ptr<Piece>& piece);
 
   /**
    * Tells that the download of the specified piece is canceled.
    */
-  virtual void cancelPiece(const SharedHandle<Piece>& piece, cuid_t cuid);
+  virtual void cancelPiece(const std::shared_ptr<Piece>& piece, cuid_t cuid);
 
   /**
    * Returns true if the specified piece is already downloaded.
@@ -226,7 +226,7 @@ public:
 
   virtual void setEndGamePieceNum(size_t num) {}
 
-  virtual SharedHandle<DiskAdaptor> getDiskAdaptor();
+  virtual std::shared_ptr<DiskAdaptor> getDiskAdaptor();
 
   virtual WrDiskCache* getWrDiskCache() { return 0; }
 
@@ -269,14 +269,14 @@ public:
    * class.
    */
   virtual void addInFlightPiece
-  (const std::vector<SharedHandle<Piece> >& pieces) {}
+  (const std::vector<std::shared_ptr<Piece> >& pieces) {}
 
   virtual size_t countInFlightPiece()
   {
     return 0;
   }
 
-  virtual void getInFlightPieces(std::vector<SharedHandle<Piece> >& pieces);
+  virtual void getInFlightPieces(std::vector<std::shared_ptr<Piece> >& pieces);
 
   virtual void addPieceStats(size_t index) {}
 
@@ -292,7 +292,7 @@ public:
 
   virtual size_t getNextUsedIndex(size_t index) { return 0; }
 
-  void setDiskWriterFactory(const SharedHandle<DiskWriterFactory>& diskWriterFactory);
+  void setDiskWriterFactory(const std::shared_ptr<DiskWriterFactory>& diskWriterFactory);
 
   virtual void onDownloadIncomplete() {}
 };

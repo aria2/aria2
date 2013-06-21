@@ -57,7 +57,7 @@
 
 namespace aria2 {
 
-HttpServer::HttpServer(const SharedHandle<SocketCore>& socket)
+HttpServer::HttpServer(const std::shared_ptr<SocketCore>& socket)
  : socket_(socket),
    socketRecvBuffer_(new SocketRecvBuffer(socket_)),
    socketBuffer_(socket),
@@ -126,7 +126,7 @@ const char* getStatusString(int status)
 }
 } // namespace
 
-SharedHandle<HttpHeader> HttpServer::receiveRequest()
+std::shared_ptr<HttpHeader> HttpServer::receiveRequest()
 {
   if(socketRecvBuffer_->bufferEmpty()) {
     if(socketRecvBuffer_->recv() == 0 &&
@@ -134,7 +134,7 @@ SharedHandle<HttpHeader> HttpServer::receiveRequest()
       throw DL_ABORT_EX(EX_EOF_FROM_PEER);
     }
   }
-  SharedHandle<HttpHeader> header;
+  std::shared_ptr<HttpHeader> header;
   if(headerProcessor_->parse(socketRecvBuffer_->getBuffer(),
                              socketRecvBuffer_->getBufferLength())) {
     header = headerProcessor_->getResult();

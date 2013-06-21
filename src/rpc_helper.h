@@ -39,8 +39,7 @@
 
 #include <cstdlib>
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -61,7 +60,7 @@ RpcRequest xmlParseMemory(const char* xml, size_t size);
 // |msg| is the error message. The |id| is the id of the request .
 RpcResponse createJsonRpcErrorResponse(int code,
                                        const std::string& msg,
-                                       const SharedHandle<ValueBase>& id);
+                                       const std::shared_ptr<ValueBase>& id);
 
 // Processes JSON-RPC request |jsondict| and returns the result.
 RpcResponse processJsonRpcRequest(const Dict* jsondict, DownloadEngine* e);

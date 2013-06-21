@@ -35,11 +35,11 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION( UDPTrackerClientTest );
 
 namespace {
-SharedHandle<UDPTrackerRequest> createAnnounce(const std::string& remoteAddr,
+std::shared_ptr<UDPTrackerRequest> createAnnounce(const std::string& remoteAddr,
                                                uint16_t remotePort,
                                                int32_t transactionId)
 {
-  SharedHandle<UDPTrackerRequest> req(new UDPTrackerRequest());
+  std::shared_ptr<UDPTrackerRequest> req(new UDPTrackerRequest());
   req->connectionId = INT64_MAX;
   req->action = UDPT_ACT_ANNOUNCE;
   req->remoteAddr = remoteAddr;
@@ -104,7 +104,7 @@ void UDPTrackerClientTest::testCreateUDPTrackerConnect()
   unsigned char data[16];
   std::string remoteAddr;
   uint16_t remotePort = 0;
-  SharedHandle<UDPTrackerRequest> req(new UDPTrackerRequest());
+  std::shared_ptr<UDPTrackerRequest> req(new UDPTrackerRequest());
   req->action = UDPT_ACT_CONNECT;
   req->remoteAddr = "192.168.0.1";
   req->remotePort = 6991;
@@ -126,7 +126,7 @@ void UDPTrackerClientTest::testCreateUDPTrackerAnnounce()
   unsigned char data[100];
   std::string remoteAddr;
   uint16_t remotePort = 0;
-  SharedHandle<UDPTrackerRequest> req(createAnnounce("192.168.0.1", 6991,
+  std::shared_ptr<UDPTrackerRequest> req(createAnnounce("192.168.0.1", 6991,
                                                      1000000009));
   ssize_t rv = createUDPTrackerAnnounce(data, sizeof(data), remoteAddr,
                                         remotePort, req);
@@ -162,8 +162,8 @@ void UDPTrackerClientTest::testConnectFollowedByAnnounce()
   uint16_t remotePort;
   Timer now;
 
-  SharedHandle<UDPTrackerRequest> req1(createAnnounce("192.168.0.1", 6991, 0));
-  SharedHandle<UDPTrackerRequest> req2(createAnnounce("192.168.0.1", 6991, 0));
+  std::shared_ptr<UDPTrackerRequest> req1(createAnnounce("192.168.0.1", 6991, 0));
+  std::shared_ptr<UDPTrackerRequest> req2(createAnnounce("192.168.0.1", 6991, 0));
   req2->infohash = "bittorrent-infohash2";
 
   tr.addRequest(req1);
@@ -256,7 +256,7 @@ void UDPTrackerClientTest::testConnectFollowedByAnnounce()
 
   // Since we have connection ID, next announce request can be sent
   // immediately
-  SharedHandle<UDPTrackerRequest> req3(createAnnounce("192.168.0.1", 6991, 0));
+  std::shared_ptr<UDPTrackerRequest> req3(createAnnounce("192.168.0.1", 6991, 0));
   req3->infohash = "bittorrent-infohash3";
   tr.addRequest(req3);
   rv = tr.createRequest(data, sizeof(data), remoteAddr, remotePort, now);
@@ -266,7 +266,7 @@ void UDPTrackerClientTest::testConnectFollowedByAnnounce()
 
   tr.requestSent(now);
 
-  SharedHandle<UDPTrackerRequest> req4(createAnnounce("192.168.0.1", 6991, 0));
+  std::shared_ptr<UDPTrackerRequest> req4(createAnnounce("192.168.0.1", 6991, 0));
   req4->infohash = "bittorrent-infohash4";
   tr.addRequest(req4);
   Timer future = now;
@@ -288,9 +288,9 @@ void UDPTrackerClientTest::testRequestFailure()
   uint16_t remotePort;
   Timer now;
   {
-    SharedHandle<UDPTrackerRequest> req1
+    std::shared_ptr<UDPTrackerRequest> req1
       (createAnnounce("192.168.0.1", 6991, 0));
-    SharedHandle<UDPTrackerRequest> req2
+    std::shared_ptr<UDPTrackerRequest> req2
       (createAnnounce("192.168.0.1", 6991, 0));
 
     tr.addRequest(req1);
@@ -308,9 +308,9 @@ void UDPTrackerClientTest::testRequestFailure()
     CPPUNIT_ASSERT(tr.getInflightRequests().empty());
   }
   {
-    SharedHandle<UDPTrackerRequest> req1
+    std::shared_ptr<UDPTrackerRequest> req1
       (createAnnounce("192.168.0.1", 6991, 0));
-    SharedHandle<UDPTrackerRequest> req2
+    std::shared_ptr<UDPTrackerRequest> req2
       (createAnnounce("192.168.0.1", 6991, 0));
 
     tr.addRequest(req1);
@@ -332,7 +332,7 @@ void UDPTrackerClientTest::testRequestFailure()
     CPPUNIT_ASSERT(tr.getInflightRequests().empty());
   }
   {
-    SharedHandle<UDPTrackerRequest> req1
+    std::shared_ptr<UDPTrackerRequest> req1
       (createAnnounce("192.168.0.1", 6991, 0));
 
     tr.addRequest(req1);
@@ -373,9 +373,9 @@ void UDPTrackerClientTest::testTimeout()
   Timer now;
   UDPTrackerClient tr;
   {
-    SharedHandle<UDPTrackerRequest> req1
+    std::shared_ptr<UDPTrackerRequest> req1
       (createAnnounce("192.168.0.1", 6991, 0));
-    SharedHandle<UDPTrackerRequest> req2
+    std::shared_ptr<UDPTrackerRequest> req2
       (createAnnounce("192.168.0.1", 6991, 0));
 
     tr.addRequest(req1);
@@ -408,7 +408,7 @@ void UDPTrackerClientTest::testTimeout()
     CPPUNIT_ASSERT_EQUAL((int)UDPT_ERR_TIMEOUT, req2->error);
   }
   {
-    SharedHandle<UDPTrackerRequest> req1
+    std::shared_ptr<UDPTrackerRequest> req1
       (createAnnounce("192.168.0.1", 6991, 0));
 
     tr.addRequest(req1);

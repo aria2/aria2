@@ -41,8 +41,6 @@
 #include <vector>
 #include <string>
 
-#include "SharedHandle.h"
-
 namespace aria2 {
 
 struct Range;

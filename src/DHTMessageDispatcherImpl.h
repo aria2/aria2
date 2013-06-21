@@ -45,28 +45,28 @@ struct DHTMessageEntry;
 
 class DHTMessageDispatcherImpl:public DHTMessageDispatcher {
 private:
-  SharedHandle<DHTMessageTracker> tracker_;
+  std::shared_ptr<DHTMessageTracker> tracker_;
 
-  std::deque<SharedHandle<DHTMessageEntry> > messageQueue_;
+  std::deque<std::shared_ptr<DHTMessageEntry> > messageQueue_;
 
   time_t timeout_;
 
-  bool sendMessage(const SharedHandle<DHTMessageEntry>& msg);
+  bool sendMessage(const std::shared_ptr<DHTMessageEntry>& msg);
 public:
-  DHTMessageDispatcherImpl(const SharedHandle<DHTMessageTracker>& tracker);
+  DHTMessageDispatcherImpl(const std::shared_ptr<DHTMessageTracker>& tracker);
 
   virtual ~DHTMessageDispatcherImpl();
 
   virtual void
-  addMessageToQueue(const SharedHandle<DHTMessage>& message,
+  addMessageToQueue(const std::shared_ptr<DHTMessage>& message,
                     time_t timeout,
-                    const SharedHandle<DHTMessageCallback>& callback =
-                    SharedHandle<DHTMessageCallback>());
+                    const std::shared_ptr<DHTMessageCallback>& callback =
+                    std::shared_ptr<DHTMessageCallback>());
 
   virtual void
-  addMessageToQueue(const SharedHandle<DHTMessage>& message,
-                    const SharedHandle<DHTMessageCallback>& callback =
-                    SharedHandle<DHTMessageCallback>());
+  addMessageToQueue(const std::shared_ptr<DHTMessage>& message,
+                    const std::shared_ptr<DHTMessageCallback>& callback =
+                    std::shared_ptr<DHTMessageCallback>());
 
   virtual void sendMessages();
 

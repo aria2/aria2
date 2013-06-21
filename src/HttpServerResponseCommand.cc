@@ -46,9 +46,9 @@ namespace aria2 {
 
 HttpServerResponseCommand::HttpServerResponseCommand
 (cuid_t cuid,
- const SharedHandle<HttpServer>& httpServer,
+ const std::shared_ptr<HttpServer>& httpServer,
  DownloadEngine* e,
- const SharedHandle<SocketCore>& socket)
+ const std::shared_ptr<SocketCore>& socket)
   : AbstractHttpServerResponseCommand(cuid, httpServer, e, socket)
 {}
 
@@ -56,7 +56,7 @@ HttpServerResponseCommand::~HttpServerResponseCommand()
 {}
 
 void HttpServerResponseCommand::afterSend
-(const SharedHandle<HttpServer>& httpServer,
+(const std::shared_ptr<HttpServer>& httpServer,
  DownloadEngine* e)
 {
   if(httpServer->supportsPersistentConnection()) {

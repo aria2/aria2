@@ -26,7 +26,7 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION( MessageDigestHelperTest );
 
 void MessageDigestHelperTest::testDigestDiskWriter() {
-  SharedHandle<DefaultDiskWriter> diskio
+  std::shared_ptr<DefaultDiskWriter> diskio
     (new DefaultDiskWriter(A2_TEST_DIR"/4096chunk.txt"));
   diskio->enableReadOnly();
   diskio->openExistingFile();

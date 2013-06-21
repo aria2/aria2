@@ -74,7 +74,7 @@
 namespace aria2 {
 
 DefaultPieceStorage::DefaultPieceStorage
-(const SharedHandle<DownloadContext>& downloadContext, const Option* option)
+(const std::shared_ptr<DownloadContext>& downloadContext, const Option* option)
  : downloadContext_(downloadContext),
    bitfieldMan_(new BitfieldMan(downloadContext->getPieceLength(),
                                 downloadContext->getTotalLength())),
@@ -102,12 +102,12 @@ DefaultPieceStorage::~DefaultPieceStorage()
   delete bitfieldMan_;
 }
 
-SharedHandle<Piece> DefaultPieceStorage::checkOutPiece
+std::shared_ptr<Piece> DefaultPieceStorage::checkOutPiece
 (size_t index, cuid_t cuid)
 {
   bitfieldMan_->setUseBit(index);
 
-  SharedHandle<Piece> piece = findUsedPiece(index);
+  std::shared_ptr<Piece> piece = findUsedPiece(index);
   if(!piece) {
     piece.reset(new Piece(index, bitfieldMan_->getBlockLength(index)));
 #ifdef ENABLE_MESSAGE_DIGEST
@@ -133,9 +133,9 @@ SharedHandle<Piece> DefaultPieceStorage::checkOutPiece
  * Newly instantiated piece is not added to usedPieces.
  * Because it is waste of memory and there is no chance to use them later.
  */
-SharedHandle<Piece> DefaultPieceStorage::getPiece(size_t index)
+std::shared_ptr<Piece> DefaultPieceStorage::getPiece(size_t index)
 {
-  SharedHandle<Piece> piece;
+  std::shared_ptr<Piece> piece;
   if(index <= bitfieldMan_->getMaxIndex()) {
     piece = findUsedPiece(index);
     if(!piece) {
@@ -148,16 +148,16 @@ SharedHandle<Piece> DefaultPieceStorage::getPiece(size_t index)
   return piece;
 }
 
-void DefaultPieceStorage::addUsedPiece(const SharedHandle<Piece>& piece)
+void DefaultPieceStorage::addUsedPiece(const std::shared_ptr<Piece>& piece)
 {
   usedPieces_.insert(piece);
   A2_LOG_DEBUG(fmt("usedPieces_.size()=%lu",
                    static_cast<unsigned long>(usedPieces_.size())));
 }
 
-SharedHandle<Piece> DefaultPieceStorage::findUsedPiece(size_t index) const
+std::shared_ptr<Piece> DefaultPieceStorage::findUsedPiece(size_t index) const
 {
-  SharedHandle<Piece> p(new Piece());
+  std::shared_ptr<Piece> p(new Piece());
   p->setIndex(index);
 
   UsedPieceSet::iterator i = usedPieces_.find(p);
@@ -171,14 +171,14 @@ SharedHandle<Piece> DefaultPieceStorage::findUsedPiece(size_t index) const
 
 #ifdef ENABLE_BITTORRENT
 
-bool DefaultPieceStorage::hasMissingPiece(const SharedHandle<Peer>& peer)
+bool DefaultPieceStorage::hasMissingPiece(const std::shared_ptr<Peer>& peer)
 {
   return bitfieldMan_->hasMissingPiece(peer->getBitfield(),
                                        peer->getBitfieldLength());
 }
 
 void DefaultPieceStorage::getMissingPiece
-(std::vector<SharedHandle<Piece> >& pieces,
+(std::vector<std::shared_ptr<Piece> >& pieces,
  size_t minMissingBlocks,
  const unsigned char* bitfield,
  size_t length,
@@ -203,7 +203,7 @@ void DefaultPieceStorage::getMissingPiece
     std::random_shuffle(indexes.begin(), indexes.end());
     for(std::vector<size_t>::const_iterator i = indexes.begin(),
           eoi = indexes.end(); i != eoi && misBlock < minMissingBlocks; ++i) {
-      SharedHandle<Piece> piece = checkOutPiece(*i, cuid);
+      std::shared_ptr<Piece> piece = checkOutPiece(*i, cuid);
       if(piece->getUsedBySegment()) {
         // We don't share piece downloaded via HTTP/FTP
         piece->removeUser(cuid);
@@ -241,7 +241,7 @@ void unsetExcludedIndexes(BitfieldMan& bitfield,
 } // namespace
 
 void DefaultPieceStorage::createFastIndexBitfield
-(BitfieldMan& bitfield, const SharedHandle<Peer>& peer)
+(BitfieldMan& bitfield, const std::shared_ptr<Peer>& peer)
 {
   for(std::set<size_t>::const_iterator itr =
         peer->getPeerAllowedIndexSet().begin(),
@@ -253,9 +253,9 @@ void DefaultPieceStorage::createFastIndexBitfield
 }
 
 void DefaultPieceStorage::getMissingPiece
-(std::vector<SharedHandle<Piece> >& pieces,
+(std::vector<std::shared_ptr<Piece> >& pieces,
  size_t minMissingBlocks,
- const SharedHandle<Peer>& peer,
+ const std::shared_ptr<Peer>& peer,
  cuid_t cuid)
 {
   getMissingPiece(pieces, minMissingBlocks,
@@ -265,9 +265,9 @@ void DefaultPieceStorage::getMissingPiece
 
 
 void DefaultPieceStorage::getMissingPiece
-(std::vector<SharedHandle<Piece> >& pieces,
+(std::vector<std::shared_ptr<Piece> >& pieces,
  size_t minMissingBlocks,
- const SharedHandle<Peer>& peer,
+ const std::shared_ptr<Peer>& peer,
  const std::vector<size_t>& excludedIndexes,
  cuid_t cuid)
 {
@@ -281,9 +281,9 @@ void DefaultPieceStorage::getMissingPiece
 }
 
 void DefaultPieceStorage::getMissingFastPiece
-(std::vector<SharedHandle<Piece> >& pieces,
+(std::vector<std::shared_ptr<Piece> >& pieces,
  size_t minMissingBlocks,
- const SharedHandle<Peer>& peer,
+ const std::shared_ptr<Peer>& peer,
  cuid_t cuid)
 {
   if(peer->isFastExtensionEnabled() && peer->countPeerAllowedIndexSet() > 0) {
@@ -298,9 +298,9 @@ void DefaultPieceStorage::getMissingFastPiece
 }
 
 void DefaultPieceStorage::getMissingFastPiece
-(std::vector<SharedHandle<Piece> >& pieces,
+(std::vector<std::shared_ptr<Piece> >& pieces,
  size_t minMissingBlocks,
- const SharedHandle<Peer>& peer,
+ const std::shared_ptr<Peer>& peer,
  const std::vector<size_t>& excludedIndexes,
  cuid_t cuid)
 {
@@ -316,56 +316,56 @@ void DefaultPieceStorage::getMissingFastPiece
   }
 }
 
-SharedHandle<Piece>
+std::shared_ptr<Piece>
 DefaultPieceStorage::getMissingPiece
-(const SharedHandle<Peer>& peer,
+(const std::shared_ptr<Peer>& peer,
  cuid_t cuid)
 {
-  std::vector<SharedHandle<Piece> > pieces;
+  std::vector<std::shared_ptr<Piece> > pieces;
   getMissingPiece(pieces, 1, peer, cuid);
   if(pieces.empty()) {
-    return SharedHandle<Piece>();
+    return std::shared_ptr<Piece>();
   } else {
     return pieces.front();
   }
 }
 
-SharedHandle<Piece> DefaultPieceStorage::getMissingPiece
-(const SharedHandle<Peer>& peer,
+std::shared_ptr<Piece> DefaultPieceStorage::getMissingPiece
+(const std::shared_ptr<Peer>& peer,
  const std::vector<size_t>& excludedIndexes,
  cuid_t cuid)
 {
-  std::vector<SharedHandle<Piece> > pieces;
+  std::vector<std::shared_ptr<Piece> > pieces;
   getMissingPiece(pieces, 1, peer, excludedIndexes, cuid);
   if(pieces.empty()) {
-    return SharedHandle<Piece>();
+    return std::shared_ptr<Piece>();
   } else {
     return pieces.front();
   }
 }
 
-SharedHandle<Piece> DefaultPieceStorage::getMissingFastPiece
-(const SharedHandle<Peer>& peer,
+std::shared_ptr<Piece> DefaultPieceStorage::getMissingFastPiece
+(const std::shared_ptr<Peer>& peer,
  cuid_t cuid)
 {
-  std::vector<SharedHandle<Piece> > pieces;
+  std::vector<std::shared_ptr<Piece> > pieces;
   getMissingFastPiece(pieces, 1, peer, cuid);
   if(pieces.empty()) {
-    return SharedHandle<Piece>();
+    return std::shared_ptr<Piece>();
   } else {
     return pieces.front();
   }
 }
 
-SharedHandle<Piece> DefaultPieceStorage::getMissingFastPiece
-(const SharedHandle<Peer>& peer,
+std::shared_ptr<Piece> DefaultPieceStorage::getMissingFastPiece
+(const std::shared_ptr<Peer>& peer,
  const std::vector<size_t>& excludedIndexes,
  cuid_t cuid)
 {
-  std::vector<SharedHandle<Piece> > pieces;
+  std::vector<std::shared_ptr<Piece> > pieces;
   getMissingFastPiece(pieces, 1, peer, excludedIndexes, cuid);
   if(pieces.empty()) {
-    return SharedHandle<Piece>();
+    return std::shared_ptr<Piece>();
   } else {
     return pieces.front();
   }
@@ -379,7 +379,7 @@ bool DefaultPieceStorage::hasMissingUnusedPiece()
   return bitfieldMan_->getFirstMissingUnusedIndex(index);
 }
 
-SharedHandle<Piece> DefaultPieceStorage::getMissingPiece
+std::shared_ptr<Piece> DefaultPieceStorage::getMissingPiece
 (size_t minSplitSize,
  const unsigned char* ignoreBitfield,
  size_t length,
@@ -390,22 +390,22 @@ SharedHandle<Piece> DefaultPieceStorage::getMissingPiece
      (index, minSplitSize, ignoreBitfield, length)) {
     return checkOutPiece(index, cuid);
   } else {
-    return SharedHandle<Piece>();
+    return std::shared_ptr<Piece>();
   }
 }
 
-SharedHandle<Piece> DefaultPieceStorage::getMissingPiece
+std::shared_ptr<Piece> DefaultPieceStorage::getMissingPiece
 (size_t index,
  cuid_t cuid)
 {
   if(hasPiece(index) || isPieceUsed(index)) {
-    return SharedHandle<Piece>();
+    return std::shared_ptr<Piece>();
   } else {
     return checkOutPiece(index, cuid);
   }
 }
 
-void DefaultPieceStorage::deleteUsedPiece(const SharedHandle<Piece>& piece)
+void DefaultPieceStorage::deleteUsedPiece(const std::shared_ptr<Piece>& piece)
 {
   if(!piece) {
     return;
@@ -434,7 +434,7 @@ void DefaultPieceStorage::deleteUsedPiece(const SharedHandle<Piece>& piece)
 //   size_t deleted = 0;
 //   for(Pieces::iterator itr = usedPieces.begin();
 //       itr != usedPieces.end() && deleted < delNum;) {
-//     SharedHandle<Piece>& piece = *itr;
+//     std::shared_ptr<Piece>& piece = *itr;
 //     if(!bitfieldMan->isUseBitSet(piece->getIndex()) &&
 //        piece->countCompleteBlock() <= piece->countBlock()*(fillRate/100.0)) {
 //       logger->info(MSG_DELETING_USED_PIECE,
@@ -450,7 +450,7 @@ void DefaultPieceStorage::deleteUsedPiece(const SharedHandle<Piece>& piece)
 //   return deleted;
 // }
 
-void DefaultPieceStorage::completePiece(const SharedHandle<Piece>& piece)
+void DefaultPieceStorage::completePiece(const std::shared_ptr<Piece>& piece)
 {
   if(!piece) {
     return;
@@ -477,7 +477,7 @@ void DefaultPieceStorage::completePiece(const SharedHandle<Piece>& piece)
     }
 #ifdef ENABLE_BITTORRENT
     if(downloadContext_->hasAttribute(CTX_ATTR_BT)) {
-      SharedHandle<TorrentAttribute> torrentAttrs =
+      std::shared_ptr<TorrentAttribute> torrentAttrs =
         bittorrent::getTorrentAttrs(downloadContext_);
       if(!torrentAttrs->metadata.empty()) {
 #ifdef __MINGW32__
@@ -509,7 +509,7 @@ bool DefaultPieceStorage::isSelectiveDownloadingMode()
 
 // not unittested
 void DefaultPieceStorage::cancelPiece
-(const SharedHandle<Piece>& piece, cuid_t cuid)
+(const std::shared_ptr<Piece>& piece, cuid_t cuid)
 {
   if(!piece) {
     return;
@@ -587,10 +587,10 @@ int64_t DefaultPieceStorage::getInFlightPieceFilteredCompletedLength() const
 // not unittested
 void DefaultPieceStorage::setupFileFilter()
 {
-  const std::vector<SharedHandle<FileEntry> >& fileEntries =
+  const std::vector<std::shared_ptr<FileEntry> >& fileEntries =
     downloadContext_->getFileEntries();
   bool allSelected = true;
-  for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
+  for(std::vector<std::shared_ptr<FileEntry> >::const_iterator i =
         fileEntries.begin(), eoi = fileEntries.end();
       i != eoi; ++i) {
     if(!(*i)->isRequested()) {
@@ -601,7 +601,7 @@ void DefaultPieceStorage::setupFileFilter()
   if(allSelected) {
     return;
   }
-  for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
+  for(std::vector<std::shared_ptr<FileEntry> >::const_iterator i =
         fileEntries.begin(), eoi = fileEntries.end(); i != eoi; ++i) {
     if((*i)->isRequested()) {
       bitfieldMan_->addFilter((*i)->getOffset(), (*i)->getLength());
@@ -641,7 +641,7 @@ void DefaultPieceStorage::initStorage()
       (downloadContext_->getFileEntries().begin(),
        downloadContext_->getFileEntries().end());
 
-    SharedHandle<DiskWriter> writer =
+    std::shared_ptr<DiskWriter> writer =
       diskWriterFactory_->newDiskWriter(directDiskAdaptor->getFilePath());
     directDiskAdaptor->setDiskWriter(writer);
     diskAdaptor_.reset(directDiskAdaptor);
@@ -679,7 +679,7 @@ const unsigned char* DefaultPieceStorage::getBitfield()
   return bitfieldMan_->getBitfield();
 }
 
-SharedHandle<DiskAdaptor> DefaultPieceStorage::getDiskAdaptor() {
+std::shared_ptr<DiskAdaptor> DefaultPieceStorage::getDiskAdaptor() {
   return diskAdaptor_;
 }
 
@@ -781,7 +781,7 @@ void DefaultPieceStorage::markPiecesDone(int64_t length)
     }
     size_t r = (length%bitfieldMan_->getBlockLength())/Piece::BLOCK_LENGTH;
     if(r > 0) {
-      SharedHandle<Piece> p
+      std::shared_ptr<Piece> p
         (new Piece(numPiece, bitfieldMan_->getBlockLength(numPiece)));
 
       for(size_t i = 0; i < r; ++i) {
@@ -805,7 +805,7 @@ void DefaultPieceStorage::markPieceMissing(size_t index)
 }
 
 void DefaultPieceStorage::addInFlightPiece
-(const std::vector<SharedHandle<Piece> >& pieces)
+(const std::vector<std::shared_ptr<Piece> >& pieces)
 {
   usedPieces_.insert(pieces.begin(), pieces.end());
 }
@@ -816,13 +816,13 @@ size_t DefaultPieceStorage::countInFlightPiece()
 }
 
 void DefaultPieceStorage::getInFlightPieces
-(std::vector<SharedHandle<Piece> >& pieces)
+(std::vector<std::shared_ptr<Piece> >& pieces)
 {
   pieces.insert(pieces.end(), usedPieces_.begin(), usedPieces_.end());
 }
 
 void DefaultPieceStorage::setDiskWriterFactory
-(const SharedHandle<DiskWriterFactory>& diskWriterFactory)
+(const std::shared_ptr<DiskWriterFactory>& diskWriterFactory)
 {
   diskWriterFactory_ = diskWriterFactory;
 }

@@ -134,17 +134,17 @@ std::vector<std::pair<sockaddr_union, socklen_t> >
 SocketCore::bindAddrs_;
 
 #ifdef ENABLE_SSL
-SharedHandle<TLSContext> SocketCore::clTlsContext_;
-SharedHandle<TLSContext> SocketCore::svTlsContext_;
+std::shared_ptr<TLSContext> SocketCore::clTlsContext_;
+std::shared_ptr<TLSContext> SocketCore::svTlsContext_;
 
 void SocketCore::setClientTLSContext
-(const SharedHandle<TLSContext>& tlsContext)
+(const std::shared_ptr<TLSContext>& tlsContext)
 {
   clTlsContext_ = tlsContext;
 }
 
 void SocketCore::setServerTLSContext
-(const SharedHandle<TLSContext>& tlsContext)
+(const std::shared_ptr<TLSContext>& tlsContext)
 {
   svTlsContext_ = tlsContext;
 }
@@ -344,7 +344,7 @@ void SocketCore::beginListen()
   setNonBlockingMode();
 }
 
-SharedHandle<SocketCore> SocketCore::acceptConnection() const
+std::shared_ptr<SocketCore> SocketCore::acceptConnection() const
 {
   sockaddr_union sockaddr;
   socklen_t len = sizeof(sockaddr);
@@ -355,7 +355,7 @@ SharedHandle<SocketCore> SocketCore::acceptConnection() const
   if(fd == (sock_t) -1) {
     throw DL_ABORT_EX(fmt(EX_SOCKET_ACCEPT, errorMsg(errNum).c_str()));
   }
-  SharedHandle<SocketCore> sock(new SocketCore(fd, sockType_));
+  std::shared_ptr<SocketCore> sock(new SocketCore(fd, sockType_));
   sock->setNonBlockingMode();
   return sock;
 }

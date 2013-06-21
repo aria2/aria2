@@ -49,9 +49,9 @@ namespace aria2 {
 
 AbstractHttpServerResponseCommand::AbstractHttpServerResponseCommand
 (cuid_t cuid,
- const SharedHandle<HttpServer>& httpServer,
+ const std::shared_ptr<HttpServer>& httpServer,
  DownloadEngine* e,
- const SharedHandle<SocketCore>& socket)
+ const std::shared_ptr<SocketCore>& socket)
  : Command(cuid),
    e_(e),
    socket_(socket),
@@ -107,20 +107,21 @@ bool AbstractHttpServerResponseCommand::execute()
     }
   } catch(RecoverableException& e) {
     A2_LOG_INFO_EX
-      (fmt("CUID#%"PRId64" - Error occurred while transmitting response body.",
+      (fmt("CUID#%" PRId64
+           " - Error occurred while transmitting response body.",
            getCuid()),
        e);
     return true;
   }
   if(httpServer_->sendBufferIsEmpty()) {
-    A2_LOG_INFO(fmt("CUID#%"PRId64" - HttpServer: all response transmitted.",
+    A2_LOG_INFO(fmt("CUID#%" PRId64 " - HttpServer: all response transmitted.",
                     getCuid()));
     afterSend(httpServer_, e_);
     return true;
   } else {
     if(timeoutTimer_.difference(global::wallclock()) >= 30) {
-      A2_LOG_INFO(fmt("CUID#%"PRId64" - HttpServer: Timeout while trasmitting"
-                      " response.",
+      A2_LOG_INFO(fmt("CUID#%" PRId64
+                      " - HttpServer: Timeout while trasmitting response.",
                       getCuid()));
       return true;
     } else {

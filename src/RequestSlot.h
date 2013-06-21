@@ -55,7 +55,7 @@ private:
   // PieceStorage::getPiece() repeatedly. It turns out that this process
   // takes time(about 1.7% of processing time). To reduce it, we put piece here
   // at the construction of RequestSlot as a cache.
-  SharedHandle<Piece> piece_;
+  std::shared_ptr<Piece> piece_;
 
   // inlined for performance reason
   void copy(const RequestSlot& requestSlot)
@@ -70,7 +70,7 @@ private:
 public:
 
   RequestSlot(size_t index, int32_t begin, int32_t length, size_t blockIndex,
-              const SharedHandle<Piece>& piece = SharedHandle<Piece>()):
+              const std::shared_ptr<Piece>& piece = std::shared_ptr<Piece>()):
     dispatchedTime_(global::wallclock()),
     index_(index), begin_(begin), length_(length), blockIndex_(blockIndex),
     piece_(piece) {}
@@ -133,7 +133,7 @@ public:
   size_t getBlockIndex() const { return blockIndex_; }
   void setBlockIndex(size_t blockIndex) { blockIndex_ = blockIndex; }
 
-  const SharedHandle<Piece>& getPiece() const
+  const std::shared_ptr<Piece>& getPiece() const
   {
     return piece_;
   }

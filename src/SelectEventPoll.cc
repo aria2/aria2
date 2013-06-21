@@ -126,7 +126,7 @@ int SelectEventPoll::SocketEntry::getEvents()
 #ifdef ENABLE_ASYNC_DNS
 
 SelectEventPoll::AsyncNameResolverEntry::AsyncNameResolverEntry
-(const SharedHandle<AsyncNameResolver>& nameResolver, Command* command):
+(const std::shared_ptr<AsyncNameResolver>& nameResolver, Command* command):
   nameResolver_(nameResolver), command_(command) {}
 
 int SelectEventPoll::AsyncNameResolverEntry::getFds
@@ -183,7 +183,7 @@ void SelectEventPoll::poll(const struct timeval& tv)
 
   for(AsyncNameResolverEntrySet::iterator itr = nameResolverEntries_.begin(),
         eoi = nameResolverEntries_.end(); itr != eoi; ++itr) {
-    const SharedHandle<AsyncNameResolverEntry>& entry = *itr;
+    const std::shared_ptr<AsyncNameResolverEntry>& entry = *itr;
     int fd = entry->getFds(&rfds, &wfds);
     // TODO force error if fd == 0
     if(fdmax_ < fd) {
@@ -280,7 +280,7 @@ void SelectEventPoll::updateFdSet()
 bool SelectEventPoll::addEvents(sock_t socket, Command* command,
                                 EventPoll::EventType events)
 {
-  SharedHandle<SocketEntry> socketEntry(new SocketEntry(socket));
+  std::shared_ptr<SocketEntry> socketEntry(new SocketEntry(socket));
   SocketEntrySet::iterator i = socketEntries_.lower_bound(socketEntry);
   if(i != socketEntries_.end() && *(*i) == *socketEntry) {
     (*i)->addCommandEvent(command, events);
@@ -295,7 +295,7 @@ bool SelectEventPoll::addEvents(sock_t socket, Command* command,
 bool SelectEventPoll::deleteEvents(sock_t socket, Command* command,
                                    EventPoll::EventType events)
 {
-  SharedHandle<SocketEntry> socketEntry(new SocketEntry(socket));
+  std::shared_ptr<SocketEntry> socketEntry(new SocketEntry(socket));
   SocketEntrySet::iterator i = socketEntries_.find(socketEntry);
   if(i == socketEntries_.end()) {
     A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
@@ -312,9 +312,9 @@ bool SelectEventPoll::deleteEvents(sock_t socket, Command* command,
 
 #ifdef ENABLE_ASYNC_DNS
 bool SelectEventPoll::addNameResolver
-(const SharedHandle<AsyncNameResolver>& resolver, Command* command)
+(const std::shared_ptr<AsyncNameResolver>& resolver, Command* command)
 {
-  SharedHandle<AsyncNameResolverEntry> entry
+  std::shared_ptr<AsyncNameResolverEntry> entry
     (new AsyncNameResolverEntry(resolver, command));
   AsyncNameResolverEntrySet::iterator itr =
     nameResolverEntries_.lower_bound(entry);
@@ -327,9 +327,9 @@ bool SelectEventPoll::addNameResolver
 }
 
 bool SelectEventPoll::deleteNameResolver
-(const SharedHandle<AsyncNameResolver>& resolver, Command* command)
+(const std::shared_ptr<AsyncNameResolver>& resolver, Command* command)
 {
-  SharedHandle<AsyncNameResolverEntry> entry
+  std::shared_ptr<AsyncNameResolverEntry> entry
     (new AsyncNameResolverEntry(resolver, command));
   return nameResolverEntries_.erase(entry) == 1;
 }

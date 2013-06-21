@@ -40,8 +40,8 @@
 #include <string>
 #include <algorithm>
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "TransferStat.h"
 #include "TimeA2.h"
 #include "Request.h"
@@ -88,11 +88,11 @@ public:
     STATE_ACTIVE
   };
 private:
-  SharedHandle<GroupId> gid_;
+  std::shared_ptr<GroupId> gid_;
 
   int state_;
 
-  SharedHandle<Option> option_;
+  std::shared_ptr<Option> option_;
 
   int numConcurrentCommand_;
 
@@ -105,19 +105,19 @@ private:
 
   int numCommand_;
 
-  SharedHandle<SegmentMan> segmentMan_;
+  std::shared_ptr<SegmentMan> segmentMan_;
 
-  SharedHandle<DownloadContext> downloadContext_;
+  std::shared_ptr<DownloadContext> downloadContext_;
 
-  SharedHandle<PieceStorage> pieceStorage_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
 
   bool saveControlFile_;
 
-  SharedHandle<BtProgressInfoFile> progressInfoFile_;
+  std::shared_ptr<BtProgressInfoFile> progressInfoFile_;
 
-  SharedHandle<DiskWriterFactory> diskWriterFactory_;
+  std::shared_ptr<DiskWriterFactory> diskWriterFactory_;
 
-  SharedHandle<Dependency> dependency_;
+  std::shared_ptr<Dependency> dependency_;
 
   bool fileAllocationEnabled_;
 
@@ -131,11 +131,11 @@ private:
 
   bool pauseRequested_;
 
-  std::vector<SharedHandle<PreDownloadHandler> > preDownloadHandlers_;
+  std::vector<std::shared_ptr<PreDownloadHandler> > preDownloadHandlers_;
 
-  std::vector<SharedHandle<PostDownloadHandler> > postDownloadHandlers_;
+  std::vector<std::shared_ptr<PostDownloadHandler> > postDownloadHandlers_;
 
-  SharedHandle<URISelector> uriSelector_;
+  std::shared_ptr<URISelector> uriSelector_;
 
   Time lastModifiedTime_;
 
@@ -172,7 +172,7 @@ private:
   // RequestGroup.
   a2_gid_t belongsToGID_;
 
-  SharedHandle<MetadataInfo> metadataInfo_;
+  std::shared_ptr<MetadataInfo> metadataInfo_;
 
   RequestGroupMan* requestGroupMan_;
 
@@ -195,22 +195,22 @@ private:
   error_code::Value downloadResult() const;
 
   void removeDefunctControlFile
-  (const SharedHandle<BtProgressInfoFile>& progressInfoFile);
+  (const std::shared_ptr<BtProgressInfoFile>& progressInfoFile);
 
 public:
-  RequestGroup(const SharedHandle<GroupId>& gid,
-               const SharedHandle<Option>& option);
+  RequestGroup(const std::shared_ptr<GroupId>& gid,
+               const std::shared_ptr<Option>& option);
 
   ~RequestGroup();
 
   bool isCheckIntegrityReady();
 
-  const SharedHandle<SegmentMan>& getSegmentMan() const
+  const std::shared_ptr<SegmentMan>& getSegmentMan() const
   {
     return segmentMan_;
   }
 
-  SharedHandle<CheckIntegrityEntry> createCheckIntegrityEntry();
+  std::shared_ptr<CheckIntegrityEntry> createCheckIntegrityEntry();
 
   // Returns first bootstrap commands to initiate a download.
   // If this is HTTP/FTP download and file size is unknown, only 1 command
@@ -265,30 +265,30 @@ public:
     return gid_->getNumericId();
   }
 
-  const SharedHandle<GroupId>& getGroupId() const
+  const std::shared_ptr<GroupId>& getGroupId() const
   {
     return gid_;
   }
 
   TransferStat calculateStat() const;
 
-  const SharedHandle<DownloadContext>& getDownloadContext() const
+  const std::shared_ptr<DownloadContext>& getDownloadContext() const
   {
     return downloadContext_;
   }
 
   // This function also calls
   // downloadContext->setOwnerRequestGroup(this).
-  void setDownloadContext(const SharedHandle<DownloadContext>& downloadContext);
+  void setDownloadContext(const std::shared_ptr<DownloadContext>& downloadContext);
 
-  const SharedHandle<PieceStorage>& getPieceStorage() const
+  const std::shared_ptr<PieceStorage>& getPieceStorage() const
   {
     return pieceStorage_;
   }
 
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+  void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage);
 
-  void setProgressInfoFile(const SharedHandle<BtProgressInfoFile>& progressInfoFile);
+  void setProgressInfoFile(const std::shared_ptr<BtProgressInfoFile>& progressInfoFile);
 
   void increaseStreamCommand();
 
@@ -310,9 +310,9 @@ public:
   }
 
   // TODO is it better to move the following 2 methods to SingleFileDownloadContext?
-  void setDiskWriterFactory(const SharedHandle<DiskWriterFactory>& diskWriterFactory);
+  void setDiskWriterFactory(const std::shared_ptr<DiskWriterFactory>& diskWriterFactory);
 
-  const SharedHandle<DiskWriterFactory>& getDiskWriterFactory() const
+  const std::shared_ptr<DiskWriterFactory>& getDiskWriterFactory() const
   {
     return diskWriterFactory_;
   }
@@ -365,26 +365,26 @@ public:
     return pauseRequested_;
   }
 
-  void dependsOn(const SharedHandle<Dependency>& dep);
+  void dependsOn(const std::shared_ptr<Dependency>& dep);
 
   bool isDependencyResolved();
 
   void releaseRuntimeResource(DownloadEngine* e);
 
-  void postDownloadProcessing(std::vector<SharedHandle<RequestGroup> >& groups);
+  void postDownloadProcessing(std::vector<std::shared_ptr<RequestGroup> >& groups);
 
-  void addPostDownloadHandler(const SharedHandle<PostDownloadHandler>& handler);
+  void addPostDownloadHandler(const std::shared_ptr<PostDownloadHandler>& handler);
 
   void clearPostDownloadHandler();
 
   void preDownloadProcessing();
 
-  void addPreDownloadHandler(const SharedHandle<PreDownloadHandler>& handler);
+  void addPreDownloadHandler(const std::shared_ptr<PreDownloadHandler>& handler);
 
   void clearPreDownloadHandler();
 
   void processCheckIntegrityEntry(std::vector<Command*>& commands,
-                                  const SharedHandle<CheckIntegrityEntry>& entry,
+                                  const std::shared_ptr<CheckIntegrityEntry>& entry,
                                   DownloadEngine* e);
 
   // Initializes pieceStorage_ and segmentMan_.  We guarantee that
@@ -396,24 +396,24 @@ public:
 
   bool downloadFinishedByFileLength();
 
-  void loadAndOpenFile(const SharedHandle<BtProgressInfoFile>& progressInfoFile);
+  void loadAndOpenFile(const std::shared_ptr<BtProgressInfoFile>& progressInfoFile);
 
   void shouldCancelDownloadForSafety();
 
-  void adjustFilename(const SharedHandle<BtProgressInfoFile>& infoFile);
+  void adjustFilename(const std::shared_ptr<BtProgressInfoFile>& infoFile);
 
-  SharedHandle<DownloadResult> createDownloadResult() const;
+  std::shared_ptr<DownloadResult> createDownloadResult() const;
 
-  const SharedHandle<Option>& getOption() const
+  const std::shared_ptr<Option>& getOption() const
   {
     return option_;
   }
 
   void reportDownloadFinished();
 
-  void setURISelector(const SharedHandle<URISelector>& uriSelector);
+  void setURISelector(const std::shared_ptr<URISelector>& uriSelector);
 
-  const SharedHandle<URISelector>& getURISelector() const
+  const std::shared_ptr<URISelector>& getURISelector() const
   {
     return uriSelector_;
   }
@@ -534,12 +534,12 @@ public:
 
   bool p2pInvolved() const;
 
-  void setMetadataInfo(const SharedHandle<MetadataInfo>& info)
+  void setMetadataInfo(const std::shared_ptr<MetadataInfo>& info)
   {
     metadataInfo_ = info;
   }
 
-  const SharedHandle<MetadataInfo>& getMetadataInfo() const
+  const std::shared_ptr<MetadataInfo>& getMetadataInfo() const
   {
     return metadataInfo_;
   }

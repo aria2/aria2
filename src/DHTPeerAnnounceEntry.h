@@ -38,8 +38,8 @@
 #include "common.h"
 
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "DHTConstants.h"
 #include "PeerAddrEntry.h"
 #include "TimerA2.h"
@@ -87,7 +87,7 @@ public:
     return infoHash_;
   }
 
-  void getPeers(std::vector<SharedHandle<Peer> >& peers) const;
+  void getPeers(std::vector<std::shared_ptr<Peer> >& peers) const;
 
 };
 

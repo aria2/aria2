@@ -82,10 +82,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkProcessorTest );
 
 void MetalinkProcessorTest::testParseFileV4()
 {
-  SharedHandle<Metalinker> m = metalink::parseFile(A2_TEST_DIR"/metalink4.xml");
-  SharedHandle<MetalinkEntry> e;
-  SharedHandle<MetalinkResource> r;
-  SharedHandle<MetalinkMetaurl> mu;
+  std::shared_ptr<Metalinker> m = metalink::parseFile(A2_TEST_DIR"/metalink4.xml");
+  std::shared_ptr<MetalinkEntry> e;
+  std::shared_ptr<MetalinkResource> r;
+  std::shared_ptr<MetalinkMetaurl> mu;
   CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
   e = m->getEntries()[0];
   CPPUNIT_ASSERT_EQUAL(std::string("example.ext"), e->getPath());
@@ -151,7 +151,7 @@ void MetalinkProcessorTest::testParseFileV4()
 
 void MetalinkProcessorTest::testParseFileV4_attrs()
 {
-  SharedHandle<Metalinker> m;
+  std::shared_ptr<Metalinker> m;
   ByteArrayDiskWriter dw;
   {
     // Testing file@name
@@ -492,13 +492,13 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
 void MetalinkProcessorTest::testParseFile()
 {
   try {
-    SharedHandle<Metalinker> metalinker =
+    std::shared_ptr<Metalinker> metalinker =
       metalink::parseFile(A2_TEST_DIR"/test.xml");
 
-    std::vector<SharedHandle<MetalinkEntry> >::const_iterator entryItr =
+    std::vector<std::shared_ptr<MetalinkEntry> >::const_iterator entryItr =
       metalinker->getEntries().begin();
 
-    SharedHandle<MetalinkEntry> entry1 = *entryItr;
+    std::shared_ptr<MetalinkEntry> entry1 = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2"), entry1->getPath());
     CPPUNIT_ASSERT_EQUAL((int64_t)0LL, entry1->getLength());
     CPPUNIT_ASSERT_EQUAL(std::string("0.5.2"), entry1->version);
@@ -527,9 +527,9 @@ void MetalinkProcessorTest::testParseFile()
         "\t"),
        entry1->getSignature()->getBody());
 
-    std::vector<SharedHandle<MetalinkResource> >::iterator resourceItr1 =
+    std::vector<std::shared_ptr<MetalinkResource> >::iterator resourceItr1 =
       entry1->resources.begin();
-    SharedHandle<MetalinkResource> resource1 = *resourceItr1;
+    std::shared_ptr<MetalinkResource> resource1 = *resourceItr1;
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP, resource1->type);
     CPPUNIT_ASSERT_EQUAL(std::string("jp"), resource1->location);
     CPPUNIT_ASSERT_EQUAL(1, resource1->priority);
@@ -538,7 +538,7 @@ void MetalinkProcessorTest::testParseFile()
     CPPUNIT_ASSERT_EQUAL(1, resource1->maxConnections);
 
     resourceItr1++;
-    SharedHandle<MetalinkResource> resource2 = *resourceItr1;
+    std::shared_ptr<MetalinkResource> resource2 = *resourceItr1;
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTP, resource2->type);
     CPPUNIT_ASSERT_EQUAL(std::string("us"), resource2->location);
     CPPUNIT_ASSERT_EQUAL(1, resource2->priority);
@@ -548,7 +548,7 @@ void MetalinkProcessorTest::testParseFile()
 
     entryItr++;
 
-    SharedHandle<MetalinkEntry> entry2 = *entryItr;
+    std::shared_ptr<MetalinkEntry> entry2 = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.1.tar.bz2"), entry2->getPath());
     CPPUNIT_ASSERT_EQUAL((int64_t)345689LL, entry2->getLength());
     CPPUNIT_ASSERT_EQUAL(std::string("0.5.1"), entry2->version);
@@ -572,7 +572,7 @@ void MetalinkProcessorTest::testParseFile()
     entryItr++;
 
     // test case: verification hash is not provided
-    SharedHandle<MetalinkEntry> entry3 = *entryItr;
+    std::shared_ptr<MetalinkEntry> entry3 = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("NoVerificationHash"), entry3->getPath());
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT(!entry3->checksum);
@@ -582,7 +582,7 @@ void MetalinkProcessorTest::testParseFile()
     entryItr++;
 
     // test case: unsupported verification hash is included
-    SharedHandle<MetalinkEntry> entry4 = *entryItr;
+    std::shared_ptr<MetalinkEntry> entry4 = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("UnsupportedVerificationHashTypeIncluded"), entry4->getPath());
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), entry4->checksum->getHashType());
@@ -599,10 +599,10 @@ void MetalinkProcessorTest::testParseFile()
 
 void MetalinkProcessorTest::testParseFile_dirtraversal()
 {
-  SharedHandle<Metalinker> metalinker =
+  std::shared_ptr<Metalinker> metalinker =
     metalink::parseFile(A2_TEST_DIR"/metalink3-dirtraversal.xml");
   CPPUNIT_ASSERT_EQUAL((size_t)1, metalinker->getEntries().size());
-  SharedHandle<MetalinkEntry> e = metalinker->getEntries()[0];
+  std::shared_ptr<MetalinkEntry> e = metalinker->getEntries()[0];
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.3.tar.bz2"), e->getPath());
   CPPUNIT_ASSERT(e->getSignature());
   CPPUNIT_ASSERT_EQUAL(std::string(""), e->getSignature()->getFile());
@@ -615,11 +615,11 @@ void MetalinkProcessorTest::testParseBinaryStream()
   dw.openExistingFile();
 
   try {
-    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
+    std::shared_ptr<Metalinker> m = metalink::parseBinaryStream(&dw);
 
-    std::vector<SharedHandle<MetalinkEntry> >::const_iterator entryItr =
+    std::vector<std::shared_ptr<MetalinkEntry> >::const_iterator entryItr =
       m->getEntries().begin();
-    SharedHandle<MetalinkEntry> entry1 = *entryItr;
+    std::shared_ptr<MetalinkEntry> entry1 = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2"), entry1->getPath());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
@@ -632,7 +632,7 @@ void MetalinkProcessorTest::testMalformedXML()
   dw.setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\"><files></file></metalink>");
 
   try {
-    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
+    std::shared_ptr<Metalinker> m = metalink::parseBinaryStream(&dw);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
@@ -645,7 +645,7 @@ void MetalinkProcessorTest::testMalformedXML2()
   dw.setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\"><files></files>");
 
   try {
-    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
+    std::shared_ptr<Metalinker> m = metalink::parseBinaryStream(&dw);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
@@ -654,7 +654,7 @@ void MetalinkProcessorTest::testMalformedXML2()
 
 void MetalinkProcessorTest::testBadSizeV4()
 {
-  SharedHandle<Metalinker> m;
+  std::shared_ptr<Metalinker> m;
   ByteArrayDiskWriter dw;
 
   const char* tmpl =
@@ -691,11 +691,11 @@ void MetalinkProcessorTest::testBadSize()
                 "</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
+    std::shared_ptr<Metalinker> m = metalink::parseBinaryStream(&dw);
 
-    std::vector<SharedHandle<MetalinkEntry> >::const_iterator entryItr =
+    std::vector<std::shared_ptr<MetalinkEntry> >::const_iterator entryItr =
       m->getEntries().begin();
-    SharedHandle<MetalinkEntry> e = *entryItr;
+    std::shared_ptr<MetalinkEntry> e = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2"), e->getPath());
     CPPUNIT_ASSERT_EQUAL((int64_t)0LL, e->getLength());
     CPPUNIT_ASSERT_EQUAL(std::string("0.5.2"), e->version);
@@ -723,11 +723,11 @@ void MetalinkProcessorTest::testBadMaxConn()
                 "</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
+    std::shared_ptr<Metalinker> m = metalink::parseBinaryStream(&dw);
 
-    std::vector<SharedHandle<MetalinkEntry> >::const_iterator entryItr =
+    std::vector<std::shared_ptr<MetalinkEntry> >::const_iterator entryItr =
       m->getEntries().begin();
-    SharedHandle<MetalinkEntry> e = *entryItr;
+    std::shared_ptr<MetalinkEntry> e = *entryItr;
     CPPUNIT_ASSERT_EQUAL((int64_t)43743838LL, e->getLength());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
@@ -755,11 +755,11 @@ void MetalinkProcessorTest::testNoName()
                 "</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
+    std::shared_ptr<Metalinker> m = metalink::parseBinaryStream(&dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
-    std::vector<SharedHandle<MetalinkEntry> >::const_iterator entryItr =
+    std::vector<std::shared_ptr<MetalinkEntry> >::const_iterator entryItr =
       m->getEntries().begin();
-    SharedHandle<MetalinkEntry> e = *entryItr;
+    std::shared_ptr<MetalinkEntry> e = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2"), e->getPath());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
@@ -785,9 +785,9 @@ void MetalinkProcessorTest::testBadURLPrefs()
                 "</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
-    SharedHandle<MetalinkEntry> e = m->getEntries()[0];
-    SharedHandle<MetalinkResource> r = e->resources[0];
+    std::shared_ptr<Metalinker> m = metalink::parseBinaryStream(&dw);
+    std::shared_ptr<MetalinkEntry> e = m->getEntries()[0];
+    std::shared_ptr<MetalinkResource> r = e->resources[0];
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP, r->type);
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::getLowestPriority(), r->priority);
     CPPUNIT_ASSERT_EQUAL(1, r->maxConnections);
@@ -817,9 +817,9 @@ void MetalinkProcessorTest::testBadURLMaxConn()
                 "</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
-    SharedHandle<MetalinkEntry> e = m->getEntries()[0];
-    SharedHandle<MetalinkResource> r = e->resources[0];
+    std::shared_ptr<Metalinker> m = metalink::parseBinaryStream(&dw);
+    std::shared_ptr<MetalinkEntry> e = m->getEntries()[0];
+    std::shared_ptr<MetalinkResource> r = e->resources[0];
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP, r->type);
     CPPUNIT_ASSERT_EQUAL(1, r->priority);
     CPPUNIT_ASSERT_EQUAL(-1, r->maxConnections);
@@ -850,14 +850,14 @@ void MetalinkProcessorTest::testUnsupportedType()
                 "</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
-    SharedHandle<MetalinkEntry> e = m->getEntries()[0];
+    std::shared_ptr<Metalinker> m = metalink::parseBinaryStream(&dw);
+    std::shared_ptr<MetalinkEntry> e = m->getEntries()[0];
     CPPUNIT_ASSERT_EQUAL((size_t)3, e->resources.size());
-    SharedHandle<MetalinkResource> r1 = e->resources[0];
+    std::shared_ptr<MetalinkResource> r1 = e->resources[0];
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP, r1->type);
-    SharedHandle<MetalinkResource> r2 = e->resources[1];
+    std::shared_ptr<MetalinkResource> r2 = e->resources[1];
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_NOT_SUPPORTED, r2->type);
-    SharedHandle<MetalinkResource> r3 = e->resources[2];
+    std::shared_ptr<MetalinkResource> r3 = e->resources[2];
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTP, r3->type);
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
@@ -882,9 +882,9 @@ void MetalinkProcessorTest::testMultiplePieces()
 
   try {
     // aria2 prefers sha1
-    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
-    SharedHandle<MetalinkEntry> e = m->getEntries()[0];
-    SharedHandle<ChunkChecksum> c = e->chunkChecksum;
+    std::shared_ptr<Metalinker> m = metalink::parseBinaryStream(&dw);
+    std::shared_ptr<MetalinkEntry> e = m->getEntries()[0];
+    std::shared_ptr<ChunkChecksum> c = e->chunkChecksum;
 
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c->getHashType());
     CPPUNIT_ASSERT_EQUAL(1024, c->getPieceLength());
@@ -914,9 +914,9 @@ void MetalinkProcessorTest::testBadPieceNo()
      "</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
-    SharedHandle<MetalinkEntry> e = m->getEntries()[0];
-    SharedHandle<ChunkChecksum> c = e->chunkChecksum;
+    std::shared_ptr<Metalinker> m = metalink::parseBinaryStream(&dw);
+    std::shared_ptr<MetalinkEntry> e = m->getEntries()[0];
+    std::shared_ptr<ChunkChecksum> c = e->chunkChecksum;
 
     CPPUNIT_ASSERT(c);
     CPPUNIT_ASSERT_EQUAL(1024, c->getPieceLength());
@@ -946,10 +946,10 @@ void MetalinkProcessorTest::testBadPieceLength()
      "</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
+    std::shared_ptr<Metalinker> m = metalink::parseBinaryStream(&dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
-    SharedHandle<MetalinkEntry> e = m->getEntries()[0];
-    SharedHandle<ChunkChecksum> c = e->chunkChecksum;
+    std::shared_ptr<MetalinkEntry> e = m->getEntries()[0];
+    std::shared_ptr<ChunkChecksum> c = e->chunkChecksum;
     CPPUNIT_ASSERT(c);
     CPPUNIT_ASSERT_EQUAL(1024, c->getPieceLength());
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c->getHashType());
@@ -978,9 +978,9 @@ void MetalinkProcessorTest::testUnsupportedType_piece()
      "</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
-    SharedHandle<MetalinkEntry> e = m->getEntries()[0];
-    SharedHandle<ChunkChecksum> c = e->chunkChecksum;
+    std::shared_ptr<Metalinker> m = metalink::parseBinaryStream(&dw);
+    std::shared_ptr<MetalinkEntry> e = m->getEntries()[0];
+    std::shared_ptr<ChunkChecksum> c = e->chunkChecksum;
 
     CPPUNIT_ASSERT(c);
     CPPUNIT_ASSERT_EQUAL(1024, c->getPieceLength());
@@ -1006,8 +1006,8 @@ void MetalinkProcessorTest::testLargeFileSize()
      "</files>"
      "</metalink>");
   try {
-    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
-    SharedHandle<MetalinkEntry> e = m->getEntries()[0];
+    std::shared_ptr<Metalinker> m = metalink::parseBinaryStream(&dw);
+    std::shared_ptr<MetalinkEntry> e = m->getEntries()[0];
     CPPUNIT_ASSERT_EQUAL((int64_t)9223372036854775807LL, e->getLength());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
@@ -1029,9 +1029,9 @@ void MetalinkProcessorTest::testXmlPrefixV3()
                 "</m:metalink>");
 
   try {
-    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
+    std::shared_ptr<Metalinker> m = metalink::parseBinaryStream(&dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
-    SharedHandle<MetalinkEntry> e = m->getEntries()[0];
+    std::shared_ptr<MetalinkEntry> e = m->getEntries()[0];
     CPPUNIT_ASSERT_EQUAL((int64_t)9223372036854775807LL, e->getLength());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());

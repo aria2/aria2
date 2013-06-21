@@ -65,8 +65,8 @@ namespace aria2 {
 
 FtpInitiateConnectionCommand::FtpInitiateConnectionCommand
 (cuid_t cuid,
- const SharedHandle<Request>& req,
- const SharedHandle<FileEntry>& fileEntry,
+ const std::shared_ptr<Request>& req,
+ const std::shared_ptr<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  DownloadEngine* e)
   :InitiateConnectionCommand(cuid, req, fileEntry, requestGroup, e) {}
@@ -76,12 +76,12 @@ FtpInitiateConnectionCommand::~FtpInitiateConnectionCommand() {}
 Command* FtpInitiateConnectionCommand::createNextCommand
 (const std::string& hostname, const std::string& addr, uint16_t port,
  const std::vector<std::string>& resolvedAddresses,
- const SharedHandle<Request>& proxyRequest)
+ const std::shared_ptr<Request>& proxyRequest)
 {
   Command* command;
   if(proxyRequest) {
     std::string options;
-    SharedHandle<SocketCore> pooledSocket;
+    std::shared_ptr<SocketCore> pooledSocket;
     std::string proxyMethod = resolveProxyMethod(getRequest()->getProtocol());
     if(proxyMethod == V_GET) {
       pooledSocket = getDownloadEngine()->popPooledSocket
@@ -112,11 +112,11 @@ Command* FtpInitiateConnectionCommand::createNextCommand
       if(proxyMethod == V_GET) {
         // Use GET for FTP via HTTP proxy.
         getRequest()->setMethod(Request::METHOD_GET);
-        SharedHandle<HttpRequestConnectChain> chain
+        std::shared_ptr<HttpRequestConnectChain> chain
           (new HttpRequestConnectChain());
         c->setControlChain(chain);
       } else if(proxyMethod == V_TUNNEL) {
-        SharedHandle<FtpTunnelRequestConnectChain> chain
+        std::shared_ptr<FtpTunnelRequestConnectChain> chain
           (new FtpTunnelRequestConnectChain());
         c->setControlChain(chain);
       } else {
@@ -141,9 +141,9 @@ Command* FtpInitiateConnectionCommand::createNextCommand
       } else if(proxyMethod == V_GET) {
         // Use GET for FTP via HTTP proxy.
         getRequest()->setMethod(Request::METHOD_GET);
-        SharedHandle<SocketRecvBuffer> socketRecvBuffer
+        std::shared_ptr<SocketRecvBuffer> socketRecvBuffer
           (new SocketRecvBuffer(pooledSocket));
-        SharedHandle<HttpConnection> hc
+        std::shared_ptr<HttpConnection> hc
           (new HttpConnection(getCuid(), pooledSocket, socketRecvBuffer));
 
         HttpRequestCommand* c = new HttpRequestCommand(getCuid(),
@@ -162,7 +162,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
     }
   } else {
     std::string options;
-    SharedHandle<SocketCore> pooledSocket =
+    std::shared_ptr<SocketCore> pooledSocket =
       getDownloadEngine()->popPooledSocket
       (options, resolvedAddresses,
        getRequest()->getPort(),
@@ -181,7 +181,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
                                              getRequestGroup(),
                                              getDownloadEngine(),
                                              getSocket());
-      SharedHandle<FtpNegotiationConnectChain> chain
+      std::shared_ptr<FtpNegotiationConnectChain> chain
         (new FtpNegotiationConnectChain());
       c->setControlChain(chain);
       setupBackupConnection(hostname, addr, port, c);

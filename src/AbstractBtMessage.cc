@@ -54,7 +54,7 @@ AbstractBtMessage::AbstractBtMessage(uint8_t id, const char* name)
 
 AbstractBtMessage::~AbstractBtMessage() {}
 
-void AbstractBtMessage::setPeer(const SharedHandle<Peer>& peer)
+void AbstractBtMessage::setPeer(const std::shared_ptr<Peer>& peer)
 {
   peer_ = peer;
 }
@@ -67,12 +67,12 @@ void AbstractBtMessage::validate()
 }
 
 void
-AbstractBtMessage::setBtMessageValidator(const SharedHandle<BtMessageValidator>& validator) {
+AbstractBtMessage::setBtMessageValidator(const std::shared_ptr<BtMessageValidator>& validator) {
   validator_ = validator;
 }
 
 void AbstractBtMessage::setPieceStorage
-(const SharedHandle<PieceStorage>& pieceStorage)
+(const std::shared_ptr<PieceStorage>& pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }

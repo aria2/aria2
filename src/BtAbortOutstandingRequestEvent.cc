@@ -38,7 +38,7 @@
 namespace aria2 {
 
 BtAbortOutstandingRequestEvent::BtAbortOutstandingRequestEvent
-(const SharedHandle<Piece>& piece)
+(const std::shared_ptr<Piece>& piece)
   : piece_(piece)
 {}
 

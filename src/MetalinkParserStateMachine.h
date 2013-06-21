@@ -40,8 +40,8 @@
 #include <string>
 #include <vector>
 #include <stack>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "MetalinkParserController.h"
 #include "MetalinkParserState.h"
 
@@ -51,7 +51,7 @@ class Metalinker;
 
 class MetalinkParserStateMachine : public ParserStateMachine {
 private:
-  SharedHandle<MetalinkParserController> ctrl_;
+  std::shared_ptr<MetalinkParserController> ctrl_;
 
   std::stack<MetalinkParserState*> stateStack_;
 
@@ -265,7 +265,7 @@ public:
 
   std::string getErrorString() const;
 
-  const SharedHandle<Metalinker>& getResult() const
+  const std::shared_ptr<Metalinker>& getResult() const
   {
     return ctrl_->getResult();
   }

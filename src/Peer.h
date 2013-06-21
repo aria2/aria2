@@ -42,7 +42,6 @@
 #include <set>
 #include <algorithm>
 
-#include "SharedHandle.h"
 #include "TimerA2.h"
 #include "BtConstants.h"
 #include "PeerStat.h"

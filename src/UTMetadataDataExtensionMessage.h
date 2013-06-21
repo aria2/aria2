@@ -36,7 +36,8 @@
 #define D_UT_METADATA_DATA_EXTENSION_MESSAGE_H
 
 #include "UTMetadataExtensionMessage.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -50,9 +51,9 @@ private:
 
   std::string data_;
 
-  SharedHandle<DownloadContext> dctx_;
+  std::shared_ptr<DownloadContext> dctx_;
 
-  SharedHandle<PieceStorage> pieceStorage_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
 
   UTMetadataRequestTracker* tracker_;
 public:
@@ -89,14 +90,14 @@ public:
     return data_;
   }
 
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+  void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage);
 
   void setUTMetadataRequestTracker(UTMetadataRequestTracker* tracker)
   {
     tracker_ = tracker;
   }
 
-  void setDownloadContext(const SharedHandle<DownloadContext>& dctx);
+  void setDownloadContext(const std::shared_ptr<DownloadContext>& dctx);
 };
 
 } // namespace aria2

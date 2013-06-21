@@ -36,7 +36,6 @@
 #define D_FILL_REQUEST_GROUP_COMMAND_H
 
 #include "Command.h"
-#include "SharedHandle.h"
 #include "a2time.h"
 
 namespace aria2 {

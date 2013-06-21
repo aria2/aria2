@@ -34,17 +34,17 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTMessageTrackerTest);
 
 void DHTMessageTrackerTest::testMessageArrived()
 {
-  SharedHandle<DHTNode> localNode(new DHTNode());
-  SharedHandle<DHTRoutingTable> routingTable(new DHTRoutingTable(localNode));
-  SharedHandle<MockDHTMessageFactory> factory(new MockDHTMessageFactory());
+  std::shared_ptr<DHTNode> localNode(new DHTNode());
+  std::shared_ptr<DHTRoutingTable> routingTable(new DHTRoutingTable(localNode));
+  std::shared_ptr<MockDHTMessageFactory> factory(new MockDHTMessageFactory());
   factory->setLocalNode(localNode);
 
-  SharedHandle<MockDHTMessage> m1(new MockDHTMessage(localNode,
-                                                     SharedHandle<DHTNode>(new DHTNode())));
-  SharedHandle<MockDHTMessage> m2(new MockDHTMessage(localNode,
-                                                     SharedHandle<DHTNode>(new DHTNode())));
-  SharedHandle<MockDHTMessage> m3(new MockDHTMessage(localNode,
-                                                     SharedHandle<DHTNode>(new DHTNode())));
+  std::shared_ptr<MockDHTMessage> m1(new MockDHTMessage(localNode,
+                                                     std::shared_ptr<DHTNode>(new DHTNode())));
+  std::shared_ptr<MockDHTMessage> m2(new MockDHTMessage(localNode,
+                                                     std::shared_ptr<DHTNode>(new DHTNode())));
+  std::shared_ptr<MockDHTMessage> m3(new MockDHTMessage(localNode,
+                                                     std::shared_ptr<DHTNode>(new DHTNode())));
 
   m1->getRemoteNode()->setIPAddress("192.168.0.1");
   m1->getRemoteNode()->setPort(6881);
@@ -64,10 +64,10 @@ void DHTMessageTrackerTest::testMessageArrived()
     Dict resDict;
     resDict.put("t", m2->getTransactionID());
 
-    std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p =
+    std::pair<std::shared_ptr<DHTMessage>, std::shared_ptr<DHTMessageCallback> > p =
       tracker.messageArrived(&resDict, m2->getRemoteNode()->getIPAddress(),
                              m2->getRemoteNode()->getPort());
-    SharedHandle<DHTMessage> reply = p.first;
+    std::shared_ptr<DHTMessage> reply = p.first;
 
     CPPUNIT_ASSERT(reply);
     CPPUNIT_ASSERT(!tracker.getEntryFor(m2));
@@ -77,10 +77,10 @@ void DHTMessageTrackerTest::testMessageArrived()
     Dict resDict;
     resDict.put("t", m3->getTransactionID());
 
-    std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p =
+    std::pair<std::shared_ptr<DHTMessage>, std::shared_ptr<DHTMessageCallback> > p =
       tracker.messageArrived(&resDict, m3->getRemoteNode()->getIPAddress(),
                              m3->getRemoteNode()->getPort());
-    SharedHandle<DHTMessage> reply = p.first;
+    std::shared_ptr<DHTMessage> reply = p.first;
 
     CPPUNIT_ASSERT(reply);
     CPPUNIT_ASSERT(!tracker.getEntryFor(m3));
@@ -90,9 +90,9 @@ void DHTMessageTrackerTest::testMessageArrived()
     Dict resDict;
     resDict.put("t", m1->getTransactionID());
 
-    std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p =
+    std::pair<std::shared_ptr<DHTMessage>, std::shared_ptr<DHTMessageCallback> > p =
       tracker.messageArrived(&resDict, "192.168.1.100", 6889);
-    SharedHandle<DHTMessage> reply = p.first;
+    std::shared_ptr<DHTMessage> reply = p.first;
 
     CPPUNIT_ASSERT(!reply);
   }

@@ -61,8 +61,8 @@ const std::string DHTGetPeersReplyMessage::NODES6("nodes6");
 
 DHTGetPeersReplyMessage::DHTGetPeersReplyMessage
 (int family,
- const SharedHandle<DHTNode>& localNode,
- const SharedHandle<DHTNode>& remoteNode,
+ const std::shared_ptr<DHTNode>& localNode,
+ const std::shared_ptr<DHTNode>& remoteNode,
  const std::string& token,
  const std::string& transactionID):
   DHTResponseMessage(localNode, remoteNode, transactionID),
@@ -76,9 +76,9 @@ void DHTGetPeersReplyMessage::doReceivedAction()
   // Returned peers and nodes are handled in DHTPeerLookupTask.
 }
 
-SharedHandle<Dict> DHTGetPeersReplyMessage::getResponse()
+std::shared_ptr<Dict> DHTGetPeersReplyMessage::getResponse()
 {
-  SharedHandle<Dict> rDict = Dict::g();
+  std::shared_ptr<Dict> rDict = Dict::g();
   rDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
   rDict->put(TOKEN, token_);
   // TODO want parameter
@@ -88,10 +88,10 @@ SharedHandle<Dict> DHTGetPeersReplyMessage::getResponse()
     const int unit = clen+20;
     size_t offset = 0;
     size_t k = 0;
-    for(std::vector<SharedHandle<DHTNode> >::const_iterator i =
+    for(std::vector<std::shared_ptr<DHTNode> >::const_iterator i =
           closestKNodes_.begin(), eoi = closestKNodes_.end();
         i != eoi && k < DHTBucket::K; ++i) {
-      SharedHandle<DHTNode> node = *i;
+      std::shared_ptr<DHTNode> node = *i;
       memcpy(buffer+offset, node->getID(), DHT_ID_LENGTH);
       unsigned char compact[COMPACT_LEN_IPV6];
       int compactlen = bittorrent::packcompact
@@ -128,11 +128,11 @@ SharedHandle<Dict> DHTGetPeersReplyMessage::getResponse()
     // template may get bigger than 395 bytes. So we use 25 as maximum
     // number of peer info that a message can carry.
     static const size_t MAX_VALUES_SIZE = 25;
-    SharedHandle<List> valuesList = List::g();
-    for(std::vector<SharedHandle<Peer> >::const_iterator i = values_.begin(),
+    std::shared_ptr<List> valuesList = List::g();
+    for(std::vector<std::shared_ptr<Peer> >::const_iterator i = values_.begin(),
           eoi = values_.end(); i != eoi && valuesList->size() < MAX_VALUES_SIZE;
         ++i) {
-      const SharedHandle<Peer>& peer = *i;
+      const std::shared_ptr<Peer>& peer = *i;
       unsigned char compact[COMPACT_LEN_IPV6];
       const int clen = bittorrent::getCompactLength(family_);
       int compactlen = bittorrent::packcompact

@@ -47,7 +47,7 @@ private:
   uint16_t port_;
 public:
   // _remoteNode is always null
-  DHTUnknownMessage(const SharedHandle<DHTNode>& localNode,
+  DHTUnknownMessage(const std::shared_ptr<DHTNode>& localNode,
                     const unsigned char* data, size_t length,
                     const std::string& ipaddr, uint16_t port);
 

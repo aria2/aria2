@@ -68,12 +68,12 @@ HttpRequest::HttpRequest():contentEncodingEnabled_(true),
 
 HttpRequest::~HttpRequest() {}
 
-void HttpRequest::setSegment(const SharedHandle<Segment>& segment)
+void HttpRequest::setSegment(const std::shared_ptr<Segment>& segment)
 {
   segment_ = segment;
 }
 
-void HttpRequest::setRequest(const SharedHandle<Request>& request)
+void HttpRequest::setRequest(const std::shared_ptr<Request>& request)
 {
   request_ = request;
 }
@@ -328,34 +328,34 @@ void HttpRequest::clearHeader()
 }
 
 void HttpRequest::setCookieStorage
-(const SharedHandle<CookieStorage>& cookieStorage)
+(const std::shared_ptr<CookieStorage>& cookieStorage)
 {
   cookieStorage_ = cookieStorage;
 }
 
 void HttpRequest::setAuthConfigFactory
-(const SharedHandle<AuthConfigFactory>& factory, const Option* option)
+(const std::shared_ptr<AuthConfigFactory>& factory, const Option* option)
 {
   authConfigFactory_ = factory;
   option_ = option;
 }
 
-void HttpRequest::setProxyRequest(const SharedHandle<Request>& proxyRequest)
+void HttpRequest::setProxyRequest(const std::shared_ptr<Request>& proxyRequest)
 {
   proxyRequest_ = proxyRequest;
 }
 
 bool HttpRequest::isProxyRequestSet() const
 {
-  return proxyRequest_;
+  return proxyRequest_.get();
 }
 
 bool HttpRequest::authenticationUsed() const
 {
-  return authConfig_;
+  return authConfig_.get();
 }
 
-const SharedHandle<AuthConfig>& HttpRequest::getAuthConfig() const
+const std::shared_ptr<AuthConfig>& HttpRequest::getAuthConfig() const
 {
   return authConfig_;
 }
@@ -421,7 +421,7 @@ void HttpRequest::setUserAgent(const std::string& userAgent)
   userAgent_ = userAgent;
 }
 
-void HttpRequest::setFileEntry(const SharedHandle<FileEntry>& fileEntry)
+void HttpRequest::setFileEntry(const std::shared_ptr<FileEntry>& fileEntry)
 {
   fileEntry_ = fileEntry;
 }

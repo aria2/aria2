@@ -20,13 +20,13 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTTaskExecutorTest);
 
 void DHTTaskExecutorTest::testUpdate()
 {
-  SharedHandle<DHTNode> rn;
+  std::shared_ptr<DHTNode> rn;
   DHTTaskExecutor tex(2);
-  SharedHandle<MockDHTTask> tasks[] = {
-    SharedHandle<MockDHTTask>(new MockDHTTask(rn)),
-    SharedHandle<MockDHTTask>(new MockDHTTask(rn)),
-    SharedHandle<MockDHTTask>(new MockDHTTask(rn)),
-    SharedHandle<MockDHTTask>(new MockDHTTask(rn))
+  std::shared_ptr<MockDHTTask> tasks[] = {
+    std::shared_ptr<MockDHTTask>(new MockDHTTask(rn)),
+    std::shared_ptr<MockDHTTask>(new MockDHTTask(rn)),
+    std::shared_ptr<MockDHTTask>(new MockDHTTask(rn)),
+    std::shared_ptr<MockDHTTask>(new MockDHTTask(rn))
   };
   tasks[1]->finished_ = true;
   for(size_t i = 0; i < A2_ARRAY_LEN(tasks); ++i) {

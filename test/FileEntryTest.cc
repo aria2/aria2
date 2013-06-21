@@ -44,12 +44,12 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION( FileEntryTest );
 
 namespace {
-SharedHandle<FileEntry> createFileEntry()
+std::shared_ptr<FileEntry> createFileEntry()
 {
   const char* uris[] = { "http://localhost/aria2.zip",
                          "ftp://localhost/aria2.zip",
                          "http://mirror/aria2.zip" };
-  SharedHandle<FileEntry> fileEntry(new FileEntry());
+  std::shared_ptr<FileEntry> fileEntry(new FileEntry());
   fileEntry->setUris(std::vector<std::string>(&uris[0], &uris[3]));
   return fileEntry;
 }
@@ -57,7 +57,7 @@ SharedHandle<FileEntry> createFileEntry()
 
 void FileEntryTest::testRemoveURIWhoseHostnameIs()
 {
-  SharedHandle<FileEntry> fileEntry = createFileEntry();
+  std::shared_ptr<FileEntry> fileEntry = createFileEntry();
   fileEntry->removeURIWhoseHostnameIs("localhost");
   CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntry->getRemainingUris().size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://mirror/aria2.zip"),
@@ -94,42 +94,42 @@ void FileEntryTest::testExtractURIResult()
 
 void FileEntryTest::testGetRequest()
 {
-  SharedHandle<FileEntry> fileEntry = createFileEntry();
-  SharedHandle<InorderURISelector> selector(new InorderURISelector());
+  std::shared_ptr<FileEntry> fileEntry = createFileEntry();
+  std::shared_ptr<InorderURISelector> selector(new InorderURISelector());
   std::vector<std::pair<size_t, std::string> > usedHosts;
-  SharedHandle<Request> req =
+  std::shared_ptr<Request> req =
     fileEntry->getRequest(selector, true, usedHosts);
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req->getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req->getProtocol());
   fileEntry->poolRequest(req);
 
-  SharedHandle<Request> req2nd =
+  std::shared_ptr<Request> req2nd =
     fileEntry->getRequest(selector, true, usedHosts);
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req2nd->getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req2nd->getProtocol());
 
-  SharedHandle<Request> req3rd =
+  std::shared_ptr<Request> req3rd =
     fileEntry->getRequest(selector, true, usedHosts);
   CPPUNIT_ASSERT_EQUAL(std::string("mirror"), req3rd->getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req3rd->getProtocol());
 
-  SharedHandle<Request> req4th =
+  std::shared_ptr<Request> req4th =
     fileEntry->getRequest(selector, true, usedHosts);
   CPPUNIT_ASSERT(!req4th);
 
   fileEntry->setMaxConnectionPerServer(2);
 
-  SharedHandle<Request> req5th =
+  std::shared_ptr<Request> req5th =
     fileEntry->getRequest(selector, true, usedHosts);
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req5th->getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("ftp"), req5th->getProtocol());
 
-  SharedHandle<Request> req6th =
+  std::shared_ptr<Request> req6th =
     fileEntry->getRequest(selector, true, usedHosts);
   CPPUNIT_ASSERT_EQUAL(std::string("mirror"), req6th->getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req6th->getProtocol());
 
-  SharedHandle<Request> req7th =
+  std::shared_ptr<Request> req7th =
     fileEntry->getRequest(selector, true, usedHosts);
   CPPUNIT_ASSERT(!req7th);
 }
@@ -137,24 +137,24 @@ void FileEntryTest::testGetRequest()
 void FileEntryTest::testGetRequest_withoutUriReuse()
 {
   std::vector<std::pair<size_t, std::string> > usedHosts;
-  SharedHandle<FileEntry> fileEntry = createFileEntry();
+  std::shared_ptr<FileEntry> fileEntry = createFileEntry();
   fileEntry->setMaxConnectionPerServer(2);
-  SharedHandle<InorderURISelector> selector(new InorderURISelector());
-  SharedHandle<Request> req = fileEntry->getRequest(selector, false, usedHosts);
+  std::shared_ptr<InorderURISelector> selector(new InorderURISelector());
+  std::shared_ptr<Request> req = fileEntry->getRequest(selector, false, usedHosts);
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req->getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req->getProtocol());
 
-  SharedHandle<Request> req2nd =
+  std::shared_ptr<Request> req2nd =
     fileEntry->getRequest(selector, false, usedHosts);
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req2nd->getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("ftp"), req2nd->getProtocol());
 
-  SharedHandle<Request> req3rd =
+  std::shared_ptr<Request> req3rd =
     fileEntry->getRequest(selector, false, usedHosts);
   CPPUNIT_ASSERT_EQUAL(std::string("mirror"), req3rd->getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req3rd->getProtocol());
 
-  SharedHandle<Request> req4th =
+  std::shared_ptr<Request> req4th =
     fileEntry->getRequest(selector, false, usedHosts);
   CPPUNIT_ASSERT(!req4th);
 }
@@ -162,20 +162,20 @@ void FileEntryTest::testGetRequest_withoutUriReuse()
 void FileEntryTest::testGetRequest_withUniqueProtocol()
 {
   std::vector<std::pair<size_t, std::string> > usedHosts;
-  SharedHandle<FileEntry> fileEntry = createFileEntry();
+  std::shared_ptr<FileEntry> fileEntry = createFileEntry();
   fileEntry->setUniqueProtocol(true);
-  SharedHandle<InorderURISelector> selector(new InorderURISelector());
-  SharedHandle<Request> req =
+  std::shared_ptr<InorderURISelector> selector(new InorderURISelector());
+  std::shared_ptr<Request> req =
     fileEntry->getRequest(selector, true, usedHosts);
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req->getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req->getProtocol());
 
-  SharedHandle<Request> req2nd =
+  std::shared_ptr<Request> req2nd =
     fileEntry->getRequest(selector, true, usedHosts);
   CPPUNIT_ASSERT_EQUAL(std::string("mirror"), req2nd->getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req2nd->getProtocol());
 
-  SharedHandle<Request> req3rd =
+  std::shared_ptr<Request> req3rd =
     fileEntry->getRequest(selector, true, usedHosts);
   CPPUNIT_ASSERT(!req3rd);
 
@@ -188,10 +188,10 @@ void FileEntryTest::testGetRequest_withUniqueProtocol()
 
 void FileEntryTest::testGetRequest_withReferer()
 {
-  SharedHandle<FileEntry> fileEntry = createFileEntry();
-  SharedHandle<InorderURISelector> selector(new InorderURISelector());
+  std::shared_ptr<FileEntry> fileEntry = createFileEntry();
+  std::shared_ptr<InorderURISelector> selector(new InorderURISelector());
   std::vector<std::pair<size_t, std::string> > usedHosts;
-  SharedHandle<Request> req =
+  std::shared_ptr<Request> req =
     fileEntry->getRequest(selector, true, usedHosts, "http://referer");
   CPPUNIT_ASSERT_EQUAL(std::string("http://referer"), req->getReferer());
   // URI is used as referer if "*" is given.
@@ -201,8 +201,8 @@ void FileEntryTest::testGetRequest_withReferer()
 
 void FileEntryTest::testReuseUri()
 {
-  SharedHandle<InorderURISelector> selector(new InorderURISelector());
-  SharedHandle<FileEntry> fileEntry = createFileEntry();
+  std::shared_ptr<InorderURISelector> selector(new InorderURISelector());
+  std::shared_ptr<FileEntry> fileEntry = createFileEntry();
   fileEntry->setMaxConnectionPerServer(3);
   size_t numUris = fileEntry->getRemainingUris().size();
   std::vector<std::pair<size_t, std::string> > usedHosts;
@@ -279,7 +279,7 @@ void FileEntryTest::testInsertUri()
 void FileEntryTest::testRemoveUri()
 {
   std::vector<std::pair<size_t, std::string> > usedHosts;
-  SharedHandle<InorderURISelector> selector(new InorderURISelector());
+  std::shared_ptr<InorderURISelector> selector(new InorderURISelector());
   FileEntry file;
   file.addUri("http://example.org/");
   CPPUNIT_ASSERT(file.removeUri("http://example.org/"));
@@ -287,7 +287,7 @@ void FileEntryTest::testRemoveUri()
   CPPUNIT_ASSERT(!file.removeUri("http://example.org/"));
 
   file.addUri("http://example.org/");
-  SharedHandle<Request> exampleOrgReq =
+  std::shared_ptr<Request> exampleOrgReq =
     file.getRequest(selector, true, usedHosts);
   CPPUNIT_ASSERT(!exampleOrgReq->removalRequested());
   CPPUNIT_ASSERT_EQUAL((size_t)1, file.getSpentUris().size());
@@ -311,12 +311,12 @@ void FileEntryTest::testRemoveUri()
 
 void FileEntryTest::testPutBackRequest()
 {
-  SharedHandle<FileEntry> fileEntry = createFileEntry();
-  SharedHandle<InorderURISelector> selector(new InorderURISelector());
+  std::shared_ptr<FileEntry> fileEntry = createFileEntry();
+  std::shared_ptr<InorderURISelector> selector(new InorderURISelector());
   std::vector<std::pair<size_t, std::string> > usedHosts;
-  SharedHandle<Request> req1 =
+  std::shared_ptr<Request> req1 =
     fileEntry->getRequest(selector, false, usedHosts);
-  SharedHandle<Request> req2 =
+  std::shared_ptr<Request> req2 =
     fileEntry->getRequest(selector, false, usedHosts);
   CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntry->getRemainingUris().size());
   fileEntry->poolRequest(req2);

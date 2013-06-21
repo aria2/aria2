@@ -57,10 +57,10 @@ class DHTTaskFactory;
 class DefaultBtMessageFactory : public BtMessageFactory {
 private:
   cuid_t cuid_;
-  SharedHandle<DownloadContext> downloadContext_;
-  SharedHandle<PieceStorage> pieceStorage_;
-  SharedHandle<PeerStorage> peerStorage_;
-  SharedHandle<Peer> peer_;
+  std::shared_ptr<DownloadContext> downloadContext_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
+  std::shared_ptr<PeerStorage> peerStorage_;
+  std::shared_ptr<Peer> peer_;
 
   bool dhtEnabled_;
 
@@ -70,7 +70,7 @@ private:
 
   PeerConnection* peerConnection_;
 
-  SharedHandle<ExtensionMessageFactory> extensionMessageFactory_;
+  std::shared_ptr<ExtensionMessageFactory> extensionMessageFactory_;
 
   DHTNode* localNode_;
 
@@ -88,60 +88,60 @@ public:
 
   virtual ~DefaultBtMessageFactory();
 
-  virtual SharedHandle<BtMessage>
+  virtual std::shared_ptr<BtMessage>
   createBtMessage(const unsigned char* msg, size_t msgLength);
 
-  virtual SharedHandle<BtHandshakeMessage>
+  virtual std::shared_ptr<BtHandshakeMessage>
   createHandshakeMessage(const unsigned char* msg, size_t msgLength);
 
-  virtual SharedHandle<BtHandshakeMessage>
+  virtual std::shared_ptr<BtHandshakeMessage>
   createHandshakeMessage(const unsigned char* infoHash,
                          const unsigned char* peerId);
 
-  virtual SharedHandle<BtMessage>
-  createRequestMessage(const SharedHandle<Piece>& piece, size_t blockIndex);
+  virtual std::shared_ptr<BtMessage>
+  createRequestMessage(const std::shared_ptr<Piece>& piece, size_t blockIndex);
 
-  virtual SharedHandle<BtMessage>
+  virtual std::shared_ptr<BtMessage>
   createCancelMessage(size_t index, int32_t begin, int32_t length);
 
-  virtual SharedHandle<BtMessage>
+  virtual std::shared_ptr<BtMessage>
   createPieceMessage(size_t index, int32_t begin, int32_t length);
 
-  virtual SharedHandle<BtMessage> createHaveMessage(size_t index);
+  virtual std::shared_ptr<BtMessage> createHaveMessage(size_t index);
 
-  virtual SharedHandle<BtMessage> createChokeMessage();
+  virtual std::shared_ptr<BtMessage> createChokeMessage();
 
-  virtual SharedHandle<BtMessage> createUnchokeMessage();
+  virtual std::shared_ptr<BtMessage> createUnchokeMessage();
 
-  virtual SharedHandle<BtMessage> createInterestedMessage();
+  virtual std::shared_ptr<BtMessage> createInterestedMessage();
 
-  virtual SharedHandle<BtMessage> createNotInterestedMessage();
+  virtual std::shared_ptr<BtMessage> createNotInterestedMessage();
 
-  virtual SharedHandle<BtMessage> createBitfieldMessage();
+  virtual std::shared_ptr<BtMessage> createBitfieldMessage();
 
-  virtual SharedHandle<BtMessage> createKeepAliveMessage();
+  virtual std::shared_ptr<BtMessage> createKeepAliveMessage();
 
-  virtual SharedHandle<BtMessage> createHaveAllMessage();
+  virtual std::shared_ptr<BtMessage> createHaveAllMessage();
 
-  virtual SharedHandle<BtMessage> createHaveNoneMessage();
+  virtual std::shared_ptr<BtMessage> createHaveNoneMessage();
 
-  virtual SharedHandle<BtMessage>
+  virtual std::shared_ptr<BtMessage>
   createRejectMessage(size_t index, int32_t begin, int32_t length);
 
-  virtual SharedHandle<BtMessage> createAllowedFastMessage(size_t index);
+  virtual std::shared_ptr<BtMessage> createAllowedFastMessage(size_t index);
 
-  virtual SharedHandle<BtMessage> createPortMessage(uint16_t port);
+  virtual std::shared_ptr<BtMessage> createPortMessage(uint16_t port);
 
-  virtual SharedHandle<BtMessage>
-  createBtExtendedMessage(const SharedHandle<ExtensionMessage>& msg);
+  virtual std::shared_ptr<BtMessage>
+  createBtExtendedMessage(const std::shared_ptr<ExtensionMessage>& msg);
 
-  void setPeer(const SharedHandle<Peer>& peer);
+  void setPeer(const std::shared_ptr<Peer>& peer);
 
-  void setDownloadContext(const SharedHandle<DownloadContext>& downloadContext);
+  void setDownloadContext(const std::shared_ptr<DownloadContext>& downloadContext);
 
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+  void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage);
 
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
 
   void setCuid(cuid_t cuid)
   {
@@ -160,7 +160,7 @@ public:
   void setPeerConnection(PeerConnection* connection);
 
   void setExtensionMessageFactory
-  (const SharedHandle<ExtensionMessageFactory>& factory);
+  (const std::shared_ptr<ExtensionMessageFactory>& factory);
 
   void setLocalNode(DHTNode* localNode);
 

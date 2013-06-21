@@ -118,13 +118,13 @@ OutputStream& encode(OutputStream& out, const ValueBase* vlb)
 }
 
 template<typename OutputStream>
-OutputStream& encode(OutputStream& out, const SharedHandle<ValueBase>& vlb)
+OutputStream& encode(OutputStream& out, const std::shared_ptr<ValueBase>& vlb)
 {
   return encode(out, vlb.get());
 }
 
 // Serializes JSON object or array.
-std::string encode(const SharedHandle<ValueBase>& json);
+std::string encode(const std::shared_ptr<ValueBase>& json);
 
 struct JsonGetParam {
   std::string request;

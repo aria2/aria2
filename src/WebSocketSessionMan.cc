@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "WebSocketSessionMan.h"
+
+#include <cassert>
+
 #include "WebSocketSession.h"
 #include "RequestGroup.h"
 #include "json.h"
@@ -49,14 +52,14 @@ WebSocketSessionMan::WebSocketSessionMan() {}
 WebSocketSessionMan::~WebSocketSessionMan() {}
 
 void WebSocketSessionMan::addSession
-(const SharedHandle<WebSocketSession>& wsSession)
+(const std::shared_ptr<WebSocketSession>& wsSession)
 {
   A2_LOG_DEBUG("WebSocket session added.");
   sessions_.insert(wsSession);
 }
 
 void WebSocketSessionMan::removeSession
-(const SharedHandle<WebSocketSession>& wsSession)
+(const std::shared_ptr<WebSocketSession>& wsSession)
 {
   A2_LOG_DEBUG("WebSocket session removed.");
   sessions_.erase(wsSession);
@@ -65,12 +68,12 @@ void WebSocketSessionMan::removeSession
 void WebSocketSessionMan::addNotification
 (const std::string& method, const RequestGroup* group)
 {
-  SharedHandle<Dict> dict = Dict::g();
+  std::shared_ptr<Dict> dict = Dict::g();
   dict->put("jsonrpc", "2.0");
   dict->put("method", method);
-  SharedHandle<Dict> eventSpec = Dict::g();
+  std::shared_ptr<Dict> eventSpec = Dict::g();
   eventSpec->put("gid", GroupId::toHex((group->getGID())));
-  SharedHandle<List> params = List::g();
+  std::shared_ptr<List> params = List::g();
   params->append(eventSpec);
   dict->put("params", params);
   std::string msg = json::encode(dict);

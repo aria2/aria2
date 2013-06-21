@@ -36,6 +36,7 @@
 
 #include <cerrno>
 #include <cstring>
+#include <cassert>
 
 #include "SocketCore.h"
 #include "LogFactory.h"
@@ -58,7 +59,7 @@ ssize_t sendCallback(wslay_event_context_ptr wsctx,
                       void* userData)
 {
   WebSocketSession* session = reinterpret_cast<WebSocketSession*>(userData);
-  const SharedHandle<SocketCore>& socket = session->getSocket();
+  const std::shared_ptr<SocketCore>& socket = session->getSocket();
   try {
     ssize_t r = socket->writeData(data, len);
     if(r == 0) {
@@ -84,7 +85,7 @@ ssize_t recvCallback(wslay_event_context_ptr wsctx,
                      void* userData)
 {
   WebSocketSession* session = reinterpret_cast<WebSocketSession*>(userData);
-  const SharedHandle<SocketCore>& socket = session->getSocket();
+  const std::shared_ptr<SocketCore>& socket = session->getSocket();
   try {
     ssize_t r;
     socket->readData(buf, len);
@@ -159,7 +160,7 @@ void onMsgRecvCallback(wslay_event_context_ptr wsctx,
   if(!wslay_is_ctrl_frame(arg->opcode)) {
     // TODO Only process text frame
     ssize_t error = 0;
-    SharedHandle<ValueBase> json = wsSession->parseFinal(0, 0, error);
+    std::shared_ptr<ValueBase> json = wsSession->parseFinal(0, 0, error);
     if(error < 0) {
       A2_LOG_INFO("Failed to parse JSON-RPC request");
       RpcResponse res
@@ -201,7 +202,7 @@ void onMsgRecvCallback(wslay_event_context_ptr wsctx,
 }
 } // namespace
 
-WebSocketSession::WebSocketSession(const SharedHandle<SocketCore>& socket,
+WebSocketSession::WebSocketSession(const std::shared_ptr<SocketCore>& socket,
                                    DownloadEngine* e)
   : socket_(socket),
     e_(e),
@@ -291,10 +292,10 @@ ssize_t WebSocketSession::parseUpdate(const uint8_t* data, size_t len)
   return parser_.parseUpdate(reinterpret_cast<const char*>(data), len);
 }
 
-SharedHandle<ValueBase> WebSocketSession::parseFinal
+std::shared_ptr<ValueBase> WebSocketSession::parseFinal
 (const uint8_t* data, size_t len, ssize_t& error)
 {
-  SharedHandle<ValueBase> res =
+  std::shared_ptr<ValueBase> res =
     parser_.parseFinal(reinterpret_cast<const char*>(data), len, error);
   receivedLength_ = 0;
   return res;

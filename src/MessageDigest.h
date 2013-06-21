@@ -39,8 +39,7 @@
 
 #include <string>
 #include <vector>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -48,7 +47,7 @@ class MessageDigestImpl;
 
 class MessageDigest {
 private:
-  SharedHandle<MessageDigestImpl> pImpl_;
+  std::shared_ptr<MessageDigestImpl> pImpl_;
 
   MessageDigest();
 
@@ -60,11 +59,11 @@ public:
   ~MessageDigest();
 
   // Factory functions
-  static SharedHandle<MessageDigest> sha1();
+  static std::shared_ptr<MessageDigest> sha1();
 
   // Factory function which takes hashType as string.  Throws
   // exception if hashType is not supported.
-  static SharedHandle<MessageDigest> create(const std::string& hashType);
+  static std::shared_ptr<MessageDigest> create(const std::string& hashType);
 
   // Returns true if hashType is supported. Otherwise returns false.
   static bool supports(const std::string& hashType);

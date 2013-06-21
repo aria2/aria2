@@ -48,12 +48,12 @@
 namespace aria2 {
 
 ConnectCommand::ConnectCommand(cuid_t cuid,
-                               const SharedHandle<Request>& req,
-                               const SharedHandle<Request>& proxyRequest,
-                               const SharedHandle<FileEntry>& fileEntry,
+                               const std::shared_ptr<Request>& req,
+                               const std::shared_ptr<Request>& proxyRequest,
+                               const std::shared_ptr<FileEntry>& fileEntry,
                                RequestGroup* requestGroup,
                                DownloadEngine* e,
-                               const SharedHandle<SocketCore>& s)
+                               const std::shared_ptr<SocketCore>& s)
   : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
     proxyRequest_(proxyRequest)
 {
@@ -70,18 +70,18 @@ ConnectCommand::~ConnectCommand()
 }
 
 void ConnectCommand::setControlChain
-(const SharedHandle<ControlChain<ConnectCommand*> >& chain)
+(const std::shared_ptr<ControlChain<ConnectCommand*> >& chain)
 {
   chain_ = chain;
 }
 
 void ConnectCommand::setBackupConnectInfo
-(const SharedHandle<BackupConnectInfo>& info)
+(const std::shared_ptr<BackupConnectInfo>& info)
 {
   backupConnectionInfo_ = info;
 }
 
-const SharedHandle<Request>& ConnectCommand::getProxyRequest() const
+const std::shared_ptr<Request>& ConnectCommand::getProxyRequest() const
 {
   return proxyRequest_;
 }
@@ -89,7 +89,7 @@ const SharedHandle<Request>& ConnectCommand::getProxyRequest() const
 bool ConnectCommand::executeInternal()
 {
   if(backupConnectionInfo_ && !backupConnectionInfo_->ipaddr.empty()) {
-    A2_LOG_INFO(fmt("CUID#%"PRId64" - Use backup connection address %s",
+    A2_LOG_INFO(fmt("CUID#%" PRId64 " - Use backup connection address %s",
                     getCuid(), backupConnectionInfo_->ipaddr.c_str()));
     getDownloadEngine()->markBadIPAddress
       (getRequest()->getConnectedHostname(),

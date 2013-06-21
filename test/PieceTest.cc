@@ -27,8 +27,8 @@ class PieceTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<DirectDiskAdaptor> adaptor_;
-  SharedHandle<ByteArrayDiskWriter> writer_;
+  std::shared_ptr<DirectDiskAdaptor> adaptor_;
+  std::shared_ptr<ByteArrayDiskWriter> writer_;
 public:
   void setUp()
   {

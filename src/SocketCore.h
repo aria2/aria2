@@ -41,9 +41,9 @@
 #include <cstdlib>
 #include <utility>
 #include <vector>
+#include <memory>
 
 #include "a2netcompat.h"
-#include "SharedHandle.h"
 #include "a2io.h"
 #include "a2netcompat.h"
 #include "a2time.h"
@@ -77,11 +77,11 @@ private:
 
 #if ENABLE_SSL
   // TLS context for client side
-  static SharedHandle<TLSContext> clTlsContext_;
+  static std::shared_ptr<TLSContext> clTlsContext_;
   // TLS context for server side
-  static SharedHandle<TLSContext> svTlsContext_;
+  static std::shared_ptr<TLSContext> svTlsContext_;
 
-  SharedHandle<TLSSession> tlsSession_;
+  std::shared_ptr<TLSSession> tlsSession_;
 
   /**
    * Makes this socket secure. The connection must be established
@@ -177,7 +177,7 @@ public:
    * You must call beginListen() before calling this method.
    * @return accepted socket.
    */
-  SharedHandle<SocketCore> acceptConnection() const;
+  std::shared_ptr<SocketCore> acceptConnection() const;
 
   /**
    * Connects to the server named host and the destination port is port.
@@ -307,8 +307,8 @@ public:
   bool wantWrite() const;
 
 #ifdef ENABLE_SSL
-  static void setClientTLSContext(const SharedHandle<TLSContext>& tlsContext);
-  static void setServerTLSContext(const SharedHandle<TLSContext>& tlsContext);
+  static void setClientTLSContext(const std::shared_ptr<TLSContext>& tlsContext);
+  static void setServerTLSContext(const std::shared_ptr<TLSContext>& tlsContext);
 #endif // ENABLE_SSL
 
   static void setProtocolFamily(int protocolFamily)

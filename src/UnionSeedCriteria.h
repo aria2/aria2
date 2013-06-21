@@ -38,12 +38,13 @@
 #include "SeedCriteria.h"
 
 #include <vector>
+#include <memory>
 
 namespace aria2 {
 
 class UnionSeedCriteria : public SeedCriteria {
 private:
-  std::vector<SharedHandle<SeedCriteria> > criterion_;
+  std::vector<std::shared_ptr<SeedCriteria> > criterion_;
 public:
   UnionSeedCriteria();
   virtual ~UnionSeedCriteria();
@@ -52,9 +53,9 @@ public:
 
   virtual bool evaluate();
 
-  void addSeedCriteria(const SharedHandle<SeedCriteria>& cri);
+  void addSeedCriteria(const std::shared_ptr<SeedCriteria>& cri);
 
-  const std::vector<SharedHandle<SeedCriteria> >& getSeedCriterion() const
+  const std::vector<std::shared_ptr<SeedCriteria> >& getSeedCriterion() const
   {
     return criterion_;
   }

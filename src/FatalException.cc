@@ -36,9 +36,9 @@
 
 namespace aria2 {
 
-SharedHandle<Exception> FatalException::copy() const
+std::shared_ptr<Exception> FatalException::copy() const
 {
-  SharedHandle<Exception> e(new FatalException(*this));
+  std::shared_ptr<Exception> e(new FatalException(*this));
   return e;
 }
 

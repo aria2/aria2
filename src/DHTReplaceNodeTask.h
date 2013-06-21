@@ -45,9 +45,9 @@ class DHTPingReplyMessage;
 
 class DHTReplaceNodeTask:public DHTAbstractTask {
 private:
-  SharedHandle<DHTBucket> bucket_;
+  std::shared_ptr<DHTBucket> bucket_;
 
-  SharedHandle<DHTNode> newNode_;
+  std::shared_ptr<DHTNode> newNode_;
 
   int numRetry_;
 
@@ -55,8 +55,8 @@ private:
 
   void sendMessage();
 public:
-  DHTReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
-                     const SharedHandle<DHTNode>& newNode);
+  DHTReplaceNodeTask(const std::shared_ptr<DHTBucket>& bucket,
+                     const std::shared_ptr<DHTNode>& newNode);
 
   virtual ~DHTReplaceNodeTask();
 
@@ -64,7 +64,7 @@ public:
 
   void onReceived(const DHTPingReplyMessage* message);
 
-  void onTimeout(const SharedHandle<DHTNode>& node);
+  void onTimeout(const std::shared_ptr<DHTNode>& node);
 
   void setTimeout(time_t timeout)
   {

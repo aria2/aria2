@@ -41,8 +41,8 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "error_code.h"
 #include "RequestGroup.h"
 
@@ -54,9 +54,9 @@ class MetadataInfo;
 
 struct DownloadResult
 {
-  SharedHandle<GroupId> gid;
+  std::shared_ptr<GroupId> gid;
 
-  std::vector<SharedHandle<FileEntry> > fileEntries;
+  std::vector<std::shared_ptr<FileEntry> > fileEntries;
 
   bool inMemoryDownload;
 
@@ -75,9 +75,9 @@ struct DownloadResult
   // RequestGroup.cc::belongsToGID_.
   a2_gid_t belongsTo;
 
-  SharedHandle<Option> option;
+  std::shared_ptr<Option> option;
 
-  SharedHandle<MetadataInfo> metadataInfo;
+  std::shared_ptr<MetadataInfo> metadataInfo;
 
   int64_t totalLength;
 

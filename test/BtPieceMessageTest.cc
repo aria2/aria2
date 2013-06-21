@@ -59,20 +59,20 @@ public:
 
   class MockBtMessageFactory2 : public MockBtMessageFactory {
   public:
-    virtual SharedHandle<BtMessage>
+    virtual std::shared_ptr<BtMessage>
     createRejectMessage(size_t index,
                         int32_t begin,
                         int32_t length) {
-      SharedHandle<MockBtMessage2> msg(new MockBtMessage2(index, begin, length));
+      std::shared_ptr<MockBtMessage2> msg(new MockBtMessage2(index, begin, length));
       return msg;
     }
   };
 
-  SharedHandle<DownloadContext> dctx_;
-  SharedHandle<MockBtMessageDispatcher> btMessageDispatcher;
-  SharedHandle<MockBtMessageFactory> btMessageFactory_;
-  SharedHandle<Peer> peer;
-  SharedHandle<BtPieceMessage> msg;
+  std::shared_ptr<DownloadContext> dctx_;
+  std::shared_ptr<MockBtMessageDispatcher> btMessageDispatcher;
+  std::shared_ptr<MockBtMessageFactory> btMessageFactory_;
+  std::shared_ptr<Peer> peer;
+  std::shared_ptr<BtPieceMessage> msg;
 
   void setUp() {
     dctx_.reset(new DownloadContext(16*1024, 256*1024, "/path/to/file"));
@@ -106,7 +106,7 @@ void BtPieceMessageTest::testCreate() {
   bittorrent::setIntParam(&msg[5], 12345);
   bittorrent::setIntParam(&msg[9], 256);
   memcpy(&msg[13], data, sizeof(data));
-  SharedHandle<BtPieceMessage> pm(BtPieceMessage::create(&msg[4], 11));
+  std::shared_ptr<BtPieceMessage> pm(BtPieceMessage::create(&msg[4], 11));
   CPPUNIT_ASSERT_EQUAL((uint8_t)7, pm->getId());
   CPPUNIT_ASSERT_EQUAL((size_t)12345, pm->getIndex());
   CPPUNIT_ASSERT_EQUAL(256, pm->getBegin());
@@ -166,8 +166,7 @@ void BtPieceMessageTest::testChokingEvent_allowedFastEnabled() {
 
   CPPUNIT_ASSERT(msg->isInvalidate());
   CPPUNIT_ASSERT_EQUAL((size_t)1, btMessageDispatcher->messageQueue.size());
-  SharedHandle<MockBtMessage2> rej =
-    dynamic_pointer_cast<MockBtMessage2>
+  auto rej = std::dynamic_pointer_cast<MockBtMessage2>
     (btMessageDispatcher->messageQueue.front());
   CPPUNIT_ASSERT_EQUAL((size_t)1, rej->index);
   CPPUNIT_ASSERT_EQUAL((uint32_t)1024, rej->begin);
@@ -235,8 +234,7 @@ void BtPieceMessageTest::testCancelSendingPieceEvent_allowedFastEnabled() {
 
   CPPUNIT_ASSERT(msg->isInvalidate());
   CPPUNIT_ASSERT_EQUAL((size_t)1, btMessageDispatcher->messageQueue.size());
-  SharedHandle<MockBtMessage2> rej =
-    dynamic_pointer_cast<MockBtMessage2>
+  auto rej = std::dynamic_pointer_cast<MockBtMessage2>
     (btMessageDispatcher->messageQueue.front());
   CPPUNIT_ASSERT_EQUAL((size_t)1, rej->index);
   CPPUNIT_ASSERT_EQUAL((uint32_t)1024, rej->begin);

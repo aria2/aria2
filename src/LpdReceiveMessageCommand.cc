@@ -53,7 +53,7 @@ namespace aria2 {
 
 LpdReceiveMessageCommand::LpdReceiveMessageCommand
 (cuid_t cuid,
- const SharedHandle<LpdMessageReceiver>& receiver,
+ const std::shared_ptr<LpdMessageReceiver>& receiver,
  DownloadEngine* e)
   : Command(cuid),
     receiver_(receiver),
@@ -73,12 +73,12 @@ bool LpdReceiveMessageCommand::execute()
     return true;
   }
   for(size_t i = 0; i < 20; ++i) {
-    SharedHandle<LpdMessage> m = receiver_->receiveMessage();
+    std::shared_ptr<LpdMessage> m = receiver_->receiveMessage();
     if(!m) {
       break;
     }
-    SharedHandle<BtRegistry> reg = e_->getBtRegistry();
-    SharedHandle<DownloadContext> dctx = reg->getDownloadContext(m->infoHash);
+    std::shared_ptr<BtRegistry> reg = e_->getBtRegistry();
+    std::shared_ptr<DownloadContext> dctx = reg->getDownloadContext(m->infoHash);
     if(!dctx) {
       A2_LOG_DEBUG(fmt("Download Context is null for infohash=%s.",
                        util::toHex(m->infoHash).c_str()));
@@ -90,11 +90,11 @@ bool LpdReceiveMessageCommand::execute()
     }
     RequestGroup* group = dctx->getOwnerRequestGroup();
     assert(group);
-    const SharedHandle<BtObject>& btobj = reg->get(group->getGID());
+    const std::shared_ptr<BtObject>& btobj = reg->get(group->getGID());
     assert(btobj);
-    const SharedHandle<PeerStorage>& peerStorage = btobj->peerStorage;
+    const std::shared_ptr<PeerStorage>& peerStorage = btobj->peerStorage;
     assert(peerStorage);
-    SharedHandle<Peer> peer = m->peer;
+    std::shared_ptr<Peer> peer = m->peer;
     if(peerStorage->addPeer(peer)) {
       A2_LOG_DEBUG(fmt("LPD peer %s:%u local=%d added.",
                        peer->getIPAddress().c_str(), peer->getPort(),

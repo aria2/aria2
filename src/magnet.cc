@@ -40,9 +40,9 @@ namespace aria2 {
 
 namespace magnet {
 
-SharedHandle<Dict> parse(const std::string& magnet)
+std::shared_ptr<Dict> parse(const std::string& magnet)
 {
-  SharedHandle<Dict> dict;
+  std::shared_ptr<Dict> dict;
   if(!util::startsWith(magnet, "magnet:?")) {
     return dict;
   }
@@ -60,7 +60,7 @@ SharedHandle<Dict> parse(const std::string& magnet)
     if(l) {
       l->append(String::g(value));
     } else {
-      SharedHandle<List> l = List::g();
+      std::shared_ptr<List> l = List::g();
       l->append(String::g(value));
       dict->put(name, l);
     }

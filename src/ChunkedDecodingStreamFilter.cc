@@ -65,7 +65,7 @@ enum {
 } // namespace
 
 ChunkedDecodingStreamFilter::ChunkedDecodingStreamFilter
-(const SharedHandle<StreamFilter>& delegate):
+(const std::shared_ptr<StreamFilter>& delegate):
   StreamFilter(delegate),
   state_(PREV_CHUNK_SIZE),
   chunkSize_(0),
@@ -77,8 +77,8 @@ ChunkedDecodingStreamFilter::~ChunkedDecodingStreamFilter() {}
 void ChunkedDecodingStreamFilter::init() {}
 
 ssize_t ChunkedDecodingStreamFilter::transform
-(const SharedHandle<BinaryStream>& out,
- const SharedHandle<Segment>& segment,
+(const std::shared_ptr<BinaryStream>& out,
+ const std::shared_ptr<Segment>& segment,
  const unsigned char* inbuf, size_t inlen)
 {
   ssize_t outlen = 0;

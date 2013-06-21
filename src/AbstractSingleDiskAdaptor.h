@@ -44,7 +44,7 @@ class FileAllocationIterator;
 
 class AbstractSingleDiskAdaptor : public DiskAdaptor {
 private:
-  SharedHandle<DiskWriter> diskWriter_;
+  std::shared_ptr<DiskWriter> diskWriter_;
   int64_t totalLength_;
   bool readOnly_;
 public:
@@ -73,7 +73,7 @@ public:
 
   virtual void truncate(int64_t length);
 
-  virtual SharedHandle<FileAllocationIterator> fileAllocationIterator();
+  virtual std::shared_ptr<FileAllocationIterator> fileAllocationIterator();
 
   // Make sure that DiskWriter is set before calling this function.
   virtual void enableReadOnly();
@@ -89,9 +89,9 @@ public:
 
   virtual const std::string& getFilePath() = 0;
 
-  void setDiskWriter(const SharedHandle<DiskWriter>& diskWriter);
+  void setDiskWriter(const std::shared_ptr<DiskWriter>& diskWriter);
 
-  const SharedHandle<DiskWriter>& getDiskWriter() const
+  const std::shared_ptr<DiskWriter>& getDiskWriter() const
   {
     return diskWriter_;
   }

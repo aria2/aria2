@@ -1566,9 +1566,9 @@ void UtilTest::testAbbrevSize()
 void UtilTest::testToStream()
 {
   std::ostringstream os;
-  SharedHandle<FileEntry> f1(new FileEntry("aria2.tar.bz2", 12300, 0));
-  SharedHandle<FileEntry> f2(new FileEntry("aria2.txt", 556, 0));
-  std::deque<SharedHandle<FileEntry> > entries;
+  std::shared_ptr<FileEntry> f1(new FileEntry("aria2.tar.bz2", 12300, 0));
+  std::shared_ptr<FileEntry> f2(new FileEntry("aria2.txt", 556, 0));
+  std::deque<std::shared_ptr<FileEntry> > entries;
   entries.push_back(f1);
   entries.push_back(f2);
   const char* filename = A2_TEST_OUT_DIR"/aria2_UtilTest_testToStream";
@@ -1791,7 +1791,7 @@ void UtilTest::testParseLLIntNoThrow()
 
 void UtilTest::testToString_binaryStream()
 {
-  SharedHandle<DiskWriter> dw(new ByteArrayDiskWriter());
+  std::shared_ptr<DiskWriter> dw(new ByteArrayDiskWriter());
   std::string data(16*1024+256, 'a');
   dw->initAndOpenFile();
   dw->writeData((const unsigned char*)data.c_str(), data.size(), 0);
@@ -1987,7 +1987,7 @@ void UtilTest::testParsePrioritizePieceRange()
   //                      |                    |
   //                      file4                |
   size_t pieceLength = 1024;
-  std::vector<SharedHandle<FileEntry> > entries(4, SharedHandle<FileEntry>());
+  std::vector<std::shared_ptr<FileEntry> > entries(4, std::shared_ptr<FileEntry>());
   entries[0].reset(new FileEntry("file1", 1024, 0));
   entries[1].reset(new FileEntry("file2",2560,entries[0]->getLastOffset()));
   entries[2].reset(new FileEntry("file3",0,entries[1]->getLastOffset()));

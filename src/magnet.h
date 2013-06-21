@@ -43,11 +43,11 @@ namespace aria2 {
 namespace magnet {
 
 // Parses Magnet URI magnet and stores parameters in
-// SharedHandle<Dict>.  Because same parameter name can appear more
-// than once, the value associated with a key is SharedHandle<List>. A
+// std::shared_ptr<Dict>.  Because same parameter name can appear more
+// than once, the value associated with a key is std::shared_ptr<List>. A
 // parameter value is stored in a list. If parsing operation failed,
-// SharedHandle<Dict>() is returned.
-SharedHandle<Dict> parse(const std::string& magnet);
+// std::shared_ptr<Dict>() is returned.
+std::shared_ptr<Dict> parse(const std::string& magnet);
 
 } // namespace magnet
 

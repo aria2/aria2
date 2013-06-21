@@ -33,11 +33,11 @@ void DHTBucketTreeTest::testDig()
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0xff, DHT_ID_LENGTH);
 
-  SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
+  std::shared_ptr<DHTNode> localNode(new DHTNode(localNodeID));
 
-  SharedHandle<DHTBucket> bucket1(new DHTBucket(localNode));
-  SharedHandle<DHTBucket> bucket2 = bucket1->split();
-  SharedHandle<DHTBucket> bucket3 = bucket1->split();
+  std::shared_ptr<DHTBucket> bucket1(new DHTBucket(localNode));
+  std::shared_ptr<DHTBucket> bucket2 = bucket1->split();
+  std::shared_ptr<DHTBucket> bucket3 = bucket1->split();
   // Tree: number is prefix
   //
   //           +
@@ -65,13 +65,13 @@ void DHTBucketTreeTest::testFindBucketFor()
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0xaa, DHT_ID_LENGTH);
 
-  SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
+  std::shared_ptr<DHTNode> localNode(new DHTNode(localNodeID));
 
-  SharedHandle<DHTBucket> bucket1(new DHTBucket(localNode));
-  SharedHandle<DHTBucket> bucket2 = bucket1->split();
-  SharedHandle<DHTBucket> bucket3 = bucket1->split();
-  SharedHandle<DHTBucket> bucket4 = bucket3->split();
-  SharedHandle<DHTBucket> bucket5 = bucket3->split();
+  std::shared_ptr<DHTBucket> bucket1(new DHTBucket(localNode));
+  std::shared_ptr<DHTBucket> bucket2 = bucket1->split();
+  std::shared_ptr<DHTBucket> bucket3 = bucket1->split();
+  std::shared_ptr<DHTBucket> bucket4 = bucket3->split();
+  std::shared_ptr<DHTBucket> bucket5 = bucket3->split();
 
   {
     DHTBucketTreeNode b(bucket5);
@@ -112,13 +112,13 @@ void DHTBucketTreeTest::testFindClosestKNodes()
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0xaa, DHT_ID_LENGTH);
 
-  SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
+  std::shared_ptr<DHTNode> localNode(new DHTNode(localNodeID));
 
-  SharedHandle<DHTBucket> bucket1(new DHTBucket(localNode));
-  SharedHandle<DHTBucket> bucket2 = bucket1->split();
-  SharedHandle<DHTBucket> bucket3 = bucket1->split();
-  SharedHandle<DHTBucket> bucket4 = bucket3->split();
-  SharedHandle<DHTBucket> bucket5 = bucket3->split();
+  std::shared_ptr<DHTBucket> bucket1(new DHTBucket(localNode));
+  std::shared_ptr<DHTBucket> bucket2 = bucket1->split();
+  std::shared_ptr<DHTBucket> bucket3 = bucket1->split();
+  std::shared_ptr<DHTBucket> bucket4 = bucket3->split();
+  std::shared_ptr<DHTBucket> bucket5 = bucket3->split();
 
   unsigned char id[DHT_ID_LENGTH];
   {
@@ -135,20 +135,20 @@ void DHTBucketTreeTest::testFindClosestKNodes()
 
     for(size_t i = 0; i < 2; ++i) {
       bucket1->getRandomNodeID(id);
-      bucket1->addNode(SharedHandle<DHTNode>(new DHTNode(id)));
+      bucket1->addNode(std::shared_ptr<DHTNode>(new DHTNode(id)));
       bucket2->getRandomNodeID(id);
-      bucket2->addNode(SharedHandle<DHTNode>(new DHTNode(id)));
+      bucket2->addNode(std::shared_ptr<DHTNode>(new DHTNode(id)));
       bucket3->getRandomNodeID(id);
-      bucket3->addNode(SharedHandle<DHTNode>(new DHTNode(id)));
+      bucket3->addNode(std::shared_ptr<DHTNode>(new DHTNode(id)));
       bucket4->getRandomNodeID(id);
-      bucket4->addNode(SharedHandle<DHTNode>(new DHTNode(id)));
+      bucket4->addNode(std::shared_ptr<DHTNode>(new DHTNode(id)));
       bucket5->getRandomNodeID(id);
-      bucket5->addNode(SharedHandle<DHTNode>(new DHTNode(id)));
+      bucket5->addNode(std::shared_ptr<DHTNode>(new DHTNode(id)));
     }
     {
       unsigned char targetID[DHT_ID_LENGTH];
       memset(targetID, 0x80, DHT_ID_LENGTH);
-      std::vector<SharedHandle<DHTNode> > nodes;
+      std::vector<std::shared_ptr<DHTNode> > nodes;
       dht::findClosestKNodes(nodes, &bp4, targetID);
       CPPUNIT_ASSERT_EQUAL((size_t)8, nodes.size());
       CPPUNIT_ASSERT(bucket4->isInRange(nodes[0]));
@@ -163,7 +163,7 @@ void DHTBucketTreeTest::testFindClosestKNodes()
     {
       unsigned char targetID[DHT_ID_LENGTH];
       memset(targetID, 0xf0, DHT_ID_LENGTH);
-      std::vector<SharedHandle<DHTNode> > nodes;
+      std::vector<std::shared_ptr<DHTNode> > nodes;
       dht::findClosestKNodes(nodes, &bp4, targetID);
       CPPUNIT_ASSERT_EQUAL((size_t)8, nodes.size());
       CPPUNIT_ASSERT(bucket1->isInRange(nodes[0]));
@@ -178,11 +178,11 @@ void DHTBucketTreeTest::testFindClosestKNodes()
     {
       for(size_t i = 0; i < 6; ++i) {
         bucket4->getRandomNodeID(id);
-        bucket4->addNode(SharedHandle<DHTNode>(new DHTNode(id)));
+        bucket4->addNode(std::shared_ptr<DHTNode>(new DHTNode(id)));
       }
       unsigned char targetID[DHT_ID_LENGTH];
       memset(targetID, 0x80, DHT_ID_LENGTH);
-      std::vector<SharedHandle<DHTNode> > nodes;
+      std::vector<std::shared_ptr<DHTNode> > nodes;
       dht::findClosestKNodes(nodes, &bp4, targetID);
       CPPUNIT_ASSERT_EQUAL((size_t)8, nodes.size());
       for(size_t i = 0; i < DHTBucket::K; ++i) {
@@ -198,17 +198,17 @@ void DHTBucketTreeTest::testEnumerateBucket()
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0xaa, DHT_ID_LENGTH);
 
-  SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
+  std::shared_ptr<DHTNode> localNode(new DHTNode(localNodeID));
 
-  SharedHandle<DHTBucket> bucket1(new DHTBucket(localNode));
-  SharedHandle<DHTBucket> bucket2 = bucket1->split();
-  SharedHandle<DHTBucket> bucket3 = bucket1->split();
-  SharedHandle<DHTBucket> bucket4 = bucket3->split();
-  SharedHandle<DHTBucket> bucket5 = bucket3->split();
+  std::shared_ptr<DHTBucket> bucket1(new DHTBucket(localNode));
+  std::shared_ptr<DHTBucket> bucket2 = bucket1->split();
+  std::shared_ptr<DHTBucket> bucket3 = bucket1->split();
+  std::shared_ptr<DHTBucket> bucket4 = bucket3->split();
+  std::shared_ptr<DHTBucket> bucket5 = bucket3->split();
 
   {
     DHTBucketTreeNode b(bucket1);
-    std::vector<SharedHandle<DHTBucket> > buckets;
+    std::vector<std::shared_ptr<DHTBucket> > buckets;
     dht::enumerateBucket(buckets, &b);
     CPPUNIT_ASSERT_EQUAL((size_t)1, buckets.size());
     CPPUNIT_ASSERT(*bucket1 == *buckets[0]);
@@ -225,7 +225,7 @@ void DHTBucketTreeTest::testEnumerateBucket()
     DHTBucketTreeNode* bp3 = new DHTBucketTreeNode(bp2, b1);
     DHTBucketTreeNode bp4(b2, bp3);
 
-    std::vector<SharedHandle<DHTBucket> > buckets;
+    std::vector<std::shared_ptr<DHTBucket> > buckets;
     dht::enumerateBucket(buckets, &bp4);
     CPPUNIT_ASSERT_EQUAL((size_t)5, buckets.size());
     CPPUNIT_ASSERT(*bucket2 == *buckets[0]);

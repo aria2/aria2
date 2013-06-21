@@ -36,7 +36,8 @@
 #define D_UT_METADATA_REQUEST_EXTENSION_MESSAGE_H
 
 #include "UTMetadataExtensionMessage.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -47,9 +48,9 @@ class Peer;
 
 class UTMetadataRequestExtensionMessage:public UTMetadataExtensionMessage {
 private:
-  SharedHandle<DownloadContext> dctx_;
+  std::shared_ptr<DownloadContext> dctx_;
 
-  SharedHandle<Peer> peer_;
+  std::shared_ptr<Peer> peer_;
 
   BtMessageDispatcher* dispatcher_;
 
@@ -65,7 +66,7 @@ public:
 
   virtual void doReceivedAction();
 
-  void setDownloadContext(const SharedHandle<DownloadContext>& dctx);
+  void setDownloadContext(const std::shared_ptr<DownloadContext>& dctx);
 
   void setBtMessageDispatcher(BtMessageDispatcher* disp)
   {
@@ -77,7 +78,7 @@ public:
     messageFactory_ = factory;
   }
 
-  void setPeer(const SharedHandle<Peer>& peer);
+  void setPeer(const std::shared_ptr<Peer>& peer);
 };
 
 } // namespace aria2

@@ -39,8 +39,7 @@
 
 #include <utility>
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -74,7 +73,7 @@ public:
    * Processes the received header as a http response header and returns
    * HttpHeader object.
    */
-  const SharedHandle<HttpHeader>& getResult() const;
+  const std::shared_ptr<HttpHeader>& getResult() const;
 
   std::string getHeaderString() const;
 
@@ -89,7 +88,7 @@ private:
   std::string buf_;
   std::string lastFieldName_;
   int lastFieldHdKey_;
-  SharedHandle<HttpHeader> result_;
+  std::shared_ptr<HttpHeader> result_;
   std::string headers_;
 };
 

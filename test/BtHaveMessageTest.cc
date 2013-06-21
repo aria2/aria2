@@ -41,7 +41,7 @@ void BtHaveMessageTest::testCreate() {
   unsigned char msg[9];
   bittorrent::createPeerMessageString(msg, sizeof(msg), 5, 4);
   bittorrent::setIntParam(&msg[5], 12345);
-  SharedHandle<BtHaveMessage> pm(BtHaveMessage::create(&msg[4], 5));
+  std::shared_ptr<BtHaveMessage> pm(BtHaveMessage::create(&msg[4], 5));
   CPPUNIT_ASSERT_EQUAL((uint8_t)4, pm->getId());
   CPPUNIT_ASSERT_EQUAL((size_t)12345, pm->getIndex());
 
@@ -75,12 +75,12 @@ void BtHaveMessageTest::testCreateMessage() {
 }
 
 void BtHaveMessageTest::testDoReceivedAction() {
-  SharedHandle<Peer> peer(new Peer("host", 6969));
+  std::shared_ptr<Peer> peer(new Peer("host", 6969));
   peer->allocateSessionResource(16*1024, 256*1024);
   BtHaveMessage msg;
   msg.setIndex(1);
   msg.setPeer(peer);
-  SharedHandle<MockPieceStorage> pieceStorage(new MockPieceStorage());
+  std::shared_ptr<MockPieceStorage> pieceStorage(new MockPieceStorage());
   msg.setPieceStorage(pieceStorage);
 
   CPPUNIT_ASSERT(!peer->hasPiece(msg.getIndex()));
@@ -92,12 +92,12 @@ void BtHaveMessageTest::testDoReceivedAction() {
 
 void BtHaveMessageTest::testDoReceivedAction_goodByeSeeder()
 {
-  SharedHandle<Peer> peer(new Peer("ip", 6000));
+  std::shared_ptr<Peer> peer(new Peer("ip", 6000));
   peer->allocateSessionResource(1024, 2*1024);
   BtHaveMessage msg;
   msg.setIndex(0);
   msg.setPeer(peer);
-  SharedHandle<MockPieceStorage> pieceStorage(new MockPieceStorage());
+  std::shared_ptr<MockPieceStorage> pieceStorage(new MockPieceStorage());
   msg.setPieceStorage(pieceStorage);
 
   // peer is not seeder and client have not completed download

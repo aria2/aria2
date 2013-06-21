@@ -67,7 +67,7 @@ DownloadContext::DownloadContext(int32_t pieceLength,
   downloadStopTime_(0),
   acceptMetalink_(true)
 {
-  SharedHandle<FileEntry> fileEntry(new FileEntry(path, totalLength, 0));
+  std::shared_ptr<FileEntry> fileEntry(new FileEntry(path, totalLength, 0));
   fileEntries_.push_back(fileEntry);
 }
 
@@ -91,19 +91,19 @@ int64_t DownloadContext::calculateSessionTime() const
   return startTime.differenceInMillis(downloadStopTime_);
 }
 
-SharedHandle<FileEntry>
+std::shared_ptr<FileEntry>
 DownloadContext::findFileEntryByOffset(int64_t offset) const
 {
   if(fileEntries_.empty() ||
      (offset > 0 && fileEntries_.back()->getLastOffset() <= offset)) {
-    return SharedHandle<FileEntry>();
+    return std::shared_ptr<FileEntry>();
   }
 
-  SharedHandle<FileEntry> obj(new FileEntry());
+  std::shared_ptr<FileEntry> obj(new FileEntry());
   obj->setOffset(offset);
-  std::vector<SharedHandle<FileEntry> >::const_iterator i =
+  std::vector<std::shared_ptr<FileEntry> >::const_iterator i =
     std::upper_bound(fileEntries_.begin(), fileEntries_.end(), obj,
-                     DerefLess<SharedHandle<FileEntry> >());
+                     DerefLess<std::shared_ptr<FileEntry> >());
   if(i != fileEntries_.end() && (*i)->getOffset() == offset) {
     return *i;
   } else {
@@ -148,17 +148,17 @@ void DownloadContext::setFileFilter(SegList<int>& sgl)
 }
 
 void DownloadContext::setAttribute
-(ContextAttributeType key, const SharedHandle<ContextAttribute>& value)
+(ContextAttributeType key, const std::shared_ptr<ContextAttribute>& value)
 {
   assert(key < MAX_CTX_ATTR);
   attrs_[key] = value;
 }
 
-const SharedHandle<ContextAttribute>& DownloadContext::getAttribute
+const std::shared_ptr<ContextAttribute>& DownloadContext::getAttribute
 (ContextAttributeType key)
 {
   assert(key < MAX_CTX_ATTR);
-  const SharedHandle<ContextAttribute>& attr = attrs_[key];
+  const std::shared_ptr<ContextAttribute>& attr = attrs_[key];
   if(attr) {
     return attr;
   } else {
@@ -170,12 +170,12 @@ const SharedHandle<ContextAttribute>& DownloadContext::getAttribute
 bool DownloadContext::hasAttribute(ContextAttributeType key) const
 {
   assert(key < MAX_CTX_ATTR);
-  return attrs_[key];
+  return attrs_[key].get();
 }
 
 void DownloadContext::releaseRuntimeResource()
 {
-  for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
+  for(std::vector<std::shared_ptr<FileEntry> >::const_iterator i =
         fileEntries_.begin(), eoi = fileEntries_.end(); i != eoi; ++i) {
     (*i)->putBackRequest();
     (*i)->releaseRuntimeResource();
@@ -211,22 +211,22 @@ const std::string& DownloadContext::getBasePath() const
   }
 }
 
-SharedHandle<FileEntry>
+std::shared_ptr<FileEntry>
 DownloadContext::getFirstRequestedFileEntry() const
 {
-  for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
+  for(std::vector<std::shared_ptr<FileEntry> >::const_iterator i =
         fileEntries_.begin(), eoi = fileEntries_.end(); i != eoi; ++i) {
     if((*i)->isRequested()) {
       return *i;
     }
   }
-  return SharedHandle<FileEntry>();
+  return std::shared_ptr<FileEntry>();
 }
 
 size_t DownloadContext::countRequestedFileEntry() const
 {
   size_t numFiles = 0;
-  for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
+  for(std::vector<std::shared_ptr<FileEntry> >::const_iterator i =
         fileEntries_.begin(), eoi = fileEntries_.end(); i != eoi; ++i) {
     if((*i)->isRequested()) {
       ++numFiles;
@@ -274,7 +274,7 @@ void DownloadContext::setBasePath(const std::string& basePath)
   basePath_ = basePath;
 }
 
-void DownloadContext::setSignature(const SharedHandle<Signature>& signature)
+void DownloadContext::setSignature(const std::shared_ptr<Signature>& signature)
 {
   signature_ = signature;
 }

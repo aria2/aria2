@@ -52,9 +52,9 @@ MessageDigestImpl::~MessageDigestImpl()
   EVP_MD_CTX_cleanup(&ctx_);
 }
 
-SharedHandle<MessageDigestImpl> MessageDigestImpl::sha1()
+std::shared_ptr<MessageDigestImpl> MessageDigestImpl::sha1()
 {
-  return SharedHandle<MessageDigestImpl>(new MessageDigestImpl(EVP_sha1()));
+  return std::shared_ptr<MessageDigestImpl>(new MessageDigestImpl(EVP_sha1()));
 }
 
 typedef HashFuncEntry<const EVP_MD*> CHashFuncEntry;
@@ -79,12 +79,12 @@ CHashFuncEntry hashFuncs[] = {
 };
 } // namespace
 
-SharedHandle<MessageDigestImpl> MessageDigestImpl::create
+std::shared_ptr<MessageDigestImpl> MessageDigestImpl::create
 (const std::string& hashType)
 {
   const EVP_MD* hashFunc = getHashFunc(vbegin(hashFuncs), vend(hashFuncs),
                                        hashType);
-  return SharedHandle<MessageDigestImpl>(new MessageDigestImpl(hashFunc));
+  return std::shared_ptr<MessageDigestImpl>(new MessageDigestImpl(hashFunc));
 }
 
 bool MessageDigestImpl::supports(const std::string& hashType)

@@ -65,15 +65,15 @@ void UTMetadataDataExtensionMessageTest::testToString()
 
 void UTMetadataDataExtensionMessageTest::testDoReceivedAction()
 {
-  SharedHandle<DirectDiskAdaptor> diskAdaptor(new DirectDiskAdaptor());
-  SharedHandle<ByteArrayDiskWriter> diskWriter(new ByteArrayDiskWriter());
+  std::shared_ptr<DirectDiskAdaptor> diskAdaptor(new DirectDiskAdaptor());
+  std::shared_ptr<ByteArrayDiskWriter> diskWriter(new ByteArrayDiskWriter());
   diskAdaptor->setDiskWriter(diskWriter);
-  SharedHandle<MockPieceStorage> pieceStorage(new MockPieceStorage());
+  std::shared_ptr<MockPieceStorage> pieceStorage(new MockPieceStorage());
   pieceStorage->setDiskAdaptor(diskAdaptor);
-  SharedHandle<UTMetadataRequestTracker> tracker
+  std::shared_ptr<UTMetadataRequestTracker> tracker
     (new UTMetadataRequestTracker());
-  SharedHandle<DownloadContext> dctx(new DownloadContext());
-  SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
+  std::shared_ptr<DownloadContext> dctx(new DownloadContext());
+  std::shared_ptr<TorrentAttribute> attrs(new TorrentAttribute());
 
   std::string piece0 = std::string(METADATA_PIECE_SIZE, '0');
   std::string piece1 = std::string(METADATA_PIECE_SIZE, '1');

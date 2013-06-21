@@ -49,7 +49,7 @@ PieceHashCheckIntegrityEntry::~PieceHashCheckIntegrityEntry() {}
 
 bool PieceHashCheckIntegrityEntry::isValidationReady()
 {
-  const SharedHandle<DownloadContext>& dctx =
+  const std::shared_ptr<DownloadContext>& dctx =
     getRequestGroup()->getDownloadContext();
   return dctx->isPieceHashVerificationAvailable();
 }
@@ -57,7 +57,7 @@ bool PieceHashCheckIntegrityEntry::isValidationReady()
 void PieceHashCheckIntegrityEntry::initValidator()
 {
 #ifdef ENABLE_MESSAGE_DIGEST
-  SharedHandle<IteratableChunkChecksumValidator> validator
+  std::shared_ptr<IteratableChunkChecksumValidator> validator
     (new IteratableChunkChecksumValidator
      (getRequestGroup()->getDownloadContext(),
       getRequestGroup()->getPieceStorage()));

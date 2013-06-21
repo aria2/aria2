@@ -114,8 +114,8 @@ public:
     bool operator<(const DomainEntry& de) const;
   };
 private:
-  typedef std::set<SharedHandle<DomainEntry>,
-                   DerefLess<SharedHandle<DomainEntry> > > DomainEntrySet;
+  typedef std::set<std::shared_ptr<DomainEntry>,
+                   DerefLess<std::shared_ptr<DomainEntry> > > DomainEntrySet;
   DomainEntrySet domains_;
 
   template<typename InputIterator>

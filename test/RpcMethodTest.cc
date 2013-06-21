@@ -79,8 +79,8 @@ class RpcMethodTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSystemMulticall_fail);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<DownloadEngine> e_;
-  SharedHandle<Option> option_;
+  std::shared_ptr<DownloadEngine> e_;
+  std::shared_ptr<Option> option_;
 public:
   void setUp()
   {
@@ -90,11 +90,11 @@ public:
     option_->put(PREF_MAX_DOWNLOAD_RESULT, "10");
     File(option_->get(PREF_DIR)).mkdirs();
     e_.reset
-      (new DownloadEngine(SharedHandle<EventPoll>(new SelectEventPoll())));
+      (new DownloadEngine(std::shared_ptr<EventPoll>(new SelectEventPoll())));
     e_->setOption(option_.get());
     e_->setRequestGroupMan
-      (SharedHandle<RequestGroupMan>
-       (new RequestGroupMan(std::vector<SharedHandle<RequestGroup> >(),
+      (std::shared_ptr<RequestGroupMan>
+       (new RequestGroupMan(std::vector<std::shared_ptr<RequestGroup> >(),
                             1, option_.get())));
   }
 
@@ -158,7 +158,7 @@ void RpcMethodTest::testAddUri()
 {
   AddUriRpcMethod m;
   RpcRequest req(AddUriRpcMethod::getMethodName(), List::g());
-  SharedHandle<List> urisParam = List::g();
+  std::shared_ptr<List> urisParam = List::g();
   urisParam->append("http://localhost/");
   req.params->append(urisParam);
   {
@@ -172,7 +172,7 @@ void RpcMethodTest::testAddUri()
                          getFirstFileEntry()->getRemainingUris().front());
   }
   // with options
-  SharedHandle<Dict> opt = Dict::g();
+  std::shared_ptr<Dict> opt = Dict::g();
   opt->put(PREF_DIR->k, "/sink");
   req.params->append(opt);
   {
@@ -199,7 +199,7 @@ void RpcMethodTest::testAddUri_notUri()
 {
   AddUriRpcMethod m;
   RpcRequest req(AddUriRpcMethod::getMethodName(), List::g());
-  SharedHandle<List> urisParam = List::g();
+  std::shared_ptr<List> urisParam = List::g();
   urisParam->append("not uri");
   req.params->append(urisParam);
   RpcResponse res = m.execute(req, e_.get());
@@ -210,10 +210,10 @@ void RpcMethodTest::testAddUri_withBadOption()
 {
   AddUriRpcMethod m;
   RpcRequest req(AddUriRpcMethod::getMethodName(), List::g());
-  SharedHandle<List> urisParam = List::g();
+  std::shared_ptr<List> urisParam = List::g();
   urisParam->append("http://localhost");
   req.params->append(urisParam);
-  SharedHandle<Dict> opt = Dict::g();
+  std::shared_ptr<Dict> opt = Dict::g();
   opt->put(PREF_FILE_ALLOCATION->k, "badvalue");
   req.params->append(opt);
   RpcResponse res = m.execute(req, e_.get());
@@ -224,14 +224,14 @@ void RpcMethodTest::testAddUri_withPosition()
 {
   AddUriRpcMethod m;
   RpcRequest req1(AddUriRpcMethod::getMethodName(), List::g());
-  SharedHandle<List> urisParam1 = List::g();
+  std::shared_ptr<List> urisParam1 = List::g();
   urisParam1->append("http://uri1");
   req1.params->append(urisParam1);
   RpcResponse res1 = m.execute(req1, e_.get());
   CPPUNIT_ASSERT_EQUAL(0, res1.code);
 
   RpcRequest req2(AddUriRpcMethod::getMethodName(), List::g());
-  SharedHandle<List> urisParam2 = List::g();
+  std::shared_ptr<List> urisParam2 = List::g();
   urisParam2->append("http://uri2");
   req2.params->append(urisParam2);
   req2.params->append(Dict::g());
@@ -249,7 +249,7 @@ void RpcMethodTest::testAddUri_withBadPosition()
 {
   AddUriRpcMethod m;
   RpcRequest req(AddUriRpcMethod::getMethodName(), List::g());
-  SharedHandle<List> urisParam = List::g();
+  std::shared_ptr<List> urisParam = List::g();
   urisParam->append("http://localhost/");
   req.params->append(urisParam);
   req.params->append(Dict::g());
@@ -266,7 +266,7 @@ void RpcMethodTest::testAddTorrent()
   AddTorrentRpcMethod m;
   RpcRequest req(AddTorrentRpcMethod::getMethodName(), List::g());
   req.params->append(readFile(A2_TEST_DIR"/single.torrent"));
-  SharedHandle<List> uris = List::g();
+  std::shared_ptr<List> uris = List::g();
   uris->append("http://localhost/aria2-0.8.2.tar.bz2");
   req.params->append(uris);
   {
@@ -290,7 +290,7 @@ void RpcMethodTest::testAddTorrent()
     CPPUNIT_ASSERT_EQUAL(0, GroupId::toNumericId
                          (gid, downcast<String>(res.param)->s().c_str()));
 
-    SharedHandle<RequestGroup> group =
+    std::shared_ptr<RequestGroup> group =
       findReservedGroup(e_->getRequestGroupMan(), gid);
     CPPUNIT_ASSERT(group);
     CPPUNIT_ASSERT_EQUAL(e_->getOption()->get(PREF_DIR)+"/aria2-0.8.2.tar.bz2",
@@ -305,7 +305,7 @@ void RpcMethodTest::testAddTorrent()
   // with options
   std::string dir = A2_TEST_OUT_DIR"/aria2_RpcMethodTest_testAddTorrent";
   File(dir).mkdirs();
-  SharedHandle<Dict> opt = Dict::g();
+  std::shared_ptr<Dict> opt = Dict::g();
   opt->put(PREF_DIR->k, dir);
   File(dir+"/0a3893293e27ac0490424c06de4d09242215f0a6.torrent").remove();
   req.params->append(opt);
@@ -408,12 +408,12 @@ void RpcMethodTest::testAddMetalink()
             "/c908634fbc257fd56f0114912c2772aeeb4064f4.meta4").exists());
 #endif // ENABLE_MESSAGE_DIGEST
 
-    SharedHandle<RequestGroup> tar =
+    std::shared_ptr<RequestGroup> tar =
       findReservedGroup(e_->getRequestGroupMan(), gid3);
     CPPUNIT_ASSERT(tar);
     CPPUNIT_ASSERT_EQUAL(e_->getOption()->get(PREF_DIR)+"/aria2-5.0.0.tar.bz2",
                          tar->getFirstFilePath());
-    SharedHandle<RequestGroup> deb =
+    std::shared_ptr<RequestGroup> deb =
       findReservedGroup(e_->getRequestGroupMan(), gid4);
     CPPUNIT_ASSERT(deb);
     CPPUNIT_ASSERT_EQUAL(e_->getOption()->get(PREF_DIR)+"/aria2-5.0.0.deb",
@@ -422,7 +422,7 @@ void RpcMethodTest::testAddMetalink()
   // with options
   std::string dir = A2_TEST_OUT_DIR"/aria2_RpcMethodTest_testAddMetalink";
   File(dir).mkdirs();
-  SharedHandle<Dict> opt = Dict::g();
+  std::shared_ptr<Dict> opt = Dict::g();
   opt->put(PREF_DIR->k, dir);
   File(dir+"/c908634fbc257fd56f0114912c2772aeeb4064f4.meta4").remove();
   req.params->append(opt);
@@ -466,7 +466,7 @@ void RpcMethodTest::testAddMetalink_withPosition()
 {
   AddUriRpcMethod m1;
   RpcRequest req1(AddUriRpcMethod::getMethodName(), List::g());
-  SharedHandle<List> urisParam1 = List::g();
+  std::shared_ptr<List> urisParam1 = List::g();
   urisParam1->append("http://uri");
   req1.params->append(urisParam1);
   RpcResponse res1 = m1.execute(req1, e_.get());
@@ -489,11 +489,11 @@ void RpcMethodTest::testAddMetalink_withPosition()
 
 void RpcMethodTest::testGetOption()
 {
-  SharedHandle<RequestGroup> group(new RequestGroup(GroupId::create(),
+  std::shared_ptr<RequestGroup> group(new RequestGroup(GroupId::create(),
                                                     option_));
   group->getOption()->put(PREF_DIR, "alpha");
   e_->getRequestGroupMan()->addReservedGroup(group);
-  SharedHandle<DownloadResult> dr = createDownloadResult(error_code::FINISHED,
+  std::shared_ptr<DownloadResult> dr = createDownloadResult(error_code::FINISHED,
                                                          "http://host/fin");
   dr->option->put(PREF_DIR, "bravo");
   e_->getRequestGroupMan()->addDownloadResult(dr);
@@ -523,28 +523,28 @@ void RpcMethodTest::testGetOption()
 
 void RpcMethodTest::testChangeOption()
 {
-  SharedHandle<RequestGroup> group(new RequestGroup(GroupId::create(),
+  std::shared_ptr<RequestGroup> group(new RequestGroup(GroupId::create(),
                                                     option_));
   e_->getRequestGroupMan()->addReservedGroup(group);
 
   ChangeOptionRpcMethod m;
   RpcRequest req(ChangeOptionRpcMethod::getMethodName(), List::g());
   req.params->append(GroupId::toHex(group->getGID()));
-  SharedHandle<Dict> opt = Dict::g();
+  std::shared_ptr<Dict> opt = Dict::g();
   opt->put(PREF_MAX_DOWNLOAD_LIMIT->k, "100K");
 #ifdef ENABLE_BITTORRENT
   opt->put(PREF_BT_MAX_PEERS->k, "100");
   opt->put(PREF_BT_REQUEST_PEER_SPEED_LIMIT->k, "300K");
   opt->put(PREF_MAX_UPLOAD_LIMIT->k, "50K");
 
-  SharedHandle<BtObject> btObject(new BtObject());
-  btObject->btRuntime = SharedHandle<BtRuntime>(new BtRuntime());
+  std::shared_ptr<BtObject> btObject(new BtObject());
+  btObject->btRuntime = std::shared_ptr<BtRuntime>(new BtRuntime());
   e_->getBtRegistry()->put(group->getGID(), btObject);
 #endif // ENABLE_BITTORRENT
   req.params->append(opt);
   RpcResponse res = m.execute(req, e_.get());
 
-  SharedHandle<Option> option = group->getOption();
+  std::shared_ptr<Option> option = group->getOption();
 
   CPPUNIT_ASSERT_EQUAL(0, res.code);
   CPPUNIT_ASSERT_EQUAL(100*1024,
@@ -567,14 +567,14 @@ void RpcMethodTest::testChangeOption()
 
 void RpcMethodTest::testChangeOption_withBadOption()
 {
-  SharedHandle<RequestGroup> group(new RequestGroup(GroupId::create(),
+  std::shared_ptr<RequestGroup> group(new RequestGroup(GroupId::create(),
                                                     option_));
   e_->getRequestGroupMan()->addReservedGroup(group);
 
   ChangeOptionRpcMethod m;
   RpcRequest req(ChangeOptionRpcMethod::getMethodName(), List::g());
   req.params->append(GroupId::toHex(group->getGID()));
-  SharedHandle<Dict> opt = Dict::g();
+  std::shared_ptr<Dict> opt = Dict::g();
   opt->put(PREF_MAX_DOWNLOAD_LIMIT->k, "badvalue");
   req.params->append(opt);
   RpcResponse res = m.execute(req, e_.get());
@@ -583,14 +583,14 @@ void RpcMethodTest::testChangeOption_withBadOption()
 
 void RpcMethodTest::testChangeOption_withNotAllowedOption()
 {
-  SharedHandle<RequestGroup> group(new RequestGroup(GroupId::create(),
+  std::shared_ptr<RequestGroup> group(new RequestGroup(GroupId::create(),
                                                     option_));
   e_->getRequestGroupMan()->addReservedGroup(group);
 
   ChangeOptionRpcMethod m;
   RpcRequest req(ChangeOptionRpcMethod::getMethodName(), List::g());
   req.params->append(GroupId::toHex(group->getGID()));
-  SharedHandle<Dict> opt = Dict::g();
+  std::shared_ptr<Dict> opt = Dict::g();
   opt->put(PREF_MAX_OVERALL_DOWNLOAD_LIMIT->k, "100K");
   req.params->append(opt);
   RpcResponse res = m.execute(req, e_.get());
@@ -611,7 +611,7 @@ void RpcMethodTest::testChangeGlobalOption()
   ChangeGlobalOptionRpcMethod m;
   RpcRequest req
     (ChangeGlobalOptionRpcMethod::getMethodName(), List::g());
-  SharedHandle<Dict> opt = Dict::g();
+  std::shared_ptr<Dict> opt = Dict::g();
   opt->put(PREF_MAX_OVERALL_DOWNLOAD_LIMIT->k, "100K");
 #ifdef ENABLE_BITTORRENT
   opt->put(PREF_MAX_OVERALL_UPLOAD_LIMIT->k, "50K");
@@ -639,7 +639,7 @@ void RpcMethodTest::testChangeGlobalOption_withBadOption()
   ChangeGlobalOptionRpcMethod m;
   RpcRequest req
     (ChangeGlobalOptionRpcMethod::getMethodName(), List::g());
-  SharedHandle<Dict> opt = Dict::g();
+  std::shared_ptr<Dict> opt = Dict::g();
   opt->put(PREF_MAX_OVERALL_DOWNLOAD_LIMIT->k, "badvalue");
   req.params->append(opt);
   RpcResponse res = m.execute(req, e_.get());
@@ -651,7 +651,7 @@ void RpcMethodTest::testChangeGlobalOption_withNotAllowedOption()
   ChangeGlobalOptionRpcMethod m;
   RpcRequest req
     (ChangeGlobalOptionRpcMethod::getMethodName(), List::g());
-  SharedHandle<Dict> opt = Dict::g();
+  std::shared_ptr<Dict> opt = Dict::g();
   opt->put(PREF_ENABLE_RPC->k, "100K");
   req.params->append(opt);
   RpcResponse res = m.execute(req, e_.get());
@@ -678,11 +678,11 @@ void RpcMethodTest::testTellStatus_withoutGid()
 }
 
 namespace {
-void addUri(const std::string& uri, const SharedHandle<DownloadEngine>& e)
+void addUri(const std::string& uri, const std::shared_ptr<DownloadEngine>& e)
 {
   AddUriRpcMethod m;
   RpcRequest req(AddUriRpcMethod::getMethodName(), List::g());
-  SharedHandle<List> urisParam = List::g();
+  std::shared_ptr<List> urisParam = List::g();
   urisParam->append(uri);
   req.params->append(urisParam);
   CPPUNIT_ASSERT_EQUAL(0, m.execute(req, e.get()).code);
@@ -692,7 +692,7 @@ void addUri(const std::string& uri, const SharedHandle<DownloadEngine>& e)
 #ifdef ENABLE_BITTORRENT
 namespace {
 void addTorrent
-(const std::string& torrentFile, const SharedHandle<DownloadEngine>& e)
+(const std::string& torrentFile, const std::shared_ptr<DownloadEngine>& e)
 {
   AddTorrentRpcMethod m;
   RpcRequest req(AddTorrentRpcMethod::getMethodName(), List::g());
@@ -712,7 +712,7 @@ void RpcMethodTest::testTellWaiting()
 #else // !ENABLE_BITTORRENT
   addUri("http://4/", e_);
 #endif // !ENABLE_BITTORRENT
-  const SharedHandle<RequestGroupMan>& rgman = e_->getRequestGroupMan();
+  const std::shared_ptr<RequestGroupMan>& rgman = e_->getRequestGroupMan();
   TellWaitingRpcMethod m;
   RpcRequest req(TellWaitingRpcMethod::getMethodName(), List::g());
   req.params->append(Integer::g(1));
@@ -833,11 +833,11 @@ void RpcMethodTest::testGetVersion()
 
 void RpcMethodTest::testGatherStoppedDownload()
 {
-  std::vector<SharedHandle<FileEntry> > fileEntries;
+  std::vector<std::shared_ptr<FileEntry> > fileEntries;
   std::vector<a2_gid_t> followedBy;
   followedBy.push_back(3);
   followedBy.push_back(4);
-  SharedHandle<DownloadResult> d(new DownloadResult());
+  std::shared_ptr<DownloadResult> d(new DownloadResult());
   d->gid = GroupId::create();
   d->fileEntries = fileEntries;
   d->inMemoryDownload = false;
@@ -846,7 +846,7 @@ void RpcMethodTest::testGatherStoppedDownload()
   d->result = error_code::FINISHED;
   d->followedBy = followedBy;
   d->belongsTo = 2;
-  SharedHandle<Dict> entry = Dict::g();
+  std::shared_ptr<Dict> entry = Dict::g();
   std::vector<std::string> keys;
   gatherStoppedDownload(entry, d, keys);
 
@@ -868,24 +868,24 @@ void RpcMethodTest::testGatherStoppedDownload()
 
 void RpcMethodTest::testGatherProgressCommon()
 {
-  SharedHandle<DownloadContext> dctx(new DownloadContext(0, 0,"aria2.tar.bz2"));
+  std::shared_ptr<DownloadContext> dctx(new DownloadContext(0, 0,"aria2.tar.bz2"));
   std::string uris[] = { "http://localhost/aria2.tar.bz2" };
   dctx->getFirstFileEntry()->addUris(vbegin(uris), vend(uris));
-  SharedHandle<RequestGroup> group(new RequestGroup(GroupId::create(),
+  std::shared_ptr<RequestGroup> group(new RequestGroup(GroupId::create(),
                                                     util::copy(option_)));
   group->setDownloadContext(dctx);
-  std::vector<SharedHandle<RequestGroup> > followedBy;
+  std::vector<std::shared_ptr<RequestGroup> > followedBy;
   for(int i = 0; i < 2; ++i) {
-    followedBy.push_back(SharedHandle<RequestGroup>
+    followedBy.push_back(std::shared_ptr<RequestGroup>
                          (new RequestGroup(GroupId::create(),
                                            util::copy(option_))));
   }
 
   group->followedBy(followedBy.begin(), followedBy.end());
-  SharedHandle<GroupId> parent = GroupId::create();
+  std::shared_ptr<GroupId> parent = GroupId::create();
   group->belongsTo(parent->getNumericId());
 
-  SharedHandle<Dict> entry = Dict::g();
+  std::shared_ptr<Dict> entry = Dict::g();
   std::vector<std::string> keys;
   gatherProgressCommon(entry, group, keys);
 
@@ -922,11 +922,11 @@ void RpcMethodTest::testGatherProgressCommon()
 #ifdef ENABLE_BITTORRENT
 void RpcMethodTest::testGatherBitTorrentMetadata()
 {
-  SharedHandle<Option> option(new Option());
+  std::shared_ptr<Option> option(new Option());
   option->put(PREF_DIR, ".");
-  SharedHandle<DownloadContext> dctx(new DownloadContext());
+  std::shared_ptr<DownloadContext> dctx(new DownloadContext());
   bittorrent::load(A2_TEST_DIR"/test.torrent", dctx, option);
-  SharedHandle<Dict> btDict = Dict::g();
+  std::shared_ptr<Dict> btDict = Dict::g();
   gatherBitTorrentMetadata(btDict, bittorrent::getTorrentAttrs(dctx));
   CPPUNIT_ASSERT_EQUAL(std::string("REDNOAH.COM RULES"),
                        downcast<String>(btDict->get("comment"))->s());
@@ -949,7 +949,7 @@ void RpcMethodTest::testGatherBitTorrentMetadata()
   CPPUNIT_ASSERT_EQUAL(std::string("http://tracker3"),
                        downcast<String>(downcast<List>(announceList->get(2))->get(0))->s());
   // Remove some keys
-  SharedHandle<TorrentAttribute> modBtAttrs = bittorrent::getTorrentAttrs(dctx);
+  std::shared_ptr<TorrentAttribute> modBtAttrs = bittorrent::getTorrentAttrs(dctx);
   modBtAttrs->comment.clear();
   modBtAttrs->creationDate = 0;
   modBtAttrs->mode = BT_FILE_MODE_NONE;
@@ -967,10 +967,10 @@ void RpcMethodTest::testGatherBitTorrentMetadata()
 void RpcMethodTest::testChangePosition()
 {
   e_->getRequestGroupMan()->addReservedGroup
-    (SharedHandle<RequestGroup>(new RequestGroup(GroupId::create(),
+    (std::shared_ptr<RequestGroup>(new RequestGroup(GroupId::create(),
                                                  util::copy(option_))));
   e_->getRequestGroupMan()->addReservedGroup
-    (SharedHandle<RequestGroup>(new RequestGroup(GroupId::create(),
+    (std::shared_ptr<RequestGroup>(new RequestGroup(GroupId::create(),
                                                  util::copy(option_))));
 
   a2_gid_t gid = getReservedGroup(e_->getRequestGroupMan(), 0)->getGID();
@@ -1001,16 +1001,16 @@ void RpcMethodTest::testChangePosition_fail()
 
 void RpcMethodTest::testChangeUri()
 {
-  SharedHandle<FileEntry> files[3];
+  std::shared_ptr<FileEntry> files[3];
   for(int i = 0; i < 3; ++i) {
     files[i].reset(new FileEntry());
   }
   files[1]->addUri("http://example.org/aria2.tar.bz2");
   files[1]->addUri("http://example.org/mustremove1");
   files[1]->addUri("http://example.org/mustremove2");
-  SharedHandle<DownloadContext> dctx(new DownloadContext());
+  std::shared_ptr<DownloadContext> dctx(new DownloadContext());
   dctx->setFileEntries(&files[0], &files[3]);
-  SharedHandle<RequestGroup> group(new RequestGroup(GroupId::create(),
+  std::shared_ptr<RequestGroup> group(new RequestGroup(GroupId::create(),
                                                     option_));
   group->setDownloadContext(dctx);
   e_->getRequestGroupMan()->addReservedGroup(group);
@@ -1019,12 +1019,12 @@ void RpcMethodTest::testChangeUri()
   RpcRequest req(ChangeUriRpcMethod::getMethodName(), List::g());
   req.params->append(GroupId::toHex(group->getGID())); // GID
   req.params->append(Integer::g(2)); // index of FileEntry
-  SharedHandle<List> removeuris = List::g();
+  std::shared_ptr<List> removeuris = List::g();
   removeuris->append("http://example.org/mustremove1");
   removeuris->append("http://example.org/mustremove2");
   removeuris->append("http://example.org/notexist");
   req.params->append(removeuris);
-  SharedHandle<List> adduris = List::g();
+  std::shared_ptr<List> adduris = List::g();
   adduris->append("http://example.org/added1");
   adduris->append("http://example.org/added2");
   adduris->append("baduri");
@@ -1075,13 +1075,13 @@ void RpcMethodTest::testChangeUri()
 
 void RpcMethodTest::testChangeUri_fail()
 {
-  SharedHandle<FileEntry> files[3];
+  std::shared_ptr<FileEntry> files[3];
   for(int i = 0; i < 3; ++i) {
     files[i].reset(new FileEntry());
   }
-  SharedHandle<DownloadContext> dctx(new DownloadContext());
+  std::shared_ptr<DownloadContext> dctx(new DownloadContext());
   dctx->setFileEntries(&files[0], &files[3]);
-  SharedHandle<RequestGroup> group(new RequestGroup(GroupId::create(),
+  std::shared_ptr<RequestGroup> group(new RequestGroup(GroupId::create(),
                                                     option_));
   group->setDownloadContext(dctx);
   e_->getRequestGroupMan()->addReservedGroup(group);
@@ -1090,9 +1090,9 @@ void RpcMethodTest::testChangeUri_fail()
   RpcRequest req(ChangeUriRpcMethod::getMethodName(), List::g());
   req.params->append(GroupId::toHex(group->getGID())); // GID
   req.params->append(Integer::g(1)); // index of FileEntry
-  SharedHandle<List> removeuris = List::g();
+  std::shared_ptr<List> removeuris = List::g();
   req.params->append(removeuris);
-  SharedHandle<List> adduris = List::g();
+  std::shared_ptr<List> adduris = List::g();
   req.params->append(adduris);
   RpcResponse res = m.execute(req, e_.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
@@ -1151,7 +1151,7 @@ void RpcMethodTest::testPause()
   };
   std::vector<std::string> uris(vbegin(URIS), vend(URIS));
   option_->put(PREF_FORCE_SEQUENTIAL, A2_V_TRUE);
-  std::vector<SharedHandle<RequestGroup> > groups;
+  std::vector<std::shared_ptr<RequestGroup> > groups;
   createRequestGroupForUri(groups, option_, uris);
   CPPUNIT_ASSERT_EQUAL((size_t)3, groups.size());
   e_->getRequestGroupMan()->addReservedGroup(groups);
@@ -1204,20 +1204,20 @@ void RpcMethodTest::testSystemMulticall()
 {
   SystemMulticallRpcMethod m;
   RpcRequest req("system.multicall", List::g());
-  SharedHandle<List> reqparams = List::g();
+  std::shared_ptr<List> reqparams = List::g();
   req.params->append(reqparams);
   for(int i = 0; i < 2; ++i) {
-    SharedHandle<Dict> dict = Dict::g();
+    std::shared_ptr<Dict> dict = Dict::g();
     dict->put("methodName", AddUriRpcMethod::getMethodName());
-    SharedHandle<List> params = List::g();
-    SharedHandle<List> urisParam = List::g();
+    std::shared_ptr<List> params = List::g();
+    std::shared_ptr<List> urisParam = List::g();
     urisParam->append("http://localhost/"+util::itos(i));
     params->append(urisParam);
     dict->put("params", params);
     reqparams->append(dict);
   }
   {
-    SharedHandle<Dict> dict = Dict::g();
+    std::shared_ptr<Dict> dict = Dict::g();
     dict->put("methodName", "not exists");
     dict->put("params", List::g());
     reqparams->append(dict);
@@ -1226,19 +1226,19 @@ void RpcMethodTest::testSystemMulticall()
     reqparams->append("not struct");
   }
   {
-    SharedHandle<Dict> dict = Dict::g();
+    std::shared_ptr<Dict> dict = Dict::g();
     dict->put("methodName", "system.multicall");
     dict->put("params", List::g());
     reqparams->append(dict);
   }
   {
     // missing params
-    SharedHandle<Dict> dict = Dict::g();
+    std::shared_ptr<Dict> dict = Dict::g();
     dict->put("methodName", GetVersionRpcMethod::getMethodName());
     reqparams->append(dict);
   }
   {
-    SharedHandle<Dict> dict = Dict::g();
+    std::shared_ptr<Dict> dict = Dict::g();
     dict->put("methodName", GetVersionRpcMethod::getMethodName());
     dict->put("params", List::g());
     reqparams->append(dict);
@@ -1247,7 +1247,7 @@ void RpcMethodTest::testSystemMulticall()
   CPPUNIT_ASSERT_EQUAL(0, res.code);
   const List* resParams = downcast<List>(res.param);
   CPPUNIT_ASSERT_EQUAL((size_t)7, resParams->size());
-  SharedHandle<RequestGroupMan> rgman = e_->getRequestGroupMan();
+  std::shared_ptr<RequestGroupMan> rgman = e_->getRequestGroupMan();
   CPPUNIT_ASSERT_EQUAL(GroupId::toHex(getReservedGroup(rgman, 0)->getGID()),
                        downcast<String>(downcast<List>(resParams->get(0))->get(0))->s());
   CPPUNIT_ASSERT_EQUAL(GroupId::toHex(getReservedGroup(rgman, 1)->getGID()),

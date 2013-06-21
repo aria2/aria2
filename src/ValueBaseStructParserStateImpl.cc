@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "ValueBaseStructParserStateImpl.h"
+
+#include <cassert>
+
 #include "ValueBaseStructParserStateMachine.h"
 #include "ValueBase.h"
 

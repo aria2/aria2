@@ -37,9 +37,10 @@
 
 #include "common.h"
 
+#include <memory>
+
 #include <wslay/wslay.h>
 
-#include "SharedHandle.h"
 #include "ValueBaseJsonParser.h"
 
 namespace aria2 {
@@ -53,7 +54,7 @@ class WebSocketInteractionCommand;
 
 class WebSocketSession {
 public:
-  WebSocketSession(const SharedHandle<SocketCore>& socket,
+  WebSocketSession(const std::shared_ptr<SocketCore>& socket,
                    DownloadEngine* e);
   ~WebSocketSession();
   // Returns true if this session object wants to read data from the
@@ -85,10 +86,10 @@ public:
   // |error| will be the number of bytes processed if this function
   // succeeds, or negative error code. Whether success or failure,
   // this function resets parser state and receivedLength_.
-  SharedHandle<ValueBase> parseFinal(const uint8_t* data, size_t len,
+  std::shared_ptr<ValueBase> parseFinal(const uint8_t* data, size_t len,
                                      ssize_t& error);
 
-  const SharedHandle<SocketCore>& getSocket() const
+  const std::shared_ptr<SocketCore>& getSocket() const
   {
     return socket_;
   }
@@ -118,7 +119,7 @@ public:
     ignorePayload_ = flag;
   }
 private:
-  SharedHandle<SocketCore> socket_;
+  std::shared_ptr<SocketCore> socket_;
   DownloadEngine* e_;
   wslay_event_context_ptr wsctx_;
   bool ignorePayload_;

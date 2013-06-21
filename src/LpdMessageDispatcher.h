@@ -36,8 +36,8 @@
 #include "common.h"
 
 #include <string>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "TimerA2.h"
 
 namespace aria2 {
@@ -46,7 +46,7 @@ class SocketCore;
 
 class LpdMessageDispatcher {
 private:
-  SharedHandle<SocketCore> socket_;
+  std::shared_ptr<SocketCore> socket_;
   std::string infoHash_;
   uint16_t port_;
   std::string multicastAddress_;

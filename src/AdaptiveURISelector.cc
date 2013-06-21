@@ -66,7 +66,7 @@ namespace aria2 {
  */
 
 AdaptiveURISelector::AdaptiveURISelector
-(const SharedHandle<ServerStatMan>& serverStatMan, RequestGroup* requestGroup)
+(const std::shared_ptr<ServerStatMan>& serverStatMan, RequestGroup* requestGroup)
   : serverStatMan_(serverStatMan),
     requestGroup_(requestGroup)
 {
@@ -242,7 +242,7 @@ void AdaptiveURISelector::adjustLowestSpeedLimit
 }
 
 namespace {
-int getUriMaxSpeed(SharedHandle<ServerStat> ss)
+int getUriMaxSpeed(std::shared_ptr<ServerStat> ss)
 {
   return std::max(ss->getSingleConnectionAvgSpeed(),
                   ss->getMultiConnectionAvgSpeed());
@@ -265,7 +265,7 @@ std::string AdaptiveURISelector::getMaxDownloadSpeedUri
   std::string uri = A2STR::NIL;
   for(std::deque<std::string>::const_iterator i = uris.begin(),
         eoi = uris.end(); i != eoi; ++i) {
-    SharedHandle<ServerStat> ss = getServerStats(*i);
+    std::shared_ptr<ServerStat> ss = getServerStats(*i);
     if(!ss)
       continue;
 
@@ -287,7 +287,7 @@ std::deque<std::string> AdaptiveURISelector::getUrisBySpeed
   std::deque<std::string> bests;
   for(std::deque<std::string>::const_iterator i = uris.begin(),
         eoi = uris.end(); i != eoi; ++i) {
-    SharedHandle<ServerStat> ss = getServerStats(*i);
+    std::shared_ptr<ServerStat> ss = getServerStats(*i);
     if(!ss)
       continue;
     if(ss->getSingleConnectionAvgSpeed() > min ||
@@ -312,7 +312,7 @@ std::string AdaptiveURISelector::getFirstNotTestedUri
 {
   for(std::deque<std::string>::const_iterator i = uris.begin(),
         eoi = uris.end(); i != eoi; ++i) {
-    SharedHandle<ServerStat> ss = getServerStats(*i);
+    std::shared_ptr<ServerStat> ss = getServerStats(*i);
     if(!ss)
       return *i;
   }
@@ -326,7 +326,7 @@ std::string AdaptiveURISelector::getFirstToTestUri
   int power;
   for(std::deque<std::string>::const_iterator i = uris.begin(),
         eoi = uris.end(); i != eoi; ++i) {
-    SharedHandle<ServerStat> ss = getServerStats(*i);
+    std::shared_ptr<ServerStat> ss = getServerStats(*i);
     if(!ss)
       continue;
     counter = ss->getCounter();
@@ -342,7 +342,7 @@ std::string AdaptiveURISelector::getFirstToTestUri
   return A2STR::NIL;
 }
 
-SharedHandle<ServerStat> AdaptiveURISelector::getServerStats
+std::shared_ptr<ServerStat> AdaptiveURISelector::getServerStats
 (const std::string& uri) const
 {
   uri_split_result us;
@@ -351,7 +351,7 @@ SharedHandle<ServerStat> AdaptiveURISelector::getServerStats
     std::string protocol = uri::getFieldString(us, USR_SCHEME, uri.c_str());
     return serverStatMan_->find(host, protocol);
   } else {
-    return SharedHandle<ServerStat>();
+    return std::shared_ptr<ServerStat>();
   }
 }
 
@@ -361,7 +361,7 @@ int AdaptiveURISelector::getNbTestedServers
   int counter = 0;
   for(std::deque<std::string>::const_iterator i = uris.begin(),
         eoi = uris.end(); i != eoi; ++i) {
-    SharedHandle<ServerStat> ss = getServerStats(*i);
+    std::shared_ptr<ServerStat> ss = getServerStats(*i);
     if(!ss)
       ++counter;
   }

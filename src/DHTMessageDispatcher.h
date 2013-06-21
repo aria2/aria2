@@ -36,7 +36,9 @@
 #define D_DHT_MESSAGE_DISPATCHER_H
 
 #include "common.h"
-#include "SharedHandle.h"
+
+#include <memory>
+
 #include "a2time.h"
 
 namespace aria2 {
@@ -49,15 +51,15 @@ public:
   virtual ~DHTMessageDispatcher() {}
 
   virtual void
-  addMessageToQueue(const SharedHandle<DHTMessage>& message,
+  addMessageToQueue(const std::shared_ptr<DHTMessage>& message,
                     time_t timeout,
-                    const SharedHandle<DHTMessageCallback>& callback =
-                    SharedHandle<DHTMessageCallback>()) = 0;
+                    const std::shared_ptr<DHTMessageCallback>& callback =
+                    std::shared_ptr<DHTMessageCallback>()) = 0;
 
   virtual void
-  addMessageToQueue(const SharedHandle<DHTMessage>& message,
-                    const SharedHandle<DHTMessageCallback>& callback =
-                    SharedHandle<DHTMessageCallback>()) = 0;
+  addMessageToQueue(const std::shared_ptr<DHTMessage>& message,
+                    const std::shared_ptr<DHTMessageCallback>& callback =
+                    std::shared_ptr<DHTMessageCallback>()) = 0;
 
   virtual void sendMessages() = 0;
 

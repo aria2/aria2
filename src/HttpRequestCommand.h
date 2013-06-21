@@ -50,22 +50,22 @@ class SocketCore;
 // returns true.
 class HttpRequestCommand:public AbstractCommand {
 private:
-  SharedHandle<Request> proxyRequest_;
+  std::shared_ptr<Request> proxyRequest_;
 
-  SharedHandle<HttpConnection> httpConnection_;
+  std::shared_ptr<HttpConnection> httpConnection_;
 protected:
   virtual bool executeInternal();
 public:
   HttpRequestCommand(cuid_t cuid,
-                     const SharedHandle<Request>& req,
-                     const SharedHandle<FileEntry>& fileEntry,
+                     const std::shared_ptr<Request>& req,
+                     const std::shared_ptr<FileEntry>& fileEntry,
                      RequestGroup* requestGroup,
-                     const SharedHandle<HttpConnection>& httpConnection,
+                     const std::shared_ptr<HttpConnection>& httpConnection,
                      DownloadEngine* e,
-                     const SharedHandle<SocketCore>& s);
+                     const std::shared_ptr<SocketCore>& s);
   virtual ~HttpRequestCommand();
 
-  void setProxyRequest(const SharedHandle<Request>& proxyRequest);
+  void setProxyRequest(const std::shared_ptr<Request>& proxyRequest);
 };
 
 } // namespace aria2

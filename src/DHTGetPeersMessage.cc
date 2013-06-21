@@ -52,8 +52,8 @@ const std::string DHTGetPeersMessage::GET_PEERS("get_peers");
 
 const std::string DHTGetPeersMessage::INFO_HASH("info_hash");
 
-DHTGetPeersMessage::DHTGetPeersMessage(const SharedHandle<DHTNode>& localNode,
-                                       const SharedHandle<DHTNode>& remoteNode,
+DHTGetPeersMessage::DHTGetPeersMessage(const std::shared_ptr<DHTNode>& localNode,
+                                       const std::shared_ptr<DHTNode>& remoteNode,
                                        const unsigned char* infoHash,
                                        const std::string& transactionID):
   DHTQueryMessage(localNode, remoteNode, transactionID),
@@ -70,19 +70,19 @@ void DHTGetPeersMessage::doReceivedAction()
   std::string token = tokenTracker_->generateToken
     (infoHash_, getRemoteNode()->getIPAddress(), getRemoteNode()->getPort());
   // Check to see localhost has the contents which has same infohash
-  std::vector<SharedHandle<Peer> > peers;
+  std::vector<std::shared_ptr<Peer> > peers;
   peerAnnounceStorage_->getPeers(peers, infoHash_);
-  std::vector<SharedHandle<DHTNode> > nodes;
+  std::vector<std::shared_ptr<DHTNode> > nodes;
   getRoutingTable()->getClosestKNodes(nodes, infoHash_);
-  SharedHandle<DHTMessage> reply =
+  std::shared_ptr<DHTMessage> reply =
     getMessageFactory()->createGetPeersReplyMessage
     (getRemoteNode(), nodes, peers, token, getTransactionID());
   getMessageDispatcher()->addMessageToQueue(reply);
 }
 
-SharedHandle<Dict> DHTGetPeersMessage::getArgument()
+std::shared_ptr<Dict> DHTGetPeersMessage::getArgument()
 {
-  SharedHandle<Dict> aDict = Dict::g();
+  std::shared_ptr<Dict> aDict = Dict::g();
   aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
   aDict->put(INFO_HASH, String::g(infoHash_, DHT_ID_LENGTH));
   return aDict;

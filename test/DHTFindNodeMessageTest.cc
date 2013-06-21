@@ -29,13 +29,13 @@ public:
 
   class MockDHTMessageFactory2:public MockDHTMessageFactory {
   public:
-    virtual SharedHandle<DHTResponseMessage>
+    virtual std::shared_ptr<DHTResponseMessage>
     createFindNodeReplyMessage
-    (const SharedHandle<DHTNode>& remoteNode,
-     const std::vector<SharedHandle<DHTNode> >& closestKNodes,
+    (const std::shared_ptr<DHTNode>& remoteNode,
+     const std::vector<std::shared_ptr<DHTNode> >& closestKNodes,
      const std::string& transactionID)
     {
-      SharedHandle<MockDHTResponseMessage> m
+      std::shared_ptr<MockDHTResponseMessage> m
         (new MockDHTResponseMessage
          (localNode_, remoteNode, "find_node", transactionID));
       m->nodes_ = closestKNodes;
@@ -49,14 +49,14 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTFindNodeMessageTest);
 
 void DHTFindNodeMessageTest::testGetBencodedMessage()
 {
-  SharedHandle<DHTNode> localNode(new DHTNode());
-  SharedHandle<DHTNode> remoteNode(new DHTNode());
+  std::shared_ptr<DHTNode> localNode(new DHTNode());
+  std::shared_ptr<DHTNode> remoteNode(new DHTNode());
 
   unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   util::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
   std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 
-  SharedHandle<DHTNode> targetNode(new DHTNode());
+  std::shared_ptr<DHTNode> targetNode(new DHTNode());
 
   DHTFindNodeMessage msg(localNode, remoteNode, targetNode->getID(), transactionID);
   msg.setVersion("A200");
@@ -67,7 +67,7 @@ void DHTFindNodeMessageTest::testGetBencodedMessage()
   dict.put("v", "A200");
   dict.put("y", "q");
   dict.put("q", "find_node");
-  SharedHandle<Dict> aDict = Dict::g();
+  std::shared_ptr<Dict> aDict = Dict::g();
   aDict->put("id", String::g(localNode->getID(), DHT_ID_LENGTH));
   aDict->put("target", String::g(targetNode->getID(), DHT_ID_LENGTH));
   dict.put("a", aDict);
@@ -77,14 +77,14 @@ void DHTFindNodeMessageTest::testGetBencodedMessage()
 
 void DHTFindNodeMessageTest::testDoReceivedAction()
 {
-  SharedHandle<DHTNode> localNode(new DHTNode());
-  SharedHandle<DHTNode> remoteNode(new DHTNode());
+  std::shared_ptr<DHTNode> localNode(new DHTNode());
+  std::shared_ptr<DHTNode> remoteNode(new DHTNode());
 
   unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   util::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
   std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 
-  SharedHandle<DHTNode> targetNode(new DHTNode());
+  std::shared_ptr<DHTNode> targetNode(new DHTNode());
 
   MockDHTMessageDispatcher dispatcher;
   MockDHTMessageFactory2 factory;
@@ -100,9 +100,8 @@ void DHTFindNodeMessageTest::testDoReceivedAction()
   msg.doReceivedAction();
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher.messageQueue_.size());
-  SharedHandle<MockDHTResponseMessage> m
-    (dynamic_pointer_cast<MockDHTResponseMessage>
-     (dispatcher.messageQueue_[0].message_));
+  auto m = std::dynamic_pointer_cast<MockDHTResponseMessage>
+    (dispatcher.messageQueue_[0].message_);
   CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
   CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(std::string("find_node"), m->getMessageType());

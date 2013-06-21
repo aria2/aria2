@@ -40,8 +40,7 @@
 #include <string>
 #include <vector>
 #include <map>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -53,7 +52,7 @@ public:
 
   virtual void accept(ValueBaseVisitor& visitor) const = 0;
 
-  static const SharedHandle<ValueBase> none;
+  static const std::shared_ptr<ValueBase> none;
 };
 
 class String;
@@ -105,14 +104,14 @@ public:
   // Use s().size() to get length.
   const unsigned char* uc() const;
 
-  static SharedHandle<String> g(const ValueType& string);
+  static std::shared_ptr<String> g(const ValueType& string);
 
-  static SharedHandle<String> g(const unsigned char* data, size_t length);
+  static std::shared_ptr<String> g(const unsigned char* data, size_t length);
 
   template<typename InputIterator>
-  static SharedHandle<String> g(InputIterator first, InputIterator last)
+  static std::shared_ptr<String> g(InputIterator first, InputIterator last)
   {
-    return SharedHandle<String>(new String(first, last));
+    return std::shared_ptr<String>(new String(first, last));
   }
 
   virtual void accept(ValueBaseVisitor& visitor) const;
@@ -137,7 +136,7 @@ public:
   // Returns Integer.
   ValueType i() const;
 
-  static SharedHandle<Integer> g(ValueType integer);
+  static std::shared_ptr<Integer> g(ValueType integer);
 
   virtual void accept(ValueBaseVisitor& visitor) const;
 private:
@@ -146,8 +145,8 @@ private:
 
 class Bool:public ValueBase {
 public:
-  static SharedHandle<Bool> gTrue();
-  static SharedHandle<Bool> gFalse();
+  static std::shared_ptr<Bool> gTrue();
+  static std::shared_ptr<Bool> gFalse();
   bool val() const;
   virtual void accept(ValueBaseVisitor& visitor) const;
 private:
@@ -156,25 +155,25 @@ private:
   Bool(const Bool&);
   Bool& operator=(const Bool&);
   bool val_;
-  static const SharedHandle<Bool> trueValue_;
-  static const SharedHandle<Bool> falseValue_;
+  static const std::shared_ptr<Bool> trueValue_;
+  static const std::shared_ptr<Bool> falseValue_;
 };
 
 class Null:public ValueBase {
 public:
-  static SharedHandle<Null> g();
+  static std::shared_ptr<Null> g();
   virtual void accept(ValueBaseVisitor& visitor) const;
 private:
   Null();
   // Don't allow copying
   Null(const Null&);
   Null& operator=(const Null&);
-  static const SharedHandle<Null> nullValue_;
+  static const std::shared_ptr<Null> nullValue_;
 };
 
 class List:public ValueBase {
 public:
-  typedef std::vector<SharedHandle<ValueBase> > ValueType;
+  typedef std::vector<std::shared_ptr<ValueBase> > ValueType;
 
   List();
 
@@ -185,22 +184,22 @@ public:
   List& operator=(const List&);
 
   // Appends given v to list.
-  void append(const SharedHandle<ValueBase>& v);
+  void append(const std::shared_ptr<ValueBase>& v);
 
   // Appeding string is so common that we provide shortcut function.
   void append(const String::ValueType& string);
 
   // Alias for append()
-  List& operator<<(const SharedHandle<ValueBase>& v);
+  List& operator<<(const std::shared_ptr<ValueBase>& v);
 
   // Returns the object at given index.
-  const SharedHandle<ValueBase>& get(size_t index) const;
+  const std::shared_ptr<ValueBase>& get(size_t index) const;
 
   // Set the object at given index.
-  void set(size_t index, const SharedHandle<ValueBase>& v);
+  void set(size_t index, const std::shared_ptr<ValueBase>& v);
 
   // Returns the const reference of the object at the given index.
-  const SharedHandle<ValueBase>& operator[](size_t index) const;
+  const std::shared_ptr<ValueBase>& operator[](size_t index) const;
 
   // Returns a read/write iterator that points to the first object in
   // list.
@@ -224,7 +223,7 @@ public:
   // Returns true if size of list is 0.
   bool empty() const;
 
-  static SharedHandle<List> g();
+  static std::shared_ptr<List> g();
 
   virtual void accept(ValueBaseVisitor& visitor) const;
 private:
@@ -233,7 +232,7 @@ private:
 
 class Dict:public ValueBase {
 public:
-  typedef std::map<std::string, SharedHandle<ValueBase> > ValueType;
+  typedef std::map<std::string, std::shared_ptr<ValueBase> > ValueType;
 
   Dict();
 
@@ -243,24 +242,24 @@ public:
   Dict(const Dict&);
   Dict& operator=(const Dict&);
 
-  void put(const std::string& key, const SharedHandle<ValueBase>& vlb);
+  void put(const std::string& key, const std::shared_ptr<ValueBase>& vlb);
 
   // Putting string is so common that we provide shortcut function.
   void put(const std::string& key, const String::ValueType& string);
 
-  const SharedHandle<ValueBase>& get(const std::string& key) const;
+  const std::shared_ptr<ValueBase>& get(const std::string& key) const;
 
-  SharedHandle<ValueBase>& get(const std::string& key);
+  std::shared_ptr<ValueBase>& get(const std::string& key);
 
   // Returns the reference to object associated with given key.  If
   // the key is not found, new pair with that key is created using
   // default values, which is then returned. In other words, this is
   // the same behavior of std::map's operator[].
-  SharedHandle<ValueBase>& operator[](const std::string& key);
+  std::shared_ptr<ValueBase>& operator[](const std::string& key);
 
   // Returns the const reference to ojbect associated with given key.
   // If the key is not found, ValueBase::none is returned.
-  const SharedHandle<ValueBase>& operator[](const std::string& key) const;
+  const std::shared_ptr<ValueBase>& operator[](const std::string& key) const;
 
   // Returns true if the given key is found in dict.
   bool containsKey(const std::string& key) const;
@@ -290,7 +289,7 @@ public:
   // Returns true if size of Dict is 0.
   bool empty() const;
 
-  static SharedHandle<Dict> g();
+  static std::shared_ptr<Dict> g();
 
   virtual void accept(ValueBaseVisitor& visitor) const;
 private:

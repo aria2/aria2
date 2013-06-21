@@ -9,9 +9,9 @@ class MockBtRequestFactory : public BtRequestFactory {
 public:
   virtual ~MockBtRequestFactory() {}
 
-  virtual void addTargetPiece(const SharedHandle<Piece>& piece) {}
+  virtual void addTargetPiece(const std::shared_ptr<Piece>& piece) {}
 
-  virtual void removeTargetPiece(const SharedHandle<Piece>& piece) {}
+  virtual void removeTargetPiece(const std::shared_ptr<Piece>& piece) {}
 
   virtual void removeAllTargetPiece() {}
 
@@ -24,10 +24,10 @@ public:
   virtual void doChokedAction() {}
 
   virtual void createRequestMessages
-  (std::vector<SharedHandle<BtMessage> >& requests, size_t max) {}
+  (std::vector<std::shared_ptr<BtMessage> >& requests, size_t max) {}
 
   virtual void createRequestMessagesOnEndGame
-  (std::vector<SharedHandle<BtMessage> >& requests, size_t max) {}
+  (std::vector<std::shared_ptr<BtMessage> >& requests, size_t max) {}
 
   virtual void getTargetPieceIndexes(std::vector<size_t>& indexes) const {}
 };

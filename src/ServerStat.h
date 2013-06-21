@@ -38,8 +38,8 @@
 
 #include <string>
 #include <iosfwd>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "TimeA2.h"
 
 namespace aria2 {
@@ -170,8 +170,8 @@ private:
 class ServerStatFaster {
 public:
   bool operator()
-  (const std::pair<SharedHandle<ServerStat>, std::string> lhs,
-   const std::pair<SharedHandle<ServerStat>, std::string> rhs) const
+  (const std::pair<std::shared_ptr<ServerStat>, std::string> lhs,
+   const std::pair<std::shared_ptr<ServerStat>, std::string> rhs) const
   {
     return lhs.first->getDownloadSpeed() > rhs.first->getDownloadSpeed();
   }

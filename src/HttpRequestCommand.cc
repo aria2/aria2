@@ -64,12 +64,12 @@ namespace aria2 {
 
 HttpRequestCommand::HttpRequestCommand
 (cuid_t cuid,
- const SharedHandle<Request>& req,
- const SharedHandle<FileEntry>& fileEntry,
+ const std::shared_ptr<Request>& req,
+ const std::shared_ptr<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
- const SharedHandle<HttpConnection>& httpConnection,
+ const std::shared_ptr<HttpConnection>& httpConnection,
  DownloadEngine* e,
- const SharedHandle<SocketCore>& s)
+ const std::shared_ptr<SocketCore>& s)
   : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s,
                     httpConnection->getSocketRecvBuffer()),
     httpConnection_(httpConnection)
@@ -82,19 +82,19 @@ HttpRequestCommand::HttpRequestCommand
 HttpRequestCommand::~HttpRequestCommand() {}
 
 namespace {
-SharedHandle<HttpRequest>
-createHttpRequest(const SharedHandle<Request>& req,
-                  const SharedHandle<FileEntry>& fileEntry,
-                  const SharedHandle<Segment>& segment,
+std::shared_ptr<HttpRequest>
+createHttpRequest(const std::shared_ptr<Request>& req,
+                  const std::shared_ptr<FileEntry>& fileEntry,
+                  const std::shared_ptr<Segment>& segment,
                   int64_t totalLength,
-                  const SharedHandle<Option>& option,
+                  const std::shared_ptr<Option>& option,
                   const RequestGroup* rg,
-                  const SharedHandle<CookieStorage>& cookieStorage,
-                  const SharedHandle<AuthConfigFactory>& authConfigFactory,
-                  const SharedHandle<Request>& proxyRequest,
+                  const std::shared_ptr<CookieStorage>& cookieStorage,
+                  const std::shared_ptr<AuthConfigFactory>& authConfigFactory,
+                  const std::shared_ptr<Request>& proxyRequest,
                   int64_t endOffset = 0)
 {
-  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
+  std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
   httpRequest->setUserAgent(option->get(PREF_USER_AGENT));
   httpRequest->setRequest(req);
   httpRequest->setFileEntry(fileEntry);
@@ -136,10 +136,10 @@ bool HttpRequestCommand::executeInternal() {
     }
 #endif // ENABLE_SSL
     if(getSegments().empty()) {
-      SharedHandle<HttpRequest> httpRequest
+      std::shared_ptr<HttpRequest> httpRequest
         (createHttpRequest(getRequest(),
                            getFileEntry(),
-                           SharedHandle<Segment>(),
+                           std::shared_ptr<Segment>(),
                            getRequestGroup()->getTotalLength(),
                            getOption(),
                            getRequestGroup(),
@@ -172,10 +172,10 @@ bool HttpRequestCommand::executeInternal() {
       }
       httpConnection_->sendRequest(httpRequest);
     } else {
-      for(std::vector<SharedHandle<Segment> >::const_iterator itr =
+      for(std::vector<std::shared_ptr<Segment> >::const_iterator itr =
             getSegments().begin(), eoi = getSegments().end();
           itr != eoi; ++itr) {
-        const SharedHandle<Segment>& segment = *itr;
+        const std::shared_ptr<Segment>& segment = *itr;
         if(!httpConnection_->isIssued(segment)) {
           int64_t endOffset = 0;
           // FTP via HTTP proxy does not support end byte marker
@@ -188,7 +188,7 @@ bool HttpRequestCommand::executeInternal() {
                getFileEntry()->gtoloff
                (static_cast<int64_t>(segment->getSegmentLength())*nextIndex));
           }
-          SharedHandle<HttpRequest> httpRequest
+          std::shared_ptr<HttpRequest> httpRequest
             (createHttpRequest(getRequest(),
                                getFileEntry(),
                                segment,
@@ -225,7 +225,7 @@ bool HttpRequestCommand::executeInternal() {
 }
 
 void HttpRequestCommand::setProxyRequest
-(const SharedHandle<Request>& proxyRequest)
+(const std::shared_ptr<Request>& proxyRequest)
 {
   proxyRequest_ = proxyRequest;
 }

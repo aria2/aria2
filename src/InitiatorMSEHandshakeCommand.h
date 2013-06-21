@@ -60,16 +60,16 @@ public:
 private:
   RequestGroup* requestGroup_;
 
-  SharedHandle<PeerStorage> peerStorage_;
+  std::shared_ptr<PeerStorage> peerStorage_;
 
-  SharedHandle<PieceStorage> pieceStorage_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
 
-  SharedHandle<BtRuntime> btRuntime_;
+  std::shared_ptr<BtRuntime> btRuntime_;
 
   Seq sequence_;
   MSEHandshake* mseHandshake_;
 
-  const SharedHandle<Option>& getOption() const;
+  const std::shared_ptr<Option>& getOption() const;
 
   void tryNewPeer();
 protected:
@@ -81,16 +81,16 @@ public:
   InitiatorMSEHandshakeCommand
   (cuid_t cuid,
    RequestGroup* requestGroup,
-   const SharedHandle<Peer>& peer,
+   const std::shared_ptr<Peer>& peer,
    DownloadEngine* e,
-   const SharedHandle<BtRuntime>& btRuntime,
-   const SharedHandle<SocketCore>& s);
+   const std::shared_ptr<BtRuntime>& btRuntime,
+   const std::shared_ptr<SocketCore>& s);
 
   virtual ~InitiatorMSEHandshakeCommand();
 
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
 
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+  void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage);
 };
 
 } // namespace aria2

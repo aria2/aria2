@@ -25,7 +25,7 @@ class BtChokeMessageTest:public CppUnit::TestFixture {
 private:
 
 public:
-  SharedHandle<Peer> peer;
+  std::shared_ptr<Peer> peer;
 
   void setUp() {
     peer.reset(new Peer("host", 6969));
@@ -72,7 +72,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BtChokeMessageTest);
 void BtChokeMessageTest::testCreate() {
   unsigned char msg[5];
   bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 0);
-  SharedHandle<BtChokeMessage> pm(BtChokeMessage::create(&msg[4], 1));
+  std::shared_ptr<BtChokeMessage> pm(BtChokeMessage::create(&msg[4], 1));
   CPPUNIT_ASSERT_EQUAL((uint8_t)0, pm->getId());
 
   // case: payload size is wrong
@@ -106,9 +106,9 @@ void BtChokeMessageTest::testDoReceivedAction() {
   BtChokeMessage msg;
   msg.setPeer(peer);
 
-  SharedHandle<MockBtMessageDispatcher2> dispatcher(new MockBtMessageDispatcher2());
+  std::shared_ptr<MockBtMessageDispatcher2> dispatcher(new MockBtMessageDispatcher2());
   msg.setBtMessageDispatcher(dispatcher.get());
-  SharedHandle<MockBtRequestFactory2> requestFactory(new MockBtRequestFactory2());
+  std::shared_ptr<MockBtRequestFactory2> requestFactory(new MockBtRequestFactory2());
   msg.setBtRequestFactory(requestFactory.get());
 
   msg.doReceivedAction();
@@ -121,10 +121,10 @@ void BtChokeMessageTest::testOnSendComplete() {
   BtChokeMessage msg;
   msg.setPeer(peer);
 
-  SharedHandle<MockBtMessageDispatcher2> dispatcher(new MockBtMessageDispatcher2());
+  std::shared_ptr<MockBtMessageDispatcher2> dispatcher(new MockBtMessageDispatcher2());
   msg.setBtMessageDispatcher(dispatcher.get());
 
-  SharedHandle<ProgressUpdate> pu(msg.getProgressUpdate());
+  std::shared_ptr<ProgressUpdate> pu(msg.getProgressUpdate());
   pu->update(0, true);
 
   CPPUNIT_ASSERT(dispatcher->doChokingActionCalled);

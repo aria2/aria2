@@ -36,7 +36,6 @@
 #define D_REQUEST_GROUP_CRITERIA_H
 
 #include "common.h"
-#include "SharedHandle.h"
 
 namespace aria2 {
 

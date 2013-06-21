@@ -39,8 +39,7 @@
 
 #include <vector>
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -97,7 +96,7 @@ private:
   void disableNameResolverCheck(size_t index, DownloadEngine* e,
                                 Command* command);
 
-  SharedHandle<AsyncNameResolver> asyncNameResolver_[2];
+  std::shared_ptr<AsyncNameResolver> asyncNameResolver_[2];
   size_t numResolver_;
   int resolverCheck_;
   bool ipv4_;

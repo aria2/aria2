@@ -47,8 +47,8 @@ class DHTResponseMessage:public DHTAbstractMessage {
 protected:
   virtual std::string toStringOptional() const { return A2STR::NIL; }
 public:
-  DHTResponseMessage(const SharedHandle<DHTNode>& localNode,
-                     const SharedHandle<DHTNode>& remoteNode,
+  DHTResponseMessage(const std::shared_ptr<DHTNode>& localNode,
+                     const std::shared_ptr<DHTNode>& remoteNode,
                      const std::string& transactionID);
 
   virtual ~DHTResponseMessage();
@@ -57,7 +57,7 @@ public:
 
   virtual void fillMessage(Dict* msgDict);
 
-  virtual SharedHandle<Dict> getResponse() = 0;
+  virtual std::shared_ptr<Dict> getResponse() = 0;
 
   virtual bool isReply() const;
 

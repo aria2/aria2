@@ -24,10 +24,10 @@ class ChunkedDecodingStreamFilterTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetName);
   CPPUNIT_TEST_SUITE_END();
 
-  SharedHandle<ChunkedDecodingStreamFilter> filter_;
-  SharedHandle<SinkStreamFilter> sinkFilter_;
-  SharedHandle<ByteArrayDiskWriter> writer_;
-  SharedHandle<Segment> segment_;
+  std::shared_ptr<ChunkedDecodingStreamFilter> filter_;
+  std::shared_ptr<SinkStreamFilter> sinkFilter_;
+  std::shared_ptr<ByteArrayDiskWriter> writer_;
+  std::shared_ptr<Segment> segment_;
 
   void clearWriter()
   {

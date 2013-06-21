@@ -57,16 +57,16 @@ DHTPeerAnnounceStorage::DHTPeerAnnounceStorage() {}
 DHTPeerAnnounceStorage::~DHTPeerAnnounceStorage() {}
 
 bool DHTPeerAnnounceStorage::InfoHashLess::operator()
-  (const SharedHandle<DHTPeerAnnounceEntry>& lhs,
-   const SharedHandle<DHTPeerAnnounceEntry>& rhs)
+  (const std::shared_ptr<DHTPeerAnnounceEntry>& lhs,
+   const std::shared_ptr<DHTPeerAnnounceEntry>& rhs)
 {
   return memcmp(lhs->getInfoHash(), rhs->getInfoHash(), DHT_ID_LENGTH) < 0;
 }
 
-SharedHandle<DHTPeerAnnounceEntry>
+std::shared_ptr<DHTPeerAnnounceEntry>
 DHTPeerAnnounceStorage::getPeerAnnounceEntry(const unsigned char* infoHash)
 {
-  SharedHandle<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(infoHash));
+  std::shared_ptr<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(infoHash));
 
   DHTPeerAnnounceEntrySet::iterator i = entries_.lower_bound(entry);
 
@@ -91,15 +91,15 @@ DHTPeerAnnounceStorage::addPeerAnnounce(const unsigned char* infoHash,
 
 bool DHTPeerAnnounceStorage::contains(const unsigned char* infoHash) const
 {
-  SharedHandle<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(infoHash));
+  std::shared_ptr<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(infoHash));
   return
     std::binary_search(entries_.begin(), entries_.end(), entry, InfoHashLess());
 }
 
-void DHTPeerAnnounceStorage::getPeers(std::vector<SharedHandle<Peer> >& peers,
+void DHTPeerAnnounceStorage::getPeers(std::vector<std::shared_ptr<Peer> >& peers,
                                       const unsigned char* infoHash)
 {
-  SharedHandle<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(infoHash));
+  std::shared_ptr<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(infoHash));
 
   DHTPeerAnnounceEntrySet::iterator i = entries_.find(entry);
   if(i != entries_.end()) {
@@ -111,7 +111,7 @@ namespace {
 class RemoveStalePeerAddrEntry
 {
 public:
-  void operator()(const SharedHandle<DHTPeerAnnounceEntry>& e)
+  void operator()(const std::shared_ptr<DHTPeerAnnounceEntry>& e)
   {
     e->removeStalePeerAddrEntry(DHT_PEER_ANNOUNCE_PURGE_INTERVAL);
   }
@@ -143,7 +143,7 @@ void DHTPeerAnnounceStorage::announcePeer()
     if((*i)->getLastUpdated().
        difference(global::wallclock()) >= DHT_PEER_ANNOUNCE_INTERVAL) {
       (*i)->notifyUpdate();
-      SharedHandle<DHTTask> task =
+      std::shared_ptr<DHTTask> task =
         taskFactory_->createPeerAnnounceTask((*i)->getInfoHash());
       taskQueue_->addPeriodicTask2(task);
       A2_LOG_DEBUG
@@ -153,12 +153,12 @@ void DHTPeerAnnounceStorage::announcePeer()
   }
 }
 
-void DHTPeerAnnounceStorage::setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue)
+void DHTPeerAnnounceStorage::setTaskQueue(const std::shared_ptr<DHTTaskQueue>& taskQueue)
 {
   taskQueue_ = taskQueue;
 }
 
-void DHTPeerAnnounceStorage::setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory)
+void DHTPeerAnnounceStorage::setTaskFactory(const std::shared_ptr<DHTTaskFactory>& taskFactory)
 {
   taskFactory_ = taskFactory;
 }

@@ -68,7 +68,7 @@ void DHTPeerAnnounceCommand::process()
 }
 
 void DHTPeerAnnounceCommand::setPeerAnnounceStorage
-(const SharedHandle<DHTPeerAnnounceStorage>& storage)
+(const std::shared_ptr<DHTPeerAnnounceStorage>& storage)
 {
   peerAnnounceStorage_ = storage;
 }

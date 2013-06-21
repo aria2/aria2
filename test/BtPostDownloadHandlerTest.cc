@@ -20,7 +20,7 @@ class BtPostDownloadHandlerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetNextRequestGroups);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<Option> option_;
+  std::shared_ptr<Option> option_;
 public:
   void setUp()
   {
@@ -37,7 +37,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( BtPostDownloadHandlerTest );
 
 void BtPostDownloadHandlerTest::testCanHandle_extension()
 {
-  SharedHandle<DownloadContext> dctx
+  std::shared_ptr<DownloadContext> dctx
     (new DownloadContext(0, 0, A2_TEST_DIR"/test.torrent"));
   RequestGroup rg(GroupId::create(), option_);
   rg.setDownloadContext(dctx);
@@ -52,7 +52,7 @@ void BtPostDownloadHandlerTest::testCanHandle_extension()
 
 void BtPostDownloadHandlerTest::testCanHandle_contentType()
 {
-  SharedHandle<DownloadContext> dctx(new DownloadContext(0, 0, "test"));
+  std::shared_ptr<DownloadContext> dctx(new DownloadContext(0, 0, "test"));
   dctx->getFirstFileEntry()->setContentType("application/x-bittorrent");
   RequestGroup rg(GroupId::create(), option_);
   rg.setDownloadContext(dctx);
@@ -67,7 +67,7 @@ void BtPostDownloadHandlerTest::testCanHandle_contentType()
 
 void BtPostDownloadHandlerTest::testGetNextRequestGroups()
 {
-  SharedHandle<DownloadContext> dctx
+  std::shared_ptr<DownloadContext> dctx
     (new DownloadContext(1024, 0, A2_TEST_DIR"/test.torrent"));
   RequestGroup rg(GroupId::create(), option_);
   rg.setDownloadContext(dctx);
@@ -75,7 +75,7 @@ void BtPostDownloadHandlerTest::testGetNextRequestGroups()
   rg.getPieceStorage()->getDiskAdaptor()->enableReadOnly();
 
   BtPostDownloadHandler handler;
-  std::vector<SharedHandle<RequestGroup> > groups;
+  std::vector<std::shared_ptr<RequestGroup> > groups;
   handler.getNextRequestGroups(groups, &rg);
   CPPUNIT_ASSERT_EQUAL((size_t)1, groups.size());
   CPPUNIT_ASSERT_EQUAL

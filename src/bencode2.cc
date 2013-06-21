@@ -47,25 +47,25 @@ namespace aria2 {
 
 namespace bencode2 {
 
-SharedHandle<ValueBase> decode(const unsigned char* data, size_t len)
+std::shared_ptr<ValueBase> decode(const unsigned char* data, size_t len)
 {
   size_t end;
   return decode(data, len, end);
 }
 
-SharedHandle<ValueBase> decode(const std::string& data)
+std::shared_ptr<ValueBase> decode(const std::string& data)
 {
   size_t end;
   return decode(reinterpret_cast<const unsigned char*>(data.c_str()),
                 data.size(), end);
 }
 
-SharedHandle<ValueBase> decode(const unsigned char* data, size_t len,
+std::shared_ptr<ValueBase> decode(const unsigned char* data, size_t len,
                                size_t& end)
 {
   ssize_t error;
   bittorrent::ValueBaseBencodeParser parser;
-  SharedHandle<ValueBase> res =
+  std::shared_ptr<ValueBase> res =
     parser.parseFinal(reinterpret_cast<const char*>(data), len, error);
   if(error < 0) {
     throw DL_ABORT_EX2(fmt("Bencode decoding failed: error=%d",
@@ -130,7 +130,7 @@ std::string encode(const ValueBase* vlb)
   return visitor.getResult();
 }
 
-std::string encode(const SharedHandle<ValueBase>& vlb)
+std::string encode(const std::shared_ptr<ValueBase>& vlb)
 {
   return encode(vlb.get());
 }

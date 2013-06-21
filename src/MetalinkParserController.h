@@ -40,8 +40,7 @@
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -58,21 +57,21 @@ class ChunkChecksum;
 
 class MetalinkParserController {
 private:
-  SharedHandle<Metalinker> metalinker_;
+  std::shared_ptr<Metalinker> metalinker_;
 
-  SharedHandle<MetalinkEntry> tEntry_;
+  std::shared_ptr<MetalinkEntry> tEntry_;
 
-  SharedHandle<MetalinkResource> tResource_;
+  std::shared_ptr<MetalinkResource> tResource_;
 
-  SharedHandle<MetalinkMetaurl> tMetaurl_;
+  std::shared_ptr<MetalinkMetaurl> tMetaurl_;
 #ifdef ENABLE_MESSAGE_DIGEST
-  SharedHandle<Checksum> tChecksum_;
+  std::shared_ptr<Checksum> tChecksum_;
 
-  SharedHandle<ChunkChecksum> tChunkChecksumV4_; // Metalink4Spec
+  std::shared_ptr<ChunkChecksum> tChunkChecksumV4_; // Metalink4Spec
 
   std::vector<std::string> tempChunkChecksumsV4_; // Metalink4Spec
 
-  SharedHandle<ChunkChecksum> tChunkChecksum_; // Metalink3Spec
+  std::shared_ptr<ChunkChecksum> tChunkChecksum_; // Metalink3Spec
 
   std::vector<std::pair<size_t, std::string> > tempChunkChecksums_;//Metalink3Spec
 
@@ -80,7 +79,7 @@ private:
 
 #endif // ENABLE_MESSAGE_DIGEST
 
-  SharedHandle<Signature> tSignature_;
+  std::shared_ptr<Signature> tSignature_;
   std::string baseUri_;
 public:
   MetalinkParserController();
@@ -89,7 +88,7 @@ public:
 
   void reset();
 
-  const SharedHandle<Metalinker>& getResult() const
+  const std::shared_ptr<Metalinker>& getResult() const
   {
     return metalinker_;
   }

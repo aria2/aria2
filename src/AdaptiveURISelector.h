@@ -36,7 +36,8 @@
 #ifndef D_ADAPTIVE_URI_SELECTOR_H
 #define D_ADAPTIVE_URI_SELECTOR_H
 #include "URISelector.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -46,7 +47,7 @@ class ServerStat;
 
 class AdaptiveURISelector:public URISelector {
 private:
-  SharedHandle<ServerStatMan> serverStatMan_;
+  std::shared_ptr<ServerStatMan> serverStatMan_;
   // No need to delete requestGroup_
   RequestGroup* requestGroup_;
   int nbServerToEvaluate_;
@@ -66,11 +67,11 @@ private:
   std::string selectRandomUri(const std::deque<std::string>& uris) const;
   std::string getFirstNotTestedUri(const std::deque<std::string>& uris) const;
   std::string getFirstToTestUri(const std::deque<std::string>& uris) const;
-  SharedHandle<ServerStat> getServerStats(const std::string& uri) const;
+  std::shared_ptr<ServerStat> getServerStats(const std::string& uri) const;
   int getNbTestedServers(const std::deque<std::string>& uris) const;
   std::string getBestMirror(const std::deque<std::string>& uris) const;
 public:
-  AdaptiveURISelector(const SharedHandle<ServerStatMan>& serverStatMan,
+  AdaptiveURISelector(const std::shared_ptr<ServerStatMan>& serverStatMan,
                       RequestGroup* requestGroup);
 
   virtual ~AdaptiveURISelector();

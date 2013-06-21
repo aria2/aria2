@@ -44,23 +44,23 @@ class SocketCore;
 
 class AbstractProxyResponseCommand : public AbstractCommand {
 private:
-  SharedHandle<HttpConnection> httpConnection_;
+  std::shared_ptr<HttpConnection> httpConnection_;
 protected:
   virtual bool executeInternal();
 
-  const SharedHandle<HttpConnection>& getHttpConnection() const
+  const std::shared_ptr<HttpConnection>& getHttpConnection() const
   {
     return httpConnection_;
   }
 public:
   AbstractProxyResponseCommand
   (cuid_t cuid,
-   const SharedHandle<Request>& req,
-   const SharedHandle<FileEntry>& fileEntry,
+   const std::shared_ptr<Request>& req,
+   const std::shared_ptr<FileEntry>& fileEntry,
    RequestGroup* requestGroup,
-   const SharedHandle<HttpConnection>& httpConnection,
+   const std::shared_ptr<HttpConnection>& httpConnection,
    DownloadEngine* e,
-   const SharedHandle<SocketCore>& s);
+   const std::shared_ptr<SocketCore>& s);
 
   virtual ~AbstractProxyResponseCommand();
 

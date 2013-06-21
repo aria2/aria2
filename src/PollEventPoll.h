@@ -70,12 +70,12 @@ private:
   friend int accumulateEvent(int events, const KEvent& event);
 
 private:
-  typedef std::set<SharedHandle<KSocketEntry>,
-                   DerefLess<SharedHandle<KSocketEntry> > > KSocketEntrySet;
+  typedef std::set<std::shared_ptr<KSocketEntry>,
+                   DerefLess<std::shared_ptr<KSocketEntry> > > KSocketEntrySet;
   KSocketEntrySet socketEntries_;
 #ifdef ENABLE_ASYNC_DNS
-  typedef std::set<SharedHandle<KAsyncNameResolverEntry>,
-                   DerefLess<SharedHandle<KAsyncNameResolverEntry> > >
+  typedef std::set<std::shared_ptr<KAsyncNameResolverEntry>,
+                   DerefLess<std::shared_ptr<KAsyncNameResolverEntry> > >
   KAsyncNameResolverEntrySet;
   KAsyncNameResolverEntrySet nameResolverEntries_;
 #endif // ENABLE_ASYNC_DNS
@@ -93,10 +93,10 @@ private:
   bool deleteEvents(sock_t socket, const KEvent& event);
 
   bool addEvents(sock_t socket, Command* command, int events,
-                 const SharedHandle<AsyncNameResolver>& rs);
+                 const std::shared_ptr<AsyncNameResolver>& rs);
 
   bool deleteEvents(sock_t socket, Command* command,
-                    const SharedHandle<AsyncNameResolver>& rs);
+                    const std::shared_ptr<AsyncNameResolver>& rs);
 
   static int translateEvents(EventPoll::EventType events);
 public:
@@ -113,10 +113,10 @@ public:
                             Command* command, EventPoll::EventType events);
 #ifdef ENABLE_ASYNC_DNS
 
-  virtual bool addNameResolver(const SharedHandle<AsyncNameResolver>& resolver,
+  virtual bool addNameResolver(const std::shared_ptr<AsyncNameResolver>& resolver,
                                Command* command);
   virtual bool deleteNameResolver
-  (const SharedHandle<AsyncNameResolver>& resolver, Command* command);
+  (const std::shared_ptr<AsyncNameResolver>& resolver, Command* command);
 #endif // ENABLE_ASYNC_DNS
 
   static const int IEV_READ = POLLIN;

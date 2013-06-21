@@ -229,13 +229,13 @@ void Aria2ApiTest::testChangeGlobalOption()
 
 void Aria2ApiTest::testDownloadResultDH()
 {
-  SharedHandle<DownloadResult> dr1 =
+  std::shared_ptr<DownloadResult> dr1 =
     createDownloadResult(error_code::TIME_OUT, "http://example.org/timeout");
   dr1->option->put(PREF_DIR, "mydownload");
-  SharedHandle<DownloadResult> dr2 =
+  std::shared_ptr<DownloadResult> dr2 =
     createDownloadResult(error_code::NETWORK_PROBLEM,
                          "http://example.org/network");
-  SharedHandle<RequestGroupMan> gman =
+  std::shared_ptr<RequestGroupMan> gman =
     session_->context->reqinfo->getDownloadEngine()->getRequestGroupMan();
   gman->addDownloadResult(dr1);
   gman->addDownloadResult(dr2);

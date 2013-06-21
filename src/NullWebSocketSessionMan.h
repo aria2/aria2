@@ -38,8 +38,7 @@
 #include "common.h"
 
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 // Empty implementation for build without WebSocket support.
 
@@ -55,8 +54,8 @@ class WebSocketSessionMan {
 public:
   WebSocketSessionMan() {}
   ~WebSocketSessionMan() {}
-  void addSession(const SharedHandle<WebSocketSession>& wsSession) {}
-  void removeSession(const SharedHandle<WebSocketSession>& wsSession) {}
+  void addSession(const std::shared_ptr<WebSocketSession>& wsSession) {}
+  void removeSession(const std::shared_ptr<WebSocketSession>& wsSession) {}
   void addNotification(const std::string& method, const RequestGroup* group) {}
 };
 

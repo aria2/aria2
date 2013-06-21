@@ -42,15 +42,15 @@ namespace aria2 {
 
 class DHTPingMessage:public DHTQueryMessage {
 public:
-  DHTPingMessage(const SharedHandle<DHTNode>& localNode,
-                 const SharedHandle<DHTNode>& remoteNode,
+  DHTPingMessage(const std::shared_ptr<DHTNode>& localNode,
+                 const std::shared_ptr<DHTNode>& remoteNode,
                  const std::string& transactionID = A2STR::NIL);
 
   virtual ~DHTPingMessage();
 
   virtual void doReceivedAction();
 
-  virtual SharedHandle<Dict> getArgument();
+  virtual std::shared_ptr<Dict> getArgument();
 
   virtual const std::string& getMessageType() const;
 

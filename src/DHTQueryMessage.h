@@ -45,8 +45,8 @@ class DHTQueryMessage:public DHTAbstractMessage {
 protected:
   virtual std::string toStringOptional() const { return A2STR::NIL; }
 public:
-  DHTQueryMessage(const SharedHandle<DHTNode>& localNode,
-                  const SharedHandle<DHTNode>& remoteNode,
+  DHTQueryMessage(const std::shared_ptr<DHTNode>& localNode,
+                  const std::shared_ptr<DHTNode>& remoteNode,
                   const std::string& transactionID = A2STR::NIL);
 
   virtual ~DHTQueryMessage();
@@ -55,7 +55,7 @@ public:
 
   virtual void fillMessage(Dict* msgDict);
 
-  virtual SharedHandle<Dict> getArgument() = 0;
+  virtual std::shared_ptr<Dict> getArgument() = 0;
 
   virtual bool isReply() const;
 

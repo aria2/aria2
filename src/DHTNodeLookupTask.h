@@ -47,13 +47,13 @@ public:
   DHTNodeLookupTask(const unsigned char* targetNodeID);
 
   virtual void getNodesFromMessage
-  (std::vector<SharedHandle<DHTNode> >& nodes,
+  (std::vector<std::shared_ptr<DHTNode> >& nodes,
    const DHTFindNodeReplyMessage* message);
 
-  virtual SharedHandle<DHTMessage> createMessage
-  (const SharedHandle<DHTNode>& remoteNode);
+  virtual std::shared_ptr<DHTMessage> createMessage
+  (const std::shared_ptr<DHTNode>& remoteNode);
 
-  virtual SharedHandle<DHTMessageCallback> createCallback();
+  virtual std::shared_ptr<DHTMessageCallback> createCallback();
 };
 
 } // namespace aria2

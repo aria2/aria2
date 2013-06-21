@@ -35,6 +35,7 @@
 #include "SocketRecvBuffer.h"
 
 #include <cstring>
+#include <cassert>
 
 #include "SocketCore.h"
 #include "LogFactory.h"
@@ -42,7 +43,7 @@
 namespace aria2 {
 
 SocketRecvBuffer::SocketRecvBuffer
-(const SharedHandle<SocketCore>& socket,
+(const std::shared_ptr<SocketCore>& socket,
  size_t capacity)
   : socket_(socket),
     capacity_(capacity),

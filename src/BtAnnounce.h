@@ -38,9 +38,9 @@
 #include "common.h"
 
 #include <string>
+#include <memory>
 
 #include "a2time.h"
-#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -68,7 +68,7 @@ public:
    */
   virtual std::string getAnnounceUrl() = 0;
 
-  virtual SharedHandle<UDPTrackerRequest>
+  virtual std::shared_ptr<UDPTrackerRequest>
   createUDPTrackerRequest(const std::string& remoteAddr, uint16_t remotePort,
                           uint16_t localPort) = 0;
 
@@ -104,7 +104,7 @@ public:
                                        size_t trackerResponseLength) = 0;
 
   virtual void processUDPTrackerResponse
-  (const SharedHandle<UDPTrackerRequest>& req) = 0;
+  (const std::shared_ptr<UDPTrackerRequest>& req) = 0;
 
   /**
    * Returns true if no more announce is needed.

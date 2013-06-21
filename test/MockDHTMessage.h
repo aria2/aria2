@@ -20,14 +20,14 @@ public:
 
   std::string messageType_;
 
-  std::vector<SharedHandle<DHTNode> > nodes_;
+  std::vector<std::shared_ptr<DHTNode> > nodes_;
 
-  std::vector<SharedHandle<Peer> > peers_;
+  std::vector<std::shared_ptr<Peer> > peers_;
 
   std::string token_;
 public:
-  MockDHTMessage(const SharedHandle<DHTNode>& localNode,
-                 const SharedHandle<DHTNode>& remoteNode,
+  MockDHTMessage(const std::shared_ptr<DHTNode>& localNode,
+                 const std::shared_ptr<DHTNode>& remoteNode,
                  const std::string& messageType = "mock",
                  const std::string& transactionID = ""):
     DHTMessage(localNode, remoteNode, transactionID), isReply_(false), messageType_(messageType) {}
@@ -51,14 +51,14 @@ class MockDHTQueryMessage:public DHTQueryMessage {
 public:
   std::string messageType_;
 
-  std::vector<SharedHandle<DHTNode> > nodes_;
+  std::vector<std::shared_ptr<DHTNode> > nodes_;
 
-  std::vector<SharedHandle<Peer> > peers_;
+  std::vector<std::shared_ptr<Peer> > peers_;
 
   std::string token_;
 public:
-  MockDHTQueryMessage(const SharedHandle<DHTNode>& localNode,
-                      const SharedHandle<DHTNode>& remoteNode,
+  MockDHTQueryMessage(const std::shared_ptr<DHTNode>& localNode,
+                      const std::shared_ptr<DHTNode>& remoteNode,
                       const std::string& messageType = "mock",
                       const std::string& transactionID = ""):
     DHTQueryMessage(localNode, remoteNode, transactionID),
@@ -76,21 +76,21 @@ public:
 
   virtual std::string toString() const { return "MockDHTMessage"; }
 
-  virtual SharedHandle<Dict> getArgument() { return Dict::g(); }
+  virtual std::shared_ptr<Dict> getArgument() { return Dict::g(); }
 };
 
 class MockDHTResponseMessage:public DHTResponseMessage {
 public:
   std::string messageType_;
 
-  std::vector<SharedHandle<DHTNode> > nodes_;
+  std::vector<std::shared_ptr<DHTNode> > nodes_;
 
-  std::vector<SharedHandle<Peer> > peers_;
+  std::vector<std::shared_ptr<Peer> > peers_;
 
   std::string token_;
 public:
-  MockDHTResponseMessage(const SharedHandle<DHTNode>& localNode,
-                         const SharedHandle<DHTNode>& remoteNode,
+  MockDHTResponseMessage(const std::shared_ptr<DHTNode>& localNode,
+                         const std::shared_ptr<DHTNode>& remoteNode,
                          const std::string& messageType = "mock",
                          const std::string& transactionID = ""):
     DHTResponseMessage(localNode, remoteNode, transactionID),
@@ -108,7 +108,7 @@ public:
 
   virtual std::string toString() const { return "MockDHTMessage"; }
 
-  virtual SharedHandle<Dict> getResponse() { return Dict::g(); }
+  virtual std::shared_ptr<Dict> getResponse() { return Dict::g(); }
 
   virtual void accept(DHTMessageCallback* callback) {}
 };

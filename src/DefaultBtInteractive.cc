@@ -77,8 +77,8 @@
 namespace aria2 {
 
 DefaultBtInteractive::DefaultBtInteractive
-(const SharedHandle<DownloadContext>& downloadContext,
- const SharedHandle<Peer>& peer)
+(const std::shared_ptr<DownloadContext>& downloadContext,
+ const std::shared_ptr<Peer>& peer)
   : cuid_(0),
     downloadContext_(downloadContext),
     peer_(peer),
@@ -104,18 +104,18 @@ DefaultBtInteractive::DefaultBtInteractive
 DefaultBtInteractive::~DefaultBtInteractive() {}
 
 void DefaultBtInteractive::initiateHandshake() {
-  SharedHandle<BtMessage> message =
+  std::shared_ptr<BtMessage> message =
     messageFactory_->createHandshakeMessage
     (bittorrent::getInfoHash(downloadContext_), bittorrent::getStaticPeerId());
   dispatcher_->addMessageToQueue(message);
   dispatcher_->sendMessages();
 }
 
-SharedHandle<BtMessage> DefaultBtInteractive::receiveHandshake(bool quickReply) {
-  SharedHandle<BtHandshakeMessage> message =
+std::shared_ptr<BtMessage> DefaultBtInteractive::receiveHandshake(bool quickReply) {
+  std::shared_ptr<BtHandshakeMessage> message =
     btMessageReceiver_->receiveHandshake(quickReply);
   if(!message) {
-    return SharedHandle<BtMessage>();
+    return std::shared_ptr<BtMessage>();
   }
   if(memcmp(message->getPeerId(), bittorrent::getStaticPeerId(),
             PEER_ID_LENGTH) == 0) {
@@ -158,7 +158,7 @@ SharedHandle<BtMessage> DefaultBtInteractive::receiveHandshake(bool quickReply) 
   return message;
 }
 
-SharedHandle<BtMessage> DefaultBtInteractive::receiveAndSendHandshake() {
+std::shared_ptr<BtMessage> DefaultBtInteractive::receiveAndSendHandshake() {
   return receiveHandshake(true);
 }
 
@@ -191,16 +191,16 @@ void DefaultBtInteractive::addPortMessageToQueue()
 
 void DefaultBtInteractive::addHandshakeExtendedMessageToQueue()
 {
-  SharedHandle<HandshakeExtensionMessage> m(new HandshakeExtensionMessage());
+  std::shared_ptr<HandshakeExtensionMessage> m(new HandshakeExtensionMessage());
   m->setClientVersion("aria2/" PACKAGE_VERSION);
   m->setTCPPort(tcpPort_);
   m->setExtensions(extensionMessageRegistry_->getExtensions());
-  SharedHandle<TorrentAttribute> attrs =
+  std::shared_ptr<TorrentAttribute> attrs =
     bittorrent::getTorrentAttrs(downloadContext_);
   if(!attrs->metadata.empty()) {
     m->setMetadataSize(attrs->metadataSize);
   }
-  SharedHandle<BtMessage> msg = messageFactory_->createBtExtendedMessage(m);
+  std::shared_ptr<BtMessage> msg = messageFactory_->createBtExtendedMessage(m);
   dispatcher_->addMessageToQueue(msg);
 }
 
@@ -290,7 +290,7 @@ size_t DefaultBtInteractive::receiveMessages() {
        downloadContext_->getOwnerRequestGroup()->doesDownloadSpeedExceed()) {
       break;
     }
-    SharedHandle<BtMessage> message = btMessageReceiver_->receiveMessage();
+    std::shared_ptr<BtMessage> message = btMessageReceiver_->receiveMessage();
     if(!message) {
       break;
     }
@@ -356,7 +356,7 @@ void DefaultBtInteractive::fillPiece(size_t maxMissingBlock) {
       return;
     }
     size_t diffMissingBlock = maxMissingBlock-numMissingBlock;
-    std::vector<SharedHandle<Piece> > pieces;
+    std::vector<std::shared_ptr<Piece> > pieces;
     if(peer_->peerChoking()) {
       if(peer_->isFastExtensionEnabled()) {
         if(pieceStorage_->isEndGame()) {
@@ -383,7 +383,7 @@ void DefaultBtInteractive::fillPiece(size_t maxMissingBlock) {
         pieceStorage_->getMissingPiece(pieces, diffMissingBlock, peer_, cuid_);
       }
     }
-    for(std::vector<SharedHandle<Piece> >::const_iterator i =
+    for(std::vector<std::shared_ptr<Piece> >::const_iterator i =
           pieces.begin(), eoi = pieces.end(); i != eoi; ++i) {
       btRequestFactory_->addTargetPiece(*i);
     }
@@ -400,7 +400,7 @@ void DefaultBtInteractive::addRequests() {
     0 : maxOutstandingRequest_-dispatcher_->countOutstandingRequest();
 
   if(reqNumToCreate > 0) {
-    std::vector<SharedHandle<BtMessage> > requests;
+    std::vector<std::shared_ptr<BtMessage> > requests;
     requests.reserve(reqNumToCreate);
     if(pieceStorage_->isEndGame()) {
       btRequestFactory_->createRequestMessagesOnEndGame(requests,reqNumToCreate);
@@ -481,7 +481,7 @@ void DefaultBtInteractive::addPeerExchangeMessage()
 {
   if(pexTimer_.
      difference(global::wallclock()) >= UTPexExtensionMessage::DEFAULT_INTERVAL) {
-    SharedHandle<UTPexExtensionMessage> m
+    std::shared_ptr<UTPexExtensionMessage> m
       (new UTPexExtensionMessage(peer_->getExtensionMessageID
                                  (ExtensionMessageRegistry::UT_PEX)));
 
@@ -492,9 +492,9 @@ void DefaultBtInteractive::addPeerExchangeMessage()
         m->addFreshPeer(*i);
       }
     }
-    const std::deque<SharedHandle<Peer> >& droppedPeers =
+    const std::deque<std::shared_ptr<Peer> >& droppedPeers =
       peerStorage_->getDroppedPeers();
-    for(std::deque<SharedHandle<Peer> >::const_iterator i =
+    for(std::deque<std::shared_ptr<Peer> >::const_iterator i =
           droppedPeers.begin(), eoi = droppedPeers.end();
         i != eoi && !m->droppedPeersAreFull();
         ++i) {
@@ -503,7 +503,7 @@ void DefaultBtInteractive::addPeerExchangeMessage()
       }
     }
 
-    SharedHandle<BtMessage> msg = messageFactory_->createBtExtendedMessage(m);
+    std::shared_ptr<BtMessage> msg = messageFactory_->createBtExtendedMessage(m);
     dispatcher_->addMessageToQueue(msg);
     pexTimer_ = global::wallclock();
   }
@@ -521,7 +521,7 @@ void DefaultBtInteractive::doInteractionProcessing() {
        downloadContext_->getTotalLength() > 0) {
       size_t num = utMetadataRequestTracker_->avail();
       if(num > 0) {
-        std::vector<SharedHandle<BtMessage> > requests;
+        std::vector<std::shared_ptr<BtMessage> > requests;
         utMetadataRequestFactory_->create(requests, num, pieceStorage_);
         dispatcher_->addMessageToQueue(requests);
       }
@@ -596,60 +596,60 @@ size_t DefaultBtInteractive::countOutstandingRequest()
 }
 
 void DefaultBtInteractive::setBtRuntime
-(const SharedHandle<BtRuntime>& btRuntime)
+(const std::shared_ptr<BtRuntime>& btRuntime)
 {
   btRuntime_ = btRuntime;
 }
 
 void DefaultBtInteractive::setPieceStorage
-(const SharedHandle<PieceStorage>& pieceStorage)
+(const std::shared_ptr<PieceStorage>& pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }
 
 void DefaultBtInteractive::setPeerStorage
-(const SharedHandle<PeerStorage>& peerStorage)
+(const std::shared_ptr<PeerStorage>& peerStorage)
 {
   peerStorage_ = peerStorage;
 }
 
-void DefaultBtInteractive::setPeer(const SharedHandle<Peer>& peer)
+void DefaultBtInteractive::setPeer(const std::shared_ptr<Peer>& peer)
 {
   peer_ = peer;
 }
 
 void DefaultBtInteractive::setBtMessageReceiver
-(const SharedHandle<BtMessageReceiver>& receiver)
+(const std::shared_ptr<BtMessageReceiver>& receiver)
 {
   btMessageReceiver_ = receiver;
 }
 
 void DefaultBtInteractive::setDispatcher
-(const SharedHandle<BtMessageDispatcher>& dispatcher)
+(const std::shared_ptr<BtMessageDispatcher>& dispatcher)
 {
   dispatcher_ = dispatcher;
 }
 
 void DefaultBtInteractive::setBtRequestFactory
-(const SharedHandle<BtRequestFactory>& factory)
+(const std::shared_ptr<BtRequestFactory>& factory)
 {
   btRequestFactory_ = factory;
 }
 
 void DefaultBtInteractive::setPeerConnection
-(const SharedHandle<PeerConnection>& peerConnection)
+(const std::shared_ptr<PeerConnection>& peerConnection)
 {
   peerConnection_ = peerConnection;
 }
 
 void DefaultBtInteractive::setExtensionMessageFactory
-(const SharedHandle<ExtensionMessageFactory>& factory)
+(const std::shared_ptr<ExtensionMessageFactory>& factory)
 {
   extensionMessageFactory_ = factory;
 }
 
 void DefaultBtInteractive::setBtMessageFactory
-(const SharedHandle<BtMessageFactory>& factory)
+(const std::shared_ptr<BtMessageFactory>& factory)
 {
   messageFactory_ = factory;
 }

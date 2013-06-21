@@ -115,13 +115,13 @@ void UTMetadataDataExtensionMessage::setData(const std::string& data)
 }
 
 void UTMetadataDataExtensionMessage::setPieceStorage
-(const SharedHandle<PieceStorage>& pieceStorage)
+(const std::shared_ptr<PieceStorage>& pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }
 
 void UTMetadataDataExtensionMessage::setDownloadContext
-(const SharedHandle<DownloadContext>& dctx)
+(const std::shared_ptr<DownloadContext>& dctx)
 {
   dctx_ = dctx;
 }

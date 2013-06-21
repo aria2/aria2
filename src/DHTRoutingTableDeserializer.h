@@ -39,8 +39,8 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "TimeA2.h"
 
 namespace aria2 {
@@ -51,9 +51,9 @@ class DHTRoutingTableDeserializer {
 private:
   int family_;
 
-  SharedHandle<DHTNode> localNode_;
+  std::shared_ptr<DHTNode> localNode_;
 
-  std::vector<SharedHandle<DHTNode> > nodes_;
+  std::vector<std::shared_ptr<DHTNode> > nodes_;
 
   Time serializedTime_;
 public:
@@ -61,12 +61,12 @@ public:
 
   ~DHTRoutingTableDeserializer();
 
-  const SharedHandle<DHTNode>& getLocalNode() const
+  const std::shared_ptr<DHTNode>& getLocalNode() const
   {
     return localNode_;
   }
 
-  const std::vector<SharedHandle<DHTNode> >& getNodes() const
+  const std::vector<std::shared_ptr<DHTNode> >& getNodes() const
   {
     return nodes_;
   }

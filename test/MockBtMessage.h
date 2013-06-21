@@ -90,9 +90,9 @@ public:
 template<typename T>
 class WrapBtMessage:public MockBtMessage {
 public:
-  SharedHandle<T> m_;
+  std::shared_ptr<T> m_;
 
-  WrapBtMessage(const SharedHandle<T>& m):m_(m) {}
+  WrapBtMessage(const std::shared_ptr<T>& m):m_(m) {}
 };
 
 

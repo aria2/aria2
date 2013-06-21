@@ -656,14 +656,14 @@ void parseIntSegments(SegList<int>& sgl, const std::string& src)
 namespace {
 void computeHeadPieces
 (std::vector<size_t>& indexes,
- const std::vector<SharedHandle<FileEntry> >& fileEntries,
+ const std::vector<std::shared_ptr<FileEntry> >& fileEntries,
  size_t pieceLength,
  int64_t head)
 {
   if(head == 0) {
     return;
   }
-  for(std::vector<SharedHandle<FileEntry> >::const_iterator fi =
+  for(std::vector<std::shared_ptr<FileEntry> >::const_iterator fi =
         fileEntries.begin(), eoi = fileEntries.end(); fi != eoi; ++fi) {
     if((*fi)->getLength() == 0) {
       continue;
@@ -681,14 +681,14 @@ void computeHeadPieces
 namespace {
 void computeTailPieces
 (std::vector<size_t>& indexes,
- const std::vector<SharedHandle<FileEntry> >& fileEntries,
+ const std::vector<std::shared_ptr<FileEntry> >& fileEntries,
  size_t pieceLength,
  int64_t tail)
 {
   if(tail == 0) {
     return;
   }
-  for(std::vector<SharedHandle<FileEntry> >::const_iterator fi =
+  for(std::vector<std::shared_ptr<FileEntry> >::const_iterator fi =
         fileEntries.begin(), eoi = fileEntries.end(); fi != eoi; ++fi) {
     if((*fi)->getLength() == 0) {
       continue;
@@ -706,7 +706,7 @@ void computeTailPieces
 
 void parsePrioritizePieceRange
 (std::vector<size_t>& result, const std::string& src,
- const std::vector<SharedHandle<FileEntry> >& fileEntries,
+ const std::vector<std::shared_ptr<FileEntry> >& fileEntries,
  size_t pieceLength,
  int64_t defaultSize)
 {
@@ -1409,7 +1409,7 @@ void convertBitfield(BitfieldMan* dest, const BitfieldMan* src)
   }
 }
 
-std::string toString(const SharedHandle<BinaryStream>& binaryStream)
+std::string toString(const std::shared_ptr<BinaryStream>& binaryStream)
 {
   std::stringstream strm;
   char data[2048];
@@ -1506,7 +1506,7 @@ std::vector<std::pair<size_t, std::string> > createIndexPaths(std::istream& i)
 namespace {
 void generateRandomDataRandom(unsigned char* data, size_t length)
 {
-  const SharedHandle<SimpleRandomizer>& rd = SimpleRandomizer::getInstance();
+  const std::shared_ptr<SimpleRandomizer>& rd = SimpleRandomizer::getInstance();
   for(size_t i = 0; i < length; ++i) {
     data[i] = static_cast<unsigned long>(rd->getRandomNumber(256));
   }
@@ -1793,7 +1793,7 @@ void executeHook
 } // namespace
 
 void executeHookByOptName
-(const SharedHandle<RequestGroup>& group, const Option* option,
+(const std::shared_ptr<RequestGroup>& group, const Option* option,
  const Pref* pref)
 {
   executeHookByOptName(group.get(), option, pref);
@@ -1804,11 +1804,11 @@ void executeHookByOptName
 {
   const std::string& cmd = option->get(pref);
   if(!cmd.empty()) {
-    const SharedHandle<DownloadContext> dctx = group->getDownloadContext();
+    const std::shared_ptr<DownloadContext> dctx = group->getDownloadContext();
     std::string firstFilename;
     size_t numFiles = 0;
     if(!group->inMemoryDownload()) {
-      SharedHandle<FileEntry> file = dctx->getFirstRequestedFileEntry();
+      std::shared_ptr<FileEntry> file = dctx->getFirstRequestedFileEntry();
       if(file) {
         firstFilename = file->getPath();
       }

@@ -4,7 +4,7 @@
 
 namespace aria2 {
 
-typedef SharedHandle<int> Integer;
+typedef std::shared_ptr<int> Integer;
 
 class SequentialPickerTest:public CppUnit::TestFixture {
 

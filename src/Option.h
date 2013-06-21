@@ -39,8 +39,7 @@
 
 #include <string>
 #include <vector>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -50,7 +49,7 @@ class Option {
 private:
   std::vector<std::string> table_;
   std::vector<unsigned char> use_;
-  SharedHandle<Option> parent_;
+  std::shared_ptr<Option> parent_;
 public:
   Option();
   ~Option();
@@ -91,8 +90,8 @@ public:
   // left unmodified for this object.
   void merge(const Option& option);
   // Sets parent Option object for this object.
-  void setParent(const SharedHandle<Option>& parent);
-  const SharedHandle<Option>& getParent() const;
+  void setParent(const std::shared_ptr<Option>& parent);
+  const std::shared_ptr<Option>& getParent() const;
 };
 
 } // namespace aria2

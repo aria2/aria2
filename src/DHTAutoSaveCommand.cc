@@ -93,13 +93,13 @@ void DHTAutoSaveCommand::save()
   tempFile.remove();
 
   File(File(dhtFile).getDirname()).mkdirs();
-  std::vector<SharedHandle<DHTNode> > nodes;
-  std::vector<SharedHandle<DHTBucket> > buckets;
+  std::vector<std::shared_ptr<DHTNode> > nodes;
+  std::vector<std::shared_ptr<DHTBucket> > buckets;
   routingTable_->getBuckets(buckets);
-  for(std::vector<SharedHandle<DHTBucket> >::const_iterator i = buckets.begin(),
+  for(std::vector<std::shared_ptr<DHTBucket> >::const_iterator i = buckets.begin(),
         eoi = buckets.end(); i != eoi; ++i) {
-    const SharedHandle<DHTBucket>& bucket = *i;
-    std::vector<SharedHandle<DHTNode> > goodNodes;
+    const std::shared_ptr<DHTBucket>& bucket = *i;
+    std::vector<std::shared_ptr<DHTNode> > goodNodes;
     bucket->getGoodNodes(goodNodes);
     nodes.insert(nodes.end(), goodNodes.begin(), goodNodes.end());
   }
@@ -117,13 +117,13 @@ void DHTAutoSaveCommand::save()
   }
 }
 
-void DHTAutoSaveCommand::setLocalNode(const SharedHandle<DHTNode>& localNode)
+void DHTAutoSaveCommand::setLocalNode(const std::shared_ptr<DHTNode>& localNode)
 {
   localNode_ = localNode;
 }
 
 void DHTAutoSaveCommand::setRoutingTable
-(const SharedHandle<DHTRoutingTable>& routingTable)
+(const std::shared_ptr<DHTRoutingTable>& routingTable)
 {
   routingTable_ = routingTable;
 }

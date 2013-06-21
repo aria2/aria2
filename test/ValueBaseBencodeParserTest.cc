@@ -22,7 +22,7 @@ void checkDecodeError(const std::string& src)
 {
   bittorrent::ValueBaseBencodeParser parser;
   ssize_t error;
-  SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+  std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                 error);
   CPPUNIT_ASSERT(!r);
   CPPUNIT_ASSERT(error < 0);
@@ -36,42 +36,42 @@ void ValueBaseBencodeParserTest::testParseUpdate()
   {
     // empty string
     std::string src = "0:";
-    SharedHandle<ValueBase> s = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> s = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     CPPUNIT_ASSERT_EQUAL(std::string(""), downcast<String>(s)->s());
   }
   {
     // integer 0
     std::string src = "i0e";
-    SharedHandle<ValueBase> s = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> s = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     CPPUNIT_ASSERT_EQUAL((int64_t)0, downcast<Integer>(s)->i());
   }
   {
     // empty dict
     std::string src = "de";
-    SharedHandle<ValueBase> d = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> d = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     CPPUNIT_ASSERT(downcast<Dict>(d)->empty());
   }
   {
     // empty list
     std::string src = "le";
-    SharedHandle<ValueBase> l = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> l = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     CPPUNIT_ASSERT(downcast<List>(l)->empty());
   }
   {
     // string
     std::string src = "3:foo";
-    SharedHandle<ValueBase> s = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> s = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     CPPUNIT_ASSERT_EQUAL(std::string("foo"), downcast<String>(s)->s());
   }
   {
     // integer
     std::string src = "i9223372036854775807e";
-    SharedHandle<ValueBase> s = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> s = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     CPPUNIT_ASSERT_EQUAL((int64_t)9223372036854775807LL,
                          downcast<Integer>(s)->i());
@@ -79,7 +79,7 @@ void ValueBaseBencodeParserTest::testParseUpdate()
   {
     // dict, size 1
     std::string src = "d3:fooi123ee";
-    SharedHandle<ValueBase> d = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> d = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     Dict* dict = downcast<Dict>(d);
     CPPUNIT_ASSERT(dict);
@@ -90,7 +90,7 @@ void ValueBaseBencodeParserTest::testParseUpdate()
   {
     // dict, size 2
     std::string src = "d3:fooi123e3:bar1:ee";
-    SharedHandle<ValueBase> d = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> d = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     Dict* dict = downcast<Dict>(d);
     CPPUNIT_ASSERT(dict);
@@ -105,7 +105,7 @@ void ValueBaseBencodeParserTest::testParseUpdate()
   {
     // list, size 1
     std::string src = "l3:fooe";
-    SharedHandle<ValueBase> l = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> l = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     List* list = downcast<List>(l);
     CPPUNIT_ASSERT(list);
@@ -116,7 +116,7 @@ void ValueBaseBencodeParserTest::testParseUpdate()
   {
     // list, size 2
     std::string src = "l3:fooi123ee";
-    SharedHandle<ValueBase> l = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> l = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     List* list = downcast<List>(l);
     CPPUNIT_ASSERT(list);
@@ -129,7 +129,7 @@ void ValueBaseBencodeParserTest::testParseUpdate()
   {
     // string, integer and list in dict
     std::string src = "d4:name5:aria24:sizei12345678900e5:filesl3:bin3:docee";
-    SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     const Dict* dict = downcast<Dict>(r);
     CPPUNIT_ASSERT(dict);
@@ -148,7 +148,7 @@ void ValueBaseBencodeParserTest::testParseUpdate()
   {
     // dict in list
     std::string src = "ld1:ki123eee";
-    SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
@@ -161,13 +161,13 @@ void ValueBaseBencodeParserTest::testParseUpdate()
   {
     // empty key is allowed
     std::string src = "d0:1:ve";
-    SharedHandle<ValueBase> s = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> s = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
   }
   {
     // empty encoded data
     std::string src = "";
-    SharedHandle<ValueBase> s = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> s = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     CPPUNIT_ASSERT(!s);
   }
@@ -189,7 +189,7 @@ void ValueBaseBencodeParserTest::testParseUpdate()
   {
     // ignore trailing garbage at the end of the input.
     std::string src = "5:aria2trail";
-    SharedHandle<ValueBase> s = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> s = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     CPPUNIT_ASSERT_EQUAL(std::string("aria2"), downcast<String>(s)->s());
     // Get trailing garbage position

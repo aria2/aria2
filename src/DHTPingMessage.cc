@@ -43,8 +43,8 @@ namespace aria2 {
 
 const std::string DHTPingMessage::PING("ping");
 
-DHTPingMessage::DHTPingMessage(const SharedHandle<DHTNode>& localNode,
-                               const SharedHandle<DHTNode>& remoteNode,
+DHTPingMessage::DHTPingMessage(const std::shared_ptr<DHTNode>& localNode,
+                               const std::shared_ptr<DHTNode>& remoteNode,
                                const std::string& transactionID):
   DHTQueryMessage(localNode, remoteNode, transactionID) {}
 
@@ -53,15 +53,15 @@ DHTPingMessage::~DHTPingMessage() {}
 void DHTPingMessage::doReceivedAction()
 {
   // send back ping reply
-  SharedHandle<DHTMessage> reply =
+  std::shared_ptr<DHTMessage> reply =
     getMessageFactory()->createPingReplyMessage
     (getRemoteNode(), getLocalNode()->getID(), getTransactionID());
   getMessageDispatcher()->addMessageToQueue(reply);
 }
 
-SharedHandle<Dict> DHTPingMessage::getArgument()
+std::shared_ptr<Dict> DHTPingMessage::getArgument()
 {
-  SharedHandle<Dict> aDict = Dict::g();
+  std::shared_ptr<Dict> aDict = Dict::g();
   aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
   return aDict;
 }

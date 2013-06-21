@@ -69,17 +69,17 @@ void StreamFileAllocationEntry::prepareForNextAction
   if(getNextCommand()) {
     // Reset download start time of PeerStat because it is started
     // before file allocation begins.
-    const SharedHandle<DownloadContext>& dctx =
+    const std::shared_ptr<DownloadContext>& dctx =
       getRequestGroup()->getDownloadContext();
-    const std::vector<SharedHandle<FileEntry> >& fileEntries =
+    const std::vector<std::shared_ptr<FileEntry> >& fileEntries =
       dctx->getFileEntries();
-    for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
+    for(std::vector<std::shared_ptr<FileEntry> >::const_iterator i =
           fileEntries.begin(), eoi = fileEntries.end(); i != eoi; ++i) {
       const FileEntry::InFlightRequestSet& reqs =
         (*i)->getInFlightRequests();
       for(FileEntry::InFlightRequestSet::iterator j =
             reqs.begin(), eoj = reqs.end(); j != eoj; ++j) {
-        const SharedHandle<PeerStat>& peerStat = (*j)->getPeerStat();
+        const std::shared_ptr<PeerStat>& peerStat = (*j)->getPeerStat();
         if(peerStat) {
           peerStat->downloadStart();
         }

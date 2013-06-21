@@ -36,9 +36,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION(ServerStatManTest);
 
 void ServerStatManTest::testAddAndFind()
 {
-  SharedHandle<ServerStat> localhost_http(new ServerStat("localhost", "http"));
-  SharedHandle<ServerStat> localhost_ftp(new ServerStat("localhost", "ftp"));
-  SharedHandle<ServerStat> mirror(new ServerStat("mirror", "http"));
+  std::shared_ptr<ServerStat> localhost_http(new ServerStat("localhost", "http"));
+  std::shared_ptr<ServerStat> localhost_ftp(new ServerStat("localhost", "ftp"));
+  std::shared_ptr<ServerStat> mirror(new ServerStat("mirror", "http"));
 
   ServerStatMan ssm;
   CPPUNIT_ASSERT(ssm.add(localhost_http));
@@ -47,29 +47,29 @@ void ServerStatManTest::testAddAndFind()
   CPPUNIT_ASSERT(ssm.add(mirror));
 
   {
-    SharedHandle<ServerStat> r = ssm.find("localhost", "http");
+    std::shared_ptr<ServerStat> r = ssm.find("localhost", "http");
     CPPUNIT_ASSERT(r);
     CPPUNIT_ASSERT_EQUAL(std::string("localhost"), r->getHostname());
     CPPUNIT_ASSERT_EQUAL(std::string("http"), r->getProtocol());
   }
   {
-    SharedHandle<ServerStat> r = ssm.find("mirror", "ftp");
+    std::shared_ptr<ServerStat> r = ssm.find("mirror", "ftp");
     CPPUNIT_ASSERT(!r);
   }
 }
 
 void ServerStatManTest::testSave()
 {
-  SharedHandle<ServerStat> localhost_http(new ServerStat("localhost", "http"));
+  std::shared_ptr<ServerStat> localhost_http(new ServerStat("localhost", "http"));
   localhost_http->setDownloadSpeed(25000);
   localhost_http->setSingleConnectionAvgSpeed(100);
   localhost_http->setMultiConnectionAvgSpeed(101);
   localhost_http->setCounter(5);
   localhost_http->setLastUpdated(Time(1210000000));
-  SharedHandle<ServerStat> localhost_ftp(new ServerStat("localhost", "ftp"));
+  std::shared_ptr<ServerStat> localhost_ftp(new ServerStat("localhost", "ftp"));
   localhost_ftp->setDownloadSpeed(30000);
   localhost_ftp->setLastUpdated(Time(1210000001));
-  SharedHandle<ServerStat> mirror(new ServerStat("mirror", "http"));
+  std::shared_ptr<ServerStat> mirror(new ServerStat("mirror", "http"));
   mirror->setDownloadSpeed(0);
   mirror->setStatus(ServerStat::A2_ERROR);
   mirror->setLastUpdated(Time(1210000002));
@@ -123,7 +123,7 @@ void ServerStatManTest::testLoad()
   ServerStatMan ssm;
   CPPUNIT_ASSERT(ssm.load(filename));
 
-  SharedHandle<ServerStat> localhost_http = ssm.find("localhost", "http");
+  std::shared_ptr<ServerStat> localhost_http = ssm.find("localhost", "http");
   CPPUNIT_ASSERT(localhost_http);
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), localhost_http->getHostname());
   CPPUNIT_ASSERT_EQUAL(std::string("http"), localhost_http->getProtocol());
@@ -135,7 +135,7 @@ void ServerStatManTest::testLoad()
                        localhost_http->getLastUpdated().getTime());
   CPPUNIT_ASSERT_EQUAL(ServerStat::OK, localhost_http->getStatus());
 
-  SharedHandle<ServerStat> mirror = ssm.find("mirror", "http");
+  std::shared_ptr<ServerStat> mirror = ssm.find("mirror", "http");
   CPPUNIT_ASSERT(mirror);
   CPPUNIT_ASSERT_EQUAL(ServerStat::A2_ERROR, mirror->getStatus());
 }
@@ -143,13 +143,13 @@ void ServerStatManTest::testLoad()
 void ServerStatManTest::testRemoveStaleServerStat()
 {
   Time now;
-  SharedHandle<ServerStat> localhost_http(new ServerStat("localhost", "http"));
+  std::shared_ptr<ServerStat> localhost_http(new ServerStat("localhost", "http"));
   localhost_http->setDownloadSpeed(25000);
   localhost_http->setLastUpdated(now);
-  SharedHandle<ServerStat> localhost_ftp(new ServerStat("localhost", "ftp"));
+  std::shared_ptr<ServerStat> localhost_ftp(new ServerStat("localhost", "ftp"));
   localhost_ftp->setDownloadSpeed(30000);
   localhost_ftp->setLastUpdated(Time(1210000001));
-  SharedHandle<ServerStat> mirror(new ServerStat("mirror", "http"));
+  std::shared_ptr<ServerStat> mirror(new ServerStat("mirror", "http"));
   mirror->setDownloadSpeed(0);
   mirror->setStatus(ServerStat::A2_ERROR);
   mirror->setLastUpdated(Time(1210000002));

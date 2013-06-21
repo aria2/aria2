@@ -39,8 +39,7 @@
 
 #include <stdint.h>
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -83,7 +82,7 @@ public:
 
   virtual void clear(WrDiskCache* diskCache) = 0;
 
-  virtual SharedHandle<Piece> getPiece() const = 0;
+  virtual std::shared_ptr<Piece> getPiece() const = 0;
 
   bool operator==(const Segment& segment) const
   {

@@ -38,8 +38,7 @@
 #include "common.h"
 
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -49,7 +48,7 @@ class AuthResolver {
 public:
   virtual ~AuthResolver() {}
 
-  virtual SharedHandle<AuthConfig> resolveAuthConfig(const std::string& hostname) = 0;
+  virtual std::shared_ptr<AuthConfig> resolveAuthConfig(const std::string& hostname) = 0;
 };
 
 } // namespace aria2

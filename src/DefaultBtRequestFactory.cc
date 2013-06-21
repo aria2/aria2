@@ -59,7 +59,7 @@ DefaultBtRequestFactory::DefaultBtRequestFactory()
 
 DefaultBtRequestFactory::~DefaultBtRequestFactory() {}
 
-void DefaultBtRequestFactory::addTargetPiece(const SharedHandle<Piece>& piece)
+void DefaultBtRequestFactory::addTargetPiece(const std::shared_ptr<Piece>& piece)
 {
   pieces_.push_back(piece);
 }
@@ -73,7 +73,7 @@ public:
   AbortCompletedPieceRequest(BtMessageDispatcher* dispatcher):
     dispatcher_(dispatcher) {}
 
-  void operator()(const SharedHandle<Piece>& piece)
+  void operator()(const std::shared_ptr<Piece>& piece)
   {
     if(piece->pieceComplete()) {
       dispatcher_->doAbortOutstandingRequestAction(piece);
@@ -91,7 +91,7 @@ void DefaultBtRequestFactory::removeCompletedPiece() {
 }
 
 void DefaultBtRequestFactory::removeTargetPiece
-(const SharedHandle<Piece>& piece)
+(const std::shared_ptr<Piece>& piece)
 {
   pieces_.erase(std::remove_if(pieces_.begin(), pieces_.end(),
                                derefEqual(piece)),
@@ -103,19 +103,19 @@ void DefaultBtRequestFactory::removeTargetPiece
 namespace {
 class ProcessChokedPiece {
 private:
-  SharedHandle<Peer> peer_;
-  SharedHandle<PieceStorage> pieceStorage_;
+  std::shared_ptr<Peer> peer_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
   cuid_t cuid_;
 public:
-  ProcessChokedPiece(const SharedHandle<Peer>& peer,
-                     const SharedHandle<PieceStorage>& pieceStorage,
+  ProcessChokedPiece(const std::shared_ptr<Peer>& peer,
+                     const std::shared_ptr<PieceStorage>& pieceStorage,
                      cuid_t cuid):
     peer_(peer),
     pieceStorage_(pieceStorage),
     cuid_(cuid)
   {}
 
-  void operator()(const SharedHandle<Piece>& piece)
+  void operator()(const std::shared_ptr<Piece>& piece)
   {
     if(!peer_->isInPeerAllowedIndexSet(piece->getIndex())) {
       pieceStorage_->cancelPiece(piece, cuid_);
@@ -127,11 +127,11 @@ public:
 namespace {
 class FindChokedPiece {
 private:
-  SharedHandle<Peer> peer_;
+  std::shared_ptr<Peer> peer_;
 public:
-  FindChokedPiece(const SharedHandle<Peer>& peer):peer_(peer) {}
+  FindChokedPiece(const std::shared_ptr<Peer>& peer):peer_(peer) {}
 
-  bool operator()(const SharedHandle<Piece>& piece)
+  bool operator()(const std::shared_ptr<Piece>& piece)
   {
     return !peer_->isInPeerAllowedIndexSet(piece->getIndex());
   }
@@ -148,7 +148,7 @@ void DefaultBtRequestFactory::doChokedAction()
 }
 
 void DefaultBtRequestFactory::removeAllTargetPiece() {
-  for(std::deque<SharedHandle<Piece> >::iterator itr = pieces_.begin(),
+  for(std::deque<std::shared_ptr<Piece> >::iterator itr = pieces_.begin(),
         eoi = pieces_.end(); itr != eoi; ++itr) {
     dispatcher_->doAbortOutstandingRequestAction(*itr);
     pieceStorage_->cancelPiece(*itr, cuid_);
@@ -157,7 +157,7 @@ void DefaultBtRequestFactory::removeAllTargetPiece() {
 }
 
 void DefaultBtRequestFactory::createRequestMessages
-(std::vector<SharedHandle<BtMessage> >& requests, size_t max)
+(std::vector<std::shared_ptr<BtMessage> >& requests, size_t max)
 {
   if(requests.size() >= max) {
     return;
@@ -165,9 +165,9 @@ void DefaultBtRequestFactory::createRequestMessages
   size_t getnum = max-requests.size();
   std::vector<size_t> blockIndexes;
   blockIndexes.reserve(getnum);
-  for(std::deque<SharedHandle<Piece> >::iterator itr = pieces_.begin(),
+  for(std::deque<std::shared_ptr<Piece> >::iterator itr = pieces_.begin(),
         eoi = pieces_.end(); itr != eoi && getnum; ++itr) {
-    SharedHandle<Piece>& piece = *itr;
+    std::shared_ptr<Piece>& piece = *itr;
     if(piece->getMissingUnusedBlockIndex(blockIndexes, getnum)) {
       getnum -= blockIndexes.size();
       for(std::vector<size_t>::const_iterator i = blockIndexes.begin(),
@@ -187,11 +187,11 @@ void DefaultBtRequestFactory::createRequestMessages
 }
 
 void DefaultBtRequestFactory::createRequestMessagesOnEndGame
-(std::vector<SharedHandle<BtMessage> >& requests, size_t max)
+(std::vector<std::shared_ptr<BtMessage> >& requests, size_t max)
 {
-  for(std::deque<SharedHandle<Piece> >::iterator itr = pieces_.begin(),
+  for(std::deque<std::shared_ptr<Piece> >::iterator itr = pieces_.begin(),
         eoi = pieces_.end(); itr != eoi && requests.size() < max; ++itr) {
-    SharedHandle<Piece>& piece = *itr;
+    std::shared_ptr<Piece>& piece = *itr;
     const size_t mislen = piece->getBitfieldLength();
     array_ptr<unsigned char> misbitfield(new unsigned char[mislen]);
 
@@ -242,7 +242,7 @@ public:
     return numMissingBlock_;
   }
 
-  void operator()(const SharedHandle<Piece>& piece)
+  void operator()(const std::shared_ptr<Piece>& piece)
   {
     numMissingBlock_ += piece->countMissingBlock();
   }
@@ -263,12 +263,12 @@ void DefaultBtRequestFactory::getTargetPieceIndexes
 }
 
 void DefaultBtRequestFactory::setPieceStorage
-(const SharedHandle<PieceStorage>& pieceStorage)
+(const std::shared_ptr<PieceStorage>& pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }
 
-void DefaultBtRequestFactory::setPeer(const SharedHandle<Peer>& peer)
+void DefaultBtRequestFactory::setPeer(const std::shared_ptr<Peer>& peer)
 {
   peer_ = peer;
 }

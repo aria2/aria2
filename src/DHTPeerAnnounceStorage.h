@@ -40,8 +40,7 @@
 #include <set>
 #include <vector>
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -54,18 +53,18 @@ class DHTPeerAnnounceStorage {
 private:
   class InfoHashLess {
   public:
-    bool operator()(const SharedHandle<DHTPeerAnnounceEntry>& lhs,
-                    const SharedHandle<DHTPeerAnnounceEntry>& rhs);
+    bool operator()(const std::shared_ptr<DHTPeerAnnounceEntry>& lhs,
+                    const std::shared_ptr<DHTPeerAnnounceEntry>& rhs);
   };
-  typedef std::set<SharedHandle<DHTPeerAnnounceEntry>, InfoHashLess>
+  typedef std::set<std::shared_ptr<DHTPeerAnnounceEntry>, InfoHashLess>
   DHTPeerAnnounceEntrySet;
   DHTPeerAnnounceEntrySet entries_;
 
-  SharedHandle<DHTPeerAnnounceEntry> getPeerAnnounceEntry(const unsigned char* infoHash);
+  std::shared_ptr<DHTPeerAnnounceEntry> getPeerAnnounceEntry(const unsigned char* infoHash);
 
-  SharedHandle<DHTTaskQueue> taskQueue_;
+  std::shared_ptr<DHTTaskQueue> taskQueue_;
 
-  SharedHandle<DHTTaskFactory> taskFactory_;
+  std::shared_ptr<DHTTaskFactory> taskFactory_;
 public:
   DHTPeerAnnounceStorage();
 
@@ -76,7 +75,7 @@ public:
 
   bool contains(const unsigned char* infoHash) const;
 
-  void getPeers(std::vector<SharedHandle<Peer> >& peers,
+  void getPeers(std::vector<std::shared_ptr<Peer> >& peers,
                 const unsigned char* infoHash);
 
   // drop peer announce entry which is not updated in the past
@@ -88,9 +87,9 @@ public:
   // are excluded from announce.
   void announcePeer();
 
-  void setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue);
+  void setTaskQueue(const std::shared_ptr<DHTTaskQueue>& taskQueue);
 
-  void setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory);
+  void setTaskFactory(const std::shared_ptr<DHTTaskFactory>& taskFactory);
 };
 
 } // namespace aria2

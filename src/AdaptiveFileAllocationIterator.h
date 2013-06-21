@@ -37,6 +37,8 @@
 
 #include "FileAllocationIterator.h"
 
+#include <memory>
+
 namespace aria2 {
 
 class BinaryStream;
@@ -44,7 +46,7 @@ class BinaryStream;
 class AdaptiveFileAllocationIterator:public FileAllocationIterator
 {
 private:
-  SharedHandle<FileAllocationIterator> allocator_;
+  std::shared_ptr<FileAllocationIterator> allocator_;
 
   BinaryStream* stream_;
 

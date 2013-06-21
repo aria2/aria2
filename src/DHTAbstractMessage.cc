@@ -46,8 +46,8 @@
 
 namespace aria2 {
 
-DHTAbstractMessage::DHTAbstractMessage(const SharedHandle<DHTNode>& localNode,
-                                       const SharedHandle<DHTNode>& remoteNode,
+DHTAbstractMessage::DHTAbstractMessage(const std::shared_ptr<DHTNode>& localNode,
+                                       const std::shared_ptr<DHTNode>& remoteNode,
                                        const std::string& transactionID):
   DHTMessage(localNode, remoteNode, transactionID),
   connection_(0),

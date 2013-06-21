@@ -63,9 +63,9 @@ OptionHandlerException::OptionHandlerException
 
 OptionHandlerException::~OptionHandlerException() throw() {}
 
-SharedHandle<Exception> OptionHandlerException::copy() const
+std::shared_ptr<Exception> OptionHandlerException::copy() const
 {
-  SharedHandle<Exception> e(new OptionHandlerException(*this));
+  std::shared_ptr<Exception> e(new OptionHandlerException(*this));
   return e;
 }
 

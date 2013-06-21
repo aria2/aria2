@@ -38,8 +38,7 @@
 #include "common.h"
 
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -53,8 +52,8 @@ namespace message_digest {
  * Returns raw digest string, not hex digest
  */
 std::string digest
-(const SharedHandle<MessageDigest>& ctx,
- const SharedHandle<BinaryStream>& bs,
+(const std::shared_ptr<MessageDigest>& ctx,
+ const std::shared_ptr<BinaryStream>& bs,
  int64_t offset, int64_t length);
 
 /**
@@ -63,7 +62,7 @@ std::string digest
  */
 void digest
 (unsigned char* md, size_t mdLength,
- const SharedHandle<MessageDigest>& ctx,
+ const std::shared_ptr<MessageDigest>& ctx,
  const void* data, size_t length);
 
 } // namespace message_digest

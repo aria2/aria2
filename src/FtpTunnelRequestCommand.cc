@@ -43,12 +43,12 @@ namespace aria2 {
 
 FtpTunnelRequestCommand::FtpTunnelRequestCommand
 (cuid_t cuid,
- const SharedHandle<Request>& req,
- const SharedHandle<FileEntry>& fileEntry,
+ const std::shared_ptr<Request>& req,
+ const std::shared_ptr<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  DownloadEngine* e,
- const SharedHandle<Request>& proxyRequest,
- const SharedHandle<SocketCore>& s)
+ const std::shared_ptr<Request>& proxyRequest,
+ const std::shared_ptr<SocketCore>& s)
   :
   AbstractProxyRequestCommand(cuid, req, fileEntry, requestGroup, e,
                               proxyRequest, s)

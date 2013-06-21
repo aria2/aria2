@@ -72,7 +72,7 @@ bool HttpListenCommand::execute()
   }
   try {
     if(serverSocket_->isReadable(0)) {
-      SharedHandle<SocketCore> socket(serverSocket_->acceptConnection());
+      std::shared_ptr<SocketCore> socket(serverSocket_->acceptConnection());
       socket->setTcpNodelay(true);
       std::pair<std::string, uint16_t> peerInfo;
       socket->getPeerInfo(peerInfo);

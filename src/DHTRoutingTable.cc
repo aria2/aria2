@@ -49,10 +49,10 @@
 
 namespace aria2 {
 
-DHTRoutingTable::DHTRoutingTable(const SharedHandle<DHTNode>& localNode)
+DHTRoutingTable::DHTRoutingTable(const std::shared_ptr<DHTNode>& localNode)
   : localNode_(localNode),
     root_(new DHTBucketTreeNode
-          (SharedHandle<DHTBucket>(new DHTBucket(localNode_)))),
+          (std::shared_ptr<DHTBucket>(new DHTBucket(localNode_)))),
     numBucket_(1)
 {}
 
@@ -61,17 +61,17 @@ DHTRoutingTable::~DHTRoutingTable()
   delete root_;
 }
 
-bool DHTRoutingTable::addNode(const SharedHandle<DHTNode>& node)
+bool DHTRoutingTable::addNode(const std::shared_ptr<DHTNode>& node)
 {
   return addNode(node, false);
 }
 
-bool DHTRoutingTable::addGoodNode(const SharedHandle<DHTNode>& node)
+bool DHTRoutingTable::addGoodNode(const std::shared_ptr<DHTNode>& node)
 {
   return addNode(node, true);
 }
 
-bool DHTRoutingTable::addNode(const SharedHandle<DHTNode>& node, bool good)
+bool DHTRoutingTable::addNode(const std::shared_ptr<DHTNode>& node, bool good)
 {
   A2_LOG_DEBUG(fmt("Trying to add node:%s", node->toString().c_str()));
   if(*localNode_ == *node) {
@@ -80,7 +80,7 @@ bool DHTRoutingTable::addNode(const SharedHandle<DHTNode>& node, bool good)
   }
   DHTBucketTreeNode* treeNode = dht::findTreeNodeFor(root_, node->getID());
   while(1) {
-    const SharedHandle<DHTBucket>& bucket = treeNode->getBucket();
+    const std::shared_ptr<DHTBucket>& bucket = treeNode->getBucket();
     if(bucket->addNode(node)) {
       A2_LOG_DEBUG("Added DHTNode.");
       return true;
@@ -107,7 +107,7 @@ bool DHTRoutingTable::addNode(const SharedHandle<DHTNode>& node, bool good)
 }
 
 void DHTRoutingTable::getClosestKNodes
-(std::vector<SharedHandle<DHTNode> >& nodes,
+(std::vector<std::shared_ptr<DHTNode> >& nodes,
  const unsigned char* key) const
 {
   dht::findClosestKNodes(nodes, root_, key);
@@ -120,56 +120,56 @@ int DHTRoutingTable::getNumBucket() const
 
 void DHTRoutingTable::showBuckets() const
 {/*
-   for(std::deque<SharedHandle<DHTBucket> >::const_iterator itr = buckets_.begin(); itr != buckets_.end(); ++itr) {
+   for(std::deque<std::shared_ptr<DHTBucket> >::const_iterator itr = buckets_.begin(); itr != buckets_.end(); ++itr) {
    cerr << "prefix = " << (*itr)->getPrefixLength() << ", "
    << "nodes = " << (*itr)->countNode() << endl;
    }
  */
 }
 
-SharedHandle<DHTBucket> DHTRoutingTable::getBucketFor(const unsigned char* nodeID) const
+std::shared_ptr<DHTBucket> DHTRoutingTable::getBucketFor(const unsigned char* nodeID) const
 {
   return dht::findBucketFor(root_, nodeID);
 }
 
-SharedHandle<DHTBucket> DHTRoutingTable::getBucketFor(const SharedHandle<DHTNode>& node) const
+std::shared_ptr<DHTBucket> DHTRoutingTable::getBucketFor(const std::shared_ptr<DHTNode>& node) const
 {
   return getBucketFor(node->getID());
 }
 
-SharedHandle<DHTNode> DHTRoutingTable::getNode(const unsigned char* nodeID, const std::string& ipaddr, uint16_t port) const
+std::shared_ptr<DHTNode> DHTRoutingTable::getNode(const unsigned char* nodeID, const std::string& ipaddr, uint16_t port) const
 {
-  SharedHandle<DHTBucket> bucket = getBucketFor(nodeID);
+  std::shared_ptr<DHTBucket> bucket = getBucketFor(nodeID);
   return bucket->getNode(nodeID, ipaddr, port);
 }
 
-void DHTRoutingTable::dropNode(const SharedHandle<DHTNode>& node)
+void DHTRoutingTable::dropNode(const std::shared_ptr<DHTNode>& node)
 {
   getBucketFor(node)->dropNode(node);
 }
 /*
-  void DHTRoutingTable::moveBucketHead(const SharedHandle<DHTNode>& node)
+  void DHTRoutingTable::moveBucketHead(const std::shared_ptr<DHTNode>& node)
   {
   getBucketFor(node)->moveToHead(node);
   }
 */
-void DHTRoutingTable::moveBucketTail(const SharedHandle<DHTNode>& node)
+void DHTRoutingTable::moveBucketTail(const std::shared_ptr<DHTNode>& node)
 {
   getBucketFor(node)->moveToTail(node);
 }
 
 void DHTRoutingTable::getBuckets
-(std::vector<SharedHandle<DHTBucket> >& buckets) const
+(std::vector<std::shared_ptr<DHTBucket> >& buckets) const
 {
   dht::enumerateBucket(buckets, root_);
 }
 
-void DHTRoutingTable::setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue)
+void DHTRoutingTable::setTaskQueue(const std::shared_ptr<DHTTaskQueue>& taskQueue)
 {
   taskQueue_ = taskQueue;
 }
 
-void DHTRoutingTable::setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory)
+void DHTRoutingTable::setTaskFactory(const std::shared_ptr<DHTTaskFactory>& taskFactory)
 {
   taskFactory_ = taskFactory;
 }

@@ -12,16 +12,16 @@ namespace aria2 {
 
 class MockBtMessageDispatcher : public BtMessageDispatcher {
 public:
-  std::deque<SharedHandle<BtMessage> > messageQueue;
+  std::deque<std::shared_ptr<BtMessage> > messageQueue;
 
   virtual ~MockBtMessageDispatcher() {}
 
-  virtual void addMessageToQueue(const SharedHandle<BtMessage>& btMessage) {
+  virtual void addMessageToQueue(const std::shared_ptr<BtMessage>& btMessage) {
     messageQueue.push_back(btMessage);
   }
 
   virtual void addMessageToQueue
-  (const std::vector<SharedHandle<BtMessage> >& btMessages)
+  (const std::vector<std::shared_ptr<BtMessage> >& btMessages)
   {
     std::copy(btMessages.begin(), btMessages.end(), back_inserter(messageQueue));
   }
@@ -31,9 +31,9 @@ public:
   virtual void doCancelSendingPieceAction
   (size_t index, int32_t begin, int32_t length) {}
 
-  virtual void doCancelSendingPieceAction(const SharedHandle<Piece>& piece) {}
+  virtual void doCancelSendingPieceAction(const std::shared_ptr<Piece>& piece) {}
 
-  virtual void doAbortOutstandingRequestAction(const SharedHandle<Piece>& piece) {}
+  virtual void doAbortOutstandingRequestAction(const std::shared_ptr<Piece>& piece) {}
 
   virtual void doChokedAction() {}
 

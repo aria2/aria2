@@ -34,7 +34,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BtInterestedMessageTest);
 void BtInterestedMessageTest::testCreate() {
   unsigned char msg[5];
   bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 2);
-  SharedHandle<BtInterestedMessage> pm
+  std::shared_ptr<BtInterestedMessage> pm
     (BtInterestedMessage::create(&msg[4], 1));
   CPPUNIT_ASSERT_EQUAL((uint8_t)2, pm->getId());
 
@@ -67,11 +67,11 @@ void BtInterestedMessageTest::testCreateMessage() {
 
 void BtInterestedMessageTest::testDoReceivedAction() {
   BtInterestedMessage msg;
-  SharedHandle<Peer> peer(new Peer("host", 6969));
+  std::shared_ptr<Peer> peer(new Peer("host", 6969));
   peer->allocateSessionResource(1024, 1024*1024);
   msg.setPeer(peer);
 
-  SharedHandle<MockPeerStorage> peerStorage(new MockPeerStorage());
+  std::shared_ptr<MockPeerStorage> peerStorage(new MockPeerStorage());
 
   msg.setPeerStorage(peerStorage);
 
@@ -87,11 +87,11 @@ void BtInterestedMessageTest::testDoReceivedAction() {
 
 void BtInterestedMessageTest::testOnSendComplete() {
   BtInterestedMessage msg;
-  SharedHandle<Peer> peer(new Peer("host", 6969));
+  std::shared_ptr<Peer> peer(new Peer("host", 6969));
   peer->allocateSessionResource(1024, 1024*1024);
   msg.setPeer(peer);
   CPPUNIT_ASSERT(!peer->amInterested());
-  SharedHandle<ProgressUpdate> pu(msg.getProgressUpdate());
+  std::shared_ptr<ProgressUpdate> pu(msg.getProgressUpdate());
   pu->update(0, true);
   CPPUNIT_ASSERT(peer->amInterested());
 }

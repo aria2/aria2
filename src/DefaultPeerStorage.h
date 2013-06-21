@@ -51,20 +51,20 @@ class PieceStorage;
 
 class DefaultPeerStorage : public PeerStorage {
 private:
-  SharedHandle<BtRuntime> btRuntime_;
-  SharedHandle<PieceStorage> pieceStorage_;
+  std::shared_ptr<BtRuntime> btRuntime_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
   size_t maxPeerListSize_;
 
   // This contains ip address and port pair and is used to ensure that
   // no duplicate peers are stored.
   std::set<std::pair<std::string, uint16_t> > uniqPeers_;
   // Unused (not connected) peers, sorted by last added.
-  std::deque<SharedHandle<Peer> > unusedPeers_;
+  std::deque<std::shared_ptr<Peer> > unusedPeers_;
   // The set of used peers. Some of them are not connected yet. To
   // know it is connected or not, call Peer::isActive().
   PeerSet usedPeers_;
 
-  std::deque<SharedHandle<Peer> > droppedPeers_;
+  std::deque<std::shared_ptr<Peer> > droppedPeers_;
 
   BtSeederStateChoke* seederStateChoke_;
   BtLeecherStateChoke* leecherStateChoke_;
@@ -74,29 +74,29 @@ private:
   std::map<std::string, time_t> badPeers_;
   Timer lastBadPeerCleaned_;
 
-  bool isPeerAlreadyAdded(const SharedHandle<Peer>& peer);
-  void addUniqPeer(const SharedHandle<Peer>& peer);
+  bool isPeerAlreadyAdded(const std::shared_ptr<Peer>& peer);
+  void addUniqPeer(const std::shared_ptr<Peer>& peer);
 
-  void addDroppedPeer(const SharedHandle<Peer>& peer);
+  void addDroppedPeer(const std::shared_ptr<Peer>& peer);
 public:
   DefaultPeerStorage();
 
   virtual ~DefaultPeerStorage();
 
   // TODO We need addAndCheckoutPeer for incoming peers
-  virtual bool addPeer(const SharedHandle<Peer>& peer);
+  virtual bool addPeer(const std::shared_ptr<Peer>& peer);
 
   virtual size_t countAllPeer() const;
 
-  SharedHandle<Peer> getPeer(const std::string& ipaddr, uint16_t port) const;
+  std::shared_ptr<Peer> getPeer(const std::string& ipaddr, uint16_t port) const;
 
-  virtual void addPeer(const std::vector<SharedHandle<Peer> >& peers);
+  virtual void addPeer(const std::vector<std::shared_ptr<Peer> >& peers);
 
-  const std::deque<SharedHandle<Peer> >& getUnusedPeers();
+  const std::deque<std::shared_ptr<Peer> >& getUnusedPeers();
 
   virtual const PeerSet& getUsedPeers();
 
-  virtual const std::deque<SharedHandle<Peer> >& getDroppedPeers();
+  virtual const std::deque<std::shared_ptr<Peer> >& getDroppedPeers();
 
   virtual bool isPeerAvailable();
 
@@ -104,9 +104,9 @@ public:
 
   virtual void addBadPeer(const std::string& ipaddr);
 
-  virtual SharedHandle<Peer> checkoutPeer(cuid_t cuid);
+  virtual std::shared_ptr<Peer> checkoutPeer(cuid_t cuid);
 
-  virtual void returnPeer(const SharedHandle<Peer>& peer);
+  virtual void returnPeer(const std::shared_ptr<Peer>& peer);
 
   virtual bool chokeRoundIntervalElapsed();
 
@@ -114,13 +114,13 @@ public:
 
   void deleteUnusedPeer(size_t delSize);
 
-  void onErasingPeer(const SharedHandle<Peer>& peer);
+  void onErasingPeer(const std::shared_ptr<Peer>& peer);
 
-  void onReturningPeer(const SharedHandle<Peer>& peer);
+  void onReturningPeer(const std::shared_ptr<Peer>& peer);
 
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+  void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage);
 
-  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
+  void setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime);
 
   void setMaxPeerListSize(size_t maxPeerListSize)
   {

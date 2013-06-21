@@ -237,7 +237,7 @@ namespace {
 struct KeyFunc {
   int n;
   KeyFunc(int n):n(n) {}
-  int operator()(const SharedHandle<std::string>& x)
+  int operator()(const std::shared_ptr<std::string>& x)
   {
     return n++;
   }
@@ -246,14 +246,14 @@ struct KeyFunc {
 
 void IndexedListTest::testInsert_keyFunc()
 {
-  SharedHandle<std::string> s[] = {
-    SharedHandle<std::string>(new std::string("a")),
-    SharedHandle<std::string>(new std::string("b")),
-    SharedHandle<std::string>(new std::string("c")),
-    SharedHandle<std::string>(new std::string("d"))
+  std::shared_ptr<std::string> s[] = {
+    std::shared_ptr<std::string>(new std::string("a")),
+    std::shared_ptr<std::string>(new std::string("b")),
+    std::shared_ptr<std::string>(new std::string("c")),
+    std::shared_ptr<std::string>(new std::string("d"))
   };
   size_t slen = sizeof(s)/sizeof(s[0]);
-  IndexedList<int, SharedHandle<std::string> > list;
+  IndexedList<int, std::shared_ptr<std::string> > list;
   list.insert(list.begin(), KeyFunc(0), vbegin(s), vend(s));
   CPPUNIT_ASSERT_EQUAL((size_t)slen, list.size());
   for(size_t i = 0; i < slen; ++i) {
@@ -264,7 +264,7 @@ void IndexedListTest::testInsert_keyFunc()
   for(size_t i = slen; i < slen*2; ++i) {
     CPPUNIT_ASSERT_EQUAL(*s[i - slen], *list.get(i));
   }
-  IndexedList<int, SharedHandle<std::string> >::iterator itr;
+  IndexedList<int, std::shared_ptr<std::string> >::iterator itr;
   itr = list.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("a"), *(*itr++));
   CPPUNIT_ASSERT_EQUAL(std::string("b"), *(*itr++));

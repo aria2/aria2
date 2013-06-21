@@ -39,8 +39,8 @@
 
 #include <stdint.h>
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "TimeA2.h"
 #include "Command.h"
 
@@ -56,8 +56,8 @@ class Checksum;
 class HttpResponse {
 private:
   cuid_t cuid_;
-  SharedHandle<HttpRequest> httpRequest_;
-  SharedHandle<HttpHeader> httpHeader_;
+  std::shared_ptr<HttpRequest> httpRequest_;
+  std::shared_ptr<HttpHeader> httpHeader_;
 public:
   HttpResponse();
 
@@ -88,13 +88,13 @@ public:
 
   const std::string& getTransferEncoding() const;
 
-  SharedHandle<StreamFilter> getTransferEncodingStreamFilter() const;
+  std::shared_ptr<StreamFilter> getTransferEncodingStreamFilter() const;
 
   bool isContentEncodingSpecified() const;
 
   const std::string& getContentEncoding() const;
 
-  SharedHandle<StreamFilter> getContentEncodingStreamFilter() const;
+  std::shared_ptr<StreamFilter> getContentEncodingStreamFilter() const;
 
   int64_t getContentLength() const;
 
@@ -103,18 +103,18 @@ public:
   // Returns type "/" subtype. The parameter is removed.
   std::string getContentType() const;
 
-  void setHttpHeader(const SharedHandle<HttpHeader>& httpHeader);
+  void setHttpHeader(const std::shared_ptr<HttpHeader>& httpHeader);
 
-  const SharedHandle<HttpHeader>& getHttpHeader() const
+  const std::shared_ptr<HttpHeader>& getHttpHeader() const
   {
     return httpHeader_;
   }
 
   int getStatusCode() const;
 
-  void setHttpRequest(const SharedHandle<HttpRequest>& httpRequest);
+  void setHttpRequest(const std::shared_ptr<HttpRequest>& httpRequest);
 
-  const SharedHandle<HttpRequest>& getHttpRequest() const
+  const std::shared_ptr<HttpRequest>& getHttpRequest() const
   {
     return httpRequest_;
   }
@@ -130,7 +130,7 @@ public:
 
   void getMetalinKHttpEntries
   (std::vector<MetalinkHttpEntry>& result,
-   const SharedHandle<Option>& option) const;
+   const std::shared_ptr<Option>& option) const;
 #ifdef ENABLE_MESSAGE_DIGEST
   // Returns all digests specified in Digest header field.  Sort
   // strong algorithm first. Strength is defined in MessageDigest. If

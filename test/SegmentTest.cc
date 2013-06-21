@@ -30,7 +30,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( SegmentTest );
 
 void SegmentTest::testUpdateWrittenLength()
 {
-  SharedHandle<Piece> p(new Piece(0, 16*1024*10));
+  std::shared_ptr<Piece> p(new Piece(0, 16*1024*10));
   PiecedSegment s(16*1024*10, p);
   CPPUNIT_ASSERT_EQUAL(0, s.getWrittenLength());
 
@@ -44,7 +44,7 @@ void SegmentTest::testUpdateWrittenLength()
 
 void SegmentTest::testUpdateWrittenLength_lastPiece()
 {
-  SharedHandle<Piece> p(new Piece(0, 16*1024*9+1));
+  std::shared_ptr<Piece> p(new Piece(0, 16*1024*9+1));
   PiecedSegment s(16*1024*10, p);
 
   s.updateWrittenLength(p->getLength());
@@ -53,7 +53,7 @@ void SegmentTest::testUpdateWrittenLength_lastPiece()
 
 void SegmentTest::testUpdateWrittenLength_incompleteLastPiece()
 {
-  SharedHandle<Piece> p(new Piece(0, 16*1024*9+2));
+  std::shared_ptr<Piece> p(new Piece(0, 16*1024*9+2));
   PiecedSegment s(16*1024*10, p);
 
   s.updateWrittenLength(16*1024*9+1);
@@ -64,7 +64,7 @@ void SegmentTest::testUpdateWrittenLength_incompleteLastPiece()
 
 void SegmentTest::testClear()
 {
-  SharedHandle<Piece> p(new Piece(0, 16*1024*10));
+  std::shared_ptr<Piece> p(new Piece(0, 16*1024*10));
   PiecedSegment s(16*1024*10, p);
   s.updateWrittenLength(16*1024*10);
   CPPUNIT_ASSERT_EQUAL(16*1024*10, s.getWrittenLength());

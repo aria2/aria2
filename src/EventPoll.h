@@ -36,7 +36,9 @@
 #define D_EVENT_POLL_H
 
 #include "common.h"
-#include "SharedHandle.h"
+
+#include <memory>
+
 #include "a2time.h"
 #include "a2netcompat.h"
 
@@ -66,10 +68,10 @@ public:
                             EventType events) = 0;
 #ifdef ENABLE_ASYNC_DNS
 
-  virtual bool addNameResolver(const SharedHandle<AsyncNameResolver>& resolver,
+  virtual bool addNameResolver(const std::shared_ptr<AsyncNameResolver>& resolver,
                                Command* command) = 0;
   virtual bool deleteNameResolver
-  (const SharedHandle<AsyncNameResolver>& resolver, Command* command) = 0;
+  (const std::shared_ptr<AsyncNameResolver>& resolver, Command* command) = 0;
 #endif // ENABLE_ASYNC_DNS
 
 };

@@ -38,7 +38,6 @@
 #include <iterator>
 #include <algorithm>
 
-#include "SharedHandle.h"
 #include "a2io.h"
 #include "FeatureConfig.h"
 #ifdef ENABLE_MESSAGE_DIGEST
@@ -84,7 +83,7 @@ void showVersion() {
 
 void showUsage
 (const std::string& keyword,
- const SharedHandle<OptionParser>& oparser,
+ const std::shared_ptr<OptionParser>& oparser,
  const Console& out) {
   out->printf(_("Usage: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE |"
                 " METALINK_FILE]..."));

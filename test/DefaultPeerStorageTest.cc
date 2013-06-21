@@ -26,7 +26,7 @@ class DefaultPeerStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testAddBadPeer);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<BtRuntime> btRuntime;
+  std::shared_ptr<BtRuntime> btRuntime;
   Option* option;
 public:
   void setUp() {
@@ -57,11 +57,11 @@ void DefaultPeerStorageTest::testCountAllPeer()
 
   CPPUNIT_ASSERT_EQUAL((size_t)0, ps.countAllPeer());
   for(int i = 0; i < 2; ++i) {
-    SharedHandle<Peer> peer(new Peer("192.168.0.1", 6889+i));
+    std::shared_ptr<Peer> peer(new Peer("192.168.0.1", 6889+i));
     ps.addPeer(peer);
   }
   CPPUNIT_ASSERT_EQUAL((size_t)2, ps.countAllPeer());
-  SharedHandle<Peer> peer = ps.checkoutPeer(1);
+  std::shared_ptr<Peer> peer = ps.checkoutPeer(1);
   CPPUNIT_ASSERT(peer);
   CPPUNIT_ASSERT_EQUAL((size_t)2, ps.countAllPeer());
   ps.returnPeer(peer);
@@ -72,9 +72,9 @@ void DefaultPeerStorageTest::testDeleteUnusedPeer()
 {
   DefaultPeerStorage ps;
 
-  SharedHandle<Peer> peer1(new Peer("192.168.0.1", 6889));
-  SharedHandle<Peer> peer2(new Peer("192.168.0.2", 6889));
-  SharedHandle<Peer> peer3(new Peer("192.168.0.3", 6889));
+  std::shared_ptr<Peer> peer1(new Peer("192.168.0.1", 6889));
+  std::shared_ptr<Peer> peer2(new Peer("192.168.0.2", 6889));
+  std::shared_ptr<Peer> peer3(new Peer("192.168.0.3", 6889));
 
   CPPUNIT_ASSERT(ps.addPeer(peer1));
   CPPUNIT_ASSERT(ps.addPeer(peer2));
@@ -93,13 +93,13 @@ void DefaultPeerStorageTest::testDeleteUnusedPeer()
 void DefaultPeerStorageTest::testAddPeer()
 {
   DefaultPeerStorage ps;
-  SharedHandle<BtRuntime> btRuntime(new BtRuntime());
+  std::shared_ptr<BtRuntime> btRuntime(new BtRuntime());
   ps.setMaxPeerListSize(2);
   ps.setBtRuntime(btRuntime);
 
-  SharedHandle<Peer> peer1(new Peer("192.168.0.1", 6889));
-  SharedHandle<Peer> peer2(new Peer("192.168.0.2", 6889));
-  SharedHandle<Peer> peer3(new Peer("192.168.0.3", 6889));
+  std::shared_ptr<Peer> peer1(new Peer("192.168.0.1", 6889));
+  std::shared_ptr<Peer> peer2(new Peer("192.168.0.2", 6889));
+  std::shared_ptr<Peer> peer3(new Peer("192.168.0.3", 6889));
 
   CPPUNIT_ASSERT(ps.addPeer(peer1));
   CPPUNIT_ASSERT(ps.addPeer(peer2));
@@ -124,7 +124,7 @@ void DefaultPeerStorageTest::testAddPeer()
 void DefaultPeerStorageTest::testIsPeerAvailable() {
   DefaultPeerStorage ps;
   ps.setBtRuntime(btRuntime);
-  SharedHandle<Peer> peer1(new Peer("192.168.0.1", 6889));
+  std::shared_ptr<Peer> peer1(new Peer("192.168.0.1", 6889));
 
   CPPUNIT_ASSERT(!ps.isPeerAvailable());
   ps.addPeer(peer1);
@@ -136,17 +136,17 @@ void DefaultPeerStorageTest::testIsPeerAvailable() {
 void DefaultPeerStorageTest::testCheckoutPeer()
 {
   DefaultPeerStorage ps;
-  SharedHandle<Peer> peers[] = {
-    SharedHandle<Peer>(new Peer("192.168.0.1", 1000)),
-    SharedHandle<Peer>(new Peer("192.168.0.2", 1000)),
-    SharedHandle<Peer>(new Peer("192.168.0.3", 1000))
+  std::shared_ptr<Peer> peers[] = {
+    std::shared_ptr<Peer>(new Peer("192.168.0.1", 1000)),
+    std::shared_ptr<Peer>(new Peer("192.168.0.2", 1000)),
+    std::shared_ptr<Peer>(new Peer("192.168.0.3", 1000))
   };
   int len = A2_ARRAY_LEN(peers);
   for(int i = 0; i < len; ++i) {
     ps.addPeer(peers[i]);
   }
   for(int i = 0; i < len; ++i) {
-    SharedHandle<Peer> peer = ps.checkoutPeer(i+1);
+    std::shared_ptr<Peer> peer = ps.checkoutPeer(i+1);
     CPPUNIT_ASSERT_EQUAL(peers[len-i-1]->getIPAddress(), peer->getIPAddress());
   }
   CPPUNIT_ASSERT(!ps.checkoutPeer(len+1));
@@ -156,11 +156,11 @@ void DefaultPeerStorageTest::testReturnPeer()
 {
   DefaultPeerStorage ps;
 
-  SharedHandle<Peer> peer1(new Peer("192.168.0.1", 0));
+  std::shared_ptr<Peer> peer1(new Peer("192.168.0.1", 0));
   peer1->allocateSessionResource(1024*1024, 1024*1024*10);
-  SharedHandle<Peer> peer2(new Peer("192.168.0.2", 6889));
+  std::shared_ptr<Peer> peer2(new Peer("192.168.0.2", 6889));
   peer2->allocateSessionResource(1024*1024, 1024*1024*10);
-  SharedHandle<Peer> peer3(new Peer("192.168.0.1", 6889));
+  std::shared_ptr<Peer> peer3(new Peer("192.168.0.1", 6889));
   peer2->setDisconnectedGracefully(true);
   ps.addPeer(peer1);
   ps.addPeer(peer2);

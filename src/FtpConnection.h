@@ -39,8 +39,8 @@
 
 #include <utility>
 #include <string>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "TimeA2.h"
 #include "SocketBuffer.h"
 #include "Command.h"
@@ -56,10 +56,10 @@ class AuthConfig;
 class FtpConnection {
 private:
   cuid_t cuid_;
-  SharedHandle<SocketCore> socket_;
-  SharedHandle<Request> req_;
+  std::shared_ptr<SocketCore> socket_;
+  std::shared_ptr<Request> req_;
 
-  SharedHandle<AuthConfig> authConfig_;
+  std::shared_ptr<AuthConfig> authConfig_;
 
   const Option* option_;
 
@@ -77,9 +77,9 @@ private:
   //prepare for large banners
   static const size_t MAX_RECV_BUFFER = 65536;
 public:
-  FtpConnection(cuid_t cuid, const SharedHandle<SocketCore>& socket,
-                const SharedHandle<Request>& req,
-                const SharedHandle<AuthConfig>& authConfig,
+  FtpConnection(cuid_t cuid, const std::shared_ptr<SocketCore>& socket,
+                const std::shared_ptr<Request>& req,
+                const std::shared_ptr<AuthConfig>& authConfig,
                 const Option* op);
   ~FtpConnection();
   bool sendUser();
@@ -91,10 +91,10 @@ public:
   bool sendSize();
   bool sendEpsv();
   bool sendPasv();
-  SharedHandle<SocketCore> createServerSocket();
-  bool sendEprt(const SharedHandle<SocketCore>& serverSocket);
-  bool sendPort(const SharedHandle<SocketCore>& serverSocket);
-  bool sendRest(const SharedHandle<Segment>& segment);
+  std::shared_ptr<SocketCore> createServerSocket();
+  bool sendEprt(const std::shared_ptr<SocketCore>& serverSocket);
+  bool sendPort(const std::shared_ptr<SocketCore>& serverSocket);
+  bool sendRest(const std::shared_ptr<Segment>& segment);
   bool sendRetr();
 
   int receiveResponse();

@@ -123,7 +123,7 @@ Session* sessionNew(const KeyVals& options, const SessionConfig& config)
       delete session;
       return 0;
     }
-    const SharedHandle<DownloadEngine>& e =
+    const std::shared_ptr<DownloadEngine>& e =
       session->context->reqinfo->getDownloadEngine();
     if(config.keepRunning) {
       e->getRequestGroupMan()->setKeepRunning(true);
@@ -131,7 +131,7 @@ Session* sessionNew(const KeyVals& options, const SessionConfig& config)
       e->addCommand(new KeepRunningCommand(e->newCUID(), e.get()));
     }
     if(config.downloadEventCallback) {
-      SharedHandle<DownloadEventListener> listener
+      std::shared_ptr<DownloadEventListener> listener
         (new ApiCallbackDownloadEventListener(session,
                                               config.downloadEventCallback,
                                               config.userData));
@@ -154,14 +154,14 @@ int sessionFinal(Session* session)
 
 int run(Session* session, RUN_MODE mode)
 {
-  const SharedHandle<DownloadEngine>& e =
+  const std::shared_ptr<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
   return e->run(mode == RUN_ONCE);
 }
 
 int shutdown(Session* session, bool force)
 {
-  const SharedHandle<DownloadEngine>& e =
+  const std::shared_ptr<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
   if(force) {
     e->requestForceHalt();
@@ -200,7 +200,7 @@ void apiGatherOption
 (InputIterator first, InputIterator last,
  Pred pred,
  Option* option,
- const SharedHandle<OptionParser>& optionParser)
+ const std::shared_ptr<OptionParser>& optionParser)
 {
   for(; first != last; ++first) {
     const std::string& optionName = (*first).first;
@@ -217,7 +217,7 @@ void apiGatherOption
 
 namespace {
 void apiGatherRequestOption(Option* option, const KeyVals& options,
-                            const SharedHandle<OptionParser>& optionParser)
+                            const std::shared_ptr<OptionParser>& optionParser)
 {
   apiGatherOption(options.begin(), options.end(),
                   std::mem_fun(&OptionHandler::getInitialOption),
@@ -227,7 +227,7 @@ void apiGatherRequestOption(Option* option, const KeyVals& options,
 
 namespace {
 void apiGatherChangeableOption(Option* option, const KeyVals& options,
-                               const SharedHandle<OptionParser>& optionParser)
+                               const std::shared_ptr<OptionParser>& optionParser)
 {
   apiGatherOption(options.begin(), options.end(),
                   std::mem_fun(&OptionHandler::getChangeOption),
@@ -238,7 +238,7 @@ void apiGatherChangeableOption(Option* option, const KeyVals& options,
 namespace {
 void apiGatherChangeableOptionForReserved
 (Option* option, const KeyVals& options,
- const SharedHandle<OptionParser>& optionParser)
+ const std::shared_ptr<OptionParser>& optionParser)
 {
   apiGatherOption(options.begin(), options.end(),
                   std::mem_fun(&OptionHandler::getChangeOptionForReserved),
@@ -249,7 +249,7 @@ void apiGatherChangeableOptionForReserved
 namespace {
 void apiGatherChangeableGlobalOption
 (Option* option, const KeyVals& options,
- const SharedHandle<OptionParser>& optionParser)
+ const std::shared_ptr<OptionParser>& optionParser)
 {
   apiGatherOption(options.begin(), options.end(),
                   std::mem_fun(&OptionHandler::getChangeGlobalOption),
@@ -258,8 +258,8 @@ void apiGatherChangeableGlobalOption
 } // namespace
 
 namespace {
-void addRequestGroup(const SharedHandle<RequestGroup>& group,
-                     const SharedHandle<DownloadEngine>& e,
+void addRequestGroup(const std::shared_ptr<RequestGroup>& group,
+                     const std::shared_ptr<DownloadEngine>& e,
                      int position)
 {
   if(position >= 0) {
@@ -276,9 +276,9 @@ int addUri(Session* session,
            const KeyVals& options,
            int position)
 {
-  const SharedHandle<DownloadEngine>& e =
+  const std::shared_ptr<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
-  SharedHandle<Option> requestOption(new Option(*e->getOption()));
+  std::shared_ptr<Option> requestOption(new Option(*e->getOption()));
   try {
     apiGatherRequestOption(requestOption.get(), options,
                            OptionParser::getInstance());
@@ -286,7 +286,7 @@ int addUri(Session* session,
     A2_LOG_INFO_EX(EX_EXCEPTION_CAUGHT, e);
     return -1;
   }
-  std::vector<SharedHandle<RequestGroup> > result;
+  std::vector<std::shared_ptr<RequestGroup> > result;
   createRequestGroupForUri(result, requestOption, uris,
                            /* ignoreForceSeq = */ true,
                            /* ignoreLocalPath = */ true);
@@ -306,10 +306,10 @@ int addMetalink(Session* session,
                 int position)
 {
 #ifdef ENABLE_METALINK
-  const SharedHandle<DownloadEngine>& e =
+  const std::shared_ptr<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
-  SharedHandle<Option> requestOption(new Option(*e->getOption()));
-  std::vector<SharedHandle<RequestGroup> > result;
+  std::shared_ptr<Option> requestOption(new Option(*e->getOption()));
+  std::vector<std::shared_ptr<RequestGroup> > result;
   try {
     apiGatherRequestOption(requestOption.get(), options,
                            OptionParser::getInstance());
@@ -326,7 +326,7 @@ int addMetalink(Session* session,
       e->getRequestGroupMan()->addReservedGroup(result);
     }
     if(gids) {
-      for(std::vector<SharedHandle<RequestGroup> >::const_iterator i =
+      for(std::vector<std::shared_ptr<RequestGroup> >::const_iterator i =
             result.begin(), eoi = result.end(); i != eoi; ++i) {
         (*gids).push_back((*i)->getGID());
       }
@@ -346,10 +346,10 @@ int addTorrent(Session* session,
                int position)
 {
 #ifdef ENABLE_BITTORRENT
-  const SharedHandle<DownloadEngine>& e =
+  const std::shared_ptr<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
-  SharedHandle<Option> requestOption(new Option(*e->getOption()));
-  std::vector<SharedHandle<RequestGroup> > result;
+  std::shared_ptr<Option> requestOption(new Option(*e->getOption()));
+  std::vector<std::shared_ptr<RequestGroup> > result;
   try {
     apiGatherRequestOption(requestOption.get(), options,
                            OptionParser::getInstance());
@@ -384,9 +384,9 @@ int addTorrent(Session* session,
 
 int removeDownload(Session* session, A2Gid gid, bool force)
 {
-  const SharedHandle<DownloadEngine>& e =
+  const std::shared_ptr<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
-  SharedHandle<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
+  std::shared_ptr<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
   if(group) {
     if(group->getState() == RequestGroup::STATE_ACTIVE) {
       if(force) {
@@ -410,9 +410,9 @@ int removeDownload(Session* session, A2Gid gid, bool force)
 
 int pauseDownload(Session* session, A2Gid gid, bool force)
 {
-  const SharedHandle<DownloadEngine>& e =
+  const std::shared_ptr<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
-  SharedHandle<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
+  std::shared_ptr<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
   if(group) {
     bool reserved = group->getState() == RequestGroup::STATE_WAITING;
     if(pauseRequestGroup(group, reserved, force)) {
@@ -425,9 +425,9 @@ int pauseDownload(Session* session, A2Gid gid, bool force)
 
 int unpauseDownload(Session* session, A2Gid gid)
 {
-  const SharedHandle<DownloadEngine>& e =
+  const std::shared_ptr<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
-  SharedHandle<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
+  std::shared_ptr<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
   if(!group ||
      group->getState() != RequestGroup::STATE_WAITING ||
      !group->isPauseRequested()) {
@@ -441,7 +441,7 @@ int unpauseDownload(Session* session, A2Gid gid)
 
 int changePosition(Session* session, A2Gid gid, int pos, OffsetMode how)
 {
-  const SharedHandle<DownloadEngine>& e =
+  const std::shared_ptr<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
   try {
     return e->getRequestGroupMan()->changeReservedGroupPosition(gid, pos, how);
@@ -453,9 +453,9 @@ int changePosition(Session* session, A2Gid gid, int pos, OffsetMode how)
 
 int changeOption(Session* session, A2Gid gid, const KeyVals& options)
 {
-  const SharedHandle<DownloadEngine>& e =
+  const std::shared_ptr<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
-  SharedHandle<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
+  std::shared_ptr<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
   if(group) {
     Option option;
     try {
@@ -479,7 +479,7 @@ int changeOption(Session* session, A2Gid gid, const KeyVals& options)
 
 const std::string& getGlobalOption(Session* session, const std::string& name)
 {
-  const SharedHandle<DownloadEngine>& e =
+  const std::shared_ptr<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
   const Pref* pref = option::k2p(name);
   if(OptionParser::getInstance()->find(pref)) {
@@ -491,9 +491,9 @@ const std::string& getGlobalOption(Session* session, const std::string& name)
 
 KeyVals getGlobalOptions(Session* session)
 {
-  const SharedHandle<DownloadEngine>& e =
+  const std::shared_ptr<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
-  const SharedHandle<OptionParser>& optionParser = OptionParser::getInstance();
+  const std::shared_ptr<OptionParser>& optionParser = OptionParser::getInstance();
   const Option* option = e->getOption();
   KeyVals options;
   for(size_t i = 1, len = option::countOption(); i < len; ++i) {
@@ -507,7 +507,7 @@ KeyVals getGlobalOptions(Session* session)
 
 int changeGlobalOption(Session* session, const KeyVals& options)
 {
-  const SharedHandle<DownloadEngine>& e =
+  const std::shared_ptr<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
   Option option;
   try {
@@ -523,9 +523,9 @@ int changeGlobalOption(Session* session, const KeyVals& options)
 
 GlobalStat getGlobalStat(Session* session)
 {
-  const SharedHandle<DownloadEngine>& e =
+  const std::shared_ptr<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
-  const SharedHandle<RequestGroupMan>& rgman = e->getRequestGroupMan();
+  const std::shared_ptr<RequestGroupMan>& rgman = e->getRequestGroupMan();
   TransferStat ts = rgman->calculateStat();
   GlobalStat res;
   res.downloadSpeed = ts.downloadSpeed;
@@ -538,7 +538,7 @@ GlobalStat getGlobalStat(Session* session)
 
 std::vector<A2Gid> getActiveDownload(Session* session)
 {
-  const SharedHandle<DownloadEngine>& e =
+  const std::shared_ptr<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
   const RequestGroupList& groups = e->getRequestGroupMan()->getRequestGroups();
   std::vector<A2Gid> res;
@@ -568,7 +568,7 @@ void createUriEntry
 namespace {
 template<typename OutputIterator>
 void createUriEntry
-(OutputIterator out, const SharedHandle<FileEntry>& file)
+(OutputIterator out, const std::shared_ptr<FileEntry>& file)
 {
   createUriEntry(out,
                  file->getSpentUris().begin(),
@@ -583,7 +583,7 @@ void createUriEntry
 
 namespace {
 FileData createFileData
-(const SharedHandle<FileEntry>& fe, int index, const BitfieldMan* bf)
+(const std::shared_ptr<FileEntry>& fe, int index, const BitfieldMan* bf)
 {
   FileData file;
   file.index = index;
@@ -634,7 +634,7 @@ void createFileEntry
  InputIterator first, InputIterator last,
  int64_t totalLength,
  int32_t pieceLength,
- const SharedHandle<PieceStorage>& ps)
+ const std::shared_ptr<PieceStorage>& ps)
 {
   BitfieldMan bf(pieceLength, totalLength);
   if(ps) {
@@ -648,8 +648,8 @@ namespace {
 template<typename OutputIterator>
 void pushRequestOption
 (OutputIterator out,
- const SharedHandle<Option>& option,
- const SharedHandle<OptionParser>& oparser)
+ const std::shared_ptr<Option>& option,
+ const std::shared_ptr<OptionParser>& oparser)
 {
   for(size_t i = 1, len = option::countOption(); i < len; ++i) {
     const Pref* pref = option::i2p(i);
@@ -662,7 +662,7 @@ void pushRequestOption
 } // namespace
 
 namespace {
-const std::string& getRequestOption(const SharedHandle<Option>& option,
+const std::string& getRequestOption(const std::shared_ptr<Option>& option,
                                     const std::string& name)
 {
   const Pref* pref = option::k2p(name);
@@ -675,7 +675,7 @@ const std::string& getRequestOption(const SharedHandle<Option>& option,
 } // namespace
 
 namespace {
-KeyVals getRequestOptions(const SharedHandle<Option>& option)
+KeyVals getRequestOptions(const std::shared_ptr<Option>& option)
 {
   KeyVals res;
   pushRequestOption(std::back_inserter(res), option,
@@ -686,7 +686,7 @@ KeyVals getRequestOptions(const SharedHandle<Option>& option)
 
 namespace {
 struct RequestGroupDH : public DownloadHandle {
-  RequestGroupDH(const SharedHandle<RequestGroup>& group)
+  RequestGroupDH(const std::shared_ptr<RequestGroup>& group)
     : group(group),
       ts(group->calculateStat())
   {}
@@ -717,7 +717,7 @@ struct RequestGroupDH : public DownloadHandle {
   }
   virtual std::string getBitfield()
   {
-    const SharedHandle<PieceStorage>& ps = group->getPieceStorage();
+    const std::shared_ptr<PieceStorage>& ps = group->getPieceStorage();
     if(ps) {
       return std::string(reinterpret_cast<const char*>(ps->getBitfield()),
                          ps->getBitfieldLength());
@@ -737,7 +737,7 @@ struct RequestGroupDH : public DownloadHandle {
   {
 #ifdef ENABLE_BITTORRENT
     if(group->getDownloadContext()->hasAttribute(CTX_ATTR_BT)) {
-      SharedHandle<TorrentAttribute> torrentAttrs =
+      std::shared_ptr<TorrentAttribute> torrentAttrs =
         bittorrent::getTorrentAttrs(group->getDownloadContext());
       return torrentAttrs->infoHash;
     }
@@ -746,7 +746,7 @@ struct RequestGroupDH : public DownloadHandle {
   }
   virtual size_t getPieceLength()
   {
-    const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
+    const std::shared_ptr<DownloadContext>& dctx = group->getDownloadContext();
     return dctx->getPieceLength();
   }
   virtual int getNumPieces()
@@ -776,7 +776,7 @@ struct RequestGroupDH : public DownloadHandle {
   virtual std::vector<FileData> getFiles()
   {
     std::vector<FileData> res;
-    const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
+    const std::shared_ptr<DownloadContext>& dctx = group->getDownloadContext();
     createFileEntry(std::back_inserter(res),
                     dctx->getFileEntries().begin(),
                     dctx->getFileEntries().end(),
@@ -786,14 +786,14 @@ struct RequestGroupDH : public DownloadHandle {
   }
   virtual int getNumFiles()
   {
-    const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
+    const std::shared_ptr<DownloadContext>& dctx = group->getDownloadContext();
     return dctx->getFileEntries().size();
   }
   virtual FileData getFile(int index)
   {
-    const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
+    const std::shared_ptr<DownloadContext>& dctx = group->getDownloadContext();
     BitfieldMan bf(dctx->getPieceLength(), dctx->getTotalLength());
-    const SharedHandle<PieceStorage>& ps = group->getPieceStorage();
+    const std::shared_ptr<PieceStorage>& ps = group->getPieceStorage();
     if(ps) {
       bf.setBitfield(ps->getBitfield(), ps->getBitfieldLength());
     }
@@ -804,7 +804,7 @@ struct RequestGroupDH : public DownloadHandle {
     BtMetaInfoData res;
 #ifdef ENABLE_BITTORRENT
     if(group->getDownloadContext()->hasAttribute(CTX_ATTR_BT)) {
-      SharedHandle<TorrentAttribute> torrentAttrs =
+      std::shared_ptr<TorrentAttribute> torrentAttrs =
         bittorrent::getTorrentAttrs(group->getDownloadContext());
       res.announceList = torrentAttrs->announceList;
       res.comment = torrentAttrs->comment;
@@ -829,14 +829,14 @@ struct RequestGroupDH : public DownloadHandle {
   {
     return getRequestOptions(group->getOption());
   }
-  SharedHandle<RequestGroup> group;
+  std::shared_ptr<RequestGroup> group;
   TransferStat ts;
 };
 } // namespace
 
 namespace {
 struct DownloadResultDH : public DownloadHandle {
-  DownloadResultDH(const SharedHandle<DownloadResult>& dr)
+  DownloadResultDH(const std::shared_ptr<DownloadResult>& dr)
     : dr(dr)
   {}
   virtual ~DownloadResultDH() {}
@@ -938,20 +938,20 @@ struct DownloadResultDH : public DownloadHandle {
   {
     return getRequestOptions(dr->option);
   }
-  SharedHandle<DownloadResult> dr;
+  std::shared_ptr<DownloadResult> dr;
 };
 } // namespace
 
 DownloadHandle* getDownloadHandle(Session* session, A2Gid gid)
 {
-  const SharedHandle<DownloadEngine>& e =
+  const std::shared_ptr<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
-  const SharedHandle<RequestGroupMan>& rgman = e->getRequestGroupMan();
-  SharedHandle<RequestGroup> group = rgman->findGroup(gid);
+  const std::shared_ptr<RequestGroupMan>& rgman = e->getRequestGroupMan();
+  std::shared_ptr<RequestGroup> group = rgman->findGroup(gid);
   if(group) {
     return new RequestGroupDH(group);
   } else {
-    SharedHandle<DownloadResult> ds = rgman->findDownloadResult(gid);
+    std::shared_ptr<DownloadResult> ds = rgman->findDownloadResult(gid);
     if(ds) {
       return new DownloadResultDH(ds);
     }

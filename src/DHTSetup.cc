@@ -93,7 +93,7 @@ void DHTSetup::setup
     auto_delete_container<std::vector<Command*> > commandsDel(tempCommands);
     // load routing table and localnode id here
 
-    SharedHandle<DHTNode> localNode;
+    std::shared_ptr<DHTNode> localNode;
 
     DHTRoutingTableDeserializer deserializer(family);
     const std::string& dhtFile =
@@ -113,7 +113,7 @@ void DHTSetup::setup
     }
 
     uint16_t port;
-    SharedHandle<DHTConnectionImpl> connection(new DHTConnectionImpl(family));
+    std::shared_ptr<DHTConnectionImpl> connection(new DHTConnectionImpl(family));
     {
       port = e->getBtRegistry()->getUdpPort();
       const std::string& addr =
@@ -139,24 +139,24 @@ void DHTSetup::setup
     }
     A2_LOG_DEBUG(fmt("Initialized local node ID=%s",
                      util::toHex(localNode->getID(), DHT_ID_LENGTH).c_str()));
-    SharedHandle<DHTRoutingTable> routingTable(new DHTRoutingTable(localNode));
+    std::shared_ptr<DHTRoutingTable> routingTable(new DHTRoutingTable(localNode));
 
-    SharedHandle<DHTMessageFactoryImpl> factory
+    std::shared_ptr<DHTMessageFactoryImpl> factory
       (new DHTMessageFactoryImpl(family));
 
-    SharedHandle<DHTMessageTracker> tracker(new DHTMessageTracker());
+    std::shared_ptr<DHTMessageTracker> tracker(new DHTMessageTracker());
 
-    SharedHandle<DHTMessageDispatcherImpl> dispatcher(new DHTMessageDispatcherImpl(tracker));
+    std::shared_ptr<DHTMessageDispatcherImpl> dispatcher(new DHTMessageDispatcherImpl(tracker));
 
-    SharedHandle<DHTMessageReceiver> receiver(new DHTMessageReceiver(tracker));
+    std::shared_ptr<DHTMessageReceiver> receiver(new DHTMessageReceiver(tracker));
 
-    SharedHandle<DHTTaskQueue> taskQueue(new DHTTaskQueueImpl());
+    std::shared_ptr<DHTTaskQueue> taskQueue(new DHTTaskQueueImpl());
 
-    SharedHandle<DHTTaskFactoryImpl> taskFactory(new DHTTaskFactoryImpl());
+    std::shared_ptr<DHTTaskFactoryImpl> taskFactory(new DHTTaskFactoryImpl());
 
-    SharedHandle<DHTPeerAnnounceStorage> peerAnnounceStorage(new DHTPeerAnnounceStorage());
+    std::shared_ptr<DHTPeerAnnounceStorage> peerAnnounceStorage(new DHTPeerAnnounceStorage());
 
-    SharedHandle<DHTTokenTracker> tokenTracker(new DHTTokenTracker());
+    std::shared_ptr<DHTTokenTracker> tokenTracker(new DHTTokenTracker());
 
     const time_t messageTimeout = e->getOption()->getAsInt(PREF_DHT_MESSAGE_TIMEOUT);
     // wiring up
@@ -190,7 +190,7 @@ void DHTSetup::setup
     factory->setLocalNode(localNode);
 
     // For now, UDPTrackerClient was enabled along with DHT
-    SharedHandle<UDPTrackerClient> udpTrackerClient(new UDPTrackerClient());
+    std::shared_ptr<UDPTrackerClient> udpTrackerClient(new UDPTrackerClient());
     // assign them into DHTRegistry
     if(family == AF_INET) {
       DHTRegistry::getMutableData().localNode = localNode;
@@ -215,16 +215,15 @@ void DHTSetup::setup
       DHTRegistry::getMutableData6().messageFactory = factory;
     }
     // add deserialized nodes to routing table
-    const std::vector<SharedHandle<DHTNode> >& desnodes =
+    const std::vector<std::shared_ptr<DHTNode> >& desnodes =
       deserializer.getNodes();
-    for(std::vector<SharedHandle<DHTNode> >::const_iterator i =
+    for(std::vector<std::shared_ptr<DHTNode> >::const_iterator i =
           desnodes.begin(), eoi = desnodes.end(); i != eoi; ++i) {
       routingTable->addNode(*i);
     }
     if(!desnodes.empty()) {
-      SharedHandle<DHTBucketRefreshTask> task
-        (static_pointer_cast<DHTBucketRefreshTask>
-         (taskFactory->createBucketRefreshTask()));
+      auto task = std::static_pointer_cast<DHTBucketRefreshTask>
+        (taskFactory->createBucketRefreshTask());
       task->setForceRefresh(true);
       taskQueue->addPeriodicTask1(task);
     }
@@ -311,7 +310,7 @@ void DHTSetup::setup
     if(family == AF_INET) {
       DHTRegistry::clearData();
       e->getBtRegistry()->setUDPTrackerClient
-        (SharedHandle<UDPTrackerClient>());
+        (std::shared_ptr<UDPTrackerClient>());
     } else {
       DHTRegistry::clearData6();
     }

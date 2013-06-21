@@ -63,7 +63,7 @@ bool BtUnchokeMessage::sendPredicate() const
 
 namespace {
 struct ThisProgressUpdate : public ProgressUpdate {
-  ThisProgressUpdate(const SharedHandle<Peer>& peer)
+  ThisProgressUpdate(const std::shared_ptr<Peer>& peer)
     : peer(peer) {}
   virtual void update(size_t length, bool complete)
   {
@@ -71,7 +71,7 @@ struct ThisProgressUpdate : public ProgressUpdate {
       peer->amChoking(false);
     }
   }
-  SharedHandle<Peer> peer;
+  std::shared_ptr<Peer> peer;
 };
 } // namespace
 

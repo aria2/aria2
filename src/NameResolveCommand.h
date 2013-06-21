@@ -39,8 +39,7 @@
 
 #include <string>
 #include <vector>
-
-#include "SharedHandle.h"
+#include <memory>
 
 // TODO Make this class generic.
 namespace aria2 {
@@ -56,7 +55,7 @@ private:
   DownloadEngine* e_;
 
 #ifdef ENABLE_ASYNC_DNS
-  SharedHandle<AsyncNameResolverMan> asyncNameResolverMan_;
+  std::shared_ptr<AsyncNameResolverMan> asyncNameResolverMan_;
 #endif // ENABLE_ASYNC_DNS
 
 #ifdef ENABLE_ASYNC_DNS
@@ -64,14 +63,14 @@ private:
                       const std::string& hostname);
 #endif // ENABLE_ASYNC_DNS
 
-  SharedHandle<UDPTrackerRequest> req_;
+  std::shared_ptr<UDPTrackerRequest> req_;
   void onShutdown();
   void onFailure();
   void onSuccess
   (const std::vector<std::string>& addrs, DownloadEngine* e);
 public:
   NameResolveCommand(cuid_t cuid, DownloadEngine* e,
-                     const SharedHandle<UDPTrackerRequest>& req);
+                     const std::shared_ptr<UDPTrackerRequest>& req);
 
   virtual ~NameResolveCommand();
 

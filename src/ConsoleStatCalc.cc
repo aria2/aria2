@@ -96,7 +96,7 @@ protected:
 } // namespace
 
 namespace {
-void printSizeProgress(std::ostream& o, const SharedHandle<RequestGroup>& rg,
+void printSizeProgress(std::ostream& o, const std::shared_ptr<RequestGroup>& rg,
                        const TransferStat& stat,
                        const SizeFormatter& sizeFormatter)
 {
@@ -144,7 +144,7 @@ void printProgressCompact(std::ostream& o, const DownloadEngine* e,
   const size_t MAX_ITEM = 5;
   for(RequestGroupList::const_iterator i = groups.begin(),
         eoi = groups.end(); i != eoi && cnt < MAX_ITEM; ++i, ++cnt) {
-    const SharedHandle<RequestGroup>& rg = *i;
+    const std::shared_ptr<RequestGroup>& rg = *i;
     TransferStat stat = rg->calculateStat();
     o << "[#" << GroupId::toAbbrevHex(rg->getGID()) << " ";
     printSizeProgress(o, rg, stat, sizeFormatter);
@@ -158,7 +158,7 @@ void printProgressCompact(std::ostream& o, const DownloadEngine* e,
 
 namespace {
 void printProgress
-(std::ostream& o, const SharedHandle<RequestGroup>& rg, const DownloadEngine* e,
+(std::ostream& o, const std::shared_ptr<RequestGroup>& rg, const DownloadEngine* e,
  const SizeFormatter& sizeFormatter)
 {
   TransferStat stat = rg->calculateStat();
@@ -171,7 +171,7 @@ void printProgress
   o << " CN:"
     << rg->getNumConnection();
 #ifdef ENABLE_BITTORRENT
-  const SharedHandle<BtObject>& btObj = e->getBtRegistry()->get(rg->getGID());
+  const std::shared_ptr<BtObject>& btObj = e->getBtRegistry()->get(rg->getGID());
   if(btObj) {
     const PeerSet& peers = btObj->peerStorage->getUsedPeers();
     o << " SD:"
@@ -214,7 +214,7 @@ public:
     const char SEP_CHAR = '-';
     std::stringstream o;
     printProgress(o, rg, e_, sizeFormatter_);
-    const std::vector<SharedHandle<FileEntry> >& fileEntries =
+    const std::vector<std::shared_ptr<FileEntry> >& fileEntries =
       rg->getDownloadContext()->getFileEntries();
     o << "\nFILE: ";
     writeFilePath(fileEntries.begin(), fileEntries.end(),
@@ -321,7 +321,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   }
   size_t numGroup = e->getRequestGroupMan()->countRequestGroup();
   if(numGroup == 1) {
-    const SharedHandle<RequestGroup>& rg =
+    const std::shared_ptr<RequestGroup>& rg =
       *e->getRequestGroupMan()->getRequestGroups().begin();
     printProgress(o, rg, e, sizeFormatter);
   } else if(numGroup > 1) {
@@ -330,7 +330,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   }
 
   {
-    const SharedHandle<FileAllocationEntry>& entry =
+    const std::shared_ptr<FileAllocationEntry>& entry =
       e->getFileAllocationMan()->getPickedEntry();
     if(entry) {
       o << " [FileAlloc:#"
@@ -350,7 +350,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   }
 #ifdef ENABLE_MESSAGE_DIGEST
   {
-    const SharedHandle<CheckIntegrityEntry>& entry =
+    const std::shared_ptr<CheckIntegrityEntry>& entry =
       e->getCheckIntegrityMan()->getPickedEntry();
     if(entry) {
       o << " [Checksum:#"

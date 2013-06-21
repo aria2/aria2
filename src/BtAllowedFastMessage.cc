@@ -65,7 +65,7 @@ void BtAllowedFastMessage::doReceivedAction() {
 
 namespace {
 struct ThisProgressUpdate : public ProgressUpdate {
-  ThisProgressUpdate(const SharedHandle<Peer>& peer, size_t index)
+  ThisProgressUpdate(const std::shared_ptr<Peer>& peer, size_t index)
     : peer(peer), index(index) {}
   virtual void update(size_t length, bool complete)
   {
@@ -73,7 +73,7 @@ struct ThisProgressUpdate : public ProgressUpdate {
       peer->addAmAllowedIndex(index);
     }
   }
-  SharedHandle<Peer> peer;
+  std::shared_ptr<Peer> peer;
   size_t index;
 };
 } // namespace

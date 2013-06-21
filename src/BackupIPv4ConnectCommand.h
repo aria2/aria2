@@ -38,8 +38,8 @@
 #include "Command.h"
 
 #include <string>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "TimerA2.h"
 
 namespace aria2 {
@@ -55,7 +55,7 @@ class SocketCore;
 // member becomes true.
 struct BackupConnectInfo {
   std::string ipaddr;
-  SharedHandle<SocketCore> socket;
+  std::shared_ptr<SocketCore> socket;
   bool cancel;
   BackupConnectInfo();
 };
@@ -66,7 +66,7 @@ class BackupIPv4ConnectCommand : public Command {
 public:
   BackupIPv4ConnectCommand(cuid_t cuid,
                            const std::string& ipaddr, uint16_t port,
-                           const SharedHandle<BackupConnectInfo>& info,
+                           const std::shared_ptr<BackupConnectInfo>& info,
                            Command* mainCommand,
                            RequestGroup* requestGroup, DownloadEngine* e);
   ~BackupIPv4ConnectCommand();
@@ -74,8 +74,8 @@ public:
 private:
   std::string ipaddr_;
   uint16_t port_;
-  SharedHandle<SocketCore> socket_;
-  SharedHandle<BackupConnectInfo> info_;
+  std::shared_ptr<SocketCore> socket_;
+  std::shared_ptr<BackupConnectInfo> info_;
   Command* mainCommand_;
   RequestGroup* requestGroup_;
   DownloadEngine* e_;

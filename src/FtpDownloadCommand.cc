@@ -50,15 +50,15 @@ namespace aria2 {
 
 FtpDownloadCommand::FtpDownloadCommand
 (cuid_t cuid,
- const SharedHandle<Request>& req,
- const SharedHandle<FileEntry>& fileEntry,
+ const std::shared_ptr<Request>& req,
+ const std::shared_ptr<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
- const SharedHandle<FtpConnection>& ftpConnection,
+ const std::shared_ptr<FtpConnection>& ftpConnection,
  DownloadEngine* e,
- const SharedHandle<SocketCore>& dataSocket,
- const SharedHandle<SocketCore>& ctrlSocket)
+ const std::shared_ptr<SocketCore>& dataSocket,
+ const std::shared_ptr<SocketCore>& ctrlSocket)
   :DownloadCommand(cuid, req, fileEntry, requestGroup, e, dataSocket,
-                   SharedHandle<SocketRecvBuffer>
+                   std::shared_ptr<SocketRecvBuffer>
                    (new SocketRecvBuffer(dataSocket))),
    ftpConnection_(ftpConnection),
    ctrlSocket_(ctrlSocket) {}

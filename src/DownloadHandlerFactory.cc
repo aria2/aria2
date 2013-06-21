@@ -44,35 +44,35 @@ namespace aria2 {
 
 #ifdef ENABLE_METALINK
 
-SharedHandle<PreDownloadHandler>
+std::shared_ptr<PreDownloadHandler>
 DownloadHandlerFactory::metalinkPreDownloadHandler_;
 
-SharedHandle<PostDownloadHandler>
+std::shared_ptr<PostDownloadHandler>
 DownloadHandlerFactory::metalinkPostDownloadHandler_;
 
 #endif // ENABLE_METALINK
 
 #ifdef ENABLE_BITTORRENT
 
-SharedHandle<PreDownloadHandler>
+std::shared_ptr<PreDownloadHandler>
 DownloadHandlerFactory::btPreDownloadHandler_;
 
-SharedHandle<PostDownloadHandler>
+std::shared_ptr<PostDownloadHandler>
 DownloadHandlerFactory::btPostDownloadHandler_;
 
-SharedHandle<PostDownloadHandler>
+std::shared_ptr<PostDownloadHandler>
 DownloadHandlerFactory::btMetadataPostDownloadHandler_;
 #endif // ENABLE_BITTORRENT
 
 #ifdef ENABLE_METALINK
 
-SharedHandle<PreDownloadHandler>
+std::shared_ptr<PreDownloadHandler>
 DownloadHandlerFactory::getMetalinkPreDownloadHandler()
 {
   if(!metalinkPreDownloadHandler_) {
     metalinkPreDownloadHandler_.reset(new MemoryBufferPreDownloadHandler());
 
-    SharedHandle<RequestGroupCriteria> criteria
+    std::shared_ptr<RequestGroupCriteria> criteria
       (new ContentTypeRequestGroupCriteria
        (getMetalinkContentTypes(), getMetalinkExtensions()));
     metalinkPreDownloadHandler_->setCriteria(criteria);
@@ -80,7 +80,7 @@ DownloadHandlerFactory::getMetalinkPreDownloadHandler()
   return metalinkPreDownloadHandler_;
 }
 
-SharedHandle<PostDownloadHandler>
+std::shared_ptr<PostDownloadHandler>
 DownloadHandlerFactory::getMetalinkPostDownloadHandler()
 {
   if(!metalinkPostDownloadHandler_) {
@@ -93,14 +93,14 @@ DownloadHandlerFactory::getMetalinkPostDownloadHandler()
 
 #ifdef ENABLE_BITTORRENT
 
-SharedHandle<PreDownloadHandler>
+std::shared_ptr<PreDownloadHandler>
 DownloadHandlerFactory::getBtPreDownloadHandler()
 {
   if(!btPreDownloadHandler_) {
     btPreDownloadHandler_.reset
       (new bittorrent::MemoryBencodePreDownloadHandler());
 
-    SharedHandle<RequestGroupCriteria> criteria
+    std::shared_ptr<RequestGroupCriteria> criteria
       (new ContentTypeRequestGroupCriteria
        (getBtContentTypes(), getBtExtensions()));
     btPreDownloadHandler_->setCriteria(criteria);
@@ -108,7 +108,7 @@ DownloadHandlerFactory::getBtPreDownloadHandler()
   return btPreDownloadHandler_;
 }
 
-SharedHandle<PostDownloadHandler>
+std::shared_ptr<PostDownloadHandler>
 DownloadHandlerFactory::getBtPostDownloadHandler()
 {
   if(!btPostDownloadHandler_) {
@@ -117,7 +117,7 @@ DownloadHandlerFactory::getBtPostDownloadHandler()
   return btPostDownloadHandler_;
 }
 
-SharedHandle<PostDownloadHandler>
+std::shared_ptr<PostDownloadHandler>
 DownloadHandlerFactory::getUTMetadataPostDownloadHandler()
 {
   if(!btMetadataPostDownloadHandler_) {

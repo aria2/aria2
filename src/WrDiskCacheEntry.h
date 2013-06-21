@@ -38,8 +38,8 @@
 #include "common.h"
 
 #include <set>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "a2functional.h"
 #include "error_code.h"
 
@@ -68,7 +68,7 @@ public:
 
   typedef std::set<DataCell*, DerefLess<DataCell*> > DataCellSet;
 
-  WrDiskCacheEntry(const SharedHandle<DiskAdaptor>& diskAdaptor);
+  WrDiskCacheEntry(const std::shared_ptr<DiskAdaptor>& diskAdaptor);
   ~WrDiskCacheEntry();
 
   // Flushes the cached data to the disk and deletes them.
@@ -140,7 +140,7 @@ private:
   int error_;
   error_code::Value errorCode_;
 
-  SharedHandle<DiskAdaptor> diskAdaptor_;
+  std::shared_ptr<DiskAdaptor> diskAdaptor_;
 };
 
 } // namespace aria2

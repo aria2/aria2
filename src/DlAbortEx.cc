@@ -36,9 +36,9 @@
 
 namespace aria2 {
 
-SharedHandle<Exception> DlAbortEx::copy() const
+std::shared_ptr<Exception> DlAbortEx::copy() const
 {
-  SharedHandle<Exception> e(new DlAbortEx(*this));
+  std::shared_ptr<Exception> e(new DlAbortEx(*this));
   return e;
 }
 

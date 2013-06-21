@@ -75,7 +75,7 @@ void XmlRpcRequestParserController::popArrayFrame()
 }
 
 void XmlRpcRequestParserController::setCurrentFrameValue
-(const SharedHandle<ValueBase>& value)
+(const std::shared_ptr<ValueBase>& value)
 {
   currentFrame_.value_ = value;
 }
@@ -86,7 +86,7 @@ void XmlRpcRequestParserController::setCurrentFrameName
   currentFrame_.name_ = name;
 }
 
-const SharedHandle<ValueBase>&
+const std::shared_ptr<ValueBase>&
 XmlRpcRequestParserController::getCurrentFrameValue() const
 {
   return currentFrame_.value_;

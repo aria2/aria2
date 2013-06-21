@@ -38,8 +38,8 @@
 #include "RequestGroupEntry.h"
 
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "ProgressAwareEntry.h"
 
 namespace aria2 {
@@ -51,12 +51,12 @@ class FileAllocationEntry;
 class CheckIntegrityEntry : public RequestGroupEntry,
                             public ProgressAwareEntry {
 private:
-  SharedHandle<IteratableValidator> validator_;
+  std::shared_ptr<IteratableValidator> validator_;
 protected:
-  void setValidator(const SharedHandle<IteratableValidator>& validator);
+  void setValidator(const std::shared_ptr<IteratableValidator>& validator);
 
   void proceedFileAllocation(std::vector<Command*>& commands,
-                             const SharedHandle<FileAllocationEntry>& entry,
+                             const std::shared_ptr<FileAllocationEntry>& entry,
                              DownloadEngine* e);
 public:
   CheckIntegrityEntry(RequestGroup* requestGroup, Command* nextCommand = 0);

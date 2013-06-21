@@ -40,8 +40,8 @@
 #include <stdint.h>
 #include <vector>
 #include <string>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "Command.h"
 
 namespace aria2 {
@@ -72,7 +72,7 @@ private:
 
   std::string hashType_;
 
-  SharedHandle<MessageDigest> mdctx_;
+  std::shared_ptr<MessageDigest> mdctx_;
 
 #endif // ENABLE_MESSAGE_DIGEST
 
@@ -179,7 +179,7 @@ public:
   // Returns raw hash value, not hex digest, which is calculated using
   // cached data and data on disk.
   std::string getDigestWithWrCache(size_t pieceLength,
-                                   const SharedHandle<DiskAdaptor>& adaptor);
+                                   const std::shared_ptr<DiskAdaptor>& adaptor);
 #endif // ENABLE_MESSAGE_DIGEST
 
   /**
@@ -204,7 +204,7 @@ public:
   }
 
   void initWrCache(WrDiskCache* diskCache,
-                   const SharedHandle<DiskAdaptor>& diskAdaptor);
+                   const std::shared_ptr<DiskAdaptor>& diskAdaptor);
   void flushWrCache(WrDiskCache* diskCache);
   void clearWrCache(WrDiskCache* diskCache);
   void updateWrCache(WrDiskCache* diskCache, unsigned char* data,

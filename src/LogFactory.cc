@@ -40,12 +40,12 @@
 namespace aria2 {
 
 std::string LogFactory::filename_ = DEV_NULL;
-SharedHandle<Logger> LogFactory::logger_;
+std::shared_ptr<Logger> LogFactory::logger_;
 bool LogFactory::consoleOutput_ = true;
 Logger::LEVEL LogFactory::logLevel_ = Logger::A2_DEBUG;
 Logger::LEVEL LogFactory::consoleLogLevel_ = Logger::A2_NOTICE;
 
-void LogFactory::openLogger(const SharedHandle<Logger>& logger)
+void LogFactory::openLogger(const std::shared_ptr<Logger>& logger)
 {
   if(filename_ != DEV_NULL) {
     // don't open file DEV_NULL for performance sake.
@@ -70,10 +70,10 @@ void LogFactory::reconfigure()
   }
 }
 
-const SharedHandle<Logger>& LogFactory::getInstance()
+const std::shared_ptr<Logger>& LogFactory::getInstance()
 {
   if(!logger_) {
-    SharedHandle<Logger> slogger(new Logger());
+    std::shared_ptr<Logger> slogger(new Logger());
     openLogger(slogger);
     logger_.swap(slogger);
   }

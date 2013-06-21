@@ -43,19 +43,19 @@ class FtpConnection;
 
 class FtpFinishDownloadCommand : public AbstractCommand {
 private:
-  SharedHandle<FtpConnection> ftpConnection_;
+  std::shared_ptr<FtpConnection> ftpConnection_;
 protected:
   virtual bool execute();
 
   virtual bool executeInternal();
 public:
   FtpFinishDownloadCommand(cuid_t cuid,
-                           const SharedHandle<Request>& req,
-                           const SharedHandle<FileEntry>& fileEntry,
+                           const std::shared_ptr<Request>& req,
+                           const std::shared_ptr<FileEntry>& fileEntry,
                            RequestGroup* requestGroup,
-                           const SharedHandle<FtpConnection>& ftpConnection,
+                           const std::shared_ptr<FtpConnection>& ftpConnection,
                            DownloadEngine* e,
-                           const SharedHandle<SocketCore>& socket);
+                           const std::shared_ptr<SocketCore>& socket);
   virtual ~FtpFinishDownloadCommand();
 };
 

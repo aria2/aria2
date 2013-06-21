@@ -27,8 +27,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTAnnouncePeerReplyMessageTest);
 
 void DHTAnnouncePeerReplyMessageTest::testGetBencodedMessage()
 {
-  SharedHandle<DHTNode> localNode(new DHTNode());
-  SharedHandle<DHTNode> remoteNode(new DHTNode());
+  std::shared_ptr<DHTNode> localNode(new DHTNode());
+  std::shared_ptr<DHTNode> remoteNode(new DHTNode());
 
   unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   util::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
@@ -42,7 +42,7 @@ void DHTAnnouncePeerReplyMessageTest::testGetBencodedMessage()
   dict.put("t", transactionID);
   dict.put("v", "A200");
   dict.put("y", "r");
-  SharedHandle<Dict> rDict = Dict::g();
+  std::shared_ptr<Dict> rDict = Dict::g();
   rDict->put("id", String::g(localNode->getID(), DHT_ID_LENGTH));
   dict.put("r", rDict);
 

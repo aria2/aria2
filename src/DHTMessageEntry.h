@@ -36,7 +36,9 @@
 #define D_DHT_MESSAGE_ENTRY_H
 
 #include "common.h"
-#include "SharedHandle.h"
+
+#include <memory>
+
 #include "a2time.h"
 
 namespace aria2 {
@@ -45,13 +47,13 @@ class DHTMessage;
 class DHTMessageCallback;
 
 struct DHTMessageEntry {
-  SharedHandle<DHTMessage> message;
+  std::shared_ptr<DHTMessage> message;
   time_t timeout;
-  SharedHandle<DHTMessageCallback> callback;
+  std::shared_ptr<DHTMessageCallback> callback;
 
-  DHTMessageEntry(const SharedHandle<DHTMessage>& message,
+  DHTMessageEntry(const std::shared_ptr<DHTMessage>& message,
                   time_t timeout,
-                  const SharedHandle<DHTMessageCallback>& callback);
+                  const std::shared_ptr<DHTMessageCallback>& callback);
 
   ~DHTMessageEntry();
 };

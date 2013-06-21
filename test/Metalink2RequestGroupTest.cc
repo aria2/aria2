@@ -21,7 +21,7 @@ class Metalink2RequestGroupTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGenerate_dosDirTraversal);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<Option> option_;
+  std::shared_ptr<Option> option_;
 
 public:
   void setUp()
@@ -40,12 +40,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION( Metalink2RequestGroupTest );
 
 void Metalink2RequestGroupTest::testGenerate()
 {
-  std::vector<SharedHandle<RequestGroup> > groups;
+  std::vector<std::shared_ptr<RequestGroup> > groups;
   option_->put(PREF_DIR, "/tmp");
   Metalink2RequestGroup().generate(groups, A2_TEST_DIR"/test.xml", option_);
   // first file
   {
-    SharedHandle<RequestGroup> rg = groups[0];
+    std::shared_ptr<RequestGroup> rg = groups[0];
     std::vector<std::string> uris;
     rg->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     std::sort(uris.begin(), uris.end());
@@ -55,7 +55,7 @@ void Metalink2RequestGroupTest::testGenerate()
     CPPUNIT_ASSERT_EQUAL
       (std::string("http://httphost/aria2-0.5.2.tar.bz2"), uris[1]);
 
-    const SharedHandle<DownloadContext>& dctx = rg->getDownloadContext();
+    const std::shared_ptr<DownloadContext>& dctx = rg->getDownloadContext();
 
     CPPUNIT_ASSERT(dctx);
     CPPUNIT_ASSERT_EQUAL((int64_t)0LL, dctx->getTotalLength());
@@ -70,12 +70,12 @@ void Metalink2RequestGroupTest::testGenerate()
   }
   // second file
   {
-    SharedHandle<RequestGroup> rg = groups[1];
+    std::shared_ptr<RequestGroup> rg = groups[1];
     std::vector<std::string> uris;
     rg->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)2, uris.size());
 
-    const SharedHandle<DownloadContext>& dctx = rg->getDownloadContext();
+    const std::shared_ptr<DownloadContext>& dctx = rg->getDownloadContext();
 
     CPPUNIT_ASSERT(dctx);
 #ifdef ENABLE_MESSAGE_DIGEST
@@ -93,13 +93,13 @@ void Metalink2RequestGroupTest::testGenerate()
 #ifdef ENABLE_BITTORRENT
   // fifth file <- downloading .torrent file
   {
-    SharedHandle<RequestGroup> rg = groups[4];
+    std::shared_ptr<RequestGroup> rg = groups[4];
     std::vector<std::string> uris;
     rg->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)1, uris.size());
     CPPUNIT_ASSERT_EQUAL
       (std::string("http://host/torrent-http.integrated.torrent"), uris[0]);
-    const SharedHandle<DownloadContext>& dctx = rg->getDownloadContext();
+    const std::shared_ptr<DownloadContext>& dctx = rg->getDownloadContext();
 
     CPPUNIT_ASSERT(dctx);
     CPPUNIT_ASSERT_EQUAL(groups[5]->getGID(), rg->belongsTo());
@@ -109,9 +109,9 @@ void Metalink2RequestGroupTest::testGenerate()
   // sixth file <- depends on fifth file to download .torrent file.
   {
 #ifdef ENABLE_BITTORRENT
-    SharedHandle<RequestGroup> rg = groups[5];
+    std::shared_ptr<RequestGroup> rg = groups[5];
 #else
-    SharedHandle<RequestGroup> rg = groups[4];
+    std::shared_ptr<RequestGroup> rg = groups[4];
 #endif // ENABLE_BITTORRENT
     std::vector<std::string> uris;
     rg->getDownloadContext()->getFirstFileEntry()->getUris(uris);
@@ -119,7 +119,7 @@ void Metalink2RequestGroupTest::testGenerate()
     CPPUNIT_ASSERT_EQUAL
       (std::string("http://host/torrent-http.integrated"), uris[0]);
 
-    const SharedHandle<DownloadContext>& dctx = rg->getDownloadContext();
+    const std::shared_ptr<DownloadContext>& dctx = rg->getDownloadContext();
 
     CPPUNIT_ASSERT(dctx);
   }
@@ -127,7 +127,7 @@ void Metalink2RequestGroupTest::testGenerate()
 
 void Metalink2RequestGroupTest::testGenerate_groupByMetaurl()
 {
-  std::vector<SharedHandle<RequestGroup> > groups;
+  std::vector<std::shared_ptr<RequestGroup> > groups;
   Metalink2RequestGroup().generate(groups,
                                    A2_TEST_DIR"/metalink4-groupbymetaurl.xml",
                                    option_);
@@ -136,7 +136,7 @@ void Metalink2RequestGroupTest::testGenerate_groupByMetaurl()
 #ifdef ENABLE_BITTORRENT
   // first RequestGroup is torrent for second RequestGroup
   {
-    SharedHandle<RequestGroup> rg = groups[0];
+    std::shared_ptr<RequestGroup> rg = groups[0];
     std::vector<std::string> uris;
     rg->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)1, uris.size());
@@ -144,9 +144,9 @@ void Metalink2RequestGroupTest::testGenerate_groupByMetaurl()
   }
   // second
   {
-    SharedHandle<RequestGroup> rg = groups[1];
-    SharedHandle<DownloadContext> dctx = rg->getDownloadContext();
-    const std::vector<SharedHandle<FileEntry> >& fileEntries =
+    std::shared_ptr<RequestGroup> rg = groups[1];
+    std::shared_ptr<DownloadContext> dctx = rg->getDownloadContext();
+    const std::vector<std::shared_ptr<FileEntry> >& fileEntries =
       dctx->getFileEntries();
     CPPUNIT_ASSERT_EQUAL((size_t)2, fileEntries.size());
     CPPUNIT_ASSERT_EQUAL(std::string("./file1"), fileEntries[0]->getPath());
@@ -162,9 +162,9 @@ void Metalink2RequestGroupTest::testGenerate_groupByMetaurl()
   }
   // third
   {
-    SharedHandle<RequestGroup> rg = groups[2];
-    SharedHandle<DownloadContext> dctx = rg->getDownloadContext();
-    const std::vector<SharedHandle<FileEntry> >& fileEntries =
+    std::shared_ptr<RequestGroup> rg = groups[2];
+    std::shared_ptr<DownloadContext> dctx = rg->getDownloadContext();
+    const std::vector<std::shared_ptr<FileEntry> >& fileEntries =
       dctx->getFileEntries();
     CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntries.size());
     CPPUNIT_ASSERT_EQUAL(std::string("./file2"), fileEntries[0]->getPath());
@@ -174,21 +174,21 @@ void Metalink2RequestGroupTest::testGenerate_groupByMetaurl()
   }
 #else // !ENABLE_BITTORRENT
   {
-    SharedHandle<RequestGroup> rg = groups[0];
+    std::shared_ptr<RequestGroup> rg = groups[0];
     std::vector<std::string> uris;
     rg->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)1, uris.size());
     CPPUNIT_ASSERT_EQUAL(std::string("http://file1p1"), uris[0]);
   }
   {
-    SharedHandle<RequestGroup> rg = groups[1];
+    std::shared_ptr<RequestGroup> rg = groups[1];
     std::vector<std::string> uris;
     rg->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)1, uris.size());
     CPPUNIT_ASSERT_EQUAL(std::string("http://file2p1"), uris[0]);
   }
   {
-    SharedHandle<RequestGroup> rg = groups[2];
+    std::shared_ptr<RequestGroup> rg = groups[2];
     std::vector<std::string> uris;
     rg->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)1, uris.size());
@@ -202,13 +202,13 @@ void Metalink2RequestGroupTest::testGenerate_dosDirTraversal()
 {
 #ifdef __MINGW32__
 #ifdef ENABLE_BITTORRENT
-  std::vector<SharedHandle<RequestGroup> > groups;
+  std::vector<std::shared_ptr<RequestGroup> > groups;
   option_->put(PREF_DIR, "/tmp");
   Metalink2RequestGroup().generate
     (groups, A2_TEST_DIR"/metalink4-dosdirtraversal.xml", option_);
   CPPUNIT_ASSERT_EQUAL((size_t)3, groups.size());
-  SharedHandle<RequestGroup> rg = groups[0];
-  SharedHandle<FileEntry> file = rg->getDownloadContext()->getFirstFileEntry();
+  std::shared_ptr<RequestGroup> rg = groups[0];
+  std::shared_ptr<FileEntry> file = rg->getDownloadContext()->getFirstFileEntry();
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/..%5C..%5Cexample.ext"),
                        file->getPath());
 

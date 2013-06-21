@@ -37,8 +37,8 @@
 #include "common.h"
 
 #include <string>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "TimerA2.h"
 #include "uri.h"
 
@@ -73,7 +73,7 @@ private:
   bool pipeliningHint_;
   // maximum number of pipelined requests
   int maxPipelinedRequest_;
-  SharedHandle<PeerStat> peerStat_;
+  std::shared_ptr<PeerStat> peerStat_;
   bool removalRequested_;
   uint16_t connectedPort_;
   Timer wakeTime_;
@@ -176,12 +176,12 @@ public:
     return method_;
   }
 
-  const SharedHandle<PeerStat>& getPeerStat() const
+  const std::shared_ptr<PeerStat>& getPeerStat() const
   {
     return peerStat_;
   }
 
-  const SharedHandle<PeerStat>& initPeerStat();
+  const std::shared_ptr<PeerStat>& initPeerStat();
 
   void requestRemoval()
   {

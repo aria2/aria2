@@ -33,10 +33,10 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(BtExtendedMessageTest);
 
 void BtExtendedMessageTest::testCreate() {
-  SharedHandle<Peer> peer(new Peer("192.168.0.1", 6969));
+  std::shared_ptr<Peer> peer(new Peer("192.168.0.1", 6969));
   peer->allocateSessionResource(1024, 1024*1024);
 
-  SharedHandle<MockExtensionMessageFactory> exmsgFactory
+  std::shared_ptr<MockExtensionMessageFactory> exmsgFactory
     (new MockExtensionMessageFactory());
 
   // payload:{4:name3:foo}->11bytes
@@ -45,7 +45,7 @@ void BtExtendedMessageTest::testCreate() {
   bittorrent::createPeerMessageString((unsigned char*)msg, sizeof(msg), 13, 20);
   msg[5] = 1; // Set dummy extended message ID 1
   memcpy(msg+6, payload.c_str(), payload.size());
-  SharedHandle<BtExtendedMessage> pm(BtExtendedMessage::create(exmsgFactory,
+  std::shared_ptr<BtExtendedMessage> pm(BtExtendedMessage::create(exmsgFactory,
                                                                peer,
                                                                &msg[4], 13));
   CPPUNIT_ASSERT_EQUAL((uint8_t)20, pm->getId());
@@ -73,7 +73,7 @@ void BtExtendedMessageTest::testCreate() {
 void BtExtendedMessageTest::testCreateMessage() {
   std::string payload = "4:name3:foo";
   uint8_t extendedMessageID = 1;
-  SharedHandle<MockExtensionMessage> exmsg
+  std::shared_ptr<MockExtensionMessage> exmsg
     (new MockExtensionMessage("charlie", extendedMessageID, payload));
   BtExtendedMessage msg(exmsg);
 
@@ -88,7 +88,7 @@ void BtExtendedMessageTest::testCreateMessage() {
 }
 
 void BtExtendedMessageTest::testDoReceivedAction() {
-  SharedHandle<MockExtensionMessage> exmsg
+  std::shared_ptr<MockExtensionMessage> exmsg
     (new MockExtensionMessage("charlie", 1, ""));
   BtExtendedMessage msg(exmsg);
   msg.doReceivedAction();
@@ -98,7 +98,7 @@ void BtExtendedMessageTest::testDoReceivedAction() {
 void BtExtendedMessageTest::testToString() {
   std::string payload = "4:name3:foo";
   uint8_t extendedMessageID = 1;
-  SharedHandle<MockExtensionMessage> exmsg
+  std::shared_ptr<MockExtensionMessage> exmsg
     (new MockExtensionMessage("charlie", extendedMessageID, payload));
   BtExtendedMessage msg(exmsg);
   CPPUNIT_ASSERT_EQUAL(std::string("extended charlie"), msg.toString());

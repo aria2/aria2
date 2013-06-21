@@ -65,7 +65,7 @@ NullValueBaseStructParserState* nullState =
   new NullValueBaseStructParserState();
 } // namespace
 
-const SharedHandle<ValueBase>&
+const std::shared_ptr<ValueBase>&
 ValueBaseStructParserStateMachine::noResult()
 {
   return ValueBase::none;
@@ -102,7 +102,7 @@ void ValueBaseStructParserStateMachine::endElement(int elementType)
   stateStack_.pop();
 }
 
-SharedHandle<ValueBase>
+std::shared_ptr<ValueBase>
 ValueBaseStructParserStateMachine::getResult() const
 {
   return getCurrentFrameValue();
@@ -159,12 +159,12 @@ void ValueBaseStructParserStateMachine::pushFrame()
 }
 
 void ValueBaseStructParserStateMachine::setCurrentFrameValue
-(const SharedHandle<ValueBase>& value)
+(const std::shared_ptr<ValueBase>& value)
 {
   ctrl_->setCurrentFrameValue(value);
 }
 
-const SharedHandle<ValueBase>&
+const std::shared_ptr<ValueBase>&
 ValueBaseStructParserStateMachine::getCurrentFrameValue() const
 {
   return ctrl_->getCurrentFrameValue();

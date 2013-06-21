@@ -55,9 +55,9 @@ CreateRequestCommand::CreateRequestCommand(cuid_t cuid,
                                            RequestGroup* requestGroup,
                                            DownloadEngine* e):
   AbstractCommand
-  (cuid, SharedHandle<Request>(), SharedHandle<FileEntry>(), requestGroup, e,
-   SharedHandle<SocketCore>(),
-   SharedHandle<SocketRecvBuffer>(),
+  (cuid, std::shared_ptr<Request>(), std::shared_ptr<FileEntry>(), requestGroup, e,
+   std::shared_ptr<SocketCore>(),
+   std::shared_ptr<SocketRecvBuffer>(),
    false)
 {
   setStatus(Command::STATUS_ONESHOT_REALTIME);

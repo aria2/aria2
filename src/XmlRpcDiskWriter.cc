@@ -67,9 +67,9 @@ int XmlRpcDiskWriter::finalize()
 
 RpcRequest XmlRpcDiskWriter::getResult() const
 {
-  SharedHandle<List> params;
+  std::shared_ptr<List> params;
   if(downcast<List>(psm_.getCurrentFrameValue())) {
-    params = static_pointer_cast<List>(psm_.getCurrentFrameValue());
+    params = std::static_pointer_cast<List>(psm_.getCurrentFrameValue());
   } else {
     params = List::g();
   }

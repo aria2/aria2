@@ -52,8 +52,8 @@
 namespace aria2 {
 
 bool FileEntry::RequestFaster::operator()
-  (const SharedHandle<Request>& lhs,
-   const SharedHandle<Request>& rhs) const
+  (const std::shared_ptr<Request>& lhs,
+   const std::shared_ptr<Request>& rhs) const
 {
   if(!lhs->getPeerStat()) {
     return false;
@@ -139,15 +139,15 @@ OutputIterator enumerateInFlightHosts
 }
 } // namespace
 
-SharedHandle<Request>
+std::shared_ptr<Request>
 FileEntry::getRequest
-(const SharedHandle<URISelector>& selector,
+(const std::shared_ptr<URISelector>& selector,
  bool uriReuse,
  const std::vector<std::pair<size_t, std::string> >& usedHosts,
  const std::string& referer,
  const std::string& method)
 {
-  SharedHandle<Request> req;
+  std::shared_ptr<Request> req;
   if(requestPool_.empty()) {
     std::vector<std::string> inFlightHosts;
     enumerateInFlightHosts(inFlightRequests_.begin(), inFlightRequests_.end(),
@@ -215,54 +215,54 @@ FileEntry::getRequest
   return req;
 }
 
-SharedHandle<Request>
-FileEntry::findFasterRequest(const SharedHandle<Request>& base)
+std::shared_ptr<Request>
+FileEntry::findFasterRequest(const std::shared_ptr<Request>& base)
 {
   const int startupIdleTime = 10;
   if(requestPool_.empty() ||
      lastFasterReplace_.difference(global::wallclock()) < startupIdleTime) {
-    return SharedHandle<Request>();
+    return std::shared_ptr<Request>();
   }
-  const SharedHandle<PeerStat>& fastest =
+  const std::shared_ptr<PeerStat>& fastest =
     (*requestPool_.begin())->getPeerStat();
   if(!fastest) {
-    return SharedHandle<Request>();
+    return std::shared_ptr<Request>();
   }
-  const SharedHandle<PeerStat>& basestat = base->getPeerStat();
+  const std::shared_ptr<PeerStat>& basestat = base->getPeerStat();
   // TODO hard coded value. See PREF_STARTUP_IDLE_TIME
   if(!basestat ||
      (basestat->getDownloadStartTime().
       difference(global::wallclock()) >= startupIdleTime &&
       fastest->getAvgDownloadSpeed()*0.8 > basestat->calculateDownloadSpeed())){
     // TODO we should consider that "fastest" is very slow.
-    SharedHandle<Request> fastestRequest = *requestPool_.begin();
+    std::shared_ptr<Request> fastestRequest = *requestPool_.begin();
     requestPool_.erase(requestPool_.begin());
     inFlightRequests_.insert(fastestRequest);
     lastFasterReplace_ = global::wallclock();
     return fastestRequest;
   }
-  return SharedHandle<Request>();
+  return std::shared_ptr<Request>();
 }
 
-SharedHandle<Request>
+std::shared_ptr<Request>
 FileEntry::findFasterRequest
-(const SharedHandle<Request>& base,
+(const std::shared_ptr<Request>& base,
  const std::vector<std::pair<size_t, std::string> >& usedHosts,
- const SharedHandle<ServerStatMan>& serverStatMan)
+ const std::shared_ptr<ServerStatMan>& serverStatMan)
 {
   const int startupIdleTime = 10;
   const int SPEED_THRESHOLD = 20*1024;
   if(lastFasterReplace_.difference(global::wallclock()) < startupIdleTime) {
-    return SharedHandle<Request>();
+    return std::shared_ptr<Request>();
   }
   std::vector<std::string> inFlightHosts;
   enumerateInFlightHosts(inFlightRequests_.begin(), inFlightRequests_.end(),
                          std::back_inserter(inFlightHosts));
-  const SharedHandle<PeerStat>& basestat = base->getPeerStat();
+  const std::shared_ptr<PeerStat>& basestat = base->getPeerStat();
   A2_LOG_DEBUG("Search faster server using ServerStat.");
   // Use first 10 good URIs to introduce some randomness.
   const size_t NUM_URI = 10;
-  std::vector<std::pair<SharedHandle<ServerStat>, std::string> > fastCands;
+  std::vector<std::pair<std::shared_ptr<ServerStat>, std::string> > fastCands;
   std::vector<std::string> normCands;
   for(std::deque<std::string>::const_iterator i = uris_.begin(),
         eoi = uris_.end(); i != eoi && fastCands.size() < NUM_URI; ++i) {
@@ -284,7 +284,7 @@ FileEntry::findFasterRequest
       A2_LOG_DEBUG(fmt("%s is in usedHosts, not considered", (*i).c_str()));
       continue;
     }
-    SharedHandle<ServerStat> ss = serverStatMan->find(host, protocol);
+    std::shared_ptr<ServerStat> ss = serverStatMan->find(host, protocol);
     if(ss && ss->isOK()) {
       if((basestat &&
           ss->getDownloadSpeed() > basestat->calculateDownloadSpeed()*1.5) ||
@@ -295,7 +295,7 @@ FileEntry::findFasterRequest
   }
   if(!fastCands.empty()) {
     std::sort(fastCands.begin(), fastCands.end(), ServerStatFaster());
-    SharedHandle<Request> fastestRequest(new Request());
+    std::shared_ptr<Request> fastestRequest(new Request());
     const std::string& uri = fastCands.front().second;
     A2_LOG_DEBUG(fmt("Selected %s from fastCands", uri.c_str()));
     fastestRequest->setUri(uri);
@@ -307,12 +307,12 @@ FileEntry::findFasterRequest
     return fastestRequest;
   }
   A2_LOG_DEBUG("No faster server found.");
-  return SharedHandle<Request>();
+  return std::shared_ptr<Request>();
 }
 
-void FileEntry::storePool(const SharedHandle<Request>& request)
+void FileEntry::storePool(const std::shared_ptr<Request>& request)
 {
-  const SharedHandle<PeerStat>& peerStat = request->getPeerStat();
+  const std::shared_ptr<PeerStat>& peerStat = request->getPeerStat();
   if(peerStat) {
     // We need to calculate average download speed here in order to
     // store Request in the right position in the pool.
@@ -321,7 +321,7 @@ void FileEntry::storePool(const SharedHandle<Request>& request)
   requestPool_.insert(request);
 }
 
-void FileEntry::poolRequest(const SharedHandle<Request>& request)
+void FileEntry::poolRequest(const std::shared_ptr<Request>& request)
 {
   removeRequest(request);
   if(!request->removalRequested()) {
@@ -329,7 +329,7 @@ void FileEntry::poolRequest(const SharedHandle<Request>& request)
   }
 }
 
-bool FileEntry::removeRequest(const SharedHandle<Request>& request)
+bool FileEntry::removeRequest(const std::shared_ptr<Request>& request)
 {
   return inFlightRequests_.erase(request) == 1;
 }
@@ -497,7 +497,7 @@ bool FileEntry::removeUri(const std::string& uri)
     }
   } else {
     spentUris_.erase(itr);
-    SharedHandle<Request> req;
+    std::shared_ptr<Request> req;
     InFlightRequestSet::iterator riter =
       findRequestByUri(inFlightRequests_.begin(), inFlightRequests_.end(), uri);
     if(riter == inFlightRequests_.end()) {
@@ -588,7 +588,7 @@ bool FileEntry::emptyRequestUri() const
 
 void writeFilePath
 (std::ostream& o,
- const SharedHandle<FileEntry>& entry,
+ const std::shared_ptr<FileEntry>& entry,
  bool memory)
 {
   if(entry->getPath().empty()) {

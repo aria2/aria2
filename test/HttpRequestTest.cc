@@ -40,8 +40,8 @@ class HttpRequestTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testConditionalRequest);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<Option> option_;
-  SharedHandle<AuthConfigFactory> authConfigFactory_;
+  std::shared_ptr<Option> option_;
+  std::shared_ptr<AuthConfigFactory> authConfigFactory_;
 public:
   void setUp()
   {
@@ -74,9 +74,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION( HttpRequestTest );
 void HttpRequestTest::testGetStartByte()
 {
   HttpRequest httpRequest;
-  SharedHandle<Piece> p(new Piece(1, 1024));
-  SharedHandle<Segment> segment(new PiecedSegment(1024, p));
-  SharedHandle<FileEntry> fileEntry(new FileEntry("file", 1024*10, 0));
+  std::shared_ptr<Piece> p(new Piece(1, 1024));
+  std::shared_ptr<Segment> segment(new PiecedSegment(1024, p));
+  std::shared_ptr<FileEntry> fileEntry(new FileEntry("file", 1024*10, 0));
 
   CPPUNIT_ASSERT_EQUAL((int64_t)0LL, httpRequest.getStartByte());
 
@@ -93,9 +93,9 @@ void HttpRequestTest::testGetEndByte()
   size_t segmentLength = 1024*1024;
 
   HttpRequest httpRequest;
-  SharedHandle<Piece> piece(new Piece(index, length));
-  SharedHandle<Segment> segment(new PiecedSegment(segmentLength, piece));
-  SharedHandle<FileEntry> fileEntry(new FileEntry("file", segmentLength*10, 0));
+  std::shared_ptr<Piece> piece(new Piece(index, length));
+  std::shared_ptr<Segment> segment(new PiecedSegment(segmentLength, piece));
+  std::shared_ptr<FileEntry> fileEntry(new FileEntry("file", segmentLength*10, 0));
 
   CPPUNIT_ASSERT_EQUAL((int64_t)0LL, httpRequest.getEndByte());
 
@@ -103,7 +103,7 @@ void HttpRequestTest::testGetEndByte()
 
   CPPUNIT_ASSERT_EQUAL((int64_t)0LL, httpRequest.getEndByte());
 
-  SharedHandle<Request> request(new Request());
+  std::shared_ptr<Request> request(new Request());
   request->supportsPersistentConnection(true);
   request->setPipeliningHint(true);
 
@@ -126,16 +126,16 @@ void HttpRequestTest::testGetEndByte()
 
 void HttpRequestTest::testCreateRequest()
 {
-  SharedHandle<Piece> p;
+  std::shared_ptr<Piece> p;
 
-  SharedHandle<Request> request(new Request());
+  std::shared_ptr<Request> request(new Request());
   request->supportsPersistentConnection(true);
 
   request->setUri("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
   p.reset(new Piece(0, 1024));
-  SharedHandle<Segment> segment(new PiecedSegment(1024, p));
-  SharedHandle<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
+  std::shared_ptr<Segment> segment(new PiecedSegment(1024, p));
+  std::shared_ptr<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
 
   HttpRequest httpRequest;
   httpRequest.disableContentEncoding();
@@ -259,7 +259,7 @@ void HttpRequestTest::testCreateRequest()
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
   // enable http proxy auth
-  SharedHandle<Request> proxyRequest(new Request());
+  std::shared_ptr<Request> proxyRequest(new Request());
   CPPUNIT_ASSERT(proxyRequest->setUri
                  ("http://aria2proxyuser:aria2proxypasswd@localhost:9000"));
   httpRequest.setProxyRequest(proxyRequest);
@@ -316,18 +316,18 @@ void HttpRequestTest::testCreateRequest_ftp()
   option_->put(PREF_FTP_USER, "aria2user");
   option_->put(PREF_FTP_PASSWD, "aria2passwd");
 
-  SharedHandle<Request> request(new Request());
+  std::shared_ptr<Request> request(new Request());
   request->setUri("ftp://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
-  SharedHandle<Request> proxyRequest(new Request());
+  std::shared_ptr<Request> proxyRequest(new Request());
   CPPUNIT_ASSERT(proxyRequest->setUri
                  ("http://localhost:9000"));
 
   HttpRequest httpRequest;
-  SharedHandle<Piece> p(new Piece(0, 1024*1024));
-  SharedHandle<Segment> segment
+  std::shared_ptr<Piece> p(new Piece(0, 1024*1024));
+  std::shared_ptr<Segment> segment
     (new PiecedSegment(1024*1024, p));
-  SharedHandle<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
+  std::shared_ptr<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
 
   httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
@@ -372,12 +372,12 @@ void HttpRequestTest::testCreateRequest_ftp()
 
 void HttpRequestTest::testCreateRequest_with_cookie()
 {
-  SharedHandle<Request> request(new Request());
+  std::shared_ptr<Request> request(new Request());
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
-  SharedHandle<Piece> p(new Piece(0, 1024*1024));
-  SharedHandle<Segment> segment
+  std::shared_ptr<Piece> p(new Piece(0, 1024*1024));
+  std::shared_ptr<Segment> segment
     (new PiecedSegment(1024*1024, p));
-  SharedHandle<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
+  std::shared_ptr<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
 
   Cookie cookies[] = {
     createCookie("name1", "value1", "localhost", true, "/archives", false),
@@ -388,7 +388,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
     createCookie("name4", "value4", "aria2.org", false, "/archives/", true),
     createCookie("name5", "value5", "example.org", false, "/", false)
   };
-  SharedHandle<CookieStorage> st(new CookieStorage());
+  std::shared_ptr<CookieStorage> st(new CookieStorage());
   for(size_t i = 0; i < A2_ARRAY_LEN(cookies); ++i) {
     CPPUNIT_ASSERT(st->store(cookies[i], 0));
   }
@@ -489,7 +489,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
 
 void HttpRequestTest::testCreateRequest_query()
 {
-  SharedHandle<Request> request(new Request());
+  std::shared_ptr<Request> request(new Request());
   request->setUri("http://localhost/wiki?id=9ad5109a-b8a5-4edf-9373-56a1c34ae138");
   HttpRequest httpRequest;
   httpRequest.disableContentEncoding();
@@ -511,7 +511,7 @@ void HttpRequestTest::testCreateRequest_query()
 
 void HttpRequestTest::testCreateRequest_head()
 {
-  SharedHandle<Request> request(new Request());
+  std::shared_ptr<Request> request(new Request());
   request->setMethod(Request::METHOD_HEAD);
   request->setUri("http://localhost/aria2-1.0.0.tar.bz2");
 
@@ -528,17 +528,17 @@ void HttpRequestTest::testCreateRequest_head()
 
 void HttpRequestTest::testCreateRequest_endOffsetOverride()
 {
-  SharedHandle<Request> request(new Request());
+  std::shared_ptr<Request> request(new Request());
   request->setUri("http://localhost/myfile");
   HttpRequest httpRequest;
   httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
   httpRequest.setAuthConfigFactory(authConfigFactory_, option_.get());
-  SharedHandle<Piece> p(new Piece(0, 1024*1024));
-  SharedHandle<Segment> segment(new PiecedSegment(1024*1024, p));
+  std::shared_ptr<Piece> p(new Piece(0, 1024*1024));
+  std::shared_ptr<Segment> segment(new PiecedSegment(1024*1024, p));
   httpRequest.setSegment(segment);
   httpRequest.setEndOffsetOverride(1024*1024*1024);
-  SharedHandle<FileEntry> fileEntry
+  std::shared_ptr<FileEntry> fileEntry
     (new FileEntry("file", 1024*1024*1024*10LL, 0));
   httpRequest.setFileEntry(fileEntry);
   // End byte is passed if it is not 0
@@ -573,12 +573,12 @@ void HttpRequestTest::testCreateRequest_endOffsetOverride()
 
 void HttpRequestTest::testCreateProxyRequest()
 {
-  SharedHandle<Request> request(new Request());
+  std::shared_ptr<Request> request(new Request());
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
-  SharedHandle<Piece> p(new Piece(0, 1024*1024));
-  SharedHandle<Segment> segment(new PiecedSegment(1024*1024, p));
+  std::shared_ptr<Piece> p(new Piece(0, 1024*1024));
+  std::shared_ptr<Segment> segment(new PiecedSegment(1024*1024, p));
 
-  SharedHandle<Request> proxyRequest(new Request());
+  std::shared_ptr<Request> proxyRequest(new Request());
   CPPUNIT_ASSERT(proxyRequest->setUri("http://localhost:9000"));
 
   HttpRequest httpRequest;
@@ -636,13 +636,13 @@ void HttpRequestTest::testCreateProxyRequest()
 
 void HttpRequestTest::testIsRangeSatisfied()
 {
-  SharedHandle<Request> request(new Request());
+  std::shared_ptr<Request> request(new Request());
   request->supportsPersistentConnection(true);
   request->setUri("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
   request->setPipeliningHint(false); // default: false
-  SharedHandle<Piece> p(new Piece(0, 1024*1024));
-  SharedHandle<Segment> segment(new PiecedSegment(1024*1024, p));
-  SharedHandle<FileEntry> fileEntry(new FileEntry("file", 0, 0));
+  std::shared_ptr<Piece> p(new Piece(0, 1024*1024));
+  std::shared_ptr<Segment> segment(new PiecedSegment(1024*1024, p));
+  std::shared_ptr<FileEntry> fileEntry(new FileEntry("file", 0, 0));
 
   HttpRequest httpRequest;
 
@@ -699,11 +699,11 @@ void HttpRequestTest::testIsRangeSatisfied()
 
 void HttpRequestTest::testUserAgent()
 {
-  SharedHandle<Request> request(new Request());
+  std::shared_ptr<Request> request(new Request());
   request->setUri("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
-  //SharedHandle<Piece> p(new Piece(0, 1024));
-  //SharedHandle<Segment> segment(new PiecedSegment(1024, p));
+  //std::shared_ptr<Piece> p(new Piece(0, 1024));
+  //std::shared_ptr<Segment> segment(new PiecedSegment(1024, p));
 
   HttpRequest httpRequest;
   httpRequest.disableContentEncoding();
@@ -723,7 +723,7 @@ void HttpRequestTest::testUserAgent()
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
-  SharedHandle<Request> proxyRequest(new Request());
+  std::shared_ptr<Request> proxyRequest(new Request());
   CPPUNIT_ASSERT(proxyRequest->setUri("http://localhost:9000"));
 
   httpRequest.setProxyRequest(proxyRequest);
@@ -739,7 +739,7 @@ void HttpRequestTest::testUserAgent()
 
 void HttpRequestTest::testAddHeader()
 {
-  SharedHandle<Request> request(new Request());
+  std::shared_ptr<Request> request(new Request());
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
 
   HttpRequest httpRequest;
@@ -764,7 +764,7 @@ void HttpRequestTest::testAddHeader()
 
 void HttpRequestTest::testAcceptMetalink()
 {
-  SharedHandle<Request> request(new Request());
+  std::shared_ptr<Request> request(new Request());
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
 
   HttpRequest httpRequest;
@@ -788,7 +788,7 @@ void HttpRequestTest::testAcceptMetalink()
 
 void HttpRequestTest::testEnableAcceptEncoding()
 {
-  SharedHandle<Request> request(new Request());
+  std::shared_ptr<Request> request(new Request());
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
 
   HttpRequest httpRequest;
@@ -829,7 +829,7 @@ void HttpRequestTest::testEnableAcceptEncoding()
 
 void HttpRequestTest::testCreateRequest_ipv6LiteralAddr()
 {
-  SharedHandle<Request> request(new Request());
+  std::shared_ptr<Request> request(new Request());
   request->setUri("http://[::1]/path");
   HttpRequest httpRequest;
   httpRequest.disableContentEncoding();
@@ -838,7 +838,7 @@ void HttpRequestTest::testCreateRequest_ipv6LiteralAddr()
 
   CPPUNIT_ASSERT(httpRequest.createRequest().find("Host: [::1]") != std::string::npos);
 
-  SharedHandle<Request> proxy(new Request());
+  std::shared_ptr<Request> proxy(new Request());
   proxy->setUri("http://proxy");
   httpRequest.setProxyRequest(proxy);
   std::string proxyRequest = httpRequest.createProxyRequest();

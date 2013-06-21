@@ -80,11 +80,11 @@ void BtPortMessage::doReceivedAction()
     }
     // node id is random at this point. When ping reply received, new DHTNode
     // instance created with proper node ID and is added to a routing table.
-    SharedHandle<DHTNode> node(new DHTNode());
+    std::shared_ptr<DHTNode> node(new DHTNode());
     node->setIPAddress(getPeer()->getIPAddress());
     node->setPort(port_);
     {
-      SharedHandle<DHTTask> task = taskFactory_->createPingTask(node);
+      std::shared_ptr<DHTTask> task = taskFactory_->createPingTask(node);
       taskQueue_->addImmediateTask(task);
     }
     if(routingTable_->getNumBucket() == 1) {

@@ -97,7 +97,7 @@ void appendReservedGroup(RequestGroupList& list,
 } // namespace
 
 RequestGroupMan::RequestGroupMan
-(const std::vector<SharedHandle<RequestGroup> >& requestGroups,
+(const std::vector<std::shared_ptr<RequestGroup> >& requestGroups,
  int maxSimultaneousDownloads,
  const Option* option)
   : maxSimultaneousDownloads_(maxSimultaneousDownloads),
@@ -132,20 +132,20 @@ bool RequestGroupMan::downloadFinished()
 }
 
 void RequestGroupMan::addRequestGroup
-(const SharedHandle<RequestGroup>& group)
+(const std::shared_ptr<RequestGroup>& group)
 {
   requestGroups_.push_back(group->getGID(), group);
 }
 
 void RequestGroupMan::addReservedGroup
-(const std::vector<SharedHandle<RequestGroup> >& groups)
+(const std::vector<std::shared_ptr<RequestGroup> >& groups)
 {
   requestQueueCheck();
   appendReservedGroup(reservedGroups_, groups.begin(), groups.end());
 }
 
 void RequestGroupMan::addReservedGroup
-(const SharedHandle<RequestGroup>& group)
+(const std::shared_ptr<RequestGroup>& group)
 {
   requestQueueCheck();
   reservedGroups_.push_back(group->getGID(), group);
@@ -153,7 +153,7 @@ void RequestGroupMan::addReservedGroup
 
 namespace {
 struct RequestGroupKeyFunc {
-  a2_gid_t operator()(const SharedHandle<RequestGroup>& rg) const
+  a2_gid_t operator()(const std::shared_ptr<RequestGroup>& rg) const
   {
     return rg->getGID();
   }
@@ -161,7 +161,7 @@ struct RequestGroupKeyFunc {
 } // namespace
 
 void RequestGroupMan::insertReservedGroup
-(size_t pos, const std::vector<SharedHandle<RequestGroup> >& groups)
+(size_t pos, const std::vector<std::shared_ptr<RequestGroup> >& groups)
 {
   requestQueueCheck();
   pos = std::min(reservedGroups_.size(), pos);
@@ -170,7 +170,7 @@ void RequestGroupMan::insertReservedGroup
 }
 
 void RequestGroupMan::insertReservedGroup
-(size_t pos, const SharedHandle<RequestGroup>& group)
+(size_t pos, const std::shared_ptr<RequestGroup>& group)
 {
   requestQueueCheck();
   pos = std::min(reservedGroups_.size(), pos);
@@ -182,9 +182,9 @@ size_t RequestGroupMan::countRequestGroup() const
   return requestGroups_.size();
 }
 
-SharedHandle<RequestGroup> RequestGroupMan::findGroup(a2_gid_t gid) const
+std::shared_ptr<RequestGroup> RequestGroupMan::findGroup(a2_gid_t gid) const
 {
-  SharedHandle<RequestGroup> rg = requestGroups_.get(gid);
+  std::shared_ptr<RequestGroup> rg = requestGroups_.get(gid);
   if(!rg) {
     rg = reservedGroups_.get(gid);
   }
@@ -211,7 +211,7 @@ bool RequestGroupMan::removeReservedGroup(a2_gid_t gid)
 namespace {
 
 void notifyDownloadEvent
-(DownloadEvent event, const SharedHandle<RequestGroup>& group)
+(DownloadEvent event, const std::shared_ptr<RequestGroup>& group)
 {
   // Check NULL to make unit test easier.
   if(SingletonHolder<Notifier>::instance()) {
@@ -224,7 +224,7 @@ void notifyDownloadEvent
 namespace {
 
 void executeStopHook
-(const SharedHandle<RequestGroup>& group,
+(const std::shared_ptr<RequestGroup>& group,
  const Option* option,
  error_code::Value result)
 {
@@ -256,9 +256,9 @@ private:
   DownloadEngine* e_;
   RequestGroupList& reservedGroups_;
 
-  void saveSignature(const SharedHandle<RequestGroup>& group)
+  void saveSignature(const std::shared_ptr<RequestGroup>& group)
   {
-    SharedHandle<Signature> sig =
+    std::shared_ptr<Signature> sig =
       group->getDownloadContext()->getSignature();
     if(sig && !sig->getBody().empty()) {
       // filename of signature file is the path to download file followed by
@@ -274,14 +274,14 @@ private:
 
   // Collect statistics during download in PeerStats and update/register
   // ServerStatMan
-  void collectStat(const SharedHandle<RequestGroup>& group)
+  void collectStat(const std::shared_ptr<RequestGroup>& group)
   {
     if(group->getSegmentMan()) {
       bool singleConnection =
         group->getSegmentMan()->getPeerStats().size() == 1;
-      const std::vector<SharedHandle<PeerStat> >& peerStats =
+      const std::vector<std::shared_ptr<PeerStat> >& peerStats =
         group->getSegmentMan()->getFastestPeerStats();
-      for(std::vector<SharedHandle<PeerStat> >::const_iterator i =
+      for(std::vector<std::shared_ptr<PeerStat> >::const_iterator i =
             peerStats.begin(), eoi = peerStats.end(); i != eoi; ++i) {
         if((*i)->getHostname().empty() || (*i)->getProtocol().empty()) {
           continue;
@@ -289,7 +289,7 @@ private:
         int speed = (*i)->getAvgDownloadSpeed();
         if (speed == 0) continue;
 
-        SharedHandle<ServerStat> ss =
+        std::shared_ptr<ServerStat> ss =
           e_->getRequestGroupMan()->getOrCreateServerStat((*i)->getHostname(),
                                                           (*i)->getProtocol());
         ss->increaseCounter();
@@ -315,7 +315,7 @@ public:
   {
     if(group->getNumCommand() == 0) {
       collectStat(group);
-      const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
+      const std::shared_ptr<DownloadContext>& dctx = group->getDownloadContext();
       // DownloadContext::resetDownloadStopTime() is only called when
       // download completed. If
       // DownloadContext::getDownloadStopTime().isZero() is true, then
@@ -342,7 +342,7 @@ public:
           } else {
             group->saveControlFile();
           }
-          std::vector<SharedHandle<RequestGroup> > nextGroups;
+          std::vector<std::shared_ptr<RequestGroup> > nextGroups;
           group->postDownloadProcessing(nextGroups);
           if(!nextGroups.empty()) {
             A2_LOG_DEBUG
@@ -360,9 +360,9 @@ public:
              dctx->hasAttribute(CTX_ATTR_BT)) {
             A2_LOG_INFO(fmt(MSG_REMOVING_UNSELECTED_FILE,
                             GroupId::toHex(group->getGID()).c_str()));
-            const std::vector<SharedHandle<FileEntry> >& files =
+            const std::vector<std::shared_ptr<FileEntry> >& files =
               dctx->getFileEntries();
-            for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
+            for(std::vector<std::shared_ptr<FileEntry> >::const_iterator i =
                   files.begin(), eoi = files.end(); i != eoi; ++i) {
               if(!(*i)->isRequested()) {
                 if(File((*i)->getPath()).remove()) {
@@ -396,7 +396,7 @@ public:
         // TODO Should we have to prepend spend uris to remaining uris
         // in case PREF_REUSE_URI is disabed?
       } else {
-        SharedHandle<DownloadResult> dr = group->createDownloadResult();
+        std::shared_ptr<DownloadResult> dr = group->createDownloadResult();
         e_->getRequestGroupMan()->addDownloadResult(dr);
         executeStopHook(group, e_->getOption(), dr->result);
         group->releaseRuntimeResource(e_);
@@ -421,11 +421,11 @@ void RequestGroupMan::removeStoppedGroup(DownloadEngine* e)
 }
 
 void RequestGroupMan::configureRequestGroup
-(const SharedHandle<RequestGroup>& requestGroup) const
+(const std::shared_ptr<RequestGroup>& requestGroup) const
 {
   const std::string& uriSelectorValue =
     requestGroup->getOption()->get(PREF_URI_SELECTOR);
-  SharedHandle<URISelector> sel;
+  std::shared_ptr<URISelector> sel;
   if(uriSelectorValue == V_FEEDBACK) {
     sel.reset(new FeedbackURISelector(serverStatMan_));
   } else if(uriSelectorValue == V_INORDER) {
@@ -439,7 +439,7 @@ void RequestGroupMan::configureRequestGroup
 }
 
 namespace {
-void createInitialCommand(const SharedHandle<RequestGroup>& requestGroup,
+void createInitialCommand(const std::shared_ptr<RequestGroup>& requestGroup,
                           std::vector<Command*>& commands,
                           DownloadEngine* e)
 {
@@ -455,11 +455,11 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
   }
   int count = 0;
   int num = maxSimultaneousDownloads_-requestGroups_.size();
-  std::vector<SharedHandle<RequestGroup> > pending;
+  std::vector<std::shared_ptr<RequestGroup> > pending;
 
   while(count < num && (uriListParser_ || !reservedGroups_.empty())) {
     if(uriListParser_ && reservedGroups_.empty()) {
-      std::vector<SharedHandle<RequestGroup> > groups;
+      std::vector<std::shared_ptr<RequestGroup> > groups;
       // May throw exception
       bool ok = createRequestGroupFromUriListParser(groups, option_,
                                                     uriListParser_.get());
@@ -472,7 +472,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
         }
       }
     }
-    SharedHandle<RequestGroup> groupToAdd = *reservedGroups_.begin();
+    std::shared_ptr<RequestGroup> groupToAdd = *reservedGroups_.begin();
     reservedGroups_.pop_front();
     if((keepRunning_ && groupToAdd->isPauseRequested()) ||
        !groupToAdd->isDependencyResolved()) {
@@ -525,7 +525,7 @@ void RequestGroupMan::save()
 {
   for(RequestGroupList::iterator itr = requestGroups_.begin(),
         eoi = requestGroups_.end(); itr != eoi; ++itr) {
-    const SharedHandle<RequestGroup>& rg = *itr;
+    const std::shared_ptr<RequestGroup>& rg = *itr;
     if(rg->allDownloadFinished() &&
        !rg->getDownloadContext()->isChecksumVerificationNeeded()) {
       rg->removeControlFile();
@@ -557,7 +557,7 @@ RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
   for(DownloadResultList::const_iterator itr =
         downloadResults_.begin(), eoi = downloadResults_.end(); itr != eoi;
       ++itr) {
-    const SharedHandle<DownloadResult>& dr = *itr;
+    const std::shared_ptr<DownloadResult>& dr = *itr;
     if(dr->belongsTo != 0) {
       continue;
     }
@@ -646,7 +646,7 @@ void RequestGroupMan::showDownloadResults(OutputFile& o, bool full) const
   for(DownloadResultList::const_iterator itr =
         downloadResults_.begin(), eoi = downloadResults_.end(); itr != eoi;
       ++itr) {
-    const SharedHandle<DownloadResult>& dr = *itr;
+    const std::shared_ptr<DownloadResult>& dr = *itr;
     if(dr->belongsTo != 0) {
       continue;
     }
@@ -697,7 +697,7 @@ namespace {
 void formatDownloadResultCommon
 (std::ostream& o,
  const char* status,
- const SharedHandle<DownloadResult>& downloadResult)
+ const std::shared_ptr<DownloadResult>& downloadResult)
 {
   o << std::setw(3) << downloadResult->gid->toAbbrevHex() << "|"
     << std::setw(4) << status << "|"
@@ -716,16 +716,16 @@ void formatDownloadResultCommon
 void RequestGroupMan::formatDownloadResultFull
 (OutputFile& out,
  const char* status,
- const SharedHandle<DownloadResult>& downloadResult) const
+ const std::shared_ptr<DownloadResult>& downloadResult) const
 {
   BitfieldMan bt(downloadResult->pieceLength, downloadResult->totalLength);
   bt.setBitfield(reinterpret_cast<const unsigned char*>
                  (downloadResult->bitfield.data()),
                  downloadResult->bitfield.size());
   bool head = true;
-  const std::vector<SharedHandle<FileEntry> >& fileEntries =
+  const std::vector<std::shared_ptr<FileEntry> >& fileEntries =
     downloadResult->fileEntries;
-  for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
+  for(std::vector<std::shared_ptr<FileEntry> >::const_iterator i =
         fileEntries.begin(), eoi = fileEntries.end(); i != eoi; ++i) {
     if(!(*i)->isRequested()) {
       continue;
@@ -758,11 +758,11 @@ void RequestGroupMan::formatDownloadResultFull
 
 std::string RequestGroupMan::formatDownloadResult
 (const char* status,
- const SharedHandle<DownloadResult>& downloadResult) const
+ const std::shared_ptr<DownloadResult>& downloadResult) const
 {
   std::stringstream o;
   formatDownloadResultCommon(o, status, downloadResult);
-  const std::vector<SharedHandle<FileEntry> >& fileEntries =
+  const std::vector<std::shared_ptr<FileEntry> >& fileEntries =
     downloadResult->fileEntries;
   writeFilePath(fileEntries.begin(), fileEntries.end(), o,
                 downloadResult->inMemoryDownload);
@@ -795,9 +795,9 @@ bool RequestGroupMan::isSameFileBeingDownloaded(RequestGroup* requestGroup) cons
   std::vector<std::string> files;
   for(RequestGroupList::const_iterator itr = requestGroups_.begin(),
         eoi = requestGroups_.end(); itr != eoi; ++itr) {
-    const SharedHandle<RequestGroup>& rg = *itr;
+    const std::shared_ptr<RequestGroup>& rg = *itr;
     if(rg.get() != requestGroup) {
-      const std::vector<SharedHandle<FileEntry> >& entries =
+      const std::vector<std::shared_ptr<FileEntry> >& entries =
         rg->getDownloadContext()->getFileEntries();
       std::transform(entries.begin(), entries.end(),
                      std::back_inserter(files),
@@ -805,7 +805,7 @@ bool RequestGroupMan::isSameFileBeingDownloaded(RequestGroup* requestGroup) cons
     }
   }
   std::sort(files.begin(), files.end());
-  const std::vector<SharedHandle<FileEntry> >& entries =
+  const std::vector<std::shared_ptr<FileEntry> >& entries =
     requestGroup->getDownloadContext()->getFileEntries();
   return sameFilePathExists(files.begin(), files.end(),
                             entries.begin(), entries.end());
@@ -833,7 +833,7 @@ TransferStat RequestGroupMan::calculateStat()
   return netStat_.toTransferStat();
 }
 
-SharedHandle<DownloadResult>
+std::shared_ptr<DownloadResult>
 RequestGroupMan::findDownloadResult(a2_gid_t gid) const
 {
   return downloadResults_.get(gid);
@@ -844,7 +844,7 @@ bool RequestGroupMan::removeDownloadResult(a2_gid_t gid)
   return downloadResults_.remove(gid);
 }
 
-void RequestGroupMan::addDownloadResult(const SharedHandle<DownloadResult>& dr)
+void RequestGroupMan::addDownloadResult(const std::shared_ptr<DownloadResult>& dr)
 {
   bool rv = downloadResults_.push_back(dr->gid->getNumericId(), dr);
   assert(rv);
@@ -852,7 +852,7 @@ void RequestGroupMan::addDownloadResult(const SharedHandle<DownloadResult>& dr)
     DownloadResultList::iterator i = downloadResults_.begin();
     // Save last encountered error code so that we can report it
     // later.
-    const SharedHandle<DownloadResult>& dr = *i;
+    const std::shared_ptr<DownloadResult>& dr = *i;
     if(dr->belongsTo == 0 && dr->result != error_code::FINISHED) {
       removedLastErrorResult_ = dr->result;
       ++removedErrorResult_;
@@ -866,18 +866,18 @@ void RequestGroupMan::purgeDownloadResult()
   downloadResults_.clear();
 }
 
-SharedHandle<ServerStat>
+std::shared_ptr<ServerStat>
 RequestGroupMan::findServerStat(const std::string& hostname,
                                 const std::string& protocol) const
 {
   return serverStatMan_->find(hostname, protocol);
 }
 
-SharedHandle<ServerStat>
+std::shared_ptr<ServerStat>
 RequestGroupMan::getOrCreateServerStat(const std::string& hostname,
                                        const std::string& protocol)
 {
-  SharedHandle<ServerStat> ss = findServerStat(hostname, protocol);
+  std::shared_ptr<ServerStat> ss = findServerStat(hostname, protocol);
   if(!ss) {
     ss.reset(new ServerStat(hostname, protocol));
     addServerStat(ss);
@@ -885,7 +885,7 @@ RequestGroupMan::getOrCreateServerStat(const std::string& hostname,
   return ss;
 }
 
-bool RequestGroupMan::addServerStat(const SharedHandle<ServerStat>& serverStat)
+bool RequestGroupMan::addServerStat(const std::shared_ptr<ServerStat>& serverStat)
 {
   return serverStatMan_->add(serverStat);
 }
@@ -927,7 +927,7 @@ void RequestGroupMan::getUsedHosts
   std::vector<Triplet<size_t, int, std::string> > tempHosts;
   for(RequestGroupList::const_iterator i = requestGroups_.begin(),
         eoi = requestGroups_.end(); i != eoi; ++i) {
-    const SharedHandle<RequestGroup>& rg = *i;
+    const std::shared_ptr<RequestGroup>& rg = *i;
     const FileEntry::InFlightRequestSet& inFlightReqs =
       rg->getDownloadContext()->getFirstFileEntry()->getInFlightRequests();
     for(FileEntry::InFlightRequestSet::iterator j =
@@ -948,7 +948,7 @@ void RequestGroupMan::getUsedHosts
         if(k == eok) {
           std::string protocol = uri::getFieldString(us, USR_SCHEME,
                                                      (*j)->getUri().c_str());
-          SharedHandle<ServerStat> ss = findServerStat(host, protocol);
+          std::shared_ptr<ServerStat> ss = findServerStat(host, protocol);
           int invDlSpeed = (ss && ss->isOK()) ?
             -(static_cast<int>(ss->getDownloadSpeed())) : 0;
           tempHosts.push_back(makeTriplet(1, invDlSpeed, host));
@@ -962,7 +962,7 @@ void RequestGroupMan::getUsedHosts
 }
 
 void RequestGroupMan::setUriListParser
-(const SharedHandle<UriListParser>& uriListParser)
+(const std::shared_ptr<UriListParser>& uriListParser)
 {
   uriListParser_ = uriListParser;
 }

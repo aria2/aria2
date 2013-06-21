@@ -54,8 +54,8 @@ private:
 protected:
   virtual std::string toStringOptional() const;
 public:
-  DHTGetPeersMessage(const SharedHandle<DHTNode>& localNode,
-                     const SharedHandle<DHTNode>& remoteNode,
+  DHTGetPeersMessage(const std::shared_ptr<DHTNode>& localNode,
+                     const std::shared_ptr<DHTNode>& remoteNode,
                      const unsigned char* infoHash,
                      const std::string& transactionID = A2STR::NIL);
 
@@ -63,7 +63,7 @@ public:
 
   virtual void doReceivedAction();
 
-  virtual SharedHandle<Dict> getArgument();
+  virtual std::shared_ptr<Dict> getArgument();
 
   virtual const std::string& getMessageType() const;
 

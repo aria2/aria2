@@ -35,7 +35,8 @@
 #ifndef D_FEEDBACK_URI_SELECTOR_H
 #define D_FEEDBACK_URI_SELECTOR_H
 #include "URISelector.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -43,7 +44,7 @@ class ServerStatMan;
 
 class FeedbackURISelector:public URISelector {
 private:
-  SharedHandle<ServerStatMan> serverStatMan_;
+  std::shared_ptr<ServerStatMan> serverStatMan_;
 
   std::string selectRarer
   (const std::deque<std::string>& uris,
@@ -53,7 +54,7 @@ private:
   (const std::deque<std::string>& uris,
    const std::vector<std::pair<size_t, std::string> >& usedHosts);
 public:
-  FeedbackURISelector(const SharedHandle<ServerStatMan>& serverStatMan);
+  FeedbackURISelector(const std::shared_ptr<ServerStatMan>& serverStatMan);
 
   virtual ~FeedbackURISelector();
 

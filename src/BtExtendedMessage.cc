@@ -51,7 +51,7 @@ namespace aria2 {
 const char BtExtendedMessage::NAME[] = "extended";
 
 BtExtendedMessage::BtExtendedMessage
-(const SharedHandle<ExtensionMessage>& extensionMessage):
+(const std::shared_ptr<ExtensionMessage>& extensionMessage):
   SimpleBtMessage(ID, NAME),
   extensionMessage_(extensionMessage),
   msgLength_(0)
@@ -97,14 +97,14 @@ std::string BtExtendedMessage::toString() const {
 }
 
 BtExtendedMessage*
-BtExtendedMessage::create(const SharedHandle<ExtensionMessageFactory>& factory,
-                          const SharedHandle<Peer>& peer,
+BtExtendedMessage::create(const std::shared_ptr<ExtensionMessageFactory>& factory,
+                          const std::shared_ptr<Peer>& peer,
                           const unsigned char* data, size_t dataLength)
 {
   bittorrent::assertPayloadLengthGreater(1, dataLength, NAME);
   bittorrent::assertID(ID, data, NAME);
   assert(factory);
-  SharedHandle<ExtensionMessage> extmsg = factory->createMessage(data+1,
+  std::shared_ptr<ExtensionMessage> extmsg = factory->createMessage(data+1,
                                                                  dataLength-1);
   BtExtendedMessage* message(new BtExtendedMessage(extmsg));
   return message;

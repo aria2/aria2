@@ -50,8 +50,8 @@ namespace metalink {
 namespace {
 
 void query
-(std::vector<SharedHandle<MetalinkEntry> >& result,
- const SharedHandle<Metalinker>& metalinker,
+(std::vector<std::shared_ptr<MetalinkEntry> >& result,
+ const std::shared_ptr<Metalinker>& metalinker,
  const Option* option)
 {
   metalinker->queryEntry(result,
@@ -63,40 +63,40 @@ void query
 } // namespace
 
 void parseAndQuery
-(std::vector<SharedHandle<MetalinkEntry> >& result,
+(std::vector<std::shared_ptr<MetalinkEntry> >& result,
  const std::string& filename,
  const Option* option,
  const std::string& baseUri)
 {
-  SharedHandle<Metalinker> metalinker = parseFile(filename, baseUri);
+  std::shared_ptr<Metalinker> metalinker = parseFile(filename, baseUri);
   query(result, metalinker, option);
 }
 
 void parseAndQuery
-(std::vector<SharedHandle<MetalinkEntry> >& result,
+(std::vector<std::shared_ptr<MetalinkEntry> >& result,
  BinaryStream* bs,
  const Option* option,
  const std::string& baseUri)
 {
-  SharedHandle<Metalinker> metalinker = parseBinaryStream(bs, baseUri);
+  std::shared_ptr<Metalinker> metalinker = parseBinaryStream(bs, baseUri);
   query(result, metalinker, option);
 }
 
 void groupEntryByMetaurlName
 (std::vector<
-  std::pair<std::string, std::vector<SharedHandle<MetalinkEntry> > > >& result,
- const std::vector<SharedHandle<MetalinkEntry> >& entries)
+  std::pair<std::string, std::vector<std::shared_ptr<MetalinkEntry> > > >& result,
+ const std::vector<std::shared_ptr<MetalinkEntry> >& entries)
 {
-  for(std::vector<SharedHandle<MetalinkEntry> >::const_iterator eiter =
+  for(std::vector<std::shared_ptr<MetalinkEntry> >::const_iterator eiter =
         entries.begin(), eoi = entries.end(); eiter != eoi; ++eiter) {
     if((*eiter)->metaurls.empty()) {
-      std::pair<std::string, std::vector<SharedHandle<MetalinkEntry> > > p;
+      std::pair<std::string, std::vector<std::shared_ptr<MetalinkEntry> > > p;
       p.second.push_back(*eiter);
       result.push_back(p);
     } else {
       std::vector<
       std::pair<std::string,
-        std::vector<SharedHandle<MetalinkEntry> > > >::iterator i =
+        std::vector<std::shared_ptr<MetalinkEntry> > > >::iterator i =
         result.begin();
       if((*eiter)->metaurls[0]->name.empty() ||
          !(*eiter)->sizeKnown) {
@@ -110,7 +110,7 @@ void groupEntryByMetaurlName
         }
       }
       if(i == result.end()) {
-        std::pair<std::string, std::vector<SharedHandle<MetalinkEntry> > > p;
+        std::pair<std::string, std::vector<std::shared_ptr<MetalinkEntry> > > p;
         p.first = (*eiter)->metaurls[0]->url;
         p.second.push_back(*eiter);
         result.push_back(p);
@@ -119,7 +119,7 @@ void groupEntryByMetaurlName
   }
 }
 
-SharedHandle<Metalinker> parseFile
+std::shared_ptr<Metalinker> parseFile
 (const std::string& filename,
  const std::string& baseUri)
 {
@@ -136,7 +136,7 @@ SharedHandle<Metalinker> parseFile
   return psm.getResult();
 }
 
-SharedHandle<Metalinker> parseBinaryStream
+std::shared_ptr<Metalinker> parseBinaryStream
 (BinaryStream* bs,
  const std::string& baseUri)
 {

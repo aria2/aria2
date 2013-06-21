@@ -13,91 +13,91 @@ public:
 
   virtual ~MockBtMessageFactory() {}
 
-  virtual SharedHandle<BtMessage>
+  virtual std::shared_ptr<BtMessage>
   createBtMessage(const unsigned char* msg, size_t msgLength) {
-    return SharedHandle<BtMessage>();
+    return std::shared_ptr<BtMessage>();
   };
 
-  virtual SharedHandle<BtHandshakeMessage>
+  virtual std::shared_ptr<BtHandshakeMessage>
   createHandshakeMessage(const unsigned char* msg, size_t msgLength) {
-    return SharedHandle<BtHandshakeMessage>();
+    return std::shared_ptr<BtHandshakeMessage>();
   }
 
-  virtual SharedHandle<BtHandshakeMessage>
+  virtual std::shared_ptr<BtHandshakeMessage>
   createHandshakeMessage(const unsigned char* infoHash,
                          const unsigned char* peerId) {
-    return SharedHandle<BtHandshakeMessage>();
+    return std::shared_ptr<BtHandshakeMessage>();
   }
 
-  virtual SharedHandle<BtMessage>
-  createRequestMessage(const SharedHandle<Piece>& piece, size_t blockIndex) {
-    return SharedHandle<BtMessage>();
+  virtual std::shared_ptr<BtMessage>
+  createRequestMessage(const std::shared_ptr<Piece>& piece, size_t blockIndex) {
+    return std::shared_ptr<BtMessage>();
   }
 
-  virtual SharedHandle<BtMessage>
+  virtual std::shared_ptr<BtMessage>
   createCancelMessage(size_t index, int32_t begin, int32_t length) {
-    return SharedHandle<BtMessage>();
+    return std::shared_ptr<BtMessage>();
   }
 
-  virtual SharedHandle<BtMessage>
+  virtual std::shared_ptr<BtMessage>
   createPieceMessage(size_t index, int32_t begin, int32_t length) {
-    return SharedHandle<BtMessage>();
+    return std::shared_ptr<BtMessage>();
   }
 
-  virtual SharedHandle<BtMessage> createHaveMessage(size_t index) {
-    return SharedHandle<BtMessage>();
+  virtual std::shared_ptr<BtMessage> createHaveMessage(size_t index) {
+    return std::shared_ptr<BtMessage>();
   }
 
-  virtual SharedHandle<BtMessage> createChokeMessage() {
-    return SharedHandle<BtMessage>();
+  virtual std::shared_ptr<BtMessage> createChokeMessage() {
+    return std::shared_ptr<BtMessage>();
   }
 
-  virtual SharedHandle<BtMessage> createUnchokeMessage() {
-    return SharedHandle<BtMessage>();
+  virtual std::shared_ptr<BtMessage> createUnchokeMessage() {
+    return std::shared_ptr<BtMessage>();
   }
 
-  virtual SharedHandle<BtMessage> createInterestedMessage() {
-    return SharedHandle<BtMessage>();
+  virtual std::shared_ptr<BtMessage> createInterestedMessage() {
+    return std::shared_ptr<BtMessage>();
   }
 
-  virtual SharedHandle<BtMessage> createNotInterestedMessage() {
-    return SharedHandle<BtMessage>();
+  virtual std::shared_ptr<BtMessage> createNotInterestedMessage() {
+    return std::shared_ptr<BtMessage>();
   }
 
-  virtual SharedHandle<BtMessage> createBitfieldMessage() {
-    return SharedHandle<BtMessage>();
+  virtual std::shared_ptr<BtMessage> createBitfieldMessage() {
+    return std::shared_ptr<BtMessage>();
   }
 
-  virtual SharedHandle<BtMessage> createKeepAliveMessage() {
-    return SharedHandle<BtMessage>();
+  virtual std::shared_ptr<BtMessage> createKeepAliveMessage() {
+    return std::shared_ptr<BtMessage>();
   }
 
-  virtual SharedHandle<BtMessage> createHaveAllMessage() {
-    return SharedHandle<BtMessage>();
+  virtual std::shared_ptr<BtMessage> createHaveAllMessage() {
+    return std::shared_ptr<BtMessage>();
   }
 
-  virtual SharedHandle<BtMessage> createHaveNoneMessage() {
-    return SharedHandle<BtMessage>();
+  virtual std::shared_ptr<BtMessage> createHaveNoneMessage() {
+    return std::shared_ptr<BtMessage>();
   }
 
-  virtual SharedHandle<BtMessage>
+  virtual std::shared_ptr<BtMessage>
   createRejectMessage(size_t index, int32_t begin, int32_t length) {
-    return SharedHandle<BtMessage>();
+    return std::shared_ptr<BtMessage>();
   }
 
-  virtual SharedHandle<BtMessage> createAllowedFastMessage(size_t index) {
-    return SharedHandle<BtMessage>();
+  virtual std::shared_ptr<BtMessage> createAllowedFastMessage(size_t index) {
+    return std::shared_ptr<BtMessage>();
   }
 
-  virtual SharedHandle<BtMessage> createPortMessage(uint16_t port)
+  virtual std::shared_ptr<BtMessage> createPortMessage(uint16_t port)
   {
-    return SharedHandle<BtMessage>();
+    return std::shared_ptr<BtMessage>();
   }
 
-  virtual SharedHandle<BtMessage>
-  createBtExtendedMessage(const SharedHandle<ExtensionMessage>& extmsg)
+  virtual std::shared_ptr<BtMessage>
+  createBtExtendedMessage(const std::shared_ptr<ExtensionMessage>& extmsg)
   {
-    return SharedHandle<BtMessage>();
+    return std::shared_ptr<BtMessage>();
   }
 };
 

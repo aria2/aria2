@@ -39,8 +39,7 @@
 
 #include <string>
 #include <deque>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -62,7 +61,7 @@ private:
       delete progressUpdate_;
     }
     virtual ssize_t send
-    (const SharedHandle<SocketCore>& socket, size_t offset) = 0;
+    (const std::shared_ptr<SocketCore>& socket, size_t offset) = 0;
     virtual bool final(size_t offset) const = 0;
     virtual size_t getLength() const = 0;
     virtual const unsigned char* getData() const = 0;
@@ -82,7 +81,7 @@ private:
                       ProgressUpdate* progressUpdate);
     virtual ~ByteArrayBufEntry();
     virtual ssize_t send
-    (const SharedHandle<SocketCore>& socket, size_t offset);
+    (const std::shared_ptr<SocketCore>& socket, size_t offset);
     virtual bool final(size_t offset) const;
     virtual size_t getLength() const;
     virtual const unsigned char* getData() const;
@@ -97,7 +96,7 @@ private:
                    ProgressUpdate* progressUpdate);
     StringBufEntry();
     virtual ssize_t send
-    (const SharedHandle<SocketCore>& socket, size_t offset);
+    (const std::shared_ptr<SocketCore>& socket, size_t offset);
     virtual bool final(size_t offset) const;
     virtual size_t getLength() const;
     virtual const unsigned char* getData() const;
@@ -106,16 +105,16 @@ private:
     std::string str_;
   };
 
-  SharedHandle<SocketCore> socket_;
+  std::shared_ptr<SocketCore> socket_;
 
-  std::deque<SharedHandle<BufEntry> > bufq_;
+  std::deque<std::shared_ptr<BufEntry> > bufq_;
 
   // Offset of data in bufq_[0]. SocketBuffer tries to send bufq_[0],
   // but it cannot always send whole data. In this case, offset points
   // to the data to be sent in the next send() call.
   size_t offset_;
 public:
-  SocketBuffer(const SharedHandle<SocketCore>& socket);
+  SocketBuffer(const std::shared_ptr<SocketCore>& socket);
 
   ~SocketBuffer();
 

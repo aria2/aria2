@@ -41,9 +41,9 @@ class SinkStreamFilterTest:public CppUnit::TestFixture {
     int32_t writtenLength;
   };
 
-  SharedHandle<SinkStreamFilter> filter_;
-  SharedHandle<ByteArrayDiskWriter> writer_;
-  SharedHandle<MockSegment2> segment_;
+  std::shared_ptr<SinkStreamFilter> filter_;
+  std::shared_ptr<ByteArrayDiskWriter> writer_;
+  std::shared_ptr<MockSegment2> segment_;
 
   void clearWriter()
   {

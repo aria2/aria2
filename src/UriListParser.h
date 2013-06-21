@@ -40,16 +40,16 @@
 #include <string>
 #include <deque>
 #include <iosfwd>
+#include <memory>
 
 #include "Option.h"
 #include "IOFile.h"
-#include "SharedHandle.h"
 
 namespace aria2 {
 
 class UriListParser {
 private:
-  SharedHandle<IOFile> fp_;
+  std::shared_ptr<IOFile> fp_;
 
   std::string line_;
 public:

@@ -65,7 +65,7 @@ void ValueBaseTest::testDowncast()
   CPPUNIT_ASSERT(x);
   CPPUNIT_ASSERT_EQUAL(static_cast<Integer::ValueType>(100), x->i());
   CPPUNIT_ASSERT(!downcast<String>(&integer));
-  SharedHandle<Integer> si(new Integer(101));
+  std::shared_ptr<Integer> si(new Integer(101));
   const Integer* x2 = downcast<Integer>(si);
   CPPUNIT_ASSERT_EQUAL(static_cast<Integer::ValueType>(101), x2->i());
 

@@ -36,7 +36,9 @@
 #define D_PEER_ABSTRACT_COMMAND_H
 
 #include "Command.h"
-#include "SharedHandle.h"
+
+#include <memory>
+
 #include "TimerA2.h"
 
 namespace aria2 {
@@ -51,13 +53,13 @@ private:
   Timer checkPoint_;
   time_t timeout_;
   DownloadEngine* e_;
-  SharedHandle<SocketCore> socket_;
-  SharedHandle<Peer> peer_;
+  std::shared_ptr<SocketCore> socket_;
+  std::shared_ptr<Peer> peer_;
 
   bool checkSocketIsReadable_;
   bool checkSocketIsWritable_;
-  SharedHandle<SocketCore> readCheckTarget_;
-  SharedHandle<SocketCore> writeCheckTarget_;
+  std::shared_ptr<SocketCore> readCheckTarget_;
+  std::shared_ptr<SocketCore> writeCheckTarget_;
   bool noCheck_;
 protected:
   DownloadEngine* getDownloadEngine() const
@@ -65,14 +67,14 @@ protected:
     return e_;
   }
 
-  const SharedHandle<SocketCore>& getSocket() const
+  const std::shared_ptr<SocketCore>& getSocket() const
   {
     return socket_;
   }
 
   void createSocket();
 
-  const SharedHandle<Peer>& getPeer() const
+  const std::shared_ptr<Peer>& getPeer() const
   {
     return peer_;
   }
@@ -85,18 +87,18 @@ protected:
   virtual void onFailure(const Exception& err) {};
   virtual bool exitBeforeExecute() = 0;
   virtual bool executeInternal() = 0;
-  void setReadCheckSocket(const SharedHandle<SocketCore>& socket);
-  void setWriteCheckSocket(const SharedHandle<SocketCore>& socket);
+  void setReadCheckSocket(const std::shared_ptr<SocketCore>& socket);
+  void setWriteCheckSocket(const std::shared_ptr<SocketCore>& socket);
   void disableReadCheckSocket();
   void disableWriteCheckSocket();
   void setNoCheck(bool check);
   void updateKeepAlive();
 public:
   PeerAbstractCommand(cuid_t cuid,
-                      const SharedHandle<Peer>& peer,
+                      const std::shared_ptr<Peer>& peer,
                       DownloadEngine* e,
-                      const SharedHandle<SocketCore>& s =
-                      SharedHandle<SocketCore>());
+                      const std::shared_ptr<SocketCore>& s =
+                      std::shared_ptr<SocketCore>());
 
   virtual ~PeerAbstractCommand();
 

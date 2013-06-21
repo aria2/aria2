@@ -144,7 +144,7 @@ void DHTRoutingTableDeserializer::deserialize(const std::string& filename)
   readBytes(fp, buf, buf.size(), 8);
   // localnode ID
   readBytes(fp, buf, buf.size(), DHT_ID_LENGTH);
-  SharedHandle<DHTNode> localNode(new DHTNode(buf));
+  std::shared_ptr<DHTNode> localNode(new DHTNode(buf));
   // 4bytes reserved
   readBytes(fp, buf, buf.size(), 4);
 
@@ -154,7 +154,7 @@ void DHTRoutingTableDeserializer::deserialize(const std::string& filename)
   // 4bytes reserved
   readBytes(fp, buf, buf.size(), 4);
 
-  std::vector<SharedHandle<DHTNode> > nodes;
+  std::vector<std::shared_ptr<DHTNode> > nodes;
   // nodes
   const int compactlen = bittorrent::getCompactLength(family_);
   for(size_t i = 0; i < numNodes; ++i) {
@@ -187,7 +187,7 @@ void DHTRoutingTableDeserializer::deserialize(const std::string& filename)
     // node ID
     readBytes(fp, buf, buf.size(), DHT_ID_LENGTH);
 
-    SharedHandle<DHTNode> node(new DHTNode(buf));
+    std::shared_ptr<DHTNode> node(new DHTNode(buf));
     node->setIPAddress(peer.first);
     node->setPort(peer.second);
     // 4bytes reserved

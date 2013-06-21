@@ -33,11 +33,11 @@ CPPUNIT_TEST_SUITE_REGISTRATION( IteratableChecksumValidatorTest );
 
 void IteratableChecksumValidatorTest::testValidate() {
   Option option;
-  SharedHandle<DownloadContext> dctx
+  std::shared_ptr<DownloadContext> dctx
     (new DownloadContext(100, 250, A2_TEST_DIR"/chunkChecksumTestFile250.txt"));
   dctx->setDigest("sha-1",
                   fromHex("898a81b8e0181280ae2ee1b81e269196d91e869a"));
-  SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &option));
+  std::shared_ptr<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &option));
   ps->initStorage();
   ps->getDiskAdaptor()->enableReadOnly();
   ps->getDiskAdaptor()->openFile();
@@ -53,11 +53,11 @@ void IteratableChecksumValidatorTest::testValidate() {
 
 void IteratableChecksumValidatorTest::testValidate_fail() {
   Option option;
-  SharedHandle<DownloadContext> dctx
+  std::shared_ptr<DownloadContext> dctx
     (new DownloadContext(100, 250, A2_TEST_DIR"/chunkChecksumTestFile250.txt"));
   dctx->setDigest("sha-1",
                   fromHex(std::string(40, '0'))); // set wrong checksum
-  SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &option));
+  std::shared_ptr<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &option));
   ps->initStorage();
   ps->getDiskAdaptor()->enableReadOnly();
   ps->getDiskAdaptor()->openFile();

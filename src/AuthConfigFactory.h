@@ -39,8 +39,8 @@
 
 #include <string>
 #include <set>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "SingletonHolder.h"
 #include "a2functional.h"
 
@@ -54,14 +54,14 @@ class AuthResolver;
 
 class AuthConfigFactory {
 private:
-  SharedHandle<Netrc> netrc_;
+  std::shared_ptr<Netrc> netrc_;
 
-  SharedHandle<AuthConfig> createAuthConfig(const std::string& user,
+  std::shared_ptr<AuthConfig> createAuthConfig(const std::string& user,
                                             const std::string& password) const;
 
-  SharedHandle<AuthResolver> createHttpAuthResolver(const Option* op) const;
+  std::shared_ptr<AuthResolver> createHttpAuthResolver(const Option* op) const;
 
-  SharedHandle<AuthResolver> createFtpAuthResolver(const Option* op) const;
+  std::shared_ptr<AuthResolver> createFtpAuthResolver(const Option* op) const;
 public:
   class BasicCred {
   public:
@@ -85,8 +85,8 @@ public:
     bool operator<(const BasicCred& cred) const;
   };
 
-  typedef std::set<SharedHandle<BasicCred>,
-                   DerefLess<SharedHandle<BasicCred> > > BasicCredSet;
+  typedef std::set<std::shared_ptr<BasicCred>,
+                   DerefLess<std::shared_ptr<BasicCred> > > BasicCredSet;
 private:
   BasicCredSet basicCreds_;
 public:
@@ -98,10 +98,10 @@ public:
   // are used in this method: PREF_HTTP_USER, PREF_HTTP_PASSWD,
   // PREF_FTP_USER, PREF_FTP_PASSWD, PREF_NO_NETRC and
   // PREF_HTTP_AUTH_CHALLENGE.
-  SharedHandle<AuthConfig> createAuthConfig
-  (const SharedHandle<Request>& request, const Option* op);
+  std::shared_ptr<AuthConfig> createAuthConfig
+  (const std::shared_ptr<Request>& request, const Option* op);
 
-  void setNetrc(const SharedHandle<Netrc>& netrc);
+  void setNetrc(const std::shared_ptr<Netrc>& netrc);
 
   // Find a BasicCred using findBasicCred() and activate it then
   // return true.  If matching BasicCred is not found, AuthConfig
@@ -127,7 +127,7 @@ public:
   // If the same BasicCred is already added, then it is replaced with
   // given basicCred. Otherwise, insert given basicCred to
   // basicCreds_.
-  void updateBasicCred(const SharedHandle<BasicCred>& basicCred);
+  void updateBasicCred(const std::shared_ptr<BasicCred>& basicCred);
 };
 
 } // namespace aria2

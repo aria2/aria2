@@ -52,12 +52,12 @@ StreamCheckIntegrityEntry::~StreamCheckIntegrityEntry() {}
 void StreamCheckIntegrityEntry::onDownloadIncomplete
 (std::vector<Command*>& commands, DownloadEngine* e)
 {
-  const SharedHandle<PieceStorage>& ps = getRequestGroup()->getPieceStorage();
+  const std::shared_ptr<PieceStorage>& ps = getRequestGroup()->getPieceStorage();
   ps->onDownloadIncomplete();
   if(getRequestGroup()->getOption()->getAsBool(PREF_HASH_CHECK_ONLY)) {
     return;
   }
-  SharedHandle<FileAllocationEntry> entry
+  std::shared_ptr<FileAllocationEntry> entry
     (new StreamFileAllocationEntry(getRequestGroup(), popNextCommand()));
   proceedFileAllocation(commands, entry, e);
 }

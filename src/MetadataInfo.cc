@@ -34,9 +34,11 @@
 /* copyright --> */
 #include "MetadataInfo.h"
 
+#include <cassert>
+
 namespace aria2 {
 
-MetadataInfo::MetadataInfo(const SharedHandle<GroupId>& gid,
+MetadataInfo::MetadataInfo(const std::shared_ptr<GroupId>& gid,
                            const std::string& uri)
   : gid_(gid), uri_(uri)
 {}
@@ -44,5 +46,11 @@ MetadataInfo::MetadataInfo(const SharedHandle<GroupId>& gid,
 MetadataInfo::MetadataInfo() {}
 
 MetadataInfo::~MetadataInfo() {}
+
+a2_gid_t MetadataInfo::getGID() const
+{
+  assert(gid_);
+  return gid_->getNumericId();
+}
 
 } // namespace aria2

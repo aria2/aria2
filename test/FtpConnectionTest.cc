@@ -35,13 +35,13 @@ class FtpConnectionTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testReceiveEpsvResponse);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<SocketCore> serverSocket_;
+  std::shared_ptr<SocketCore> serverSocket_;
   uint16_t listenPort_;
-  SharedHandle<SocketCore> clientSocket_;
-  SharedHandle<FtpConnection> ftp_;
-  SharedHandle<Option> option_;
-  SharedHandle<AuthConfigFactory> authConfigFactory_;
-  SharedHandle<Request> req_;
+  std::shared_ptr<SocketCore> clientSocket_;
+  std::shared_ptr<FtpConnection> ftp_;
+  std::shared_ptr<Option> option_;
+  std::shared_ptr<AuthConfigFactory> authConfigFactory_;
+  std::shared_ptr<Request> req_;
 public:
   void setUp()
   {
@@ -49,7 +49,7 @@ public:
     authConfigFactory_.reset(new AuthConfigFactory());
 
     //_ftpServerSocket.reset(new SocketCore());
-    SharedHandle<SocketCore> listenSocket(new SocketCore());
+    std::shared_ptr<SocketCore> listenSocket(new SocketCore());
     listenSocket->bind(0);
     listenSocket->beginListen();
     listenSocket->setBlockingMode();
@@ -94,7 +94,7 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(FtpConnectionTest);
 
 namespace {
-void waitRead(const SharedHandle<SocketCore>& socket)
+void waitRead(const std::shared_ptr<SocketCore>& socket)
 {
   while(!socket->isReadable(0));
 }

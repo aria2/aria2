@@ -30,7 +30,7 @@ class OptionParserTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testParseKeyVals);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<OptionParser> oparser_;
+  std::shared_ptr<OptionParser> oparser_;
 public:
   void setUp()
   {

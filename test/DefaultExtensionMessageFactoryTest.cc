@@ -38,14 +38,14 @@ class DefaultExtensionMessageFactoryTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreateMessage_UTMetadataReject);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<MockPeerStorage> peerStorage_;
-  SharedHandle<Peer> peer_;
-  SharedHandle<DefaultExtensionMessageFactory> factory_;
-  SharedHandle<ExtensionMessageRegistry> registry_;
-  SharedHandle<MockBtMessageDispatcher> dispatcher_;
-  SharedHandle<MockBtMessageFactory> messageFactory_;
-  SharedHandle<DownloadContext> dctx_;
-  SharedHandle<RequestGroup> requestGroup_;
+  std::shared_ptr<MockPeerStorage> peerStorage_;
+  std::shared_ptr<Peer> peer_;
+  std::shared_ptr<DefaultExtensionMessageFactory> factory_;
+  std::shared_ptr<ExtensionMessageRegistry> registry_;
+  std::shared_ptr<MockBtMessageDispatcher> dispatcher_;
+  std::shared_ptr<MockBtMessageFactory> messageFactory_;
+  std::shared_ptr<DownloadContext> dctx_;
+  std::shared_ptr<RequestGroup> requestGroup_;
 public:
   void setUp()
   {
@@ -63,7 +63,7 @@ public:
 
     dctx_.reset(new DownloadContext());
 
-    SharedHandle<Option> option(new Option());
+    std::shared_ptr<Option> option(new Option());
     requestGroup_.reset(new RequestGroup(GroupId::create(), option));
     requestGroup_->setDownloadContext(dctx_);
 
@@ -83,9 +83,9 @@ public:
   }
 
   template<typename T>
-  SharedHandle<T> createMessage(const std::string& data)
+  std::shared_ptr<T> createMessage(const std::string& data)
   {
-    return dynamic_pointer_cast<T>
+    return std::dynamic_pointer_cast<T>
       (factory_->createMessage
        (reinterpret_cast<const unsigned char*>(data.c_str()), data.size()));
   }
@@ -123,7 +123,7 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_Handshake()
   char id[1] = { 0 };
 
   std::string data = std::string(&id[0], &id[1])+"d1:v5:aria2e";
-  SharedHandle<HandshakeExtensionMessage> m =
+  std::shared_ptr<HandshakeExtensionMessage> m =
     createMessage<HandshakeExtensionMessage>(data);
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"), m->getClientVersion());
 }
@@ -148,7 +148,7 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_UTPex()
     std::string(&c3[0], &c3[6])+std::string(&c4[0], &c4[6])+
     "e";
 
-  SharedHandle<UTPexExtensionMessage> m =
+  std::shared_ptr<UTPexExtensionMessage> m =
     createMessage<UTPexExtensionMessage>(data);
   CPPUNIT_ASSERT_EQUAL(registry_->getExtensionMessageID
                        (ExtensionMessageRegistry::UT_PEX),
@@ -162,7 +162,7 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_UTMetadataRequest()
   std::string data = getExtensionMessageID
     (ExtensionMessageRegistry::UT_METADATA)+
     "d8:msg_typei0e5:piecei1ee";
-  SharedHandle<UTMetadataRequestExtensionMessage> m =
+  std::shared_ptr<UTMetadataRequestExtensionMessage> m =
     createMessage<UTMetadataRequestExtensionMessage>(data);
   CPPUNIT_ASSERT_EQUAL((size_t)1, m->getIndex());
 }
@@ -174,7 +174,7 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_UTMetadataData()
   std::string data = getExtensionMessageID
     (ExtensionMessageRegistry::UT_METADATA)+
     "d8:msg_typei1e5:piecei1e10:total_sizei300ee0000000000";
-  SharedHandle<UTMetadataDataExtensionMessage> m =
+  std::shared_ptr<UTMetadataDataExtensionMessage> m =
     createMessage<UTMetadataDataExtensionMessage>(data);
   CPPUNIT_ASSERT_EQUAL((size_t)1, m->getIndex());
   CPPUNIT_ASSERT_EQUAL((size_t)300, m->getTotalSize());
@@ -188,7 +188,7 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_UTMetadataReject()
   std::string data = getExtensionMessageID
     (ExtensionMessageRegistry::UT_METADATA)+
     "d8:msg_typei2e5:piecei1ee";
-  SharedHandle<UTMetadataRejectExtensionMessage> m =
+  std::shared_ptr<UTMetadataRejectExtensionMessage> m =
     createMessage<UTMetadataRejectExtensionMessage>(data);
   CPPUNIT_ASSERT_EQUAL((size_t)1, m->getIndex());
 }

@@ -70,7 +70,7 @@ void DHTNodeLookupTaskCallback::visit(const DHTPingReplyMessage* message)
 }
 
 void DHTNodeLookupTaskCallback::onTimeout
-(const SharedHandle<DHTNode>& remoteNode)
+(const std::shared_ptr<DHTNode>& remoteNode)
 {
   task_->onTimeout(remoteNode);
 }

@@ -45,24 +45,24 @@ class BackupConnectInfo;
 class ConnectCommand : public AbstractCommand {
 public:
   ConnectCommand(cuid_t cuid,
-                 const SharedHandle<Request>& req,
-                 const SharedHandle<Request>& proxyRequest,
-                 const SharedHandle<FileEntry>& fileEntry,
+                 const std::shared_ptr<Request>& req,
+                 const std::shared_ptr<Request>& proxyRequest,
+                 const std::shared_ptr<FileEntry>& fileEntry,
                  RequestGroup* requestGroup,
                  DownloadEngine* e,
-                 const SharedHandle<SocketCore>& s);
+                 const std::shared_ptr<SocketCore>& s);
   virtual ~ConnectCommand();
   void setControlChain
-  (const SharedHandle<ControlChain<ConnectCommand*> >& chain);
-  void setBackupConnectInfo(const SharedHandle<BackupConnectInfo>& info);
-  const SharedHandle<Request>& getProxyRequest() const;
+  (const std::shared_ptr<ControlChain<ConnectCommand*> >& chain);
+  void setBackupConnectInfo(const std::shared_ptr<BackupConnectInfo>& info);
+  const std::shared_ptr<Request>& getProxyRequest() const;
 protected:
   virtual bool executeInternal();
   virtual bool noCheck();
 private:
-  SharedHandle<Request> proxyRequest_;
-  SharedHandle<BackupConnectInfo> backupConnectionInfo_;
-  SharedHandle<ControlChain<ConnectCommand*> > chain_;
+  std::shared_ptr<Request> proxyRequest_;
+  std::shared_ptr<BackupConnectInfo> backupConnectionInfo_;
+  std::shared_ptr<ControlChain<ConnectCommand*> > chain_;
 };
 
 } // namespace aria2

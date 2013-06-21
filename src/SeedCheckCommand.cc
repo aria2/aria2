@@ -49,7 +49,7 @@ SeedCheckCommand::SeedCheckCommand
 (cuid_t cuid,
  RequestGroup* requestGroup,
  DownloadEngine* e,
- const SharedHandle<SeedCriteria>& seedCriteria)
+ const std::shared_ptr<SeedCriteria>& seedCriteria)
   : Command(cuid),
     requestGroup_(requestGroup),
     e_(e),
@@ -89,18 +89,18 @@ bool SeedCheckCommand::execute() {
 }
 
 void SeedCheckCommand::setSeedCriteria
-(const SharedHandle<SeedCriteria>& seedCriteria)
+(const std::shared_ptr<SeedCriteria>& seedCriteria)
 {
   seedCriteria_ = seedCriteria;
 }
 
-void SeedCheckCommand::setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
+void SeedCheckCommand::setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime)
 {
   btRuntime_ = btRuntime;
 }
 
 void SeedCheckCommand::setPieceStorage
-(const SharedHandle<PieceStorage>& pieceStorage)
+(const std::shared_ptr<PieceStorage>& pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }

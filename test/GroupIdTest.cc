@@ -33,7 +33,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( GroupIdTest );
 
 void GroupIdTest::testCreate()
 {
-  SharedHandle<GroupId> gid = GroupId::create();
+  std::shared_ptr<GroupId> gid = GroupId::create();
   CPPUNIT_ASSERT(gid);
   CPPUNIT_ASSERT(0 != gid->getNumericId());
   CPPUNIT_ASSERT(!GroupId::import(gid->getNumericId()));
@@ -69,12 +69,12 @@ void GroupIdTest::testToNumericId()
 void GroupIdTest::testExpandUnique()
 {
   a2_gid_t gid;
-  SharedHandle<GroupId> ids[] = {
+  std::shared_ptr<GroupId> ids[] = {
     GroupId::import(0xff80000000010000LL),
     GroupId::import(0xff80000000020001LL),
     GroupId::import(0xfff8000000030000LL)
   };
-  for(SharedHandle<GroupId>* i = vbegin(ids), *eoi = vend(ids); i != eoi;
+  for(std::shared_ptr<GroupId>* i = vbegin(ids), *eoi = vend(ids); i != eoi;
       ++i) {
     CPPUNIT_ASSERT(*i);
   }

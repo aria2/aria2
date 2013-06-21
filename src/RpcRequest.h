@@ -47,18 +47,18 @@ namespace rpc {
 
 struct RpcRequest {
   std::string methodName;
-  SharedHandle<List> params;
-  SharedHandle<ValueBase> id;
+  std::shared_ptr<List> params;
+  std::shared_ptr<ValueBase> id;
   bool jsonRpc;
 
   RpcRequest();
 
   RpcRequest(const std::string& methodName,
-             const SharedHandle<List>& params);
+             const std::shared_ptr<List>& params);
 
   RpcRequest(const std::string& methodName,
-             const SharedHandle<List>& params,
-             const SharedHandle<ValueBase>& id);
+             const std::shared_ptr<List>& params,
+             const std::shared_ptr<ValueBase>& id);
 
   ~RpcRequest();
 

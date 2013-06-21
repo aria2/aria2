@@ -98,7 +98,7 @@ void OptionTest::testMerge()
 void OptionTest::testParent()
 {
   Option child;
-  SharedHandle<Option> parent(new Option());
+  std::shared_ptr<Option> parent(new Option());
   parent->put(PREF_TIMEOUT, "100");
   child.put(PREF_DIR, "foo");
   CPPUNIT_ASSERT(!child.defined(PREF_TIMEOUT));

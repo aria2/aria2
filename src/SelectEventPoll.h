@@ -133,12 +133,12 @@ private:
 
   class AsyncNameResolverEntry {
   private:
-    SharedHandle<AsyncNameResolver> nameResolver_;
+    std::shared_ptr<AsyncNameResolver> nameResolver_;
 
     Command* command_;
 
   public:
-    AsyncNameResolverEntry(const SharedHandle<AsyncNameResolver>& nameResolver,
+    AsyncNameResolverEntry(const std::shared_ptr<AsyncNameResolver>& nameResolver,
                            Command* command);
 
     bool operator==(const AsyncNameResolverEntry& entry)
@@ -164,12 +164,12 @@ private:
   fd_set wfdset_;
   sock_t fdmax_;
 
-  typedef std::set<SharedHandle<SocketEntry>,
-                   DerefLess<SharedHandle<SocketEntry> > > SocketEntrySet;
+  typedef std::set<std::shared_ptr<SocketEntry>,
+                   DerefLess<std::shared_ptr<SocketEntry> > > SocketEntrySet;
   SocketEntrySet socketEntries_;
 #ifdef ENABLE_ASYNC_DNS
-  typedef std::set<SharedHandle<AsyncNameResolverEntry>,
-                   DerefLess<SharedHandle<AsyncNameResolverEntry> > >
+  typedef std::set<std::shared_ptr<AsyncNameResolverEntry>,
+                   DerefLess<std::shared_ptr<AsyncNameResolverEntry> > >
   AsyncNameResolverEntrySet;
   AsyncNameResolverEntrySet nameResolverEntries_;
 #endif // ENABLE_ASYNC_DNS
@@ -195,10 +195,10 @@ public:
                             Command* command, EventPoll::EventType events);
 #ifdef ENABLE_ASYNC_DNS
 
-  virtual bool addNameResolver(const SharedHandle<AsyncNameResolver>& resolver,
+  virtual bool addNameResolver(const std::shared_ptr<AsyncNameResolver>& resolver,
                                Command* command);
   virtual bool deleteNameResolver
-  (const SharedHandle<AsyncNameResolver>& resolver, Command* command);
+  (const std::shared_ptr<AsyncNameResolver>& resolver, Command* command);
 #endif // ENABLE_ASYNC_DNS
 };
 

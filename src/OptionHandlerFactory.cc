@@ -1351,7 +1351,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     OptionHandler* op(new DefaultOptionHandler
                       (PREF_USER_AGENT,
                        TEXT_USER_AGENT,
-                       "aria2/"PACKAGE_VERSION,
+                       "aria2/" PACKAGE_VERSION,
                        A2STR::NIL,
                        OptionHandler::REQ_ARG,
                        'U'));

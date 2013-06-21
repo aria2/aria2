@@ -23,7 +23,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTUnknownMessageTest);
 
 void DHTUnknownMessageTest::testToString()
 {
-  SharedHandle<DHTNode> localNode(new DHTNode());
+  std::shared_ptr<DHTNode> localNode(new DHTNode());
   std::string ipaddr = "192.168.0.1";
   uint16_t port = 6881;
 

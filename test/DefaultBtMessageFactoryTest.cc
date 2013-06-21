@@ -24,10 +24,10 @@ class DefaultBtMessageFactoryTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreatePortMessage);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<DownloadContext> dctx_;
-  SharedHandle<Peer> peer_;
-  SharedHandle<MockExtensionMessageFactory> exmsgFactory_;
-  SharedHandle<DefaultBtMessageFactory> factory_;
+  std::shared_ptr<DownloadContext> dctx_;
+  std::shared_ptr<Peer> peer_;
+  std::shared_ptr<MockExtensionMessageFactory> exmsgFactory_;
+  std::shared_ptr<DefaultBtMessageFactory> factory_;
 public:
   void setUp()
   {
@@ -62,9 +62,8 @@ void DefaultBtMessageFactoryTest::testCreateBtMessage_BtExtendedMessage()
   msg[5] = 1; // Set dummy extended message ID 1
   memcpy(msg+6, payload.c_str(), payload.size());
 
-  SharedHandle<BtExtendedMessage> m
-    (dynamic_pointer_cast<BtExtendedMessage>
-     (factory_->createBtMessage((const unsigned char*)msg+4, sizeof(msg))));
+  auto m = std::dynamic_pointer_cast<BtExtendedMessage>
+    (factory_->createBtMessage((const unsigned char*)msg+4, sizeof(msg)));
 
   try {
     // disable extended messaging
@@ -83,9 +82,8 @@ void DefaultBtMessageFactoryTest::testCreatePortMessage()
     bittorrent::createPeerMessageString(data, sizeof(data), 3, 9);
     bittorrent::setShortIntParam(&data[5], 6881);
     try {
-      SharedHandle<BtPortMessage> m
-        (dynamic_pointer_cast<BtPortMessage>
-         (factory_->createBtMessage(&data[4], sizeof(data)-4)));
+      auto m = std::dynamic_pointer_cast<BtPortMessage>
+        (factory_->createBtMessage(&data[4], sizeof(data)-4));
       CPPUNIT_ASSERT(m);
       CPPUNIT_ASSERT_EQUAL((uint16_t)6881, m->getPort());
     } catch(Exception& e) {
@@ -93,8 +91,8 @@ void DefaultBtMessageFactoryTest::testCreatePortMessage()
     }
   }
   {
-    SharedHandle<BtPortMessage> m
-      (dynamic_pointer_cast<BtPortMessage>(factory_->createPortMessage(6881)));
+    auto m = std::dynamic_pointer_cast<BtPortMessage>
+      (factory_->createPortMessage(6881));
     CPPUNIT_ASSERT_EQUAL((uint16_t)6881, m->getPort());
   }
 }

@@ -52,7 +52,7 @@ BtLeecherStateChoke::BtLeecherStateChoke()
 
 BtLeecherStateChoke::~BtLeecherStateChoke() {}
 
-BtLeecherStateChoke::PeerEntry::PeerEntry(const SharedHandle<Peer>& peer):
+BtLeecherStateChoke::PeerEntry::PeerEntry(const std::shared_ptr<Peer>& peer):
   peer_(peer), downloadSpeed_(peer->calculateDownloadSpeed()),
   // peer must be interested to us and sent block in the last 30 seconds
   regularUnchoker_
@@ -86,7 +86,7 @@ BtLeecherStateChoke::PeerEntry& BtLeecherStateChoke::PeerEntry::operator=
 
 BtLeecherStateChoke::PeerEntry::~PeerEntry() {}
 
-const SharedHandle<Peer>& BtLeecherStateChoke::PeerEntry::getPeer() const
+const std::shared_ptr<Peer>& BtLeecherStateChoke::PeerEntry::getPeer() const
 {
   return peer_;
 }

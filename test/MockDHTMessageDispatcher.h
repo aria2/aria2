@@ -12,12 +12,12 @@ class MockDHTMessageDispatcher:public DHTMessageDispatcher {
 public:
   class Entry {
   public:
-    SharedHandle<DHTMessage> message_;
+    std::shared_ptr<DHTMessage> message_;
     time_t timeout_;
-    SharedHandle<DHTMessageCallback> callback_;
+    std::shared_ptr<DHTMessageCallback> callback_;
 
-    Entry(const SharedHandle<DHTMessage>& message, time_t timeout,
-          const SharedHandle<DHTMessageCallback>& callback):
+    Entry(const std::shared_ptr<DHTMessage>& message, time_t timeout,
+          const std::shared_ptr<DHTMessageCallback>& callback):
       message_(message),
       timeout_(timeout),
       callback_(callback) {}
@@ -31,18 +31,18 @@ public:
   virtual ~MockDHTMessageDispatcher() {}
 
   virtual void
-  addMessageToQueue(const SharedHandle<DHTMessage>& message,
+  addMessageToQueue(const std::shared_ptr<DHTMessage>& message,
                     time_t timeout,
-                    const SharedHandle<DHTMessageCallback>& callback =
-                    SharedHandle<DHTMessageCallback>())
+                    const std::shared_ptr<DHTMessageCallback>& callback =
+                    std::shared_ptr<DHTMessageCallback>())
   {
     messageQueue_.push_back(Entry(message, timeout, callback));
   }
 
   virtual void
-  addMessageToQueue(const SharedHandle<DHTMessage>& message,
-                    const SharedHandle<DHTMessageCallback>& callback =
-                    SharedHandle<DHTMessageCallback>())
+  addMessageToQueue(const std::shared_ptr<DHTMessage>& message,
+                    const std::shared_ptr<DHTMessageCallback>& callback =
+                    std::shared_ptr<DHTMessageCallback>())
   {
     messageQueue_.push_back(Entry(message, DHT_MESSAGE_TIMEOUT, callback));
   }

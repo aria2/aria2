@@ -107,7 +107,7 @@ void BtPieceMessage::doReceivedAction()
   downloadContext_->updateDownloadLength(blockLength_);
   if(!RequestSlot::isNull(slot)) {
     getPeer()->snubbing(false);
-    SharedHandle<Piece> piece = getPieceStorage()->getPiece(index_);
+    std::shared_ptr<Piece> piece = getPieceStorage()->getPiece(index_);
     int64_t offset =
       static_cast<int64_t>(index_)*downloadContext_->getPieceLength()+begin_;
     A2_LOG_DEBUG(fmt(MSG_PIECE_RECEIVED,
@@ -179,7 +179,7 @@ size_t BtPieceMessage::getMessageHeaderLength()
 
 namespace {
 struct PieceSendUpdate : public ProgressUpdate {
-  PieceSendUpdate(const SharedHandle<Peer>& peer, size_t headerLength)
+  PieceSendUpdate(const std::shared_ptr<Peer>& peer, size_t headerLength)
     : peer(peer), headerLength(headerLength) {}
   virtual void update(size_t length, bool complete)
   {
@@ -190,7 +190,7 @@ struct PieceSendUpdate : public ProgressUpdate {
     }
     peer->updateUploadLength(length);
   }
-  SharedHandle<Peer> peer;
+  std::shared_ptr<Peer> peer;
   size_t headerLength;
 };
 } // namespace
@@ -241,7 +241,7 @@ std::string BtPieceMessage::toString() const
              begin_, blockLength_);
 }
 
-bool BtPieceMessage::checkPieceHash(const SharedHandle<Piece>& piece)
+bool BtPieceMessage::checkPieceHash(const std::shared_ptr<Piece>& piece)
 {
   if(!getPieceStorage()->isEndGame() && piece->isHashCalculated()) {
     A2_LOG_DEBUG(fmt("Hash is available!! index=%lu",
@@ -262,7 +262,7 @@ bool BtPieceMessage::checkPieceHash(const SharedHandle<Piece>& piece)
   }
 }
 
-void BtPieceMessage::onNewPiece(const SharedHandle<Piece>& piece)
+void BtPieceMessage::onNewPiece(const std::shared_ptr<Piece>& piece)
 {
   if(piece->getWrDiskCacheEntry()) {
     // We flush cached data whenever an whole piece is retrieved.
@@ -283,7 +283,7 @@ void BtPieceMessage::onNewPiece(const SharedHandle<Piece>& piece)
   getPieceStorage()->advertisePiece(getCuid(), piece->getIndex());
 }
 
-void BtPieceMessage::onWrongPiece(const SharedHandle<Piece>& piece)
+void BtPieceMessage::onWrongPiece(const std::shared_ptr<Piece>& piece)
 {
   A2_LOG_INFO(fmt(MSG_GOT_WRONG_PIECE,
                   getCuid(),
@@ -303,7 +303,7 @@ void BtPieceMessage::onChokingEvent(const BtChokingEvent& event)
                      begin_,
                      blockLength_));
     if(getPeer()->isFastExtensionEnabled()) {
-      SharedHandle<BtMessage> rej =
+      std::shared_ptr<BtMessage> rej =
         getBtMessageFactory()->createRejectMessage
         (index_, begin_, blockLength_);
       getBtMessageDispatcher()->addMessageToQueue(rej);
@@ -325,7 +325,7 @@ void BtPieceMessage::onCancelSendingPieceEvent
                      begin_,
                      blockLength_));
     if(getPeer()->isFastExtensionEnabled()) {
-      SharedHandle<BtMessage> rej =
+      std::shared_ptr<BtMessage> rej =
         getBtMessageFactory()->createRejectMessage
         (index_, begin_, blockLength_);
       getBtMessageDispatcher()->addMessageToQueue(rej);
@@ -335,13 +335,13 @@ void BtPieceMessage::onCancelSendingPieceEvent
 }
 
 void BtPieceMessage::setDownloadContext
-(const SharedHandle<DownloadContext>& downloadContext)
+(const std::shared_ptr<DownloadContext>& downloadContext)
 {
   downloadContext_ = downloadContext;
 }
 
 void BtPieceMessage::setPeerStorage
-(const SharedHandle<PeerStorage>& peerStorage)
+(const std::shared_ptr<PeerStorage>& peerStorage)
 {
   peerStorage_ = peerStorage;
 }

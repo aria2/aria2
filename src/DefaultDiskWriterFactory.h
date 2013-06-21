@@ -44,7 +44,7 @@ class DiskWriter;
 class DefaultDiskWriterFactory:public DiskWriterFactory
 {
 public:
-  virtual SharedHandle<DiskWriter> newDiskWriter(const std::string& filename);
+  virtual std::shared_ptr<DiskWriter> newDiskWriter(const std::string& filename);
 };
 
 } // namespace aria2

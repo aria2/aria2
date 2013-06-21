@@ -70,13 +70,13 @@ void AdaptiveFileAllocationIterator::allocateChunk()
         (new FallocFileAllocationIterator(stream_, offset_, totalLength_));
     } catch(RecoverableException& e) {
       A2_LOG_DEBUG("File system does not support fallocate.");
-      SharedHandle<SingleFileAllocationIterator> salloc
+      std::shared_ptr<SingleFileAllocationIterator> salloc
         (new SingleFileAllocationIterator(stream_, offset_, totalLength_));
       salloc->init();
       allocator_ = salloc;
     }
 #else // !HAVE_FALLOCATE
-    SharedHandle<SingleFileAllocationIterator> salloc
+    std::shared_ptr<SingleFileAllocationIterator> salloc
       (new SingleFileAllocationIterator(stream_, offset_, totalLength_));
     salloc->init();
     allocator_ = salloc;

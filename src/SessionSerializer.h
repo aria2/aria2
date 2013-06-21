@@ -39,8 +39,7 @@
 
 #include <string>
 #include <iosfwd>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -49,13 +48,13 @@ class IOFile;
 
 class SessionSerializer {
 private:
-  SharedHandle<RequestGroupMan> rgman_;
+  std::shared_ptr<RequestGroupMan> rgman_;
   bool saveError_;
   bool saveInProgress_;
   bool saveWaiting_;
   bool save(IOFile& fp) const;
 public:
-  SessionSerializer(const SharedHandle<RequestGroupMan>& requestGroupMan);
+  SessionSerializer(const std::shared_ptr<RequestGroupMan>& requestGroupMan);
 
   bool save(const std::string& filename) const;
 };

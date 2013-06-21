@@ -72,7 +72,7 @@ const unsigned char* GENERATOR = reinterpret_cast<const unsigned char*>("2");
 
 MSEHandshake::MSEHandshake
 (cuid_t cuid,
- const SharedHandle<SocketCore>& socket,
+ const std::shared_ptr<SocketCore>& socket,
  const Option* op)
   : cuid_(cuid),
     socket_(socket),
@@ -422,7 +422,7 @@ bool MSEHandshake::findReceiverHashMarker()
 }
 
 bool MSEHandshake::receiveReceiverHashAndPadCLength
-(const std::vector<SharedHandle<DownloadContext> >& downloadContexts)
+(const std::vector<std::shared_ptr<DownloadContext> >& downloadContexts)
 {
   if(20+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2/*PadC length*/ > rbufLength_) {
     wantRead_ = true;
@@ -431,8 +431,8 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength
   // resolve info hash
   // pointing to the position of HASH('req2', SKEY) xor HASH('req3', S)
   unsigned char* rbufptr = rbuf_;
-  SharedHandle<DownloadContext> downloadContext;
-  for(std::vector<SharedHandle<DownloadContext> >::const_iterator i =
+  std::shared_ptr<DownloadContext> downloadContext;
+  for(std::vector<std::shared_ptr<DownloadContext> >::const_iterator i =
         downloadContexts.begin(), eoi = downloadContexts.end();
       i != eoi; ++i) {
     unsigned char md[20];

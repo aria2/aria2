@@ -31,7 +31,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( AuthConfigFactoryTest );
 
 void AuthConfigFactoryTest::testCreateAuthConfig_http()
 {
-  SharedHandle<Request> req(new Request());
+  std::shared_ptr<Request> req(new Request());
   req->setUri("http://localhost/download/aria2-1.0.0.tar.bz2");
 
   Option option;
@@ -44,14 +44,14 @@ void AuthConfigFactoryTest::testCreateAuthConfig_http()
   CPPUNIT_ASSERT(!factory.createAuthConfig(req, &option));
 
   // with Netrc
-  SharedHandle<Netrc> netrc(new Netrc());
+  std::shared_ptr<Netrc> netrc(new Netrc());
   netrc->addAuthenticator
-    (SharedHandle<Authenticator>(new Authenticator("localhost",
+    (std::shared_ptr<Authenticator>(new Authenticator("localhost",
                                                    "localhostuser",
                                                    "localhostpass",
                                                    "localhostacct")));
   netrc->addAuthenticator
-    (SharedHandle<Authenticator>(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount")));
+    (std::shared_ptr<Authenticator>(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount")));
   factory.setNetrc(netrc);
 
   // not activated
@@ -88,7 +88,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_http()
 
 void AuthConfigFactoryTest::testCreateAuthConfig_httpNoChallenge()
 {
-  SharedHandle<Request> req(new Request());
+  std::shared_ptr<Request> req(new Request());
   req->setUri("http://localhost/download/aria2-1.0.0.tar.bz2");
 
   Option option;
@@ -100,14 +100,14 @@ void AuthConfigFactoryTest::testCreateAuthConfig_httpNoChallenge()
   CPPUNIT_ASSERT(!factory.createAuthConfig(req, &option));
 
   // with Netrc
-  SharedHandle<Netrc> netrc(new Netrc());
+  std::shared_ptr<Netrc> netrc(new Netrc());
   netrc->addAuthenticator
-    (SharedHandle<Authenticator>(new Authenticator("localhost",
+    (std::shared_ptr<Authenticator>(new Authenticator("localhost",
                                                    "localhostuser",
                                                    "localhostpass",
                                                    "localhostacct")));
   netrc->addAuthenticator
-    (SharedHandle<Authenticator>(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount")));
+    (std::shared_ptr<Authenticator>(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount")));
   factory.setNetrc(netrc);
 
   // not activated
@@ -134,7 +134,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_httpNoChallenge()
 
 void AuthConfigFactoryTest::testCreateAuthConfig_ftp()
 {
-  SharedHandle<Request> req(new Request());
+  std::shared_ptr<Request> req(new Request());
   req->setUri("ftp://localhost/download/aria2-1.0.0.tar.bz2");
 
   Option option;
@@ -147,9 +147,9 @@ void AuthConfigFactoryTest::testCreateAuthConfig_ftp()
                        factory.createAuthConfig(req, &option)->getAuthText());
 
   // with Netrc
-  SharedHandle<Netrc> netrc(new Netrc());
+  std::shared_ptr<Netrc> netrc(new Netrc());
   netrc->addAuthenticator
-    (SharedHandle<Authenticator>(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount")));
+    (std::shared_ptr<Authenticator>(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount")));
   factory.setNetrc(netrc);
   CPPUNIT_ASSERT_EQUAL(std::string("default:defaultpassword"),
                        factory.createAuthConfig(req, &option)->getAuthText());
@@ -180,7 +180,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_ftp()
   // Recreate netrc with entry for user aria2user
   netrc.reset(new Netrc());
   netrc->addAuthenticator
-    (SharedHandle<Authenticator>(new Authenticator("localhost",
+    (std::shared_ptr<Authenticator>(new Authenticator("localhost",
                                                    "aria2user",
                                                    "netrcpass",
                                                    "netrcacct")));
@@ -196,14 +196,14 @@ void AuthConfigFactoryTest::testCreateAuthConfig_ftp()
 }
 
 namespace {
-SharedHandle<AuthConfigFactory::BasicCred>
+std::shared_ptr<AuthConfigFactory::BasicCred>
 createBasicCred(const std::string& user,
                 const std::string& password,
                 const std::string& host, uint16_t port,
                 const std::string& path,
                 bool activated = false)
 {
-  SharedHandle<AuthConfigFactory::BasicCred> bc
+  std::shared_ptr<AuthConfigFactory::BasicCred> bc
     (new AuthConfigFactory::BasicCred(user, password, host, port, path,
                                       activated));
   return bc;
@@ -229,7 +229,7 @@ void AuthConfigFactoryTest::testUpdateBasicCred()
   factory.updateBasicCred
     (createBasicCred("jack", "jackx", "mirror", 80, "/doc", true));
 
-  SharedHandle<Request> req(new Request());
+  std::shared_ptr<Request> req(new Request());
   req->setUri("http://localhost/download/v2.6/Changelog");
   CPPUNIT_ASSERT_EQUAL(std::string("price:j38jdc"),
                        factory.createAuthConfig(req, &option)->getAuthText());

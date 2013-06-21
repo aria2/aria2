@@ -20,9 +20,9 @@ private:
   BitfieldMan* bitfieldMan;
   bool selectiveDownloadingMode;
   bool endGame;
-  SharedHandle<DiskAdaptor> diskAdaptor;
+  std::shared_ptr<DiskAdaptor> diskAdaptor;
   std::deque<int32_t> pieceLengthList;
-  std::deque<SharedHandle<Piece> > inFlightPieces;
+  std::deque<std::shared_ptr<Piece> > inFlightPieces;
   bool downloadFinished_;
   bool allDownloadFinished_;
 public:
@@ -40,53 +40,53 @@ public:
 
 #ifdef ENABLE_BITTORRENT
 
-  virtual bool hasMissingPiece(const SharedHandle<Peer>& peer) {
+  virtual bool hasMissingPiece(const std::shared_ptr<Peer>& peer) {
     return false;
   }
 
   virtual void getMissingPiece
-  (std::vector<SharedHandle<Piece> >& pieces,
+  (std::vector<std::shared_ptr<Piece> >& pieces,
    size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer,
+   const std::shared_ptr<Peer>& peer,
    cuid_t cuid)
   {}
 
   virtual void getMissingPiece
-  (std::vector<SharedHandle<Piece> >& pieces,
+  (std::vector<std::shared_ptr<Piece> >& pieces,
    size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer,
+   const std::shared_ptr<Peer>& peer,
    const std::vector<size_t>& excludedIndexes,
    cuid_t cuid)
   {}
 
   virtual void getMissingFastPiece
-  (std::vector<SharedHandle<Piece> >& pieces,
+  (std::vector<std::shared_ptr<Piece> >& pieces,
    size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer,
+   const std::shared_ptr<Peer>& peer,
    cuid_t cuid)
   {}
 
   virtual void getMissingFastPiece
-  (std::vector<SharedHandle<Piece> >& pieces,
+  (std::vector<std::shared_ptr<Piece> >& pieces,
    size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer,
+   const std::shared_ptr<Peer>& peer,
    const std::vector<size_t>& excludedIndexes,
    cuid_t cuid)
   {}
 
-  virtual SharedHandle<Piece> getMissingPiece
-  (const SharedHandle<Peer>& peer,
+  virtual std::shared_ptr<Piece> getMissingPiece
+  (const std::shared_ptr<Peer>& peer,
    cuid_t cuid)
   {
-    return SharedHandle<Piece>(new Piece());
+    return std::shared_ptr<Piece>(new Piece());
   }
 
-  virtual SharedHandle<Piece> getMissingPiece
-  (const SharedHandle<Peer>& peer,
+  virtual std::shared_ptr<Piece> getMissingPiece
+  (const std::shared_ptr<Peer>& peer,
    const std::vector<size_t>& excludedIndexes,
    cuid_t cuid)
   {
-    return SharedHandle<Piece>(new Piece());
+    return std::shared_ptr<Piece>(new Piece());
   }
 
 #endif // ENABLE_BITTORRENT
@@ -96,18 +96,18 @@ public:
     return false;
   }
 
-  virtual SharedHandle<Piece> getMissingPiece
+  virtual std::shared_ptr<Piece> getMissingPiece
   (size_t minSplitSize,
    const unsigned char* ignoreBitfield,
    size_t length,
    cuid_t cuid)
   {
-    return SharedHandle<Piece>(new Piece());
+    return std::shared_ptr<Piece>(new Piece());
   }
 
-  virtual SharedHandle<Piece> getMissingPiece(size_t index, cuid_t cuid)
+  virtual std::shared_ptr<Piece> getMissingPiece(size_t index, cuid_t cuid)
   {
-    return SharedHandle<Piece>(new Piece());
+    return std::shared_ptr<Piece>(new Piece());
   }
 
   virtual bool isPieceUsed(size_t index)
@@ -119,13 +119,13 @@ public:
 
   virtual void markPiecesDone(int64_t) {}
 
-  virtual SharedHandle<Piece> getPiece(size_t index) {
-    return SharedHandle<Piece>(new Piece());
+  virtual std::shared_ptr<Piece> getPiece(size_t index) {
+    return std::shared_ptr<Piece>(new Piece());
   }
 
-  virtual void completePiece(const SharedHandle<Piece>& piece) {}
+  virtual void completePiece(const std::shared_ptr<Piece>& piece) {}
 
-  virtual void cancelPiece(const SharedHandle<Piece>& piece, cuid_t cuid) {}
+  virtual void cancelPiece(const std::shared_ptr<Piece>& piece, cuid_t cuid) {}
 
   virtual bool hasPiece(size_t index) {
     return false;
@@ -222,7 +222,7 @@ public:
     this->endGame = true;
   }
 
-  virtual SharedHandle<DiskAdaptor> getDiskAdaptor() {
+  virtual std::shared_ptr<DiskAdaptor> getDiskAdaptor() {
     return diskAdaptor;
   }
 
@@ -232,7 +232,7 @@ public:
 
   virtual void flushWrDiskCacheEntry() {}
 
-  void setDiskAdaptor(const SharedHandle<DiskAdaptor>& adaptor) {
+  void setDiskAdaptor(const std::shared_ptr<DiskAdaptor>& adaptor) {
     this->diskAdaptor = adaptor;
   }
 
@@ -255,7 +255,7 @@ public:
 
   virtual void markAllPiecesDone() {}
 
-  virtual void addInFlightPiece(const std::vector<SharedHandle<Piece> >& pieces)
+  virtual void addInFlightPiece(const std::vector<std::shared_ptr<Piece> >& pieces)
   {
     std::copy(pieces.begin(), pieces.end(), back_inserter(inFlightPieces));
   }
@@ -265,7 +265,7 @@ public:
     return inFlightPieces.size();
   }
 
-  virtual void getInFlightPieces(std::vector<SharedHandle<Piece> >& pieces)
+  virtual void getInFlightPieces(std::vector<std::shared_ptr<Piece> >& pieces)
   {
     pieces.insert(pieces.end(), inFlightPieces.begin(), inFlightPieces.end());
   }

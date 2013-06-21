@@ -37,8 +37,9 @@
 
 #include "common.h"
 
+#include <memory>
+
 #include <aria2/aria2.h>
-#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -47,7 +48,7 @@ struct Context;
 struct Session {
   Session(const KeyVals& options);
   ~Session();
-  SharedHandle<Context> context;
+  std::shared_ptr<Context> context;
 };
 
 } // namespace aria2

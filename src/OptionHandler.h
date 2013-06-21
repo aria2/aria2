@@ -42,7 +42,6 @@
 #include <iosfwd>
 #include <functional>
 
-#include "SharedHandle.h"
 #include "console.h"
 
 namespace aria2 {

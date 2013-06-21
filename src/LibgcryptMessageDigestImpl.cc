@@ -51,9 +51,9 @@ MessageDigestImpl::~MessageDigestImpl()
   gcry_md_close(ctx_);
 }
 
-SharedHandle<MessageDigestImpl> MessageDigestImpl::sha1()
+std::shared_ptr<MessageDigestImpl> MessageDigestImpl::sha1()
 {
-  return SharedHandle<MessageDigestImpl>(new MessageDigestImpl(GCRY_MD_SHA1));
+  return std::shared_ptr<MessageDigestImpl>(new MessageDigestImpl(GCRY_MD_SHA1));
 }
 
 typedef HashFuncEntry<int> CHashFuncEntry;
@@ -70,11 +70,11 @@ CHashFuncEntry hashFuncs[] = {
 };
 } // namespace
 
-SharedHandle<MessageDigestImpl> MessageDigestImpl::create
+std::shared_ptr<MessageDigestImpl> MessageDigestImpl::create
 (const std::string& hashType)
 {
   int hashFunc = getHashFunc(vbegin(hashFuncs), vend(hashFuncs), hashType);
-  return SharedHandle<MessageDigestImpl>(new MessageDigestImpl(hashFunc));
+  return std::shared_ptr<MessageDigestImpl>(new MessageDigestImpl(hashFunc));
 }
 
 bool MessageDigestImpl::supports(const std::string& hashType)

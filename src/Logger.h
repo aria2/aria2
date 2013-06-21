@@ -38,8 +38,7 @@
 #include "common.h"
 
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -58,7 +57,7 @@ public:
 private:
   // Minimum log level for file log output.
   LEVEL logLevel_;
-  SharedHandle<OutputFile> fpp_;
+  std::shared_ptr<OutputFile> fpp_;
   // Minimum log level for console log output.
   LEVEL consoleLogLevel_;
   // true if console log output is enabled.

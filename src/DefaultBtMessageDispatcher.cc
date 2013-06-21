@@ -73,16 +73,16 @@ DefaultBtMessageDispatcher::~DefaultBtMessageDispatcher()
 }
 
 void DefaultBtMessageDispatcher::addMessageToQueue
-(const SharedHandle<BtMessage>& btMessage)
+(const std::shared_ptr<BtMessage>& btMessage)
 {
   btMessage->onQueued();
   messageQueue_.push_back(btMessage);
 }
 
 void DefaultBtMessageDispatcher::addMessageToQueue
-(const std::vector<SharedHandle<BtMessage> >& btMessages)
+(const std::vector<std::shared_ptr<BtMessage> >& btMessages)
 {
-  for(std::vector<SharedHandle<BtMessage> >::const_iterator itr =
+  for(std::vector<std::shared_ptr<BtMessage> >::const_iterator itr =
         btMessages.begin(), eoi = btMessages.end(); itr != eoi; ++itr) {
     addMessageToQueue(*itr);
   }
@@ -90,9 +90,9 @@ void DefaultBtMessageDispatcher::addMessageToQueue
 
 void DefaultBtMessageDispatcher::sendMessagesInternal()
 {
-  std::vector<SharedHandle<BtMessage> > tempQueue;
+  std::vector<std::shared_ptr<BtMessage> > tempQueue;
   while(!messageQueue_.empty()) {
-    SharedHandle<BtMessage> msg = messageQueue_.front();
+    std::shared_ptr<BtMessage> msg = messageQueue_.front();
     messageQueue_.pop_front();
     if(msg->isUploading()) {
       if(requestGroupMan_->doesOverallUploadSpeedExceed() ||
@@ -123,7 +123,7 @@ void DefaultBtMessageDispatcher::doCancelSendingPieceAction
 {
   BtCancelSendingPieceEvent event(index, begin, length);
 
-  std::vector<SharedHandle<BtMessage> > tempQueue
+  std::vector<std::shared_ptr<BtMessage> > tempQueue
     (messageQueue_.begin(), messageQueue_.end());
 
   forEachMemFunSH(tempQueue.begin(), tempQueue.end(),
@@ -133,13 +133,13 @@ void DefaultBtMessageDispatcher::doCancelSendingPieceAction
 // Cancel sending piece message to peer.
 // TODO Is this method really necessary?
 void DefaultBtMessageDispatcher::doCancelSendingPieceAction
-(const SharedHandle<Piece>& piece)
+(const std::shared_ptr<Piece>& piece)
 {
 }
 
 namespace {
 void abortOutstandingRequest
-(const RequestSlot& slot, const SharedHandle<Piece>& piece, cuid_t cuid)
+(const RequestSlot& slot, const std::shared_ptr<Piece>& piece, cuid_t cuid)
 {
   A2_LOG_DEBUG(fmt(MSG_DELETING_REQUEST_SLOT,
                    cuid,
@@ -163,7 +163,7 @@ struct FindRequestSlotByIndex {
 
 // localhost cancels outstanding download requests to the peer.
 void DefaultBtMessageDispatcher::doAbortOutstandingRequestAction
-(const SharedHandle<Piece>& piece) {
+(const std::shared_ptr<Piece>& piece) {
   for(std::deque<RequestSlot>::iterator itr = requestSlots_.begin(),
         eoi = requestSlots_.end(); itr != eoi; ++itr) {
     if((*itr).getIndex() == piece->getIndex()) {
@@ -176,7 +176,7 @@ void DefaultBtMessageDispatcher::doAbortOutstandingRequestAction
 
   BtAbortOutstandingRequestEvent event(piece);
 
-  std::vector<SharedHandle<BtMessage> > tempQueue
+  std::vector<std::shared_ptr<BtMessage> > tempQueue
     (messageQueue_.begin(), messageQueue_.end());
   forEachMemFunSH(tempQueue.begin(), tempQueue.end(),
                   &BtMessage::onAbortOutstandingRequestEvent, event);
@@ -186,13 +186,13 @@ namespace {
 class ProcessChokedRequestSlot {
 private:
   cuid_t cuid_;
-  SharedHandle<Peer> peer_;
-  SharedHandle<PieceStorage> pieceStorage_;
+  std::shared_ptr<Peer> peer_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
 public:
   ProcessChokedRequestSlot
   (cuid_t cuid,
-   const SharedHandle<Peer>& peer,
-   const SharedHandle<PieceStorage>& pieceStorage)
+   const std::shared_ptr<Peer>& peer,
+   const std::shared_ptr<PieceStorage>& pieceStorage)
     : cuid_(cuid),
       peer_(peer),
       pieceStorage_(pieceStorage)
@@ -206,7 +206,7 @@ public:
                        static_cast<unsigned long>(slot.getIndex()),
                        slot.getBegin(),
                        static_cast<unsigned long>(slot.getBlockIndex())));
-      SharedHandle<Piece> piece = pieceStorage_->getPiece(slot.getIndex());
+      std::shared_ptr<Piece> piece = pieceStorage_->getPiece(slot.getIndex());
       piece->cancelBlock(slot.getBlockIndex());
     }
   }
@@ -217,9 +217,9 @@ public:
 namespace {
 class FindChokedRequestSlot {
 private:
-  SharedHandle<Peer> peer_;
+  std::shared_ptr<Peer> peer_;
 public:
-  FindChokedRequestSlot(const SharedHandle<Peer>& peer):
+  FindChokedRequestSlot(const std::shared_ptr<Peer>& peer):
     peer_(peer) {}
 
   bool operator()(const RequestSlot& slot) const
@@ -245,7 +245,7 @@ void DefaultBtMessageDispatcher::doChokingAction()
 {
   BtChokingEvent event;
 
-  std::vector<SharedHandle<BtMessage> > tempQueue
+  std::vector<std::shared_ptr<BtMessage> > tempQueue
     (messageQueue_.begin(), messageQueue_.end());
   forEachMemFunSH(tempQueue.begin(), tempQueue.end(),
                   &BtMessage::onChokingEvent, event);
@@ -255,15 +255,15 @@ namespace {
 class ProcessStaleRequestSlot {
 private:
   cuid_t cuid_;
-  SharedHandle<Peer> peer_;
-  SharedHandle<PieceStorage> pieceStorage_;
+  std::shared_ptr<Peer> peer_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
   BtMessageDispatcher* messageDispatcher_;
   BtMessageFactory* messageFactory_;
   time_t requestTimeout_;
 public:
   ProcessStaleRequestSlot
-  (cuid_t cuid, const SharedHandle<Peer>& peer,
-   const SharedHandle<PieceStorage>& pieceStorage,
+  (cuid_t cuid, const std::shared_ptr<Peer>& peer,
+   const std::shared_ptr<PieceStorage>& pieceStorage,
    BtMessageDispatcher* dispatcher,
    BtMessageFactory* factory,
    time_t requestTimeout)
@@ -303,10 +303,10 @@ public:
 namespace {
 class FindStaleRequestSlot {
 private:
-  SharedHandle<PieceStorage> pieceStorage_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
   time_t requestTimeout_;
 public:
-  FindStaleRequestSlot(const SharedHandle<PieceStorage>& pieceStorage,
+  FindStaleRequestSlot(const std::shared_ptr<PieceStorage>& pieceStorage,
                        time_t requestTimeout):
     pieceStorage_(pieceStorage),
     requestTimeout_(requestTimeout) {}
@@ -411,25 +411,25 @@ size_t DefaultBtMessageDispatcher::countOutstandingUpload()
                        mem_fun_sh(&BtMessage::isUploading));
 }
 
-void DefaultBtMessageDispatcher::setPeer(const SharedHandle<Peer>& peer)
+void DefaultBtMessageDispatcher::setPeer(const std::shared_ptr<Peer>& peer)
 {
   peer_ = peer;
 }
 
 void DefaultBtMessageDispatcher::setDownloadContext
-(const SharedHandle<DownloadContext>& downloadContext)
+(const std::shared_ptr<DownloadContext>& downloadContext)
 {
   downloadContext_ = downloadContext;
 }
 
 void DefaultBtMessageDispatcher::setPieceStorage
-(const SharedHandle<PieceStorage>& pieceStorage)
+(const std::shared_ptr<PieceStorage>& pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }
 
 void DefaultBtMessageDispatcher::setPeerStorage
-(const SharedHandle<PeerStorage>& peerStorage)
+(const std::shared_ptr<PeerStorage>& peerStorage)
 {
   peerStorage_ = peerStorage;
 }

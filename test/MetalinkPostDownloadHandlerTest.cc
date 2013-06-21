@@ -20,7 +20,7 @@ class MetalinkPostDownloadHandlerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetNextRequestGroups_withBaseUri);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<Option> option_;
+  std::shared_ptr<Option> option_;
 public:
   void setUp()
   {
@@ -38,7 +38,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkPostDownloadHandlerTest );
 
 void MetalinkPostDownloadHandlerTest::testCanHandle_extension()
 {
-  SharedHandle<DownloadContext> dctx
+  std::shared_ptr<DownloadContext> dctx
     (new DownloadContext(0, 0, "test.metalink"));
   RequestGroup rg(GroupId::create(), option_);
   rg.setDownloadContext(dctx);
@@ -53,7 +53,7 @@ void MetalinkPostDownloadHandlerTest::testCanHandle_extension()
 
 void MetalinkPostDownloadHandlerTest::testCanHandle_contentType()
 {
-  SharedHandle<DownloadContext> dctx(new DownloadContext(0, 0, "test"));
+  std::shared_ptr<DownloadContext> dctx(new DownloadContext(0, 0, "test"));
   dctx->getFirstFileEntry()->setContentType("application/metalink+xml");
   RequestGroup rg(GroupId::create(), option_);
   rg.setDownloadContext(dctx);
@@ -68,7 +68,7 @@ void MetalinkPostDownloadHandlerTest::testCanHandle_contentType()
 
 void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups()
 {
-  SharedHandle<DownloadContext> dctx
+  std::shared_ptr<DownloadContext> dctx
     (new DownloadContext(1024, 0, A2_TEST_DIR"/test.xml"));
   RequestGroup rg(GroupId::create(), option_);
   rg.setDownloadContext(dctx);
@@ -76,7 +76,7 @@ void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups()
   rg.getPieceStorage()->getDiskAdaptor()->enableReadOnly();
 
   MetalinkPostDownloadHandler handler;
-  std::vector<SharedHandle<RequestGroup> > groups;
+  std::vector<std::shared_ptr<RequestGroup> > groups;
   handler.getNextRequestGroups(groups, &rg);
 #ifdef ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL((size_t)6/* 5 + 1 torrent file download */, groups.size());
@@ -87,7 +87,7 @@ void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups()
 
 void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups_withBaseUri()
 {
-  SharedHandle<DownloadContext> dctx
+  std::shared_ptr<DownloadContext> dctx
     (new DownloadContext(1024, 0, A2_TEST_DIR"/base_uri.xml"));
   dctx->getFirstFileEntry()->addUri("http://base/dir/base_uri.xml");
   RequestGroup rg(GroupId::create(), option_);
@@ -96,7 +96,7 @@ void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups_withBaseUri()
   rg.getPieceStorage()->getDiskAdaptor()->enableReadOnly();
 
   MetalinkPostDownloadHandler handler;
-  std::vector<SharedHandle<RequestGroup> > groups;
+  std::vector<std::shared_ptr<RequestGroup> > groups;
   handler.getNextRequestGroups(groups, &rg);
   CPPUNIT_ASSERT_EQUAL((size_t)1, groups.size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://base/dir/example.ext"),

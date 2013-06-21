@@ -64,8 +64,8 @@ DefaultExtensionMessageFactory::DefaultExtensionMessageFactory()
 {}
 
 DefaultExtensionMessageFactory::DefaultExtensionMessageFactory
-(const SharedHandle<Peer>& peer,
- const SharedHandle<ExtensionMessageRegistry>& registry)
+(const std::shared_ptr<Peer>& peer,
+ const std::shared_ptr<ExtensionMessageRegistry>& registry)
   : peer_(peer),
     registry_(registry),
     messageFactory_(0),
@@ -75,7 +75,7 @@ DefaultExtensionMessageFactory::DefaultExtensionMessageFactory
 
 DefaultExtensionMessageFactory::~DefaultExtensionMessageFactory() {}
 
-SharedHandle<ExtensionMessage>
+std::shared_ptr<ExtensionMessage>
 DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t length)
 {
   uint8_t extensionMessageID = *data;
@@ -85,7 +85,7 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
       HandshakeExtensionMessage::create(data, length);
     m->setPeer(peer_);
     m->setDownloadContext(dctx_);
-    return SharedHandle<ExtensionMessage>(m);
+    return std::shared_ptr<ExtensionMessage>(m);
   } else {
     const char* extensionName = registry_->getExtensionName(extensionMessageID);
     if(!extensionName) {
@@ -97,7 +97,7 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
       // uTorrent compatible Peer-Exchange
       UTPexExtensionMessage* m = UTPexExtensionMessage::create(data, length);
       m->setPeerStorage(peerStorage_);
-      return SharedHandle<ExtensionMessage>(m);
+      return std::shared_ptr<ExtensionMessage>(m);
     } else if(strcmp(extensionName, "ut_metadata") == 0) {
       if(length == 0) {
         throw DL_ABORT_EX
@@ -106,7 +106,7 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
                static_cast<unsigned long>(length)));
       }
       size_t end;
-      SharedHandle<ValueBase> decoded =
+      std::shared_ptr<ValueBase> decoded =
         bencode2::decode(data+1, length - 1, end);
       const Dict* dict = downcast<Dict>(decoded);
       if(!dict) {
@@ -129,7 +129,7 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
         m->setPeer(peer_);
         m->setBtMessageFactory(messageFactory_);
         m->setBtMessageDispatcher(dispatcher_);
-        return SharedHandle<ExtensionMessage>(m);
+        return std::shared_ptr<ExtensionMessage>(m);
       }
       case 1: {
         if(end == length) {
@@ -147,14 +147,14 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
         m->setUTMetadataRequestTracker(tracker_);
         m->setPieceStorage(dctx_->getOwnerRequestGroup()->getPieceStorage());
         m->setDownloadContext(dctx_);
-        return SharedHandle<ExtensionMessage>(m);
+        return std::shared_ptr<ExtensionMessage>(m);
       }
       case 2: {
         UTMetadataRejectExtensionMessage* m
           (new UTMetadataRejectExtensionMessage(extensionMessageID));
         m->setIndex(index->i());
         // No need to inject tracker because peer will be disconnected.
-        return SharedHandle<ExtensionMessage>(m);
+        return std::shared_ptr<ExtensionMessage>(m);
       }
       default:
         throw DL_ABORT_EX
@@ -171,12 +171,12 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
 }
 
 void DefaultExtensionMessageFactory::setPeerStorage
-(const SharedHandle<PeerStorage>& peerStorage)
+(const std::shared_ptr<PeerStorage>& peerStorage)
 {
   peerStorage_ = peerStorage;
 }
 
-void DefaultExtensionMessageFactory::setPeer(const SharedHandle<Peer>& peer)
+void DefaultExtensionMessageFactory::setPeer(const std::shared_ptr<Peer>& peer)
 {
   peer_ = peer;
 }

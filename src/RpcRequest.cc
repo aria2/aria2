@@ -43,13 +43,13 @@ RpcRequest::RpcRequest()
 {}
 
 RpcRequest::RpcRequest(const std::string& methodName,
-                       const SharedHandle<List>& params)
+                       const std::shared_ptr<List>& params)
   : methodName(methodName), params(params), jsonRpc(false)
 {}
 
 RpcRequest::RpcRequest(const std::string& methodName,
-                       const SharedHandle<List>& params,
-                       const SharedHandle<ValueBase>& id)
+                       const std::shared_ptr<List>& params,
+                       const std::shared_ptr<ValueBase>& id)
   : methodName(methodName), params(params), id(id), jsonRpc(false)
 {}
 

@@ -130,22 +130,22 @@ bool DHTGetPeersCommand::execute()
   return false;
 }
 
-void DHTGetPeersCommand::setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue)
+void DHTGetPeersCommand::setTaskQueue(const std::shared_ptr<DHTTaskQueue>& taskQueue)
 {
   taskQueue_ = taskQueue;
 }
 
-void DHTGetPeersCommand::setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory)
+void DHTGetPeersCommand::setTaskFactory(const std::shared_ptr<DHTTaskFactory>& taskFactory)
 {
   taskFactory_ = taskFactory;
 }
 
-void DHTGetPeersCommand::setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
+void DHTGetPeersCommand::setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime)
 {
   btRuntime_ = btRuntime;
 }
 
-void DHTGetPeersCommand::setPeerStorage(const SharedHandle<PeerStorage>& ps)
+void DHTGetPeersCommand::setPeerStorage(const std::shared_ptr<PeerStorage>& ps)
 {
   peerStorage_ = ps;
 }

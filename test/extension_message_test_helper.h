@@ -10,10 +10,10 @@ typedef WrapBtMessage<ExtensionMessage> WrapExtBtMessage;
 
 class WrapExtBtMessageFactory:public MockBtMessageFactory {
 public:
-  virtual SharedHandle<BtMessage>
-  createBtExtendedMessage(const SharedHandle<ExtensionMessage>& extmsg)
+  virtual std::shared_ptr<BtMessage>
+  createBtExtendedMessage(const std::shared_ptr<ExtensionMessage>& extmsg)
   {
-    return SharedHandle<BtMessage>(new WrapExtBtMessage(extmsg));
+    return std::shared_ptr<BtMessage>(new WrapExtBtMessage(extmsg));
   }
 };
 

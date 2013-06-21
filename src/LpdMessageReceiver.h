@@ -36,8 +36,7 @@
 #include "common.h"
 
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -46,7 +45,7 @@ struct LpdMessage;
 
 class LpdMessageReceiver {
 private:
-  SharedHandle<SocketCore> socket_;
+  std::shared_ptr<SocketCore> socket_;
   std::string multicastAddress_;
   uint16_t multicastPort_;
   std::string localAddress_;
@@ -62,11 +61,11 @@ public:
 
   // Receives LPD message and returns LpdMessage which contains
   // sender(peer) and infohash. If no data is available on socket,
-  // returns SharedHandle<LpdMessage>().  If received data is bad,
-  // then returns SharedHandle<LpdMessage>(new LpdMessage())
-  SharedHandle<LpdMessage> receiveMessage();
+  // returns std::shared_ptr<LpdMessage>().  If received data is bad,
+  // then returns std::shared_ptr<LpdMessage>(new LpdMessage())
+  std::shared_ptr<LpdMessage> receiveMessage();
 
-  const SharedHandle<SocketCore>& getSocket() const
+  const std::shared_ptr<SocketCore>& getSocket() const
   {
     return socket_;
   }

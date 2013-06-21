@@ -31,7 +31,7 @@ public:
     virtual std::string sayGreetingConst() const = 0;
   };
 
-  typedef SharedHandle<Greeting> GreetingHandle;
+  typedef std::shared_ptr<Greeting> GreetingHandle;
 
   class JapaneseGreeting:public Greeting
   {

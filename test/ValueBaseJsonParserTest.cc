@@ -30,7 +30,7 @@ void ValueBaseJsonParserTest::testParseUpdate()
   {
     // empty object
     std::string src = "{}";
-    SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     const Dict* dict = downcast<Dict>(r);
     CPPUNIT_ASSERT(dict);
@@ -38,7 +38,7 @@ void ValueBaseJsonParserTest::testParseUpdate()
   {
     // empty object
     std::string src = "{  }";
-    SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     const Dict* dict = downcast<Dict>(r);
     CPPUNIT_ASSERT(dict);
@@ -46,7 +46,7 @@ void ValueBaseJsonParserTest::testParseUpdate()
   {
     // empty array
     std::string src = "[]";
-    SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
@@ -54,7 +54,7 @@ void ValueBaseJsonParserTest::testParseUpdate()
   {
     // empty array
     std::string src = "[ ]";
-    SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
@@ -62,7 +62,7 @@ void ValueBaseJsonParserTest::testParseUpdate()
   {
     // empty string
     std::string src = "[\"\"]";
-    SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
@@ -72,7 +72,7 @@ void ValueBaseJsonParserTest::testParseUpdate()
   {
     // string
     std::string src = "[\"foobar\"]";
-    SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
@@ -82,7 +82,7 @@ void ValueBaseJsonParserTest::testParseUpdate()
   {
     // string with escape
     std::string src = "[\"\\\\foo\\\"\\\"bar\"]";
-    SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
@@ -92,7 +92,7 @@ void ValueBaseJsonParserTest::testParseUpdate()
   {
     // string with escape
     std::string src = "[\"foo\\\"\"]";
-    SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
@@ -102,7 +102,7 @@ void ValueBaseJsonParserTest::testParseUpdate()
   {
     // string: utf-8 1 to 3 bytes.
     std::string src = "[\"\\u0024\\u00A2\\u20AC\"]";
-    SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
@@ -112,7 +112,7 @@ void ValueBaseJsonParserTest::testParseUpdate()
   {
     // string: utf-8 4 bytes
     std::string src = "[\"\\uD852\\uDF62\"]";
-    SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
@@ -123,7 +123,7 @@ void ValueBaseJsonParserTest::testParseUpdate()
   {
     // null
     std::string src = "[null]";
-    SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
@@ -133,7 +133,7 @@ void ValueBaseJsonParserTest::testParseUpdate()
   {
     // true, false
     std::string src = "[true, false]";
-    SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
@@ -147,7 +147,7 @@ void ValueBaseJsonParserTest::testParseUpdate()
   {
     // object: 1 member
     std::string src = "{\"foo\":[\"bar\"]}";
-    SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     const Dict* dict = downcast<Dict>(r);
     CPPUNIT_ASSERT(dict);
@@ -160,7 +160,7 @@ void ValueBaseJsonParserTest::testParseUpdate()
     // object: 2 members
     // TODO ValueBaseJsonParser does not allow empty dict key
     std::string src = "{\"foo\":[\"bar\"], \"alpha\" : \"bravo\"}";
-    SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     const Dict* dict = downcast<Dict>(r);
     CPPUNIT_ASSERT(dict);
@@ -174,7 +174,7 @@ void ValueBaseJsonParserTest::testParseUpdate()
   {
     // array: 2 values
     std::string src = "[\"foo\", {}]";
-    SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
@@ -186,7 +186,7 @@ void ValueBaseJsonParserTest::testParseUpdate()
   {
     // Number: currently we ignore frac and exp
     std::string src = "[0,-1,1.2,-1.2e-10,-1e10]";
-    SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
@@ -204,7 +204,7 @@ void ValueBaseJsonParserTest::testParseUpdate()
   {
     // escape chars: ", \, /, \b, \f, \n, \r, \t
     std::string src = "[\"\\\"\\\\\\/\\b\\f\\n\\r\\t\"]";
-    SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     const List* list = downcast<List>(r);
     const String* s = downcast<String>(list->get(0));
@@ -213,7 +213,7 @@ void ValueBaseJsonParserTest::testParseUpdate()
   {
     // string: literal + escaped chars.
     std::string src = "[\"foo\\u0024b\\u00A2\\u20ACbaz\"]";
-    SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
@@ -223,7 +223,7 @@ void ValueBaseJsonParserTest::testParseUpdate()
   {
     // ignore garbage at the end of the input.
     std::string src = "[]trail";
-    SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+    std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                   error);
     const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
@@ -236,7 +236,7 @@ void checkDecodeError(const std::string& src)
 {
   json::ValueBaseJsonParser parser;
   ssize_t error;
-  SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+  std::shared_ptr<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
                                                 error);
   CPPUNIT_ASSERT(!r);
   CPPUNIT_ASSERT(error < 0);

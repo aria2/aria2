@@ -148,7 +148,7 @@ bool DHTEntryPointNameResolveCommand::execute()
 void DHTEntryPointNameResolveCommand::addPingTask
 (const std::pair<std::string, uint16_t>& addr)
 {
-  SharedHandle<DHTNode> entryNode(new DHTNode());
+  std::shared_ptr<DHTNode> entryNode(new DHTNode());
   entryNode->setIPAddress(addr.first);
   entryNode->setPort(addr.second);
 
@@ -198,25 +198,25 @@ void DHTEntryPointNameResolveCommand::setBootstrapEnabled(bool f)
 }
 
 void DHTEntryPointNameResolveCommand::setTaskQueue
-(const SharedHandle<DHTTaskQueue>& taskQueue)
+(const std::shared_ptr<DHTTaskQueue>& taskQueue)
 {
   taskQueue_ = taskQueue;
 }
 
 void DHTEntryPointNameResolveCommand::setTaskFactory
-(const SharedHandle<DHTTaskFactory>& taskFactory)
+(const std::shared_ptr<DHTTaskFactory>& taskFactory)
 {
   taskFactory_ = taskFactory;
 }
 
 void DHTEntryPointNameResolveCommand::setRoutingTable
-(const SharedHandle<DHTRoutingTable>& routingTable)
+(const std::shared_ptr<DHTRoutingTable>& routingTable)
 {
   routingTable_ = routingTable;
 }
 
 void DHTEntryPointNameResolveCommand::setLocalNode
-(const SharedHandle<DHTNode>& localNode)
+(const std::shared_ptr<DHTNode>& localNode)
 {
   localNode_ = localNode;
 }

@@ -56,19 +56,19 @@ ServerStatMan::ServerStatMan() {}
 
 ServerStatMan::~ServerStatMan() {}
 
-SharedHandle<ServerStat> ServerStatMan::find(const std::string& hostname,
+std::shared_ptr<ServerStat> ServerStatMan::find(const std::string& hostname,
                                              const std::string& protocol) const
 {
-  SharedHandle<ServerStat> ss(new ServerStat(hostname, protocol));
+  std::shared_ptr<ServerStat> ss(new ServerStat(hostname, protocol));
   ServerStatSet::iterator i = serverStats_.find(ss);
   if(i == serverStats_.end()) {
-    return SharedHandle<ServerStat>();
+    return std::shared_ptr<ServerStat>();
   } else {
     return *i;
   }
 }
 
-bool ServerStatMan::add(const SharedHandle<ServerStat>& serverStat)
+bool ServerStatMan::add(const std::shared_ptr<ServerStat>& serverStat)
 {
   ServerStatSet::iterator i = serverStats_.lower_bound(serverStat);
   if(i != serverStats_.end() && *(*i) == *serverStat) {
@@ -195,7 +195,7 @@ bool ServerStatMan::load(const std::string& filename)
     if(m[S_HOST].empty() || m[S_PROTOCOL].empty()) {
       continue;
     }
-    SharedHandle<ServerStat> sstat(new ServerStat(m[S_HOST], m[S_PROTOCOL]));
+    std::shared_ptr<ServerStat> sstat(new ServerStat(m[S_HOST], m[S_PROTOCOL]));
 
     uint32_t uintval;
     if(!util::parseUIntNoThrow(uintval, m[S_DL_SPEED])) {
@@ -243,7 +243,7 @@ private:
 public:
   FindStaleServerStat(time_t timeout):timeout_(timeout) {}
 
-  bool operator()(const SharedHandle<ServerStat>& ss) const
+  bool operator()(const std::shared_ptr<ServerStat>& ss) const
   {
     return ss->getLastUpdated().difference(time_) >= timeout_;
   }

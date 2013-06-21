@@ -41,8 +41,8 @@
 #include <deque>
 #include <map>
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "a2netcompat.h"
 #include "TimerA2.h"
 #include "a2io.h"
@@ -80,15 +80,15 @@ private:
 
   std::string sessionId_;
 
-  SharedHandle<EventPoll> eventPoll_;
+  std::shared_ptr<EventPoll> eventPoll_;
 
-  SharedHandle<StatCalc> statCalc_;
+  std::shared_ptr<StatCalc> statCalc_;
 
   int haltRequested_;
 
   class SocketPoolEntry {
   private:
-    SharedHandle<SocketCore> socket_;
+    std::shared_ptr<SocketCore> socket_;
     // protocol specific option string
     std::string options_;
 
@@ -96,18 +96,18 @@ private:
 
     Timer registeredTime_;
   public:
-    SocketPoolEntry(const SharedHandle<SocketCore>& socket,
+    SocketPoolEntry(const std::shared_ptr<SocketCore>& socket,
                     const std::string& option,
                     time_t timeout);
 
-    SocketPoolEntry(const SharedHandle<SocketCore>& socket,
+    SocketPoolEntry(const std::shared_ptr<SocketCore>& socket,
                     time_t timeout);
 
     ~SocketPoolEntry();
 
     bool isTimeout() const;
 
-    const SharedHandle<SocketCore>& getSocket() const
+    const std::shared_ptr<SocketCore>& getSocket() const
     {
       return socket_;
     }
@@ -133,10 +133,10 @@ private:
 
   std::deque<Command*> routineCommands_;
 
-  SharedHandle<CookieStorage> cookieStorage_;
+  std::shared_ptr<CookieStorage> cookieStorage_;
 
 #ifdef ENABLE_BITTORRENT
-  SharedHandle<BtRegistry> btRegistry_;
+  std::shared_ptr<BtRegistry> btRegistry_;
 #endif // ENABLE_BITTORRENT
 
   CUIDCounter cuidCounter_;
@@ -145,12 +145,12 @@ private:
   ares_addr_node* asyncDNSServers_;
 #endif // HAVE_ARES_ADDR_NODE
 
-  SharedHandle<DNSCache> dnsCache_;
+  std::shared_ptr<DNSCache> dnsCache_;
 
-  SharedHandle<AuthConfigFactory> authConfigFactory_;
+  std::shared_ptr<AuthConfigFactory> authConfigFactory_;
 
 #ifdef ENABLE_WEBSOCKET
-  SharedHandle<rpc::WebSocketSessionMan> webSocketSessionMan_;
+  std::shared_ptr<rpc::WebSocketSessionMan> webSocketSessionMan_;
 #endif // ENABLE_WEBSOCKET
 
   /**
@@ -168,12 +168,12 @@ private:
   findSocketPoolEntry(const std::string& key);
 
   std::deque<Command*> commands_;
-  SharedHandle<RequestGroupMan> requestGroupMan_;
-  SharedHandle<FileAllocationMan> fileAllocationMan_;
-  SharedHandle<CheckIntegrityMan> checkIntegrityMan_;
+  std::shared_ptr<RequestGroupMan> requestGroupMan_;
+  std::shared_ptr<FileAllocationMan> fileAllocationMan_;
+  std::shared_ptr<CheckIntegrityMan> checkIntegrityMan_;
   Option* option_;
 public:
-  DownloadEngine(const SharedHandle<EventPoll>& eventPoll);
+  DownloadEngine(const std::shared_ptr<EventPoll>& eventPoll);
 
   ~DownloadEngine();
 
@@ -183,20 +183,20 @@ public:
   // processed. Otherwise, returns 0.
   int run(bool oneshot=false);
 
-  bool addSocketForReadCheck(const SharedHandle<SocketCore>& socket,
+  bool addSocketForReadCheck(const std::shared_ptr<SocketCore>& socket,
                              Command* command);
-  bool deleteSocketForReadCheck(const SharedHandle<SocketCore>& socket,
+  bool deleteSocketForReadCheck(const std::shared_ptr<SocketCore>& socket,
                                 Command* command);
-  bool addSocketForWriteCheck(const SharedHandle<SocketCore>& socket,
+  bool addSocketForWriteCheck(const std::shared_ptr<SocketCore>& socket,
                               Command* command);
-  bool deleteSocketForWriteCheck(const SharedHandle<SocketCore>& socket,
+  bool deleteSocketForWriteCheck(const std::shared_ptr<SocketCore>& socket,
                                  Command* command);
 
 #ifdef ENABLE_ASYNC_DNS
 
-  bool addNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver,
+  bool addNameResolverCheck(const std::shared_ptr<AsyncNameResolver>& resolver,
                             Command* command);
-  bool deleteNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver,
+  bool deleteNameResolverCheck(const std::shared_ptr<AsyncNameResolver>& resolver,
                                Command* command);
 #endif // ENABLE_ASYNC_DNS
 
@@ -204,26 +204,26 @@ public:
 
   void addCommand(Command* command);
 
-  const SharedHandle<RequestGroupMan>& getRequestGroupMan() const
+  const std::shared_ptr<RequestGroupMan>& getRequestGroupMan() const
   {
     return requestGroupMan_;
   }
 
-  void setRequestGroupMan(const SharedHandle<RequestGroupMan>& rgman);
+  void setRequestGroupMan(const std::shared_ptr<RequestGroupMan>& rgman);
 
-  const SharedHandle<FileAllocationMan>& getFileAllocationMan() const
+  const std::shared_ptr<FileAllocationMan>& getFileAllocationMan() const
   {
     return fileAllocationMan_;
   }
 
-  void setFileAllocationMan(const SharedHandle<FileAllocationMan>& faman);
+  void setFileAllocationMan(const std::shared_ptr<FileAllocationMan>& faman);
 
-  const SharedHandle<CheckIntegrityMan>& getCheckIntegrityMan() const
+  const std::shared_ptr<CheckIntegrityMan>& getCheckIntegrityMan() const
   {
     return checkIntegrityMan_;
   }
 
-  void setCheckIntegrityMan(const SharedHandle<CheckIntegrityMan>& ciman);
+  void setCheckIntegrityMan(const std::shared_ptr<CheckIntegrityMan>& ciman);
 
   Option* getOption() const
   {
@@ -235,7 +235,7 @@ public:
     option_ = op;
   }
 
-  void setStatCalc(const SharedHandle<StatCalc>& statCalc);
+  void setStatCalc(const std::shared_ptr<StatCalc>& statCalc);
 
   bool isHaltRequested() const
   {
@@ -258,57 +258,57 @@ public:
   void poolSocket(const std::string& ipaddr, uint16_t port,
                   const std::string& username,
                   const std::string& proxyhost, uint16_t proxyport,
-                  const SharedHandle<SocketCore>& sock,
+                  const std::shared_ptr<SocketCore>& sock,
                   const std::string& options,
                   time_t timeout = 15);
 
-  void poolSocket(const SharedHandle<Request>& request,
+  void poolSocket(const std::shared_ptr<Request>& request,
                   const std::string& username,
-                  const SharedHandle<Request>& proxyRequest,
-                  const SharedHandle<SocketCore>& socket,
+                  const std::shared_ptr<Request>& proxyRequest,
+                  const std::shared_ptr<SocketCore>& socket,
                   const std::string& options,
                   time_t timeout = 15);
 
   void poolSocket(const std::string& ipaddr, uint16_t port,
                   const std::string& proxyhost, uint16_t proxyport,
-                  const SharedHandle<SocketCore>& sock,
+                  const std::shared_ptr<SocketCore>& sock,
                   time_t timeout = 15);
 
-  void poolSocket(const SharedHandle<Request>& request,
-                  const SharedHandle<Request>& proxyRequest,
-                  const SharedHandle<SocketCore>& socket,
+  void poolSocket(const std::shared_ptr<Request>& request,
+                  const std::shared_ptr<Request>& proxyRequest,
+                  const std::shared_ptr<SocketCore>& socket,
                   time_t timeout = 15);
 
-  SharedHandle<SocketCore> popPooledSocket
+  std::shared_ptr<SocketCore> popPooledSocket
   (const std::string& ipaddr,
    uint16_t port,
    const std::string& proxyhost, uint16_t proxyport);
 
-  SharedHandle<SocketCore> popPooledSocket
+  std::shared_ptr<SocketCore> popPooledSocket
   (std::string& options,
    const std::string& ipaddr,
    uint16_t port,
    const std::string& username,
    const std::string& proxyhost, uint16_t proxyport);
 
-  SharedHandle<SocketCore>
+  std::shared_ptr<SocketCore>
   popPooledSocket
   (const std::vector<std::string>& ipaddrs, uint16_t port);
 
-  SharedHandle<SocketCore>
+  std::shared_ptr<SocketCore>
   popPooledSocket
   (std::string& options,
    const std::vector<std::string>& ipaddrs,
    uint16_t port,
    const std::string& username);
 
-  const SharedHandle<CookieStorage>& getCookieStorage() const
+  const std::shared_ptr<CookieStorage>& getCookieStorage() const
   {
     return cookieStorage_;
   }
 
 #ifdef ENABLE_BITTORRENT
-  const SharedHandle<BtRegistry>& getBtRegistry() const
+  const std::shared_ptr<BtRegistry>& getBtRegistry() const
   {
     return btRegistry_;
   }
@@ -334,9 +334,9 @@ public:
 
   void removeCachedIPAddress(const std::string& hostname, uint16_t port);
 
-  void setAuthConfigFactory(const SharedHandle<AuthConfigFactory>& factory);
+  void setAuthConfigFactory(const std::shared_ptr<AuthConfigFactory>& factory);
 
-  const SharedHandle<AuthConfigFactory>& getAuthConfigFactory() const
+  const std::shared_ptr<AuthConfigFactory>& getAuthConfigFactory() const
   {
     return authConfigFactory_;
   }
@@ -359,8 +359,8 @@ public:
 
 #ifdef ENABLE_WEBSOCKET
   void setWebSocketSessionMan
-  (const SharedHandle<rpc::WebSocketSessionMan>& wsman);
-  const SharedHandle<rpc::WebSocketSessionMan>& getWebSocketSessionMan() const
+  (const std::shared_ptr<rpc::WebSocketSessionMan>& wsman);
+  const std::shared_ptr<rpc::WebSocketSessionMan>& getWebSocketSessionMan() const
   {
     return webSocketSessionMan_;
   }

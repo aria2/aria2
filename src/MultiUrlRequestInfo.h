@@ -40,8 +40,8 @@
 #include <signal.h>
 
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "DownloadResult.h"
 #include "util.h"
 
@@ -56,17 +56,17 @@ class DownloadEngine;
 
 class MultiUrlRequestInfo {
 private:
-  std::vector<SharedHandle<RequestGroup> > requestGroups_;
+  std::vector<std::shared_ptr<RequestGroup> > requestGroups_;
 
-  SharedHandle<Option> option_;
+  std::shared_ptr<Option> option_;
 
-  SharedHandle<StatCalc> statCalc_;
+  std::shared_ptr<StatCalc> statCalc_;
 
-  SharedHandle<OutputFile> summaryOut_;
+  std::shared_ptr<OutputFile> summaryOut_;
 
-  SharedHandle<UriListParser> uriListParser_;
+  std::shared_ptr<UriListParser> uriListParser_;
 
-  SharedHandle<DownloadEngine> e_;
+  std::shared_ptr<DownloadEngine> e_;
 
   sigset_t mask_;
 
@@ -81,11 +81,11 @@ public:
    * requestGroups.
    */
   MultiUrlRequestInfo
-  (std::vector<SharedHandle<RequestGroup> >& requestGroups,
-   const SharedHandle<Option>& op,
-   const SharedHandle<StatCalc>& statCalc,
-   const SharedHandle<OutputFile>& summaryOut,
-   const SharedHandle<UriListParser>& uriListParser);
+  (std::vector<std::shared_ptr<RequestGroup> >& requestGroups,
+   const std::shared_ptr<Option>& op,
+   const std::shared_ptr<StatCalc>& statCalc,
+   const std::shared_ptr<OutputFile>& summaryOut,
+   const std::shared_ptr<UriListParser>& uriListParser);
 
   virtual ~MultiUrlRequestInfo();
 
@@ -107,7 +107,7 @@ public:
   // have completed.
   error_code::Value getResult();
 
-  const SharedHandle<DownloadEngine>& getDownloadEngine() const;
+  const std::shared_ptr<DownloadEngine>& getDownloadEngine() const;
 
   // Signal handlers are not prepared if false is given.
   void setUseSignalHandler(bool useSignalHandler)

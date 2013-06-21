@@ -35,6 +35,7 @@
 #include "SinkStreamFilter.h"
 
 #include <cstring>
+#include <cassert>
 
 #include "BinaryStream.h"
 #include "Segment.h"
@@ -51,8 +52,8 @@ SinkStreamFilter::SinkStreamFilter(WrDiskCache* wrDiskCache, bool hashUpdate):
   bytesProcessed_(0) {}
 
 ssize_t SinkStreamFilter::transform
-(const SharedHandle<BinaryStream>& out,
- const SharedHandle<Segment>& segment,
+(const std::shared_ptr<BinaryStream>& out,
+ const std::shared_ptr<Segment>& segment,
  const unsigned char* inbuf, size_t inlen)
 {
   size_t wlen;
@@ -66,7 +67,7 @@ ssize_t SinkStreamFilter::transform
     } else {
       wlen = inlen;
     }
-    const SharedHandle<Piece>& piece = segment->getPiece();
+    const std::shared_ptr<Piece>& piece = segment->getPiece();
     if(piece->getWrDiskCacheEntry()) {
       assert(wrDiskCache_);
       // If we receive small data (e.g., 1 or 2 bytes), cache entry

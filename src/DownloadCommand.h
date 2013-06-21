@@ -51,25 +51,25 @@ class DownloadCommand : public AbstractCommand {
 private:
   time_t startupIdleTime_;
   int lowestDownloadSpeedLimit_;
-  SharedHandle<PeerStat> peerStat_;
+  std::shared_ptr<PeerStat> peerStat_;
 
   bool pieceHashValidationEnabled_;
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
-  SharedHandle<MessageDigest> messageDigest_;
+  std::shared_ptr<MessageDigest> messageDigest_;
 
 #endif // ENABLE_MESSAGE_DIGEST
 
-  void validatePieceHash(const SharedHandle<Segment>& segment,
+  void validatePieceHash(const std::shared_ptr<Segment>& segment,
                          const std::string& expectedPieceHash,
                          const std::string& actualPieceHash);
 
   void checkLowestDownloadSpeed() const;
 
-  void completeSegment(cuid_t cuid, const SharedHandle<Segment>& segment);
+  void completeSegment(cuid_t cuid, const std::shared_ptr<Segment>& segment);
 
-  SharedHandle<StreamFilter> streamFilter_;
+  std::shared_ptr<StreamFilter> streamFilter_;
 
   bool sinkFilterOnly_;
 protected:
@@ -81,20 +81,20 @@ protected:
   virtual int64_t getRequestEndOffset() const = 0;
 public:
   DownloadCommand(cuid_t cuid,
-                  const SharedHandle<Request>& req,
-                  const SharedHandle<FileEntry>& fileEntry,
+                  const std::shared_ptr<Request>& req,
+                  const std::shared_ptr<FileEntry>& fileEntry,
                   RequestGroup* requestGroup,
                   DownloadEngine* e,
-                  const SharedHandle<SocketCore>& s,
-                  const SharedHandle<SocketRecvBuffer>& socketRecvBuffer);
+                  const std::shared_ptr<SocketCore>& s,
+                  const std::shared_ptr<SocketRecvBuffer>& socketRecvBuffer);
   virtual ~DownloadCommand();
 
-  const SharedHandle<StreamFilter>& getStreamFilter() const
+  const std::shared_ptr<StreamFilter>& getStreamFilter() const
   {
     return streamFilter_;
   }
 
-  void installStreamFilter(const SharedHandle<StreamFilter>& streamFilter);
+  void installStreamFilter(const std::shared_ptr<StreamFilter>& streamFilter);
 
   void setStartupIdleTime(time_t startupIdleTime)
   {

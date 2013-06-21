@@ -62,10 +62,10 @@ namespace aria2 {
 InitiatorMSEHandshakeCommand::InitiatorMSEHandshakeCommand
 (cuid_t cuid,
  RequestGroup* requestGroup,
- const SharedHandle<Peer>& p,
+ const std::shared_ptr<Peer>& p,
  DownloadEngine* e,
- const SharedHandle<BtRuntime>& btRuntime,
- const SharedHandle<SocketCore>& s)
+ const std::shared_ptr<BtRuntime>& btRuntime,
+ const std::shared_ptr<SocketCore>& s)
   : PeerAbstractCommand(cuid, p, e, s),
     requestGroup_(requestGroup),
     btRuntime_(btRuntime),
@@ -149,7 +149,7 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
     }
     case INITIATOR_RECEIVE_PAD_D: {
       if(mseHandshake_->receivePad()) {
-        SharedHandle<PeerConnection> peerConnection
+        std::shared_ptr<PeerConnection> peerConnection
           (new PeerConnection(getCuid(), getPeer(), getSocket()));
         if(mseHandshake_->getNegotiatedCryptoType() ==
            MSEHandshake::CRYPTO_ARC4){
@@ -199,7 +199,7 @@ void InitiatorMSEHandshakeCommand::tryNewPeer()
 {
   if(peerStorage_->isPeerAvailable() && btRuntime_->lessThanEqMinPeers()) {
     cuid_t ncuid = getDownloadEngine()->newCUID();
-    SharedHandle<Peer> peer = peerStorage_->checkoutPeer(ncuid);
+    std::shared_ptr<Peer> peer = peerStorage_->checkoutPeer(ncuid);
     // sanity check
     if(peer) {
       PeerInitiateConnectionCommand* command;
@@ -254,18 +254,18 @@ bool InitiatorMSEHandshakeCommand::exitBeforeExecute()
 }
 
 void InitiatorMSEHandshakeCommand::setPeerStorage
-(const SharedHandle<PeerStorage>& peerStorage)
+(const std::shared_ptr<PeerStorage>& peerStorage)
 {
   peerStorage_ = peerStorage;
 }
 
 void InitiatorMSEHandshakeCommand::setPieceStorage
-(const SharedHandle<PieceStorage>& pieceStorage)
+(const std::shared_ptr<PieceStorage>& pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }
 
-const SharedHandle<Option>& InitiatorMSEHandshakeCommand::getOption() const
+const std::shared_ptr<Option>& InitiatorMSEHandshakeCommand::getOption() const
 {
   return requestGroup_->getOption();
 }

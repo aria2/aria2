@@ -41,8 +41,8 @@ namespace aria2 {
 
 const std::string DHTResponseMessage::R("r");
 
-DHTResponseMessage::DHTResponseMessage(const SharedHandle<DHTNode>& localNode,
-                                       const SharedHandle<DHTNode>& remoteNode,
+DHTResponseMessage::DHTResponseMessage(const std::shared_ptr<DHTNode>& localNode,
+                                       const std::shared_ptr<DHTNode>& remoteNode,
                                        const std::string& transactionID):
   DHTAbstractMessage(localNode, remoteNode, transactionID) {}
 

@@ -50,7 +50,7 @@ class XmlRpcRequestParserController {
 private:
 
   struct StateFrame {
-    SharedHandle<ValueBase> value_;
+    std::shared_ptr<ValueBase> value_;
     std::string name_;
 
     bool validMember() const
@@ -81,11 +81,11 @@ public:
   // to p and currentFrame_ = p;
   void popArrayFrame();
 
-  void setCurrentFrameValue(const SharedHandle<ValueBase>& value);
+  void setCurrentFrameValue(const std::shared_ptr<ValueBase>& value);
 
   void setCurrentFrameName(const std::string& name);
 
-  const SharedHandle<ValueBase>& getCurrentFrameValue() const;
+  const std::shared_ptr<ValueBase>& getCurrentFrameValue() const;
 
   void setMethodName(const std::string& methodName)
   {

@@ -60,7 +60,7 @@
 namespace aria2 {
 
 SessionSerializer::SessionSerializer
-(const SharedHandle<RequestGroupMan>& requestGroupMan):
+(const std::shared_ptr<RequestGroupMan>& requestGroupMan):
   rgman_(requestGroupMan),
   saveError_(true),
   saveInProgress_(true),
@@ -71,7 +71,7 @@ bool SessionSerializer::save(const std::string& filename) const
   std::string tempFilename = filename;
   tempFilename += "__temp";
   {
-    SharedHandle<IOFile> fp;
+    std::shared_ptr<IOFile> fp;
 #if HAVE_ZLIB
     if (util::endsWith(filename, ".gz")) {
       fp.reset(new GZipFile(tempFilename.c_str(), IOFile::WRITE));
@@ -107,9 +107,9 @@ bool writeOptionLine(IOFile& fp, const Pref* pref,
 } // namespace
 
 namespace {
-bool writeOption(IOFile& fp, const SharedHandle<Option>& op)
+bool writeOption(IOFile& fp, const std::shared_ptr<Option>& op)
 {
-  const SharedHandle<OptionParser>& oparser = OptionParser::getInstance();
+  const std::shared_ptr<OptionParser>& oparser = OptionParser::getInstance();
   for(size_t i = 1, len = option::countOption(); i < len; ++i) {
     const Pref* pref = option::i2p(i);
     const OptionHandler* h = oparser->find(pref);
@@ -191,9 +191,9 @@ namespace {
 namespace {
 bool writeDownloadResult
 (IOFile& fp, std::set<a2_gid_t>& metainfoCache,
- const SharedHandle<DownloadResult>& dr)
+ const std::shared_ptr<DownloadResult>& dr)
 {
-  const SharedHandle<MetadataInfo>& mi = dr->metadataInfo;
+  const std::shared_ptr<MetadataInfo>& mi = dr->metadataInfo;
   if(dr->belongsTo != 0 || (mi && mi->dataOnly())) {
     return true;
   }
@@ -211,7 +211,7 @@ bool writeDownloadResult
     if(dr->fileEntries.empty()) {
       return true;
     }
-    const SharedHandle<FileEntry>& file = dr->fileEntries[0];
+    const std::shared_ptr<FileEntry>& file = dr->fileEntries[0];
     // Don't save download if there are no URIs.
     const bool hasRemaining = !file->getRemainingUris().empty();
     const bool hasSpent = !file->getSpentUris().empty();
@@ -267,7 +267,7 @@ bool SessionSerializer::save(IOFile& fp) const
   const DownloadResultList& results = rgman_->getDownloadResults();
   for(DownloadResultList::const_iterator itr = results.begin(),
         eoi = results.end(); itr != eoi; ++itr) {
-    const SharedHandle<DownloadResult>& dr = *itr;
+    const std::shared_ptr<DownloadResult>& dr = *itr;
     if(dr->result == error_code::FINISHED ||
        dr->result == error_code::REMOVED) {
       if(dr->option->getAsBool(PREF_FORCE_SAVE)) {
@@ -297,8 +297,8 @@ bool SessionSerializer::save(IOFile& fp) const
     const RequestGroupList& groups = rgman_->getRequestGroups();
     for(RequestGroupList::const_iterator itr = groups.begin(),
           eoi = groups.end(); itr != eoi; ++itr) {
-      const SharedHandle<RequestGroup>& rg = *itr;
-      SharedHandle<DownloadResult> dr = rg->createDownloadResult();
+      const std::shared_ptr<RequestGroup>& rg = *itr;
+      std::shared_ptr<DownloadResult> dr = rg->createDownloadResult();
       bool stopped = dr->result == error_code::FINISHED ||
         dr->result == error_code::REMOVED;
       if((!stopped && saveInProgress_) ||
@@ -313,8 +313,8 @@ bool SessionSerializer::save(IOFile& fp) const
     const RequestGroupList& groups = rgman_->getReservedGroups();
     for(RequestGroupList::const_iterator itr = groups.begin(),
           eoi = groups.end(); itr != eoi; ++itr) {
-      const SharedHandle<RequestGroup>& rg = *itr;
-      SharedHandle<DownloadResult> result = rg->createDownloadResult();
+      const std::shared_ptr<RequestGroup>& rg = *itr;
+      std::shared_ptr<DownloadResult> result = rg->createDownloadResult();
       if(!writeDownloadResult(fp, metainfoCache, result)) {
         return false;
       }

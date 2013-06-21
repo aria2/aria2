@@ -127,7 +127,7 @@ void toStringList(OutputIterator out, const List* src)
 
 class AddUriRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -138,7 +138,7 @@ public:
 
 class RemoveRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -149,7 +149,7 @@ public:
 
 class ForceRemoveRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -160,7 +160,7 @@ public:
 
 class PauseRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -171,7 +171,7 @@ public:
 
 class ForcePauseRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -182,7 +182,7 @@ public:
 
 class PauseAllRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -193,7 +193,7 @@ public:
 
 class ForcePauseAllRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -204,7 +204,7 @@ public:
 
 class UnpauseRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -215,7 +215,7 @@ public:
 
 class UnpauseAllRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -227,7 +227,7 @@ public:
 #ifdef ENABLE_BITTORRENT
 class AddTorrentRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -240,7 +240,7 @@ public:
 #ifdef ENABLE_METALINK
 class AddMetalinkRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -252,7 +252,7 @@ public:
 
 class PurgeDownloadResultRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -263,7 +263,7 @@ public:
 
 class RemoveDownloadResultRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -274,7 +274,7 @@ public:
 
 class GetUrisRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -285,7 +285,7 @@ public:
 
 class GetFilesRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -297,7 +297,7 @@ public:
 #ifdef ENABLE_BITTORRENT
 class GetPeersRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -309,7 +309,7 @@ public:
 
 class GetServersRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -320,7 +320,7 @@ public:
 
 class TellStatusRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -331,7 +331,7 @@ public:
 
 class TellActiveRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -374,9 +374,9 @@ private:
     return std::make_pair(first, last);
   }
 protected:
-  typedef IndexedList<a2_gid_t, SharedHandle<T> > ItemListType;
+  typedef IndexedList<a2_gid_t, std::shared_ptr<T> > ItemListType;
 
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e)
   {
     const Integer* offsetParam = checkRequiredParam<Integer>(req, 0);
@@ -391,9 +391,9 @@ protected:
     std::pair<typename ItemListType::const_iterator,
               typename ItemListType::const_iterator> range =
       getPaginationRange(offset, num, items.begin(), items.end());
-    SharedHandle<List> list = List::g();
+    std::shared_ptr<List> list = List::g();
     for(; range.first != range.second; ++range.first) {
-      SharedHandle<Dict> entryDict = Dict::g();
+      std::shared_ptr<Dict> entryDict = Dict::g();
       createEntry(entryDict, *range.first, e, keys);
       list->append(entryDict);
     }
@@ -406,8 +406,8 @@ protected:
   virtual const ItemListType& getItems(DownloadEngine* e) const = 0;
 
   virtual void createEntry
-  (const SharedHandle<Dict>& entryDict,
-   const SharedHandle<T>& item,
+  (const std::shared_ptr<Dict>& entryDict,
+   const std::shared_ptr<T>& item,
    DownloadEngine* e,
    const std::vector<std::string>& keys) const = 0;
 };
@@ -418,8 +418,8 @@ protected:
   virtual const RequestGroupList& getItems(DownloadEngine* e) const;
 
   virtual void createEntry
-  (const SharedHandle<Dict>& entryDict,
-   const SharedHandle<RequestGroup>& item,
+  (const std::shared_ptr<Dict>& entryDict,
+   const std::shared_ptr<RequestGroup>& item,
    DownloadEngine* e,
    const std::vector<std::string>& keys) const;
 public:
@@ -435,8 +435,8 @@ protected:
   virtual const DownloadResultList& getItems(DownloadEngine* e) const;
 
   virtual void createEntry
-  (const SharedHandle<Dict>& entryDict,
-   const SharedHandle<DownloadResult>& item,
+  (const std::shared_ptr<Dict>& entryDict,
+   const std::shared_ptr<DownloadResult>& item,
    DownloadEngine* e,
    const std::vector<std::string>& keys) const;
 public:
@@ -448,7 +448,7 @@ public:
 
 class ChangeOptionRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -459,7 +459,7 @@ public:
 
 class ChangeGlobalOptionRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -470,7 +470,7 @@ public:
 
 class GetVersionRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -481,7 +481,7 @@ public:
 
 class GetOptionRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -492,7 +492,7 @@ public:
 
 class GetGlobalOptionRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -503,7 +503,7 @@ public:
 
 class ChangePositionRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -514,7 +514,7 @@ public:
 
 class ChangeUriRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -525,7 +525,7 @@ public:
 
 class GetSessionInfoRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -536,7 +536,7 @@ public:
 
 class ShutdownRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -547,7 +547,7 @@ public:
 
 class GetGlobalStatRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -558,7 +558,7 @@ public:
 
 class ForceShutdownRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -569,7 +569,7 @@ public:
 
 class SystemMulticallRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
   static const char* getMethodName()
@@ -580,36 +580,36 @@ public:
 
 class NoSuchMethodRpcMethod:public RpcMethod {
 protected:
-  virtual SharedHandle<ValueBase> process
+  virtual std::shared_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 };
 
 // Helper function to store data to entryDict from ds. This function
 // is used by tellStatus method.
 void gatherStoppedDownload
-(const SharedHandle<Dict>& entryDict, const SharedHandle<DownloadResult>& ds,
+(const std::shared_ptr<Dict>& entryDict, const std::shared_ptr<DownloadResult>& ds,
  const std::vector<std::string>& keys);
 
 // Helper function to store data to entryDict from group. This
 // function is used by tellStatus/tellActive/tellWaiting method
 void gatherProgressCommon
-(const SharedHandle<Dict>& entryDict, const SharedHandle<RequestGroup>& group,
+(const std::shared_ptr<Dict>& entryDict, const std::shared_ptr<RequestGroup>& group,
  const std::vector<std::string>& keys);
 
 #ifdef ENABLE_BITTORRENT
 // Helper function to store BitTorrent metadata from torrentAttrs.
 void gatherBitTorrentMetadata
-(const SharedHandle<Dict>& btDict,
- const SharedHandle<TorrentAttribute>& torrentAttrs);
+(const std::shared_ptr<Dict>& btDict,
+ const std::shared_ptr<TorrentAttribute>& torrentAttrs);
 #endif // ENABLE_BITTORRENT
 
 } // namespace rpc
 
 bool pauseRequestGroup
-(const SharedHandle<RequestGroup>& group, bool reserved,  bool forcePause);
+(const std::shared_ptr<RequestGroup>& group, bool reserved,  bool forcePause);
 
 void changeOption
-(const SharedHandle<RequestGroup>& group,
+(const std::shared_ptr<RequestGroup>& group,
  const Option& option,
  DownloadEngine* e);
 

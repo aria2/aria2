@@ -59,10 +59,10 @@ RpcMethod::RpcMethod()
 
 RpcMethod::~RpcMethod() {}
 
-SharedHandle<ValueBase> RpcMethod::createErrorResponse
+std::shared_ptr<ValueBase> RpcMethod::createErrorResponse
 (const Exception& e, const RpcRequest& req)
 {
-  SharedHandle<Dict> params = Dict::g();
+  std::shared_ptr<Dict> params = Dict::g();
   params->put((req.jsonRpc ? "code" : "faultCode"), Integer::g(1));
   params->put((req.jsonRpc ? "message" : "faultString"), std::string(e.what()));
   return params;
@@ -85,7 +85,7 @@ void gatherOption
 (InputIterator first, InputIterator last,
  Pred pred,
  Option* option,
- const SharedHandle<OptionParser>& optionParser)
+ const std::shared_ptr<OptionParser>& optionParser)
 {
   for(; first != last; ++first) {
     const std::string& optionName = (*first).first;

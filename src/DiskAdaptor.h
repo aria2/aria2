@@ -39,9 +39,9 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "TimeA2.h"
-#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -78,12 +78,12 @@ public:
     fileEntries_.assign(first, last);
   }
 
-  const std::vector<SharedHandle<FileEntry> >& getFileEntries() const
+  const std::vector<std::shared_ptr<FileEntry> >& getFileEntries() const
   {
     return fileEntries_;
   }
 
-  virtual SharedHandle<FileAllocationIterator> fileAllocationIterator() = 0;
+  virtual std::shared_ptr<FileAllocationIterator> fileAllocationIterator() = 0;
 
   virtual void enableReadOnly() {}
 
@@ -120,7 +120,7 @@ public:
   }
 
 private:
-  std::vector<SharedHandle<FileEntry> > fileEntries_;
+  std::vector<std::shared_ptr<FileEntry> > fileEntries_;
 
   FileAllocationMethod fileAllocationMethod_;
 };

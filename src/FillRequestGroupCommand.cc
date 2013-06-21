@@ -60,7 +60,7 @@ bool FillRequestGroupCommand::execute()
   if(e_->isHaltRequested()) {
     return true;
   }
-  const SharedHandle<RequestGroupMan>& rgman = e_->getRequestGroupMan();
+  const std::shared_ptr<RequestGroupMan>& rgman = e_->getRequestGroupMan();
   if(rgman->queueCheckRequested()) {
     while(rgman->queueCheckRequested()) {
       try {

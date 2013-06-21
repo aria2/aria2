@@ -52,14 +52,14 @@ private:
   static const size_t OUTBUF_LENGTH = 16*1024;
 public:
   GZipDecodingStreamFilter
-  (const SharedHandle<StreamFilter>& delegate = SharedHandle<StreamFilter>());
+  (const std::shared_ptr<StreamFilter>& delegate = std::shared_ptr<StreamFilter>());
 
   virtual ~GZipDecodingStreamFilter();
 
   virtual void init();
 
-  virtual ssize_t transform(const SharedHandle<BinaryStream>& out,
-                            const SharedHandle<Segment>& segment,
+  virtual ssize_t transform(const std::shared_ptr<BinaryStream>& out,
+                            const std::shared_ptr<Segment>& segment,
                             const unsigned char* inbuf, size_t inlen);
 
   virtual bool finished();

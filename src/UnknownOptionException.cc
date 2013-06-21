@@ -59,9 +59,9 @@ UnknownOptionException::UnknownOptionException
 
 UnknownOptionException::~UnknownOptionException() throw() {}
 
-SharedHandle<Exception> UnknownOptionException::copy() const
+std::shared_ptr<Exception> UnknownOptionException::copy() const
 {
-  SharedHandle<Exception> e(new UnknownOptionException(*this));
+  std::shared_ptr<Exception> e(new UnknownOptionException(*this));
   return e;
 }
 

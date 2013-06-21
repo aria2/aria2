@@ -39,8 +39,7 @@
 
 #include <vector>
 #include <deque>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -49,8 +48,8 @@ class DHTTask;
 class DHTTaskExecutor {
 private:
   int numConcurrent_;
-  std::vector<SharedHandle<DHTTask> > execTasks_;
-  std::deque<SharedHandle<DHTTask> > queue_;
+  std::vector<std::shared_ptr<DHTTask> > execTasks_;
+  std::deque<std::shared_ptr<DHTTask> > queue_;
 public:
   DHTTaskExecutor(int numConcurrent);
 
@@ -58,7 +57,7 @@ public:
 
   void update();
 
-  void addTask(const SharedHandle<DHTTask>& task)
+  void addTask(const std::shared_ptr<DHTTask>& task)
   {
     queue_.push_back(task);
   }

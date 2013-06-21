@@ -42,17 +42,17 @@ void SessionSerializerTest::testSave()
       A2_TEST_DIR"/serialize_session.meta4",
       "magnet:?xt=urn:btih:248D0A1CD08284299DE78D5C1ED359BB46717D8C"};
   std::vector<std::string> uris(vbegin(URIs), vend(URIs));
-  std::vector<SharedHandle<RequestGroup> > result;
-  SharedHandle<Option> option(new Option());
+  std::vector<std::shared_ptr<RequestGroup> > result;
+  std::shared_ptr<Option> option(new Option());
   option->put(PREF_DIR, "/tmp");
   createRequestGroupForUri(result, option, uris);
   CPPUNIT_ASSERT_EQUAL((size_t)5, result.size());
   result[4]->getOption()->put(PREF_PAUSE, A2_V_TRUE);
   option->put(PREF_MAX_DOWNLOAD_RESULT, "10");
-  SharedHandle<RequestGroupMan> rgman
+  std::shared_ptr<RequestGroupMan> rgman
     (new RequestGroupMan(result, 1, option.get()));
   SessionSerializer s(rgman);
-  SharedHandle<DownloadResult> drs[] = {
+  std::shared_ptr<DownloadResult> drs[] = {
     // REMOVED downloads will not be saved.
     createDownloadResult(error_code::REMOVED, "http://removed"),
     createDownloadResult(error_code::TIME_OUT, "http://error"),
@@ -80,7 +80,7 @@ void SessionSerializerTest::testSave()
     rgman->addDownloadResult(drs[i]);
   }
 
-  DownloadEngine e(SharedHandle<EventPoll>(new SelectEventPoll()));
+  DownloadEngine e(std::shared_ptr<EventPoll>(new SelectEventPoll()));
   e.setOption(option.get());
   rgman->fillRequestGroupFromReserver(&e);
   CPPUNIT_ASSERT_EQUAL((size_t)1, rgman->getRequestGroups().size());
@@ -143,14 +143,14 @@ void SessionSerializerTest::testSave()
 
 void SessionSerializerTest::testSaveErrorDownload()
 {
-  SharedHandle<DownloadResult> dr = createDownloadResult(error_code::TIME_OUT,
+  std::shared_ptr<DownloadResult> dr = createDownloadResult(error_code::TIME_OUT,
                                                          "http://error");
   dr->fileEntries[0]->getSpentUris().swap
     (dr->fileEntries[0]->getRemainingUris());
-  SharedHandle<Option> option(new Option());
+  std::shared_ptr<Option> option(new Option());
   option->put(PREF_MAX_DOWNLOAD_RESULT, "10");
-  SharedHandle<RequestGroupMan> rgman
-    (new RequestGroupMan(std::vector<SharedHandle<RequestGroup> >(), 1,
+  std::shared_ptr<RequestGroupMan> rgman
+    (new RequestGroupMan(std::vector<std::shared_ptr<RequestGroup> >(), 1,
                          option.get()));
   rgman->addDownloadResult(dr);
   SessionSerializer s(rgman);

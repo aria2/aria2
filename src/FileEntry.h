@@ -42,8 +42,8 @@
 #include <vector>
 #include <ostream>
 #include <set>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "File.h"
 #include "Request.h"
 #include "URIResult.h"
@@ -60,7 +60,7 @@ class ServerStatMan;
 
 class FileEntry {
 public:
-  typedef std::set<SharedHandle<Request>, RefLess<Request> >
+  typedef std::set<std::shared_ptr<Request>, RefLess<Request> >
   InFlightRequestSet;
 private:
   std::string path_;
@@ -72,11 +72,11 @@ private:
 
   class RequestFaster {
   public:
-    bool operator()(const SharedHandle<Request>& lhs,
-                    const SharedHandle<Request>& rhs) const;
+    bool operator()(const std::shared_ptr<Request>& lhs,
+                    const std::shared_ptr<Request>& rhs) const;
   };
 
-  typedef std::set<SharedHandle<Request>, RequestFaster> RequestPool;
+  typedef std::set<std::shared_ptr<Request>, RequestFaster> RequestPool;
   RequestPool requestPool_;
   InFlightRequestSet inFlightRequests_;
   std::string contentType_;
@@ -88,7 +88,7 @@ private:
   std::string originalName_;
   Timer lastFasterReplace_;
 
-  void storePool(const SharedHandle<Request>& request);
+  void storePool(const std::shared_ptr<Request>& request);
 public:
   FileEntry();
 
@@ -178,8 +178,8 @@ public:
   // returns Request object either because uris_ is empty or all URI
   // are not be usable because maxConnectionPerServer_ limit, then
   // reuse used URIs and do selection again.
-  SharedHandle<Request> getRequest
-  (const SharedHandle<URISelector>& selector,
+  std::shared_ptr<Request> getRequest
+  (const std::shared_ptr<URISelector>& selector,
    bool uriReuse,
    const std::vector<std::pair<size_t, std::string> >& usedHosts,
    const std::string& referer = A2STR::NIL,
@@ -188,18 +188,18 @@ public:
   // Finds pooled Request object which is faster than passed one,
   // comparing their PeerStat objects. If such Request is found, it is
   // removed from the pool and returned.
-  SharedHandle<Request> findFasterRequest(const SharedHandle<Request>& base);
+  std::shared_ptr<Request> findFasterRequest(const std::shared_ptr<Request>& base);
 
   // Finds faster server using ServerStatMan.
-  SharedHandle<Request>
+  std::shared_ptr<Request>
   findFasterRequest
-  (const SharedHandle<Request>& base,
+  (const std::shared_ptr<Request>& base,
    const std::vector<std::pair<size_t, std::string> >& usedHosts,
-   const SharedHandle<ServerStatMan>& serverStatMan);
+   const std::shared_ptr<ServerStatMan>& serverStatMan);
 
-  void poolRequest(const SharedHandle<Request>& request);
+  void poolRequest(const std::shared_ptr<Request>& request);
 
-  bool removeRequest(const SharedHandle<Request>& request);
+  bool removeRequest(const std::shared_ptr<Request>& request);
 
   size_t countInFlightRequest() const;
 
@@ -277,9 +277,9 @@ public:
 
 // Returns the first FileEntry which isRequested() method returns
 // true.  If no such FileEntry exists, then returns
-// SharedHandle<FileEntry>().
+// std::shared_ptr<FileEntry>().
 template<typename InputIterator>
-SharedHandle<FileEntry> getFirstRequestedFileEntry
+std::shared_ptr<FileEntry> getFirstRequestedFileEntry
 (InputIterator first, InputIterator last)
 {
   for(; first != last; ++first) {
@@ -287,7 +287,7 @@ SharedHandle<FileEntry> getFirstRequestedFileEntry
       return *first;
     }
   }
-  return SharedHandle<FileEntry>();
+  return std::shared_ptr<FileEntry>();
 }
 
 // Counts the number of files selected in the given iterator range
@@ -321,7 +321,7 @@ bool isUriSuppliedForRequsetFileEntry(InputIterator first, InputIterator last)
 // FileEntry, writes "n/a" to o.
 void writeFilePath
 (std::ostream& o,
- const SharedHandle<FileEntry>& entry,
+ const std::shared_ptr<FileEntry>& entry,
  bool memory);
 
 // Writes first filename to given o.  If memory is true, the output is
@@ -333,7 +333,7 @@ template<typename InputIterator>
 void writeFilePath
 (InputIterator first, InputIterator last, std::ostream& o, bool memory)
 {
-  SharedHandle<FileEntry> e = getFirstRequestedFileEntry(first, last);
+  std::shared_ptr<FileEntry> e = getFirstRequestedFileEntry(first, last);
   if(!e) {
     o << "n/a";
   } else {

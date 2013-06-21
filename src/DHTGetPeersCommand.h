@@ -36,7 +36,9 @@
 #define D_DHT_GET_PEERS_COMMAND_H
 
 #include "Command.h"
-#include "SharedHandle.h"
+
+#include <memory>
+
 #include "TimerA2.h"
 
 namespace aria2 {
@@ -54,17 +56,17 @@ class DHTGetPeersCommand:public Command {
 private:
   RequestGroup* requestGroup_;
 
-  SharedHandle<BtRuntime> btRuntime_;
+  std::shared_ptr<BtRuntime> btRuntime_;
 
-  SharedHandle<PeerStorage> peerStorage_;
+  std::shared_ptr<PeerStorage> peerStorage_;
 
   DownloadEngine* e_;
 
-  SharedHandle<DHTTaskQueue> taskQueue_;
+  std::shared_ptr<DHTTaskQueue> taskQueue_;
 
-  SharedHandle<DHTTaskFactory> taskFactory_;
+  std::shared_ptr<DHTTaskFactory> taskFactory_;
 
-  SharedHandle<DHTTask> task_;
+  std::shared_ptr<DHTTask> task_;
 
   int numRetry_;
 
@@ -77,13 +79,13 @@ public:
 
   virtual bool execute();
 
-  void setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue);
+  void setTaskQueue(const std::shared_ptr<DHTTaskQueue>& taskQueue);
 
-  void setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory);
+  void setTaskFactory(const std::shared_ptr<DHTTaskFactory>& taskFactory);
 
-  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
+  void setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime);
 
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
 };
 
 } // namespace aria2

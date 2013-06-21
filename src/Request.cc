@@ -158,7 +158,7 @@ void Request::setMaxPipelinedRequest(int num)
   maxPipelinedRequest_ = num;
 }
 
-const SharedHandle<PeerStat>& Request::initPeerStat()
+const std::shared_ptr<PeerStat>& Request::initPeerStat()
 {
   // Use host and protocol in original URI, because URI selector
   // selects URI based on original URI, not redirected one.

@@ -64,7 +64,7 @@ namespace aria2 {
 HttpServerCommand::HttpServerCommand
 (cuid_t cuid,
  DownloadEngine* e,
- const SharedHandle<SocketCore>& socket,
+ const std::shared_ptr<SocketCore>& socket,
  bool secure)
   : Command(cuid),
     e_(e),
@@ -90,9 +90,9 @@ HttpServerCommand::HttpServerCommand
 
 HttpServerCommand::HttpServerCommand
 (cuid_t cuid,
- const SharedHandle<HttpServer>& httpServer,
+ const std::shared_ptr<HttpServer>& httpServer,
  DownloadEngine* e,
- const SharedHandle<SocketCore>& socket)
+ const std::shared_ptr<SocketCore>& socket)
   : Command(cuid),
     e_(e),
     socket_(socket),
@@ -137,7 +137,7 @@ std::string createWebSocketServerKey(const std::string& clientKey)
 } // namespace
 
 namespace {
-int websocketHandshake(const SharedHandle<HttpHeader>& header)
+int websocketHandshake(const std::shared_ptr<HttpHeader>& header)
 {
   if(header->getMethod() != "GET" ||
      header->find(HttpHeader::SEC_WEBSOCKET_KEY).empty()) {
@@ -190,7 +190,7 @@ bool HttpServerCommand::execute()
       }
 #endif // ENABLE_SSL
 
-      SharedHandle<HttpHeader> header;
+      std::shared_ptr<HttpHeader> header;
       header = httpServer_->receiveRequest();
       if(!header) {
         updateWriteCheck();

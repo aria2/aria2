@@ -36,7 +36,9 @@
 #define D_HTTP_SERVER_BODY_COMMAND_H
 
 #include "Command.h"
-#include "SharedHandle.h"
+
+#include <memory>
+
 #include "TimerA2.h"
 #include "ValueBase.h"
 #include "RpcResponse.h"
@@ -50,8 +52,8 @@ class HttpServer;
 class HttpServerBodyCommand : public Command {
 private:
   DownloadEngine* e_;
-  SharedHandle<SocketCore> socket_;
-  SharedHandle<HttpServer> httpServer_;
+  std::shared_ptr<SocketCore> socket_;
+  std::shared_ptr<HttpServer> httpServer_;
   Timer timeoutTimer_;
   bool writeCheck_;
 
@@ -59,7 +61,7 @@ private:
   (const std::string& httpStatus,
    int code,
    const std::string& message,
-   const SharedHandle<ValueBase>& id,
+   const std::shared_ptr<ValueBase>& id,
    const std::string& callback);
   void sendJsonRpcResponse
   (const rpc::RpcResponse& res,
@@ -71,9 +73,9 @@ private:
   void updateWriteCheck();
 public:
   HttpServerBodyCommand(cuid_t cuid,
-                        const SharedHandle<HttpServer>& httpServer,
+                        const std::shared_ptr<HttpServer>& httpServer,
                         DownloadEngine* e,
-                        const SharedHandle<SocketCore>& socket);
+                        const std::shared_ptr<SocketCore>& socket);
 
   virtual ~HttpServerBodyCommand();
 

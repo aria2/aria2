@@ -50,14 +50,14 @@ struct RpcResponse {
   // 0 for success, non-zero for error
   int code;
 
-  SharedHandle<ValueBase> param;
+  std::shared_ptr<ValueBase> param;
 
-  SharedHandle<ValueBase> id;
+  std::shared_ptr<ValueBase> id;
 
   RpcResponse
   (int code,
-   const SharedHandle<ValueBase>& param,
-   const SharedHandle<ValueBase>& id);
+   const std::shared_ptr<ValueBase>& param,
+   const std::shared_ptr<ValueBase>& id);
 
   RpcResponse(const RpcResponse& c);
 

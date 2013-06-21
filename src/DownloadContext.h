@@ -40,8 +40,8 @@
 #include <cassert>
 #include <string>
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "TimerA2.h"
 #include "A2STR.h"
 #include "ValueBase.h"
@@ -58,7 +58,7 @@ class FileEntry;
 class DownloadContext
 {
 private:
-  std::vector<SharedHandle<FileEntry> > fileEntries_;
+  std::vector<std::shared_ptr<FileEntry> > fileEntries_;
 
   std::vector<std::string> pieceHashes_;
 
@@ -78,13 +78,13 @@ private:
 
   RequestGroup* ownerRequestGroup_;
 
-  std::vector<SharedHandle<ContextAttribute> > attrs_;
+  std::vector<std::shared_ptr<ContextAttribute> > attrs_;
 
   NetStat netStat_;
 
   Timer downloadStopTime_;
 
-  SharedHandle<Signature> signature_;
+  std::shared_ptr<Signature> signature_;
   // This member variable is required to avoid to use parse Metalink
   // (including both Metalink XML and Metalink/HTTP) twice.
   bool acceptMetalink_;
@@ -123,12 +123,12 @@ public:
 
   void markTotalLengthIsKnown() { knowsTotalLength_ = true; }
 
-  const std::vector<SharedHandle<FileEntry> >& getFileEntries() const
+  const std::vector<std::shared_ptr<FileEntry> >& getFileEntries() const
   {
     return fileEntries_;
   }
 
-  const SharedHandle<FileEntry>& getFirstFileEntry() const
+  const std::shared_ptr<FileEntry>& getFirstFileEntry() const
   {
     assert(!fileEntries_.empty());
     return fileEntries_[0];
@@ -136,8 +136,8 @@ public:
 
   // This function returns first FileEntry whose isRequested() returns
   // true.  If there is no such FileEntry, returns
-  // SharedHandle<FileEntry>().
-  SharedHandle<FileEntry> getFirstRequestedFileEntry() const;
+  // std::shared_ptr<FileEntry>().
+  std::shared_ptr<FileEntry> getFirstRequestedFileEntry() const;
 
   size_t countRequestedFileEntry() const;
 
@@ -169,9 +169,9 @@ public:
 
   void setBasePath(const std::string& basePath);
 
-  const SharedHandle<Signature>& getSignature() const { return signature_; }
+  const std::shared_ptr<Signature>& getSignature() const { return signature_; }
 
-  void setSignature(const SharedHandle<Signature>& signature);
+  void setSignature(const std::shared_ptr<Signature>& signature);
 
   RequestGroup* getOwnerRequestGroup() { return ownerRequestGroup_; }
 
@@ -204,9 +204,9 @@ public:
   }
 
   void setAttribute
-  (ContextAttributeType key, const SharedHandle<ContextAttribute>& value);
+  (ContextAttributeType key, const std::shared_ptr<ContextAttribute>& value);
 
-  const SharedHandle<ContextAttribute>& getAttribute(ContextAttributeType key);
+  const std::shared_ptr<ContextAttribute>& getAttribute(ContextAttributeType key);
 
   bool hasAttribute(ContextAttributeType key) const;
 
@@ -221,9 +221,9 @@ public:
 
   int64_t calculateSessionTime() const;
 
-  // Returns FileEntry at given offset. SharedHandle<FileEntry>() is
+  // Returns FileEntry at given offset. std::shared_ptr<FileEntry>() is
   // returned if no such FileEntry is found.
-  SharedHandle<FileEntry> findFileEntryByOffset(int64_t offset) const;
+  std::shared_ptr<FileEntry> findFileEntryByOffset(int64_t offset) const;
 
   void releaseRuntimeResource();
 

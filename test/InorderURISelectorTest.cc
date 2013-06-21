@@ -17,7 +17,7 @@ class InorderURISelectorTest:public CppUnit::TestFixture {
 private:
   FileEntry fileEntry_;
 
-  SharedHandle<InorderURISelector> sel;
+  std::shared_ptr<InorderURISelector> sel;
 
 public:
   void setUp()

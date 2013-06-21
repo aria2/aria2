@@ -41,7 +41,6 @@
 #include <vector>
 #include <iostream>
 
-#include "SharedHandle.h"
 #include "LogFactory.h"
 #include "Logger.h"
 #include "util.h"
@@ -86,13 +85,13 @@ extern int optind, opterr, optopt;
 
 namespace aria2 {
 
-SharedHandle<StatCalc> getStatCalc(const SharedHandle<Option>& op)
+std::shared_ptr<StatCalc> getStatCalc(const std::shared_ptr<Option>& op)
 {
-  SharedHandle<StatCalc> statCalc;
+  std::shared_ptr<StatCalc> statCalc;
   if(op->getAsBool(PREF_QUIET)) {
     statCalc.reset(new NullStatCalc());
   } else {
-    SharedHandle<ConsoleStatCalc> impl
+    std::shared_ptr<ConsoleStatCalc> impl
       (new ConsoleStatCalc(op->getAsInt(PREF_SUMMARY_INTERVAL),
                            op->getAsBool(PREF_HUMAN_READABLE)));
     impl->setReadoutVisibility(op->getAsBool(PREF_SHOW_CONSOLE_READOUT));
@@ -102,10 +101,10 @@ SharedHandle<StatCalc> getStatCalc(const SharedHandle<Option>& op)
   return statCalc;
 }
 
-SharedHandle<OutputFile> getSummaryOut(const SharedHandle<Option>& op)
+std::shared_ptr<OutputFile> getSummaryOut(const std::shared_ptr<Option>& op)
 {
   if(op->getAsBool(PREF_QUIET)) {
-    return SharedHandle<OutputFile>(new NullOutputFile());
+    return std::shared_ptr<OutputFile>(new NullOutputFile());
   } else {
     return global::cout();
   }
@@ -115,8 +114,8 @@ SharedHandle<OutputFile> getSummaryOut(const SharedHandle<Option>& op)
 namespace {
 void showTorrentFile(const std::string& uri)
 {
-  SharedHandle<Option> op(new Option());
-  SharedHandle<DownloadContext> dctx(new DownloadContext());
+  std::shared_ptr<Option> op(new Option());
+  std::shared_ptr<DownloadContext> dctx(new DownloadContext());
   bittorrent::load(uri, dctx, op);
   bittorrent::print(*global::cout(), dctx);
 }
@@ -126,12 +125,12 @@ void showTorrentFile(const std::string& uri)
 #ifdef ENABLE_METALINK
 namespace {
 void showMetalinkFile
-(const std::string& uri, const SharedHandle<Option>& op)
+(const std::string& uri, const std::shared_ptr<Option>& op)
 {
-  std::vector<SharedHandle<MetalinkEntry> > metalinkEntries;
+  std::vector<std::shared_ptr<MetalinkEntry> > metalinkEntries;
   metalink::parseAndQuery(metalinkEntries, uri, op.get(),
                           op->get(PREF_METALINK_BASE_URI));
-  std::vector<SharedHandle<FileEntry> > fileEntries;
+  std::vector<std::shared_ptr<FileEntry> > fileEntries;
   MetalinkEntry::toFileEntry(fileEntries, metalinkEntries);
   util::toStream(fileEntries.begin(), fileEntries.end(), *global::cout());
   global::cout()->write("\n");
@@ -143,7 +142,7 @@ void showMetalinkFile
 #if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
 namespace {
 void showFiles
-(const std::vector<std::string>& uris, const SharedHandle<Option>& op)
+(const std::vector<std::string>& uris, const std::shared_ptr<Option>& op)
 {
   ProtocolDetector dt;
   for(std::vector<std::string>::const_iterator i = uris.begin(),
@@ -183,7 +182,7 @@ Context::Context(bool standalone,
                  int argc, char** argv, const KeyVals& options)
 {
   std::vector<std::string> args;
-  SharedHandle<Option> op(new Option());
+  std::shared_ptr<Option> op(new Option());
   error_code::Value rv;
   rv = option_processing(*op.get(), standalone, args, argc, argv, options);
   if(rv != error_code::FINISHED) {
@@ -222,8 +221,8 @@ Context::Context(bool standalone,
     std::string iface = op->get(PREF_INTERFACE);
     SocketCore::bindAddress(iface);
   }
-  std::vector<SharedHandle<RequestGroup> > requestGroups;
-  SharedHandle<UriListParser> uriListParser;
+  std::vector<std::shared_ptr<RequestGroup> > requestGroups;
+  std::shared_ptr<UriListParser> uriListParser;
 #ifdef ENABLE_BITTORRENT
   if(!op->blank(PREF_TORRENT_FILE)) {
     if(op->get(PREF_SHOW_FILES) == A2_V_TRUE) {
@@ -266,7 +265,7 @@ Context::Context(bool standalone,
   // command-line. If they are left, because op is used as a template
   // for new RequestGroup(such as created in RPC command), they causes
   // unintentional effect.
-  for(SharedHandle<Option> i = op; i; i = i->getParent()) {
+  for(std::shared_ptr<Option> i = op; i; i = i->getParent()) {
     i->remove(PREF_OUT);
     i->remove(PREF_FORCE_SEQUENTIAL);
     i->remove(PREF_INPUT_FILE);

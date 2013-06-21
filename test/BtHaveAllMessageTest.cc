@@ -38,7 +38,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BtHaveAllMessageTest);
 void BtHaveAllMessageTest::testCreate() {
   unsigned char msg[5];
   bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 14);
-  SharedHandle<BtHaveAllMessage> pm(BtHaveAllMessage::create(&msg[4], 1));
+  std::shared_ptr<BtHaveAllMessage> pm(BtHaveAllMessage::create(&msg[4], 1));
   CPPUNIT_ASSERT_EQUAL((uint8_t)14, pm->getId());
 
   // case: payload size is wrong
@@ -70,11 +70,11 @@ void BtHaveAllMessageTest::testCreateMessage() {
 
 void BtHaveAllMessageTest::testDoReceivedAction() {
   BtHaveAllMessage msg;
-  SharedHandle<Peer> peer(new Peer("host", 6969));
+  std::shared_ptr<Peer> peer(new Peer("host", 6969));
   peer->allocateSessionResource(16*1024, 256*1024);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
-  SharedHandle<MockPieceStorage> pieceStorage(new MockPieceStorage());
+  std::shared_ptr<MockPieceStorage> pieceStorage(new MockPieceStorage());
   msg.setPieceStorage(pieceStorage);
 
   msg.doReceivedAction();
@@ -92,11 +92,11 @@ void BtHaveAllMessageTest::testDoReceivedAction() {
 void BtHaveAllMessageTest::testDoReceivedAction_goodByeSeeder()
 {
   BtHaveAllMessage msg;
-  SharedHandle<Peer> peer(new Peer("ip", 6000));
+  std::shared_ptr<Peer> peer(new Peer("ip", 6000));
   peer->allocateSessionResource(1024, 1024);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
-  SharedHandle<MockPieceStorage> pieceStorage(new MockPieceStorage());
+  std::shared_ptr<MockPieceStorage> pieceStorage(new MockPieceStorage());
   msg.setPieceStorage(pieceStorage);
 
   pieceStorage->setDownloadFinished(true);

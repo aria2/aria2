@@ -38,8 +38,8 @@
 #include "common.h"
 
 #include <unistd.h>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "SocketBuffer.h"
 #include "Command.h"
 
@@ -57,8 +57,8 @@ class ARC4Encryptor;
 class PeerConnection {
 private:
   cuid_t cuid_;
-  SharedHandle<Peer> peer_;
-  SharedHandle<SocketCore> socket_;
+  std::shared_ptr<Peer> peer_;
+  std::shared_ptr<SocketCore> socket_;
 
   int msgState_;
   // The capacity of the buffer resbuf_
@@ -77,8 +77,8 @@ private:
   SocketBuffer socketBuffer_;
 
   bool encryptionEnabled_;
-  SharedHandle<ARC4Encryptor> encryptor_;
-  SharedHandle<ARC4Encryptor> decryptor_;
+  std::shared_ptr<ARC4Encryptor> encryptor_;
+  std::shared_ptr<ARC4Encryptor> decryptor_;
 
   bool prevPeek_;
 
@@ -89,8 +89,8 @@ private:
 public:
   PeerConnection
   (cuid_t cuid,
-   const SharedHandle<Peer>& peer,
-   const SharedHandle<SocketCore>& socket);
+   const std::shared_ptr<Peer>& peer,
+   const std::shared_ptr<SocketCore>& socket);
 
   ~PeerConnection();
 
@@ -112,8 +112,8 @@ public:
   bool receiveHandshake
   (unsigned char* data, size_t& dataLength, bool peek = false);
 
-  void enableEncryption(const SharedHandle<ARC4Encryptor>& encryptor,
-                        const SharedHandle<ARC4Encryptor>& decryptor);
+  void enableEncryption(const std::shared_ptr<ARC4Encryptor>& encryptor,
+                        const std::shared_ptr<ARC4Encryptor>& decryptor);
 
   void presetBuffer(const unsigned char* data, size_t length);
 

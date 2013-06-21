@@ -40,7 +40,7 @@ namespace aria2 {
 
 class DlRetryEx:public RecoverableException {
 protected:
-  virtual SharedHandle<Exception> copy() const;
+  virtual std::shared_ptr<Exception> copy() const;
 public:
   DlRetryEx(const char* file, int line, const std::string& msg);
 

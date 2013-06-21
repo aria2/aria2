@@ -39,8 +39,7 @@
 
 #include <string>
 #include <vector>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -48,7 +47,7 @@ class MetalinkEntry;
 
 class Metalinker {
 private:
-  std::vector<SharedHandle<MetalinkEntry> > entries_;
+  std::vector<std::shared_ptr<MetalinkEntry> > entries_;
 public:
   Metalinker();
   ~Metalinker();
@@ -58,17 +57,17 @@ public:
   Metalinker& operator=(const Metalinker&);
 
   void queryEntry
-  (std::vector<SharedHandle<MetalinkEntry> >& queryResult,
+  (std::vector<std::shared_ptr<MetalinkEntry> >& queryResult,
    const std::string& version,
    const std::string& language,
    const std::string& os) const;
 
-  const std::vector<SharedHandle<MetalinkEntry> >& getEntries() const
+  const std::vector<std::shared_ptr<MetalinkEntry> >& getEntries() const
   {
     return entries_;
   }
 
-  void addEntry(const SharedHandle<MetalinkEntry>& entry);
+  void addEntry(const std::shared_ptr<MetalinkEntry>& entry);
 };
 
 } // namespace aria2

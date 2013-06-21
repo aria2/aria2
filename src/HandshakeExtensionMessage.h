@@ -37,9 +37,10 @@
 
 #include "ExtensionMessage.h"
 
+#include <memory>
+
 #include "BtConstants.h"
 #include "ExtensionMessageRegistry.h"
-#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -56,9 +57,9 @@ private:
 
   ExtensionMessageRegistry extreg_;
 
-  SharedHandle<DownloadContext> dctx_;
+  std::shared_ptr<DownloadContext> dctx_;
 
-  SharedHandle<Peer> peer_;
+  std::shared_ptr<Peer> peer_;
 public:
   HandshakeExtensionMessage();
 
@@ -112,7 +113,7 @@ public:
     metadataSize_ = size;
   }
 
-  void setDownloadContext(const SharedHandle<DownloadContext>& dctx)
+  void setDownloadContext(const std::shared_ptr<DownloadContext>& dctx)
   {
     dctx_ = dctx;
   }
@@ -123,7 +124,7 @@ public:
 
   uint8_t getExtensionMessageID(int key) const;
 
-  void setPeer(const SharedHandle<Peer>& peer);
+  void setPeer(const std::shared_ptr<Peer>& peer);
 
   static HandshakeExtensionMessage*
   create(const unsigned char* data, size_t dataLength);

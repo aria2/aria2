@@ -36,7 +36,8 @@
 #define D_CHECK_INTEGRITY_COMMAND_H
 
 #include "RealtimeCommand.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -44,12 +45,12 @@ class CheckIntegrityEntry;
 
 class CheckIntegrityCommand : public RealtimeCommand {
 private:
-  SharedHandle<CheckIntegrityEntry> entry_;
+  std::shared_ptr<CheckIntegrityEntry> entry_;
 public:
   CheckIntegrityCommand(cuid_t cuid,
                         RequestGroup* requestGroup,
                         DownloadEngine* e,
-                        const SharedHandle<CheckIntegrityEntry>& entry);
+                        const std::shared_ptr<CheckIntegrityEntry>& entry);
 
   virtual ~CheckIntegrityCommand();
 

@@ -50,23 +50,23 @@ DHTNodeLookupTask::DHTNodeLookupTask(const unsigned char* targetNodeID):
 
 void
 DHTNodeLookupTask::getNodesFromMessage
-(std::vector<SharedHandle<DHTNode> >& nodes,
+(std::vector<std::shared_ptr<DHTNode> >& nodes,
  const DHTFindNodeReplyMessage* message)
 {
-  const std::vector<SharedHandle<DHTNode> >& knodes =
+  const std::vector<std::shared_ptr<DHTNode> >& knodes =
     message->getClosestKNodes();
   nodes.insert(nodes.end(), knodes.begin(), knodes.end());
 }
 
-SharedHandle<DHTMessage>
-DHTNodeLookupTask::createMessage(const SharedHandle<DHTNode>& remoteNode)
+std::shared_ptr<DHTMessage>
+DHTNodeLookupTask::createMessage(const std::shared_ptr<DHTNode>& remoteNode)
 {
   return getMessageFactory()->createFindNodeMessage(remoteNode, getTargetID());
 }
 
-SharedHandle<DHTMessageCallback> DHTNodeLookupTask::createCallback()
+std::shared_ptr<DHTMessageCallback> DHTNodeLookupTask::createCallback()
 {
-  return SharedHandle<DHTNodeLookupTaskCallback>
+  return std::shared_ptr<DHTNodeLookupTaskCallback>
     (new DHTNodeLookupTaskCallback(this));
 }
 

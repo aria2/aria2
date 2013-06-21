@@ -611,7 +611,7 @@ void PrioritizePieceOptionHandler::parseArg
   // error.
   std::vector<size_t> result;
   util::parsePrioritizePieceRange
-    (result, optarg, std::vector<SharedHandle<FileEntry> >(), 1024);
+    (result, optarg, std::vector<std::shared_ptr<FileEntry> >(), 1024);
   option.put(pref_, optarg);
 }
 

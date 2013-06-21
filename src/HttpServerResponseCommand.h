@@ -41,13 +41,13 @@ namespace aria2 {
 
 class HttpServerResponseCommand : public AbstractHttpServerResponseCommand {
 protected:
-  virtual void afterSend(const SharedHandle<HttpServer>& httpServer,
+  virtual void afterSend(const std::shared_ptr<HttpServer>& httpServer,
                          DownloadEngine* e);
 public:
   HttpServerResponseCommand(cuid_t cuid,
-                            const SharedHandle<HttpServer>& httpServer,
+                            const std::shared_ptr<HttpServer>& httpServer,
                             DownloadEngine* e,
-                            const SharedHandle<SocketCore>& socket);
+                            const std::shared_ptr<SocketCore>& socket);
 
   virtual ~HttpServerResponseCommand();
 };

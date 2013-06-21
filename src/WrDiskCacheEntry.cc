@@ -45,7 +45,7 @@
 namespace aria2 {
 
 WrDiskCacheEntry::WrDiskCacheEntry
-(const SharedHandle<DiskAdaptor>& diskAdaptor)
+(const std::shared_ptr<DiskAdaptor>& diskAdaptor)
   : sizeKey_(0),
     lastUpdate_(0),
     size_(0),
@@ -93,7 +93,7 @@ void WrDiskCacheEntry::clear()
 
 bool WrDiskCacheEntry::cacheData(DataCell* dataCell)
 {
-  A2_LOG_DEBUG(fmt("WrDiskCacheEntry cache goff=%"PRId64", len=%lu",
+  A2_LOG_DEBUG(fmt("WrDiskCacheEntry cache goff=%" PRId64 ", len=%lu",
                    dataCell->goff, static_cast<unsigned long>(dataCell->len)));
   if(set_.insert(dataCell).second) {
     size_ += dataCell->len;

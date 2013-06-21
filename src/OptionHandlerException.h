@@ -44,7 +44,7 @@ class OptionHandlerException:public RecoverableException {
 private:
   const Pref* pref_;
 protected:
-  virtual SharedHandle<Exception> copy() const;
+  virtual std::shared_ptr<Exception> copy() const;
 public:
   OptionHandlerException(const char* file, int line,
                          const Pref* pref);

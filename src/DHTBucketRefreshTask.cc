@@ -54,15 +54,15 @@ DHTBucketRefreshTask::~DHTBucketRefreshTask() {}
 
 void DHTBucketRefreshTask::startup()
 {
-  std::vector<SharedHandle<DHTBucket> > buckets;
+  std::vector<std::shared_ptr<DHTBucket> > buckets;
   getRoutingTable()->getBuckets(buckets);
-  for(std::vector<SharedHandle<DHTBucket> >::iterator i = buckets.begin(),
+  for(std::vector<std::shared_ptr<DHTBucket> >::iterator i = buckets.begin(),
         eoi = buckets.end(); i != eoi; ++i) {
     if(forceRefresh_ || (*i)->needsRefresh()) {
       (*i)->notifyUpdate();
       unsigned char targetID[DHT_ID_LENGTH];
       (*i)->getRandomNodeID(targetID);
-      SharedHandle<DHTNodeLookupTask> task(new DHTNodeLookupTask(targetID));
+      std::shared_ptr<DHTNodeLookupTask> task(new DHTNodeLookupTask(targetID));
       task->setRoutingTable(getRoutingTable());
       task->setMessageDispatcher(getMessageDispatcher());
       task->setMessageFactory(getMessageFactory());

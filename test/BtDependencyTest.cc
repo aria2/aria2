@@ -36,37 +36,37 @@ class BtDependencyTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testResolve_dependeeInProgress);
   CPPUNIT_TEST_SUITE_END();
 
-  SharedHandle<RequestGroup> createDependant(const SharedHandle<Option>& option)
+  std::shared_ptr<RequestGroup> createDependant(const std::shared_ptr<Option>& option)
   {
-    SharedHandle<RequestGroup> dependant(new RequestGroup(GroupId::create(),
+    std::shared_ptr<RequestGroup> dependant(new RequestGroup(GroupId::create(),
                                                           util::copy(option)));
-    SharedHandle<DownloadContext> dctx
+    std::shared_ptr<DownloadContext> dctx
       (new DownloadContext(0, 0, "/tmp/outfile.path"));
     std::vector<std::string> uris;
     uris.push_back("http://localhost/outfile.path");
-    SharedHandle<FileEntry> fileEntry = dctx->getFirstFileEntry();
+    std::shared_ptr<FileEntry> fileEntry = dctx->getFirstFileEntry();
     fileEntry->setUris(uris);
     fileEntry->setOriginalName("aria2-0.8.2.tar.bz2");
     dependant->setDownloadContext(dctx);
     return dependant;
   }
 
-  SharedHandle<RequestGroup>
+  std::shared_ptr<RequestGroup>
   createDependee
-  (const SharedHandle<Option>& option,
+  (const std::shared_ptr<Option>& option,
    const std::string& torrentFile,
    int64_t length)
   {
-    SharedHandle<RequestGroup> dependee(new RequestGroup(GroupId::create(),
+    std::shared_ptr<RequestGroup> dependee(new RequestGroup(GroupId::create(),
                                                          util::copy(option)));
-    SharedHandle<DownloadContext> dctx
+    std::shared_ptr<DownloadContext> dctx
       (new DownloadContext(1024*1024, length, torrentFile));
     dependee->setDownloadContext(dctx);
     dependee->initPieceStorage();
     return dependee;
   }
 
-  SharedHandle<Option> option_;
+  std::shared_ptr<Option> option_;
 public:
   void setUp()
   {
@@ -91,8 +91,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( BtDependencyTest );
 void BtDependencyTest::testResolve()
 {
   std::string filename = A2_TEST_DIR"/single.torrent";
-  SharedHandle<RequestGroup> dependant = createDependant(option_);
-  SharedHandle<RequestGroup> dependee =
+  std::shared_ptr<RequestGroup> dependant = createDependant(option_);
+  std::shared_ptr<RequestGroup> dependee =
     createDependee(option_, filename, File(filename).size());
   dependee->getPieceStorage()->getDiskAdaptor()->enableReadOnly();
   dependee->getPieceStorage()->markAllPiecesDone();
@@ -103,7 +103,7 @@ void BtDependencyTest::testResolve()
   CPPUNIT_ASSERT_EQUAL
     (std::string("cd41c7fdddfd034a15a04d7ff881216e01c4ceaf"),
      bittorrent::getInfoHashString(dependant->getDownloadContext()));
-  const SharedHandle<FileEntry>& firstFileEntry =
+  const std::shared_ptr<FileEntry>& firstFileEntry =
     dependant->getDownloadContext()->getFirstFileEntry();
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/outfile.path"),
                        firstFileEntry->getPath());
@@ -113,18 +113,18 @@ void BtDependencyTest::testResolve()
 
 void BtDependencyTest::testResolve_nullDependee()
 {
-  SharedHandle<RequestGroup> dependant = createDependant(option_);
-  BtDependency dep(dependant.get(), SharedHandle<RequestGroup>());
+  std::shared_ptr<RequestGroup> dependant = createDependant(option_);
+  BtDependency dep(dependant.get(), std::shared_ptr<RequestGroup>());
   CPPUNIT_ASSERT(dep.resolve());
 }
 
 void BtDependencyTest::testResolve_originalNameNoMatch()
 {
   std::string filename = A2_TEST_DIR"/single.torrent";
-  SharedHandle<RequestGroup> dependant = createDependant(option_);
+  std::shared_ptr<RequestGroup> dependant = createDependant(option_);
   dependant->getDownloadContext()->getFirstFileEntry()->setOriginalName
     ("aria2-1.1.0.tar.bz2");
-  SharedHandle<RequestGroup> dependee =
+  std::shared_ptr<RequestGroup> dependee =
     createDependee(option_, filename, File(filename).size());
   dependee->getPieceStorage()->getDiskAdaptor()->enableReadOnly();
   dependee->getPieceStorage()->markAllPiecesDone();
@@ -138,9 +138,9 @@ void BtDependencyTest::testResolve_originalNameNoMatch()
 void BtDependencyTest::testResolve_singleFileWithoutOriginalName()
 {
   std::string filename = A2_TEST_DIR"/single.torrent";
-  SharedHandle<RequestGroup> dependant = createDependant(option_);
+  std::shared_ptr<RequestGroup> dependant = createDependant(option_);
   dependant->getDownloadContext()->getFirstFileEntry()->setOriginalName("");
-  SharedHandle<RequestGroup> dependee =
+  std::shared_ptr<RequestGroup> dependee =
     createDependee(option_, filename, File(filename).size());
   dependee->getPieceStorage()->getDiskAdaptor()->enableReadOnly();
   dependee->getPieceStorage()->markAllPiecesDone();
@@ -152,10 +152,10 @@ void BtDependencyTest::testResolve_singleFileWithoutOriginalName()
 void BtDependencyTest::testResolve_multiFile()
 {
   std::string filename = A2_TEST_DIR"/test.torrent";
-  SharedHandle<RequestGroup> dependant = createDependant(option_);
+  std::shared_ptr<RequestGroup> dependant = createDependant(option_);
   dependant->getDownloadContext()->getFirstFileEntry()->setOriginalName
     ("aria2-test/aria2/src/aria2c");
-  SharedHandle<RequestGroup> dependee =
+  std::shared_ptr<RequestGroup> dependee =
     createDependee(option_, filename, File(filename).size());
   dependee->getPieceStorage()->getDiskAdaptor()->enableReadOnly();
   dependee->getPieceStorage()->markAllPiecesDone();
@@ -165,7 +165,7 @@ void BtDependencyTest::testResolve_multiFile()
 
   CPPUNIT_ASSERT(dependant->getDownloadContext()->hasAttribute(CTX_ATTR_BT));
 
-  const std::vector<SharedHandle<FileEntry> >& fileEntries =
+  const std::vector<std::shared_ptr<FileEntry> >& fileEntries =
     dependant->getDownloadContext()->getFileEntries();
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/outfile.path"),
                        fileEntries[0]->getPath());
@@ -177,22 +177,22 @@ void BtDependencyTest::testResolve_multiFile()
 
 void BtDependencyTest::testResolve_metadata()
 {
-  SharedHandle<RequestGroup> dependant = createDependant(option_);
-  SharedHandle<RequestGroup> dependee =
+  std::shared_ptr<RequestGroup> dependant = createDependant(option_);
+  std::shared_ptr<RequestGroup> dependee =
     createDependee(option_, "metadata", 0);
 
-  SharedHandle<DirectDiskAdaptor> diskAdaptor(new DirectDiskAdaptor());
-  SharedHandle<ByteArrayDiskWriter> diskWriter(new ByteArrayDiskWriter());
+  std::shared_ptr<DirectDiskAdaptor> diskAdaptor(new DirectDiskAdaptor());
+  std::shared_ptr<ByteArrayDiskWriter> diskWriter(new ByteArrayDiskWriter());
   diskAdaptor->setDiskWriter(diskWriter);
   diskWriter->setString
     ("d4:name19:aria2-0.8.2.tar.bz26:lengthi384e12:piece lengthi128e"
      "6:pieces60:AAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCC"
      "e");
-  SharedHandle<MockPieceStorage> pieceStorage(new MockPieceStorage());
+  std::shared_ptr<MockPieceStorage> pieceStorage(new MockPieceStorage());
   pieceStorage->setDiskAdaptor(diskAdaptor);
   pieceStorage->setDownloadFinished(true);
   dependee->setPieceStorage(pieceStorage);
-  SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
+  std::shared_ptr<TorrentAttribute> attrs(new TorrentAttribute());
   dependee->getDownloadContext()->setAttribute(CTX_ATTR_BT, attrs);
 
   BtDependency dep(dependant.get(), dependee);
@@ -207,8 +207,8 @@ void BtDependencyTest::testResolve_metadata()
 
 void BtDependencyTest::testResolve_loadError()
 {
-  SharedHandle<RequestGroup> dependant = createDependant(option_);
-  SharedHandle<RequestGroup> dependee =
+  std::shared_ptr<RequestGroup> dependant = createDependant(option_);
+  std::shared_ptr<RequestGroup> dependee =
     createDependee(option_, "notExist", 40);
   dependee->getPieceStorage()->markAllPiecesDone();
 
@@ -223,8 +223,8 @@ void BtDependencyTest::testResolve_loadError()
 
 void BtDependencyTest::testResolve_dependeeFailure()
 {
-  SharedHandle<RequestGroup> dependant = createDependant(option_);
-  SharedHandle<RequestGroup> dependee = createDependee(option_, "notExist", 40);
+  std::shared_ptr<RequestGroup> dependant = createDependant(option_);
+  std::shared_ptr<RequestGroup> dependee = createDependee(option_, "notExist", 40);
 
   BtDependency dep(dependant.get(), dependee);
   CPPUNIT_ASSERT(dep.resolve());
@@ -238,8 +238,8 @@ void BtDependencyTest::testResolve_dependeeFailure()
 void BtDependencyTest::testResolve_dependeeInProgress()
 {
   std::string filename = A2_TEST_DIR"/single.torrent";
-  SharedHandle<RequestGroup> dependant = createDependant(option_);
-  SharedHandle<RequestGroup> dependee =
+  std::shared_ptr<RequestGroup> dependant = createDependant(option_);
+  std::shared_ptr<RequestGroup> dependee =
     createDependee(option_, filename, File(filename).size());
   dependee->increaseNumCommand();
 

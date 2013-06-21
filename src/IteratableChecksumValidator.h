@@ -36,7 +36,8 @@
 #define D_ITERATABLE_CHECKSUM_VALIDATOR_H
 
 #include "IteratableValidator.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -47,16 +48,16 @@ class MessageDigest;
 class IteratableChecksumValidator:public IteratableValidator
 {
 private:
-  SharedHandle<DownloadContext> dctx_;
+  std::shared_ptr<DownloadContext> dctx_;
 
-  SharedHandle<PieceStorage> pieceStorage_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
 
   int64_t currentOffset_;
 
-  SharedHandle<MessageDigest> ctx_;
+  std::shared_ptr<MessageDigest> ctx_;
 public:
-  IteratableChecksumValidator(const SharedHandle<DownloadContext>& dctx,
-                              const SharedHandle<PieceStorage>& pieceStorage);
+  IteratableChecksumValidator(const std::shared_ptr<DownloadContext>& dctx,
+                              const std::shared_ptr<PieceStorage>& pieceStorage);
 
   virtual ~IteratableChecksumValidator();
 

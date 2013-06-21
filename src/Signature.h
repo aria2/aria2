@@ -39,8 +39,6 @@
 
 #include <string>
 
-#include "SharedHandle.h"
-
 namespace aria2 {
 
 class Signature {

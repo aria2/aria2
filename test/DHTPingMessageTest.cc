@@ -28,12 +28,12 @@ public:
 
   class MockDHTMessageFactory2:public MockDHTMessageFactory {
   public:
-    virtual SharedHandle<DHTResponseMessage>
-    createPingReplyMessage(const SharedHandle<DHTNode>& remoteNode,
+    virtual std::shared_ptr<DHTResponseMessage>
+    createPingReplyMessage(const std::shared_ptr<DHTNode>& remoteNode,
                            const unsigned char* remoteNodeID,
                            const std::string& transactionID)
     {
-      return SharedHandle<MockDHTResponseMessage>
+      return std::shared_ptr<MockDHTResponseMessage>
         (new MockDHTResponseMessage(localNode_, remoteNode, "ping_reply",
                                     transactionID));
     }
@@ -45,8 +45,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTPingMessageTest);
 
 void DHTPingMessageTest::testGetBencodedMessage()
 {
-  SharedHandle<DHTNode> localNode(new DHTNode());
-  SharedHandle<DHTNode> remoteNode(new DHTNode());
+  std::shared_ptr<DHTNode> localNode(new DHTNode());
+  std::shared_ptr<DHTNode> remoteNode(new DHTNode());
 
   unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   util::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
@@ -62,7 +62,7 @@ void DHTPingMessageTest::testGetBencodedMessage()
   dict.put("v", "A200");
   dict.put("y", "q");
   dict.put("q", "ping");
-  SharedHandle<Dict> aDict = Dict::g();
+  std::shared_ptr<Dict> aDict = Dict::g();
   aDict->put("id", String::g(localNode->getID(), DHT_ID_LENGTH));
   dict.put("a", aDict);
 
@@ -71,8 +71,8 @@ void DHTPingMessageTest::testGetBencodedMessage()
 
 void DHTPingMessageTest::testDoReceivedAction()
 {
-  SharedHandle<DHTNode> localNode(new DHTNode());
-  SharedHandle<DHTNode> remoteNode(new DHTNode());
+  std::shared_ptr<DHTNode> localNode(new DHTNode());
+  std::shared_ptr<DHTNode> remoteNode(new DHTNode());
 
   unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   util::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
@@ -89,9 +89,8 @@ void DHTPingMessageTest::testDoReceivedAction()
   msg.doReceivedAction();
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher.messageQueue_.size());
-  SharedHandle<MockDHTResponseMessage> m
-    (dynamic_pointer_cast<MockDHTResponseMessage>
-     (dispatcher.messageQueue_[0].message_));
+  auto m = std::dynamic_pointer_cast<MockDHTResponseMessage>
+    (dispatcher.messageQueue_[0].message_);
   CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
   CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(std::string("ping_reply"), m->getMessageType());

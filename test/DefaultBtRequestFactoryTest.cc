@@ -27,12 +27,12 @@ class DefaultBtRequestFactoryTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetTargetPieceIndexes);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<Peer> peer_;
-  SharedHandle<DefaultBtRequestFactory> requestFactory_;
-  SharedHandle<DownloadContext> dctx_;
-  SharedHandle<MockPieceStorage> pieceStorage_;
-  SharedHandle<MockBtMessageFactory> messageFactory_;
-  SharedHandle<MockBtMessageDispatcher> dispatcher_;
+  std::shared_ptr<Peer> peer_;
+  std::shared_ptr<DefaultBtRequestFactory> requestFactory_;
+  std::shared_ptr<DownloadContext> dctx_;
+  std::shared_ptr<MockPieceStorage> pieceStorage_;
+  std::shared_ptr<MockBtMessageFactory> messageFactory_;
+  std::shared_ptr<MockBtMessageDispatcher> dispatcher_;
 public:
   void testAddTargetPiece();
   void testRemoveCompletedPiece();
@@ -50,13 +50,13 @@ public:
       index(index), blockIndex(blockIndex) {}
   };
 
-  typedef SharedHandle<MockBtRequestMessage> MockBtRequestMessageHandle;
+  typedef std::shared_ptr<MockBtRequestMessage> MockBtRequestMessageHandle;
 
   class MockBtMessageFactory2 : public MockBtMessageFactory {
   public:
-    virtual SharedHandle<BtMessage>
-    createRequestMessage(const SharedHandle<Piece>& piece, size_t blockIndex) {
-      return SharedHandle<BtMessage>
+    virtual std::shared_ptr<BtMessage>
+    createRequestMessage(const std::shared_ptr<Piece>& piece, size_t blockIndex) {
+      return std::shared_ptr<BtMessage>
         (new MockBtRequestMessage(piece->getIndex(), blockIndex));
     }
   };
@@ -70,8 +70,8 @@ public:
 
   class SortMockBtRequestMessage {
   public:
-    bool operator()(const SharedHandle<MockBtRequestMessage>& a,
-                    const SharedHandle<MockBtRequestMessage>& b) {
+    bool operator()(const std::shared_ptr<MockBtRequestMessage>& a,
+                    const std::shared_ptr<MockBtRequestMessage>& b) {
       if(a->index < b->index) {
         return true;
       } else if(b->index < a->index) {
@@ -109,12 +109,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DefaultBtRequestFactoryTest);
 
 void DefaultBtRequestFactoryTest::testAddTargetPiece() {
   {
-    SharedHandle<Piece> piece(new Piece(0, 16*1024*10));
+    std::shared_ptr<Piece> piece(new Piece(0, 16*1024*10));
     requestFactory_->addTargetPiece(piece);
     CPPUNIT_ASSERT_EQUAL((size_t)1, requestFactory_->countTargetPiece());
   }
   {
-    SharedHandle<Piece> piece(new Piece(1, 16*1024*9));
+    std::shared_ptr<Piece> piece(new Piece(1, 16*1024*9));
     piece->completeBlock(0);
     requestFactory_->addTargetPiece(piece);
     CPPUNIT_ASSERT_EQUAL((size_t)2, requestFactory_->countTargetPiece());
@@ -123,8 +123,8 @@ void DefaultBtRequestFactoryTest::testAddTargetPiece() {
 }
 
 void DefaultBtRequestFactoryTest::testRemoveCompletedPiece() {
-  SharedHandle<Piece> piece1(new Piece(0, 16*1024));
-  SharedHandle<Piece> piece2(new Piece(1, 16*1024));
+  std::shared_ptr<Piece> piece1(new Piece(0, 16*1024));
+  std::shared_ptr<Piece> piece2(new Piece(1, 16*1024));
   piece2->setAllBlock();
   requestFactory_->addTargetPiece(piece1);
   requestFactory_->addTargetPiece(piece2);
@@ -137,61 +137,60 @@ void DefaultBtRequestFactoryTest::testRemoveCompletedPiece() {
 
 void DefaultBtRequestFactoryTest::testCreateRequestMessages() {
   int PIECE_LENGTH = 16*1024*2;
-  SharedHandle<Piece> piece1(new Piece(0, PIECE_LENGTH));
-  SharedHandle<Piece> piece2(new Piece(1, PIECE_LENGTH));
+  std::shared_ptr<Piece> piece1(new Piece(0, PIECE_LENGTH));
+  std::shared_ptr<Piece> piece2(new Piece(1, PIECE_LENGTH));
   requestFactory_->addTargetPiece(piece1);
   requestFactory_->addTargetPiece(piece2);
 
-  std::vector<SharedHandle<BtMessage> > msgs;
+  std::vector<std::shared_ptr<BtMessage> > msgs;
   requestFactory_->createRequestMessages(msgs, 3);
 
   CPPUNIT_ASSERT_EQUAL((size_t)3, msgs.size());
-  std::vector<SharedHandle<BtMessage> >::iterator itr = msgs.begin();
-  SharedHandle<MockBtRequestMessage> msg =
-    dynamic_pointer_cast<MockBtRequestMessage>(*itr);
+  std::vector<std::shared_ptr<BtMessage> >::iterator itr = msgs.begin();
+  auto msg = std::dynamic_pointer_cast<MockBtRequestMessage>(*itr);
   CPPUNIT_ASSERT_EQUAL((size_t)0, msg->index);
   CPPUNIT_ASSERT_EQUAL((size_t)0, msg->blockIndex);
   ++itr;
-  msg = dynamic_pointer_cast<MockBtRequestMessage>(*itr);
+  msg = std::dynamic_pointer_cast<MockBtRequestMessage>(*itr);
   CPPUNIT_ASSERT_EQUAL((size_t)0, msg->index);
   CPPUNIT_ASSERT_EQUAL((size_t)1, msg->blockIndex);
   ++itr;
-  msg = dynamic_pointer_cast<MockBtRequestMessage>(*itr);
+  msg = std::dynamic_pointer_cast<MockBtRequestMessage>(*itr);
   CPPUNIT_ASSERT_EQUAL((size_t)1, msg->index);
   CPPUNIT_ASSERT_EQUAL((size_t)0, msg->blockIndex);
 
   {
-    std::vector<SharedHandle<BtMessage> > msgs;
+    std::vector<std::shared_ptr<BtMessage> > msgs;
     requestFactory_->createRequestMessages(msgs, 3);
     CPPUNIT_ASSERT_EQUAL((size_t)1, msgs.size());
   }
 }
 
 void DefaultBtRequestFactoryTest::testCreateRequestMessages_onEndGame() {
-  SharedHandle<MockBtMessageDispatcher2> dispatcher
+  std::shared_ptr<MockBtMessageDispatcher2> dispatcher
     (new MockBtMessageDispatcher2());
 
   requestFactory_->setBtMessageDispatcher(dispatcher.get());
 
   int PIECE_LENGTH = 16*1024*2;
-  SharedHandle<Piece> piece1(new Piece(0, PIECE_LENGTH));
-  SharedHandle<Piece> piece2(new Piece(1, PIECE_LENGTH));
+  std::shared_ptr<Piece> piece1(new Piece(0, PIECE_LENGTH));
+  std::shared_ptr<Piece> piece2(new Piece(1, PIECE_LENGTH));
   requestFactory_->addTargetPiece(piece1);
   requestFactory_->addTargetPiece(piece2);
 
-  std::vector<SharedHandle<BtMessage> > msgs;
+  std::vector<std::shared_ptr<BtMessage> > msgs;
   requestFactory_->createRequestMessagesOnEndGame(msgs, 3);
 
-  std::vector<SharedHandle<MockBtRequestMessage> > mmsgs;
-  for(std::vector<SharedHandle<BtMessage> >::iterator i = msgs.begin();
+  std::vector<std::shared_ptr<MockBtRequestMessage> > mmsgs;
+  for(std::vector<std::shared_ptr<BtMessage> >::iterator i = msgs.begin();
       i != msgs.end(); ++i) {
-    mmsgs.push_back(dynamic_pointer_cast<MockBtRequestMessage>(*i));
+    mmsgs.push_back(std::dynamic_pointer_cast<MockBtRequestMessage>(*i));
   }
 
   std::sort(mmsgs.begin(), mmsgs.end(), SortMockBtRequestMessage());
 
   CPPUNIT_ASSERT_EQUAL((size_t)3, mmsgs.size());
-  std::vector<SharedHandle<MockBtRequestMessage> >::iterator itr =mmsgs.begin();
+  std::vector<std::shared_ptr<MockBtRequestMessage> >::iterator itr =mmsgs.begin();
   MockBtRequestMessage* msg = (*itr).get();
   CPPUNIT_ASSERT_EQUAL((size_t)0, msg->index);
   CPPUNIT_ASSERT_EQUAL((size_t)1, msg->blockIndex);
@@ -206,7 +205,7 @@ void DefaultBtRequestFactoryTest::testCreateRequestMessages_onEndGame() {
 }
 
 void DefaultBtRequestFactoryTest::testRemoveTargetPiece() {
-  SharedHandle<Piece> piece1(new Piece(0, 16*1024));
+  std::shared_ptr<Piece> piece1(new Piece(0, 16*1024));
 
   requestFactory_->addTargetPiece(piece1);
 
@@ -225,9 +224,9 @@ void DefaultBtRequestFactoryTest::testRemoveTargetPiece() {
 
 void DefaultBtRequestFactoryTest::testGetTargetPieceIndexes()
 {
-  SharedHandle<Piece> piece1(new Piece(1, 16*1024));
-  SharedHandle<Piece> piece3(new Piece(3, 16*1024));
-  SharedHandle<Piece> piece5(new Piece(5, 16*1024));
+  std::shared_ptr<Piece> piece1(new Piece(1, 16*1024));
+  std::shared_ptr<Piece> piece3(new Piece(3, 16*1024));
+  std::shared_ptr<Piece> piece5(new Piece(5, 16*1024));
 
   requestFactory_->addTargetPiece(piece3);
   requestFactory_->addTargetPiece(piece1);

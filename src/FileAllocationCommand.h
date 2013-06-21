@@ -36,7 +36,9 @@
 #define D_FILE_ALLOCATION_COMMAND_H
 
 #include "RealtimeCommand.h"
-#include "SharedHandle.h"
+
+#include <memory>
+
 #include "TimerA2.h"
 
 namespace aria2 {
@@ -45,12 +47,12 @@ class FileAllocationEntry;
 
 class FileAllocationCommand : public RealtimeCommand {
 private:
-  SharedHandle<FileAllocationEntry> fileAllocationEntry_;
+  std::shared_ptr<FileAllocationEntry> fileAllocationEntry_;
   Timer timer_;
 public:
   FileAllocationCommand(cuid_t cuid, RequestGroup* requestGroup,
                         DownloadEngine* e,
-                        const SharedHandle<FileAllocationEntry>& fileAllocationEntry);
+                        const std::shared_ptr<FileAllocationEntry>& fileAllocationEntry);
 
   virtual ~FileAllocationCommand();
 

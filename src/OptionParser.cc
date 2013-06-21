@@ -38,6 +38,7 @@
 #include <getopt.h>
 
 #include <cstring>
+#include <cassert>
 #include <istream>
 #include <utility>
 
@@ -354,9 +355,9 @@ const OptionHandler* OptionParser::findByShortName(char shortName) const
   return findById(shortOpts_[idx]);
 }
 
-SharedHandle<OptionParser> OptionParser::optionParser_;
+std::shared_ptr<OptionParser> OptionParser::optionParser_;
 
-const SharedHandle<OptionParser>& OptionParser::getInstance()
+const std::shared_ptr<OptionParser>& OptionParser::getInstance()
 {
   if(!optionParser_) {
     optionParser_.reset(new OptionParser());

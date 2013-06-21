@@ -85,11 +85,11 @@ DefaultBtMessageFactory::DefaultBtMessageFactory():
 
 DefaultBtMessageFactory::~DefaultBtMessageFactory() {}
 
-SharedHandle<BtMessage>
+std::shared_ptr<BtMessage>
 DefaultBtMessageFactory::createBtMessage
 (const unsigned char* data, size_t dataLength)
 {
-  SharedHandle<AbstractBtMessage> msg;
+  std::shared_ptr<AbstractBtMessage> msg;
   if(dataLength == 0) {
     // keep-alive
     msg.reset(new BtKeepAliveMessage());
@@ -120,7 +120,7 @@ DefaultBtMessageFactory::createBtMessage
     case BtHaveMessage::ID:
       msg.reset(BtHaveMessage::create(data, dataLength));
       if(!metadataGetMode_) {
-        SharedHandle<BtMessageValidator> v
+        std::shared_ptr<BtMessageValidator> v
           (new IndexBtMessageValidator(static_cast<BtHaveMessage*>(msg.get()),
                                        downloadContext_->getNumPieces()));
         msg->setBtMessageValidator(v);
@@ -129,7 +129,7 @@ DefaultBtMessageFactory::createBtMessage
     case BtBitfieldMessage::ID:
       msg.reset(BtBitfieldMessage::create(data, dataLength));
       if(!metadataGetMode_) {
-        SharedHandle<BtMessageValidator> v
+        std::shared_ptr<BtMessageValidator> v
           (new BtBitfieldMessageValidator
            (static_cast<BtBitfieldMessage*>(msg.get()),
             downloadContext_->getNumPieces()));
@@ -139,7 +139,7 @@ DefaultBtMessageFactory::createBtMessage
     case BtRequestMessage::ID: {
       BtRequestMessage* m = BtRequestMessage::create(data, dataLength);
       if(!metadataGetMode_) {
-        SharedHandle<BtMessageValidator> validator
+        std::shared_ptr<BtMessageValidator> validator
           (new RangeBtMessageValidator
            (m,
             downloadContext_->getNumPieces(),
@@ -152,7 +152,7 @@ DefaultBtMessageFactory::createBtMessage
     case BtCancelMessage::ID: {
       BtCancelMessage* m = BtCancelMessage::create(data, dataLength);
       if(!metadataGetMode_) {
-        SharedHandle<BtMessageValidator> validator
+        std::shared_ptr<BtMessageValidator> validator
           (new RangeBtMessageValidator
            (m,
             downloadContext_->getNumPieces(),
@@ -165,7 +165,7 @@ DefaultBtMessageFactory::createBtMessage
     case BtPieceMessage::ID: {
       BtPieceMessage* m = BtPieceMessage::create(data, dataLength);
       if(!metadataGetMode_) {
-        SharedHandle<BtMessageValidator> validator
+        std::shared_ptr<BtMessageValidator> validator
           (new BtPieceMessageValidator
            (m,
             downloadContext_->getNumPieces(),
@@ -186,7 +186,7 @@ DefaultBtMessageFactory::createBtMessage
     case BtRejectMessage::ID: {
       BtRejectMessage* m = BtRejectMessage::create(data, dataLength);
       if(!metadataGetMode_) {
-        SharedHandle<BtMessageValidator> validator
+        std::shared_ptr<BtMessageValidator> validator
           (new RangeBtMessageValidator
            (m,
             downloadContext_->getNumPieces(),
@@ -200,7 +200,7 @@ DefaultBtMessageFactory::createBtMessage
       BtSuggestPieceMessage* m =
         BtSuggestPieceMessage::create(data, dataLength);
       if(!metadataGetMode_) {
-        SharedHandle<BtMessageValidator> validator
+        std::shared_ptr<BtMessageValidator> validator
           (new IndexBtMessageValidator(m, downloadContext_->getNumPieces()));
         m->setBtMessageValidator(validator);
       }
@@ -210,7 +210,7 @@ DefaultBtMessageFactory::createBtMessage
     case BtAllowedFastMessage::ID: {
       BtAllowedFastMessage* m = BtAllowedFastMessage::create(data, dataLength);
       if(!metadataGetMode_) {
-        SharedHandle<BtMessageValidator> validator
+        std::shared_ptr<BtMessageValidator> validator
           (new IndexBtMessageValidator(m, downloadContext_->getNumPieces()));
         m->setBtMessageValidator(validator);
       }
@@ -258,13 +258,13 @@ void DefaultBtMessageFactory::setCommonProperty(AbstractBtMessage* msg)
   }
 }
 
-SharedHandle<BtHandshakeMessage>
+std::shared_ptr<BtHandshakeMessage>
 DefaultBtMessageFactory::createHandshakeMessage
 (const unsigned char* data, size_t dataLength)
 {
-  SharedHandle<BtHandshakeMessage> msg =
+  std::shared_ptr<BtHandshakeMessage> msg =
     BtHandshakeMessage::create(data, dataLength);
-  SharedHandle<BtMessageValidator> validator
+  std::shared_ptr<BtMessageValidator> validator
     (new BtHandshakeMessageValidator
      (msg.get(), bittorrent::getInfoHash(downloadContext_)));
   msg->setBtMessageValidator(validator);
@@ -272,20 +272,20 @@ DefaultBtMessageFactory::createHandshakeMessage
   return msg;
 }
 
-SharedHandle<BtHandshakeMessage>
+std::shared_ptr<BtHandshakeMessage>
 DefaultBtMessageFactory::createHandshakeMessage(const unsigned char* infoHash,
                                                 const unsigned char* peerId)
 {
-  SharedHandle<BtHandshakeMessage> msg
+  std::shared_ptr<BtHandshakeMessage> msg
     (new BtHandshakeMessage(infoHash, peerId));
   msg->setDHTEnabled(dhtEnabled_);
   setCommonProperty(msg.get());
   return msg;
 }
 
-SharedHandle<BtMessage>
+std::shared_ptr<BtMessage>
 DefaultBtMessageFactory::createRequestMessage
-(const SharedHandle<Piece>& piece, size_t blockIndex)
+(const std::shared_ptr<Piece>& piece, size_t blockIndex)
 {
   BtRequestMessage* msg
     (new BtRequestMessage(piece->getIndex(),
@@ -293,134 +293,134 @@ DefaultBtMessageFactory::createRequestMessage
                           piece->getBlockLength(blockIndex),
                           blockIndex));
   setCommonProperty(msg);
-  return SharedHandle<BtMessage>(msg);
+  return std::shared_ptr<BtMessage>(msg);
 }
 
-SharedHandle<BtMessage>
+std::shared_ptr<BtMessage>
 DefaultBtMessageFactory::createCancelMessage
 (size_t index, int32_t begin, int32_t length)
 {
   BtCancelMessage* msg(new BtCancelMessage(index, begin, length));
   setCommonProperty(msg);
-  return SharedHandle<BtMessage>(msg);
+  return std::shared_ptr<BtMessage>(msg);
 }
 
-SharedHandle<BtMessage>
+std::shared_ptr<BtMessage>
 DefaultBtMessageFactory::createPieceMessage
 (size_t index, int32_t begin, int32_t length)
 {
   BtPieceMessage* msg(new BtPieceMessage(index, begin, length));
   msg->setDownloadContext(downloadContext_);
   setCommonProperty(msg);
-  return SharedHandle<BtMessage>(msg);
+  return std::shared_ptr<BtMessage>(msg);
 }
 
-SharedHandle<BtMessage>
+std::shared_ptr<BtMessage>
 DefaultBtMessageFactory::createHaveMessage(size_t index)
 {
   BtHaveMessage* msg(new BtHaveMessage(index));
   setCommonProperty(msg);
-  return SharedHandle<BtMessage>(msg);
+  return std::shared_ptr<BtMessage>(msg);
 }
 
-SharedHandle<BtMessage>
+std::shared_ptr<BtMessage>
 DefaultBtMessageFactory::createChokeMessage()
 {
   BtChokeMessage* msg(new BtChokeMessage());
   setCommonProperty(msg);
-  return SharedHandle<BtMessage>(msg);
+  return std::shared_ptr<BtMessage>(msg);
 }
 
-SharedHandle<BtMessage>
+std::shared_ptr<BtMessage>
 DefaultBtMessageFactory::createUnchokeMessage()
 {
   BtUnchokeMessage* msg(new BtUnchokeMessage());
   setCommonProperty(msg);
-  return SharedHandle<BtMessage>(msg);
+  return std::shared_ptr<BtMessage>(msg);
 }
 
-SharedHandle<BtMessage>
+std::shared_ptr<BtMessage>
 DefaultBtMessageFactory::createInterestedMessage()
 {
   BtInterestedMessage* msg(new BtInterestedMessage());
   setCommonProperty(msg);
-  return SharedHandle<BtMessage>(msg);
+  return std::shared_ptr<BtMessage>(msg);
 }
 
-SharedHandle<BtMessage>
+std::shared_ptr<BtMessage>
 DefaultBtMessageFactory::createNotInterestedMessage()
 {
   BtNotInterestedMessage* msg(new BtNotInterestedMessage());
   setCommonProperty(msg);
-  return SharedHandle<BtMessage>(msg);
+  return std::shared_ptr<BtMessage>(msg);
 }
 
-SharedHandle<BtMessage>
+std::shared_ptr<BtMessage>
 DefaultBtMessageFactory::createBitfieldMessage()
 {
   BtBitfieldMessage* msg
     (new BtBitfieldMessage(pieceStorage_->getBitfield(),
                            pieceStorage_->getBitfieldLength()));
   setCommonProperty(msg);
-  return SharedHandle<BtMessage>(msg);
+  return std::shared_ptr<BtMessage>(msg);
 }
 
-SharedHandle<BtMessage>
+std::shared_ptr<BtMessage>
 DefaultBtMessageFactory::createKeepAliveMessage()
 {
   BtKeepAliveMessage* msg(new BtKeepAliveMessage());
   setCommonProperty(msg);
-  return SharedHandle<BtMessage>(msg);
+  return std::shared_ptr<BtMessage>(msg);
 }
 
-SharedHandle<BtMessage>
+std::shared_ptr<BtMessage>
 DefaultBtMessageFactory::createHaveAllMessage()
 {
   BtHaveAllMessage* msg(new BtHaveAllMessage());
   setCommonProperty(msg);
-  return SharedHandle<BtMessage>(msg);
+  return std::shared_ptr<BtMessage>(msg);
 }
 
-SharedHandle<BtMessage>
+std::shared_ptr<BtMessage>
 DefaultBtMessageFactory::createHaveNoneMessage()
 {
   BtHaveNoneMessage* msg(new BtHaveNoneMessage());
   setCommonProperty(msg);
-  return SharedHandle<BtMessage>(msg);
+  return std::shared_ptr<BtMessage>(msg);
 }
 
-SharedHandle<BtMessage>
+std::shared_ptr<BtMessage>
 DefaultBtMessageFactory::createRejectMessage
 (size_t index, int32_t begin, int32_t length)
 {
   BtRejectMessage* msg(new BtRejectMessage(index, begin, length));
   setCommonProperty(msg);
-  return SharedHandle<BtMessage>(msg);
+  return std::shared_ptr<BtMessage>(msg);
 }
 
-SharedHandle<BtMessage>
+std::shared_ptr<BtMessage>
 DefaultBtMessageFactory::createAllowedFastMessage(size_t index)
 {
   BtAllowedFastMessage* msg(new BtAllowedFastMessage(index));
   setCommonProperty(msg);
-  return SharedHandle<BtMessage>(msg);
+  return std::shared_ptr<BtMessage>(msg);
 }
 
-SharedHandle<BtMessage>
+std::shared_ptr<BtMessage>
 DefaultBtMessageFactory::createPortMessage(uint16_t port)
 {
   BtPortMessage* msg(new BtPortMessage(port));
   setCommonProperty(msg);
-  return SharedHandle<BtMessage>(msg);
+  return std::shared_ptr<BtMessage>(msg);
 }
 
-SharedHandle<BtMessage>
+std::shared_ptr<BtMessage>
 DefaultBtMessageFactory::createBtExtendedMessage
-(const SharedHandle<ExtensionMessage>& msg)
+(const std::shared_ptr<ExtensionMessage>& msg)
 {
   BtExtendedMessage* m(new BtExtendedMessage(msg));
   setCommonProperty(m);
-  return SharedHandle<BtMessage>(m);
+  return std::shared_ptr<BtMessage>(m);
 }
 
 void DefaultBtMessageFactory::setTaskQueue(DHTTaskQueue* taskQueue)
@@ -433,25 +433,25 @@ void DefaultBtMessageFactory::setTaskFactory(DHTTaskFactory* taskFactory)
   taskFactory_ = taskFactory;
 }
 
-void DefaultBtMessageFactory::setPeer(const SharedHandle<Peer>& peer)
+void DefaultBtMessageFactory::setPeer(const std::shared_ptr<Peer>& peer)
 {
   peer_ = peer;
 }
 
 void DefaultBtMessageFactory::setDownloadContext
-(const SharedHandle<DownloadContext>& downloadContext)
+(const std::shared_ptr<DownloadContext>& downloadContext)
 {
   downloadContext_ = downloadContext;
 }
 
 void DefaultBtMessageFactory::setPieceStorage
-(const SharedHandle<PieceStorage>& pieceStorage)
+(const std::shared_ptr<PieceStorage>& pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }
 
 void DefaultBtMessageFactory::setPeerStorage
-(const SharedHandle<PeerStorage>& peerStorage)
+(const std::shared_ptr<PeerStorage>& peerStorage)
 {
   peerStorage_ = peerStorage;
 }
@@ -463,7 +463,7 @@ void DefaultBtMessageFactory::setBtMessageDispatcher
 }
 
 void DefaultBtMessageFactory::setExtensionMessageFactory
-(const SharedHandle<ExtensionMessageFactory>& factory)
+(const std::shared_ptr<ExtensionMessageFactory>& factory)
 {
   extensionMessageFactory_ = factory;
 }

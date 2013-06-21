@@ -60,7 +60,7 @@ DefaultBtMessageReceiver::DefaultBtMessageReceiver():
   messageFactory_(0)
 {}
 
-SharedHandle<BtHandshakeMessage>
+std::shared_ptr<BtHandshakeMessage>
 DefaultBtMessageReceiver::receiveHandshake(bool quickReply)
 {
   A2_LOG_DEBUG
@@ -68,7 +68,7 @@ DefaultBtMessageReceiver::receiveHandshake(bool quickReply)
          static_cast<unsigned long>(peerConnection_->getBufferLength())));
   unsigned char data[BtHandshakeMessage::MESSAGE_LENGTH];
   size_t dataLength = BtHandshakeMessage::MESSAGE_LENGTH;
-  SharedHandle<BtHandshakeMessage> msg;
+  std::shared_ptr<BtHandshakeMessage> msg;
   if(handshakeSent_ || !quickReply || peerConnection_->getBufferLength() < 48) {
     if(peerConnection_->receiveHandshake(data, dataLength)) {
       msg = messageFactory_->createHandshakeMessage(data, dataLength);
@@ -100,40 +100,39 @@ DefaultBtMessageReceiver::receiveHandshake(bool quickReply)
   return msg;
 }
 
-SharedHandle<BtHandshakeMessage>
+std::shared_ptr<BtHandshakeMessage>
 DefaultBtMessageReceiver::receiveAndSendHandshake()
 {
   return receiveHandshake(true);
 }
 
 void DefaultBtMessageReceiver::sendHandshake() {
-  SharedHandle<BtMessage> msg =
+  std::shared_ptr<BtMessage> msg =
     messageFactory_->createHandshakeMessage
     (bittorrent::getInfoHash(downloadContext_), bittorrent::getStaticPeerId());
   dispatcher_->addMessageToQueue(msg);
   dispatcher_->sendMessages();
 }
 
-SharedHandle<BtMessage> DefaultBtMessageReceiver::receiveMessage() {
+std::shared_ptr<BtMessage> DefaultBtMessageReceiver::receiveMessage() {
   size_t dataLength = 0;
   // Give 0 to PeerConnection::receiveMessage() to prevent memcpy.
   if(!peerConnection_->receiveMessage(0, dataLength)) {
-    return SharedHandle<BtMessage>();
+    return std::shared_ptr<BtMessage>();
   }
-  SharedHandle<BtMessage> msg =
+  std::shared_ptr<BtMessage> msg =
     messageFactory_->createBtMessage(peerConnection_->getMsgPayloadBuffer(),
                                      dataLength);
   msg->validate();
   if(msg->getId() == BtPieceMessage::ID) {
-    SharedHandle<BtPieceMessage> piecemsg =
-      static_pointer_cast<BtPieceMessage>(msg);
+    auto piecemsg = std::static_pointer_cast<BtPieceMessage>(msg);
     piecemsg->setMsgPayload(peerConnection_->getMsgPayloadBuffer());
   }
   return msg;
 }
 
 void DefaultBtMessageReceiver::setDownloadContext
-(const SharedHandle<DownloadContext>& downloadContext)
+(const std::shared_ptr<DownloadContext>& downloadContext)
 {
   downloadContext_ = downloadContext;
 }

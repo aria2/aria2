@@ -52,8 +52,8 @@
 #include <iomanip>
 #include <algorithm>
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "a2time.h"
 #include "a2netcompat.h"
 #include "a2functional.h"
@@ -296,7 +296,7 @@ void parseIntSegments(SegList<int>& sgl, const std::string& src);
 // sample: head=512K,tail=512K
 void parsePrioritizePieceRange
 (std::vector<size_t>& result, const std::string& src,
- const std::vector<SharedHandle<FileEntry> >& fileEntries,
+ const std::vector<std::shared_ptr<FileEntry> >& fileEntries,
  size_t pieceLength,
  int64_t defaultSize = 1048576 /* 1MiB */);
 
@@ -430,7 +430,7 @@ void mkdirs(const std::string& dirpath);
 void convertBitfield(BitfieldMan* dest, const BitfieldMan* src);
 
 // binaryStream has to be opened before calling this function.
-std::string toString(const SharedHandle<BinaryStream>& binaryStream);
+std::string toString(const std::shared_ptr<BinaryStream>& binaryStream);
 
 #ifdef HAVE_POSIX_MEMALIGN
 void* allocateAlignedMemory(size_t alignment, size_t size);
@@ -784,7 +784,7 @@ bool inSameCidrBlock
 
 // No throw
 void executeHookByOptName
-(const SharedHandle<RequestGroup>& group, const Option* option,
+(const std::shared_ptr<RequestGroup>& group, const Option* option,
  const Pref* pref);
 
 // No throw
@@ -861,9 +861,9 @@ nextParam
 }
 
 template<typename T>
-SharedHandle<T> copy(const SharedHandle<T>& a)
+std::shared_ptr<T> copy(const std::shared_ptr<T>& a)
 {
-  return SharedHandle<T>(new T(*a.get()));
+  return std::shared_ptr<T>(new T(*a.get()));
 }
 
 // This is a bit different from cookie_helper::domainMatch().  If

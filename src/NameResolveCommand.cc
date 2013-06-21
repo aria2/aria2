@@ -54,7 +54,7 @@ namespace aria2 {
 
 NameResolveCommand::NameResolveCommand
 (cuid_t cuid, DownloadEngine* e,
- const SharedHandle<UDPTrackerRequest>& req)
+ const std::shared_ptr<UDPTrackerRequest>& req)
   : Command(cuid),
     e_(e),
 #ifdef ENABLE_ASYNC_DNS

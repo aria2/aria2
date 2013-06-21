@@ -48,8 +48,8 @@ public:
   virtual void init() {}
 
   virtual ssize_t transform
-  (const SharedHandle<BinaryStream>& out,
-   const SharedHandle<Segment>& segment,
+  (const std::shared_ptr<BinaryStream>& out,
+   const std::shared_ptr<Segment>& segment,
    const unsigned char* inbuf, size_t inlen)
   {
     bytesProcessed_ = inlen;
@@ -75,7 +75,7 @@ public:
     return bytesProcessed_;
   }
 
-  virtual bool installDelegate(const SharedHandle<StreamFilter>& filter)
+  virtual bool installDelegate(const std::shared_ptr<StreamFilter>& filter)
   {
     return false;
   }

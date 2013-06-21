@@ -33,13 +33,16 @@
  */
 /* copyright --> */
 #include "GroupId.h"
+
+#include <cassert>
+
 #include "util.h"
 
 namespace aria2 {
 
 std::set<a2_gid_t> GroupId::set_;
 
-SharedHandle<GroupId> GroupId::create()
+std::shared_ptr<GroupId> GroupId::create()
 {
   a2_gid_t n;
   for(;;) {
@@ -48,13 +51,13 @@ SharedHandle<GroupId> GroupId::create()
       break;
     }
   }
-  SharedHandle<GroupId> res(new GroupId(n));
+  std::shared_ptr<GroupId> res(new GroupId(n));
   return res;
 }
 
-SharedHandle<GroupId> GroupId::import(a2_gid_t n)
+std::shared_ptr<GroupId> GroupId::import(a2_gid_t n)
 {
-  SharedHandle<GroupId> res;
+  std::shared_ptr<GroupId> res;
   if(n == 0 || set_.count(n) != 0) {
     return res;
   }

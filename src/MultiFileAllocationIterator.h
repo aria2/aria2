@@ -36,7 +36,9 @@
 #define D_MULTI_FILE_ALLOCATION_ITERATOR_H
 
 #include "FileAllocationIterator.h"
+
 #include <deque>
+#include <memory>
 
 namespace aria2 {
 
@@ -47,8 +49,8 @@ class MultiFileAllocationIterator:public FileAllocationIterator
 {
 private:
   MultiDiskAdaptor* diskAdaptor_;
-  std::deque<SharedHandle<DiskWriterEntry> > entries_;
-  SharedHandle<FileAllocationIterator> fileAllocationIterator_;
+  std::deque<std::shared_ptr<DiskWriterEntry> > entries_;
+  std::shared_ptr<FileAllocationIterator> fileAllocationIterator_;
 public:
   MultiFileAllocationIterator(MultiDiskAdaptor* diskAdaptor);
 
@@ -62,7 +64,7 @@ public:
 
   virtual int64_t getTotalLength();
 
-  const std::deque<SharedHandle<DiskWriterEntry> >&
+  const std::deque<std::shared_ptr<DiskWriterEntry> >&
   getDiskWriterEntries() const;
 };
 

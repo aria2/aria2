@@ -26,9 +26,9 @@ class UTMetadataPostDownloadHandlerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetNextRequestGroups);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<Option> option_;
-  SharedHandle<DownloadContext> dctx_;
-  SharedHandle<RequestGroup> requestGroup_;
+  std::shared_ptr<Option> option_;
+  std::shared_ptr<DownloadContext> dctx_;
+  std::shared_ptr<RequestGroup> requestGroup_;
 public:
   void setUp()
   {
@@ -52,7 +52,7 @@ void UTMetadataPostDownloadHandlerTest::testCanHandle()
 
   CPPUNIT_ASSERT(!handler.canHandle(requestGroup_.get()));
 
-  SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
+  std::shared_ptr<TorrentAttribute> attrs(new TorrentAttribute());
   dctx_->setAttribute(CTX_ATTR_BT, attrs);
 
   CPPUNIT_ASSERT(handler.canHandle(requestGroup_.get()));
@@ -77,7 +77,7 @@ void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
     (infoHash, sizeof(infoHash), MessageDigest::sha1(),
      reinterpret_cast<const unsigned char*>(metadata.data()), metadata.size());
   dctx_->getFirstFileEntry()->setLength(metadata.size());
-  SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
+  std::shared_ptr<TorrentAttribute> attrs(new TorrentAttribute());
   attrs->infoHash = std::string(&infoHash[0], &infoHash[20]);
   std::vector<std::vector<std::string> > announceList;
   std::vector<std::string> announceTier;
@@ -86,20 +86,20 @@ void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
   attrs->announceList = announceList;
   dctx_->setAttribute(CTX_ATTR_BT, attrs);
   requestGroup_->setDiskWriterFactory
-    (SharedHandle<DiskWriterFactory>(new ByteArrayDiskWriterFactory()));
+    (std::shared_ptr<DiskWriterFactory>(new ByteArrayDiskWriterFactory()));
   requestGroup_->initPieceStorage();
   requestGroup_->getPieceStorage()->getDiskAdaptor()->writeData
     (reinterpret_cast<const unsigned char*>(metadata.data()), metadata.size(),
      0);
 
   UTMetadataPostDownloadHandler handler;
-  std::vector<SharedHandle<RequestGroup> > results;
+  std::vector<std::shared_ptr<RequestGroup> > results;
   handler.getNextRequestGroups(results, requestGroup_.get());
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, results.size());
-  SharedHandle<RequestGroup> newRg = results.front();
-  SharedHandle<DownloadContext> newDctx = newRg->getDownloadContext();
-  SharedHandle<TorrentAttribute> newAttrs =
+  std::shared_ptr<RequestGroup> newRg = results.front();
+  std::shared_ptr<DownloadContext> newDctx = newRg->getDownloadContext();
+  std::shared_ptr<TorrentAttribute> newAttrs =
     bittorrent::getTorrentAttrs(newDctx);
   CPPUNIT_ASSERT_EQUAL(bittorrent::getInfoHashString(dctx_),
                        bittorrent::getInfoHashString(newDctx));

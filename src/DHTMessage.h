@@ -38,8 +38,8 @@
 #include "common.h"
 
 #include <string>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "A2STR.h"
 
 namespace aria2 {
@@ -48,9 +48,9 @@ class DHTNode;
 
 class DHTMessage {
 private:
-  SharedHandle<DHTNode> localNode_;
+  std::shared_ptr<DHTNode> localNode_;
 
-  SharedHandle<DHTNode> remoteNode_;
+  std::shared_ptr<DHTNode> remoteNode_;
 
   std::string transactionID_;
 
@@ -58,8 +58,8 @@ private:
 
   void generateTransactionID();
 public:
-  DHTMessage(const SharedHandle<DHTNode>& localNode,
-             const SharedHandle<DHTNode>& remoteNode,
+  DHTMessage(const std::shared_ptr<DHTNode>& localNode,
+             const std::shared_ptr<DHTNode>& remoteNode,
              const std::string& transactionID = A2STR::NIL);
 
   virtual ~DHTMessage();
@@ -69,12 +69,12 @@ public:
     return transactionID_;
   }
 
-  const SharedHandle<DHTNode>& getLocalNode() const
+  const std::shared_ptr<DHTNode>& getLocalNode() const
   {
     return localNode_;
   }
 
-  const SharedHandle<DHTNode>& getRemoteNode() const
+  const std::shared_ptr<DHTNode>& getRemoteNode() const
   {
     return remoteNode_;
   }

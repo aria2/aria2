@@ -44,12 +44,12 @@ class ExtensionMessageFactory;
 class BtExtendedMessage:public SimpleBtMessage
 {
 private:
-  SharedHandle<ExtensionMessage> extensionMessage_;
+  std::shared_ptr<ExtensionMessage> extensionMessage_;
 
   size_t msgLength_;
 public:
-  BtExtendedMessage(const SharedHandle<ExtensionMessage>& extensionMessage =
-                    SharedHandle<ExtensionMessage>());
+  BtExtendedMessage(const std::shared_ptr<ExtensionMessage>& extensionMessage =
+                    std::shared_ptr<ExtensionMessage>());
   virtual ~BtExtendedMessage();
 
   static const uint8_t ID = 20;
@@ -57,8 +57,8 @@ public:
   static const char NAME[];
 
   static BtExtendedMessage* create
-  (const SharedHandle<ExtensionMessageFactory>& factory,
-   const SharedHandle<Peer>& peer,
+  (const std::shared_ptr<ExtensionMessageFactory>& factory,
+   const std::shared_ptr<Peer>& peer,
    const unsigned char* data,
    size_t dataLength);
 
@@ -72,7 +72,7 @@ public:
 
   virtual std::string toString() const;
 
-  const SharedHandle<ExtensionMessage>& getExtensionMessage() const
+  const std::shared_ptr<ExtensionMessage>& getExtensionMessage() const
   {
     return extensionMessage_;
   }

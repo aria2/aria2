@@ -47,7 +47,7 @@ public:
   virtual ~MetalinkPostDownloadHandler();
 
   virtual void
-  getNextRequestGroups(std::vector<SharedHandle<RequestGroup> >& groups,
+  getNextRequestGroups(std::vector<std::shared_ptr<RequestGroup> >& groups,
                        RequestGroup* requestGroup);
 };
 

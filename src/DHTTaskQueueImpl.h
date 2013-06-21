@@ -54,11 +54,11 @@ public:
 
   virtual void executeTask();
 
-  virtual void addPeriodicTask1(const SharedHandle<DHTTask>& task);
+  virtual void addPeriodicTask1(const std::shared_ptr<DHTTask>& task);
 
-  virtual void addPeriodicTask2(const SharedHandle<DHTTask>& task);
+  virtual void addPeriodicTask2(const std::shared_ptr<DHTTask>& task);
 
-  virtual void addImmediateTask(const SharedHandle<DHTTask>& task);
+  virtual void addImmediateTask(const std::shared_ptr<DHTTask>& task);
 };
 
 } // namespace aria2

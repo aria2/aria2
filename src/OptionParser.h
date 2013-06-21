@@ -40,9 +40,9 @@
 #include <string>
 #include <vector>
 #include <iosfwd>
+#include <memory>
 
 #include <aria2/aria2.h>
-#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -55,7 +55,7 @@ private:
   std::vector<OptionHandler*> handlers_;
   // Index of handler in handlers_ for option who has short option name.
   std::vector<size_t> shortOpts_;
-  static SharedHandle<OptionParser> optionParser_;
+  static std::shared_ptr<OptionParser> optionParser_;
 public:
   OptionParser();
   ~OptionParser();
@@ -96,7 +96,7 @@ public:
   // Hidden options are not returned.
   const OptionHandler* findByShortName(char shortName) const;
 
-  static const SharedHandle<OptionParser>& getInstance();
+  static const std::shared_ptr<OptionParser>& getInstance();
   // Deletes statically allocated instace. Call this at the end of the
   // program.
   static void deleteInstance();

@@ -39,8 +39,8 @@
 
 #include <set>
 #include <string>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "a2functional.h"
 
 namespace aria2 {
@@ -53,12 +53,12 @@ class WebSocketSession;
 
 class WebSocketSessionMan : public DownloadEventListener {
 public:
-  typedef std::set<SharedHandle<WebSocketSession>,
+  typedef std::set<std::shared_ptr<WebSocketSession>,
                    RefLess<WebSocketSession> > WebSocketSessions;
   WebSocketSessionMan();
   ~WebSocketSessionMan();
-  void addSession(const SharedHandle<WebSocketSession>& wsSession);
-  void removeSession(const SharedHandle<WebSocketSession>& wsSession);
+  void addSession(const std::shared_ptr<WebSocketSession>& wsSession);
+  void removeSession(const std::shared_ptr<WebSocketSession>& wsSession);
   void addNotification(const std::string& method, const RequestGroup* group);
   virtual void onEvent(DownloadEvent event, const RequestGroup* group);
 private:

@@ -35,7 +35,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BtHaveNoneMessageTest);
 void BtHaveNoneMessageTest::testCreate() {
   unsigned char msg[5];
   bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 15);
-  SharedHandle<BtHaveNoneMessage> pm(BtHaveNoneMessage::create(&msg[4], 1));
+  std::shared_ptr<BtHaveNoneMessage> pm(BtHaveNoneMessage::create(&msg[4], 1));
   CPPUNIT_ASSERT_EQUAL((uint8_t)15, pm->getId());
 
   // case: payload size is wrong
@@ -67,7 +67,7 @@ void BtHaveNoneMessageTest::testCreateMessage() {
 
 void BtHaveNoneMessageTest::testDoReceivedAction() {
   BtHaveNoneMessage msg;
-  SharedHandle<Peer> peer(new Peer("host", 6969));
+  std::shared_ptr<Peer> peer(new Peer("host", 6969));
   peer->allocateSessionResource(1024, 1024*1024);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);

@@ -25,7 +25,7 @@ class DownloadHandlerFactoryTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<Option> option_;
+  std::shared_ptr<Option> option_;
 public:
   void setUp()
   {
@@ -50,11 +50,11 @@ CPPUNIT_TEST_SUITE_REGISTRATION( DownloadHandlerFactoryTest );
 
 void DownloadHandlerFactoryTest::testGetMetalinkPreDownloadHandler_extension()
 {
-  SharedHandle<DownloadContext> dctx(new DownloadContext(0, 0, "test.metalink"));
+  std::shared_ptr<DownloadContext> dctx(new DownloadContext(0, 0, "test.metalink"));
   RequestGroup rg(GroupId::create(), option_);
   rg.setDownloadContext(dctx);
 
-  SharedHandle<PreDownloadHandler> handler = DownloadHandlerFactory::getMetalinkPreDownloadHandler();
+  std::shared_ptr<PreDownloadHandler> handler = DownloadHandlerFactory::getMetalinkPreDownloadHandler();
 
   CPPUNIT_ASSERT(handler->canHandle(&rg));
 
@@ -64,12 +64,12 @@ void DownloadHandlerFactoryTest::testGetMetalinkPreDownloadHandler_extension()
 
 void DownloadHandlerFactoryTest::testGetMetalinkPreDownloadHandler_contentType()
 {
-  SharedHandle<DownloadContext> dctx(new DownloadContext(0, 0, "test"));
+  std::shared_ptr<DownloadContext> dctx(new DownloadContext(0, 0, "test"));
   dctx->getFirstFileEntry()->setContentType("application/metalink+xml");
   RequestGroup rg(GroupId::create(), option_);
   rg.setDownloadContext(dctx);
 
-  SharedHandle<PreDownloadHandler> handler = DownloadHandlerFactory::getMetalinkPreDownloadHandler();
+  std::shared_ptr<PreDownloadHandler> handler = DownloadHandlerFactory::getMetalinkPreDownloadHandler();
 
   CPPUNIT_ASSERT(handler->canHandle(&rg));
 
@@ -83,12 +83,12 @@ void DownloadHandlerFactoryTest::testGetMetalinkPreDownloadHandler_contentType()
 
 void DownloadHandlerFactoryTest::testGetBtPreDownloadHandler_extension()
 {
-  SharedHandle<DownloadContext> dctx
+  std::shared_ptr<DownloadContext> dctx
     (new DownloadContext(0, 0, A2_TEST_DIR"/test.torrent"));
   RequestGroup rg(GroupId::create(), option_);
   rg.setDownloadContext(dctx);
 
-  SharedHandle<PreDownloadHandler> handler = DownloadHandlerFactory::getBtPreDownloadHandler();
+  std::shared_ptr<PreDownloadHandler> handler = DownloadHandlerFactory::getBtPreDownloadHandler();
 
   CPPUNIT_ASSERT(handler->canHandle(&rg));
 
@@ -98,12 +98,12 @@ void DownloadHandlerFactoryTest::testGetBtPreDownloadHandler_extension()
 
 void DownloadHandlerFactoryTest::testGetBtPreDownloadHandler_contentType()
 {
-  SharedHandle<DownloadContext> dctx(new DownloadContext(0, 0, "test"));
+  std::shared_ptr<DownloadContext> dctx(new DownloadContext(0, 0, "test"));
   dctx->getFirstFileEntry()->setContentType("application/x-bittorrent");
   RequestGroup rg(GroupId::create(), option_);
   rg.setDownloadContext(dctx);
 
-  SharedHandle<PreDownloadHandler> handler = DownloadHandlerFactory::getBtPreDownloadHandler();
+  std::shared_ptr<PreDownloadHandler> handler = DownloadHandlerFactory::getBtPreDownloadHandler();
 
   CPPUNIT_ASSERT(handler->canHandle(&rg));
 

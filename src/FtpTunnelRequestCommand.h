@@ -44,12 +44,12 @@ class SocketCore;
 class FtpTunnelRequestCommand : public AbstractProxyRequestCommand {
 public:
   FtpTunnelRequestCommand(cuid_t cuid,
-                          const SharedHandle<Request>& req,
-                          const SharedHandle<FileEntry>& fileEntry,
+                          const std::shared_ptr<Request>& req,
+                          const std::shared_ptr<FileEntry>& fileEntry,
                           RequestGroup* requestGroup,
                           DownloadEngine* e,
-                          const SharedHandle<Request>& proxyRequest,
-                          const SharedHandle<SocketCore>& s);
+                          const std::shared_ptr<Request>& proxyRequest,
+                          const std::shared_ptr<SocketCore>& s);
   virtual ~FtpTunnelRequestCommand();
 
   virtual Command* getNextCommand();

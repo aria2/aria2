@@ -38,8 +38,7 @@
 #include "common.h"
 
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -51,45 +50,45 @@ class DHTRoutingTable;
 
 class DHTMessageReceiver {
 private:
-  SharedHandle<DHTMessageTracker> tracker_;
+  std::shared_ptr<DHTMessageTracker> tracker_;
 
-  SharedHandle<DHTConnection> connection_;
+  std::shared_ptr<DHTConnection> connection_;
 
-  SharedHandle<DHTMessageFactory> factory_;
+  std::shared_ptr<DHTMessageFactory> factory_;
 
-  SharedHandle<DHTRoutingTable> routingTable_;
+  std::shared_ptr<DHTRoutingTable> routingTable_;
 
-  SharedHandle<DHTMessage>
+  std::shared_ptr<DHTMessage>
   handleUnknownMessage(const unsigned char* data, size_t length,
                        const std::string& remoteAddr, uint16_t remotePort);
 
-  void onMessageReceived(const SharedHandle<DHTMessage>& message);
+  void onMessageReceived(const std::shared_ptr<DHTMessage>& message);
 public:
-  DHTMessageReceiver(const SharedHandle<DHTMessageTracker>& tracker);
+  DHTMessageReceiver(const std::shared_ptr<DHTMessageTracker>& tracker);
 
   ~DHTMessageReceiver();
 
-  SharedHandle<DHTMessage> receiveMessage
+  std::shared_ptr<DHTMessage> receiveMessage
   (const std::string& remoteAddr, uint16_t remotePort, unsigned char *data,
    size_t length);
 
   void handleTimeout();
 
-  const SharedHandle<DHTConnection>& getConnection() const
+  const std::shared_ptr<DHTConnection>& getConnection() const
   {
     return connection_;
   }
 
-  const SharedHandle<DHTMessageTracker>& getMessageTracker() const
+  const std::shared_ptr<DHTMessageTracker>& getMessageTracker() const
   {
     return tracker_;
   }
 
-  void setConnection(const SharedHandle<DHTConnection>& connection);
+  void setConnection(const std::shared_ptr<DHTConnection>& connection);
 
-  void setMessageFactory(const SharedHandle<DHTMessageFactory>& factory);
+  void setMessageFactory(const std::shared_ptr<DHTMessageFactory>& factory);
 
-  void setRoutingTable(const SharedHandle<DHTRoutingTable>& routingTable);
+  void setRoutingTable(const std::shared_ptr<DHTRoutingTable>& routingTable);
 };
 
 } // namespace aria2

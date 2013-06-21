@@ -36,9 +36,9 @@
 
 namespace aria2 {
 
-SharedHandle<Exception> DlRetryEx::copy() const
+std::shared_ptr<Exception> DlRetryEx::copy() const
 {
-  SharedHandle<Exception> e(new DlRetryEx(*this));
+  std::shared_ptr<Exception> e(new DlRetryEx(*this));
   return e;
 }
 

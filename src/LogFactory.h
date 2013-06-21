@@ -38,21 +38,21 @@
 #include "common.h"
 
 #include <string>
+#include <memory>
 
 #include "Logger.h"
-#include "SharedHandle.h"
 
 namespace aria2 {
 
 class LogFactory {
 private:
   static std::string filename_;
-  static SharedHandle<Logger> logger_;
+  static std::shared_ptr<Logger> logger_;
   static bool consoleOutput_;
   static Logger::LEVEL logLevel_;
   static Logger::LEVEL consoleLogLevel_;
 
-  static void openLogger(const SharedHandle<Logger>& logger);
+  static void openLogger(const std::shared_ptr<Logger>& logger);
 
   LogFactory();
 public:
@@ -60,7 +60,7 @@ public:
    * Get logger instance. Returned logger is singleton.
    * This function is not thread-safe.
    */
-  static const SharedHandle<Logger>& getInstance();
+  static const std::shared_ptr<Logger>& getInstance();
 
   /**
    * Set a filename to write log. If name is "-", log is written to
@@ -112,14 +112,14 @@ public:
 
 #define A2_LOG(level, msg)                                              \
   {                                                                     \
-    const aria2::SharedHandle<aria2::Logger>& logger =                  \
+    const std::shared_ptr<aria2::Logger>& logger =                  \
       aria2::LogFactory::getInstance();                                 \
     if(logger->levelEnabled(level))                                     \
       logger->log(level, __FILE__, __LINE__, msg);                      \
   }
 #define A2_LOG_EX(level, msg, ex)                                       \
   {                                                                     \
-    const aria2::SharedHandle<aria2::Logger>& logger =                  \
+    const std::shared_ptr<aria2::Logger>& logger =                  \
       aria2::LogFactory::getInstance();                                 \
     if(logger->levelEnabled(level))                                     \
       logger->log(level, __FILE__, __LINE__, msg, ex);                  \

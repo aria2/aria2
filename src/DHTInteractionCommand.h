@@ -36,7 +36,8 @@
 #define D_DHT_INTERACTION_COMMAND_H
 
 #include "Command.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -51,12 +52,12 @@ class UDPTrackerClient;
 class DHTInteractionCommand:public Command {
 private:
   DownloadEngine* e_;
-  SharedHandle<DHTMessageDispatcher> dispatcher_;
-  SharedHandle<DHTMessageReceiver> receiver_;
-  SharedHandle<DHTTaskQueue> taskQueue_;
-  SharedHandle<SocketCore> readCheckSocket_;
-  SharedHandle<DHTConnection> connection_;
-  SharedHandle<UDPTrackerClient> udpTrackerClient_;
+  std::shared_ptr<DHTMessageDispatcher> dispatcher_;
+  std::shared_ptr<DHTMessageReceiver> receiver_;
+  std::shared_ptr<DHTTaskQueue> taskQueue_;
+  std::shared_ptr<SocketCore> readCheckSocket_;
+  std::shared_ptr<DHTConnection> connection_;
+  std::shared_ptr<UDPTrackerClient> udpTrackerClient_;
 public:
   DHTInteractionCommand(cuid_t cuid, DownloadEngine* e);
 
@@ -64,20 +65,20 @@ public:
 
   virtual bool execute();
 
-  void setReadCheckSocket(const SharedHandle<SocketCore>& socket);
+  void setReadCheckSocket(const std::shared_ptr<SocketCore>& socket);
 
-  void disableReadCheckSocket(const SharedHandle<SocketCore>& socket);
+  void disableReadCheckSocket(const std::shared_ptr<SocketCore>& socket);
 
-  void setMessageDispatcher(const SharedHandle<DHTMessageDispatcher>& dispatcher);
+  void setMessageDispatcher(const std::shared_ptr<DHTMessageDispatcher>& dispatcher);
 
-  void setMessageReceiver(const SharedHandle<DHTMessageReceiver>& receiver);
+  void setMessageReceiver(const std::shared_ptr<DHTMessageReceiver>& receiver);
 
-  void setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue);
+  void setTaskQueue(const std::shared_ptr<DHTTaskQueue>& taskQueue);
 
-  void setConnection(const SharedHandle<DHTConnection>& connection);
+  void setConnection(const std::shared_ptr<DHTConnection>& connection);
 
   void setUDPTrackerClient
-  (const SharedHandle<UDPTrackerClient>& udpTrackerClient);
+  (const std::shared_ptr<UDPTrackerClient>& udpTrackerClient);
 };
 
 } // namespace aria2

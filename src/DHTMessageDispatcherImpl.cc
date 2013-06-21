@@ -47,7 +47,7 @@
 namespace aria2 {
 
 DHTMessageDispatcherImpl::DHTMessageDispatcherImpl
-(const SharedHandle<DHTMessageTracker>& tracker)
+(const std::shared_ptr<DHTMessageTracker>& tracker)
   : tracker_(tracker),
     timeout_(DHT_MESSAGE_TIMEOUT)
 {}
@@ -56,26 +56,26 @@ DHTMessageDispatcherImpl::~DHTMessageDispatcherImpl() {}
 
 void
 DHTMessageDispatcherImpl::addMessageToQueue
-(const SharedHandle<DHTMessage>& message,
+(const std::shared_ptr<DHTMessage>& message,
  time_t timeout,
- const SharedHandle<DHTMessageCallback>& callback)
+ const std::shared_ptr<DHTMessageCallback>& callback)
 {
-  SharedHandle<DHTMessageEntry> e
+  std::shared_ptr<DHTMessageEntry> e
     (new DHTMessageEntry(message, timeout, callback));
   messageQueue_.push_back(e);
 }
 
 void
 DHTMessageDispatcherImpl::addMessageToQueue
-(const SharedHandle<DHTMessage>& message,
- const SharedHandle<DHTMessageCallback>& callback)
+(const std::shared_ptr<DHTMessage>& message,
+ const std::shared_ptr<DHTMessageCallback>& callback)
 {
   addMessageToQueue(message, timeout_, callback);
 }
 
 bool
 DHTMessageDispatcherImpl::sendMessage
-(const SharedHandle<DHTMessageEntry>& entry)
+(const std::shared_ptr<DHTMessageEntry>& entry)
 {
   try {
     if(entry->message->send()) {
@@ -105,7 +105,7 @@ void DHTMessageDispatcherImpl::sendMessages()
 {
   // TODO I can't use bind1st and mem_fun here because bind1st cannot bind a
   // function which takes a reference as an argument..
-  std::deque<SharedHandle<DHTMessageEntry> >::iterator itr =
+  std::deque<std::shared_ptr<DHTMessageEntry> >::iterator itr =
     messageQueue_.begin();
   for(; itr != messageQueue_.end(); ++itr) {
     if(!sendMessage(*itr)) {

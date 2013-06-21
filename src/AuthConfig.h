@@ -39,8 +39,7 @@
 
 #include <string>
 #include <iosfwd>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -72,7 +71,7 @@ public:
 };
 
 std::ostream& operator<<(std::ostream& o,
-                         const SharedHandle<AuthConfig>& authConfig);
+                         const std::shared_ptr<AuthConfig>& authConfig);
 
 } // namespace aria2
 

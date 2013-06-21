@@ -36,7 +36,8 @@
 #define D_HTTP_LISTEN_COMMAND_H
 
 #include "Command.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -47,7 +48,7 @@ class HttpListenCommand : public Command {
 private:
   DownloadEngine* e_;
   int family_;
-  SharedHandle<SocketCore> serverSocket_;
+  std::shared_ptr<SocketCore> serverSocket_;
   bool secure_;
 public:
   HttpListenCommand(cuid_t cuid, DownloadEngine* e, int family, bool secure);

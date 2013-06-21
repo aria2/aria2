@@ -70,7 +70,7 @@ public:
     std::sort(locations_.begin(), locations_.end());
   }
 
-  void operator()(SharedHandle<MetalinkResource>& res) {
+  void operator()(std::shared_ptr<MetalinkResource>& res) {
     if(std::binary_search
        (locations_.begin(), locations_.end(), res->location)) {
       res->priority += priorityToAdd_;
@@ -122,7 +122,7 @@ public:
   AddProtocolPriority(const std::string& protocol, int prefToAdd):
     protocol_(protocol), priorityToAdd_(prefToAdd) {}
 
-  void operator()(const SharedHandle<MetalinkResource>& res) const
+  void operator()(const std::shared_ptr<MetalinkResource>& res) const
   {
     if(protocol_ == MetalinkResource::getTypeString(res->type)) {
       res->priority += priorityToAdd_;
@@ -142,8 +142,8 @@ namespace {
 template<typename T>
 class PriorityHigher {
 public:
-  bool operator()(const SharedHandle<T>& res1,
-                  const SharedHandle<T>& res2)
+  bool operator()(const std::shared_ptr<T>& res1,
+                  const std::shared_ptr<T>& res2)
   {
     return res1->priority < res2->priority;
   }
@@ -163,9 +163,9 @@ void MetalinkEntry::reorderMetaurlsByPriority()
 }
 
 namespace {
-class Supported:public std::unary_function<SharedHandle<MetalinkResource>, bool> {
+class Supported:public std::unary_function<std::shared_ptr<MetalinkResource>, bool> {
 public:
-  bool operator()(const SharedHandle<MetalinkResource>& res) const
+  bool operator()(const std::shared_ptr<MetalinkResource>& res) const
   {
     switch(res->type) {
     case MetalinkResource::TYPE_FTP:
@@ -191,15 +191,15 @@ void MetalinkEntry::dropUnsupportedResource() {
 }
 
 void MetalinkEntry::toFileEntry
-(std::vector<SharedHandle<FileEntry> >& fileEntries,
- const std::vector<SharedHandle<MetalinkEntry> >& metalinkEntries)
+(std::vector<std::shared_ptr<FileEntry> >& fileEntries,
+ const std::vector<std::shared_ptr<MetalinkEntry> >& metalinkEntries)
 {
   std::transform(metalinkEntries.begin(), metalinkEntries.end(),
                  std::back_inserter(fileEntries),
                  mem_fun_sh(&MetalinkEntry::getFile));
 }
 
-void MetalinkEntry::setSignature(const SharedHandle<Signature>& signature)
+void MetalinkEntry::setSignature(const std::shared_ptr<Signature>& signature)
 {
   signature_ = signature;
 }

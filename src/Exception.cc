@@ -124,7 +124,7 @@ std::string Exception::stackTrace() const
   }
   s << "errorCode=" << errorCode_ << " ";
   s  << what() << "\n";
-  SharedHandle<Exception> e = cause_;
+  std::shared_ptr<Exception> e = cause_;
   while(e) {
     s << "  -> " << "[" << e->file_ << ":" << e->line_ << "] ";
     if(e->getErrNum()) {

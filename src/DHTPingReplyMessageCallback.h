@@ -70,7 +70,7 @@ public:
     task_->onReceived(message);
   }
 
-  virtual void onTimeout(const SharedHandle<DHTNode>& remoteNode)
+  virtual void onTimeout(const std::shared_ptr<DHTNode>& remoteNode)
   {
     task_->onTimeout(remoteNode);
   }

@@ -36,7 +36,8 @@
 #define D_SOCKET_RECV_BUFFER_H
 
 #include "common.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -45,7 +46,7 @@ class SocketCore;
 class SocketRecvBuffer {
 public:
   SocketRecvBuffer
-  (const SharedHandle<SocketCore>& socket,
+  (const std::shared_ptr<SocketCore>& socket,
    size_t capacity = 16*1024);
   ~SocketRecvBuffer();
   // Reads data from socket as much as capacity allows. Returns the
@@ -60,7 +61,7 @@ public:
     bufLen_ = 0;
   }
 
-  const SharedHandle<SocketCore>& getSocket() const
+  const std::shared_ptr<SocketCore>& getSocket() const
   {
     return socket_;
   }
@@ -82,7 +83,7 @@ public:
 
   void pushBuffer(const unsigned char* data, size_t len);
 private:
-  SharedHandle<SocketCore> socket_;
+  std::shared_ptr<SocketCore> socket_;
   size_t capacity_;
   unsigned char* buf_;
   size_t bufLen_;

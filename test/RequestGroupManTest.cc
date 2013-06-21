@@ -37,9 +37,9 @@ class RequestGroupManTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testAddDownloadResult);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<DownloadEngine> e_;
-  SharedHandle<Option> option_;
-  SharedHandle<RequestGroupMan> rgman_;
+  std::shared_ptr<DownloadEngine> e_;
+  std::shared_ptr<Option> option_;
+  std::shared_ptr<RequestGroupMan> rgman_;
 public:
   void setUp()
   {
@@ -49,10 +49,10 @@ public:
     option_->put(PREF_ENABLE_RPC, A2_V_TRUE);
     File(option_->get(PREF_DIR)).mkdirs();
     e_.reset
-      (new DownloadEngine(SharedHandle<EventPoll>(new SelectEventPoll())));
+      (new DownloadEngine(std::shared_ptr<EventPoll>(new SelectEventPoll())));
     e_->setOption(option_.get());
-    rgman_ = SharedHandle<RequestGroupMan>
-      (new RequestGroupMan(std::vector<SharedHandle<RequestGroup> >(),
+    rgman_ = std::shared_ptr<RequestGroupMan>
+      (new RequestGroupMan(std::vector<std::shared_ptr<RequestGroup> >(),
                            3, option_.get()));
     e_->setRequestGroupMan(rgman_);
   }
@@ -73,20 +73,20 @@ CPPUNIT_TEST_SUITE_REGISTRATION( RequestGroupManTest );
 
 void RequestGroupManTest::testIsSameFileBeingDownloaded()
 {
-  SharedHandle<RequestGroup> rg1(new RequestGroup(GroupId::create(),
+  std::shared_ptr<RequestGroup> rg1(new RequestGroup(GroupId::create(),
                                                   util::copy(option_)));
-  SharedHandle<RequestGroup> rg2(new RequestGroup(GroupId::create(),
+  std::shared_ptr<RequestGroup> rg2(new RequestGroup(GroupId::create(),
                                                   util::copy(option_)));
 
-  SharedHandle<DownloadContext> dctx1
+  std::shared_ptr<DownloadContext> dctx1
     (new DownloadContext(0, 0, "aria2.tar.bz2"));
-  SharedHandle<DownloadContext> dctx2
+  std::shared_ptr<DownloadContext> dctx2
     (new DownloadContext(0, 0, "aria2.tar.bz2"));
 
   rg1->setDownloadContext(dctx1);
   rg2->setDownloadContext(dctx2);
 
-  RequestGroupMan gm(std::vector<SharedHandle<RequestGroup> >(), 1,
+  RequestGroupMan gm(std::vector<std::shared_ptr<RequestGroup> >(), 1,
                      option_.get());
 
   gm.addRequestGroup(rg1);
@@ -108,8 +108,8 @@ void RequestGroupManTest::testGetInitialCommands()
 void RequestGroupManTest::testSaveServerStat()
 {
   RequestGroupMan rm
-    (std::vector<SharedHandle<RequestGroup> >(),0,option_.get());
-  SharedHandle<ServerStat> ss_localhost(new ServerStat("localhost", "http"));
+    (std::vector<std::shared_ptr<RequestGroup> >(),0,option_.get());
+  std::shared_ptr<ServerStat> ss_localhost(new ServerStat("localhost", "http"));
   rm.addServerStat(ss_localhost);
   File f(A2_TEST_OUT_DIR"/aria2_RequestGroupManTest_testSaveServerStat");
   if(f.exists()) {
@@ -132,10 +132,10 @@ void RequestGroupManTest::testLoadServerStat()
   o.close();
 
   RequestGroupMan rm
-    (std::vector<SharedHandle<RequestGroup> >(),0,option_.get());
+    (std::vector<std::shared_ptr<RequestGroup> >(),0,option_.get());
   std::cerr << "testLoadServerStat" << std::endl;
   CPPUNIT_ASSERT(rm.loadServerStat(f.getPath()));
-  SharedHandle<ServerStat> ss_localhost = rm.findServerStat("localhost",
+  std::shared_ptr<ServerStat> ss_localhost = rm.findServerStat("localhost",
                                                             "http");
   CPPUNIT_ASSERT(ss_localhost);
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), ss_localhost->getHostname());
@@ -143,17 +143,17 @@ void RequestGroupManTest::testLoadServerStat()
 
 void RequestGroupManTest::testChangeReservedGroupPosition()
 {
-  SharedHandle<RequestGroup> gs[] = {
-    SharedHandle<RequestGroup>(new RequestGroup(GroupId::create(),
+  std::shared_ptr<RequestGroup> gs[] = {
+    std::shared_ptr<RequestGroup>(new RequestGroup(GroupId::create(),
                                                 util::copy(option_))),
-    SharedHandle<RequestGroup>(new RequestGroup(GroupId::create(),
+    std::shared_ptr<RequestGroup>(new RequestGroup(GroupId::create(),
                                                 util::copy(option_))),
-    SharedHandle<RequestGroup>(new RequestGroup(GroupId::create(),
+    std::shared_ptr<RequestGroup>(new RequestGroup(GroupId::create(),
                                                 util::copy(option_))),
-    SharedHandle<RequestGroup>(new RequestGroup(GroupId::create(),
+    std::shared_ptr<RequestGroup>(new RequestGroup(GroupId::create(),
                                                 util::copy(option_)))
   };
-  std::vector<SharedHandle<RequestGroup> > groups(vbegin(gs), vend(gs));
+  std::vector<std::shared_ptr<RequestGroup> > groups(vbegin(gs), vend(gs));
   RequestGroupMan rm(groups, 0, option_.get());
 
   CPPUNIT_ASSERT_EQUAL
@@ -217,7 +217,7 @@ void RequestGroupManTest::testChangeReservedGroupPosition()
 
 void RequestGroupManTest::testFillRequestGroupFromReserver()
 {
-  SharedHandle<RequestGroup> rgs[] = {
+  std::shared_ptr<RequestGroup> rgs[] = {
     createRequestGroup(0, 0, "foo1", "http://host/foo1", util::copy(option_)),
     createRequestGroup(0, 0, "foo2", "http://host/foo2", util::copy(option_)),
     createRequestGroup(0, 0, "foo3", "http://host/foo3", util::copy(option_)),
@@ -228,7 +228,7 @@ void RequestGroupManTest::testFillRequestGroupFromReserver()
     createRequestGroup(0, 0, "foo5", "http://host/foo5", util::copy(option_))
   };
   rgs[1]->setPauseRequested(true);
-  for(SharedHandle<RequestGroup>* i = vbegin(rgs); i != vend(rgs); ++i) {
+  for(std::shared_ptr<RequestGroup>* i = vbegin(rgs); i != vend(rgs); ++i) {
     rgman_->addReservedGroup(*i);
   }
   rgman_->fillRequestGroupFromReserver(e_.get());
@@ -238,16 +238,16 @@ void RequestGroupManTest::testFillRequestGroupFromReserver()
 
 void RequestGroupManTest::testFillRequestGroupFromReserver_uriParser()
 {
-  SharedHandle<RequestGroup> rgs[] = {
+  std::shared_ptr<RequestGroup> rgs[] = {
     createRequestGroup(0, 0, "mem1", "http://mem1", util::copy(option_)),
     createRequestGroup(0, 0, "mem2", "http://mem2", util::copy(option_)),
   };
   rgs[0]->setPauseRequested(true);
-  for(SharedHandle<RequestGroup>* i = vbegin(rgs); i != vend(rgs); ++i) {
+  for(std::shared_ptr<RequestGroup>* i = vbegin(rgs); i != vend(rgs); ++i) {
     rgman_->addReservedGroup(*i);
   }
 
-  SharedHandle<UriListParser> flp
+  std::shared_ptr<UriListParser> flp
     (new UriListParser(A2_TEST_DIR"/filelist2.txt"));
   rgman_->setUriListParser(flp);
 
@@ -262,19 +262,19 @@ void RequestGroupManTest::testFillRequestGroupFromReserver_uriParser()
 
 void RequestGroupManTest::testInsertReservedGroup()
 {
-  SharedHandle<RequestGroup> rgs1[] = {
-    SharedHandle<RequestGroup>(new RequestGroup(GroupId::create(),
+  std::shared_ptr<RequestGroup> rgs1[] = {
+    std::shared_ptr<RequestGroup>(new RequestGroup(GroupId::create(),
                                                 util::copy(option_))),
-    SharedHandle<RequestGroup>(new RequestGroup(GroupId::create(),
+    std::shared_ptr<RequestGroup>(new RequestGroup(GroupId::create(),
                                                 util::copy(option_)))
   };
-  SharedHandle<RequestGroup> rgs2[] = {
-    SharedHandle<RequestGroup>(new RequestGroup(GroupId::create(),
+  std::shared_ptr<RequestGroup> rgs2[] = {
+    std::shared_ptr<RequestGroup>(new RequestGroup(GroupId::create(),
                                                 util::copy(option_))),
-    SharedHandle<RequestGroup>(new RequestGroup(GroupId::create(),
+    std::shared_ptr<RequestGroup>(new RequestGroup(GroupId::create(),
                                                 util::copy(option_)))
   };
-  std::vector<SharedHandle<RequestGroup> > groups(vbegin(rgs1), vend(rgs1));
+  std::vector<std::shared_ptr<RequestGroup> > groups(vbegin(rgs1), vend(rgs1));
   rgman_->insertReservedGroup(0, groups);
   CPPUNIT_ASSERT_EQUAL((size_t)2, rgman_->getReservedGroups().size());
   RequestGroupList::const_iterator itr;

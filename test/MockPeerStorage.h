@@ -11,26 +11,26 @@ namespace aria2 {
 
 class MockPeerStorage : public PeerStorage {
 private:
-  std::deque<SharedHandle<Peer> > unusedPeers;
+  std::deque<std::shared_ptr<Peer> > unusedPeers;
   PeerSet usedPeers;
-  std::deque<SharedHandle<Peer> > droppedPeers;
-  std::vector<SharedHandle<Peer> > activePeers;
+  std::deque<std::shared_ptr<Peer> > droppedPeers;
+  std::vector<std::shared_ptr<Peer> > activePeers;
   int numChokeExecuted_;
 public:
   MockPeerStorage():numChokeExecuted_(0) {}
   virtual ~MockPeerStorage() {}
 
-  virtual bool addPeer(const SharedHandle<Peer>& peer)
+  virtual bool addPeer(const std::shared_ptr<Peer>& peer)
   {
     unusedPeers.push_back(peer);
     return true;
   }
 
-  virtual void addPeer(const std::vector<SharedHandle<Peer> >& peers) {
+  virtual void addPeer(const std::vector<std::shared_ptr<Peer> >& peers) {
     unusedPeers.insert(unusedPeers.end(), peers.begin(), peers.end());
   }
 
-  const std::deque<SharedHandle<Peer> >& getUnusedPeers()
+  const std::deque<std::shared_ptr<Peer> >& getUnusedPeers()
   {
     return unusedPeers;
   }
@@ -40,11 +40,11 @@ public:
     return unusedPeers.size() + usedPeers.size();
   }
 
-  virtual const std::deque<SharedHandle<Peer> >& getDroppedPeers() {
+  virtual const std::deque<std::shared_ptr<Peer> >& getDroppedPeers() {
     return droppedPeers;
   }
 
-  void addDroppedPeer(const SharedHandle<Peer>& peer) {
+  void addDroppedPeer(const std::shared_ptr<Peer>& peer) {
     droppedPeers.push_back(peer);
   }
 
@@ -52,12 +52,12 @@ public:
     return false;
   }
 
-  void setActivePeers(const std::vector<SharedHandle<Peer> >& activePeers)
+  void setActivePeers(const std::vector<std::shared_ptr<Peer> >& activePeers)
   {
     this->activePeers = activePeers;
   }
 
-  void getActivePeers(std::vector<SharedHandle<Peer> >& peers) {
+  void getActivePeers(std::vector<std::shared_ptr<Peer> >& peers) {
     peers.insert(peers.end(), activePeers.begin(), activePeers.end());
   }
 
@@ -75,12 +75,12 @@ public:
   {
   }
 
-  virtual SharedHandle<Peer> checkoutPeer(cuid_t cuid)
+  virtual std::shared_ptr<Peer> checkoutPeer(cuid_t cuid)
   {
-    return SharedHandle<Peer>();
+    return std::shared_ptr<Peer>();
   }
 
-  virtual void returnPeer(const SharedHandle<Peer>& peer)
+  virtual void returnPeer(const std::shared_ptr<Peer>& peer)
   {
   }
 

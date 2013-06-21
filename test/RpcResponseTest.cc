@@ -26,9 +26,9 @@ void RpcResponseTest::testToJson()
 {
   std::vector<RpcResponse> results;
   {
-    SharedHandle<List> param = List::g();
+    std::shared_ptr<List> param = List::g();
     param->append(Integer::g(1));
-    SharedHandle<String> id = String::g("9");
+    std::shared_ptr<String> id = String::g("9");
     RpcResponse res(0, param, id);
     results.push_back(res);
     std::string s = toJson(res, "", false);
@@ -45,7 +45,7 @@ void RpcResponseTest::testToJson()
   }
   {
     // error response
-    SharedHandle<Dict> param = Dict::g();
+    std::shared_ptr<Dict> param = Dict::g();
     param->put("code", Integer::g(1));
     param->put("message", "HELLO ERROR");
     RpcResponse res(1, param, Null::g());
@@ -99,7 +99,7 @@ void RpcResponseTest::testToJson()
 #ifdef ENABLE_XML_RPC
 void RpcResponseTest::testToXml()
 {
-  SharedHandle<Dict> param = Dict::g();
+  std::shared_ptr<Dict> param = Dict::g();
   param->put("faultCode", Integer::g(1));
   param->put("faultString", "No such method: make.hamburger");
   RpcResponse res(1, param, Null::g());

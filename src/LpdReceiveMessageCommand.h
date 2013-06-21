@@ -36,7 +36,8 @@
 #define D_LPD_RECEIVE_MESSAGE_COMMAND_H
 
 #include "Command.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -46,17 +47,17 @@ class SocketCore;
 
 class LpdReceiveMessageCommand:public Command {
 private:
-  SharedHandle<LpdMessageReceiver> receiver_;
+  std::shared_ptr<LpdMessageReceiver> receiver_;
   DownloadEngine* e_;
 public:
   LpdReceiveMessageCommand
-  (cuid_t cuid, const SharedHandle<LpdMessageReceiver>& receiver,
+  (cuid_t cuid, const std::shared_ptr<LpdMessageReceiver>& receiver,
    DownloadEngine* e);
   virtual ~LpdReceiveMessageCommand();
 
   virtual bool execute();
 
-  const SharedHandle<LpdMessageReceiver>& getLpdMessageReceiver() const
+  const std::shared_ptr<LpdMessageReceiver>& getLpdMessageReceiver() const
   {
     return receiver_;
   }

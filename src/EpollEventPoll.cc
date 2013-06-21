@@ -168,7 +168,7 @@ int translateEvents(EventPoll::EventType events)
 bool EpollEventPoll::addEvents(sock_t socket,
                                const EpollEventPoll::KEvent& event)
 {
-  SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
+  std::shared_ptr<KSocketEntry> socketEntry(new KSocketEntry(socket));
   KSocketEntrySet::iterator i = socketEntries_.lower_bound(socketEntry);
   int r = 0;
   int errNum = 0;
@@ -220,7 +220,7 @@ bool EpollEventPoll::addEvents(sock_t socket, Command* command,
 
 #ifdef ENABLE_ASYNC_DNS
 bool EpollEventPoll::addEvents(sock_t socket, Command* command, int events,
-                               const SharedHandle<AsyncNameResolver>& rs)
+                               const std::shared_ptr<AsyncNameResolver>& rs)
 {
   return addEvents(socket, KADNSEvent(rs, command, socket, events));
 }
@@ -229,7 +229,7 @@ bool EpollEventPoll::addEvents(sock_t socket, Command* command, int events,
 bool EpollEventPoll::deleteEvents(sock_t socket,
                                   const EpollEventPoll::KEvent& event)
 {
-  SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
+  std::shared_ptr<KSocketEntry> socketEntry(new KSocketEntry(socket));
   KSocketEntrySet::iterator i = socketEntries_.find(socketEntry);
   if(i == socketEntries_.end()) {
     A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
@@ -268,7 +268,7 @@ bool EpollEventPoll::deleteEvents(sock_t socket,
 
 #ifdef ENABLE_ASYNC_DNS
 bool EpollEventPoll::deleteEvents(sock_t socket, Command* command,
-                                  const SharedHandle<AsyncNameResolver>& rs)
+                                  const std::shared_ptr<AsyncNameResolver>& rs)
 {
   return deleteEvents(socket, KADNSEvent(rs, command, socket, 0));
 }
@@ -283,9 +283,9 @@ bool EpollEventPoll::deleteEvents(sock_t socket, Command* command,
 
 #ifdef ENABLE_ASYNC_DNS
 bool EpollEventPoll::addNameResolver
-(const SharedHandle<AsyncNameResolver>& resolver, Command* command)
+(const std::shared_ptr<AsyncNameResolver>& resolver, Command* command)
 {
-  SharedHandle<KAsyncNameResolverEntry> entry
+  std::shared_ptr<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
   KAsyncNameResolverEntrySet::iterator itr =
     nameResolverEntries_.lower_bound(entry);
@@ -299,9 +299,9 @@ bool EpollEventPoll::addNameResolver
 }
 
 bool EpollEventPoll::deleteNameResolver
-(const SharedHandle<AsyncNameResolver>& resolver, Command* command)
+(const std::shared_ptr<AsyncNameResolver>& resolver, Command* command)
 {
-  SharedHandle<KAsyncNameResolverEntry> entry
+  std::shared_ptr<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
   KAsyncNameResolverEntrySet::iterator itr =
     nameResolverEntries_.find(entry);

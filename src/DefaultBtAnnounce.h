@@ -50,7 +50,7 @@ class Randomizer;
 
 class DefaultBtAnnounce : public BtAnnounce {
 private:
-  SharedHandle<DownloadContext> downloadContext_;
+  std::shared_ptr<DownloadContext> downloadContext_;
   int trackers_;
   Timer prevAnnounceTimer_;
   time_t interval_;
@@ -61,36 +61,36 @@ private:
   AnnounceList announceList_;
   std::string trackerId_;
   const Option* option_;
-  SharedHandle<Randomizer> randomizer_;
-  SharedHandle<BtRuntime> btRuntime_;
-  SharedHandle<PieceStorage> pieceStorage_;
-  SharedHandle<PeerStorage> peerStorage_;
+  std::shared_ptr<Randomizer> randomizer_;
+  std::shared_ptr<BtRuntime> btRuntime_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
+  std::shared_ptr<PeerStorage> peerStorage_;
   uint16_t tcpPort_;
 
   bool adjustAnnounceList();
 public:
-  DefaultBtAnnounce(const SharedHandle<DownloadContext>& downloadContext,
+  DefaultBtAnnounce(const std::shared_ptr<DownloadContext>& downloadContext,
                     const Option* option);
 
   virtual ~DefaultBtAnnounce();
 
-  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
+  void setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime);
 
-  const SharedHandle<BtRuntime>& getBtRuntime() const
+  const std::shared_ptr<BtRuntime>& getBtRuntime() const
   {
     return btRuntime_;
   }
 
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+  void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage);
 
-  const SharedHandle<PieceStorage>& getPieceStorage() const
+  const std::shared_ptr<PieceStorage>& getPieceStorage() const
   {
     return pieceStorage_;
   }
 
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
 
-  const SharedHandle<PeerStorage>& getPeerStorage() const
+  const std::shared_ptr<PeerStorage>& getPeerStorage() const
   {
     return peerStorage_;
   }
@@ -105,7 +105,7 @@ public:
 
   virtual std::string getAnnounceUrl();
 
-  virtual SharedHandle<UDPTrackerRequest>
+  virtual std::shared_ptr<UDPTrackerRequest>
   createUDPTrackerRequest(const std::string& remoteAddr, uint16_t remotePort,
                           uint16_t localPort);
 
@@ -123,7 +123,7 @@ public:
                                        size_t trackerResponseLength);
 
   virtual void processUDPTrackerResponse
-  (const SharedHandle<UDPTrackerRequest>& req);
+  (const std::shared_ptr<UDPTrackerRequest>& req);
 
   virtual bool noMoreAnnounce();
 
@@ -136,7 +136,7 @@ public:
     tcpPort_ = port;
   }
 
-  void setRandomizer(const SharedHandle<Randomizer>& randomizer);
+  void setRandomizer(const std::shared_ptr<Randomizer>& randomizer);
 
   time_t getInterval() const
   {

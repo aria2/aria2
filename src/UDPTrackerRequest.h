@@ -39,8 +39,8 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "TimerA2.h"
 
 namespace aria2 {
@@ -103,7 +103,7 @@ struct UDPTrackerRequest {
   int error;
   Timer dispatched;
   int failCount;
-  SharedHandle<UDPTrackerReply> reply;
+  std::shared_ptr<UDPTrackerReply> reply;
   UDPTrackerRequest();
 };
 

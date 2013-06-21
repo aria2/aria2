@@ -39,6 +39,7 @@
 
 #include <string>
 #include <functional>
+#include <memory>
 
 #include "TimerA2.h"
 
@@ -62,7 +63,7 @@ private:
 
   time_t summaryInterval_;
 
-  SharedHandle<SizeFormatter> sizeFormatter_;
+  std::shared_ptr<SizeFormatter> sizeFormatter_;
   bool readoutVisibility_;
   bool truncate_;
   bool isTTY_;

@@ -44,7 +44,7 @@ namespace aria2 {
 const std::string GZipDecodingStreamFilter::NAME("GZipDecodingStreamFilter");
 
 GZipDecodingStreamFilter::GZipDecodingStreamFilter
-(const SharedHandle<StreamFilter>& delegate):
+(const std::shared_ptr<StreamFilter>& delegate):
   StreamFilter(delegate), strm_(0), finished_(false), bytesProcessed_(0) {}
 
 GZipDecodingStreamFilter::~GZipDecodingStreamFilter()
@@ -79,8 +79,8 @@ void GZipDecodingStreamFilter::release()
 }
 
 ssize_t GZipDecodingStreamFilter::transform
-(const SharedHandle<BinaryStream>& out,
- const SharedHandle<Segment>& segment,
+(const std::shared_ptr<BinaryStream>& out,
+ const std::shared_ptr<Segment>& segment,
  const unsigned char* inbuf, size_t inlen)
 {
   bytesProcessed_ = 0;

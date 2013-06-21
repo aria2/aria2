@@ -45,7 +45,7 @@ namespace aria2 {
 
 CheckIntegrityDispatcherCommand::CheckIntegrityDispatcherCommand
 (cuid_t cuid,
- const SharedHandle<CheckIntegrityMan>& fileAllocMan,
+ const std::shared_ptr<CheckIntegrityMan>& fileAllocMan,
  DownloadEngine* e)
   : SequentialDispatcherCommand<CheckIntegrityEntry>(cuid, fileAllocMan, e)
 {
@@ -53,7 +53,7 @@ CheckIntegrityDispatcherCommand::CheckIntegrityDispatcherCommand
 }
 
 Command* CheckIntegrityDispatcherCommand::createCommand
-(const SharedHandle<CheckIntegrityEntry>& entry)
+(const std::shared_ptr<CheckIntegrityEntry>& entry)
 {
   cuid_t newCUID = getDownloadEngine()->newCUID();
   A2_LOG_INFO(fmt("CUID#%" PRId64 " - Dispatching CheckIntegrityCommand CUID#%" PRId64 ".",

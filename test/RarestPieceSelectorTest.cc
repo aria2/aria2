@@ -29,7 +29,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(RarestPieceSelectorTest);
 
 void RarestPieceSelectorTest::testSelect()
 {
-  SharedHandle<PieceStatMan> pieceStatMan(new PieceStatMan(10, false));
+  std::shared_ptr<PieceStatMan> pieceStatMan(new PieceStatMan(10, false));
   RarestPieceSelector selector(pieceStatMan);
   BitfieldMan bf(1024, 10*1024);
   bf.setBitRange(0, 2);

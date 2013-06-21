@@ -58,13 +58,13 @@ DHTRoutingTableSerializer::DHTRoutingTableSerializer(int family):
 DHTRoutingTableSerializer::~DHTRoutingTableSerializer() {}
 
 void DHTRoutingTableSerializer::setLocalNode
-(const SharedHandle<DHTNode>& localNode)
+(const std::shared_ptr<DHTNode>& localNode)
 {
   localNode_ = localNode;
 }
 
 void DHTRoutingTableSerializer::setNodes
-(const std::vector<SharedHandle<DHTNode> >& nodes)
+(const std::vector<std::shared_ptr<DHTNode> >& nodes)
 {
   nodes_ = nodes;
 }
@@ -120,9 +120,9 @@ void DHTRoutingTableSerializer::serialize(const std::string& filename)
 
   const int clen = bittorrent::getCompactLength(family_);
   // nodes
-  for(std::vector<SharedHandle<DHTNode> >::const_iterator i = nodes_.begin(),
+  for(std::vector<std::shared_ptr<DHTNode> >::const_iterator i = nodes_.begin(),
         eoi = nodes_.end(); i != eoi; ++i) {
-    const SharedHandle<DHTNode>& node = *i;
+    const std::shared_ptr<DHTNode>& node = *i;
     // Write IP address + port in Compact IP-address/port info form.
     unsigned char compactPeer[COMPACT_LEN_IPV6];
     int compactlen = bittorrent::packcompact

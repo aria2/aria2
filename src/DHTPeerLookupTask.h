@@ -50,27 +50,27 @@ class DHTPeerLookupTask:
 private:
   std::map<std::string, std::string> tokenStorage_;
 
-  SharedHandle<PeerStorage> peerStorage_;
+  std::shared_ptr<PeerStorage> peerStorage_;
   uint16_t tcpPort_;
 public:
   DHTPeerLookupTask
-  (const SharedHandle<DownloadContext>& downloadContext,
+  (const std::shared_ptr<DownloadContext>& downloadContext,
    uint16_t tcpPort);
 
   virtual void getNodesFromMessage
-  (std::vector<SharedHandle<DHTNode> >& nodes,
+  (std::vector<std::shared_ptr<DHTNode> >& nodes,
    const DHTGetPeersReplyMessage* message);
 
   virtual void onReceivedInternal(const DHTGetPeersReplyMessage* message);
 
-  virtual SharedHandle<DHTMessage> createMessage
-  (const SharedHandle<DHTNode>& remoteNode);
+  virtual std::shared_ptr<DHTMessage> createMessage
+  (const std::shared_ptr<DHTNode>& remoteNode);
 
-  virtual SharedHandle<DHTMessageCallback> createCallback();
+  virtual std::shared_ptr<DHTMessageCallback> createCallback();
 
   virtual void onFinish();
 
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
 };
 
 } // namespace aria2

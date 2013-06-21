@@ -54,7 +54,6 @@ SRCS =  option_processing.cc\
 	LogFactory.cc LogFactory.h\
 	TimerA2.cc TimerA2.h\
 	TimeA2.cc TimeA2.h\
-	SharedHandle.cc SharedHandle.h\
 	FeatureConfig.cc FeatureConfig.h\
 	DownloadEngineFactory.cc DownloadEngineFactory.h\
 	SpeedCalc.cc SpeedCalc.h\

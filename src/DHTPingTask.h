@@ -44,7 +44,7 @@ class DHTPingReplyMessage;
 
 class DHTPingTask:public DHTAbstractTask {
 private:
-  SharedHandle<DHTNode> remoteNode_;
+  std::shared_ptr<DHTNode> remoteNode_;
 
   int numMaxRetry_;
 
@@ -56,7 +56,7 @@ private:
 
   void addMessage();
 public:
-  DHTPingTask(const SharedHandle<DHTNode>& remoteNode, int numMaxRetry = 0);
+  DHTPingTask(const std::shared_ptr<DHTNode>& remoteNode, int numMaxRetry = 0);
 
   virtual ~DHTPingTask();
 
@@ -64,7 +64,7 @@ public:
 
   void onReceived(const DHTPingReplyMessage* message);
 
-  void onTimeout(const SharedHandle<DHTNode>& node);
+  void onTimeout(const std::shared_ptr<DHTNode>& node);
 
   void setTimeout(time_t timeout)
   {

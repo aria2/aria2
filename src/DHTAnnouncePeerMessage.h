@@ -58,8 +58,8 @@ private:
 protected:
   virtual std::string toStringOptional() const;
 public:
-  DHTAnnouncePeerMessage(const SharedHandle<DHTNode>& localNode,
-                         const SharedHandle<DHTNode>& remoteNode,
+  DHTAnnouncePeerMessage(const std::shared_ptr<DHTNode>& localNode,
+                         const std::shared_ptr<DHTNode>& remoteNode,
                          const unsigned char* infoHash,
                          uint16_t tcpPort,
                          const std::string& token,
@@ -69,7 +69,7 @@ public:
 
   virtual void doReceivedAction();
 
-  virtual SharedHandle<Dict> getArgument();
+  virtual std::shared_ptr<Dict> getArgument();
 
   virtual const std::string& getMessageType() const;
 

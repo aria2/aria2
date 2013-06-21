@@ -31,7 +31,6 @@ aria2c_SOURCES = AllTest.cc\
 	SingletonHolderTest.cc\
 	HttpHeaderTest.cc\
 	HttpResponseTest.cc\
-	SharedHandleTest.cc\
 	FileTest.cc\
 	OptionTest.cc\
 	DefaultDiskWriterTest.cc\

@@ -38,8 +38,8 @@
 #include "common.h"
 
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "RequestSlot.h"
 
 namespace aria2 {
@@ -51,19 +51,19 @@ class BtMessageDispatcher {
 public:
   virtual ~BtMessageDispatcher() {}
 
-  virtual void addMessageToQueue(const SharedHandle<BtMessage>& btMessage) = 0;
+  virtual void addMessageToQueue(const std::shared_ptr<BtMessage>& btMessage) = 0;
 
   virtual void
-  addMessageToQueue(const std::vector<SharedHandle<BtMessage> >& btMessages) =0;
+  addMessageToQueue(const std::vector<std::shared_ptr<BtMessage> >& btMessages) =0;
 
   virtual void sendMessages() = 0;
 
   virtual void doCancelSendingPieceAction
   (size_t index, int32_t begin, int32_t length) = 0;
 
-  virtual void doCancelSendingPieceAction(const SharedHandle<Piece>& piece) = 0;
+  virtual void doCancelSendingPieceAction(const std::shared_ptr<Piece>& piece) = 0;
 
-  virtual void doAbortOutstandingRequestAction(const SharedHandle<Piece>& piece) = 0;
+  virtual void doAbortOutstandingRequestAction(const std::shared_ptr<Piece>& piece) = 0;
 
   virtual void doChokedAction() = 0;
 

@@ -98,15 +98,15 @@ void BtSetup::setup(std::vector<Command*>& commands,
   if(!requestGroup->getDownloadContext()->hasAttribute(CTX_ATTR_BT)){
     return;
   }
-  SharedHandle<TorrentAttribute> torrentAttrs =
+  std::shared_ptr<TorrentAttribute> torrentAttrs =
     bittorrent::getTorrentAttrs(requestGroup->getDownloadContext());
   bool metadataGetMode = torrentAttrs->metadata.empty();
-  const SharedHandle<BtRegistry>& btReg = e->getBtRegistry();
-  const SharedHandle<BtObject>& btObject = btReg->get(requestGroup->getGID());
-  const SharedHandle<PieceStorage>& pieceStorage = btObject->pieceStorage;
-  const SharedHandle<PeerStorage>& peerStorage = btObject->peerStorage;
-  const SharedHandle<BtRuntime>& btRuntime = btObject->btRuntime;
-  const SharedHandle<BtAnnounce>& btAnnounce = btObject->btAnnounce;
+  const std::shared_ptr<BtRegistry>& btReg = e->getBtRegistry();
+  const std::shared_ptr<BtObject>& btObject = btReg->get(requestGroup->getGID());
+  const std::shared_ptr<PieceStorage>& pieceStorage = btObject->pieceStorage;
+  const std::shared_ptr<PeerStorage>& peerStorage = btObject->peerStorage;
+  const std::shared_ptr<BtRuntime>& btRuntime = btObject->btRuntime;
+  const std::shared_ptr<BtAnnounce>& btAnnounce = btObject->btAnnounce;
   // commands
   {
     TrackerWatcherCommand* c =
@@ -159,16 +159,16 @@ void BtSetup::setup(std::vector<Command*>& commands,
     }
   }
   if(!metadataGetMode) {
-    SharedHandle<UnionSeedCriteria> unionCri(new UnionSeedCriteria());
+    std::shared_ptr<UnionSeedCriteria> unionCri(new UnionSeedCriteria());
     if(option->defined(PREF_SEED_TIME)) {
-      SharedHandle<SeedCriteria> cri
+      std::shared_ptr<SeedCriteria> cri
         (new TimeSeedCriteria(option->getAsInt(PREF_SEED_TIME)*60));
       unionCri->addSeedCriteria(cri);
     }
     {
       double ratio = option->getAsDouble(PREF_SEED_RATIO);
       if(ratio > 0.0) {
-        SharedHandle<ShareRatioSeedCriteria> cri
+        std::shared_ptr<ShareRatioSeedCriteria> cri
           (new ShareRatioSeedCriteria(option->getAsDouble(PREF_SEED_RATIO),
                                       requestGroup->getDownloadContext()));
         cri->setPieceStorage(pieceStorage);
@@ -223,7 +223,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
      (metadataGetMode || !torrentAttrs->privateTorrent)) {
     if(!btReg->getLpdMessageReceiver()) {
       A2_LOG_INFO("Initializing LpdMessageReceiver.");
-      SharedHandle<LpdMessageReceiver> receiver
+      std::shared_ptr<LpdMessageReceiver> receiver
         (new LpdMessageReceiver(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT));
       bool initialized = false;
       const std::string& lpdInterface =
@@ -263,7 +263,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
       const unsigned char* infoHash =
         bittorrent::getInfoHash(requestGroup->getDownloadContext());
       A2_LOG_INFO("Initializing LpdMessageDispatcher.");
-      SharedHandle<LpdMessageDispatcher> dispatcher
+      std::shared_ptr<LpdMessageDispatcher> dispatcher
         (new LpdMessageDispatcher
          (std::string(&infoHash[0], &infoHash[INFO_HASH_LENGTH]),
           btReg->getTcpPort(),
