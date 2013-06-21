@@ -34,9 +34,10 @@
 /* copyright --> */
 #include "SimpleRandomizer.h"
 
-#include <cstdlib>
 #include <sys/types.h>
 #include <unistd.h>
+#include <cstdlib>
+#include <cassert>
 
 #include "a2time.h"
 
