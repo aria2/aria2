@@ -197,7 +197,6 @@ SRCS =  option_processing.cc\
 	NullSinkStreamFilter.cc NullSinkStreamFilter.h\
 	uri.cc uri.h\
 	uri_split.c uri_split.h\
-	Triplet.h\
 	cookie_helper.cc cookie_helper.h\
 	json.cc json.h\
 	JsonParser.cc JsonParser.h\

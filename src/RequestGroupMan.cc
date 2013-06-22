@@ -70,7 +70,6 @@
 #include "Segment.h"
 #include "DlAbortEx.h"
 #include "uri.h"
-#include "Triplet.h"
 #include "Signature.h"
 #include "OutputFile.h"
 #include "download_helper.h"
@@ -920,45 +919,44 @@ bool RequestGroupMan::doesOverallUploadSpeedExceed()
 void RequestGroupMan::getUsedHosts
 (std::vector<std::pair<size_t, std::string> >& usedHosts)
 {
-  // vector of triplet which consists of use count, -download speed,
+  // vector of tuple which consists of use count, -download speed,
   // hostname. We want to sort by least used and faster download
   // speed. We use -download speed so that we can sort them using
   // operator<().
-  std::vector<Triplet<size_t, int, std::string> > tempHosts;
-  for(RequestGroupList::const_iterator i = requestGroups_.begin(),
-        eoi = requestGroups_.end(); i != eoi; ++i) {
-    const std::shared_ptr<RequestGroup>& rg = *i;
-    const FileEntry::InFlightRequestSet& inFlightReqs =
+  std::vector<std::tuple<size_t, int, std::string> > tempHosts;
+  for(const auto& rg : requestGroups_) {
+    const auto& inFlightReqs =
       rg->getDownloadContext()->getFirstFileEntry()->getInFlightRequests();
-    for(FileEntry::InFlightRequestSet::iterator j =
-          inFlightReqs.begin(), eoj = inFlightReqs.end(); j != eoj; ++j) {
+    for(const auto& req : inFlightReqs) {
       uri_split_result us;
-      if(uri_split(&us, (*j)->getUri().c_str()) == 0) {
-        std::vector<Triplet<size_t, int, std::string> >::iterator k;
-        std::vector<Triplet<size_t, int, std::string> >::iterator eok =
-          tempHosts.end();
+      if(uri_split(&us, req->getUri().c_str()) == 0) {
         std::string host = uri::getFieldString(us, USR_HOST,
-                                               (*j)->getUri().c_str());
-        for(k =  tempHosts.begin(); k != eok; ++k) {
-          if((*k).third == host) {
-            ++(*k).first;
+                                               req->getUri().c_str());
+        auto k = tempHosts.begin();
+        auto eok = tempHosts.end();
+        for(; k != eok; ++k) {
+          if(std::get<2>(*k) == host) {
+            ++std::get<0>(*k);
             break;
           }
         }
         if(k == eok) {
           std::string protocol = uri::getFieldString(us, USR_SCHEME,
-                                                     (*j)->getUri().c_str());
-          std::shared_ptr<ServerStat> ss = findServerStat(host, protocol);
+                                                     req->getUri().c_str());
+          auto ss = findServerStat(host, protocol);
           int invDlSpeed = (ss && ss->isOK()) ?
             -(static_cast<int>(ss->getDownloadSpeed())) : 0;
-          tempHosts.push_back(makeTriplet(1, invDlSpeed, host));
+          tempHosts.emplace_back(1, invDlSpeed, host);
         }
       }
     }
   }
   std::sort(tempHosts.begin(), tempHosts.end());
   std::transform(tempHosts.begin(), tempHosts.end(),
-                 std::back_inserter(usedHosts), Tuple2Pair<1, 3>());
+                 std::back_inserter(usedHosts),
+                 [](const std::tuple<size_t, int, std::string>& x) {
+                   return std::make_pair(std::get<0>(x), std::get<2>(x));
+                 });
 }
 
 void RequestGroupMan::setUriListParser

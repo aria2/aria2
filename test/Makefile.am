@@ -71,7 +71,6 @@ aria2c_SOURCES = AllTest.cc\
 	UriTest.cc\
 	UriSplitTest.cc\
 	MockSegment.h\
-	TripletTest.cc\
 	CookieHelperTest.cc\
 	JsonTest.cc\
 	ValueBaseJsonParserTest.cc\
