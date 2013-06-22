@@ -56,7 +56,7 @@ private:
 
   const char* name_;
 
-  std::shared_ptr<PieceStorage> pieceStorage_;
+  PieceStorage* pieceStorage_;
 
   std::shared_ptr<Peer> peer_;
 
@@ -72,7 +72,7 @@ private:
 
   bool metadataGetMode_;
 protected:
-  const std::shared_ptr<PieceStorage>& getPieceStorage() const
+  PieceStorage* getPieceStorage() const
   {
     return pieceStorage_;
   }
@@ -153,7 +153,7 @@ public:
 
   void setBtMessageValidator(const std::shared_ptr<BtMessageValidator>& validator);
 
-  void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage);
+  void setPieceStorage(PieceStorage* pieceStorage);
 
   void setBtMessageDispatcher(BtMessageDispatcher* dispatcher);
 

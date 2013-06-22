@@ -624,12 +624,22 @@ void loadFromMemory(const std::shared_ptr<ValueBase>& torrent,
 std::shared_ptr<TorrentAttribute> getTorrentAttrs
 (const std::shared_ptr<DownloadContext>& dctx)
 {
+  return getTorrentAttrs(dctx.get());
+}
+
+std::shared_ptr<TorrentAttribute> getTorrentAttrs(DownloadContext* dctx)
+{
   return std::static_pointer_cast<TorrentAttribute>
     (dctx->getAttribute(CTX_ATTR_BT));
 }
 
-const unsigned char*
-getInfoHash(const std::shared_ptr<DownloadContext>& dctx)
+const unsigned char* getInfoHash
+(const std::shared_ptr<DownloadContext>& dctx)
+{
+  return getInfoHash(dctx.get());
+}
+
+const unsigned char* getInfoHash(DownloadContext* dctx)
 {
   return reinterpret_cast<const unsigned char*>
     (getTorrentAttrs(dctx)->infoHash.data());
@@ -637,6 +647,12 @@ getInfoHash(const std::shared_ptr<DownloadContext>& dctx)
 
 std::string
 getInfoHashString(const std::shared_ptr<DownloadContext>& dctx)
+{
+  return getInfoHashString(dctx.get());
+}
+
+std::string
+getInfoHashString(DownloadContext* dctx)
 {
   return util::toHex(getTorrentAttrs(dctx)->infoHash);
 }

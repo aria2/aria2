@@ -72,6 +72,9 @@ namespace aria2 {
 
 DefaultBtMessageFactory::DefaultBtMessageFactory():
   cuid_(0),
+  downloadContext_(0),
+  pieceStorage_(0),
+  peerStorage_(0),
   dhtEnabled_(false),
   dispatcher_(0),
   requestFactory_(0),
@@ -439,19 +442,17 @@ void DefaultBtMessageFactory::setPeer(const std::shared_ptr<Peer>& peer)
 }
 
 void DefaultBtMessageFactory::setDownloadContext
-(const std::shared_ptr<DownloadContext>& downloadContext)
+(DownloadContext* downloadContext)
 {
   downloadContext_ = downloadContext;
 }
 
-void DefaultBtMessageFactory::setPieceStorage
-(const std::shared_ptr<PieceStorage>& pieceStorage)
+void DefaultBtMessageFactory::setPieceStorage(PieceStorage* pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }
 
-void DefaultBtMessageFactory::setPeerStorage
-(const std::shared_ptr<PeerStorage>& peerStorage)
+void DefaultBtMessageFactory::setPeerStorage(PeerStorage* peerStorage)
 {
   peerStorage_ = peerStorage;
 }

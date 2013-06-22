@@ -40,7 +40,7 @@ public:
     exmsgFactory_.reset(new MockExtensionMessageFactory());
 
     factory_.reset(new DefaultBtMessageFactory());
-    factory_->setDownloadContext(dctx_);
+    factory_->setDownloadContext(dctx_.get());
     factory_->setPeer(peer_);
     factory_->setExtensionMessageFactory(exmsgFactory_);
   }

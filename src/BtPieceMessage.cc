@@ -71,7 +71,9 @@ BtPieceMessage::BtPieceMessage
     index_(index),
     begin_(begin),
     blockLength_(blockLength),
-    data_(0)
+    data_(0),
+    downloadContext_(0),
+    peerStorage_(0)
 {
   setUploading(true);
 }
@@ -334,14 +336,12 @@ void BtPieceMessage::onCancelSendingPieceEvent
   }
 }
 
-void BtPieceMessage::setDownloadContext
-(const std::shared_ptr<DownloadContext>& downloadContext)
+void BtPieceMessage::setDownloadContext(DownloadContext* downloadContext)
 {
   downloadContext_ = downloadContext;
 }
 
-void BtPieceMessage::setPeerStorage
-(const std::shared_ptr<PeerStorage>& peerStorage)
+void BtPieceMessage::setPeerStorage(PeerStorage* peerStorage)
 {
   peerStorage_ = peerStorage;
 }

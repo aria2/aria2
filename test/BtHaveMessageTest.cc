@@ -80,8 +80,8 @@ void BtHaveMessageTest::testDoReceivedAction() {
   BtHaveMessage msg;
   msg.setIndex(1);
   msg.setPeer(peer);
-  std::shared_ptr<MockPieceStorage> pieceStorage(new MockPieceStorage());
-  msg.setPieceStorage(pieceStorage);
+  auto pieceStorage = make_unique<MockPieceStorage>();
+  msg.setPieceStorage(pieceStorage.get());
 
   CPPUNIT_ASSERT(!peer->hasPiece(msg.getIndex()));
 
@@ -97,8 +97,8 @@ void BtHaveMessageTest::testDoReceivedAction_goodByeSeeder()
   BtHaveMessage msg;
   msg.setIndex(0);
   msg.setPeer(peer);
-  std::shared_ptr<MockPieceStorage> pieceStorage(new MockPieceStorage());
-  msg.setPieceStorage(pieceStorage);
+  auto pieceStorage = make_unique<MockPieceStorage>();
+  msg.setPieceStorage(pieceStorage.get());
 
   // peer is not seeder and client have not completed download
   msg.doReceivedAction();

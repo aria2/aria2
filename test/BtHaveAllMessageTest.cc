@@ -74,8 +74,8 @@ void BtHaveAllMessageTest::testDoReceivedAction() {
   peer->allocateSessionResource(16*1024, 256*1024);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
-  std::shared_ptr<MockPieceStorage> pieceStorage(new MockPieceStorage());
-  msg.setPieceStorage(pieceStorage);
+  auto pieceStorage = make_unique<MockPieceStorage>();
+  msg.setPieceStorage(pieceStorage.get());
 
   msg.doReceivedAction();
 
@@ -96,8 +96,8 @@ void BtHaveAllMessageTest::testDoReceivedAction_goodByeSeeder()
   peer->allocateSessionResource(1024, 1024);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
-  std::shared_ptr<MockPieceStorage> pieceStorage(new MockPieceStorage());
-  msg.setPieceStorage(pieceStorage);
+  auto pieceStorage = make_unique<MockPieceStorage>();
+  msg.setPieceStorage(pieceStorage.get());
 
   pieceStorage->setDownloadFinished(true);
 

@@ -147,9 +147,9 @@ PeerInteractionCommand::PeerInteractionCommand
 
   DefaultBtMessageFactory* factoryPtr(new DefaultBtMessageFactory());
   factoryPtr->setCuid(cuid);
-  factoryPtr->setDownloadContext(requestGroup_->getDownloadContext());
-  factoryPtr->setPieceStorage(pieceStorage);
-  factoryPtr->setPeerStorage(peerStorage);
+  factoryPtr->setDownloadContext(requestGroup_->getDownloadContext().get());
+  factoryPtr->setPieceStorage(pieceStorage.get());
+  factoryPtr->setPeerStorage(peerStorage.get());
   factoryPtr->setExtensionMessageFactory(extensionMessageFactory);
   factoryPtr->setPeer(getPeer());
   if(family == AF_INET) {

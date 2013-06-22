@@ -44,7 +44,7 @@ class BtNotInterestedMessage;
 
 class BtNotInterestedMessage : public ZeroBtMessage {
 private:
-  std::shared_ptr<PeerStorage> peerStorage_;
+  PeerStorage* peerStorage_;
 public:
   BtNotInterestedMessage();
   virtual ~BtNotInterestedMessage();
@@ -62,7 +62,7 @@ public:
 
   virtual ProgressUpdate* getProgressUpdate();
 
-  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
+  void setPeerStorage(PeerStorage* peerStorage);
 };
 
 } // namespace aria2

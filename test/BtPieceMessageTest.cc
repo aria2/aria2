@@ -88,7 +88,7 @@ public:
     msg->setIndex(1);
     msg->setBegin(1024);
     msg->setBlockLength(16*1024);
-    msg->setDownloadContext(dctx_);
+    msg->setDownloadContext(dctx_.get());
     msg->setPeer(peer);
     msg->setBtMessageDispatcher(btMessageDispatcher.get());
     msg->setBtMessageFactory(btMessageFactory_.get());

@@ -57,9 +57,9 @@ class DHTTaskFactory;
 class DefaultBtMessageFactory : public BtMessageFactory {
 private:
   cuid_t cuid_;
-  std::shared_ptr<DownloadContext> downloadContext_;
-  std::shared_ptr<PieceStorage> pieceStorage_;
-  std::shared_ptr<PeerStorage> peerStorage_;
+  DownloadContext* downloadContext_;
+  PieceStorage* pieceStorage_;
+  PeerStorage* peerStorage_;
   std::shared_ptr<Peer> peer_;
 
   bool dhtEnabled_;
@@ -137,11 +137,11 @@ public:
 
   void setPeer(const std::shared_ptr<Peer>& peer);
 
-  void setDownloadContext(const std::shared_ptr<DownloadContext>& downloadContext);
+  void setDownloadContext(DownloadContext* downloadContext);
 
-  void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage);
+  void setPieceStorage(PieceStorage* pieceStorage);
 
-  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
+  void setPeerStorage(PeerStorage* peerStorage);
 
   void setCuid(cuid_t cuid)
   {

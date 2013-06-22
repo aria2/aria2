@@ -49,8 +49,8 @@ private:
   int32_t begin_;
   int32_t blockLength_;
   const unsigned char* data_;
-  std::shared_ptr<DownloadContext> downloadContext_;
-  std::shared_ptr<PeerStorage> peerStorage_;
+  DownloadContext* downloadContext_;
+  PeerStorage* peerStorage_;
 
   static size_t MESSAGE_HEADER_LENGTH;
 
@@ -88,9 +88,9 @@ public:
 
   void setBlockLength(int32_t blockLength) { blockLength_ = blockLength; }
 
-  void setDownloadContext(const std::shared_ptr<DownloadContext>& downloadContext);
+  void setDownloadContext(DownloadContext* downloadContext);
 
-  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
+  void setPeerStorage(PeerStorage* peerStorage);
 
   static BtPieceMessage* create(const unsigned char* data, size_t dataLength);
 

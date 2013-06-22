@@ -149,16 +149,19 @@ void computeFastSet
 (std::vector<size_t>& fastSet, const std::string& ipaddr,
  size_t numPieces, const unsigned char* infoHash, size_t fastSetSize);
 
+std::shared_ptr<TorrentAttribute> getTorrentAttrs(DownloadContext* dctx);
 std::shared_ptr<TorrentAttribute> getTorrentAttrs
 (const std::shared_ptr<DownloadContext>& dctx);
 
 // Returns the value associated with INFO_HASH key in BITTORRENT
 // attribute.
-const unsigned char*
-getInfoHash(const std::shared_ptr<DownloadContext>& downloadContext);
+const unsigned char* getInfoHash(DownloadContext* downloadContext);
+const unsigned char* getInfoHash
+(const std::shared_ptr<DownloadContext>& downloadContext);
 
-std::string
-getInfoHashString(const std::shared_ptr<DownloadContext>& downloadContext);
+std::string getInfoHashString(DownloadContext* downloadContext);
+std::string getInfoHashString
+(const std::shared_ptr<DownloadContext>& downloadContext);
 
 // Returns 8bytes unsigned integer located at offset pos.  The integer
 // in msg is network byte order. This function converts it into host

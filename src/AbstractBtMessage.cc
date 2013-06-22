@@ -45,6 +45,7 @@ AbstractBtMessage::AbstractBtMessage(uint8_t id, const char* name)
     uploading_(false),
     cuid_(0),
     name_(name),
+    pieceStorage_(0),
     dispatcher_(0),
     messageFactory_(0),
     requestFactory_(0),
@@ -71,8 +72,7 @@ AbstractBtMessage::setBtMessageValidator(const std::shared_ptr<BtMessageValidato
   validator_ = validator;
 }
 
-void AbstractBtMessage::setPieceStorage
-(const std::shared_ptr<PieceStorage>& pieceStorage)
+void AbstractBtMessage::setPieceStorage(PieceStorage* pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }

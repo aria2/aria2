@@ -117,7 +117,7 @@ public:
     msg->setBlockIndex(2);
     msg->setBtMessageDispatcher(dispatcher_.get());
     msg->setBtMessageFactory(messageFactory_.get());
-    msg->setPieceStorage(pieceStorage_);
+    msg->setPieceStorage(pieceStorage_.get());
   }
 };
 

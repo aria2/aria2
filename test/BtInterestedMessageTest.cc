@@ -71,9 +71,9 @@ void BtInterestedMessageTest::testDoReceivedAction() {
   peer->allocateSessionResource(1024, 1024*1024);
   msg.setPeer(peer);
 
-  std::shared_ptr<MockPeerStorage> peerStorage(new MockPeerStorage());
+  auto peerStorage = make_unique<MockPeerStorage>();
 
-  msg.setPeerStorage(peerStorage);
+  msg.setPeerStorage(peerStorage.get());
 
   CPPUNIT_ASSERT(!peer->peerInterested());
   msg.doReceivedAction();

@@ -85,8 +85,8 @@ void BtBitfieldMessageTest::testDoReceivedAction() {
   peer->allocateSessionResource(16*1024, 16*16*1024);
   BtBitfieldMessage msg;
   msg.setPeer(peer);
-  std::shared_ptr<MockPieceStorage> pieceStorage(new MockPieceStorage());
-  msg.setPieceStorage(pieceStorage);
+  auto pieceStorage = make_unique<MockPieceStorage>();
+  msg.setPieceStorage(pieceStorage.get());
   unsigned char bitfield[] = { 0xff, 0xff };
   msg.setBitfield(bitfield, sizeof(bitfield));
 
@@ -103,8 +103,8 @@ void BtBitfieldMessageTest::testDoReceivedAction_goodByeSeeder()
   peer->allocateSessionResource(1024, 1024);
   BtBitfieldMessage msg;
   msg.setPeer(peer);
-  std::shared_ptr<MockPieceStorage> pieceStorage(new MockPieceStorage());
-  msg.setPieceStorage(pieceStorage);
+  auto pieceStorage = make_unique<MockPieceStorage>();
+  msg.setPieceStorage(pieceStorage.get());
   unsigned char bitfield[] = { 0x00 };
   msg.setBitfield(bitfield, sizeof(bitfield));
 

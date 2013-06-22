@@ -41,7 +41,10 @@ namespace aria2 {
 
 const char BtNotInterestedMessage::NAME[] = "not interested";
 
-BtNotInterestedMessage::BtNotInterestedMessage():ZeroBtMessage(ID, NAME) {}
+BtNotInterestedMessage::BtNotInterestedMessage()
+  : ZeroBtMessage(ID, NAME),
+    peerStorage_(0)
+{}
 
 BtNotInterestedMessage::~BtNotInterestedMessage() {}
 
@@ -86,8 +89,7 @@ ProgressUpdate* BtNotInterestedMessage::getProgressUpdate()
   return new ThisProgressUpdate(getPeer());
 }
 
-void BtNotInterestedMessage::setPeerStorage
-(const std::shared_ptr<PeerStorage>& peerStorage)
+void BtNotInterestedMessage::setPeerStorage(PeerStorage* peerStorage)
 {
   peerStorage_ = peerStorage;
 }
