@@ -18,9 +18,7 @@ class OptionHandlerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testNumberOptionHandler_max);
   CPPUNIT_TEST(testNumberOptionHandler_min_max);
   CPPUNIT_TEST(testUnitNumberOptionHandler);
-  CPPUNIT_TEST(testParameterOptionHandler_1argInit);
-  CPPUNIT_TEST(testParameterOptionHandler_2argsInit);
-  CPPUNIT_TEST(testParameterOptionHandler_listInit);
+  CPPUNIT_TEST(testParameterOptionHandler);
   CPPUNIT_TEST(testDefaultOptionHandler);
   CPPUNIT_TEST(testFloatNumberOptionHandler);
   CPPUNIT_TEST(testFloatNumberOptionHandler_min);
@@ -37,9 +35,7 @@ public:
   void testNumberOptionHandler_max();
   void testNumberOptionHandler_min_max();
   void testUnitNumberOptionHandler();
-  void testParameterOptionHandler_1argInit();
-  void testParameterOptionHandler_2argsInit();
-  void testParameterOptionHandler_listInit();
+  void testParameterOptionHandler();
   void testDefaultOptionHandler();
   void testFloatNumberOptionHandler();
   void testFloatNumberOptionHandler_min();
@@ -148,43 +144,9 @@ void OptionHandlerTest::testUnitNumberOptionHandler()
   } catch(Exception& e) {}
 }
 
-void OptionHandlerTest::testParameterOptionHandler_1argInit()
+void OptionHandlerTest::testParameterOptionHandler()
 {
-  ParameterOptionHandler handler(PREF_TIMEOUT, "", "", "value1");
-  Option option;
-  handler.parse(option, "value1");
-  CPPUNIT_ASSERT_EQUAL(std::string("value1"), option.get(PREF_TIMEOUT));
-  try {
-    handler.parse(option, "value3");
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {}
-  CPPUNIT_ASSERT_EQUAL(std::string("value1"),
-                       handler.createPossibleValuesString());
-}
-
-void OptionHandlerTest::testParameterOptionHandler_2argsInit()
-{
-  ParameterOptionHandler handler(PREF_TIMEOUT, "", "", "value1", "value2");
-  Option option;
-  handler.parse(option, "value1");
-  CPPUNIT_ASSERT_EQUAL(std::string("value1"), option.get(PREF_TIMEOUT));
-  handler.parse(option, "value2");
-  CPPUNIT_ASSERT_EQUAL(std::string("value2"), option.get(PREF_TIMEOUT));
-  try {
-    handler.parse(option, "value3");
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {}
-  CPPUNIT_ASSERT_EQUAL(std::string("value1, value2"),
-                       handler.createPossibleValuesString());
-}
-
-void OptionHandlerTest::testParameterOptionHandler_listInit()
-{
-  std::vector<std::string> validValues;
-  validValues.push_back("value1");
-  validValues.push_back("value2");
-
-  ParameterOptionHandler handler(PREF_TIMEOUT, "", "", validValues);
+  ParameterOptionHandler handler(PREF_TIMEOUT, "", "", {"value1", "value2"});
   Option option;
   handler.parse(option, "value1");
   CPPUNIT_ASSERT_EQUAL(std::string("value1"), option.get(PREF_TIMEOUT));

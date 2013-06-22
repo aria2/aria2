@@ -394,54 +394,12 @@ ParameterOptionHandler::ParameterOptionHandler
 (const Pref* pref,
  const char* description,
  const std::string& defaultValue,
- const std::vector<std::string>& validParamValues,
+ std::vector<std::string>&& validParamValues,
  char shortName)
   : AbstractOptionHandler(pref, description, defaultValue,
                           OptionHandler::REQ_ARG, shortName),
-    validParamValues_(validParamValues)
+    validParamValues_(std::move(validParamValues))
 {}
-
-ParameterOptionHandler::ParameterOptionHandler
-(const Pref* pref,
- const char* description,
- const std::string& defaultValue,
- const std::string& validParamValue,
- char shortName)
-  : AbstractOptionHandler(pref, description, defaultValue,
-                          OptionHandler::REQ_ARG, shortName)
-{
-  validParamValues_.push_back(validParamValue);
-}
-
-ParameterOptionHandler::ParameterOptionHandler
-(const Pref* pref,
- const char* description,
- const std::string& defaultValue,
- const std::string& validParamValue1,
- const std::string& validParamValue2,
- char shortName)
-  : AbstractOptionHandler(pref, description, defaultValue,
-                          OptionHandler::REQ_ARG, shortName)
-{
-  validParamValues_.push_back(validParamValue1);
-  validParamValues_.push_back(validParamValue2);
-}
-
-ParameterOptionHandler::ParameterOptionHandler
-(const Pref* pref,
- const char* description,
- const std::string& defaultValue,
- const std::string& validParamValue1,
- const std::string& validParamValue2,
- const std::string& validParamValue3,
- char shortName)
-  : AbstractOptionHandler(pref, description, defaultValue,
-                          OptionHandler::REQ_ARG, shortName)
-{
-  validParamValues_.push_back(validParamValue1);
-  validParamValues_.push_back(validParamValue2);
-  validParamValues_.push_back(validParamValue3);
-}
 
 ParameterOptionHandler::~ParameterOptionHandler() {}
 
