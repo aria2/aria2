@@ -44,20 +44,20 @@ namespace aria2 {
 template<typename T>
 class SingletonHolder {
 private:
-  static std::shared_ptr<T> instance_;
+  static std::unique_ptr<T> instance_;
 
   SingletonHolder() {}
 public:
   ~SingletonHolder() {}
 
-  static const std::shared_ptr<T>& instance()
+  static T* instance()
   {
-    return instance_;
+    return instance_.get();
   }
 
-  static void instance(const std::shared_ptr<T>& instance)
+  static void instance(std::unique_ptr<T>&& ptr)
   {
-    instance_ = instance;
+    instance_ = std::move(ptr);
   }
 
   static void clear()
@@ -67,7 +67,7 @@ public:
 };
 
 template<typename T>
-std::shared_ptr<T> SingletonHolder<T>::instance_;
+std::unique_ptr<T> SingletonHolder<T>::instance_;
 
 } // namespace aria2
 

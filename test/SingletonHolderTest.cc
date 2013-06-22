@@ -4,6 +4,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "a2functional.h"
+
 namespace aria2 {
 
 class SingletonHolderTest : public CppUnit::TestFixture {
@@ -38,8 +40,7 @@ public:
 
 void SingletonHolderTest::testInstance()
 {
-  std::shared_ptr<M> m(new M("Hello world."));
-  SingletonHolder<M>::instance(m);
+  SingletonHolder<M>::instance(make_unique<M>("Hello world."));
   CPPUNIT_ASSERT_EQUAL(std::string("Hello world."),
                        SingletonHolder<M>::instance()->greeting());
 

@@ -137,8 +137,7 @@ int MultiUrlRequestInfo::prepare()
 {
   global::globalHaltRequested = 0;
   try {
-    std::shared_ptr<Notifier> notifier(new Notifier());
-    SingletonHolder<Notifier>::instance(notifier);
+    SingletonHolder<Notifier>::instance(make_unique<Notifier>());
 
 #ifdef ENABLE_SSL
     if(option_->getAsBool(PREF_ENABLE_RPC) &&
