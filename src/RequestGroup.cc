@@ -617,7 +617,7 @@ void RequestGroup::initPieceStorage()
            downloadContext_->getPieceLength());
         if(!result.empty()) {
           std::random_shuffle(result.begin(), result.end(),
-                              *(SimpleRandomizer::getInstance().get()));
+                              *SimpleRandomizer::getInstance());
           std::shared_ptr<PriorityPieceSelector> priSelector
             (new PriorityPieceSelector(ps->getPieceSelector()));
           priSelector->setPriorityPiece(result.begin(), result.end());

@@ -52,7 +52,7 @@ PieceStatMan::PieceStatMan(size_t pieceNum, bool randomShuffle):
   // we need some randomness in ordering.
   if(randomShuffle) {
     std::random_shuffle(order_.begin(), order_.end(),
-                        *(SimpleRandomizer::getInstance().get()));
+                        *SimpleRandomizer::getInstance());
   }
 }
 

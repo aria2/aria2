@@ -61,7 +61,7 @@ private:
   AnnounceList announceList_;
   std::string trackerId_;
   const Option* option_;
-  std::shared_ptr<Randomizer> randomizer_;
+  Randomizer* randomizer_;
   std::shared_ptr<BtRuntime> btRuntime_;
   std::shared_ptr<PieceStorage> pieceStorage_;
   std::shared_ptr<PeerStorage> peerStorage_;
@@ -136,7 +136,7 @@ public:
     tcpPort_ = port;
   }
 
-  void setRandomizer(const std::shared_ptr<Randomizer>& randomizer);
+  void setRandomizer(Randomizer* randomizer);
 
   time_t getInterval() const
   {

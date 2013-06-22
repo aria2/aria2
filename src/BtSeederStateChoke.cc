@@ -138,7 +138,7 @@ void BtSeederStateChoke::unchoke
                   std::mem_fun_ref(&PeerEntry::disableOptUnchoking));
     if(r != peers.end()) {
       std::random_shuffle(r, peers.end(),
-                          *(SimpleRandomizer::getInstance().get()));
+                          *SimpleRandomizer::getInstance());
       (*r).getPeer()->optUnchoking(true);
       A2_LOG_INFO(fmt("POU: %s", (*r).getPeer()->getIPAddress().c_str()));
     }

@@ -152,7 +152,7 @@ public:
 
 void MetalinkEntry::reorderResourcesByPriority() {
   std::random_shuffle(resources.begin(), resources.end(),
-                      *(SimpleRandomizer::getInstance().get()));
+                      *SimpleRandomizer::getInstance());
   std::sort(resources.begin(), resources.end(),
             PriorityHigher<MetalinkResource>());
 }

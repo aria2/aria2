@@ -50,7 +50,7 @@ class MultiFileAllocationIterator:public FileAllocationIterator
 private:
   MultiDiskAdaptor* diskAdaptor_;
   std::deque<std::shared_ptr<DiskWriterEntry> > entries_;
-  std::shared_ptr<FileAllocationIterator> fileAllocationIterator_;
+  std::unique_ptr<FileAllocationIterator> fileAllocationIterator_;
 public:
   MultiFileAllocationIterator(MultiDiskAdaptor* diskAdaptor);
 

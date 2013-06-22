@@ -227,7 +227,7 @@ void AnnounceList::shuffle() {
         tiers_.begin(), eoi = tiers_.end(); itr != eoi; ++itr) {
     std::deque<std::string>& urls = (*itr)->urls;
     std::random_shuffle(urls.begin(), urls.end(),
-                        *(SimpleRandomizer::getInstance().get()));
+                        *SimpleRandomizer::getInstance());
   }
 }
 

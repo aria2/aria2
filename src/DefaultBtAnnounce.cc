@@ -384,8 +384,7 @@ void DefaultBtAnnounce::shuffleAnnounce() {
   announceList_.shuffle();
 }
 
-void DefaultBtAnnounce::setRandomizer
-(const std::shared_ptr<Randomizer>& randomizer)
+void DefaultBtAnnounce::setRandomizer(Randomizer* randomizer)
 {
   randomizer_ = randomizer;
 }

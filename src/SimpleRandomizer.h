@@ -47,7 +47,7 @@ namespace aria2 {
 
 class SimpleRandomizer : public Randomizer {
 private:
-  static std::shared_ptr<SimpleRandomizer> randomizer_;
+  static std::unique_ptr<SimpleRandomizer> randomizer_;
 
 #ifdef __MINGW32__
   HCRYPTPROV cryProvider_;
@@ -56,7 +56,7 @@ private:
   SimpleRandomizer();
 public:
 
-  static const std::shared_ptr<SimpleRandomizer>& getInstance();
+  static SimpleRandomizer* getInstance();
 
   static void init();
 

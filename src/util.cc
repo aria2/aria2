@@ -1506,7 +1506,7 @@ std::vector<std::pair<size_t, std::string> > createIndexPaths(std::istream& i)
 namespace {
 void generateRandomDataRandom(unsigned char* data, size_t length)
 {
-  const std::shared_ptr<SimpleRandomizer>& rd = SimpleRandomizer::getInstance();
+  SimpleRandomizer* rd = SimpleRandomizer::getInstance();
   for(size_t i = 0; i < length; ++i) {
     data[i] = static_cast<unsigned long>(rd->getRandomNumber(256));
   }

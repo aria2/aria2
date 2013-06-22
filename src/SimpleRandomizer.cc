@@ -43,14 +43,14 @@
 
 namespace aria2 {
 
-std::shared_ptr<SimpleRandomizer> SimpleRandomizer::randomizer_;
+std::unique_ptr<SimpleRandomizer> SimpleRandomizer::randomizer_;
 
-const std::shared_ptr<SimpleRandomizer>& SimpleRandomizer::getInstance()
+SimpleRandomizer* SimpleRandomizer::getInstance()
 {
   if(!randomizer_) {
     randomizer_.reset(new SimpleRandomizer());
   }
-  return randomizer_;
+  return randomizer_.get();
 }
 
 void SimpleRandomizer::init()

@@ -209,7 +209,7 @@ void DefaultBtRequestFactory::createRequestMessagesOnEndGame
       }
     }
     std::random_shuffle(missingBlockIndexes.begin(), missingBlockIndexes.end(),
-                        *(SimpleRandomizer::getInstance().get()));
+                        *SimpleRandomizer::getInstance());
     for(std::vector<size_t>::const_iterator bitr = missingBlockIndexes.begin(),
           eoi2 = missingBlockIndexes.end();
         bitr != eoi2 && requests.size() < max; ++bitr) {

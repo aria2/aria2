@@ -151,7 +151,7 @@ void BtLeecherStateChoke::plannedOptimisticUnchoke
                    PeerFilter(true, true));
   if(i != peerEntries.begin()) {
     std::random_shuffle(peerEntries.begin(), i,
-                        *(SimpleRandomizer::getInstance().get()));
+                        *SimpleRandomizer::getInstance());
     (*peerEntries.begin()).enableOptUnchoking();
     A2_LOG_INFO(fmt("POU: %s",
                     (*peerEntries.begin()).getPeer()->getIPAddress().c_str()));
@@ -183,7 +183,7 @@ void BtLeecherStateChoke::regularUnchoke(std::vector<PeerEntry>& peerEntries)
   }
   if(fastOptUnchoker) {
     std::random_shuffle(peerIter, peerEntries.end(),
-                        *(SimpleRandomizer::getInstance().get()));
+                        *SimpleRandomizer::getInstance());
     for(std::vector<PeerEntry>::iterator i = peerIter,
           eoi = peerEntries.end(); i != eoi; ++i) {
       if((*i).getPeer()->peerInterested()) {

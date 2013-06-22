@@ -71,7 +71,7 @@ bool PeerListenCommand::bindPort(uint16_t& port, SegList<int>& sgl)
     ports.push_back(sgl.next());
   }
   std::random_shuffle(ports.begin(), ports.end(),
-                      *SimpleRandomizer::getInstance().get());
+                      *SimpleRandomizer::getInstance());
   const int ipv = (family_ == AF_INET) ? 4 : 6;
   for(std::vector<uint16_t>::const_iterator i = ports.begin(),
         eoi = ports.end(); i != eoi; ++i) {
