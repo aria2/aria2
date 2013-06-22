@@ -106,9 +106,9 @@ void SelectEventPoll::SocketEntry::removeCommandEvent
 }
 void SelectEventPoll::SocketEntry::processEvents(int events)
 {
+  using namespace std::placeholders;
   std::for_each(commandEvents_.begin(), commandEvents_.end(),
-                std::bind2nd(std::mem_fun_ref(&CommandEvent::processEvents),
-                             events));
+                std::bind(&CommandEvent::processEvents, _1, events));
 }
 
 int accumulateEvent(int events, const SelectEventPoll::CommandEvent& event)

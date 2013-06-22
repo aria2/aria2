@@ -119,7 +119,7 @@ void RpcMethod::gatherRequestOption(Option* option, const Dict* optionsDict)
 {
   if(optionsDict) {
     gatherOption(optionsDict->begin(), optionsDict->end(),
-                 std::mem_fun(&OptionHandler::getInitialOption),
+                 std::mem_fn(&OptionHandler::getInitialOption),
                  option, optionParser_);
   }
 }
@@ -128,7 +128,7 @@ void RpcMethod::gatherChangeableOption(Option* option, const Dict* optionsDict)
 {
   if(optionsDict) {
     gatherOption(optionsDict->begin(), optionsDict->end(),
-                 std::mem_fun(&OptionHandler::getChangeOption),
+                 std::mem_fn(&OptionHandler::getChangeOption),
                  option, optionParser_);
   }
 }
@@ -139,7 +139,7 @@ void RpcMethod::gatherChangeableOptionForReserved
 {
   if(optionsDict) {
     gatherOption(optionsDict->begin(), optionsDict->end(),
-                 std::mem_fun(&OptionHandler::getChangeOptionForReserved),
+                 std::mem_fn(&OptionHandler::getChangeOptionForReserved),
                  option, optionParser_);
   }
 }
@@ -149,7 +149,7 @@ void RpcMethod::gatherChangeableGlobalOption
 {
   if(optionsDict) {
     gatherOption(optionsDict->begin(), optionsDict->end(),
-                 std::mem_fun(&OptionHandler::getChangeGlobalOption),
+                 std::mem_fn(&OptionHandler::getChangeGlobalOption),
                  option, optionParser_);
   }
 }

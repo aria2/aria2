@@ -469,7 +469,7 @@ void AbstractCommand::onAbort() {
           std::vector<std::string> uris;
           uris.reserve(res.size());
           std::transform(res.begin(), res.end(), std::back_inserter(uris),
-                         std::mem_fun_ref(&URIResult::getURI));
+                         std::mem_fn(&URIResult::getURI));
           A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - %lu URIs found.",
                            getCuid(),
                            static_cast<unsigned long int>(uris.size())));

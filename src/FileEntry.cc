@@ -403,7 +403,7 @@ void FileEntry::reuseUri(const std::vector<std::string>& ignore)
 
   std::vector<std::string> errorUris(uriResults_.size());
   std::transform(uriResults_.begin(), uriResults_.end(),
-                 errorUris.begin(), std::mem_fun_ref(&URIResult::getURI));
+                 errorUris.begin(), std::mem_fn(&URIResult::getURI));
   std::sort(errorUris.begin(), errorUris.end());
   errorUris.erase(std::unique(errorUris.begin(), errorUris.end()),
                   errorUris.end());

@@ -235,8 +235,9 @@ namespace {
 void unsetExcludedIndexes(BitfieldMan& bitfield,
                           const std::vector<size_t>& excludedIndexes)
 {
+  using namespace std::placeholders;
   std::for_each(excludedIndexes.begin(), excludedIndexes.end(),
-                std::bind1st(std::mem_fun(&BitfieldMan::unsetBit), &bitfield));
+                std::bind(&BitfieldMan::unsetBit, &bitfield, _1));
 }
 } // namespace
 

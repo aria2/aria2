@@ -220,7 +220,7 @@ void apiGatherRequestOption(Option* option, const KeyVals& options,
                             const std::shared_ptr<OptionParser>& optionParser)
 {
   apiGatherOption(options.begin(), options.end(),
-                  std::mem_fun(&OptionHandler::getInitialOption),
+                  std::mem_fn(&OptionHandler::getInitialOption),
                   option, optionParser);
 }
 } // namespace
@@ -230,7 +230,7 @@ void apiGatherChangeableOption(Option* option, const KeyVals& options,
                                const std::shared_ptr<OptionParser>& optionParser)
 {
   apiGatherOption(options.begin(), options.end(),
-                  std::mem_fun(&OptionHandler::getChangeOption),
+                  std::mem_fn(&OptionHandler::getChangeOption),
                   option, optionParser);
 }
 } // namespace
@@ -241,7 +241,7 @@ void apiGatherChangeableOptionForReserved
  const std::shared_ptr<OptionParser>& optionParser)
 {
   apiGatherOption(options.begin(), options.end(),
-                  std::mem_fun(&OptionHandler::getChangeOptionForReserved),
+                  std::mem_fn(&OptionHandler::getChangeOptionForReserved),
                   option, optionParser);
 }
 } // namespace
@@ -252,7 +252,7 @@ void apiGatherChangeableGlobalOption
  const std::shared_ptr<OptionParser>& optionParser)
 {
   apiGatherOption(options.begin(), options.end(),
-                  std::mem_fun(&OptionHandler::getChangeGlobalOption),
+                  std::mem_fn(&OptionHandler::getChangeGlobalOption),
                   option, optionParser);
 }
 } // namespace

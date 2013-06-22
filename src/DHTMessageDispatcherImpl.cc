@@ -103,10 +103,7 @@ DHTMessageDispatcherImpl::sendMessage
 
 void DHTMessageDispatcherImpl::sendMessages()
 {
-  // TODO I can't use bind1st and mem_fun here because bind1st cannot bind a
-  // function which takes a reference as an argument..
-  std::deque<std::shared_ptr<DHTMessageEntry> >::iterator itr =
-    messageQueue_.begin();
+  auto itr = messageQueue_.begin();
   for(; itr != messageQueue_.end(); ++itr) {
     if(!sendMessage(*itr)) {
       break;

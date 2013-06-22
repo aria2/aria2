@@ -111,6 +111,7 @@ void CookieStorage::DomainEntry::findCookie
 
 bool CookieStorage::DomainEntry::addCookie(const Cookie& cookie, time_t now)
 {
+  using namespace std::placeholders;
   setLastAccessTime(now);
   std::deque<Cookie>::iterator i =
     std::find(cookies_.begin(), cookies_.end(), cookie);
@@ -121,8 +122,7 @@ bool CookieStorage::DomainEntry::addCookie(const Cookie& cookie, time_t now)
       if(cookies_.size() >= CookieStorage::MAX_COOKIE_PER_DOMAIN) {
         cookies_.erase
           (std::remove_if(cookies_.begin(), cookies_.end(),
-                          std::bind2nd
-                          (std::mem_fun_ref(&Cookie::isExpired), now)),
+                          std::bind(&Cookie::isExpired, _1, now)),
            cookies_.end());
         if(cookies_.size() >= CookieStorage::MAX_COOKIE_PER_DOMAIN) {
           std::deque<Cookie>::iterator m = std::min_element

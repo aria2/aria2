@@ -290,15 +290,12 @@ public:
 
   void processEvents(int events)
   {
+    using namespace std::placeholders;
     std::for_each(commandEvents_.begin(), commandEvents_.end(),
-                  std::bind2nd(std::mem_fun_ref
-                               (&CommandEvent::processEvents),
-                               events));
+                  std::bind(&CommandEvent::processEvents, _1, events));
 #ifdef ENABLE_ASYNC_DNS
     std::for_each(adnsEvents_.begin(), adnsEvents_.end(),
-                  std::bind2nd(std::mem_fun_ref
-                               (&ADNSEvent::processEvents),
-                               events));
+                  std::bind(&ADNSEvent::processEvents, _1, events));
 #endif // ENABLE_ASYNC_DNS
   }
 };

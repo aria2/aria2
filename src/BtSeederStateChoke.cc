@@ -135,7 +135,7 @@ void BtSeederStateChoke::unchoke
 
   if(round_ < 2) {
     std::for_each(peers.begin(), peers.end(),
-                  std::mem_fun_ref(&PeerEntry::disableOptUnchoking));
+                  std::mem_fn(&PeerEntry::disableOptUnchoking));
     if(r != peers.end()) {
       std::random_shuffle(r, peers.end(),
                           *SimpleRandomizer::getInstance());
