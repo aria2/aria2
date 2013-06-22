@@ -493,12 +493,12 @@ void MetalinkParserController::commitChunkChecksumTransaction()
   if(!tEntry_->chunkChecksum ||
      MessageDigest::isStronger(tChunkChecksum_->getHashType(),
                                tEntry_->chunkChecksum->getHashType())) {
-    std::sort(tempChunkChecksums_.begin(), tempChunkChecksums_.end(),
-              Ascend1st<std::pair<size_t, std::string> >());
+    std::sort(tempChunkChecksums_.begin(), tempChunkChecksums_.end());
     std::vector<std::string> pieceHashes;
     std::transform(tempChunkChecksums_.begin(), tempChunkChecksums_.end(),
                    std::back_inserter(pieceHashes),
-                   select2nd<std::pair<size_t, std::string> >());
+                   [](const std::pair<size_t, std::string>& p)
+                   { return p.second; });
     tChunkChecksum_->setPieceHashes(pieceHashes);
     tEntry_->chunkChecksum = tChunkChecksum_;
   }

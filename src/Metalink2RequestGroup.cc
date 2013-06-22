@@ -201,7 +201,7 @@ Metalink2RequestGroup::createRequestGroup
     }
   }
   std::for_each(selectedEntries.begin(), selectedEntries.end(),
-                mem_fun_sh(&MetalinkEntry::reorderMetaurlsByPriority));
+                std::mem_fn(&MetalinkEntry::reorderMetaurlsByPriority));
   std::vector<std::pair<std::string,
     std::vector<std::shared_ptr<MetalinkEntry> > > > entryGroups;
   metalink::groupEntryByMetaurlName(entryGroups, selectedEntries);

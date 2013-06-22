@@ -86,7 +86,7 @@ void DefaultBtRequestFactory::removeCompletedPiece() {
   std::for_each(pieces_.begin(), pieces_.end(),
                 AbortCompletedPieceRequest(dispatcher_));
   pieces_.erase(std::remove_if(pieces_.begin(), pieces_.end(),
-                              mem_fun_sh(&Piece::pieceComplete)),
+                               std::mem_fn(&Piece::pieceComplete)),
                pieces_.end());
 }
 
@@ -259,7 +259,7 @@ void DefaultBtRequestFactory::getTargetPieceIndexes
 (std::vector<size_t>& indexes) const
 {
   std::transform(pieces_.begin(), pieces_.end(), std::back_inserter(indexes),
-                 mem_fun_sh(&Piece::getIndex));
+                 std::mem_fn(&Piece::getIndex));
 }
 
 void DefaultBtRequestFactory::setPieceStorage

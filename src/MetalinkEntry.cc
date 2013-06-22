@@ -196,7 +196,7 @@ void MetalinkEntry::toFileEntry
 {
   std::transform(metalinkEntries.begin(), metalinkEntries.end(),
                  std::back_inserter(fileEntries),
-                 mem_fun_sh(&MetalinkEntry::getFile));
+                 std::mem_fn(&MetalinkEntry::getFile));
 }
 
 void MetalinkEntry::setSignature(const std::shared_ptr<Signature>& signature)

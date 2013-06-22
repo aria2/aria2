@@ -300,7 +300,7 @@ void MultiDiskAdaptor::openExistingFile()
 void MultiDiskAdaptor::closeFile()
 {
   std::for_each(diskWriterEntries_.begin(), diskWriterEntries_.end(),
-                mem_fun_sh(&DiskWriterEntry::closeFile));
+                std::mem_fn(&DiskWriterEntry::closeFile));
 }
 
 namespace {
@@ -520,7 +520,7 @@ void MultiDiskAdaptor::writeCache(const WrDiskCacheEntry* entry)
 bool MultiDiskAdaptor::fileExists()
 {
   return std::find_if(getFileEntries().begin(), getFileEntries().end(),
-                      mem_fun_sh(&FileEntry::exists)) !=
+                      std::mem_fn(&FileEntry::exists)) !=
     getFileEntries().end();
 }
 

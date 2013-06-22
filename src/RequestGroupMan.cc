@@ -801,7 +801,7 @@ bool RequestGroupMan::isSameFileBeingDownloaded(RequestGroup* requestGroup) cons
         rg->getDownloadContext()->getFileEntries();
       std::transform(entries.begin(), entries.end(),
                      std::back_inserter(files),
-                     mem_fun_sh(&FileEntry::getPath));
+                     std::mem_fn(&FileEntry::getPath));
     }
   }
   std::sort(files.begin(), files.end());
