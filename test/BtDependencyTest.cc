@@ -192,9 +192,8 @@ void BtDependencyTest::testResolve_metadata()
   pieceStorage->setDiskAdaptor(diskAdaptor);
   pieceStorage->setDownloadFinished(true);
   dependee->setPieceStorage(pieceStorage);
-  std::shared_ptr<TorrentAttribute> attrs(new TorrentAttribute());
-  dependee->getDownloadContext()->setAttribute(CTX_ATTR_BT, attrs);
-
+  dependee->getDownloadContext()->setAttribute(CTX_ATTR_BT,
+                                               make_unique<TorrentAttribute>());
   BtDependency dep(dependant.get(), dependee);
   CPPUNIT_ASSERT(dep.resolve());
 

@@ -478,8 +478,7 @@ void DefaultPieceStorage::completePiece(const std::shared_ptr<Piece>& piece)
     }
 #ifdef ENABLE_BITTORRENT
     if(downloadContext_->hasAttribute(CTX_ATTR_BT)) {
-      std::shared_ptr<TorrentAttribute> torrentAttrs =
-        bittorrent::getTorrentAttrs(downloadContext_);
+      auto torrentAttrs = bittorrent::getTorrentAttrs(downloadContext_);
       if(!torrentAttrs->metadata.empty()) {
 #ifdef __MINGW32__
         // On Windows, if aria2 opens files with GENERIC_WRITE access

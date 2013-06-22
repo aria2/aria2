@@ -117,7 +117,7 @@ void loadFromMemory(const std::shared_ptr<ValueBase>& torrent,
 // magnet:?xt=urn:btih:<info-hash>&dn=<name>&tr=<tracker-url>
 // <info-hash> comes in 2 flavors: 40bytes hexadecimal ascii string,
 // or 32bytes Base32 encoded string.
-std::shared_ptr<TorrentAttribute> parseMagnet(const std::string& magnet);
+std::unique_ptr<TorrentAttribute> parseMagnet(const std::string& magnet);
 
 // Parses BitTorrent Magnet URI and set them in ctx as a
 // bittorrent::BITTORRENT attibute. If parsing operation failed, an
@@ -149,8 +149,8 @@ void computeFastSet
 (std::vector<size_t>& fastSet, const std::string& ipaddr,
  size_t numPieces, const unsigned char* infoHash, size_t fastSetSize);
 
-std::shared_ptr<TorrentAttribute> getTorrentAttrs(DownloadContext* dctx);
-std::shared_ptr<TorrentAttribute> getTorrentAttrs
+TorrentAttribute* getTorrentAttrs(DownloadContext* dctx);
+TorrentAttribute* getTorrentAttrs
 (const std::shared_ptr<DownloadContext>& dctx);
 
 // Returns the value associated with INFO_HASH key in BITTORRENT
@@ -240,22 +240,20 @@ void assertID
 // Converts attrs into torrent data. This function does not guarantee
 // the returned string is valid torrent data.
 std::string metadata2Torrent
-(const std::string& metadata, const std::shared_ptr<TorrentAttribute>& attrs);
+(const std::string& metadata, const TorrentAttribute* attrs);
 
 // Constructs BitTorrent Magnet URI using attrs.
-std::string torrent2Magnet(const std::shared_ptr<TorrentAttribute>& attrs);
+std::string torrent2Magnet(const TorrentAttribute* attrs);
 
 // Removes announce URI in uris from attrs.  If uris contains '*', all
 // announce URIs are removed.
 void removeAnnounceUri
-(const std::shared_ptr<TorrentAttribute>& attrs,
- const std::vector<std::string>& uris);
+(TorrentAttribute* attrs, const std::vector<std::string>& uris);
 
 // Adds announce URI in uris to attrs. Each URI in uris creates its
 // own tier.
 void addAnnounceUri
-(const std::shared_ptr<TorrentAttribute>& attrs,
- const std::vector<std::string>& uris);
+(TorrentAttribute* attrs, const std::vector<std::string>& uris);
 
 // This helper function uses 2 option values: PREF_BT_TRACKER and
 // PREF_BT_EXCLUDE_TRACKER. First, the value of
@@ -263,8 +261,7 @@ void addAnnounceUri
 // and call removeAnnounceUri(). Then the value of PREF_BT_TRACKER is
 // converted to std::vector<std::string> and call addAnnounceUri().
 void adjustAnnounceUri
-(const std::shared_ptr<TorrentAttribute>& attrs,
- const std::shared_ptr<Option>& option);
+(TorrentAttribute* attrs, const std::shared_ptr<Option>& option);
 
 template<typename OutputIterator>
 void extractPeer(const ValueBase* peerData, int family, OutputIterator dest)
@@ -346,7 +343,7 @@ const char* getModeString(BtFileMode mode);
 template<typename Output>
 void print(Output& o, const std::shared_ptr<DownloadContext>& dctx)
 {
-  std::shared_ptr<TorrentAttribute> torrentAttrs = getTorrentAttrs(dctx);
+  TorrentAttribute* torrentAttrs = getTorrentAttrs(dctx);
   o.write("*** BitTorrent File Information ***\n");
   if(!torrentAttrs->comment.empty()) {
     o.printf("Comment: %s\n", torrentAttrs->comment.c_str());

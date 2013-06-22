@@ -97,8 +97,7 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
   RequestGroup rg(GroupId::create(), op);
   rg.setDownloadContext(dctx);
 
-  std::shared_ptr<TorrentAttribute> attrs(new TorrentAttribute());
-  dctx->setAttribute(CTX_ATTR_BT, attrs);
+  dctx->setAttribute(CTX_ATTR_BT, make_unique<TorrentAttribute>());
   dctx->markTotalLengthIsUnknown();
 
   std::shared_ptr<Peer> peer(new Peer("192.168.0.1", 0));
@@ -122,6 +121,7 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
                        peer->getExtensionMessageID
                        (ExtensionMessageRegistry::UT_METADATA));
   CPPUNIT_ASSERT(peer->isSeeder());
+  auto attrs = bittorrent::getTorrentAttrs(dctx);
   CPPUNIT_ASSERT_EQUAL((size_t)1024, attrs->metadataSize);
   CPPUNIT_ASSERT_EQUAL((int64_t)1024, dctx->getTotalLength());
   CPPUNIT_ASSERT(dctx->knowsTotalLength());

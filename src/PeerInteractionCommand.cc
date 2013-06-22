@@ -114,7 +114,7 @@ PeerInteractionCommand::PeerInteractionCommand
     family = AF_INET;
   }
 
-  std::shared_ptr<TorrentAttribute> torrentAttrs =
+  auto torrentAttrs =
     bittorrent::getTorrentAttrs(requestGroup_->getDownloadContext());
   bool metadataGetMode = torrentAttrs->metadata.empty();
 

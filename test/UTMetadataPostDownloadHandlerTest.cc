@@ -52,11 +52,11 @@ void UTMetadataPostDownloadHandlerTest::testCanHandle()
 
   CPPUNIT_ASSERT(!handler.canHandle(requestGroup_.get()));
 
-  std::shared_ptr<TorrentAttribute> attrs(new TorrentAttribute());
-  dctx_->setAttribute(CTX_ATTR_BT, attrs);
+  dctx_->setAttribute(CTX_ATTR_BT, make_unique<TorrentAttribute>());
 
   CPPUNIT_ASSERT(handler.canHandle(requestGroup_.get()));
 
+  auto attrs = bittorrent::getTorrentAttrs(dctx_);
   // Only checks whether metadata is empty or not
   attrs->metadata = "metadata";
 
@@ -77,14 +77,16 @@ void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
     (infoHash, sizeof(infoHash), MessageDigest::sha1(),
      reinterpret_cast<const unsigned char*>(metadata.data()), metadata.size());
   dctx_->getFirstFileEntry()->setLength(metadata.size());
-  std::shared_ptr<TorrentAttribute> attrs(new TorrentAttribute());
-  attrs->infoHash = std::string(&infoHash[0], &infoHash[20]);
   std::vector<std::vector<std::string> > announceList;
   std::vector<std::string> announceTier;
   announceTier.push_back("http://tracker");
   announceList.push_back(announceTier);
-  attrs->announceList = announceList;
-  dctx_->setAttribute(CTX_ATTR_BT, attrs);
+  {
+    auto attrs = make_unique<TorrentAttribute>();
+    attrs->infoHash = std::string(&infoHash[0], &infoHash[20]);
+    attrs->announceList = announceList;
+    dctx_->setAttribute(CTX_ATTR_BT, std::move(attrs));
+  }
   requestGroup_->setDiskWriterFactory
     (std::shared_ptr<DiskWriterFactory>(new ByteArrayDiskWriterFactory()));
   requestGroup_->initPieceStorage();
@@ -99,8 +101,7 @@ void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
   CPPUNIT_ASSERT_EQUAL((size_t)1, results.size());
   std::shared_ptr<RequestGroup> newRg = results.front();
   std::shared_ptr<DownloadContext> newDctx = newRg->getDownloadContext();
-  std::shared_ptr<TorrentAttribute> newAttrs =
-    bittorrent::getTorrentAttrs(newDctx);
+  auto newAttrs = bittorrent::getTorrentAttrs(newDctx);
   CPPUNIT_ASSERT_EQUAL(bittorrent::getInfoHashString(dctx_),
                        bittorrent::getInfoHashString(newDctx));
   const std::vector<std::vector<std::string> >& newAnnounceList =

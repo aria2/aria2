@@ -599,8 +599,7 @@ void gatherProgressCommon
 #ifdef ENABLE_BITTORRENT
 // Helper function to store BitTorrent metadata from torrentAttrs.
 void gatherBitTorrentMetadata
-(const std::shared_ptr<Dict>& btDict,
- const std::shared_ptr<TorrentAttribute>& torrentAttrs);
+(const std::shared_ptr<Dict>& btDict, TorrentAttribute* torrentAttrs);
 #endif // ENABLE_BITTORRENT
 
 } // namespace rpc

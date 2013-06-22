@@ -66,13 +66,16 @@ void BtRegistryTest::testGetDownloadContext_infoHash()
 {
   BtRegistry btRegistry;
   addTwoDownloadContext(btRegistry);
-  std::shared_ptr<TorrentAttribute> attrs1(new TorrentAttribute());
-  attrs1->infoHash = "hash1";
-  std::shared_ptr<TorrentAttribute> attrs2(new TorrentAttribute());
-  attrs2->infoHash = "hash2";
-  btRegistry.getDownloadContext(1)->setAttribute(CTX_ATTR_BT, attrs1);
-  btRegistry.getDownloadContext(2)->setAttribute(CTX_ATTR_BT, attrs2);
-
+  {
+    auto attrs1 = make_unique<TorrentAttribute>();
+    attrs1->infoHash = "hash1";
+    auto attrs2 = make_unique<TorrentAttribute>();
+    attrs2->infoHash = "hash2";
+    btRegistry.getDownloadContext(1)->setAttribute(CTX_ATTR_BT,
+                                                   std::move(attrs1));
+    btRegistry.getDownloadContext(2)->setAttribute(CTX_ATTR_BT,
+                                                   std::move(attrs2));
+  }
   CPPUNIT_ASSERT(btRegistry.getDownloadContext("hash1"));
   CPPUNIT_ASSERT(btRegistry.getDownloadContext("hash1").get() ==
                  btRegistry.getDownloadContext(1).get());

@@ -98,7 +98,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
   if(!requestGroup->getDownloadContext()->hasAttribute(CTX_ATTR_BT)){
     return;
   }
-  std::shared_ptr<TorrentAttribute> torrentAttrs =
+  auto torrentAttrs =
     bittorrent::getTorrentAttrs(requestGroup->getDownloadContext());
   bool metadataGetMode = torrentAttrs->metadata.empty();
   const std::shared_ptr<BtRegistry>& btReg = e->getBtRegistry();

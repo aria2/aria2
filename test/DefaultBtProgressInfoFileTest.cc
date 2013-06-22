@@ -70,9 +70,11 @@ public:
     };
 
     dctx_.reset(new DownloadContext());
-    std::shared_ptr<TorrentAttribute> torrentAttrs(new TorrentAttribute());
-    torrentAttrs->infoHash = std::string(vbegin(infoHash), vend(infoHash));
-    dctx_->setAttribute(CTX_ATTR_BT, torrentAttrs);
+    {
+      auto torrentAttrs = make_unique<TorrentAttribute>();
+      torrentAttrs->infoHash = std::string(vbegin(infoHash), vend(infoHash));
+      dctx_->setAttribute(CTX_ATTR_BT, std::move(torrentAttrs));
+    }
     const std::shared_ptr<FileEntry> fileEntries[] = {
       std::shared_ptr<FileEntry>(new FileEntry("/path/to/file",totalLength,0))
     };

@@ -244,8 +244,7 @@ createBtMagnetRequestGroup
   rg->setFileAllocationEnabled(false);
   rg->setPreLocalFileCheckEnabled(false);
   bittorrent::loadMagnet(magnetLink, dctx);
-  std::shared_ptr<TorrentAttribute> torrentAttrs =
-    bittorrent::getTorrentAttrs(dctx);
+  auto torrentAttrs = bittorrent::getTorrentAttrs(dctx);
   bittorrent::adjustAnnounceUri(torrentAttrs, option);
   dctx->getFirstFileEntry()->setPath(torrentAttrs->name);
   rg->setDownloadContext(dctx);

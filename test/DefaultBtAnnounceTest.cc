@@ -61,9 +61,11 @@ public:
     std::string peerId = "-aria2-ultrafastdltl";
 
     dctx_.reset(new DownloadContext(pieceLength, totalLength));
-    std::shared_ptr<TorrentAttribute> torrentAttrs(new TorrentAttribute());
-    torrentAttrs->infoHash = std::string(vbegin(infoHash), vend(infoHash));
-    dctx_->setAttribute(CTX_ATTR_BT, torrentAttrs);
+    {
+      auto torrentAttrs = make_unique<TorrentAttribute>();
+      torrentAttrs->infoHash = std::string(vbegin(infoHash), vend(infoHash));
+      dctx_->setAttribute(CTX_ATTR_BT, std::move(torrentAttrs));
+    }
     dctx_->getNetStat().updateDownloadLength(pieceLength*5);
     dctx_->getNetStat().updateUploadLength(pieceLength*6);
     bittorrent::setStaticPeerId(peerId);

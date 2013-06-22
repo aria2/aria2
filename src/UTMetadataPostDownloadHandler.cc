@@ -59,7 +59,7 @@ bool UTMetadataPostDownloadHandler::Criteria::match
   const std::shared_ptr<DownloadContext>& dctx =
     requestGroup->getDownloadContext();
   if(dctx->hasAttribute(CTX_ATTR_BT)) {
-    std::shared_ptr<TorrentAttribute> attrs = bittorrent::getTorrentAttrs(dctx);
+    auto attrs = bittorrent::getTorrentAttrs(dctx);
     if(attrs->metadata.empty()) {
       return true;
     }
@@ -77,7 +77,7 @@ void UTMetadataPostDownloadHandler::getNextRequestGroups
 (std::vector<std::shared_ptr<RequestGroup> >& groups, RequestGroup* requestGroup)
 {
   const std::shared_ptr<DownloadContext>& dctx =requestGroup->getDownloadContext();
-  std::shared_ptr<TorrentAttribute> attrs = bittorrent::getTorrentAttrs(dctx);
+  auto attrs = bittorrent::getTorrentAttrs(dctx);
   std::string metadata =
     util::toString(requestGroup->getPieceStorage()->getDiskAdaptor());
   std::string torrent = bittorrent::metadata2Torrent(metadata, attrs);

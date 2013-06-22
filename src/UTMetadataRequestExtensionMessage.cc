@@ -76,7 +76,7 @@ std::string UTMetadataRequestExtensionMessage::toString() const
 
 void UTMetadataRequestExtensionMessage::doReceivedAction()
 {
-  std::shared_ptr<TorrentAttribute> attrs = bittorrent::getTorrentAttrs(dctx_);
+  auto attrs = bittorrent::getTorrentAttrs(dctx_);
   uint8_t id = peer_->getExtensionMessageID
     (ExtensionMessageRegistry::UT_METADATA);
   if(attrs->metadata.empty()) {

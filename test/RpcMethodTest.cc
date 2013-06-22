@@ -949,7 +949,7 @@ void RpcMethodTest::testGatherBitTorrentMetadata()
   CPPUNIT_ASSERT_EQUAL(std::string("http://tracker3"),
                        downcast<String>(downcast<List>(announceList->get(2))->get(0))->s());
   // Remove some keys
-  std::shared_ptr<TorrentAttribute> modBtAttrs = bittorrent::getTorrentAttrs(dctx);
+  auto modBtAttrs = bittorrent::getTorrentAttrs(dctx);
   modBtAttrs->comment.clear();
   modBtAttrs->creationDate = 0;
   modBtAttrs->mode = BT_FILE_MODE_NONE;

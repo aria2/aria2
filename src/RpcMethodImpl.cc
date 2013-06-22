@@ -697,8 +697,7 @@ void gatherProgressCommon
 
 #ifdef ENABLE_BITTORRENT
 void gatherBitTorrentMetadata
-(const std::shared_ptr<Dict>& btDict,
- const std::shared_ptr<TorrentAttribute>& torrentAttrs)
+(const std::shared_ptr<Dict>& btDict, TorrentAttribute* torrentAttrs)
 {
   if(!torrentAttrs->comment.empty()) {
     btDict->put(KEY_COMMENT, torrentAttrs->comment);
@@ -731,7 +730,7 @@ void gatherBitTorrentMetadata
 namespace {
 void gatherProgressBitTorrent
 (const std::shared_ptr<Dict>& entryDict,
- const std::shared_ptr<TorrentAttribute>& torrentAttrs,
+ TorrentAttribute* torrentAttrs,
  const std::shared_ptr<BtObject>& btObject,
  const std::vector<std::string>& keys)
 {
@@ -801,7 +800,7 @@ void gatherProgress
   gatherProgressCommon(entryDict, group, keys);
 #ifdef ENABLE_BITTORRENT
   if(group->getDownloadContext()->hasAttribute(CTX_ATTR_BT)) {
-    std::shared_ptr<TorrentAttribute> torrentAttrs =
+    auto torrentAttrs =
       bittorrent::getTorrentAttrs(group->getDownloadContext());
     const std::shared_ptr<BtObject>& btObject =
       e->getBtRegistry()->get(group->getGID());

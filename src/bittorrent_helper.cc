@@ -129,17 +129,16 @@ void extractPieceHash(const std::shared_ptr<DownloadContext>& ctx,
 
 namespace {
 void extractUrlList
-(const std::shared_ptr<TorrentAttribute>& torrent, std::vector<std::string>& uris,
+(TorrentAttribute* torrent, std::vector<std::string>& uris,
  const ValueBase* v)
 {
   class UrlListVisitor:public ValueBaseVisitor {
   private:
     std::vector<std::string>& uris_;
-    const std::shared_ptr<TorrentAttribute>& torrent_;
+    TorrentAttribute* torrent_;
   public:
     UrlListVisitor
-    (std::vector<std::string>& uris,
-     const std::shared_ptr<TorrentAttribute>& torrent):
+    (std::vector<std::string>& uris, TorrentAttribute* torrent):
       uris_(uris), torrent_(torrent) {}
 
     virtual void visit(const String& v)
@@ -195,7 +194,7 @@ OutputIterator createUri
 namespace {
 void extractFileEntries
 (const std::shared_ptr<DownloadContext>& ctx,
- const std::shared_ptr<TorrentAttribute>& torrent,
+ TorrentAttribute* torrent,
  const Dict* infoDict,
  const std::shared_ptr<Option>& option,
  const std::string& defaultName,
@@ -341,8 +340,7 @@ void extractFileEntries
 } // namespace
 
 namespace {
-void extractAnnounce
-(const std::shared_ptr<TorrentAttribute>& torrent, const Dict* rootDict)
+void extractAnnounce(TorrentAttribute* torrent, const Dict* rootDict)
 {
   const List* announceList = downcast<List>(rootDict->get(C_ANNOUNCE_LIST));
   if(announceList) {
@@ -376,8 +374,7 @@ void extractAnnounce
 } // namespace
 
 namespace {
-void extractNodes
-(const std::shared_ptr<TorrentAttribute>& torrent, const ValueBase* nodesListSrc)
+void extractNodes(TorrentAttribute* torrent, const ValueBase* nodesListSrc)
 {
   const List* nodesList = downcast<List>(nodesListSrc);
   if(nodesList) {
@@ -425,7 +422,7 @@ void processRootDictionary
     throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_INFO.c_str()),
                        error_code::BITTORRENT_PARSE_ERROR);
   }
-  std::shared_ptr<TorrentAttribute> torrent(new TorrentAttribute());
+  std::unique_ptr<TorrentAttribute> torrent(new TorrentAttribute());
 
   // retrieve infoHash
   std::string encodedInfoDict = bencode2::encode(infoDict);
@@ -478,22 +475,22 @@ void processRootDictionary
   // This implemantation obeys HTTP-Seeding specification:
   // see http://www.getright.com/seedtorrent.html
   std::vector<std::string> urlList;
-  extractUrlList(torrent, urlList, rootDict->get(C_URL_LIST).get());
+  extractUrlList(torrent.get(), urlList, rootDict->get(C_URL_LIST).get());
   urlList.insert(urlList.end(), uris.begin(), uris.end());
   std::sort(urlList.begin(), urlList.end());
   urlList.erase(std::unique(urlList.begin(), urlList.end()), urlList.end());
 
   // retrieve file entries
   extractFileEntries
-    (ctx, torrent, infoDict, option, defaultName, overrideName, urlList);
+    (ctx, torrent.get(), infoDict, option, defaultName, overrideName, urlList);
   if((ctx->getTotalLength()+pieceLength-1)/pieceLength != numPieces) {
     throw DL_ABORT_EX2("Too few/many piece hash.",
                        error_code::BITTORRENT_PARSE_ERROR);
   }
   // retrieve announce
-  extractAnnounce(torrent, rootDict);
+  extractAnnounce(torrent.get(), rootDict);
   // retrieve nodes
-  extractNodes(torrent, rootDict->get(C_NODES).get());
+  extractNodes(torrent.get(), rootDict->get(C_NODES).get());
 
   const Integer* creationDate = downcast<Integer>(rootDict->get(C_CREATION_DATE));
   if(creationDate) {
@@ -513,7 +510,7 @@ void processRootDictionary
     torrent->createdBy = util::encodeNonUtf8(createdBy->s());
   }
 
-  ctx->setAttribute(CTX_ATTR_BT, torrent);
+  ctx->setAttribute(CTX_ATTR_BT, std::move(torrent));
 }
 } // namespace
 
@@ -621,16 +618,15 @@ void loadFromMemory(const std::shared_ptr<ValueBase>& torrent,
      uris);
 }
 
-std::shared_ptr<TorrentAttribute> getTorrentAttrs
+TorrentAttribute* getTorrentAttrs
 (const std::shared_ptr<DownloadContext>& dctx)
 {
   return getTorrentAttrs(dctx.get());
 }
 
-std::shared_ptr<TorrentAttribute> getTorrentAttrs(DownloadContext* dctx)
+TorrentAttribute* getTorrentAttrs(DownloadContext* dctx)
 {
-  return std::static_pointer_cast<TorrentAttribute>
-    (dctx->getAttribute(CTX_ATTR_BT));
+  return static_cast<TorrentAttribute*>(dctx->getAttribute(CTX_ATTR_BT));
 }
 
 const unsigned char* getInfoHash
@@ -907,7 +903,7 @@ void assertID
   }
 }
 
-std::shared_ptr<TorrentAttribute> parseMagnet(const std::string& magnet)
+std::unique_ptr<TorrentAttribute> parseMagnet(const std::string& magnet)
 {
   std::shared_ptr<Dict> r = magnet::parse(magnet);
   if(!r) {
@@ -919,7 +915,7 @@ std::shared_ptr<TorrentAttribute> parseMagnet(const std::string& magnet)
     throw DL_ABORT_EX2("Missing xt parameter in Magnet URI.",
                        error_code::MAGNET_PARSE_ERROR);
   }
-  std::shared_ptr<TorrentAttribute> attrs(new TorrentAttribute());
+  auto attrs = make_unique<TorrentAttribute>();
   std::string infoHash;
   for(List::ValueType::const_iterator xtiter = xts->begin(),
         eoi = xts->end(); xtiter != eoi && infoHash.empty(); ++xtiter) {
@@ -969,12 +965,11 @@ std::shared_ptr<TorrentAttribute> parseMagnet(const std::string& magnet)
 void loadMagnet
 (const std::string& magnet, const std::shared_ptr<DownloadContext>& dctx)
 {
-  std::shared_ptr<TorrentAttribute> attrs = parseMagnet(magnet);
-  dctx->setAttribute(CTX_ATTR_BT, attrs);
+  dctx->setAttribute(CTX_ATTR_BT, parseMagnet(magnet));
 }
 
 std::string metadata2Torrent
-(const std::string& metadata, const std::shared_ptr<TorrentAttribute>& attrs)
+(const std::string& metadata, const TorrentAttribute* attrs)
 {
   std::string torrent = "d";
 
@@ -1001,7 +996,7 @@ std::string metadata2Torrent
   return torrent;
 }
 
-std::string torrent2Magnet(const std::shared_ptr<TorrentAttribute>& attrs)
+std::string torrent2Magnet(const TorrentAttribute* attrs)
 {
   std::string uri = "magnet:?";
   if(!attrs->infoHash.empty()) {
@@ -1038,8 +1033,7 @@ int getCompactLength(int family)
 }
 
 void removeAnnounceUri
-(const std::shared_ptr<TorrentAttribute>& attrs,
- const std::vector<std::string>& uris)
+(TorrentAttribute* attrs, const std::vector<std::string>& uris)
 {
   if(uris.empty()) {
     return;
@@ -1066,8 +1060,7 @@ void removeAnnounceUri
 }
 
 void addAnnounceUri
-(const std::shared_ptr<TorrentAttribute>& attrs,
- const std::vector<std::string>& uris)
+(TorrentAttribute* attrs, const std::vector<std::string>& uris)
 {
   for(std::vector<std::string>::const_iterator i = uris.begin(),
         eoi = uris.end(); i != eoi; ++i) {
@@ -1078,8 +1071,7 @@ void addAnnounceUri
 }
 
 void adjustAnnounceUri
-(const std::shared_ptr<TorrentAttribute>& attrs,
- const std::shared_ptr<Option>& option)
+(TorrentAttribute* attrs, const std::shared_ptr<Option>& option)
 {
   std::vector<std::string> excludeUris;
   std::vector<std::string> addUris;

@@ -109,7 +109,7 @@ void HandshakeExtensionMessage::doReceivedAction()
       peer_->setExtension(i, id);
     }
   }
-  std::shared_ptr<TorrentAttribute> attrs = bittorrent::getTorrentAttrs(dctx_);
+  auto attrs = bittorrent::getTorrentAttrs(dctx_);
   if(attrs->metadata.empty()) {
     if(!peer_->getExtensionMessageID(ExtensionMessageRegistry::UT_METADATA)) {
       // TODO In metadataGetMode, if peer don't support metadata

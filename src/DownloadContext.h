@@ -78,7 +78,7 @@ private:
 
   RequestGroup* ownerRequestGroup_;
 
-  std::vector<std::shared_ptr<ContextAttribute> > attrs_;
+  std::vector<std::unique_ptr<ContextAttribute> > attrs_;
 
   NetStat netStat_;
 
@@ -204,9 +204,9 @@ public:
   }
 
   void setAttribute
-  (ContextAttributeType key, const std::shared_ptr<ContextAttribute>& value);
+  (ContextAttributeType key, std::unique_ptr<ContextAttribute>&& value);
 
-  const std::shared_ptr<ContextAttribute>& getAttribute(ContextAttributeType key);
+  ContextAttribute* getAttribute(ContextAttributeType key);
 
   bool hasAttribute(ContextAttributeType key) const;
 

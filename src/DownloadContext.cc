@@ -150,19 +150,18 @@ void DownloadContext::setFileFilter(SegList<int>& sgl)
 }
 
 void DownloadContext::setAttribute
-(ContextAttributeType key, const std::shared_ptr<ContextAttribute>& value)
+(ContextAttributeType key, std::unique_ptr<ContextAttribute>&& value)
 {
   assert(key < MAX_CTX_ATTR);
-  attrs_[key] = value;
+  attrs_[key] = std::move(value);
 }
 
-const std::shared_ptr<ContextAttribute>& DownloadContext::getAttribute
-(ContextAttributeType key)
+ContextAttribute* DownloadContext::getAttribute(ContextAttributeType key)
 {
   assert(key < MAX_CTX_ATTR);
-  const std::shared_ptr<ContextAttribute>& attr = attrs_[key];
+  const std::unique_ptr<ContextAttribute>& attr = attrs_[key];
   if(attr) {
-    return attr;
+    return attr.get();
   } else {
     throw DL_ABORT_EX(fmt("No attribute named %s",
                           strContextAttributeType(key)));

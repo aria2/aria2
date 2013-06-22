@@ -33,9 +33,11 @@ public:
     dctx_.reset(new DownloadContext());
     unsigned char infoHash[20];
     memset(infoHash, 0, sizeof(infoHash));
-    std::shared_ptr<TorrentAttribute> torrentAttrs(new TorrentAttribute());
-    torrentAttrs->infoHash = std::string(vbegin(infoHash), vend(infoHash));
-    dctx_->setAttribute(CTX_ATTR_BT, torrentAttrs);
+    {
+      auto torrentAttrs = make_unique<TorrentAttribute>();
+      torrentAttrs->infoHash = std::string(vbegin(infoHash), vend(infoHash));
+      dctx_->setAttribute(CTX_ATTR_BT, std::move(torrentAttrs));
+    }
   }
 
   void testHandshake();

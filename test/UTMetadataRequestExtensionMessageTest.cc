@@ -42,7 +42,7 @@ public:
     dispatcher_.reset(new MockBtMessageDispatcher());
     dctx_.reset(new DownloadContext());
     std::shared_ptr<TorrentAttribute> attrs(new TorrentAttribute());
-    dctx_->setAttribute(CTX_ATTR_BT, attrs);
+    dctx_->setAttribute(CTX_ATTR_BT, make_unique<TorrentAttribute>());
     peer_.reset(new Peer("host", 6880));
     peer_->allocateSessionResource(0, 0);
     peer_->setExtension(ExtensionMessageRegistry::UT_METADATA, 1);
@@ -125,7 +125,7 @@ void UTMetadataRequestExtensionMessageTest::testDoReceivedAction_data()
   msg.setBtMessageDispatcher(dispatcher_.get());
 
   size_t metadataSize = METADATA_PIECE_SIZE*2;
-  std::shared_ptr<TorrentAttribute> attrs = bittorrent::getTorrentAttrs(dctx_);
+  auto attrs = bittorrent::getTorrentAttrs(dctx_);
   std::string first(METADATA_PIECE_SIZE, '0');
   std::string second(METADATA_PIECE_SIZE, '1');
   attrs->metadata = first+second;

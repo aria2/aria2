@@ -336,8 +336,7 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
       CPPUNIT_ASSERT_EQUAL(array[i]+"/aria2-test/aria2/src/aria2c", uris[i]);
     }
     CPPUNIT_ASSERT_EQUAL(5, group->getNumConcurrentCommand());
-    std::shared_ptr<TorrentAttribute> attrs =
-      bittorrent::getTorrentAttrs(group->getDownloadContext());
+    auto attrs = bittorrent::getTorrentAttrs(group->getDownloadContext());
     // http://tracker1 was deleted.
     CPPUNIT_ASSERT_EQUAL((size_t)2, attrs->announceList.size());
   }

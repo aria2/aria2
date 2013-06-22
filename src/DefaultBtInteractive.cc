@@ -195,8 +195,7 @@ void DefaultBtInteractive::addHandshakeExtendedMessageToQueue()
   m->setClientVersion("aria2/" PACKAGE_VERSION);
   m->setTCPPort(tcpPort_);
   m->setExtensions(extensionMessageRegistry_->getExtensions());
-  std::shared_ptr<TorrentAttribute> attrs =
-    bittorrent::getTorrentAttrs(downloadContext_);
+  auto attrs = bittorrent::getTorrentAttrs(downloadContext_);
   if(!attrs->metadata.empty()) {
     m->setMetadataSize(attrs->metadataSize);
   }

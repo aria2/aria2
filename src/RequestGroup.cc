@@ -287,8 +287,7 @@ void RequestGroup::createInitialCommand
 #ifdef ENABLE_BITTORRENT
   {
     if(downloadContext_->hasAttribute(CTX_ATTR_BT)) {
-      std::shared_ptr<TorrentAttribute> torrentAttrs =
-        bittorrent::getTorrentAttrs(downloadContext_);
+      auto torrentAttrs = bittorrent::getTorrentAttrs(downloadContext_);
       bool metadataGetMode = torrentAttrs->metadata.empty();
       if(option_->getAsBool(PREF_DRY_RUN)) {
         throw DOWNLOAD_FAILURE_EXCEPTION
@@ -1207,8 +1206,7 @@ void RequestGroup::reportDownloadFinished()
     int64_t completedLength = getCompletedLength();
     double shareRatio = completedLength == 0 ? 0.0 :
       1.0*stat.allTimeUploadLength/completedLength;
-    std::shared_ptr<TorrentAttribute> attrs =
-      bittorrent::getTorrentAttrs(downloadContext_);
+    auto attrs = bittorrent::getTorrentAttrs(downloadContext_);
     if(!attrs->metadata.empty()) {
       A2_LOG_NOTICE(fmt(MSG_SHARE_RATIO_REPORT,
                         shareRatio,

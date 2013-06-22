@@ -328,8 +328,7 @@ namespace {
 bool backupTrackerIsAvailable
 (const std::shared_ptr<DownloadContext>& context)
 {
-  std::shared_ptr<TorrentAttribute> torrentAttrs =
-    bittorrent::getTorrentAttrs(context);
+  auto torrentAttrs = bittorrent::getTorrentAttrs(context);
   if(torrentAttrs->announceList.size() >= 2) {
     return true;
   }
