@@ -125,9 +125,9 @@ void DefaultBtMessageDispatcher::doCancelSendingPieceAction
 
   std::vector<std::shared_ptr<BtMessage> > tempQueue
     (messageQueue_.begin(), messageQueue_.end());
-
-  forEachMemFunSH(tempQueue.begin(), tempQueue.end(),
-                  &BtMessage::onCancelSendingPieceEvent, event);
+  for(const auto& i : tempQueue) {
+    i->onCancelSendingPieceEvent(event);
+  }
 }
 
 // Cancel sending piece message to peer.
@@ -178,8 +178,9 @@ void DefaultBtMessageDispatcher::doAbortOutstandingRequestAction
 
   std::vector<std::shared_ptr<BtMessage> > tempQueue
     (messageQueue_.begin(), messageQueue_.end());
-  forEachMemFunSH(tempQueue.begin(), tempQueue.end(),
-                  &BtMessage::onAbortOutstandingRequestEvent, event);
+  for(const auto& i : tempQueue) {
+    i->onAbortOutstandingRequestEvent(event);
+  }
 }
 
 namespace {
@@ -247,8 +248,9 @@ void DefaultBtMessageDispatcher::doChokingAction()
 
   std::vector<std::shared_ptr<BtMessage> > tempQueue
     (messageQueue_.begin(), messageQueue_.end());
-  forEachMemFunSH(tempQueue.begin(), tempQueue.end(),
-                  &BtMessage::onChokingEvent, event);
+  for(const auto& i : tempQueue) {
+    i->onChokingEvent(event);
+  }
 }
 
 namespace {

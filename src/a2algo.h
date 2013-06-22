@@ -86,16 +86,6 @@ std::pair<InputIterator, size_t> max_sequence(InputIterator first,
   return std::pair<InputIterator, size_t>(maxfirst, maxlen);
 }
 
-template<typename InputIterator, typename R, typename C, typename A,
-         typename ACompat>
-static void forEachMemFunSH(InputIterator first, InputIterator last,
-                            R (C::*f)(A), ACompat arg)
-{
-  for(; first != last; ++first) {
-    ((*first).get()->*f)(arg);
-  }
-}
-
 template<typename InputIterator, typename T>
 InputIterator findSecond
 (InputIterator first, InputIterator last, const T& t)
