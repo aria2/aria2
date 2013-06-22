@@ -193,7 +193,8 @@ int OpenSSLTLSSession::tlsConnect(const std::string& hostname,
       handshakeErr = "certificate not found";
       return TLS_ERR_ERROR;
     }
-    auto_delete<X509*> certDeleter(peerCert, X509_free);
+    std::unique_ptr<X509, decltype(&X509_free)> certDeleter
+      (peerCert, X509_free);
     long verifyResult = SSL_get_verify_result(ssl_);
     if(verifyResult != X509_V_OK) {
       handshakeErr = X509_verify_cert_error_string(verifyResult);
@@ -206,8 +207,8 @@ int OpenSSLTLSSession::tlsConnect(const std::string& hostname,
     altNames = reinterpret_cast<GENERAL_NAMES*>
       (X509_get_ext_d2i(peerCert, NID_subject_alt_name, NULL, NULL));
     if(altNames) {
-      auto_delete<GENERAL_NAMES*> altNamesDeleter
-        (altNames, GENERAL_NAMES_free);
+      std::unique_ptr<GENERAL_NAMES, decltype(&GENERAL_NAMES_free)>
+        altNamesDeleter(altNames, GENERAL_NAMES_free);
       size_t n = sk_GENERAL_NAME_num(altNames);
       for(size_t i = 0; i < n; ++i) {
         const GENERAL_NAME* altName = sk_GENERAL_NAME_value(altNames, i);

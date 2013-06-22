@@ -108,26 +108,6 @@
 # endif // !SHUT_WR
 #endif // __MINGW32__
 
-#ifdef __MINGW32__
-template<typename T>
-class wsaapi_auto_delete {
-private:
-  T obj_;
-  void (WSAAPI*deleter_)(T);
-public:
-  wsaapi_auto_delete(T obj, void (WSAAPI*deleter)(T)):
-    obj_(obj), deleter_(deleter) {}
-
-  ~wsaapi_auto_delete()
-  {
-    deleter_(obj_);
-  }
-};
-# define WSAAPI_AUTO_DELETE wsaapi_auto_delete
-#else // !__MINGW32__
-# define WSAAPI_AUTO_DELETE auto_delete
-#endif // !__MINGW32__
-
 union sockaddr_union {
   sockaddr sa;
   sockaddr_storage storage;

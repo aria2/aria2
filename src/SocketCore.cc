@@ -250,7 +250,8 @@ static sock_t bindTo
     error = gai_strerror(s);
     return -1;
   }
-  WSAAPI_AUTO_DELETE<struct addrinfo*> resDeleter(res, freeaddrinfo);
+  std::unique_ptr<addrinfo, decltype(&freeaddrinfo)> resDeleter
+    (res, freeaddrinfo);
   struct addrinfo* rp;
   for(rp = res; rp; rp = rp->ai_next) {
     sock_t fd = bindInternal(rp->ai_family, rp->ai_socktype, rp->ai_protocol,
@@ -409,7 +410,8 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port,
   if(s) {
     throw DL_ABORT_EX(fmt(EX_RESOLVE_HOSTNAME, host.c_str(), gai_strerror(s)));
   }
-  WSAAPI_AUTO_DELETE<struct addrinfo*> resDeleter(res, freeaddrinfo);
+  std::unique_ptr<addrinfo, decltype(&freeaddrinfo)> resDeleter
+    (res, freeaddrinfo);
   struct addrinfo* rp;
   int errNum;
   for(rp = res; rp; rp = rp->ai_next) {
@@ -888,7 +890,8 @@ ssize_t SocketCore::writeData(const void* data, size_t len,
   if(s) {
     throw DL_ABORT_EX(fmt(EX_SOCKET_SEND, gai_strerror(s)));
   }
-  WSAAPI_AUTO_DELETE<struct addrinfo*> resDeleter(res, freeaddrinfo);
+  std::unique_ptr<addrinfo, decltype(&freeaddrinfo)> resDeleter
+    (res, freeaddrinfo);
   struct addrinfo* rp;
   ssize_t r = -1;
   int errNum = 0;
@@ -1005,7 +1008,8 @@ void getInterfaceAddress
     A2_LOG_INFO(fmt(MSG_INTERFACE_NOT_FOUND,
                     iface.c_str(), errorMsg(errNum).c_str()));
   } else {
-    auto_delete<ifaddrs*> ifaddrDeleter(ifaddr, freeifaddrs);
+    std::unique_ptr<ifaddrs, decltype(&freeifaddrs)> ifaddrDeleter
+      (ifaddr, freeifaddrs);
     for(ifaddrs* ifa = ifaddr; ifa; ifa = ifa->ifa_next) {
       if(!ifa->ifa_addr) {
         continue;
@@ -1044,7 +1048,8 @@ void getInterfaceAddress
     if(s) {
       A2_LOG_INFO(fmt(MSG_INTERFACE_NOT_FOUND, iface.c_str(), gai_strerror(s)));
     } else {
-      WSAAPI_AUTO_DELETE<addrinfo*> resDeleter(res, freeaddrinfo);
+      std::unique_ptr<addrinfo, decltype(&freeaddrinfo)> resDeleter
+        (res, freeaddrinfo);
       addrinfo* rp;
       for(rp = res; rp; rp = rp->ai_next) {
         // Try to bind socket with this address. If it fails, the
@@ -1156,7 +1161,8 @@ size_t getBinAddr(void* dest, const std::string& ip)
                      0, AI_NUMERICHOST, 0) != 0) {
     return len;
   }
-  WSAAPI_AUTO_DELETE<addrinfo*> resDeleter(res, freeaddrinfo);
+  std::unique_ptr<addrinfo, decltype(&freeaddrinfo)> resDeleter
+    (res, freeaddrinfo);
   for(addrinfo* rp = res; rp; rp = rp->ai_next) {
     sockaddr_union su;
     memcpy(&su, rp->ai_addr, rp->ai_addrlen);
@@ -1309,7 +1315,8 @@ void checkAddrconfig()
     A2_LOG_INFO(fmt("getifaddrs failed. Cause: %s", errorMsg(errNum).c_str()));
     return;
   }
-  auto_delete<ifaddrs*> ifaddrDeleter(ifaddr, freeifaddrs);
+  std::unique_ptr<ifaddrs, decltype(&freeifaddrs)> ifaddrDeleter
+    (ifaddr, freeifaddrs);
   char host[NI_MAXHOST];
   sockaddr_union ad;
   for(ifaddrs* ifa = ifaddr; ifa; ifa = ifa->ifa_next) {

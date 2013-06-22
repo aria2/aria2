@@ -209,7 +209,9 @@ int GnuTLSSession::tlsConnect(const std::string& hostname,
     if(rv_ != GNUTLS_E_SUCCESS) {
       return TLS_ERR_ERROR;
     }
-    auto_delete<gnutls_x509_crt_t> certDeleter(cert, gnutls_x509_crt_deinit);
+    std::unique_ptr<std::remove_pointer<gnutls_x509_crt_t>::type,
+                    decltype(&gnutls_x509_crt_deinit)> certDeleter
+      (cert, gnutls_x509_crt_deinit);
     rv_ = gnutls_x509_crt_import(cert, &peerCerts[0], GNUTLS_X509_FMT_DER);
     if(rv_ != GNUTLS_E_SUCCESS) {
       return TLS_ERR_ERROR;

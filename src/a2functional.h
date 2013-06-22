@@ -54,33 +54,6 @@ public:
   }
 };
 
-template<typename T>
-class auto_delete {
-private:
-  T obj_;
-  void (*deleter_)(T);
-public:
-  auto_delete(T obj, void (*deleter)(T)):obj_(obj), deleter_(deleter) {}
-
-  ~auto_delete()
-  {
-    deleter_(obj_);
-  }
-};
-
-template<typename T>
-class auto_delete_d {
-private:
-  T obj_;
-public:
-  auto_delete_d(T obj):obj_(obj) {}
-
-  ~auto_delete_d()
-  {
-    delete obj_;
-  }
-};
-
 template<typename T, typename R>
 class auto_delete_r {
 private:
