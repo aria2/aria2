@@ -49,7 +49,7 @@ class BtMessageFactory;
 class DefaultBtMessageReceiver : public BtMessageReceiver {
 private:
   bool handshakeSent_;
-  std::shared_ptr<DownloadContext> downloadContext_;
+  DownloadContext* downloadContext_;
   PeerConnection* peerConnection_;
   BtMessageDispatcher* dispatcher_;
   BtMessageFactory* messageFactory_;
@@ -65,7 +65,7 @@ public:
 
   virtual std::shared_ptr<BtMessage> receiveMessage();
 
-  void setDownloadContext(const std::shared_ptr<DownloadContext>& downloadContext);
+  void setDownloadContext(DownloadContext* downloadContext);
 
   void setPeerConnection(PeerConnection* peerConnection);
 

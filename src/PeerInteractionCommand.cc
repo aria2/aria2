@@ -204,11 +204,11 @@ PeerInteractionCommand::PeerInteractionCommand
   std::shared_ptr<BtMessageDispatcher> dispatcher(dispatcherPtr);
 
   DefaultBtMessageReceiver* receiverPtr(new DefaultBtMessageReceiver());
-  receiverPtr->setDownloadContext(requestGroup_->getDownloadContext());
+  std::shared_ptr<BtMessageReceiver> receiver(receiverPtr);
+  receiverPtr->setDownloadContext(requestGroup_->getDownloadContext().get());
   receiverPtr->setPeerConnection(peerConnection.get());
   receiverPtr->setDispatcher(dispatcherPtr);
   receiverPtr->setBtMessageFactory(factoryPtr);
-  std::shared_ptr<BtMessageReceiver> receiver(receiverPtr);
 
   DefaultBtRequestFactory* reqFactoryPtr(new DefaultBtRequestFactory());
   reqFactoryPtr->setPeer(getPeer());

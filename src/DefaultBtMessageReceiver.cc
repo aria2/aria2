@@ -55,6 +55,7 @@ namespace aria2 {
 
 DefaultBtMessageReceiver::DefaultBtMessageReceiver():
   handshakeSent_(false),
+  downloadContext_{0},
   peerConnection_(0),
   dispatcher_(0),
   messageFactory_(0)
@@ -132,7 +133,7 @@ std::shared_ptr<BtMessage> DefaultBtMessageReceiver::receiveMessage() {
 }
 
 void DefaultBtMessageReceiver::setDownloadContext
-(const std::shared_ptr<DownloadContext>& downloadContext)
+(DownloadContext* downloadContext)
 {
   downloadContext_ = downloadContext;
 }
