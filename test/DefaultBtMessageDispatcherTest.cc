@@ -155,9 +155,9 @@ public:
 
     btMessageDispatcher.reset(new DefaultBtMessageDispatcher());
     btMessageDispatcher->setPeer(peer);
-    btMessageDispatcher->setDownloadContext(dctx_);
-    btMessageDispatcher->setPieceStorage(pieceStorage);
-    btMessageDispatcher->setPeerStorage(peerStorage);
+    btMessageDispatcher->setDownloadContext(dctx_.get());
+    btMessageDispatcher->setPieceStorage(pieceStorage.get());
+    btMessageDispatcher->setPeerStorage(peerStorage.get());
     btMessageDispatcher->setBtMessageFactory(messageFactory_.get());
     btMessageDispatcher->setCuid(1);
     btMessageDispatcher->setRequestGroupMan(rgman_.get());
@@ -255,11 +255,11 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing() {
   CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(index));
   CPPUNIT_ASSERT_EQUAL((size_t)0, index);
 
-  std::shared_ptr<MockPieceStorage2> pieceStorage(new MockPieceStorage2());
+  auto pieceStorage = make_unique<MockPieceStorage2>();
   pieceStorage->setPiece(piece);
 
   btMessageDispatcher->setRequestTimeout(60);
-  btMessageDispatcher->setPieceStorage(pieceStorage);
+  btMessageDispatcher->setPieceStorage(pieceStorage.get());
   btMessageDispatcher->addOutstandingRequest(slot);
 
   btMessageDispatcher->checkRequestSlotAndDoNecessaryThing();
@@ -280,11 +280,11 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_tim
   CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(index));
   CPPUNIT_ASSERT_EQUAL((size_t)0, index);
 
-  std::shared_ptr<MockPieceStorage2> pieceStorage(new MockPieceStorage2());
+  auto pieceStorage = make_unique<MockPieceStorage2>();
   pieceStorage->setPiece(piece);
 
   btMessageDispatcher->setRequestTimeout(60);
-  btMessageDispatcher->setPieceStorage(pieceStorage);
+  btMessageDispatcher->setPieceStorage(pieceStorage.get());
   btMessageDispatcher->addOutstandingRequest(slot);
 
   btMessageDispatcher->checkRequestSlotAndDoNecessaryThing();
@@ -303,11 +303,11 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_com
 
   RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0, piece);
 
-  std::shared_ptr<MockPieceStorage2> pieceStorage(new MockPieceStorage2());
+  auto pieceStorage = make_unique<MockPieceStorage2>();
   pieceStorage->setPiece(piece);
 
   btMessageDispatcher->setRequestTimeout(60);
-  btMessageDispatcher->setPieceStorage(pieceStorage);
+  btMessageDispatcher->setPieceStorage(pieceStorage.get());
   btMessageDispatcher->addOutstandingRequest(slot);
 
   btMessageDispatcher->checkRequestSlotAndDoNecessaryThing();

@@ -192,15 +192,15 @@ PeerInteractionCommand::PeerInteractionCommand
   DefaultBtMessageDispatcher* dispatcherPtr(new DefaultBtMessageDispatcher());
   dispatcherPtr->setCuid(cuid);
   dispatcherPtr->setPeer(getPeer());
-  dispatcherPtr->setDownloadContext(requestGroup_->getDownloadContext());
-  dispatcherPtr->setPieceStorage(pieceStorage);
-  dispatcherPtr->setPeerStorage(peerStorage);
+  dispatcherPtr->setDownloadContext(requestGroup_->getDownloadContext().get());
+  dispatcherPtr->setPieceStorage(pieceStorage.get());
+  dispatcherPtr->setPeerStorage(peerStorage.get());
   dispatcherPtr->setRequestTimeout(getOption()->
                                    getAsInt(PREF_BT_REQUEST_TIMEOUT));
   dispatcherPtr->setBtMessageFactory(factoryPtr);
   dispatcherPtr->setRequestGroupMan
     (getDownloadEngine()->getRequestGroupMan().get());
-  dispatcherPtr->setPeerConnection(peerConnection);
+  dispatcherPtr->setPeerConnection(peerConnection.get());
   std::shared_ptr<BtMessageDispatcher> dispatcher(dispatcherPtr);
 
   DefaultBtMessageReceiver* receiverPtr(new DefaultBtMessageReceiver());

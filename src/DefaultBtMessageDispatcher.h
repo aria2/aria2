@@ -59,10 +59,10 @@ private:
   cuid_t cuid_;
   std::deque<std::shared_ptr<BtMessage> > messageQueue_;
   std::deque<RequestSlot> requestSlots_;
-  std::shared_ptr<DownloadContext> downloadContext_;
-  std::shared_ptr<PeerStorage> peerStorage_;
-  std::shared_ptr<PieceStorage> pieceStorage_;
-  std::shared_ptr<PeerConnection> peerConnection_;
+  DownloadContext* downloadContext_;
+  PeerStorage* peerStorage_;
+  PieceStorage* pieceStorage_;
+  PeerConnection* peerConnection_;
   BtMessageFactory* messageFactory_;
   std::shared_ptr<Peer> peer_;
   RequestGroupMan* requestGroupMan_;
@@ -129,11 +129,11 @@ public:
 
   void setPeer(const std::shared_ptr<Peer>& peer);
 
-  void setDownloadContext(const std::shared_ptr<DownloadContext>& downloadContext);
+  void setDownloadContext(DownloadContext* downloadContext);
 
-  void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage);
+  void setPieceStorage(PieceStorage* pieceStorage);
 
-  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
+  void setPeerStorage(PeerStorage* peerStorage);
 
   void setBtMessageFactory(BtMessageFactory* factory);
 
@@ -149,7 +149,7 @@ public:
     requestTimeout_ = requestTimeout;
   }
 
-  void setPeerConnection(const std::shared_ptr<PeerConnection>& peerConnection)
+  void setPeerConnection(PeerConnection* peerConnection)
   {
     peerConnection_ = peerConnection;
   }

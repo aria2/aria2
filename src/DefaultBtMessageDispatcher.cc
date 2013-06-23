@@ -62,6 +62,10 @@ namespace aria2 {
 
 DefaultBtMessageDispatcher::DefaultBtMessageDispatcher()
   : cuid_(0),
+    downloadContext_{0},
+    peerStorage_{0},
+    pieceStorage_{0},
+    peerConnection_{0},
     messageFactory_(0),
     requestGroupMan_(0),
     requestTimeout_(0)
@@ -188,12 +192,10 @@ class ProcessChokedRequestSlot {
 private:
   cuid_t cuid_;
   std::shared_ptr<Peer> peer_;
-  std::shared_ptr<PieceStorage> pieceStorage_;
+  PieceStorage* pieceStorage_;
 public:
   ProcessChokedRequestSlot
-  (cuid_t cuid,
-   const std::shared_ptr<Peer>& peer,
-   const std::shared_ptr<PieceStorage>& pieceStorage)
+  (cuid_t cuid, const std::shared_ptr<Peer>& peer, PieceStorage* pieceStorage)
     : cuid_(cuid),
       peer_(peer),
       pieceStorage_(pieceStorage)
@@ -258,14 +260,14 @@ class ProcessStaleRequestSlot {
 private:
   cuid_t cuid_;
   std::shared_ptr<Peer> peer_;
-  std::shared_ptr<PieceStorage> pieceStorage_;
+  PieceStorage* pieceStorage_;
   BtMessageDispatcher* messageDispatcher_;
   BtMessageFactory* messageFactory_;
   time_t requestTimeout_;
 public:
   ProcessStaleRequestSlot
   (cuid_t cuid, const std::shared_ptr<Peer>& peer,
-   const std::shared_ptr<PieceStorage>& pieceStorage,
+   PieceStorage* pieceStorage,
    BtMessageDispatcher* dispatcher,
    BtMessageFactory* factory,
    time_t requestTimeout)
@@ -305,13 +307,12 @@ public:
 namespace {
 class FindStaleRequestSlot {
 private:
-  std::shared_ptr<PieceStorage> pieceStorage_;
+  PieceStorage* pieceStorage_;
   time_t requestTimeout_;
 public:
-  FindStaleRequestSlot(const std::shared_ptr<PieceStorage>& pieceStorage,
-                       time_t requestTimeout):
-    pieceStorage_(pieceStorage),
-    requestTimeout_(requestTimeout) {}
+  FindStaleRequestSlot(PieceStorage* pieceStorage, time_t requestTimeout)
+    : pieceStorage_(pieceStorage),
+      requestTimeout_(requestTimeout) {}
 
   bool operator()(const RequestSlot& slot)
   {
@@ -419,19 +420,17 @@ void DefaultBtMessageDispatcher::setPeer(const std::shared_ptr<Peer>& peer)
 }
 
 void DefaultBtMessageDispatcher::setDownloadContext
-(const std::shared_ptr<DownloadContext>& downloadContext)
+(DownloadContext* downloadContext)
 {
   downloadContext_ = downloadContext;
 }
 
-void DefaultBtMessageDispatcher::setPieceStorage
-(const std::shared_ptr<PieceStorage>& pieceStorage)
+void DefaultBtMessageDispatcher::setPieceStorage(PieceStorage* pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }
 
-void DefaultBtMessageDispatcher::setPeerStorage
-(const std::shared_ptr<PeerStorage>& peerStorage)
+void DefaultBtMessageDispatcher::setPeerStorage(PeerStorage* peerStorage)
 {
   peerStorage_ = peerStorage;
 }
