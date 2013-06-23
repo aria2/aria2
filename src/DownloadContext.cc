@@ -150,7 +150,7 @@ void DownloadContext::setFileFilter(SegList<int>& sgl)
 }
 
 void DownloadContext::setAttribute
-(ContextAttributeType key, std::unique_ptr<ContextAttribute>&& value)
+(ContextAttributeType key, std::unique_ptr<ContextAttribute> value)
 {
   assert(key < MAX_CTX_ATTR);
   attrs_[key] = std::move(value);

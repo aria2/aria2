@@ -394,7 +394,7 @@ ParameterOptionHandler::ParameterOptionHandler
 (const Pref* pref,
  const char* description,
  const std::string& defaultValue,
- std::vector<std::string>&& validParamValues,
+ std::vector<std::string> validParamValues,
  char shortName)
   : AbstractOptionHandler(pref, description, defaultValue,
                           OptionHandler::REQ_ARG, shortName),

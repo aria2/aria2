@@ -181,7 +181,7 @@ public:
   ParameterOptionHandler(const Pref* pref,
                          const char* description,
                          const std::string& defaultValue,
-                         std::vector<std::string>&& validParamValues,
+                         std::vector<std::string> validParamValues,
                          char shortName = 0);
   virtual ~ParameterOptionHandler();
   virtual void parseArg(Option& option, const std::string& optarg) const;

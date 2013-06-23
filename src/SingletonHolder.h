@@ -55,7 +55,7 @@ public:
     return instance_.get();
   }
 
-  static void instance(std::unique_ptr<T>&& ptr)
+  static void instance(std::unique_ptr<T> ptr)
   {
     instance_ = std::move(ptr);
   }
