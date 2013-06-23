@@ -52,7 +52,7 @@ public:
 
   std::shared_ptr<DownloadEngine>
   newDownloadEngine
-  (Option* op, const std::vector<std::shared_ptr<RequestGroup> >& requestGroups);
+  (Option* op, std::vector<std::shared_ptr<RequestGroup> > requestGroups);
 };
 
 } // namespace aria2

@@ -81,7 +81,7 @@ public:
    * requestGroups.
    */
   MultiUrlRequestInfo
-  (std::vector<std::shared_ptr<RequestGroup> >& requestGroups,
+  (std::vector<std::shared_ptr<RequestGroup> > requestGroups,
    const std::shared_ptr<Option>& op,
    const std::shared_ptr<StatCalc>& statCalc,
    const std::shared_ptr<OutputFile>& summaryOut,

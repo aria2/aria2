@@ -120,7 +120,7 @@ private:
   void addRequestGroupIndex
   (const std::vector<std::shared_ptr<RequestGroup> >& groups);
 public:
-  RequestGroupMan(const std::vector<std::shared_ptr<RequestGroup> >& requestGroups,
+  RequestGroupMan(std::vector<std::shared_ptr<RequestGroup> > requestGroups,
                   int maxSimultaneousDownloads,
                   const Option* option);
 

@@ -96,7 +96,7 @@ void appendReservedGroup(RequestGroupList& list,
 } // namespace
 
 RequestGroupMan::RequestGroupMan
-(const std::vector<std::shared_ptr<RequestGroup> >& requestGroups,
+(std::vector<std::shared_ptr<RequestGroup> > requestGroups,
  int maxSimultaneousDownloads,
  const Option* option)
   : maxSimultaneousDownloads_(maxSimultaneousDownloads),

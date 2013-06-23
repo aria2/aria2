@@ -280,7 +280,8 @@ Context::Context(bool standalone,
      !uriListParser) {
     global::cout()->printf("%s\n", MSG_NO_FILES_TO_DOWNLOAD);
   } else {
-    reqinfo.reset(new MultiUrlRequestInfo(requestGroups, op, getStatCalc(op),
+    reqinfo.reset(new MultiUrlRequestInfo(std::move(requestGroups),
+                                          op, getStatCalc(op),
                                           getSummaryOut(op),
                                           uriListParser));
   }

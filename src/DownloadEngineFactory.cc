@@ -86,7 +86,7 @@ DownloadEngineFactory::DownloadEngineFactory() {}
 
 std::shared_ptr<DownloadEngine>
 DownloadEngineFactory::newDownloadEngine
-(Option* op, const std::vector<std::shared_ptr<RequestGroup> >& requestGroups)
+(Option* op, std::vector<std::shared_ptr<RequestGroup> > requestGroups)
 {
   const size_t MAX_CONCURRENT_DOWNLOADS =
     op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS);
@@ -149,9 +149,8 @@ DownloadEngineFactory::newDownloadEngine
   std::shared_ptr<DownloadEngine> e(new DownloadEngine(eventPoll));
   e->setOption(op);
 
-  std::shared_ptr<RequestGroupMan>
-    requestGroupMan(new RequestGroupMan(requestGroups, MAX_CONCURRENT_DOWNLOADS,
-                                        op));
+  auto requestGroupMan = std::make_shared<RequestGroupMan>
+    (std::move(requestGroups), MAX_CONCURRENT_DOWNLOADS, op);
   requestGroupMan->initWrDiskCache();
   e->setRequestGroupMan(requestGroupMan);
   e->setFileAllocationMan

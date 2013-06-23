@@ -104,12 +104,13 @@ void handler(int signal) {
 } // namespace
 
 MultiUrlRequestInfo::MultiUrlRequestInfo
-(std::vector<std::shared_ptr<RequestGroup> >& requestGroups,
+(std::vector<std::shared_ptr<RequestGroup> > requestGroups,
  const std::shared_ptr<Option>& op,
  const std::shared_ptr<StatCalc>& statCalc,
  const std::shared_ptr<OutputFile>& summaryOut,
  const std::shared_ptr<UriListParser>& uriListParser)
-  : option_(op),
+  : requestGroups_(std::move(requestGroups)),
+    option_(op),
     statCalc_(statCalc),
     summaryOut_(summaryOut),
     uriListParser_(uriListParser),
@@ -120,7 +121,6 @@ MultiUrlRequestInfo::MultiUrlRequestInfo
 #else // !HAVE_SIGACTION
   mask_ = 0;
 #endif // !HAVE_SIGACTION
-  requestGroups_.swap(requestGroups);
 }
 
 MultiUrlRequestInfo::~MultiUrlRequestInfo() {}
@@ -160,10 +160,9 @@ int MultiUrlRequestInfo::prepare()
     }
 #endif // ENABLE_SSL
 
+    // RequestGroups will be transferred to DownloadEngine
     e_ = DownloadEngineFactory().newDownloadEngine(option_.get(),
-                                                   requestGroups_);
-    // Avoid keeping RequestGroups alive longer than necessary
-    requestGroups_.clear();
+                                                   std::move(requestGroups_));
 
 #ifdef ENABLE_WEBSOCKET
     if(option_->getAsBool(PREF_ENABLE_RPC)) {
