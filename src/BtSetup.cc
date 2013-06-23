@@ -156,27 +156,26 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
     }
   }
   if(!metadataGetMode) {
-    std::shared_ptr<UnionSeedCriteria> unionCri(new UnionSeedCriteria());
+    auto unionCri = make_unique<UnionSeedCriteria>();
     if(option->defined(PREF_SEED_TIME)) {
-      std::shared_ptr<SeedCriteria> cri
-        (new TimeSeedCriteria(option->getAsInt(PREF_SEED_TIME)*60));
-      unionCri->addSeedCriteria(cri);
+      unionCri->addSeedCriteria(make_unique<TimeSeedCriteria>
+                                (option->getAsInt(PREF_SEED_TIME)*60));
     }
     {
       double ratio = option->getAsDouble(PREF_SEED_RATIO);
       if(ratio > 0.0) {
-        std::shared_ptr<ShareRatioSeedCriteria> cri
-          (new ShareRatioSeedCriteria(option->getAsDouble(PREF_SEED_RATIO),
-                                      requestGroup->getDownloadContext()));
+        auto cri = make_unique<ShareRatioSeedCriteria>
+          (option->getAsDouble(PREF_SEED_RATIO),
+           requestGroup->getDownloadContext());
         cri->setPieceStorage(pieceStorage);
         cri->setBtRuntime(btRuntime);
 
-        unionCri->addSeedCriteria(cri);
+        unionCri->addSeedCriteria(std::move(cri));
       }
     }
     if(!unionCri->getSeedCriterion().empty()) {
       auto c = make_unique<SeedCheckCommand>
-        (e->newCUID(), requestGroup, e, unionCri);
+        (e->newCUID(), requestGroup, e, std::move(unionCri));
       c->setPieceStorage(pieceStorage);
       c->setBtRuntime(btRuntime);
       commands.push_back(std::move(c));

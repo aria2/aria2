@@ -44,7 +44,7 @@ namespace aria2 {
 
 class UnionSeedCriteria : public SeedCriteria {
 private:
-  std::vector<std::shared_ptr<SeedCriteria> > criterion_;
+  std::vector<std::unique_ptr<SeedCriteria>> criterion_;
 public:
   UnionSeedCriteria();
   virtual ~UnionSeedCriteria();
@@ -53,9 +53,9 @@ public:
 
   virtual bool evaluate();
 
-  void addSeedCriteria(const std::shared_ptr<SeedCriteria>& cri);
+  void addSeedCriteria(std::unique_ptr<SeedCriteria> cri);
 
-  const std::vector<std::shared_ptr<SeedCriteria> >& getSeedCriterion() const
+  const std::vector<std::unique_ptr<SeedCriteria>>& getSeedCriterion() const
   {
     return criterion_;
   }

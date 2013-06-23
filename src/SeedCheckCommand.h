@@ -54,19 +54,17 @@ private:
   DownloadEngine* e_;
   std::shared_ptr<PieceStorage> pieceStorage_;
   std::shared_ptr<BtRuntime> btRuntime_;
-  std::shared_ptr<SeedCriteria> seedCriteria_;
+  std::unique_ptr<SeedCriteria> seedCriteria_;
   bool checkStarted_;
 public:
   SeedCheckCommand(cuid_t cuid,
                    RequestGroup* requestGroup,
                    DownloadEngine* e,
-                   const std::shared_ptr<SeedCriteria>& seedCriteria);
+                   std::unique_ptr<SeedCriteria> seedCriteria);
 
   virtual ~SeedCheckCommand();
 
   virtual bool execute();
-
-  void setSeedCriteria(const std::shared_ptr<SeedCriteria>& seedCriteria);
 
   void setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime);
 

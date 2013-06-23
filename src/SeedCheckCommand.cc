@@ -49,11 +49,11 @@ SeedCheckCommand::SeedCheckCommand
 (cuid_t cuid,
  RequestGroup* requestGroup,
  DownloadEngine* e,
- const std::shared_ptr<SeedCriteria>& seedCriteria)
+ std::unique_ptr<SeedCriteria> seedCriteria)
   : Command(cuid),
     requestGroup_(requestGroup),
     e_(e),
-    seedCriteria_(seedCriteria),
+    seedCriteria_(std::move(seedCriteria)),
     checkStarted_(false)
 {
   setStatusRealtime();
@@ -86,12 +86,6 @@ bool SeedCheckCommand::execute() {
   }
   e_->addCommand(std::unique_ptr<Command>(this));
   return false;
-}
-
-void SeedCheckCommand::setSeedCriteria
-(const std::shared_ptr<SeedCriteria>& seedCriteria)
-{
-  seedCriteria_ = seedCriteria;
 }
 
 void SeedCheckCommand::setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime)
