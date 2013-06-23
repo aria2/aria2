@@ -210,26 +210,27 @@ const std::string& HttpServer::getRequestPath() const
   return lastRequestHeader_->getRequestPath();
 }
 
-void HttpServer::feedResponse(std::string& text, const std::string& contentType)
+void HttpServer::feedResponse(std::string text,
+                              const std::string& contentType)
 {
-  feedResponse(200, "", text, contentType);
+  feedResponse(200, "", std::move(text), contentType);
 }
 
 void HttpServer::feedResponse(int status,
                               const std::string& headers,
-                              const std::string& text,
+                              std::string text,
                               const std::string& contentType)
 {
   std::string httpDate = Time().toHTTPDate();
-  std::string header= fmt("HTTP/1.1 %s\r\n"
-                          "Date: %s\r\n"
-                          "Content-Length: %lu\r\n"
-                          "Expires: %s\r\n"
-                          "Cache-Control: no-cache\r\n",
-                          getStatusString(status),
-                          httpDate.c_str(),
-                          static_cast<unsigned long>(text.size()),
-                          httpDate.c_str());
+  std::string header = fmt("HTTP/1.1 %s\r\n"
+                           "Date: %s\r\n"
+                           "Content-Length: %lu\r\n"
+                           "Expires: %s\r\n"
+                           "Cache-Control: no-cache\r\n",
+                           getStatusString(status),
+                           httpDate.c_str(),
+                           static_cast<unsigned long>(text.size()),
+                           httpDate.c_str());
   if(!contentType.empty()) {
     header += "Content-Type: ";
     header += contentType;
@@ -249,8 +250,8 @@ void HttpServer::feedResponse(int status,
   header += headers;
   header += "\r\n";
   A2_LOG_DEBUG(fmt("HTTP Server sends response:\n%s", header.c_str()));
-  socketBuffer_.pushStr(header);
-  socketBuffer_.pushStr(text);
+  socketBuffer_.pushStr(std::move(header));
+  socketBuffer_.pushStr(std::move(text));
 }
 
 void HttpServer::feedUpgradeResponse(const std::string& protocol,
@@ -264,7 +265,7 @@ void HttpServer::feedUpgradeResponse(const std::string& protocol,
                           protocol.c_str(),
                           headers.c_str());
   A2_LOG_DEBUG(fmt("HTTP Server sends upgrade response:\n%s", header.c_str()));
-  socketBuffer_.pushStr(header);
+  socketBuffer_.pushStr(std::move(header));
 }
 
 ssize_t HttpServer::sendResponse()

@@ -111,7 +111,7 @@ public:
     return reqType_;
   }
 
-  void feedResponse(std::string& text, const std::string& contentType);
+  void feedResponse(std::string text, const std::string& contentType);
 
   // Feeds HTTP response with the status code |status| (e.g.,
   // 200). The |headers| is zero or more lines of HTTP header field
@@ -119,7 +119,7 @@ public:
   // body. The |contentType" is the content-type of the response body.
   void feedResponse(int status,
                     const std::string& headers = "",
-                    const std::string& text = "",
+                    std::string text = "",
                     const std::string& contentType = "");
 
   // Feeds "101 Switching Protocols" response. The |protocol| will

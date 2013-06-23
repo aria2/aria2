@@ -85,7 +85,7 @@ bool FtpConnection::sendUser()
     request += "\r\n";
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                     cuid_, "USER ********"));
-    socketBuffer_.pushStr(request);
+    socketBuffer_.pushStr(std::move(request));
   }
   socketBuffer_.send();
   return socketBuffer_.sendBufferIsEmpty();
@@ -99,7 +99,7 @@ bool FtpConnection::sendPass()
     request += "\r\n";
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                     cuid_, "PASS ********"));
-    socketBuffer_.pushStr(request);
+    socketBuffer_.pushStr(std::move(request));
   }
   socketBuffer_.send();
   return socketBuffer_.sendBufferIsEmpty();
@@ -113,7 +113,7 @@ bool FtpConnection::sendType()
     request += "\r\n";
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                     cuid_,request.c_str()));
-    socketBuffer_.pushStr(request);
+    socketBuffer_.pushStr(std::move(request));
   }
   socketBuffer_.send();
   return socketBuffer_.sendBufferIsEmpty();
@@ -125,7 +125,7 @@ bool FtpConnection::sendPwd()
     std::string request = "PWD\r\n";
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                     cuid_,request.c_str()));
-    socketBuffer_.pushStr(request);
+    socketBuffer_.pushStr(std::move(request));
   }
   socketBuffer_.send();
   return socketBuffer_.sendBufferIsEmpty();
@@ -139,7 +139,7 @@ bool FtpConnection::sendCwd(const std::string& dir)
     request += "\r\n";
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                     cuid_,request.c_str()));
-    socketBuffer_.pushStr(request);
+    socketBuffer_.pushStr(std::move(request));
   }
   socketBuffer_.send();
   return socketBuffer_.sendBufferIsEmpty();
@@ -154,7 +154,7 @@ bool FtpConnection::sendMdtm()
     request += "\r\n";
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                     cuid_, request.c_str()));
-    socketBuffer_.pushStr(request);
+    socketBuffer_.pushStr(std::move(request));
   }
   socketBuffer_.send();
   return socketBuffer_.sendBufferIsEmpty();
@@ -169,7 +169,7 @@ bool FtpConnection::sendSize()
     request += "\r\n";
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                     cuid_, request.c_str()));
-    socketBuffer_.pushStr(request);
+    socketBuffer_.pushStr(std::move(request));
   }
   socketBuffer_.send();
   return socketBuffer_.sendBufferIsEmpty();
@@ -181,7 +181,7 @@ bool FtpConnection::sendEpsv()
     std::string request("EPSV\r\n");
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                     cuid_, request.c_str()));
-    socketBuffer_.pushStr(request);
+    socketBuffer_.pushStr(std::move(request));
   }
   socketBuffer_.send();
   return socketBuffer_.sendBufferIsEmpty();
@@ -193,7 +193,7 @@ bool FtpConnection::sendPasv()
     std::string request("PASV\r\n");
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                     cuid_, request.c_str()));
-    socketBuffer_.pushStr(request);
+    socketBuffer_.pushStr(std::move(request));
   }
   socketBuffer_.send();
   return socketBuffer_.sendBufferIsEmpty();
@@ -223,7 +223,7 @@ bool FtpConnection::sendEprt(const std::shared_ptr<SocketCore>& serverSocket)
           addrinfo.first.c_str(),
           addrinfo.second);
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST, cuid_, request.c_str()));
-    socketBuffer_.pushStr(request);
+    socketBuffer_.pushStr(std::move(request));
   }
   socketBuffer_.send();
   return socketBuffer_.sendBufferIsEmpty();
@@ -243,7 +243,7 @@ bool FtpConnection::sendPort(const std::shared_ptr<SocketCore>& serverSocket)
                               addrinfo.second/256, addrinfo.second%256);
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                     cuid_, request.c_str()));
-    socketBuffer_.pushStr(request);
+    socketBuffer_.pushStr(std::move(request));
   }
   socketBuffer_.send();
   return socketBuffer_.sendBufferIsEmpty();
@@ -258,7 +258,7 @@ bool FtpConnection::sendRest(const std::shared_ptr<Segment>& segment)
           segment->getPositionToWrite() : static_cast<int64_t>(0LL));
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                     cuid_, request.c_str()));
-    socketBuffer_.pushStr(request);
+    socketBuffer_.pushStr(std::move(request));
   }
   socketBuffer_.send();
   return socketBuffer_.sendBufferIsEmpty();
@@ -273,7 +273,7 @@ bool FtpConnection::sendRetr()
     request += "\r\n";
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                     cuid_, request.c_str()));
-    socketBuffer_.pushStr(request);
+    socketBuffer_.pushStr(std::move(request));
   }
   socketBuffer_.send();
   return socketBuffer_.sendBufferIsEmpty();

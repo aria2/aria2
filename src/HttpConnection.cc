@@ -105,7 +105,7 @@ void HttpConnection::sendRequest(const std::shared_ptr<HttpRequest>& httpRequest
   A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                   cuid_,
                   eraseConfidentialInfo(request).c_str()));
-  socketBuffer_.pushStr(request);
+  socketBuffer_.pushStr(std::move(request));
   socketBuffer_.send();
   std::shared_ptr<HttpRequestEntry> entry(new HttpRequestEntry(httpRequest));
   outstandingHttpRequests_.push_back(entry);
@@ -118,7 +118,7 @@ void HttpConnection::sendProxyRequest
   A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                   cuid_,
                   eraseConfidentialInfo(request).c_str()));
-  socketBuffer_.pushStr(request);
+  socketBuffer_.pushStr(std::move(request));
   socketBuffer_.send();
   std::shared_ptr<HttpRequestEntry> entry(new HttpRequestEntry(httpRequest));
   outstandingHttpRequests_.push_back(entry);

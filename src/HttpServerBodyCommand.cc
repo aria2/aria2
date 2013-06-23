@@ -107,7 +107,7 @@ void HttpServerBodyCommand::sendJsonRpcResponse
   bool gzip = httpServer_->supportsGZip();
   std::string responseData = rpc::toJson(res, callback, gzip);
   if(res.code == 0) {
-    httpServer_->feedResponse(responseData,
+    httpServer_->feedResponse(std::move(responseData),
                               getJsonRpcContentType(!callback.empty()));
   } else {
     httpServer_->disableKeepAlive();
@@ -123,7 +123,7 @@ void HttpServerBodyCommand::sendJsonRpcResponse
       httpCode = 500;
     };
     httpServer_->feedResponse(httpCode, A2STR::NIL,
-                              responseData,
+                              std::move(responseData),
                               getJsonRpcContentType(!callback.empty()));
   }
   addHttpServerResponseCommand();
@@ -135,7 +135,7 @@ void HttpServerBodyCommand::sendJsonRpcBatchResponse
 {
   bool gzip = httpServer_->supportsGZip();
   std::string responseData = rpc::toJsonBatch(results, callback, gzip);
-  httpServer_->feedResponse(responseData,
+  httpServer_->feedResponse(std::move(responseData),
                             getJsonRpcContentType(!callback.empty()));
   addHttpServerResponseCommand();
 }
@@ -233,7 +233,7 @@ bool HttpServerBodyCommand::execute()
           rpc::RpcResponse res = method->execute(req, e_);
           bool gzip = httpServer_->supportsGZip();
           std::string responseData = rpc::toXml(res, gzip);
-          httpServer_->feedResponse(responseData, "text/xml");
+          httpServer_->feedResponse(std::move(responseData), "text/xml");
           addHttpServerResponseCommand();
 #else // !ENABLE_XML_RPC
           httpServer_->feedResponse(404);
