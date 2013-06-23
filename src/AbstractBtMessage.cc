@@ -68,8 +68,10 @@ void AbstractBtMessage::validate()
 }
 
 void
-AbstractBtMessage::setBtMessageValidator(const std::shared_ptr<BtMessageValidator>& validator) {
-  validator_ = validator;
+AbstractBtMessage::setBtMessageValidator
+(std::unique_ptr<BtMessageValidator> validator)
+{
+  validator_ = std::move(validator);
 }
 
 void AbstractBtMessage::setPieceStorage(PieceStorage* pieceStorage)

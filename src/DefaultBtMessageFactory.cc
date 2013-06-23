@@ -123,31 +123,27 @@ DefaultBtMessageFactory::createBtMessage
     case BtHaveMessage::ID:
       msg.reset(BtHaveMessage::create(data, dataLength));
       if(!metadataGetMode_) {
-        std::shared_ptr<BtMessageValidator> v
-          (new IndexBtMessageValidator(static_cast<BtHaveMessage*>(msg.get()),
-                                       downloadContext_->getNumPieces()));
-        msg->setBtMessageValidator(v);
+        msg->setBtMessageValidator(make_unique<IndexBtMessageValidator>
+                                   (static_cast<BtHaveMessage*>(msg.get()),
+                                    downloadContext_->getNumPieces()));
       }
       break;
     case BtBitfieldMessage::ID:
       msg.reset(BtBitfieldMessage::create(data, dataLength));
       if(!metadataGetMode_) {
-        std::shared_ptr<BtMessageValidator> v
-          (new BtBitfieldMessageValidator
-           (static_cast<BtBitfieldMessage*>(msg.get()),
-            downloadContext_->getNumPieces()));
-        msg->setBtMessageValidator(v);
+        msg->setBtMessageValidator(make_unique<BtBitfieldMessageValidator>
+                                   (static_cast<BtBitfieldMessage*>(msg.get()),
+                                    downloadContext_->getNumPieces()));
       }
       break;
     case BtRequestMessage::ID: {
       BtRequestMessage* m = BtRequestMessage::create(data, dataLength);
       if(!metadataGetMode_) {
-        std::shared_ptr<BtMessageValidator> validator
-          (new RangeBtMessageValidator
+        m->setBtMessageValidator
+          (make_unique<RangeBtMessageValidator>
            (m,
             downloadContext_->getNumPieces(),
             pieceStorage_->getPieceLength(m->getIndex())));
-        m->setBtMessageValidator(validator);
       }
       msg.reset(m);
       break;
@@ -155,12 +151,11 @@ DefaultBtMessageFactory::createBtMessage
     case BtCancelMessage::ID: {
       BtCancelMessage* m = BtCancelMessage::create(data, dataLength);
       if(!metadataGetMode_) {
-        std::shared_ptr<BtMessageValidator> validator
-          (new RangeBtMessageValidator
+        m->setBtMessageValidator
+          (make_unique<RangeBtMessageValidator>
            (m,
             downloadContext_->getNumPieces(),
             pieceStorage_->getPieceLength(m->getIndex())));
-        m->setBtMessageValidator(validator);
       }
       msg.reset(m);
       break;
@@ -168,12 +163,11 @@ DefaultBtMessageFactory::createBtMessage
     case BtPieceMessage::ID: {
       BtPieceMessage* m = BtPieceMessage::create(data, dataLength);
       if(!metadataGetMode_) {
-        std::shared_ptr<BtMessageValidator> validator
-          (new BtPieceMessageValidator
+        m->setBtMessageValidator
+          (make_unique<BtPieceMessageValidator>
            (m,
             downloadContext_->getNumPieces(),
             pieceStorage_->getPieceLength(m->getIndex())));
-        m->setBtMessageValidator(validator);
       }
       m->setDownloadContext(downloadContext_);
       m->setPeerStorage(peerStorage_);
@@ -189,12 +183,11 @@ DefaultBtMessageFactory::createBtMessage
     case BtRejectMessage::ID: {
       BtRejectMessage* m = BtRejectMessage::create(data, dataLength);
       if(!metadataGetMode_) {
-        std::shared_ptr<BtMessageValidator> validator
-          (new RangeBtMessageValidator
+        m->setBtMessageValidator
+          (make_unique<RangeBtMessageValidator>
            (m,
             downloadContext_->getNumPieces(),
             pieceStorage_->getPieceLength(m->getIndex())));
-        m->setBtMessageValidator(validator);
       }
       msg.reset(m);
       break;
@@ -203,9 +196,8 @@ DefaultBtMessageFactory::createBtMessage
       BtSuggestPieceMessage* m =
         BtSuggestPieceMessage::create(data, dataLength);
       if(!metadataGetMode_) {
-        std::shared_ptr<BtMessageValidator> validator
-          (new IndexBtMessageValidator(m, downloadContext_->getNumPieces()));
-        m->setBtMessageValidator(validator);
+        m->setBtMessageValidator(make_unique<IndexBtMessageValidator>
+                                 (m, downloadContext_->getNumPieces()));
       }
       msg.reset(m);
       break;
@@ -215,7 +207,8 @@ DefaultBtMessageFactory::createBtMessage
       if(!metadataGetMode_) {
         std::shared_ptr<BtMessageValidator> validator
           (new IndexBtMessageValidator(m, downloadContext_->getNumPieces()));
-        m->setBtMessageValidator(validator);
+        m->setBtMessageValidator(make_unique<IndexBtMessageValidator>
+                                 (m, downloadContext_->getNumPieces()));
       }
       msg.reset(m);
       break;
@@ -267,10 +260,9 @@ DefaultBtMessageFactory::createHandshakeMessage
 {
   std::shared_ptr<BtHandshakeMessage> msg =
     BtHandshakeMessage::create(data, dataLength);
-  std::shared_ptr<BtMessageValidator> validator
-    (new BtHandshakeMessageValidator
-     (msg.get(), bittorrent::getInfoHash(downloadContext_)));
-  msg->setBtMessageValidator(validator);
+  msg->setBtMessageValidator(make_unique<BtHandshakeMessageValidator>
+                             (msg.get(),
+                              bittorrent::getInfoHash(downloadContext_)));
   setCommonProperty(msg.get());
   return msg;
 }

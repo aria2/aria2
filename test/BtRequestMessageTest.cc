@@ -256,16 +256,14 @@ void BtRequestMessageTest::testToString() {
 void BtRequestMessageTest::testValidate() {
   BtRequestMessage msg(0, 0, 16*1024);
   msg.setBtMessageValidator
-    (std::shared_ptr<BtMessageValidator>
-     (new RangeBtMessageValidator(&msg, 1024, 256*1024)));
+    (make_unique<RangeBtMessageValidator>(&msg, 1024, 256*1024));
   msg.validate();
 }
 
 void BtRequestMessageTest::testValidate_lengthTooLong() {
   BtRequestMessage msg(0, 0, 16*1024+1);
   msg.setBtMessageValidator
-    (std::shared_ptr<BtMessageValidator>
-     (new RangeBtMessageValidator(&msg, 1024, 256*1024)));
+    (make_unique<RangeBtMessageValidator>(&msg, 1024, 256*1024));
   try {
     msg.validate();
     CPPUNIT_FAIL("exception must be thrown.");

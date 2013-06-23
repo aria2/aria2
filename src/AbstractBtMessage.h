@@ -68,7 +68,7 @@ private:
 
   PeerConnection* peerConnection_;
 
-  std::shared_ptr<BtMessageValidator> validator_;
+  std::unique_ptr<BtMessageValidator> validator_;
 
   bool metadataGetMode_;
 protected:
@@ -151,7 +151,7 @@ public:
 
   virtual void onChokingEvent(const BtChokingEvent& event) {}
 
-  void setBtMessageValidator(const std::shared_ptr<BtMessageValidator>& validator);
+  void setBtMessageValidator(std::unique_ptr<BtMessageValidator> validator);
 
   void setPieceStorage(PieceStorage* pieceStorage);
 
