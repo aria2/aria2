@@ -142,9 +142,8 @@ void HttpServerBodyCommand::sendJsonRpcBatchResponse
 
 void HttpServerBodyCommand::addHttpServerResponseCommand()
 {
-  Command* command =
-    new HttpServerResponseCommand(getCuid(), httpServer_, e_, socket_);
-  e_->addCommand(command);
+  e_->addCommand(make_unique<HttpServerResponseCommand>
+                 (getCuid(), httpServer_, e_, socket_));
   e_->setNoWait(true);
 }
 
@@ -309,7 +308,7 @@ bool HttpServerBodyCommand::execute()
         }
       } else {
         updateWriteCheck();
-        e_->addCommand(this);
+        e_->addCommand(std::unique_ptr<Command>(this));
         return false;
       }
     } else {
@@ -317,7 +316,7 @@ bool HttpServerBodyCommand::execute()
         A2_LOG_INFO("HTTP request body timeout.");
         return true;
       } else {
-        e_->addCommand(this);
+        e_->addCommand(std::unique_ptr<Command>(this));
         return false;
       }
     }

@@ -130,7 +130,7 @@ bool HttpRequestCommand::executeInternal() {
       if(!getSocket()->tlsConnect(getRequest()->getHost())) {
         setReadCheckSocketIf(getSocket(), getSocket()->wantRead());
         setWriteCheckSocketIf(getSocket(), getSocket()->wantWrite());
-        getDownloadEngine()->addCommand(this);
+        addCommandSelf();
         return false;
       }
     }
@@ -207,19 +207,19 @@ bool HttpRequestCommand::executeInternal() {
     httpConnection_->sendPendingData();
   }
   if(httpConnection_->sendBufferIsEmpty()) {
-    Command* command = new HttpResponseCommand(getCuid(),
-                                               getRequest(),
-                                               getFileEntry(),
-                                               getRequestGroup(),
-                                               httpConnection_,
-                                               getDownloadEngine(),
-                                               getSocket());
-    getDownloadEngine()->addCommand(command);
+    getDownloadEngine()->addCommand(make_unique<HttpResponseCommand>
+                                    (getCuid(),
+                                     getRequest(),
+                                     getFileEntry(),
+                                     getRequestGroup(),
+                                     httpConnection_,
+                                     getDownloadEngine(),
+                                     getSocket()));
     return true;
   } else {
     setReadCheckSocketIf(getSocket(), getSocket()->wantRead());
     setWriteCheckSocketIf(getSocket(), getSocket()->wantWrite());
-    getDownloadEngine()->addCommand(this);
+    addCommandSelf();
     return false;
   }
 }

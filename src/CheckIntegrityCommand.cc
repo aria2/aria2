@@ -74,25 +74,21 @@ bool CheckIntegrityCommand::executeInternal()
       A2_LOG_NOTICE
         (fmt(MSG_VERIFICATION_SUCCESSFUL,
              getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
-      std::vector<Command*>* commands = new std::vector<Command*>();
-      auto_delete_container<std::vector<Command*> > commandsDel(commands);
-      entry_->onDownloadFinished(*commands, getDownloadEngine());
-      getDownloadEngine()->addCommand(*commands);
-      commands->clear();
+      std::vector<std::unique_ptr<Command>> commands;
+      entry_->onDownloadFinished(commands, getDownloadEngine());
+      getDownloadEngine()->addCommand(std::move(commands));
     } else {
       A2_LOG_ERROR
         (fmt(MSG_VERIFICATION_FAILED,
              getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
-      std::vector<Command*>* commands = new std::vector<Command*>();
-      auto_delete_container<std::vector<Command*> > commandsDel(commands);
-      entry_->onDownloadIncomplete(*commands, getDownloadEngine());
-      getDownloadEngine()->addCommand(*commands);
-      commands->clear();
+      std::vector<std::unique_ptr<Command>> commands;
+      entry_->onDownloadIncomplete(commands, getDownloadEngine());
+      getDownloadEngine()->addCommand(std::move(commands));
     }
     getDownloadEngine()->setNoWait(true);
     return true;
   } else {
-    getDownloadEngine()->addCommand(this);
+    getDownloadEngine()->addCommand(std::unique_ptr<Command>(this));
     return false;
   }
 }

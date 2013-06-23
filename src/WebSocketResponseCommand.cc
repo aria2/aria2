@@ -60,11 +60,10 @@ void WebSocketResponseCommand::afterSend
 {
   std::shared_ptr<WebSocketSession> wsSession
     (new WebSocketSession(httpServer->getSocket(), getDownloadEngine()));
-  WebSocketInteractionCommand* command =
-    new WebSocketInteractionCommand(getCuid(), wsSession, e,
-                                    wsSession->getSocket());
-  wsSession->setCommand(command);
-  e->addCommand(command);
+  auto command = make_unique<WebSocketInteractionCommand>
+    (getCuid(), wsSession, e, wsSession->getSocket());
+  wsSession->setCommand(command.get());
+  e->addCommand(std::move(command));
 }
 
 } // namespace rpc

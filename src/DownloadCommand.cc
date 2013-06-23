@@ -143,7 +143,7 @@ void flushWrDiskCacheEntry(WrDiskCache* wrDiskCache,
 bool DownloadCommand::executeInternal() {
   if(getDownloadEngine()->getRequestGroupMan()->doesOverallDownloadSpeedExceed()
      || getRequestGroup()->doesDownloadSpeedExceed()) {
-    getDownloadEngine()->addCommand(this);
+    addCommandSelf();
     disableReadCheckSocket();
     return false;
   }
@@ -293,7 +293,7 @@ bool DownloadCommand::executeInternal() {
     checkLowestDownloadSpeed();
     setWriteCheckSocketIf(getSocket(), getSocket()->wantWrite());
     checkSocketRecvBuffer();
-    getDownloadEngine()->addCommand(this);
+    addCommandSelf();
     return false;
   }
 }
@@ -368,7 +368,7 @@ bool DownloadCommand::prepareForNextSegment() {
         return prepareForRetry(0);
       } else {
         checkSocketRecvBuffer();
-        getDownloadEngine()->addCommand(this);
+        addCommandSelf();
         return false;
       }
     } else {

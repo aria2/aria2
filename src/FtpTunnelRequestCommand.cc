@@ -38,6 +38,7 @@
 #include "SocketCore.h"
 #include "DownloadContext.h"
 #include "SocketRecvBuffer.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -56,9 +57,9 @@ FtpTunnelRequestCommand::FtpTunnelRequestCommand
 
 FtpTunnelRequestCommand::~FtpTunnelRequestCommand() {}
 
-Command* FtpTunnelRequestCommand::getNextCommand()
+std::unique_ptr<Command> FtpTunnelRequestCommand::getNextCommand()
 {
-  return new FtpTunnelResponseCommand
+  return make_unique<FtpTunnelResponseCommand>
     (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
      getHttpConnection(), getDownloadEngine(), getSocket());
 }

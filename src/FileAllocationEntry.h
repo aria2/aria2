@@ -52,7 +52,9 @@ class FileAllocationEntry : public RequestGroupEntry, public ProgressAwareEntry 
 private:
   std::shared_ptr<FileAllocationIterator> fileAllocationIterator_;
 public:
-  FileAllocationEntry(RequestGroup* requestGroup, Command* nextCommand = 0);
+  FileAllocationEntry(RequestGroup* requestGroup,
+                      std::unique_ptr<Command> nextCommand =
+                      std::unique_ptr<Command>());
 
   ~FileAllocationEntry();
 
@@ -64,8 +66,9 @@ public:
 
   void allocateChunk();
 
-  virtual void prepareForNextAction(std::vector<Command*>& commands,
-                                    DownloadEngine* e) = 0;
+  virtual void prepareForNextAction
+  (std::vector<std::unique_ptr<Command>>& commands,
+   DownloadEngine* e) = 0;
 };
 
 } // namespace aria2

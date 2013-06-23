@@ -58,7 +58,7 @@ protected:
   // use this address this time.  resolvedAddresses are all addresses
   // resolved.  proxyRequest is set if we are going to use proxy
   // server.
-  virtual Command* createNextCommand
+  virtual std::unique_ptr<Command> createNextCommand
   (const std::string& hostname, const std::string& addr, uint16_t port,
    const std::vector<std::string>& resolvedAddresses,
    const std::shared_ptr<Request>& proxyRequest) = 0;

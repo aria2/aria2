@@ -142,8 +142,7 @@ bool PeerReceiveHandshakeCommand::executeInternal()
       // that the added peer must be checked out.
       if(peerStorage->addPeer(getPeer()) &&
          peerStorage->checkoutPeer(getCuid())) {
-        PeerInteractionCommand* command =
-          new PeerInteractionCommand
+        getDownloadEngine()->addCommand(make_unique<PeerInteractionCommand>
           (getCuid(),
            downloadContext->getOwnerRequestGroup(),
            getPeer(),
@@ -153,8 +152,7 @@ bool PeerReceiveHandshakeCommand::executeInternal()
            peerStorage,
            getSocket(),
            PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE,
-           peerConnection_);
-        getDownloadEngine()->addCommand(command);
+           peerConnection_));
         A2_LOG_DEBUG(fmt(MSG_INCOMING_PEER_CONNECTION,
                          getCuid(),
                          getPeer()->usedBy()));
@@ -162,7 +160,7 @@ bool PeerReceiveHandshakeCommand::executeInternal()
     }
     return true;
   } else {
-    getDownloadEngine()->addCommand(this);
+    addCommandSelf();
     return false;
   }
 }

@@ -47,7 +47,7 @@
 
 namespace aria2 {
 
-Command*
+std::unique_ptr<Command>
 InitiateConnectionCommandFactory::createInitiateConnectionCommand
 (cuid_t cuid,
  const std::shared_ptr<Request>& req,
@@ -69,16 +69,16 @@ InitiateConnectionCommandFactory::createInitiateConnectionCommand
       req->setPipeliningHint(true);
     }
 
-    return
-      new HttpInitiateConnectionCommand(cuid, req, fileEntry, requestGroup, e);
+    return make_unique<HttpInitiateConnectionCommand>(cuid, req, fileEntry,
+                                                      requestGroup, e);
   } else if(req->getProtocol() == "ftp") {
     if(req->getFile().empty()) {
       throw DL_ABORT_EX
         (fmt("FTP URI %s doesn't contain file path.",
              req->getUri().c_str()));
     }
-    return
-      new FtpInitiateConnectionCommand(cuid, req, fileEntry, requestGroup, e);
+    return make_unique<FtpInitiateConnectionCommand>(cuid, req, fileEntry,
+                                                     requestGroup, e);
   } else {
     // these protocols are not supported yet
     throw DL_ABORT_EX

@@ -63,8 +63,8 @@ void HttpServerResponseCommand::afterSend
     A2_LOG_INFO(fmt("CUID#%" PRId64 " - Persist connection.",
                     getCuid()));
     e->addCommand
-      (new HttpServerCommand(getCuid(), httpServer, e,
-                             httpServer->getSocket()));
+      (make_unique<HttpServerCommand>(getCuid(), httpServer, e,
+                                      httpServer->getSocket()));
   }
 }
 

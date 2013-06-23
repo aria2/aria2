@@ -36,7 +36,9 @@
 #define D_DHT_SETUP_H
 
 #include "common.h"
+
 #include <vector>
+#include <memory>
 
 namespace aria2 {
 
@@ -49,7 +51,7 @@ public:
 
   ~DHTSetup();
 
-  void setup(std::vector<Command*>& commands, DownloadEngine* e, int family);
+  std::vector<std::unique_ptr<Command>> setup(DownloadEngine* e, int family);
 };
 
 } // namespace aria2

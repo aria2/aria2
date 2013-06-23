@@ -99,7 +99,7 @@ bool DHTEntryPointNameResolveCommand::execute()
           std::vector<std::string> res;
           int rv = resolveHostname(res, hostname);
           if(rv == 0) {
-            e_->addCommand(this);
+            e_->addCommand(std::unique_ptr<Command>(this));
             return false;
           } else {
             if(rv == 1) {

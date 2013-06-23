@@ -40,6 +40,7 @@
 #include <cerrno>
 #include <algorithm>
 #include <numeric>
+#include <iterator>
 
 #include "StatCalc.h"
 #include "RequestGroup.h"
@@ -107,40 +108,32 @@ DownloadEngine::DownloadEngine(const std::shared_ptr<EventPoll>& eventPoll)
   sessionId_.assign(&sessionId[0], & sessionId[sizeof(sessionId)]);
 }
 
-namespace {
-void cleanQueue(std::deque<Command*>& commands) {
-  std::for_each(commands.begin(), commands.end(), Deleter());
-  commands.clear();
-}
-} // namespace
-
-DownloadEngine::~DownloadEngine() {
-  cleanQueue(commands_);
-  cleanQueue(routineCommands_);
+DownloadEngine::~DownloadEngine()
+{
 #ifdef HAVE_ARES_ADDR_NODE
   setAsyncDNSServers(0);
 #endif // HAVE_ARES_ADDR_NODE
 }
 
 namespace {
-void executeCommand(std::deque<Command*>& commands,
+void executeCommand(std::deque<std::unique_ptr<Command>>& commands,
                     Command::STATUS statusFilter)
 {
   size_t max = commands.size();
   for(size_t i = 0; i < max; ++i) {
-    Command* com = commands.front();
+    std::unique_ptr<Command> com = std::move(commands.front());
     commands.pop_front();
     if(com->statusMatch(statusFilter)) {
       com->transitStatus();
       if(com->execute()) {
-        delete com;
-        com = 0;
+        com.reset();
+      } else {
+        com->clearIOEvents();
+        com.release();
       }
     } else {
-      commands.push_back(com);
-    }
-    if(com) {
       com->clearIOEvents();
+      commands.push_back(std::move(com));
     }
   }
 }
@@ -282,9 +275,9 @@ void DownloadEngine::setNoWait(bool b)
   noWait_ = b;
 }
 
-void DownloadEngine::addRoutineCommand(Command* command)
+void DownloadEngine::addRoutineCommand(std::unique_ptr<Command> command)
 {
-  routineCommands_.push_back(command);
+  routineCommands_.push_back(std::move(command));
 }
 
 void DownloadEngine::poolSocket(const std::string& key,
@@ -561,14 +554,17 @@ void DownloadEngine::setRefreshInterval(int64_t interval)
   refreshInterval_ = std::min(static_cast<int64_t>(999), interval);
 }
 
-void DownloadEngine::addCommand(const std::vector<Command*>& commands)
+void DownloadEngine::addCommand
+(std::vector<std::unique_ptr<Command>> commands)
 {
-  commands_.insert(commands_.end(), commands.begin(), commands.end());
+  commands_.insert(commands_.end(),
+                   std::make_move_iterator(std::begin(commands)),
+                   std::make_move_iterator(std::end(commands)));
 }
 
-void DownloadEngine::addCommand(Command* command)
+void DownloadEngine::addCommand(std::unique_ptr<Command> command)
 {
-  commands_.push_back(command);
+  commands_.push_back(std::move(command));
 }
 
 void DownloadEngine::setRequestGroupMan

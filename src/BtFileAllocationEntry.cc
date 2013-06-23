@@ -56,7 +56,7 @@ BtFileAllocationEntry::BtFileAllocationEntry(RequestGroup* requestGroup):
 BtFileAllocationEntry::~BtFileAllocationEntry() {}
 
 void BtFileAllocationEntry::prepareForNextAction
-(std::vector<Command*>& commands, DownloadEngine* e)
+(std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
 {
   BtSetup().setup(commands, getRequestGroup(), e,
                   getRequestGroup()->getOption().get());

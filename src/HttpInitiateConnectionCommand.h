@@ -68,7 +68,7 @@ namespace aria2 {
 // calling execute() returns true.
 class HttpInitiateConnectionCommand : public InitiateConnectionCommand {
 protected:
-  virtual Command* createNextCommand
+  virtual std::unique_ptr<Command> createNextCommand
   (const std::string& hostname, const std::string& addr, uint16_t port,
    const std::vector<std::string>& resolvedAddresses,
    const std::shared_ptr<Request>& proxyRequest);

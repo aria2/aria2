@@ -52,13 +52,13 @@ CheckIntegrityDispatcherCommand::CheckIntegrityDispatcherCommand
   setStatusRealtime();
 }
 
-Command* CheckIntegrityDispatcherCommand::createCommand
+std::unique_ptr<Command> CheckIntegrityDispatcherCommand::createCommand
 (const std::shared_ptr<CheckIntegrityEntry>& entry)
 {
   cuid_t newCUID = getDownloadEngine()->newCUID();
   A2_LOG_INFO(fmt("CUID#%" PRId64 " - Dispatching CheckIntegrityCommand CUID#%" PRId64 ".",
                   getCuid(), newCUID));
-  return new CheckIntegrityCommand
+  return make_unique<CheckIntegrityCommand>
     (newCUID, entry->getRequestGroup(), getDownloadEngine(), entry);
 }
 

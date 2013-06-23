@@ -88,7 +88,7 @@ bool AbstractProxyRequestCommand::executeInternal() {
     return true;
   } else {
     setWriteCheckSocket(getSocket());
-    getDownloadEngine()->addCommand(this);
+    addCommandSelf();
     return false;
   }
 }

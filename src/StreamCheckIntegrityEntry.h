@@ -43,15 +43,16 @@ class StreamCheckIntegrityEntry:public PieceHashCheckIntegrityEntry
 {
 public:
   StreamCheckIntegrityEntry(RequestGroup* requestGroup,
-                            Command* nextCommand = 0);
+                            std::unique_ptr<Command> nextCommand =
+                            std::unique_ptr<Command>());
 
   virtual ~StreamCheckIntegrityEntry();
 
-  virtual void onDownloadFinished(std::vector<Command*>& commands,
-                                  DownloadEngine* e);
+  virtual void onDownloadFinished
+  (std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e);
 
-  virtual void onDownloadIncomplete(std::vector<Command*>& commands,
-                                    DownloadEngine* e);
+  virtual void onDownloadIncomplete
+  (std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e);
 };
 
 } // namespace aria2

@@ -78,12 +78,13 @@ public:
       e_->setNoWait(true);
     }
 
-    e_->addRoutineCommand(this);
+    e_->addRoutineCommand(std::unique_ptr<Command>(this));
     return false;
   }
 
 protected:
-  virtual Command* createCommand(const std::shared_ptr<T>& entry) = 0;
+  virtual std::unique_ptr<Command> createCommand
+  (const std::shared_ptr<T>& entry) = 0;
 };
 
 } // namespace aria2

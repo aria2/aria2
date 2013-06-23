@@ -95,12 +95,10 @@ void HTTPAnnRequest::stop(DownloadEngine* e)
 bool HTTPAnnRequest::issue(DownloadEngine* e)
 {
   try {
-    std::vector<Command*>* commands = new std::vector<Command*>();
-    auto_delete_container<std::vector<Command*> > commandsDel(commands);
-    rg_->createInitialCommand(*commands, e);
-    e->addCommand(*commands);
+    std::vector<std::unique_ptr<Command>> commands;
+    rg_->createInitialCommand(commands, e);
+    e->addCommand(std::move(commands));
     e->setNoWait(true);
-    commands->clear();
     A2_LOG_DEBUG("added tracker request command");
     return true;
   } catch(RecoverableException& ex) {
@@ -162,9 +160,7 @@ void UDPAnnRequest::stop(DownloadEngine* e)
 bool UDPAnnRequest::issue(DownloadEngine* e)
 {
   if(req_) {
-    NameResolveCommand* command = new NameResolveCommand
-      (e->newCUID(), e, req_);
-    e->addCommand(command);
+    e->addCommand(make_unique<NameResolveCommand>(e->newCUID(), e, req_));
     e->setNoWait(true);
     return true;
   } else {
@@ -214,7 +210,7 @@ bool TrackerWatcherCommand::execute() {
     } else {
       trackerRequest_->stop(e_);
       e_->setRefreshInterval(0);
-      e_->addCommand(this);
+      e_->addCommand(std::unique_ptr<Command>(this));
       return false;
     }
   }
@@ -253,7 +249,7 @@ bool TrackerWatcherCommand::execute() {
       }
     }
   }
-  e_->addCommand(this);
+  e_->addCommand(std::unique_ptr<Command>(this));
   return false;
 }
 
@@ -269,12 +265,11 @@ void TrackerWatcherCommand::addConnection()
     if(!peer) {
       break;
     }
-    PeerInitiateConnectionCommand* command;
-    command = new PeerInitiateConnectionCommand(ncuid, requestGroup_, peer,
-                                                e_, btRuntime_);
+    auto command = make_unique<PeerInitiateConnectionCommand>
+      (ncuid, requestGroup_, peer, e_, btRuntime_);
     command->setPeerStorage(peerStorage_);
     command->setPieceStorage(pieceStorage_);
-    e_->addCommand(command);
+    e_->addCommand(std::move(command));
     A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - Adding new command CUID#%" PRId64 "",
                      getCuid(), peer->usedBy()));
   }

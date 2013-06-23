@@ -131,7 +131,7 @@ private:
   int64_t refreshInterval_;
   Timer lastRefresh_;
 
-  std::deque<Command*> routineCommands_;
+  std::deque<std::unique_ptr<Command>> routineCommands_;
 
   std::shared_ptr<CookieStorage> cookieStorage_;
 
@@ -167,7 +167,7 @@ private:
   std::multimap<std::string, SocketPoolEntry>::iterator
   findSocketPoolEntry(const std::string& key);
 
-  std::deque<Command*> commands_;
+  std::deque<std::unique_ptr<Command>> commands_;
   std::shared_ptr<RequestGroupMan> requestGroupMan_;
   std::shared_ptr<FileAllocationMan> fileAllocationMan_;
   std::shared_ptr<CheckIntegrityMan> checkIntegrityMan_;
@@ -200,9 +200,9 @@ public:
                                Command* command);
 #endif // ENABLE_ASYNC_DNS
 
-  void addCommand(const std::vector<Command*>& commands);
+  void addCommand(std::vector<std::unique_ptr<Command>> commands);
 
-  void addCommand(Command* command);
+  void addCommand(std::unique_ptr<Command> command);
 
   const std::shared_ptr<RequestGroupMan>& getRequestGroupMan() const
   {
@@ -253,7 +253,7 @@ public:
 
   void setNoWait(bool b);
 
-  void addRoutineCommand(Command* command);
+  void addRoutineCommand(std::unique_ptr<Command> command);
 
   void poolSocket(const std::string& ipaddr, uint16_t port,
                   const std::string& username,

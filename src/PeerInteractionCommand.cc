@@ -384,7 +384,7 @@ bool PeerInteractionCommand::executeInternal() {
   if(btInteractive_->countPendingMessage() > 0) {
     setNoCheck(true);
   }
-  getDownloadEngine()->addCommand(this);
+  addCommandSelf();
   return false;
 }
 
@@ -395,13 +395,11 @@ bool PeerInteractionCommand::prepareForNextPeer(time_t wait) {
     std::shared_ptr<Peer> peer = peerStorage_->checkoutPeer(ncuid);
     // sanity check
     if(peer) {
-      PeerInitiateConnectionCommand* command;
-      command = new PeerInitiateConnectionCommand(ncuid, requestGroup_, peer,
-                                                  getDownloadEngine(),
-                                                  btRuntime_);
+      auto command = make_unique<PeerInitiateConnectionCommand>
+        (ncuid, requestGroup_, peer, getDownloadEngine(), btRuntime_);
       command->setPeerStorage(peerStorage_);
       command->setPieceStorage(pieceStorage_);
-      getDownloadEngine()->addCommand(command);
+      getDownloadEngine()->addCommand(std::move(command));
     }
   }
   return true;

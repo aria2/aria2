@@ -57,11 +57,12 @@ HttpProxyResponseCommand::HttpProxyResponseCommand
 
 HttpProxyResponseCommand::~HttpProxyResponseCommand() {}
 
-Command* HttpProxyResponseCommand::getNextCommand()
+std::unique_ptr<Command> HttpProxyResponseCommand::getNextCommand()
 {
-  return new HttpRequestCommand(getCuid(), getRequest(), getFileEntry(),
-                                getRequestGroup(), getHttpConnection(),
-                                getDownloadEngine(), getSocket());
+  return make_unique<HttpRequestCommand>
+    (getCuid(), getRequest(), getFileEntry(),
+     getRequestGroup(), getHttpConnection(),
+     getDownloadEngine(), getSocket());
 }
 
 } // namespace aria2

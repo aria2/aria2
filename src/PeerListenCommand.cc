@@ -115,9 +115,8 @@ bool PeerListenCommand::execute() {
 
       std::shared_ptr<Peer> peer(new Peer(peerInfo.first, peerInfo.second, true));
       cuid_t cuid = e_->newCUID();
-      Command* command =
-        new ReceiverMSEHandshakeCommand(cuid, peer, e_, peerSocket);
-      e_->addCommand(command);
+      e_->addCommand(make_unique<ReceiverMSEHandshakeCommand>
+                     (cuid, peer, e_, peerSocket));
       A2_LOG_DEBUG(fmt("Accepted the connection from %s:%u.",
                        peer->getIPAddress().c_str(),
                        peer->getPort()));
@@ -129,7 +128,7 @@ bool PeerListenCommand::execute() {
                       ex);
     }
   }
-  e_->addCommand(this);
+  e_->addCommand(std::unique_ptr<Command>(this));
   return false;
 }
 

@@ -215,16 +215,18 @@ public:
   // Returns first bootstrap commands to initiate a download.
   // If this is HTTP/FTP download and file size is unknown, only 1 command
   // (usually, HttpInitiateConnection or FtpInitiateConnection) will be created.
-  void createInitialCommand(std::vector<Command*>& commands,
+  void createInitialCommand(std::vector<std::unique_ptr<Command>>& commands,
                             DownloadEngine* e);
 
-  void createNextCommandWithAdj(std::vector<Command*>& commands,
-                                DownloadEngine* e, int numAdj);
+  void createNextCommandWithAdj
+  (std::vector<std::unique_ptr<Command>>& commands,
+   DownloadEngine* e, int numAdj);
 
-  void createNextCommand(std::vector<Command*>& commands,
+  void createNextCommand(std::vector<std::unique_ptr<Command>>& commands,
                          DownloadEngine* e, int numCommand);
 
-  void createNextCommand(std::vector<Command*>& commands, DownloadEngine* e);
+  void createNextCommand(std::vector<std::unique_ptr<Command>>& commands,
+                         DownloadEngine* e);
 
   bool downloadFinished() const;
 
@@ -383,9 +385,10 @@ public:
 
   void clearPreDownloadHandler();
 
-  void processCheckIntegrityEntry(std::vector<Command*>& commands,
-                                  const std::shared_ptr<CheckIntegrityEntry>& entry,
-                                  DownloadEngine* e);
+  void processCheckIntegrityEntry
+  (std::vector<std::unique_ptr<Command>>& commands,
+   const std::shared_ptr<CheckIntegrityEntry>& entry,
+   DownloadEngine* e);
 
   // Initializes pieceStorage_ and segmentMan_.  We guarantee that
   // either both of pieceStorage_ and segmentMan_ are initialized or

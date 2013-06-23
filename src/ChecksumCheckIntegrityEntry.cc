@@ -44,8 +44,9 @@
 
 namespace aria2 {
 
-ChecksumCheckIntegrityEntry::ChecksumCheckIntegrityEntry(RequestGroup* requestGroup, Command* nextCommand):
-  CheckIntegrityEntry(requestGroup, nextCommand),
+ChecksumCheckIntegrityEntry::ChecksumCheckIntegrityEntry
+(RequestGroup* requestGroup, std::unique_ptr<Command> nextCommand):
+  CheckIntegrityEntry(requestGroup, std::move(nextCommand)),
   redownload_(false) {}
 
 ChecksumCheckIntegrityEntry::~ChecksumCheckIntegrityEntry() {}
@@ -68,12 +69,12 @@ void ChecksumCheckIntegrityEntry::initValidator()
 
 void
 ChecksumCheckIntegrityEntry::onDownloadFinished
-(std::vector<Command*>& commands, DownloadEngine* e)
+(std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
 {}
 
 void
 ChecksumCheckIntegrityEntry::onDownloadIncomplete
-(std::vector<Command*>& commands, DownloadEngine* e)
+(std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
 {
   if(redownload_) {
     std::shared_ptr<FileAllocationEntry> entry

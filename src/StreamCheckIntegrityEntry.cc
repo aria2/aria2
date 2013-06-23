@@ -42,15 +42,15 @@
 
 namespace aria2 {
 
-StreamCheckIntegrityEntry::StreamCheckIntegrityEntry(RequestGroup* requestGroup,
-                                                     Command* nextCommand):
-  PieceHashCheckIntegrityEntry(requestGroup, nextCommand)
+StreamCheckIntegrityEntry::StreamCheckIntegrityEntry
+(RequestGroup* requestGroup, std::unique_ptr<Command> nextCommand):
+  PieceHashCheckIntegrityEntry(requestGroup, std::move(nextCommand))
 {}
 
 StreamCheckIntegrityEntry::~StreamCheckIntegrityEntry() {}
 
 void StreamCheckIntegrityEntry::onDownloadIncomplete
-(std::vector<Command*>& commands, DownloadEngine* e)
+(std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
 {
   const std::shared_ptr<PieceStorage>& ps = getRequestGroup()->getPieceStorage();
   ps->onDownloadIncomplete();
@@ -63,7 +63,7 @@ void StreamCheckIntegrityEntry::onDownloadIncomplete
 }
 
 void StreamCheckIntegrityEntry::onDownloadFinished
-(std::vector<Command*>& commands, DownloadEngine* e)
+(std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
 {}
 
 } // namespace aria2

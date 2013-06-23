@@ -80,7 +80,7 @@ bool FillRequestGroupCommand::execute()
       return true;
     }
   }
-  e_->addRoutineCommand(this);
+  e_->addRoutineCommand(std::unique_ptr<Command>(this));
   return false;
 }
 

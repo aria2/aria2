@@ -49,15 +49,15 @@
 
 namespace aria2 {
 
-StreamFileAllocationEntry::StreamFileAllocationEntry(RequestGroup* requestGroup,
-                                                     Command* nextCommand):
-  FileAllocationEntry(requestGroup, nextCommand)
+StreamFileAllocationEntry::StreamFileAllocationEntry
+(RequestGroup* requestGroup, std::unique_ptr<Command> nextCommand):
+  FileAllocationEntry(requestGroup, std::move(nextCommand))
 {}
 
 StreamFileAllocationEntry::~StreamFileAllocationEntry() {}
 
 void StreamFileAllocationEntry::prepareForNextAction
-(std::vector<Command*>& commands,
+(std::vector<std::unique_ptr<Command>>& commands,
  DownloadEngine* e)
 {
   // For DownloadContext::resetDownloadStartTime(), see also

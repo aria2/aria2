@@ -84,7 +84,7 @@ bool SeedCheckCommand::execute() {
       btRuntime_->setHalt(true);
     }
   }
-  e_->addCommand(this);
+  e_->addCommand(std::unique_ptr<Command>(this));
   return false;
 }
 

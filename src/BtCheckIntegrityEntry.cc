@@ -49,7 +49,7 @@ BtCheckIntegrityEntry::BtCheckIntegrityEntry(RequestGroup* requestGroup):
 BtCheckIntegrityEntry::~BtCheckIntegrityEntry() {}
 
 void BtCheckIntegrityEntry::onDownloadIncomplete
-(std::vector<Command*>& commands, DownloadEngine* e)
+(std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
 {
   const std::shared_ptr<PieceStorage>& ps = getRequestGroup()->getPieceStorage();
   ps->onDownloadIncomplete();
@@ -69,7 +69,7 @@ void BtCheckIntegrityEntry::onDownloadIncomplete
 }
 
 void BtCheckIntegrityEntry::onDownloadFinished
-(std::vector<Command*>& commands, DownloadEngine* e)
+(std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
 {
   // TODO Currently,when all the checksums
   // are valid, then aira2 goes to seeding mode. Sometimes it is better

@@ -90,7 +90,7 @@ namespace aria2 {
 
 BtSetup::BtSetup() {}
 
-void BtSetup::setup(std::vector<Command*>& commands,
+void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
                     RequestGroup* requestGroup,
                     DownloadEngine* e,
                     const Option* option)
@@ -109,53 +109,50 @@ void BtSetup::setup(std::vector<Command*>& commands,
   const std::shared_ptr<BtAnnounce>& btAnnounce = btObject->btAnnounce;
   // commands
   {
-    TrackerWatcherCommand* c =
-      new TrackerWatcherCommand(e->newCUID(), requestGroup, e);
+    auto c = make_unique<TrackerWatcherCommand>(e->newCUID(), requestGroup, e);
     c->setPeerStorage(peerStorage);
     c->setPieceStorage(pieceStorage);
     c->setBtRuntime(btRuntime);
     c->setBtAnnounce(btAnnounce);
 
-    commands.push_back(c);
+    commands.push_back(std::move(c));
   }
   if(!metadataGetMode) {
-    PeerChokeCommand* c =
-      new PeerChokeCommand(e->newCUID(), e);
+    auto c = make_unique<PeerChokeCommand>(e->newCUID(), e);
     c->setPeerStorage(peerStorage);
     c->setBtRuntime(btRuntime);
 
-    commands.push_back(c);
+    commands.push_back(std::move(c));
   }
   {
-    ActivePeerConnectionCommand* c =
-      new ActivePeerConnectionCommand(e->newCUID(), requestGroup, e,
-                                      metadataGetMode?2:10);
+    auto c = make_unique<ActivePeerConnectionCommand>
+      (e->newCUID(), requestGroup, e, metadataGetMode?2:10);
     c->setBtRuntime(btRuntime);
     c->setPieceStorage(pieceStorage);
     c->setPeerStorage(peerStorage);
     c->setBtAnnounce(btAnnounce);
 
-    commands.push_back(c);
+    commands.push_back(std::move(c));
   }
 
   if(metadataGetMode || !torrentAttrs->privateTorrent) {
     if(DHTRegistry::isInitialized()) {
-      DHTGetPeersCommand* command =
-        new DHTGetPeersCommand(e->newCUID(), requestGroup, e);
+      auto command = make_unique<DHTGetPeersCommand>
+        (e->newCUID(), requestGroup, e);
       command->setTaskQueue(DHTRegistry::getData().taskQueue);
       command->setTaskFactory(DHTRegistry::getData().taskFactory);
       command->setBtRuntime(btRuntime);
       command->setPeerStorage(peerStorage);
-      commands.push_back(command);
+      commands.push_back(std::move(command));
     }
     if(DHTRegistry::isInitialized6()) {
-      DHTGetPeersCommand* command =
-        new DHTGetPeersCommand(e->newCUID(), requestGroup, e);
+      auto command = make_unique<DHTGetPeersCommand>
+        (e->newCUID(), requestGroup, e);
       command->setTaskQueue(DHTRegistry::getData6().taskQueue);
       command->setTaskFactory(DHTRegistry::getData6().taskFactory);
       command->setBtRuntime(btRuntime);
       command->setPeerStorage(peerStorage);
-      commands.push_back(command);
+      commands.push_back(std::move(command));
     }
   }
   if(!metadataGetMode) {
@@ -178,19 +175,19 @@ void BtSetup::setup(std::vector<Command*>& commands,
       }
     }
     if(!unionCri->getSeedCriterion().empty()) {
-      SeedCheckCommand* c =
-        new SeedCheckCommand(e->newCUID(), requestGroup, e, unionCri);
+      auto c = make_unique<SeedCheckCommand>
+        (e->newCUID(), requestGroup, e, unionCri);
       c->setPieceStorage(pieceStorage);
       c->setBtRuntime(btRuntime);
-      commands.push_back(c);
+      commands.push_back(std::move(c));
     }
   }
   if(btReg->getTcpPort() == 0) {
     static int families[] = { AF_INET, AF_INET6 };
     size_t familiesLength = e->getOption()->getAsBool(PREF_DISABLE_IPV6)?1:2;
     for(size_t i = 0; i < familiesLength; ++i) {
-      PeerListenCommand* command =
-        new PeerListenCommand(e->newCUID(), e, families[i]);
+      auto command = make_unique<PeerListenCommand>
+        (e->newCUID(), e, families[i]);
       bool ret;
       uint16_t port;
       if(btReg->getTcpPort()) {
@@ -207,9 +204,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
       if(ret) {
         btReg->setTcpPort(port);
         // Add command to DownloadEngine directly.
-        e->addCommand(command);
-      } else {
-        delete command;
+        e->addCommand(std::move(command));
       }
     }
     if(btReg->getTcpPort() == 0) {
@@ -252,9 +247,8 @@ void BtSetup::setup(std::vector<Command*>& commands,
                         " localAddr=%s",
                         LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT,
                         receiver->getLocalAddress().c_str()));
-        LpdReceiveMessageCommand* cmd =
-          new LpdReceiveMessageCommand(e->newCUID(), receiver, e);
-        e->addCommand(cmd);
+        e->addCommand(make_unique<LpdReceiveMessageCommand>
+                      (e->newCUID(), receiver, e));
       } else {
         A2_LOG_INFO("LpdMessageReceiver not initialized.");
       }
@@ -271,10 +265,10 @@ void BtSetup::setup(std::vector<Command*>& commands,
       if(dispatcher->init(btReg->getLpdMessageReceiver()->getLocalAddress(),
                           /*ttl*/1, /*loop*/1)) {
         A2_LOG_INFO("LpdMessageDispatcher initialized.");
-        LpdDispatchMessageCommand* cmd =
-          new LpdDispatchMessageCommand(e->newCUID(), dispatcher, e);
+        auto cmd = make_unique<LpdDispatchMessageCommand>
+          (e->newCUID(), dispatcher, e);
         cmd->setBtRuntime(btRuntime);
-        e->addCommand(cmd);
+        e->addCommand(std::move(cmd));
       } else {
         A2_LOG_INFO("LpdMessageDispatcher not initialized.");
       }
@@ -282,11 +276,11 @@ void BtSetup::setup(std::vector<Command*>& commands,
   }
   time_t btStopTimeout = option->getAsInt(PREF_BT_STOP_TIMEOUT);
   if(btStopTimeout > 0) {
-    BtStopDownloadCommand* stopDownloadCommand =
-      new BtStopDownloadCommand(e->newCUID(), requestGroup, e, btStopTimeout);
+    auto stopDownloadCommand = make_unique<BtStopDownloadCommand>
+      (e->newCUID(), requestGroup, e, btStopTimeout);
     stopDownloadCommand->setBtRuntime(btRuntime);
     stopDownloadCommand->setPieceStorage(pieceStorage);
-    commands.push_back(stopDownloadCommand);
+    commands.push_back(std::move(stopDownloadCommand));
   }
   btRuntime->setReady(true);
 }

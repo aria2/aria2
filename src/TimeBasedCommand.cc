@@ -64,9 +64,9 @@ bool TimeBasedCommand::execute()
     return true;
   }
   if(routineCommand_) {
-    e_->addRoutineCommand(this);
+    e_->addRoutineCommand(std::unique_ptr<Command>(this));
   } else {
-    e_->addCommand(this);
+    e_->addCommand(std::unique_ptr<Command>(this));
   }
   return false;
 }

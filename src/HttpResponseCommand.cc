@@ -158,7 +158,7 @@ bool HttpResponseCommand::executeInternal()
     // For socket->wantRead() == true, setReadCheckSocket(socket) is already
     // done in the constructor.
     setWriteCheckSocketIf(getSocket(), getSocket()->wantWrite());
-    getDownloadEngine()->addCommand(this);
+    addCommandSelf();
     return false;
   }
   // check HTTP status number
@@ -377,21 +377,17 @@ bool HttpResponseCommand::handleDefaultEncoding
   // we can't continue to use this socket because server sends all entity
   // body instead of a segment.
   // Therefore, we shutdown the socket here if pipelining is enabled.
-  DownloadCommand* command = 0;
   if(getRequest()->getMethod() == Request::METHOD_GET &&
      segment && segment->getPositionToWrite() == 0 &&
      !getRequest()->isPipeliningEnabled()) {
-    command = createHttpDownloadCommand
-      (httpResponse,
-       getTransferEncodingStreamFilter(httpResponse));
+    checkEntry->pushNextCommand
+      (createHttpDownloadCommand
+       (httpResponse,
+        getTransferEncodingStreamFilter(httpResponse)));
   } else {
     getSegmentMan()->cancelSegment(getCuid());
     getFileEntry()->poolRequest(getRequest());
   }
-  // After command is passed to prepareForNextAction(), it is managed
-  // by CheckIntegrityEntry.
-  checkEntry->pushNextCommand(command);
-  command = 0;
 
   prepareForNextAction(checkEntry);
 
@@ -505,7 +501,7 @@ bool HttpResponseCommand::skipResponseBody
   // We don't use Content-Encoding here because this response body is just
   // thrown away.
 
-  HttpSkipResponseCommand* command = new HttpSkipResponseCommand
+  auto command = make_unique<HttpSkipResponseCommand>
     (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
      httpConnection_, httpResponse,
      getDownloadEngine(), getSocket());
@@ -522,7 +518,7 @@ bool HttpResponseCommand::skipResponseBody
     getDownloadEngine()->setNoWait(true);
   }
 
-  getDownloadEngine()->addCommand(command);
+  getDownloadEngine()->addCommand(std::move(command));
   return true;
 }
 
@@ -544,16 +540,17 @@ bool decideFileAllocation
 }
 } // namespace
 
-HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
+std::unique_ptr<HttpDownloadCommand>
+HttpResponseCommand::createHttpDownloadCommand
 (const std::shared_ptr<HttpResponse>& httpResponse,
  const std::shared_ptr<StreamFilter>& filter)
 {
 
-  HttpDownloadCommand* command =
-    new HttpDownloadCommand(getCuid(), getRequest(), getFileEntry(),
-                            getRequestGroup(),
-                            httpResponse, httpConnection_,
-                            getDownloadEngine(), getSocket());
+  auto command = make_unique<HttpDownloadCommand>
+    (getCuid(), getRequest(), getFileEntry(),
+     getRequestGroup(),
+     httpResponse, httpConnection_,
+     getDownloadEngine(), getSocket());
   command->setStartupIdleTime(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME));
   command->setLowestDownloadSpeedLimit
     (getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));
@@ -563,9 +560,9 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
     getRequestGroup()->setFileAllocationEnabled(false);
   }
   getRequestGroup()->getURISelector()->tuneDownloadCommand
-    (getFileEntry()->getRemainingUris(), command);
+    (getFileEntry()->getRemainingUris(), command.get());
 
-  return command;
+  return std::move(command);
 }
 
 void HttpResponseCommand::poolConnection()

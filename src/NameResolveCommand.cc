@@ -95,7 +95,7 @@ bool NameResolveCommand::execute()
 #ifdef ENABLE_ASYNC_DNS
     if(e_->getOption()->getAsBool(PREF_ASYNC_DNS)) {
       if(resolveHostname(res, hostname) == 0) {
-        e_->addCommand(this);
+        e_->addCommand(std::unique_ptr<Command>(this));
         return false;
       }
     } else

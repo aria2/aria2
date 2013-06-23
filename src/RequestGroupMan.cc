@@ -438,11 +438,12 @@ void RequestGroupMan::configureRequestGroup
 }
 
 namespace {
-void createInitialCommand(const std::shared_ptr<RequestGroup>& requestGroup,
-                          std::vector<Command*>& commands,
-                          DownloadEngine* e)
+std::vector<std::unique_ptr<Command>> createInitialCommand
+(const std::shared_ptr<RequestGroup>& requestGroup, DownloadEngine* e)
 {
-  requestGroup->createInitialCommand(commands, e);
+  std::vector<std::unique_ptr<Command>> res;
+  requestGroup->createInitialCommand(res, e);
+  return res;
 }
 } // namespace
 
@@ -483,24 +484,21 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
     groupToAdd->dropPieceStorage();
     configureRequestGroup(groupToAdd);
     groupToAdd->setRequestGroupMan(this);
-    std::vector<Command*> commands;
     try {
-      createInitialCommand(groupToAdd, commands, e);
+      auto res = createInitialCommand(groupToAdd, e);
       ++count;
+      if(res.empty()) {
+        requestQueueCheck();
+      } else {
+        e->addCommand(std::move(res));
+      }
     } catch(RecoverableException& ex) {
       A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, ex);
       A2_LOG_DEBUG("Deleting temporal commands.");
-      std::for_each(commands.begin(), commands.end(), Deleter());
-      commands.clear();
-      A2_LOG_DEBUG("Commands deleted");
       groupToAdd->setLastErrorCode(ex.getErrorCode());
       // We add groupToAdd to e later in order to it is processed in
       // removeStoppedGroup().
-    }
-    if(commands.empty()) {
       requestQueueCheck();
-    } else {
-      e->addCommand(commands);
     }
     groupToAdd->setState(RequestGroup::STATE_ACTIVE);
     requestGroups_.push_back(groupToAdd->getGID(), groupToAdd);

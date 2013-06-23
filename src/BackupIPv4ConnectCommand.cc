@@ -133,7 +133,7 @@ bool BackupIPv4ConnectCommand::execute()
     retval = true;
   }
   if(!retval) {
-    e_->addCommand(this);
+    e_->addCommand(std::unique_ptr<Command>(this));
   }
   return retval;
 }

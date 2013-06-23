@@ -126,7 +126,7 @@ bool DHTGetPeersCommand::execute()
     task_.reset();
   }
 
-  e_->addCommand(this);
+  e_->addCommand(std::unique_ptr<Command>(this));
   return false;
 }
 

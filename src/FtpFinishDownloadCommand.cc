@@ -80,7 +80,7 @@ bool FtpFinishDownloadCommand::execute()
       getCheckPoint() = global::wallclock();
       int status = ftpConnection_->receiveResponse();
       if(status == 0) {
-        getDownloadEngine()->addCommand(this);
+        addCommandSelf();
         return false;
       }
       if(status == 226) {
@@ -97,7 +97,7 @@ bool FtpFinishDownloadCommand::execute()
       A2_LOG_INFO(fmt("CUID#%" PRId64 " - Timeout before receiving transfer complete.",
                       getCuid()));
     } else {
-      getDownloadEngine()->addCommand(this);
+      addCommandSelf();
       return false;
     }
   } catch(RecoverableException& e) {

@@ -36,7 +36,9 @@
 #define D_BT_SETUP_H
 
 #include "common.h"
+
 #include <vector>
+#include <memory>
 
 namespace aria2 {
 
@@ -49,7 +51,7 @@ class BtSetup {
 public:
   BtSetup();
 
-  void setup(std::vector<Command*>& commands,
+  void setup(std::vector<std::unique_ptr<Command>>& commands,
              RequestGroup* requestGroup,
              DownloadEngine* e,
              const Option* option);

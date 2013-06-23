@@ -67,7 +67,7 @@ bool AbstractProxyResponseCommand::executeInternal() {
   std::shared_ptr<HttpResponse> httpResponse = httpConnection_->receiveResponse();
   if(!httpResponse) {
     // the server has not responded our request yet.
-    getDownloadEngine()->addCommand(this);
+    addCommandSelf();
     return false;
   }
   if(httpResponse->getStatusCode() != 200) {

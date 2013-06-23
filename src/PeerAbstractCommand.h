@@ -93,6 +93,7 @@ protected:
   void disableWriteCheckSocket();
   void setNoCheck(bool check);
   void updateKeepAlive();
+  void addCommandSelf();
 public:
   PeerAbstractCommand(cuid_t cuid,
                       const std::shared_ptr<Peer>& peer,

@@ -64,7 +64,7 @@ public:
 
   virtual ~AbstractProxyResponseCommand();
 
-  virtual Command* getNextCommand() = 0;
+  virtual std::unique_ptr<Command> getNextCommand() = 0;
 };
 
 } // namespace aria2

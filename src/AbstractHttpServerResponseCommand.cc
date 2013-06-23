@@ -126,7 +126,7 @@ bool AbstractHttpServerResponseCommand::execute()
       return true;
     } else {
       updateReadWriteCheck();
-      e_->addCommand(this);
+      e_->addCommand(std::unique_ptr<Command>(this));
       return false;
     }
   }

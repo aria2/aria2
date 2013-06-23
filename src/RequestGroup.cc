@@ -277,7 +277,7 @@ std::shared_ptr<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
 }
 
 void RequestGroup::createInitialCommand
-(std::vector<Command*>& commands, DownloadEngine* e)
+(std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
 {
   // Start session timer here.  When file size becomes known, it will
   // be reset again in *FileAllocationEntry, because hash check and
@@ -369,15 +369,11 @@ void RequestGroup::createInitialCommand
            (!e->getOption()->getAsBool(PREF_DISABLE_IPV6) &&
             option_->getAsBool(PREF_ENABLE_DHT6))) {
           if(option_->getAsBool(PREF_ENABLE_DHT)) {
-            std::vector<Command*> dhtCommands;
-            DHTSetup().setup(dhtCommands, e, AF_INET);
-            e->addCommand(dhtCommands);
+            e->addCommand(DHTSetup().setup(e, AF_INET));
           }
           if(!e->getOption()->getAsBool(PREF_DISABLE_IPV6) &&
              option_->getAsBool(PREF_ENABLE_DHT6)) {
-            std::vector<Command*> dhtCommands;
-            DHTSetup().setup(dhtCommands, e, AF_INET6);
-            e->addCommand(dhtCommands);
+            e->addCommand(DHTSetup().setup(e, AF_INET6));
           }
         } else {
           A2_LOG_NOTICE(_("For BitTorrent Magnet URI, enabling DHT is strongly"
@@ -439,27 +435,23 @@ void RequestGroup::createInitialCommand
           (!e->getOption()->getAsBool(PREF_DISABLE_IPV6) &&
            option_->getAsBool(PREF_ENABLE_DHT6)))) {
         if(option_->getAsBool(PREF_ENABLE_DHT)) {
-          std::vector<Command*> dhtCommands;
-          DHTSetup().setup(dhtCommands, e, AF_INET);
-          e->addCommand(dhtCommands);
+          e->addCommand(DHTSetup().setup(e, AF_INET));
         }
         if(!e->getOption()->getAsBool(PREF_DISABLE_IPV6) &&
            option_->getAsBool(PREF_ENABLE_DHT6)) {
-          std::vector<Command*> dhtCommands;
-          DHTSetup().setup(dhtCommands, e, AF_INET6);
-          e->addCommand(dhtCommands);
+          e->addCommand(DHTSetup().setup(e, AF_INET6));
         }
         const std::vector<std::pair<std::string, uint16_t> >& nodes =
           torrentAttrs->nodes;
         // TODO Are nodes in torrent IPv4 only?
         if(!nodes.empty() && DHTRegistry::isInitialized()) {
-          DHTEntryPointNameResolveCommand* command =
-            new DHTEntryPointNameResolveCommand(e->newCUID(), e, nodes);
+          auto command = make_unique<DHTEntryPointNameResolveCommand>
+            (e->newCUID(), e, nodes);
           command->setTaskQueue(DHTRegistry::getData().taskQueue);
           command->setTaskFactory(DHTRegistry::getData().taskFactory);
           command->setRoutingTable(DHTRegistry::getData().routingTable);
           command->setLocalNode(DHTRegistry::getData().localNode);
-          e->addCommand(command);
+          e->addCommand(std::move(command));
         }
       }
       std::shared_ptr<CheckIntegrityEntry> entry(new BtCheckIntegrityEntry(this));
@@ -553,7 +545,7 @@ void RequestGroup::createInitialCommand
 }
 
 void RequestGroup::processCheckIntegrityEntry
-(std::vector<Command*>& commands,
+(std::vector<std::unique_ptr<Command>>& commands,
  const std::shared_ptr<CheckIntegrityEntry>& entry,
  DownloadEngine* e)
 {
@@ -804,8 +796,9 @@ bool RequestGroup::tryAutoFileRenaming()
   return false;
 }
 
-void RequestGroup::createNextCommandWithAdj(std::vector<Command*>& commands,
-                                            DownloadEngine* e, int numAdj)
+void RequestGroup::createNextCommandWithAdj
+(std::vector<std::unique_ptr<Command>>& commands,
+ DownloadEngine* e, int numAdj)
 {
   int numCommand;
   if(getTotalLength() == 0) {
@@ -820,8 +813,9 @@ void RequestGroup::createNextCommandWithAdj(std::vector<Command*>& commands,
   }
 }
 
-void RequestGroup::createNextCommand(std::vector<Command*>& commands,
-                                     DownloadEngine* e)
+void RequestGroup::createNextCommand
+(std::vector<std::unique_ptr<Command>>& commands,
+ DownloadEngine* e)
 {
   int numCommand;
   if(getTotalLength() == 0) {
@@ -844,13 +838,14 @@ void RequestGroup::createNextCommand(std::vector<Command*>& commands,
   }
 }
 
-void RequestGroup::createNextCommand(std::vector<Command*>& commands,
-                                     DownloadEngine* e,
-                                     int numCommand)
+void RequestGroup::createNextCommand
+(std::vector<std::unique_ptr<Command>>& commands,
+ DownloadEngine* e,
+ int numCommand)
 {
   for(; numCommand > 0; --numCommand) {
-    Command* command = new CreateRequestCommand(e->newCUID(), this, e);
-    commands.push_back(command);
+     commands.push_back(make_unique<CreateRequestCommand>
+                        (e->newCUID(), this, e));
   }
   if(!commands.empty()) {
     e->setNoWait(true);

@@ -1312,9 +1312,9 @@ std::shared_ptr<ValueBase> ChangeUriRpcMethod::process
     }
   }
   if(addcount && group->getPieceStorage()) {
-    std::vector<Command*> commands;
+    std::vector<std::unique_ptr<Command>> commands;
     group->createNextCommand(commands, e);
-    e->addCommand(commands);
+    e->addCommand(std::move(commands));
     group->getSegmentMan()->recognizeSegmentFor(s);
   }
   std::shared_ptr<List> res = List::g();
@@ -1329,7 +1329,8 @@ std::shared_ptr<ValueBase> goingShutdown
 {
   // Schedule shutdown after 3seconds to give time to client to
   // receive RPC response.
-  e->addRoutineCommand(new TimedHaltCommand(e->newCUID(), e, 3, forceHalt));
+  e->addRoutineCommand(make_unique<TimedHaltCommand>
+                       (e->newCUID(), e, 3, forceHalt));
   A2_LOG_INFO("Scheduled shutdown in 3 seconds.");
   return VLB_OK;
 }

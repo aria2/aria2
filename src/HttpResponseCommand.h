@@ -67,7 +67,7 @@ private:
   bool handleOtherEncoding(const std::shared_ptr<HttpResponse>& httpResponse);
   bool skipResponseBody(const std::shared_ptr<HttpResponse>& httpResponse);
 
-  HttpDownloadCommand*
+  std::unique_ptr<HttpDownloadCommand>
   createHttpDownloadCommand
   (const std::shared_ptr<HttpResponse>& httpResponse,
    const std::shared_ptr<StreamFilter>& streamFilter);

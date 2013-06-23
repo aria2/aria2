@@ -69,12 +69,11 @@ HttpInitiateConnectionCommand::HttpInitiateConnectionCommand
 
 HttpInitiateConnectionCommand::~HttpInitiateConnectionCommand() {}
 
-Command* HttpInitiateConnectionCommand::createNextCommand
+std::unique_ptr<Command> HttpInitiateConnectionCommand::createNextCommand
 (const std::string& hostname, const std::string& addr, uint16_t port,
  const std::vector<std::string>& resolvedAddresses,
  const std::shared_ptr<Request>& proxyRequest)
 {
-  Command* command;
   if(proxyRequest) {
     std::shared_ptr<SocketCore> pooledSocket =
       getDownloadEngine()->popPooledSocket
@@ -88,13 +87,13 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       getSocket()->establishConnection(addr, port);
 
       getRequest()->setConnectedAddrInfo(hostname, addr, port);
-      ConnectCommand* c = new ConnectCommand(getCuid(),
-                                             getRequest(),
-                                             proxyRequest,
-                                             getFileEntry(),
-                                             getRequestGroup(),
-                                             getDownloadEngine(),
-                                             getSocket());
+      auto c = make_unique<ConnectCommand>(getCuid(),
+                                           getRequest(),
+                                           proxyRequest,
+                                           getFileEntry(),
+                                           getRequestGroup(),
+                                           getDownloadEngine(),
+                                           getSocket());
       if(proxyMethod == V_TUNNEL) {
         std::shared_ptr<HttpProxyRequestConnectChain> chain
           (new HttpProxyRequestConnectChain());
@@ -107,25 +106,25 @@ Command* HttpInitiateConnectionCommand::createNextCommand
         // Unreachable
         assert(0);
       }
-      setupBackupConnection(hostname, addr, port, c);
-      command = c;
+      setupBackupConnection(hostname, addr, port, c.get());
+      return std::move(c);
     } else {
       setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
       std::shared_ptr<SocketRecvBuffer> socketRecvBuffer
         (new SocketRecvBuffer(pooledSocket));
       std::shared_ptr<HttpConnection> httpConnection
         (new HttpConnection(getCuid(), pooledSocket, socketRecvBuffer));
-      HttpRequestCommand* c = new HttpRequestCommand(getCuid(),
-                                                     getRequest(),
-                                                     getFileEntry(),
-                                                     getRequestGroup(),
-                                                     httpConnection,
-                                                     getDownloadEngine(),
-                                                     pooledSocket);
+      auto c = make_unique<HttpRequestCommand>(getCuid(),
+                                               getRequest(),
+                                               getFileEntry(),
+                                               getRequestGroup(),
+                                               httpConnection,
+                                               getDownloadEngine(),
+                                               pooledSocket);
       if(proxyMethod == V_GET) {
         c->setProxyRequest(proxyRequest);
       }
-      command = c;
+      return std::move(c);
     }
   } else {
     std::shared_ptr<SocketCore> pooledSocket =
@@ -138,18 +137,18 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       getSocket()->establishConnection(addr, port);
 
       getRequest()->setConnectedAddrInfo(hostname, addr, port);
-      ConnectCommand* c = new ConnectCommand(getCuid(),
-                                             getRequest(),
-                                             proxyRequest, // must be null
-                                             getFileEntry(),
-                                             getRequestGroup(),
-                                             getDownloadEngine(),
-                                             getSocket());
+      auto c = make_unique<ConnectCommand>(getCuid(),
+                                           getRequest(),
+                                           proxyRequest, // must be null
+                                           getFileEntry(),
+                                           getRequestGroup(),
+                                           getDownloadEngine(),
+                                           getSocket());
       std::shared_ptr<HttpRequestConnectChain> chain
         (new HttpRequestConnectChain());
       c->setControlChain(chain);
-      setupBackupConnection(hostname, addr, port, c);
-      command = c;
+      setupBackupConnection(hostname, addr, port, c.get());
+      return std::move(c);
     } else {
       setSocket(pooledSocket);
       setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
@@ -158,16 +157,15 @@ Command* HttpInitiateConnectionCommand::createNextCommand
         (new SocketRecvBuffer(getSocket()));
       std::shared_ptr<HttpConnection> httpConnection
         (new HttpConnection(getCuid(), getSocket(), socketRecvBuffer));
-      command = new HttpRequestCommand(getCuid(),
-                                       getRequest(),
-                                       getFileEntry(),
-                                       getRequestGroup(),
-                                       httpConnection,
-                                       getDownloadEngine(),
-                                       getSocket());
+      return make_unique<HttpRequestCommand>(getCuid(),
+                                             getRequest(),
+                                             getFileEntry(),
+                                             getRequestGroup(),
+                                             httpConnection,
+                                             getDownloadEngine(),
+                                             getSocket());
     }
   }
-  return command;
 }
 
 } // namespace aria2

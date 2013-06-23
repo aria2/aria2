@@ -53,7 +53,7 @@ bool PeerChokeCommand::execute() {
   if(peerStorage_->chokeRoundIntervalElapsed()) {
     peerStorage_->executeChoke();
   }
-  e_->addCommand(this);
+  e_->addCommand(std::unique_ptr<Command>(this));
   return false;
 }
 

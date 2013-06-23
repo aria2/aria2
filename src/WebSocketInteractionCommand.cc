@@ -104,7 +104,7 @@ bool WebSocketInteractionCommand::execute()
     return true;
   }
   updateWriteCheck();
-  e_->addCommand(this);
+  e_->addCommand(std::unique_ptr<Command>(this));
   return false;
 }
 

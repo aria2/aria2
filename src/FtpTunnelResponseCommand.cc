@@ -57,11 +57,12 @@ FtpTunnelResponseCommand::FtpTunnelResponseCommand
 
 FtpTunnelResponseCommand::~FtpTunnelResponseCommand() {}
 
-Command* FtpTunnelResponseCommand::getNextCommand()
+std::unique_ptr<Command> FtpTunnelResponseCommand::getNextCommand()
 {
-  return new FtpNegotiationCommand(getCuid(), getRequest(), getFileEntry(),
-                                   getRequestGroup(), getDownloadEngine(),
-                                   getSocket());
+  return make_unique<FtpNegotiationCommand>
+    (getCuid(), getRequest(), getFileEntry(),
+     getRequestGroup(), getDownloadEngine(),
+     getSocket());
 }
 
 } // namespace aria2

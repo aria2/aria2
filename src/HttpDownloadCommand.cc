@@ -75,16 +75,16 @@ HttpDownloadCommand::~HttpDownloadCommand() {}
 bool HttpDownloadCommand::prepareForNextSegment() {
   bool downloadFinished = getRequestGroup()->downloadFinished();
   if(getRequest()->isPipeliningEnabled() && !downloadFinished) {
-    HttpRequestCommand* command =
-      new HttpRequestCommand(getCuid(), getRequest(), getFileEntry(),
-                             getRequestGroup(), httpConnection_,
-                             getDownloadEngine(), getSocket());
+    auto command = make_unique<HttpRequestCommand>
+      (getCuid(), getRequest(), getFileEntry(),
+       getRequestGroup(), httpConnection_,
+       getDownloadEngine(), getSocket());
     // Set proxy request here. aria2 sends the HTTP request specialized for
     // proxy.
     if(resolveProxyMethod(getRequest()->getProtocol()) == V_GET) {
       command->setProxyRequest(createProxyRequest());
     }
-    getDownloadEngine()->addCommand(command);
+    getDownloadEngine()->addCommand(std::move(command));
     return true;
   } else {
     const std::string& streamFilterName = getStreamFilter()->getName();

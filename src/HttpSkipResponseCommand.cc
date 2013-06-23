@@ -173,7 +173,7 @@ bool HttpSkipResponseCommand::executeInternal()
     return processResponse();
   } else {
     setWriteCheckSocketIf(getSocket(), getSocket()->wantWrite());
-    getDownloadEngine()->addCommand(this);
+    addCommandSelf();
     return false;
   }
 }

@@ -41,8 +41,9 @@
 
 namespace aria2 {
 
-FileAllocationEntry::FileAllocationEntry(RequestGroup* requestGroup, Command* nextCommand):
-  RequestGroupEntry(requestGroup, nextCommand),
+FileAllocationEntry::FileAllocationEntry(RequestGroup* requestGroup,
+                                         std::unique_ptr<Command> nextCommand):
+  RequestGroupEntry(requestGroup, std::move(nextCommand)),
   fileAllocationIterator_(requestGroup->getPieceStorage()->getDiskAdaptor()->fileAllocationIterator())
 {}
 

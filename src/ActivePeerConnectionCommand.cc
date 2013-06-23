@@ -123,7 +123,7 @@ bool ActivePeerConnectionCommand::execute() {
       }
     }
   }
-  e_->addCommand(this);
+  e_->addCommand(std::unique_ptr<Command>(this));
   return false;
 }
 
@@ -136,12 +136,11 @@ void ActivePeerConnectionCommand::makeNewConnections(int num)
     if(!peer) {
       break;
     }
-    PeerInitiateConnectionCommand* command;
-    command = new PeerInitiateConnectionCommand(ncuid, requestGroup_, peer, e_,
-                                                btRuntime_);
+    auto command = make_unique<PeerInitiateConnectionCommand>
+      (ncuid, requestGroup_, peer, e_, btRuntime_);
     command->setPeerStorage(peerStorage_);
     command->setPieceStorage(pieceStorage_);
-    e_->addCommand(command);
+    e_->addCommand(std::move(command));
     A2_LOG_INFO(fmt(MSG_CONNECTING_TO_PEER, getCuid(),
                     peer->getIPAddress().c_str()));
   }

@@ -45,8 +45,8 @@ public:
 
   virtual ~BtFileAllocationEntry();
 
-  virtual void prepareForNextAction(std::vector<Command*>& commands,
-                                    DownloadEngine* e);
+  virtual void prepareForNextAction
+  (std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e);
 };
 
 } // namespace aria2

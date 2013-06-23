@@ -159,35 +159,38 @@ DownloadEngineFactory::newDownloadEngine
   e->setCheckIntegrityMan
     (std::shared_ptr<CheckIntegrityMan>(new CheckIntegrityMan()));
 #endif // ENABLE_MESSAGE_DIGEST
-  e->addRoutineCommand(new FillRequestGroupCommand(e->newCUID(), e.get()));
-  e->addRoutineCommand(new FileAllocationDispatcherCommand
+  e->addRoutineCommand(make_unique<FillRequestGroupCommand>
+                       (e->newCUID(), e.get()));
+  e->addRoutineCommand(make_unique<FileAllocationDispatcherCommand>
                        (e->newCUID(), e->getFileAllocationMan(), e.get()));
 #ifdef ENABLE_MESSAGE_DIGEST
-  e->addRoutineCommand(new CheckIntegrityDispatcherCommand
+  e->addRoutineCommand(make_unique<CheckIntegrityDispatcherCommand>
                        (e->newCUID(), e->getCheckIntegrityMan(), e.get()));
 #endif // ENABLE_MESSAGE_DIGEST
 
   if(op->getAsInt(PREF_AUTO_SAVE_INTERVAL) > 0) {
     e->addRoutineCommand
-      (new AutoSaveCommand(e->newCUID(), e.get(),
-                           op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
+      (make_unique<AutoSaveCommand>(e->newCUID(), e.get(),
+                                    op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
   }
   if(op->getAsInt(PREF_SAVE_SESSION_INTERVAL) > 0) {
-    e->addRoutineCommand
-      (new SaveSessionCommand(e->newCUID(), e.get(),
-                              op->getAsInt(PREF_SAVE_SESSION_INTERVAL)));
+    e->addRoutineCommand(make_unique<SaveSessionCommand>
+                         (e->newCUID(), e.get(),
+                          op->getAsInt(PREF_SAVE_SESSION_INTERVAL)));
   }
-  e->addRoutineCommand(new HaveEraseCommand(e->newCUID(), e.get(), 10));
+  e->addRoutineCommand(make_unique<HaveEraseCommand>
+                       (e->newCUID(), e.get(), 10));
   {
     time_t stopSec = op->getAsInt(PREF_STOP);
     if(stopSec > 0) {
-      e->addRoutineCommand(new TimedHaltCommand(e->newCUID(), e.get(),
-                                                stopSec));
+      e->addRoutineCommand(make_unique<TimedHaltCommand>(e->newCUID(), e.get(),
+                                                         stopSec));
     }
   }
   if(op->defined(PREF_STOP_WITH_PROCESS)) {
     unsigned int pid = op->getAsInt(PREF_STOP_WITH_PROCESS);
-    e->addRoutineCommand(new WatchProcessCommand(e->newCUID(), e.get(), pid));
+    e->addRoutineCommand(make_unique<WatchProcessCommand>(e->newCUID(),
+                                                          e.get(), pid));
   }
   if(op->getAsBool(PREF_ENABLE_RPC)) {
     bool ok = false;
@@ -198,13 +201,11 @@ DownloadEngineFactory::newDownloadEngine
     static int families[] = { AF_INET, AF_INET6 };
     size_t familiesLength = op->getAsBool(PREF_DISABLE_IPV6)?1:2;
     for(size_t i = 0; i < familiesLength; ++i) {
-      HttpListenCommand* httpListenCommand =
-        new HttpListenCommand(e->newCUID(), e.get(), families[i], secure);
+      auto httpListenCommand = make_unique<HttpListenCommand>
+        (e->newCUID(), e.get(), families[i], secure);
       if(httpListenCommand->bindPort(op->getAsInt(PREF_RPC_LISTEN_PORT))){
-        e->addCommand(httpListenCommand);
+        e->addCommand(std::move(httpListenCommand));
         ok = true;
-      } else {
-        delete httpListenCommand;
       }
     }
     if(!ok) {

@@ -50,7 +50,7 @@ public:
    const std::shared_ptr<FileAllocationMan>& fileAllocMan,
    DownloadEngine* e);
 protected:
-  virtual Command* createCommand
+  virtual std::unique_ptr<Command> createCommand
   (const std::shared_ptr<FileAllocationEntry>& entry);
 };
 

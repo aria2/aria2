@@ -45,11 +45,11 @@ public:
 
   virtual ~BtCheckIntegrityEntry();
 
-  virtual void onDownloadFinished(std::vector<Command*>& commands,
-                                  DownloadEngine* e);
+  virtual void onDownloadFinished
+  (std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e);
 
-  virtual void onDownloadIncomplete(std::vector<Command*>& commands,
-                                    DownloadEngine* e);
+  virtual void onDownloadIncomplete
+  (std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e);
 };
 
 } // namespace aria2

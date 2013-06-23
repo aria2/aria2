@@ -52,7 +52,7 @@ public:
                           const std::shared_ptr<SocketCore>& s);
   virtual ~HttpProxyRequestCommand();
 
-  virtual Command* getNextCommand();
+  virtual std::unique_ptr<Command> getNextCommand();
 };
 
 } // namespace aria2

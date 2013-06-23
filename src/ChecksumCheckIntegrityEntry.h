@@ -44,7 +44,9 @@ class ChecksumCheckIntegrityEntry:public CheckIntegrityEntry
 private:
   bool redownload_;
 public:
-  ChecksumCheckIntegrityEntry(RequestGroup* requestGroup, Command* nextCommand = 0);
+  ChecksumCheckIntegrityEntry(RequestGroup* requestGroup,
+                              std::unique_ptr<Command> nextCommand =
+                              std::unique_ptr<Command>());
 
   virtual ~ChecksumCheckIntegrityEntry();
 
@@ -52,11 +54,13 @@ public:
 
   virtual void initValidator();
 
-  virtual void onDownloadFinished(std::vector<Command*>& commands,
-                                  DownloadEngine* e);
+  virtual void onDownloadFinished
+  (std::vector<std::unique_ptr<Command>>& commands,
+   DownloadEngine* e);
 
-  virtual void onDownloadIncomplete(std::vector<Command*>& commands,
-                                    DownloadEngine* e);
+  virtual void onDownloadIncomplete
+  (std::vector<std::unique_ptr<Command>>& commands,
+   DownloadEngine* e);
 
   void setRedownload(bool redownload)
   {

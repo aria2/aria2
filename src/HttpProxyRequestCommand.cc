@@ -37,6 +37,7 @@
 #include "Request.h"
 #include "SocketCore.h"
 #include "SocketRecvBuffer.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -55,9 +56,9 @@ HttpProxyRequestCommand::HttpProxyRequestCommand
 
 HttpProxyRequestCommand::~HttpProxyRequestCommand() {}
 
-Command* HttpProxyRequestCommand::getNextCommand()
+std::unique_ptr<Command> HttpProxyRequestCommand::getNextCommand()
 {
-  return new HttpProxyResponseCommand
+  return make_unique<HttpProxyResponseCommand>
     (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
      getHttpConnection(), getDownloadEngine(), getSocket());
 }

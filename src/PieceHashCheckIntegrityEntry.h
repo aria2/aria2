@@ -42,7 +42,9 @@ namespace aria2 {
 class PieceHashCheckIntegrityEntry : public CheckIntegrityEntry
 {
 public:
-  PieceHashCheckIntegrityEntry(RequestGroup* requestGroup, Command* nextCommand = 0);
+  PieceHashCheckIntegrityEntry(RequestGroup* requestGroup,
+                               std::unique_ptr<Command> nextCommand =
+                               std::unique_ptr<Command>());
 
   virtual ~PieceHashCheckIntegrityEntry();
 

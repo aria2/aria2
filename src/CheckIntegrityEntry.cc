@@ -45,8 +45,8 @@
 namespace aria2 {
 
 CheckIntegrityEntry::CheckIntegrityEntry(RequestGroup* requestGroup,
-                                         Command* nextCommand):
-  RequestGroupEntry(requestGroup, nextCommand)
+                                         std::unique_ptr<Command> nextCommand):
+  RequestGroupEntry(requestGroup, std::move(nextCommand))
 {}
 
 CheckIntegrityEntry::~CheckIntegrityEntry() {}
@@ -85,7 +85,7 @@ void CheckIntegrityEntry::cutTrailingGarbage()
 }
 
 void CheckIntegrityEntry::proceedFileAllocation
-(std::vector<Command*>& commands,
+(std::vector<std::unique_ptr<Command>>& commands,
  const std::shared_ptr<FileAllocationEntry>& entry,
  DownloadEngine* e)
 {

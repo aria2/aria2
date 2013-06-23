@@ -47,7 +47,7 @@ struct FtpNegotiationConnectChain : public ControlChain<ConnectCommand*> {
   virtual ~FtpNegotiationConnectChain() {}
   virtual int run(ConnectCommand* t, DownloadEngine* e)
   {
-    FtpNegotiationCommand* c = new FtpNegotiationCommand
+    auto c = make_unique<FtpNegotiationCommand>
       (t->getCuid(),
        t->getRequest(),
        t->getFileEntry(),
@@ -56,7 +56,7 @@ struct FtpNegotiationConnectChain : public ControlChain<ConnectCommand*> {
        t->getSocket());
     c->setStatus(Command::STATUS_ONESHOT_REALTIME);
     e->setNoWait(true);
-    e->addCommand(c);
+    e->addCommand(std::move(c));
     return 0;
   }
 };

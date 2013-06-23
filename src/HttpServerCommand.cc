@@ -184,7 +184,7 @@ bool HttpServerCommand::execute()
         // finished.
         if(!socket_->tlsAccept()) {
           updateWriteCheck();
-          e_->addCommand(this);
+          e_->addCommand(std::unique_ptr<Command>(this));
           return false;
         }
       }
@@ -194,7 +194,7 @@ bool HttpServerCommand::execute()
       header = httpServer_->receiveRequest();
       if(!header) {
         updateWriteCheck();
-        e_->addCommand(this);
+        e_->addCommand(std::unique_ptr<Command>(this));
         return false;
       }
       // CORS preflight request uses OPTIONS method. It is not
@@ -204,9 +204,8 @@ bool HttpServerCommand::execute()
         httpServer_->disableKeepAlive();
         httpServer_->feedResponse
           (401, "WWW-Authenticate: Basic realm=\"aria2\"\r\n");
-        Command* command =
-          new HttpServerResponseCommand(getCuid(), httpServer_, e_, socket_);
-        e_->addCommand(command);
+        e_->addCommand(make_unique<HttpServerResponseCommand>
+                       (getCuid(), httpServer_, e_, socket_));
         e_->setNoWait(true);
         return true;
       }
@@ -214,7 +213,6 @@ bool HttpServerCommand::execute()
          header->fieldContains(HttpHeader::CONNECTION, "upgrade")) {
 #ifdef ENABLE_WEBSOCKET
         int status = websocketHandshake(header);
-        Command* command;
         if(status == 101) {
           std::string serverKey =
             createWebSocketServerKey
@@ -222,26 +220,23 @@ bool HttpServerCommand::execute()
           httpServer_->feedUpgradeResponse("websocket",
                                            fmt("Sec-WebSocket-Accept: %s\r\n",
                                                serverKey.c_str()));
-          command = new rpc::WebSocketResponseCommand(getCuid(), httpServer_,
-                                                      e_, socket_);
+          e_->addCommand(make_unique<rpc::WebSocketResponseCommand>
+                         (getCuid(), httpServer_, e_, socket_));
         } else {
           if(status == 426) {
             httpServer_->feedResponse(426, "Sec-WebSocket-Version: 13\r\n");
           } else {
             httpServer_->feedResponse(status);
           }
-          command = new HttpServerResponseCommand(getCuid(), httpServer_, e_,
-                                                  socket_);
+          e_->addCommand(make_unique<HttpServerResponseCommand>
+                         (getCuid(), httpServer_, e_, socket_));
         }
-        e_->addCommand(command);
         e_->setNoWait(true);
         return true;
 #else // !ENABLE_WEBSOCKET
         httpServer_->feedResponse(400);
-        Command* command = new HttpServerResponseCommand(getCuid(),
-                                                         httpServer_, e_,
-                                                         socket_);
-        e_->addCommand(command);
+        e_->addCommand(make_unique<HttpServerResponseCommand>
+                       (getCuid(), httpServer_, e_, socket_));
         e_->setNoWait(true);
         return true;
 #endif // !ENABLE_WEBSOCKET
@@ -255,9 +250,8 @@ bool HttpServerCommand::execute()
                  httpServer_->getContentLength()));
           return true;
         }
-        Command* command = new HttpServerBodyCommand(getCuid(), httpServer_, e_,
-                                                     socket_);
-        e_->addCommand(command);
+        e_->addCommand(make_unique<HttpServerBodyCommand>
+                       (getCuid(), httpServer_, e_, socket_));
         e_->setNoWait(true);
         return true;
       }
@@ -266,7 +260,7 @@ bool HttpServerCommand::execute()
         A2_LOG_INFO("HTTP request timeout.");
         return true;
       } else {
-        e_->addCommand(this);
+        e_->addCommand(std::unique_ptr<Command>(this));
         return false;
       }
     }

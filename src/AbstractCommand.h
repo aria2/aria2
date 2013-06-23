@@ -222,6 +222,7 @@ public:
 
   void checkSocketRecvBuffer();
 
+  void addCommandSelf();
 protected:
   virtual bool prepareForRetry(time_t wait);
   virtual void onAbort();

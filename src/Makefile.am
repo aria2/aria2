@@ -24,7 +24,6 @@ SRCS =  option_processing.cc\
 	FtpDownloadCommand.cc FtpDownloadCommand.h\
 	FtpTunnelRequestCommand.cc FtpTunnelRequestCommand.h\
 	FtpTunnelResponseCommand.cc FtpTunnelResponseCommand.h\
-	SleepCommand.cc SleepCommand.h\
 	DownloadEngine.cc DownloadEngine.h\
 	Segment.h\
 	GrowSegment.cc GrowSegment.h\

@@ -47,7 +47,7 @@ struct FtpTunnelRequestConnectChain : public ControlChain<ConnectCommand*> {
   virtual ~FtpTunnelRequestConnectChain() {}
   virtual int run(ConnectCommand* t, DownloadEngine* e)
   {
-    FtpTunnelRequestCommand* c = new FtpTunnelRequestCommand
+    auto c = make_unique<FtpTunnelRequestCommand>
       (t->getCuid(),
        t->getRequest(),
        t->getFileEntry(),
@@ -57,7 +57,7 @@ struct FtpTunnelRequestConnectChain : public ControlChain<ConnectCommand*> {
        t->getSocket());
     c->setStatus(Command::STATUS_ONESHOT_REALTIME);
     e->setNoWait(true);
-    e->addCommand(c);
+    e->addCommand(std::move(c));
     return 0;
   }
 };

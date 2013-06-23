@@ -52,7 +52,7 @@ public:
                           const std::shared_ptr<SocketCore>& s);
   virtual ~FtpTunnelRequestCommand();
 
-  virtual Command* getNextCommand();
+  virtual std::unique_ptr<Command> getNextCommand();
 };
 
 } // namespace aria2

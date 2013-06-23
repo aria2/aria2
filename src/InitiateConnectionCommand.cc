@@ -87,13 +87,12 @@ bool InitiateConnectionCommand::executeInternal() {
   std::vector<std::string> addrs;
   std::string ipaddr = resolveHostname(addrs, hostname, port);
   if(ipaddr.empty()) {
-    getDownloadEngine()->addCommand(this);
+    addCommandSelf();
     return false;
   }
   try {
-    Command* command = createNextCommand(hostname, ipaddr, port,
-                                         addrs, proxyRequest);
-    getDownloadEngine()->addCommand(command);
+    getDownloadEngine()->addCommand(createNextCommand(hostname, ipaddr, port,
+                                                      addrs, proxyRequest));
     return true;
   } catch(RecoverableException& ex) {
     // Catch exception and retry another address.
@@ -106,12 +105,12 @@ bool InitiateConnectionCommand::executeInternal() {
       A2_LOG_INFO(fmt(MSG_CONNECT_FAILED_AND_RETRY,
                       getCuid(),
                       ipaddr.c_str(), port));
-      Command* command =
+      auto command =
         InitiateConnectionCommandFactory::createInitiateConnectionCommand
         (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
          getDownloadEngine());
       getDownloadEngine()->setNoWait(true);
-      getDownloadEngine()->addCommand(command);
+      getDownloadEngine()->addCommand(std::move(command));
       return true;
     }
     getDownloadEngine()->removeCachedIPAddress(hostname, port);
@@ -149,12 +148,12 @@ InitiateConnectionCommand::createBackupIPv4ConnectCommand
         eoi = addrs.end(); i != eoi; ++i) {
     if(inetPton(AF_INET, (*i).c_str(), &buf) == 0) {
       info.reset(new BackupConnectInfo());
-      BackupIPv4ConnectCommand* command = new BackupIPv4ConnectCommand
+      auto command = make_unique<BackupIPv4ConnectCommand>
         (getDownloadEngine()->newCUID(), *i, port, info, mainCommand,
          getRequestGroup(), getDownloadEngine());
       A2_LOG_INFO(fmt("Issue backup connection command CUID#%" PRId64
                       ", addr=%s", command->getCuid(), (*i).c_str()));
-      getDownloadEngine()->addCommand(command);
+      getDownloadEngine()->addCommand(std::move(command));
       return info;
     }
   }

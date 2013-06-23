@@ -107,12 +107,12 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
           (new PeerConnection(getCuid(), getPeer(), getSocket()));
         peerConnection->presetBuffer(mseHandshake_->getBuffer(),
                                      mseHandshake_->getBufferLength());
-        Command* c = new PeerReceiveHandshakeCommand(getCuid(),
-                                                     getPeer(),
-                                                     getDownloadEngine(),
-                                                     getSocket(),
-                                                     peerConnection);
-        getDownloadEngine()->addCommand(c);
+        getDownloadEngine()->addCommand
+          (make_unique<PeerReceiveHandshakeCommand>(getCuid(),
+                                                    getPeer(),
+                                                    getDownloadEngine(),
+                                                    getSocket(),
+                                                    peerConnection));
         return true;
       }
       default:
@@ -200,7 +200,7 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
   } else {
     disableWriteCheckSocket();
   }
-  getDownloadEngine()->addCommand(this);
+  addCommandSelf();
   return false;
 }
 
@@ -219,10 +219,9 @@ void ReceiverMSEHandshakeCommand::createCommand()
   // TODO add mseHandshake_->getInfoHash() to PeerReceiveHandshakeCommand
   // as a hint. If this info hash and one in BitTorrent Handshake does not
   // match, then drop connection.
-  Command* c =
-    new PeerReceiveHandshakeCommand(getCuid(), getPeer(), getDownloadEngine(),
-                                    getSocket(), peerConnection);
-  getDownloadEngine()->addCommand(c);
+  getDownloadEngine()->addCommand(make_unique<PeerReceiveHandshakeCommand>
+                                  (getCuid(), getPeer(), getDownloadEngine(),
+                                   getSocket(), peerConnection));
 }
 
 } // namespace aria2

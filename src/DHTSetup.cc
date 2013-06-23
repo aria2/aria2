@@ -78,21 +78,17 @@ DHTSetup::DHTSetup() {}
 
 DHTSetup::~DHTSetup() {}
 
-void DHTSetup::setup
-(std::vector<Command*>& commands, DownloadEngine* e, int family)
+std::vector<std::unique_ptr<Command>> DHTSetup::setup
+(DownloadEngine* e, int family)
 {
-  if(family != AF_INET && family != AF_INET6) {
-    return;
-  }
-  if((family == AF_INET && DHTRegistry::isInitialized()) ||
+  std::vector<std::unique_ptr<Command> > tempCommands;
+  if((family != AF_INET && family != AF_INET6) ||
+     (family == AF_INET && DHTRegistry::isInitialized()) ||
      (family == AF_INET6 && DHTRegistry::isInitialized6())) {
-    return;
+    return tempCommands;
   }
   try {
-    std::vector<Command*>* tempCommands = new std::vector<Command*>();
-    auto_delete_container<std::vector<Command*> > commandsDel(tempCommands);
     // load routing table and localnode id here
-
     std::shared_ptr<DHTNode> localNode;
 
     DHTRoutingTableDeserializer deserializer(family);
@@ -240,65 +236,60 @@ void DHTSetup::setup
            e->getOption()->getAsInt(prefEntryPointPort));
         std::vector<std::pair<std::string, uint16_t> > entryPoints;
         entryPoints.push_back(addr);
-        DHTEntryPointNameResolveCommand* command =
-          new DHTEntryPointNameResolveCommand(e->newCUID(), e, entryPoints);
+        auto command = make_unique<DHTEntryPointNameResolveCommand>
+          (e->newCUID(), e, entryPoints);
         command->setBootstrapEnabled(true);
         command->setTaskQueue(taskQueue);
         command->setTaskFactory(taskFactory);
         command->setRoutingTable(routingTable);
         command->setLocalNode(localNode);
-        tempCommands->push_back(command);
+        tempCommands.push_back(std::move(command));
       }
     } else {
       A2_LOG_INFO("No DHT entry point specified.");
     }
     {
-      DHTInteractionCommand* command =
-        new DHTInteractionCommand(e->newCUID(), e);
+      auto command = make_unique<DHTInteractionCommand>(e->newCUID(), e);
       command->setMessageDispatcher(dispatcher);
       command->setMessageReceiver(receiver);
       command->setTaskQueue(taskQueue);
       command->setReadCheckSocket(connection->getSocket());
       command->setConnection(connection);
       command->setUDPTrackerClient(udpTrackerClient);
-      tempCommands->push_back(command);
+      tempCommands.push_back(std::move(command));
     }
     {
-      DHTTokenUpdateCommand* command =
-        new DHTTokenUpdateCommand(e->newCUID(), e, DHT_TOKEN_UPDATE_INTERVAL);
+      auto command = make_unique<DHTTokenUpdateCommand>
+        (e->newCUID(), e, DHT_TOKEN_UPDATE_INTERVAL);
       command->setTokenTracker(tokenTracker);
-      tempCommands->push_back(command);
+      tempCommands.push_back(std::move(command));
     }
     {
-      DHTBucketRefreshCommand* command =
-        new DHTBucketRefreshCommand(e->newCUID(), e,
-                                    DHT_BUCKET_REFRESH_CHECK_INTERVAL);
+      auto command = make_unique<DHTBucketRefreshCommand>
+        (e->newCUID(), e, DHT_BUCKET_REFRESH_CHECK_INTERVAL);
       command->setTaskQueue(taskQueue);
       command->setRoutingTable(routingTable);
       command->setTaskFactory(taskFactory);
-      tempCommands->push_back(command);
+      tempCommands.push_back(std::move(command));
     }
     {
-      DHTPeerAnnounceCommand* command =
-        new DHTPeerAnnounceCommand(e->newCUID(), e,
-                                   DHT_PEER_ANNOUNCE_CHECK_INTERVAL);
+      auto command = make_unique<DHTPeerAnnounceCommand>
+        (e->newCUID(), e, DHT_PEER_ANNOUNCE_CHECK_INTERVAL);
       command->setPeerAnnounceStorage(peerAnnounceStorage);
-      tempCommands->push_back(command);
+      tempCommands.push_back(std::move(command));
     }
     {
-      DHTAutoSaveCommand* command =
-        new DHTAutoSaveCommand(e->newCUID(), e, family, 30*60);
+      auto command = make_unique<DHTAutoSaveCommand>
+        (e->newCUID(), e, family, 30*60);
       command->setLocalNode(localNode);
       command->setRoutingTable(routingTable);
-      tempCommands->push_back(command);
+      tempCommands.push_back(std::move(command));
     }
     if(family == AF_INET) {
       DHTRegistry::setInitialized(true);
     } else {
       DHTRegistry::setInitialized6(true);
     }
-    commands.insert(commands.end(), tempCommands->begin(), tempCommands->end());
-    tempCommands->clear();
     if(e->getBtRegistry()->getUdpPort() == 0) {
       // We assign port last so that no exception gets in the way
       e->getBtRegistry()->setUdpPort(port);
@@ -307,6 +298,7 @@ void DHTSetup::setup
     A2_LOG_ERROR_EX(fmt("Exception caught while initializing DHT functionality."
                         " DHT is disabled."),
                     ex);
+    tempCommands.clear();
     if(family == AF_INET) {
       DHTRegistry::clearData();
       e->getBtRegistry()->setUDPTrackerClient
@@ -315,6 +307,7 @@ void DHTSetup::setup
       DHTRegistry::clearData6();
     }
   }
+  return tempCommands;
 }
 
 } // namespace aria2

@@ -50,15 +50,13 @@ FileAllocationDispatcherCommand::FileAllocationDispatcherCommand
   : SequentialDispatcherCommand<FileAllocationEntry>(cuid, fileAllocMan, e)
 {}
 
-Command* FileAllocationDispatcherCommand::createCommand
+std::unique_ptr<Command> FileAllocationDispatcherCommand::createCommand
 (const std::shared_ptr<FileAllocationEntry>& entry)
 {
   cuid_t newCUID = getDownloadEngine()->newCUID();
   A2_LOG_INFO(fmt(MSG_FILE_ALLOCATION_DISPATCH, newCUID));
-  FileAllocationCommand* command =
-    new FileAllocationCommand(newCUID, entry->getRequestGroup(),
-                              getDownloadEngine(), entry);
-  return command;
+  return make_unique<FileAllocationCommand>
+    (newCUID, entry->getRequestGroup(), getDownloadEngine(), entry);
 }
 
 } // namespace aria2

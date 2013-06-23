@@ -110,8 +110,7 @@ bool FtpNegotiationCommand::executeInternal() {
   if(sequence_ == SEQ_RETRY) {
     return prepareForRetry(0);
   } else if(sequence_ == SEQ_NEGOTIATION_COMPLETED) {
-    FtpDownloadCommand* command =
-      new FtpDownloadCommand
+    auto command = make_unique<FtpDownloadCommand>
       (getCuid(), getRequest(), getFileEntry(), getRequestGroup(), ftp_,
        getDownloadEngine(), dataSocket_, getSocket());
     command->setStartupIdleTime(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME));
@@ -121,8 +120,8 @@ bool FtpNegotiationCommand::executeInternal() {
       getFileEntry()->removeURIWhoseHostnameIs(getRequest()->getHost());
     }
     getRequestGroup()->getURISelector()->tuneDownloadCommand
-      (getFileEntry()->getRemainingUris(), command);
-    getDownloadEngine()->addCommand(command);
+      (getFileEntry()->getRemainingUris(), command.get());
+    getDownloadEngine()->addCommand(std::move(command));
     return true;
   } else if(sequence_ == SEQ_HEAD_OK ||
             sequence_ == SEQ_DOWNLOAD_ALREADY_COMPLETED) {
@@ -137,7 +136,7 @@ bool FtpNegotiationCommand::executeInternal() {
   } else if(sequence_ == SEQ_EXIT) {
     return true;
   } else {
-    getDownloadEngine()->addCommand(this);
+    addCommandSelf();
     return false;
   }
 }
@@ -473,7 +472,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
       poolConnection();
       return false;
     }
-    checkIntegrityEntry->pushNextCommand(this);
+    checkIntegrityEntry->pushNextCommand(std::unique_ptr<Command>(this));
     // We have to make sure that command that has Request object must
     // have segment after PieceStorage is initialized. See
     // AbstractCommand::execute()

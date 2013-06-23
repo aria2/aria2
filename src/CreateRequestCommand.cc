@@ -105,16 +105,15 @@ bool CreateRequestCommand::executeInternal()
     // counted (1 for pooled and another one in this command) and
     // AbstractCommand::execute() will behave badly.
     resetRequest();
-    getDownloadEngine()->addCommand(this);
+    addCommandSelf();
     return false;
   }
 
-  Command* command =
-    InitiateConnectionCommandFactory::createInitiateConnectionCommand
-    (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
-     getDownloadEngine());
   getDownloadEngine()->setNoWait(true);
-  getDownloadEngine()->addCommand(command);
+  getDownloadEngine()->addCommand
+    (InitiateConnectionCommandFactory::createInitiateConnectionCommand
+     (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
+      getDownloadEngine()));
   return true;
 }
 

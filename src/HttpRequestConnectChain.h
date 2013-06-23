@@ -53,17 +53,17 @@ struct HttpRequestConnectChain : public ControlChain<ConnectCommand*> {
       (new SocketRecvBuffer(t->getSocket()));
     std::shared_ptr<HttpConnection> httpConnection
       (new HttpConnection(t->getCuid(), t->getSocket(), socketRecvBuffer));
-    HttpRequestCommand* c = new HttpRequestCommand(t->getCuid(),
-                                                   t->getRequest(),
-                                                   t->getFileEntry(),
-                                                   t->getRequestGroup(),
-                                                   httpConnection,
-                                                   e,
-                                                   t->getSocket());
+    auto c = make_unique<HttpRequestCommand>(t->getCuid(),
+                                             t->getRequest(),
+                                             t->getFileEntry(),
+                                             t->getRequestGroup(),
+                                             httpConnection,
+                                             e,
+                                             t->getSocket());
     c->setProxyRequest(t->getProxyRequest());
     c->setStatus(Command::STATUS_ONESHOT_REALTIME);
     e->setNoWait(true);
-    e->addCommand(c);
+    e->addCommand(std::move(c));
     return 0;
   }
 };

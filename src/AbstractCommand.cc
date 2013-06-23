@@ -48,7 +48,6 @@
 #include "DownloadFailureException.h"
 #include "CreateRequestCommand.h"
 #include "InitiateConnectionCommandFactory.h"
-#include "SleepCommand.h"
 #include "StreamCheckIntegrityEntry.h"
 #include "PieceStorage.h"
 #include "SocketCore.h"
@@ -133,11 +132,10 @@ void AbstractCommand::useFasterRequest
                   fasterRequest->getPort()));
   // Cancel current Request object and use faster one.
   fileEntry_->removeRequest(req_);
-  Command* command =
-    InitiateConnectionCommandFactory::createInitiateConnectionCommand
-    (getCuid(), fasterRequest, fileEntry_, requestGroup_, e_);
   e_->setNoWait(true);
-  e_->addCommand(command);
+  e_->addCommand(InitiateConnectionCommandFactory::
+                 createInitiateConnectionCommand
+                 (getCuid(), fasterRequest, fileEntry_, requestGroup_, e_));
 }
 
 bool AbstractCommand::execute() {
@@ -301,7 +299,7 @@ bool AbstractCommand::execute() {
         }
         throw DL_RETRY_EX2(EX_TIME_OUT, error_code::TIME_OUT);
       }
-      e_->addCommand(this);
+      addCommandSelf();
       return false;
     }
   } catch(DlAbortEx& err) {
@@ -390,10 +388,10 @@ void AbstractCommand::tryReserved() {
   }
   A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - Trying reserved/pooled request.",
                    getCuid()));
-  std::vector<Command*> commands;
+  std::vector<std::unique_ptr<Command>> commands;
   requestGroup_->createNextCommand(commands, e_, 1);
   e_->setNoWait(true);
-  e_->addCommand(commands);
+  e_->addCommand(std::move(commands));
 }
 
 bool AbstractCommand::prepareForRetry(time_t wait) {
@@ -415,16 +413,16 @@ bool AbstractCommand::prepareForRetry(time_t wait) {
     }
   }
 
-  Command* command = new CreateRequestCommand(getCuid(), requestGroup_, e_);
+  auto command = make_unique<CreateRequestCommand>(getCuid(),
+                                                   requestGroup_, e_);
   if(wait == 0) {
     e_->setNoWait(true);
-    e_->addCommand(command);
   } else {
     // We don't use wait so that Command can be executed by
     // DownloadEngine::setRefreshInterval(0).
     command->setStatus(Command::STATUS_INACTIVE);
-    e_->addCommand(command);
   }
+  e_->addCommand(std::move(command));
   return true;
 }
 
@@ -774,11 +772,9 @@ std::string AbstractCommand::resolveHostname
 void AbstractCommand::prepareForNextAction
 (const std::shared_ptr<CheckIntegrityEntry>& checkEntry)
 {
-  std::vector<Command*>* commands = new std::vector<Command*>();
-  auto_delete_container<std::vector<Command*> > commandsDel(commands);
-  requestGroup_->processCheckIntegrityEntry(*commands, checkEntry, e_);
-  e_->addCommand(*commands);
-  commands->clear();
+  std::vector<std::unique_ptr<Command>> commands;
+  requestGroup_->processCheckIntegrityEntry(commands, checkEntry, e_);
+  e_->addCommand(std::move(commands));
   e_->setNoWait(true);
 }
 
@@ -796,11 +792,10 @@ bool AbstractCommand::checkIfConnectionEstablished
       A2_LOG_INFO(fmt(MSG_CONNECT_FAILED_AND_RETRY,
                       getCuid(),
                       connectedAddr.c_str(), connectedPort));
-      Command* command =
-        InitiateConnectionCommandFactory::createInitiateConnectionCommand
-        (getCuid(), req_, fileEntry_, requestGroup_, e_);
       e_->setNoWait(true);
-      e_->addCommand(command);
+      e_->addCommand(InitiateConnectionCommandFactory::
+                     createInitiateConnectionCommand
+                     (getCuid(), req_, fileEntry_, requestGroup_, e_));
       return false;
     }
     e_->removeCachedIPAddress(connectedHostname, connectedPort);
@@ -887,6 +882,11 @@ void AbstractCommand::checkSocketRecvBuffer()
     setStatus(Command::STATUS_ONESHOT_REALTIME);
     e_->setNoWait(true);
   }
+}
+
+void AbstractCommand::addCommandSelf()
+{
+  e_->addCommand(std::unique_ptr<Command>(this));
 }
 
 } // namespace aria2

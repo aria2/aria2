@@ -198,4 +198,9 @@ void PeerAbstractCommand::createSocket()
   socket_.reset(new SocketCore());
 }
 
+void PeerAbstractCommand::addCommandSelf()
+{
+  e_->addCommand(std::unique_ptr<Command>(this));
+}
+
 } // namespace aria2
