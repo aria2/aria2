@@ -50,7 +50,7 @@ class Randomizer;
 
 class DefaultBtAnnounce : public BtAnnounce {
 private:
-  std::shared_ptr<DownloadContext> downloadContext_;
+  DownloadContext* downloadContext_;
   int trackers_;
   Timer prevAnnounceTimer_;
   time_t interval_;
@@ -69,8 +69,7 @@ private:
 
   bool adjustAnnounceList();
 public:
-  DefaultBtAnnounce(const std::shared_ptr<DownloadContext>& downloadContext,
-                    const Option* option);
+  DefaultBtAnnounce(DownloadContext* downloadContext, const Option* option);
 
   virtual ~DefaultBtAnnounce();
 

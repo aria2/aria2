@@ -343,15 +343,15 @@ void RequestGroup::createInitialCommand
         progressInfoFilePtr->setPeerStorage(peerStorage);
       }
 
-      DefaultBtAnnounce* btAnnouncePtr
-        (new DefaultBtAnnounce(downloadContext_, option_.get()));
+      auto btAnnouncePtr = new DefaultBtAnnounce(downloadContext_.get(),
+                                                 option_.get());
+      std::shared_ptr<BtAnnounce> btAnnounce(btAnnouncePtr);
       btAnnouncePtr->setBtRuntime(btRuntime);
       btAnnouncePtr->setPieceStorage(pieceStorage_);
       btAnnouncePtr->setPeerStorage(peerStorage);
       btAnnouncePtr->setUserDefinedInterval
         (option_->getAsInt(PREF_BT_TRACKER_INTERVAL));
       btAnnouncePtr->shuffleAnnounce();
-      std::shared_ptr<BtAnnounce> btAnnounce(btAnnouncePtr);
 
       assert(!btRegistry->get(gid_->getNumericId()));
       btRegistry->put

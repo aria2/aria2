@@ -58,9 +58,8 @@
 namespace aria2 {
 
 DefaultBtAnnounce::DefaultBtAnnounce
-(const std::shared_ptr<DownloadContext>& downloadContext,
- const Option* option)
-  : downloadContext_(downloadContext),
+(DownloadContext* downloadContext, const Option* option)
+  : downloadContext_{downloadContext},
     trackers_(0),
     prevAnnounceTimer_(0),
     interval_(DEFAULT_ANNOUNCE_INTERVAL),

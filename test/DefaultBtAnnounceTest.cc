@@ -151,7 +151,7 @@ void DefaultBtAnnounceTest::testNoMoreAnnounce()
 
   setAnnounceList(dctx_, announceList);
 
-  DefaultBtAnnounce btAnnounce(dctx_, option_);
+  DefaultBtAnnounce btAnnounce(dctx_.get(), option_);
   btAnnounce.setPieceStorage(pieceStorage_);
   btAnnounce.setPeerStorage(peerStorage_);
   btAnnounce.setBtRuntime(btRuntime_);
@@ -200,7 +200,7 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl()
   announceList->append(createAnnounceTier("http://localhost/announce"));
   setAnnounceList(dctx_, announceList);
 
-  DefaultBtAnnounce btAnnounce(dctx_, option_);
+  DefaultBtAnnounce btAnnounce(dctx_.get(), option_);
   btAnnounce.setPieceStorage(pieceStorage_);
   btAnnounce.setPeerStorage(peerStorage_);
   btAnnounce.setBtRuntime(btRuntime_);
@@ -257,7 +257,7 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl_withQuery()
   announceList->append(createAnnounceTier("http://localhost/announce?k=v"));
   setAnnounceList(dctx_, announceList);
 
-  DefaultBtAnnounce btAnnounce(dctx_, option_);
+  DefaultBtAnnounce btAnnounce(dctx_.get(), option_);
   btAnnounce.setPieceStorage(pieceStorage_);
   btAnnounce.setPeerStorage(peerStorage_);
   btAnnounce.setBtRuntime(btRuntime_);
@@ -281,7 +281,7 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl_externalIP()
   setAnnounceList(dctx_, announceList);
 
   option_->put(PREF_BT_EXTERNAL_IP, "192.168.1.1");
-  DefaultBtAnnounce btAnnounce(dctx_, option_);
+  DefaultBtAnnounce btAnnounce(dctx_.get(), option_);
   btAnnounce.setPieceStorage(pieceStorage_);
   btAnnounce.setPeerStorage(peerStorage_);
   btAnnounce.setBtRuntime(btRuntime_);
@@ -312,7 +312,7 @@ void DefaultBtAnnounceTest::testIsAllAnnounceFailed()
   announceList->append(createAnnounceTier("http://backup/announce"));
   setAnnounceList(dctx_, announceList);
 
-  DefaultBtAnnounce btAnnounce(dctx_, option_);
+  DefaultBtAnnounce btAnnounce(dctx_.get(), option_);
   btAnnounce.setPieceStorage(pieceStorage_);
   btAnnounce.setPeerStorage(peerStorage_);
   btAnnounce.setBtRuntime(btRuntime_);
@@ -345,7 +345,7 @@ void DefaultBtAnnounceTest::testURLOrderInStoppedEvent()
   announceList->append(createAnnounceTier(vbegin(urls), vend(urls)));
   setAnnounceList(dctx_, announceList);
 
-  DefaultBtAnnounce btAnnounce(dctx_, option_);
+  DefaultBtAnnounce btAnnounce(dctx_.get(), option_);
   btAnnounce.setPieceStorage(pieceStorage_);
   btAnnounce.setPeerStorage(peerStorage_);
   btAnnounce.setBtRuntime(btRuntime_);
@@ -376,7 +376,7 @@ void DefaultBtAnnounceTest::testURLOrderInCompletedEvent()
   announceList->append(createAnnounceTier(vbegin(urls), vend(urls)));
   setAnnounceList(dctx_, announceList);
 
-  DefaultBtAnnounce btAnnounce(dctx_, option_);
+  DefaultBtAnnounce btAnnounce(dctx_.get(), option_);
   btAnnounce.setPieceStorage(pieceStorage_);
   btAnnounce.setPeerStorage(peerStorage_);
   btAnnounce.setBtRuntime(btRuntime_);
@@ -402,7 +402,9 @@ void DefaultBtAnnounceTest::testProcessAnnounceResponse_malformed()
 {
   try {
     std::string res = "i123e";
-    DefaultBtAnnounce(dctx_, option_).processAnnounceResponse(reinterpret_cast<const unsigned char*>(res.c_str()), res.size());
+    DefaultBtAnnounce(dctx_.get(), option_)
+      .processAnnounceResponse
+      (reinterpret_cast<const unsigned char*>(res.c_str()), res.size());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
@@ -413,7 +415,9 @@ void DefaultBtAnnounceTest::testProcessAnnounceResponse_failureReason()
 {
   try {
     std::string res = "d14:failure reason11:hello worlde";
-    DefaultBtAnnounce(dctx_, option_).processAnnounceResponse(reinterpret_cast<const unsigned char*>(res.c_str()), res.size());
+    DefaultBtAnnounce(dctx_.get(), option_)
+      .processAnnounceResponse
+      (reinterpret_cast<const unsigned char*>(res.c_str()), res.size());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
@@ -435,7 +439,7 @@ void DefaultBtAnnounceTest::testProcessAnnounceResponse()
   res += fromHex("100210354527354678541237324732171ae1");
   res += "e";
 
-  DefaultBtAnnounce an(dctx_, option_);
+  DefaultBtAnnounce an(dctx_.get(), option_);
   an.setPeerStorage(peerStorage_);
   an.setBtRuntime(btRuntime_);
   an.processAnnounceResponse(reinterpret_cast<const unsigned char*>(res.c_str()), res.size());
@@ -465,7 +469,7 @@ void DefaultBtAnnounceTest::testProcessUDPTrackerResponse()
                                           6890+i));
   }
   req->reply = reply;
-  DefaultBtAnnounce an(dctx_, option_);
+  DefaultBtAnnounce an(dctx_.get(), option_);
   an.setPeerStorage(peerStorage_);
   an.setBtRuntime(btRuntime_);
   an.processUDPTrackerResponse(req);
