@@ -52,7 +52,8 @@
 namespace aria2 {
 
 DefaultBtRequestFactory::DefaultBtRequestFactory()
-  : dispatcher_(0),
+  : pieceStorage_(0),
+    dispatcher_(0),
     messageFactory_(0),
     cuid_(0)
 {}
@@ -104,11 +105,11 @@ namespace {
 class ProcessChokedPiece {
 private:
   std::shared_ptr<Peer> peer_;
-  std::shared_ptr<PieceStorage> pieceStorage_;
+  PieceStorage* pieceStorage_;
   cuid_t cuid_;
 public:
   ProcessChokedPiece(const std::shared_ptr<Peer>& peer,
-                     const std::shared_ptr<PieceStorage>& pieceStorage,
+                     PieceStorage* pieceStorage,
                      cuid_t cuid):
     peer_(peer),
     pieceStorage_(pieceStorage),
@@ -262,8 +263,7 @@ void DefaultBtRequestFactory::getTargetPieceIndexes
                  std::mem_fn(&Piece::getIndex));
 }
 
-void DefaultBtRequestFactory::setPieceStorage
-(const std::shared_ptr<PieceStorage>& pieceStorage)
+void DefaultBtRequestFactory::setPieceStorage(PieceStorage* pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }

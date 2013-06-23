@@ -212,7 +212,7 @@ PeerInteractionCommand::PeerInteractionCommand
 
   DefaultBtRequestFactory* reqFactoryPtr(new DefaultBtRequestFactory());
   reqFactoryPtr->setPeer(getPeer());
-  reqFactoryPtr->setPieceStorage(pieceStorage);
+  reqFactoryPtr->setPieceStorage(pieceStorage.get());
   reqFactoryPtr->setBtMessageDispatcher(dispatcherPtr);
   reqFactoryPtr->setBtMessageFactory(factoryPtr);
   reqFactoryPtr->setCuid(cuid);

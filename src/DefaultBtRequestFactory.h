@@ -51,7 +51,7 @@ class Piece;
 
 class DefaultBtRequestFactory : public BtRequestFactory {
 private:
-  std::shared_ptr<PieceStorage> pieceStorage_;
+  PieceStorage* pieceStorage_;
   std::shared_ptr<Peer> peer_;
   BtMessageDispatcher* dispatcher_;
   BtMessageFactory* messageFactory_;
@@ -91,7 +91,7 @@ public:
     return pieces_;
   }
 
-  void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage);
+  void setPieceStorage(PieceStorage* pieceStorage);
 
   void setPeer(const std::shared_ptr<Peer>& peer);
 

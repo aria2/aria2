@@ -97,7 +97,7 @@ public:
     dispatcher_.reset(new MockBtMessageDispatcher());
 
     requestFactory_.reset(new DefaultBtRequestFactory());
-    requestFactory_->setPieceStorage(pieceStorage_);
+    requestFactory_->setPieceStorage(pieceStorage_.get());
     requestFactory_->setPeer(peer_);
     requestFactory_->setBtMessageDispatcher(dispatcher_.get());
     requestFactory_->setBtMessageFactory(messageFactory_.get());
