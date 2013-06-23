@@ -210,7 +210,7 @@ bool HttpServerBodyCommand::execute()
         switch(httpServer_->getRequestType()) {
         case RPC_TYPE_XML: {
 #ifdef ENABLE_XML_RPC
-          auto dw = std::static_pointer_cast<rpc::XmlRpcDiskWriter>
+          auto dw = static_cast<rpc::XmlRpcDiskWriter*>
             (httpServer_->getBody());
           int error;
           error = dw->finalize();
@@ -255,7 +255,7 @@ bool HttpServerBodyCommand::execute()
                param.request.size(),
                error);
           } else {
-            auto dw = std::static_pointer_cast<json::JsonDiskWriter>
+            auto dw = static_cast<json::JsonDiskWriter*>
               (httpServer_->getBody());
             error = dw->finalize();
             if(error == 0) {

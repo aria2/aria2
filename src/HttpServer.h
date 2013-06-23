@@ -67,14 +67,14 @@ private:
   std::shared_ptr<SocketCore> socket_;
   std::shared_ptr<SocketRecvBuffer> socketRecvBuffer_;
   SocketBuffer socketBuffer_;
-  std::shared_ptr<HttpHeaderProcessor> headerProcessor_;
+  std::unique_ptr<HttpHeaderProcessor> headerProcessor_;
   std::shared_ptr<HttpHeader> lastRequestHeader_;
   int64_t lastContentLength_;
   // How many bytes are consumed. The total number of bytes is
   // lastContentLength_.
   int64_t bodyConsumed_;
   RequestType reqType_;
-  std::shared_ptr<DiskWriter> lastBody_;
+  std::unique_ptr<DiskWriter> lastBody_;
   bool keepAlive_;
   bool gzip_;
   std::string username_;
@@ -101,10 +101,7 @@ public:
 
   std::string createQuery() const;
 
-  const std::shared_ptr<DiskWriter>& getBody() const
-  {
-    return lastBody_;
-  }
+  DiskWriter* getBody() const;
 
   RequestType getRequestType() const
   {

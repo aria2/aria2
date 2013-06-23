@@ -61,7 +61,7 @@ HttpServer::HttpServer(const std::shared_ptr<SocketCore>& socket)
  : socket_(socket),
    socketRecvBuffer_(new SocketRecvBuffer(socket_)),
    socketBuffer_(socket),
-   headerProcessor_(new HttpHeaderProcessor
+   headerProcessor_(make_unique<HttpHeaderProcessor>
                     (HttpHeaderProcessor::SERVER_PARSER)),
    lastContentLength_(0),
    bodyConsumed_(0),
@@ -380,6 +380,11 @@ std::string HttpServer::createQuery() const
     }
     return reqPath.substr(start, i - start);
   }
+}
+
+DiskWriter* HttpServer::getBody() const
+{
+  return lastBody_.get();
 }
 
 bool HttpServer::supportsPersistentConnection() const
