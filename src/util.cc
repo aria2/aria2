@@ -1184,16 +1184,15 @@ std::string getContentDispositionFilename(const std::string& header)
   }
 }
 
-std::string toUpper(const std::string& src) {
-  std::string temp = src;
-  uppercase(temp);
-  return temp;
+std::string toUpper(std::string src)
+{
+  uppercase(src);
+  return src;
 }
 
-std::string toLower(const std::string& src) {
-  std::string temp = src;
-  lowercase(temp);
-  return temp;
+std::string toLower(std::string src) {
+  lowercase(src);
+  return src;
 }
 
 void uppercase(std::string& s)

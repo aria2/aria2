@@ -325,9 +325,9 @@ ssize_t parse_content_disposition(char *dest, size_t destlen,
 
 std::string getContentDispositionFilename(const std::string& header);
 
-std::string toUpper(const std::string& src);
+std::string toUpper(std::string src);
 
-std::string toLower(const std::string& src);
+std::string toLower(std::string src);
 
 void uppercase(std::string& s);
 

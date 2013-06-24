@@ -380,8 +380,7 @@ bool goodPath
 
 std::string canonicalizeHost(const std::string& host)
 {
-  std::string ch = util::toLower(host);
-  return ch;
+  return util::toLower(host);
 }
 
 bool domainMatch(const std::string& requestHost, const std::string& domain)
