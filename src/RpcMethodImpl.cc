@@ -1450,8 +1450,7 @@ void changeOption
   grOption->merge(option);
   if(option.defined(PREF_CHECKSUM)) {
     const std::string& checksum = grOption->get(PREF_CHECKSUM);
-    std::pair<Scip, Scip> p;
-    util::divide(p, checksum.begin(), checksum.end(), '=');
+    auto p = util::divide(std::begin(checksum), std::end(checksum), '=');
     std::string hashType(p.first.first, p.first.second);
     util::lowercase(hashType);
     dctx->setDigest(hashType, util::fromHex(p.second.first, p.second.second));

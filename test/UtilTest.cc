@@ -266,33 +266,32 @@ void UtilTest::testLstripIter_char()
 }
 
 void UtilTest::testDivide() {
-  std::pair<Sip, Sip> p1;
   std::string s = "name=value";
-  util::divide(p1, s.begin(), s.end(), '=');
+  auto p1 = util::divide(std::begin(s), std::end(s), '=');
   CPPUNIT_ASSERT_EQUAL(std::string("name"),
                        std::string(p1.first.first, p1.first.second));
   CPPUNIT_ASSERT_EQUAL(std::string("value"),
                        std::string(p1.second.first, p1.second.second));
   s = " name = value ";
-  util::divide(p1, s.begin(), s.end(), '=');
+  p1 = util::divide(std::begin(s), std::end(s), '=');
   CPPUNIT_ASSERT_EQUAL(std::string("name"),
                        std::string(p1.first.first, p1.first.second));
   CPPUNIT_ASSERT_EQUAL(std::string("value"),
                        std::string(p1.second.first, p1.second.second));
   s = "=value";
-  util::divide(p1, s.begin(), s.end(), '=');
+  p1 = util::divide(std::begin(s), std::end(s), '=');
   CPPUNIT_ASSERT_EQUAL(std::string(""),
                        std::string(p1.first.first, p1.first.second));
   CPPUNIT_ASSERT_EQUAL(std::string("value"),
                        std::string(p1.second.first, p1.second.second));
   s = "name=";
-  util::divide(p1, s.begin(), s.end(), '=');
+  p1 = util::divide(std::begin(s), std::end(s), '=');
   CPPUNIT_ASSERT_EQUAL(std::string("name"),
                        std::string(p1.first.first, p1.first.second));
   CPPUNIT_ASSERT_EQUAL(std::string(""),
                        std::string(p1.second.first, p1.second.second));
   s = "name";
-  util::divide(p1, s.begin(), s.end(), '=');
+  p1 = util::divide(std::begin(s), std::end(s), '=');
   CPPUNIT_ASSERT_EQUAL(std::string("name"),
                        std::string(p1.first.first, p1.first.second));
   CPPUNIT_ASSERT_EQUAL(std::string(""),

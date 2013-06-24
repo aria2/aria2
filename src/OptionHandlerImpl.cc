@@ -372,8 +372,7 @@ ChecksumOptionHandler::~ChecksumOptionHandler() {}
 void ChecksumOptionHandler::parseArg(Option& option, const std::string& optarg)
   const
 {
-  std::pair<Scip, Scip> p;
-  util::divide(p, optarg.begin(), optarg.end(), '=');
+  auto p = util::divide(std::begin(optarg), std::end(optarg), '=');
   std::string hashType(p.first.first, p.first.second);
   std::string hexDigest(p.second.first, p.second.second);
   util::lowercase(hashType);

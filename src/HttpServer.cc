@@ -289,14 +289,12 @@ bool HttpServer::authenticate()
   if(authHeader.empty()) {
     return false;
   }
-  std::pair<Scip, Scip> p;
-  util::divide(p, authHeader.begin(), authHeader.end(), ' ');
+  auto p = util::divide(std::begin(authHeader), std::end(authHeader), ' ');
   if(!util::streq(p.first.first, p.first.second, "Basic")) {
     return false;
   }
   std::string userpass = base64::decode(p.second.first, p.second.second);
-  std::pair<Sip, Sip> up;
-  util::divide(up, userpass.begin(), userpass.end(), ':');
+  auto up = util::divide(std::begin(userpass), std::end(userpass), ':');
   return util::streq(up.first.first, up.first.second,
                      username_.begin(), username_.end()) &&
     util::streq(up.second.first, up.second.second,

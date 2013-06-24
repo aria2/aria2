@@ -1482,8 +1482,7 @@ std::string htmlEscape(const std::string& src)
 std::pair<size_t, std::string>
 parseIndexPath(const std::string& line)
 {
-  std::pair<Scip, Scip> p;
-  divide(p, line.begin(), line.end(), '=');
+  auto p = divide(std::begin(line), std::end(line), '=');
   uint32_t index;
   if(!parseUIntNoThrow(index, std::string(p.first.first, p.first.second))) {
     throw DL_ABORT_EX("Bad path index");

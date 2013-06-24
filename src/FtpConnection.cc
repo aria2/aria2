@@ -403,8 +403,9 @@ int FtpConnection::receiveSizeResponse(int64_t& size)
   std::pair<int, std::string> response;
   if(bulkReceiveResponse(response)) {
     if(response.first == 213) {
-      std::pair<Sip, Sip> rp;
-      util::divide(rp, response.second.begin(), response.second.end(), ' ');
+      auto rp = util::divide(std::begin(response.second),
+                             std::end(response.second),
+                             ' ');
       if(!util::parseLLIntNoThrow(size, std::string(rp.second.first,
                                                     rp.second.second)) ||
          size < 0) {

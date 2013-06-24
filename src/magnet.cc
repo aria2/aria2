@@ -52,8 +52,7 @@ std::shared_ptr<Dict> parse(const std::string& magnet)
                   '&');
   for(std::vector<Scip>::const_iterator i = queries.begin(),
         eoi = queries.end(); i != eoi; ++i) {
-    std::pair<Scip, Scip> p;
-    util::divide(p, (*i).first, (*i).second, '=');
+    auto p = util::divide((*i).first, (*i).second, '=');
     std::string name(p.first.first, p.first.second);
     std::string value(util::percentDecode(p.second.first, p.second.second));
     List* l = downcast<List>(dict->get(name));

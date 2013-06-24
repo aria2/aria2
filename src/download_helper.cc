@@ -146,8 +146,7 @@ std::shared_ptr<RequestGroup> createRequestGroup
 #ifdef ENABLE_MESSAGE_DIGEST
   const std::string& checksum = option->get(PREF_CHECKSUM);
   if(!checksum.empty()) {
-    std::pair<Scip, Scip> p;
-    util::divide(p, std::begin(checksum), std::end(checksum), '=');
+    auto p = util::divide(std::begin(checksum), std::end(checksum), '=');
     std::string hashType(p.first.first, p.first.second);
     std::string hexDigest(p.second.first, p.second.second);
     util::lowercase(hashType);
