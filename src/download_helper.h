@@ -60,7 +60,7 @@ class GroupId;
 // adjusted using bittorrent::adjustAnnounceUri().  In this function,
 // force-sequential is ignored.
 void createRequestGroupForBitTorrent
-(std::vector<std::shared_ptr<RequestGroup> >& result,
+(std::vector<std::shared_ptr<RequestGroup>>& result,
  const std::shared_ptr<Option>& option,
  const std::vector<std::string>& uris,
  const std::string& metaInfoUri,
@@ -72,7 +72,7 @@ void createRequestGroupForBitTorrent
 // adjusted using bittorrent::adjustAnnounceUri().  In this function,
 // force-sequential is ignored.
 void createRequestGroupForBitTorrent
-(std::vector<std::shared_ptr<RequestGroup> >& result,
+(std::vector<std::shared_ptr<RequestGroup>>& result,
  const std::shared_ptr<Option>& option,
  const std::vector<std::string>& uris,
  const std::string& metaInfoUri,
@@ -86,7 +86,7 @@ void createRequestGroupForBitTorrent
 // metalink-file option. If non-empty metalinkData is specified, it is
 // used as a content of metalink file instead.
 void createRequestGroupForMetalink
-(std::vector<std::shared_ptr<RequestGroup> >& result,
+(std::vector<std::shared_ptr<RequestGroup>>& result,
  const std::shared_ptr<Option>& option,
  const std::string& metalinkData = "");
 #endif // ENABLE_METALINK
@@ -99,7 +99,7 @@ void createRequestGroupForMetalink
 // is created and uriListParser reads all input, this function returns
 // false. The option is used as a option template.
 bool createRequestGroupFromUriListParser
-(std::vector<std::shared_ptr<RequestGroup> >& result,
+(std::vector<std::shared_ptr<RequestGroup>>& result,
  const Option* option,
  UriListParser* uriListParser);
 
@@ -117,7 +117,7 @@ std::shared_ptr<UriListParser> openUriListParser(const std::string& filename);
 // The additional out and dir options can be specified after each line of URIs.
 // This optional line must start with white space(s).
 void createRequestGroupForUriList
-(std::vector<std::shared_ptr<RequestGroup> >& result,
+(std::vector<std::shared_ptr<RequestGroup>>& result,
  const std::shared_ptr<Option>& option);
 
 // Create RequestGroup object using provided uris.  If ignoreLocalPath
@@ -127,7 +127,7 @@ void createRequestGroupForUriList
 // given. If throwOnError is false, these errors are just logged as
 // error.
 void createRequestGroupForUri
-(std::vector<std::shared_ptr<RequestGroup> >& result,
+(std::vector<std::shared_ptr<RequestGroup>>& result,
  const std::shared_ptr<Option>& option,
  const std::vector<std::string>& uris,
  bool ignoreForceSequential = false,
@@ -136,7 +136,8 @@ void createRequestGroupForUri
 
 template<typename InputIterator>
 void setMetadataInfo
-(InputIterator first, InputIterator last, const std::shared_ptr<MetadataInfo>& mi)
+(InputIterator first, InputIterator last,
+ const std::shared_ptr<MetadataInfo>& mi)
 {
   for(; first != last; ++first) {
     (*first)->setMetadataInfo(mi);
@@ -144,8 +145,9 @@ void setMetadataInfo
 }
 
 std::shared_ptr<MetadataInfo>
-createMetadataInfoFromFirstFileEntry(const std::shared_ptr<GroupId>& gid,
-                                     const std::shared_ptr<DownloadContext>& dctx);
+createMetadataInfoFromFirstFileEntry
+(const std::shared_ptr<GroupId>& gid,
+ const std::shared_ptr<DownloadContext>& dctx);
 
 // Removes option value which is only effective at the first
 // construction time.
