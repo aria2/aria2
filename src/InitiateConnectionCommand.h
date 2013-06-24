@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-class BackupConnectInfo;
+struct BackupConnectInfo;
 class ConnectCommand;
 
 class InitiateConnectionCommand : public AbstractCommand {

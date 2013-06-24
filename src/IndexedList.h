@@ -64,8 +64,8 @@ struct IndexedListIterator {
   typedef ValueType value_type;
   typedef PointerType pointer;
   typedef ReferenceType reference;
-  typedef typename SeqIteratorType::size_type size_type;
-  typedef typename SeqIteratorType::difference_type difference_type;
+  typedef typename SeqType::size_type size_type;
+  typedef typename SeqType::difference_type difference_type;
   typedef IndexedListIterator SelfType;
 
   IndexedListIterator() {}
