@@ -35,13 +35,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION(SessionSerializerTest);
 void SessionSerializerTest::testSave()
 {
 #if defined(ENABLE_BITTORRENT) && defined(ENABLE_METALINK)
-  const std::string URIs[] =
-    { "http://localhost/file",
-      "http://mirror/file",
-      A2_TEST_DIR"/test.torrent",
-      A2_TEST_DIR"/serialize_session.meta4",
-      "magnet:?xt=urn:btih:248D0A1CD08284299DE78D5C1ED359BB46717D8C"};
-  std::vector<std::string> uris(vbegin(URIs), vend(URIs));
+  std::vector<std::string> uris {
+    "http://localhost/file",
+    "http://mirror/file",
+    A2_TEST_DIR"/test.torrent",
+    A2_TEST_DIR"/serialize_session.meta4",
+    "magnet:?xt=urn:btih:248D0A1CD08284299DE78D5C1ED359BB46717D8C"};
   std::vector<std::shared_ptr<RequestGroup> > result;
   std::shared_ptr<Option> option(new Option());
   option->put(PREF_DIR, "/tmp");

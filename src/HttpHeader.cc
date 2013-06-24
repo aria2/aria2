@@ -273,11 +273,11 @@ const char* INTERESTING_HEADER_NAMES[] = {
 
 int idInterestingHeader(const char* hdName)
 {
-  const char** i = std::lower_bound(vbegin(INTERESTING_HEADER_NAMES),
-                                    vend(INTERESTING_HEADER_NAMES),
+  const char** i = std::lower_bound(std::begin(INTERESTING_HEADER_NAMES),
+                                    std::end(INTERESTING_HEADER_NAMES),
                                     hdName, util::strless);
-  if(i != vend(INTERESTING_HEADER_NAMES) && strcmp(*i, hdName) == 0 ) {
-    return i - vbegin(INTERESTING_HEADER_NAMES);
+  if(i != std::end(INTERESTING_HEADER_NAMES) && strcmp(*i, hdName) == 0 ) {
+    return i - std::begin(INTERESTING_HEADER_NAMES);
   } else {
     return HttpHeader::MAX_INTERESTING_HEADER;
   }

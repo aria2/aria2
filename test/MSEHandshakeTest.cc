@@ -35,7 +35,7 @@ public:
     memset(infoHash, 0, sizeof(infoHash));
     {
       auto torrentAttrs = make_unique<TorrentAttribute>();
-      torrentAttrs->infoHash = std::string(vbegin(infoHash), vend(infoHash));
+      torrentAttrs->infoHash.assign(std::begin(infoHash), std::end(infoHash));
       dctx_->setAttribute(CTX_ATTR_BT, std::move(torrentAttrs));
     }
   }

@@ -13,7 +13,6 @@ class array_funTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testArrayLength);
   CPPUNIT_TEST(testArrayPtr);
   CPPUNIT_TEST(testArrayWrapper);
-  CPPUNIT_TEST(testVbeginVend);
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -24,7 +23,6 @@ public:
   void testArrayLength();
   void testArrayPtr();
   void testArrayWrapper();
-  void testVbeginVend();
 
   struct X{
     int m;
@@ -125,13 +123,6 @@ void array_funTest::testArrayWrapper()
   array_wrapper<struct X, 10> x1;
   arrayPtrCast(x1);
   arrayPtrConstCast(x1);
-}
-
-void array_funTest::testVbeginVend()
-{
-  int a[] = {1,2,3};
-  CPPUNIT_ASSERT_EQUAL(&a[0], vbegin(a));
-  CPPUNIT_ASSERT_EQUAL(a+3, vend(a));
 }
 
 } // namespace aria2

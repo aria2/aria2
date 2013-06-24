@@ -29,15 +29,11 @@ private:
 public:
   void setUp()
   {
-    static const char* urisSrc[] = {
-      "http://alpha/file",
-      "ftp://alpha/file",
-      "http://bravo/file"
-    };
-    std::vector<std::string> uris;
-    uris.assign(vbegin(urisSrc), vend(urisSrc));
-
-    fileEntry_.setUris(uris);
+    fileEntry_.setUris({
+        "http://alpha/file",
+        "ftp://alpha/file",
+        "http://bravo/file"
+    });
 
     ssm.reset(new ServerStatMan());
     sel.reset(new FeedbackURISelector(ssm));

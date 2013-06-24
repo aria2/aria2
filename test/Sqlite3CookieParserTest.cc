@@ -89,7 +89,7 @@ void Sqlite3CookieParserTest::testMozParse_fileNotFound()
     // SUCCESS
     const char A2_SQLITE_ERR[] = "SQLite3 database is not opened";
     CPPUNIT_ASSERT(util::startsWith(e.what(), e.what()+strlen(e.what()),
-                                    A2_SQLITE_ERR, vend(A2_SQLITE_ERR)-1));
+                                    A2_SQLITE_ERR, std::end(A2_SQLITE_ERR)-1));
   }
 }
 

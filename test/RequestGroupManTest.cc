@@ -143,18 +143,13 @@ void RequestGroupManTest::testLoadServerStat()
 
 void RequestGroupManTest::testChangeReservedGroupPosition()
 {
-  std::shared_ptr<RequestGroup> gs[] = {
-    std::shared_ptr<RequestGroup>(new RequestGroup(GroupId::create(),
-                                                util::copy(option_))),
-    std::shared_ptr<RequestGroup>(new RequestGroup(GroupId::create(),
-                                                util::copy(option_))),
-    std::shared_ptr<RequestGroup>(new RequestGroup(GroupId::create(),
-                                                util::copy(option_))),
-    std::shared_ptr<RequestGroup>(new RequestGroup(GroupId::create(),
-                                                util::copy(option_)))
+  std::vector<std::shared_ptr<RequestGroup>> gs {
+    std::make_shared<RequestGroup>(GroupId::create(), util::copy(option_)),
+    std::make_shared<RequestGroup>(GroupId::create(), util::copy(option_)),
+    std::make_shared<RequestGroup>(GroupId::create(), util::copy(option_)),
+    std::make_shared<RequestGroup>(GroupId::create(), util::copy(option_))
   };
-  std::vector<std::shared_ptr<RequestGroup> > groups(vbegin(gs), vend(gs));
-  RequestGroupMan rm(groups, 0, option_.get());
+  RequestGroupMan rm(gs, 0, option_.get());
 
   CPPUNIT_ASSERT_EQUAL
     ((size_t)0, rm.changeReservedGroupPosition(gs[0]->getGID(),
@@ -228,8 +223,8 @@ void RequestGroupManTest::testFillRequestGroupFromReserver()
     createRequestGroup(0, 0, "foo5", "http://host/foo5", util::copy(option_))
   };
   rgs[1]->setPauseRequested(true);
-  for(std::shared_ptr<RequestGroup>* i = vbegin(rgs); i != vend(rgs); ++i) {
-    rgman_->addReservedGroup(*i);
+  for(const auto& i : rgs) {
+    rgman_->addReservedGroup(i);
   }
   rgman_->fillRequestGroupFromReserver(e_.get());
 
@@ -243,8 +238,8 @@ void RequestGroupManTest::testFillRequestGroupFromReserver_uriParser()
     createRequestGroup(0, 0, "mem2", "http://mem2", util::copy(option_)),
   };
   rgs[0]->setPauseRequested(true);
-  for(std::shared_ptr<RequestGroup>* i = vbegin(rgs); i != vend(rgs); ++i) {
-    rgman_->addReservedGroup(*i);
+  for(const auto& i : rgs) {
+    rgman_->addReservedGroup(i);
   }
 
   std::shared_ptr<UriListParser> flp
@@ -262,28 +257,26 @@ void RequestGroupManTest::testFillRequestGroupFromReserver_uriParser()
 
 void RequestGroupManTest::testInsertReservedGroup()
 {
-  std::shared_ptr<RequestGroup> rgs1[] = {
+  std::vector<std::shared_ptr<RequestGroup>> rgs1 {
     std::shared_ptr<RequestGroup>(new RequestGroup(GroupId::create(),
                                                 util::copy(option_))),
     std::shared_ptr<RequestGroup>(new RequestGroup(GroupId::create(),
                                                 util::copy(option_)))
   };
-  std::shared_ptr<RequestGroup> rgs2[] = {
+  std::vector<std::shared_ptr<RequestGroup>> rgs2 {
     std::shared_ptr<RequestGroup>(new RequestGroup(GroupId::create(),
                                                 util::copy(option_))),
     std::shared_ptr<RequestGroup>(new RequestGroup(GroupId::create(),
                                                 util::copy(option_)))
   };
-  std::vector<std::shared_ptr<RequestGroup> > groups(vbegin(rgs1), vend(rgs1));
-  rgman_->insertReservedGroup(0, groups);
+  rgman_->insertReservedGroup(0, rgs1);
   CPPUNIT_ASSERT_EQUAL((size_t)2, rgman_->getReservedGroups().size());
   RequestGroupList::const_iterator itr;
   itr = rgman_->getReservedGroups().begin();
   CPPUNIT_ASSERT_EQUAL(rgs1[0]->getGID(), (*itr++)->getGID());
   CPPUNIT_ASSERT_EQUAL(rgs1[1]->getGID(), (*itr++)->getGID());
 
-  groups.assign(vbegin(rgs2), vend(rgs2));
-  rgman_->insertReservedGroup(1, groups);
+  rgman_->insertReservedGroup(1, rgs2);
   CPPUNIT_ASSERT_EQUAL((size_t)4, rgman_->getReservedGroups().size());
   itr = rgman_->getReservedGroups().begin();
   ++itr;

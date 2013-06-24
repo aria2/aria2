@@ -226,9 +226,8 @@ Time Time::parseHTTPDate(const std::string& datetime)
     &parseAsctime,
     &parseRFC850Ext,
   };
-  for(Time (**funcsp)(const std::string&) = &funcs[0];
-      funcsp != vend(funcs); ++funcsp) {
-    Time t = (*funcsp)(datetime);
+  for(auto func : funcs) {
+    Time t = func(datetime);
     if(t.good()) {
       return t;
     }

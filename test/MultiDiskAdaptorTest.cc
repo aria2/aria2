@@ -47,17 +47,18 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( MultiDiskAdaptorTest );
 
-std::vector<std::shared_ptr<FileEntry> > createEntries() {
-  std::shared_ptr<FileEntry> array[] = {
-    std::shared_ptr<FileEntry>(new FileEntry(A2_TEST_OUT_DIR"/file0.txt", 0, 0)),
-    std::shared_ptr<FileEntry>(new FileEntry(A2_TEST_OUT_DIR"/file1.txt", 15, 0)),
-    std::shared_ptr<FileEntry>(new FileEntry(A2_TEST_OUT_DIR"/file2.txt", 7, 15)),
-    std::shared_ptr<FileEntry>(new FileEntry(A2_TEST_OUT_DIR"/file3.txt", 0, 22)),
-    std::shared_ptr<FileEntry>(new FileEntry(A2_TEST_OUT_DIR"/file4.txt", 2, 22)),
-    std::shared_ptr<FileEntry>(new FileEntry(A2_TEST_OUT_DIR"/file5.txt", 0, 24)),
-    std::shared_ptr<FileEntry>(new FileEntry(A2_TEST_OUT_DIR"/file6.txt", 3, 24)),
-    std::shared_ptr<FileEntry>(new FileEntry(A2_TEST_OUT_DIR"/file7.txt", 0, 27)),
-    std::shared_ptr<FileEntry>(new FileEntry(A2_TEST_OUT_DIR"/file8.txt", 2, 27)),
+std::vector<std::shared_ptr<FileEntry> > createEntries()
+{
+  std::vector<std::shared_ptr<FileEntry>> entries {
+    std::make_shared<FileEntry>(A2_TEST_OUT_DIR "/file0.txt", 0, 0),
+    std::make_shared<FileEntry>(A2_TEST_OUT_DIR "/file1.txt", 15, 0),
+    std::make_shared<FileEntry>(A2_TEST_OUT_DIR "/file2.txt", 7, 15),
+    std::make_shared<FileEntry>(A2_TEST_OUT_DIR "/file3.txt", 0, 22),
+    std::make_shared<FileEntry>(A2_TEST_OUT_DIR "/file4.txt", 2, 22),
+    std::make_shared<FileEntry>(A2_TEST_OUT_DIR "/file5.txt", 0, 24),
+    std::make_shared<FileEntry>(A2_TEST_OUT_DIR "/file6.txt", 3, 24),
+    std::make_shared<FileEntry>(A2_TEST_OUT_DIR "/file7.txt", 0, 27),
+    std::make_shared<FileEntry>(A2_TEST_OUT_DIR "/file8.txt", 2, 27),
   };
   //           1    1    2    2    3
   // 0....5....0....5....0....5....0
@@ -71,10 +72,8 @@ std::vector<std::shared_ptr<FileEntry> > createEntries() {
   //                         *** file6
   //                            |file7
   //                            ** file8
-  std::vector<std::shared_ptr<FileEntry> > entries(vbegin(array), vend(array));
-  for(std::vector<std::shared_ptr<FileEntry> >::const_iterator i = entries.begin();
-      i != entries.end(); ++i) {
-    File((*i)->getPath()).remove();
+  for(const auto& i : entries) {
+    File(i->getPath()).remove();
   }
   return entries;
 }
@@ -339,14 +338,13 @@ void MultiDiskAdaptorTest::testWriteData() {
   CPPUNIT_ASSERT(File(A2_TEST_OUT_DIR"/file5.txt").isFile());
 }
 
-void MultiDiskAdaptorTest::testReadData() {
-  std::shared_ptr<FileEntry> entry1(new FileEntry(A2_TEST_DIR"/file1r.txt", 15, 0));
-  std::shared_ptr<FileEntry> entry2(new FileEntry(A2_TEST_DIR"/file2r.txt", 7, 15));
-  std::shared_ptr<FileEntry> entry3(new FileEntry(A2_TEST_DIR"/file3r.txt", 3, 22));
-  std::vector<std::shared_ptr<FileEntry> > entries;
-  entries.push_back(entry1);
-  entries.push_back(entry2);
-  entries.push_back(entry3);
+void MultiDiskAdaptorTest::testReadData()
+{
+  std::vector<std::shared_ptr<FileEntry>> entries {
+    std::make_shared<FileEntry>(A2_TEST_DIR "/file1r.txt", 15, 0),
+    std::make_shared<FileEntry>(A2_TEST_DIR "/file2r.txt", 7, 15),
+    std::make_shared<FileEntry>(A2_TEST_DIR "/file3r.txt", 3, 22)
+  };
 
   adaptor->setFileEntries(entries.begin(), entries.end());
   adaptor->enableReadOnly();
@@ -363,22 +361,21 @@ void MultiDiskAdaptorTest::testReadData() {
   CPPUNIT_ASSERT_EQUAL(std::string("KLMN"), std::string((char*)buf));
   adaptor->readData(buf, 25, 0);
   buf[25] = '\0';
-  CPPUNIT_ASSERT_EQUAL(std::string("1234567890ABCDEFGHIJKLMNO"), std::string((char*)buf));
+  CPPUNIT_ASSERT_EQUAL(std::string("1234567890ABCDEFGHIJKLMNO"),
+                       std::string((char*)buf));
 }
 
 void MultiDiskAdaptorTest::testCutTrailingGarbage()
 {
   std::string dir = A2_TEST_OUT_DIR;
   std::string prefix = "aria2_MultiDiskAdaptorTest_testCutTrailingGarbage_";
-  std::shared_ptr<FileEntry> entries[] = {
-    std::shared_ptr<FileEntry>(new FileEntry(dir+"/"+prefix+"1", 256, 0)),
-    std::shared_ptr<FileEntry>(new FileEntry(dir+"/"+prefix+"2", 512, 256))
+  std::vector<std::shared_ptr<FileEntry> > fileEntries {
+    std::make_shared<FileEntry>(dir+"/"+prefix+"1", 256, 0),
+    std::make_shared<FileEntry>(dir+"/"+prefix+"2", 512, 256)
   };
-  for(size_t i = 0; i < A2_ARRAY_LEN(entries); ++i) {
-    createFile(entries[i]->getPath(), entries[i]->getLength()+100);
+  for(const auto& i : fileEntries) {
+    createFile(i->getPath(), i->getLength()+100);
   }
-  std::vector<std::shared_ptr<FileEntry> > fileEntries
-    (vbegin(entries), vend(entries));
 
   MultiDiskAdaptor adaptor;
   adaptor.setFileEntries(fileEntries.begin(), fileEntries.end());
@@ -390,24 +387,22 @@ void MultiDiskAdaptorTest::testCutTrailingGarbage()
   adaptor.cutTrailingGarbage();
 
   CPPUNIT_ASSERT_EQUAL((int64_t)256,
-                       File(entries[0]->getPath()).size());
+                       File(fileEntries[0]->getPath()).size());
   CPPUNIT_ASSERT_EQUAL((int64_t)512,
-                       File(entries[1]->getPath()).size());
+                       File(fileEntries[1]->getPath()).size());
 }
 
 void MultiDiskAdaptorTest::testSize()
 {
   std::string dir = A2_TEST_OUT_DIR;
   std::string prefix = "aria2_MultiDiskAdaptorTest_testSize_";
-  std::shared_ptr<FileEntry> entries[] = {
-    std::shared_ptr<FileEntry>(new FileEntry(dir+"/"+prefix+"1", 1, 0)),
-    std::shared_ptr<FileEntry>(new FileEntry(dir+"/"+prefix+"2", 1, 1))
+  std::vector<std::shared_ptr<FileEntry>> fileEntries {
+    std::make_shared<FileEntry>(dir+"/"+prefix+"1", 1, 0),
+    std::make_shared<FileEntry>(dir+"/"+prefix+"2", 1, 1)
   };
-  for(size_t i = 0; i < A2_ARRAY_LEN(entries); ++i) {
-    createFile(entries[i]->getPath(), entries[i]->getLength());
+  for(const auto& i : fileEntries) {
+    createFile(i->getPath(), i->getLength());
   }
-  std::vector<std::shared_ptr<FileEntry> > fileEntries
-    (vbegin(entries), vend(entries));
 
   MultiDiskAdaptor adaptor;
   adaptor.setFileEntries(fileEntries.begin(), fileEntries.end());
@@ -422,11 +417,11 @@ void MultiDiskAdaptorTest::testSize()
 void MultiDiskAdaptorTest::testUtime()
 {
   std::string storeDir = A2_TEST_OUT_DIR"/aria2_MultiDiskAdaptorTest_testUtime";
-  std::shared_ptr<FileEntry> entries[] = {
-    std::shared_ptr<FileEntry>(new FileEntry(storeDir+"/requested", 0, 0)),
-    std::shared_ptr<FileEntry>(new FileEntry(storeDir+"/notFound", 0, 0)),
-    std::shared_ptr<FileEntry>(new FileEntry(storeDir+"/notRequested", 0, 0)),
-    std::shared_ptr<FileEntry>(new FileEntry(storeDir+"/anotherRequested", 0, 0)),
+  std::vector<std::shared_ptr<FileEntry> > entries {
+    std::make_shared<FileEntry>(storeDir+"/requested", 0, 0),
+    std::make_shared<FileEntry>(storeDir+"/notFound", 0, 0),
+    std::make_shared<FileEntry>(storeDir+"/notRequested", 0, 0),
+    std::make_shared<FileEntry>(storeDir+"/anotherRequested", 0, 0),
   };
 
   createFile(entries[0]->getPath(), entries[0]->getLength());
@@ -436,10 +431,8 @@ void MultiDiskAdaptorTest::testUtime()
 
   entries[2]->setRequested(false);
 
-  std::vector<std::shared_ptr<FileEntry> > fileEntries
-    (vbegin(entries), vend(entries));
   MultiDiskAdaptor adaptor;
-  adaptor.setFileEntries(fileEntries.begin(), fileEntries.end());
+  adaptor.setFileEntries(entries.begin(), entries.end());
 
   time_t atime = (time_t) 100000;
   time_t mtime = (time_t) 200000;
@@ -460,15 +453,15 @@ void MultiDiskAdaptorTest::testWriteCache()
 {
   std::string storeDir =
     A2_TEST_OUT_DIR"/aria2_MultiDiskAdaptorTest_testWriteCache";
-  std::shared_ptr<FileEntry> entries[] = {
-    std::shared_ptr<FileEntry>(new FileEntry(storeDir+"/file1", 16385, 0)),
-    std::shared_ptr<FileEntry>(new FileEntry(storeDir+"/file2", 4098, 16385))
+  std::vector<std::shared_ptr<FileEntry>> entries {
+    std::make_shared<FileEntry>(storeDir+"/file1", 16385, 0),
+    std::make_shared<FileEntry>(storeDir+"/file2", 4098, 16385)
   };
-  for(int i = 0; i < 2; ++i) {
-    File(entries[i]->getPath()).remove();
+  for(const auto& i : entries) {
+    File(i->getPath()).remove();
   }
   std::shared_ptr<MultiDiskAdaptor> adaptor(new MultiDiskAdaptor());
-  adaptor->setFileEntries(vbegin(entries), vend(entries));
+  adaptor->setFileEntries(std::begin(entries), std::end(entries));
   WrDiskCacheEntry cache(adaptor);
   std::string data1(16383, '1'), data2(100, '2'), data3(4000, '3');
   cache.cacheData(createDataCell(0, data1.c_str()));

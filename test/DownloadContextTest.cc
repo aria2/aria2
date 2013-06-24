@@ -41,7 +41,7 @@ void DownloadContextTest::testFindFileEntryByOffset()
       std::shared_ptr<FileEntry>(new FileEntry("file5",3000,3000)),
       std::shared_ptr<FileEntry>(new FileEntry("file6",0,6000))
     };
-  ctx.setFileEntries(vbegin(fileEntries), vend(fileEntries));
+  ctx.setFileEntries(std::begin(fileEntries), std::end(fileEntries));
 
   CPPUNIT_ASSERT_EQUAL(std::string("file1"),
                        ctx.findFileEntryByOffset(0)->getPath());

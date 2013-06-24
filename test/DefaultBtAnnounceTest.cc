@@ -63,7 +63,7 @@ public:
     dctx_.reset(new DownloadContext(pieceLength, totalLength));
     {
       auto torrentAttrs = make_unique<TorrentAttribute>();
-      torrentAttrs->infoHash = std::string(vbegin(infoHash), vend(infoHash));
+      torrentAttrs->infoHash.assign(std::begin(infoHash), std::end(infoHash));
       dctx_->setAttribute(CTX_ATTR_BT, std::move(torrentAttrs));
     }
     dctx_->getNetStat().updateDownloadLength(pieceLength*5);
@@ -342,7 +342,7 @@ void DefaultBtAnnounceTest::testURLOrderInStoppedEvent()
                          "http://localhost2/announce" };
 
   std::shared_ptr<List> announceList = List::g();
-  announceList->append(createAnnounceTier(vbegin(urls), vend(urls)));
+  announceList->append(createAnnounceTier(std::begin(urls), std::end(urls)));
   setAnnounceList(dctx_, announceList);
 
   DefaultBtAnnounce btAnnounce(dctx_.get(), option_);
@@ -373,7 +373,7 @@ void DefaultBtAnnounceTest::testURLOrderInCompletedEvent()
                          "http://localhost2/announce" };
 
   std::shared_ptr<List> announceList = List::g();
-  announceList->append(createAnnounceTier(vbegin(urls), vend(urls)));
+  announceList->append(createAnnounceTier(std::begin(urls), std::end(urls)));
   setAnnounceList(dctx_, announceList);
 
   DefaultBtAnnounce btAnnounce(dctx_.get(), option_);

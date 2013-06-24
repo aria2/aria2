@@ -100,14 +100,13 @@ void DHTRoutingTableSerializerTest::testSerialize()
 {
   std::shared_ptr<DHTNode> localNode(new DHTNode());
 
-  std::shared_ptr<DHTNode> nodesSrc[3];
-  for(size_t i = 0; i < A2_ARRAY_LEN(nodesSrc); ++i) {
-    nodesSrc[i].reset(new DHTNode());
-    nodesSrc[i]->setIPAddress("192.168.0."+util::uitos(i+1));
-    nodesSrc[i]->setPort(6881+i);
+  std::vector<std::shared_ptr<DHTNode>> nodes(3);
+  for(size_t i = 0; i < nodes.size(); ++i) {
+    nodes[i].reset(new DHTNode());
+    nodes[i]->setIPAddress("192.168.0."+util::uitos(i+1));
+    nodes[i]->setPort(6881+i);
   }
-  nodesSrc[1]->setIPAddress("non-numerical-name");
-  std::vector<std::shared_ptr<DHTNode> > nodes(vbegin(nodesSrc), vend(nodesSrc));
+  nodes[1]->setIPAddress("non-numerical-name");
 
   DHTRoutingTableSerializer s(AF_INET);
   s.setLocalNode(localNode);
@@ -228,14 +227,13 @@ void DHTRoutingTableSerializerTest::testSerialize6()
 {
   std::shared_ptr<DHTNode> localNode(new DHTNode());
 
-  std::shared_ptr<DHTNode> nodesSrc[2];
-  for(size_t i = 0; i < A2_ARRAY_LEN(nodesSrc); ++i) {
-    nodesSrc[i].reset(new DHTNode());
-    nodesSrc[i]->setIPAddress("2001::100"+util::uitos(i+1));
-    nodesSrc[i]->setPort(6881+i);
+  std::vector<std::shared_ptr<DHTNode>> nodes(2);
+  for(size_t i = 0; i < nodes.size(); ++i) {
+    nodes[i].reset(new DHTNode());
+    nodes[i]->setIPAddress("2001::100"+util::uitos(i+1));
+    nodes[i]->setPort(6881+i);
   }
-  nodesSrc[1]->setIPAddress("non-numerical-name");
-  std::vector<std::shared_ptr<DHTNode> > nodes(vbegin(nodesSrc), vend(nodesSrc));
+  nodes[1]->setIPAddress("non-numerical-name");
 
   DHTRoutingTableSerializer s(AF_INET6);
   s.setLocalNode(localNode);

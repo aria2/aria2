@@ -870,7 +870,7 @@ void RpcMethodTest::testGatherProgressCommon()
 {
   std::shared_ptr<DownloadContext> dctx(new DownloadContext(0, 0,"aria2.tar.bz2"));
   std::string uris[] = { "http://localhost/aria2.tar.bz2" };
-  dctx->getFirstFileEntry()->addUris(vbegin(uris), vend(uris));
+  dctx->getFirstFileEntry()->addUris(std::begin(uris), std::end(uris));
   std::shared_ptr<RequestGroup> group(new RequestGroup(GroupId::create(),
                                                     util::copy(option_)));
   group->setDownloadContext(dctx);
@@ -1144,12 +1144,11 @@ void RpcMethodTest::testGetSessionInfo()
 
 void RpcMethodTest::testPause()
 {
-  const std::string URIS[] = {
+  std::vector<std::string> uris {
     "http://url1",
     "http://url2",
     "http://url3",
   };
-  std::vector<std::string> uris(vbegin(URIS), vend(URIS));
   option_->put(PREF_FORCE_SEQUENTIAL, A2_V_TRUE);
   std::vector<std::shared_ptr<RequestGroup> > groups;
   createRequestGroupForUri(groups, option_, uris);

@@ -25,12 +25,12 @@ void PriorityPieceSelectorTest::testSelect()
   size_t pieceLength = 1024;
   size_t A[] = { 1,200};
   BitfieldMan bf(pieceLength, pieceLength*256);
-  for(size_t i = 0; i < A2_ARRAY_LEN(A); ++i) {
-    bf.setBit(A[i]);
+  for(auto i : A) {
+    bf.setBit(i);
   }
   PriorityPieceSelector selector
     (std::shared_ptr<PieceSelector>(new MockPieceSelector()));
-  selector.setPriorityPiece(vbegin(A), vend(A));
+  selector.setPriorityPiece(std::begin(A), std::end(A));
 
   size_t index;
   CPPUNIT_ASSERT(selector.select(index, bf.getBitfield(), bf.countBlock()));

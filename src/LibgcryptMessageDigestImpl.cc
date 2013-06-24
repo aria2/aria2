@@ -73,19 +73,22 @@ CHashFuncEntry hashFuncs[] = {
 std::shared_ptr<MessageDigestImpl> MessageDigestImpl::create
 (const std::string& hashType)
 {
-  int hashFunc = getHashFunc(vbegin(hashFuncs), vend(hashFuncs), hashType);
+  int hashFunc = getHashFunc(std::begin(hashFuncs), std::end(hashFuncs),
+                             hashType);
   return std::shared_ptr<MessageDigestImpl>(new MessageDigestImpl(hashFunc));
 }
 
 bool MessageDigestImpl::supports(const std::string& hashType)
 {
-  return vend(hashFuncs) != std::find_if(vbegin(hashFuncs), vend(hashFuncs),
-                                         CFindHashFunc(hashType));
+  return std::end(hashFuncs) != std::find_if(std::begin(hashFuncs),
+                                             std::end(hashFuncs),
+                                             CFindHashFunc(hashType));
 }
 
 size_t MessageDigestImpl::getDigestLength(const std::string& hashType)
 {
-  int hashFunc = getHashFunc(vbegin(hashFuncs), vend(hashFuncs), hashType);
+  int hashFunc = getHashFunc(std::begin(hashFuncs), std::end(hashFuncs),
+                             hashType);
   return gcry_md_get_algo_dlen(hashFunc);
 }
 

@@ -220,8 +220,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
                       (PREF_CONSOLE_LOG_LEVEL,
                        TEXT_CONSOLE_LOG_LEVEL,
                        V_NOTICE,
-                       std::vector<std::string>
-                       (vbegin(logLevels), vend(logLevels))));
+                       {std::begin(logLevels), std::end(logLevels)}));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
@@ -479,8 +478,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
                       (PREF_LOG_LEVEL,
                        TEXT_LOG_LEVEL,
                        V_DEBUG,
-                       std::vector<std::string>
-                       (vbegin(logLevels), vend(logLevels))));
+                       {std::begin(logLevels), std::end(logLevels)}));
     op->addTag(TAG_ADVANCED);
     op->setChangeGlobalOption(true);
     handlers.push_back(op);

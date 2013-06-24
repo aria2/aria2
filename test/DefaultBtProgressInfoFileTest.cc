@@ -72,13 +72,13 @@ public:
     dctx_.reset(new DownloadContext());
     {
       auto torrentAttrs = make_unique<TorrentAttribute>();
-      torrentAttrs->infoHash = std::string(vbegin(infoHash), vend(infoHash));
+      torrentAttrs->infoHash.assign(std::begin(infoHash), std::end(infoHash));
       dctx_->setAttribute(CTX_ATTR_BT, std::move(torrentAttrs));
     }
     const std::shared_ptr<FileEntry> fileEntries[] = {
       std::shared_ptr<FileEntry>(new FileEntry("/path/to/file",totalLength,0))
     };
-    dctx_->setFileEntries(vbegin(fileEntries), vend(fileEntries));
+    dctx_->setFileEntries(std::begin(fileEntries), std::end(fileEntries));
     dctx_->setPieceLength(pieceLength);
     peerStorage_.reset(new MockPeerStorage());
     btRuntime_.reset(new BtRuntime());

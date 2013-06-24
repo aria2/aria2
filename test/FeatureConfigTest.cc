@@ -79,7 +79,8 @@ void FeatureConfigTest::testFeatureSummary() {
 
   };
 
-  std::string featuresString = strjoin(vbegin(features), vend(features), ", ");
+  std::string featuresString = strjoin(std::begin(features),
+                                       std::end(features), ", ");
   CPPUNIT_ASSERT_EQUAL(featuresString, featureSummary());
 }
 

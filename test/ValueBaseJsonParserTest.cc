@@ -118,7 +118,7 @@ void ValueBaseJsonParserTest::testParseUpdate()
     CPPUNIT_ASSERT(list);
     const String* s = downcast<String>(list->get(0));
     const unsigned char arr[] = { 0xF0u, 0xA4u, 0xADu, 0xA2u };
-    CPPUNIT_ASSERT_EQUAL(std::string(vbegin(arr), vend(arr)), s->s());
+    CPPUNIT_ASSERT_EQUAL(std::string(std::begin(arr), std::end(arr)), s->s());
   }
   {
     // null

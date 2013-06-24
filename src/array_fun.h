@@ -53,18 +53,6 @@ char (&char_array_ref_fun(T (&)[0u]))[0u];
 // To calculate size of array at compile time, we use macro here.
 #define A2_ARRAY_LEN(X) sizeof(char_array_ref_fun(X))
 
-template<typename T, size_t N>
-T* vbegin(T (&a)[N])
-{
-  return a;
-}
-
-template<typename T, size_t N>
-T* vend(T (&a)[N])
-{
-  return a+N;
-}
-
 template<typename T>
 class array_ptr {
 private:

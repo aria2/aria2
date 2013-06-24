@@ -68,12 +68,11 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DownloadHelperTest);
 
 void DownloadHelperTest::testCreateRequestGroupForUri()
 {
-  std::string array[] = {
+  std::vector<std::string> uris {
     "http://alpha/file",
     "http://bravo/file",
     "http://charlie/file"
   };
-  std::vector<std::string> uris(vbegin(array), vend(array));
   option_->put(PREF_SPLIT, "7");
   option_->put(PREF_MAX_CONNECTION_PER_SERVER, "2");
   option_->put(PREF_DIR, "/tmp");
@@ -87,7 +86,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
     group->getDownloadContext()->getFirstFileEntry()->getUris(xuris);
     CPPUNIT_ASSERT_EQUAL((size_t)6, xuris.size());
     for(size_t i = 0; i < 6; ++i) {
-      CPPUNIT_ASSERT_EQUAL(array[i%3], xuris[i]);
+      CPPUNIT_ASSERT_EQUAL(uris[i%3], xuris[i]);
     }
     CPPUNIT_ASSERT_EQUAL(7, group->getNumConcurrentCommand());
     std::shared_ptr<DownloadContext> ctx = group->getDownloadContext();
@@ -103,7 +102,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
     group->getDownloadContext()->getFirstFileEntry()->getUris(xuris);
     CPPUNIT_ASSERT_EQUAL((size_t)5, xuris.size());
     for(size_t i = 0; i < 5; ++i) {
-      CPPUNIT_ASSERT_EQUAL(array[i%3], xuris[i]);
+      CPPUNIT_ASSERT_EQUAL(uris[i%3], xuris[i]);
     }
   }
   option_->put(PREF_SPLIT, "2");
@@ -116,7 +115,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
     group->getDownloadContext()->getFirstFileEntry()->getUris(xuris);
     CPPUNIT_ASSERT_EQUAL((size_t)3, xuris.size());
     for(size_t i = 0; i < 3; ++i) {
-      CPPUNIT_ASSERT_EQUAL(array[i%3], xuris[i]);
+      CPPUNIT_ASSERT_EQUAL(uris[i%3], xuris[i]);
     }
   }
   option_->put(PREF_FORCE_SEQUENTIAL, A2_V_TRUE);
@@ -130,7 +129,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
     alphaGroup->getDownloadContext()->getFirstFileEntry()->getUris(alphaURIs);
     CPPUNIT_ASSERT_EQUAL((size_t)2, alphaURIs.size());
     for(size_t i = 0; i < 2; ++i) {
-      CPPUNIT_ASSERT_EQUAL(array[0], alphaURIs[i]);
+      CPPUNIT_ASSERT_EQUAL(uris[0], alphaURIs[i]);
     }
     CPPUNIT_ASSERT_EQUAL(2, alphaGroup->getNumConcurrentCommand());
     std::shared_ptr<DownloadContext> alphaCtx = alphaGroup->getDownloadContext();
@@ -141,11 +140,10 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
 
 void DownloadHelperTest::testCreateRequestGroupForUri_parameterized()
 {
-  std::string array[] = {
+  std::vector<std::string> uris {
     "http://{alpha, bravo}/file",
     "http://charlie/file"
   };
-  std::vector<std::string> uris(vbegin(array), vend(array));
   option_->put(PREF_MAX_CONNECTION_PER_SERVER, "1");
   option_->put(PREF_SPLIT, "3");
   option_->put(PREF_DIR, "/tmp");
@@ -175,13 +173,12 @@ void DownloadHelperTest::testCreateRequestGroupForUri_parameterized()
 #ifdef ENABLE_BITTORRENT
 void DownloadHelperTest::testCreateRequestGroupForUri_BitTorrent()
 {
-  std::string array[] = {
+  std::vector<std::string> uris {
     "http://alpha/file",
-    A2_TEST_DIR"/test.torrent",
+    A2_TEST_DIR "/test.torrent",
     "http://bravo/file",
     "http://charlie/file"
   };
-  std::vector<std::string> uris(vbegin(array), vend(array));
   option_->put(PREF_MAX_CONNECTION_PER_SERVER, "1");
   option_->put(PREF_SPLIT, "3");
   option_->put(PREF_DIR, "/tmp");
@@ -197,9 +194,9 @@ void DownloadHelperTest::testCreateRequestGroupForUri_BitTorrent()
     group->getDownloadContext()->getFirstFileEntry()->getUris(xuris);
     CPPUNIT_ASSERT_EQUAL((size_t)3, xuris.size());
 
-    CPPUNIT_ASSERT_EQUAL(array[0], xuris[0]);
-    CPPUNIT_ASSERT_EQUAL(array[2], xuris[1]);
-    CPPUNIT_ASSERT_EQUAL(array[3], xuris[2]);
+    CPPUNIT_ASSERT_EQUAL(uris[0], xuris[0]);
+    CPPUNIT_ASSERT_EQUAL(uris[2], xuris[1]);
+    CPPUNIT_ASSERT_EQUAL(uris[3], xuris[2]);
 
     CPPUNIT_ASSERT_EQUAL(3, group->getNumConcurrentCommand());
     std::shared_ptr<DownloadContext> ctx = group->getDownloadContext();
@@ -221,13 +218,12 @@ void DownloadHelperTest::testCreateRequestGroupForUri_BitTorrent()
 #ifdef ENABLE_METALINK
 void DownloadHelperTest::testCreateRequestGroupForUri_Metalink()
 {
-  std::string array[] = {
+  std::vector<std::string> uris {
     "http://alpha/file",
     "http://bravo/file",
     "http://charlie/file",
-    A2_TEST_DIR"/test.xml"
+    A2_TEST_DIR "/test.xml"
   };
-  std::vector<std::string> uris(vbegin(array), vend(array));
   option_->put(PREF_MAX_CONNECTION_PER_SERVER, "1");
   option_->put(PREF_SPLIT, "2");
   option_->put(PREF_DIR, "/tmp");
@@ -250,7 +246,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_Metalink()
     group->getDownloadContext()->getFirstFileEntry()->getUris(xuris);
     CPPUNIT_ASSERT_EQUAL((size_t)3, xuris.size());
     for(size_t i = 0; i < 3; ++i) {
-      CPPUNIT_ASSERT_EQUAL(array[i], xuris[i]);
+      CPPUNIT_ASSERT_EQUAL(uris[i], xuris[i]);
     }
     CPPUNIT_ASSERT_EQUAL(2, group->getNumConcurrentCommand());
     std::shared_ptr<DownloadContext> ctx = group->getDownloadContext();
@@ -305,13 +301,12 @@ void DownloadHelperTest::testCreateRequestGroupForUriList()
 #ifdef ENABLE_BITTORRENT
 void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
 {
-  std::string array[] = {
+  std::vector<std::string> auxURIs {
     "http://alpha/file",
     "http://bravo/file",
     "http://charlie/file"
   };
 
-  std::vector<std::string> auxURIs(vbegin(array), vend(array));
   option_->put(PREF_MAX_CONNECTION_PER_SERVER, "2");
   option_->put(PREF_SPLIT, "5");
   option_->put(PREF_TORRENT_FILE, A2_TEST_DIR"/test.torrent");
@@ -332,8 +327,8 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
     // See -s option is ignored. See processRootDictionary() in
     // bittorrent_helper.cc
     CPPUNIT_ASSERT_EQUAL((size_t)3, uris.size());
-    for(size_t i = 0; i < A2_ARRAY_LEN(array); ++i) {
-      CPPUNIT_ASSERT_EQUAL(array[i]+"/aria2-test/aria2/src/aria2c", uris[i]);
+    for(size_t i = 0; i < auxURIs.size(); ++i) {
+      CPPUNIT_ASSERT_EQUAL(auxURIs[i]+"/aria2-test/aria2/src/aria2c", uris[i]);
     }
     CPPUNIT_ASSERT_EQUAL(5, group->getNumConcurrentCommand());
     auto attrs = bittorrent::getTorrentAttrs(group->getDownloadContext());

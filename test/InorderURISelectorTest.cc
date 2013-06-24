@@ -22,15 +22,11 @@ private:
 public:
   void setUp()
   {
-    static const char* urisSrc[] = {
+    fileEntry_.setUris({
       "http://alpha/file",
       "ftp://alpha/file",
       "http://bravo/file"
-    };
-    std::vector<std::string> uris;
-    uris.assign(vbegin(urisSrc), vend(urisSrc));
-
-    fileEntry_.setUris(uris);
+    });
 
     sel.reset(new InorderURISelector());
   }

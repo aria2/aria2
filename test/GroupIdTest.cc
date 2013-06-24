@@ -74,9 +74,8 @@ void GroupIdTest::testExpandUnique()
     GroupId::import(0xff80000000020001LL),
     GroupId::import(0xfff8000000030000LL)
   };
-  for(std::shared_ptr<GroupId>* i = vbegin(ids), *eoi = vend(ids); i != eoi;
-      ++i) {
-    CPPUNIT_ASSERT(*i);
+  for(const auto& i : ids) {
+    CPPUNIT_ASSERT(i);
   }
 
   CPPUNIT_ASSERT_EQUAL((int)GroupId::ERR_NOT_UNIQUE,
