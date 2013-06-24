@@ -148,6 +148,13 @@ In order to enable async DNS support, you need c-ares.
 
 How to build
 ------------
+
+aria2 is primarily written in C++. Initially it was written based on
+C++98/C++03 standard features. We are now migrating aria2 to C++11
+standard. The current source code requires C++11 aware compiler. For
+well-known compilers, such as g++ and clang, flag ``-std=c++11`` or
+``-std=c++0x`` must be supported.
+
 In order to build aria2 from the source package, you need following
 development packages(package name may vary depending on the
 distribution you use):
