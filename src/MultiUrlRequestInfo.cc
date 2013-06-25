@@ -187,7 +187,7 @@ int MultiUrlRequestInfo::prepare()
       }
     }
 
-    std::shared_ptr<AuthConfigFactory> authConfigFactory(new AuthConfigFactory());
+    auto authConfigFactory = make_unique<AuthConfigFactory>();
     File netrccf(option_->get(PREF_NETRC_PATH));
     if(!option_->getAsBool(PREF_NO_NETRC) && netrccf.isFile()) {
 #ifdef __MINGW32__
@@ -205,7 +205,7 @@ int MultiUrlRequestInfo::prepare()
         authConfigFactory->setNetrc(netrc);
       }
     }
-    e_->setAuthConfigFactory(authConfigFactory);
+    e_->setAuthConfigFactory(std::move(authConfigFactory));
 
 #ifdef ENABLE_SSL
     std::shared_ptr<TLSContext> clTlsContext(TLSContext::make(TLS_CLIENT));

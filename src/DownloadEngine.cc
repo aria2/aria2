@@ -544,9 +544,14 @@ void DownloadEngine::removeCachedIPAddress
 }
 
 void DownloadEngine::setAuthConfigFactory
-(const std::shared_ptr<AuthConfigFactory>& factory)
+(std::unique_ptr<AuthConfigFactory> factory)
 {
-  authConfigFactory_ = factory;
+  authConfigFactory_ = std::move(factory);
+}
+
+AuthConfigFactory* DownloadEngine::getAuthConfigFactory() const
+{
+  return authConfigFactory_.get();
 }
 
 void DownloadEngine::setRefreshInterval(int64_t interval)

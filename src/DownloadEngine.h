@@ -147,7 +147,7 @@ private:
 
   std::shared_ptr<DNSCache> dnsCache_;
 
-  std::shared_ptr<AuthConfigFactory> authConfigFactory_;
+  std::unique_ptr<AuthConfigFactory> authConfigFactory_;
 
 #ifdef ENABLE_WEBSOCKET
   std::shared_ptr<rpc::WebSocketSessionMan> webSocketSessionMan_;
@@ -334,12 +334,9 @@ public:
 
   void removeCachedIPAddress(const std::string& hostname, uint16_t port);
 
-  void setAuthConfigFactory(const std::shared_ptr<AuthConfigFactory>& factory);
+  void setAuthConfigFactory(std::unique_ptr<AuthConfigFactory> factory);
 
-  const std::shared_ptr<AuthConfigFactory>& getAuthConfigFactory() const
-  {
-    return authConfigFactory_;
-  }
+  AuthConfigFactory* getAuthConfigFactory() const;
 
   void setRefreshInterval(int64_t interval);
 

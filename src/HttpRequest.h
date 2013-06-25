@@ -76,7 +76,7 @@ private:
 
   std::shared_ptr<CookieStorage> cookieStorage_;
 
-  std::shared_ptr<AuthConfigFactory> authConfigFactory_;
+  AuthConfigFactory* authConfigFactory_;
 
   const Option* option_;
 
@@ -192,8 +192,8 @@ public:
     return cookieStorage_;
   }
 
-  void setAuthConfigFactory
-  (const std::shared_ptr<AuthConfigFactory>& factory, const Option* option);
+  void setAuthConfigFactory(AuthConfigFactory* factory);
+  void setOption(const Option* option);
 
   /*
    * To use proxy, pass proxy string to Request::setUri() and set it this

@@ -86,11 +86,9 @@ std::shared_ptr<HttpRequest>
 createHttpRequest(const std::shared_ptr<Request>& req,
                   const std::shared_ptr<FileEntry>& fileEntry,
                   const std::shared_ptr<Segment>& segment,
-                  int64_t totalLength,
                   const std::shared_ptr<Option>& option,
                   const RequestGroup* rg,
-                  const std::shared_ptr<CookieStorage>& cookieStorage,
-                  const std::shared_ptr<AuthConfigFactory>& authConfigFactory,
+                  const DownloadEngine* e,
                   const std::shared_ptr<Request>& proxyRequest,
                   int64_t endOffset = 0)
 {
@@ -100,8 +98,9 @@ createHttpRequest(const std::shared_ptr<Request>& req,
   httpRequest->setFileEntry(fileEntry);
   httpRequest->setSegment(segment);
   httpRequest->addHeader(option->get(PREF_HEADER));
-  httpRequest->setCookieStorage(cookieStorage);
-  httpRequest->setAuthConfigFactory(authConfigFactory, option.get());
+  httpRequest->setCookieStorage(e->getCookieStorage());
+  httpRequest->setAuthConfigFactory(e->getAuthConfigFactory());
+  httpRequest->setOption(option.get());
   httpRequest->setProxyRequest(proxyRequest);
   httpRequest->setAcceptMetalink(rg->getDownloadContext()->
                                  getAcceptMetalink());
@@ -140,11 +139,9 @@ bool HttpRequestCommand::executeInternal() {
         (createHttpRequest(getRequest(),
                            getFileEntry(),
                            std::shared_ptr<Segment>(),
-                           getRequestGroup()->getTotalLength(),
                            getOption(),
                            getRequestGroup(),
-                           getDownloadEngine()->getCookieStorage(),
-                           getDownloadEngine()->getAuthConfigFactory(),
+                           getDownloadEngine(),
                            proxyRequest_));
       if(getOption()->getAsBool(PREF_CONDITIONAL_GET) &&
          (getRequest()->getProtocol() == "http" ||
@@ -192,11 +189,9 @@ bool HttpRequestCommand::executeInternal() {
             (createHttpRequest(getRequest(),
                                getFileEntry(),
                                segment,
-                               getRequestGroup()->getTotalLength(),
                                getOption(),
                                getRequestGroup(),
-                               getDownloadEngine()->getCookieStorage(),
-                               getDownloadEngine()->getAuthConfigFactory(),
+                               getDownloadEngine(),
                                proxyRequest_,
                                endOffset));
           httpConnection_->sendRequest(httpRequest);

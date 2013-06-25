@@ -57,13 +57,15 @@ namespace aria2 {
 
 const std::string HttpRequest::USER_AGENT("aria2");
 
-HttpRequest::HttpRequest():contentEncodingEnabled_(true),
-                           userAgent_(USER_AGENT),
-                           acceptMetalink_(false),
-                           option_(0),
-                           noCache_(true),
-                           acceptGzip_(false),
-                           endOffsetOverride_(0)
+HttpRequest::HttpRequest()
+  : contentEncodingEnabled_(true),
+    userAgent_(USER_AGENT),
+    acceptMetalink_(false),
+    authConfigFactory_(0),
+    option_(0),
+    noCache_(true),
+    acceptGzip_(false),
+    endOffsetOverride_(0)
 {}
 
 HttpRequest::~HttpRequest() {}
@@ -333,10 +335,13 @@ void HttpRequest::setCookieStorage
   cookieStorage_ = cookieStorage;
 }
 
-void HttpRequest::setAuthConfigFactory
-(const std::shared_ptr<AuthConfigFactory>& factory, const Option* option)
+void HttpRequest::setAuthConfigFactory(AuthConfigFactory* factory)
 {
   authConfigFactory_ = factory;
+}
+
+void HttpRequest::setOption(const Option* option)
+{
   option_ = option;
 }
 
