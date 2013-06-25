@@ -61,6 +61,7 @@ HttpRequest::HttpRequest()
   : contentEncodingEnabled_(true),
     userAgent_(USER_AGENT),
     acceptMetalink_(false),
+    cookieStorage_(0),
     authConfigFactory_(0),
     option_(0),
     noCache_(true),
@@ -329,10 +330,14 @@ void HttpRequest::clearHeader()
   headers_.clear();
 }
 
-void HttpRequest::setCookieStorage
-(const std::shared_ptr<CookieStorage>& cookieStorage)
+void HttpRequest::setCookieStorage(CookieStorage* cookieStorage)
 {
   cookieStorage_ = cookieStorage;
+}
+
+CookieStorage* HttpRequest::getCookieStorage() const
+{
+  return cookieStorage_;
 }
 
 void HttpRequest::setAuthConfigFactory(AuthConfigFactory* factory)

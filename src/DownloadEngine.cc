@@ -554,6 +554,11 @@ AuthConfigFactory* DownloadEngine::getAuthConfigFactory() const
   return authConfigFactory_.get();
 }
 
+CookieStorage* DownloadEngine::getCookieStorage() const
+{
+  return cookieStorage_.get();
+}
+
 void DownloadEngine::setRefreshInterval(int64_t interval)
 {
   refreshInterval_ = std::min(static_cast<int64_t>(999), interval);

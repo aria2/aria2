@@ -514,8 +514,8 @@ void HttpResponseTest::testRetrieveCookie()
   std::shared_ptr<Request> request(new Request());
   request->setUri("http://www.aria2.org/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
-  std::shared_ptr<CookieStorage> st(new CookieStorage());
-  httpRequest->setCookieStorage(st);
+  CookieStorage  st;
+  httpRequest->setCookieStorage(&st);
   httpResponse.setHttpRequest(httpRequest);
 
   httpHeader->put(HttpHeader::SET_COOKIE,
@@ -528,10 +528,10 @@ void HttpResponseTest::testRetrieveCookie()
 
   httpResponse.retrieveCookie();
 
-  CPPUNIT_ASSERT_EQUAL((size_t)2, st->size());
+  CPPUNIT_ASSERT_EQUAL((size_t)2, st.size());
 
   std::vector<Cookie> cookies;
-  st->dumpCookie(std::back_inserter(cookies));
+  st.dumpCookie(std::back_inserter(cookies));
   CPPUNIT_ASSERT_EQUAL(std::string("k2=v2"), cookies[0].toString());
   CPPUNIT_ASSERT_EQUAL(std::string("k3=v3"), cookies[1].toString());
 }

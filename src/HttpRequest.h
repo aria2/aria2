@@ -74,7 +74,7 @@ private:
   // If true, metalink content types are sent in Accept header field.
   bool acceptMetalink_;
 
-  std::shared_ptr<CookieStorage> cookieStorage_;
+  CookieStorage* cookieStorage_;
 
   AuthConfigFactory* authConfigFactory_;
 
@@ -185,12 +185,9 @@ public:
     acceptMetalink_ = f;
   }
 
-  void setCookieStorage(const std::shared_ptr<CookieStorage>& cookieStorage);
+  void setCookieStorage(CookieStorage* cookieStorage);
 
-  const std::shared_ptr<CookieStorage>& getCookieStorage() const
-  {
-    return cookieStorage_;
-  }
+  CookieStorage* getCookieStorage() const;
 
   void setAuthConfigFactory(AuthConfigFactory* factory);
   void setOption(const Option* option);

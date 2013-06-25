@@ -385,9 +385,9 @@ void HttpRequestTest::testCreateRequest_with_cookie()
     createCookie("name4", "value4", "aria2.org", false, "/archives/", true),
     createCookie("name5", "value5", "example.org", false, "/", false)
   };
-  auto st = std::make_shared<CookieStorage>();
+  CookieStorage st;
   for(auto c : cookies) {
-    CPPUNIT_ASSERT(st->store(c, 0));
+    CPPUNIT_ASSERT(st.store(c, 0));
   }
 
   HttpRequest httpRequest;
@@ -396,7 +396,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
   httpRequest.setFileEntry(fileEntry);
-  httpRequest.setCookieStorage(st);
+  httpRequest.setCookieStorage(&st);
   httpRequest.setAuthConfigFactory(authConfigFactory_.get());
   httpRequest.setOption(option_.get());
 

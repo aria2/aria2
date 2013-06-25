@@ -133,7 +133,7 @@ private:
 
   std::deque<std::unique_ptr<Command>> routineCommands_;
 
-  std::shared_ptr<CookieStorage> cookieStorage_;
+  std::unique_ptr<CookieStorage> cookieStorage_;
 
 #ifdef ENABLE_BITTORRENT
   std::shared_ptr<BtRegistry> btRegistry_;
@@ -302,10 +302,7 @@ public:
    uint16_t port,
    const std::string& username);
 
-  const std::shared_ptr<CookieStorage>& getCookieStorage() const
-  {
-    return cookieStorage_;
-  }
+  CookieStorage* getCookieStorage() const;
 
 #ifdef ENABLE_BITTORRENT
   const std::shared_ptr<BtRegistry>& getBtRegistry() const
