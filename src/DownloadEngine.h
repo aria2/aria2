@@ -302,7 +302,7 @@ public:
    uint16_t port,
    const std::string& username);
 
-  CookieStorage* getCookieStorage() const;
+  const std::unique_ptr<CookieStorage>& getCookieStorage() const;
 
 #ifdef ENABLE_BITTORRENT
   const std::shared_ptr<BtRegistry>& getBtRegistry() const
@@ -333,7 +333,7 @@ public:
 
   void setAuthConfigFactory(std::unique_ptr<AuthConfigFactory> factory);
 
-  AuthConfigFactory* getAuthConfigFactory() const;
+  const std::unique_ptr<AuthConfigFactory>& getAuthConfigFactory() const;
 
   void setRefreshInterval(int64_t interval);
 

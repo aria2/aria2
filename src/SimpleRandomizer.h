@@ -56,7 +56,7 @@ private:
   SimpleRandomizer();
 public:
 
-  static SimpleRandomizer* getInstance();
+  static const std::unique_ptr<SimpleRandomizer>& getInstance();
 
   static void init();
 

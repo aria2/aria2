@@ -206,7 +206,8 @@ public:
   void setAttribute
   (ContextAttributeType key, std::unique_ptr<ContextAttribute> value);
 
-  ContextAttribute* getAttribute(ContextAttributeType key);
+  const std::unique_ptr<ContextAttribute>& getAttribute
+  (ContextAttributeType key);
 
   bool hasAttribute(ContextAttributeType key) const;
 

@@ -41,7 +41,6 @@ public:
     messageFactory_.reset(new WrapExtBtMessageFactory());
     dispatcher_.reset(new MockBtMessageDispatcher());
     dctx_.reset(new DownloadContext());
-    std::shared_ptr<TorrentAttribute> attrs(new TorrentAttribute());
     dctx_->setAttribute(CTX_ATTR_BT, make_unique<TorrentAttribute>());
     peer_.reset(new Peer("host", 6880));
     peer_->allocateSessionResource(0, 0);

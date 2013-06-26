@@ -98,8 +98,8 @@ createHttpRequest(const std::shared_ptr<Request>& req,
   httpRequest->setFileEntry(fileEntry);
   httpRequest->setSegment(segment);
   httpRequest->addHeader(option->get(PREF_HEADER));
-  httpRequest->setCookieStorage(e->getCookieStorage());
-  httpRequest->setAuthConfigFactory(e->getAuthConfigFactory());
+  httpRequest->setCookieStorage(e->getCookieStorage().get());
+  httpRequest->setAuthConfigFactory(e->getAuthConfigFactory().get());
   httpRequest->setOption(option.get());
   httpRequest->setProxyRequest(proxyRequest);
   httpRequest->setAcceptMetalink(rg->getDownloadContext()->

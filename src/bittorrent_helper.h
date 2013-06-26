@@ -109,7 +109,7 @@ void loadFromMemory(const std::shared_ptr<ValueBase>& torrent,
                     const std::string& overrideName = "");
 
 // Parses BitTorrent Magnet URI and returns
-// std::shared_ptr<TorrentAttribute> which includes infoHash, name and
+// std::unique_ptr<TorrentAttribute> which includes infoHash, name and
 // announceList. If parsing operation failed, an RecoverableException
 // will be thrown.  infoHash and name are string and announceList is a
 // list of list of announce URI.
@@ -149,6 +149,7 @@ void computeFastSet
 (std::vector<size_t>& fastSet, const std::string& ipaddr,
  size_t numPieces, const unsigned char* infoHash, size_t fastSetSize);
 
+// Make sure that don't recieve return value into std::shared_ptr.
 TorrentAttribute* getTorrentAttrs(DownloadContext* dctx);
 TorrentAttribute* getTorrentAttrs
 (const std::shared_ptr<DownloadContext>& dctx);

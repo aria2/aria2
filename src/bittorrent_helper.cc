@@ -626,7 +626,7 @@ TorrentAttribute* getTorrentAttrs
 
 TorrentAttribute* getTorrentAttrs(DownloadContext* dctx)
 {
-  return static_cast<TorrentAttribute*>(dctx->getAttribute(CTX_ATTR_BT));
+  return static_cast<TorrentAttribute*>(dctx->getAttribute(CTX_ATTR_BT).get());
 }
 
 const unsigned char* getInfoHash

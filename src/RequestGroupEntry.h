@@ -60,10 +60,7 @@ public:
     return requestGroup_;
   }
 
-  Command* getNextCommand() const
-  {
-    return nextCommand_.get();
-  }
+  const std::unique_ptr<Command>& getNextCommand() const;
 
   std::unique_ptr<Command> popNextCommand();
 

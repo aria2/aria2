@@ -52,6 +52,11 @@ RequestGroupEntry::~RequestGroupEntry()
   requestGroup_->decreaseNumCommand();
 }
 
+const std::unique_ptr<Command>& RequestGroupEntry::getNextCommand() const
+{
+  return nextCommand_;
+}
+
 std::unique_ptr<Command> RequestGroupEntry::popNextCommand()
 {
   return std::move(nextCommand_);

@@ -156,12 +156,13 @@ void DownloadContext::setAttribute
   attrs_[key] = std::move(value);
 }
 
-ContextAttribute* DownloadContext::getAttribute(ContextAttributeType key)
+const std::unique_ptr<ContextAttribute>& DownloadContext::getAttribute
+(ContextAttributeType key)
 {
   assert(key < MAX_CTX_ATTR);
   const std::unique_ptr<ContextAttribute>& attr = attrs_[key];
   if(attr) {
-    return attr.get();
+    return attr;
   } else {
     throw DL_ABORT_EX(fmt("No attribute named %s",
                           strContextAttributeType(key)));

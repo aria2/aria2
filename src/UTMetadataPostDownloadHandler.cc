@@ -59,8 +59,7 @@ bool UTMetadataPostDownloadHandler::Criteria::match
   const std::shared_ptr<DownloadContext>& dctx =
     requestGroup->getDownloadContext();
   if(dctx->hasAttribute(CTX_ATTR_BT)) {
-    auto attrs = bittorrent::getTorrentAttrs(dctx);
-    if(attrs->metadata.empty()) {
+    if(bittorrent::getTorrentAttrs(dctx)->metadata.empty()) {
       return true;
     }
   }

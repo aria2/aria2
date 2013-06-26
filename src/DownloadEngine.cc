@@ -549,14 +549,15 @@ void DownloadEngine::setAuthConfigFactory
   authConfigFactory_ = std::move(factory);
 }
 
-AuthConfigFactory* DownloadEngine::getAuthConfigFactory() const
+const std::unique_ptr<AuthConfigFactory>&
+DownloadEngine::getAuthConfigFactory() const
 {
-  return authConfigFactory_.get();
+  return authConfigFactory_;
 }
 
-CookieStorage* DownloadEngine::getCookieStorage() const
+const std::unique_ptr<CookieStorage>& DownloadEngine::getCookieStorage() const
 {
-  return cookieStorage_.get();
+  return cookieStorage_;
 }
 
 void DownloadEngine::setRefreshInterval(int64_t interval)

@@ -50,9 +50,9 @@ private:
 public:
   ~SingletonHolder() {}
 
-  static T* instance()
+  static std::unique_ptr<T>& instance()
   {
-    return instance_.get();
+    return instance_;
   }
 
   static void instance(std::unique_ptr<T> ptr)

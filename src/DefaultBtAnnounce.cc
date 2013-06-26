@@ -69,7 +69,7 @@ DefaultBtAnnounce::DefaultBtAnnounce
     incomplete_(0),
     announceList_(bittorrent::getTorrentAttrs(downloadContext)->announceList),
     option_(option),
-    randomizer_(SimpleRandomizer::getInstance()),
+    randomizer_(SimpleRandomizer::getInstance().get()),
     tcpPort_(0)
 {}
 
