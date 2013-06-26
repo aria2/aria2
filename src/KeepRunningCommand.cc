@@ -52,7 +52,7 @@ bool KeepRunningCommand::execute()
   if(e_->isHaltRequested()) {
     return true;
   }
-  e_->addCommand(this);
+  e_->addCommand(std::unique_ptr<Command>(this));
   return false;
 }
 

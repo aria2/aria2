@@ -41,7 +41,7 @@
 #include <aria2/aria2.h>
 
 int downloadEventCallback(aria2::Session* session, aria2::DownloadEvent event,
-                          const aria2::A2Gid& gid, void* userData)
+                          aria2::A2Gid gid, void* userData)
 {
   switch(event) {
   case aria2::EVENT_ON_DOWNLOAD_COMPLETE:
