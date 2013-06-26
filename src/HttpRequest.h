@@ -80,7 +80,7 @@ private:
 
   const Option* option_;
 
-  std::shared_ptr<AuthConfig> authConfig_;
+  std::unique_ptr<AuthConfig> authConfig_;
 
   std::shared_ptr<Request> proxyRequest_;
 
@@ -210,7 +210,7 @@ public:
 
   // Returns AuthConfig used in the last invocation of
   // createRequest().
-  const std::shared_ptr<AuthConfig>& getAuthConfig() const;
+  const std::unique_ptr<AuthConfig>& getAuthConfig() const;
 
   void setFileEntry(const std::shared_ptr<FileEntry>& fileEntry);
 

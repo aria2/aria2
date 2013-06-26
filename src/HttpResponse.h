@@ -57,7 +57,7 @@ class HttpResponse {
 private:
   cuid_t cuid_;
   std::shared_ptr<HttpRequest> httpRequest_;
-  std::shared_ptr<HttpHeader> httpHeader_;
+  std::unique_ptr<HttpHeader> httpHeader_;
 public:
   HttpResponse();
 
@@ -103,12 +103,9 @@ public:
   // Returns type "/" subtype. The parameter is removed.
   std::string getContentType() const;
 
-  void setHttpHeader(const std::shared_ptr<HttpHeader>& httpHeader);
+  void setHttpHeader(std::unique_ptr<HttpHeader> httpHeader);
 
-  const std::shared_ptr<HttpHeader>& getHttpHeader() const
-  {
-    return httpHeader_;
-  }
+  const std::unique_ptr<HttpHeader>& getHttpHeader() const;
 
   int getStatusCode() const;
 

@@ -69,6 +69,12 @@ HttpRequestEntry::HttpRequestEntry
 
 HttpRequestEntry::~HttpRequestEntry() {}
 
+const std::unique_ptr<HttpHeaderProcessor>&
+HttpRequestEntry::getHttpHeaderProcessor() const
+{
+  return proc_;
+}
+
 HttpConnection::HttpConnection
 (cuid_t cuid,
  const std::shared_ptr<SocketCore>& socket,
@@ -99,29 +105,28 @@ std::string HttpConnection::eraseConfidentialInfo(const std::string& request)
   return result;
 }
 
-void HttpConnection::sendRequest(const std::shared_ptr<HttpRequest>& httpRequest)
+void HttpConnection::sendRequest
+(const std::shared_ptr<HttpRequest>& httpRequest, std::string request)
 {
-  std::string request = httpRequest->createRequest();
   A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                   cuid_,
                   eraseConfidentialInfo(request).c_str()));
   socketBuffer_.pushStr(std::move(request));
   socketBuffer_.send();
-  std::shared_ptr<HttpRequestEntry> entry(new HttpRequestEntry(httpRequest));
-  outstandingHttpRequests_.push_back(entry);
+  outstandingHttpRequests_.push_back(make_unique<HttpRequestEntry>
+                                     (httpRequest));
+}
+
+void HttpConnection::sendRequest
+(const std::shared_ptr<HttpRequest>& httpRequest)
+{
+  sendRequest(httpRequest, httpRequest->createRequest());
 }
 
 void HttpConnection::sendProxyRequest
 (const std::shared_ptr<HttpRequest>& httpRequest)
 {
-  std::string request = httpRequest->createProxyRequest();
-  A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
-                  cuid_,
-                  eraseConfidentialInfo(request).c_str()));
-  socketBuffer_.pushStr(std::move(request));
-  socketBuffer_.send();
-  std::shared_ptr<HttpRequestEntry> entry(new HttpRequestEntry(httpRequest));
-  outstandingHttpRequests_.push_back(entry);
+  sendRequest(httpRequest, httpRequest->createProxyRequest());
 }
 
 std::shared_ptr<HttpResponse> HttpConnection::receiveResponse()
@@ -129,9 +134,6 @@ std::shared_ptr<HttpResponse> HttpConnection::receiveResponse()
   if(outstandingHttpRequests_.empty()) {
     throw DL_ABORT_EX(EX_NO_HTTP_REQUEST_ENTRY_FOUND);
   }
-  std::shared_ptr<HttpRequestEntry> entry = outstandingHttpRequests_.front();
-  const std::shared_ptr<HttpHeaderProcessor>& proc =
-    entry->getHttpHeaderProcessor();
   if(socketRecvBuffer_->bufferEmpty()) {
     if(socketRecvBuffer_->recv() == 0 &&
        !socket_->wantRead() && !socket_->wantWrite()) {
@@ -139,16 +141,17 @@ std::shared_ptr<HttpResponse> HttpConnection::receiveResponse()
     }
   }
   std::shared_ptr<HttpResponse> httpResponse;
+  const auto& proc = outstandingHttpRequests_.front()->getHttpHeaderProcessor();
   if(proc->parse(socketRecvBuffer_->getBuffer(),
                  socketRecvBuffer_->getBufferLength())) {
-    const std::shared_ptr<HttpHeader>& httpHeader = proc->getResult();
     A2_LOG_INFO(fmt(MSG_RECEIVE_RESPONSE,
                     cuid_,
                     proc->getHeaderString().c_str()));
     httpResponse.reset(new HttpResponse());
     httpResponse->setCuid(cuid_);
-    httpResponse->setHttpHeader(httpHeader);
-    httpResponse->setHttpRequest(entry->getHttpRequest());
+    httpResponse->setHttpHeader(proc->getResult());
+    httpResponse->setHttpRequest(outstandingHttpRequests_.front()->
+                                 getHttpRequest());
     outstandingHttpRequests_.pop_front();
   }
   socketRecvBuffer_->shiftBuffer(proc->getLastBytesProcessed());
@@ -157,10 +160,8 @@ std::shared_ptr<HttpResponse> HttpConnection::receiveResponse()
 
 bool HttpConnection::isIssued(const std::shared_ptr<Segment>& segment) const
 {
-  for(HttpRequestEntries::const_iterator itr = outstandingHttpRequests_.begin(),
-        eoi = outstandingHttpRequests_.end(); itr != eoi; ++itr) {
-    std::shared_ptr<HttpRequest> httpRequest = (*itr)->getHttpRequest();
-    if(*httpRequest->getSegment() == *segment) {
+  for(const auto& entry : outstandingHttpRequests_) {
+    if(*entry->getHttpRequest()->getSegment() == *segment) {
       return true;
     }
   }

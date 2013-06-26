@@ -70,10 +70,11 @@ public:
   size_t getLastBytesProcessed() const;
 
   /**
-   * Processes the received header as a http response header and returns
-   * HttpHeader object.
+   * Processes the received header as a http response header and
+   * returns HttpHeader object. This method transfers the ownership of
+   * resulting HttpHeader to the caller.
    */
-  const std::shared_ptr<HttpHeader>& getResult() const;
+  std::unique_ptr<HttpHeader> getResult();
 
   std::string getHeaderString() const;
 
@@ -88,7 +89,7 @@ private:
   std::string buf_;
   std::string lastFieldName_;
   int lastFieldHdKey_;
-  std::shared_ptr<HttpHeader> result_;
+  std::unique_ptr<HttpHeader> result_;
   std::string headers_;
 };
 

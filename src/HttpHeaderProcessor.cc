@@ -391,9 +391,9 @@ void HttpHeaderProcessor::clear()
   headers_.clear();
 }
 
-const std::shared_ptr<HttpHeader>& HttpHeaderProcessor::getResult() const
+std::unique_ptr<HttpHeader> HttpHeaderProcessor::getResult()
 {
-  return result_;
+  return std::move(result_);
 }
 
 std::string HttpHeaderProcessor::getHeaderString() const

@@ -256,9 +256,14 @@ std::string HttpResponse::getContentType() const
   }
 }
 
-void HttpResponse::setHttpHeader(const std::shared_ptr<HttpHeader>& httpHeader)
+void HttpResponse::setHttpHeader(std::unique_ptr<HttpHeader> httpHeader)
 {
-  httpHeader_ = httpHeader;
+  httpHeader_ = std::move(httpHeader);
+}
+
+const std::unique_ptr<HttpHeader>& HttpResponse::getHttpHeader() const
+{
+  return httpHeader_;
 }
 
 void HttpResponse::setHttpRequest(const std::shared_ptr<HttpRequest>& httpRequest)

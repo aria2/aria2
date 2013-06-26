@@ -57,7 +57,7 @@ class SocketRecvBuffer;
 class HttpRequestEntry {
 private:
   std::shared_ptr<HttpRequest> httpRequest_;
-  std::shared_ptr<HttpHeaderProcessor> proc_;
+  std::unique_ptr<HttpHeaderProcessor> proc_;
 public:
   HttpRequestEntry(const std::shared_ptr<HttpRequest>& httpRequest);
 
@@ -68,13 +68,10 @@ public:
     return httpRequest_;
   }
 
-  const std::shared_ptr<HttpHeaderProcessor>& getHttpHeaderProcessor() const
-  {
-    return proc_;
-  }
+  const std::unique_ptr<HttpHeaderProcessor>& getHttpHeaderProcessor() const;
 };
 
-typedef std::deque<std::shared_ptr<HttpRequestEntry> > HttpRequestEntries;
+typedef std::deque<std::unique_ptr<HttpRequestEntry>> HttpRequestEntries;
 
 class HttpConnection {
 private:
@@ -86,6 +83,8 @@ private:
   HttpRequestEntries outstandingHttpRequests_;
 
   std::string eraseConfidentialInfo(const std::string& request);
+  void sendRequest
+  (const std::shared_ptr<HttpRequest>& httpRequest, std::string request);
 public:
   HttpConnection
   (cuid_t cuid,

@@ -165,7 +165,7 @@ bool HttpResponseCommand::executeInternal()
   httpResponse->validateResponse();
   httpResponse->retrieveCookie();
 
-  std::shared_ptr<HttpHeader> httpHeader = httpResponse->getHttpHeader();
+  const auto& httpHeader = httpResponse->getHttpHeader();
   // Disable persistent connection if:
   //   Connection: close is received or the remote server is not HTTP/1.1.
   // We don't care whether non-HTTP/1.1 server returns Connection: keep-alive.

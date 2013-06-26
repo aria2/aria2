@@ -76,7 +76,7 @@ void HttpHeaderProcessorTest::testParse3()
     "Content-Type:\r\n"
     "\r\n";
   CPPUNIT_ASSERT(proc.parse(s));
-  std::shared_ptr<HttpHeader> h = proc.getResult();
+  auto h = proc.getResult();
   CPPUNIT_ASSERT_EQUAL(std::string("close"), h->find(HttpHeader::CONNECTION));
   CPPUNIT_ASSERT_EQUAL(std::string("text1 text2 text3"),
                        h->find(HttpHeader::ACCEPT_ENCODING));
@@ -136,7 +136,7 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader()
 
   CPPUNIT_ASSERT(proc.parse(hd));
 
-  std::shared_ptr<HttpHeader> header = proc.getResult();
+  auto header = proc.getResult();
   CPPUNIT_ASSERT_EQUAL(404, header->getStatusCode());
   CPPUNIT_ASSERT_EQUAL(std::string("Not Found"), header->getReasonPhrase());
   CPPUNIT_ASSERT_EQUAL(std::string("HTTP/1.1"), header->getVersion());
@@ -153,7 +153,7 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader_statusOnly()
 
   std::string hd = "HTTP/1.1 200\r\n\r\n";
   CPPUNIT_ASSERT(proc.parse(hd));
-  std::shared_ptr<HttpHeader> header = proc.getResult();
+  auto header = proc.getResult();
   CPPUNIT_ASSERT_EQUAL(200, header->getStatusCode());
 }
 
@@ -269,7 +269,7 @@ void HttpHeaderProcessorTest::testGetHttpRequestHeader()
 
   CPPUNIT_ASSERT(proc.parse(request));
 
-  std::shared_ptr<HttpHeader> httpHeader = proc.getResult();
+  auto httpHeader = proc.getResult();
   CPPUNIT_ASSERT_EQUAL(std::string("GET"), httpHeader->getMethod());
   CPPUNIT_ASSERT_EQUAL(std::string("/index.html"),httpHeader->getRequestPath());
   CPPUNIT_ASSERT_EQUAL(std::string("HTTP/1.1"), httpHeader->getVersion());

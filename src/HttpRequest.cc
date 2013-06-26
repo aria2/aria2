@@ -365,7 +365,7 @@ bool HttpRequest::authenticationUsed() const
   return authConfig_.get();
 }
 
-const std::shared_ptr<AuthConfig>& HttpRequest::getAuthConfig() const
+const std::unique_ptr<AuthConfig>& HttpRequest::getAuthConfig() const
 {
   return authConfig_;
 }
