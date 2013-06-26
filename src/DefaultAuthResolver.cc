@@ -37,13 +37,14 @@
 
 namespace aria2 {
 
-std::shared_ptr<AuthConfig> DefaultAuthResolver::resolveAuthConfig
+std::unique_ptr<AuthConfig> DefaultAuthResolver::resolveAuthConfig
 (const std::string& hostname)
 {
-  if(!getUserDefinedAuthConfig()) {
-    return getDefaultAuthConfig();
+  auto authConfig = getUserDefinedAuthConfig();
+  if(authConfig) {
+    return authConfig;
   } else {
-    return getUserDefinedAuthConfig();
+    return getDefaultAuthConfig();
   }
 }
 

@@ -12,9 +12,7 @@ class DefaultAuthResolverTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testResolveAuthConfig_with_userDefined);
   CPPUNIT_TEST_SUITE_END();
 private:
-  //NetrcHandle _netrc;
-  //std::shared_ptr<Option> _option;
-  std::shared_ptr<DefaultAuthResolver> resolver_;
+  std::unique_ptr<DefaultAuthResolver> resolver_;
 public:
   void setUp()
   {
@@ -22,8 +20,7 @@ public:
     //_option = new Option();
     resolver_.reset(new DefaultAuthResolver());
     //_factory->setOption(_option.get());
-    resolver_->setDefaultAuthConfig
-      (std::shared_ptr<AuthConfig>(new AuthConfig("foo", "bar")));
+    resolver_->setDefaultCred("foo", "bar");
   }
 
   void testResolveAuthConfig_without_userDefined();
@@ -35,16 +32,16 @@ CPPUNIT_TEST_SUITE_REGISTRATION( DefaultAuthResolverTest );
 
 void DefaultAuthResolverTest::testResolveAuthConfig_without_userDefined()
 {
-  std::shared_ptr<AuthConfig> authConfig = resolver_->resolveAuthConfig("localhost");
+  auto authConfig = resolver_->resolveAuthConfig("localhost");
   CPPUNIT_ASSERT_EQUAL(std::string("foo:bar"), authConfig->getAuthText());
 }
 
 void DefaultAuthResolverTest::testResolveAuthConfig_with_userDefined()
 {
-  resolver_->setUserDefinedAuthConfig
-    (std::shared_ptr<AuthConfig>(new AuthConfig("myname", "mypasswd")));
-  std::shared_ptr<AuthConfig> authConfig = resolver_->resolveAuthConfig("localhost");
-  CPPUNIT_ASSERT_EQUAL(std::string("myname:mypasswd"), authConfig->getAuthText());
+  resolver_->setUserDefinedCred("myname", "mypasswd");
+  auto authConfig = resolver_->resolveAuthConfig("localhost");
+  CPPUNIT_ASSERT_EQUAL(std::string("myname:mypasswd"),
+                       authConfig->getAuthText());
 }
 
 } // namespace aria2

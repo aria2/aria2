@@ -43,24 +43,19 @@ class Netrc;
 
 class NetrcAuthResolver : public AbstractAuthResolver {
 private:
-  std::shared_ptr<Netrc> netrc_;
+  Netrc* netrc_;
 
   bool ignoreDefault_;
 
-  std::shared_ptr<AuthConfig> findNetrcAuthenticator
+  std::unique_ptr<AuthConfig> findNetrcAuthenticator
   (const std::string& hostname) const;
 public:
   NetrcAuthResolver();
 
-  virtual std::shared_ptr<AuthConfig> resolveAuthConfig
+  virtual std::unique_ptr<AuthConfig> resolveAuthConfig
   (const std::string& hostname);
 
-  void setNetrc(const std::shared_ptr<Netrc>& netrc);
-
-  const std::shared_ptr<Netrc>& getNetrc() const
-  {
-    return netrc_;
-  }
+  void setNetrc(Netrc* netrc);
 
   // Ignores default token of netrc
   void ignoreDefault();

@@ -40,29 +40,24 @@
 namespace aria2 {
 
 class AbstractAuthResolver : public AuthResolver {
-private:
-  std::shared_ptr<AuthConfig> userDefinedAuthConfig_;
-
-  std::shared_ptr<AuthConfig> defaultAuthConfig_;
 public:
   AbstractAuthResolver();
 
   virtual ~AbstractAuthResolver();
 
-  void setUserDefinedAuthConfig(const std::shared_ptr<AuthConfig>& authConfig);
+  void setUserDefinedCred(std::string user, std::string password);
 
-  const std::shared_ptr<AuthConfig>& getUserDefinedAuthConfig() const
-  {
-    return userDefinedAuthConfig_;
-  }
+  std::unique_ptr<AuthConfig> getUserDefinedAuthConfig() const;
 
-  void setDefaultAuthConfig(const std::shared_ptr<AuthConfig>& authConfig);
+  void setDefaultCred(std::string user, std::string password);
 
-  const std::shared_ptr<AuthConfig>& getDefaultAuthConfig() const
-  {
-    return defaultAuthConfig_;
-  }
+  std::unique_ptr<AuthConfig> getDefaultAuthConfig() const;
+private:
+  std::string userDefinedUser_;
+  std::string userDefinedPassword_;
 
+  std::string defaultUser_;
+  std::string defaultPassword_;
 };
 
 } // namespace aria2

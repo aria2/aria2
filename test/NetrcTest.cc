@@ -4,6 +4,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "Exception.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -35,34 +36,41 @@ CPPUNIT_TEST_SUITE_REGISTRATION( NetrcTest );
 void NetrcTest::testFindAuthenticator()
 {
   Netrc netrc;
-  netrc.addAuthenticator
-    (std::shared_ptr<Authenticator>(new Authenticator("host1", "tujikawa", "tujikawapasswd", "tujikawaaccount")));
-  netrc.addAuthenticator
-    (std::shared_ptr<Authenticator>(new Authenticator("host2", "aria2", "aria2password", "aria2account")));
-  netrc.addAuthenticator
-    (std::shared_ptr<Authenticator>(new Authenticator(".my.domain", "dmname", "dmpass", "dmaccount")));
-  netrc.addAuthenticator
-    (std::shared_ptr<Authenticator>(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount")));
+  netrc.addAuthenticator(make_unique<Authenticator>("host1",
+                                                    "tujikawa",
+                                                    "tujikawapasswd",
+                                                    "tujikawaaccount"));
+  netrc.addAuthenticator(make_unique<Authenticator>("host2",
+                                                    "aria2",
+                                                    "aria2password",
+                                                    "aria2account"));
+  netrc.addAuthenticator(make_unique<Authenticator>(".my.domain",
+                                                    "dmname",
+                                                    "dmpass",
+                                                    "dmaccount"));
+  netrc.addAuthenticator(make_unique<DefaultAuthenticator>("default",
+                                                           "defaultpassword",
+                                                           "defaultaccount"));
 
-  std::shared_ptr<Authenticator> aria2auth = netrc.findAuthenticator("host2");
+  auto aria2auth = netrc.findAuthenticator("host2");
   CPPUNIT_ASSERT(aria2auth);
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"), aria2auth->getLogin());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2password"), aria2auth->getPassword());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2account"), aria2auth->getAccount());
 
-  std::shared_ptr<Authenticator> defaultauth = netrc.findAuthenticator("host3");
+  auto defaultauth = netrc.findAuthenticator("host3");
   CPPUNIT_ASSERT(defaultauth);
   CPPUNIT_ASSERT_EQUAL(std::string("default"), defaultauth->getLogin());
-  CPPUNIT_ASSERT_EQUAL(std::string("defaultpassword"), defaultauth->getPassword());
-  CPPUNIT_ASSERT_EQUAL(std::string("defaultaccount"), defaultauth->getAccount());
+  CPPUNIT_ASSERT_EQUAL(std::string("defaultpassword"),
+                       defaultauth->getPassword());
+  CPPUNIT_ASSERT_EQUAL(std::string("defaultaccount"),
+                       defaultauth->getAccount());
 
-  std::shared_ptr<Authenticator> domainMatchAuth =
-    netrc.findAuthenticator("host3.my.domain");
+  auto domainMatchAuth = netrc.findAuthenticator("host3.my.domain");
   CPPUNIT_ASSERT(domainMatchAuth);
   CPPUNIT_ASSERT_EQUAL(std::string("dmname"), domainMatchAuth->getLogin());
 
-  std::shared_ptr<Authenticator> domainMatchAuth2 =
-    netrc.findAuthenticator("my.domain");
+  auto domainMatchAuth2 = netrc.findAuthenticator("my.domain");
   CPPUNIT_ASSERT(domainMatchAuth2);
   CPPUNIT_ASSERT_EQUAL(std::string("default"), domainMatchAuth2->getLogin());
 }
@@ -71,24 +79,25 @@ void NetrcTest::testParse()
 {
   Netrc netrc;
   netrc.parse(A2_TEST_DIR"/sample.netrc");
-  std::vector<std::shared_ptr<Authenticator> >::const_iterator itr =
-    netrc.getAuthenticators().begin();
+  auto itr = std::begin(netrc.getAuthenticators());
 
-  std::shared_ptr<Authenticator> tujikawaauth = *itr;
+  const auto& tujikawaauth = *itr;
   CPPUNIT_ASSERT(tujikawaauth);
   CPPUNIT_ASSERT_EQUAL(std::string("host1"), tujikawaauth->getMachine());
   CPPUNIT_ASSERT_EQUAL(std::string("tujikawa"), tujikawaauth->getLogin());
-  CPPUNIT_ASSERT_EQUAL(std::string("tujikawapassword"), tujikawaauth->getPassword());
-  CPPUNIT_ASSERT_EQUAL(std::string("tujikawaaccount"), tujikawaauth->getAccount());
+  CPPUNIT_ASSERT_EQUAL(std::string("tujikawapassword"),
+                       tujikawaauth->getPassword());
+  CPPUNIT_ASSERT_EQUAL(std::string("tujikawaaccount"),
+                       tujikawaauth->getAccount());
   ++itr;
-  std::shared_ptr<Authenticator> aria2auth = *itr;
+  const auto& aria2auth = *itr;
   CPPUNIT_ASSERT(aria2auth);
   CPPUNIT_ASSERT_EQUAL(std::string("host2"), aria2auth->getMachine());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"), aria2auth->getLogin());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2password"), aria2auth->getPassword());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2account"), aria2auth->getAccount());
   ++itr;
-  std::shared_ptr<Authenticator> defaultauth = *itr;
+  const auto& defaultauth = *itr;
   CPPUNIT_ASSERT(defaultauth);
   CPPUNIT_ASSERT_EQUAL(std::string("anonymous"), defaultauth->getLogin());
   CPPUNIT_ASSERT_EQUAL(std::string("ARIA2@USER"), defaultauth->getPassword());

@@ -35,42 +35,44 @@
 #include "NetrcAuthResolver.h"
 #include "AuthConfig.h"
 #include "Netrc.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
-NetrcAuthResolver::NetrcAuthResolver():ignoreDefault_(false) {}
+NetrcAuthResolver::NetrcAuthResolver()
+  : netrc_(nullptr), ignoreDefault_(false) {}
 
-std::shared_ptr<AuthConfig>
+std::unique_ptr<AuthConfig>
 NetrcAuthResolver::resolveAuthConfig(const std::string& hostname)
 {
-  if(!getUserDefinedAuthConfig()) {
-    return findNetrcAuthenticator(hostname);
+  auto authConfig = getUserDefinedAuthConfig();
+  if(authConfig) {
+    return authConfig;
   } else {
-    return getUserDefinedAuthConfig();
+    return findNetrcAuthenticator(hostname);
   }
 }
 
-std::shared_ptr<AuthConfig>
+std::unique_ptr<AuthConfig>
 NetrcAuthResolver::findNetrcAuthenticator(const std::string& hostname) const
 {
   if(!netrc_) {
     return getDefaultAuthConfig();
   } else {
-    std::shared_ptr<Authenticator> auth = netrc_->findAuthenticator(hostname);
+    auto auth = netrc_->findAuthenticator(hostname);
     if(!auth) {
       return getDefaultAuthConfig();
     } else {
       if(ignoreDefault_ && auth->getMachine().empty()) {
         return getDefaultAuthConfig();
       } else {
-        return std::shared_ptr<AuthConfig>
-          (new AuthConfig(auth->getLogin(), auth->getPassword()));
+        return make_unique<AuthConfig>(auth->getLogin(), auth->getPassword());
       }
     }
   }
 }
 
-void NetrcAuthResolver::setNetrc(const std::shared_ptr<Netrc>& netrc)
+void NetrcAuthResolver::setNetrc(Netrc* netrc)
 {
   netrc_ = netrc;
 }

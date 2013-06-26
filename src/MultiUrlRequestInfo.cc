@@ -200,9 +200,9 @@ int MultiUrlRequestInfo::prepare()
         A2_LOG_NOTICE(fmt(MSG_INCORRECT_NETRC_PERMISSION,
                           option_->get(PREF_NETRC_PATH).c_str()));
       } else {
-        std::shared_ptr<Netrc> netrc(new Netrc());
+        auto netrc = make_unique<Netrc>();
         netrc->parse(option_->get(PREF_NETRC_PATH));
-        authConfigFactory->setNetrc(netrc);
+        authConfigFactory->setNetrc(std::move(netrc));
       }
     }
     e_->setAuthConfigFactory(std::move(authConfigFactory));
