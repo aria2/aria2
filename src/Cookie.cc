@@ -43,23 +43,23 @@
 namespace aria2 {
 
 Cookie::Cookie
-(const std::string& name,
- const std::string& value,
+(std::string name,
+ std::string value,
  time_t  expiryTime,
  bool persistent,
- const std::string& domain,
+ std::string domain,
  bool hostOnly,
- const std::string& path,
+ std::string path,
  bool secure,
  bool httpOnly,
  time_t creationTime):
-  name_(name),
-  value_(value),
+  name_(std::move(name)),
+  value_(std::move(value)),
   expiryTime_(expiryTime),
   persistent_(persistent),
-  domain_(domain),
+  domain_(std::move(domain)),
   hostOnly_(hostOnly),
-  path_(path),
+  path_(std::move(path)),
   secure_(secure),
   httpOnly_(httpOnly),
   creationTime_(creationTime),
@@ -73,40 +73,6 @@ Cookie::Cookie():
   httpOnly_(false),
   creationTime_(0),
   lastAccessTime_(0) {}
-
-Cookie::Cookie(const Cookie& c)
-  : name_(c.name_),
-    value_(c.value_),
-    expiryTime_(c.expiryTime_),
-    persistent_(c.persistent_),
-    domain_(c.domain_),
-    hostOnly_(c.hostOnly_),
-    path_(c.path_),
-    secure_(c.secure_),
-    httpOnly_(c.httpOnly_),
-    creationTime_(c.creationTime_),
-    lastAccessTime_(c.lastAccessTime_)
-{}
-
-Cookie::~Cookie() {}
-
-Cookie& Cookie::operator=(const Cookie& c)
-{
-  if(this != &c) {
-    name_ = c.name_;
-    value_ = c.value_;
-    expiryTime_ = c.expiryTime_;
-    persistent_ = c.persistent_;
-    domain_ = c.domain_;
-    hostOnly_ = c.hostOnly_;
-    path_ = c.path_;
-    secure_ = c.secure_;
-    httpOnly_ = c.httpOnly_;
-    creationTime_ = c.creationTime_;
-    lastAccessTime_ = c.lastAccessTime_;
-  }
-  return *this;
-}
 
 std::string Cookie::toString() const
 {
@@ -136,6 +102,11 @@ bool Cookie::operator==(const Cookie& cookie) const
 {
   return domain_ == cookie.domain_ && path_ == cookie.path_ &&
     name_ == cookie.name_;
+}
+
+bool Cookie::operator!=(const Cookie& cookie) const
+{
+  return !(*this == cookie);
 }
 
 bool Cookie::isExpired(time_t base) const
@@ -174,24 +145,24 @@ std::string Cookie::toNsCookieFormat() const
   return ss.str();
 }
 
-void Cookie::setName(const std::string& name)
+void Cookie::setName(std::string name)
 {
-  name_ = name;
+  name_ = std::move(name);
 }
 
-void Cookie::setValue(const std::string& value)
+void Cookie::setValue(std::string value)
 {
-  value_ = value;
+  value_ = std::move(value);
 }
 
-void Cookie::setDomain(const std::string& domain)
+void Cookie::setDomain(std::string domain)
 {
-  domain_ = domain;
+  domain_ = std::move(domain);
 }
 
-void Cookie::setPath(const std::string& path)
+void Cookie::setPath(std::string path)
 {
-  path_ = path;
+  path_ = std::move(path);
 }
 
 } // namespace aria2

@@ -50,7 +50,7 @@ std::string readFile(const std::string& path)
   return ss.str();
 }
 
-Cookie createCookie
+std::unique_ptr<Cookie> createCookie
 (const std::string& name,
  const std::string& value,
  const std::string& domain,
@@ -58,11 +58,11 @@ Cookie createCookie
  const std::string& path,
  bool secure)
 {
-  return Cookie
+  return make_unique<Cookie>
     (name, value, 0, false, domain, hostOnly, path, secure, false, 0);
 }
 
-Cookie createCookie
+std::unique_ptr<Cookie> createCookie
 (const std::string& name,
  const std::string& value,
  time_t expiryTime,
@@ -71,7 +71,7 @@ Cookie createCookie
  const std::string& path,
  bool secure)
 {
-  return Cookie
+  return make_unique<Cookie>
     (name, value, expiryTime, true, domain, hostOnly, path, secure, false, 0);
 }
 

@@ -216,9 +216,8 @@ bool parseDate
   return time != -1;
 }
 
-bool parse
-(Cookie& cookie,
- const std::string& cookieStr,
+std::unique_ptr<Cookie> parse
+(const std::string& cookieStr,
  const std::string& requestHost,
  const std::string& defaultPath,
  time_t creationTime)
@@ -231,13 +230,13 @@ bool parse
   std::string::const_iterator eq = cookieStr.begin();
   for(; eq != nvEnd && *eq != '='; ++eq);
   if(eq == nvEnd) {
-    return false;
+    return std::unique_ptr<Cookie>{};
   }
   std::pair<std::string::const_iterator,
             std::string::const_iterator> p =
     util::stripIter(cookieStr.begin(), eq);
   if(p.first == p.second) {
-    return false;
+    return std::unique_ptr<Cookie>{};
   }
   Scip cookieName(p.first, p.second);
   p = util::stripIter(eq+1, nvEnd);
@@ -276,18 +275,18 @@ bool parse
       if(parseDate(expiryTime, attrp.first, attrp.second)) {
         foundExpires = true;
       } else {
-        return false;
+        return std::unique_ptr<Cookie>{};
       }
     } else if(util::strieq(p.first, p.second, "max-age")) {
       if(attrp.first == attrp.second ||
          (!in(static_cast<unsigned char>(*attrp.first), 0x30u, 0x39u) &&
           *attrp.first != '-')) {
-        return false;
+        return std::unique_ptr<Cookie>{};
       }
       for(std::string::const_iterator s = attrp.first+1,
             eos = attrp.second; s != eos; ++s) {
         if(!in(static_cast<unsigned char>(*s), 0x30u, 0x39u)) {
-          return false;
+          return std::unique_ptr<Cookie>{};
         }
       }
       int64_t delta;
@@ -306,17 +305,17 @@ bool parse
           }
         }
       } else {
-        return false;
+        return std::unique_ptr<Cookie>{};
       }
     } else if(util::strieq(p.first, p.second, "domain")) {
       if(attrp.first == attrp.second) {
-        return false;
+        return std::unique_ptr<Cookie>{};
       }
       std::string::const_iterator noDot = attrp.first;
       std::string::const_iterator end = attrp.second;
       for(; noDot != end && *noDot == '.'; ++noDot);
       if(noDot == end) {
-        return false;
+        return std::unique_ptr<Cookie>{};
       }
       cookieDomain.assign(noDot, end);
     } else if(util::strieq(p.first, p.second, "path")) {
@@ -349,26 +348,27 @@ bool parse
   } else if(domainMatch(canonicalizedHost, cookieDomain)) {
     hostOnly = util::isNumericHost(canonicalizedHost);
   } else {
-    return false;
+    return std::unique_ptr<Cookie>{};
   }
 
   if(cookiePath.empty()) {
     cookiePath = defaultPath;
   }
 
-  cookie.setName(cookieName.first, cookieName.second);
-  cookie.setValue(cookieValue.first, cookieValue.second);
-  cookie.setExpiryTime(expiryTime);
-  cookie.setPersistent(persistent);
-  cookie.setDomain(cookieDomain);
-  cookie.setHostOnly(hostOnly);
-  cookie.setPath(cookiePath);
-  cookie.setSecure(secure);
-  cookie.setHttpOnly(httpOnly);
-  cookie.setCreationTime(creationTime);
-  cookie.setLastAccessTime(creationTime);
+  auto cookie = make_unique<Cookie>();
+  cookie->setName(cookieName.first, cookieName.second);
+  cookie->setValue(cookieValue.first, cookieValue.second);
+  cookie->setExpiryTime(expiryTime);
+  cookie->setPersistent(persistent);
+  cookie->setDomain(std::move(cookieDomain));
+  cookie->setHostOnly(hostOnly);
+  cookie->setPath(std::move(cookiePath));
+  cookie->setSecure(secure);
+  cookie->setHttpOnly(httpOnly);
+  cookie->setCreationTime(creationTime);
+  cookie->setLastAccessTime(creationTime);
 
-  return true;
+  return cookie;
 }
 
 bool goodPath

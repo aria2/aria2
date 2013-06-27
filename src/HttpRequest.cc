@@ -234,13 +234,11 @@ std::string HttpRequest::createRequest()
     std::string cookiesValue;
     std::string path = getDir();
     path += getFile();
-    std::vector<Cookie> cookies =
-      cookieStorage_->criteriaFind(getHost(), path,
-                                   Time().getTime(),
-                                   getProtocol() == "https");
-    for(std::vector<Cookie>::const_iterator itr = cookies.begin(),
-          eoi = cookies.end(); itr != eoi; ++itr) {
-      cookiesValue += (*itr).toString();
+    auto cookies = cookieStorage_->criteriaFind(getHost(), path,
+                                                Time().getTime(),
+                                                getProtocol() == "https");
+    for(auto c : cookies) {
+      cookiesValue += c->toString();
       cookiesValue += ";";
     }
     if(!cookiesValue.empty()) {

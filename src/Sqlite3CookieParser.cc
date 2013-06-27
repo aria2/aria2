@@ -102,8 +102,8 @@ int cookieRowMapper(void* data, int columns, char** values, char** names)
   if(columns != 7 || !values[0] || !values[1] || !values[4]) {
     return 0;
   }
-  std::vector<Cookie>& cookies =
-    *reinterpret_cast<std::vector<Cookie>*>(data);
+  std::vector<std::unique_ptr<Cookie>>& cookies =
+    *reinterpret_cast<std::vector<std::unique_ptr<Cookie>>*>(data);
   size_t val0len = strlen(values[0]);
   std::string cookieDomain
     (util::lstripIter(&values[0][0], &values[0][val0len], '.'),
@@ -122,29 +122,29 @@ int cookieRowMapper(void* data, int columns, char** values, char** names)
   if(!values[6] || !parseTime(lastAccessTime, values[6])) {
     return 0;
   }
-  Cookie c(cookieName,
-           toString(values[5]), // value
-           expiryTime,
-           true, // persistent
-           cookieDomain,
-           util::isNumericHost(cookieDomain) ||
-           (values[0] && values[0][0] != '.'), // hostOnly
-           cookiePath,
-           values[2] && strcmp(values[2], "1") == 0, //secure
-           false,
-           lastAccessTime // creation time. Set this later.
-           );
-  cookies.push_back(c);
+  cookies.push_back(make_unique<Cookie>
+                    (std::move(cookieName),
+                     toString(values[5]), // value
+                     expiryTime,
+                     true, // persistent
+                     std::move(cookieDomain),
+                     util::isNumericHost(cookieDomain) ||
+                     (values[0] && values[0][0] != '.'), // hostOnly
+                     std::move(cookiePath),
+                     values[2] && strcmp(values[2], "1") == 0, //secure
+                     false,
+                     lastAccessTime // creation time. Set this later.
+                     ));
   return 0;
 }
 } // namespace
 
-void Sqlite3CookieParser::parse(std::vector<Cookie>& cookies)
+std::vector<std::unique_ptr<Cookie>> Sqlite3CookieParser::parse()
 {
   if(!db_) {
     throw DL_ABORT_EX(fmt("SQLite3 database is not opened."));
   }
-  std::vector<Cookie> tcookies;
+  auto tcookies = std::vector<std::unique_ptr<Cookie>>{};
   char* sqlite3ErrMsg = 0;
   int ret = sqlite3_exec(db_, getQuery(), cookieRowMapper,
                          &tcookies, &sqlite3ErrMsg);
@@ -157,7 +157,7 @@ void Sqlite3CookieParser::parse(std::vector<Cookie>& cookies)
     throw DL_ABORT_EX
       (fmt("Failed to read SQLite3 database: %s", errMsg.c_str()));
   }
-  cookies.swap(tcookies);
+  return tcookies;
 }
 
 } // namespace aria2

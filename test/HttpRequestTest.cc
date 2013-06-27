@@ -368,6 +368,13 @@ void HttpRequestTest::testCreateRequest_ftp()
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 }
 
+template<typename InputIterator>
+void foo(CookieStorage& st, InputIterator first, InputIterator last, time_t t)
+{
+  for(; first != last; ++first) {
+    st.store(*first, t);
+  }
+}
 void HttpRequestTest::testCreateRequest_with_cookie()
 {
   auto request = std::make_shared<Request>();
@@ -376,19 +383,17 @@ void HttpRequestTest::testCreateRequest_with_cookie()
   auto segment = std::make_shared<PiecedSegment>(1024*1024, p);
   auto fileEntry = std::make_shared<FileEntry>("file", 1024*1024*10, 0);
 
-  std::vector<Cookie> cookies {
-    createCookie("name1", "value1", "localhost", true, "/archives", false),
-    createCookie("name2", "value2", "localhost", true,
-                 "/archives/download",  false),
-    createCookie("name3", "value3", "aria2.org", false,
-                 "/archives/download",  false),
-    createCookie("name4", "value4", "aria2.org", false, "/archives/", true),
-    createCookie("name5", "value5", "example.org", false, "/", false)
-  };
-  CookieStorage st;
-  for(auto c : cookies) {
-    CPPUNIT_ASSERT(st.store(c, 0));
-  }
+  auto st = CookieStorage{};
+  CPPUNIT_ASSERT(st.store(createCookie("name1", "value1", "localhost", true,
+                                       "/archives", false), 0));
+  CPPUNIT_ASSERT(st.store(createCookie("name2", "value2", "localhost", true,
+                                       "/archives/download",  false), 0));
+  CPPUNIT_ASSERT(st.store(createCookie("name3", "value3", "aria2.org", false,
+                                       "/archives/download",  false), 0));
+  CPPUNIT_ASSERT(st.store(createCookie("name4", "value4", "aria2.org", false,
+                                       "/archives/", true), 0));
+  CPPUNIT_ASSERT(st.store(createCookie("name5", "value5", "example.org", false,
+                                       "/", false), 0));
 
   HttpRequest httpRequest;
 

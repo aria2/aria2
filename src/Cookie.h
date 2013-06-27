@@ -63,22 +63,16 @@ public:
   Cookie();
 
   Cookie
-  (const std::string& name,
-   const std::string& value,
+  (std::string name,
+   std::string value,
    time_t  expiryTime,
    bool persistent,
-   const std::string& domain,
+   std::string domain,
    bool hostOnly,
-   const std::string& path,
+   std::string path,
    bool secure,
    bool httpOnly,
    time_t creationTime);
-
-  Cookie(const Cookie& c);
-
-  ~Cookie();
-
-  Cookie& operator=(const Cookie& c);
 
   std::string toString() const;
 
@@ -88,6 +82,8 @@ public:
 
   bool operator==(const Cookie& cookie) const;
 
+  bool operator!=(const Cookie& cookie) const;
+
   bool isExpired(time_t base) const;
 
   const std::string& getName() const
@@ -95,7 +91,7 @@ public:
     return name_;
   }
 
-  void setName(const std::string& name);
+  void setName(std::string name);
 
   template<typename InputIterator>
   void setName(InputIterator first, InputIterator last)
@@ -108,7 +104,7 @@ public:
     return value_;
   }
 
-  void setValue(const std::string& value);
+  void setValue(std::string value);
 
   template<typename InputIterator>
   void setValue(InputIterator first, InputIterator last)
@@ -141,7 +137,7 @@ public:
     return domain_;
   }
 
-  void setDomain(const std::string& domain);
+  void setDomain(std::string domain);
 
   template<typename InputIterator>
   void setDomain(InputIterator first, InputIterator last)
@@ -164,7 +160,7 @@ public:
     return path_;
   }
 
-  void setPath(const std::string& path);
+  void setPath(std::string path);
 
   template<typename InputIterator>
   void setPath(InputIterator first, InputIterator last)

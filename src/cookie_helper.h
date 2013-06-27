@@ -38,6 +38,7 @@
 #include "common.h"
 
 #include <string>
+#include <memory>
 
 #include "a2time.h"
 
@@ -52,9 +53,8 @@ bool parseDate
  std::string::const_iterator first,
  std::string::const_iterator last);
 
-bool parse
-(Cookie& cookie,
- const std::string& cookieStr,
+std::unique_ptr<Cookie> parse
+(const std::string& cookieStr,
  const std::string& requestHost,
  const std::string& defaultPath,
  time_t creationTime);

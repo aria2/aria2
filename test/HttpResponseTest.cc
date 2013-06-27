@@ -4,6 +4,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "TestUtil.h"
 #include "prefs.h"
 #include "PiecedSegment.h"
 #include "Piece.h"
@@ -511,10 +512,11 @@ void HttpResponseTest::testRetrieveCookie()
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, st.size());
 
-  std::vector<Cookie> cookies;
+  auto cookies = std::vector<const Cookie*>{};
   st.dumpCookie(std::back_inserter(cookies));
-  CPPUNIT_ASSERT_EQUAL(std::string("k2=v2"), cookies[0].toString());
-  CPPUNIT_ASSERT_EQUAL(std::string("k3=v3"), cookies[1].toString());
+  std::sort(std::begin(cookies), std::end(cookies), CookieSorter());
+  CPPUNIT_ASSERT_EQUAL(std::string("k2=v2"), cookies[0]->toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("k3=v3"), cookies[1]->toString());
 }
 
 void HttpResponseTest::testSupportsPersistentConnection()
