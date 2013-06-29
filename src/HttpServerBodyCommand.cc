@@ -183,8 +183,7 @@ bool HttpServerBodyCommand::execute()
         if(httpServer_->getMethod() == "OPTIONS") {
           // Response to Preflight Request.
           // See http://www.w3.org/TR/cors/
-          const std::shared_ptr<HttpHeader>& header =
-            httpServer_->getRequestHeader();
+          auto& header = httpServer_->getRequestHeader();
           std::string accessControlHeaders;
           if(!header->find(HttpHeader::ORIGIN).empty() &&
              !header->find(HttpHeader::ACCESS_CONTROL_REQUEST_METHOD).empty()

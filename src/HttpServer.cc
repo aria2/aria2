@@ -126,7 +126,7 @@ const char* getStatusString(int status)
 }
 } // namespace
 
-std::shared_ptr<HttpHeader> HttpServer::receiveRequest()
+bool HttpServer::receiveRequest()
 {
   if(socketRecvBuffer_->bufferEmpty()) {
     if(socketRecvBuffer_->recv() == 0 &&
@@ -134,14 +134,12 @@ std::shared_ptr<HttpHeader> HttpServer::receiveRequest()
       throw DL_ABORT_EX(EX_EOF_FROM_PEER);
     }
   }
-  std::shared_ptr<HttpHeader> header;
   if(headerProcessor_->parse(socketRecvBuffer_->getBuffer(),
                              socketRecvBuffer_->getBufferLength())) {
-    header = headerProcessor_->getResult();
+    lastRequestHeader_ = headerProcessor_->getResult();
     A2_LOG_INFO(fmt("HTTP Server received request\n%s",
                     headerProcessor_->getHeaderString().c_str()));
     socketRecvBuffer_->shiftBuffer(headerProcessor_->getLastBytesProcessed());
-    lastRequestHeader_ = header;
     bodyConsumed_ = 0;
     if(setupResponseRecv() < 0) {
       A2_LOG_INFO("Request path is invaild. Ignore the request body.");
@@ -172,10 +170,11 @@ std::shared_ptr<HttpHeader> HttpServer::receiveRequest()
         break;
       }
     }
+    return true;
   } else {
     socketRecvBuffer_->shiftBuffer(headerProcessor_->getLastBytesProcessed());
+    return false;
   }
-  return header;
 }
 
 bool HttpServer::receiveBody()

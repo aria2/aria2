@@ -68,7 +68,7 @@ private:
   std::shared_ptr<SocketRecvBuffer> socketRecvBuffer_;
   SocketBuffer socketBuffer_;
   std::unique_ptr<HttpHeaderProcessor> headerProcessor_;
-  std::shared_ptr<HttpHeader> lastRequestHeader_;
+  std::unique_ptr<HttpHeader> lastRequestHeader_;
   int64_t lastContentLength_;
   // How many bytes are consumed. The total number of bytes is
   // lastContentLength_.
@@ -87,7 +87,7 @@ public:
 
   ~HttpServer();
 
-  std::shared_ptr<HttpHeader> receiveRequest();
+  bool receiveRequest();
 
   bool receiveBody();
 
@@ -171,7 +171,7 @@ public:
     return socket_;
   }
 
-  const std::shared_ptr<HttpHeader>& getRequestHeader() const
+  const std::unique_ptr<HttpHeader>& getRequestHeader() const
   {
     return lastRequestHeader_;
   }
