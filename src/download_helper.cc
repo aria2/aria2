@@ -487,8 +487,8 @@ bool createRequestGroupFromUriListParser
     requestOption->remove(PREF_OUT);
     const auto& oparser = OptionParser::getInstance();
     for(size_t i = 1, len = option::countOption(); i < len; ++i) {
-      const auto pref = option::i2p(i);
-      const auto h = oparser->find(pref);
+      auto pref = option::i2p(i);
+      auto h = oparser->find(pref);
       if(h && h->getInitialOption() && tempOption.defined(pref)) {
         requestOption->put(pref, tempOption.get(pref));
       }
