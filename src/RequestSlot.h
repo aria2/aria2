@@ -51,6 +51,10 @@ public:
       piece_(piece)
   {}
 
+  RequestSlot():dispatchedTime_(0), index_(0), begin_(0), length_(0),
+                blockIndex_(0)
+  {}
+
   bool operator==(const RequestSlot& requestSlot) const
   {
     return index_ == requestSlot.index_ && begin_ == requestSlot.begin_
