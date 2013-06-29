@@ -57,14 +57,14 @@ public:
     return false;
   }
 
-  virtual RequestSlot getOutstandingRequest
+  virtual const RequestSlot* getOutstandingRequest
   (size_t index, int32_t begin, int32_t length) {
-    return RequestSlot::nullSlot;
+    return nullptr;
   }
 
-  virtual void removeOutstandingRequest(const RequestSlot& slot) {}
+  virtual void removeOutstandingRequest(const RequestSlot* slot) {}
 
-  virtual void addOutstandingRequest(const RequestSlot& slot) {}
+  virtual void addOutstandingRequest(std::unique_ptr<RequestSlot> slot) {}
 
   virtual size_t countOutstandingUpload()
   {

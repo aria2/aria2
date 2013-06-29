@@ -65,13 +65,12 @@ void BtRejectMessage::doReceivedAction()
   }
   // TODO Current implementation does not close a connection even if
   // a request for this reject message has never sent.
-  RequestSlot slot =
-    getBtMessageDispatcher()->getOutstandingRequest
+  auto slot = getBtMessageDispatcher()->getOutstandingRequest
     (getIndex(), getBegin(), getLength());
-  if(RequestSlot::isNull(slot)) {
-    //throw DL_ABORT_EX("reject received, but it is not in the request slots.");
-  } else {
+  if(slot) {
     getBtMessageDispatcher()->removeOutstandingRequest(slot);
+  } else {
+    //throw DL_ABORT_EX("reject received, but it is not in the request slots.");
   }
 
 }

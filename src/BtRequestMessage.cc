@@ -79,9 +79,9 @@ void BtRequestMessage::doReceivedAction()
 
 void BtRequestMessage::onQueued()
 {
-  RequestSlot requestSlot(getIndex(), getBegin(), getLength(), blockIndex_,
-                          getPieceStorage()->getPiece(getIndex()));
-  getBtMessageDispatcher()->addOutstandingRequest(requestSlot);
+  getBtMessageDispatcher()->addOutstandingRequest
+    (make_unique<RequestSlot>(getIndex(), getBegin(), getLength(), blockIndex_,
+                              getPieceStorage()->getPiece(getIndex())));
 }
 
 void BtRequestMessage::onAbortOutstandingRequestEvent

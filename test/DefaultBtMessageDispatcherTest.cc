@@ -248,9 +248,7 @@ void DefaultBtMessageDispatcherTest::testDoCancelSendingPieceAction() {
 int MY_PIECE_LENGTH = 16*1024;
 
 void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing() {
-  std::shared_ptr<Piece> piece(new Piece(0, MY_PIECE_LENGTH));
-  RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0, piece);
-
+  auto piece = std::make_shared<Piece>(0, MY_PIECE_LENGTH);
   size_t index;
   CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(index));
   CPPUNIT_ASSERT_EQUAL((size_t)0, index);
@@ -260,7 +258,8 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing() {
 
   btMessageDispatcher->setRequestTimeout(60);
   btMessageDispatcher->setPieceStorage(pieceStorage.get());
-  btMessageDispatcher->addOutstandingRequest(slot);
+  btMessageDispatcher->addOutstandingRequest
+    (make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0, piece));
 
   btMessageDispatcher->checkRequestSlotAndDoNecessaryThing();
 
@@ -270,12 +269,9 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing() {
                        btMessageDispatcher->getRequestSlots().size());
 }
 
-void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_timeout() {
-  std::shared_ptr<Piece> piece(new Piece(0, MY_PIECE_LENGTH));
-  RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0, piece);
-  // make this slot timeout
-  slot.setDispatchedTime(0);
-
+void DefaultBtMessageDispatcherTest::
+testCheckRequestSlotAndDoNecessaryThing_timeout() {
+  auto piece = std::make_shared<Piece>(0, MY_PIECE_LENGTH);
   size_t index;
   CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(index));
   CPPUNIT_ASSERT_EQUAL((size_t)0, index);
@@ -285,8 +281,10 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_tim
 
   btMessageDispatcher->setRequestTimeout(60);
   btMessageDispatcher->setPieceStorage(pieceStorage.get());
-  btMessageDispatcher->addOutstandingRequest(slot);
-
+  auto slot = make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0, piece);
+  // make this slot timeout
+  slot->setDispatchedTime(0);
+  btMessageDispatcher->addOutstandingRequest(std::move(slot));
   btMessageDispatcher->checkRequestSlotAndDoNecessaryThing();
 
   CPPUNIT_ASSERT_EQUAL((size_t)0,
@@ -297,18 +295,17 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_tim
   CPPUNIT_ASSERT_EQUAL(true, peer->snubbing());
 }
 
-void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_completeBlock() {
-  std::shared_ptr<Piece> piece(new Piece(0, MY_PIECE_LENGTH));
+void DefaultBtMessageDispatcherTest::
+testCheckRequestSlotAndDoNecessaryThing_completeBlock() {
+  auto piece = std::make_shared<Piece>(0, MY_PIECE_LENGTH);
   piece->completeBlock(0);
-
-  RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0, piece);
-
   auto pieceStorage = make_unique<MockPieceStorage2>();
   pieceStorage->setPiece(piece);
 
   btMessageDispatcher->setRequestTimeout(60);
   btMessageDispatcher->setPieceStorage(pieceStorage.get());
-  btMessageDispatcher->addOutstandingRequest(slot);
+  btMessageDispatcher->addOutstandingRequest
+    (make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0, piece));
 
   btMessageDispatcher->checkRequestSlotAndDoNecessaryThing();
 
@@ -319,15 +316,15 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_com
 }
 
 void DefaultBtMessageDispatcherTest::testCountOutstandingRequest() {
-  RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0);
-  btMessageDispatcher->addOutstandingRequest(slot);
+  btMessageDispatcher->addOutstandingRequest
+    (make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0));
   CPPUNIT_ASSERT_EQUAL((size_t)1,
                        btMessageDispatcher->countOutstandingRequest());
 }
 
 void DefaultBtMessageDispatcherTest::testIsOutstandingRequest() {
-  RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0);
-  btMessageDispatcher->addOutstandingRequest(slot);
+  btMessageDispatcher->addOutstandingRequest
+    (make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0));
 
   CPPUNIT_ASSERT(btMessageDispatcher->isOutstandingRequest(0, 0));
   CPPUNIT_ASSERT(!btMessageDispatcher->isOutstandingRequest(0, 1));
@@ -336,42 +333,42 @@ void DefaultBtMessageDispatcherTest::testIsOutstandingRequest() {
 }
 
 void DefaultBtMessageDispatcherTest::testGetOutstandingRequest() {
-  RequestSlot slot(1, 1024, 16*1024, 10);
-  btMessageDispatcher->addOutstandingRequest(slot);
+  btMessageDispatcher->addOutstandingRequest
+    (make_unique<RequestSlot>(1, 1024, 16*1024, 10));
 
-  RequestSlot s2 = btMessageDispatcher->getOutstandingRequest(1, 1024, 16*1024);
-  CPPUNIT_ASSERT(!RequestSlot::isNull(s2));
+  CPPUNIT_ASSERT(btMessageDispatcher->getOutstandingRequest(1, 1024, 16*1024));
 
-  RequestSlot s3 = btMessageDispatcher->getOutstandingRequest(1, 1024, 17*1024);
-  CPPUNIT_ASSERT(RequestSlot::isNull(s3));
+  CPPUNIT_ASSERT(!btMessageDispatcher->
+                 getOutstandingRequest(1, 1024, 17*1024));
 
-  RequestSlot s4 =
-    btMessageDispatcher->getOutstandingRequest(1, 2*1024, 16*1024);
-  CPPUNIT_ASSERT(RequestSlot::isNull(s4));
+  CPPUNIT_ASSERT(!btMessageDispatcher->
+                 getOutstandingRequest(1, 2*1024, 16*1024));
 
-  RequestSlot s5 = btMessageDispatcher->getOutstandingRequest(2, 1024, 16*1024);
-  CPPUNIT_ASSERT(RequestSlot::isNull(s5));
+  CPPUNIT_ASSERT(!btMessageDispatcher->
+                 getOutstandingRequest(2, 1024, 16*1024));
 }
 
 void DefaultBtMessageDispatcherTest::testRemoveOutstandingRequest() {
-  std::shared_ptr<Piece> piece(new Piece(1, 1024*1024));
+  auto piece = std::make_shared<Piece>(1, 1024*1024);
   size_t blockIndex = 0;
   CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(blockIndex));
   uint32_t begin = blockIndex*piece->getBlockLength();
   size_t length = piece->getBlockLength(blockIndex);
-  RequestSlot slot(piece->getIndex(), begin, length, blockIndex, piece);
-  btMessageDispatcher->addOutstandingRequest(slot);
+  RequestSlot slot;
+  btMessageDispatcher->addOutstandingRequest
+    (make_unique<RequestSlot>(piece->getIndex(), begin, length, blockIndex,
+                              piece));
 
-  RequestSlot s2 = btMessageDispatcher->getOutstandingRequest
-    (piece->getIndex(), begin, length);
-  CPPUNIT_ASSERT(!RequestSlot::isNull(s2));
+  auto s2 = btMessageDispatcher->getOutstandingRequest(piece->getIndex(),
+                                                       begin, length);
+  CPPUNIT_ASSERT(s2);
   CPPUNIT_ASSERT(piece->isBlockUsed(blockIndex));
 
   btMessageDispatcher->removeOutstandingRequest(s2);
 
-  RequestSlot s3 = btMessageDispatcher->getOutstandingRequest
-    (piece->getIndex(), begin, length);
-  CPPUNIT_ASSERT(RequestSlot::isNull(s3));
+  auto s3 = btMessageDispatcher->getOutstandingRequest(piece->getIndex(),
+                                                       begin, length);
+  CPPUNIT_ASSERT(!s3);
   CPPUNIT_ASSERT(!piece->isBlockUsed(blockIndex));
 }
 

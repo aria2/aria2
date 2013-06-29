@@ -33,29 +33,30 @@ public:
 
   class MockBtMessageDispatcher2 : public MockBtMessageDispatcher {
   public:
-    RequestSlot slot;
-  public:
-    MockBtMessageDispatcher2():slot(RequestSlot::nullSlot) {}
+    std::unique_ptr<RequestSlot> slot;
 
-    void setRequestSlot(const RequestSlot& slot) {
-      this->slot = slot;
+    void setRequestSlot(std::unique_ptr<RequestSlot> s)
+    {
+      slot = std::move(s);
     }
 
-    virtual RequestSlot getOutstandingRequest
-    (size_t index, int32_t begin, int32_t length) {
-      if(slot.getIndex() == index && slot.getBegin() == begin &&
-         slot.getLength() == length) {
-        return slot;
+    virtual const RequestSlot* getOutstandingRequest
+    (size_t index, int32_t begin, int32_t length) override {
+      if(slot &&
+         slot->getIndex() == index && slot->getBegin() == begin &&
+         slot->getLength() == length) {
+        return slot.get();
       } else {
-        return RequestSlot::nullSlot;
+        return nullptr;
       }
     }
 
-    virtual void removeOutstandingRequest(const RequestSlot& slot) {
-      if(this->slot.getIndex() == slot.getIndex() &&
-         this->slot.getBegin() == slot.getBegin() &&
-         this->slot.getLength() == slot.getLength()) {
-        this->slot = RequestSlot::nullSlot;
+    virtual void removeOutstandingRequest(const RequestSlot* s) override
+    {
+      if(slot->getIndex() == s->getIndex() &&
+         slot->getBegin() == s->getBegin() &&
+         slot->getLength() == s->getLength()) {
+        slot.reset();
       }
     }
   };
@@ -131,39 +132,32 @@ void BtRejectMessageTest::testCreateMessage() {
 
 void BtRejectMessageTest::testDoReceivedAction() {
   peer->setFastExtensionEnabled(true);
-  RequestSlot slot(1, 16, 32, 2);
-  dispatcher->setRequestSlot(slot);
+  dispatcher->setRequestSlot(make_unique<RequestSlot>(1, 16, 32, 2));
 
-  CPPUNIT_ASSERT
-    (!RequestSlot::isNull(dispatcher->getOutstandingRequest(1, 16, 32)));
+  CPPUNIT_ASSERT(dispatcher->getOutstandingRequest(1, 16, 32));
 
   msg->doReceivedAction();
 
-  CPPUNIT_ASSERT
-    (RequestSlot::isNull(dispatcher->getOutstandingRequest(1, 16, 32)));
+  CPPUNIT_ASSERT(!dispatcher->getOutstandingRequest(1, 16, 32));
 }
 
 void BtRejectMessageTest::testDoReceivedActionNoMatch() {
   peer->setFastExtensionEnabled(true);
-  RequestSlot slot(2, 16, 32, 2);
-  dispatcher->setRequestSlot(slot);
+  dispatcher->setRequestSlot(make_unique<RequestSlot>(2, 16, 32, 2));
 
-  CPPUNIT_ASSERT
-    (!RequestSlot::isNull(dispatcher->getOutstandingRequest(2, 16, 32)));
+  CPPUNIT_ASSERT(dispatcher->getOutstandingRequest(2, 16, 32));
 
   msg->doReceivedAction();
 
-  CPPUNIT_ASSERT
-    (!RequestSlot::isNull(dispatcher->getOutstandingRequest(2, 16, 32)));
+  CPPUNIT_ASSERT(dispatcher->getOutstandingRequest(2, 16, 32));
 
 }
 
 void BtRejectMessageTest::testDoReceivedActionFastExtensionDisabled() {
   RequestSlot slot(1, 16, 32, 2);
-  dispatcher->setRequestSlot(slot);
+  dispatcher->setRequestSlot(make_unique<RequestSlot>(1, 16, 32, 2));
 
-  CPPUNIT_ASSERT
-    (!RequestSlot::isNull(dispatcher->getOutstandingRequest(1, 16, 32)));
+  CPPUNIT_ASSERT(dispatcher->getOutstandingRequest(1, 16, 32));
   try {
     msg->doReceivedAction();
     CPPUNIT_FAIL("exception must be thrown.");

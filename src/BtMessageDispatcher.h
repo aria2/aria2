@@ -79,12 +79,12 @@ public:
 
   virtual bool isOutstandingRequest(size_t index, size_t blockIndex) = 0;
 
-  virtual RequestSlot getOutstandingRequest
+  virtual const RequestSlot* getOutstandingRequest
   (size_t index, int32_t begin, int32_t length) = 0;
 
-  virtual void removeOutstandingRequest(const RequestSlot& slot) = 0;
+  virtual void removeOutstandingRequest(const RequestSlot* slot) = 0;
 
-  virtual void addOutstandingRequest(const RequestSlot& slot) = 0;
+  virtual void addOutstandingRequest(std::unique_ptr<RequestSlot> slot) = 0;
 
   virtual size_t countOutstandingUpload() = 0;
 };

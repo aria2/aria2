@@ -103,11 +103,11 @@ void BtPieceMessage::doReceivedAction()
   if(isMetadataGetMode()) {
     return;
   }
-  RequestSlot slot = getBtMessageDispatcher()->getOutstandingRequest
+  auto slot = getBtMessageDispatcher()->getOutstandingRequest
     (index_, begin_, blockLength_);
   getPeer()->updateDownloadLength(blockLength_);
   downloadContext_->updateDownloadLength(blockLength_);
-  if(!RequestSlot::isNull(slot)) {
+  if(slot) {
     getPeer()->snubbing(false);
     std::shared_ptr<Piece> piece = getPieceStorage()->getPiece(index_);
     int64_t offset =
@@ -118,8 +118,8 @@ void BtPieceMessage::doReceivedAction()
                      begin_,
                      blockLength_,
                      static_cast<int64_t>(offset),
-                     static_cast<unsigned long>(slot.getBlockIndex())));
-    if(piece->hasBlock(slot.getBlockIndex())) {
+                     static_cast<unsigned long>(slot->getBlockIndex())));
+    if(piece->hasBlock(slot->getBlockIndex())) {
       A2_LOG_DEBUG("Already have this block.");
       return;
     }
@@ -134,7 +134,7 @@ void BtPieceMessage::doReceivedAction()
       getPieceStorage()->getDiskAdaptor()->writeData(data_+9, blockLength_,
                                                      offset);
     }
-    piece->completeBlock(slot.getBlockIndex());
+    piece->completeBlock(slot->getBlockIndex());
     A2_LOG_DEBUG(fmt(MSG_PIECE_BITFIELD, getCuid(),
                      util::toHex(piece->getBitfield(),
                                  piece->getBitfieldLength()).c_str()));

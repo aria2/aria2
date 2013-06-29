@@ -58,7 +58,7 @@ class DefaultBtMessageDispatcher : public BtMessageDispatcher {
 private:
   cuid_t cuid_;
   std::deque<std::shared_ptr<BtMessage> > messageQueue_;
-  std::deque<RequestSlot> requestSlots_;
+  std::deque<std::unique_ptr<RequestSlot>> requestSlots_;
   DownloadContext* downloadContext_;
   PeerStorage* peerStorage_;
   PieceStorage* pieceStorage_;
@@ -108,12 +108,12 @@ public:
 
   virtual bool isOutstandingRequest(size_t index, size_t blockIndex);
 
-  virtual RequestSlot getOutstandingRequest
+  virtual const RequestSlot* getOutstandingRequest
   (size_t index, int32_t begin, int32_t length);
 
-  virtual void removeOutstandingRequest(const RequestSlot& slot);
+  virtual void removeOutstandingRequest(const RequestSlot* slot);
 
-  virtual void addOutstandingRequest(const RequestSlot& requestSlot);
+  virtual void addOutstandingRequest(std::unique_ptr<RequestSlot> requestSlot);
 
   virtual size_t countOutstandingUpload();
 
@@ -122,7 +122,7 @@ public:
     return messageQueue_;
   }
 
-  const std::deque<RequestSlot>& getRequestSlots() const
+  const std::deque<std::unique_ptr<RequestSlot>>& getRequestSlots() const
   {
     return requestSlots_;
   }

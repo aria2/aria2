@@ -36,19 +36,12 @@
 
 namespace aria2 {
 
-RequestSlot RequestSlot::nullSlot = RequestSlot();
-
 void RequestSlot::setDispatchedTime(time_t sec) {
   dispatchedTime_.reset(sec);
 }
 
 bool RequestSlot::isTimeout(time_t timeoutSec) const {
   return dispatchedTime_.difference(global::wallclock()) >= timeoutSec;
-}
-
-bool RequestSlot::isNull(const RequestSlot& requestSlot) {
-  return requestSlot.index_ == 0 && requestSlot.begin_ == 0&&
-    requestSlot.length_ == 0;
 }
 
 } // namespace aria2
