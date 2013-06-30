@@ -41,7 +41,7 @@ public:
                                length(0) {}
 
     virtual void doCancelSendingPieceAction
-    (size_t index, int32_t begin, int32_t length) {
+    (size_t index, int32_t begin, int32_t length) override {
       this->index = index;
       this->begin = begin;
       this->length = length;
@@ -58,7 +58,7 @@ void BtCancelMessageTest::testCreate() {
   bittorrent::setIntParam(&msg[5], 12345);
   bittorrent::setIntParam(&msg[9], 256);
   bittorrent::setIntParam(&msg[13], 1024);
-  std::shared_ptr<BtCancelMessage> pm(BtCancelMessage::create(&msg[4], 13));
+  auto pm = BtCancelMessage::create(&msg[4], 13);
   CPPUNIT_ASSERT_EQUAL((uint8_t)8, pm->getId());
   CPPUNIT_ASSERT_EQUAL((size_t)12345, pm->getIndex());
   CPPUNIT_ASSERT_EQUAL(256, pm->getBegin());
@@ -103,8 +103,7 @@ void BtCancelMessageTest::testDoReceivedAction() {
   msg.setBegin(2*16*1024);
   msg.setLength(16*1024);
   msg.setPeer(peer);
-  std::shared_ptr<MockBtMessageDispatcher2> dispatcher
-    (new MockBtMessageDispatcher2());
+  auto dispatcher = make_unique<MockBtMessageDispatcher2>();
   msg.setBtMessageDispatcher(dispatcher.get());
 
   msg.doReceivedAction();

@@ -51,6 +51,9 @@ class Piece;
 
 class DefaultBtRequestFactory : public BtRequestFactory {
 private:
+  std::vector<std::unique_ptr<BtRequestMessage>> createRequestMessagesOnEndGame
+  (size_t max);
+
   PieceStorage* pieceStorage_;
   std::shared_ptr<Peer> peer_;
   BtMessageDispatcher* dispatcher_;
@@ -78,13 +81,10 @@ public:
 
   virtual void doChokedAction();
 
-  virtual void createRequestMessages
-  (std::vector<std::shared_ptr<BtMessage> >& requests, size_t max);
+  virtual std::vector<std::unique_ptr<BtRequestMessage>> createRequestMessages
+  (size_t max, bool endGame);
 
-  virtual void createRequestMessagesOnEndGame
-  (std::vector<std::shared_ptr<BtMessage> >& requests, size_t max);
-
-  virtual void getTargetPieceIndexes(std::vector<size_t>& indexes) const;
+  virtual std::vector<size_t> getTargetPieceIndexes() const;
 
   std::deque<std::shared_ptr<Piece> >& getTargetPieces()
   {

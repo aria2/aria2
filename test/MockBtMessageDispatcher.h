@@ -12,18 +12,12 @@ namespace aria2 {
 
 class MockBtMessageDispatcher : public BtMessageDispatcher {
 public:
-  std::deque<std::shared_ptr<BtMessage> > messageQueue;
+  std::deque<std::unique_ptr<BtMessage>> messageQueue;
 
   virtual ~MockBtMessageDispatcher() {}
 
-  virtual void addMessageToQueue(const std::shared_ptr<BtMessage>& btMessage) {
-    messageQueue.push_back(btMessage);
-  }
-
-  virtual void addMessageToQueue
-  (const std::vector<std::shared_ptr<BtMessage> >& btMessages)
-  {
-    std::copy(btMessages.begin(), btMessages.end(), back_inserter(messageQueue));
+  virtual void addMessageToQueue(std::unique_ptr<BtMessage> btMessage) {
+    messageQueue.push_back(std::move(btMessage));
   }
 
   virtual void sendMessages() {}

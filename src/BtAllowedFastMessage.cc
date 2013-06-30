@@ -45,7 +45,7 @@ const char BtAllowedFastMessage::NAME[] = "allowed fast";
 BtAllowedFastMessage::BtAllowedFastMessage(size_t index):
   IndexBtMessage(ID, NAME, index) {}
 
-BtAllowedFastMessage* BtAllowedFastMessage::create
+std::unique_ptr<BtAllowedFastMessage> BtAllowedFastMessage::create
 (const unsigned char* data, size_t dataLength)
 {
   return IndexBtMessage::create<BtAllowedFastMessage>(data, dataLength);

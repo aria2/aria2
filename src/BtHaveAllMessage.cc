@@ -45,7 +45,7 @@ const char BtHaveAllMessage::NAME[] = "have all";
 
 BtHaveAllMessage::BtHaveAllMessage():ZeroBtMessage(ID, NAME) {}
 
-BtHaveAllMessage* BtHaveAllMessage::create
+std::unique_ptr<BtHaveAllMessage> BtHaveAllMessage::create
 (const unsigned char* data, size_t dataLength)
 {
   return ZeroBtMessage::create<BtHaveAllMessage>(data, dataLength);

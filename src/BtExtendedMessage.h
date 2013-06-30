@@ -56,7 +56,7 @@ public:
 
   static const char NAME[];
 
-  static BtExtendedMessage* create
+  static std::unique_ptr<BtExtendedMessage> create
   (const std::shared_ptr<ExtensionMessageFactory>& factory,
    const std::shared_ptr<Peer>& peer,
    const unsigned char* data,

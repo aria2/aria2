@@ -37,6 +37,10 @@
 
 namespace aria2 {
 
+ZeroBtMessage::ZeroBtMessage(uint8_t id, const char* name)
+  : SimpleBtMessage{id, name}
+{}
+
 unsigned char* ZeroBtMessage::createMessage()
 {
   /**

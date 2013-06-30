@@ -46,6 +46,14 @@
 #include "BtUnchokeMessage.h"
 #include "BtRequestMessage.h"
 #include "BtPieceMessage.h"
+#include "BtPortMessage.h"
+#include "BtInterestedMessage.h"
+#include "BtNotInterestedMessage.h"
+#include "BtHaveMessage.h"
+#include "BtHaveAllMessage.h"
+#include "BtBitfieldMessage.h"
+#include "BtHaveNoneMessage.h"
+#include "BtAllowedFastMessage.h"
 #include "DlAbortEx.h"
 #include "BtExtendedMessage.h"
 #include "HandshakeExtensionMessage.h"
@@ -104,10 +112,10 @@ DefaultBtInteractive::DefaultBtInteractive
 DefaultBtInteractive::~DefaultBtInteractive() {}
 
 void DefaultBtInteractive::initiateHandshake() {
-  std::shared_ptr<BtMessage> message =
-    messageFactory_->createHandshakeMessage
-    (bittorrent::getInfoHash(downloadContext_), bittorrent::getStaticPeerId());
-  dispatcher_->addMessageToQueue(message);
+  dispatcher_->addMessageToQueue
+    (messageFactory_->createHandshakeMessage
+     (bittorrent::getInfoHash(downloadContext_),
+      bittorrent::getStaticPeerId()));
   dispatcher_->sendMessages();
 }
 
@@ -199,8 +207,7 @@ void DefaultBtInteractive::addHandshakeExtendedMessageToQueue()
   if(!attrs->metadata.empty()) {
     m->setMetadataSize(attrs->metadataSize);
   }
-  std::shared_ptr<BtMessage> msg = messageFactory_->createBtExtendedMessage(m);
-  dispatcher_->addMessageToQueue(msg);
+  dispatcher_->addMessageToQueue(messageFactory_->createBtExtendedMessage(m));
 }
 
 void DefaultBtInteractive::addBitfieldMessageToQueue() {
@@ -301,9 +308,6 @@ size_t DefaultBtInteractive::receiveMessages() {
     message->doReceivedAction();
 
     switch(message->getId()) {
-    case BtKeepAliveMessage::ID:
-      floodingStat_.incKeepAliveCount();
-      break;
     case BtChokeMessage::ID:
       if(!peer_->peerChoking()) {
         floodingStat_.incChokeUnchokeCount();
@@ -314,9 +318,12 @@ size_t DefaultBtInteractive::receiveMessages() {
         floodingStat_.incChokeUnchokeCount();
       }
       break;
-    case BtPieceMessage::ID:
     case BtRequestMessage::ID:
+    case BtPieceMessage::ID:
       inactiveTimer_ = global::wallclock();
+      break;
+    case BtKeepAliveMessage::ID:
+      floodingStat_.incKeepAliveCount();
       break;
     }
   }
@@ -359,11 +366,9 @@ void DefaultBtInteractive::fillPiece(size_t maxMissingBlock) {
     if(peer_->peerChoking()) {
       if(peer_->isFastExtensionEnabled()) {
         if(pieceStorage_->isEndGame()) {
-          std::vector<size_t> excludedIndexes;
-          excludedIndexes.reserve(btRequestFactory_->countTargetPiece());
-          btRequestFactory_->getTargetPieceIndexes(excludedIndexes);
           pieceStorage_->getMissingFastPiece
-            (pieces, diffMissingBlock, peer_, excludedIndexes, cuid_);
+            (pieces, diffMissingBlock, peer_,
+             btRequestFactory_->getTargetPieceIndexes(), cuid_);
         } else {
           pieces.reserve(diffMissingBlock);
           pieceStorage_->getMissingFastPiece
@@ -372,11 +377,9 @@ void DefaultBtInteractive::fillPiece(size_t maxMissingBlock) {
       }
     } else {
       if(pieceStorage_->isEndGame()) {
-        std::vector<size_t> excludedIndexes;
-        excludedIndexes.reserve(btRequestFactory_->countTargetPiece());
-        btRequestFactory_->getTargetPieceIndexes(excludedIndexes);
         pieceStorage_->getMissingPiece
-          (pieces, diffMissingBlock, peer_, excludedIndexes, cuid_);
+          (pieces, diffMissingBlock, peer_,
+           btRequestFactory_->getTargetPieceIndexes(), cuid_);
       } else {
         pieces.reserve(diffMissingBlock);
         pieceStorage_->getMissingPiece(pieces, diffMissingBlock, peer_, cuid_);
@@ -399,14 +402,12 @@ void DefaultBtInteractive::addRequests() {
     0 : maxOutstandingRequest_-dispatcher_->countOutstandingRequest();
 
   if(reqNumToCreate > 0) {
-    std::vector<std::shared_ptr<BtMessage> > requests;
-    requests.reserve(reqNumToCreate);
-    if(pieceStorage_->isEndGame()) {
-      btRequestFactory_->createRequestMessagesOnEndGame(requests,reqNumToCreate);
-    } else {
-      btRequestFactory_->createRequestMessages(requests, reqNumToCreate);
+    auto requests =
+      btRequestFactory_->createRequestMessages(reqNumToCreate,
+                                               pieceStorage_->isEndGame());
+    for(auto& i : requests) {
+      dispatcher_->addMessageToQueue(std::move(i));
     }
-    dispatcher_->addMessageToQueue(requests);
   }
 }
 
@@ -502,8 +503,8 @@ void DefaultBtInteractive::addPeerExchangeMessage()
       }
     }
 
-    std::shared_ptr<BtMessage> msg = messageFactory_->createBtExtendedMessage(m);
-    dispatcher_->addMessageToQueue(msg);
+    dispatcher_->addMessageToQueue
+      (messageFactory_->createBtExtendedMessage(m));
     pexTimer_ = global::wallclock();
   }
 }
@@ -520,9 +521,11 @@ void DefaultBtInteractive::doInteractionProcessing() {
        downloadContext_->getTotalLength() > 0) {
       size_t num = utMetadataRequestTracker_->avail();
       if(num > 0) {
-        std::vector<std::shared_ptr<BtMessage> > requests;
-        utMetadataRequestFactory_->create(requests, num, pieceStorage_);
-        dispatcher_->addMessageToQueue(requests);
+        auto requests =
+          utMetadataRequestFactory_->create(num, pieceStorage_);
+        for(auto& i : requests) {
+          dispatcher_->addMessageToQueue(std::move(i));
+        }
       }
       if(perSecTimer_.difference(global::wallclock()) >= 1) {
         perSecTimer_ = global::wallclock();

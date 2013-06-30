@@ -55,7 +55,7 @@ public:
   size_t getBlockIndex() const { return blockIndex_; }
   void setBlockIndex(size_t blockIndex) { blockIndex_ = blockIndex; }
 
-  static BtRequestMessage* create
+  static std::unique_ptr<BtRequestMessage> create
   (const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction();

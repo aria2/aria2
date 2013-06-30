@@ -66,16 +66,14 @@ void UTMetadataRequestFactoryTest::testCreate()
     (new UTMetadataRequestTracker());
   factory.setUTMetadataRequestTracker(tracker.get());
 
-  std::vector<std::shared_ptr<BtMessage> > msgs;
-
-  factory.create(msgs, 1, ps);
+  auto msgs = factory.create(1, ps);
   CPPUNIT_ASSERT_EQUAL((size_t)1, msgs.size());
 
-  factory.create(msgs, 1, ps);
-  CPPUNIT_ASSERT_EQUAL((size_t)2, msgs.size());
+  msgs = factory.create(1, ps);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, msgs.size());
 
-  factory.create(msgs, 1, ps);
-  CPPUNIT_ASSERT_EQUAL((size_t)2, msgs.size());
+  msgs = factory.create(1, ps);
+  CPPUNIT_ASSERT_EQUAL((size_t)0, msgs.size());
 }
 
 } // namespace aria2

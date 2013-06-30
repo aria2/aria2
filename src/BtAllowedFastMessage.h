@@ -47,7 +47,7 @@ public:
 
   static const char NAME[];
 
-  static BtAllowedFastMessage* create
+  static std::unique_ptr<BtAllowedFastMessage> create
   (const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction();

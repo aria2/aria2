@@ -53,7 +53,7 @@ public:
 
   static const char NAME[];
 
-  static BtNotInterestedMessage* create
+  static std::unique_ptr<BtNotInterestedMessage> create
   (const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction();

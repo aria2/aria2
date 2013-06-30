@@ -108,10 +108,10 @@ DefaultBtMessageReceiver::receiveAndSendHandshake()
 }
 
 void DefaultBtMessageReceiver::sendHandshake() {
-  std::shared_ptr<BtMessage> msg =
-    messageFactory_->createHandshakeMessage
-    (bittorrent::getInfoHash(downloadContext_), bittorrent::getStaticPeerId());
-  dispatcher_->addMessageToQueue(msg);
+  dispatcher_->addMessageToQueue
+    (messageFactory_->createHandshakeMessage
+     (bittorrent::getInfoHash(downloadContext_),
+      bittorrent::getStaticPeerId()));
   dispatcher_->sendMessages();
 }
 

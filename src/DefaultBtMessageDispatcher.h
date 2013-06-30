@@ -57,7 +57,7 @@ class PeerConnection;
 class DefaultBtMessageDispatcher : public BtMessageDispatcher {
 private:
   cuid_t cuid_;
-  std::deque<std::shared_ptr<BtMessage> > messageQueue_;
+  std::deque<std::unique_ptr<BtMessage> > messageQueue_;
   std::deque<std::unique_ptr<RequestSlot>> requestSlots_;
   DownloadContext* downloadContext_;
   PeerStorage* peerStorage_;
@@ -72,10 +72,7 @@ public:
 
   virtual ~DefaultBtMessageDispatcher();
 
-  virtual void addMessageToQueue(const std::shared_ptr<BtMessage>& btMessage);
-
-  virtual void addMessageToQueue
-  (const std::vector<std::shared_ptr<BtMessage> >& btMessages);
+  virtual void addMessageToQueue(std::unique_ptr<BtMessage> btMessage);
 
   virtual void sendMessages();
 
@@ -117,7 +114,7 @@ public:
 
   virtual size_t countOutstandingUpload();
 
-  const std::deque<std::shared_ptr<BtMessage> >& getMessageQueue() const
+  const std::deque<std::unique_ptr<BtMessage>>& getMessageQueue() const
   {
     return messageQueue_;
   }

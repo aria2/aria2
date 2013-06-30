@@ -49,7 +49,7 @@ public:
 
   static const char NAME[];
 
-  static BtUnchokeMessage* create
+  static std::unique_ptr<BtUnchokeMessage> create
   (const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction();

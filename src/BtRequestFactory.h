@@ -43,7 +43,7 @@
 namespace aria2 {
 
 class Piece;
-class BtMessage;
+class BtRequestMessage;
 
 class BtRequestFactory {
 public:
@@ -65,24 +65,18 @@ public:
 
   /**
    * Creates RequestMessage objects associated to the pieces added by
-   * addTargetPiece() and returns them.
-   * The number of objects returned is capped by max.
+   * addTargetPiece() and returns them.  The number of objects
+   * returned is capped by max.  If |endGame| is true, returns
+   * requests in end game mode.
    */
-  virtual void createRequestMessages
-  (std::vector<std::shared_ptr<BtMessage> >& requests, size_t max) = 0;
+  virtual std::vector<std::unique_ptr<BtRequestMessage>> createRequestMessages
+  (size_t max, bool endGame) = 0;
 
   /**
-   * Use this method in end game mode.
-   *
+   * Returns the list of index of pieces added using addTargetPiece()
+   * into indexes.
    */
-  virtual void createRequestMessagesOnEndGame
-  (std::vector<std::shared_ptr<BtMessage> >& requests, size_t max) = 0;
-
-  /**
-   * Stores the list of index of pieces added using addTargetPiece() into
-   * indexes.
-   */
-  virtual void getTargetPieceIndexes(std::vector<size_t>& indexes) const = 0;
+  virtual std::vector<size_t> getTargetPieceIndexes() const = 0;
 
 };
 

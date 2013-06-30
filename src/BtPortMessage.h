@@ -65,7 +65,8 @@ public:
 
   uint16_t getPort() const { return port_; }
 
-  static BtPortMessage* create(const unsigned char* data, size_t dataLength);
+  static std::unique_ptr<BtPortMessage> create
+  (const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction();
 

@@ -1,19 +1,17 @@
 #ifndef D_EXTENSION_MESSAGE_TEST_HELPER_H
 #define D_EXTENSION_MESSAGE_TEST_HELPER_H
 
-#include "MockBtMessage.h"
 #include "MockBtMessageFactory.h"
 
 namespace aria2 {
 
-typedef WrapBtMessage<ExtensionMessage> WrapExtBtMessage;
-
 class WrapExtBtMessageFactory:public MockBtMessageFactory {
 public:
-  virtual std::shared_ptr<BtMessage>
+  virtual std::unique_ptr<BtExtendedMessage>
   createBtExtendedMessage(const std::shared_ptr<ExtensionMessage>& extmsg)
+    override
   {
-    return std::shared_ptr<BtMessage>(new WrapExtBtMessage(extmsg));
+    return make_unique<BtExtendedMessage>(extmsg);
   }
 };
 

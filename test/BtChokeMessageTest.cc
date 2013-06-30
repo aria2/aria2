@@ -43,13 +43,18 @@ public:
     bool doChokedActionCalled;
     bool doChokingActionCalled;
   public:
-    MockBtMessageDispatcher2():doChokedActionCalled(false), doChokingActionCalled(false) {}
+    MockBtMessageDispatcher2()
+      : doChokedActionCalled{false},
+        doChokingActionCalled{false}
+    {}
 
-    virtual void doChokedAction() {
+    virtual void doChokedAction() override
+    {
       doChokedActionCalled = true;
     }
 
-    virtual void doChokingAction() {
+    virtual void doChokingAction() override
+    {
       doChokingActionCalled = true;
     }
   };
@@ -58,9 +63,10 @@ public:
   public:
     bool doChokedActionCalled;
   public:
-    MockBtRequestFactory2():doChokedActionCalled(false) {}
+    MockBtRequestFactory2():doChokedActionCalled{false} {}
 
-    virtual void doChokedAction() {
+    virtual void doChokedAction() override
+    {
       doChokedActionCalled = true;
     }
   };
@@ -72,7 +78,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BtChokeMessageTest);
 void BtChokeMessageTest::testCreate() {
   unsigned char msg[5];
   bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 0);
-  std::shared_ptr<BtChokeMessage> pm(BtChokeMessage::create(&msg[4], 1));
+  auto pm = BtChokeMessage::create(&msg[4], 1);
   CPPUNIT_ASSERT_EQUAL((uint8_t)0, pm->getId());
 
   // case: payload size is wrong
@@ -106,9 +112,9 @@ void BtChokeMessageTest::testDoReceivedAction() {
   BtChokeMessage msg;
   msg.setPeer(peer);
 
-  std::shared_ptr<MockBtMessageDispatcher2> dispatcher(new MockBtMessageDispatcher2());
+  auto dispatcher = make_unique<MockBtMessageDispatcher2>();
   msg.setBtMessageDispatcher(dispatcher.get());
-  std::shared_ptr<MockBtRequestFactory2> requestFactory(new MockBtRequestFactory2());
+  auto requestFactory = make_unique<MockBtRequestFactory2>();
   msg.setBtRequestFactory(requestFactory.get());
 
   msg.doReceivedAction();
@@ -121,10 +127,10 @@ void BtChokeMessageTest::testOnSendComplete() {
   BtChokeMessage msg;
   msg.setPeer(peer);
 
-  std::shared_ptr<MockBtMessageDispatcher2> dispatcher(new MockBtMessageDispatcher2());
+  auto dispatcher = make_unique<MockBtMessageDispatcher2>();
   msg.setBtMessageDispatcher(dispatcher.get());
 
-  std::shared_ptr<ProgressUpdate> pu(msg.getProgressUpdate());
+  auto pu = std::unique_ptr<ProgressUpdate>{msg.getProgressUpdate()};
   pu->update(0, true);
 
   CPPUNIT_ASSERT(dispatcher->doChokingActionCalled);

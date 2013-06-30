@@ -45,17 +45,16 @@ private:
   static const size_t MESSAGE_LENGTH = 5;
 protected:
   template<typename T>
-  static T* create(const unsigned char* data, size_t dataLength)
+  static std::unique_ptr<T> create(const unsigned char* data,
+                                   size_t dataLength)
   {
     bittorrent::assertPayloadLengthEqual(1, dataLength, T::NAME);
     bittorrent::assertID(T::ID, data, T::NAME);
-    T* message(new T());
-    return message;
+    return make_unique<T>();
   }
 
 public:
-  ZeroBtMessage(uint8_t id, const char* name):
-    SimpleBtMessage(id, name) {}
+  ZeroBtMessage(uint8_t id, const char* name);
 
   virtual unsigned char* createMessage();
 

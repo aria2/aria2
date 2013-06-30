@@ -48,6 +48,7 @@
 #include "SimpleRandomizer.h"
 #include "array_fun.h"
 #include "fmt.h"
+#include "BtRequestMessage.h"
 
 namespace aria2 {
 
@@ -88,7 +89,7 @@ void DefaultBtRequestFactory::removeCompletedPiece() {
                 AbortCompletedPieceRequest(dispatcher_));
   pieces_.erase(std::remove_if(pieces_.begin(), pieces_.end(),
                                std::mem_fn(&Piece::pieceComplete)),
-               pieces_.end());
+                pieces_.end());
 }
 
 void DefaultBtRequestFactory::removeTargetPiece
@@ -157,48 +158,50 @@ void DefaultBtRequestFactory::removeAllTargetPiece() {
   pieces_.clear();
 }
 
-void DefaultBtRequestFactory::createRequestMessages
-(std::vector<std::shared_ptr<BtMessage> >& requests, size_t max)
+std::vector<std::unique_ptr<BtRequestMessage>>
+DefaultBtRequestFactory::createRequestMessages(size_t max, bool endGame)
 {
-  if(requests.size() >= max) {
-    return;
+  if(endGame) {
+    return createRequestMessagesOnEndGame(max);
   }
+  auto requests = std::vector<std::unique_ptr<BtRequestMessage>>{};
   size_t getnum = max-requests.size();
-  std::vector<size_t> blockIndexes;
+  auto blockIndexes = std::vector<size_t>{};
   blockIndexes.reserve(getnum);
-  for(std::deque<std::shared_ptr<Piece> >::iterator itr = pieces_.begin(),
-        eoi = pieces_.end(); itr != eoi && getnum; ++itr) {
-    std::shared_ptr<Piece>& piece = *itr;
+  for(auto itr = std::begin(pieces_), eoi = std::end(pieces_);
+      itr != eoi && getnum; ++itr) {
+    auto& piece = *itr;
     if(piece->getMissingUnusedBlockIndex(blockIndexes, getnum)) {
       getnum -= blockIndexes.size();
-      for(std::vector<size_t>::const_iterator i = blockIndexes.begin(),
-            eoi2 = blockIndexes.end(); i != eoi2; ++i) {
+      for(auto i = std::begin(blockIndexes), eoi2 = std::end(blockIndexes);
+          i != eoi2; ++i) {
         A2_LOG_DEBUG
           (fmt("Creating RequestMessage index=%lu, begin=%u,"
                " blockIndex=%lu",
                static_cast<unsigned long>(piece->getIndex()),
                static_cast<unsigned int>((*i)*piece->getBlockLength()),
                static_cast<unsigned long>(*i)));
-        requests.push_back
-          (messageFactory_->createRequestMessage(piece, *i));
+        requests.push_back(messageFactory_->createRequestMessage(piece, *i));
       }
       blockIndexes.clear();
     }
   }
+  return requests;
 }
 
-void DefaultBtRequestFactory::createRequestMessagesOnEndGame
-(std::vector<std::shared_ptr<BtMessage> >& requests, size_t max)
+std::vector<std::unique_ptr<BtRequestMessage>>
+DefaultBtRequestFactory::createRequestMessagesOnEndGame(size_t max)
 {
-  for(std::deque<std::shared_ptr<Piece> >::iterator itr = pieces_.begin(),
-        eoi = pieces_.end(); itr != eoi && requests.size() < max; ++itr) {
-    std::shared_ptr<Piece>& piece = *itr;
+  auto requests = std::vector<std::unique_ptr<BtRequestMessage>>{};
+  for(auto itr = std::begin(pieces_), eoi = std::end(pieces_);
+      itr != eoi && requests.size() < max; ++itr) {
+    auto& piece = *itr;
     const size_t mislen = piece->getBitfieldLength();
     array_ptr<unsigned char> misbitfield(new unsigned char[mislen]);
 
     piece->getAllMissingBlockIndexes(misbitfield, mislen);
 
-    std::vector<size_t> missingBlockIndexes;
+    auto missingBlockIndexes = std::vector<size_t>{};
     size_t blockIndex = 0;
     for(size_t i = 0; i < mislen; ++i) {
       unsigned char bits = misbitfield[i];
@@ -209,12 +212,13 @@ void DefaultBtRequestFactory::createRequestMessagesOnEndGame
         }
       }
     }
-    std::random_shuffle(missingBlockIndexes.begin(), missingBlockIndexes.end(),
+    std::random_shuffle(std::begin(missingBlockIndexes),
+                        std::end(missingBlockIndexes),
                         *SimpleRandomizer::getInstance());
-    for(std::vector<size_t>::const_iterator bitr = missingBlockIndexes.begin(),
-          eoi2 = missingBlockIndexes.end();
+    for(auto bitr = std::begin(missingBlockIndexes),
+          eoi2 = std::end(missingBlockIndexes);
         bitr != eoi2 && requests.size() < max; ++bitr) {
-      const size_t& blockIndex = *bitr;
+      size_t blockIndex = *bitr;
       if(!dispatcher_->isOutstandingRequest(piece->getIndex(),
                                            blockIndex)) {
         A2_LOG_DEBUG
@@ -228,6 +232,7 @@ void DefaultBtRequestFactory::createRequestMessagesOnEndGame
       }
     }
   }
+  return requests;
 }
 
 namespace {
@@ -256,11 +261,14 @@ size_t DefaultBtRequestFactory::countMissingBlock()
                        CountMissingBlock()).getNumMissingBlock();
 }
 
-void DefaultBtRequestFactory::getTargetPieceIndexes
-(std::vector<size_t>& indexes) const
+std::vector<size_t>
+DefaultBtRequestFactory::getTargetPieceIndexes() const
 {
-  std::transform(pieces_.begin(), pieces_.end(), std::back_inserter(indexes),
-                 std::mem_fn(&Piece::getIndex));
+  auto res = std::vector<size_t>{};
+  res.reserve(pieces_.size());
+  std::transform(std::begin(pieces_), std::end(pieces_),
+                 std::back_inserter(res), std::mem_fn(&Piece::getIndex));
+  return res;
 }
 
 void DefaultBtRequestFactory::setPieceStorage(PieceStorage* pieceStorage)

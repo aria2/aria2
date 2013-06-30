@@ -2,6 +2,7 @@
 #define D_MOCK_BT_REQUEST_FACTORY_H
 
 #include "BtRequestFactory.h"
+#include "BtRequestMessage.h"
 
 namespace aria2 {
 
@@ -23,13 +24,16 @@ public:
 
   virtual void doChokedAction() {}
 
-  virtual void createRequestMessages
-  (std::vector<std::shared_ptr<BtMessage> >& requests, size_t max) {}
+  virtual std::vector<std::unique_ptr<BtRequestMessage>> createRequestMessages
+  (size_t max, bool endGame)
+  {
+    return std::vector<std::unique_ptr<BtRequestMessage>>{};
+  }
 
-  virtual void createRequestMessagesOnEndGame
-  (std::vector<std::shared_ptr<BtMessage> >& requests, size_t max) {}
-
-  virtual void getTargetPieceIndexes(std::vector<size_t>& indexes) const {}
+  virtual std::vector<size_t> getTargetPieceIndexes() const
+  {
+    return std::vector<size_t>{};
+  }
 };
 
 } // namespace aria2

@@ -43,7 +43,7 @@ const char BtHaveNoneMessage::NAME[] = "have none";
 
 BtHaveNoneMessage::BtHaveNoneMessage():ZeroBtMessage(ID, NAME) {}
 
-BtHaveNoneMessage* BtHaveNoneMessage::create
+std::unique_ptr<BtHaveNoneMessage> BtHaveNoneMessage::create
 (const unsigned char* data, size_t dataLength)
 {
   return ZeroBtMessage::create<BtHaveNoneMessage>(data, dataLength);

@@ -54,62 +54,44 @@ public:
 
   class MockPieceStorage2 : public MockPieceStorage {
   public:
-    virtual bool hasPiece(size_t index) {
+    virtual bool hasPiece(size_t index) override
+    {
       return index == 1;
     }
   };
 
-  class MockBtMessage2 : public MockBtMessage {
-  public:
-    std::string type;
-    size_t index;
-    uint32_t begin;
-    size_t length;
-  public:
-    MockBtMessage2(std::string type, size_t index, uint32_t begin,
-                   size_t length)
-      :
-      type(type), index(index), begin(begin), length(length) {}
-  };
-
-  typedef std::shared_ptr<MockBtMessage2> MockBtMessage2Handle;
-
   class MockBtMessageFactory2 : public MockBtMessageFactory {
   public:
-    virtual std::shared_ptr<BtMessage>
-    createPieceMessage(size_t index, int32_t begin, int32_t length) {
-      std::shared_ptr<MockBtMessage2> btMsg
-        (new MockBtMessage2("piece", index, begin, length));
-      return btMsg;
+    virtual std::unique_ptr<BtPieceMessage>
+    createPieceMessage(size_t index, int32_t begin, int32_t length) override
+    {
+      return make_unique<BtPieceMessage>(index, begin, length);
     }
 
-    virtual std::shared_ptr<BtMessage>
-    createRejectMessage(size_t index, int32_t begin, int32_t length) {
-      std::shared_ptr<MockBtMessage2> btMsg
-        (new MockBtMessage2("reject", index, begin, length));
-      return btMsg;
+    virtual std::unique_ptr<BtRejectMessage>
+    createRejectMessage(size_t index, int32_t begin, int32_t length) override
+    {
+      return make_unique<BtRejectMessage>(index, begin, length);
     }
   };
 
-  typedef std::shared_ptr<MockBtMessageFactory2> MockBtMessageFactory2Handle;
-
-  std::shared_ptr<MockPieceStorage> pieceStorage_;
+  std::unique_ptr<MockPieceStorage> pieceStorage_;
   std::shared_ptr<Peer> peer_;
-  std::shared_ptr<MockBtMessageDispatcher> dispatcher_;
-  std::shared_ptr<MockBtMessageFactory> messageFactory_;
-  std::shared_ptr<BtRequestMessage> msg;
+  std::unique_ptr<MockBtMessageDispatcher> dispatcher_;
+  std::unique_ptr<MockBtMessageFactory> messageFactory_;
+  std::unique_ptr<BtRequestMessage> msg;
 
   void setUp() {
-    pieceStorage_.reset(new MockPieceStorage2());
+    pieceStorage_ = make_unique<MockPieceStorage2>();
 
-    peer_.reset(new Peer("host", 6969));
+    peer_ = std::make_shared<Peer>("host", 6969);
     peer_->allocateSessionResource(16*1024, 256*1024);
 
-    dispatcher_.reset(new MockBtMessageDispatcher());
+    dispatcher_ = make_unique<MockBtMessageDispatcher>();
 
-    messageFactory_.reset(new MockBtMessageFactory2());
+    messageFactory_ = make_unique<MockBtMessageFactory2>();
 
-    msg.reset(new BtRequestMessage());
+    msg = make_unique<BtRequestMessage>();
     msg->setPeer(peer_);
     msg->setIndex(1);
     msg->setBegin(16);
@@ -130,7 +112,7 @@ void BtRequestMessageTest::testCreate() {
   bittorrent::setIntParam(&msg[5], 12345);
   bittorrent::setIntParam(&msg[9], 256);
   bittorrent::setIntParam(&msg[13], 1024);
-  std::shared_ptr<BtRequestMessage> pm(BtRequestMessage::create(&msg[4], 13));
+  auto pm = BtRequestMessage::create(&msg[4], 13);
   CPPUNIT_ASSERT_EQUAL((uint8_t)6, pm->getId());
   CPPUNIT_ASSERT_EQUAL((size_t)12345, pm->getIndex());
   CPPUNIT_ASSERT_EQUAL(256, pm->getBegin());
@@ -174,12 +156,13 @@ void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmNotChoking() {
   msg->doReceivedAction();
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher_->messageQueue.size());
-  auto pieceMsg = std::dynamic_pointer_cast<MockBtMessage2>
-    (dispatcher_->messageQueue.front());
-  CPPUNIT_ASSERT_EQUAL(std::string("piece"), pieceMsg->type);
-  CPPUNIT_ASSERT_EQUAL((size_t)1, pieceMsg->index);
-  CPPUNIT_ASSERT_EQUAL((uint32_t)16, pieceMsg->begin);
-  CPPUNIT_ASSERT_EQUAL((size_t)32, pieceMsg->length);
+  CPPUNIT_ASSERT(BtPieceMessage::ID ==
+                 dispatcher_->messageQueue.front()->getId());
+  auto pieceMsg = static_cast<const BtPieceMessage*>
+    (dispatcher_->messageQueue.front().get());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, pieceMsg->getIndex());
+  CPPUNIT_ASSERT_EQUAL((int32_t)16, pieceMsg->getBegin());
+  CPPUNIT_ASSERT_EQUAL((int32_t)32, pieceMsg->getBlockLength());
 }
 
 void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmChokingAndFastExtensionEnabled() {
@@ -188,12 +171,13 @@ void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmChokingAndFastExten
   msg->doReceivedAction();
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher_->messageQueue.size());
-  auto pieceMsg = std::dynamic_pointer_cast<MockBtMessage2>
-    (dispatcher_->messageQueue.front());
-  CPPUNIT_ASSERT_EQUAL(std::string("reject"), pieceMsg->type);
-  CPPUNIT_ASSERT_EQUAL((size_t)1, pieceMsg->index);
-  CPPUNIT_ASSERT_EQUAL((uint32_t)16, pieceMsg->begin);
-  CPPUNIT_ASSERT_EQUAL((size_t)32, pieceMsg->length);
+  CPPUNIT_ASSERT(BtRejectMessage::ID ==
+                 dispatcher_->messageQueue.front()->getId());
+  auto rejectMsg = static_cast<const BtRejectMessage*>
+    (dispatcher_->messageQueue.front().get());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, rejectMsg->getIndex());
+  CPPUNIT_ASSERT_EQUAL((int32_t)16, rejectMsg->getBegin());
+  CPPUNIT_ASSERT_EQUAL((int32_t)32, rejectMsg->getLength());
 }
 
 void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmChokingAndFastExtensionDisabled() {
@@ -210,12 +194,13 @@ void BtRequestMessageTest::testDoReceivedAction_doesntHavePieceAndFastExtensionE
   msg->doReceivedAction();
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher_->messageQueue.size());
-  auto pieceMsg = std::dynamic_pointer_cast<MockBtMessage2>
-    (dispatcher_->messageQueue.front());
-  CPPUNIT_ASSERT_EQUAL(std::string("reject"), pieceMsg->type);
-  CPPUNIT_ASSERT_EQUAL((size_t)2, pieceMsg->index);
-  CPPUNIT_ASSERT_EQUAL((uint32_t)16, pieceMsg->begin);
-  CPPUNIT_ASSERT_EQUAL((size_t)32, pieceMsg->length);
+  CPPUNIT_ASSERT(BtRejectMessage::ID ==
+                 dispatcher_->messageQueue.front()->getId());
+  auto rejectMsg = static_cast<const BtRejectMessage*>
+    (dispatcher_->messageQueue.front().get());
+  CPPUNIT_ASSERT_EQUAL((size_t)2, rejectMsg->getIndex());
+  CPPUNIT_ASSERT_EQUAL((int32_t)16, rejectMsg->getBegin());
+  CPPUNIT_ASSERT_EQUAL((int32_t)32, rejectMsg->getLength());
 }
 
 void BtRequestMessageTest::testDoReceivedAction_doesntHavePieceAndFastExtensionDisabled() {
@@ -227,21 +212,21 @@ void BtRequestMessageTest::testDoReceivedAction_doesntHavePieceAndFastExtensionD
 }
 
 void BtRequestMessageTest::testHandleAbortRequestEvent() {
-  std::shared_ptr<Piece> piece(new Piece(1, 16*1024));
+  auto piece = std::make_shared<Piece>(1, 16*1024);
   CPPUNIT_ASSERT(!msg->isInvalidate());
   msg->onAbortOutstandingRequestEvent(BtAbortOutstandingRequestEvent(piece));
   CPPUNIT_ASSERT(msg->isInvalidate());
 }
 
 void BtRequestMessageTest::testHandleAbortRequestEvent_indexNoMatch() {
-  std::shared_ptr<Piece> piece(new Piece(2, 16*1024));
+  auto piece = std::make_shared<Piece>(2, 16*1024);
   CPPUNIT_ASSERT(!msg->isInvalidate());
   msg->onAbortOutstandingRequestEvent(BtAbortOutstandingRequestEvent(piece));
   CPPUNIT_ASSERT(!msg->isInvalidate());
 }
 
 void BtRequestMessageTest::testHandleAbortRequestEvent_alreadyInvalidated() {
-  std::shared_ptr<Piece> piece(new Piece(1, 16*1024));
+  auto piece = std::make_shared<Piece>(1, 16*1024);
   msg->setInvalidate(true);
   CPPUNIT_ASSERT(msg->isInvalidate());
   msg->onAbortOutstandingRequestEvent(BtAbortOutstandingRequestEvent(piece));

@@ -47,13 +47,12 @@ private:
   static const size_t MESSAGE_LENGTH = 9;
 protected:
   template<typename T>
-  static T* create(const unsigned char* data, size_t dataLength)
+  static std::unique_ptr<T> create(const unsigned char* data,
+                                   size_t dataLength)
   {
     bittorrent::assertPayloadLengthEqual(5, dataLength, T::NAME);
     bittorrent::assertID(T::ID, data, T::NAME);
-    T* message(new T());
-    message->setIndex(bittorrent::getIntParam(data, 1));
-    return message;
+    return make_unique<T>(bittorrent::getIntParam(data, 1));
   }
 public:
   IndexBtMessage(uint8_t id, const char* name, size_t index)

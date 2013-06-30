@@ -57,18 +57,19 @@
 #include "util.h"
 #include "fmt.h"
 #include "PeerConnection.h"
+#include "BtCancelMessage.h"
 
 namespace aria2 {
 
 DefaultBtMessageDispatcher::DefaultBtMessageDispatcher()
-  : cuid_(0),
-    downloadContext_{0},
-    peerStorage_{0},
-    pieceStorage_{0},
-    peerConnection_{0},
-    messageFactory_(0),
-    requestGroupMan_(0),
-    requestTimeout_(0)
+  : cuid_{0},
+    downloadContext_{nullptr},
+    peerStorage_{nullptr},
+    pieceStorage_{nullptr},
+    peerConnection_{nullptr},
+    messageFactory_{nullptr},
+    requestGroupMan_{nullptr},
+    requestTimeout_{0}
 {}
 
 DefaultBtMessageDispatcher::~DefaultBtMessageDispatcher()
@@ -77,39 +78,31 @@ DefaultBtMessageDispatcher::~DefaultBtMessageDispatcher()
 }
 
 void DefaultBtMessageDispatcher::addMessageToQueue
-(const std::shared_ptr<BtMessage>& btMessage)
+(std::unique_ptr<BtMessage> btMessage)
 {
   btMessage->onQueued();
-  messageQueue_.push_back(btMessage);
-}
-
-void DefaultBtMessageDispatcher::addMessageToQueue
-(const std::vector<std::shared_ptr<BtMessage> >& btMessages)
-{
-  for(std::vector<std::shared_ptr<BtMessage> >::const_iterator itr =
-        btMessages.begin(), eoi = btMessages.end(); itr != eoi; ++itr) {
-    addMessageToQueue(*itr);
-  }
+  messageQueue_.push_back(std::move(btMessage));
 }
 
 void DefaultBtMessageDispatcher::sendMessagesInternal()
 {
-  std::vector<std::shared_ptr<BtMessage> > tempQueue;
+  auto tempQueue = std::vector<std::unique_ptr<BtMessage>>{};
   while(!messageQueue_.empty()) {
-    std::shared_ptr<BtMessage> msg = messageQueue_.front();
+    auto msg = std::move(messageQueue_.front());
     messageQueue_.pop_front();
     if(msg->isUploading()) {
       if(requestGroupMan_->doesOverallUploadSpeedExceed() ||
          downloadContext_->getOwnerRequestGroup()->doesUploadSpeedExceed()) {
-        tempQueue.push_back(msg);
+        tempQueue.push_back(std::move(msg));
         continue;
       }
     }
     msg->send();
   }
   if(!tempQueue.empty()) {
-      messageQueue_.insert(messageQueue_.begin(),
-                           tempQueue.begin(), tempQueue.end());
+    messageQueue_.insert(std::begin(messageQueue_),
+                         std::make_move_iterator(std::begin(tempQueue)),
+                         std::make_move_iterator(std::end(tempQueue)));
   }
 }
 
@@ -121,15 +114,26 @@ void DefaultBtMessageDispatcher::sendMessages()
   peerConnection_->sendPendingData();
 }
 
+namespace {
+std::vector<BtMessage*> toRawPointers
+(const std::deque<std::unique_ptr<BtMessage>>& v)
+{
+  auto x = std::vector<BtMessage*>{};
+  x.reserve(v.size());
+  for(auto& i : v) {
+    x.push_back(i.get());
+  }
+  return x;
+}
+} // namespace
+
 // Cancel sending piece message to peer.
 void DefaultBtMessageDispatcher::doCancelSendingPieceAction
 (size_t index, int32_t begin, int32_t length)
 {
   BtCancelSendingPieceEvent event(index, begin, length);
-
-  std::vector<std::shared_ptr<BtMessage> > tempQueue
-    (messageQueue_.begin(), messageQueue_.end());
-  for(const auto& i : tempQueue) {
+  auto q = toRawPointers(messageQueue_);
+  for(auto i : q) {
     i->onCancelSendingPieceEvent(event);
   }
 }
@@ -173,9 +177,8 @@ void DefaultBtMessageDispatcher::doAbortOutstandingRequestAction
 
   BtAbortOutstandingRequestEvent event(piece);
 
-  std::vector<std::shared_ptr<BtMessage> > tempQueue
-    (messageQueue_.begin(), messageQueue_.end());
-  for(const auto& i : tempQueue) {
+  auto tempQueue = toRawPointers(messageQueue_);
+  for(auto i : tempQueue) {
     i->onAbortOutstandingRequestEvent(event);
   }
 }
@@ -207,9 +210,8 @@ void DefaultBtMessageDispatcher::doChokingAction()
 {
   BtChokingEvent event;
 
-  std::vector<std::shared_ptr<BtMessage> > tempQueue
-    (messageQueue_.begin(), messageQueue_.end());
-  for(const auto& i : tempQueue) {
+  auto tempQueue = toRawPointers(messageQueue_);
+  for(auto i : tempQueue) {
     i->onChokingEvent(event);
   }
 }
@@ -298,7 +300,7 @@ void DefaultBtMessageDispatcher::addOutstandingRequest
 
 size_t DefaultBtMessageDispatcher::countOutstandingUpload()
 {
-  return std::count_if(messageQueue_.begin(), messageQueue_.end(),
+  return std::count_if(std::begin(messageQueue_), std::end(messageQueue_),
                        std::mem_fn(&BtMessage::isUploading));
 }
 

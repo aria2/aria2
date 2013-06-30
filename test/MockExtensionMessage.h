@@ -15,27 +15,28 @@ public:
   MockExtensionMessage(const std::string& extensionName,
                        uint8_t extensionMessageID,
                        const unsigned char* data,
-                       size_t length):extensionName_(extensionName),
-                                      extensionMessageID_(extensionMessageID),
-                                      data_(&data[0], &data[length]),
-                                      doReceivedActionCalled_(false) {}
+                       size_t length)
+    : extensionName_{extensionName},
+      extensionMessageID_{extensionMessageID},
+      data_{&data[0], &data[length]},
+      doReceivedActionCalled_{false}
+  {}
 
   MockExtensionMessage(const std::string& extensionName,
                        uint8_t extensionMessageID,
-                       const std::string& data):
-    extensionName_(extensionName),
-    extensionMessageID_(extensionMessageID),
-    data_(data),
-    doReceivedActionCalled_(false) {}
-
-  virtual ~MockExtensionMessage() {}
+                       const std::string& data)
+    : extensionName_{extensionName},
+      extensionMessageID_{extensionMessageID},
+      data_{data},
+      doReceivedActionCalled_{false}
+  {}
 
   virtual std::string getPayload()
   {
     return data_;
   }
 
-  virtual uint8_t getExtensionMessageID()
+  virtual uint8_t getExtensionMessageID() const
   {
     return extensionMessageID_;
   }

@@ -32,28 +32,29 @@ class UTMetadataRequestExtensionMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE_END();
 public:
   std::shared_ptr<DownloadContext> dctx_;
-  std::shared_ptr<WrapExtBtMessageFactory> messageFactory_;
-  std::shared_ptr<MockBtMessageDispatcher> dispatcher_;
+  std::unique_ptr<WrapExtBtMessageFactory> messageFactory_;
+  std::unique_ptr<MockBtMessageDispatcher> dispatcher_;
   std::shared_ptr<Peer> peer_;
 
   void setUp()
   {
-    messageFactory_.reset(new WrapExtBtMessageFactory());
-    dispatcher_.reset(new MockBtMessageDispatcher());
-    dctx_.reset(new DownloadContext());
+    messageFactory_ = make_unique<WrapExtBtMessageFactory>();
+    dispatcher_ = make_unique<MockBtMessageDispatcher>();
+    dctx_ = std::make_shared<DownloadContext>();
     dctx_->setAttribute(CTX_ATTR_BT, make_unique<TorrentAttribute>());
-    peer_.reset(new Peer("host", 6880));
+    peer_ = std::make_shared<Peer>("host", 6880);
     peer_->allocateSessionResource(0, 0);
     peer_->setExtension(ExtensionMessageRegistry::UT_METADATA, 1);
   }
 
   template<typename T>
-  std::shared_ptr<T> getFirstDispatchedMessage()
+  const T* getFirstDispatchedMessage()
   {
-    auto wrapmsg = std::dynamic_pointer_cast<WrapExtBtMessage>
-      (dispatcher_->messageQueue.front());
-
-    return std::dynamic_pointer_cast<T>(wrapmsg->m_);
+    CPPUNIT_ASSERT(BtExtendedMessage::ID ==
+                   dispatcher_->messageQueue.front()->getId());
+    auto msg = static_cast<const BtExtendedMessage*>
+      (dispatcher_->messageQueue.front().get());
+    return dynamic_cast<const T*>(msg->getExtensionMessage().get());
   }
 
   void testGetExtensionMessageID();
@@ -106,8 +107,7 @@ void UTMetadataRequestExtensionMessageTest::testDoReceivedAction_reject()
   msg.setBtMessageDispatcher(dispatcher_.get());
   msg.doReceivedAction();
 
-  std::shared_ptr<UTMetadataRejectExtensionMessage> m =
-    getFirstDispatchedMessage<UTMetadataRejectExtensionMessage>();
+  auto m = getFirstDispatchedMessage<UTMetadataRejectExtensionMessage>();
 
   CPPUNIT_ASSERT(m);
   CPPUNIT_ASSERT_EQUAL((size_t)10, m->getIndex());
@@ -132,8 +132,7 @@ void UTMetadataRequestExtensionMessageTest::testDoReceivedAction_data()
 
   msg.doReceivedAction();
 
-  std::shared_ptr<UTMetadataDataExtensionMessage> m =
-    getFirstDispatchedMessage<UTMetadataDataExtensionMessage>();
+  auto m = getFirstDispatchedMessage<UTMetadataDataExtensionMessage>();
 
   CPPUNIT_ASSERT(m);
   CPPUNIT_ASSERT_EQUAL((size_t)1, m->getIndex());

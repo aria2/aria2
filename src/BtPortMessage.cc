@@ -61,14 +61,13 @@ BtPortMessage::BtPortMessage(uint16_t port)
     taskFactory_(0)
 {}
 
-BtPortMessage* BtPortMessage::create
+std::unique_ptr<BtPortMessage> BtPortMessage::create
 (const unsigned char* data, size_t dataLength)
 {
   bittorrent::assertPayloadLengthEqual(3, dataLength, NAME);
   bittorrent::assertID(ID, data, NAME);
   uint16_t port = bittorrent::getShortIntParam(data, 1);
-  BtPortMessage* message(new BtPortMessage(port));
-  return message;
+  return make_unique<BtPortMessage>(port);
 }
 
 void BtPortMessage::doReceivedAction()

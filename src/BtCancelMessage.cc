@@ -43,7 +43,7 @@ BtCancelMessage::BtCancelMessage
 (size_t index, int32_t begin, int32_t length)
   :RangeBtMessage(ID, NAME, index, begin, length) {}
 
-BtCancelMessage* BtCancelMessage::create
+std::unique_ptr<BtCancelMessage> BtCancelMessage::create
 (const unsigned char* data, size_t dataLength)
 {
   return RangeBtMessage::create<BtCancelMessage>(data, dataLength);

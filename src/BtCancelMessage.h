@@ -47,7 +47,8 @@ public:
 
   static const char NAME[];
 
-  static BtCancelMessage* create(const unsigned char* data, size_t dataLength);
+  static std::unique_ptr<BtCancelMessage> create
+  (const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction();
 };

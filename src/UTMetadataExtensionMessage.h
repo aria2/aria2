@@ -47,7 +47,7 @@ private:
 public:
   UTMetadataExtensionMessage(uint8_t extensionMessageID);
 
-  virtual uint8_t getExtensionMessageID()
+  virtual uint8_t getExtensionMessageID() const
   {
     return extensionMessageID_;
   }

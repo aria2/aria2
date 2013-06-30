@@ -24,22 +24,22 @@ class DefaultBtMessageFactoryTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreatePortMessage);
   CPPUNIT_TEST_SUITE_END();
 private:
-  std::shared_ptr<DownloadContext> dctx_;
+  std::unique_ptr<DownloadContext> dctx_;
   std::shared_ptr<Peer> peer_;
   std::shared_ptr<MockExtensionMessageFactory> exmsgFactory_;
-  std::shared_ptr<DefaultBtMessageFactory> factory_;
+  std::unique_ptr<DefaultBtMessageFactory> factory_;
 public:
   void setUp()
   {
-    dctx_.reset(new DownloadContext());
+    dctx_ = make_unique<DownloadContext>();
 
-    peer_.reset(new Peer("192.168.0.1", 6969));
+    peer_ = std::make_shared<Peer>("192.168.0.1", 6969);
     peer_->allocateSessionResource(1024, 1024*1024);
     peer_->setExtendedMessagingEnabled(true);
 
-    exmsgFactory_.reset(new MockExtensionMessageFactory());
+    exmsgFactory_ = std::make_shared<MockExtensionMessageFactory>();
 
-    factory_.reset(new DefaultBtMessageFactory());
+    factory_ = make_unique<DefaultBtMessageFactory>();
     factory_->setDownloadContext(dctx_.get());
     factory_->setPeer(peer_);
     factory_->setExtensionMessageFactory(exmsgFactory_);
@@ -62,9 +62,9 @@ void DefaultBtMessageFactoryTest::testCreateBtMessage_BtExtendedMessage()
   msg[5] = 1; // Set dummy extended message ID 1
   memcpy(msg+6, payload.c_str(), payload.size());
 
-  auto m = std::dynamic_pointer_cast<BtExtendedMessage>
-    (factory_->createBtMessage((const unsigned char*)msg+4, sizeof(msg)));
-
+  auto m =
+    factory_->createBtMessage((const unsigned char*)msg+4, sizeof(msg));
+  CPPUNIT_ASSERT(BtExtendedMessage::ID == m->getId());
   try {
     // disable extended messaging
     peer_->setExtendedMessagingEnabled(false);
@@ -82,17 +82,16 @@ void DefaultBtMessageFactoryTest::testCreatePortMessage()
     bittorrent::createPeerMessageString(data, sizeof(data), 3, 9);
     bittorrent::setShortIntParam(&data[5], 6881);
     try {
-      auto m = std::dynamic_pointer_cast<BtPortMessage>
-        (factory_->createBtMessage(&data[4], sizeof(data)-4));
-      CPPUNIT_ASSERT(m);
+      auto r = factory_->createBtMessage(&data[4], sizeof(data)-4);
+      CPPUNIT_ASSERT(BtPortMessage::ID == r->getId());
+      auto m = static_cast<const BtPortMessage*>(r.get());
       CPPUNIT_ASSERT_EQUAL((uint16_t)6881, m->getPort());
     } catch(Exception& e) {
       CPPUNIT_FAIL(e.stackTrace());
     }
   }
   {
-    auto m = std::dynamic_pointer_cast<BtPortMessage>
-      (factory_->createPortMessage(6881));
+    auto m = factory_->createPortMessage(6881);
     CPPUNIT_ASSERT_EQUAL((uint16_t)6881, m->getPort());
   }
 }

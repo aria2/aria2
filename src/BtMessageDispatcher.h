@@ -51,10 +51,7 @@ class BtMessageDispatcher {
 public:
   virtual ~BtMessageDispatcher() {}
 
-  virtual void addMessageToQueue(const std::shared_ptr<BtMessage>& btMessage) = 0;
-
-  virtual void
-  addMessageToQueue(const std::vector<std::shared_ptr<BtMessage> >& btMessages) =0;
+  virtual void addMessageToQueue(std::unique_ptr<BtMessage> btMessage) = 0;
 
   virtual void sendMessages() = 0;
 

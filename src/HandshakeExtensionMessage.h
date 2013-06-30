@@ -67,7 +67,7 @@ public:
 
   virtual std::string getPayload();
 
-  virtual uint8_t getExtensionMessageID()
+  virtual uint8_t getExtensionMessageID() const
   {
     return 0;
   }

@@ -96,7 +96,7 @@ std::string BtExtendedMessage::toString() const {
   return s;
 }
 
-BtExtendedMessage*
+std::unique_ptr<BtExtendedMessage>
 BtExtendedMessage::create(const std::shared_ptr<ExtensionMessageFactory>& factory,
                           const std::shared_ptr<Peer>& peer,
                           const unsigned char* data, size_t dataLength)
@@ -106,8 +106,7 @@ BtExtendedMessage::create(const std::shared_ptr<ExtensionMessageFactory>& factor
   assert(factory);
   std::shared_ptr<ExtensionMessage> extmsg = factory->createMessage(data+1,
                                                                  dataLength-1);
-  BtExtendedMessage* message(new BtExtendedMessage(extmsg));
-  return message;
+  return make_unique<BtExtendedMessage>(extmsg);
 }
 
 void BtExtendedMessage::doReceivedAction()

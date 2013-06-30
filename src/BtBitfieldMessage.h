@@ -60,7 +60,7 @@ public:
 
   size_t getBitfieldLength() const { return bitfieldLength_; }
 
-  static BtBitfieldMessage* create
+  static std::unique_ptr<BtBitfieldMessage> create
   (const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction();

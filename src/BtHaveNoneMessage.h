@@ -47,7 +47,7 @@ public:
 
   static const char NAME[];
 
-  static BtHaveNoneMessage* create
+  static std::unique_ptr<BtHaveNoneMessage> create
   (const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction();

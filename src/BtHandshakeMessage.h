@@ -60,7 +60,7 @@ public:
    */
   BtHandshakeMessage(const unsigned char* infoHash, const unsigned char* peerId);
 
-  static std::shared_ptr<BtHandshakeMessage>
+  static std::unique_ptr<BtHandshakeMessage>
   create(const unsigned char* data, size_t dataLength);
 
   virtual ~BtHandshakeMessage() {

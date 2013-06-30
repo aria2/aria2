@@ -92,7 +92,8 @@ public:
 
   void setPeerStorage(PeerStorage* peerStorage);
 
-  static BtPieceMessage* create(const unsigned char* data, size_t dataLength);
+  static std::unique_ptr<BtPieceMessage> create
+  (const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction();
 

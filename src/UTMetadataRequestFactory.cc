@@ -45,24 +45,24 @@
 #include "LogFactory.h"
 #include "fmt.h"
 #include "ExtensionMessageRegistry.h"
+#include "BtExtendedMessage.h"
 
 namespace aria2 {
 
 UTMetadataRequestFactory::UTMetadataRequestFactory()
-  : dispatcher_(0),
-    messageFactory_(0),
-    tracker_(0),
+  : dispatcher_{nullptr},
+    messageFactory_{nullptr},
+    tracker_{nullptr},
     cuid_(0)
 {}
 
-void UTMetadataRequestFactory::create
-(std::vector<std::shared_ptr<BtMessage> >& msgs, size_t num,
- const std::shared_ptr<PieceStorage>& pieceStorage)
+std::vector<std::unique_ptr<BtMessage>> UTMetadataRequestFactory::create
+(size_t num, const std::shared_ptr<PieceStorage>& pieceStorage)
 {
+  auto msgs = std::vector<std::unique_ptr<BtMessage>>{};
   while(num) {
-    std::vector<size_t> metadataRequests = tracker_->getAllTrackedIndex();
-    std::shared_ptr<Piece> p =
-      pieceStorage->getMissingPiece(peer_, metadataRequests, cuid_);
+    auto metadataRequests = tracker_->getAllTrackedIndex();
+    auto p = pieceStorage->getMissingPiece(peer_, metadataRequests, cuid_);
     if(!p) {
       A2_LOG_DEBUG("No ut_metadata piece is available to download.");
       break;
@@ -79,10 +79,10 @@ void UTMetadataRequestFactory::create
     m->setBtMessageFactory(messageFactory_);
     m->setPeer(peer_);
 
-    std::shared_ptr<BtMessage> msg = messageFactory_->createBtExtendedMessage(m);
-    msgs.push_back(msg);
+    msgs.push_back(messageFactory_->createBtExtendedMessage(m));
     tracker_->add(p->getIndex());
   }
+  return msgs;
 }
 
 } // namespace aria2

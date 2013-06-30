@@ -67,10 +67,10 @@ private:
 public:
   UTMetadataRequestFactory();
 
-  // Creates at most num of ut_metadata request message and appends
-  // them to msgs. pieceStorage is used to identify missing piece.
-  void create(std::vector<std::shared_ptr<BtMessage> >& msgs, size_t num,
-              const std::shared_ptr<PieceStorage>& pieceStorage);
+  // Creates and returns at most num of ut_metadata request
+  // message. pieceStorage is used to identify missing piece.
+  std::vector<std::unique_ptr<BtMessage>> create
+  (size_t num, const std::shared_ptr<PieceStorage>& pieceStorage);
 
   void setDownloadContext(const std::shared_ptr<DownloadContext>& dctx)
   {

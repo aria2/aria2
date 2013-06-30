@@ -86,53 +86,53 @@ private:
 public:
   DefaultBtMessageFactory();
 
-  virtual ~DefaultBtMessageFactory();
-
-  virtual std::shared_ptr<BtMessage>
+  virtual std::unique_ptr<BtMessage>
   createBtMessage(const unsigned char* msg, size_t msgLength);
 
-  virtual std::shared_ptr<BtHandshakeMessage>
+  virtual std::unique_ptr<BtHandshakeMessage>
   createHandshakeMessage(const unsigned char* msg, size_t msgLength);
 
-  virtual std::shared_ptr<BtHandshakeMessage>
+  virtual std::unique_ptr<BtHandshakeMessage>
   createHandshakeMessage(const unsigned char* infoHash,
                          const unsigned char* peerId);
 
-  virtual std::shared_ptr<BtMessage>
-  createRequestMessage(const std::shared_ptr<Piece>& piece, size_t blockIndex);
+  virtual std::unique_ptr<BtRequestMessage>
+  createRequestMessage(const std::shared_ptr<Piece>& piece,
+                       size_t blockIndex);
 
-  virtual std::shared_ptr<BtMessage>
+  virtual std::unique_ptr<BtCancelMessage>
   createCancelMessage(size_t index, int32_t begin, int32_t length);
 
-  virtual std::shared_ptr<BtMessage>
+  virtual std::unique_ptr<BtPieceMessage>
   createPieceMessage(size_t index, int32_t begin, int32_t length);
 
-  virtual std::shared_ptr<BtMessage> createHaveMessage(size_t index);
+  virtual std::unique_ptr<BtHaveMessage> createHaveMessage(size_t index);
 
-  virtual std::shared_ptr<BtMessage> createChokeMessage();
+  virtual std::unique_ptr<BtChokeMessage> createChokeMessage();
 
-  virtual std::shared_ptr<BtMessage> createUnchokeMessage();
+  virtual std::unique_ptr<BtUnchokeMessage> createUnchokeMessage();
 
-  virtual std::shared_ptr<BtMessage> createInterestedMessage();
+  virtual std::unique_ptr<BtInterestedMessage> createInterestedMessage();
 
-  virtual std::shared_ptr<BtMessage> createNotInterestedMessage();
+  virtual std::unique_ptr<BtNotInterestedMessage> createNotInterestedMessage();
 
-  virtual std::shared_ptr<BtMessage> createBitfieldMessage();
+  virtual std::unique_ptr<BtBitfieldMessage> createBitfieldMessage();
 
-  virtual std::shared_ptr<BtMessage> createKeepAliveMessage();
+  virtual std::unique_ptr<BtKeepAliveMessage> createKeepAliveMessage();
 
-  virtual std::shared_ptr<BtMessage> createHaveAllMessage();
+  virtual std::unique_ptr<BtHaveAllMessage> createHaveAllMessage();
 
-  virtual std::shared_ptr<BtMessage> createHaveNoneMessage();
+  virtual std::unique_ptr<BtHaveNoneMessage> createHaveNoneMessage();
 
-  virtual std::shared_ptr<BtMessage>
+  virtual std::unique_ptr<BtRejectMessage>
   createRejectMessage(size_t index, int32_t begin, int32_t length);
 
-  virtual std::shared_ptr<BtMessage> createAllowedFastMessage(size_t index);
+  virtual std::unique_ptr<BtAllowedFastMessage> createAllowedFastMessage
+  (size_t index);
 
-  virtual std::shared_ptr<BtMessage> createPortMessage(uint16_t port);
+  virtual std::unique_ptr<BtPortMessage> createPortMessage(uint16_t port);
 
-  virtual std::shared_ptr<BtMessage>
+  virtual std::unique_ptr<BtExtendedMessage>
   createBtExtendedMessage(const std::shared_ptr<ExtensionMessage>& msg);
 
   void setPeer(const std::shared_ptr<Peer>& peer);

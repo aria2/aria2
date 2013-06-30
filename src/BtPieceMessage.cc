@@ -60,6 +60,7 @@
 #include "WrDiskCache.h"
 #include "WrDiskCacheEntry.h"
 #include "DownloadFailureException.h"
+#include "BtRejectMessage.h"
 
 namespace aria2 {
 
@@ -86,16 +87,14 @@ void BtPieceMessage::setMsgPayload(const unsigned char* data)
   data_ = data;
 }
 
-BtPieceMessage* BtPieceMessage::create
+std::unique_ptr<BtPieceMessage> BtPieceMessage::create
 (const unsigned char* data, size_t dataLength)
 {
   bittorrent::assertPayloadLengthGreater(9, dataLength, NAME);
   bittorrent::assertID(ID, data, NAME);
-  BtPieceMessage* message(new BtPieceMessage());
-  message->setIndex(bittorrent::getIntParam(data, 1));
-  message->setBegin(bittorrent::getIntParam(data, 5));
-  message->setBlockLength(dataLength-9);
-  return message;
+  return make_unique<BtPieceMessage>(bittorrent::getIntParam(data, 1),
+                                     bittorrent::getIntParam(data, 5),
+                                     dataLength-9);
 }
 
 void BtPieceMessage::doReceivedAction()
@@ -305,10 +304,9 @@ void BtPieceMessage::onChokingEvent(const BtChokingEvent& event)
                      begin_,
                      blockLength_));
     if(getPeer()->isFastExtensionEnabled()) {
-      std::shared_ptr<BtMessage> rej =
-        getBtMessageFactory()->createRejectMessage
-        (index_, begin_, blockLength_);
-      getBtMessageDispatcher()->addMessageToQueue(rej);
+      getBtMessageDispatcher()->addMessageToQueue
+        (getBtMessageFactory()->createRejectMessage
+         (index_, begin_, blockLength_));
     }
     setInvalidate(true);
   }
@@ -327,10 +325,9 @@ void BtPieceMessage::onCancelSendingPieceEvent
                      begin_,
                      blockLength_));
     if(getPeer()->isFastExtensionEnabled()) {
-      std::shared_ptr<BtMessage> rej =
-        getBtMessageFactory()->createRejectMessage
-        (index_, begin_, blockLength_);
-      getBtMessageDispatcher()->addMessageToQueue(rej);
+      getBtMessageDispatcher()->addMessageToQueue
+        (getBtMessageFactory()->createRejectMessage
+         (index_, begin_, blockLength_));
     }
     setInvalidate(true);
   }

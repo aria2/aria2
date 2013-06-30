@@ -49,6 +49,7 @@
 #include "BtMessage.h"
 #include "PieceStorage.h"
 #include "ExtensionMessageRegistry.h"
+#include "BtExtendedMessage.h"
 
 namespace aria2 {
 
@@ -83,8 +84,8 @@ void UTMetadataRequestExtensionMessage::doReceivedAction()
     std::shared_ptr<UTMetadataRejectExtensionMessage> m
       (new UTMetadataRejectExtensionMessage(id));
     m->setIndex(getIndex());
-    std::shared_ptr<BtMessage> msg = messageFactory_->createBtExtendedMessage(m);
-    dispatcher_->addMessageToQueue(msg);
+    dispatcher_->addMessageToQueue
+      (messageFactory_->createBtExtendedMessage(m));
   }else if(getIndex()*METADATA_PIECE_SIZE < attrs->metadataSize) {
     std::shared_ptr<UTMetadataDataExtensionMessage> m
       (new UTMetadataDataExtensionMessage(id));
@@ -97,8 +98,8 @@ void UTMetadataRequestExtensionMessage::doReceivedAction()
       attrs->metadata.begin()+(getIndex()+1)*METADATA_PIECE_SIZE:
       attrs->metadata.end();
     m->setData(begin, end);
-    std::shared_ptr<BtMessage> msg = messageFactory_->createBtExtendedMessage(m);
-    dispatcher_->addMessageToQueue(msg);
+    dispatcher_->addMessageToQueue
+      (messageFactory_->createBtExtendedMessage(m));
   } else {
     throw DL_ABORT_EX
       (fmt("Metadata piece index is too big. piece=%lu",

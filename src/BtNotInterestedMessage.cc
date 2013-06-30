@@ -48,7 +48,7 @@ BtNotInterestedMessage::BtNotInterestedMessage()
 
 BtNotInterestedMessage::~BtNotInterestedMessage() {}
 
-BtNotInterestedMessage* BtNotInterestedMessage::create
+std::unique_ptr<BtNotInterestedMessage> BtNotInterestedMessage::create
 (const unsigned char* data, size_t dataLength)
 {
   return ZeroBtMessage::create<BtNotInterestedMessage>(data, dataLength);
