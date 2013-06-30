@@ -72,13 +72,13 @@ public:
 
   void incChokeUnchokeCount() {
     if(chokeUnchokeCount < INT_MAX) {
-      chokeUnchokeCount++;
+      ++chokeUnchokeCount;
     }
   }
 
   void incKeepAliveCount() {
     if(keepAliveCount < INT_MAX) {
-      keepAliveCount++;
+      ++keepAliveCount;
     }
   }
 
