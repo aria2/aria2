@@ -47,8 +47,9 @@
 namespace aria2 {
 
 SocketBuffer::ByteArrayBufEntry::ByteArrayBufEntry
-(unsigned char* bytes, size_t length, ProgressUpdate* progressUpdate)
-  : BufEntry(progressUpdate), bytes_(bytes), length_(length)
+(unsigned char* bytes, size_t length,
+ std::unique_ptr<ProgressUpdate> progressUpdate)
+  : BufEntry(std::move(progressUpdate)), bytes_(bytes), length_(length)
 {}
 
 SocketBuffer::ByteArrayBufEntry::~ByteArrayBufEntry()
@@ -77,12 +78,10 @@ const unsigned char* SocketBuffer::ByteArrayBufEntry::getData() const
   return bytes_;
 }
 
-SocketBuffer::StringBufEntry::StringBufEntry(std::string s,
-                                             ProgressUpdate* progressUpdate)
-  : BufEntry(progressUpdate), str_(std::move(s))
+SocketBuffer::StringBufEntry::StringBufEntry
+(std::string s, std::unique_ptr<ProgressUpdate> progressUpdate)
+  : BufEntry(std::move(progressUpdate)), str_(std::move(s))
 {}
-
-// SocketBuffer::StringBufEntry::StringBufEntry() {}
 
 ssize_t SocketBuffer::StringBufEntry::send
 (const std::shared_ptr<SocketCore>& socket, size_t offset)
@@ -105,30 +104,26 @@ const unsigned char* SocketBuffer::StringBufEntry::getData() const
   return reinterpret_cast<const unsigned char*>(str_.c_str());
 }
 
-void SocketBuffer::StringBufEntry::swap(std::string& s)
-{
-  str_.swap(s);
-}
-
 SocketBuffer::SocketBuffer(const std::shared_ptr<SocketCore>& socket):
   socket_(socket), offset_(0) {}
 
 SocketBuffer::~SocketBuffer() {}
 
 void SocketBuffer::pushBytes(unsigned char* bytes, size_t len,
-                             ProgressUpdate* progressUpdate)
+                             std::unique_ptr<ProgressUpdate> progressUpdate)
 {
   if(len > 0) {
-    bufq_.push_back(make_unique<ByteArrayBufEntry>(bytes, len,
-                                                   progressUpdate));
+    bufq_.push_back(make_unique<ByteArrayBufEntry>
+                    (bytes, len, std::move(progressUpdate)));
   }
 }
 
-void SocketBuffer::pushStr(std::string data, ProgressUpdate* progressUpdate)
+void SocketBuffer::pushStr(std::string data,
+                           std::unique_ptr<ProgressUpdate> progressUpdate)
 {
   if(!data.empty()) {
-    bufq_.push_back(make_unique<StringBufEntry>(std::move(data),
-                                                progressUpdate));
+    bufq_.push_back(make_unique<StringBufEntry>
+                    (std::move(data), std::move(progressUpdate)));
   }
 }
 

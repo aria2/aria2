@@ -63,4 +63,9 @@ void SimpleBtMessage::send() {
   getPeerConnection()->pushBytes(msg, msgLength, getProgressUpdate());
 }
 
+std::unique_ptr<ProgressUpdate> SimpleBtMessage::getProgressUpdate()
+{
+  return std::unique_ptr<ProgressUpdate>{};
+}
+
 } // namespace aria2

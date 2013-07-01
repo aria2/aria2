@@ -82,9 +82,9 @@ struct ThisProgressUpdate : public ProgressUpdate {
 };
 } // namespace
 
-ProgressUpdate* BtChokeMessage::getProgressUpdate()
+std::unique_ptr<ProgressUpdate> BtChokeMessage::getProgressUpdate()
 {
-  return new ThisProgressUpdate(getPeer(), getBtMessageDispatcher());
+  return make_unique<ThisProgressUpdate>(getPeer(), getBtMessageDispatcher());
 }
 
 } // namespace aria2

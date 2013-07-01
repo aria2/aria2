@@ -224,8 +224,8 @@ void BtPieceMessage::pushPieceData(int64_t offset, int32_t length) const
     unsigned char* dbuf = buf;
     buf.reset(0);
     getPeerConnection()->pushBytes(dbuf, length+MESSAGE_HEADER_LENGTH,
-                                   new PieceSendUpdate(getPeer(),
-                                                       MESSAGE_HEADER_LENGTH));
+                                   make_unique<PieceSendUpdate>
+                                   (getPeer(), MESSAGE_HEADER_LENGTH));
     // To avoid upload rate overflow, we update the length here at
     // once.
     downloadContext_->updateUploadLength(length);

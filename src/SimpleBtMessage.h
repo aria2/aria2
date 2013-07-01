@@ -51,7 +51,7 @@ public:
 
   virtual size_t getMessageLength() = 0;
 
-  virtual ProgressUpdate* getProgressUpdate() { return 0; };
+  virtual std::unique_ptr<ProgressUpdate> getProgressUpdate();
 
   virtual bool sendPredicate() const { return true; };
 

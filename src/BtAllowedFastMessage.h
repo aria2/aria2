@@ -52,7 +52,7 @@ public:
 
   virtual void doReceivedAction();
 
-  virtual ProgressUpdate* getProgressUpdate();
+  virtual std::unique_ptr<ProgressUpdate> getProgressUpdate();
 };
 
 } // namespace aria2

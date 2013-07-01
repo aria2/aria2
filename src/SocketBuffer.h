@@ -54,12 +54,9 @@ class SocketBuffer {
 private:
   class BufEntry {
   public:
-    BufEntry(ProgressUpdate* progressUpdate)
-    : progressUpdate_(progressUpdate) {}
-    virtual ~BufEntry()
-    {
-      delete progressUpdate_;
-    }
+    BufEntry(std::unique_ptr<ProgressUpdate> progressUpdate)
+      : progressUpdate_(std::move(progressUpdate)) {}
+    virtual ~BufEntry() {}
     virtual ssize_t send
     (const std::shared_ptr<SocketCore>& socket, size_t offset) = 0;
     virtual bool final(size_t offset) const = 0;
@@ -72,13 +69,13 @@ private:
       }
     }
   private:
-    ProgressUpdate* progressUpdate_;
+    std::unique_ptr<ProgressUpdate> progressUpdate_;
   };
 
   class ByteArrayBufEntry:public BufEntry {
   public:
     ByteArrayBufEntry(unsigned char* bytes, size_t length,
-                      ProgressUpdate* progressUpdate);
+                      std::unique_ptr<ProgressUpdate> progressUpdate);
     virtual ~ByteArrayBufEntry();
     virtual ssize_t send
     (const std::shared_ptr<SocketCore>& socket, size_t offset);
@@ -93,14 +90,12 @@ private:
   class StringBufEntry:public BufEntry {
   public:
     StringBufEntry(std::string s,
-                   ProgressUpdate* progressUpdate);
-    StringBufEntry();
+                   std::unique_ptr<ProgressUpdate> progressUpdate);
     virtual ssize_t send
     (const std::shared_ptr<SocketCore>& socket, size_t offset);
     virtual bool final(size_t offset) const;
     virtual size_t getLength() const;
     virtual const unsigned char* getData() const;
-    void swap(std::string& s);
   private:
     std::string str_;
   };
@@ -129,13 +124,16 @@ public:
   // each time the data is sent. It will be deleted by this object. It
   // can be null.
   void pushBytes(unsigned char* bytes, size_t len,
-                 ProgressUpdate* progressUpdate = 0);
+                 std::unique_ptr<ProgressUpdate> progressUpdate =
+                 std::unique_ptr<ProgressUpdate>{});
 
   // Feeds data into queue. This function doesn't send data.  If
   // progressUpdate is not null, its update() function will be called
   // each time the data is sent. It will be deleted by this object. It
   // can be null.
-  void pushStr(std::string data, ProgressUpdate* progressUpdate = 0);
+  void pushStr(std::string data,
+               std::unique_ptr<ProgressUpdate> progressUpdate =
+               std::unique_ptr<ProgressUpdate>{});
 
   // Sends data in queue.  Returns the number of bytes sent.
   ssize_t send();

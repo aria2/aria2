@@ -84,9 +84,9 @@ struct ThisProgressUpdate : public ProgressUpdate {
 };
 } // namespace
 
-ProgressUpdate* BtNotInterestedMessage::getProgressUpdate()
+std::unique_ptr<ProgressUpdate> BtNotInterestedMessage::getProgressUpdate()
 {
-  return new ThisProgressUpdate(getPeer());
+  return make_unique<ThisProgressUpdate>(getPeer());
 }
 
 void BtNotInterestedMessage::setPeerStorage(PeerStorage* peerStorage)

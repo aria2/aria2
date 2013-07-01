@@ -86,12 +86,12 @@ PeerConnection::~PeerConnection()
 }
 
 void PeerConnection::pushBytes(unsigned char* data, size_t len,
-                               ProgressUpdate* progressUpdate)
+                               std::unique_ptr<ProgressUpdate> progressUpdate)
 {
   if(encryptionEnabled_) {
     encryptor_->encrypt(len, data, data);
   }
-  socketBuffer_.pushBytes(data, len, progressUpdate);
+  socketBuffer_.pushBytes(data, len, std::move(progressUpdate));
 }
 
 bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength)

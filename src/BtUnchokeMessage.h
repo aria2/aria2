@@ -56,7 +56,7 @@ public:
 
   virtual bool sendPredicate() const;
 
-  virtual ProgressUpdate* getProgressUpdate();
+  virtual std::unique_ptr<ProgressUpdate> getProgressUpdate();
 };
 
 } // namespace aria2

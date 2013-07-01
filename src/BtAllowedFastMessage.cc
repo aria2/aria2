@@ -78,9 +78,9 @@ struct ThisProgressUpdate : public ProgressUpdate {
 };
 } // namespace
 
-ProgressUpdate* BtAllowedFastMessage::getProgressUpdate()
+std::unique_ptr<ProgressUpdate> BtAllowedFastMessage::getProgressUpdate()
 {
-  return new ThisProgressUpdate(getPeer(), getIndex());
+  return make_unique<ThisProgressUpdate>(getPeer(), getIndex());
 }
 
 } // namespace aria2
