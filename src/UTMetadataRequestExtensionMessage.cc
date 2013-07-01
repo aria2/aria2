@@ -54,12 +54,12 @@
 namespace aria2 {
 
 UTMetadataRequestExtensionMessage::UTMetadataRequestExtensionMessage
-(uint8_t extensionMessageID):UTMetadataExtensionMessage(extensionMessageID),
-                             dispatcher_(0),
-                             messageFactory_(0)
+(uint8_t extensionMessageID)
+  : UTMetadataExtensionMessage{extensionMessageID},
+    dctx_{nullptr},
+    dispatcher_{nullptr},
+    messageFactory_{nullptr}
 {}
-
-UTMetadataRequestExtensionMessage::~UTMetadataRequestExtensionMessage() {}
 
 std::string UTMetadataRequestExtensionMessage::getPayload()
 {
@@ -81,25 +81,22 @@ void UTMetadataRequestExtensionMessage::doReceivedAction()
   uint8_t id = peer_->getExtensionMessageID
     (ExtensionMessageRegistry::UT_METADATA);
   if(attrs->metadata.empty()) {
-    std::shared_ptr<UTMetadataRejectExtensionMessage> m
-      (new UTMetadataRejectExtensionMessage(id));
+    auto m = make_unique<UTMetadataRejectExtensionMessage>(id);
     m->setIndex(getIndex());
     dispatcher_->addMessageToQueue
-      (messageFactory_->createBtExtendedMessage(m));
+      (messageFactory_->createBtExtendedMessage(std::move(m)));
   }else if(getIndex()*METADATA_PIECE_SIZE < attrs->metadataSize) {
-    std::shared_ptr<UTMetadataDataExtensionMessage> m
-      (new UTMetadataDataExtensionMessage(id));
+    auto m = make_unique<UTMetadataDataExtensionMessage>(id);
     m->setIndex(getIndex());
     m->setTotalSize(attrs->metadataSize);
-    std::string::const_iterator begin =
-      attrs->metadata.begin()+getIndex()*METADATA_PIECE_SIZE;
-    std::string::const_iterator end =
+    auto begin = std::begin(attrs->metadata)+getIndex()*METADATA_PIECE_SIZE;
+    auto end =
       (getIndex()+1)*METADATA_PIECE_SIZE <= attrs->metadata.size()?
-      attrs->metadata.begin()+(getIndex()+1)*METADATA_PIECE_SIZE:
-      attrs->metadata.end();
+      std::begin(attrs->metadata)+(getIndex()+1)*METADATA_PIECE_SIZE:
+      std::end(attrs->metadata);
     m->setData(begin, end);
     dispatcher_->addMessageToQueue
-      (messageFactory_->createBtExtendedMessage(m));
+      (messageFactory_->createBtExtendedMessage(std::move(m)));
   } else {
     throw DL_ABORT_EX
       (fmt("Metadata piece index is too big. piece=%lu",
@@ -108,14 +105,27 @@ void UTMetadataRequestExtensionMessage::doReceivedAction()
 }
 
 void UTMetadataRequestExtensionMessage::setDownloadContext
-(const std::shared_ptr<DownloadContext>& dctx)
+(DownloadContext* dctx)
 {
   dctx_ = dctx;
 }
 
-void UTMetadataRequestExtensionMessage::setPeer(const std::shared_ptr<Peer>& peer)
+void UTMetadataRequestExtensionMessage::setPeer
+(const std::shared_ptr<Peer>& peer)
 {
   peer_ = peer;
+}
+
+void UTMetadataRequestExtensionMessage::setBtMessageDispatcher
+(BtMessageDispatcher* disp)
+{
+  dispatcher_ = disp;
+}
+
+void UTMetadataRequestExtensionMessage::setBtMessageFactory
+(BtMessageFactory* factory)
+{
+  messageFactory_ = factory;
 }
 
 } // namespace aria2

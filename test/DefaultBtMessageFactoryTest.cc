@@ -42,7 +42,7 @@ public:
     factory_ = make_unique<DefaultBtMessageFactory>();
     factory_->setDownloadContext(dctx_.get());
     factory_->setPeer(peer_);
-    factory_->setExtensionMessageFactory(exmsgFactory_);
+    factory_->setExtensionMessageFactory(exmsgFactory_.get());
   }
 
   void testCreateBtMessage_BtExtendedMessage();

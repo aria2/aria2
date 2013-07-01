@@ -20,6 +20,7 @@
 #include "BtAllowedFastMessage.h"
 #include "BtPortMessage.h"
 #include "BtExtendedMessage.h"
+#include "ExtensionMessage.h"
 
 namespace aria2 {
 
@@ -114,7 +115,7 @@ public:
   }
 
   virtual std::unique_ptr<BtExtendedMessage>
-  createBtExtendedMessage(const std::shared_ptr<ExtensionMessage>& extmsg)
+  createBtExtendedMessage(std::unique_ptr<ExtensionMessage> extmsg)
   {
     return std::unique_ptr<BtExtendedMessage>{};
   }

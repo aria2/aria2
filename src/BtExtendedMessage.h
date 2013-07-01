@@ -44,20 +44,19 @@ class ExtensionMessageFactory;
 class BtExtendedMessage:public SimpleBtMessage
 {
 private:
-  std::shared_ptr<ExtensionMessage> extensionMessage_;
+  std::unique_ptr<ExtensionMessage> extensionMessage_;
 
   size_t msgLength_;
 public:
-  BtExtendedMessage(const std::shared_ptr<ExtensionMessage>& extensionMessage =
-                    std::shared_ptr<ExtensionMessage>());
-  virtual ~BtExtendedMessage();
+  BtExtendedMessage(std::unique_ptr<ExtensionMessage> extensionMessage =
+                    std::unique_ptr<ExtensionMessage>{});
 
   static const uint8_t ID = 20;
 
   static const char NAME[];
 
   static std::unique_ptr<BtExtendedMessage> create
-  (const std::shared_ptr<ExtensionMessageFactory>& factory,
+  (ExtensionMessageFactory* factory,
    const std::shared_ptr<Peer>& peer,
    const unsigned char* data,
    size_t dataLength);
@@ -72,11 +71,7 @@ public:
 
   virtual std::string toString() const;
 
-  const std::shared_ptr<ExtensionMessage>& getExtensionMessage() const
-  {
-    return extensionMessage_;
-  }
-
+  const std::unique_ptr<ExtensionMessage>& getExtensionMessage() const;
 };
 
 } // namespace aria2

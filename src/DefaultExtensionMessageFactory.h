@@ -49,13 +49,13 @@ class UTMetadataRequestTracker;
 
 class DefaultExtensionMessageFactory:public ExtensionMessageFactory {
 private:
-  std::shared_ptr<PeerStorage> peerStorage_;
+  PeerStorage* peerStorage_;
 
   std::shared_ptr<Peer> peer_;
 
-  std::shared_ptr<ExtensionMessageRegistry> registry_;
+  ExtensionMessageRegistry* registry_;
 
-  std::shared_ptr<DownloadContext> dctx_;
+  DownloadContext* dctx_;
 
   BtMessageFactory* messageFactory_;
 
@@ -66,43 +66,24 @@ public:
   DefaultExtensionMessageFactory();
 
   DefaultExtensionMessageFactory
-  (const std::shared_ptr<Peer>& peer,
-   const std::shared_ptr<ExtensionMessageRegistry>& registry);
+  (const std::shared_ptr<Peer>& peer, ExtensionMessageRegistry* registry);
 
-  virtual ~DefaultExtensionMessageFactory();
-
-  virtual std::shared_ptr<ExtensionMessage>
+  virtual std::unique_ptr<ExtensionMessage>
   createMessage(const unsigned char* data, size_t length);
 
-  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
+  void setPeerStorage(PeerStorage* peerStorage);
 
   void setPeer(const std::shared_ptr<Peer>& peer);
 
-  void setExtensionMessageRegistry
-  (const std::shared_ptr<ExtensionMessageRegistry>& registry)
-  {
-    registry_ = registry;
-  }
+  void setExtensionMessageRegistry(ExtensionMessageRegistry* registry);
 
-  void setDownloadContext(const std::shared_ptr<DownloadContext>& dctx)
-  {
-    dctx_ = dctx;
-  }
+  void setDownloadContext(DownloadContext* dctx);
 
-  void setBtMessageFactory(BtMessageFactory* factory)
-  {
-    messageFactory_ = factory;
-  }
+  void setBtMessageFactory(BtMessageFactory* factory);
 
-  void setBtMessageDispatcher(BtMessageDispatcher* disp)
-  {
-    dispatcher_ = disp;
-  }
+  void setBtMessageDispatcher(BtMessageDispatcher* disp);
 
-  void setUTMetadataRequestTracker(UTMetadataRequestTracker* tracker)
-  {
-    tracker_ = tracker;
-  }
+  void setUTMetadataRequestTracker(UTMetadataRequestTracker* tracker);
 };
 
 } // namespace aria2

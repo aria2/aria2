@@ -56,7 +56,7 @@ private:
 
   std::vector<std::shared_ptr<Peer> > droppedPeers_;
 
-  std::shared_ptr<PeerStorage> peerStorage_;
+  PeerStorage* peerStorage_;
 
   time_t interval_;
 
@@ -65,13 +65,11 @@ private:
   size_t maxDroppedPeer_;
 
   std::pair<std::pair<std::string, std::string>,
-            std::pair<std::string, std::string> >
-  createCompactPeerListAndFlag(const std::vector<std::shared_ptr<Peer> >& peers);
+            std::pair<std::string, std::string>>
+  createCompactPeerListAndFlag(const std::vector<std::shared_ptr<Peer>>& peers);
 
 public:
   UTPexExtensionMessage(uint8_t extensionMessageID);
-
-  virtual ~UTPexExtensionMessage();
 
   virtual std::string getPayload();
 
@@ -93,25 +91,19 @@ public:
 
   bool addFreshPeer(const std::shared_ptr<Peer>& peer);
 
-  const std::vector<std::shared_ptr<Peer> >& getFreshPeers() const
-  {
-    return freshPeers_;
-  }
+  const std::vector<std::shared_ptr<Peer>>& getFreshPeers() const;
 
   bool freshPeersAreFull() const;
 
   bool addDroppedPeer(const std::shared_ptr<Peer>& peer);
 
-  const std::vector<std::shared_ptr<Peer> >& getDroppedPeers() const
-  {
-    return droppedPeers_;
-  }
+  const std::vector<std::shared_ptr<Peer>>& getDroppedPeers() const;
 
   bool droppedPeersAreFull() const;
 
-  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
+  void setPeerStorage(PeerStorage* peerStorage);
 
-  static UTPexExtensionMessage*
+  static std::unique_ptr<UTPexExtensionMessage>
   create(const unsigned char* data, size_t len);
 
   void setMaxFreshPeer(size_t maxFreshPeer);

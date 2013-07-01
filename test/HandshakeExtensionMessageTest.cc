@@ -91,16 +91,15 @@ void HandshakeExtensionMessageTest::testToString()
 
 void HandshakeExtensionMessageTest::testDoReceivedAction()
 {
-  std::shared_ptr<DownloadContext> dctx
-    (new DownloadContext(METADATA_PIECE_SIZE, 0));
-  std::shared_ptr<Option> op(new Option());
+  auto dctx = std::make_shared<DownloadContext>(METADATA_PIECE_SIZE, 0);
+  auto op = std::make_shared<Option>();
   RequestGroup rg(GroupId::create(), op);
   rg.setDownloadContext(dctx);
 
   dctx->setAttribute(CTX_ATTR_BT, make_unique<TorrentAttribute>());
   dctx->markTotalLengthIsUnknown();
 
-  std::shared_ptr<Peer> peer(new Peer("192.168.0.1", 0));
+  auto peer = std::make_shared<Peer>("192.168.0.1", 0);
   peer->allocateSessionResource(1024, 1024*1024);
   HandshakeExtensionMessage msg;
   msg.setClientVersion("aria2");
@@ -109,7 +108,7 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
   msg.setExtension(ExtensionMessageRegistry::UT_METADATA, 3);
   msg.setMetadataSize(1024);
   msg.setPeer(peer);
-  msg.setDownloadContext(dctx);
+  msg.setDownloadContext(dctx.get());
 
   msg.doReceivedAction();
 

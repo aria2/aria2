@@ -41,8 +41,9 @@
 namespace aria2 {
 
 UTMetadataRejectExtensionMessage::UTMetadataRejectExtensionMessage
-(uint8_t extensionMessageID):
-  UTMetadataExtensionMessage(extensionMessageID) {}
+(uint8_t extensionMessageID)
+  : UTMetadataExtensionMessage{extensionMessageID}
+{}
 
 std::string UTMetadataRejectExtensionMessage::getPayload()
 {

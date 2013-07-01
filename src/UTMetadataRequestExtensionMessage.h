@@ -48,7 +48,7 @@ class Peer;
 
 class UTMetadataRequestExtensionMessage:public UTMetadataExtensionMessage {
 private:
-  std::shared_ptr<DownloadContext> dctx_;
+  DownloadContext* dctx_;
 
   std::shared_ptr<Peer> peer_;
 
@@ -58,25 +58,17 @@ private:
 public:
   UTMetadataRequestExtensionMessage(uint8_t extensionMessageID);
 
-  ~UTMetadataRequestExtensionMessage();
-
   virtual std::string getPayload();
 
   virtual std::string toString() const;
 
   virtual void doReceivedAction();
 
-  void setDownloadContext(const std::shared_ptr<DownloadContext>& dctx);
+  void setDownloadContext(DownloadContext* dctx);
 
-  void setBtMessageDispatcher(BtMessageDispatcher* disp)
-  {
-    dispatcher_ = disp;
-  }
+  void setBtMessageDispatcher(BtMessageDispatcher* disp);
 
-  void setBtMessageFactory(BtMessageFactory* factory)
-  {
-    messageFactory_ = factory;
-  }
+  void setBtMessageFactory(BtMessageFactory* factory);
 
   void setPeer(const std::shared_ptr<Peer>& peer);
 };

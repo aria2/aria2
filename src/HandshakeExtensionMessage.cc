@@ -52,11 +52,8 @@ namespace aria2 {
 const char HandshakeExtensionMessage::EXTENSION_NAME[] = "handshake";
 
 HandshakeExtensionMessage::HandshakeExtensionMessage()
-  : tcpPort_(0),
-    metadataSize_(0)
+  : tcpPort_{0}, metadataSize_{0}, dctx_{nullptr}
 {}
-
-HandshakeExtensionMessage::~HandshakeExtensionMessage() {}
 
 std::string HandshakeExtensionMessage::getPayload()
 {
@@ -127,12 +124,9 @@ void HandshakeExtensionMessage::doReceivedAction()
         dctx_->getFirstFileEntry()->setLength(metadataSize_);
         dctx_->markTotalLengthIsKnown();
         dctx_->getOwnerRequestGroup()->initPieceStorage();
-
-        std::shared_ptr<PieceStorage> pieceStorage =
-          dctx_->getOwnerRequestGroup()->getPieceStorage();
         // We enter 'end game' mode from the start to get metadata
         // quickly.
-        pieceStorage->enterEndGame();
+        dctx_->getOwnerRequestGroup()->getPieceStorage()->enterEndGame();
       }
       peer_->reconfigureSessionResource(dctx_->getPieceLength(),
                                         dctx_->getTotalLength());
@@ -164,7 +158,7 @@ uint8_t HandshakeExtensionMessage::getExtensionMessageID(int key) const
   return extreg_.getExtensionMessageID(key);
 }
 
-HandshakeExtensionMessage*
+std::unique_ptr<HandshakeExtensionMessage>
 HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
 {
   if(length < 1) {
@@ -174,13 +168,13 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
   }
   A2_LOG_DEBUG(fmt("Creating HandshakeExtensionMessage from %s",
                    util::percentEncode(data, length).c_str()));
-  std::shared_ptr<ValueBase> decoded = bencode2::decode(data+1, length - 1);
+  auto decoded = bencode2::decode(data+1, length - 1);
   const Dict* dict = downcast<Dict>(decoded);
   if(!dict) {
     throw DL_ABORT_EX
       ("Unexpected payload format for extended message handshake");
   }
-  HandshakeExtensionMessage* msg(new HandshakeExtensionMessage());
+  auto msg = make_unique<HandshakeExtensionMessage>();
   const Integer* port = downcast<Integer>(dict->get("p"));
   if(port && 0 < port->i() && port->i() < 65536) {
     msg->tcpPort_ = port->i();

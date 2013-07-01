@@ -5,30 +5,38 @@
 
 namespace aria2 {
 
+struct MockExtensionMessageEventCheck {
+  MockExtensionMessageEventCheck() : doReceivedActionCalled{false}
+  {}
+  bool doReceivedActionCalled;
+};
+
 class MockExtensionMessage:public ExtensionMessage {
 public:
   std::string extensionName_;
   uint8_t extensionMessageID_;
   std::string data_;
-  bool doReceivedActionCalled_;
-public:
+  MockExtensionMessageEventCheck* evcheck_;
+
   MockExtensionMessage(const std::string& extensionName,
                        uint8_t extensionMessageID,
                        const unsigned char* data,
-                       size_t length)
+                       size_t length,
+                       MockExtensionMessageEventCheck* evcheck)
     : extensionName_{extensionName},
       extensionMessageID_{extensionMessageID},
       data_{&data[0], &data[length]},
-      doReceivedActionCalled_{false}
+      evcheck_{evcheck}
   {}
 
   MockExtensionMessage(const std::string& extensionName,
                        uint8_t extensionMessageID,
-                       const std::string& data)
+                       const std::string& data,
+                       MockExtensionMessageEventCheck* evcheck)
     : extensionName_{extensionName},
       extensionMessageID_{extensionMessageID},
       data_{data},
-      doReceivedActionCalled_{false}
+      evcheck_{evcheck}
   {}
 
   virtual std::string getPayload()
@@ -53,7 +61,9 @@ public:
 
   virtual void doReceivedAction()
   {
-    doReceivedActionCalled_ = true;
+    if(evcheck_) {
+      evcheck_->doReceivedActionCalled = true;
+    }
   }
 };
 

@@ -57,13 +57,11 @@ private:
 
   ExtensionMessageRegistry extreg_;
 
-  std::shared_ptr<DownloadContext> dctx_;
+  DownloadContext* dctx_;
 
   std::shared_ptr<Peer> peer_;
 public:
   HandshakeExtensionMessage();
-
-  virtual ~HandshakeExtensionMessage();
 
   virtual std::string getPayload();
 
@@ -113,7 +111,7 @@ public:
     metadataSize_ = size;
   }
 
-  void setDownloadContext(const std::shared_ptr<DownloadContext>& dctx)
+  void setDownloadContext(DownloadContext* dctx)
   {
     dctx_ = dctx;
   }
@@ -126,7 +124,7 @@ public:
 
   void setPeer(const std::shared_ptr<Peer>& peer);
 
-  static HandshakeExtensionMessage*
+  static std::unique_ptr<HandshakeExtensionMessage>
   create(const unsigned char* data, size_t dataLength);
 };
 

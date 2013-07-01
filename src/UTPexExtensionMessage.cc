@@ -57,23 +57,18 @@ const size_t DEFAULT_MAX_DROPPED_PEER = 50;
 
 const char UTPexExtensionMessage::EXTENSION_NAME[] = "ut_pex";
 
-UTPexExtensionMessage::UTPexExtensionMessage(uint8_t extensionMessageID):
-  extensionMessageID_(extensionMessageID),
-  interval_(DEFAULT_INTERVAL),
-  maxFreshPeer_(DEFAULT_MAX_FRESH_PEER),
-  maxDroppedPeer_(DEFAULT_MAX_DROPPED_PEER) {}
-
-UTPexExtensionMessage::~UTPexExtensionMessage() {}
+UTPexExtensionMessage::UTPexExtensionMessage(uint8_t extensionMessageID)
+  : extensionMessageID_{extensionMessageID},
+    peerStorage_{nullptr},
+    interval_{DEFAULT_INTERVAL},
+    maxFreshPeer_{DEFAULT_MAX_FRESH_PEER},
+    maxDroppedPeer_{DEFAULT_MAX_DROPPED_PEER}
+ {}
 
 std::string UTPexExtensionMessage::getPayload()
 {
-  std::pair<std::pair<std::string, std::string>,
-            std::pair<std::string, std::string> > freshPeerPair =
-    createCompactPeerListAndFlag(freshPeers_);
-  std::pair<std::pair<std::string, std::string>,
-            std::pair<std::string, std::string> > droppedPeerPair =
-    createCompactPeerListAndFlag(droppedPeers_);
-
+  auto freshPeerPair = createCompactPeerListAndFlag(freshPeers_);
+  auto droppedPeerPair = createCompactPeerListAndFlag(droppedPeers_);
   Dict dict;
   if(!freshPeerPair.first.first.empty()) {
     dict.put("added", freshPeerPair.first.first);
@@ -102,8 +97,7 @@ UTPexExtensionMessage::createCompactPeerListAndFlag
   std::string flagstring;
   std::string addrstring6;
   std::string flagstring6;
-  for(std::vector<std::shared_ptr<Peer> >::const_iterator itr = peers.begin(),
-        eoi = peers.end(); itr != eoi; ++itr) {
+  for(auto itr = std::begin(peers), eoi = std::end(peers); itr != eoi; ++itr) {
     unsigned char compact[COMPACT_LEN_IPV6];
     int compactlen = bittorrent::packcompact
       (compact, (*itr)->getIPAddress(), (*itr)->getPort());
@@ -115,8 +109,10 @@ UTPexExtensionMessage::createCompactPeerListAndFlag
       flagstring6 += (*itr)->isSeeder() ? 0x02u : 0x00u;
     }
   }
-  return std::make_pair(std::make_pair(addrstring, flagstring),
-                        std::make_pair(addrstring6, flagstring6));
+  return std::make_pair(std::make_pair(std::move(addrstring),
+                                       std::move(flagstring)),
+                        std::make_pair(std::move(addrstring6),
+                                       std::move(flagstring6)));
 }
 
 std::string UTPexExtensionMessage::toString() const
@@ -143,6 +139,12 @@ bool UTPexExtensionMessage::addFreshPeer(const std::shared_ptr<Peer>& peer)
   }
 }
 
+const std::vector<std::shared_ptr<Peer>>&
+UTPexExtensionMessage::getFreshPeers() const
+{
+  return freshPeers_;
+}
+
 bool UTPexExtensionMessage::freshPeersAreFull() const
 {
   return freshPeers_.size() >= maxFreshPeer_;
@@ -157,6 +159,12 @@ bool UTPexExtensionMessage::addDroppedPeer(const std::shared_ptr<Peer>& peer)
   } else {
     return false;
   }
+}
+
+const std::vector<std::shared_ptr<Peer>>&
+UTPexExtensionMessage::getDroppedPeers() const
+{
+  return droppedPeers_;
 }
 
 bool UTPexExtensionMessage::droppedPeersAreFull() const
@@ -174,13 +182,12 @@ void UTPexExtensionMessage::setMaxDroppedPeer(size_t maxDroppedPeer)
   maxDroppedPeer_ = maxDroppedPeer;
 }
 
-void UTPexExtensionMessage::setPeerStorage
-(const std::shared_ptr<PeerStorage>& peerStorage)
+void UTPexExtensionMessage::setPeerStorage(PeerStorage* peerStorage)
 {
   peerStorage_ = peerStorage;
 }
 
-UTPexExtensionMessage*
+std::unique_ptr<UTPexExtensionMessage>
 UTPexExtensionMessage::create(const unsigned char* data, size_t len)
 {
   if(len < 1) {
@@ -188,9 +195,9 @@ UTPexExtensionMessage::create(const unsigned char* data, size_t len)
                           EXTENSION_NAME,
                           static_cast<unsigned long>(len)));
   }
-  UTPexExtensionMessage* msg(new UTPexExtensionMessage(*data));
+  auto msg = make_unique<UTPexExtensionMessage>(*data);
 
-  std::shared_ptr<ValueBase> decoded = bencode2::decode(data+1, len - 1);
+  auto decoded = bencode2::decode(data+1, len - 1);
   const Dict* dict = downcast<Dict>(decoded);
   if(dict) {
     const String* added = downcast<String>(dict->get("added"));

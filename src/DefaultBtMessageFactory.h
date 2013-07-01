@@ -70,7 +70,7 @@ private:
 
   PeerConnection* peerConnection_;
 
-  std::shared_ptr<ExtensionMessageFactory> extensionMessageFactory_;
+  ExtensionMessageFactory* extensionMessageFactory_;
 
   DHTNode* localNode_;
 
@@ -133,7 +133,7 @@ public:
   virtual std::unique_ptr<BtPortMessage> createPortMessage(uint16_t port);
 
   virtual std::unique_ptr<BtExtendedMessage>
-  createBtExtendedMessage(const std::shared_ptr<ExtensionMessage>& msg);
+  createBtExtendedMessage(std::unique_ptr<ExtensionMessage> msg);
 
   void setPeer(const std::shared_ptr<Peer>& peer);
 
@@ -159,8 +159,7 @@ public:
 
   void setPeerConnection(PeerConnection* connection);
 
-  void setExtensionMessageFactory
-  (const std::shared_ptr<ExtensionMessageFactory>& factory);
+  void setExtensionMessageFactory(ExtensionMessageFactory* factory);
 
   void setLocalNode(DHTNode* localNode);
 

@@ -51,15 +51,13 @@ private:
 
   std::string data_;
 
-  std::shared_ptr<DownloadContext> dctx_;
+  DownloadContext* dctx_;
 
-  std::shared_ptr<PieceStorage> pieceStorage_;
+  PieceStorage* pieceStorage_;
 
   UTMetadataRequestTracker* tracker_;
 public:
   UTMetadataDataExtensionMessage(uint8_t extensionMessageID);
-
-  ~UTMetadataDataExtensionMessage();
 
   virtual std::string getPayload();
 
@@ -67,15 +65,9 @@ public:
 
   virtual void doReceivedAction();
 
-  void setTotalSize(size_t totalSize)
-  {
-    totalSize_ = totalSize;
-  }
+  void setTotalSize(size_t totalSize);
 
-  size_t getTotalSize() const
-  {
-    return totalSize_;
-  }
+  size_t getTotalSize() const;
 
   void setData(const std::string& data);
 
@@ -85,19 +77,13 @@ public:
     data_.assign(first, last);
   }
 
-  const std::string& getData() const
-  {
-    return data_;
-  }
+  const std::string& getData() const;
 
-  void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage);
+  void setPieceStorage(PieceStorage* pieceStorage);
 
-  void setUTMetadataRequestTracker(UTMetadataRequestTracker* tracker)
-  {
-    tracker_ = tracker;
-  }
+  void setUTMetadataRequestTracker(UTMetadataRequestTracker* tracker);
 
-  void setDownloadContext(const std::shared_ptr<DownloadContext>& dctx);
+  void setDownloadContext(DownloadContext* dctx);
 };
 
 } // namespace aria2

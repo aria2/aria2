@@ -65,14 +65,13 @@ void UTMetadataDataExtensionMessageTest::testToString()
 
 void UTMetadataDataExtensionMessageTest::testDoReceivedAction()
 {
-  std::shared_ptr<DirectDiskAdaptor> diskAdaptor(new DirectDiskAdaptor());
-  std::shared_ptr<ByteArrayDiskWriter> diskWriter(new ByteArrayDiskWriter());
+  auto diskAdaptor = std::make_shared<DirectDiskAdaptor>();
+  auto diskWriter = std::make_shared<ByteArrayDiskWriter>();
   diskAdaptor->setDiskWriter(diskWriter);
-  std::shared_ptr<MockPieceStorage> pieceStorage(new MockPieceStorage());
+  auto pieceStorage = make_unique<MockPieceStorage>();
   pieceStorage->setDiskAdaptor(diskAdaptor);
-  std::shared_ptr<UTMetadataRequestTracker> tracker
-    (new UTMetadataRequestTracker());
-  std::shared_ptr<DownloadContext> dctx(new DownloadContext());
+  auto tracker = make_unique<UTMetadataRequestTracker>();
+  auto dctx = make_unique<DownloadContext>();
 
   std::string piece0 = std::string(METADATA_PIECE_SIZE, '0');
   std::string piece1 = std::string(METADATA_PIECE_SIZE, '1');
@@ -88,9 +87,9 @@ void UTMetadataDataExtensionMessageTest::testDoReceivedAction()
     dctx->setAttribute(CTX_ATTR_BT, std::move(attrs));
   }
   UTMetadataDataExtensionMessage m(1);
-  m.setPieceStorage(pieceStorage);
+  m.setPieceStorage(pieceStorage.get());
   m.setUTMetadataRequestTracker(tracker.get());
-  m.setDownloadContext(dctx);
+  m.setDownloadContext(dctx.get());
 
   m.setIndex(1);
   m.setData(piece1);

@@ -79,6 +79,7 @@ DefaultBtMessageFactory::DefaultBtMessageFactory()
     dispatcher_{nullptr},
     requestFactory_{nullptr},
     peerConnection_{nullptr},
+    extensionMessageFactory_{nullptr},
     localNode_{nullptr},
     routingTable_{nullptr},
     taskQueue_{nullptr},
@@ -402,9 +403,9 @@ DefaultBtMessageFactory::createPortMessage(uint16_t port)
 
 std::unique_ptr<BtExtendedMessage>
 DefaultBtMessageFactory::createBtExtendedMessage
-(const std::shared_ptr<ExtensionMessage>& exmsg)
+(std::unique_ptr<ExtensionMessage> exmsg)
 {
-  auto msg = make_unique<BtExtendedMessage>(exmsg);
+  auto msg = make_unique<BtExtendedMessage>(std::move(exmsg));
   setCommonProperty(msg.get());
   return msg;
 }
@@ -447,7 +448,7 @@ void DefaultBtMessageFactory::setBtMessageDispatcher
 }
 
 void DefaultBtMessageFactory::setExtensionMessageFactory
-(const std::shared_ptr<ExtensionMessageFactory>& factory)
+(ExtensionMessageFactory* factory)
 {
   extensionMessageFactory_ = factory;
 }

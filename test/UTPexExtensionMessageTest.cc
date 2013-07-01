@@ -31,11 +31,11 @@ class UTPexExtensionMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testDroppedPeersAreFull);
   CPPUNIT_TEST_SUITE_END();
 private:
-  std::shared_ptr<MockPeerStorage> peerStorage_;
+  std::unique_ptr<MockPeerStorage> peerStorage_;
 public:
   void setUp()
   {
-    peerStorage_.reset(new MockPeerStorage());
+    peerStorage_ = make_unique<MockPeerStorage>();
     global::wallclock().reset();
   }
 
@@ -70,23 +70,23 @@ void UTPexExtensionMessageTest::testGetExtensionName()
 void UTPexExtensionMessageTest::testGetBencodedData()
 {
   UTPexExtensionMessage msg(1);
-  std::shared_ptr<Peer> p1(new Peer("192.168.0.1", 6881));
+  auto p1 = std::make_shared<Peer>("192.168.0.1", 6881);
   p1->allocateSessionResource(256*1024, 1024*1024);
   p1->setAllBitfield();
   CPPUNIT_ASSERT(msg.addFreshPeer(p1));// added seeder, check add.f flag
-  std::shared_ptr<Peer> p2(new Peer("10.1.1.2", 9999));
+  auto p2 = std::make_shared<Peer>("10.1.1.2", 9999);
   CPPUNIT_ASSERT(msg.addFreshPeer(p2));
-  std::shared_ptr<Peer> p3(new Peer("192.168.0.2", 6882));
+  auto p3 = std::make_shared<Peer>("192.168.0.2", 6882);
   p3->startDrop();
   CPPUNIT_ASSERT(msg.addDroppedPeer(p3));
-  std::shared_ptr<Peer> p4(new Peer("10.1.1.3", 10000));
+  auto p4 = std::make_shared<Peer>("10.1.1.3", 10000);
   p4->startDrop();
   CPPUNIT_ASSERT(msg.addDroppedPeer(p4));
 
-  std::shared_ptr<Peer> p5(new Peer("1002:1035:4527:3546:7854:1237:3247:3217",
-                                 6881));
+  auto p5 = std::make_shared<Peer>("1002:1035:4527:3546:7854:1237:3247:3217",
+                                   6881);
   CPPUNIT_ASSERT(msg.addFreshPeer(p5));
-  std::shared_ptr<Peer> p6(new Peer("2001:db8:bd05:1d2:288a:1fc0:1:10ee", 6882));
+  auto p6 = std::make_shared<Peer>("2001:db8:bd05:1d2:288a:1fc0:1:10ee", 6882);
   p6->startDrop();
   CPPUNIT_ASSERT(msg.addDroppedPeer(p6));
 
@@ -150,7 +150,7 @@ void UTPexExtensionMessageTest::testDoReceivedAction()
   std::shared_ptr<Peer> p4(new Peer("2001:db8:bd05:1d2:288a:1fc0:1:10ee", 10000));
   p4->startDrop();
   msg.addDroppedPeer(p4);
-  msg.setPeerStorage(peerStorage_);
+  msg.setPeerStorage(peerStorage_.get());
 
   msg.doReceivedAction();
 
@@ -203,9 +203,8 @@ void UTPexExtensionMessageTest::testCreate()
     "8:dropped618:"+std::string(&c6[0], &c6[COMPACT_LEN_IPV6])+
     "e";
 
-  std::shared_ptr<UTPexExtensionMessage> msg
-    (UTPexExtensionMessage::create
-     (reinterpret_cast<const unsigned char*>(data.c_str()), data.size()));
+  auto msg = UTPexExtensionMessage::create
+    (reinterpret_cast<const unsigned char*>(data.c_str()), data.size());
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, msg->getExtensionMessageID());
   CPPUNIT_ASSERT_EQUAL((size_t)3, msg->getFreshPeers().size());
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"),

@@ -132,25 +132,22 @@ PeerInteractionCommand::PeerInteractionCommand
     utMetadataRequestTracker.reset(new UTMetadataRequestTracker());
   }
 
-  DefaultExtensionMessageFactory* extensionMessageFactoryPtr
-    (new DefaultExtensionMessageFactory(getPeer(), exMsgRegistry));
-  extensionMessageFactoryPtr->setPeerStorage(peerStorage);
-  extensionMessageFactoryPtr->setDownloadContext
-    (requestGroup_->getDownloadContext());
-  extensionMessageFactoryPtr->setUTMetadataRequestTracker
+  auto extensionMessageFactory =
+    make_unique<DefaultExtensionMessageFactory>(getPeer(),
+                                                exMsgRegistry.get());
+  extensionMessageFactory->setPeerStorage(peerStorage.get());
+  extensionMessageFactory->setDownloadContext
+    (requestGroup_->getDownloadContext().get());
+  extensionMessageFactory->setUTMetadataRequestTracker
     (utMetadataRequestTracker.get());
   // PieceStorage will be set later.
-  std::shared_ptr<ExtensionMessageFactory> extensionMessageFactory
-    (extensionMessageFactoryPtr);
-
-
 
   DefaultBtMessageFactory* factoryPtr(new DefaultBtMessageFactory());
   factoryPtr->setCuid(cuid);
   factoryPtr->setDownloadContext(requestGroup_->getDownloadContext().get());
   factoryPtr->setPieceStorage(pieceStorage.get());
   factoryPtr->setPeerStorage(peerStorage.get());
-  factoryPtr->setExtensionMessageFactory(extensionMessageFactory);
+  factoryPtr->setExtensionMessageFactory(extensionMessageFactory.get());
   factoryPtr->setPeer(getPeer());
   if(family == AF_INET) {
     factoryPtr->setLocalNode(DHTRegistry::getData().localNode.get());
@@ -218,6 +215,30 @@ PeerInteractionCommand::PeerInteractionCommand
   reqFactoryPtr->setCuid(cuid);
   std::shared_ptr<BtRequestFactory> reqFactory(reqFactoryPtr);
 
+  // reverse depends
+  factoryPtr->setBtMessageDispatcher(dispatcherPtr);
+  factoryPtr->setBtRequestFactory(reqFactoryPtr);
+  factoryPtr->setPeerConnection(peerConnection.get());
+
+  extensionMessageFactory->setBtMessageDispatcher(dispatcherPtr);
+  extensionMessageFactory->setBtMessageFactory(factoryPtr);
+
+  if(metadataGetMode) {
+    utMetadataRequestFactory->setCuid(cuid);
+    utMetadataRequestFactory->setDownloadContext
+      (requestGroup_->getDownloadContext().get());
+    utMetadataRequestFactory->setBtMessageDispatcher(dispatcherPtr);
+    utMetadataRequestFactory->setBtMessageFactory(factoryPtr);
+    utMetadataRequestFactory->setPeer(getPeer());
+    utMetadataRequestFactory->setUTMetadataRequestTracker
+      (utMetadataRequestTracker.get());
+  }
+
+  getPeer()->allocateSessionResource
+    (requestGroup_->getDownloadContext()->getPieceLength(),
+     requestGroup_->getDownloadContext()->getTotalLength());
+  getPeer()->setBtMessageDispatcher(dispatcherPtr);
+
   DefaultBtInteractive* btInteractivePtr
     (new DefaultBtInteractive(requestGroup_->getDownloadContext(), getPeer()));
   btInteractivePtr->setBtRuntime(btRuntime_);
@@ -228,7 +249,8 @@ PeerInteractionCommand::PeerInteractionCommand
   btInteractivePtr->setDispatcher(dispatcher);
   btInteractivePtr->setBtRequestFactory(reqFactory);
   btInteractivePtr->setPeerConnection(peerConnection);
-  btInteractivePtr->setExtensionMessageFactory(extensionMessageFactory);
+  btInteractivePtr->setExtensionMessageFactory
+    (std::move(extensionMessageFactory));
   btInteractivePtr->setExtensionMessageRegistry(exMsgRegistry);
   btInteractivePtr->setKeepAliveInterval
     (getOption()->getAsInt(PREF_BT_KEEP_ALIVE_INTERVAL));
@@ -264,29 +286,6 @@ PeerInteractionCommand::PeerInteractionCommand
 
   btInteractive_ = btInteractive;
 
-  // reverse depends
-  factoryPtr->setBtMessageDispatcher(dispatcherPtr);
-  factoryPtr->setBtRequestFactory(reqFactoryPtr);
-  factoryPtr->setPeerConnection(peerConnection.get());
-
-  extensionMessageFactoryPtr->setBtMessageDispatcher(dispatcherPtr);
-  extensionMessageFactoryPtr->setBtMessageFactory(factoryPtr);
-
-  if(metadataGetMode) {
-    utMetadataRequestFactory->setCuid(cuid);
-    utMetadataRequestFactory->setDownloadContext
-      (requestGroup_->getDownloadContext());
-    utMetadataRequestFactory->setBtMessageDispatcher(dispatcherPtr);
-    utMetadataRequestFactory->setBtMessageFactory(factoryPtr);
-    utMetadataRequestFactory->setPeer(getPeer());
-    utMetadataRequestFactory->setUTMetadataRequestTracker
-      (utMetadataRequestTracker.get());
-  }
-
-  getPeer()->allocateSessionResource
-    (requestGroup_->getDownloadContext()->getPieceLength(),
-     requestGroup_->getDownloadContext()->getTotalLength());
-  getPeer()->setBtMessageDispatcher(dispatcherPtr);
 
   btRuntime_->increaseConnections();
   requestGroup_->increaseNumCommand();

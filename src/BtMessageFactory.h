@@ -114,7 +114,7 @@ public:
   virtual std::unique_ptr<BtPortMessage> createPortMessage(uint16_t port) = 0;
 
   virtual std::unique_ptr<BtExtendedMessage>
-  createBtExtendedMessage(const std::shared_ptr<ExtensionMessage>& msg) = 0;
+  createBtExtendedMessage(std::unique_ptr<ExtensionMessage> msg) = 0;
 };
 
 } // namespace aria2

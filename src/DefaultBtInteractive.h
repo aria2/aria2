@@ -117,7 +117,7 @@ private:
   // holds the reference so that peerConnection_ is not deleted.
   std::shared_ptr<PeerConnection> peerConnection_;
   std::shared_ptr<BtMessageFactory> messageFactory_;
-  std::shared_ptr<ExtensionMessageFactory> extensionMessageFactory_;
+  std::unique_ptr<ExtensionMessageFactory> extensionMessageFactory_;
   std::shared_ptr<ExtensionMessageRegistry> extensionMessageRegistry_;
   std::shared_ptr<UTMetadataRequestFactory> utMetadataRequestFactory_;
   std::shared_ptr<UTMetadataRequestTracker> utMetadataRequestTracker_;
@@ -219,7 +219,7 @@ public:
   void setBtMessageFactory(const std::shared_ptr<BtMessageFactory>& factory);
 
   void setExtensionMessageFactory
-  (const std::shared_ptr<ExtensionMessageFactory>& factory);
+  (std::unique_ptr<ExtensionMessageFactory> factory);
 
   void setExtensionMessageRegistry
   (const std::shared_ptr<ExtensionMessageRegistry>& registry)

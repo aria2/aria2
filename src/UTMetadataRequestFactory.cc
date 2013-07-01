@@ -50,14 +50,15 @@
 namespace aria2 {
 
 UTMetadataRequestFactory::UTMetadataRequestFactory()
-  : dispatcher_{nullptr},
+  : dctx_{nullptr},
+    dispatcher_{nullptr},
     messageFactory_{nullptr},
     tracker_{nullptr},
-    cuid_(0)
+    cuid_{0}
 {}
 
 std::vector<std::unique_ptr<BtMessage>> UTMetadataRequestFactory::create
-(size_t num, const std::shared_ptr<PieceStorage>& pieceStorage)
+(size_t num, PieceStorage* pieceStorage)
 {
   auto msgs = std::vector<std::unique_ptr<BtMessage>>{};
   while(num) {
@@ -70,16 +71,15 @@ std::vector<std::unique_ptr<BtMessage>> UTMetadataRequestFactory::create
     --num;
     A2_LOG_DEBUG(fmt("Creating ut_metadata request index=%lu",
                      static_cast<unsigned long>(p->getIndex())));
-    std::shared_ptr<UTMetadataRequestExtensionMessage> m
-      (new UTMetadataRequestExtensionMessage
-       (peer_->getExtensionMessageID(ExtensionMessageRegistry::UT_METADATA)));
+    auto m = make_unique<UTMetadataRequestExtensionMessage>
+      (peer_->getExtensionMessageID(ExtensionMessageRegistry::UT_METADATA));
     m->setIndex(p->getIndex());
     m->setDownloadContext(dctx_);
     m->setBtMessageDispatcher(dispatcher_);
     m->setBtMessageFactory(messageFactory_);
     m->setPeer(peer_);
 
-    msgs.push_back(messageFactory_->createBtExtendedMessage(m));
+    msgs.push_back(messageFactory_->createBtExtendedMessage(std::move(m)));
     tracker_->add(p->getIndex());
   }
   return msgs;

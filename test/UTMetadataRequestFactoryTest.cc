@@ -38,7 +38,7 @@ public:
       } else {
         size_t index = missingIndexes.front();
         missingIndexes.pop_front();
-        return std::shared_ptr<Piece>(new Piece(index, 0));
+        return std::make_shared<Piece>(index, 0);
       }
     }
   };
@@ -50,29 +50,26 @@ CPPUNIT_TEST_SUITE_REGISTRATION(UTMetadataRequestFactoryTest);
 void UTMetadataRequestFactoryTest::testCreate()
 {
   UTMetadataRequestFactory factory;
-  std::shared_ptr<DownloadContext> dctx
-    (new DownloadContext(METADATA_PIECE_SIZE, METADATA_PIECE_SIZE*2));
-  factory.setDownloadContext(dctx);
-  std::shared_ptr<MockPieceStorage2> ps(new MockPieceStorage2());
-  ps->missingIndexes.push_back(0);
-  ps->missingIndexes.push_back(1);
-  std::shared_ptr<WrapExtBtMessageFactory> messageFactory
-    (new WrapExtBtMessageFactory());
-  factory.setBtMessageFactory(messageFactory.get());
-  std::shared_ptr<Peer> peer(new Peer("peer", 6880));
+  DownloadContext dctx{METADATA_PIECE_SIZE, METADATA_PIECE_SIZE*2};
+  factory.setDownloadContext(&dctx);
+  MockPieceStorage2 ps;
+  ps.missingIndexes.push_back(0);
+  ps.missingIndexes.push_back(1);
+  WrapExtBtMessageFactory messageFactory;
+  factory.setBtMessageFactory(&messageFactory);
+  auto peer = std::make_shared<Peer>("peer", 6880);
   peer->allocateSessionResource(0, 0);
   factory.setPeer(peer);
-  std::shared_ptr<UTMetadataRequestTracker> tracker
-    (new UTMetadataRequestTracker());
-  factory.setUTMetadataRequestTracker(tracker.get());
+  UTMetadataRequestTracker tracker;
+  factory.setUTMetadataRequestTracker(&tracker);
 
-  auto msgs = factory.create(1, ps);
+  auto msgs = factory.create(1, &ps);
   CPPUNIT_ASSERT_EQUAL((size_t)1, msgs.size());
 
-  msgs = factory.create(1, ps);
+  msgs = factory.create(1, &ps);
   CPPUNIT_ASSERT_EQUAL((size_t)1, msgs.size());
 
-  msgs = factory.create(1, ps);
+  msgs = factory.create(1, &ps);
   CPPUNIT_ASSERT_EQUAL((size_t)0, msgs.size());
 }
 
