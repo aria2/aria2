@@ -63,8 +63,8 @@ namespace aria2 {
 
 HttpRequestEntry::HttpRequestEntry
 (const std::shared_ptr<HttpRequest>& httpRequest)
-  : httpRequest_(httpRequest),
-    proc_(new HttpHeaderProcessor(HttpHeaderProcessor::CLIENT_PARSER))
+  : httpRequest_{httpRequest},
+    proc_{make_unique<HttpHeaderProcessor>(HttpHeaderProcessor::CLIENT_PARSER)}
 {}
 
 HttpRequestEntry::~HttpRequestEntry() {}
@@ -152,9 +152,11 @@ std::shared_ptr<HttpResponse> HttpConnection::receiveResponse()
     httpResponse->setHttpHeader(proc->getResult());
     httpResponse->setHttpRequest(outstandingHttpRequests_.front()->
                                  getHttpRequest());
+    socketRecvBuffer_->shiftBuffer(proc->getLastBytesProcessed());
     outstandingHttpRequests_.pop_front();
+  } else {
+    socketRecvBuffer_->shiftBuffer(proc->getLastBytesProcessed());
   }
-  socketRecvBuffer_->shiftBuffer(proc->getLastBytesProcessed());
   return httpResponse;
 }
 
