@@ -58,7 +58,7 @@ NameResolveCommand::NameResolveCommand
   : Command(cuid),
     e_(e),
 #ifdef ENABLE_ASYNC_DNS
-    asyncNameResolverMan_(new AsyncNameResolverMan()),
+    asyncNameResolverMan_(make_unique<AsyncNameResolverMan>()),
 #endif // ENABLE_ASYNC_DNS
     req_(req)
 {

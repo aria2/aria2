@@ -91,7 +91,7 @@ AbstractCommand::AbstractCommand
     req_(req), fileEntry_(fileEntry), e_(e), socket_(s),
     socketRecvBuffer_(socketRecvBuffer),
 #ifdef ENABLE_ASYNC_DNS
-    asyncNameResolverMan_(new AsyncNameResolverMan()),
+    asyncNameResolverMan_(make_unique<AsyncNameResolverMan>()),
 #endif // ENABLE_ASYNC_DNS
     checkSocketIsReadable_(false), checkSocketIsWritable_(false),
     incNumConnection_(incNumConnection),

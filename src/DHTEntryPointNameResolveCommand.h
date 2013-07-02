@@ -59,7 +59,7 @@ private:
   DownloadEngine* e_;
 
 #ifdef ENABLE_ASYNC_DNS
-  std::shared_ptr<AsyncNameResolverMan> asyncNameResolverMan_;
+  std::unique_ptr<AsyncNameResolverMan> asyncNameResolverMan_;
 #endif // ENABLE_ASYNC_DNS
 
   DHTTaskQueue* taskQueue_;

@@ -94,13 +94,13 @@ void AsyncNameResolverMan::startAsyncFamily(const std::string& hostname,
                                             DownloadEngine* e,
                                             Command* command)
 {
-  asyncNameResolver_[numResolver_].reset
-    (new AsyncNameResolver(family
+  asyncNameResolver_[numResolver_] = std::make_shared<AsyncNameResolver>
+    (family
 #ifdef HAVE_ARES_ADDR_NODE
-                           ,
-                           e->getAsyncDNSServers()
+     ,
+     e->getAsyncDNSServers()
 #endif // HAVE_ARES_ADDR_NODE
-                           ));
+     );
   asyncNameResolver_[numResolver_]->resolve(hostname);
   setNameResolverCheck(numResolver_, e, command);
 }
@@ -111,9 +111,8 @@ const
   for(size_t i = 0; i < numResolver_; ++i) {
     if(asyncNameResolver_[i]->getStatus() ==
        AsyncNameResolver::STATUS_SUCCESS) {
-      const std::vector<std::string>& addrs =
-        asyncNameResolver_[i]->getResolvedAddresses();
-      res.insert(res.end(), addrs.begin(), addrs.end());
+      auto& addrs = asyncNameResolver_[i]->getResolvedAddresses();
+      res.insert(std::end(res), std::begin(addrs), std::end(addrs));
     }
   }
   return;
