@@ -49,7 +49,7 @@ namespace aria2 {
 namespace message_digest {
 
 std::string digest
-(const std::shared_ptr<MessageDigest>& ctx,
+(MessageDigest* ctx,
  const std::shared_ptr<BinaryStream>& bs,
  int64_t offset, int64_t length)
 {
@@ -78,7 +78,7 @@ std::string digest
 
 void digest
 (unsigned char* md, size_t mdLength,
- const std::shared_ptr<MessageDigest>& ctx, const void* data, size_t length)
+ MessageDigest* ctx, const void* data, size_t length)
 {
   size_t reqLength = ctx->getDigestLength();
   if(mdLength < reqLength) {

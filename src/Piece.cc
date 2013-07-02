@@ -245,7 +245,7 @@ std::string Piece::getDigest()
 }
 
 namespace {
-void updateHashWithRead(const std::shared_ptr<MessageDigest>& mdctx,
+void updateHashWithRead(MessageDigest* mdctx,
                         const std::shared_ptr<DiskAdaptor>& adaptor,
                         int64_t offset, size_t len)
 {
@@ -274,7 +274,7 @@ void updateHashWithRead(const std::shared_ptr<MessageDigest>& mdctx,
 std::string Piece::getDigestWithWrCache
 (size_t pieceLength, const std::shared_ptr<DiskAdaptor>& adaptor)
 {
-  std::shared_ptr<MessageDigest> mdctx(MessageDigest::create(hashType_));
+  auto mdctx = MessageDigest::create(hashType_);
   int64_t start = static_cast<int64_t>(index_)*pieceLength;
   int64_t goff = start;
   if(wrCache_) {
@@ -282,14 +282,14 @@ std::string Piece::getDigestWithWrCache
     for(WrDiskCacheEntry::DataCellSet::iterator i = dataSet.begin(),
           eoi = dataSet.end(); i != eoi; ++i) {
       if(goff < (*i)->goff) {
-        updateHashWithRead(mdctx, adaptor, goff, (*i)->goff - goff);
+        updateHashWithRead(mdctx.get(), adaptor, goff, (*i)->goff - goff);
       }
       mdctx->update((*i)->data+(*i)->offset, (*i)->len);
       goff = (*i)->goff + (*i)->len;
     }
-    updateHashWithRead(mdctx, adaptor, goff, start+length_-goff);
+    updateHashWithRead(mdctx.get(), adaptor, goff, start+length_-goff);
   } else {
-    updateHashWithRead(mdctx, adaptor, goff, length_);
+    updateHashWithRead(mdctx.get(), adaptor, goff, length_);
   }
   return mdctx->digest();
 }

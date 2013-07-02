@@ -98,7 +98,7 @@ private:
   uint16_t padLength_;
   uint16_t iaLength_;
   unsigned char* ia_;
-  std::shared_ptr<MessageDigest> sha1_;
+  std::unique_ptr<MessageDigest> sha1_;
 
   void encryptAndSendData(unsigned char* data, size_t length);
 

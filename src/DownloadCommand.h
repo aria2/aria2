@@ -57,7 +57,7 @@ private:
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
-  std::shared_ptr<MessageDigest> messageDigest_;
+  std::unique_ptr<MessageDigest> messageDigest_;
 
 #endif // ENABLE_MESSAGE_DIGEST
 

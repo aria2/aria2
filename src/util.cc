@@ -1602,7 +1602,8 @@ void generateRandomKey(unsigned char* key)
 #ifdef ENABLE_MESSAGE_DIGEST
   unsigned char bytes[40];
   generateRandomData(bytes, sizeof(bytes));
-  message_digest::digest(key, 20, MessageDigest::sha1(), bytes, sizeof(bytes));
+  message_digest::digest(key, 20, MessageDigest::sha1().get(), bytes,
+                         sizeof(bytes));
 #else // !ENABLE_MESSAGE_DIGEST
   generateRandomData(key, 20);
 #endif // !ENABLE_MESSAGE_DIGEST

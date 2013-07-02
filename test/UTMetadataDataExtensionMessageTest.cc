@@ -79,7 +79,7 @@ void UTMetadataDataExtensionMessageTest::testDoReceivedAction()
 
   unsigned char infoHash[INFO_HASH_LENGTH];
   message_digest::digest(infoHash, INFO_HASH_LENGTH,
-                         MessageDigest::sha1(),
+                         MessageDigest::sha1().get(),
                          metadata.data(), metadata.size());
   {
     auto attrs = make_unique<TorrentAttribute>();

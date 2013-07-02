@@ -90,7 +90,7 @@ void UTMetadataDataExtensionMessage::doReceivedAction()
       std::string metadata = util::toString(pieceStorage_->getDiskAdaptor());
       unsigned char infoHash[INFO_HASH_LENGTH];
       message_digest::digest(infoHash, INFO_HASH_LENGTH,
-                             MessageDigest::sha1(),
+                             MessageDigest::sha1().get(),
                              metadata.data(), metadata.size());
       if(memcmp(infoHash, bittorrent::getInfoHash(dctx_),
                 INFO_HASH_LENGTH) == 0) {

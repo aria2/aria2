@@ -428,7 +428,7 @@ void processRootDictionary
   std::string encodedInfoDict = bencode2::encode(infoDict);
   unsigned char infoHash[INFO_HASH_LENGTH];
   message_digest::digest(infoHash, INFO_HASH_LENGTH,
-                         MessageDigest::sha1(),
+                         MessageDigest::sha1().get(),
                          encodedInfoDict.data(),
                          encodedInfoDict.size());
   torrent->infoHash.assign(&infoHash[0], &infoHash[INFO_HASH_LENGTH]);
@@ -675,8 +675,8 @@ void computeFastSet
   }
   memcpy(tx+4, infoHash, 20);
   unsigned char x[20];
-  std::shared_ptr<MessageDigest> sha1 = MessageDigest::sha1();
-  message_digest::digest(x, sizeof(x), sha1, tx, 24);
+  auto sha1 = MessageDigest::sha1();
+  message_digest::digest(x, sizeof(x), sha1.get(), tx, 24);
   while(fastSet.size() < fastSetSize) {
     for(size_t i = 0; i < 5 && fastSet.size() < fastSetSize; ++i) {
       size_t j = i*4;
@@ -690,7 +690,7 @@ void computeFastSet
     }
     unsigned char temp[20];
     sha1->reset();
-    message_digest::digest(temp, sizeof(temp), sha1, x, sizeof(x));
+    message_digest::digest(temp, sizeof(temp), sha1.get(), x, sizeof(x));
     memcpy(x, temp, sizeof(x));
   }
 }

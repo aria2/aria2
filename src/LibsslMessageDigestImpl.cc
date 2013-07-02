@@ -38,10 +38,12 @@
 
 #include "array_fun.h"
 #include "HashFuncEntry.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
-MessageDigestImpl::MessageDigestImpl(const EVP_MD* hashFunc):hashFunc_(hashFunc)
+MessageDigestImpl::MessageDigestImpl(const EVP_MD* hashFunc)
+  : hashFunc_{hashFunc}
 {
   EVP_MD_CTX_init(&ctx_);
   reset();
@@ -52,9 +54,9 @@ MessageDigestImpl::~MessageDigestImpl()
   EVP_MD_CTX_cleanup(&ctx_);
 }
 
-std::shared_ptr<MessageDigestImpl> MessageDigestImpl::sha1()
+std::unique_ptr<MessageDigestImpl> MessageDigestImpl::sha1()
 {
-  return std::shared_ptr<MessageDigestImpl>(new MessageDigestImpl(EVP_sha1()));
+  return make_unique<MessageDigestImpl>(EVP_sha1());
 }
 
 typedef HashFuncEntry<const EVP_MD*> CHashFuncEntry;
@@ -79,13 +81,12 @@ CHashFuncEntry hashFuncs[] = {
 };
 } // namespace
 
-std::shared_ptr<MessageDigestImpl> MessageDigestImpl::create
+std::unique_ptr<MessageDigestImpl> MessageDigestImpl::create
 (const std::string& hashType)
 {
-  const EVP_MD* hashFunc = getHashFunc(std::begin(hashFuncs),
-                                       std::end(hashFuncs),
-                                       hashType);
-  return std::shared_ptr<MessageDigestImpl>(new MessageDigestImpl(hashFunc));
+  auto hashFunc = getHashFunc(std::begin(hashFuncs), std::end(hashFuncs),
+                              hashType);
+  return make_unique<MessageDigestImpl>(hashFunc);
 }
 
 bool MessageDigestImpl::supports(const std::string& hashType)
@@ -97,9 +98,8 @@ bool MessageDigestImpl::supports(const std::string& hashType)
 
 size_t MessageDigestImpl::getDigestLength(const std::string& hashType)
 {
-  const EVP_MD* hashFunc = getHashFunc(std::begin(hashFuncs),
-                                       std::end(hashFuncs),
-                                       hashType);
+  auto hashFunc = getHashFunc(std::begin(hashFuncs), std::end(hashFuncs),
+                              hashType);
   return EVP_MD_size(hashFunc);
 }
 

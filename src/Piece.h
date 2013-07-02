@@ -72,7 +72,7 @@ private:
 
   std::string hashType_;
 
-  std::shared_ptr<MessageDigest> mdctx_;
+  std::unique_ptr<MessageDigest> mdctx_;
 
 #endif // ENABLE_MESSAGE_DIGEST
 

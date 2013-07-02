@@ -45,20 +45,18 @@
 namespace aria2 {
 
 class MessageDigestImpl {
-private:
-  const nettle_hash* hashInfo_;
-  char* ctx_;
-
+public:
   MessageDigestImpl(const nettle_hash* hashInfo);
   // We don't implement copy ctor.
-  MessageDigestImpl(const MessageDigestImpl&);
+  MessageDigestImpl(const MessageDigestImpl&) = delete;
   // We don't implement assignment operator.
-  MessageDigestImpl& operator==(const MessageDigestImpl&);
-public:
+  MessageDigestImpl& operator==(const MessageDigestImpl&) = delete;
+
   ~MessageDigestImpl();
 
-  static std::shared_ptr<MessageDigestImpl> sha1();
-  static std::shared_ptr<MessageDigestImpl> create(const std::string& hashType);
+  static std::unique_ptr<MessageDigestImpl> sha1();
+  static std::unique_ptr<MessageDigestImpl> create
+  (const std::string& hashType);
 
   static bool supports(const std::string& hashType);
   static size_t getDigestLength(const std::string& hashType);
@@ -67,6 +65,9 @@ public:
   void reset();
   void update(const void* data, size_t length);
   void digest(unsigned char* md);
+private:
+  const nettle_hash* hashInfo_;
+  char* ctx_;
 };
 
 } // namespace aria2

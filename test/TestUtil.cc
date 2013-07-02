@@ -81,8 +81,7 @@ std::string fromHex(const std::string& s)
 }
 
 #ifdef ENABLE_MESSAGE_DIGEST
-std::string fileHexDigest
-(const std::shared_ptr<MessageDigest>& ctx, const std::string& filename)
+std::string fileHexDigest(MessageDigest* ctx, const std::string& filename)
 {
   std::shared_ptr<DiskWriter> writer(new DefaultDiskWriter(filename));
   writer->openExistingFile();

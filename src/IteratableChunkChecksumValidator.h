@@ -54,7 +54,7 @@ private:
   std::shared_ptr<PieceStorage> pieceStorage_;
   std::shared_ptr<BitfieldMan> bitfield_;
   size_t currentIndex_;
-  std::shared_ptr<MessageDigest> ctx_;
+  std::unique_ptr<MessageDigest> ctx_;
 
   std::string calculateActualChecksum();
 

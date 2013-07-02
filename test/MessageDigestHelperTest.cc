@@ -26,17 +26,19 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION( MessageDigestHelperTest );
 
 void MessageDigestHelperTest::testDigestDiskWriter() {
-  std::shared_ptr<DefaultDiskWriter> diskio
-    (new DefaultDiskWriter(A2_TEST_DIR"/4096chunk.txt"));
+  auto diskio = std::make_shared<DefaultDiskWriter>
+    (A2_TEST_DIR"/4096chunk.txt");
   diskio->enableReadOnly();
   diskio->openExistingFile();
   CPPUNIT_ASSERT_EQUAL(std::string("608cabc0f2fa18c260cafd974516865c772363d5"),
                        util::toHex(message_digest::digest
-                                   (MessageDigest::sha1(), diskio, 0, 4096)));
+                                   (MessageDigest::sha1().get(),
+                                    diskio, 0, 4096)));
 
   CPPUNIT_ASSERT_EQUAL(std::string("7a4a9ae537ebbbb826b1060e704490ad0f365ead"),
                        util::toHex(message_digest::digest
-                                   (MessageDigest::sha1(), diskio, 5, 100)));
+                                   (MessageDigest::sha1().get(),
+                                    diskio, 5, 100)));
 }
 
 } // namespace aria2

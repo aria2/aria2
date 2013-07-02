@@ -63,24 +63,21 @@ HashTypeEntry hashTypes[] = {
 };
 } // namespace aria2
 
-MessageDigest::MessageDigest()
+MessageDigest::MessageDigest(std::unique_ptr<MessageDigestImpl> impl)
+  : pImpl_{std::move(impl)}
 {}
 
-MessageDigest::~MessageDigest()
-{}
+MessageDigest::~MessageDigest() {}
 
-std::shared_ptr<MessageDigest> MessageDigest::sha1()
+std::unique_ptr<MessageDigest> MessageDigest::sha1()
 {
-  std::shared_ptr<MessageDigest> md(new MessageDigest());
-  md->pImpl_ = MessageDigestImpl::sha1();
-  return md;
+  return make_unique<MessageDigest>(MessageDigestImpl::sha1());
 }
 
-std::shared_ptr<MessageDigest> MessageDigest::create(const std::string& hashType)
+std::unique_ptr<MessageDigest> MessageDigest::create
+(const std::string& hashType)
 {
-  std::shared_ptr<MessageDigest> md(new MessageDigest());
-  md->pImpl_ = MessageDigestImpl::create(hashType);
-  return md;
+  return make_unique<MessageDigest>(MessageDigestImpl::create(hashType));
 }
 
 bool MessageDigest::supports(const std::string& hashType)
@@ -101,10 +98,11 @@ std::vector<std::string> MessageDigest::getSupportedHashTypes()
 
 std::string MessageDigest::getSupportedHashTypeString()
 {
-  std::vector<std::string> ht = getSupportedHashTypes();
+  auto ht = getSupportedHashTypes();
   std::stringstream ss;
-  std::copy(ht.begin(), ht.end(), std::ostream_iterator<std::string>(ss, ", "));
-  std::string res = ss.str();
+  std::copy(std::begin(ht), std::end(ht),
+            std::ostream_iterator<std::string>(ss, ", "));
+  auto res = ss.str();
   if(!res.empty()) {
     res.erase(ss.str().length()-2);
   }
@@ -133,12 +131,10 @@ public:
 
 bool MessageDigest::isStronger(const std::string& lhs, const std::string& rhs)
 {
-  HashTypeEntry* lEntry = std::find_if(std::begin(hashTypes),
-                                       std::end(hashTypes),
-                                       FindHashTypeEntry(lhs));
-  HashTypeEntry* rEntry = std::find_if(std::begin(hashTypes),
-                                       std::end(hashTypes),
-                                       FindHashTypeEntry(rhs));
+  auto lEntry = std::find_if(std::begin(hashTypes), std::end(hashTypes),
+                             FindHashTypeEntry(lhs));
+  auto rEntry = std::find_if(std::begin(hashTypes), std::end(hashTypes),
+                             FindHashTypeEntry(rhs));
   if(lEntry == std::end(hashTypes) || rEntry == std::end(hashTypes)) {
     return false;
   }

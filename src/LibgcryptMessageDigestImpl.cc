@@ -38,10 +38,11 @@
 
 #include "array_fun.h"
 #include "HashFuncEntry.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
-MessageDigestImpl::MessageDigestImpl(int hashFunc):hashFunc_(hashFunc)
+MessageDigestImpl::MessageDigestImpl(int hashFunc) : hashFunc_{hashFunc}
 {
   gcry_md_open(&ctx_, hashFunc_, 0);
 }
@@ -51,9 +52,9 @@ MessageDigestImpl::~MessageDigestImpl()
   gcry_md_close(ctx_);
 }
 
-std::shared_ptr<MessageDigestImpl> MessageDigestImpl::sha1()
+std::unique_ptr<MessageDigestImpl> MessageDigestImpl::sha1()
 {
-  return std::shared_ptr<MessageDigestImpl>(new MessageDigestImpl(GCRY_MD_SHA1));
+  return make_unique<MessageDigestImpl>(GCRY_MD_SHA1);
 }
 
 typedef HashFuncEntry<int> CHashFuncEntry;
@@ -70,12 +71,12 @@ CHashFuncEntry hashFuncs[] = {
 };
 } // namespace
 
-std::shared_ptr<MessageDigestImpl> MessageDigestImpl::create
+std::unique_ptr<MessageDigestImpl> MessageDigestImpl::create
 (const std::string& hashType)
 {
   int hashFunc = getHashFunc(std::begin(hashFuncs), std::end(hashFuncs),
                              hashType);
-  return std::shared_ptr<MessageDigestImpl>(new MessageDigestImpl(hashFunc));
+  return make_unique<MessageDigestImpl>(hashFunc);
 }
 
 bool MessageDigestImpl::supports(const std::string& hashType)

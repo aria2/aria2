@@ -46,24 +46,22 @@ namespace aria2 {
 class MessageDigestImpl;
 
 class MessageDigest {
-private:
-  std::shared_ptr<MessageDigestImpl> pImpl_;
-
-  MessageDigest();
-
-  // We don't implement copy ctor.
-  MessageDigest(const MessageDigest&);
-  // We don't implement assignment operator.
-  MessageDigest& operator=(const MessageDigest&);
 public:
+  // Made public for make_unique
+  MessageDigest(std::unique_ptr<MessageDigestImpl> impl);
+  // We don't implement copy ctor.
+  MessageDigest(const MessageDigest&) = delete;
+  // We don't implement assignment operator.
+  MessageDigest& operator=(const MessageDigest&) = delete;
+
   ~MessageDigest();
 
   // Factory functions
-  static std::shared_ptr<MessageDigest> sha1();
+  static std::unique_ptr<MessageDigest> sha1();
 
   // Factory function which takes hashType as string.  Throws
   // exception if hashType is not supported.
-  static std::shared_ptr<MessageDigest> create(const std::string& hashType);
+  static std::unique_ptr<MessageDigest> create(const std::string& hashType);
 
   // Returns true if hashType is supported. Otherwise returns false.
   static bool supports(const std::string& hashType);
@@ -107,6 +105,8 @@ public:
   // Returns raw digest, not hex digest.  This call can only be called
   // once. To reuse this object, call reset().
   std::string digest();
+private:
+  std::unique_ptr<MessageDigestImpl> pImpl_;
 };
 
 } // namespace aria2

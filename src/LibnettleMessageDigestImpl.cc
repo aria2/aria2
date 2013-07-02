@@ -38,12 +38,13 @@
 
 #include "array_fun.h"
 #include "HashFuncEntry.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
 MessageDigestImpl::MessageDigestImpl(const nettle_hash* hashInfo)
-  : hashInfo_(hashInfo),
-    ctx_(new char[hashInfo->context_size])
+  : hashInfo_{hashInfo},
+    ctx_{new char[hashInfo->context_size]}
 {
   reset();
 }
@@ -53,9 +54,9 @@ MessageDigestImpl::~MessageDigestImpl()
   delete [] ctx_;
 }
 
-std::shared_ptr<MessageDigestImpl> MessageDigestImpl::sha1()
+std::unique_ptr<MessageDigestImpl> MessageDigestImpl::sha1()
 {
-  return std::shared_ptr<MessageDigestImpl>(new MessageDigestImpl(&nettle_sha1));
+  return make_unique<MessageDigestImpl>(&nettle_sha1);
 }
 
 typedef HashFuncEntry<const nettle_hash*> CHashFuncEntry;
@@ -72,12 +73,12 @@ CHashFuncEntry hashFuncs[] = {
 };
 } // namespace
 
-std::shared_ptr<MessageDigestImpl> MessageDigestImpl::create
+std::unique_ptr<MessageDigestImpl> MessageDigestImpl::create
 (const std::string& hashType)
 {
-  const nettle_hash* hashInfo =
+  auto hashInfo =
     getHashFunc(std::begin(hashFuncs), std::end(hashFuncs), hashType);
-  return std::shared_ptr<MessageDigestImpl>(new MessageDigestImpl(hashInfo));
+  return make_unique<MessageDigestImpl>(hashInfo);
 }
 
 bool MessageDigestImpl::supports(const std::string& hashType)
@@ -89,7 +90,7 @@ bool MessageDigestImpl::supports(const std::string& hashType)
 
 size_t MessageDigestImpl::getDigestLength(const std::string& hashType)
 {
-  const nettle_hash* hashInfo =
+  auto hashInfo =
     getHashFunc(std::begin(hashFuncs), std::end(hashFuncs), hashType);
   return hashInfo->digest_size;
 }

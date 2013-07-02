@@ -74,7 +74,7 @@ void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
     "6:pieces60:AAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCe";
   unsigned char infoHash[20];
   message_digest::digest
-    (infoHash, sizeof(infoHash), MessageDigest::sha1(),
+    (infoHash, sizeof(infoHash), MessageDigest::sha1().get(),
      reinterpret_cast<const unsigned char*>(metadata.data()), metadata.size());
   dctx_->getFirstFileEntry()->setLength(metadata.size());
   std::vector<std::vector<std::string> > announceList;

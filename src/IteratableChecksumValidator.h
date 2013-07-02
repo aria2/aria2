@@ -54,7 +54,7 @@ private:
 
   int64_t currentOffset_;
 
-  std::shared_ptr<MessageDigest> ctx_;
+  std::unique_ptr<MessageDigest> ctx_;
 public:
   IteratableChecksumValidator(const std::shared_ptr<DownloadContext>& dctx,
                               const std::shared_ptr<PieceStorage>& pieceStorage);

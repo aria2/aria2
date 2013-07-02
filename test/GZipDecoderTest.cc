@@ -55,7 +55,7 @@ void GZipDecoderTest::testDecode()
 
 #ifdef ENABLE_MESSAGE_DIGEST
   CPPUNIT_ASSERT_EQUAL(std::string("8b577b33c0411b2be9d4fa74c7402d54a8d21f96"),
-                       fileHexDigest(MessageDigest::sha1(), outfile));
+                       fileHexDigest(MessageDigest::sha1().get(), outfile));
 #endif // ENABLE_MESSAGE_DIGEST
 }
 

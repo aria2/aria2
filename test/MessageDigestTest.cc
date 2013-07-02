@@ -17,7 +17,7 @@ class MessageDigestTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetCanonicalHashType);
   CPPUNIT_TEST_SUITE_END();
 
-  std::shared_ptr<MessageDigest> sha1_;
+  std::unique_ptr<MessageDigest> sha1_;
 public:
   void setUp()
   {
