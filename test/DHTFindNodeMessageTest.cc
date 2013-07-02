@@ -20,7 +20,14 @@ class DHTFindNodeMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST_SUITE_END();
 public:
-  void setUp() {}
+  std::shared_ptr<DHTNode> localNode_;
+  std::shared_ptr<DHTNode> remoteNode_;
+
+  void setUp()
+  {
+    localNode_ = std::make_shared<DHTNode>();
+    remoteNode_ = std::make_shared<DHTNode>();
+  }
 
   void tearDown() {}
 
@@ -29,16 +36,15 @@ public:
 
   class MockDHTMessageFactory2:public MockDHTMessageFactory {
   public:
-    virtual std::shared_ptr<DHTResponseMessage>
+    virtual std::unique_ptr<DHTFindNodeReplyMessage>
     createFindNodeReplyMessage
     (const std::shared_ptr<DHTNode>& remoteNode,
-     const std::vector<std::shared_ptr<DHTNode> >& closestKNodes,
-     const std::string& transactionID)
+     std::vector<std::shared_ptr<DHTNode>> closestKNodes,
+     const std::string& transactionID) override
     {
-      std::shared_ptr<MockDHTResponseMessage> m
-        (new MockDHTResponseMessage
-         (localNode_, remoteNode, "find_node", transactionID));
-      m->nodes_ = closestKNodes;
+      auto m = make_unique<DHTFindNodeReplyMessage>
+        (AF_INET, localNode_, remoteNode, transactionID);
+      m->setClosestKNodes(std::move(closestKNodes));
       return m;
     }
   };
@@ -49,16 +55,14 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTFindNodeMessageTest);
 
 void DHTFindNodeMessageTest::testGetBencodedMessage()
 {
-  std::shared_ptr<DHTNode> localNode(new DHTNode());
-  std::shared_ptr<DHTNode> remoteNode(new DHTNode());
-
   unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   util::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
   std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 
-  std::shared_ptr<DHTNode> targetNode(new DHTNode());
+  auto targetNode = std::make_shared<DHTNode>();
 
-  DHTFindNodeMessage msg(localNode, remoteNode, targetNode->getID(), transactionID);
+  DHTFindNodeMessage msg(localNode_, remoteNode_, targetNode->getID(),
+                         transactionID);
   msg.setVersion("A200");
   std::string msgbody = msg.getBencodedMessage();
 
@@ -67,8 +71,8 @@ void DHTFindNodeMessageTest::testGetBencodedMessage()
   dict.put("v", "A200");
   dict.put("y", "q");
   dict.put("q", "find_node");
-  std::shared_ptr<Dict> aDict = Dict::g();
-  aDict->put("id", String::g(localNode->getID(), DHT_ID_LENGTH));
+  auto aDict = Dict::g();
+  aDict->put("id", String::g(localNode_->getID(), DHT_ID_LENGTH));
   aDict->put("target", String::g(targetNode->getID(), DHT_ID_LENGTH));
   dict.put("a", aDict);
 
@@ -77,22 +81,20 @@ void DHTFindNodeMessageTest::testGetBencodedMessage()
 
 void DHTFindNodeMessageTest::testDoReceivedAction()
 {
-  std::shared_ptr<DHTNode> localNode(new DHTNode());
-  std::shared_ptr<DHTNode> remoteNode(new DHTNode());
-
   unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   util::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
   std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 
-  std::shared_ptr<DHTNode> targetNode(new DHTNode());
+  auto targetNode = std::make_shared<DHTNode>();
 
   MockDHTMessageDispatcher dispatcher;
   MockDHTMessageFactory2 factory;
-  factory.setLocalNode(localNode);
-  DHTRoutingTable routingTable(localNode);
+  factory.setLocalNode(localNode_);
+  DHTRoutingTable routingTable(localNode_);
   routingTable.addNode(targetNode);
 
-  DHTFindNodeMessage msg(localNode, remoteNode, targetNode->getID(), transactionID);
+  DHTFindNodeMessage msg(localNode_, remoteNode_, targetNode->getID(),
+                         transactionID);
   msg.setMessageDispatcher(&dispatcher);
   msg.setMessageFactory(&factory);
   msg.setRoutingTable(&routingTable);
@@ -100,13 +102,13 @@ void DHTFindNodeMessageTest::testDoReceivedAction()
   msg.doReceivedAction();
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher.messageQueue_.size());
-  auto m = std::dynamic_pointer_cast<MockDHTResponseMessage>
-    (dispatcher.messageQueue_[0].message_);
-  CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
-  CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
+  auto m = dynamic_cast<DHTFindNodeReplyMessage*>
+    (dispatcher.messageQueue_[0].message_.get());
+  CPPUNIT_ASSERT(*localNode_ == *m->getLocalNode());
+  CPPUNIT_ASSERT(*remoteNode_ == *m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(std::string("find_node"), m->getMessageType());
   CPPUNIT_ASSERT_EQUAL(msg.getTransactionID(), m->getTransactionID());
-  CPPUNIT_ASSERT_EQUAL((size_t)1, m->nodes_.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, m->getClosestKNodes().size());
 }
 
 } // namespace aria2

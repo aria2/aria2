@@ -40,11 +40,14 @@ class DHTMessageFactoryImplTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testReceivedErrorMessage);
   CPPUNIT_TEST_SUITE_END();
 public:
-  std::shared_ptr<DHTMessageFactoryImpl> factory;
+  std::unique_ptr<DHTMessageFactoryImpl> factory;
 
-  std::shared_ptr<DHTRoutingTable> routingTable;
+  std::unique_ptr<DHTRoutingTable> routingTable;
 
   std::shared_ptr<DHTNode> localNode;
+
+  std::unique_ptr<DHTNode> remoteNode_;
+  std::unique_ptr<DHTNode> remoteNode6_;
 
   unsigned char transactionID[DHT_TRANSACTION_ID_LENGTH];
 
@@ -52,13 +55,21 @@ public:
 
   void setUp()
   {
-    localNode.reset(new DHTNode());
-    factory.reset(new DHTMessageFactoryImpl(AF_INET));
+    localNode = std::make_shared<DHTNode>();
+    factory = make_unique<DHTMessageFactoryImpl>(AF_INET);
     factory->setLocalNode(localNode);
     memset(transactionID, 0xff, DHT_TRANSACTION_ID_LENGTH);
     memset(remoteNodeID, 0x0f, DHT_ID_LENGTH);
-    routingTable.reset(new DHTRoutingTable(localNode));
+    routingTable = make_unique<DHTRoutingTable>(localNode);
     factory->setRoutingTable(routingTable.get());
+
+    remoteNode_ = make_unique<DHTNode>(remoteNodeID);
+    remoteNode_->setIPAddress("192.168.0.1");
+    remoteNode_->setPort(6881);
+
+    remoteNode6_ = make_unique<DHTNode>(remoteNodeID);
+    remoteNode6_->setIPAddress("2001::2001");
+    remoteNode6_->setPort(6881);
   }
 
   void tearDown() {}
@@ -85,18 +96,15 @@ void DHTMessageFactoryImplTest::testCreatePingMessage()
   dict.put("t", String::g(transactionID, DHT_TRANSACTION_ID_LENGTH));
   dict.put("y", "q");
   dict.put("q", "ping");
-  std::shared_ptr<Dict> aDict = Dict::g();
+  auto aDict = Dict::g();
   aDict->put("id", String::g(remoteNodeID, DHT_ID_LENGTH));
   dict.put("a", aDict);
 
-  auto m = std::dynamic_pointer_cast<DHTPingMessage>
-    (factory->createQueryMessage(&dict, "192.168.0.1", 6881));
-  std::shared_ptr<DHTNode> remoteNode(new DHTNode(remoteNodeID));
-  remoteNode->setIPAddress("192.168.0.1");
-  remoteNode->setPort(6881);
+  auto r = factory->createQueryMessage(&dict, "192.168.0.1", 6881);
+  auto m = dynamic_cast<DHTPingMessage*>(r.get());
 
   CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
-  CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
+  CPPUNIT_ASSERT(*remoteNode_ == *m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
                        util::toHex(m->getTransactionID()));
 }
@@ -106,21 +114,17 @@ void DHTMessageFactoryImplTest::testCreatePingReplyMessage()
   Dict dict;
   dict.put("t", String::g(transactionID, DHT_TRANSACTION_ID_LENGTH));
   dict.put("y", "r");
-  std::shared_ptr<Dict> rDict = Dict::g();
+  auto rDict = Dict::g();
   rDict->put("id", String::g(remoteNodeID, DHT_ID_LENGTH));
   dict.put("r", rDict);
 
-  std::shared_ptr<DHTNode> remoteNode(new DHTNode(remoteNodeID));
-  remoteNode->setIPAddress("192.168.0.1");
-  remoteNode->setPort(6881);
-
-  auto m = std::dynamic_pointer_cast<DHTPingReplyMessage>
-    (factory->createResponseMessage("ping", &dict,
-                                    remoteNode->getIPAddress(),
-                                    remoteNode->getPort()));
+  auto r = factory->createResponseMessage("ping", &dict,
+                                          remoteNode_->getIPAddress(),
+                                          remoteNode_->getPort());
+  auto m = dynamic_cast<DHTPingReplyMessage*>(r.get());
 
   CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
-  CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
+  CPPUNIT_ASSERT(*remoteNode_ == *m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
                        util::toHex(m->getTransactionID()));
 }
@@ -131,21 +135,18 @@ void DHTMessageFactoryImplTest::testCreateFindNodeMessage()
   dict.put("t", String::g(transactionID, DHT_TRANSACTION_ID_LENGTH));
   dict.put("y", "q");
   dict.put("q", "find_node");
-  std::shared_ptr<Dict> aDict = Dict::g();
+  auto aDict = Dict::g();
   aDict->put("id", String::g(remoteNodeID, DHT_ID_LENGTH));
   unsigned char targetNodeID[DHT_ID_LENGTH];
   memset(targetNodeID, 0x11, DHT_ID_LENGTH);
   aDict->put("target", String::g(targetNodeID, DHT_ID_LENGTH));
   dict.put("a", aDict);
 
-  auto m = std::dynamic_pointer_cast<DHTFindNodeMessage>
-    (factory->createQueryMessage(&dict, "192.168.0.1", 6881));
-  std::shared_ptr<DHTNode> remoteNode(new DHTNode(remoteNodeID));
-  remoteNode->setIPAddress("192.168.0.1");
-  remoteNode->setPort(6881);
+  auto r = factory->createQueryMessage(&dict, "192.168.0.1", 6881);
+  auto m = dynamic_cast<DHTFindNodeMessage*>(r.get());
 
   CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
-  CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
+  CPPUNIT_ASSERT(*remoteNode_ == *m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
                        util::toHex(m->getTransactionID()));
   CPPUNIT_ASSERT_EQUAL(util::toHex(targetNodeID, DHT_ID_LENGTH),
@@ -158,12 +159,12 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage()
     Dict dict;
     dict.put("t", String::g(transactionID, DHT_TRANSACTION_ID_LENGTH));
     dict.put("y", "r");
-    std::shared_ptr<Dict> rDict = Dict::g();
+    auto rDict = Dict::g();
     rDict->put("id", String::g(remoteNodeID, DHT_ID_LENGTH));
     std::string compactNodeInfo;
     std::shared_ptr<DHTNode> nodes[8];
     for(size_t i = 0; i < DHTBucket::K; ++i) {
-      nodes[i].reset(new DHTNode());
+      nodes[i] = std::make_shared<DHTNode>();
       nodes[i]->setIPAddress("192.168.0."+util::uitos(i+1));
       nodes[i]->setPort(6881+i);
 
@@ -179,17 +180,13 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage()
     rDict->put("nodes", compactNodeInfo);
     dict.put("r", rDict);
 
-    std::shared_ptr<DHTNode> remoteNode(new DHTNode(remoteNodeID));
-    remoteNode->setIPAddress("192.168.0.1");
-    remoteNode->setPort(6881);
-
-    auto m = std::dynamic_pointer_cast<DHTFindNodeReplyMessage>
-      (factory->createResponseMessage("find_node", &dict,
-                                      remoteNode->getIPAddress(),
-                                      remoteNode->getPort()));
+    auto r = factory->createResponseMessage("find_node", &dict,
+                                            remoteNode_->getIPAddress(),
+                                            remoteNode_->getPort());
+    auto m = dynamic_cast<DHTFindNodeReplyMessage*>(r.get());
 
     CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
-    CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
+    CPPUNIT_ASSERT(*remoteNode_ == *m->getRemoteNode());
     CPPUNIT_ASSERT_EQUAL((size_t)DHTBucket::K, m->getClosestKNodes().size());
     CPPUNIT_ASSERT(*nodes[0] == *m->getClosestKNodes()[0]);
     CPPUNIT_ASSERT(*nodes[7] == *m->getClosestKNodes()[7]);
@@ -202,19 +199,19 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage()
 
 void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage6()
 {
-  factory.reset(new DHTMessageFactoryImpl(AF_INET6));
+  factory = make_unique<DHTMessageFactoryImpl>(AF_INET6);
   factory->setLocalNode(localNode);
   factory->setRoutingTable(routingTable.get());
   try {
     Dict dict;
     dict.put("t", String::g(transactionID, DHT_TRANSACTION_ID_LENGTH));
     dict.put("y", "r");
-    std::shared_ptr<Dict> rDict = Dict::g();
+    auto rDict = Dict::g();
     rDict->put("id", String::g(remoteNodeID, DHT_ID_LENGTH));
     std::string compactNodeInfo;
     std::shared_ptr<DHTNode> nodes[8];
     for(size_t i = 0; i < DHTBucket::K; ++i) {
-      nodes[i].reset(new DHTNode());
+      nodes[i] = std::make_shared<DHTNode>();
       nodes[i]->setIPAddress("2001::000"+util::uitos(i+1));
       nodes[i]->setPort(6881+i);
 
@@ -230,17 +227,13 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage6()
     rDict->put("nodes6", compactNodeInfo);
     dict.put("r", rDict);
 
-    std::shared_ptr<DHTNode> remoteNode(new DHTNode(remoteNodeID));
-    remoteNode->setIPAddress("2001::2001");
-    remoteNode->setPort(6881);
-
-    auto m = std::dynamic_pointer_cast<DHTFindNodeReplyMessage>
-      (factory->createResponseMessage("find_node", &dict,
-                                      remoteNode->getIPAddress(),
-                                      remoteNode->getPort()));
+    auto r = factory->createResponseMessage("find_node", &dict,
+                                            remoteNode_->getIPAddress(),
+                                            remoteNode_->getPort());
+    auto m = dynamic_cast<DHTFindNodeReplyMessage*>(r.get());
 
     CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
-    CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
+    CPPUNIT_ASSERT(*remoteNode_ == *m->getRemoteNode());
     CPPUNIT_ASSERT_EQUAL((size_t)DHTBucket::K, m->getClosestKNodes().size());
     CPPUNIT_ASSERT(*nodes[0] == *m->getClosestKNodes()[0]);
     CPPUNIT_ASSERT(*nodes[7] == *m->getClosestKNodes()[7]);
@@ -257,21 +250,18 @@ void DHTMessageFactoryImplTest::testCreateGetPeersMessage()
   dict.put("t", String::g(transactionID, DHT_TRANSACTION_ID_LENGTH));
   dict.put("y", "q");
   dict.put("q", "get_peers");
-  std::shared_ptr<Dict> aDict = Dict::g();
+  auto aDict = Dict::g();
   aDict->put("id", String::g(remoteNodeID, DHT_ID_LENGTH));
   unsigned char infoHash[DHT_ID_LENGTH];
   memset(infoHash, 0x11, DHT_ID_LENGTH);
   aDict->put("info_hash", String::g(infoHash, DHT_ID_LENGTH));
   dict.put("a", aDict);
 
-  auto m = std::dynamic_pointer_cast<DHTGetPeersMessage>
-    (factory->createQueryMessage(&dict, "192.168.0.1", 6881));
-  std::shared_ptr<DHTNode> remoteNode(new DHTNode(remoteNodeID));
-  remoteNode->setIPAddress("192.168.0.1");
-  remoteNode->setPort(6881);
+  auto r = factory->createQueryMessage(&dict, "192.168.0.1", 6881);
+  auto m = dynamic_cast<DHTGetPeersMessage*>(r.get());
 
   CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
-  CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
+  CPPUNIT_ASSERT(*remoteNode_ == *m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
                        util::toHex(m->getTransactionID()));
   CPPUNIT_ASSERT_EQUAL(util::toHex(infoHash, DHT_ID_LENGTH),
@@ -284,12 +274,12 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage()
     Dict dict;
     dict.put("t", String::g(transactionID, DHT_TRANSACTION_ID_LENGTH));
     dict.put("y", "r");
-    std::shared_ptr<Dict> rDict = Dict::g();
+    auto rDict = Dict::g();
     rDict->put("id", String::g(remoteNodeID, DHT_ID_LENGTH));
     std::string compactNodeInfo;
     std::shared_ptr<DHTNode> nodes[8];
     for(size_t i = 0; i < DHTBucket::K; ++i) {
-      nodes[i].reset(new DHTNode());
+      nodes[i] = std::make_shared<DHTNode>();
       nodes[i]->setIPAddress("192.168.0."+util::uitos(i+1));
       nodes[i]->setPort(6881+i);
 
@@ -307,7 +297,8 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage()
     std::deque<std::shared_ptr<Peer> > peers;
     std::shared_ptr<List> valuesList = List::g();
     for(size_t i = 0; i < 4; ++i) {
-      std::shared_ptr<Peer> peer(new Peer("192.168.0."+util::uitos(i+1), 6881+i));
+      auto peer = std::make_shared<Peer>("192.168.0."+util::uitos(i+1),
+                                         6881+i);
       unsigned char buffer[COMPACT_LEN_IPV6];
       CPPUNIT_ASSERT_EQUAL
         (COMPACT_LEN_IPV4,
@@ -321,17 +312,13 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage()
     rDict->put("token", "token");
     dict.put("r", rDict);
 
-    std::shared_ptr<DHTNode> remoteNode(new DHTNode(remoteNodeID));
-    remoteNode->setIPAddress("192.168.0.1");
-    remoteNode->setPort(6881);
-
-    auto m = std::dynamic_pointer_cast<DHTGetPeersReplyMessage>
-      (factory->createResponseMessage("get_peers", &dict,
-                                      remoteNode->getIPAddress(),
-                                      remoteNode->getPort()));
+    auto r = factory->createResponseMessage("get_peers", &dict,
+                                            remoteNode_->getIPAddress(),
+                                            remoteNode_->getPort());
+    auto m = dynamic_cast<DHTGetPeersReplyMessage*>(r.get());
 
     CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
-    CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
+    CPPUNIT_ASSERT(*remoteNode_ == *m->getRemoteNode());
     CPPUNIT_ASSERT_EQUAL(std::string("token"), m->getToken());
     CPPUNIT_ASSERT_EQUAL((size_t)DHTBucket::K, m->getClosestKNodes().size());
     CPPUNIT_ASSERT(*nodes[0] == *m->getClosestKNodes()[0]);
@@ -351,19 +338,19 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage()
 
 void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage6()
 {
-  factory.reset(new DHTMessageFactoryImpl(AF_INET6));
+  factory = make_unique<DHTMessageFactoryImpl>(AF_INET6);
   factory->setLocalNode(localNode);
   factory->setRoutingTable(routingTable.get());
   try {
     Dict dict;
     dict.put("t", String::g(transactionID, DHT_TRANSACTION_ID_LENGTH));
     dict.put("y", "r");
-    std::shared_ptr<Dict> rDict = Dict::g();
+    auto rDict = Dict::g();
     rDict->put("id", String::g(remoteNodeID, DHT_ID_LENGTH));
     std::string compactNodeInfo;
     std::shared_ptr<DHTNode> nodes[8];
     for(size_t i = 0; i < DHTBucket::K; ++i) {
-      nodes[i].reset(new DHTNode());
+      nodes[i] = std::make_shared<DHTNode>();
       nodes[i]->setIPAddress("2001::000"+util::uitos(i+1));
       nodes[i]->setPort(6881+i);
 
@@ -378,10 +365,10 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage6()
     }
     rDict->put("nodes6", compactNodeInfo);
 
-    std::deque<std::shared_ptr<Peer> > peers;
-    std::shared_ptr<List> valuesList = List::g();
+    std::deque<std::shared_ptr<Peer>> peers;
+    auto valuesList = List::g();
     for(size_t i = 0; i < 4; ++i) {
-      std::shared_ptr<Peer> peer(new Peer("2001::100"+util::uitos(i+1), 6881+i));
+      auto peer = std::make_shared<Peer>("2001::100"+util::uitos(i+1), 6881+i);
       unsigned char buffer[COMPACT_LEN_IPV6];
       CPPUNIT_ASSERT_EQUAL
         (COMPACT_LEN_IPV6,
@@ -395,17 +382,13 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage6()
     rDict->put("token", "token");
     dict.put("r", rDict);
 
-    std::shared_ptr<DHTNode> remoteNode(new DHTNode(remoteNodeID));
-    remoteNode->setIPAddress("2001::2001");
-    remoteNode->setPort(6881);
-
-    auto m = std::dynamic_pointer_cast<DHTGetPeersReplyMessage>
-      (factory->createResponseMessage("get_peers", &dict,
-                                      remoteNode->getIPAddress(),
-                                      remoteNode->getPort()));
+    auto r = factory->createResponseMessage("get_peers", &dict,
+                                            remoteNode_->getIPAddress(),
+                                            remoteNode_->getPort());
+    auto m = dynamic_cast<DHTGetPeersReplyMessage*>(r.get());
 
     CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
-    CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
+    CPPUNIT_ASSERT(*remoteNode_ == *m->getRemoteNode());
     CPPUNIT_ASSERT_EQUAL(std::string("token"), m->getToken());
     CPPUNIT_ASSERT_EQUAL((size_t)DHTBucket::K, m->getClosestKNodes().size());
     CPPUNIT_ASSERT(*nodes[0] == *m->getClosestKNodes()[0]);
@@ -430,7 +413,7 @@ void DHTMessageFactoryImplTest::testCreateAnnouncePeerMessage()
     dict.put("t", String::g(transactionID, DHT_TRANSACTION_ID_LENGTH));
     dict.put("y", "q");
     dict.put("q", "announce_peer");
-    std::shared_ptr<Dict> aDict = Dict::g();
+    auto aDict = Dict::g();
     aDict->put("id", String::g(remoteNodeID, DHT_ID_LENGTH));
     unsigned char infoHash[DHT_ID_LENGTH];
     memset(infoHash, 0x11, DHT_ID_LENGTH);
@@ -441,14 +424,13 @@ void DHTMessageFactoryImplTest::testCreateAnnouncePeerMessage()
     aDict->put("token", token);
     dict.put("a", aDict);
 
-    auto m = std::dynamic_pointer_cast<DHTAnnouncePeerMessage>
-      (factory->createQueryMessage(&dict, "192.168.0.1", 6882));
-    std::shared_ptr<DHTNode> remoteNode(new DHTNode(remoteNodeID));
-    remoteNode->setIPAddress("192.168.0.1");
-    remoteNode->setPort(6882);
+    remoteNode_->setPort(6882);
+
+    auto r = factory->createQueryMessage(&dict, "192.168.0.1", 6882);
+    auto m = dynamic_cast<DHTAnnouncePeerMessage*>(r.get());
 
     CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
-    CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
+    CPPUNIT_ASSERT(*remoteNode_ == *m->getRemoteNode());
     CPPUNIT_ASSERT_EQUAL(token, m->getToken());
     CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
                          util::toHex(m->getTransactionID()));
@@ -465,21 +447,17 @@ void DHTMessageFactoryImplTest::testCreateAnnouncePeerReplyMessage()
   Dict dict;
   dict.put("t", String::g(transactionID, DHT_TRANSACTION_ID_LENGTH));
   dict.put("y", "r");
-  std::shared_ptr<Dict> rDict = Dict::g();
+  auto rDict = Dict::g();
   rDict->put("id", String::g(remoteNodeID, DHT_ID_LENGTH));
   dict.put("r", rDict);
 
-  std::shared_ptr<DHTNode> remoteNode(new DHTNode(remoteNodeID));
-  remoteNode->setIPAddress("192.168.0.1");
-  remoteNode->setPort(6881);
-
-  auto m = std::dynamic_pointer_cast<DHTAnnouncePeerReplyMessage>
-    (factory->createResponseMessage("announce_peer", &dict,
-                                    remoteNode->getIPAddress(),
-                                    remoteNode->getPort()));
+  auto r = factory->createResponseMessage("announce_peer", &dict,
+                                          remoteNode_->getIPAddress(),
+                                          remoteNode_->getPort());
+  auto m = dynamic_cast<DHTAnnouncePeerReplyMessage*>(r.get());
 
   CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
-  CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
+  CPPUNIT_ASSERT(*remoteNode_ == *m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
                        util::toHex(m->getTransactionID()));
 }
@@ -489,19 +467,15 @@ void DHTMessageFactoryImplTest::testReceivedErrorMessage()
   Dict dict;
   dict.put("t", String::g(transactionID, DHT_TRANSACTION_ID_LENGTH));
   dict.put("y", "e");
-  std::shared_ptr<List> list = List::g();
+  auto list = List::g();
   list->append(Integer::g(404));
   list->append("Not found");
   dict.put("e", list);
 
-  std::shared_ptr<DHTNode> remoteNode(new DHTNode(remoteNodeID));
-  remoteNode->setIPAddress("192.168.0.1");
-  remoteNode->setPort(6881);
-
   try {
     factory->createResponseMessage("announce_peer", &dict,
-                                   remoteNode->getIPAddress(),
-                                   remoteNode->getPort());
+                                   remoteNode_->getIPAddress(),
+                                   remoteNode_->getPort());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(RecoverableException& e) {
     std::cerr << e.stackTrace() << std::endl;

@@ -55,38 +55,37 @@ class DHTMessageTrackerEntry;
 
 class DHTMessageTracker {
 private:
-  std::deque<std::shared_ptr<DHTMessageTrackerEntry> > entries_;
+  std::deque<std::unique_ptr<DHTMessageTrackerEntry>> entries_;
 
   std::shared_ptr<DHTRoutingTable> routingTable_;
 
-  std::shared_ptr<DHTMessageFactory> factory_;
+  DHTMessageFactory* factory_;
 public:
   DHTMessageTracker();
 
-  ~DHTMessageTracker();
-
-  void addMessage(const std::shared_ptr<DHTMessage>& message,
+  void addMessage(DHTMessage* message,
                   time_t timeout,
-                  const std::shared_ptr<DHTMessageCallback>& callback =
-                  std::shared_ptr<DHTMessageCallback>());
+                  std::unique_ptr<DHTMessageCallback> callback =
+                  std::unique_ptr<DHTMessageCallback>{});
 
-  std::pair<std::shared_ptr<DHTResponseMessage>, std::shared_ptr<DHTMessageCallback> >
+  std::pair<std::unique_ptr<DHTResponseMessage>,
+            std::unique_ptr<DHTMessageCallback>>
   messageArrived(const Dict* dict,
                  const std::string& ipaddr, uint16_t port);
 
   void handleTimeout();
 
   // Made public so that unnamed functor can access this
-  void handleTimeoutEntry(const std::shared_ptr<DHTMessageTrackerEntry>& entry);
+  void handleTimeoutEntry(DHTMessageTrackerEntry* entry);
 
-  std::shared_ptr<DHTMessageTrackerEntry> getEntryFor
-  (const std::shared_ptr<DHTMessage>& message) const;
+  // // For unittest only
+  const DHTMessageTrackerEntry* getEntryFor(const DHTMessage* message) const;
 
   size_t countEntry() const;
 
   void setRoutingTable(const std::shared_ptr<DHTRoutingTable>& routingTable);
 
-  void setMessageFactory(const std::shared_ptr<DHTMessageFactory>& factory);
+  void setMessageFactory(DHTMessageFactory* factory);
 };
 
 } // namespace aria2

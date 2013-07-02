@@ -44,6 +44,7 @@
 #include "util.h"
 #include "DHTPeerAnnounceStorage.h"
 #include "DHTTokenTracker.h"
+#include "DHTAnnouncePeerReplyMessage.h"
 #include "DlAbortEx.h"
 #include "BtConstants.h"
 #include "fmt.h"
@@ -65,32 +66,29 @@ DHTAnnouncePeerMessage::DHTAnnouncePeerMessage
  const unsigned char* infoHash,
  uint16_t tcpPort,
  const std::string& token,
- const std::string& transactionID):
-  DHTQueryMessage(localNode, remoteNode, transactionID),
-  token_(token),
-  tcpPort_(tcpPort),
-  peerAnnounceStorage_(0),
-  tokenTracker_(0)
+ const std::string& transactionID)
+  : DHTQueryMessage{localNode, remoteNode, transactionID},
+    token_{token},
+    tcpPort_{tcpPort},
+    peerAnnounceStorage_{nullptr},
+    tokenTracker_{nullptr}
 {
   memcpy(infoHash_, infoHash, DHT_ID_LENGTH);
 }
-
-DHTAnnouncePeerMessage::~DHTAnnouncePeerMessage() {}
 
 void DHTAnnouncePeerMessage::doReceivedAction()
 {
   peerAnnounceStorage_->addPeerAnnounce
     (infoHash_, getRemoteNode()->getIPAddress(), tcpPort_);
 
-  std::shared_ptr<DHTMessage> reply =
-    getMessageFactory()->createAnnouncePeerReplyMessage
-    (getRemoteNode(), getTransactionID());
-  getMessageDispatcher()->addMessageToQueue(reply);
+  getMessageDispatcher()->addMessageToQueue
+    (getMessageFactory()->createAnnouncePeerReplyMessage
+     (getRemoteNode(), getTransactionID()));
 }
 
 std::shared_ptr<Dict> DHTAnnouncePeerMessage::getArgument()
 {
-  std::shared_ptr<Dict> aDict = Dict::g();
+  auto aDict = Dict::g();
   aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
   aDict->put(INFO_HASH, String::g(infoHash_, DHT_ID_LENGTH));
   aDict->put(PORT, Integer::g(tcpPort_));

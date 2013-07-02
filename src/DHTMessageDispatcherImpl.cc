@@ -43,44 +43,41 @@
 #include "DHTConstants.h"
 #include "fmt.h"
 #include "DHTNode.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
 DHTMessageDispatcherImpl::DHTMessageDispatcherImpl
 (const std::shared_ptr<DHTMessageTracker>& tracker)
-  : tracker_(tracker),
-    timeout_(DHT_MESSAGE_TIMEOUT)
+  : tracker_{tracker},
+    timeout_{DHT_MESSAGE_TIMEOUT}
 {}
 
-DHTMessageDispatcherImpl::~DHTMessageDispatcherImpl() {}
-
 void
 DHTMessageDispatcherImpl::addMessageToQueue
-(const std::shared_ptr<DHTMessage>& message,
+(std::unique_ptr<DHTMessage> message,
  time_t timeout,
- const std::shared_ptr<DHTMessageCallback>& callback)
+ std::unique_ptr<DHTMessageCallback> callback)
 {
-  std::shared_ptr<DHTMessageEntry> e
-    (new DHTMessageEntry(message, timeout, callback));
-  messageQueue_.push_back(e);
+  messageQueue_.push_back(make_unique<DHTMessageEntry>
+                          (std::move(message), timeout, std::move(callback)));
 }
 
 void
 DHTMessageDispatcherImpl::addMessageToQueue
-(const std::shared_ptr<DHTMessage>& message,
- const std::shared_ptr<DHTMessageCallback>& callback)
+(std::unique_ptr<DHTMessage> message,
+ std::unique_ptr<DHTMessageCallback> callback)
 {
-  addMessageToQueue(message, timeout_, callback);
+  addMessageToQueue(std::move(message), timeout_, std::move(callback));
 }
 
-bool
-DHTMessageDispatcherImpl::sendMessage
-(const std::shared_ptr<DHTMessageEntry>& entry)
+bool DHTMessageDispatcherImpl::sendMessage(DHTMessageEntry* entry)
 {
   try {
     if(entry->message->send()) {
       if(!entry->message->isReply()) {
-        tracker_->addMessage(entry->message, entry->timeout, entry->callback);
+        tracker_->addMessage(entry->message.get(), entry->timeout,
+                             std::move(entry->callback));
       }
       A2_LOG_INFO(fmt("Message sent: %s", entry->message->toString().c_str()));
     } else {
@@ -95,7 +92,8 @@ DHTMessageDispatcherImpl::sendMessage
     // DHTTask(such as DHTAbstractNodeLookupTask) don't finish
     // forever.
     if(!entry->message->isReply()) {
-      tracker_->addMessage(entry->message, 0, entry->callback);
+      tracker_->addMessage(entry->message.get(), 0,
+                           std::move(entry->callback));
     }
   }
   return true;
@@ -103,13 +101,13 @@ DHTMessageDispatcherImpl::sendMessage
 
 void DHTMessageDispatcherImpl::sendMessages()
 {
-  auto itr = messageQueue_.begin();
-  for(; itr != messageQueue_.end(); ++itr) {
-    if(!sendMessage(*itr)) {
+  auto itr = std::begin(messageQueue_);
+  for(; itr != std::end(messageQueue_); ++itr) {
+    if(!sendMessage((*itr).get())) {
       break;
     }
   }
-  messageQueue_.erase(messageQueue_.begin(), itr);
+  messageQueue_.erase(std::begin(messageQueue_), itr);
   A2_LOG_DEBUG(fmt("%lu dht messages remaining in the queue.",
                    static_cast<unsigned long>(messageQueue_.size())));
 }

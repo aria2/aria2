@@ -53,13 +53,11 @@ DHTPingReplyMessage::DHTPingReplyMessage
   memcpy(id_, id, DHT_ID_LENGTH);
 }
 
-DHTPingReplyMessage::~DHTPingReplyMessage() {}
-
 void DHTPingReplyMessage::doReceivedAction() {}
 
 std::shared_ptr<Dict> DHTPingReplyMessage::getResponse()
 {
-  std::shared_ptr<Dict> rDict = Dict::g();
+  auto rDict = Dict::g();
   rDict->put(DHTMessage::ID, String::g(id_, DHT_ID_LENGTH));
   return rDict;
 }

@@ -53,7 +53,7 @@ class DHTMessageCallback {
 public:
   virtual ~DHTMessageCallback() {}
 
-  void onReceived(const std::shared_ptr<DHTResponseMessage>& message)
+  void onReceived(DHTResponseMessage* message)
   {
     message->accept(this);
   }

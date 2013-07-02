@@ -115,6 +115,8 @@ public:
 
   bool operator==(const DHTNode& node) const;
 
+  bool operator!=(const DHTNode& node) const;
+
   bool operator<(const DHTNode& node) const;
 
   std::string toString() const;

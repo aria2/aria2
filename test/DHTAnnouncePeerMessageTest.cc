@@ -20,7 +20,14 @@ class DHTAnnouncePeerMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST_SUITE_END();
 public:
-  void setUp() {}
+  std::shared_ptr<DHTNode> localNode_;
+  std::shared_ptr<DHTNode> remoteNode_;
+
+  void setUp()
+  {
+    localNode_ = std::make_shared<DHTNode>();
+    remoteNode_ = std::make_shared<DHTNode>();
+  }
 
   void tearDown() {}
 
@@ -28,13 +35,12 @@ public:
   void testDoReceivedAction();
 
   class MockDHTMessageFactory2:public MockDHTMessageFactory {
-    virtual std::shared_ptr<DHTResponseMessage>
+    virtual std::unique_ptr<DHTAnnouncePeerReplyMessage>
     createAnnouncePeerReplyMessage(const std::shared_ptr<DHTNode>& remoteNode,
-                                   const std::string& transactionID)
+                                   const std::string& transactionID) override
     {
-      return std::shared_ptr<DHTResponseMessage>
-        (new MockDHTResponseMessage
-         (localNode_, remoteNode, "announce_peer", transactionID));
+      return make_unique<DHTAnnouncePeerReplyMessage>(localNode_, remoteNode,
+                                                      transactionID);
     }
   };
 };
@@ -44,9 +50,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTAnnouncePeerMessageTest);
 
 void DHTAnnouncePeerMessageTest::testGetBencodedMessage()
 {
-  std::shared_ptr<DHTNode> localNode(new DHTNode());
-  std::shared_ptr<DHTNode> remoteNode(new DHTNode());
-
   unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   util::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
   std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
@@ -57,7 +60,8 @@ void DHTAnnouncePeerMessageTest::testGetBencodedMessage()
   std::string token = "token";
   uint16_t port = 6881;
 
-  DHTAnnouncePeerMessage msg(localNode, remoteNode, infoHash, port, token, transactionID);
+  DHTAnnouncePeerMessage msg(localNode_, remoteNode_, infoHash, port, token,
+                             transactionID);
   msg.setVersion("A200");
   std::string msgbody = msg.getBencodedMessage();
 
@@ -66,8 +70,8 @@ void DHTAnnouncePeerMessageTest::testGetBencodedMessage()
   dict.put("v", "A200");
   dict.put("y", "q");
   dict.put("q", "announce_peer");
-  std::shared_ptr<Dict> aDict = Dict::g();
-  aDict->put("id", String::g(localNode->getID(), DHT_ID_LENGTH));
+  auto aDict = Dict::g();
+  aDict->put("id", String::g(localNode_->getID(), DHT_ID_LENGTH));
   aDict->put("info_hash", String::g(infoHash, DHT_ID_LENGTH));
   aDict->put("port", Integer::g(port));
   aDict->put("token", token);
@@ -79,10 +83,8 @@ void DHTAnnouncePeerMessageTest::testGetBencodedMessage()
 
 void DHTAnnouncePeerMessageTest::testDoReceivedAction()
 {
-  std::shared_ptr<DHTNode> localNode(new DHTNode());
-  std::shared_ptr<DHTNode> remoteNode(new DHTNode());
-  remoteNode->setIPAddress("192.168.0.1");
-  remoteNode->setPort(6881);
+  remoteNode_->setIPAddress("192.168.0.1");
+  remoteNode_->setPort(6881);
 
   unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   util::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
@@ -96,10 +98,11 @@ void DHTAnnouncePeerMessageTest::testDoReceivedAction()
 
   DHTPeerAnnounceStorage peerAnnounceStorage;
   MockDHTMessageFactory2 factory;
-  factory.setLocalNode(localNode);
+  factory.setLocalNode(localNode_);
   MockDHTMessageDispatcher dispatcher;
 
-  DHTAnnouncePeerMessage msg(localNode, remoteNode, infoHash, port, token, transactionID);
+  DHTAnnouncePeerMessage msg(localNode_, remoteNode_, infoHash, port, token,
+                             transactionID);
   msg.setPeerAnnounceStorage(&peerAnnounceStorage);
   msg.setMessageFactory(&factory);
   msg.setMessageDispatcher(&dispatcher);
@@ -107,10 +110,10 @@ void DHTAnnouncePeerMessageTest::testDoReceivedAction()
   msg.doReceivedAction();
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher.messageQueue_.size());
-  auto m = std::dynamic_pointer_cast<MockDHTResponseMessage>
-    (dispatcher.messageQueue_[0].message_);
-  CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
-  CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
+  auto m = dynamic_cast<DHTAnnouncePeerReplyMessage*>
+    (dispatcher.messageQueue_[0].message_.get());
+  CPPUNIT_ASSERT(*localNode_ == *m->getLocalNode());
+  CPPUNIT_ASSERT(*remoteNode_ == *m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(std::string("announce_peer"), m->getMessageType());
   CPPUNIT_ASSERT_EQUAL(transactionID, m->getTransactionID());
   std::vector<std::shared_ptr<Peer> > peers;

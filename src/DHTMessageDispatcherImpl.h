@@ -47,26 +47,24 @@ class DHTMessageDispatcherImpl:public DHTMessageDispatcher {
 private:
   std::shared_ptr<DHTMessageTracker> tracker_;
 
-  std::deque<std::shared_ptr<DHTMessageEntry> > messageQueue_;
+  std::deque<std::unique_ptr<DHTMessageEntry>> messageQueue_;
 
   time_t timeout_;
 
-  bool sendMessage(const std::shared_ptr<DHTMessageEntry>& msg);
+  bool sendMessage(DHTMessageEntry* msg);
 public:
   DHTMessageDispatcherImpl(const std::shared_ptr<DHTMessageTracker>& tracker);
 
-  virtual ~DHTMessageDispatcherImpl();
-
   virtual void
-  addMessageToQueue(const std::shared_ptr<DHTMessage>& message,
+  addMessageToQueue(std::unique_ptr<DHTMessage> message,
                     time_t timeout,
-                    const std::shared_ptr<DHTMessageCallback>& callback =
-                    std::shared_ptr<DHTMessageCallback>());
+                    std::unique_ptr<DHTMessageCallback> callback =
+                    std::unique_ptr<DHTMessageCallback>{});
 
   virtual void
-  addMessageToQueue(const std::shared_ptr<DHTMessage>& message,
-                    const std::shared_ptr<DHTMessageCallback>& callback =
-                    std::shared_ptr<DHTMessageCallback>());
+  addMessageToQueue(std::unique_ptr<DHTMessage> message,
+                    std::unique_ptr<DHTMessageCallback> callback =
+                    std::unique_ptr<DHTMessageCallback>{});
 
   virtual void sendMessages();
 

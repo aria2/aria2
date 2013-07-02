@@ -33,14 +33,17 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTMessageTrackerEntryTest);
 
 void DHTMessageTrackerEntryTest::testMatch()
 {
-  std::shared_ptr<DHTNode> localNode(new DHTNode());
+  auto localNode = std::make_shared<DHTNode>();
   try {
-    std::shared_ptr<DHTNode> node1(new DHTNode());
-    std::shared_ptr<MockDHTMessage> msg1(new MockDHTMessage(localNode, node1));
-    std::shared_ptr<DHTNode> node2(new DHTNode());
-    std::shared_ptr<MockDHTMessage> msg2(new MockDHTMessage(localNode, node2));
+    auto node1 = std::make_shared<DHTNode>();
+    auto msg1 = make_unique<MockDHTMessage>(localNode, node1);
+    auto node2 = std::make_shared<DHTNode>();
+    auto msg2 = make_unique<MockDHTMessage>(localNode, node2);
 
-    DHTMessageTrackerEntry entry(msg1, 30);
+    DHTMessageTrackerEntry entry(msg1->getRemoteNode(),
+                                 msg1->getTransactionID(),
+                                 msg1->getMessageType(),
+                                 30);
 
     CPPUNIT_ASSERT(entry.match(msg1->getTransactionID(),
                                msg1->getRemoteNode()->getIPAddress(),

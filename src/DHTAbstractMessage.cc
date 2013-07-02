@@ -46,17 +46,16 @@
 
 namespace aria2 {
 
-DHTAbstractMessage::DHTAbstractMessage(const std::shared_ptr<DHTNode>& localNode,
-                                       const std::shared_ptr<DHTNode>& remoteNode,
-                                       const std::string& transactionID):
-  DHTMessage(localNode, remoteNode, transactionID),
-  connection_(0),
-  dispatcher_(0),
-  factory_(0),
-  routingTable_(0)
- {}
-
-DHTAbstractMessage::~DHTAbstractMessage() {}
+DHTAbstractMessage::DHTAbstractMessage
+(const std::shared_ptr<DHTNode>& localNode,
+ const std::shared_ptr<DHTNode>& remoteNode,
+ const std::string& transactionID)
+  : DHTMessage{localNode, remoteNode, transactionID},
+    connection_{nullptr},
+    dispatcher_{nullptr},
+    factory_{nullptr},
+    routingTable_{nullptr}
+{}
 
 std::string DHTAbstractMessage::getBencodedMessage()
 {

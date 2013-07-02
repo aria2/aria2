@@ -40,6 +40,7 @@
 #include "DHTConstants.h"
 #include "DHTPingReplyMessageCallback.h"
 #include "DHTQueryMessage.h"
+#include "DHTPingMessage.h"
 
 namespace aria2 {
 
@@ -56,11 +57,10 @@ DHTPingTask::~DHTPingTask() {}
 
 void DHTPingTask::addMessage()
 {
-  std::shared_ptr<DHTMessage> m =
-    getMessageFactory()->createPingMessage(remoteNode_);
-  std::shared_ptr<DHTMessageCallback> callback
-    (new DHTPingReplyMessageCallback<DHTPingTask>(this));
-  getMessageDispatcher()->addMessageToQueue(m, timeout_, callback);
+  getMessageDispatcher()->addMessageToQueue
+    (getMessageFactory()->createPingMessage(remoteNode_),
+     timeout_,
+     make_unique<DHTPingReplyMessageCallback<DHTPingTask>>(this));
 }
 
 void DHTPingTask::startup()

@@ -51,8 +51,6 @@ public:
                      const unsigned char* targetNodeID,
                      const std::string& transactionID = A2STR::NIL);
 
-  virtual ~DHTFindNodeMessage();
-
   virtual void doReceivedAction();
 
   virtual std::shared_ptr<Dict> getArgument();

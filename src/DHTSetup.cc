@@ -61,6 +61,8 @@
 #include "DHTRegistry.h"
 #include "DHTBucketRefreshTask.h"
 #include "DHTMessageCallback.h"
+#include "DHTMessageTrackerEntry.h"
+#include "DHTMessageEntry.h"
 #include "UDPTrackerClient.h"
 #include "BtRegistry.h"
 #include "prefs.h"
@@ -137,27 +139,19 @@ std::vector<std::unique_ptr<Command>> DHTSetup::setup
                      util::toHex(localNode->getID(), DHT_ID_LENGTH).c_str()));
     std::shared_ptr<DHTRoutingTable> routingTable(new DHTRoutingTable(localNode));
 
-    std::shared_ptr<DHTMessageFactoryImpl> factory
-      (new DHTMessageFactoryImpl(family));
-
-    std::shared_ptr<DHTMessageTracker> tracker(new DHTMessageTracker());
-
-    std::shared_ptr<DHTMessageDispatcherImpl> dispatcher(new DHTMessageDispatcherImpl(tracker));
-
-    std::shared_ptr<DHTMessageReceiver> receiver(new DHTMessageReceiver(tracker));
-
-    std::shared_ptr<DHTTaskQueue> taskQueue(new DHTTaskQueueImpl());
-
-    std::shared_ptr<DHTTaskFactoryImpl> taskFactory(new DHTTaskFactoryImpl());
-
-    std::shared_ptr<DHTPeerAnnounceStorage> peerAnnounceStorage(new DHTPeerAnnounceStorage());
-
-    std::shared_ptr<DHTTokenTracker> tokenTracker(new DHTTokenTracker());
-
-    const time_t messageTimeout = e->getOption()->getAsInt(PREF_DHT_MESSAGE_TIMEOUT);
+    auto factory = std::make_shared<DHTMessageFactoryImpl>(family);
+    auto tracker = std::make_shared<DHTMessageTracker>();
+    auto dispatcher = std::make_shared<DHTMessageDispatcherImpl>(tracker);
+    auto receiver = std::make_shared<DHTMessageReceiver>(tracker);
+    auto taskQueue = std::make_shared<DHTTaskQueueImpl>();
+    auto taskFactory = std::make_shared<DHTTaskFactoryImpl>();
+    auto peerAnnounceStorage = std::make_shared<DHTPeerAnnounceStorage>();
+    auto tokenTracker = std::make_shared<DHTTokenTracker>();
+    const time_t messageTimeout =
+      e->getOption()->getAsInt(PREF_DHT_MESSAGE_TIMEOUT);
     // wiring up
     tracker->setRoutingTable(routingTable);
-    tracker->setMessageFactory(factory);
+    tracker->setMessageFactory(factory.get());
 
     dispatcher->setTimeout(messageTimeout);
 
@@ -186,7 +180,7 @@ std::vector<std::unique_ptr<Command>> DHTSetup::setup
     factory->setLocalNode(localNode);
 
     // For now, UDPTrackerClient was enabled along with DHT
-    std::shared_ptr<UDPTrackerClient> udpTrackerClient(new UDPTrackerClient());
+    auto udpTrackerClient = std::make_shared<UDPTrackerClient>();
     // assign them into DHTRegistry
     if(family == AF_INET) {
       DHTRegistry::getMutableData().localNode = localNode;
@@ -211,11 +205,9 @@ std::vector<std::unique_ptr<Command>> DHTSetup::setup
       DHTRegistry::getMutableData6().messageFactory = factory;
     }
     // add deserialized nodes to routing table
-    const std::vector<std::shared_ptr<DHTNode> >& desnodes =
-      deserializer.getNodes();
-    for(std::vector<std::shared_ptr<DHTNode> >::const_iterator i =
-          desnodes.begin(), eoi = desnodes.end(); i != eoi; ++i) {
-      routingTable->addNode(*i);
+    auto& desnodes = deserializer.getNodes();
+    for(auto& node : desnodes) {
+      routingTable->addNode(node);
     }
     if(!desnodes.empty()) {
       auto task = std::static_pointer_cast<DHTBucketRefreshTask>
@@ -234,7 +226,7 @@ std::vector<std::unique_ptr<Command>> DHTSetup::setup
         std::pair<std::string, uint16_t> addr
           (e->getOption()->get(prefEntryPointHost),
            e->getOption()->getAsInt(prefEntryPointPort));
-        std::vector<std::pair<std::string, uint16_t> > entryPoints;
+        std::vector<std::pair<std::string, uint16_t>> entryPoints;
         entryPoints.push_back(addr);
         auto command = make_unique<DHTEntryPointNameResolveCommand>
           (e->newCUID(), e, entryPoints);
@@ -302,7 +294,7 @@ std::vector<std::unique_ptr<Command>> DHTSetup::setup
     if(family == AF_INET) {
       DHTRegistry::clearData();
       e->getBtRegistry()->setUDPTrackerClient
-        (std::shared_ptr<UDPTrackerClient>());
+        (std::shared_ptr<UDPTrackerClient>{});
     } else {
       DHTRegistry::clearData6();
     }

@@ -42,18 +42,19 @@
 
 namespace aria2 {
 
-DHTMessageTrackerEntry::DHTMessageTrackerEntry(const std::shared_ptr<DHTMessage>& sentMessage,
-                                               time_t timeout,
-                                               const std::shared_ptr<DHTMessageCallback>& callback):
-  targetNode_(sentMessage->getRemoteNode()),
-  transactionID_(sentMessage->getTransactionID()),
-  messageType_(sentMessage->getMessageType()),
-  callback_(callback),
-  dispatchedTime_(global::wallclock()),
-  timeout_(timeout)
+DHTMessageTrackerEntry::DHTMessageTrackerEntry
+(std::shared_ptr<DHTNode> targetNode,
+ std::string transactionID,
+ std::string messageType,
+ time_t timeout,
+ std::unique_ptr<DHTMessageCallback> callback)
+  : targetNode_{std::move(targetNode)},
+    transactionID_{std::move(transactionID)},
+    messageType_{std::move(messageType)},
+    callback_{std::move(callback)},
+    dispatchedTime_{global::wallclock()},
+    timeout_{timeout}
 {}
-
-DHTMessageTrackerEntry::~DHTMessageTrackerEntry() {}
 
 bool DHTMessageTrackerEntry::isTimeout() const
 {
@@ -82,6 +83,27 @@ bool DHTMessageTrackerEntry::match(const std::string& transactionID, const std::
 int64_t DHTMessageTrackerEntry::getElapsedMillis() const
 {
   return dispatchedTime_.differenceInMillis(global::wallclock());
+}
+
+const std::shared_ptr<DHTNode>& DHTMessageTrackerEntry::getTargetNode() const
+{
+  return targetNode_;
+}
+
+const std::string& DHTMessageTrackerEntry::getMessageType() const
+{
+  return messageType_;
+}
+
+const std::unique_ptr<DHTMessageCallback>&
+DHTMessageTrackerEntry::getCallback() const
+{
+  return callback_;
+}
+
+std::unique_ptr<DHTMessageCallback> DHTMessageTrackerEntry::popCallback()
+{
+  return std::move(callback_);
 }
 
 } // namespace aria2

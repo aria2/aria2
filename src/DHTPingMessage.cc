@@ -38,6 +38,7 @@
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageFactory.h"
 #include "DHTMessageCallback.h"
+#include "DHTPingReplyMessage.h"
 
 namespace aria2 {
 
@@ -48,20 +49,17 @@ DHTPingMessage::DHTPingMessage(const std::shared_ptr<DHTNode>& localNode,
                                const std::string& transactionID):
   DHTQueryMessage(localNode, remoteNode, transactionID) {}
 
-DHTPingMessage::~DHTPingMessage() {}
-
 void DHTPingMessage::doReceivedAction()
 {
   // send back ping reply
-  std::shared_ptr<DHTMessage> reply =
-    getMessageFactory()->createPingReplyMessage
-    (getRemoteNode(), getLocalNode()->getID(), getTransactionID());
-  getMessageDispatcher()->addMessageToQueue(reply);
+  getMessageDispatcher()->addMessageToQueue
+    (getMessageFactory()->createPingReplyMessage
+     (getRemoteNode(), getLocalNode()->getID(), getTransactionID()));
 }
 
 std::shared_ptr<Dict> DHTPingMessage::getArgument()
 {
-  std::shared_ptr<Dict> aDict = Dict::g();
+  auto aDict = Dict::g();
   aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
   return aDict;
 }

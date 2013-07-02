@@ -65,8 +65,6 @@ public:
                          const std::string& token,
                          const std::string& transactionID = A2STR::NIL);
 
-  virtual ~DHTAnnouncePeerMessage();
-
   virtual void doReceivedAction();
 
   virtual std::shared_ptr<Dict> getArgument();

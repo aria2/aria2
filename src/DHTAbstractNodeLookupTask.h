@@ -67,32 +67,29 @@ class DHTAbstractNodeLookupTask:public DHTAbstractTask {
 private:
   unsigned char targetID_[DHT_ID_LENGTH];
 
-  std::deque<std::shared_ptr<DHTNodeLookupEntry> > entries_;
+  std::deque<std::unique_ptr<DHTNodeLookupEntry>> entries_;
 
   size_t inFlightMessage_;
 
   template<typename Container>
   void toEntries
-  (Container& entries, const std::vector<std::shared_ptr<DHTNode> >& nodes) const
+  (Container& entries,
+   const std::vector<std::shared_ptr<DHTNode>>& nodes) const
   {
-    for(std::vector<std::shared_ptr<DHTNode> >::const_iterator i = nodes.begin(),
-          eoi = nodes.end(); i != eoi; ++i) {
-      std::shared_ptr<DHTNodeLookupEntry> e(new DHTNodeLookupEntry(*i));
-      entries.push_back(e);
+    for(auto& node : nodes) {
+      entries.push_back(make_unique<DHTNodeLookupEntry>(node));
     }
   }
 
   void sendMessage()
   {
-    for(std::deque<std::shared_ptr<DHTNodeLookupEntry> >::iterator i =
-          entries_.begin(), eoi = entries_.end();
+    for(auto i = std::begin(entries_), eoi = std::end(entries_);
         i != eoi && inFlightMessage_ < ALPHA; ++i) {
       if((*i)->used == false) {
         ++inFlightMessage_;
         (*i)->used = true;
-        std::shared_ptr<DHTMessage> m = createMessage((*i)->node);
-        std::shared_ptr<DHTMessageCallback> callback(createCallback());
-        getMessageDispatcher()->addMessageToQueue(m, callback);
+        getMessageDispatcher()->addMessageToQueue
+          (createMessage((*i)->node), createCallback());
       }
     }
   }
@@ -122,13 +119,13 @@ protected:
     return targetID_;
   }
 
-  const std::deque<std::shared_ptr<DHTNodeLookupEntry> >& getEntries() const
+  const std::deque<std::unique_ptr<DHTNodeLookupEntry>>& getEntries() const
   {
     return entries_;
   }
 
   virtual void getNodesFromMessage
-  (std::vector<std::shared_ptr<DHTNode> >& nodes,
+  (std::vector<std::shared_ptr<DHTNode>>& nodes,
    const ResponseMessage* message) = 0;
 
   virtual void onReceivedInternal
@@ -138,10 +135,10 @@ protected:
 
   virtual void onFinish() {}
 
-  virtual std::shared_ptr<DHTMessage> createMessage
+  virtual std::unique_ptr<DHTMessage> createMessage
   (const std::shared_ptr<DHTNode>& remoteNode) = 0;
 
-  virtual std::shared_ptr<DHTMessageCallback> createCallback() = 0;
+  virtual std::unique_ptr<DHTMessageCallback> createCallback() = 0;
 public:
   DHTAbstractNodeLookupTask(const unsigned char* targetID):
     inFlightMessage_(0)
@@ -153,7 +150,7 @@ public:
 
   virtual void startup()
   {
-    std::vector<std::shared_ptr<DHTNode> > nodes;
+    std::vector<std::shared_ptr<DHTNode>> nodes;
     getRoutingTable()->getClosestKNodes(nodes, targetID_);
     entries_.clear();
     toEntries(entries_, nodes);
@@ -174,43 +171,42 @@ public:
   {
     --inFlightMessage_;
     // Replace old Node ID with new Node ID.
-    for(std::deque<std::shared_ptr<DHTNodeLookupEntry> >::iterator i =
-          entries_.begin(), eoi = entries_.end(); i != eoi; ++i) {
-      if((*i)->node->getIPAddress() == message->getRemoteNode()->getIPAddress()
-         && (*i)->node->getPort() == message->getRemoteNode()->getPort()) {
-        (*i)->node = message->getRemoteNode();
+    for(auto& entry : entries_) {
+      if(entry->node->getIPAddress() == message->getRemoteNode()->getIPAddress()
+         && entry->node->getPort() == message->getRemoteNode()->getPort()) {
+        entry->node = message->getRemoteNode();
       }
     }
     onReceivedInternal(message);
-    std::vector<std::shared_ptr<DHTNode> > nodes;
+    std::vector<std::shared_ptr<DHTNode>> nodes;
     getNodesFromMessage(nodes, message);
-    std::vector<std::shared_ptr<DHTNodeLookupEntry> > newEntries;
+    std::vector<std::unique_ptr<DHTNodeLookupEntry>> newEntries;
     toEntries(newEntries, nodes);
 
     size_t count = 0;
-    for(std::vector<std::shared_ptr<DHTNodeLookupEntry> >::const_iterator i =
-          newEntries.begin(), eoi = newEntries.end(); i != eoi; ++i) {
-      if(memcmp(getLocalNode()->getID(), (*i)->node->getID(),
+    for(auto& ne : newEntries) {
+      if(memcmp(getLocalNode()->getID(), ne->node->getID(),
                 DHT_ID_LENGTH) != 0) {
-        entries_.push_front(*i);
-        ++count;
         A2_LOG_DEBUG(fmt("Received nodes: id=%s, ip=%s",
-                         util::toHex((*i)->node->getID(),
+                         util::toHex(ne->node->getID(),
                                      DHT_ID_LENGTH).c_str(),
-                         (*i)->node->getIPAddress().c_str()));
+                         ne->node->getIPAddress().c_str()));
+        entries_.push_front(std::move(ne));
+        ++count;
       }
     }
     A2_LOG_DEBUG(fmt("%lu node lookup entries added.",
                      static_cast<unsigned long>(count)));
-    std::stable_sort(entries_.begin(), entries_.end(), DHTIDCloser(targetID_));
+    std::stable_sort(std::begin(entries_), std::end(entries_),
+                     DHTIDCloser(targetID_));
     entries_.erase
-      (std::unique(entries_.begin(), entries_.end(),
-                   DerefEqualTo<std::shared_ptr<DHTNodeLookupEntry> >()),
-       entries_.end());
+      (std::unique(std::begin(entries_), std::end(entries_),
+                   DerefEqualTo<std::unique_ptr<DHTNodeLookupEntry>>{}),
+       std::end(entries_));
     A2_LOG_DEBUG(fmt("%lu node lookup entries are unique.",
                      static_cast<unsigned long>(entries_.size())));
     if(entries_.size() > DHTBucket::K) {
-      entries_.erase(entries_.begin()+DHTBucket::K, entries_.end());
+      entries_.erase(std::begin(entries_)+DHTBucket::K, std::end(entries_));
     }
     sendMessageAndCheckFinish();
   }
@@ -220,8 +216,8 @@ public:
     A2_LOG_DEBUG(fmt("node lookup message timeout for node ID=%s",
                      util::toHex(node->getID(), DHT_ID_LENGTH).c_str()));
     --inFlightMessage_;
-    for(std::deque<std::shared_ptr<DHTNodeLookupEntry> >::iterator i =
-          entries_.begin(), eoi = entries_.end(); i != eoi; ++i) {
+    for(auto i = std::begin(entries_), eoi = std::end(entries_);
+        i != eoi; ++i) {
       if(*(*i)->node == *node) {
         entries_.erase(i);
         break;

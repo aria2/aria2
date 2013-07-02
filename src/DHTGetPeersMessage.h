@@ -59,8 +59,6 @@ public:
                      const unsigned char* infoHash,
                      const std::string& transactionID = A2STR::NIL);
 
-  virtual ~DHTGetPeersMessage();
-
   virtual void doReceivedAction();
 
   virtual std::shared_ptr<Dict> getArgument();

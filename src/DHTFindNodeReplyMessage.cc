@@ -57,25 +57,23 @@ DHTFindNodeReplyMessage::DHTFindNodeReplyMessage
 (int family,
  const std::shared_ptr<DHTNode>& localNode,
  const std::shared_ptr<DHTNode>& remoteNode,
- const std::string& transactionID):
-  DHTResponseMessage(localNode, remoteNode, transactionID),
-  family_(family) {}
-
-DHTFindNodeReplyMessage::~DHTFindNodeReplyMessage() {}
+ const std::string& transactionID)
+  : DHTResponseMessage{localNode, remoteNode, transactionID},
+    family_{family}
+{}
 
 void DHTFindNodeReplyMessage::doReceivedAction()
 {
-  for(std::vector<std::shared_ptr<DHTNode> >::iterator i = closestKNodes_.begin(),
-        eoi = closestKNodes_.end(); i != eoi; ++i) {
-    if(memcmp((*i)->getID(), getLocalNode()->getID(), DHT_ID_LENGTH) != 0) {
-      getRoutingTable()->addNode(*i);
+  for(auto& node : closestKNodes_) {
+    if(memcmp(node->getID(), getLocalNode()->getID(), DHT_ID_LENGTH) != 0) {
+      getRoutingTable()->addNode(node);
     }
   }
 }
 
 std::shared_ptr<Dict> DHTFindNodeReplyMessage::getResponse()
 {
-  std::shared_ptr<Dict> aDict = Dict::g();
+  auto aDict = Dict::g();
   aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
   unsigned char buffer[DHTBucket::K*38];
   const int clen = bittorrent::getCompactLength(family_);
@@ -83,14 +81,12 @@ std::shared_ptr<Dict> DHTFindNodeReplyMessage::getResponse()
   assert(unit <= 38);
   size_t offset = 0;
   size_t k = 0;
-  for(std::vector<std::shared_ptr<DHTNode> >::const_iterator i =
-        closestKNodes_.begin(), eoi = closestKNodes_.end();
+  for(auto i = std::begin(closestKNodes_), eoi = std::end(closestKNodes_);
       i != eoi && k < DHTBucket::K; ++i) {
-    std::shared_ptr<DHTNode> node = *i;
-    memcpy(buffer+offset, node->getID(), DHT_ID_LENGTH);
+    memcpy(buffer+offset, (*i)->getID(), DHT_ID_LENGTH);
     unsigned char compact[COMPACT_LEN_IPV6];
-    int compactlen = bittorrent::packcompact
-      (compact, node->getIPAddress(), node->getPort());
+    int compactlen = bittorrent::packcompact(compact, (*i)->getIPAddress(),
+                                             (*i)->getPort());
     if(compactlen == clen) {
       memcpy(buffer+20+offset, compact, compactlen);
       offset += unit;
@@ -112,9 +108,9 @@ void DHTFindNodeReplyMessage::accept(DHTMessageCallback* callback)
 }
 
 void DHTFindNodeReplyMessage::setClosestKNodes
-(const std::vector<std::shared_ptr<DHTNode> >& closestKNodes)
+(std::vector<std::shared_ptr<DHTNode>> closestKNodes)
 {
-  closestKNodes_ = closestKNodes;
+  closestKNodes_ = std::move(closestKNodes);
 }
 
 std::string DHTFindNodeReplyMessage::toStringOptional() const

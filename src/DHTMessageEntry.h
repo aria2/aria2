@@ -47,15 +47,13 @@ class DHTMessage;
 class DHTMessageCallback;
 
 struct DHTMessageEntry {
-  std::shared_ptr<DHTMessage> message;
+  std::unique_ptr<DHTMessage> message;
   time_t timeout;
-  std::shared_ptr<DHTMessageCallback> callback;
+  std::unique_ptr<DHTMessageCallback> callback;
 
-  DHTMessageEntry(const std::shared_ptr<DHTMessage>& message,
+  DHTMessageEntry(std::unique_ptr<DHTMessage> message,
                   time_t timeout,
-                  const std::shared_ptr<DHTMessageCallback>& callback);
-
-  ~DHTMessageEntry();
+                  std::unique_ptr<DHTMessageCallback> callback);
 };
 
 } // namespace aria2

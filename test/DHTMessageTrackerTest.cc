@@ -34,65 +34,62 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTMessageTrackerTest);
 
 void DHTMessageTrackerTest::testMessageArrived()
 {
-  std::shared_ptr<DHTNode> localNode(new DHTNode());
-  std::shared_ptr<DHTRoutingTable> routingTable(new DHTRoutingTable(localNode));
-  std::shared_ptr<MockDHTMessageFactory> factory(new MockDHTMessageFactory());
+  auto localNode = std::make_shared<DHTNode>();
+  auto routingTable = std::make_shared<DHTRoutingTable>(localNode);
+  auto factory = std::make_shared<MockDHTMessageFactory>();
   factory->setLocalNode(localNode);
 
-  std::shared_ptr<MockDHTMessage> m1(new MockDHTMessage(localNode,
-                                                     std::shared_ptr<DHTNode>(new DHTNode())));
-  std::shared_ptr<MockDHTMessage> m2(new MockDHTMessage(localNode,
-                                                     std::shared_ptr<DHTNode>(new DHTNode())));
-  std::shared_ptr<MockDHTMessage> m3(new MockDHTMessage(localNode,
-                                                     std::shared_ptr<DHTNode>(new DHTNode())));
+  auto r1 = std::make_shared<DHTNode>();
+  r1->setIPAddress("192.168.0.1");
+  r1->setPort(6881);
+  auto r2 = std::make_shared<DHTNode>();
+  r2->setIPAddress("192.168.0.2");
+  r2->setPort(6882);
+  auto r3 = std::make_shared<DHTNode>();
+  r3->setIPAddress("192.168.0.3");
+  r3->setPort(6883);
 
-  m1->getRemoteNode()->setIPAddress("192.168.0.1");
-  m1->getRemoteNode()->setPort(6881);
-  m2->getRemoteNode()->setIPAddress("192.168.0.2");
-  m2->getRemoteNode()->setPort(6882);
-  m3->getRemoteNode()->setIPAddress("192.168.0.3");
-  m3->getRemoteNode()->setPort(6883);
+  auto m1 = make_unique<MockDHTMessage>(localNode, r1);
+  auto m2 = make_unique<MockDHTMessage>(localNode, r2);
+  auto m3 = make_unique<MockDHTMessage>(localNode, r3);
 
   DHTMessageTracker tracker;
   tracker.setRoutingTable(routingTable);
-  tracker.setMessageFactory(factory);
-  tracker.addMessage(m1, DHT_MESSAGE_TIMEOUT);
-  tracker.addMessage(m2, DHT_MESSAGE_TIMEOUT);
-  tracker.addMessage(m3, DHT_MESSAGE_TIMEOUT);
+  tracker.setMessageFactory(factory.get());
+  tracker.addMessage(m1.get(), DHT_MESSAGE_TIMEOUT);
+  tracker.addMessage(m2.get(), DHT_MESSAGE_TIMEOUT);
+  tracker.addMessage(m3.get(), DHT_MESSAGE_TIMEOUT);
 
   {
     Dict resDict;
     resDict.put("t", m2->getTransactionID());
 
-    std::pair<std::shared_ptr<DHTMessage>, std::shared_ptr<DHTMessageCallback> > p =
-      tracker.messageArrived(&resDict, m2->getRemoteNode()->getIPAddress(),
-                             m2->getRemoteNode()->getPort());
-    std::shared_ptr<DHTMessage> reply = p.first;
+    auto p =
+      tracker.messageArrived(&resDict, r2->getIPAddress(), r2->getPort());
+    auto& reply = p.first;
 
     CPPUNIT_ASSERT(reply);
-    CPPUNIT_ASSERT(!tracker.getEntryFor(m2));
+    CPPUNIT_ASSERT(!tracker.getEntryFor(m2.get()));
     CPPUNIT_ASSERT_EQUAL((size_t)2, tracker.countEntry());
   }
   {
     Dict resDict;
     resDict.put("t", m3->getTransactionID());
 
-    std::pair<std::shared_ptr<DHTMessage>, std::shared_ptr<DHTMessageCallback> > p =
-      tracker.messageArrived(&resDict, m3->getRemoteNode()->getIPAddress(),
-                             m3->getRemoteNode()->getPort());
-    std::shared_ptr<DHTMessage> reply = p.first;
+    auto p =
+      tracker.messageArrived(&resDict, r3->getIPAddress(), r3->getPort());
+    auto& reply = p.first;
 
     CPPUNIT_ASSERT(reply);
-    CPPUNIT_ASSERT(!tracker.getEntryFor(m3));
+    CPPUNIT_ASSERT(!tracker.getEntryFor(m3.get()));
     CPPUNIT_ASSERT_EQUAL((size_t)1, tracker.countEntry());
   }
   {
     Dict resDict;
     resDict.put("t", m1->getTransactionID());
 
-    std::pair<std::shared_ptr<DHTMessage>, std::shared_ptr<DHTMessageCallback> > p =
-      tracker.messageArrived(&resDict, "192.168.1.100", 6889);
-    std::shared_ptr<DHTMessage> reply = p.first;
+    auto p = tracker.messageArrived(&resDict, "192.168.1.100", 6889);
+    auto& reply = p.first;
 
     CPPUNIT_ASSERT(!reply);
   }

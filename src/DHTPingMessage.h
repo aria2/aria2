@@ -46,8 +46,6 @@ public:
                  const std::shared_ptr<DHTNode>& remoteNode,
                  const std::string& transactionID = A2STR::NIL);
 
-  virtual ~DHTPingMessage();
-
   virtual void doReceivedAction();
 
   virtual std::shared_ptr<Dict> getArgument();

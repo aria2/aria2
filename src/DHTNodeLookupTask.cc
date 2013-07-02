@@ -41,6 +41,7 @@
 #include "util.h"
 #include "DHTNodeLookupTaskCallback.h"
 #include "DHTQueryMessage.h"
+#include "DHTFindNodeMessage.h"
 
 namespace aria2 {
 
@@ -53,21 +54,19 @@ DHTNodeLookupTask::getNodesFromMessage
 (std::vector<std::shared_ptr<DHTNode> >& nodes,
  const DHTFindNodeReplyMessage* message)
 {
-  const std::vector<std::shared_ptr<DHTNode> >& knodes =
-    message->getClosestKNodes();
-  nodes.insert(nodes.end(), knodes.begin(), knodes.end());
+  auto& knodes = message->getClosestKNodes();
+  nodes.insert(std::end(nodes), std::begin(knodes), std::end(knodes));
 }
 
-std::shared_ptr<DHTMessage>
+std::unique_ptr<DHTMessage>
 DHTNodeLookupTask::createMessage(const std::shared_ptr<DHTNode>& remoteNode)
 {
   return getMessageFactory()->createFindNodeMessage(remoteNode, getTargetID());
 }
 
-std::shared_ptr<DHTMessageCallback> DHTNodeLookupTask::createCallback()
+std::unique_ptr<DHTMessageCallback> DHTNodeLookupTask::createCallback()
 {
-  return std::shared_ptr<DHTNodeLookupTaskCallback>
-    (new DHTNodeLookupTaskCallback(this));
+  return make_unique<DHTNodeLookupTaskCallback>(this);
 }
 
 } // namespace aria2

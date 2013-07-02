@@ -44,7 +44,7 @@ class DHTFindNodeReplyMessage:public DHTResponseMessage {
 private:
   int family_;
 
-  std::vector<std::shared_ptr<DHTNode> > closestKNodes_;
+  std::vector<std::shared_ptr<DHTNode>> closestKNodes_;
 protected:
   virtual std::string toStringOptional() const;
 public:
@@ -52,8 +52,6 @@ public:
                           const std::shared_ptr<DHTNode>& localNode,
                           const std::shared_ptr<DHTNode>& remoteNode,
                           const std::string& transactionID);
-
-  virtual ~DHTFindNodeReplyMessage();
 
   virtual void doReceivedAction();
 
@@ -63,13 +61,12 @@ public:
 
   virtual void accept(DHTMessageCallback* callback);
 
-  const std::vector<std::shared_ptr<DHTNode> >& getClosestKNodes() const
+  const std::vector<std::shared_ptr<DHTNode>>& getClosestKNodes() const
   {
     return closestKNodes_;
   }
 
-  void setClosestKNodes
-  (const std::vector<std::shared_ptr<DHTNode> >& closestKNodes);
+  void setClosestKNodes(std::vector<std::shared_ptr<DHTNode>> closestKNodes);
 
   static const std::string FIND_NODE;
 

@@ -57,18 +57,18 @@ private:
 
   std::string messageType_;
 
-  std::shared_ptr<DHTMessageCallback> callback_;
+  std::unique_ptr<DHTMessageCallback> callback_;
 
   Timer dispatchedTime_;
 
   time_t timeout_;
 public:
-  DHTMessageTrackerEntry(const std::shared_ptr<DHTMessage>& sentMessage,
+  DHTMessageTrackerEntry(std::shared_ptr<DHTNode> targetNode,
+                         std::string transactionID,
+                         std::string messageType,
                          time_t timeout,
-                         const std::shared_ptr<DHTMessageCallback>& callback =
-                         std::shared_ptr<DHTMessageCallback>());
-
-  ~DHTMessageTrackerEntry();
+                         std::unique_ptr<DHTMessageCallback> callback =
+                         std::unique_ptr<DHTMessageCallback>{});
 
   bool isTimeout() const;
 
@@ -76,21 +76,10 @@ public:
 
   bool match(const std::string& transactionID, const std::string& ipaddr, uint16_t port) const;
 
-  const std::shared_ptr<DHTNode>& getTargetNode() const
-  {
-    return targetNode_;
-  }
-
-  const std::string& getMessageType() const
-  {
-    return messageType_;
-  }
-
-  const std::shared_ptr<DHTMessageCallback>& getCallback() const
-  {
-    return callback_;
-  }
-
+  const std::shared_ptr<DHTNode>& getTargetNode() const;
+  const std::string& getMessageType() const;
+  const std::unique_ptr<DHTMessageCallback>& getCallback() const;
+  std::unique_ptr<DHTMessageCallback> popCallback();
   int64_t getElapsedMillis() const;
 };
 

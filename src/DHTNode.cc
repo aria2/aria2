@@ -65,6 +65,11 @@ bool DHTNode::operator==(const DHTNode& node) const
   return memcmp(id_, node.id_, DHT_ID_LENGTH) == 0;
 }
 
+bool DHTNode::operator!=(const DHTNode& node) const
+{
+  return !(*this == node);
+}
+
 bool DHTNode::operator<(const DHTNode& node) const
 {
   for(size_t i = 0; i < DHT_ID_LENGTH; ++i) {

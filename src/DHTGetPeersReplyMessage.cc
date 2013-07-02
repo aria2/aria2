@@ -64,12 +64,11 @@ DHTGetPeersReplyMessage::DHTGetPeersReplyMessage
  const std::shared_ptr<DHTNode>& localNode,
  const std::shared_ptr<DHTNode>& remoteNode,
  const std::string& token,
- const std::string& transactionID):
-  DHTResponseMessage(localNode, remoteNode, transactionID),
-  family_(family),
-  token_(token) {}
-
-DHTGetPeersReplyMessage::~DHTGetPeersReplyMessage() {}
+ const std::string& transactionID)
+  : DHTResponseMessage{localNode, remoteNode, transactionID},
+    family_{family},
+    token_{token}
+{}
 
 void DHTGetPeersReplyMessage::doReceivedAction()
 {
@@ -78,7 +77,7 @@ void DHTGetPeersReplyMessage::doReceivedAction()
 
 std::shared_ptr<Dict> DHTGetPeersReplyMessage::getResponse()
 {
-  std::shared_ptr<Dict> rDict = Dict::g();
+  auto rDict = Dict::g();
   rDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
   rDict->put(TOKEN, token_);
   // TODO want parameter
@@ -88,14 +87,12 @@ std::shared_ptr<Dict> DHTGetPeersReplyMessage::getResponse()
     const int unit = clen+20;
     size_t offset = 0;
     size_t k = 0;
-    for(std::vector<std::shared_ptr<DHTNode> >::const_iterator i =
-          closestKNodes_.begin(), eoi = closestKNodes_.end();
+    for(auto i = std::begin(closestKNodes_), eoi = std::end(closestKNodes_);
         i != eoi && k < DHTBucket::K; ++i) {
-      std::shared_ptr<DHTNode> node = *i;
-      memcpy(buffer+offset, node->getID(), DHT_ID_LENGTH);
+      memcpy(buffer+offset, (*i)->getID(), DHT_ID_LENGTH);
       unsigned char compact[COMPACT_LEN_IPV6];
       int compactlen = bittorrent::packcompact
-        (compact, node->getIPAddress(), node->getPort());
+        (compact, (*i)->getIPAddress(), (*i)->getPort());
       if(compactlen == clen) {
         memcpy(buffer+20+offset, compact, compactlen);
         offset += unit;
@@ -128,15 +125,13 @@ std::shared_ptr<Dict> DHTGetPeersReplyMessage::getResponse()
     // template may get bigger than 395 bytes. So we use 25 as maximum
     // number of peer info that a message can carry.
     static const size_t MAX_VALUES_SIZE = 25;
-    std::shared_ptr<List> valuesList = List::g();
-    for(std::vector<std::shared_ptr<Peer> >::const_iterator i = values_.begin(),
-          eoi = values_.end(); i != eoi && valuesList->size() < MAX_VALUES_SIZE;
-        ++i) {
-      const std::shared_ptr<Peer>& peer = *i;
+    auto valuesList = List::g();
+    for(auto i = std::begin(values_), eoi = std::end(values_);
+        i != eoi && valuesList->size() < MAX_VALUES_SIZE; ++i) {
       unsigned char compact[COMPACT_LEN_IPV6];
       const int clen = bittorrent::getCompactLength(family_);
       int compactlen = bittorrent::packcompact
-        (compact, peer->getIPAddress(), peer->getPort());
+        (compact, (*i)->getIPAddress(), (*i)->getPort());
       if(compactlen == clen) {
         valuesList->append(String::g(compact, compactlen));
       }
@@ -162,6 +157,18 @@ std::string DHTGetPeersReplyMessage::toStringOptional() const
              util::toHex(token_).c_str(),
              static_cast<unsigned long>(values_.size()),
              static_cast<unsigned long>(closestKNodes_.size()));
+}
+
+void DHTGetPeersReplyMessage::setClosestKNodes
+(std::vector<std::shared_ptr<DHTNode>> closestKNodes)
+{
+  closestKNodes_ = std::move(closestKNodes);
+}
+
+void DHTGetPeersReplyMessage::setValues
+(std::vector<std::shared_ptr<Peer>> peers)
+{
+  values_ = std::move(peers);
 }
 
 } // namespace aria2

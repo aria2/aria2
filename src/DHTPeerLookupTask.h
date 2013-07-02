@@ -58,15 +58,15 @@ public:
    uint16_t tcpPort);
 
   virtual void getNodesFromMessage
-  (std::vector<std::shared_ptr<DHTNode> >& nodes,
+  (std::vector<std::shared_ptr<DHTNode>>& nodes,
    const DHTGetPeersReplyMessage* message);
 
   virtual void onReceivedInternal(const DHTGetPeersReplyMessage* message);
 
-  virtual std::shared_ptr<DHTMessage> createMessage
+  virtual std::unique_ptr<DHTMessage> createMessage
   (const std::shared_ptr<DHTNode>& remoteNode);
 
-  virtual std::shared_ptr<DHTMessageCallback> createCallback();
+  virtual std::unique_ptr<DHTMessageCallback> createCallback();
 
   virtual void onFinish();
 

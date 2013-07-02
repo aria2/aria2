@@ -49,8 +49,6 @@ public:
                       const unsigned char* id,
                       const std::string& transactionID);
 
-  virtual ~DHTPingReplyMessage();
-
   virtual void doReceivedAction();
 
   virtual std::shared_ptr<Dict> getResponse();

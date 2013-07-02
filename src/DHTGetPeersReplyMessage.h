@@ -51,9 +51,9 @@ private:
 
   std::string token_;
 
-  std::vector<std::shared_ptr<DHTNode> > closestKNodes_;
+  std::vector<std::shared_ptr<DHTNode>> closestKNodes_;
 
-  std::vector<std::shared_ptr<Peer> > values_;
+  std::vector<std::shared_ptr<Peer>> values_;
 protected:
   virtual std::string toStringOptional() const;
 public:
@@ -63,8 +63,6 @@ public:
                           const std::string& token,
                           const std::string& transactionID);
 
-  virtual ~DHTGetPeersReplyMessage();
-
   virtual void doReceivedAction();
 
   virtual std::shared_ptr<Dict> getResponse();
@@ -73,26 +71,19 @@ public:
 
   virtual void accept(DHTMessageCallback* callback);
 
-  const std::vector<std::shared_ptr<DHTNode> >& getClosestKNodes() const
+  const std::vector<std::shared_ptr<DHTNode>>& getClosestKNodes() const
   {
     return closestKNodes_;
   }
 
-  const std::vector<std::shared_ptr<Peer> >& getValues() const
+  const std::vector<std::shared_ptr<Peer>>& getValues() const
   {
     return values_;
   }
 
-  void setClosestKNodes
-  (const std::vector<std::shared_ptr<DHTNode> >& closestKNodes)
-  {
-    closestKNodes_ = closestKNodes;
-  }
+  void setClosestKNodes(std::vector<std::shared_ptr<DHTNode>> closestKNodes);
 
-  void setValues(const std::vector<std::shared_ptr<Peer> >& peers)
-  {
-    values_ = peers;
-  }
+  void setValues(std::vector<std::shared_ptr<Peer>> peers);
 
   const std::string& getToken() const
   {

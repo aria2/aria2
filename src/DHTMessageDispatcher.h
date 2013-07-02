@@ -51,15 +51,15 @@ public:
   virtual ~DHTMessageDispatcher() {}
 
   virtual void
-  addMessageToQueue(const std::shared_ptr<DHTMessage>& message,
+  addMessageToQueue(std::unique_ptr<DHTMessage> message,
                     time_t timeout,
-                    const std::shared_ptr<DHTMessageCallback>& callback =
-                    std::shared_ptr<DHTMessageCallback>()) = 0;
+                    std::unique_ptr<DHTMessageCallback> callback =
+                    std::unique_ptr<DHTMessageCallback>{}) = 0;
 
   virtual void
-  addMessageToQueue(const std::shared_ptr<DHTMessage>& message,
-                    const std::shared_ptr<DHTMessageCallback>& callback =
-                    std::shared_ptr<DHTMessageCallback>()) = 0;
+  addMessageToQueue(std::unique_ptr<DHTMessage> message,
+                    std::unique_ptr<DHTMessageCallback> callback =
+                    std::unique_ptr<DHTMessageCallback>{}) = 0;
 
   virtual void sendMessages() = 0;
 

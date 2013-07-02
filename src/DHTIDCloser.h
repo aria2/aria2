@@ -37,6 +37,7 @@
 
 #include "common.h"
 #include "DHTNodeLookupEntry.h"
+#include "DHTNode.h"
 #include "DHTConstants.h"
 #include "XORCloser.h"
 
@@ -46,10 +47,12 @@ class DHTIDCloser {
 private:
   XORCloser closer_;
 public:
-  DHTIDCloser(const unsigned char* targetID):closer_(targetID, DHT_ID_LENGTH) {}
+  DHTIDCloser(const unsigned char* targetID)
+    : closer_{targetID, DHT_ID_LENGTH}
+  {}
 
-  bool operator()(const std::shared_ptr<DHTNodeLookupEntry>& m1,
-                  const std::shared_ptr<DHTNodeLookupEntry>& m2) const
+  bool operator()(const std::unique_ptr<DHTNodeLookupEntry>& m1,
+                  const std::unique_ptr<DHTNodeLookupEntry>& m2) const
   {
     return closer_(m1->node->getID(), m2->node->getID());
   }

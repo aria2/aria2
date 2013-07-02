@@ -41,6 +41,7 @@
 #include "DHTMessageFactory.h"
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageCallback.h"
+#include "DHTFindNodeReplyMessage.h"
 #include "util.h"
 
 namespace aria2 {
@@ -49,30 +50,28 @@ const std::string DHTFindNodeMessage::FIND_NODE("find_node");
 
 const std::string DHTFindNodeMessage::TARGET_NODE("target");
 
-DHTFindNodeMessage::DHTFindNodeMessage(const std::shared_ptr<DHTNode>& localNode,
-                                       const std::shared_ptr<DHTNode>& remoteNode,
-                                       const unsigned char* targetNodeID,
-                                       const std::string& transactionID):
-  DHTQueryMessage(localNode, remoteNode, transactionID)
+DHTFindNodeMessage::DHTFindNodeMessage
+(const std::shared_ptr<DHTNode>& localNode,
+ const std::shared_ptr<DHTNode>& remoteNode,
+ const unsigned char* targetNodeID,
+ const std::string& transactionID)
+  : DHTQueryMessage{localNode, remoteNode, transactionID}
 {
   memcpy(targetNodeID_, targetNodeID, DHT_ID_LENGTH);
 }
 
-DHTFindNodeMessage::~DHTFindNodeMessage() {}
-
 void DHTFindNodeMessage::doReceivedAction()
 {
-  std::vector<std::shared_ptr<DHTNode> > nodes;
+  std::vector<std::shared_ptr<DHTNode>> nodes;
   getRoutingTable()->getClosestKNodes(nodes, targetNodeID_);
-  std::shared_ptr<DHTMessage> reply =
-    getMessageFactory()->createFindNodeReplyMessage
-    (getRemoteNode(), nodes, getTransactionID());
-  getMessageDispatcher()->addMessageToQueue(reply);
+  getMessageDispatcher()->addMessageToQueue
+    (getMessageFactory()->createFindNodeReplyMessage
+     (getRemoteNode(), std::move(nodes), getTransactionID()));
 }
 
 std::shared_ptr<Dict> DHTFindNodeMessage::getArgument()
 {
-  std::shared_ptr<Dict> aDict = Dict::g();
+  auto aDict = Dict::g();
   aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
   aDict->put(TARGET_NODE, String::g(targetNodeID_, DHT_ID_LENGTH));
   return aDict;

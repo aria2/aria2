@@ -60,8 +60,6 @@ public:
                      const std::shared_ptr<DHTNode>& remoteNode,
                      const std::string& transactionID = A2STR::NIL);
 
-  virtual ~DHTAbstractMessage();
-
   virtual bool send();
 
   virtual const std::string& getType() const = 0;

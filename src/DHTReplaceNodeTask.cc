@@ -42,6 +42,7 @@
 #include "LogFactory.h"
 #include "DHTPingReplyMessageCallback.h"
 #include "DHTQueryMessage.h"
+#include "DHTPingMessage.h"
 #include "fmt.h"
 
 namespace aria2 {
@@ -67,11 +68,10 @@ void DHTReplaceNodeTask::sendMessage()
   if(!questionableNode) {
     setFinished(true);
   } else {
-    std::shared_ptr<DHTMessage> m =
-      getMessageFactory()->createPingMessage(questionableNode);
-    std::shared_ptr<DHTMessageCallback> callback
-      (new DHTPingReplyMessageCallback<DHTReplaceNodeTask>(this));
-    getMessageDispatcher()->addMessageToQueue(m, timeout_, callback);
+    getMessageDispatcher()->addMessageToQueue
+      (getMessageFactory()->createPingMessage(questionableNode),
+       timeout_,
+       make_unique<DHTPingReplyMessageCallback<DHTReplaceNodeTask>>(this));
   }
 }
 

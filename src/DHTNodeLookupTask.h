@@ -50,10 +50,10 @@ public:
   (std::vector<std::shared_ptr<DHTNode> >& nodes,
    const DHTFindNodeReplyMessage* message);
 
-  virtual std::shared_ptr<DHTMessage> createMessage
+  virtual std::unique_ptr<DHTMessage> createMessage
   (const std::shared_ptr<DHTNode>& remoteNode);
 
-  virtual std::shared_ptr<DHTMessageCallback> createCallback();
+  virtual std::unique_ptr<DHTMessageCallback> createCallback();
 };
 
 } // namespace aria2
