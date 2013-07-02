@@ -71,11 +71,13 @@ DHTGetPeersCommand::DHTGetPeersCommand
 (cuid_t cuid,
  RequestGroup* requestGroup,
  DownloadEngine* e)
-  : Command(cuid),
-    requestGroup_(requestGroup),
-    e_(e),
-    numRetry_(0),
-    lastGetPeerTime_(0)
+  : Command{cuid},
+    requestGroup_{requestGroup},
+    e_{e},
+    taskQueue_{nullptr},
+    taskFactory_{nullptr},
+    numRetry_{0},
+    lastGetPeerTime_{0}
 {
   requestGroup_->increaseNumCommand();
 }
@@ -130,12 +132,12 @@ bool DHTGetPeersCommand::execute()
   return false;
 }
 
-void DHTGetPeersCommand::setTaskQueue(const std::shared_ptr<DHTTaskQueue>& taskQueue)
+void DHTGetPeersCommand::setTaskQueue(DHTTaskQueue* taskQueue)
 {
   taskQueue_ = taskQueue;
 }
 
-void DHTGetPeersCommand::setTaskFactory(const std::shared_ptr<DHTTaskFactory>& taskFactory)
+void DHTGetPeersCommand::setTaskFactory(DHTTaskFactory* taskFactory)
 {
   taskFactory_ = taskFactory;
 }

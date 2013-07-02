@@ -52,7 +52,8 @@
 namespace aria2 {
 
 DHTMessageTracker::DHTMessageTracker()
-  : factory_{nullptr}
+  : routingTable_{nullptr},
+    factory_{nullptr}
 {}
 
 void DHTMessageTracker::addMessage
@@ -173,8 +174,7 @@ size_t DHTMessageTracker::countEntry() const
   return entries_.size();
 }
 
-void DHTMessageTracker::setRoutingTable
-(const std::shared_ptr<DHTRoutingTable>& routingTable)
+void DHTMessageTracker::setRoutingTable(DHTRoutingTable* routingTable)
 {
   routingTable_ = routingTable;
 }

@@ -58,7 +58,9 @@ namespace aria2 {
 
 DHTMessageReceiver::DHTMessageReceiver
 (const std::shared_ptr<DHTMessageTracker>& tracker)
-  : tracker_{tracker}
+  : tracker_{tracker},
+    factory_{nullptr},
+    routingTable_{nullptr}
 {}
 
 std::unique_ptr<DHTMessage> DHTMessageReceiver::receiveMessage
@@ -146,12 +148,12 @@ void DHTMessageReceiver::setConnection(const std::shared_ptr<DHTConnection>& con
   connection_ = connection;
 }
 
-void DHTMessageReceiver::setMessageFactory(const std::shared_ptr<DHTMessageFactory>& factory)
+void DHTMessageReceiver::setMessageFactory(DHTMessageFactory* factory)
 {
   factory_ = factory;
 }
 
-void DHTMessageReceiver::setRoutingTable(const std::shared_ptr<DHTRoutingTable>& routingTable)
+void DHTMessageReceiver::setRoutingTable(DHTRoutingTable* routingTable)
 {
   routingTable_ = routingTable;
 }

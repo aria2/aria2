@@ -62,9 +62,9 @@ private:
 
   DownloadEngine* e_;
 
-  std::shared_ptr<DHTTaskQueue> taskQueue_;
+  DHTTaskQueue* taskQueue_;
 
-  std::shared_ptr<DHTTaskFactory> taskFactory_;
+  DHTTaskFactory* taskFactory_;
 
   std::shared_ptr<DHTTask> task_;
 
@@ -79,9 +79,9 @@ public:
 
   virtual bool execute();
 
-  void setTaskQueue(const std::shared_ptr<DHTTaskQueue>& taskQueue);
+  void setTaskQueue(DHTTaskQueue* taskQueue);
 
-  void setTaskFactory(const std::shared_ptr<DHTTaskFactory>& taskFactory);
+  void setTaskFactory(DHTTaskFactory* taskFactory);
 
   void setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime);
 

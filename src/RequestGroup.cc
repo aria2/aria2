@@ -447,9 +447,9 @@ void RequestGroup::createInitialCommand
         if(!nodes.empty() && DHTRegistry::isInitialized()) {
           auto command = make_unique<DHTEntryPointNameResolveCommand>
             (e->newCUID(), e, nodes);
-          command->setTaskQueue(DHTRegistry::getData().taskQueue);
-          command->setTaskFactory(DHTRegistry::getData().taskFactory);
-          command->setRoutingTable(DHTRegistry::getData().routingTable);
+          command->setTaskQueue(DHTRegistry::getData().taskQueue.get());
+          command->setTaskFactory(DHTRegistry::getData().taskFactory.get());
+          command->setRoutingTable(DHTRegistry::getData().routingTable.get());
           command->setLocalNode(DHTRegistry::getData().localNode);
           e->addCommand(std::move(command));
         }

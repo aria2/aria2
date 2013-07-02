@@ -62,15 +62,15 @@ private:
   std::shared_ptr<AsyncNameResolverMan> asyncNameResolverMan_;
 #endif // ENABLE_ASYNC_DNS
 
-  std::shared_ptr<DHTTaskQueue> taskQueue_;
+  DHTTaskQueue* taskQueue_;
 
-  std::shared_ptr<DHTTaskFactory> taskFactory_;
+  DHTTaskFactory* taskFactory_;
 
-  std::shared_ptr<DHTRoutingTable> routingTable_;
+  DHTRoutingTable* routingTable_;
 
   std::shared_ptr<DHTNode> localNode_;
 
-  std::deque<std::pair<std::string, uint16_t> > entryPoints_;
+  std::deque<std::pair<std::string, uint16_t>> entryPoints_;
 
   int numSuccess_;
 
@@ -94,11 +94,11 @@ public:
 
   void setBootstrapEnabled(bool f);
 
-  void setTaskQueue(const std::shared_ptr<DHTTaskQueue>& taskQueue);
+  void setTaskQueue(DHTTaskQueue* taskQueue);
 
-  void setTaskFactory(const std::shared_ptr<DHTTaskFactory>& taskFactory);
+  void setTaskFactory(DHTTaskFactory* taskFactory);
 
-  void setRoutingTable(const std::shared_ptr<DHTRoutingTable>& routingTable);
+  void setRoutingTable(DHTRoutingTable* routingTable);
 
   void setLocalNode(const std::shared_ptr<DHTNode>& localNode);
 };

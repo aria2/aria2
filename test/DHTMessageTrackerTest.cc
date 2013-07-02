@@ -35,8 +35,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTMessageTrackerTest);
 void DHTMessageTrackerTest::testMessageArrived()
 {
   auto localNode = std::make_shared<DHTNode>();
-  auto routingTable = std::make_shared<DHTRoutingTable>(localNode);
-  auto factory = std::make_shared<MockDHTMessageFactory>();
+  auto routingTable = make_unique<DHTRoutingTable>(localNode);
+  auto factory = make_unique<MockDHTMessageFactory>();
   factory->setLocalNode(localNode);
 
   auto r1 = std::make_shared<DHTNode>();
@@ -54,7 +54,7 @@ void DHTMessageTrackerTest::testMessageArrived()
   auto m3 = make_unique<MockDHTMessage>(localNode, r3);
 
   DHTMessageTracker tracker;
-  tracker.setRoutingTable(routingTable);
+  tracker.setRoutingTable(routingTable.get());
   tracker.setMessageFactory(factory.get());
   tracker.addMessage(m1.get(), DHT_MESSAGE_TIMEOUT);
   tracker.addMessage(m2.get(), DHT_MESSAGE_TIMEOUT);

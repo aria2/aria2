@@ -57,7 +57,7 @@ class DHTMessageTracker {
 private:
   std::deque<std::unique_ptr<DHTMessageTrackerEntry>> entries_;
 
-  std::shared_ptr<DHTRoutingTable> routingTable_;
+  DHTRoutingTable* routingTable_;
 
   DHTMessageFactory* factory_;
 public:
@@ -83,7 +83,7 @@ public:
 
   size_t countEntry() const;
 
-  void setRoutingTable(const std::shared_ptr<DHTRoutingTable>& routingTable);
+  void setRoutingTable(DHTRoutingTable* routingTable);
 
   void setMessageFactory(DHTMessageFactory* factory);
 };

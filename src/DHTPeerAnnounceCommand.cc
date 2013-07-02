@@ -45,7 +45,8 @@ namespace aria2 {
 
 DHTPeerAnnounceCommand::DHTPeerAnnounceCommand
 (cuid_t cuid, DownloadEngine* e, time_t interval)
-  : TimeBasedCommand(cuid, e, interval)
+  : TimeBasedCommand{cuid, e, interval},
+    peerAnnounceStorage_{nullptr}
 {}
 
 DHTPeerAnnounceCommand::~DHTPeerAnnounceCommand() {}
@@ -68,7 +69,7 @@ void DHTPeerAnnounceCommand::process()
 }
 
 void DHTPeerAnnounceCommand::setPeerAnnounceStorage
-(const std::shared_ptr<DHTPeerAnnounceStorage>& storage)
+(DHTPeerAnnounceStorage* storage)
 {
   peerAnnounceStorage_ = storage;
 }

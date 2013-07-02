@@ -58,21 +58,21 @@ private:
 
     std::shared_ptr<DHTNode> localNode;
 
-    std::shared_ptr<DHTRoutingTable> routingTable;
+    std::unique_ptr<DHTRoutingTable> routingTable;
 
-    std::shared_ptr<DHTTaskQueue> taskQueue;
+    std::unique_ptr<DHTTaskQueue> taskQueue;
 
-    std::shared_ptr<DHTTaskFactory> taskFactory;
+    std::unique_ptr<DHTTaskFactory> taskFactory;
 
-    std::shared_ptr<DHTPeerAnnounceStorage> peerAnnounceStorage;
+    std::unique_ptr<DHTPeerAnnounceStorage> peerAnnounceStorage;
 
-    std::shared_ptr<DHTTokenTracker> tokenTracker;
+    std::unique_ptr<DHTTokenTracker> tokenTracker;
 
-    std::shared_ptr<DHTMessageDispatcher> messageDispatcher;
+    std::unique_ptr<DHTMessageDispatcher> messageDispatcher;
 
-    std::shared_ptr<DHTMessageReceiver> messageReceiver;
+    std::unique_ptr<DHTMessageReceiver> messageReceiver;
 
-    std::shared_ptr<DHTMessageFactory> messageFactory;
+    std::unique_ptr<DHTMessageFactory> messageFactory;
 
     Data():initialized(false) {}
   };

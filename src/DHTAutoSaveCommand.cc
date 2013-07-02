@@ -58,8 +58,9 @@ namespace aria2 {
 
 DHTAutoSaveCommand::DHTAutoSaveCommand
 (cuid_t cuid, DownloadEngine* e, int family, time_t interval)
- : TimeBasedCommand(cuid, e, interval),
-   family_(family)
+  : TimeBasedCommand{cuid, e, interval},
+    family_{family},
+    routingTable_{nullptr}
 {}
 
 DHTAutoSaveCommand::~DHTAutoSaveCommand() {}
@@ -122,8 +123,7 @@ void DHTAutoSaveCommand::setLocalNode(const std::shared_ptr<DHTNode>& localNode)
   localNode_ = localNode;
 }
 
-void DHTAutoSaveCommand::setRoutingTable
-(const std::shared_ptr<DHTRoutingTable>& routingTable)
+void DHTAutoSaveCommand::setRoutingTable(DHTRoutingTable* routingTable)
 {
   routingTable_ = routingTable;
 }

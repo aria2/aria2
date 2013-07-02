@@ -139,8 +139,8 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
     if(DHTRegistry::isInitialized()) {
       auto command = make_unique<DHTGetPeersCommand>
         (e->newCUID(), requestGroup, e);
-      command->setTaskQueue(DHTRegistry::getData().taskQueue);
-      command->setTaskFactory(DHTRegistry::getData().taskFactory);
+      command->setTaskQueue(DHTRegistry::getData().taskQueue.get());
+      command->setTaskFactory(DHTRegistry::getData().taskFactory.get());
       command->setBtRuntime(btRuntime);
       command->setPeerStorage(peerStorage);
       commands.push_back(std::move(command));
@@ -148,8 +148,8 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
     if(DHTRegistry::isInitialized6()) {
       auto command = make_unique<DHTGetPeersCommand>
         (e->newCUID(), requestGroup, e);
-      command->setTaskQueue(DHTRegistry::getData6().taskQueue);
-      command->setTaskFactory(DHTRegistry::getData6().taskFactory);
+      command->setTaskQueue(DHTRegistry::getData6().taskQueue.get());
+      command->setTaskFactory(DHTRegistry::getData6().taskFactory.get());
       command->setBtRuntime(btRuntime);
       command->setPeerStorage(peerStorage);
       commands.push_back(std::move(command));

@@ -57,8 +57,11 @@ namespace aria2 {
 // TODO This name of this command is misleading, because now it also
 // handles UDP trackers as well as DHT.
 DHTInteractionCommand::DHTInteractionCommand(cuid_t cuid, DownloadEngine* e)
-  : Command(cuid),
-    e_(e)
+  : Command{cuid},
+    e_{e},
+    dispatcher_{nullptr},
+    receiver_{nullptr},
+    taskQueue_{nullptr}
 {}
 
 DHTInteractionCommand::~DHTInteractionCommand()
@@ -142,17 +145,18 @@ bool DHTInteractionCommand::execute()
   return false;
 }
 
-void DHTInteractionCommand::setMessageDispatcher(const std::shared_ptr<DHTMessageDispatcher>& dispatcher)
+void DHTInteractionCommand::setMessageDispatcher
+(DHTMessageDispatcher* dispatcher)
 {
   dispatcher_ = dispatcher;
 }
 
-void DHTInteractionCommand::setMessageReceiver(const std::shared_ptr<DHTMessageReceiver>& receiver)
+void DHTInteractionCommand::setMessageReceiver(DHTMessageReceiver* receiver)
 {
   receiver_ = receiver;
 }
 
-void DHTInteractionCommand::setTaskQueue(const std::shared_ptr<DHTTaskQueue>& taskQueue)
+void DHTInteractionCommand::setTaskQueue(DHTTaskQueue* taskQueue)
 {
   taskQueue_ = taskQueue;
 }

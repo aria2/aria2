@@ -45,7 +45,8 @@ namespace aria2 {
 
 DHTTokenUpdateCommand::DHTTokenUpdateCommand
 (cuid_t cuid, DownloadEngine* e, time_t interval)
-  : TimeBasedCommand(cuid, e, interval)
+  : TimeBasedCommand{cuid, e, interval},
+    tokenTracker_{nullptr}
 {}
 
 DHTTokenUpdateCommand::~DHTTokenUpdateCommand() {}
@@ -67,7 +68,7 @@ void DHTTokenUpdateCommand::process()
   }
 }
 
-void DHTTokenUpdateCommand::setTokenTracker(const std::shared_ptr<DHTTokenTracker>& tokenTracker)
+void DHTTokenUpdateCommand::setTokenTracker(DHTTokenTracker* tokenTracker)
 {
   tokenTracker_ = tokenTracker;
 }

@@ -52,9 +52,9 @@ class UDPTrackerClient;
 class DHTInteractionCommand:public Command {
 private:
   DownloadEngine* e_;
-  std::shared_ptr<DHTMessageDispatcher> dispatcher_;
-  std::shared_ptr<DHTMessageReceiver> receiver_;
-  std::shared_ptr<DHTTaskQueue> taskQueue_;
+  DHTMessageDispatcher* dispatcher_;
+  DHTMessageReceiver* receiver_;
+  DHTTaskQueue* taskQueue_;
   std::shared_ptr<SocketCore> readCheckSocket_;
   std::shared_ptr<DHTConnection> connection_;
   std::shared_ptr<UDPTrackerClient> udpTrackerClient_;
@@ -69,11 +69,11 @@ public:
 
   void disableReadCheckSocket(const std::shared_ptr<SocketCore>& socket);
 
-  void setMessageDispatcher(const std::shared_ptr<DHTMessageDispatcher>& dispatcher);
+  void setMessageDispatcher(DHTMessageDispatcher* dispatcher);
 
-  void setMessageReceiver(const std::shared_ptr<DHTMessageReceiver>& receiver);
+  void setMessageReceiver(DHTMessageReceiver* receiver);
 
-  void setTaskQueue(const std::shared_ptr<DHTTaskQueue>& taskQueue);
+  void setTaskQueue(DHTTaskQueue* taskQueue);
 
   void setConnection(const std::shared_ptr<DHTConnection>& connection);
 

@@ -58,15 +58,18 @@ namespace aria2 {
 
 DHTEntryPointNameResolveCommand::DHTEntryPointNameResolveCommand
 (cuid_t cuid, DownloadEngine* e,
- const std::vector<std::pair<std::string, uint16_t> >& entryPoints):
-  Command(cuid),
-  e_(e),
+ const std::vector<std::pair<std::string, uint16_t> >& entryPoints)
+  : Command{cuid},
+    e_{e},
 #ifdef ENABLE_ASYNC_DNS
-  asyncNameResolverMan_(new AsyncNameResolverMan()),
+    asyncNameResolverMan_{make_unique<AsyncNameResolverMan>()},
 #endif // ENABLE_ASYNC_DNS
-  entryPoints_(entryPoints.begin(), entryPoints.end()),
-  numSuccess_(0),
-  bootstrapEnabled_(false)
+    taskQueue_{nullptr},
+    taskFactory_{nullptr},
+    routingTable_{nullptr},
+    entryPoints_(std::begin(entryPoints), std::end(entryPoints)),
+    numSuccess_{0},
+    bootstrapEnabled_{false}
 {
 #ifdef ENABLE_ASYNC_DNS
   configureAsyncNameResolverMan(asyncNameResolverMan_.get(), e_->getOption());
@@ -197,20 +200,19 @@ void DHTEntryPointNameResolveCommand::setBootstrapEnabled(bool f)
   bootstrapEnabled_ = f;
 }
 
-void DHTEntryPointNameResolveCommand::setTaskQueue
-(const std::shared_ptr<DHTTaskQueue>& taskQueue)
+void DHTEntryPointNameResolveCommand::setTaskQueue(DHTTaskQueue* taskQueue)
 {
   taskQueue_ = taskQueue;
 }
 
 void DHTEntryPointNameResolveCommand::setTaskFactory
-(const std::shared_ptr<DHTTaskFactory>& taskFactory)
+(DHTTaskFactory* taskFactory)
 {
   taskFactory_ = taskFactory;
 }
 
 void DHTEntryPointNameResolveCommand::setRoutingTable
-(const std::shared_ptr<DHTRoutingTable>& routingTable)
+(DHTRoutingTable* routingTable)
 {
   routingTable_ = routingTable;
 }

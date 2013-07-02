@@ -53,7 +53,9 @@ DHTRoutingTable::DHTRoutingTable(const std::shared_ptr<DHTNode>& localNode)
   : localNode_(localNode),
     root_(new DHTBucketTreeNode
           (std::shared_ptr<DHTBucket>(new DHTBucket(localNode_)))),
-    numBucket_(1)
+    numBucket_(1),
+    taskQueue_{nullptr},
+    taskFactory_{nullptr}
 {}
 
 DHTRoutingTable::~DHTRoutingTable()
@@ -164,12 +166,12 @@ void DHTRoutingTable::getBuckets
   dht::enumerateBucket(buckets, root_);
 }
 
-void DHTRoutingTable::setTaskQueue(const std::shared_ptr<DHTTaskQueue>& taskQueue)
+void DHTRoutingTable::setTaskQueue(DHTTaskQueue* taskQueue)
 {
   taskQueue_ = taskQueue;
 }
 
-void DHTRoutingTable::setTaskFactory(const std::shared_ptr<DHTTaskFactory>& taskFactory)
+void DHTRoutingTable::setTaskFactory(DHTTaskFactory* taskFactory)
 {
   taskFactory_ = taskFactory;
 }

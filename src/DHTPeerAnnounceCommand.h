@@ -45,7 +45,7 @@ class DHTPeerAnnounceStorage;
 
 class DHTPeerAnnounceCommand:public TimeBasedCommand {
 private:
-  std::shared_ptr<DHTPeerAnnounceStorage> peerAnnounceStorage_;
+  DHTPeerAnnounceStorage* peerAnnounceStorage_;
 public:
   DHTPeerAnnounceCommand(cuid_t cuid, DownloadEngine* e, time_t interval);
 
@@ -55,7 +55,7 @@ public:
 
   virtual void process();
 
-  void setPeerAnnounceStorage(const std::shared_ptr<DHTPeerAnnounceStorage>& storage);
+  void setPeerAnnounceStorage(DHTPeerAnnounceStorage* storage);
 };
 
 } // namespace aria2

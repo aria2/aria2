@@ -52,9 +52,10 @@
 
 namespace aria2 {
 
-DHTPeerAnnounceStorage::DHTPeerAnnounceStorage() {}
-
-DHTPeerAnnounceStorage::~DHTPeerAnnounceStorage() {}
+DHTPeerAnnounceStorage::DHTPeerAnnounceStorage()
+  : taskQueue_{nullptr},
+    taskFactory_{nullptr}
+{}
 
 bool DHTPeerAnnounceStorage::InfoHashLess::operator()
   (const std::shared_ptr<DHTPeerAnnounceEntry>& lhs,
@@ -153,12 +154,12 @@ void DHTPeerAnnounceStorage::announcePeer()
   }
 }
 
-void DHTPeerAnnounceStorage::setTaskQueue(const std::shared_ptr<DHTTaskQueue>& taskQueue)
+void DHTPeerAnnounceStorage::setTaskQueue(DHTTaskQueue* taskQueue)
 {
   taskQueue_ = taskQueue;
 }
 
-void DHTPeerAnnounceStorage::setTaskFactory(const std::shared_ptr<DHTTaskFactory>& taskFactory)
+void DHTPeerAnnounceStorage::setTaskFactory(DHTTaskFactory* taskFactory)
 {
   taskFactory_ = taskFactory;
 }

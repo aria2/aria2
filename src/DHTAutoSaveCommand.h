@@ -51,7 +51,7 @@ private:
 
   std::shared_ptr<DHTNode> localNode_;
 
-  std::shared_ptr<DHTRoutingTable> routingTable_;
+  DHTRoutingTable* routingTable_;
 
   void save();
 public:
@@ -66,7 +66,7 @@ public:
 
   void setLocalNode(const std::shared_ptr<DHTNode>& localNode);
 
-  void setRoutingTable(const std::shared_ptr<DHTRoutingTable>& routingTable);
+  void setRoutingTable(DHTRoutingTable* routingTable);
 };
 
 } // namespace aria2

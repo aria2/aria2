@@ -62,13 +62,11 @@ private:
 
   std::shared_ptr<DHTPeerAnnounceEntry> getPeerAnnounceEntry(const unsigned char* infoHash);
 
-  std::shared_ptr<DHTTaskQueue> taskQueue_;
+  DHTTaskQueue* taskQueue_;
 
-  std::shared_ptr<DHTTaskFactory> taskFactory_;
+  DHTTaskFactory* taskFactory_;
 public:
   DHTPeerAnnounceStorage();
-
-  ~DHTPeerAnnounceStorage();
 
   void addPeerAnnounce(const unsigned char* infoHash,
                        const std::string& ipaddr, uint16_t port);
@@ -87,9 +85,9 @@ public:
   // are excluded from announce.
   void announcePeer();
 
-  void setTaskQueue(const std::shared_ptr<DHTTaskQueue>& taskQueue);
+  void setTaskQueue(DHTTaskQueue* taskQueue);
 
-  void setTaskFactory(const std::shared_ptr<DHTTaskFactory>& taskFactory);
+  void setTaskFactory(DHTTaskFactory* taskFactory);
 };
 
 } // namespace aria2

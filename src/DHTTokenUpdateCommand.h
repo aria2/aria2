@@ -45,7 +45,7 @@ class DHTTokenTracker;
 
 class DHTTokenUpdateCommand:public TimeBasedCommand {
 private:
-  std::shared_ptr<DHTTokenTracker> tokenTracker_;
+  DHTTokenTracker* tokenTracker_;
 public:
   DHTTokenUpdateCommand(cuid_t cuid, DownloadEngine* e, time_t interval);
 
@@ -55,7 +55,7 @@ public:
 
   virtual void process();
 
-  void setTokenTracker(const std::shared_ptr<DHTTokenTracker>& tokenTracker);
+  void setTokenTracker(DHTTokenTracker* tokenTracker);
 };
 
 } // namespace aria2

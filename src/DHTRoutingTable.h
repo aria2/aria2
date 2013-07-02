@@ -57,9 +57,9 @@ private:
 
   int numBucket_;
 
-  std::shared_ptr<DHTTaskQueue> taskQueue_;
+  DHTTaskQueue* taskQueue_;
 
-  std::shared_ptr<DHTTaskFactory> taskFactory_;
+  DHTTaskFactory* taskFactory_;
 
   bool addNode(const std::shared_ptr<DHTNode>& node, bool good);
 public:
@@ -92,9 +92,9 @@ public:
 
   void getBuckets(std::vector<std::shared_ptr<DHTBucket> >& buckets) const;
 
-  void setTaskQueue(const std::shared_ptr<DHTTaskQueue>& taskQueue);
+  void setTaskQueue(DHTTaskQueue* taskQueue);
 
-  void setTaskFactory(const std::shared_ptr<DHTTaskFactory>& taskFactory);
+  void setTaskFactory(DHTTaskFactory* taskFactory);
 };
 
 } // namespace aria2

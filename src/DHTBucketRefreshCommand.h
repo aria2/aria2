@@ -47,11 +47,11 @@ class DHTTaskFactory;
 
 class DHTBucketRefreshCommand:public TimeBasedCommand {
 private:
-  std::shared_ptr<DHTRoutingTable> routingTable_;
+  DHTRoutingTable* routingTable_;
 
-  std::shared_ptr<DHTTaskQueue> taskQueue_;
+  DHTTaskQueue* taskQueue_;
 
-  std::shared_ptr<DHTTaskFactory> taskFactory_;
+  DHTTaskFactory* taskFactory_;
 public:
   DHTBucketRefreshCommand(cuid_t cuid, DownloadEngine* e, time_t interval);
 
@@ -61,11 +61,11 @@ public:
 
   virtual void process();
 
-  void setRoutingTable(const std::shared_ptr<DHTRoutingTable>& routingTable);
+  void setRoutingTable(DHTRoutingTable* routingTable);
 
-  void setTaskQueue(const std::shared_ptr<DHTTaskQueue>& taskQueue);
+  void setTaskQueue(DHTTaskQueue* taskQueue);
 
-  void setTaskFactory(const std::shared_ptr<DHTTaskFactory>& taskFactory);
+  void setTaskFactory(DHTTaskFactory* taskFactory);
 };
 
 } // namespace aria2

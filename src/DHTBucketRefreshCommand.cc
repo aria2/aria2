@@ -43,8 +43,12 @@
 namespace aria2 {
 
 DHTBucketRefreshCommand::DHTBucketRefreshCommand
-(cuid_t cuid, DownloadEngine* e, time_t interval):
-  TimeBasedCommand(cuid, e, interval) {}
+(cuid_t cuid, DownloadEngine* e, time_t interval)
+  : TimeBasedCommand{cuid, e, interval},
+    routingTable_{nullptr},
+    taskQueue_{nullptr},
+    taskFactory_{nullptr}
+{}
 
 DHTBucketRefreshCommand::~DHTBucketRefreshCommand() {}
 
@@ -61,20 +65,17 @@ void DHTBucketRefreshCommand::process()
   taskQueue_->addPeriodicTask1(taskFactory_->createBucketRefreshTask());
 }
 
-void DHTBucketRefreshCommand::setRoutingTable
-(const std::shared_ptr<DHTRoutingTable>& routingTable)
+void DHTBucketRefreshCommand::setRoutingTable(DHTRoutingTable* routingTable)
 {
   routingTable_ = routingTable;
 }
 
-void DHTBucketRefreshCommand::setTaskQueue
-(const std::shared_ptr<DHTTaskQueue>& taskQueue)
+void DHTBucketRefreshCommand::setTaskQueue(DHTTaskQueue* taskQueue)
 {
   taskQueue_ = taskQueue;
 }
 
-void DHTBucketRefreshCommand::setTaskFactory
-(const std::shared_ptr<DHTTaskFactory>& taskFactory)
+void DHTBucketRefreshCommand::setTaskFactory(DHTTaskFactory* taskFactory)
 {
   taskFactory_ = taskFactory;
 }

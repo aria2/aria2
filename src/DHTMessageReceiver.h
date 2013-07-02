@@ -55,9 +55,9 @@ private:
 
   std::shared_ptr<DHTConnection> connection_;
 
-  std::shared_ptr<DHTMessageFactory> factory_;
+  DHTMessageFactory* factory_;
 
-  std::shared_ptr<DHTRoutingTable> routingTable_;
+  DHTRoutingTable* routingTable_;
 
   std::unique_ptr<DHTUnknownMessage>
   handleUnknownMessage(const unsigned char* data, size_t length,
@@ -85,9 +85,9 @@ public:
 
   void setConnection(const std::shared_ptr<DHTConnection>& connection);
 
-  void setMessageFactory(const std::shared_ptr<DHTMessageFactory>& factory);
+  void setMessageFactory(DHTMessageFactory* factory);
 
-  void setRoutingTable(const std::shared_ptr<DHTRoutingTable>& routingTable);
+  void setRoutingTable(DHTRoutingTable* routingTable);
 };
 
 } // namespace aria2
