@@ -57,8 +57,14 @@
 
 namespace aria2 {
 
+// i686-w64-mingw32-g++ 4.6 does not support constructor delegate
 DefaultExtensionMessageFactory::DefaultExtensionMessageFactory()
-  : DefaultExtensionMessageFactory{std::shared_ptr<Peer>{}, nullptr}
+  : peerStorage_{nullptr},
+    registry_{nullptr},
+    dctx_{nullptr},
+    messageFactory_{nullptr},
+    dispatcher_{nullptr},
+    tracker_{nullptr}
 {}
 
 DefaultExtensionMessageFactory::DefaultExtensionMessageFactory
