@@ -50,7 +50,7 @@ void LpdMessageReceiverTest::testReceiveMessage()
                       LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
 
   rcv.getSocket()->isReadable(5);
-  std::shared_ptr<LpdMessage> msg = rcv.receiveMessage();
+  auto msg = rcv.receiveMessage();
   CPPUNIT_ASSERT(msg);
   CPPUNIT_ASSERT_EQUAL(std::string("cd41c7fdddfd034a15a04d7ff881216e01c4ceaf"),
                        util::toHex(msg->infoHash));
