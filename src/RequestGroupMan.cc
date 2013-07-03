@@ -424,16 +424,14 @@ void RequestGroupMan::configureRequestGroup
 {
   const std::string& uriSelectorValue =
     requestGroup->getOption()->get(PREF_URI_SELECTOR);
-  std::shared_ptr<URISelector> sel;
   if(uriSelectorValue == V_FEEDBACK) {
-    sel.reset(new FeedbackURISelector(serverStatMan_));
+    requestGroup->setURISelector(make_unique<FeedbackURISelector>
+                                 (serverStatMan_));
   } else if(uriSelectorValue == V_INORDER) {
-    sel.reset(new InorderURISelector());
+    requestGroup->setURISelector(make_unique<InorderURISelector>());
   } else if(uriSelectorValue == V_ADAPTIVE) {
-    sel.reset(new AdaptiveURISelector(serverStatMan_, requestGroup.get()));
-  }
-  if(sel) {
-    requestGroup->setURISelector(sel);
+    requestGroup->setURISelector(make_unique<AdaptiveURISelector>
+                                 (serverStatMan_, requestGroup.get()));
   }
 }
 

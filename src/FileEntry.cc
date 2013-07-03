@@ -141,7 +141,7 @@ OutputIterator enumerateInFlightHosts
 
 std::shared_ptr<Request>
 FileEntry::getRequest
-(const std::shared_ptr<URISelector>& selector,
+(URISelector* selector,
  bool uriReuse,
  const std::vector<std::pair<size_t, std::string> >& usedHosts,
  const std::string& referer,

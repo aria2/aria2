@@ -135,7 +135,7 @@ private:
 
   std::vector<std::shared_ptr<PostDownloadHandler> > postDownloadHandlers_;
 
-  std::shared_ptr<URISelector> uriSelector_;
+  std::unique_ptr<URISelector> uriSelector_;
 
   Time lastModifiedTime_;
 
@@ -414,9 +414,9 @@ public:
 
   void reportDownloadFinished();
 
-  void setURISelector(const std::shared_ptr<URISelector>& uriSelector);
+  void setURISelector(std::unique_ptr<URISelector> uriSelector);
 
-  const std::shared_ptr<URISelector>& getURISelector() const
+  const std::unique_ptr<URISelector>& getURISelector() const
   {
     return uriSelector_;
   }

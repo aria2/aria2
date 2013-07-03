@@ -136,7 +136,7 @@ RequestGroup::RequestGroup(const std::shared_ptr<GroupId>& gid,
     forceHaltRequested_(false),
     haltReason_(RequestGroup::NONE),
     pauseRequested_(false),
-    uriSelector_(new InorderURISelector()),
+    uriSelector_(make_unique<InorderURISelector>()),
     lastModifiedTime_(Time::null()),
     fileNotFoundCount_(0),
     timeout_(option->getAsInt(PREF_TIMEOUT)),
@@ -1212,9 +1212,9 @@ void RequestGroup::reportDownloadFinished()
 #endif // ENABLE_BITTORRENT
 }
 
-void RequestGroup::setURISelector(const std::shared_ptr<URISelector>& uriSelector)
+void RequestGroup::setURISelector(std::unique_ptr<URISelector> uriSelector)
 {
-  uriSelector_ = uriSelector;
+  uriSelector_ = std::move(uriSelector);
 }
 
 void RequestGroup::applyLastModifiedTimeToLocalFiles()

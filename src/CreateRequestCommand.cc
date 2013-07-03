@@ -79,7 +79,7 @@ bool CreateRequestCommand::executeInternal()
     getDownloadEngine()->getRequestGroupMan()->getUsedHosts(usedHosts);
   }
   setRequest
-    (getFileEntry()->getRequest(getRequestGroup()->getURISelector(),
+    (getFileEntry()->getRequest(getRequestGroup()->getURISelector().get(),
                                 getOption()->getAsBool(PREF_REUSE_URI),
                                 usedHosts,
                                 getOption()->get(PREF_REFERER),
