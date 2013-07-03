@@ -89,11 +89,14 @@ DefaultPieceStorage::DefaultPieceStorage
   const std::string& pieceSelectorOpt =
     option_->get(PREF_STREAM_PIECE_SELECTOR);
   if(pieceSelectorOpt.empty() || pieceSelectorOpt == A2_V_DEFAULT) {
-    streamPieceSelector_.reset(new DefaultStreamPieceSelector(bitfieldMan_));
+    streamPieceSelector_ = make_unique<DefaultStreamPieceSelector>
+      (bitfieldMan_);
   } else if(pieceSelectorOpt == V_INORDER) {
-    streamPieceSelector_.reset(new InorderStreamPieceSelector(bitfieldMan_));
+    streamPieceSelector_ = make_unique<InorderStreamPieceSelector>
+      (bitfieldMan_);
   } else if(pieceSelectorOpt == A2_V_GEOM) {
-    streamPieceSelector_.reset(new GeomStreamPieceSelector(bitfieldMan_, 1.5));
+    streamPieceSelector_ = make_unique<GeomStreamPieceSelector>
+      (bitfieldMan_, 1.5);
   }
 }
 

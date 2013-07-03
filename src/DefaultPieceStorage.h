@@ -91,7 +91,7 @@ private:
   std::shared_ptr<PieceStatMan> pieceStatMan_;
 
   std::unique_ptr<PieceSelector> pieceSelector_;
-  std::shared_ptr<StreamPieceSelector> streamPieceSelector_;
+  std::unique_ptr<StreamPieceSelector> streamPieceSelector_;
 
   WrDiskCache* wrDiskCache_;
 #ifdef ENABLE_BITTORRENT
