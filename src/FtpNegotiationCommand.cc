@@ -734,7 +734,7 @@ bool FtpNegotiationCommand::sendTunnelRequest()
         }
       }
     }
-    std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
+    auto httpRequest = make_unique<HttpRequest>();
     httpRequest->setUserAgent(getOption()->get(PREF_USER_AGENT));
     std::shared_ptr<Request> req(new Request());
     // Construct fake URI in order to use HttpRequest
@@ -749,7 +749,7 @@ bool FtpNegotiationCommand::sendTunnelRequest()
     }
     httpRequest->setRequest(req);
     httpRequest->setProxyRequest(createProxyRequest());
-    http_->sendProxyRequest(httpRequest);
+    http_->sendProxyRequest(std::move(httpRequest));
   } else {
     http_->sendPendingData();
   }

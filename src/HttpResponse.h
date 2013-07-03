@@ -56,12 +56,10 @@ class Checksum;
 class HttpResponse {
 private:
   cuid_t cuid_;
-  std::shared_ptr<HttpRequest> httpRequest_;
+  std::unique_ptr<HttpRequest> httpRequest_;
   std::unique_ptr<HttpHeader> httpHeader_;
 public:
   HttpResponse();
-
-  ~HttpResponse();
 
   void validateResponse() const;
 
@@ -109,9 +107,9 @@ public:
 
   int getStatusCode() const;
 
-  void setHttpRequest(const std::shared_ptr<HttpRequest>& httpRequest);
+  void setHttpRequest(std::unique_ptr<HttpRequest> httpRequest);
 
-  const std::shared_ptr<HttpRequest>& getHttpRequest() const
+  const std::unique_ptr<HttpRequest>& getHttpRequest() const
   {
     return httpRequest_;
   }

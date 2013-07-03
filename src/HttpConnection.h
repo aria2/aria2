@@ -56,17 +56,17 @@ class SocketRecvBuffer;
 
 class HttpRequestEntry {
 private:
-  std::shared_ptr<HttpRequest> httpRequest_;
+  std::unique_ptr<HttpRequest> httpRequest_;
   std::unique_ptr<HttpHeaderProcessor> proc_;
 public:
-  HttpRequestEntry(const std::shared_ptr<HttpRequest>& httpRequest);
+  HttpRequestEntry(std::unique_ptr<HttpRequest> httpRequest);
 
-  ~HttpRequestEntry();
-
-  const std::shared_ptr<HttpRequest>& getHttpRequest() const
+  const std::unique_ptr<HttpRequest>& getHttpRequest() const
   {
     return httpRequest_;
   }
+
+  std::unique_ptr<HttpRequest> popHttpRequest();
 
   const std::unique_ptr<HttpHeaderProcessor>& getHttpHeaderProcessor() const;
 };
@@ -84,7 +84,7 @@ private:
 
   std::string eraseConfidentialInfo(const std::string& request);
   void sendRequest
-  (const std::shared_ptr<HttpRequest>& httpRequest, std::string request);
+  (std::unique_ptr<HttpRequest> httpRequest, std::string request);
 public:
   HttpConnection
   (cuid_t cuid,
@@ -99,12 +99,12 @@ public:
    * HTTP proxy(GET method).
    * @param segment indicates starting postion of the file for downloading
    */
-  void sendRequest(const std::shared_ptr<HttpRequest>& httpRequest);
+  void sendRequest(std::unique_ptr<HttpRequest> httpRequest);
 
   /**
    * Sends Http proxy request using CONNECT method.
    */
-  void sendProxyRequest(const std::shared_ptr<HttpRequest>& httpRequest);
+  void sendProxyRequest(std::unique_ptr<HttpRequest> httpRequest);
 
   /**
    * Receives HTTP response from the server and returns HttpResponseHandle
@@ -118,8 +118,6 @@ public:
    * @return HttpResponse or 0 if whole response header is not received
    */
   std::unique_ptr<HttpResponse> receiveResponse();
-
-  std::shared_ptr<HttpRequest> getFirstHttpRequest() const;
 
   bool isIssued(const std::shared_ptr<Segment>& segment) const;
 

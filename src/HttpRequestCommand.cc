@@ -82,7 +82,7 @@ HttpRequestCommand::HttpRequestCommand
 HttpRequestCommand::~HttpRequestCommand() {}
 
 namespace {
-std::shared_ptr<HttpRequest>
+std::unique_ptr<HttpRequest>
 createHttpRequest(const std::shared_ptr<Request>& req,
                   const std::shared_ptr<FileEntry>& fileEntry,
                   const std::shared_ptr<Segment>& segment,
@@ -92,7 +92,7 @@ createHttpRequest(const std::shared_ptr<Request>& req,
                   const std::shared_ptr<Request>& proxyRequest,
                   int64_t endOffset = 0)
 {
-  std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
+  auto httpRequest = make_unique<HttpRequest>();
   httpRequest->setUserAgent(option->get(PREF_USER_AGENT));
   httpRequest->setRequest(req);
   httpRequest->setFileEntry(fileEntry);
@@ -135,14 +135,13 @@ bool HttpRequestCommand::executeInternal() {
     }
 #endif // ENABLE_SSL
     if(getSegments().empty()) {
-      std::shared_ptr<HttpRequest> httpRequest
-        (createHttpRequest(getRequest(),
-                           getFileEntry(),
-                           std::shared_ptr<Segment>(),
-                           getOption(),
-                           getRequestGroup(),
-                           getDownloadEngine(),
-                           proxyRequest_));
+      auto httpRequest = createHttpRequest(getRequest(),
+                                           getFileEntry(),
+                                           std::shared_ptr<Segment>(),
+                                           getOption(),
+                                           getRequestGroup(),
+                                           getDownloadEngine(),
+                                           proxyRequest_);
       if(getOption()->getAsBool(PREF_CONDITIONAL_GET) &&
          (getRequest()->getProtocol() == "http" ||
           getRequest()->getProtocol() == "https")) {
@@ -167,12 +166,9 @@ bool HttpRequestCommand::executeInternal() {
           }
         }
       }
-      httpConnection_->sendRequest(httpRequest);
+      httpConnection_->sendRequest(std::move(httpRequest));
     } else {
-      for(std::vector<std::shared_ptr<Segment> >::const_iterator itr =
-            getSegments().begin(), eoi = getSegments().end();
-          itr != eoi; ++itr) {
-        const std::shared_ptr<Segment>& segment = *itr;
+      for(auto& segment : getSegments()) {
         if(!httpConnection_->isIssued(segment)) {
           int64_t endOffset = 0;
           // FTP via HTTP proxy does not support end byte marker
@@ -185,16 +181,14 @@ bool HttpRequestCommand::executeInternal() {
                getFileEntry()->gtoloff
                (static_cast<int64_t>(segment->getSegmentLength())*nextIndex));
           }
-          std::shared_ptr<HttpRequest> httpRequest
-            (createHttpRequest(getRequest(),
-                               getFileEntry(),
-                               segment,
-                               getOption(),
-                               getRequestGroup(),
-                               getDownloadEngine(),
-                               proxyRequest_,
-                               endOffset));
-          httpConnection_->sendRequest(httpRequest);
+          httpConnection_->sendRequest(createHttpRequest(getRequest(),
+                                                         getFileEntry(),
+                                                         segment,
+                                                         getOption(),
+                                                         getRequestGroup(),
+                                                         getDownloadEngine(),
+                                                         proxyRequest_,
+                                                         endOffset));
         }
       }
     }

@@ -151,7 +151,6 @@ HttpResponseCommand::~HttpResponseCommand() {}
 
 bool HttpResponseCommand::executeInternal()
 {
-  std::shared_ptr<HttpRequest> httpRequest =httpConnection_->getFirstHttpRequest();
   auto httpResponse = httpConnection_->receiveResponse();
   if(!httpResponse) {
     // The server has not responded to our request yet.

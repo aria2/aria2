@@ -68,10 +68,8 @@
 namespace aria2 {
 
 HttpResponse::HttpResponse()
-  : cuid_(0)
+  : cuid_{0}
 {}
-
-HttpResponse::~HttpResponse() {}
 
 void HttpResponse::validateResponse() const
 {
@@ -266,9 +264,9 @@ const std::unique_ptr<HttpHeader>& HttpResponse::getHttpHeader() const
   return httpHeader_;
 }
 
-void HttpResponse::setHttpRequest(const std::shared_ptr<HttpRequest>& httpRequest)
+void HttpResponse::setHttpRequest(std::unique_ptr<HttpRequest> httpRequest)
 {
-  httpRequest_ = httpRequest;
+  httpRequest_ = std::move(httpRequest);
 }
 
 int HttpResponse::getStatusCode() const

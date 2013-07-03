@@ -146,13 +146,13 @@ void HttpResponseTest::testGetContentType()
 void HttpResponseTest::testDeterminFilename_without_ContentDisposition()
 {
   HttpResponse httpResponse;
-  std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
-  std::shared_ptr<Request> request(new Request());
+  auto httpRequest = make_unique<HttpRequest>();
+  auto request = std::make_shared<Request>();
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
 
   httpResponse.setHttpHeader(make_unique<HttpHeader>());
-  httpResponse.setHttpRequest(httpRequest);
+  httpResponse.setHttpRequest(std::move(httpRequest));
 
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-1.0.0.tar.bz2"),
                        httpResponse.determinFilename());
@@ -164,13 +164,13 @@ void HttpResponseTest::testDeterminFilename_with_ContentDisposition_zero_length
   HttpResponse httpResponse;
   auto httpHeader = make_unique<HttpHeader>();
   httpHeader->put(HttpHeader::CONTENT_DISPOSITION, "attachment; filename=\"\"");
-  std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
-  std::shared_ptr<Request> request(new Request());
+  auto httpRequest = make_unique<HttpRequest>();
+  auto request = std::make_shared<Request>();
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
 
   httpResponse.setHttpHeader(std::move(httpHeader));
-  httpResponse.setHttpRequest(httpRequest);
+  httpResponse.setHttpRequest(std::move(httpRequest));
 
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-1.0.0.tar.bz2"),
                        httpResponse.determinFilename());
@@ -182,13 +182,13 @@ void HttpResponseTest::testDeterminFilename_with_ContentDisposition()
   auto httpHeader = make_unique<HttpHeader>();
   httpHeader->put(HttpHeader::CONTENT_DISPOSITION,
                   "attachment; filename=\"aria2-current.tar.bz2\"");
-  std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
-  std::shared_ptr<Request> request(new Request());
+  auto httpRequest = make_unique<HttpRequest>();
+  auto request = std::make_shared<Request>();
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
 
   httpResponse.setHttpHeader(std::move(httpHeader));
-  httpResponse.setHttpRequest(httpRequest);
+  httpResponse.setHttpRequest(std::move(httpRequest));
 
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-current.tar.bz2"),
                        httpResponse.determinFilename());
@@ -351,16 +351,16 @@ void HttpResponseTest::testValidateResponse_good_range()
 
   httpResponse.setHttpHeader(make_unique<HttpHeader>());
 
-  std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
-  std::shared_ptr<Piece> p(new Piece(1, 1024*1024));
-  std::shared_ptr<Segment> segment(new PiecedSegment(1024*1024, p));
+  auto httpRequest = make_unique<HttpRequest>();
+  auto p = std::make_shared<Piece>(1, 1024*1024);
+  auto segment = std::make_shared<PiecedSegment>(1024*1024, p);
   httpRequest->setSegment(segment);
-  std::shared_ptr<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
+  auto fileEntry = std::make_shared<FileEntry>("file", 1024*1024*10, 0);
   httpRequest->setFileEntry(fileEntry);
-  std::shared_ptr<Request> request(new Request());
+  auto request = std::make_shared<Request>();
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
-  httpResponse.setHttpRequest(httpRequest);
+  httpResponse.setHttpRequest(std::move(httpRequest));
   httpResponse.getHttpHeader()->setStatusCode(206);
   httpResponse.getHttpHeader()->put(HttpHeader::CONTENT_RANGE,
                                     "bytes 1048576-10485760/10485760");
@@ -379,16 +379,16 @@ void HttpResponseTest::testValidateResponse_bad_range()
 
   httpResponse.setHttpHeader(make_unique<HttpHeader>());
 
-  std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
-  std::shared_ptr<Piece> p(new Piece(1, 1024*1024));
-  std::shared_ptr<Segment> segment(new PiecedSegment(1024*1024, p));
+  auto httpRequest = make_unique<HttpRequest>();
+  auto p = std::make_shared<Piece>(1, 1024*1024);
+  auto segment = std::make_shared<PiecedSegment>(1024*1024, p);
   httpRequest->setSegment(segment);
-  std::shared_ptr<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
+  auto fileEntry = std::make_shared<FileEntry>("file", 1024*1024*10, 0);
   httpRequest->setFileEntry(fileEntry);
-  std::shared_ptr<Request> request(new Request());
+  auto request = std::make_shared<Request>();
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
-  httpResponse.setHttpRequest(httpRequest);
+  httpResponse.setHttpRequest(std::move(httpRequest));
   httpResponse.getHttpHeader()->setStatusCode(206);
   httpResponse.getHttpHeader()->put(HttpHeader::CONTENT_RANGE,
                                     "bytes 0-10485760/10485761");
@@ -405,16 +405,16 @@ void HttpResponseTest::testValidateResponse_chunked()
   HttpResponse httpResponse;
   httpResponse.setHttpHeader(make_unique<HttpHeader>());
 
-  std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
-  std::shared_ptr<Piece> p(new Piece(1, 1024*1024));
-  std::shared_ptr<Segment> segment(new PiecedSegment(1024*1024, p));
+  auto httpRequest = make_unique<HttpRequest>();
+  auto p = std::make_shared<Piece>(1, 1024*1024);
+  auto segment = std::make_shared<PiecedSegment>(1024*1024, p);
   httpRequest->setSegment(segment);
-  std::shared_ptr<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
+  auto fileEntry = std::make_shared<FileEntry>("file", 1024*1024*10, 0);
   httpRequest->setFileEntry(fileEntry);
-  std::shared_ptr<Request> request(new Request());
+  auto request = std::make_shared<Request>();
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
-  httpResponse.setHttpRequest(httpRequest);
+  httpResponse.setHttpRequest(std::move(httpRequest));
   httpResponse.getHttpHeader()->setStatusCode(206);
   httpResponse.getHttpHeader()->put(HttpHeader::CONTENT_RANGE,
                                     "bytes 0-10485760/10485761");
@@ -433,14 +433,16 @@ void HttpResponseTest::testValidateResponse_withIfModifiedSince()
   HttpResponse httpResponse;
   httpResponse.setHttpHeader(make_unique<HttpHeader>());
   httpResponse.getHttpHeader()->setStatusCode(304);
-  std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
-  httpResponse.setHttpRequest(httpRequest);
+  auto httpRequest = make_unique<HttpRequest>();
+  httpResponse.setHttpRequest(std::move(httpRequest));
   try {
     httpResponse.validateResponse();
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
   }
+  httpRequest = make_unique<HttpRequest>();
   httpRequest->setIfModifiedSinceHeader("Fri, 16 Jul 2010 12:56:59 GMT");
+  httpResponse.setHttpRequest(std::move(httpRequest));
   httpResponse.validateResponse();
 }
 
@@ -450,11 +452,11 @@ void HttpResponseTest::testProcessRedirect()
 
   httpResponse.setHttpHeader(make_unique<HttpHeader>());
 
-  std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
-  std::shared_ptr<Request> request(new Request());
+  auto httpRequest = make_unique<HttpRequest>();
+  auto request = std::make_shared<Request>();
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
-  httpResponse.setHttpRequest(httpRequest);
+  httpResponse.setHttpRequest(std::move(httpRequest));
 
   httpResponse.getHttpHeader()->put(HttpHeader::LOCATION,
                                     "http://mirror/aria2-1.0.0.tar.bz2");
@@ -490,13 +492,13 @@ void HttpResponseTest::testRetrieveCookie()
 
   httpResponse.setHttpHeader(make_unique<HttpHeader>());
 
-  std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
-  std::shared_ptr<Request> request(new Request());
+  auto httpRequest = make_unique<HttpRequest>();
+  auto request = std::make_shared<Request>();
   request->setUri("http://www.aria2.org/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
   CookieStorage  st;
   httpRequest->setCookieStorage(&st);
-  httpResponse.setHttpRequest(httpRequest);
+  httpResponse.setHttpRequest(std::move(httpRequest));
 
   httpResponse.getHttpHeader()->put
     (HttpHeader::SET_COOKIE,
@@ -523,8 +525,7 @@ void HttpResponseTest::testSupportsPersistentConnection()
 {
   HttpResponse httpResponse;
   httpResponse.setHttpHeader(make_unique<HttpHeader>());
-  std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
-  httpResponse.setHttpRequest(httpRequest);
+  httpResponse.setHttpRequest(make_unique<HttpRequest>());
 
   httpResponse.getHttpHeader()->setVersion("HTTP/1.1");
   CPPUNIT_ASSERT(httpResponse.supportsPersistentConnection());
@@ -545,8 +546,9 @@ void HttpResponseTest::testSupportsPersistentConnection()
   httpResponse.getHttpHeader()->clearField();
 
   // test proxy connection
-  std::shared_ptr<Request> proxyRequest(new Request());
-  httpRequest->setProxyRequest(proxyRequest);
+  auto httpRequest = make_unique<HttpRequest>();
+  httpRequest->setProxyRequest(std::make_shared<Request>());
+  httpResponse.setHttpRequest(std::move(httpRequest));
 
   httpResponse.getHttpHeader()->setVersion("HTTP/1.1");
   CPPUNIT_ASSERT(httpResponse.supportsPersistentConnection());

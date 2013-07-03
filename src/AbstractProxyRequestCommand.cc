@@ -74,12 +74,12 @@ AbstractProxyRequestCommand::~AbstractProxyRequestCommand() {}
 bool AbstractProxyRequestCommand::executeInternal() {
   //socket->setBlockingMode();
   if(httpConnection_->sendBufferIsEmpty()) {
-    std::shared_ptr<HttpRequest> httpRequest(new HttpRequest());
+    auto httpRequest = make_unique<HttpRequest>();
     httpRequest->setUserAgent(getOption()->get(PREF_USER_AGENT));
     httpRequest->setRequest(getRequest());
     httpRequest->setProxyRequest(proxyRequest_);
 
-    httpConnection_->sendProxyRequest(httpRequest);
+    httpConnection_->sendProxyRequest(std::move(httpRequest));
   } else {
     httpConnection_->sendPendingData();
   }
