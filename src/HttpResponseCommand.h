@@ -63,13 +63,13 @@ class HttpResponseCommand : public AbstractCommand {
 private:
   std::shared_ptr<HttpConnection> httpConnection_;
 
-  bool handleDefaultEncoding(const std::shared_ptr<HttpResponse>& httpResponse);
-  bool handleOtherEncoding(const std::shared_ptr<HttpResponse>& httpResponse);
-  bool skipResponseBody(const std::shared_ptr<HttpResponse>& httpResponse);
+  bool handleDefaultEncoding(std::unique_ptr<HttpResponse> httpResponse);
+  bool handleOtherEncoding(std::unique_ptr<HttpResponse> httpResponse);
+  bool skipResponseBody(std::unique_ptr<HttpResponse> httpResponse);
 
   std::unique_ptr<HttpDownloadCommand>
   createHttpDownloadCommand
-  (const std::shared_ptr<HttpResponse>& httpResponse,
+  (std::unique_ptr<HttpResponse> httpResponse,
    const std::shared_ptr<StreamFilter>& streamFilter);
 
   void updateLastModifiedTime(const Time& lastModified);
@@ -88,8 +88,7 @@ private:
 protected:
   bool executeInternal();
 
-  bool shouldInflateContentEncoding
-  (const std::shared_ptr<HttpResponse>& httpResponse);
+  bool shouldInflateContentEncoding(HttpResponse* httpResponse);
 
 public:
   HttpResponseCommand(cuid_t cuid,

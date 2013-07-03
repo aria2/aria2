@@ -129,7 +129,7 @@ void HttpConnection::sendProxyRequest
   sendRequest(httpRequest, httpRequest->createProxyRequest());
 }
 
-std::shared_ptr<HttpResponse> HttpConnection::receiveResponse()
+std::unique_ptr<HttpResponse> HttpConnection::receiveResponse()
 {
   if(outstandingHttpRequests_.empty()) {
     throw DL_ABORT_EX(EX_NO_HTTP_REQUEST_ENTRY_FOUND);
@@ -140,24 +140,24 @@ std::shared_ptr<HttpResponse> HttpConnection::receiveResponse()
       throw DL_RETRY_EX(EX_GOT_EOF);
     }
   }
-  std::shared_ptr<HttpResponse> httpResponse;
   const auto& proc = outstandingHttpRequests_.front()->getHttpHeaderProcessor();
   if(proc->parse(socketRecvBuffer_->getBuffer(),
                  socketRecvBuffer_->getBufferLength())) {
     A2_LOG_INFO(fmt(MSG_RECEIVE_RESPONSE,
                     cuid_,
                     proc->getHeaderString().c_str()));
-    httpResponse.reset(new HttpResponse());
+    auto httpResponse = make_unique<HttpResponse>();
     httpResponse->setCuid(cuid_);
     httpResponse->setHttpHeader(proc->getResult());
     httpResponse->setHttpRequest(outstandingHttpRequests_.front()->
                                  getHttpRequest());
     socketRecvBuffer_->shiftBuffer(proc->getLastBytesProcessed());
     outstandingHttpRequests_.pop_front();
+    return httpResponse;
   } else {
     socketRecvBuffer_->shiftBuffer(proc->getLastBytesProcessed());
+    return std::unique_ptr<HttpResponse>{};
   }
-  return httpResponse;
 }
 
 bool HttpConnection::isIssued(const std::shared_ptr<Segment>& segment) const

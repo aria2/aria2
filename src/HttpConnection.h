@@ -117,7 +117,7 @@ public:
    *
    * @return HttpResponse or 0 if whole response header is not received
    */
-  std::shared_ptr<HttpResponse> receiveResponse();
+  std::unique_ptr<HttpResponse> receiveResponse();
 
   std::shared_ptr<HttpRequest> getFirstHttpRequest() const;
 

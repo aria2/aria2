@@ -44,7 +44,7 @@ class HttpConnection;
 
 class HttpDownloadCommand : public DownloadCommand {
 private:
-  std::shared_ptr<HttpResponse> httpResponse_;
+  std::unique_ptr<HttpResponse> httpResponse_;
   std::shared_ptr<HttpConnection> httpConnection_;
 protected:
   virtual bool prepareForNextSegment();
@@ -54,7 +54,7 @@ public:
                       const std::shared_ptr<Request>& req,
                       const std::shared_ptr<FileEntry>& fileEntry,
                       RequestGroup* requestGroup,
-                      const std::shared_ptr<HttpResponse>& httpResponse,
+                      std::unique_ptr<HttpResponse> httpResponse,
                       const std::shared_ptr<HttpConnection>& httpConnection,
                       DownloadEngine* e,
                       const std::shared_ptr<SocketCore>& s);

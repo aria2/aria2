@@ -60,13 +60,13 @@ HttpDownloadCommand::HttpDownloadCommand
  const std::shared_ptr<Request>& req,
  const std::shared_ptr<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
- const std::shared_ptr<HttpResponse>& httpResponse,
+ std::unique_ptr<HttpResponse> httpResponse,
  const std::shared_ptr<HttpConnection>& httpConnection,
  DownloadEngine* e,
  const std::shared_ptr<SocketCore>& socket)
   : DownloadCommand(cuid, req, fileEntry, requestGroup, e, socket,
                     httpConnection->getSocketRecvBuffer()),
-    httpResponse_(httpResponse),
+    httpResponse_(std::move(httpResponse)),
     httpConnection_(httpConnection)
 {}
 

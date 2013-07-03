@@ -47,7 +47,7 @@ class HttpSkipResponseCommand : public AbstractCommand {
 private:
   std::shared_ptr<HttpConnection> httpConnection_;
 
-  std::shared_ptr<HttpResponse> httpResponse_;
+  std::unique_ptr<HttpResponse> httpResponse_;
 
   std::shared_ptr<StreamFilter> streamFilter_;
 
@@ -69,7 +69,7 @@ public:
    const std::shared_ptr<FileEntry>& fileEntry,
    RequestGroup* requestGroup,
    const std::shared_ptr<HttpConnection>& httpConnection,
-   const std::shared_ptr<HttpResponse>& httpResponse,
+   std::unique_ptr<HttpResponse> httpResponse,
    DownloadEngine* e,
    const std::shared_ptr<SocketCore>& s);
 
