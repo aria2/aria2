@@ -82,7 +82,7 @@ namespace expr {
 
 template<typename L, typename OpTag, typename R>
 struct BinExpr {
-  BinExpr(const L& l, const R& r):l_(l), r_(r) {}
+  BinExpr(L l, R r):l_(l), r_(r) {}
 
   typedef typename OpTag::returnType returnType;
 
@@ -91,13 +91,13 @@ struct BinExpr {
     return OpTag::apply(l_[index], r_[index]);
   }
 
-  const L& l_;
-  const R& r_;
+  const L l_;
+  const R r_;
 };
 
 template<typename OpTag, typename A>
 struct UnExpr {
-  UnExpr(const A& a):a_(a) {}
+  UnExpr(A a):a_(a) {}
 
   typedef typename OpTag::returnType returnType;
 
@@ -106,7 +106,7 @@ struct UnExpr {
     return OpTag::apply(a_[index]);
   }
 
-  const A& a_;
+  const A a_;
 };
 
 template<typename T>
