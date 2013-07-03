@@ -65,12 +65,13 @@ enum {
 } // namespace
 
 ChunkedDecodingStreamFilter::ChunkedDecodingStreamFilter
-(const std::shared_ptr<StreamFilter>& delegate):
-  StreamFilter(delegate),
-  state_(PREV_CHUNK_SIZE),
-  chunkSize_(0),
-  chunkRemaining_(0),
-  bytesProcessed_(0) {}
+(std::unique_ptr<StreamFilter> delegate)
+  : StreamFilter{std::move(delegate)},
+    state_{PREV_CHUNK_SIZE},
+    chunkSize_{0},
+    chunkRemaining_{0},
+    bytesProcessed_{0}
+{}
 
 ChunkedDecodingStreamFilter::~ChunkedDecodingStreamFilter() {}
 

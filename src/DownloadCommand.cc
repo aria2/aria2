@@ -108,9 +108,8 @@ DownloadCommand::DownloadCommand
   peerStat_->downloadStart();
   getSegmentMan()->registerPeerStat(peerStat_);
 
-  WrDiskCache* wrDiskCache = getPieceStorage()->getWrDiskCache();
-  streamFilter_.reset(new SinkStreamFilter(wrDiskCache,
-                                           pieceHashValidationEnabled_));
+  streamFilter_ = make_unique<SinkStreamFilter>
+    (getPieceStorage()->getWrDiskCache(), pieceHashValidationEnabled_);
   streamFilter_->init();
   sinkFilterOnly_ = true;
   checkSocketRecvBuffer();
@@ -410,13 +409,13 @@ void DownloadCommand::completeSegment(cuid_t cuid,
 }
 
 void DownloadCommand::installStreamFilter
-(const std::shared_ptr<StreamFilter>& streamFilter)
+(std::unique_ptr<StreamFilter> streamFilter)
 {
   if(!streamFilter) {
     return;
   }
-  streamFilter->installDelegate(streamFilter_);
-  streamFilter_ = streamFilter;
+  streamFilter->installDelegate(std::move(streamFilter_));
+  streamFilter_ = std::move(streamFilter);
   const std::string& name = streamFilter_->getName();
   sinkFilterOnly_ = util::endsWith(name, SinkStreamFilter::NAME);
 }

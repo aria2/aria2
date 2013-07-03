@@ -84,51 +84,44 @@
 namespace aria2 {
 
 namespace {
-std::shared_ptr<StreamFilter> getTransferEncodingStreamFilter
+std::unique_ptr<StreamFilter> getTransferEncodingStreamFilter
 (HttpResponse* httpResponse,
- const std::shared_ptr<StreamFilter>& delegate = std::shared_ptr<StreamFilter>())
+ std::unique_ptr<StreamFilter> delegate = std::unique_ptr<StreamFilter>{})
 {
-  std::shared_ptr<StreamFilter> filter;
   if(httpResponse->isTransferEncodingSpecified()) {
-    filter = httpResponse->getTransferEncodingStreamFilter();
+    auto filter = httpResponse->getTransferEncodingStreamFilter();
     if(!filter) {
       throw DL_ABORT_EX
         (fmt(EX_TRANSFER_ENCODING_NOT_SUPPORTED,
              httpResponse->getTransferEncoding().c_str()));
     }
     filter->init();
-    filter->installDelegate(delegate);
+    filter->installDelegate(std::move(delegate));
+    return filter;
   }
-  if(!filter) {
-    filter = delegate;
-  }
-  return filter;
+  return delegate;
 }
 } // namespace
 
 namespace {
-std::shared_ptr<StreamFilter> getContentEncodingStreamFilter
+std::unique_ptr<StreamFilter> getContentEncodingStreamFilter
 (HttpResponse* httpResponse,
- const std::shared_ptr<StreamFilter>& delegate = std::shared_ptr<StreamFilter>())
+ std::unique_ptr<StreamFilter> delegate = std::unique_ptr<StreamFilter>{})
 {
-  std::shared_ptr<StreamFilter> filter;
   if(httpResponse->isContentEncodingSpecified()) {
-    filter = httpResponse->getContentEncodingStreamFilter();
+    auto filter = httpResponse->getContentEncodingStreamFilter();
     if(!filter) {
       A2_LOG_INFO
         (fmt("Content-Encoding %s is specified, but the current implementation"
              "doesn't support it. The decoding process is skipped and the"
              "downloaded content will be still encoded.",
              httpResponse->getContentEncoding().c_str()));
-    } else {
-      filter->init();
-      filter->installDelegate(delegate);
     }
+    filter->init();
+    filter->installDelegate(std::move(delegate));
+    return filter;
   }
-  if(!filter) {
-    filter = delegate;
-  }
-  return filter;
+  return delegate;
 }
 } // namespace
 
@@ -311,11 +304,13 @@ bool HttpResponseCommand::executeInternal()
         (httpResponse.get(),
          getContentEncodingStreamFilter(httpResponse.get()));
       getDownloadEngine()->addCommand
-        (createHttpDownloadCommand(std::move(httpResponse), teFilter));
+        (createHttpDownloadCommand(std::move(httpResponse),
+                                   std::move(teFilter)));
     } else {
       auto teFilter = getTransferEncodingStreamFilter(httpResponse.get());
       getDownloadEngine()->addCommand
-        (createHttpDownloadCommand(std::move(httpResponse), teFilter));
+        (createHttpDownloadCommand(std::move(httpResponse),
+                                   std::move(teFilter)));
     }
     return true;
   }
@@ -375,7 +370,8 @@ bool HttpResponseCommand::handleDefaultEncoding
      !getRequest()->isPipeliningEnabled()) {
     auto teFilter = getTransferEncodingStreamFilter(httpResponse.get());
     checkEntry->pushNextCommand
-      (createHttpDownloadCommand(std::move(httpResponse), teFilter));
+      (createHttpDownloadCommand(std::move(httpResponse),
+                                 std::move(teFilter)));
   } else {
     getSegmentMan()->cancelSegment(getCuid());
     getFileEntry()->poolRequest(getRequest());
@@ -477,7 +473,8 @@ bool HttpResponseCommand::handleOtherEncoding
   getSegmentMan()->getSegmentWithIndex(getCuid(), 0);
 
   getDownloadEngine()->addCommand
-    (createHttpDownloadCommand(std::move(httpResponse), streamFilter));
+    (createHttpDownloadCommand(std::move(httpResponse),
+                               std::move(streamFilter)));
   return true;
 }
 
@@ -492,7 +489,7 @@ bool HttpResponseCommand::skipResponseBody
     (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
      httpConnection_, std::move(httpResponse),
      getDownloadEngine(), getSocket());
-  command->installStreamFilter(filter);
+  command->installStreamFilter(std::move(filter));
 
   // If request method is HEAD or the response body is zero-length,
   // set command's status to real time so that avoid read check blocking
@@ -510,11 +507,10 @@ bool HttpResponseCommand::skipResponseBody
 }
 
 namespace {
-bool decideFileAllocation
-(const std::shared_ptr<StreamFilter>& filter)
+bool decideFileAllocation(StreamFilter* filter)
 {
 #ifdef HAVE_ZLIB
-  for(std::shared_ptr<StreamFilter> f = filter; f; f = f->getDelegate()){
+  for(StreamFilter* f = filter; f; f = f->getDelegate().get()){
     // Since the compressed file's length are returned in the response header
     // and the decompressed file size is unknown at this point, disable file
     // allocation here.
@@ -530,7 +526,7 @@ bool decideFileAllocation
 std::unique_ptr<HttpDownloadCommand>
 HttpResponseCommand::createHttpDownloadCommand
 (std::unique_ptr<HttpResponse> httpResponse,
- const std::shared_ptr<StreamFilter>& filter)
+ std::unique_ptr<StreamFilter> filter)
 {
 
   auto command = make_unique<HttpDownloadCommand>
@@ -541,11 +537,11 @@ HttpResponseCommand::createHttpDownloadCommand
   command->setStartupIdleTime(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME));
   command->setLowestDownloadSpeedLimit
     (getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));
-  command->installStreamFilter(filter);
   if(getRequestGroup()->isFileAllocationEnabled() &&
-     !decideFileAllocation(filter)) {
+     !decideFileAllocation(filter.get())) {
     getRequestGroup()->setFileAllocationEnabled(false);
   }
+  command->installStreamFilter(std::move(filter));
   getRequestGroup()->getURISelector()->tuneDownloadCommand
     (getFileEntry()->getRemainingUris(), command.get());
 

@@ -9,6 +9,7 @@
 #include "ByteArrayDiskWriter.h"
 #include "SinkStreamFilter.h"
 #include "MockSegment.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -24,8 +25,7 @@ class ChunkedDecodingStreamFilterTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetName);
   CPPUNIT_TEST_SUITE_END();
 
-  std::shared_ptr<ChunkedDecodingStreamFilter> filter_;
-  std::shared_ptr<SinkStreamFilter> sinkFilter_;
+  std::unique_ptr<ChunkedDecodingStreamFilter> filter_;
   std::shared_ptr<ByteArrayDiskWriter> writer_;
   std::shared_ptr<Segment> segment_;
 
@@ -36,12 +36,12 @@ class ChunkedDecodingStreamFilterTest:public CppUnit::TestFixture {
 public:
   void setUp()
   {
-    writer_.reset(new ByteArrayDiskWriter());
-    sinkFilter_.reset(new SinkStreamFilter());
-    filter_.reset(new ChunkedDecodingStreamFilter(sinkFilter_));
-    sinkFilter_->init();
+    writer_ = std::make_shared<ByteArrayDiskWriter>();
+    auto sinkFilter = make_unique<SinkStreamFilter>();
+    sinkFilter->init();
+    filter_ = make_unique<ChunkedDecodingStreamFilter>(std::move(sinkFilter));
     filter_->init();
-    segment_.reset(new MockSegment());
+    segment_ = std::make_shared<MockSegment>();
   }
 
   void testTransform();

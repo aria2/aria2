@@ -36,19 +36,19 @@
 
 namespace aria2 {
 
-StreamFilter::StreamFilter
-(const std::shared_ptr<StreamFilter>& delegate):
-  delegate_(delegate) {}
+StreamFilter::StreamFilter(std::unique_ptr<StreamFilter> delegate)
+  : delegate_(std::move(delegate))
+{}
 
 StreamFilter::~StreamFilter() {}
 
-bool StreamFilter::installDelegate(const std::shared_ptr<StreamFilter>& filter)
+bool StreamFilter::installDelegate(std::unique_ptr<StreamFilter> filter)
 {
   if(!delegate_) {
-    delegate_ = filter;
+    delegate_ = std::move(filter);
     return true;
   } else {
-    return delegate_->installDelegate(filter);
+    return delegate_->installDelegate(std::move(filter));
   }
 }
 

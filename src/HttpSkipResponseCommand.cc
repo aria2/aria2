@@ -87,13 +87,13 @@ HttpSkipResponseCommand::HttpSkipResponseCommand
 HttpSkipResponseCommand::~HttpSkipResponseCommand() {}
 
 void HttpSkipResponseCommand::installStreamFilter
-(const std::shared_ptr<StreamFilter>& streamFilter)
+(std::unique_ptr<StreamFilter> streamFilter)
 {
   if(!streamFilter) {
     return;
   }
-  streamFilter->installDelegate(streamFilter_);
-  streamFilter_ = streamFilter;
+  streamFilter->installDelegate(std::move(streamFilter_));
+  streamFilter_ = std::move(streamFilter);
   const std::string& name = streamFilter_->getName();
   sinkFilterOnly_ = util::endsWith(name, SinkStreamFilter::NAME);
 }

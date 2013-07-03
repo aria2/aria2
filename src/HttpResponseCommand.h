@@ -70,7 +70,7 @@ private:
   std::unique_ptr<HttpDownloadCommand>
   createHttpDownloadCommand
   (std::unique_ptr<HttpResponse> httpResponse,
-   const std::shared_ptr<StreamFilter>& streamFilter);
+   std::unique_ptr<StreamFilter> streamFilter);
 
   void updateLastModifiedTime(const Time& lastModified);
 

@@ -86,13 +86,13 @@ public:
 
   const std::string& getTransferEncoding() const;
 
-  std::shared_ptr<StreamFilter> getTransferEncodingStreamFilter() const;
+  std::unique_ptr<StreamFilter> getTransferEncodingStreamFilter() const;
 
   bool isContentEncodingSpecified() const;
 
   const std::string& getContentEncoding() const;
 
-  std::shared_ptr<StreamFilter> getContentEncodingStreamFilter() const;
+  std::unique_ptr<StreamFilter> getContentEncodingStreamFilter() const;
 
   int64_t getContentLength() const;
 

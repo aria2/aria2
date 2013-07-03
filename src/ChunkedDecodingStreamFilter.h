@@ -47,7 +47,7 @@ private:
   size_t bytesProcessed_;
 public:
   ChunkedDecodingStreamFilter
-  (const std::shared_ptr<StreamFilter>& delegate = std::shared_ptr<StreamFilter>());
+  (std::unique_ptr<StreamFilter> delegate = std::unique_ptr<StreamFilter>{});
 
   virtual ~ChunkedDecodingStreamFilter();
 

@@ -49,7 +49,7 @@ private:
 
   std::unique_ptr<HttpResponse> httpResponse_;
 
-  std::shared_ptr<StreamFilter> streamFilter_;
+  std::unique_ptr<StreamFilter> streamFilter_;
 
   bool sinkFilterOnly_;
 
@@ -75,7 +75,7 @@ public:
 
   virtual ~HttpSkipResponseCommand();
 
-  void installStreamFilter(const std::shared_ptr<StreamFilter>& streamFilter);
+  void installStreamFilter(std::unique_ptr<StreamFilter> streamFilter);
 
   void disableSocketCheck();
 };

@@ -48,10 +48,10 @@ class Segment;
 // Interface for basic decoding functionality.
 class StreamFilter {
 private:
-  std::shared_ptr<StreamFilter> delegate_;
+  std::unique_ptr<StreamFilter> delegate_;
 public:
   StreamFilter
-  (const std::shared_ptr<StreamFilter>& delegate = std::shared_ptr<StreamFilter>());
+  (std::unique_ptr<StreamFilter> delegate = std::unique_ptr<StreamFilter>{});
 
   virtual ~StreamFilter();
 
@@ -75,9 +75,9 @@ public:
   // tranfrom() invocation.
   virtual size_t getBytesProcessed() const = 0;
 
-  virtual bool installDelegate(const std::shared_ptr<StreamFilter>& filter);
+  virtual bool installDelegate(std::unique_ptr<StreamFilter> filter);
 
-  std::shared_ptr<StreamFilter> getDelegate() const
+  const std::unique_ptr<StreamFilter>& getDelegate() const
   {
     return delegate_;
   }

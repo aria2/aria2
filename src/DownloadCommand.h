@@ -69,7 +69,7 @@ private:
 
   void completeSegment(cuid_t cuid, const std::shared_ptr<Segment>& segment);
 
-  std::shared_ptr<StreamFilter> streamFilter_;
+  std::unique_ptr<StreamFilter> streamFilter_;
 
   bool sinkFilterOnly_;
 protected:
@@ -89,12 +89,12 @@ public:
                   const std::shared_ptr<SocketRecvBuffer>& socketRecvBuffer);
   virtual ~DownloadCommand();
 
-  const std::shared_ptr<StreamFilter>& getStreamFilter() const
+  const std::unique_ptr<StreamFilter>& getStreamFilter() const
   {
     return streamFilter_;
   }
 
-  void installStreamFilter(const std::shared_ptr<StreamFilter>& streamFilter);
+  void installStreamFilter(std::unique_ptr<StreamFilter> streamFilter);
 
   void setStartupIdleTime(time_t startupIdleTime)
   {
