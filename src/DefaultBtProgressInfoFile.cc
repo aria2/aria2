@@ -242,18 +242,17 @@ void DefaultBtProgressInfoFile::load()
     throw DL_ABORT_EX(fmt("Invalid info hash length: %d", infoHashLength));
   }
   if(infoHashLength > 0) {
-    array_ptr<unsigned char> savedInfoHash(new unsigned char[infoHashLength]);
-    READ_CHECK(fp, static_cast<unsigned char*>(savedInfoHash),
-               infoHashLength);
+    auto savedInfoHash = make_unique<unsigned char[]>((size_t)infoHashLength);
+    READ_CHECK(fp, savedInfoHash.get(), infoHashLength);
 #ifdef ENABLE_BITTORRENT
     if(infoHashCheckEnabled) {
       const unsigned char* infoHash = bittorrent::getInfoHash(dctx_);
       if(infoHashLength != INFO_HASH_LENGTH ||
-         memcmp(savedInfoHash, infoHash, INFO_HASH_LENGTH) != 0) {
+         memcmp(savedInfoHash.get(), infoHash, INFO_HASH_LENGTH) != 0) {
         throw DL_ABORT_EX
           (fmt("info hash mismatch. expected: %s, actual: %s",
                util::toHex(infoHash, INFO_HASH_LENGTH).c_str(),
-               util::toHex(savedInfoHash, infoHashLength).c_str()
+               util::toHex(savedInfoHash.get(), infoHashLength).c_str()
                ));
       }
     }
@@ -302,11 +301,10 @@ void DefaultBtProgressInfoFile::load()
            bitfieldLength));
   }
 
-  array_ptr<unsigned char> savedBitfield(new unsigned char[bitfieldLength]);
-  READ_CHECK(fp, static_cast<unsigned char*>(savedBitfield),
-             bitfieldLength);
+  auto savedBitfield = make_unique<unsigned char[]>((size_t)bitfieldLength);
+  READ_CHECK(fp, savedBitfield.get(), bitfieldLength);
   if(pieceLength == static_cast<uint32_t>(dctx_->getPieceLength())) {
-    pieceStorage_->setBitfield(savedBitfield, bitfieldLength);
+    pieceStorage_->setBitfield(savedBitfield.get(), bitfieldLength);
 
     uint32_t numInFlightPiece;
     READ_CHECK(fp, &numInFlightPiece, sizeof(numInFlightPiece));
@@ -345,11 +343,10 @@ void DefaultBtProgressInfoFile::load()
                static_cast<unsigned long>(piece->getBitfieldLength()),
                bitfieldLength));
       }
-      array_ptr<unsigned char> pieceBitfield
-        (new unsigned char[bitfieldLength]);
-      READ_CHECK(fp, static_cast<unsigned char*>(pieceBitfield),
-                 bitfieldLength);
-      piece->setBitfield(pieceBitfield, bitfieldLength);
+      auto pieceBitfield = make_unique<unsigned char[]>
+        ((size_t)bitfieldLength);
+      READ_CHECK(fp, pieceBitfield.get(), bitfieldLength);
+      piece->setBitfield(pieceBitfield.get(), bitfieldLength);
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
@@ -367,7 +364,7 @@ void DefaultBtProgressInfoFile::load()
       numInFlightPiece = ntohl(numInFlightPiece);
     }
     BitfieldMan src(pieceLength, totalLength);
-    src.setBitfield(savedBitfield, bitfieldLength);
+    src.setBitfield(savedBitfield.get(), bitfieldLength);
     if((src.getCompletedLength() || numInFlightPiece) &&
        !option_->getAsBool(PREF_ALLOW_PIECE_LENGTH_CHANGE)) {
       throw DOWNLOAD_FAILURE_EXCEPTION2

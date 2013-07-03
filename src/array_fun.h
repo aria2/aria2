@@ -53,45 +53,6 @@ char (&char_array_ref_fun(T (&)[0u]))[0u];
 // To calculate size of array at compile time, we use macro here.
 #define A2_ARRAY_LEN(X) sizeof(char_array_ref_fun(X))
 
-template<typename T>
-class array_ptr {
-private:
-  T* array_;
-
-  // Copies are not allowed. Let's make them private.
-  array_ptr(const array_ptr& s);
-
-  array_ptr& operator=(const array_ptr& s);
-
-  template<typename S>
-  array_ptr& operator=(const array_ptr<S>& s);
-
-public:
-  array_ptr():array_(0) {}
-
-  explicit array_ptr(T* array):array_(array) {}
-
-  ~array_ptr()
-  {
-    delete [] array_;
-  }
-
-  operator T*()
-  {
-    return array_;
-  }
-
-  operator const T*() const
-  {
-    return array_;
-  }
-
-  void reset(T* array)
-  {
-    array_ = array;
-  }
-};
-
 template<typename T, size_t N>
 class array_wrapper {
 private:

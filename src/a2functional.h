@@ -186,6 +186,12 @@ std::unique_ptr<T> make_unique(U&&... u)
   return std::unique_ptr<T>(new T(std::forward<U>(u)...));
 }
 
+template<typename T>
+std::unique_ptr<T> make_unique(size_t size)
+{
+  return std::unique_ptr<T>(new typename std::remove_extent<T>::type[size]());
+}
+
 } // namespace aria2
 
 #endif // D_A2_FUNCTIONAL_H

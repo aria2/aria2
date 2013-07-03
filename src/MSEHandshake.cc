@@ -128,15 +128,13 @@ void MSEHandshake::sendPublicKey()
 {
   A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - Sending public key.",
                    cuid_));
-  unsigned char* buf = new unsigned char[KEY_LENGTH+MAX_PAD_LENGTH];
-  array_ptr<unsigned char> bufp(buf);
-  dh_->getPublicKey(buf, KEY_LENGTH);
+  auto buf = make_unique<unsigned char[]>(KEY_LENGTH+MAX_PAD_LENGTH);
+  dh_->getPublicKey(buf.get(), KEY_LENGTH);
 
   size_t padLength =
     SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
-  dh_->generateNonce(buf+KEY_LENGTH, padLength);
-  socketBuffer_.pushBytes(buf, KEY_LENGTH+padLength);
-  bufp.reset(0);
+  dh_->generateNonce(buf.get()+KEY_LENGTH, padLength);
+  socketBuffer_.pushBytes(buf.release(), KEY_LENGTH+padLength);
 }
 
 void MSEHandshake::read()
@@ -271,23 +269,23 @@ void MSEHandshake::sendInitiatorStep2()
 {
   A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - Sending negotiation step2.", cuid_));
   // Assuming no exception
-  unsigned char* md = new unsigned char[20];
-  createReq1Hash(md);
-  socketBuffer_.pushBytes(md, 20);
+  auto md = make_unique<unsigned char[]>((size_t)20);
+  createReq1Hash(md.get());
+  socketBuffer_.pushBytes(md.release(), 20);
   // Assuming no exception
-  md = new unsigned char[20];
-  createReq23Hash(md, infoHash_);
-  socketBuffer_.pushBytes(md, 20);
+  md = make_unique<unsigned char[]>((size_t)20);
+  createReq23Hash(md.get(), infoHash_);
+  socketBuffer_.pushBytes(md.release(), 20);
   // buffer is filled in this order:
   //   VC(VC_LENGTH bytes),
   //   crypto_provide(CRYPTO_BITFIELD_LENGTH bytes),
   //   len(padC)(2 bytes),
   //   padC(len(padC) bytes <= MAX_PAD_LENGTH),
   //   len(IA)(2 bytes)
-  unsigned char* buffer = new unsigned char
-    [40+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+MAX_PAD_LENGTH+2];
-  array_ptr<unsigned char> bufp(buffer);
-  unsigned char* ptr = buffer;
+  auto buffer = make_unique<unsigned char[]>(40+VC_LENGTH+
+                                             CRYPTO_BITFIELD_LENGTH+2+
+                                             MAX_PAD_LENGTH+2);
+  unsigned char* ptr = buffer.get();
   // VC
   memcpy(ptr, VC, sizeof(VC));
   ptr += sizeof(VC);
@@ -317,8 +315,8 @@ void MSEHandshake::sendInitiatorStep2()
     memcpy(ptr, &iaLengthBE, sizeof(iaLengthBE));
   }
   ptr += 2;
-  encryptAndSendData(buffer, ptr-buffer);
-  bufp.reset(0);
+  size_t buflen = ptr-buffer.get();
+  encryptAndSendData(buffer.release(), buflen);
 }
 
 // This function reads exactly until the end of VC marker is reached.
@@ -522,10 +520,10 @@ void MSEHandshake::sendReceiverStep2()
   //   cryptoSelect(CRYPTO_BITFIELD_LENGTH bytes),
   //   len(padD)(2bytes),
   //   padD(len(padD)bytes <= MAX_PAD_LENGTH)
-  unsigned char* buffer = new unsigned char
-    [VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+MAX_PAD_LENGTH];
-  array_ptr<unsigned char> bufp(buffer);
-  unsigned char* ptr = buffer;
+  auto buffer = make_unique<unsigned char[]>(VC_LENGTH+
+                                             CRYPTO_BITFIELD_LENGTH+2+
+                                             MAX_PAD_LENGTH);
+  unsigned char* ptr = buffer.get();
   // VC
   memcpy(ptr, VC, sizeof(VC));
   ptr += sizeof(VC);
@@ -542,8 +540,8 @@ void MSEHandshake::sendReceiverStep2()
   // padD, all zeroed
   memset(ptr, 0, padDLength);
   ptr += padDLength;
-  encryptAndSendData(buffer, ptr-buffer);
-  bufp.reset(0);
+  size_t buflen = ptr - buffer.get();
+  encryptAndSendData(buffer.release(), buflen);
 }
 
 uint16_t MSEHandshake::verifyPadLength(const unsigned char* padlenbuf, const char* padName)

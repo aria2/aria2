@@ -11,7 +11,6 @@ class array_funTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testArray_negate);
   CPPUNIT_TEST(testArray_and);
   CPPUNIT_TEST(testArrayLength);
-  CPPUNIT_TEST(testArrayPtr);
   CPPUNIT_TEST(testArrayWrapper);
   CPPUNIT_TEST_SUITE_END();
 
@@ -21,7 +20,6 @@ public:
   void testArray_negate();
   void testArray_and();
   void testArrayLength();
-  void testArrayPtr();
   void testArrayWrapper();
 
   struct X{
@@ -71,34 +69,12 @@ void array_funTest::testArrayLength()
 }
 
 namespace {
-// Check operator[] in const context.
-void arrayPtrConst(const array_ptr<struct array_funTest::X>& ax)
-{
-  CPPUNIT_ASSERT_EQUAL(100, ax[3].m);
-  CPPUNIT_ASSERT_EQUAL(99, ax[2].m);
-}
-} // namespace
-
-namespace {
 void arrayPtrCast(struct array_funTest::X* x) {}
 } // namespace
 
 namespace {
 void arrayPtrConstCast(const struct array_funTest::X* x) {}
 } // namespace
-
-void array_funTest::testArrayPtr()
-{
-  array_ptr<struct X> ax(new struct X[10]);
-  ax[3].m = 100;
-  ax[2].m = 99;
-  CPPUNIT_ASSERT_EQUAL(100, ax[3].m);
-  CPPUNIT_ASSERT_EQUAL(99, ax[2].m);
-  arrayPtrConst(ax);
-
-  arrayPtrCast(ax);
-  arrayPtrConstCast(ax);
-}
 
 namespace {
 void arrayWrapperConst(const array_wrapper<int, 10>& array)

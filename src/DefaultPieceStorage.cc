@@ -185,12 +185,12 @@ void DefaultPieceStorage::getMissingPiece
  cuid_t cuid)
 {
   const size_t mislen = bitfieldMan_->getBitfieldLength();
-  array_ptr<unsigned char> misbitfield(new unsigned char[mislen]);
+  auto misbitfield = make_unique<unsigned char[]>(mislen);
   size_t blocks = bitfieldMan_->countBlock();
   size_t misBlock = 0;
   if(isEndGame()) {
     bool r = bitfieldMan_->getAllMissingIndexes
-      (misbitfield, mislen, bitfield, length);
+      (misbitfield.get(), mislen, bitfield, length);
     if(!r) {
       return;
     }
@@ -214,15 +214,15 @@ void DefaultPieceStorage::getMissingPiece
     }
   } else {
     bool r = bitfieldMan_->getAllMissingUnusedIndexes
-      (misbitfield, mislen, bitfield, length);
+      (misbitfield.get(), mislen, bitfield, length);
     if(!r) {
       return;
     }
     while(misBlock < minMissingBlocks) {
       size_t index;
-      if(pieceSelector_->select(index, misbitfield, blocks)) {
+      if(pieceSelector_->select(index, misbitfield.get(), blocks)) {
         pieces.push_back(checkOutPiece(index, cuid));
-        bitfield::flipBit(misbitfield, blocks, index);
+        bitfield::flipBit(misbitfield.get(), blocks, index);
         misBlock += pieces.back()->countMissingBlock();
       } else {
         break;

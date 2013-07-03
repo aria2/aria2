@@ -129,16 +129,15 @@ int wCharToAnsi(char* out, size_t outLength, const wchar_t* src)
 std::wstring utf8ToWChar(const char* src)
 {
   int len = utf8ToWChar(0, 0, src);
-  if(len == 0) {
+  if(len <= 0) {
     abort();
   }
-  array_ptr<wchar_t> buf(new wchar_t[len]);
-  len = utf8ToWChar(buf, len, src);
-  if(len == 0) {
+  auto buf = make_unique<wchar_t[]>((size_t)len);
+  len = utf8ToWChar(buf.get(), len, src);
+  if(len <= 0) {
     abort();
   } else {
-    std::wstring dest(buf);
-    return dest;
+    return buf.get();
   }
 }
 
@@ -151,47 +150,45 @@ std::string utf8ToNative(const std::string& src)
 {
   std::wstring wsrc = utf8ToWChar(src);
   int len = wCharToAnsi(0, 0, wsrc.c_str());
-  if(len == 0) {
+  if(len <= 0) {
     abort();
   }
-  array_ptr<char> buf(new char[len]);
-  len = wCharToAnsi(buf, len, wsrc.c_str());
-  if(len == 0) {
+  auto buf = make_unique<char[]>((size_t)len);
+  len = wCharToAnsi(buf.get(), len, wsrc.c_str());
+  if(len <= 0) {
     abort();
   } else {
-    std::string dest(buf);
-    return dest;
+    return buf.get();
   }
 }
 
 std::string wCharToUtf8(const std::wstring& wsrc)
 {
   int len = wCharToUtf8(0, 0, wsrc.c_str());
-  if(len == 0) {
+  if(len <= 0) {
     abort();
   }
-  array_ptr<char> buf(new char[len]);
-  len = wCharToUtf8(buf, len, wsrc.c_str());
-  if(len == 0) {
+  auto buf = make_unique<char[]>((size_t)len);
+  len = wCharToUtf8(buf.get(), len, wsrc.c_str());
+  if(len <= 0) {
     abort();
   } else {
-    std::string dest(buf);
-    return dest;
+    return buf.get();
   }
 }
 
 std::string nativeToUtf8(const std::string& src)
 {
   int len = ansiToWChar(0, 0, src.c_str());
-  if(len == 0) {
+  if(len <= 0) {
     abort();
   }
-  array_ptr<wchar_t> buf(new wchar_t[len]);
-  len = ansiToWChar(buf, len, src.c_str());
-  if(len == 0) {
+  auto buf = make_unique<wchar_t[]>((size_t)len);
+  len = ansiToWChar(buf.get(), len, src.c_str());
+  if(len <= 0) {
     abort();
   } else {
-    return wCharToUtf8(std::wstring(buf));
+    return wCharToUtf8(std::wstring(buf.get()));
   }
 }
 #endif // __MINGW32__
@@ -1770,12 +1767,12 @@ void executeHook
   }
   int cmdlineLen = utf8ToWChar(0, 0, cmdline.c_str());
   assert(cmdlineLen > 0);
-  array_ptr<wchar_t> wcharCmdline(new wchar_t[cmdlineLen]);
-  cmdlineLen = utf8ToWChar(wcharCmdline, cmdlineLen, cmdline.c_str());
+  auto wcharCmdline = std::unique_ptr<wchar_t[]>(new wchar_t[cmdlineLen]);
+  cmdlineLen = utf8ToWChar(wcharCmdline.get(), cmdlineLen, cmdline.c_str());
   assert(cmdlineLen > 0);
   A2_LOG_INFO(fmt("Executing user command: %s", cmdline.c_str()));
   DWORD rc = CreateProcessW(batch ? utf8ToWChar(cmdexe).c_str() : NULL,
-                            wcharCmdline,
+                            wcharCmdline.get(),
                             NULL,
                             NULL,
                             true,

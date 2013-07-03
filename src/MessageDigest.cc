@@ -186,10 +186,9 @@ void MessageDigest::digest(unsigned char* md)
 std::string MessageDigest::digest()
 {
   size_t length = pImpl_->getDigestLength();
-  array_ptr<unsigned char> buf(new unsigned char[length]);
-  pImpl_->digest(buf);
-  std::string hd(&buf[0], &buf[length]);
-  return hd;
+  auto buf = make_unique<unsigned char[]>(length);
+  pImpl_->digest(buf.get());
+  return std::string(&buf[0], &buf[length]);
 }
 
 } // namespace aria2

@@ -214,16 +214,13 @@ void BtPieceMessage::send()
 void BtPieceMessage::pushPieceData(int64_t offset, int32_t length) const
 {
   assert(length <= 16*1024);
-  array_ptr<unsigned char> buf
-    (new unsigned char[length+MESSAGE_HEADER_LENGTH]);
-  createMessageHeader(buf);
+  auto buf = make_unique<unsigned char[]>(length+MESSAGE_HEADER_LENGTH);
+  createMessageHeader(buf.get());
   ssize_t r;
-  r = getPieceStorage()->getDiskAdaptor()->readData(buf+MESSAGE_HEADER_LENGTH,
-                                                    length, offset);
+  r = getPieceStorage()->getDiskAdaptor()->readData
+    (buf.get()+MESSAGE_HEADER_LENGTH, length, offset);
   if(r == length) {
-    unsigned char* dbuf = buf;
-    buf.reset(0);
-    getPeerConnection()->pushBytes(dbuf, length+MESSAGE_HEADER_LENGTH,
+    getPeerConnection()->pushBytes(buf.release(), length+MESSAGE_HEADER_LENGTH,
                                    make_unique<PieceSendUpdate>
                                    (getPeer(), MESSAGE_HEADER_LENGTH));
     // To avoid upload rate overflow, we update the length here at

@@ -152,11 +152,11 @@ void OptionParser::parseArg
   size_t numPublicOption = countPublicOption(handlers_.begin(),
                                              handlers_.end());
   int lopt;
-  array_ptr<struct option> longOpts(new struct option[numPublicOption+1]);
-  putOptions(longOpts, &lopt, handlers_.begin(), handlers_.end());
+  auto longOpts = make_unique<struct option[]>(numPublicOption+1);
+  putOptions(longOpts.get(), &lopt, handlers_.begin(), handlers_.end());
   std::string optstring = createOptstring(handlers_.begin(), handlers_.end());
   while(1) {
-    int c = getopt_long(argc, argv, optstring.c_str(), longOpts, 0);
+    int c = getopt_long(argc, argv, optstring.c_str(), longOpts.get(), 0);
     if(c == -1) {
       break;
     }

@@ -197,9 +197,9 @@ DefaultBtRequestFactory::createRequestMessagesOnEndGame(size_t max)
       itr != eoi && requests.size() < max; ++itr) {
     auto& piece = *itr;
     const size_t mislen = piece->getBitfieldLength();
-    array_ptr<unsigned char> misbitfield(new unsigned char[mislen]);
+    auto misbitfield = make_unique<unsigned char[]>(mislen);
 
-    piece->getAllMissingBlockIndexes(misbitfield, mislen);
+    piece->getAllMissingBlockIndexes(misbitfield.get(), mislen);
 
     auto missingBlockIndexes = std::vector<size_t>{};
     size_t blockIndex = 0;
