@@ -181,13 +181,15 @@ struct RefLess {
 };
 
 template<typename T, typename... U>
-std::unique_ptr<T> make_unique(U&&... u)
+typename std::enable_if<!std::is_array<T>::value, std::unique_ptr<T>>::type
+make_unique(U&&... u)
 {
   return std::unique_ptr<T>(new T(std::forward<U>(u)...));
 }
 
 template<typename T>
-std::unique_ptr<T> make_unique(size_t size)
+typename std::enable_if<std::is_array<T>::value, std::unique_ptr<T>>::type
+make_unique(size_t size)
 {
   return std::unique_ptr<T>(new typename std::remove_extent<T>::type[size]());
 }
