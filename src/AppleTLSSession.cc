@@ -349,7 +349,7 @@ AppleTLSSession::AppleTLSSession(AppleTLSContext* ctx)
       state_ = st_error;
       return;
     }
-    std::unique_ptr<void, decltype(&CFRelease)> del_certs(certs, CFRelease);
+    std::unique_ptr<void, decltype(&CFRelease)> del_certs((void*)certs, CFRelease);
     lastError_ = SSLSetCertificate(sslCtx_, certs);
     if (lastError_ != noErr) {
       A2_LOG_ERROR(fmt("AppleTLS: Failed to set credentials: %s", getLastErrorString().c_str()));
