@@ -90,7 +90,7 @@ private:
 
   std::shared_ptr<PieceStatMan> pieceStatMan_;
 
-  std::shared_ptr<PieceSelector> pieceSelector_;
+  std::unique_ptr<PieceSelector> pieceSelector_;
   std::shared_ptr<StreamPieceSelector> streamPieceSelector_;
 
   WrDiskCache* wrDiskCache_;
@@ -301,15 +301,14 @@ public:
     return pieceStatMan_;
   }
 
-  void setPieceSelector(const std::shared_ptr<PieceSelector>& pieceSelector)
-  {
-    pieceSelector_ = pieceSelector;
-  }
+  void setPieceSelector(std::unique_ptr<PieceSelector> pieceSelector);
 
-  const std::shared_ptr<PieceSelector>& getPieceSelector() const
+  const std::unique_ptr<PieceSelector>& getPieceSelector() const
   {
     return pieceSelector_;
   }
+
+  std::unique_ptr<PieceSelector> popPieceSelector();
 
   void setWrDiskCache(WrDiskCache* wrDiskCache)
   {

@@ -83,7 +83,7 @@ DefaultPieceStorage::DefaultPieceStorage
    endGamePieceNum_(END_GAME_PIECE_NUM),
    option_(option),
    pieceStatMan_(new PieceStatMan(downloadContext->getNumPieces(), true)),
-   pieceSelector_(new RarestPieceSelector(pieceStatMan_)),
+   pieceSelector_(make_unique<RarestPieceSelector>(pieceStatMan_)),
    wrDiskCache_(0)
 {
   const std::string& pieceSelectorOpt =
@@ -864,6 +864,17 @@ size_t DefaultPieceStorage::getNextUsedIndex(size_t index)
 void DefaultPieceStorage::onDownloadIncomplete()
 {
   streamPieceSelector_->onBitfieldInit();
+}
+
+void DefaultPieceStorage::setPieceSelector
+(std::unique_ptr<PieceSelector> pieceSelector)
+{
+  pieceSelector_ = std::move(pieceSelector);
+}
+
+std::unique_ptr<PieceSelector> DefaultPieceStorage::popPieceSelector()
+{
+  return std::move(pieceSelector_);
 }
 
 } // namespace aria2
