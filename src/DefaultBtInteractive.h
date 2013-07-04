@@ -173,9 +173,10 @@ public:
 
   virtual void initiateHandshake();
 
-  virtual std::shared_ptr<BtMessage> receiveHandshake(bool quickReply = false);
+  virtual std::unique_ptr<BtHandshakeMessage> receiveHandshake
+  (bool quickReply = false);
 
-  virtual std::shared_ptr<BtMessage> receiveAndSendHandshake();
+  virtual std::unique_ptr<BtHandshakeMessage> receiveAndSendHandshake();
 
   virtual void doPostHandshakeProcessing();
 

@@ -48,11 +48,12 @@ class BtMessageReceiver {
 public:
   virtual ~BtMessageReceiver() {}
 
-  virtual std::shared_ptr<BtHandshakeMessage> receiveHandshake(bool quickReply = false) = 0;
+  virtual std::unique_ptr<BtHandshakeMessage> receiveHandshake
+  (bool quickReply = false) = 0;
 
-  virtual std::shared_ptr<BtHandshakeMessage> receiveAndSendHandshake() = 0;
+  virtual std::unique_ptr<BtHandshakeMessage> receiveAndSendHandshake() = 0;
 
-  virtual std::shared_ptr<BtMessage> receiveMessage() = 0;
+  virtual std::unique_ptr<BtMessage> receiveMessage() = 0;
 };
 
 } // namespace aria2

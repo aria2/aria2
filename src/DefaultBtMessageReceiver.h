@@ -58,12 +58,12 @@ private:
 public:
   DefaultBtMessageReceiver();
 
-  virtual std::shared_ptr<BtHandshakeMessage> receiveHandshake
+  virtual std::unique_ptr<BtHandshakeMessage> receiveHandshake
   (bool quickReply = false);
 
-  virtual std::shared_ptr<BtHandshakeMessage> receiveAndSendHandshake();
+  virtual std::unique_ptr<BtHandshakeMessage> receiveAndSendHandshake();
 
-  virtual std::shared_ptr<BtMessage> receiveMessage();
+  virtual std::unique_ptr<BtMessage> receiveMessage();
 
   void setDownloadContext(DownloadContext* downloadContext);
 

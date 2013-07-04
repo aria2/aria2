@@ -119,9 +119,9 @@ void DefaultBtInteractive::initiateHandshake() {
   dispatcher_->sendMessages();
 }
 
-std::shared_ptr<BtMessage> DefaultBtInteractive::receiveHandshake(bool quickReply) {
-  std::shared_ptr<BtHandshakeMessage> message =
-    btMessageReceiver_->receiveHandshake(quickReply);
+std::unique_ptr<BtHandshakeMessage> DefaultBtInteractive::receiveHandshake
+(bool quickReply) {
+  auto message = btMessageReceiver_->receiveHandshake(quickReply);
   if(!message) {
     return nullptr;
   }
@@ -131,11 +131,9 @@ std::shared_ptr<BtMessage> DefaultBtInteractive::receiveHandshake(bool quickRepl
       (fmt("CUID#%" PRId64 " - Drop connection from the same Peer ID",
            cuid_));
   }
-  const PeerSet& usedPeers = peerStorage_->getUsedPeers();
-  for(PeerSet::const_iterator i = usedPeers.begin(), eoi = usedPeers.end();
-      i != eoi; ++i) {
-    if((*i)->isActive() &&
-       memcmp((*i)->getPeerId(), message->getPeerId(), PEER_ID_LENGTH) == 0) {
+  for(auto& peer : peerStorage_->getUsedPeers()) {
+    if(peer->isActive() &&
+       memcmp(peer->getPeerId(), message->getPeerId(), PEER_ID_LENGTH) == 0) {
       throw DL_ABORT_EX
         (fmt("CUID#%" PRId64 " - Same Peer ID has been already seen.",
              cuid_));
@@ -166,7 +164,9 @@ std::shared_ptr<BtMessage> DefaultBtInteractive::receiveHandshake(bool quickRepl
   return message;
 }
 
-std::shared_ptr<BtMessage> DefaultBtInteractive::receiveAndSendHandshake() {
+std::unique_ptr<BtHandshakeMessage>
+DefaultBtInteractive::receiveAndSendHandshake()
+{
   return receiveHandshake(true);
 }
 
@@ -297,7 +297,7 @@ size_t DefaultBtInteractive::receiveMessages() {
        downloadContext_->getOwnerRequestGroup()->doesDownloadSpeedExceed()) {
       break;
     }
-    std::shared_ptr<BtMessage> message = btMessageReceiver_->receiveMessage();
+    auto message = btMessageReceiver_->receiveMessage();
     if(!message) {
       break;
     }

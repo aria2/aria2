@@ -47,6 +47,7 @@
 #include "DownloadContext.h"
 #include "Peer.h"
 #include "BtMessage.h"
+#include "BtHandshakeMessage.h"
 #include "BtRuntime.h"
 #include "PeerStorage.h"
 #include "DefaultBtMessageDispatcher.h"
@@ -327,8 +328,7 @@ bool PeerInteractionCommand::executeInternal() {
           break;
         }
       }
-      std::shared_ptr<BtMessage> handshakeMessage =
-        btInteractive_->receiveHandshake();
+      auto handshakeMessage = btInteractive_->receiveHandshake();
       if(!handshakeMessage) {
         done = true;
         break;
@@ -338,8 +338,7 @@ bool PeerInteractionCommand::executeInternal() {
       break;
     }
     case RECEIVER_WAIT_HANDSHAKE: {
-      std::shared_ptr<BtMessage> handshakeMessage =
-        btInteractive_->receiveAndSendHandshake();
+      auto handshakeMessage = btInteractive_->receiveAndSendHandshake();
       if(!handshakeMessage) {
         done = true;
         break;
