@@ -221,12 +221,12 @@ FileEntry::findFasterRequest(const std::shared_ptr<Request>& base)
   const int startupIdleTime = 10;
   if(requestPool_.empty() ||
      lastFasterReplace_.difference(global::wallclock()) < startupIdleTime) {
-    return std::shared_ptr<Request>();
+    return nullptr;
   }
   const std::shared_ptr<PeerStat>& fastest =
     (*requestPool_.begin())->getPeerStat();
   if(!fastest) {
-    return std::shared_ptr<Request>();
+    return nullptr;
   }
   const std::shared_ptr<PeerStat>& basestat = base->getPeerStat();
   // TODO hard coded value. See PREF_STARTUP_IDLE_TIME
@@ -241,7 +241,7 @@ FileEntry::findFasterRequest(const std::shared_ptr<Request>& base)
     lastFasterReplace_ = global::wallclock();
     return fastestRequest;
   }
-  return std::shared_ptr<Request>();
+  return nullptr;
 }
 
 std::shared_ptr<Request>
@@ -253,7 +253,7 @@ FileEntry::findFasterRequest
   const int startupIdleTime = 10;
   const int SPEED_THRESHOLD = 20*1024;
   if(lastFasterReplace_.difference(global::wallclock()) < startupIdleTime) {
-    return std::shared_ptr<Request>();
+    return nullptr;
   }
   std::vector<std::string> inFlightHosts;
   enumerateInFlightHosts(inFlightRequests_.begin(), inFlightRequests_.end(),
@@ -307,7 +307,7 @@ FileEntry::findFasterRequest
     return fastestRequest;
   }
   A2_LOG_DEBUG("No faster server found.");
-  return std::shared_ptr<Request>();
+  return nullptr;
 }
 
 void FileEntry::storePool(const std::shared_ptr<Request>& request)

@@ -205,7 +205,7 @@ std::shared_ptr<UDPTrackerRequest> DefaultBtAnnounce::createUDPTrackerRequest
 (const std::string& remoteAddr, uint16_t remotePort, uint16_t localPort)
 {
   if(!adjustAnnounceList()) {
-    return std::shared_ptr<UDPTrackerRequest>();
+    return nullptr;
   }
   NetStat& stat = downloadContext_->getNetStat();
   int64_t left =

@@ -351,7 +351,7 @@ std::shared_ptr<ServerStat> AdaptiveURISelector::getServerStats
     std::string protocol = uri::getFieldString(us, USR_SCHEME, uri.c_str());
     return serverStatMan_->find(host, protocol);
   } else {
-    return std::shared_ptr<ServerStat>();
+    return nullptr;
   }
 }
 

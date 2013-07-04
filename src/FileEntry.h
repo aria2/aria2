@@ -287,7 +287,7 @@ std::shared_ptr<FileEntry> getFirstRequestedFileEntry
       return *first;
     }
   }
-  return std::shared_ptr<FileEntry>();
+  return nullptr;
 }
 
 // Counts the number of files selected in the given iterator range

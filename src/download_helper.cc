@@ -532,12 +532,12 @@ createMetadataInfoFromFirstFileEntry
  const std::shared_ptr<DownloadContext>& dctx)
 {
   if(dctx->getFileEntries().empty()) {
-    return std::shared_ptr<MetadataInfo>();
+    return nullptr;
   } else {
     std::vector<std::string> uris;
     dctx->getFileEntries()[0]->getUris(uris);
     if(uris.empty()) {
-      return std::shared_ptr<MetadataInfo>();
+      return nullptr;
     }
     return std::make_shared<MetadataInfo>(gid, uris[0]);
   }

@@ -142,13 +142,13 @@ std::shared_ptr<Piece> UnknownLengthPieceStorage::getMissingPiece
  cuid_t cuid)
 {
   if(downloadFinished_) {
-    return std::shared_ptr<Piece>();
+    return nullptr;
   }
   if(!piece_) {
     piece_.reset(new Piece());
     return piece_;
   } else {
-    return std::shared_ptr<Piece>();
+    return nullptr;
   }
 }
 
@@ -159,7 +159,7 @@ std::shared_ptr<Piece> UnknownLengthPieceStorage::getMissingPiece
   if(index == 0) {
     return getMissingPiece(0, 0, 0, cuid);
   } else {
-    return std::shared_ptr<Piece>();
+    return nullptr;
   }
 }
 
@@ -172,7 +172,7 @@ std::shared_ptr<Piece> UnknownLengthPieceStorage::getPiece(size_t index)
       return piece_;
     }
   } else {
-    return std::shared_ptr<Piece>();
+    return nullptr;
   }
 }
 

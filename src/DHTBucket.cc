@@ -235,7 +235,7 @@ std::shared_ptr<DHTNode> DHTBucket::getNode(const unsigned char* nodeID, const s
     std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
   if(itr == nodes_.end() ||
      (*itr)->getIPAddress() != ipaddr || (*itr)->getPort() != port) {
-    return std::shared_ptr<DHTNode>();
+    return nullptr;
   } else {
     return *itr;
   }
@@ -278,7 +278,7 @@ std::shared_ptr<DHTNode> DHTBucket::getLRUQuestionableNode() const
   std::deque<std::shared_ptr<DHTNode> >::const_iterator i =
     std::find_if(nodes_.begin(), nodes_.end(), FindQuestionableNode());
   if(i == nodes_.end()) {
-    return std::shared_ptr<DHTNode>();
+    return nullptr;
   } else {
     return *i;
   }

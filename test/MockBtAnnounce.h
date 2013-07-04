@@ -29,7 +29,7 @@ public:
   virtual std::shared_ptr<UDPTrackerRequest>
   createUDPTrackerRequest(const std::string& remoteAddr, uint16_t remotePort,
                           uint16_t localPort) {
-    return std::shared_ptr<UDPTrackerRequest>();
+    return nullptr;
   }
 
   void setAnnounceUrl(const std::string& url) {

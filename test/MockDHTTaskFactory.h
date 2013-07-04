@@ -13,18 +13,18 @@ public:
   createPingTask(const std::shared_ptr<DHTNode>& remoteNode,
                  int numRetry = 0)
   {
-    return std::shared_ptr<DHTTask>();
+    return nullptr;
   }
 
   virtual std::shared_ptr<DHTTask>
   createNodeLookupTask(const unsigned char* targetID)
   {
-    return std::shared_ptr<DHTTask>();
+    return nullptr;
   }
 
   virtual std::shared_ptr<DHTTask> createBucketRefreshTask()
   {
-    return std::shared_ptr<DHTTask>();
+    return nullptr;
   }
 
   virtual std::shared_ptr<DHTTask>
@@ -32,20 +32,20 @@ public:
                        uint16_t tcpPort,
                        const std::shared_ptr<PeerStorage>& peerStorage)
   {
-    return std::shared_ptr<DHTTask>();
+    return nullptr;
   }
 
   virtual std::shared_ptr<DHTTask>
   createPeerAnnounceTask(const unsigned char* infoHash)
   {
-    return std::shared_ptr<DHTTask>();
+    return nullptr;
   }
 
   virtual std::shared_ptr<DHTTask>
   createReplaceNodeTask(const std::shared_ptr<DHTBucket>& bucket,
                         const std::shared_ptr<DHTNode>& newNode)
   {
-    return std::shared_ptr<DHTTask>();
+    return nullptr;
   }
 };
 

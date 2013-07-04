@@ -96,7 +96,7 @@ DownloadContext::findFileEntryByOffset(int64_t offset) const
 {
   if(fileEntries_.empty() ||
      (offset > 0 && fileEntries_.back()->getLastOffset() <= offset)) {
-    return std::shared_ptr<FileEntry>();
+    return nullptr;
   }
 
   std::shared_ptr<FileEntry> obj(new FileEntry());
@@ -222,7 +222,7 @@ DownloadContext::getFirstRequestedFileEntry() const
       return *i;
     }
   }
-  return std::shared_ptr<FileEntry>();
+  return nullptr;
 }
 
 size_t DownloadContext::countRequestedFileEntry() const

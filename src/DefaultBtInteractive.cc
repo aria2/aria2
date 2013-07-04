@@ -123,7 +123,7 @@ std::shared_ptr<BtMessage> DefaultBtInteractive::receiveHandshake(bool quickRepl
   std::shared_ptr<BtHandshakeMessage> message =
     btMessageReceiver_->receiveHandshake(quickReply);
   if(!message) {
-    return std::shared_ptr<BtMessage>();
+    return nullptr;
   }
   if(memcmp(message->getPeerId(), bittorrent::getStaticPeerId(),
             PEER_ID_LENGTH) == 0) {

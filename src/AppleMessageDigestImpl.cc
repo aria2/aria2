@@ -134,7 +134,7 @@ std::shared_ptr<MessageDigestImpl> MessageDigestImpl::create
   if (hashType == "md5") {
     return std::shared_ptr<MessageDigestImpl>(new MessageDigestMD5());
   }
-  return std::shared_ptr<MessageDigestImpl>();
+  return nullptr;
 }
 
 bool MessageDigestImpl::supports(const std::string& hashType)

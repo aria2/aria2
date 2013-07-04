@@ -103,7 +103,7 @@ std::shared_ptr<DHTTask>
 DHTTaskFactoryImpl::createPeerAnnounceTask(const unsigned char* infoHash)
 {
   // TODO
-  return std::shared_ptr<DHTTask>();
+  return nullptr;
 }
 
 std::shared_ptr<DHTTask>

@@ -62,7 +62,7 @@ std::shared_ptr<ServerStat> ServerStatMan::find(const std::string& hostname,
   std::shared_ptr<ServerStat> ss(new ServerStat(hostname, protocol));
   ServerStatSet::iterator i = serverStats_.find(ss);
   if(i == serverStats_.end()) {
-    return std::shared_ptr<ServerStat>();
+    return nullptr;
   } else {
     return *i;
   }

@@ -129,7 +129,7 @@ createMethod(const std::string& methodName)
   } else if(methodName == SystemMulticallRpcMethod::getMethodName()) {
     return std::shared_ptr<RpcMethod>(new SystemMulticallRpcMethod());
   } else {
-    return std::shared_ptr<RpcMethod>();
+    return nullptr;
   }
 }
 } // namespace

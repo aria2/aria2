@@ -119,7 +119,7 @@ std::shared_ptr<BtMessage> DefaultBtMessageReceiver::receiveMessage() {
   size_t dataLength = 0;
   // Give 0 to PeerConnection::receiveMessage() to prevent memcpy.
   if(!peerConnection_->receiveMessage(0, dataLength)) {
-    return std::shared_ptr<BtMessage>();
+    return nullptr;
   }
   std::shared_ptr<BtMessage> msg =
     messageFactory_->createBtMessage(peerConnection_->getMsgPayloadBuffer(),

@@ -77,7 +77,7 @@ public:
 
   virtual std::shared_ptr<Peer> checkoutPeer(cuid_t cuid)
   {
-    return std::shared_ptr<Peer>();
+    return nullptr;
   }
 
   virtual void returnPeer(const std::shared_ptr<Peer>& peer)

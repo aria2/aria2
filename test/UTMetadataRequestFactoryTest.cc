@@ -34,7 +34,7 @@ public:
      cuid_t cuid)
     {
       if(missingIndexes.empty()) {
-        return std::shared_ptr<Piece>();
+        return nullptr;
       } else {
         size_t index = missingIndexes.front();
         missingIndexes.pop_front();

@@ -328,7 +328,7 @@ DefaultPieceStorage::getMissingPiece
   std::vector<std::shared_ptr<Piece> > pieces;
   getMissingPiece(pieces, 1, peer, cuid);
   if(pieces.empty()) {
-    return std::shared_ptr<Piece>();
+    return nullptr;
   } else {
     return pieces.front();
   }
@@ -342,7 +342,7 @@ std::shared_ptr<Piece> DefaultPieceStorage::getMissingPiece
   std::vector<std::shared_ptr<Piece> > pieces;
   getMissingPiece(pieces, 1, peer, excludedIndexes, cuid);
   if(pieces.empty()) {
-    return std::shared_ptr<Piece>();
+    return nullptr;
   } else {
     return pieces.front();
   }
@@ -355,7 +355,7 @@ std::shared_ptr<Piece> DefaultPieceStorage::getMissingFastPiece
   std::vector<std::shared_ptr<Piece> > pieces;
   getMissingFastPiece(pieces, 1, peer, cuid);
   if(pieces.empty()) {
-    return std::shared_ptr<Piece>();
+    return nullptr;
   } else {
     return pieces.front();
   }
@@ -369,7 +369,7 @@ std::shared_ptr<Piece> DefaultPieceStorage::getMissingFastPiece
   std::vector<std::shared_ptr<Piece> > pieces;
   getMissingFastPiece(pieces, 1, peer, excludedIndexes, cuid);
   if(pieces.empty()) {
-    return std::shared_ptr<Piece>();
+    return nullptr;
   } else {
     return pieces.front();
   }
@@ -394,7 +394,7 @@ std::shared_ptr<Piece> DefaultPieceStorage::getMissingPiece
      (index, minSplitSize, ignoreBitfield, length)) {
     return checkOutPiece(index, cuid);
   } else {
-    return std::shared_ptr<Piece>();
+    return nullptr;
   }
 }
 
@@ -403,7 +403,7 @@ std::shared_ptr<Piece> DefaultPieceStorage::getMissingPiece
  cuid_t cuid)
 {
   if(hasPiece(index) || isPieceUsed(index)) {
-    return std::shared_ptr<Piece>();
+    return nullptr;
   } else {
     return checkOutPiece(index, cuid);
   }

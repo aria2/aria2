@@ -225,7 +225,7 @@ void DefaultPeerStorage::deleteUnusedPeer(size_t delSize) {
 std::shared_ptr<Peer> DefaultPeerStorage::checkoutPeer(cuid_t cuid)
 {
   if(!isPeerAvailable()) {
-    return std::shared_ptr<Peer>();
+    return nullptr;
   }
   std::shared_ptr<Peer> peer = unusedPeers_.front();
   unusedPeers_.pop_front();

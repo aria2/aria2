@@ -132,7 +132,7 @@ std::shared_ptr<Segment> SegmentMan::checkoutSegment
 (cuid_t cuid, const std::shared_ptr<Piece>& piece)
 {
   if(!piece) {
-    return std::shared_ptr<Segment>();
+    return nullptr;
   }
   A2_LOG_DEBUG(fmt("Attach segment#%lu to CUID#%" PRId64 ".",
                    static_cast<unsigned long>(piece->getIndex()),
@@ -241,7 +241,7 @@ void SegmentMan::getSegment
 std::shared_ptr<Segment> SegmentMan::getSegmentWithIndex
 (cuid_t cuid, size_t index) {
   if(index > 0 && downloadContext_->getNumPieces() <= index) {
-    return std::shared_ptr<Segment>();
+    return nullptr;
   }
   return checkoutSegment(cuid, pieceStorage_->getMissingPiece(index, cuid));
 }
@@ -250,14 +250,14 @@ std::shared_ptr<Segment> SegmentMan::getCleanSegmentIfOwnerIsIdle
 (cuid_t cuid, size_t index)
 {
   if(index > 0 && downloadContext_->getNumPieces() <= index) {
-    return std::shared_ptr<Segment>();
+    return nullptr;
   }
   for(SegmentEntries::const_iterator itr = usedSegmentEntries_.begin(),
         eoi = usedSegmentEntries_.end(); itr != eoi; ++itr) {
     const std::shared_ptr<SegmentEntry>& segmentEntry = *itr;
     if(segmentEntry->segment->getIndex() == index) {
       if(segmentEntry->segment->getWrittenLength() > 0) {
-        return std::shared_ptr<Segment>();
+        return nullptr;
       }
       if(segmentEntry->cuid == cuid) {
         return segmentEntry->segment;
@@ -268,11 +268,11 @@ std::shared_ptr<Segment> SegmentMan::getCleanSegmentIfOwnerIsIdle
         cancelSegment(owner);
         return getSegmentWithIndex(cuid, index);
       } else {
-        return std::shared_ptr<Segment>();
+        return nullptr;
       }
     }
   }
-  return std::shared_ptr<Segment>();
+  return nullptr;
 }
 
 void SegmentMan::cancelSegmentInternal
@@ -399,7 +399,7 @@ std::shared_ptr<PeerStat> SegmentMan::getPeerStat(cuid_t cuid) const
       return *i;
     }
   }
-  return std::shared_ptr<PeerStat>();
+  return nullptr;
 }
 
 namespace {
