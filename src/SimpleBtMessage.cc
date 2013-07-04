@@ -65,7 +65,7 @@ void SimpleBtMessage::send() {
 
 std::unique_ptr<ProgressUpdate> SimpleBtMessage::getProgressUpdate()
 {
-  return std::unique_ptr<ProgressUpdate>{};
+  return nullptr;
 }
 
 } // namespace aria2

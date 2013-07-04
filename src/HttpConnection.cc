@@ -159,7 +159,7 @@ std::unique_ptr<HttpResponse> HttpConnection::receiveResponse()
     return httpResponse;
   } else {
     socketRecvBuffer_->shiftBuffer(proc->getLastBytesProcessed());
-    return std::unique_ptr<HttpResponse>{};
+    return nullptr;
   }
 }
 

@@ -61,17 +61,17 @@ std::unique_ptr<Cookie> parseNsCookie
   util::splitIter(cookieStr.begin(), cookieStr.end(), std::back_inserter(vs),
                   '\t', true);
   if(vs.size() < 6) {
-    return std::unique_ptr<Cookie>{};
+    return nullptr;
   }
   vs[0].first = util::lstripIter(vs[0].first, vs[0].second, '.');
   if(vs[5].first == vs[5].second || vs[0].first == vs[0].second ||
      !cookie::goodPath(vs[2].first, vs[2].second)) {
-    return std::unique_ptr<Cookie>{};
+    return nullptr;
   }
   int64_t expiryTime;
   if(!util::parseLLIntNoThrow(expiryTime,
                               std::string(vs[4].first, vs[4].second))) {
-    return std::unique_ptr<Cookie>{};
+    return nullptr;
   }
   if(std::numeric_limits<time_t>::max() < expiryTime) {
     expiryTime = std::numeric_limits<time_t>::max();

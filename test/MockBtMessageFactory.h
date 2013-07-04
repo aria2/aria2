@@ -34,90 +34,90 @@ public:
 
   virtual std::unique_ptr<BtMessage>
   createBtMessage(const unsigned char* msg, size_t msgLength) {
-    return std::unique_ptr<BtMessage>{};
+    return nullptr;
   };
 
   virtual std::unique_ptr<BtHandshakeMessage>
   createHandshakeMessage(const unsigned char* msg, size_t msgLength) {
-    return std::unique_ptr<BtHandshakeMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<BtHandshakeMessage>
   createHandshakeMessage(const unsigned char* infoHash,
                          const unsigned char* peerId) {
-    return std::unique_ptr<BtHandshakeMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<BtRequestMessage>
   createRequestMessage(const std::shared_ptr<Piece>& piece, size_t blockIndex) {
-    return std::unique_ptr<BtRequestMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<BtCancelMessage>
   createCancelMessage(size_t index, int32_t begin, int32_t length) {
-    return std::unique_ptr<BtCancelMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<BtPieceMessage>
   createPieceMessage(size_t index, int32_t begin, int32_t length) {
-    return std::unique_ptr<BtPieceMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<BtHaveMessage> createHaveMessage(size_t index) {
-    return std::unique_ptr<BtHaveMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<BtChokeMessage> createChokeMessage() {
-    return std::unique_ptr<BtChokeMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<BtUnchokeMessage> createUnchokeMessage() {
-    return std::unique_ptr<BtUnchokeMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<BtInterestedMessage> createInterestedMessage() {
-    return std::unique_ptr<BtInterestedMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<BtNotInterestedMessage> createNotInterestedMessage() {
-    return std::unique_ptr<BtNotInterestedMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<BtBitfieldMessage> createBitfieldMessage() {
-    return std::unique_ptr<BtBitfieldMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<BtKeepAliveMessage> createKeepAliveMessage() {
-    return std::unique_ptr<BtKeepAliveMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<BtHaveAllMessage> createHaveAllMessage() {
-    return std::unique_ptr<BtHaveAllMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<BtHaveNoneMessage> createHaveNoneMessage() {
-    return std::unique_ptr<BtHaveNoneMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<BtRejectMessage>
   createRejectMessage(size_t index, int32_t begin, int32_t length) {
-    return std::unique_ptr<BtRejectMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<BtAllowedFastMessage> createAllowedFastMessage
   (size_t index) {
-    return std::unique_ptr<BtAllowedFastMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<BtPortMessage> createPortMessage(uint16_t port)
   {
-    return std::unique_ptr<BtPortMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<BtExtendedMessage>
   createBtExtendedMessage(std::unique_ptr<ExtensionMessage> extmsg)
   {
-    return std::unique_ptr<BtExtendedMessage>{};
+    return nullptr;
   }
 };
 

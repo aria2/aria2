@@ -230,13 +230,13 @@ std::unique_ptr<Cookie> parse
   std::string::const_iterator eq = cookieStr.begin();
   for(; eq != nvEnd && *eq != '='; ++eq);
   if(eq == nvEnd) {
-    return std::unique_ptr<Cookie>{};
+    return nullptr;
   }
   std::pair<std::string::const_iterator,
             std::string::const_iterator> p =
     util::stripIter(cookieStr.begin(), eq);
   if(p.first == p.second) {
-    return std::unique_ptr<Cookie>{};
+    return nullptr;
   }
   Scip cookieName(p.first, p.second);
   p = util::stripIter(eq+1, nvEnd);
@@ -275,18 +275,18 @@ std::unique_ptr<Cookie> parse
       if(parseDate(expiryTime, attrp.first, attrp.second)) {
         foundExpires = true;
       } else {
-        return std::unique_ptr<Cookie>{};
+        return nullptr;
       }
     } else if(util::strieq(p.first, p.second, "max-age")) {
       if(attrp.first == attrp.second ||
          (!in(static_cast<unsigned char>(*attrp.first), 0x30u, 0x39u) &&
           *attrp.first != '-')) {
-        return std::unique_ptr<Cookie>{};
+        return nullptr;
       }
       for(std::string::const_iterator s = attrp.first+1,
             eos = attrp.second; s != eos; ++s) {
         if(!in(static_cast<unsigned char>(*s), 0x30u, 0x39u)) {
-          return std::unique_ptr<Cookie>{};
+          return nullptr;
         }
       }
       int64_t delta;
@@ -305,17 +305,17 @@ std::unique_ptr<Cookie> parse
           }
         }
       } else {
-        return std::unique_ptr<Cookie>{};
+        return nullptr;
       }
     } else if(util::strieq(p.first, p.second, "domain")) {
       if(attrp.first == attrp.second) {
-        return std::unique_ptr<Cookie>{};
+        return nullptr;
       }
       std::string::const_iterator noDot = attrp.first;
       std::string::const_iterator end = attrp.second;
       for(; noDot != end && *noDot == '.'; ++noDot);
       if(noDot == end) {
-        return std::unique_ptr<Cookie>{};
+        return nullptr;
       }
       cookieDomain.assign(noDot, end);
     } else if(util::strieq(p.first, p.second, "path")) {
@@ -348,7 +348,7 @@ std::unique_ptr<Cookie> parse
   } else if(domainMatch(canonicalizedHost, cookieDomain)) {
     hostOnly = util::isNumericHost(canonicalizedHost);
   } else {
-    return std::unique_ptr<Cookie>{};
+    return nullptr;
   }
 
   if(cookiePath.empty()) {

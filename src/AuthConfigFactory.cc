@@ -74,7 +74,7 @@ AuthConfigFactory::createAuthConfig
       auto i = findBasicCred(request->getHost(), request->getPort(),
                              request->getDir());
       if(i == std::end(basicCreds_)) {
-        return std::unique_ptr<AuthConfig>();
+        return nullptr;
       } else {
         return AuthConfig::create((*i)->user_, (*i)->password_);
       }
@@ -114,7 +114,7 @@ AuthConfigFactory::createAuthConfig
         createFtpAuthResolver(op)->resolveAuthConfig(request->getHost());
     }
   } else {
-    return std::unique_ptr<AuthConfig>();
+    return nullptr;
   }
 }
 

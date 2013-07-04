@@ -86,11 +86,11 @@ std::unique_ptr<LpdMessage> LpdMessageReceiver::receiveMessage()
     try {
       length = socket_->readDataFrom(buf, sizeof(buf), peerAddr);
       if(length == 0) {
-        return std::unique_ptr<LpdMessage>{};
+        return nullptr;
       }
     } catch(RecoverableException& e) {
       A2_LOG_INFO_EX("Failed to receive LPD message.", e);
-      return std::unique_ptr<LpdMessage>{};
+      return nullptr;
     }
     HttpHeaderProcessor proc(HttpHeaderProcessor::SERVER_PARSER);
     try {

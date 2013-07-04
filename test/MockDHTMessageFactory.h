@@ -26,7 +26,7 @@ public:
   createQueryMessage(const Dict* dict,
                      const std::string& ipaddr, uint16_t port)
   {
-    return std::unique_ptr<DHTQueryMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<DHTResponseMessage>
@@ -46,7 +46,7 @@ public:
   createPingMessage(const std::shared_ptr<DHTNode>& remoteNode,
                     const std::string& transactionID = "")
   {
-    return std::unique_ptr<DHTPingMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<DHTPingReplyMessage>
@@ -54,7 +54,7 @@ public:
                          const unsigned char* remoteNodeID,
                          const std::string& transactionID)
   {
-    return std::unique_ptr<DHTPingReplyMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<DHTFindNodeMessage>
@@ -62,7 +62,7 @@ public:
                         const unsigned char* targetNodeID,
                         const std::string& transactionID = "")
   {
-    return std::unique_ptr<DHTFindNodeMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<DHTFindNodeReplyMessage>
@@ -71,7 +71,7 @@ public:
    std::vector<std::shared_ptr<DHTNode>> closestKNodes,
    const std::string& transactionID)
   {
-    return std::unique_ptr<DHTFindNodeReplyMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<DHTGetPeersMessage>
@@ -79,7 +79,7 @@ public:
                         const unsigned char* infoHash,
                         const std::string& transactionID)
   {
-    return std::unique_ptr<DHTGetPeersMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<DHTGetPeersReplyMessage>
@@ -90,7 +90,7 @@ public:
    const std::string& token,
    const std::string& transactionID)
   {
-    return std::unique_ptr<DHTGetPeersReplyMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<DHTAnnouncePeerMessage>
@@ -100,21 +100,21 @@ public:
                             const std::string& token,
                             const std::string& transactionID = "")
   {
-    return std::unique_ptr<DHTAnnouncePeerMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<DHTAnnouncePeerReplyMessage>
   createAnnouncePeerReplyMessage(const std::shared_ptr<DHTNode>& remoteNode,
                                  const std::string& transactionID)
   {
-    return std::unique_ptr<DHTAnnouncePeerReplyMessage>{};
+    return nullptr;
   }
 
   virtual std::unique_ptr<DHTUnknownMessage>
   createUnknownMessage(const unsigned char* data, size_t length,
                        const std::string& ipaddr, uint16_t port)
   {
-    return std::unique_ptr<DHTUnknownMessage>{};
+    return nullptr;
   }
 
   void setLocalNode(const std::shared_ptr<DHTNode>& node)

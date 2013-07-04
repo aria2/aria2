@@ -199,7 +199,7 @@ HttpResponse::getTransferEncodingStreamFilter() const
       return make_unique<ChunkedDecodingStreamFilter>();
     }
   }
-  return std::unique_ptr<StreamFilter>{};
+  return nullptr;
 }
 
 bool HttpResponse::isContentEncodingSpecified() const
@@ -221,7 +221,7 @@ HttpResponse::getContentEncodingStreamFilter() const
     return make_unique<GZipDecodingStreamFilter>();
   }
 #endif // HAVE_ZLIB
-  return std::unique_ptr<StreamFilter>{};
+  return nullptr;
 }
 
 int64_t HttpResponse::getContentLength() const

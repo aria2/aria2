@@ -61,7 +61,7 @@ std::unique_ptr<AuthConfig> AuthConfig::create
 (std::string user, std::string password)
 {
   if(user.empty()) {
-    return std::unique_ptr<AuthConfig>();
+    return nullptr;
   } else {
     return make_unique<AuthConfig>(std::move(user), std::move(password));
   }
