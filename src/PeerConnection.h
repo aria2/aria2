@@ -77,8 +77,8 @@ private:
   SocketBuffer socketBuffer_;
 
   bool encryptionEnabled_;
-  std::shared_ptr<ARC4Encryptor> encryptor_;
-  std::shared_ptr<ARC4Encryptor> decryptor_;
+  std::unique_ptr<ARC4Encryptor> encryptor_;
+  std::unique_ptr<ARC4Encryptor> decryptor_;
 
   bool prevPeek_;
 
@@ -111,8 +111,8 @@ public:
   bool receiveHandshake
   (unsigned char* data, size_t& dataLength, bool peek = false);
 
-  void enableEncryption(const std::shared_ptr<ARC4Encryptor>& encryptor,
-                        const std::shared_ptr<ARC4Encryptor>& decryptor);
+  void enableEncryption(std::unique_ptr<ARC4Encryptor> encryptor,
+                        std::unique_ptr<ARC4Encryptor> decryptor);
 
   void presetBuffer(const unsigned char* data, size_t length);
 

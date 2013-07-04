@@ -88,8 +88,8 @@ private:
 
   CRYPTO_TYPE negotiatedCryptoType_;
   DHKeyExchange* dh_;
-  std::shared_ptr<ARC4Encryptor> encryptor_;
-  std::shared_ptr<ARC4Encryptor> decryptor_;
+  std::unique_ptr<ARC4Encryptor> encryptor_;
+  std::unique_ptr<ARC4Encryptor> decryptor_;
   unsigned char infoHash_[INFO_HASH_LENGTH];
   unsigned char secret_[KEY_LENGTH];
   bool initiator_;
@@ -197,15 +197,19 @@ public:
     return negotiatedCryptoType_;
   }
 
-  const std::shared_ptr<ARC4Encryptor>& getEncryptor() const
+  const std::unique_ptr<ARC4Encryptor>& getEncryptor() const
   {
     return encryptor_;
   }
 
-  const std::shared_ptr<ARC4Encryptor>& getDecryptor() const
+  const std::unique_ptr<ARC4Encryptor>& getDecryptor() const
   {
     return decryptor_;
   }
+
+  std::unique_ptr<ARC4Encryptor> popEncryptor();
+
+  std::unique_ptr<ARC4Encryptor> popDecryptor();
 
   const unsigned char* getBuffer() const
   {

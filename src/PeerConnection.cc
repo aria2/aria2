@@ -232,11 +232,11 @@ void PeerConnection::readData
 }
 
 void PeerConnection::enableEncryption
-(const std::shared_ptr<ARC4Encryptor>& encryptor,
- const std::shared_ptr<ARC4Encryptor>& decryptor)
+(std::unique_ptr<ARC4Encryptor> encryptor,
+ std::unique_ptr<ARC4Encryptor> decryptor)
 {
-  encryptor_ = encryptor;
-  decryptor_ = decryptor;
+  encryptor_ = std::move(encryptor);
+  decryptor_ = std::move(decryptor);
 
   encryptionEnabled_ = true;
 }

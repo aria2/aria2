@@ -209,8 +209,8 @@ void ReceiverMSEHandshakeCommand::createCommand()
   std::shared_ptr<PeerConnection> peerConnection
     (new PeerConnection(getCuid(), getPeer(), getSocket()));
   if(mseHandshake_->getNegotiatedCryptoType() == MSEHandshake::CRYPTO_ARC4) {
-    peerConnection->enableEncryption(mseHandshake_->getEncryptor(),
-                                     mseHandshake_->getDecryptor());
+    peerConnection->enableEncryption(mseHandshake_->popEncryptor(),
+                                     mseHandshake_->popDecryptor());
   }
   // Since initiator cannot send payload stream before reading step2
   // from receiver, mseHandshake_->getBufferLength() should be 0.

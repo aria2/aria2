@@ -153,13 +153,13 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
           (new PeerConnection(getCuid(), getPeer(), getSocket()));
         if(mseHandshake_->getNegotiatedCryptoType() ==
            MSEHandshake::CRYPTO_ARC4){
-          peerConnection->enableEncryption(mseHandshake_->getEncryptor(),
-                                           mseHandshake_->getDecryptor());
           size_t buflen = mseHandshake_->getBufferLength();
           mseHandshake_->getDecryptor()->encrypt(buflen,
                                                  mseHandshake_->getBuffer(),
                                                  mseHandshake_->getBuffer());
           peerConnection->presetBuffer(mseHandshake_->getBuffer(), buflen);
+          peerConnection->enableEncryption(mseHandshake_->popEncryptor(),
+                                           mseHandshake_->popDecryptor());
         } else {
           peerConnection->presetBuffer(mseHandshake_->getBuffer(),
                                        mseHandshake_->getBufferLength());
