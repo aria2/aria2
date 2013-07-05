@@ -330,8 +330,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   }
 
   {
-    const std::shared_ptr<FileAllocationEntry>& entry =
-      e->getFileAllocationMan()->getPickedEntry();
+    auto& entry = e->getFileAllocationMan()->getPickedEntry();
     if(entry) {
       o << " [FileAlloc:#"
         << GroupId::toAbbrevHex(entry->getRequestGroup()->getGID()) << " "
@@ -350,8 +349,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   }
 #ifdef ENABLE_MESSAGE_DIGEST
   {
-    const std::shared_ptr<CheckIntegrityEntry>& entry =
-      e->getCheckIntegrityMan()->getPickedEntry();
+    auto& entry = e->getCheckIntegrityMan()->getPickedEntry();
     if(entry) {
       o << " [Checksum:#"
         << GroupId::toAbbrevHex(entry->getRequestGroup()->getGID()) << " "

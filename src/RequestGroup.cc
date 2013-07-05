@@ -216,18 +216,16 @@ void RequestGroup::closeFile()
 
 // TODO The function name is not intuitive at all.. it does not convey
 // that this function open file.
-std::shared_ptr<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
+std::unique_ptr<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
 {
-  std::shared_ptr<BtProgressInfoFile> infoFile
-    (new DefaultBtProgressInfoFile(downloadContext_, pieceStorage_,
-                                   option_.get()));
-  std::shared_ptr<CheckIntegrityEntry> checkEntry;
+  auto infoFile = std::make_shared<DefaultBtProgressInfoFile>
+    (downloadContext_, pieceStorage_, option_.get());
   if(option_->getAsBool(PREF_CHECK_INTEGRITY) &&
      downloadContext_->isPieceHashVerificationAvailable()) {
     // When checking piece hash, we don't care file is downloaded and
     // infoFile exists.
     loadAndOpenFile(infoFile);
-    checkEntry.reset(new StreamCheckIntegrityEntry(this));
+    return make_unique<StreamCheckIntegrityEntry>(this);
   } else if(isPreLocalFileCheckEnabled() &&
             (infoFile->exists() ||
              (File(getFirstFilePath()).exists() &&
@@ -242,10 +240,9 @@ std::shared_ptr<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
 #ifdef ENABLE_MESSAGE_DIGEST
       if(downloadContext_->isChecksumVerificationNeeded()) {
         A2_LOG_INFO(MSG_HASH_CHECK_NOT_DONE);
-        ChecksumCheckIntegrityEntry* tempEntry =
-          new ChecksumCheckIntegrityEntry(this);
+        auto tempEntry = make_unique<ChecksumCheckIntegrityEntry>(this);
         tempEntry->setRedownload(true);
-        checkEntry.reset(tempEntry);
+        return std::move(tempEntry);
       } else
 #endif // ENABLE_MESSAGE_DIGEST
         {
@@ -253,9 +250,10 @@ std::shared_ptr<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
           A2_LOG_NOTICE(fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
                             gid_->toHex().c_str(),
                             downloadContext_->getBasePath().c_str()));
+          return nullptr;
         }
     } else {
-      checkEntry.reset(new StreamCheckIntegrityEntry(this));
+      return make_unique<StreamCheckIntegrityEntry>(this);
     }
   } else
 #ifdef ENABLE_MESSAGE_DIGEST
@@ -263,17 +261,15 @@ std::shared_ptr<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
        downloadContext_->isChecksumVerificationAvailable()) {
       pieceStorage_->markAllPiecesDone();
       loadAndOpenFile(infoFile);
-      ChecksumCheckIntegrityEntry* tempEntry =
-        new ChecksumCheckIntegrityEntry(this);
+      auto tempEntry = make_unique<ChecksumCheckIntegrityEntry>(this);
       tempEntry->setRedownload(true);
-      checkEntry.reset(tempEntry);
+      return std::move(tempEntry);
     } else
 #endif // ENABLE_MESSAGE_DIGEST
       {
         loadAndOpenFile(infoFile);
-        checkEntry.reset(new StreamCheckIntegrityEntry(this));
+        return make_unique<StreamCheckIntegrityEntry>(this);
       }
-  return checkEntry;
 }
 
 void RequestGroup::createInitialCommand
@@ -379,11 +375,7 @@ void RequestGroup::createInitialCommand
           A2_LOG_NOTICE(_("For BitTorrent Magnet URI, enabling DHT is strongly"
                           " recommended. See --enable-dht option."));
         }
-
-        std::shared_ptr<CheckIntegrityEntry> entry
-          (new BtCheckIntegrityEntry(this));
-        entry->onDownloadIncomplete(commands, e);
-
+        BtCheckIntegrityEntry{this}.onDownloadIncomplete(commands, e);
         return;
       }
       removeDefunctControlFile(progressInfoFile);
@@ -454,14 +446,14 @@ void RequestGroup::createInitialCommand
           e->addCommand(std::move(command));
         }
       }
-      std::shared_ptr<CheckIntegrityEntry> entry(new BtCheckIntegrityEntry(this));
+      auto entry = make_unique<BtCheckIntegrityEntry>(this);
       // --bt-seed-unverified=true is given and download has completed, skip
       // validation for piece hashes.
       if(option_->getAsBool(PREF_BT_SEED_UNVERIFIED) &&
          pieceStorage_->downloadFinished()) {
         entry->onDownloadFinished(commands, e);
       } else {
-        processCheckIntegrityEntry(commands, entry, e);
+        processCheckIntegrityEntry(commands, std::move(entry), e);
       }
       return;
     }
@@ -485,10 +477,9 @@ void RequestGroup::createInitialCommand
          (downloadContext_, std::shared_ptr<PieceStorage>(), option_.get()));
       adjustFilename(progressInfoFile);
       initPieceStorage();
-      std::shared_ptr<CheckIntegrityEntry> checkEntry =
-        createCheckIntegrityEntry();
+      auto checkEntry = createCheckIntegrityEntry();
       if(checkEntry) {
-        processCheckIntegrityEntry(commands, checkEntry, e);
+        processCheckIntegrityEntry(commands, std::move(checkEntry), e);
       }
     }
   } else {
@@ -538,15 +529,15 @@ void RequestGroup::createInitialCommand
       }
     }
     progressInfoFile_ = progressInfoFile;
-    std::shared_ptr<CheckIntegrityEntry> checkIntegrityEntry
-      (new StreamCheckIntegrityEntry(this));
-    processCheckIntegrityEntry(commands, checkIntegrityEntry, e);
+    processCheckIntegrityEntry(commands,
+                               make_unique<StreamCheckIntegrityEntry>(this),
+                               e);
   }
 }
 
 void RequestGroup::processCheckIntegrityEntry
 (std::vector<std::unique_ptr<Command>>& commands,
- const std::shared_ptr<CheckIntegrityEntry>& entry,
+ std::unique_ptr<CheckIntegrityEntry> entry,
  DownloadEngine* e)
 {
   int64_t actualFileSize = pieceStorage_->getDiskAdaptor()->size();
@@ -565,7 +556,7 @@ void RequestGroup::processCheckIntegrityEntry
     // enableSaveControlFile() will be called after hash checking is
     // done. See CheckIntegrityCommand.
     disableSaveControlFile();
-    e->getCheckIntegrityMan()->pushEntry(entry);
+    e->getCheckIntegrityMan()->pushEntry(std::move(entry));
   } else
 #endif // ENABLE_MESSAGE_DIGEST
     {

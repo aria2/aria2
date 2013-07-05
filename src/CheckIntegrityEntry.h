@@ -56,7 +56,7 @@ protected:
   void setValidator(std::unique_ptr<IteratableValidator> validator);
 
   void proceedFileAllocation(std::vector<std::unique_ptr<Command>>& commands,
-                             const std::shared_ptr<FileAllocationEntry>& entry,
+                             std::unique_ptr<FileAllocationEntry> entry,
                              DownloadEngine* e);
 public:
   CheckIntegrityEntry(RequestGroup* requestGroup,

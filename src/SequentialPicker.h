@@ -45,15 +45,15 @@ namespace aria2 {
 template<typename T>
 class SequentialPicker {
 private:
-  std::deque<std::shared_ptr<T> > entries_;
-  std::shared_ptr<T> pickedEntry_;
+  std::deque<std::unique_ptr<T>> entries_;
+  std::unique_ptr<T> pickedEntry_;
 public:
   bool isPicked() const
   {
     return pickedEntry_.get();
   }
 
-  const std::shared_ptr<T>& getPickedEntry() const
+  const std::unique_ptr<T>& getPickedEntry() const
   {
     return pickedEntry_;
   }
@@ -68,20 +68,19 @@ public:
     return !entries_.empty();
   }
 
-  std::shared_ptr<T> pickNext()
+  T* pickNext()
   {
-    std::shared_ptr<T> r;
     if(hasNext()) {
-      r = entries_.front();
+      pickedEntry_ = std::move(entries_.front());
       entries_.pop_front();
-      pickedEntry_ = r;
+      return pickedEntry_.get();
     }
-    return r;
+    return nullptr;
   }
 
-  void pushEntry(const std::shared_ptr<T>& entry)
+  void pushEntry(std::unique_ptr<T> entry)
   {
-    entries_.push_back(entry);
+    entries_.push_back(std::move(entry));
   }
 
   size_t countEntryInQueue() const

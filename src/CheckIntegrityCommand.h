@@ -45,12 +45,12 @@ class CheckIntegrityEntry;
 
 class CheckIntegrityCommand : public RealtimeCommand {
 private:
-  std::shared_ptr<CheckIntegrityEntry> entry_;
+  CheckIntegrityEntry* entry_;
 public:
   CheckIntegrityCommand(cuid_t cuid,
                         RequestGroup* requestGroup,
                         DownloadEngine* e,
-                        const std::shared_ptr<CheckIntegrityEntry>& entry);
+                        CheckIntegrityEntry* entry);
 
   virtual ~CheckIntegrityCommand();
 

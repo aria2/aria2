@@ -400,11 +400,12 @@ bool FtpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
       getRequestGroup()->initPieceStorage();
       if(getDownloadContext()->isChecksumVerificationNeeded()) {
         A2_LOG_DEBUG("Zero length file exists. Verify checksum.");
-        std::shared_ptr<ChecksumCheckIntegrityEntry> entry
-          (new ChecksumCheckIntegrityEntry(getRequestGroup()));
+        auto entry = make_unique<ChecksumCheckIntegrityEntry>
+          (getRequestGroup());
         entry->initValidator();
         getPieceStorage()->getDiskAdaptor()->openExistingFile();
-        getDownloadEngine()->getCheckIntegrityMan()->pushEntry(entry);
+        getDownloadEngine()->getCheckIntegrityMan()->pushEntry
+          (std::move(entry));
         sequence_ = SEQ_EXIT;
       } else
 #endif // ENABLE_MESSAGE_DIGEST
@@ -434,10 +435,11 @@ bool FtpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
       // HttpResponseCommand::handleOtherEncoding()
       if(getDownloadContext()->isChecksumVerificationNeeded()) {
         A2_LOG_DEBUG("Verify checksum for zero-length file");
-        std::shared_ptr<ChecksumCheckIntegrityEntry> entry
-          (new ChecksumCheckIntegrityEntry(getRequestGroup()));
+        auto entry = make_unique<ChecksumCheckIntegrityEntry>
+          (getRequestGroup());
         entry->initValidator();
-        getDownloadEngine()->getCheckIntegrityMan()->pushEntry(entry);
+        getDownloadEngine()->getCheckIntegrityMan()->pushEntry
+          (std::move(entry));
         sequence_ = SEQ_EXIT;
       } else
 #endif // ENABLE_MESSAGE_DIGEST
@@ -465,8 +467,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
       return false;
     }
 
-    std::shared_ptr<CheckIntegrityEntry> checkIntegrityEntry =
-      getRequestGroup()->createCheckIntegrityEntry();
+    auto checkIntegrityEntry = getRequestGroup()->createCheckIntegrityEntry();
     if(!checkIntegrityEntry) {
       sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
       poolConnection();
@@ -478,7 +479,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
     // AbstractCommand::execute()
     getSegmentMan()->getSegmentWithIndex(getCuid(), 0);
 
-    prepareForNextAction(checkIntegrityEntry);
+    prepareForNextAction(std::move(checkIntegrityEntry));
 
     disableReadCheckSocket();
   }

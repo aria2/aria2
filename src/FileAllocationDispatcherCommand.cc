@@ -47,11 +47,11 @@ FileAllocationDispatcherCommand::FileAllocationDispatcherCommand
 (cuid_t cuid,
  const std::shared_ptr<FileAllocationMan>& fileAllocMan,
  DownloadEngine* e)
-  : SequentialDispatcherCommand<FileAllocationEntry>(cuid, fileAllocMan, e)
+  : SequentialDispatcherCommand<FileAllocationEntry>{cuid, fileAllocMan, e}
 {}
 
 std::unique_ptr<Command> FileAllocationDispatcherCommand::createCommand
-(const std::shared_ptr<FileAllocationEntry>& entry)
+(FileAllocationEntry* entry)
 {
   cuid_t newCUID = getDownloadEngine()->newCUID();
   A2_LOG_INFO(fmt(MSG_FILE_ALLOCATION_DISPATCH, newCUID));

@@ -86,11 +86,11 @@ void CheckIntegrityEntry::cutTrailingGarbage()
 
 void CheckIntegrityEntry::proceedFileAllocation
 (std::vector<std::unique_ptr<Command>>& commands,
- const std::shared_ptr<FileAllocationEntry>& entry,
+ std::unique_ptr<FileAllocationEntry> entry,
  DownloadEngine* e)
 {
   if(getRequestGroup()->needsFileAllocation()) {
-    e->getFileAllocationMan()->pushEntry(entry);
+    e->getFileAllocationMan()->pushEntry(std::move(entry));
   } else {
     entry->prepareForNextAction(commands, e);
   }

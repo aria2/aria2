@@ -2,9 +2,9 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace aria2 {
+#include "a2functional.h"
 
-typedef std::shared_ptr<int> Integer;
+namespace aria2 {
 
 class SequentialPickerTest:public CppUnit::TestFixture {
 
@@ -26,8 +26,8 @@ void SequentialPickerTest::testPick()
   CPPUNIT_ASSERT(!picker.hasNext());
   CPPUNIT_ASSERT_EQUAL((size_t)0, picker.countEntryInQueue());
 
-  picker.pushEntry(Integer(new int(1)));
-  picker.pushEntry(Integer(new int(2)));
+  picker.pushEntry(make_unique<int>(1));
+  picker.pushEntry(make_unique<int>(2));
 
   CPPUNIT_ASSERT(picker.hasNext());
   CPPUNIT_ASSERT_EQUAL((size_t)2, picker.countEntryInQueue());
@@ -35,7 +35,7 @@ void SequentialPickerTest::testPick()
   picker.pickNext();
 
   CPPUNIT_ASSERT(picker.isPicked());
-  CPPUNIT_ASSERT_EQUAL(*Integer(new int(1)), *picker.getPickedEntry());
+  CPPUNIT_ASSERT_EQUAL(1, *picker.getPickedEntry());
 
   picker.dropPickedEntry();
 
@@ -44,7 +44,7 @@ void SequentialPickerTest::testPick()
 
   picker.pickNext();
 
-  CPPUNIT_ASSERT_EQUAL(*Integer(new int(2)), *picker.getPickedEntry());
+  CPPUNIT_ASSERT_EQUAL(2, *picker.getPickedEntry());
   CPPUNIT_ASSERT(!picker.hasNext());
 }
 

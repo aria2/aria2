@@ -59,10 +59,11 @@ protected:
     return e_;
   }
 public:
-  SequentialDispatcherCommand(cuid_t cuid,
-                              const std::shared_ptr<SequentialPicker<T> >& picker,
-                              DownloadEngine* e):
-    Command(cuid), picker_(picker), e_(e)
+  SequentialDispatcherCommand
+  (cuid_t cuid,
+   const std::shared_ptr<SequentialPicker<T>>& picker,
+   DownloadEngine* e)
+    : Command{cuid}, picker_{picker}, e_{e}
   {
     setStatusRealtime();
   }
@@ -83,8 +84,7 @@ public:
   }
 
 protected:
-  virtual std::unique_ptr<Command> createCommand
-  (const std::shared_ptr<T>& entry) = 0;
+  virtual std::unique_ptr<Command> createCommand(T* entry) = 0;
 };
 
 } // namespace aria2

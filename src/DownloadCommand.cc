@@ -327,12 +327,12 @@ bool DownloadCommand::prepareForNextSegment() {
     }
 #ifdef ENABLE_MESSAGE_DIGEST
     if(getDownloadContext()->getPieceHashType().empty()) {
-      std::shared_ptr<CheckIntegrityEntry> entry
-        (new ChecksumCheckIntegrityEntry(getRequestGroup()));
+      auto entry = make_unique<ChecksumCheckIntegrityEntry>(getRequestGroup());
       if(entry->isValidationReady()) {
         entry->initValidator();
         entry->cutTrailingGarbage();
-        getDownloadEngine()->getCheckIntegrityMan()->pushEntry(entry);
+        getDownloadEngine()->getCheckIntegrityMan()->pushEntry
+          (std::move(entry));
       }
     }
 #endif // ENABLE_MESSAGE_DIGEST

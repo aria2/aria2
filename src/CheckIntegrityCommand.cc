@@ -50,22 +50,23 @@ namespace aria2 {
 
 CheckIntegrityCommand::CheckIntegrityCommand
 (cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e,
- const std::shared_ptr<CheckIntegrityEntry>& entry):
-  RealtimeCommand(cuid, requestGroup, e),
-  entry_(entry)
+ CheckIntegrityEntry* entry)
+  : RealtimeCommand{cuid, requestGroup, e},
+    entry_{entry}
 {}
 
-CheckIntegrityCommand::~CheckIntegrityCommand() {}
+CheckIntegrityCommand::~CheckIntegrityCommand()
+{
+  getDownloadEngine()->getCheckIntegrityMan()->dropPickedEntry();
+}
 
 bool CheckIntegrityCommand::executeInternal()
 {
   if(getRequestGroup()->isHaltRequested()) {
-    getDownloadEngine()->getCheckIntegrityMan()->dropPickedEntry();
     return true;
   }
   entry_->validateChunk();
   if(entry_->finished()) {
-    getDownloadEngine()->getCheckIntegrityMan()->dropPickedEntry();
     // Enable control file saving here. See also
     // RequestGroup::processCheckIntegrityEntry() to know why this is
     // needed.
@@ -95,7 +96,6 @@ bool CheckIntegrityCommand::executeInternal()
 
 bool CheckIntegrityCommand::handleException(Exception& e)
 {
-  getDownloadEngine()->getCheckIntegrityMan()->dropPickedEntry();
   A2_LOG_ERROR_EX(fmt(MSG_FILE_VALIDATION_FAILURE,
                    getCuid()),
                   e);

@@ -47,12 +47,12 @@ class FileAllocationEntry;
 
 class FileAllocationCommand : public RealtimeCommand {
 private:
-  std::shared_ptr<FileAllocationEntry> fileAllocationEntry_;
+  FileAllocationEntry* fileAllocationEntry_;
   Timer timer_;
 public:
   FileAllocationCommand(cuid_t cuid, RequestGroup* requestGroup,
                         DownloadEngine* e,
-                        const std::shared_ptr<FileAllocationEntry>& fileAllocationEntry);
+                        FileAllocationEntry* fileAllocationEntry);
 
   virtual ~FileAllocationCommand();
 

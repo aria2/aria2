@@ -50,8 +50,7 @@ public:
    const std::shared_ptr<FileAllocationMan>& fileAllocMan,
    DownloadEngine* e);
 protected:
-  virtual std::unique_ptr<Command> createCommand
-  (const std::shared_ptr<FileAllocationEntry>& entry);
+  virtual std::unique_ptr<Command> createCommand(FileAllocationEntry* entry);
 };
 
 } // namespace aria2

@@ -78,9 +78,10 @@ ChecksumCheckIntegrityEntry::onDownloadIncomplete
 (std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
 {
   if(redownload_) {
-    std::shared_ptr<FileAllocationEntry> entry
-      (new StreamFileAllocationEntry(getRequestGroup(), popNextCommand()));
-    proceedFileAllocation(commands, entry, e);
+    proceedFileAllocation(commands,
+                          make_unique<StreamFileAllocationEntry>
+                          (getRequestGroup(), popNextCommand()),
+                          e);
   }
 }
 

@@ -377,7 +377,7 @@ bool HttpResponseCommand::handleDefaultEncoding
     getFileEntry()->poolRequest(getRequest());
   }
 
-  prepareForNextAction(checkEntry);
+  prepareForNextAction(std::move(checkEntry));
 
   if(getRequest()->getMethod() == Request::METHOD_HEAD) {
     poolConnection();
@@ -421,11 +421,11 @@ bool HttpResponseCommand::handleOtherEncoding
     // See also FtpNegotiationCommand::onFileSizeDetermined()
     if(getDownloadContext()->isChecksumVerificationNeeded()) {
       A2_LOG_DEBUG("Zero length file exists. Verify checksum.");
-      std::shared_ptr<ChecksumCheckIntegrityEntry> entry
-        (new ChecksumCheckIntegrityEntry(getRequestGroup()));
+      auto  entry = make_unique<ChecksumCheckIntegrityEntry>
+        (getRequestGroup());
       entry->initValidator();
       getPieceStorage()->getDiskAdaptor()->openExistingFile();
-      getDownloadEngine()->getCheckIntegrityMan()->pushEntry(entry);
+      getDownloadEngine()->getCheckIntegrityMan()->pushEntry(std::move(entry));
     } else
 #endif // ENABLE_MESSAGE_DIGEST
       {
@@ -455,10 +455,10 @@ bool HttpResponseCommand::handleOtherEncoding
 #ifdef ENABLE_MESSAGE_DIGEST
     if(getDownloadContext()->isChecksumVerificationNeeded()) {
       A2_LOG_DEBUG("Verify checksum for zero-length file");
-      auto entry = std::make_shared<ChecksumCheckIntegrityEntry>
+      auto entry = make_unique<ChecksumCheckIntegrityEntry>
         (getRequestGroup());
       entry->initValidator();
-      getDownloadEngine()->getCheckIntegrityMan()->pushEntry(entry);
+      getDownloadEngine()->getCheckIntegrityMan()->pushEntry(std::move(entry));
     } else
 #endif // ENABLE_MESSAGE_DIGEST
       {

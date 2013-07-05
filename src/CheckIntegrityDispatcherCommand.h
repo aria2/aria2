@@ -50,8 +50,7 @@ public:
    const std::shared_ptr<CheckIntegrityMan>& checkMan,
    DownloadEngine* e);
 protected:
-  virtual std::unique_ptr<Command> createCommand
-  (const std::shared_ptr<CheckIntegrityEntry>& entry);
+  virtual std::unique_ptr<Command> createCommand(CheckIntegrityEntry* entry);
 };
 
 } // namespace aria2

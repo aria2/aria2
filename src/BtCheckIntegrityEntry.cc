@@ -51,21 +51,22 @@ BtCheckIntegrityEntry::~BtCheckIntegrityEntry() {}
 void BtCheckIntegrityEntry::onDownloadIncomplete
 (std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
 {
-  const std::shared_ptr<PieceStorage>& ps = getRequestGroup()->getPieceStorage();
+  auto& ps = getRequestGroup()->getPieceStorage();
   ps->onDownloadIncomplete();
   if(getRequestGroup()->getOption()->getAsBool(PREF_HASH_CHECK_ONLY)) {
     return;
   }
-  const std::shared_ptr<DiskAdaptor>& diskAdaptor = ps->getDiskAdaptor();
+  const auto& diskAdaptor = ps->getDiskAdaptor();
   if(diskAdaptor->isReadOnlyEnabled()) {
     // Now reopen DiskAdaptor with read only disabled.
     diskAdaptor->closeFile();
     diskAdaptor->disableReadOnly();
     diskAdaptor->openFile();
   }
-  std::shared_ptr<BtFileAllocationEntry> entry
-    (new BtFileAllocationEntry(getRequestGroup()));
-  proceedFileAllocation(commands, entry, e);
+  proceedFileAllocation(commands,
+                        make_unique<BtFileAllocationEntry>
+                        (getRequestGroup()),
+                        e);
 }
 
 void BtCheckIntegrityEntry::onDownloadFinished
@@ -77,9 +78,10 @@ void BtCheckIntegrityEntry::onDownloadFinished
   // behavior.
   if(!getRequestGroup()->getOption()->getAsBool(PREF_HASH_CHECK_ONLY) &&
      getRequestGroup()->getOption()->getAsBool(PREF_BT_HASH_CHECK_SEED)) {
-    std::shared_ptr<BtFileAllocationEntry> entry
-      (new BtFileAllocationEntry(getRequestGroup()));
-    proceedFileAllocation(commands, entry, e);
+    proceedFileAllocation(commands,
+                          make_unique<BtFileAllocationEntry>
+                          (getRequestGroup()),
+                          e);
   }
 }
 

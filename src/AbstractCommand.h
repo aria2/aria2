@@ -179,8 +179,7 @@ public:
 
   void setTimeout(time_t timeout) { timeout_ = timeout; }
 
-  void prepareForNextAction
-  (const std::shared_ptr<CheckIntegrityEntry>& checkEntry);
+  void prepareForNextAction(std::unique_ptr<CheckIntegrityEntry> checkEntry);
 
   // Check if socket is connected. If socket is not connected and
   // there are other addresses to try, command is created using

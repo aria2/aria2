@@ -47,17 +47,17 @@ CheckIntegrityDispatcherCommand::CheckIntegrityDispatcherCommand
 (cuid_t cuid,
  const std::shared_ptr<CheckIntegrityMan>& fileAllocMan,
  DownloadEngine* e)
-  : SequentialDispatcherCommand<CheckIntegrityEntry>(cuid, fileAllocMan, e)
+  : SequentialDispatcherCommand<CheckIntegrityEntry>{cuid, fileAllocMan, e}
 {
   setStatusRealtime();
 }
 
 std::unique_ptr<Command> CheckIntegrityDispatcherCommand::createCommand
-(const std::shared_ptr<CheckIntegrityEntry>& entry)
+(CheckIntegrityEntry* entry)
 {
   cuid_t newCUID = getDownloadEngine()->newCUID();
-  A2_LOG_INFO(fmt("CUID#%" PRId64 " - Dispatching CheckIntegrityCommand CUID#%" PRId64 ".",
-                  getCuid(), newCUID));
+  A2_LOG_INFO(fmt("CUID#%" PRId64 " - Dispatching CheckIntegrityCommand "
+                  "CUID#%" PRId64 ".", getCuid(), newCUID));
   return make_unique<CheckIntegrityCommand>
     (newCUID, entry->getRequestGroup(), getDownloadEngine(), entry);
 }

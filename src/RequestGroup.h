@@ -210,7 +210,7 @@ public:
     return segmentMan_;
   }
 
-  std::shared_ptr<CheckIntegrityEntry> createCheckIntegrityEntry();
+  std::unique_ptr<CheckIntegrityEntry> createCheckIntegrityEntry();
 
   // Returns first bootstrap commands to initiate a download.
   // If this is HTTP/FTP download and file size is unknown, only 1 command
@@ -387,7 +387,7 @@ public:
 
   void processCheckIntegrityEntry
   (std::vector<std::unique_ptr<Command>>& commands,
-   const std::shared_ptr<CheckIntegrityEntry>& entry,
+   std::unique_ptr<CheckIntegrityEntry> entry,
    DownloadEngine* e);
 
   // Initializes pieceStorage_ and segmentMan_.  We guarantee that

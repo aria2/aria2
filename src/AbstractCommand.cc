@@ -770,10 +770,11 @@ std::string AbstractCommand::resolveHostname
 }
 
 void AbstractCommand::prepareForNextAction
-(const std::shared_ptr<CheckIntegrityEntry>& checkEntry)
+(std::unique_ptr<CheckIntegrityEntry> checkEntry)
 {
   std::vector<std::unique_ptr<Command>> commands;
-  requestGroup_->processCheckIntegrityEntry(commands, checkEntry, e_);
+  requestGroup_->processCheckIntegrityEntry(commands, std::move(checkEntry),
+                                            e_);
   e_->addCommand(std::move(commands));
   e_->setNoWait(true);
 }
