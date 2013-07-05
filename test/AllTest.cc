@@ -10,6 +10,8 @@
 #include "SocketCore.h"
 #include "util.h"
 #include "console.h"
+#include "LogFactory.h"
+#include "prefs.h"
 
 int main(int argc, char* argv[]) {
   aria2::global::initConsole(false);
@@ -32,6 +34,9 @@ int main(int argc, char* argv[]) {
   aria2::setDefaultAIFlags(0);
   // Create output directory
   aria2::util::mkdirs(A2_TEST_OUT_DIR);
+
+  aria2::LogFactory::setConsoleLogLevel(aria2::V_DEBUG);
+  aria2::LogFactory::reconfigure();
 
   CppUnit::Test* suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
   CppUnit::TextUi::TestRunner runner;
