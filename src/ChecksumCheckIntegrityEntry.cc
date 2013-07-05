@@ -45,9 +45,10 @@
 namespace aria2 {
 
 ChecksumCheckIntegrityEntry::ChecksumCheckIntegrityEntry
-(RequestGroup* requestGroup, std::unique_ptr<Command> nextCommand):
-  CheckIntegrityEntry(requestGroup, std::move(nextCommand)),
-  redownload_(false) {}
+(RequestGroup* requestGroup, std::unique_ptr<Command> nextCommand)
+  : CheckIntegrityEntry{requestGroup, std::move(nextCommand)},
+    redownload_{false}
+{}
 
 ChecksumCheckIntegrityEntry::~ChecksumCheckIntegrityEntry() {}
 
@@ -60,11 +61,11 @@ bool ChecksumCheckIntegrityEntry::isValidationReady()
 
 void ChecksumCheckIntegrityEntry::initValidator()
 {
-  std::shared_ptr<IteratableChecksumValidator> validator
-    (new IteratableChecksumValidator(getRequestGroup()->getDownloadContext(),
-                                     getRequestGroup()->getPieceStorage()));
+  auto validator = make_unique<IteratableChecksumValidator>
+    (getRequestGroup()->getDownloadContext(),
+     getRequestGroup()->getPieceStorage());
   validator->init();
-  setValidator(validator);
+  setValidator(std::move(validator));
 }
 
 void

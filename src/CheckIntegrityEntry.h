@@ -51,9 +51,9 @@ class FileAllocationEntry;
 class CheckIntegrityEntry : public RequestGroupEntry,
                             public ProgressAwareEntry {
 private:
-  std::shared_ptr<IteratableValidator> validator_;
+  std::unique_ptr<IteratableValidator> validator_;
 protected:
-  void setValidator(const std::shared_ptr<IteratableValidator>& validator);
+  void setValidator(std::unique_ptr<IteratableValidator> validator);
 
   void proceedFileAllocation(std::vector<std::unique_ptr<Command>>& commands,
                              const std::shared_ptr<FileAllocationEntry>& entry,

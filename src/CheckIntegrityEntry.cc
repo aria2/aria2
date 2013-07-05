@@ -45,8 +45,8 @@
 namespace aria2 {
 
 CheckIntegrityEntry::CheckIntegrityEntry(RequestGroup* requestGroup,
-                                         std::unique_ptr<Command> nextCommand):
-  RequestGroupEntry(requestGroup, std::move(nextCommand))
+                                         std::unique_ptr<Command> nextCommand)
+  : RequestGroupEntry{requestGroup, std::move(nextCommand)}
 {}
 
 CheckIntegrityEntry::~CheckIntegrityEntry() {}
@@ -97,9 +97,9 @@ void CheckIntegrityEntry::proceedFileAllocation
 }
 
 void CheckIntegrityEntry::setValidator
-(const std::shared_ptr<IteratableValidator>& validator)
+(std::unique_ptr<IteratableValidator> validator)
 {
-  validator_ = validator;
+  validator_ = std::move(validator);
 }
 
 } // namespace aria2

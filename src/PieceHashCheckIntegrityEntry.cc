@@ -37,13 +37,15 @@
 #include "IteratableChunkChecksumValidator.h"
 #include "DownloadContext.h"
 #include "PieceStorage.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
 PieceHashCheckIntegrityEntry::PieceHashCheckIntegrityEntry
 (RequestGroup* requestGroup,
- std::unique_ptr<Command> nextCommand):
-  CheckIntegrityEntry(requestGroup, std::move(nextCommand)) {}
+ std::unique_ptr<Command> nextCommand)
+  : CheckIntegrityEntry{requestGroup, std::move(nextCommand)}
+{}
 
 PieceHashCheckIntegrityEntry::~PieceHashCheckIntegrityEntry() {}
 
@@ -57,12 +59,11 @@ bool PieceHashCheckIntegrityEntry::isValidationReady()
 void PieceHashCheckIntegrityEntry::initValidator()
 {
 #ifdef ENABLE_MESSAGE_DIGEST
-  std::shared_ptr<IteratableChunkChecksumValidator> validator
-    (new IteratableChunkChecksumValidator
-     (getRequestGroup()->getDownloadContext(),
-      getRequestGroup()->getPieceStorage()));
+  auto validator = make_unique<IteratableChunkChecksumValidator>
+    (getRequestGroup()->getDownloadContext(),
+     getRequestGroup()->getPieceStorage());
   validator->init();
-  setValidator(validator);
+  setValidator(std::move(validator));
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
