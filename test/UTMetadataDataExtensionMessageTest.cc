@@ -66,8 +66,12 @@ void UTMetadataDataExtensionMessageTest::testToString()
 void UTMetadataDataExtensionMessageTest::testDoReceivedAction()
 {
   auto diskAdaptor = std::make_shared<DirectDiskAdaptor>();
-  auto diskWriter = std::make_shared<ByteArrayDiskWriter>();
-  diskAdaptor->setDiskWriter(diskWriter);
+  ByteArrayDiskWriter* diskWriter;
+  {
+    auto dw = make_unique<ByteArrayDiskWriter>();
+    diskWriter = dw.get();
+    diskAdaptor->setDiskWriter(std::move(dw));
+  }
   auto pieceStorage = make_unique<MockPieceStorage>();
   pieceStorage->setDiskAdaptor(diskAdaptor);
   auto tracker = make_unique<UTMetadataRequestTracker>();

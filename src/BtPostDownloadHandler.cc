@@ -73,11 +73,10 @@ void BtPostDownloadHandler::getNextRequestGroups
                   requestGroup->getFirstFilePath().c_str()));
   std::shared_ptr<ValueBase> torrent;
   if(requestGroup->inMemoryDownload()) {
-    const std::shared_ptr<DiskWriter>& dw =
-      std::static_pointer_cast<AbstractSingleDiskAdaptor>
-      (requestGroup->getPieceStorage()->getDiskAdaptor())->getDiskWriter();
-    const std::shared_ptr<bittorrent::BencodeDiskWriter>& bdw =
-      std::static_pointer_cast<bittorrent::BencodeDiskWriter>(dw);
+    auto& dw = static_cast<AbstractSingleDiskAdaptor*>
+      (requestGroup->getPieceStorage()->getDiskAdaptor().get())
+      ->getDiskWriter();
+    auto bdw = static_cast<bittorrent::BencodeDiskWriter*>(dw.get());
     int error = bdw->finalize();
     if(error == 0) {
       torrent = bdw->getResult();

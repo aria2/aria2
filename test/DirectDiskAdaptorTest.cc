@@ -33,17 +33,13 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DirectDiskAdaptorTest);
 void DirectDiskAdaptorTest::testCutTrailingGarbage()
 {
   std::string dir = A2_TEST_OUT_DIR;
-  std::shared_ptr<FileEntry> entry
-    (new FileEntry(dir+"/aria2_DirectDiskAdaptorTest_testCutTrailingGarbage",
-                   256, 0));
+  auto entry = std::make_shared<FileEntry>
+    (dir+"/aria2_DirectDiskAdaptorTest_testCutTrailingGarbage",
+     256, 0);
   createFile(entry->getPath(), entry->getLength()+100);
-
-  std::vector<std::shared_ptr<FileEntry> > fileEntries;
-  fileEntries.push_back(entry);
-
+  auto fileEntries = std::vector<std::shared_ptr<FileEntry>>{entry};
   DirectDiskAdaptor adaptor;
-  adaptor.setDiskWriter
-    (std::shared_ptr<DiskWriter>(new DefaultDiskWriter(entry->getPath())));
+  adaptor.setDiskWriter(make_unique<DefaultDiskWriter>(entry->getPath()));
   adaptor.setTotalLength(entry->getLength());
   adaptor.setFileEntries(fileEntries.begin(), fileEntries.end());
   adaptor.openFile();
@@ -56,10 +52,14 @@ void DirectDiskAdaptorTest::testCutTrailingGarbage()
 
 void DirectDiskAdaptorTest::testWriteCache()
 {
-  std::shared_ptr<DirectDiskAdaptor> adaptor(new DirectDiskAdaptor());
-  std::shared_ptr<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  adaptor->setDiskWriter(dw);
-  WrDiskCacheEntry cache(adaptor);
+  auto adaptor = std::make_shared<DirectDiskAdaptor>();
+  ByteArrayDiskWriter* dw;
+  {
+    auto sdw = make_unique<ByteArrayDiskWriter>();
+    dw = sdw.get();
+    adaptor->setDiskWriter(std::move(sdw));
+  }
+  WrDiskCacheEntry cache{adaptor};
   std::string data1(4096, '1'), data2(4094, '2');
   cache.cacheData(createDataCell(5, data1.c_str()));
   cache.cacheData(createDataCell(5+data1.size(), data2.c_str()));

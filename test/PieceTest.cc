@@ -28,13 +28,14 @@ class PieceTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE_END();
 private:
   std::shared_ptr<DirectDiskAdaptor> adaptor_;
-  std::shared_ptr<ByteArrayDiskWriter> writer_;
+  ByteArrayDiskWriter* writer_;
 public:
   void setUp()
   {
-    adaptor_.reset(new DirectDiskAdaptor());
-    writer_.reset(new ByteArrayDiskWriter());
-    adaptor_->setDiskWriter(writer_);
+    adaptor_ = std::make_shared<DirectDiskAdaptor>();
+    auto dw = make_unique<ByteArrayDiskWriter>();
+    writer_ = dw.get();
+    adaptor_->setDiskWriter(std::move(dw));
   }
 
   void testCompleteBlock();

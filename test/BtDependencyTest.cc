@@ -181,14 +181,16 @@ void BtDependencyTest::testResolve_metadata()
   std::shared_ptr<RequestGroup> dependee =
     createDependee(option_, "metadata", 0);
 
-  std::shared_ptr<DirectDiskAdaptor> diskAdaptor(new DirectDiskAdaptor());
-  std::shared_ptr<ByteArrayDiskWriter> diskWriter(new ByteArrayDiskWriter());
-  diskAdaptor->setDiskWriter(diskWriter);
-  diskWriter->setString
-    ("d4:name19:aria2-0.8.2.tar.bz26:lengthi384e12:piece lengthi128e"
-     "6:pieces60:AAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCC"
-     "e");
-  std::shared_ptr<MockPieceStorage> pieceStorage(new MockPieceStorage());
+  auto diskAdaptor = std::make_shared<DirectDiskAdaptor>();
+  {
+    auto diskWriter = make_unique<ByteArrayDiskWriter>();
+    diskWriter->setString
+      ("d4:name19:aria2-0.8.2.tar.bz26:lengthi384e12:piece lengthi128e"
+       "6:pieces60:AAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCC"
+       "e");
+    diskAdaptor->setDiskWriter(std::move(diskWriter));
+  }
+  auto pieceStorage = std::make_shared<MockPieceStorage>();
   pieceStorage->setDiskAdaptor(diskAdaptor);
   pieceStorage->setDownloadFinished(true);
   dependee->setPieceStorage(pieceStorage);
@@ -206,9 +208,8 @@ void BtDependencyTest::testResolve_metadata()
 
 void BtDependencyTest::testResolve_loadError()
 {
-  std::shared_ptr<RequestGroup> dependant = createDependant(option_);
-  std::shared_ptr<RequestGroup> dependee =
-    createDependee(option_, "notExist", 40);
+  auto dependant = createDependant(option_);
+  auto dependee = createDependee(option_, "notExist", 40);
   dependee->getPieceStorage()->markAllPiecesDone();
 
   BtDependency dep(dependant.get(), dependee);
@@ -222,8 +223,8 @@ void BtDependencyTest::testResolve_loadError()
 
 void BtDependencyTest::testResolve_dependeeFailure()
 {
-  std::shared_ptr<RequestGroup> dependant = createDependant(option_);
-  std::shared_ptr<RequestGroup> dependee = createDependee(option_, "notExist", 40);
+  auto dependant = createDependant(option_);
+  auto dependee = createDependee(option_, "notExist", 40);
 
   BtDependency dep(dependant.get(), dependee);
   CPPUNIT_ASSERT(dep.resolve());
@@ -237,9 +238,8 @@ void BtDependencyTest::testResolve_dependeeFailure()
 void BtDependencyTest::testResolve_dependeeInProgress()
 {
   std::string filename = A2_TEST_DIR"/single.torrent";
-  std::shared_ptr<RequestGroup> dependant = createDependant(option_);
-  std::shared_ptr<RequestGroup> dependee =
-    createDependee(option_, filename, File(filename).size());
+  auto dependant = createDependant(option_);
+  auto dependee = createDependee(option_, filename, File(filename).size());
   dependee->increaseNumCommand();
 
   BtDependency dep(dependant.get(), dependee);

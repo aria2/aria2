@@ -188,9 +188,9 @@ void AbstractSingleDiskAdaptor::cutTrailingGarbage()
 }
 
 void AbstractSingleDiskAdaptor::setDiskWriter
-(const std::shared_ptr<DiskWriter>& diskWriter)
+(std::unique_ptr<DiskWriter> diskWriter)
 {
-  diskWriter_ = diskWriter;
+  diskWriter_ = std::move(diskWriter);
 }
 
 void AbstractSingleDiskAdaptor::setTotalLength(int64_t totalLength)
