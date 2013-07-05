@@ -45,7 +45,7 @@ namespace aria2 {
 
 CheckIntegrityDispatcherCommand::CheckIntegrityDispatcherCommand
 (cuid_t cuid,
- const std::shared_ptr<CheckIntegrityMan>& fileAllocMan,
+ CheckIntegrityMan* fileAllocMan,
  DownloadEngine* e)
   : SequentialDispatcherCommand<CheckIntegrityEntry>{cuid, fileAllocMan, e}
 {

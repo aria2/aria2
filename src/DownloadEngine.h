@@ -169,8 +169,8 @@ private:
 
   std::deque<std::unique_ptr<Command>> commands_;
   std::shared_ptr<RequestGroupMan> requestGroupMan_;
-  std::shared_ptr<FileAllocationMan> fileAllocationMan_;
-  std::shared_ptr<CheckIntegrityMan> checkIntegrityMan_;
+  std::unique_ptr<FileAllocationMan> fileAllocationMan_;
+  std::unique_ptr<CheckIntegrityMan> checkIntegrityMan_;
   Option* option_;
 public:
   DownloadEngine(const std::shared_ptr<EventPoll>& eventPoll);
@@ -211,19 +211,19 @@ public:
 
   void setRequestGroupMan(const std::shared_ptr<RequestGroupMan>& rgman);
 
-  const std::shared_ptr<FileAllocationMan>& getFileAllocationMan() const
+  const std::unique_ptr<FileAllocationMan>& getFileAllocationMan() const
   {
     return fileAllocationMan_;
   }
 
-  void setFileAllocationMan(const std::shared_ptr<FileAllocationMan>& faman);
+  void setFileAllocationMan(std::unique_ptr<FileAllocationMan> faman);
 
-  const std::shared_ptr<CheckIntegrityMan>& getCheckIntegrityMan() const
+  const std::unique_ptr<CheckIntegrityMan>& getCheckIntegrityMan() const
   {
     return checkIntegrityMan_;
   }
 
-  void setCheckIntegrityMan(const std::shared_ptr<CheckIntegrityMan>& ciman);
+  void setCheckIntegrityMan(std::unique_ptr<CheckIntegrityMan> ciman);
 
   Option* getOption() const
   {

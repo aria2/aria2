@@ -47,7 +47,7 @@ class CheckIntegrityDispatcherCommand :
 public:
   CheckIntegrityDispatcherCommand
   (cuid_t cuid,
-   const std::shared_ptr<CheckIntegrityMan>& checkMan,
+   CheckIntegrityMan* checkMan,
    DownloadEngine* e);
 protected:
   virtual std::unique_ptr<Command> createCommand(CheckIntegrityEntry* entry);

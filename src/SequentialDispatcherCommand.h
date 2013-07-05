@@ -50,7 +50,7 @@ class DownloadEngine;
 template<typename T>
 class SequentialDispatcherCommand : public Command {
 private:
-  std::shared_ptr<SequentialPicker<T> > picker_;
+  SequentialPicker<T>* picker_;
 
   DownloadEngine* e_;
 protected:
@@ -61,7 +61,7 @@ protected:
 public:
   SequentialDispatcherCommand
   (cuid_t cuid,
-   const std::shared_ptr<SequentialPicker<T>>& picker,
+   SequentialPicker<T>* picker,
    DownloadEngine* e)
     : Command{cuid}, picker_{picker}, e_{e}
   {

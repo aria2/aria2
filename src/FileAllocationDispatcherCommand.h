@@ -47,7 +47,7 @@ class FileAllocationDispatcherCommand :
 public:
   FileAllocationDispatcherCommand
   (cuid_t cuid,
-   const std::shared_ptr<FileAllocationMan>& fileAllocMan,
+   FileAllocationMan* fileAllocMan,
    DownloadEngine* e);
 protected:
   virtual std::unique_ptr<Command> createCommand(FileAllocationEntry* entry);

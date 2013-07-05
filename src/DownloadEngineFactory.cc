@@ -153,19 +153,19 @@ DownloadEngineFactory::newDownloadEngine
     (std::move(requestGroups), MAX_CONCURRENT_DOWNLOADS, op);
   requestGroupMan->initWrDiskCache();
   e->setRequestGroupMan(requestGroupMan);
-  e->setFileAllocationMan
-    (std::shared_ptr<FileAllocationMan>(new FileAllocationMan()));
+  e->setFileAllocationMan(make_unique<FileAllocationMan>());
 #ifdef ENABLE_MESSAGE_DIGEST
-  e->setCheckIntegrityMan
-    (std::shared_ptr<CheckIntegrityMan>(new CheckIntegrityMan()));
+  e->setCheckIntegrityMan(make_unique<CheckIntegrityMan>());
 #endif // ENABLE_MESSAGE_DIGEST
   e->addRoutineCommand(make_unique<FillRequestGroupCommand>
                        (e->newCUID(), e.get()));
   e->addRoutineCommand(make_unique<FileAllocationDispatcherCommand>
-                       (e->newCUID(), e->getFileAllocationMan(), e.get()));
+                       (e->newCUID(), e->getFileAllocationMan().get(),
+                        e.get()));
 #ifdef ENABLE_MESSAGE_DIGEST
   e->addRoutineCommand(make_unique<CheckIntegrityDispatcherCommand>
-                       (e->newCUID(), e->getCheckIntegrityMan(), e.get()));
+                       (e->newCUID(), e->getCheckIntegrityMan().get(),
+                        e.get()));
 #endif // ENABLE_MESSAGE_DIGEST
 
   if(op->getAsInt(PREF_AUTO_SAVE_INTERVAL) > 0) {

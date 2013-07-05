@@ -45,7 +45,7 @@ namespace aria2 {
 
 FileAllocationDispatcherCommand::FileAllocationDispatcherCommand
 (cuid_t cuid,
- const std::shared_ptr<FileAllocationMan>& fileAllocMan,
+ FileAllocationMan* fileAllocMan,
  DownloadEngine* e)
   : SequentialDispatcherCommand<FileAllocationEntry>{cuid, fileAllocMan, e}
 {}

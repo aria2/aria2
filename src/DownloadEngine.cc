@@ -585,15 +585,15 @@ void DownloadEngine::setRequestGroupMan
 }
 
 void DownloadEngine::setFileAllocationMan
-(const std::shared_ptr<FileAllocationMan>& faman)
+(std::unique_ptr<FileAllocationMan> faman)
 {
-  fileAllocationMan_ = faman;
+  fileAllocationMan_ = std::move(faman);
 }
 
 void DownloadEngine::setCheckIntegrityMan
-(const std::shared_ptr<CheckIntegrityMan>& ciman)
+(std::unique_ptr<CheckIntegrityMan> ciman)
 {
-  checkIntegrityMan_ = ciman;
+  checkIntegrityMan_ = std::move(ciman);
 }
 
 #ifdef HAVE_ARES_ADDR_NODE
