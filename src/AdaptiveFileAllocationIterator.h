@@ -46,7 +46,7 @@ class BinaryStream;
 class AdaptiveFileAllocationIterator:public FileAllocationIterator
 {
 private:
-  std::shared_ptr<FileAllocationIterator> allocator_;
+  std::unique_ptr<FileAllocationIterator> allocator_;
 
   BinaryStream* stream_;
 

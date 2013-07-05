@@ -73,7 +73,7 @@ public:
 
   virtual void truncate(int64_t length);
 
-  virtual std::shared_ptr<FileAllocationIterator> fileAllocationIterator();
+  virtual std::unique_ptr<FileAllocationIterator> fileAllocationIterator();
 
   // Make sure that DiskWriter is set before calling this function.
   virtual void enableReadOnly();

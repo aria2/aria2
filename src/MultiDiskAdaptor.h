@@ -150,7 +150,7 @@ public:
 
   virtual int64_t size();
 
-  virtual std::shared_ptr<FileAllocationIterator> fileAllocationIterator();
+  virtual std::unique_ptr<FileAllocationIterator> fileAllocationIterator();
 
   virtual void enableReadOnly();
 

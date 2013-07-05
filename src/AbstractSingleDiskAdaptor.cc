@@ -145,30 +145,21 @@ void AbstractSingleDiskAdaptor::truncate(int64_t length)
   diskWriter_->truncate(length);
 }
 
-std::shared_ptr<FileAllocationIterator>
+std::unique_ptr<FileAllocationIterator>
 AbstractSingleDiskAdaptor::fileAllocationIterator()
 {
   switch(getFileAllocationMethod()) {
 #ifdef HAVE_SOME_FALLOCATE
-  case(DiskAdaptor::FILE_ALLOC_FALLOC): {
-    std::shared_ptr<FallocFileAllocationIterator> h
-      (new FallocFileAllocationIterator
-       (diskWriter_.get(), size() ,totalLength_));
-    return h;
-  }
+  case(DiskAdaptor::FILE_ALLOC_FALLOC):
+    return make_unique<FallocFileAllocationIterator>
+      (diskWriter_.get(), size() ,totalLength_);
 #endif // HAVE_SOME_FALLOCATE
-  case(DiskAdaptor::FILE_ALLOC_TRUNC): {
-    std::shared_ptr<TruncFileAllocationIterator> h
-      (new TruncFileAllocationIterator
-       (diskWriter_.get(), size(), totalLength_));
-    return h;
-  }
-  default: {
-    std::shared_ptr<AdaptiveFileAllocationIterator> h
-      (new AdaptiveFileAllocationIterator
-       (diskWriter_.get(), size(), totalLength_));
-    return h;
-  }
+  case(DiskAdaptor::FILE_ALLOC_TRUNC):
+    return make_unique<TruncFileAllocationIterator>
+      (diskWriter_.get(), size(), totalLength_);
+  default:
+    return make_unique<AdaptiveFileAllocationIterator>
+      (diskWriter_.get(), size(), totalLength_);
   }
 }
 

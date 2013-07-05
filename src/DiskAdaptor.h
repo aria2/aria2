@@ -78,12 +78,12 @@ public:
     fileEntries_.assign(first, last);
   }
 
-  const std::vector<std::shared_ptr<FileEntry> >& getFileEntries() const
+  const std::vector<std::shared_ptr<FileEntry>>& getFileEntries() const
   {
     return fileEntries_;
   }
 
-  virtual std::shared_ptr<FileAllocationIterator> fileAllocationIterator() = 0;
+  virtual std::unique_ptr<FileAllocationIterator> fileAllocationIterator() = 0;
 
   virtual void enableReadOnly() {}
 

@@ -38,6 +38,7 @@
 #include "RecoverableException.h"
 #include "LogFactory.h"
 #include "Logger.h"
+#include "a2functional.h"
 #ifdef HAVE_FALLOCATE
 # include "FallocFileAllocationIterator.h"
 #endif // HAVE_FALLOCATE
@@ -66,20 +67,20 @@ void AdaptiveFileAllocationIterator::allocateChunk()
         offset_ += len;
       }
       A2_LOG_DEBUG("File system supports fallocate.");
-      allocator_.reset
-        (new FallocFileAllocationIterator(stream_, offset_, totalLength_));
+      allocator_ = make_unique<FallocFileAllocationIterator>
+        (stream_, offset_, totalLength_);
     } catch(RecoverableException& e) {
       A2_LOG_DEBUG("File system does not support fallocate.");
-      std::shared_ptr<SingleFileAllocationIterator> salloc
-        (new SingleFileAllocationIterator(stream_, offset_, totalLength_));
+      auto salloc = make_unique<SingleFileAllocationIterator>
+        (stream_, offset_, totalLength_);
       salloc->init();
-      allocator_ = salloc;
+      allocator_ = std::move(salloc);
     }
 #else // !HAVE_FALLOCATE
-    std::shared_ptr<SingleFileAllocationIterator> salloc
-      (new SingleFileAllocationIterator(stream_, offset_, totalLength_));
+    auto salloc = make_unique<SingleFileAllocationIterator>
+      (stream_, offset_, totalLength_);
     salloc->init();
-    allocator_ = salloc;
+    allocator_ = std::move(salloc);
 #endif // !HAVE_FALLOCATE
     allocator_->allocateChunk();
   } else {

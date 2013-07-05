@@ -50,7 +50,7 @@ class DownloadEngine;
 
 class FileAllocationEntry : public RequestGroupEntry, public ProgressAwareEntry {
 private:
-  std::shared_ptr<FileAllocationIterator> fileAllocationIterator_;
+  std::unique_ptr<FileAllocationIterator> fileAllocationIterator_;
 public:
   FileAllocationEntry(RequestGroup* requestGroup,
                       std::unique_ptr<Command> nextCommand =

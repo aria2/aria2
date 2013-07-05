@@ -481,10 +481,10 @@ int64_t MultiDiskAdaptor::size()
   return size;
 }
 
-std::shared_ptr<FileAllocationIterator>
+std::unique_ptr<FileAllocationIterator>
 MultiDiskAdaptor::fileAllocationIterator()
 {
-  return std::make_shared<MultiFileAllocationIterator>(this);
+  return make_unique<MultiFileAllocationIterator>(this);
 }
 
 void MultiDiskAdaptor::enableReadOnly()
