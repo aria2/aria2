@@ -148,11 +148,12 @@ DownloadEngineFactory::newDownloadEngine
           }
   std::shared_ptr<DownloadEngine> e(new DownloadEngine(eventPoll));
   e->setOption(op);
-
-  auto requestGroupMan = std::make_shared<RequestGroupMan>
-    (std::move(requestGroups), MAX_CONCURRENT_DOWNLOADS, op);
-  requestGroupMan->initWrDiskCache();
-  e->setRequestGroupMan(requestGroupMan);
+  {
+    auto requestGroupMan = make_unique<RequestGroupMan>
+      (std::move(requestGroups), MAX_CONCURRENT_DOWNLOADS, op);
+    requestGroupMan->initWrDiskCache();
+    e->setRequestGroupMan(std::move(requestGroupMan));
+  }
   e->setFileAllocationMan(make_unique<FileAllocationMan>());
 #ifdef ENABLE_MESSAGE_DIGEST
   e->setCheckIntegrityMan(make_unique<CheckIntegrityMan>());

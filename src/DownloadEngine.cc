@@ -578,10 +578,9 @@ void DownloadEngine::addCommand(std::unique_ptr<Command> command)
   commands_.push_back(std::move(command));
 }
 
-void DownloadEngine::setRequestGroupMan
-(const std::shared_ptr<RequestGroupMan>& rgman)
+void DownloadEngine::setRequestGroupMan(std::unique_ptr<RequestGroupMan> rgman)
 {
-  requestGroupMan_ = rgman;
+  requestGroupMan_ = std::move(rgman);
 }
 
 void DownloadEngine::setFileAllocationMan

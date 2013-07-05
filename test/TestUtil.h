@@ -60,10 +60,10 @@ WrDiskCacheEntry::DataCell* createDataCell(int64_t goff,
                                            size_t offset = 0);
 
 std::shared_ptr<RequestGroup> findReservedGroup
-(const std::shared_ptr<RequestGroupMan>& rgman, a2_gid_t gid);
+(RequestGroupMan* rgman, a2_gid_t gid);
 
 std::shared_ptr<RequestGroup> getReservedGroup
-(const std::shared_ptr<RequestGroupMan>& rgman, size_t index);
+(RequestGroupMan* rgman, size_t index);
 
 std::shared_ptr<RequestGroup> createRequestGroup(int32_t pieceLength,
                                               int64_t totalLength,

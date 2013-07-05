@@ -168,7 +168,7 @@ private:
   findSocketPoolEntry(const std::string& key);
 
   std::deque<std::unique_ptr<Command>> commands_;
-  std::shared_ptr<RequestGroupMan> requestGroupMan_;
+  std::unique_ptr<RequestGroupMan> requestGroupMan_;
   std::unique_ptr<FileAllocationMan> fileAllocationMan_;
   std::unique_ptr<CheckIntegrityMan> checkIntegrityMan_;
   Option* option_;
@@ -204,12 +204,12 @@ public:
 
   void addCommand(std::unique_ptr<Command> command);
 
-  const std::shared_ptr<RequestGroupMan>& getRequestGroupMan() const
+  const std::unique_ptr<RequestGroupMan>& getRequestGroupMan() const
   {
     return requestGroupMan_;
   }
 
-  void setRequestGroupMan(const std::shared_ptr<RequestGroupMan>& rgman);
+  void setRequestGroupMan(std::unique_ptr<RequestGroupMan> rgman);
 
   const std::unique_ptr<FileAllocationMan>& getFileAllocationMan() const
   {

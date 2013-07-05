@@ -48,9 +48,8 @@ void SessionSerializerTest::testSave()
   CPPUNIT_ASSERT_EQUAL((size_t)5, result.size());
   result[4]->getOption()->put(PREF_PAUSE, A2_V_TRUE);
   option->put(PREF_MAX_DOWNLOAD_RESULT, "10");
-  std::shared_ptr<RequestGroupMan> rgman
-    (new RequestGroupMan(result, 1, option.get()));
-  SessionSerializer s(rgman);
+  RequestGroupMan rgman{result, 1, option.get()};
+  SessionSerializer s(&rgman);
   std::shared_ptr<DownloadResult> drs[] = {
     // REMOVED downloads will not be saved.
     createDownloadResult(error_code::REMOVED, "http://removed"),
@@ -76,13 +75,13 @@ void SessionSerializerTest::testSave()
 
   drs[3]->option->put(PREF_FORCE_SAVE, A2_V_TRUE);
   for(size_t i = 0; i < sizeof(drs)/sizeof(drs[0]); ++i) {
-    rgman->addDownloadResult(drs[i]);
+    rgman.addDownloadResult(drs[i]);
   }
 
   DownloadEngine e(std::shared_ptr<EventPoll>(new SelectEventPoll()));
   e.setOption(option.get());
-  rgman->fillRequestGroupFromReserver(&e);
-  CPPUNIT_ASSERT_EQUAL((size_t)1, rgman->getRequestGroups().size());
+  rgman.fillRequestGroupFromReserver(&e);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, rgman.getRequestGroups().size());
 
   std::string filename = A2_TEST_OUT_DIR"/aria2_SessionSerializerTest_testSave";
   s.save(filename);
@@ -148,11 +147,10 @@ void SessionSerializerTest::testSaveErrorDownload()
     (dr->fileEntries[0]->getRemainingUris());
   std::shared_ptr<Option> option(new Option());
   option->put(PREF_MAX_DOWNLOAD_RESULT, "10");
-  std::shared_ptr<RequestGroupMan> rgman
-    (new RequestGroupMan(std::vector<std::shared_ptr<RequestGroup> >(), 1,
-                         option.get()));
-  rgman->addDownloadResult(dr);
-  SessionSerializer s(rgman);
+  RequestGroupMan rgman{std::vector<std::shared_ptr<RequestGroup> >(), 1,
+                        option.get()};
+  rgman.addDownloadResult(dr);
+  SessionSerializer s(&rgman);
   std::string filename =
     A2_TEST_OUT_DIR"/aria2_SessionSerializerTest_testSaveErrorDownload";
   CPPUNIT_ASSERT(s.save(filename));

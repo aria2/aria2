@@ -288,7 +288,7 @@ error_code::Value MultiUrlRequestInfo::getResult()
       returnValue = s.getLastErrorResult();
     }
   }
-  SessionSerializer sessionSerializer(e_->getRequestGroupMan());
+  SessionSerializer sessionSerializer{e_->getRequestGroupMan().get()};
   // TODO Add option: --save-session-status=error,inprogress,waiting
   if(!option_->blank(PREF_SAVE_SESSION)) {
     const std::string& filename = option_->get(PREF_SAVE_SESSION);

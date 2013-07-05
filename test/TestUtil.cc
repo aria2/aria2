@@ -104,9 +104,9 @@ WrDiskCacheEntry::DataCell* createDataCell(int64_t goff,
 }
 
 std::shared_ptr<RequestGroup> findReservedGroup
-(const std::shared_ptr<RequestGroupMan>& rgman, a2_gid_t gid)
+(RequestGroupMan* rgman, a2_gid_t gid)
 {
-  std::shared_ptr<RequestGroup> rg = rgman->findGroup(gid);
+  auto rg = rgman->findGroup(gid);
   if(rg) {
     if(rg->getState() == RequestGroup::STATE_WAITING) {
       return rg;
@@ -118,10 +118,10 @@ std::shared_ptr<RequestGroup> findReservedGroup
 }
 
 std::shared_ptr<RequestGroup> getReservedGroup
-(const std::shared_ptr<RequestGroupMan>& rgman, size_t index)
+(RequestGroupMan* rgman, size_t index)
 {
   assert(rgman->getReservedGroups().size() > index);
-  RequestGroupList::const_iterator i = rgman->getReservedGroups().begin();
+  auto i = rgman->getReservedGroups().begin();
   std::advance(i, index);
   return *i;
 }

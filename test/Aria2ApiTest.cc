@@ -235,7 +235,7 @@ void Aria2ApiTest::testDownloadResultDH()
   std::shared_ptr<DownloadResult> dr2 =
     createDownloadResult(error_code::NETWORK_PROBLEM,
                          "http://example.org/network");
-  std::shared_ptr<RequestGroupMan> gman =
+  auto& gman =
     session_->context->reqinfo->getDownloadEngine()->getRequestGroupMan();
   gman->addDownloadResult(dr1);
   gman->addDownloadResult(dr2);

@@ -48,13 +48,13 @@ class IOFile;
 
 class SessionSerializer {
 private:
-  std::shared_ptr<RequestGroupMan> rgman_;
+  RequestGroupMan* rgman_;
   bool saveError_;
   bool saveInProgress_;
   bool saveWaiting_;
   bool save(IOFile& fp) const;
 public:
-  SessionSerializer(const std::shared_ptr<RequestGroupMan>& requestGroupMan);
+  SessionSerializer(RequestGroupMan* requestGroupMan);
 
   bool save(const std::string& filename) const;
 };

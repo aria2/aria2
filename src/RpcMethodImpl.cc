@@ -1351,7 +1351,7 @@ std::shared_ptr<ValueBase> ForceShutdownRpcMethod::process
 std::shared_ptr<ValueBase> GetGlobalStatRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  const std::shared_ptr<RequestGroupMan>& rgman = e->getRequestGroupMan();
+  auto& rgman = e->getRequestGroupMan();
   TransferStat ts = rgman->calculateStat();
   std::shared_ptr<Dict> res = Dict::g();
   res->put(KEY_DOWNLOAD_SPEED, util::itos(ts.downloadSpeed));

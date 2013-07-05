@@ -525,7 +525,7 @@ GlobalStat getGlobalStat(Session* session)
 {
   const std::shared_ptr<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
-  const std::shared_ptr<RequestGroupMan>& rgman = e->getRequestGroupMan();
+  auto& rgman = e->getRequestGroupMan();
   TransferStat ts = rgman->calculateStat();
   GlobalStat res;
   res.downloadSpeed = ts.downloadSpeed;
@@ -945,7 +945,7 @@ DownloadHandle* getDownloadHandle(Session* session, A2Gid gid)
 {
   const std::shared_ptr<DownloadEngine>& e =
     session->context->reqinfo->getDownloadEngine();
-  const std::shared_ptr<RequestGroupMan>& rgman = e->getRequestGroupMan();
+  auto& rgman = e->getRequestGroupMan();
   std::shared_ptr<RequestGroup> group = rgman->findGroup(gid);
   if(group) {
     return new RequestGroupDH(group);

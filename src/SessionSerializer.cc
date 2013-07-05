@@ -60,11 +60,12 @@
 namespace aria2 {
 
 SessionSerializer::SessionSerializer
-(const std::shared_ptr<RequestGroupMan>& requestGroupMan):
-  rgman_(requestGroupMan),
-  saveError_(true),
-  saveInProgress_(true),
-  saveWaiting_(true) {}
+(RequestGroupMan* requestGroupMan)
+  : rgman_{requestGroupMan},
+    saveError_{true},
+    saveInProgress_{true},
+    saveWaiting_{true}
+{}
 
 bool SessionSerializer::save(const std::string& filename) const
 {

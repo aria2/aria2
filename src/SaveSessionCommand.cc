@@ -64,7 +64,7 @@ void SaveSessionCommand::process()
     ->get(PREF_SAVE_SESSION);
   if(!filename.empty()) {
     SessionSerializer sessionSerializer(getDownloadEngine()->
-                                        getRequestGroupMan());
+                                        getRequestGroupMan().get());
     if(sessionSerializer.save(filename)) {
       A2_LOG_NOTICE(fmt(_("Serialized session to '%s' successfully."),
                         filename.c_str()));

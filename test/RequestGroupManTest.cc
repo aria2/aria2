@@ -37,24 +37,23 @@ class RequestGroupManTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testAddDownloadResult);
   CPPUNIT_TEST_SUITE_END();
 private:
-  std::shared_ptr<DownloadEngine> e_;
+  std::unique_ptr<DownloadEngine> e_;
   std::shared_ptr<Option> option_;
-  std::shared_ptr<RequestGroupMan> rgman_;
+  RequestGroupMan* rgman_;
 public:
   void setUp()
   {
-    option_.reset(new Option());
+    option_ = std::make_shared<Option>();
     option_->put(PREF_PIECE_LENGTH, "1048576");
     // To enable paused RequestGroup
     option_->put(PREF_ENABLE_RPC, A2_V_TRUE);
     File(option_->get(PREF_DIR)).mkdirs();
-    e_.reset
-      (new DownloadEngine(std::shared_ptr<EventPoll>(new SelectEventPoll())));
+    e_ = make_unique<DownloadEngine>(std::make_shared<SelectEventPoll>());
     e_->setOption(option_.get());
-    rgman_ = std::shared_ptr<RequestGroupMan>
-      (new RequestGroupMan(std::vector<std::shared_ptr<RequestGroup> >(),
-                           3, option_.get()));
-    e_->setRequestGroupMan(rgman_);
+    auto rgman = make_unique<RequestGroupMan>
+      (std::vector<std::shared_ptr<RequestGroup>>{}, 3, option_.get());
+    rgman_ = rgman.get();
+    e_->setRequestGroupMan(std::move(rgman));
   }
 
   void testIsSameFileBeingDownloaded();
