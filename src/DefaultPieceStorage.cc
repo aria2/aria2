@@ -637,7 +637,7 @@ void DefaultPieceStorage::initStorage()
 {
   if(downloadContext_->getFileEntries().size() == 1) {
     A2_LOG_DEBUG("Instantiating DirectDiskAdaptor");
-    DirectDiskAdaptor* directDiskAdaptor(new DirectDiskAdaptor());
+    auto directDiskAdaptor = make_unique<DirectDiskAdaptor>();
     directDiskAdaptor->setTotalLength(downloadContext_->getTotalLength());
     directDiskAdaptor->setFileEntries
       (downloadContext_->getFileEntries().begin(),
@@ -645,16 +645,16 @@ void DefaultPieceStorage::initStorage()
 
     directDiskAdaptor->setDiskWriter
       (diskWriterFactory_->newDiskWriter(directDiskAdaptor->getFilePath()));
-    diskAdaptor_.reset(directDiskAdaptor);
+    diskAdaptor_ = std::move(directDiskAdaptor);
   } else {
     A2_LOG_DEBUG("Instantiating MultiDiskAdaptor");
-    MultiDiskAdaptor* multiDiskAdaptor(new MultiDiskAdaptor());
+    auto multiDiskAdaptor = make_unique<MultiDiskAdaptor>();
     multiDiskAdaptor->setFileEntries(downloadContext_->getFileEntries().begin(),
                                      downloadContext_->getFileEntries().end());
     multiDiskAdaptor->setPieceLength(downloadContext_->getPieceLength());
     multiDiskAdaptor->setMaxOpenFiles
       (option_->getAsInt(PREF_BT_MAX_OPEN_FILES));
-    diskAdaptor_.reset(multiDiskAdaptor);
+    diskAdaptor_ = std::move(multiDiskAdaptor);
   }
   if(option_->get(PREF_FILE_ALLOCATION) == V_FALLOC) {
     diskAdaptor_->setFileAllocationMethod(DiskAdaptor::FILE_ALLOC_FALLOC);
