@@ -45,8 +45,8 @@ namespace aria2 {
 class MessageDigestImpl {
 public:
   virtual ~MessageDigestImpl() {}
-  static std::shared_ptr<MessageDigestImpl> sha1();
-  static std::shared_ptr<MessageDigestImpl> create(const std::string& hashType);
+  static std::unique_ptr<MessageDigestImpl> sha1();
+  static std::unique_ptr<MessageDigestImpl> create(const std::string& hashType);
 
   static bool supports(const std::string& hashType);
   static size_t getDigestLength(const std::string& hashType);
