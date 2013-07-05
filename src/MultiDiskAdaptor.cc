@@ -139,76 +139,47 @@ std::unique_ptr<DiskWriterEntry> createDiskWriterEntry
 void MultiDiskAdaptor::resetDiskWriterEntries()
 {
   diskWriterEntries_.clear();
-
   if(getFileEntries().empty()) {
     return;
   }
-
   for(auto& fileEntry: getFileEntries()) {
     diskWriterEntries_.push_back(createDiskWriterEntry(fileEntry));
   }
   // TODO Currently, pieceLength_ == 0 is used for unit testing only.
   if(pieceLength_ > 0) {
-    auto done = std::begin(diskWriterEntries_);
-    for(auto itr = std::begin(diskWriterEntries_),
-          eoi = std::end(diskWriterEntries_); itr != eoi;) {
-      auto& fileEntry = (*itr)->getFileEntry();
-      if(!fileEntry->isRequested()) {
-        ++itr;
-        continue;
-      }
-      int64_t pieceStartOffset =
-        (fileEntry->getOffset()/pieceLength_)*pieceLength_;
-      if(itr != std::begin(diskWriterEntries_)) {
-        for(auto i = itr-1;; --i) {
-          auto& fileEntry = (*i)->getFileEntry();
-          if(pieceStartOffset <= fileEntry->getOffset() ||
-             pieceStartOffset < fileEntry->getLastOffset()) {
-            A2_LOG_DEBUG(fmt("%s needs file allocation",
-                             (*i)->getFileEntry()->getPath().c_str()));
-            (*i)->needsFileAllocation(true);
-          } else {
-            break;
-          }
-          if(i == done) {
-            break;
-          }
+    // Check shared piece forward
+    int64_t lastOffset = 0;
+    for(auto& dwent : diskWriterEntries_) {
+      auto& fileEntry = dwent->getFileEntry();
+      if(fileEntry->isRequested()) {
+        // zero length file does not affect lastOffset.
+        if(fileEntry->getLength() > 0) {
+          lastOffset = (fileEntry->getLastOffset()-1)/pieceLength_
+            * pieceLength_ + pieceLength_;
         }
+      } else if(fileEntry->getOffset() < lastOffset) {
+        // The files which shares last piece are not needed to be
+        // allocated. They just requre DiskWriter
+        A2_LOG_DEBUG(fmt("%s needs DiskWriter",
+                         fileEntry->getPath().c_str()));
+        dwent->needsDiskWriter(true);
       }
-
-      if(fileEntry->getLength() > 0) {
-        int64_t lastPieceStartOffset =
-          (fileEntry->getOffset()+fileEntry->getLength()-1)/
-          pieceLength_*pieceLength_;
-        A2_LOG_DEBUG(fmt("Checking adjacent backward file to %s"
-                         " whose lastPieceStartOffset+pieceLength_=%" PRId64 "",
-                         fileEntry->getPath().c_str(),
-                         static_cast<int64_t>
-                         (lastPieceStartOffset+pieceLength_)));
-        ++itr;
-        // adjacent backward files are not needed to be allocated. They
-        // just requre DiskWriter
-        for(; itr != eoi &&
-              (!(*itr)->getFileEntry()->isRequested() ||
-               (*itr)->getFileEntry()->getLength() == 0); ++itr) {
-          A2_LOG_DEBUG
-            (fmt("file=%s, offset=%" PRId64 "",
-                 (*itr)->getFileEntry()->getPath().c_str(),
-                 (*itr)->getFileEntry()->getOffset()));
-          if((*itr)->getFileEntry()->getOffset() <
-             lastPieceStartOffset+pieceLength_) {
-            A2_LOG_DEBUG
-              (fmt("%s needs diskwriter",
-                   (*itr)->getFileEntry()->getPath().c_str()));
-            (*itr)->needsDiskWriter(true);
-          } else {
-            break;
-          }
-        }
-        done = itr-1;
-      } else {
-        done = itr;
-        ++itr;
+    }
+    // Check shared piece backword
+    lastOffset = std::numeric_limits<int64_t>::max();
+    for(auto i = diskWriterEntries_.rbegin(), eoi = diskWriterEntries_.rend();
+        i != eoi; ++i) {
+      auto& fileEntry = (*i)->getFileEntry();
+      if(fileEntry->isRequested()) {
+        lastOffset = fileEntry->getOffset()/pieceLength_*pieceLength_;
+      } else if(lastOffset <= fileEntry->getOffset() || // length == 0 case
+                lastOffset < fileEntry->getLastOffset()) {
+        // We needs last part of the file, so file allocation is
+        // required, especially for file system which does not support
+        // sparse files.
+        A2_LOG_DEBUG(fmt("%s needs file allocation",
+                         fileEntry->getPath().c_str()));
+        (*i)->needsFileAllocation(true);
       }
     }
   }
