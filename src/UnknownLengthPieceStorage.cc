@@ -62,9 +62,8 @@ void UnknownLengthPieceStorage::initStorage()
   directDiskAdaptor->setFileEntries(downloadContext_->getFileEntries().begin(),
                                     downloadContext_->getFileEntries().end());
 
-  std::shared_ptr<DiskWriter> writer =
-    diskWriterFactory_->newDiskWriter(directDiskAdaptor->getFilePath());
-  directDiskAdaptor->setDiskWriter(writer);
+  directDiskAdaptor->setDiskWriter
+    (diskWriterFactory_->newDiskWriter(directDiskAdaptor->getFilePath()));
 
   diskAdaptor_.reset(directDiskAdaptor);
 }

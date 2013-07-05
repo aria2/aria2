@@ -45,51 +45,49 @@
 namespace aria2 {
 
 MultiFileAllocationIterator::MultiFileAllocationIterator
-(MultiDiskAdaptor* diskAdaptor):
-  diskAdaptor_(diskAdaptor),
-  entries_(diskAdaptor_->diskWriterEntries_.begin(),
-           diskAdaptor_->diskWriterEntries_.end())
+(MultiDiskAdaptor* diskAdaptor)
+  : diskAdaptor_{diskAdaptor},
+    entryItr_{std::begin(diskAdaptor_->getDiskWriterEntries())}
 {}
 
 MultiFileAllocationIterator::~MultiFileAllocationIterator() {}
 
 void MultiFileAllocationIterator::allocateChunk()
 {
-  while(!fileAllocationIterator_ ||
-        fileAllocationIterator_->finished()) {
-    if(entries_.empty()) {
-      break;
-    }
-    std::shared_ptr<DiskWriterEntry> entry = entries_.front();
-    entries_.pop_front();
-    std::shared_ptr<FileEntry> fileEntry = entry->getFileEntry();
-    // Open file before calling DiskWriterEntry::size()
-    diskAdaptor_->openIfNot(entry, &DiskWriterEntry::openFile);
-    if(entry->needsFileAllocation() && entry->size() < fileEntry->getLength()) {
-      // Calling private function of MultiDiskAdaptor.
+  while((!fileAllocationIterator_ ||
+         fileAllocationIterator_->finished()) &&
+        entryItr_ != std::end(diskAdaptor_->getDiskWriterEntries())) {
+    auto& fileEntry = (*entryItr_)->getFileEntry();
+    // Open file before calling DiskWriterEntry::size().  Calling
+    // private function of MultiDiskAdaptor.
+    diskAdaptor_->openIfNot((*entryItr_).get(), &DiskWriterEntry::openFile);
+    if((*entryItr_)->needsFileAllocation() &&
+       (*entryItr_)->size() < fileEntry->getLength()) {
       switch(diskAdaptor_->getFileAllocationMethod()) {
 #ifdef HAVE_SOME_FALLOCATE
       case(DiskAdaptor::FILE_ALLOC_FALLOC):
-        fileAllocationIterator_.reset
-          (new FallocFileAllocationIterator(entry->getDiskWriter().get(),
-                                            entry->size(),
-                                            fileEntry->getLength()));
+        fileAllocationIterator_ = make_unique<FallocFileAllocationIterator>
+          ((*entryItr_)->getDiskWriter().get(),
+           (*entryItr_)->size(),
+           fileEntry->getLength());
         break;
 #endif // HAVE_SOME_FALLOCATE
       case(DiskAdaptor::FILE_ALLOC_TRUNC):
-        fileAllocationIterator_.reset
-          (new TruncFileAllocationIterator(entry->getDiskWriter().get(),
-                                           entry->size(),
-                                           fileEntry->getLength()));
+        fileAllocationIterator_ = make_unique<TruncFileAllocationIterator>
+          ((*entryItr_)->getDiskWriter().get(),
+           (*entryItr_)->size(),
+           fileEntry->getLength());
         break;
       default:
-        fileAllocationIterator_.reset
-          (new AdaptiveFileAllocationIterator(entry->getDiskWriter().get(),
-                                              entry->size(),
-                                              fileEntry->getLength()));
+        fileAllocationIterator_ = make_unique<AdaptiveFileAllocationIterator>
+          ((*entryItr_)->getDiskWriter().get(),
+           (*entryItr_)->size(),
+           fileEntry->getLength());
         break;
       }
+      break;
     }
+    ++entryItr_;
   }
   if(finished()) {
     return;
@@ -99,7 +97,7 @@ void MultiFileAllocationIterator::allocateChunk()
 
 bool MultiFileAllocationIterator::finished()
 {
-  return entries_.empty() &&
+  return entryItr_ == std::end(diskAdaptor_->getDiskWriterEntries()) &&
     (!fileAllocationIterator_ || fileAllocationIterator_->finished());
 }
 
@@ -121,10 +119,10 @@ int64_t MultiFileAllocationIterator::getTotalLength()
   }
 }
 
-const std::deque<std::shared_ptr<DiskWriterEntry> >&
+const DiskWriterEntries&
 MultiFileAllocationIterator::getDiskWriterEntries() const
 {
-  return entries_;
+  return diskAdaptor_->getDiskWriterEntries();
 }
 
 } // namespace aria2

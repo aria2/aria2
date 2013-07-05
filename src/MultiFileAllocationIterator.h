@@ -40,16 +40,17 @@
 #include <deque>
 #include <memory>
 
+#include "MultiDiskAdaptor.h"
+
 namespace aria2 {
 
-class MultiDiskAdaptor;
 class DiskWriterEntry;
 
 class MultiFileAllocationIterator:public FileAllocationIterator
 {
 private:
   MultiDiskAdaptor* diskAdaptor_;
-  std::deque<std::shared_ptr<DiskWriterEntry> > entries_;
+  DiskWriterEntries::const_iterator entryItr_;
   std::unique_ptr<FileAllocationIterator> fileAllocationIterator_;
 public:
   MultiFileAllocationIterator(MultiDiskAdaptor* diskAdaptor);
@@ -64,8 +65,7 @@ public:
 
   virtual int64_t getTotalLength();
 
-  const std::deque<std::shared_ptr<DiskWriterEntry> >&
-  getDiskWriterEntries() const;
+  const DiskWriterEntries& getDiskWriterEntries() const;
 };
 
 } // namespace aria2

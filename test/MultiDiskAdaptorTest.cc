@@ -28,10 +28,10 @@ class MultiDiskAdaptorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testWriteCache);
   CPPUNIT_TEST_SUITE_END();
 private:
-  std::shared_ptr<MultiDiskAdaptor> adaptor;
+  std::unique_ptr<MultiDiskAdaptor> adaptor;
 public:
   void setUp() {
-    adaptor.reset(new MultiDiskAdaptor());
+    adaptor = make_unique<MultiDiskAdaptor>();
     adaptor->setPieceLength(2);
   }
 
@@ -81,13 +81,12 @@ std::vector<std::shared_ptr<FileEntry> > createEntries()
 void MultiDiskAdaptorTest::testResetDiskWriterEntries()
 {
   {
-    std::vector<std::shared_ptr<FileEntry> > fileEntries = createEntries();
+    auto fileEntries = createEntries();
     adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     // In openFile(), resetDiskWriterEntries() are called.
     adaptor->openFile();
 
-    std::vector<std::shared_ptr<DiskWriterEntry> > entries =
-      adaptor->getDiskWriterEntries();
+    auto& entries = adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(entries[0]->getDiskWriter());
     CPPUNIT_ASSERT(entries[1]->getDiskWriter());
     CPPUNIT_ASSERT(entries[2]->getDiskWriter());
@@ -98,14 +97,13 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->closeFile();
   }
   {
-    std::vector<std::shared_ptr<FileEntry> > fileEntries = createEntries();
+    auto fileEntries = createEntries();
     fileEntries[0]->setRequested(false);
     adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     // In openFile(), resetDiskWriterEntries() are called.
     adaptor->openFile();
 
-    std::vector<std::shared_ptr<DiskWriterEntry> > entries =
-      adaptor->getDiskWriterEntries();
+    auto& entries = adaptor->getDiskWriterEntries();
     // Because entries[1] spans entries[0]
     CPPUNIT_ASSERT(entries[0]->getDiskWriter());
     CPPUNIT_ASSERT(entries[1]->getDiskWriter());
@@ -117,15 +115,14 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->closeFile();
   }
   {
-    std::vector<std::shared_ptr<FileEntry> > fileEntries = createEntries();
+    auto fileEntries = createEntries();
     fileEntries[0]->setRequested(false);
     fileEntries[1]->setRequested(false);
     adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     // In openFile(), resetDiskWriterEntries() are called.
     adaptor->openFile();
 
-    std::vector<std::shared_ptr<DiskWriterEntry> > entries =
-      adaptor->getDiskWriterEntries();
+    auto& entries = adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(!entries[0]->getDiskWriter());
     // Because entries[2] spans entries[1]
     CPPUNIT_ASSERT(entries[1]->getDiskWriter());
@@ -138,14 +135,13 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->closeFile();
   }
   {
-    std::vector<std::shared_ptr<FileEntry> > fileEntries = createEntries();
+    auto fileEntries = createEntries();
     fileEntries[3]->setRequested(false);
     adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     // In openFile(), resetDiskWriterEntries() are called.
     adaptor->openFile();
 
-    std::vector<std::shared_ptr<DiskWriterEntry> > entries =
-      adaptor->getDiskWriterEntries();
+    auto& entries = adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(entries[0]->getDiskWriter());
     CPPUNIT_ASSERT(entries[1]->getDiskWriter());
     CPPUNIT_ASSERT(entries[2]->getDiskWriter());
@@ -158,14 +154,13 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->closeFile();
   }
   {
-    std::vector<std::shared_ptr<FileEntry> > fileEntries = createEntries();
+    auto fileEntries = createEntries();
     fileEntries[4]->setRequested(false);
     adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     // In openFile(), resetDiskWriterEntries() are called.
     adaptor->openFile();
 
-    std::vector<std::shared_ptr<DiskWriterEntry> > entries =
-      adaptor->getDiskWriterEntries();
+    auto& entries = adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(entries[0]->getDiskWriter());
     CPPUNIT_ASSERT(entries[1]->getDiskWriter());
     CPPUNIT_ASSERT(entries[2]->getDiskWriter());
@@ -177,15 +172,14 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->closeFile();
   }
   {
-    std::vector<std::shared_ptr<FileEntry> > fileEntries = createEntries();
+    auto fileEntries = createEntries();
     fileEntries[3]->setRequested(false);
     fileEntries[4]->setRequested(false);
     adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     // In openFile(), resetDiskWriterEntries() are called.
     adaptor->openFile();
 
-    std::vector<std::shared_ptr<DiskWriterEntry> > entries =
-      adaptor->getDiskWriterEntries();
+    auto& entries = adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(entries[0]->getDiskWriter());
     CPPUNIT_ASSERT(entries[1]->getDiskWriter());
     CPPUNIT_ASSERT(entries[2]->getDiskWriter());
@@ -196,7 +190,7 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->closeFile();
   }
   {
-    std::vector<std::shared_ptr<FileEntry> > fileEntries = createEntries();
+    auto fileEntries = createEntries();
     for(size_t i = 5; i < 9; ++i) {
       fileEntries[i]->setRequested(false);
     }
@@ -204,8 +198,7 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     // In openFile(), resetDiskWriterEntries() are called.
     adaptor->openFile();
 
-    std::vector<std::shared_ptr<DiskWriterEntry> > entries =
-      adaptor->getDiskWriterEntries();
+    auto& entries = adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(entries[0]->getDiskWriter());
     CPPUNIT_ASSERT(entries[1]->getDiskWriter());
     CPPUNIT_ASSERT(entries[2]->getDiskWriter());
@@ -216,14 +209,13 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->closeFile();
   }
   {
-    std::vector<std::shared_ptr<FileEntry> > fileEntries = createEntries();
+    auto fileEntries = createEntries();
     for(size_t i = 1; i < 9; ++i) {
       fileEntries[i]->setRequested(false);
     }
     adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     adaptor->openFile();
-    std::vector<std::shared_ptr<DiskWriterEntry> > entries =
-      adaptor->getDiskWriterEntries();
+    auto& entries = adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(entries[0]->getDiskWriter());
     CPPUNIT_ASSERT(!entries[1]->getDiskWriter());
     CPPUNIT_ASSERT(!entries[2]->getDiskWriter());
@@ -234,14 +226,13 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->closeFile();
   }
   {
-    std::vector<std::shared_ptr<FileEntry> > fileEntries = createEntries();
+    auto fileEntries = createEntries();
     for(size_t i = 2; i < 9; ++i) {
       fileEntries[i]->setRequested(false);
     }
     adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     adaptor->openFile();
-    std::vector<std::shared_ptr<DiskWriterEntry> > entries =
-      adaptor->getDiskWriterEntries();
+    auto& entries = adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(entries[0]->getDiskWriter());
     CPPUNIT_ASSERT(entries[1]->getDiskWriter());
     // entries[1] spans entries[2]
@@ -254,15 +245,14 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->closeFile();
   }
   {
-    std::vector<std::shared_ptr<FileEntry> > fileEntries = createEntries();
+    auto fileEntries = createEntries();
     for(size_t i = 0; i < 6; ++i) {
       fileEntries[i]->setRequested(false);
     }
     fileEntries[8]->setRequested(false);
     adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
     adaptor->openFile();
-    std::vector<std::shared_ptr<DiskWriterEntry> > entries =
-      adaptor->getDiskWriterEntries();
+    auto& entries = adaptor->getDiskWriterEntries();
     CPPUNIT_ASSERT(!entries[0]->getDiskWriter());
     CPPUNIT_ASSERT(!entries[1]->getDiskWriter());
     CPPUNIT_ASSERT(!entries[2]->getDiskWriter());
@@ -291,8 +281,8 @@ void readFile(const std::string& filename, char* buf, int bufLength) {
 }
 
 void MultiDiskAdaptorTest::testWriteData() {
-  std::vector<std::shared_ptr<FileEntry> > fileEntries(createEntries());
-  adaptor->setFileEntries(fileEntries.begin(), fileEntries.end());
+  auto fileEntries = createEntries();
+  adaptor->setFileEntries(std::begin(fileEntries), std::end(fileEntries));
 
   adaptor->openFile();
   std::string msg = "12345";
@@ -340,13 +330,13 @@ void MultiDiskAdaptorTest::testWriteData() {
 
 void MultiDiskAdaptorTest::testReadData()
 {
-  std::vector<std::shared_ptr<FileEntry>> entries {
+  auto entries = std::vector<std::shared_ptr<FileEntry>>{
     std::make_shared<FileEntry>(A2_TEST_DIR "/file1r.txt", 15, 0),
     std::make_shared<FileEntry>(A2_TEST_DIR "/file2r.txt", 7, 15),
     std::make_shared<FileEntry>(A2_TEST_DIR "/file3r.txt", 3, 22)
   };
 
-  adaptor->setFileEntries(entries.begin(), entries.end());
+  adaptor->setFileEntries(std::begin(entries), std::end(entries));
   adaptor->enableReadOnly();
   adaptor->openFile();
   unsigned char buf[128];
@@ -369,7 +359,7 @@ void MultiDiskAdaptorTest::testCutTrailingGarbage()
 {
   std::string dir = A2_TEST_OUT_DIR;
   std::string prefix = "aria2_MultiDiskAdaptorTest_testCutTrailingGarbage_";
-  std::vector<std::shared_ptr<FileEntry> > fileEntries {
+  auto fileEntries = std::vector<std::shared_ptr<FileEntry>>{
     std::make_shared<FileEntry>(dir+"/"+prefix+"1", 256, 0),
     std::make_shared<FileEntry>(dir+"/"+prefix+"2", 512, 256)
   };
@@ -378,7 +368,7 @@ void MultiDiskAdaptorTest::testCutTrailingGarbage()
   }
 
   MultiDiskAdaptor adaptor;
-  adaptor.setFileEntries(fileEntries.begin(), fileEntries.end());
+  adaptor.setFileEntries(std::begin(fileEntries), std::end(fileEntries));
   adaptor.setMaxOpenFiles(1);
   adaptor.setPieceLength(1);
 
@@ -396,7 +386,7 @@ void MultiDiskAdaptorTest::testSize()
 {
   std::string dir = A2_TEST_OUT_DIR;
   std::string prefix = "aria2_MultiDiskAdaptorTest_testSize_";
-  std::vector<std::shared_ptr<FileEntry>> fileEntries {
+  auto fileEntries = std::vector<std::shared_ptr<FileEntry>>{
     std::make_shared<FileEntry>(dir+"/"+prefix+"1", 1, 0),
     std::make_shared<FileEntry>(dir+"/"+prefix+"2", 1, 1)
   };
@@ -405,7 +395,7 @@ void MultiDiskAdaptorTest::testSize()
   }
 
   MultiDiskAdaptor adaptor;
-  adaptor.setFileEntries(fileEntries.begin(), fileEntries.end());
+  adaptor.setFileEntries(std::begin(fileEntries), std::end(fileEntries));
   adaptor.setMaxOpenFiles(1);
   adaptor.setPieceLength(1);
 
@@ -417,7 +407,7 @@ void MultiDiskAdaptorTest::testSize()
 void MultiDiskAdaptorTest::testUtime()
 {
   std::string storeDir = A2_TEST_OUT_DIR"/aria2_MultiDiskAdaptorTest_testUtime";
-  std::vector<std::shared_ptr<FileEntry> > entries {
+  auto entries = std::vector<std::shared_ptr<FileEntry>>{
     std::make_shared<FileEntry>(storeDir+"/requested", 0, 0),
     std::make_shared<FileEntry>(storeDir+"/notFound", 0, 0),
     std::make_shared<FileEntry>(storeDir+"/notRequested", 0, 0),
@@ -432,7 +422,7 @@ void MultiDiskAdaptorTest::testUtime()
   entries[2]->setRequested(false);
 
   MultiDiskAdaptor adaptor;
-  adaptor.setFileEntries(entries.begin(), entries.end());
+  adaptor.setFileEntries(std::begin(entries), std::end(entries));
 
   time_t atime = (time_t) 100000;
   time_t mtime = (time_t) 200000;
@@ -453,16 +443,16 @@ void MultiDiskAdaptorTest::testWriteCache()
 {
   std::string storeDir =
     A2_TEST_OUT_DIR"/aria2_MultiDiskAdaptorTest_testWriteCache";
-  std::vector<std::shared_ptr<FileEntry>> entries {
+  auto entries = std::vector<std::shared_ptr<FileEntry>>{
     std::make_shared<FileEntry>(storeDir+"/file1", 16385, 0),
     std::make_shared<FileEntry>(storeDir+"/file2", 4098, 16385)
   };
   for(const auto& i : entries) {
     File(i->getPath()).remove();
   }
-  std::shared_ptr<MultiDiskAdaptor> adaptor(new MultiDiskAdaptor());
+  auto adaptor = std::make_shared<MultiDiskAdaptor>();
   adaptor->setFileEntries(std::begin(entries), std::end(entries));
-  WrDiskCacheEntry cache(adaptor);
+  WrDiskCacheEntry cache{adaptor};
   std::string data1(16383, '1'), data2(100, '2'), data3(4000, '3');
   cache.cacheData(createDataCell(0, data1.c_str()));
   cache.cacheData(createDataCell(data1.size(), data2.c_str()));

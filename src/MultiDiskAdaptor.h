@@ -46,9 +46,10 @@ class DiskWriter;
 class DiskWriterEntry {
 private:
   std::shared_ptr<FileEntry> fileEntry_;
-  std::shared_ptr<DiskWriter> diskWriter_;
+  std::unique_ptr<DiskWriter> diskWriter_;
   bool open_;
   bool needsFileAllocation_;
+  bool needsDiskWriter_;
 public:
   DiskWriterEntry(const std::shared_ptr<FileEntry>& fileEntry);
 
@@ -76,9 +77,9 @@ public:
     return fileEntry_;
   }
 
-  void setDiskWriter(const std::shared_ptr<DiskWriter>& diskWriter);
+  void setDiskWriter(std::unique_ptr<DiskWriter> diskWriter);
 
-  const std::shared_ptr<DiskWriter>& getDiskWriter() const
+  const std::unique_ptr<DiskWriter>& getDiskWriter() const
   {
     return diskWriter_;
   }
@@ -95,9 +96,18 @@ public:
     needsFileAllocation_ = f;
   }
 
+  bool needsDiskWriter() const
+  {
+    return needsDiskWriter_;
+  }
+
+  void needsDiskWriter(bool f)
+  {
+    needsDiskWriter_ = f;
+  }
 };
 
-typedef std::vector<std::shared_ptr<DiskWriterEntry> > DiskWriterEntries;
+typedef std::vector<std::unique_ptr<DiskWriterEntry>> DiskWriterEntries;
 
 class MultiDiskAdaptor : public DiskAdaptor {
   friend class MultiFileAllocationIterator;
@@ -105,7 +115,7 @@ private:
   int32_t pieceLength_;
   DiskWriterEntries diskWriterEntries_;
 
-  std::vector<std::shared_ptr<DiskWriterEntry> > openedDiskWriterEntries_;
+  std::vector<DiskWriterEntry*> openedDiskWriterEntries_;
 
   int maxOpenFiles_;
 
@@ -113,8 +123,7 @@ private:
 
   void resetDiskWriterEntries();
 
-  void openIfNot(const std::shared_ptr<DiskWriterEntry>& entry,
-                 void (DiskWriterEntry::*f)());
+  void openIfNot(DiskWriterEntry* entry, void (DiskWriterEntry::*f)());
 
   static const int DEFAULT_MAX_OPEN_FILES = 100;
 
@@ -168,8 +177,7 @@ public:
 
   virtual size_t utime(const Time& actime, const Time& modtime);
 
-  const std::vector<std::shared_ptr<DiskWriterEntry> >&
-  getDiskWriterEntries() const
+  const DiskWriterEntries& getDiskWriterEntries() const
   {
     return diskWriterEntries_;
   }

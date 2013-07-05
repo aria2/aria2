@@ -36,6 +36,7 @@
 #define D_ANON_DISK_WRITER_FACTORY_H
 
 #include "DiskWriterFactory.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -47,9 +48,9 @@ public:
   AnonDiskWriterFactory() {}
   virtual ~AnonDiskWriterFactory() {}
 
-  virtual std::shared_ptr<DiskWriter> newDiskWriter(const std::string& filename)
+  virtual std::unique_ptr<DiskWriter> newDiskWriter(const std::string& filename)
   {
-    return std::shared_ptr<DiskWriter>(new DiskWriterType());
+    return make_unique<DiskWriterType>();
   }
 };
 
