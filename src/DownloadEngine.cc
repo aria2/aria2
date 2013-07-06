@@ -95,7 +95,7 @@ DownloadEngine::DownloadEngine(const std::shared_ptr<EventPoll>& eventPoll)
     lastRefresh_(0),
     cookieStorage_(new CookieStorage()),
 #ifdef ENABLE_BITTORRENT
-    btRegistry_(new BtRegistry()),
+    btRegistry_(make_unique<BtRegistry>()),
 #endif // ENABLE_BITTORRENT
 #ifdef HAVE_ARES_ADDR_NODE
     asyncDNSServers_(0),

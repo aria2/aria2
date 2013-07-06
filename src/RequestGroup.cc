@@ -289,7 +289,7 @@ void RequestGroup::createInitialCommand
         throw DOWNLOAD_FAILURE_EXCEPTION
           ("Cancel BitTorrent download in dry-run context.");
       }
-      std::shared_ptr<BtRegistry> btRegistry = e->getBtRegistry();
+      auto& btRegistry = e->getBtRegistry();
       if(btRegistry->getDownloadContext(torrentAttrs->infoHash)) {
         // TODO If metadataGetMode == false and each FileEntry has
         // URI, then go without BT.

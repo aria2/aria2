@@ -101,12 +101,12 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
   auto torrentAttrs =
     bittorrent::getTorrentAttrs(requestGroup->getDownloadContext());
   bool metadataGetMode = torrentAttrs->metadata.empty();
-  const std::shared_ptr<BtRegistry>& btReg = e->getBtRegistry();
-  const std::shared_ptr<BtObject>& btObject = btReg->get(requestGroup->getGID());
-  const std::shared_ptr<PieceStorage>& pieceStorage = btObject->pieceStorage;
-  const std::shared_ptr<PeerStorage>& peerStorage = btObject->peerStorage;
-  const std::shared_ptr<BtRuntime>& btRuntime = btObject->btRuntime;
-  const std::shared_ptr<BtAnnounce>& btAnnounce = btObject->btAnnounce;
+  auto& btReg = e->getBtRegistry();
+  auto& btObject = btReg->get(requestGroup->getGID());
+  auto& pieceStorage = btObject->pieceStorage;
+  auto& peerStorage = btObject->peerStorage;
+  auto& btRuntime = btObject->btRuntime;
+  auto& btAnnounce = btObject->btAnnounce;
   // commands
   {
     auto c = make_unique<TrackerWatcherCommand>(e->newCUID(), requestGroup, e);

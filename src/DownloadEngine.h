@@ -136,7 +136,7 @@ private:
   std::unique_ptr<CookieStorage> cookieStorage_;
 
 #ifdef ENABLE_BITTORRENT
-  std::shared_ptr<BtRegistry> btRegistry_;
+  std::unique_ptr<BtRegistry> btRegistry_;
 #endif // ENABLE_BITTORRENT
 
   CUIDCounter cuidCounter_;
@@ -305,7 +305,7 @@ public:
   const std::unique_ptr<CookieStorage>& getCookieStorage() const;
 
 #ifdef ENABLE_BITTORRENT
-  const std::shared_ptr<BtRegistry>& getBtRegistry() const
+  const std::unique_ptr<BtRegistry>& getBtRegistry() const
   {
     return btRegistry_;
   }
