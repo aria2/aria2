@@ -146,13 +146,13 @@ std::unique_ptr<EventPoll> createEventPoll(Option* op)
 }
 } // namespace
 
-std::shared_ptr<DownloadEngine>
+std::unique_ptr<DownloadEngine>
 DownloadEngineFactory::newDownloadEngine
-(Option* op, std::vector<std::shared_ptr<RequestGroup> > requestGroups)
+(Option* op, std::vector<std::shared_ptr<RequestGroup>> requestGroups)
 {
   const size_t MAX_CONCURRENT_DOWNLOADS =
     op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS);
-  auto e = std::make_shared<DownloadEngine>(createEventPoll(op));
+  auto e = make_unique<DownloadEngine>(createEventPoll(op));
   e->setOption(op);
   {
     auto requestGroupMan = make_unique<RequestGroupMan>

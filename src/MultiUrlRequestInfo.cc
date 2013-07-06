@@ -391,7 +391,7 @@ void MultiUrlRequestInfo::resetSignalHandlers()
 #endif // SIGPIPE
 }
 
-const std::shared_ptr<DownloadEngine>&
+const std::unique_ptr<DownloadEngine>&
 MultiUrlRequestInfo::getDownloadEngine() const
 {
   return e_;

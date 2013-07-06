@@ -60,7 +60,7 @@ private:
 
   std::shared_ptr<UriListParser> uriListParser_;
 
-  std::shared_ptr<DownloadEngine> e_;
+  std::unique_ptr<DownloadEngine> e_;
 
   sigset_t mask_;
 
@@ -99,7 +99,7 @@ public:
   // have completed.
   error_code::Value getResult();
 
-  const std::shared_ptr<DownloadEngine>& getDownloadEngine() const;
+  const std::unique_ptr<DownloadEngine>& getDownloadEngine() const;
 
   // Signal handlers are not prepared if false is given.
   void setUseSignalHandler(bool useSignalHandler)

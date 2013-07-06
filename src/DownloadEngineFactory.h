@@ -50,9 +50,9 @@ class DownloadEngineFactory {
 public:
   DownloadEngineFactory();
 
-  std::shared_ptr<DownloadEngine>
+  std::unique_ptr<DownloadEngine>
   newDownloadEngine
-  (Option* op, std::vector<std::shared_ptr<RequestGroup> > requestGroups);
+  (Option* op, std::vector<std::shared_ptr<RequestGroup>> requestGroups);
 };
 
 } // namespace aria2
