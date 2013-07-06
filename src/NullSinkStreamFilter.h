@@ -75,7 +75,8 @@ public:
     return bytesProcessed_;
   }
 
-  virtual bool installDelegate(const std::unique_ptr<StreamFilter> filter) override
+  virtual bool installDelegate(const std::unique_ptr<StreamFilter> filter)
+    CXX11_OVERRIDE
   {
     return false;
   }

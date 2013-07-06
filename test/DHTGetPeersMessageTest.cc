@@ -44,7 +44,7 @@ public:
      std::vector<std::shared_ptr<DHTNode>> closestKNodes,
      std::vector<std::shared_ptr<Peer>> peers,
      const std::string& token,
-     const std::string& transactionID) override
+     const std::string& transactionID) CXX11_OVERRIDE
     {
       auto m = make_unique<DHTGetPeersReplyMessage>(AF_INET, localNode_,
                                                     remoteNode, token,

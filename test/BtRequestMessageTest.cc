@@ -54,7 +54,7 @@ public:
 
   class MockPieceStorage2 : public MockPieceStorage {
   public:
-    virtual bool hasPiece(size_t index) override
+    virtual bool hasPiece(size_t index) CXX11_OVERRIDE
     {
       return index == 1;
     }
@@ -63,13 +63,15 @@ public:
   class MockBtMessageFactory2 : public MockBtMessageFactory {
   public:
     virtual std::unique_ptr<BtPieceMessage>
-    createPieceMessage(size_t index, int32_t begin, int32_t length) override
+    createPieceMessage(size_t index, int32_t begin, int32_t length)
+      CXX11_OVERRIDE
     {
       return make_unique<BtPieceMessage>(index, begin, length);
     }
 
     virtual std::unique_ptr<BtRejectMessage>
-    createRejectMessage(size_t index, int32_t begin, int32_t length) override
+    createRejectMessage(size_t index, int32_t begin, int32_t length)
+      CXX11_OVERRIDE
     {
       return make_unique<BtRejectMessage>(index, begin, length);
     }

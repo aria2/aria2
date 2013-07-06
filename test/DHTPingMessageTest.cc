@@ -38,7 +38,7 @@ public:
     virtual std::unique_ptr<DHTPingReplyMessage>
     createPingReplyMessage(const std::shared_ptr<DHTNode>& remoteNode,
                            const unsigned char* remoteNodeID,
-                           const std::string& transactionID) override
+                           const std::string& transactionID) CXX11_OVERRIDE
     {
       unsigned char id[DHT_ID_LENGTH];
       std::fill(std::begin(id), std::end(id), '0');

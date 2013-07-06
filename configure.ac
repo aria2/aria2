@@ -96,6 +96,27 @@ PKG_PROG_PKG_CONFIG([0.20])
 # Check C++ compiler supports C++0x/C++11 feature
 AX_CXX_COMPILE_STDCXX_11([noext])
 
+# i686-w64-mingw32-g++ 4.6 does not support override keyword. For
+# those compilers, define CXX11_OVERRIDE to empty string. Otherwise
+# define it as override. Use CXX11_OVERRIDE instead of override.
+AC_MSG_CHECKING([whether the C++ compiler supports `override` keyword])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+struct Base {
+virtual void f() = 0;
+};
+struct Derived : Base {
+virtual void f() override {}
+};
+]],
+[[
+Derived x;
+]])],
+    [cxx11_override=override
+     AC_MSG_RESULT([yes])],
+    [AC_MSG_RESULT([no])])
+AC_DEFINE_UNQUOTED([CXX11_OVERRIDE], [$cxx11_override],
+                   [Define `override` keyword if the compiler supports it])
+
 # Check static build is requested
 if test "x$ARIA2_STATIC" = "xyes"; then
   case "$host" in

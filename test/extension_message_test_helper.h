@@ -9,7 +9,7 @@ class WrapExtBtMessageFactory:public MockBtMessageFactory {
 public:
   virtual std::unique_ptr<BtExtendedMessage>
   createBtExtendedMessage(std::unique_ptr<ExtensionMessage> extmsg)
-    override
+    CXX11_OVERRIDE
   {
     return make_unique<BtExtendedMessage>(std::move(extmsg));
   }

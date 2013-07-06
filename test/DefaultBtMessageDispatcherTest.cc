@@ -83,14 +83,14 @@ public:
       : evcheck{evcheck}
     {}
 
-    virtual void onQueued() override
+    virtual void onQueued() CXX11_OVERRIDE
     {
       if(evcheck){
         evcheck->onQueuedCalled = true;
       }
     }
 
-    virtual void send() override
+    virtual void send() CXX11_OVERRIDE
     {
       if(evcheck) {
         evcheck->sendCalled = true;
@@ -98,7 +98,7 @@ public:
     }
 
     virtual void onCancelSendingPieceEvent
-    (const BtCancelSendingPieceEvent& event) override
+    (const BtCancelSendingPieceEvent& event) CXX11_OVERRIDE
     {
       if(evcheck) {
         evcheck->doCancelActionCalled = true;
@@ -110,7 +110,7 @@ public:
   private:
     std::shared_ptr<Piece> piece;
   public:
-    virtual std::shared_ptr<Piece> getPiece(size_t index) override
+    virtual std::shared_ptr<Piece> getPiece(size_t index) CXX11_OVERRIDE
     {
       return piece;
     }
@@ -124,7 +124,8 @@ public:
   class MockBtMessageFactory2 : public MockBtMessageFactory {
   public:
     virtual std::unique_ptr<BtCancelMessage>
-    createCancelMessage(size_t index, int32_t begin, int32_t length) override
+    createCancelMessage(size_t index, int32_t begin, int32_t length)
+      CXX11_OVERRIDE
     {
       return make_unique<BtCancelMessage>(index, begin, length);
     }

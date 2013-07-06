@@ -37,7 +37,8 @@ public:
   class MockDHTMessageFactory2:public MockDHTMessageFactory {
     virtual std::unique_ptr<DHTAnnouncePeerReplyMessage>
     createAnnouncePeerReplyMessage(const std::shared_ptr<DHTNode>& remoteNode,
-                                   const std::string& transactionID) override
+                                   const std::string& transactionID)
+      CXX11_OVERRIDE
     {
       return make_unique<DHTAnnouncePeerReplyMessage>(localNode_, remoteNode,
                                                       transactionID);

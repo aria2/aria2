@@ -41,7 +41,7 @@ public:
                                length(0) {}
 
     virtual void doCancelSendingPieceAction
-    (size_t index, int32_t begin, int32_t length) override {
+    (size_t index, int32_t begin, int32_t length) CXX11_OVERRIDE {
       this->index = index;
       this->begin = begin;
       this->length = length;

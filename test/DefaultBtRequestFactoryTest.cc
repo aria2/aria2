@@ -53,7 +53,7 @@ public:
   public:
     virtual std::unique_ptr<BtRequestMessage>
     createRequestMessage(const std::shared_ptr<Piece>& piece,
-                         size_t blockIndex) override
+                         size_t blockIndex) CXX11_OVERRIDE
     {
       return make_unique<BtRequestMessage>(piece->getIndex(), 0, 0,
                                            blockIndex);
@@ -62,7 +62,8 @@ public:
 
   class MockBtMessageDispatcher2 : public MockBtMessageDispatcher {
   public:
-    virtual bool isOutstandingRequest(size_t index, size_t blockIndex) override
+    virtual bool isOutstandingRequest(size_t index, size_t blockIndex)
+      CXX11_OVERRIDE
     {
       return index == 0 && blockIndex == 0;
     }
