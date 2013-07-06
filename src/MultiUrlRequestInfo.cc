@@ -166,11 +166,9 @@ int MultiUrlRequestInfo::prepare()
 
 #ifdef ENABLE_WEBSOCKET
     if(option_->getAsBool(PREF_ENABLE_RPC)) {
-      std::shared_ptr<rpc::WebSocketSessionMan> wsSessionMan
-        (new rpc::WebSocketSessionMan());
-      e_->setWebSocketSessionMan(wsSessionMan);
+      e_->setWebSocketSessionMan(make_unique<rpc::WebSocketSessionMan>());
       SingletonHolder<Notifier>::instance()->addDownloadEventListener
-        (wsSessionMan);
+        (e_->getWebSocketSessionMan().get());
     }
 #endif // ENABLE_WEBSOCKET
 

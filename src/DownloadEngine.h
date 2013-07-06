@@ -150,7 +150,7 @@ private:
   std::unique_ptr<AuthConfigFactory> authConfigFactory_;
 
 #ifdef ENABLE_WEBSOCKET
-  std::shared_ptr<rpc::WebSocketSessionMan> webSocketSessionMan_;
+  std::unique_ptr<rpc::WebSocketSessionMan> webSocketSessionMan_;
 #endif // ENABLE_WEBSOCKET
 
   /**
@@ -352,9 +352,9 @@ public:
 #endif // HAVE_ARES_ADDR_NODE
 
 #ifdef ENABLE_WEBSOCKET
-  void setWebSocketSessionMan
-  (const std::shared_ptr<rpc::WebSocketSessionMan>& wsman);
-  const std::shared_ptr<rpc::WebSocketSessionMan>& getWebSocketSessionMan() const
+  void setWebSocketSessionMan(std::unique_ptr<rpc::WebSocketSessionMan> wsman);
+  const std::unique_ptr<rpc::WebSocketSessionMan>& getWebSocketSessionMan()
+    const
   {
     return webSocketSessionMan_;
   }

@@ -44,11 +44,13 @@
 namespace aria2 {
 
 struct Context;
+class ApiCallbackDownloadEventListener;
 
 struct Session {
   Session(const KeyVals& options);
   ~Session();
   std::shared_ptr<Context> context;
+  std::unique_ptr<ApiCallbackDownloadEventListener> listener;
 };
 
 } // namespace aria2

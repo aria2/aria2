@@ -55,8 +55,7 @@ class Notifier {
 public:
   Notifier();
   ~Notifier();
-  void addDownloadEventListener
-  (const std::shared_ptr<DownloadEventListener>& listener);
+  void addDownloadEventListener(DownloadEventListener* listener);
   // Notifies the download event to all listeners.
   void notifyDownloadEvent(DownloadEvent event, const RequestGroup* group);
 
@@ -66,7 +65,7 @@ public:
     notifyDownloadEvent(event, group.get());
   }
 private:
-  std::vector<std::shared_ptr<DownloadEventListener> > listeners_;
+  std::vector<DownloadEventListener*> listeners_;
 };
 
 } // namespace aria2

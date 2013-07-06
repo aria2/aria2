@@ -108,11 +108,11 @@ int libraryDeinit()
 Session* sessionNew(const KeyVals& options, const SessionConfig& config)
 {
   int rv;
-  Session* session;
+  std::unique_ptr<Session> session;
   try {
-    session = new Session(options);
+    session = make_unique<Session>(options);
   } catch(RecoverableException& e) {
-    return 0;
+    return nullptr;
   }
   if(session->context->reqinfo) {
     if(!config.useSignalHandler) {
@@ -120,29 +120,24 @@ Session* sessionNew(const KeyVals& options, const SessionConfig& config)
     }
     rv = session->context->reqinfo->prepare();
     if(rv != 0) {
-      delete session;
-      return 0;
+      return nullptr;
     }
-    const std::shared_ptr<DownloadEngine>& e =
-      session->context->reqinfo->getDownloadEngine();
+    auto& e = session->context->reqinfo->getDownloadEngine();
     if(config.keepRunning) {
       e->getRequestGroupMan()->setKeepRunning(true);
       // Add command to make aria2 keep event polling
       e->addCommand(make_unique<KeepRunningCommand>(e->newCUID(), e.get()));
     }
     if(config.downloadEventCallback) {
-      std::shared_ptr<DownloadEventListener> listener
-        (new ApiCallbackDownloadEventListener(session,
-                                              config.downloadEventCallback,
-                                              config.userData));
+      session->listener = make_unique<ApiCallbackDownloadEventListener>
+        (session.get(), config.downloadEventCallback, config.userData);
       SingletonHolder<Notifier>::instance()
-        ->addDownloadEventListener(listener);
+        ->addDownloadEventListener(session->listener.get());
     }
   } else {
-    delete session;
-    return 0;
+    return nullptr;
   }
-  return session;
+  return session.release();
 }
 
 int sessionFinal(Session* session)

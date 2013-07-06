@@ -610,9 +610,9 @@ void DownloadEngine::setAsyncDNSServers(ares_addr_node* asyncDNSServers)
 
 #ifdef ENABLE_WEBSOCKET
 void DownloadEngine::setWebSocketSessionMan
-(const std::shared_ptr<rpc::WebSocketSessionMan>& wsman)
+(std::unique_ptr<rpc::WebSocketSessionMan> wsman)
 {
-  webSocketSessionMan_ = wsman;
+  webSocketSessionMan_ = std::move(wsman);
 }
 #endif // ENABLE_WEBSOCKET
 
