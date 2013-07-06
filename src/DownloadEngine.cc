@@ -87,8 +87,8 @@ volatile sig_atomic_t globalHaltRequested = 0;
 
 } // namespace global
 
-DownloadEngine::DownloadEngine(const std::shared_ptr<EventPoll>& eventPoll)
-  : eventPoll_(eventPoll),
+DownloadEngine::DownloadEngine(std::unique_ptr<EventPoll> eventPoll)
+  : eventPoll_(std::move(eventPoll)),
     haltRequested_(0),
     noWait_(true),
     refreshInterval_(DEFAULT_REFRESH_INTERVAL),

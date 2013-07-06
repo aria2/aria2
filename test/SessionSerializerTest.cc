@@ -78,7 +78,7 @@ void SessionSerializerTest::testSave()
     rgman.addDownloadResult(drs[i]);
   }
 
-  DownloadEngine e(std::shared_ptr<EventPoll>(new SelectEventPoll()));
+  DownloadEngine e(make_unique<SelectEventPoll>());
   e.setOption(option.get());
   rgman.fillRequestGroupFromReserver(&e);
   CPPUNIT_ASSERT_EQUAL((size_t)1, rgman.getRequestGroups().size());

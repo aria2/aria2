@@ -80,7 +80,7 @@ private:
 
   std::string sessionId_;
 
-  std::shared_ptr<EventPoll> eventPoll_;
+  std::unique_ptr<EventPoll> eventPoll_;
 
   std::unique_ptr<StatCalc> statCalc_;
 
@@ -173,7 +173,7 @@ private:
   std::unique_ptr<CheckIntegrityMan> checkIntegrityMan_;
   Option* option_;
 public:
-  DownloadEngine(const std::shared_ptr<EventPoll>& eventPoll);
+  DownloadEngine(std::unique_ptr<EventPoll> eventPoll);
 
   ~DownloadEngine();
 

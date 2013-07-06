@@ -48,7 +48,7 @@ public:
     // To enable paused RequestGroup
     option_->put(PREF_ENABLE_RPC, A2_V_TRUE);
     File(option_->get(PREF_DIR)).mkdirs();
-    e_ = make_unique<DownloadEngine>(std::make_shared<SelectEventPoll>());
+    e_ = make_unique<DownloadEngine>(make_unique<SelectEventPoll>());
     e_->setOption(option_.get());
     auto rgman = make_unique<RequestGroupMan>
       (std::vector<std::shared_ptr<RequestGroup>>{}, 3, option_.get());

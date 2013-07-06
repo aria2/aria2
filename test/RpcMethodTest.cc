@@ -89,7 +89,7 @@ public:
     option_->put(PREF_PIECE_LENGTH, "1048576");
     option_->put(PREF_MAX_DOWNLOAD_RESULT, "10");
     File(option_->get(PREF_DIR)).mkdirs();
-    e_ = make_unique<DownloadEngine>(std::make_shared<SelectEventPoll>());
+    e_ = make_unique<DownloadEngine>(make_unique<SelectEventPoll>());
     e_->setOption(option_.get());
     e_->setRequestGroupMan
       (make_unique<RequestGroupMan>

@@ -84,30 +84,27 @@ namespace aria2 {
 
 DownloadEngineFactory::DownloadEngineFactory() {}
 
-std::shared_ptr<DownloadEngine>
-DownloadEngineFactory::newDownloadEngine
-(Option* op, std::vector<std::shared_ptr<RequestGroup> > requestGroups)
+namespace {
+std::unique_ptr<EventPoll> createEventPoll(Option* op)
 {
-  const size_t MAX_CONCURRENT_DOWNLOADS =
-    op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS);
-  std::shared_ptr<EventPoll> eventPoll;
   const std::string& pollMethod = op->get(PREF_EVENT_POLL);
 #ifdef HAVE_LIBUV
   if (pollMethod == V_LIBUV) {
-    std::shared_ptr<LibuvEventPoll> ep(new LibuvEventPoll());
-    if (!ep->good()) {
+    auto ep = make_unique<LibuvEventPoll>();
+    if(ep->good()) {
+      return std::move(ep);
+    } else {
       throw DL_ABORT_EX("Initializing LibuvEventPoll failed."
                         " Try --event-poll=select");
     }
-    eventPoll = ep;
   }
   else
 #endif // HAVE_LIBUV
 #ifdef HAVE_EPOLL
   if(pollMethod == V_EPOLL) {
-    std::shared_ptr<EpollEventPoll> ep(new EpollEventPoll());
+    auto ep = make_unique<EpollEventPoll>();
     if(ep->good()) {
-      eventPoll = ep;
+      return std::move(ep);
     } else {
       throw DL_ABORT_EX("Initializing EpollEventPoll failed."
                         " Try --event-poll=select");
@@ -116,9 +113,9 @@ DownloadEngineFactory::newDownloadEngine
 #endif // HAVE_EPLL
 #ifdef HAVE_KQUEUE
     if(pollMethod == V_KQUEUE) {
-      std::shared_ptr<KqueueEventPoll> kp(new KqueueEventPoll());
+      auto kp = make_unique<KqueueEventPoll>();
       if(kp->good()) {
-        eventPoll = kp;
+        return std::move(kp);
       } else {
         throw DL_ABORT_EX("Initializing KqueueEventPoll failed."
                           " Try --event-poll=select");
@@ -127,9 +124,9 @@ DownloadEngineFactory::newDownloadEngine
 #endif // HAVE_KQUEUE
 #ifdef HAVE_PORT_ASSOCIATE
       if(pollMethod == V_PORT) {
-        std::shared_ptr<PortEventPoll> pp(new PortEventPoll());
+        auto pp = make_unique<PortEventPoll>();
         if(pp->good()) {
-          eventPoll = pp;
+          return std::move(pp);
         } else {
           throw DL_ABORT_EX("Initializing PortEventPoll failed."
                             " Try --event-poll=select");
@@ -138,15 +135,24 @@ DownloadEngineFactory::newDownloadEngine
 #endif // HAVE_PORT_ASSOCIATE
 #ifdef HAVE_POLL
         if(pollMethod == V_POLL) {
-          eventPoll.reset(new PollEventPoll());
+          return make_unique<PollEventPoll>();
         } else
 #endif // HAVE_POLL
           if(pollMethod == V_SELECT) {
-            eventPoll.reset(new SelectEventPoll());
+            return make_unique<SelectEventPoll>();
           } else {
-            abort();
+            assert(0);
           }
-  std::shared_ptr<DownloadEngine> e(new DownloadEngine(eventPoll));
+}
+} // namespace
+
+std::shared_ptr<DownloadEngine>
+DownloadEngineFactory::newDownloadEngine
+(Option* op, std::vector<std::shared_ptr<RequestGroup> > requestGroups)
+{
+  const size_t MAX_CONCURRENT_DOWNLOADS =
+    op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS);
+  auto e = std::make_shared<DownloadEngine>(createEventPoll(op));
   e->setOption(op);
   {
     auto requestGroupMan = make_unique<RequestGroupMan>
