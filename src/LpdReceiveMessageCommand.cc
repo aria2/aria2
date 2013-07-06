@@ -90,7 +90,7 @@ bool LpdReceiveMessageCommand::execute()
     }
     RequestGroup* group = dctx->getOwnerRequestGroup();
     assert(group);
-    auto& btobj = reg->get(group->getGID());
+    auto btobj = reg->get(group->getGID());
     assert(btobj);
     auto& peerStorage = btobj->peerStorage;
     assert(peerStorage);

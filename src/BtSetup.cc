@@ -102,7 +102,7 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
     bittorrent::getTorrentAttrs(requestGroup->getDownloadContext());
   bool metadataGetMode = torrentAttrs->metadata.empty();
   auto& btReg = e->getBtRegistry();
-  auto& btObject = btReg->get(requestGroup->getGID());
+  auto btObject = btReg->get(requestGroup->getGID());
   auto& pieceStorage = btObject->pieceStorage;
   auto& peerStorage = btObject->peerStorage;
   auto& btRuntime = btObject->btRuntime;

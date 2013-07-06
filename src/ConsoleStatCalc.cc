@@ -171,7 +171,7 @@ void printProgress
   o << " CN:"
     << rg->getNumConnection();
 #ifdef ENABLE_BITTORRENT
-  const std::shared_ptr<BtObject>& btObj = e->getBtRegistry()->get(rg->getGID());
+  auto btObj = e->getBtRegistry()->get(rg->getGID());
   if(btObj) {
     const PeerSet& peers = btObj->peerStorage->getUsedPeers();
     o << " SD:"

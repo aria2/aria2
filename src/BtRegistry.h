@@ -69,17 +69,11 @@ struct BtObject {
            const std::shared_ptr<BtProgressInfoFile>& btProgressInfoFile);
 
   BtObject();
-
-  BtObject(const BtObject& c);
-
-  ~BtObject();
-
-  BtObject& operator=(const BtObject& c);
 };
 
 class BtRegistry {
 private:
-  std::map<a2_gid_t, std::shared_ptr<BtObject> > pool_;
+  std::map<a2_gid_t, std::unique_ptr<BtObject>> pool_;
   uint16_t tcpPort_;
   // This is UDP port for DHT and UDP tracker. But currently UDP
   // tracker is not supported in IPv6.
@@ -88,7 +82,6 @@ private:
   std::shared_ptr<UDPTrackerClient> udpTrackerClient_;
 public:
   BtRegistry();
-  ~BtRegistry();
 
   const std::shared_ptr<DownloadContext>&
   getDownloadContext(a2_gid_t gid) const;
@@ -96,16 +89,15 @@ public:
   const std::shared_ptr<DownloadContext>&
   getDownloadContext(const std::string& infoHash) const;
 
-  void put(a2_gid_t gid, const std::shared_ptr<BtObject>& obj);
+  void put(a2_gid_t gid, std::unique_ptr<BtObject> obj);
 
-  const std::shared_ptr<BtObject>& get(a2_gid_t gid) const;
+  BtObject* get(a2_gid_t gid) const;
 
   template<typename OutputIterator>
   OutputIterator getAllDownloadContext(OutputIterator dest)
   {
-    for(std::map<a2_gid_t, std::shared_ptr<BtObject> >::const_iterator i =
-          pool_.begin(), eoi = pool_.end(); i != eoi; ++i) {
-      *dest++ = (*i).second->downloadContext;
+    for(auto& kv : pool_) {
+      *dest++ = kv.second->downloadContext;
     }
     return dest;
   }

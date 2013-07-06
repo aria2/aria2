@@ -535,9 +535,11 @@ void RpcMethodTest::testChangeOption()
   opt->put(PREF_BT_REQUEST_PEER_SPEED_LIMIT->k, "300K");
   opt->put(PREF_MAX_UPLOAD_LIMIT->k, "50K");
 
-  std::shared_ptr<BtObject> btObject(new BtObject());
-  btObject->btRuntime = std::shared_ptr<BtRuntime>(new BtRuntime());
-  e_->getBtRegistry()->put(group->getGID(), btObject);
+  {
+    auto btObject = make_unique<BtObject>();
+    btObject->btRuntime = std::make_shared<BtRuntime>();
+    e_->getBtRegistry()->put(group->getGID(), std::move(btObject));
+  }
 #endif // ENABLE_BITTORRENT
   req.params->append(opt);
   RpcResponse res = m.execute(req, e_.get());
@@ -554,7 +556,9 @@ void RpcMethodTest::testChangeOption()
                        option->get(PREF_BT_REQUEST_PEER_SPEED_LIMIT));
 
   CPPUNIT_ASSERT_EQUAL(std::string("100"), option->get(PREF_BT_MAX_PEERS));
-  CPPUNIT_ASSERT_EQUAL(100, btObject->btRuntime->getMaxPeers());
+  CPPUNIT_ASSERT_EQUAL(100,
+                       e_->getBtRegistry()->get(group->getGID())
+                       ->btRuntime->getMaxPeers());
 
   CPPUNIT_ASSERT_EQUAL(50*1024,
                        group->getMaxUploadSpeedLimit());

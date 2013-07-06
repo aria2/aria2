@@ -731,7 +731,7 @@ namespace {
 void gatherProgressBitTorrent
 (const std::shared_ptr<Dict>& entryDict,
  TorrentAttribute* torrentAttrs,
- const std::shared_ptr<BtObject>& btObject,
+ BtObject* btObject,
  const std::vector<std::string>& keys)
 {
   if(requested_key(keys, KEY_INFO_HASH)) {
@@ -800,11 +800,11 @@ void gatherProgress
   gatherProgressCommon(entryDict, group, keys);
 #ifdef ENABLE_BITTORRENT
   if(group->getDownloadContext()->hasAttribute(CTX_ATTR_BT)) {
-    auto torrentAttrs =
-      bittorrent::getTorrentAttrs(group->getDownloadContext());
-    const std::shared_ptr<BtObject>& btObject =
-      e->getBtRegistry()->get(group->getGID());
-    gatherProgressBitTorrent(entryDict, torrentAttrs, btObject, keys);
+    gatherProgressBitTorrent(entryDict,
+                             bittorrent::getTorrentAttrs
+                             (group->getDownloadContext()),
+                             e->getBtRegistry()->get(group->getGID()),
+                             keys);
   }
 #endif // ENABLE_BITTORRENT
 }
@@ -956,8 +956,7 @@ std::shared_ptr<ValueBase> GetPeersRpcMethod::process
                           GroupId::toHex(gid).c_str()));
   }
   std::shared_ptr<List> peers = List::g();
-  const std::shared_ptr<BtObject>& btObject =
-    e->getBtRegistry()->get(group->getGID());
+  auto btObject = e->getBtRegistry()->get(group->getGID());
   if(btObject) {
     assert(btObject->peerStorage);
     gatherPeer(peers, btObject->peerStorage);
@@ -1506,8 +1505,7 @@ void changeOption
     group->setMaxUploadSpeedLimit(grOption->getAsInt(PREF_MAX_UPLOAD_LIMIT));
   }
 #ifdef ENABLE_BITTORRENT
-  const std::shared_ptr<BtObject>& btObject =
-    e->getBtRegistry()->get(group->getGID());
+  auto btObject = e->getBtRegistry()->get(group->getGID());
   if(btObject) {
     if(option.defined(PREF_BT_MAX_PEERS)) {
       btObject->btRuntime->setMaxPeers(grOption->getAsInt(PREF_BT_MAX_PEERS));

@@ -41,24 +41,24 @@ void BtRegistryTest::testGetDownloadContext()
 {
   BtRegistry btRegistry;
   CPPUNIT_ASSERT(!btRegistry.getDownloadContext(1));
-  std::shared_ptr<DownloadContext> dctx(new DownloadContext());
-  std::shared_ptr<BtObject> btObject(new BtObject());
+  auto dctx = std::make_shared<DownloadContext>();
+  auto btObject = make_unique<BtObject>();
   btObject->downloadContext = dctx;
-  btRegistry.put(1, btObject);
+  btRegistry.put(1, std::move(btObject));
   CPPUNIT_ASSERT_EQUAL(dctx.get(), btRegistry.getDownloadContext(1).get());
 }
 
 namespace {
 void addTwoDownloadContext(BtRegistry& btRegistry)
 {
-  std::shared_ptr<DownloadContext> dctx1(new DownloadContext());
-  std::shared_ptr<DownloadContext> dctx2(new DownloadContext());
-  std::shared_ptr<BtObject> btObject1(new BtObject());
+  auto dctx1 = std::make_shared<DownloadContext>();
+  auto dctx2 = std::make_shared<DownloadContext>();
+  auto btObject1 = make_unique<BtObject>();
   btObject1->downloadContext = dctx1;
-  std::shared_ptr<BtObject> btObject2(new BtObject());
+  auto btObject2 = make_unique<BtObject>();
   btObject2->downloadContext = dctx2;
-  btRegistry.put(1, btObject1);
-  btRegistry.put(2, btObject2);
+  btRegistry.put(1, std::move(btObject1));
+  btRegistry.put(2, std::move(btObject2));
 }
 } // namespace
 

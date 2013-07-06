@@ -350,16 +350,14 @@ void RequestGroup::createInitialCommand
       btAnnouncePtr->shuffleAnnounce();
 
       assert(!btRegistry->get(gid_->getNumericId()));
-      btRegistry->put
-        (gid_->getNumericId(), std::shared_ptr<BtObject>
-         (new BtObject
-          (downloadContext_,
-           pieceStorage_,
-           peerStorage,
-           btAnnounce,
-           btRuntime,
-           (progressInfoFile ?
-            progressInfoFile : progressInfoFile_))));
+      btRegistry->put(gid_->getNumericId(), make_unique<BtObject>
+                      (downloadContext_,
+                       pieceStorage_,
+                       peerStorage,
+                       btAnnounce,
+                       btRuntime,
+                       (progressInfoFile ?
+                        progressInfoFile : progressInfoFile_)));
       if(metadataGetMode) {
         if(option_->getAsBool(PREF_ENABLE_DHT) ||
            (!e->getOption()->getAsBool(PREF_DISABLE_IPV6) &&

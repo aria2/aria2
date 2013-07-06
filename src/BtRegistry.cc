@@ -48,16 +48,14 @@
 namespace aria2 {
 
 BtRegistry::BtRegistry()
-  : tcpPort_(0),
-    udpPort_(0)
+  : tcpPort_{0},
+    udpPort_{0}
 {}
-
-BtRegistry::~BtRegistry() {}
 
 const std::shared_ptr<DownloadContext>&
 BtRegistry::getDownloadContext(a2_gid_t gid) const
 {
-  const std::shared_ptr<BtObject>& res = get(gid);
+  auto res = get(gid);
   if(res) {
     return res->downloadContext;
   } else {
@@ -68,29 +66,27 @@ BtRegistry::getDownloadContext(a2_gid_t gid) const
 const std::shared_ptr<DownloadContext>&
 BtRegistry::getDownloadContext(const std::string& infoHash) const
 {
-  for(std::map<a2_gid_t, std::shared_ptr<BtObject> >::const_iterator i =
-        pool_.begin(), eoi = pool_.end(); i != eoi; ++i) {
-    if(bittorrent::getTorrentAttrs((*i).second->downloadContext)->infoHash ==
+  for(auto& kv : pool_) {
+    if(bittorrent::getTorrentAttrs(kv.second->downloadContext)->infoHash ==
        infoHash) {
-      return (*i).second->downloadContext;
+      return kv.second->downloadContext;
     }
   }
   return getNull<DownloadContext>();
 }
 
-void BtRegistry::put(a2_gid_t gid, const std::shared_ptr<BtObject>& obj)
+void BtRegistry::put(a2_gid_t gid, std::unique_ptr<BtObject> obj)
 {
-  pool_[gid] = obj;
+  pool_[gid] = std::move(obj);
 }
 
-const std::shared_ptr<BtObject>& BtRegistry::get(a2_gid_t gid) const
+BtObject* BtRegistry::get(a2_gid_t gid) const
 {
-  std::map<a2_gid_t, std::shared_ptr<BtObject> >::const_iterator i =
-    pool_.find(gid);
-  if(i == pool_.end()) {
-    return getNull<BtObject>();
+  auto i = pool_.find(gid);
+  if(i == std::end(pool_)) {
+    return nullptr;
   } else {
-    return (*i).second;
+    return (*i).second.get();
   }
 }
 
@@ -99,7 +95,8 @@ bool BtRegistry::remove(a2_gid_t gid)
   return pool_.erase(gid);
 }
 
-void BtRegistry::removeAll() {
+void BtRegistry::removeAll()
+{
   pool_.clear();
 }
 
@@ -122,38 +119,14 @@ BtObject::BtObject
  const std::shared_ptr<BtAnnounce>& btAnnounce,
  const std::shared_ptr<BtRuntime>& btRuntime,
  const std::shared_ptr<BtProgressInfoFile>& btProgressInfoFile)
-  : downloadContext(downloadContext),
-    pieceStorage(pieceStorage),
-    peerStorage(peerStorage),
-    btAnnounce(btAnnounce),
-    btRuntime(btRuntime),
-    btProgressInfoFile(btProgressInfoFile)
+  : downloadContext{downloadContext},
+    pieceStorage{pieceStorage},
+    peerStorage{peerStorage},
+    btAnnounce{btAnnounce},
+    btRuntime{btRuntime},
+    btProgressInfoFile{btProgressInfoFile}
 {}
 
 BtObject::BtObject() {}
-
-BtObject::BtObject(const BtObject& c)
-  : downloadContext(c.downloadContext),
-    pieceStorage(c.pieceStorage),
-    peerStorage(c.peerStorage),
-    btAnnounce(c.btAnnounce),
-    btRuntime(c.btRuntime),
-    btProgressInfoFile(c.btProgressInfoFile)
-{}
-
-BtObject::~BtObject() {}
-
-BtObject& BtObject::operator=(const BtObject& c)
-{
-  if(this != &c) {
-    downloadContext = c.downloadContext;
-    pieceStorage = c.pieceStorage;
-    peerStorage = c.peerStorage;
-    btAnnounce = c.btAnnounce;
-    btRuntime = c.btRuntime;
-    btProgressInfoFile = c.btProgressInfoFile;
-  }
-  return *this;
-}
 
 } // namespace aria2

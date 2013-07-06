@@ -109,8 +109,7 @@ bool PeerReceiveHandshakeCommand::executeInternal()
         (fmt("Unknown info hash %s",
              util::toHex(infoHash).c_str()));
     }
-    const std::shared_ptr<BtObject>& btObject =
-      getDownloadEngine()->getBtRegistry()->get
+    auto btObject = getDownloadEngine()->getBtRegistry()->get
       (downloadContext->getOwnerRequestGroup()->getGID());
     const std::shared_ptr<BtRuntime>& btRuntime = btObject->btRuntime;
     const std::shared_ptr<PieceStorage>& pieceStorage = btObject->pieceStorage;
