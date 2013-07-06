@@ -82,7 +82,7 @@ private:
 
   std::shared_ptr<EventPoll> eventPoll_;
 
-  std::shared_ptr<StatCalc> statCalc_;
+  std::unique_ptr<StatCalc> statCalc_;
 
   int haltRequested_;
 
@@ -235,7 +235,7 @@ public:
     option_ = op;
   }
 
-  void setStatCalc(const std::shared_ptr<StatCalc>& statCalc);
+  void setStatCalc(std::unique_ptr<StatCalc> statCalc);
 
   bool isHaltRequested() const
   {

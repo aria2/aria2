@@ -57,8 +57,6 @@
 #include "Platform.h"
 #include "FileEntry.h"
 #include "RequestGroup.h"
-#include "ConsoleStatCalc.h"
-#include "NullStatCalc.h"
 #include "download_helper.h"
 #include "Exception.h"
 #include "ProtocolDetector.h"
@@ -66,7 +64,6 @@
 #include "SocketCore.h"
 #include "DownloadContext.h"
 #include "fmt.h"
-#include "NullOutputFile.h"
 #include "console.h"
 #include "UriListParser.h"
 #ifdef ENABLE_BITTORRENT
@@ -84,31 +81,6 @@ extern char* optarg;
 extern int optind, opterr, optopt;
 
 namespace aria2 {
-
-std::shared_ptr<StatCalc> getStatCalc(const std::shared_ptr<Option>& op)
-{
-  std::shared_ptr<StatCalc> statCalc;
-  if(op->getAsBool(PREF_QUIET)) {
-    statCalc.reset(new NullStatCalc());
-  } else {
-    std::shared_ptr<ConsoleStatCalc> impl
-      (new ConsoleStatCalc(op->getAsInt(PREF_SUMMARY_INTERVAL),
-                           op->getAsBool(PREF_HUMAN_READABLE)));
-    impl->setReadoutVisibility(op->getAsBool(PREF_SHOW_CONSOLE_READOUT));
-    impl->setTruncate(op->getAsBool(PREF_TRUNCATE_CONSOLE_READOUT));
-    statCalc = impl;
-  }
-  return statCalc;
-}
-
-std::shared_ptr<OutputFile> getSummaryOut(const std::shared_ptr<Option>& op)
-{
-  if(op->getAsBool(PREF_QUIET)) {
-    return std::shared_ptr<OutputFile>(new NullOutputFile());
-  } else {
-    return global::cout();
-  }
-}
 
 #ifdef ENABLE_BITTORRENT
 namespace {
@@ -281,8 +253,7 @@ Context::Context(bool standalone,
     global::cout()->printf("%s\n", MSG_NO_FILES_TO_DOWNLOAD);
   } else {
     reqinfo.reset(new MultiUrlRequestInfo(std::move(requestGroups),
-                                          op, getStatCalc(op),
-                                          getSummaryOut(op),
+                                          op,
                                           uriListParser));
   }
 }

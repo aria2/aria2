@@ -49,8 +49,6 @@ namespace aria2 {
 
 class RequestGroup;
 class Option;
-class StatCalc;
-class OutputFile;
 class UriListParser;
 class DownloadEngine;
 
@@ -59,10 +57,6 @@ private:
   std::vector<std::shared_ptr<RequestGroup> > requestGroups_;
 
   std::shared_ptr<Option> option_;
-
-  std::shared_ptr<StatCalc> statCalc_;
-
-  std::shared_ptr<OutputFile> summaryOut_;
 
   std::shared_ptr<UriListParser> uriListParser_;
 
@@ -83,8 +77,6 @@ public:
   MultiUrlRequestInfo
   (std::vector<std::shared_ptr<RequestGroup> > requestGroups,
    const std::shared_ptr<Option>& op,
-   const std::shared_ptr<StatCalc>& statCalc,
-   const std::shared_ptr<OutputFile>& summaryOut,
    const std::shared_ptr<UriListParser>& uriListParser);
 
   ~MultiUrlRequestInfo();

@@ -251,9 +251,9 @@ void DownloadEngine::requestForceHalt()
   requestGroupMan_->forceHalt();
 }
 
-void DownloadEngine::setStatCalc(const std::shared_ptr<StatCalc>& statCalc)
+void DownloadEngine::setStatCalc(std::unique_ptr<StatCalc> statCalc)
 {
-  statCalc_ = statCalc;
+  statCalc_ = std::move(statCalc);
 }
 
 #ifdef ENABLE_ASYNC_DNS

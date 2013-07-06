@@ -50,7 +50,8 @@
 #include "message.h"
 #include "util.h"
 #include "Option.h"
-#include "StatCalc.h"
+#include "ConsoleStatCalc.h"
+#include "NullStatCalc.h"
 #include "CookieStorage.h"
 #include "File.h"
 #include "Netrc.h"
@@ -59,10 +60,11 @@
 #include "TimeA2.h"
 #include "fmt.h"
 #include "SocketCore.h"
-#include "OutputFile.h"
+#include "NullOutputFile.h"
 #include "UriListParser.h"
 #include "SingletonHolder.h"
 #include "Notifier.h"
+#include "console.h"
 #ifdef ENABLE_WEBSOCKET
 # include "WebSocketSessionMan.h"
 #else // !ENABLE_WEBSOCKET
@@ -103,16 +105,30 @@ void handler(int signal) {
 }
 } // namespace
 
+namespace {
+
+std::unique_ptr<StatCalc> getStatCalc(const std::shared_ptr<Option>& op)
+{
+  if(op->getAsBool(PREF_QUIET)) {
+    return make_unique<NullStatCalc>();
+  } else {
+    auto impl = make_unique<ConsoleStatCalc>
+      (op->getAsInt(PREF_SUMMARY_INTERVAL),
+       op->getAsBool(PREF_HUMAN_READABLE));
+    impl->setReadoutVisibility(op->getAsBool(PREF_SHOW_CONSOLE_READOUT));
+    impl->setTruncate(op->getAsBool(PREF_TRUNCATE_CONSOLE_READOUT));
+    return std::move(impl);
+  }
+}
+
+} // namespace
+
 MultiUrlRequestInfo::MultiUrlRequestInfo
 (std::vector<std::shared_ptr<RequestGroup> > requestGroups,
  const std::shared_ptr<Option>& op,
- const std::shared_ptr<StatCalc>& statCalc,
- const std::shared_ptr<OutputFile>& summaryOut,
  const std::shared_ptr<UriListParser>& uriListParser)
   : requestGroups_(std::move(requestGroups)),
     option_(op),
-    statCalc_(statCalc),
-    summaryOut_(summaryOut),
     uriListParser_(uriListParser),
     useSignalHandler_(true)
 {
@@ -127,10 +143,12 @@ MultiUrlRequestInfo::~MultiUrlRequestInfo() {}
 
 void MultiUrlRequestInfo::printMessageForContinue()
 {
-  summaryOut_->printf
-    ("\n%s\n%s\n",
-     _("aria2 will resume download if the transfer is restarted."),
-     _("If there are any errors, then see the log file. See '-l' option in help/man page for details."));
+  if(!option_->getAsBool(PREF_QUIET)) {
+    global::cout()->printf
+      ("\n%s\n%s\n",
+       _("aria2 will resume download if the transfer is restarted."),
+       _("If there are any errors, then see the log file. See '-l' option in help/man page for details."));
+  }
 }
 
 int MultiUrlRequestInfo::prepare()
@@ -242,7 +260,7 @@ int MultiUrlRequestInfo::prepare()
       e_->getRequestGroupMan()->removeStaleServerStat
         (option_->getAsInt(PREF_SERVER_STAT_TIMEOUT));
     }
-    e_->setStatCalc(statCalc_);
+    e_->setStatCalc(getStatCalc(option_));
     if(uriListParser_) {
       e_->getRequestGroupMan()->setUriListParser(uriListParser_);
     }
@@ -271,9 +289,11 @@ error_code::Value MultiUrlRequestInfo::getResult()
   if(!serverStatOf.empty()) {
     e_->getRequestGroupMan()->saveServerStat(serverStatOf);
   }
-  e_->getRequestGroupMan()->showDownloadResults
-    (*summaryOut_, option_->get(PREF_DOWNLOAD_RESULT) == A2_V_FULL);
-  summaryOut_->flush();
+  if(!option_->getAsBool(PREF_QUIET)) {
+    e_->getRequestGroupMan()->showDownloadResults
+      (*global::cout(), option_->get(PREF_DOWNLOAD_RESULT) == A2_V_FULL);
+    global::cout()->flush();
+  }
 
   RequestGroupMan::DownloadStat s =
     e_->getRequestGroupMan()->getDownloadStat();
