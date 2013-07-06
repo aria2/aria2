@@ -145,7 +145,7 @@ private:
   ares_addr_node* asyncDNSServers_;
 #endif // HAVE_ARES_ADDR_NODE
 
-  std::shared_ptr<DNSCache> dnsCache_;
+  std::unique_ptr<DNSCache> dnsCache_;
 
   std::unique_ptr<AuthConfigFactory> authConfigFactory_;
 

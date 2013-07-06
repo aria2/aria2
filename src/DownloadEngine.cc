@@ -100,7 +100,7 @@ DownloadEngine::DownloadEngine(const std::shared_ptr<EventPoll>& eventPoll)
 #ifdef HAVE_ARES_ADDR_NODE
     asyncDNSServers_(0),
 #endif // HAVE_ARES_ADDR_NODE
-    dnsCache_(new DNSCache()),
+    dnsCache_(make_unique<DNSCache>()),
     option_(0)
 {
   unsigned char sessionId[20];
