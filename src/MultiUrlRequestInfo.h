@@ -87,7 +87,7 @@ public:
    const std::shared_ptr<OutputFile>& summaryOut,
    const std::shared_ptr<UriListParser>& uriListParser);
 
-  virtual ~MultiUrlRequestInfo();
+  ~MultiUrlRequestInfo();
 
   // Returns FINISHED if all downloads have completed, otherwise returns the
   // last download result.
