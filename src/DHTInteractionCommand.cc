@@ -162,9 +162,9 @@ void DHTInteractionCommand::setTaskQueue(DHTTaskQueue* taskQueue)
 }
 
 void DHTInteractionCommand::setConnection
-(const std::shared_ptr<DHTConnection>& connection)
+(std::unique_ptr<DHTConnection> connection)
 {
-  connection_ = connection;
+  connection_ = std::move(connection);
 }
 
 void DHTInteractionCommand::setUDPTrackerClient

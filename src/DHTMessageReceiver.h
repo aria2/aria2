@@ -44,7 +44,6 @@ namespace aria2 {
 
 class DHTMessageTracker;
 class DHTMessage;
-class DHTConnection;
 class DHTMessageFactory;
 class DHTRoutingTable;
 class DHTUnknownMessage;
@@ -52,8 +51,6 @@ class DHTUnknownMessage;
 class DHTMessageReceiver {
 private:
   std::shared_ptr<DHTMessageTracker> tracker_;
-
-  std::shared_ptr<DHTConnection> connection_;
 
   DHTMessageFactory* factory_;
 
@@ -73,17 +70,10 @@ public:
 
   void handleTimeout();
 
-  const std::shared_ptr<DHTConnection>& getConnection() const
-  {
-    return connection_;
-  }
-
   const std::shared_ptr<DHTMessageTracker>& getMessageTracker() const
   {
     return tracker_;
   }
-
-  void setConnection(const std::shared_ptr<DHTConnection>& connection);
 
   void setMessageFactory(DHTMessageFactory* factory);
 

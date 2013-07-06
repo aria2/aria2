@@ -38,7 +38,6 @@
 #include <utility>
 
 #include "DHTMessageTracker.h"
-#include "DHTConnection.h"
 #include "DHTMessage.h"
 #include "DHTQueryMessage.h"
 #include "DHTResponseMessage.h"
@@ -141,11 +140,6 @@ DHTMessageReceiver::handleUnknownMessage(const unsigned char* data,
     factory_->createUnknownMessage(data, length, remoteAddr, remotePort);
   A2_LOG_INFO(fmt("Message received: %s", m->toString().c_str()));
   return m;
-}
-
-void DHTMessageReceiver::setConnection(const std::shared_ptr<DHTConnection>& connection)
-{
-  connection_ = connection;
 }
 
 void DHTMessageReceiver::setMessageFactory(DHTMessageFactory* factory)

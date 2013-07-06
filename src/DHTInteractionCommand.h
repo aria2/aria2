@@ -56,7 +56,7 @@ private:
   DHTMessageReceiver* receiver_;
   DHTTaskQueue* taskQueue_;
   std::shared_ptr<SocketCore> readCheckSocket_;
-  std::shared_ptr<DHTConnection> connection_;
+  std::unique_ptr<DHTConnection> connection_;
   std::shared_ptr<UDPTrackerClient> udpTrackerClient_;
 public:
   DHTInteractionCommand(cuid_t cuid, DownloadEngine* e);
@@ -75,7 +75,7 @@ public:
 
   void setTaskQueue(DHTTaskQueue* taskQueue);
 
-  void setConnection(const std::shared_ptr<DHTConnection>& connection);
+  void setConnection(std::unique_ptr<DHTConnection> connection);
 
   void setUDPTrackerClient
   (const std::shared_ptr<UDPTrackerClient>& udpTrackerClient);

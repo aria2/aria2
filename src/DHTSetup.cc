@@ -111,7 +111,7 @@ std::vector<std::unique_ptr<Command>> DHTSetup::setup
     }
 
     uint16_t port;
-    auto connection = std::make_shared<DHTConnectionImpl>(family);
+    auto connection = make_unique<DHTConnectionImpl>(family);
     {
       port = e->getBtRegistry()->getUdpPort();
       const std::string& addr =
@@ -156,7 +156,6 @@ std::vector<std::unique_ptr<Command>> DHTSetup::setup
 
     dispatcher->setTimeout(messageTimeout);
 
-    receiver->setConnection(connection);
     receiver->setMessageFactory(factory.get());
     receiver->setRoutingTable(routingTable.get());
 
@@ -210,7 +209,7 @@ std::vector<std::unique_ptr<Command>> DHTSetup::setup
       command->setMessageReceiver(receiver.get());
       command->setTaskQueue(taskQueue.get());
       command->setReadCheckSocket(connection->getSocket());
-      command->setConnection(connection);
+      command->setConnection(std::move(connection));
       command->setUDPTrackerClient(udpTrackerClient);
       tempCommands.push_back(std::move(command));
     }
