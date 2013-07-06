@@ -614,27 +614,27 @@ void DefaultBtInteractive::setPeer(const std::shared_ptr<Peer>& peer)
 }
 
 void DefaultBtInteractive::setBtMessageReceiver
-(const std::shared_ptr<BtMessageReceiver>& receiver)
+(std::unique_ptr<BtMessageReceiver> receiver)
 {
-  btMessageReceiver_ = receiver;
+  btMessageReceiver_ = std::move(receiver);
 }
 
 void DefaultBtInteractive::setDispatcher
-(const std::shared_ptr<BtMessageDispatcher>& dispatcher)
+(std::unique_ptr<BtMessageDispatcher> dispatcher)
 {
-  dispatcher_ = dispatcher;
+  dispatcher_ = std::move(dispatcher);
 }
 
 void DefaultBtInteractive::setBtRequestFactory
-(const std::shared_ptr<BtRequestFactory>& factory)
+(std::unique_ptr<BtRequestFactory> factory)
 {
-  btRequestFactory_ = factory;
+  btRequestFactory_ = std::move(factory);
 }
 
 void DefaultBtInteractive::setPeerConnection
-(const std::shared_ptr<PeerConnection>& peerConnection)
+(std::unique_ptr<PeerConnection> peerConnection)
 {
-  peerConnection_ = peerConnection;
+  peerConnection_ = std::move(peerConnection);
 }
 
 void DefaultBtInteractive::setExtensionMessageFactory
@@ -644,14 +644,32 @@ void DefaultBtInteractive::setExtensionMessageFactory
 }
 
 void DefaultBtInteractive::setBtMessageFactory
-(const std::shared_ptr<BtMessageFactory>& factory)
+(std::unique_ptr<BtMessageFactory> factory)
 {
-  messageFactory_ = factory;
+  messageFactory_ = std::move(factory);
 }
 
 void DefaultBtInteractive::setRequestGroupMan(RequestGroupMan* rgman)
 {
   requestGroupMan_ = rgman;
+}
+
+void DefaultBtInteractive::setExtensionMessageRegistry
+(std::unique_ptr<ExtensionMessageRegistry> registry)
+{
+  extensionMessageRegistry_ = std::move(registry);
+}
+
+void DefaultBtInteractive::setUTMetadataRequestTracker
+(std::unique_ptr<UTMetadataRequestTracker> tracker)
+{
+  utMetadataRequestTracker_ = std::move(tracker);
+}
+
+void DefaultBtInteractive::setUTMetadataRequestFactory
+(std::unique_ptr<UTMetadataRequestFactory> factory)
+{
+  utMetadataRequestFactory_ = std::move(factory);
 }
 
 } // namespace aria2

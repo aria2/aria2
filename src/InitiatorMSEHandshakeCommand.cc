@@ -149,8 +149,8 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
     }
     case INITIATOR_RECEIVE_PAD_D: {
       if(mseHandshake_->receivePad()) {
-        std::shared_ptr<PeerConnection> peerConnection
-          (new PeerConnection(getCuid(), getPeer(), getSocket()));
+        auto peerConnection = make_unique<PeerConnection>
+          (getCuid(), getPeer(), getSocket());
         if(mseHandshake_->getNegotiatedCryptoType() ==
            MSEHandshake::CRYPTO_ARC4){
           size_t buflen = mseHandshake_->getBufferLength();
@@ -172,7 +172,7 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
             peerStorage_,
             getSocket(),
             PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE,
-            peerConnection));
+            std::move(peerConnection)));
         return true;
       } else {
         done = true;

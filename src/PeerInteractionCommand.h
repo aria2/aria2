@@ -64,7 +64,7 @@ private:
   std::shared_ptr<PeerStorage> peerStorage_;
 
   Seq sequence_;
-  std::shared_ptr<BtInteractive> btInteractive_;
+  std::unique_ptr<BtInteractive> btInteractive_;
 
   const std::shared_ptr<Option>& getOption() const;
 protected:
@@ -83,8 +83,8 @@ public:
                          const std::shared_ptr<PeerStorage>& peerStorage,
                          const std::shared_ptr<SocketCore>& s,
                          Seq sequence,
-                         const std::shared_ptr<PeerConnection>& peerConnection =
-                         std::shared_ptr<PeerConnection>());
+                         std::unique_ptr<PeerConnection> peerConnection =
+                         nullptr);
 
   virtual ~PeerInteractionCommand();
 };

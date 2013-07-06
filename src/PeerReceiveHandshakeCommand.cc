@@ -66,9 +66,9 @@ PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand
  const std::shared_ptr<Peer>& peer,
  DownloadEngine* e,
  const std::shared_ptr<SocketCore>& s,
- const std::shared_ptr<PeerConnection>& peerConnection)
-  : PeerAbstractCommand(cuid, peer, e, s),
-    peerConnection_(peerConnection)
+ std::unique_ptr<PeerConnection> peerConnection)
+  : PeerAbstractCommand{cuid, peer, e, s},
+    peerConnection_{std::move(peerConnection)}
 {
   if(peerConnection_) {
     if(peerConnection_->getBufferLength() > 0) {
@@ -76,7 +76,8 @@ PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand
       getDownloadEngine()->setNoWait(true);
     }
   } else {
-    peerConnection_.reset(new PeerConnection(cuid, getPeer(), getSocket()));
+    peerConnection_ = make_unique<PeerConnection>
+      (cuid, getPeer(), getSocket());
   }
 }
 
@@ -151,7 +152,7 @@ bool PeerReceiveHandshakeCommand::executeInternal()
            peerStorage,
            getSocket(),
            PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE,
-           peerConnection_));
+           std::move(peerConnection_)));
         A2_LOG_DEBUG(fmt(MSG_INCOMING_PEER_CONNECTION,
                          getCuid(),
                          getPeer()->usedBy()));

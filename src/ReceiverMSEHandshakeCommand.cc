@@ -103,16 +103,17 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
             ("The legacy BitTorrent handshake is not acceptable by the"
              " preference.");
         }
-        std::shared_ptr<PeerConnection> peerConnection
-          (new PeerConnection(getCuid(), getPeer(), getSocket()));
+        auto peerConnection = make_unique<PeerConnection>
+          (getCuid(), getPeer(), getSocket());
         peerConnection->presetBuffer(mseHandshake_->getBuffer(),
                                      mseHandshake_->getBufferLength());
         getDownloadEngine()->addCommand
-          (make_unique<PeerReceiveHandshakeCommand>(getCuid(),
-                                                    getPeer(),
-                                                    getDownloadEngine(),
-                                                    getSocket(),
-                                                    peerConnection));
+          (make_unique<PeerReceiveHandshakeCommand>
+           (getCuid(),
+            getPeer(),
+            getDownloadEngine(),
+            getSocket(),
+            std::move(peerConnection)));
         return true;
       }
       default:
@@ -206,8 +207,8 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
 
 void ReceiverMSEHandshakeCommand::createCommand()
 {
-  std::shared_ptr<PeerConnection> peerConnection
-    (new PeerConnection(getCuid(), getPeer(), getSocket()));
+  auto peerConnection = make_unique<PeerConnection>
+    (getCuid(), getPeer(), getSocket());
   if(mseHandshake_->getNegotiatedCryptoType() == MSEHandshake::CRYPTO_ARC4) {
     peerConnection->enableEncryption(mseHandshake_->popEncryptor(),
                                      mseHandshake_->popDecryptor());
@@ -221,7 +222,7 @@ void ReceiverMSEHandshakeCommand::createCommand()
   // match, then drop connection.
   getDownloadEngine()->addCommand(make_unique<PeerReceiveHandshakeCommand>
                                   (getCuid(), getPeer(), getDownloadEngine(),
-                                   getSocket(), peerConnection));
+                                   getSocket(), std::move(peerConnection)));
 }
 
 } // namespace aria2

@@ -110,17 +110,15 @@ private:
 
   std::shared_ptr<Peer> peer_;
 
-  std::shared_ptr<BtMessageReceiver> btMessageReceiver_;
-  std::shared_ptr<BtMessageDispatcher> dispatcher_;
-  std::shared_ptr<BtRequestFactory> btRequestFactory_;
-  // Although peerStorage_ is not used in this class, this object
-  // holds the reference so that peerConnection_ is not deleted.
-  std::shared_ptr<PeerConnection> peerConnection_;
-  std::shared_ptr<BtMessageFactory> messageFactory_;
+  std::unique_ptr<BtMessageReceiver> btMessageReceiver_;
+  std::unique_ptr<BtMessageDispatcher> dispatcher_;
+  std::unique_ptr<BtRequestFactory> btRequestFactory_;
+  std::unique_ptr<PeerConnection> peerConnection_;
+  std::unique_ptr<BtMessageFactory> messageFactory_;
   std::unique_ptr<ExtensionMessageFactory> extensionMessageFactory_;
-  std::shared_ptr<ExtensionMessageRegistry> extensionMessageRegistry_;
-  std::shared_ptr<UTMetadataRequestFactory> utMetadataRequestFactory_;
-  std::shared_ptr<UTMetadataRequestTracker> utMetadataRequestTracker_;
+  std::unique_ptr<ExtensionMessageRegistry> extensionMessageRegistry_;
+  std::unique_ptr<UTMetadataRequestFactory> utMetadataRequestFactory_;
+  std::unique_ptr<UTMetadataRequestTracker> utMetadataRequestTracker_;
 
   bool metadataGetMode_;
 
@@ -210,24 +208,21 @@ public:
 
   void setPeer(const std::shared_ptr<Peer>& peer);
 
-  void setBtMessageReceiver(const std::shared_ptr<BtMessageReceiver>& receiver);
+  void setBtMessageReceiver(std::unique_ptr<BtMessageReceiver> receiver);
 
-  void setDispatcher(const std::shared_ptr<BtMessageDispatcher>& dispatcher);
+  void setDispatcher(std::unique_ptr<BtMessageDispatcher> dispatcher);
 
-  void setBtRequestFactory(const std::shared_ptr<BtRequestFactory>& factory);
+  void setBtRequestFactory(std::unique_ptr<BtRequestFactory> factory);
 
-  void setPeerConnection(const std::shared_ptr<PeerConnection>& peerConnection);
+  void setPeerConnection(std::unique_ptr<PeerConnection> peerConnection);
 
-  void setBtMessageFactory(const std::shared_ptr<BtMessageFactory>& factory);
+  void setBtMessageFactory(std::unique_ptr<BtMessageFactory> factory);
 
   void setExtensionMessageFactory
   (std::unique_ptr<ExtensionMessageFactory> factory);
 
   void setExtensionMessageRegistry
-  (const std::shared_ptr<ExtensionMessageRegistry>& registry)
-  {
-    extensionMessageRegistry_ = registry;
-  }
+  (std::unique_ptr<ExtensionMessageRegistry> registry);
 
   void setKeepAliveInterval(time_t keepAliveInterval) {
     keepAliveInterval_ = keepAliveInterval;
@@ -248,16 +243,10 @@ public:
   void setRequestGroupMan(RequestGroupMan* rgman);
 
   void setUTMetadataRequestTracker
-  (const std::shared_ptr<UTMetadataRequestTracker>& tracker)
-  {
-    utMetadataRequestTracker_ = tracker;
-  }
+  (std::unique_ptr<UTMetadataRequestTracker> tracker);
 
   void setUTMetadataRequestFactory
-  (const std::shared_ptr<UTMetadataRequestFactory>& factory)
-  {
-    utMetadataRequestFactory_ = factory;
-  }
+  (std::unique_ptr<UTMetadataRequestFactory> factory);
 
   void enableMetadataGetMode()
   {
