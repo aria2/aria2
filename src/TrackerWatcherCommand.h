@@ -70,7 +70,7 @@ public:
 
 class HTTPAnnRequest:public AnnRequest {
 public:
-  HTTPAnnRequest(const std::shared_ptr<RequestGroup>& rg);
+  HTTPAnnRequest(std::unique_ptr<RequestGroup> rg);
   virtual ~HTTPAnnRequest();
   virtual bool stopped() const CXX11_OVERRIDE;
   virtual bool success() const CXX11_OVERRIDE;
@@ -79,7 +79,7 @@ public:
   virtual bool processResponse(const std::shared_ptr<BtAnnounce>& btAnnounce)
     CXX11_OVERRIDE;
 private:
-  std::shared_ptr<RequestGroup> rg_;
+  std::unique_ptr<RequestGroup> rg_;
 };
 
 class UDPAnnRequest:public AnnRequest {
@@ -113,16 +113,16 @@ private:
 
   std::shared_ptr<BtAnnounce> btAnnounce_;
 
-  std::shared_ptr<AnnRequest> trackerRequest_;
+  std::unique_ptr<AnnRequest> trackerRequest_;
 
   /**
    * Returns a command for announce request. Returns 0 if no announce request
    * is needed.
    */
-  std::shared_ptr<AnnRequest>
+  std::unique_ptr<AnnRequest>
   createHTTPAnnRequest(const std::string& uri);
 
-  std::shared_ptr<AnnRequest>
+  std::unique_ptr<AnnRequest>
   createUDPAnnRequest(const std::string& host, uint16_t port,
                       uint16_t localPort);
 
@@ -136,7 +136,7 @@ public:
 
   virtual ~TrackerWatcherCommand();
 
-  std::shared_ptr<AnnRequest> createAnnounce(DownloadEngine* e);
+  std::unique_ptr<AnnRequest> createAnnounce(DownloadEngine* e);
 
   virtual bool execute() CXX11_OVERRIDE;
 

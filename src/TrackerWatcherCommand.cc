@@ -70,8 +70,8 @@
 
 namespace aria2 {
 
-HTTPAnnRequest::HTTPAnnRequest(const std::shared_ptr<RequestGroup>& rg)
-  : rg_(rg)
+HTTPAnnRequest::HTTPAnnRequest(std::unique_ptr<RequestGroup> rg)
+  : rg_{std::move(rg)}
 {}
 
 HTTPAnnRequest::~HTTPAnnRequest()
@@ -275,10 +275,9 @@ void TrackerWatcherCommand::addConnection()
   }
 }
 
-std::shared_ptr<AnnRequest>
+std::unique_ptr<AnnRequest>
 TrackerWatcherCommand::createAnnounce(DownloadEngine* e)
 {
-  std::shared_ptr<AnnRequest> treq;
   while(!btAnnounce_->isAllAnnounceFailed() &&
         btAnnounce_->isAnnounceReady()) {
     std::string uri = btAnnounce_->getAnnounceUrl();
@@ -287,6 +286,7 @@ TrackerWatcherCommand::createAnnounce(DownloadEngine* e)
     if(uri_split(&res, uri.c_str()) == 0) {
       // Without UDP tracker support, send it to normal tracker flow
       // and make it fail.
+      std::unique_ptr<AnnRequest> treq;
       if(udpTrackerClient_ &&
          uri::getFieldString(res, USR_SCHEME, uri.c_str()) == "udp") {
         uint16_t localPort;
@@ -298,7 +298,7 @@ TrackerWatcherCommand::createAnnounce(DownloadEngine* e)
         treq = createHTTPAnnRequest(btAnnounce_->getAnnounceUrl());
       }
       btAnnounce_->announceStart(); // inside it, trackers++.
-      break;
+      return treq;
     } else {
       btAnnounce_->announceFailure();
     }
@@ -306,17 +306,16 @@ TrackerWatcherCommand::createAnnounce(DownloadEngine* e)
   if(btAnnounce_->isAllAnnounceFailed()) {
     btAnnounce_->resetAnnounce();
   }
-  return treq;
+  return nullptr;
 }
 
-std::shared_ptr<AnnRequest>
+std::unique_ptr<AnnRequest>
 TrackerWatcherCommand::createUDPAnnRequest(const std::string& host,
                                            uint16_t port,
                                            uint16_t localPort)
 {
-  std::shared_ptr<UDPTrackerRequest> req =
-    btAnnounce_->createUDPTrackerRequest(host, port, localPort);
-  return std::shared_ptr<AnnRequest>(new UDPAnnRequest(req));
+  return make_unique<UDPAnnRequest>
+    (btAnnounce_->createUDPTrackerRequest(host, port, localPort));
 }
 
 namespace {
@@ -338,13 +337,13 @@ bool backupTrackerIsAvailable
 }
 } // namespace
 
-std::shared_ptr<AnnRequest>
+std::unique_ptr<AnnRequest>
 TrackerWatcherCommand::createHTTPAnnRequest(const std::string& uri)
 {
   std::vector<std::string> uris;
   uris.push_back(uri);
-  std::shared_ptr<Option> option = util::copy(getOption());
-  std::shared_ptr<RequestGroup> rg(new RequestGroup(GroupId::create(), option));
+  auto option = util::copy(getOption());
+  auto rg = make_unique<RequestGroup>(GroupId::create(), option);
   if(backupTrackerIsAvailable(requestGroup_->getDownloadContext())) {
     A2_LOG_DEBUG("This is multi-tracker announce.");
   } else {
@@ -363,13 +362,13 @@ TrackerWatcherCommand::createHTTPAnnRequest(const std::string& uri)
               option->get(PREF_BT_TRACKER_CONNECT_TIMEOUT));
   option->put(PREF_REUSE_URI, A2_V_FALSE);
   option->put(PREF_SELECT_LEAST_USED_HOST, A2_V_FALSE);
-  std::shared_ptr<DownloadContext> dctx
-    (new DownloadContext(option->getAsInt(PREF_PIECE_LENGTH),
-                         0,
-                         "[tracker.announce]"));
+  auto dctx = std::make_shared<DownloadContext>
+    (option->getAsInt(PREF_PIECE_LENGTH),
+     0,
+     "[tracker.announce]");
   dctx->getFileEntries().front()->setUris(uris);
   rg->setDownloadContext(dctx);
-  std::shared_ptr<DiskWriterFactory> dwf(new ByteArrayDiskWriterFactory());
+  auto dwf = std::make_shared<ByteArrayDiskWriterFactory>();
   rg->setDiskWriterFactory(dwf);
   rg->setFileAllocationEnabled(false);
   rg->setPreLocalFileCheckEnabled(false);
@@ -380,7 +379,7 @@ TrackerWatcherCommand::createHTTPAnnRequest(const std::string& uri)
   dctx->setAcceptMetalink(false);
   A2_LOG_INFO(fmt("Creating tracker request group GID#%s",
                   GroupId::toHex(rg->getGID()).c_str()));
-  return std::shared_ptr<AnnRequest>(new HTTPAnnRequest(rg));
+  return make_unique<HTTPAnnRequest>(std::move(rg));
 }
 
 void TrackerWatcherCommand::setBtRuntime
