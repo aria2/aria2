@@ -75,7 +75,7 @@ public:
     return bytesProcessed_;
   }
 
-  virtual bool installDelegate(const std::shared_ptr<StreamFilter>& filter)
+  virtual bool installDelegate(const std::unique_ptr<StreamFilter> filter) override
   {
     return false;
   }
