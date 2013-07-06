@@ -45,7 +45,7 @@ public:
 
   virtual ~DefaultDiskWriter();
 
-  virtual void initAndOpenFile(int64_t totalLength = 0);
+  virtual void initAndOpenFile(int64_t totalLength = 0) CXX11_OVERRIDE;
 };
 
 } // namespace aria2

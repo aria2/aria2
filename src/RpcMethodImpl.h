@@ -128,7 +128,7 @@ void toStringList(OutputIterator out, const List* src)
 class AddUriRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -139,7 +139,7 @@ public:
 class RemoveRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -150,7 +150,7 @@ public:
 class ForceRemoveRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -161,7 +161,7 @@ public:
 class PauseRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -172,7 +172,7 @@ public:
 class ForcePauseRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -183,7 +183,7 @@ public:
 class PauseAllRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -194,7 +194,7 @@ public:
 class ForcePauseAllRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -205,7 +205,7 @@ public:
 class UnpauseRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -216,7 +216,7 @@ public:
 class UnpauseAllRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -228,7 +228,7 @@ public:
 class AddTorrentRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -241,7 +241,7 @@ public:
 class AddMetalinkRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -253,7 +253,7 @@ public:
 class PurgeDownloadResultRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -264,7 +264,7 @@ public:
 class RemoveDownloadResultRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -275,7 +275,7 @@ public:
 class GetUrisRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -286,7 +286,7 @@ public:
 class GetFilesRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -298,7 +298,7 @@ public:
 class GetPeersRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -310,7 +310,7 @@ public:
 class GetServersRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -321,7 +321,7 @@ public:
 class TellStatusRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -332,7 +332,7 @@ public:
 class TellActiveRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -377,7 +377,7 @@ protected:
   typedef IndexedList<a2_gid_t, std::shared_ptr<T> > ItemListType;
 
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e)
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE
   {
     const Integer* offsetParam = checkRequiredParam<Integer>(req, 0);
     const Integer* numParam = checkRequiredInteger(req, 1, IntegerGE(0));
@@ -415,13 +415,14 @@ protected:
 class TellWaitingRpcMethod:
     public AbstractPaginationRpcMethod<RequestGroup> {
 protected:
-  virtual const RequestGroupList& getItems(DownloadEngine* e) const;
+  virtual const RequestGroupList& getItems(DownloadEngine* e) const
+    CXX11_OVERRIDE;
 
   virtual void createEntry
   (const std::shared_ptr<Dict>& entryDict,
    const std::shared_ptr<RequestGroup>& item,
    DownloadEngine* e,
-   const std::vector<std::string>& keys) const;
+   const std::vector<std::string>& keys) const CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -432,13 +433,14 @@ public:
 class TellStoppedRpcMethod:
     public AbstractPaginationRpcMethod<DownloadResult> {
 protected:
-  virtual const DownloadResultList& getItems(DownloadEngine* e) const;
+  virtual const DownloadResultList& getItems(DownloadEngine* e) const
+    CXX11_OVERRIDE;
 
   virtual void createEntry
   (const std::shared_ptr<Dict>& entryDict,
    const std::shared_ptr<DownloadResult>& item,
    DownloadEngine* e,
-   const std::vector<std::string>& keys) const;
+   const std::vector<std::string>& keys) const CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -449,7 +451,7 @@ public:
 class ChangeOptionRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -460,7 +462,7 @@ public:
 class ChangeGlobalOptionRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -471,7 +473,7 @@ public:
 class GetVersionRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -482,7 +484,7 @@ public:
 class GetOptionRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -493,7 +495,7 @@ public:
 class GetGlobalOptionRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -504,7 +506,7 @@ public:
 class ChangePositionRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -515,7 +517,7 @@ public:
 class ChangeUriRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -526,7 +528,7 @@ public:
 class GetSessionInfoRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -537,7 +539,7 @@ public:
 class ShutdownRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -548,7 +550,7 @@ public:
 class GetGlobalStatRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -559,7 +561,7 @@ public:
 class ForceShutdownRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -570,7 +572,7 @@ public:
 class SystemMulticallRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 public:
   static const char* getMethodName()
   {
@@ -581,7 +583,7 @@ public:
 class NoSuchMethodRpcMethod:public RpcMethod {
 protected:
   virtual std::shared_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 };
 
 // Helper function to store data to entryDict from ds. This function

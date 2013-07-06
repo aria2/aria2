@@ -46,7 +46,7 @@ public:
 
   virtual ~TrueRequestGroupCriteria() {}
 
-  virtual bool match(const RequestGroup* requestGroup) const
+  virtual bool match(const RequestGroup* requestGroup) const CXX11_OVERRIDE
   {
     return true;
   }

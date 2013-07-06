@@ -63,13 +63,13 @@ public:
   static std::unique_ptr<BtBitfieldMessage> create
   (const unsigned char* data, size_t dataLength);
 
-  virtual void doReceivedAction();
+  virtual void doReceivedAction() CXX11_OVERRIDE;
 
-  virtual unsigned char* createMessage();
+  virtual unsigned char* createMessage() CXX11_OVERRIDE;
 
-  virtual size_t getMessageLength();
+  virtual size_t getMessageLength() CXX11_OVERRIDE;
 
-  virtual std::string toString() const;
+  virtual std::string toString() const CXX11_OVERRIDE;
 };
 
 } // namespace aria2

@@ -691,7 +691,7 @@ struct RequestGroupDH : public DownloadHandle {
       ts(group->calculateStat())
   {}
   virtual ~RequestGroupDH() {}
-  virtual DownloadStatus getStatus()
+  virtual DownloadStatus getStatus() CXX11_OVERRIDE
   {
     if(group->getState() == RequestGroup::STATE_ACTIVE) {
       return DOWNLOAD_ACTIVE;
@@ -703,19 +703,19 @@ struct RequestGroupDH : public DownloadHandle {
       }
     }
   }
-  virtual int64_t getTotalLength()
+  virtual int64_t getTotalLength() CXX11_OVERRIDE
   {
     return group->getTotalLength();
   }
-  virtual int64_t getCompletedLength()
+  virtual int64_t getCompletedLength() CXX11_OVERRIDE
   {
     return group->getCompletedLength();
   }
-  virtual int64_t getUploadLength()
+  virtual int64_t getUploadLength() CXX11_OVERRIDE
   {
     return ts.allTimeUploadLength;
   }
-  virtual std::string getBitfield()
+  virtual std::string getBitfield() CXX11_OVERRIDE
   {
     const std::shared_ptr<PieceStorage>& ps = group->getPieceStorage();
     if(ps) {
@@ -725,15 +725,15 @@ struct RequestGroupDH : public DownloadHandle {
       return "";
     }
   }
-  virtual int getDownloadSpeed()
+  virtual int getDownloadSpeed() CXX11_OVERRIDE
   {
     return ts.downloadSpeed;
   }
-  virtual int getUploadSpeed()
+  virtual int getUploadSpeed() CXX11_OVERRIDE
   {
     return ts.uploadSpeed;
   }
-  virtual const std::string& getInfoHash()
+  virtual const std::string& getInfoHash() CXX11_OVERRIDE
   {
 #ifdef ENABLE_BITTORRENT
     if(group->getDownloadContext()->hasAttribute(CTX_ATTR_BT)) {
@@ -743,36 +743,36 @@ struct RequestGroupDH : public DownloadHandle {
 #endif // ENABLE_BITTORRENT
     return A2STR::NIL;
   }
-  virtual size_t getPieceLength()
+  virtual size_t getPieceLength() CXX11_OVERRIDE
   {
     const std::shared_ptr<DownloadContext>& dctx = group->getDownloadContext();
     return dctx->getPieceLength();
   }
-  virtual int getNumPieces()
+  virtual int getNumPieces() CXX11_OVERRIDE
   {
     return group->getDownloadContext()->getNumPieces();
   }
-  virtual int getConnections()
+  virtual int getConnections() CXX11_OVERRIDE
   {
     return group->getNumConnection();
   }
-  virtual int getErrorCode()
+  virtual int getErrorCode() CXX11_OVERRIDE
   {
     return 0;
   }
-  virtual const std::vector<A2Gid>& getFollowedBy()
+  virtual const std::vector<A2Gid>& getFollowedBy() CXX11_OVERRIDE
   {
     return group->followedBy();
   }
-  virtual A2Gid getBelongsTo()
+  virtual A2Gid getBelongsTo() CXX11_OVERRIDE
   {
     return group->belongsTo();
   }
-  virtual const std::string& getDir()
+  virtual const std::string& getDir() CXX11_OVERRIDE
   {
     return group->getOption()->get(PREF_DIR);
   }
-  virtual std::vector<FileData> getFiles()
+  virtual std::vector<FileData> getFiles() CXX11_OVERRIDE
   {
     std::vector<FileData> res;
     const std::shared_ptr<DownloadContext>& dctx = group->getDownloadContext();
@@ -783,12 +783,12 @@ struct RequestGroupDH : public DownloadHandle {
                     group->getPieceStorage());
     return res;
   }
-  virtual int getNumFiles()
+  virtual int getNumFiles() CXX11_OVERRIDE
   {
     const std::shared_ptr<DownloadContext>& dctx = group->getDownloadContext();
     return dctx->getFileEntries().size();
   }
-  virtual FileData getFile(int index)
+  virtual FileData getFile(int index) CXX11_OVERRIDE
   {
     const std::shared_ptr<DownloadContext>& dctx = group->getDownloadContext();
     BitfieldMan bf(dctx->getPieceLength(), dctx->getTotalLength());
@@ -798,7 +798,7 @@ struct RequestGroupDH : public DownloadHandle {
     }
     return createFileData(dctx->getFileEntries()[index-1], index, &bf);
   }
-  virtual BtMetaInfoData getBtMetaInfo()
+  virtual BtMetaInfoData getBtMetaInfo() CXX11_OVERRIDE
   {
     BtMetaInfoData res;
 #ifdef ENABLE_BITTORRENT
@@ -820,11 +820,11 @@ struct RequestGroupDH : public DownloadHandle {
       }
     return res;
   }
-  virtual const std::string& getOption(const std::string& name)
+  virtual const std::string& getOption(const std::string& name) CXX11_OVERRIDE
   {
     return getRequestOption(group->getOption(), name);
   }
-  virtual KeyVals getOptions()
+  virtual KeyVals getOptions() CXX11_OVERRIDE
   {
     return getRequestOptions(group->getOption());
   }
@@ -839,7 +839,7 @@ struct DownloadResultDH : public DownloadHandle {
     : dr(dr)
   {}
   virtual ~DownloadResultDH() {}
-  virtual DownloadStatus getStatus()
+  virtual DownloadStatus getStatus() CXX11_OVERRIDE
   {
     switch(dr->result) {
     case error_code::FINISHED:
@@ -850,63 +850,63 @@ struct DownloadResultDH : public DownloadHandle {
       return DOWNLOAD_ERROR;
     }
   }
-  virtual int64_t getTotalLength()
+  virtual int64_t getTotalLength() CXX11_OVERRIDE
   {
     return dr->totalLength;
   }
-  virtual int64_t getCompletedLength()
+  virtual int64_t getCompletedLength() CXX11_OVERRIDE
   {
     return dr->completedLength;
   }
-  virtual int64_t getUploadLength()
+  virtual int64_t getUploadLength() CXX11_OVERRIDE
   {
     return dr->uploadLength;
   }
-  virtual std::string getBitfield()
+  virtual std::string getBitfield() CXX11_OVERRIDE
   {
     return dr->bitfield;
   }
-  virtual int getDownloadSpeed()
+  virtual int getDownloadSpeed() CXX11_OVERRIDE
   {
     return 0;
   }
-  virtual int getUploadSpeed()
+  virtual int getUploadSpeed() CXX11_OVERRIDE
   {
     return 0;
   }
-  virtual const std::string& getInfoHash()
+  virtual const std::string& getInfoHash() CXX11_OVERRIDE
   {
     return dr->infoHash;
   }
-  virtual size_t getPieceLength()
+  virtual size_t getPieceLength() CXX11_OVERRIDE
   {
     return dr->pieceLength;
   }
-  virtual int getNumPieces()
+  virtual int getNumPieces() CXX11_OVERRIDE
   {
     return dr->numPieces;
   }
-  virtual int getConnections()
+  virtual int getConnections() CXX11_OVERRIDE
   {
     return 0;
   }
-  virtual int getErrorCode()
+  virtual int getErrorCode() CXX11_OVERRIDE
   {
     return dr->result;
   }
-  virtual const std::vector<A2Gid>& getFollowedBy()
+  virtual const std::vector<A2Gid>& getFollowedBy() CXX11_OVERRIDE
   {
     return dr->followedBy;
   }
-  virtual A2Gid getBelongsTo()
+  virtual A2Gid getBelongsTo() CXX11_OVERRIDE
   {
     return dr->belongsTo;
   }
-  virtual const std::string& getDir()
+  virtual const std::string& getDir() CXX11_OVERRIDE
   {
     return dr->dir;
   }
-  virtual std::vector<FileData> getFiles()
+  virtual std::vector<FileData> getFiles() CXX11_OVERRIDE
   {
     std::vector<FileData> res;
     createFileEntry(std::back_inserter(res),
@@ -914,26 +914,26 @@ struct DownloadResultDH : public DownloadHandle {
                     dr->totalLength, dr->pieceLength, dr->bitfield);
     return res;
   }
-  virtual int getNumFiles()
+  virtual int getNumFiles() CXX11_OVERRIDE
   {
     return dr->fileEntries.size();
   }
-  virtual FileData getFile(int index)
+  virtual FileData getFile(int index) CXX11_OVERRIDE
   {
     BitfieldMan bf(dr->pieceLength, dr->totalLength);
     bf.setBitfield(reinterpret_cast<const unsigned char*>(dr->bitfield.data()),
                    dr->bitfield.size());
     return createFileData(dr->fileEntries[index-1], index, &bf);
   }
-  virtual BtMetaInfoData getBtMetaInfo()
+  virtual BtMetaInfoData getBtMetaInfo() CXX11_OVERRIDE
   {
     return BtMetaInfoData();
   }
-  virtual const std::string& getOption(const std::string& name)
+  virtual const std::string& getOption(const std::string& name) CXX11_OVERRIDE
   {
     return getRequestOption(dr->option, name);
   }
-  virtual KeyVals getOptions()
+  virtual KeyVals getOptions() CXX11_OVERRIDE
   {
     return getRequestOptions(dr->option);
   }

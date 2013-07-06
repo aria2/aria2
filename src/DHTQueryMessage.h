@@ -51,15 +51,15 @@ public:
 
   virtual ~DHTQueryMessage();
 
-  virtual const std::string& getType() const;
+  virtual const std::string& getType() const CXX11_OVERRIDE;
 
-  virtual void fillMessage(Dict* msgDict);
+  virtual void fillMessage(Dict* msgDict) CXX11_OVERRIDE;
 
   virtual std::shared_ptr<Dict> getArgument() = 0;
 
-  virtual bool isReply() const;
+  virtual bool isReply() const CXX11_OVERRIDE;
 
-  virtual std::string toString() const;
+  virtual std::string toString() const CXX11_OVERRIDE;
 
   static const std::string Q;
 

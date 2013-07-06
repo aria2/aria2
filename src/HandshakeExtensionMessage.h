@@ -65,21 +65,21 @@ public:
 
   virtual std::string getPayload();
 
-  virtual uint8_t getExtensionMessageID() const
+  virtual uint8_t getExtensionMessageID() const CXX11_OVERRIDE
   {
     return 0;
   }
 
-  virtual const char* getExtensionName() const
+  virtual const char* getExtensionName() const CXX11_OVERRIDE
   {
     return EXTENSION_NAME;
   }
 
   static const char EXTENSION_NAME[];
 
-  virtual std::string toString() const;
+  virtual std::string toString() const CXX11_OVERRIDE;
 
-  virtual void doReceivedAction();
+  virtual void doReceivedAction() CXX11_OVERRIDE;
 
   void setClientVersion(const std::string& version)
   {

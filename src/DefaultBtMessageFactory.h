@@ -87,53 +87,67 @@ public:
   DefaultBtMessageFactory();
 
   virtual std::unique_ptr<BtMessage>
-  createBtMessage(const unsigned char* msg, size_t msgLength);
+  createBtMessage(const unsigned char* msg, size_t msgLength) CXX11_OVERRIDE;
 
   virtual std::unique_ptr<BtHandshakeMessage>
-  createHandshakeMessage(const unsigned char* msg, size_t msgLength);
+  createHandshakeMessage(const unsigned char* msg, size_t msgLength)
+    CXX11_OVERRIDE;
 
   virtual std::unique_ptr<BtHandshakeMessage>
   createHandshakeMessage(const unsigned char* infoHash,
-                         const unsigned char* peerId);
+                         const unsigned char* peerId) CXX11_OVERRIDE;
 
   virtual std::unique_ptr<BtRequestMessage>
   createRequestMessage(const std::shared_ptr<Piece>& piece,
-                       size_t blockIndex);
+                       size_t blockIndex) CXX11_OVERRIDE;
 
   virtual std::unique_ptr<BtCancelMessage>
-  createCancelMessage(size_t index, int32_t begin, int32_t length);
+  createCancelMessage(size_t index, int32_t begin, int32_t length)
+    CXX11_OVERRIDE;
 
   virtual std::unique_ptr<BtPieceMessage>
-  createPieceMessage(size_t index, int32_t begin, int32_t length);
+  createPieceMessage(size_t index, int32_t begin, int32_t length)
+    CXX11_OVERRIDE;
 
-  virtual std::unique_ptr<BtHaveMessage> createHaveMessage(size_t index);
+  virtual std::unique_ptr<BtHaveMessage> createHaveMessage(size_t index)
+    CXX11_OVERRIDE;
 
-  virtual std::unique_ptr<BtChokeMessage> createChokeMessage();
+  virtual std::unique_ptr<BtChokeMessage> createChokeMessage() CXX11_OVERRIDE;
 
-  virtual std::unique_ptr<BtUnchokeMessage> createUnchokeMessage();
+  virtual std::unique_ptr<BtUnchokeMessage> createUnchokeMessage()
+    CXX11_OVERRIDE;
 
-  virtual std::unique_ptr<BtInterestedMessage> createInterestedMessage();
+  virtual std::unique_ptr<BtInterestedMessage> createInterestedMessage()
+    CXX11_OVERRIDE;
 
-  virtual std::unique_ptr<BtNotInterestedMessage> createNotInterestedMessage();
+  virtual std::unique_ptr<BtNotInterestedMessage> createNotInterestedMessage()
+    CXX11_OVERRIDE;
 
-  virtual std::unique_ptr<BtBitfieldMessage> createBitfieldMessage();
+  virtual std::unique_ptr<BtBitfieldMessage> createBitfieldMessage()
+    CXX11_OVERRIDE;
 
-  virtual std::unique_ptr<BtKeepAliveMessage> createKeepAliveMessage();
+  virtual std::unique_ptr<BtKeepAliveMessage> createKeepAliveMessage()
+    CXX11_OVERRIDE;
 
-  virtual std::unique_ptr<BtHaveAllMessage> createHaveAllMessage();
+  virtual std::unique_ptr<BtHaveAllMessage> createHaveAllMessage()
+    CXX11_OVERRIDE;
 
-  virtual std::unique_ptr<BtHaveNoneMessage> createHaveNoneMessage();
+  virtual std::unique_ptr<BtHaveNoneMessage> createHaveNoneMessage()
+    CXX11_OVERRIDE;
 
   virtual std::unique_ptr<BtRejectMessage>
-  createRejectMessage(size_t index, int32_t begin, int32_t length);
+  createRejectMessage(size_t index, int32_t begin, int32_t length)
+    CXX11_OVERRIDE;
 
   virtual std::unique_ptr<BtAllowedFastMessage> createAllowedFastMessage
-  (size_t index);
+  (size_t index) CXX11_OVERRIDE;
 
-  virtual std::unique_ptr<BtPortMessage> createPortMessage(uint16_t port);
+  virtual std::unique_ptr<BtPortMessage> createPortMessage(uint16_t port)
+    CXX11_OVERRIDE;
 
   virtual std::unique_ptr<BtExtendedMessage>
-  createBtExtendedMessage(std::unique_ptr<ExtensionMessage> msg);
+  createBtExtendedMessage(std::unique_ptr<ExtensionMessage> msg)
+    CXX11_OVERRIDE;
 
   void setPeer(const std::shared_ptr<Peer>& peer);
 

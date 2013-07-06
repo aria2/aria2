@@ -59,13 +59,13 @@ public:
 
   virtual ~AdaptiveFileAllocationIterator();
 
-  virtual void allocateChunk();
+  virtual void allocateChunk() CXX11_OVERRIDE;
 
-  virtual bool finished();
+  virtual bool finished() CXX11_OVERRIDE;
 
-  virtual int64_t getCurrentLength();
+  virtual int64_t getCurrentLength() CXX11_OVERRIDE;
 
-  virtual int64_t getTotalLength();
+  virtual int64_t getTotalLength() CXX11_OVERRIDE;
 };
 
 } // namespace aria2

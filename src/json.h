@@ -51,27 +51,27 @@ OutputStream& encode(OutputStream& out, const ValueBase* vlb)
   public:
     JsonValueBaseVisitor(OutputStream& out):out_(out) {}
 
-    virtual void visit(const String& string)
+    virtual void visit(const String& string) CXX11_OVERRIDE
     {
       encodeString(string.s());
     }
 
-    virtual void visit(const Integer& integer)
+    virtual void visit(const Integer& integer) CXX11_OVERRIDE
     {
       out_ << integer.i();
     }
 
-    virtual void visit(const Bool& boolValue)
+    virtual void visit(const Bool& boolValue) CXX11_OVERRIDE
     {
       out_ << (boolValue.val() ? "true" : "false");
     }
 
-    virtual void visit(const Null& nullValue)
+    virtual void visit(const Null& nullValue) CXX11_OVERRIDE
     {
       out_ << "null";
     }
 
-    virtual void visit(const List& list)
+    virtual void visit(const List& list) CXX11_OVERRIDE
     {
       out_ << "[";
       List::ValueType::const_iterator i = list.begin();
@@ -86,7 +86,7 @@ OutputStream& encode(OutputStream& out, const ValueBase* vlb)
       out_ << "]";
     }
 
-    virtual void visit(const Dict& dict)
+    virtual void visit(const Dict& dict) CXX11_OVERRIDE
     {
       out_ << "{";
       Dict::ValueType::const_iterator i = dict.begin();

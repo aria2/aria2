@@ -44,7 +44,7 @@ protected:
   virtual std::unique_ptr<Command> createNextCommand
   (const std::string& hostname, const std::string& addr, uint16_t port,
    const std::vector<std::string>& resolvedAddresses,
-   const std::shared_ptr<Request>& proxyRequest);
+   const std::shared_ptr<Request>& proxyRequest) CXX11_OVERRIDE;
 public:
   FtpInitiateConnectionCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
                                const std::shared_ptr<FileEntry>& fileEntry,

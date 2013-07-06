@@ -51,7 +51,7 @@ public:
                        RequestGroup* requestGroup,
                        DownloadEngine* e);
 protected:
-  virtual bool executeInternal();
+  virtual bool executeInternal() CXX11_OVERRIDE;
 };
 
 } // namespace aria2

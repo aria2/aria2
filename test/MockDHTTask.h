@@ -24,9 +24,9 @@ public:
 
   virtual ~MockDHTTask() {}
 
-  virtual void startup() {}
+  virtual void startup() CXX11_OVERRIDE {}
 
-  virtual bool finished()
+  virtual bool finished() CXX11_OVERRIDE
   {
     return finished_;
   }

@@ -52,40 +52,42 @@ public:
 
   virtual ~AbstractSingleDiskAdaptor();
 
-  virtual void initAndOpenFile();
+  virtual void initAndOpenFile() CXX11_OVERRIDE;
 
-  virtual void openFile();
+  virtual void openFile() CXX11_OVERRIDE;
 
-  virtual void closeFile();
+  virtual void closeFile() CXX11_OVERRIDE;
 
-  virtual void openExistingFile();
+  virtual void openExistingFile() CXX11_OVERRIDE;
 
   virtual void writeData(const unsigned char* data, size_t len,
-                         int64_t offset);
+                         int64_t offset) CXX11_OVERRIDE;
 
-  virtual ssize_t readData(unsigned char* data, size_t len, int64_t offset);
+  virtual ssize_t readData(unsigned char* data, size_t len, int64_t offset)
+    CXX11_OVERRIDE;
 
-  virtual void writeCache(const WrDiskCacheEntry* entry);
+  virtual void writeCache(const WrDiskCacheEntry* entry) CXX11_OVERRIDE;
 
-  virtual bool fileExists();
+  virtual bool fileExists() CXX11_OVERRIDE;
 
-  virtual int64_t size();
+  virtual int64_t size() CXX11_OVERRIDE;
 
-  virtual void truncate(int64_t length);
+  virtual void truncate(int64_t length) CXX11_OVERRIDE;
 
-  virtual std::unique_ptr<FileAllocationIterator> fileAllocationIterator();
+  virtual std::unique_ptr<FileAllocationIterator> fileAllocationIterator()
+    CXX11_OVERRIDE;
 
   // Make sure that DiskWriter is set before calling this function.
-  virtual void enableReadOnly();
+  virtual void enableReadOnly() CXX11_OVERRIDE;
 
   // Make sure that DiskWriter is set before calling this function.
-  virtual void disableReadOnly();
+  virtual void disableReadOnly() CXX11_OVERRIDE;
 
-  virtual bool isReadOnlyEnabled() const { return readOnly_; }
+  virtual bool isReadOnlyEnabled() const CXX11_OVERRIDE { return readOnly_; }
 
-  virtual void enableMmap();
+  virtual void enableMmap() CXX11_OVERRIDE;
 
-  virtual void cutTrailingGarbage();
+  virtual void cutTrailingGarbage() CXX11_OVERRIDE;
 
   virtual const std::string& getFilePath() = 0;
 

@@ -49,20 +49,20 @@ public:
   virtual ~BufferedFile();
 protected:
   // wrapper for fread. Using 1 for 2nd argument of fread.
-  virtual size_t onRead(void* ptr, size_t count);
+  virtual size_t onRead(void* ptr, size_t count) CXX11_OVERRIDE;
   // wrapper for fwrite. Using 1 for 2nd argument of fwrite.
-  virtual size_t onWrite(const void* ptr, size_t count);
+  virtual size_t onWrite(const void* ptr, size_t count) CXX11_OVERRIDE;
   // wrapper for fgets
-  virtual char* onGets(char* s, int size);
-  virtual int onVprintf(const char* format, va_list va);
+  virtual char* onGets(char* s, int size) CXX11_OVERRIDE;
+  virtual int onVprintf(const char* format, va_list va) CXX11_OVERRIDE;
   // wrapper for fflush
-  virtual int onFlush();
+  virtual int onFlush() CXX11_OVERRIDE;
   // wrapper for fclose
-  virtual int onClose();
-  virtual bool onSupportsColor();
-  virtual bool isError() const;
-  virtual bool isEOF() const;
-  virtual bool isOpen() const;
+  virtual int onClose() CXX11_OVERRIDE;
+  virtual bool onSupportsColor() CXX11_OVERRIDE;
+  virtual bool isError() const CXX11_OVERRIDE;
+  virtual bool isEOF() const CXX11_OVERRIDE;
+  virtual bool isOpen() const CXX11_OVERRIDE;
 private:
   // Don't allow copying;
   BufferedFile(const BufferedFile&);

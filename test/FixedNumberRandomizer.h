@@ -14,15 +14,15 @@ public:
 
   virtual ~FixedNumberRandomizer() {}
 
-  virtual long int getRandomNumber() {
+  virtual long int getRandomNumber() CXX11_OVERRIDE {
     return fixedNumber;
   }
 
-  virtual long int getMaxRandomNumber() {
+  virtual long int getMaxRandomNumber() CXX11_OVERRIDE {
     return RAND_MAX;
   }
 
-  virtual long int getRandomNumber(long int to)
+  virtual long int getRandomNumber(long int to) CXX11_OVERRIDE
   {
     return getRandomNumber();
   }

@@ -73,16 +73,18 @@ public:
   ValueBaseStructParserStateMachine();
   virtual ~ValueBaseStructParserStateMachine();
 
-  virtual void beginElement(int elementType);
-  virtual void endElement(int elementType);
+  virtual void beginElement(int elementType) CXX11_OVERRIDE;
+  virtual void endElement(int elementType) CXX11_OVERRIDE;
 
-  virtual void charactersCallback(const char* data, size_t len);
-  virtual void numberCallback(int64_t number, int frac, int exp);
-  virtual void boolCallback(bool bval);
+  virtual void charactersCallback(const char* data, size_t len)
+    CXX11_OVERRIDE;
+  virtual void numberCallback(int64_t number, int frac, int exp)
+    CXX11_OVERRIDE;
+  virtual void boolCallback(bool bval) CXX11_OVERRIDE;
 
   std::shared_ptr<ValueBase> getResult() const;
 
-  virtual void reset();
+  virtual void reset() CXX11_OVERRIDE;
 
   const std::string& getCharacters() const;
   const NumberData& getNumber() const;

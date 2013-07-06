@@ -46,7 +46,8 @@ public:
 
   virtual std::string select
   (FileEntry* fileEntry,
-   const std::vector<std::pair<size_t, std::string> >& usedHosts);
+   const std::vector<std::pair<size_t, std::string> >& usedHosts)
+    CXX11_OVERRIDE;
 };
 
 } // namespace aria2

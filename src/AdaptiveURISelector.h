@@ -78,12 +78,14 @@ public:
 
   virtual std::string select
   (FileEntry* fileEntry,
-   const std::vector<std::pair<size_t, std::string> >& usedHosts);
+   const std::vector<std::pair<size_t, std::string> >& usedHosts)
+    CXX11_OVERRIDE;
 
   virtual void tuneDownloadCommand(const std::deque<std::string>& uris,
-                                   DownloadCommand* command);
+                                   DownloadCommand* command)
+    CXX11_OVERRIDE;
 
-  virtual void resetCounters();
+  virtual void resetCounters() CXX11_OVERRIDE;
 };
 
 } // namespace aria2

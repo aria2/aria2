@@ -78,10 +78,10 @@ private:
                       std::unique_ptr<ProgressUpdate> progressUpdate);
     virtual ~ByteArrayBufEntry();
     virtual ssize_t send
-    (const std::shared_ptr<SocketCore>& socket, size_t offset);
-    virtual bool final(size_t offset) const;
-    virtual size_t getLength() const;
-    virtual const unsigned char* getData() const;
+    (const std::shared_ptr<SocketCore>& socket, size_t offset) CXX11_OVERRIDE;
+    virtual bool final(size_t offset) const CXX11_OVERRIDE;
+    virtual size_t getLength() const CXX11_OVERRIDE;
+    virtual const unsigned char* getData() const CXX11_OVERRIDE;
   private:
     unsigned char* bytes_;
     size_t length_;
@@ -92,10 +92,10 @@ private:
     StringBufEntry(std::string s,
                    std::unique_ptr<ProgressUpdate> progressUpdate);
     virtual ssize_t send
-    (const std::shared_ptr<SocketCore>& socket, size_t offset);
-    virtual bool final(size_t offset) const;
-    virtual size_t getLength() const;
-    virtual const unsigned char* getData() const;
+    (const std::shared_ptr<SocketCore>& socket, size_t offset) CXX11_OVERRIDE;
+    virtual bool final(size_t offset) const CXX11_OVERRIDE;
+    virtual size_t getLength() const CXX11_OVERRIDE;
+    virtual const unsigned char* getData() const CXX11_OVERRIDE;
   private:
     std::string str_;
   };

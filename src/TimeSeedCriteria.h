@@ -49,9 +49,9 @@ public:
   TimeSeedCriteria(time_t duration);
   virtual ~TimeSeedCriteria();
 
-  virtual void reset();
+  virtual void reset() CXX11_OVERRIDE;
 
-  virtual bool evaluate();
+  virtual bool evaluate() CXX11_OVERRIDE;
 
   void setDuration(time_t duration)
   {

@@ -32,7 +32,7 @@ public:
   addMessageToQueue(std::unique_ptr<DHTMessage> message,
                     time_t timeout,
                     std::unique_ptr<DHTMessageCallback> callback =
-                    std::unique_ptr<DHTMessageCallback>{})
+                    std::unique_ptr<DHTMessageCallback>{}) CXX11_OVERRIDE
   {
     messageQueue_.push_back(Entry(std::move(message), timeout,
                                   std::move(callback)));
@@ -41,15 +41,15 @@ public:
   virtual void
   addMessageToQueue(std::unique_ptr<DHTMessage> message,
                     std::unique_ptr<DHTMessageCallback> callback =
-                    std::unique_ptr<DHTMessageCallback>{})
+                    std::unique_ptr<DHTMessageCallback>{}) CXX11_OVERRIDE
   {
     messageQueue_.push_back(Entry(std::move(message), DHT_MESSAGE_TIMEOUT,
                                   std::move(callback)));
   }
 
-  virtual void sendMessages() {}
+  virtual void sendMessages() CXX11_OVERRIDE {}
 
-  virtual size_t countMessageInQueue() const
+  virtual size_t countMessageInQueue() const CXX11_OVERRIDE
   {
     return messageQueue_.size();
   }

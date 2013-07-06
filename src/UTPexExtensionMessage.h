@@ -71,23 +71,23 @@ private:
 public:
   UTPexExtensionMessage(uint8_t extensionMessageID);
 
-  virtual std::string getPayload();
+  virtual std::string getPayload() CXX11_OVERRIDE;
 
-  virtual uint8_t getExtensionMessageID() const
+  virtual uint8_t getExtensionMessageID() const CXX11_OVERRIDE
   {
     return extensionMessageID_;
   }
 
-  virtual const char* getExtensionName() const
+  virtual const char* getExtensionName() const CXX11_OVERRIDE
   {
     return EXTENSION_NAME;
   }
 
   static const char EXTENSION_NAME[];
 
-  virtual std::string toString() const;
+  virtual std::string toString() const CXX11_OVERRIDE;
 
-  virtual void doReceivedAction();
+  virtual void doReceivedAction() CXX11_OVERRIDE;
 
   bool addFreshPeer(const std::shared_ptr<Peer>& peer);
 

@@ -73,7 +73,7 @@ private:
 
   bool sinkFilterOnly_;
 protected:
-  virtual bool executeInternal();
+  virtual bool executeInternal() CXX11_OVERRIDE;
 
   virtual bool prepareForNextSegment();
 

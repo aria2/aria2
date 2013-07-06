@@ -59,16 +59,18 @@ public:
 
   virtual void getNodesFromMessage
   (std::vector<std::shared_ptr<DHTNode>>& nodes,
-   const DHTGetPeersReplyMessage* message);
+   const DHTGetPeersReplyMessage* message) CXX11_OVERRIDE;
 
-  virtual void onReceivedInternal(const DHTGetPeersReplyMessage* message);
+  virtual void onReceivedInternal(const DHTGetPeersReplyMessage* message)
+    CXX11_OVERRIDE;
 
   virtual std::unique_ptr<DHTMessage> createMessage
-  (const std::shared_ptr<DHTNode>& remoteNode);
+  (const std::shared_ptr<DHTNode>& remoteNode) CXX11_OVERRIDE;
 
-  virtual std::unique_ptr<DHTMessageCallback> createCallback();
+  virtual std::unique_ptr<DHTMessageCallback> createCallback()
+    CXX11_OVERRIDE;
 
-  virtual void onFinish();
+  virtual void onFinish() CXX11_OVERRIDE;
 
   void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
 };

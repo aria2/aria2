@@ -54,9 +54,9 @@ public:
 
   virtual ~CheckIntegrityCommand();
 
-  virtual bool executeInternal();
+  virtual bool executeInternal() CXX11_OVERRIDE;
 
-  virtual bool handleException(Exception& e);
+  virtual bool handleException(Exception& e) CXX11_OVERRIDE;
 };
 
 } // namespace aria2

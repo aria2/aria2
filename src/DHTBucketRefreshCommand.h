@@ -57,9 +57,9 @@ public:
 
   virtual ~DHTBucketRefreshCommand();
 
-  virtual void preProcess();
+  virtual void preProcess() CXX11_OVERRIDE;
 
-  virtual void process();
+  virtual void process() CXX11_OVERRIDE;
 
   void setRoutingTable(DHTRoutingTable* routingTable);
 

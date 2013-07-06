@@ -51,7 +51,7 @@ public:
                             const char* localname,
                             const char* prefix,
                             const char* nsUri,
-                            const std::vector<XmlAttr>& attrs);
+                            const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
 };
 
 class InitialMetalinkParserState:public MetalinkParserState
@@ -61,7 +61,7 @@ public:
                             const char* localname,
                             const char* prefix,
                             const char* nsUri,
-                            const std::vector<XmlAttr>& attrs);
+                            const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
 };
 
 } // namespace aria2

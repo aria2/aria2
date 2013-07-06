@@ -61,18 +61,18 @@ public:
 
   virtual ~IteratableChecksumValidator();
 
-  virtual void init();
+  virtual void init() CXX11_OVERRIDE;
 
-  virtual void validateChunk();
+  virtual void validateChunk() CXX11_OVERRIDE;
 
-  virtual bool finished() const;
+  virtual bool finished() const CXX11_OVERRIDE;
 
-  virtual int64_t getCurrentOffset() const
+  virtual int64_t getCurrentOffset() const CXX11_OVERRIDE
   {
     return currentOffset_;
   }
 
-  virtual int64_t getTotalLength() const;
+  virtual int64_t getTotalLength() const CXX11_OVERRIDE;
 };
 
 } // namespace aria2

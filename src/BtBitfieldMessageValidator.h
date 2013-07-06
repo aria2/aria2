@@ -50,7 +50,7 @@ public:
                              size_t numPiece);
   ~BtBitfieldMessageValidator();
 
-  virtual void validate();
+  virtual void validate() CXX11_OVERRIDE;
 };
 
 } // namespace aria2

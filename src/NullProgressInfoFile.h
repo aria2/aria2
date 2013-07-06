@@ -44,20 +44,20 @@ class NullProgressInfoFile:public BtProgressInfoFile {
 public:
   virtual ~NullProgressInfoFile() {}
 
-  virtual std::string getFilename()
+  virtual std::string getFilename() CXX11_OVERRIDE
   {
     return A2STR::NIL;
   }
 
-  virtual bool exists() { return false; }
+  virtual bool exists() CXX11_OVERRIDE { return false; }
 
-  virtual void save() {}
+  virtual void save() CXX11_OVERRIDE {}
 
-  virtual void load() {}
+  virtual void load() CXX11_OVERRIDE {}
 
-  virtual void removeFile() {}
+  virtual void removeFile() CXX11_OVERRIDE {}
 
-  virtual void updateFilename() {}
+  virtual void updateFilename() CXX11_OVERRIDE {}
 };
 
 } // namespace aria2

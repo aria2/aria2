@@ -141,18 +141,18 @@ void extractUrlList
     (std::vector<std::string>& uris, TorrentAttribute* torrent):
       uris_(uris), torrent_(torrent) {}
 
-    virtual void visit(const String& v)
+    virtual void visit(const String& v) CXX11_OVERRIDE
     {
       std::string utf8Uri = util::encodeNonUtf8(v.s());
       uris_.push_back(utf8Uri);
       torrent_->urlList.push_back(utf8Uri);
     }
 
-    virtual void visit(const Integer& v) {}
-    virtual void visit(const Bool& v) {}
-    virtual void visit(const Null& v) {}
+    virtual void visit(const Integer& v) CXX11_OVERRIDE {}
+    virtual void visit(const Bool& v) CXX11_OVERRIDE {}
+    virtual void visit(const Null& v) CXX11_OVERRIDE {}
 
-    virtual void visit(const List& v)
+    virtual void visit(const List& v) CXX11_OVERRIDE
     {
       for(List::ValueType::const_iterator itr = v.begin(), eoi = v.end();
           itr != eoi; ++itr) {
@@ -164,7 +164,7 @@ void extractUrlList
         }
       }
     }
-    virtual void visit(const Dict& v) {}
+    virtual void visit(const Dict& v) CXX11_OVERRIDE {}
   };
 
   if(v) {

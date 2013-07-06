@@ -143,18 +143,21 @@ public:
 
   bool good() const { return loop_; }
 
-  virtual void poll(const struct timeval& tv);
+  virtual void poll(const struct timeval& tv) CXX11_OVERRIDE;
 
   virtual bool addEvents(sock_t socket,
-                         Command* command, EventPoll::EventType events);
+                         Command* command, EventPoll::EventType events)
+    CXX11_OVERRIDE;
   virtual bool deleteEvents(sock_t socket,
-                            Command* command, EventPoll::EventType events);
+                            Command* command, EventPoll::EventType events)
+    CXX11_OVERRIDE;
 
 #ifdef ENABLE_ASYNC_DNS
   virtual bool addNameResolver(const std::shared_ptr<AsyncNameResolver>& resolver,
-                               Command* command);
+                               Command* command) CXX11_OVERRIDE;
   virtual bool deleteNameResolver(
-      const std::shared_ptr<AsyncNameResolver>& resolver, Command* command);
+      const std::shared_ptr<AsyncNameResolver>& resolver, Command* command)
+    CXX11_OVERRIDE;
 #endif // ENABLE_ASYNC_DNS
 
   static const int IEV_READ = UV_READABLE;

@@ -71,7 +71,7 @@ protected:
 public:
   DHTAbstractTask();
 
-  virtual bool finished();
+  virtual bool finished() CXX11_OVERRIDE;
 
   DHTRoutingTable* getRoutingTable() const
   {

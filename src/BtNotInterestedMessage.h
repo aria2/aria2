@@ -56,11 +56,11 @@ public:
   static std::unique_ptr<BtNotInterestedMessage> create
   (const unsigned char* data, size_t dataLength);
 
-  virtual void doReceivedAction();
+  virtual void doReceivedAction() CXX11_OVERRIDE;
 
-  virtual bool sendPredicate() const;
+  virtual bool sendPredicate() const CXX11_OVERRIDE;
 
-  virtual std::unique_ptr<ProgressUpdate> getProgressUpdate();
+  virtual std::unique_ptr<ProgressUpdate> getProgressUpdate() CXX11_OVERRIDE;
 
   void setPeerStorage(PeerStorage* peerStorage);
 };

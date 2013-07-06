@@ -65,9 +65,9 @@ public:
    DownloadEngine* e,
    time_t timeout);
 
-  virtual void preProcess();
+  virtual void preProcess() CXX11_OVERRIDE;
 
-  virtual void process();
+  virtual void process() CXX11_OVERRIDE;
 
   void setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime)
   {

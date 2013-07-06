@@ -41,9 +41,9 @@ namespace aria2 {
 
 class DirectDiskAdaptor : public AbstractSingleDiskAdaptor {
 public:
-  virtual const std::string& getFilePath();
+  virtual const std::string& getFilePath() CXX11_OVERRIDE;
 
-  virtual size_t utime(const Time& actime, const Time& modtime);
+  virtual size_t utime(const Time& actime, const Time& modtime) CXX11_OVERRIDE;
 };
 
 } // namespace aria2

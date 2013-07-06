@@ -128,8 +128,7 @@ protected:
   (std::vector<std::shared_ptr<DHTNode>>& nodes,
    const ResponseMessage* message) = 0;
 
-  virtual void onReceivedInternal
-  (const ResponseMessage* message) {}
+  virtual void onReceivedInternal(const ResponseMessage* message) {}
 
   virtual bool needsAdditionalOutgoingMessage() { return true; }
 
@@ -148,7 +147,7 @@ public:
 
   static const size_t ALPHA = 3;
 
-  virtual void startup()
+  virtual void startup() CXX11_OVERRIDE
   {
     std::vector<std::shared_ptr<DHTNode>> nodes;
     getRoutingTable()->getClosestKNodes(nodes, targetID_);

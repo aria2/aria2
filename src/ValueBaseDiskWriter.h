@@ -54,35 +54,37 @@ public:
   virtual ~ValueBaseDiskWriter()
   {}
 
-  virtual void initAndOpenFile(int64_t totalLength = 0)
+  virtual void initAndOpenFile(int64_t totalLength = 0) CXX11_OVERRIDE
   {
     parser_.reset();
   }
 
-  virtual void openFile(int64_t totalLength = 0)
+  virtual void openFile(int64_t totalLength = 0) CXX11_OVERRIDE
   {
     initAndOpenFile(totalLength);
   }
 
-  virtual void closeFile() {}
+  virtual void closeFile() CXX11_OVERRIDE {}
 
-  virtual void openExistingFile(int64_t totalLength = 0)
+  virtual void openExistingFile(int64_t totalLength = 0) CXX11_OVERRIDE
   {
     initAndOpenFile(totalLength);
   }
 
-  virtual int64_t size()
+  virtual int64_t size() CXX11_OVERRIDE
   {
     return 0;
   }
 
   virtual void writeData(const unsigned char* data, size_t len, int64_t offset)
+    CXX11_OVERRIDE
   {
     // Return value is ignored here but handled in finalize()
     parser_.parseUpdate(reinterpret_cast<const char*>(data), len);
   }
 
   virtual ssize_t readData(unsigned char* data, size_t len, int64_t offset)
+    CXX11_OVERRIDE
   {
     return 0;
   }

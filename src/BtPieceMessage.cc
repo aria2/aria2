@@ -182,7 +182,7 @@ namespace {
 struct PieceSendUpdate : public ProgressUpdate {
   PieceSendUpdate(const std::shared_ptr<Peer>& peer, size_t headerLength)
     : peer(peer), headerLength(headerLength) {}
-  virtual void update(size_t length, bool complete)
+  virtual void update(size_t length, bool complete) CXX11_OVERRIDE
   {
     if(headerLength > 0) {
       size_t m = std::min(headerLength, length);

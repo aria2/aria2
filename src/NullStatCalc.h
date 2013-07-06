@@ -43,7 +43,7 @@ class NullStatCalc:public StatCalc {
 public:
   virtual ~NullStatCalc() {}
 
-  virtual void calculateStat(const DownloadEngine* e) {}
+  virtual void calculateStat(const DownloadEngine* e) CXX11_OVERRIDE {}
 };
 
 } // namespace aria2

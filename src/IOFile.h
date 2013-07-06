@@ -58,7 +58,7 @@ public:
   size_t read(void* ptr, size_t count);
   // wrapper for fwrite. Using 1 for 2nd argument of fwrite.
   size_t write(const void* ptr, size_t count);
-  virtual size_t write(const char* str);
+  virtual size_t write(const char* str) CXX11_OVERRIDE;
   // wrapper for fgets
   char* gets(char* s, int size);
   // wrapper for fgets, but trailing '\n' is replaced with '\0'.

@@ -72,11 +72,12 @@ class HTTPAnnRequest:public AnnRequest {
 public:
   HTTPAnnRequest(const std::shared_ptr<RequestGroup>& rg);
   virtual ~HTTPAnnRequest();
-  virtual bool stopped() const;
-  virtual bool success() const;
-  virtual bool issue(DownloadEngine* e);
-  virtual void stop(DownloadEngine* e);
-  virtual bool processResponse(const std::shared_ptr<BtAnnounce>& btAnnounce);
+  virtual bool stopped() const CXX11_OVERRIDE;
+  virtual bool success() const CXX11_OVERRIDE;
+  virtual bool issue(DownloadEngine* e) CXX11_OVERRIDE;
+  virtual void stop(DownloadEngine* e) CXX11_OVERRIDE;
+  virtual bool processResponse(const std::shared_ptr<BtAnnounce>& btAnnounce)
+    CXX11_OVERRIDE;
 private:
   std::shared_ptr<RequestGroup> rg_;
 };
@@ -85,11 +86,12 @@ class UDPAnnRequest:public AnnRequest {
 public:
   UDPAnnRequest(const std::shared_ptr<UDPTrackerRequest>& req);
   virtual ~UDPAnnRequest();
-  virtual bool stopped() const;
-  virtual bool success() const;
-  virtual bool issue(DownloadEngine* e);
-  virtual void stop(DownloadEngine* e);
-  virtual bool processResponse(const std::shared_ptr<BtAnnounce>& btAnnounce);
+  virtual bool stopped() const CXX11_OVERRIDE;
+  virtual bool success() const CXX11_OVERRIDE;
+  virtual bool issue(DownloadEngine* e) CXX11_OVERRIDE;
+  virtual void stop(DownloadEngine* e) CXX11_OVERRIDE;
+  virtual bool processResponse(const std::shared_ptr<BtAnnounce>& btAnnounce)
+    CXX11_OVERRIDE;
 private:
   std::shared_ptr<UDPTrackerRequest> req_;
 };
@@ -136,7 +138,7 @@ public:
 
   std::shared_ptr<AnnRequest> createAnnounce(DownloadEngine* e);
 
-  virtual bool execute();
+  virtual bool execute() CXX11_OVERRIDE;
 
   void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
 

@@ -84,33 +84,35 @@ public:
   virtual ~DefaultPeerStorage();
 
   // TODO We need addAndCheckoutPeer for incoming peers
-  virtual bool addPeer(const std::shared_ptr<Peer>& peer);
+  virtual bool addPeer(const std::shared_ptr<Peer>& peer) CXX11_OVERRIDE;
 
-  virtual size_t countAllPeer() const;
+  virtual size_t countAllPeer() const CXX11_OVERRIDE;
 
   std::shared_ptr<Peer> getPeer(const std::string& ipaddr, uint16_t port) const;
 
-  virtual void addPeer(const std::vector<std::shared_ptr<Peer> >& peers);
+  virtual void addPeer(const std::vector<std::shared_ptr<Peer> >& peers)
+    CXX11_OVERRIDE;
 
   const std::deque<std::shared_ptr<Peer> >& getUnusedPeers();
 
-  virtual const PeerSet& getUsedPeers();
+  virtual const PeerSet& getUsedPeers() CXX11_OVERRIDE;
 
-  virtual const std::deque<std::shared_ptr<Peer> >& getDroppedPeers();
+  virtual const std::deque<std::shared_ptr<Peer> >& getDroppedPeers()
+    CXX11_OVERRIDE;
 
-  virtual bool isPeerAvailable();
+  virtual bool isPeerAvailable() CXX11_OVERRIDE;
 
-  virtual bool isBadPeer(const std::string& ipaddr);
+  virtual bool isBadPeer(const std::string& ipaddr) CXX11_OVERRIDE;
 
-  virtual void addBadPeer(const std::string& ipaddr);
+  virtual void addBadPeer(const std::string& ipaddr) CXX11_OVERRIDE;
 
-  virtual std::shared_ptr<Peer> checkoutPeer(cuid_t cuid);
+  virtual std::shared_ptr<Peer> checkoutPeer(cuid_t cuid) CXX11_OVERRIDE;
 
-  virtual void returnPeer(const std::shared_ptr<Peer>& peer);
+  virtual void returnPeer(const std::shared_ptr<Peer>& peer) CXX11_OVERRIDE;
 
-  virtual bool chokeRoundIntervalElapsed();
+  virtual bool chokeRoundIntervalElapsed() CXX11_OVERRIDE;
 
-  virtual void executeChoke();
+  virtual void executeChoke() CXX11_OVERRIDE;
 
   void deleteUnusedPeer(size_t delSize);
 

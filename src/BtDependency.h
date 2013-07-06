@@ -55,7 +55,7 @@ public:
 
   virtual ~BtDependency();
 
-  virtual bool resolve();
+  virtual bool resolve() CXX11_OVERRIDE;
 };
 
 } // namespace aria2

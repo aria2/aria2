@@ -68,7 +68,7 @@ public:
     setStatusRealtime();
   }
 
-  virtual bool execute()
+  virtual bool execute() CXX11_OVERRIDE
   {
     if(e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
       return true;

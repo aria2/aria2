@@ -95,20 +95,20 @@ public:
   static std::unique_ptr<BtPieceMessage> create
   (const unsigned char* data, size_t dataLength);
 
-  virtual void doReceivedAction();
+  virtual void doReceivedAction() CXX11_OVERRIDE;
 
   void createMessageHeader(unsigned char* msgHeader) const;
 
   size_t getMessageHeaderLength();
 
-  virtual void send();
+  virtual void send() CXX11_OVERRIDE;
 
-  virtual std::string toString() const;
+  virtual std::string toString() const CXX11_OVERRIDE;
 
-  virtual void onChokingEvent(const BtChokingEvent& event);
+  virtual void onChokingEvent(const BtChokingEvent& event) CXX11_OVERRIDE;
 
   virtual void onCancelSendingPieceEvent
-  (const BtCancelSendingPieceEvent& event);
+  (const BtCancelSendingPieceEvent& event) CXX11_OVERRIDE;
 };
 
 } // namespace aria2

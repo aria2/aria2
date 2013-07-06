@@ -50,7 +50,7 @@ public:
   static std::unique_ptr<BtRejectMessage> create
   (const unsigned char* data, size_t dataLength);
 
-  virtual void doReceivedAction();
+  virtual void doReceivedAction() CXX11_OVERRIDE;
 };
 
 } // namespace aria2

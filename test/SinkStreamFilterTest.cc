@@ -22,17 +22,17 @@ class SinkStreamFilterTest:public CppUnit::TestFixture {
   public:
     MockSegment2(int32_t length):length(length), writtenLength(0) {}
 
-    virtual int32_t getLength() const
+    virtual int32_t getLength() const CXX11_OVERRIDE
     {
       return length;
     }
 
-    virtual int32_t getWrittenLength() const
+    virtual int32_t getWrittenLength() const CXX11_OVERRIDE
     {
       return writtenLength;
     }
 
-    virtual void updateWrittenLength(int32_t bytes)
+    virtual void updateWrittenLength(int32_t bytes) CXX11_OVERRIDE
     {
       writtenLength += bytes;
     }

@@ -31,7 +31,7 @@ public:
     virtual std::shared_ptr<Piece> getMissingPiece
     (const std::shared_ptr<Peer>& peer,
      const std::vector<size_t>& exlucdedIndexes,
-     cuid_t cuid)
+     cuid_t cuid) CXX11_OVERRIDE
     {
       if(missingIndexes.empty()) {
         return nullptr;

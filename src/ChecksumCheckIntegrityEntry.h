@@ -50,17 +50,17 @@ public:
 
   virtual ~ChecksumCheckIntegrityEntry();
 
-  virtual bool isValidationReady();
+  virtual bool isValidationReady() CXX11_OVERRIDE;
 
-  virtual void initValidator();
+  virtual void initValidator() CXX11_OVERRIDE;
 
   virtual void onDownloadFinished
   (std::vector<std::unique_ptr<Command>>& commands,
-   DownloadEngine* e);
+   DownloadEngine* e) CXX11_OVERRIDE;
 
   virtual void onDownloadIncomplete
   (std::vector<std::unique_ptr<Command>>& commands,
-   DownloadEngine* e);
+   DownloadEngine* e) CXX11_OVERRIDE;
 
   void setRedownload(bool redownload)
   {

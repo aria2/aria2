@@ -51,7 +51,7 @@ public:
 
   virtual ~FillRequestGroupCommand();
 
-  virtual bool execute();
+  virtual bool execute() CXX11_OVERRIDE;
 };
 
 } // namespace aria2

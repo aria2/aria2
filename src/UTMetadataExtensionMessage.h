@@ -47,12 +47,12 @@ private:
 public:
   UTMetadataExtensionMessage(uint8_t extensionMessageID);
 
-  virtual uint8_t getExtensionMessageID() const
+  virtual uint8_t getExtensionMessageID() const CXX11_OVERRIDE
   {
     return extensionMessageID_;
   }
 
-  virtual const char* getExtensionName() const
+  virtual const char* getExtensionName() const CXX11_OVERRIDE
   {
     return EXTENSION_NAME;
   }

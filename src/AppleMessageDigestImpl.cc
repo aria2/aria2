@@ -51,20 +51,20 @@ public:
   MessageDigestBase() { reset(); }
   virtual ~MessageDigestBase() {}
 
-  virtual size_t getDigestLength() const {
+  virtual size_t getDigestLength() const CXX11_OVERRIDE {
     return dlen;
   }
-  virtual void reset() {
+  virtual void reset() CXX11_OVERRIDE {
     init_fn(&ctx_);
   }
-  virtual void update(const void* data, size_t length) {
+  virtual void update(const void* data, size_t length) CXX11_OVERRIDE {
     while (length) {
       CC_LONG l = std::min(length, (size_t)std::numeric_limits<uint32_t>::max());
       update_fn(&ctx_, data, l);
       length -= l;
     }
   }
-  virtual void digest(unsigned char* md) {
+  virtual void digest(unsigned char* md) CXX11_OVERRIDE {
     final_fn(md, &ctx_);
   }
 private:

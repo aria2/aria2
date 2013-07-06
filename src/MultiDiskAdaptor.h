@@ -131,36 +131,38 @@ public:
   MultiDiskAdaptor();
   ~MultiDiskAdaptor();
 
-  virtual void initAndOpenFile();
+  virtual void initAndOpenFile() CXX11_OVERRIDE;
 
-  virtual void openFile();
+  virtual void openFile() CXX11_OVERRIDE;
 
-  virtual void openExistingFile();
+  virtual void openExistingFile() CXX11_OVERRIDE;
 
-  virtual void closeFile();
+  virtual void closeFile() CXX11_OVERRIDE;
 
   virtual void writeData(const unsigned char* data, size_t len,
-                         int64_t offset);
+                         int64_t offset) CXX11_OVERRIDE;
 
-  virtual ssize_t readData(unsigned char* data, size_t len, int64_t offset);
+  virtual ssize_t readData(unsigned char* data, size_t len, int64_t offset)
+    CXX11_OVERRIDE;
 
-  virtual void writeCache(const WrDiskCacheEntry* entry);
+  virtual void writeCache(const WrDiskCacheEntry* entry) CXX11_OVERRIDE;
 
-  virtual bool fileExists();
+  virtual bool fileExists() CXX11_OVERRIDE;
 
-  virtual int64_t size();
+  virtual int64_t size() CXX11_OVERRIDE;
 
-  virtual std::unique_ptr<FileAllocationIterator> fileAllocationIterator();
+  virtual std::unique_ptr<FileAllocationIterator> fileAllocationIterator()
+    CXX11_OVERRIDE;
 
-  virtual void enableReadOnly();
+  virtual void enableReadOnly() CXX11_OVERRIDE;
 
-  virtual void disableReadOnly();
+  virtual void disableReadOnly() CXX11_OVERRIDE;
 
-  virtual bool isReadOnlyEnabled() const { return readOnly_; }
+  virtual bool isReadOnlyEnabled() const CXX11_OVERRIDE { return readOnly_; }
 
   // Enables mmap feature. This method must be called after files are
   // opened.
-  virtual void enableMmap();
+  virtual void enableMmap() CXX11_OVERRIDE;
 
   void setPieceLength(int32_t pieceLength)
   {
@@ -171,11 +173,11 @@ public:
     return pieceLength_;
   }
 
-  virtual void cutTrailingGarbage();
+  virtual void cutTrailingGarbage() CXX11_OVERRIDE;
 
   void setMaxOpenFiles(int maxOpenFiles);
 
-  virtual size_t utime(const Time& actime, const Time& modtime);
+  virtual size_t utime(const Time& actime, const Time& modtime) CXX11_OVERRIDE;
 
   const DiskWriterEntries& getDiskWriterEntries() const
   {

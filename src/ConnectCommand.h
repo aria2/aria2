@@ -57,8 +57,8 @@ public:
   void setBackupConnectInfo(const std::shared_ptr<BackupConnectInfo>& info);
   const std::shared_ptr<Request>& getProxyRequest() const;
 protected:
-  virtual bool executeInternal();
-  virtual bool noCheck();
+  virtual bool executeInternal() CXX11_OVERRIDE;
+  virtual bool noCheck() CXX11_OVERRIDE;
 private:
   std::shared_ptr<Request> proxyRequest_;
   std::shared_ptr<BackupConnectInfo> backupConnectionInfo_;

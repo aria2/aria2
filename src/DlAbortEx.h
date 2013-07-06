@@ -40,7 +40,7 @@ namespace aria2 {
 
 class DlAbortEx:public RecoverableException {
 protected:
-  virtual std::shared_ptr<Exception> copy() const;
+  virtual std::shared_ptr<Exception> copy() const CXX11_OVERRIDE;
 public:
   DlAbortEx(const char* file, int line, const std::string& msg);
 

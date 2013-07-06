@@ -41,12 +41,13 @@ public:
   public:
     virtual std::shared_ptr<DHTTask>
     createPingTask(const std::shared_ptr<DHTNode>& remoteNode, int numRetry)
+      CXX11_OVERRIDE
     {
       return std::shared_ptr<DHTTask>(new MockDHTTask(remoteNode));
     }
 
     virtual std::shared_ptr<DHTTask>
-    createNodeLookupTask(const unsigned char* targetID)
+    createNodeLookupTask(const unsigned char* targetID) CXX11_OVERRIDE
     {
       std::shared_ptr<MockDHTTask> task(new MockDHTTask(std::shared_ptr<DHTNode>()));
       task->setTargetID(targetID);

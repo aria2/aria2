@@ -50,7 +50,8 @@ public:
    FileAllocationMan* fileAllocMan,
    DownloadEngine* e);
 protected:
-  virtual std::unique_ptr<Command> createCommand(FileAllocationEntry* entry);
+  virtual std::unique_ptr<Command> createCommand(FileAllocationEntry* entry)
+    CXX11_OVERRIDE;
 };
 
 } // namespace aria2

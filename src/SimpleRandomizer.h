@@ -62,14 +62,14 @@ public:
 
   virtual ~SimpleRandomizer();
 
-  virtual long int getRandomNumber();
+  virtual long int getRandomNumber() CXX11_OVERRIDE;
 
-  virtual long int getMaxRandomNumber();
+  virtual long int getMaxRandomNumber() CXX11_OVERRIDE;
 
   /**
    * Returns random number in [0, to).
    */
-  virtual long int getRandomNumber(long int to);
+  virtual long int getRandomNumber(long int to) CXX11_OVERRIDE;
 
   long int operator()(long int to);
 };

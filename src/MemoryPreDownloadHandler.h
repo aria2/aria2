@@ -48,7 +48,7 @@ public:
 
   virtual ~MemoryPreDownloadHandler() {}
 
-  virtual void execute(RequestGroup* requestGroup)
+  virtual void execute(RequestGroup* requestGroup) CXX11_OVERRIDE
   {
     std::shared_ptr<DiskWriterFactory> dwf(new DiskWriterFactoryType());
     requestGroup->setDiskWriterFactory(dwf);

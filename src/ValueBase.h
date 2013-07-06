@@ -114,7 +114,7 @@ public:
     return std::shared_ptr<String>(new String(first, last));
   }
 
-  virtual void accept(ValueBaseVisitor& visitor) const;
+  virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
 private:
   ValueType str_;
 };
@@ -138,7 +138,7 @@ public:
 
   static std::shared_ptr<Integer> g(ValueType integer);
 
-  virtual void accept(ValueBaseVisitor& visitor) const;
+  virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
 private:
   ValueType integer_;
 };
@@ -148,7 +148,7 @@ public:
   static std::shared_ptr<Bool> gTrue();
   static std::shared_ptr<Bool> gFalse();
   bool val() const;
-  virtual void accept(ValueBaseVisitor& visitor) const;
+  virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
 private:
   Bool(bool val);
   // Don't allow copying
@@ -162,7 +162,7 @@ private:
 class Null:public ValueBase {
 public:
   static std::shared_ptr<Null> g();
-  virtual void accept(ValueBaseVisitor& visitor) const;
+  virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
 private:
   Null();
   // Don't allow copying
@@ -225,7 +225,7 @@ public:
 
   static std::shared_ptr<List> g();
 
-  virtual void accept(ValueBaseVisitor& visitor) const;
+  virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
 private:
   ValueType list_;
 };
@@ -291,7 +291,7 @@ public:
 
   static std::shared_ptr<Dict> g();
 
-  virtual void accept(ValueBaseVisitor& visitor) const;
+  virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
 private:
   ValueType dict_;
 };
@@ -299,12 +299,12 @@ private:
 class EmptyDowncastValueBaseVisitor:public ValueBaseVisitor {
 public:
   EmptyDowncastValueBaseVisitor() {}
-  virtual void visit(const String& v) {}
-  virtual void visit(const Integer& v) {}
-  virtual void visit(const Bool& v) {}
-  virtual void visit(const Null& v) {}
-  virtual void visit(const List& v) {}
-  virtual void visit(const Dict& v) {}
+  virtual void visit(const String& v) CXX11_OVERRIDE {}
+  virtual void visit(const Integer& v) CXX11_OVERRIDE {}
+  virtual void visit(const Bool& v) CXX11_OVERRIDE {}
+  virtual void visit(const Null& v) CXX11_OVERRIDE {}
+  virtual void visit(const List& v) CXX11_OVERRIDE {}
+  virtual void visit(const Dict& v) CXX11_OVERRIDE {}
 };
 
 template<typename T>
@@ -312,7 +312,7 @@ class DowncastValueBaseVisitor:public EmptyDowncastValueBaseVisitor {
 public:
   DowncastValueBaseVisitor():result_(0) {}
 
-  virtual void visit(const T& t)
+  virtual void visit(const T& t) CXX11_OVERRIDE
   {
     result_ = &t;
   }

@@ -54,7 +54,7 @@ private:
 
   std::shared_ptr<HttpConnection> httpConnection_;
 protected:
-  virtual bool executeInternal();
+  virtual bool executeInternal() CXX11_OVERRIDE;
 public:
   HttpRequestCommand(cuid_t cuid,
                      const std::shared_ptr<Request>& req,

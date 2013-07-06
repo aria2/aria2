@@ -48,7 +48,7 @@ public:
 
   virtual ~DHTBucketRefreshTask();
 
-  virtual void startup();
+  virtual void startup() CXX11_OVERRIDE;
 
   void setForceRefresh(bool forceRefresh);
 };

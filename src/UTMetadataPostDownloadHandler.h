@@ -46,14 +46,14 @@ private:
   class Criteria:public RequestGroupCriteria
   {
   public:
-    virtual bool match(const RequestGroup* requestGroup) const;
+    virtual bool match(const RequestGroup* requestGroup) const CXX11_OVERRIDE;
   };
 public:
   UTMetadataPostDownloadHandler();
 
   virtual void
   getNextRequestGroups(std::vector<std::shared_ptr<RequestGroup> >& groups,
-                       RequestGroup* requestGroup);
+                       RequestGroup* requestGroup) CXX11_OVERRIDE;
 };
 
 } // namespace aria2

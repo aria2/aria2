@@ -70,7 +70,7 @@ struct ThisProgressUpdate : public ProgressUpdate {
   ThisProgressUpdate(const std::shared_ptr<Peer>& peer,
                      BtMessageDispatcher* disp)
     : peer(peer), disp(disp) {}
-  virtual void update(size_t length, bool complete)
+  virtual void update(size_t length, bool complete) CXX11_OVERRIDE
   {
     if(complete) {
       peer->amChoking(true);

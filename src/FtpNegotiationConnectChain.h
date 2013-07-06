@@ -45,7 +45,7 @@ namespace aria2 {
 struct FtpNegotiationConnectChain : public ControlChain<ConnectCommand*> {
   FtpNegotiationConnectChain() {}
   virtual ~FtpNegotiationConnectChain() {}
-  virtual int run(ConnectCommand* t, DownloadEngine* e)
+  virtual int run(ConnectCommand* t, DownloadEngine* e) CXX11_OVERRIDE
   {
     auto c = make_unique<FtpNegotiationCommand>
       (t->getCuid(),

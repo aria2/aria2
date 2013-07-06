@@ -95,23 +95,23 @@ public:
 
   virtual ~MetalinkParserStateMachine();
 
-  virtual bool needsCharactersBuffering() const;
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE;
 
-  virtual bool finished() const;
+  virtual bool finished() const CXX11_OVERRIDE;
 
   virtual void beginElement
   (const char* localname,
    const char* prefix,
    const char* nsUri,
-   const std::vector<XmlAttr>& attrs);
+   const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
 
   virtual void endElement
   (const char* localname,
    const char* prefix,
    const char* nsUri,
-   const std::string& characters);
+   const std::string& characters) CXX11_OVERRIDE;
 
-  virtual void reset();
+  virtual void reset() CXX11_OVERRIDE;
 
   void setSkipTagState();
 

@@ -9,67 +9,67 @@ namespace aria2 {
 
 class MockSegment:public Segment {
 public:
-  virtual bool complete() const
+  virtual bool complete() const CXX11_OVERRIDE
   {
     return false;
   }
 
-  virtual size_t getIndex() const
+  virtual size_t getIndex() const CXX11_OVERRIDE
   {
     return 0;
   }
 
-  virtual int64_t getPosition() const
+  virtual int64_t getPosition() const CXX11_OVERRIDE
   {
     return 0;
   }
 
-  virtual int64_t getPositionToWrite() const
+  virtual int64_t getPositionToWrite() const CXX11_OVERRIDE
   {
     return 0;
   }
 
-  virtual int32_t getLength() const
+  virtual int32_t getLength() const CXX11_OVERRIDE
   {
     return 0;
   }
 
-  virtual int32_t getSegmentLength() const
+  virtual int32_t getSegmentLength() const CXX11_OVERRIDE
   {
     return 0;
   }
 
-  virtual int32_t getWrittenLength() const
+  virtual int32_t getWrittenLength() const CXX11_OVERRIDE
   {
     return 0;
   }
 
-  virtual void updateWrittenLength(int32_t bytes) {}
+  virtual void updateWrittenLength(int32_t bytes) CXX11_OVERRIDE {}
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
   // `begin' is a offset inside this segment.
   virtual bool updateHash
-  (int32_t begin, const unsigned char* data, size_t dataLength)
+  (int32_t begin, const unsigned char* data, size_t dataLength) CXX11_OVERRIDE
   {
     return false;
   }
 
-  virtual bool isHashCalculated() const
+  virtual bool isHashCalculated() const CXX11_OVERRIDE
   {
     return false;
   }
 
-  virtual std::string getDigest()
+  virtual std::string getDigest() CXX11_OVERRIDE
   {
     return A2STR::NIL;
   }
 
 #endif // ENABLE_MESSAGE_DIGEST
 
-  virtual void clear(WrDiskCache* diskCache) {}
+  virtual void clear(WrDiskCache* diskCache) CXX11_OVERRIDE {}
 
-  virtual std::shared_ptr<Piece> getPiece() const
+  virtual std::shared_ptr<Piece> getPiece() const CXX11_OVERRIDE
   {
     return std::shared_ptr<Piece>(new Piece());
   }

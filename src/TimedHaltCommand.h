@@ -48,9 +48,9 @@ public:
 
   virtual ~TimedHaltCommand();
 
-  virtual void preProcess();
+  virtual void preProcess() CXX11_OVERRIDE;
 
-  virtual void process();
+  virtual void process() CXX11_OVERRIDE;
 };
 
 } // namespace aria2

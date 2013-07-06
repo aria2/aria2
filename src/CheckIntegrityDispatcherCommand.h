@@ -50,7 +50,8 @@ public:
    CheckIntegrityMan* checkMan,
    DownloadEngine* e);
 protected:
-  virtual std::unique_ptr<Command> createCommand(CheckIntegrityEntry* entry);
+  virtual std::unique_ptr<Command> createCommand(CheckIntegrityEntry* entry)
+    CXX11_OVERRIDE;
 };
 
 } // namespace aria2

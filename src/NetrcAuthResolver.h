@@ -53,7 +53,7 @@ public:
   NetrcAuthResolver();
 
   virtual std::unique_ptr<AuthConfig> resolveAuthConfig
-  (const std::string& hostname);
+  (const std::string& hostname) CXX11_OVERRIDE;
 
   void setNetrc(Netrc* netrc);
 

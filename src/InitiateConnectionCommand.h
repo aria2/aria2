@@ -50,7 +50,7 @@ protected:
    * Using nonblocking mode of socket, this funtion returns immediately
    * after send connection packet to the server.
    */
-  virtual bool executeInternal();
+  virtual bool executeInternal() CXX11_OVERRIDE;
 
   // hostname and port are the hostname and port number we are going
   // to connect. If proxy server is used, these values are hostname

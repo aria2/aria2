@@ -57,9 +57,9 @@ public:
 
   virtual ~ShareRatioSeedCriteria();
 
-  virtual void reset();
+  virtual void reset() CXX11_OVERRIDE;
 
-  virtual bool evaluate();
+  virtual bool evaluate() CXX11_OVERRIDE;
 
   void setRatio(double ratio) {
     ratio_ = ratio;

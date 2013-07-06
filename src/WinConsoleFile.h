@@ -44,10 +44,10 @@ class WinConsoleFile:public OutputFile {
 public:
   WinConsoleFile(DWORD stdHandle);
   virtual ~WinConsoleFile();
-  virtual size_t write(const char* str);
-  virtual int vprintf(const char* format, va_list va);
-  virtual int flush();
-  virtual bool supportsColor();
+  virtual size_t write(const char* str) CXX11_OVERRIDE;
+  virtual int vprintf(const char* format, va_list va) CXX11_OVERRIDE;
+  virtual int flush() CXX11_OVERRIDE;
+  virtual bool supportsColor() CXX11_OVERRIDE;
 private:
   DWORD stdHandle_;
   // Don't allow copying

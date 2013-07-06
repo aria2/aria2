@@ -46,7 +46,8 @@ public:
   virtual ~BtFileAllocationEntry();
 
   virtual void prepareForNextAction
-  (std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e);
+  (std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
+    CXX11_OVERRIDE;
 };
 
 } // namespace aria2

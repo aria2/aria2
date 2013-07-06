@@ -64,7 +64,7 @@ public:
 
   virtual ~SeedCheckCommand();
 
-  virtual bool execute();
+  virtual bool execute() CXX11_OVERRIDE;
 
   void setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime);
 

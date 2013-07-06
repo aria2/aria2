@@ -49,7 +49,7 @@ public:
                             const char* localname,
                             const char* prefix,
                             const char* nsUri,
-                            const std::vector<XmlAttr>& attrs);
+                            const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
 };
 
 class FileMetalinkParserStateV4:public MetalinkParserState
@@ -59,15 +59,15 @@ public:
                             const char* localname,
                             const char* prefix,
                             const char* nsUri,
-                            const std::vector<XmlAttr>& attrs);
+                            const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
 
   virtual void endElement(MetalinkParserStateMachine* psm,
                           const char* localname,
                           const char* prefix,
                           const char* nsUri,
-                          const std::string& characters);
+                          const std::string& characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
   {
     return true;
   }
@@ -80,9 +80,9 @@ public:
                           const char* localname,
                           const char* prefix,
                           const char* nsUri,
-                          const std::string& characters);
+                          const std::string& characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
   {
     return true;
   }
@@ -95,9 +95,9 @@ public:
                           const char* localname,
                           const char* prefix,
                           const char* nsUri,
-                          const std::string& characters);
+                          const std::string& characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
   {
     return true;
   }
@@ -110,9 +110,9 @@ public:
                           const char* localname,
                           const char* prefix,
                           const char* nsUri,
-                          const std::string& characters);
+                          const std::string& characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
   {
     return true;
   }
@@ -125,9 +125,9 @@ public:
                           const char* localname,
                           const char* prefix,
                           const char* nsUri,
-                          const std::string& characters);
+                          const std::string& characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
   {
     return true;
   }
@@ -140,9 +140,9 @@ public:
                           const char* localname,
                           const char* prefix,
                           const char* nsUri,
-                          const std::string& characters);
+                          const std::string& characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
   {
     return true;
   }
@@ -155,15 +155,15 @@ public:
                             const char* localname,
                             const char* prefix,
                             const char* nsUri,
-                            const std::vector<XmlAttr>& attrs);
+                            const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
 
   virtual void endElement(MetalinkParserStateMachine* psm,
                           const char* localname,
                           const char* prefix,
                           const char* nsUri,
-                          const std::string& characters);
+                          const std::string& characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
   {
     return true;
   }
@@ -176,9 +176,9 @@ public:
                           const char* localname,
                           const char* prefix,
                           const char* nsUri,
-			  const std::string& characters);
+			  const std::string& characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
   {
     return true;
   }
@@ -191,9 +191,9 @@ public:
                           const char* localname,
                           const char* prefix,
                           const char* nsUri,
-                          const std::string& characters);
+                          const std::string& characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
   {
     return true;
   }
@@ -206,9 +206,9 @@ public:
                           const char* localname,
                           const char* prefix,
                           const char* nsUri,
-                          const std::string& characters);
+                          const std::string& characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
   {
     return true;
   }
@@ -221,9 +221,9 @@ public:
                           const char* localname,
                           const char* prefix,
                           const char* nsUri,
-                          const std::string& characters);
+                          const std::string& characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
   {
     return true;
   }

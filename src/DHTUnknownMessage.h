@@ -54,19 +54,19 @@ public:
   virtual ~DHTUnknownMessage();
 
   // do nothing
-  virtual void doReceivedAction();
+  virtual void doReceivedAction() CXX11_OVERRIDE;
 
   // do nothing; we don't use this message as outgoing message.
-  virtual bool send();
+  virtual bool send() CXX11_OVERRIDE;
 
   // always return false
-  virtual bool isReply() const;
+  virtual bool isReply() const CXX11_OVERRIDE;
 
   // returns "unknown"
-  virtual const std::string& getMessageType() const;
+  virtual const std::string& getMessageType() const CXX11_OVERRIDE;
 
   // show some sample bytes
-  virtual std::string toString() const;
+  virtual std::string toString() const CXX11_OVERRIDE;
 
   static const std::string E;
 

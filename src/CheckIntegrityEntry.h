@@ -65,13 +65,13 @@ public:
 
   virtual ~CheckIntegrityEntry();
 
-  virtual int64_t getTotalLength();
+  virtual int64_t getTotalLength() CXX11_OVERRIDE;
 
-  virtual int64_t getCurrentLength();
+  virtual int64_t getCurrentLength() CXX11_OVERRIDE;
 
   virtual void validateChunk();
 
-  virtual bool finished();
+  virtual bool finished() CXX11_OVERRIDE;
 
   virtual bool isValidationReady() = 0;
 

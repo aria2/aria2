@@ -50,9 +50,9 @@ public:
   (size_t& index,
    size_t minSplitSize,
    const unsigned char* ignoreBitfield,
-   size_t length);
+   size_t length) CXX11_OVERRIDE;
 
-  virtual void onBitfieldInit();
+  virtual void onBitfieldInit() CXX11_OVERRIDE;
 private:
   BitfieldMan* bitfieldMan_;
   double base_;

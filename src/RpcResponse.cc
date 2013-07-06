@@ -59,21 +59,21 @@ void encodeValue(const std::shared_ptr<ValueBase>& value, OutputStream& o)
 
     virtual ~XmlValueBaseVisitor() {}
 
-    virtual void visit(const String& v)
+    virtual void visit(const String& v) CXX11_OVERRIDE
     {
       o_ << "<value><string>" << util::htmlEscape(v.s()) << "</string></value>";
     }
 
-    virtual void visit(const Integer& v)
+    virtual void visit(const Integer& v) CXX11_OVERRIDE
     {
       o_ << "<value><int>" << v.i() << "</int></value>";
     }
 
-    virtual void visit(const Bool& boolValue) {}
+    virtual void visit(const Bool& boolValue) CXX11_OVERRIDE {}
 
-    virtual void visit(const Null& nullValue) {}
+    virtual void visit(const Null& nullValue) CXX11_OVERRIDE {}
 
-    virtual void visit(const List& v)
+    virtual void visit(const List& v) CXX11_OVERRIDE
     {
       o_ << "<value><array><data>";
       for(List::ValueType::const_iterator i = v.begin(), eoi = v.end();
@@ -83,7 +83,7 @@ void encodeValue(const std::shared_ptr<ValueBase>& value, OutputStream& o)
       o_ << "</data></array></value>";
     }
 
-    virtual void visit(const Dict& v)
+    virtual void visit(const Dict& v) CXX11_OVERRIDE
     {
       o_ << "<value><struct>";
       for(Dict::ValueType::const_iterator i = v.begin(), eoi = v.end();

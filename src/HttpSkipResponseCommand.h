@@ -61,7 +61,7 @@ private:
 
   void poolConnection() const;
 protected:
-  virtual bool executeInternal();
+  virtual bool executeInternal() CXX11_OVERRIDE;
 public:
   HttpSkipResponseCommand
   (cuid_t cuid,

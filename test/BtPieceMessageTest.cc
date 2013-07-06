@@ -53,7 +53,8 @@ public:
     virtual std::unique_ptr<BtRejectMessage>
     createRejectMessage(size_t index,
                         int32_t begin,
-                        int32_t length) {
+                        int32_t length) CXX11_OVERRIDE
+    {
       return make_unique<BtRejectMessage>(index, begin, length);
     }
   };

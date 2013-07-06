@@ -56,10 +56,10 @@ private:
 
   bool mseHandshakeEnabled_;
 protected:
-  virtual bool executeInternal();
-  virtual bool prepareForNextPeer(time_t wait);
-  virtual void onAbort();
-  virtual bool exitBeforeExecute();
+  virtual bool executeInternal() CXX11_OVERRIDE;
+  virtual bool prepareForNextPeer(time_t wait) CXX11_OVERRIDE;
+  virtual void onAbort() CXX11_OVERRIDE;
+  virtual bool exitBeforeExecute() CXX11_OVERRIDE;
 
 public:
   PeerInitiateConnectionCommand(cuid_t cuid,

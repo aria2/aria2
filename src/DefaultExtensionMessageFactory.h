@@ -69,7 +69,7 @@ public:
   (const std::shared_ptr<Peer>& peer, ExtensionMessageRegistry* registry);
 
   virtual std::unique_ptr<ExtensionMessage>
-  createMessage(const unsigned char* data, size_t length);
+  createMessage(const unsigned char* data, size_t length) CXX11_OVERRIDE;
 
   void setPeerStorage(PeerStorage* peerStorage);
 

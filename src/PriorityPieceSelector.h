@@ -51,7 +51,8 @@ public:
   PriorityPieceSelector(const std::shared_ptr<PieceSelector>& selector);
 
   virtual bool select
-  (size_t& index, const unsigned char* bitfield, size_t nbits) const;
+  (size_t& index, const unsigned char* bitfield, size_t nbits) const
+    CXX11_OVERRIDE;
 
   template<typename InputIterator>
   void setPriorityPiece(InputIterator first, InputIterator last)

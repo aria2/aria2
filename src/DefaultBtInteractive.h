@@ -171,30 +171,31 @@ public:
 
   virtual ~DefaultBtInteractive();
 
-  virtual void initiateHandshake();
+  virtual void initiateHandshake() CXX11_OVERRIDE;
 
   virtual std::unique_ptr<BtHandshakeMessage> receiveHandshake
-  (bool quickReply = false);
+  (bool quickReply = false) CXX11_OVERRIDE;
 
-  virtual std::unique_ptr<BtHandshakeMessage> receiveAndSendHandshake();
+  virtual std::unique_ptr<BtHandshakeMessage> receiveAndSendHandshake()
+    CXX11_OVERRIDE;
 
-  virtual void doPostHandshakeProcessing();
+  virtual void doPostHandshakeProcessing() CXX11_OVERRIDE;
 
-  virtual void doInteractionProcessing();
+  virtual void doInteractionProcessing() CXX11_OVERRIDE;
 
-  virtual void cancelAllPiece();
+  virtual void cancelAllPiece() CXX11_OVERRIDE;
 
-  virtual void sendPendingMessage();
+  virtual void sendPendingMessage() CXX11_OVERRIDE;
 
   size_t receiveMessages();
 
-  virtual size_t countPendingMessage();
+  virtual size_t countPendingMessage() CXX11_OVERRIDE;
 
-  virtual bool isSendingMessageInProgress();
+  virtual bool isSendingMessageInProgress() CXX11_OVERRIDE;
 
-  virtual size_t countReceivedMessageInIteration() const;
+  virtual size_t countReceivedMessageInIteration() const CXX11_OVERRIDE;
 
-  virtual size_t countOutstandingRequest();
+  virtual size_t countOutstandingRequest() CXX11_OVERRIDE;
 
   void setCuid(cuid_t cuid)
   {

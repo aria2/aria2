@@ -48,8 +48,8 @@ class PeerReceiveHandshakeCommand:public PeerAbstractCommand
 private:
   std::shared_ptr<PeerConnection> peerConnection_;
 protected:
-  virtual bool executeInternal();
-  virtual bool exitBeforeExecute();
+  virtual bool executeInternal() CXX11_OVERRIDE;
+  virtual bool exitBeforeExecute() CXX11_OVERRIDE;
 public:
   PeerReceiveHandshakeCommand
   (cuid_t cuid,

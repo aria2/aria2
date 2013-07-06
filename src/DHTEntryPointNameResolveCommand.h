@@ -90,7 +90,7 @@ public:
 
   virtual ~DHTEntryPointNameResolveCommand();
 
-  virtual bool execute();
+  virtual bool execute() CXX11_OVERRIDE;
 
   void setBootstrapEnabled(bool f);
 

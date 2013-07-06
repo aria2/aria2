@@ -244,7 +244,7 @@ public:
    bool incNumConnection = true);
 
   virtual ~AbstractCommand();
-  bool execute();
+  virtual bool execute() CXX11_OVERRIDE;
 };
 
 // Returns proxy URI for given protocol.  If no proxy URI is defined,

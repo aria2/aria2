@@ -49,28 +49,28 @@ private:
 public:
   SinkStreamFilter(WrDiskCache* wrDiskCache = 0, bool hashUpdate = false);
 
-  virtual void init() {}
+  virtual void init() CXX11_OVERRIDE {}
 
   virtual ssize_t transform
   (const std::shared_ptr<BinaryStream>& out,
    const std::shared_ptr<Segment>& segment,
-   const unsigned char* inbuf, size_t inlen);
+   const unsigned char* inbuf, size_t inlen) CXX11_OVERRIDE;
 
-  virtual bool finished()
+  virtual bool finished() CXX11_OVERRIDE
   {
     return true;
   }
 
-  virtual void release() {}
+  virtual void release() CXX11_OVERRIDE {}
 
-  virtual const std::string& getName() const
+  virtual const std::string& getName() const CXX11_OVERRIDE
   {
     return NAME;
   }
 
   static const std::string NAME;
 
-  virtual size_t getBytesProcessed() const
+  virtual size_t getBytesProcessed() const CXX11_OVERRIDE
   {
     return bytesProcessed_;
   }

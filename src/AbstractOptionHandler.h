@@ -64,66 +64,67 @@ public:
 
   virtual ~AbstractOptionHandler();
 
-  virtual void parse(Option& option, const std::string& arg) const;
+  virtual void parse(Option& option, const std::string& arg) const
+    CXX11_OVERRIDE;
 
-  virtual bool hasTag(uint32_t tag) const;
+  virtual bool hasTag(uint32_t tag) const CXX11_OVERRIDE;
 
-  virtual void addTag(uint32_t tag);
+  virtual void addTag(uint32_t tag) CXX11_OVERRIDE;
 
-  virtual std::string toTagString() const;
+  virtual std::string toTagString() const CXX11_OVERRIDE;
 
-  virtual const char* getName() const;
+  virtual const char* getName() const CXX11_OVERRIDE;
 
-  virtual const char* getDescription() const
+  virtual const char* getDescription() const CXX11_OVERRIDE
   {
     return description_;
   }
 
-  virtual const std::string& getDefaultValue() const
+  virtual const std::string& getDefaultValue() const CXX11_OVERRIDE
   {
     return defaultValue_;
   }
 
-  virtual const Pref* getPref() const
+  virtual const Pref* getPref() const CXX11_OVERRIDE
   {
     return pref_;
   }
 
-  virtual char getShortName() const
+  virtual char getShortName() const CXX11_OVERRIDE
   {
     return shortName_;
   }
 
-  virtual OptionHandler::ARG_TYPE getArgType() const
+  virtual OptionHandler::ARG_TYPE getArgType() const CXX11_OVERRIDE
   {
     return argType_;
   }
 
-  virtual bool isHidden() const;
+  virtual bool isHidden() const CXX11_OVERRIDE;
 
-  virtual void hide();
+  virtual void hide() CXX11_OVERRIDE;
 
-  virtual bool getEraseAfterParse() const;
+  virtual bool getEraseAfterParse() const CXX11_OVERRIDE;
 
-  virtual void setEraseAfterParse(bool f);
+  virtual void setEraseAfterParse(bool f) CXX11_OVERRIDE;
 
-  virtual bool getInitialOption() const;
+  virtual bool getInitialOption() const CXX11_OVERRIDE;
 
-  virtual void setInitialOption(bool f);
+  virtual void setInitialOption(bool f) CXX11_OVERRIDE;
 
-  virtual bool getChangeOption() const;
+  virtual bool getChangeOption() const CXX11_OVERRIDE;
 
-  virtual void setChangeOption(bool f);
+  virtual void setChangeOption(bool f) CXX11_OVERRIDE;
 
-  virtual bool getChangeOptionForReserved() const;
+  virtual bool getChangeOptionForReserved() const CXX11_OVERRIDE;
 
-  virtual void setChangeOptionForReserved(bool f);
+  virtual void setChangeOptionForReserved(bool f) CXX11_OVERRIDE;
 
-  virtual bool getChangeGlobalOption() const;
+  virtual bool getChangeGlobalOption() const CXX11_OVERRIDE;
 
-  virtual void setChangeGlobalOption(bool f);
+  virtual void setChangeGlobalOption(bool f) CXX11_OVERRIDE;
 
-  virtual bool getCumulative() const;
+  virtual bool getCumulative() const CXX11_OVERRIDE;
 
   virtual void setCumulative(bool f);
 

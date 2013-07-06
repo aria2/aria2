@@ -48,12 +48,12 @@ public:
 
   virtual void getNodesFromMessage
   (std::vector<std::shared_ptr<DHTNode> >& nodes,
-   const DHTFindNodeReplyMessage* message);
+   const DHTFindNodeReplyMessage* message) CXX11_OVERRIDE;
 
   virtual std::unique_ptr<DHTMessage> createMessage
-  (const std::shared_ptr<DHTNode>& remoteNode);
+  (const std::shared_ptr<DHTNode>& remoteNode) CXX11_OVERRIDE;
 
-  virtual std::unique_ptr<DHTMessageCallback> createCallback();
+  virtual std::unique_ptr<DHTMessageCallback> createCallback() CXX11_OVERRIDE;
 };
 
 } // namespace aria2

@@ -60,9 +60,9 @@ public:
 
   virtual ~DHTAutoSaveCommand();
 
-  virtual void preProcess();
+  virtual void preProcess() CXX11_OVERRIDE;
 
-  virtual void process();
+  virtual void process() CXX11_OVERRIDE;
 
   void setLocalNode(const std::shared_ptr<DHTNode>& localNode);
 

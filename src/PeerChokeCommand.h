@@ -58,7 +58,7 @@ public:
 
   virtual ~PeerChokeCommand();
 
-  virtual bool execute();
+  virtual bool execute() CXX11_OVERRIDE;
 
   void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
 

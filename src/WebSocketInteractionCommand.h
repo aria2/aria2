@@ -62,7 +62,7 @@ public:
 
   virtual ~WebSocketInteractionCommand();
 
-  virtual bool execute();
+  virtual bool execute() CXX11_OVERRIDE;
 
   void updateWriteCheck();
 };

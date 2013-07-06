@@ -70,7 +70,7 @@ public:
                            Command* mainCommand,
                            RequestGroup* requestGroup, DownloadEngine* e);
   ~BackupIPv4ConnectCommand();
-  virtual bool execute();
+  virtual bool execute() CXX11_OVERRIDE;
 private:
   std::string ipaddr_;
   uint16_t port_;

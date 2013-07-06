@@ -65,26 +65,29 @@ public:
 
   virtual ~DefaultBtRequestFactory();
 
-  virtual void addTargetPiece(const std::shared_ptr<Piece>& piece);
+  virtual void addTargetPiece(const std::shared_ptr<Piece>& piece)
+    CXX11_OVERRIDE;
 
-  virtual void removeTargetPiece(const std::shared_ptr<Piece>& piece);
+  virtual void removeTargetPiece(const std::shared_ptr<Piece>& piece)
+    CXX11_OVERRIDE;
 
-  virtual void removeAllTargetPiece();
+  virtual void removeAllTargetPiece() CXX11_OVERRIDE;
 
-  virtual size_t countTargetPiece() {
+  virtual size_t countTargetPiece() CXX11_OVERRIDE
+  {
     return pieces_.size();
   }
 
-  virtual size_t countMissingBlock();
+  virtual size_t countMissingBlock() CXX11_OVERRIDE;
 
-  virtual void removeCompletedPiece();
+  virtual void removeCompletedPiece() CXX11_OVERRIDE;
 
-  virtual void doChokedAction();
+  virtual void doChokedAction() CXX11_OVERRIDE;
 
   virtual std::vector<std::unique_ptr<BtRequestMessage>> createRequestMessages
-  (size_t max, bool endGame);
+  (size_t max, bool endGame) CXX11_OVERRIDE;
 
-  virtual std::vector<size_t> getTargetPieceIndexes() const;
+  virtual std::vector<size_t> getTargetPieceIndexes() const CXX11_OVERRIDE;
 
   std::deque<std::shared_ptr<Piece> >& getTargetPieces()
   {

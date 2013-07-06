@@ -74,11 +74,11 @@ public:
 
   void setLength(int32_t length) { length_ = length; }
 
-  virtual unsigned char* createMessage();
+  virtual unsigned char* createMessage() CXX11_OVERRIDE;
 
-  virtual size_t getMessageLength();
+  virtual size_t getMessageLength() CXX11_OVERRIDE;
 
-  virtual std::string toString() const;
+  virtual std::string toString() const CXX11_OVERRIDE;
 };
 
 } // namespace aria2

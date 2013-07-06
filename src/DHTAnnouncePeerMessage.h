@@ -56,7 +56,7 @@ private:
 
   DHTTokenTracker* tokenTracker_;
 protected:
-  virtual std::string toStringOptional() const;
+  virtual std::string toStringOptional() const CXX11_OVERRIDE;
 public:
   DHTAnnouncePeerMessage(const std::shared_ptr<DHTNode>& localNode,
                          const std::shared_ptr<DHTNode>& remoteNode,
@@ -65,13 +65,13 @@ public:
                          const std::string& token,
                          const std::string& transactionID = A2STR::NIL);
 
-  virtual void doReceivedAction();
+  virtual void doReceivedAction() CXX11_OVERRIDE;
 
-  virtual std::shared_ptr<Dict> getArgument();
+  virtual std::shared_ptr<Dict> getArgument() CXX11_OVERRIDE;
 
-  virtual const std::string& getMessageType() const;
+  virtual const std::string& getMessageType() const CXX11_OVERRIDE;
 
-  virtual void validate() const;
+  virtual void validate() const CXX11_OVERRIDE;
 
   const unsigned char* getInfoHash() const
   {
