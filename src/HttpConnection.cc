@@ -123,7 +123,8 @@ void HttpConnection::sendRequest
 void HttpConnection::sendRequest
 (std::unique_ptr<HttpRequest> httpRequest)
 {
-  sendRequest(std::move(httpRequest), httpRequest->createRequest());
+  auto req = httpRequest->createRequest();
+  sendRequest(std::move(httpRequest), req);
 }
 
 void HttpConnection::sendProxyRequest
