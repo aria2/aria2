@@ -180,8 +180,6 @@ PeerInteractionCommand::PeerInteractionCommand
   dispatcher->setCuid(cuid);
   dispatcher->setPeer(getPeer());
   dispatcher->setDownloadContext(requestGroup_->getDownloadContext().get());
-  dispatcher->setPieceStorage(pieceStorage.get());
-  dispatcher->setPeerStorage(peerStorage.get());
   dispatcher->setRequestTimeout(getOption()->
                                    getAsInt(PREF_BT_REQUEST_TIMEOUT));
   dispatcher->setBtMessageFactory(factory.get());

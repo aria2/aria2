@@ -45,8 +45,6 @@
 namespace aria2 {
 
 class DownloadContext;
-class PeerStorage;
-class PieceStorage;
 class BtMessage;
 class BtMessageFactory;
 class Peer;
@@ -60,8 +58,6 @@ private:
   std::deque<std::unique_ptr<BtMessage> > messageQueue_;
   std::deque<std::unique_ptr<RequestSlot>> requestSlots_;
   DownloadContext* downloadContext_;
-  PeerStorage* peerStorage_;
-  PieceStorage* pieceStorage_;
   PeerConnection* peerConnection_;
   BtMessageFactory* messageFactory_;
   std::shared_ptr<Peer> peer_;
@@ -134,10 +130,6 @@ public:
   void setPeer(const std::shared_ptr<Peer>& peer);
 
   void setDownloadContext(DownloadContext* downloadContext);
-
-  void setPieceStorage(PieceStorage* pieceStorage);
-
-  void setPeerStorage(PeerStorage* peerStorage);
 
   void setBtMessageFactory(BtMessageFactory* factory);
 

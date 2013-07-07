@@ -64,8 +64,6 @@ namespace aria2 {
 DefaultBtMessageDispatcher::DefaultBtMessageDispatcher()
   : cuid_{0},
     downloadContext_{nullptr},
-    peerStorage_{nullptr},
-    pieceStorage_{nullptr},
     peerConnection_{nullptr},
     messageFactory_{nullptr},
     requestGroupMan_{nullptr},
@@ -313,16 +311,6 @@ void DefaultBtMessageDispatcher::setDownloadContext
 (DownloadContext* downloadContext)
 {
   downloadContext_ = downloadContext;
-}
-
-void DefaultBtMessageDispatcher::setPieceStorage(PieceStorage* pieceStorage)
-{
-  pieceStorage_ = pieceStorage;
-}
-
-void DefaultBtMessageDispatcher::setPeerStorage(PeerStorage* peerStorage)
-{
-  peerStorage_ = peerStorage;
 }
 
 void DefaultBtMessageDispatcher::setBtMessageFactory(BtMessageFactory* factory)

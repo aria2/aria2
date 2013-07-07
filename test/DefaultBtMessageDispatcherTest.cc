@@ -6,8 +6,6 @@
 
 #include "util.h"
 #include "Exception.h"
-#include "MockPieceStorage.h"
-#include "MockPeerStorage.h"
 #include "MockBtMessage.h"
 #include "MockBtMessageFactory.h"
 #include "prefs.h"
@@ -44,8 +42,6 @@ private:
   std::shared_ptr<DownloadContext> dctx_;
   std::shared_ptr<Peer> peer;
   std::unique_ptr<DefaultBtMessageDispatcher> btMessageDispatcher;
-  std::unique_ptr<MockPeerStorage> peerStorage;
-  std::unique_ptr<MockPieceStorage> pieceStorage;
   std::unique_ptr<MockBtMessageFactory> messageFactory_;
   std::unique_ptr<RequestGroupMan> rgman_;
   std::shared_ptr<Option> option_;
@@ -106,21 +102,6 @@ public:
     }
   };
 
-  class MockPieceStorage2 : public MockPieceStorage {
-  private:
-    std::shared_ptr<Piece> piece;
-  public:
-    virtual std::shared_ptr<Piece> getPiece(size_t index) CXX11_OVERRIDE
-    {
-      return piece;
-    }
-
-    void setPiece(const std::shared_ptr<Piece>& piece)
-    {
-      this->piece = piece;
-    }
-  };
-
   class MockBtMessageFactory2 : public MockBtMessageFactory {
   public:
     virtual std::unique_ptr<BtCancelMessage>
@@ -146,9 +127,6 @@ public:
     peer = std::make_shared<Peer>("192.168.0.1", 6969);
     peer->allocateSessionResource
       (dctx_->getPieceLength(), dctx_->getTotalLength());
-    peerStorage = make_unique<MockPeerStorage>();
-    pieceStorage = make_unique<MockPieceStorage>();
-
     messageFactory_ = make_unique<MockBtMessageFactory2>();
 
     rgman_ = make_unique<RequestGroupMan>
@@ -157,8 +135,6 @@ public:
     btMessageDispatcher = make_unique<DefaultBtMessageDispatcher>();
     btMessageDispatcher->setPeer(peer);
     btMessageDispatcher->setDownloadContext(dctx_.get());
-    btMessageDispatcher->setPieceStorage(pieceStorage.get());
-    btMessageDispatcher->setPeerStorage(peerStorage.get());
     btMessageDispatcher->setBtMessageFactory(messageFactory_.get());
     btMessageDispatcher->setCuid(1);
     btMessageDispatcher->setRequestGroupMan(rgman_.get());
@@ -233,11 +209,7 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing()
   CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(index));
   CPPUNIT_ASSERT_EQUAL((size_t)0, index);
 
-  auto pieceStorage = make_unique<MockPieceStorage2>();
-  pieceStorage->setPiece(piece);
-
   btMessageDispatcher->setRequestTimeout(60);
-  btMessageDispatcher->setPieceStorage(pieceStorage.get());
   btMessageDispatcher->addOutstandingRequest
     (make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0, piece));
 
@@ -256,11 +228,7 @@ testCheckRequestSlotAndDoNecessaryThing_timeout() {
   CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(index));
   CPPUNIT_ASSERT_EQUAL((size_t)0, index);
 
-  auto pieceStorage = make_unique<MockPieceStorage2>();
-  pieceStorage->setPiece(piece);
-
   btMessageDispatcher->setRequestTimeout(60);
-  btMessageDispatcher->setPieceStorage(pieceStorage.get());
   auto slot = make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0, piece);
   // make this slot timeout
   slot->setDispatchedTime(0);
@@ -279,11 +247,7 @@ void DefaultBtMessageDispatcherTest::
 testCheckRequestSlotAndDoNecessaryThing_completeBlock() {
   auto piece = std::make_shared<Piece>(0, MY_PIECE_LENGTH);
   piece->completeBlock(0);
-  auto pieceStorage = make_unique<MockPieceStorage2>();
-  pieceStorage->setPiece(piece);
-
   btMessageDispatcher->setRequestTimeout(60);
-  btMessageDispatcher->setPieceStorage(pieceStorage.get());
   btMessageDispatcher->addOutstandingRequest
     (make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0, piece));
 
