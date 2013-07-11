@@ -49,10 +49,9 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
   dict.put("t", transactionID);
   dict.put("v", "A200");
   dict.put("y", "r");
-  std::shared_ptr<Dict> rDict = Dict::g();
+  auto rDict = Dict::g();
   rDict->put("id", String::g(localNode->getID(), DHT_ID_LENGTH));
   rDict->put("token", token);
-  dict.put("r", rDict);
   {
     std::string compactNodeInfo;
     std::shared_ptr<DHTNode> nodes[8];
@@ -74,10 +73,11 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
       (std::vector<std::shared_ptr<DHTNode> >(&nodes[0], &nodes[DHTBucket::K]));
     rDict->put("nodes", compactNodeInfo);
 
-    std::vector<std::shared_ptr<Peer> > peers;
-    std::shared_ptr<List> valuesList = List::g();
+    std::vector<std::shared_ptr<Peer>> peers;
+    auto valuesList = List::g();
     for(size_t i = 0; i < 4; ++i) {
-      std::shared_ptr<Peer> peer(new Peer("192.168.0."+util::uitos(i+1), 6881+i));
+      auto peer = std::make_shared<Peer>("192.168.0."+util::uitos(i+1),
+                                         6881+i);
       unsigned char buffer[COMPACT_LEN_IPV6];
       CPPUNIT_ASSERT_EQUAL
         (COMPACT_LEN_IPV4,
@@ -87,7 +87,8 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
       peers.push_back(peer);
     }
     msg.setValues(peers);
-    rDict->put("values", valuesList);
+    rDict->put("values", std::move(valuesList));
+    dict.put("r", std::move(rDict));
 
     std::string msgbody = msg.getBencodedMessage();
     CPPUNIT_ASSERT_EQUAL(util::percentEncode(bencode2::encode(&dict)),
@@ -113,10 +114,9 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage6()
   dict.put("t", transactionID);
   dict.put("v", "A200");
   dict.put("y", "r");
-  std::shared_ptr<Dict> rDict = Dict::g();
+  auto rDict = Dict::g();
   rDict->put("id", String::g(localNode->getID(), DHT_ID_LENGTH));
   rDict->put("token", token);
-  dict.put("r", rDict);
   {
     std::string compactNodeInfo;
     std::shared_ptr<DHTNode> nodes[8];
@@ -138,9 +138,9 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage6()
     rDict->put("nodes6", compactNodeInfo);
 
     std::vector<std::shared_ptr<Peer> > peers;
-    std::shared_ptr<List> valuesList = List::g();
+    auto valuesList = List::g();
     for(size_t i = 0; i < 4; ++i) {
-      std::shared_ptr<Peer> peer(new Peer("2001::100"+util::uitos(i+1), 6881+i));
+      auto peer = std::make_shared<Peer>("2001::100"+util::uitos(i+1), 6881+i);
       unsigned char buffer[COMPACT_LEN_IPV6];
       CPPUNIT_ASSERT_EQUAL
         (COMPACT_LEN_IPV6,
@@ -150,7 +150,8 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage6()
       peers.push_back(peer);
     }
     msg.setValues(peers);
-    rDict->put("values", valuesList);
+    rDict->put("values", std::move(valuesList));
+    dict.put("r", std::move(rDict));
 
     std::string msgbody = msg.getBencodedMessage();
     CPPUNIT_ASSERT_EQUAL(util::percentEncode(bencode2::encode(&dict)),

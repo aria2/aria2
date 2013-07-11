@@ -53,7 +53,7 @@ public:
 
   virtual void doReceivedAction() CXX11_OVERRIDE;
 
-  virtual std::shared_ptr<Dict> getArgument() CXX11_OVERRIDE;
+  virtual std::unique_ptr<Dict> getArgument() CXX11_OVERRIDE;
 
   virtual const std::string& getMessageType() const CXX11_OVERRIDE;
 

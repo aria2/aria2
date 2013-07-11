@@ -46,20 +46,18 @@ namespace aria2 {
 namespace bencode2 {
 
 // Decode the data whose length is len.
-std::shared_ptr<ValueBase> decode(const unsigned char* data, size_t len);
+std::unique_ptr<ValueBase> decode(const unsigned char* data, size_t len);
 
-std::shared_ptr<ValueBase> decode(const std::string& data);
+std::unique_ptr<ValueBase> decode(const std::string& data);
 
 // Decode the data whose length is len. After decode is done
 // successfully, return the bencoded string length in end.
-std::shared_ptr<ValueBase> decode(const unsigned char* data, size_t len,
-                               size_t& end);
+std::unique_ptr<ValueBase> decode(const unsigned char* data, size_t len,
+                                  size_t& end);
 
-std::shared_ptr<ValueBase> decodeFromFile(const std::string& filename);
+std::unique_ptr<ValueBase> decodeFromFile(const std::string& filename);
 
 std::string encode(const ValueBase* vlb);
-
-std::string encode(const std::shared_ptr<ValueBase>& vlb);
 
 } // namespace bencode2
 

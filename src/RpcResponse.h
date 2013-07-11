@@ -49,21 +49,13 @@ namespace rpc {
 struct RpcResponse {
   // 0 for success, non-zero for error
   int code;
-
-  std::shared_ptr<ValueBase> param;
-
-  std::shared_ptr<ValueBase> id;
+  std::unique_ptr<ValueBase> param;
+  std::unique_ptr<ValueBase> id;
 
   RpcResponse
   (int code,
-   const std::shared_ptr<ValueBase>& param,
-   const std::shared_ptr<ValueBase>& id);
-
-  RpcResponse(const RpcResponse& c);
-
-  ~RpcResponse();
-
-  RpcResponse& operator=(const RpcResponse& c);
+   std::unique_ptr<ValueBase> param,
+   std::unique_ptr<ValueBase> id);
 };
 
 std::string toXml(const RpcResponse& response, bool gzip = false);

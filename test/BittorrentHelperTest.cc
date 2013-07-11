@@ -412,25 +412,25 @@ void BittorrentHelperTest::testGetFileEntries_singleFileUrlListEndsWithSlash() {
 
 void BittorrentHelperTest::testLoadFromMemory_multiFileNonUtf8Path()
 {
-  std::shared_ptr<List> path = List::g();
+  auto path = List::g();
   path->append("path");
   path->append(fromHex("90a28a")+"E");
-  std::shared_ptr<Dict> file = Dict::g();
+  auto file = Dict::g();
   file->put("length", Integer::g(1024));
-  file->put("path", path);
-  std::shared_ptr<List> files = List::g();
-  files->append(file);
-  std::shared_ptr<Dict> info = Dict::g();
-  info->put("files", files);
+  file->put("path", std::move(path));
+  auto files = List::g();
+  files->append(std::move(file));
+  auto info = Dict::g();
+  info->put("files", std::move(files));
   info->put("piece length", Integer::g(1024));
   info->put("pieces", "01234567890123456789");
   info->put("name", fromHex("1b")+"$B%O%m!<"+fromHex("1b")+"(B");
   Dict dict;
-  dict.put("info", info);
-  std::shared_ptr<DownloadContext> dctx(new DownloadContext());
+  dict.put("info", std::move(info));
+  auto dctx = std::make_shared<DownloadContext>();
   loadFromMemory(bencode2::encode(&dict), dctx, option_, "default");
 
-  const std::shared_ptr<FileEntry>& fe = dctx->getFirstFileEntry();
+  auto& fe = dctx->getFirstFileEntry();
   CPPUNIT_ASSERT_EQUAL
     (std::string("./%1B%24B%25O%25m%21%3C%1B%28B/path/%90%A2%8AE"),
      fe->getPath());
@@ -440,14 +440,14 @@ void BittorrentHelperTest::testLoadFromMemory_multiFileNonUtf8Path()
 
 void BittorrentHelperTest::testLoadFromMemory_singleFileNonUtf8Path()
 {
-  std::shared_ptr<Dict> info = Dict::g();
+  auto info = Dict::g();
   info->put("piece length", Integer::g(1024));
   info->put("pieces", "01234567890123456789");
   info->put("name", fromHex("90a28a")+"E");
   info->put("length", Integer::g(1024));
   Dict dict;
-  dict.put("info", info);
-  std::shared_ptr<DownloadContext> dctx(new DownloadContext());
+  dict.put("info", std::move(info));
+  auto dctx = std::make_shared<DownloadContext>();
   loadFromMemory(bencode2::encode(&dict), dctx, option_, "default");
 
   const std::shared_ptr<FileEntry>& fe = dctx->getFirstFileEntry();
@@ -740,11 +740,11 @@ void BittorrentHelperTest::testCheckBitfield()
 }
 
 void BittorrentHelperTest::testMetadata() {
-  std::shared_ptr<DownloadContext> dctx(new DownloadContext());
+  auto dctx = std::make_shared<DownloadContext>();
   load(A2_TEST_DIR"/test.torrent", dctx, option_);
   std::string torrentData = readFile(A2_TEST_DIR"/test.torrent");
-  std::shared_ptr<ValueBase> tr = bencode2::decode(torrentData);
-  std::shared_ptr<ValueBase> infoDic = downcast<Dict>(tr)->get("info");
+  auto tr = bencode2::decode(torrentData);
+  auto infoDic = downcast<Dict>(tr)->get("info");
   std::string metadata = bencode2::encode(infoDic);
   auto attrs = getTorrentAttrs(dctx);
   CPPUNIT_ASSERT(metadata == attrs->metadata);
@@ -827,9 +827,9 @@ void BittorrentHelperTest::testExtractPeerFromString()
   std::string hextext = "100210354527354678541237324732171ae1";
   hextext += "20010db8bd0501d2288a1fc0000110ee1ae2";
   std::string peersstr = "36:"+fromHex(hextext);
-  std::shared_ptr<ValueBase> str = bencode2::decode(peersstr);
-  std::deque<std::shared_ptr<Peer> > peers;
-  extractPeer(str, AF_INET6, std::back_inserter(peers));
+  auto str = bencode2::decode(peersstr);
+  std::deque<std::shared_ptr<Peer>> peers;
+  extractPeer(str.get(), AF_INET6, std::back_inserter(peers));
   CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());
   CPPUNIT_ASSERT_EQUAL(std::string("1002:1035:4527:3546:7854:1237:3247:3217"),
                        peers[0]->getIPAddress());
@@ -843,7 +843,7 @@ void BittorrentHelperTest::testExtractPeerFromString()
   peersstr = "12:"+fromHex(hextext);
   str = bencode2::decode(peersstr);
   peers.clear();
-  extractPeer(str, AF_INET, std::back_inserter(peers));
+  extractPeer(str.get(), AF_INET, std::back_inserter(peers));
   CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peers[0]->getIPAddress());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, peers[0]->getPort());
@@ -857,12 +857,12 @@ void BittorrentHelperTest::testExtractPeerFromList()
     "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-00000000000000"
     "4:porti2006eeee";
 
-  std::shared_ptr<ValueBase> dict = bencode2::decode(peersString);
+  auto dict = bencode2::decode(peersString);
 
-  std::deque<std::shared_ptr<Peer> > peers;
+  std::deque<std::shared_ptr<Peer>> peers;
   extractPeer(downcast<Dict>(dict)->get("peers"), AF_INET, std::back_inserter(peers));
   CPPUNIT_ASSERT_EQUAL((size_t)1, peers.size());
-  std::shared_ptr<Peer> peer = *peers.begin();
+  auto& peer = *peers.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->getIPAddress());
   CPPUNIT_ASSERT_EQUAL((uint16_t)2006, peer->getPort());
 }
@@ -874,12 +874,12 @@ void BittorrentHelperTest::testExtract2PeersFromList()
     "4:porti65535eed2:ip11:192.168.0.27:peer id20:aria2-00000000000000"
     "4:porti2007eeee";
 
-  std::shared_ptr<ValueBase> dict = bencode2::decode(peersString);
+  auto dict = bencode2::decode(peersString);
 
-  std::deque<std::shared_ptr<Peer> > peers;
+  std::deque<std::shared_ptr<Peer>> peers;
   extractPeer(downcast<Dict>(dict)->get("peers"), AF_INET, std::back_inserter(peers));
   CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());
-  std::shared_ptr<Peer> peer = *peers.begin();
+  auto& peer = *peers.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->getIPAddress());
   CPPUNIT_ASSERT_EQUAL((uint16_t)65535, peer->getPort());
 

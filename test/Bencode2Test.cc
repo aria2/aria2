@@ -23,14 +23,14 @@ void Bencode2Test::testEncode()
 {
   {
     Dict dict;
-    dict["name"] = String::g("aria2");
-    dict["loc"] = Integer::g(80000);
-    std::shared_ptr<List> files = List::g();
+    dict.put("name", String::g("aria2"));
+    dict.put("loc", Integer::g(80000));
+    auto files = List::g();
     files->append(String::g("aria2c"));
-    dict["files"] = files;
-    std::shared_ptr<Dict> attrs = Dict::g();
+    dict.put("files", std::move(files));
+    auto attrs = Dict::g();
     attrs->put("license", String::g("GPL"));
-    dict["attrs"] = attrs;
+    dict.put("attrs", std::move(attrs));
 
     CPPUNIT_ASSERT_EQUAL(std::string("d"
                                      "5:attrsd7:license3:GPLe"

@@ -69,7 +69,7 @@ void DHTFindNodeMessage::doReceivedAction()
      (getRemoteNode(), std::move(nodes), getTransactionID()));
 }
 
-std::shared_ptr<Dict> DHTFindNodeMessage::getArgument()
+std::unique_ptr<Dict> DHTFindNodeMessage::getArgument()
 {
   auto aDict = Dict::g();
   aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));

@@ -69,7 +69,7 @@ protected:
   // Subclass must implement this function to fulfil RpcRequest req.
   // The return value of this method is used as a return value of RPC
   // request.
-  virtual std::shared_ptr<ValueBase> process
+  virtual std::unique_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e) = 0;
 
   void gatherRequestOption(Option* option, const Dict* optionsDict);
@@ -81,7 +81,7 @@ protected:
 
   void gatherChangeableGlobalOption(Option* option, const Dict* optionDict);
 
-  std::shared_ptr<ValueBase> createErrorResponse
+  std::unique_ptr<ValueBase> createErrorResponse
   (const Exception& e, const RpcRequest& req);
 
   const std::shared_ptr<OptionParser>& getOptionParser() const
@@ -95,7 +95,7 @@ public:
 
   // Do work to fulfill RpcRequest req and returns its result as
   // RpcResponse. This method delegates to process() method.
-  RpcResponse execute(const RpcRequest& req, DownloadEngine* e);
+  RpcResponse execute(RpcRequest req, DownloadEngine* e);
 };
 
 } // namespace rpc

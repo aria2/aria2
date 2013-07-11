@@ -83,17 +83,17 @@ namespace aria2 {
 namespace rpc {
 
 namespace {
-const std::shared_ptr<String> VLB_TRUE = String::g("true");
-const std::shared_ptr<String> VLB_FALSE = String::g("false");
-const std::shared_ptr<String> VLB_OK = String::g("OK");
-const std::shared_ptr<String> VLB_ACTIVE = String::g("active");
-const std::shared_ptr<String> VLB_WAITING = String::g("waiting");
-const std::shared_ptr<String> VLB_PAUSED = String::g("paused");
-const std::shared_ptr<String> VLB_REMOVED = String::g("removed");
-const std::shared_ptr<String> VLB_ERROR = String::g("error");
-const std::shared_ptr<String> VLB_COMPLETE = String::g("complete");
-const std::shared_ptr<String> VLB_USED = String::g("used");
-const std::shared_ptr<String> VLB_ZERO = String::g("0");
+const char VLB_TRUE[] = "true";
+const char VLB_FALSE[] = "false";
+const char VLB_OK[]  = "OK";
+const char VLB_ACTIVE[] = "active";
+const char VLB_WAITING[] = "waiting";
+const char VLB_PAUSED[] = "paused";
+const char VLB_REMOVED[] = "removed";
+const char VLB_ERROR[] = "error";
+const char VLB_COMPLETE[] = "complete";
+const char VLB_USED[] = "used";
+const char VLB_ZERO[] = "0";
 
 const std::string KEY_GID = "gid";
 const std::string KEY_ERROR_CODE = "errorCode";
@@ -145,14 +145,21 @@ const std::string KEY_NUM_ACTIVE = "numActive";
 } // namespace
 
 namespace {
-std::shared_ptr<ValueBase> createGIDResponse(a2_gid_t gid)
+std::unique_ptr<ValueBase> createGIDResponse(a2_gid_t gid)
 {
   return String::g(GroupId::toHex(gid));
 }
 } // namespace
 
 namespace {
-std::shared_ptr<ValueBase>
+std::unique_ptr<ValueBase> createOKResponse()
+{
+  return String::g("OK");
+}
+} // namespace
+
+namespace {
+std::unique_ptr<ValueBase>
 addRequestGroup(const std::shared_ptr<RequestGroup>& group,
                 DownloadEngine* e,
                 bool posGiven, int pos)
@@ -216,7 +223,7 @@ void extractUris(OutputIterator out, const List* src)
 }
 } // namespace
 
-std::shared_ptr<ValueBase> AddUriRpcMethod::process
+std::unique_ptr<ValueBase> AddUriRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   const List* urisParam = checkRequiredParam<List>(req, 0);
@@ -229,13 +236,13 @@ std::shared_ptr<ValueBase> AddUriRpcMethod::process
     throw DL_ABORT_EX("URI is not provided.");
   }
 
-  std::shared_ptr<Option> requestOption(new Option(*e->getOption()));
+  auto requestOption = std::make_shared<Option>(*e->getOption());
   gatherRequestOption(requestOption.get(), optsParam);
 
   bool posGiven = checkPosParam(posParam);
   size_t pos = posGiven ? posParam->i() : 0;
 
-  std::vector<std::shared_ptr<RequestGroup> > result;
+  std::vector<std::shared_ptr<RequestGroup>> result;
   createRequestGroupForUri(result, requestOption, uris,
                            /* ignoreForceSeq = */ true,
                            /* ignoreLocalPath = */ true);
@@ -260,7 +267,7 @@ std::string getHexSha1(const std::string& s)
 #endif // ENABLE_MESSAGE_DIGEST
 
 #ifdef ENABLE_BITTORRENT
-std::shared_ptr<ValueBase> AddTorrentRpcMethod::process
+std::unique_ptr<ValueBase> AddTorrentRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   const String* torrentParam = checkRequiredParam<String>(req, 0);
@@ -268,7 +275,7 @@ std::shared_ptr<ValueBase> AddTorrentRpcMethod::process
   const Dict* optsParam = checkParam<Dict>(req, 2);
   const Integer* posParam = checkParam<Integer>(req, 3);
 
-  std::shared_ptr<String> tempTorrentParam;
+  std::unique_ptr<String> tempTorrentParam;
   if(req.jsonRpc) {
     tempTorrentParam = String::g
       (base64::decode(torrentParam->s().begin(),
@@ -278,7 +285,7 @@ std::shared_ptr<ValueBase> AddTorrentRpcMethod::process
   std::vector<std::string> uris;
   extractUris(std::back_inserter(uris), urisParam);
 
-  std::shared_ptr<Option> requestOption(new Option(*e->getOption()));
+  auto requestOption = std::make_shared<Option>(*e->getOption());
   gatherRequestOption(requestOption.get(), optsParam);
 
   bool posGiven = checkPosParam(posParam);
@@ -300,7 +307,7 @@ std::shared_ptr<ValueBase> AddTorrentRpcMethod::process
       filename.clear();
     }
   }
-  std::vector<std::shared_ptr<RequestGroup> > result;
+  std::vector<std::shared_ptr<RequestGroup>> result;
   createRequestGroupForBitTorrent(result, requestOption, uris, filename,
                                   torrentParam->s());
 
@@ -313,27 +320,27 @@ std::shared_ptr<ValueBase> AddTorrentRpcMethod::process
 #endif // ENABLE_BITTORRENT
 
 #ifdef ENABLE_METALINK
-std::shared_ptr<ValueBase> AddMetalinkRpcMethod::process
+std::unique_ptr<ValueBase> AddMetalinkRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   const String* metalinkParam = checkRequiredParam<String>(req, 0);
   const Dict* optsParam = checkParam<Dict>(req, 1);
   const Integer* posParam = checkParam<Integer>(req, 2);
 
-  std::shared_ptr<String> tempMetalinkParam;
+  std::unique_ptr<String> tempMetalinkParam;
   if(req.jsonRpc) {
     tempMetalinkParam = String::g
       (base64::decode(metalinkParam->s().begin(),
                       metalinkParam->s().end()));
     metalinkParam = tempMetalinkParam.get();
   }
-  std::shared_ptr<Option> requestOption(new Option(*e->getOption()));
+  auto requestOption = std::make_shared<Option>(*e->getOption());
   gatherRequestOption(requestOption.get(), optsParam);
 
   bool posGiven = checkPosParam(posParam);
   size_t pos = posGiven ? posParam->i() : 0;
 
-  std::vector<std::shared_ptr<RequestGroup> > result;
+  std::vector<std::shared_ptr<RequestGroup>> result;
 #ifdef ENABLE_MESSAGE_DIGEST
   std::string filename;
   if(requestOption->getAsBool(PREF_RPC_SAVE_UPLOAD_METADATA)) {
@@ -361,30 +368,29 @@ std::shared_ptr<ValueBase> AddMetalinkRpcMethod::process
 #else // !ENABLE_MESSAGE_DIGEST
   createRequestGroupForMetalink(result, requestOption, metalinkParam->s());
 #endif // !ENABLE_MESSAGE_DIGEST
-  std::shared_ptr<List> gids = List::g();
+  auto gids = List::g();
   if(!result.empty()) {
     if(posGiven) {
       e->getRequestGroupMan()->insertReservedGroup(pos, result);
     } else {
       e->getRequestGroupMan()->addReservedGroup(result);
     }
-    for(std::vector<std::shared_ptr<RequestGroup> >::const_iterator i =
-          result.begin(), eoi = result.end(); i != eoi; ++i) {
-      gids->append(GroupId::toHex((*i)->getGID()));
+    for(auto& i : result) {
+      gids->append(GroupId::toHex(i->getGID()));
     }
   }
-  return gids;
+  return std::move(gids);
 }
 #endif // ENABLE_METALINK
 
 namespace {
-std::shared_ptr<ValueBase> removeDownload
+std::unique_ptr<ValueBase> removeDownload
 (const RpcRequest& req, DownloadEngine* e, bool forceRemove)
 {
   const String* gidParam = checkRequiredParam<String>(req, 0);
 
   a2_gid_t gid = str2Gid(gidParam);
-  std::shared_ptr<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
+  auto group = e->getRequestGroupMan()->findGroup(gid);
   if(group) {
     if(group->getState() == RequestGroup::STATE_ACTIVE) {
       if(forceRemove) {
@@ -409,26 +415,26 @@ std::shared_ptr<ValueBase> removeDownload
 }
 } // namespace
 
-std::shared_ptr<ValueBase> RemoveRpcMethod::process
+std::unique_ptr<ValueBase> RemoveRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   return removeDownload(req, e, false);
 }
 
-std::shared_ptr<ValueBase> ForceRemoveRpcMethod::process
+std::unique_ptr<ValueBase> ForceRemoveRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   return removeDownload(req, e, true);
 }
 
 namespace {
-std::shared_ptr<ValueBase> pauseDownload
+std::unique_ptr<ValueBase> pauseDownload
 (const RpcRequest& req, DownloadEngine* e, bool forcePause)
 {
   const String* gidParam = checkRequiredParam<String>(req, 0);
 
   a2_gid_t gid = str2Gid(gidParam);
-  std::shared_ptr<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
+  auto group = e->getRequestGroupMan()->findGroup(gid);
   if(group) {
     bool reserved = group->getState() == RequestGroup::STATE_WAITING;
     if(pauseRequestGroup(group, reserved, forcePause)) {
@@ -441,13 +447,13 @@ std::shared_ptr<ValueBase> pauseDownload
 }
 } // namespace
 
-std::shared_ptr<ValueBase> PauseRpcMethod::process
+std::unique_ptr<ValueBase> PauseRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   return pauseDownload(req, e, false);
 }
 
-std::shared_ptr<ValueBase> ForcePauseRpcMethod::process
+std::unique_ptr<ValueBase> ForcePauseRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   return pauseDownload(req, e, true);
@@ -465,38 +471,37 @@ void pauseRequestGroups
 } // namespace
 
 namespace {
-std::shared_ptr<ValueBase> pauseAllDownloads
+std::unique_ptr<ValueBase> pauseAllDownloads
 (const RpcRequest& req, DownloadEngine* e, bool forcePause)
 {
-  const RequestGroupList& groups = e->getRequestGroupMan()->getRequestGroups();
+  auto& groups = e->getRequestGroupMan()->getRequestGroups();
   pauseRequestGroups(groups.begin(), groups.end(), false, forcePause);
-  const RequestGroupList& reservedGroups =
-    e->getRequestGroupMan()->getReservedGroups();
+  auto& reservedGroups = e->getRequestGroupMan()->getReservedGroups();
   pauseRequestGroups(reservedGroups.begin(), reservedGroups.end(),
                      true, forcePause);
-  return VLB_OK;
+  return createOKResponse();
 }
 } // namespace
 
-std::shared_ptr<ValueBase> PauseAllRpcMethod::process
+std::unique_ptr<ValueBase> PauseAllRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   return pauseAllDownloads(req, e, false);
 }
 
-std::shared_ptr<ValueBase> ForcePauseAllRpcMethod::process
+std::unique_ptr<ValueBase> ForcePauseAllRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   return pauseAllDownloads(req, e, true);
 }
 
-std::shared_ptr<ValueBase> UnpauseRpcMethod::process
+std::unique_ptr<ValueBase> UnpauseRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   const String* gidParam = checkRequiredParam<String>(req, 0);
 
   a2_gid_t gid = str2Gid(gidParam);
-  std::shared_ptr<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
+  auto group = e->getRequestGroupMan()->findGroup(gid);
   if(!group ||
      group->getState() != RequestGroup::STATE_WAITING ||
      !group->isPauseRequested()) {
@@ -509,46 +514,44 @@ std::shared_ptr<ValueBase> UnpauseRpcMethod::process
   return createGIDResponse(gid);
 }
 
-std::shared_ptr<ValueBase> UnpauseAllRpcMethod::process
+std::unique_ptr<ValueBase> UnpauseAllRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  const RequestGroupList& groups =
-    e->getRequestGroupMan()->getReservedGroups();
-  for(RequestGroupList::const_iterator i = groups.begin(),
-        eoi = groups.end(); i != eoi; ++i) {
-    (*i)->setPauseRequested(false);
+  auto& groups = e->getRequestGroupMan()->getReservedGroups();
+  for(auto& group : groups) {
+    group->setPauseRequested(false);
   }
   e->getRequestGroupMan()->requestQueueCheck();
-  return VLB_OK;
+  return createOKResponse();
 }
 
 namespace {
 template<typename InputIterator>
 void createUriEntry
-(const std::shared_ptr<List>& uriList,
+(List* uriList,
  InputIterator first, InputIterator last,
- const std::shared_ptr<String>& status)
+ const std::string& status)
 {
   for(; first != last; ++first) {
-    std::shared_ptr<Dict> entry = Dict::g();
+    auto entry = Dict::g();
     entry->put(KEY_URI, *first);
     entry->put(KEY_STATUS, status);
-    uriList->append(entry);
+    uriList->append(std::move(entry));
   }
 }
 } // namespace
 
 namespace {
 void createUriEntry
-(const std::shared_ptr<List>& uriList, const std::shared_ptr<FileEntry>& file)
+(List* uriList, const std::shared_ptr<FileEntry>& file)
 {
   createUriEntry(uriList,
-                 file->getSpentUris().begin(),
-                 file->getSpentUris().end(),
+                 std::begin(file->getSpentUris()),
+                 std::end(file->getSpentUris()),
                  VLB_USED);
   createUriEntry(uriList,
-                 file->getRemainingUris().begin(),
-                 file->getRemainingUris().end(),
+                 std::begin(file->getRemainingUris()),
+                 std::end(file->getRemainingUris()),
                  VLB_WAITING);
 }
 } // namespace
@@ -556,13 +559,13 @@ void createUriEntry
 namespace {
 template<typename InputIterator>
 void createFileEntry
-(const std::shared_ptr<List>& files,
+(List* files,
  InputIterator first, InputIterator last,
  const BitfieldMan* bf)
 {
   size_t index = 1;
   for(; first != last; ++first, ++index) {
-    std::shared_ptr<Dict> entry = Dict::g();
+    auto entry = Dict::g();
     entry->put(KEY_INDEX, util::uitos(index));
     entry->put(KEY_PATH, (*first)->getPath());
     entry->put(KEY_SELECTED, (*first)->isRequested()?VLB_TRUE:VLB_FALSE);
@@ -571,10 +574,10 @@ void createFileEntry
       ((*first)->getOffset(), (*first)->getLength());
     entry->put(KEY_COMPLETED_LENGTH, util::itos(completedLength));
 
-    std::shared_ptr<List> uriList = List::g();
-    createUriEntry(uriList, *first);
-    entry->put(KEY_URIS, uriList);
-    files->append(entry);
+    auto uriList = List::g();
+    createUriEntry(uriList.get(), *first);
+    entry->put(KEY_URIS, std::move(uriList));
+    files->append(std::move(entry));
   }
 }
 } // namespace
@@ -582,7 +585,7 @@ void createFileEntry
 namespace {
 template<typename InputIterator>
 void createFileEntry
-(const std::shared_ptr<List>& files,
+(List* files,
  InputIterator first, InputIterator last,
  int64_t totalLength,
  int32_t pieceLength,
@@ -598,7 +601,7 @@ void createFileEntry
 namespace {
 template<typename InputIterator>
 void createFileEntry
-(const std::shared_ptr<List>& files,
+(List* files,
  InputIterator first, InputIterator last,
  int64_t totalLength,
  int32_t pieceLength,
@@ -621,11 +624,11 @@ bool requested_key
 } // namespace
 
 void gatherProgressCommon
-(const std::shared_ptr<Dict>& entryDict,
+(Dict* entryDict,
  const std::shared_ptr<RequestGroup>& group,
  const std::vector<std::string>& keys)
 {
-  const std::shared_ptr<PieceStorage>& ps = group->getPieceStorage();
+  auto& ps = group->getPieceStorage();
   if(requested_key(keys, KEY_GID)) {
     entryDict->put(KEY_GID, GroupId::toHex(group->getGID()).c_str());
   }
@@ -660,7 +663,7 @@ void gatherProgressCommon
       }
     }
   }
-  const std::shared_ptr<DownloadContext>& dctx = group->getDownloadContext();
+  auto& dctx = group->getDownloadContext();
   if(requested_key(keys, KEY_PIECE_LENGTH)) {
     entryDict->put(KEY_PIECE_LENGTH, util::itos(dctx->getPieceLength()));
   }
@@ -669,13 +672,12 @@ void gatherProgressCommon
   }
   if(requested_key(keys, KEY_FOLLOWED_BY)) {
     if(!group->followedBy().empty()) {
-      std::shared_ptr<List> list = List::g();
+      auto list = List::g();
       // The element is GID.
-      for(std::vector<a2_gid_t>::const_iterator i = group->followedBy().begin(),
-            eoi = group->followedBy().end(); i != eoi; ++i) {
-        list->append(GroupId::toHex(*i));
+      for(auto& gid : group->followedBy()) {
+        list->append(GroupId::toHex(gid));
       }
-      entryDict->put(KEY_FOLLOWED_BY, list);
+      entryDict->put(KEY_FOLLOWED_BY, std::move(list));
     }
   }
   if(requested_key(keys, KEY_BELONGS_TO)) {
@@ -684,11 +686,12 @@ void gatherProgressCommon
     }
   }
   if(requested_key(keys, KEY_FILES)) {
-    std::shared_ptr<List> files = List::g();
+    auto files = List::g();
     createFileEntry
-      (files, dctx->getFileEntries().begin(), dctx->getFileEntries().end(),
+      (files.get(),
+       std::begin(dctx->getFileEntries()), std::end(dctx->getFileEntries()),
        dctx->getTotalLength(), dctx->getPieceLength(), ps);
-    entryDict->put(KEY_FILES, files);
+    entryDict->put(KEY_FILES, std::move(files));
   }
   if(requested_key(keys, KEY_DIR)) {
     entryDict->put(KEY_DIR, group->getOption()->get(PREF_DIR));
@@ -697,7 +700,7 @@ void gatherProgressCommon
 
 #ifdef ENABLE_BITTORRENT
 void gatherBitTorrentMetadata
-(const std::shared_ptr<Dict>& btDict, TorrentAttribute* torrentAttrs)
+(Dict* btDict, TorrentAttribute* torrentAttrs)
 {
   if(!torrentAttrs->comment.empty()) {
     btDict->put(KEY_COMMENT, torrentAttrs->comment);
@@ -708,28 +711,25 @@ void gatherBitTorrentMetadata
   if(torrentAttrs->mode) {
     btDict->put(KEY_MODE, bittorrent::getModeString(torrentAttrs->mode));
   }
-  std::shared_ptr<List> destAnnounceList = List::g();
-  for(std::vector<std::vector<std::string> >::const_iterator l =
-        torrentAttrs->announceList.begin(),
-        eoi = torrentAttrs->announceList.end(); l != eoi; ++l) {
-    std::shared_ptr<List> destAnnounceTier = List::g();
-    for(std::vector<std::string>::const_iterator t = (*l).begin(),
-          eoi2 = (*l).end(); t != eoi2; ++t) {
-      destAnnounceTier->append(*t);
+  auto destAnnounceList = List::g();
+  for(auto& annlist : torrentAttrs->announceList) {
+    auto destAnnounceTier = List::g();
+    for(auto& ann : annlist) {
+      destAnnounceTier->append(ann);
     }
-    destAnnounceList->append(destAnnounceTier);
+    destAnnounceList->append(std::move(destAnnounceTier));
   }
-  btDict->put(KEY_ANNOUNCE_LIST, destAnnounceList);
+  btDict->put(KEY_ANNOUNCE_LIST, std::move(destAnnounceList));
   if(!torrentAttrs->metadata.empty()) {
-    std::shared_ptr<Dict> infoDict = Dict::g();
+    auto infoDict = Dict::g();
     infoDict->put(KEY_NAME, torrentAttrs->name);
-    btDict->put(KEY_INFO, infoDict);
+    btDict->put(KEY_INFO, std::move(infoDict));
   }
 }
 
 namespace {
 void gatherProgressBitTorrent
-(const std::shared_ptr<Dict>& entryDict,
+(Dict* entryDict,
  TorrentAttribute* torrentAttrs,
  BtObject* btObject,
  const std::vector<std::string>& keys)
@@ -738,17 +738,17 @@ void gatherProgressBitTorrent
     entryDict->put(KEY_INFO_HASH, util::toHex(torrentAttrs->infoHash));
   }
   if(requested_key(keys, KEY_BITTORRENT)) {
-    std::shared_ptr<Dict> btDict = Dict::g();
-    gatherBitTorrentMetadata(btDict, torrentAttrs);
-    entryDict->put(KEY_BITTORRENT, btDict);
+    auto btDict = Dict::g();
+    gatherBitTorrentMetadata(btDict.get(), torrentAttrs);
+    entryDict->put(KEY_BITTORRENT, std::move(btDict));
   }
   if(requested_key(keys, KEY_NUM_SEEDERS)) {
     if(!btObject) {
       entryDict->put(KEY_NUM_SEEDERS, VLB_ZERO);
     } else {
-      const std::shared_ptr<PeerStorage>& peerStorage = btObject->peerStorage;
+      auto& peerStorage = btObject->peerStorage;
       assert(peerStorage);
-      const PeerSet& peers = peerStorage->getUsedPeers();
+      auto& peers = peerStorage->getUsedPeers();
       entryDict->put(KEY_NUM_SEEDERS,
                      util::uitos(countSeeder(peers.begin(), peers.end())));
     }
@@ -758,33 +758,32 @@ void gatherProgressBitTorrent
 
 namespace {
 void gatherPeer
-(const std::shared_ptr<List>& peers, const std::shared_ptr<PeerStorage>& ps)
+(List* peers, const std::shared_ptr<PeerStorage>& ps)
 {
-  const PeerSet& usedPeers = ps->getUsedPeers();
-  for(PeerSet::const_iterator i = usedPeers.begin(), eoi = usedPeers.end();
-      i != eoi; ++i) {
-    if(!(*i)->isActive()) {
+  auto& usedPeers = ps->getUsedPeers();
+  for(auto& peer : usedPeers) {
+    if(!peer->isActive()) {
       continue;
     }
-    std::shared_ptr<Dict> peerEntry = Dict::g();
-    peerEntry->put(KEY_PEER_ID, util::torrentPercentEncode((*i)->getPeerId(),
+    auto peerEntry = Dict::g();
+    peerEntry->put(KEY_PEER_ID, util::torrentPercentEncode(peer->getPeerId(),
                                                            PEER_ID_LENGTH));
-    peerEntry->put(KEY_IP, (*i)->getIPAddress());
-    if((*i)->isIncomingPeer()) {
+    peerEntry->put(KEY_IP, peer->getIPAddress());
+    if(peer->isIncomingPeer()) {
       peerEntry->put(KEY_PORT, VLB_ZERO);
     } else {
-      peerEntry->put(KEY_PORT, util::uitos((*i)->getPort()));
+      peerEntry->put(KEY_PORT, util::uitos(peer->getPort()));
     }
     peerEntry->put(KEY_BITFIELD,
-                   util::toHex((*i)->getBitfield(), (*i)->getBitfieldLength()));
-    peerEntry->put(KEY_AM_CHOKING, (*i)->amChoking()?VLB_TRUE:VLB_FALSE);
-    peerEntry->put(KEY_PEER_CHOKING, (*i)->peerChoking()?VLB_TRUE:VLB_FALSE);
+                   util::toHex(peer->getBitfield(), peer->getBitfieldLength()));
+    peerEntry->put(KEY_AM_CHOKING, peer->amChoking()?VLB_TRUE:VLB_FALSE);
+    peerEntry->put(KEY_PEER_CHOKING, peer->peerChoking()?VLB_TRUE:VLB_FALSE);
     peerEntry->put(KEY_DOWNLOAD_SPEED,
-                   util::itos((*i)->calculateDownloadSpeed()));
+                   util::itos(peer->calculateDownloadSpeed()));
     peerEntry->put(KEY_UPLOAD_SPEED,
-                   util::itos((*i)->calculateUploadSpeed()));
-    peerEntry->put(KEY_SEEDER, (*i)->isSeeder()?VLB_TRUE:VLB_FALSE);
-    peers->append(peerEntry);
+                   util::itos(peer->calculateUploadSpeed()));
+    peerEntry->put(KEY_SEEDER, peer->isSeeder()?VLB_TRUE:VLB_FALSE);
+    peers->append(std::move(peerEntry));
   }
 }
 } // namespace
@@ -792,7 +791,7 @@ void gatherPeer
 
 namespace {
 void gatherProgress
-(const std::shared_ptr<Dict>& entryDict,
+(Dict* entryDict,
  const std::shared_ptr<RequestGroup>& group,
  DownloadEngine* e,
  const std::vector<std::string>& keys)
@@ -811,7 +810,7 @@ void gatherProgress
 } // namespace
 
 void gatherStoppedDownload
-(const std::shared_ptr<Dict>& entryDict, const std::shared_ptr<DownloadResult>& ds,
+(Dict* entryDict, const std::shared_ptr<DownloadResult>& ds,
  const std::vector<std::string>& keys)
 {
   if(requested_key(keys, KEY_GID)) {
@@ -831,13 +830,12 @@ void gatherStoppedDownload
   }
   if(requested_key(keys, KEY_FOLLOWED_BY)) {
     if(!ds->followedBy.empty()) {
-      std::shared_ptr<List> list = List::g();
+      auto list = List::g();
       // The element is GID.
-      for(std::vector<a2_gid_t>::const_iterator i = ds->followedBy.begin(),
-            eoi = ds->followedBy.end(); i != eoi; ++i) {
-        list->append(GroupId::toHex(*i));
+      for(auto gid : ds->followedBy) {
+        list->append(GroupId::toHex(gid));
       }
-      entryDict->put(KEY_FOLLOWED_BY, list);
+      entryDict->put(KEY_FOLLOWED_BY, std::move(list));
     }
   }
   if(requested_key(keys, KEY_BELONGS_TO)) {
@@ -846,10 +844,11 @@ void gatherStoppedDownload
     }
   }
   if(requested_key(keys, KEY_FILES)) {
-    std::shared_ptr<List> files = List::g();
-    createFileEntry(files, ds->fileEntries.begin(), ds->fileEntries.end(),
+    auto files = List::g();
+    createFileEntry(files.get(),
+                    std::begin(ds->fileEntries), std::end(ds->fileEntries),
                     ds->totalLength, ds->pieceLength, ds->bitfield);
-    entryDict->put(KEY_FILES, files);
+    entryDict->put(KEY_FILES, std::move(files));
   }
   if(requested_key(keys, KEY_TOTAL_LENGTH)) {
     entryDict->put(KEY_TOTAL_LENGTH, util::itos(ds->totalLength));
@@ -893,79 +892,80 @@ void gatherStoppedDownload
   }
 }
 
-std::shared_ptr<ValueBase> GetFilesRpcMethod::process
+std::unique_ptr<ValueBase> GetFilesRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   const String* gidParam = checkRequiredParam<String>(req, 0);
 
   a2_gid_t gid = str2Gid(gidParam);
-  std::shared_ptr<List> files = List::g();
-  std::shared_ptr<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
+  auto files = List::g();
+  auto group = e->getRequestGroupMan()->findGroup(gid);
   if(!group) {
-    std::shared_ptr<DownloadResult> dr =
-      e->getRequestGroupMan()->findDownloadResult(gid);
+    auto dr = e->getRequestGroupMan()->findDownloadResult(gid);
     if(!dr) {
       throw DL_ABORT_EX(fmt("No file data is available for GID#%s",
                             GroupId::toHex(gid).c_str()));
     } else {
-      createFileEntry(files, dr->fileEntries.begin(), dr->fileEntries.end(),
+      createFileEntry(files.get(),
+                      std::begin(dr->fileEntries),
+                      std::end(dr->fileEntries),
                       dr->totalLength, dr->pieceLength, dr->bitfield);
     }
   } else {
-    const std::shared_ptr<PieceStorage>& ps = group->getPieceStorage();
-    const std::shared_ptr<DownloadContext>& dctx = group->getDownloadContext();
-    createFileEntry(files,
-                    group->getDownloadContext()->getFileEntries().begin(),
-                    group->getDownloadContext()->getFileEntries().end(),
+    auto& dctx = group->getDownloadContext();
+    createFileEntry(files.get(),
+                    std::begin(group->getDownloadContext()->getFileEntries()),
+                    std::end(group->getDownloadContext()->getFileEntries()),
                     dctx->getTotalLength(),
                     dctx->getPieceLength(),
-                    ps);
+                    group->getPieceStorage());
   }
-  return files;
+  return std::move(files);
 }
 
-std::shared_ptr<ValueBase> GetUrisRpcMethod::process
+std::unique_ptr<ValueBase> GetUrisRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   const String* gidParam = checkRequiredParam<String>(req, 0);
 
   a2_gid_t gid = str2Gid(gidParam);
-  std::shared_ptr<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
+  auto group = e->getRequestGroupMan()->findGroup(gid);
   if(!group) {
     throw DL_ABORT_EX(fmt("No URI data is available for GID#%s",
                           GroupId::toHex(gid).c_str()));
   }
-  std::shared_ptr<List> uriList = List::g();
+  auto uriList = List::g();
   // TODO Current implementation just returns first FileEntry's URIs.
   if(!group->getDownloadContext()->getFileEntries().empty()) {
-    createUriEntry(uriList, group->getDownloadContext()->getFirstFileEntry());
+    createUriEntry(uriList.get(),
+                   group->getDownloadContext()->getFirstFileEntry());
   }
-  return uriList;
+  return std::move(uriList);
 }
 
 #ifdef ENABLE_BITTORRENT
-std::shared_ptr<ValueBase> GetPeersRpcMethod::process
+std::unique_ptr<ValueBase> GetPeersRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   const String* gidParam = checkRequiredParam<String>(req, 0);
 
   a2_gid_t gid = str2Gid(gidParam);
-  std::shared_ptr<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
+  auto group = e->getRequestGroupMan()->findGroup(gid);
   if(!group) {
     throw DL_ABORT_EX(fmt("No peer data is available for GID#%s",
                           GroupId::toHex(gid).c_str()));
   }
-  std::shared_ptr<List> peers = List::g();
+  auto peers = List::g();
   auto btObject = e->getBtRegistry()->get(group->getGID());
   if(btObject) {
     assert(btObject->peerStorage);
-    gatherPeer(peers, btObject->peerStorage);
+    gatherPeer(peers.get(), btObject->peerStorage);
   }
-  return peers;
+  return std::move(peers);
 }
 #endif // ENABLE_BITTORRENT
 
-std::shared_ptr<ValueBase> TellStatusRpcMethod::process
+std::unique_ptr<ValueBase> TellStatusRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   const String* gidParam = checkRequiredParam<String>(req, 0);
@@ -975,17 +975,15 @@ std::shared_ptr<ValueBase> TellStatusRpcMethod::process
   std::vector<std::string> keys;
   toStringList(std::back_inserter(keys), keysParam);
 
-  std::shared_ptr<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
-
-  std::shared_ptr<Dict> entryDict = Dict::g();
+  auto group = e->getRequestGroupMan()->findGroup(gid);
+  auto entryDict = Dict::g();
   if(!group) {
-    std::shared_ptr<DownloadResult> ds =
-      e->getRequestGroupMan()->findDownloadResult(gid);
+    auto ds = e->getRequestGroupMan()->findDownloadResult(gid);
     if(!ds) {
       throw DL_ABORT_EX(fmt("No such download for GID#%s",
                             GroupId::toHex(gid).c_str()));
     }
-    gatherStoppedDownload(entryDict, ds, keys);
+    gatherStoppedDownload(entryDict.get(), ds, keys);
   } else {
     if(requested_key(keys, KEY_STATUS)) {
       if(group->getState() == RequestGroup::STATE_ACTIVE) {
@@ -998,29 +996,28 @@ std::shared_ptr<ValueBase> TellStatusRpcMethod::process
         }
       }
     }
-    gatherProgress(entryDict, group, e, keys);
+    gatherProgress(entryDict.get(), group, e, keys);
   }
-  return entryDict;
+  return std::move(entryDict);
 }
 
-std::shared_ptr<ValueBase> TellActiveRpcMethod::process
+std::unique_ptr<ValueBase> TellActiveRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   const List* keysParam = checkParam<List>(req, 0);
   std::vector<std::string> keys;
   toStringList(std::back_inserter(keys), keysParam);
-  std::shared_ptr<List> list = List::g();
-  const RequestGroupList& groups = e->getRequestGroupMan()->getRequestGroups();
-  for(RequestGroupList::const_iterator i = groups.begin(),
-        eoi = groups.end(); i != eoi; ++i) {
-    std::shared_ptr<Dict> entryDict = Dict::g();
-    if(requested_key(keys, KEY_STATUS)) {
+  auto list = List::g();
+  bool statusReq = requested_key(keys, KEY_STATUS);
+  for(auto& group : e->getRequestGroupMan()->getRequestGroups()) {
+    auto entryDict = Dict::g();
+    if(statusReq) {
       entryDict->put(KEY_STATUS, VLB_ACTIVE);
     }
-    gatherProgress(entryDict, *i, e, keys);
-    list->append(entryDict);
+    gatherProgress(entryDict.get(), group, e, keys);
+    list->append(std::move(entryDict));
   }
-  return list;
+  return std::move(list);
 }
 
 const RequestGroupList&
@@ -1030,7 +1027,7 @@ TellWaitingRpcMethod::getItems(DownloadEngine* e) const
 }
 
 void TellWaitingRpcMethod::createEntry
-(const std::shared_ptr<Dict>& entryDict,
+(Dict* entryDict,
  const std::shared_ptr<RequestGroup>& item,
  DownloadEngine* e,
  const std::vector<std::string>& keys) const
@@ -1052,7 +1049,7 @@ TellStoppedRpcMethod::getItems(DownloadEngine* e) const
 }
 
 void TellStoppedRpcMethod::createEntry
-(const std::shared_ptr<Dict>& entryDict,
+(Dict* entryDict,
  const std::shared_ptr<DownloadResult>& item,
  DownloadEngine* e,
  const std::vector<std::string>& keys) const
@@ -1060,14 +1057,14 @@ void TellStoppedRpcMethod::createEntry
   gatherStoppedDownload(entryDict, item, keys);
 }
 
-std::shared_ptr<ValueBase> PurgeDownloadResultRpcMethod::process
+std::unique_ptr<ValueBase> PurgeDownloadResultRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   e->getRequestGroupMan()->purgeDownloadResult();
-  return VLB_OK;
+  return createOKResponse();
 }
 
-std::shared_ptr<ValueBase> RemoveDownloadResultRpcMethod::process
+std::unique_ptr<ValueBase> RemoveDownloadResultRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   const String* gidParam = checkRequiredParam<String>(req, 0);
@@ -1077,17 +1074,17 @@ std::shared_ptr<ValueBase> RemoveDownloadResultRpcMethod::process
     throw DL_ABORT_EX(fmt("Could not remove download result of GID#%s",
                           GroupId::toHex(gid).c_str()));
   }
-  return VLB_OK;
+  return createOKResponse();
 }
 
-std::shared_ptr<ValueBase> ChangeOptionRpcMethod::process
+std::unique_ptr<ValueBase> ChangeOptionRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   const String* gidParam = checkRequiredParam<String>(req, 0);
   const Dict* optsParam = checkRequiredParam<Dict>(req, 1);
 
   a2_gid_t gid = str2Gid(gidParam);
-  std::shared_ptr<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
+  auto group = e->getRequestGroupMan()->findGroup(gid);
   Option option;
   if(group) {
     if(group->getState() == RequestGroup::STATE_ACTIVE) {
@@ -1100,10 +1097,10 @@ std::shared_ptr<ValueBase> ChangeOptionRpcMethod::process
     throw DL_ABORT_EX(fmt("Cannot change option for GID#%s",
                           GroupId::toHex(gid).c_str()));
   }
-  return VLB_OK;
+  return createOKResponse();
 }
 
-std::shared_ptr<ValueBase> ChangeGlobalOptionRpcMethod::process
+std::unique_ptr<ValueBase> ChangeGlobalOptionRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   const Dict* optsParam = checkRequiredParam<Dict>(req, 0);
@@ -1111,28 +1108,28 @@ std::shared_ptr<ValueBase> ChangeGlobalOptionRpcMethod::process
   Option option;
   gatherChangeableGlobalOption(&option, optsParam);
   changeGlobalOption(option, e);
-  return VLB_OK;
+  return createOKResponse();
 }
 
-std::shared_ptr<ValueBase> GetVersionRpcMethod::process
+std::unique_ptr<ValueBase> GetVersionRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  std::shared_ptr<Dict> result = Dict::g();
+  auto result = Dict::g();
   result->put(KEY_VERSION, PACKAGE_VERSION);
-  std::shared_ptr<List> featureList = List::g();
+  auto featureList = List::g();
   for(int feat = 0; feat < MAX_FEATURE; ++feat) {
     const char* name = strSupportedFeature(feat);
     if(name) {
       featureList->append(name);
     }
   }
-  result->put(KEY_ENABLED_FEATURES, featureList);
-  return result;
+  result->put(KEY_ENABLED_FEATURES, std::move(featureList));
+  return std::move(result);
 }
 
 namespace {
 void pushRequestOption
-(const std::shared_ptr<Dict>& dict,
+(Dict* dict,
  const std::shared_ptr<Option>& option,
  const std::shared_ptr<OptionParser>& oparser)
 {
@@ -1146,32 +1143,31 @@ void pushRequestOption
 }
 } // namespace
 
-std::shared_ptr<ValueBase> GetOptionRpcMethod::process
+std::unique_ptr<ValueBase> GetOptionRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   const String* gidParam = checkRequiredParam<String>(req, 0);
 
   a2_gid_t gid = str2Gid(gidParam);
-  std::shared_ptr<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
-  std::shared_ptr<Dict> result = Dict::g();
+  auto group = e->getRequestGroupMan()->findGroup(gid);
+  auto result = Dict::g();
   if(!group) {
-    std::shared_ptr<DownloadResult> dr =
-      e->getRequestGroupMan()->findDownloadResult(gid);
+    auto dr = e->getRequestGroupMan()->findDownloadResult(gid);
     if(!dr) {
       throw DL_ABORT_EX(fmt("Cannot get option for GID#%s",
                             GroupId::toHex(gid).c_str()));
     }
-    pushRequestOption(result, dr->option, getOptionParser());
+    pushRequestOption(result.get(), dr->option, getOptionParser());
   } else {
-    pushRequestOption(result, group->getOption(), getOptionParser());
+    pushRequestOption(result.get(), group->getOption(), getOptionParser());
   }
-  return result;
+  return std::move(result);
 }
 
-std::shared_ptr<ValueBase> GetGlobalOptionRpcMethod::process
+std::unique_ptr<ValueBase> GetGlobalOptionRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  std::shared_ptr<Dict> result = Dict::g();
+  auto result = Dict::g();
   for(size_t i = 0, len = e->getOption()->getTable().size(); i < len; ++i) {
     const Pref* pref = option::i2p(i);
     if(!e->getOption()->defined(pref)) {
@@ -1182,10 +1178,10 @@ std::shared_ptr<ValueBase> GetGlobalOptionRpcMethod::process
       result->put(pref->k, e->getOption()->get(pref));
     }
   }
-  return result;
+  return std::move(result);
 }
 
-std::shared_ptr<ValueBase> ChangePositionRpcMethod::process
+std::unique_ptr<ValueBase> ChangePositionRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   const String* gidParam = checkRequiredParam<String>(req, 0);
@@ -1207,59 +1203,52 @@ std::shared_ptr<ValueBase> ChangePositionRpcMethod::process
   }
   size_t destPos =
     e->getRequestGroupMan()->changeReservedGroupPosition(gid, pos, how);
-  std::shared_ptr<Integer> result = Integer::g(destPos);
-  return result;
+  return Integer::g(destPos);
 }
 
-std::shared_ptr<ValueBase> GetSessionInfoRpcMethod::process
+std::unique_ptr<ValueBase> GetSessionInfoRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  std::shared_ptr<Dict> result = Dict::g();
+  auto result = Dict::g();
   result->put(KEY_SESSION_ID, util::toHex(e->getSessionId()));
-  return result;
+  return std::move(result);
 }
 
-std::shared_ptr<ValueBase> GetServersRpcMethod::process
+std::unique_ptr<ValueBase> GetServersRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   const String* gidParam = checkRequiredParam<String>(req, 0);
 
   a2_gid_t gid = str2Gid(gidParam);
-  std::shared_ptr<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
+  auto group = e->getRequestGroupMan()->findGroup(gid);
   if(!group || group->getState() != RequestGroup::STATE_ACTIVE) {
     throw DL_ABORT_EX(fmt("No active download for GID#%s",
                           GroupId::toHex(gid).c_str()));
   }
-  const std::shared_ptr<DownloadContext>& dctx = group->getDownloadContext();
-  const std::vector<std::shared_ptr<FileEntry> >& files = dctx->getFileEntries();
-  std::shared_ptr<List> result = List::g();
+  auto result = List::g();
   size_t index = 1;
-  for(std::vector<std::shared_ptr<FileEntry> >::const_iterator fi = files.begin(),
-        eoi = files.end(); fi != eoi; ++fi, ++index) {
-    std::shared_ptr<Dict> fileEntry = Dict::g();
-    fileEntry->put(KEY_INDEX, util::uitos(index));
-    std::shared_ptr<List> servers = List::g();
-    const FileEntry::InFlightRequestSet& requests =
-      (*fi)->getInFlightRequests();
-    for(FileEntry::InFlightRequestSet::iterator ri =requests.begin(),
-          eoi = requests.end(); ri != eoi; ++ri) {
-      std::shared_ptr<PeerStat> ps = (*ri)->getPeerStat();
+  for(auto& fe : group->getDownloadContext()->getFileEntries()) {
+    auto fileEntry = Dict::g();
+    fileEntry->put(KEY_INDEX, util::uitos(index++));
+    auto servers = List::g();
+    for(auto& req : fe->getInFlightRequests()) {
+      auto ps = req->getPeerStat();
       if(ps) {
-        std::shared_ptr<Dict> serverEntry = Dict::g();
-        serverEntry->put(KEY_URI, (*ri)->getUri());
-        serverEntry->put(KEY_CURRENT_URI, (*ri)->getCurrentUri());
+        auto serverEntry = Dict::g();
+        serverEntry->put(KEY_URI, req->getUri());
+        serverEntry->put(KEY_CURRENT_URI, req->getCurrentUri());
         serverEntry->put(KEY_DOWNLOAD_SPEED,
                          util::itos(ps->calculateDownloadSpeed()));
-        servers->append(serverEntry);
+        servers->append(std::move(serverEntry));
       }
     }
-    fileEntry->put(KEY_SERVERS, servers);
-    result->append(fileEntry);
+    fileEntry->put(KEY_SERVERS, std::move(servers));
+    result->append(std::move(fileEntry));
   }
-  return result;
+  return std::move(result);
 }
 
-std::shared_ptr<ValueBase> ChangeUriRpcMethod::process
+std::unique_ptr<ValueBase> ChangeUriRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   const String* gidParam = checkRequiredParam<String>(req, 0);
@@ -1272,20 +1261,19 @@ std::shared_ptr<ValueBase> ChangeUriRpcMethod::process
   bool posGiven = checkPosParam(posParam);
   size_t pos = posGiven ? posParam->i() : 0;
   size_t index = indexParam->i()-1;
-  std::shared_ptr<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
+  auto group = e->getRequestGroupMan()->findGroup(gid);
   if(!group) {
     throw DL_ABORT_EX(fmt("Cannot remove URIs from GID#%s",
                           GroupId::toHex(gid).c_str()));
   }
-  const std::shared_ptr<DownloadContext>& dctx = group->getDownloadContext();
-  const std::vector<std::shared_ptr<FileEntry> >& files = dctx->getFileEntries();
+  auto& files = group->getDownloadContext()->getFileEntries();
   if(files.size() <= index) {
     throw DL_ABORT_EX(fmt("fileIndex is out of range"));
   }
-  std::shared_ptr<FileEntry> s = files[index];
+  auto& s = files[index];
   size_t delcount = 0;
-  for(List::ValueType::const_iterator i = delUrisParam->begin(),
-        eoi = delUrisParam->end(); i != eoi; ++i) {
+  for(auto i = delUrisParam->begin(), eoi = delUrisParam->end();
+      i != eoi; ++i) {
     const String* uri = downcast<String>(*i);
     if(uri && s->removeUri(uri->s())) {
       ++delcount;
@@ -1293,8 +1281,8 @@ std::shared_ptr<ValueBase> ChangeUriRpcMethod::process
   }
   size_t addcount = 0;
   if(posGiven) {
-    for(List::ValueType::const_iterator i = addUrisParam->begin(),
-          eoi = addUrisParam->end(); i != eoi; ++i) {
+    for(auto i = addUrisParam->begin(), eoi = addUrisParam->end();
+        i != eoi; ++i) {
       const String* uri = downcast<String>(*i);
       if(uri && s->insertUri(uri->s(), pos)) {
         ++addcount;
@@ -1302,8 +1290,8 @@ std::shared_ptr<ValueBase> ChangeUriRpcMethod::process
       }
     }
   } else {
-    for(List::ValueType::const_iterator i = addUrisParam->begin(),
-          eoi = addUrisParam->end(); i != eoi; ++i) {
+    for(auto i = addUrisParam->begin(), eoi = addUrisParam->end();
+        i != eoi; ++i) {
       const String* uri = downcast<String>(*i);
       if(uri && s->addUri(uri->s())) {
         ++addcount;
@@ -1316,14 +1304,14 @@ std::shared_ptr<ValueBase> ChangeUriRpcMethod::process
     e->addCommand(std::move(commands));
     group->getSegmentMan()->recognizeSegmentFor(s);
   }
-  std::shared_ptr<List> res = List::g();
+  auto res = List::g();
   res->append(Integer::g(delcount));
   res->append(Integer::g(addcount));
-  return res;
+  return std::move(res);
 }
 
 namespace {
-std::shared_ptr<ValueBase> goingShutdown
+std::unique_ptr<ValueBase> goingShutdown
 (const RpcRequest& req, DownloadEngine* e, bool forceHalt)
 {
   // Schedule shutdown after 3seconds to give time to client to
@@ -1331,44 +1319,43 @@ std::shared_ptr<ValueBase> goingShutdown
   e->addRoutineCommand(make_unique<TimedHaltCommand>
                        (e->newCUID(), e, 3, forceHalt));
   A2_LOG_INFO("Scheduled shutdown in 3 seconds.");
-  return VLB_OK;
+  return createOKResponse();
 }
 } // namespace
 
-std::shared_ptr<ValueBase> ShutdownRpcMethod::process
+std::unique_ptr<ValueBase> ShutdownRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   return goingShutdown(req, e, false);
 }
 
-std::shared_ptr<ValueBase> ForceShutdownRpcMethod::process
+std::unique_ptr<ValueBase> ForceShutdownRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   return goingShutdown(req, e, true);
 }
 
-std::shared_ptr<ValueBase> GetGlobalStatRpcMethod::process
+std::unique_ptr<ValueBase> GetGlobalStatRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   auto& rgman = e->getRequestGroupMan();
-  TransferStat ts = rgman->calculateStat();
-  std::shared_ptr<Dict> res = Dict::g();
+  auto ts = rgman->calculateStat();
+  auto res = Dict::g();
   res->put(KEY_DOWNLOAD_SPEED, util::itos(ts.downloadSpeed));
   res->put(KEY_UPLOAD_SPEED, util::itos(ts.uploadSpeed));
   res->put(KEY_NUM_WAITING, util::uitos(rgman->getReservedGroups().size()));
   res->put(KEY_NUM_STOPPED, util::uitos(rgman->getDownloadResults().size()));
   res->put(KEY_NUM_ACTIVE, util::uitos(rgman->getRequestGroups().size()));
-  return res;
+  return std::move(res);
 }
 
-std::shared_ptr<ValueBase> SystemMulticallRpcMethod::process
+std::unique_ptr<ValueBase> SystemMulticallRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   const List* methodSpecs = checkRequiredParam<List>(req, 0);
-  std::shared_ptr<List> list = List::g();
-  for(List::ValueType::const_iterator i = methodSpecs->begin(),
-        eoi = methodSpecs->end(); i != eoi; ++i) {
-    const Dict* methodDict = downcast<Dict>(*i);
+  auto list = List::g();
+  for(auto i = methodSpecs->begin(), eoi = methodSpecs->end(); i != eoi; ++i) {
+    Dict* methodDict = downcast<Dict>(*i);
     if(!methodDict) {
       list->append(createErrorResponse
                    (DL_ABORT_EX("system.multicall expected struct."), req));
@@ -1385,29 +1372,30 @@ std::shared_ptr<ValueBase> SystemMulticallRpcMethod::process
                    (DL_ABORT_EX("Recursive system.multicall forbidden."), req));
       continue;
     }
-    const std::shared_ptr<ValueBase>& tempParamsList = methodDict->get(KEY_PARAMS);
-    std::shared_ptr<List> paramsList;
+    // TODO what if params missing?
+    auto tempParamsList = methodDict->get(KEY_PARAMS);
+    std::unique_ptr<List> paramsList;
     if(downcast<List>(tempParamsList)) {
-      paramsList = std::static_pointer_cast<List>(tempParamsList);
+      paramsList.reset(static_cast<List*>(methodDict->popValue(KEY_PARAMS)
+                                          .release()));
     } else {
       paramsList = List::g();
     }
-    std::shared_ptr<RpcMethod> method = RpcMethodFactory::create(methodName->s());
-    RpcRequest innerReq(methodName->s(), paramsList);
-    innerReq.jsonRpc = req.jsonRpc;
-    RpcResponse res = method->execute(innerReq, e);
+    auto method = RpcMethodFactory::create(methodName->s());
+    RpcResponse res = method->execute
+      ({methodName->s(), std::move(paramsList), nullptr, req.jsonRpc}, e);
     if(res.code == 0) {
-      std::shared_ptr<List> l = List::g();
-      l->append(res.param);
-      list->append(l);
+      auto l = List::g();
+      l->append(std::move(res.param));
+      list->append(std::move(l));
     } else {
-      list->append(res.param);
+      list->append(std::move(res.param));
     }
   }
-  return list;
+  return std::move(list);
 }
 
-std::shared_ptr<ValueBase> NoSuchMethodRpcMethod::process
+std::unique_ptr<ValueBase> NoSuchMethodRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   throw DL_ABORT_EX(fmt("No such method: %s", req.methodName.c_str()));

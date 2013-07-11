@@ -103,10 +103,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DefaultBtAnnounceTest);
 
 namespace {
 template<typename InputIterator>
-std::shared_ptr<List> createAnnounceTier
+std::unique_ptr<List> createAnnounceTier
 (InputIterator first, InputIterator last)
 {
-  std::shared_ptr<List> announceTier = List::g();
+  auto announceTier = List::g();
   for(; first != last; ++first) {
     announceTier->append(String::g(*first));
   }
@@ -115,9 +115,9 @@ std::shared_ptr<List> createAnnounceTier
 } // namespace
 
 namespace {
-std::shared_ptr<List> createAnnounceTier(const std::string& uri)
+std::unique_ptr<List> createAnnounceTier(const std::string& uri)
 {
-  std::shared_ptr<List> announceTier = List::g();
+  auto announceTier = List::g();
   announceTier->append(String::g(uri));
   return announceTier;
 }
@@ -125,19 +125,19 @@ std::shared_ptr<List> createAnnounceTier(const std::string& uri)
 
 namespace {
 void setAnnounceList(const std::shared_ptr<DownloadContext>& dctx,
-                     const std::shared_ptr<List>& announceList)
+                     const List* announceList)
 {
-  std::vector<std::vector<std::string> > dest;
-  for(List::ValueType::const_iterator tierIter = announceList->begin(),
-        eoi = announceList->end(); tierIter != eoi; ++tierIter) {
+  std::vector<std::vector<std::string>> dest;
+  for(auto tierIter = announceList->begin(), eoi = announceList->end();
+      tierIter != eoi; ++tierIter) {
     std::vector<std::string> ntier;
     const List* tier = downcast<List>(*tierIter);
-    for(List::ValueType::const_iterator uriIter = tier->begin(),
-          eoi2 = tier->end(); uriIter != eoi2; ++uriIter) {
+    for(auto uriIter = tier->begin(), eoi2 = tier->end(); uriIter != eoi2;
+        ++uriIter) {
       const String* uri = downcast<String>(*uriIter);
       ntier.push_back(uri->s());
     }
-    dest.push_back(ntier);
+    dest.push_back(std::move(ntier));
   }
   bittorrent::getTorrentAttrs(dctx)->announceList.swap(dest);
 }
@@ -145,11 +145,11 @@ void setAnnounceList(const std::shared_ptr<DownloadContext>& dctx,
 
 void DefaultBtAnnounceTest::testNoMoreAnnounce()
 {
-  std::shared_ptr<List> announceList = List::g();
+  auto announceList = List::g();
   announceList->append(createAnnounceTier("http://localhost/announce"));
   announceList->append(createAnnounceTier("http://backup/announce"));
 
-  setAnnounceList(dctx_, announceList);
+  setAnnounceList(dctx_, announceList.get());
 
   DefaultBtAnnounce btAnnounce(dctx_.get(), option_);
   btAnnounce.setPieceStorage(pieceStorage_);
@@ -195,10 +195,9 @@ void DefaultBtAnnounceTest::testNoMoreAnnounce()
 
 void DefaultBtAnnounceTest::testGetAnnounceUrl()
 {
-
-  std::shared_ptr<List> announceList = List::g();
+  auto announceList = List::g();
   announceList->append(createAnnounceTier("http://localhost/announce"));
-  setAnnounceList(dctx_, announceList);
+  setAnnounceList(dctx_, announceList.get());
 
   DefaultBtAnnounce btAnnounce(dctx_.get(), option_);
   btAnnounce.setPieceStorage(pieceStorage_);
@@ -253,9 +252,9 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl()
 
 void DefaultBtAnnounceTest::testGetAnnounceUrl_withQuery()
 {
-  std::shared_ptr<List> announceList = List::g();
+  auto announceList = List::g();
   announceList->append(createAnnounceTier("http://localhost/announce?k=v"));
-  setAnnounceList(dctx_, announceList);
+  setAnnounceList(dctx_, announceList.get());
 
   DefaultBtAnnounce btAnnounce(dctx_.get(), option_);
   btAnnounce.setPieceStorage(pieceStorage_);
@@ -276,9 +275,9 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl_withQuery()
 
 void DefaultBtAnnounceTest::testGetAnnounceUrl_externalIP()
 {
-  std::shared_ptr<List> announceList = List::g();
+  auto announceList = List::g();
   announceList->append(createAnnounceTier("http://localhost/announce"));
-  setAnnounceList(dctx_, announceList);
+  setAnnounceList(dctx_, announceList.get());
 
   option_->put(PREF_BT_EXTERNAL_IP, "192.168.1.1");
   DefaultBtAnnounce btAnnounce(dctx_.get(), option_);
@@ -307,10 +306,10 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl_externalIP()
 
 void DefaultBtAnnounceTest::testIsAllAnnounceFailed()
 {
-  std::shared_ptr<List> announceList = List::g();
+  auto announceList = List::g();
   announceList->append(createAnnounceTier("http://localhost/announce"));
   announceList->append(createAnnounceTier("http://backup/announce"));
-  setAnnounceList(dctx_, announceList);
+  setAnnounceList(dctx_, announceList.get());
 
   DefaultBtAnnounce btAnnounce(dctx_.get(), option_);
   btAnnounce.setPieceStorage(pieceStorage_);
@@ -341,9 +340,9 @@ void DefaultBtAnnounceTest::testURLOrderInStoppedEvent()
   const char* urls[] = { "http://localhost1/announce",
                          "http://localhost2/announce" };
 
-  std::shared_ptr<List> announceList = List::g();
+  auto announceList = List::g();
   announceList->append(createAnnounceTier(std::begin(urls), std::end(urls)));
-  setAnnounceList(dctx_, announceList);
+  setAnnounceList(dctx_, announceList.get());
 
   DefaultBtAnnounce btAnnounce(dctx_.get(), option_);
   btAnnounce.setPieceStorage(pieceStorage_);
@@ -372,9 +371,9 @@ void DefaultBtAnnounceTest::testURLOrderInCompletedEvent()
   const char* urls[] = { "http://localhost1/announce",
                          "http://localhost2/announce" };
 
-  std::shared_ptr<List> announceList = List::g();
+  auto announceList = List::g();
   announceList->append(createAnnounceTier(std::begin(urls), std::end(urls)));
-  setAnnounceList(dctx_, announceList);
+  setAnnounceList(dctx_, announceList.get());
 
   DefaultBtAnnounce btAnnounce(dctx_.get(), option_);
   btAnnounce.setPieceStorage(pieceStorage_);

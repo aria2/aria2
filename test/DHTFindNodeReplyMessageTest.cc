@@ -64,10 +64,10 @@ void DHTFindNodeReplyMessageTest::testGetBencodedMessage()
   dict.put("t", transactionID);
   dict.put("v", "A200");
   dict.put("y", "r");
-  std::shared_ptr<Dict> rDict = Dict::g();
+  auto rDict = Dict::g();
   rDict->put("id", String::g(localNode->getID(), DHT_ID_LENGTH));
   rDict->put("nodes", compactNodeInfo);
-  dict.put("r", rDict);
+  dict.put("r", std::move(rDict));
 
   CPPUNIT_ASSERT_EQUAL(bencode2::encode(&dict), msgbody);
 }
@@ -106,10 +106,10 @@ void DHTFindNodeReplyMessageTest::testGetBencodedMessage6()
   dict.put("t", transactionID);
   dict.put("v", "A200");
   dict.put("y", "r");
-  std::shared_ptr<Dict> rDict = Dict::g();
+  auto rDict = Dict::g();
   rDict->put("id", String::g(localNode->getID(), DHT_ID_LENGTH));
   rDict->put("nodes6", compactNodeInfo);
-  dict.put("r", rDict);
+  dict.put("r", std::move(rDict));
 
   CPPUNIT_ASSERT_EQUAL(bencode2::encode(&dict), msgbody);
 }

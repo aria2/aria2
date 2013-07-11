@@ -94,7 +94,7 @@ public:
     return parser_.parseFinal(0, 0);
   }
 
-  std::shared_ptr<ValueBase> getResult() const
+  std::unique_ptr<ValueBase> getResult()
   {
     return psm_.getResult();
   }

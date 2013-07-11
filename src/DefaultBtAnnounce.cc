@@ -283,8 +283,7 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
                                            size_t trackerResponseLength)
 {
   A2_LOG_DEBUG("Now processing tracker response.");
-  std::shared_ptr<ValueBase> decodedValue =
-    bencode2::decode(trackerResponse, trackerResponseLength);
+  auto decodedValue = bencode2::decode(trackerResponse, trackerResponseLength);
   const Dict* dict = downcast<Dict>(decodedValue);
   if(!dict) {
     throw DL_ABORT_EX(MSG_NULL_TRACKER_RESPONSE);
@@ -327,7 +326,7 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
     incomplete_ = incomp->i();
     A2_LOG_DEBUG(fmt("Incomplete:%d", incomplete_));
   }
-  const std::shared_ptr<ValueBase>& peerData = dict->get(BtAnnounce::PEERS);
+  auto peerData = dict->get(BtAnnounce::PEERS);
   if(!peerData) {
     A2_LOG_INFO(MSG_NO_PEER_LIST_RECEIVED);
   } else {
@@ -337,7 +336,7 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
       peerStorage_->addPeer(peers);
     }
   }
-  const std::shared_ptr<ValueBase>& peer6Data = dict->get(BtAnnounce::PEERS6);
+  auto peer6Data = dict->get(BtAnnounce::PEERS6);
   if(!peer6Data) {
     A2_LOG_INFO("No peers6 received.");
   } else {

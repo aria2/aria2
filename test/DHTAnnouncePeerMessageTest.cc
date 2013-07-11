@@ -76,7 +76,7 @@ void DHTAnnouncePeerMessageTest::testGetBencodedMessage()
   aDict->put("info_hash", String::g(infoHash, DHT_ID_LENGTH));
   aDict->put("port", Integer::g(port));
   aDict->put("token", token);
-  dict.put("a", aDict);
+  dict.put("a", std::move(aDict));
 
   CPPUNIT_ASSERT_EQUAL(util::percentEncode(bencode2::encode(&dict)),
                        util::percentEncode(msgbody));

@@ -75,7 +75,7 @@ void DHTGetPeersReplyMessage::doReceivedAction()
   // Returned peers and nodes are handled in DHTPeerLookupTask.
 }
 
-std::shared_ptr<Dict> DHTGetPeersReplyMessage::getResponse()
+std::unique_ptr<Dict> DHTGetPeersReplyMessage::getResponse()
 {
   auto rDict = Dict::g();
   rDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
@@ -136,7 +136,7 @@ std::shared_ptr<Dict> DHTGetPeersReplyMessage::getResponse()
         valuesList->append(String::g(compact, compactlen));
       }
     }
-    rDict->put(VALUES, valuesList);
+    rDict->put(VALUES, std::move(valuesList));
   }
   return rDict;
 }

@@ -80,7 +80,7 @@ public:
   virtual std::string toString() const CXX11_OVERRIDE
   { return "MockDHTMessage"; }
 
-  virtual std::shared_ptr<Dict> getArgument() CXX11_OVERRIDE
+  virtual std::unique_ptr<Dict> getArgument() CXX11_OVERRIDE
   { return Dict::g(); }
 };
 
@@ -115,7 +115,7 @@ public:
   virtual std::string toString() const CXX11_OVERRIDE
   { return "MockDHTMessage"; }
 
-  virtual std::shared_ptr<Dict> getResponse() CXX11_OVERRIDE
+  virtual std::unique_ptr<Dict> getResponse() CXX11_OVERRIDE
   { return Dict::g(); }
 
   virtual void accept(DHTMessageCallback* callback) CXX11_OVERRIDE {}

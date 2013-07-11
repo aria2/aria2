@@ -65,22 +65,20 @@ NullValueBaseStructParserState* nullState =
   new NullValueBaseStructParserState();
 } // namespace
 
-const std::shared_ptr<ValueBase>&
+std::unique_ptr<ValueBase>
 ValueBaseStructParserStateMachine::noResult()
 {
-  return ValueBase::none;
+  return nullptr;
 }
 
 ValueBaseStructParserStateMachine::ValueBaseStructParserStateMachine()
-  : ctrl_(new rpc::XmlRpcRequestParserController())
+  : ctrl_{make_unique<rpc::XmlRpcRequestParserController>()}
 {
   stateStack_.push(valueState);
 }
 
 ValueBaseStructParserStateMachine::~ValueBaseStructParserStateMachine()
-{
-  delete ctrl_;
-}
+{}
 
 void ValueBaseStructParserStateMachine::reset()
 {
@@ -102,10 +100,9 @@ void ValueBaseStructParserStateMachine::endElement(int elementType)
   stateStack_.pop();
 }
 
-std::shared_ptr<ValueBase>
-ValueBaseStructParserStateMachine::getResult() const
+std::unique_ptr<ValueBase> ValueBaseStructParserStateMachine::getResult()
 {
-  return getCurrentFrameValue();
+  return popCurrentFrameValue();
 }
 
 void ValueBaseStructParserStateMachine::charactersCallback
@@ -159,21 +156,26 @@ void ValueBaseStructParserStateMachine::pushFrame()
 }
 
 void ValueBaseStructParserStateMachine::setCurrentFrameValue
-(const std::shared_ptr<ValueBase>& value)
+(std::unique_ptr<ValueBase> value)
 {
-  ctrl_->setCurrentFrameValue(value);
+  ctrl_->setCurrentFrameValue(std::move(value));
 }
 
-const std::shared_ptr<ValueBase>&
+const std::unique_ptr<ValueBase>&
 ValueBaseStructParserStateMachine::getCurrentFrameValue() const
 {
   return ctrl_->getCurrentFrameValue();
 }
 
-void ValueBaseStructParserStateMachine::setCurrentFrameName
-(const std::string& name)
+std::unique_ptr<ValueBase>
+ValueBaseStructParserStateMachine::popCurrentFrameValue()
 {
-  ctrl_->setCurrentFrameName(name);
+  return ctrl_->popCurrentFrameValue();
+}
+
+void ValueBaseStructParserStateMachine::setCurrentFrameName(std::string name)
+{
+  ctrl_->setCurrentFrameName(std::move(name));
 }
 
 void ValueBaseStructParserStateMachine::pushDictState()

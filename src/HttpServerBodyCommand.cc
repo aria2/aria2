@@ -226,10 +226,9 @@ bool HttpServerBodyCommand::execute()
             addHttpServerResponseCommand();
             return true;
           }
-          std::shared_ptr<rpc::RpcMethod> method =
-            rpc::RpcMethodFactory::create(req.methodName);
+          auto method = rpc::RpcMethodFactory::create(req.methodName);
           A2_LOG_INFO(fmt("Executing RPC method %s", req.methodName.c_str()));
-          rpc::RpcResponse res = method->execute(req, e_);
+          rpc::RpcResponse res = method->execute(std::move(req), e_);
           bool gzip = httpServer_->supportsGZip();
           std::string responseData = rpc::toXml(res, gzip);
           httpServer_->feedResponse(std::move(responseData), "text/xml");
@@ -243,7 +242,7 @@ bool HttpServerBodyCommand::execute()
         case RPC_TYPE_JSON:
         case RPC_TYPE_JSONP: {
           std::string callback;
-          std::shared_ptr<ValueBase> json;
+          std::unique_ptr<ValueBase> json;
           ssize_t error = 0;
           if(httpServer_->getRequestType() == RPC_TYPE_JSONP) {
             json::JsonGetParam param = json::decodeGetParams(query);
@@ -272,22 +271,20 @@ bool HttpServerBodyCommand::execute()
             sendJsonRpcResponse(res, callback);
             return true;
           }
-          const Dict* jsondict = downcast<Dict>(json);
+          Dict* jsondict = downcast<Dict>(json);
           if(jsondict) {
             rpc::RpcResponse res = rpc::processJsonRpcRequest(jsondict, e_);
             sendJsonRpcResponse(res, callback);
           } else {
-            const List* jsonlist = downcast<List>(json);
+            List* jsonlist = downcast<List>(json);
             if(jsonlist) {
               // This is batch call
               std::vector<rpc::RpcResponse> results;
               for(List::ValueType::const_iterator i = jsonlist->begin(),
                     eoi = jsonlist->end(); i != eoi; ++i) {
-                const Dict* jsondict = downcast<Dict>(*i);
+                Dict* jsondict = downcast<Dict>(*i);
                 if(jsondict) {
-                  rpc::RpcResponse r =
-                    rpc::processJsonRpcRequest(jsondict, e_);
-                  results.push_back(r);
+                  results.push_back(rpc::processJsonRpcRequest(jsondict, e_));
                 }
               }
               sendJsonRpcBatchResponse(results, callback);

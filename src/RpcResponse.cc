@@ -49,7 +49,7 @@ namespace rpc {
 
 namespace {
 template<typename OutputStream>
-void encodeValue(const std::shared_ptr<ValueBase>& value, OutputStream& o)
+void encodeValue(const ValueBase* value, OutputStream& o)
 {
   class XmlValueBaseVisitor:public ValueBaseVisitor {
   private:
@@ -104,7 +104,7 @@ void encodeValue(const std::shared_ptr<ValueBase>& value, OutputStream& o)
 namespace {
 template<typename OutputStream>
 std::string encodeAll
-(OutputStream& o, int code, const std::shared_ptr<ValueBase>& param)
+(OutputStream& o, int code, const ValueBase* param)
 {
   o << "<?xml version=\"1.0\"?>" << "<methodResponse>";
   if(code == 0) {
@@ -123,27 +123,10 @@ std::string encodeAll
 
 RpcResponse::RpcResponse
 (int code,
- const std::shared_ptr<ValueBase>& param,
- const std::shared_ptr<ValueBase>& id)
-  : code(code), param(param), id(id)
+ std::unique_ptr<ValueBase> param,
+ std::unique_ptr<ValueBase> id)
+  : code{code}, param{std::move(param)}, id{std::move(id)}
 {}
-
-RpcResponse::RpcResponse(const RpcResponse& c)
-  : code(c.code),
-    param(c.param),
-    id(c.id)
-{}
-
-RpcResponse::~RpcResponse() {}
-
-RpcResponse& RpcResponse::operator=(const RpcResponse& c)
-{
-  if(this != &c) {
-    code = c.code;
-    param = c.param;
-  }
-  return *this;
-}
 
 std::string toXml(const RpcResponse& res, bool gzip)
 {
@@ -151,13 +134,13 @@ std::string toXml(const RpcResponse& res, bool gzip)
 #ifdef HAVE_ZLIB
     GZipEncoder o;
     o.init();
-    return encodeAll(o, res.code, res.param);
+    return encodeAll(o, res.code, res.param.get());
 #else // !HAVE_ZLIB
     abort();
 #endif // !HAVE_ZLIB
   } else {
     std::stringstream o;
-    return encodeAll(o, res.code, res.param);
+    return encodeAll(o, res.code, res.param.get());
   }
 }
 
@@ -166,22 +149,23 @@ template<typename OutputStream>
 OutputStream& encodeJsonAll
 (OutputStream& o,
  int code,
- const std::shared_ptr<ValueBase>& param,
- const std::shared_ptr<ValueBase>& id,
+ const ValueBase* param,
+ const ValueBase* id,
  const std::string& callback = A2STR::NIL)
 {
   if(!callback.empty()) {
     o << callback << "(";
   }
-  std::shared_ptr<Dict> dict = Dict::g();
-  dict->put("jsonrpc", "2.0");
-  dict->put("id", id);
+  o << "{\"id\":";
+  json::encode(o, id);
+  o << ",\"jsonrpc\":\"2.0\",";
   if(code == 0) {
-    dict->put("result", param);
+    o << "\"result\":";
   } else {
-    dict->put("error", param);
+    o << "\"error\":";
   }
-  json::encode(o, dict);
+  json::encode(o, param);
+  o << "}";
   if(!callback.empty()) {
     o << ")";
   }
@@ -196,13 +180,15 @@ std::string toJson
 #ifdef HAVE_ZLIB
     GZipEncoder o;
     o.init();
-    return encodeJsonAll(o, res.code, res.param, res.id, callback).str();
+    return encodeJsonAll(o, res.code, res.param.get(), res.id.get(),
+                         callback).str();
 #else // !HAVE_ZLIB
     abort();
 #endif // !HAVE_ZLIB
   } else {
     std::stringstream o;
-    return encodeJsonAll(o, res.code, res.param, res.id, callback).str();
+    return encodeJsonAll(o, res.code, res.param.get(), res.id.get(),
+                         callback).str();
   }
 }
 
@@ -218,12 +204,12 @@ OutputStream& encodeJsonBatchAll
   }
   o << "[";
   if(!results.empty()) {
-    encodeJsonAll(o, results[0].code, results[0].param, results[0].id);
+    encodeJsonAll(o, results[0].code, results[0].param.get(),
+                  results[0].id.get());
   }
-  for(std::vector<RpcResponse>::const_iterator i = results.begin()+1,
-        eoi = results.end(); i != eoi; ++i) {
+  for(auto i = std::begin(results)+1, eoi = std::end(results); i != eoi; ++i) {
     o << ",";
-    encodeJsonAll(o, (*i).code, (*i).param, (*i).id);
+    encodeJsonAll(o, (*i).code, (*i).param.get(), (*i).id.get());
   }
   o << "]";
   if(!callback.empty()) {

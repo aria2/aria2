@@ -86,8 +86,8 @@ public:
   // |error| will be the number of bytes processed if this function
   // succeeds, or negative error code. Whether success or failure,
   // this function resets parser state and receivedLength_.
-  std::shared_ptr<ValueBase> parseFinal(const uint8_t* data, size_t len,
-                                     ssize_t& error);
+  std::unique_ptr<ValueBase> parseFinal(const uint8_t* data, size_t len,
+                                        ssize_t& error);
 
   const std::shared_ptr<SocketCore>& getSocket() const
   {

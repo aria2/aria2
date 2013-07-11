@@ -59,23 +59,22 @@ RpcMethod::RpcMethod()
 
 RpcMethod::~RpcMethod() {}
 
-std::shared_ptr<ValueBase> RpcMethod::createErrorResponse
+std::unique_ptr<ValueBase> RpcMethod::createErrorResponse
 (const Exception& e, const RpcRequest& req)
 {
-  std::shared_ptr<Dict> params = Dict::g();
+  auto params = Dict::g();
   params->put((req.jsonRpc ? "code" : "faultCode"), Integer::g(1));
   params->put((req.jsonRpc ? "message" : "faultString"), std::string(e.what()));
-  return params;
+  return std::move(params);
 }
 
-RpcResponse RpcMethod::execute
-(const RpcRequest& req, DownloadEngine* e)
+RpcResponse RpcMethod::execute(RpcRequest req, DownloadEngine* e)
 {
   try {
-    return RpcResponse(0, process(req, e), req.id);
+    return RpcResponse(0, process(req, e), std::move(req.id));
   } catch(RecoverableException& ex) {
     A2_LOG_DEBUG_EX(EX_EXCEPTION_CAUGHT, ex);
-    return RpcResponse(1, createErrorResponse(ex, req), req.id);
+    return RpcResponse(1, createErrorResponse(ex, req), std::move(req.id));
   }
 }
 

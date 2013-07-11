@@ -69,7 +69,7 @@ void DHTPingMessageTest::testGetBencodedMessage()
   dict.put("q", "ping");
   auto aDict = Dict::g();
   aDict->put("id", String::g(localNode_->getID(), DHT_ID_LENGTH));
-  dict.put("a", aDict);
+  dict.put("a", std::move(aDict));
 
   CPPUNIT_ASSERT_EQUAL(bencode2::encode(&dict), msgbody);
 }

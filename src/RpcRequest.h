@@ -47,24 +47,19 @@ namespace rpc {
 
 struct RpcRequest {
   std::string methodName;
-  std::shared_ptr<List> params;
-  std::shared_ptr<ValueBase> id;
+  std::unique_ptr<List> params;
+  std::unique_ptr<ValueBase> id;
   bool jsonRpc;
 
   RpcRequest();
 
-  RpcRequest(const std::string& methodName,
-             const std::shared_ptr<List>& params);
+  RpcRequest(std::string methodName,
+             std::unique_ptr<List> params);
 
-  RpcRequest(const std::string& methodName,
-             const std::shared_ptr<List>& params,
-             const std::shared_ptr<ValueBase>& id);
-
-  ~RpcRequest();
-
-  RpcRequest(const RpcRequest& c);
-
-  RpcRequest& operator=(const RpcRequest& c);
+  RpcRequest(std::string methodName,
+             std::unique_ptr<List> params,
+             std::unique_ptr<ValueBase> id,
+             bool jsonRpc = false);
 };
 
 } // namespace rpc

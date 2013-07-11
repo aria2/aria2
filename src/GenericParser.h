@@ -45,7 +45,7 @@ template<typename Parser, typename ParserStateMachine>
 class GenericParser {
 public:
   GenericParser()
-    : parser_(&psm_)
+    : parser_{&psm_}
   {}
 
   ~GenericParser()

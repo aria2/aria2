@@ -71,7 +71,7 @@ void DHTFindNodeReplyMessage::doReceivedAction()
   }
 }
 
-std::shared_ptr<Dict> DHTFindNodeReplyMessage::getResponse()
+std::unique_ptr<Dict> DHTFindNodeReplyMessage::getResponse()
 {
   auto aDict = Dict::g();
   aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));

@@ -47,7 +47,7 @@ std::string jsonEscape(const std::string& s);
 template<typename OutputStream>
 OutputStream& encode(OutputStream& out, const ValueBase* vlb)
 {
-  class JsonValueBaseVisitor:public ValueBaseVisitor {
+  class JsonValueBaseVisitor : public ValueBaseVisitor {
   public:
     JsonValueBaseVisitor(OutputStream& out):out_(out) {}
 
@@ -74,11 +74,11 @@ OutputStream& encode(OutputStream& out, const ValueBase* vlb)
     virtual void visit(const List& list) CXX11_OVERRIDE
     {
       out_ << "[";
-      List::ValueType::const_iterator i = list.begin();
       if(!list.empty()) {
+        auto i = list.begin();
         (*i)->accept(*this);
         ++i;
-        for(List::ValueType::const_iterator eoi = list.end(); i != eoi; ++i){
+        for(auto eoi = list.end(); i != eoi; ++i){
           out_ << ",";
           (*i)->accept(*this);
         }
@@ -89,13 +89,13 @@ OutputStream& encode(OutputStream& out, const ValueBase* vlb)
     virtual void visit(const Dict& dict) CXX11_OVERRIDE
     {
       out_ << "{";
-      Dict::ValueType::const_iterator i = dict.begin();
       if(!dict.empty()) {
+        auto i = dict.begin();
         encodeString((*i).first);
         out_ << ":";
         (*i).second->accept(*this);
         ++i;
-        for(Dict::ValueType::const_iterator eoi = dict.end(); i != eoi; ++i){
+        for(auto eoi = dict.end(); i != eoi; ++i){
           out_ << ",";
           encodeString((*i).first);
           out_ << ":";
@@ -107,8 +107,7 @@ OutputStream& encode(OutputStream& out, const ValueBase* vlb)
   private:
     void encodeString(const std::string& s)
     {
-      std::string t = jsonEscape(s);
-      out_ << "\"" << t << "\"";
+      out_ << "\"" << jsonEscape(s) << "\"";
     }
     OutputStream& out_;
   };
@@ -117,14 +116,8 @@ OutputStream& encode(OutputStream& out, const ValueBase* vlb)
   return out;
 }
 
-template<typename OutputStream>
-OutputStream& encode(OutputStream& out, const std::shared_ptr<ValueBase>& vlb)
-{
-  return encode(out, vlb.get());
-}
-
 // Serializes JSON object or array.
-std::string encode(const std::shared_ptr<ValueBase>& json);
+std::string encode(const ValueBase* json);
 
 struct JsonGetParam {
   std::string request;

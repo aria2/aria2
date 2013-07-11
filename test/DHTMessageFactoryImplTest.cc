@@ -98,7 +98,7 @@ void DHTMessageFactoryImplTest::testCreatePingMessage()
   dict.put("q", "ping");
   auto aDict = Dict::g();
   aDict->put("id", String::g(remoteNodeID, DHT_ID_LENGTH));
-  dict.put("a", aDict);
+  dict.put("a", std::move(aDict));
 
   auto r = factory->createQueryMessage(&dict, "192.168.0.1", 6881);
   auto m = dynamic_cast<DHTPingMessage*>(r.get());
@@ -116,7 +116,7 @@ void DHTMessageFactoryImplTest::testCreatePingReplyMessage()
   dict.put("y", "r");
   auto rDict = Dict::g();
   rDict->put("id", String::g(remoteNodeID, DHT_ID_LENGTH));
-  dict.put("r", rDict);
+  dict.put("r", std::move(rDict));
 
   auto r = factory->createResponseMessage("ping", &dict,
                                           remoteNode_->getIPAddress(),
@@ -140,7 +140,7 @@ void DHTMessageFactoryImplTest::testCreateFindNodeMessage()
   unsigned char targetNodeID[DHT_ID_LENGTH];
   memset(targetNodeID, 0x11, DHT_ID_LENGTH);
   aDict->put("target", String::g(targetNodeID, DHT_ID_LENGTH));
-  dict.put("a", aDict);
+  dict.put("a", std::move(aDict));
 
   auto r = factory->createQueryMessage(&dict, "192.168.0.1", 6881);
   auto m = dynamic_cast<DHTFindNodeMessage*>(r.get());
@@ -178,7 +178,7 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage()
         std::string(&buf[0], &buf[COMPACT_LEN_IPV4]);
     }
     rDict->put("nodes", compactNodeInfo);
-    dict.put("r", rDict);
+    dict.put("r", std::move(rDict));
 
     auto r = factory->createResponseMessage("find_node", &dict,
                                             remoteNode_->getIPAddress(),
@@ -225,7 +225,7 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage6()
         std::string(&buf[0], &buf[COMPACT_LEN_IPV6]);
     }
     rDict->put("nodes6", compactNodeInfo);
-    dict.put("r", rDict);
+    dict.put("r", std::move(rDict));
 
     auto r = factory->createResponseMessage("find_node", &dict,
                                             remoteNode_->getIPAddress(),
@@ -255,7 +255,7 @@ void DHTMessageFactoryImplTest::testCreateGetPeersMessage()
   unsigned char infoHash[DHT_ID_LENGTH];
   memset(infoHash, 0x11, DHT_ID_LENGTH);
   aDict->put("info_hash", String::g(infoHash, DHT_ID_LENGTH));
-  dict.put("a", aDict);
+  dict.put("a", std::move(aDict));
 
   auto r = factory->createQueryMessage(&dict, "192.168.0.1", 6881);
   auto m = dynamic_cast<DHTGetPeersMessage*>(r.get());
@@ -295,7 +295,7 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage()
     rDict->put("nodes", compactNodeInfo);
 
     std::deque<std::shared_ptr<Peer> > peers;
-    std::shared_ptr<List> valuesList = List::g();
+    auto valuesList = List::g();
     for(size_t i = 0; i < 4; ++i) {
       auto peer = std::make_shared<Peer>("192.168.0."+util::uitos(i+1),
                                          6881+i);
@@ -307,10 +307,9 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage()
       valuesList->append(String::g(buffer, COMPACT_LEN_IPV4));
       peers.push_back(peer);
     }
-    rDict->put("values", valuesList);
-
+    rDict->put("values", std::move(valuesList));
     rDict->put("token", "token");
-    dict.put("r", rDict);
+    dict.put("r", std::move(rDict));
 
     auto r = factory->createResponseMessage("get_peers", &dict,
                                             remoteNode_->getIPAddress(),
@@ -377,10 +376,9 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage6()
       valuesList->append(String::g(buffer, COMPACT_LEN_IPV6));
       peers.push_back(peer);
     }
-    rDict->put("values", valuesList);
-
+    rDict->put("values", std::move(valuesList));
     rDict->put("token", "token");
-    dict.put("r", rDict);
+    dict.put("r", std::move(rDict));
 
     auto r = factory->createResponseMessage("get_peers", &dict,
                                             remoteNode_->getIPAddress(),
@@ -422,7 +420,7 @@ void DHTMessageFactoryImplTest::testCreateAnnouncePeerMessage()
     uint16_t port = 6881;
     aDict->put("port", Integer::g(port));
     aDict->put("token", token);
-    dict.put("a", aDict);
+    dict.put("a", std::move(aDict));
 
     remoteNode_->setPort(6882);
 
@@ -449,7 +447,7 @@ void DHTMessageFactoryImplTest::testCreateAnnouncePeerReplyMessage()
   dict.put("y", "r");
   auto rDict = Dict::g();
   rDict->put("id", String::g(remoteNodeID, DHT_ID_LENGTH));
-  dict.put("r", rDict);
+  dict.put("r", std::move(rDict));
 
   auto r = factory->createResponseMessage("announce_peer", &dict,
                                           remoteNode_->getIPAddress(),
@@ -470,7 +468,7 @@ void DHTMessageFactoryImplTest::testReceivedErrorMessage()
   auto list = List::g();
   list->append(Integer::g(404));
   list->append("Not found");
-  dict.put("e", list);
+  dict.put("e", std::move(list));
 
   try {
     factory->createResponseMessage("announce_peer", &dict,

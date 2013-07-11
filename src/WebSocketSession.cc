@@ -160,7 +160,7 @@ void onMsgRecvCallback(wslay_event_context_ptr wsctx,
   if(!wslay_is_ctrl_frame(arg->opcode)) {
     // TODO Only process text frame
     ssize_t error = 0;
-    std::shared_ptr<ValueBase> json = wsSession->parseFinal(0, 0, error);
+    auto json = wsSession->parseFinal(0, 0, error);
     if(error < 0) {
       A2_LOG_INFO("Failed to parse JSON-RPC request");
       RpcResponse res
@@ -168,23 +168,22 @@ void onMsgRecvCallback(wslay_event_context_ptr wsctx,
       addResponse(wsSession, res);
       return;
     }
-    const Dict* jsondict = downcast<Dict>(json);
+    Dict* jsondict = downcast<Dict>(json);
     if(jsondict) {
       RpcResponse res = processJsonRpcRequest(jsondict,
                                               wsSession->getDownloadEngine());
       addResponse(wsSession, res);
     } else {
-      const List* jsonlist = downcast<List>(json);
+      List* jsonlist = downcast<List>(json);
       if(jsonlist) {
         // This is batch call
         std::vector<RpcResponse> results;
         for(List::ValueType::const_iterator i = jsonlist->begin(),
               eoi = jsonlist->end(); i != eoi; ++i) {
-          const Dict* jsondict = downcast<Dict>(*i);
+          Dict* jsondict = downcast<Dict>(*i);
           if(jsondict) {
-            RpcResponse r = processJsonRpcRequest
-              (jsondict, wsSession->getDownloadEngine());
-            results.push_back(r);
+            results.push_back(processJsonRpcRequest
+                              (jsondict, wsSession->getDownloadEngine()));
           }
         }
         addResponse(wsSession, results);
@@ -292,10 +291,10 @@ ssize_t WebSocketSession::parseUpdate(const uint8_t* data, size_t len)
   return parser_.parseUpdate(reinterpret_cast<const char*>(data), len);
 }
 
-std::shared_ptr<ValueBase> WebSocketSession::parseFinal
+std::unique_ptr<ValueBase> WebSocketSession::parseFinal
 (const uint8_t* data, size_t len, ssize_t& error)
 {
-  std::shared_ptr<ValueBase> res =
+  auto res =
     parser_.parseFinal(reinterpret_cast<const char*>(data), len, error);
   receivedLength_ = 0;
   return res;

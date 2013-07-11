@@ -77,8 +77,9 @@ public:
   void popArrayFrame();
   void popStructFrame();
   void pushFrame();
-  void setCurrentFrameValue(const std::shared_ptr<ValueBase>& value);
-  const std::shared_ptr<ValueBase>& getCurrentFrameValue() const;
+  void setCurrentFrameValue(std::unique_ptr<ValueBase> value);
+  const std::unique_ptr<ValueBase>& getCurrentFrameValue() const;
+  std::unique_ptr<ValueBase> popCurrentFrameValue();
   void setCurrentFrameName(const std::string& name);
 
   void pushUnknownElementState();

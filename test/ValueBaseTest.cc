@@ -87,8 +87,8 @@ void ValueBaseTest::testDict()
   Dict dict;
   CPPUNIT_ASSERT(dict.empty());
 
-  dict["ki"] = Integer::g(7);
-  dict["ks"] = String::g("abc");
+  dict.put("ki", Integer::g(7));
+  dict.put("ks", String::g("abc"));
 
   CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), dict.size());
   CPPUNIT_ASSERT(dict.containsKey("ki"));
@@ -98,27 +98,31 @@ void ValueBaseTest::testDict()
   CPPUNIT_ASSERT_EQUAL(std::string("abc"),
                        downcast<String>(dict["ks"])->s());
 
-  CPPUNIT_ASSERT(!dict["kn"]); // This adds kn key with default value.
-  CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), dict.size());
-  CPPUNIT_ASSERT(dict.containsKey("kn"));
+  CPPUNIT_ASSERT(!dict["kn"]); // This does not adds kn key
+  CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), dict.size());
 
-  const Dict& ref = dict;
+  auto& ref = dict;
   ref["kn2"]; // This doesn't add kn2 key.
-  CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), ref.size());
+  CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), ref.size());
   CPPUNIT_ASSERT(!ref.containsKey("kn2"));
 
-  dict.removeKey("kn");
-  CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), dict.size());
-  CPPUNIT_ASSERT(!dict.containsKey("kn"));
+  dict.removeKey("ks");
+  CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), dict.size());
+  CPPUNIT_ASSERT(!dict.containsKey("ks"));
+
+  auto ki = dict.popValue("ki");
+  CPPUNIT_ASSERT_EQUAL(Integer::ValueType{7}, downcast<Integer>(ki)->i());
+  CPPUNIT_ASSERT(dict.empty());
+  CPPUNIT_ASSERT(!dict.containsKey("ki"));
 }
 
 void ValueBaseTest::testDictIter()
 {
   Dict dict;
-  dict["alpha2"] = String::g("alpha2");
-  dict["charlie"] = String::g("charlie");
-  dict["bravo"] = String::g("bravo");
-  dict["alpha"] = String::g("alpha");
+  dict.put("alpha2", String::g("alpha2"));
+  dict.put("charlie", String::g("charlie"));
+  dict.put("bravo", String::g("bravo"));
+  dict.put("alpha", String::g("alpha"));
 
   Dict::ValueType::iterator i = dict.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("alpha"), (*i++).first);

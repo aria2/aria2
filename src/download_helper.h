@@ -76,7 +76,7 @@ void createRequestGroupForBitTorrent
  const std::shared_ptr<Option>& option,
  const std::vector<std::string>& uris,
  const std::string& metaInfoUri,
- const std::shared_ptr<ValueBase>& torrent,
+ const ValueBase* torrent,
  bool adjustAnnounceUri = true);
 
 #endif // ENABLE_BITTORRENT

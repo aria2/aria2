@@ -81,7 +81,7 @@ void DHTGetPeersMessageTest::testGetBencodedMessage()
   auto aDict = Dict::g();
   aDict->put("id", String::g(localNode_->getID(), DHT_ID_LENGTH));
   aDict->put("info_hash", String::g(infoHash, DHT_ID_LENGTH));
-  dict.put("a", aDict);
+  dict.put("a", std::move(aDict));
 
   CPPUNIT_ASSERT_EQUAL(util::percentEncode(bencode2::encode(&dict)),
                        util::percentEncode(msgbody));

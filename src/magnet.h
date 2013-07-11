@@ -42,12 +42,11 @@ namespace aria2 {
 
 namespace magnet {
 
-// Parses Magnet URI magnet and stores parameters in
-// std::shared_ptr<Dict>.  Because same parameter name can appear more
-// than once, the value associated with a key is std::shared_ptr<List>. A
-// parameter value is stored in a list. If parsing operation failed,
-// std::shared_ptr<Dict>() is returned.
-std::shared_ptr<Dict> parse(const std::string& magnet);
+// Parses Magnet URI magnet and returns the result.  Because same
+// parameter name can appear more than once, the value associated with
+// a key is std::unique_ptr<List>. A parameter value is stored in a
+// list. If parsing operation failed, nullptr is returned.
+std::unique_ptr<Dict> parse(const std::string& magnet);
 
 } // namespace magnet
 

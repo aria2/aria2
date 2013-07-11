@@ -65,15 +65,15 @@ int XmlRpcDiskWriter::finalize()
   return parser_.parseFinal(0, 0);
 }
 
-RpcRequest XmlRpcDiskWriter::getResult() const
+RpcRequest XmlRpcDiskWriter::getResult()
 {
-  std::shared_ptr<List> params;
+  std::unique_ptr<List> params;
   if(downcast<List>(psm_.getCurrentFrameValue())) {
-    params = std::static_pointer_cast<List>(psm_.getCurrentFrameValue());
+    params.reset(static_cast<List*>(psm_.popCurrentFrameValue().release()));
   } else {
     params = List::g();
   }
-  return RpcRequest(psm_.getMethodName(), params);
+  return RpcRequest{psm_.getMethodName(), std::move(params)};
 }
 
 int XmlRpcDiskWriter::reset()

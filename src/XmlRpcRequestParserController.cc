@@ -42,7 +42,7 @@ namespace rpc {
 
 void XmlRpcRequestParserController::pushFrame()
 {
-  frameStack_.push(currentFrame_);
+  frameStack_.push(std::move(currentFrame_));
   currentFrame_ = StateFrame();
 }
 
@@ -50,46 +50,52 @@ void XmlRpcRequestParserController::popStructFrame()
 {
   assert(!frameStack_.empty());
 
-  StateFrame parentFrame = frameStack_.top();
+  StateFrame parentFrame = std::move(frameStack_.top());
   Dict* dict = downcast<Dict>(parentFrame.value_);
   assert(dict);
   frameStack_.pop();
   if(currentFrame_.validMember()) {
-    dict->put(currentFrame_.name_, currentFrame_.value_);
+    dict->put(std::move(currentFrame_.name_), std::move(currentFrame_.value_));
   }
-  currentFrame_ = parentFrame;
+  currentFrame_ = std::move(parentFrame);
 }
 
 void XmlRpcRequestParserController::popArrayFrame()
 {
   assert(!frameStack_.empty());
 
-  StateFrame parentFrame = frameStack_.top();
+  StateFrame parentFrame = std::move(frameStack_.top());
   List* list = downcast<List>(parentFrame.value_);
   assert(list);
   frameStack_.pop();
   if(currentFrame_.value_) {
-    list->append(currentFrame_.value_);
+    list->append(std::move(currentFrame_.value_));
   }
-  currentFrame_ = parentFrame;
+  currentFrame_ = std::move(parentFrame);
 }
 
 void XmlRpcRequestParserController::setCurrentFrameValue
-(const std::shared_ptr<ValueBase>& value)
+(std::unique_ptr<ValueBase> value)
 {
-  currentFrame_.value_ = value;
+  currentFrame_.value_ = std::move(value);
 }
 
 void XmlRpcRequestParserController::setCurrentFrameName
-(const std::string& name)
+(std::string name)
 {
-  currentFrame_.name_ = name;
+  currentFrame_.name_ = std::move(name);
 }
 
-const std::shared_ptr<ValueBase>&
+const std::unique_ptr<ValueBase>&
 XmlRpcRequestParserController::getCurrentFrameValue() const
 {
   return currentFrame_.value_;
+}
+
+std::unique_ptr<ValueBase>
+XmlRpcRequestParserController::popCurrentFrameValue()
+{
+  return std::move(currentFrame_.value_);
 }
 
 void XmlRpcRequestParserController::reset()
@@ -99,6 +105,11 @@ void XmlRpcRequestParserController::reset()
   }
   currentFrame_.reset();
   methodName_.clear();
+}
+
+void XmlRpcRequestParserController::setMethodName(std::string methodName)
+{
+  methodName_ = std::move(methodName);
 }
 
 } // namespace rpc

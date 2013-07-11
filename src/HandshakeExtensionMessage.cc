@@ -64,14 +64,14 @@ std::string HandshakeExtensionMessage::getPayload()
   if(tcpPort_ > 0) {
     dict.put("p", Integer::g(tcpPort_));
   }
-  std::shared_ptr<Dict> extDict = Dict::g();
+  auto extDict = Dict::g();
   for(int i = 0; i < ExtensionMessageRegistry::MAX_EXTENSION; ++i) {
     int id = extreg_.getExtensionMessageID(i);
     if(id) {
       extDict->put(strBtExtension(i), Integer::g(id));
     }
   }
-  dict.put("m", extDict);
+  dict.put("m", std::move(extDict));
   if(metadataSize_) {
     dict.put("metadata_size", Integer::g(metadataSize_));
   }

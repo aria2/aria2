@@ -86,7 +86,7 @@ void DHTAnnouncePeerMessage::doReceivedAction()
      (getRemoteNode(), getTransactionID()));
 }
 
-std::shared_ptr<Dict> DHTAnnouncePeerMessage::getArgument()
+std::unique_ptr<Dict> DHTAnnouncePeerMessage::getArgument()
 {
   auto aDict = Dict::g();
   aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));

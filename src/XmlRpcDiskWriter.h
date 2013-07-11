@@ -83,7 +83,7 @@ public:
   }
 
   int finalize();
-  RpcRequest getResult() const;
+  RpcRequest getResult();
   int reset();
 private:
   XmlRpcRequestParserStateMachine psm_;

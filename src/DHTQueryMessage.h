@@ -55,7 +55,7 @@ public:
 
   virtual void fillMessage(Dict* msgDict) CXX11_OVERRIDE;
 
-  virtual std::shared_ptr<Dict> getArgument() = 0;
+  virtual std::unique_ptr<Dict> getArgument() = 0;
 
   virtual bool isReply() const CXX11_OVERRIDE;
 

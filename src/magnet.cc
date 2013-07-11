@@ -40,13 +40,12 @@ namespace aria2 {
 
 namespace magnet {
 
-std::shared_ptr<Dict> parse(const std::string& magnet)
+std::unique_ptr<Dict> parse(const std::string& magnet)
 {
-  std::shared_ptr<Dict> dict;
   if(!util::startsWith(magnet, "magnet:?")) {
-    return dict;
+    return nullptr;
   }
-  dict.reset(new Dict());
+  auto dict = Dict::g();
   std::vector<Scip> queries;
   util::splitIter(magnet.begin()+8, magnet.end(), std::back_inserter(queries),
                   '&');
@@ -59,9 +58,9 @@ std::shared_ptr<Dict> parse(const std::string& magnet)
     if(l) {
       l->append(String::g(value));
     } else {
-      std::shared_ptr<List> l = List::g();
+      auto l = List::g();
       l->append(String::g(value));
-      dict->put(name, l);
+      dict->put(name, std::move(l));
     }
   }
   return dict;

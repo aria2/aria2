@@ -166,15 +166,21 @@ void XmlRpcRequestParserStateMachine::pushFrame()
 }
 
 void XmlRpcRequestParserStateMachine::setCurrentFrameValue
-(const std::shared_ptr<ValueBase>& value)
+(std::unique_ptr<ValueBase> value)
 {
-  controller_->setCurrentFrameValue(value);
+  controller_->setCurrentFrameValue(std::move(value));
 }
 
-const std::shared_ptr<ValueBase>&
+const std::unique_ptr<ValueBase>&
 XmlRpcRequestParserStateMachine::getCurrentFrameValue() const
 {
   return controller_->getCurrentFrameValue();
+}
+
+std::unique_ptr<ValueBase>
+XmlRpcRequestParserStateMachine::popCurrentFrameValue()
+{
+  return controller_->popCurrentFrameValue();
 }
 
 void XmlRpcRequestParserStateMachine::setCurrentFrameName

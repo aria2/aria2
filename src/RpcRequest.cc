@@ -39,34 +39,22 @@ namespace aria2 {
 namespace rpc {
 
 RpcRequest::RpcRequest()
-  : jsonRpc(false)
+  : jsonRpc{false}
 {}
 
-RpcRequest::RpcRequest(const std::string& methodName,
-                       const std::shared_ptr<List>& params)
-  : methodName(methodName), params(params), jsonRpc(false)
+RpcRequest::RpcRequest(std::string methodName,
+                       std::unique_ptr<List> params)
+  : methodName{std::move(methodName)}, params{std::move(params)},
+    jsonRpc{false}
 {}
 
-RpcRequest::RpcRequest(const std::string& methodName,
-                       const std::shared_ptr<List>& params,
-                       const std::shared_ptr<ValueBase>& id)
-  : methodName(methodName), params(params), id(id), jsonRpc(false)
+RpcRequest::RpcRequest(std::string methodName,
+                       std::unique_ptr<List> params,
+                       std::unique_ptr<ValueBase> id,
+                       bool jsonRpc)
+  : methodName{std::move(methodName)}, params{std::move(params)},
+    id{std::move(id)}, jsonRpc{jsonRpc}
 {}
-
-RpcRequest::RpcRequest(const RpcRequest& c)
-  : methodName(c.methodName), params(c.params), id(c.id), jsonRpc(c.jsonRpc)
-{}
-
-RpcRequest::~RpcRequest() {}
-
-RpcRequest& RpcRequest::operator=(const RpcRequest& c)
-{
-  if(this != &c) {
-    methodName = c.methodName;
-    params = c.params;
-  }
-  return *this;
-}
 
 } // namespace rpc
 

@@ -42,6 +42,8 @@
 #include <map>
 #include <memory>
 
+#include "a2functional.h"
+
 namespace aria2 {
 
 class ValueBaseVisitor;
@@ -51,8 +53,6 @@ public:
   virtual ~ValueBase() {}
 
   virtual void accept(ValueBaseVisitor& visitor) const = 0;
-
-  static const std::shared_ptr<ValueBase> none;
 };
 
 class String;
@@ -78,6 +78,7 @@ public:
   typedef std::string ValueType;
 
   String(const ValueType& string);
+  String(ValueType&& string);
 
   explicit String(const char* cstring);
 
@@ -92,26 +93,27 @@ public:
 
   String();
 
-  ~String();
-
   // Don't allow copying
-  String(const String&);
-  String& operator=(const String&);
+  String(const String&) = delete;
+  String& operator=(const String&) = delete;
 
   const ValueType& s() const;
+
+  ValueType popValue() const;
 
   // Returns std::string.data() casted to unsigned char*.
   // Use s().size() to get length.
   const unsigned char* uc() const;
 
-  static std::shared_ptr<String> g(const ValueType& string);
+  static std::unique_ptr<String> g(const ValueType& string);
+  static std::unique_ptr<String> g(ValueType&& string);
 
-  static std::shared_ptr<String> g(const unsigned char* data, size_t length);
+  static std::unique_ptr<String> g(const unsigned char* data, size_t length);
 
   template<typename InputIterator>
-  static std::shared_ptr<String> g(InputIterator first, InputIterator last)
+  static std::unique_ptr<String> g(InputIterator first, InputIterator last)
   {
-    return std::shared_ptr<String>(new String(first, last));
+    return make_unique<String>(first, last);
   }
 
   virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
@@ -127,16 +129,14 @@ public:
 
   Integer();
 
-  ~Integer();
-
   // Don't allow copying
-  Integer(const Integer&);
-  Integer& operator=(const Integer&);
+  Integer(const Integer&) = delete;
+  Integer& operator=(const Integer&) = delete;
 
   // Returns Integer.
   ValueType i() const;
 
-  static std::shared_ptr<Integer> g(ValueType integer);
+  static std::unique_ptr<Integer> g(ValueType integer);
 
   virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
 private:
@@ -145,61 +145,56 @@ private:
 
 class Bool:public ValueBase {
 public:
-  static std::shared_ptr<Bool> gTrue();
-  static std::shared_ptr<Bool> gFalse();
+  static std::unique_ptr<Bool> gTrue();
+  static std::unique_ptr<Bool> gFalse();
+  Bool(bool val);
   bool val() const;
   virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
 private:
-  Bool(bool val);
   // Don't allow copying
-  Bool(const Bool&);
-  Bool& operator=(const Bool&);
+  Bool(const Bool&) = delete;
+  Bool& operator=(const Bool&) = delete;
   bool val_;
-  static const std::shared_ptr<Bool> trueValue_;
-  static const std::shared_ptr<Bool> falseValue_;
 };
 
 class Null:public ValueBase {
 public:
-  static std::shared_ptr<Null> g();
+  static std::unique_ptr<Null> g();
+  Null();
   virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
 private:
-  Null();
   // Don't allow copying
   Null(const Null&);
   Null& operator=(const Null&);
-  static const std::shared_ptr<Null> nullValue_;
 };
 
 class List:public ValueBase {
 public:
-  typedef std::vector<std::shared_ptr<ValueBase> > ValueType;
+  typedef std::vector<std::unique_ptr<ValueBase>> ValueType;
 
   List();
 
-  ~List();
-
   // Don't allow copying
-  List(const List&);
-  List& operator=(const List&);
+  List(const List&) = delete;
+  List& operator=(const List&) = delete;
 
   // Appends given v to list.
-  void append(const std::shared_ptr<ValueBase>& v);
+  void append(std::unique_ptr<ValueBase> v);
 
   // Appeding string is so common that we provide shortcut function.
-  void append(const String::ValueType& string);
+  void append(String::ValueType string);
 
   // Alias for append()
-  List& operator<<(const std::shared_ptr<ValueBase>& v);
+  List& operator<<(std::unique_ptr<ValueBase> v);
 
   // Returns the object at given index.
-  const std::shared_ptr<ValueBase>& get(size_t index) const;
+  ValueBase* get(size_t index) const;
 
   // Set the object at given index.
-  void set(size_t index, const std::shared_ptr<ValueBase>& v);
+  void set(size_t index, std::unique_ptr<ValueBase> v);
 
   // Returns the const reference of the object at the given index.
-  const std::shared_ptr<ValueBase>& operator[](size_t index) const;
+  ValueBase* operator[](size_t index) const;
 
   // Returns a read/write iterator that points to the first object in
   // list.
@@ -217,13 +212,21 @@ public:
   // past the last object in list.
   ValueType::const_iterator end() const;
 
+  // Returns a read/write read-only iterator that points to the first
+  // object in list.
+  ValueType::const_iterator cbegin() const;
+
+  // Returns a read/write read-only iterator that points to the one
+  // past the last object in list.
+  ValueType::const_iterator cend() const;
+
   // Returns size of list.
   size_t size() const;
 
   // Returns true if size of list is 0.
   bool empty() const;
 
-  static std::shared_ptr<List> g();
+  static std::unique_ptr<List> g();
 
   virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
 private:
@@ -232,40 +235,33 @@ private:
 
 class Dict:public ValueBase {
 public:
-  typedef std::map<std::string, std::shared_ptr<ValueBase> > ValueType;
+  typedef std::map<std::string, std::unique_ptr<ValueBase>> ValueType;
 
   Dict();
 
-  ~Dict();
-
   // Don't allow copying
-  Dict(const Dict&);
-  Dict& operator=(const Dict&);
+  Dict(const Dict&) = delete;
+  Dict& operator=(const Dict&) = delete;
 
-  void put(const std::string& key, const std::shared_ptr<ValueBase>& vlb);
+  void put(std::string key, std::unique_ptr<ValueBase> vlb);
 
   // Putting string is so common that we provide shortcut function.
-  void put(const std::string& key, const String::ValueType& string);
+  void put(std::string key, String::ValueType string);
 
-  const std::shared_ptr<ValueBase>& get(const std::string& key) const;
-
-  std::shared_ptr<ValueBase>& get(const std::string& key);
+  ValueBase* get(const std::string& key) const;
 
   // Returns the reference to object associated with given key.  If
-  // the key is not found, new pair with that key is created using
-  // default values, which is then returned. In other words, this is
-  // the same behavior of std::map's operator[].
-  std::shared_ptr<ValueBase>& operator[](const std::string& key);
-
-  // Returns the const reference to ojbect associated with given key.
-  // If the key is not found, ValueBase::none is returned.
-  const std::shared_ptr<ValueBase>& operator[](const std::string& key) const;
+  // the key is not found, nullptr is returned.
+  ValueBase* operator[](const std::string& key) const;
 
   // Returns true if the given key is found in dict.
   bool containsKey(const std::string& key) const;
 
   // Removes specified key from dict.
   void removeKey(const std::string& key);
+
+  // Removes specified key from dict and return its associated value.
+  std::unique_ptr<ValueBase> popValue(const std::string& key);
 
   // Returns a read/write iterator that points to the first pair in
   // the dict.
@@ -283,13 +279,21 @@ public:
   // the last pair in the dict.
   ValueType::const_iterator end() const;
 
+  // Returns a read/write read-only iterator that points to the first
+  // pair in the dict.
+  ValueType::const_iterator cbegin() const;
+
+  // Returns a read/write read-only iterator that points to one past
+  // the last pair in the dict.
+  ValueType::const_iterator cend() const;
+
   // Returns size of Dict.
   size_t size() const;
 
   // Returns true if size of Dict is 0.
   bool empty() const;
 
-  static std::shared_ptr<Dict> g();
+  static std::unique_ptr<Dict> g();
 
   virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
 private:
@@ -310,7 +314,7 @@ public:
 template<typename T>
 class DowncastValueBaseVisitor:public EmptyDowncastValueBaseVisitor {
 public:
-  DowncastValueBaseVisitor():result_(0) {}
+  DowncastValueBaseVisitor() : result_{nullptr} {}
 
   virtual void visit(const T& t) CXX11_OVERRIDE
   {

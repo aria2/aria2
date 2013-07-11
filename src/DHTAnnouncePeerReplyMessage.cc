@@ -50,9 +50,9 @@ DHTAnnouncePeerReplyMessage::~DHTAnnouncePeerReplyMessage() {}
 
 void DHTAnnouncePeerReplyMessage::doReceivedAction() {}
 
-std::shared_ptr<Dict> DHTAnnouncePeerReplyMessage::getResponse()
+std::unique_ptr<Dict> DHTAnnouncePeerReplyMessage::getResponse()
 {
-  std::shared_ptr<Dict> rDict = Dict::g();
+  auto rDict = Dict::g();
   rDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
   return rDict;
 }

@@ -406,7 +406,7 @@ void extractNodes(TorrentAttribute* torrent, const ValueBase* nodesListSrc)
 namespace {
 void processRootDictionary
 (const std::shared_ptr<DownloadContext>& ctx,
- const std::shared_ptr<ValueBase>& root,
+ const ValueBase* root,
  const std::shared_ptr<Option>& option,
  const std::string& defaultName,
  const std::string& overrideName,
@@ -422,7 +422,7 @@ void processRootDictionary
     throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_INFO.c_str()),
                        error_code::BITTORRENT_PARSE_ERROR);
   }
-  std::unique_ptr<TorrentAttribute> torrent(new TorrentAttribute());
+  auto torrent = make_unique<TorrentAttribute>();
 
   // retrieve infoHash
   std::string encodedInfoDict = bencode2::encode(infoDict);
@@ -475,7 +475,7 @@ void processRootDictionary
   // This implemantation obeys HTTP-Seeding specification:
   // see http://www.getright.com/seedtorrent.html
   std::vector<std::string> urlList;
-  extractUrlList(torrent.get(), urlList, rootDict->get(C_URL_LIST).get());
+  extractUrlList(torrent.get(), urlList, rootDict->get(C_URL_LIST));
   urlList.insert(urlList.end(), uris.begin(), uris.end());
   std::sort(urlList.begin(), urlList.end());
   urlList.erase(std::unique(urlList.begin(), urlList.end()), urlList.end());
@@ -490,7 +490,7 @@ void processRootDictionary
   // retrieve announce
   extractAnnounce(torrent.get(), rootDict);
   // retrieve nodes
-  extractNodes(torrent.get(), rootDict->get(C_NODES).get());
+  extractNodes(torrent.get(), rootDict->get(C_NODES));
 
   const Integer* creationDate = downcast<Integer>(rootDict->get(C_CREATION_DATE));
   if(creationDate) {
@@ -521,7 +521,7 @@ void load(const std::string& torrentFile,
 {
   ValueBaseBencodeParser parser;
   processRootDictionary(ctx,
-                        parseFile(parser, torrentFile),
+                        parseFile(parser, torrentFile).get(),
                         option,
                         torrentFile,
                         overrideName,
@@ -536,7 +536,7 @@ void load(const std::string& torrentFile,
 {
   ValueBaseBencodeParser parser;
   processRootDictionary(ctx,
-                        parseFile(parser, torrentFile),
+                        parseFile(parser, torrentFile).get(),
                         option,
                         torrentFile,
                         overrideName,
@@ -551,7 +551,7 @@ void loadFromMemory(const unsigned char* content,
                     const std::string& overrideName)
 {
   processRootDictionary(ctx,
-                        bencode2::decode(content, length),
+                        bencode2::decode(content, length).get(),
                         option,
                         defaultName,
                         overrideName,
@@ -567,7 +567,7 @@ void loadFromMemory(const unsigned char* content,
                     const std::string& overrideName)
 {
   processRootDictionary(ctx,
-                        bencode2::decode(content, length),
+                        bencode2::decode(content, length).get(),
                         option,
                         defaultName,
                         overrideName,
@@ -582,7 +582,7 @@ void loadFromMemory(const std::string& context,
 {
   processRootDictionary
     (ctx,
-     bencode2::decode(context),
+     bencode2::decode(context).get(),
      option,
      defaultName, overrideName,
      std::vector<std::string>());
@@ -597,13 +597,13 @@ void loadFromMemory(const std::string& context,
 {
   processRootDictionary
     (ctx,
-     bencode2::decode(context),
+     bencode2::decode(context).get(),
      option,
      defaultName, overrideName,
      uris);
 }
 
-void loadFromMemory(const std::shared_ptr<ValueBase>& torrent,
+void loadFromMemory(const ValueBase* torrent,
                     const std::shared_ptr<DownloadContext>& ctx,
                     const std::shared_ptr<Option>& option,
                     const std::vector<std::string>& uris,
@@ -905,7 +905,7 @@ void assertID
 
 std::unique_ptr<TorrentAttribute> parseMagnet(const std::string& magnet)
 {
-  std::shared_ptr<Dict> r = magnet::parse(magnet);
+  auto r = magnet::parse(magnet);
   if(!r) {
     throw DL_ABORT_EX2("Bad BitTorrent Magnet URI.",
                        error_code::MAGNET_PARSE_ERROR);
@@ -917,8 +917,8 @@ std::unique_ptr<TorrentAttribute> parseMagnet(const std::string& magnet)
   }
   auto attrs = make_unique<TorrentAttribute>();
   std::string infoHash;
-  for(List::ValueType::const_iterator xtiter = xts->begin(),
-        eoi = xts->end(); xtiter != eoi && infoHash.empty(); ++xtiter) {
+  for(auto xtiter = xts->begin(), eoi = xts->end();
+      xtiter != eoi && infoHash.empty(); ++xtiter) {
     const String* xt = downcast<String>(*xtiter);
     if(util::startsWith(xt->s(), "urn:btih:")) {
       size_t size = xt->s().end()-xt->s().begin()-9;
@@ -942,8 +942,7 @@ std::unique_ptr<TorrentAttribute> parseMagnet(const std::string& magnet)
   }
   const List* trs = downcast<List>(r->get("tr"));
   if(trs) {
-    for(List::ValueType::const_iterator i = trs->begin(), eoi = trs->end();
-        i != eoi; ++i) {
+    for(auto i = trs->begin(), eoi = trs->end(); i != eoi; ++i) {
       std::vector<std::string> tier;
       tier.push_back(util::encodeNonUtf8(downcast<String>(*i)->s()));
       attrs->announceList.push_back(tier);
@@ -974,16 +973,14 @@ std::string metadata2Torrent
   std::string torrent = "d";
 
   List announceList;
-  for(std::vector<std::vector<std::string> >::const_iterator tierIter =
-        attrs->announceList.begin(),
+  for(auto tierIter = attrs->announceList.begin(),
         eoi = attrs->announceList.end(); tierIter != eoi; ++tierIter) {
-    std::shared_ptr<List> tier = List::g();
-    for(std::vector<std::string>::const_iterator uriIter = (*tierIter).begin(),
-          eoi2 = (*tierIter).end(); uriIter != eoi2; ++uriIter) {
-      tier->append(String::g(*uriIter));
+    auto tier = List::g();
+    for(auto& uri : *tierIter) {
+      tier->append(uri);
     }
     if(!tier->empty()) {
-      announceList.append(tier);
+      announceList.append(std::move(tier));
     }
   }
   if(!announceList.empty()) {

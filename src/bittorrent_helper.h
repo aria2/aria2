@@ -101,7 +101,7 @@ void loadFromMemory(const std::string& context,
                     const std::string& defaultName,
                     const std::string& overrideName = "");
 
-void loadFromMemory(const std::shared_ptr<ValueBase>& torrent,
+void loadFromMemory(const ValueBase* torrent,
                     const std::shared_ptr<DownloadContext>& ctx,
                     const std::shared_ptr<Option>& option,
                     const std::vector<std::string>& uris,
@@ -326,13 +326,6 @@ void extractPeer(const ValueBase* peerData, int family, OutputIterator dest)
     PeerListValueBaseVisitor visitor(dest, family);
     peerData->accept(visitor);
   }
-}
-
-template<typename OutputIterator>
-void extractPeer
-(const std::shared_ptr<ValueBase>& peerData, int family, OutputIterator dest)
-{
-  return extractPeer(peerData.get(), family, dest);
 }
 
 int getCompactLength(int family);

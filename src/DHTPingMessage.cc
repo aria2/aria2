@@ -57,7 +57,7 @@ void DHTPingMessage::doReceivedAction()
      (getRemoteNode(), getLocalNode()->getID(), getTransactionID()));
 }
 
-std::shared_ptr<Dict> DHTPingMessage::getArgument()
+std::unique_ptr<Dict> DHTPingMessage::getArgument()
 {
   auto aDict = Dict::g();
   aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));

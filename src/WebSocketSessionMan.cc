@@ -68,15 +68,15 @@ void WebSocketSessionMan::removeSession
 void WebSocketSessionMan::addNotification
 (const std::string& method, const RequestGroup* group)
 {
-  std::shared_ptr<Dict> dict = Dict::g();
+  auto dict = Dict::g();
   dict->put("jsonrpc", "2.0");
   dict->put("method", method);
-  std::shared_ptr<Dict> eventSpec = Dict::g();
+  auto eventSpec = Dict::g();
   eventSpec->put("gid", GroupId::toHex((group->getGID())));
-  std::shared_ptr<List> params = List::g();
-  params->append(eventSpec);
-  dict->put("params", params);
-  std::string msg = json::encode(dict);
+  auto params = List::g();
+  params->append(std::move(eventSpec));
+  dict->put("params", std::move(params));
+  std::string msg = json::encode(dict.get());
   for(WebSocketSessions::const_iterator i = sessions_.begin(),
         eoi = sessions_.end(); i != eoi; ++i) {
     (*i)->addTextMessage(msg);

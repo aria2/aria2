@@ -80,7 +80,7 @@ void DHTGetPeersMessage::doReceivedAction()
       getTransactionID()));
 }
 
-std::shared_ptr<Dict> DHTGetPeersMessage::getArgument()
+std::unique_ptr<Dict> DHTGetPeersMessage::getArgument()
 {
   auto aDict = Dict::g();
   aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));

@@ -55,7 +55,7 @@ DHTPingReplyMessage::DHTPingReplyMessage
 
 void DHTPingReplyMessage::doReceivedAction() {}
 
-std::shared_ptr<Dict> DHTPingReplyMessage::getResponse()
+std::unique_ptr<Dict> DHTPingReplyMessage::getResponse()
 {
   auto rDict = Dict::g();
   rDict->put(DHTMessage::ID, String::g(id_, DHT_ID_LENGTH));

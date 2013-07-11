@@ -57,12 +57,6 @@ private:
   Timer timeoutTimer_;
   bool writeCheck_;
 
-  void sendJsonRpcErrorResponse
-  (const std::string& httpStatus,
-   int code,
-   const std::string& message,
-   const std::shared_ptr<ValueBase>& id,
-   const std::string& callback);
   void sendJsonRpcResponse
   (const rpc::RpcResponse& res,
    const std::string& callback);

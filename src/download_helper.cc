@@ -185,7 +185,7 @@ std::shared_ptr<RequestGroup>
 createBtRequestGroup(const std::string& metaInfoUri,
                      const std::shared_ptr<Option>& optionTemplate,
                      const std::vector<std::string>& auxUris,
-                     const std::shared_ptr<ValueBase>& torrent,
+                     const ValueBase* torrent,
                      bool adjustAnnounceUri = true)
 {
   auto option = util::copy(optionTemplate);
@@ -264,7 +264,7 @@ void createRequestGroupForBitTorrent
  const std::string& torrentData,
  bool adjustAnnounceUri)
 {
-  std::shared_ptr<ValueBase> torrent;
+  std::unique_ptr<ValueBase> torrent;
   bittorrent::ValueBaseBencodeParser parser;
   if(torrentData.empty()) {
     torrent = parseFile(parser, metaInfoUri);
@@ -277,7 +277,8 @@ void createRequestGroupForBitTorrent
     throw DL_ABORT_EX2("Bencode decoding failed",
                        error_code::BENCODE_PARSE_ERROR);
   }
-  createRequestGroupForBitTorrent(result, option, uris, metaInfoUri, torrent);
+  createRequestGroupForBitTorrent(result, option, uris, metaInfoUri,
+                                  torrent.get());
 }
 
 void createRequestGroupForBitTorrent
@@ -285,7 +286,7 @@ void createRequestGroupForBitTorrent
  const std::shared_ptr<Option>& option,
  const std::vector<std::string>& uris,
  const std::string& metaInfoUri,
- const std::shared_ptr<ValueBase>& torrent,
+ const ValueBase* torrent,
  bool adjustAnnounceUri)
 {
   std::vector<std::string> nargs;
@@ -369,7 +370,7 @@ public:
                              error_code::BENCODE_PARSE_ERROR);
         }
         requestGroups_.push_back
-          (createBtRequestGroup(uri, option_, {}, torrent));
+          (createBtRequestGroup(uri, option_, {}, torrent.get()));
       } catch(RecoverableException& e) {
         if(throwOnError_) {
           throw;

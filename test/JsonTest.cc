@@ -27,43 +27,43 @@ CPPUNIT_TEST_SUITE_REGISTRATION( JsonTest );
 void JsonTest::testEncode()
 {
   {
-    std::shared_ptr<Dict> dict = Dict::g();
+    auto dict = Dict::g();
     dict->put("name", String::g("aria2"));
     dict->put("loc", Integer::g(80000));
-    std::shared_ptr<List> files = List::g();
+    auto files = List::g();
     files->append(String::g("aria2c"));
-    dict->put("files", files);
-    std::shared_ptr<Dict> attrs = Dict::g();
+    dict->put("files", std::move(files));
+    auto attrs = Dict::g();
     attrs->put("license", String::g("GPL"));
-    dict->put("attrs", attrs);
+    dict->put("attrs", std::move(attrs));
 
     CPPUNIT_ASSERT_EQUAL(std::string("{\"attrs\":{\"license\":\"GPL\"},"
                                      "\"files\":[\"aria2c\"],"
                                      "\"loc\":80000,"
                                      "\"name\":\"aria2\"}"),
-                         json::encode(dict));
+                         json::encode(dict.get()));
   }
   {
-    std::shared_ptr<List> list = List::g();
+    auto list = List::g();
     list->append("\"\\/\b\f\n\r\t");
     CPPUNIT_ASSERT_EQUAL(std::string("[\"\\\"\\\\\\/\\b\\f\\n\\r\\t\"]"),
-                         json::encode(list));
+                         json::encode(list.get()));
   }
   {
-    std::shared_ptr<List> list = List::g();
+    auto list = List::g();
     std::string s;
     s += 0x1Fu;
     list->append(s);
     CPPUNIT_ASSERT_EQUAL(std::string("[\"\\u001F\"]"),
-                         json::encode(list));
+                         json::encode(list.get()));
   }
   {
-    std::shared_ptr<List> list = List::g();
+    auto list = List::g();
     list->append(Bool::gTrue());
     list->append(Bool::gFalse());
     list->append(Null::g());
     CPPUNIT_ASSERT_EQUAL(std::string("[true,false,null]"),
-                         json::encode(list));
+                         json::encode(list.get()));
   }
 }
 
