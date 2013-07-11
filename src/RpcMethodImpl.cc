@@ -1381,8 +1381,7 @@ std::unique_ptr<ValueBase> SystemMulticallRpcMethod::process
     } else {
       paramsList = List::g();
     }
-    auto method = RpcMethodFactory::create(methodName->s());
-    RpcResponse res = method->execute
+    RpcResponse res = getMethod(methodName->s())->execute
       ({methodName->s(), std::move(paramsList), nullptr, req.jsonRpc}, e);
     if(res.code == 0) {
       auto l = List::g();

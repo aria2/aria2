@@ -98,17 +98,9 @@ RpcResponse processJsonRpcRequest(Dict* jsondict, DownloadEngine* e)
     return createJsonRpcErrorResponse(-32602, "Invalid params.",
                                       std::move(id));
   }
-  std::shared_ptr<RpcMethod> method;
-  try {
-    method = rpc::RpcMethodFactory::create(methodName->s());
-  } catch(RecoverableException& e) {
-    A2_LOG_INFO_EX(EX_EXCEPTION_CAUGHT, e);
-    return createJsonRpcErrorResponse(-32601, "Method not found.",
-                                      std::move(id));
-  }
   A2_LOG_INFO(fmt("Executing RPC method %s", methodName->s().c_str()));
-  return method->execute({methodName->s(), std::move(params),
-                          std::move(id), true}, e);
+  return getMethod(methodName->s())->execute
+    ({methodName->s(), std::move(params), std::move(id), true}, e);
 }
 
 } // namespace rpc

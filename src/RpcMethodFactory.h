@@ -38,7 +38,6 @@
 #include "common.h"
 
 #include <string>
-#include <map>
 #include <memory>
 
 namespace aria2 {
@@ -47,12 +46,7 @@ namespace rpc {
 
 class RpcMethod;
 
-class RpcMethodFactory {
-public:
-  static std::shared_ptr<RpcMethod> create(const std::string& methodName);
-private:
-  static std::map<std::string, std::shared_ptr<RpcMethod> > cache_;
-};
+RpcMethod* getMethod(const std::string& methodName);
 
 } // namespace rpc
 

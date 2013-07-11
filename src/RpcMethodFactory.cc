@@ -42,115 +42,114 @@ namespace aria2 {
 namespace rpc {
 
 namespace {
-std::shared_ptr<RpcMethod> getNoSuchMethod()
-{
-  static std::shared_ptr<RpcMethod> m(new NoSuchMethodRpcMethod());
-  return m;
-}
+std::map<std::string, std::unique_ptr<RpcMethod>> cache;
 } // namespace
 
 namespace {
-std::shared_ptr<RpcMethod>
+std::unique_ptr<RpcMethod> noSuchRpcMethod;
+} // namespace
+
+namespace {
+std::unique_ptr<RpcMethod>
 createMethod(const std::string& methodName)
 {
   if(methodName == AddUriRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new AddUriRpcMethod());
+    return make_unique<AddUriRpcMethod>();
 #ifdef ENABLE_BITTORRENT
   } else if(methodName == AddTorrentRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new AddTorrentRpcMethod());
+    return make_unique<AddTorrentRpcMethod>();
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
   }
   else if(methodName == AddMetalinkRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new AddMetalinkRpcMethod());
+    return make_unique<AddMetalinkRpcMethod>();
 #endif // ENABLE_METALINK
   }
   else if(methodName == RemoveRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new RemoveRpcMethod());
+    return make_unique<RemoveRpcMethod>();
   } else if(methodName == PauseRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new PauseRpcMethod());
+    return make_unique<PauseRpcMethod>();
   } else if(methodName == ForcePauseRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new ForcePauseRpcMethod());
+    return make_unique<ForcePauseRpcMethod>();
   } else if(methodName == PauseAllRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new PauseAllRpcMethod());
+    return make_unique<PauseAllRpcMethod>();
   } else if(methodName == ForcePauseAllRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new ForcePauseAllRpcMethod());
+    return make_unique<ForcePauseAllRpcMethod>();
   } else if(methodName == UnpauseRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new UnpauseRpcMethod());
+    return make_unique<UnpauseRpcMethod>();
   } else if(methodName == UnpauseAllRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new UnpauseAllRpcMethod());
+    return make_unique<UnpauseAllRpcMethod>();
   } else if(methodName == ForceRemoveRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new ForceRemoveRpcMethod());
+    return make_unique<ForceRemoveRpcMethod>();
   } else if(methodName == ChangePositionRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new ChangePositionRpcMethod());
+    return make_unique<ChangePositionRpcMethod>();
   } else if(methodName == TellStatusRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new TellStatusRpcMethod());
+    return make_unique<TellStatusRpcMethod>();
   } else if(methodName == GetUrisRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new GetUrisRpcMethod());
+    return make_unique<GetUrisRpcMethod>();
   } else if(methodName == GetFilesRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new GetFilesRpcMethod());
+    return make_unique<GetFilesRpcMethod>();
 #ifdef ENABLE_BITTORRENT
   }
   else if(methodName == GetPeersRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new GetPeersRpcMethod());
+    return make_unique<GetPeersRpcMethod>();
 #endif // ENABLE_BITTORRENT
   } else if(methodName == GetServersRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new GetServersRpcMethod());
+    return make_unique<GetServersRpcMethod>();
   } else if(methodName == TellActiveRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new TellActiveRpcMethod());
+    return make_unique<TellActiveRpcMethod>();
   } else if(methodName == TellWaitingRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new TellWaitingRpcMethod());
+    return make_unique<TellWaitingRpcMethod>();
   } else if(methodName == TellStoppedRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new TellStoppedRpcMethod());
+    return make_unique<TellStoppedRpcMethod>();
   } else if(methodName == GetOptionRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new GetOptionRpcMethod());
+    return make_unique<GetOptionRpcMethod>();
   } else if(methodName == ChangeUriRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new ChangeUriRpcMethod());
+    return make_unique<ChangeUriRpcMethod>();
   } else if(methodName == ChangeOptionRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new ChangeOptionRpcMethod());
+    return make_unique<ChangeOptionRpcMethod>();
   } else if(methodName == GetGlobalOptionRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new GetGlobalOptionRpcMethod());
+    return make_unique<GetGlobalOptionRpcMethod>();
   } else if(methodName == ChangeGlobalOptionRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new ChangeGlobalOptionRpcMethod());
+    return make_unique<ChangeGlobalOptionRpcMethod>();
   } else if(methodName == PurgeDownloadResultRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new PurgeDownloadResultRpcMethod());
+    return make_unique<PurgeDownloadResultRpcMethod>();
   } else if(methodName == RemoveDownloadResultRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new RemoveDownloadResultRpcMethod());
+    return make_unique<RemoveDownloadResultRpcMethod>();
   } else if(methodName == GetVersionRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new GetVersionRpcMethod());
+    return make_unique<GetVersionRpcMethod>();
   } else if(methodName == GetSessionInfoRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new GetSessionInfoRpcMethod());
+    return make_unique<GetSessionInfoRpcMethod>();
   } else if(methodName == ShutdownRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new ShutdownRpcMethod());
+    return make_unique<ShutdownRpcMethod>();
   } else if(methodName == ForceShutdownRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new ForceShutdownRpcMethod());
+    return make_unique<ForceShutdownRpcMethod>();
   } else if(methodName == GetGlobalStatRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new GetGlobalStatRpcMethod());
+    return make_unique<GetGlobalStatRpcMethod>();
   } else if(methodName == SystemMulticallRpcMethod::getMethodName()) {
-    return std::shared_ptr<RpcMethod>(new SystemMulticallRpcMethod());
+    return make_unique<SystemMulticallRpcMethod>();
   } else {
     return nullptr;
   }
 }
 } // namespace
 
-std::map<std::string, std::shared_ptr<RpcMethod> > RpcMethodFactory::cache_;
-
-std::shared_ptr<RpcMethod>
-RpcMethodFactory::create(const std::string& methodName)
+RpcMethod* getMethod(const std::string& methodName)
 {
-  std::map<std::string, std::shared_ptr<RpcMethod> >::const_iterator itr =
-    cache_.find(methodName);
-  if(itr == cache_.end()) {
-    std::shared_ptr<RpcMethod> m = createMethod(methodName);
+  auto itr = cache.find(methodName);
+  if(itr == cache.end()) {
+    auto m = createMethod(methodName);
     if(m) {
-      cache_.insert(std::make_pair(methodName, m));
-      return m;
+      auto rv = cache.insert(std::make_pair(methodName, std::move(m)));
+      return (*rv.first).second.get();
     } else {
-      return getNoSuchMethod();
+      if(!noSuchRpcMethod) {
+        noSuchRpcMethod = make_unique<NoSuchMethodRpcMethod>();
+      }
+      return noSuchRpcMethod.get();
     }
   } else {
-    return (*itr).second;
+    return (*itr).second.get();
   }
 }
 
