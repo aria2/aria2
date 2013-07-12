@@ -42,6 +42,7 @@
 #include "MetalinkParserStateV4Impl.h"
 #include "Metalinker.h"
 #include "MetalinkEntry.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -104,8 +105,8 @@ MetalinkParserState* MetalinkParserStateMachine::urlStateV4_ =
 MetalinkParserState* MetalinkParserStateMachine::metaurlStateV4_ =
   new MetaurlMetalinkParserStateV4();
 
-MetalinkParserStateMachine::MetalinkParserStateMachine():
-  ctrl_(new MetalinkParserController())
+MetalinkParserStateMachine::MetalinkParserStateMachine()
+  : ctrl_{make_unique<MetalinkParserController>()}
 {
   stateStack_.push(initialState_);
 }
@@ -549,6 +550,11 @@ std::string MetalinkParserStateMachine::getErrorString() const
   std::copy(errors_.begin(), errors_.end(),
             std::ostream_iterator<std::string>(error, ", "));
   return error.str();
+}
+
+std::unique_ptr<Metalinker> MetalinkParserStateMachine::getResult()
+{
+  return ctrl_->getResult();
 }
 
 void MetalinkParserStateMachine::setBaseUri(const std::string& uri)

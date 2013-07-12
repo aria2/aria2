@@ -47,27 +47,26 @@ class MetalinkEntry;
 
 class Metalinker {
 private:
-  std::vector<std::shared_ptr<MetalinkEntry> > entries_;
+  std::vector<std::unique_ptr<MetalinkEntry>> entries_;
 public:
   Metalinker();
   ~Metalinker();
 
   // Don't allow copying
-  Metalinker(const Metalinker&);
-  Metalinker& operator=(const Metalinker&);
+  Metalinker(const Metalinker&) = delete;
+  Metalinker& operator=(const Metalinker&) = delete;
 
-  void queryEntry
-  (std::vector<std::shared_ptr<MetalinkEntry> >& queryResult,
-   const std::string& version,
-   const std::string& language,
-   const std::string& os) const;
+  std::vector<std::unique_ptr<MetalinkEntry>>
+  queryEntry(const std::string& version,
+             const std::string& language,
+             const std::string& os);
 
-  const std::vector<std::shared_ptr<MetalinkEntry> >& getEntries() const
+  const std::vector<std::unique_ptr<MetalinkEntry>>& getEntries() const
   {
     return entries_;
   }
 
-  void addEntry(const std::shared_ptr<MetalinkEntry>& entry);
+  void addEntry(std::unique_ptr<MetalinkEntry> entry);
 };
 
 } // namespace aria2

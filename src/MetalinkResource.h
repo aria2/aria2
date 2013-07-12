@@ -63,8 +63,8 @@ public:
   ~MetalinkResource();
 
   // Don't allow copying
-  MetalinkResource(const MetalinkResource&);
-  MetalinkResource& operator=(const MetalinkResource&);
+  MetalinkResource(const MetalinkResource&) = delete;
+  MetalinkResource& operator=(const MetalinkResource&) = delete;
 
   static const std::string& getTypeString(TYPE type)
   {

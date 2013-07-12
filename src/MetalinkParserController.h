@@ -57,21 +57,21 @@ class ChunkChecksum;
 
 class MetalinkParserController {
 private:
-  std::shared_ptr<Metalinker> metalinker_;
+  std::unique_ptr<Metalinker> metalinker_;
 
-  std::shared_ptr<MetalinkEntry> tEntry_;
+  std::unique_ptr<MetalinkEntry> tEntry_;
 
-  std::shared_ptr<MetalinkResource> tResource_;
+  std::unique_ptr<MetalinkResource> tResource_;
 
-  std::shared_ptr<MetalinkMetaurl> tMetaurl_;
+  std::unique_ptr<MetalinkMetaurl> tMetaurl_;
 #ifdef ENABLE_MESSAGE_DIGEST
-  std::shared_ptr<Checksum> tChecksum_;
+  std::unique_ptr<Checksum> tChecksum_;
 
-  std::shared_ptr<ChunkChecksum> tChunkChecksumV4_; // Metalink4Spec
+  std::unique_ptr<ChunkChecksum> tChunkChecksumV4_; // Metalink4Spec
 
   std::vector<std::string> tempChunkChecksumsV4_; // Metalink4Spec
 
-  std::shared_ptr<ChunkChecksum> tChunkChecksum_; // Metalink3Spec
+  std::unique_ptr<ChunkChecksum> tChunkChecksum_; // Metalink3Spec
 
   std::vector<std::pair<size_t, std::string> > tempChunkChecksums_;//Metalink3Spec
 
@@ -79,7 +79,7 @@ private:
 
 #endif // ENABLE_MESSAGE_DIGEST
 
-  std::shared_ptr<Signature> tSignature_;
+  std::unique_ptr<Signature> tSignature_;
   std::string baseUri_;
 public:
   MetalinkParserController();
@@ -88,10 +88,7 @@ public:
 
   void reset();
 
-  const std::shared_ptr<Metalinker>& getResult() const
-  {
-    return metalinker_;
-  }
+  std::unique_ptr<Metalinker> getResult();
 
   void newEntryTransaction();
 

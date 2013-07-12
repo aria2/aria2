@@ -51,7 +51,7 @@ class Metalinker;
 
 class MetalinkParserStateMachine : public ParserStateMachine {
 private:
-  std::shared_ptr<MetalinkParserController> ctrl_;
+  std::unique_ptr<MetalinkParserController> ctrl_;
 
   std::stack<MetalinkParserState*> stateStack_;
 
@@ -265,10 +265,7 @@ public:
 
   std::string getErrorString() const;
 
-  const std::shared_ptr<Metalinker>& getResult() const
-  {
-    return ctrl_->getResult();
-  }
+  std::unique_ptr<Metalinker> getResult();
 
   void setBaseUri(const std::string& uri);
 };

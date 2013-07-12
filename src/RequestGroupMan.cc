@@ -257,8 +257,7 @@ private:
 
   void saveSignature(const std::shared_ptr<RequestGroup>& group)
   {
-    std::shared_ptr<Signature> sig =
-      group->getDownloadContext()->getSignature();
+    auto& sig = group->getDownloadContext()->getSignature();
     if(sig && !sig->getBody().empty()) {
       // filename of signature file is the path to download file followed by
       // ".sig".

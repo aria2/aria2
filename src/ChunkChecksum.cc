@@ -80,9 +80,9 @@ void ChunkChecksum::setHashType(const std::string& hashType)
   hashType_ = hashType;
 }
 
-void ChunkChecksum::setPieceHashes(const std::vector<std::string>& pieceHashes)
+void ChunkChecksum::setPieceHashes(std::vector<std::string> pieceHashes)
 {
-  pieceHashes_ = pieceHashes;
+  pieceHashes_ = std::move(pieceHashes);
 }
 
 } // namespace aria2

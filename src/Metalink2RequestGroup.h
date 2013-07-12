@@ -52,18 +52,18 @@ class MetalinkEntry;
 class Metalink2RequestGroup {
 private:
   void
-  createRequestGroup(std::vector<std::shared_ptr<RequestGroup> >& groups,
-                     const std::vector<std::shared_ptr<MetalinkEntry> >& entries,
+  createRequestGroup(std::vector<std::shared_ptr<RequestGroup>>& groups,
+                     std::vector<std::unique_ptr<MetalinkEntry>> entries,
                      const std::shared_ptr<Option>& option);
 public:
   Metalink2RequestGroup();
 
-  void generate(std::vector<std::shared_ptr<RequestGroup> >& groups,
+  void generate(std::vector<std::shared_ptr<RequestGroup>>& groups,
                 const std::string& metalinkFile,
                 const std::shared_ptr<Option>& option,
                 const std::string& baseUri = A2STR::NIL);
 
-  void generate(std::vector<std::shared_ptr<RequestGroup> >& groups,
+  void generate(std::vector<std::shared_ptr<RequestGroup>>& groups,
                 const std::shared_ptr<BinaryStream>& binaryStream,
                 const std::shared_ptr<Option>& option,
                 const std::string& baseUri = A2STR::NIL);

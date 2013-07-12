@@ -49,77 +49,65 @@ namespace metalink {
 
 namespace {
 
-void query
-(std::vector<std::shared_ptr<MetalinkEntry> >& result,
- const std::shared_ptr<Metalinker>& metalinker,
- const Option* option)
+std::vector<std::unique_ptr<MetalinkEntry>>
+query(const std::shared_ptr<Metalinker>& metalinker,
+      const Option* option)
 {
-  metalinker->queryEntry(result,
-                         option->get(PREF_METALINK_VERSION),
-                         option->get(PREF_METALINK_LANGUAGE),
-                         option->get(PREF_METALINK_OS));
+  return metalinker->queryEntry(option->get(PREF_METALINK_VERSION),
+                                option->get(PREF_METALINK_LANGUAGE),
+                                option->get(PREF_METALINK_OS));
 }
 
 } // namespace
 
-void parseAndQuery
-(std::vector<std::shared_ptr<MetalinkEntry> >& result,
- const std::string& filename,
+std::vector<std::unique_ptr<MetalinkEntry>> parseAndQuery
+(const std::string& filename,
  const Option* option,
  const std::string& baseUri)
 {
-  std::shared_ptr<Metalinker> metalinker = parseFile(filename, baseUri);
-  query(result, metalinker, option);
+  return query(parseFile(filename, baseUri), option);
 }
 
-void parseAndQuery
-(std::vector<std::shared_ptr<MetalinkEntry> >& result,
- BinaryStream* bs,
+std::vector<std::unique_ptr<MetalinkEntry>> parseAndQuery
+(BinaryStream* bs,
  const Option* option,
  const std::string& baseUri)
 {
-  std::shared_ptr<Metalinker> metalinker = parseBinaryStream(bs, baseUri);
-  query(result, metalinker, option);
+  return query(parseBinaryStream(bs, baseUri), option);
 }
 
-void groupEntryByMetaurlName
-(std::vector<
-  std::pair<std::string, std::vector<std::shared_ptr<MetalinkEntry> > > >& result,
- const std::vector<std::shared_ptr<MetalinkEntry> >& entries)
+std::vector<std::pair<std::string,
+                      std::vector<MetalinkEntry*>>> groupEntryByMetaurlName
+(const std::vector<std::unique_ptr<MetalinkEntry>>& entries)
 {
-  for(std::vector<std::shared_ptr<MetalinkEntry> >::const_iterator eiter =
-        entries.begin(), eoi = entries.end(); eiter != eoi; ++eiter) {
-    if((*eiter)->metaurls.empty()) {
-      std::pair<std::string, std::vector<std::shared_ptr<MetalinkEntry> > > p;
-      p.second.push_back(*eiter);
-      result.push_back(p);
+  std::vector<std::pair<std::string,
+                        std::vector<MetalinkEntry*>>> result;
+  for(auto& entry : entries) {
+    if(entry->metaurls.empty()) {
+      // std::pair<std::string, std::vector<MetalinkEntry*>> p;
+      // p.second.push_back(entry.get());
+      result.push_back({"", {entry.get()}});
     } else {
-      std::vector<
-      std::pair<std::string,
-        std::vector<std::shared_ptr<MetalinkEntry> > > >::iterator i =
-        result.begin();
-      if((*eiter)->metaurls[0]->name.empty() ||
-         !(*eiter)->sizeKnown) {
-        i = result.end();
+      auto i = std::begin(result);
+      if(entry->metaurls[0]->name.empty() || !entry->sizeKnown) {
+        i = std::end(result);
       }
-      for(; i != result.end(); ++i) {
-        if((*i).first == (*eiter)->metaurls[0]->url &&
+      for(; i != std::end(result); ++i) {
+        if((*i).first == entry->metaurls[0]->url &&
            !(*i).second[0]->metaurls[0]->name.empty()) {
-          (*i).second.push_back(*eiter);
+          (*i).second.push_back(entry.get());
           break;
         }
       }
-      if(i == result.end()) {
-        std::pair<std::string, std::vector<std::shared_ptr<MetalinkEntry> > > p;
-        p.first = (*eiter)->metaurls[0]->url;
-        p.second.push_back(*eiter);
-        result.push_back(p);
+      if(i == std::end(result)) {
+        result.push_back({entry->metaurls[0]->url, {entry.get()}});
       }
     }
   }
+  return result;
 }
 
-std::shared_ptr<Metalinker> parseFile
+std::unique_ptr<Metalinker> parseFile
 (const std::string& filename,
  const std::string& baseUri)
 {
@@ -136,7 +124,7 @@ std::shared_ptr<Metalinker> parseFile
   return psm.getResult();
 }
 
-std::shared_ptr<Metalinker> parseBinaryStream
+std::unique_ptr<Metalinker> parseBinaryStream
 (BinaryStream* bs,
  const std::string& baseUri)
 {

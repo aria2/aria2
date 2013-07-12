@@ -6,6 +6,7 @@
 #include "Option.h"
 #include "prefs.h"
 #include "MetalinkMetaurl.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -30,8 +31,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkHelperTest );
 void MetalinkHelperTest::testParseAndQuery()
 {
   Option option;
-  std::vector<std::shared_ptr<MetalinkEntry> > result;
-  metalink::parseAndQuery(result, A2_TEST_DIR"/test.xml", &option);
+  auto result = metalink::parseAndQuery(A2_TEST_DIR"/test.xml", &option);
   CPPUNIT_ASSERT_EQUAL((size_t)5, result.size());
 }
 
@@ -39,67 +39,59 @@ void MetalinkHelperTest::testParseAndQuery_version()
 {
   Option option;
   option.put(PREF_METALINK_VERSION, "0.5.1");
-  std::vector<std::shared_ptr<MetalinkEntry> > result;
-  metalink::parseAndQuery(result, A2_TEST_DIR"/test.xml", &option);
+  auto result = metalink::parseAndQuery(A2_TEST_DIR"/test.xml", &option);
   CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
-  std::shared_ptr<MetalinkEntry> entry = result.front();
+  auto& entry = result.front();
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.1.tar.bz2"), entry->getPath());
 }
 
 void MetalinkHelperTest::testGroupEntryByMetaurlName()
 {
-  std::vector<std::shared_ptr<MetalinkEntry> > entries;
+  std::vector<std::unique_ptr<MetalinkEntry>> entries;
 
-  std::shared_ptr<MetalinkEntry> e1(new MetalinkEntry());
+  auto e1 = make_unique<MetalinkEntry>();
   e1->version = "1";
   e1->sizeKnown = true;
   // no name
   e1->metaurls.push_back
-    (std::shared_ptr<MetalinkMetaurl>
-     (new MetalinkMetaurl("http://meta1", "torrent", "", 1)));
+    (make_unique<MetalinkMetaurl>("http://meta1", "torrent", "", 1));
 
-  std::shared_ptr<MetalinkEntry> e2(new MetalinkEntry());
+  auto e2 = make_unique<MetalinkEntry>();
   e2->version = "2";
   e2->sizeKnown = true;
 
-  std::shared_ptr<MetalinkEntry> e3(new MetalinkEntry());
+  auto e3 = make_unique<MetalinkEntry>();
   e3->version = "3";
   e3->sizeKnown = true;
   e3->metaurls.push_back
-    (std::shared_ptr<MetalinkMetaurl>
-     (new MetalinkMetaurl("http://meta2", "torrent", "f3", 1)));
+    (make_unique<MetalinkMetaurl>("http://meta2", "torrent", "f3", 1));
 
-  std::shared_ptr<MetalinkEntry> e4(new MetalinkEntry());
+  auto e4 = make_unique<MetalinkEntry>();
   e4->version = "4";
   e4->sizeKnown = true;
   e4->metaurls.push_back
-    (std::shared_ptr<MetalinkMetaurl>
-     (new MetalinkMetaurl("http://meta1", "torrent", "f4", 1)));
+    (make_unique<MetalinkMetaurl>("http://meta1", "torrent", "f4", 1));
 
-  std::shared_ptr<MetalinkEntry> e5(new MetalinkEntry());
+  auto e5 = make_unique<MetalinkEntry>();
   e5->version = "5";
   // no size
   e5->metaurls.push_back
-    (std::shared_ptr<MetalinkMetaurl>
-     (new MetalinkMetaurl("http://meta1", "torrent", "f5", 1)));
+    (make_unique<MetalinkMetaurl>("http://meta1", "torrent", "f5", 1));
 
-  std::shared_ptr<MetalinkEntry> e6(new MetalinkEntry());
+  auto e6 = make_unique<MetalinkEntry>();
   e6->version = "6";
   e6->sizeKnown = true;
   e6->metaurls.push_back
-    (std::shared_ptr<MetalinkMetaurl>
-     (new MetalinkMetaurl("http://meta1", "torrent", "f6", 1)));
+    (make_unique<MetalinkMetaurl>("http://meta1", "torrent", "f6", 1));
 
-  entries.push_back(e1);
-  entries.push_back(e2);
-  entries.push_back(e3);
-  entries.push_back(e4);
-  entries.push_back(e5);
-  entries.push_back(e6);
+  entries.push_back(std::move(e1));
+  entries.push_back(std::move(e2));
+  entries.push_back(std::move(e3));
+  entries.push_back(std::move(e4));
+  entries.push_back(std::move(e5));
+  entries.push_back(std::move(e6));
 
-  std::vector<std::pair<std::string,
-    std::vector<std::shared_ptr<MetalinkEntry> > > > result;
-  metalink::groupEntryByMetaurlName(result, entries);
+  auto result = metalink::groupEntryByMetaurlName(entries);
 
   CPPUNIT_ASSERT_EQUAL(std::string("http://meta1"), result[0].first);
   CPPUNIT_ASSERT_EQUAL(std::string("1"), result[0].second[0]->version);

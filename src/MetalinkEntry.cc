@@ -57,45 +57,6 @@ MetalinkEntry::MetalinkEntry():
 
 MetalinkEntry::~MetalinkEntry() {}
 
-namespace {
-class AddLocationPriority {
-private:
-  std::vector<std::string> locations_;
-  int priorityToAdd_;
-public:
-  AddLocationPriority
-  (const std::vector<std::string>& locations, int priorityToAdd):
-    locations_(locations), priorityToAdd_(priorityToAdd)
-  {
-    std::sort(locations_.begin(), locations_.end());
-  }
-
-  void operator()(std::shared_ptr<MetalinkResource>& res) {
-    if(std::binary_search
-       (locations_.begin(), locations_.end(), res->location)) {
-      res->priority += priorityToAdd_;
-    }
-  }
-};
-} // namespace
-
-MetalinkEntry& MetalinkEntry::operator=(const MetalinkEntry& metalinkEntry)
-{
-  if(this != &metalinkEntry) {
-    this->file = metalinkEntry.file;
-    this->version = metalinkEntry.version;
-    this->languages = metalinkEntry.languages;
-    this->oses = metalinkEntry.oses;
-    this->maxConnections = metalinkEntry.maxConnections;
-#ifdef ENABLE_MESSAGE_DIGEST
-    this->checksum = metalinkEntry.checksum;
-    this->chunkChecksum = metalinkEntry.chunkChecksum;
-#endif // ENABLE_MESSAGE_DIGEST
-    this->signature_ = metalinkEntry.signature_;
-  }
-  return *this;
-}
-
 const std::string& MetalinkEntry::getPath() const
 {
   return file->getPath();
@@ -109,41 +70,29 @@ int64_t MetalinkEntry::getLength() const
 void MetalinkEntry::setLocationPriority
 (const std::vector<std::string>& locations, int priorityToAdd)
 {
-  std::for_each(resources.begin(), resources.end(),
-                AddLocationPriority(locations, priorityToAdd));
-}
-
-namespace {
-class AddProtocolPriority {
-private:
-  std::string protocol_;
-  int priorityToAdd_;
-public:
-  AddProtocolPriority(const std::string& protocol, int prefToAdd):
-    protocol_(protocol), priorityToAdd_(prefToAdd) {}
-
-  void operator()(const std::shared_ptr<MetalinkResource>& res) const
-  {
-    if(protocol_ == MetalinkResource::getTypeString(res->type)) {
-      res->priority += priorityToAdd_;
+  for(auto& res : resources) {
+    if(std::find(std::begin(locations), std::end(locations), res->location)
+       != std::end(locations)) {
+      res->priority += priorityToAdd;
     }
   }
-};
-} // namespace
+}
 
 void MetalinkEntry::setProtocolPriority(const std::string& protocol,
-                                          int priorityToAdd)
+                                        int priorityToAdd)
 {
-  std::for_each(resources.begin(), resources.end(),
-                AddProtocolPriority(protocol, priorityToAdd));
+  for(auto& res : resources) {
+    if(protocol == MetalinkResource::getTypeString(res->type)) {
+      res->priority += priorityToAdd;
+    }
+  }
 }
 
 namespace {
 template<typename T>
 class PriorityHigher {
 public:
-  bool operator()(const std::shared_ptr<T>& res1,
-                  const std::shared_ptr<T>& res2)
+  bool operator()(const T& res1, const T& res2)
   {
     return res1->priority < res2->priority;
   }
@@ -151,15 +100,16 @@ public:
 } // namespace
 
 void MetalinkEntry::reorderResourcesByPriority() {
-  std::random_shuffle(resources.begin(), resources.end(),
+  std::random_shuffle(std::begin(resources), std::end(resources),
                       *SimpleRandomizer::getInstance());
-  std::sort(resources.begin(), resources.end(),
-            PriorityHigher<MetalinkResource>());
+  std::sort(std::begin(resources), std::end(resources),
+            PriorityHigher<std::unique_ptr<MetalinkResource>>{});
 }
 
 void MetalinkEntry::reorderMetaurlsByPriority()
 {
-  std::sort(metaurls.begin(), metaurls.end(),PriorityHigher<MetalinkMetaurl>());
+  std::sort(std::begin(metaurls), std::end(metaurls),
+            PriorityHigher<std::unique_ptr<MetalinkMetaurl>>{});
 }
 
 namespace {
@@ -184,24 +134,43 @@ public:
 };
 } // namespace
 
-void MetalinkEntry::dropUnsupportedResource() {
-  resources.erase(std::remove_if(resources.begin(), resources.end(),
-                                 std::not1(Supported())),
-                  resources.end());
+void MetalinkEntry::dropUnsupportedResource()
+{
+  resources.erase(std::remove_if
+                  (std::begin(resources), std::end(resources),
+                   [](const std::unique_ptr<MetalinkResource>& res)
+                   {
+                     switch(res->type) {
+                     case MetalinkResource::TYPE_FTP:
+                     case MetalinkResource::TYPE_HTTP:
+#ifdef ENABLE_SSL
+                     case MetalinkResource::TYPE_HTTPS:
+#endif // ENABLE_SSL
+#ifdef ENABLE_BITTORRENT
+                     case MetalinkResource::TYPE_BITTORRENT:
+#endif // ENABLE_BITTORRENT
+                       return false;
+                     default:
+                       return true;
+                     }
+                   }),
+                  std::end(resources));
 }
 
-void MetalinkEntry::toFileEntry
-(std::vector<std::shared_ptr<FileEntry> >& fileEntries,
- const std::vector<std::shared_ptr<MetalinkEntry> >& metalinkEntries)
+std::vector<std::unique_ptr<FileEntry>> MetalinkEntry::toFileEntry
+(std::vector<std::unique_ptr<MetalinkEntry>> metalinkEntries)
 {
-  std::transform(metalinkEntries.begin(), metalinkEntries.end(),
-                 std::back_inserter(fileEntries),
-                 std::mem_fn(&MetalinkEntry::getFile));
+  std::vector<std::unique_ptr<FileEntry>> res;
+  res.reserve(metalinkEntries.size());
+  for(auto& entry : metalinkEntries) {
+    res.push_back(entry->popFile());
+  }
+  return res;
 }
 
-void MetalinkEntry::setSignature(const std::shared_ptr<Signature>& signature)
+void MetalinkEntry::setSignature(std::unique_ptr<Signature> signature)
 {
-  signature_ = signature;
+  signature_ = std::move(signature);
 }
 
 bool MetalinkEntry::containsLanguage(const std::string& lang) const
@@ -212,6 +181,16 @@ bool MetalinkEntry::containsLanguage(const std::string& lang) const
 bool MetalinkEntry::containsOS(const std::string& os) const
 {
   return std::find(oses.begin(), oses.end(), os) != oses.end();
+}
+
+std::unique_ptr<Signature> MetalinkEntry::popSignature()
+{
+  return std::move(signature_);
+}
+
+std::unique_ptr<FileEntry> MetalinkEntry::popFile()
+{
+  return std::move(file);
 }
 
 } // namespace aria2

@@ -3,6 +3,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "MetalinkResource.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -31,44 +32,46 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkEntryTest );
 
-std::shared_ptr<MetalinkEntry> createTestEntry() {
-  std::shared_ptr<MetalinkEntry> entry(new MetalinkEntry());
-  std::shared_ptr<MetalinkResource> res1(new MetalinkResource());
+std::unique_ptr<MetalinkEntry> createTestEntry()
+{
+  auto entry = make_unique<MetalinkEntry>();
+  auto res1 = make_unique<MetalinkResource>();
   res1->url = "ftp://myhost/aria2.tar.bz2";
   res1->type = MetalinkResource::TYPE_FTP;
   res1->location = "ro";
   res1->priority = 50;
-  std::shared_ptr<MetalinkResource> res2(new MetalinkResource());
+  auto res2 = make_unique<MetalinkResource>();
   res2->url = "http://myhost/aria2.tar.bz2";
   res2->type = MetalinkResource::TYPE_HTTP;
   res2->location = "at";
   res2->priority = 1;
-  std::shared_ptr<MetalinkResource> res3(new MetalinkResource());
+  auto res3 = make_unique<MetalinkResource>();
   res3->url = "http://myhost/aria2.torrent";
   res3->type = MetalinkResource::TYPE_BITTORRENT;
   res3->location = "al";
   res3->priority = 40;
-  std::shared_ptr<MetalinkResource> res4(new MetalinkResource());
+  auto res4 = make_unique<MetalinkResource>();
   res4->url = "http://myhost/aria2.ext";
   res4->type = MetalinkResource::TYPE_NOT_SUPPORTED;
   res4->location = "ad";
   res4->priority = 90;
-  std::shared_ptr<MetalinkResource> res5(new MetalinkResource());
+  auto res5 = make_unique<MetalinkResource>();
   res5->url = "https://myhost/aria2.tar.bz2";
   res5->type = MetalinkResource::TYPE_HTTPS;
   res5->location = "jp";
   res5->priority = 10;
 
-  entry->resources.push_back(res1);
-  entry->resources.push_back(res2);
-  entry->resources.push_back(res3);
-  entry->resources.push_back(res4);
-  entry->resources.push_back(res5);
+  entry->resources.push_back(std::move(res1));
+  entry->resources.push_back(std::move(res2));
+  entry->resources.push_back(std::move(res3));
+  entry->resources.push_back(std::move(res4));
+  entry->resources.push_back(std::move(res5));
   return entry;
 }
 
-void MetalinkEntryTest::testDropUnsupportedResource() {
-  std::shared_ptr<MetalinkEntry> entry(createTestEntry());
+void MetalinkEntryTest::testDropUnsupportedResource()
+{
+  auto entry = createTestEntry();
 
   entry->dropUnsupportedResource();
 #if defined ENABLE_SSL && defined ENABLE_BITTORRENT
@@ -79,8 +82,7 @@ void MetalinkEntryTest::testDropUnsupportedResource() {
   CPPUNIT_ASSERT_EQUAL((size_t)2, entry->resources.size());
 #endif // ENABLE_MESSAGE_DIGEST
 
-  std::vector<std::shared_ptr<MetalinkResource> >::const_iterator itr =
-    entry->resources.begin();
+  auto itr = std::begin(entry->resources);
   CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP,
                        (*itr++)->type);
   CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTP,
@@ -95,8 +97,9 @@ void MetalinkEntryTest::testDropUnsupportedResource() {
 #endif // ENABLE_SSL
 }
 
-void MetalinkEntryTest::testReorderResourcesByPriority() {
-  std::shared_ptr<MetalinkEntry> entry(createTestEntry());
+void MetalinkEntryTest::testReorderResourcesByPriority()
+{
+  auto entry = createTestEntry();
 
   entry->reorderResourcesByPriority();
 
@@ -109,11 +112,9 @@ void MetalinkEntryTest::testReorderResourcesByPriority() {
 
 void MetalinkEntryTest::testSetLocationPriority()
 {
-  std::shared_ptr<MetalinkEntry> entry(createTestEntry());
+  auto entry = createTestEntry();
 
-  const char* locationsSrc[] = { "jp", "al", "ro" };
-
-  std::vector<std::string> locations(&locationsSrc[0], &locationsSrc[3]);
+  auto locations = std::vector<std::string>{ "jp", "al", "ro" };
 
   entry->setLocationPriority(locations, -100);
 
@@ -131,7 +132,7 @@ void MetalinkEntryTest::testSetLocationPriority()
 
 void MetalinkEntryTest::testSetProtocolPriority()
 {
-  std::shared_ptr<MetalinkEntry> entry(createTestEntry());
+  auto entry = createTestEntry();
   entry->setProtocolPriority("http", -1);
   CPPUNIT_ASSERT_EQUAL(50, entry->resources[0]->priority); // ftp
   CPPUNIT_ASSERT_EQUAL(0, entry->resources[1]->priority); // http, -1

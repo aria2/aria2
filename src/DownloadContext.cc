@@ -276,9 +276,9 @@ void DownloadContext::setBasePath(const std::string& basePath)
   basePath_ = basePath;
 }
 
-void DownloadContext::setSignature(const std::shared_ptr<Signature>& signature)
+void DownloadContext::setSignature(std::unique_ptr<Signature> signature)
 {
-  signature_ = signature;
+  signature_ = std::move(signature);
 }
 
 void DownloadContext::updateDownloadLength(size_t bytes)

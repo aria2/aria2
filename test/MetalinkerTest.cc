@@ -3,6 +3,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "MetalinkEntry.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -25,18 +26,19 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkerTest );
 
-void MetalinkerTest::testQueryEntry() {
-  std::shared_ptr<Metalinker> metalinker(new Metalinker());
-  std::shared_ptr<MetalinkEntry> entry1(new MetalinkEntry());
+void MetalinkerTest::testQueryEntry()
+{
+  Metalinker metalinker;
+  auto entry1 = make_unique<MetalinkEntry>();
   entry1->version = "0.5.2";
   entry1->languages.push_back("en-US");
   entry1->oses.push_back("Linux-x86");
-  std::shared_ptr<MetalinkEntry> entry2(new MetalinkEntry());
+  auto entry2 = make_unique<MetalinkEntry>();
   entry2->version = "0.5.1";
   entry2->languages.push_back("ja-JP");
   entry2->oses.push_back("Linux-m68k");
-  metalinker->addEntry(entry1);
-  metalinker->addEntry(entry2);
+  metalinker.addEntry(std::move(entry1));
+  metalinker.addEntry(std::move(entry2));
 
   std::string version;
   std::string language;
@@ -46,8 +48,7 @@ void MetalinkerTest::testQueryEntry() {
   language = "ja-JP";
   os = "Linux-m68k";
   {
-    std::vector<std::shared_ptr<MetalinkEntry> > result;
-    metalinker->queryEntry(result, version, language, os);
+    auto result = metalinker.queryEntry(version, language, os);
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
     CPPUNIT_ASSERT_EQUAL(std::string("0.5.1"), result.at(0)->version);
     CPPUNIT_ASSERT_EQUAL(std::string("ja-JP"), result.at(0)->languages[0]);
@@ -57,8 +58,7 @@ void MetalinkerTest::testQueryEntry() {
   language = "";
   os = "";
   {
-    std::vector<std::shared_ptr<MetalinkEntry> > result;
-    metalinker->queryEntry(result, version, language, os);
+    auto result = metalinker.queryEntry(version, language, os);
     CPPUNIT_ASSERT_EQUAL((size_t)0, result.size());
   }
 
@@ -66,8 +66,7 @@ void MetalinkerTest::testQueryEntry() {
   language = "";
   os = "";
   {
-    std::vector<std::shared_ptr<MetalinkEntry> > result;
-    metalinker->queryEntry(result, version, language, os);
+    auto result = metalinker.queryEntry(version, language, os);
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
     CPPUNIT_ASSERT_EQUAL(std::string("0.5.2"), result.at(0)->version);
     CPPUNIT_ASSERT_EQUAL(std::string("en-US"), result.at(0)->languages[0]);

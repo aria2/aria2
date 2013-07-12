@@ -84,7 +84,7 @@ private:
 
   Timer downloadStopTime_;
 
-  std::shared_ptr<Signature> signature_;
+  std::unique_ptr<Signature> signature_;
   // This member variable is required to avoid to use parse Metalink
   // (including both Metalink XML and Metalink/HTTP) twice.
   bool acceptMetalink_;
@@ -169,9 +169,9 @@ public:
 
   void setBasePath(const std::string& basePath);
 
-  const std::shared_ptr<Signature>& getSignature() const { return signature_; }
+  const std::unique_ptr<Signature>& getSignature() const { return signature_; }
 
-  void setSignature(const std::shared_ptr<Signature>& signature);
+  void setSignature(std::unique_ptr<Signature> signature);
 
   RequestGroup* getOwnerRequestGroup() { return ownerRequestGroup_; }
 

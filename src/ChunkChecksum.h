@@ -64,7 +64,7 @@ public:
 
   const std::string& getPieceHash(size_t index) const;
 
-  void setPieceHashes(const std::vector<std::string>& pieceHashes);
+  void setPieceHashes(std::vector<std::string> pieceHashes);
   const std::vector<std::string>& getPieceHashes() const
   {
     return pieceHashes_;

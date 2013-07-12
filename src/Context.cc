@@ -99,12 +99,10 @@ namespace {
 void showMetalinkFile
 (const std::string& uri, const std::shared_ptr<Option>& op)
 {
-  std::vector<std::shared_ptr<MetalinkEntry> > metalinkEntries;
-  metalink::parseAndQuery(metalinkEntries, uri, op.get(),
-                          op->get(PREF_METALINK_BASE_URI));
-  std::vector<std::shared_ptr<FileEntry> > fileEntries;
-  MetalinkEntry::toFileEntry(fileEntries, metalinkEntries);
-  util::toStream(fileEntries.begin(), fileEntries.end(), *global::cout());
+  auto fileEntries = MetalinkEntry::toFileEntry
+    (metalink::parseAndQuery(uri, op.get(), op->get(PREF_METALINK_BASE_URI)));
+  util::toStream(std::begin(fileEntries), std::end(fileEntries),
+                 *global::cout());
   global::cout()->write("\n");
   global::cout()->flush();
 }

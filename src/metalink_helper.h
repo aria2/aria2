@@ -52,28 +52,25 @@ class Metalinker;
 
 namespace metalink {
 
-void parseAndQuery
-(std::vector<std::shared_ptr<MetalinkEntry> >& result,
- const std::string& filename,
+std::vector<std::unique_ptr<MetalinkEntry>> parseAndQuery
+(const std::string& filename,
  const Option* option,
  const std::string& baseUri = A2STR::NIL);
 
-void parseAndQuery
-(std::vector<std::shared_ptr<MetalinkEntry> >& result,
- BinaryStream* bs,
+std::vector<std::unique_ptr<MetalinkEntry>> parseAndQuery
+(BinaryStream* bs,
  const Option* option,
  const std::string& baseUri = A2STR::NIL);
 
-void groupEntryByMetaurlName
-(std::vector<
-  std::pair<std::string, std::vector<std::shared_ptr<MetalinkEntry> > > >& result,
- const std::vector<std::shared_ptr<MetalinkEntry> >& entries);
+std::vector<std::pair<std::string,
+                      std::vector<MetalinkEntry*>>> groupEntryByMetaurlName
+(const std::vector<std::unique_ptr<MetalinkEntry>>& entries);
 
-std::shared_ptr<Metalinker> parseFile
+std::unique_ptr<Metalinker> parseFile
 (const std::string& filename,
  const std::string& baseUri = A2STR::NIL);
 
-std::shared_ptr<Metalinker> parseBinaryStream
+std::unique_ptr<Metalinker> parseBinaryStream
 (BinaryStream* bs,
  const std::string& baseUri = A2STR::NIL);
 

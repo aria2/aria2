@@ -57,20 +57,25 @@
 
 namespace aria2 {
 
-MetalinkParserController::MetalinkParserController():
-  metalinker_(new Metalinker())
+MetalinkParserController::MetalinkParserController()
+  : metalinker_{make_unique<Metalinker>()}
 {}
 
 MetalinkParserController::~MetalinkParserController() {}
 
 void MetalinkParserController::reset()
 {
-  metalinker_.reset(new Metalinker());
+  metalinker_ = make_unique<Metalinker>();
+}
+
+std::unique_ptr<Metalinker> MetalinkParserController::getResult()
+{
+  return std::move(metalinker_);
 }
 
 void MetalinkParserController::newEntryTransaction()
 {
-  tEntry_.reset(new MetalinkEntry());
+  tEntry_ = make_unique<MetalinkEntry>();
   tResource_.reset();
   tMetaurl_.reset();
 #ifdef ENABLE_MESSAGE_DIGEST
@@ -86,7 +91,7 @@ void MetalinkParserController::setFileNameOfEntry(const std::string& filename)
     return;
   }
   if(!tEntry_->file) {
-    tEntry_->file.reset(new FileEntry(util::escapePath(filename), 0, 0));
+    tEntry_->file = make_unique<FileEntry>(util::escapePath(filename), 0, 0);
   } else {
     tEntry_->file->setPath(util::escapePath(filename));
   }
@@ -147,8 +152,7 @@ void MetalinkParserController::commitEntryTransaction()
   commitChunkChecksumTransactionV4();
   commitChunkChecksumTransaction();
   commitSignatureTransaction();
-  metalinker_->addEntry(tEntry_);
-  tEntry_.reset();
+  metalinker_->addEntry(std::move(tEntry_));
 }
 
 void MetalinkParserController::cancelEntryTransaction()
@@ -167,7 +171,7 @@ void MetalinkParserController::newResourceTransaction()
   if(!tEntry_) {
     return;
   }
-  tResource_.reset(new MetalinkResource());
+  tResource_ = make_unique<MetalinkResource>();
 }
 
 void MetalinkParserController::setURLOfResource(const std::string& url)
@@ -237,16 +241,16 @@ void MetalinkParserController::commitResourceTransaction()
   }
 #ifdef ENABLE_BITTORRENT
   if(tResource_->type == MetalinkResource::TYPE_BITTORRENT) {
-    std::shared_ptr<MetalinkMetaurl> metaurl(new MetalinkMetaurl());
-    metaurl->url = tResource_->url;
+    auto metaurl = make_unique<MetalinkMetaurl>();
+    metaurl->url = std::move(tResource_->url);
     metaurl->priority = tResource_->priority;
     metaurl->mediatype = MetalinkMetaurl::MEDIATYPE_TORRENT;
-    tEntry_->metaurls.push_back(metaurl);
+    tEntry_->metaurls.push_back(std::move(metaurl));
   } else {
-    tEntry_->resources.push_back(tResource_);
+    tEntry_->resources.push_back(std::move(tResource_));
   }
 #else // !ENABLE_BITTORRENT
-  tEntry_->resources.push_back(tResource_);
+  tEntry_->resources.push_back(std::move(tResource_));
 #endif // !ENABLE_BITTORRENT
   tResource_.reset();
 }
@@ -262,7 +266,7 @@ void MetalinkParserController::newChecksumTransaction()
   if(!tEntry_) {
     return;
   }
-  tChecksum_.reset(new Checksum());
+  tChecksum_ = make_unique<Checksum>();
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
@@ -304,7 +308,7 @@ void MetalinkParserController::commitChecksumTransaction()
   if(!tEntry_->checksum ||
      MessageDigest::isStronger(tChecksum_->getHashType(),
                                tEntry_->checksum->getHashType())) {
-    tEntry_->checksum = tChecksum_;
+    tEntry_->checksum = std::move(tChecksum_);
   }
   tChecksum_.reset();
 #endif // ENABLE_MESSAGE_DIGEST
@@ -323,7 +327,7 @@ void MetalinkParserController::newChunkChecksumTransactionV4()
   if(!tEntry_) {
     return;
   }
-  tChunkChecksumV4_.reset(new ChunkChecksum());
+  tChunkChecksumV4_ = make_unique<ChunkChecksum>();
   tempChunkChecksumsV4_.clear();
 #endif // ENABLE_MESSAGE_DIGEST
 }
@@ -380,10 +384,8 @@ void MetalinkParserController::commitChunkChecksumTransactionV4()
   if(!tEntry_->chunkChecksum ||
      MessageDigest::isStronger(tChunkChecksumV4_->getHashType(),
                                tEntry_->chunkChecksum->getHashType())) {
-    std::vector<std::string> pieceHashes(tempChunkChecksumsV4_.begin(),
-                                         tempChunkChecksumsV4_.end());
-    tChunkChecksumV4_->setPieceHashes(pieceHashes);
-    tEntry_->chunkChecksum = tChunkChecksumV4_;
+    tChunkChecksumV4_->setPieceHashes(std::move(tempChunkChecksumsV4_));
+    tEntry_->chunkChecksum = std::move(tChunkChecksumV4_);
   }
   tChunkChecksumV4_.reset();
 #endif // ENABLE_MESSAGE_DIGEST
@@ -402,7 +404,7 @@ void MetalinkParserController::newChunkChecksumTransaction()
   if(!tEntry_) {
     return;
   }
-  tChunkChecksum_.reset(new ChunkChecksum());
+  tChunkChecksum_ = make_unique<ChunkChecksum>();
   tempChunkChecksums_.clear();
 #endif // ENABLE_MESSAGE_DIGEST
 }
@@ -493,14 +495,15 @@ void MetalinkParserController::commitChunkChecksumTransaction()
   if(!tEntry_->chunkChecksum ||
      MessageDigest::isStronger(tChunkChecksum_->getHashType(),
                                tEntry_->chunkChecksum->getHashType())) {
-    std::sort(tempChunkChecksums_.begin(), tempChunkChecksums_.end());
+    std::sort(std::begin(tempChunkChecksums_), std::end(tempChunkChecksums_));
     std::vector<std::string> pieceHashes;
-    std::transform(tempChunkChecksums_.begin(), tempChunkChecksums_.end(),
+    std::transform(std::begin(tempChunkChecksums_),
+                   std::end(tempChunkChecksums_),
                    std::back_inserter(pieceHashes),
                    [](const std::pair<size_t, std::string>& p)
                    { return p.second; });
-    tChunkChecksum_->setPieceHashes(pieceHashes);
-    tEntry_->chunkChecksum = tChunkChecksum_;
+    tChunkChecksum_->setPieceHashes(std::move(pieceHashes));
+    tEntry_->chunkChecksum = std::move(tChunkChecksum_);
   }
   tChunkChecksum_.reset();
 #endif // ENABLE_MESSAGE_DIGEST
@@ -518,7 +521,7 @@ void MetalinkParserController::newSignatureTransaction()
   if(!tEntry_) {
     return;
   }
-  tSignature_.reset(new Signature());
+  tSignature_ = make_unique<Signature>();
 }
 
 void MetalinkParserController::setTypeOfSignature(const std::string& type)
@@ -550,8 +553,7 @@ void MetalinkParserController::commitSignatureTransaction()
   if(!tSignature_) {
     return;
   }
-  tEntry_->setSignature(tSignature_);
-  tSignature_.reset();
+  tEntry_->setSignature(std::move(tSignature_));
 }
 
 void MetalinkParserController::cancelSignatureTransaction()
@@ -564,7 +566,7 @@ void MetalinkParserController::newMetaurlTransaction()
   if(!tEntry_) {
     return;
   }
-  tMetaurl_.reset(new MetalinkMetaurl());
+  tMetaurl_ = make_unique<MetalinkMetaurl>();
 }
 
 void MetalinkParserController::setURLOfMetaurl(const std::string& url)
@@ -619,7 +621,7 @@ void MetalinkParserController::commitMetaurlTransaction()
   }
 #ifdef ENABLE_BITTORRENT
   if(tMetaurl_->mediatype == MetalinkMetaurl::MEDIATYPE_TORRENT) {
-    tEntry_->metaurls.push_back(tMetaurl_);
+    tEntry_->metaurls.push_back(std::move(tMetaurl_));
   }
 #endif // ENABLE_BITTORRENT
   tMetaurl_.reset();
