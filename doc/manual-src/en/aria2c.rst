@@ -1144,8 +1144,9 @@ Advanced Options
 .. option:: --force-save[=true|false]
 
   Save download with :option:`--save-session <--save-session>` option
-  even if the download is completed or removed. This may be useful to
-  save BitTorrent seeding which is recognized as completed state.
+  even if the download is completed or removed. This option also saves
+  control file in that situations. This may be useful to save
+  BitTorrent seeding which is recognized as completed state.
   Default: ``false``
 
 .. option:: --gid=<GID>

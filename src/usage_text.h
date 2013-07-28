@@ -921,8 +921,10 @@
 #define TEXT_FORCE_SAVE                         \
   _(" --force-save[=true|false]    Save download with --save-session option even\n" \
     "                              if the download is completed or removed. This\n" \
-    "                              may be useful to save BitTorrent seeding which\n" \
-    "                              is recognized as completed state.")
+    "                              option also saves control file in that\n" \
+    "                              situations. This may be useful to save\n" \
+    "                              BitTorrent seeding which is recognized as\n" \
+    "                              completed state.")
 #define TEXT_DISK_CACHE                         \
   _(" --disk-cache=SIZE            Enable disk cache. If SIZE is 0, the disk cache\n" \
     "                              is disabled. This feature caches the downloaded\n" \

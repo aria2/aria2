@@ -334,7 +334,8 @@ public:
            !group->getDownloadContext()->isChecksumVerificationNeeded()) {
           group->applyLastModifiedTimeToLocalFiles();
           group->reportDownloadFinished();
-          if(group->allDownloadFinished()) {
+          if(group->allDownloadFinished() &&
+             !group->getOption()->getAsBool(PREF_FORCE_SAVE)) {
             group->removeControlFile();
             saveSignature(group);
           } else {
@@ -517,11 +518,10 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
 
 void RequestGroupMan::save()
 {
-  for(RequestGroupList::iterator itr = requestGroups_.begin(),
-        eoi = requestGroups_.end(); itr != eoi; ++itr) {
-    const std::shared_ptr<RequestGroup>& rg = *itr;
+  for(auto& rg : requestGroups_) {
     if(rg->allDownloadFinished() &&
-       !rg->getDownloadContext()->isChecksumVerificationNeeded()) {
+       !rg->getDownloadContext()->isChecksumVerificationNeeded() &&
+       !rg->getOption()->getAsBool(PREF_FORCE_SAVE)) {
       rg->removeControlFile();
     } else {
       try {
