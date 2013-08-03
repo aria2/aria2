@@ -71,7 +71,8 @@ std::unique_ptr<ValueBase> RpcMethod::createErrorResponse
 RpcResponse RpcMethod::execute(RpcRequest req, DownloadEngine* e)
 {
   try {
-    return RpcResponse(0, process(req, e), std::move(req.id));
+    auto r = process(req, e);
+    return RpcResponse(0, std::move(r), std::move(req.id));
   } catch(RecoverableException& ex) {
     A2_LOG_DEBUG_EX(EX_EXCEPTION_CAUGHT, ex);
     return RpcResponse(1, createErrorResponse(ex, req), std::move(req.id));
