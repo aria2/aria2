@@ -179,9 +179,14 @@ int LibuvEventPoll::translateEvents(EventPoll::EventType events)
 
 void LibuvEventPoll::pollCallback(KPoll* poll, int status, int events)
 {
+#if HAVE_UV_LAST_ERROR
   if (status == -1) {
     uv_err_t err = uv_last_error(loop_);
     switch (err.code) {
+#else
+  if (status < 0) {
+    switch (status) {
+#endif
       case UV_EAGAIN:
       case UV_EINTR:
         return;

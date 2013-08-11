@@ -220,6 +220,7 @@ int main() { return uv_poll_init_socket(); }
 
   if test "x$have_libuv" = "xyes"; then
     AC_DEFINE([HAVE_LIBUV], [1], [Define to 1 if you have libuv.])
+    AC_CHECK_FUNCS([uv_last_error])
   elif test "x$with_libuv_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([libuv])
   fi
