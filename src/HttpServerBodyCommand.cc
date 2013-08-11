@@ -227,8 +227,8 @@ bool HttpServerBodyCommand::execute()
             return true;
           }
           A2_LOG_INFO(fmt("Executing RPC method %s", req.methodName.c_str()));
-          auto res = rpc::getMethod(req.methodName)
-            ->execute(std::move(req), e_);
+          const auto meth = rpc::getMethod(req.methodName);
+          auto res = meth->execute(std::move(req), e_);
           bool gzip = httpServer_->supportsGZip();
           std::string responseData = rpc::toXml(res, gzip);
           httpServer_->feedResponse(std::move(responseData), "text/xml");
