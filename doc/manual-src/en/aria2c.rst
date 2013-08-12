@@ -1089,7 +1089,7 @@ Advanced Options
   unit and it is reordered by the offset of the file.  If hash
   checking is involved and the data are cached in memory, we don't
   need to read them from the disk.  SIZE can include ``K`` or ``M``
-  (1K = 1024, 1M = 1024K). Default: ``0``
+  (1K = 1024, 1M = 1024K). Default: ``16M``
 
 .. option:: --download-result=<OPT>
 
