@@ -671,4 +671,4 @@ LDADD = libaria2.la @LIBINTL@ @ALLOCA@ #-lprofiler
 AM_CPPFLAGS =  -Wall\
 	-I$(top_srcdir)/lib -I$(top_srcdir)/intl\
 	-I$(srcdir)/includes -I$(builddir)/includes\
-	-DLOCALEDIR=\"@localedir@\" -DCA_BUNDLE=\"$(ca_bundle)\" @DEFS@ #-pg
+	-DLOCALEDIR=\"@localedir@\" @DEFS@ #-pg

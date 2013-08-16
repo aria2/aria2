@@ -1144,7 +1144,11 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     OptionHandler* op(new DefaultOptionHandler
                       (PREF_CA_CERTIFICATE,
                        TEXT_CA_CERTIFICATE,
+#ifdef CA_BUNDLE
                        CA_BUNDLE,
+#else
+                       "",
+#endif
                        PATH_TO_FILE));
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);

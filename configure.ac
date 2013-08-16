@@ -52,7 +52,9 @@ ARIA2_ARG_ENABLE([libaria2])
 
 AC_ARG_WITH([ca-bundle],
   AS_HELP_STRING([--with-ca-bundle=FILE],[Use FILE as default CA bundle.]),
-  [ca_bundle=$withval], [ca_bundle=""])
+  [AC_DEFINE_UNQUOTED([CA_BUNDLE], ["$withval"], [Define to choose default CA bundle.])
+   ca_bundle=$withval
+  ], [])
 
 AC_ARG_WITH([disk-cache],
   AS_HELP_STRING([--with-disk-cache=SIZE],[Use SIZE as the default disk-cache size.]),
@@ -405,7 +407,6 @@ if test "x$have_appletls" = "xyes" || test "x$have_libgnutls" = "xyes" || test "
   have_ssl="yes"
   AC_DEFINE([ENABLE_SSL], [1], [Define to 1 if ssl support is enabled.])
   AM_CONDITIONAL([ENABLE_SSL], true)
-  AC_SUBST([ca_bundle])
 else
   AM_CONDITIONAL([ENABLE_SSL], false)
 fi
