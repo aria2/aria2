@@ -54,6 +54,11 @@ AC_ARG_WITH([ca-bundle],
   AS_HELP_STRING([--with-ca-bundle=FILE],[Use FILE as default CA bundle.]),
   [ca_bundle=$withval], [ca_bundle=""])
 
+AC_ARG_WITH([disk-cache],
+  AS_HELP_STRING([--with-disk-cache=SIZE],[Use SIZE as the default disk-cache size.]),
+  [AC_DEFINE_UNQUOTED([DEFAULT_DISK_CACHE], ["$withval"], [Define to choose default disk-cache size])],
+  [])
+
 AC_ARG_WITH([bashcompletiondir],
   AS_HELP_STRING([--with-bashcompletiondir=DIR],
                  [Directory to install bash_completion file]),

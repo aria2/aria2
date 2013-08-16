@@ -210,7 +210,11 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     OptionHandler* op(new UnitNumberOptionHandler
                       (PREF_DISK_CACHE,
                        TEXT_DISK_CACHE,
+#ifdef DEFAULT_DISK_CACHE
+                       DEFAULT_DISK_CACHE,
+#else
                        "16M",
+#endif
                        0));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
