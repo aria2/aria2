@@ -86,21 +86,44 @@ extern volatile sig_atomic_t globalHaltRequested;
 } // namespace global
 
 namespace {
-void handler(int signal) {
+
+#ifdef _WIN32
+static const DWORD mainThread = GetCurrentThreadId();
+#endif
+
+static void handler(int signal)
+{
   if(
 #ifdef SIGHUP
      signal == SIGHUP ||
 #endif // SIGHUP
      signal == SIGTERM) {
-    if(global::globalHaltRequested == 0 || global::globalHaltRequested == 2) {
+    if(global::globalHaltRequested <= 2) {
       global::globalHaltRequested = 3;
     }
-  } else {
-    if(global::globalHaltRequested == 0) {
-      global::globalHaltRequested = 1;
-    } else if(global::globalHaltRequested == 2) {
-      global::globalHaltRequested = 3;
+#ifdef _WIN32
+    if (::GetCurrentThreadId() != mainThread) {
+      // SIGTERM may arrive on another thread (via SetConsoleCtrlHandler), and
+      // the process will be forcefully terminated as soon as that thread is
+      // done. So better make sure it isn't done prematurely. ;)
+      while (global::globalHaltRequested != 5) {
+        ::Sleep(100); // Yeah, semi-busy waiting for now.
+      }
     }
+#endif
+    return;
+  }
+
+  // SIGINT
+
+  if (global::globalHaltRequested == 0) {
+    global::globalHaltRequested = 1;
+    return;
+  }
+
+  if (global::globalHaltRequested == 2) {
+    global::globalHaltRequested = 3;
+    return;
   }
 }
 } // namespace

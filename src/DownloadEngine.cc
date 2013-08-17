@@ -83,6 +83,7 @@ namespace global {
 // 2 ... stop signal processed by DownloadEngine
 // 3 ... 2nd stop signal(force shutdown) detected
 // 4 ... 2nd stop signal processed by DownloadEngine
+// 5 ... main loop exited
 volatile sig_atomic_t globalHaltRequested = 0;
 
 } // namespace global
@@ -141,6 +142,13 @@ void executeCommand(std::deque<std::unique_ptr<Command>>& commands,
 
 int DownloadEngine::run(bool oneshot)
 {
+  class GHR {
+    public:
+      ~GHR() {
+        global::globalHaltRequested = 5;
+      }
+  } ghr;
+
   while(!commands_.empty() || !routineCommands_.empty()) {
     if(!commands_.empty()) {
       waitData();
