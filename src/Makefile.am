@@ -250,7 +250,8 @@ SRCS =  option_processing.cc\
 	HttpRequestConnectChain.h\
 	HttpProxyRequestConnectChain.h\
 	FtpNegotiationConnectChain.h\
-	FtpTunnelRequestConnectChain.h
+	FtpTunnelRequestConnectChain.h\
+	Lock.h
 
 # Android NDK R8e does not provide ftruncate64. Use assembly code from
 # android source code and link it.
