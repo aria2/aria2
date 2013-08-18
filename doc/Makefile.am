@@ -1,4 +1,6 @@
+if HAVE_SPHINXBUILD
 SUBDIRS = manual-src
+endif #SPHINXBUILD
 
 doc_xmlrpcdir = $(docdir)/xmlrpc
 dist_doc_xmlrpc_DATA = xmlrpc/aria2mon \
