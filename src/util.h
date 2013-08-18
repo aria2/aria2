@@ -334,8 +334,9 @@ char toLowerChar(char c);
 
 bool isNumericHost(const std::string& name);
 
-void setGlobalSignalHandler(int signal, sigset_t* mask, void (*handler)(int),
-                            int flags);
+typedef void(*signal_handler_t)(int);
+void setGlobalSignalHandler(int signal, sigset_t* mask,
+                            signal_handler_t handler, int flags);
 
 std::string getHomeDir();
 

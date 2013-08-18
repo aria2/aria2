@@ -1237,8 +1237,8 @@ bool isNumericHost(const std::string& name)
 namespace {
   static Lock win_signal_lock;
 
-  static void(*win_int_handler)(int) = nullptr;
-  static void(*win_term_handler)(int) = nullptr;
+  static signal_handler_t win_int_handler = nullptr;
+  static signal_handler_t win_term_handler = nullptr;
 
   static void win_ign_handler(int) {}
 
@@ -1279,7 +1279,7 @@ namespace {
 }
 #endif
 
-void setGlobalSignalHandler(int sig, sigset_t* mask, void (*handler)(int),
+void setGlobalSignalHandler(int sig, sigset_t* mask, signal_handler_t handler,
                             int flags) {
 #if _WIN32
   if (sig == SIGINT || sig == SIGTERM) {
