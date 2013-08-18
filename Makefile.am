@@ -11,8 +11,9 @@ dist_doc_DATA = README README.rst
 
 if HAVE_RST2HTML
 dist_doc_DATA += README.html
+
 README.html: README.rst
-	$(RST2HTML) README.rst > README.html
+	$(RST2HTML)  $< > README.html
 endif # HAVE_RST2HTML
 
 dist_noinst_DATA = LICENSE.OpenSSL
