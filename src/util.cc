@@ -84,6 +84,7 @@
 #include "BufferedFile.h"
 #include "SocketCore.h"
 #include "prefs.h"
+#include "Lock.h"
 
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigest.h"
@@ -1232,8 +1233,83 @@ bool isNumericHost(const std::string& name)
   return true;
 }
 
-void setGlobalSignalHandler(int sig, sigset_t* mask, void (*handler)(int),
+#if _WIN32
+namespace {
+  static Lock win_signal_lock;
+
+  static signal_handler_t win_int_handler = nullptr;
+  static signal_handler_t win_term_handler = nullptr;
+
+  static void win_ign_handler(int) {}
+
+  static BOOL WINAPI HandlerRoutine(DWORD ctrlType)
+  {
+    void(*handler)(int) = nullptr;
+    switch (ctrlType) {
+      case CTRL_C_EVENT:
+      case CTRL_BREAK_EVENT:
+        {
+          // Handler will be called on a new/different thread.
+          LockGuard lg(win_signal_lock);
+          handler = win_int_handler;
+        }
+
+        if (handler) {
+          handler(SIGINT);
+          return TRUE;
+        }
+        return FALSE;
+
+      case CTRL_LOGOFF_EVENT:
+      case CTRL_CLOSE_EVENT:
+      case CTRL_SHUTDOWN_EVENT:
+        {
+          // Handler will be called on a new/different thread.
+          LockGuard lg(win_signal_lock);
+          handler = win_term_handler;;
+        }
+        if (handler) {
+          handler(SIGTERM);
+          return TRUE;
+        }
+        return FALSE;
+    }
+    return FALSE;
+  }
+}
+#endif
+
+void setGlobalSignalHandler(int sig, sigset_t* mask, signal_handler_t handler,
                             int flags) {
+#if _WIN32
+  if (sig == SIGINT || sig == SIGTERM) {
+    // Handler will be called on a new/different thread.
+    LockGuard lg(win_signal_lock);
+
+    if (handler == SIG_DFL) {
+      handler = nullptr;
+    }
+    else if (handler == SIG_IGN) {
+      handler = win_ign_handler;
+    }
+    // Not yet in use: add console handler.
+    if (handler && !win_int_handler && !win_term_handler) {
+      ::SetConsoleCtrlHandler(HandlerRoutine, TRUE);
+    }
+    if (sig == SIGINT) {
+      win_int_handler = handler;
+    }
+    else {
+      win_term_handler = handler;
+    }
+    // No handlers set: remove.
+    if (!win_int_handler && !win_term_handler) {
+      ::SetConsoleCtrlHandler(HandlerRoutine, FALSE);
+    }
+    return;
+  }
+#endif
+
 #ifdef HAVE_SIGACTION
   struct sigaction sigact;
   sigact.sa_handler = handler;
