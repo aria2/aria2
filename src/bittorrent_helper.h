@@ -291,7 +291,7 @@ void extractPeer(const ValueBase* peerData, int family, OutputIterator dest)
           if(p.first.empty()) {
             continue;
           }
-          *dest_++ = std::shared_ptr<Peer>(new Peer(p.first, p.second));
+          *dest_++ = std::make_shared<Peer>(p.first, p.second);
         }
       }
     }
@@ -315,7 +315,7 @@ void extractPeer(const ValueBase* peerData, int family, OutputIterator dest)
         if(!ip || !port || !(0 < port->i() && port->i() < 65536)) {
           continue;
         }
-        *dest_ = std::shared_ptr<Peer>(new Peer(ip->s(), port->i()));
+        *dest_ = std::make_shared<Peer>(ip->s(), port->i());
         ++dest_;
       }
     }
