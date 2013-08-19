@@ -50,8 +50,7 @@ class StreamFilter {
 private:
   std::unique_ptr<StreamFilter> delegate_;
 public:
-  StreamFilter
-  (std::unique_ptr<StreamFilter> delegate = std::unique_ptr<StreamFilter>{});
+  StreamFilter(std::unique_ptr<StreamFilter> delegate = nullptr);
 
   virtual ~StreamFilter();
 

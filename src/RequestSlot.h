@@ -45,7 +45,7 @@ namespace aria2 {
 class RequestSlot {
 public:
   RequestSlot(size_t index, int32_t begin, int32_t length, size_t blockIndex,
-              const std::shared_ptr<Piece>& piece = std::shared_ptr<Piece>())
+              const std::shared_ptr<Piece>& piece = nullptr)
     : dispatchedTime_(global::wallclock()),
       index_(index), begin_(begin), length_(length), blockIndex_(blockIndex),
       piece_(piece)

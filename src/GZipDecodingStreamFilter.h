@@ -52,7 +52,7 @@ private:
   static const size_t OUTBUF_LENGTH = 16*1024;
 public:
   GZipDecodingStreamFilter
-  (std::unique_ptr<StreamFilter> delegate = std::unique_ptr<StreamFilter>{});
+  (std::unique_ptr<StreamFilter> delegate = nullptr);
 
   virtual ~GZipDecodingStreamFilter();
 

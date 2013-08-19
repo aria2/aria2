@@ -86,7 +86,7 @@ namespace aria2 {
 namespace {
 std::unique_ptr<StreamFilter> getTransferEncodingStreamFilter
 (HttpResponse* httpResponse,
- std::unique_ptr<StreamFilter> delegate = std::unique_ptr<StreamFilter>{})
+ std::unique_ptr<StreamFilter> delegate = nullptr)
 {
   if(httpResponse->isTransferEncodingSpecified()) {
     auto filter = httpResponse->getTransferEncodingStreamFilter();
@@ -106,7 +106,7 @@ std::unique_ptr<StreamFilter> getTransferEncodingStreamFilter
 namespace {
 std::unique_ptr<StreamFilter> getContentEncodingStreamFilter
 (HttpResponse* httpResponse,
- std::unique_ptr<StreamFilter> delegate = std::unique_ptr<StreamFilter>{})
+ std::unique_ptr<StreamFilter> delegate = nullptr)
 {
   if(httpResponse->isContentEncodingSpecified()) {
     auto filter = httpResponse->getContentEncodingStreamFilter();
