@@ -122,13 +122,14 @@ int cookieRowMapper(void* data, int columns, char** values, char** names)
   if(!values[6] || !parseTime(lastAccessTime, values[6])) {
     return 0;
   }
+  bool numericHost = util::isNumericHost(cookieDomain);
   cookies.push_back(make_unique<Cookie>
                     (std::move(cookieName),
                      toString(values[5]), // value
                      expiryTime,
                      true, // persistent
                      std::move(cookieDomain),
-                     util::isNumericHost(cookieDomain) ||
+                     numericHost ||
                      (values[0] && values[0][0] != '.'), // hostOnly
                      std::move(cookiePath),
                      values[2] && strcmp(values[2], "1") == 0, //secure
