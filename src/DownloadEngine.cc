@@ -140,15 +140,20 @@ void executeCommand(std::deque<std::unique_ptr<Command>>& commands,
 }
 } // namespace
 
+namespace {
+class GHR {
+public:
+  GHR() {}
+  ~GHR()
+  {
+    global::globalHaltRequested = 5;
+  }
+};
+} // namespace
+
 int DownloadEngine::run(bool oneshot)
 {
-  class GHR {
-    public:
-      ~GHR() {
-        global::globalHaltRequested = 5;
-      }
-  } ghr;
-
+  GHR ghr;
   while(!commands_.empty() || !routineCommands_.empty()) {
     if(!commands_.empty()) {
       waitData();
