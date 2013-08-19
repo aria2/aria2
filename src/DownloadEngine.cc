@@ -122,7 +122,7 @@ void executeCommand(std::deque<std::unique_ptr<Command>>& commands,
 {
   size_t max = commands.size();
   for(size_t i = 0; i < max; ++i) {
-    std::unique_ptr<Command> com = std::move(commands.front());
+    auto com = std::move(commands.front());
     commands.pop_front();
     if(com->statusMatch(statusFilter)) {
       com->transitStatus();

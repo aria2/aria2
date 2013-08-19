@@ -77,10 +77,9 @@ void WebSocketSessionMan::addNotification
   params->append(std::move(eventSpec));
   dict->put("params", std::move(params));
   std::string msg = json::encode(dict.get());
-  for(WebSocketSessions::const_iterator i = sessions_.begin(),
-        eoi = sessions_.end(); i != eoi; ++i) {
-    (*i)->addTextMessage(msg);
-    (*i)->getCommand()->updateWriteCheck();
+  for(auto& session : sessions_) {
+    session->addTextMessage(msg);
+    session->getCommand()->updateWriteCheck();
   }
 }
 
