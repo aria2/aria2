@@ -107,7 +107,7 @@ void WatchProcessCommand::process()
   mib[2]=KERN_PROC_PID;
   mib[3]=pid_;
 
-  int ret = sysctl(mib, MIBSIZE, &kp, &len, NULL, 0);
+  int ret = sysctl(mib, MIBSIZE, &kp, &len, nullptr, 0);
   if (ret == -1 || len <= 0) {
     waiting = false;
   }

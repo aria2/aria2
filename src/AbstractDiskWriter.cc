@@ -64,7 +64,7 @@ AbstractDiskWriter::AbstractDiskWriter(const std::string& filename)
 #endif // !__MINGW32__
     readOnly_(false),
     enableMmap_(false),
-    mapaddr_(0),
+    mapaddr_(nullptr),
     maplen_(0)
 
 {}
@@ -155,7 +155,7 @@ void AbstractDiskWriter::closeFile()
     } else {
       A2_LOG_INFO(fmt("Unmapping file %s succeeded", filename_.c_str()));
     }
-    mapaddr_ = 0;
+    mapaddr_ = nullptr;
     maplen_ = 0;
   }
 #endif // HAVE_MMAP || defined __MINGW32__
@@ -356,7 +356,7 @@ void AbstractDiskWriter::ensureMmapWrite(size_t len, int64_t offset)
           A2_LOG_ERROR(fmt("Unmapping file %s failed: %s",
                            filename_.c_str(), fileStrerror(errNum).c_str()));
         }
-        mapaddr_ = 0;
+        mapaddr_ = nullptr;
         maplen_ = 0;
         enableMmap_ = false;
       }
@@ -381,7 +381,7 @@ void AbstractDiskWriter::ensureMmapWrite(size_t len, int64_t offset)
         }
 #else // !__MINGW32__
         mapaddr_ = reinterpret_cast<unsigned char*>
-          (mmap(0, size(), PROT_READ | PROT_WRITE, MAP_SHARED, fd_, 0));
+          (mmap(nullptr, size(), PROT_READ | PROT_WRITE, MAP_SHARED, fd_, 0));
         if(!mapaddr_) {
           errNum = errno;
         }

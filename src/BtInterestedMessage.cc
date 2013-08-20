@@ -43,7 +43,7 @@ const char BtInterestedMessage::NAME[] = "interested";
 
 BtInterestedMessage::BtInterestedMessage()
   : ZeroBtMessage(ID, NAME),
-    peerStorage_(0)
+    peerStorage_(nullptr)
 {}
 
 BtInterestedMessage::~BtInterestedMessage() {}

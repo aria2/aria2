@@ -91,7 +91,7 @@ DefaultBtInteractive::DefaultBtInteractive
     downloadContext_(downloadContext),
     peer_(peer),
     metadataGetMode_(false),
-    localNode_(0),
+    localNode_(nullptr),
     allowedFastSetSize_(10),
     haveTimer_(global::wallclock()),
     keepAliveTimer_(global::wallclock()),
@@ -104,7 +104,7 @@ DefaultBtInteractive::DefaultBtInteractive
     dhtEnabled_(false),
     numReceivedMessage_(0),
     maxOutstandingRequest_(DEFAULT_MAX_OUTSTANDING_REQUEST),
-    requestGroupMan_(0),
+    requestGroupMan_(nullptr),
     tcpPort_(0),
     haveLastSent_(global::wallclock())
 {}

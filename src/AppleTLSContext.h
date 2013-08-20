@@ -51,7 +51,7 @@ public:
   AppleTLSContext(TLSSessionSide side)
     : side_(side),
       verifyPeer_(true),
-      credentials_(0)
+      credentials_(nullptr)
   {}
 
   virtual ~AppleTLSContext();

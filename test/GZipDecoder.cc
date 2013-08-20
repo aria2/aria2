@@ -40,7 +40,7 @@ namespace aria2 {
 
 const std::string GZipDecoder::NAME("GZipDecoder");
 
-GZipDecoder::GZipDecoder():strm_(0), finished_(false) {}
+GZipDecoder::GZipDecoder():strm_(nullptr), finished_(false) {}
 
 GZipDecoder::~GZipDecoder()
 {
@@ -69,7 +69,7 @@ void GZipDecoder::release()
   if(strm_) {
     inflateEnd(strm_);
     delete strm_;
-    strm_ = 0;
+    strm_ = nullptr;
   }
 }
 

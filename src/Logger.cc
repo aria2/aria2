@@ -133,7 +133,7 @@ void writeHeader
 (Output& fp, Logger::LEVEL level, const char* sourceFile, int lineNum)
 {
   struct timeval tv;
-  gettimeofday(&tv, 0);
+  gettimeofday(&tv, nullptr);
   char datestr[20]; // 'YYYY-MM-DD hh:mm:ss'+'\0' = 20 bytes
   struct tm tm;
   //tv.tv_sec may not be of type time_t.
@@ -172,7 +172,7 @@ template<typename Output>
 void writeHeaderConsole(Output& fp, Logger::LEVEL level, bool useColor)
 {
   struct timeval tv;
-  gettimeofday(&tv, 0);
+  gettimeofday(&tv, nullptr);
   char datestr[15]; // 'MM/DD hh:mm:ss'+'\0' = 15 bytes
   struct tm tm;
   //tv.tv_sec may not be of type time_t.

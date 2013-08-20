@@ -47,7 +47,7 @@ private:
   bool hashUpdate_;
   size_t bytesProcessed_;
 public:
-  SinkStreamFilter(WrDiskCache* wrDiskCache = 0, bool hashUpdate = false);
+  SinkStreamFilter(WrDiskCache* wrDiskCache = nullptr, bool hashUpdate = false);
 
   virtual void init() CXX11_OVERRIDE {}
 

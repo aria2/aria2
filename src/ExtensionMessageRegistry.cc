@@ -49,7 +49,7 @@ namespace {
 const char* EXTENSION_NAMES[] = {
   "ut_metadata",
   "ut_pex",
-  0
+  nullptr
 };
 } // namespace
 
@@ -63,7 +63,7 @@ const char* ExtensionMessageRegistry::getExtensionName(uint8_t id) const
 {
   int i;
   if(id == 0) {
-    return 0;
+    return nullptr;
   }
   for(i = 0; i < MAX_EXTENSION; ++i) {
     if(extensions_[i] == id) {
@@ -93,7 +93,7 @@ void ExtensionMessageRegistry::setExtensions(const Extensions& extensions)
 const char* strBtExtension(int key)
 {
   if(key >= ExtensionMessageRegistry::MAX_EXTENSION) {
-    return 0;
+    return nullptr;
   } else {
     return EXTENSION_NAMES[key];
   }

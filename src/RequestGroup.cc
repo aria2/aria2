@@ -141,15 +141,15 @@ RequestGroup::RequestGroup(const std::shared_ptr<GroupId>& gid,
     fileNotFoundCount_(0),
     timeout_(option->getAsInt(PREF_TIMEOUT)),
 #ifdef ENABLE_BITTORRENT
-    btRuntime_(0),
-    peerStorage_(0),
+    btRuntime_(nullptr),
+    peerStorage_(nullptr),
 #endif // ENABLE_BITTORRENT
     inMemoryDownload_(false),
     maxDownloadSpeedLimit_(option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT)),
     maxUploadSpeedLimit_(option->getAsInt(PREF_MAX_UPLOAD_LIMIT)),
     lastErrorCode_(error_code::UNDEFINED),
     belongsToGID_(0),
-    requestGroupMan_(0),
+    requestGroupMan_(nullptr),
     resumeFailureCount_(0)
 {
   fileAllocationEnabled_ = option_->get(PREF_FILE_ALLOCATION) != V_NONE;
@@ -314,7 +314,7 @@ void RequestGroup::createInitialCommand
         }
       }
 
-      DefaultBtProgressInfoFile* progressInfoFilePtr = 0;
+      DefaultBtProgressInfoFile* progressInfoFilePtr = nullptr;
       std::shared_ptr<BtProgressInfoFile> progressInfoFile;
       if(!metadataGetMode) {
         progressInfoFilePtr = new DefaultBtProgressInfoFile(downloadContext_,
@@ -997,8 +997,8 @@ void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
 {
 #ifdef ENABLE_BITTORRENT
   e->getBtRegistry()->remove(gid_->getNumericId());
-  btRuntime_ = 0;
-  peerStorage_ = 0;
+  btRuntime_ = nullptr;
+  peerStorage_ = nullptr;
 #endif // ENABLE_BITTORRENT
   if(pieceStorage_) {
     pieceStorage_->removeAdvertisedPiece(0);

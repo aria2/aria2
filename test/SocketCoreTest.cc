@@ -87,7 +87,7 @@ void SocketCoreTest::testInetNtop()
   {
     std::string s = "192.168.0.1";
     addrinfo* res;
-    CPPUNIT_ASSERT_EQUAL(0, callGetaddrinfo(&res, s.c_str(), 0, AF_INET,
+    CPPUNIT_ASSERT_EQUAL(0, callGetaddrinfo(&res, s.c_str(), nullptr, AF_INET,
                                             SOCK_STREAM, 0, 0));
     std::unique_ptr<addrinfo, decltype(&freeaddrinfo)> resDeleter
       (res, freeaddrinfo);
@@ -100,7 +100,7 @@ void SocketCoreTest::testInetNtop()
   {
     std::string s = "2001:db8::2:1";
     addrinfo* res;
-    CPPUNIT_ASSERT_EQUAL(0, callGetaddrinfo(&res, s.c_str(), 0, AF_INET6,
+    CPPUNIT_ASSERT_EQUAL(0, callGetaddrinfo(&res, s.c_str(), nullptr, AF_INET6,
                                             SOCK_STREAM, 0, 0));
     std::unique_ptr<addrinfo, decltype(&freeaddrinfo)> resDeleter
       (res, freeaddrinfo);

@@ -103,7 +103,7 @@ bool HttpListenCommand::bindPort(uint16_t port)
     if(e_->getOption()->getAsBool(PREF_RPC_LISTEN_ALL)) {
       flags = AI_PASSIVE;
     }
-    serverSocket_->bind(0, port, family_, flags);
+    serverSocket_->bind(nullptr, port, family_, flags);
     serverSocket_->beginListen();
     A2_LOG_INFO(fmt(MSG_LISTENING_PORT,
                     getCuid(), port));

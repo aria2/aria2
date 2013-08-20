@@ -78,7 +78,7 @@ void GZipDecodingStreamFilter::release()
   if(strm_) {
     inflateEnd(strm_);
     delete strm_;
-    strm_ = 0;
+    strm_ = nullptr;
   }
 }
 

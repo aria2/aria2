@@ -102,7 +102,7 @@ namespace {
   std::string errToString(OSStatus err)
   {
     std::string rv = "Unkown error";
-    CFStringRef cerr = SecCopyErrorMessageString(err, 0);
+    CFStringRef cerr = SecCopyErrorMessageString(err, nullptr);
     if (cerr) {
       size_t len = CFStringGetLength(cerr) * 4;
       char *buf = new char[len];
@@ -118,7 +118,7 @@ namespace {
   bool checkIdentity(const SecIdentityRef id, const std::string& fingerPrint,
                      const std::vector<std::string> supported)
   {
-    SecCertificateRef ref = 0;
+    SecCertificateRef ref = nullptr;
     if (SecIdentityCopyCertificate(id, &ref) != errSecSuccess) {
       A2_LOG_ERROR("Failed to get a certref!");
       return false;
@@ -155,7 +155,7 @@ AppleTLSContext::~AppleTLSContext()
 {
   if (credentials_) {
     CFRelease(credentials_);
-    credentials_ = 0;
+    credentials_ = nullptr;
   }
 }
 
@@ -198,7 +198,7 @@ bool AppleTLSContext::tryAsFingerprint(const std::string& fingerprint)
   A2_LOG_DEBUG(fmt("Looking for cert with fingerprint %s", fp.c_str()));
 
   // Build and run the KeyChain the query.
-  SecPolicyRef policy = SecPolicyCreateSSL(true, 0);
+  SecPolicyRef policy = SecPolicyCreateSSL(true, nullptr);
   if (!policy) {
     A2_LOG_ERROR("Failed to create SecPolicy");
     return false;
@@ -210,8 +210,8 @@ bool AppleTLSContext::tryAsFingerprint(const std::string& fingerprint)
     policy,
     kSecMatchLimitAll
   };
-  CFDictionaryRef query = CFDictionaryCreate(0, query_keys, query_values,
-                                             4, 0, 0);
+  CFDictionaryRef query = CFDictionaryCreate(nullptr, query_keys, query_values,
+                                             4, nullptr, nullptr);
   if (!query) {
     A2_LOG_ERROR("Failed to create identity query");
     return false;

@@ -104,7 +104,7 @@ const char* strSupportedFeature(int feature)
 #ifdef ENABLE_ASYNC_DNS
     return "Async DNS";
 #else // !ENABLE_ASYNC_DNS
-    return 0;
+    return nullptr;
 #endif // !ENABLE_ASYNC_DNS
     break;
 
@@ -120,7 +120,7 @@ const char* strSupportedFeature(int feature)
 #ifdef HAVE_SQLITE3
     return "Firefox3 Cookie";
 #else // !HAVE_SQLITE3
-    return 0;
+    return nullptr;
 #endif // !HAVE_SQLITE3
     break;
 
@@ -165,7 +165,7 @@ const char* strSupportedFeature(int feature)
     break;
 
   default:
-    return 0;
+    return nullptr;
   }
 }
 

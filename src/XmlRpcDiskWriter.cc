@@ -62,7 +62,7 @@ void XmlRpcDiskWriter::writeData(const unsigned char* data, size_t len,
 
 int XmlRpcDiskWriter::finalize()
 {
-  return parser_.parseFinal(0, 0);
+  return parser_.parseFinal(nullptr, 0);
 }
 
 RpcRequest XmlRpcDiskWriter::getResult()

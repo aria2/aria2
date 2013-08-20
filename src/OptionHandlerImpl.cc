@@ -241,7 +241,7 @@ FloatNumberOptionHandler::~FloatNumberOptionHandler() {}
 void FloatNumberOptionHandler::parseArg
 (Option& option, const std::string& optarg) const
 {
-  double number = strtod(optarg.c_str(), 0);
+  double number = strtod(optarg.c_str(), nullptr);
   if((min_ < 0 || min_ <= number) && (max_ < 0 || number <= max_)) {
     option.put(pref_, optarg);
   } else {

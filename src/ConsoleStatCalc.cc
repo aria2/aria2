@@ -240,8 +240,8 @@ void printProgressSummary
     time_t now;
     struct tm* staticNowtmPtr;
     char buf[26];
-    if(time(&now) != (time_t)-1 && (staticNowtmPtr = localtime(&now)) != 0 &&
-       asctime_r(staticNowtmPtr, buf) != 0) {
+    if(time(&now) != (time_t)-1 && (staticNowtmPtr = localtime(&now)) != nullptr &&
+       asctime_r(staticNowtmPtr, buf) != nullptr) {
       char* lfptr = strchr(buf, '\n');
       if(lfptr) {
         *lfptr = '\0';

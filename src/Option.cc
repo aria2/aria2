@@ -122,7 +122,7 @@ int32_t Option::getAsInt(const Pref* pref) const {
   if(value.empty()) {
     return 0;
   } else {
-    return strtol(value.c_str(), 0, 10);
+    return strtol(value.c_str(), nullptr, 10);
   }
 }
 
@@ -131,7 +131,7 @@ int64_t Option::getAsLLInt(const Pref* pref) const {
   if(value.empty()) {
     return 0;
   } else {
-    return strtoll(value.c_str(), 0, 10);
+    return strtoll(value.c_str(), nullptr, 10);
   }
 }
 
@@ -144,7 +144,7 @@ double Option::getAsDouble(const Pref* pref) const {
   if(value.empty()) {
     return 0.0;
   } else {
-    return strtod(value.c_str(), 0);
+    return strtod(value.c_str(), nullptr);
   }
 }
 

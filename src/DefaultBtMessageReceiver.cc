@@ -119,7 +119,7 @@ std::unique_ptr<BtMessage> DefaultBtMessageReceiver::receiveMessage()
 {
   size_t dataLength = 0;
   // Give 0 to PeerConnection::receiveMessage() to prevent memcpy.
-  if(!peerConnection_->receiveMessage(0, dataLength)) {
+  if(!peerConnection_->receiveMessage(nullptr, dataLength)) {
     return nullptr;
   }
   auto msg =

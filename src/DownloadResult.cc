@@ -40,7 +40,7 @@
 namespace aria2 {
 
 DownloadResult::DownloadResult()
-  : gid(0),
+  : gid(nullptr),
     inMemoryDownload(false),
     sessionDownloadLength(0),
     sessionTime(0),

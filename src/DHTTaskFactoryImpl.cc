@@ -51,10 +51,10 @@
 namespace aria2 {
 
 DHTTaskFactoryImpl::DHTTaskFactoryImpl()
-  : routingTable_(0),
-    dispatcher_(0),
-    factory_(0),
-    taskQueue_(0),
+  : routingTable_(nullptr),
+    dispatcher_(nullptr),
+    factory_(nullptr),
+    taskQueue_(nullptr),
     timeout_(DHT_MESSAGE_TIMEOUT)
 {}
 

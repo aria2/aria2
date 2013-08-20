@@ -65,7 +65,7 @@ bool parseFile(const std::string& filename, ParserStateMachine* psm)
     }
   }
   if(nread == 0 && retval) {
-    if(ps.parseFinal(0, 0) < 0) {
+    if(ps.parseFinal(nullptr, 0) < 0) {
       retval = false;
     }
   }

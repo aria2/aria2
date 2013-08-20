@@ -129,7 +129,7 @@ public:
   // Returns true iff res_ != 0.
   bool isActive() const
   {
-    return res_ != 0;
+    return res_ != nullptr;
   }
 
   void setPeerId(const unsigned char* peerId);

@@ -49,14 +49,14 @@ namespace aria2 {
 const char BtBitfieldMessage::NAME[] = "bitfield";
 
 BtBitfieldMessage::BtBitfieldMessage():SimpleBtMessage(ID, NAME),
-                                       bitfield_(0),
+                                       bitfield_(nullptr),
                                        bitfieldLength_(0)
 {}
 
 BtBitfieldMessage::BtBitfieldMessage
 (const unsigned char* bitfield, size_t bitfieldLength):
   SimpleBtMessage(ID, NAME),
-  bitfield_(0),
+  bitfield_(nullptr),
   bitfieldLength_(0)
 {
   setBitfield(bitfield, bitfieldLength);

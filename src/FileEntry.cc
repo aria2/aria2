@@ -536,7 +536,7 @@ size_t FileEntry::setUris(const std::vector<std::string>& uris)
 bool FileEntry::addUri(const std::string& uri)
 {
   std::string peUri = util::percentEncodeMini(uri);
-  if(uri_split(NULL, peUri.c_str()) == 0) {
+  if(uri_split(nullptr, peUri.c_str()) == 0) {
     uris_.push_back(peUri);
     return true;
   } else {
@@ -547,7 +547,7 @@ bool FileEntry::addUri(const std::string& uri)
 bool FileEntry::insertUri(const std::string& uri, size_t pos)
 {
   std::string peUri = util::percentEncodeMini(uri);
-  if(uri_split(NULL, peUri.c_str()) == 0) {
+  if(uri_split(nullptr, peUri.c_str()) == 0) {
     pos = std::min(pos, uris_.size());
     uris_.insert(uris_.begin()+pos, peUri);
     return true;

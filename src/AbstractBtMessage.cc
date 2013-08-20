@@ -45,11 +45,11 @@ AbstractBtMessage::AbstractBtMessage(uint8_t id, const char* name)
     uploading_(false),
     cuid_(0),
     name_(name),
-    pieceStorage_(0),
-    dispatcher_(0),
-    messageFactory_(0),
-    requestFactory_(0),
-    peerConnection_(0),
+    pieceStorage_(nullptr),
+    dispatcher_(nullptr),
+    messageFactory_(nullptr),
+    requestFactory_(nullptr),
+    peerConnection_(nullptr),
     metadataGetMode_(false)
 {}
 

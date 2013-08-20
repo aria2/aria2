@@ -44,7 +44,7 @@
 namespace aria2 {
 
 GZipFile::GZipFile(const char* filename, const char* mode)
-  : fp_(0),
+  : fp_(nullptr),
     buflen_(1024), buf_(reinterpret_cast<char*>(malloc(buflen_)))
 {
   FILE* fp =
@@ -85,7 +85,7 @@ int GZipFile::onClose()
   int rv = 0;
   if (fp_) {
     rv = gzclose(fp_);
-    fp_ = 0;
+    fp_ = nullptr;
   }
   return rv;
 }
@@ -99,7 +99,7 @@ bool GZipFile::isError() const
 {
   int rv = 0;
   const char *e = gzerror(fp_, &rv);
-  return (e != 0 && *e != 0) || rv != 0;
+  return (e != nullptr && *e != 0) || rv != 0;
 }
 
 bool GZipFile::isEOF() const

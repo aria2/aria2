@@ -45,7 +45,7 @@ namespace aria2 {
 DHTBucketTreeNode::DHTBucketTreeNode
 (DHTBucketTreeNode* left,
  DHTBucketTreeNode* right)
-  : parent_(0),
+  : parent_(nullptr),
     left_(left),
     right_(right)
 {
@@ -53,9 +53,9 @@ DHTBucketTreeNode::DHTBucketTreeNode
 }
 
 DHTBucketTreeNode::DHTBucketTreeNode(const std::shared_ptr<DHTBucket>& bucket)
-  : parent_(0),
-    left_(0),
-    right_(0),
+  : parent_(nullptr),
+    left_(nullptr),
+    right_(nullptr),
     bucket_(bucket)
 {
   memcpy(minId_, bucket_->getMinID(), DHT_ID_LENGTH);
@@ -79,7 +79,7 @@ void DHTBucketTreeNode::resetRelation()
 DHTBucketTreeNode* DHTBucketTreeNode::dig(const unsigned char* key)
 {
   if(leaf()) {
-    return 0;
+    return nullptr;
   }
   if(left_->isInRange(key)) {
     return left_;

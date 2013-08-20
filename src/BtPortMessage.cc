@@ -55,10 +55,10 @@ const char BtPortMessage::NAME[] = "port";
 BtPortMessage::BtPortMessage(uint16_t port)
   : SimpleBtMessage(ID, NAME),
     port_(port),
-    localNode_(0),
-    routingTable_(0),
-    taskQueue_(0),
-    taskFactory_(0)
+    localNode_(nullptr),
+    routingTable_(nullptr),
+    taskQueue_(nullptr),
+    taskFactory_(nullptr)
 {}
 
 std::unique_ptr<BtPortMessage> BtPortMessage::create

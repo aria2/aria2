@@ -581,7 +581,7 @@ void MetalinkParserController::setURLOfMetaurl(const std::string& url)
 #endif // ENABLE_BITTORRENT
     {
       std::string u = uri::joinUri(baseUri_, url);
-      if(uri_split(NULL, u.c_str()) == 0) {
+      if(uri_split(nullptr, u.c_str()) == 0) {
         tMetaurl_->url = u;
       } else {
         tMetaurl_->url = url;

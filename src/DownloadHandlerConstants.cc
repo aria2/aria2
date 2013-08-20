@@ -40,7 +40,7 @@ namespace {
 const char* METALINK_EXTENSIONS[] = {
   ".metalink", // Metalink3Spec
   ".meta4", // Metalink4Spec
-  0
+  nullptr
 };
 } // namespace
 
@@ -53,7 +53,7 @@ namespace {
 const char* METALINK_CONTENT_TYPES[] = {
   "application/metalink4+xml", // Metalink4Spec
   "application/metalink+xml", // Metalink3Spec
-  0
+  nullptr
 };
 } // namespace
 
@@ -65,7 +65,7 @@ const char** getMetalinkContentTypes()
 namespace {
 const char* BT_EXTENSIONS[] = {
   ".torrent",
-  0
+  nullptr
 };
 } // namespace
 
@@ -77,7 +77,7 @@ const char** getBtExtensions()
 namespace {
 const char* BT_CONTENT_TYPES[] = {
   "application/x-bittorrent",
-  0
+  nullptr
 };
 } // namespace
 

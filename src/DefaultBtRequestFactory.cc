@@ -53,9 +53,9 @@
 namespace aria2 {
 
 DefaultBtRequestFactory::DefaultBtRequestFactory()
-  : pieceStorage_(0),
-    dispatcher_(0),
-    messageFactory_(0),
+  : pieceStorage_(nullptr),
+    dispatcher_(nullptr),
+    messageFactory_(nullptr),
     cuid_(0)
 {}
 

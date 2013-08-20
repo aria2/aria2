@@ -99,10 +99,10 @@ DownloadEngine::DownloadEngine(std::unique_ptr<EventPoll> eventPoll)
     btRegistry_(make_unique<BtRegistry>()),
 #endif // ENABLE_BITTORRENT
 #ifdef HAVE_ARES_ADDR_NODE
-    asyncDNSServers_(0),
+    asyncDNSServers_(nullptr),
 #endif // HAVE_ARES_ADDR_NODE
     dnsCache_(make_unique<DNSCache>()),
-    option_(0)
+    option_(nullptr)
 {
   unsigned char sessionId[20];
   util::generateRandomKey(sessionId);
@@ -112,7 +112,7 @@ DownloadEngine::DownloadEngine(std::unique_ptr<EventPoll> eventPoll)
 DownloadEngine::~DownloadEngine()
 {
 #ifdef HAVE_ARES_ADDR_NODE
-  setAsyncDNSServers(0);
+  setAsyncDNSServers(nullptr);
 #endif // HAVE_ARES_ADDR_NODE
 }
 

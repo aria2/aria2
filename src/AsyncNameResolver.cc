@@ -148,21 +148,21 @@ ares_addr_node* parseAsyncDNSServers(const std::string& serversOpt)
               ',',
               true /* doStrip */);
   ares_addr_node root;
-  root.next = 0;
+  root.next = nullptr;
   ares_addr_node* tail = &root;
-  ares_addr_node* node = 0;
+  ares_addr_node* node = nullptr;
   for(std::vector<std::string>::const_iterator i = servers.begin(),
         eoi = servers.end(); i != eoi; ++i) {
-    if(node == 0) {
+    if(node == nullptr) {
       node = new ares_addr_node();
     }
     size_t len = net::getBinAddr(&node->addr, (*i).c_str());
     if(len != 0) {
-      node->next = 0;
+      node->next = nullptr;
       node->family = (len == 4 ? AF_INET : AF_INET6);
       tail->next = node;
       tail = node;
-      node = 0;
+      node = nullptr;
     }
   }
   if(node) {

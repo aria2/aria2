@@ -111,7 +111,7 @@ RequestGroupMan::RequestGroupMan
     removedErrorResult_(0),
     removedLastErrorResult_(error_code::FINISHED),
     maxDownloadResult_(option->getAsInt(PREF_MAX_DOWNLOAD_RESULT)),
-    wrDiskCache_(0)
+    wrDiskCache_(nullptr)
 {
   appendReservedGroup(reservedGroups_,
                       requestGroups.begin(), requestGroups.end());
@@ -962,7 +962,7 @@ void RequestGroupMan::setUriListParser
 
 void RequestGroupMan::initWrDiskCache()
 {
-  assert(wrDiskCache_ == 0);
+  assert(wrDiskCache_ == nullptr);
   size_t limit = option_->getAsInt(PREF_DISK_CACHE);
   if(limit > 0) {
     wrDiskCache_ = new WrDiskCache(limit);

@@ -69,7 +69,7 @@
 namespace aria2 {
 
 Session::Session(const KeyVals& options)
-  : context(new Context(false, 0, 0, options))
+  : context(new Context(false, 0, nullptr, options))
 {}
 
 Session::~Session()
@@ -78,12 +78,12 @@ Session::~Session()
 SessionConfig::SessionConfig()
   : keepRunning(false),
     useSignalHandler(true),
-    downloadEventCallback(0),
-    userData(0)
+    downloadEventCallback(nullptr),
+    userData(nullptr)
 {}
 
 namespace {
-Platform* platform = 0;
+Platform* platform = nullptr;
 } // namespace
 
 int libraryInit()
@@ -934,7 +934,7 @@ DownloadHandle* getDownloadHandle(Session* session, A2Gid gid)
       return new DownloadResultDH(ds);
     }
   }
-  return 0;
+  return nullptr;
 }
 
 void deleteDownloadHandle(DownloadHandle* dh)

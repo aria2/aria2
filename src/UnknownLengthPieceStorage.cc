@@ -156,7 +156,7 @@ std::shared_ptr<Piece> UnknownLengthPieceStorage::getMissingPiece
  cuid_t cuid)
 {
   if(index == 0) {
-    return getMissingPiece(0, 0, 0, cuid);
+    return getMissingPiece(0, nullptr, 0, cuid);
   } else {
     return nullptr;
   }

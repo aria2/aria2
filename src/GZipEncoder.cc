@@ -46,7 +46,7 @@ namespace {
 const int OUTBUF_LENGTH = 4096;
 } // namespace
 
-GZipEncoder::GZipEncoder():strm_(0) {}
+GZipEncoder::GZipEncoder():strm_(nullptr) {}
 
 GZipEncoder::~GZipEncoder()
 {
@@ -74,7 +74,7 @@ void GZipEncoder::release()
   if(strm_) {
     deflateEnd(strm_);
     delete strm_;
-    strm_ = 0;
+    strm_ = nullptr;
   }
 }
 
@@ -104,7 +104,7 @@ std::string GZipEncoder::encode
 
 std::string GZipEncoder::str()
 {
-  internalBuf_ += encode(0, 0, Z_FINISH);
+  internalBuf_ += encode(nullptr, 0, Z_FINISH);
   return internalBuf_;
 }
 

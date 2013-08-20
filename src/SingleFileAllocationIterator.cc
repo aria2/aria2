@@ -55,7 +55,7 @@ SingleFileAllocationIterator::SingleFileAllocationIterator
   : stream_(stream),
     offset_(offset),
     totalLength_(totalLength),
-    buffer_(0)
+    buffer_(nullptr)
 {}
 
 SingleFileAllocationIterator::~SingleFileAllocationIterator()

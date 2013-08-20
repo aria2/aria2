@@ -82,7 +82,7 @@ int BufferedFile::onClose()
   int rv = 0;
   if (fp_) {
     rv = fclose(fp_);
-    fp_ = 0;
+    fp_ = nullptr;
   }
   return rv;
 }

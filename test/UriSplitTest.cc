@@ -391,28 +391,28 @@ void UriSplitTest::testUriSplit()
 
 void UriSplitTest::testUriSplit_fail()
 {
-  CPPUNIT_ASSERT_EQUAL(-1, uri_split(NULL, ""));
-  CPPUNIT_ASSERT_EQUAL(-1, uri_split(NULL, "h"));
-  CPPUNIT_ASSERT_EQUAL(-1, uri_split(NULL, "http:"));
-  CPPUNIT_ASSERT_EQUAL(-1, uri_split(NULL, "http:a"));
-  CPPUNIT_ASSERT_EQUAL(-1, uri_split(NULL, "http:/"));
-  CPPUNIT_ASSERT_EQUAL(-1, uri_split(NULL, "http://"));
-  CPPUNIT_ASSERT_EQUAL(-1, uri_split(NULL, "http:/a"));
-  CPPUNIT_ASSERT_EQUAL(-1, uri_split(NULL, "http://:host"));
-  CPPUNIT_ASSERT_EQUAL(-1, uri_split(NULL, "http://@user@host"));
-  CPPUNIT_ASSERT_EQUAL(-1, uri_split(NULL, "http://user:"));
-  CPPUNIT_ASSERT_EQUAL(-1, uri_split(NULL, "http://user:pass"));
-  CPPUNIT_ASSERT_EQUAL(-1, uri_split(NULL, "http://user:65536"));
-  CPPUNIT_ASSERT_EQUAL(-1, uri_split(NULL, "http://user:pass?"));
-  CPPUNIT_ASSERT_EQUAL(-1, uri_split(NULL, "http://user:pass@host:65536"));
-  CPPUNIT_ASSERT_EQUAL(-1, uri_split(NULL, "http://user:pass@host:x"));
-  CPPUNIT_ASSERT_EQUAL(-1, uri_split(NULL, "http://user:pass@host:80x"));
-  CPPUNIT_ASSERT_EQUAL(-1, uri_split(NULL, "http://user@"));
-  CPPUNIT_ASSERT_EQUAL(-1, uri_split(NULL, "http://[]"));
-  CPPUNIT_ASSERT_EQUAL(-1, uri_split(NULL, "http://[::"));
-  CPPUNIT_ASSERT_EQUAL(-1, uri_split(NULL, "http://user[::1]"));
-  CPPUNIT_ASSERT_EQUAL(-1, uri_split(NULL, "http://user[::1]x"));
-  CPPUNIT_ASSERT_EQUAL(-1, uri_split(NULL, "http://user:pass[::1]"));
+  CPPUNIT_ASSERT_EQUAL(-1, uri_split(nullptr, ""));
+  CPPUNIT_ASSERT_EQUAL(-1, uri_split(nullptr, "h"));
+  CPPUNIT_ASSERT_EQUAL(-1, uri_split(nullptr, "http:"));
+  CPPUNIT_ASSERT_EQUAL(-1, uri_split(nullptr, "http:a"));
+  CPPUNIT_ASSERT_EQUAL(-1, uri_split(nullptr, "http:/"));
+  CPPUNIT_ASSERT_EQUAL(-1, uri_split(nullptr, "http://"));
+  CPPUNIT_ASSERT_EQUAL(-1, uri_split(nullptr, "http:/a"));
+  CPPUNIT_ASSERT_EQUAL(-1, uri_split(nullptr, "http://:host"));
+  CPPUNIT_ASSERT_EQUAL(-1, uri_split(nullptr, "http://@user@host"));
+  CPPUNIT_ASSERT_EQUAL(-1, uri_split(nullptr, "http://user:"));
+  CPPUNIT_ASSERT_EQUAL(-1, uri_split(nullptr, "http://user:pass"));
+  CPPUNIT_ASSERT_EQUAL(-1, uri_split(nullptr, "http://user:65536"));
+  CPPUNIT_ASSERT_EQUAL(-1, uri_split(nullptr, "http://user:pass?"));
+  CPPUNIT_ASSERT_EQUAL(-1, uri_split(nullptr, "http://user:pass@host:65536"));
+  CPPUNIT_ASSERT_EQUAL(-1, uri_split(nullptr, "http://user:pass@host:x"));
+  CPPUNIT_ASSERT_EQUAL(-1, uri_split(nullptr, "http://user:pass@host:80x"));
+  CPPUNIT_ASSERT_EQUAL(-1, uri_split(nullptr, "http://user@"));
+  CPPUNIT_ASSERT_EQUAL(-1, uri_split(nullptr, "http://[]"));
+  CPPUNIT_ASSERT_EQUAL(-1, uri_split(nullptr, "http://[::"));
+  CPPUNIT_ASSERT_EQUAL(-1, uri_split(nullptr, "http://user[::1]"));
+  CPPUNIT_ASSERT_EQUAL(-1, uri_split(nullptr, "http://user[::1]x"));
+  CPPUNIT_ASSERT_EQUAL(-1, uri_split(nullptr, "http://user:pass[::1]"));
 }
 
 } // namespace aria2

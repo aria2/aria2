@@ -205,7 +205,7 @@ public:
 
   virtual const unsigned char* getBitfield() CXX11_OVERRIDE
   {
-    return 0;
+    return nullptr;
   }
 
   virtual void setBitfield(const unsigned char* bitfield,
@@ -232,7 +232,7 @@ public:
 
   virtual std::shared_ptr<DiskAdaptor> getDiskAdaptor() CXX11_OVERRIDE;
 
-  virtual WrDiskCache* getWrDiskCache() CXX11_OVERRIDE { return 0; }
+  virtual WrDiskCache* getWrDiskCache() CXX11_OVERRIDE { return nullptr; }
 
   virtual void flushWrDiskCacheEntry() CXX11_OVERRIDE {}
 

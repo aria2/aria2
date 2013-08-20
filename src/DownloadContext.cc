@@ -51,7 +51,7 @@ DownloadContext::DownloadContext():
   pieceLength_(0),
   checksumVerified_(false),
   knowsTotalLength_(true),
-  ownerRequestGroup_(0),
+  ownerRequestGroup_(nullptr),
   attrs_(MAX_CTX_ATTR),
   downloadStopTime_(0),
   acceptMetalink_(true) {}
@@ -62,7 +62,7 @@ DownloadContext::DownloadContext(int32_t pieceLength,
   pieceLength_(pieceLength),
   checksumVerified_(false),
   knowsTotalLength_(true),
-  ownerRequestGroup_(0),
+  ownerRequestGroup_(nullptr),
   attrs_(MAX_CTX_ATTR),
   downloadStopTime_(0),
   acceptMetalink_(true)

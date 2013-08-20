@@ -44,7 +44,7 @@
 namespace aria2 {
 
 BtCheckIntegrityEntry::BtCheckIntegrityEntry(RequestGroup* requestGroup):
-  PieceHashCheckIntegrityEntry(requestGroup, 0) {}
+  PieceHashCheckIntegrityEntry(requestGroup, nullptr) {}
 
 BtCheckIntegrityEntry::~BtCheckIntegrityEntry() {}
 

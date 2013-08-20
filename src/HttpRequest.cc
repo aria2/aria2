@@ -61,9 +61,9 @@ HttpRequest::HttpRequest()
   : contentEncodingEnabled_(true),
     userAgent_(USER_AGENT),
     acceptMetalink_(false),
-    cookieStorage_(0),
-    authConfigFactory_(0),
-    option_(0),
+    cookieStorage_(nullptr),
+    authConfigFactory_(nullptr),
+    option_(nullptr),
     noCache_(true),
     acceptGzip_(false),
     endOffsetOverride_(0)

@@ -52,8 +52,8 @@
 
 namespace aria2 {
 
-Piece::Piece():index_(0), length_(0), blockLength_(BLOCK_LENGTH), bitfield_(0),
-               usedBySegment_(false), wrCache_(0)
+Piece::Piece():index_(0), length_(0), blockLength_(BLOCK_LENGTH), bitfield_(nullptr),
+               usedBySegment_(false), wrCache_(nullptr)
 #ifdef ENABLE_MESSAGE_DIGEST
               , nextBegin_(0)
 #endif // ENABLE_MESSAGE_DIGEST
@@ -64,7 +64,7 @@ Piece::Piece(size_t index, int32_t length, int32_t blockLength)
    length_(length),
    blockLength_(blockLength),
    bitfield_(new BitfieldMan(blockLength_, length)),
-   usedBySegment_(false), wrCache_(0)
+   usedBySegment_(false), wrCache_(nullptr)
 #ifdef ENABLE_MESSAGE_DIGEST
  ,nextBegin_(0)
 #endif // ENABLE_MESSAGE_DIGEST
@@ -325,7 +325,7 @@ void Piece::initWrCache(WrDiskCache* diskCache,
   if(!diskCache) {
     return;
   }
-  assert(wrCache_ == 0);
+  assert(wrCache_ == nullptr);
   wrCache_ = new WrDiskCacheEntry(diskAdaptor);
   bool rv = diskCache->add(wrCache_);
   assert(rv);
@@ -396,7 +396,7 @@ void Piece::releaseWrCache(WrDiskCache* diskCache)
   if(diskCache && wrCache_) {
     diskCache->remove(wrCache_);
     delete wrCache_;
-    wrCache_ = 0;
+    wrCache_ = nullptr;
   }
 }
 

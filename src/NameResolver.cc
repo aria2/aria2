@@ -52,7 +52,7 @@ void NameResolver::resolve(std::vector<std::string>& resolvedAddresses,
 {
   struct addrinfo* res;
   int s;
-  s = callGetaddrinfo(&res, hostname.c_str(), 0, family_, socktype_, 0, 0);
+  s = callGetaddrinfo(&res, hostname.c_str(), nullptr, family_, socktype_, 0, 0);
   if(s) {
     throw DL_ABORT_EX2(fmt(EX_RESOLVE_HOSTNAME,
                            hostname.c_str(), gai_strerror(s)),

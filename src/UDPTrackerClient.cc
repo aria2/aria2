@@ -474,12 +474,12 @@ UDPTrackerConnection* UDPTrackerClient::getConnectionId
            UDPTrackerConnection>::iterator i =
     connectionIdCache_.find(std::make_pair(remoteAddr, remotePort));
   if(i == connectionIdCache_.end()) {
-    return 0;
+    return nullptr;
   }
   if((*i).second.state == UDPT_CST_CONNECTED &&
      (*i).second.lastUpdated.difference(now) > 60) {
     connectionIdCache_.erase(i);
-    return 0;
+    return nullptr;
   } else {
     return &(*i).second;
   }

@@ -51,7 +51,7 @@
 namespace aria2 {
 
 BtFileAllocationEntry::BtFileAllocationEntry(RequestGroup* requestGroup):
-  FileAllocationEntry(requestGroup, 0) {}
+  FileAllocationEntry(requestGroup, nullptr) {}
 
 BtFileAllocationEntry::~BtFileAllocationEntry() {}
 

@@ -53,7 +53,7 @@ Peer::Peer(std::string ipaddr, uint16_t port, bool incoming):
   firstContactTime_(global::wallclock()),
   dropStartTime_(0),
   seeder_(false),
-  res_(0),
+  res_(nullptr),
   incoming_(incoming),
   localPeer_(false),
   disconnectedGracefully_(false)
@@ -88,7 +88,7 @@ void Peer::reconfigureSessionResource(int32_t pieceLength, int64_t totalLength)
 void Peer::releaseSessionResource()
 {
   delete res_;
-  res_ = 0;
+  res_ = nullptr;
 }
 
 void Peer::setPeerId(const unsigned char* peerId)

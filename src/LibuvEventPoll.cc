@@ -115,7 +115,7 @@ LibuvEventPoll::~LibuvEventPoll()
 
   if (loop_) {
     uv_loop_delete(loop_);
-    loop_ = 0;
+    loop_ = nullptr;
   }
 
   // Need this to free only after the loop is gone.

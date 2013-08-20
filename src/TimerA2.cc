@@ -95,7 +95,7 @@ static timeval getCurrentTime()
     tv.tv_sec = ts.tv_sec+2678400; // 1month offset(24*3600*31)
     tv.tv_usec = ts.tv_nsec/1000;
   } else {
-    gettimeofday(&tv, 0);
+    gettimeofday(&tv, nullptr);
   }
   return tv;
 }

@@ -96,7 +96,7 @@ bool PeerReceiveHandshakeCommand::executeInternal()
     size_t dataLength = 0;
     // Ignore return value. The received data is kept in
     // PeerConnection object because of peek = true.
-    peerConnection_->receiveHandshake(0, dataLength, true);
+    peerConnection_->receiveHandshake(nullptr, dataLength, true);
   }
   if(peerConnection_->getBufferLength() >= 48) {
     const unsigned char* data = peerConnection_->getBuffer();

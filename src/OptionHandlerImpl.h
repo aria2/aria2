@@ -271,7 +271,7 @@ public:
   // argument.
   DeprecatedOptionHandler
   (OptionHandler* depOptHandler,
-   const OptionHandler* repOptHandler = 0);
+   const OptionHandler* repOptHandler = nullptr);
   virtual ~DeprecatedOptionHandler();
   virtual void parse(Option& option, const std::string& arg) const
     CXX11_OVERRIDE;

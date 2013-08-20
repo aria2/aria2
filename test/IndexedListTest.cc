@@ -229,7 +229,7 @@ void IndexedListTest::testGet()
   int b = 1;
   list.push_back(123, &a);
   list.push_back(1, &b);
-  CPPUNIT_ASSERT_EQUAL((int*)0, list.get(1000));
+  CPPUNIT_ASSERT_EQUAL((int*)nullptr, list.get(1000));
   CPPUNIT_ASSERT_EQUAL(&a, list.get(123));
 }
 

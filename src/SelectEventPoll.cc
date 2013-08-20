@@ -198,7 +198,7 @@ void SelectEventPoll::poll(const struct timeval& tv)
 #ifdef __MINGW32__
     retval = select(fdmax_+1, &rfds, &wfds, &efds, &ttv);
 #else // !__MINGW32__
-    retval = select(fdmax_+1, &rfds, &wfds, NULL, &ttv);
+    retval = select(fdmax_+1, &rfds, &wfds, nullptr, &ttv);
 #endif // !__MINGW32__
   } while(retval == -1 && errno == EINTR);
   if(retval > 0) {

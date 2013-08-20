@@ -84,7 +84,7 @@ DefaultPieceStorage::DefaultPieceStorage
    option_(option),
    pieceStatMan_(new PieceStatMan(downloadContext->getNumPieces(), true)),
    pieceSelector_(make_unique<RarestPieceSelector>(pieceStatMan_)),
-   wrDiskCache_(0)
+   wrDiskCache_(nullptr)
 {
   const std::string& pieceSelectorOpt =
     option_->get(PREF_STREAM_PIECE_SELECTOR);

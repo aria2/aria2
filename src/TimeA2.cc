@@ -80,12 +80,12 @@ bool Time::operator<(const Time& time) const
 }
 
 void Time::reset() {
-  gettimeofday(&tv_, 0);
+  gettimeofday(&tv_, nullptr);
 }
 
 struct timeval Time::getCurrentTime() const {
   struct timeval now;
-  gettimeofday(&now, 0);
+  gettimeofday(&now, nullptr);
   return now;
 }
 
@@ -94,7 +94,7 @@ bool Time::elapsed(time_t sec) const {
   // the time this function is called before specified time passes, we first do
   // simple test using time.
   // Then only when the further test is required, call gettimeofday.
-  time_t now = time(0);
+  time_t now = time(nullptr);
   if(tv_.tv_sec+sec < now) {
     return true;
   } else if(tv_.tv_sec+sec == now) {

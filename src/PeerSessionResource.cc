@@ -49,7 +49,7 @@ PeerSessionResource::PeerSessionResource(int32_t pieceLength, int64_t totalLengt
   bitfieldMan_(new BitfieldMan(pieceLength, totalLength)),
   lastDownloadUpdate_(0),
   lastAmUnchoking_(0),
-  dispatcher_(0),
+  dispatcher_(nullptr),
   amChoking_(true),
   amInterested_(false),
   peerChoking_(true),

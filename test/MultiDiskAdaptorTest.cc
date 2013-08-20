@@ -270,7 +270,7 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
 
 void readFile(const std::string& filename, char* buf, int bufLength) {
   FILE* f = fopen(filename.c_str(), "r");
-  if(f == NULL) {
+  if(f == nullptr) {
     CPPUNIT_FAIL(strerror(errno));
   }
   int retval = fread(buf, bufLength, 1, f);

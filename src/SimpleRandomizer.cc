@@ -56,7 +56,7 @@ const std::unique_ptr<SimpleRandomizer>& SimpleRandomizer::getInstance()
 void SimpleRandomizer::init()
 {
 #ifndef __MINGW32__
-  srandom(time(0)^getpid());
+  srandom(time(nullptr)^getpid());
 #endif // !__MINGW32__
 }
 

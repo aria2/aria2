@@ -55,7 +55,7 @@ ProtocolDetector::~ProtocolDetector() {}
 
 bool ProtocolDetector::isStreamProtocol(const std::string& uri) const
 {
-  return uri_split(NULL, uri.c_str()) == 0;
+  return uri_split(nullptr, uri.c_str()) == 0;
 }
 
 bool ProtocolDetector::guessTorrentFile(const std::string& uri) const

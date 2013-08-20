@@ -81,12 +81,12 @@ MSEHandshake::MSEHandshake
     rbufLength_(0),
     socketBuffer_(socket),
     negotiatedCryptoType_(CRYPTO_NONE),
-    dh_(0),
+    dh_(nullptr),
     initiator_(true),
     markerIndex_(0),
     padLength_(0),
     iaLength_(0),
-    ia_(0),
+    ia_(nullptr),
     sha1_(MessageDigest::sha1())
 {}
 

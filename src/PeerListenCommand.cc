@@ -77,7 +77,7 @@ bool PeerListenCommand::bindPort(uint16_t& port, SegList<int>& sgl)
         eoi = ports.end(); i != eoi; ++i) {
     port = *i;
     try {
-      socket_->bind(0, port, family_);
+      socket_->bind(nullptr, port, family_);
       socket_->beginListen();
       A2_LOG_NOTICE(fmt(_("IPv%d BitTorrent: listening on TCP port %u"),
                         ipv, port));

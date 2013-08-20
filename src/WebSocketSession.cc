@@ -160,7 +160,7 @@ void onMsgRecvCallback(wslay_event_context_ptr wsctx,
   if(!wslay_is_ctrl_frame(arg->opcode)) {
     // TODO Only process text frame
     ssize_t error = 0;
-    auto json = wsSession->parseFinal(0, 0, error);
+    auto json = wsSession->parseFinal(nullptr, 0, error);
     if(error < 0) {
       A2_LOG_INFO("Failed to parse JSON-RPC request");
       RpcResponse res

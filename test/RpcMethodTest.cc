@@ -684,7 +684,7 @@ void RpcMethodTest::testChangeGlobalOption_withNotAllowedOption()
 void RpcMethodTest::testNoSuchMethod()
 {
   NoSuchMethodRpcMethod m;
-  auto res = m.execute(createReq("make.hamburger"), 0);
+  auto res = m.execute(createReq("make.hamburger"), nullptr);
   CPPUNIT_ASSERT_EQUAL(1, res.code);
   CPPUNIT_ASSERT_EQUAL(std::string("No such method: make.hamburger"),
                        getString(downcast<Dict>(res.param), "faultString"));

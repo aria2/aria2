@@ -72,9 +72,9 @@ BtPieceMessage::BtPieceMessage
     index_(index),
     begin_(begin),
     blockLength_(blockLength),
-    data_(0),
-    downloadContext_(0),
-    peerStorage_(0)
+    data_(nullptr),
+    downloadContext_(nullptr),
+    peerStorage_(nullptr)
 {
   setUploading(true);
 }

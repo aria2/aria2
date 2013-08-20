@@ -103,12 +103,12 @@ std::string errorMsg(int errNum)
   if (FormatMessage(
                     FORMAT_MESSAGE_FROM_SYSTEM |
                     FORMAT_MESSAGE_IGNORE_INSERTS,
-                    NULL,
+                    nullptr,
                     errNum,
                     MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),
                     (LPTSTR) &buf,
                     sizeof(buf),
-                    NULL
+                    nullptr
                     ) == 0) {
     snprintf(buf, sizeof(buf), EX_SOCKET_UNKNOWN_ERROR, errNum, errNum);
   }
@@ -267,7 +267,7 @@ void SocketCore::bindWithFamily(uint16_t port, int family, int flags)
 {
   closeConnection();
   std::string error;
-  sock_t fd = bindTo(0, port, family, sockType_, flags, error);
+  sock_t fd = bindTo(nullptr, port, family, sockType_, flags, error);
   if(fd == (sock_t) -1) {
     throw DL_ABORT_EX(fmt(EX_SOCKET_BIND, error.c_str()));
   } else {
@@ -284,7 +284,7 @@ void SocketCore::bind
   if(addr && addr[0]) {
     addrp = addr;
   } else {
-    addrp = 0;
+    addrp = nullptr;
   }
   if(!(flags&AI_PASSIVE) || bindAddrs_.empty()) {
     sock_t fd = bindTo(addrp, port, family, sockType_, flags, error);
@@ -297,7 +297,7 @@ void SocketCore::bind
         i != eoi; ++i) {
       char host[NI_MAXHOST];
       int s;
-      s = getnameinfo(&(*i).first.sa, (*i).second, host, NI_MAXHOST, 0, 0,
+      s = getnameinfo(&(*i).first.sa, (*i).second, host, NI_MAXHOST, nullptr, 0,
                       NI_NUMERICHOST);
       if(s) {
         error = gai_strerror(s);
@@ -321,7 +321,7 @@ void SocketCore::bind
 
 void SocketCore::bind(uint16_t port, int flags)
 {
-  bind(0, port, protocolFamily_, flags);
+  bind(nullptr, port, protocolFamily_, flags);
 }
 
 void SocketCore::bind(const struct sockaddr* addr, socklen_t addrlen)
@@ -622,7 +622,7 @@ bool SocketCore::isWritable(time_t timeout)
   tv.tv_sec = timeout;
   tv.tv_usec = 0;
 
-  int r = select(sockfd_+1, NULL, &fds, NULL, &tv);
+  int r = select(sockfd_+1, nullptr, &fds, nullptr, &tv);
   int errNum = SOCKET_ERRNO;
   if(r == 1) {
     return true;
@@ -668,7 +668,7 @@ bool SocketCore::isReadable(time_t timeout)
   tv.tv_sec = timeout;
   tv.tv_usec = 0;
 
-  int r = select(sockfd_+1, &fds, NULL, NULL, &tv);
+  int r = select(sockfd_+1, &fds, nullptr, nullptr, &tv);
   int errNum = SOCKET_ERRNO;
   if(r == 1) {
     return true;
@@ -986,7 +986,7 @@ void SocketCore::bindAddress(const std::string& iface)
         i != eoi; ++i) {
       char host[NI_MAXHOST];
       int s;
-      s = getnameinfo(&(*i).first.sa, (*i).second, host, NI_MAXHOST, 0, 0,
+      s = getnameinfo(&(*i).first.sa, (*i).second, host, NI_MAXHOST, nullptr, 0,
                       NI_NUMERICHOST);
       if(s == 0) {
         A2_LOG_DEBUG(fmt("Sockets will bind to %s", host));
@@ -1002,7 +1002,7 @@ void getInterfaceAddress
   A2_LOG_DEBUG(fmt("Finding interface %s", iface.c_str()));
 #ifdef HAVE_GETIFADDRS
   // First find interface in interface addresses
-  struct ifaddrs* ifaddr = 0;
+  struct ifaddrs* ifaddr = nullptr;
   if(getifaddrs(&ifaddr) == -1) {
     int errNum = SOCKET_ERRNO;
     A2_LOG_INFO(fmt(MSG_INTERFACE_NOT_FOUND,
@@ -1044,7 +1044,7 @@ void getInterfaceAddress
   if(ifAddrs.empty()) {
     addrinfo* res;
     int s;
-    s = callGetaddrinfo(&res, iface.c_str(), 0, family, SOCK_STREAM, aiFlags,0);
+    s = callGetaddrinfo(&res, iface.c_str(), nullptr, family, SOCK_STREAM, aiFlags,0);
     if(s) {
       A2_LOG_INFO(fmt(MSG_INTERFACE_NOT_FOUND, iface.c_str(), gai_strerror(s)));
     } else {
@@ -1111,7 +1111,7 @@ int inetNtop(int af, const void* src, char* dst, socklen_t size)
 #endif // HAVE_SOCKADDR_IN_SIN_LEN
     memcpy(&su.in.sin_addr, src, sizeof(su.in.sin_addr));
     s = getnameinfo(&su.sa, sizeof(su.in),
-                    dst, size, 0, 0, NI_NUMERICHOST);
+                    dst, size, nullptr, 0, NI_NUMERICHOST);
   } else if(af == AF_INET6) {
     su.in6.sin6_family = AF_INET6;
 #ifdef HAVE_SOCKADDR_IN6_SIN6_LEN
@@ -1119,7 +1119,7 @@ int inetNtop(int af, const void* src, char* dst, socklen_t size)
 #endif // HAVE_SOCKADDR_IN6_SIN6_LEN
     memcpy(&su.in6.sin6_addr, src, sizeof(su.in6.sin6_addr));
     s = getnameinfo(&su.sa, sizeof(su.in6),
-                    dst, size, 0, 0, NI_NUMERICHOST);
+                    dst, size, nullptr, 0, NI_NUMERICHOST);
   } else {
     s = EAI_FAMILY;
   }
@@ -1157,7 +1157,7 @@ size_t getBinAddr(void* dest, const std::string& ip)
 {
   size_t len = 0;
   addrinfo* res;
-  if(callGetaddrinfo(&res, ip.c_str(), 0, AF_UNSPEC,
+  if(callGetaddrinfo(&res, ip.c_str(), nullptr, AF_UNSPEC,
                      0, AI_NUMERICHOST, 0) != 0) {
     return len;
   }
@@ -1307,7 +1307,7 @@ void checkAddrconfig()
   A2_LOG_INFO("Checking configured addresses");
   ipv4AddrConfigured = false;
   ipv6AddrConfigured = false;
-  ifaddrs* ifaddr = 0;
+  ifaddrs* ifaddr = nullptr;
   int rv;
   rv = getifaddrs(&ifaddr);
   if(rv == -1) {
@@ -1348,7 +1348,7 @@ void checkAddrconfig()
     default:
       continue;
     }
-    rv = getnameinfo(ifa->ifa_addr, addrlen, host, NI_MAXHOST, 0, 0,
+    rv = getnameinfo(ifa->ifa_addr, addrlen, host, NI_MAXHOST, nullptr, 0,
                      NI_NUMERICHOST);
     if(rv == 0) {
       if(found) {

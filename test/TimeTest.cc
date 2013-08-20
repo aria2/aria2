@@ -113,7 +113,7 @@ void TimeTest::testToHTTPDate()
 void TimeTest::testElapsed()
 {
   struct timeval now;
-  gettimeofday(&now, 0);
+  gettimeofday(&now, nullptr);
   {
     struct timeval tv = now;
     CPPUNIT_ASSERT(!Time(tv).elapsed(1));

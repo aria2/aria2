@@ -58,7 +58,7 @@ public:
   bool operator()(const XmlAttr& attr) const
   {
     return strcmp(attr.localname, localname_) == 0 &&
-      (attr.nsUri == 0 || strcmp(attr.nsUri, nsUri_) == 0);
+      (attr.nsUri == nullptr || strcmp(attr.nsUri, nsUri_) == 0);
   }
 };
 } // namespace

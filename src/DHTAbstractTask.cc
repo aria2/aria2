@@ -47,10 +47,10 @@ namespace aria2 {
 
 DHTAbstractTask::DHTAbstractTask():
   finished_(false),
-  routingTable_(0),
-  dispatcher_(0),
-  factory_(0),
-  taskQueue_(0)
+  routingTable_(nullptr),
+  dispatcher_(nullptr),
+  factory_(nullptr),
+  taskQueue_(nullptr)
 {}
 
 bool DHTAbstractTask::finished()

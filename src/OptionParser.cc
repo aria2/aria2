@@ -59,7 +59,7 @@
 namespace aria2 {
 
 OptionParser::OptionParser()
-  : handlers_(option::countOption(), 0),
+  : handlers_(option::countOption(), nullptr),
     shortOpts_(256)
 {}
 
@@ -111,15 +111,15 @@ void putOptions(struct option* longOpts, int* plopt,
         (*longOpts).flag = plopt;
         (*longOpts).val = (*first)->getPref()->i;
       } else {
-        (*longOpts).flag = 0;
+        (*longOpts).flag = nullptr;
         (*longOpts).val = (*first)->getShortName();
       }
       ++longOpts;
     }
   }
-  (*longOpts).name = 0;
+  (*longOpts).name = nullptr;
   (*longOpts).has_arg = 0;
-  (*longOpts).flag = 0;
+  (*longOpts).flag = nullptr;
   (*longOpts).val = 0;
 }
 } // namespace
@@ -156,11 +156,11 @@ void OptionParser::parseArg
   putOptions(longOpts.get(), &lopt, handlers_.begin(), handlers_.end());
   std::string optstring = createOptstring(handlers_.begin(), handlers_.end());
   while(1) {
-    int c = getopt_long(argc, argv, optstring.c_str(), longOpts.get(), 0);
+    int c = getopt_long(argc, argv, optstring.c_str(), longOpts.get(), nullptr);
     if(c == -1) {
       break;
     }
-    const OptionHandler* op = 0;
+    const OptionHandler* op = nullptr;
     if(c == 0) {
       op = findById(lopt);
     } else if(c != '?') {

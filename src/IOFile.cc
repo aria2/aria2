@@ -50,7 +50,7 @@ const char IOFile::APPEND[] = "ab";
 IOFile::operator unspecified_bool_type() const
 {
   bool ok = isOpen() && !isError();
-  return ok ? &IOFile::goodState : 0;
+  return ok ? &IOFile::goodState : nullptr;
 }
 
 size_t IOFile::read(void* ptr, size_t count)

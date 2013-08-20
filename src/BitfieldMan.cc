@@ -50,9 +50,9 @@ BitfieldMan::BitfieldMan(int32_t blockLength, int64_t totalLength)
    bitfieldLength_(0),
    blocks_(0),
    filterEnabled_(false),
-   bitfield_(0),
-   useBitfield_(0),
-   filterBitfield_(0),
+   bitfield_(nullptr),
+   useBitfield_(nullptr),
+   filterBitfield_(nullptr),
    cachedNumMissingBlock_(0),
    cachedNumFilteredBlock_(0),
    cachedCompletedLength_(0),
@@ -78,7 +78,7 @@ BitfieldMan::BitfieldMan(const BitfieldMan& bitfieldMan)
    filterEnabled_(bitfieldMan.filterEnabled_),
    bitfield_(new unsigned char[bitfieldLength_]),
    useBitfield_(new unsigned char[bitfieldLength_]),
-   filterBitfield_(0),
+   filterBitfield_(nullptr),
    cachedNumMissingBlock_(0),
    cachedNumFilteredBlock_(0),
    cachedCompletedLength_(0),
@@ -116,7 +116,7 @@ BitfieldMan& BitfieldMan::operator=(const BitfieldMan& bitfieldMan)
       filterBitfield_ = new unsigned char[bitfieldLength_];
       memcpy(filterBitfield_, bitfieldMan.filterBitfield_, bitfieldLength_);
     } else {
-      filterBitfield_ = 0;
+      filterBitfield_ = nullptr;
     }
 
     updateCache();
@@ -724,7 +724,7 @@ void BitfieldMan::disableFilter() {
 void BitfieldMan::clearFilter() {
   if(filterBitfield_) {
     delete [] filterBitfield_;
-    filterBitfield_ = 0;
+    filterBitfield_ = nullptr;
   }
   filterEnabled_ = false;
   updateCache();

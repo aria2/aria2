@@ -56,7 +56,7 @@ DHTUnknownMessage::DHTUnknownMessage(const std::shared_ptr<DHTNode>& localNode,
   port_(port)
 {
   if(length_ == 0) {
-    data_ = 0;
+    data_ = nullptr;
   } else {
     data_ = new unsigned char[length];
     memcpy(data_, data, length);

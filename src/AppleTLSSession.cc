@@ -295,7 +295,7 @@ TLSSession* TLSSession::make(TLSContext* ctx)
 
 AppleTLSSession::AppleTLSSession(AppleTLSContext* ctx)
   : ctx_(ctx),
-    sslCtx_(0),
+    sslCtx_(nullptr),
     sockfd_(0),
     state_(st_constructed),
     lastError_(noErr),
@@ -343,7 +343,7 @@ AppleTLSSession::AppleTLSSession(AppleTLSContext* ctx)
       state_ = st_error;
       return;
     }
-    CFArrayRef certs = CFArrayCreate(0, (const void**)&creds, 1, 0);
+    CFArrayRef certs = CFArrayCreate(nullptr, (const void**)&creds, 1, nullptr);
     if (!certs) {
       A2_LOG_ERROR("AppleTLS: Failed to setup credentials");
       state_ = st_error;
@@ -374,7 +374,7 @@ AppleTLSSession::~AppleTLSSession()
   closeConnection();
   if (sslCtx_) {
     SSLDisposeContext(sslCtx_);
-    sslCtx_ = 0;
+    sslCtx_ = nullptr;
   }
   state_ = st_error;
 }
@@ -448,7 +448,7 @@ ssize_t AppleTLSSession::writeData(const void* data, size_t len)
   }
   size_t processed = 0;
   if (writeBuffered_) {
-    lastError_ = SSLWrite(sslCtx_, 0, 0, &processed);
+    lastError_ = SSLWrite(sslCtx_, nullptr, 0, &processed);
     switch (lastError_) {
       case noErr:
         processed = writeBuffered_;

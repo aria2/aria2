@@ -867,7 +867,7 @@ ssize_t parse_content_disposition(char *dest, size_t destlen,
                                   const char **charsetp, size_t *charsetlenp,
                                   const char *in, size_t len)
 {
-  const char *p = in, *eop = in + len, *mark_first = NULL, *mark_last = NULL;
+  const char *p = in, *eop = in + len, *mark_first = nullptr, *mark_last = nullptr;
   int state = CD_BEFORE_DISPOSITION_TYPE;
   int in_file_parm = 0;
   int flags = 0;
@@ -880,7 +880,7 @@ ssize_t parse_content_disposition(char *dest, size_t destlen,
   uint32_t dfa_code = 0;
   uint8_t pctval = 0;
 
-  *charsetp = NULL;
+  *charsetp = nullptr;
   *charsetlenp = 0;
 
   for(; p != eop; ++p) {
@@ -1226,7 +1226,7 @@ bool isNumericHost(const std::string& name)
   memset(&hints, 0, sizeof(hints));
   hints.ai_family = AF_UNSPEC;
   hints.ai_flags = AI_NUMERICHOST;
-  if(getaddrinfo(name.c_str(), 0, &hints, &res)) {
+  if(getaddrinfo(name.c_str(), nullptr, &hints, &res)) {
     return false;
   }
   freeaddrinfo(res);
@@ -1315,7 +1315,7 @@ void setGlobalSignalHandler(int sig, sigset_t* mask, signal_handler_t handler,
   sigact.sa_handler = handler;
   sigact.sa_flags = flags;
   sigact.sa_mask = *mask;
-  sigaction(sig, &sigact, NULL);
+  sigaction(sig, &sigact, nullptr);
 #else
   signal(sig, handler);
 #endif // HAVE_SIGACTION
@@ -1847,13 +1847,13 @@ void executeHook
   cmdlineLen = utf8ToWChar(wcharCmdline.get(), cmdlineLen, cmdline.c_str());
   assert(cmdlineLen > 0);
   A2_LOG_INFO(fmt("Executing user command: %s", cmdline.c_str()));
-  DWORD rc = CreateProcessW(batch ? utf8ToWChar(cmdexe).c_str() : NULL,
+  DWORD rc = CreateProcessW(batch ? utf8ToWChar(cmdexe).c_str() : nullptr,
                             wcharCmdline.get(),
-                            NULL,
-                            NULL,
+                            nullptr,
+                            nullptr,
                             true,
                             0,
-                            NULL,
+                            nullptr,
                             0,
                             &si,
                             &pi);

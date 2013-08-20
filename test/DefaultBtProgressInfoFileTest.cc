@@ -557,7 +557,7 @@ void DefaultBtProgressInfoFileTest::testUpdateFilename()
   std::shared_ptr<DownloadContext> dctx
     (new DownloadContext(1024, 81920, A2_TEST_DIR"/file1"));
 
-  DefaultBtProgressInfoFile infoFile(dctx, std::shared_ptr<MockPieceStorage>(), 0);
+  DefaultBtProgressInfoFile infoFile(dctx, std::shared_ptr<MockPieceStorage>(), nullptr);
 #ifdef ENABLE_BITTORRENT
   infoFile.setBtRuntime(btRuntime_);
   infoFile.setPeerStorage(peerStorage_);
