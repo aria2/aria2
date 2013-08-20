@@ -101,51 +101,52 @@ decodeGetParams(const std::string& query)
 {
   std::string jsonRequest;
   std::string callback;
-  if(!query.empty() && query[0] == '?') {
-    Scip method;
-    Scip id;
-    Scip params;
-    std::vector<Scip> getParams;
-    util::splitIter(query.begin()+1, query.end(), std::back_inserter(getParams),
-                    '&');
-    for(std::vector<Scip>::const_iterator i =
-          getParams.begin(), eoi = getParams.end(); i != eoi; ++i) {
-      if(util::startsWith((*i).first, (*i).second, "method=")) {
-        method.first = (*i).first+7;
-        method.second = (*i).second;
-      } else if(util::startsWith((*i).first, (*i).second, "id=")) {
-        id.first = (*i).first+3;
-        id.second = (*i).second;
-      } else if(util::startsWith((*i).first, (*i).second, "params=")) {
-        params.first = (*i).first+7;
-        params.second = (*i).second;
-      } else if(util::startsWith((*i).first, (*i).second, "jsoncallback=")) {
-        callback.assign((*i).first+13, (*i).second);
-      }
+  if (query.empty() || query[0] != '?') {
+    return JsonGetParam(jsonRequest, callback);
+  }
+
+  Scip method = std::make_pair(query.end(), query.end());
+  Scip id = std::make_pair(query.end(), query.end());
+  Scip params = std::make_pair(query.end(), query.end());
+  std::vector<Scip> getParams;
+  util::splitIter(query.begin()+1, query.end(), std::back_inserter(getParams),
+                  '&');
+  for (const auto& i : getParams) {
+    if(util::startsWith(i.first, i.second, "method=")) {
+      method.first = i.first+7;
+      method.second = i.second;
+    } else if(util::startsWith(i.first, i.second, "id=")) {
+      id.first = i.first+3;
+      id.second = i.second;
+    } else if(util::startsWith(i.first, i.second, "params=")) {
+      params.first = i.first+7;
+      params.second = i.second;
+    } else if(util::startsWith(i.first, i.second, "jsoncallback=")) {
+      callback.assign(i.first+13, i.second);
     }
-    std::string decparam = util::percentDecode(params.first, params.second);
-    std::string jsonParam = base64::decode(decparam.begin(), decparam.end());
-    if(method.first == method.second && id.first == id.second) {
-      // Assume batch call.
-      jsonRequest = jsonParam;
-    } else {
-      jsonRequest = "{";
-      if(method.first != method.second) {
-        jsonRequest += "\"method\":\"";
-        jsonRequest.append(method.first, method.second);
-        jsonRequest += "\"";
-      }
-      if(id.first != id.second) {
-        jsonRequest += ",\"id\":\"";
-        jsonRequest.append(id.first, id.second);
-        jsonRequest += "\"";
-      }
-      if(params.first != params.second) {
-        jsonRequest += ",\"params\":";
-        jsonRequest += jsonParam;
-      }
-      jsonRequest += "}";
+  }
+  std::string decparam = util::percentDecode(params.first, params.second);
+  std::string jsonParam = base64::decode(decparam.begin(), decparam.end());
+  if(method.first == method.second && id.first == id.second) {
+    // Assume batch call.
+    jsonRequest = jsonParam;
+  } else {
+    jsonRequest = "{";
+    if(method.first != method.second) {
+      jsonRequest += "\"method\":\"";
+      jsonRequest.append(method.first, method.second);
+      jsonRequest += "\"";
     }
+    if(id.first != id.second) {
+      jsonRequest += ",\"id\":\"";
+      jsonRequest.append(id.first, id.second);
+      jsonRequest += "\"";
+    }
+    if(params.first != params.second) {
+      jsonRequest += ",\"params\":";
+      jsonRequest += jsonParam;
+    }
+    jsonRequest += "}";
   }
   return JsonGetParam(jsonRequest, callback);
 }
