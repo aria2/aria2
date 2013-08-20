@@ -829,9 +829,9 @@ nextParam
       }
     }
     std::pair<std::string::const_iterator,
-              std::string::const_iterator> namep;
+              std::string::const_iterator> namep = std::make_pair(last, last);
     std::pair<std::string::const_iterator,
-              std::string::const_iterator> valuep;
+              std::string::const_iterator> valuep = std::make_pair(last, last);
     if(parmnameFirst == parmnameLast) {
       if(!eqFound) {
         parmnameFirst = first;
