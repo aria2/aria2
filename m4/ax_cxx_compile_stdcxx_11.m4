@@ -62,7 +62,7 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX_11], [dnl
   m4_if([$2], [], [ax_cxx_compile_cxx11_required=true],
         [$2], [mandatory], [ax_cxx_compile_cxx11_required=true],
         [$2], [optional], [ax_cxx_compile_cxx11_required=false],
-        [m4_fatal([invalid second argument `$2' to AX_CXX_COMPILE_STDCXX_11])])dnl
+        [m4_fatal([invalid second argument `$2' to AX_CXX_COMPILE_STDCXX_11])])
   AC_LANG_PUSH([C++])dnl
   ac_success=no
   AC_CACHE_CHECK(whether $CXX supports C++11 features by default,

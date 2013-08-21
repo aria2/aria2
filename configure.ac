@@ -105,7 +105,7 @@ AC_LANG([C++])
 PKG_PROG_PKG_CONFIG([0.20])
 
 # Check C++ compiler supports C++0x/C++11 feature
-AX_CXX_COMPILE_STDCXX_11([noext])
+AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
 
 # i686-w64-mingw32-g++ 4.6 does not support override keyword. For
 # those compilers, define CXX11_OVERRIDE to empty string. Otherwise
