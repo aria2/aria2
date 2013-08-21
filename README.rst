@@ -183,7 +183,8 @@ You can use libexpat1-dev instead of libxml2-dev:
 * libexpat1-dev    (Required for Metalink support)
 
 On Fedora you need the following packages: gcc, gcc-c++, kernel-devel,
-libgcrypt-devel, libgcrypt-devel, libxml2-devel, openssl-devel
+libgcrypt-devel, libgcrypt-devel, libxml2-devel, openssl-devel,
+gettext-devel, cppunit
 
 If you downloaded source code from git repository, you have to run
 following command to generate configure script and other files
