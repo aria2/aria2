@@ -43,25 +43,25 @@
 namespace aria2 {
 
 namespace {
-ValueValueBaseStructParserState* valueState =
+auto valueState =
   new ValueValueBaseStructParserState();
-DictValueBaseStructParserState* dictState =
+auto dictState =
   new DictValueBaseStructParserState();
-DictKeyValueBaseStructParserState* dictKeyState =
+auto dictKeyState =
   new DictKeyValueBaseStructParserState();
-DictDataValueBaseStructParserState* dictDataState =
+auto dictDataState =
   new DictDataValueBaseStructParserState();
-ArrayValueBaseStructParserState* arrayState =
+auto arrayState =
   new ArrayValueBaseStructParserState();
-ArrayDataValueBaseStructParserState* arrayDataState =
+auto arrayDataState =
   new ArrayDataValueBaseStructParserState();
-StringValueBaseStructParserState* stringState =
+auto stringState =
   new StringValueBaseStructParserState();
-NumberValueBaseStructParserState* numberState =
+auto numberState =
   new NumberValueBaseStructParserState();
-BoolValueBaseStructParserState* boolState =
+auto boolState =
   new BoolValueBaseStructParserState();
-NullValueBaseStructParserState* nullState =
+auto nullState =
   new NullValueBaseStructParserState();
 } // namespace
 

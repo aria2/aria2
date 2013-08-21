@@ -57,7 +57,7 @@ unsigned char* RangeBtMessage::createMessage()
    * length -- length, 4bytes
    * total: 17bytes
    */
-  unsigned char* msg = new unsigned char[MESSAGE_LENGTH];
+  auto msg = new unsigned char[MESSAGE_LENGTH];
   bittorrent::createPeerMessageString(msg, MESSAGE_LENGTH, 13, getId());
   bittorrent::setIntParam(&msg[5], index_);
   bittorrent::setIntParam(&msg[9], begin_);

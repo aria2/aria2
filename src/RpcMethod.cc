@@ -102,9 +102,8 @@ void gatherOption
       // header and index-out option can take array as value
       const List* oplist = downcast<List>((*first).second);
       if(oplist) {
-        for(List::ValueType::const_iterator argiter = oplist->begin(),
-              eoi = oplist->end(); argiter != eoi; ++argiter) {
-          const String* opval = downcast<String>(*argiter);
+        for(auto & elem : *oplist) {
+          const String* opval = downcast<String>(elem);
           if(opval) {
             handler->parse(*option, opval->s());
           }

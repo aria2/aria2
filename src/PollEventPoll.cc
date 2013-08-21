@@ -168,7 +168,7 @@ bool PollEventPoll::addEvents
     event.addSelf(socketEntry);
     if(pollfdCapacity_ == pollfdNum_) {
       pollfdCapacity_ *= 2;
-      struct pollfd* newPollfds = new struct pollfd[pollfdCapacity_];
+      auto newPollfds = new struct pollfd[pollfdCapacity_];
       memcpy(newPollfds, pollfds_, pollfdNum_*sizeof(struct pollfd));
       delete [] pollfds_;
       pollfds_ = newPollfds;

@@ -60,24 +60,24 @@ void MetalinkMetalinkParserStateV4::beginElement
  const char* nsUri,
  const std::vector<XmlAttr>& attrs)
 {
-  if(checkNsUri(nsUri) && strcmp(localname, "file") == 0) {
-    psm->setFileStateV4();
-    std::vector<XmlAttr>::const_iterator itr =
-      findAttr(attrs, "name", METALINK4_NAMESPACE_URI);
-    if(itr == attrs.end() || (*itr).valueLength == 0) {
-      psm->logError("Missing file@name");
-      return;
-    }
-    std::string name((*itr).value, (*itr).valueLength);
-    if(util::detectDirTraversal(name)) {
-      psm->logError("Bad file@name");
-      return;
-    }
-    psm->newEntryTransaction();
-    psm->setFileNameOfEntry(name);
-  } else {
+  if(checkNsUri(nsUri) && strcmp(localname, "file") != 0) {
     psm->setSkipTagState();
+    return;
   }
+
+  psm->setFileStateV4();
+  auto itr = findAttr(attrs, "name", METALINK4_NAMESPACE_URI);
+  if(itr == attrs.end() || (*itr).valueLength == 0) {
+    psm->logError("Missing file@name");
+    return;
+  }
+  std::string name((*itr).value, (*itr).valueLength);
+  if(util::detectDirTraversal(name)) {
+    psm->logError("Bad file@name");
+    return;
+  }
+  psm->newEntryTransaction();
+  psm->setFileNameOfEntry(name);
 }
 
 void FileMetalinkParserStateV4::beginElement
@@ -101,8 +101,7 @@ void FileMetalinkParserStateV4::beginElement
     psm->setMetaurlStateV4();
     std::string name;
     {
-      std::vector<XmlAttr>::const_iterator itr =
-        findAttr(attrs, "name", METALINK4_NAMESPACE_URI);
+      auto itr = findAttr(attrs, "name", METALINK4_NAMESPACE_URI);
       if(itr != attrs.end()) {
         name.assign((*itr).value, (*itr).valueLength);
         if(name.empty() || util::detectDirTraversal(name)) {
@@ -113,33 +112,27 @@ void FileMetalinkParserStateV4::beginElement
     }
     int priority;
     {
-      std::vector<XmlAttr>::const_iterator itr =
-        findAttr(attrs, "priority", METALINK4_NAMESPACE_URI);
+      auto itr = findAttr(attrs, "priority", METALINK4_NAMESPACE_URI);
       if(itr == attrs.end()) {
         priority = MetalinkResource::getLowestPriority();
-      } else {
-        if(util::parseIntNoThrow
-           (priority, std::string((*itr).value, (*itr).valueLength))) {
-          if(priority < 1 || MetalinkResource::getLowestPriority() < priority) {
-            psm->logError("metaurl@priority is out of range");
-            return;
-          }
-        } else {
-          psm->logError("Bad metaurl@priority");
+      } else if(util::parseIntNoThrow(priority, std::string((*itr).value, (*itr).valueLength))) {
+        if(priority < 1 || MetalinkResource::getLowestPriority() < priority) {
+          psm->logError("metaurl@priority is out of range");
           return;
         }
+      } else {
+        psm->logError("Bad metaurl@priority");
+        return;
       }
     }
     std::string mediatype;
     {
-      std::vector<XmlAttr>::const_iterator itr =
-        findAttr(attrs, "mediatype", METALINK4_NAMESPACE_URI);
+      auto itr = findAttr(attrs, "mediatype", METALINK4_NAMESPACE_URI);
       if(itr == attrs.end() || (*itr).valueLength == 0) {
         psm->logError("Missing metaurl@mediatype");
         return;
-      } else {
-        mediatype.assign((*itr).value, (*itr).valueLength);
       }
+      mediatype.assign((*itr).value, (*itr).valueLength);
     }
     psm->newMetaurlTransaction();
     psm->setPriorityOfMetaurl(priority);
@@ -149,29 +142,24 @@ void FileMetalinkParserStateV4::beginElement
     psm->setURLStateV4();
     std::string location;
     {
-      std::vector<XmlAttr>::const_iterator itr =
-        findAttr(attrs, "location", METALINK4_NAMESPACE_URI);
+      auto itr = findAttr(attrs, "location", METALINK4_NAMESPACE_URI);
       if(itr != attrs.end()) {
         location.assign((*itr).value, (*itr).valueLength);
       }
     }
     int priority;
     {
-      std::vector<XmlAttr>::const_iterator itr =
-        findAttr(attrs, "priority", METALINK4_NAMESPACE_URI);
+      auto itr = findAttr(attrs, "priority", METALINK4_NAMESPACE_URI);
       if(itr == attrs.end()) {
         priority = MetalinkResource::getLowestPriority();
-      } else {
-        if(util::parseIntNoThrow
-           (priority, std::string((*itr).value, (*itr).valueLength))) {
-          if(priority < 1 || MetalinkResource::getLowestPriority() < priority) {
-            psm->logError("url@priority is out of range");
-            return;
-          }
-        } else {
-          psm->logError("Bad url@priority");
+      } else if(util::parseIntNoThrow(priority, std::string((*itr).value, (*itr).valueLength))) {
+        if(priority < 1 || MetalinkResource::getLowestPriority() < priority) {
+          psm->logError("url@priority is out of range");
           return;
         }
+      } else {
+        psm->logError("Bad url@priority");
+        return;
       }
     }
     psm->newResourceTransaction();
@@ -181,40 +169,35 @@ void FileMetalinkParserStateV4::beginElement
 #ifdef ENABLE_MESSAGE_DIGEST
   else if(strcmp(localname, "hash") == 0) {
     psm->setHashStateV4();
-    std::vector<XmlAttr>::const_iterator itr =
-      findAttr(attrs, "type", METALINK4_NAMESPACE_URI);
+    auto itr = findAttr(attrs, "type", METALINK4_NAMESPACE_URI);
     if(itr == attrs.end() || (*itr).valueLength == 0) {
       psm->logError("Missing hash@type");
       return;
-    } else {
-      psm->newChecksumTransaction();
-      psm->setTypeOfChecksum(std::string((*itr).value, (*itr).valueLength));
     }
+    psm->newChecksumTransaction();
+    psm->setTypeOfChecksum(std::string((*itr).value, (*itr).valueLength));
   } else if(strcmp(localname, "pieces") == 0) {
     psm->setPiecesStateV4();
     uint32_t length;
     {
-      std::vector<XmlAttr>::const_iterator itr =
-        findAttr(attrs, "length", METALINK4_NAMESPACE_URI);
+      auto itr = findAttr(attrs, "length", METALINK4_NAMESPACE_URI);
       if(itr == attrs.end() || (*itr).valueLength == 0) {
         psm->logError("Missing pieces@length");
         return;
-      } else if(!util::parseUIntNoThrow
-                (length, std::string((*itr).value, (*itr).valueLength))) {
+      }
+      if(!util::parseUIntNoThrow(length, std::string((*itr).value, (*itr).valueLength))) {
         psm->logError("Bad pieces@length");
         return;
       }
     }
     std::string type;
     {
-      std::vector<XmlAttr>::const_iterator itr =
-        findAttr(attrs, "type", METALINK4_NAMESPACE_URI);
+      auto itr = findAttr(attrs, "type", METALINK4_NAMESPACE_URI);
       if(itr == attrs.end() || (*itr).valueLength == 0) {
         psm->logError("Missing pieces@type");
         return;
-      } else {
-        type.assign((*itr).value, (*itr).valueLength);
       }
+      type.assign((*itr).value, (*itr).valueLength);
     }
     psm->newChunkChecksumTransactionV4();
     psm->setLengthOfChunkChecksumV4(length);
@@ -223,8 +206,7 @@ void FileMetalinkParserStateV4::beginElement
 #endif // ENABLE_MESSAGE_DIGEST
   else if(strcmp(localname, "signature") == 0) {
     psm->setSignatureStateV4();
-    std::vector<XmlAttr>::const_iterator itr =
-      findAttr(attrs, "mediatype", METALINK4_NAMESPACE_URI);
+    auto itr = findAttr(attrs, "mediatype", METALINK4_NAMESPACE_URI);
     if(itr == attrs.end() || (*itr).valueLength == 0) {
       psm->logError("Missing signature@mediatype");
       return;

@@ -263,8 +263,7 @@ std::string AdaptiveURISelector::getMaxDownloadSpeedUri
 {
   int max = -1;
   std::string uri = A2STR::NIL;
-  for(std::deque<std::string>::const_iterator i = uris.begin(),
-        eoi = uris.end(); i != eoi; ++i) {
+  for(auto i = uris.begin(), eoi = uris.end(); i != eoi; ++i) {
     std::shared_ptr<ServerStat> ss = getServerStats(*i);
     if(!ss)
       continue;
@@ -285,8 +284,7 @@ std::deque<std::string> AdaptiveURISelector::getUrisBySpeed
 (const std::deque<std::string>& uris, int min) const
 {
   std::deque<std::string> bests;
-  for(std::deque<std::string>::const_iterator i = uris.begin(),
-        eoi = uris.end(); i != eoi; ++i) {
+  for(auto i = uris.begin(), eoi = uris.end(); i != eoi; ++i) {
     std::shared_ptr<ServerStat> ss = getServerStats(*i);
     if(!ss)
       continue;
@@ -302,7 +300,7 @@ std::string AdaptiveURISelector::selectRandomUri
 (const std::deque<std::string>& uris) const
 {
   int pos = SimpleRandomizer::getInstance()->getRandomNumber(uris.size());
-  std::deque<std::string>::const_iterator i = uris.begin();
+  auto i = uris.begin();
   i = i+pos;
   return *i;
 }
@@ -310,11 +308,10 @@ std::string AdaptiveURISelector::selectRandomUri
 std::string AdaptiveURISelector::getFirstNotTestedUri
 (const std::deque<std::string>& uris) const
 {
-  for(std::deque<std::string>::const_iterator i = uris.begin(),
-        eoi = uris.end(); i != eoi; ++i) {
-    std::shared_ptr<ServerStat> ss = getServerStats(*i);
+  for (const auto& i : uris) {
+    std::shared_ptr<ServerStat> ss = getServerStats(i);
     if(!ss)
-      return *i;
+      return i;
   }
   return A2STR::NIL;
 }
@@ -324,9 +321,8 @@ std::string AdaptiveURISelector::getFirstToTestUri
 {
   int counter;
   int power;
-  for(std::deque<std::string>::const_iterator i = uris.begin(),
-        eoi = uris.end(); i != eoi; ++i) {
-    std::shared_ptr<ServerStat> ss = getServerStats(*i);
+  for (const auto& u : uris) {
+    std::shared_ptr<ServerStat> ss = getServerStats(u);
     if(!ss)
       continue;
     counter = ss->getCounter();
@@ -336,7 +332,7 @@ std::string AdaptiveURISelector::getFirstToTestUri
     /* We test the mirror another time if it has not been
      * tested since 2^counter days */
     if(ss->getLastUpdated().difference() > power*24*60*60) {
-      return *i;
+      return u;
     }
   }
   return A2STR::NIL;
@@ -359,9 +355,8 @@ int AdaptiveURISelector::getNbTestedServers
 (const std::deque<std::string>& uris) const
 {
   int counter = 0;
-  for(std::deque<std::string>::const_iterator i = uris.begin(),
-        eoi = uris.end(); i != eoi; ++i) {
-    std::shared_ptr<ServerStat> ss = getServerStats(*i);
+  for(const auto& u : uris) {
+    std::shared_ptr<ServerStat> ss = getServerStats(u);
     if(!ss)
       ++counter;
   }

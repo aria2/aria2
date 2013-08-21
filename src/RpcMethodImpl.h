@@ -116,9 +116,8 @@ void toStringList(OutputIterator out, const List* src)
   if(!src) {
     return;
   }
-  for(List::ValueType::const_iterator i = src->begin(), eoi = src->end();
-      i != eoi; ++i) {
-    const String* s = downcast<String>(*i);
+  for(auto & elem : *src) {
+    const String* s = downcast<String>(elem);
     if(s) {
       *out++ = s->s();
     }

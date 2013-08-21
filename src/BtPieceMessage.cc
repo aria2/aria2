@@ -125,7 +125,7 @@ void BtPieceMessage::doReceivedAction()
     if(piece->getWrDiskCacheEntry()) {
       // Write Disk Cache enabled. Unfortunately, it incurs extra data
       // copy.
-      unsigned char* dataCopy = new unsigned char[blockLength_];
+      auto dataCopy = new unsigned char[blockLength_];
       memcpy(dataCopy, data_+9, blockLength_);
       piece->updateWrCache(getPieceStorage()->getWrDiskCache(),
                            dataCopy, 0, blockLength_, blockLength_, offset);

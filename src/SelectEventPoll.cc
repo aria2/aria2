@@ -79,9 +79,7 @@ void SelectEventPoll::SocketEntry::addCommandEvent
 (Command* command, int events)
 {
   CommandEvent cev(command, events);
-  std::deque<CommandEvent>::iterator i = std::find(commandEvents_.begin(),
-                                                   commandEvents_.end(),
-                                                   cev);
+  auto i = std::find(commandEvents_.begin(), commandEvents_.end(), cev);
   if(i == commandEvents_.end()) {
     commandEvents_.push_back(cev);
   } else {
@@ -92,9 +90,7 @@ void SelectEventPoll::SocketEntry::removeCommandEvent
 (Command* command, int events)
 {
   CommandEvent cev(command, events);
-  std::deque<CommandEvent>::iterator i = std::find(commandEvents_.begin(),
-                                                   commandEvents_.end(),
-                                                   cev);
+  auto i = std::find(commandEvents_.begin(), commandEvents_.end(), cev);
   if(i == commandEvents_.end()) {
     // not found
   } else {

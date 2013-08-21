@@ -169,21 +169,22 @@ void NumberOptionHandler::parseArg(Option& option, int64_t number) const
 {
   if((min_ == -1 || min_ <= number) && (max_ ==  -1 || number <= max_)) {
     option.put(pref_, util::itos(number));
-  } else {
-    std::string msg = pref_->k;
-    msg += " ";
-    if(min_ == -1 && max_ != -1) {
-      msg += fmt(_("must be smaller than or equal to %" PRId64 "."), max_);
-    } else if(min_ != -1 && max_ != -1) {
-      msg += fmt(_("must be between %" PRId64 " and %" PRId64 "."),
-                 min_, max_);
-    } else if(min_ != -1 && max_ == -1) {
-      msg += fmt(_("must be greater than or equal to %" PRId64 "."), min_);
-    } else {
-      msg += _("must be a number.");
-    }
-    throw DL_ABORT_EX(msg);
+    return;
   }
+
+  std::string msg = pref_->k;
+  msg += " ";
+  if(min_ == -1 && max_ != -1) {
+    msg += fmt(_("must be smaller than or equal to %" PRId64 "."), max_);
+  } else if(min_ != -1 && max_ != -1) {
+    msg += fmt(_("must be between %" PRId64 " and %" PRId64 "."),
+                min_, max_);
+  } else if(min_ != -1 && max_ == -1) {
+    msg += fmt(_("must be greater than or equal to %" PRId64 "."), min_);
+  } else {
+    msg += _("must be a number.");
+  }
+  throw DL_ABORT_EX(msg);
 }
 
 std::string NumberOptionHandler::createPossibleValuesString() const
@@ -405,20 +406,18 @@ ParameterOptionHandler::~ParameterOptionHandler() {}
 void ParameterOptionHandler::parseArg(Option& option, const std::string& optarg)
   const
 {
-  std::vector<std::string>::const_iterator itr =
-    std::find(validParamValues_.begin(), validParamValues_.end(), optarg);
+  auto itr = std::find(validParamValues_.begin(), validParamValues_.end(), optarg);
   if(itr == validParamValues_.end()) {
     std::string msg = pref_->k;
     msg += " ";
     msg += _("must be one of the following:");
     if(validParamValues_.size() == 0) {
       msg += "''";
-    } else {
-      for(std::vector<std::string>::const_iterator itr =
-            validParamValues_.begin(), eoi = validParamValues_.end();
-          itr != eoi; ++itr) {
+    }
+    else {
+      for (const auto& p: validParamValues_) {
         msg += "'";
-        msg += *itr;
+        msg += p;
         msg += "' ";
       }
     }

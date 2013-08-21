@@ -330,7 +330,7 @@ void RequestGroup::createInitialCommand
         progressInfoFilePtr->setBtRuntime(btRuntime);
       }
 
-      DefaultPeerStorage* peerStoragePtr(new DefaultPeerStorage());
+      auto peerStoragePtr(new DefaultPeerStorage());
       peerStoragePtr->setBtRuntime(btRuntime);
       peerStoragePtr->setPieceStorage(pieceStorage_);
       peerStorage_ = peerStoragePtr;
@@ -574,7 +574,7 @@ void RequestGroup::initPieceStorage()
 #endif // ENABLE_BITTORRENT
       )) {
 #ifdef ENABLE_BITTORRENT
-    DefaultPieceStorage* ps =
+    auto ps =
       new DefaultPieceStorage(downloadContext_, option_.get());
     std::shared_ptr<PieceStorage> psHolder(ps);
     if(downloadContext_->hasAttribute(CTX_ATTR_BT)) {
@@ -616,7 +616,7 @@ void RequestGroup::initPieceStorage()
     }
     tempPieceStorage.swap(psHolder);
   } else {
-    UnknownLengthPieceStorage* ps =
+    auto ps =
       new UnknownLengthPieceStorage(downloadContext_);
     std::shared_ptr<PieceStorage> psHolder(ps);
     if(diskWriterFactory_) {

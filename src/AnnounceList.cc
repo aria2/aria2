@@ -61,12 +61,11 @@ AnnounceList::~AnnounceList() {}
 void AnnounceList::reconfigure
 (const std::vector<std::vector<std::string> >& announceList)
 {
-  for(std::vector<std::vector<std::string> >::const_iterator itr =
-        announceList.begin(), eoi = announceList.end(); itr != eoi; ++itr) {
-    if((*itr).empty()) {
+  for (const auto& vec: announceList) {
+    if(vec.empty()) {
       continue;
     }
-    std::deque<std::string> urls((*itr).begin(), (*itr).end());
+    std::deque<std::string> urls(vec.begin(), vec.end());
     std::shared_ptr<AnnounceTier> tier(new AnnounceTier(urls));
     tiers_.push_back(tier);
   }
@@ -207,15 +206,13 @@ void AnnounceList::setCurrentTier
 }
 
 void AnnounceList::moveToStoppedAllowedTier() {
-  std::deque<std::shared_ptr<AnnounceTier> >::iterator itr =
-    find_wrap_if(tiers_.begin(), tiers_.end(),
-                 currentTier_,
-                 FindStoppedAllowedTier());
+  auto itr = find_wrap_if(tiers_.begin(), tiers_.end(), currentTier_,
+                          FindStoppedAllowedTier());
   setCurrentTier(itr);
 }
 
 void AnnounceList::moveToCompletedAllowedTier() {
-  std::deque<std::shared_ptr<AnnounceTier> >::iterator itr =
+  auto itr =
     find_wrap_if(tiers_.begin(), tiers_.end(),
                  currentTier_,
                  FindCompletedAllowedTier());
@@ -223,9 +220,8 @@ void AnnounceList::moveToCompletedAllowedTier() {
 }
 
 void AnnounceList::shuffle() {
-  for(std::deque<std::shared_ptr<AnnounceTier> >::const_iterator itr =
-        tiers_.begin(), eoi = tiers_.end(); itr != eoi; ++itr) {
-    std::deque<std::string>& urls = (*itr)->urls;
+  for (const auto& tier: tiers_) {
+    auto& urls = tier->urls;
     std::random_shuffle(urls.begin(), urls.end(),
                         *SimpleRandomizer::getInstance());
   }

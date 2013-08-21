@@ -110,7 +110,7 @@ bool DHTBucket::isInRange(const unsigned char* nodeID,
 bool DHTBucket::addNode(const std::shared_ptr<DHTNode>& node)
 {
   notifyUpdate();
-  std::deque<std::shared_ptr<DHTNode> >::iterator itr =
+  auto itr =
     std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
   if(itr == nodes_.end()) {
     if(nodes_.size() < K) {
@@ -144,7 +144,7 @@ void DHTBucket::cacheNode(const std::shared_ptr<DHTNode>& node)
 void DHTBucket::dropNode(const std::shared_ptr<DHTNode>& node)
 {
   if(!cachedNodes_.empty()) {
-    std::deque<std::shared_ptr<DHTNode> >::iterator itr =
+    auto itr =
       std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
     if(itr != nodes_.end()) {
       nodes_.erase(itr);
@@ -156,7 +156,7 @@ void DHTBucket::dropNode(const std::shared_ptr<DHTNode>& node)
 
 void DHTBucket::moveToHead(const std::shared_ptr<DHTNode>& node)
 {
-  std::deque<std::shared_ptr<DHTNode> >::iterator itr =
+  auto itr =
     std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
   if(itr != nodes_.end()) {
     nodes_.erase(itr);
@@ -166,7 +166,7 @@ void DHTBucket::moveToHead(const std::shared_ptr<DHTNode>& node)
 
 void DHTBucket::moveToTail(const std::shared_ptr<DHTNode>& node)
 {
-  std::deque<std::shared_ptr<DHTNode> >::iterator itr =
+  auto itr =
     std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
   if(itr != nodes_.end()) {
     nodes_.erase(itr);
@@ -196,12 +196,11 @@ std::shared_ptr<DHTBucket> DHTBucket::split()
                                                 rMax, rMin, localNode_));
 
   std::deque<std::shared_ptr<DHTNode> > lNodes;
-  for(std::deque<std::shared_ptr<DHTNode> >::iterator i = nodes_.begin(),
-        eoi = nodes_.end(); i != eoi; ++i) {
-    if(rBucket->isInRange(*i)) {
-      assert(rBucket->addNode(*i));
+  for(auto & elem : nodes_) {
+    if(rBucket->isInRange(elem)) {
+      assert(rBucket->addNode(elem));
     } else {
-      lNodes.push_back(*i);
+      lNodes.push_back(elem);
     }
   }
   nodes_ = lNodes;
@@ -231,7 +230,7 @@ std::shared_ptr<DHTNode> DHTBucket::getNode(const unsigned char* nodeID, const s
   std::shared_ptr<DHTNode> node(new DHTNode(nodeID));
   node->setIPAddress(ipaddr);
   node->setPort(port);
-  std::deque<std::shared_ptr<DHTNode> >::const_iterator itr =
+  auto itr =
     std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
   if(itr == nodes_.end() ||
      (*itr)->getIPAddress() != ipaddr || (*itr)->getPort() != port) {
@@ -275,7 +274,7 @@ bool DHTBucket::containsQuestionableNode() const
 
 std::shared_ptr<DHTNode> DHTBucket::getLRUQuestionableNode() const
 {
-  std::deque<std::shared_ptr<DHTNode> >::const_iterator i =
+  auto i =
     std::find_if(nodes_.begin(), nodes_.end(), FindQuestionableNode());
   if(i == nodes_.end()) {
     return nullptr;

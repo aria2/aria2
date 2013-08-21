@@ -80,7 +80,7 @@ ssize_t SinkStreamFilter::transform
       if(alen < wlen) {
         size_t len = wlen - alen;
         size_t capacity = std::max(len, static_cast<size_t>(4096));
-        unsigned char* dataCopy = new unsigned char[capacity];
+        auto dataCopy = new unsigned char[capacity];
         memcpy(dataCopy, inbuf + alen, len);
         piece->updateWrCache(wrDiskCache_, dataCopy, 0, len, capacity,
                              segment->getPositionToWrite() + alen);

@@ -128,7 +128,7 @@ void LibuvEventPoll::poll(const struct timeval& tv)
 
   // timeout == 0 will tick once
   if (timeout >= 0) {
-    uv_timer_t* timer = new uv_timer_t;
+    auto timer = new uv_timer_t;
     uv_timer_init(loop_, timer);
     uv_timer_start(timer, timer_callback, timeout, timeout);
 
@@ -147,11 +147,10 @@ void LibuvEventPoll::poll(const struct timeval& tv)
   // own timeout and ares may create new sockets or closes socket in
   // their API. So we call ares_process_fd for all ares_channel and
   // re-register their sockets.
-  for(KAsyncNameResolverEntrySet::iterator i = nameResolverEntries_.begin(),
-        eoi = nameResolverEntries_.end(); i != eoi; ++i) {
-    (*i)->processTimeout();
-    (*i)->removeSocketEvents(this);
-    (*i)->addSocketEvents(this);
+  for (auto& r: nameResolverEntries_) {
+    r->processTimeout();
+    r->removeSocketEvents(this);
+    r->addSocketEvents(this);
   }
 #endif // ENABLE_ASYNC_DNS
 
@@ -219,8 +218,8 @@ void LibuvEventPoll::pollCallback(KPoll* poll, int status, int events)
 bool LibuvEventPoll::addEvents(sock_t socket,
                                const LibuvEventPoll::KEvent& event)
 {
-  std::shared_ptr<KSocketEntry> socketEntry(new KSocketEntry(socket));
-  KSocketEntrySet::iterator i = socketEntries_.lower_bound(socketEntry);
+  auto socketEntry = std::make_shared<KSocketEntry>(socket);
+  auto i = socketEntries_.lower_bound(socketEntry);
 
   if (i != socketEntries_.end() && **i == *socketEntry) {
     event.addSelf(*i);
@@ -234,7 +233,7 @@ bool LibuvEventPoll::addEvents(sock_t socket,
 
   socketEntries_.insert(i, socketEntry);
   event.addSelf(socketEntry);
-  KPoll* poll = new KPoll(this, socketEntry.get(), socket);
+  auto poll = new KPoll(this, socketEntry.get(), socket);
   polls_[socket] = poll;
   poll->start();
   return true;
@@ -302,10 +301,8 @@ bool LibuvEventPoll::deleteEvents(sock_t socket, Command* command,
 bool LibuvEventPoll::addNameResolver(const std::shared_ptr<AsyncNameResolver>& resolver,
                                      Command* command)
 {
-  std::shared_ptr<KAsyncNameResolverEntry> entry(
-      new KAsyncNameResolverEntry(resolver, command));
-  KAsyncNameResolverEntrySet::iterator itr =
-    nameResolverEntries_.lower_bound(entry);
+  auto entry = std::make_shared<KAsyncNameResolverEntry>(resolver, command);
+  auto itr = nameResolverEntries_.lower_bound(entry);
   if (itr != nameResolverEntries_.end() && *(*itr) == *entry) {
     return false;
   }
@@ -317,9 +314,8 @@ bool LibuvEventPoll::addNameResolver(const std::shared_ptr<AsyncNameResolver>& r
 bool LibuvEventPoll::deleteNameResolver(const std::shared_ptr<AsyncNameResolver>& resolver,
                                         Command* command)
 {
-  std::shared_ptr<KAsyncNameResolverEntry> entry(
-      new KAsyncNameResolverEntry(resolver, command));
-  KAsyncNameResolverEntrySet::iterator itr = nameResolverEntries_.find(entry);
+  auto entry = std::make_shared<KAsyncNameResolverEntry>(resolver, command);
+  auto itr = nameResolverEntries_.find(entry);
   if (itr == nameResolverEntries_.end()) {
     return false;
   }

@@ -94,17 +94,16 @@ int64_t HttpRequest::getEndByte() const
 {
   if(!segment_ || !request_) {
     return 0;
-  } else {
-    if(request_->isPipeliningEnabled()) {
-      int64_t endByte =
-        fileEntry_->gtoloff(segment_->getPosition()+segment_->getLength()-1);
-      return std::min(endByte, fileEntry_->getLength()-1);
-    } else if(endOffsetOverride_ > 0) {
-      return endOffsetOverride_ - 1;
-    } else {
-      return 0;
-    }
   }
+  if(request_->isPipeliningEnabled()) {
+    int64_t endByte =
+      fileEntry_->gtoloff(segment_->getPosition()+segment_->getLength()-1);
+    return std::min(endByte, fileEntry_->getLength()-1);
+  }
+  if(endOffsetOverride_ > 0) {
+    return endOffsetOverride_ - 1;
+  }
+  return 0;
 }
 
 Range HttpRequest::getRange() const
@@ -112,9 +111,8 @@ Range HttpRequest::getRange() const
   // content-length is always 0
   if(!segment_) {
     return Range();
-  } else {
-    return Range(getStartByte(), getEndByte(), fileEntry_->getLength());
   }
+  return Range(getStartByte(), getEndByte(), fileEntry_->getLength());
 }
 
 bool HttpRequest::isRangeSatisfied(const Range& range) const
@@ -128,9 +126,8 @@ bool HttpRequest::isRangeSatisfied(const Range& range) const
      ((fileEntry_->getLength() == 0) ||
       (fileEntry_->getLength() == range.entityLength))) {
     return true;
-  } else {
-    return false;
   }
+  return false;
 }
 
 namespace {
@@ -444,7 +441,7 @@ bool HttpRequest::conditionalRequest() const
   if(!ifModSinceHeader_.empty()) {
     return true;
   }
-  for(std::vector<std::string>::const_iterator i = headers_.begin(),
+  for(auto i = headers_.begin(),
         eoi = headers_.end(); i != eoi; ++i) {
     if(util::istartsWith(*i, "if-modified-since") ||
        util::istartsWith(*i, "if-none-match")) {

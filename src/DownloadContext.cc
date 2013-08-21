@@ -101,9 +101,8 @@ DownloadContext::findFileEntryByOffset(int64_t offset) const
 
   std::shared_ptr<FileEntry> obj(new FileEntry());
   obj->setOffset(offset);
-  std::vector<std::shared_ptr<FileEntry> >::const_iterator i =
-    std::upper_bound(fileEntries_.begin(), fileEntries_.end(), obj,
-                     DerefLess<std::shared_ptr<FileEntry> >());
+  auto i = std::upper_bound(fileEntries_.begin(), fileEntries_.end(), obj,
+                            DerefLess<std::shared_ptr<FileEntry> >());
   if(i != fileEntries_.end() && (*i)->getOffset() == offset) {
     return *i;
   } else {
@@ -216,10 +215,9 @@ const std::string& DownloadContext::getBasePath() const
 std::shared_ptr<FileEntry>
 DownloadContext::getFirstRequestedFileEntry() const
 {
-  for(std::vector<std::shared_ptr<FileEntry> >::const_iterator i =
-        fileEntries_.begin(), eoi = fileEntries_.end(); i != eoi; ++i) {
-    if((*i)->isRequested()) {
-      return *i;
+  for (auto& e : fileEntries_) {
+    if(e->isRequested()) {
+      return e;
     }
   }
   return nullptr;
@@ -228,9 +226,8 @@ DownloadContext::getFirstRequestedFileEntry() const
 size_t DownloadContext::countRequestedFileEntry() const
 {
   size_t numFiles = 0;
-  for(std::vector<std::shared_ptr<FileEntry> >::const_iterator i =
-        fileEntries_.begin(), eoi = fileEntries_.end(); i != eoi; ++i) {
-    if((*i)->isRequested()) {
+  for (const auto& e: fileEntries_) {
+    if(e->isRequested()) {
       ++numFiles;
     }
   }

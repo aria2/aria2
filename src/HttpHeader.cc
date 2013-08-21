@@ -60,7 +60,7 @@ bool HttpHeader::defined(int hdKey) const
 
 const std::string& HttpHeader::find(int hdKey) const
 {
-  std::multimap<int, std::string>::const_iterator itr = table_.find(hdKey);
+  auto itr = table_.find(hdKey);
   if(itr == table_.end()) {
     return A2STR::NIL;
   } else {
@@ -71,9 +71,7 @@ const std::string& HttpHeader::find(int hdKey) const
 std::vector<std::string> HttpHeader::findAll(int hdKey) const
 {
   std::vector<std::string> v;
-  std::pair<std::multimap<int, std::string>::const_iterator,
-            std::multimap<int, std::string>::const_iterator> itrpair =
-    table_.equal_range(hdKey);
+  auto itrpair = table_.equal_range(hdKey);
   while(itrpair.first != itrpair.second) {
     v.push_back((*itrpair.first).second);
     ++itrpair.first;
@@ -90,7 +88,7 @@ HttpHeader::equalRange(int hdKey) const
 
 Range HttpHeader::getRange() const
 {
-  const std::string& rangeStr = find(CONTENT_RANGE);
+  const auto& rangeStr = find(CONTENT_RANGE);
   if(rangeStr.empty()) {
     const std::string& clenStr = find(CONTENT_LENGTH);
     if(clenStr.empty()) {
@@ -113,8 +111,7 @@ Range HttpHeader::getRange() const
   // we expect that rangeStr looks like 'bytes 100-199/100'
   // but some server returns '100-199/100', omitting bytes-unit sepcifier
   // 'bytes'.
-  std::string::const_iterator byteRangeSpec =
-    std::find(rangeStr.begin(), rangeStr.end(), ' ');
+  auto byteRangeSpec = std::find(rangeStr.begin(), rangeStr.end(), ' ');
   if(byteRangeSpec == rangeStr.end()) {
     // we assume bytes-unit specifier omitted.
     byteRangeSpec = rangeStr.begin();
@@ -124,8 +121,7 @@ Range HttpHeader::getRange() const
       ++byteRangeSpec;
     }
   }
-  std::string::const_iterator slash =
-    std::find(byteRangeSpec, rangeStr.end(), '/');
+  auto slash = std::find(byteRangeSpec, rangeStr.end(), '/');
   if(slash == rangeStr.end() || slash+1 == rangeStr.end() ||
      (byteRangeSpec+1 == slash && *byteRangeSpec == '*') ||
      (slash+2 == rangeStr.end() && *(slash+1) == '*')) {
@@ -134,7 +130,7 @@ Range HttpHeader::getRange() const
     // not satisfiable) status.
     return Range();
   }
-  std::string::const_iterator minus = std::find(byteRangeSpec, slash, '-');
+  auto minus = std::find(byteRangeSpec, slash, '-');
   if(minus == slash) {
     return Range();
   }
@@ -218,17 +214,15 @@ bool HttpHeader::fieldContains(int hdKey, const char* value)
   std::pair<std::multimap<int, std::string>::const_iterator,
             std::multimap<int, std::string>::const_iterator> range =
     equalRange(hdKey);
-  for(std::multimap<int, std::string>::const_iterator i = range.first;
-      i != range.second; ++i) {
+  for(auto i = range.first; i != range.second; ++i) {
     std::vector<Scip> values;
     util::splitIter((*i).second.begin(), (*i).second.end(),
                     std::back_inserter(values),
                     ',',
                     true // doStrip
                     );
-    for(std::vector<Scip>::const_iterator j = values.begin(),
-          eoj = values.end(); j != eoj; ++j) {
-      if(util::strieq((*j).first, (*j).second, value)) {
+    for (const auto& v: values) {
+      if(util::strieq(v.first, v.second, value)) {
         return true;
       }
     }

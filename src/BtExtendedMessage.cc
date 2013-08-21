@@ -68,7 +68,7 @@ unsigned char* BtExtendedMessage::createMessage()
    */
   std::string payload = extensionMessage_->getPayload();
   msgLength_ = 6+payload.size();
-  unsigned char* msg = new unsigned char[msgLength_];
+  auto msg = new unsigned char[msgLength_];
   bittorrent::createPeerMessageString(msg, msgLength_, 2+payload.size(), ID);
   *(msg+5) = extensionMessage_->getExtensionMessageID();
   memcpy(msg+6, payload.data(), payload.size());

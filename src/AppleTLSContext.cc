@@ -105,7 +105,7 @@ namespace {
     CFStringRef cerr = SecCopyErrorMessageString(err, nullptr);
     if (cerr) {
       size_t len = CFStringGetLength(cerr) * 4;
-      char *buf = new char[len];
+      auto buf = new char[len];
       if (CFStringGetCString(cerr, buf, len, kCFStringEncodingUTF8)) {
         rv = buf;
       }

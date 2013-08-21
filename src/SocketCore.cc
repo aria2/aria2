@@ -1194,8 +1194,7 @@ bool verifyHostname(const std::string& hostname,
     if(addrLen == 0) {
       return false;
     }
-    for(std::vector<std::string>::const_iterator i = ipAddrs.begin(),
-          eoi = ipAddrs.end(); i != eoi; ++i) {
+    for(auto i = ipAddrs.begin(), eoi = ipAddrs.end(); i != eoi; ++i) {
       if(addrLen == (*i).size() &&
          memcmp(binAddr, (*i).c_str(), addrLen) == 0) {
         return true;
@@ -1205,8 +1204,7 @@ bool verifyHostname(const std::string& hostname,
     if(dnsNames.empty()) {
       return util::tlsHostnameMatch(commonName, hostname);
     }
-    for(std::vector<std::string>::const_iterator i = dnsNames.begin(),
-          eoi = dnsNames.end(); i != eoi; ++i) {
+    for(auto i = dnsNames.begin(), eoi = dnsNames.end(); i != eoi; ++i) {
       if(util::tlsHostnameMatch(*i, hostname)) {
         return true;
       }

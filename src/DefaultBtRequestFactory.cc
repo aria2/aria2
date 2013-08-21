@@ -150,10 +150,9 @@ void DefaultBtRequestFactory::doChokedAction()
 }
 
 void DefaultBtRequestFactory::removeAllTargetPiece() {
-  for(std::deque<std::shared_ptr<Piece> >::iterator itr = pieces_.begin(),
-        eoi = pieces_.end(); itr != eoi; ++itr) {
-    dispatcher_->doAbortOutstandingRequestAction(*itr);
-    pieceStorage_->cancelPiece(*itr, cuid_);
+  for(auto & elem : pieces_) {
+    dispatcher_->doAbortOutstandingRequestAction(elem);
+    pieceStorage_->cancelPiece(elem, cuid_);
   }
   pieces_.clear();
 }

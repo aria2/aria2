@@ -304,10 +304,9 @@ void DownloadEngine::poolSocket(const std::string& key,
     std::multimap<std::string, SocketPoolEntry> newPool;
     A2_LOG_DEBUG("Scaning SocketPool and erasing timed out entry.");
     lastSocketPoolScan_ = global::wallclock();
-    for(std::multimap<std::string, SocketPoolEntry>::iterator i =
-          socketPool_.begin(), eoi = socketPool_.end(); i != eoi; ++i) {
-      if(!(*i).second.isTimeout()) {
-        newPool.insert(*i);
+    for(auto & elem : socketPool_) {
+      if(!elem.second.isTimeout()) {
+        newPool.insert(elem);
       }
     }
     A2_LOG_DEBUG(fmt("%lu entries removed.",
@@ -425,8 +424,7 @@ DownloadEngine::findSocketPoolEntry(const std::string& key)
   std::pair<std::multimap<std::string, SocketPoolEntry>::iterator,
     std::multimap<std::string, SocketPoolEntry>::iterator> range =
     socketPool_.equal_range(key);
-  for(std::multimap<std::string, SocketPoolEntry>::iterator i =
-        range.first, eoi = range.second; i != eoi; ++i) {
+  for(auto i = range.first, eoi = range.second; i != eoi; ++i) {
     const SocketPoolEntry& e = (*i).second;
     // We assume that if socket is readable it means peer shutdowns
     // connection and the socket will receive EOF. So skip it.
@@ -444,9 +442,8 @@ DownloadEngine::popPooledSocket
  const std::string& proxyhost, uint16_t proxyport)
 {
   std::shared_ptr<SocketCore> s;
-  std::multimap<std::string, SocketPoolEntry>::iterator i =
-    findSocketPoolEntry
-    (createSockPoolKey(ipaddr, port, A2STR::NIL, proxyhost, proxyport));
+  auto i = findSocketPoolEntry(createSockPoolKey(ipaddr, port, A2STR::NIL,
+                                                 proxyhost, proxyport));
   if(i != socketPool_.end()) {
     s = (*i).second.getSocket();
     socketPool_.erase(i);
@@ -462,9 +459,8 @@ DownloadEngine::popPooledSocket
  const std::string& proxyhost, uint16_t proxyport)
 {
   std::shared_ptr<SocketCore> s;
-  std::multimap<std::string, SocketPoolEntry>::iterator i =
-    findSocketPoolEntry
-    (createSockPoolKey(ipaddr, port, username, proxyhost, proxyport));
+  auto i = findSocketPoolEntry(createSockPoolKey(ipaddr, port, username,
+                                                 proxyhost, proxyport));
   if(i != socketPool_.end()) {
     s = (*i).second.getSocket();
     options = (*i).second.getOptions();
@@ -478,9 +474,8 @@ DownloadEngine::popPooledSocket
 (const std::vector<std::string>& ipaddrs, uint16_t port)
 {
   std::shared_ptr<SocketCore> s;
-  for(std::vector<std::string>::const_iterator i = ipaddrs.begin(),
-        eoi = ipaddrs.end(); i != eoi; ++i) {
-    s = popPooledSocket(*i, port, A2STR::NIL, 0);
+  for(const auto & ipaddr : ipaddrs) {
+    s = popPooledSocket(ipaddr, port, A2STR::NIL, 0);
     if(s) {
       break;
     }
@@ -495,9 +490,8 @@ DownloadEngine::popPooledSocket
  const std::string& username)
 {
   std::shared_ptr<SocketCore> s;
-  for(std::vector<std::string>::const_iterator i = ipaddrs.begin(),
-        eoi = ipaddrs.end(); i != eoi; ++i) {
-    s = popPooledSocket(options, *i, port, username, A2STR::NIL, 0);
+  for(const auto & ipaddr : ipaddrs) {
+    s = popPooledSocket(options, ipaddr, port, username, A2STR::NIL, 0);
     if(s) {
       break;
     }

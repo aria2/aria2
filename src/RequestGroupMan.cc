@@ -279,17 +279,16 @@ private:
         group->getSegmentMan()->getPeerStats().size() == 1;
       const std::vector<std::shared_ptr<PeerStat> >& peerStats =
         group->getSegmentMan()->getFastestPeerStats();
-      for(std::vector<std::shared_ptr<PeerStat> >::const_iterator i =
-            peerStats.begin(), eoi = peerStats.end(); i != eoi; ++i) {
-        if((*i)->getHostname().empty() || (*i)->getProtocol().empty()) {
+      for(auto & stat : peerStats) {
+        if(stat->getHostname().empty() || stat->getProtocol().empty()) {
           continue;
         }
-        int speed = (*i)->getAvgDownloadSpeed();
+        int speed = stat->getAvgDownloadSpeed();
         if (speed == 0) continue;
 
         std::shared_ptr<ServerStat> ss =
-          e_->getRequestGroupMan()->getOrCreateServerStat((*i)->getHostname(),
-                                                          (*i)->getProtocol());
+          e_->getRequestGroupMan()->getOrCreateServerStat(stat->getHostname(),
+                                                          stat->getProtocol());
         ss->increaseCounter();
         ss->updateDownloadSpeed(speed);
         if(singleConnection) {
@@ -361,14 +360,13 @@ public:
                             GroupId::toHex(group->getGID()).c_str()));
             const std::vector<std::shared_ptr<FileEntry> >& files =
               dctx->getFileEntries();
-            for(std::vector<std::shared_ptr<FileEntry> >::const_iterator i =
-                  files.begin(), eoi = files.end(); i != eoi; ++i) {
-              if(!(*i)->isRequested()) {
-                if(File((*i)->getPath()).remove()) {
-                  A2_LOG_INFO(fmt(MSG_FILE_REMOVED, (*i)->getPath().c_str()));
+            for(auto & file : files) {
+              if(!file->isRequested()) {
+                if(File(file->getPath()).remove()) {
+                  A2_LOG_INFO(fmt(MSG_FILE_REMOVED, file->getPath().c_str()));
                 } else {
                   A2_LOG_INFO(fmt(MSG_FILE_COULD_NOT_REMOVED,
-                                  (*i)->getPath().c_str()));
+                                  file->getPath().c_str()));
                 }
               }
             }
@@ -535,9 +533,8 @@ void RequestGroupMan::save()
 
 void RequestGroupMan::closeFile()
 {
-  for(RequestGroupList::iterator itr = requestGroups_.begin(),
-        eoi = requestGroups_.end(); itr != eoi; ++itr) {
-    (*itr)->closeFile();
+  for(auto & elem : requestGroups_) {
+    elem->closeFile();
   }
 }
 
@@ -548,10 +545,8 @@ RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
   int inprogress = 0;
   int removed = 0;
   error_code::Value lastError = removedLastErrorResult_;
-  for(DownloadResultList::const_iterator itr =
-        downloadResults_.begin(), eoi = downloadResults_.end(); itr != eoi;
-      ++itr) {
-    const std::shared_ptr<DownloadResult>& dr = *itr;
+  for(auto & dr : downloadResults_) {
+
     if(dr->belongsTo != 0) {
       continue;
     }
@@ -637,10 +632,8 @@ void RequestGroupMan::showDownloadResults(OutputFile& o, bool full) const
   int err = 0;
   int inpr = 0;
   int rm = 0;
-  for(DownloadResultList::const_iterator itr =
-        downloadResults_.begin(), eoi = downloadResults_.end(); itr != eoi;
-      ++itr) {
-    const std::shared_ptr<DownloadResult>& dr = *itr;
+  for(auto & dr : downloadResults_) {
+
     if(dr->belongsTo != 0) {
       continue;
     }
@@ -719,9 +712,8 @@ void RequestGroupMan::formatDownloadResultFull
   bool head = true;
   const std::vector<std::shared_ptr<FileEntry> >& fileEntries =
     downloadResult->fileEntries;
-  for(std::vector<std::shared_ptr<FileEntry> >::const_iterator i =
-        fileEntries.begin(), eoi = fileEntries.end(); i != eoi; ++i) {
-    if(!(*i)->isRequested()) {
+  for(auto & f: fileEntries) {
+    if(!f->isRequested()) {
       continue;
     }
     std::stringstream o;
@@ -731,14 +723,14 @@ void RequestGroupMan::formatDownloadResultFull
     } else {
       o << "   |    |           |";
     }
-    if((*i)->getLength() == 0 || downloadResult->bitfield.empty()) {
+    if(f->getLength() == 0 || downloadResult->bitfield.empty()) {
       o << "  -|";
     } else {
       int64_t completedLength =
-        bt.getOffsetCompletedLength((*i)->getOffset(), (*i)->getLength());
-      o << std::setw(3) << 100*completedLength/(*i)->getLength() << "|";
+        bt.getOffsetCompletedLength(f->getOffset(), f->getLength());
+      o << std::setw(3) << 100*completedLength/f->getLength() << "|";
     }
-    writeFilePath(o, *i, downloadResult->inMemoryDownload);
+    writeFilePath(o, f, downloadResult->inMemoryDownload);
     o << "\n";
     out.write(o.str().c_str());
   }
@@ -787,9 +779,7 @@ bool RequestGroupMan::isSameFileBeingDownloaded(RequestGroup* requestGroup) cons
     return false;
   }
   std::vector<std::string> files;
-  for(RequestGroupList::const_iterator itr = requestGroups_.begin(),
-        eoi = requestGroups_.end(); itr != eoi; ++itr) {
-    const std::shared_ptr<RequestGroup>& rg = *itr;
+  for(auto & rg : requestGroups_) {
     if(rg.get() != requestGroup) {
       const std::vector<std::shared_ptr<FileEntry> >& entries =
         rg->getDownloadContext()->getFileEntries();
@@ -807,17 +797,15 @@ bool RequestGroupMan::isSameFileBeingDownloaded(RequestGroup* requestGroup) cons
 
 void RequestGroupMan::halt()
 {
-  for(RequestGroupList::const_iterator i = requestGroups_.begin(),
-        eoi = requestGroups_.end(); i != eoi; ++i) {
-    (*i)->setHaltRequested(true);
+  for(auto & elem : requestGroups_) {
+    elem->setHaltRequested(true);
   }
 }
 
 void RequestGroupMan::forceHalt()
 {
-  for(RequestGroupList::const_iterator i = requestGroups_.begin(),
-        eoi = requestGroups_.end(); i != eoi; ++i) {
-    (*i)->setForceHaltRequested(true);
+  for(auto & elem : requestGroups_) {
+    elem->setForceHaltRequested(true);
   }
 }
 

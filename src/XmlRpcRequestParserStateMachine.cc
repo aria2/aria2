@@ -41,53 +41,37 @@ namespace aria2 {
 namespace rpc {
 
 namespace {
-InitialXmlRpcRequestParserState*
-initialState = new InitialXmlRpcRequestParserState();
+auto initialState = new InitialXmlRpcRequestParserState();
 
-UnknownElementXmlRpcRequestParserState*
-unknownElementState = new UnknownElementXmlRpcRequestParserState();
+auto unknownElementState = new UnknownElementXmlRpcRequestParserState();
 
-MethodCallXmlRpcRequestParserState*
-methodCallState = new MethodCallXmlRpcRequestParserState();
+auto methodCallState = new MethodCallXmlRpcRequestParserState();
 
-MethodNameXmlRpcRequestParserState*
-methodNameState = new MethodNameXmlRpcRequestParserState();
+auto methodNameState = new MethodNameXmlRpcRequestParserState();
 
-ParamsXmlRpcRequestParserState*
-paramsState = new ParamsXmlRpcRequestParserState();
+auto paramsState = new ParamsXmlRpcRequestParserState();
 
-ParamXmlRpcRequestParserState*
-paramState = new ParamXmlRpcRequestParserState();
+auto paramState = new ParamXmlRpcRequestParserState();
 
-ValueXmlRpcRequestParserState*
-valueState = new ValueXmlRpcRequestParserState();
+auto valueState = new ValueXmlRpcRequestParserState();
 
-IntXmlRpcRequestParserState*
-intState = new IntXmlRpcRequestParserState();
+auto intState = new IntXmlRpcRequestParserState();
 
-StringXmlRpcRequestParserState*
-stringState = new StringXmlRpcRequestParserState();
+auto stringState = new StringXmlRpcRequestParserState();
 
-Base64XmlRpcRequestParserState*
-base64State = new Base64XmlRpcRequestParserState();
+auto base64State = new Base64XmlRpcRequestParserState();
 
-StructXmlRpcRequestParserState*
-structState = new StructXmlRpcRequestParserState();
+auto structState = new StructXmlRpcRequestParserState();
 
-MemberXmlRpcRequestParserState*
-memberState = new MemberXmlRpcRequestParserState();
+auto memberState = new MemberXmlRpcRequestParserState();
 
-NameXmlRpcRequestParserState*
-nameState = new NameXmlRpcRequestParserState();
+auto nameState = new NameXmlRpcRequestParserState();
 
-ArrayXmlRpcRequestParserState*
-arrayState =  new ArrayXmlRpcRequestParserState();
+auto arrayState =  new ArrayXmlRpcRequestParserState();
 
-DataXmlRpcRequestParserState*
-dataState = new DataXmlRpcRequestParserState();
+auto dataState = new DataXmlRpcRequestParserState();
 
-ArrayValueXmlRpcRequestParserState*
-arrayValueState = new ArrayValueXmlRpcRequestParserState();
+auto arrayValueState = new ArrayValueXmlRpcRequestParserState();
 } // namespace
 
 XmlRpcRequestParserStateMachine::XmlRpcRequestParserStateMachine():

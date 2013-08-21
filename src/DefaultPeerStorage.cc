@@ -116,7 +116,7 @@ void DefaultPeerStorage::addPeer(const std::vector<std::shared_ptr<Peer> >& peer
 {
   size_t added = 0;
   size_t addMax = std::min(maxPeerListSize_, MAX_PEER_LIST_UPDATE);
-  for(std::vector<std::shared_ptr<Peer> >::const_iterator itr = peers.begin(),
+  for(auto itr = peers.begin(),
         eoi = peers.end(); itr != eoi && added < addMax; ++itr) {
     const std::shared_ptr<Peer>& peer = *itr;
     if(isPeerAlreadyAdded(peer)) {
@@ -148,7 +148,7 @@ void DefaultPeerStorage::addDroppedPeer(const std::shared_ptr<Peer>& peer)
 {
   // Make sure that duplicated peers exist in droppedPeers_. If
   // exists, erase older one.
-  for(std::deque<std::shared_ptr<Peer> >::iterator i = droppedPeers_.begin(),
+  for(auto i = droppedPeers_.begin(),
         eoi = droppedPeers_.end(); i != eoi; ++i) {
     if((*i)->getIPAddress() == peer->getIPAddress() &&
        (*i)->getPort() == peer->getPort()) {
@@ -183,21 +183,23 @@ bool DefaultPeerStorage::isPeerAvailable() {
 
 bool DefaultPeerStorage::isBadPeer(const std::string& ipaddr)
 {
-  std::map<std::string, time_t>::iterator i = badPeers_.find(ipaddr);
+  auto i = badPeers_.find(ipaddr);
   if(i == badPeers_.end()) {
     return false;
-  } else if(global::wallclock().getTime() >= (*i).second) {
+  }
+
+  if(global::wallclock().getTime() >= (*i).second) {
     badPeers_.erase(i);
     return false;
-  } else {
-    return true;
   }
+
+  return true;
 }
 
 void DefaultPeerStorage::addBadPeer(const std::string& ipaddr)
 {
   if(lastBadPeerCleaned_.difference(global::wallclock()) >= 3600) {
-    for(std::map<std::string, time_t>::iterator i = badPeers_.begin(),
+    for(auto i = badPeers_.begin(),
           eoi = badPeers_.end(); i != eoi;) {
       if(global::wallclock().getTime() >= (*i).second) {
         A2_LOG_DEBUG(fmt("Purge %s from bad peer", (*i).first.c_str()));

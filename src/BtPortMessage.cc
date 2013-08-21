@@ -106,7 +106,7 @@ unsigned char* BtPortMessage::createMessage()
    * port --- port number, 2bytes
    * total: 7bytes
    */
-  unsigned char* msg = new unsigned char[MESSAGE_LENGTH];
+  auto msg = new unsigned char[MESSAGE_LENGTH];
   bittorrent::createPeerMessageString(msg, MESSAGE_LENGTH, 3, ID);
   bittorrent::setShortIntParam(&msg[5], port_);
   return msg;

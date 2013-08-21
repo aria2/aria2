@@ -663,8 +663,7 @@ void computeHeadPieces
   if(head == 0) {
     return;
   }
-  for(std::vector<std::shared_ptr<FileEntry> >::const_iterator fi =
-        fileEntries.begin(), eoi = fileEntries.end(); fi != eoi; ++fi) {
+  for(auto fi = fileEntries.begin(), eoi = fileEntries.end(); fi != eoi; ++fi) {
     if((*fi)->getLength() == 0) {
       continue;
     }
@@ -688,8 +687,7 @@ void computeTailPieces
   if(tail == 0) {
     return;
   }
-  for(std::vector<std::shared_ptr<FileEntry> >::const_iterator fi =
-        fileEntries.begin(), eoi = fileEntries.end(); fi != eoi; ++fi) {
+  for(auto fi = fileEntries.begin(), eoi = fileEntries.end(); fi != eoi; ++fi) {
     if((*fi)->getLength() == 0) {
       continue;
     }

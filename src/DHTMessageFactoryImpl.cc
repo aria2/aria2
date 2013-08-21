@@ -428,8 +428,8 @@ DHTMessageFactoryImpl::createGetPeersReplyMessage
   std::vector<std::shared_ptr<Peer>> peers;
   size_t clen = bittorrent::getCompactLength(family_);
   if(valuesList) {
-    for(auto i = valuesList->begin(), eoi = valuesList->end(); i != eoi; ++i) {
-      const String* data = downcast<String>(*i);
+    for(auto & elem : *valuesList) {
+      const String* data = downcast<String>(elem);
       if(data && data->s().size() == clen) {
         auto addr = bittorrent::unpackcompact(data->uc(), family_);
         if(addr.first.empty()) {

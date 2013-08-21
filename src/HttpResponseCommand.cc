@@ -194,10 +194,9 @@ bool HttpResponseCommand::executeInternal()
         getDownloadContext()->setAcceptMetalink(false);
         std::vector<MetalinkHttpEntry> entries;
         httpResponse->getMetalinKHttpEntries(entries, getOption());
-        for(std::vector<MetalinkHttpEntry>::iterator i = entries.begin(),
-              eoi = entries.end(); i != eoi; ++i) {
-          getFileEntry()->addUri((*i).uri);
-          A2_LOG_DEBUG(fmt("Adding URI=%s", (*i).uri.c_str()));
+        for(const auto& e : entries) {
+          getFileEntry()->addUri(e.uri);
+          A2_LOG_DEBUG(fmt("Adding URI=%s", e.uri.c_str()));
         }
       }
     }
@@ -205,16 +204,16 @@ bool HttpResponseCommand::executeInternal()
     if(httpHeader->defined(HttpHeader::DIGEST)) {
       std::vector<Checksum> checksums;
       httpResponse->getDigest(checksums);
-      for(std::vector<Checksum>::iterator i = checksums.begin(),
-            eoi = checksums.end(); i != eoi; ++i) {
+      for(const auto &checksum : checksums) {
         if(getDownloadContext()->getHashType().empty()) {
           A2_LOG_DEBUG(fmt("Setting digest: type=%s, digest=%s",
-                           (*i).getHashType().c_str(),
-                           (*i).getDigest().c_str()));
-          getDownloadContext()->setDigest((*i).getHashType(), (*i).getDigest());
+                           checksum.getHashType().c_str(),
+                           checksum.getDigest().c_str()));
+          getDownloadContext()->setDigest(checksum.getHashType(),
+                                          checksum.getDigest());
           break;
         } else {
-          if(checkChecksum(getDownloadContext(), *i)) {
+          if(checkChecksum(getDownloadContext(), checksum)) {
             break;
           }
         }
@@ -281,9 +280,8 @@ bool HttpResponseCommand::executeInternal()
        httpHeader->defined(HttpHeader::DIGEST)) {
       std::vector<Checksum> checksums;
       httpResponse->getDigest(checksums);
-      for(std::vector<Checksum>::iterator i = checksums.begin(),
-            eoi = checksums.end(); i != eoi; ++i) {
-        if(checkChecksum(getDownloadContext(), *i)) {
+      for(const auto &checksum : checksums) {
+        if(checkChecksum(getDownloadContext(), checksum)) {
           break;
         }
       }

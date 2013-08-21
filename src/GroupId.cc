@@ -87,7 +87,7 @@ int GroupId::expandUnique(a2_gid_t& n, const char* hex)
   }
   p <<= 64-i*4;
   a2_gid_t mask = UINT64_MAX-((1LL << (64-i*4))-1);
-  std::set<a2_gid_t>::const_iterator itr = set_.lower_bound(p);
+  auto itr = set_.lower_bound(p);
   if(itr == set_.end()) {
     return ERR_NOT_FOUND;
   }

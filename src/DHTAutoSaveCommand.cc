@@ -97,11 +97,9 @@ void DHTAutoSaveCommand::save()
   std::vector<std::shared_ptr<DHTNode> > nodes;
   std::vector<std::shared_ptr<DHTBucket> > buckets;
   routingTable_->getBuckets(buckets);
-  for(std::vector<std::shared_ptr<DHTBucket> >::const_iterator i = buckets.begin(),
-        eoi = buckets.end(); i != eoi; ++i) {
-    const std::shared_ptr<DHTBucket>& bucket = *i;
+  for (const auto& b : buckets) {
     std::vector<std::shared_ptr<DHTNode> > goodNodes;
-    bucket->getGoodNodes(goodNodes);
+    b->getGoodNodes(goodNodes);
     nodes.insert(nodes.end(), goodNodes.begin(), goodNodes.end());
   }
 

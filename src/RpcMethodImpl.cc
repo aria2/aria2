@@ -212,9 +212,8 @@ template<typename OutputIterator>
 void extractUris(OutputIterator out, const List* src)
 {
   if(src) {
-    for(List::ValueType::const_iterator i = src->begin(), eoi = src->end();
-        i != eoi; ++i) {
-      const String* uri = downcast<String>(*i);
+    for(auto & elem : *src) {
+      const String* uri = downcast<String>(elem);
       if(uri) {
         out++ = uri->s();
       }
@@ -1272,27 +1271,24 @@ std::unique_ptr<ValueBase> ChangeUriRpcMethod::process
   }
   auto& s = files[index];
   size_t delcount = 0;
-  for(auto i = delUrisParam->begin(), eoi = delUrisParam->end();
-      i != eoi; ++i) {
-    const String* uri = downcast<String>(*i);
+  for(auto & elem : *delUrisParam) {
+    const String* uri = downcast<String>(elem);
     if(uri && s->removeUri(uri->s())) {
       ++delcount;
     }
   }
   size_t addcount = 0;
   if(posGiven) {
-    for(auto i = addUrisParam->begin(), eoi = addUrisParam->end();
-        i != eoi; ++i) {
-      const String* uri = downcast<String>(*i);
+    for(auto & elem : *addUrisParam) {
+      const String* uri = downcast<String>(elem);
       if(uri && s->insertUri(uri->s(), pos)) {
         ++addcount;
         ++pos;
       }
     }
   } else {
-    for(auto i = addUrisParam->begin(), eoi = addUrisParam->end();
-        i != eoi; ++i) {
-      const String* uri = downcast<String>(*i);
+    for(auto & elem : *addUrisParam) {
+      const String* uri = downcast<String>(elem);
       if(uri && s->addUri(uri->s())) {
         ++addcount;
       }
@@ -1354,8 +1350,8 @@ std::unique_ptr<ValueBase> SystemMulticallRpcMethod::process
 {
   const List* methodSpecs = checkRequiredParam<List>(req, 0);
   auto list = List::g();
-  for(auto i = methodSpecs->begin(), eoi = methodSpecs->end(); i != eoi; ++i) {
-    Dict* methodDict = downcast<Dict>(*i);
+  for(auto & methodSpec : *methodSpecs) {
+    Dict* methodDict = downcast<Dict>(methodSpec);
     if(!methodDict) {
       list->append(createErrorResponse
                    (DL_ABORT_EX("system.multicall expected struct."), req));
@@ -1453,9 +1449,8 @@ void changeOption
   if(option.defined(PREF_MAX_CONNECTION_PER_SERVER)) {
     int maxConn = grOption->getAsInt(PREF_MAX_CONNECTION_PER_SERVER);
     const std::vector<std::shared_ptr<FileEntry> >& files = dctx->getFileEntries();
-    for(std::vector<std::shared_ptr<FileEntry> >::const_iterator i = files.begin(),
-          eoi = files.end(); i != eoi; ++i) {
-      (*i)->setMaxConnectionPerServer(maxConn);
+    for(auto & file : files) {
+      (file)->setMaxConnectionPerServer(maxConn);
     }
   }
   if(option.defined(PREF_DIR) || option.defined(PREF_OUT)) {

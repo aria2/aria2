@@ -302,9 +302,8 @@ void extractPeer(const ValueBase* peerData, int family, OutputIterator dest)
 
     virtual void visit(const List& peerData) CXX11_OVERRIDE
     {
-      for(List::ValueType::const_iterator itr = peerData.begin(),
-            eoi = peerData.end(); itr != eoi; ++itr) {
-        const Dict* peerDict = downcast<Dict>(*itr);
+      for(auto & elem : peerData) {
+        const Dict* peerDict = downcast<Dict>(elem);
         if(!peerDict) {
           continue;
         }
@@ -354,9 +353,8 @@ void print(Output& o, const std::shared_ptr<DownloadContext>& dctx)
   for(std::vector<std::vector<std::string> >::const_iterator tierIter =
         torrentAttrs->announceList.begin(),
         eoi = torrentAttrs->announceList.end(); tierIter != eoi; ++tierIter) {
-    for(std::vector<std::string>::const_iterator i = (*tierIter).begin(),
-          eoi2 = (*tierIter).end(); i != eoi2; ++i) {
-      o.printf(" %s", (*i).c_str());
+    for(auto & elem : *tierIter) {
+      o.printf(" %s", elem.c_str());
     }
     o.write("\n");
   }

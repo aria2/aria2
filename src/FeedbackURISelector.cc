@@ -61,11 +61,10 @@ std::string FeedbackURISelector::select
  const std::vector<std::pair<size_t, std::string> >& usedHosts)
 {
   if(A2_LOG_DEBUG_ENABLED) {
-    for(std::vector<std::pair<size_t, std::string> >::const_iterator i =
-          usedHosts.begin(), eoi = usedHosts.end(); i != eoi; ++i) {
+    for (const auto& h: usedHosts) {
       A2_LOG_DEBUG(fmt("UsedHost=%lu, %s",
-                       static_cast<unsigned long>((*i).first),
-                       (*i).second.c_str()));
+                       static_cast<unsigned long>(h.first),
+                       h.second.c_str()));
     }
   }
   if(fileEntry->getRemainingUris().empty()) {
@@ -92,27 +91,24 @@ std::string FeedbackURISelector::selectRarer
 {
   // pair of host and URI
   std::vector<std::pair<std::string, std::string> > cands;
-  for(std::deque<std::string>::const_iterator i = uris.begin(),
-        eoi = uris.end(); i != eoi; ++i) {
+  for (const auto& u: uris) {
     uri_split_result us;
-    if(uri_split(&us, (*i).c_str()) == -1) {
+    if(uri_split(&us, u.c_str()) == -1) {
       continue;
     }
-    std::string host = uri::getFieldString(us, USR_HOST, (*i).c_str());
-    std::string protocol = uri::getFieldString(us, USR_SCHEME, (*i).c_str());
-    std::shared_ptr<ServerStat> ss = serverStatMan_->find(host, protocol);
+    auto host = uri::getFieldString(us, USR_HOST, u.c_str());
+    auto protocol = uri::getFieldString(us, USR_SCHEME, u.c_str());
+    auto ss = serverStatMan_->find(host, protocol);
     if(ss && ss->isError()) {
-      A2_LOG_DEBUG(fmt("Error not considered: %s", (*i).c_str()));
+      A2_LOG_DEBUG(fmt("Error not considered: %s", u.c_str()));
       continue;
     }
-    cands.push_back(std::make_pair(host, *i));
+    cands.push_back(std::make_pair(host, u));
   }
-  for(std::vector<std::pair<size_t, std::string> >::const_iterator i =
-        usedHosts.begin(), eoi = usedHosts.end(); i != eoi; ++i) {
-    for(std::vector<std::pair<std::string, std::string> >::const_iterator j =
-          cands.begin(), eoj = cands.end(); j != eoj; ++j) {
-      if((*i).second == (*j).first) {
-        return (*j).second;
+  for (const auto& h: usedHosts) {
+    for (const auto& c: cands) {
+      if(h.second == c.first) {
+        return c.second;
       }
     }
   }
@@ -130,27 +126,29 @@ std::string FeedbackURISelector::selectFaster
   const int SPEED_THRESHOLD = 20*1024;
   std::vector<std::pair<std::shared_ptr<ServerStat>, std::string> > fastCands;
   std::vector<std::string> normCands;
-  for(std::deque<std::string>::const_iterator i = uris.begin(),
-        eoi = uris.end(); i != eoi && fastCands.size() < NUM_URI; ++i) {
+  for (const auto& u: uris) {
+    if (fastCands.size() >=  NUM_URI) {
+      break;
+    }
     uri_split_result us;
-    if(uri_split(&us, (*i).c_str()) == -1) {
+    if(uri_split(&us, u.c_str()) == -1) {
       continue;
     }
-    std::string host = uri::getFieldString(us, USR_HOST, (*i).c_str());
+    auto host = uri::getFieldString(us, USR_HOST, u.c_str());
     if(findSecond(usedHosts.begin(), usedHosts.end(), host) !=
        usedHosts.end()) {
-      A2_LOG_DEBUG(fmt("%s is in usedHosts, not considered", (*i).c_str()));
+      A2_LOG_DEBUG(fmt("%s is in usedHosts, not considered", u.c_str()));
       continue;
     }
-    std::string protocol = uri::getFieldString(us, USR_SCHEME, (*i).c_str());
-    std::shared_ptr<ServerStat> ss = serverStatMan_->find(host, protocol);
+    auto protocol = uri::getFieldString(us, USR_SCHEME, u.c_str());
+    auto ss = serverStatMan_->find(host, protocol);
     if(!ss) {
-      normCands.push_back(*i);
+      normCands.push_back(u);
     } else if(ss->isOK()) {
       if(ss->getDownloadSpeed() > SPEED_THRESHOLD) {
-        fastCands.push_back(std::make_pair(ss, *i));
+        fastCands.push_back(std::make_pair(ss, u));
       } else {
-        normCands.push_back(*i);
+        normCands.push_back(u);
       }
     }
   }

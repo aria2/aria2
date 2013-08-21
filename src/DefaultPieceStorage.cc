@@ -247,11 +247,10 @@ void unsetExcludedIndexes(BitfieldMan& bitfield,
 void DefaultPieceStorage::createFastIndexBitfield
 (BitfieldMan& bitfield, const std::shared_ptr<Peer>& peer)
 {
-  for(std::set<size_t>::const_iterator itr =
-        peer->getPeerAllowedIndexSet().begin(),
-        eoi = peer->getPeerAllowedIndexSet().end(); itr != eoi; ++itr) {
-    if(!bitfieldMan_->isBitSet(*itr) && peer->hasPiece(*itr)) {
-      bitfield.setBit(*itr);
+  const auto& is = peer->getPeerAllowedIndexSet();
+  for(const auto& i: is) {
+    if(!bitfieldMan_->isBitSet(i) && peer->hasPiece(i)) {
+      bitfield.setBit(i);
     }
   }
 }
@@ -567,9 +566,8 @@ int64_t DefaultPieceStorage::getFilteredCompletedLength()
 int64_t DefaultPieceStorage::getInFlightPieceCompletedLength() const
 {
   int64_t len = 0;
-  for(UsedPieceSet::const_iterator i = usedPieces_.begin(),
-        eoi = usedPieces_.end(); i != eoi; ++i) {
-    len += (*i)->getCompletedLength();
+  for(auto & elem : usedPieces_) {
+    len += elem->getCompletedLength();
   }
   return len;
 }
@@ -577,10 +575,9 @@ int64_t DefaultPieceStorage::getInFlightPieceCompletedLength() const
 int64_t DefaultPieceStorage::getInFlightPieceFilteredCompletedLength() const
 {
   int64_t len = 0;
-  for(UsedPieceSet::const_iterator i = usedPieces_.begin(),
-        eoi = usedPieces_.end(); i != eoi; ++i) {
-    if(bitfieldMan_->isFilterBitSet((*i)->getIndex())) {
-      len += (*i)->getCompletedLength();
+  for(auto & elem : usedPieces_) {
+    if(bitfieldMan_->isFilterBitSet(elem->getIndex())) {
+      len += elem->getCompletedLength();
     }
   }
   return len;
@@ -592,10 +589,8 @@ void DefaultPieceStorage::setupFileFilter()
   const std::vector<std::shared_ptr<FileEntry> >& fileEntries =
     downloadContext_->getFileEntries();
   bool allSelected = true;
-  for(std::vector<std::shared_ptr<FileEntry> >::const_iterator i =
-        fileEntries.begin(), eoi = fileEntries.end();
-      i != eoi; ++i) {
-    if(!(*i)->isRequested()) {
+  for(auto & e : fileEntries) {
+    if(!e->isRequested()) {
       allSelected = false;
       break;
     }
@@ -603,10 +598,9 @@ void DefaultPieceStorage::setupFileFilter()
   if(allSelected) {
     return;
   }
-  for(std::vector<std::shared_ptr<FileEntry> >::const_iterator i =
-        fileEntries.begin(), eoi = fileEntries.end(); i != eoi; ++i) {
-    if((*i)->isRequested()) {
-      bitfieldMan_->addFilter((*i)->getOffset(), (*i)->getLength());
+  for(auto & e: fileEntries) {
+    if(e->isRequested()) {
+      bitfieldMan_->addFilter(e->getOffset(), e->getLength());
     }
   }
   bitfieldMan_->enableFilter();
@@ -697,12 +691,11 @@ void DefaultPieceStorage::flushWrDiskCacheEntry()
   // UsedPieceSet is sorted by piece index. It means we can flush
   // cache by non-decreasing offset, which is good to reduce disk seek
   // unless the file is heavily fragmented.
-  for(UsedPieceSet::const_iterator i = usedPieces_.begin(),
-        eoi = usedPieces_.end(); i != eoi; ++i) {
-    WrDiskCacheEntry* ce = (*i)->getWrDiskCacheEntry();
+  for(auto & piece : usedPieces_) {
+    auto ce = piece->getWrDiskCacheEntry();
     if(ce) {
-      (*i)->flushWrCache(wrDiskCache_);
-      (*i)->releaseWrCache(wrDiskCache_);
+      piece->flushWrCache(wrDiskCache_);
+      piece->releaseWrCache(wrDiskCache_);
     }
   }
 }
@@ -753,8 +746,8 @@ public:
 
 void DefaultPieceStorage::removeAdvertisedPiece(time_t elapsed)
 {
-  std::deque<HaveEntry>::iterator itr =
-    std::find_if(haves_.begin(), haves_.end(), FindElapsedHave(elapsed));
+  auto itr = std::find_if(haves_.begin(), haves_.end(),
+                          FindElapsedHave(elapsed));
   if(itr != haves_.end()) {
     A2_LOG_DEBUG(fmt(MSG_REMOVED_HAVE_ENTRY,
                      static_cast<unsigned long>(haves_.end()-itr)));

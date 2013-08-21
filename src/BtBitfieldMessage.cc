@@ -108,7 +108,7 @@ unsigned char* BtBitfieldMessage::createMessage() {
    * total: 5+bitfieldLength bytes
    */
   const size_t msgLength = 5+bitfieldLength_;
-  unsigned char* msg = new unsigned char[msgLength];
+  auto msg = new unsigned char[msgLength];
   bittorrent::createPeerMessageString(msg, msgLength, 1+bitfieldLength_, ID);
   memcpy(msg+5, bitfield_, bitfieldLength_);
   return msg;

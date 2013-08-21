@@ -51,7 +51,7 @@ DHTPeerAnnounceEntry::~DHTPeerAnnounceEntry() {}
 
 void DHTPeerAnnounceEntry::addPeerAddrEntry(const PeerAddrEntry& entry)
 {
-  std::vector<PeerAddrEntry>::iterator i =
+  auto i =
     std::find(peerAddrEntries_.begin(), peerAddrEntries_.end(), entry);
   if(i == peerAddrEntries_.end()) {
     peerAddrEntries_.push_back(entry);
@@ -98,9 +98,8 @@ bool DHTPeerAnnounceEntry::empty() const
 void DHTPeerAnnounceEntry::getPeers
 (std::vector<std::shared_ptr<Peer> >& peers) const
 {
-  for(std::vector<PeerAddrEntry>::const_iterator i = peerAddrEntries_.begin(),
-        eoi = peerAddrEntries_.end(); i != eoi; ++i) {
-    std::shared_ptr<Peer> peer(new Peer((*i).getIPAddress(), (*i).getPort()));
+  for (const auto& p: peerAddrEntries_) {
+    std::shared_ptr<Peer> peer(new Peer(p.getIPAddress(), p.getPort()));
     peers.push_back(peer);
   }
 }

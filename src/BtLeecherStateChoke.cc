@@ -146,9 +146,8 @@ void BtLeecherStateChoke::plannedOptimisticUnchoke
   std::for_each(peerEntries.begin(), peerEntries.end(),
                 std::mem_fn(&PeerEntry::disableOptUnchoking));
 
-  std::vector<PeerEntry>::iterator i =
-    std::partition(peerEntries.begin(), peerEntries.end(),
-                   PeerFilter(true, true));
+  auto i = std::partition(peerEntries.begin(), peerEntries.end(),
+                          PeerFilter(true, true));
   if(i != peerEntries.begin()) {
     std::random_shuffle(peerEntries.begin(), i,
                         *SimpleRandomizer::getInstance());
@@ -160,9 +159,8 @@ void BtLeecherStateChoke::plannedOptimisticUnchoke
 
 void BtLeecherStateChoke::regularUnchoke(std::vector<PeerEntry>& peerEntries)
 {
-  std::vector<PeerEntry>::iterator rest =
-    std::partition(peerEntries.begin(), peerEntries.end(),
-                   std::mem_fn(&PeerEntry::isRegularUnchoker));
+  auto rest = std::partition(peerEntries.begin(), peerEntries.end(),
+                             std::mem_fn(&PeerEntry::isRegularUnchoker));
 
   std::sort(peerEntries.begin(), rest);
 
@@ -170,29 +168,28 @@ void BtLeecherStateChoke::regularUnchoke(std::vector<PeerEntry>& peerEntries)
   int count = 3;
 
   bool fastOptUnchoker = false;
-  std::vector<PeerEntry>::iterator peerIter = peerEntries.begin();
+  auto peerIter = peerEntries.begin();
   for(;peerIter != rest && count; ++peerIter, --count) {
-    (*peerIter).disableChokingRequired();
+    peerIter->disableChokingRequired();
     A2_LOG_INFO(fmt("RU: %s, dlspd=%d",
                     (*peerIter).getPeer()->getIPAddress().c_str(),
                     (*peerIter).getDownloadSpeed()));
-    if((*peerIter).getPeer()->optUnchoking()) {
+    if(peerIter->getPeer()->optUnchoking()) {
       fastOptUnchoker = true;
-      (*peerIter).disableOptUnchoking();
+      peerIter->disableOptUnchoking();
     }
   }
   if(fastOptUnchoker) {
     std::random_shuffle(peerIter, peerEntries.end(),
                         *SimpleRandomizer::getInstance());
-    for(std::vector<PeerEntry>::iterator i = peerIter,
-          eoi = peerEntries.end(); i != eoi; ++i) {
-      if((*i).getPeer()->peerInterested()) {
-        (*i).enableOptUnchoking();
-        A2_LOG_INFO(fmt("OU: %s", (*i).getPeer()->getIPAddress().c_str()));
+    for (auto& p : peerEntries) {
+      if(p.getPeer()->peerInterested()) {
+        p.enableOptUnchoking();
+        A2_LOG_INFO(fmt("OU: %s", p.getPeer()->getIPAddress().c_str()));
         break;
       } else {
-        (*i).disableChokingRequired();
-        A2_LOG_INFO(fmt("OU: %s", (*i).getPeer()->getIPAddress().c_str()));
+        p.disableChokingRequired();
+        A2_LOG_INFO(fmt("OU: %s", p.getPeer()->getIPAddress().c_str()));
       }
     }
   }

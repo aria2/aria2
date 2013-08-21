@@ -57,7 +57,7 @@ UnknownLengthPieceStorage::~UnknownLengthPieceStorage() {}
 
 void UnknownLengthPieceStorage::initStorage()
 {
-  DirectDiskAdaptor* directDiskAdaptor(new DirectDiskAdaptor());
+  auto directDiskAdaptor(new DirectDiskAdaptor());
   directDiskAdaptor->setTotalLength(downloadContext_->getTotalLength());
   directDiskAdaptor->setFileEntries(downloadContext_->getFileEntries().begin(),
                                     downloadContext_->getFileEntries().end());

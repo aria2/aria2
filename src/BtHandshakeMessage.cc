@@ -89,7 +89,7 @@ BtHandshakeMessage::create(const unsigned char* data, size_t dataLength)
 
 unsigned char* BtHandshakeMessage::createMessage()
 {
-  unsigned char* msg = new unsigned char[MESSAGE_LENGTH];
+  auto msg = new unsigned char[MESSAGE_LENGTH];
   msg[0] = pstrlen_;
   memcpy(msg+1, pstr_, PSTR_LENGTH);
   memcpy(msg+20, reserved_, RESERVED_LENGTH);

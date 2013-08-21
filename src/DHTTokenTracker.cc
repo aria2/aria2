@@ -91,8 +91,8 @@ bool DHTTokenTracker::validateToken(const std::string& token,
                                     const unsigned char* infoHash,
                                     const std::string& ipaddr, uint16_t port) const
 {
-  for(int i = 0; i < 2; ++i) {
-    if(generateToken(infoHash, ipaddr, port, secret_[i]) == token) {
+  for(auto & elem : secret_) {
+    if(generateToken(infoHash, ipaddr, port, elem) == token) {
       return true;
     }
   }

@@ -128,28 +128,23 @@ bool BtDependency::resolve()
       } else {
         std::vector<std::shared_ptr<FileEntry> > destFiles;
         destFiles.reserve(fileEntries.size());
-        for(std::vector<std::shared_ptr<FileEntry> >::const_iterator i =
-              fileEntries.begin(), eoi = fileEntries.end(); i != eoi; ++i) {
-          (*i)->setRequested(false);
-          destFiles.push_back(*i);
+        for(auto & e : fileEntries) {
+          e->setRequested(false);
+          destFiles.push_back(e);
         }
         std::sort(destFiles.begin(), destFiles.end(), EntryCmp());
         // Copy file path in dependant_'s FileEntries to newly created
         // context's FileEntries to endorse the path structure of
         // dependant_.  URIs and singleHostMultiConnection are also copied.
-        for(std::vector<std::shared_ptr<FileEntry> >::const_iterator s =
-              dependantFileEntries.begin(), eoi = dependantFileEntries.end();
-            s != eoi; ++s){
-          std::vector<std::shared_ptr<FileEntry> >::const_iterator d =
-            std::lower_bound(destFiles.begin(), destFiles.end(), *s,
-                             EntryCmp());
+        for(const auto& e: dependantFileEntries){
+          const auto d = std::lower_bound(destFiles.begin(), destFiles.end(), e,
+                                          EntryCmp());
           if(d == destFiles.end() ||
-             (*d)->getOriginalName() != (*s)->getOriginalName()) {
+             (*d)->getOriginalName() != e->getOriginalName()) {
             throw DL_ABORT_EX
-              (fmt("No entry %s in torrent file",
-                   (*s)->getOriginalName().c_str()));
+              (fmt("No entry %s in torrent file", e->getOriginalName().c_str()));
           } else {
-            copyValues(*d, *s);
+            copyValues(*d, e);
           }
         }
       }

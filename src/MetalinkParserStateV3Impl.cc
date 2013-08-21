@@ -76,8 +76,7 @@ void FilesMetalinkParserState::beginElement
 {
   if(checkNsUri(nsUri) && strcmp(localname, "file") == 0) {
     psm->setFileState();
-    std::vector<XmlAttr>::const_iterator itr =
-      findAttr(attrs, "name", METALINK3_NAMESPACE_URI);
+    auto itr = findAttr(attrs, "name", METALINK3_NAMESPACE_URI);
     if(itr != attrs.end()) {
       std::string name((*itr).value, (*itr).valueLength);
       if(name.empty() || util::detectDirTraversal(name)) {
@@ -113,7 +112,7 @@ void FileMetalinkParserState::beginElement
   } else if(strcmp(localname, "resources") == 0) {
     psm->setResourcesState();
     int maxConnections;
-    std::vector<XmlAttr>::const_iterator itr =
+    auto itr =
       findAttr(attrs, "maxconnections", METALINK3_NAMESPACE_URI);
     if(itr == attrs.end()) {
       maxConnections = -1;
@@ -198,8 +197,7 @@ void VerificationMetalinkParserState::beginElement
 #ifdef ENABLE_MESSAGE_DIGEST
     if(strcmp(localname, "hash") == 0) {
       psm->setHashState();
-      std::vector<XmlAttr>::const_iterator itr =
-        findAttr(attrs, "type", METALINK3_NAMESPACE_URI);
+      auto itr = findAttr(attrs, "type", METALINK3_NAMESPACE_URI);
       if(itr == attrs.end()) {
         return;
       } else {
@@ -210,8 +208,7 @@ void VerificationMetalinkParserState::beginElement
       psm->setPiecesState();
       uint32_t length;
       {
-        std::vector<XmlAttr>::const_iterator itr =
-          findAttr(attrs, "length", METALINK3_NAMESPACE_URI);
+        auto itr = findAttr(attrs, "length", METALINK3_NAMESPACE_URI);
         if(itr == attrs.end()) {
           return;
         } else {
@@ -223,8 +220,7 @@ void VerificationMetalinkParserState::beginElement
       }
       std::string type;
       {
-        std::vector<XmlAttr>::const_iterator itr =
-          findAttr(attrs, "type", METALINK3_NAMESPACE_URI);
+        auto itr = findAttr(attrs, "type", METALINK3_NAMESPACE_URI);
         if(itr == attrs.end()) {
           return;
         } else {
@@ -238,16 +234,14 @@ void VerificationMetalinkParserState::beginElement
 #endif // ENABLE_MESSAGE_DIGEST
       if(strcmp(localname, "signature") == 0) {
         psm->setSignatureState();
-        std::vector<XmlAttr>::const_iterator itr =
-          findAttr(attrs, "type", METALINK3_NAMESPACE_URI);
+        auto itr = findAttr(attrs, "type", METALINK3_NAMESPACE_URI);
         if(itr == attrs.end()) {
           return;
         } else {
           psm->newSignatureTransaction();
           psm->setTypeOfSignature
             (std::string((*itr).value, (*itr).valueLength));
-          std::vector<XmlAttr>::const_iterator itr =
-            findAttr(attrs, "file", METALINK3_NAMESPACE_URI);
+          auto itr = findAttr(attrs, "file", METALINK3_NAMESPACE_URI);
           if(itr != attrs.end()) {
             std::string file((*itr).value, (*itr).valueLength);
             if(!util::detectDirTraversal(file)) {
@@ -280,8 +274,7 @@ void PiecesMetalinkParserState::beginElement
 {
   if(checkNsUri(nsUri) && strcmp(localname, "hash") == 0) {
     psm->setPieceHashState();
-    std::vector<XmlAttr>::const_iterator itr =
-      findAttr(attrs, "piece", METALINK3_NAMESPACE_URI);
+    auto itr = findAttr(attrs, "piece", METALINK3_NAMESPACE_URI);
     if(itr == attrs.end()) {
       psm->cancelChunkChecksumTransaction();
     } else {
@@ -343,53 +336,44 @@ void ResourcesMetalinkParserState::beginElement
     psm->setURLState();
     std::string type;
     {
-      std::vector<XmlAttr>::const_iterator itr =
-        findAttr(attrs, "type", METALINK3_NAMESPACE_URI);
+      auto itr = findAttr(attrs, "type", METALINK3_NAMESPACE_URI);
       if(itr == attrs.end()) {
         return;
-      } else {
-        type.assign((*itr).value, (*itr).valueLength);
       }
+      type.assign((*itr).value, (*itr).valueLength);
     }
     std::string location;
     {
-      std::vector<XmlAttr>::const_iterator itr =
-        findAttr(attrs, "location", METALINK3_NAMESPACE_URI);
+      auto itr = findAttr(attrs, "location", METALINK3_NAMESPACE_URI);
       if(itr != attrs.end()) {
         location.assign((*itr).value, (*itr).valueLength);
       }
     }
     int preference;
     {
-      std::vector<XmlAttr>::const_iterator itr =
-        findAttr(attrs, "preference", METALINK3_NAMESPACE_URI);
+      auto itr = findAttr(attrs, "preference", METALINK3_NAMESPACE_URI);
       if(itr == attrs.end()) {
         preference = MetalinkResource::getLowestPriority();
-      } else {
-        if(util::parseIntNoThrow
-           (preference, std::string((*itr).value, (*itr).valueLength)) &&
-           preference >= 0) {
-          // In Metalink3Spec, highest prefernce value is 100.  We
-          // use Metalink4Spec priority unit system in which 1 is
-          // higest.
-          preference = 101-preference;
-        } else {
-          preference = MetalinkResource::getLowestPriority();
-        }
+      }
+      else if(util::parseIntNoThrow(preference, std::string((*itr).value, (*itr).valueLength)) &&
+              preference >= 0) {
+        // In Metalink3Spec, highest prefernce value is 100.  We
+        // use Metalink4Spec priority unit system in which 1 is
+        // higest.
+        preference = 101-preference;
+      }
+      else {
+        preference = MetalinkResource::getLowestPriority();
       }
     }
     int maxConnections;
     {
-      std::vector<XmlAttr>::const_iterator itr =
-        findAttr(attrs, "maxconnections", METALINK3_NAMESPACE_URI);
+      auto itr = findAttr(attrs, "maxconnections", METALINK3_NAMESPACE_URI);
       if(itr == attrs.end()) {
         maxConnections = -1;
-      } else {
-        if(!util::parseIntNoThrow
-           (maxConnections, std::string((*itr).value, (*itr).valueLength)) ||
-           maxConnections <= 0) {
-          maxConnections = -1;
-        }
+      } else if(!util::parseIntNoThrow(maxConnections, std::string((*itr).value, (*itr).valueLength)) ||
+                maxConnections <= 0) {
+        maxConnections = -1;
       }
     }
     psm->newResourceTransaction();

@@ -151,12 +151,11 @@ ares_addr_node* parseAsyncDNSServers(const std::string& serversOpt)
   root.next = nullptr;
   ares_addr_node* tail = &root;
   ares_addr_node* node = nullptr;
-  for(std::vector<std::string>::const_iterator i = servers.begin(),
-        eoi = servers.end(); i != eoi; ++i) {
+  for (const auto& s: servers) {
     if(node == nullptr) {
       node = new ares_addr_node();
     }
-    size_t len = net::getBinAddr(&node->addr, (*i).c_str());
+    size_t len = net::getBinAddr(&node->addr, s.c_str());
     if(len != 0) {
       node->next = nullptr;
       node->family = (len == 4 ? AF_INET : AF_INET6);

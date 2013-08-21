@@ -83,10 +83,9 @@ private:
     template<typename OutputIterator>
     void getAllGoodAddrs(OutputIterator out) const
     {
-      for(std::vector<AddrEntry>::const_iterator i = addrEntries_.begin(),
-            eoi = addrEntries_.end(); i != eoi; ++i) {
-        if((*i).good_) {
-          *out++ = (*i).addr_;
+      for(auto & elem : addrEntries_) {
+        if(elem.good_) {
+          *out++ = elem.addr_;
         }
       }
     }

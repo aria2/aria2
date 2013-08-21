@@ -65,7 +65,7 @@ public:
   Pref* makePref(const char* key)
   {
     size_t id = nextId();
-    Pref* pref = new Pref(key, id);
+    auto pref = new Pref(key, id);
     i2p_.push_back(pref);
     k2p_[key] = pref;
     return pref;
@@ -81,7 +81,7 @@ public:
   }
   const Pref* k2p(const std::string& k) const
   {
-    std::map<std::string, const Pref*>::const_iterator i = k2p_.find(k);
+    auto i = k2p_.find(k);
     if(i == k2p_.end()) {
       return i2p_[0];
     } else {
@@ -96,7 +96,7 @@ private:
 
 PrefFactory* getPrefFactory()
 {
-  static PrefFactory* pf = new PrefFactory();
+  static auto pf = new PrefFactory();
   return pf;
 }
 

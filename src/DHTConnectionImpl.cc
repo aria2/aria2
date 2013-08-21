@@ -63,9 +63,8 @@ bool DHTConnectionImpl::bind
   }
   std::random_shuffle(ports.begin(), ports.end(),
                       *SimpleRandomizer::getInstance());
-  for(std::vector<uint16_t>::const_iterator i = ports.begin(),
-        eoi = ports.end(); i != eoi; ++i) {
-    port = *i;
+  for (const auto& p : ports) {
+    port = p;
     if(bind(port, addr)) {
       return true;
     }

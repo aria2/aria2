@@ -154,9 +154,8 @@ void extractUrlList
 
     virtual void visit(const List& v) CXX11_OVERRIDE
     {
-      for(List::ValueType::const_iterator itr = v.begin(), eoi = v.end();
-          itr != eoi; ++itr) {
-        const String* uri = downcast<String>(*itr);
+      for(auto & elem : v) {
+        const String* uri = downcast<String>(elem);
         if(uri) {
           std::string utf8Uri = util::encodeNonUtf8(uri->s());
           uris_.push_back(utf8Uri);
@@ -235,9 +234,8 @@ void extractFileEntries
     int64_t offset = 0;
     // multi-file mode
     torrent->mode = BT_FILE_MODE_MULTI;
-    for(List::ValueType::const_iterator itr = filesList->begin(),
-          eoi = filesList->end(); itr != eoi; ++itr) {
-      const Dict* fileDict = downcast<Dict>(*itr);
+    for(auto & f : *filesList) {
+      const Dict* fileDict = downcast<Dict>(f);
       if(!fileDict) {
         continue;
       }
@@ -267,11 +265,10 @@ void extractFileEntries
 
       std::vector<std::string> pathelem(pathList->size()+1);
       pathelem[0] = utf8Name;
-      std::vector<std::string>::iterator pathelemOutItr = pathelem.begin();
+      auto pathelemOutItr = pathelem.begin();
       ++pathelemOutItr;
-      for(List::ValueType::const_iterator itr = pathList->begin(),
-            eoi = pathList->end(); itr != eoi; ++itr) {
-        const String* elem = downcast<String>(*itr);
+      for(auto & p : *pathList) {
+        const String* elem = downcast<String>(p);
         if(elem) {
           (*pathelemOutItr++) = elem->s();
         } else {
@@ -315,12 +312,11 @@ void extractFileEntries
     // For each uri in urlList, if it ends with '/', then
     // concatenate name to it. Specification just says so.
     std::vector<std::string> uris;
-    for(std::vector<std::string>::const_iterator i = urlList.begin(),
-          eoi = urlList.end(); i != eoi; ++i) {
-      if(!(*i).empty() && (*i)[(*i).size()-1] == '/') {
-        uris.push_back((*i)+util::percentEncode(utf8Name));
+    for(auto & elem : urlList) {
+      if(!elem.empty() && elem[elem.size()-1] == '/') {
+        uris.push_back(elem+util::percentEncode(utf8Name));
       } else {
-        uris.push_back(*i);
+        uris.push_back(elem);
       }
     }
     std::shared_ptr<FileEntry> fileEntry
@@ -344,16 +340,14 @@ void extractAnnounce(TorrentAttribute* torrent, const Dict* rootDict)
 {
   const List* announceList = downcast<List>(rootDict->get(C_ANNOUNCE_LIST));
   if(announceList) {
-    for(List::ValueType::const_iterator tierIter = announceList->begin(),
-          eoi = announceList->end(); tierIter != eoi; ++tierIter) {
-      const List* tier = downcast<List>(*tierIter);
+    for(auto & elem : *announceList) {
+      const List* tier = downcast<List>(elem);
       if(!tier) {
         continue;
       }
       std::vector<std::string> ntier;
-      for(List::ValueType::const_iterator uriIter = tier->begin(),
-            eoi2 = tier->end(); uriIter != eoi2; ++uriIter) {
-        const String* uri = downcast<String>(*uriIter);
+      for(auto & t : *tier) {
+        const String* uri = downcast<String>(t);
         if(uri) {
           ntier.push_back(util::encodeNonUtf8(util::strip(uri->s())));
         }
@@ -378,9 +372,8 @@ void extractNodes(TorrentAttribute* torrent, const ValueBase* nodesListSrc)
 {
   const List* nodesList = downcast<List>(nodesListSrc);
   if(nodesList) {
-    for(List::ValueType::const_iterator i = nodesList->begin(),
-          eoi = nodesList->end(); i != eoi; ++i) {
-      const List* addrPairList = downcast<List>(*i);
+    for(auto & elem : *nodesList) {
+      const List* addrPairList = downcast<List>(elem);
       if(!addrPairList || addrPairList->size() != 2) {
         continue;
       }
@@ -942,9 +935,9 @@ std::unique_ptr<TorrentAttribute> parseMagnet(const std::string& magnet)
   }
   const List* trs = downcast<List>(r->get("tr"));
   if(trs) {
-    for(auto i = trs->begin(), eoi = trs->end(); i != eoi; ++i) {
+    for(auto & tr : *trs) {
       std::vector<std::string> tier;
-      tier.push_back(util::encodeNonUtf8(downcast<String>(*i)->s()));
+      tier.push_back(util::encodeNonUtf8(downcast<String>(tr)->s()));
       attrs->announceList.push_back(tier);
     }
   }
@@ -973,10 +966,9 @@ std::string metadata2Torrent
   std::string torrent = "d";
 
   List announceList;
-  for(auto tierIter = attrs->announceList.begin(),
-        eoi = attrs->announceList.end(); tierIter != eoi; ++tierIter) {
+  for(auto & elem : attrs->announceList) {
     auto tier = List::g();
-    for(auto& uri : *tierIter) {
+    for(auto& uri : elem) {
       tier->append(uri);
     }
     if(!tier->empty()) {
@@ -1006,11 +998,9 @@ std::string torrent2Magnet(const TorrentAttribute* attrs)
     uri += "&dn=";
     uri += util::percentEncode(attrs->name);
   }
-  for(std::vector<std::vector<std::string> >::const_iterator tierIter =
-        attrs->announceList.begin(),
-        eoi = attrs->announceList.end(); tierIter != eoi; ++tierIter) {
-    for(std::vector<std::string>::const_iterator uriIter = (*tierIter).begin(),
-          eoi2 = (*tierIter).end(); uriIter != eoi2; ++uriIter) {
+  for(auto & elem : attrs->announceList) {
+    for(auto uriIter = elem.begin(),
+          eoi2 = elem.end(); uriIter != eoi2; ++uriIter) {
       uri += "&tr=";
       uri += util::percentEncode(*uriIter);
     }
@@ -1036,9 +1026,8 @@ void removeAnnounceUri
     return;
   }
   if(std::find(uris.begin(), uris.end(), "*") == uris.end()) {
-    for(std::vector<std::vector<std::string> >::iterator i =
-          attrs->announceList.begin(); i != attrs->announceList.end();) {
-      for(std::vector<std::string>::iterator j =(*i).begin();j != (*i).end();) {
+    for(auto i = attrs->announceList.begin(); i != attrs->announceList.end();) {
+      for(auto j = (*i).begin(); j != (*i).end();) {
         if(std::find(uris.begin(), uris.end(), *j) == uris.end()) {
           ++j;
         } else {
@@ -1059,10 +1048,9 @@ void removeAnnounceUri
 void addAnnounceUri
 (TorrentAttribute* attrs, const std::vector<std::string>& uris)
 {
-  for(std::vector<std::string>::const_iterator i = uris.begin(),
-        eoi = uris.end(); i != eoi; ++i) {
+  for(auto & uri : uris) {
     std::vector<std::string> tier;
-    tier.push_back(*i);
+    tier.push_back(uri);
     attrs->announceList.push_back(tier);
   }
 }

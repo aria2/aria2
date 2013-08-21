@@ -382,9 +382,8 @@ public:
 void FileEntry::extractURIResult
 (std::deque<URIResult>& res, error_code::Value r)
 {
-  std::deque<URIResult>::iterator i =
-    std::stable_partition(uriResults_.begin(), uriResults_.end(),
-                          FindURIResultByResult(r));
+  auto i = std::stable_partition(uriResults_.begin(), uriResults_.end(),
+                                 FindURIResultByResult(r));
   std::copy(uriResults_.begin(), i, std::back_inserter(res));
   uriResults_.erase(uriResults_.begin(), i);
 }
@@ -392,9 +391,8 @@ void FileEntry::extractURIResult
 void FileEntry::reuseUri(const std::vector<std::string>& ignore)
 {
   if(A2_LOG_DEBUG_ENABLED) {
-    for(std::vector<std::string>::const_iterator i = ignore.begin(),
-          eoi = ignore.end(); i != eoi; ++i) {
-      A2_LOG_DEBUG(fmt("ignore host=%s", (*i).c_str()));
+    for (const auto& i: ignore) {
+      A2_LOG_DEBUG(fmt("ignore host=%s", i.c_str()));
     }
   }
   std::deque<std::string> uris = spentUris_;
@@ -417,8 +415,8 @@ void FileEntry::reuseUri(const std::vector<std::string>& ignore)
   std::set_difference(uris.begin(), uris.end(),
                       errorUris.begin(), errorUris.end(),
                       std::back_inserter(reusableURIs));
-  std::vector<std::string>::iterator insertionPoint = reusableURIs.begin();
-  for(std::vector<std::string>::iterator i = reusableURIs.begin(),
+  auto insertionPoint = reusableURIs.begin();
+  for(auto i = reusableURIs.begin(),
         eoi = reusableURIs.end(); i != eoi; ++i) {
     uri_split_result us;
     if(uri_split(&us, (*i).c_str()) == 0 &&
@@ -485,36 +483,32 @@ InputIterator findRequestByUri
 
 bool FileEntry::removeUri(const std::string& uri)
 {
-  std::deque<std::string>::iterator itr =
-    std::find(spentUris_.begin(), spentUris_.end(), uri);
+  auto itr = std::find(spentUris_.begin(), spentUris_.end(), uri);
   if(itr == spentUris_.end()) {
     itr = std::find(uris_.begin(), uris_.end(), uri);
     if(itr == uris_.end()) {
       return false;
-    } else {
-      uris_.erase(itr);
-      return true;
     }
-  } else {
-    spentUris_.erase(itr);
-    std::shared_ptr<Request> req;
-    InFlightRequestSet::iterator riter =
-      findRequestByUri(inFlightRequests_.begin(), inFlightRequests_.end(), uri);
-    if(riter == inFlightRequests_.end()) {
-      RequestPool::iterator riter = findRequestByUri(requestPool_.begin(),
-                                                     requestPool_.end(), uri);
-      if(riter == requestPool_.end()) {
-        return true;
-      } else {
-        req = *riter;
-        requestPool_.erase(riter);
-      }
-    } else {
-      req = *riter;
-    }
-    req->requestRemoval();
+    uris_.erase(itr);
     return true;
   }
+  spentUris_.erase(itr);
+  std::shared_ptr<Request> req;
+  InFlightRequestSet::iterator riter =
+    findRequestByUri(inFlightRequests_.begin(), inFlightRequests_.end(), uri);
+  if(riter == inFlightRequests_.end()) {
+    RequestPool::iterator riter = findRequestByUri(requestPool_.begin(),
+                                                    requestPool_.end(), uri);
+    if(riter == requestPool_.end()) {
+      return true;
+    }
+    req = *riter;
+    requestPool_.erase(riter);
+  } else {
+    req = *riter;
+  }
+  req->requestRemoval();
+  return true;
 }
 
 std::string FileEntry::getBasename() const
@@ -547,13 +541,12 @@ bool FileEntry::addUri(const std::string& uri)
 bool FileEntry::insertUri(const std::string& uri, size_t pos)
 {
   std::string peUri = util::percentEncodeMini(uri);
-  if(uri_split(nullptr, peUri.c_str()) == 0) {
-    pos = std::min(pos, uris_.size());
-    uris_.insert(uris_.begin()+pos, peUri);
-    return true;
-  } else {
+  if(uri_split(nullptr, peUri.c_str()) != 0) {
     return false;
   }
+  pos = std::min(pos, uris_.size());
+  uris_.insert(uris_.begin()+pos, peUri);
+  return true;
 }
 
 void FileEntry::setPath(const std::string& path)
@@ -599,12 +592,13 @@ void writeFilePath
     } else {
       o << uris.front();
     }
+    return;
+  }
+
+  if(memory) {
+    o << "[MEMORY]" << File(entry->getPath()).getBasename();
   } else {
-    if(memory) {
-      o << "[MEMORY]" << File(entry->getPath()).getBasename();
-    } else {
-      o << entry->getPath();
-    }
+    o << entry->getPath();
   }
 }
 

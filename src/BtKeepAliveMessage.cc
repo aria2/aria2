@@ -45,7 +45,7 @@ unsigned char* BtKeepAliveMessage::createMessage()
    * len --- 0, 4bytes
    * total: 4bytes
    */
-  unsigned char* msg = new unsigned char[MESSAGE_LENGTH];
+  auto msg = new unsigned char[MESSAGE_LENGTH];
   memset(msg, 0, MESSAGE_LENGTH);
   return msg;
 }

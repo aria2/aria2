@@ -363,11 +363,8 @@ void DefaultBtAnnounce::processUDPTrackerResponse
   incomplete_ = reply->leechers;
   A2_LOG_DEBUG(fmt("Incomplete:%d", reply->leechers));
   if(!btRuntime_->isHalt() && btRuntime_->lessThanMinPeers()) {
-    for(std::vector<std::pair<std::string, uint16_t> >::iterator i =
-          reply->peers.begin(), eoi = reply->peers.end(); i != eoi;
-        ++i) {
-      peerStorage_->addPeer(std::shared_ptr<Peer>(new Peer((*i).first,
-                                                        (*i).second)));
+    for(auto & elem : reply->peers) {
+      peerStorage_->addPeer(std::make_shared<Peer>(elem.first, elem.second));
     }
   }
 }

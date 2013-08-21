@@ -124,15 +124,13 @@ std::string HttpResponse::determinFilename() const
                           httpRequest_->getFile().end());
     if(file.empty()) {
       return "index.html";
-    } else {
-      return file;
     }
-  } else {
-    A2_LOG_INFO(fmt(MSG_CONTENT_DISPOSITION_DETECTED,
-                    cuid_,
-                    contentDisposition.c_str()));
-    return contentDisposition;
+    return file;
   }
+  A2_LOG_INFO(fmt(MSG_CONTENT_DISPOSITION_DETECTED,
+                  cuid_,
+                  contentDisposition.c_str()));
+  return contentDisposition;
 }
 
 void HttpResponse::retrieveCookie()
@@ -299,9 +297,8 @@ bool parseMetalinkHttpLink(MetalinkHttpEntry& result, const std::string& s)
             std::string::const_iterator> p = util::stripIter(first+1, last);
   if(p.first == p.second) {
     return false;
-  } else {
-    result.uri.assign(p.first, p.second);
   }
+  result.uri.assign(p.first, p.second);
   last = std::find(last, s.end(), ';');
   if(last != s.end()) {
     ++last;
@@ -363,15 +360,13 @@ void HttpResponse::getMetalinKHttpEntries
     if(option->defined(PREF_METALINK_LOCATION)) {
       const std::string& loc = option->get(PREF_METALINK_LOCATION);
       util::split(loc.begin(), loc.end(), std::back_inserter(locs), ',', true);
-      for(std::vector<std::string>::iterator i = locs.begin(), eoi = locs.end();
-          i != eoi; ++i) {
-        util::lowercase(*i);
+      for (auto& l: locs) {
+        util::lowercase(l);
       }
     }
-    for(std::vector<MetalinkHttpEntry>::iterator i = result.begin(),
-          eoi = result.end(); i != eoi; ++i) {
-      if(std::find(locs.begin(), locs.end(), (*i).geo) != locs.end()) {
-        (*i).pri -= 999999;
+    for (auto& r: result) {
+      if(std::find(locs.begin(), locs.end(), r.geo) != locs.end()) {
+        r.pri -= 999999;
       }
     }
   }
@@ -409,10 +404,9 @@ void HttpResponse::getDigest(std::vector<Checksum>& result) const
   }
   std::sort(result.begin(), result.end(), HashTypeStronger());
   std::vector<Checksum> temp;
-  for(std::vector<Checksum>::iterator i = result.begin(),
-        eoi = result.end(); i != eoi;) {
+  for(auto i = result.begin(), eoi = result.end(); i != eoi;) {
     bool ok = true;
-    std::vector<Checksum>::iterator j = i+1;
+    auto j = i+1;
     for(; j != eoi; ++j) {
       if((*i).getHashType() != (*j).getHashType()) {
         break;

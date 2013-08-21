@@ -57,9 +57,8 @@ void HaveEraseCommand::process()
 {
   const RequestGroupList& groups =
     getDownloadEngine()->getRequestGroupMan()->getRequestGroups();
-  for(RequestGroupList::const_iterator i = groups.begin(),
-        eoi = groups.end(); i != eoi; ++i) {
-    const std::shared_ptr<PieceStorage>& ps = (*i)->getPieceStorage();
+  for(auto & group : groups) {
+    const auto& ps = group->getPieceStorage();
     if(ps) {
       ps->removeAdvertisedPiece(5);
     }

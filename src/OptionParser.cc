@@ -262,9 +262,8 @@ void OptionParser::parse(Option& option, const KeyVals& options) const
 void OptionParser::setOptionHandlers
 (const std::vector<OptionHandler*>& handlers)
 {
-  for(std::vector<OptionHandler*>::const_iterator i =
-        handlers.begin(), eoi = handlers.end(); i != eoi; ++i) {
-    addOptionHandler(*i);
+  for (const auto& h: handlers) {
+    addOptionHandler(h);
   }
 }
 
@@ -280,10 +279,9 @@ void OptionParser::addOptionHandler(OptionHandler* handler)
 
 void OptionParser::parseDefaultValues(Option& option) const
 {
-  for(std::vector<OptionHandler*>::const_iterator i =
-        handlers_.begin(), eoi = handlers_.end(); i != eoi; ++i) {
-    if(*i && !(*i)->getDefaultValue().empty()) {
-      (*i)->parse(option, (*i)->getDefaultValue());
+  for (const auto& h: handlers_) {
+    if (h && !h->getDefaultValue().empty()) {
+      h->parse(option, h->getDefaultValue());
     }
   }
 }
@@ -291,10 +289,9 @@ void OptionParser::parseDefaultValues(Option& option) const
 std::vector<const OptionHandler*> OptionParser::findByTag(uint32_t tag) const
 {
   std::vector<const OptionHandler*> result;
-  for(std::vector<OptionHandler*>::const_iterator i =
-        handlers_.begin(), eoi = handlers_.end(); i != eoi; ++i) {
-    if(*i && !(*i)->isHidden() && (*i)->hasTag(tag)) {
-      result.push_back(*i);
+  for (const auto& h: handlers_) {
+    if(h && !h->isHidden() && h->hasTag(tag)) {
+      result.push_back(h);
     }
   }
   return result;
@@ -304,14 +301,13 @@ std::vector<const OptionHandler*>
 OptionParser::findByNameSubstring(const std::string& substring) const
 {
   std::vector<const OptionHandler*> result;
-  for(std::vector<OptionHandler*>::const_iterator i =
-        handlers_.begin(), eoi = handlers_.end(); i != eoi; ++i) {
-    if(*i && !(*i)->isHidden()) {
-      size_t nameLen = strlen((*i)->getName());
-      if(std::search((*i)->getName(), (*i)->getName()+nameLen,
+  for (const auto& h: handlers_) {
+    if(h && !h->isHidden()) {
+      size_t nameLen = strlen(h->getName());
+      if(std::search(h->getName(), h->getName()+nameLen,
                      substring.begin(), substring.end()) !=
-         (*i)->getName()+nameLen) {
-        result.push_back(*i);
+         h->getName()+nameLen) {
+        result.push_back(h);
       }
     }
   }
@@ -321,10 +317,9 @@ OptionParser::findByNameSubstring(const std::string& substring) const
 std::vector<const OptionHandler*> OptionParser::findAll() const
 {
   std::vector<const OptionHandler*> result;
-  for(std::vector<OptionHandler*>::const_iterator i =
-        handlers_.begin(), eoi = handlers_.end(); i != eoi; ++i) {
-    if(*i && !(*i)->isHidden()) {
-      result.push_back(*i);
+  for (const auto& h: handlers_) {
+    if(h && !h->isHidden()) {
+      result.push_back(h);
     }
   }
   return result;

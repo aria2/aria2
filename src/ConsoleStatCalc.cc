@@ -142,7 +142,7 @@ void printProgressCompact(std::ostream& o, const DownloadEngine* e,
     e->getRequestGroupMan()->getRequestGroups();
   size_t cnt = 0;
   const size_t MAX_ITEM = 5;
-  for(RequestGroupList::const_iterator i = groups.begin(),
+  for(auto i = groups.begin(),
         eoi = groups.end(); i != eoi && cnt < MAX_ITEM; ++i, ++cnt) {
     const std::shared_ptr<RequestGroup>& rg = *i;
     TransferStat stat = rg->calculateStat();

@@ -362,7 +362,7 @@ void Piece::updateWrCache(WrDiskCache* diskCache, unsigned char* data,
   }
   assert(wrCache_);
   A2_LOG_DEBUG(fmt("updateWrCache entry=%p", wrCache_));
-  WrDiskCacheEntry::DataCell* cell = new WrDiskCacheEntry::DataCell();
+  auto cell = new WrDiskCacheEntry::DataCell();
   cell->goff = goff;
   cell->data = data;
   cell->offset = offset;

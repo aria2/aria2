@@ -139,18 +139,15 @@ void DHTPeerAnnounceStorage::handleTimeout()
 void DHTPeerAnnounceStorage::announcePeer()
 {
   A2_LOG_DEBUG("Now announcing peer.");
-  for(DHTPeerAnnounceEntrySet::iterator i =
-        entries_.begin(), eoi = entries_.end(); i != eoi; ++i) {
-    if((*i)->getLastUpdated().
-       difference(global::wallclock()) >= DHT_PEER_ANNOUNCE_INTERVAL) {
-      (*i)->notifyUpdate();
-      std::shared_ptr<DHTTask> task =
-        taskFactory_->createPeerAnnounceTask((*i)->getInfoHash());
-      taskQueue_->addPeriodicTask2(task);
-      A2_LOG_DEBUG
-        (fmt("Added 1 peer announce: infoHash=%s",
-             util::toHex((*i)->getInfoHash(), DHT_ID_LENGTH).c_str()));
+  for (auto& e: entries_) {
+    if(e->getLastUpdated().difference(global::wallclock()) < DHT_PEER_ANNOUNCE_INTERVAL) {
+      continue;
     }
+    e->notifyUpdate();
+    auto task = taskFactory_->createPeerAnnounceTask(e->getInfoHash());
+    taskQueue_->addPeriodicTask2(task);
+    A2_LOG_DEBUG(fmt("Added 1 peer announce: infoHash=%s",
+                     util::toHex(e->getInfoHash(), DHT_ID_LENGTH).c_str()));
   }
 }
 

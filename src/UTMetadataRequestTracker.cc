@@ -57,9 +57,8 @@ bool UTMetadataRequestTracker::tracks(size_t index)
 
 void UTMetadataRequestTracker::remove(size_t index)
 {
-  std::vector<RequestEntry>::iterator i =
-    std::find(trackedRequests_.begin(), trackedRequests_.end(),
-              RequestEntry(index));
+  auto i = std::find(trackedRequests_.begin(), trackedRequests_.end(),
+                     RequestEntry(index));
   if(i != trackedRequests_.end()) {
     trackedRequests_.erase(i);
   }
@@ -109,8 +108,7 @@ size_t UTMetadataRequestTracker::avail() const
 std::vector<size_t> UTMetadataRequestTracker::getAllTrackedIndex() const
 {
   std::vector<size_t> indexes;
-  for(std::vector<RequestEntry>::const_iterator i = trackedRequests_.begin(),
-        eoi = trackedRequests_.end(); i != eoi; ++i) {
+  for(auto i = trackedRequests_.begin(), eoi = trackedRequests_.end(); i != eoi; ++i) {
     indexes.push_back((*i).index_);
   }
   return indexes;

@@ -73,13 +73,10 @@ void StreamFileAllocationEntry::prepareForNextAction
       getRequestGroup()->getDownloadContext();
     const std::vector<std::shared_ptr<FileEntry> >& fileEntries =
       dctx->getFileEntries();
-    for(std::vector<std::shared_ptr<FileEntry> >::const_iterator i =
-          fileEntries.begin(), eoi = fileEntries.end(); i != eoi; ++i) {
-      const FileEntry::InFlightRequestSet& reqs =
-        (*i)->getInFlightRequests();
-      for(FileEntry::InFlightRequestSet::iterator j =
-            reqs.begin(), eoj = reqs.end(); j != eoj; ++j) {
-        const std::shared_ptr<PeerStat>& peerStat = (*j)->getPeerStat();
+    for(auto & f : fileEntries) {
+      const auto& reqs = f->getInFlightRequests();
+      for(auto & req : reqs) {
+        const std::shared_ptr<PeerStat>& peerStat = req->getPeerStat();
         if(peerStat) {
           peerStat->downloadStart();
         }

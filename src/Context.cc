@@ -115,20 +115,19 @@ void showFiles
 (const std::vector<std::string>& uris, const std::shared_ptr<Option>& op)
 {
   ProtocolDetector dt;
-  for(std::vector<std::string>::const_iterator i = uris.begin(),
-        eoi = uris.end(); i != eoi; ++i) {
+  for(const auto & uri : uris) {
     printf(">>> ");
-    printf(MSG_SHOW_FILES, (*i).c_str());
+    printf(MSG_SHOW_FILES, (uri).c_str());
     printf("\n");
     try {
 #ifdef ENABLE_BITTORRENT
-      if(dt.guessTorrentFile(*i)) {
-        showTorrentFile(*i);
+      if(dt.guessTorrentFile(uri)) {
+        showTorrentFile(uri);
       } else
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
-        if(dt.guessMetalinkFile(*i)) {
-          showMetalinkFile(*i, op);
+        if(dt.guessMetalinkFile(uri)) {
+          showMetalinkFile(uri, op);
         } else
 #endif // ENABLE_METALINK
           {
@@ -235,7 +234,7 @@ Context::Context(bool standalone,
   // command-line. If they are left, because op is used as a template
   // for new RequestGroup(such as created in RPC command), they causes
   // unintentional effect.
-  for(std::shared_ptr<Option> i = op; i; i = i->getParent()) {
+  for(auto i = op; i; i = i->getParent()) {
     i->remove(PREF_OUT);
     i->remove(PREF_FORCE_SEQUENTIAL);
     i->remove(PREF_INPUT_FILE);

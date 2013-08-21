@@ -229,10 +229,9 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
       } else {
         std::vector<std::pair<sockaddr_union, socklen_t> > ifAddrs;
         getInterfaceAddress(ifAddrs, lpdInterface, AF_INET, AI_NUMERICHOST);
-        for(std::vector<std::pair<sockaddr_union, socklen_t> >::const_iterator
-              i = ifAddrs.begin(), eoi = ifAddrs.end(); i != eoi; ++i) {
+        for (const auto& i : ifAddrs) {
           char host[NI_MAXHOST];
-          if(inetNtop(AF_INET, &(*i).first.in.sin_addr, host,
+          if(inetNtop(AF_INET, &i.first.in.sin_addr, host,
                       sizeof(host)) == 0 &&
              receiver->init(host)) {
             initialized = true;

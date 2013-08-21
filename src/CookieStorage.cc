@@ -434,18 +434,17 @@ std::vector<const Cookie*> CookieStorage::criteriaFind
   }
   auto labels = splitDomainLabel(requestHost);
   auto node = rootNode_.get();
-  for(auto i = labels.rbegin(), eoi = labels.rend(); i != eoi; ++i) {
+  for (auto i = labels.rbegin(), eoi = labels.rend(); i != eoi; ++i) {
     auto nextNode = node->findNext(*i);
-    if(nextNode) {
-      nextNode->setLastAccessTime(now);
-      if(nextNode->getInLru()) {
-        updateLru(nextNode, now);
-      }
-      nextNode->findCookie(res, requestHost, requestPath, now, secure);
-      node = nextNode;
-    } else {
+    if(!nextNode) {
       break;
     }
+    nextNode->setLastAccessTime(now);
+    if(nextNode->getInLru()) {
+      updateLru(nextNode, now);
+    }
+    nextNode->findCookie(res, requestHost, requestPath, now, secure);
+    node = nextNode;
   }
   auto divs = std::vector<CookiePathDivider>{};
   std::transform(std::begin(res), std::end(res), std::back_inserter(divs),

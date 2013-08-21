@@ -124,8 +124,8 @@ void BtSeederStateChoke::unchoke
 
   std::sort(peers.begin(), peers.end());
 
-  std::vector<PeerEntry>::iterator r = peers.begin();
-  for(std::vector<PeerEntry>::iterator eoi = peers.end();
+  auto r = peers.begin();
+  for(auto eoi = peers.end();
       r != eoi && count; ++r, --count) {
     (*r).getPeer()->chokingRequired(false);
     A2_LOG_INFO(fmt("RU: %s, ulspd=%d",

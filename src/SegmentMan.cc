@@ -164,8 +164,7 @@ std::shared_ptr<Segment> SegmentMan::checkoutSegment
                    segment->getWrittenLength()));
 
   if(piece->getLength() > 0) {
-    std::map<size_t, int32_t>::iterator positr =
-      segmentWrittenLengthMemo_.find(segment->getIndex());
+    auto positr = segmentWrittenLengthMemo_.find(segment->getIndex());
     if(positr != segmentWrittenLengthMemo_.end()) {
       const int32_t writtenLength = (*positr).second;
       A2_LOG_DEBUG(fmt("writtenLength(in memo)=%d, writtenLength=%d",
@@ -332,8 +331,7 @@ void SegmentMan::cancelSegment
 
 void SegmentMan::cancelAllSegments()
 {
-  for(std::deque<std::shared_ptr<SegmentEntry> >::iterator itr =
-        usedSegmentEntries_.begin(), eoi = usedSegmentEntries_.end();
+  for(auto itr = usedSegmentEntries_.begin(), eoi = usedSegmentEntries_.end();
       itr != eoi; ++itr) {
     cancelSegmentInternal((*itr)->cuid, (*itr)->segment);
   }
@@ -393,8 +391,7 @@ void SegmentMan::registerPeerStat(const std::shared_ptr<PeerStat>& peerStat)
 
 std::shared_ptr<PeerStat> SegmentMan::getPeerStat(cuid_t cuid) const
 {
-  for(std::vector<std::shared_ptr<PeerStat> >::const_iterator i =
-        peerStats_.begin(), eoi = peerStats_.end(); i != eoi; ++i) {
+  for(auto i = peerStats_.begin(), eoi = peerStats_.end(); i != eoi; ++i) {
     if((*i)->getCuid() == cuid) {
       return *i;
     }
@@ -420,9 +417,8 @@ public:
 
 void SegmentMan::updateFastestPeerStat(const std::shared_ptr<PeerStat>& peerStat)
 {
-  std::vector<std::shared_ptr<PeerStat> >::iterator i =
-    std::find_if(fastestPeerStats_.begin(), fastestPeerStats_.end(),
-                 PeerStatHostProtoEqual(peerStat));
+  auto i = std::find_if(fastestPeerStats_.begin(), fastestPeerStats_.end(),
+                        PeerStatHostProtoEqual(peerStat));
   if(i == fastestPeerStats_.end()) {
     fastestPeerStats_.push_back(peerStat);
   } else if((*i)->getAvgDownloadSpeed() < peerStat->getAvgDownloadSpeed()) {

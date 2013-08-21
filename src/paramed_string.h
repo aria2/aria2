@@ -221,9 +221,8 @@ void expand
   while(first != last) {
     InputIterator i = first;
     for(; i != last && *i != '{' && *i != '['; ++i);
-    for(std::vector<std::string>::iterator j = res.begin(), eoj = res.end();
-        j != eoj; ++j) {
-      (*j).append(first, i);
+    for(auto & re : res) {
+      re.append(first, i);
     }
     first = i;
     if(first == last) {

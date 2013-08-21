@@ -274,7 +274,7 @@ void PeerConnection::reserveBuffer(size_t minSize)
 {
   if(bufferCapacity_ < minSize) {
     bufferCapacity_ = minSize;
-    unsigned char *buf = new unsigned char[bufferCapacity_];
+    auto buf = new unsigned char[bufferCapacity_];
     memcpy(buf, resbuf_, resbufLength_);
     delete [] resbuf_;
     resbuf_ = buf;

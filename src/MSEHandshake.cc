@@ -107,11 +107,10 @@ MSEHandshake::HANDSHAKE_TYPE MSEHandshake::identifyHandshakeType()
     A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - This is legacy BitTorrent handshake.",
                      cuid_));
     return HANDSHAKE_LEGACY;
-  } else {
-    A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - This may be encrypted BitTorrent handshake.",
-                     cuid_));
-    return HANDSHAKE_ENCRYPTED;
   }
+  A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - This may be encrypted BitTorrent handshake.",
+                    cuid_));
+  return HANDSHAKE_ENCRYPTED;
 }
 
 void MSEHandshake::initEncryptionFacility(bool initiator)
@@ -430,17 +429,15 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength
   // pointing to the position of HASH('req2', SKEY) xor HASH('req3', S)
   unsigned char* rbufptr = rbuf_;
   std::shared_ptr<DownloadContext> downloadContext;
-  for(std::vector<std::shared_ptr<DownloadContext> >::const_iterator i =
-        downloadContexts.begin(), eoi = downloadContexts.end();
-      i != eoi; ++i) {
+  for(auto & ctx : downloadContexts) {
     unsigned char md[20];
-    const unsigned char* infohash = bittorrent::getInfoHash(*i);
+    const auto infohash = bittorrent::getInfoHash(ctx);
     createReq23Hash(md, infohash);
     if(memcmp(md, rbufptr, sizeof(md)) == 0) {
       A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - info hash found: %s",
                        cuid_,
                        util::toHex(infohash, INFO_HASH_LENGTH).c_str()));
-      downloadContext = *i;
+      downloadContext = ctx;
       break;
     }
   }

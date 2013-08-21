@@ -168,8 +168,8 @@ void showCandidates
   global::cerr()->printf("\n");
   global::cerr()->printf(_("Did you mean:"));
   global::cerr()->printf("\n");
-  for(std::vector<std::pair<int, const Pref*> >::iterator i = cands.begin(),
-        eoi = cands.end(); i != eoi && (*i).first <= threshold; ++i) {
+  for(auto i = cands.begin(), eoi = cands.end();
+      i != eoi && (*i).first <= threshold; ++i) {
     global::cerr()->printf("\t--%s\n", (*i).second->k);
   }
 }

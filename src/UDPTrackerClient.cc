@@ -452,8 +452,8 @@ std::shared_ptr<UDPTrackerRequest> UDPTrackerClient::findInflightRequest
  bool remove)
 {
   std::shared_ptr<UDPTrackerRequest> res;
-  for(std::deque<std::shared_ptr<UDPTrackerRequest> >::iterator i =
-        inflightRequests_.begin(), eoi = inflightRequests_.end(); i != eoi;
+  for(auto i = inflightRequests_.begin(), eoi = inflightRequests_.end();
+      i != eoi;
       ++i) {
     if((*i)->remoteAddr == remoteAddr && (*i)->remotePort == remotePort &&
        (*i)->transactionId == transactionId) {
@@ -470,9 +470,7 @@ std::shared_ptr<UDPTrackerRequest> UDPTrackerClient::findInflightRequest
 UDPTrackerConnection* UDPTrackerClient::getConnectionId
 (const std::string& remoteAddr, uint16_t remotePort, const Timer& now)
 {
-  std::map<std::pair<std::string, uint16_t>,
-           UDPTrackerConnection>::iterator i =
-    connectionIdCache_.find(std::make_pair(remoteAddr, remotePort));
+  auto i = connectionIdCache_.find(std::make_pair(remoteAddr, remotePort));
   if(i == connectionIdCache_.end()) {
     return nullptr;
   }
