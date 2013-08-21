@@ -22,11 +22,16 @@
 #   'optional', then configuration proceeds regardless, after defining
 #   HAVE_CXX11 if and only if a supporting mode is found.
 #
+#   This version of AX_CXX_COMPILE_STDCXX_11 will also check if specifying
+#   `-stdlib=libc++`` is required, as it is on current OSX systems using
+#   a clang which defaults to an old libstdc++.
+#
 # LICENSE
 #
 #   Copyright (c) 2008 Benjamin Kosnik <bkoz@redhat.com>
 #   Copyright (c) 2012 Zack Weinberg <zackw@panix.com>
 #   Copyright (c) 2013 Roy Stogner <roystgnr@ices.utexas.edu>
+#   Copyright (c) 2013 Nils Maier <maierman@web.de>
 #
 #   Copying and distribution of this file, with or without modification, are
 #   permitted in any medium without royalty provided the copyright notice
@@ -34,8 +39,11 @@
 #   warranty.
 
 #serial 3
+#modified to check fo -stdlib=libc++ (required on OSX)
 
 m4_define([_AX_CXX_COMPILE_STDCXX_11_testbody], [
+  #include <memory>
+
   template <typename T>
     struct check
     {
@@ -52,6 +60,9 @@ m4_define([_AX_CXX_COMPILE_STDCXX_11_testbody], [
     check_type&& cr = static_cast<check_type&&>(c);
 
     auto d = a;
+
+    // Check std::shared_ptr is available, which might require -stdlib=libc++.
+    std::shared_ptr<check_type> ptr;
 ])
 
 AC_DEFUN([AX_CXX_COMPILE_STDCXX_11], [dnl
@@ -77,40 +88,44 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX_11], [dnl
   m4_if([$1], [noext], [], [dnl
   if test x$ac_success = xno; then
     for switch in -std=gnu++11 -std=gnu++0x; do
-      cachevar=AS_TR_SH([ax_cv_cxx_compile_cxx11_$switch])
-      AC_CACHE_CHECK(whether $CXX supports C++11 features with $switch,
-                     $cachevar,
-        [ac_save_CXXFLAGS="$CXXFLAGS"
-         CXXFLAGS="$CXXFLAGS $switch"
-         AC_COMPILE_IFELSE([AC_LANG_SOURCE([_AX_CXX_COMPILE_STDCXX_11_testbody])],
-          [eval $cachevar=yes],
-          [eval $cachevar=no])
-         CXXFLAGS="$ac_save_CXXFLAGS"])
-      if eval test x\$$cachevar = xyes; then
-        CXXFLAGS="$CXXFLAGS $switch"
-        ac_success=yes
-        break
-      fi
+      for lib in "" -stdlib=libc++; do
+        cachevar=AS_TR_SH([ax_cv_cxx_compile_cxx11_$switch$lib])
+        AC_CACHE_CHECK(whether $CXX supports C++11 features with $switch $lib,
+                      $cachevar,
+          [ac_save_CXXFLAGS="$CXXFLAGS"
+          CXXFLAGS="$CXXFLAGS $switch $lib"
+          AC_COMPILE_IFELSE([AC_LANG_SOURCE([_AX_CXX_COMPILE_STDCXX_11_testbody])],
+            [eval $cachevar=yes],
+            [eval $cachevar=no])
+          CXXFLAGS="$ac_save_CXXFLAGS"])
+        if eval test x\$$cachevar = xyes; then
+          CXXFLAGS="$CXXFLAGS $switch $lib"
+          ac_success=yes
+          break 2
+        fi
+      done
     done
   fi])
 
   m4_if([$1], [ext], [], [dnl
   if test x$ac_success = xno; then
     for switch in -std=c++11 -std=c++0x; do
-      cachevar=AS_TR_SH([ax_cv_cxx_compile_cxx11_$switch])
-      AC_CACHE_CHECK(whether $CXX supports C++11 features with $switch,
-                     $cachevar,
-        [ac_save_CXXFLAGS="$CXXFLAGS"
-         CXXFLAGS="$CXXFLAGS $switch"
-         AC_COMPILE_IFELSE([AC_LANG_SOURCE([_AX_CXX_COMPILE_STDCXX_11_testbody])],
-          [eval $cachevar=yes],
-          [eval $cachevar=no])
-         CXXFLAGS="$ac_save_CXXFLAGS"])
-      if eval test x\$$cachevar = xyes; then
-        CXXFLAGS="$CXXFLAGS $switch"
-        ac_success=yes
-        break
-      fi
+      for lib in "" -stdlib=libc++; do
+        cachevar=AS_TR_SH([ax_cv_cxx_compile_cxx11_$switch$lib])
+        AC_CACHE_CHECK(whether $CXX supports C++11 features with $switch $lib,
+                      $cachevar,
+          [ac_save_CXXFLAGS="$CXXFLAGS"
+          CXXFLAGS="$CXXFLAGS $switch $lib"
+          AC_COMPILE_IFELSE([AC_LANG_SOURCE([_AX_CXX_COMPILE_STDCXX_11_testbody])],
+            [eval $cachevar=yes],
+            [eval $cachevar=no])
+          CXXFLAGS="$ac_save_CXXFLAGS"])
+        if eval test x\$$cachevar = xyes; then
+          CXXFLAGS="$CXXFLAGS $switch $lib"
+          ac_success=yes
+          break 2
+        fi
+      done
     done
   fi])
   AC_LANG_POP([C++])
