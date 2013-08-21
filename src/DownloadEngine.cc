@@ -124,27 +124,28 @@ void executeCommand(std::deque<std::unique_ptr<Command>>& commands,
   for(size_t i = 0; i < max; ++i) {
     auto com = std::move(commands.front());
     commands.pop_front();
-    if(com->statusMatch(statusFilter)) {
-      com->transitStatus();
-      if(com->execute()) {
-        com.reset();
-      } else {
-        com->clearIOEvents();
-        com.release();
-      }
-    } else {
+    if (!com->statusMatch(statusFilter)) {
       com->clearIOEvents();
       commands.push_back(std::move(com));
+      continue;
+    }
+    com->transitStatus();
+    if (com->execute()) {
+      com.reset();
+    }
+    else {
+      com->clearIOEvents();
+      com.release();
     }
   }
 }
 } // namespace
 
 namespace {
-class GHR {
+class GlobalHaltRequestedFinalizer {
 public:
-  GHR() {}
-  ~GHR()
+  GlobalHaltRequestedFinalizer() {}
+  ~GlobalHaltRequestedFinalizer()
   {
     global::globalHaltRequested = 5;
   }
@@ -153,7 +154,7 @@ public:
 
 int DownloadEngine::run(bool oneshot)
 {
-  GHR ghr;
+  GlobalHaltRequestedFinalizer ghrf;
   while(!commands_.empty() || !routineCommands_.empty()) {
     if(!commands_.empty()) {
       waitData();
@@ -243,12 +244,16 @@ void DownloadEngine::afterEachIteration()
     global::globalHaltRequested = 2;
     setNoWait(true);
     setRefreshInterval(0);
-  } else if(global::globalHaltRequested == 3) {
+    return;
+  }
+
+  if(global::globalHaltRequested == 3) {
     A2_LOG_NOTICE(_("Emergency shutdown sequence commencing..."));
     requestForceHalt();
     global::globalHaltRequested = 4;
     setNoWait(true);
     setRefreshInterval(0);
+    return;
   }
 }
 
@@ -300,20 +305,21 @@ void DownloadEngine::poolSocket(const std::string& key,
   std::multimap<std::string, SocketPoolEntry>::value_type p(key, entry);
   socketPool_.insert(p);
 
-  if(lastSocketPoolScan_.difference(global::wallclock()) >= 60) {
-    std::multimap<std::string, SocketPoolEntry> newPool;
-    A2_LOG_DEBUG("Scaning SocketPool and erasing timed out entry.");
-    lastSocketPoolScan_ = global::wallclock();
-    for(auto & elem : socketPool_) {
-      if(!elem.second.isTimeout()) {
-        newPool.insert(elem);
-      }
-    }
-    A2_LOG_DEBUG(fmt("%lu entries removed.",
-                     static_cast<unsigned long>
-                     (socketPool_.size()-newPool.size())));
-    socketPool_ = newPool;
+  if(lastSocketPoolScan_.difference(global::wallclock()) < 60) {
+    return;
   }
+  std::multimap<std::string, SocketPoolEntry> newPool;
+  A2_LOG_DEBUG("Scaning SocketPool and erasing timed out entry.");
+  lastSocketPoolScan_ = global::wallclock();
+  for(auto & elem : socketPool_) {
+    if(!elem.second.isTimeout()) {
+      newPool.insert(elem);
+    }
+  }
+  A2_LOG_DEBUG(fmt("%lu entries removed.",
+                    static_cast<unsigned long>
+                    (socketPool_.size()-newPool.size())));
+  socketPool_ = newPool;
 }
 
 namespace {
@@ -382,17 +388,18 @@ void DownloadEngine::poolSocket(const std::shared_ptr<Request>& request,
                                 const std::shared_ptr<SocketCore>& socket,
                                 time_t timeout)
 {
-  if(!proxyRequest) {
-    std::pair<std::string, uint16_t> peerInfo;
-    if(getPeerInfo(peerInfo, socket)) {
-      poolSocket(peerInfo.first, peerInfo.second,
-                 A2STR::NIL, 0, socket, timeout);
-    }
-  } else {
+  if(proxyRequest) {
     // If proxy is defined, then pool socket with its hostname.
     poolSocket(request->getHost(), request->getPort(),
                proxyRequest->getHost(), proxyRequest->getPort(),
                socket, timeout);
+    return;
+  }
+
+  std::pair<std::string, uint16_t> peerInfo;
+  if(getPeerInfo(peerInfo, socket)) {
+    poolSocket(peerInfo.first, peerInfo.second,
+                A2STR::NIL, 0, socket, timeout);
   }
 }
 
@@ -404,17 +411,18 @@ void DownloadEngine::poolSocket
  const std::string& options,
  time_t timeout)
 {
-  if(!proxyRequest) {
-    std::pair<std::string, uint16_t> peerInfo;
-    if(getPeerInfo(peerInfo, socket)) {
-      poolSocket(peerInfo.first, peerInfo.second, username,
-                 A2STR::NIL, 0, socket, options, timeout);
-    }
-  } else {
+  if(proxyRequest) {
     // If proxy is defined, then pool socket with its hostname.
     poolSocket(request->getHost(), request->getPort(), username,
                proxyRequest->getHost(), proxyRequest->getPort(),
                socket, options, timeout);
+    return;
+  }
+
+  std::pair<std::string, uint16_t> peerInfo;
+  if(getPeerInfo(peerInfo, socket)) {
+    poolSocket(peerInfo.first, peerInfo.second, username,
+                A2STR::NIL, 0, socket, options, timeout);
   }
 }
 

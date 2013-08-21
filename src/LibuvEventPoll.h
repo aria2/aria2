@@ -76,7 +76,7 @@ private:
     uv_poll_t handle_;
 
     static void poll_callback(uv_poll_t* handle, int status, int events) {
-      KPoll* poll = static_cast<KPoll*>(handle->data);
+      auto poll = static_cast<KPoll*>(handle->data);
       poll->eventer_->pollCallback(poll, status, events);
     }
     static void close_callback(uv_handle_t* handle) {
@@ -87,8 +87,8 @@ private:
     inline KPoll(LibuvEventPoll* eventer, KSocketEntry* entry, sock_t sock)
       : eventer_(eventer), entry_(entry)
     {
-        uv_poll_init_socket(eventer->loop_, &handle_, sock);
-        handle_.data = this;
+      uv_poll_init_socket(eventer->loop_, &handle_, sock);
+      handle_.data = this;
     }
     inline void start() {
       uv_poll_start(&handle_, entry_->getEvents() & IEV_RW, poll_callback);

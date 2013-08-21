@@ -58,11 +58,11 @@ namespace {
   };
 #endif // defined(__MAC_10_7)
 
-  class cfrelease {
+  class CFReleaser {
     const void *ptr_;
   public:
-    inline cfrelease(const void *ptr) : ptr_(ptr) {}
-    inline ~cfrelease() { if (ptr_) CFRelease(ptr_); }
+    inline CFReleaser(const void *ptr) : ptr_(ptr) {}
+    inline ~CFReleaser() { if (ptr_) CFRelease(ptr_); }
   };
 
   static inline bool isWhitespace(char c)
@@ -123,13 +123,13 @@ namespace {
       A2_LOG_ERROR("Failed to get a certref!");
       return false;
     }
-    cfrelease del_ref(ref);
+    CFReleaser del_ref(ref);
     CFDataRef data = SecCertificateCopyData(ref);
     if (!data) {
       A2_LOG_ERROR("Failed to get a data!");
       return false;
     }
-    cfrelease del_data(data);
+    CFReleaser del_data(data);
 
     // Do try all supported hash algorithms.
     // Usually the fingerprint would be sha1 or md5, however this is more
@@ -183,12 +183,12 @@ SecIdentityRef AppleTLSContext::getCredentials()
 
 bool AppleTLSContext::tryAsFingerprint(const std::string& fingerprint)
 {
-  std::string fp = stripWhitespace(fingerprint);
+  auto fp = stripWhitespace(fingerprint);
   // Verify this is a valid hex representation and normalize.
   fp = util::toHex(util::fromHex(fp.begin(), fp.end()));
 
   // Verify this can represent a hash
-  std::vector<std::string> ht = MessageDigest::getSupportedHashTypes();
+  auto ht = MessageDigest::getSupportedHashTypes();
   if (std::find_if(ht.begin(), ht.end(), hash_validator(fp)) == ht.end()) {
     A2_LOG_INFO(fmt("%s is not a fingerprint, invalid hash representation", fingerprint.c_str()));
     return false;
@@ -198,25 +198,25 @@ bool AppleTLSContext::tryAsFingerprint(const std::string& fingerprint)
   A2_LOG_DEBUG(fmt("Looking for cert with fingerprint %s", fp.c_str()));
 
   // Build and run the KeyChain the query.
-  SecPolicyRef policy = SecPolicyCreateSSL(true, nullptr);
+  auto policy = SecPolicyCreateSSL(true, nullptr);
   if (!policy) {
     A2_LOG_ERROR("Failed to create SecPolicy");
     return false;
   }
-  cfrelease del_policy(policy);
+  CFReleaser del_policy(policy);
   const void *query_values[] = {
     kSecClassIdentity,
     kCFBooleanTrue,
     policy,
     kSecMatchLimitAll
   };
-  CFDictionaryRef query = CFDictionaryCreate(nullptr, query_keys, query_values,
-                                             4, nullptr, nullptr);
+  auto query = CFDictionaryCreate(nullptr, query_keys, query_values, 4,
+                                  nullptr, nullptr);
   if (!query) {
     A2_LOG_ERROR("Failed to create identity query");
     return false;
   }
-  cfrelease del_query(query);
+  CFReleaser del_query(query);
   CFArrayRef identities;
   OSStatus err = SecItemCopyMatching(query, (CFTypeRef*)&identities);
   if (err != errSecSuccess) {
@@ -254,7 +254,7 @@ bool AppleTLSContext::tryAsFingerprint(const std::string& fingerprint)
   if (err != errSecSuccess) {
     A2_LOG_ERROR("Certificate search failed: " + errToString(err));
   }
-  cfrelease del_search(search);
+  CFReleaser del_search(search);
 
   SecIdentityRef id;
   while (SecIdentitySearchCopyNext(search, &id) == errSecSuccess) {

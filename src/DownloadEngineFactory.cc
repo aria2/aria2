@@ -91,58 +91,54 @@ std::unique_ptr<EventPoll> createEventPoll(Option* op)
 #ifdef HAVE_LIBUV
   if (pollMethod == V_LIBUV) {
     auto ep = make_unique<LibuvEventPoll>();
-    if(ep->good()) {
-      return std::move(ep);
-    } else {
+    if(!ep->good()) {
       throw DL_ABORT_EX("Initializing LibuvEventPoll failed."
                         " Try --event-poll=select");
     }
+    return std::move(ep);
   }
   else
 #endif // HAVE_LIBUV
 #ifdef HAVE_EPOLL
   if(pollMethod == V_EPOLL) {
     auto ep = make_unique<EpollEventPoll>();
-    if(ep->good()) {
-      return std::move(ep);
-    } else {
+    if(!ep->good()) {
       throw DL_ABORT_EX("Initializing EpollEventPoll failed."
                         " Try --event-poll=select");
     }
+    return std::move(ep);
   } else
 #endif // HAVE_EPLL
 #ifdef HAVE_KQUEUE
-    if(pollMethod == V_KQUEUE) {
-      auto kp = make_unique<KqueueEventPoll>();
-      if(kp->good()) {
-        return std::move(kp);
-      } else {
-        throw DL_ABORT_EX("Initializing KqueueEventPoll failed."
-                          " Try --event-poll=select");
-      }
-    } else
+  if(pollMethod == V_KQUEUE) {
+    auto kp = make_unique<KqueueEventPoll>();
+    if(!kp->good()) {
+      throw DL_ABORT_EX("Initializing KqueueEventPoll failed."
+                        " Try --event-poll=select");
+    }
+    return std::move(kp);
+  } else
 #endif // HAVE_KQUEUE
 #ifdef HAVE_PORT_ASSOCIATE
-      if(pollMethod == V_PORT) {
-        auto pp = make_unique<PortEventPoll>();
-        if(pp->good()) {
-          return std::move(pp);
-        } else {
-          throw DL_ABORT_EX("Initializing PortEventPoll failed."
-                            " Try --event-poll=select");
-        }
-      } else
+  if(pollMethod == V_PORT) {
+    auto pp = make_unique<PortEventPoll>();
+    if(!pp->good()) {
+      throw DL_ABORT_EX("Initializing PortEventPoll failed."
+                        " Try --event-poll=select");
+    }
+    return std::move(pp);
+  } else
 #endif // HAVE_PORT_ASSOCIATE
 #ifdef HAVE_POLL
-        if(pollMethod == V_POLL) {
-          return make_unique<PollEventPoll>();
-        } else
+  if(pollMethod == V_POLL) {
+    return make_unique<PollEventPoll>();
+  } else
 #endif // HAVE_POLL
-          if(pollMethod == V_SELECT) {
-            return make_unique<SelectEventPoll>();
-          } else {
-            assert(0);
-          }
+  if(pollMethod == V_SELECT) {
+    return make_unique<SelectEventPoll>();
+  }
+  assert(0);
+  return nullptr;
 }
 } // namespace
 

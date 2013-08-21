@@ -107,8 +107,8 @@ LibuvEventPoll::LibuvEventPoll()
 
 LibuvEventPoll::~LibuvEventPoll()
 {
-  for (KPolls::iterator i = polls_.begin(), e = polls_.end(); i != e; ++i) {
-    i->second->close();
+  for (auto& p: polls_) {
+    p.second->close();
   }
   // Actually kill the polls, and timers, if any.
   uv_run(loop_, (uv_run_mode)(UV_RUN_ONCE | UV_RUN_NOWAIT));
@@ -256,8 +256,8 @@ bool LibuvEventPoll::addEvents(sock_t socket, Command* command, int events,
 bool LibuvEventPoll::deleteEvents(sock_t socket,
                                   const LibuvEventPoll::KEvent& event)
 {
-  std::shared_ptr<KSocketEntry> socketEntry(new KSocketEntry(socket));
-  KSocketEntrySet::iterator i = socketEntries_.find(socketEntry);
+  auto socketEntry = std::make_shared<KSocketEntry>(socket);
+  auto i = socketEntries_.find(socketEntry);
 
   if (i == socketEntries_.end()) {
     A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
@@ -266,7 +266,7 @@ bool LibuvEventPoll::deleteEvents(sock_t socket,
 
   event.removeSelf(*i);
 
-  KPolls::iterator poll = polls_.find(socket);
+  auto poll = polls_.find(socket);
   if (poll == polls_.end()) {
     return false;
   }

@@ -134,14 +134,12 @@ std::unique_ptr<StatCalc> getStatCalc(const std::shared_ptr<Option>& op)
 {
   if(op->getAsBool(PREF_QUIET)) {
     return make_unique<NullStatCalc>();
-  } else {
-    auto impl = make_unique<ConsoleStatCalc>
-      (op->getAsInt(PREF_SUMMARY_INTERVAL),
-       op->getAsBool(PREF_HUMAN_READABLE));
-    impl->setReadoutVisibility(op->getAsBool(PREF_SHOW_CONSOLE_READOUT));
-    impl->setTruncate(op->getAsBool(PREF_TRUNCATE_CONSOLE_READOUT));
-    return std::move(impl);
   }
+  auto impl = make_unique<ConsoleStatCalc>(op->getAsInt(PREF_SUMMARY_INTERVAL),
+                                           op->getAsBool(PREF_HUMAN_READABLE));
+  impl->setReadoutVisibility(op->getAsBool(PREF_SHOW_CONSOLE_READOUT));
+  impl->setTruncate(op->getAsBool(PREF_TRUNCATE_CONSOLE_READOUT));
+  return std::move(impl);
 }
 
 } // namespace
@@ -183,21 +181,20 @@ int MultiUrlRequestInfo::prepare()
 #ifdef ENABLE_SSL
     if(option_->getAsBool(PREF_ENABLE_RPC) &&
        option_->getAsBool(PREF_RPC_SECURE)) {
-      if(!option_->blank(PREF_RPC_CERTIFICATE)
+      if(option_->blank(PREF_RPC_CERTIFICATE)
 #ifndef HAVE_APPLETLS
-         && !option_->blank(PREF_RPC_PRIVATE_KEY)
+        || option_->blank(PREF_RPC_PRIVATE_KEY)
 #endif // HAVE_APPLETLS
          ) {
-        // We set server TLS context to the SocketCore before creating
-        // DownloadEngine instance.
-        std::shared_ptr<TLSContext> svTlsContext(TLSContext::make(TLS_SERVER));
-        svTlsContext->addCredentialFile(option_->get(PREF_RPC_CERTIFICATE),
-                                        option_->get(PREF_RPC_PRIVATE_KEY));
-        SocketCore::setServerTLSContext(svTlsContext);
-      } else {
         throw DL_ABORT_EX("Specify --rpc-certificate and --rpc-private-key "
                           "options in order to use secure RPC.");
       }
+      // We set server TLS context to the SocketCore before creating
+      // DownloadEngine instance.
+      std::shared_ptr<TLSContext> svTlsContext(TLSContext::make(TLS_SERVER));
+      svTlsContext->addCredentialFile(option_->get(PREF_RPC_CERTIFICATE),
+                                      option_->get(PREF_RPC_PRIVATE_KEY));
+      SocketCore::setServerTLSContext(svTlsContext);
     }
 #endif // ENABLE_SSL
 

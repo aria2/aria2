@@ -37,6 +37,7 @@
 #include <CommonCrypto/CommonDigest.h>
 
 #include "array_fun.h"
+#include "a2functional.h"
 #include "HashFuncEntry.h"
 
 namespace aria2 {
@@ -117,29 +118,31 @@ std::unique_ptr<MessageDigestImpl> MessageDigestImpl::create
 (const std::string& hashType)
 {
   if (hashType == "sha-1") {
-    return std::unique_ptr<MessageDigestImpl>(new MessageDigestSHA1());
+    return make_unique<MessageDigestSHA1>();
   }
   if (hashType == "sha-224") {
-    return std::unique_ptr<MessageDigestImpl>(new MessageDigestSHA224());
+    return make_unique<MessageDigestSHA224>();
   }
   if (hashType == "sha-256") {
-    return std::unique_ptr<MessageDigestImpl>(new MessageDigestSHA256());
+    return make_unique<MessageDigestSHA256>();
   }
   if (hashType == "sha-384") {
-    return std::unique_ptr<MessageDigestImpl>(new MessageDigestSHA384());
+    return make_unique<MessageDigestSHA384>();
   }
   if (hashType == "sha-512") {
-    return std::unique_ptr<MessageDigestImpl>(new MessageDigestSHA512());
+    return make_unique<MessageDigestSHA512>();
   }
   if (hashType == "md5") {
-    return std::unique_ptr<MessageDigestImpl>(new MessageDigestMD5());
+    return make_unique<MessageDigestMD5>();
   }
   return nullptr;
 }
 
 bool MessageDigestImpl::supports(const std::string& hashType)
 {
-  return hashType == "sha-1" || hashType == "sha-224" || hashType == "sha-256" || hashType == "sha-384" || hashType == "sha-512" || hashType == "md5";
+  return hashType == "sha-1" || hashType == "sha-224" ||
+    hashType == "sha-256" || hashType == "sha-384" ||
+    hashType == "sha-512" || hashType == "md5";
 }
 
 size_t MessageDigestImpl::getDigestLength(const std::string& hashType)
