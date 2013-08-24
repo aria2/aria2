@@ -596,7 +596,7 @@ AC_C_BIGENDIAN
 AC_SYS_LARGEFILE
 
 # Checks for library functions.
-AM_GNU_GETTEXT
+AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.18])
 AC_FUNC_ERROR_AT_LINE
 AC_PROG_GCC_TRADITIONAL
@@ -896,7 +896,6 @@ AC_CONFIG_FILES([Makefile
 		src/includes/Makefile
 		test/Makefile
 		po/Makefile.in
-		intl/Makefile
 		lib/Makefile
 		doc/Makefile
 		doc/manual-src/Makefile
