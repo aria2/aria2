@@ -347,10 +347,21 @@ bool isCRLF(const char c)
 }
 
 namespace {
+
+inline static
 bool isUtf8Tail(unsigned char ch)
 {
   return in(ch, 0x80u, 0xbfu);
 }
+
+inline static
+bool inPercentEncodeMini(const unsigned char c)
+{
+  return c > 0x20 && c < 0x7fu &&
+    // Chromium escapes following characters. Firefox4 escapes more.
+    c != '"' && c != '<' && c != '>';
+}
+
 } // namespace
 
 bool isUtf8(const std::string& str)
@@ -443,15 +454,13 @@ std::string percentEncode(const std::string& target)
 
 std::string percentEncodeMini(const std::string& src)
 {
+  if (std::find_if_not(src.begin(), src.end(), inPercentEncodeMini) ==
+      src.end()) {
+    return src;
+  }
   std::string result;
-  for(std::string::const_iterator i = src.begin(), eoi = src.end(); i != eoi;
-      ++i) {
-    // Non-Printable ASCII and non-ASCII chars + some ASCII chars.
-    unsigned char c = *i;
-    if(in(c, 0x00u, 0x20u) || c >= 0x7fu ||
-       // Chromium escapes following characters. Firefox4 escapes
-       // more.
-       c == '"' || c == '<' || c == '>') {
+  for (const auto& c: src) {
+    if(!inPercentEncodeMini(c)) {
       result += fmt("%%%02X", c);
     } else {
       result += c;
