@@ -40,6 +40,15 @@
 namespace aria2 {
 
 class FtpInitiateConnectionCommand : public InitiateConnectionCommand {
+private:
+  virtual std::unique_ptr<Command> createNextCommandProxied
+  (const std::string& hostname, const std::string& addr, uint16_t port,
+   const std::vector<std::string>& resolvedAddresses,
+   const std::shared_ptr<Request>& proxyRequest);
+
+  virtual std::unique_ptr<Command> createNextCommandPlain
+  (const std::string& hostname, const std::string& addr, uint16_t port,
+   const std::vector<std::string>& resolvedAddresses);
 protected:
   virtual std::unique_ptr<Command> createNextCommand
   (const std::string& hostname, const std::string& addr, uint16_t port,

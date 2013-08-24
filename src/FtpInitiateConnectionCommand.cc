@@ -73,133 +73,155 @@ FtpInitiateConnectionCommand::FtpInitiateConnectionCommand
 
 FtpInitiateConnectionCommand::~FtpInitiateConnectionCommand() {}
 
+std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandProxied
+(const std::string& hostname, const std::string& addr, uint16_t port,
+ const std::vector<std::string>& resolvedAddresses,
+ const std::shared_ptr<Request>& proxyRequest)
+{
+  std::string options;
+  std::shared_ptr<SocketCore> pooledSocket;
+  std::string proxyMethod = resolveProxyMethod(getRequest()->getProtocol());
+
+  if(proxyMethod == V_GET) {
+    pooledSocket = getDownloadEngine()->popPooledSocket
+      (getRequest()->getHost(), getRequest()->getPort(),
+        proxyRequest->getHost(), proxyRequest->getPort());
+  }
+  else {
+    pooledSocket = getDownloadEngine()->popPooledSocket
+      (options, getRequest()->getHost(), getRequest()->getPort(),
+        getDownloadEngine()->getAuthConfigFactory()->createAuthConfig
+        (getRequest(), getOption().get())->getUser(),
+        proxyRequest->getHost(), proxyRequest->getPort());
+  }
+
+  if(!pooledSocket) {
+    A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
+                    getCuid(), addr.c_str(), port));
+    createSocket();
+    getSocket()->establishConnection(addr, port);
+
+    getRequest()->setConnectedAddrInfo(hostname, addr, port);
+
+    auto c = make_unique<ConnectCommand>(getCuid(),
+                                          getRequest(),
+                                          proxyRequest,
+                                          getFileEntry(),
+                                          getRequestGroup(),
+                                          getDownloadEngine(),
+                                          getSocket());
+    if(proxyMethod == V_GET) {
+      // Use GET for FTP via HTTP proxy.
+      getRequest()->setMethod(Request::METHOD_GET);
+      std::shared_ptr<HttpRequestConnectChain> chain
+        (new HttpRequestConnectChain());
+      c->setControlChain(chain);
+    } else if(proxyMethod == V_TUNNEL) {
+      std::shared_ptr<FtpTunnelRequestConnectChain> chain
+        (new FtpTunnelRequestConnectChain());
+      c->setControlChain(chain);
+    } else {
+      // Unreachable
+      assert(0);
+      return nullptr;
+    }
+    setupBackupConnection(hostname, addr, port, c.get());
+    return std::move(c);
+  }
+
+  setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
+  if(proxyMethod == V_TUNNEL) {
+    // options contains "baseWorkingDir"
+    return make_unique<FtpNegotiationCommand>
+      (getCuid(),
+        getRequest(),
+        getFileEntry(),
+        getRequestGroup(),
+        getDownloadEngine(),
+        pooledSocket,
+        FtpNegotiationCommand::SEQ_SEND_CWD_PREP,
+        options);
+  }
+
+  if(proxyMethod != V_GET) {
+    assert(0);
+    return nullptr;
+  }
+
+  // Use GET for FTP via HTTP proxy.
+  getRequest()->setMethod(Request::METHOD_GET);
+  std::shared_ptr<SocketRecvBuffer> socketRecvBuffer
+    (new SocketRecvBuffer(pooledSocket));
+  std::shared_ptr<HttpConnection> hc
+    (new HttpConnection(getCuid(), pooledSocket, socketRecvBuffer));
+
+  auto c = make_unique<HttpRequestCommand>(getCuid(),
+                                           getRequest(),
+                                           getFileEntry(),
+                                           getRequestGroup(),
+                                           hc,
+                                           getDownloadEngine(),
+                                           pooledSocket);
+  c->setProxyRequest(proxyRequest);
+  return std::move(c);
+}
+
+std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandPlain
+(const std::string& hostname, const std::string& addr, uint16_t port,
+ const std::vector<std::string>& resolvedAddresses)
+{
+  std::string options;
+  std::shared_ptr<SocketCore> pooledSocket =
+    getDownloadEngine()->popPooledSocket
+    (options, resolvedAddresses,
+      getRequest()->getPort(),
+      getDownloadEngine()->getAuthConfigFactory()->createAuthConfig
+      (getRequest(), getOption().get())->getUser());
+
+  if(!pooledSocket) {
+    A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
+                    getCuid(), addr.c_str(), port));
+    createSocket();
+    getSocket()->establishConnection(addr, port);
+    getRequest()->setConnectedAddrInfo(hostname, addr, port);
+    auto c = make_unique<ConnectCommand>(getCuid(),
+                                          getRequest(),
+                                          nullptr,
+                                          getFileEntry(),
+                                          getRequestGroup(),
+                                          getDownloadEngine(),
+                                          getSocket());
+    std::shared_ptr<FtpNegotiationConnectChain> chain
+      (new FtpNegotiationConnectChain());
+    c->setControlChain(chain);
+    setupBackupConnection(hostname, addr, port, c.get());
+    return std::move(c);
+  }
+
+  // options contains "baseWorkingDir"
+  auto command = make_unique<FtpNegotiationCommand>
+    (getCuid(),
+      getRequest(),
+      getFileEntry(),
+      getRequestGroup(),
+      getDownloadEngine(),
+      pooledSocket,
+      FtpNegotiationCommand::SEQ_SEND_CWD_PREP,
+      options);
+  setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
+  return std::move(command);
+}
+
 std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommand
 (const std::string& hostname, const std::string& addr, uint16_t port,
  const std::vector<std::string>& resolvedAddresses,
  const std::shared_ptr<Request>& proxyRequest)
 {
-  if(proxyRequest) {
-    std::string options;
-    std::shared_ptr<SocketCore> pooledSocket;
-    std::string proxyMethod = resolveProxyMethod(getRequest()->getProtocol());
-    if(proxyMethod == V_GET) {
-      pooledSocket = getDownloadEngine()->popPooledSocket
-        (getRequest()->getHost(), getRequest()->getPort(),
-         proxyRequest->getHost(), proxyRequest->getPort());
-    } else {
-      pooledSocket = getDownloadEngine()->popPooledSocket
-        (options, getRequest()->getHost(), getRequest()->getPort(),
-         getDownloadEngine()->getAuthConfigFactory()->createAuthConfig
-         (getRequest(), getOption().get())->getUser(),
-         proxyRequest->getHost(), proxyRequest->getPort());
-    }
-    if(!pooledSocket) {
-      A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
-                      getCuid(), addr.c_str(), port));
-      createSocket();
-      getSocket()->establishConnection(addr, port);
-
-      getRequest()->setConnectedAddrInfo(hostname, addr, port);
-
-      auto c = make_unique<ConnectCommand>(getCuid(),
-                                           getRequest(),
-                                           proxyRequest,
-                                           getFileEntry(),
-                                           getRequestGroup(),
-                                           getDownloadEngine(),
-                                           getSocket());
-      if(proxyMethod == V_GET) {
-        // Use GET for FTP via HTTP proxy.
-        getRequest()->setMethod(Request::METHOD_GET);
-        std::shared_ptr<HttpRequestConnectChain> chain
-          (new HttpRequestConnectChain());
-        c->setControlChain(chain);
-      } else if(proxyMethod == V_TUNNEL) {
-        std::shared_ptr<FtpTunnelRequestConnectChain> chain
-          (new FtpTunnelRequestConnectChain());
-        c->setControlChain(chain);
-      } else {
-        // Unreachable
-        assert(0);
-      }
-      setupBackupConnection(hostname, addr, port, c.get());
-      return std::move(c);
-    } else {
-      setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
-      if(proxyMethod == V_TUNNEL) {
-        // options contains "baseWorkingDir"
-        return make_unique<FtpNegotiationCommand>
-          (getCuid(),
-           getRequest(),
-           getFileEntry(),
-           getRequestGroup(),
-           getDownloadEngine(),
-           pooledSocket,
-           FtpNegotiationCommand::SEQ_SEND_CWD_PREP,
-           options);
-      } else if(proxyMethod == V_GET) {
-        // Use GET for FTP via HTTP proxy.
-        getRequest()->setMethod(Request::METHOD_GET);
-        std::shared_ptr<SocketRecvBuffer> socketRecvBuffer
-          (new SocketRecvBuffer(pooledSocket));
-        std::shared_ptr<HttpConnection> hc
-          (new HttpConnection(getCuid(), pooledSocket, socketRecvBuffer));
-
-        auto c = make_unique<HttpRequestCommand>(getCuid(),
-                                                 getRequest(),
-                                                 getFileEntry(),
-                                                 getRequestGroup(),
-                                                 hc,
-                                                 getDownloadEngine(),
-                                                 pooledSocket);
-        c->setProxyRequest(proxyRequest);
-        return std::move(c);
-      } else {
-        // Unreachable
-        assert(0);
-      }
-    }
-  } else {
-    std::string options;
-    std::shared_ptr<SocketCore> pooledSocket =
-      getDownloadEngine()->popPooledSocket
-      (options, resolvedAddresses,
-       getRequest()->getPort(),
-       getDownloadEngine()->getAuthConfigFactory()->createAuthConfig
-       (getRequest(), getOption().get())->getUser());
-    if(!pooledSocket) {
-      A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
-                      getCuid(), addr.c_str(), port));
-      createSocket();
-      getSocket()->establishConnection(addr, port);
-      getRequest()->setConnectedAddrInfo(hostname, addr, port);
-      auto c = make_unique<ConnectCommand>(getCuid(),
-                                           getRequest(),
-                                           proxyRequest, // must be null
-                                           getFileEntry(),
-                                           getRequestGroup(),
-                                           getDownloadEngine(),
-                                           getSocket());
-      std::shared_ptr<FtpNegotiationConnectChain> chain
-        (new FtpNegotiationConnectChain());
-      c->setControlChain(chain);
-      setupBackupConnection(hostname, addr, port, c.get());
-      return std::move(c);
-    } else {
-      // options contains "baseWorkingDir"
-      auto command = make_unique<FtpNegotiationCommand>
-        (getCuid(),
-         getRequest(),
-         getFileEntry(),
-         getRequestGroup(),
-         getDownloadEngine(),
-         pooledSocket,
-         FtpNegotiationCommand::SEQ_SEND_CWD_PREP,
-         options);
-      setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
-      return std::move(command);
-    }
+  if (proxyRequest) {
+    return createNextCommandProxied(hostname, addr, port, resolvedAddresses,
+                                    proxyRequest);
   }
+  return createNextCommandPlain(hostname, addr, port, resolvedAddresses);
 }
 
 } // namespace aria2
