@@ -433,6 +433,10 @@ std::string percentEncode(const unsigned char* target, size_t len)
 
 std::string percentEncode(const std::string& target)
 {
+  if (std::find_if_not(target.begin(), target.end(),
+                       inRFC3986UnreservedChars) == target.end()) {
+    return target;
+  }
   return percentEncode(reinterpret_cast<const unsigned char*>(target.c_str()),
                        target.size());
 }
