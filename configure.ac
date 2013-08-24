@@ -2,9 +2,15 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ([2.67])
-LT_PREREQ([2.2.6])
 AC_INIT([aria2],[1.17.1],[t-tujikawa@users.sourceforge.net],[aria2],[http://aria2.sourceforge.net/])
+
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
+
+AM_INIT_AUTOMAKE()
 AC_USE_SYSTEM_EXTENSIONS
+
+LT_PREREQ([2.2.6])
 LT_INIT([disable-static])
 dnl See versioning rule:
 dnl  http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
@@ -13,9 +19,6 @@ AC_SUBST(LT_REVISION, 0)
 AC_SUBST(LT_AGE, 0)
 
 AC_CONFIG_MACRO_DIR([m4])
-AC_CANONICAL_HOST
-AC_CANONICAL_TARGET
-AM_INIT_AUTOMAKE()
 AM_PATH_CPPUNIT(1.10.2)
 AC_CONFIG_SRCDIR([src/a2io.h])
 AC_CONFIG_HEADERS([config.h])
