@@ -1533,25 +1533,32 @@ getNumericNameInfo(const struct sockaddr* sockaddr, socklen_t len)
 
 std::string htmlEscape(const std::string& src)
 {
-  std::string dest;
-  for(std::string::const_iterator i = src.begin(), eoi = src.end();
-      i != eoi; ++i) {
-    char ch = *i;
-    if(ch == '<') {
-      dest += "&lt;";
-    } else if(ch == '>') {
-      dest += "&gt;";
-    } else if(ch == '&') {
-      dest += "&amp;";
-    } else if(ch == '\'') {
-      dest += "&#39;";
-    } else if(ch == '"') {
-      dest += "&quot;";
-    } else {
-      dest += ch;
+  std::string rv(src);
+  std::string::size_type pos = 0;
+  while ((pos = rv.find_first_of("<>&\"'", pos)) != std::string::npos) {
+    auto ch = rv[pos];
+    if (ch == '<') {
+      rv.replace(pos, 1, "&lt;");
+      pos += 4;
+    }
+    else if (ch == '>') {
+      rv.replace(pos, 1, "&gt;");
+      pos += 4;
+    }
+    else if (ch == '&') {
+      rv.replace(pos, 1, "&amp;");
+      pos += 5;
+    }
+    else if (ch == '"') {
+      rv.replace(pos, 1, "&quot;");
+      pos += 6;
+    }
+    else { // '\''
+      rv.replace(pos, 1, "&#39;");
+      pos += 5;
     }
   }
-  return dest;
+  return rv;
 }
 
 std::pair<size_t, std::string>
