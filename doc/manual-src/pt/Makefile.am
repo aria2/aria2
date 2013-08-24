@@ -21,7 +21,7 @@ $(man_MANS): aria2c.rst
 	$(MAKE) man
 else
 $(man_MANS):
-	@echo "WARNING: Building only stub man pages. Please install sphinx-build)"
+	@echo "WARNING: Building only stub man pages. Please install sphinx-build: pip install sphinx"
 	if [ ! -d "$(@D)" ]; then mkdir -p "$(@D)"; fi;
 	if [ ! -e "$@" ]; then touch "$@"; fi;
 endif
