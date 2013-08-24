@@ -112,7 +112,6 @@ private:
     return ((AppleTLSSession*)conn)->sockRead(data, len);
   }
 
-  AppleTLSContext *ctx_;
   SSLContextRef sslCtx_;
   sock_t sockfd_;
   state_t state_;

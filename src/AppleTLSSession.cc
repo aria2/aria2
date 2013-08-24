@@ -294,8 +294,7 @@ TLSSession* TLSSession::make(TLSContext* ctx)
 }
 
 AppleTLSSession::AppleTLSSession(AppleTLSContext* ctx)
-  : ctx_(ctx),
-    sslCtx_(nullptr),
+  : sslCtx_(nullptr),
     sockfd_(0),
     state_(st_constructed),
     lastError_(noErr),
