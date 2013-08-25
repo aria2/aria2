@@ -108,8 +108,8 @@ size_t UTMetadataRequestTracker::avail() const
 std::vector<size_t> UTMetadataRequestTracker::getAllTrackedIndex() const
 {
   std::vector<size_t> indexes;
-  for(auto i = trackedRequests_.begin(), eoi = trackedRequests_.end(); i != eoi; ++i) {
-    indexes.push_back((*i).index_);
+  for(auto& e: trackedRequests_) {
+    indexes.push_back(e.index_);
   }
   return indexes;
 }

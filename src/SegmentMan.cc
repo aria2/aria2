@@ -302,8 +302,8 @@ void SegmentMan::cancelSegmentInternal
 }
 
 void SegmentMan::cancelSegment(cuid_t cuid) {
-  for(SegmentEntries::iterator itr = usedSegmentEntries_.begin(),
-        eoi = usedSegmentEntries_.end(); itr != eoi;) {
+  for(auto itr = usedSegmentEntries_.begin(), eoi = usedSegmentEntries_.end();
+      itr != eoi;) {
     if((*itr)->cuid == cuid) {
       cancelSegmentInternal(cuid, (*itr)->segment);
       itr = usedSegmentEntries_.erase(itr);
@@ -317,7 +317,7 @@ void SegmentMan::cancelSegment(cuid_t cuid) {
 void SegmentMan::cancelSegment
 (cuid_t cuid, const std::shared_ptr<Segment>& segment)
 {
-  for(SegmentEntries::iterator itr = usedSegmentEntries_.begin(),
+  for(auto itr = usedSegmentEntries_.begin(),
         eoi = usedSegmentEntries_.end(); itr != eoi;) {
     if((*itr)->cuid == cuid && *(*itr)->segment == *segment) {
       cancelSegmentInternal(cuid, (*itr)->segment);
@@ -331,9 +331,8 @@ void SegmentMan::cancelSegment
 
 void SegmentMan::cancelAllSegments()
 {
-  for(auto itr = usedSegmentEntries_.begin(), eoi = usedSegmentEntries_.end();
-      itr != eoi; ++itr) {
-    cancelSegmentInternal((*itr)->cuid, (*itr)->segment);
+  for(auto& e: usedSegmentEntries_) {
+    cancelSegmentInternal(e->cuid, e->segment);
   }
   usedSegmentEntries_.clear();
 }
@@ -361,9 +360,9 @@ bool SegmentMan::completeSegment
 (cuid_t cuid, const std::shared_ptr<Segment>& segment) {
   pieceStorage_->completePiece(segment->getPiece());
   pieceStorage_->advertisePiece(cuid, segment->getPiece()->getIndex());
-  SegmentEntries::iterator itr = std::find_if(usedSegmentEntries_.begin(),
-                                              usedSegmentEntries_.end(),
-                                              FindSegmentEntry(segment));
+  auto itr = std::find_if(usedSegmentEntries_.begin(),
+                          usedSegmentEntries_.end(),
+                          FindSegmentEntry(segment));
   if(itr == usedSegmentEntries_.end()) {
     return false;
   } else {
@@ -391,9 +390,9 @@ void SegmentMan::registerPeerStat(const std::shared_ptr<PeerStat>& peerStat)
 
 std::shared_ptr<PeerStat> SegmentMan::getPeerStat(cuid_t cuid) const
 {
-  for(auto i = peerStats_.begin(), eoi = peerStats_.end(); i != eoi; ++i) {
-    if((*i)->getCuid() == cuid) {
-      return *i;
+  for(auto& e: peerStats_) {
+    if(e->getCuid() == cuid) {
+      return e;
     }
   }
   return nullptr;

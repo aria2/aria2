@@ -65,10 +65,9 @@ WrDiskCacheEntry::~WrDiskCacheEntry()
 
 void WrDiskCacheEntry::deleteDataCells()
 {
-  for(DataCellSet::iterator i = set_.begin(), eoi = set_.end(); i != eoi;
-      ++i) {
-    delete [] (*i)->data;
-    delete *i;
+  for(auto& e: set_) {
+    delete [] e->data;
+    delete e;
   }
   set_.clear();
   size_ = 0;
@@ -109,7 +108,7 @@ size_t WrDiskCacheEntry::append(int64_t goff, const unsigned char *data,
   if(set_.empty()) {
     return 0;
   }
-  DataCellSet::iterator i = set_.end();
+  auto i = set_.end();
   --i;
   if(static_cast<int64_t>((*i)->goff + (*i)->len) == goff) {
     size_t wlen = std::min((*i)->capacity - (*i)->len, len);

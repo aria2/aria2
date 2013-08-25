@@ -53,9 +53,9 @@ std::string encode(const std::string& src)
   std::string ret;
   size_t count = 0;
   uint64_t buf = 0;
-  for(size_t i = 0; i < src.size(); ++i) {
+  for(const auto& ch: src) {
     buf <<= 8;
-    buf += src[i]&0xffu;
+    buf += ch & 0xffu;
     ++count;
     if(count == 5) {
       char temp[8];

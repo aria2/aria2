@@ -54,7 +54,7 @@ void splitNsName(const char** localname, const char** nsUri, const char* src)
   if(sep) {
     *localname = sep+1;
     size_t nsUriLen = sep-src;
-    char* temp = new char[nsUriLen+1];
+    auto temp = new char[nsUriLen + 1];
     memcpy(temp, src, nsUriLen);
     temp[nsUriLen] = '\0';
     *nsUri = temp;
@@ -71,10 +71,10 @@ void mlStartElement(void* userData, const char* nsName, const char** attrs)
   std::vector<XmlAttr> xmlAttrs;
   if(attrs) {
     const char** p = attrs;
-    while(*p != 0) {
+    while(*p) {
       XmlAttr xa;
       const char* attrNsName = *p++;
-      if(*p == 0) {
+      if(!*p) {
         break;
       }
       splitNsName(&xa.localname, &xa.nsUri, attrNsName);
@@ -84,15 +84,14 @@ void mlStartElement(void* userData, const char* nsName, const char** attrs)
       xmlAttrs.push_back(xa);
     }
   }
-  const char* localname = 0;
-  const char* prefix = 0;
-  const char* nsUri = 0;
+  const char* localname = nullptr;
+  const char* prefix = nullptr;
+  const char* nsUri = nullptr;
   splitNsName(&localname, &nsUri, nsName);
   sd->psm->beginElement(localname, prefix, nsUri, xmlAttrs);
   delete [] nsUri;
-  for(std::vector<XmlAttr>::iterator i = xmlAttrs.begin(),
-        eoi = xmlAttrs.end(); i != eoi; ++i) {
-    delete [] (*i).nsUri;
+  for(auto& a: xmlAttrs) {
+    delete [] a.nsUri;
   }
   if(sd->psm->needsCharactersBuffering()) {
     sd->charactersStack.push_front(A2STR::NIL);
@@ -103,9 +102,9 @@ void mlStartElement(void* userData, const char* nsName, const char** attrs)
 namespace {
 void mlEndElement(void* userData, const char* nsName)
 {
-  const char* localname = 0;
-  const char* prefix = 0;
-  const char* nsUri = 0;
+  const char* localname = nullptr;
+  const char* prefix = nullptr;
+  const char* nsUri = nullptr;
   splitNsName(&localname, &nsUri, nsName);
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   std::string characters;
@@ -140,7 +139,7 @@ void setupParser(XML_Parser parser, SessionData *sd)
 XmlParser::XmlParser(ParserStateMachine* psm)
   : psm_(psm),
     sessionData_(psm_),
-    ctx_(XML_ParserCreateNS(0, static_cast<const XML_Char>('\t'))),
+    ctx_(XML_ParserCreateNS(nullptr, static_cast<const XML_Char>('\t'))),
     lastError_(0)
 {
   setupParser(ctx_, &sessionData_);
@@ -181,7 +180,7 @@ int XmlParser::reset()
 {
   psm_->reset();
   sessionData_.reset();
-  XML_Bool rv = XML_ParserReset(ctx_, 0);
+  XML_Bool rv = XML_ParserReset(ctx_, nullptr);
   if(rv == XML_FALSE) {
     return lastError_ = ERR_RESET;
   } else {

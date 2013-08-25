@@ -441,10 +441,9 @@ bool HttpRequest::conditionalRequest() const
   if(!ifModSinceHeader_.empty()) {
     return true;
   }
-  for(auto i = headers_.begin(),
-        eoi = headers_.end(); i != eoi; ++i) {
-    if(util::istartsWith(*i, "if-modified-since") ||
-       util::istartsWith(*i, "if-none-match")) {
+  for(auto& h : headers_) {
+    if(util::istartsWith(h, "if-modified-since") ||
+       util::istartsWith(h, "if-none-match")) {
       return true;
     }
   }

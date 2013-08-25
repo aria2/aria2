@@ -63,8 +63,8 @@ bool BtUnchokeMessage::sendPredicate() const
 
 namespace {
 struct ThisProgressUpdate : public ProgressUpdate {
-  ThisProgressUpdate(const std::shared_ptr<Peer>& peer)
-    : peer(peer) {}
+  ThisProgressUpdate(std::shared_ptr<Peer>  peer)
+    : peer(std::move(peer)) {}
   virtual void update(size_t length, bool complete) CXX11_OVERRIDE
   {
     if(complete) {

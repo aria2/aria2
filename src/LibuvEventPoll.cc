@@ -223,7 +223,7 @@ bool LibuvEventPoll::addEvents(sock_t socket,
 
   if (i != socketEntries_.end() && **i == *socketEntry) {
     event.addSelf(*i);
-    KPolls::iterator poll = polls_.find(socket);
+    auto poll = polls_.find(socket);
     if (poll == polls_.end()) {
       throw std::logic_error("Invalid socket");
     }

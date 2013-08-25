@@ -94,35 +94,34 @@ void AbstractSingleDiskAdaptor::writeCache(const WrDiskCacheEntry* entry)
   size_t buflen = 0;
   size_t buffoffset = 0;
   const WrDiskCacheEntry::DataCellSet& dataSet = entry->getDataSet();
-  for(WrDiskCacheEntry::DataCellSet::const_iterator i = dataSet.begin(),
-        eoi = dataSet.end(); i != eoi; ++i) {
-    if(start+static_cast<ssize_t>(buflen) < (*i)->goff) {
+  for(auto & d : dataSet) {
+    if(start+static_cast<ssize_t>(buflen) < d->goff) {
       A2_LOG_DEBUG(fmt("Cache flush goff=%" PRId64 ", len=%lu",
                        start, static_cast<unsigned long>(buflen)));
       writeData(buf+buffoffset, buflen-buffoffset, start);
-      start = (*i)->goff;
+      start = d->goff;
       buflen = buffoffset = 0;
     }
-    if(buflen == 0 && ((*i)->goff & 0xfff) == 0 && ((*i)->len & 0xfff) == 0) {
+    if(buflen == 0 && (d->goff & 0xfff) == 0 && (d->len & 0xfff) == 0) {
       // Already aligned. Write it without copy.
       A2_LOG_DEBUG(fmt("Cache flush goff=%" PRId64 ", len=%lu",
-                       start, static_cast<unsigned long>((*i)->len)));
-      writeData((*i)->data + (*i)->offset, (*i)->len, start);
-      start += (*i)->len;
+                       start, static_cast<unsigned long>(d->len)));
+      writeData(d->data + d->offset, d->len, start);
+      start += d->len;
     } else {
       if(buflen == 0) {
-        buflen = buffoffset = (*i)->goff & 0xfff;
+        buflen = buffoffset = d->goff & 0xfff;
       }
-      size_t wlen = std::min(sizeof(buf) - buflen, (*i)->len);
-      memcpy(buf+buflen, (*i)->data+(*i)->offset, wlen);
+      size_t wlen = std::min(sizeof(buf) - buflen, d->len);
+      memcpy(buf+buflen, d->data + d->offset, wlen);
       buflen += wlen;
       if(buflen == sizeof(buf)) {
         A2_LOG_DEBUG(fmt("Cache flush goff=%" PRId64 ", len=%lu",
                          start, static_cast<unsigned long>(buflen)));
         writeData(buf+buffoffset, buflen-buffoffset, start);
-        memcpy(buf, (*i)->data + (*i)->offset + wlen, (*i)->len - wlen);
+        memcpy(buf, d->data + d->offset + wlen, d->len - wlen);
         start += sizeof(buf) - buffoffset;
-        buflen = (*i)->len - wlen;
+        buflen = d->len - wlen;
         buffoffset = 0;
       }
     }

@@ -48,11 +48,11 @@
 
 namespace aria2 {
 
-Sqlite3CookieParser::Sqlite3CookieParser(const std::string& filename):db_(0)
+Sqlite3CookieParser::Sqlite3CookieParser(const std::string& filename) : db_(nullptr)
 {
   int ret;
 #ifdef HAVE_SQLITE3_OPEN_V2
-  ret = sqlite3_open_v2(filename.c_str(), &db_, SQLITE_OPEN_READONLY, 0);
+  ret = sqlite3_open_v2(filename.c_str(), &db_, SQLITE_OPEN_READONLY, nullptr);
 #else // !HAVE_SQLITE3_OPEN_V2
   if(!File(filename).isFile()) {
     return;
@@ -61,7 +61,7 @@ Sqlite3CookieParser::Sqlite3CookieParser(const std::string& filename):db_(0)
 #endif // !HAVE_SQLITE3_OPEN_V2
   if(SQLITE_OK != ret) {
     sqlite3_close(db_);
-    db_ = 0;
+    db_ = nullptr;
   }
 }
 
@@ -146,7 +146,7 @@ std::vector<std::unique_ptr<Cookie>> Sqlite3CookieParser::parse()
     throw DL_ABORT_EX(fmt("SQLite3 database is not opened."));
   }
   auto tcookies = std::vector<std::unique_ptr<Cookie>>{};
-  char* sqlite3ErrMsg = 0;
+  char* sqlite3ErrMsg = nullptr;
   int ret = sqlite3_exec(db_, getQuery(), cookieRowMapper,
                          &tcookies, &sqlite3ErrMsg);
   std::string errMsg;

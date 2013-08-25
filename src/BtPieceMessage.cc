@@ -180,8 +180,8 @@ size_t BtPieceMessage::getMessageHeaderLength()
 
 namespace {
 struct PieceSendUpdate : public ProgressUpdate {
-  PieceSendUpdate(const std::shared_ptr<Peer>& peer, size_t headerLength)
-    : peer(peer), headerLength(headerLength) {}
+  PieceSendUpdate(std::shared_ptr<Peer>  peer, size_t headerLength)
+    : peer(std::move(peer)), headerLength(headerLength) {}
   virtual void update(size_t length, bool complete) CXX11_OVERRIDE
   {
     if(headerLength > 0) {

@@ -101,7 +101,7 @@ void PollEventPoll::poll(const struct timeval& tv)
         first != last; ++first) {
       if(first->revents) {
         se->setSocket(first->fd);
-        KSocketEntrySet::iterator itr = socketEntries_.find(se);
+        auto itr = socketEntries_.find(se);
         if(itr == socketEntries_.end()) {
           A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.",
                            first->fd));
@@ -119,11 +119,10 @@ void PollEventPoll::poll(const struct timeval& tv)
   // own timeout and ares may create new sockets or closes socket in
   // their API. So we call ares_process_fd for all ares_channel and
   // re-register their sockets.
-  for(KAsyncNameResolverEntrySet::iterator i = nameResolverEntries_.begin(),
-        eoi = nameResolverEntries_.end(); i != eoi; ++i) {
-    (*i)->processTimeout();
-    (*i)->removeSocketEvents(this);
-    (*i)->addSocketEvents(this);
+  for(auto& r : nameResolverEntries_) {
+    r->processTimeout();
+    r->removeSocketEvents(this);
+    r->addSocketEvents(this);
   }
 #endif // ENABLE_ASYNC_DNS
 
@@ -153,7 +152,7 @@ bool PollEventPoll::addEvents
 (sock_t socket, const PollEventPoll::KEvent& event)
 {
   std::shared_ptr<KSocketEntry> socketEntry(new KSocketEntry(socket));
-  KSocketEntrySet::iterator i = socketEntries_.lower_bound(socketEntry);
+  auto i = socketEntries_.lower_bound(socketEntry);
   if(i != socketEntries_.end() && *(*i) == *socketEntry) {
     event.addSelf(*i);
     for(struct pollfd* first = pollfds_, *last = pollfds_+pollfdNum_;
@@ -199,7 +198,7 @@ bool PollEventPoll::deleteEvents
 (sock_t socket, const PollEventPoll::KEvent& event)
 {
   std::shared_ptr<KSocketEntry> socketEntry(new KSocketEntry(socket));
-  KSocketEntrySet::iterator i = socketEntries_.find(socketEntry);
+  auto i = socketEntries_.find(socketEntry);
   if(i == socketEntries_.end()) {
     A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
     return false;
@@ -245,8 +244,7 @@ bool PollEventPoll::addNameResolver
 {
   std::shared_ptr<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
-  KAsyncNameResolverEntrySet::iterator itr =
-    nameResolverEntries_.lower_bound(entry);
+  auto itr = nameResolverEntries_.lower_bound(entry);
   if(itr != nameResolverEntries_.end() && *(*itr) == *entry) {
     return false;
   } else {
@@ -261,7 +259,7 @@ bool PollEventPoll::deleteNameResolver
 {
   std::shared_ptr<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
-  KAsyncNameResolverEntrySet::iterator itr = nameResolverEntries_.find(entry);
+  auto itr = nameResolverEntries_.find(entry);
   if(itr == nameResolverEntries_.end()) {
     return false;
   } else {

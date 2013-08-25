@@ -100,9 +100,8 @@ std::string encode(const ValueBase* vlb)
     virtual void visit(const List& list) CXX11_OVERRIDE
     {
       out_ << "l";
-      for(List::ValueType::const_iterator i = list.begin(), eoi = list.end();
-          i != eoi; ++i){
-        (*i)->accept(*this);
+      for(const auto& e: list){
+        e->accept(*this);
       }
       out_ << "e";
     }
@@ -110,12 +109,11 @@ std::string encode(const ValueBase* vlb)
     virtual void visit(const Dict& dict) CXX11_OVERRIDE
     {
       out_ << "d";
-      for(Dict::ValueType::const_iterator i = dict.begin(), eoi = dict.end();
-          i != eoi; ++i){
-        const std::string& key = (*i).first;
+      for(const auto& e: dict){
+        auto& key = e.first;
         out_ << key.size() << ":";
         out_.write(key.data(), key.size());
-        (*i).second->accept(*this);
+        e.second->accept(*this);
       }
       out_ << "e";
     }

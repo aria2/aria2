@@ -60,7 +60,7 @@ std::shared_ptr<ServerStat> ServerStatMan::find(const std::string& hostname,
                                              const std::string& protocol) const
 {
   std::shared_ptr<ServerStat> ss(new ServerStat(hostname, protocol));
-  ServerStatSet::iterator i = serverStats_.find(ss);
+  auto i = serverStats_.find(ss);
   if(i == serverStats_.end()) {
     return nullptr;
   } else {
@@ -70,7 +70,7 @@ std::shared_ptr<ServerStat> ServerStatMan::find(const std::string& hostname,
 
 bool ServerStatMan::add(const std::shared_ptr<ServerStat>& serverStat)
 {
-  ServerStatSet::iterator i = serverStats_.lower_bound(serverStat);
+  auto i = serverStats_.lower_bound(serverStat);
   if(i != serverStats_.end() && *(*i) == *serverStat) {
     return false;
   } else {
@@ -90,9 +90,8 @@ bool ServerStatMan::save(const std::string& filename) const
                        filename.c_str()));
       return false;
     }
-    for(ServerStatSet::iterator i = serverStats_.begin(),
-          eoi = serverStats_.end(); i != eoi; ++i) {
-      std::string l = (*i)->toString();
+    for(auto& e: serverStats_) {
+      std::string l = e->toString();
       l += "\n";
       if(fp.write(l.data(), l.size()) != l.size()) {
         A2_LOG_ERROR(fmt(MSG_WRITING_SERVER_STAT_FILE_FAILED,
@@ -252,8 +251,7 @@ public:
 void ServerStatMan::removeStaleServerStat(time_t timeout)
 {
   FindStaleServerStat finder(timeout);
-  for(ServerStatSet::iterator i = serverStats_.begin(),
-        eoi = serverStats_.end(); i != eoi;) {
+  for(auto i = serverStats_.begin(), eoi = serverStats_.end(); i != eoi;) {
     if(finder(*i)) {
       serverStats_.erase(i++);
     } else {

@@ -279,13 +279,12 @@ std::string Piece::getDigestWithWrCache
   int64_t goff = start;
   if(wrCache_) {
     const WrDiskCacheEntry::DataCellSet& dataSet = wrCache_->getDataSet();
-    for(WrDiskCacheEntry::DataCellSet::iterator i = dataSet.begin(),
-          eoi = dataSet.end(); i != eoi; ++i) {
-      if(goff < (*i)->goff) {
-        updateHashWithRead(mdctx.get(), adaptor, goff, (*i)->goff - goff);
+    for(auto& d : dataSet) {
+      if(goff < d->goff) {
+        updateHashWithRead(mdctx.get(), adaptor, goff, d->goff - goff);
       }
-      mdctx->update((*i)->data+(*i)->offset, (*i)->len);
-      goff = (*i)->goff + (*i)->len;
+      mdctx->update(d->data + d->offset, d->len);
+      goff = d->goff + d->len;
     }
     updateHashWithRead(mdctx.get(), adaptor, goff, start+length_-goff);
   } else {

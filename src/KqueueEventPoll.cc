@@ -141,11 +141,10 @@ void KqueueEventPoll::poll(const struct timeval& tv)
   // own timeout and ares may create new sockets or closes socket in
   // their API. So we call ares_process_fd for all ares_channel and
   // re-register their sockets.
-  for(KAsyncNameResolverEntrySet::iterator i = nameResolverEntries_.begin(),
-        eoi = nameResolverEntries_.end(); i != eoi; ++i) {
-    (*i)->processTimeout();
-    (*i)->removeSocketEvents(this);
-    (*i)->addSocketEvents(this);
+  for(auto & r : nameResolverEntries_) {
+    r->processTimeout();
+    r->removeSocketEvents(this);
+    r->addSocketEvents(this);
   }
 #endif // ENABLE_ASYNC_DNS
 
@@ -171,7 +170,7 @@ bool KqueueEventPoll::addEvents
 (sock_t socket, const KqueueEventPoll::KEvent& event)
 {
   std::shared_ptr<KSocketEntry> socketEntry(new KSocketEntry(socket));
-  KSocketEntrySet::iterator i = socketEntries_.lower_bound(socketEntry);
+  auto i = socketEntries_.lower_bound(socketEntry);
   int r = 0;
   struct timespec zeroTimeout = { 0, 0 };
   struct kevent changelist[2];
@@ -220,7 +219,7 @@ bool KqueueEventPoll::deleteEvents(sock_t socket,
                                   const KqueueEventPoll::KEvent& event)
 {
   std::shared_ptr<KSocketEntry> socketEntry(new KSocketEntry(socket));
-  KSocketEntrySet::iterator i = socketEntries_.find(socketEntry);
+  auto i = socketEntries_.find(socketEntry);
   if(i == socketEntries_.end()) {
     A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
     return false;
@@ -266,7 +265,7 @@ bool KqueueEventPoll::addNameResolver
 {
   std::shared_ptr<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
-  KAsyncNameResolverEntrySet::iterator itr = nameResolverEntries_.find(entry);
+  auto itr = nameResolverEntries_.find(entry);
   if(itr == nameResolverEntries_.end()) {
     nameResolverEntries_.insert(entry);
     entry->addSocketEvents(this);
@@ -281,7 +280,7 @@ bool KqueueEventPoll::deleteNameResolver
 {
   std::shared_ptr<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
-  KAsyncNameResolverEntrySet::iterator itr = nameResolverEntries_.find(entry);
+  auto itr = nameResolverEntries_.find(entry);
   if(itr == nameResolverEntries_.end()) {
     return false;
   } else {

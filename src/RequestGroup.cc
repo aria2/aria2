@@ -574,8 +574,7 @@ void RequestGroup::initPieceStorage()
 #endif // ENABLE_BITTORRENT
       )) {
 #ifdef ENABLE_BITTORRENT
-    auto ps =
-      new DefaultPieceStorage(downloadContext_, option_.get());
+    auto ps = new DefaultPieceStorage(downloadContext_, option_.get());
     std::shared_ptr<PieceStorage> psHolder(ps);
     if(downloadContext_->hasAttribute(CTX_ATTR_BT)) {
       if(isUriSuppliedForRequsetFileEntry
@@ -616,8 +615,7 @@ void RequestGroup::initPieceStorage()
     }
     tempPieceStorage.swap(psHolder);
   } else {
-    auto ps =
-      new UnknownLengthPieceStorage(downloadContext_);
+    auto ps = new UnknownLengthPieceStorage(downloadContext_);
     std::shared_ptr<PieceStorage> psHolder(ps);
     if(diskWriterFactory_) {
       ps->setDiskWriterFactory(diskWriterFactory_);

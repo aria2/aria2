@@ -197,8 +197,8 @@ FileEntry::getRequest
     // sleeping(Request::getWakeTime() < global::wallclock()).  If all
     // pooled objects are sleeping, return first one.  Caller should
     // inspect returned object's getWakeTime().
-    RequestPool::iterator i = requestPool_.begin();
-    RequestPool::iterator eoi = requestPool_.end();
+    auto i = requestPool_.begin();
+    auto eoi = requestPool_.end();
     for(; i != eoi; ++i) {
       if((*i)->getWakeTime() <= global::wallclock()) {
         break;
@@ -494,10 +494,10 @@ bool FileEntry::removeUri(const std::string& uri)
   }
   spentUris_.erase(itr);
   std::shared_ptr<Request> req;
-  InFlightRequestSet::iterator riter =
+  auto riter =
     findRequestByUri(inFlightRequests_.begin(), inFlightRequests_.end(), uri);
   if(riter == inFlightRequests_.end()) {
-    RequestPool::iterator riter = findRequestByUri(requestPool_.begin(),
+    auto riter = findRequestByUri(requestPool_.begin(),
                                                     requestPool_.end(), uri);
     if(riter == requestPool_.end()) {
       return true;

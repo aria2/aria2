@@ -1751,8 +1751,7 @@ std::string escapePath(const std::string& s)
     { '"', '*', ':', '<', '>', '?', '\\', '|' };
 #endif // __MINGW32__
   std::string d;
-  for(std::string::const_iterator i = s.begin(), eoi = s.end(); i != eoi; ++i) {
-    unsigned char c = *i;
+  for(const auto& c: s) {
     if(in(c, 0x00u, 0x1fu) || c == 0x7fu
 #ifdef __MINGW32__
        || std::find(std::begin(WIN_INVALID_PATH_CHARS),
@@ -1762,7 +1761,7 @@ std::string escapePath(const std::string& s)
        ){
       d += fmt("%%%02X", c);
     } else {
-      d += *i;
+      d += c;
     }
   }
   return d;

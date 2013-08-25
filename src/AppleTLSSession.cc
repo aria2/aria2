@@ -230,9 +230,9 @@ namespace {
 
   static inline const char* suiteToString(const SSLCipherSuite suite)
   {
-    for (size_t i = 0; i < nSuites; ++i) {
-      if (kSuites[i].suite == suite) {
-        return kSuites[i].name;
+    for (auto & s : kSuites) {
+      if (s.suite == suite) {
+        return s.name;
       }
     }
     return "Unknown suite";
@@ -246,8 +246,8 @@ namespace {
   static inline bool isBlockedSuite(SSLCipherSuite suite)
   {
     const char* name = suiteToString(suite);
-    for (size_t i = 0; i < nBlocked; ++i) {
-      if (strstr(name, kBlocked[i])) {
+    for (auto& blocked : kBlocked) {
+      if (strstr(name, blocked)) {
         return true;
       }
     }

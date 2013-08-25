@@ -109,10 +109,10 @@ private:
   PieceStorage* pieceStorage_;
   cuid_t cuid_;
 public:
-  ProcessChokedPiece(const std::shared_ptr<Peer>& peer,
+  ProcessChokedPiece(std::shared_ptr<Peer>  peer,
                      PieceStorage* pieceStorage,
                      cuid_t cuid):
-    peer_(peer),
+    peer_(std::move(peer)),
     pieceStorage_(pieceStorage),
     cuid_(cuid)
   {}
@@ -131,7 +131,7 @@ class FindChokedPiece {
 private:
   std::shared_ptr<Peer> peer_;
 public:
-  FindChokedPiece(const std::shared_ptr<Peer>& peer):peer_(peer) {}
+  FindChokedPiece(std::shared_ptr<Peer>  peer):peer_(std::move(peer)) {}
 
   bool operator()(const std::shared_ptr<Piece>& piece)
   {

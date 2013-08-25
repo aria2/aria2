@@ -32,6 +32,7 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
+
 #include "HttpDownloadCommand.h"
 #include "RequestGroup.h"
 #include "DownloadEngine.h"

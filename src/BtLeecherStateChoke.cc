@@ -201,11 +201,10 @@ void BtLeecherStateChoke::executeChoke(const PeerSet& peerSet)
   lastRound_ = global::wallclock();
 
   std::vector<PeerEntry> peerEntries;
-  for(PeerSet::const_iterator i = peerSet.begin(), eoi = peerSet.end();
-      i != eoi; ++i) {
-    if((*i)->isActive() && !(*i)->snubbing()) {
-      (*i)->chokingRequired(true);
-      peerEntries.push_back(PeerEntry(*i));
+  for (const auto& p : peerSet) {
+    if(p->isActive() && !p->snubbing()) {
+      p->chokingRequired(true);
+      peerEntries.push_back(PeerEntry(p));
     }
   }
 

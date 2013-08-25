@@ -163,7 +163,7 @@ std::shared_ptr<Piece> DefaultPieceStorage::findUsedPiece(size_t index) const
   std::shared_ptr<Piece> p(new Piece());
   p->setIndex(index);
 
-  UsedPieceSet::iterator i = usedPieces_.find(p);
+  auto i = usedPieces_.find(p);
   if(i == usedPieces_.end()) {
     p.reset();
     return p;

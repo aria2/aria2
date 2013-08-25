@@ -47,8 +47,8 @@ namespace {
 struct HashTypeEntry {
   std::string hashType;
   int strength;
-  HashTypeEntry(const std::string& hashType, int strength):
-    hashType(hashType), strength(strength) {}
+  HashTypeEntry(std::string  hashType, int strength):
+    hashType(std::move(hashType)), strength(strength) {}
 };
 } // namespace
 

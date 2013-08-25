@@ -263,18 +263,18 @@ std::string AdaptiveURISelector::getMaxDownloadSpeedUri
 {
   int max = -1;
   std::string uri = A2STR::NIL;
-  for(auto i = uris.begin(), eoi = uris.end(); i != eoi; ++i) {
-    std::shared_ptr<ServerStat> ss = getServerStats(*i);
+  for(auto& u : uris) {
+    std::shared_ptr<ServerStat> ss = getServerStats(u);
     if(!ss)
       continue;
 
     if((int)ss->getSingleConnectionAvgSpeed() > max) {
       max = ss->getSingleConnectionAvgSpeed();
-      uri = (*i);
+      uri = u;
     }
     if((int)ss->getMultiConnectionAvgSpeed() > max) {
       max = ss->getMultiConnectionAvgSpeed();
-      uri = (*i);
+      uri = u;
     }
   }
   return uri;
@@ -284,13 +284,13 @@ std::deque<std::string> AdaptiveURISelector::getUrisBySpeed
 (const std::deque<std::string>& uris, int min) const
 {
   std::deque<std::string> bests;
-  for(auto i = uris.begin(), eoi = uris.end(); i != eoi; ++i) {
-    std::shared_ptr<ServerStat> ss = getServerStats(*i);
+  for(auto& uri : uris) {
+    std::shared_ptr<ServerStat> ss = getServerStats(uri);
     if(!ss)
       continue;
     if(ss->getSingleConnectionAvgSpeed() > min ||
        ss->getMultiConnectionAvgSpeed() > min) {
-      bests.push_back(*i);
+      bests.push_back(uri);
     }
   }
   return bests;

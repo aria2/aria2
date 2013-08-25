@@ -76,9 +76,8 @@ void encodeValue(const ValueBase* value, OutputStream& o)
     virtual void visit(const List& v) CXX11_OVERRIDE
     {
       o_ << "<value><array><data>";
-      for(List::ValueType::const_iterator i = v.begin(), eoi = v.end();
-          i != eoi; ++i) {
-        (*i)->accept(*this);
+      for(const auto& e: v) {
+        e->accept(*this);
       }
       o_ << "</data></array></value>";
     }
@@ -86,10 +85,9 @@ void encodeValue(const ValueBase* value, OutputStream& o)
     virtual void visit(const Dict& v) CXX11_OVERRIDE
     {
       o_ << "<value><struct>";
-      for(Dict::ValueType::const_iterator i = v.begin(), eoi = v.end();
-          i != eoi; ++i) {
-        o_ << "<member><name>" << util::htmlEscape((*i).first) << "</name>";
-        (*i).second->accept(*this);
+      for(const auto& e: v) {
+        o_ << "<member><name>" << util::htmlEscape(e.first) << "</name>";
+        e.second->accept(*this);
         o_ << "</member>";
       }
       o_ << "</struct></value>";

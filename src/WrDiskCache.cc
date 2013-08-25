@@ -114,7 +114,7 @@ bool WrDiskCache::update(WrDiskCacheEntry* ent, ssize_t delta)
 void WrDiskCache::ensureLimit()
 {
   while(total_ > limit_) {
-    EntrySet::iterator i = set_.begin();
+    auto i = set_.begin();
     WrDiskCacheEntry* ent = *i;
     A2_LOG_DEBUG(fmt("Force flush cache entry size=%lu, clock=%" PRId64,
                      static_cast<unsigned long>(ent->getSizeKey()),

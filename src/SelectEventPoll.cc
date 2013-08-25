@@ -177,9 +177,7 @@ void SelectEventPoll::poll(const struct timeval& tv)
 #endif // __MINGW32__
 #ifdef ENABLE_ASYNC_DNS
 
-  for(AsyncNameResolverEntrySet::iterator itr = nameResolverEntries_.begin(),
-        eoi = nameResolverEntries_.end(); itr != eoi; ++itr) {
-    const std::shared_ptr<AsyncNameResolverEntry>& entry = *itr;
+  for(auto& entry : nameResolverEntries_) {
     int fd = entry->getFds(&rfds, &wfds);
     // TODO force error if fd == 0
     if(fdmax_ < fd) {
@@ -198,16 +196,15 @@ void SelectEventPoll::poll(const struct timeval& tv)
 #endif // !__MINGW32__
   } while(retval == -1 && errno == EINTR);
   if(retval > 0) {
-    for(SocketEntrySet::iterator i = socketEntries_.begin(),
-          eoi = socketEntries_.end(); i != eoi; ++i) {
+    for(auto& e: socketEntries_) {
       int events = 0;
-      if(FD_ISSET((*i)->getSocket(), &rfds)) {
+      if(FD_ISSET(e->getSocket(), &rfds)) {
         events |= EventPoll::EVENT_READ;
       }
-      if(FD_ISSET((*i)->getSocket(), &wfds)) {
+      if(FD_ISSET(e->getSocket(), &wfds)) {
         events |= EventPoll::EVENT_WRITE;
       }
-      (*i)->processEvents(events);
+      e->processEvents(events);
     }
   } else if(retval == -1) {
     int errNum = errno;
@@ -215,9 +212,8 @@ void SelectEventPoll::poll(const struct timeval& tv)
   }
 #ifdef ENABLE_ASYNC_DNS
 
-  for(AsyncNameResolverEntrySet::iterator i = nameResolverEntries_.begin(),
-        eoi = nameResolverEntries_.end(); i != eoi; ++i) {
-    (*i)->process(&rfds, &wfds);
+  for(auto & e: nameResolverEntries_) {
+    e->process(&rfds, &wfds);
   }
 
 #endif // ENABLE_ASYNC_DNS
@@ -244,9 +240,8 @@ void SelectEventPoll::updateFdSet()
 #endif // !__MINGW32__
   FD_ZERO(&rfdset_);
   FD_ZERO(&wfdset_);
-  for(SocketEntrySet::iterator i = socketEntries_.begin(),
-        eoi = socketEntries_.end(); i != eoi; ++i) {
-    sock_t fd = (*i)->getSocket();
+  for(auto& e: socketEntries_) {
+    sock_t fd = e->getSocket();
 #ifndef __MINGW32__
     if(fd < 0 || FD_SETSIZE <= fd) {
       A2_LOG_WARN("Detected file descriptor >= FD_SETSIZE or < 0. "
@@ -254,7 +249,7 @@ void SelectEventPoll::updateFdSet()
       continue;
     }
 #endif // !__MINGW32__
-    int events = (*i)->getEvents();
+    int events = e->getEvents();
     if(events&EventPoll::EVENT_READ) {
 #ifdef __MINGW32__
       checkFdCountMingw(rfdset_);
@@ -277,7 +272,7 @@ bool SelectEventPoll::addEvents(sock_t socket, Command* command,
                                 EventPoll::EventType events)
 {
   std::shared_ptr<SocketEntry> socketEntry(new SocketEntry(socket));
-  SocketEntrySet::iterator i = socketEntries_.lower_bound(socketEntry);
+  auto i = socketEntries_.lower_bound(socketEntry);
   if(i != socketEntries_.end() && *(*i) == *socketEntry) {
     (*i)->addCommandEvent(command, events);
   } else {
@@ -292,7 +287,7 @@ bool SelectEventPoll::deleteEvents(sock_t socket, Command* command,
                                    EventPoll::EventType events)
 {
   std::shared_ptr<SocketEntry> socketEntry(new SocketEntry(socket));
-  SocketEntrySet::iterator i = socketEntries_.find(socketEntry);
+  auto i = socketEntries_.find(socketEntry);
   if(i == socketEntries_.end()) {
     A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
     return false;
@@ -312,8 +307,7 @@ bool SelectEventPoll::addNameResolver
 {
   std::shared_ptr<AsyncNameResolverEntry> entry
     (new AsyncNameResolverEntry(resolver, command));
-  AsyncNameResolverEntrySet::iterator itr =
-    nameResolverEntries_.lower_bound(entry);
+  auto itr = nameResolverEntries_.lower_bound(entry);
   if(itr != nameResolverEntries_.end() && *(*itr) == *entry) {
     return false;
   } else {

@@ -999,10 +999,9 @@ std::string torrent2Magnet(const TorrentAttribute* attrs)
     uri += util::percentEncode(attrs->name);
   }
   for(auto & elem : attrs->announceList) {
-    for(auto uriIter = elem.begin(),
-          eoi2 = elem.end(); uriIter != eoi2; ++uriIter) {
+    for(auto& e: elem) {
       uri += "&tr=";
-      uri += util::percentEncode(*uriIter);
+      uri += util::percentEncode(e);
     }
   }
   return uri;

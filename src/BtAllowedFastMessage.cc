@@ -65,8 +65,8 @@ void BtAllowedFastMessage::doReceivedAction() {
 
 namespace {
 struct ThisProgressUpdate : public ProgressUpdate {
-  ThisProgressUpdate(const std::shared_ptr<Peer>& peer, size_t index)
-    : peer(peer), index(index) {}
+  ThisProgressUpdate(std::shared_ptr<Peer>  peer, size_t index)
+    : peer(std::move(peer)), index(index) {}
   virtual void update(size_t length, bool complete) CXX11_OVERRIDE
   {
     if(complete) {
