@@ -564,9 +564,9 @@ namespace {
 // Constructs proxy URI, merging username and password if they are
 // defined.
 std::string makeProxyUri
-(const Pref* proxyPref,
- const Pref* proxyUser,
- const Pref* proxyPasswd,
+(PrefPtr proxyPref,
+ PrefPtr proxyUser,
+ PrefPtr proxyPasswd,
  const Option* option)
 {
   uri::UriStruct us;
@@ -588,9 +588,9 @@ std::string makeProxyUri
 namespace {
 // Returns proxy option value for the given protocol.
 std::string getProxyOptionFor
-(const Pref* proxyPref,
- const Pref* proxyUser,
- const Pref* proxyPasswd,
+(PrefPtr proxyPref,
+ PrefPtr proxyUser,
+ PrefPtr proxyPasswd,
  const Option* option)
 {
   std::string uri = makeProxyUri(proxyPref, proxyUser, proxyPasswd, option);

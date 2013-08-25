@@ -49,7 +49,7 @@ struct Pref;
 
 class BooleanOptionHandler : public AbstractOptionHandler {
 public:
-  BooleanOptionHandler(const Pref* pref,
+  BooleanOptionHandler(PrefPtr pref,
                        const char* description = NO_DESCRIPTION,
                        const std::string& defaultValue = NO_DEFAULT_VALUE,
                        OptionHandler::ARG_TYPE argType = OptionHandler::REQ_ARG,
@@ -65,7 +65,7 @@ private:
   int32_t min_;
   int32_t max_;
 public:
-  IntegerRangeOptionHandler(const Pref* pref,
+  IntegerRangeOptionHandler(PrefPtr pref,
                             const char* description,
                             const std::string& defaultValue,
                             int32_t min, int32_t max,
@@ -81,7 +81,7 @@ private:
   int64_t min_;
   int64_t max_;
 public:
-  NumberOptionHandler(const Pref* pref,
+  NumberOptionHandler(PrefPtr pref,
                       const char* description = NO_DESCRIPTION,
                       const std::string& defaultValue = NO_DEFAULT_VALUE,
                       int64_t min = -1,
@@ -97,7 +97,7 @@ public:
 
 class UnitNumberOptionHandler : public NumberOptionHandler {
 public:
-  UnitNumberOptionHandler(const Pref* pref,
+  UnitNumberOptionHandler(PrefPtr pref,
                           const char* description = NO_DESCRIPTION,
                           const std::string& defaultValue = NO_DEFAULT_VALUE,
                           int64_t min = -1,
@@ -113,7 +113,7 @@ private:
   double min_;
   double max_;
 public:
-  FloatNumberOptionHandler(const Pref* pref,
+  FloatNumberOptionHandler(PrefPtr pref,
                            const char* description = NO_DESCRIPTION,
                            const std::string& defaultValue = NO_DEFAULT_VALUE,
                            double min = -1, double max = -1,
@@ -128,7 +128,7 @@ class DefaultOptionHandler : public AbstractOptionHandler {
 private:
   std::string possibleValuesString_;
 public:
-  DefaultOptionHandler(const Pref* pref,
+  DefaultOptionHandler(PrefPtr pref,
                        const char* description = NO_DESCRIPTION,
                        const std::string& defaultValue = NO_DEFAULT_VALUE,
                        const std::string& possibleValuesString = A2STR::NIL,
@@ -145,7 +145,7 @@ private:
   std::string delim_;
   std::string possibleValuesString_;
 public:
-  CumulativeOptionHandler(const Pref* pref,
+  CumulativeOptionHandler(PrefPtr pref,
                           const char* description,
                           const std::string& defaultValue,
                           const std::string& delim,
@@ -161,7 +161,7 @@ public:
 
 class IndexOutOptionHandler : public AbstractOptionHandler {
 public:
-  IndexOutOptionHandler(const Pref* pref,
+  IndexOutOptionHandler(PrefPtr pref,
                         const char* description,
                         char shortName = 0);
   virtual ~IndexOutOptionHandler();
@@ -173,7 +173,7 @@ public:
 #ifdef ENABLE_MESSAGE_DIGEST
 class ChecksumOptionHandler : public AbstractOptionHandler {
 public:
-  ChecksumOptionHandler(const Pref* pref,
+  ChecksumOptionHandler(PrefPtr pref,
                         const char* description,
                         char shortName = 0);
   virtual ~ChecksumOptionHandler();
@@ -187,7 +187,7 @@ class ParameterOptionHandler : public AbstractOptionHandler {
 private:
   std::vector<std::string> validParamValues_;
 public:
-  ParameterOptionHandler(const Pref* pref,
+  ParameterOptionHandler(PrefPtr pref,
                          const char* description,
                          const std::string& defaultValue,
                          std::vector<std::string> validParamValues,
@@ -200,14 +200,14 @@ public:
 
 class HostPortOptionHandler : public AbstractOptionHandler {
 private:
-  const Pref* hostOptionName_;
-  const Pref* portOptionName_;
+  PrefPtr hostOptionName_;
+  PrefPtr portOptionName_;
 public:
-  HostPortOptionHandler(const Pref* pref,
+  HostPortOptionHandler(PrefPtr pref,
                         const char* description,
                         const std::string& defaultValue,
-                        const Pref* hostOptionName,
-                        const Pref* portOptionName,
+                        PrefPtr hostOptionName,
+                        PrefPtr portOptionName,
                         char shortName = 0);
   virtual ~HostPortOptionHandler();
   virtual void parseArg(Option& option, const std::string& optarg) const
@@ -219,10 +219,10 @@ public:
 
 class HttpProxyOptionHandler : public AbstractOptionHandler {
 private:
-  const Pref* proxyUserPref_;
-  const Pref* proxyPasswdPref_;
+  PrefPtr proxyUserPref_;
+  PrefPtr proxyPasswdPref_;
 public:
-  HttpProxyOptionHandler(const Pref* pref,
+  HttpProxyOptionHandler(PrefPtr pref,
                          const char* description,
                          const std::string& defaultValue,
                          char shortName = 0);
@@ -237,7 +237,7 @@ private:
   bool acceptStdin_;
 public:
   LocalFilePathOptionHandler
-  (const Pref* pref,
+  (PrefPtr pref,
    const char* description = NO_DESCRIPTION,
    const std::string& defaultValue = NO_DEFAULT_VALUE,
    bool acceptStdin = false,
@@ -250,7 +250,7 @@ public:
 class PrioritizePieceOptionHandler:public AbstractOptionHandler {
 public:
   PrioritizePieceOptionHandler
-  (const Pref* pref,
+  (PrefPtr pref,
    const char* description = NO_DESCRIPTION,
    const std::string& defaultValue = NO_DEFAULT_VALUE,
    char shortName = 0);
@@ -284,7 +284,7 @@ public:
   virtual const std::string& getDefaultValue() const CXX11_OVERRIDE;
   virtual bool isHidden() const CXX11_OVERRIDE;
   virtual void hide() CXX11_OVERRIDE;
-  virtual const Pref* getPref() const CXX11_OVERRIDE;
+  virtual PrefPtr getPref() const CXX11_OVERRIDE;
   virtual ARG_TYPE getArgType() const CXX11_OVERRIDE;
   virtual char getShortName() const CXX11_OVERRIDE;
   virtual bool getEraseAfterParse() const CXX11_OVERRIDE;

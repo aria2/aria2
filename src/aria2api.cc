@@ -197,7 +197,7 @@ void apiGatherOption
 {
   for(; first != last; ++first) {
     const std::string& optionName = (*first).first;
-    const Pref* pref = option::k2p(optionName);
+    PrefPtr pref = option::k2p(optionName);
     const OptionHandler* handler = optionParser->find(pref);
     if(!handler || !pred(handler)) {
       // Just ignore the unacceptable options in this context.
@@ -465,7 +465,7 @@ int changeOption(Session* session, A2Gid gid, const KeyVals& options)
 const std::string& getGlobalOption(Session* session, const std::string& name)
 {
   auto& e = session->context->reqinfo->getDownloadEngine();
-  const Pref* pref = option::k2p(name);
+  PrefPtr pref = option::k2p(name);
   if(OptionParser::getInstance()->find(pref)) {
     return e->getOption()->get(pref);
   } else {
@@ -480,7 +480,7 @@ KeyVals getGlobalOptions(Session* session)
   const Option* option = e->getOption();
   KeyVals options;
   for(size_t i = 1, len = option::countOption(); i < len; ++i) {
-    const Pref* pref = option::i2p(i);
+    PrefPtr pref = option::i2p(i);
     if(option->defined(pref) && optionParser->find(pref)) {
       options.push_back(KeyVals::value_type(pref->k, option->get(pref)));
     }
@@ -632,7 +632,7 @@ void pushRequestOption
  const std::shared_ptr<OptionParser>& oparser)
 {
   for(size_t i = 1, len = option::countOption(); i < len; ++i) {
-    const Pref* pref = option::i2p(i);
+    PrefPtr pref = option::i2p(i);
     const OptionHandler* h = oparser->find(pref);
     if(h && h->getInitialOption() && option->defined(pref)) {
       out++ = KeyVals::value_type(pref->k, option->get(pref));
@@ -645,7 +645,7 @@ namespace {
 const std::string& getRequestOption(const std::shared_ptr<Option>& option,
                                     const std::string& name)
 {
-  const Pref* pref = option::k2p(name);
+  PrefPtr pref = option::k2p(name);
   if(OptionParser::getInstance()->find(pref)) {
     return option->get(pref);
   } else {

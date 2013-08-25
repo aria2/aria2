@@ -1133,7 +1133,7 @@ void pushRequestOption
  const std::shared_ptr<OptionParser>& oparser)
 {
   for(size_t i = 1, len = option::countOption(); i < len; ++i) {
-    const Pref* pref = option::i2p(i);
+    PrefPtr pref = option::i2p(i);
     const OptionHandler* h = oparser->find(pref);
     if(h && h->getInitialOption() && option->defined(pref)) {
       dict->put(pref->k, option->get(pref));
@@ -1168,7 +1168,7 @@ std::unique_ptr<ValueBase> GetGlobalOptionRpcMethod::process
 {
   auto result = Dict::g();
   for(size_t i = 0, len = e->getOption()->getTable().size(); i < len; ++i) {
-    const Pref* pref = option::i2p(i);
+    PrefPtr pref = option::i2p(i);
     if(!e->getOption()->defined(pref)) {
       continue;
     }

@@ -75,7 +75,7 @@ namespace {
 void overrideWithEnv
 (Option& op,
  const std::shared_ptr<OptionParser>& optionParser,
- const Pref* pref,
+ PrefPtr pref,
  const std::string& envName)
 {
   char* value = getenv(envName.c_str());
@@ -139,9 +139,9 @@ void showCandidates
     return;
   }
   int optstrlen = strlen(optstr);
-  std::vector<std::pair<int, const Pref*> > cands;
+  std::vector<std::pair<int, PrefPtr> > cands;
   for(int i = 1, len = option::countOption(); i < len; ++i) {
-    const Pref* pref = option::i2p(i);
+    PrefPtr pref = option::i2p(i);
     const OptionHandler* h = parser->find(pref);
     if(!h || h->isHidden()) {
       continue;
@@ -181,7 +181,7 @@ namespace {
 void optionNativeToUtf8(Option& op)
 {
   for(size_t i = 1, len = option::countOption(); i < len; ++i) {
-    const Pref* pref = option::i2p(i);
+    PrefPtr pref = option::i2p(i);
     if(op.definedLocal(pref) && !util::isUtf8(op.get(pref))) {
       op.put(pref, nativeToUtf8(op.get(pref)));
     }

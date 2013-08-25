@@ -45,7 +45,7 @@
 namespace aria2 {
 
 AbstractOptionHandler::AbstractOptionHandler
-(const Pref* pref,
+(PrefPtr pref,
  const char* description,
  const std::string& defaultValue,
  ARG_TYPE argType,

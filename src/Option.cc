@@ -68,36 +68,36 @@ Option& Option::operator=(const Option& option)
 namespace {
 
 template<typename V>
-void setBit(V& b, const Pref* pref)
+void setBit(V& b, PrefPtr pref)
 {
   b[pref->i/8] |= 128 >> (pref->i%8);
 }
 
 template<typename V>
-void unsetBit(V& b, const Pref* pref)
+void unsetBit(V& b, PrefPtr pref)
 {
   b[pref->i/8] &= ~(128 >> (pref->i%8));
 }
 
 } // namespace
 
-void Option::put(const Pref* pref, const std::string& value) {
+void Option::put(PrefPtr pref, const std::string& value) {
   setBit(use_, pref);
   table_[pref->i] = value;
 }
 
-bool Option::defined(const Pref* pref) const
+bool Option::defined(PrefPtr pref) const
 {
   return bitfield::test(use_, use_.size()*8, pref->i) ||
     (parent_ && parent_->defined(pref));
 }
 
-bool Option::definedLocal(const Pref* pref) const
+bool Option::definedLocal(PrefPtr pref) const
 {
   return bitfield::test(use_, use_.size()*8, pref->i);
 }
 
-bool Option::blank(const Pref* pref) const
+bool Option::blank(PrefPtr pref) const
 {
   if(bitfield::test(use_, use_.size()*8, pref->i)) {
     return table_[pref->i].empty();
@@ -106,7 +106,7 @@ bool Option::blank(const Pref* pref) const
   }
 }
 
-const std::string& Option::get(const Pref* pref) const
+const std::string& Option::get(PrefPtr pref) const
 {
   if(bitfield::test(use_, use_.size()*8, pref->i)) {
     return table_[pref->i];
@@ -117,7 +117,7 @@ const std::string& Option::get(const Pref* pref) const
   }
 }
 
-int32_t Option::getAsInt(const Pref* pref) const {
+int32_t Option::getAsInt(PrefPtr pref) const {
   const std::string& value = get(pref);
   if(value.empty()) {
     return 0;
@@ -126,7 +126,7 @@ int32_t Option::getAsInt(const Pref* pref) const {
   }
 }
 
-int64_t Option::getAsLLInt(const Pref* pref) const {
+int64_t Option::getAsLLInt(PrefPtr pref) const {
   const std::string& value = get(pref);
   if(value.empty()) {
     return 0;
@@ -135,11 +135,11 @@ int64_t Option::getAsLLInt(const Pref* pref) const {
   }
 }
 
-bool Option::getAsBool(const Pref* pref) const {
+bool Option::getAsBool(PrefPtr pref) const {
   return get(pref) == A2_V_TRUE;
 }
 
-double Option::getAsDouble(const Pref* pref) const {
+double Option::getAsDouble(PrefPtr pref) const {
   const std::string& value = get(pref);
   if(value.empty()) {
     return 0.0;
@@ -148,7 +148,7 @@ double Option::getAsDouble(const Pref* pref) const {
   }
 }
 
-void Option::remove(const Pref* pref)
+void Option::remove(PrefPtr pref)
 {
   unsetBit(use_, pref);
   table_[pref->i].clear();

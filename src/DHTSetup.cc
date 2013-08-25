@@ -179,11 +179,11 @@ std::vector<std::unique_ptr<Command>> DHTSetup::setup
     factory->setTokenTracker(tokenTracker.get());
     factory->setLocalNode(localNode);
 
-    const Pref* prefEntryPointHost =
+    PrefPtr prefEntryPointHost =
       family == AF_INET?PREF_DHT_ENTRY_POINT_HOST:PREF_DHT_ENTRY_POINT_HOST6;
     if(!e->getOption()->get(prefEntryPointHost).empty()) {
       {
-        const Pref* prefEntryPointPort =
+        PrefPtr prefEntryPointPort =
           family == AF_INET?PREF_DHT_ENTRY_POINT_PORT:
           PREF_DHT_ENTRY_POINT_PORT6;
         std::pair<std::string, uint16_t> addr

@@ -44,7 +44,7 @@ struct Pref;
 
 class AbstractOptionHandler : public OptionHandler {
 protected:
-  const Pref* pref_;
+  PrefPtr pref_;
 
   const char* description_;
 
@@ -56,7 +56,7 @@ protected:
 
   virtual void parseArg(Option& option, const std::string& arg) const = 0;
 public:
-  AbstractOptionHandler(const Pref* pref,
+  AbstractOptionHandler(PrefPtr pref,
                          const char* description = NO_DESCRIPTION,
                          const std::string& defaultValue = NO_DEFAULT_VALUE,
                          ARG_TYPE argType = REQ_ARG,
@@ -85,7 +85,7 @@ public:
     return defaultValue_;
   }
 
-  virtual const Pref* getPref() const CXX11_OVERRIDE
+  virtual PrefPtr getPref() const CXX11_OVERRIDE
   {
     return pref_;
   }

@@ -57,6 +57,7 @@ extern const std::string PATH_TO_COMMAND;
 
 class Option;
 struct Pref;
+typedef const Pref* PrefPtr;
 
 class OptionHandler {
 public:
@@ -82,7 +83,7 @@ public:
 
   virtual void hide() = 0;
 
-  virtual const Pref* getPref() const = 0;
+  virtual PrefPtr getPref() const = 0;
 
   enum ARG_TYPE {
     REQ_ARG,

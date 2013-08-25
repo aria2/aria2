@@ -68,7 +68,7 @@
 namespace aria2 {
 
 BooleanOptionHandler::BooleanOptionHandler
-(const Pref* pref,
+(PrefPtr pref,
  const char* description,
  const std::string& defaultValue,
  OptionHandler::ARG_TYPE argType,
@@ -103,7 +103,7 @@ std::string BooleanOptionHandler::createPossibleValuesString() const
 }
 
 IntegerRangeOptionHandler::IntegerRangeOptionHandler
-(const Pref* pref,
+(PrefPtr pref,
  const char* description,
  const std::string& defaultValue,
  int32_t min, int32_t max,
@@ -140,7 +140,7 @@ std::string IntegerRangeOptionHandler::createPossibleValuesString() const
 }
 
 NumberOptionHandler::NumberOptionHandler
-(const Pref* pref,
+(PrefPtr pref,
  const char* description,
  const std::string& defaultValue,
  int64_t min,
@@ -205,7 +205,7 @@ std::string NumberOptionHandler::createPossibleValuesString() const
 }
 
 UnitNumberOptionHandler::UnitNumberOptionHandler
-(const Pref* pref,
+(PrefPtr pref,
  const char* description,
  const std::string& defaultValue,
  int64_t min,
@@ -225,7 +225,7 @@ void UnitNumberOptionHandler::parseArg
 }
 
 FloatNumberOptionHandler::FloatNumberOptionHandler
-(const Pref* pref,
+(PrefPtr pref,
  const char* description,
  const std::string& defaultValue,
  double min,
@@ -279,7 +279,7 @@ std::string FloatNumberOptionHandler::createPossibleValuesString() const
 }
 
 DefaultOptionHandler::DefaultOptionHandler
-(const Pref* pref,
+(PrefPtr pref,
  const char* description,
  const std::string& defaultValue,
  const std::string& possibleValuesString,
@@ -304,7 +304,7 @@ std::string DefaultOptionHandler::createPossibleValuesString() const
 }
 
 CumulativeOptionHandler::CumulativeOptionHandler
-(const Pref* pref,
+(PrefPtr pref,
  const char* description,
  const std::string& defaultValue,
  const std::string& delim,
@@ -334,7 +334,7 @@ std::string CumulativeOptionHandler::createPossibleValuesString() const
 }
 
 IndexOutOptionHandler::IndexOutOptionHandler
-(const Pref* pref,
+(PrefPtr pref,
  const char* description,
  char shortName)
   : AbstractOptionHandler(pref, description, NO_DEFAULT_VALUE,
@@ -361,7 +361,7 @@ std::string IndexOutOptionHandler::createPossibleValuesString() const
 
 #ifdef ENABLE_MESSAGE_DIGEST
 ChecksumOptionHandler::ChecksumOptionHandler
-(const Pref* pref,
+(PrefPtr pref,
  const char* description,
  char shortName)
   : AbstractOptionHandler(pref, description, NO_DEFAULT_VALUE,
@@ -391,7 +391,7 @@ std::string ChecksumOptionHandler::createPossibleValuesString() const
 #endif // ENABLE_MESSAGE_DIGEST
 
 ParameterOptionHandler::ParameterOptionHandler
-(const Pref* pref,
+(PrefPtr pref,
  const char* description,
  const std::string& defaultValue,
  std::vector<std::string> validParamValues,
@@ -436,11 +436,11 @@ std::string ParameterOptionHandler::createPossibleValuesString() const
 }
 
 HostPortOptionHandler::HostPortOptionHandler
-(const Pref* pref,
+(PrefPtr pref,
  const char* description,
  const std::string& defaultValue,
- const Pref* hostOptionName,
- const Pref* portOptionName,
+ PrefPtr hostOptionName,
+ PrefPtr portOptionName,
  char shortName)
   : AbstractOptionHandler(pref, description, defaultValue,
                           OptionHandler::REQ_ARG, shortName),
@@ -476,7 +476,7 @@ std::string HostPortOptionHandler::createPossibleValuesString() const
 }
 
 HttpProxyOptionHandler::HttpProxyOptionHandler
-(const Pref* pref,
+(PrefPtr pref,
  const char* description,
  const std::string& defaultValue,
  char shortName)
@@ -518,7 +518,7 @@ std::string HttpProxyOptionHandler::createPossibleValuesString() const
 }
 
 LocalFilePathOptionHandler::LocalFilePathOptionHandler
-(const Pref* pref,
+(PrefPtr pref,
  const char* description,
  const std::string& defaultValue,
  bool acceptStdin,
@@ -552,7 +552,7 @@ std::string LocalFilePathOptionHandler::createPossibleValuesString() const
 }
 
 PrioritizePieceOptionHandler::PrioritizePieceOptionHandler
-(const Pref* pref,
+(PrefPtr pref,
  const char* description,
  const std::string& defaultValue,
  char shortName)
@@ -649,7 +649,7 @@ void DeprecatedOptionHandler::hide()
   depOptHandler_->hide();
 }
 
-const Pref* DeprecatedOptionHandler::getPref() const
+PrefPtr DeprecatedOptionHandler::getPref() const
 {
   return depOptHandler_->getPref();
 }

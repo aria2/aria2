@@ -49,6 +49,7 @@ namespace aria2 {
 class Option;
 class OptionHandler;
 struct Pref;
+typedef const Pref* PrefPtr;
 
 class OptionParser {
 private:
@@ -88,7 +89,7 @@ public:
   std::vector<const OptionHandler*> findAll() const;
 
   // Hidden options are not returned.
-  const OptionHandler* find(const Pref* pref) const;
+  const OptionHandler* find(PrefPtr pref) const;
 
   // Hidden options are not returned.
   const OptionHandler* findById(size_t id) const;

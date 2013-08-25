@@ -95,7 +95,7 @@ bool SessionSerializer::save(const std::string& filename) const
 namespace {
 // Write 1 line of option name/value pair. This function returns true
 // if it succeeds, or false.
-bool writeOptionLine(IOFile& fp, const Pref* pref,
+bool writeOptionLine(IOFile& fp, PrefPtr pref,
                      const std::string& val)
 {
   size_t prefLen = strlen(pref->k);
@@ -112,7 +112,7 @@ bool writeOption(IOFile& fp, const std::shared_ptr<Option>& op)
 {
   const std::shared_ptr<OptionParser>& oparser = OptionParser::getInstance();
   for(size_t i = 1, len = option::countOption(); i < len; ++i) {
-    const Pref* pref = option::i2p(i);
+    PrefPtr pref = option::i2p(i);
     const OptionHandler* h = oparser->find(pref);
     if(h && h->getInitialOption() && op->definedLocal(pref)) {
       if(h->getCumulative()) {

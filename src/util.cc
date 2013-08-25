@@ -1896,13 +1896,13 @@ void executeHook
 
 void executeHookByOptName
 (const std::shared_ptr<RequestGroup>& group, const Option* option,
- const Pref* pref)
+ PrefPtr pref)
 {
   executeHookByOptName(group.get(), option, pref);
 }
 
 void executeHookByOptName
-(const RequestGroup* group, const Option* option, const Pref* pref)
+(const RequestGroup* group, const Option* option, PrefPtr pref)
 {
   const std::string& cmd = option->get(pref);
   if(!cmd.empty()) {

@@ -89,7 +89,7 @@ void gatherOption
 {
   for(; first != last; ++first) {
     const std::string& optionName = (*first).first;
-    const Pref* pref = option::k2p(optionName);
+    PrefPtr pref = option::k2p(optionName);
     const OptionHandler* handler = optionParser->find(pref);
     if(!handler || !pred(handler)) {
       // Just ignore the unacceptable options in this context.
