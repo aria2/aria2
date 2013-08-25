@@ -7,7 +7,7 @@ AC_INIT([aria2],[1.17.1],[t-tujikawa@users.sourceforge.net],[aria2],[http://aria
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 
-AM_INIT_AUTOMAKE()
+AM_INIT_AUTOMAKE([subdir-objects])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 AC_USE_SYSTEM_EXTENSIONS
