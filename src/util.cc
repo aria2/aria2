@@ -1542,32 +1542,31 @@ getNumericNameInfo(const struct sockaddr* sockaddr, socklen_t len)
 
 std::string htmlEscape(const std::string& src)
 {
-  std::string rv(src);
-  std::string::size_type pos = 0;
-  while ((pos = rv.find_first_of("<>&\"'", pos)) != std::string::npos) {
-    auto ch = rv[pos];
-    if (ch == '<') {
-      rv.replace(pos, 1, "&lt;");
-      pos += 4;
+  std::string dest;
+  dest.reserve(src.size());
+  auto j = std::begin(src);
+  for(auto i = std::begin(src); i != std::end(src); ++i) {
+    char ch = *i;
+    const char *repl;
+    if(ch == '<') {
+      repl = "&lt;";
+    } else if(ch == '>') {
+      repl = "&gt;";
+    } else if(ch == '&') {
+      repl = "&amp;";
+    } else if(ch == '\'') {
+      repl = "&#39;";
+    } else if(ch == '"') {
+      repl = "&quot;";
+    } else {
+      continue;
     }
-    else if (ch == '>') {
-      rv.replace(pos, 1, "&gt;");
-      pos += 4;
-    }
-    else if (ch == '&') {
-      rv.replace(pos, 1, "&amp;");
-      pos += 5;
-    }
-    else if (ch == '"') {
-      rv.replace(pos, 1, "&quot;");
-      pos += 6;
-    }
-    else { // '\''
-      rv.replace(pos, 1, "&#39;");
-      pos += 5;
-    }
+    dest.append(j, i);
+    j = i + 1;
+    dest += repl;
   }
-  return rv;
+  dest.append(j, std::end(src));
+  return dest;
 }
 
 std::pair<size_t, std::string>
