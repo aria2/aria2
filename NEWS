@@ -1,182 +1,135 @@
-aria2 1.17.1
+aria2 1.18.0
 ============
 
 Release Note
 ------------
 
-This release adds large file support for Android build and libuv
-support for event polling mechanism. AppleTLS now supports Snow
-Leopard (10.6). The experimental libaria2 C++ library API was added.
+This release changes the default disk cache size to 16 MiB. To change
+the default size, --with-disk-cache configure option was added.  Now
+used URIs are also saved by --save-session option. The control file is
+now always saved if --force-save is given. The ctrl-c handling on
+Mingw build was improved. The internal intl library is no longer
+supplied. From this release, C++11 compiler is required to build aria2
+executable. For gcc, at least 4.6.3 is required.
 
 Changes
 -------
 
-* Add code to detect rst2html.py or rst2html
+* Use AM subdir-objects
 
-* AppleTLS: Properly support Snow Leopard (10.6)
+  Doing so in AM_INIT_AUTOMAKE seems to be the most compatible way of
+  doing so.
 
-  Tested on 10.6.8 + XCode 4.2 (llvm-gcc-4.2, clang)
+  Closes GH-120
 
-  Contributed by Nils Maier
+* AM_SILENT_RULES([yes]) with backwards-compatiblity
 
-* Enable multicast loopback in BitTorrent local peer discovery
+  Supported since automake-1.11. There is no point in having the very
+  verbose compile stuff running about, which cannot even silenced
+  properly with `make -s` by default. Otherwise, `make V=1` or
+  `--disable-silent-rules` are your friends
 
-* Enable TLS1.1 with gnutls build
+* Fix automake-1.14 am_aux_dir
 
-* Support off64_t for Android build
+  AC_USE_SYSTEM_EXTENSIONS will cause AC_PROG_CC, which is overridden
+  by automake-1.14, which will then init (part) of automake, in
+  particular am_aux_dir expansion, which in turn relies on ac_aux-dir,
+  which is not initialized at this point, and thus: certain doom (or
+  fun, depending on your POV and mood :p)
 
-  Android NDK R8e does not provide ftruncate64, but bionic has the
-  assembler code to access kernel function. We borrowed those
-  ftruncate64.S files from android source code repository.  It turns
-  out that x86 asm.h in NDK R8e is also broken, so latest asm.h was
-  also borrowed.
+  Hence call AC_USE_SYSTEM_EXTENSIONS only after
+  AM_INIT_AUTOMAKE. This, of course, caused a lot of related macro
+  shuffling.
 
-* Check zlib availability usin AC_CHECK_LIB
+  Tested against automake-1.10 (OSX Lion/XCode version) and
+  automake-1.14 (homebrew version)
 
-  This is workaround for zlib 1.2.3 which does not come with
-  pkg-config file.
+* Require external gettext for --enable-nls
 
-* Treat response is completed if EOF is received before streamFilter
-  completes
+  And stop using the internal flavor with ./intl
 
-  This fixes the error with web server which has buggy chunked
-  encoding.
+* Make AX_CXX_COMPILE_STDCXX_11 test for -stdlib=libc++ via std::shared_ptr
 
-* uitos: Fix off-by-one error bug
+  The clang shipped with OSX XCode and clangs not build enabling
+  libcpp, will default to the libstdc++ headers and lib installed on
+  the system.  In the OSX case, that libstdc++ is the one bundles with
+  gcc-4.2, which is far too old to provide all required C++11 types,
+  such as std::shared_ptr.  Hence, the C++11 check should try to
+  compile a program with a C++11 type and try -stdlib=libc++ if the
+  default lib fails to compile said program.
 
-* Add configure support for linking tcmalloc_minimal and/or jemalloc
+* Make the configure check for C++11 compiler mandatory
 
-  Both tcmalloc_minimal and jemalloc outperform the native malloc
-  implemention on Windows (MSVCRT) in terms of committed memory
-  consumption (~-30%) and performance (e.g. far less page faults,
-  ~-60%), depending, of course, on the actual workload.  The longer
-  the download queue, the bigger the impact ;)
+  Remove stray "dnl", so that mandatory actually works with (my)
+  autoreconf.
 
-  On *nix the picture is a little different... tcmalloc usually still
-  outperforms the native malloc implementation, but not that
-  significantly than on Windows. jemalloc however is only marginally
-  better than recent native Linux implementations, while it is already
-  used by some BSD as the native allocator.
+* Always build doc/manual-src
 
-  tcmalloc is part of gperftools and very mature and tested by now. It
-  doesn't work on OSX in the default configuration, however.
-  http://code.google.com/p/gperftools/
+  Should sphinx-build be not available AND the man file not be prsent,
+  then just "touch" it into existence (and warn about that)
 
-  jemalloc is the default allocator at least on FreeBSD and NetBSD and
-  used in Firefox.  http://www.canonware.com/jemalloc/index.html
+* Win: Use SetConsoleCtrlHandler for SIGINT/SIGTERM
 
-  Contributed by Nils Maier
+* Implement a simple resource lock (threading)
 
-* Close GZipFiles in the d'tor
+  In this initial implementation Locks are no-ops on platforms other
+  than Windows.
 
-  Contributed by Nils Maier
+* Check for sphinx-build during configure
 
-* Add libaria2, C++ library interface to aria2
+* Add --with-disk-cache configure option
 
-  The libaria2 is a C++ library and offers the core functionality of
-  aria2. The library takes care of all networking and downloading
-  stuff, so its usage is very straight forward right now. See
-  libaria2ex.cc in examples directory to see how to use API. By
-  default, libaria2 is not built. See libaria2 section in README to
-  how to enable it.
+  Enables packagers more fine grained control over the default value
+  without having to mess with config files.
 
-  The APIs in this release is considered experimental.
+  See GH-115
 
-* Add missing check for sigaction
+* Change defaults: Enable 16M disk cache by default.
 
-* Fix cached data is not flushed when downloaded data is less than
-  16KiB
+* Always save control file if --force-save is given
 
-* LibUV: Implement LibuvEventPoll
+* Set log level DEBUG for unittests
 
-  LibUV event will use the best available polling method on a system,
-  kind of like aria2 does already with the different *EventPoll
-  implementations.  However, libuv may support different/newer polling
-  mechanisms; for example on Windows it will use IO Completion Ports
-  which are superior to select() ;)
+* Check that C++ compiler supports override keyword
 
-  Contributed by Nils Maier
+  If the compiler supports override, define CXX11_OVERRIDE as
+  override, otherwise define it as empty. Use CXX11_OVERRIDE instead
+  of override.
 
-
+* AppleTLS: Fix MessageDigestImpl
 
-aria2 1.17.0
-============
+* AppleTLS: Fix session CFRelease stuff
 
-Release Note
-------------
+* Use AX_CXX_COMPILE_STDCXX_11 macro to detect C++0x/C++11 support in
+  compiler
 
-This release adds Mac OS X native SSL/TLS library support.  The IPv6
-asynchronous DNS is enabled by default and A/AAAA lookups are done in
-parallel. The simple Happy Eyeballs algorithm was implemented to
-mitigate long timeout when connecting to IPv6 host on dual-stack host.
---save-session option only saves the options specified by command-line
-or RPC.
+* Require -std=c++11 and use std::shared_ptr instead of SharedHandle
 
-Changes
--------
+* Join URI on redirect
 
-* Updated Russian manual
+* Send HAVE message to the peer which the piece is downloaded from
 
-  Contributed by ITriskTI
+  Historically, aria2 did not send HAVE message to the peer which the
+  piece is coming from, thinking it is obvious that the peer knows we
+  have the piece. But it is not obvious if one piece is download from
+  more than 1 peers (e.g., end game mode). So it is better to send
+  HAVE to all peers connected.
 
-* Updated Portuguese manual
+* Improvements to --follow-torrent=false documentation.
 
-  Contributed by Gilberto dos Santos Alves
+  Patch from gt
 
-* Append --static to pkg-config arguments when ARIA2_STATIC=yes
+* SessionSerializer: Truly unique URIs
 
-* Save options directly specified for download in --save-session
+  Before, only spent uris where sanitized not to be contained within
+  remaining uris. Change this so that each uri in the
+  union(remaining,spent) get saved once at most.  The order of the
+  uris will won't be changed, with remaining uris going first followed
+  by spent uris.
 
-  This change makes --save-session save only options specified for
-  download, more specifically, options in command-line, -i file and
-  via RPC. The other options from conf file and default values are not
-  saved.  This will drastically decrease the size of session file.
+  Also avoid copying the uri std::strings around during dupe checking,
+  usually resulting in better performance regarding CPU and space.
 
-* Save URI returned only from FileEntry::getRemainingUris()
+* Make getOption RPC method return option for stopped downloads
 
-  The currently used URIs are inserted back into remaining URI list in
-  FileEntry::putBackRequest(), which overlaps to some of the URIs in
-  spentUris_. If we save spent URIs, each time save is performed, the
-  number of URIs are increased due to this overlap. This change fixes
-  this bug.
-
-* Print linked 3rd party libraries with version in `aria2c -v` output
-
-* AppleTLS: Support credentials via KeyChain fingerprints
-
-  Contributed by Nils Maier
-
-* AppleTLS: Implement AppleTLS and Apple Message Digest
-
-  Contributed by Nils Maier
-
-* Use info level log for system trusted ca imports failure
-
-  This is because on some platforms (gnutls on cygwin for example),
-  library always fails for this function and getting ERROR every time
-  aria2c invoked is too hard.
-
-* Don't add Windows native DLLs for Cygwin build
-
-* Remove deprecated options: --enable-direct-io and --metalink-servers
-
-* Deprecate --enable-async-dns6
-
-  The IPv6 asynchronous name resolver is enabled if the host has at
-  least one interface with IPv6 address configured (the loopback
-  address will not be counted), which is roughly the same behaviour of
-  the standard getaddrinfo(3). To disable IPv6 asynchronous name
-  resolver, use --disable-ipv6.
-
-* Fix uninitialized UDPTrackerClient::numWatchers_
-
-* Implement simple Happy Eyeballs for HTTP/FTP downloads
-
-* Parallel A and AAAA record lookups with c-ares
-
-  But we don't wait for AAAA query response if A query response has
-  been received.  If we got IPv4 lookup response, we don't wait for
-  IPv6 lookup response. This is because DNS server may drop AAAA query
-  and we have to wait for the long time before timeout. We don't do
-  the inverse, because, based on todays deployment of DNS server,
-  almost all of them can respond A query just fine.
+* SessionSerializer: Save spent URIs as well as remaining ones
