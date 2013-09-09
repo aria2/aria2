@@ -29,6 +29,9 @@ case "$host" in
   *mingw*)
     win_build=yes
     LIBS="$LIBS -lws2_32 -lwsock32 -lgdi32 -lwinmm -liphlpapi -lpsapi"
+    # Deactivate __USE_MINGW_ANSI_STDIO because it causes lots of errors for
+    # PRId64.
+    CPPFLAGS="-D__USE_MINGW_ANSI_STDIO=0 $CPPFLAGS"
     ;;
 esac
 
