@@ -49,14 +49,16 @@ help:
 	@echo "  linkcheck  to check all external links for integrity"
 	@echo "  doctest    to run all doctests embedded in the documentation (if enabled)"
 
-libaria2api: $(top_builddir)/src/includes/aria2/aria2.h
-	$(builddir)/mkapiref.py $^ > $@
+$(srcdir)/libaria2api: $(top_builddir)/src/includes/aria2/aria2.h
+	$(srcdir)/mkapiref.py $^ > $@
+
+html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest: $(srcdir)/libaria2api
 
 docclean:
-	-rm libaria2api
+	-rm $(srcdir)/libaria2api
 	-rm -rf $(BUILDDIR)/*
 
-html: libaria2api
+html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
