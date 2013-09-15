@@ -144,6 +144,7 @@ std::unique_ptr<HttpResponse> HttpConnection::receiveResponse()
       throw DL_RETRY_EX(EX_GOT_EOF);
     }
   }
+
   const auto& proc = outstandingHttpRequests_.front()->getHttpHeaderProcessor();
   if(proc->parse(socketRecvBuffer_->getBuffer(),
                  socketRecvBuffer_->getBufferLength())) {
@@ -158,10 +159,10 @@ std::unique_ptr<HttpResponse> HttpConnection::receiveResponse()
     socketRecvBuffer_->shiftBuffer(proc->getLastBytesProcessed());
     outstandingHttpRequests_.pop_front();
     return httpResponse;
-  } else {
-    socketRecvBuffer_->shiftBuffer(proc->getLastBytesProcessed());
-    return nullptr;
   }
+
+  socketRecvBuffer_->shiftBuffer(proc->getLastBytesProcessed());
+  return nullptr;
 }
 
 bool HttpConnection::isIssued(const std::shared_ptr<Segment>& segment) const

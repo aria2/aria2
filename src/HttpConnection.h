@@ -58,11 +58,11 @@ class HttpRequestEntry {
 private:
   std::unique_ptr<HttpRequest> httpRequest_;
   std::unique_ptr<HttpHeaderProcessor> proc_;
+
 public:
   HttpRequestEntry(std::unique_ptr<HttpRequest> httpRequest);
 
-  const std::unique_ptr<HttpRequest>& getHttpRequest() const
-  {
+  const std::unique_ptr<HttpRequest>& getHttpRequest() const {
     return httpRequest_;
   }
 
@@ -83,13 +83,12 @@ private:
   HttpRequestEntries outstandingHttpRequests_;
 
   std::string eraseConfidentialInfo(const std::string& request);
-  void sendRequest
-  (std::unique_ptr<HttpRequest> httpRequest, std::string request);
+  void sendRequest(std::unique_ptr<HttpRequest> httpRequest,
+                   std::string request);
+
 public:
-  HttpConnection
-  (cuid_t cuid,
-   const std::shared_ptr<SocketCore>& socket,
-   const std::shared_ptr<SocketRecvBuffer>& socketRecvBuffer);
+  HttpConnection(cuid_t cuid, const std::shared_ptr<SocketCore>& socket,
+                 const std::shared_ptr<SocketRecvBuffer>& socketRecvBuffer);
   ~HttpConnection();
 
   /**
@@ -125,8 +124,7 @@ public:
 
   void sendPendingData();
 
-  const std::shared_ptr<SocketRecvBuffer>& getSocketRecvBuffer() const
-  {
+  const std::shared_ptr<SocketRecvBuffer>& getSocketRecvBuffer() const {
     return socketRecvBuffer_;
   }
 };

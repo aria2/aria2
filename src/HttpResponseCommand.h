@@ -68,9 +68,8 @@ private:
   bool skipResponseBody(std::unique_ptr<HttpResponse> httpResponse);
 
   std::unique_ptr<HttpDownloadCommand>
-  createHttpDownloadCommand
-  (std::unique_ptr<HttpResponse> httpResponse,
-   std::unique_ptr<StreamFilter> streamFilter);
+  createHttpDownloadCommand(std::unique_ptr<HttpResponse> httpResponse,
+                            std::unique_ptr<StreamFilter> streamFilter);
 
   void updateLastModifiedTime(const Time& lastModified);
 
@@ -81,10 +80,10 @@ private:
   // Returns true if dctx and checksum has same hash type and hash
   // value.  If they have same hash type but different hash value,
   // throws exception.  Otherwise returns false.
-  bool checkChecksum
-  (const std::shared_ptr<DownloadContext>& dctx,
-   const Checksum& checksum);
+  bool checkChecksum(const std::shared_ptr<DownloadContext>& dctx,
+                     const Checksum& checksum);
 #endif // ENABLE_MESSAGE_DIGEST
+
 protected:
   bool executeInternal();
 

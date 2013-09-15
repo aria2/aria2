@@ -58,6 +58,7 @@ private:
   cuid_t cuid_;
   std::unique_ptr<HttpRequest> httpRequest_;
   std::unique_ptr<HttpHeader> httpHeader_;
+
 public:
   HttpResponse();
 
@@ -109,13 +110,11 @@ public:
 
   void setHttpRequest(std::unique_ptr<HttpRequest> httpRequest);
 
-  const std::unique_ptr<HttpRequest>& getHttpRequest() const
-  {
+  const std::unique_ptr<HttpRequest>& getHttpRequest() const {
     return httpRequest_;
   }
 
-  void setCuid(cuid_t cuid)
-  {
+  void setCuid(cuid_t cuid) {
     cuid_ = cuid;
   }
 
@@ -123,9 +122,9 @@ public:
 
   bool supportsPersistentConnection() const;
 
-  void getMetalinKHttpEntries
-  (std::vector<MetalinkHttpEntry>& result,
-   const std::shared_ptr<Option>& option) const;
+  void getMetalinKHttpEntries(std::vector<MetalinkHttpEntry>& result,
+                              const std::shared_ptr<Option>& option) const;
+
 #ifdef ENABLE_MESSAGE_DIGEST
   // Returns all digests specified in Digest header field.  Sort
   // strong algorithm first. Strength is defined in MessageDigest. If
@@ -133,6 +132,7 @@ public:
   // different value, they are all ignored.
   void getDigest(std::vector<Checksum>& result) const;
 #endif // ENABLE_MESSAGE_DIGEST
+
 };
 
 } // namespace aria2
