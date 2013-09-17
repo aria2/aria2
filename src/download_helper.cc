@@ -161,7 +161,7 @@ std::shared_ptr<RequestGroup> createRequestGroup
 }
 } // namespace
 
-#if defined ENABLE_BITTORRENT || ENABLE_METALINK
+#if defined(ENABLE_BITTORRENT) || defined(ENABLE_METALINK)
 namespace {
 std::shared_ptr<MetadataInfo> createMetadataInfo
 (const std::shared_ptr<GroupId>& gid, const std::string& uri)

@@ -109,7 +109,7 @@ void showMetalinkFile
 } // namespace
 #endif // ENABLE_METALINK
 
-#if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
+#if defined(ENABLE_BITTORRENT) || defined(ENABLE_METALINK)
 namespace {
 void showFiles
 (const std::vector<std::string>& uris, const std::shared_ptr<Option>& op)
@@ -221,7 +221,7 @@ Context::Context(bool standalone,
         } else {
           createRequestGroupForUriList(requestGroups, op);
         }
-#if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
+#if defined(ENABLE_BITTORRENT) || defined(ENABLE_METALINK)
       } else if(op->get(PREF_SHOW_FILES) == A2_V_TRUE) {
         showFiles(args, op);
         return;

@@ -76,7 +76,7 @@ AsyncNameResolver::AsyncNameResolver
 {
   // TODO evaluate return value
   ares_init(&channel_);
-#if defined HAVE_ARES_SET_SERVERS && HAVE_ARES_ADDR_NODE
+#if defined(HAVE_ARES_SET_SERVERS) && defined(HAVE_ARES_ADDR_NODE)
   if(servers) {
     // ares_set_servers has been added since c-ares 1.7.1
     if(ares_set_servers(channel_, servers) != ARES_SUCCESS) {

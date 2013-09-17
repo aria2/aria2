@@ -134,7 +134,7 @@ void AbstractDiskWriter::openFile(int64_t totalLength)
 
 void AbstractDiskWriter::closeFile()
 {
-#if defined HAVE_MMAP || defined __MINGW32__
+#if defined(HAVE_MMAP) || defined(__MINGW32__)
   if(mapaddr_) {
     int errNum = 0;
 #ifdef __MINGW32__
@@ -336,7 +336,7 @@ void AbstractDiskWriter::seek(int64_t offset)
 
 void AbstractDiskWriter::ensureMmapWrite(size_t len, int64_t offset)
 {
-#if defined HAVE_MMAP || defined __MINGW32__
+#if defined(HAVE_MMAP) || defined(__MINGW32__)
   if(enableMmap_) {
     if(mapaddr_) {
       if(static_cast<int64_t>(len + offset) > maplen_) {

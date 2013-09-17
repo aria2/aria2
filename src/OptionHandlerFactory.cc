@@ -107,7 +107,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
-#if defined HAVE_ARES_SET_SERVERS && HAVE_ARES_ADDR_NODE
+#if defined(HAVE_ARES_SET_SERVERS) && defined(HAVE_ARES_ADDR_NODE)
   {
     OptionHandler* op(new DefaultOptionHandler
                       (PREF_ASYNC_DNS_SERVER,
@@ -305,7 +305,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
 #endif // ENABLE_ASYNC_DNS
-#if defined HAVE_MMAP || defined __MINGW32__
+#if defined(HAVE_MMAP) || defined(__MINGW32__)
   {
     OptionHandler* op(new BooleanOptionHandler
                       (PREF_ENABLE_MMAP,
@@ -1607,7 +1607,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   // BitTorrent/Metalink Options
-#if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
+#if defined(ENABLE_BITTORRENT) || defined(ENABLE_METALINK)
   {
     OptionHandler* op(new IntegerRangeOptionHandler
                       (PREF_SELECT_FILE,

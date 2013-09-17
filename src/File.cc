@@ -250,7 +250,7 @@ bool File::renameTo(const std::string& dest)
 
 bool File::utime(const Time& actime, const Time& modtime) const
 {
-#if defined HAVE_UTIMES && !(defined __MINGW32__)
+#if defined(HAVE_UTIMES) && !defined(__MINGW32__)
   struct timeval times[2] = {
     { actime.getTime(), 0 },
     { modtime.getTime(), 0 }
