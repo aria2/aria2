@@ -296,6 +296,9 @@ Cross-compiling Android binary
 In this section, we describe how to build Android binary using Android
 NDK cross-compiler on Debian Linux.
 
+At the time of this writing, android-ndk-r9 should compile aria2
+without errors.
+
 ``android-config`` script is a configure script wrapper for Android
 build.  We use it to create official Android build.  This script
 assumes the following libraries have been built for cross-compile:
@@ -315,14 +318,14 @@ by ourselves.
 environment variable which must fulfill the following conditions:
 
 * Android NDK toolchain is installed under
-  ``$ANDROID_HOME/toolchain``.  Refer to "3/ Invoking the compiler
+  ``$ANDROID_HOME/toolchain``.  Refer to "4/ Invoking the compiler
   (the easy way):" section in Android NDK
   ``docs/STANDALONE-TOOLCHAIN.html`` to install custom toolchain.
 
   For example, to install toolchain under ``$ANDROID_HOME/toolchain``,
   do this::
 
-      $NDK/build/tools/make-standalone-toolchain.sh --platform=android-9 --install-dir=$ANDROID_HOME/toolchain
+      $NDK/build/tools/make-standalone-toolchain.sh --platform=android-18 --toolchain=arm-linux-androideabi-4.8 --install-dir=$ANDROID_HOME/toolchain
 
   You may need to add ``--system=linux-x86_64`` to the above
   command-line for x86_64 Linux host.
