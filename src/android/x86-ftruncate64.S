@@ -17,7 +17,7 @@ ENTRY(ftruncate64)
     jb      1f
     negl    %eax
     pushl   %eax
-    call    __set_errno
+    call    a2_set_errno
     addl    $4, %esp
     orl     $-1, %eax
 1:

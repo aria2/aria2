@@ -869,6 +869,7 @@ AC_SUBST([bashcompletiondir])
 
 case "$host" in
   *android*)
+    android=yes
     LIBS="$LIBS -lstdc++ -lsupc++"
     case "$host" in
       arm-*)
@@ -886,6 +887,7 @@ case "$host" in
     ;;
 esac
 
+AM_CONDITIONAL([ANDROID], [test "x$android" = "xyes"])
 AM_CONDITIONAL([ANDROID_ARM], [test "x$android_arm" = "xyes"])
 AM_CONDITIONAL([ANDROID_MIPS], [test "x$android_mips" = "xyes"])
 AM_CONDITIONAL([ANDROID_X86], [test "x$android_x86" = "xyes"])

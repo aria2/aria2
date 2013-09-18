@@ -253,6 +253,10 @@ SRCS =  option_processing.cc\
 	FtpTunnelRequestConnectChain.h\
 	Lock.h
 
+if ANDROID
+SRCS += android/android.c
+endif # ANDROID
+
 # Android NDK R8e does not provide ftruncate64. Use assembly code from
 # android source code and link it.
 if ANDROID_ARM

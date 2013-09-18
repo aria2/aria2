@@ -11,5 +11,5 @@ ENTRY(ftruncate64)
     cmn     r0, #(MAX_ERRNO + 1)
     bxls    lr
     neg     r0, r0
-    b       __set_errno
+    b       a2_set_errno
 END(ftruncate64)

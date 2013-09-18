@@ -15,7 +15,7 @@ ftruncate64:
     j $ra
     nop
 1:
-    la $t9,__set_errno
+    la $t9,a2_set_errno
     j $t9
     nop
     .set reorder
