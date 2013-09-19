@@ -63,7 +63,7 @@ private:
 public:
   HandshakeExtensionMessage();
 
-  virtual std::string getPayload();
+  virtual std::string getPayload() CXX11_OVERRIDE;
 
   virtual uint8_t getExtensionMessageID() const CXX11_OVERRIDE
   {

@@ -85,7 +85,7 @@ private:
 #endif // ENABLE_MESSAGE_DIGEST
 
 protected:
-  bool executeInternal();
+  bool executeInternal() CXX11_OVERRIDE;
 
   bool shouldInflateContentEncoding(HttpResponse* httpResponse);
 

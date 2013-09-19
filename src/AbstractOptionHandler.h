@@ -126,7 +126,7 @@ public:
 
   virtual bool getCumulative() const CXX11_OVERRIDE;
 
-  virtual void setCumulative(bool f);
+  virtual void setCumulative(bool f) CXX11_OVERRIDE;
 
   enum Flag {
     FLAG_HIDDEN = 1,

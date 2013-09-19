@@ -68,16 +68,16 @@ public:
   // wrapper for fclose
   int close();
   // wrapper for fflush
-  int flush();
+  int flush() CXX11_OVERRIDE;
   // Return true if file is opened && feof(fp_) != 0. Otherwise
   // returns false.
   bool eof();
   // Returns true if file supports ANSI color escape codes.
-  bool supportsColor();
+  bool supportsColor() CXX11_OVERRIDE;
   // Convenient method. Read data to end of file and write them into
   // given stream. Returns written size.
   size_t transfer(std::ostream& out);
-  int vprintf(const char* format, va_list va);
+  int vprintf(const char* format, va_list va) CXX11_OVERRIDE;
   // Mode for reading
   static const char READ[];
   // Mode for writing

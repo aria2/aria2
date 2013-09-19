@@ -81,7 +81,7 @@ public:
 
   virtual ~Exception() throw();
 
-  virtual const char* what() const throw();
+  virtual const char* what() const throw() CXX11_OVERRIDE;
 
   std::string stackTrace() const;
 
