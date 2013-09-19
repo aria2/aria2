@@ -225,7 +225,6 @@ namespace {
 
     SUITE(SSL_NO_SUCH_CIPHERSUITE)
   };
-  static const size_t nSuites = sizeof(kSuites) / sizeof(*kSuites);
 #undef SUITE
 
   static inline const char* suiteToString(const SSLCipherSuite suite)
@@ -241,7 +240,6 @@ namespace {
   static const char* kBlocked[] = {
     "NULL", "anon", "MD5", "EXPORT", "DES", "IDEA", "NO_SUCH", "EMPTY"
   };
-  static const size_t nBlocked = sizeof(kBlocked) / sizeof(*kBlocked);
 
   static inline bool isBlockedSuite(SSLCipherSuite suite)
   {
