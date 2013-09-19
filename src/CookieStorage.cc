@@ -126,6 +126,7 @@ bool DomainNode::addCookie(std::unique_ptr<Cookie> cookie, time_t now)
     cookies_->erase(i);
     return false;
   } else {
+    cookie->setCreationTime((*i)->getCreationTime());
     *i = std::move(cookie);
     return true;
   }

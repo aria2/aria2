@@ -66,10 +66,12 @@ std::vector<const Cookie*> dumpCookie(const CookieStorage& st)
 
 void CookieStorageTest::testStore()
 {
-  time_t now = 1000;
+  time_t now = 999;
   auto st = CookieStorage{};
-  auto goodCookie = []() {
-    return createCookie("k", "v", "localhost", true, "/", false);
+  auto goodCookie = [&]() {
+    auto c = createCookie("k", "v", "localhost", true, "/", false);
+    c->setCreationTime(now);
+    return c;
   };
   CPPUNIT_ASSERT(st.store(goodCookie(), now));
   CPPUNIT_ASSERT_EQUAL((size_t)1, st.size());
@@ -83,13 +85,21 @@ void CookieStorageTest::testStore()
   CPPUNIT_ASSERT(st.contains(*anotherCookie()));
   CPPUNIT_ASSERT(st.contains(*goodCookie()));
 
-  auto updateGoodCookie = []() {
-    return createCookie("k", "v2", "localhost",  true, "/", false);
+  ++now;
+  auto updateGoodCookie = [&]() {
+    auto c = createCookie("k", "v2", "localhost",  true, "/", false);
+    c->setCreationTime(now);
+    return c;
   };
   CPPUNIT_ASSERT(st.store(updateGoodCookie(), now));
   CPPUNIT_ASSERT_EQUAL((size_t)2, st.size());
   CPPUNIT_ASSERT(st.contains(*updateGoodCookie()));
   CPPUNIT_ASSERT(st.contains(*anotherCookie()));
+  auto cookies = st.criteriaFind("localhost", "/", now, false);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, cookies.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("v2"), cookies[0]->getValue());
+  // New cookie's creation time must match old cookie's creation time.
+  CPPUNIT_ASSERT_EQUAL((time_t)999, cookies[0]->getCreationTime());
 
   auto expireGoodCookie = []() {
     return createCookie("k", "v3", 0, "localhost", true, "/", false);
