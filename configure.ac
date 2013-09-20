@@ -40,6 +40,7 @@ AC_DEFINE_UNQUOTED([TARGET], ["$target"], [Define target-type])
 # Checks for arguments.
 ARIA2_ARG_WITHOUT([libuv])
 ARIA2_ARG_WITHOUT([appletls])
+ARIA2_ARG_WITHOUT([wintls])
 ARIA2_ARG_WITHOUT([gnutls])
 ARIA2_ARG_WITHOUT([libnettle])
 ARIA2_ARG_WITHOUT([libgmp])
@@ -286,7 +287,29 @@ case "$host" in
   *darwin*)
     have_osx="yes"
   ;;
+  *mingw*)
+    AC_CHECK_HEADERS([windows.h \
+                      winsock2.h \
+                      ws2tcpip.h \
+                      mmsystem.h \
+                      io.h \
+                      iphlpapi.h\
+                      winioctl.h \
+                      share.h], [], [],
+                      [[
+#ifdef HAVE_WS2TCPIP_H
+# include <ws2tcpip.h>
+#endif
+#ifdef HAVE_WINSOCK2_H
+# include <winsock2.h>
+#endif
+#ifdef HAVE_WINDOWS_H
+# include <windows.h>
+#endif
+                      ]])
+  ;;
 esac
+
 
 if test "x$with_appletls" = "xyes"; then
   AC_MSG_CHECKING([whether to enable Mac OS X native SSL/TLS])
@@ -299,6 +322,23 @@ if test "x$with_appletls" = "xyes"; then
     AC_MSG_RESULT(no)
     if test "x$with_appletls_requested" = "xyes"; then
       ARIA2_DEP_NOT_MET([appletls])
+    fi
+  fi
+fi
+
+if test "x$with_wintls" = "xyes"; then
+  AC_SEARCH_LIBS([CryptAcquireContextW], [advapi32], [
+                  AC_CHECK_HEADER([wincrypt.h], [have_wincrypt=yes], [have_wincrypt=no],
+                      [[
+#ifdef HAVE_WINDOWS_H
+# include <windows.h>
+#endif
+                      ]])
+                  break;
+                  ], [have_wincrypt=no])
+  if test "x$have_wincrypt" != "xyes"; then
+    if test "x$with_wintls_requested" = "xyes"; then
+      ARIA2_DEP_NOT_MET([wintls])
     fi
   fi
 fi
@@ -398,17 +438,22 @@ if test "x$have_osx" == "xyes"; then
   use_md="apple"
   AC_DEFINE([USE_APPLE_MD], [1], [What message digest implementation to use])
 else
-  if test "x$have_libnettle" = "xyes"; then
-    AC_DEFINE([USE_LIBNETTLE_MD], [1], [What message digest implementation to use])
-    use_md="libnettle"
+  if test "x$have_wincrypt" == "xyes"; then
+    use_md="windows"
+    AC_DEFINE([USE_WINDOWS_MD], [1], [What message digest implementation to use])
   else
-    if test "x$have_libgcrypt" = "xyes"; then
-      AC_DEFINE([USE_LIBGCRYPT_MD], [1], [What message digest implementation to use])
-      use_md="libgcrypt"
+    if test "x$have_libnettle" = "xyes"; then
+      AC_DEFINE([USE_LIBNETTLE_MD], [1], [What message digest implementation to use])
+      use_md="libnettle"
     else
-      if test "x$have_openssl" = "xyes"; then
-        AC_DEFINE([USE_OPENSSL_MD], [1], [What message digest implementation to use])
-        use_md="openssl"
+      if test "x$have_libgcrypt" = "xyes"; then
+        AC_DEFINE([USE_LIBGCRYPT_MD], [1], [What message digest implementation to use])
+        use_md="libgcrypt"
+      else
+        if test "x$have_openssl" = "xyes"; then
+          AC_DEFINE([USE_OPENSSL_MD], [1], [What message digest implementation to use])
+          use_md="openssl"
+        fi
       fi
     fi
   fi
@@ -427,6 +472,7 @@ fi
 AM_CONDITIONAL([HAVE_OSX], [ test "x$have_osx" = "xyes" ])
 AM_CONDITIONAL([HAVE_APPLETLS], [ test "x$have_appletls" = "xyes" ])
 AM_CONDITIONAL([USE_APPLE_MD], [ test "x$use_md" = "xapple" ])
+AM_CONDITIONAL([USE_WINDOWS_MD], [ test "x$use_md" = "xwindows" ])
 AM_CONDITIONAL([HAVE_LIBGNUTLS], [ test "x$have_libgnutls" = "xyes" ])
 AM_CONDITIONAL([HAVE_LIBNETTLE], [ test "x$have_libnettle" = "xyes" ])
 AM_CONDITIONAL([USE_LIBNETTLE_MD], [ test "x$use_md" = "xlibnettle"])
@@ -518,30 +564,6 @@ esac
 # Checks for header files.
 AC_FUNC_ALLOCA
 AC_HEADER_STDC
-
-case "$host" in
-	*mingw*)
-    AC_CHECK_HEADERS([windows.h \
-                      winsock2.h \
-                      ws2tcpip.h \
-                      mmsystem.h \
-                      io.h \
-                      iphlpapi.h\
-                      winioctl.h \
-                      share.h], [], [],
-                      [[
-#ifdef HAVE_WS2TCPIP_H
-# include <ws2tcpip.h>
-#endif
-#ifdef HAVE_WINSOCK2_H
-# include <winsock2.h>
-#endif
-#ifdef HAVE_WINDOWS_H
-# include <windows.h>
-#endif
-                      ]])
-		;;
-esac
 
 AC_CHECK_HEADERS([argz.h \
                   arpa/inet.h \

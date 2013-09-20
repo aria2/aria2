@@ -329,6 +329,10 @@ SRCS += AppleTLSContext.cc AppleTLSContext.h \
         AppleTLSSession.cc AppleTLSSession.h
 endif # HAVE_APPLETLS
 
+if USE_WINDOWS_MD
+SRCS += WinMessageDigestImpl.cc WinMessageDigestImpl.h
+endif # USE_WINDOWS_MD
+
 if HAVE_LIBGNUTLS
 SRCS += LibgnutlsTLSContext.cc LibgnutlsTLSContext.h \
         LibgnutlsTLSSession.cc LibgnutlsTLSSession.h

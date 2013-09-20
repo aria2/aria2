@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2010 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Nils Maier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,20 +32,39 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_MESSAGE_DIGEST_IMPL_H
-#define D_MESSAGE_DIGEST_IMPL_H
+#ifndef D_WIN_MESSAGE_DIGEST_IMPL_H
+#define D_WIN_MESSAGE_DIGEST_IMPL_H
 
+#include "common.h"
 
-#ifdef USE_APPLE_MD
-# include "AppleMessageDigestImpl.h"
-#elif defined(USE_WINDOWS_MD)
-# include "WinMessageDigestImpl.h"
-#elif defined(USE_LIBNETTLE_MD)
-# include "LibnettleMessageDigestImpl.h"
-#elif defined(USE_LIBGCRYPT_MD)
-# include "LibgcryptMessageDigestImpl.h"
-#elif defined(USE_OPENSSL_MD)
-# include "LibsslMessageDigestImpl.h"
-#endif
+#include <string>
+#include <memory>
 
-#endif // D_MESSAGE_DIGEST_IMPL_H
+namespace aria2 {
+
+class MessageDigestImpl {
+public:
+  virtual ~MessageDigestImpl() {}
+  static std::unique_ptr<MessageDigestImpl> sha1();
+  static std::unique_ptr<MessageDigestImpl> create(const std::string& hashType);
+
+  static bool supports(const std::string& hashType);
+  static size_t getDigestLength(const std::string& hashType);
+
+public:
+  virtual size_t getDigestLength() const = 0;
+  virtual void reset() = 0;
+  virtual void update(const void* data, size_t length) = 0;
+  virtual void digest(unsigned char* md) = 0;
+
+protected:
+  MessageDigestImpl() {}
+
+private:
+  MessageDigestImpl(const MessageDigestImpl&);
+  MessageDigestImpl& operator=(const MessageDigestImpl&);
+};
+
+} // namespace aria2
+
+#endif // D_WIN_MESSAGE_DIGEST_IMPL_H
