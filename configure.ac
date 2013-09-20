@@ -54,6 +54,7 @@ ARIA2_ARG_WITHOUT([libz])
 ARIA2_ARG_WITH([tcmalloc])
 ARIA2_ARG_WITH([jemalloc])
 
+ARIA2_ARG_DISABLE([ssl])
 ARIA2_ARG_DISABLE([bittorrent])
 ARIA2_ARG_DISABLE([metalink])
 ARIA2_ARG_DISABLE([epoll])
@@ -311,6 +312,15 @@ case "$host" in
 esac
 
 
+if test "x$enable_ssl" != "xyes"; then
+  with_appletls=no
+  with_wintls=no
+  with_libnettle=no
+  with_libgcrypt=no
+  with_gnutls=no
+  with_openssl=no
+fi
+
 if test "x$with_appletls" = "xyes"; then
   AC_MSG_CHECKING([whether to enable Mac OS X native SSL/TLS])
   if test "x$have_osx" = "xyes"; then
@@ -468,6 +478,7 @@ if test "x$have_appletls" = "xyes" || test "x$have_libgnutls" = "xyes" || test "
   AC_DEFINE([ENABLE_SSL], [1], [Define to 1 if ssl support is enabled.])
   AM_CONDITIONAL([ENABLE_SSL], true)
 else
+  have_ssl="no"
   AM_CONDITIONAL([ENABLE_SSL], false)
 fi
 
