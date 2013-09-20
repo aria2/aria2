@@ -333,6 +333,10 @@ if USE_WINDOWS_MD
 SRCS += WinMessageDigestImpl.cc
 endif # USE_WINDOWS_MD
 
+if USE_INTERNAL_MD
+SRCS += InternalMessageDigestImpl.cc sha1.c md5.c
+endif # USE_WINDOWS_MD
+
 if HAVE_LIBGNUTLS
 SRCS += LibgnutlsTLSContext.cc LibgnutlsTLSContext.h \
         LibgnutlsTLSSession.cc LibgnutlsTLSSession.h

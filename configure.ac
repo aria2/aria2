@@ -453,6 +453,9 @@ else
         if test "x$have_openssl" = "xyes"; then
           AC_DEFINE([USE_OPENSSL_MD], [1], [What message digest implementation to use])
           use_md="openssl"
+        else
+          AC_DEFINE([USE_INTERNAL_MD], [1], [What message digest implementation to use])
+          use_md="internal"
         fi
       fi
     fi
@@ -481,6 +484,7 @@ AM_CONDITIONAL([HAVE_LIBGCRYPT], [ test "x$have_libgcrypt" = "xyes" ])
 AM_CONDITIONAL([USE_LIBGCRYPT_MD], [ test "x$use_md" = "xlibgcrypt"])
 AM_CONDITIONAL([HAVE_OPENSSL], [ test "x$have_openssl" = "xyes" ])
 AM_CONDITIONAL([USE_OPENSSL_MD], [ test "x$use_md" = "xopenssl"])
+AM_CONDITIONAL([USE_INTERNAL_MD], [ test "x$use_md" = "xinternal"])
 
 if test "x$use_md" != "x"; then
   AC_DEFINE([ENABLE_MESSAGE_DIGEST], [1],
@@ -969,7 +973,7 @@ echo "Epoll:          $have_epoll"
 echo "Bittorrent:     $enable_bittorrent"
 echo "Metalink:       $enable_metalink"
 echo "XML-RPC:        $enable_xml_rpc"
-echo "Message Digest: $enable_message_digest"
+echo "Message Digest: $use_md"
 echo "WebSocket:      $enable_websocket"
 echo "Libaria2:       $enable_libaria2"
 if test "x$enable_libaria2" = "xyes"; then
