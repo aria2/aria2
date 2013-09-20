@@ -434,7 +434,7 @@ if test "x$with_libcares" = "xyes"; then
 fi
 
 use_md=""
-if test "x$have_osx" == "xyes"; then
+if test "x$have_appletls" == "xyes"; then
   use_md="apple"
   AC_DEFINE([USE_APPLE_MD], [1], [What message digest implementation to use])
 else
