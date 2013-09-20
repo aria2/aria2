@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2010 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Nils Maier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,95 +32,76 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "LibsslMessageDigestImpl.h"
 
-#include <algorithm>
+#include "MessageDigestImpl.h"
 
-#include "array_fun.h"
-#include "HashFuncEntry.h"
-#include "a2functional.h"
+#include <openssl/evp.h>
 
 namespace aria2 {
 
-MessageDigestImpl::MessageDigestImpl(const EVP_MD* hashFunc)
-  : hashFunc_{hashFunc}
-{
-  EVP_MD_CTX_init(&ctx_);
-  reset();
-}
+template<const EVP_MD* (*init_fn)()>
+class MessageDigestBase : public MessageDigestImpl {
+public:
+  MessageDigestBase() :  md_(init_fn()), len_(EVP_MD_size(md_)) {
+    EVP_MD_CTX_init(&ctx_);
+    reset();
+  }
+  virtual ~MessageDigestBase() {
+    EVP_MD_CTX_cleanup(&ctx_);
+  }
 
-MessageDigestImpl::~MessageDigestImpl()
-{
-  EVP_MD_CTX_cleanup(&ctx_);
-}
+  static size_t length() {
+    return EVP_MD_size(init_fn());
+  }
+  virtual size_t getDigestLength() const CXX11_OVERRIDE {
+    return len_;
+  }
+  virtual void reset() CXX11_OVERRIDE {
+    EVP_DigestInit_ex(&ctx_, md_, 0);
+  }
+  virtual void update(const void* data, size_t length) CXX11_OVERRIDE {
+    auto bytes = reinterpret_cast<const char*>(data);
+    while (length) {
+      size_t l = std::min(length, (size_t)std::numeric_limits<uint32_t>::max());
+      EVP_DigestUpdate(&ctx_, bytes, l);
+      length -= l;
+      bytes += l;
+    }
+  }
+  virtual void digest(unsigned char* md) CXX11_OVERRIDE {
+    unsigned int len;
+    EVP_DigestFinal_ex(&ctx_, md, &len);
+  }
+
+private:
+  EVP_MD_CTX ctx_;
+  const EVP_MD* md_;
+  const size_t len_;
+};
+
+typedef MessageDigestBase<EVP_md5> MessageDigestMD5;
+typedef MessageDigestBase<EVP_sha1> MessageDigestSHA1;
 
 std::unique_ptr<MessageDigestImpl> MessageDigestImpl::sha1()
 {
-  return make_unique<MessageDigestImpl>(EVP_sha1());
+  return std::unique_ptr<MessageDigestImpl>(new MessageDigestSHA1());
 }
 
-typedef HashFuncEntry<const EVP_MD*> CHashFuncEntry;
-typedef FindHashFunc<const EVP_MD*> CFindHashFunc;
-
-namespace {
-CHashFuncEntry hashFuncs[] = {
-  CHashFuncEntry("sha-1", EVP_sha1()),
+MessageDigestImpl::hashes_t MessageDigestImpl::hashes = {
+  { "sha-1", make_hi<MessageDigestSHA1>() },
 #ifdef HAVE_EVP_SHA224
-  CHashFuncEntry("sha-224", EVP_sha224()),
-#endif // HAVE_EVP_SHA224
-#ifdef HAVE_EVP_SHA256
-  CHashFuncEntry("sha-256", EVP_sha256()),
-#endif // HAVE_EVP_SHA256
-#ifdef HAVE_EVP_SHA384
-  CHashFuncEntry("sha-384", EVP_sha384()),
-#endif // HAVE_EVP_SHA384
-#ifdef HAVE_EVP_SHA512
-  CHashFuncEntry("sha-512", EVP_sha512()),
-#endif // HAVE_EVP_SHA512
-  CHashFuncEntry("md5", EVP_md5())
+  { "sha-224", make_hi<MessageDigestBase<EVP_sha224> >() },
+#endif
+#ifdef HAVE_EVP_SHA224
+  { "sha-256", make_hi<MessageDigestBase<EVP_sha256> >() },
+#endif
+#ifdef HAVE_EVP_SHA224
+  { "sha-384", make_hi<MessageDigestBase<EVP_sha384> >() },
+#endif
+#ifdef HAVE_EVP_SHA224
+  { "sha-512", make_hi<MessageDigestBase<EVP_sha512> >() },
+#endif
+  { "md5", make_hi<MessageDigestMD5>() },
 };
-} // namespace
-
-std::unique_ptr<MessageDigestImpl> MessageDigestImpl::create
-(const std::string& hashType)
-{
-  auto hashFunc = getHashFunc(std::begin(hashFuncs), std::end(hashFuncs),
-                              hashType);
-  return make_unique<MessageDigestImpl>(hashFunc);
-}
-
-bool MessageDigestImpl::supports(const std::string& hashType)
-{
-  return std::end(hashFuncs) != std::find_if(std::begin(hashFuncs),
-                                             std::end(hashFuncs),
-                                             CFindHashFunc(hashType));
-}
-
-size_t MessageDigestImpl::getDigestLength(const std::string& hashType)
-{
-  auto hashFunc = getHashFunc(std::begin(hashFuncs), std::end(hashFuncs),
-                              hashType);
-  return EVP_MD_size(hashFunc);
-}
-
-size_t MessageDigestImpl::getDigestLength() const
-{
-  return EVP_MD_size(hashFunc_);
-}
-
-void MessageDigestImpl::reset()
-{
-  EVP_DigestInit_ex(&ctx_, hashFunc_, 0);
-}
-void MessageDigestImpl::update(const void* data, size_t length)
-{
-  EVP_DigestUpdate(&ctx_, data, length);
-}
-
-void MessageDigestImpl::digest(unsigned char* md)
-{
-  unsigned int len;
-  EVP_DigestFinal_ex(&ctx_, md, &len);
-}
 
 } // namespace aria2

@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2011 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Nils Maier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,86 +32,69 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "LibnettleMessageDigestImpl.h"
 
-#include <algorithm>
+#include "MessageDigestImpl.h"
 
-#include "array_fun.h"
-#include "HashFuncEntry.h"
-#include "a2functional.h"
+#include <nettle/nettle-meta.h>
 
 namespace aria2 {
 
-MessageDigestImpl::MessageDigestImpl(const nettle_hash* hashInfo)
-  : hashInfo_{hashInfo},
-    ctx_{new char[hashInfo->context_size]}
-{
-  reset();
-}
+namespace {
+template<const nettle_hash* hash>
+class MessageDigestBase : public MessageDigestImpl {
+public:
+  MessageDigestBase() : ctx_(new char[hash->context_size]) {
+    reset();
+  }
+  virtual ~MessageDigestBase() {}
 
-MessageDigestImpl::~MessageDigestImpl()
-{
-  delete [] ctx_;
-}
+  static size_t length() {
+    return hash->digest_size;
+  }
+  virtual size_t getDigestLength() const CXX11_OVERRIDE {
+    return hash->digest_size;
+  }
+  virtual void reset() CXX11_OVERRIDE {
+    hash->init(ctx_.get());
+  }
+  virtual void update(const void* data, size_t length) CXX11_OVERRIDE {
+    auto bytes = reinterpret_cast<const uint8_t*>(data);
+    while (length) {
+      size_t l = std::min(length, (size_t)std::numeric_limits<uint32_t>::max());
+      hash->update(ctx_.get(), l, bytes);
+      length -= l;
+      bytes += l;
+    }
+  }
+  virtual void digest(unsigned char* md) CXX11_OVERRIDE {
+    hash->digest(ctx_.get(), getDigestLength(), md);
+  }
+
+private:
+  std::unique_ptr<char[]> ctx_;
+  size_t len_;
+};
+
+typedef MessageDigestBase<&nettle_md5> MessageDigestMD5;
+typedef MessageDigestBase<&nettle_sha1> MessageDigestSHA1;
+typedef MessageDigestBase<&nettle_sha224> MessageDigestSHA224;
+typedef MessageDigestBase<&nettle_sha256> MessageDigestSHA256;
+typedef MessageDigestBase<&nettle_sha384> MessageDigestSHA384;
+typedef MessageDigestBase<&nettle_sha512> MessageDigestSHA512;
+} // namespace
 
 std::unique_ptr<MessageDigestImpl> MessageDigestImpl::sha1()
 {
-  return make_unique<MessageDigestImpl>(&nettle_sha1);
+  return std::unique_ptr<MessageDigestImpl>(new MessageDigestSHA1());
 }
 
-typedef HashFuncEntry<const nettle_hash*> CHashFuncEntry;
-typedef FindHashFunc<const nettle_hash*> CFindHashFunc;
-
-namespace {
-CHashFuncEntry hashFuncs[] = {
-  CHashFuncEntry("sha-1", &nettle_sha1),
-  CHashFuncEntry("sha-224", &nettle_sha224),
-  CHashFuncEntry("sha-256", &nettle_sha256),
-  CHashFuncEntry("sha-384", &nettle_sha384),
-  CHashFuncEntry("sha-512", &nettle_sha512),
-  CHashFuncEntry("md5", &nettle_md5)
+MessageDigestImpl::hashes_t MessageDigestImpl::hashes = {
+  { "sha-1", make_hi<MessageDigestSHA1>() },
+  { "sha-224", make_hi<MessageDigestSHA224>() },
+  { "sha-256", make_hi<MessageDigestSHA256>() },
+  { "sha-384", make_hi<MessageDigestSHA384>() },
+  { "sha-512", make_hi<MessageDigestSHA512>() },
+  { "md5", make_hi<MessageDigestMD5>() },
 };
-} // namespace
-
-std::unique_ptr<MessageDigestImpl> MessageDigestImpl::create
-(const std::string& hashType)
-{
-  auto hashInfo =
-    getHashFunc(std::begin(hashFuncs), std::end(hashFuncs), hashType);
-  return make_unique<MessageDigestImpl>(hashInfo);
-}
-
-bool MessageDigestImpl::supports(const std::string& hashType)
-{
-  return std::end(hashFuncs) != std::find_if(std::begin(hashFuncs),
-                                             std::end(hashFuncs),
-                                             CFindHashFunc(hashType));
-}
-
-size_t MessageDigestImpl::getDigestLength(const std::string& hashType)
-{
-  auto hashInfo =
-    getHashFunc(std::begin(hashFuncs), std::end(hashFuncs), hashType);
-  return hashInfo->digest_size;
-}
-
-size_t MessageDigestImpl::getDigestLength() const
-{
-  return hashInfo_->digest_size;
-}
-
-void MessageDigestImpl::reset()
-{
-  hashInfo_->init(ctx_);
-}
-void MessageDigestImpl::update(const void* data, size_t length)
-{
-  hashInfo_->update(ctx_, length, static_cast<const uint8_t*>(data));
-}
-
-void MessageDigestImpl::digest(unsigned char* md)
-{
-  hashInfo_->digest(ctx_, getDigestLength(), md);
-}
 
 } // namespace aria2

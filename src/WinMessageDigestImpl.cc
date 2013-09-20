@@ -33,14 +33,13 @@
  */
 /* copyright --> */
 
-#include "WinMessageDigestImpl.h"
+#include "MessageDigestImpl.h"
 
 #include <wincrypt.h>
 
-#include "array_fun.h"
-#include "a2functional.h"
-#include "HashFuncEntry.h"
+#include "fmt.h"
 #include "DlAbortEx.h"
+#include "LogFactory.h"
 
 namespace {
 using namespace aria2;
@@ -50,9 +49,12 @@ private:
   HCRYPTPROV provider_;
 public:
   Context() {
-    if (!::CryptAcquireContext(&provider_, nullptr, nullptr, PROV_RSA_FULL,
-                               CRYPT_VERIFYCONTEXT)) {
-      throw DL_ABORT_EX("Failed to get cryptographic provider");
+    if (!::CryptAcquireContext(&provider_, nullptr, nullptr,
+                               PROV_RSA_AES, CRYPT_VERIFYCONTEXT)) {
+      if (!::CryptAcquireContext(&provider_, nullptr, nullptr, PROV_RSA_AES,
+                                CRYPT_VERIFYCONTEXT)) {
+        throw DL_ABORT_EX("Failed to get cryptographic provider");
+      }
     }
   }
   ~Context() {
@@ -67,9 +69,29 @@ public:
 // XXX static OK?
 static Context context_;
 
+inline size_t getAlgLength(ALG_ID id)
+{
+  Context context;
+  HCRYPTHASH hash;
+  if (!::CryptCreateHash(context.get(), id, 0, 0, &hash)) {
+    throw DL_ABORT_EX(fmt("Failed to initialize hash %d", id));
+  }
+
+  DWORD rv = 0;
+  DWORD len = sizeof(rv);
+  if (!::CryptGetHashParam(hash, HP_HASHSIZE, reinterpret_cast<BYTE*>(&rv),
+                            &len, 0)) {
+    throw DL_ABORT_EX("Failed to initialize hash(2)");
+  }
+  ::CryptDestroyHash(hash);
+
+  return rv;
+}
+
 } // namespace
 
 namespace aria2 {
+
 
 template<ALG_ID id>
 class MessageDigestBase : public MessageDigestImpl {
@@ -88,6 +110,10 @@ public:
   MessageDigestBase() : hash_(0), len_(0) { reset(); }
   virtual ~MessageDigestBase() { destroy(); }
 
+  static size_t length() {
+    MessageDigestBase<id> rv;
+    return rv.getDigestLength();
+  }
   virtual size_t getDigestLength() const CXX11_OVERRIDE {
     return len_;
   }
@@ -96,11 +122,10 @@ public:
     if (!::CryptCreateHash(context_.get(), id, 0, 0, &hash_)) {
       throw DL_ABORT_EX("Failed to create hash");
     }
-
     DWORD len = sizeof(len_);
     if (!::CryptGetHashParam(hash_, HP_HASHSIZE, reinterpret_cast<BYTE*>(&len_),
                              &len, 0)) {
-      throw DL_ABORT_EX("Failed to create hash");
+      throw DL_ABORT_EX("Failed to initialize hash");
     }
   }
   virtual void update(const void* data, size_t length) CXX11_OVERRIDE {
@@ -133,45 +158,36 @@ std::unique_ptr<MessageDigestImpl> MessageDigestImpl::sha1()
   return std::unique_ptr<MessageDigestImpl>(new MessageDigestSHA1());
 }
 
-std::unique_ptr<MessageDigestImpl> MessageDigestImpl::create(
-    const std::string& hashType)
-{
-  if (hashType == "sha-1") {
-    return make_unique<MessageDigestSHA1>();
-  }
-  if (hashType == "sha-256") {
-    return make_unique<MessageDigestSHA256>();
-  }
-  if (hashType == "sha-384") {
-    return make_unique<MessageDigestSHA384>();
-  }
-  if (hashType == "sha-512") {
-    return make_unique<MessageDigestSHA512>();
-  }
-  if (hashType == "md5") {
-    return make_unique<MessageDigestMD5>();
-  }
-  return nullptr;
-}
+namespace {
+MessageDigestImpl::hashes_t initialize() {
+  MessageDigestImpl::hashes_t rv = {
+    { "sha-1", MessageDigestImpl::make_hi<MessageDigestSHA1>() },
+    { "md5", MessageDigestImpl::make_hi<MessageDigestMD5>() },
+  };
 
-bool MessageDigestImpl::supports(const std::string& hashType)
-{
   try {
-    return !!create(hashType);
+    rv.emplace("sha-256", MessageDigestImpl::make_hi<MessageDigestSHA256>());
   }
-  catch (RecoverableException& ex) {
-    // no op
+  catch (RecoverableException &ex) {
+    printf("SHA-256 is not supported on this machine");
   }
-  return false;
-}
+  try {
+    rv.emplace("sha-384", MessageDigestImpl::make_hi<MessageDigestSHA384>());
+  }
+  catch (RecoverableException &ex) {
+    printf("SHA-384 is not supported on this machine");
+  }
+  try {
+    rv.emplace("sha-512", MessageDigestImpl::make_hi<MessageDigestSHA512>());
+  }
+  catch (RecoverableException &ex) {
+    printf("SHA-512 is not supported on this machine");
+  }
 
-size_t MessageDigestImpl::getDigestLength(const std::string& hashType)
-{
-  std::unique_ptr<MessageDigestImpl> impl = create(hashType);
-  if (!impl) {
-    return 0;
-  }
-  return impl->getDigestLength();
-}
+  return rv;
+};
+} // namespace
+
+MessageDigestImpl::hashes_t MessageDigestImpl::hashes = initialize();
 
 } // namespace aria2

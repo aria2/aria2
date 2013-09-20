@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2010 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Nils Maier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,84 +32,81 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "LibgcryptMessageDigestImpl.h"
 
-#include <algorithm>
+#include "MessageDigestImpl.h"
 
-#include "array_fun.h"
-#include "HashFuncEntry.h"
-#include "a2functional.h"
+#include <gcrypt.h>
 
 namespace aria2 {
 
-MessageDigestImpl::MessageDigestImpl(int hashFunc) : hashFunc_{hashFunc}
-{
-  gcry_md_open(&ctx_, hashFunc_, 0);
-}
+namespace {
+template<int hash>
+class MessageDigestBase : public MessageDigestImpl {
+private:
+  struct Deleter {
+    void operator()(gcry_md_hd_t ctx) {
+      if (ctx) {
+        gcry_md_close(ctx);
+      }
+    }
+  };
 
-MessageDigestImpl::~MessageDigestImpl()
-{
-  gcry_md_close(ctx_);
-}
+public:
+  MessageDigestBase() {
+    gcry_md_hd_t ctx = nullptr;
+    gcry_md_open(&ctx, hash, 0);
+    ctx_.reset(ctx);
+    reset();
+  }
+  virtual ~MessageDigestBase() {}
+
+  static size_t length() {
+    return ::gcry_md_get_algo_dlen(hash);
+  }
+  virtual size_t getDigestLength() const CXX11_OVERRIDE {
+    return ::gcry_md_get_algo_dlen(hash);
+  }
+  virtual void reset() CXX11_OVERRIDE {
+    ::gcry_md_reset(ctx_.get());
+  }
+  virtual void update(const void* data, size_t length) CXX11_OVERRIDE {
+    auto bytes = reinterpret_cast<const uint8_t*>(data);
+    while (length) {
+      size_t l = std::min(length, (size_t)std::numeric_limits<uint32_t>::max());
+      gcry_md_write(ctx_.get(), bytes, length);
+      length -= l;
+      bytes += l;
+    }
+  }
+  virtual void digest(unsigned char* md) CXX11_OVERRIDE {
+    ::memcpy(md, gcry_md_read(ctx_.get(), 0), getDigestLength());
+  }
+
+private:
+  std::unique_ptr<std::remove_pointer<gcry_md_hd_t>::type, Deleter> ctx_;
+  size_t len_;
+};
+
+typedef MessageDigestBase<GCRY_MD_MD5> MessageDigestMD5;
+typedef MessageDigestBase<GCRY_MD_SHA1> MessageDigestSHA1;
+typedef MessageDigestBase<GCRY_MD_SHA224> MessageDigestSHA224;
+typedef MessageDigestBase<GCRY_MD_SHA256> MessageDigestSHA256;
+typedef MessageDigestBase<GCRY_MD_SHA384> MessageDigestSHA384;
+typedef MessageDigestBase<GCRY_MD_SHA512> MessageDigestSHA512;
+} // namespace
 
 std::unique_ptr<MessageDigestImpl> MessageDigestImpl::sha1()
 {
-  return make_unique<MessageDigestImpl>(GCRY_MD_SHA1);
+  return std::unique_ptr<MessageDigestImpl>(new MessageDigestSHA1());
 }
 
-typedef HashFuncEntry<int> CHashFuncEntry;
-typedef FindHashFunc<int> CFindHashFunc;
-
-namespace {
-CHashFuncEntry hashFuncs[] = {
-  CHashFuncEntry("sha-1", GCRY_MD_SHA1),
-  CHashFuncEntry("sha-224", GCRY_MD_SHA224),
-  CHashFuncEntry("sha-256", GCRY_MD_SHA256),
-  CHashFuncEntry("sha-384", GCRY_MD_SHA384),
-  CHashFuncEntry("sha-512", GCRY_MD_SHA512),
-  CHashFuncEntry("md5", GCRY_MD_MD5)
+MessageDigestImpl::hashes_t MessageDigestImpl::hashes = {
+  { "sha-1", make_hi<MessageDigestSHA1>() },
+  { "sha-224", make_hi<MessageDigestSHA224>() },
+  { "sha-256", make_hi<MessageDigestSHA256>() },
+  { "sha-384", make_hi<MessageDigestSHA384>() },
+  { "sha-512", make_hi<MessageDigestSHA512>() },
+  { "md5", make_hi<MessageDigestMD5>() },
 };
-} // namespace
-
-std::unique_ptr<MessageDigestImpl> MessageDigestImpl::create
-(const std::string& hashType)
-{
-  int hashFunc = getHashFunc(std::begin(hashFuncs), std::end(hashFuncs),
-                             hashType);
-  return make_unique<MessageDigestImpl>(hashFunc);
-}
-
-bool MessageDigestImpl::supports(const std::string& hashType)
-{
-  return std::end(hashFuncs) != std::find_if(std::begin(hashFuncs),
-                                             std::end(hashFuncs),
-                                             CFindHashFunc(hashType));
-}
-
-size_t MessageDigestImpl::getDigestLength(const std::string& hashType)
-{
-  int hashFunc = getHashFunc(std::begin(hashFuncs), std::end(hashFuncs),
-                             hashType);
-  return gcry_md_get_algo_dlen(hashFunc);
-}
-
-size_t MessageDigestImpl::getDigestLength() const
-{
-  return gcry_md_get_algo_dlen(hashFunc_);
-}
-
-void MessageDigestImpl::reset()
-{
-  gcry_md_reset(ctx_);
-}
-void MessageDigestImpl::update(const void* data, size_t length)
-{
-  gcry_md_write(ctx_, data, length);
-}
-
-void MessageDigestImpl::digest(unsigned char* md)
-{
-  memcpy(md, gcry_md_read(ctx_, 0), gcry_md_get_algo_dlen(hashFunc_));
-}
 
 } // namespace aria2

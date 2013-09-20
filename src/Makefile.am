@@ -321,7 +321,7 @@ SRCS += TLSContext.h TLSSession.h
 endif # ENABLE_SSL
 
 if USE_APPLE_MD
-SRCS += AppleMessageDigestImpl.cc AppleMessageDigestImpl.h
+SRCS += AppleMessageDigestImpl.cc
 endif # USE_APPLE_MD
 
 if HAVE_APPLETLS
@@ -330,7 +330,7 @@ SRCS += AppleTLSContext.cc AppleTLSContext.h \
 endif # HAVE_APPLETLS
 
 if USE_WINDOWS_MD
-SRCS += WinMessageDigestImpl.cc WinMessageDigestImpl.h
+SRCS += WinMessageDigestImpl.cc
 endif # USE_WINDOWS_MD
 
 if HAVE_LIBGNUTLS
@@ -342,14 +342,14 @@ if HAVE_LIBGCRYPT
 SRCS += LibgcryptARC4Encryptor.cc LibgcryptARC4Encryptor.h \
         LibgcryptDHKeyExchange.cc LibgcryptDHKeyExchange.h
 if USE_LIBGCRYPT_MD
-SRCS += LibgcryptMessageDigestImpl.cc LibgcryptMessageDigestImpl.h
+SRCS += LibgcryptMessageDigestImpl.cc
 endif # USE_LIBGCRYPT_MD
 endif # HAVE_LIBGCRYPT
 
 if HAVE_LIBNETTLE
 SRCS += LibnettleARC4Encryptor.cc LibnettleARC4Encryptor.h
 if USE_LIBNETTLE_MD
-SRCS += LibnettleMessageDigestImpl.cc LibnettleMessageDigestImpl.h
+SRCS += LibnettleMessageDigestImpl.cc
 endif # USE_LIBNETTLE_MD
 endif # HAVE_LIBNETTLE
 
@@ -366,7 +366,7 @@ SRCS += LibsslTLSContext.cc LibsslTLSContext.h \
         LibsslTLSSession.cc LibsslTLSSession.h
 endif # !HAVE_APPLETLS
 if USE_OPENSSL_MD
-SRCS += LibsslMessageDigestImpl.cc LibsslMessageDigestImpl.h
+SRCS += LibsslMessageDigestImpl.cc
 endif
 endif # HAVE_OPENSSL
 
