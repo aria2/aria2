@@ -59,10 +59,12 @@ public:
     init_fn(&ctx_);
   }
   virtual void update(const void* data, size_t length) CXX11_OVERRIDE {
+    auto bytes = reinterpret_cast<const char*>(data);
     while (length) {
       CC_LONG l = std::min(length, (size_t)std::numeric_limits<uint32_t>::max());
-      update_fn(&ctx_, data, l);
+      update_fn(&ctx_, bytes, l);
       length -= l;
+      bytes += l;
     }
   }
   virtual void digest(unsigned char* md) CXX11_OVERRIDE {
