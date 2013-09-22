@@ -333,6 +333,11 @@ if USE_WINDOWS_MD
 SRCS += WinMessageDigestImpl.cc
 endif # USE_WINDOWS_MD
 
+if HAVE_WINTLS
+SRCS += WinTLSContext.cc WinTLSContext.h \
+	WinTLSSession.cc WinTLSSession.h
+endif # HAVE_WINTLS
+
 if USE_INTERNAL_BIGNUM
 SRCS += InternalDHKeyExchange.cc InternalDHKeyExchange.h bignum.h
 endif

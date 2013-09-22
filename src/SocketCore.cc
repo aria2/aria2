@@ -779,7 +779,7 @@ void SocketCore::readData(void* data, size_t& len)
     ret = tlsSession_->readData(data, len);
     if(ret < 0) {
       if(ret != TLS_ERR_WOULDBLOCK) {
-        throw DL_RETRY_EX(fmt(EX_SOCKET_SEND,
+        throw DL_RETRY_EX(fmt(EX_SOCKET_RECV,
                               tlsSession_->getLastErrorString().c_str()));
       }
       if(tlsSession_->checkDirection() == TLS_WANT_READ) {
@@ -814,6 +814,7 @@ bool SocketCore::tlsHandshake(TLSContext* tlsctx, const std::string& hostname)
   wantWrite_ = false;
   switch(secure_) {
   case A2_TLS_NONE:
+    A2_LOG_DEBUG("Creating TLS session");
     tlsSession_.reset(TLSSession::make(tlsctx));
     rv = tlsSession_->init(sockfd_);
     if(rv != TLS_ERR_OK) {
@@ -835,6 +836,7 @@ bool SocketCore::tlsHandshake(TLSContext* tlsctx, const std::string& hostname)
     secure_ = A2_TLS_HANDSHAKING;
     // Fall through
   case A2_TLS_HANDSHAKING:
+    A2_LOG_DEBUG("TLS Handshaking");
     if(tlsctx->getSide() == TLS_CLIENT) {
       rv = tlsSession_->tlsConnect(hostname, handshakeError);
     } else {
@@ -857,6 +859,7 @@ bool SocketCore::tlsHandshake(TLSContext* tlsctx, const std::string& hostname)
     }
     return false;
   default:
+    A2_LOG_DEBUG("TLS else");
     break;
   }
   return true;
