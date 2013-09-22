@@ -34,14 +34,18 @@
 /* copyright --> */
 #include "LibgnutlsTLSContext.h"
 
+#include <sstream>
+
 #ifdef HAVE_LIBGNUTLS
 # include <gnutls/x509.h>
+# include <gnutls/pkcs12.h>
 #endif // HAVE_LIBGNUTLS
 
 #include "LogFactory.h"
 #include "Logger.h"
 #include "fmt.h"
 #include "message.h"
+#include "BufferedFile.h"
 
 namespace aria2 {
 
@@ -83,6 +87,9 @@ bool GnuTLSContext::good() const
 bool GnuTLSContext::addCredentialFile(const std::string& certfile,
                                    const std::string& keyfile)
 {
+  if (keyfile.empty()) {
+    return addP12CredentialFile(certfile);
+  }
   int ret = gnutls_certificate_set_x509_key_file(certCred_,
                                                  certfile.c_str(),
                                                  keyfile.c_str(),
@@ -99,6 +106,22 @@ bool GnuTLSContext::addCredentialFile(const std::string& certfile,
                      gnutls_strerror(ret)));
     return false;
   }
+}
+bool GnuTLSContext::addP12CredentialFile(const std::string& p12file)
+{
+  std::stringstream ss;
+  BufferedFile(p12file.c_str(), "rb").transfer(ss);
+  const gnutls_datum_t data = {
+    (unsigned char*)ss.str().c_str(),
+    (unsigned int)ss.str().length()
+  };
+  int err = gnutls_certificate_set_x509_simple_pkcs12_mem(
+      certCred_, &data, GNUTLS_X509_FMT_DER, "");
+  if (err != GNUTLS_E_SUCCESS) {
+    A2_LOG_ERROR("Failed to import pkcs12");
+    return false;
+  }
+  return true;
 }
 
 bool GnuTLSContext::addSystemTrustedCACerts()
