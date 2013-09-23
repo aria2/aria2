@@ -111,9 +111,10 @@ bool GnuTLSContext::addP12CredentialFile(const std::string& p12file)
 {
   std::stringstream ss;
   BufferedFile(p12file.c_str(), "rb").transfer(ss);
+  auto datastr = ss.str();
   const gnutls_datum_t data = {
-    (unsigned char*)ss.str().c_str(),
-    (unsigned int)ss.str().length()
+    (unsigned char*)datastr.c_str(),
+    (unsigned int)datastr.length()
   };
   int err = gnutls_certificate_set_x509_simple_pkcs12_mem(
       certCred_, &data, GNUTLS_X509_FMT_DER, "");

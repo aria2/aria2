@@ -135,8 +135,9 @@ bool OpenSSLTLSContext::addP12CredentialFile(const std::string& p12file)
   std::stringstream ss;
   BufferedFile(p12file.c_str(), "rb").transfer(ss);
 
-  void *ptr = const_cast<char*>(ss.str().c_str());
-  size_t len = ss.str().length();
+  auto data = ss.str();
+  void *ptr = const_cast<char*>(data.c_str());
+  size_t len = data.length();
   std::unique_ptr<BIO, bio_deleter> bio(BIO_new_mem_buf(ptr, len));
   A2_LOG_DEBUG(fmt("p12 size: %" PRIu64, len));
 
