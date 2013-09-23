@@ -51,7 +51,6 @@
 #include "OptionHandlerFactory.h"
 #include "DlAbortEx.h"
 #include "error_code.h"
-#include "prefs.h"
 #include "UnknownOptionException.h"
 #include "LogFactory.h"
 #include "fmt.h"

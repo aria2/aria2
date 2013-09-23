@@ -37,7 +37,6 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "prefs.h"
 #include "bitfield.h"
 
 namespace aria2 {

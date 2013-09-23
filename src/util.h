@@ -62,6 +62,7 @@
 #include "message.h"
 #include "DlAbortEx.h"
 #include "fmt.h"
+#include "prefs.h"
 
 #ifndef HAVE_SIGACTION
 #  define sigset_t int
@@ -75,8 +76,6 @@ class BinaryStream;
 class FileEntry;
 class RequestGroup;
 class Option;
-struct Pref;
-typedef const Pref* PrefPtr;
 
 #define STRTOLL(X) strtoll(X, reinterpret_cast<char**>(0), 10)
 #define STRTOULL(X) strtoull(X, reinterpret_cast<char**>(0), 10)

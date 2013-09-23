@@ -34,7 +34,6 @@
 /* copyright --> */
 #include "OptionHandlerException.h"
 #include "fmt.h"
-#include "prefs.h"
 
 namespace aria2 {
 

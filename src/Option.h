@@ -41,10 +41,9 @@
 #include <vector>
 #include <memory>
 
-namespace aria2 {
+#include "prefs.h"
 
-struct Pref;
-typedef const Pref* PrefPtr;
+namespace aria2 {
 
 class Option {
 private:

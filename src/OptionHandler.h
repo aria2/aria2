@@ -43,6 +43,7 @@
 #include <functional>
 
 #include "console.h"
+#include "prefs.h"
 
 namespace aria2 {
 
@@ -56,8 +57,6 @@ extern const std::string PATH_TO_DIR;
 extern const std::string PATH_TO_COMMAND;
 
 class Option;
-struct Pref;
-typedef const Pref* PrefPtr;
 
 class OptionHandler {
 public:

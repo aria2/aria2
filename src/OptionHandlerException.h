@@ -35,11 +35,9 @@
 #ifndef D_OPTION_HANDLER_EXCEPTION_H
 #define D_OPTION_HANDLER_EXCEPTION_H
 #include "RecoverableException.h"
+#include "prefs.h"
 
 namespace aria2 {
-
-struct Pref;
-typedef const Pref* PrefPtr;
 
 class OptionHandlerException:public RecoverableException {
 private:

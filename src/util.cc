@@ -83,7 +83,6 @@
 #include "DownloadContext.h"
 #include "BufferedFile.h"
 #include "SocketCore.h"
-#include "prefs.h"
 #include "Lock.h"
 
 #ifdef ENABLE_MESSAGE_DIGEST

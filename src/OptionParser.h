@@ -44,12 +44,12 @@
 
 #include <aria2/aria2.h>
 
+#include "prefs.h"
+
 namespace aria2 {
 
 class Option;
 class OptionHandler;
-struct Pref;
-typedef const Pref* PrefPtr;
 
 class OptionParser {
 private:
