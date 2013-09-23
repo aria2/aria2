@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Nils Maier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,18 +32,42 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_DH_KEY_EXCHANGE_H
-#define D_DH_KEY_EXCHANGE_H
+
+#ifndef D_INTERNAL_DH_KEY_EXCHANGE_H
+#define D_INTERNAL_DH_KEY_EXCHANGE_H
 
 #include "common.h"
-#ifdef USE_INTERNAL_BIGNUM
-# include "InternalDHKeyExchange.h"
-#elif HAVE_LIBGMP
-# include "LibgmpDHKeyExchange.h"
-#elif HAVE_LIBGCRYPT
-# include "LibgcryptDHKeyExchange.h"
-#elif HAVE_OPENSSL
-# include "LibsslDHKeyExchange.h"
-#endif // HAVE_OPENSSL
+#include "bignum.h"
 
-#endif // D_DH_KEY_EXCHANGE_H
+namespace aria2 {
+
+class DHKeyExchange {
+private:
+  typedef bignum::ulong<1024> n; // aka max. 8096 bits
+  size_t keyLength_;
+  n prime_;
+  n generator_;
+  n privateKey_;
+  n publicKey_;
+
+public:
+  DHKeyExchange() : keyLength_(0) {}
+  ~DHKeyExchange() {}
+
+  void init(const unsigned char* prime, size_t primeBits,
+            const unsigned char* generator, size_t privateKeyBits);
+
+  void generatePublicKey();
+
+  size_t getPublicKey(unsigned char* out, size_t outLength) const;
+
+  void generateNonce(unsigned char* out, size_t outLength) const;
+
+  size_t computeSecret(unsigned char* out, size_t outLength,
+                       const unsigned char* peerPublicKeyData,
+                       size_t peerPublicKeyLength) const;
+};
+
+} // namespace aria2
+
+#endif // D_INTERNAL_DH_KEY_EXCHANGE_H

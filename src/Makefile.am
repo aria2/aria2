@@ -333,6 +333,10 @@ if USE_WINDOWS_MD
 SRCS += WinMessageDigestImpl.cc
 endif # USE_WINDOWS_MD
 
+if USE_INTERNAL_BIGNUM
+SRCS += InternalDHKeyExchange.cc InternalDHKeyExchange.h bignum.h
+endif
+
 if USE_INTERNAL_MD
 SRCS += InternalMessageDigestImpl.cc sha1.c md5.c
 endif # USE_WINDOWS_MD
