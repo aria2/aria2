@@ -161,12 +161,14 @@ bool OpenSSLTLSContext::addP12CredentialFile(const std::string& p12file)
   bio_t bio(BIO_new_mem_buf(ptr, len));
 
   if (!bio) {
-    A2_LOG_ERROR("Failed to open p12 file: no memory");
+    A2_LOG_ERROR("Failed to open PKCS12 file: no memory.");
     return false;
   }
   p12_t p12(d2i_PKCS12_bio(bio.get(), nullptr));
   if (!p12) {
-    A2_LOG_ERROR(fmt("Failed to open p12 file: %s",
+    A2_LOG_ERROR(fmt("Failed to open PKCS12 file: %s. "
+                     "If you meant to use PEM, you'll also have to specify "
+                     "--rpc-private-key. See the manual.",
                      ERR_error_string(ERR_get_error(), nullptr)));
     return false;
   }
@@ -174,7 +176,9 @@ bool OpenSSLTLSContext::addP12CredentialFile(const std::string& p12file)
   X509 *cert;
   STACK_OF(X509) *ca = 0;
   if (!PKCS12_parse(p12.get(), "", &pkey, &cert, &ca)) {
-    A2_LOG_ERROR(fmt("Failed to parse p12 file: %s",
+    A2_LOG_ERROR(fmt("Failed to parse PKCS12 file: %s. "
+                     "If you meant to use PEM, you'll also have to specify "
+                     "--rpc-private-key. See the manual.",
                      ERR_error_string(ERR_get_error(), nullptr)));
     return false;
   }
@@ -184,27 +188,27 @@ bool OpenSSLTLSContext::addP12CredentialFile(const std::string& p12file)
   x509_sk_t ca_holder(ca);
 
   if (!pkey || !cert) {
-    A2_LOG_ERROR(fmt("Failed to use p12 file: no pkey or cert %s",
+    A2_LOG_ERROR(fmt("Failed to use PKCS12 file: no pkey or cert %s",
                      ERR_error_string(ERR_get_error(), nullptr)));
     return false;
   }
   if (!SSL_CTX_use_PrivateKey(sslCtx_, pkey)) {
-    A2_LOG_ERROR(fmt("Failed to use p12 file pkey: %s",
+    A2_LOG_ERROR(fmt("Failed to use PKCS12 file pkey: %s",
                       ERR_error_string(ERR_get_error(), nullptr)));
     return false;
   }
   if (!SSL_CTX_use_certificate(sslCtx_, cert)) {
-    A2_LOG_ERROR(fmt("Failed to use p12 file cert: %s",
+    A2_LOG_ERROR(fmt("Failed to use PKCS12 file cert: %s",
                       ERR_error_string(ERR_get_error(), nullptr)));
     return false;
   }
   if (ca && sk_X509_num(ca) && !SSL_CTX_add_extra_chain_cert(sslCtx_, ca)) {
-    A2_LOG_ERROR(fmt("Failed to use p12 file chain: %s",
+    A2_LOG_ERROR(fmt("Failed to use PKCS12 file chain: %s",
                       ERR_error_string(ERR_get_error(), nullptr)));
     return false;
   }
 
-  A2_LOG_INFO("Using certificate and key from p12 file");
+  A2_LOG_INFO("Using certificate and key from PKCS12 file");
   return true;
 }
 
