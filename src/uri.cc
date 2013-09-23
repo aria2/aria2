@@ -235,16 +235,14 @@ namespace {
 
 std::string normalizePath(std::string path)
 {
-  typedef std::string::iterator itr;
-
-  itr begin = path.begin(), out = begin;
+  auto begin = path.begin(), out = begin;
   int state = NPATH_START;
   bool startWithSlash = false;
   std::vector<int> range;
   // 32 is arbitrary
   range.reserve(32);
 
-  for(itr in = begin, eoi = path.end(); in != eoi; ++in) {
+  for(auto in = begin, eoi = path.end(); in != eoi; ++in) {
     switch(state) {
     case NPATH_START:
       switch(*in) {
@@ -336,8 +334,8 @@ std::string normalizePath(std::string path)
   }
 
   for(int i = 0; i < (int)range.size(); i += 2) {
-    itr a = begin + range[i];
-    itr b = begin + range[i+1];
+    auto a = begin + range[i];
+    auto b = begin + range[i+1];
     if(a == out) {
       out = b;
     } else {
