@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Nils Maier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,19 +32,42 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_ARC4_ENCRYPTOR_H
-#define D_ARC4_ENCRYPTOR_H
 
-#include "common.h"
+#include "InternalARC4Encryptor.h"
 
-#ifdef USE_INTERNAL_ARC4
-# include "InternalARC4Encryptor.h"
-#elif HAVE_LIBNETTLE
-# include "LibnettleARC4Encryptor.h"
-#elif HAVE_LIBGCRYPT
-# include "LibgcryptARC4Encryptor.h"
-#elif HAVE_OPENSSL
-# include "LibsslARC4Encryptor.h"
-#endif
+namespace aria2 {
 
-#endif // D_ARC4_ENCRYPTOR_H
+ARC4Encryptor::~ARC4Encryptor()
+{
+  for (auto& c : state_) c = 0;
+  i = j = 0;
+}
+void ARC4Encryptor::init(const unsigned char* key, size_t keyLength)
+{
+  j = 0;
+  for (auto& c : state_) c = j++;
+
+  j = 0;
+  for (i = 0; i < sizeof(state_); ++i) {
+    j = (j + state_[i] + key[i % keyLength]) & 0xff;
+    auto tmp = state_[i];
+    state_[i] = state_[j];
+    state_[j] = tmp;
+  }
+  i = j = 0;
+}
+
+void ARC4Encryptor::encrypt(size_t len, unsigned char* out,
+                            const unsigned char* in)
+{
+  for (auto c = 0; c < len; ++c) {
+    i = (i + 1) & 0xff;
+    j = (j + state_[i]) & 0xff;
+    auto sj = state_[i];
+    auto si = state_[i] = state_[j];
+    state_[j] = sj;
+    out[c] = in[c] ^ state_[(si + sj) & 0xff];
+  }
+}
+
+} // namespace aria2
