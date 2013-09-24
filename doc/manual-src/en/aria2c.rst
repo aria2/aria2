@@ -924,7 +924,7 @@ RPC Options
   Use the certificate in FILE for RPC server. The certificate must be
   either in PKCS12 (.p12, .pfx) or in PEM format.
 
-  PKCS12 files must contain the certifcate, a key and optionally a chain
+  PKCS12 files must contain the certificate, a key and optionally a chain
   of additional certificates. Only PKCS12 files with a blank import password
   can be opened!
 
@@ -2676,7 +2676,10 @@ All code examples come from Python2.7 interpreter.
 
 .. function:: aria2.tellWaiting(offset, num, [keys])
 
-  This method returns the list of waiting download, including paused
+  This method returns the list of waiting download, i file.
+  If you want to add BitTorrent Magnet URI, use :func:`aria2.addUri`
+  method instead.  *torrent* is of type base64 which contains
+  Base64-encoded ncluding paused
   downloads. *offset* is of type integer and specifies the offset from
   the download waiting at the front. *num* is of type integer and
   specifies the number of downloads to be returned.  For *keys*
