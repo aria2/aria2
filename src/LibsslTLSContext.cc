@@ -34,12 +34,50 @@
 /* copyright --> */
 #include "LibsslTLSContext.h"
 
+#include <sstream>
+
 #include <openssl/err.h>
+#include <openssl/pkcs12.h>
+#include <openssl/bio.h>
 
 #include "LogFactory.h"
 #include "Logger.h"
 #include "fmt.h"
 #include "message.h"
+#include "BufferedFile.h"
+
+namespace {
+  struct bio_deleter {
+    void operator()(BIO *b) {
+      if (b) BIO_free(b);
+    }
+  };
+  typedef std::unique_ptr<BIO, bio_deleter> bio_t;
+  struct p12_deleter {
+    void operator()(PKCS12 *p) {
+      if (p) PKCS12_free(p);
+    }
+  };
+  typedef std::unique_ptr<PKCS12, p12_deleter> p12_t;
+  struct pkey_deleter {
+    void operator()(EVP_PKEY *x) {
+      if (x) EVP_PKEY_free(x);
+    }
+  };
+  typedef std::unique_ptr<EVP_PKEY, pkey_deleter> pkey_t;
+  struct x509_deleter {
+    void operator()(X509 *x) {
+      if (x) X509_free(x);
+    }
+  };
+  typedef std::unique_ptr<X509, x509_deleter> x509_t;
+  struct x509_sk_deleter {
+    void operator()(STACK_OF(X509) *x) {
+      if (x) sk_X509_pop_free(x, X509_free);
+    }
+  };
+  typedef std::unique_ptr<STACK_OF(X509), x509_sk_deleter> x509_sk_t;
+} // namespace
 
 namespace aria2 {
 
@@ -88,6 +126,9 @@ bool OpenSSLTLSContext::good() const
 bool OpenSSLTLSContext::addCredentialFile(const std::string& certfile,
                                    const std::string& keyfile)
 {
+  if (keyfile.empty()) {
+    return addP12CredentialFile(certfile);
+  }
   if(SSL_CTX_use_PrivateKey_file(sslCtx_, keyfile.c_str(),
                                  SSL_FILETYPE_PEM) != 1) {
     A2_LOG_ERROR(fmt("Failed to load private key from %s. Cause: %s",
@@ -104,6 +145,70 @@ bool OpenSSLTLSContext::addCredentialFile(const std::string& certfile,
   A2_LOG_INFO(fmt("Credential files(cert=%s, key=%s) were successfully added.",
                   certfile.c_str(),
                   keyfile.c_str()));
+  return true;
+}
+bool OpenSSLTLSContext::addP12CredentialFile(const std::string& p12file)
+{
+  // Need this to "decrypt" p12 files.
+  OpenSSL_add_all_algorithms();
+
+  std::stringstream ss;
+  BufferedFile(p12file.c_str(), "rb").transfer(ss);
+
+  auto data = ss.str();
+  void *ptr = const_cast<char*>(data.c_str());
+  size_t len = data.length();
+  bio_t bio(BIO_new_mem_buf(ptr, len));
+
+  if (!bio) {
+    A2_LOG_ERROR("Failed to open PKCS12 file: no memory.");
+    return false;
+  }
+  p12_t p12(d2i_PKCS12_bio(bio.get(), nullptr));
+  if (!p12) {
+    A2_LOG_ERROR(fmt("Failed to open PKCS12 file: %s. "
+                     "If you meant to use PEM, you'll also have to specify "
+                     "--rpc-private-key. See the manual.",
+                     ERR_error_string(ERR_get_error(), nullptr)));
+    return false;
+  }
+  EVP_PKEY *pkey;
+  X509 *cert;
+  STACK_OF(X509) *ca = 0;
+  if (!PKCS12_parse(p12.get(), "", &pkey, &cert, &ca)) {
+    A2_LOG_ERROR(fmt("Failed to parse PKCS12 file: %s. "
+                     "If you meant to use PEM, you'll also have to specify "
+                     "--rpc-private-key. See the manual.",
+                     ERR_error_string(ERR_get_error(), nullptr)));
+    return false;
+  }
+
+  pkey_t pkey_holder(pkey);
+  x509_t cert_holder(cert);
+  x509_sk_t ca_holder(ca);
+
+  if (!pkey || !cert) {
+    A2_LOG_ERROR(fmt("Failed to use PKCS12 file: no pkey or cert %s",
+                     ERR_error_string(ERR_get_error(), nullptr)));
+    return false;
+  }
+  if (!SSL_CTX_use_PrivateKey(sslCtx_, pkey)) {
+    A2_LOG_ERROR(fmt("Failed to use PKCS12 file pkey: %s",
+                      ERR_error_string(ERR_get_error(), nullptr)));
+    return false;
+  }
+  if (!SSL_CTX_use_certificate(sslCtx_, cert)) {
+    A2_LOG_ERROR(fmt("Failed to use PKCS12 file cert: %s",
+                      ERR_error_string(ERR_get_error(), nullptr)));
+    return false;
+  }
+  if (ca && sk_X509_num(ca) && !SSL_CTX_add_extra_chain_cert(sslCtx_, ca)) {
+    A2_LOG_ERROR(fmt("Failed to use PKCS12 file chain: %s",
+                      ERR_error_string(ERR_get_error(), nullptr)));
+    return false;
+  }
+
+  A2_LOG_INFO("Using certificate and key from PKCS12 file");
   return true;
 }
 

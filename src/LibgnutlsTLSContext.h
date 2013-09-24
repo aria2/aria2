@@ -53,6 +53,7 @@ public:
   // private key `keyfile' must be decrypted.
   virtual bool addCredentialFile(const std::string& certfile,
                                  const std::string& keyfile) CXX11_OVERRIDE;
+  bool addP12CredentialFile(const std::string& p12file);
 
   virtual bool addSystemTrustedCACerts() CXX11_OVERRIDE;
 

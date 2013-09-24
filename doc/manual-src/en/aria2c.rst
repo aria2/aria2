@@ -922,8 +922,14 @@ RPC Options
 .. option:: --rpc-certificate=<FILE>
 
   Use the certificate in FILE for RPC server. The certificate must be
-  in PEM format. Use :option:`--rpc-private-key` option to specify the
-  private key. Use :option:`--rpc-secure` option to enable encryption.
+  either in PKCS12 (.p12, .pfx) or in PEM format.
+
+  PKCS12 files must contain the certifcate, a key and optionally a chain
+  of additional certificates. Only PKCS12 files with a blank import password
+  can be opened!
+
+  When using PEM, you have to specify the private key via :option:`--rpc-private-key`
+  as well. Use :option:`--rpc-secure` option to enable encryption.
 
   *AppleTLS* users should use the Keychain Access utility to first generate a
   self-signed SSL-Server certificate, e.g. using the wizard, and get the

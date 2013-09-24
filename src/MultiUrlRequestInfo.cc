@@ -181,11 +181,7 @@ int MultiUrlRequestInfo::prepare()
 #ifdef ENABLE_SSL
     if(option_->getAsBool(PREF_ENABLE_RPC) &&
        option_->getAsBool(PREF_RPC_SECURE)) {
-      if(option_->blank(PREF_RPC_CERTIFICATE)
-#ifndef HAVE_APPLETLS
-        || option_->blank(PREF_RPC_PRIVATE_KEY)
-#endif // HAVE_APPLETLS
-         ) {
+      if(option_->blank(PREF_RPC_CERTIFICATE)) {
         throw DL_ABORT_EX("Specify --rpc-certificate and --rpc-private-key "
                           "options in order to use secure RPC.");
       }

@@ -804,7 +804,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
                        TEXT_RPC_CERTIFICATE,
                        NO_DEFAULT_VALUE,
                        false)
-#endif
+#endif // HAVE_APPLETLS
         );
     op->addTag(TAG_RPC);
     handlers.push_back(op);
