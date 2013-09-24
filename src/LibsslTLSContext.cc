@@ -52,31 +52,31 @@ namespace {
       if (b) BIO_free(b);
     }
   };
-  using bio_t = std::unique_ptr<BIO, bio_deleter>;
+  typedef std::unique_ptr<BIO, bio_deleter> bio_t;
   struct p12_deleter {
     void operator()(PKCS12 *p) {
       if (p) PKCS12_free(p);
     }
   };
-  using p12_t = std::unique_ptr<PKCS12, p12_deleter>;
+  typedef std::unique_ptr<PKCS12, p12_deleter> p12_t;
   struct pkey_deleter {
     void operator()(EVP_PKEY *x) {
       if (x) EVP_PKEY_free(x);
     }
   };
-  using pkey_t = std::unique_ptr<EVP_PKEY, pkey_deleter>;
+  typedef std::unique_ptr<EVP_PKEY, pkey_deleter> pkey_t;
   struct x509_deleter {
     void operator()(X509 *x) {
       if (x) X509_free(x);
     }
   };
-  using x509_t = std::unique_ptr<X509, x509_deleter>;
+  typedef std::unique_ptr<X509, x509_deleter> x509_t;
   struct x509_sk_deleter {
     void operator()(STACK_OF(X509) *x) {
       if (x) sk_X509_pop_free(x, X509_free);
     }
   };
-  using x509_sk_t = std::unique_ptr<STACK_OF(X509), x509_sk_deleter>;
+  typedef std::unique_ptr<STACK_OF(X509), x509_sk_deleter> x509_sk_t;
 } // namespace
 
 namespace aria2 {
