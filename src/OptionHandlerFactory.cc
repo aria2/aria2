@@ -792,10 +792,20 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(new DefaultOptionHandler
+    OptionHandler* op(
+#ifdef HAVE_APPLETLS
+                      new DefaultOptionHandler
                       (PREF_RPC_CERTIFICATE,
                        TEXT_RPC_CERTIFICATE,
-                       NO_DEFAULT_VALUE));
+                       NO_DEFAULT_VALUE)
+#else // HAVE_APPLETLS
+                      new LocalFilePathOptionHandler
+                      (PREF_RPC_CERTIFICATE,
+                       TEXT_RPC_CERTIFICATE,
+                       NO_DEFAULT_VALUE,
+                       false)
+#endif // HAVE_APPLETLS
+        );
     op->addTag(TAG_RPC);
     handlers.push_back(op);
   }
