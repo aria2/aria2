@@ -45,9 +45,6 @@ private:
   unsigned i, j;
 
 public:
-  ARC4Encryptor() {}
-  ~ARC4Encryptor();
-
   void init(const unsigned char* key, size_t keyLength);
 
   // Encrypts data in in buffer to out buffer. in and out can be the

@@ -37,11 +37,6 @@
 
 namespace aria2 {
 
-ARC4Encryptor::~ARC4Encryptor()
-{
-  for (auto& c : state_) c = 0;
-  i = j = 0;
-}
 void ARC4Encryptor::init(const unsigned char* key, size_t keyLength)
 {
   j = 0;
@@ -60,7 +55,7 @@ void ARC4Encryptor::init(const unsigned char* key, size_t keyLength)
 void ARC4Encryptor::encrypt(size_t len, unsigned char* out,
                             const unsigned char* in)
 {
-  for (auto c = 0; c < len; ++c) {
+  for (auto c = 0u; c < len; ++c) {
     i = (i + 1) & 0xff;
     j = (j + state_[i]) & 0xff;
     auto sj = state_[i];
