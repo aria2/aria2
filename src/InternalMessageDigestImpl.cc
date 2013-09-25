@@ -49,7 +49,7 @@ template<size_t dlen,
          void (*free_fn)(ctx_t**)>
 class MessageDigestBase : public MessageDigestImpl {
 public:
-  MessageDigestBase() { reset(); }
+  MessageDigestBase() : ctx_(nullptr) { reset(); }
   virtual ~MessageDigestBase()
   {
     free_fn(&ctx_);
@@ -65,6 +65,7 @@ public:
   }
   virtual void reset() CXX11_OVERRIDE
   {
+    free_fn(&ctx_);
     init_fn(&ctx_);
   }
   virtual void update(const void* data, size_t length) CXX11_OVERRIDE
