@@ -506,14 +506,26 @@ else
   AM_CONDITIONAL([ENABLE_MESSAGE_DIGEST], false)
 fi
 
-if test "x$have_libnettle" = "xyes" && test "x$have_libgmp" = "xyes" ||
-   test "x$have_libgcrypt" = "xyes" || test "x$have_openssl" = "xyes"; then
-  enable_bignum=yes
+if test "x$have_libgmp" = "xyes" ||
+   test "x$have_libgcrypt" = "xyes" ||
+   test "x$have_openssl" = "xyes"; then
+  AM_CONDITIONAL([USE_INTERNAL_BIGNUM], false)
+else
+  AC_DEFINE([USE_INTERNAL_BIGNUM], [1], [Define to 1 if internal BIGNUM support is enabled.])
+  AM_CONDITIONAL([USE_INTERNAL_BIGNUM], true)
+fi
+
+if test "x$have_libnettle" = "xyes" ||
+   test "x$have_libgcrypt" = "xyes" ||
+   test "x$have_openssl" = "xyes"; then
+  AM_CONDITIONAL([USE_INTERNAL_ARC4], false)
+else
+  AC_DEFINE([USE_INTERNAL_ARC4], [1], [Define to 1 if internal ARC4 support is enabled.])
+  AM_CONDITIONAL([USE_INTERNAL_ARC4], true)
 fi
 
 if test "x$enable_bittorrent" = "xyes" &&
-   test "x$enable_message_digest" = "xyes" &&
-   test "x$enable_bignum" = "xyes"; then
+   test "x$enable_message_digest" = "xyes"; then
   AC_DEFINE([ENABLE_BITTORRENT], [1],
             [Define to 1 if BitTorrent support is enabled.])
   AM_CONDITIONAL([ENABLE_BITTORRENT], true)

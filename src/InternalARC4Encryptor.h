@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Nils Maier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,18 +32,29 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_DH_KEY_EXCHANGE_H
-#define D_DH_KEY_EXCHANGE_H
+#ifndef D_INTERNAL_ARC4_ENCRYPTOR_H
+#define D_INTERNAL_ARC4_ENCRYPTOR_H
 
 #include "common.h"
-#ifdef USE_INTERNAL_BIGNUM
-# include "InternalDHKeyExchange.h"
-#elif HAVE_LIBGMP
-# include "LibgmpDHKeyExchange.h"
-#elif HAVE_LIBGCRYPT
-# include "LibgcryptDHKeyExchange.h"
-#elif HAVE_OPENSSL
-# include "LibsslDHKeyExchange.h"
-#endif // HAVE_OPENSSL
 
-#endif // D_DH_KEY_EXCHANGE_H
+namespace aria2 {
+
+class ARC4Encryptor {
+private:
+  unsigned char state_[256];
+  unsigned i, j;
+
+public:
+  ARC4Encryptor() {}
+  ~ARC4Encryptor();
+
+  void init(const unsigned char* key, size_t keyLength);
+
+  // Encrypts data in in buffer to out buffer. in and out can be the
+  // same buffer.
+  void encrypt(size_t len, unsigned char* out, const unsigned char* in);
+};
+
+} // namespace aria2
+
+#endif // D_INTERNAL_ARC4_ENCRYPTOR_H
