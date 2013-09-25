@@ -14,6 +14,7 @@
 #ifndef BIGNUM_H
 #define BIGNUM_H
 
+#include <cstring>
 #include <algorithm>
 #include <memory>
 #include <stdint.h>
