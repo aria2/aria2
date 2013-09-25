@@ -52,7 +52,6 @@ private:
 
 public:
   DHKeyExchange() : keyLength_(0) {}
-  ~DHKeyExchange() {}
 
   void init(const unsigned char* prime, size_t primeBits,
             const unsigned char* generator, size_t privateKeyBits);
