@@ -123,11 +123,12 @@ void SimpleRandomizer::getRandomBytes(unsigned char *buf, size_t len)
   }
 #else
   while (len) {
+    // If RAND_MAX is less than 2**16-1, we are in trouble.
     union {
-      int32_t r;
-      uint8_t b[4];
-    } r = { (int32_t)random() };
-    for (auto i = 0; i < 4 && len; ++i, --len) {
+      uint16_t r;
+      uint8_t b[2];
+    } r = { (uint16_t)(random() & 0xffffu) };
+    for (auto i = 0; i < 2 && len; ++i, --len) {
       *buf++ = r.b[i];
     }
   }
