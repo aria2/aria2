@@ -121,7 +121,7 @@ JSON-RPC over WebSocket  libnettle or libgcrypt or OpenSSL
 
   On Apple OSX the OS-level SSL/TLS support will be preferred. Hence
   neither GnuTLS nor OpenSSL are required on that platform. If you'd like
-  to disable this behavior, run configure with `--without-appletls`.
+  to disable this behavior, run configure with ``--without-appletls``.
 
   GnuTLS has precedence over OpenSSL if both libraries are installed.
   If you prefer OpenSSL, run configure with ``--without-gnutls``
@@ -129,7 +129,8 @@ JSON-RPC over WebSocket  libnettle or libgcrypt or OpenSSL
 
 .. note::
 
-  On Apple OSX the OS-level checksumming support will be preferred.
+  On Apple OSX the OS-level checksumming support will be preferred,
+  unless aria2 is configured with ``--without-appletls``.
 
   libnettle has precedence over libgcrypt if both libraries are
   installed.  If you prefer libgcrypt, run configure with
