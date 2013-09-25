@@ -924,7 +924,7 @@ RPC Options
   Use the certificate in FILE for RPC server. The certificate must be
   either in PKCS12 (.p12, .pfx) or in PEM format.
 
-  PKCS12 files must contain the certifcate, a key and optionally a chain
+  PKCS12 files must contain the certificate, a key and optionally a chain
   of additional certificates. Only PKCS12 files with a blank import password
   can be opened!
 
