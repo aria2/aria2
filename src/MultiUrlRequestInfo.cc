@@ -188,8 +188,12 @@ int MultiUrlRequestInfo::prepare()
       // We set server TLS context to the SocketCore before creating
       // DownloadEngine instance.
       std::shared_ptr<TLSContext> svTlsContext(TLSContext::make(TLS_SERVER));
-      svTlsContext->addCredentialFile(option_->get(PREF_RPC_CERTIFICATE),
-                                      option_->get(PREF_RPC_PRIVATE_KEY));
+      if(!svTlsContext->addCredentialFile
+         (option_->get(PREF_RPC_CERTIFICATE),
+          option_->get(PREF_RPC_PRIVATE_KEY))) {
+        throw DL_ABORT_EX("Loading private key and/or certificate for secure "
+                          "RPC failed.");
+      }
       SocketCore::setServerTLSContext(svTlsContext);
     }
 #endif // ENABLE_SSL
@@ -285,6 +289,7 @@ int MultiUrlRequestInfo::prepare()
     }
     e_->getRequestGroupMan()->getNetStat().downloadStart();
   } catch(RecoverableException& e) {
+    A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
     SingletonHolder<Notifier>::clear();
     if(useSignalHandler_) {
       resetSignalHandlers();
