@@ -131,8 +131,6 @@ private:
   int64_t refreshInterval_;
   Timer lastRefresh_;
 
-  std::deque<std::unique_ptr<Command>> routineCommands_;
-
   std::unique_ptr<CookieStorage> cookieStorage_;
 
 #ifdef ENABLE_BITTORRENT
@@ -167,11 +165,14 @@ private:
   std::multimap<std::string, SocketPoolEntry>::iterator
   findSocketPoolEntry(const std::string& key);
 
-  std::deque<std::unique_ptr<Command>> commands_;
   std::unique_ptr<RequestGroupMan> requestGroupMan_;
   std::unique_ptr<FileAllocationMan> fileAllocationMan_;
   std::unique_ptr<CheckIntegrityMan> checkIntegrityMan_;
   Option* option_;
+  // Ensure that Commands are cleaned up before requestGroupMan_ is
+  // deleted.
+  std::deque<std::unique_ptr<Command>> routineCommands_;
+  std::deque<std::unique_ptr<Command>> commands_;
 public:
   DownloadEngine(std::unique_ptr<EventPoll> eventPoll);
 

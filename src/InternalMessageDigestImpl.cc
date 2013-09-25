@@ -49,22 +49,27 @@ template<size_t dlen,
          void (*free_fn)(ctx_t**)>
 class MessageDigestBase : public MessageDigestImpl {
 public:
-  MessageDigestBase() { reset(); }
-  virtual ~MessageDigestBase() {
+  MessageDigestBase() : ctx_(nullptr) { reset(); }
+  virtual ~MessageDigestBase()
+  {
     free_fn(&ctx_);
   }
 
-  static  size_t length() {
+  static  size_t length()
+  {
     return dlen;
   }
-  virtual size_t getDigestLength() const CXX11_OVERRIDE {
+  virtual size_t getDigestLength() const CXX11_OVERRIDE
+  {
     return dlen;
   }
-  virtual void reset() CXX11_OVERRIDE {
-    printf("hash-%d\n", dlen);
+  virtual void reset() CXX11_OVERRIDE
+  {
+    free_fn(&ctx_);
     init_fn(&ctx_);
   }
-  virtual void update(const void* data, size_t length) CXX11_OVERRIDE {
+  virtual void update(const void* data, size_t length) CXX11_OVERRIDE
+  {
     auto bytes = reinterpret_cast<const char*>(data);
     while (length) {
       size_t l = std::min(length, (size_t)std::numeric_limits<uint32_t>::max());
@@ -73,7 +78,8 @@ public:
       bytes += l;
     }
   }
-  virtual void digest(unsigned char* md) CXX11_OVERRIDE {
+  virtual void digest(unsigned char* md) CXX11_OVERRIDE
+  {
     final_fn(ctx_, md);
   }
 private:
@@ -99,7 +105,7 @@ MessageDigestSHA1;
 
 std::unique_ptr<MessageDigestImpl> MessageDigestImpl::sha1()
 {
-  return std::unique_ptr<MessageDigestImpl>(new MessageDigestSHA1());
+  return make_unique<MessageDigestSHA1>();
 }
 
 MessageDigestImpl::hashes_t MessageDigestImpl::hashes = {
