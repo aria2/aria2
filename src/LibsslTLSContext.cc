@@ -149,9 +149,6 @@ bool OpenSSLTLSContext::addCredentialFile(const std::string& certfile,
 }
 bool OpenSSLTLSContext::addP12CredentialFile(const std::string& p12file)
 {
-  // Need this to "decrypt" p12 files.
-  OpenSSL_add_all_algorithms();
-
   std::stringstream ss;
   BufferedFile(p12file.c_str(), "rb").transfer(ss);
 

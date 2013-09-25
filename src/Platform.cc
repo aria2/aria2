@@ -103,6 +103,8 @@ bool Platform::setUp()
   // for SSL initialization
   SSL_load_error_strings();
   SSL_library_init();
+  // Need this to "decrypt" p12 files.
+  OpenSSL_add_all_algorithms();
 #endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGCRYPT
   if(!gcry_check_version(A2_MIN_GCRYPT_VERSION)) {
