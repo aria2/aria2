@@ -40,7 +40,7 @@
 
 #include <string>
 #include <memory>
-#include <functional> 
+#include <functional>
 #include <map>
 #include <tuple>
 
