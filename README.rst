@@ -99,10 +99,11 @@ Dependency
 ======================== ========================================
 features                  dependency
 ======================== ========================================
-HTTPS                    GnuTLS or OpenSSL
+HTTPS                    OSX or GnuTLS or OpenSSL
 BitTorrent               libnettle+libgmp or libgcrypt or OpenSSL
 Metalink                 libxml2 or Expat.
-Checksum                 libnettle or libgcrypt or OpenSSL
+Checksum                 None. Optional: OSX or libnettle or libgcrypt
+                         or OpenSSL (see note)
 gzip, deflate in HTTP    zlib
 Async DNS                C-Ares
 Firefox3/Chromium cookie libsqlite3
@@ -118,16 +119,26 @@ JSON-RPC over WebSocket  libnettle or libgcrypt or OpenSSL
 
 .. note::
 
+  On Apple OSX the OS-level SSL/TLS support will be preferred. Hence
+  neither GnuTLS nor OpenSSL are required on that platform. If you'd like
+  to disable this behavior, run configure with ``--without-appletls``.
+
   GnuTLS has precedence over OpenSSL if both libraries are installed.
   If you prefer OpenSSL, run configure with ``--without-gnutls``
   ``--with-openssl``.
 
 .. note::
 
+  On Apple OSX the OS-level checksumming support will be preferred,
+  unless aria2 is configured with ``--without-appletls``.
+
   libnettle has precedence over libgcrypt if both libraries are
   installed.  If you prefer libgcrypt, run configure with
   ``--without-libnettle --with-libgcrypt``. If OpenSSL is selected over
   GnuTLS, neither libnettle nor libgcrypt will be used.
+  
+  If none of the optional dependencies are installed, an internal
+  implementation that only supports md5 and sha1 will be used.
 
 A user can have one of the following configurations for SSL and crypto
 libraries:

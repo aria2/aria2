@@ -115,4 +115,23 @@ long int SimpleRandomizer::operator()(long int to)
   return getRandomNumber(to);
 }
 
+void SimpleRandomizer::getRandomBytes(unsigned char *buf, size_t len)
+{
+#ifdef __MINGW32__
+  if (!CryptGenRandom(cryProvider_, len, (PBYTE)buf)) {
+    throw std::bad_alloc();
+  }
+#else
+  while (len) {
+    union {
+      int32_t r;
+      uint8_t b[4];
+    } r = { (int32_t)random() };
+    for (auto i = 0; i < 4 && len; ++i, --len) {
+      *buf++ = r.b[i];
+    }
+  }
+#endif
+}
+
 } // namespace aria2

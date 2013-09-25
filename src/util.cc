@@ -1595,9 +1595,7 @@ namespace {
 void generateRandomDataRandom(unsigned char* data, size_t length)
 {
   const auto& rd = SimpleRandomizer::getInstance();
-  for(size_t i = 0; i < length; ++i) {
-    data[i] = static_cast<unsigned long>(rd->getRandomNumber(256));
-  }
+  rd->getRandomBytes(data, length);
 }
 } // namespace
 

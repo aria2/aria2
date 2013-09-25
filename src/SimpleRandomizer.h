@@ -71,6 +71,8 @@ public:
    */
   virtual long int getRandomNumber(long int to) CXX11_OVERRIDE;
 
+  void getRandomBytes(unsigned char *buf, size_t len);
+
   long int operator()(long int to);
 };
 
