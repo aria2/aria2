@@ -75,9 +75,7 @@ public:
     if (i == hashes.end()) {
       return nullptr;
     }
-    factory_t factory;
-    std::tie(factory, std::ignore) = i->second;
-    return factory();
+    return std::get<0>(i->second)();
   }
 
   inline static bool supports(const std::string& hashType) {
@@ -90,9 +88,7 @@ public:
     if (i == hashes.end()) {
       return 0;
     }
-    size_t len;
-    std::tie(std::ignore, len) = i->second;
-    return len;
+    return std::get<1>(i->second);
   }
 
 public:
