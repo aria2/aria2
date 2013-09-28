@@ -38,6 +38,7 @@
 #include <unistd.h>
 #include <cstdlib>
 #include <cassert>
+#include <cstring>
 
 #include "a2time.h"
 
@@ -56,7 +57,8 @@ const std::unique_ptr<SimpleRandomizer>& SimpleRandomizer::getInstance()
 void SimpleRandomizer::init()
 {
 #ifndef __MINGW32__
-  srandom(time(nullptr)^getpid());
+  // Just in case std::random_device() is fixed, add time and pid too.
+  eng_.seed(std::random_device()()^time(nullptr)^getpid());
 #endif // !__MINGW32__
 }
 
@@ -90,7 +92,7 @@ long int SimpleRandomizer::getRandomNumber()
   }
   return val;
 #else // !__MINGW32__
-  return random();
+  return eng_();
 #endif // !__MINGW32__
 }
 
@@ -99,15 +101,18 @@ long int SimpleRandomizer::getMaxRandomNumber()
 #ifdef __MINGW32__
   return INT32_MAX;
 #else // !__MINGW32__
-  // TODO Warning: The maximum value of random() in some sytems (e.g.,
-  // Solaris and openbsd) is (2**31)-1.
-  return RAND_MAX;
+  return eng_.max();
 #endif // !__MINGW32__
 }
 
 long int SimpleRandomizer::getRandomNumber(long int to)
 {
+  assert(to > 0);
+#ifdef __MINGW32__
   return getRandomNumber() % to;
+#else // !__MINGW32__
+  return std::uniform_int_distribution<long int>(0, to - 1)(eng_);
+#endif // !__MINGW32__
 }
 
 long int SimpleRandomizer::operator()(long int to)
@@ -122,16 +127,19 @@ void SimpleRandomizer::getRandomBytes(unsigned char *buf, size_t len)
     throw std::bad_alloc();
   }
 #else
-  while (len) {
-    // If RAND_MAX is less than 2**16-1, we are in trouble.
-    union {
-      uint16_t r;
-      uint8_t b[2];
-    } r = { (uint16_t)(random() & 0xffffu) };
-    for (auto i = 0; i < 2 && len; ++i, --len) {
-      *buf++ = r.b[i];
-    }
+  uint32_t val;
+  size_t q = len / sizeof(val);
+  size_t r = len % sizeof(val);
+  auto gen = std::bind(std::uniform_int_distribution<uint32_t>
+                       (0, std::numeric_limits<uint32_t>::max()),
+                       eng_);
+  for(; q > 0; --q) {
+    val = gen();
+    memcpy(buf, &val, sizeof(val));
+    buf += sizeof(val);
   }
+  val = gen();
+  memcpy(buf, &val, r);
 #endif
 }
 
