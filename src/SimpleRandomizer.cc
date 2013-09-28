@@ -78,8 +78,9 @@ SimpleRandomizer::~SimpleRandomizer()
 #endif // __MINGW32__
 }
 
-long int SimpleRandomizer::getRandomNumber()
+long int SimpleRandomizer::getRandomNumber(long int to)
 {
+  assert(to > 0);
 #ifdef __MINGW32__
   int32_t val;
   BOOL r = CryptGenRandom(cryProvider_, sizeof(val),
@@ -90,26 +91,7 @@ long int SimpleRandomizer::getRandomNumber()
   } else if(val < 0) {
     val = -val;
   }
-  return val;
-#else // !__MINGW32__
-  return eng_();
-#endif // !__MINGW32__
-}
-
-long int SimpleRandomizer::getMaxRandomNumber()
-{
-#ifdef __MINGW32__
-  return INT32_MAX;
-#else // !__MINGW32__
-  return eng_.max();
-#endif // !__MINGW32__
-}
-
-long int SimpleRandomizer::getRandomNumber(long int to)
-{
-  assert(to > 0);
-#ifdef __MINGW32__
-  return getRandomNumber() % to;
+  return val % to;
 #else // !__MINGW32__
   return std::uniform_int_distribution<long int>(0, to - 1)(eng_);
 #endif // !__MINGW32__

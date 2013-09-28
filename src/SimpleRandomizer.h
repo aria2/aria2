@@ -65,10 +65,6 @@ public:
 
   void init();
 
-  virtual long int getRandomNumber() CXX11_OVERRIDE;
-
-  virtual long int getMaxRandomNumber() CXX11_OVERRIDE;
-
   /**
    * Returns random number in [0, to).
    */
