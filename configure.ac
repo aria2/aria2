@@ -40,7 +40,7 @@ AC_DEFINE_UNQUOTED([TARGET], ["$target"], [Define target-type])
 # Checks for arguments.
 ARIA2_ARG_WITHOUT([libuv])
 ARIA2_ARG_WITHOUT([appletls])
-ARIA2_ARG_WITHOUT([wintls])
+ARIA2_ARG_WITH([wintls])
 ARIA2_ARG_WITHOUT([gnutls])
 ARIA2_ARG_WITHOUT([libnettle])
 ARIA2_ARG_WITHOUT([libgmp])
@@ -337,23 +337,39 @@ if test "x$with_appletls" = "xyes"; then
 fi
 
 if test "x$with_wintls" = "xyes"; then
-  AC_SEARCH_LIBS([CryptAcquireContextW], [advapi32], [
-                  AC_CHECK_HEADER([wincrypt.h], [have_wincrypt=yes], [have_wincrypt=no],
-                      [[
+  AC_HAVE_LIBRARY([crypt32],[have_wintls_libs=yes],[have_wintls_libs=no])
+  AC_HAVE_LIBRARY([secur32],[have_wintls_libs=$have_wintls_libs],[have_wintls_libs=no])
+  AC_HAVE_LIBRARY([advapi32],[have_wintls_libs=$have_wintls_libs],[have_wintls_libs=no])
+  AC_CHECK_HEADER([wincrypt.h], [have_wintls_headers=yes], [have_wintls_headers=no], [[
 #ifdef HAVE_WINDOWS_H
 # include <windows.h>
 #endif
-                      ]])
-                  break;
-                  ], [have_wincrypt=no])
-  if test "x$have_wincrypt" != "xyes"; then
+  ]])
+  AC_CHECK_HEADER([security.h], [have_wintls_headers=$have_wintls_headers], [have_wintls_headers=no], [[
+#ifdef HAVE_WINDOWS_H
+# include <windows.h>
+#endif
+#ifndef SECURITY_WIN32
+#define SECURITY_WIN32 1
+#endif
+  ]])
+
+  if test "x$have_wintls_libs" = "xyes" &&
+     test "x$have_wintls_headers" = "xyes"; then
+    AC_DEFINE([SECURITY_WIN32], [1], [Use security.h in WIN32 mode])
+    LIBS="$LIBS -lcrypt32 -lsecur32 -ladvapi32"
+    have_wintls=yes
+  else
+    have_wintls=no
+  fi
+  if test "x$have_wintls" != "xyes"; then
     if test "x$with_wintls_requested" = "xyes"; then
       ARIA2_DEP_NOT_MET([wintls])
     fi
   fi
 fi
 
-if test "x$with_gnutls" = "xyes" && test "x$have_appletls" != "xyes"; then
+if test "x$with_gnutls" = "xyes" && test "x$have_appletls" != "xyes" && test "x$have_wintls" != "xyes"; then
   # gnutls >= 2.8 doesn't have libgnutls-config anymore. We require
   # 2.2.0 because we use gnutls_priority_set_direct()
   PKG_CHECK_MODULES([LIBGNUTLS], [gnutls >= 2.2.0],
@@ -371,7 +387,7 @@ if test "x$with_gnutls" = "xyes" && test "x$have_appletls" != "xyes"; then
   fi
 fi
 
-if test "x$with_openssl" = "xyes" && test "x$have_appletls" != "xyes" && test "x$have_libgnutls" != "xyes"; then
+if test "x$with_openssl" = "xyes" && test "x$have_appletls" != "xyes" && test "x$have_wintls" != "xyes" && test "x$have_libgnutls" != "xyes"; then
   PKG_CHECK_MODULES([OPENSSL], [openssl >= 0.9.8],
                     [have_openssl=yes], [have_openssl=no])
   if test "x$have_openssl" = "xyes"; then
@@ -448,7 +464,7 @@ if test "x$have_appletls" == "xyes"; then
   use_md="apple"
   AC_DEFINE([USE_APPLE_MD], [1], [What message digest implementation to use])
 else
-  if test "x$have_wincrypt" == "xyes"; then
+  if test "x$have_wintls" == "xyes"; then
     use_md="windows"
     AC_DEFINE([USE_WINDOWS_MD], [1], [What message digest implementation to use])
   else
@@ -473,7 +489,7 @@ else
 fi
 
 # Define variables based on the result of the checks for libraries.
-if test "x$have_appletls" = "xyes" || test "x$have_libgnutls" = "xyes" || test "x$have_openssl" = "xyes"; then
+if test "x$have_appletls" = "xyes" || test "x$have_wintls" == "xyes" || test "x$have_libgnutls" = "xyes" || test "x$have_openssl" = "xyes"; then
   have_ssl="yes"
   AC_DEFINE([ENABLE_SSL], [1], [Define to 1 if ssl support is enabled.])
   AM_CONDITIONAL([ENABLE_SSL], true)
@@ -485,6 +501,7 @@ fi
 
 AM_CONDITIONAL([HAVE_OSX], [ test "x$have_osx" = "xyes" ])
 AM_CONDITIONAL([HAVE_APPLETLS], [ test "x$have_appletls" = "xyes" ])
+AM_CONDITIONAL([HAVE_WINTLS], [ test "x$have_wintls" = "xyes" ])
 AM_CONDITIONAL([USE_APPLE_MD], [ test "x$use_md" = "xapple" ])
 AM_CONDITIONAL([USE_WINDOWS_MD], [ test "x$use_md" = "xwindows" ])
 AM_CONDITIONAL([HAVE_LIBGNUTLS], [ test "x$have_libgnutls" = "xyes" ])
@@ -985,6 +1002,7 @@ echo "LibUV:          $have_libuv"
 echo "SQLite3:        $have_sqlite3"
 echo "SSL Support:    $have_ssl"
 echo "AppleTLS:       $have_appletls"
+echo "WinTLS:         $have_wintls"
 echo "GnuTLS:         $have_libgnutls"
 echo "OpenSSL:        $have_openssl"
 echo "CA Bundle:      $ca_bundle"
