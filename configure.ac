@@ -337,34 +337,27 @@ if test "x$with_appletls" = "xyes"; then
 fi
 
 if test "x$with_wintls" = "xyes"; then
-  AC_SEARCH_LIBS([CryptAcquireContextW], [advapi32], [
-                  AC_CHECK_HEADER([wincrypt.h], [have_wincrypt=yes], [have_wincrypt=no],
-                      [[
+  AC_HAVE_LIBRARY([crypt32],[have_wintls_libs=yes],[have_wintls_libs=no])
+  AC_HAVE_LIBRARY([secur32],[have_wintls_libs=$have_wintls_libs],[have_wintls_libs=no])
+  AC_HAVE_LIBRARY([advapi32],[have_wintls_libs=$have_wintls_libs],[have_wintls_libs=no])
+  AC_CHECK_HEADER([wincrypt.h], [have_wintls_headers=yes], [have_wintls_headers=no], [[
 #ifdef HAVE_WINDOWS_H
 # include <windows.h>
 #endif
-                      ]])
-                  break;
-                  ], [have_wincrypt=no])
-
-  AC_SEARCH_LIBS([PFXImportCertStore], [crypt32], [have_pfximport=yes], [have_pfximport=no])
-  AC_SEARCH_LIBS([AcquireCredentialsHandleW], [secur32], [
-                  AC_CHECK_HEADER([security.h], [have_schannel=yes], [have_schannel=no],
-                      [[
+  ]])
+  AC_CHECK_HEADER([security.h], [have_wintls_headers=$have_wintls_headers], [have_wintls_headers=no], [[
 #ifdef HAVE_WINDOWS_H
 # include <windows.h>
 #endif
 #ifndef SECURITY_WIN32
 #define SECURITY_WIN32 1
 #endif
-                      ]])
-                  break;
-                  ], [have_schannel=no])
+  ]])
 
-  if test "x$have_wincrypt" = "xyes" &&
-     test "x$have_pfximport" = "xyes" &&
-     test "x$have_schannel" = "xyes"; then
+  if test "x$have_wintls_libs" = "xyes" &&
+     test "x$have_wintls_headers" = "xyes"; then
     AC_DEFINE([SECURITY_WIN32], [1], [Use security.h in WIN32 mode])
+    LIBS="$LIBS -lcrypt32 -lsecur32 -ladvapi32"
     have_wintls=yes
   else
     have_wintls=no
