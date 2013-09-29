@@ -464,7 +464,7 @@ if test "x$have_appletls" == "xyes"; then
   use_md="apple"
   AC_DEFINE([USE_APPLE_MD], [1], [What message digest implementation to use])
 else
-  if test "x$have_wincrypt" == "xyes"; then
+  if test "x$have_wintls" == "xyes"; then
     use_md="windows"
     AC_DEFINE([USE_WINDOWS_MD], [1], [What message digest implementation to use])
   else
