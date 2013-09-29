@@ -278,8 +278,8 @@ ssize_t WinTLSSession::writeData(const void* data, size_t len)
     return TLS_ERR_ERROR;
   }
 
-  A2_LOG_DEBUG(fmt("WinTLS: Write request: %" PRId64 " buffered: %" PRId64,
-                   len, writeBuf_.size()));
+  A2_LOG_DEBUG(fmt("WinTLS: Write request: %" PRIu64 " buffered: %" PRIu64,
+                   (uint64_t)len, (uint64_t)writeBuf_.size()));
 
   // Write remaining buffered data, if any.
   size_t written = 0;
@@ -360,7 +360,8 @@ ssize_t WinTLSSession::writeData(const void* data, size_t len)
     memcpy(buffers[1].pvBuffer, bytes, writeBuffered_);
     status_ = ::EncryptMessage(&handle_, 0, &desc, 0);
     if (status_ != SEC_E_OK) {
-      A2_LOG_ERROR(fmt("WinTLS: Failed to encrypt a message! %x", status_));
+      A2_LOG_ERROR(fmt("WinTLS: Failed to encrypt a message! %s",
+                       getLastErrorString().c_str()));
       state_ = st_error;
       return TLS_ERR_ERROR;
     }
@@ -415,8 +416,8 @@ ssize_t WinTLSSession::writeData(const void* data, size_t len)
     writeBuffered_ = 0;
   }
 
-  A2_LOG_DEBUG(fmt("WinTLS: Write result: %" PRId64 " buffered: %" PRId64,
-                   len, writeBuf_.size()));
+  A2_LOG_DEBUG(fmt("WinTLS: Write result: %" PRIu64 " buffered: %" PRIu64,
+                   (uint64_t)len, (uint64_t)writeBuf_.size()));
   if (!len) {
     return TLS_ERR_WOULDBLOCK;
   }
@@ -446,8 +447,8 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
     return TLS_ERR_ERROR;
   }
 
-  A2_LOG_DEBUG(fmt("WinTLS: Read request: %" PRId64 " buffered: %" PRId64,
-                   len, readBuf_.size()));
+  A2_LOG_DEBUG(fmt("WinTLS: Read request: %" PRIu64 " buffered: %" PRIu64,
+                   (uint64_t)len, (uint64_t)readBuf_.size()));
   if (len == 0) {
     return 0;
   }
@@ -491,7 +492,8 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
 
     if (status_ != SEC_E_OK && status_ != SEC_I_CONTEXT_EXPIRED &&
         status_ != SEC_I_RENEGOTIATE) {
-      A2_LOG_ERROR(fmt("WinTLS: Failed to decrypt a message! %x", status_));
+      A2_LOG_ERROR(fmt("WinTLS: Failed to decrypt a message! %s",
+                       getLastErrorString().c_str()));
       state_ = st_error;
       return TLS_ERR_ERROR;
     }
@@ -750,7 +752,7 @@ read:
       if (side_ == TLS_CLIENT && flags != kReqFlags) {
         A2_LOG_ERROR(fmt("WinTLS: Channel setup failed. Schannel provider did "
                          "not fulfill requested flags. "
-                         "Excepted: %d  Actual: %d",
+                         "Excepted: %lu Actual: %lu",
                          kReqFlags, flags));
         status_ = SEC_E_INTERNAL_ERROR;
         state_ = st_error;
