@@ -176,6 +176,9 @@ private:
 
   // Buffer for already encrypted writes
   wintls::Buffer writeBuf_;
+  // While the writeBuf_ holds encrypted messages, writeBuffered_ has the
+  // corresponding size of unencrpted data used to procude the messages.
+  size_t writeBuffered_;
   // Buffer for still encrypted reads
   wintls::Buffer readBuf_;
   // Buffer for already decrypted reads

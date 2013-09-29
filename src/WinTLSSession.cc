@@ -129,6 +129,7 @@ WinTLSSession::WinTLSSession(WinTLSContext* ctx)
   : sockfd_(0),
     side_(ctx->getSide()),
     cred_(ctx->getCredHandle()),
+    writeBuffered_(0),
     state_(st_constructed),
     status_(SEC_E_OK)
 {
@@ -317,22 +318,46 @@ ssize_t WinTLSSession::writeData(const void* data, size_t len)
   }
 
   size_t process = len;
-  len = 0;
   auto bytes = reinterpret_cast<const char*>(data);
+  if (writeBuffered_) {
+    // There was buffered data, hence we need to "remove" that data from the
+    // incoming buffer to avoid writing it again
+    if (len < writeBuffered_) {
+      // We didn't get called with the same data again, obviously.
+      status_ = SEC_E_INVALID_HANDLE;
+      status_ = st_error;
+      return TLS_ERR_ERROR;
+    }
+    // just advance the buffer by writeBuffered_ bytes
+    bytes += writeBuffered_;
+    process -= writeBuffered_;
+    writeBuffered_ = 0;
+  }
+  if (!process) {
+    // The buffer contained the full remainder. At this point, the buffer has
+    // been written, so the request is done in its entirety;
+    return len;
+  }
+
+  // Buffered data was already written ;)
+  // If there was no buffered data, this will be len - len = 0.
+  len = len - process;
   while (process) {
     // Set up an outgoing message, according to streamSizes_
-    const size_t ml = std::min(process, (size_t)streamSizes_->cbMaximumMessage);
-    size_t dl = streamSizes_->cbHeader + ml + streamSizes_->cbTrailer;
-    std::unique_ptr<char[]> buf(new char[dl]());
+    writeBuffered_ = std::min(process, (size_t)streamSizes_->cbMaximumMessage);
+    size_t dl = streamSizes_->cbHeader + writeBuffered_ +
+                streamSizes_->cbTrailer;
+    auto buf = make_unique<char[]>(dl);
     TLSBuffer buffers[] = {
       TLSBuffer(SECBUFFER_STREAM_HEADER, streamSizes_->cbHeader, buf.get()),
-      TLSBuffer(SECBUFFER_DATA, ml, buf.get() + streamSizes_->cbHeader),
+      TLSBuffer(SECBUFFER_DATA, writeBuffered_,
+                buf.get() + streamSizes_->cbHeader),
       TLSBuffer(SECBUFFER_STREAM_TRAILER, streamSizes_->cbTrailer,
-                buf.get() + streamSizes_->cbHeader + ml),
+                buf.get() + streamSizes_->cbHeader + writeBuffered_),
       TLSBuffer(SECBUFFER_EMPTY, 0, nullptr),
     };
     TLSBufferDesc desc(buffers, 4);
-    memcpy(buffers[1].pvBuffer, bytes, ml);
+    memcpy(buffers[1].pvBuffer, bytes, writeBuffered_);
     status_ = ::EncryptMessage(&handle_, 0, &desc, 0);
     if (status_ != SEC_E_OK) {
       A2_LOG_ERROR(fmt("WinTLS: Failed to encrypt a message! %x", status_));
@@ -348,14 +373,11 @@ ssize_t WinTLSSession::writeData(const void* data, size_t len)
               buffers[1].cbBuffer);
     }
     dl += buffers[1].cbBuffer;
-    if (buffers[1].cbBuffer < ml) {
-      memmove(buf.get() + dl, buf.get() + dl + ml, buffers[2].cbBuffer);
+    if (buffers[1].cbBuffer < writeBuffered_) {
+      memmove(buf.get() + dl, buf.get() + dl + writeBuffered_,
+              buffers[2].cbBuffer);
     }
     dl += buffers[2].cbBuffer;
-
-    // Consider all encrypted bytes as "written" (although they might get
-    // buffered).
-    len += ml;
 
     // Write (or buffer) the message.
     char* p = buf.get();
@@ -386,12 +408,18 @@ ssize_t WinTLSSession::writeData(const void* data, size_t len)
       dl -= written;
       p += written;
     }
-    bytes += ml;
-    process -= ml;
+
+    len += writeBuffered_;
+    bytes += writeBuffered_;
+    process -= writeBuffered_;
+    writeBuffered_ = 0;
   }
 
   A2_LOG_DEBUG(fmt("WinTLS: Write result: %" PRId64 " buffered: %" PRId64,
                    len, writeBuf_.size()));
+  if (!len) {
+    return TLS_ERR_WOULDBLOCK;
+  }
   return len;
 }
 
@@ -641,7 +669,7 @@ read:
 
       // Need to copy the data, as Schannel is free to mess with it. But we
       // might later need unmodified data from the original read buffer.
-      std::unique_ptr<char> bufcopy(new char[readBuf_.size()]);
+      auto bufcopy = make_unique<char[]>(readBuf_.size());
       memcpy(bufcopy.get(), readBuf_.data(), readBuf_.size());
 
       // Set up buffers. inbufs will be the raw bytes the library has to decode.
