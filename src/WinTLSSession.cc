@@ -369,14 +369,14 @@ ssize_t WinTLSSession::writeData(const void* data, size_t len)
     // EncryptMessage may have truncated the buffers.
     // Should rarely happen, if ever, except for the trailer.
     dl = buffers[0].cbBuffer;
-    if (buffers[0].cbBuffer < streamSizes_->cbHeader) {
-      memmove(buf.get() + dl, buf.get() + streamSizes_->cbHeader,
-              buffers[1].cbBuffer);
+    if (dl < streamSizes_->cbHeader) {
+      // Move message.
+      memmove(buf.get() + dl, buffers[1].pvBuffer, buffers[1].cbBuffer);
     }
     dl += buffers[1].cbBuffer;
-    if (buffers[1].cbBuffer < writeBuffered_) {
-      memmove(buf.get() + dl, buf.get() + dl + writeBuffered_,
-              buffers[2].cbBuffer);
+    if (dl < streamSizes_->cbHeader + writeBuffered_) {
+      // Move tailer.
+      memmove(buf.get() + dl, buffers[2].pvBuffer, buffers[2].cbBuffer);
     }
     dl += buffers[2].cbBuffer;
 
