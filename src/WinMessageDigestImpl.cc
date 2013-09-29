@@ -166,19 +166,19 @@ MessageDigestImpl::hashes_t initialize() {
   };
 
   try {
-    rv.emplace("sha-256", MessageDigestImpl::make_hi<MessageDigestSHA256>());
+    rv.insert({ "sha-256", MessageDigestImpl::make_hi<MessageDigestSHA256>() });
   }
   catch (RecoverableException &ex) {
     printf("SHA-256 is not supported on this machine");
   }
   try {
-    rv.emplace("sha-384", MessageDigestImpl::make_hi<MessageDigestSHA384>());
+    rv.insert({ "sha-384", MessageDigestImpl::make_hi<MessageDigestSHA384>() });
   }
   catch (RecoverableException &ex) {
     printf("SHA-384 is not supported on this machine");
   }
   try {
-    rv.emplace("sha-512", MessageDigestImpl::make_hi<MessageDigestSHA512>());
+    rv.insert({ "sha-512", MessageDigestImpl::make_hi<MessageDigestSHA512>() });
   }
   catch (RecoverableException &ex) {
     printf("SHA-512 is not supported on this machine");
