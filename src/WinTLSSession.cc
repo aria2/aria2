@@ -59,7 +59,7 @@
 namespace {
   using namespace aria2;
 
-  struct __SecPkgContext_CipherInfo {
+  struct WinSecPkgContext_CipherInfo {
       DWORD dwVersion;
       DWORD dwProtocol;
       DWORD dwCipherSuite;
@@ -109,7 +109,7 @@ namespace {
 
   inline static std::string getCipherSuite(CtxtHandle *handle)
   {
-    __SecPkgContext_CipherInfo info = { SECPKGCONTEXT_CIPHERINFO_V1 };
+    WinSecPkgContext_CipherInfo info = { SECPKGCONTEXT_CIPHERINFO_V1 };
     if (QueryContextAttributes(handle, SECPKG_ATTR_CIPHER_INFO, &info) ==
         SEC_E_OK) {
       return wCharToUtf8(info.szCipherSuite);
