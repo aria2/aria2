@@ -347,6 +347,11 @@ HTTP Specific Options
     certificates store, aria2 will automatically load those
     certificates at the startup.
 
+  .. note::
+
+    *WinTLS* and *AppleTLS* do not support this option. Instead you will
+    have to import the certificate into the OS trust store.
+
 .. option:: --certificate=<FILE>
 
   Use the client certificate in FILE. The certificate must be
