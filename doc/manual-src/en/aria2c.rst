@@ -931,6 +931,8 @@ RPC Options
   When using PEM, you have to specify the private key via :option:`--rpc-private-key`
   as well. Use :option:`--rpc-secure` option to enable encryption.
 
+  *WinTLS* does not support PEM files at the moment. Users have to use PKCS12 files.
+
   *AppleTLS* users should use the Keychain Access utility to first generate a
   self-signed SSL-Server certificate, e.g. using the wizard, and get the
   SHA-1 fingerprint from the Information dialog corresponding to that new
