@@ -347,13 +347,11 @@ bool isCRLF(const char c)
 
 namespace {
 
-inline static
 bool isUtf8Tail(unsigned char ch)
 {
   return in(ch, 0x80u, 0xbfu);
 }
 
-inline static
 bool inPercentEncodeMini(const unsigned char c)
 {
   return c > 0x20 && c < 0x7fu &&
