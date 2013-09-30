@@ -81,6 +81,7 @@ namespace {
                                  ISC_REQ_REPLAY_DETECT |
                                  ISC_REQ_CONFIDENTIALITY |
                                  ISC_REQ_ALLOCATE_MEMORY |
+                                 ISC_REQ_USE_SUPPLIED_CREDS |
                                  ISC_REQ_STREAM;
   static const ULONG kReqAFlags = ASC_REQ_SEQUENCE_DETECT |
                                   ASC_REQ_REPLAY_DETECT |
