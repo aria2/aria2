@@ -78,7 +78,7 @@ TLSContext* TLSContext::make(TLSSessionSide side)
 WinTLSContext::~WinTLSContext()
 {
   if (store_) {
-    CertCloseStore(store_, 0);
+    ::CertCloseStore(store_, 0);
     store_ = 0;
   }
 }
@@ -104,11 +104,7 @@ void WinTLSContext::setVerifyPeer(bool verify)
       SCH_CRED_IGNORE_REVOCATION_OFFLINE |
       SCH_CRED_NO_SERVERNAME_CHECK;
   }
-
-  // Need to initialize cred_ early, because later on it will segfault deep
-  // within AcquireCredentialsHandle for whatever reason.
   cred_.reset();
-  getCredHandle();
 }
 
 CredHandle* WinTLSContext::getCredHandle()
@@ -119,6 +115,20 @@ CredHandle* WinTLSContext::getCredHandle()
 
   TimeStamp ts;
   cred_.reset(new CredHandle());
+
+  const CERT_CONTEXT* ctx = nullptr;
+  if (store_) {
+    ctx = ::CertEnumCertificatesInStore(store_, nullptr);
+    if (!ctx) {
+      throw DL_ABORT_EX("Failed to load certificate");
+    }
+    credentials_.cCreds = 1;
+    credentials_.paCred = &ctx;
+  }
+  else {
+    credentials_.cCreds = 0;
+    credentials_.paCred = nullptr;
+  }
   SECURITY_STATUS status = ::AcquireCredentialsHandleW(
       nullptr,
       (SEC_WCHAR*)UNISP_NAME_W,
@@ -129,6 +139,9 @@ CredHandle* WinTLSContext::getCredHandle()
       nullptr,
       cred_.get(),
       &ts);
+  if (ctx) {
+    ::CertFreeCertificateContext(ctx);
+  }
   if (status != SEC_E_OK) {
     cred_.reset();
     throw DL_ABORT_EX("Failed to initialize WinTLS context handle");
@@ -146,35 +159,33 @@ bool WinTLSContext::addCredentialFile(const std::string& certfile,
     (DWORD)data.length(),
     (BYTE*)data.c_str()
   };
-  if (!PFXIsPFXBlob(&blob)) {
+  if (!::PFXIsPFXBlob(&blob)) {
     A2_LOG_ERROR("Not a valid PKCS12 file");
     return false;
   }
-  store_ = ::PFXImportCertStore(&blob, L"",
-                                CRYPT_EXPORTABLE | CRYPT_USER_KEYSET);
+  HCERTSTORE store = ::PFXImportCertStore(&blob, L"",
+                                          CRYPT_EXPORTABLE | CRYPT_USER_KEYSET);
   if (!store_) {
-    store_ = ::PFXImportCertStore(&blob, nullptr,
+    store = ::PFXImportCertStore(&blob, nullptr,
                                   CRYPT_EXPORTABLE | CRYPT_USER_KEYSET);
   }
-  if (!store_) {
+  if (!store) {
     A2_LOG_ERROR("Failed to import PKCS12 store");
     return false;
   }
-
-  const CERT_CONTEXT* ctx = ::CertEnumCertificatesInStore(store_, nullptr);
+  auto ctx = ::CertEnumCertificatesInStore(store, nullptr);
   if (!ctx) {
-    A2_LOG_ERROR("Failed to read any certificates from the PKCS12 store");
+    A2_LOG_ERROR("PKCS12 file does not contain certificates");
+    ::CertCloseStore(store, 0);
     return false;
   }
-  credentials_.cCreds = 1;
-  credentials_.paCred = &ctx;
+  ::CertFreeCertificateContext(ctx);
 
-  // Need to initialize cred_ early, because later on it will segfault deep
-  // within AcquireCredentialsHandle for whatever reason.
+  if (store_) {
+    ::CertCloseStore(store_, 0);
+  }
+  store_ = store;
   cred_.reset();
-  getCredHandle();
-
-  CertFreeCertificateContext(ctx);
 
   return true;
 }
