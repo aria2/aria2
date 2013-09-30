@@ -245,8 +245,7 @@ int MultiUrlRequestInfo::prepare()
 
 #ifdef ENABLE_SSL
     std::shared_ptr<TLSContext> clTlsContext(TLSContext::make(TLS_CLIENT));
-    if(!option_->blank(PREF_CERTIFICATE) &&
-       !option_->blank(PREF_PRIVATE_KEY)) {
+    if(!option_->blank(PREF_CERTIFICATE)) {
       clTlsContext->addCredentialFile(option_->get(PREF_CERTIFICATE),
                                       option_->get(PREF_PRIVATE_KEY));
     }

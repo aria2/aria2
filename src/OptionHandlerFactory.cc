@@ -1155,11 +1155,20 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(new DefaultOptionHandler
+    OptionHandler* op(
+#ifdef HAVE_APPLETLS
+                      new DefaultOptionHandler
+                      (PREF_CERTIFICATE,
+                       TEXT_CERTIFICATE,
+                       NO_DEFAULT_VALUE)
+#else // HAVE_APPLETLS
+                      new LocalFilePathOptionHandler
                       (PREF_CERTIFICATE,
                        TEXT_CERTIFICATE,
                        NO_DEFAULT_VALUE,
-                       PATH_TO_FILE));
+                       false)
+#endif // HAVE_APPLETLS
+        );
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);
     handlers.push_back(op);

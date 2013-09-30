@@ -333,13 +333,13 @@ AppleTLSSession::AppleTLSSession(AppleTLSContext* ctx)
   }
 #endif
 
-  if (ctx->getSide() != TLS_SERVER) {
-    // Done with client-only initialization
-    return;
-  }
-
   SecIdentityRef creds = ctx->getCredentials();
   if (!creds) {
+    if (ctx->getSide() != TLS_SERVER) {
+      // Done with client-only initialization
+      return;
+    }
+
     A2_LOG_ERROR("AppleTLS: No credentials");
     state_ = st_error;
     return;
