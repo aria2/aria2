@@ -458,9 +458,9 @@ std::string percentEncodeMini(const std::string& src)
     return src;
   }
   std::string result;
-  for (const auto& c: src) {
+  for (auto c: src) {
     if(!inPercentEncodeMini(c)) {
-      result += fmt("%%%02X", c);
+      result += fmt("%%%02X", static_cast<unsigned char>(c));
     } else {
       result += c;
     }
@@ -1725,7 +1725,8 @@ bool detectDirTraversal(const std::string& s)
   if(s.empty()) {
     return false;
   }
-  for (const auto& ch: s) {
+  for (auto c : s) {
+    unsigned char ch = c;
     if (in(ch, 0x00u, 0x1fu) || ch == 0x7fu) {
       return true;
     }
@@ -1748,7 +1749,8 @@ std::string escapePath(const std::string& s)
     { '"', '*', ':', '<', '>', '?', '\\', '|' };
 #endif // __MINGW32__
   std::string d;
-  for(const auto& c: s) {
+  for(auto cc: s) {
+    unsigned char c = cc;
     if(in(c, 0x00u, 0x1fu) || c == 0x7fu
 #ifdef __MINGW32__
        || std::find(std::begin(WIN_INVALID_PATH_CHARS),

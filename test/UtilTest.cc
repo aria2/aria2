@@ -64,6 +64,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testUitos);
   CPPUNIT_TEST(testNtoh64);
   CPPUNIT_TEST(testPercentEncode);
+  CPPUNIT_TEST(testPercentEncodeMini);
   CPPUNIT_TEST(testHtmlEscape);
   CPPUNIT_TEST(testJoinPath);
   CPPUNIT_TEST(testParseIndexPath);
@@ -132,6 +133,7 @@ public:
   void testUitos();
   void testNtoh64();
   void testPercentEncode();
+  void testPercentEncodeMini();
   void testHtmlEscape();
   void testJoinPath();
   void testParseIndexPath();
@@ -1877,6 +1879,12 @@ void UtilTest::testPercentEncode()
   CPPUNIT_ASSERT_EQUAL(unreserved, util::percentEncode(unreserved));
 
   CPPUNIT_ASSERT_EQUAL(std::string("1%5EA%20"), util::percentEncode("1^A "));
+}
+
+void UtilTest::testPercentEncodeMini()
+{
+  CPPUNIT_ASSERT_EQUAL(std::string("%80"),
+                       util::percentEncodeMini({(char)0x80}));
 }
 
 void UtilTest::testHtmlEscape()
