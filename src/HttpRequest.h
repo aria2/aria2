@@ -131,8 +131,6 @@ public:
 
   const std::string& getQuery() const;
 
-  const std::string& getPreviousURI() const;
-
   std::string getURIHost() const;
 
   Range getRange() const;

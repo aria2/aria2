@@ -224,8 +224,8 @@ std::string HttpRequest::createRequest()
     val += base64::encode(authText.begin(), authText.end());
     builtinHds.push_back(std::make_pair("Authorization:", val));
   }
-  if(!getPreviousURI().empty()) {
-    builtinHds.push_back(std::make_pair("Referer:", getPreviousURI()));
+  if(!request_->getReferer().empty()) {
+    builtinHds.push_back(std::make_pair("Referer:", request_->getReferer()));
   }
   if(cookieStorage_) {
     std::string cookiesValue;
@@ -409,11 +409,6 @@ const std::string& HttpRequest::getFile() const
 const std::string& HttpRequest::getQuery() const
 {
   return request_->getQuery();
-}
-
-const std::string& HttpRequest::getPreviousURI() const
-{
-  return request_->getPreviousUri();
 }
 
 std::string HttpRequest::getURIHost() const

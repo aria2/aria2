@@ -84,7 +84,6 @@ bool Request::setUri(const std::string& uri) {
 }
 
 bool Request::resetUri() {
-  previousUri_ = referer_;
   supportsPersistentConnection_ = true;
   setConnectedAddrInfo(A2STR::NIL, A2STR::NIL, 0);
   return parseUri(uri_);
@@ -92,7 +91,7 @@ bool Request::resetUri() {
 
 void Request::setReferer(const std::string& uri)
 {
-  referer_ = previousUri_ = removeFragment(uri);
+  referer_ = removeFragment(uri);
 }
 
 bool Request::redirectUri(const std::string& uri) {

@@ -52,11 +52,7 @@ private:
   std::string uri_;
   std::string currentUri_;
   /**
-   * URI previously requested to the server. This is used as Referer
-   */
-  std::string previousUri_;
-  /**
-   * URI used as Referer in the initial request
+   * URI used as Referer header field
    */
   std::string referer_;
   std::string method_;
@@ -97,7 +93,6 @@ public:
   // Returns URI passed by setUri()
   const std::string& getUri() const { return uri_; }
   const std::string& getCurrentUri() const { return currentUri_; }
-  const std::string& getPreviousUri() const { return previousUri_; }
   const std::string& getReferer() const { return referer_; }
   void setReferer(const std::string& uri);
   const std::string& getProtocol() const { return us_.protocol; }
