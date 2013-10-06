@@ -63,12 +63,12 @@ void DefaultBtMessageFactoryTest::testCreateBtMessage_BtExtendedMessage()
   memcpy(msg+6, payload.c_str(), payload.size());
 
   auto m =
-    factory_->createBtMessage((const unsigned char*)msg+4, sizeof(msg));
+    factory_->createBtMessage((const unsigned char*)msg+4, sizeof(msg)-4);
   CPPUNIT_ASSERT(BtExtendedMessage::ID == m->getId());
   try {
     // disable extended messaging
     peer_->setExtendedMessagingEnabled(false);
-    factory_->createBtMessage((const unsigned char*)msg+4, sizeof(msg));
+    factory_->createBtMessage((const unsigned char*)msg+4, sizeof(msg)-4);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
