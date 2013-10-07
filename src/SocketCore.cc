@@ -834,9 +834,9 @@ bool SocketCore::tlsHandshake(TLSContext* tlsctx, const std::string& hostname)
       }
     }
     secure_ = A2_TLS_HANDSHAKING;
+    A2_LOG_DEBUG("TLS Handshaking");
     // Fall through
   case A2_TLS_HANDSHAKING:
-    A2_LOG_DEBUG("TLS Handshaking");
     if(tlsctx->getSide() == TLS_CLIENT) {
       rv = tlsSession_->tlsConnect(hostname, handshakeError);
     } else {
