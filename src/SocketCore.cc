@@ -859,7 +859,6 @@ bool SocketCore::tlsHandshake(TLSContext* tlsctx, const std::string& hostname)
     }
     return false;
   default:
-    A2_LOG_DEBUG("TLS else");
     break;
   }
   return true;
