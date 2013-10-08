@@ -98,6 +98,7 @@ OpenSSLTLSContext::OpenSSLTLSContext(TLSSessionSide side)
     good_ = false;
     A2_LOG_ERROR(fmt("SSL_CTX_new() failed. Cause: %s",
                      ERR_error_string(ERR_get_error(), 0)));
+    return;
   }
   // Disable SSLv2 and enable all workarounds for buggy servers
   SSL_CTX_set_options(sslCtx_, SSL_OP_ALL | SSL_OP_NO_SSLv2
@@ -111,6 +112,11 @@ OpenSSLTLSContext::OpenSSLTLSContext(TLSSessionSide side)
   /* keep memory usage low */
   SSL_CTX_set_mode(sslCtx_, SSL_MODE_RELEASE_BUFFERS);
   #endif
+  if(SSL_CTX_set_cipher_list(sslCtx_, "HIGH:!aNULL:!eNULL") == 0) {
+    good_ = false;
+    A2_LOG_ERROR(fmt("SSL_CTX_set_cipher_list() failed. Cause: %s",
+                     ERR_error_string(ERR_get_error(), nullptr)));
+  }
 }
 
 OpenSSLTLSContext::~OpenSSLTLSContext()
