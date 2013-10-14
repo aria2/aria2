@@ -146,7 +146,7 @@ void DefaultPeerStorage::addPeer(const std::vector<std::shared_ptr<Peer> >& peer
 
 void DefaultPeerStorage::addDroppedPeer(const std::shared_ptr<Peer>& peer)
 {
-  // Make sure that duplicated peers exist in droppedPeers_. If
+  // Make sure that no duplicated peer exists in droppedPeers_. If
   // exists, erase older one.
   for(auto i = droppedPeers_.begin(),
         eoi = droppedPeers_.end(); i != eoi; ++i) {
