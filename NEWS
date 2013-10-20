@@ -1,3 +1,70 @@
+aria2 1.18.1
+============
+
+Release Note
+------------
+
+This release fixes the percent-encoding bug which affects file name
+encodings. It adds PKCS12 support in certificate import. It also adds
+experimental internal implementation of message digest functions, ARC4
+cipher and bignum. It means that no external libraries are required to
+build BitTorrent support, but this feature is still marked as
+experimental. This release also fixes the android build with NDK r9.
+
+Changes
+-------
+
+* LibsslTLSContext: Remove weak cipher suite
+
+* AppleTLS: Enable --certificate
+
+* util::percentEncodeMini: Fix regression bug removed unsignedness
+
+  srange-based for around std::string is convenient but several
+  functions depend unsigned char for correctness and readability.
+
+* Log exception; throw error if loading private key and/or certificate
+  failed
+
+* Provide internal ARC4 implementation
+
+  Now you can build bittorrent support without without external
+  libraries, meaning you can skip libnettle, libgmp, libgcrypt, GnuTLS
+  and OpenSSL on OSX (for now).
+
+* Internal implementation of DHKeyExchange
+
+  Reusing a bignum (well, unsigned very-long) implementation I had
+  lying around for years and just cleaned up a bit and brought to
+  C++11 land.
+
+  It might not be the most performant implementation, but it shoud be
+  fast enough for our purposes and will go a long way of removing
+  gcrypt, nettle, gmp, openssl dependencies when using AppleTLS and
+  WinTLS (upcoming).
+
+* PKCS12 support in --certificate and --rpc-certificate options.
+
+* Add --disable-ssl configure option
+
+* Add internal md5 and sha1 message digests
+
+* Fix AppleMessageDigestImpl use with large data
+
+* Set old cookie's creation-time to new cookie on replacement
+
+  As described in http://tools.ietf.org/html/rfc6265#section-5.3
+
+* Fix link error with Android NDK r9
+
+  Since Android ndk r9, __set_errno is deprecated. It is now defined
+  as inline function in errno.h. The syscall assembly calls
+  __set_errno, but since libc.so does not export it, the link
+  fails. To workaround this, replace all occurrences of __set_errno
+  with a2_set_errno and define it as normal C function.
+
+
+
 aria2 1.18.0
 ============
 
