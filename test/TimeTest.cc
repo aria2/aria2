@@ -131,7 +131,7 @@ void TimeTest::testElapsed()
     CPPUNIT_ASSERT(!Time(tv).elapsed(1));
   }
   {
-    struct timeval tv = { now.tv_sec-1, now.tv_usec };
+    struct timeval tv = { now.tv_sec-2, now.tv_usec };
     CPPUNIT_ASSERT(Time(tv).elapsed(1));
   }
 }
