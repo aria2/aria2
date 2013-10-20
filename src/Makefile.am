@@ -347,7 +347,7 @@ SRCS += InternalARC4Encryptor.cc InternalARC4Encryptor.h
 endif
 
 if USE_INTERNAL_MD
-SRCS += InternalMessageDigestImpl.cc sha1.c md5.c
+SRCS += InternalMessageDigestImpl.cc sha1.c sha1.h md5.c md5.h
 endif # USE_WINDOWS_MD
 
 if HAVE_LIBGNUTLS
