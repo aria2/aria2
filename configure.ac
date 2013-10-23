@@ -959,11 +959,18 @@ AM_CONDITIONAL([ANDROID_MIPS], [test "x$android_mips" = "xyes"])
 AM_CONDITIONAL([ANDROID_X86], [test "x$android_x86" = "xyes"])
 
 if test "x$ARIA2_STATIC" = "xyes"; then
-  LDFLAGS="$LDFLAGS -all-static -static-libgcc -static-libstdc++"
+  # -static-libgcc and -static-libstdc++ are linker flags and not for
+  # libtool.
+  LDFLAGS="$LDFLAGS -all-static"
   dnl For non-MinGW build, we need additional libs for static build.
   if test "x$win_build" != "xyes"; then
     LIBS="$LIBS -lpthread -ldl -lrt"
   fi
+fi
+
+if test "x$win_build" = "xyes" && test "x$enable_libaria2" = "xyes"; then
+  # Creating dll needs this
+  LDFLAGS="$LDFLAGS -no-undefined"
 fi
 
 AC_CONFIG_FILES([Makefile
