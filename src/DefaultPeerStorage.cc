@@ -231,6 +231,11 @@ std::shared_ptr<Peer> DefaultPeerStorage::checkoutPeer(cuid_t cuid)
   }
   std::shared_ptr<Peer> peer = unusedPeers_.front();
   unusedPeers_.pop_front();
+  if(peer->usedBy() != 0) {
+    A2_LOG_WARN(fmt("CUID#%" PRId64 " is already set for peer %s:%u",
+                    peer->usedBy(),
+                    peer->getIPAddress().c_str(), peer->getOrigPort()));
+  }
   peer->usedBy(cuid);
   usedPeers_.insert(peer);
   A2_LOG_DEBUG(fmt("Checkout peer %s:%u to CUID#%" PRId64,
