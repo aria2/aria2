@@ -234,7 +234,7 @@ std::shared_ptr<Peer> DefaultPeerStorage::checkoutPeer(cuid_t cuid)
   peer->usedBy(cuid);
   usedPeers_.insert(peer);
   A2_LOG_DEBUG(fmt("Checkout peer %s:%u to CUID#%" PRId64,
-                   peer->getIPAddress().c_str(), peer->getPort(),
+                   peer->getIPAddress().c_str(), peer->getOrigPort(),
                    peer->usedBy()));
   return peer;
 }
@@ -264,14 +264,14 @@ void DefaultPeerStorage::onReturningPeer(const std::shared_ptr<Peer>& peer)
 void DefaultPeerStorage::returnPeer(const std::shared_ptr<Peer>& peer)
 {
   A2_LOG_DEBUG(fmt("Peer %s:%u returned from CUID#%" PRId64,
-                   peer->getIPAddress().c_str(), peer->getPort(),
+                   peer->getIPAddress().c_str(), peer->getOrigPort(),
                    peer->usedBy()));
   if(usedPeers_.erase(peer)) {
     onReturningPeer(peer);
     onErasingPeer(peer);
   } else {
-    A2_LOG_DEBUG(fmt("Cannot find peer %s:%u in usedPeers_",
-                     peer->getIPAddress().c_str(), peer->getPort()));
+    A2_LOG_WARN(fmt("Cannot find peer %s:%u in usedPeers_",
+                    peer->getIPAddress().c_str(), peer->getOrigPort()));
   }
 }
 
