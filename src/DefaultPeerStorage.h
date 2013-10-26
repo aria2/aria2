@@ -57,17 +57,17 @@ private:
 
   // This contains ip address and port pair and is used to ensure that
   // no duplicate peers are stored.
-  std::set<std::pair<std::string, uint16_t> > uniqPeers_;
+  std::set<std::pair<std::string, uint16_t>> uniqPeers_;
   // Unused (not connected) peers, sorted by last added.
-  std::deque<std::shared_ptr<Peer> > unusedPeers_;
+  std::deque<std::shared_ptr<Peer>> unusedPeers_;
   // The set of used peers. Some of them are not connected yet. To
   // know it is connected or not, call Peer::isActive().
   PeerSet usedPeers_;
 
-  std::deque<std::shared_ptr<Peer> > droppedPeers_;
+  std::deque<std::shared_ptr<Peer>> droppedPeers_;
 
-  BtSeederStateChoke* seederStateChoke_;
-  BtLeecherStateChoke* leecherStateChoke_;
+  std::unique_ptr<BtSeederStateChoke> seederStateChoke_;
+  std::unique_ptr<BtLeecherStateChoke> leecherStateChoke_;
 
   Timer lastTransferStatMapUpdated_;
 
@@ -90,14 +90,14 @@ public:
 
   std::shared_ptr<Peer> getPeer(const std::string& ipaddr, uint16_t port) const;
 
-  virtual void addPeer(const std::vector<std::shared_ptr<Peer> >& peers)
+  virtual void addPeer(const std::vector<std::shared_ptr<Peer>>& peers)
     CXX11_OVERRIDE;
 
-  const std::deque<std::shared_ptr<Peer> >& getUnusedPeers();
+  const std::deque<std::shared_ptr<Peer>>& getUnusedPeers();
 
   virtual const PeerSet& getUsedPeers() CXX11_OVERRIDE;
 
-  virtual const std::deque<std::shared_ptr<Peer> >& getDroppedPeers()
+  virtual const std::deque<std::shared_ptr<Peer>>& getDroppedPeers()
     CXX11_OVERRIDE;
 
   virtual bool isPeerAvailable() CXX11_OVERRIDE;
