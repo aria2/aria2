@@ -74,7 +74,7 @@ private:
 
   bool seeder_;
 
-  PeerSessionResource* res_;
+  std::unique_ptr<PeerSessionResource> res_;
 
   // If true, port is assumed not to be a listening port.
   bool incoming_;
@@ -129,7 +129,7 @@ public:
   // Returns true iff res_ != 0.
   bool isActive() const
   {
-    return res_ != nullptr;
+    return res_.get() != nullptr;
   }
 
   void setPeerId(const unsigned char* peerId);

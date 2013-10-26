@@ -53,7 +53,6 @@ Peer::Peer(std::string ipaddr, uint16_t port, bool incoming):
   firstContactTime_(global::wallclock()),
   dropStartTime_(0),
   seeder_(false),
-  res_(nullptr),
   incoming_(incoming),
   localPeer_(false),
   disconnectedGracefully_(false)
@@ -73,8 +72,7 @@ void Peer::usedBy(cuid_t cuid)
 
 void Peer::allocateSessionResource(int32_t pieceLength, int64_t totalLength)
 {
-  delete res_;
-  res_ = new PeerSessionResource(pieceLength, totalLength);
+  res_ = make_unique<PeerSessionResource>(pieceLength, totalLength);
   res_->getNetStat().downloadStart();
   updateSeeder();
 }
@@ -87,8 +85,7 @@ void Peer::reconfigureSessionResource(int32_t pieceLength, int64_t totalLength)
 
 void Peer::releaseSessionResource()
 {
-  delete res_;
-  res_ = nullptr;
+  res_.reset();
 }
 
 void Peer::setPeerId(const unsigned char* peerId)
