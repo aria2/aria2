@@ -300,6 +300,10 @@ For example, to build 64bit binary do this::
 
     $ HOST=x86_64-w64-mingw32 ./mingw-config
 
+If you want libaria2 dll with ``--enable-libaria2``, then don't use
+``ARIA2_STATIC=yes`` and prepare the DLL version of external
+libraries.
+
 Cross-compiling Android binary
 ------------------------------
 
