@@ -36,6 +36,10 @@
 
 #include <unistd.h>
 
+#ifdef __MINGW32__
+#include <shellapi.h>
+#endif // __MINGW32__
+
 #include <aria2/aria2.h>
 #include "Context.h"
 #include "MultiUrlRequestInfo.h"
@@ -43,12 +47,32 @@
 #include "Platform.h"
 #include "Exception.h"
 #include "console.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
 error_code::Value main(int argc, char** argv)
 {
+#ifdef __MINGW32__
+  int winArgc;
+  auto winArgv = CommandLineToArgvW(GetCommandLineW(), &winArgc);
+  if(winArgv == nullptr) {
+    A2_LOG_ERROR("Reading command-line failed");
+    return error_code::UNKNOWN_ERROR;
+  }
+  std::vector<std::unique_ptr<char>> winArgStrs;
+  winArgStrs.reserve(winArgc);
+  auto pargv = make_unique<char*[]>(winArgc);
+  for(int i = 0; i < winArgc; ++i) {
+    winArgStrs.emplace_back(strdup(wCharToUtf8(winArgv[i]).c_str()));
+    pargv[i] = winArgStrs.back().get();
+  }
+
+  Context context(true, winArgc, pargv.get(), KeyVals());
+#else // !__MINGW32__
   Context context(true, argc, argv, KeyVals());
+#endif // !__MINGW32__
+
   error_code::Value exitStatus = error_code::FINISHED;
   if(context.reqinfo) {
     exitStatus = context.reqinfo->execute();
