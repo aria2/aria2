@@ -1820,9 +1820,9 @@ void executeHook
   if(batch) {
     cmdline += "\"";
   }
-  int cmdlineLen = utf8ToWChar(0, 0, cmdline.c_str());
+  int cmdlineLen = utf8ToWChar(nullptr, 0, cmdline.c_str());
   assert(cmdlineLen > 0);
-  auto wcharCmdline = std::unique_ptr<wchar_t[]>(new wchar_t[cmdlineLen]);
+  auto wcharCmdline = make_unique<wchar_t[]>(cmdlineLen);
   cmdlineLen = utf8ToWChar(wcharCmdline.get(), cmdlineLen, cmdline.c_str());
   assert(cmdlineLen > 0);
   A2_LOG_INFO(fmt("Executing user command: %s", cmdline.c_str()));
