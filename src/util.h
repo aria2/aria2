@@ -103,11 +103,7 @@ std::wstring utf8ToWChar(const std::string& src);
 
 std::wstring utf8ToWChar(const char* str);
 
-std::string utf8ToNative(const std::string& src);
-
 std::string wCharToUtf8(const std::wstring& wsrc);
-
-std::string nativeToUtf8(const std::string& src);
 #else // !__MINGW32__
 # define utf8ToWChar(src) src
 # define utf8ToNative(src) src

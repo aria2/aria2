@@ -176,20 +176,6 @@ void showCandidates
 
 } // namespace
 
-#ifdef __MINGW32__
-namespace {
-void optionNativeToUtf8(Option& op)
-{
-  for(size_t i = 1, len = option::countOption(); i < len; ++i) {
-    PrefPtr pref = option::i2p(i);
-    if(op.definedLocal(pref) && !util::isUtf8(op.get(pref))) {
-      op.put(pref, nativeToUtf8(op.get(pref)));
-    }
-  }
-}
-} // namespace
-#endif // __MINGW32__
-
 error_code::Value option_processing(Option& op, bool standalone,
                                     std::vector<std::string>& uris,
                                     int argc, char** argv,
@@ -290,10 +276,6 @@ error_code::Value option_processing(Option& op, bool standalone,
     op.setParent(confOption);
     oparser->parse(op, cmdstream);
     oparser->parse(op, options);
-#ifdef __MINGW32__
-    optionNativeToUtf8(op);
-    optionNativeToUtf8(*confOption);
-#endif // __MINGW32__
   } catch(OptionHandlerException& e) {
     global::cerr()->printf("%s", e.stackTrace().c_str());
     const OptionHandler* h = oparser->find(e.getPref());
