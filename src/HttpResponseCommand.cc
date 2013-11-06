@@ -254,7 +254,7 @@ bool HttpResponseCommand::executeInternal()
     fe->setLength(totalLength);
     if (fe->getPath().empty()) {
       fe->setPath(util::createSafePath(getOption()->get(PREF_DIR),
-                                       httpResponse->determinFilename()));
+                                       httpResponse->determineFilename()));
     }
     fe->setContentType(httpResponse->getContentType());
     grp->preDownloadProcessing();

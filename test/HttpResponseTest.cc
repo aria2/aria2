@@ -32,9 +32,9 @@ class HttpResponseTest : public CppUnit::TestFixture {
   //CPPUNIT_TEST(testGetContentLength_range);
   CPPUNIT_TEST(testGetEntityLength);
   CPPUNIT_TEST(testGetContentType);
-  CPPUNIT_TEST(testDeterminFilename_without_ContentDisposition);
-  CPPUNIT_TEST(testDeterminFilename_with_ContentDisposition_zero_length);
-  CPPUNIT_TEST(testDeterminFilename_with_ContentDisposition);
+  CPPUNIT_TEST(testDetermineFilename_without_ContentDisposition);
+  CPPUNIT_TEST(testDetermineFilename_with_ContentDisposition_zero_length);
+  CPPUNIT_TEST(testDetermineFilename_with_ContentDisposition);
   CPPUNIT_TEST(testGetRedirectURI_without_Location);
   CPPUNIT_TEST(testGetRedirectURI_with_Location);
   CPPUNIT_TEST(testIsRedirect);
@@ -67,9 +67,9 @@ public:
   void testGetContentLength_contentLength();
   void testGetEntityLength();
   void testGetContentType();
-  void testDeterminFilename_without_ContentDisposition();
-  void testDeterminFilename_with_ContentDisposition_zero_length();
-  void testDeterminFilename_with_ContentDisposition();
+  void testDetermineFilename_without_ContentDisposition();
+  void testDetermineFilename_with_ContentDisposition_zero_length();
+  void testDetermineFilename_with_ContentDisposition();
   void testGetRedirectURI_without_Location();
   void testGetRedirectURI_with_Location();
   void testIsRedirect();
@@ -143,7 +143,7 @@ void HttpResponseTest::testGetContentType()
                        httpResponse.getContentType());
 }
 
-void HttpResponseTest::testDeterminFilename_without_ContentDisposition()
+void HttpResponseTest::testDetermineFilename_without_ContentDisposition()
 {
   HttpResponse httpResponse;
   auto httpRequest = make_unique<HttpRequest>();
@@ -155,10 +155,10 @@ void HttpResponseTest::testDeterminFilename_without_ContentDisposition()
   httpResponse.setHttpRequest(std::move(httpRequest));
 
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-1.0.0.tar.bz2"),
-                       httpResponse.determinFilename());
+                       httpResponse.determineFilename());
 }
 
-void HttpResponseTest::testDeterminFilename_with_ContentDisposition_zero_length
+void HttpResponseTest::testDetermineFilename_with_ContentDisposition_zero_length
 ()
 {
   HttpResponse httpResponse;
@@ -173,10 +173,10 @@ void HttpResponseTest::testDeterminFilename_with_ContentDisposition_zero_length
   httpResponse.setHttpRequest(std::move(httpRequest));
 
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-1.0.0.tar.bz2"),
-                       httpResponse.determinFilename());
+                       httpResponse.determineFilename());
 }
 
-void HttpResponseTest::testDeterminFilename_with_ContentDisposition()
+void HttpResponseTest::testDetermineFilename_with_ContentDisposition()
 {
   HttpResponse httpResponse;
   auto httpHeader = make_unique<HttpHeader>();
@@ -191,7 +191,7 @@ void HttpResponseTest::testDeterminFilename_with_ContentDisposition()
   httpResponse.setHttpRequest(std::move(httpRequest));
 
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-current.tar.bz2"),
-                       httpResponse.determinFilename());
+                       httpResponse.determineFilename());
 }
 
 void HttpResponseTest::testGetRedirectURI_without_Location()

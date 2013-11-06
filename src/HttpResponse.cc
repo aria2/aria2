@@ -117,7 +117,7 @@ void HttpResponse::validateResponse() const
   }
 }
 
-std::string HttpResponse::determinFilename() const
+std::string HttpResponse::determineFilename() const
 {
   std::string contentDisposition = util::getContentDispositionFilename(
       httpHeader_->find(HttpHeader::CONTENT_DISPOSITION));
