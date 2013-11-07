@@ -465,11 +465,6 @@ void RequestGroup::createInitialCommand(
       createNextCommand(commands, e, 1);
       return;
     }
-    if (e->getRequestGroupMan()->isSameFileBeingDownloaded(this)) {
-      throw DOWNLOAD_FAILURE_EXCEPTION2(fmt(EX_DUPLICATE_FILE_DOWNLOAD,
-                                            downloadContext_->getBasePath().c_str()),
-                                        error_code::DUPLICATE_DOWNLOAD);
-    }
     auto progressInfoFile = std::make_shared<DefaultBtProgressInfoFile>(
         downloadContext_,
         nullptr,
@@ -652,6 +647,15 @@ void RequestGroup::adjustFilename(
     // OK, no need to care about filename.
     return;
   }
+  // TODO need this?
+  if(requestGroupMan_) {
+    if(requestGroupMan_->isSameFileBeingDownloaded(this)) {
+      // The file name must be renamed
+      tryAutoFileRenaming();
+      A2_LOG_NOTICE(fmt(MSG_FILE_RENAMED, getFirstFilePath().c_str()));
+      return;
+    }
+  }
   if (!option_->getAsBool(PREF_DRY_RUN) &&
       option_->getAsBool(PREF_REMOVE_CONTROL_FILE) &&
       infoFile->exists()) {
@@ -743,26 +747,23 @@ void RequestGroup::shouldCancelDownloadForSafety()
     return;
   }
 
+  tryAutoFileRenaming();
+  A2_LOG_NOTICE(fmt(MSG_FILE_RENAMED, getFirstFilePath().c_str()));
+}
+
+void RequestGroup::tryAutoFileRenaming()
+{
   if (!option_->getAsBool(PREF_AUTO_FILE_RENAMING)) {
     throw DOWNLOAD_FAILURE_EXCEPTION2(fmt(MSG_FILE_ALREADY_EXISTS,
                                           getFirstFilePath().c_str()),
                                       error_code::FILE_ALREADY_EXISTS);
   }
 
-  if (!tryAutoFileRenaming()) {
+  std::string filepath = getFirstFilePath();
+  if(filepath.empty()) {
     throw DOWNLOAD_FAILURE_EXCEPTION2(fmt("File renaming failed: %s",
                                           getFirstFilePath().c_str()),
                                       error_code::FILE_RENAMING_FAILED);
-  }
-
-  A2_LOG_NOTICE(fmt(MSG_FILE_RENAMED, getFirstFilePath().c_str()));
-}
-
-bool RequestGroup::tryAutoFileRenaming()
-{
-  std::string filepath = getFirstFilePath();
-  if(filepath.empty()) {
-    return false;
   }
   for (int i = 1; i < 10000; ++i) {
     auto newfilename = fmt("%s.%d", filepath.c_str(), i);
@@ -770,10 +771,12 @@ bool RequestGroup::tryAutoFileRenaming()
     File ctrlfile(newfile.getPath() + DefaultBtProgressInfoFile::getSuffix());
     if (!newfile.exists() || (newfile.exists() && ctrlfile.exists())) {
       downloadContext_->getFirstFileEntry()->setPath(newfile.getPath());
-      return true;
+      return;
     }
   }
-  return false;
+  throw DOWNLOAD_FAILURE_EXCEPTION2(fmt("File renaming failed: %s",
+                                        getFirstFilePath().c_str()),
+                                    error_code::FILE_RENAMING_FAILED);
 }
 
 void RequestGroup::createNextCommandWithAdj(

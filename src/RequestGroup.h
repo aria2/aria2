@@ -185,7 +185,7 @@ private:
 
   void initializePostDownloadHandler();
 
-  bool tryAutoFileRenaming();
+  void tryAutoFileRenaming();
 
   // Returns the result code of this RequestGroup.  If the download
   // finished, then returns error_code::FINISHED.  If the

@@ -74,6 +74,7 @@
 #include "CheckIntegrityEntry.h"
 #include "error_code.h"
 #include "SocketRecvBuffer.h"
+#include "NullProgressInfoFile.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "ChecksumCheckIntegrityEntry.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -369,13 +370,6 @@ bool FtpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
                             getRequest()->getFile().end())));
   }
   getRequestGroup()->preDownloadProcessing();
-  if(getDownloadEngine()->getRequestGroupMan()->
-     isSameFileBeingDownloaded(getRequestGroup())) {
-    throw DOWNLOAD_FAILURE_EXCEPTION2
-      (fmt(EX_DUPLICATE_FILE_DOWNLOAD,
-           getRequestGroup()->getFirstFilePath().c_str()),
-       error_code::DUPLICATE_DOWNLOAD);
-  }
   if(totalLength == 0) {
 
     if(getOption()->getAsBool(PREF_FTP_PASV)) {
@@ -422,7 +416,8 @@ bool FtpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
       return false;
     }
 
-    getRequestGroup()->shouldCancelDownloadForSafety();
+    getRequestGroup()->adjustFilename
+      (std::make_shared<NullProgressInfoFile>());
     getRequestGroup()->initPieceStorage();
     getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
 

@@ -74,6 +74,7 @@
 #include "uri.h"
 #include "SocketRecvBuffer.h"
 #include "MetalinkHttpEntry.h"
+#include "NullProgressInfoFile.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "Checksum.h"
 # include "ChecksumCheckIntegrityEntry.h"
@@ -258,11 +259,6 @@ bool HttpResponseCommand::executeInternal()
     }
     fe->setContentType(httpResponse->getContentType());
     grp->preDownloadProcessing();
-    if (getDownloadEngine()->getRequestGroupMan()->isSameFileBeingDownloaded(grp)) {
-      throw DOWNLOAD_FAILURE_EXCEPTION2(fmt(EX_DUPLICATE_FILE_DOWNLOAD,
-                                            grp->getFirstFilePath().c_str()),
-                                        error_code::DUPLICATE_DOWNLOAD);
-    }
 
     // update last modified time
     updateLastModifiedTime(httpResponse->getLastModifiedTime());
@@ -451,7 +447,7 @@ bool HttpResponseCommand::handleOtherEncoding(
     return true;
   }
 
-  getRequestGroup()->shouldCancelDownloadForSafety();
+  getRequestGroup()->adjustFilename(std::make_shared<NullProgressInfoFile>());
   getRequestGroup()->initPieceStorage();
   getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
 
