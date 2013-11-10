@@ -51,8 +51,8 @@ public:
   ChunkChecksum();
 
   ChunkChecksum
-  (const std::string& hashType,
-   const std::vector<std::string>& pieceHashes,
+  (std::string hashType,
+   std::vector<std::string> pieceHashes,
    int32_t pieceLength);
 
   bool validateChunk(const std::string& actualDigest,
@@ -70,7 +70,7 @@ public:
     return pieceHashes_;
   }
 
-  void setHashType(const std::string& hashType);
+  void setHashType(std::string hashType);
   const std::string& getHashType() const
   {
     return hashType_;

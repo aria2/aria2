@@ -68,11 +68,11 @@ public:
   (const char* localname,
    const char* prefix,
    const char* nsUri,
-   const std::string& characters) CXX11_OVERRIDE;
+   std::string characters) CXX11_OVERRIDE;
 
   virtual void reset() CXX11_OVERRIDE;
 
-  void setMethodName(const std::string& methodName);
+  void setMethodName(std::string methodName);
   const std::string& getMethodName() const;
   void popArrayFrame();
   void popStructFrame();
@@ -80,7 +80,7 @@ public:
   void setCurrentFrameValue(std::unique_ptr<ValueBase> value);
   const std::unique_ptr<ValueBase>& getCurrentFrameValue() const;
   std::unique_ptr<ValueBase> popCurrentFrameValue();
-  void setCurrentFrameName(const std::string& name);
+  void setCurrentFrameName(std::string name);
 
   void pushUnknownElementState();
   void pushMethodCallState();

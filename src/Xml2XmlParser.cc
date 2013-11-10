@@ -97,7 +97,7 @@ void mlEndElement
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   std::string characters;
   if(sd->psm->needsCharactersBuffering()) {
-    characters = sd->charactersStack.front();
+    characters = std::move(sd->charactersStack.front());
     sd->charactersStack.pop_front();
   }
   sd->psm->endElement

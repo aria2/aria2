@@ -134,7 +134,7 @@ void FileMetalinkParserState::endElement
  const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
   psm->commitEntryTransaction();
 }
@@ -144,7 +144,7 @@ void SizeMetalinkParserState::endElement
  const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
   // current metalink specification doesn't require size element.
   int64_t size;
@@ -159,9 +159,9 @@ void VersionMetalinkParserState::endElement
  const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
-  psm->setVersionOfEntry(characters);
+  psm->setVersionOfEntry(std::move(characters));
 }
 
 void LanguageMetalinkParserState::endElement
@@ -169,9 +169,9 @@ void LanguageMetalinkParserState::endElement
  const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
-  psm->setLanguageOfEntry(characters);
+  psm->setLanguageOfEntry(std::move(characters));
 }
 
 void OSMetalinkParserState::endElement
@@ -179,9 +179,9 @@ void OSMetalinkParserState::endElement
  const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
-  psm->setOSOfEntry(characters);
+  psm->setOSOfEntry(std::move(characters));
 }
 
 void VerificationMetalinkParserState::beginElement
@@ -259,9 +259,9 @@ void HashMetalinkParserState::endElement
  const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
-  psm->setHashOfChecksum(characters);
+  psm->setHashOfChecksum(std::move(characters));
   psm->commitChecksumTransaction();
 }
 
@@ -296,7 +296,7 @@ void PiecesMetalinkParserState::endElement
  const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
   psm->commitChunkChecksumTransaction();
 }
@@ -306,9 +306,9 @@ void PieceHashMetalinkParserState::endElement
  const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
-  psm->setMessageDigestOfChunkChecksum(characters);
+  psm->setMessageDigestOfChunkChecksum(std::move(characters));
   psm->addHashOfChunkChecksum();
 }
 
@@ -317,9 +317,9 @@ void SignatureMetalinkParserState::endElement
  const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
-  psm->setBodyOfSignature(characters);
+  psm->setBodyOfSignature(std::move(characters));
   psm->commitSignatureTransaction();
 }
 
@@ -391,9 +391,9 @@ void URLMetalinkParserState::endElement
  const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
-  psm->setURLOfResource(characters);
+  psm->setURLOfResource(std::move(characters));
   psm->commitResourceTransaction();
 }
 

@@ -42,19 +42,19 @@ Signature::Signature() {}
 
 Signature::~Signature() {}
 
-void Signature::setType(const std::string& type)
+void Signature::setType(std::string type)
 {
-  type_ = type;
+  type_ = std::move(type);
 }
 
-void Signature::setFile(const std::string& file)
+void Signature::setFile(std::string file)
 {
-  file_ = file;
+  file_ = std::move(file);
 }
 
-void Signature::setBody(const std::string& body)
+void Signature::setBody(std::string body)
 {
-  body_ = body;
+  body_ = std::move(body);
 }
 
 bool Signature::save(const std::string& filepath) const

@@ -40,12 +40,12 @@ namespace aria2 {
 ChunkChecksum::ChunkChecksum():pieceLength_(0) {}
 
 ChunkChecksum::ChunkChecksum
-(const std::string& hashType,
- const std::vector<std::string>& pieceHashes,
+(std::string hashType,
+ std::vector<std::string> pieceHashes,
  int32_t pieceLength)
-    : hashType_(hashType),
-      pieceHashes_(pieceHashes),
-      pieceLength_(pieceLength)
+  : hashType_(std::move(hashType)),
+    pieceHashes_(std::move(pieceHashes)),
+    pieceLength_(pieceLength)
 {}
 
 bool ChunkChecksum::validateChunk
@@ -75,9 +75,9 @@ const std::string& ChunkChecksum::getPieceHash(size_t index) const
   }
 }
 
-void ChunkChecksum::setHashType(const std::string& hashType)
+void ChunkChecksum::setHashType(std::string hashType)
 {
-  hashType_ = hashType;
+  hashType_ = std::move(hashType);
 }
 
 void ChunkChecksum::setPieceHashes(std::vector<std::string> pieceHashes)

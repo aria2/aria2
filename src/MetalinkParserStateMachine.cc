@@ -268,9 +268,9 @@ void MetalinkParserStateMachine::newEntryTransaction()
   ctrl_->newEntryTransaction();
 }
 
-void MetalinkParserStateMachine::setFileNameOfEntry(const std::string& filename)
+void MetalinkParserStateMachine::setFileNameOfEntry(std::string filename)
 {
-  ctrl_->setFileNameOfEntry(filename);
+  ctrl_->setFileNameOfEntry(std::move(filename));
 }
 
 void MetalinkParserStateMachine::setFileLengthOfEntry(int64_t length)
@@ -278,19 +278,19 @@ void MetalinkParserStateMachine::setFileLengthOfEntry(int64_t length)
   ctrl_->setFileLengthOfEntry(length);
 }
 
-void MetalinkParserStateMachine::setVersionOfEntry(const std::string& version)
+void MetalinkParserStateMachine::setVersionOfEntry(std::string version)
 {
-  ctrl_->setVersionOfEntry(version);
+  ctrl_->setVersionOfEntry(std::move(version));
 }
 
-void MetalinkParserStateMachine::setLanguageOfEntry(const std::string& language)
+void MetalinkParserStateMachine::setLanguageOfEntry(std::string language)
 {
-  ctrl_->setLanguageOfEntry(language);
+  ctrl_->setLanguageOfEntry(std::move(language));
 }
 
-void MetalinkParserStateMachine::setOSOfEntry(const std::string& os)
+void MetalinkParserStateMachine::setOSOfEntry(std::string os)
 {
-  ctrl_->setOSOfEntry(os);
+  ctrl_->setOSOfEntry(std::move(os));
 }
 
 void MetalinkParserStateMachine::setMaxConnectionsOfEntry(int maxConnections)
@@ -313,20 +313,19 @@ void MetalinkParserStateMachine::newResourceTransaction()
   ctrl_->newResourceTransaction();
 }
 
-void MetalinkParserStateMachine::setURLOfResource(const std::string& url)
+void MetalinkParserStateMachine::setURLOfResource(std::string url)
 {
-  ctrl_->setURLOfResource(url);
+  ctrl_->setURLOfResource(std::move(url));
 }
 
-void MetalinkParserStateMachine::setTypeOfResource(const std::string& type)
+void MetalinkParserStateMachine::setTypeOfResource(std::string type)
 {
-  ctrl_->setTypeOfResource(type);
+  ctrl_->setTypeOfResource(std::move(type));
 }
 
-void MetalinkParserStateMachine::setLocationOfResource
-(const std::string& location)
+void MetalinkParserStateMachine::setLocationOfResource(std::string location)
 {
-  ctrl_->setLocationOfResource(location);
+  ctrl_->setLocationOfResource(std::move(location));
 }
 
 void MetalinkParserStateMachine::setPriorityOfResource(int priority)
@@ -354,14 +353,14 @@ void MetalinkParserStateMachine::newChecksumTransaction()
   ctrl_->newChecksumTransaction();
 }
 
-void MetalinkParserStateMachine::setTypeOfChecksum(const std::string& type)
+void MetalinkParserStateMachine::setTypeOfChecksum(std::string type)
 {
-  ctrl_->setTypeOfChecksum(type);
+  ctrl_->setTypeOfChecksum(std::move(type));
 }
 
-void MetalinkParserStateMachine::setHashOfChecksum(const std::string& md)
+void MetalinkParserStateMachine::setHashOfChecksum(std::string md)
 {
-  ctrl_->setHashOfChecksum(md);
+  ctrl_->setHashOfChecksum(std::move(md));
 }
 
 void MetalinkParserStateMachine::commitChecksumTransaction()
@@ -384,15 +383,14 @@ void MetalinkParserStateMachine::setLengthOfChunkChecksumV4(size_t length)
   ctrl_->setLengthOfChunkChecksumV4(length);
 }
 
-void MetalinkParserStateMachine::setTypeOfChunkChecksumV4
-(const std::string& type)
+void MetalinkParserStateMachine::setTypeOfChunkChecksumV4(std::string type)
 {
-  ctrl_->setTypeOfChunkChecksumV4(type);
+  ctrl_->setTypeOfChunkChecksumV4(std::move(type));
 }
 
-void MetalinkParserStateMachine::addHashOfChunkChecksumV4(const std::string& md)
+void MetalinkParserStateMachine::addHashOfChunkChecksumV4(std::string md)
 {
-  ctrl_->addHashOfChunkChecksumV4(md);
+  ctrl_->addHashOfChunkChecksumV4(std::move(md));
 }
 
 void MetalinkParserStateMachine::commitChunkChecksumTransactionV4()
@@ -415,9 +413,9 @@ void MetalinkParserStateMachine::setLengthOfChunkChecksum(size_t length)
   ctrl_->setLengthOfChunkChecksum(length);
 }
 
-void MetalinkParserStateMachine::setTypeOfChunkChecksum(const std::string& type)
+void MetalinkParserStateMachine::setTypeOfChunkChecksum(std::string type)
 {
-  ctrl_->setTypeOfChunkChecksum(type);
+  ctrl_->setTypeOfChunkChecksum(std::move(type));
 }
 
 void MetalinkParserStateMachine::createNewHashOfChunkChecksum(size_t order)
@@ -425,10 +423,9 @@ void MetalinkParserStateMachine::createNewHashOfChunkChecksum(size_t order)
   ctrl_->createNewHashOfChunkChecksum(order);
 }
 
-void MetalinkParserStateMachine::setMessageDigestOfChunkChecksum
-(const std::string& md)
+void MetalinkParserStateMachine::setMessageDigestOfChunkChecksum(std::string md)
 {
-  ctrl_->setMessageDigestOfChunkChecksum(md);
+  ctrl_->setMessageDigestOfChunkChecksum(std::move(md));
 }
 
 void MetalinkParserStateMachine::addHashOfChunkChecksum()
@@ -451,19 +448,19 @@ void MetalinkParserStateMachine::newSignatureTransaction()
   ctrl_->newSignatureTransaction();
 }
 
-void MetalinkParserStateMachine::setTypeOfSignature(const std::string& type)
+void MetalinkParserStateMachine::setTypeOfSignature(std::string type)
 {
-  ctrl_->setTypeOfSignature(type);
+  ctrl_->setTypeOfSignature(std::move(type));
 }
 
-void MetalinkParserStateMachine::setFileOfSignature(const std::string& file)
+void MetalinkParserStateMachine::setFileOfSignature(std::string file)
 {
-  ctrl_->setFileOfSignature(file);
+  ctrl_->setFileOfSignature(std::move(file));
 }
 
-void MetalinkParserStateMachine::setBodyOfSignature(const std::string& body)
+void MetalinkParserStateMachine::setBodyOfSignature(std::string body)
 {
-  ctrl_->setBodyOfSignature(body);
+  ctrl_->setBodyOfSignature(std::move(body));
 }
 
 void MetalinkParserStateMachine::commitSignatureTransaction()
@@ -481,15 +478,14 @@ void MetalinkParserStateMachine::newMetaurlTransaction()
   ctrl_->newMetaurlTransaction();
 }
 
-void MetalinkParserStateMachine::setURLOfMetaurl(const std::string& url)
+void MetalinkParserStateMachine::setURLOfMetaurl(std::string url)
 {
-  ctrl_->setURLOfMetaurl(url);
+  ctrl_->setURLOfMetaurl(std::move(url));
 }
 
-void MetalinkParserStateMachine::setMediatypeOfMetaurl
-(const std::string& mediatype)
+void MetalinkParserStateMachine::setMediatypeOfMetaurl(std::string mediatype)
 {
-  ctrl_->setMediatypeOfMetaurl(mediatype);
+  ctrl_->setMediatypeOfMetaurl(std::move(mediatype));
 }
 
 void MetalinkParserStateMachine::setPriorityOfMetaurl(int priority)
@@ -497,9 +493,9 @@ void MetalinkParserStateMachine::setPriorityOfMetaurl(int priority)
   ctrl_->setPriorityOfMetaurl(priority);
 }
 
-void MetalinkParserStateMachine::setNameOfMetaurl(const std::string& name)
+void MetalinkParserStateMachine::setNameOfMetaurl(std::string name)
 {
-  ctrl_->setNameOfMetaurl(name);
+  ctrl_->setNameOfMetaurl(std::move(name));
 }
 
 void MetalinkParserStateMachine::commitMetaurlTransaction()
@@ -525,9 +521,10 @@ void MetalinkParserStateMachine::endElement
 (const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
-  stateStack_.top()->endElement(this, localname, prefix, nsUri, characters);
+  stateStack_.top()->endElement(this, localname, prefix, nsUri,
+                                std::move(characters));
   stateStack_.pop();
 }
 
@@ -536,10 +533,10 @@ bool MetalinkParserStateMachine::needsCharactersBuffering() const
   return stateStack_.top()->needsCharactersBuffering();
 }
 
-void MetalinkParserStateMachine::logError(const std::string& log)
+void MetalinkParserStateMachine::logError(std::string log)
 {
   if(errors_.size() < 10) {
-    errors_.push_back(log);
+    errors_.push_back(std::move(log));
   }
 }
 
@@ -557,9 +554,9 @@ std::unique_ptr<Metalinker> MetalinkParserStateMachine::getResult()
   return ctrl_->getResult();
 }
 
-void MetalinkParserStateMachine::setBaseUri(const std::string& uri)
+void MetalinkParserStateMachine::setBaseUri(std::string uri)
 {
-  ctrl_->setBaseUri(uri);
+  ctrl_->setBaseUri(std::move(uri));
 }
 
 } // namespace aria2

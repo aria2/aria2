@@ -65,7 +65,7 @@ public:
                           const char* localname,
                           const char* prefix,
                           const char* nsUri,
-                          const std::string& characters) CXX11_OVERRIDE;
+                          std::string characters) CXX11_OVERRIDE;
 
   virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
   {
@@ -80,7 +80,7 @@ public:
                           const char* localname,
                           const char* prefix,
                           const char* nsUri,
-                          const std::string& characters) CXX11_OVERRIDE;
+                          std::string characters) CXX11_OVERRIDE;
 
   virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
   {
@@ -95,7 +95,7 @@ public:
                           const char* localname,
                           const char* prefix,
                           const char* nsUri,
-                          const std::string& characters) CXX11_OVERRIDE;
+                          std::string characters) CXX11_OVERRIDE;
 
   virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
   {
@@ -110,7 +110,7 @@ public:
                           const char* localname,
                           const char* prefix,
                           const char* nsUri,
-                          const std::string& characters) CXX11_OVERRIDE;
+                          std::string characters) CXX11_OVERRIDE;
 
   virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
   {
@@ -125,7 +125,7 @@ public:
                           const char* localname,
                           const char* prefix,
                           const char* nsUri,
-                          const std::string& characters) CXX11_OVERRIDE;
+                          std::string characters) CXX11_OVERRIDE;
 
   virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
   {
@@ -140,7 +140,7 @@ public:
                           const char* localname,
                           const char* prefix,
                           const char* nsUri,
-                          const std::string& characters) CXX11_OVERRIDE;
+                          std::string characters) CXX11_OVERRIDE;
 
   virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
   {
@@ -161,7 +161,7 @@ public:
                           const char* localname,
                           const char* prefix,
                           const char* nsUri,
-                          const std::string& characters) CXX11_OVERRIDE;
+                          std::string characters) CXX11_OVERRIDE;
 
   virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
   {
@@ -176,7 +176,7 @@ public:
                           const char* localname,
                           const char* prefix,
                           const char* nsUri,
-			  const std::string& characters) CXX11_OVERRIDE;
+			  std::string characters) CXX11_OVERRIDE;
 
   virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
   {
@@ -191,7 +191,7 @@ public:
                           const char* localname,
                           const char* prefix,
                           const char* nsUri,
-                          const std::string& characters) CXX11_OVERRIDE;
+                          std::string characters) CXX11_OVERRIDE;
 
   virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
   {
@@ -206,7 +206,7 @@ public:
                           const char* localname,
                           const char* prefix,
                           const char* nsUri,
-                          const std::string& characters) CXX11_OVERRIDE;
+                          std::string characters) CXX11_OVERRIDE;
 
   virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
   {
@@ -221,7 +221,7 @@ public:
                           const char* localname,
                           const char* prefix,
                           const char* nsUri,
-                          const std::string& characters) CXX11_OVERRIDE;
+                          std::string characters) CXX11_OVERRIDE;
 
   virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
   {

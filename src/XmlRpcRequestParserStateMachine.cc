@@ -117,16 +117,15 @@ void XmlRpcRequestParserStateMachine::endElement
 (const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
-  stateStack_.top()->endElement(this, localname, characters);
+  stateStack_.top()->endElement(this, localname, std::move(characters));
   stateStack_.pop();
 }
 
-void XmlRpcRequestParserStateMachine::setMethodName
-(const std::string& methodName)
+void XmlRpcRequestParserStateMachine::setMethodName(std::string methodName)
 {
-  controller_->setMethodName(methodName);
+  controller_->setMethodName(std::move(methodName));
 }
 
 const std::string& XmlRpcRequestParserStateMachine::getMethodName() const
@@ -167,10 +166,9 @@ XmlRpcRequestParserStateMachine::popCurrentFrameValue()
   return controller_->popCurrentFrameValue();
 }
 
-void XmlRpcRequestParserStateMachine::setCurrentFrameName
-(const std::string& name)
+void XmlRpcRequestParserStateMachine::setCurrentFrameName(std::string name)
 {
-  controller_->setCurrentFrameName(name);
+  controller_->setCurrentFrameName(std::move(name));
 }
 
 void XmlRpcRequestParserStateMachine::pushUnknownElementState()

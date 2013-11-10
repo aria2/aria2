@@ -47,19 +47,19 @@ private:
   std::string digest_;
 public:
   // digest_ is raw byte array of hash value, not ascii hexadecimal notation.
-  Checksum(const std::string& hashType, const std::string& digest);
+  Checksum(std::string hashType, std::string digest);
   Checksum();
   ~Checksum();
 
   bool isEmpty() const;
 
-  void setDigest(const std::string& md);
+  void setDigest(std::string md);
   const std::string& getDigest() const
   {
     return digest_;
   }
 
-  void setHashType(const std::string& type);
+  void setHashType(std::string type);
   const std::string& getHashType() const
   {
     return hashType_;

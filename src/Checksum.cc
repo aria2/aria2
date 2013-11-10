@@ -37,15 +37,13 @@
 
 namespace aria2 {
 
-Checksum::Checksum
-(const std::string& hashType,
- const std::string& digest)
-    : hashType_(hashType),
-      digest_(digest)
+Checksum::Checksum(std::string hashType, std::string digest)
+  : hashType_(std::move(hashType)),
+    digest_(std::move(digest))
 {}
 
 Checksum::Checksum()
-    : hashType_("sha-1")
+  : hashType_("sha-1")
 {}
 
 Checksum::~Checksum() {}
@@ -55,14 +53,14 @@ bool Checksum::isEmpty() const
   return digest_.empty();
 }
 
-void Checksum::setDigest(const std::string& digest)
+void Checksum::setDigest(std::string digest)
 {
-  digest_ = digest;
+  digest_ = std::move(digest);
 }
 
-void Checksum::setHashType(const std::string& hashType)
+void Checksum::setHashType(std::string hashType)
 {
-  hashType_ = hashType;
+  hashType_ = std::move(hashType);
 }
 
 void Checksum::swap(Checksum& other)

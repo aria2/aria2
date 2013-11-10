@@ -223,7 +223,7 @@ void FileMetalinkParserStateV4::endElement
  const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
   psm->commitEntryTransaction();
 }
@@ -233,7 +233,7 @@ void SizeMetalinkParserStateV4::endElement
  const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
   int64_t size;
   if(util::parseLLIntNoThrow(size, characters) && size >= 0 &&
@@ -250,9 +250,9 @@ void VersionMetalinkParserStateV4::endElement
  const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
-  psm->setVersionOfEntry(characters);
+  psm->setVersionOfEntry(std::move(characters));
 }
 
 void LanguageMetalinkParserStateV4::endElement
@@ -260,9 +260,9 @@ void LanguageMetalinkParserStateV4::endElement
  const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
-  psm->setLanguageOfEntry(characters);
+  psm->setLanguageOfEntry(std::move(characters));
 }
 
 void OSMetalinkParserStateV4::endElement
@@ -270,9 +270,9 @@ void OSMetalinkParserStateV4::endElement
  const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
-  psm->setOSOfEntry(characters);
+  psm->setOSOfEntry(std::move(characters));
 }
 
 void HashMetalinkParserStateV4::endElement
@@ -280,9 +280,9 @@ void HashMetalinkParserStateV4::endElement
  const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
-  psm->setHashOfChecksum(characters);
+  psm->setHashOfChecksum(std::move(characters));
   psm->commitChecksumTransaction();
 }
 
@@ -305,7 +305,7 @@ void PiecesMetalinkParserStateV4::endElement
  const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
   psm->commitChunkChecksumTransactionV4();
 }
@@ -315,9 +315,9 @@ void PieceHashMetalinkParserStateV4::endElement
  const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
-  psm->addHashOfChunkChecksumV4(characters);
+  psm->addHashOfChunkChecksumV4(std::move(characters));
 }
 
 void SignatureMetalinkParserStateV4::endElement
@@ -325,9 +325,9 @@ void SignatureMetalinkParserStateV4::endElement
  const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
-  psm->setBodyOfSignature(characters);
+  psm->setBodyOfSignature(std::move(characters));
   psm->commitSignatureTransaction();
 }
 
@@ -336,9 +336,9 @@ void URLMetalinkParserStateV4::endElement
  const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
-  psm->setURLOfResource(characters);
+  psm->setURLOfResource(std::move(characters));
   psm->commitResourceTransaction();
 }
 
@@ -347,9 +347,9 @@ void MetaurlMetalinkParserStateV4::endElement
  const char* localname,
  const char* prefix,
  const char* nsUri,
- const std::string& characters)
+ std::string characters)
 {
-  psm->setURLOfMetaurl(characters);
+  psm->setURLOfMetaurl(std::move(characters));
   psm->commitMetaurlTransaction();
 }
 

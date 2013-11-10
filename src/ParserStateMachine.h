@@ -62,7 +62,7 @@ public:
   (const char* localname,
    const char* prefix,
    const char* nsUri,
-   const std::string& characters) = 0;
+   std::string characters) = 0;
 
   // Resets internal state of the object and make it ready for new
   // parser session.

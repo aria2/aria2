@@ -63,7 +63,7 @@ void InitialXmlRpcRequestParserState::beginElement
 void InitialXmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* psm,
  const char* name,
- const std::string& characters)
+ std::string characters)
 {}
 
 // UnknownElementXmlRpcRequestParserState
@@ -106,9 +106,9 @@ void MethodNameXmlRpcRequestParserState::beginElement
 void MethodNameXmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* psm,
  const char* name,
- const std::string& characters)
+ std::string characters)
 {
-  psm->setMethodName(characters);
+  psm->setMethodName(std::move(characters));
 }
 
 // ParamsXmlRpcRequestParserState
@@ -143,7 +143,7 @@ void ParamXmlRpcRequestParserState::beginElement
 void ParamXmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* psm,
  const char* name,
- const std::string& characters)
+ std::string characters)
 {
   psm->popArrayFrame();
 }
@@ -175,13 +175,13 @@ void ValueXmlRpcRequestParserState::beginElement
 void ValueXmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* psm,
  const char* name,
- const std::string& characters)
+ std::string characters)
 {
   // XML-RPC specification says that if no data type tag is used, the
   // data must be treated as string.  To prevent from overwriting
   // current frame value, we first check it is still null.
   if(!psm->getCurrentFrameValue() && !characters.empty()) {
-    psm->setCurrentFrameValue(String::g(characters));
+    psm->setCurrentFrameValue(String::g(std::move(characters)));
   }
 }
 
@@ -198,7 +198,7 @@ void IntXmlRpcRequestParserState::beginElement
 void IntXmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* psm,
  const char* name,
- const std::string& characters)
+ std::string characters)
 {
   int32_t value;
   if(util::parseIntNoThrow(value, characters)) {
@@ -221,9 +221,9 @@ void StringXmlRpcRequestParserState::beginElement
 void StringXmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* psm,
  const char* name,
- const std::string& characters)
+ std::string characters)
 {
-  psm->setCurrentFrameValue(String::g(characters));
+  psm->setCurrentFrameValue(String::g(std::move(characters)));
 }
 
 // Base64XmlRpcRequestParserState
@@ -239,7 +239,7 @@ void Base64XmlRpcRequestParserState::beginElement
 void Base64XmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* psm,
  const char* name,
- const std::string& characters)
+ std::string characters)
 {
   psm->setCurrentFrameValue
     (String::g(base64::decode(characters.begin(), characters.end())));
@@ -279,7 +279,7 @@ void MemberXmlRpcRequestParserState::beginElement
 void MemberXmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* psm,
  const char* name,
- const std::string& characters)
+ std::string characters)
 {
   psm->popStructFrame();
 }
@@ -297,9 +297,9 @@ void NameXmlRpcRequestParserState::beginElement
 void NameXmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* psm,
  const char* name,
- const std::string& characters)
+ std::string characters)
 {
-  psm->setCurrentFrameName(characters);
+  psm->setCurrentFrameName(std::move(characters));
 }
 
 // ArrayXmlRpcRequestParserState
@@ -336,9 +336,9 @@ void DataXmlRpcRequestParserState::beginElement
 void ArrayValueXmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* psm,
  const char* name,
- const std::string& characters)
+ std::string characters)
 {
-  ValueXmlRpcRequestParserState::endElement(psm, name, characters);
+  ValueXmlRpcRequestParserState::endElement(psm, name, std::move(characters));
   psm->popArrayFrame();
 }
 

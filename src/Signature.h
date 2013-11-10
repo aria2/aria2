@@ -53,21 +53,21 @@ public:
 
   ~Signature();
 
-  void setType(const std::string& type);
+  void setType(std::string type);
 
   const std::string& getType() const
   {
     return type_;
   }
 
-  void setFile(const std::string& file);
+  void setFile(std::string file);
 
   const std::string& getFile() const
   {
     return file_;
   }
 
-  void setBody(const std::string& body);
+  void setBody(std::string body);
 
   const std::string& getBody() const
   {

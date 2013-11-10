@@ -58,7 +58,7 @@ public:
 
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
-                          const std::string& characters) = 0;
+                          std::string characters) = 0;
 
   virtual bool needsCharactersBuffering() const = 0;
 };

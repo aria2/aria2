@@ -92,15 +92,15 @@ public:
 
   void newEntryTransaction();
 
-  void setFileNameOfEntry(const std::string& filename);
+  void setFileNameOfEntry(std::string filename);
 
   void setFileLengthOfEntry(int64_t length);
 
-  void setVersionOfEntry(const std::string& version);
+  void setVersionOfEntry(std::string version);
 
-  void setLanguageOfEntry(const std::string& language);
+  void setLanguageOfEntry(std::string language);
 
-  void setOSOfEntry(const std::string& os);
+  void setOSOfEntry(std::string os);
 
   void setMaxConnectionsOfEntry(int maxConnections);
 
@@ -110,11 +110,11 @@ public:
 
   void newResourceTransaction();
 
-  void setURLOfResource(const std::string& url);
+  void setURLOfResource(std::string url);
 
-  void setTypeOfResource(const std::string& type);
+  void setTypeOfResource(std::string type);
 
-  void setLocationOfResource(const std::string& location);
+  void setLocationOfResource(std::string location);
 
   void setPriorityOfResource(int priority);
 
@@ -126,9 +126,9 @@ public:
 
   void newChecksumTransaction();
 
-  void setTypeOfChecksum(const std::string& type);
+  void setTypeOfChecksum(std::string type);
 
-  void setHashOfChecksum(const std::string& md);
+  void setHashOfChecksum(std::string md);
 
   void commitChecksumTransaction();
 
@@ -136,11 +136,11 @@ public:
 
   void newChunkChecksumTransactionV4(); // Metalink4Spec
 
-  void setTypeOfChunkChecksumV4(const std::string& type); // Metalink4Spec
+  void setTypeOfChunkChecksumV4(std::string type); // Metalink4Spec
 
   void setLengthOfChunkChecksumV4(size_t length); // Metalink4Spec
 
-  void addHashOfChunkChecksumV4(const std::string& md); // Metalink4Spec
+  void addHashOfChunkChecksumV4(std::string md); // Metalink4Spec
 
   void commitChunkChecksumTransactionV4(); // Metalink4Spec
 
@@ -148,15 +148,15 @@ public:
 
   void newChunkChecksumTransaction(); // Metalink3Spec
 
-  void setTypeOfChunkChecksum(const std::string& type); // Metalink3Spec
+  void setTypeOfChunkChecksum(std::string type); // Metalink3Spec
 
   void setLengthOfChunkChecksum(size_t length); // Metalink3Spec
 
-  void addHashOfChunkChecksum(size_t order, const std::string& md);// Metalink3Spec
+  void addHashOfChunkChecksum(size_t order, std::string md);// Metalink3Spec
 
   void createNewHashOfChunkChecksum(size_t order); // Metalink3Spec
 
-  void setMessageDigestOfChunkChecksum(const std::string& md); // Metalink3Spec
+  void setMessageDigestOfChunkChecksum(std::string md); // Metalink3Spec
 
   void addHashOfChunkChecksum(); // Metalink3Spec
 
@@ -166,11 +166,11 @@ public:
 
   void newSignatureTransaction();
 
-  void setTypeOfSignature(const std::string& type);
+  void setTypeOfSignature(std::string type);
 
-  void setFileOfSignature(const std::string& file);
+  void setFileOfSignature(std::string file);
 
-  void setBodyOfSignature(const std::string& body);
+  void setBodyOfSignature(std::string body);
 
   void commitSignatureTransaction();
 
@@ -178,21 +178,21 @@ public:
 
   void newMetaurlTransaction();
 
-  void setURLOfMetaurl(const std::string& url);
+  void setURLOfMetaurl(std::string url);
 
-  void setMediatypeOfMetaurl(const std::string& mediatype);
+  void setMediatypeOfMetaurl(std::string mediatype);
 
   void setPriorityOfMetaurl(int priority);
 
-  void setNameOfMetaurl(const std::string& name);
+  void setNameOfMetaurl(std::string name);
 
   void commitMetaurlTransaction();
 
   void cancelMetaurlTransaction();
 
-  void setBaseUri(const std::string& baseUri)
+  void setBaseUri(std::string baseUri)
   {
-    baseUri_ = baseUri;
+    baseUri_ = std::move(baseUri);
   }
 };
 

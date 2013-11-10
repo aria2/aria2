@@ -62,7 +62,7 @@ public:
    const char* localname,
    const char* prefix,
    const char* nsUri,
-   const std::string& characters) {}
+   std::string characters) {}
 
   virtual bool needsCharactersBuffering() const
   {

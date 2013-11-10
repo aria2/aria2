@@ -85,7 +85,7 @@ void MetalinkParserController::newEntryTransaction()
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-void MetalinkParserController::setFileNameOfEntry(const std::string& filename)
+void MetalinkParserController::setFileNameOfEntry(std::string filename)
 {
   if(!tEntry_) {
     return;
@@ -109,28 +109,28 @@ void MetalinkParserController::setFileLengthOfEntry(int64_t length)
   tEntry_->sizeKnown = true;
 }
 
-void MetalinkParserController::setVersionOfEntry(const std::string& version)
+void MetalinkParserController::setVersionOfEntry(std::string version)
 {
   if(!tEntry_) {
     return;
   }
-  tEntry_->version = version;
+  tEntry_->version = std::move(version);
 }
 
-void MetalinkParserController::setLanguageOfEntry(const std::string& language)
+void MetalinkParserController::setLanguageOfEntry(std::string language)
 {
   if(!tEntry_) {
     return;
   }
-  tEntry_->languages.push_back(language);
+  tEntry_->languages.push_back(std::move(language));
 }
 
-void MetalinkParserController::setOSOfEntry(const std::string& os)
+void MetalinkParserController::setOSOfEntry(std::string os)
 {
   if(!tEntry_) {
     return;
   }
-  tEntry_->oses.push_back(os);
+  tEntry_->oses.push_back(std::move(os));
 }
 
 void MetalinkParserController::setMaxConnectionsOfEntry(int maxConnections)
@@ -174,7 +174,7 @@ void MetalinkParserController::newResourceTransaction()
   tResource_ = make_unique<MetalinkResource>();
 }
 
-void MetalinkParserController::setURLOfResource(const std::string& url)
+void MetalinkParserController::setURLOfResource(std::string url)
 {
   if(!tResource_) {
     return;
@@ -182,16 +182,17 @@ void MetalinkParserController::setURLOfResource(const std::string& url)
   std::string u = uri::joinUri(baseUri_, url);
   uri_split_result us;
   if(uri_split(&us, u.c_str()) == 0) {
-    tResource_->url = u;
+    tResource_->url = std::move(u);
     if(tResource_->type == MetalinkResource::TYPE_UNKNOWN) {
-      setTypeOfResource(uri::getFieldString(us, USR_SCHEME, u.c_str()));
+      setTypeOfResource(uri::getFieldString(us, USR_SCHEME,
+                                            tResource_->url.c_str()));
     }
   } else {
-    tResource_->url = url;
+    tResource_->url = std::move(url);
   }
 }
 
-void MetalinkParserController::setTypeOfResource(const std::string& type)
+void MetalinkParserController::setTypeOfResource(std::string type)
 {
   if(!tResource_) {
     return;
@@ -210,12 +211,12 @@ void MetalinkParserController::setTypeOfResource(const std::string& type)
   }
 }
 
-void MetalinkParserController::setLocationOfResource(const std::string& location)
+void MetalinkParserController::setLocationOfResource(std::string location)
 {
   if(!tResource_) {
     return;
   }
-  tResource_->location = location;
+  tResource_->location = std::move(location);
 }
 
 void MetalinkParserController::setPriorityOfResource(int priority)
@@ -270,7 +271,7 @@ void MetalinkParserController::newChecksumTransaction()
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-void MetalinkParserController::setTypeOfChecksum(const std::string& type)
+void MetalinkParserController::setTypeOfChecksum(std::string type)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   if(!tChecksum_) {
@@ -278,14 +279,14 @@ void MetalinkParserController::setTypeOfChecksum(const std::string& type)
   }
   std::string calgo = MessageDigest::getCanonicalHashType(type);
   if(MessageDigest::supports(calgo)) {
-    tChecksum_->setHashType(calgo);
+    tChecksum_->setHashType(std::move(calgo));
   } else {
     cancelChecksumTransaction();
   }
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-void MetalinkParserController::setHashOfChecksum(const std::string& md)
+void MetalinkParserController::setHashOfChecksum(std::string md)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   if(!tChecksum_) {
@@ -332,7 +333,7 @@ void MetalinkParserController::newChunkChecksumTransactionV4()
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-void MetalinkParserController::setTypeOfChunkChecksumV4(const std::string& type)
+void MetalinkParserController::setTypeOfChunkChecksumV4(std::string type)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   if(!tChunkChecksumV4_) {
@@ -340,7 +341,7 @@ void MetalinkParserController::setTypeOfChunkChecksumV4(const std::string& type)
   }
   std::string calgo = MessageDigest::getCanonicalHashType(type);
   if(MessageDigest::supports(calgo)) {
-    tChunkChecksumV4_->setHashType(calgo);
+    tChunkChecksumV4_->setHashType(std::move(calgo));
   } else {
     cancelChunkChecksumTransactionV4();
   }
@@ -361,7 +362,7 @@ void MetalinkParserController::setLengthOfChunkChecksumV4(size_t length)
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-void MetalinkParserController::addHashOfChunkChecksumV4(const std::string& md)
+void MetalinkParserController::addHashOfChunkChecksumV4(std::string md)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   if(!tChunkChecksumV4_) {
@@ -409,7 +410,7 @@ void MetalinkParserController::newChunkChecksumTransaction()
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-void MetalinkParserController::setTypeOfChunkChecksum(const std::string& type)
+void MetalinkParserController::setTypeOfChunkChecksum(std::string type)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   if(!tChunkChecksum_) {
@@ -417,7 +418,7 @@ void MetalinkParserController::setTypeOfChunkChecksum(const std::string& type)
   }
   std::string calgo = MessageDigest::getCanonicalHashType(type);
   if(MessageDigest::supports(calgo)) {
-    tChunkChecksum_->setHashType(calgo);
+    tChunkChecksum_->setHashType(std::move(calgo));
   } else {
     cancelChunkChecksumTransaction();
   }
@@ -438,14 +439,15 @@ void MetalinkParserController::setLengthOfChunkChecksum(size_t length)
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-void MetalinkParserController::addHashOfChunkChecksum(size_t order, const std::string& md)
+void MetalinkParserController::addHashOfChunkChecksum(size_t order,
+                                                      std::string md)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   if(!tChunkChecksum_) {
     return;
   }
   if(MessageDigest::isValidHash(tChunkChecksum_->getHashType(), md)) {
-    tempChunkChecksums_.push_back(std::make_pair(order, md));
+    tempChunkChecksums_.push_back(std::make_pair(order, std::move(md)));
   } else {
     cancelChunkChecksumTransaction();
   }
@@ -462,7 +464,7 @@ void MetalinkParserController::createNewHashOfChunkChecksum(size_t order)
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-void MetalinkParserController::setMessageDigestOfChunkChecksum(const std::string& md)
+void MetalinkParserController::setMessageDigestOfChunkChecksum(std::string md)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   if(!tChunkChecksum_) {
@@ -524,28 +526,28 @@ void MetalinkParserController::newSignatureTransaction()
   tSignature_ = make_unique<Signature>();
 }
 
-void MetalinkParserController::setTypeOfSignature(const std::string& type)
+void MetalinkParserController::setTypeOfSignature(std::string type)
 {
   if(!tSignature_) {
     return;
   }
-  tSignature_->setType(type);
+  tSignature_->setType(std::move(type));
 }
 
-void MetalinkParserController::setFileOfSignature(const std::string& file)
+void MetalinkParserController::setFileOfSignature(std::string file)
 {
   if(!tSignature_) {
     return;
   }
-  tSignature_->setFile(file);
+  tSignature_->setFile(std::move(file));
 }
 
-void MetalinkParserController::setBodyOfSignature(const std::string& body)
+void MetalinkParserController::setBodyOfSignature(std::string body)
 {
   if(!tSignature_) {
     return;
   }
-  tSignature_->setBody(body);
+  tSignature_->setBody(std::move(body));
 }
 
 void MetalinkParserController::commitSignatureTransaction()
@@ -569,33 +571,32 @@ void MetalinkParserController::newMetaurlTransaction()
   tMetaurl_ = make_unique<MetalinkMetaurl>();
 }
 
-void MetalinkParserController::setURLOfMetaurl(const std::string& url)
+void MetalinkParserController::setURLOfMetaurl(std::string url)
 {
   if(!tMetaurl_) {
     return;
   }
 #ifdef ENABLE_BITTORRENT
   if(magnet::parse(url)) {
-    tMetaurl_->url = url;
+    tMetaurl_->url = std::move(url);
   } else
 #endif // ENABLE_BITTORRENT
     {
       std::string u = uri::joinUri(baseUri_, url);
       if(uri_split(nullptr, u.c_str()) == 0) {
-        tMetaurl_->url = u;
+        tMetaurl_->url = std::move(u);
       } else {
-        tMetaurl_->url = url;
+        tMetaurl_->url = std::move(url);
       }
     }
 }
 
-void MetalinkParserController::setMediatypeOfMetaurl
-(const std::string& mediatype)
+void MetalinkParserController::setMediatypeOfMetaurl(std::string mediatype)
 {
   if(!tMetaurl_) {
     return;
   }
-  tMetaurl_->mediatype = mediatype;
+  tMetaurl_->mediatype = std::move(mediatype);
 }
 
 void MetalinkParserController::setPriorityOfMetaurl(int priority)
@@ -606,12 +607,12 @@ void MetalinkParserController::setPriorityOfMetaurl(int priority)
   tMetaurl_->priority = priority;
 }
 
-void MetalinkParserController::setNameOfMetaurl(const std::string& name)
+void MetalinkParserController::setNameOfMetaurl(std::string name)
 {
   if(!tMetaurl_) {
     return;
   }
-  tMetaurl_->name = name;
+  tMetaurl_->name = std::move(name);
 }
 
 void MetalinkParserController::commitMetaurlTransaction()
