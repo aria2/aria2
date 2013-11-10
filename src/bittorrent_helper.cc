@@ -68,43 +68,26 @@ namespace aria2 {
 namespace bittorrent {
 
 namespace {
-const std::string C_NAME("name");
+const char C_NAME[] = "name";
+const char C_NAME_UTF8[] = "name.utf-8";
+const char C_FILES[] = "files";
+const char C_LENGTH[] = "length";
+const char C_PATH[] = "path";
+const char C_PATH_UTF8[] = "path.utf-8";
+const char C_INFO[] = "info";
+const char C_PIECES[] = "pieces";
+const char C_PIECE_LENGTH[] = "piece length";
+const char C_PRIVATE[] = "private";
+const char C_URL_LIST[] = "url-list";
+const char C_ANNOUNCE[] = "announce";
+const char C_ANNOUNCE_LIST[] = "announce-list";
+const char C_NODES[] = "nodes";
+const char C_CREATION_DATE[] = "creation date";
+const char C_COMMENT[] = "comment";
+const char C_COMMENT_UTF8[] = "comment.utf-8";
+const char C_CREATED_BY[] = "created by";
 
-const std::string C_NAME_UTF8("name.utf-8");
-
-const std::string C_FILES("files");
-
-const std::string C_LENGTH("length");
-
-const std::string C_PATH("path");
-
-const std::string C_PATH_UTF8("path.utf-8");
-
-const std::string C_INFO("info");
-
-const std::string C_PIECES("pieces");
-
-const std::string C_PIECE_LENGTH("piece length");
-
-const std::string C_PRIVATE("private");
-
-const std::string C_URL_LIST("url-list");
-
-const std::string C_ANNOUNCE("announce");
-
-const std::string C_ANNOUNCE_LIST("announce-list");
-
-const std::string C_NODES("nodes");
-
-const std::string C_CREATION_DATE("creation date");
-
-const std::string C_COMMENT("comment");
-
-const std::string C_COMMENT_UTF8("comment.utf-8");
-
-const std::string C_CREATED_BY("created by");
-
-const std::string DEFAULT_PEER_ID_PREFIX("aria2-");
+const char DEFAULT_PEER_ID_PREFIX[] = "aria2-";
 } // namespace
 
 const std::string MULTI("multi");
@@ -241,7 +224,7 @@ void extractFileEntries
       }
       const Integer* fileLengthData = downcast<Integer>(fileDict->get(C_LENGTH));
       if(!fileLengthData) {
-        throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_LENGTH.c_str()),
+        throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_LENGTH),
                            error_code::BITTORRENT_PARSE_ERROR);
       }
       if(length > std::numeric_limits<int64_t>::max() - fileLengthData->i()) {
@@ -302,7 +285,7 @@ void extractFileEntries
     torrent->mode = BT_FILE_MODE_SINGLE;
     const Integer* lengthData = downcast<Integer>(infoDict->get(C_LENGTH));
     if(!lengthData) {
-      throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_LENGTH.c_str()),
+      throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_LENGTH),
                          error_code::BITTORRENT_PARSE_ERROR);
     }
     int64_t totalLength = lengthData->i();
@@ -412,7 +395,7 @@ void processRootDictionary
   }
   const Dict* infoDict = downcast<Dict>(rootDict->get(C_INFO));
   if(!infoDict) {
-    throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_INFO.c_str()),
+    throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_INFO),
                        error_code::BITTORRENT_PARSE_ERROR);
   }
   auto torrent = make_unique<TorrentAttribute>();
@@ -431,7 +414,7 @@ void processRootDictionary
   // calculate the number of pieces
   const String* piecesData = downcast<String>(infoDict->get(C_PIECES));
   if(!piecesData) {
-    throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_PIECES.c_str()),
+    throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_PIECES),
                        error_code::BITTORRENT_PARSE_ERROR);
   }
   // Commented out To download 0 length torrent.
@@ -446,7 +429,7 @@ void processRootDictionary
   // retrieve piece length
   const Integer* pieceLengthData = downcast<Integer>(infoDict->get(C_PIECE_LENGTH));
   if(!pieceLengthData) {
-    throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_PIECE_LENGTH.c_str()),
+    throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_PIECE_LENGTH),
                        error_code::BITTORRENT_PARSE_ERROR);
   }
   size_t pieceLength = pieceLengthData->i();
