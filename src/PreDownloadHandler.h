@@ -46,7 +46,7 @@ public:
 
   virtual ~PreDownloadHandler() {}
 
-  virtual void execute(RequestGroup* requestGroup) = 0;
+  virtual void execute(RequestGroup* requestGroup) const = 0;
 };
 
 } // namespace aria2

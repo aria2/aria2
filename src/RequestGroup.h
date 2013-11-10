@@ -131,9 +131,9 @@ private:
 
   bool pauseRequested_;
 
-  std::vector<std::shared_ptr<PreDownloadHandler> > preDownloadHandlers_;
+  std::vector<const PreDownloadHandler*> preDownloadHandlers_;
 
-  std::vector<std::shared_ptr<PostDownloadHandler> > postDownloadHandlers_;
+  std::vector<const PostDownloadHandler*> postDownloadHandlers_;
 
   std::unique_ptr<URISelector> uriSelector_;
 
@@ -375,13 +375,13 @@ public:
 
   void postDownloadProcessing(std::vector<std::shared_ptr<RequestGroup> >& groups);
 
-  void addPostDownloadHandler(const std::shared_ptr<PostDownloadHandler>& handler);
+  void addPostDownloadHandler(const PostDownloadHandler* handler);
 
   void clearPostDownloadHandler();
 
   void preDownloadProcessing();
 
-  void addPreDownloadHandler(const std::shared_ptr<PreDownloadHandler>& handler);
+  void addPreDownloadHandler(const PreDownloadHandler* handler);
 
   void clearPreDownloadHandler();
 

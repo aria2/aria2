@@ -115,7 +115,7 @@ SRCS =  option_processing.cc\
 	ContentTypeRequestGroupCriteria.cc ContentTypeRequestGroupCriteria.h\
 	DownloadHandler.cc DownloadHandler.h\
 	DownloadHandlerConstants.cc DownloadHandlerConstants.h\
-	DownloadHandlerFactory.cc DownloadHandlerFactory.h\
+	download_handlers.cc download_handlers.h\
 	MemoryPreDownloadHandler.h\
 	MemoryBufferPreDownloadHandler.h\
 	HaveEraseCommand.cc HaveEraseCommand.h\

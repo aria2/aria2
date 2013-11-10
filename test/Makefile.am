@@ -42,7 +42,7 @@ aria2c_SOURCES = AllTest.cc\
 	ProtocolDetectorTest.cc\
 	ExceptionTest.cc\
 	FmtTest.cc\
-	DownloadHandlerFactoryTest.cc\
+	DownloadHandlersTest.cc\
 	SignatureTest.cc\
 	ServerStatManTest.cc\
 	FeedbackURISelectorTest.cc\

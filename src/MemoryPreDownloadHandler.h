@@ -44,13 +44,9 @@ template<class DiskWriterFactoryType>
 class MemoryPreDownloadHandler:public PreDownloadHandler
 {
 public:
-  MemoryPreDownloadHandler() {}
-
-  virtual ~MemoryPreDownloadHandler() {}
-
-  virtual void execute(RequestGroup* requestGroup) CXX11_OVERRIDE
+  virtual void execute(RequestGroup* requestGroup) const CXX11_OVERRIDE
   {
-    std::shared_ptr<DiskWriterFactory> dwf(new DiskWriterFactoryType());
+    auto dwf = std::make_shared<DiskWriterFactoryType>();
     requestGroup->setDiskWriterFactory(dwf);
     requestGroup->setFileAllocationEnabled(false);
     requestGroup->setPreLocalFileCheckEnabled(false);

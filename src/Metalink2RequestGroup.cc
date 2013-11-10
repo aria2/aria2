@@ -47,7 +47,6 @@
 #include "metalink_helper.h"
 #include "BinaryStream.h"
 #include "MemoryBufferPreDownloadHandler.h"
-#include "TrueRequestGroupCriteria.h"
 #include "MetalinkEntry.h"
 #include "MetalinkResource.h"
 #include "MetalinkMetaurl.h"
@@ -59,6 +58,8 @@
 #include "SegList.h"
 #include "DownloadFailureException.h"
 #include "Signature.h"
+#include "download_handlers.h"
+#include "RequestGroupCriteria.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtDependency.h"
 # include "download_helper.h"
@@ -233,9 +234,8 @@ Metalink2RequestGroup::createRequestGroup
         // tranparent metalink
         torrentRg->getDownloadContext()->setAcceptMetalink(false);
         // make it in-memory download
-        auto preh = std::make_shared<MemoryBufferPreDownloadHandler>();
-        preh->setCriteria(std::make_shared<TrueRequestGroupCriteria>());
-        torrentRg->addPreDownloadHandler(preh);
+        torrentRg->addPreDownloadHandler
+          (download_handlers::getMemoryPreDownloadHandler());
         groups.push_back(torrentRg);
       }
     }

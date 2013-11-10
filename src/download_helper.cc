@@ -61,10 +61,10 @@
 #include "MetadataInfo.h"
 #include "OptionParser.h"
 #include "SegList.h"
+#include "download_handlers.h"
 #ifdef ENABLE_BITTORRENT
 #  include "bittorrent_helper.h"
 #  include "BtConstants.h"
-#  include "UTMetadataPostDownloadHandler.h"
 #  include "ValueBaseBencodeParser.h"
 #endif // ENABLE_BITTORRENT
 
@@ -244,9 +244,8 @@ createBtMagnetRequestGroup
   dctx->getFirstFileEntry()->setPath(torrentAttrs->name);
   rg->setDownloadContext(dctx);
   rg->clearPostDownloadHandler();
-  auto utMetadataPostHandler =
-    std::make_shared<UTMetadataPostDownloadHandler>();
-  rg->addPostDownloadHandler(utMetadataPostHandler);
+  rg->addPostDownloadHandler
+    (download_handlers::getUTMetadataPostDownloadHandler());
   rg->setDiskWriterFactory(std::make_shared<ByteArrayDiskWriterFactory>());
   rg->setMetadataInfo(createMetadataInfo(gid, magnetLink));
   rg->markInMemoryDownload();

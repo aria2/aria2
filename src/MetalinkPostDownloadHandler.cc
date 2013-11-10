@@ -56,27 +56,22 @@ namespace aria2 {
 
 MetalinkPostDownloadHandler::MetalinkPostDownloadHandler()
 {
-  std::shared_ptr<RequestGroupCriteria> cri
-    (new ContentTypeRequestGroupCriteria
-     (getMetalinkContentTypes(), getMetalinkExtensions()));
-  setCriteria(cri);
+  setCriteria(make_unique<ContentTypeRequestGroupCriteria>
+              (getMetalinkContentTypes(), getMetalinkExtensions()));
 }
-
-MetalinkPostDownloadHandler::~MetalinkPostDownloadHandler() {}
 
 namespace {
 const std::string& getBaseUri(RequestGroup* requestGroup)
 {
-  const std::shared_ptr<DownloadContext>& dctx =
-    requestGroup->getDownloadContext();
+  auto& dctx = requestGroup->getDownloadContext();
   if(dctx->getFileEntries().empty()) {
     return A2STR::NIL;
   } else {
     // TODO Check download result for each URI
-    const std::shared_ptr<FileEntry>& entry = dctx->getFirstFileEntry();
-    const std::deque<std::string>& spentUris = entry->getSpentUris();
+    auto& entry = dctx->getFirstFileEntry();
+    auto& spentUris = entry->getSpentUris();
     if(spentUris.empty()) {
-      const std::deque<std::string>& remainingUris = entry->getRemainingUris();
+      auto& remainingUris = entry->getRemainingUris();
       if(remainingUris.empty()) {
         return A2STR::NIL;
       } else {
@@ -90,22 +85,21 @@ const std::string& getBaseUri(RequestGroup* requestGroup)
 } // namespace
 
 void MetalinkPostDownloadHandler::getNextRequestGroups
-(std::vector<std::shared_ptr<RequestGroup> >& groups,
- RequestGroup* requestGroup)
+(std::vector<std::shared_ptr<RequestGroup>>& groups,
+ RequestGroup* requestGroup) const
 {
   A2_LOG_DEBUG(fmt("Generating RequestGroups for Metalink file %s",
                    requestGroup->getFirstFilePath().c_str()));
-  std::shared_ptr<DiskAdaptor> diskAdaptor =
-    requestGroup->getPieceStorage()->getDiskAdaptor();
+  auto diskAdaptor = requestGroup->getPieceStorage()->getDiskAdaptor();
   try {
     diskAdaptor->openExistingFile();
     //requestOption.put(PREF_DIR, requestGroup->getDownloadContext()->getDir());
     const std::string& baseUri = getBaseUri(requestGroup);
-    std::vector<std::shared_ptr<RequestGroup> > newRgs;
+    std::vector<std::shared_ptr<RequestGroup>> newRgs;
     Metalink2RequestGroup().generate(newRgs, diskAdaptor,
                                      requestGroup->getOption(), baseUri);
     requestGroup->followedBy(newRgs.begin(), newRgs.end());
-    std::shared_ptr<MetadataInfo> mi =
+    auto mi =
       createMetadataInfoFromFirstFileEntry(requestGroup->getGroupId(),
                                            requestGroup->getDownloadContext());
     if(mi) {

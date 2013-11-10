@@ -57,17 +57,13 @@ namespace aria2 {
 
 BtPostDownloadHandler::BtPostDownloadHandler()
 {
-  std::shared_ptr<RequestGroupCriteria> cri
-    (new ContentTypeRequestGroupCriteria
-     (getBtContentTypes(), getBtExtensions()));
-  setCriteria(cri);
+  setCriteria(make_unique<ContentTypeRequestGroupCriteria>
+              (getBtContentTypes(), getBtExtensions()));
 }
-
-BtPostDownloadHandler::~BtPostDownloadHandler() {}
 
 void BtPostDownloadHandler::getNextRequestGroups
 (std::vector<std::shared_ptr<RequestGroup> >& groups,
- RequestGroup* requestGroup)
+ RequestGroup* requestGroup) const
 {
   A2_LOG_INFO(fmt("Generating RequestGroups for Torrent file %s",
                   requestGroup->getFirstFilePath().c_str()));
@@ -100,13 +96,13 @@ void BtPostDownloadHandler::getNextRequestGroups
     throw DL_ABORT_EX2("Could not parse BitTorrent metainfo",
                        error_code::BENCODE_PARSE_ERROR);
   }
-  std::vector<std::shared_ptr<RequestGroup> > newRgs;
+  std::vector<std::shared_ptr<RequestGroup>> newRgs;
   createRequestGroupForBitTorrent(newRgs, requestGroup->getOption(),
                                   std::vector<std::string>(),
                                   "",
                                   torrent.get());
   requestGroup->followedBy(newRgs.begin(), newRgs.end());
-  std::shared_ptr<MetadataInfo> mi =
+  auto mi =
     createMetadataInfoFromFirstFileEntry(requestGroup->getGroupId(),
                                          requestGroup->getDownloadContext());
   if(mi) {

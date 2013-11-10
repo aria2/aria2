@@ -39,62 +39,31 @@
 
 #include <memory>
 
-#include "MemoryBufferPreDownloadHandler.h"
-#ifdef ENABLE_BITTORRENT
-#  include "MemoryBencodePreDownloadHandler.h"
-#endif // ENABLE_BITTORRENT
-
 namespace aria2 {
 
-#ifdef ENABLE_METALINK
-class MetalinkPostDownloadHandler;
-#endif // ENABLE_METALINK
-#ifdef ENABLE_BITTORRENT
-class BtPostDownloadHandler;
-class UTMetadataPostDownloadHandler;
-#endif // ENABLE_BITTORRENT
+class PreDownloadHandler;
+class PostDownloadHandler;
 
-class DownloadHandlerFactory
-{
-private:
-#ifdef ENABLE_METALINK
-  static std::shared_ptr<PreDownloadHandler>
-  metalinkPreDownloadHandler_;
+namespace download_handlers {
 
-  static std::shared_ptr<PostDownloadHandler>
-  metalinkPostDownloadHandler_;
+const PreDownloadHandler* getMemoryPreDownloadHandler();
+
+#ifdef ENABLE_METALINK
+
+const PreDownloadHandler* getMetalinkPreDownloadHandler();
+const PostDownloadHandler* getMetalinkPostDownloadHandler();
+
 #endif // ENABLE_METALINK
 
 #ifdef ENABLE_BITTORRENT
-  static std::shared_ptr<PreDownloadHandler>
-  btPreDownloadHandler_;
 
-  static std::shared_ptr<PostDownloadHandler>
-  btPostDownloadHandler_;
+const PreDownloadHandler* getBtPreDownloadHandler();
+const PostDownloadHandler* getBtPostDownloadHandler();
+const PostDownloadHandler* getUTMetadataPostDownloadHandler();
 
-  static std::shared_ptr<PostDownloadHandler>
-  btMetadataPostDownloadHandler_;
 #endif // ENABLE_BITTORRENT
-public:
-#ifdef ENABLE_METALINK
-  static std::shared_ptr<PreDownloadHandler>
-  getMetalinkPreDownloadHandler();
 
-  static std::shared_ptr<PostDownloadHandler>
-  getMetalinkPostDownloadHandler();
-#endif // ENABLE_METALINK
-
-#ifdef ENABLE_BITTORRENT
-  static std::shared_ptr<PreDownloadHandler>
-  getBtPreDownloadHandler();
-
-  static std::shared_ptr<PostDownloadHandler>
-  getBtPostDownloadHandler();
-
-  static std::shared_ptr<PostDownloadHandler>
-  getUTMetadataPostDownloadHandler();
-#endif // ENABLE_BITTORRENT
-};
+} // namespace download_handlers
 
 } // namespace aria2
 

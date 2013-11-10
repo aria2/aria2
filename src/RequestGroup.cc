@@ -61,7 +61,7 @@
 #include "RequestGroupMan.h"
 #include "DefaultBtProgressInfoFile.h"
 #include "DefaultPieceStorage.h"
-#include "DownloadHandlerFactory.h"
+#include "download_handlers.h"
 #include "MemoryBufferPreDownloadHandler.h"
 #include "DownloadHandlerConstants.h"
 #include "Option.h"
@@ -78,6 +78,7 @@
 #include "SimpleRandomizer.h"
 #include "Segment.h"
 #include "SocketRecvBuffer.h"
+#include "RequestGroupCriteria.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityCommand.h"
 # include "ChecksumCheckIntegrityEntry.h"
@@ -1052,12 +1053,14 @@ void RequestGroup::initializePreDownloadHandler()
 {
 #ifdef ENABLE_BITTORRENT
   if(option_->get(PREF_FOLLOW_TORRENT) == V_MEM) {
-    preDownloadHandlers_.push_back(DownloadHandlerFactory::getBtPreDownloadHandler());
+    preDownloadHandlers_.push_back
+      (download_handlers::getBtPreDownloadHandler());
   }
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
   if(option_->get(PREF_FOLLOW_METALINK) == V_MEM) {
-    preDownloadHandlers_.push_back(DownloadHandlerFactory::getMetalinkPreDownloadHandler());
+    preDownloadHandlers_.push_back
+      (download_handlers::getMetalinkPreDownloadHandler());
   }
 #endif // ENABLE_METALINK
 }
@@ -1067,13 +1070,15 @@ void RequestGroup::initializePostDownloadHandler()
 #ifdef ENABLE_BITTORRENT
   if(option_->getAsBool(PREF_FOLLOW_TORRENT) ||
      option_->get(PREF_FOLLOW_TORRENT) == V_MEM) {
-    postDownloadHandlers_.push_back(DownloadHandlerFactory::getBtPostDownloadHandler());
+    postDownloadHandlers_.push_back
+      (download_handlers::getBtPostDownloadHandler());
   }
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
   if(option_->getAsBool(PREF_FOLLOW_METALINK) ||
      option_->get(PREF_FOLLOW_METALINK) == V_MEM) {
-    postDownloadHandlers_.push_back(DownloadHandlerFactory::getMetalinkPostDownloadHandler());
+    postDownloadHandlers_.push_back
+      (download_handlers::getMetalinkPostDownloadHandler());
   }
 #endif // ENABLE_METALINK
 }
@@ -1097,14 +1102,12 @@ void RequestGroup::setDiskWriterFactory(
   diskWriterFactory_ = diskWriterFactory;
 }
 
-void RequestGroup::addPostDownloadHandler
-(const std::shared_ptr<PostDownloadHandler>& handler)
+void RequestGroup::addPostDownloadHandler(const PostDownloadHandler* handler)
 {
   postDownloadHandlers_.push_back(handler);
 }
 
-void RequestGroup::addPreDownloadHandler(
-    const std::shared_ptr<PreDownloadHandler>& handler)
+void RequestGroup::addPreDownloadHandler(const PreDownloadHandler* handler)
 {
   preDownloadHandlers_.push_back(handler);
 }

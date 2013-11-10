@@ -8,6 +8,7 @@
 #include "FileEntry.h"
 #include "PieceStorage.h"
 #include "DiskAdaptor.h"
+#include "RequestGroupCriteria.h"
 
 namespace aria2 {
 

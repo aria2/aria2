@@ -47,16 +47,14 @@ class RequestGroupCriteria;
 
 class DownloadHandler
 {
-private:
-  std::shared_ptr<RequestGroupCriteria> criteria_;
 public:
-  DownloadHandler();
-
-  virtual ~DownloadHandler();
+  virtual ~DownloadHandler() {}
 
   bool canHandle(const RequestGroup* requestGroup) const;
 
-  void setCriteria(const std::shared_ptr<RequestGroupCriteria>& criteria);
+  void setCriteria(std::unique_ptr<RequestGroupCriteria> criteria);
+private:
+  std::unique_ptr<RequestGroupCriteria> criteria_;
 };
 
 } // namespace aria2
