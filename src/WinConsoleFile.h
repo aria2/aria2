@@ -32,28 +32,50 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
+
 #ifndef D_WIN_CONSOLE_FILE_H
 #define D_WIN_CONSOLE_FILE_H
+
+#include <string>
 
 #include "OutputFile.h"
 
 namespace aria2 {
 
-// This is a wrapper class for WriteConsoleW
-class WinConsoleFile:public OutputFile {
-public:
-  WinConsoleFile(DWORD stdHandle);
-  virtual ~WinConsoleFile();
-  virtual size_t write(const char* str) CXX11_OVERRIDE;
-  virtual int vprintf(const char* format, va_list va) CXX11_OVERRIDE;
-  virtual int flush() CXX11_OVERRIDE;
-  virtual bool supportsColor() CXX11_OVERRIDE;
-private:
-  DWORD stdHandle_;
-  // Don't allow copying
-  WinConsoleFile(const WinConsoleFile&);
-  WinConsoleFile& operator=(const WinConsoleFile&);
-};
+  // This is a wrapper class for WriteConsoleW
+  class WinConsoleFile: public OutputFile
+  {
+  public:
+    WinConsoleFile(DWORD stdHandle);
+    virtual ~WinConsoleFile() {}
+
+    virtual size_t write(const char* str) CXX11_OVERRIDE;
+    virtual int vprintf(const char* format, va_list va) CXX11_OVERRIDE;
+    virtual bool supportsColor() CXX11_OVERRIDE;
+    virtual int flush() CXX11_OVERRIDE
+    {
+      return 0;
+    }
+
+  private:
+    DWORD stdHandle_;
+    bool bold_;
+    bool underline_;
+    bool reverse_;
+    WORD fg_, deffg_;
+    WORD bg_, defbg_;
+
+    size_t writeColorful(const std::wstring& str);
+    inline HANDLE handle() const
+    {
+      return ::GetStdHandle(stdHandle_);
+    }
+
+  private:
+    // Don't allow copying
+    WinConsoleFile(const WinConsoleFile&);
+    WinConsoleFile& operator=(const WinConsoleFile&);
+  };
 
 } // namespace aria2
 
