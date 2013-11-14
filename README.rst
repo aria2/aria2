@@ -44,8 +44,8 @@ Here is a list of features:
 * HTTP Proxy support
 * HTTP BASIC authentication support
 * HTTP Proxy authentication support
-* Well-known environment variables for proxy: ``http_proxy``, ``https_proxy``,
-  ``ftp_proxy``, ``all_proxy`` and ``no_proxy``
+* Well-known environment variables for proxy: ``http_proxy``,
+  ``https_proxy``, ``ftp_proxy``, ``all_proxy`` and ``no_proxy``
 * HTTP gzip, deflate content encoding support
 * Verify peer using given trusted CA certificate in HTTPS
 * Client certificate authentication in HTTPS
@@ -60,8 +60,8 @@ Here is a list of features:
 * Download/Upload speed throttling
 * BitTorrent extensions: Fast extension, DHT, PEX, MSE/PSE,
   Multi-Tracker, UDP tracker
-* BitTorrent `WEB-Seeding <http://getright.com/seedtorrent.html>`_. aria2
-  requests chunks more than piece size to reduce the request
+* BitTorrent `WEB-Seeding <http://getright.com/seedtorrent.html>`_.
+  aria2 requests chunks more than piece size to reduce the request
   overhead. It also supports pipelined requests with piece size.
 * BitTorrent Local Peer Discovery
 * Rename/change the directory structure of BitTorrent downloads
@@ -73,8 +73,8 @@ Here is a list of features:
 * Can disable segmented downloading in Metalink
 * Netrc support
 * Configuration file support
-* Download URIs found in a text file or stdin and the destination directory and
-  output filename can be specified optionally
+* Download URIs found in a text file or stdin and the destination
+  directory and output filename can be specified optionally
 * Parameterized URI support
 * IPv6 support with Happy Eyeballs
 * Disk cache to reduce disk activity
@@ -99,11 +99,12 @@ Dependency
 ======================== ========================================
 features                  dependency
 ======================== ========================================
-HTTPS                    OSX or GnuTLS or OpenSSL
-BitTorrent               libnettle+libgmp or libgcrypt or OpenSSL
+HTTPS                    OSX or GnuTLS or OpenSSL or Windows
+BitTorrent               None. Optional: libnettle+libgmp or libgcrypt
+                         or OpenSSL (see note)
 Metalink                 libxml2 or Expat.
 Checksum                 None. Optional: OSX or libnettle or libgcrypt
-                         or OpenSSL (see note)
+                         or OpenSSL or Windows (see note)
 gzip, deflate in HTTP    zlib
 Async DNS                C-Ares
 Firefox3/Chromium cookie libsqlite3
@@ -120,12 +121,17 @@ JSON-RPC over WebSocket  libnettle or libgcrypt or OpenSSL
 .. note::
 
   On Apple OSX the OS-level SSL/TLS support will be preferred. Hence
-  neither GnuTLS nor OpenSSL are required on that platform. If you'd like
-  to disable this behavior, run configure with ``--without-appletls``.
+  neither GnuTLS nor OpenSSL are required on that platform. If you'd
+  like to disable this behavior, run configure with
+  ``--without-appletls``.
 
   GnuTLS has precedence over OpenSSL if both libraries are installed.
   If you prefer OpenSSL, run configure with ``--without-gnutls``
   ``--with-openssl``.
+
+  On Windows there is an experimental SSL implementation available that
+  is based on the native Windows SSL capabilities (Schannel). Run
+  configure with ``--with-wintls`` to use.
 
 .. note::
 
@@ -139,6 +145,10 @@ JSON-RPC over WebSocket  libnettle or libgcrypt or OpenSSL
   
   If none of the optional dependencies are installed, an internal
   implementation that only supports md5 and sha1 will be used.
+
+  On Windows there is an experimental implementation available that is
+  based on the native Windows capabilities. Run configure with
+  ``--with-wintls`` to use.
 
 A user can have one of the following configurations for SSL and crypto
 libraries:
@@ -163,8 +173,8 @@ How to build
 aria2 is primarily written in C++. Initially it was written based on
 C++98/C++03 standard features. We are now migrating aria2 to C++11
 standard. The current source code requires C++11 aware compiler. For
-well-known compilers, such as g++ and clang, flag ``-std=c++11`` or
-``-std=c++0x`` must be supported.
+well-known compilers, such as g++ and clang, the ``-std=c++11`` or
+``-std=c++0x`` flag must be supported.
 
 In order to build aria2 from the source package, you need following
 development packages(package name may vary depending on the
@@ -205,7 +215,7 @@ necessary to build the program::
 Also you need `Sphinx <http://sphinx.pocoo.org/>`_ to build man page.
 
 If you are building aria2 for Mac OS X, take a look at
-build_osx_release.sh, which builds OSX universal binary DMG.
+build_osx_release.sh, which builds an OSX universal binary DMG.
 
 The quickest way to build aria2 is first run configure script::
 
@@ -220,11 +230,12 @@ After configuration is done, run ``make`` to compile the program::
 
     $ make
 
-See `Cross-compiling Windows binary`_ to create Windows binary.  See
-`Cross-compiling Android binary`_ to create Android binary.
+See `Cross-compiling Windows binary`_ to create a Windows binary.
+See `Cross-compiling Android binary`_ to create an Android binary.
 
-The configure script checks available libraries and enables the features
-as much as possible because all the features are enabled by default.
+The configure script checks available libraries and enables as many
+features as possible execept for experimental features not enabled by
+default.
 
 Since 1.1.0, aria2 checks the certificate of HTTPS servers by default.
 If you build with OpenSSL or the recent version of GnuTLS which has
@@ -247,12 +258,17 @@ using aria2's ``--ca-certificate`` option.  If you don't have CA bundle
 file installed, then the last resort is disable the certificate
 validation using ``--check-certificate=false``.
 
-By default, bash_completion file named ``aria2c`` is installed to the
-directory ``$prefix/share/doc/aria2/bash_completion``.  To change the
-install directory of the file, use ``--with-bashcompletiondir``
+Using the native OSX (AppleTLS) and/or Windows (WinTLS) implementation
+will automatically use the system certificate store, so
+``--with-ca-bundle`` is not necessary and will be ignored when using
+these implementations.
+
+By default, the bash_completion file named ``aria2c`` is installed to
+the directory ``$prefix/share/doc/aria2/bash_completion``.  To change
+the install directory of the file, use ``--with-bashcompletiondir``
 option.
 
-The executable is 'aria2c' in src directory.
+After a ``make`` the executable is located at ``src/aria2c``.
 
 aria2 uses CppUnit for automated unit testing. To run the unit test::
 
@@ -261,8 +277,8 @@ aria2 uses CppUnit for automated unit testing. To run the unit test::
 Cross-compiling Windows binary
 ------------------------------
 
-In this section, we describe how to build Windows binary using
-mingw-w64 cross-compiler on Debian Linux.
+In this section, we describe how to build a Windows binary using
+a mingw-w64 cross-compiler on Debian Linux.
 
 Basically, after compiling and installing depended libraries, you can
 do cross-compile just passing appropriate ``--host`` option and
@@ -368,8 +384,8 @@ translation <http://aria2.sourceforge.net/manual/ru/html/>`_,
 BitTorrrent
 -----------
 
-About filename
-~~~~~~~~~~~~~~
+About filenames
+~~~~~~~~~~~~~~~
 The filename of the downloaded file is determined as follows:
 
 single-file mode
@@ -426,8 +442,8 @@ Metalink
 --------
 
 The current implementation supports HTTP(S)/FTP/BitTorrent.  The other
-P2P protocols are ignored. Both Metalink4 and Metalink version 3.0
-documents are supported.
+P2P protocols are ignored. Both Metalink4 (RFC 5854) and Metalink
+version 3.0 documents are supported.
 
 For checksum verification, md5, sha-1, sha-224, sha-256, sha-384 and
 sha-512 are supported. If multiple hash algorithms are provided, aria2

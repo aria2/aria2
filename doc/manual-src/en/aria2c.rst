@@ -372,8 +372,9 @@ HTTP Specific Options
     *AppleTLS* users should use the Keychain Access utility to import the client
     certificate and get the SHA-1 fingerprint from the Information dialog
     corresponding to that certificate.
-    To start aria2c use `--certificate=<SHA-1>` and just omit the
-    :option:`--private-key` option.
+    To start aria2c use `--certificate=<SHA-1>`.
+    Alternatively PKCS12 files are also supported. PEM files, however, are not
+    supported.
 
 .. option:: --check-certificate[=true|false]
 
@@ -964,8 +965,9 @@ RPC Options
     SHA-1 fingerprint from the Information dialog corresponding to that new
     certificate.
     To start aria2c with :option:`--rpc-secure` use
-    `--rpc-certificate=<SHA-1>` and just omit the :option:`--rpc-private-key`
-    option.
+    `--rpc-certificate=<SHA-1>`.
+    Alternatively PKCS12 files are also supported. PEM files, however, are not
+    supported.
 
 .. option:: --rpc-listen-all[=true|false]
 
@@ -3796,6 +3798,20 @@ Resume download started by web browsers or another programs
 
 Client certificate authorization for SSL/TLS
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Specify a PKCS12 file as follows:
+
+.. code-block:: console
+
+  $ aria2c --certificate=/path/to/mycert.p12
+
+.. note::
+
+  The file specified in :option:`--certificate` must be contain one PKCS12 encoded
+  certificate and key. The password must be blank.
+
+Alternatively, if PEM files are supported, use a command like the following:
+
 .. code-block:: console
 
   $ aria2c --certificate=/path/to/mycert.pem --private-key=/path/to/mykey.pem https://host/file
@@ -3817,7 +3833,18 @@ RPC
 Encrypt RPC transport by SSL/TLS
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Specify server certificate file and private key file as follows:
+Specify server PKC12 file:
+
+.. code-block:: console
+
+  $ aria2c --enable-rpc --rpc-certificate=/path/to/server.p12 --rpc-secure
+
+.. note::
+
+  The file specified in :option:`--rpc-certificate` must be contain one PKCS12 encoded
+  certificate and key. The password must be blank.
+
+Alternatively when PEM files are supported, specify the server certificate file and private key file as follows:
 
 .. code-block:: console
 
