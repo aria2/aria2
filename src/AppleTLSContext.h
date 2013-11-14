@@ -90,6 +90,8 @@ private:
   SecIdentityRef credentials_;
 
   bool tryAsFingerprint(const std::string& fingerprint);
+  bool tryAsPKCS12(const std::string& certfile);
+  bool tryAsPKCS12(CFDataRef data, const char* password);
 };
 
 } // namespace aria2
