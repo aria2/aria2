@@ -653,7 +653,7 @@ FTP, BitTorrent и Metalink. Для загрузки файла, aria2 може�
 
 .. option:: --bt-max-open-files=<NUM>
 
-  Указать максимальное количество файлов для открытия в каждой
+  Указать глобально максимальное количество файлов для открытия в многофайловой
   BitTorrent-загрузке.
   По умолчанию: ``100``
 
@@ -1918,7 +1918,6 @@ URI. Эти дополнительные строки должны начина�
   * :option:`bt-exclude-tracker <--bt-exclude-tracker>`
   * :option:`bt-external-ip <--bt-external-ip>`
   * :option:`bt-hash-check-seed <--bt-hash-check-seed>`
-  * :option:`bt-max-open-files <--bt-max-open-files>`
   * :option:`bt-max-peers <--bt-max-peers>`
   * :option:`bt-metadata-only <--bt-metadata-only>`
   * :option:`bt-min-crypto-level <--bt-min-crypto-level>`
@@ -3045,6 +3044,7 @@ GID
   Этот метод изменяет динамически глобальные параметры. *options* имеет тип
   структура. Доступны следующие параметры:
 
+  * :option:`bt-max-open-files <--bt-max-open-files>`
   * :option:`download-result <--download-result>`
   * :option:`log <-l>`
   * :option:`log-level <--log-level>`
