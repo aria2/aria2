@@ -129,13 +129,36 @@ void printSizeProgress(std::ostream& o, const std::shared_ptr<RequestGroup>& rg,
 
 namespace {
 void printProgressCompact(std::ostream& o, const DownloadEngine* e,
-                          const SizeFormatter& sizeFormatter)
+                          const SizeFormatter& sizeFormatter, const bool color,
+                          size_t& colorchars)
 {
-  if(!e->getRequestGroupMan()->downloadFinished()) {
+  if (!e->getRequestGroupMan()->downloadFinished()) {
     NetStat& netstat = e->getRequestGroupMan()->getNetStat();
     int dl = netstat.calculateDownloadSpeed();
     int ul = netstat.calculateUploadSpeed();
-    o << "[DL:" << sizeFormatter(dl) << "B UL:" << sizeFormatter(ul) << "B]";
+    o << "[DL:";
+    if (color) {
+      o << "\033[32m";
+      colorchars += 5;
+    }
+    o << sizeFormatter(dl) << "B";
+    if (color) {
+      o << "\033[0m";
+      colorchars += 4;
+    }
+    if (ul) {
+      o << " UL:";
+      if (color) {
+        o << "\033[36m";
+      colorchars += 5;
+      }
+      o << sizeFormatter(ul) << "B";
+      if (color) {
+        o << "\033[0m";
+      colorchars += 4;
+      }
+    }
+    o << "]";
   }
 
   const RequestGroupList& groups =
@@ -154,12 +177,10 @@ void printProgressCompact(std::ostream& o, const DownloadEngine* e,
     o << "(+" << groups.size()-cnt << ")";
   }
 }
-} // namespace
 
-namespace {
-void printProgress
-(std::ostream& o, const std::shared_ptr<RequestGroup>& rg, const DownloadEngine* e,
- const SizeFormatter& sizeFormatter)
+void printProgress(std::ostream& o, const std::shared_ptr<RequestGroup>& rg,
+                   const DownloadEngine* e, const SizeFormatter& sizeFormatter,
+                   const bool color, size_t& colorchars)
 {
   TransferStat stat = rg->calculateStat();
   int eta = 0;
@@ -180,17 +201,41 @@ void printProgress
 #endif // ENABLE_BITTORRENT
 
   if(!rg->downloadFinished()) {
-    o << " DL:"
-      << sizeFormatter(stat.downloadSpeed) << "B";
+    o << " DL:";
+    if (color) {
+      o << "\033[32m";
+      colorchars += 5;
+    }
+    o << sizeFormatter(stat.downloadSpeed) << "B";
+    if (color) {
+      o << "\033[0m";
+      colorchars += 4;
+    }
   }
   if(stat.sessionUploadLength > 0) {
-    o << " UL:"
-      << sizeFormatter(stat.uploadSpeed) << "B"
-      << "(" << sizeFormatter(stat.allTimeUploadLength) << "B)";
+    o << " UL:";
+    if (color) {
+      o << "\033[36m";
+      colorchars += 5;
+    }
+    o << sizeFormatter(stat.uploadSpeed) << "B";
+    if (color) {
+      o << "\033[0m";
+      colorchars += 4;
+    }
+    o << "(" << sizeFormatter(stat.allTimeUploadLength) << "B)";
   }
   if(eta > 0) {
-    o << " ETA:"
-      << util::secfmt(eta);
+    o << " ETA:";
+    if (color) {
+      o << "\033[33m";
+      colorchars += 5;
+    }
+    o << util::secfmt(eta);
+    if (color) {
+      o << "\033[0m";
+      colorchars += 4;
+    }
   }
   o << "]";
 }
@@ -213,7 +258,8 @@ public:
   {
     const char SEP_CHAR = '-';
     std::stringstream o;
-    printProgress(o, rg, e_, sizeFormatter_);
+    size_t colorchars = 0;
+    printProgress(o, rg, e_, sizeFormatter_, false, colorchars);
     const std::vector<std::shared_ptr<FileEntry> >& fileEntries =
       rg->getDownloadContext()->getFileEntries();
     o << "\nFILE: ";
@@ -227,9 +273,9 @@ public:
 } // namespace
 
 namespace {
-void printProgressSummary
-(const RequestGroupList& groups, size_t cols, const DownloadEngine* e,
- const SizeFormatter& sizeFormatter)
+void printProgressSummary(const RequestGroupList& groups, size_t cols,
+                          const DownloadEngine* e,
+                          const SizeFormatter& sizeFormatter)
 {
   const char SEP_CHAR = '=';
   time_t now;
@@ -320,13 +366,15 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
     return;
   }
   size_t numGroup = e->getRequestGroupMan()->countRequestGroup();
+  const bool color = global::cout()->supportsColor() && isTTY_;
+  size_t colorchars = 0;
   if(numGroup == 1) {
     const std::shared_ptr<RequestGroup>& rg =
       *e->getRequestGroupMan()->getRequestGroups().begin();
-    printProgress(o, rg, e, sizeFormatter);
+    printProgress(o, rg, e, sizeFormatter, color, colorchars);
   } else if(numGroup > 1) {
     // For more than 2 RequestGroups, use compact readout form
-    printProgressCompact(o, e, sizeFormatter);
+    printProgressCompact(o, e, sizeFormatter, color, colorchars);
   }
 
   {
@@ -369,8 +417,8 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
 #endif // ENABLE_MESSAGE_DIGEST
   std::string readout = o.str();
   if(isTTY_) {
-    if(truncate_ && readout.size() > cols) {
-      readout[cols] = '\0';
+    if(truncate_ && readout.size() - colorchars > cols) {
+      readout[cols + colorchars] = '\0';
     }
     global::cout()->write(readout.c_str());
     global::cout()->flush();
