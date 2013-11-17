@@ -369,7 +369,6 @@ void MultiDiskAdaptorTest::testCutTrailingGarbage()
 
   MultiDiskAdaptor adaptor;
   adaptor.setFileEntries(std::begin(fileEntries), std::end(fileEntries));
-  adaptor.setMaxOpenFiles(1);
   adaptor.setPieceLength(1);
 
   adaptor.openFile();
@@ -396,7 +395,6 @@ void MultiDiskAdaptorTest::testSize()
 
   MultiDiskAdaptor adaptor;
   adaptor.setFileEntries(std::begin(fileEntries), std::end(fileEntries));
-  adaptor.setMaxOpenFiles(1);
   adaptor.setPieceLength(1);
 
   adaptor.openFile();

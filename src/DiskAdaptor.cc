@@ -38,7 +38,8 @@
 namespace aria2 {
 
 DiskAdaptor::DiskAdaptor()
-  : fileAllocationMethod_(FILE_ALLOC_ADAPTIVE)
+  : fileAllocationMethod_(FILE_ALLOC_ADAPTIVE),
+    requestGroupMan_(nullptr)
 {}
 
 DiskAdaptor::~DiskAdaptor() {}

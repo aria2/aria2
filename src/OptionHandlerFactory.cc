@@ -1720,9 +1720,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
                        "100",
                        1));
     op->addTag(TAG_BITTORRENT);
-    op->setInitialOption(true);
     op->setChangeGlobalOption(true);
-    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {

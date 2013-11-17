@@ -51,6 +51,7 @@
 #include "LogFactory.h"
 #include "SimpleRandomizer.h"
 #include "WrDiskCacheEntry.h"
+#include "RequestGroupMan.h"
 
 namespace aria2 {
 
@@ -120,7 +121,6 @@ bool DiskWriterEntry::operator<(const DiskWriterEntry& entry) const
 
 MultiDiskAdaptor::MultiDiskAdaptor()
   : pieceLength_{0},
-    maxOpenFiles_{DEFAULT_MAX_OPEN_FILES},
     readOnly_{false}
 {}
 
@@ -200,29 +200,37 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
   }
 }
 
+size_t MultiDiskAdaptor::tryCloseFile(size_t numClose)
+{
+  size_t left = numClose;
+  for(; !openedDiskWriterEntries_.empty() && left > 0; --left) {
+    // Choose one DiskWriterEntry randomly and close it.
+    size_t index =
+      SimpleRandomizer::getInstance()->getRandomNumber
+      (openedDiskWriterEntries_.size());
+    auto i = std::begin(openedDiskWriterEntries_);
+    std::advance(i, index);
+    (*i)->closeFile();
+    (*i) = openedDiskWriterEntries_.back();
+    openedDiskWriterEntries_.pop_back();
+  }
+  return numClose - left;
+}
+
 void MultiDiskAdaptor::openIfNot
 (DiskWriterEntry* entry, void (DiskWriterEntry::*open)())
 {
   if(!entry->isOpen()) {
-    //     A2_LOG_DEBUG(fmt("DiskWriterEntry: Cache MISS. offset=%s",
-    //            util::itos(entry->getFileEntry()->getOffset()).c_str()));
-    int numOpened = openedDiskWriterEntries_.size();
-    (entry->*open)();
-    if(numOpened >= maxOpenFiles_) {
-      // Cache is full.
-      // Choose one DiskWriterEntry randomly and close it.
-      size_t index =
-        SimpleRandomizer::getInstance()->getRandomNumber(numOpened);
-      auto i = std::begin(openedDiskWriterEntries_);
-      std::advance(i, index);
-      (*i)->closeFile();
-      *i = entry;
-    } else {
-      openedDiskWriterEntries_.push_back(entry);
+        // A2_LOG_NOTICE(fmt("DiskWriterEntry: Cache MISS. offset=%s",
+        //        util::itos(entry->getFileEntry()->getOffset()).c_str()));
+    if(getRequestGroupMan()) {
+      getRequestGroupMan()->ensureMaxOpenFileLimit(1);
     }
+    (entry->*open)();
+    openedDiskWriterEntries_.push_back(entry);
   } else {
-    //     A2_LOG_DEBUG(fmt("DiskWriterEntry: Cache HIT. offset=%s",
-    //            util::itos(entry->getFileEntry()->getOffset()).c_str()));
+        // A2_LOG_NOTICE(fmt("DiskWriterEntry: Cache HIT. offset=%s",
+        //        util::itos(entry->getFileEntry()->getOffset()).c_str()));
   }
 }
 
@@ -517,11 +525,6 @@ void MultiDiskAdaptor::cutTrailingGarbage()
       dwent->getDiskWriter()->truncate(length);
     }
   }
-}
-
-void MultiDiskAdaptor::setMaxOpenFiles(int maxOpenFiles)
-{
-  maxOpenFiles_ = maxOpenFiles;
 }
 
 size_t MultiDiskAdaptor::utime(const Time& actime, const Time& modtime)

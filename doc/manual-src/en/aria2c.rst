@@ -620,7 +620,8 @@ BitTorrent Specific Options
 
 .. option:: --bt-max-open-files=<NUM>
 
-  Specify maximum number of files to open in each BitTorrent download.
+  Specify maximum number of files to open in multi-file
+  BitTorrent/Metalink download globally.
   Default: ``100``
 
 .. option:: --bt-max-peers=<NUM>
@@ -1806,7 +1807,6 @@ of URIs. These optional lines must start with white space(s).
   * :option:`bt-exclude-tracker <--bt-exclude-tracker>`
   * :option:`bt-external-ip <--bt-external-ip>`
   * :option:`bt-hash-check-seed <--bt-hash-check-seed>`
-  * :option:`bt-max-open-files <--bt-max-open-files>`
   * :option:`bt-max-peers <--bt-max-peers>`
   * :option:`bt-metadata-only <--bt-metadata-only>`
   * :option:`bt-min-crypto-level <--bt-min-crypto-level>`
@@ -2942,6 +2942,7 @@ All code examples come from Python2.7 interpreter.
   struct.
   The following options are available:
 
+  * :option:`bt-max-open-files <--bt-max-open-files>`
   * :option:`download-result <--download-result>`
   * :option:`log <-l>`
   * :option:`log-level <--log-level>`

@@ -646,8 +646,6 @@ void DefaultPieceStorage::initStorage()
     multiDiskAdaptor->setFileEntries(downloadContext_->getFileEntries().begin(),
                                      downloadContext_->getFileEntries().end());
     multiDiskAdaptor->setPieceLength(downloadContext_->getPieceLength());
-    multiDiskAdaptor->setMaxOpenFiles
-      (option_->getAsInt(PREF_BT_MAX_OPEN_FILES));
     diskAdaptor_ = std::move(multiDiskAdaptor);
   }
   if(option_->get(PREF_FILE_ALLOCATION) == V_FALLOC) {

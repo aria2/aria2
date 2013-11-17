@@ -104,6 +104,8 @@ private:
 
   WrDiskCache* wrDiskCache_;
 
+  size_t numOpenFile_;
+
   void formatDownloadResultFull
   (OutputFile& out,
    const char* status,
@@ -346,6 +348,15 @@ public:
   {
     return keepRunning_;
   }
+
+  // Keeps the number of open files under the global limit specified
+  // in the option. The caller requests that |numNewFile| files are
+  // going to be opened. This function requires that |numNewFile| is
+  // less than or equal to the limit.
+  //
+  // Currently the only download using MultiDiskAdaptor is affected by
+  // the global limit.
+  void ensureMaxOpenFileLimit(size_t numNewFile);
 };
 
 } // namespace aria2

@@ -344,8 +344,9 @@
     "                              download speed in some cases.\n"     \
     "                              You can append K or M(1K = 1024, 1M = 1024K).")
 #define TEXT_BT_MAX_OPEN_FILES                                          \
-  _(" --bt-max-open-files=NUM      Specify maximum number of files to open in each\n" \
-    "                              BitTorrent download.")
+  _(" --bt-max-open-files=NUM      Specify maximum number of files to open in\n" \
+    "                              multi-file BitTorrent/Metalink downloads\n" \
+    "                              globally.")
 #define TEXT_BT_SEED_UNVERIFIED                                         \
   _(" --bt-seed-unverified[=true|false] Seed previously downloaded files without\n" \
     "                              verifying piece hashes.")

@@ -48,6 +48,7 @@ namespace aria2 {
 class FileEntry;
 class FileAllocationIterator;
 class WrDiskCacheEntry;
+class RequestGroupMan;
 
 class DiskAdaptor:public BinaryStream {
 public:
@@ -119,10 +120,26 @@ public:
     return fileAllocationMethod_;
   }
 
+  // Closes at most |numClose| files if possible. This method is used to
+  // ensure that global number of open file stays under certain limit.
+  // Returns the number of closed files.
+  virtual size_t tryCloseFile(size_t numClose) { return 0; }
+
+  void setRequestGroupMan(RequestGroupMan* rgman)
+  {
+    requestGroupMan_ = rgman;
+  }
+
+  RequestGroupMan* getRequestGroupMan() const
+  {
+    return requestGroupMan_;
+  }
 private:
   std::vector<std::shared_ptr<FileEntry> > fileEntries_;
 
   FileAllocationMethod fileAllocationMethod_;
+
+  RequestGroupMan* requestGroupMan_;
 };
 
 } // namespace aria2

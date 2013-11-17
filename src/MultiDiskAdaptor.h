@@ -117,8 +117,6 @@ private:
 
   std::vector<DiskWriterEntry*> openedDiskWriterEntries_;
 
-  int maxOpenFiles_;
-
   bool readOnly_;
 
   void resetDiskWriterEntries();
@@ -175,8 +173,6 @@ public:
 
   virtual void cutTrailingGarbage() CXX11_OVERRIDE;
 
-  void setMaxOpenFiles(int maxOpenFiles);
-
   virtual size_t utime(const Time& actime, const Time& modtime) CXX11_OVERRIDE;
 
   const DiskWriterEntries& getDiskWriterEntries() const
@@ -184,6 +180,7 @@ public:
     return diskWriterEntries_;
   }
 
+  virtual size_t tryCloseFile(size_t numClose) CXX11_OVERRIDE;
 };
 
 } // namespace aria2
