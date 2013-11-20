@@ -226,6 +226,7 @@ SRCS =  option_processing.cc\
 	OutputFile.h\
 	NullOutputFile.h\
 	console.cc console.h\
+	ColorizedStream.cc ColorizedStream.h\
 	IOFile.cc IOFile.h\
 	BufferedFile.cc BufferedFile.h\
 	SegList.h\

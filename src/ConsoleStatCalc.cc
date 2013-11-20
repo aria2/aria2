@@ -62,6 +62,8 @@
 #include "wallclock.h"
 #include "FileEntry.h"
 #include "console.h"
+#include "ColorizedStream.h"
+
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 # include "PeerStorage.h"
@@ -83,9 +85,7 @@ protected:
     return util::abbrevSize(size);
   }
 };
-} // namespace
 
-namespace {
 class PlainSizeFormatter:public SizeFormatter {
 protected:
   virtual std::string format(int64_t size) const CXX11_OVERRIDE
@@ -93,10 +93,9 @@ protected:
     return util::itos(size);
   }
 };
-} // namespace
 
-namespace {
-void printSizeProgress(std::ostream& o, const std::shared_ptr<RequestGroup>& rg,
+void printSizeProgress(ColorizedStream& o,
+                       const std::shared_ptr<RequestGroup>& rg,
                        const TransferStat& stat,
                        const SizeFormatter& sizeFormatter)
 {
@@ -125,38 +124,17 @@ void printSizeProgress(std::ostream& o, const std::shared_ptr<RequestGroup>& rg,
       }
     }
 }
-} // namespace
 
-namespace {
-void printProgressCompact(std::ostream& o, const DownloadEngine* e,
-                          const SizeFormatter& sizeFormatter, const bool color,
-                          size_t& colorchars)
+void printProgressCompact(ColorizedStream& o, const DownloadEngine* e,
+                          const SizeFormatter& sizeFormatter)
 {
   if (!e->getRequestGroupMan()->downloadFinished()) {
     NetStat& netstat = e->getRequestGroupMan()->getNetStat();
     int dl = netstat.calculateDownloadSpeed();
     int ul = netstat.calculateUploadSpeed();
-    o << "[DL:";
-    if (color) {
-      o << "\033[32m";
-      colorchars += 5;
-    }
-    o << sizeFormatter(dl) << "B";
-    if (color) {
-      o << "\033[0m";
-      colorchars += 4;
-    }
+    o << "[DL:" << colors::green << sizeFormatter(dl) << "B" << colors::clear;
     if (ul) {
-      o << " UL:";
-      if (color) {
-        o << "\033[36m";
-      colorchars += 5;
-      }
-      o << sizeFormatter(ul) << "B";
-      if (color) {
-        o << "\033[0m";
-      colorchars += 4;
-      }
+      o << " UL:" << colors::cyan << sizeFormatter(ul) << "B" << colors::clear;
     }
     o << "]";
   }
@@ -178,9 +156,8 @@ void printProgressCompact(std::ostream& o, const DownloadEngine* e,
   }
 }
 
-void printProgress(std::ostream& o, const std::shared_ptr<RequestGroup>& rg,
-                   const DownloadEngine* e, const SizeFormatter& sizeFormatter,
-                   const bool color, size_t& colorchars)
+void printProgress(ColorizedStream& o, const std::shared_ptr<RequestGroup>& rg,
+                   const DownloadEngine* e, const SizeFormatter& sizeFormatter)
 {
   TransferStat stat = rg->calculateStat();
   int eta = 0;
@@ -200,48 +177,22 @@ void printProgress(std::ostream& o, const std::shared_ptr<RequestGroup>& rg,
   }
 #endif // ENABLE_BITTORRENT
 
-  if(!rg->downloadFinished()) {
-    o << " DL:";
-    if (color) {
-      o << "\033[32m";
-      colorchars += 5;
-    }
-    o << sizeFormatter(stat.downloadSpeed) << "B";
-    if (color) {
-      o << "\033[0m";
-      colorchars += 4;
-    }
+  if (!rg->downloadFinished()) {
+    o << " DL:" <<
+      colors::green << sizeFormatter(stat.downloadSpeed) << "B" <<
+      colors::clear;
   }
-  if(stat.sessionUploadLength > 0) {
-    o << " UL:";
-    if (color) {
-      o << "\033[36m";
-      colorchars += 5;
-    }
-    o << sizeFormatter(stat.uploadSpeed) << "B";
-    if (color) {
-      o << "\033[0m";
-      colorchars += 4;
-    }
+  if (stat.sessionUploadLength > 0) {
+    o << " UL:" <<
+      colors::cyan << sizeFormatter(stat.uploadSpeed) << "B" << colors::clear;
     o << "(" << sizeFormatter(stat.allTimeUploadLength) << "B)";
   }
-  if(eta > 0) {
-    o << " ETA:";
-    if (color) {
-      o << "\033[33m";
-      colorchars += 5;
-    }
-    o << util::secfmt(eta);
-    if (color) {
-      o << "\033[0m";
-      colorchars += 4;
-    }
+  if (eta > 0) {
+    o << " ETA:" << colors::yellow << util::secfmt(eta) << colors::clear;
   }
   o << "]";
 }
-} // namespace
 
-namespace {
 class PrintSummary
 {
 private:
@@ -257,9 +208,8 @@ public:
   void operator()(const RequestGroupList::value_type& rg)
   {
     const char SEP_CHAR = '-';
-    std::stringstream o;
-    size_t colorchars = 0;
-    printProgress(o, rg, e_, sizeFormatter_, false, colorchars);
+    ColorizedStream o;
+    printProgress(o, rg, e_, sizeFormatter_);
     const std::vector<std::shared_ptr<FileEntry> >& fileEntries =
       rg->getDownloadContext()->getFileEntries();
     o << "\nFILE: ";
@@ -267,12 +217,11 @@ public:
                   o, rg->inMemoryDownload());
     o << "\n"
       << std::setfill(SEP_CHAR) << std::setw(cols_) << SEP_CHAR << "\n";
-    global::cout()->write(o.str().c_str());
+    auto str = o.str(false);
+    global::cout()->write(str.c_str());
   }
 };
-} // namespace
 
-namespace {
 void printProgressSummary(const RequestGroupList& groups, size_t cols,
                           const DownloadEngine* e,
                           const SizeFormatter& sizeFormatter)
@@ -301,6 +250,7 @@ void printProgressSummary(const RequestGroupList& groups, size_t cols,
   std::for_each(groups.begin(), groups.end(),
                 PrintSummary(cols, e, sizeFormatter));
 }
+
 } // namespace
 
 ConsoleStatCalc::ConsoleStatCalc(time_t summaryInterval, bool humanReadable):
@@ -350,7 +300,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
     std::string line(cols, ' ');
     global::cout()->printf("\r%s\r", line.c_str());
   }
-  std::ostringstream o;
+  ColorizedStream o;
   if(e->getRequestGroupMan()->countRequestGroup() > 0) {
     if((summaryInterval_ > 0) &&
        lastSummaryNotified_.differenceInMillis(global::wallclock())+
@@ -367,14 +317,13 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   }
   size_t numGroup = e->getRequestGroupMan()->countRequestGroup();
   const bool color = global::cout()->supportsColor() && isTTY_;
-  size_t colorchars = 0;
   if(numGroup == 1) {
     const std::shared_ptr<RequestGroup>& rg =
       *e->getRequestGroupMan()->getRequestGroups().begin();
-    printProgress(o, rg, e, sizeFormatter, color, colorchars);
+    printProgress(o, rg, e, sizeFormatter);
   } else if(numGroup > 1) {
     // For more than 2 RequestGroups, use compact readout form
-    printProgressCompact(o, e, sizeFormatter, color, colorchars);
+    printProgressCompact(o, e, sizeFormatter);
   }
 
   {
@@ -415,26 +364,20 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
     }
   }
 #endif // ENABLE_MESSAGE_DIGEST
-  std::string readout = o.str();
   if(isTTY_) {
-    if (truncate_ && readout.size() - colorchars > cols) {
-      readout.resize(cols + colorchars);
-      if (colorchars) {
-        auto pos = readout.rfind("\033");
-        if (pos != std::string::npos) {
-          if (readout.find("m", pos) == std::string::npos) {
-            // remove broken SGR
-            readout.resize(pos);
-          }
-          // always reset colors
-          readout += "\033[0m";
-        }
-      }
+    if (truncate_) {
+      auto str = o.str(color, cols);
+      global::cout()->write(str.c_str());
     }
-    global::cout()->write(readout.c_str());
+    else {
+      auto str = o.str(color);
+      global::cout()->write(str.c_str());
+    }
     global::cout()->flush();
-  } else {
-    global::cout()->write(readout.c_str());
+  }
+  else {
+    auto str = o.str(false);
+    global::cout()->write(str.c_str());
     global::cout()->write("\n");
   }
 }
