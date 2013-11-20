@@ -417,8 +417,19 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
 #endif // ENABLE_MESSAGE_DIGEST
   std::string readout = o.str();
   if(isTTY_) {
-    if(truncate_ && readout.size() - colorchars > cols) {
-      readout[cols + colorchars] = '\0';
+    if (truncate_ && readout.size() - colorchars > cols) {
+      readout.resize(cols + colorchars);
+      if (colorchars) {
+        auto pos = readout.rfind("\033");
+        if (pos != std::string::npos) {
+          if (readout.find("m", pos) == std::string::npos) {
+            // remove broken SGR
+            readout.resize(pos);
+          }
+          // always reset colors
+          readout += "\033[0m";
+        }
+      }
     }
     global::cout()->write(readout.c_str());
     global::cout()->flush();
