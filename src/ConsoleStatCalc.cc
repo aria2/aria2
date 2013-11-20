@@ -62,6 +62,8 @@
 #include "wallclock.h"
 #include "FileEntry.h"
 #include "console.h"
+#include "ColorizedStream.h"
+
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 # include "PeerStorage.h"
@@ -83,9 +85,7 @@ protected:
     return util::abbrevSize(size);
   }
 };
-} // namespace
 
-namespace {
 class PlainSizeFormatter:public SizeFormatter {
 protected:
   virtual std::string format(int64_t size) const CXX11_OVERRIDE
@@ -93,10 +93,9 @@ protected:
     return util::itos(size);
   }
 };
-} // namespace
 
-namespace {
-void printSizeProgress(std::ostream& o, const std::shared_ptr<RequestGroup>& rg,
+void printSizeProgress(ColorizedStream& o,
+                       const std::shared_ptr<RequestGroup>& rg,
                        const TransferStat& stat,
                        const SizeFormatter& sizeFormatter)
 {
@@ -125,17 +124,19 @@ void printSizeProgress(std::ostream& o, const std::shared_ptr<RequestGroup>& rg,
       }
     }
 }
-} // namespace
 
-namespace {
-void printProgressCompact(std::ostream& o, const DownloadEngine* e,
+void printProgressCompact(ColorizedStream& o, const DownloadEngine* e,
                           const SizeFormatter& sizeFormatter)
 {
-  if(!e->getRequestGroupMan()->downloadFinished()) {
+  if (!e->getRequestGroupMan()->downloadFinished()) {
     NetStat& netstat = e->getRequestGroupMan()->getNetStat();
     int dl = netstat.calculateDownloadSpeed();
     int ul = netstat.calculateUploadSpeed();
-    o << "[DL:" << sizeFormatter(dl) << "B UL:" << sizeFormatter(ul) << "B]";
+    o << "[DL:" << colors::green << sizeFormatter(dl) << "B" << colors::clear;
+    if (ul) {
+      o << " UL:" << colors::cyan << sizeFormatter(ul) << "B" << colors::clear;
+    }
+    o << "]";
   }
 
   const RequestGroupList& groups =
@@ -154,12 +155,9 @@ void printProgressCompact(std::ostream& o, const DownloadEngine* e,
     o << "(+" << groups.size()-cnt << ")";
   }
 }
-} // namespace
 
-namespace {
-void printProgress
-(std::ostream& o, const std::shared_ptr<RequestGroup>& rg, const DownloadEngine* e,
- const SizeFormatter& sizeFormatter)
+void printProgress(ColorizedStream& o, const std::shared_ptr<RequestGroup>& rg,
+                   const DownloadEngine* e, const SizeFormatter& sizeFormatter)
 {
   TransferStat stat = rg->calculateStat();
   int eta = 0;
@@ -179,24 +177,22 @@ void printProgress
   }
 #endif // ENABLE_BITTORRENT
 
-  if(!rg->downloadFinished()) {
-    o << " DL:"
-      << sizeFormatter(stat.downloadSpeed) << "B";
+  if (!rg->downloadFinished()) {
+    o << " DL:" <<
+      colors::green << sizeFormatter(stat.downloadSpeed) << "B" <<
+      colors::clear;
   }
-  if(stat.sessionUploadLength > 0) {
-    o << " UL:"
-      << sizeFormatter(stat.uploadSpeed) << "B"
-      << "(" << sizeFormatter(stat.allTimeUploadLength) << "B)";
+  if (stat.sessionUploadLength > 0) {
+    o << " UL:" <<
+      colors::cyan << sizeFormatter(stat.uploadSpeed) << "B" << colors::clear;
+    o << "(" << sizeFormatter(stat.allTimeUploadLength) << "B)";
   }
-  if(eta > 0) {
-    o << " ETA:"
-      << util::secfmt(eta);
+  if (eta > 0) {
+    o << " ETA:" << colors::yellow << util::secfmt(eta) << colors::clear;
   }
   o << "]";
 }
-} // namespace
 
-namespace {
 class PrintSummary
 {
 private:
@@ -212,7 +208,7 @@ public:
   void operator()(const RequestGroupList::value_type& rg)
   {
     const char SEP_CHAR = '-';
-    std::stringstream o;
+    ColorizedStream o;
     printProgress(o, rg, e_, sizeFormatter_);
     const std::vector<std::shared_ptr<FileEntry> >& fileEntries =
       rg->getDownloadContext()->getFileEntries();
@@ -221,15 +217,14 @@ public:
                   o, rg->inMemoryDownload());
     o << "\n"
       << std::setfill(SEP_CHAR) << std::setw(cols_) << SEP_CHAR << "\n";
-    global::cout()->write(o.str().c_str());
+    auto str = o.str(false);
+    global::cout()->write(str.c_str());
   }
 };
-} // namespace
 
-namespace {
-void printProgressSummary
-(const RequestGroupList& groups, size_t cols, const DownloadEngine* e,
- const SizeFormatter& sizeFormatter)
+void printProgressSummary(const RequestGroupList& groups, size_t cols,
+                          const DownloadEngine* e,
+                          const SizeFormatter& sizeFormatter)
 {
   const char SEP_CHAR = '=';
   time_t now;
@@ -255,6 +250,7 @@ void printProgressSummary
   std::for_each(groups.begin(), groups.end(),
                 PrintSummary(cols, e, sizeFormatter));
 }
+
 } // namespace
 
 ConsoleStatCalc::ConsoleStatCalc(time_t summaryInterval, bool humanReadable):
@@ -304,7 +300,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
     std::string line(cols, ' ');
     global::cout()->printf("\r%s\r", line.c_str());
   }
-  std::ostringstream o;
+  ColorizedStream o;
   if(e->getRequestGroupMan()->countRequestGroup() > 0) {
     if((summaryInterval_ > 0) &&
        lastSummaryNotified_.differenceInMillis(global::wallclock())+
@@ -320,6 +316,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
     return;
   }
   size_t numGroup = e->getRequestGroupMan()->countRequestGroup();
+  const bool color = global::cout()->supportsColor() && isTTY_;
   if(numGroup == 1) {
     const std::shared_ptr<RequestGroup>& rg =
       *e->getRequestGroupMan()->getRequestGroups().begin();
@@ -367,15 +364,20 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
     }
   }
 #endif // ENABLE_MESSAGE_DIGEST
-  std::string readout = o.str();
   if(isTTY_) {
-    if(truncate_ && readout.size() > cols) {
-      readout[cols] = '\0';
+    if (truncate_) {
+      auto str = o.str(color, cols);
+      global::cout()->write(str.c_str());
     }
-    global::cout()->write(readout.c_str());
+    else {
+      auto str = o.str(color);
+      global::cout()->write(str.c_str());
+    }
     global::cout()->flush();
-  } else {
-    global::cout()->write(readout.c_str());
+  }
+  else {
+    auto str = o.str(false);
+    global::cout()->write(str.c_str());
     global::cout()->write("\n");
   }
 }
