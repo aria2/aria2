@@ -54,13 +54,7 @@ Logger::Logger()
   : logLevel_(Logger::A2_DEBUG),
     consoleLogLevel_(Logger::A2_NOTICE),
     consoleOutput_(true),
-#ifdef __MINGW32__
-    // Windows DOS prompt does not handle ANSI color code, so make
-    // this false.
-    useColor_(false)
-#else // !__MINGW32__
-    useColor_(isatty(STDOUT_FILENO) == 1)
-#endif // !__MINGW32__
+    useColor_(global::cout()->supportsColor())
 {}
 
 Logger::~Logger()

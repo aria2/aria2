@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2011 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Nils Maier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,50 +33,74 @@
  */
 /* copyright --> */
 
-#ifndef D_WIN_CONSOLE_FILE_H
-#define D_WIN_CONSOLE_FILE_H
+#include "ColorizedStream.h"
 
-#include <string>
-
-#include "OutputFile.h"
 
 namespace aria2 {
+namespace colors {
 
-  // This is a wrapper class for WriteConsoleW
-  class WinConsoleFile: public OutputFile
-  {
-  public:
-    WinConsoleFile(DWORD stdHandle);
-    virtual ~WinConsoleFile() {}
+const Color black("30");
+const Color red("31");
+const Color green("32");
+const Color yellow("33");
+const Color blue("34");
+const Color magenta("35");
+const Color cyan("36");
+const Color white("37");
 
-    virtual size_t write(const char* str) CXX11_OVERRIDE;
-    virtual int vprintf(const char* format, va_list va) CXX11_OVERRIDE;
-    virtual bool supportsColor() CXX11_OVERRIDE;
-    virtual int flush() CXX11_OVERRIDE
-    {
-      return 0;
+const Color lightred("1;31");
+const Color lightgreen("1;32");
+const Color lightyellow("1;33");
+const Color lightblue("1;34");
+const Color lightmagenta("1;35");
+const Color lightcyan("1;36");
+const Color lightwhite("1;37");
+
+const Color clear("0");
+
+} // namespace colors
+
+std::string ColorizedStreamBuf::str(bool color) const
+{
+  std::stringstream rv;
+  for (const auto& e: elems) {
+    if (color || e.first != eColor) {
+      rv << e.second;
     }
+  }
+  if (color) {
+    rv << colors::clear.str();
+  }
+  return rv.str();
+}
 
-  private:
-    DWORD stdHandle_;
-    bool bold_;
-    bool underline_;
-    bool reverse_;
-    WORD fg_, deffg_;
-    WORD bg_, defbg_;
-
-    size_t writeColorful(const std::wstring& str);
-    inline HANDLE handle() const
-    {
-      return ::GetStdHandle(stdHandle_);
+std::string ColorizedStreamBuf::str(bool color, size_t max) const
+{
+  std::stringstream rv;
+  for (const auto& e: elems) {
+    if (e.first == eColor) {
+      if (color) {
+        rv << e.second;
+      }
+      continue;
     }
-
-  private:
-    // Don't allow copying
-    WinConsoleFile(const WinConsoleFile&) = delete;
-    WinConsoleFile& operator=(const WinConsoleFile&) = delete;
-  };
+    auto size = e.second.size();
+    if (size > max) {
+      auto cut = e.second;
+      cut.resize(max);
+      rv << cut;
+      break;
+    }
+    rv << e.second;
+    max -= size;
+    if (!max) {
+      break;
+    }
+  }
+  if (color) {
+    rv << colors::clear.str();
+  }
+  return rv.str();
+}
 
 } // namespace aria2
-
-#endif // D_WIN_CONSOLE_FILE_H
