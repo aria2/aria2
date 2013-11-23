@@ -86,9 +86,7 @@ std::string ColorizedStreamBuf::str(bool color, size_t max) const
     }
     auto size = e.second.size();
     if (size > max) {
-      auto cut = e.second;
-      cut.resize(max);
-      rv << cut;
+      rv.write(e.second.c_str(), max);
       break;
     }
     rv << e.second;
