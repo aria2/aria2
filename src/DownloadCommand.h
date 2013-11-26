@@ -49,17 +49,21 @@ class MessageDigest;
 
 class DownloadCommand : public AbstractCommand {
 private:
-  time_t startupIdleTime_;
-  int lowestDownloadSpeedLimit_;
   std::shared_ptr<PeerStat> peerStat_;
+
+  std::unique_ptr<StreamFilter> streamFilter_;
+
+#ifdef ENABLE_MESSAGE_DIGEST
+  std::unique_ptr<MessageDigest> messageDigest_;
+#endif // ENABLE_MESSAGE_DIGEST
+
+  time_t startupIdleTime_;
+
+  int lowestDownloadSpeedLimit_;
 
   bool pieceHashValidationEnabled_;
 
-#ifdef ENABLE_MESSAGE_DIGEST
-
-  std::unique_ptr<MessageDigest> messageDigest_;
-
-#endif // ENABLE_MESSAGE_DIGEST
+  bool sinkFilterOnly_;
 
   void validatePieceHash(const std::shared_ptr<Segment>& segment,
                          const std::string& expectedPieceHash,
@@ -69,9 +73,6 @@ private:
 
   void completeSegment(cuid_t cuid, const std::shared_ptr<Segment>& segment);
 
-  std::unique_ptr<StreamFilter> streamFilter_;
-
-  bool sinkFilterOnly_;
 protected:
   virtual bool executeInternal() CXX11_OVERRIDE;
 

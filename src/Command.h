@@ -50,15 +50,17 @@ public:
     STATUS_REALTIME,
     STATUS_ONESHOT_REALTIME
   };
-private:
-  STATUS status_;
 
+private:
   cuid_t cuid_;
+
+  STATUS status_;
 
   bool readEvent_;
   bool writeEvent_;
   bool errorEvent_;
   bool hupEvent_;
+
 protected:
   bool readEventEnabled() const
   {
@@ -79,6 +81,7 @@ protected:
   {
     return hupEvent_;
   }
+
 public:
   Command(cuid_t cuid);
 

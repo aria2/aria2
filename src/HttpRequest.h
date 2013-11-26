@@ -65,28 +65,15 @@ private:
 
   std::shared_ptr<Segment> segment_;
 
-  bool contentEncodingEnabled_;
+  std::shared_ptr<Request> proxyRequest_;
 
-  std::string userAgent_;
-
-  std::vector<std::string> headers_;
-
-  // If true, metalink content types are sent in Accept header field.
-  bool acceptMetalink_;
+  std::unique_ptr<AuthConfig> authConfig_;
 
   CookieStorage* cookieStorage_;
 
   AuthConfigFactory* authConfigFactory_;
 
   const Option* option_;
-
-  std::unique_ptr<AuthConfig> authConfig_;
-
-  std::shared_ptr<Request> proxyRequest_;
-
-  bool noCache_;
-
-  bool acceptGzip_;
 
   // Historically, aria2 did not specify end byte marker unless http
   // pipelining is enabled. Sometimes end byte is known because the
@@ -97,9 +84,23 @@ private:
   // bytes and it is also true if it is used via HTTP proxy.
   int64_t endOffsetOverride_;
 
+  std::vector<std::string> headers_;
+
+  std::string userAgent_;
+
   std::string ifModSinceHeader_;
 
+  bool contentEncodingEnabled_;
+
+  // If true, metalink content types are sent in Accept header field.
+  bool acceptMetalink_;
+
+  bool noCache_;
+
+  bool acceptGzip_;
+
   std::pair<std::string, std::string> getProxyAuthString() const;
+
 public:
   HttpRequest();
   ~HttpRequest();

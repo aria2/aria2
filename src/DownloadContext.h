@@ -58,11 +58,19 @@ class FileEntry;
 class DownloadContext
 {
 private:
+  std::unique_ptr<Signature> signature_;
+
+  RequestGroup* ownerRequestGroup_;
+
+  std::vector<std::unique_ptr<ContextAttribute> > attrs_;
+
   std::vector<std::shared_ptr<FileEntry> > fileEntries_;
 
   std::vector<std::string> pieceHashes_;
 
-  int32_t pieceLength_;
+  NetStat netStat_;
+
+  Timer downloadStopTime_;
 
   std::string pieceHashType_;
 
@@ -70,24 +78,18 @@ private:
 
   std::string hashType_;
 
-  bool checksumVerified_;
-
   std::string basePath_;
+
+  int32_t pieceLength_;
+
+  bool checksumVerified_;
 
   bool knowsTotalLength_;
 
-  RequestGroup* ownerRequestGroup_;
-
-  std::vector<std::unique_ptr<ContextAttribute> > attrs_;
-
-  NetStat netStat_;
-
-  Timer downloadStopTime_;
-
-  std::unique_ptr<Signature> signature_;
   // This member variable is required to avoid to use parse Metalink
   // (including both Metalink XML and Metalink/HTTP) twice.
   bool acceptMetalink_;
+
 public:
   DownloadContext();
 

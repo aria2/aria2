@@ -48,12 +48,12 @@ namespace uri {
 struct UriStruct {
   std::string protocol;
   std::string host;
-  uint16_t port;
   std::string dir;
   std::string file;
   std::string query;
   std::string username;
   std::string password;
+  uint16_t port;
   bool hasPassword;
   bool ipv6LiteralAddress;
 

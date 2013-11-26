@@ -54,30 +54,14 @@ class MetadataInfo;
 
 struct DownloadResult
 {
-  std::shared_ptr<GroupId> gid;
-
-  std::vector<std::shared_ptr<FileEntry> > fileEntries;
-
-  bool inMemoryDownload;
+  // This field contains GID. See comment in
+  // RequestGroup.cc::belongsToGID_.
+  a2_gid_t belongsTo;
 
   uint64_t sessionDownloadLength;
 
   // milliseconds
   int64_t sessionTime;
-
-  error_code::Value result;
-
-  // This field contains GIDs. See comment in
-  // RequestGroup.cc::followedByGIDs_.
-  std::vector<a2_gid_t> followedBy;
-
-  // This field contains GID. See comment in
-  // RequestGroup.cc::belongsToGID_.
-  a2_gid_t belongsTo;
-
-  std::shared_ptr<Option> option;
-
-  std::shared_ptr<MetadataInfo> metadataInfo;
 
   int64_t totalLength;
 
@@ -85,15 +69,31 @@ struct DownloadResult
 
   int64_t uploadLength;
 
+  std::shared_ptr<GroupId> gid;
+
+  std::shared_ptr<Option> option;
+
+  std::shared_ptr<MetadataInfo> metadataInfo;
+
+  std::vector<std::shared_ptr<FileEntry> > fileEntries;
+
+  // This field contains GIDs. See comment in
+  // RequestGroup.cc::followedByGIDs_.
+  std::vector<a2_gid_t> followedBy;
+
   std::string bitfield;
 
   std::string infoHash;
 
-  int32_t pieceLength;
+  std::string dir;
 
   size_t numPieces;
 
-  std::string dir;
+  int32_t pieceLength;
+
+  error_code::Value result;
+
+  bool inMemoryDownload;
 
   DownloadResult();
   ~DownloadResult();

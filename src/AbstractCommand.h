@@ -64,31 +64,34 @@ class AsyncNameResolverMan;
 
 class AbstractCommand : public Command {
 private:
-  Timer checkPoint_;
-  time_t timeout_;
-
-  RequestGroup* requestGroup_;
   std::shared_ptr<Request> req_;
   std::shared_ptr<FileEntry> fileEntry_;
-  DownloadEngine* e_;
   std::shared_ptr<SocketCore> socket_;
   std::shared_ptr<SocketRecvBuffer> socketRecvBuffer_;
-  std::vector<std::shared_ptr<Segment> > segments_;
+  std::shared_ptr<SocketCore> readCheckTarget_;
+  std::shared_ptr<SocketCore> writeCheckTarget_;
 
 #ifdef ENABLE_ASYNC_DNS
   std::unique_ptr<AsyncNameResolverMan> asyncNameResolverMan_;
 #endif // ENABLE_ASYNC_DNS
 
+  RequestGroup* requestGroup_;
+  DownloadEngine* e_;
+
+  std::vector<std::shared_ptr<Segment> > segments_;
+
+  Timer checkPoint_;
+  Timer serverStatTimer_;
+  time_t timeout_;
+
   bool checkSocketIsReadable_;
   bool checkSocketIsWritable_;
-  std::shared_ptr<SocketCore> readCheckTarget_;
-  std::shared_ptr<SocketCore> writeCheckTarget_;
 
   bool incNumConnection_;
-  Timer serverStatTimer_;
 
   int32_t calculateMinSplitSize() const;
   void useFasterRequest(const std::shared_ptr<Request>& fasterRequest);
+
 public:
   RequestGroup* getRequestGroup() const
   {
@@ -234,13 +237,12 @@ protected:
   }
 
 public:
-  AbstractCommand
-  (cuid_t cuid, const std::shared_ptr<Request>& req,
-   const std::shared_ptr<FileEntry>& fileEntry,
-   RequestGroup* requestGroup, DownloadEngine* e,
-   const std::shared_ptr<SocketCore>& s = nullptr,
-   const std::shared_ptr<SocketRecvBuffer>& socketRecvBuffer = nullptr,
-   bool incNumConnection = true);
+  AbstractCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
+                  const std::shared_ptr<FileEntry>& fileEntry,
+                  RequestGroup* requestGroup, DownloadEngine* e,
+                  const std::shared_ptr<SocketCore>& s = nullptr,
+                  const std::shared_ptr<SocketRecvBuffer>& socketRecvBuffer = nullptr,
+                  bool incNumConnection = true);
 
   virtual ~AbstractCommand();
   virtual bool execute() CXX11_OVERRIDE;

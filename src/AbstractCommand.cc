@@ -76,26 +76,29 @@
 
 namespace aria2 {
 
-AbstractCommand::AbstractCommand
-(cuid_t cuid,
- const std::shared_ptr<Request>& req,
- const std::shared_ptr<FileEntry>& fileEntry,
- RequestGroup* requestGroup,
- DownloadEngine* e,
- const std::shared_ptr<SocketCore>& s,
- const std::shared_ptr<SocketRecvBuffer>& socketRecvBuffer,
- bool incNumConnection)
-  : Command(cuid), checkPoint_(global::wallclock()),
-    timeout_(requestGroup->getTimeout()),
-    requestGroup_(requestGroup),
-    req_(req), fileEntry_(fileEntry), e_(e), socket_(s),
+AbstractCommand::AbstractCommand(cuid_t cuid,
+                                 const std::shared_ptr<Request>& req,
+                                 const std::shared_ptr<FileEntry>& fileEntry,
+                                 RequestGroup* requestGroup, DownloadEngine* e,
+                                 const std::shared_ptr<SocketCore>& s,
+                                 const std::shared_ptr<SocketRecvBuffer>& socketRecvBuffer,
+                                 bool incNumConnection)
+  : Command(cuid),
+    req_(req),
+    fileEntry_(fileEntry),
+    socket_(s),
     socketRecvBuffer_(socketRecvBuffer),
 #ifdef ENABLE_ASYNC_DNS
     asyncNameResolverMan_(make_unique<AsyncNameResolverMan>()),
 #endif // ENABLE_ASYNC_DNS
-    checkSocketIsReadable_(false), checkSocketIsWritable_(false),
-    incNumConnection_(incNumConnection),
-    serverStatTimer_(global::wallclock())
+    requestGroup_(requestGroup),
+    e_(e),
+    checkPoint_(global::wallclock()),
+    serverStatTimer_(global::wallclock()),
+    timeout_(requestGroup->getTimeout()),
+    checkSocketIsReadable_(false),
+    checkSocketIsWritable_(false),
+    incNumConnection_(incNumConnection)
 {
   if(socket_ && socket_->isOpen()) {
     setReadCheckSocket(socket_);

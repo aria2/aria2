@@ -74,12 +74,12 @@ HttpSkipResponseCommand::HttpSkipResponseCommand
  const std::shared_ptr<SocketCore>& s)
   : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s,
                     httpConnection->getSocketRecvBuffer()),
-    httpConnection_(httpConnection),
-    httpResponse_(std::move(httpResponse)),
-    streamFilter_(new NullSinkStreamFilter()),
     sinkFilterOnly_(true),
     totalLength_(httpResponse_->getEntityLength()),
-    receivedBytes_(0)
+    receivedBytes_(0),
+    httpConnection_(httpConnection),
+    httpResponse_(std::move(httpResponse)),
+    streamFilter_(new NullSinkStreamFilter())
 {
   checkSocketRecvBuffer();
 }
