@@ -45,40 +45,31 @@ namespace aria2 {
 
 class Cookie {
 private:
+  time_t expiryTime_;
+  time_t creationTime_;
+  time_t lastAccessTime_;
   std::string name_;
   std::string value_;
-  time_t expiryTime_;
+  std::string domain_;
+  std::string path_;
   // If persistent_ is false, this is a session scope cookie and it is
   // never expired during session. So isExpired() always returns
   // false.
   bool persistent_;
-  std::string domain_;
   bool hostOnly_;
-  std::string path_;
   bool secure_;
   bool httpOnly_;
-  time_t creationTime_;
-  time_t lastAccessTime_;
+
 public:
   Cookie();
-
-  Cookie
-  (std::string name,
-   std::string value,
-   time_t  expiryTime,
-   bool persistent,
-   std::string domain,
-   bool hostOnly,
-   std::string path,
-   bool secure,
-   bool httpOnly,
-   time_t creationTime);
+  Cookie(std::string name, std::string value, time_t  expiryTime,
+         bool persistent, std::string domain, bool hostOnly, std::string path,
+         bool secure, bool httpOnly, time_t creationTime);
 
   std::string toString() const;
 
-  bool match
-  (const std::string& requestHost, const std::string& requestPath,
-   time_t date, bool secure) const;
+  bool match(const std::string& requestHost, const std::string& requestPath,
+             time_t date, bool secure) const;
 
   bool operator==(const Cookie& cookie) const;
 

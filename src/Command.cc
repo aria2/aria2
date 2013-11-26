@@ -38,8 +38,8 @@
 namespace aria2 {
 
 Command::Command(cuid_t cuid)
-  : status_(STATUS_INACTIVE),
-    cuid_(cuid),
+  : cuid_(cuid),
+    status_(STATUS_INACTIVE),
     readEvent_(false),
     writeEvent_(false),
     errorEvent_(false),

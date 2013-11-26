@@ -45,19 +45,19 @@ using namespace aria2::expr;
 namespace aria2 {
 
 BitfieldMan::BitfieldMan(int32_t blockLength, int64_t totalLength)
-  :blockLength_(blockLength),
-   totalLength_(totalLength),
-   bitfieldLength_(0),
-   blocks_(0),
-   filterEnabled_(false),
-   bitfield_(nullptr),
-   useBitfield_(nullptr),
-   filterBitfield_(nullptr),
-   cachedNumMissingBlock_(0),
-   cachedNumFilteredBlock_(0),
-   cachedCompletedLength_(0),
-   cachedFilteredCompletedLength_(0),
-   cachedFilteredTotalLength_(0)
+  : totalLength_(totalLength),
+    cachedCompletedLength_(0),
+    cachedFilteredCompletedLength_(0),
+    cachedFilteredTotalLength_(0),
+    bitfield_(nullptr),
+    useBitfield_(nullptr),
+    filterBitfield_(nullptr),
+    bitfieldLength_(0),
+    cachedNumMissingBlock_(0),
+    cachedNumFilteredBlock_(0),
+    blocks_(0),
+    blockLength_(blockLength),
+    filterEnabled_(false)
 {
   if(blockLength_ > 0 && totalLength_ > 0) {
     blocks_ = (totalLength_+blockLength_-1)/blockLength_;
@@ -71,19 +71,19 @@ BitfieldMan::BitfieldMan(int32_t blockLength, int64_t totalLength)
 }
 
 BitfieldMan::BitfieldMan(const BitfieldMan& bitfieldMan)
-  :blockLength_(bitfieldMan.blockLength_),
-   totalLength_(bitfieldMan.totalLength_),
-   bitfieldLength_(bitfieldMan.bitfieldLength_),
-   blocks_(bitfieldMan.blocks_),
-   filterEnabled_(bitfieldMan.filterEnabled_),
-   bitfield_(new unsigned char[bitfieldLength_]),
-   useBitfield_(new unsigned char[bitfieldLength_]),
-   filterBitfield_(nullptr),
-   cachedNumMissingBlock_(0),
-   cachedNumFilteredBlock_(0),
-   cachedCompletedLength_(0),
-   cachedFilteredCompletedLength_(0),
-   cachedFilteredTotalLength_(0)
+  : totalLength_(bitfieldMan.totalLength_),
+    cachedCompletedLength_(0),
+    cachedFilteredCompletedLength_(0),
+    cachedFilteredTotalLength_(0),
+    bitfield_(new unsigned char[bitfieldMan.bitfieldLength_]),
+    useBitfield_(new unsigned char[bitfieldMan.bitfieldLength_]),
+    filterBitfield_(nullptr),
+    bitfieldLength_(bitfieldMan.bitfieldLength_),
+    cachedNumMissingBlock_(0),
+    cachedNumFilteredBlock_(0),
+    blocks_(bitfieldMan.blocks_),
+    blockLength_(bitfieldMan.blockLength_),
+    filterEnabled_(bitfieldMan.filterEnabled_)
 {
   memcpy(bitfield_, bitfieldMan.bitfield_, bitfieldLength_);
   memcpy(useBitfield_, bitfieldMan.useBitfield_, bitfieldLength_);
@@ -97,8 +97,8 @@ BitfieldMan::BitfieldMan(const BitfieldMan& bitfieldMan)
 BitfieldMan& BitfieldMan::operator=(const BitfieldMan& bitfieldMan)
 {
   if(this != &bitfieldMan) {
-    blockLength_ = bitfieldMan.blockLength_;
     totalLength_ = bitfieldMan.totalLength_;
+    blockLength_ = bitfieldMan.blockLength_;
     blocks_ = bitfieldMan.blocks_;
     bitfieldLength_ = bitfieldMan.bitfieldLength_;
     filterEnabled_ = bitfieldMan.filterEnabled_;

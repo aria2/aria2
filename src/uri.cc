@@ -48,12 +48,12 @@ UriStruct::UriStruct()
 UriStruct::UriStruct(const UriStruct& c)
   : protocol(c.protocol),
     host(c.host),
-    port(c.port),
     dir(c.dir),
     file(c.file),
     query(c.query),
     username(c.username),
     password(c.password),
+    port(c.port),
     hasPassword(c.hasPassword),
     ipv6LiteralAddress(c.ipv6LiteralAddress)
 {}
@@ -65,12 +65,12 @@ UriStruct& UriStruct::operator=(const UriStruct& c)
   if(this != &c) {
     protocol = c.protocol;
     host = c.host;
-    port = c.port;
     dir = c.dir;
     file = c.file;
     query = c.query;
     username = c.username;
     password = c.password;
+    port = c.port;
     hasPassword = c.hasPassword;
     ipv6LiteralAddress = c.ipv6LiteralAddress;
   }
@@ -83,12 +83,12 @@ void UriStruct::swap(UriStruct& other)
   if(this != &other) {
     swap(protocol, other.protocol);
     swap(host, other.host);
-    swap(port, other.port);
     swap(dir, other.dir);
     swap(file, other.file);
     swap(query, other.query);
     swap(username, other.username);
     swap(password, other.password);
+    swap(port, other.port);
     swap(hasPassword, other.hasPassword);
     swap(ipv6LiteralAddress, other.ipv6LiteralAddress);
   }

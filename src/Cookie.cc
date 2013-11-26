@@ -42,37 +42,32 @@
 
 namespace aria2 {
 
-Cookie::Cookie
-(std::string name,
- std::string value,
- time_t  expiryTime,
- bool persistent,
- std::string domain,
- bool hostOnly,
- std::string path,
- bool secure,
- bool httpOnly,
- time_t creationTime):
-  name_(std::move(name)),
-  value_(std::move(value)),
-  expiryTime_(expiryTime),
-  persistent_(persistent),
-  domain_(std::move(domain)),
-  hostOnly_(hostOnly),
-  path_(std::move(path)),
-  secure_(secure),
-  httpOnly_(httpOnly),
-  creationTime_(creationTime),
-  lastAccessTime_(creationTime) {}
+Cookie::Cookie(std::string name, std::string value, time_t expiryTime,
+               bool persistent, std::string domain, bool hostOnly,
+               std::string path, bool secure, bool httpOnly,
+               time_t creationTime)
+  : expiryTime_(expiryTime),
+    creationTime_(creationTime),
+    lastAccessTime_(creationTime),
+    name_(std::move(name)),
+    value_(std::move(value)),
+    domain_(std::move(domain)),
+    path_(std::move(path)),
+    persistent_(persistent),
+    hostOnly_(hostOnly),
+    secure_(secure),
+    httpOnly_(httpOnly)
+{}
 
-Cookie::Cookie():
-  expiryTime_(0),
-  persistent_(false),
-  hostOnly_(false),
-  secure_(false),
-  httpOnly_(false),
-  creationTime_(0),
-  lastAccessTime_(0) {}
+Cookie::Cookie()
+  : expiryTime_(0),
+    creationTime_(0),
+    lastAccessTime_(0),
+    persistent_(false),
+    hostOnly_(false),
+    secure_(false),
+    httpOnly_(false)
+{}
 
 std::string Cookie::toString() const
 {
@@ -82,10 +77,9 @@ std::string Cookie::toString() const
   return s;
 }
 
-bool Cookie::match
-(const std::string& requestHost,
- const std::string& requestPath,
- time_t date, bool secure) const
+bool Cookie::match(
+    const std::string& requestHost, const std::string& requestPath,
+    time_t date, bool secure) const
 {
   if((secure_ && !secure) || isExpired(date) ||
      !cookie::pathMatch(requestPath, path_)) {
