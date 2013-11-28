@@ -266,7 +266,6 @@ void updateHashWithRead(MessageDigest* mdctx,
       throw DL_ABORT_EX(fmt(EX_FILE_READ, "n/a", "data is too short"));
     }
     mdctx->update(buf, nread);
-    offset += nread;
   }
 }
 } // namespace
