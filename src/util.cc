@@ -1764,7 +1764,7 @@ void executeHook
                   numFilesStr.c_str(),
                   firstFilename.c_str()));
   pid_t cpid = fork();
-  if (cpid > 0) {
+  if (cpid == 0) {
     // child!
     execlp(command.c_str(),
            command.c_str(),
