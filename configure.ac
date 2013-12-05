@@ -963,9 +963,14 @@ if test "x$ARIA2_STATIC" = "xyes"; then
   # libtool.
   LDFLAGS="$LDFLAGS -all-static"
   dnl For non-MinGW build, we need additional libs for static build.
-  if test "x$win_build" != "xyes"; then
-    LIBS="$LIBS -lpthread -ldl -lrt"
-  fi
+  case "$host" in
+    *mingw*|*msvc*|*darwin*)
+    ;;
+
+    *)
+      LIBS="$LIBS -lpthread -ldl -lrt"
+    ;;
+  esac
 fi
 
 if test "x$win_build" = "xyes" && test "x$enable_libaria2" = "xyes"; then
