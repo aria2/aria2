@@ -17,6 +17,7 @@ class Metalink2RequestGroupTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(Metalink2RequestGroupTest);
   CPPUNIT_TEST(testGenerate);
+  CPPUNIT_TEST(testGenerate_with_local_metaurl);
   CPPUNIT_TEST(testGenerate_groupByMetaurl);
   CPPUNIT_TEST(testGenerate_dosDirTraversal);
   CPPUNIT_TEST_SUITE_END();
@@ -31,6 +32,7 @@ public:
   }
 
   void testGenerate();
+  void testGenerate_with_local_metaurl();
   void testGenerate_groupByMetaurl();
   void testGenerate_dosDirTraversal();
 };
@@ -123,6 +125,20 @@ void Metalink2RequestGroupTest::testGenerate()
 
     CPPUNIT_ASSERT(dctx);
   }
+}
+
+void Metalink2RequestGroupTest::testGenerate_with_local_metaurl()
+{
+  std::vector<std::shared_ptr<RequestGroup> > groups;
+  option_->put(PREF_DIR, "/tmp");
+  // local metaurl does not work without --metalink-base-uri option.
+  // Make sure that it does not crash with local metaurl.
+  Metalink2RequestGroup().generate(groups, A2_TEST_DIR"/local-metaurl.meta4",
+                                   option_);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, groups.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/README"),
+                       groups[0]->getDownloadContext()->getFirstFileEntry()
+                       ->getRemainingUris()[0]);
 }
 
 void Metalink2RequestGroupTest::testGenerate_groupByMetaurl()

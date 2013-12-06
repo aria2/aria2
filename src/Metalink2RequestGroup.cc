@@ -222,7 +222,7 @@ Metalink2RequestGroup::createRequestGroup
         createRequestGroupForUri(result, optionTemplate, uris,
                                  /* ignoreForceSequential = */true,
                                  /* ignoreLocalPath = */true);
-        if(!uris.empty()) {
+        if(!result.empty()) {
           torrentRg = result[0];
         }
       }

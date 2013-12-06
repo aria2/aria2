@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metalink xmlns="urn:ietf:params:xml:ns:metalink">
+  <file name="t/README">
+    <!-- require absolute URI here -->
+    <metaurl mediatype="torrent">README.torrent</metaurl>
+    <url type="http">http://example.org/README</url>
+  </file>
+</metalink>

@@ -282,7 +282,8 @@ EXTRA_DIST = 4096chunk.txt\
 	metalink4-groupbymetaurl.xml\
 	serialize_session.meta4\
 	metalink4-dosdirtraversal.xml\
-	base_uri.xml
+	base_uri.xml\
+	local-metaurl.meta4
 
 clean-local:
 	-rm -rf ${a2_test_outdir}
