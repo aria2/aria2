@@ -1,0 +1,15 @@
+<ul class="wy-breadcrumbs">
+  <li><a href="{{ pathto(master_doc) }}">Docs</a> &raquo;</li>
+  <li><a href="">{{ title }}</a></li>
+    <li class="wy-breadcrumbs-aside">
+      {% if display_github %}
+        <a href="https://github.com/{{ github_user }}/{{ github_repo }}/blob/{{ github_version }}{{ conf_py_path }}{{ pagename }}.rst" class="icon icon-github"> Edit on GitHub</a>
+      {% elif display_bitbucket %}
+        <a href="https://bitbucket.org/{{ bitbucket_user }}/{{ bitbucket_repo }}/src/{{ bitbucket_version}}{{ conf_py_path }}{{ pagename }}.rst'" class="icon icon-bitbucket"> Edit on Bitbucket</a>
+      {% elif show_source and has_source and sourcename %}
+        <a href="{{ pathto('_sources/' + sourcename, true)|e }}" rel="nofollow"> View page source</a>
+      {% endif %}
+    </li>
+</ul>
+<hr/>
+
