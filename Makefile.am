@@ -3,9 +3,13 @@ SUBDIRS =  po lib deps src doc test
 ACLOCAL_AMFLAGS = -I m4 --install
 RST2HTML = @RST2HTML@
 
-EXTRA_DIST = config.rpath mingw-config android-config android-make\
-	build_osx_release.sh \
-	examples/libaria2ex.cc examples/libaria2wx.cc
+EXTRA_DIST = config.rpath \
+	     script-helper \
+	     makerelease \
+	     mingw-config mingw-release mingw-build-memo \
+	     android-config android-make \
+	     makerelease-osx.mk osx-package/DS_Store osx-package/etc/paths.d/aria2c osx-package/etc/manpaths.d/aria2 \
+	     examples/libaria2ex.cc examples/libaria2wx.cc
 
 dist_doc_DATA = README README.rst
 
