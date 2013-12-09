@@ -140,7 +140,6 @@ SRCS =  option_processing.cc\
 	PostDownloadHandler.h\
 	PreDownloadHandler.h\
 	SingletonHolder.h\
-	TrueRequestGroupCriteria.h\
 	a2algo.h\
 	a2functional.h\
 	a2io.h\
