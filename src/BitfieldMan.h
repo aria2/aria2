@@ -43,21 +43,23 @@ namespace aria2 {
 
 class BitfieldMan {
 private:
-  int32_t blockLength_;
   int64_t totalLength_;
-  size_t bitfieldLength_;
-  size_t blocks_;
-  bool filterEnabled_;
+  int64_t cachedCompletedLength_;
+  int64_t cachedFilteredCompletedLength_;
+  int64_t cachedFilteredTotalLength_;
+
   unsigned char* bitfield_;
   unsigned char* useBitfield_;
   unsigned char* filterBitfield_;
 
-  // for caching
+  size_t bitfieldLength_;
   size_t cachedNumMissingBlock_;
   size_t cachedNumFilteredBlock_;
-  int64_t cachedCompletedLength_;
-  int64_t cachedFilteredCompletedLength_;
-  int64_t cachedFilteredTotalLength_;
+  size_t blocks_;
+
+  int32_t blockLength_;
+
+  bool filterEnabled_;
 
   bool setBitInternal(unsigned char* bitfield, size_t index, bool on);
   bool setFilterBit(size_t index);
@@ -70,6 +72,7 @@ private:
   // If filterBitfield_ is 0, allocate bitfieldLength_ bytes to it and
   // set 0 to all bytes.
   void ensureFilterBitfield();
+
 public:
   // [startIndex, endIndex)
   struct Range {
@@ -81,6 +84,7 @@ public:
     bool operator<(const Range& range) const;
     bool operator==(const Range& range) const;
   };
+
 public:
   BitfieldMan(int32_t blockLength, int64_t totalLength);
   BitfieldMan(const BitfieldMan& bitfieldMan);

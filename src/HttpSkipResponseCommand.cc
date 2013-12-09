@@ -63,23 +63,20 @@
 
 namespace aria2 {
 
-HttpSkipResponseCommand::HttpSkipResponseCommand
-(cuid_t cuid,
- const std::shared_ptr<Request>& req,
- const std::shared_ptr<FileEntry>& fileEntry,
- RequestGroup* requestGroup,
- const std::shared_ptr<HttpConnection>& httpConnection,
- std::unique_ptr<HttpResponse> httpResponse,
- DownloadEngine* e,
- const std::shared_ptr<SocketCore>& s)
+HttpSkipResponseCommand::HttpSkipResponseCommand(
+  cuid_t cuid, const std::shared_ptr<Request>& req,
+  const std::shared_ptr<FileEntry>& fileEntry, RequestGroup* requestGroup,
+  const std::shared_ptr<HttpConnection>& httpConnection,
+  std::unique_ptr<HttpResponse> httpResponse, DownloadEngine* e,
+  const std::shared_ptr<SocketCore>& s)
   : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s,
                     httpConnection->getSocketRecvBuffer()),
-    httpConnection_(httpConnection),
-    httpResponse_(std::move(httpResponse)),
-    streamFilter_(new NullSinkStreamFilter()),
     sinkFilterOnly_(true),
     totalLength_(httpResponse_->getEntityLength()),
-    receivedBytes_(0)
+    receivedBytes_(0),
+    httpConnection_(httpConnection),
+    httpResponse_(std::move(httpResponse)),
+    streamFilter_(new NullSinkStreamFilter())
 {
   checkSocketRecvBuffer();
 }

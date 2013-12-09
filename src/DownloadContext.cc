@@ -47,25 +47,26 @@
 
 namespace aria2 {
 
-DownloadContext::DownloadContext():
-  pieceLength_(0),
-  checksumVerified_(false),
-  knowsTotalLength_(true),
-  ownerRequestGroup_(nullptr),
-  attrs_(MAX_CTX_ATTR),
-  downloadStopTime_(0),
-  acceptMetalink_(true) {}
+DownloadContext::DownloadContext()
+  : ownerRequestGroup_(nullptr),
+    attrs_(MAX_CTX_ATTR),
+    downloadStopTime_(0),
+    pieceLength_(0),
+    checksumVerified_(false),
+    knowsTotalLength_(true),
+    acceptMetalink_(true)
+{}
 
 DownloadContext::DownloadContext(int32_t pieceLength,
                                  int64_t totalLength,
-                                 const std::string& path):
-  pieceLength_(pieceLength),
-  checksumVerified_(false),
-  knowsTotalLength_(true),
-  ownerRequestGroup_(nullptr),
-  attrs_(MAX_CTX_ATTR),
-  downloadStopTime_(0),
-  acceptMetalink_(true)
+                                 const std::string& path)
+  : ownerRequestGroup_(nullptr),
+    attrs_(MAX_CTX_ATTR),
+    downloadStopTime_(0),
+    pieceLength_(pieceLength),
+    checksumVerified_(false),
+    knowsTotalLength_(true),
+    acceptMetalink_(true)
 {
   std::shared_ptr<FileEntry> fileEntry(new FileEntry(path, totalLength, 0));
   fileEntries_.push_back(fileEntry);

@@ -52,22 +52,28 @@
 
 namespace aria2 {
 
-Piece::Piece():index_(0), length_(0), blockLength_(BLOCK_LENGTH), bitfield_(nullptr),
-               usedBySegment_(false), wrCache_(nullptr)
+Piece::Piece()
+  : bitfield_(nullptr),
+    wrCache_(nullptr),
+    index_(0),
+    length_(0),
+    blockLength_(BLOCK_LENGTH),
 #ifdef ENABLE_MESSAGE_DIGEST
-              , nextBegin_(0)
+    nextBegin_(0),
 #endif // ENABLE_MESSAGE_DIGEST
+    usedBySegment_(false)
 {}
 
 Piece::Piece(size_t index, int32_t length, int32_t blockLength)
- : index_(index),
+ : bitfield_(new BitfieldMan(blockLength, length)),
+   wrCache_(nullptr),
+   index_(index),
    length_(length),
    blockLength_(blockLength),
-   bitfield_(new BitfieldMan(blockLength_, length)),
-   usedBySegment_(false), wrCache_(nullptr)
 #ifdef ENABLE_MESSAGE_DIGEST
- ,nextBegin_(0)
+    nextBegin_(0),
 #endif // ENABLE_MESSAGE_DIGEST
+   usedBySegment_(false)
 {}
 
 Piece::~Piece()
@@ -266,7 +272,6 @@ void updateHashWithRead(MessageDigest* mdctx,
       throw DL_ABORT_EX(fmt(EX_FILE_READ, "n/a", "data is too short"));
     }
     mdctx->update(buf, nread);
-    offset += nread;
   }
 }
 } // namespace

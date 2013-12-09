@@ -59,32 +59,33 @@ class MessageDigest;
 
 class Piece {
 private:
-  size_t index_;
-  int32_t length_;
-  int32_t blockLength_;
   BitfieldMan* bitfield_;
-  std::vector<cuid_t> users_;
-  bool usedBySegment_;
   WrDiskCacheEntry* wrCache_;
 #ifdef ENABLE_MESSAGE_DIGEST
-
-  int32_t nextBegin_;
-
-  std::string hashType_;
-
   std::unique_ptr<MessageDigest> mdctx_;
-
+#endif // ENABLE_MESSAGE_DIGEST
+  std::vector<cuid_t> users_;
+#ifdef ENABLE_MESSAGE_DIGEST
+  std::string hashType_;
 #endif // ENABLE_MESSAGE_DIGEST
 
-  Piece(const Piece& piece);
+  size_t index_;
 
-  Piece& operator=(const Piece& piece);
+  int32_t length_;
+  int32_t blockLength_;
+#ifdef ENABLE_MESSAGE_DIGEST
+  int32_t nextBegin_;
+#endif // ENABLE_MESSAGE_DIGEST
+
+  bool usedBySegment_;
+
+  Piece(const Piece& piece) = delete;
+  Piece& operator=(const Piece& piece) = delete;
+
 public:
-
   static const int32_t BLOCK_LENGTH  = 16*1024;
 
   Piece();
-
   Piece(size_t index, int32_t length, int32_t blockLength = BLOCK_LENGTH);
 
   ~Piece();

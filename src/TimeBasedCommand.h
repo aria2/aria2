@@ -47,6 +47,10 @@ class TimeBasedCommand : public Command
 private:
   DownloadEngine* e_;
 
+  Timer checkPoint_;
+
+  time_t interval_; // unit: sec
+
   /**
    * setting exit_ to true if this command's job has finished and you want to
    * delete this command.
@@ -56,11 +60,8 @@ private:
    */
   bool exit_;
 
-  time_t interval_; // unit: sec
-
   bool routineCommand_;
 
-  Timer checkPoint_;
 protected:
   DownloadEngine* getDownloadEngine() const
   {
