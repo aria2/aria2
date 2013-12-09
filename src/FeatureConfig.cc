@@ -188,6 +188,9 @@ std::string usedLibs()
 #ifdef HAVE_APPLETLS
   res += "AppleTLS ";
 #endif // HAVE_APPLETLS
+#ifdef HAVE_WINTLS
+  res += "WinTLS ";
+#endif // HAVE_WINTLS
 #ifdef HAVE_LIBGNUTLS
   res += "GnuTLS/" GNUTLS_VERSION " ";
 #endif // HAVE_LIBGNUTLS
