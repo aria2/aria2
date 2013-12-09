@@ -420,7 +420,9 @@ if test "x$have_openssl" != "xyes"; then
     fi
   fi
   if test "x$with_libgmp" = "xyes" &&
-     test "x$have_libnettle" = "xyes" &&
+     (test "x$have_libnettle" = "xyes" ||
+      test "x$have_appletls" = "xyes" ||
+      test "x$have_wintls" = "xyes") &&
      test "x$enable_bittorrent" = "xyes"; then
     AC_SEARCH_LIBS([__gmpz_init], [gmp], [have_libgmp=yes], [have_libgmp=no])
     if test "x$have_libgmp" = "xyes"; then
