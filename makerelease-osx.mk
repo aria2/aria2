@@ -54,7 +54,7 @@
 #  1) Avoid patching c-ares, which hardcodes some sizes in its headers.
 #  2) Make it easy in the future to enable -flto (currently, -flto builds crash)
 #
-# Note: This Makefile uses resources from doc/osx-package when creating the
+# Note: This Makefile uses resources from osx-package when creating the
 # *.pkg and *.dmg targets
 
 SHELL := bash
@@ -349,7 +349,7 @@ $(ARIA2_DIST).pkg: aria2.build $(ARIA2_DOCS) $(ARIA2_CHANGELOG)
 		--ownership recommended \
 		out.pkg
 	pkgbuild \
-		--root $(SRCDIR)/doc/osx-package/etc \
+		--root $(SRCDIR)/osx-package/etc \
 		--identifier aria2.paths \
 		--version $(VERSION) \
 		--install-location /etc \
@@ -368,7 +368,7 @@ $(ARIA2_DIST).dmg: $(ARIA2_DIST).pkg
 	cp -av $(ARIA2_DIST).pkg dmg/aria2.pkg
 	find $(ARIA2_PREFIX)/share/doc/aria2 -type f -depth 1 -exec cp -av "{}" dmg/Docs \;
 	rm -rf dmg/Docs/README dmg/Docs/README.rst
-	cp $(SRCDIR)/doc/osx-package/DS_Store dmg/.DS_Store
+	cp $(SRCDIR)/osx-package/DS_Store dmg/.DS_Store
 	hdiutil create $@.uncompressed \
 		-srcfolder dmg \
 		-volname "aria2 $(VERSION) Intel Universal" \
