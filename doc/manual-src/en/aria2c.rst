@@ -1563,11 +1563,11 @@ based on the last error encountered.
 
 4
   If aria2 saw the specfied number of "resource not found" error.
-  See :option:`--max-file-not-found` option).
+  See :option:`--max-file-not-found` option.
 
 5
   If a download aborted because download speed was too slow.
-  See :option:`--lowest-speed-limit` option)
+  See :option:`--lowest-speed-limit` option.
 
 6
   If network problem occurred.
@@ -1632,7 +1632,7 @@ based on the last error encountered.
   If HTTP authorization failed.
 
 25
-  If aria2 could not parse bencoded file(usually ".torrent" file).
+  If aria2 could not parse bencoded file (usually ".torrent" file).
 
 26
   If ".torrent" file was corrupted or missing information that aria2 needed.
