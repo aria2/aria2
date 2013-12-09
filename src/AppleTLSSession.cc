@@ -649,7 +649,7 @@ std::string AppleTLSSession::getLastErrorString()
     case errSSLConnectionRefused:
       return "Connection refused";
     default:
-      return fmt("Unspecified error %d", lastError_);
+      return fmt("Unspecified error %ld", (long)lastError_);
   }
 }
 
