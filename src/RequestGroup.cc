@@ -355,24 +355,36 @@ void RequestGroup::createInitialCommand(
                       (progressInfoFile ?
                       progressInfoFile : progressInfoFile_)));
 
+    if (option_->getAsBool(PREF_ENABLE_DHT) ||
+        (!e->getOption()->getAsBool(PREF_DISABLE_IPV6) &&
+         option_->getAsBool(PREF_ENABLE_DHT6))) {
+
+      if (option_->getAsBool(PREF_ENABLE_DHT)) {
+        e->addCommand(DHTSetup().setup(e, AF_INET));
+      }
+
+      if (!e->getOption()->getAsBool(PREF_DISABLE_IPV6) &&
+          option_->getAsBool(PREF_ENABLE_DHT6)) {
+        e->addCommand(DHTSetup().setup(e, AF_INET6));
+      }
+      const auto& nodes = torrentAttrs->nodes;
+      // TODO Are nodes in torrent IPv4 only?
+      if(!torrentAttrs->privateTorrent &&
+         !nodes.empty() && DHTRegistry::isInitialized()) {
+        auto command = make_unique<DHTEntryPointNameResolveCommand>(
+            e->newCUID(), e, nodes);
+        command->setTaskQueue(DHTRegistry::getData().taskQueue.get());
+        command->setTaskFactory(DHTRegistry::getData().taskFactory.get());
+        command->setRoutingTable(DHTRegistry::getData().routingTable.get());
+        command->setLocalNode(DHTRegistry::getData().localNode);
+        e->addCommand(std::move(command));
+      }
+    } else if(metadataGetMode) {
+      A2_LOG_NOTICE(_("For BitTorrent Magnet URI, enabling DHT is strongly"
+                      " recommended. See --enable-dht option."));
+    }
+
     if (metadataGetMode) {
-      if (option_->getAsBool(PREF_ENABLE_DHT) ||
-          (!e->getOption()->getAsBool(PREF_DISABLE_IPV6) &&
-          option_->getAsBool(PREF_ENABLE_DHT6))) {
-
-        if (option_->getAsBool(PREF_ENABLE_DHT)) {
-          e->addCommand(DHTSetup().setup(e, AF_INET));
-        }
-
-        if (!e->getOption()->getAsBool(PREF_DISABLE_IPV6) &&
-            option_->getAsBool(PREF_ENABLE_DHT6)) {
-          e->addCommand(DHTSetup().setup(e, AF_INET6));
-        }
-      }
-      else {
-        A2_LOG_NOTICE(_("For BitTorrent Magnet URI, enabling DHT is strongly"
-                        " recommended. See --enable-dht option."));
-      }
       BtCheckIntegrityEntry{this}.onDownloadIncomplete(commands, e);
       return;
     }
@@ -419,31 +431,6 @@ void RequestGroup::createInitialCommand(
     }
     progressInfoFile_ = progressInfoFile;
 
-    if (!torrentAttrs->privateTorrent &&
-        (option_->getAsBool(PREF_ENABLE_DHT) ||
-        (!e->getOption()->getAsBool(PREF_DISABLE_IPV6) &&
-          option_->getAsBool(PREF_ENABLE_DHT6)))) {
-
-      if (option_->getAsBool(PREF_ENABLE_DHT)) {
-        e->addCommand(DHTSetup().setup(e, AF_INET));
-      }
-
-      if (!e->getOption()->getAsBool(PREF_DISABLE_IPV6) &&
-          option_->getAsBool(PREF_ENABLE_DHT6)) {
-        e->addCommand(DHTSetup().setup(e, AF_INET6));
-      }
-      const auto& nodes = torrentAttrs->nodes;
-      // TODO Are nodes in torrent IPv4 only?
-      if(!nodes.empty() && DHTRegistry::isInitialized()) {
-        auto command = make_unique<DHTEntryPointNameResolveCommand>(
-            e->newCUID(), e, nodes);
-        command->setTaskQueue(DHTRegistry::getData().taskQueue.get());
-        command->setTaskFactory(DHTRegistry::getData().taskFactory.get());
-        command->setRoutingTable(DHTRegistry::getData().routingTable.get());
-        command->setLocalNode(DHTRegistry::getData().localNode);
-        e->addCommand(std::move(command));
-      }
-    }
     auto entry = make_unique<BtCheckIntegrityEntry>(this);
     // --bt-seed-unverified=true is given and download has completed, skip
     // validation for piece hashes.
