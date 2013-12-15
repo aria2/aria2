@@ -109,7 +109,7 @@ public:
 
   const std::string& getPath() const { return path_; }
 
-  void setPath(const std::string& path);
+  void setPath(std::string path);
 
   int64_t getLength() const { return length_; }
 
@@ -167,7 +167,7 @@ public:
   // Inserts uris_ and spentUris_ into uris.
   void getUris(std::vector<std::string>& uris) const;
 
-  void setContentType(const std::string& contentType);
+  void setContentType(std::string contentType);
 
   const std::string& getContentType() const { return contentType_; }
 
@@ -257,7 +257,7 @@ public:
   // Push URIs in pooled or in-flight requests to the front of uris_.
   void putBackRequest();
 
-  void setOriginalName(const std::string& originalName);
+  void setOriginalName(std::string originalName);
 
   const std::string& getOriginalName() const
   {

@@ -546,14 +546,14 @@ bool FileEntry::insertUri(const std::string& uri, size_t pos)
   return true;
 }
 
-void FileEntry::setPath(const std::string& path)
+void FileEntry::setPath(std::string path)
 {
-  path_ = path;
+  path_ = std::move(path);
 }
 
-void FileEntry::setContentType(const std::string& contentType)
+void FileEntry::setContentType(std::string contentType)
 {
-  contentType_ = contentType;
+  contentType_ = std::move(contentType);
 }
 
 size_t FileEntry::countInFlightRequest() const
@@ -566,9 +566,9 @@ size_t FileEntry::countPooledRequest() const
   return requestPool_.size();
 }
 
-void FileEntry::setOriginalName(const std::string& originalName)
+void FileEntry::setOriginalName(std::string originalName)
 {
-  originalName_ = originalName;
+  originalName_ = std::move(originalName);
 }
 
 bool FileEntry::emptyRequestUri() const
