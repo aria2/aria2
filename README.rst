@@ -215,7 +215,7 @@ necessary to build the program::
 Also you need `Sphinx <http://sphinx.pocoo.org/>`_ to build man page.
 
 If you are building aria2 for Mac OS X, take a look at
-build_osx_release.sh, which builds an OSX universal binary DMG.
+the make-release-os.mk GNU Make makefile.
 
 The quickest way to build aria2 is first run configure script::
 
