@@ -75,7 +75,7 @@ HttpSkipResponseCommand::HttpSkipResponseCommand
   : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s,
                     httpConnection->getSocketRecvBuffer()),
     sinkFilterOnly_(true),
-    totalLength_(httpResponse_->getEntityLength()),
+    totalLength_(httpResponse->getEntityLength()),
     receivedBytes_(0),
     httpConnection_(httpConnection),
     httpResponse_(std::move(httpResponse)),
