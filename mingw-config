@@ -75,4 +75,4 @@ test -z "$PREFIX" && PREFIX=/usr/local/$HOST
     ARIA2_STATIC=yes \
     CPPFLAGS="-I$PREFIX/include" \
     LDFLAGS="-L$PREFIX/lib" \
-    PKG_CONFIG_LIBDIR="$PREFIX/lib/pkgconfig"
+    PKG_CONFIG_PATH="$PREFIX/lib/pkgconfig"
