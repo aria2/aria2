@@ -1,3 +1,58 @@
+aria2 1.18.2
+============
+
+Release Note
+------------
+
+This release fixes the wrong handling of return value of fork(), which
+leads to high CPU usage. The progress readout has some color output.
+Mingw32 build now receives colorized output. Mingw32 build now can
+read unicode command-line arguments. The build script of OSX was
+rewritten. The --bt-max-open-files now limits the number of opened
+file globally for multi-file downloads instead of per download basis.
+
+Changes
+-------
+
+* Remove the outdated, broken build_osx_release.sh
+
+* Initial revision of the a new OSX release Makefile
+
+* Allow using libgmp with AppleTLS/WinTLS
+
+* Fix crash when metaurl contains unsupported URI or text
+
+* Fix bad fork() return value handling
+
+* Use some colors in progress reports (where available)
+
+* Implement basic color support for the Windows console
+
+  Only \033[*m (SGR) is supported, with a 16+16 color terminal.
+
+* AppleTLS: Implement PKCS12 loading.
+
+* Limit number of opened file globally with --bt-max-open-files option
+
+  This change changes the behavior of --bt-max-open-files. Previously,
+  it specifies the maximum number of opened files for each multi-file
+  download. Since it is more useful to limit the number globally, the
+  option now specifies the global limit. This change suggests that
+  aria2.changeOption() method now ignores --bt-max-open-files and
+  aria2.changeGlobalOption now reads it and dynamically change the
+  limit.
+
+* Don't fail multiple concurrent dl same file if auto-file-renaming is
+  enabled
+
+* mingw32: Use CommandLineToArgvW() and GetCommandLineW() to read
+  cmd-line args
+
+  This change enables aria2 to read unicode characters in
+  command-line.
+
+
+
 aria2 1.18.1
 ============
 
