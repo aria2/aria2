@@ -38,7 +38,7 @@ See `the online manual
 Notes
 -----
 
-aria2c executable was generated using android-ndk-r8e.
+aria2c executable was generated using android-ndk-r9.
 
 The following libraries were statically linked.
 
