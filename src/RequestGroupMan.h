@@ -357,6 +357,8 @@ public:
   // Currently the only download using MultiDiskAdaptor is affected by
   // the global limit.
   void ensureMaxOpenFileLimit(size_t numNewFile);
+  // Reduces the number of open files managed by this object.
+  void reduceNumOfOpenedFile(size_t numCloseFile);
 };
 
 } // namespace aria2

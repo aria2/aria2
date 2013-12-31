@@ -985,4 +985,10 @@ void RequestGroupMan::ensureMaxOpenFileLimit(size_t numNewFile)
   numOpenFile_ += numNewFile - numClose;
 }
 
+void RequestGroupMan::reduceNumOfOpenedFile(size_t numCloseFile)
+{
+  assert(numOpenFile_ >= numCloseFile);
+  numOpenFile_ -= numCloseFile;
+}
+
 } // namespace aria2

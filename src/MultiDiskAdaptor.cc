@@ -124,7 +124,10 @@ MultiDiskAdaptor::MultiDiskAdaptor()
     readOnly_{false}
 {}
 
-MultiDiskAdaptor::~MultiDiskAdaptor() {}
+MultiDiskAdaptor::~MultiDiskAdaptor()
+{
+  closeFile();
+}
 
 namespace {
 std::unique_ptr<DiskWriterEntry> createDiskWriterEntry
@@ -267,10 +270,15 @@ void MultiDiskAdaptor::openExistingFile()
 
 void MultiDiskAdaptor::closeFile()
 {
+  size_t n = 0;
   openedDiskWriterEntries_.clear();
   for(auto& dwent : diskWriterEntries_) {
-    dwent->closeFile();
+    if(dwent->isOpen()) {
+      ++n;
+      dwent->closeFile();
+    }
   }
+  getRequestGroupMan()->reduceNumOfOpenedFile(n);
 }
 
 namespace {
