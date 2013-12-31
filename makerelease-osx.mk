@@ -120,7 +120,7 @@ sqlite_url = http://sqlite.org/2013/sqlite-$(sqlite_version).tar.gz
 gmp_version = 5.1.3
 gmp_hash = b35928e2927b272711fdfbf71b7cfd5f86a6b165
 gmp_url = https://ftp.gnu.org/gnu/gmp/gmp-$(gmp_version).tar.bz2
-gmp_flags = --disable-cxx --enable-assembly
+gmp_confflags = --disable-cxx --enable-assembly --with-pic
 
 cppunit_version = 1.12.1
 cppunit_hash = f1ab8986af7a1ffa6760f4bacf5622924639bf4a
@@ -317,6 +317,8 @@ aria2.%.build: zlib.%.build expat.%.build gmp.%.build cares.%.build sqlite.%.bui
 		PKG_CONFIG_PATH=$(PWD)/$(ARCH)/lib/pkgconfig \
 		)
 	$(MAKE) -C $(DEST) -sj$(CPUS) check
+	# Check that the resulting executable is Position-independent (PIE)
+	otool -hv $(DEST)/src/aria2c | grep -q PIE
 	$(MAKE) -C $(DEST) -sj$(CPUS) install-strip
 	touch $@
 
