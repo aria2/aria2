@@ -93,7 +93,7 @@ export CXX
 OPTFLAGS ?= -Os
 CFLAGS ?= -mmacosx-version-min=10.7 $(OPTFLAGS)
 export CFLAGS
-CXXFLAGS ?= -Os -mmacosx-version-min=10.7 $(OPTFLAGS)
+CXXFLAGS ?= -mmacosx-version-min=10.7 $(OPTFLAGS)
 export CXXFLAGS
 LDFLAGS ?= -Wl,-dead_strip
 export LDFLAGS
