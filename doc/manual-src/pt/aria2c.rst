@@ -3964,7 +3964,7 @@ Descrição do Formato Download Metalink: :rfc:`5854`
 COPYRIGHT
 ---------
 
-Copyright (C) 2006, 2013 Tatsuhiro Tsujikawa
+Copyright (C) 2006, 2014 Tatsuhiro Tsujikawa
 Tradução para Português do Brasil 2013, Gilberto dos Santos Alves
 utilizando editor kate e gedit no Debian squeeze 6.0.6 novembro de 2012
 revisado em março de 2013 usando editor kate e gedit no ubuntu 12.04 LTS
