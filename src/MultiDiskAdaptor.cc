@@ -278,7 +278,9 @@ void MultiDiskAdaptor::closeFile()
       dwent->closeFile();
     }
   }
-  getRequestGroupMan()->reduceNumOfOpenedFile(n);
+  if(getRequestGroupMan()) {
+    getRequestGroupMan()->reduceNumOfOpenedFile(n);
+  }
 }
 
 namespace {
