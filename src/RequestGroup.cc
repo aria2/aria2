@@ -992,7 +992,7 @@ void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
   }
   // Don't reset segmentMan_ and pieceStorage_ here to provide
   // progress information via RPC
-  progressInfoFile_.reset();
+  progressInfoFile_ = std::make_shared<NullProgressInfoFile>();
   downloadContext_->releaseRuntimeResource();
 }
 
