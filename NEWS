@@ -1,3 +1,27 @@
+aria2 1.18.3
+============
+
+Release Note
+------------
+
+This release fixes the bug which may cause assertion failure after
+multi-file downloads (e.g., multi-file metalink or torrent) are
+performed several times due to the bad handling of --bt-max-open-files
+option.
+
+Changes
+-------
+
+* Enable and check PIE in makerelease-osx
+
+* Fix bug that numOpenFile_ is not reduced when MultiDiskAdaptor is
+  deleted
+
+  This bug caused assertion error in
+  RequestGroupMan::ensureMaxOpenFileLimit
+
+
+
 aria2 1.18.2
 ============
 
