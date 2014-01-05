@@ -12,6 +12,9 @@ option.
 Changes
 -------
 
+* Fix crash if unpause failed before assigning BtProgressInfoFile
+  object
+
 * Enable and check PIE in makerelease-osx
 
 * Fix bug that numOpenFile_ is not reduced when MultiDiskAdaptor is
