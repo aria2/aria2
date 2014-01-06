@@ -66,8 +66,18 @@
 #ifdef HAVE_LIBGMP
 # include "a2gmp.h"
 #endif // HAVE_LIBGMP
+#include "LogFactory.h"
 
 #define A2_MIN_GCRYPT_VERSION "1.2.4"
+
+namespace {
+  void gnutls_log_callback(int level, const char *str)
+  {
+    using namespace aria2;
+    A2_LOG_DEBUG(fmt("GNUTLS: %d / %s", level, str));
+  }
+}
+
 
 namespace aria2 {
 
@@ -120,6 +130,9 @@ bool Platform::setUp()
       throw DL_ABORT_EX(fmt("gnutls_global_init() failed, cause:%s",
                             gnutls_strerror(r)));
     }
+
+    gnutls_global_set_log_function(gnutls_log_callback);
+    gnutls_global_set_log_level(10);
   }
 #endif // HAVE_LIBGNUTLS
 
