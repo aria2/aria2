@@ -37,6 +37,10 @@
 #include "prefs.h"
 #include "RecoverableException.h"
 
+#ifdef HAVE_LIBGNUTLS
+# include <gnutls/gnutls.h>
+#endif // HAVE_LIBGNUTLS
+
 namespace aria2 {
 
 std::string LogFactory::filename_ = DEV_NULL;
@@ -110,24 +114,43 @@ Logger::LEVEL toLogLevel(const std::string& level)
 }
 } // namespace
 
+void LogFactory::adjustDependentLevels() {
+  auto level = consoleLogLevel_;
+  if (filename_ != DEV_NULL) {
+    level = std::min(level, logLevel_);
+  }
+#ifdef HAVE_LIBGNUTLS
+  if (level == Logger::A2_DEBUG) {
+    gnutls_global_set_log_level(10);
+  }
+  else {
+    gnutls_global_set_log_level(0);
+  }
+#endif
+}
+
 void LogFactory::setLogLevel(Logger::LEVEL level)
 {
   logLevel_ = level;
+  adjustDependentLevels();
 }
 
 void LogFactory::setLogLevel(const std::string& level)
 {
   logLevel_ = toLogLevel(level);
+  adjustDependentLevels();
 }
 
 void LogFactory::setConsoleLogLevel(Logger::LEVEL level)
 {
   consoleLogLevel_ = level;
+  adjustDependentLevels();
 }
 
 void LogFactory::setConsoleLogLevel(const std::string& level)
 {
   consoleLogLevel_ = toLogLevel(level);
+  adjustDependentLevels();
 }
 
 void LogFactory::release() {
