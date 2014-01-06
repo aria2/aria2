@@ -132,7 +132,7 @@ bool Platform::setUp()
     }
 
     gnutls_global_set_log_function(gnutls_log_callback);
-    gnutls_global_set_log_level(10);
+    gnutls_global_set_log_level(0);
   }
 #endif // HAVE_LIBGNUTLS
 
