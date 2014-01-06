@@ -68,7 +68,7 @@ void LogFactory::adjustDependentLevels() {
   }
 #ifdef HAVE_LIBGNUTLS
   if (level == Logger::A2_DEBUG) {
-    gnutls_global_set_log_level(10);
+    gnutls_global_set_log_level(6);
   }
   else {
     gnutls_global_set_log_level(0);

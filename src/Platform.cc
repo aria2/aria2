@@ -74,7 +74,10 @@ namespace {
   void gnutls_log_callback(int level, const char *str)
   {
     using namespace aria2;
-    A2_LOG_DEBUG(fmt("GNUTLS: %d / %s", level, str));
+    // GnuTLS adds a newline. Drop it.
+    std::string msg(str);
+    msg.resize(msg.size() - 1);
+    A2_LOG_DEBUG(fmt("GnuTLS: <%d> %s", level, msg.c_str()));
   }
 }
 
