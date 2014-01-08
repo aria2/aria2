@@ -101,7 +101,7 @@ int GnuTLSSession::init(sock_t sockfd)
   // It seems err is not error message, but the argument string
   // which causes syntax error.
   const char* err;
-  rv_ = gnutls_priority_set_direct(sslSession_, "NORMAL", &err);
+  rv_ = gnutls_priority_set_direct(sslSession_, "SECURE128", &err);
   if(rv_ != GNUTLS_E_SUCCESS) {
     return TLS_ERR_ERROR;
   }
