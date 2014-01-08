@@ -181,11 +181,15 @@ int GnuTLSSession::tlsConnect(const std::string& hostname,
                            std::string& handshakeErr)
 {
   handshakeErr = "";
-  rv_ = gnutls_handshake(sslSession_);
-  if(rv_ < 0) {
+  for(;;) {
+    rv_ = gnutls_handshake(sslSession_);
+    if(rv_ == GNUTLS_E_SUCCESS) {
+      break;
+    }
     if(rv_ == GNUTLS_E_AGAIN || rv_ == GNUTLS_E_INTERRUPTED) {
       return TLS_ERR_WOULDBLOCK;
-    } else {
+    }
+    if(gnutls_error_is_fatal(rv_)) {
       return TLS_ERR_ERROR;
     }
   }
@@ -279,13 +283,17 @@ int GnuTLSSession::tlsConnect(const std::string& hostname,
 
 int GnuTLSSession::tlsAccept()
 {
-  rv_ = gnutls_handshake(sslSession_);
-  if(rv_ == GNUTLS_E_SUCCESS) {
-    return TLS_ERR_OK;
-  } else if(rv_ == GNUTLS_E_AGAIN || rv_ == GNUTLS_E_INTERRUPTED) {
-    return TLS_ERR_WOULDBLOCK;
-  } else {
-    return TLS_ERR_ERROR;
+  for(;;) {
+    rv_ = gnutls_handshake(sslSession_);
+    if(rv_ == GNUTLS_E_SUCCESS) {
+      return TLS_ERR_OK;
+    }
+    if(rv_ == GNUTLS_E_AGAIN || rv_ == GNUTLS_E_INTERRUPTED) {
+      return TLS_ERR_WOULDBLOCK;
+    }
+    if(gnutls_error_is_fatal(rv_)) {
+      return TLS_ERR_ERROR;
+    }
   }
 }
 
