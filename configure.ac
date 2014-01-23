@@ -462,11 +462,11 @@ if test "x$with_libcares" = "xyes"; then
 fi
 
 use_md=""
-if test "x$have_appletls" == "xyes"; then
+if test "x$have_appletls" = "xyes"; then
   use_md="apple"
   AC_DEFINE([USE_APPLE_MD], [1], [What message digest implementation to use])
 else
-  if test "x$have_wintls" == "xyes"; then
+  if test "x$have_wintls" = "xyes"; then
     use_md="windows"
     AC_DEFINE([USE_WINDOWS_MD], [1], [What message digest implementation to use])
   else
@@ -491,7 +491,7 @@ else
 fi
 
 # Define variables based on the result of the checks for libraries.
-if test "x$have_appletls" = "xyes" || test "x$have_wintls" == "xyes" || test "x$have_libgnutls" = "xyes" || test "x$have_openssl" = "xyes"; then
+if test "x$have_appletls" = "xyes" || test "x$have_wintls" = "xyes" || test "x$have_libgnutls" = "xyes" || test "x$have_openssl" = "xyes"; then
   have_ssl="yes"
   AC_DEFINE([ENABLE_SSL], [1], [Define to 1 if ssl support is enabled.])
   AM_CONDITIONAL([ENABLE_SSL], true)
