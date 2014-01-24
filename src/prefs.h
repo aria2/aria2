@@ -294,6 +294,8 @@ extern PrefPtr PREF_DISK_CACHE;
 extern PrefPtr PREF_GID;
 // values: 1*digit
 extern PrefPtr PREF_SAVE_SESSION_INTERVAL;
+// values: 1*digit
+extern PrefPtr PREF_DSCP;
 
 /**
  * FTP related preferences

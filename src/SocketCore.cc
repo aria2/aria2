@@ -532,6 +532,11 @@ void SocketCore::setTcpNodelay(bool f)
   setSockOpt(IPPROTO_TCP, TCP_NODELAY, &val, sizeof(val));
 }
 
+void SocketCore::setIpDscp(int32_t dscp)
+{
+  setSockOpt(IPPROTO_IP, IP_TOS, &dscp, sizeof(dscp));
+}
+
 void SocketCore::setNonBlockingMode()
 {
 #ifdef __MINGW32__

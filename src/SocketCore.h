@@ -120,6 +120,9 @@ public:
   // Enables TCP_NODELAY socket option if f == true.
   void setTcpNodelay(bool f);
 
+  // Set DSCP byte
+  void setIpDscp(int32_t);
+
   void create(int family, int protocol = 0);
 
   void bindWithFamily(uint16_t port, int family, int flags = AI_PASSIVE);

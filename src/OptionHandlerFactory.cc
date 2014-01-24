@@ -731,6 +731,15 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    OptionHandler* op(new NumberOptionHandler
+                      (PREF_DSCP,
+                       TEXT_DSCP,
+                       "0",
+                       0));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
     OptionHandler* op(new BooleanOptionHandler
                       (PREF_SELECT_LEAST_USED_HOST,
                        NO_DESCRIPTION,
