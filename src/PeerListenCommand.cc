@@ -44,7 +44,6 @@
 #include "message.h"
 #include "ReceiverMSEHandshakeCommand.h"
 #include "Logger.h"
-#include "Option.h"
 #include "LogFactory.h"
 #include "SocketCore.h"
 #include "SimpleRandomizer.h"
@@ -111,7 +110,7 @@ bool PeerListenCommand::execute() {
     std::shared_ptr<SocketCore> peerSocket;
     try {
       peerSocket = socket_->acceptConnection();
-      peerSocket->setIpDscp(e_->getOption()->getAsInt(PREF_DSCP));
+      peerSocket->applyIpDscp();
       std::pair<std::string, uint16_t> peerInfo;
       peerSocket->getPeerInfo(peerInfo);
 

@@ -41,7 +41,6 @@
 #include "prefs.h"
 #include "SocketCore.h"
 #include "Logger.h"
-#include "Option.h"
 #include "LogFactory.h"
 #include "Peer.h"
 #include "BtRuntime.h"
@@ -84,7 +83,7 @@ bool PeerInitiateConnectionCommand::executeInternal() {
   createSocket();
   getSocket()->establishConnection(getPeer()->getIPAddress(),
                                    getPeer()->getPort(), false);
-  getSocket()->setIpDscp(requestGroup_->getOption()->getAsInt(PREF_DSCP));
+  getSocket()->applyIpDscp();
   if(mseHandshakeEnabled_) {
     auto c = make_unique<InitiatorMSEHandshakeCommand>
       (getCuid(), requestGroup_, getPeer(),

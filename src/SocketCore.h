@@ -66,6 +66,7 @@ private:
   sock_t sockfd_;
 
   static int protocolFamily_;
+  static int ipDscp_;
 
   static std::vector<std::pair<sockaddr_union, socklen_t> > bindAddrs_;
 
@@ -121,7 +122,11 @@ public:
   void setTcpNodelay(bool f);
 
   // Set DSCP byte
-  void setIpDscp(int32_t);
+  void applyIpDscp();
+  static void setIpDscp(int ipDscp)
+  {
+    ipDscp_ = ipDscp;
+  }
 
   void create(int family, int protocol = 0);
 
