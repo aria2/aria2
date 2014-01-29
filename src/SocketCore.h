@@ -125,7 +125,8 @@ public:
   void applyIpDscp();
   static void setIpDscp(int ipDscp)
   {
-    ipDscp_ = ipDscp;
+    // Here we prepare DSCP value for IPTOS option, which sets whole DS field
+    ipDscp_ = ipDscp << 2;
   }
 
   void create(int family, int protocol = 0);
