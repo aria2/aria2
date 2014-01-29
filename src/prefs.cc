@@ -358,6 +358,8 @@ PrefPtr PREF_DISK_CACHE = makePref("disk-cache");
 PrefPtr PREF_GID = makePref("gid");
 // values: 1*digit
 PrefPtr PREF_SAVE_SESSION_INTERVAL = makePref("save-session-interval");
+// values: 1*digit
+PrefPtr PREF_DSCP = makePref("dscp");
 
 /**
  * FTP related preferences
