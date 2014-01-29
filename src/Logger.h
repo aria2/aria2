@@ -62,7 +62,7 @@ private:
   LEVEL consoleLogLevel_;
   // true if console log output is enabled.
   bool consoleOutput_;
-  bool useColor_;
+  bool colorOutput_;
   // Don't allow copying
   Logger(const Logger&);
   Logger& operator=(const Logger&);
@@ -126,6 +126,8 @@ public:
   }
 
   void setConsoleOutput(bool enabled);
+
+  void setColorOutput(bool enabled);
 
   // Returns true if this logger actually writes debug log message to
   // either file or stdout.

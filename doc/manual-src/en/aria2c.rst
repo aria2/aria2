@@ -1138,6 +1138,11 @@ Advanced Options
   printed for each requested file in each row.
   Default: ``default``
 
+.. option:: --enable-color[=true|false]
+
+  Enable color output for a terminal.
+  Default: ``true``
+
 .. option:: --enable-mmap[=true|false]
 
    Map files into memory. This option may not work if the file space

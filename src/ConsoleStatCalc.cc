@@ -63,6 +63,7 @@
 #include "FileEntry.h"
 #include "console.h"
 #include "ColorizedStream.h"
+#include "Option.h"
 
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
@@ -264,15 +265,18 @@ void printProgressSummary(const RequestGroupList& groups, size_t cols,
 }
 } // namespace
 
-ConsoleStatCalc::ConsoleStatCalc(time_t summaryInterval, bool humanReadable):
+ConsoleStatCalc::ConsoleStatCalc(time_t summaryInterval,
+                                 bool colorOutput,
+                                 bool humanReadable):
   summaryInterval_(summaryInterval),
   readoutVisibility_(true),
   truncate_(true),
 #ifdef __MINGW32__
-  isTTY_(true)
+  isTTY_(true),
 #else // !__MINGW32__
-  isTTY_(isatty(STDOUT_FILENO) == 1)
+  isTTY_(isatty(STDOUT_FILENO) == 1),
 #endif // !__MINGW32__
+  colorOutput_(colorOutput)
 {
   if(humanReadable) {
     sizeFormatter_.reset(new AbbrevSizeFormatter());
@@ -327,7 +331,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
     return;
   }
   size_t numGroup = e->getRequestGroupMan()->countRequestGroup();
-  const bool color = global::cout()->supportsColor() && isTTY_;
+  const bool color = global::cout()->supportsColor() && isTTY_ && colorOutput_;
   if(numGroup == 1) {
     const std::shared_ptr<RequestGroup>& rg =
       *e->getRequestGroupMan()->getRequestGroups().begin();

@@ -48,6 +48,7 @@ std::shared_ptr<Logger> LogFactory::logger_;
 bool LogFactory::consoleOutput_ = true;
 Logger::LEVEL LogFactory::logLevel_ = Logger::A2_DEBUG;
 Logger::LEVEL LogFactory::consoleLogLevel_ = Logger::A2_NOTICE;
+bool LogFactory::colorOutput_ = true;
 
 void LogFactory::openLogger(const std::shared_ptr<Logger>& logger)
 {
@@ -59,6 +60,7 @@ void LogFactory::openLogger(const std::shared_ptr<Logger>& logger)
   logger->setLogLevel(logLevel_);
   logger->setConsoleLogLevel(consoleLogLevel_);
   logger->setConsoleOutput(consoleOutput_);
+  logger->setColorOutput(colorOutput_);
 }
 
 void LogFactory::adjustDependentLevels() {
@@ -152,6 +154,11 @@ void LogFactory::setConsoleLogLevel(const std::string& level)
 {
   consoleLogLevel_ = toLogLevel(level);
   adjustDependentLevels();
+}
+
+void LogFactory::setColorOutput(bool enabled)
+{
+  colorOutput_ = enabled;
 }
 
 void LogFactory::release() {

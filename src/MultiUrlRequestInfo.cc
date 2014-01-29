@@ -136,6 +136,7 @@ std::unique_ptr<StatCalc> getStatCalc(const std::shared_ptr<Option>& op)
     return make_unique<NullStatCalc>();
   }
   auto impl = make_unique<ConsoleStatCalc>(op->getAsInt(PREF_SUMMARY_INTERVAL),
+                                           op->getAsBool(PREF_ENABLE_COLOR),
                                            op->getAsBool(PREF_HUMAN_READABLE));
   impl->setReadoutVisibility(op->getAsBool(PREF_SHOW_CONSOLE_READOUT));
   impl->setTruncate(op->getAsBool(PREF_TRUNCATE_CONSOLE_READOUT));

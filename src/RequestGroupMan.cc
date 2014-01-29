@@ -631,7 +631,7 @@ void RequestGroupMan::showDownloadResults(OutputFile& o, bool full) const
   }
   std::string line(pathRowSize, '=');
   o.printf("%s\n", line.c_str());
-  bool useColor = o.supportsColor();
+  bool useColor = o.supportsColor() && option_->getAsBool(PREF_ENABLE_COLOR);
   int ok = 0;
   int err = 0;
   int inpr = 0;

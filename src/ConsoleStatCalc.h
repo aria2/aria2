@@ -67,8 +67,10 @@ private:
   bool readoutVisibility_;
   bool truncate_;
   bool isTTY_;
+  bool colorOutput_;
 public:
-  ConsoleStatCalc(time_t summaryInterval, bool humanReadable = true);
+  ConsoleStatCalc(time_t summaryInterval, bool colorOutput = true,
+                  bool humanReadable = true);
 
   virtual ~ConsoleStatCalc() {}
 

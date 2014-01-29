@@ -54,7 +54,7 @@ Logger::Logger()
   : logLevel_(Logger::A2_DEBUG),
     consoleLogLevel_(Logger::A2_NOTICE),
     consoleOutput_(true),
-    useColor_(global::cout()->supportsColor())
+    colorOutput_(global::cout()->supportsColor())
 {}
 
 Logger::~Logger()
@@ -84,6 +84,11 @@ void Logger::closeFile()
 void Logger::setConsoleOutput(bool enabled)
 {
   consoleOutput_ = enabled;
+}
+
+void Logger::setColorOutput(bool enabled)
+{
+  colorOutput_ = enabled;
 }
 
 bool Logger::fileLogEnabled(LEVEL level)
@@ -207,7 +212,7 @@ void Logger::writeLog
   }
   if(consoleLogEnabled(level)) {
     global::cout()->printf("\n");
-    writeHeaderConsole(*global::cout(), level, useColor_);
+    writeHeaderConsole(*global::cout(), level, colorOutput_);
     global::cout()->printf("%s\n", msg);
     writeStackTrace(*global::cout(), trace);
     global::cout()->flush();

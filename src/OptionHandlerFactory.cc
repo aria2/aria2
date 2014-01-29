@@ -305,6 +305,15 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
 #endif // ENABLE_ASYNC_DNS
+  {
+    OptionHandler* op(new BooleanOptionHandler
+                      (PREF_ENABLE_COLOR,
+                       TEXT_ENABLE_COLOR,
+                       A2_V_TRUE,
+                       OptionHandler::OPT_ARG));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
 #if defined(HAVE_MMAP) || defined(__MINGW32__)
   {
     OptionHandler* op(new BooleanOptionHandler

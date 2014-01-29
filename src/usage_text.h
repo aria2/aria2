@@ -958,3 +958,5 @@
     "                              specified by --save-session option every SEC\n" \
     "                              seconds. If 0 is given, file will be saved only\n" \
     "                              when aria2 exits.")
+#define TEXT_ENABLE_COLOR                                               \
+  _(" --enable-color[=true|false]  Enable color output for a terminal.")

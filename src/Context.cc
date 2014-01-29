@@ -168,6 +168,7 @@ Context::Context(bool standalone,
   LogFactory::setLogFile(op->get(PREF_LOG));
   LogFactory::setLogLevel(op->get(PREF_LOG_LEVEL));
   LogFactory::setConsoleLogLevel(op->get(PREF_CONSOLE_LOG_LEVEL));
+  LogFactory::setColorOutput(op->getAsBool(PREF_ENABLE_COLOR));
   if(op->getAsBool(PREF_QUIET)) {
     LogFactory::setConsoleOutput(false);
   }

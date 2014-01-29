@@ -51,6 +51,7 @@ private:
   static bool consoleOutput_;
   static Logger::LEVEL logLevel_;
   static Logger::LEVEL consoleLogLevel_;
+  static bool colorOutput_;
 
   static void openLogger(const std::shared_ptr<Logger>& logger);
 
@@ -100,6 +101,12 @@ public:
    * level.  Possible values are: debug, info, notice, warn, error
    */
   static void setConsoleLogLevel(const std::string& level);
+
+  /**
+   * Enable color output if |enabled| is true. By default, color
+   * output is enabled for terminal.
+   */
+  static void setColorOutput(bool enabled);
 
   /**
    * Releases used resources
