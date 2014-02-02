@@ -151,6 +151,16 @@ void List::set(size_t index, std::unique_ptr<ValueBase> v)
   list_[index] = std::move(v);
 }
 
+void List::pop_front()
+{
+  list_.pop_front();
+}
+
+void List::pop_back()
+{
+  list_.pop_back();
+}
+
 void List::append(std::unique_ptr<ValueBase> v)
 {
   list_.push_back(std::move(v));

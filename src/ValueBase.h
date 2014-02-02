@@ -38,7 +38,7 @@
 #include "common.h"
 
 #include <string>
-#include <vector>
+#include <deque>
 #include <map>
 #include <memory>
 
@@ -170,7 +170,7 @@ private:
 
 class List:public ValueBase {
 public:
-  typedef std::vector<std::unique_ptr<ValueBase>> ValueType;
+  typedef std::deque<std::unique_ptr<ValueBase>> ValueType;
 
   List();
 
@@ -195,6 +195,12 @@ public:
 
   // Returns the const reference of the object at the given index.
   ValueBase* operator[](size_t index) const;
+
+  // Pops the value in the front of the list.
+  void pop_front();
+
+  // Pops the value in the back of the list.
+  void pop_back();
 
   // Returns a read/write iterator that points to the first object in
   // list.

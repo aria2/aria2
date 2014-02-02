@@ -866,6 +866,14 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    OptionHandler* op(new DefaultOptionHandler
+                      (PREF_RPC_SECRET,
+                       TEXT_RPC_SECRET));
+    op->addTag(TAG_RPC);
+    op->setEraseAfterParse(true);
+    handlers.push_back(op);
+  }
+  {
     OptionHandler* op(new BooleanOptionHandler
                       (PREF_RPC_SECURE,
                        TEXT_RPC_SECURE,

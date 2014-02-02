@@ -48,6 +48,7 @@
 #include "fmt.h"
 #include "DlAbortEx.h"
 #include "a2functional.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -68,9 +69,33 @@ std::unique_ptr<ValueBase> RpcMethod::createErrorResponse
   return std::move(params);
 }
 
+void RpcMethod::authorize(RpcRequest& req, DownloadEngine* e)
+{
+  std::string token;
+  // We always treat first parameter as token if it is string and
+  // starts with "token:" and remove it from parameter list, so that
+  // we don't have to add conditionals to all RPCMethod
+  // implementations.
+  if(req.params && !req.params->empty()) {
+    auto t = downcast<String>(req.params->get(0));
+    if(t) {
+      if(util::startsWith(t->s(), "token:")) {
+        token = t->s().substr(6);
+        req.params->pop_front();
+      }
+    }
+  }
+  if(e && e->getOption()->defined(PREF_RPC_SECRET)) {
+    if(token != e->getOption()->get(PREF_RPC_SECRET)) {
+      throw DL_ABORT_EX("Unauthorized");
+    }
+  }
+}
+
 RpcResponse RpcMethod::execute(RpcRequest req, DownloadEngine* e)
 {
   try {
+    authorize(req, e);
     auto r = process(req, e);
     return RpcResponse(0, std::move(r), std::move(req.id));
   } catch(RecoverableException& ex) {

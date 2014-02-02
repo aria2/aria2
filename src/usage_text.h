@@ -770,11 +770,11 @@
     "                              option is useful when the system does not have\n" \
     "                              /etc/resolv.conf and user does not have the\n" \
     "                              permission to create it.")
-#define TEXT_ENABLE_RPC                                             \
-  _(" --enable-rpc[=true|false]    Enable JSON-RPC/XML-RPC server.\n"   \
-    "                              It is strongly recommended to set username and\n" \
-    "                              password using --rpc-user and --rpc-passwd\n" \
-    "                              option. See also --rpc-listen-port option.")
+#define TEXT_ENABLE_RPC                                               \
+  _(" --enable-rpc[=true|false]    Enable JSON-RPC/XML-RPC server.\n" \
+    "                              It is strongly recommended to set secret\n" \
+    "                              authorization token using --rpc-secret option.\n" \
+    "                              See also --rpc-listen-port option.")
 #define TEXT_RPC_MAX_REQUEST_SIZE                                   \
   _(" --rpc-max-request-size=SIZE  Set max size of JSON-RPC/XML-RPC request. If aria2\n" \
     "                              detects the request is more than SIZE bytes, it\n" \
@@ -960,3 +960,5 @@
     "                              when aria2 exits.")
 #define TEXT_ENABLE_COLOR                                               \
   _(" --enable-color[=true|false]  Enable color output for a terminal.")
+#define TEXT_RPC_SECRET                                                 \
+  _(" --rpc-secret=TOKEN           Set RPC secret authorization token.")

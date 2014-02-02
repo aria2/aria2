@@ -93,6 +93,8 @@ public:
 
   virtual ~RpcMethod();
 
+  virtual void authorize(RpcRequest& req, DownloadEngine* e);
+
   // Do work to fulfill RpcRequest req and returns its result as
   // RpcResponse. This method delegates to process() method.
   RpcResponse execute(RpcRequest req, DownloadEngine* e);

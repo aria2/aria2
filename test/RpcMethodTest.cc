@@ -33,6 +33,7 @@ namespace rpc {
 class RpcMethodTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(RpcMethodTest);
+  CPPUNIT_TEST(testAuthorize);
   CPPUNIT_TEST(testAddUri);
   CPPUNIT_TEST(testAddUri_withoutUri);
   CPPUNIT_TEST(testAddUri_notUri);
@@ -96,6 +97,7 @@ public:
        (std::vector<std::shared_ptr<RequestGroup>>{}, 1, option_.get()));
   }
 
+  void testAuthorize();
   void testAddUri();
   void testAddUri_withoutUri();
   void testAddUri_notUri();
@@ -158,6 +160,47 @@ RpcRequest createReq(std::string methodName)
   return {std::move(methodName), List::g()};
 }
 } // namespace
+
+void RpcMethodTest::testAuthorize()
+{
+  // Select RPC method which takes non-string parameter to make sure
+  // that token: prefixed parameter is stripped before the call.
+  TellActiveRpcMethod m;
+  // no secret token set and no token: prefixed parameter is given
+  {
+    auto req = createReq(TellActiveRpcMethod::getMethodName());
+    auto res = m.execute(std::move(req), e_.get());
+    CPPUNIT_ASSERT_EQUAL(0, res.code);
+  }
+  // no secret token set and token: prefixed parameter is given
+  {
+    auto req = createReq(GetVersionRpcMethod::getMethodName());
+    req.params->append("token:foo");
+    auto res = m.execute(std::move(req), e_.get());
+    CPPUNIT_ASSERT_EQUAL(0, res.code);
+  }
+  e_->getOption()->put(PREF_RPC_SECRET, "foo");
+  // secret token set and no token: prefixed parameter is given
+  {
+    auto req = createReq(GetVersionRpcMethod::getMethodName());
+    auto res = m.execute(std::move(req), e_.get());
+    CPPUNIT_ASSERT_EQUAL(1, res.code);
+  }
+  // secret token set and token: prefixed parameter is given
+  {
+    auto req = createReq(GetVersionRpcMethod::getMethodName());
+    req.params->append("token:foo");
+    auto res = m.execute(std::move(req), e_.get());
+    CPPUNIT_ASSERT_EQUAL(0, res.code);
+  }
+  // secret token set and bad token: prefixed parameter is given
+  {
+    auto req = createReq(GetVersionRpcMethod::getMethodName());
+    req.params->append("token:foo2");
+    auto res = m.execute(std::move(req), e_.get());
+    CPPUNIT_ASSERT_EQUAL(1, res.code);
+  }
+}
 
 void RpcMethodTest::testAddUri()
 {
