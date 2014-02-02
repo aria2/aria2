@@ -780,9 +780,13 @@
     "                              detects the request is more than SIZE bytes, it\n" \
     "                              drops connection.")
 #define TEXT_RPC_USER                               \
-  _(" --rpc-user=USER              Set JSON-RPC/XML-RPC user.")
+  _(" --rpc-user=USER              Set JSON-RPC/XML-RPC user. This option will be\n" \
+    "                              deprecated in the future release. Migrate to\n" \
+    "                              --rpc-secret option as soon as possible.")
 #define TEXT_RPC_PASSWD                                     \
-  _(" --rpc-passwd=PASSWD          Set JSON-RPC/XML-RPC password.")
+  _(" --rpc-passwd=PASSWD          Set JSON-RPC/XML-RPC password. This option will\n" \
+    "                              be deprecated in the future release. Migrate to\n" \
+    "                              --rpc-secret option as soon as possible.")
 #define TEXT_RPC_LISTEN_ALL                                         \
   _(" --rpc-listen-all[=true|false] Listen incoming JSON-RPC/XML-RPC requests on all\n" \
     "                              network interfaces. If false is given, listen only\n" \

@@ -883,17 +883,22 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(new DefaultOptionHandler
-                      (PREF_RPC_USER,
-                       TEXT_RPC_USER));
+    OptionHandler* op(new DeprecatedOptionHandler
+                      (new DefaultOptionHandler
+                       (PREF_RPC_USER,
+                        TEXT_RPC_USER),
+                       nullptr, true,
+                       "Migrate to --rpc-secret option as soon as possible."));
     op->addTag(TAG_RPC);
     op->setEraseAfterParse(true);
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(new DefaultOptionHandler
-                      (PREF_RPC_PASSWD,
-                       TEXT_RPC_PASSWD));
+    OptionHandler* op(new DeprecatedOptionHandler
+                      (new DefaultOptionHandler
+                       (PREF_RPC_PASSWD,
+                        TEXT_RPC_PASSWD),
+                       nullptr, true));
     op->addTag(TAG_RPC);
     op->setEraseAfterParse(true);
     handlers.push_back(op);

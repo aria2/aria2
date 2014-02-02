@@ -988,6 +988,12 @@ RPC Options
 
   Set JSON-RPC/XML-RPC password.
 
+  .. Warning::
+
+    :option:`--rpc-passwd` option will be deprecated in the future
+    release. Migrate to :option:`--rpc-secret` option as soon as
+    possible.
+
 .. option:: --rpc-private-key=<FILE>
 
   Use the private key in FILE for RPC server.  The private key must be
@@ -1020,6 +1026,12 @@ RPC Options
 .. option:: --rpc-user=<USER>
 
   Set JSON-RPC/XML-RPC user.
+
+  .. Warning::
+
+    :option:`--rpc-user` option will be deprecated in the future
+    release. Migrate to :option:`--rpc-secret` option as soon as
+    possible.
 
 Advanced Options
 ~~~~~~~~~~~~~~~~
