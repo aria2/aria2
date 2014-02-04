@@ -1155,6 +1155,16 @@ Advanced Options
   printed for each requested file in each row.
   Default: ``default``
 
+.. option:: --dscp=<DSCP>
+
+  Set DSCP value in outgoing IP packets of BitTorrent traffic for
+  QoS. This parameter sets only DSCP bits in TOS field of IP packets,
+  not the whole field. If you take values from
+  */usr/include/netinet/ip.h* divide them by 4 (otherwise values would
+  be incorrect, e.g. your ``CS1`` class would turn into ``CS4``). If
+  you take commonly used values from RFC, network vendors'
+  documentation, Wikipedia or any other source, use them as they are.
+
 .. option:: --enable-color[=true|false]
 
   Enable color output for a terminal.
