@@ -972,7 +972,8 @@
     "                              only DSCP bits in TOS field of IP packets,\n" \
     "                              not the whole field. If you take values\n" \
     "                              from /usr/include/netinet/ip.h divide them by 4\n" \
-    "                              (otherwise values would be incorrect, e.g. your CS1\n" \
-    "                              class would turn into CS4). If you are take commonly\n" \
-    "                              used values from RFC, network vendors' documentation,\n" \
-    "                              Wikipedia or any other source, use them as they are.")
+    "                              (otherwise values would be incorrect, e.g. your\n" \
+    "                              CS1 class would turn into CS4). If you take\n" \
+    "                              commonly used values from RFC, network vendors'\n" \
+    "                              documentation, Wikipedia or any other source,\n" \
+    "                              use them as they are.")
