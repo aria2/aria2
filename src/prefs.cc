@@ -361,6 +361,8 @@ PrefPtr PREF_SAVE_SESSION_INTERVAL = makePref("save-session-interval");
 PrefPtr PREF_ENABLE_COLOR = makePref("enable-color");
 // value: string
 PrefPtr PREF_RPC_SECRET = makePref("rpc-secret");
+// values: 1*digit
+PrefPtr PREF_DSCP = makePref("dscp");
 
 /**
  * FTP related preferences

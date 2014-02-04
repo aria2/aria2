@@ -966,3 +966,13 @@
   _(" --enable-color[=true|false]  Enable color output for a terminal.")
 #define TEXT_RPC_SECRET                                                 \
   _(" --rpc-secret=TOKEN           Set RPC secret authorization token.")
+#define TEXT_DSCP                                                       \
+  _(" --dscp=DSCP                  Set DSCP value in outgoing IP packets of\n" \
+    "                              BitTorrent traffic for QoS. This parameter sets\n" \
+    "                              only DSCP bits in TOS field of IP packets,\n" \
+    "                              not the whole field. If you take values\n" \
+    "                              from /usr/include/netinet/ip.h divide them by 4\n" \
+    "                              (otherwise values would be incorrect, e.g. your CS1\n" \
+    "                              class would turn into CS4). If you are take commonly\n" \
+    "                              used values from RFC, network vendors' documentation,\n" \
+    "                              Wikipedia or any other source, use them as they are.")

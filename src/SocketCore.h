@@ -66,6 +66,7 @@ private:
   sock_t sockfd_;
 
   static int protocolFamily_;
+  static int ipDscp_;
 
   static std::vector<std::pair<sockaddr_union, socklen_t> > bindAddrs_;
 
@@ -119,6 +120,14 @@ public:
 
   // Enables TCP_NODELAY socket option if f == true.
   void setTcpNodelay(bool f);
+
+  // Set DSCP byte
+  void applyIpDscp();
+  static void setIpDscp(int ipDscp)
+  {
+    // Here we prepare DSCP value for IPTOS option, which sets whole DS field
+    ipDscp_ = ipDscp << 2;
+  }
 
   void create(int family, int protocol = 0);
 

@@ -129,6 +129,7 @@ enum TlsState {
 } // namespace
 
 int SocketCore::protocolFamily_ = AF_UNSPEC;
+int SocketCore::ipDscp_ = 0;
 
 std::vector<std::pair<sockaddr_union, socklen_t> >
 SocketCore::bindAddrs_;
@@ -530,6 +531,11 @@ void SocketCore::setTcpNodelay(bool f)
 {
   int val = f;
   setSockOpt(IPPROTO_TCP, TCP_NODELAY, &val, sizeof(val));
+}
+
+void SocketCore::applyIpDscp()
+{
+  setSockOpt(IPPROTO_IP, IP_TOS, &ipDscp_, sizeof(ipDscp_));
 }
 
 void SocketCore::setNonBlockingMode()

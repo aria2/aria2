@@ -83,6 +83,7 @@ bool PeerInitiateConnectionCommand::executeInternal() {
   createSocket();
   getSocket()->establishConnection(getPeer()->getIPAddress(),
                                    getPeer()->getPort(), false);
+  getSocket()->applyIpDscp();
   if(mseHandshakeEnabled_) {
     auto c = make_unique<InitiatorMSEHandshakeCommand>
       (getCuid(), requestGroup_, getPeer(),

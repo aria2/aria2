@@ -185,6 +185,7 @@ Context::Context(bool standalone,
     // when none of network interface has IPv4 address.
     setDefaultAIFlags(0);
   }
+  SocketCore::setIpDscp(op->getAsInt(PREF_DSCP));
   net::checkAddrconfig();
   // Bind interface
   if(!op->get(PREF_INTERFACE).empty()) {

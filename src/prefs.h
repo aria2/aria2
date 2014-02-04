@@ -298,6 +298,8 @@ extern PrefPtr PREF_SAVE_SESSION_INTERVAL;
 extern PrefPtr PREF_ENABLE_COLOR;
 // value: string
 extern PrefPtr PREF_RPC_SECRET;
+// values: 1*digit
+extern PrefPtr PREF_DSCP;
 
 /**
  * FTP related preferences
