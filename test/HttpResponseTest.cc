@@ -220,16 +220,49 @@ void HttpResponseTest::testGetRedirectURI_with_Location()
 void HttpResponseTest::testIsRedirect()
 {
   HttpResponse httpResponse;
-  auto httpHeader = make_unique<HttpHeader>();
-  httpHeader->setStatusCode(200);
-  httpHeader->put(HttpHeader::LOCATION,
-                  "http://localhost/download/aria2-1.0.0.tar.bz2");
+  httpResponse.setHttpHeader(make_unique<HttpHeader>());
 
-  httpResponse.setHttpHeader(std::move(httpHeader));
+  httpResponse.getHttpHeader()->setStatusCode(301);
   CPPUNIT_ASSERT(!httpResponse.isRedirect());
+
+  httpResponse.getHttpHeader()->setStatusCode(200);
+  CPPUNIT_ASSERT(!httpResponse.isRedirect());
+
+  httpResponse.getHttpHeader()->put
+    (HttpHeader::LOCATION,
+     "http://localhost/download/aria2-1.0.0.tar.bz2");
+
+  CPPUNIT_ASSERT(!httpResponse.isRedirect());
+
+  httpResponse.getHttpHeader()->setStatusCode(300);
+  CPPUNIT_ASSERT(httpResponse.isRedirect());
 
   httpResponse.getHttpHeader()->setStatusCode(301);
   CPPUNIT_ASSERT(httpResponse.isRedirect());
+
+  httpResponse.getHttpHeader()->setStatusCode(302);
+  CPPUNIT_ASSERT(httpResponse.isRedirect());
+
+  httpResponse.getHttpHeader()->setStatusCode(303);
+  CPPUNIT_ASSERT(httpResponse.isRedirect());
+
+  httpResponse.getHttpHeader()->setStatusCode(304);
+  CPPUNIT_ASSERT(!httpResponse.isRedirect());
+
+  httpResponse.getHttpHeader()->setStatusCode(305);
+  CPPUNIT_ASSERT(!httpResponse.isRedirect());
+
+  httpResponse.getHttpHeader()->setStatusCode(306);
+  CPPUNIT_ASSERT(!httpResponse.isRedirect());
+
+  httpResponse.getHttpHeader()->setStatusCode(307);
+  CPPUNIT_ASSERT(httpResponse.isRedirect());
+
+  httpResponse.getHttpHeader()->setStatusCode(308);
+  CPPUNIT_ASSERT(httpResponse.isRedirect());
+
+  httpResponse.getHttpHeader()->setStatusCode(309);
+  CPPUNIT_ASSERT(!httpResponse.isRedirect());
 }
 
 void HttpResponseTest::testIsTransferEncodingSpecified()
@@ -329,19 +362,15 @@ void HttpResponseTest::testValidateResponse()
   httpResponse.setHttpHeader(make_unique<HttpHeader>());
   httpResponse.getHttpHeader()->setStatusCode(301);
 
-  try {
+  // It is fine without Location header
+  httpResponse.validateResponse();
+
+  httpResponse.getHttpHeader()->setStatusCode(201);
+  try{
     httpResponse.validateResponse();
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
-  }
-
-  httpResponse.getHttpHeader()->put
-    (HttpHeader::LOCATION,
-     "http://localhost/archives/aria2-1.0.0.tar.bz2");
-  try {
-    httpResponse.validateResponse();
-  } catch(Exception& e) {
-    CPPUNIT_FAIL("exception must not be thrown.");
+    // success
   }
 }
 

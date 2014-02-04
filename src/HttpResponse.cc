@@ -75,27 +75,9 @@ HttpResponse::HttpResponse()
 void HttpResponse::validateResponse() const
 {
   int statusCode = getStatusCode();
-  if (statusCode >= 400) {
-    return;
-  }
-
-  if (statusCode == 304) {
-    if (!httpRequest_->conditionalRequest()) {
-      throw DL_ABORT_EX2("Got 304 without If-Modified-Since or If-None-Match",
-                         error_code::HTTP_PROTOCOL_ERROR);
-    }
-  }
-  else if (statusCode == 301 ||
-           statusCode == 302 ||
-           statusCode == 303 ||
-           statusCode == 307) {
-    if (!httpHeader_->defined(HttpHeader::LOCATION)) {
-      throw DL_ABORT_EX2(fmt(EX_LOCATION_HEADER_REQUIRED, statusCode),
-                         error_code::HTTP_PROTOCOL_ERROR);
-    }
-    return;
-  }
-  else if (statusCode == 200 || statusCode == 206) {
+  switch(statusCode) {
+  case 200: // OK
+  case 206: // Partial Content
     if (!httpHeader_->defined(HttpHeader::TRANSFER_ENCODING)) {
       // compare the received range against the requested range
       auto responseRange = httpHeader_->getRange();
@@ -110,11 +92,26 @@ void HttpResponse::validateResponse() const
                            error_code::CANNOT_RESUME);
       }
     }
+    return;
+  case 304: // Not Modified
+    if (!httpRequest_->conditionalRequest()) {
+      throw DL_ABORT_EX2("Got 304 without If-Modified-Since or If-None-Match",
+                         error_code::HTTP_PROTOCOL_ERROR);
+    }
+    return;
+  case 300: // Multiple Choices
+  case 301: // Moved Permanently
+  case 302: // Found
+  case 303: // See Other
+  case 307: // Temporary Redirect
+  case 308: // Permanent Redirect
+    return;
   }
-  else {
-    throw DL_ABORT_EX2(fmt("Unexpected status %d", statusCode),
-                       error_code::HTTP_PROTOCOL_ERROR);
+  if (statusCode >= 400) {
+    return;
   }
+  throw DL_ABORT_EX2(fmt("Unexpected status %d", statusCode),
+                     error_code::HTTP_PROTOCOL_ERROR);
 }
 
 std::string HttpResponse::determineFilename() const
@@ -151,9 +148,16 @@ void HttpResponse::retrieveCookie()
 
 bool HttpResponse::isRedirect() const
 {
-  auto code = getStatusCode();
-  return (301 == code || 302 == code || 303 == code || 307 == code) &&
-         httpHeader_->defined(HttpHeader::LOCATION);
+  switch(getStatusCode()) {
+  case 300: // Multiple Choices
+  case 301: // Moved Permanently
+  case 302: // Found
+  case 303: // See Other
+  case 307: // Temporary Redirect
+  case 308: // Permanent Redirect
+    return httpHeader_->defined(HttpHeader::LOCATION);
+  }
+  return false;
 }
 
 void HttpResponse::processRedirect()
