@@ -362,7 +362,14 @@ void HttpResponseTest::testValidateResponse()
   httpResponse.setHttpHeader(make_unique<HttpHeader>());
   httpResponse.getHttpHeader()->setStatusCode(301);
 
-  // It is fine without Location header
+  try {
+    httpResponse.validateResponse();
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception& e) {
+    // success
+  }
+
+  httpResponse.getHttpHeader()->put(HttpHeader::LOCATION, "http://a/b");
   httpResponse.validateResponse();
 
   httpResponse.getHttpHeader()->setStatusCode(201);

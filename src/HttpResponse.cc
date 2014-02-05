@@ -105,6 +105,10 @@ void HttpResponse::validateResponse() const
   case 303: // See Other
   case 307: // Temporary Redirect
   case 308: // Permanent Redirect
+    if (!httpHeader_->defined(HttpHeader::LOCATION)) {
+      throw DL_ABORT_EX2(fmt(EX_LOCATION_HEADER_REQUIRED, statusCode),
+                         error_code::HTTP_PROTOCOL_ERROR);
+    }
     return;
   }
   if (statusCode >= 400) {

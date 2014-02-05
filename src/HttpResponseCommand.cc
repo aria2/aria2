@@ -231,11 +231,10 @@ bool HttpResponseCommand::executeInternal()
 #endif // ENABLE_MESSAGE_DIGEST
   }
 
-  if (statusCode == 404) {
-    grp->increaseAndValidateFileNotFoundCount();
-    return skipResponseBody(std::move(httpResponse));
-  }
-  if (statusCode >= 400 || statusCode == 304 || httpResponse->isRedirect()) {
+  if(statusCode >= 300) {
+    if(statusCode == 404) {
+      grp->increaseAndValidateFileNotFoundCount();
+    }
     return skipResponseBody(std::move(httpResponse));
   }
 
