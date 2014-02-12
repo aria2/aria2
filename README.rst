@@ -277,8 +277,10 @@ aria2 uses CppUnit for automated unit testing. To run the unit test::
 Cross-compiling Windows binary
 ------------------------------
 
-In this section, we describe how to build a Windows binary using
-a mingw-w64 cross-compiler on Debian Linux.
+In this section, we describe how to build a Windows binary using a
+mingw-w64 (http://mingw-w64.sourceforge.net/) cross-compiler on Debian
+Linux. The MinGW (http://www.mingw.org/) may not be able to build
+aria2.
 
 Basically, after compiling and installing depended libraries, you can
 do cross-compile just passing appropriate ``--host`` option and
