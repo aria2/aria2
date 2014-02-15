@@ -142,6 +142,7 @@ const char KEY_SERVERS[] = "servers";
 const char KEY_NUM_WAITING[] = "numWaiting";
 const char KEY_NUM_STOPPED[] = "numStopped";
 const char KEY_NUM_ACTIVE[] = "numActive";
+const char KEY_NUM_STOPPED_TOTAL[] = "numStoppedTotal";
 } // namespace
 
 namespace {
@@ -1341,6 +1342,7 @@ std::unique_ptr<ValueBase> GetGlobalStatRpcMethod::process
   res->put(KEY_UPLOAD_SPEED, util::itos(ts.uploadSpeed));
   res->put(KEY_NUM_WAITING, util::uitos(rgman->getReservedGroups().size()));
   res->put(KEY_NUM_STOPPED, util::uitos(rgman->getDownloadResults().size()));
+  res->put(KEY_NUM_STOPPED_TOTAL, util::uitos(rgman->getNumStoppedTotal()));
   res->put(KEY_NUM_ACTIVE, util::uitos(rgman->getRequestGroups().size()));
   return std::move(res);
 }

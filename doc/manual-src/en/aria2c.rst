@@ -3047,7 +3047,12 @@ For *secret* parameter, see :ref:`rpc_auth`.
     The number of waiting downloads.
 
   ``numStopped``
-    The number of stopped downloads.
+    The number of stopped downloads in the current session. This value
+    is capped by :option:`--max-download-result` option.
+
+  ``numStoppedTotal``
+    The number of stopped downloads in the current session and not
+    capped by :option:`--max-download-result` option.
 
   **JSON-RPC Example**
   ::

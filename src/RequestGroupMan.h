@@ -106,6 +106,10 @@ private:
 
   size_t numOpenFile_;
 
+  // The number of stopped downloads so far in total, including
+  // evicted DownloadResults.
+  size_t numStoppedTotal_;
+
   void formatDownloadResultFull
   (OutputFile& out,
    const char* status,
@@ -359,6 +363,11 @@ public:
   void ensureMaxOpenFileLimit(size_t numNewFile);
   // Reduces the number of open files managed by this object.
   void reduceNumOfOpenedFile(size_t numCloseFile);
+
+  size_t getNumStoppedTotal() const
+  {
+    return numStoppedTotal_;
+  }
 };
 
 } // namespace aria2

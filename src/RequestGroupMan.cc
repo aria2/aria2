@@ -115,7 +115,8 @@ RequestGroupMan::RequestGroupMan
     removedLastErrorResult_(error_code::FINISHED),
     maxDownloadResult_(option->getAsInt(PREF_MAX_DOWNLOAD_RESULT)),
     wrDiskCache_(nullptr),
-    numOpenFile_(0)
+    numOpenFile_(0),
+    numStoppedTotal_(0)
 {
   appendReservedGroup(reservedGroups_,
                       requestGroups.begin(), requestGroups.end());
@@ -832,6 +833,7 @@ bool RequestGroupMan::removeDownloadResult(a2_gid_t gid)
 
 void RequestGroupMan::addDownloadResult(const std::shared_ptr<DownloadResult>& dr)
 {
+  ++numStoppedTotal_;
   bool rv = downloadResults_.push_back(dr->gid->getNumericId(), dr);
   assert(rv);
   while(downloadResults_.size() > maxDownloadResult_){
