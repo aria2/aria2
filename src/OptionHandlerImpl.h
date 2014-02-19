@@ -127,6 +127,7 @@ public:
 class DefaultOptionHandler : public AbstractOptionHandler {
 private:
   std::string possibleValuesString_;
+  bool allowEmpty_;
 public:
   DefaultOptionHandler(PrefPtr pref,
                        const char* description = NO_DESCRIPTION,
@@ -138,6 +139,7 @@ public:
   virtual void parseArg(Option& option, const std::string& optarg) const
     CXX11_OVERRIDE;
   virtual std::string createPossibleValuesString() const CXX11_OVERRIDE;
+  void setAllowEmpty(bool allow);
 };
 
 class CumulativeOptionHandler : public AbstractOptionHandler {

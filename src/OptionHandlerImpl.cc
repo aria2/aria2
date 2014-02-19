@@ -287,7 +287,8 @@ DefaultOptionHandler::DefaultOptionHandler
  char shortName)
   : AbstractOptionHandler(pref, description, defaultValue, argType,
                           shortName),
-    possibleValuesString_(possibleValuesString)
+    possibleValuesString_(possibleValuesString),
+    allowEmpty_(true)
 {}
 
 DefaultOptionHandler::~DefaultOptionHandler() {}
@@ -295,12 +296,20 @@ DefaultOptionHandler::~DefaultOptionHandler() {}
 void DefaultOptionHandler::parseArg(Option& option, const std::string& optarg)
   const
 {
+  if(!allowEmpty_ && optarg.empty()) {
+    throw DL_ABORT_EX("Empty string is not allowed");
+  }
   option.put(pref_, optarg);
 }
 
 std::string DefaultOptionHandler::createPossibleValuesString() const
 {
   return possibleValuesString_;
+}
+
+void DefaultOptionHandler::setAllowEmpty(bool allow)
+{
+  allowEmpty_ = allow;
 }
 
 CumulativeOptionHandler::CumulativeOptionHandler
