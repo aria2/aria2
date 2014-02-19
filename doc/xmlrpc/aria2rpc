@@ -273,6 +273,7 @@ Usage: #{program_name} addUri URI... [options]
        #{program_name} shutdown [options]
        #{program_name} forceShutdown [options]
        #{program_name} getGlobalStat [options]
+       #{program_name} saveSession [options]
        #{program_name} appendUri GID fileIndex URI... [options]
            This command calls aria2.changeUri(GID, fileIndex, [], [URI,...])
            internally.
@@ -393,6 +394,8 @@ elsif command == "shutdown" then
 elsif command == "forceShutdown" then
   result=client_call(client, secret, "aria2."+command)
 elsif command == "getGlobalStat" then
+  result=client_call(client, secret, "aria2."+command)
+elsif command == "saveSession" then
   result=client_call(client, secret, "aria2."+command)
 elsif command == "appendUri" then
   result=client_call(client, secret, "aria2.changeUri", resources[0],

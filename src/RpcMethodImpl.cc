@@ -65,6 +65,7 @@
 #include "PeerStat.h"
 #include "base64.h"
 #include "BitfieldMan.h"
+#include "SessionSerializer.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigest.h"
 # include "message_digest_helper.h"
@@ -1345,6 +1346,23 @@ std::unique_ptr<ValueBase> GetGlobalStatRpcMethod::process
   res->put(KEY_NUM_STOPPED_TOTAL, util::uitos(rgman->getNumStoppedTotal()));
   res->put(KEY_NUM_ACTIVE, util::uitos(rgman->getRequestGroups().size()));
   return std::move(res);
+}
+
+std::unique_ptr<ValueBase> SaveSessionRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
+{
+  const std::string& filename = e->getOption()->get(PREF_SAVE_SESSION);
+  if(filename.empty()) {
+    throw DL_ABORT_EX("Filename is not given.");
+  }
+  SessionSerializer sessionSerializer(e->getRequestGroupMan().get());
+  if(sessionSerializer.save(filename)) {
+    A2_LOG_NOTICE(fmt(_("Serialized session to '%s' successfully."),
+                      filename.c_str()));
+    return createOKResponse();
+  }
+  throw DL_ABORT_EX(fmt("Failed to serialize session to '%s'.",
+                        filename.c_str()));
 }
 
 std::unique_ptr<ValueBase> SystemMulticallRpcMethod::process

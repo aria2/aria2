@@ -3209,6 +3209,12 @@ For *secret* parameter, see :ref:`rpc_auth`.
   except that any actions which takes time such as contacting BitTorrent
   tracker are skipped. This method returns ``OK``.
 
+.. function:: aria2.saveSession([secret])
+
+  This method saves the current session to a file specified by
+  :option:`--save-session` option. This method returns ``OK`` if it
+  succeeds.
+
 .. function:: system.multicall(methods)
 
   This methods encapsulates multiple method calls in a single request.

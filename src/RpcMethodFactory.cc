@@ -126,6 +126,8 @@ createMethod(const std::string& methodName)
     return make_unique<ForceShutdownRpcMethod>();
   } else if(methodName == GetGlobalStatRpcMethod::getMethodName()) {
     return make_unique<GetGlobalStatRpcMethod>();
+  } else if(methodName == SaveSessionRpcMethod::getMethodName()) {
+    return make_unique<SaveSessionRpcMethod>();
   } else if(methodName == SystemMulticallRpcMethod::getMethodName()) {
     return make_unique<SystemMulticallRpcMethod>();
   } else {
