@@ -38,6 +38,9 @@
 #include "common.h"
 
 #include <memory>
+#include <deque>
+#include <vector>
+#include <string>
 
 #include "AnnounceTier.h"
 #include "ValueBase.h"
