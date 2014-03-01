@@ -366,7 +366,7 @@ environment variable which must fulfill the following conditions:
   ``$ANDROID_HOME/usr/local``.
 
 Before running ``android-config`` and ``android-make``,
-``$ANDOIRD_HOME`` environment variable must be set to point to the
+``$ANDROID_HOME`` environment variable must be set to point to the
 correct path.
 
 After ``android-config``, run ``android-make`` to compile sources.
