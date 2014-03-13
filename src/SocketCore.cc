@@ -535,7 +535,15 @@ void SocketCore::setTcpNodelay(bool f)
 
 void SocketCore::applyIpDscp()
 {
-  setSockOpt(IPPROTO_IP, IP_TOS, &ipDscp_, sizeof(ipDscp_));
+  int family = getAddressFamily();
+  if(family == AF_INET) {
+    setSockOpt(IPPROTO_IP, IP_TOS, &ipDscp_, sizeof(ipDscp_));
+  }
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)
+  else if(family == AF_INET6) {
+    setSockOpt(IPPROTO_IPV6, IPV6_TCLASS, &ipDscp_, sizeof(ipDscp_));
+  }
+#endif
 }
 
 void SocketCore::setNonBlockingMode()
