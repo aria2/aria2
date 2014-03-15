@@ -318,7 +318,7 @@ client=XMLRPC::Client.new3({:host => options["server"],
                              :path => "/rpc",
                              :user => options["user"],
                              :password => options["passwd"],
-                             :use_ssl => options["secure"]})
+                             :use_ssl => options["secure"] == "true"})
 
 if options["check-rpc-cert"] == "false" then
   client.instance_variable_get(:@http).instance_variable_set(:@verify_mode, OpenSSL::SSL::VERIFY_NONE)
