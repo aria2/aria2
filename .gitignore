@@ -40,3 +40,7 @@ libaria2ex
 libaria2wx
 .dirstamp
 .libs
+compile
+main.log
+main.trs
+test-suite.log
