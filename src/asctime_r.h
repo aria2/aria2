@@ -42,6 +42,8 @@ extern "C" {
 
 #include <time.h>
 
+#undef asctime_r
+
 char * asctime_r (const struct tm*, char*);
 
 #ifdef __cplusplus
