@@ -159,26 +159,7 @@ int GZipFile::onFlush()
 int GZipFile::onVprintf(const char* format, va_list va)
 {
   ssize_t len;
-#ifdef __MINGW32__
-  // Windows vsnprintf returns -1 when output is truncated, so we
-  // cannot use same logic in non-MINGW32 code.
-  len = _vscprintf(format, va);
-  if(len == 0) {
-    return 0;
-  }
-  // Include terminate null
-  ++len;
-  if(len > static_cast<ssize_t>(buflen_)) {
-    while(static_cast<ssize_t>(buflen_) < len) {
-      buflen_ *= 2;
-    }
-    buf_ = reinterpret_cast<char*>(realloc(buf_, buflen_));
-  }
-  len = vsnprintf(buf_, buflen_, format, va);
-  if(len < 0) {
-    return len;
-  }
-#else // !__MINGW32__
+
   for(;;) {
     len = vsnprintf(buf_, buflen_, format, va);
     // len does not include terminating null
@@ -196,7 +177,7 @@ int GZipFile::onVprintf(const char* format, va_list va)
       break;
     }
   }
-#endif // !__MINGW32__
+
   return gzwrite(fp_, buf_, len);
 }
 

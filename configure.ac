@@ -29,9 +29,9 @@ case "$host" in
   *mingw*)
     win_build=yes
     LIBS="$LIBS -lws2_32 -lwsock32 -lgdi32 -lwinmm -liphlpapi -lpsapi"
-    # Deactivate __USE_MINGW_ANSI_STDIO because it causes lots of errors for
-    # PRId64.
-    CPPFLAGS="-D__USE_MINGW_ANSI_STDIO=0 $CPPFLAGS"
+    # C++ headers defines __USE_MINGW_ANSI_STDIO to 1 unconditionally.
+    # We have to use it as well nonetheless.
+    CPPFLAGS="-D__USE_MINGW_ANSI_STDIO=1 $CPPFLAGS"
     ;;
 esac
 
@@ -667,9 +667,15 @@ AC_TYPE_UINT64_T
 AC_TYPE_UINT8_T
 AC_TYPE_PID_T
 AC_C_VOLATILE
-AC_CHECK_TYPES([ptrdiff_t, struct timespec])
+AC_CHECK_TYPES([ptrdiff_t])
+AC_CHECK_TYPE([struct timespec], [have_timespec=yes], [have_timespec=no])
 AC_C_BIGENDIAN
 AC_SYS_LARGEFILE
+
+if test "x$have_timespec" = "xyes"; then
+  AC_DEFINE([HAVE_A2_STRUCT_TIMESPEC], [1],
+            [Define to 1 if the system has the type `struct timespec'.])
+fi
 
 # Checks for library functions.
 AM_GNU_GETTEXT([external])
@@ -847,9 +853,7 @@ case "$host" in
     AM_CONDITIONAL([HAVE_GETADDRINFO], true)
     dnl defined in ws2tcpip.h, but missing in C:\mingw\lib\libws2_32.a
     AM_CONDITIONAL([HAVE_GAI_STRERROR], false)
-    if test "x$have_clock_gettime" != "xyes"; then
-        AM_CONDITIONAL([HAVE_TIMEGETTIME], true)
-    fi
+    AM_CONDITIONAL([HAVE_TIMEGETTIME], [test "x$have_clock_gettime" != "xyes"])
     ;;
   *)
     AM_CONDITIONAL([MINGW_BUILD], false)

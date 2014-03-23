@@ -38,8 +38,8 @@
 
 #include <time.h>
 
-#ifndef HAVE_STRUCT_TIMESPEC
+#ifndef HAVE_A2_STRUCT_TIMESPEC
 struct timespec { time_t tv_sec; long tv_nsec; };
-#endif // !HAVE_STRUCT_TIMESPEC
+#endif // !HAVE_A2_STRUCT_TIMESPEC
 
 #endif // D_TIMESPEC_H

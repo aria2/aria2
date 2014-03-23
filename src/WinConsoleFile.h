@@ -36,9 +36,9 @@
 #ifndef D_WIN_CONSOLE_FILE_H
 #define D_WIN_CONSOLE_FILE_H
 
-#include <string>
-
 #include "OutputFile.h"
+
+#include <string>
 
 namespace aria2 {
 
