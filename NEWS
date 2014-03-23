@@ -1,3 +1,63 @@
+aria2 1.18.4
+============
+
+Release Note
+------------
+
+This release adds new RPC authorization mechanism using --rpc-secret
+option.  The existing --rpc-user and --rpc-passwd options are now
+deprecated, and all applications using RPC API is strongly encouraged
+to migrate to the new mechanism.  See RPC INTERFACE section in aria2
+manual page for the details.  The new RPC method, aria2.saveSession,
+was added, which tells aria2 server to save session file immediately.
+There are several enhancements and bug fixes.  See the changes for the
+details.
+
+Changes
+-------
+
+* Added support for RPC channel encryption in aria2rpc
+
+  Patch from David Macek
+
+* Add aria2.saveSession RPC method
+
+  This method saves the current session to a file specified by
+  --save-session option. This method returns "OK" if it succeeds.
+
+* Add numStoppedTotal key to aria2.getGlobalStat() RPC method response
+
+  It shows the number of stopped downloads in the current session and
+  not capped by --max-download-result option. On the other hand, the
+  existing numStopped key also shows the number of stopped downloads,
+  but it is capped by --max-download-result option.
+
+* Better handling of 30x HTTP status codes
+
+  Reference: http://greenbytes.de/tech/tc/httpredirects/
+
+* Implement new RPC authorization using --rpc-secret option
+
+  Add future deprecation warning to --rpc-user and --rpc-passwd.  Warn
+  if neither --rpc-secret nor a combination of --rpc-user/rpc-passwd
+  is set.
+
+* Add --enable-color option to enable/disable terminal color output
+
+* Add DSCP support
+
+* gnutls: Don't fail handshake if returned error is not fatal
+
+* Add workaround GnuTLS bug with OCSP status extension and
+  non-blocking socket
+
+  GnuTLS version 3.1.3 - 3.1.18 and 3.2.0 - 3.2.8, inclusive, has this
+  bug. For these versions, we disable OCSP status extension.
+
+* Make GnuTLS log level dependent on the aria2 ones
+
+
+
 aria2 1.18.3
 ============
 
