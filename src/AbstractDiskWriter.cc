@@ -483,6 +483,24 @@ void AbstractDiskWriter::allocate(int64_t offset, int64_t length, bool sparse)
 #ifdef  HAVE_SOME_FALLOCATE
 # ifdef __MINGW32__
   truncate(offset+length);
+# elif defined(__APPLE__) && defined(__MACH__)
+  auto toalloc = offset + length - size();
+  if (toalloc > 0) {
+    fstore_t fstore = {F_ALLOCATECONTIG | F_ALLOCATEALL, F_PEOFPOSMODE, 0, toalloc};
+    if (fcntl(fd_, F_PREALLOCATE, &fstore) == -1) {
+      // Retry non-contig.
+      fstore.fst_flags = F_ALLOCATEALL;
+      if (fcntl(fd_, F_PREALLOCATE, &fstore) == -1) {
+        int err = errno;
+        throw DL_ABORT_EX3(err,
+                          fmt("fcntl(F_PREALLOCATE failed. cause: %s",
+                              util::safeStrerror(err).c_str()),
+                          error_code::FILE_IO_ERROR);
+      }
+    }
+  }
+  // This forces the allocation on disk.
+  ftruncate(fd_, offset + length);
 # elif HAVE_FALLOCATE
   // For linux, we use fallocate to detect file system supports
   // fallocate or not.
