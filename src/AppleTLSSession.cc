@@ -45,7 +45,10 @@
 
 #define ioErr -36
 #define paramErr -50
+
+#ifndef errSSLServerAuthCompleted
 #define errSSLServerAuthCompleted -9841
+#endif
 
 namespace {
 #if !defined(__MAC_10_8)
@@ -298,8 +301,17 @@ AppleTLSSession::AppleTLSSession(AppleTLSContext* ctx)
     lastError_(noErr),
     writeBuffered_(0)
 {
-  lastError_ = SSLNewContext(ctx->getSide() == TLS_SERVER, &sslCtx_) == noErr;
-  if (lastError_ == noErr) {
+#if defined(__MAC_10_8)
+  sslCtx_ = SSLCreateContext(
+    nullptr,
+    ctx->getSide() == TLS_SERVER ? kSSLServerSide : kSSLClientSide,
+    kSSLStreamType
+    );
+  lastError_ =  sslCtx_ ? noErr : paramErr;
+#else
+  lastError_ = SSLNewContext(ctx->getSide() == TLS_SERVER, &sslCtx_);
+#endif
+  if (lastError_ != noErr) {
     state_ = st_error;
     return;
   }
@@ -314,7 +326,15 @@ AppleTLSSession::AppleTLSSession(AppleTLSContext* ctx)
   (void)SSLSetProtocolVersionEnabled(sslCtx_, kTLSProtocol12, true);
 #endif
 
+#if defined(__MAC_10_8)
+  if (!ctx->getVerifyPeer()) {
+    // This disables client verification
+    (void)SSLSetSessionOption(sslCtx_, kSSLSessionOptionBreakOnServerAuth, true);
+  }
+#else
   (void)SSLSetEnableCertVerify(sslCtx_, ctx->getVerifyPeer());
+#endif
+
 
 #ifndef CIPHER_ENABLE_ALL
   SSLCipherSuiteList enabled = constructEnabledSuites(sslCtx_);
@@ -372,7 +392,11 @@ AppleTLSSession::~AppleTLSSession()
 {
   closeConnection();
   if (sslCtx_) {
+#if defined(__MAC_10_8)
+    CFRelease(sslCtx_);
+#else
     SSLDisposeContext(sslCtx_);
+#endif
     sslCtx_ = nullptr;
   }
   state_ = st_error;
