@@ -1,3 +1,22 @@
+aria2 1.18.5
+============
+
+Release Note
+------------
+
+This release fixes BitTorrent download failure on Mingw build.
+
+Changes
+-------
+
+* Ignore error when setting DSCP value
+
+  Setting DSCP is additional feature and failure to enable it should
+  not abort download entirely.  This change fixes the bug that windows
+  build does not perform bittorrent downloads.
+
+
+
 aria2 1.18.4
 ============
 
