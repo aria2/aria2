@@ -382,6 +382,16 @@ AppleTLSSession::AppleTLSSession(AppleTLSContext* ctx)
   (void)SSLSetProtocolVersionEnabled(sslCtx_, kTLSProtocol12, true);
 #endif
 
+  // BEAST
+  (void)SSLSetSessionOption(
+      sslCtx_,
+#if defined(__MAC_10_9)
+      kSSLSessionOptionSendOneByteRecord,
+#else
+      (SSLSessionOption)0x4, /* kSSLSessionOptionSendOneByteRecord */
+#endif
+      true);
+
 #if defined(__MAC_10_8)
   if (!ctx->getVerifyPeer()) {
     // This disables client verification
