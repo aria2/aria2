@@ -71,6 +71,7 @@
 #define A2_MIN_GCRYPT_VERSION "1.2.4"
 
 namespace {
+#ifdef HAVE_LIBGNUTLS
   void gnutls_log_callback(int level, const char *str)
   {
     using namespace aria2;
@@ -79,6 +80,7 @@ namespace {
     msg.resize(msg.size() - 1);
     A2_LOG_DEBUG(fmt("GnuTLS: <%d> %s", level, msg.c_str()));
   }
+#endif // HAVE_LIBGNUTLS
 }
 
 

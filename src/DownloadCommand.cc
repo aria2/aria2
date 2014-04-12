@@ -75,10 +75,6 @@
 
 namespace aria2 {
 
-namespace {
-const size_t BUFSIZE = 16*1024;
-} // namespace
-
 DownloadCommand::DownloadCommand(cuid_t cuid,
                                  const std::shared_ptr<Request>& req,
                                  const std::shared_ptr<FileEntry>& fileEntry,

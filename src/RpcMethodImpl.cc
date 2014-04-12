@@ -86,7 +86,6 @@ namespace rpc {
 namespace {
 const char VLB_TRUE[] = "true";
 const char VLB_FALSE[] = "false";
-const char VLB_OK[]  = "OK";
 const char VLB_ACTIVE[] = "active";
 const char VLB_WAITING[] = "waiting";
 const char VLB_PAUSED[] = "paused";
