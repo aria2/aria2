@@ -94,7 +94,8 @@ void WinTLSContext::setVerifyPeer(bool verify)
     credentials_.dwFlags =
       SCH_CRED_NO_DEFAULT_CREDS |
       SCH_CRED_AUTO_CRED_VALIDATION |
-      SCH_CRED_REVOCATION_CHECK_CHAIN;
+      SCH_CRED_REVOCATION_CHECK_CHAIN |
+      SCH_CRED_IGNORE_NO_REVOCATION_CHECK;
   }
   else {
     credentials_.dwFlags =
