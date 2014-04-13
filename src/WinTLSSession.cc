@@ -805,7 +805,7 @@ std::string WinTLSSession::getLastErrorString()
                     (LPWSTR)&buf,
                     1024,
                     nullptr) && buf) {
-    ss << "Error: " << wCharToUtf8(buf);
+    ss << "Error: " << wCharToUtf8(buf) << "(" << std::hex << status_ <<  ")";
     LocalFree(buf);
   }
   else {
