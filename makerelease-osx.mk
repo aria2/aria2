@@ -312,8 +312,9 @@ aria2.%.build: zlib.%.build expat.%.build gmp.%.build cares.%.build sqlite.%.bui
 		--sysconfdir=/etc \
 		--with-cppunit-prefix=$(PWD)/$(ARCH) \
 		$(ARIA2_CONFFLAGS) \
-		CFLAGS="$(CFLAGS) -arch $(ARCH)" \
-		CXXFLAGS="$(CXXFLAGS) -arch $(ARCH)" \
+		CFLAGS="$(CFLAGS) -arch $(ARCH) -I$(PWD)/$(ARCH)/include" \
+		CXXFLAGS="$(CXXFLAGS) -arch $(ARCH) -I$(PWD)/$(ARCH)/include" \
+		LDFLAGS="$(LDFLAGS) -L$(PWD)/$(ARCH)/lib" \
 		PKG_CONFIG_PATH=$(PWD)/$(ARCH)/lib/pkgconfig \
 		)
 	$(MAKE) -C $(DEST) -sj$(CPUS) check
