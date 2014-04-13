@@ -199,7 +199,7 @@ bool WinTLSContext::addCredentialFile(const std::string& certfile,
 
 bool WinTLSContext::addTrustedCACertFile(const std::string& certfile)
 {
-  A2_LOG_INFO("TLS CA bundle files are not supported. "
+  A2_LOG_WARN("TLS CA bundle files are not supported. "
               "The system trust store will be used.");
   return false;
 }
