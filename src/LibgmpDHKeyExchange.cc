@@ -86,7 +86,11 @@ void DHKeyExchange::init
 
 void DHKeyExchange::generatePublicKey()
 {
+#if HAVE_GMP_SEC
+  mpz_powm_sec(publicKey_, generator_, privateKey_, prime_);
+#else // HAVE_GMP_SEC
   mpz_powm(publicKey_, generator_, privateKey_, prime_);
+#endif // HAVE_GMP_SEC
 }
 
 size_t DHKeyExchange::getPublicKey(unsigned char* out, size_t outLength) const
@@ -126,7 +130,13 @@ size_t DHKeyExchange::computeSecret
   mpz_import(peerPublicKey, peerPublicKeyLength, 1, 1, 1, 0, peerPublicKeyData);
   mpz_t secret;
   mpz_init(secret);
+
+#if HAVE_GMP_SEC
+  mpz_powm_sec(secret, peerPublicKey, privateKey_, prime_);
+#else // HAVE_GMP_SEC
   mpz_powm(secret, peerPublicKey, privateKey_, prime_);
+#endif // HAVE_GMP_SEC
+
   mpz_clear(peerPublicKey);
 
   memset(out, 0, outLength);

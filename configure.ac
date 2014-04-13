@@ -427,6 +427,10 @@ if test "x$have_openssl" != "xyes"; then
     AC_SEARCH_LIBS([__gmpz_init], [gmp], [have_libgmp=yes], [have_libgmp=no])
     if test "x$have_libgmp" = "xyes"; then
       AC_DEFINE([HAVE_LIBGMP], [1], [Define to 1 if you have libgmp.])
+      AC_CHECK_FUNCS([__gmpz_powm_sec], [have_mpz_powm_sec=yes])
+      if test "x$have_mpz_powm_sec" = "xyes"; then
+        AC_DEFINE([HAVE_GMP_SEC], [1], [Define to 1 if you have a GMP with sec functions.])
+      fi
     else
       AC_MSG_WARN([libgmp not found])
       if test "x$with_libgmp_requested" = "xyes"; then
