@@ -44,6 +44,10 @@
 #include "message.h"
 #include "util.h"
 
+#ifndef SCH_USE_STRONG_CRYPTO
+#define SCH_USE_STRONG_CRYPTO 0x00400000
+#endif
+
 namespace aria2 {
 
 WinTLSContext::WinTLSContext(TLSSessionSide side)
@@ -95,7 +99,8 @@ void WinTLSContext::setVerifyPeer(bool verify)
       SCH_CRED_NO_DEFAULT_CREDS |
       SCH_CRED_AUTO_CRED_VALIDATION |
       SCH_CRED_REVOCATION_CHECK_CHAIN |
-      SCH_CRED_IGNORE_NO_REVOCATION_CHECK;
+      SCH_CRED_IGNORE_NO_REVOCATION_CHECK |
+      SCH_USE_STRONG_CRYPTO;
   }
   else {
     credentials_.dwFlags =
@@ -103,7 +108,8 @@ void WinTLSContext::setVerifyPeer(bool verify)
       SCH_CRED_MANUAL_CRED_VALIDATION |
       SCH_CRED_IGNORE_NO_REVOCATION_CHECK |
       SCH_CRED_IGNORE_REVOCATION_OFFLINE |
-      SCH_CRED_NO_SERVERNAME_CHECK;
+      SCH_CRED_NO_SERVERNAME_CHECK |
+      SCH_USE_STRONG_CRYPTO;
   }
   cred_.reset();
 }
