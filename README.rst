@@ -383,7 +383,7 @@ translation <http://aria2.sourceforge.net/manual/ru/html/>`_,
 `Portuguese translation
 <http://aria2.sourceforge.net/manual/pt/html/>`_).
 
-BitTorrrent
+BitTorrent
 -----------
 
 About filenames
@@ -394,7 +394,7 @@ single-file mode
     If "name" key is present in .torrent file, filename is the value
     of "name" key. Otherwise, filename is the basename of .torrent
     file appended by ".file". For example, .torrent file is
-    "test.torrrent", then filename is "test.torrent.file".  The
+    "test.torrent", then filename is "test.torrent.file".  The
     directory to store the downloaded file can be specified by -d
     option.
 
