@@ -121,6 +121,7 @@ gmp_version = 5.1.3
 gmp_hash = b35928e2927b272711fdfbf71b7cfd5f86a6b165
 gmp_url = https://ftp.gnu.org/gnu/gmp/gmp-$(gmp_version).tar.bz2
 gmp_confflags = --disable-cxx --enable-assembly --with-pic
+gmp_confflags_x86_64 = --enable-fat
 
 cppunit_version = 1.12.1
 cppunit_hash = f1ab8986af7a1ffa6760f4bacf5622924639bf4a
@@ -286,7 +287,7 @@ $(1).%.build: $(1).stamp
 		--build=$$(ARCH)-apple-darwin11.4.2 \
 		--enable-static --disable-shared \
 		--prefix=$$(PWD)/$$(ARCH) \
-		$$($(1)_confflags) \
+		$$($(1)_confflags) $$($(1)_confflags_$$(ARCH)) \
 		CFLAGS="$$(CFLAGS) -arch $$(ARCH)" \
 		CXXFLAGS="$$(CXXFLAGS) -arch $$(ARCH) -stdlib=libc++ -std=c++11" \
 		)
