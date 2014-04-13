@@ -48,19 +48,6 @@
 #include "TLSContext.h"
 #include "DlAbortEx.h"
 
-#ifndef SP_PROT_TLS1_1_CLIENT
-#define SP_PROT_TLS1_1_CLIENT 0x00000200
-#endif
-#ifndef SP_PROT_TLS1_1_SERVER
-#define SP_PROT_TLS1_1_SERVER 0x00000100
-#endif
-#ifndef SP_PROT_TLS1_2_CLIENT
-#define SP_PROT_TLS1_2_CLIENT 0x00000800
-#endif
-#ifndef SP_PROT_TLS1_2_SERVER
-#define SP_PROT_TLS1_2_SERVER 0x00000400
-#endif
-
 namespace aria2 {
 
 namespace wintls {
