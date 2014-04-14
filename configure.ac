@@ -327,6 +327,8 @@ if test "x$with_appletls" = "xyes"; then
     AC_DEFINE([HAVE_APPLETLS], [1], [Define to 1 if you have Apple TLS])
     LDFLAGS="$LDFLAGS -framework CoreFoundation -framework Security"
     have_appletls="yes"
+    have_ssl=yes
+    have_nativetls=yes
     AC_MSG_RESULT(yes)
   else
     AC_MSG_RESULT(no)
@@ -359,6 +361,8 @@ if test "x$with_wintls" = "xyes"; then
     AC_DEFINE([SECURITY_WIN32], [1], [Use security.h in WIN32 mode])
     LIBS="$LIBS -lcrypt32 -lsecur32 -ladvapi32"
     have_wintls=yes
+    have_ssl=yes
+    have_nativetls=yes
   else
     have_wintls=no
   fi
@@ -369,12 +373,13 @@ if test "x$with_wintls" = "xyes"; then
   fi
 fi
 
-if test "x$with_gnutls" = "xyes" && test "x$have_appletls" != "xyes" && test "x$have_wintls" != "xyes"; then
+if test "x$with_gnutls" = "xyes" && test "x$have_ssl" != "xyes"; then
   # gnutls >= 2.8 doesn't have libgnutls-config anymore. We require
   # 2.2.0 because we use gnutls_priority_set_direct()
   PKG_CHECK_MODULES([LIBGNUTLS], [gnutls >= 2.2.0],
                     [have_libgnutls=yes], [have_libgnutls=no])
   if test "x$have_libgnutls" = "xyes"; then
+    have_ssl=yes
     AC_DEFINE([HAVE_LIBGNUTLS], [1], [Define to 1 if you have libgnutls.])
     LIBS="$LIBGNUTLS_LIBS $LIBS"
     CPPFLAGS="$LIBGNUTLS_CFLAGS $CPPFLAGS"
@@ -387,10 +392,11 @@ if test "x$with_gnutls" = "xyes" && test "x$have_appletls" != "xyes" && test "x$
   fi
 fi
 
-if test "x$with_openssl" = "xyes" && test "x$have_appletls" != "xyes" && test "x$have_wintls" != "xyes" && test "x$have_libgnutls" != "xyes"; then
+if test "x$with_openssl" = "xyes" && test "x$have_ssl" != "xyes"; then
   PKG_CHECK_MODULES([OPENSSL], [openssl >= 0.9.8],
                     [have_openssl=yes], [have_openssl=no])
   if test "x$have_openssl" = "xyes"; then
+    have_ssl=yes
     AC_DEFINE([HAVE_OPENSSL], [1], [Define to 1 if you have openssl.])
     LIBS="$OPENSSL_LIBS $LIBS"
     CPPFLAGS="$OPENSSL_CFLAGS $CPPFLAGS"
@@ -412,7 +418,8 @@ if test "x$with_openssl" = "xyes" && test "x$have_appletls" != "xyes" && test "x
 fi
 
 if test "x$have_openssl" != "xyes"; then
-  if test "x$with_libnettle" = "xyes"; then
+  if test "x$with_libnettle" = "xyes" &&
+     test "x$have_nativetls" != "xyes"; then
     AC_SEARCH_LIBS([nettle_sha1_init], [nettle],
                    [have_libnettle=yes], [have_libnettle=no])
     if test "x$have_libnettle" = "xyes"; then
@@ -421,8 +428,7 @@ if test "x$have_openssl" != "xyes"; then
   fi
   if test "x$with_libgmp" = "xyes" &&
      (test "x$have_libnettle" = "xyes" ||
-      test "x$have_appletls" = "xyes" ||
-      test "x$have_wintls" = "xyes") &&
+      test "x$have_nativetls" = "xyes") &&
      test "x$enable_bittorrent" = "xyes"; then
     AC_SEARCH_LIBS([__gmpz_init], [gmp], [have_libgmp=yes], [have_libgmp=no])
     if test "x$have_libgmp" = "xyes"; then
@@ -439,6 +445,7 @@ if test "x$have_openssl" != "xyes"; then
     fi
   fi
   if test "x$with_libgcrypt" = "xyes" &&
+     test "x$have_nativetls" != "xyes" &&
      test "x$have_libnettle" != "xyes"; then
     AM_PATH_LIBGCRYPT([1.2.4], [have_libgcrypt=yes])
     if test "x$have_libgcrypt" = "xyes"; then
@@ -500,8 +507,7 @@ else
 fi
 
 # Define variables based on the result of the checks for libraries.
-if test "x$have_appletls" = "xyes" || test "x$have_wintls" = "xyes" || test "x$have_libgnutls" = "xyes" || test "x$have_openssl" = "xyes"; then
-  have_ssl="yes"
+if test "x$have_ssl" = "xyes"; then
   AC_DEFINE([ENABLE_SSL], [1], [Define to 1 if ssl support is enabled.])
   AM_CONDITIONAL([ENABLE_SSL], true)
 else
