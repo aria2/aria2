@@ -48,7 +48,7 @@
 # In this configuration, the following dependent libraries are used:
 #
 # * c-ares
-# * openssl
+# * gmp
 # * expat
 # * sqlite3
 # * zlib
@@ -63,12 +63,14 @@ test -z "$PREFIX" && PREFIX=/usr/local/$HOST
     --without-included-gettext \
     --disable-nls \
     --with-libcares \
+    --with-wintls \
     --without-gnutls \
-    --with-openssl \
+    --without-openssl \
     --with-sqlite3 \
     --without-libxml2 \
     --with-libexpat \
     --with-libz \
+    --with-libgmp \
     --without-libgcrypt \
     --without-libnettle \
     --with-cppunit-prefix=$PREFIX \
