@@ -57,6 +57,7 @@ ARIA2_ARG_WITH([jemalloc])
 ARIA2_ARG_DISABLE([ssl])
 ARIA2_ARG_DISABLE([bittorrent])
 ARIA2_ARG_DISABLE([metalink])
+ARIA2_ARG_DISABLE([websocket])
 ARIA2_ARG_DISABLE([epoll])
 ARIA2_ARG_ENABLE([libaria2])
 
@@ -929,14 +930,16 @@ if test "x$have_option_const_name" = "xyes"; then
   AC_DEFINE([HAVE_OPTION_CONST_NAME], [1], [Define 1 if struct option.name is const char*])
 fi
 
-AC_CONFIG_SUBDIRS([deps/wslay])
-enable_websocket=yes
-AC_DEFINE([ENABLE_WEBSOCKET], [1],
-          [Define 1 if WebSocket support is enabled.])
-WSLAY_LIBS="\$(top_builddir)/deps/wslay/lib/libwslay.la"
-AC_SUBST([WSLAY_LIBS])
-# $(top_srcdir) for `make distcheck`
-CPPFLAGS="-I\$(top_builddir)/deps/wslay/lib/includes -I\$(top_srcdir)/deps/wslay/lib/includes $CPPFLAGS"
+if test "x$enable_websocket" = "xyes"; then
+  AC_CONFIG_SUBDIRS([deps/wslay])
+  enable_websocket=yes
+  AC_DEFINE([ENABLE_WEBSOCKET], [1],
+            [Define 1 if WebSocket support is enabled.])
+  WSLAY_LIBS="\$(top_builddir)/deps/wslay/lib/libwslay.la"
+  AC_SUBST([WSLAY_LIBS])
+  # $(top_srcdir) for `make distcheck`
+  CPPFLAGS="-I\$(top_builddir)/deps/wslay/lib/includes -I\$(top_srcdir)/deps/wslay/lib/includes $CPPFLAGS"
+fi
 AM_CONDITIONAL([ENABLE_WEBSOCKET], [test "x$enable_websocket" = "xyes"])
 
 AM_CONDITIONAL([ENABLE_LIBARIA2], [test "x$enable_libaria2" = "xyes"])
