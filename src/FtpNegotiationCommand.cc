@@ -75,9 +75,7 @@
 #include "error_code.h"
 #include "SocketRecvBuffer.h"
 #include "NullProgressInfoFile.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "ChecksumCheckIntegrityEntry.h"
-#endif // ENABLE_MESSAGE_DIGEST
+#include "ChecksumCheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -386,7 +384,6 @@ bool FtpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
 
     if(getDownloadContext()->knowsTotalLength() &&
        getRequestGroup()->downloadFinishedByFileLength()) {
-#ifdef ENABLE_MESSAGE_DIGEST
       // TODO Known issue: if .aria2 file exists, it will not be
       // deleted on successful verification, because .aria2 file is
       // not loaded.  See also
@@ -401,9 +398,8 @@ bool FtpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
         getDownloadEngine()->getCheckIntegrityMan()->pushEntry
           (std::move(entry));
         sequence_ = SEQ_EXIT;
-      } else
-#endif // ENABLE_MESSAGE_DIGEST
-        {
+      }
+      else {
           getPieceStorage()->markAllPiecesDone();
           getDownloadContext()->setChecksumVerified(true);
           sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
@@ -423,7 +419,6 @@ bool FtpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
 
     if(getDownloadContext()->knowsTotalLength()) {
       A2_LOG_DEBUG("File length becomes zero and it means download completed.");
-#ifdef ENABLE_MESSAGE_DIGEST
       // TODO Known issue: if .aria2 file exists, it will not be
       // deleted on successful verification, because .aria2 file is
       // not loaded.  See also
@@ -437,7 +432,6 @@ bool FtpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
           (std::move(entry));
         sequence_ = SEQ_EXIT;
       } else
-#endif // ENABLE_MESSAGE_DIGEST
         {
           sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
           getPieceStorage()->markAllPiecesDone();

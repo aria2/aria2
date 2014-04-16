@@ -51,10 +51,8 @@
 #include "fmt.h"
 #include "SocketRecvBuffer.h"
 #include "base64.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-#  include "MessageDigest.h"
-#  include "message_digest_helper.h"
-#endif // ENABLE_MESSAGE_DIGEST
+#include "MessageDigest.h"
+#include "message_digest_helper.h"
 #ifdef ENABLE_WEBSOCKET
 #  include "WebSocketResponseCommand.h"
 #endif // ENABLE_WEBSOCKET

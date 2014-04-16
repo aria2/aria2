@@ -46,10 +46,8 @@ namespace aria2 {
 class MetalinkResource;
 class MetalinkMetaurl;
 class FileEntry;
-#ifdef ENABLE_MESSAGE_DIGEST
 class Checksum;
 class ChunkChecksum;
-#endif // ENABLE_MESSAGE_DIGEST
 class Signature;
 
 class MetalinkEntry {
@@ -63,10 +61,9 @@ public:
   std::vector<std::unique_ptr<MetalinkResource>> resources;
   std::vector<std::unique_ptr<MetalinkMetaurl>> metaurls;
   int maxConnections; // Metalink3Spec
-#ifdef ENABLE_MESSAGE_DIGEST
   std::unique_ptr<Checksum> checksum;
   std::unique_ptr<ChunkChecksum> chunkChecksum;
-#endif // ENABLE_MESSAGE_DIGEST
+
 private:
   std::unique_ptr<Signature> signature_;
 public:

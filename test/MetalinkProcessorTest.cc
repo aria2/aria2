@@ -12,11 +12,9 @@
 #include "MetalinkEntry.h"
 #include "MetalinkResource.h"
 #include "MetalinkMetaurl.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "MessageDigest.h"
-# include "ChunkChecksum.h"
-# include "Checksum.h"
-#endif // ENABLE_MESSAGE_DIGEST
+#include "MessageDigest.h"
+#include "ChunkChecksum.h"
+#include "Checksum.h"
 #include "Signature.h"
 #include "fmt.h"
 #include "RecoverableException.h"
@@ -40,13 +38,11 @@ class MetalinkProcessorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testNoName);
   CPPUNIT_TEST(testBadURLPrefs);
   CPPUNIT_TEST(testBadURLMaxConn);
-#ifdef ENABLE_MESSAGE_DIGEST
   CPPUNIT_TEST(testUnsupportedType);
   CPPUNIT_TEST(testMultiplePieces);
   CPPUNIT_TEST(testBadPieceNo);
   CPPUNIT_TEST(testBadPieceLength);
   CPPUNIT_TEST(testUnsupportedType_piece);
-#endif // ENABLE_MESSAGE_DIGEST
   CPPUNIT_TEST(testLargeFileSize);
   CPPUNIT_TEST(testXmlPrefixV3);
   CPPUNIT_TEST_SUITE_END();
@@ -66,13 +62,11 @@ public:
   void testNoName();
   void testBadURLPrefs();
   void testBadURLMaxConn();
-#ifdef ENABLE_MESSAGE_DIGEST
   void testUnsupportedType();
   void testMultiplePieces();
   void testBadPieceNo();
   void testBadPieceLength();
   void testUnsupportedType_piece();
-#endif // ENABLE_MESSAGE_DIGEST
   void testLargeFileSize();
   void testXmlPrefixV3();
 };
@@ -88,7 +82,6 @@ void MetalinkProcessorTest::testParseFileV4()
   CPPUNIT_ASSERT_EQUAL(std::string("example.ext"), e->getPath());
   CPPUNIT_ASSERT_EQUAL((int64_t)786430LL, e->getLength());
   CPPUNIT_ASSERT_EQUAL(-1, e->maxConnections);
-#ifdef ENABLE_MESSAGE_DIGEST
   CPPUNIT_ASSERT_EQUAL(std::string("0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"),
 		       util::toHex(e->checksum->getDigest()));
   CPPUNIT_ASSERT(e->checksum);
@@ -118,7 +111,6 @@ void MetalinkProcessorTest::testParseFileV4()
       (std::string("44213f9f4d59b557314fadcd233232eebcac8012"),
        util::toHex(e->chunkChecksum->getPieceHash(2)));
   }
-#endif // ENABLE_MESSAGE_DIGEST
   CPPUNIT_ASSERT(e->getSignature());
   CPPUNIT_ASSERT_EQUAL(std::string("application/pgp-signature"),
                        e->getSignature()->getType());
@@ -332,7 +324,6 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       // success
     }
   }
-#ifdef ENABLE_MESSAGE_DIGEST
   {
     // Testing pieces@length
     // No pieces@length
@@ -449,7 +440,6 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {}
   }
-#endif // ENABLE_MESSAGE_DIGEST
   {
     // Testing signature@mediatype
     // No hash@type
@@ -499,11 +489,9 @@ void MetalinkProcessorTest::testParseFile()
     CPPUNIT_ASSERT_EQUAL(std::string("en-US"), entry1->languages[0]);
     CPPUNIT_ASSERT_EQUAL(std::string("Linux-x86"), entry1->oses[0]);
     CPPUNIT_ASSERT_EQUAL(1, entry1->maxConnections);
-#ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("a96cf3f0266b91d87d5124cf94326422800b627d"),
                          util::toHex(entry1->checksum->getDigest()));
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), entry1->checksum->getHashType());
-#endif // ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT(entry1->getSignature());
     CPPUNIT_ASSERT_EQUAL(std::string("pgp"), entry1->getSignature()->getType());
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2.sig"),
@@ -548,7 +536,6 @@ void MetalinkProcessorTest::testParseFile()
     CPPUNIT_ASSERT_EQUAL(std::string("ja-JP"), entry2->languages[0]);
     CPPUNIT_ASSERT_EQUAL(std::string("Linux-m68k"), entry2->oses[0]);
     CPPUNIT_ASSERT_EQUAL(-1, entry2->maxConnections);
-#ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("4c255b0ed130f5ea880f0aa061c3da0487e251cc"),
                          util::toHex(entry2->checksum->getDigest()));
     CPPUNIT_ASSERT_EQUAL((size_t)2, entry2->chunkChecksum->countPieceHash());
@@ -558,7 +545,6 @@ void MetalinkProcessorTest::testParseFile()
     CPPUNIT_ASSERT_EQUAL(std::string("fecf8bc9a1647505fe16746f94e97a477597dbf3"),
                          util::toHex(entry2->chunkChecksum->getPieceHash(1)));
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), entry2->checksum->getHashType());
-#endif // ENABLE_MESSAGE_DIGEST
     // See that signature is null
     CPPUNIT_ASSERT(!entry2->getSignature());
 
@@ -567,22 +553,18 @@ void MetalinkProcessorTest::testParseFile()
     // test case: verification hash is not provided
     auto& entry3 = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("NoVerificationHash"), entry3->getPath());
-#ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT(!entry3->checksum);
     CPPUNIT_ASSERT(!entry3->chunkChecksum);
-#endif // ENABLE_MESSAGE_DIGEST
 
     ++entryItr;
 
     // test case: unsupported verification hash is included
     auto& entry4 = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("UnsupportedVerificationHashTypeIncluded"), entry4->getPath());
-#ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), entry4->checksum->getHashType());
     CPPUNIT_ASSERT_EQUAL(std::string("4c255b0ed130f5ea880f0aa061c3da0487e251cc"),
                          util::toHex(entry4->checksum->getDigest()));
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"),entry4->chunkChecksum->getHashType());
-#endif // ENABLE_MESSAGE_DIGEST
 
 
   } catch(Exception& e) {
@@ -809,7 +791,6 @@ void MetalinkProcessorTest::testBadURLMaxConn()
   }
 }
 
-#ifdef ENABLE_MESSAGE_DIGEST
 void MetalinkProcessorTest::testUnsupportedType()
 {
   ByteArrayDiskWriter dw;
@@ -966,7 +947,6 @@ void MetalinkProcessorTest::testUnsupportedType_piece()
     CPPUNIT_FAIL(e.stackTrace());
   }
 }
-#endif // ENABLE_MESSAGE_DIGEST
 
 void MetalinkProcessorTest::testLargeFileSize()
 {

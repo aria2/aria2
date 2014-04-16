@@ -66,10 +66,8 @@
 #include "base64.h"
 #include "BitfieldMan.h"
 #include "SessionSerializer.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "MessageDigest.h"
-# include "message_digest_helper.h"
-#endif // ENABLE_MESSAGE_DIGEST
+#include "MessageDigest.h"
+#include "message_digest_helper.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 # include "BtRegistry.h"
@@ -254,7 +252,6 @@ std::unique_ptr<ValueBase> AddUriRpcMethod::process
   }
 }
 
-#ifdef ENABLE_MESSAGE_DIGEST
 namespace {
 std::string getHexSha1(const std::string& s)
 {
@@ -264,7 +261,6 @@ std::string getHexSha1(const std::string& s)
   return util::toHex(hash, sizeof(hash));
 }
 } // namespace
-#endif // ENABLE_MESSAGE_DIGEST
 
 #ifdef ENABLE_BITTORRENT
 std::unique_ptr<ValueBase> AddTorrentRpcMethod::process
@@ -341,7 +337,6 @@ std::unique_ptr<ValueBase> AddMetalinkRpcMethod::process
   size_t pos = posGiven ? posParam->i() : 0;
 
   std::vector<std::shared_ptr<RequestGroup>> result;
-#ifdef ENABLE_MESSAGE_DIGEST
   std::string filename;
   if(requestOption->getAsBool(PREF_RPC_SAVE_UPLOAD_METADATA)) {
     // TODO RFC5854 Metalink has the extension .meta4 and Metalink
@@ -365,9 +360,6 @@ std::unique_ptr<ValueBase> AddMetalinkRpcMethod::process
   } else {
     createRequestGroupForMetalink(result, requestOption, metalinkParam->s());
   }
-#else // !ENABLE_MESSAGE_DIGEST
-  createRequestGroupForMetalink(result, requestOption, metalinkParam->s());
-#endif // !ENABLE_MESSAGE_DIGEST
   auto gids = List::g();
   if(!result.empty()) {
     if(posGiven) {

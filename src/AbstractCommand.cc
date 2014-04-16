@@ -66,13 +66,11 @@
 #include "FileEntry.h"
 #include "error_code.h"
 #include "SocketRecvBuffer.h"
+#include "ChecksumCheckIntegrityEntry.h"
 #ifdef ENABLE_ASYNC_DNS
 #include "AsyncNameResolver.h"
 #include "AsyncNameResolverMan.h"
 #endif // ENABLE_ASYNC_DNS
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "ChecksumCheckIntegrityEntry.h"
-#endif // ENABLE_MESSAGE_DIGEST
 
 namespace aria2 {
 

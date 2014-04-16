@@ -78,9 +78,9 @@ void MetalinkEntryTest::testDropUnsupportedResource()
   CPPUNIT_ASSERT_EQUAL((size_t)4, entry->resources.size());
 #elif defined(ENABLE_SSL) || defined(ENABLE_BITTORRENT)
   CPPUNIT_ASSERT_EQUAL((size_t)3, entry->resources.size());
-#else
+#else // defined(ENABLE_SSL) || defined(ENABLE_BITTORRENT)
   CPPUNIT_ASSERT_EQUAL((size_t)2, entry->resources.size());
-#endif // ENABLE_MESSAGE_DIGEST
+#endif // defined(ENABLE_SSL) || defined(ENABLE_BITTORRENT)
 
   auto itr = std::begin(entry->resources);
   CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP,

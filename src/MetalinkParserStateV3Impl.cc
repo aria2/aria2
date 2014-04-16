@@ -194,7 +194,6 @@ void VerificationMetalinkParserState::beginElement
   if(!checkNsUri(nsUri)) {
     psm->setSkipTagState();
   } else
-#ifdef ENABLE_MESSAGE_DIGEST
     if(strcmp(localname, "hash") == 0) {
       psm->setHashState();
       auto itr = findAttr(attrs, "type", METALINK3_NAMESPACE_URI);
@@ -231,7 +230,6 @@ void VerificationMetalinkParserState::beginElement
       psm->setLengthOfChunkChecksum(length);
       psm->setTypeOfChunkChecksum(type);
     } else
-#endif // ENABLE_MESSAGE_DIGEST
       if(strcmp(localname, "signature") == 0) {
         psm->setSignatureState();
         auto itr = findAttr(attrs, "type", METALINK3_NAMESPACE_URI);

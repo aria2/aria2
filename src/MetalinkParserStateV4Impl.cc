@@ -166,7 +166,6 @@ void FileMetalinkParserStateV4::beginElement
     psm->setLocationOfResource(location);
     psm->setPriorityOfResource(priority);
   }
-#ifdef ENABLE_MESSAGE_DIGEST
   else if(strcmp(localname, "hash") == 0) {
     psm->setHashStateV4();
     auto itr = findAttr(attrs, "type", METALINK4_NAMESPACE_URI);
@@ -203,7 +202,6 @@ void FileMetalinkParserStateV4::beginElement
     psm->setLengthOfChunkChecksumV4(length);
     psm->setTypeOfChunkChecksumV4(type);
   }
-#endif // ENABLE_MESSAGE_DIGEST
   else if(strcmp(localname, "signature") == 0) {
     psm->setSignatureStateV4();
     auto itr = findAttr(attrs, "mediatype", METALINK4_NAMESPACE_URI);

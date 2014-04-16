@@ -46,9 +46,7 @@
 #include "LogFactory.h"
 #include "fmt.h"
 #include "DiskAdaptor.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "MessageDigest.h"
-#endif // ENABLE_MESSAGE_DIGEST
+#include "MessageDigest.h"
 
 namespace aria2 {
 
@@ -58,9 +56,7 @@ Piece::Piece()
     index_(0),
     length_(0),
     blockLength_(BLOCK_LENGTH),
-#ifdef ENABLE_MESSAGE_DIGEST
     nextBegin_(0),
-#endif // ENABLE_MESSAGE_DIGEST
     usedBySegment_(false)
 {}
 
@@ -70,9 +66,7 @@ Piece::Piece(size_t index, int32_t length, int32_t blockLength)
    index_(index),
    length_(length),
    blockLength_(blockLength),
-#ifdef ENABLE_MESSAGE_DIGEST
-    nextBegin_(0),
-#endif // ENABLE_MESSAGE_DIGEST
+   nextBegin_(0),
    usedBySegment_(false)
 {}
 
@@ -208,8 +202,6 @@ int32_t Piece::getCompletedLength()
   return bitfield_->getCompletedLength();
 }
 
-#ifdef ENABLE_MESSAGE_DIGEST
-
 void Piece::setHashType(const std::string& hashType)
 {
   hashType_ = hashType;
@@ -303,8 +295,6 @@ void Piece::destroyHashContext()
   mdctx_.reset();
   nextBegin_ = 0;
 }
-
-#endif // ENABLE_MESSAGE_DIGEST
 
 bool Piece::usedBy(cuid_t cuid) const
 {

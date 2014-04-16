@@ -61,9 +61,7 @@
 #include "SegList.h"
 #include "array_fun.h"
 #include "help_tags.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "MessageDigest.h"
-#endif // ENABLE_MESSAGE_DIGEST
+#include "MessageDigest.h"
 
 namespace aria2 {
 
@@ -368,7 +366,6 @@ std::string IndexOutOptionHandler::createPossibleValuesString() const
   return "INDEX=PATH";
 }
 
-#ifdef ENABLE_MESSAGE_DIGEST
 ChecksumOptionHandler::ChecksumOptionHandler
 (PrefPtr pref,
  const char* description,
@@ -397,7 +394,6 @@ std::string ChecksumOptionHandler::createPossibleValuesString() const
 {
   return "HASH_TYPE=HEX_DIGEST";
 }
-#endif // ENABLE_MESSAGE_DIGEST
 
 ParameterOptionHandler::ParameterOptionHandler
 (PrefPtr pref,

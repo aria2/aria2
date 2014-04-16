@@ -50,14 +50,10 @@ void GrowSegment::updateWrittenLength(int32_t bytes)
   piece_->setAllBlock();
 }
 
-#ifdef ENABLE_MESSAGE_DIGEST
-
 std::string GrowSegment::getDigest()
 {
   return A2STR::NIL;
 }
-
-#endif // ENABLE_MESSAGE_DIGEST
 
 void GrowSegment::clear(WrDiskCache* diskCache)
 {

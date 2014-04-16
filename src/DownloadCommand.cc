@@ -65,10 +65,8 @@
 #include "Piece.h"
 #include "WrDiskCacheEntry.h"
 #include "DownloadFailureException.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "MessageDigest.h"
-# include "message_digest_helper.h"
-#endif // ENABLE_MESSAGE_DIGEST
+#include "MessageDigest.h"
+#include "message_digest_helper.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
@@ -86,7 +84,6 @@ DownloadCommand::DownloadCommand(cuid_t cuid,
     lowestDownloadSpeedLimit_(0),
     pieceHashValidationEnabled_(false)
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   {
     if(getOption()->getAsBool(PREF_REALTIME_CHUNK_CHECKSUM)) {
       const std::string& algo = getDownloadContext()->getPieceHashType();
@@ -96,7 +93,6 @@ DownloadCommand::DownloadCommand(cuid_t cuid,
       }
     }
   }
-#endif // ENABLE_MESSAGE_DIGEST
 
   peerStat_ = req->initPeerStat();
   peerStat_->downloadStart();
@@ -236,8 +232,6 @@ bool DownloadCommand::executeInternal() {
       A2_LOG_INFO(fmt(MSG_SEGMENT_DOWNLOAD_COMPLETED,
                       getCuid()));
 
-#ifdef ENABLE_MESSAGE_DIGEST
-
       {
         const std::string& expectedPieceHash =
           getDownloadContext()->getPieceHash(segment->getIndex());
@@ -270,9 +264,6 @@ bool DownloadCommand::executeInternal() {
         }
       }
 
-#else // !ENABLE_MESSAGE_DIGEST
-      completeSegment(getCuid(), segment);
-#endif // !ENABLE_MESSAGE_DIGEST
     } else {
       // If segment is not canceled here, in the next pipelining
       // request, aria2 requests bad range
@@ -319,7 +310,6 @@ bool DownloadCommand::prepareForNextSegment() {
         getFileEntry()->setLength(getPieceStorage()->getCompletedLength());
       }
     }
-#ifdef ENABLE_MESSAGE_DIGEST
     if(getDownloadContext()->getPieceHashType().empty()) {
       auto entry = make_unique<ChecksumCheckIntegrityEntry>(getRequestGroup());
       if(entry->isValidationReady()) {
@@ -329,7 +319,6 @@ bool DownloadCommand::prepareForNextSegment() {
           (std::move(entry));
       }
     }
-#endif // ENABLE_MESSAGE_DIGEST
     // Following 2lines are needed for DownloadEngine to detect
     // completed RequestGroups without 1sec delay.
     getDownloadEngine()->setNoWait(true);
@@ -370,8 +359,6 @@ bool DownloadCommand::prepareForNextSegment() {
   }
 }
 
-#ifdef ENABLE_MESSAGE_DIGEST
-
 void DownloadCommand::validatePieceHash(const std::shared_ptr<Segment>& segment,
                                         const std::string& expectedHash,
                                         const std::string& actualHash)
@@ -392,8 +379,6 @@ void DownloadCommand::validatePieceHash(const std::shared_ptr<Segment>& segment,
            static_cast<unsigned long>(segment->getIndex())));
   }
 }
-
-#endif // ENABLE_MESSAGE_DIGEST
 
 void DownloadCommand::completeSegment(cuid_t cuid,
                                       const std::shared_ptr<Segment>& segment)

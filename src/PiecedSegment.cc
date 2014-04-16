@@ -90,8 +90,6 @@ void PiecedSegment::updateWrittenLength(int32_t bytes)
   writtenLength_ = newWrittenLength;
 }
 
-#ifdef ENABLE_MESSAGE_DIGEST
-
 bool PiecedSegment::updateHash
 (int32_t begin,
  const unsigned char* data,
@@ -110,18 +108,12 @@ std::string PiecedSegment::getDigest()
   return piece_->getDigest();
 }
 
-#endif // ENABLE_MESSAGE_DIGEST
-
 void PiecedSegment::clear(WrDiskCache* diskCache)
 {
   writtenLength_ = 0;
   piece_->clearAllBlock(diskCache);
 
-#ifdef ENABLE_MESSAGE_DIGEST
-
   piece_->destroyHashContext();
-
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 std::shared_ptr<Piece> PiecedSegment::getPiece() const

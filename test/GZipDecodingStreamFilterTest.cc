@@ -12,9 +12,7 @@
 #include "ByteArrayDiskWriter.h"
 #include "SinkStreamFilter.h"
 #include "MockSegment.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "MessageDigest.h"
-#endif // ENABLE_MESSAGE_DIGEST
+#include "MessageDigest.h"
 
 namespace aria2 {
 
@@ -70,13 +68,11 @@ void GZipDecodingStreamFilterTest::testTransform()
     filter_->transform(writer_, segment_, buf, in.gcount());
   }
   CPPUNIT_ASSERT(filter_->finished());
-#ifdef ENABLE_MESSAGE_DIGEST
   std::string data = writer_->getString();
   std::shared_ptr<MessageDigest> sha1(MessageDigest::sha1());
   sha1->update(data.data(), data.size());
   CPPUNIT_ASSERT_EQUAL(std::string("8b577b33c0411b2be9d4fa74c7402d54a8d21f96"),
                        util::toHex(sha1->digest()));
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 } // namespace aria2

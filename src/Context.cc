@@ -66,6 +66,7 @@
 #include "fmt.h"
 #include "console.h"
 #include "UriListParser.h"
+#include "message_digest_helper.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
@@ -73,9 +74,6 @@
 # include "metalink_helper.h"
 # include "MetalinkEntry.h"
 #endif // ENABLE_METALINK
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "message_digest_helper.h"
-#endif // ENABLE_MESSAGE_DIGEST
 
 extern char* optarg;
 extern int optind, opterr, optopt;

@@ -85,8 +85,6 @@ public:
 
   virtual void updateWrittenLength(int32_t bytes) CXX11_OVERRIDE;
 
-#ifdef ENABLE_MESSAGE_DIGEST
-
   virtual bool updateHash
   (int32_t begin,
    const unsigned char* data,
@@ -101,8 +99,6 @@ public:
   }
 
   virtual std::string getDigest() CXX11_OVERRIDE;
-
-#endif // ENABLE_MESSAGE_DIGEST
 
   virtual void clear(WrDiskCache* diskCache) CXX11_OVERRIDE;
 

@@ -7,10 +7,8 @@
 #include "MetalinkResource.h"
 #include "MetalinkMetaurl.h"
 #include "FileEntry.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "Checksum.h"
-# include "ChunkChecksum.h"
-#endif // ENABLE_MESSAGE_DIGEST
+#include "Checksum.h"
+#include "ChunkChecksum.h"
 #include "Signature.h"
 
 namespace aria2 {
@@ -22,11 +20,9 @@ class MetalinkParserControllerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testResourceTransaction);
   CPPUNIT_TEST(testResourceTransaction_withBaseUri);
   CPPUNIT_TEST(testMetaurlTransaction);
-#ifdef ENABLE_MESSAGE_DIGEST
   CPPUNIT_TEST(testChecksumTransaction);
   CPPUNIT_TEST(testChunkChecksumTransaction);
   CPPUNIT_TEST(testChunkChecksumTransactionV4);
-#endif // ENABLE_MESSAGE_DIGEST
   CPPUNIT_TEST(testSignatureTransaction);
 
   CPPUNIT_TEST_SUITE_END();
@@ -41,11 +37,9 @@ public:
   void testResourceTransaction();
   void testResourceTransaction_withBaseUri();
   void testMetaurlTransaction();
-#ifdef ENABLE_MESSAGE_DIGEST
   void testChecksumTransaction();
   void testChunkChecksumTransaction();
   void testChunkChecksumTransactionV4();
-#endif // ENABLE_MESSAGE_DIGEST
   void testSignatureTransaction();
 };
 
@@ -183,7 +177,6 @@ void MetalinkParserControllerTest::testMetaurlTransaction()
 #endif // !ENABLE_BITTORRENT
 }
 
-#ifdef ENABLE_MESSAGE_DIGEST
 void MetalinkParserControllerTest::testChecksumTransaction()
 {
   MetalinkParserController ctrl;
@@ -310,7 +303,6 @@ void MetalinkParserControllerTest::testChunkChecksumTransactionV4()
     CPPUNIT_ASSERT(!m->getEntries()[2]->chunkChecksum);
   }
 }
-#endif // ENABLE_MESSAGE_DIGEST
 
 void MetalinkParserControllerTest::testSignatureTransaction()
 {

@@ -59,9 +59,7 @@
 #include "MetalinkHttpEntry.h"
 #include "base64.h"
 #include "array_fun.h"
-#ifdef ENABLE_MESSAGE_DIGEST
 #include "MessageDigest.h"
-#endif // ENABLE_MESSAGE_DIGEST
 #ifdef HAVE_ZLIB
 # include "GZipDecodingStreamFilter.h"
 #endif // HAVE_ZLIB
@@ -395,7 +393,6 @@ void HttpResponse::getMetalinKHttpEntries(
   std::sort(result.begin(), result.end());
 }
 
-#ifdef ENABLE_MESSAGE_DIGEST
 // Digest header field is defined by
 // http://tools.ietf.org/html/rfc3230.
 void HttpResponse::getDigest(std::vector<Checksum>& result) const
@@ -445,6 +442,5 @@ void HttpResponse::getDigest(std::vector<Checksum>& result) const
   }
   std::swap(temp, result);
 }
-#endif // ENABLE_MESSAGE_DIGEST
 
 } // namespace aria2

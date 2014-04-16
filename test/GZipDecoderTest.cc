@@ -8,9 +8,7 @@
 #include "TestUtil.h"
 #include "Exception.h"
 #include "util.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "MessageDigest.h"
-#endif // ENABLE_MESSAGE_DIGEST
+#include "MessageDigest.h"
 
 namespace aria2 {
 
@@ -53,10 +51,8 @@ void GZipDecoderTest::testDecode()
 
   out.close();
 
-#ifdef ENABLE_MESSAGE_DIGEST
   CPPUNIT_ASSERT_EQUAL(std::string("8b577b33c0411b2be9d4fa74c7402d54a8d21f96"),
                        fileHexDigest(MessageDigest::sha1().get(), outfile));
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 } // namespace aria2

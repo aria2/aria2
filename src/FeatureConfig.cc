@@ -141,11 +141,7 @@ const char* strSupportedFeature(int feature)
     break;
 
   case(FEATURE_MESSAGE_DIGEST):
-#ifdef ENABLE_MESSAGE_DIGEST
     return "Message Digest";
-#else // !ENABLE_MESSAGE_DIGEST
-    return 0;
-#endif // !ENABLE_MESSAGE_DIGEST
     break;
 
   case(FEATURE_METALINK):

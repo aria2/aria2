@@ -50,10 +50,8 @@ std::unique_ptr<Cookie> createCookie
 
 std::string fromHex(const std::string& s);
 
-#ifdef ENABLE_MESSAGE_DIGEST
 // Returns hex digest of contents of file denoted by filename.
 std::string fileHexDigest(MessageDigest* ctx, const std::string& filename);
-#endif // ENABLE_MESSAGE_DIGEST
 
 WrDiskCacheEntry::DataCell* createDataCell(int64_t goff,
                                            const char* data,

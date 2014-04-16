@@ -143,7 +143,6 @@ std::shared_ptr<RequestGroup> createRequestGroup
   dctx->getFirstFileEntry()->setUris(uris);
   dctx->getFirstFileEntry()->setMaxConnectionPerServer
     (option->getAsInt(PREF_MAX_CONNECTION_PER_SERVER));
-#ifdef ENABLE_MESSAGE_DIGEST
   const std::string& checksum = option->get(PREF_CHECKSUM);
   if(!checksum.empty()) {
     auto p = util::divide(std::begin(checksum), std::end(checksum), '=');
@@ -153,7 +152,6 @@ std::shared_ptr<RequestGroup> createRequestGroup
     dctx->setDigest(hashType,
                     util::fromHex(std::begin(hexDigest), std::end(hexDigest)));
   }
-#endif // ENABLE_MESSAGE_DIGEST
   rg->setDownloadContext(dctx);
   rg->setPauseRequested(option->getAsBool(PREF_PAUSE));
   removeOneshotOption(option);

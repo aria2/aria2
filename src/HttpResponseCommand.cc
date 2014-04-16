@@ -75,10 +75,8 @@
 #include "SocketRecvBuffer.h"
 #include "MetalinkHttpEntry.h"
 #include "NullProgressInfoFile.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "Checksum.h"
-# include "ChecksumCheckIntegrityEntry.h"
-#endif // ENABLE_MESSAGE_DIGEST
+#include "Checksum.h"
+#include "ChecksumCheckIntegrityEntry.h"
 #ifdef HAVE_ZLIB
 # include "GZipDecodingStreamFilter.h"
 #endif // HAVE_ZLIB
@@ -210,7 +208,6 @@ bool HttpResponseCommand::executeInternal()
       }
     }
 
-#ifdef ENABLE_MESSAGE_DIGEST
     if (httpHeader->defined(HttpHeader::DIGEST)) {
       std::vector<Checksum> checksums;
       httpResponse->getDigest(checksums);
@@ -228,7 +225,6 @@ bool HttpResponseCommand::executeInternal()
         }
       }
     }
-#endif // ENABLE_MESSAGE_DIGEST
   }
 
   if(statusCode >= 300) {
@@ -280,7 +276,6 @@ bool HttpResponseCommand::executeInternal()
     return handleDefaultEncoding(std::move(httpResponse));
   }
 
-#ifdef ENABLE_MESSAGE_DIGEST
   if (!ctx->getHashType().empty() && httpHeader->defined(HttpHeader::DIGEST)) {
     std::vector<Checksum> checksums;
     httpResponse->getDigest(checksums);
@@ -290,7 +285,6 @@ bool HttpResponseCommand::executeInternal()
       }
     }
   }
-#endif // ENABLE_MESSAGE_DIGEST
 
   // validate totalsize
   grp->validateTotalLength(fe->getLength(), httpResponse->getEntityLength());
@@ -424,7 +418,6 @@ bool HttpResponseCommand::handleOtherEncoding(
       getRequestGroup()->downloadFinishedByFileLength()) {
     getRequestGroup()->initPieceStorage();
 
-#ifdef ENABLE_MESSAGE_DIGEST
     // TODO Known issue: if .aria2 file exists, it will not be deleted
     // on successful verification, because .aria2 file is not loaded.
     // See also FtpNegotiationCommand::onFileSizeDetermined()
@@ -434,9 +427,8 @@ bool HttpResponseCommand::handleOtherEncoding(
       entry->initValidator();
       getPieceStorage()->getDiskAdaptor()->openExistingFile();
       getDownloadEngine()->getCheckIntegrityMan()->pushEntry(std::move(entry));
-    } else
-#endif // ENABLE_MESSAGE_DIGEST
-    {
+    }
+    else {
       getPieceStorage()->markAllPiecesDone();
       getDownloadContext()->setChecksumVerified(true);
       A2_LOG_NOTICE(fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
@@ -459,14 +451,12 @@ bool HttpResponseCommand::handleOtherEncoding(
     // TODO Known issue: if .aria2 file exists, it will not be deleted
     // on successful verification, because .aria2 file is not loaded.
     // See also FtpNegotiationCommand::onFileSizeDetermined()
-#ifdef ENABLE_MESSAGE_DIGEST
     if (getDownloadContext()->isChecksumVerificationNeeded()) {
       A2_LOG_DEBUG("Verify checksum for zero-length file");
       auto entry = make_unique<ChecksumCheckIntegrityEntry>(getRequestGroup());
       entry->initValidator();
       getDownloadEngine()->getCheckIntegrityMan()->pushEntry(std::move(entry));
     } else
-#endif // ENABLE_MESSAGE_DIGEST
     {
       getRequestGroup()->getPieceStorage()->markAllPiecesDone();
     }
@@ -572,7 +562,6 @@ void HttpResponseCommand::onDryRunFileFound()
   poolConnection();
 }
 
-#ifdef ENABLE_MESSAGE_DIGEST
 bool HttpResponseCommand::checkChecksum(
     const std::shared_ptr<DownloadContext>& dctx, const Checksum& checksum)
 {
@@ -586,6 +575,5 @@ bool HttpResponseCommand::checkChecksum(
 
   return false;
 }
-#endif // ENABLE_MESSAGE_DIGEST
 
 } // namespace aria2

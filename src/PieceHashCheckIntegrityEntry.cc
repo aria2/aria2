@@ -58,13 +58,11 @@ bool PieceHashCheckIntegrityEntry::isValidationReady()
 
 void PieceHashCheckIntegrityEntry::initValidator()
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   auto validator = make_unique<IteratableChunkChecksumValidator>
     (getRequestGroup()->getDownloadContext(),
      getRequestGroup()->getPieceStorage());
   validator->init();
   setValidator(std::move(validator));
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 } // namespace aria2

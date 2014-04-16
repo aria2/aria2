@@ -46,11 +46,9 @@
 #include "uri.h"
 #include "Signature.h"
 #include "util.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "Checksum.h"
-# include "ChunkChecksum.h"
-# include "MessageDigest.h"
-#endif // ENABLE_MESSAGE_DIGEST
+#include "Checksum.h"
+#include "ChunkChecksum.h"
+#include "MessageDigest.h"
 #ifdef ENABLE_BITTORRENT
 # include "magnet.h"
 #endif // ENABLE_BITTORRENT
@@ -78,11 +76,9 @@ void MetalinkParserController::newEntryTransaction()
   tEntry_ = make_unique<MetalinkEntry>();
   tResource_.reset();
   tMetaurl_.reset();
-#ifdef ENABLE_MESSAGE_DIGEST
   tChecksum_.reset();
   tChunkChecksumV4_.reset();
   tChunkChecksum_.reset();
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::setFileNameOfEntry(std::string filename)
@@ -263,17 +259,14 @@ void MetalinkParserController::cancelResourceTransaction()
 
 void MetalinkParserController::newChecksumTransaction()
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   if(!tEntry_) {
     return;
   }
   tChecksum_ = make_unique<Checksum>();
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::setTypeOfChecksum(std::string type)
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   if(!tChecksum_) {
     return;
   }
@@ -283,12 +276,10 @@ void MetalinkParserController::setTypeOfChecksum(std::string type)
   } else {
     cancelChecksumTransaction();
   }
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::setHashOfChecksum(std::string md)
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   if(!tChecksum_) {
     return;
   }
@@ -297,12 +288,10 @@ void MetalinkParserController::setHashOfChecksum(std::string md)
   } else {
     cancelChecksumTransaction();
   }
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::commitChecksumTransaction()
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   if(!tChecksum_) {
     return;
   }
@@ -312,30 +301,24 @@ void MetalinkParserController::commitChecksumTransaction()
     tEntry_->checksum = std::move(tChecksum_);
   }
   tChecksum_.reset();
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::cancelChecksumTransaction()
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   tChecksum_.reset();
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::newChunkChecksumTransactionV4()
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   if(!tEntry_) {
     return;
   }
   tChunkChecksumV4_ = make_unique<ChunkChecksum>();
   tempChunkChecksumsV4_.clear();
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::setTypeOfChunkChecksumV4(std::string type)
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   if(!tChunkChecksumV4_) {
     return;
   }
@@ -345,12 +328,10 @@ void MetalinkParserController::setTypeOfChunkChecksumV4(std::string type)
   } else {
     cancelChunkChecksumTransactionV4();
   }
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::setLengthOfChunkChecksumV4(size_t length)
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   if(!tChunkChecksumV4_) {
     return;
   }
@@ -359,12 +340,10 @@ void MetalinkParserController::setLengthOfChunkChecksumV4(size_t length)
   } else {
     cancelChunkChecksumTransactionV4();
   }
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::addHashOfChunkChecksumV4(std::string md)
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   if(!tChunkChecksumV4_) {
     return;
   }
@@ -373,12 +352,10 @@ void MetalinkParserController::addHashOfChunkChecksumV4(std::string md)
   } else {
     cancelChunkChecksumTransactionV4();
   }
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::commitChunkChecksumTransactionV4()
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   if(!tChunkChecksumV4_) {
     return;
   }
@@ -389,30 +366,24 @@ void MetalinkParserController::commitChunkChecksumTransactionV4()
     tEntry_->chunkChecksum = std::move(tChunkChecksumV4_);
   }
   tChunkChecksumV4_.reset();
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::cancelChunkChecksumTransactionV4()
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   tChunkChecksumV4_.reset();
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::newChunkChecksumTransaction()
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   if(!tEntry_) {
     return;
   }
   tChunkChecksum_ = make_unique<ChunkChecksum>();
   tempChunkChecksums_.clear();
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::setTypeOfChunkChecksum(std::string type)
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   if(!tChunkChecksum_) {
     return;
   }
@@ -422,12 +393,10 @@ void MetalinkParserController::setTypeOfChunkChecksum(std::string type)
   } else {
     cancelChunkChecksumTransaction();
   }
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::setLengthOfChunkChecksum(size_t length)
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   if(!tChunkChecksum_) {
     return;
   }
@@ -436,13 +405,11 @@ void MetalinkParserController::setLengthOfChunkChecksum(size_t length)
   } else {
     cancelChunkChecksumTransaction();
   }
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::addHashOfChunkChecksum(size_t order,
                                                       std::string md)
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   if(!tChunkChecksum_) {
     return;
   }
@@ -451,22 +418,18 @@ void MetalinkParserController::addHashOfChunkChecksum(size_t order,
   } else {
     cancelChunkChecksumTransaction();
   }
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::createNewHashOfChunkChecksum(size_t order)
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   if(!tChunkChecksum_) {
     return;
   }
   tempHashPair_.first = order;
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::setMessageDigestOfChunkChecksum(std::string md)
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   if(!tChunkChecksum_) {
     return;
   }
@@ -475,22 +438,18 @@ void MetalinkParserController::setMessageDigestOfChunkChecksum(std::string md)
   } else {
     cancelChunkChecksumTransaction();
   }
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::addHashOfChunkChecksum()
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   if(!tChunkChecksum_) {
     return;
   }
   tempChunkChecksums_.push_back(tempHashPair_);
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::commitChunkChecksumTransaction()
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   if(!tChunkChecksum_) {
     return;
   }
@@ -508,14 +467,11 @@ void MetalinkParserController::commitChunkChecksumTransaction()
     tEntry_->chunkChecksum = std::move(tChunkChecksum_);
   }
   tChunkChecksum_.reset();
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::cancelChunkChecksumTransaction()
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   tChunkChecksum_.reset();
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::newSignatureTransaction()

@@ -65,9 +65,7 @@ void FeatureConfigTest::testFeatureSummary() {
     "HTTPS",
 #endif // ENABLE_SSL
 
-#ifdef ENABLE_MESSAGE_DIGEST
     "Message Digest",
-#endif // ENABLE_MESSAGE_DIGEST
 
 #ifdef ENABLE_METALINK
     "Metalink",

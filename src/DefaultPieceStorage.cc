@@ -113,11 +113,7 @@ std::shared_ptr<Piece> DefaultPieceStorage::checkOutPiece
   std::shared_ptr<Piece> piece = findUsedPiece(index);
   if(!piece) {
     piece.reset(new Piece(index, bitfieldMan_->getBlockLength(index)));
-#ifdef ENABLE_MESSAGE_DIGEST
-
     piece->setHashType(downloadContext_->getPieceHashType());
-
-#endif // ENABLE_MESSAGE_DIGEST
 
     addUsedPiece(piece);
   }
@@ -780,11 +776,7 @@ void DefaultPieceStorage::markPiecesDone(int64_t length)
         p->completeBlock(i);
       }
 
-#ifdef ENABLE_MESSAGE_DIGEST
-
       p->setHashType(downloadContext_->getPieceHashType());
-
-#endif // ENABLE_MESSAGE_DIGEST
 
       addUsedPiece(p);
     }

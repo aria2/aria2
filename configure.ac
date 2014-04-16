@@ -531,15 +531,6 @@ AM_CONDITIONAL([HAVE_OPENSSL], [ test "x$have_openssl" = "xyes" ])
 AM_CONDITIONAL([USE_OPENSSL_MD], [ test "x$use_md" = "xopenssl"])
 AM_CONDITIONAL([USE_INTERNAL_MD], [ test "x$use_md" = "xinternal"])
 
-if test "x$use_md" != "x"; then
-  AC_DEFINE([ENABLE_MESSAGE_DIGEST], [1],
-            [Define to 1 if message digest support is enabled.])
-  AM_CONDITIONAL([ENABLE_MESSAGE_DIGEST], true)
-  enable_message_digest=yes
-else
-  AM_CONDITIONAL([ENABLE_MESSAGE_DIGEST], false)
-fi
-
 if test "x$have_libgmp" = "xyes" ||
    test "x$have_libgcrypt" = "xyes" ||
    test "x$have_openssl" = "xyes"; then
@@ -558,8 +549,7 @@ else
   AM_CONDITIONAL([USE_INTERNAL_ARC4], true)
 fi
 
-if test "x$enable_bittorrent" = "xyes" &&
-   test "x$enable_message_digest" = "xyes"; then
+if test "x$enable_bittorrent" = "xyes"; then
   AC_DEFINE([ENABLE_BITTORRENT], [1],
             [Define to 1 if BitTorrent support is enabled.])
   AM_CONDITIONAL([ENABLE_BITTORRENT], true)
@@ -940,15 +930,13 @@ if test "x$have_option_const_name" = "xyes"; then
 fi
 
 AC_CONFIG_SUBDIRS([deps/wslay])
-if test "x$enable_message_digest" = "xyes"; then
-  enable_websocket=yes
-  AC_DEFINE([ENABLE_WEBSOCKET], [1],
-            [Define 1 if WebSocket support is enabled.])
-  WSLAY_LIBS="\$(top_builddir)/deps/wslay/lib/libwslay.la"
-  AC_SUBST([WSLAY_LIBS])
-  # $(top_srcdir) for `make distcheck`
-  CPPFLAGS="-I\$(top_builddir)/deps/wslay/lib/includes -I\$(top_srcdir)/deps/wslay/lib/includes $CPPFLAGS"
-fi
+enable_websocket=yes
+AC_DEFINE([ENABLE_WEBSOCKET], [1],
+          [Define 1 if WebSocket support is enabled.])
+WSLAY_LIBS="\$(top_builddir)/deps/wslay/lib/libwslay.la"
+AC_SUBST([WSLAY_LIBS])
+# $(top_srcdir) for `make distcheck`
+CPPFLAGS="-I\$(top_builddir)/deps/wslay/lib/includes -I\$(top_srcdir)/deps/wslay/lib/includes $CPPFLAGS"
 AM_CONDITIONAL([ENABLE_WEBSOCKET], [test "x$enable_websocket" = "xyes"])
 
 AM_CONDITIONAL([ENABLE_LIBARIA2], [test "x$enable_libaria2" = "xyes"])

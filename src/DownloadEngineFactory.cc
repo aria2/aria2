@@ -43,9 +43,7 @@
 #include "FileAllocationMan.h"
 #include "CheckIntegrityMan.h"
 #include "CheckIntegrityEntry.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "CheckIntegrityDispatcherCommand.h"
-#endif // ENABLE_MESSAGE_DIGEST
+#include "CheckIntegrityDispatcherCommand.h"
 #include "prefs.h"
 #include "FillRequestGroupCommand.h"
 #include "FileAllocationDispatcherCommand.h"
@@ -157,19 +155,15 @@ DownloadEngineFactory::newDownloadEngine
     e->setRequestGroupMan(std::move(requestGroupMan));
   }
   e->setFileAllocationMan(make_unique<FileAllocationMan>());
-#ifdef ENABLE_MESSAGE_DIGEST
   e->setCheckIntegrityMan(make_unique<CheckIntegrityMan>());
-#endif // ENABLE_MESSAGE_DIGEST
   e->addRoutineCommand(make_unique<FillRequestGroupCommand>
                        (e->newCUID(), e.get()));
   e->addRoutineCommand(make_unique<FileAllocationDispatcherCommand>
                        (e->newCUID(), e->getFileAllocationMan().get(),
                         e.get()));
-#ifdef ENABLE_MESSAGE_DIGEST
   e->addRoutineCommand(make_unique<CheckIntegrityDispatcherCommand>
                        (e->newCUID(), e->getCheckIntegrityMan().get(),
                         e.get()));
-#endif // ENABLE_MESSAGE_DIGEST
 
   if(op->getAsInt(PREF_AUTO_SAVE_INTERVAL) > 0) {
     e->addRoutineCommand

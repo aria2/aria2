@@ -172,7 +172,6 @@ public:
   virtual std::string createPossibleValuesString() const CXX11_OVERRIDE;
 };
 
-#ifdef ENABLE_MESSAGE_DIGEST
 class ChecksumOptionHandler : public AbstractOptionHandler {
 public:
   ChecksumOptionHandler(PrefPtr pref,
@@ -183,7 +182,6 @@ public:
     CXX11_OVERRIDE;
   virtual std::string createPossibleValuesString() const CXX11_OVERRIDE;
 };
-#endif // ENABLE_MESSAGE_DIGEST
 
 class ParameterOptionHandler : public AbstractOptionHandler {
 private:

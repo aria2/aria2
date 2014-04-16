@@ -50,10 +50,8 @@ class MetalinkResource;
 class MetalinkMetaurl;
 class Signature;
 
-#ifdef ENABLE_MESSAGE_DIGEST
 class Checksum;
 class ChunkChecksum;
-#endif // ENABLE_MESSAGE_DIGEST
 
 class MetalinkParserController {
 private:
@@ -64,7 +62,7 @@ private:
   std::unique_ptr<MetalinkResource> tResource_;
 
   std::unique_ptr<MetalinkMetaurl> tMetaurl_;
-#ifdef ENABLE_MESSAGE_DIGEST
+
   std::unique_ptr<Checksum> tChecksum_;
 
   std::unique_ptr<ChunkChecksum> tChunkChecksumV4_; // Metalink4Spec
@@ -76,8 +74,6 @@ private:
   std::vector<std::pair<size_t, std::string> > tempChunkChecksums_;//Metalink3Spec
 
   std::pair<size_t, std::string> tempHashPair_; // Metalink3Spec
-
-#endif // ENABLE_MESSAGE_DIGEST
 
   std::unique_ptr<Signature> tSignature_;
   std::string baseUri_;

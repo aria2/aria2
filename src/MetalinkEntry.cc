@@ -41,10 +41,8 @@
 #include "FileEntry.h"
 #include "util.h"
 #include "a2functional.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "Checksum.h"
-# include "ChunkChecksum.h"
-#endif // ENABLE_MESSAGE_DIGEST
+#include "Checksum.h"
+#include "ChunkChecksum.h"
 #include "Signature.h"
 #include "SimpleRandomizer.h"
 

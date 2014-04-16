@@ -45,9 +45,7 @@ class HttpDownloadCommand;
 class HttpResponse;
 class SocketCore;
 class StreamFilter;
-#ifdef ENABLE_MESSAGE_DIGEST
 class Checksum;
-#endif // ENABLE_MESSAGE_DIGEST
 
 // HttpResponseCommand receives HTTP response header from remote
 // server.  Because network I/O is non-blocking, execute() returns
@@ -76,13 +74,11 @@ private:
   void poolConnection();
 
   void onDryRunFileFound();
-#ifdef ENABLE_MESSAGE_DIGEST
   // Returns true if dctx and checksum has same hash type and hash
   // value.  If they have same hash type but different hash value,
   // throws exception.  Otherwise returns false.
   bool checkChecksum(const std::shared_ptr<DownloadContext>& dctx,
                      const Checksum& checksum);
-#endif // ENABLE_MESSAGE_DIGEST
 
 protected:
   bool executeInternal() CXX11_OVERRIDE;

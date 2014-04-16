@@ -359,7 +359,6 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
       }
     }
   }
-#ifdef ENABLE_MESSAGE_DIGEST
   {
     auto& entry = e->getCheckIntegrityMan()->getPickedEntry();
     if(entry) {
@@ -378,7 +377,6 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
       }
     }
   }
-#endif // ENABLE_MESSAGE_DIGEST
   if(isTTY_) {
     if (truncate_) {
       auto str = o.str(color, cols);

@@ -43,9 +43,7 @@ namespace aria2 {
 
 class PeerStat;
 class StreamFilter;
-#ifdef ENABLE_MESSAGE_DIGEST
 class MessageDigest;
-#endif // ENABLE_MESSAGE_DIGEST
 
 class DownloadCommand : public AbstractCommand {
 private:
@@ -53,9 +51,7 @@ private:
 
   std::unique_ptr<StreamFilter> streamFilter_;
 
-#ifdef ENABLE_MESSAGE_DIGEST
   std::unique_ptr<MessageDigest> messageDigest_;
-#endif // ENABLE_MESSAGE_DIGEST
 
   time_t startupIdleTime_;
 

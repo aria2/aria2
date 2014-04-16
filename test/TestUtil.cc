@@ -21,9 +21,7 @@
 #include "Option.h"
 #include "FileEntry.h"
 #include "DownloadResult.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "message_digest_helper.h"
-#endif // ENABLE_MESSAGE_DIGEST
+#include "message_digest_helper.h"
 
 namespace aria2 {
 
@@ -80,14 +78,12 @@ std::string fromHex(const std::string& s)
   return util::fromHex(s.begin(), s.end());
 }
 
-#ifdef ENABLE_MESSAGE_DIGEST
 std::string fileHexDigest(MessageDigest* ctx, const std::string& filename)
 {
   std::shared_ptr<DiskWriter> writer(new DefaultDiskWriter(filename));
   writer->openExistingFile();
   return util::toHex(message_digest::digest(ctx, writer, 0, writer->size()));
 }
-#endif // ENABLE_MESSAGE_DIGEST
 
 WrDiskCacheEntry::DataCell* createDataCell(int64_t goff,
                                            const char* data,

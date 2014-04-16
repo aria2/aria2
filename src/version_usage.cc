@@ -40,9 +40,7 @@
 
 #include "a2io.h"
 #include "FeatureConfig.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "MessageDigest.h"
-#endif // ENABLE_MESSAGE_DIGEST
+#include "MessageDigest.h"
 #include "help_tags.h"
 #include "prefs.h"
 #include "fmt.h"
@@ -70,10 +68,8 @@ void showVersion() {
             << _("** Configuration **") << "\n"
             << _("Enabled Features") << ": "
             << featureSummary() << "\n"
-#ifdef ENABLE_MESSAGE_DIGEST
             << _("Hash Algorithms") << ": "
             << MessageDigest::getSupportedHashTypeString() << "\n"
-#endif // ENABLE_MESSAGE_DIGEST
             << _("Libraries") << ": "
             << usedLibs() << "\n"
             << "\n"

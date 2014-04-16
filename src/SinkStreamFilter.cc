@@ -88,11 +88,9 @@ ssize_t SinkStreamFilter::transform
     } else {
       out->writeData(inbuf, wlen, segment->getPositionToWrite());
     }
-#ifdef ENABLE_MESSAGE_DIGEST
     if(hashUpdate_) {
       segment->updateHash(segment->getWrittenLength(), inbuf, wlen);
     }
-#endif // ENABLE_MESSAGE_DIGEST
     segment->updateWrittenLength(wlen);
   } else {
     wlen = 0;

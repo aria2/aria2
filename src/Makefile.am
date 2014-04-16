@@ -251,7 +251,18 @@ SRCS =  option_processing.cc\
 	HttpProxyRequestConnectChain.h\
 	FtpNegotiationConnectChain.h\
 	FtpTunnelRequestConnectChain.h\
-	Lock.h
+	Lock.h \
+	IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
+	IteratableChecksumValidator.cc IteratableChecksumValidator.h\
+	CheckIntegrityDispatcherCommand.cc CheckIntegrityDispatcherCommand.h\
+	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
+	ChecksumCheckIntegrityEntry.cc ChecksumCheckIntegrityEntry.h\
+	message_digest_helper.cc message_digest_helper.h\
+	Checksum.cc Checksum.h\
+	ChunkChecksum.cc ChunkChecksum.h\
+	MessageDigest.cc MessageDigest.h\
+	MessageDigestImpl.h\
+	HashFuncEntry.h
 
 if ANDROID
 SRCS += android/android.c
@@ -402,20 +413,6 @@ if ENABLE_ASYNC_DNS
 SRCS += AsyncNameResolver.cc AsyncNameResolver.h\
 	AsyncNameResolverMan.cc AsyncNameResolverMan.h
 endif # ENABLE_ASYNC_DNS
-
-if ENABLE_MESSAGE_DIGEST
-SRCS += IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
-	IteratableChecksumValidator.cc IteratableChecksumValidator.h\
-	CheckIntegrityDispatcherCommand.cc CheckIntegrityDispatcherCommand.h\
-	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
-	ChecksumCheckIntegrityEntry.cc ChecksumCheckIntegrityEntry.h\
-	message_digest_helper.cc message_digest_helper.h\
-	Checksum.cc Checksum.h\
-	ChunkChecksum.cc ChunkChecksum.h\
-	MessageDigest.cc MessageDigest.h\
-	MessageDigestImpl.h\
-	HashFuncEntry.h
-endif # ENABLE_MESSAGE_DIGEST
 
 if ENABLE_BITTORRENT
 SRCS += PeerAbstractCommand.cc PeerAbstractCommand.h\

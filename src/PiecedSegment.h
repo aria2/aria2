@@ -76,8 +76,6 @@ public:
 
   virtual void updateWrittenLength(int32_t bytes) CXX11_OVERRIDE;
 
-#ifdef ENABLE_MESSAGE_DIGEST
-
   // `begin' is a offset inside this segment.
   virtual bool updateHash
   (int32_t begin,
@@ -87,8 +85,6 @@ public:
   virtual bool isHashCalculated() const CXX11_OVERRIDE;
 
   virtual std::string getDigest() CXX11_OVERRIDE;
-
-#endif // ENABLE_MESSAGE_DIGEST
 
   virtual void clear(WrDiskCache* diskCache) CXX11_OVERRIDE;
 

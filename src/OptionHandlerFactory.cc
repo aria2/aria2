@@ -140,7 +140,6 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
-#ifdef ENABLE_MESSAGE_DIGEST
   {
     OptionHandler* op(new BooleanOptionHandler
                       (PREF_CHECK_INTEGRITY,
@@ -158,7 +157,6 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
-#endif // ENABLE_MESSAGE_DIGEST
   {
     OptionHandler* op(new BooleanOptionHandler
                       (PREF_CONDITIONAL_GET,
@@ -426,7 +424,6 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     op->setInitialOption(true);
     handlers.push_back(op);
   }
-#ifdef ENABLE_MESSAGE_DIGEST
   {
     OptionHandler* op(new BooleanOptionHandler
                       (PREF_HASH_CHECK_ONLY,
@@ -443,7 +440,6 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
-#endif // ENABLE_MESSAGE_DIGEST
   {
     OptionHandler* op(new BooleanOptionHandler
                       (PREF_HUMAN_READABLE,
@@ -693,7 +689,6 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
-#ifdef ENABLE_MESSAGE_DIGEST
   {
     OptionHandler* op(new BooleanOptionHandler
                       (PREF_REALTIME_CHUNK_CHECKSUM,
@@ -707,7 +702,6 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
-#endif // ENABLE_MESSAGE_DIGEST
   {
     OptionHandler* op(new BooleanOptionHandler
                       (PREF_REMOVE_CONTROL_FILE,
@@ -914,7 +908,6 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   // HTTP/FTP options
-#ifdef ENABLE_MESSAGE_DIGEST
   {
     OptionHandler* op(new ChecksumOptionHandler
                       (PREF_CHECKSUM,
@@ -926,7 +919,6 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
-#endif // ENABLE_MESSAGE_DIGEST
   {
     OptionHandler* op(new NumberOptionHandler
                       (PREF_CONNECT_TIMEOUT,

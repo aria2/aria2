@@ -347,12 +347,7 @@ void DefaultBtProgressInfoFile::load()
         ((size_t)bitfieldLength);
       READ_CHECK(fp, pieceBitfield.get(), bitfieldLength);
       piece->setBitfield(pieceBitfield.get(), bitfieldLength);
-
-#ifdef ENABLE_MESSAGE_DIGEST
-
       piece->setHashType(dctx_->getPieceHashType());
-
-#endif // ENABLE_MESSAGE_DIGEST
 
       inFlightPieces.push_back(piece);
     }

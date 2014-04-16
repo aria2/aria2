@@ -470,11 +470,9 @@ void RpcMethodTest::testAddMetalink()
     CPPUNIT_ASSERT_EQUAL
       (0, GroupId::toNumericId
        (gid4, downcast<String>(resParams->get(1))->s().c_str()));
-#ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT
       (File(e_->getOption()->get(PREF_DIR)+
             "/c908634fbc257fd56f0114912c2772aeeb4064f4.meta4").exists());
-#endif // ENABLE_MESSAGE_DIGEST
 
     auto tar = findReservedGroup(e_->getRequestGroupMan().get(), gid3);
     CPPUNIT_ASSERT(tar);
@@ -507,10 +505,8 @@ void RpcMethodTest::testAddMetalink()
                          findReservedGroup
                          (e_->getRequestGroupMan().get(), gid5)->
                          getFirstFilePath());
-#ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT
       (File(dir+"/c908634fbc257fd56f0114912c2772aeeb4064f4.meta4").exists());
-#endif // ENABLE_MESSAGE_DIGEST
   }
 }
 

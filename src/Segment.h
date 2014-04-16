@@ -66,8 +66,6 @@ public:
 
   virtual void updateWrittenLength(int32_t bytes) = 0;
 
-#ifdef ENABLE_MESSAGE_DIGEST
-
   // `begin' is a offset inside this segment.
   virtual bool updateHash
   (int32_t begin,
@@ -77,8 +75,6 @@ public:
   virtual bool isHashCalculated() const = 0;
 
   virtual std::string getDigest() = 0;
-
-#endif // ENABLE_MESSAGE_DIGEST
 
   virtual void clear(WrDiskCache* diskCache) = 0;
 

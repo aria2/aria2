@@ -79,10 +79,8 @@
 #include "Segment.h"
 #include "SocketRecvBuffer.h"
 #include "RequestGroupCriteria.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "CheckIntegrityCommand.h"
-# include "ChecksumCheckIntegrityEntry.h"
-#endif // ENABLE_MESSAGE_DIGEST
+#include "CheckIntegrityCommand.h"
+#include "ChecksumCheckIntegrityEntry.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 # include "BtRegistry.h"
@@ -240,14 +238,12 @@ std::unique_ptr<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
     // issue checksum verification and download fails without it.
     loadAndOpenFile(infoFile);
     if(downloadFinished()) {
-#ifdef ENABLE_MESSAGE_DIGEST
       if(downloadContext_->isChecksumVerificationNeeded()) {
         A2_LOG_INFO(MSG_HASH_CHECK_NOT_DONE);
         auto tempEntry = make_unique<ChecksumCheckIntegrityEntry>(this);
         tempEntry->setRedownload(true);
         return std::move(tempEntry);
       }
-#endif // ENABLE_MESSAGE_DIGEST
       downloadContext_->setChecksumVerified(true);
       A2_LOG_NOTICE(fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
                         gid_->toHex().c_str(),
@@ -257,7 +253,6 @@ std::unique_ptr<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
     return make_unique<StreamCheckIntegrityEntry>(this);
   }
 
-#ifdef ENABLE_MESSAGE_DIGEST
   if (downloadFinishedByFileLength() &&
       downloadContext_->isChecksumVerificationAvailable()) {
     pieceStorage_->markAllPiecesDone();
@@ -266,7 +261,6 @@ std::unique_ptr<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
     tempEntry->setRedownload(true);
     return std::move(tempEntry);
   } 
-#endif // ENABLE_MESSAGE_DIGEST
 
   loadAndOpenFile(infoFile);
   return make_unique<StreamCheckIntegrityEntry>(this);
@@ -520,7 +514,6 @@ void RequestGroup::processCheckIntegrityEntry(
   if(actualFileSize > downloadContext_->getTotalLength()) {
     entry->cutTrailingGarbage();
   }
-#ifdef ENABLE_MESSAGE_DIGEST
   if((option_->getAsBool(PREF_CHECK_INTEGRITY) ||
       downloadContext_->isChecksumVerificationNeeded()) &&
      entry->isValidationReady()) {
@@ -535,7 +528,6 @@ void RequestGroup::processCheckIntegrityEntry(
     e->getCheckIntegrityMan()->pushEntry(std::move(entry));
     return;
   }
-#endif // ENABLE_MESSAGE_DIGEST
 
   entry->onDownloadIncomplete(commands, e);
 }
@@ -664,16 +656,12 @@ void RequestGroup::adjustFilename(
       outfile.size() <= downloadContext_->getTotalLength()) {
     // File exists but user decided to resume it.
   }
-#ifdef ENABLE_MESSAGE_DIGEST
   else if(outfile.exists() && isCheckIntegrityReady()) {
       // check-integrity existing file
   }
-#endif // ENABLE_MESSAGE_DIGEST
   else {
     shouldCancelDownloadForSafety();
-#ifdef ENABLE_MESSAGE_DIGEST
   }
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void RequestGroup::removeDefunctControlFile(
@@ -709,11 +697,9 @@ void RequestGroup::loadAndOpenFile(
         pieceStorage_->getDiskAdaptor()->openExistingFile();
         pieceStorage_->markPiecesDone(outfile.size());
       }
-#ifdef ENABLE_MESSAGE_DIGEST
       else if (outfile.exists() && isCheckIntegrityReady()) {
         pieceStorage_->getDiskAdaptor()->openExistingFile();
       }
-#endif // ENABLE_MESSAGE_DIGEST
       else {
         pieceStorage_->getDiskAdaptor()->initAndOpenFile();
       }
