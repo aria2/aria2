@@ -74,6 +74,13 @@ class WebSocketSessionMan;
 } // namespace rpc
 #endif // ENABLE_WEBSOCKET
 
+namespace util {
+  namespace security {
+    class HMAC;
+    class HMACResult;
+  } // namespace security
+} // namespace util
+
 class DownloadEngine {
 private:
   void waitData();
@@ -173,6 +180,10 @@ private:
   // deleted.
   std::deque<std::unique_ptr<Command>> routineCommands_;
   std::deque<std::unique_ptr<Command>> commands_;
+
+  std::unique_ptr<util::security::HMAC> tokenHMAC_;
+  std::unique_ptr<util::security::HMACResult> tokenExpected_;
+
 public:
   DownloadEngine(std::unique_ptr<EventPoll> eventPoll);
 
@@ -360,6 +371,8 @@ public:
     return webSocketSessionMan_;
   }
 #endif // ENABLE_WEBSOCKET
+
+  bool validateToken(const std::string& token);
 };
 
 } // namespace aria2

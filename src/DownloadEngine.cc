@@ -73,6 +73,8 @@
 #ifdef ENABLE_WEBSOCKET
 # include "WebSocketSessionMan.h"
 #endif // ENABLE_WEBSOCKET
+#include "Option.h"
+#include "security.h"
 
 namespace aria2 {
 
@@ -630,5 +632,25 @@ void DownloadEngine::setWebSocketSessionMan
   webSocketSessionMan_ = std::move(wsman);
 }
 #endif // ENABLE_WEBSOCKET
+
+bool DownloadEngine::validateToken(const std::string& token)
+{
+  using namespace util::security;
+
+  if (!option_->defined(PREF_RPC_SECRET)) {
+    return true;
+  }
+  if (!tokenHMAC_) {
+    tokenHMAC_ = HMAC::createRandom();
+    if (!tokenHMAC_) {
+      A2_LOG_ERROR("Failed to create HMAC");
+      return false;
+    }
+
+    tokenExpected_ = make_unique<HMACResult>(
+        tokenHMAC_->getResult(option_->get(PREF_RPC_SECRET)));
+  }
+  return *tokenExpected_ == tokenHMAC_->getResult(token);
+}
 
 } // namespace aria2
