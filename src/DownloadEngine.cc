@@ -636,21 +636,66 @@ void DownloadEngine::setWebSocketSessionMan
 bool DownloadEngine::validateToken(const std::string& token)
 {
   using namespace util::security;
+  static size_t iterations = 5000;
 
   if (!option_->defined(PREF_RPC_SECRET)) {
     return true;
   }
   if (!tokenHMAC_) {
+    // Setup our stuff.
+
     tokenHMAC_ = HMAC::createRandom();
     if (!tokenHMAC_) {
       A2_LOG_ERROR("Failed to create HMAC");
       return false;
     }
 
+    // This should still be pretty fast on a modern system... Well, too fast,
+    // and that is why we adjust it.
+    // XXX We should run this setup high priorty, so that other processes on the
+    // system don't mess up our results and let us underestimate the iterations.
+    iterations = 5000;
+    std::deque<double> mm;
+    for (auto i = 0; i < 10; ++i) {
+      auto c = std::clock();
+      tokenExpected_ = make_unique<HMACResult>(
+          PBKDF2(tokenHMAC_.get(), option_->get(PREF_RPC_SECRET), iterations));
+      mm.push_back((std::clock() - c) / (double)CLOCKS_PER_SEC);
+    }
+    std::sort(mm.begin(), mm.end());
+    // Pop outliers.
+    mm.pop_front();
+    mm.pop_back();
+    mm.pop_back();
+    auto duration = std::accumulate(mm.begin(), mm.end(), 0.0) / mm.size();
+
+    A2_LOG_DEBUG(fmt("Took us %.4f secs on average to perform PBKDF2 with %zu "
+                     "iterations during setup",
+                     duration, iterations));
+
+    // Adjust iterations so that an op takes about 0.075 seconds, which would
+    // allow for ~14 attempts per second (instead of potentially thousands
+    // without PBKDF2)
+    // We use 0.0675, aka. 90% of 0.075, bwecause the compare we don't perform
+    // here also takes some time.
+    // We might overestimate the performance a bit, but should not perform
+    // worse than 0.1 secs per attempt on a normally loaded system.
+    iterations *= 0.0675 / duration;
+
+    auto c = std::clock();
     tokenExpected_ = make_unique<HMACResult>(
-        tokenHMAC_->getResult(option_->get(PREF_RPC_SECRET)));
+        PBKDF2(tokenHMAC_.get(), option_->get(PREF_RPC_SECRET), iterations));
+    duration = (std::clock() - c) / (double)CLOCKS_PER_SEC;
+    A2_LOG_DEBUG(fmt("Took us %.4f secs to perform PBKDF2 with %zu iterations",
+                     duration, iterations));
   }
-  return *tokenExpected_ == tokenHMAC_->getResult(token);
+
+  auto c = std::clock();
+  bool rv = *tokenExpected_ == PBKDF2(tokenHMAC_.get(), token, iterations);
+  auto duration = (std::clock() - c) / (double)CLOCKS_PER_SEC;
+  A2_LOG_DEBUG(fmt("Took us %.4f secs to perform token compare with %zu iterations",
+                   duration, iterations));
+  return rv;
 }
 
 } // namespace aria2
