@@ -217,6 +217,20 @@ private:
   bool clean_;
 };
 
+/**
+ * Create A PKBDF2-HMAC. See RFC 2898.
+ *
+ * Example:
+ *   result = PBKDF2(HMAC::create("password"), random_salt, 1000);
+ */
+HMACResult PBKDF2(HMAC* hmac, const char* salt, size_t salt_length,
+                  size_t iterations, size_t key_length = 0);
+inline HMACResult PBKDF2(HMAC* hmac, const std::string& salt, size_t iterations,
+                  size_t key_length = 0)
+{
+  return PBKDF2(hmac, salt.data(), salt.length(), iterations, key_length);
+}
+
 } // namespace security
 } // namespace util
 } // namespace aria2

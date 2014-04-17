@@ -140,6 +140,50 @@ bool HMAC::supports(const std::string& algorithm) {
     canon == "sha-384" ||  canon == "sha-512";
 }
 
+HMACResult PBKDF2(HMAC* hmac, const char* salt, size_t salt_length,
+                  size_t iterations, size_t key_length)
+{
+  if (!hmac) {
+    throw FATAL_EXCEPTION("hmac cannot be null");
+  }
+  const size_t hmac_length = hmac->length();
+  if (key_length == 0) {
+    key_length = hmac_length;
+  }
+  typedef union {
+    uint8_t bytes[4];
+    uint32_t count;
+  } counter_t;
+  counter_t counter, swapped;
+  counter.count = 1;
+
+  std::unique_ptr<char[]> work(new char[hmac_length]());
+  char* p = work.get();
+  std::string rv;
+
+  hmac->reset();
+
+  while (key_length) {
+    hmac->update(salt, salt_length);
+    swapped.count = htonl(counter.count++);
+    hmac->update((char*)swapped.bytes, sizeof(swapped.bytes));
+
+    auto bytes = hmac->getResult().getBytes();
+    memcpy(p, bytes.data(), bytes.length());
+
+    for (auto i = 1uL; i < iterations; ++i) {
+      hmac->update(bytes);
+      bytes = hmac->getResult().getBytes();
+      for (auto j = 0uL; j < hmac_length; ++j) {
+        p[j] ^= bytes[j];
+      }
+    }
+    auto use = std::min(key_length, hmac_length);
+    rv.append(p, use);
+    key_length -= use;
+  }
+  return HMACResult(rv);
+}
 
 } // namespace security
 } // namespace util
