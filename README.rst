@@ -129,9 +129,11 @@ JSON-RPC over WebSocket  libnettle or libgcrypt or OpenSSL
   If you prefer OpenSSL, run configure with ``--without-gnutls``
   ``--with-openssl``.
 
-  On Windows there is an experimental SSL implementation available that
-  is based on the native Windows SSL capabilities (Schannel). Run
-  configure with ``--with-wintls`` to use.
+  On Windows there is SSL implementation available that is based on
+  the native Windows SSL capabilities (Schannel) and it will be
+  preferred.  Hence neither GnuTLS nor OpenSSL are required on that
+  platform.  If you'd like to disable this behavior, run configure
+  with ``--without-wintls``.
 
 .. note::
 
@@ -142,13 +144,13 @@ JSON-RPC over WebSocket  libnettle or libgcrypt or OpenSSL
   installed.  If you prefer libgcrypt, run configure with
   ``--without-libnettle --with-libgcrypt``. If OpenSSL is selected over
   GnuTLS, neither libnettle nor libgcrypt will be used.
-  
+
   If none of the optional dependencies are installed, an internal
   implementation that only supports md5 and sha1 will be used.
 
-  On Windows there is an experimental implementation available that is
-  based on the native Windows capabilities. Run configure with
-  ``--with-wintls`` to use.
+  On Windows there is SSL implementation available that is based on
+  the native Windows capabilities and it will be preferred, unless
+  aria2 is configured with ``--without-wintls``.
 
 A user can have one of the following configurations for SSL and crypto
 libraries:
