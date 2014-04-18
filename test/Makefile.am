@@ -16,6 +16,7 @@ aria2c_SOURCES = AllTest.cc\
 	DefaultBtProgressInfoFileTest.cc\
 	RequestGroupTest.cc\
 	UtilTest.cc\
+	SecurityTest.cc\
 	UriListParserTest.cc\
 	HttpHeaderProcessorTest.cc\
 	RequestTest.cc\
