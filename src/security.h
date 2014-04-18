@@ -73,6 +73,13 @@ inline bool compare(const char *a, const char *b, size_t length)
       );
 }
 
+/**
+ * HMAC Result wrapper. While it is still possible to get the raw result bytes,
+ * when using this wrapper it is ensured that constant-time comparison is used.
+ * Also, this wrapper makes it an error to compare results of a different
+ * length, helping to prevent logic errors either during development, or
+ * triggering in the wild. Therefore |.getBytes()| use should be avoided.
+ */
 class HMACResult {
 public:
   HMACResult(const std::string& result)
@@ -121,16 +128,34 @@ private:
   size_t len_;
 };
 
-// See RFC 6234
+/**
+ * Implements HMAC-SHA* per RFC 6234. It supports the same cryptographic hash
+ * algorithms that MessageDigest supports, but at most the SHA-1, SHA-2
+ * algorithms as specified in the RFC.
+ */
 class HMAC {
 public:
+  /**
+   * Constructs a new HMAC. It is recommended to use the |create| or
+   * |createRandom| factory methods instead.
+   *
+   * @see create
+   * @see createRandom
+   */
   HMAC(const std::string& algorithm, const char* secret, size_t length);
 
+  /**
+   * Creates a new instance using the specified algorithm and secret.
+   */
   static std::unique_ptr<HMAC> create(
       const std::string& algorithm, const std::string& secret)
   {
     return create(algorithm, secret.data(), secret.length());
   }
+
+  /**
+   * Creates a new instance using the specified algorithm and secret.
+   */
   static std::unique_ptr<HMAC> create(
       const std::string& algorithm, const char* secret, size_t length)
   {
@@ -140,29 +165,52 @@ public:
     return make_unique<HMAC>(algorithm, secret, length);
   }
 
+  /**
+   * Creates a new instance using sha-1 and the specified secret.
+   */
   static std::unique_ptr<HMAC> create(const std::string& secret)
   {
     return create("sha-1", secret.data(), secret.length());
   }
+
+  /**
+   * Creates a new instance using sha-1 and the specified secret.
+   */
   static std::unique_ptr<HMAC> create(const char* secret, size_t length)
   {
     return create("sha-1", secret, length);
   }
 
-  // Create a Hmac with random secret.
+  /**
+   * Creates a new instance using the specified algorithm and a random secret.
+   */
   static std::unique_ptr<HMAC> createRandom(const std::string& algorithm);
+
+  /**
+   * Creates a new instance using sha-1 and a random secret.
+   */
   static std::unique_ptr<HMAC> createRandom()
   {
     return createRandom("sha-1");
   }
 
+  /**
+   * Tells if this implementation supports a specific hash algorithm.
+   */
   static bool supports(const std::string& algorithm);
 
+  /**
+   * Tells the length in bytes of the resulting HMAC.
+   */
   size_t length() const
   {
     return md_->getDigestLength();
   }
 
+  /**
+   * Resets the instance, clearing the internal state. The instance can be
+   * re-used afterwards.
+   */
   void reset()
   {
     if (clean_) {
@@ -173,17 +221,29 @@ public:
     clean_ = true;
   }
 
+  /**
+   * Updates the HMAC with new message data.
+   */
   void update(const std::string& data)
   {
     md_->update(data.data(), data.length());
     clean_ = false;
   }
+
+  /**
+   * Updates the HMAC with new message data.
+   */
   void update(const char* data, size_t length)
   {
     md_->update(data, length);
     clean_ = false;
   }
 
+  /**
+   * Returns the result. This can only be called once. After the call the
+   * internal state is reset and new HMACs can be computed with the same
+   * instance.
+   */
   HMACResult getResult()
   {
     auto rv = md_->digest();
@@ -196,6 +256,10 @@ public:
     return HMACResult(rv);
   }
 
+  /**
+   * Returns the resulting HMAC of string in one go. You cannot mix call to this
+   * method with calls to update.
+   */
   HMACResult getResult(const std::string& str)
   {
     reset();
@@ -203,6 +267,10 @@ public:
     return getResult();
   }
 
+  /**
+   * Returns the resulting HMAC of string in one go. You cannot mix call to this
+   * method with calls to update.
+   */
   HMACResult getResult(const char* data, size_t len)
   {
     reset();
@@ -221,10 +289,17 @@ private:
  * Create A PKBDF2-HMAC. See RFC 2898.
  *
  * Example:
- *   result = PBKDF2(HMAC::create("password"), random_salt, 1000);
+ *   result = PBKDF2(HMAC::create("password"), random_salt, salt_len, 1000);
  */
 HMACResult PBKDF2(HMAC* hmac, const char* salt, size_t salt_length,
                   size_t iterations, size_t key_length = 0);
+
+/**
+ * Create A PKBDF2-HMAC. See RFC 2898.
+ *
+ * Example:
+ *   result = PBKDF2(HMAC::create("password"), random_salt, 1000);
+ */
 inline HMACResult PBKDF2(HMAC* hmac, const std::string& salt, size_t iterations,
                   size_t key_length = 0)
 {
