@@ -405,10 +405,12 @@ void SecurityTest::testPBKDF2()
                                     test.iterations, test.key_len);
     const auto kl = test.key_len ? test.key_len : r.length();
     auto e = util::security::HMACResult( (char*)test.key, kl);
+#if 0
     printf("actual [%s]  expected [%s]\n",
         util::toHex(r.getBytes()).c_str(),
         util::toHex(e.getBytes()).c_str()
         );
+#endif
     CPPUNIT_ASSERT(r == e);
     CPPUNIT_ASSERT(r.getBytes() == std::string((char*)test.key, kl));
   }
