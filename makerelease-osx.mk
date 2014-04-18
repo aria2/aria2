@@ -5,9 +5,9 @@
 # This make file will:
 #  - Download a set of dependencies and verify the known-good hashes.
 #  - Build static libraries of aria2 dependencies.
-#  - Create a statically linked, universal build (i386,x86_64) aria2 release.
+#  - Create a statically linked, aria2 release.
 #    - The build will have all major features enabled, and will use
-#      AppleTLS.
+#      AppleTLS and GMP.
 #  - Create a corresponding .tar.bz containing the binaries:
 #  - Create a corresponding .pkg installer.
 #  - Create a corresponding .dmg image containing said installer.
@@ -31,6 +31,12 @@
 #  - $ pip install sphinx-build
 #  - $ ln -s ../makerelease-os.mk Makefile
 #  - $ make
+#
+# To make an universal build (x86_64, i686) use instead:
+#  - $ make universal
+#
+# To make an both builds use instead:
+#  - $ make multi
 #
 # If you haven't checkout out a release tag, you need to specify NON_RELEASE.
 # $ export NON_RELEASE=1
@@ -210,13 +216,15 @@ CPUS = $(shell sysctl hw.ncpu | cut -d" " -f2)
 
 # default target
 all::
+
+universal all::
 	@if test "x$(NON_RELEASE)" = "x" && !(git describe --tags --exact); then \
 		echo 'Not on a release tag; override by defining NON_RELEASE!'; \
 		exit 1; \
 	fi
 
 # No dice without sphinx
-all::
+universal all::
 	@if test "x$$(which sphinx-build)" = "x"; then \
 		echo "sphinx-build not present"; \
 		exit 1; \
@@ -256,8 +264,13 @@ cares.stamp: cares.tar.gz cares.check
 # Using (NON)ARCH_template kinda stinks, but real multi-target pattern rules
 # only exist in feverish dreams.
 define NONARCH_template
-$(1).build: $(1).x86_64.build $(1).i686.build
+$(1).build: $(1).x86_64.build
+
+$(1).universal.build: $(1).x86_64.build $(1).i686.build
+
 deps:: $(1).build
+
+deps.universal:: $(1).universal.build
 endef
 
 .PRECIOUS: zlib.%.build
@@ -296,8 +309,13 @@ $(1).%.build: $(1).stamp
 	$$(MAKE) -C $$(DEST) -s install
 	touch $$@
 
-$(1).build: $(1).x86_64.build $(1).i686.build
+$(1).build: $(1).x86_64.build
+
+$(1).universal.build: $(1).x86_64.build $(1).i686.build
+
 deps:: $(1).build
+
+deps.universal:: $(1).universal.build
 endef
 
 $(foreach lib,$(ARCHLIBS),$(eval $(call ARCH_template,$(lib))))
@@ -309,7 +327,7 @@ aria2.%.build: zlib.%.build expat.%.build gmp.%.build cares.%.build sqlite.%.bui
 	mkdir -p $(DEST)
 	( cd $(DEST) && ../$(SRCDIR)/configure \
 		--prefix=$(ARIA2_PREFIX) \
-		--bindir=$(ARIA2_PREFIX)/$(ARCH) \
+		--bindir=$(PWD)/$(DEST) \
 		--sysconfdir=/etc \
 		--with-cppunit-prefix=$(PWD)/$(ARCH) \
 		$(ARIA2_CONFFLAGS) \
@@ -324,34 +342,69 @@ aria2.%.build: zlib.%.build expat.%.build gmp.%.build cares.%.build sqlite.%.bui
 	$(MAKE) -C $(DEST) -sj$(CPUS) install-strip
 	touch $@
 
-aria2.build: aria2.x86_64.build aria2.i686.build
+aria2.build: aria2.x86_64.build
+	mkdir -p $(ARIA2_PREFIX)/bin
+	cp -f aria2.x86_64/aria2c $(ARIA2_PREFIX)/bin/aria2c
+	arch -64 $(ARIA2_PREFIX)/bin/aria2c -v
+	touch $@
+
+aria2.universal.build: aria2.x86_64.build aria2.i686.build
 	mkdir -p $(ARIA2_PREFIX)/bin
 	# Got two binaries now. Merge them into one universal binary and remove
 	# the old ones.
 	lipo \
-		-arch x86_64 $(ARIA2_PREFIX)/x86_64/aria2c \
-		-arch i686 $(ARIA2_PREFIX)/i686/aria2c \
+		-arch x86_64 aria2.x86_64/aria2c \
+		-arch i686 aria2.i686/aria2c \
 		-create -output $(ARIA2_PREFIX)/bin/aria2c
-	rm -rf $(ARIA2_PREFIX)/x86_64 $(ARIA2_PREFIX)/i686
 	# Basic sanity check
 	arch -64 $(ARIA2_PREFIX)/bin/aria2c -v
 	arch -32 $(ARIA2_PREFIX)/bin/aria2c -v
 	touch $@
 
-$(ARIA2_CHANGELOG): aria2.build
+$(ARIA2_CHANGELOG): aria2.x86_64.build
 	git log --pretty=fuller --date=short $(PREV_TAG)..HEAD > $@
 
-$(ARIA2_DOCS): aria2.build
+$(ARIA2_DOCS): aria2.x86_64.build
 	cp -av $(SRCDIR)/$(@F) $@
 
 $(ARIA2_DIST).tar.bz2: aria2.build $(ARIA2_DOCS) $(ARIA2_CHANGELOG)
 	find $(ARIA2_PREFIX) -exec touch "{}" \;
-	tar -cf $(ARIA2_DIST).tar.bz2 \
+	tar -cf $@ \
+		--use-compress-program=bzip2 \
+		--options='compression-level=9' \
+		$(ARIA2)
+
+$(ARIA2_DIST).universal.tar.bz2: aria2.universal.build $(ARIA2_DOCS) $(ARIA2_CHANGELOG)
+	find $(ARIA2_PREFIX) -exec touch "{}" \;
+	tar -cf $@ \
 		--use-compress-program=bzip2 \
 		--options='compression-level=9' \
 		$(ARIA2)
 
 $(ARIA2_DIST).pkg: aria2.build $(ARIA2_DOCS) $(ARIA2_CHANGELOG)
+	find $(ARIA2_PREFIX) -exec touch "{}" \;
+	pkgbuild \
+		--root $(ARIA2) \
+		--identifier aria2 \
+		--version $(VERSION) \
+		--install-location /usr/local/aria2 \
+		--ownership recommended \
+		out.pkg
+	pkgbuild \
+		--root $(SRCDIR)/osx-package/etc \
+		--identifier aria2.paths \
+		--version $(VERSION) \
+		--install-location /etc \
+		--ownership recommended \
+		paths.pkg
+	echo "$$ARIA2_DISTXML" > dist.xml
+	productbuild \
+		--distribution dist.xml \
+		--resources $(ARIA2_PREFIX)/share/doc/aria2 \
+		$@
+	rm -rf out.pkg paths.pkg dist.xml
+
+$(ARIA2_DIST).universal.pkg: aria2.universal.build $(ARIA2_DOCS) $(ARIA2_CHANGELOG)
 	find $(ARIA2_PREFIX) -exec touch "{}" \;
 	pkgbuild \
 		--root $(ARIA2) \
@@ -383,6 +436,21 @@ $(ARIA2_DIST).dmg: $(ARIA2_DIST).pkg
 	cp $(SRCDIR)/osx-package/DS_Store dmg/.DS_Store
 	hdiutil create $@.uncompressed \
 		-srcfolder dmg \
+		-volname "aria2 $(VERSION) Intel" \
+		-ov
+	hdiutil convert -format UDBZ -o $@ $@.uncompressed.dmg
+	hdiutil flatten $@
+	rm -rf $@.uncompressed.dmg dmg
+
+$(ARIA2_DIST).universal.dmg: $(ARIA2_DIST).universal.pkg
+	-rm -rf dmg
+	mkdir -p dmg/Docs
+	cp -av $(ARIA2_DIST).universal.pkg dmg/aria2.pkg
+	find $(ARIA2_PREFIX)/share/doc/aria2 -type f -depth 1 -exec cp -av "{}" dmg/Docs \;
+	rm -rf dmg/Docs/README dmg/Docs/README.rst
+	cp $(SRCDIR)/osx-package/DS_Store dmg/.DS_Store
+	hdiutil create $@.uncompressed \
+		-srcfolder dmg \
 		-volname "aria2 $(VERSION) Intel Universal" \
 		-ov
 	hdiutil convert -format UDBZ -o $@ $@.uncompressed.dmg
@@ -393,7 +461,15 @@ dist.build: $(ARIA2_DIST).tar.bz2 $(ARIA2_DIST).pkg $(ARIA2_DIST).dmg
 	echo 'Build success: $(ARIA2_DIST)'
 	touch $@
 
+dist.universal.build: $(ARIA2_DIST).universal.tar.bz2 $(ARIA2_DIST).universal.pkg $(ARIA2_DIST).universal.dmg
+	echo 'Build success: $(ARIA2_DIST)'
+	touch $@
+
 all:: dist.build
+
+universal:: dist.universal.build
+
+multi: all universal
 
 clean-dist:
 	rm -rf $(ARIA2_DIST).tar.bz2 $(ARIA2_DIST).pkg $(ARIA2_DIST).dmg
@@ -408,4 +484,4 @@ really-clean: cleaner
 	rm -rf *.tar.*
 
 
-.PHONY: all clean-dist clean cleaner really-clean
+.PHONY: all universal multi clean-dist clean cleaner really-clean
