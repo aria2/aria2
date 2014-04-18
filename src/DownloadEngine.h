@@ -183,6 +183,7 @@ private:
 
   std::unique_ptr<util::security::HMAC> tokenHMAC_;
   std::unique_ptr<util::security::HMACResult> tokenExpected_;
+  double tokenAverageDuration_;
 
 public:
   DownloadEngine(std::unique_ptr<EventPoll> eventPoll);
