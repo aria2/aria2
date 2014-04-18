@@ -682,10 +682,12 @@ bool DownloadEngine::validateToken(const std::string& token)
     // Adjust iterations so that an op takes about 0.075 seconds, which would
     // allow for ~14 attempts per second (instead of potentially thousands
     // without PBKDF2)
-    // We use 0.072, because the compare we don't perform
-    // here also takes some time.
+    // We use 0.072, because the compare we don't perform here also takes some
+    // time.
     // We might overestimate the performance a bit, but should not perform
-    // worse than 0.1 secs per attempt on a normally loaded system.
+    // worse than 0.12 secs per attempt on a normally loaded system and no better
+    // than 0.055. If this does not hold true anymore, the
+    // |tokenAverageDuration_| checks will force a re-calcuation.
     iterations *= 0.072 / duration;
 
     auto c = std::clock();
@@ -702,7 +704,8 @@ bool DownloadEngine::validateToken(const std::string& token)
   auto c = std::clock();
   bool rv = *tokenExpected_ == PBKDF2(tokenHMAC_.get(), token, iterations);
   auto duration = (std::clock() - c) / (double)CLOCKS_PER_SEC;
-  A2_LOG_DEBUG(fmt("Took us %.4f secs to perform token compare with %zu iterations",
+  A2_LOG_DEBUG(fmt("Took us %.4f secs to perform token compare with %zu "
+                   "iterations",
                    duration, iterations));;
 
   tokenAverageDuration_ = tokenAverageDuration_ * 0.9 + duration * 0.1;
