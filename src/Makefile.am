@@ -262,7 +262,8 @@ SRCS =  option_processing.cc\
 	ChunkChecksum.cc ChunkChecksum.h\
 	MessageDigest.cc MessageDigest.h\
 	MessageDigestImpl.h\
-	HashFuncEntry.h
+	HashFuncEntry.h \
+	util_security.cc util_security.h
 
 if ANDROID
 SRCS += android/android.c
