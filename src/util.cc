@@ -1551,6 +1551,7 @@ void generateRandomDataRandom(unsigned char* data, size_t length)
 }
 } // namespace
 
+#ifndef __MINGW32__
 namespace {
 void generateRandomDataUrandom
 (unsigned char* data, size_t length, std::ifstream& devUrand)
@@ -1558,6 +1559,7 @@ void generateRandomDataUrandom
   devUrand.read(reinterpret_cast<char*>(data), length);
 }
 } // namespace
+#endif
 
 void generateRandomData(unsigned char* data, size_t length)
 {
