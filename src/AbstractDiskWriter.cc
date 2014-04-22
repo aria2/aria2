@@ -229,15 +229,6 @@ int openFileWithFlags(const std::string& filename, int flags,
 #endif // !__MINGW32__
 } // namespace
 
-#ifdef __MINGW32__
-namespace {
-HANDLE getWin32Handle(int fd)
-{
-  return reinterpret_cast<HANDLE>(_get_osfhandle(fd));
-}
-} // namespace
-#endif // __MINGW32__
-
 void AbstractDiskWriter::openExistingFile(int64_t totalLength)
 {
   int flags = O_BINARY;
