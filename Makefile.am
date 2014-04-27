@@ -11,10 +11,9 @@ EXTRA_DIST = config.rpath \
 	     makerelease-osx.mk osx-package/DS_Store osx-package/etc/paths.d/aria2c osx-package/etc/manpaths.d/aria2 \
 	     examples/libaria2ex.cc examples/libaria2wx.cc
 
-dist_doc_DATA = README README.rst
+dist_doc_DATA = README README.rst README.html
 
 if HAVE_RST2HTML
-dist_doc_DATA += README.html
 
 README.html: README.rst
 	$(RST2HTML)  $< > README.html
