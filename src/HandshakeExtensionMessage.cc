@@ -199,9 +199,15 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
     }
   }
   const Integer* metadataSize = downcast<Integer>(dict->get("metadata_size"));
-  // Only accept metadata smaller than 1MiB
-  if(metadataSize && metadataSize->i() <= 1024*1024) {
-    msg->metadataSize_ = metadataSize->i();
+
+  if(metadataSize) {
+    auto size = metadataSize->i();
+
+    // Only accept metadata smaller than 1MiB.  Be aware that broken
+    // clinet can send negative size!
+    if(size > 0 && size <= 1024*1024) {
+      msg->metadataSize_ = size;
+    }
   }
   return msg;
 }
