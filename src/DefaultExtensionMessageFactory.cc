@@ -119,7 +119,7 @@ DefaultExtensionMessageFactory::createMessage
         throw DL_ABORT_EX("Bad ut_metadata: msg_type not found");
       }
       const Integer* index = downcast<Integer>(dict->get("piece"));
-      if(!index) {
+      if(!index || index->i() < 0) {
         throw DL_ABORT_EX("Bad ut_metadata: piece not found");
       }
       switch(msgType->i()) {
@@ -138,7 +138,7 @@ DefaultExtensionMessageFactory::createMessage
           throw DL_ABORT_EX("Bad ut_metadata data: data not found");
         }
         const Integer* totalSize = downcast<Integer>(dict->get("total_size"));
-        if(!totalSize) {
+        if(!totalSize || totalSize->i() < 0) {
           throw DL_ABORT_EX("Bad ut_metadata data: total_size not found");
         }
         auto m = make_unique<UTMetadataDataExtensionMessage>
@@ -161,8 +161,7 @@ DefaultExtensionMessageFactory::createMessage
       }
       default:
         throw DL_ABORT_EX
-          (fmt("Bad ut_metadata: unknown msg_type=%u",
-               static_cast<unsigned int>(msgType->i())));
+          (fmt("Bad ut_metadata: unknown msg_type=%" PRId64, msgType->i()));
       }
     } else {
       throw DL_ABORT_EX

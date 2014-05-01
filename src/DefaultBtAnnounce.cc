@@ -317,12 +317,12 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
     minInterval_ = interval_;
   }
   const Integer* comp = downcast<Integer>(dict->get(BtAnnounce::COMPLETE));
-  if(comp) {
+  if(comp && comp->i() >= 0) {
     complete_ = comp->i();
     A2_LOG_DEBUG(fmt("Complete:%d", complete_));
   }
   const Integer* incomp = downcast<Integer>(dict->get(BtAnnounce::INCOMPLETE));
-  if(incomp) {
+  if(incomp && incomp->i() >= 0) {
     incomplete_ = incomp->i();
     A2_LOG_DEBUG(fmt("Incomplete:%d", incomplete_));
   }

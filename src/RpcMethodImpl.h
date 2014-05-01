@@ -347,6 +347,10 @@ private:
   getPaginationRange
   (int64_t offset, int64_t num, InputIterator first, InputIterator last)
   {
+    if(num <= 0) {
+      return std::make_pair(last, last);
+    }
+
     int64_t size = std::distance(first, last);
     if(offset < 0) {
       int64_t tempoffset = offset+size;

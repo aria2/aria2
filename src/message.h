@@ -149,6 +149,7 @@
 #define MSG_REMOVED_DEFUNCT_CONTROL_FILE _("Removed the defunct control file %s because the download file %s doesn't exist.")
 #define MSG_SHARE_RATIO_REPORT _("Your share ratio was %.1f, uploaded/downloaded=%sB/%sB")
 #define MSG_MISSING_BT_INFO _("Missing %s in torrent metainfo.")
+#define MSG_NEGATIVE_LENGTH_BT_INFO _("%s does not allow negative integer %" PRId64 "")
 #define MSG_NULL_TRACKER_RESPONSE _("Tracker returned null data.")
 #define MSG_WINSOCK_INIT_FAILD _("Windows socket library initialization failed")
 #define MSG_TIME_HAS_PASSED _("%ld second(s) has passed. Stopping application.")

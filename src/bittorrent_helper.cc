@@ -227,6 +227,13 @@ void extractFileEntries
         throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_LENGTH),
                            error_code::BITTORRENT_PARSE_ERROR);
       }
+
+      if(fileLengthData->i() < 0) {
+        throw DL_ABORT_EX2
+          (fmt(MSG_NEGATIVE_LENGTH_BT_INFO, C_LENGTH, fileLengthData->i()),
+           error_code::BITTORRENT_PARSE_ERROR);
+      }
+
       if(length > std::numeric_limits<int64_t>::max() - fileLengthData->i()) {
         throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, length));
       }
@@ -289,6 +296,13 @@ void extractFileEntries
                          error_code::BITTORRENT_PARSE_ERROR);
     }
     int64_t totalLength = lengthData->i();
+
+    if(totalLength < 0) {
+      throw DL_ABORT_EX2
+        (fmt(MSG_NEGATIVE_LENGTH_BT_INFO, C_LENGTH, totalLength),
+         error_code::BITTORRENT_PARSE_ERROR);
+    }
+
     if(totalLength > std::numeric_limits<a2_off_t>::max()) {
       throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, totalLength));
     }
@@ -432,6 +446,13 @@ void processRootDictionary
     throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_PIECE_LENGTH),
                        error_code::BITTORRENT_PARSE_ERROR);
   }
+
+  if(pieceLengthData->i() < 0) {
+    throw DL_ABORT_EX2
+      (fmt(MSG_NEGATIVE_LENGTH_BT_INFO, C_PIECE_LENGTH, pieceLengthData->i()),
+       error_code::BITTORRENT_PARSE_ERROR);
+  }
+
   size_t pieceLength = pieceLengthData->i();
   ctx->setPieceLength(pieceLength);
   // retrieve piece hashes
