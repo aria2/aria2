@@ -220,6 +220,8 @@ public:
   static const std::string METHOD_HEAD;
 
   static const int MAX_REDIRECT = 20;
+
+  static const std::string DEFAULT_FILE;
 };
 
 } // namespace aria2

@@ -145,25 +145,31 @@ bool HttpRequestCommand::executeInternal() {
       if(getOption()->getAsBool(PREF_CONDITIONAL_GET) &&
          (getRequest()->getProtocol() == "http" ||
           getRequest()->getProtocol() == "https")) {
-        if(getFileEntry()->getPath().empty() &&
-           getRequest()->getFile().empty()) {
-          A2_LOG_DEBUG("Conditional-Get is disabled because file name"
-                       " is not available.");
+
+        std::string path;
+
+        if(getFileEntry()->getPath().empty()) {
+          auto& file = getRequest()->getFile();
+
+          // If filename part of URI is empty, we just use
+          // Request::DEFAULT_FILE, since it is the name we use to
+          // store file in disk.
+
+          path = util::createSafePath
+            (getOption()->get(PREF_DIR),
+             (getRequest()->getFile().empty() ?
+              Request::DEFAULT_FILE :
+              util::percentDecode(std::begin(file), std::end(file))));
         } else {
-          if(getFileEntry()->getPath().empty()) {
-            getFileEntry()->setPath
-              (util::createSafePath
-               (getOption()->get(PREF_DIR),
-                util::percentDecode(getRequest()->getFile().begin(),
-                                    getRequest()->getFile().end())));
-          }
-          File ctrlfile(getFileEntry()->getPath()+
-                        DefaultBtProgressInfoFile::getSuffix());
-          File file(getFileEntry()->getPath());
-          if(!ctrlfile.exists() && file.exists()) {
-            httpRequest->setIfModifiedSinceHeader
-              (file.getModifiedTime().toHTTPDate());
-          }
+          path = getFileEntry()->getPath();
+        }
+
+        File ctrlfile(path + DefaultBtProgressInfoFile::getSuffix());
+        File file(path);
+
+        if(!ctrlfile.exists() && file.exists()) {
+          httpRequest->setIfModifiedSinceHeader
+            (file.getModifiedTime().toHTTPDate());
         }
       }
       httpConnection_->sendRequest(std::move(httpRequest));

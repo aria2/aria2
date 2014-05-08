@@ -50,6 +50,8 @@ const std::string Request::METHOD_GET = "GET";
 
 const std::string Request::METHOD_HEAD = "HEAD";
 
+const std::string Request::DEFAULT_FILE = "index.html";
+
 Request::Request():
   method_(METHOD_GET),
   tryCount_(0),

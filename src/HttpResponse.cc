@@ -124,7 +124,7 @@ std::string HttpResponse::determineFilename() const
     auto file = httpRequest_->getFile();
     file = util::percentDecode(file.begin(), file.end());
     if (file.empty()) {
-      return "index.html";
+      return Request::DEFAULT_FILE;
     }
     return file;
   }
