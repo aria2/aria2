@@ -1361,6 +1361,7 @@ std::unique_ptr<ValueBase> SystemMulticallRpcMethod::process
 {
   const List* methodSpecs = checkRequiredParam<List>(req, 0);
   auto list = List::g();
+  auto auth = RpcRequest::MUST_AUTHORIZE;
   for(auto & methodSpec : *methodSpecs) {
     Dict* methodDict = downcast<Dict>(methodSpec);
     if(!methodDict) {
@@ -1388,12 +1389,19 @@ std::unique_ptr<ValueBase> SystemMulticallRpcMethod::process
     } else {
       paramsList = List::g();
     }
-    RpcResponse res = getMethod(methodName->s())->execute
-      ({methodName->s(), std::move(paramsList), nullptr, req.jsonRpc}, e);
+    RpcRequest r = {
+      methodName->s(),
+      std::move(paramsList),
+      nullptr,
+      auth,
+      req.jsonRpc
+    };
+    RpcResponse res = getMethod(methodName->s())->execute(std::move(r), e);
     if(res.code == 0) {
       auto l = List::g();
       l->append(std::move(res.param));
       list->append(std::move(l));
+      auth = RpcRequest::PREAUTHORIZED;
     } else {
       list->append(std::move(res.param));
     }

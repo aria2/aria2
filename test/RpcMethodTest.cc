@@ -200,6 +200,14 @@ void RpcMethodTest::testAuthorize()
     auto res = m.execute(std::move(req), e_.get());
     CPPUNIT_ASSERT_EQUAL(1, res.code);
   }
+  // secret token set and bad token: prefixed parameter is given, but preauthorized
+  {
+    auto req = createReq(GetVersionRpcMethod::getMethodName());
+    req.authorization = RpcRequest::PREAUTHORIZED;
+    req.params->append("token:foo2");
+    auto res = m.execute(std::move(req), e_.get());
+    CPPUNIT_ASSERT_EQUAL(0, res.code);
+  }
 }
 
 void RpcMethodTest::testAddUri()

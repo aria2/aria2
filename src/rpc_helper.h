@@ -41,6 +41,8 @@
 #include <string>
 #include <memory>
 
+#include "RpcRequest.h"
+
 namespace aria2 {
 
 class ValueBase;
@@ -49,7 +51,6 @@ class DownloadEngine;
 
 namespace rpc {
 
-struct RpcRequest;
 struct RpcResponse;
 
 #ifdef ENABLE_XML_RPC
@@ -63,7 +64,8 @@ RpcResponse createJsonRpcErrorResponse(int code,
                                        std::unique_ptr<ValueBase> id);
 
 // Processes JSON-RPC request |jsondict| and returns the result.
-RpcResponse processJsonRpcRequest(Dict* jsondict, DownloadEngine* e);
+RpcResponse processJsonRpcRequest(Dict* jsondict, DownloadEngine* e,
+                                  RpcRequest::authorization_t authorization);
 
 } // namespace rpc
 
