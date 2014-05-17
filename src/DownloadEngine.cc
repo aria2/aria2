@@ -77,11 +77,11 @@
 #include "util_security.h"
 
 // Lower time limit for PBKDF2 operations in validateToken.
-static const double kTokenTimeLower = 0.055;
+static const double kTokenTimeLower = 0.025;
 // Upper time limit for PBKDF2 operations in validateToken.
-static const double kTokenTimeUpper = 0.120;
+static const double kTokenTimeUpper = 0.5;
 // Sweet spot time for PBKDF2 operations in validateToken.
-static const double kTokenTimeSweetspot = 0.072;
+static const double kTokenTimeSweetspot = 0.035;
 
 namespace aria2 {
 
