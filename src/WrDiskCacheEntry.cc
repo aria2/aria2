@@ -78,7 +78,7 @@ void WrDiskCacheEntry::writeToDisk()
   try {
     diskAdaptor_->writeCache(this);
   } catch(RecoverableException& e) {
-    A2_LOG_ERROR("WrDiskCacheEntry flush error");
+    A2_LOG_ERROR_EX("Error when trying to flush write cache", e);
     error_ = CACHE_ERR_ERROR;
     errorCode_ = e.getErrorCode();
   }
