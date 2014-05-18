@@ -74,7 +74,7 @@ Here is a list of features:
 * Netrc support
 * Configuration file support
 * Download URIs found in a text file or stdin and the destination
-  directory and output filename can be specified optionally
+  directory and output file name can be specified optionally
 * Parameterized URI support
 * IPv6 support with Happy Eyeballs
 * Disk cache to reduce disk activity
@@ -137,7 +137,7 @@ JSON-RPC over WebSocket  libnettle or libgcrypt or OpenSSL
 
 .. note::
 
-  On Apple OSX the OS-level checksumming support will be preferred,
+  On Apple OSX the OS-level checksum support will be preferred,
   unless aria2 is configured with ``--without-appletls``.
 
   libnettle has precedence over libgcrypt if both libraries are
@@ -236,7 +236,7 @@ See `Cross-compiling Windows binary`_ to create a Windows binary.
 See `Cross-compiling Android binary`_ to create an Android binary.
 
 The configure script checks available libraries and enables as many
-features as possible execept for experimental features not enabled by
+features as possible except for experimental features not enabled by
 default.
 
 Since 1.1.0, aria2 checks the certificate of HTTPS servers by default.
@@ -364,7 +364,7 @@ environment variable which must fulfill the following conditions:
   You may need to add ``--system=linux-x86_64`` to the above
   command-line for x86_64 Linux host.
 
-* The dependant libraries must be installed under
+* The dependent libraries must be installed under
   ``$ANDROID_HOME/usr/local``.
 
 Before running ``android-config`` and ``android-make``,
@@ -388,15 +388,15 @@ translation <http://aria2.sourceforge.net/manual/ru/html/>`_,
 BitTorrent
 -----------
 
-About filenames
-~~~~~~~~~~~~~~~
-The filename of the downloaded file is determined as follows:
+About file names
+~~~~~~~~~~~~~~~~
+The file name of the downloaded file is determined as follows:
 
 single-file mode
-    If "name" key is present in .torrent file, filename is the value
-    of "name" key. Otherwise, filename is the basename of .torrent
+    If "name" key is present in .torrent file, file name is the value
+    of "name" key. Otherwise, file name is the base name of .torrent
     file appended by ".file". For example, .torrent file is
-    "test.torrent", then filename is "test.torrent.file".  The
+    "test.torrent", then file name is "test.torrent.file".  The
     directory to store the downloaded file can be specified by -d
     option.
 
@@ -429,8 +429,8 @@ option to change the port number.
 Other things should be noted
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* ``-o`` option is used to change the filename of .torrent file itself,
-  not a filename of a file in .torrent file. For this purpose, use
+* ``-o`` option is used to change the file name of .torrent file itself,
+  not a file name of a file in .torrent file. For this purpose, use
   ``--index-out`` option instead.
 * The port numbers that aria2 uses by default are 6881-6999 for TCP
   and UDP.
@@ -462,8 +462,8 @@ validates chunks of data during download. This behavior can be turned
 off by a command-line option.
 
 If signature is included in a Metalink file, aria2 saves it as a file
-after the completion of the download.  The filename is download
-filename + ".sig". If same file already exists, the signature file is
+after the completion of the download.  The file name is download
+file name + ".sig". If same file already exists, the signature file is
 not saved.
 
 In Metalink4, multi-file torrent could appear in metalink:metaurl
