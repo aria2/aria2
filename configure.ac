@@ -87,6 +87,14 @@ AC_PROG_MKDIR_P
 AC_PROG_YACC
 AM_PROG_AS
 
+# Speed GCC compilation up.
+if test "$GCC" = yes; then
+  CFLAGS="$CFLAGS -pipe"
+fi
+if test "$GXX" = yes; then
+  CXXFLAGS="$CXXFLAGS -pipe"
+fi
+
 AC_CHECK_TOOL([AR], [ar], [:])
 if test "x$AR" = "x:"; then
   AC_MSG_FAILURE([ar is not found in the system.])
