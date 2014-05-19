@@ -120,7 +120,7 @@ enum DownloadEvent {
    */
   EVENT_ON_DOWNLOAD_COMPLETE,
   /**
-   * Indicating download has stopped becauseof the error.
+   * Indicating download has stopped because of the error.
    */
   EVENT_ON_DOWNLOAD_ERROR,
   /**

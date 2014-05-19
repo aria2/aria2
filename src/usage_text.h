@@ -36,8 +36,9 @@
 #define TEXT_DIR                                                        \
   _(" -d, --dir=DIR                The directory to store the downloaded file.")
 #define TEXT_OUT                                                        \
-  _(" -o, --out=FILE               The file name of the downloaded file. When -Z\n"\
-    "                              option is used, this option is ignored.")
+  _(" -o, --out=FILE               The file name of the downloaded file. When \n" \
+    "                              the -Z option is used, this option will be \n" \
+    "                              ignored.")
 #define TEXT_LOG                                                        \
   _(" -l, --log=LOG                The file name of the log file. If '-' is\n" \
     "                              specified, log is written to stdout.")
@@ -48,13 +49,13 @@
     "                              \"/dev/null\".")
 #define TEXT_SPLIT                                                      \
   _(" -s, --split=N                Download a file using N connections. If more\n" \
-    "                              than N URLs are given, first N URLs are used and\n" \
+    "                              than N URIs are given, first N URIs are used and\n" \
     "                              remaining URLs are used for backup. If less than\n" \
-    "                              N URLs are given, those URLs are used more than\n" \
+    "                              N URIs are given, those URLs are used more than\n" \
     "                              once so that N connections total are made\n" \
     "                              simultaneously. The number of connections to the\n" \
-    "                              same host is restricted by\n"        \
-    "                              --max-connection-per-server option. See also\n" \
+    "                              same host is restricted by the \n"        \
+    "                              --max-connection-per-server option. See also the\n" \
     "                              --min-split-size option.")
 #define TEXT_RETRY_WAIT                                                 \
   _(" --retry-wait=SEC             Set the seconds to wait between retries. \n" \
@@ -65,28 +66,28 @@
 #define TEXT_MAX_TRIES                                                  \
   _(" -m, --max-tries=N            Set number of tries. 0 means unlimited.")
 #define TEXT_HTTP_PROXY                                                 \
-  _(" --http-proxy=PROXY           Use this proxy server for HTTP. To erase\n"\
+  _(" --http-proxy=PROXY           Use a proxy server for HTTP. To override a\n"\
     "                              previously defined proxy, use \"\".\n"   \
-    "                              See also  --all-proxy option.\n"     \
-    "                              This affects all URLs.")
+    "                              See also the --all-proxy option.\n"     \
+    "                              This affects all http downloads.")
 #define TEXT_HTTPS_PROXY                                                \
-  _(" --https-proxy=PROXY          Use this proxy server for HTTPS. To erase\n"  \
+  _(" --https-proxy=PROXY          Use a proxy server for HTTPS. To override a \n"  \
     "                              previously defined proxy, use \"\".\n" \
-    "                              See also  --all-proxy option.\n"     \
-    "                              This affects all URLs.")
+    "                              See also the --all-proxy option.\n"     \
+    "                              This affects all https downloads.")
 #define TEXT_FTP_PROXY                                                  \
-  _(" --ftp-proxy=PROXY            Use this proxy server for FTP. To erase previously\n"    \
-    "                              defined proxy, use \"\".\n" \
-    "                              See also  --all-proxy option.\n"     \
-    "                              This affects all URLs.")
-#define TEXT_ALL_PROXY                                                  \
-  _(" --all-proxy=PROXY            Use this proxy server for all protocols. To erase\n" \
+  _(" --ftp-proxy=PROXY            Use a proxy server for FTP. To override a \n" \
     "                              previously defined proxy, use \"\".\n" \
-    "                              You can override this setting and specify a\n" \
-    "                              proxy server for a particular protocol using\n" \
+    "                              See also the --all-proxy option.\n"     \
+    "                              This affects all ftp downloads.")
+#define TEXT_ALL_PROXY                                                  \
+  _(" --all-proxy=PROXY            Use a proxy server for all protocols. To override\n" \
+    "                              a previously defined proxy, use \"\".\n" \
+    "                              You also can override this setting and specify a\n" \
+    "                              proxy server for a particular protocol using the\n" \
     "                              --http-proxy, --https-proxy and --ftp-proxy\n" \
     "                              options.\n"                          \
-    "                              This affects all URLs.")
+    "                              This affects all downloads.")
 #define TEXT_HTTP_USER                                                  \
   _(" --http-user=USER             Set HTTP user. This affects all URLs.")
 #define TEXT_HTTP_PASSWD                                                \
@@ -94,9 +95,11 @@
 #define TEXT_PROXY_METHOD                                               \
   _(" --proxy-method=METHOD        Set the method to use in proxy request.")
 #define TEXT_REFERER                                                    \
-  _(" --referer=REFERER            Set Referer. This affects all URLs. If \"*\" is\n" \
-    "                              given, each request URI is used as a referer.\n" \
-    "                              This may be useful when used with -P option.")
+  _(" --referer=REFERER            Set an http referrrer (Referer). This affects\n" \
+    "                              all http/https downloads. If \"*\" is given,\n" \
+    "                              the download URI is also used as the referrer.\n" \
+    "                              This may be useful when used together with\n" \
+    "                              the -P option.")
 #define TEXT_FTP_USER                                                   \
   _(" --ftp-user=USER              Set FTP user. This affects all URLs.")
 #define TEXT_FTP_PASSWD                                                 \
@@ -631,21 +634,21 @@
   _(" --reuse-uri[=true|false]     Reuse already used URIs if no unused URIs are\n" \
     "                              left.")
 #define TEXT_ALL_PROXY_USER                                             \
-  _(" --all-proxy-user=USER        Set user for --all-proxy option.")
+  _(" --all-proxy-user=USER        Set user for --all-proxy.")
 #define TEXT_ALL_PROXY_PASSWD                                           \
-  _(" --all-proxy-passwd=PASSWD    Set password for --all-proxy option.")
+  _(" --all-proxy-passwd=PASSWD    Set password for --all-proxy.")
 #define TEXT_HTTP_PROXY_USER                                            \
-  _(" --http-proxy-user=USER       Set user for --http-proxy option.")
+  _(" --http-proxy-user=USER       Set user for --http-proxy.")
 #define TEXT_HTTP_PROXY_PASSWD                                          \
-  _(" --http-proxy-passwd=PASSWD   Set password for --http-proxy option.")
+  _(" --http-proxy-passwd=PASSWD   Set password for --http-proxy.")
 #define TEXT_HTTPS_PROXY_USER                                           \
-  _(" --https-proxy-user=USER      Set user for --https-proxy option.")
+  _(" --https-proxy-user=USER      Set user for --https-proxy.")
 #define TEXT_HTTPS_PROXY_PASSWD                                         \
-  _(" --https-proxy-passwd=PASSWD  Set password for --https-proxy option.")
+  _(" --https-proxy-passwd=PASSWD  Set password for --https-proxy.")
 #define TEXT_FTP_PROXY_USER                                             \
-  _(" --ftp-proxy-user=USER        Set user for --ftp-proxy option.")
+  _(" --ftp-proxy-user=USER        Set user for --ftp-proxy.")
 #define TEXT_FTP_PROXY_PASSWD                                           \
-  _(" --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option.")
+  _(" --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy.")
 #define TEXT_REMOVE_CONTROL_FILE                \
   _(" --remove-control-file[=true|false] Remove control file before download. Using\n" \
     "                              with --allow-overwrite=true, download always\n" \

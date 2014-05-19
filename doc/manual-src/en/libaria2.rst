@@ -22,7 +22,7 @@ files using libaria2. The complete source is located at
 *libaria2ex.cc* in *examples* directory.
 
 The *libaria2ex* program takes one or more URIs and downloads each of
-them in parellel. The usage is::
+them in parallel. The usage is::
 
     Usage: libaria2ex URI [URI...]
 
@@ -179,7 +179,7 @@ We first call :func:`getGlobalStat()` function to get global
 statistics of the downloads. Then, call :func:`getActiveDownload()`
 function to get the vector of active download's GID. For each GID, we
 retrieve :class:`DownloadHandle` object using
-:func:`getDownloadHandle` function and get detailed infromation.
+:func:`getDownloadHandle` function and get detailed information.
 Please don't forget to delete :class:`DownloadHandle` after the use
 and before the next call of :func:`run()`.  Keep in mind that the life
 time of :class:`DownloadHandle` object is before the next call of
