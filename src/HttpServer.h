@@ -53,6 +53,13 @@ class DownloadEngine;
 class SocketRecvBuffer;
 class DiskWriter;
 
+namespace util {
+  namespace security {
+    class HMAC;
+    class HMACResult;
+  }
+}
+
 enum RequestType {
   RPC_TYPE_NONE,
   RPC_TYPE_XML,
@@ -64,6 +71,8 @@ enum RequestType {
 // intended to be a generic HTTP server.
 class HttpServer {
 private:
+  static std::unique_ptr<util::security::HMAC> hmac_;
+
   std::shared_ptr<SocketCore> socket_;
   std::shared_ptr<SocketRecvBuffer> socketRecvBuffer_;
   SocketBuffer socketBuffer_;
@@ -77,8 +86,8 @@ private:
   std::unique_ptr<DiskWriter> lastBody_;
   bool keepAlive_;
   bool gzip_;
-  std::string username_;
-  std::string password_;
+  std::unique_ptr<util::security::HMACResult> username_;
+  std::unique_ptr<util::security::HMACResult> password_;
   bool acceptsGZip_;
   std::string allowOrigin_;
   bool secure_;

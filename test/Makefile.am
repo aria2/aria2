@@ -77,6 +77,7 @@ aria2c_SOURCES = AllTest.cc\
 	ValueBaseJsonParserTest.cc\
 	RpcResponseTest.cc\
 	RpcMethodTest.cc\
+	HttpServerTest.cc\
 	BufferedFileTest.cc\
 	GeomStreamPieceSelectorTest.cc\
 	SegListTest.cc\

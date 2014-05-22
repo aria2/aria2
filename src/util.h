@@ -156,14 +156,20 @@ std::string strip
 template<typename InputIterator>
 std::pair<std::pair<InputIterator, InputIterator>,
           std::pair<InputIterator, InputIterator>>
-divide(InputIterator first, InputIterator last, char delim)
+divide(InputIterator first, InputIterator last, char delim, bool strip=true)
 {
   auto dpos = std::find(first, last, delim);
-  if(dpos == last) {
-    return {stripIter(first, last), {last, last}};
-  } else {
-    return {stripIter(first, dpos), stripIter(dpos+1, last)};
+  if (dpos == last) {
+    if (strip) {
+      return {stripIter(first, last), {last, last}};
+    }
+    return {{first, last}, {last, last}};
   }
+
+  if (strip) {
+    return {stripIter(first, dpos), stripIter(dpos + 1, last)};
+  }
+  return {{first, dpos}, {dpos + 1, last}};
 }
 
 template<typename T>
