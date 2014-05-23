@@ -37,6 +37,7 @@
 #define D_UTIL_SECURITY_H
 
 #include <string>
+#include <stdexcept>
 
 #include "common.h"
 #include "a2functional.h"
