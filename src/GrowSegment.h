@@ -42,7 +42,7 @@ namespace aria2 {
 class GrowSegment:public Segment {
 private:
   std::shared_ptr<Piece> piece_;
-  int32_t writtenLength_;
+  int64_t writtenLength_;
 public:
   GrowSegment(const std::shared_ptr<Piece>& piece);
 
@@ -68,25 +68,25 @@ public:
     return writtenLength_;
   }
 
-  virtual int32_t getLength() const CXX11_OVERRIDE
+  virtual int64_t getLength() const CXX11_OVERRIDE
   {
     return 0;
   }
 
-  virtual int32_t getSegmentLength() const CXX11_OVERRIDE
+  virtual int64_t getSegmentLength() const CXX11_OVERRIDE
   {
     return 0;
   }
 
-  virtual int32_t getWrittenLength() const CXX11_OVERRIDE
+  virtual int64_t getWrittenLength() const CXX11_OVERRIDE
   {
     return writtenLength_;
   }
 
-  virtual void updateWrittenLength(int32_t bytes) CXX11_OVERRIDE;
+  virtual void updateWrittenLength(int64_t bytes) CXX11_OVERRIDE;
 
   virtual bool updateHash
-  (int32_t begin,
+  (int64_t begin,
    const unsigned char* data,
    size_t dataLength) CXX11_OVERRIDE
   {

@@ -66,9 +66,9 @@ void SegmentManTest::testNullBitfield()
   std::shared_ptr<Segment> segment = segmentMan.getSegment(1, minSplitSize);
   CPPUNIT_ASSERT(segment);
   CPPUNIT_ASSERT_EQUAL((size_t)0, segment->getIndex());
-  CPPUNIT_ASSERT_EQUAL(0, segment->getLength());
-  CPPUNIT_ASSERT_EQUAL(0, segment->getSegmentLength());
-  CPPUNIT_ASSERT_EQUAL(0, segment->getWrittenLength());
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, segment->getLength());
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, segment->getSegmentLength());
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, segment->getWrittenLength());
 
   std::shared_ptr<Segment> segment2 = segmentMan.getSegment(2, minSplitSize);
   CPPUNIT_ASSERT(!segment2);

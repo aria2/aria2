@@ -310,6 +310,7 @@ ssize_t AbstractDiskWriter::readDataInternal(unsigned char* data, size_t len,
 
 void AbstractDiskWriter::seek(int64_t offset)
 {
+  assert(offset >= 0);
 #ifdef __MINGW32__
   LARGE_INTEGER fileLength;
   fileLength.QuadPart = offset;

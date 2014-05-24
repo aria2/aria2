@@ -47,7 +47,7 @@ private:
    * The last piece likely have shorter length than the other length.
    */
   int32_t pieceLength_;
-  int32_t writtenLength_;
+  int64_t writtenLength_;
 
 public:
   PiecedSegment(int32_t pieceLength, const std::shared_ptr<Piece>& piece);
@@ -62,23 +62,23 @@ public:
 
   virtual int64_t getPositionToWrite() const CXX11_OVERRIDE;
 
-  virtual int32_t getLength() const CXX11_OVERRIDE;
+  virtual int64_t getLength() const CXX11_OVERRIDE;
 
-  virtual int32_t getSegmentLength() const CXX11_OVERRIDE
+  virtual int64_t getSegmentLength() const CXX11_OVERRIDE
   {
     return pieceLength_;
   }
 
-  virtual int32_t getWrittenLength() const CXX11_OVERRIDE
+  virtual int64_t getWrittenLength() const CXX11_OVERRIDE
   {
     return writtenLength_;
   }
 
-  virtual void updateWrittenLength(int32_t bytes) CXX11_OVERRIDE;
+  virtual void updateWrittenLength(int64_t bytes) CXX11_OVERRIDE;
 
   // `begin' is a offset inside this segment.
   virtual bool updateHash
-  (int32_t begin,
+  (int64_t begin,
    const unsigned char* data,
    size_t dataLength) CXX11_OVERRIDE;
 

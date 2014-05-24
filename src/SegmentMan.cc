@@ -156,8 +156,8 @@ std::shared_ptr<Segment> SegmentMan::checkoutSegment
   }
   std::shared_ptr<SegmentEntry> entry(new SegmentEntry(cuid, segment));
   usedSegmentEntries_.push_back(entry);
-  A2_LOG_DEBUG(fmt("index=%lu, length=%d, segmentLength=%d,"
-                   " writtenLength=%d",
+  A2_LOG_DEBUG(fmt("index=%lu, length=%" PRId64 ", segmentLength=%" PRId64 ","
+                   " writtenLength=%" PRId64,
                    static_cast<unsigned long>(segment->getIndex()),
                    segment->getLength(),
                    segment->getSegmentLength(),
@@ -166,8 +166,8 @@ std::shared_ptr<Segment> SegmentMan::checkoutSegment
   if(piece->getLength() > 0) {
     auto positr = segmentWrittenLengthMemo_.find(segment->getIndex());
     if(positr != segmentWrittenLengthMemo_.end()) {
-      const int32_t writtenLength = (*positr).second;
-      A2_LOG_DEBUG(fmt("writtenLength(in memo)=%d, writtenLength=%d",
+      const auto writtenLength = (*positr).second;
+      A2_LOG_DEBUG(fmt("writtenLength(in memo)=%" PRId64 ", writtenLength=%" PRId64,
                        writtenLength, segment->getWrittenLength()));
       //  If the difference between cached writtenLength and segment's
       //  writtenLength is less than one block, we assume that these
@@ -296,7 +296,7 @@ void SegmentMan::cancelSegmentInternal
   piece->setUsedBySegment(false);
   pieceStorage_->cancelPiece(piece, cuid);
   segmentWrittenLengthMemo_[segment->getIndex()] = segment->getWrittenLength();
-  A2_LOG_DEBUG(fmt("Memorized segment index=%lu, writtenLength=%d",
+  A2_LOG_DEBUG(fmt("Memorized segment index=%lu, writtenLength=%" PRId64,
                    static_cast<unsigned long>(segment->getIndex()),
                    segment->getWrittenLength()));
 }
