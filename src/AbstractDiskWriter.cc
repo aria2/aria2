@@ -310,6 +310,7 @@ ssize_t AbstractDiskWriter::readDataInternal(unsigned char* data, size_t len,
 
 void AbstractDiskWriter::seek(int64_t offset)
 {
+  assert(offset >= 0);
 #ifdef __MINGW32__
   LARGE_INTEGER fileLength;
   fileLength.QuadPart = offset;
@@ -319,6 +320,7 @@ void AbstractDiskWriter::seek(int64_t offset)
 #endif // !__MINGW32__
     {
       int errNum = fileError();
+      A2_LOG_ERROR(fmt("Failed to seek to %" PRId64, offset));
       throw DL_ABORT_EX2(fmt(EX_FILE_SEEK, filename_.c_str(),
                              fileStrerror(errNum).c_str()),
                          error_code::FILE_IO_ERROR);

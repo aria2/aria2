@@ -36,9 +36,9 @@ void GrowSegmentTest::testClear()
 {
   GrowSegment segment(std::shared_ptr<Piece>(new Piece()));
   segment.updateWrittenLength(32*1024);
-  CPPUNIT_ASSERT_EQUAL(32*1024, segment.getWrittenLength());
+  CPPUNIT_ASSERT_EQUAL((int64_t)32*1024, segment.getWrittenLength());
   segment.clear(nullptr);
-  CPPUNIT_ASSERT_EQUAL(0, segment.getWrittenLength());
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, segment.getWrittenLength());
 }
 
 } // namespace aria2

@@ -58,17 +58,17 @@ public:
 
   virtual int64_t getPositionToWrite() const = 0;
 
-  virtual int32_t getLength() const = 0;
+  virtual int64_t getLength() const = 0;
 
-  virtual int32_t getSegmentLength() const = 0;
+  virtual int64_t getSegmentLength() const = 0;
 
-  virtual int32_t getWrittenLength() const = 0;
+  virtual int64_t getWrittenLength() const = 0;
 
-  virtual void updateWrittenLength(int32_t bytes) = 0;
+  virtual void updateWrittenLength(int64_t bytes) = 0;
 
   // `begin' is a offset inside this segment.
   virtual bool updateHash
-  (int32_t begin,
+  (int64_t begin,
    const unsigned char* data,
    size_t dataLength) = 0;
 
