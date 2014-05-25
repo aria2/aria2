@@ -322,7 +322,7 @@ class DowncastValueBaseVisitor:public EmptyDowncastValueBaseVisitor {
 public:
   DowncastValueBaseVisitor() : result_{nullptr} {}
 
-  virtual void visit(const T& t) CXX11_OVERRIDE
+  virtual void visit(const T& t)
   {
     result_ = &t;
   }
