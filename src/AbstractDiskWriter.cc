@@ -220,9 +220,9 @@ int openFileWithFlags(const std::string& filename, int flags,
                                    util::safeStrerror(errNum).c_str()),
                        errCode);
   }
-  // This may reduce memory consumption on Mac OS X. Not tested.
 #if defined(__APPLE__) && defined(__MACH__)
-  fcntl(fd, F_GLOBAL_NOCACHE, 1);
+  // This may reduce memory consumption on Mac OS X.
+  fcntl(fd, F_NOCACHE, 1);
 #endif // __APPLE__ && __MACH__
   return fd;
 }
