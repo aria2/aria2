@@ -43,7 +43,8 @@
 
 #include "TimerA2.h"
 
-namespace aria2 {
+namespace aria2
+{
 
 class FileEntry;
 class RequestGroup;
@@ -62,7 +63,8 @@ class AsyncNameResolver;
 class AsyncNameResolverMan;
 #endif // ENABLE_ASYNC_DNS
 
-class AbstractCommand : public Command {
+class AbstractCommand : public Command
+{
 private:
   std::shared_ptr<Request> req_;
   std::shared_ptr<FileEntry> fileEntry_;
@@ -75,10 +77,10 @@ private:
   std::unique_ptr<AsyncNameResolverMan> asyncNameResolverMan_;
 #endif // ENABLE_ASYNC_DNS
 
-  RequestGroup* requestGroup_;
-  DownloadEngine* e_;
+  RequestGroup *requestGroup_;
+  DownloadEngine *e_;
 
-  std::vector<std::shared_ptr<Segment> > segments_;
+  std::vector<std::shared_ptr<Segment>> segments_;
 
   Timer checkPoint_;
   Timer serverStatTimer_;
@@ -90,7 +92,10 @@ private:
   bool incNumConnection_;
 
   int32_t calculateMinSplitSize() const;
-  void useFasterRequest(const std::shared_ptr<Request>& fasterRequest);
+
+  void useFasterRequest(const std::shared_ptr<Request> &fasterRequest);
+
+  bool shouldCheck() const;
 
 public:
   RequestGroup* getRequestGroup() const
@@ -103,7 +108,7 @@ public:
     return req_;
   }
 
-  void setRequest(const std::shared_ptr<Request>& request);
+  void setRequest(const std::shared_ptr<Request> &request);
 
   // Resets request_. This method is more efficient than
   // setRequest(std::shared_ptr<Request>());
@@ -114,9 +119,9 @@ public:
     return fileEntry_;
   }
 
-  void setFileEntry(const std::shared_ptr<FileEntry>& fileEntry);
+  void setFileEntry(const std::shared_ptr<FileEntry> &fileEntry);
 
-  DownloadEngine* getDownloadEngine() const
+  DownloadEngine *getDownloadEngine() const
   {
     return e_;
   }
@@ -126,12 +131,12 @@ public:
     return socket_;
   }
 
-  std::shared_ptr<SocketCore>& getSocket()
+  std::shared_ptr<SocketCore> &getSocket()
   {
     return socket_;
   }
 
-  void setSocket(const std::shared_ptr<SocketCore>& s);
+  void setSocket(const std::shared_ptr<SocketCore> &s);
 
   void createSocket();
 
@@ -140,7 +145,7 @@ public:
     return socketRecvBuffer_;
   }
 
-  const std::vector<std::shared_ptr<Segment> >& getSegments() const
+  const std::vector<std::shared_ptr<Segment>>& getSegments() const
   {
     return segments_;
   }
@@ -150,37 +155,46 @@ public:
   // return empty string. In this case, call this function with same
   // arguments until resolved address is returned.  Exception is
   // thrown on error. port is used for retrieving cached addresses.
-  std::string resolveHostname
-  (std::vector<std::string>& addrs, const std::string& hostname, uint16_t port);
+  std::string resolveHostname(std::vector<std::string> &addrs,
+                              const std::string &hostname,
+                              uint16_t port);
 
   void tryReserved();
 
-  void setReadCheckSocket(const std::shared_ptr<SocketCore>& socket);
-  void setWriteCheckSocket(const std::shared_ptr<SocketCore>& socket);
+  void setReadCheckSocket(const std::shared_ptr<SocketCore> &socket);
+
+  void setWriteCheckSocket(const std::shared_ptr<SocketCore> &socket);
+
   void disableReadCheckSocket();
+
   void disableWriteCheckSocket();
 
   /**
    * If pred == true, calls setReadCheckSocket(socket). Otherwise, calls
    * disableReadCheckSocket().
    */
-  void setReadCheckSocketIf(const std::shared_ptr<SocketCore>& socket, bool pred);
+  void setReadCheckSocketIf(const std::shared_ptr<SocketCore> &socket,
+                            bool pred);
   /**
    * If pred == true, calls setWriteCheckSocket(socket). Otherwise, calls
    * disableWriteCheckSocket().
    */
-  void setWriteCheckSocketIf(const std::shared_ptr<SocketCore>& socket, bool pred);
+  void setWriteCheckSocketIf(const std::shared_ptr<SocketCore> &socket,
+                             bool pred);
 
   // Swaps socket_ with socket. This disables current read and write
   // check.
-  void swapSocket(std::shared_ptr<SocketCore>& socket);
+  void swapSocket(std::shared_ptr<SocketCore> &socket);
 
   time_t getTimeout() const
   {
     return timeout_;
   }
 
-  void setTimeout(time_t timeout) { timeout_ = timeout; }
+  void setTimeout(time_t timeout)
+  {
+    timeout_ = timeout;
+  }
 
   void prepareForNextAction(std::unique_ptr<CheckIntegrityEntry> checkEntry);
 
@@ -189,11 +203,10 @@ public:
   // InitiateConnectionCommandFactory and it is pushed to
   // DownloadEngine and returns false. If no addresses left, DlRetryEx
   // exception is thrown.
-  bool checkIfConnectionEstablished
-  (const std::shared_ptr<SocketCore>& socket,
-   const std::string& connectedHostname,
-   const std::string& connectedAddr,
-   uint16_t connectedPort);
+  bool checkIfConnectionEstablished(const std::shared_ptr<SocketCore> &socket,
+                                    const std::string &connectedHostname,
+                                    const std::string &connectedAddr,
+                                    uint16_t connectedPort);
 
   /*
    * Returns true if proxy for the procol indicated by Request::getProtocol()
@@ -209,7 +222,7 @@ public:
 
   // Returns proxy method for given protocol. Either V_GET or V_TUNNEL
   // is returned.  For HTTPS, always returns V_TUNNEL.
-  const std::string& resolveProxyMethod(const std::string& protocol) const;
+  const std::string& resolveProxyMethod(const std::string &protocol) const;
 
   const std::shared_ptr<Option>& getOption() const;
 
@@ -217,7 +230,7 @@ public:
   const std::shared_ptr<SegmentMan>& getSegmentMan() const;
   const std::shared_ptr<PieceStorage>& getPieceStorage() const;
 
-  Timer& getCheckPoint()
+  Timer &getCheckPoint()
   {
     return checkPoint_;
   }
@@ -225,33 +238,40 @@ public:
   void checkSocketRecvBuffer();
 
   void addCommandSelf();
+
 protected:
   virtual bool prepareForRetry(time_t wait);
+
   virtual void onAbort();
+
   virtual bool executeInternal() = 0;
+
   // Returns true if the derived class wants to execute
   // executeInternal() unconditionally
-  virtual bool noCheck()
+  virtual bool noCheck() const
   {
     return false;
   }
 
 public:
-  AbstractCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
-                  const std::shared_ptr<FileEntry>& fileEntry,
-                  RequestGroup* requestGroup, DownloadEngine* e,
-                  const std::shared_ptr<SocketCore>& s = nullptr,
-                  const std::shared_ptr<SocketRecvBuffer>& socketRecvBuffer = nullptr,
+  AbstractCommand(cuid_t cuid,
+                  const std::shared_ptr<Request> &req,
+                  const std::shared_ptr<FileEntry> &fileEntry,
+                  RequestGroup *requestGroup,
+                  DownloadEngine *e,
+                  const std::shared_ptr<SocketCore> &s = nullptr,
+                  const std::shared_ptr<SocketRecvBuffer> &socketRecvBuffer =
+                      nullptr,
                   bool incNumConnection = true);
 
   virtual ~AbstractCommand();
+
   virtual bool execute() CXX11_OVERRIDE;
 };
 
 // Returns proxy URI for given protocol.  If no proxy URI is defined,
 // then returns an empty string.
-std::string getProxyUri
-(const std::string& protocol, const Option* option);
+std::string getProxyUri(const std::string &protocol, const Option *option);
 
 } // namespace aria2
 
