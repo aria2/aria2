@@ -112,7 +112,8 @@ DownloadEngine::DownloadEngine(std::unique_ptr<EventPoll> eventPoll)
 #endif // HAVE_ARES_ADDR_NODE
     dnsCache_(make_unique<DNSCache>()),
     option_(nullptr),
-    tokenIterations_(5000)
+    tokenIterations_(5000),
+    tokenAverageDuration_(0.0)
 {
   unsigned char sessionId[20];
   util::generateRandomKey(sessionId);
