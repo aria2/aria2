@@ -52,24 +52,32 @@ private:
   };
 
 public:
-  MessageDigestBase() {
+  MessageDigestBase()
+  {
     gcry_md_hd_t ctx = nullptr;
     gcry_md_open(&ctx, hash, 0);
     ctx_.reset(ctx);
     reset();
   }
+
   virtual ~MessageDigestBase() {}
 
-  static size_t length() {
+  static size_t length()
+  {
     return ::gcry_md_get_algo_dlen(hash);
   }
-  virtual size_t getDigestLength() const CXX11_OVERRIDE {
+
+  virtual size_t getDigestLength() const CXX11_OVERRIDE
+  {
     return ::gcry_md_get_algo_dlen(hash);
   }
+
   virtual void reset() CXX11_OVERRIDE {
     ::gcry_md_reset(ctx_.get());
   }
-  virtual void update(const void* data, size_t length) CXX11_OVERRIDE {
+
+  virtual void update(const void* data, size_t length) CXX11_OVERRIDE
+  {
     auto bytes = reinterpret_cast<const uint8_t*>(data);
     while (length) {
       size_t l = std::min(length, (size_t)std::numeric_limits<uint32_t>::max());
@@ -78,13 +86,14 @@ public:
       bytes += l;
     }
   }
-  virtual void digest(unsigned char* md) CXX11_OVERRIDE {
+
+  virtual void digest(unsigned char* md) CXX11_OVERRIDE
+  {
     ::memcpy(md, gcry_md_read(ctx_.get(), 0), getDigestLength());
   }
 
 private:
   std::unique_ptr<std::remove_pointer<gcry_md_hd_t>::type, Deleter> ctx_;
-  size_t len_;
 };
 
 typedef MessageDigestBase<GCRY_MD_MD5> MessageDigestMD5;
