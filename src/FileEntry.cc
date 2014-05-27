@@ -295,7 +295,8 @@ FileEntry::findFasterRequest
     std::shared_ptr<Request> fastestRequest(new Request());
     const std::string& uri = fastCands.front().second;
     A2_LOG_DEBUG(fmt("Selected %s from fastCands", uri.c_str()));
-    fastestRequest->setUri(uri);
+    // Candidate URIs where already parsed when populating fastCands.
+    (void)fastestRequest->setUri(uri);
     fastestRequest->setReferer(base->getReferer());
     uris_.erase(std::find(uris_.begin(), uris_.end(), uri));
     spentUris_.push_back(uri);
