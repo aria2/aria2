@@ -50,8 +50,8 @@ struct HashFuncEntry {
   typedef HashFunc HashFuncType;
   std::string hashType;
   HashFunc hashFunc;
-  HashFuncEntry(const std::string& hashType, const HashFunc& hashFunc):
-    hashType(hashType), hashFunc(hashFunc)
+  HashFuncEntry(std::string hashType, const HashFunc& hashFunc):
+    hashType(std::move(hashType)), hashFunc(hashFunc)
   {}
 };
 

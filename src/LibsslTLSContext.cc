@@ -87,7 +87,7 @@ TLSContext* TLSContext::make(TLSSessionSide side)
 }
 
 OpenSSLTLSContext::OpenSSLTLSContext(TLSSessionSide side)
-  : sslCtx_(0),
+  : sslCtx_(nullptr),
     side_(side),
     verifyPeer_(true)
 {
@@ -97,7 +97,7 @@ OpenSSLTLSContext::OpenSSLTLSContext(TLSSessionSide side)
   } else {
     good_ = false;
     A2_LOG_ERROR(fmt("SSL_CTX_new() failed. Cause: %s",
-                     ERR_error_string(ERR_get_error(), 0)));
+                     ERR_error_string(ERR_get_error(), nullptr)));
     return;
   }
   // Disable SSLv2 and enable all workarounds for buggy servers
@@ -139,13 +139,13 @@ bool OpenSSLTLSContext::addCredentialFile(const std::string& certfile,
                                  SSL_FILETYPE_PEM) != 1) {
     A2_LOG_ERROR(fmt("Failed to load private key from %s. Cause: %s",
                      keyfile.c_str(),
-                     ERR_error_string(ERR_get_error(), 0)));
+                     ERR_error_string(ERR_get_error(), nullptr)));
     return false;
   }
   if(SSL_CTX_use_certificate_chain_file(sslCtx_, certfile.c_str()) != 1) {
     A2_LOG_ERROR(fmt("Failed to load certificate from %s. Cause: %s",
                      certfile.c_str(),
-                     ERR_error_string(ERR_get_error(), 0)));
+                     ERR_error_string(ERR_get_error(), nullptr)));
     return false;
   }
   A2_LOG_INFO(fmt("Credential files(cert=%s, key=%s) were successfully added.",
@@ -177,7 +177,7 @@ bool OpenSSLTLSContext::addP12CredentialFile(const std::string& p12file)
   }
   EVP_PKEY *pkey;
   X509 *cert;
-  STACK_OF(X509) *ca = 0;
+  STACK_OF(X509) *ca = nullptr;
   if (!PKCS12_parse(p12.get(), "", &pkey, &cert, &ca)) {
     A2_LOG_ERROR(fmt("Failed to parse PKCS12 file: %s. "
                      "If you meant to use PEM, you'll also have to specify "
@@ -219,7 +219,7 @@ bool OpenSSLTLSContext::addSystemTrustedCACerts()
 {
   if(SSL_CTX_set_default_verify_paths(sslCtx_) != 1) {
     A2_LOG_INFO(fmt(MSG_LOADING_SYSTEM_TRUSTED_CA_CERTS_FAILED,
-                    ERR_error_string(ERR_get_error(), 0)));
+                    ERR_error_string(ERR_get_error(), nullptr)));
     return false;
   } else {
     A2_LOG_INFO("System trusted CA certificates were successfully added.");
@@ -229,10 +229,10 @@ bool OpenSSLTLSContext::addSystemTrustedCACerts()
 
 bool OpenSSLTLSContext::addTrustedCACertFile(const std::string& certfile)
 {
-  if(SSL_CTX_load_verify_locations(sslCtx_, certfile.c_str(), 0) != 1) {
+  if(SSL_CTX_load_verify_locations(sslCtx_, certfile.c_str(), nullptr) != 1) {
     A2_LOG_ERROR(fmt(MSG_LOADING_TRUSTED_CA_CERT_FAILED,
                      certfile.c_str(),
-                     ERR_error_string(ERR_get_error(), 0)));
+                     ERR_error_string(ERR_get_error(), nullptr)));
     return false;
   } else {
     A2_LOG_INFO("Trusted CA certificates were successfully added.");

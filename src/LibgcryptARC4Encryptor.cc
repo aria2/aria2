@@ -51,7 +51,7 @@ void handleError(gcry_error_t err)
 } // namespace
 
 ARC4Encryptor::ARC4Encryptor()
-  : hdl_(0)
+  : hdl_(nullptr)
 {}
 
 ARC4Encryptor::~ARC4Encryptor()
@@ -71,7 +71,7 @@ void ARC4Encryptor::init(const unsigned char* key, size_t keyLength)
   if((r = gcry_cipher_setkey(hdl_, key, keyLength))) {
     handleError(r);
   }
-  if((r = gcry_cipher_setiv(hdl_, 0, 0))) {
+  if((r = gcry_cipher_setiv(hdl_, nullptr, 0))) {
     handleError(r);
   }
 }
@@ -84,7 +84,7 @@ void ARC4Encryptor::encrypt
   size_t inlen;
   if(in == out) {
     out = const_cast<unsigned char*>(in);
-    in = 0;
+    in = nullptr;
     inlen = 0;
   } else {
     inlen = len;

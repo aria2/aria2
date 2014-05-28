@@ -40,6 +40,8 @@
 #include <sstream>
 #include <deque>
 
+#include "config.h"
+
 namespace aria2 {
 
 namespace colors {
@@ -105,7 +107,7 @@ public:
     elems.push_back(std::make_pair(eString, ""));
   }
 
-  traits_t::int_type overflow(traits_t::int_type c)
+  traits_t::int_type overflow(traits_t::int_type c) CXX11_OVERRIDE
   {
     elems.back().second.push_back((char)c);
     return std::char_traits<char>::not_eof(c);

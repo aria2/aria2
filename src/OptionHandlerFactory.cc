@@ -869,9 +869,9 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    DefaultOptionHandler* op(new DefaultOptionHandler
+    auto op = new DefaultOptionHandler
                              (PREF_RPC_SECRET,
-                              TEXT_RPC_SECRET));
+                              TEXT_RPC_SECRET);
     op->addTag(TAG_RPC);
     op->setEraseAfterParse(true);
     op->setAllowEmpty(false);

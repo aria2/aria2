@@ -48,7 +48,7 @@ TLSSession* TLSSession::make(TLSContext* ctx)
 }
 
 GnuTLSSession::GnuTLSSession(GnuTLSContext* tlsContext)
-  : sslSession_(0),
+  : sslSession_(nullptr),
     tlsContext_(tlsContext),
     rv_(0)
 {}
@@ -265,7 +265,7 @@ int GnuTLSSession::tlsConnect(const std::string& hostname,
     for(int i = 0; !(ret < 0); ++i) {
       altNameLen = sizeof(altName);
       ret = gnutls_x509_crt_get_subject_alt_name(cert, i, altName,
-                                                 &altNameLen, 0);
+                                                 &altNameLen, nullptr);
       if(ret == GNUTLS_SAN_DNSNAME) {
         dnsNames.push_back(std::string(altName, altNameLen));
       } else if(ret == GNUTLS_SAN_IPADDRESS) {

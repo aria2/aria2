@@ -66,8 +66,8 @@ namespace aria2 {
  */
 
 AdaptiveURISelector::AdaptiveURISelector
-(const std::shared_ptr<ServerStatMan>& serverStatMan, RequestGroup* requestGroup)
-  : serverStatMan_(serverStatMan),
+(std::shared_ptr<ServerStatMan> serverStatMan, RequestGroup* requestGroup)
+  : serverStatMan_(std::move(serverStatMan)),
     requestGroup_(requestGroup)
 {
   resetCounters();

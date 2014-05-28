@@ -49,17 +49,17 @@ void handleError(const std::string& funName)
 {
   throw DL_ABORT_EX
     (fmt("Exception in libssl routine %s(DHKeyExchange class): %s",
-         funName.c_str(), ERR_error_string(ERR_get_error(), 0)));
+         funName.c_str(), ERR_error_string(ERR_get_error(), nullptr)));
 }
 } // namespace
 
 DHKeyExchange::DHKeyExchange()
-  : bnCtx_(0),
+  : bnCtx_(nullptr),
     keyLength_(0),
-    prime_(0),
-    generator_(0),
-    privateKey_(0),
-    publicKey_(0)
+    prime_(nullptr),
+    generator_(nullptr),
+    privateKey_(nullptr),
+    publicKey_(nullptr)
 {}
 
 DHKeyExchange::~DHKeyExchange()
@@ -82,11 +82,11 @@ void DHKeyExchange::init(const unsigned char* prime, size_t primeBits,
   }
 
   BN_free(prime_);
-  prime_ = 0;
+  prime_ = nullptr;
   BN_free(generator_);
-  generator_ = 0;
+  generator_ = nullptr;
   BN_free(privateKey_);
-  privateKey_ = 0;
+  privateKey_ = nullptr;
 
   if(BN_hex2bn(&prime_, reinterpret_cast<const char*>(prime)) == 0) {
     handleError("BN_hex2bn in init");
@@ -150,7 +150,7 @@ size_t DHKeyExchange::computeSecret(unsigned char* out, size_t outLength,
   }
 
 
-  BIGNUM* peerPublicKey = BN_bin2bn(peerPublicKeyData, peerPublicKeyLength, 0);
+  BIGNUM* peerPublicKey = BN_bin2bn(peerPublicKeyData, peerPublicKeyLength, nullptr);
   if(!peerPublicKey) {
     handleError("BN_bin2bn in computeSecret");
   }

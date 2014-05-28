@@ -114,7 +114,7 @@ public:
   (OutputIterator out, const std::string& hostname, uint16_t port) const
   {
     std::shared_ptr<CacheEntry> target(new CacheEntry(hostname, port));
-    CacheEntrySet::iterator i = entries_.find(target);
+    auto i = entries_.find(target);
     if(i != entries_.end()) {
       (*i)->getAllGoodAddrs(out);
     }

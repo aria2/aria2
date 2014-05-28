@@ -57,7 +57,7 @@ public:
     return len_;
   }
   virtual void reset() CXX11_OVERRIDE {
-    EVP_DigestInit_ex(&ctx_, md_, 0);
+    EVP_DigestInit_ex(&ctx_, md_, nullptr);
   }
   virtual void update(const void* data, size_t length) CXX11_OVERRIDE {
     auto bytes = reinterpret_cast<const char*>(data);

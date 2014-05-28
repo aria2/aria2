@@ -522,9 +522,8 @@ std::vector<A2Gid> getActiveDownload(Session* session)
   auto& e = session->context->reqinfo->getDownloadEngine();
   const RequestGroupList& groups = e->getRequestGroupMan()->getRequestGroups();
   std::vector<A2Gid> res;
-  for(RequestGroupList::const_iterator i = groups.begin(),
-        eoi = groups.end(); i != eoi; ++i) {
-    res.push_back((*i)->getGID());
+  for(const auto& group : groups) {
+    res.push_back(group->getGID());
   }
   return res;
 }
@@ -815,8 +814,8 @@ struct RequestGroupDH : public DownloadHandle {
 
 namespace {
 struct DownloadResultDH : public DownloadHandle {
-  DownloadResultDH(const std::shared_ptr<DownloadResult>& dr)
-    : dr(dr)
+  DownloadResultDH(std::shared_ptr<DownloadResult> dr)
+    : dr(std::move(dr))
   {}
   virtual ~DownloadResultDH() {}
   virtual DownloadStatus getStatus() CXX11_OVERRIDE

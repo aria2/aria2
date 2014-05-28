@@ -50,7 +50,7 @@ TLSSession* TLSSession::make(TLSContext* ctx)
 }
 
 OpenSSLTLSSession::OpenSSLTLSSession(OpenSSLTLSContext* tlsContext)
-  : ssl_(0),
+  : ssl_(nullptr),
     tlsContext_(tlsContext),
     rv_(1)
 {}
@@ -205,7 +205,7 @@ int OpenSSLTLSSession::tlsConnect(const std::string& hostname,
     std::vector<std::string> ipAddrs;
     GENERAL_NAMES* altNames;
     altNames = reinterpret_cast<GENERAL_NAMES*>
-      (X509_get_ext_d2i(peerCert, NID_subject_alt_name, NULL, NULL));
+      (X509_get_ext_d2i(peerCert, NID_subject_alt_name, nullptr, NULL));
     if(altNames) {
       std::unique_ptr<GENERAL_NAMES, decltype(&GENERAL_NAMES_free)>
         altNamesDeleter(altNames, GENERAL_NAMES_free);
@@ -289,7 +289,7 @@ std::string OpenSSLTLSSession::getLastErrorString()
           return "unknown syscall error";
         }
       } else {
-        return ERR_error_string(err, 0);
+        return ERR_error_string(err, nullptr);
       }
     }
     case SSL_ERROR_SSL:

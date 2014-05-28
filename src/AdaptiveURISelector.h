@@ -71,7 +71,7 @@ private:
   int getNbTestedServers(const std::deque<std::string>& uris) const;
   std::string getBestMirror(const std::deque<std::string>& uris) const;
 public:
-  AdaptiveURISelector(const std::shared_ptr<ServerStatMan>& serverStatMan,
+  AdaptiveURISelector(std::shared_ptr<ServerStatMan> serverStatMan,
                       RequestGroup* requestGroup);
 
   virtual ~AdaptiveURISelector();

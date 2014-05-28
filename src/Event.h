@@ -314,9 +314,9 @@ private:
   sock_t sockets_[ARES_GETSOCK_MAXNUM];
 
 public:
-  AsyncNameResolverEntry(const std::shared_ptr<AsyncNameResolver>& nameResolver,
+  AsyncNameResolverEntry(std::shared_ptr<AsyncNameResolver> nameResolver,
                          Command* command):
-    nameResolver_(nameResolver), command_(command), socketsSize_(0) {}
+    nameResolver_(std::move(nameResolver)), command_(command), socketsSize_(0) {}
 
   bool operator==(const AsyncNameResolverEntry& entry)
   {

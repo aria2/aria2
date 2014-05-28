@@ -228,7 +228,7 @@ class AuthHostMatch {
 private:
   std::string hostname;
 public:
-  AuthHostMatch(const std::string& hostname):hostname(hostname) {}
+  AuthHostMatch(std::string hostname) : hostname(std::move(hostname)) {}
 
   bool operator()(const std::unique_ptr<Authenticator>& authenticator)
   {

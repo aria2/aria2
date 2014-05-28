@@ -347,7 +347,7 @@ class FindSegmentEntry {
 private:
   std::shared_ptr<Segment> segment_;
 public:
-  FindSegmentEntry(const std::shared_ptr<Segment>& segment):segment_(segment) {}
+  FindSegmentEntry(std::shared_ptr<Segment> segment):segment_(std::move(segment)) {}
 
   bool operator()(const std::shared_ptr<SegmentEntry>& segmentEntry) const
   {

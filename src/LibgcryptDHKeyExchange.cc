@@ -49,10 +49,10 @@ void handleError(gcry_error_t err)
 
 DHKeyExchange::DHKeyExchange()
   : keyLength_(0),
-    prime_(0),
-    generator_(0),
-    privateKey_(0),
-    publicKey_(0)
+    prime_(nullptr),
+    generator_(nullptr),
+    privateKey_(nullptr),
+    publicKey_(nullptr)
 {}
 
 DHKeyExchange::~DHKeyExchange()
@@ -72,14 +72,14 @@ void DHKeyExchange::init(const unsigned char* prime, size_t primeBits,
   gcry_mpi_release(privateKey_);
   {
     gcry_error_t r = gcry_mpi_scan(&prime_, GCRYMPI_FMT_HEX,
-                                   prime, 0, 0);
+                                   prime, 0, nullptr);
     if(r) {
       handleError(r);
     }
   }
   {
     gcry_error_t r = gcry_mpi_scan(&generator_, GCRYMPI_FMT_HEX,
-                                   generator, 0, 0);
+                                   generator, 0, nullptr);
     if(r) {
       handleError(r);
     }
@@ -137,7 +137,7 @@ size_t DHKeyExchange::computeSecret(unsigned char* out, size_t outLength,
                                    GCRYMPI_FMT_USG,
                                    peerPublicKeyData,
                                    peerPublicKeyLength,
-                                   0);
+                                   nullptr);
     if(r) {
       handleError(r);
     }

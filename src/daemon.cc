@@ -65,13 +65,13 @@ int daemon(int nochdir, int noclose)
     }
   }
   if(noclose == 0) {
-    if(freopen("/dev/null", "r", stdin) == 0) {
+    if(freopen("/dev/null", "r", stdin) == nullptr) {
       return -1;
     }
-    if(freopen("/dev/null", "w", stdout) == 0) {
+    if(freopen("/dev/null", "w", stdout) == nullptr) {
       return -1;
     }
-    if(freopen("/dev/null", "w", stderr) == 0) {
+    if(freopen("/dev/null", "w", stderr) == nullptr) {
       return -1;
     }
   }

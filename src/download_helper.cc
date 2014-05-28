@@ -332,10 +332,10 @@ private:
   bool throwOnError_;
 public:
   AccRequestGroup(std::vector<std::shared_ptr<RequestGroup>>& requestGroups,
-                  const std::shared_ptr<Option>& option,
+                  std::shared_ptr<Option> option,
                   bool ignoreLocalPath = false,
                   bool throwOnError = false):
-    requestGroups_(requestGroups), option_(option),
+    requestGroups_(requestGroups), option_(std::move(option)),
     ignoreLocalPath_(ignoreLocalPath),
     throwOnError_(throwOnError)
   {}

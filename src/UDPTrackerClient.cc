@@ -122,8 +122,8 @@ struct CollectAddrPortMatch {
   std::string remoteAddr;
   uint16_t remotePort;
   CollectAddrPortMatch(std::vector<std::shared_ptr<UDPTrackerRequest> >& dest,
-                       const std::string& remoteAddr, uint16_t remotePort)
-    : dest(dest), remoteAddr(remoteAddr), remotePort(remotePort)
+                       std::string remoteAddr, uint16_t remotePort)
+    : dest(dest), remoteAddr(std::move(remoteAddr)), remotePort(remotePort)
   {}
 };
 } // namespace
@@ -501,9 +501,9 @@ struct FailConnectDelete {
   std::string remoteAddr;
   uint16_t remotePort;
   int error;
-  FailConnectDelete(const std::string& remoteAddr, uint16_t remotePort,
+  FailConnectDelete(std::string remoteAddr, uint16_t remotePort,
                     int error)
-    : remoteAddr(remoteAddr), remotePort(remotePort), error(error)
+    : remoteAddr(std::move(remoteAddr)), remotePort(remotePort), error(error)
   {}
 };
 } // namespace

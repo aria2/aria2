@@ -46,7 +46,7 @@
 namespace aria2 {
 
 Peer::Peer(std::string ipaddr, uint16_t port, bool incoming):
-  ipaddr_(ipaddr),
+  ipaddr_(std::move(ipaddr)),
   port_(port),
   origPort_(port),
   cuid_(0),
