@@ -68,7 +68,8 @@ static inline size_t getBlockSize(const std::string& algorithm)
   }
 
 err:
-  throw FATAL_EXCEPTION(fmt("HMAC does not support algorithm %s", algorithm.c_str()));
+  throw FATAL_EXCEPTION(
+      fmt("HMAC does not support algorithm %s", algorithm.c_str()));
 }
 
 } // namespace
@@ -86,7 +87,7 @@ bool compare(const unsigned char a, const unsigned char b)
   return rv;
 }
 
-bool compare(const uint8_t *a, const uint8_t *b, size_t length)
+bool compare(const uint8_t* a, const uint8_t* b, size_t length)
 {
   unsigned char rv = 0;
   for (size_t i = 0; i < length; ++i) {
@@ -96,7 +97,8 @@ bool compare(const uint8_t *a, const uint8_t *b, size_t length)
 }
 
 HMAC::HMAC(const std::string& algorithm, const char* secret, size_t length)
-  : blockSize_(getBlockSize(algorithm)), md_(MessageDigest::create(algorithm)),
+  : blockSize_(getBlockSize(algorithm)),
+    md_(MessageDigest::create(algorithm)),
     clean_(false)
 {
   ipad_.assign(blockSize_, 0x36);
@@ -107,14 +109,14 @@ HMAC::HMAC(const std::string& algorithm, const char* secret, size_t length)
     md_->update(secret, length);
     auto hash = md_->digest();
     for (size_t i = 0uL, e = hash.length(); i < e; ++i) {
-      ipad_.replace(i, 1, 1, hash[i]  ^ 0x36);
-      opad_.replace(i, 1, 1, hash[i]  ^ 0x5c);
+      ipad_.replace(i, 1, 1, hash[i] ^ 0x36);
+      opad_.replace(i, 1, 1, hash[i] ^ 0x5c);
     }
   }
   else {
     for (size_t i = 0uL, e = length; i < e; ++i) {
-      ipad_.replace(i, 1, 1, secret[i]  ^ 0x36);
-      opad_.replace(i, 1, 1, secret[i]  ^ 0x5c);
+      ipad_.replace(i, 1, 1, secret[i] ^ 0x36);
+      opad_.replace(i, 1, 1, secret[i] ^ 0x5c);
     }
   }
   reset();
@@ -131,17 +133,21 @@ std::unique_ptr<HMAC> HMAC::createRandom(const std::string& algorithm)
   return create(algorithm, buf.get(), len);
 }
 
-bool HMAC::supports(const std::string& algorithm) {
+bool HMAC::supports(const std::string& algorithm)
+{
   if (!MessageDigest::supports(algorithm)) {
     return false;
   }
   const auto canon = MessageDigest::getCanonicalHashType(algorithm);
   return canon == "sha-1" || canon == "sha-224" || canon == "sha-256" ||
-    canon == "sha-384" ||  canon == "sha-512";
+         canon == "sha-384" || canon == "sha-512";
 }
 
-HMACResult PBKDF2(HMAC* hmac, const char* salt, size_t salt_length,
-                  size_t iterations, size_t key_length)
+HMACResult PBKDF2(HMAC* hmac,
+                  const char* salt,
+                  size_t salt_length,
+                  size_t iterations,
+                  size_t key_length)
 {
   if (!hmac) {
     throw FATAL_EXCEPTION("hmac cannot be null");
@@ -150,7 +156,8 @@ HMACResult PBKDF2(HMAC* hmac, const char* salt, size_t salt_length,
   if (key_length == 0) {
     key_length = hmac_length;
   }
-  typedef union {
+  typedef union
+  {
     uint8_t bytes[4];
     uint32_t count;
   } counter_t;

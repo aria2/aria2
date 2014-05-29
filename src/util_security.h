@@ -64,14 +64,12 @@ bool compare(const uint8_t a, const uint8_t b);
  * @param b Second byte array.
  * @return True, if both match, false otherwise.
  */
-bool compare(const uint8_t *a, const uint8_t *b, size_t length);
-inline bool compare(const char *a, const char *b, size_t length)
+bool compare(const uint8_t* a, const uint8_t* b, size_t length);
+inline bool compare(const char* a, const char* b, size_t length)
 {
-  return compare(
-      reinterpret_cast<const uint8_t*>(a),
-      reinterpret_cast<const uint8_t*>(b),
-      length * sizeof(char)
-      );
+  return compare(reinterpret_cast<const uint8_t*>(a),
+                 reinterpret_cast<const uint8_t*>(b),
+                 length * sizeof(char));
 }
 
 /**
@@ -81,27 +79,27 @@ inline bool compare(const char *a, const char *b, size_t length)
  * length, helping to prevent logic errors either during development, or
  * triggering in the wild. Therefore |.getBytes()| use should be avoided.
  */
-class HMACResult {
+class HMACResult
+{
 public:
-  HMACResult(const std::string& result)
-    : result_(result), len_(result.length())
+  HMACResult(const std::string& result) : result_(result), len_(result.length())
   {}
 
   HMACResult(const char* result, size_t length)
     : result_(result, length), len_(length)
   {}
 
-  HMACResult(const HMACResult& other) :
-    result_(other.result_), len_(other.len_)
+  HMACResult(const HMACResult& other) : result_(other.result_), len_(other.len_)
   {}
 
-  HMACResult& operator=(const HMACResult& other) {
+  HMACResult& operator=(const HMACResult& other)
+  {
     result_ = other.result_;
     len_ = other.len_;
     return *this;
   }
 
-  bool operator == (const HMACResult& other) const
+  bool operator==(const HMACResult& other) const
   {
     if (len_ != other.len_) {
       throw std::domain_error("comparing different hmac is undefined");
@@ -109,7 +107,7 @@ public:
     return compare(result_.data(), other.result_.data(), len_);
   }
 
-  bool operator != (const HMACResult& other) const
+  bool operator!=(const HMACResult& other) const
   {
     return !(*this == other);
   }
@@ -134,7 +132,8 @@ private:
  * algorithms that MessageDigest supports, but at most the SHA-1, SHA-2
  * algorithms as specified in the RFC.
  */
-class HMAC {
+class HMAC
+{
 public:
   /**
    * Constructs a new HMAC. It is recommended to use the |create| or
@@ -148,8 +147,8 @@ public:
   /**
    * Creates a new instance using the specified algorithm and secret.
    */
-  static std::unique_ptr<HMAC> create(
-      const std::string& algorithm, const std::string& secret)
+  static std::unique_ptr<HMAC> create(const std::string& algorithm,
+                                      const std::string& secret)
   {
     return create(algorithm, secret.data(), secret.length());
   }
@@ -157,8 +156,8 @@ public:
   /**
    * Creates a new instance using the specified algorithm and secret.
    */
-  static std::unique_ptr<HMAC> create(
-      const std::string& algorithm, const char* secret, size_t length)
+  static std::unique_ptr<HMAC>
+  create(const std::string& algorithm, const char* secret, size_t length)
   {
     if (!supports(algorithm)) {
       return nullptr;
@@ -292,8 +291,11 @@ private:
  * Example:
  *   result = PBKDF2(HMAC::create("password"), random_salt, salt_len, 1000);
  */
-HMACResult PBKDF2(HMAC* hmac, const char* salt, size_t salt_length,
-                  size_t iterations, size_t key_length = 0);
+HMACResult PBKDF2(HMAC* hmac,
+                  const char* salt,
+                  size_t salt_length,
+                  size_t iterations,
+                  size_t key_length = 0);
 
 /**
  * Create A PKBDF2-HMAC. See RFC 2898.
@@ -301,8 +303,10 @@ HMACResult PBKDF2(HMAC* hmac, const char* salt, size_t salt_length,
  * Example:
  *   result = PBKDF2(HMAC::create("password"), random_salt, 1000);
  */
-inline HMACResult PBKDF2(HMAC* hmac, const std::string& salt, size_t iterations,
-                  size_t key_length = 0)
+inline HMACResult PBKDF2(HMAC* hmac,
+                         const std::string& salt,
+                         size_t iterations,
+                         size_t key_length = 0)
 {
   return PBKDF2(hmac, salt.data(), salt.length(), iterations, key_length);
 }
