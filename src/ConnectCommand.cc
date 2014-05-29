@@ -115,7 +115,7 @@ bool ConnectCommand::executeInternal()
   return true;
 }
 
-bool ConnectCommand::noCheck() const
+bool ConnectCommand::noCheck()
 {
   return backupConnectionInfo_ && !backupConnectionInfo_->ipaddr.empty();
 }

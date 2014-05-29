@@ -241,11 +241,6 @@ public:
 
   int64_t getCompletedLength() const;
 
-  inline int64_t getPendingLength() const
-  {
-    return getTotalLength() - getCompletedLength();
-  }
-
   /**
    * Compares expected filename with specified actualFilename.
    * The expected filename refers to FileEntry::getBasename() of the first
