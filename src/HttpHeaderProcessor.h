@@ -45,7 +45,8 @@ namespace aria2 {
 
 class HttpHeader;
 
-class HttpHeaderProcessor {
+class HttpHeaderProcessor
+{
 public:
   enum ParserMode {
     CLIENT_PARSER,
@@ -82,6 +83,7 @@ public:
    * Resets internal status and ready for next header processing.
    */
   void clear();
+
 private:
   ParserMode mode_;
   int state_;
