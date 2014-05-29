@@ -35,6 +35,8 @@ case "$host" in
     ;;
 esac
 
+AC_DEFINE_UNQUOTED([BUILD], ["$build"], [Define build-type])
+AC_DEFINE_UNQUOTED([HOST], ["$host"], [Define build-type])
 AC_DEFINE_UNQUOTED([TARGET], ["$target"], [Define target-type])
 
 # Checks for arguments.
@@ -654,6 +656,7 @@ AC_CHECK_HEADERS([argz.h \
                   sys/time.h \
                   sys/types.h \
                   sys/uio.h \
+                  sys/utsname.h \
                   termios.h \
                   unistd.h \
                   utime.h \
