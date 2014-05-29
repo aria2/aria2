@@ -67,6 +67,12 @@ const char* strSupportedFeature(int feature);
 // aria2.
 std::string usedLibs();
 
+// Returns a summary string of the used compiler/platform.
+std::string usedCompilerAndPlatform();
+
+// Returns the system information about the OS this binary is running on.
+std::string getOperatingSystemInfo();
+
 } // namespace aria2
 
 #endif // D_FEATURE_CONFIG_H
