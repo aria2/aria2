@@ -156,7 +156,7 @@ bool OpenSSLTLSContext::addCredentialFile(const std::string& certfile,
 bool OpenSSLTLSContext::addP12CredentialFile(const std::string& p12file)
 {
   std::stringstream ss;
-  BufferedFile(p12file.c_str(), "rb").transfer(ss);
+  BufferedFile(p12file.c_str(), BufferedFile::READ).transfer(ss);
 
   auto data = ss.str();
   void *ptr = const_cast<char*>(data.c_str());

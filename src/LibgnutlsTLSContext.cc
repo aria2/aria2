@@ -110,7 +110,7 @@ bool GnuTLSContext::addCredentialFile(const std::string& certfile,
 bool GnuTLSContext::addP12CredentialFile(const std::string& p12file)
 {
   std::stringstream ss;
-  BufferedFile(p12file.c_str(), "rb").transfer(ss);
+  BufferedFile(p12file.c_str(), BufferedFile::READ).transfer(ss);
   auto datastr = ss.str();
   const gnutls_datum_t data = {
     (unsigned char*)datastr.c_str(),

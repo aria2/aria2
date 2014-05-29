@@ -343,7 +343,7 @@ bool AppleTLSContext::tryAsPKCS12(const std::string& certfile)
 {
 #if defined(__MAC_10_6)
   std::stringstream ss;
-  BufferedFile(certfile.c_str(), "rb").transfer(ss);
+  BufferedFile(certfile.c_str(), BufferedFile::READ).transfer(ss);
   auto data = ss.str();
   if (data.empty()) {
     A2_LOG_ERROR("Couldn't read certificate file.");
