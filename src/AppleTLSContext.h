@@ -46,12 +46,11 @@
 
 namespace aria2 {
 
-class AppleTLSContext : public TLSContext {
+class AppleTLSContext : public TLSContext
+{
 public:
   AppleTLSContext(TLSSessionSide side)
-    : side_(side),
-      verifyPeer_(true),
-      credentials_(nullptr)
+    : side_(side), verifyPeer_(true), credentials_(nullptr)
   {}
 
   virtual ~AppleTLSContext();
@@ -60,25 +59,31 @@ public:
   virtual bool addCredentialFile(const std::string& certfile,
                                  const std::string& keyfile) CXX11_OVERRIDE;
 
-  virtual bool addSystemTrustedCACerts() CXX11_OVERRIDE {
+  virtual bool addSystemTrustedCACerts() CXX11_OVERRIDE
+  {
     return true;
   }
 
   // certfile can contain multiple certificates.
-  virtual bool addTrustedCACertFile(const std::string& certfile)
-    CXX11_OVERRIDE;
+  virtual bool addTrustedCACertFile(const std::string& certfile) CXX11_OVERRIDE;
 
-  virtual bool good() const CXX11_OVERRIDE {
+  virtual bool good() const CXX11_OVERRIDE
+  {
     return true;
   }
-  virtual TLSSessionSide getSide() const CXX11_OVERRIDE {
+
+  virtual TLSSessionSide getSide() const CXX11_OVERRIDE
+  {
     return side_;
   }
 
-  virtual bool getVerifyPeer() const CXX11_OVERRIDE {
+  virtual bool getVerifyPeer() const CXX11_OVERRIDE
+  {
     return verifyPeer_;
   }
-  virtual void setVerifyPeer(bool verify) CXX11_OVERRIDE {
+
+  virtual void setVerifyPeer(bool verify) CXX11_OVERRIDE
+  {
     verifyPeer_ = verify;
   }
 
@@ -90,7 +95,9 @@ private:
   SecIdentityRef credentials_;
 
   bool tryAsFingerprint(const std::string& fingerprint);
+
   bool tryAsPKCS12(const std::string& certfile);
+
   bool tryAsPKCS12(CFDataRef data, const char* password);
 };
 

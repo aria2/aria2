@@ -53,73 +53,72 @@
 #define SECPKGCONTEXT_CIPHERINFO_V1 1
 #endif
 #ifndef SECPKG_ATTR_CIPHER_INFO
-#define SECPKG_ATTR_CIPHER_INFO  0x64
+#define SECPKG_ATTR_CIPHER_INFO 0x64
 #endif
 
 namespace {
-  using namespace aria2;
+using namespace aria2;
 
-  struct WinSecPkgContext_CipherInfo {
-      DWORD dwVersion;
-      DWORD dwProtocol;
-      DWORD dwCipherSuite;
-      DWORD dwBaseCipherSuite;
-      WCHAR szCipherSuite[SZ_ALG_MAX_SIZE];
-      WCHAR szCipher[SZ_ALG_MAX_SIZE];
-      DWORD dwCipherLen;
-      DWORD dwCipherBlockLen;    // in bytes
-      WCHAR szHash[SZ_ALG_MAX_SIZE];
-      DWORD dwHashLen;
-      WCHAR szExchange[SZ_ALG_MAX_SIZE];
-      DWORD dwMinExchangeLen;
-      DWORD dwMaxExchangeLen;
-      WCHAR szCertificate[SZ_ALG_MAX_SIZE];
-      DWORD dwKeyType;
-  };
+struct WinSecPkgContext_CipherInfo
+{
+  DWORD dwVersion;
+  DWORD dwProtocol;
+  DWORD dwCipherSuite;
+  DWORD dwBaseCipherSuite;
+  WCHAR szCipherSuite[SZ_ALG_MAX_SIZE];
+  WCHAR szCipher[SZ_ALG_MAX_SIZE];
+  DWORD dwCipherLen;
+  DWORD dwCipherBlockLen; // in bytes
+  WCHAR szHash[SZ_ALG_MAX_SIZE];
+  DWORD dwHashLen;
+  WCHAR szExchange[SZ_ALG_MAX_SIZE];
+  DWORD dwMinExchangeLen;
+  DWORD dwMaxExchangeLen;
+  WCHAR szCertificate[SZ_ALG_MAX_SIZE];
+  DWORD dwKeyType;
+};
 
-  static const ULONG kReqFlags = ISC_REQ_SEQUENCE_DETECT |
-                                 ISC_REQ_REPLAY_DETECT |
-                                 ISC_REQ_CONFIDENTIALITY |
-                                 ISC_REQ_ALLOCATE_MEMORY |
-                                 ISC_REQ_USE_SUPPLIED_CREDS |
-                                 ISC_REQ_STREAM;
-  static const ULONG kReqAFlags = ASC_REQ_SEQUENCE_DETECT |
-                                  ASC_REQ_REPLAY_DETECT |
-                                  ASC_REQ_CONFIDENTIALITY |
-                                  ASC_REQ_EXTENDED_ERROR |
-                                  ASC_REQ_ALLOCATE_MEMORY |
-                                  ASC_REQ_STREAM;
+static const ULONG kReqFlags =
+    ISC_REQ_SEQUENCE_DETECT | ISC_REQ_REPLAY_DETECT | ISC_REQ_CONFIDENTIALITY |
+    ISC_REQ_ALLOCATE_MEMORY | ISC_REQ_USE_SUPPLIED_CREDS | ISC_REQ_STREAM;
 
-  class TLSBuffer : public ::SecBuffer {
-  public:
-    explicit TLSBuffer(ULONG type, ULONG size, void *data)
-    {
-      cbBuffer = size;
-      BufferType = type;
-      pvBuffer = data;
-    }
-  };
+static const ULONG kReqAFlags =
+    ASC_REQ_SEQUENCE_DETECT | ASC_REQ_REPLAY_DETECT | ASC_REQ_CONFIDENTIALITY |
+    ASC_REQ_EXTENDED_ERROR | ASC_REQ_ALLOCATE_MEMORY | ASC_REQ_STREAM;
 
-  class TLSBufferDesc: public ::SecBufferDesc {
-  public:
-    explicit TLSBufferDesc(SecBuffer *arr, ULONG buffers)
-    {
-      ulVersion = SECBUFFER_VERSION;
-      cBuffers = buffers;
-      pBuffers = arr;
-    }
-  };
-
-  inline static std::string getCipherSuite(CtxtHandle *handle)
+class TLSBuffer : public ::SecBuffer
+{
+public:
+  explicit TLSBuffer(ULONG type, ULONG size, void* data)
   {
-    WinSecPkgContext_CipherInfo info = { SECPKGCONTEXT_CIPHERINFO_V1 };
-    if (QueryContextAttributes(handle, SECPKG_ATTR_CIPHER_INFO, &info) ==
-        SEC_E_OK) {
-      return wCharToUtf8(info.szCipherSuite);
-    }
-    return "Unknown";
+    cbBuffer = size;
+    BufferType = type;
+    pvBuffer = data;
   }
+};
+
+class TLSBufferDesc : public ::SecBufferDesc
+{
+public:
+  explicit TLSBufferDesc(SecBuffer* arr, ULONG buffers)
+  {
+    ulVersion = SECBUFFER_VERSION;
+    cBuffers = buffers;
+    pBuffers = arr;
+  }
+};
+
+inline static std::string getCipherSuite(CtxtHandle* handle)
+{
+  WinSecPkgContext_CipherInfo info = {SECPKGCONTEXT_CIPHERINFO_V1};
+  if (QueryContextAttributes(handle, SECPKG_ATTR_CIPHER_INFO, &info) ==
+      SEC_E_OK) {
+    return wCharToUtf8(info.szCipherSuite);
+  }
+  return "Unknown";
 }
+
+} // namespace
 
 namespace aria2 {
 
@@ -189,35 +188,33 @@ int WinTLSSession::closeConnection()
     ULONG flags = 0;
     if (side_ == TLS_CLIENT) {
       SEC_CHAR* host = hostname_.empty() ?
-        nullptr :
-        const_cast<SEC_CHAR*>(hostname_.c_str());
-      status_ = ::InitializeSecurityContext(
-          cred_,
-          &handle_,
-          host,
-          kReqFlags,
-          0,
-          0,
-          nullptr,
-          0,
-          &handle_,
-          &desc,
-          &flags,
-          nullptr);
+                           nullptr :
+                           const_cast<SEC_CHAR*>(hostname_.c_str());
+      status_ = ::InitializeSecurityContext(cred_,
+                                            &handle_,
+                                            host,
+                                            kReqFlags,
+                                            0,
+                                            0,
+                                            nullptr,
+                                            0,
+                                            &handle_,
+                                            &desc,
+                                            &flags,
+                                            nullptr);
     }
     else {
-      status_ = ::AcceptSecurityContext(
-          cred_,
-          &handle_,
-          nullptr,
-          kReqAFlags,
-          0,
-          &handle_,
-          &desc,
-          &flags,
-          nullptr);
+      status_ = ::AcceptSecurityContext(cred_,
+                                        &handle_,
+                                        nullptr,
+                                        kReqAFlags,
+                                        0,
+                                        &handle_,
+                                        &desc,
+                                        &flags,
+                                        nullptr);
     }
-    if (status_ == SEC_E_OK || status_== SEC_I_CONTEXT_EXPIRED) {
+    if (status_ == SEC_E_OK || status_ == SEC_I_CONTEXT_EXPIRED) {
       size_t len = ctx.cbBuffer;
       ssize_t rv = writeData(ctx.pvBuffer, ctx.cbBuffer);
       ::FreeContextBuffer(ctx.pvBuffer);
@@ -246,7 +243,7 @@ int WinTLSSession::closeConnection()
 
 int WinTLSSession::checkDirection()
 {
-  if (state_ == st_handshake_write || state_  == st_handshake_write_last) {
+  if (state_ == st_handshake_write || state_ == st_handshake_write_last) {
     return TLS_WANT_WRITE;
   }
   if (state_ == st_handshake_read) {
@@ -280,7 +277,8 @@ ssize_t WinTLSSession::writeData(const void* data, size_t len)
   }
 
   A2_LOG_DEBUG(fmt("WinTLS: Write request: %" PRIu64 " buffered: %" PRIu64,
-                   (uint64_t)len, (uint64_t)writeBuf_.size()));
+                   (uint64_t)len,
+                   (uint64_t)writeBuf_.size()));
 
   // Write remaining buffered data, if any.
   size_t written = 0;
@@ -310,8 +308,8 @@ ssize_t WinTLSSession::writeData(const void* data, size_t len)
 
   if (!streamSizes_) {
     streamSizes_.reset(new SecPkgContext_StreamSizes());
-    status_ = ::QueryContextAttributes(&handle_, SECPKG_ATTR_STREAM_SIZES,
-                                       streamSizes_.get());
+    status_ = ::QueryContextAttributes(
+        &handle_, SECPKG_ATTR_STREAM_SIZES, streamSizes_.get());
     if (status_ != SEC_E_OK || !streamSizes_->cbMaximumMessage) {
       state_ = st_error;
       return TLS_ERR_ERROR;
@@ -346,16 +344,17 @@ ssize_t WinTLSSession::writeData(const void* data, size_t len)
   while (process) {
     // Set up an outgoing message, according to streamSizes_
     writeBuffered_ = std::min(process, (size_t)streamSizes_->cbMaximumMessage);
-    size_t dl = streamSizes_->cbHeader + writeBuffered_ +
-                streamSizes_->cbTrailer;
+    size_t dl =
+        streamSizes_->cbHeader + writeBuffered_ + streamSizes_->cbTrailer;
     auto buf = make_unique<char[]>(dl);
     TLSBuffer buffers[] = {
-      TLSBuffer(SECBUFFER_STREAM_HEADER, streamSizes_->cbHeader, buf.get()),
-      TLSBuffer(SECBUFFER_DATA, writeBuffered_,
-                buf.get() + streamSizes_->cbHeader),
-      TLSBuffer(SECBUFFER_STREAM_TRAILER, streamSizes_->cbTrailer,
-                buf.get() + streamSizes_->cbHeader + writeBuffered_),
-      TLSBuffer(SECBUFFER_EMPTY, 0, nullptr),
+        TLSBuffer(SECBUFFER_STREAM_HEADER, streamSizes_->cbHeader, buf.get()),
+        TLSBuffer(
+            SECBUFFER_DATA, writeBuffered_, buf.get() + streamSizes_->cbHeader),
+        TLSBuffer(SECBUFFER_STREAM_TRAILER,
+                  streamSizes_->cbTrailer,
+                  buf.get() + streamSizes_->cbHeader + writeBuffered_),
+        TLSBuffer(SECBUFFER_EMPTY, 0, nullptr),
     };
     TLSBufferDesc desc(buffers, 4);
     memcpy(buffers[1].pvBuffer, bytes, writeBuffered_);
@@ -418,7 +417,8 @@ ssize_t WinTLSSession::writeData(const void* data, size_t len)
   }
 
   A2_LOG_DEBUG(fmt("WinTLS: Write result: %" PRIu64 " buffered: %" PRIu64,
-                   (uint64_t)len, (uint64_t)writeBuf_.size()));
+                   (uint64_t)len,
+                   (uint64_t)writeBuf_.size()));
   if (!len) {
     return TLS_ERR_WOULDBLOCK;
   }
@@ -428,7 +428,8 @@ ssize_t WinTLSSession::writeData(const void* data, size_t len)
 ssize_t WinTLSSession::readData(void* data, size_t len)
 {
   A2_LOG_DEBUG(fmt("WinTLS: Read request: %" PRIu64 " buffered: %" PRIu64,
-                   (uint64_t)len, (uint64_t)readBuf_.size()));
+                   (uint64_t)len,
+                   (uint64_t)readBuf_.size()));
   if (len == 0) {
     return 0;
   }
@@ -481,10 +482,10 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
   // Try to decrypt as many messages as possible from the readBuf_.
   while (readBuf_.size()) {
     TLSBuffer bufs[] = {
-      TLSBuffer(SECBUFFER_DATA, readBuf_.size(), readBuf_.data()),
-      TLSBuffer(SECBUFFER_EMPTY, 0, nullptr),
-      TLSBuffer(SECBUFFER_EMPTY, 0, nullptr),
-      TLSBuffer(SECBUFFER_EMPTY, 0, nullptr),
+        TLSBuffer(SECBUFFER_DATA, readBuf_.size(), readBuf_.data()),
+        TLSBuffer(SECBUFFER_EMPTY, 0, nullptr),
+        TLSBuffer(SECBUFFER_EMPTY, 0, nullptr),
+        TLSBuffer(SECBUFFER_EMPTY, 0, nullptr),
     };
     TLSBufferDesc desc(bufs, 4);
     status_ = ::DecryptMessage(&handle_, &desc, 0, nullptr);
@@ -563,222 +564,220 @@ int WinTLSSession::tlsConnect(const std::string& hostname,
 restart:
 
   switch (state_) {
-    default:
-      A2_LOG_ERROR("WinTLS: Invalid state");
-      status_ = SEC_E_INVALID_HANDLE;
+  default:
+    A2_LOG_ERROR("WinTLS: Invalid state");
+    status_ = SEC_E_INVALID_HANDLE;
+    return TLS_ERR_ERROR;
+
+  case st_initialized: {
+    if (side_ == TLS_SERVER) {
+      goto read;
+    }
+
+    if (!hostname.empty()) {
+      setSNIHostname(hostname);
+    }
+    A2_LOG_DEBUG("WinTLS: Initializing handshake");
+    TLSBuffer buf(SECBUFFER_EMPTY, 0, nullptr);
+    TLSBufferDesc desc(&buf, 1);
+    SEC_CHAR* host =
+        hostname_.empty() ? nullptr : const_cast<SEC_CHAR*>(hostname_.c_str());
+    status_ = ::InitializeSecurityContext(cred_,
+                                          nullptr,
+                                          host,
+                                          kReqFlags,
+                                          0,
+                                          0,
+                                          nullptr,
+                                          0,
+                                          &handle_,
+                                          &desc,
+                                          &flags,
+                                          nullptr);
+    if (status_ != SEC_I_CONTINUE_NEEDED) {
+      // Has to be SEC_I_CONTINUE_NEEDED, as we did not actually send data
+      // at this point.
+      state_ = st_error;
       return TLS_ERR_ERROR;
+    }
 
-    case st_initialized: {
-      if (side_ == TLS_SERVER) {
-        goto read;
-      }
+    // Queue the initial message...
+    writeBuf_.write(buf.pvBuffer, buf.cbBuffer);
+    FreeContextBuffer(buf.pvBuffer);
 
-      if (!hostname.empty()) {
-        setSNIHostname(hostname);
+    // ... and start sending it
+    state_ = st_handshake_write;
+  }
+  // Fall through
+
+  case st_handshake_write_last:
+  case st_handshake_write: {
+    A2_LOG_DEBUG("WinTLS: Writing handshake");
+
+    // Write the currently queued handshake message until all data is sent.
+    while (writeBuf_.size()) {
+      ssize_t writ = ::send(sockfd_, writeBuf_.data(), writeBuf_.size(), 0);
+      errno = ::WSAGetLastError();
+      if (writ < 0 && errno == WSAEINTR) {
+        continue;
       }
-      A2_LOG_DEBUG("WinTLS: Initializing handshake");
-      TLSBuffer buf(SECBUFFER_EMPTY, 0, nullptr);
-      TLSBufferDesc desc(&buf, 1);
-      SEC_CHAR* host = hostname_.empty() ?
-        nullptr :
-        const_cast<SEC_CHAR*>(hostname_.c_str());
-      status_ = ::InitializeSecurityContext(
-          cred_,
-          nullptr,
-          host,
-          kReqFlags,
-          0,
-          0,
-          nullptr,
-          0,
-          &handle_,
-          &desc,
-          &flags,
-          nullptr);
-      if (status_ != SEC_I_CONTINUE_NEEDED) {
-        // Has to be SEC_I_CONTINUE_NEEDED, as we did not actually send data
-        // at this point.
+      if (writ < 0 && errno == WSAEWOULDBLOCK) {
+        return TLS_ERR_WOULDBLOCK;
+      }
+      if (writ <= 0) {
+        status_ = SEC_E_INCOMPLETE_MESSAGE;
         state_ = st_error;
         return TLS_ERR_ERROR;
       }
-
-      // Queue the initial message...
-      writeBuf_.write(buf.pvBuffer, buf.cbBuffer);
-      FreeContextBuffer(buf.pvBuffer);
-
-      // ... and start sending it
-      state_ = st_handshake_write;
+      writeBuf_.eat(writ);
     }
-    // Fall through
 
-    case st_handshake_write_last:
-    case st_handshake_write: {
-      A2_LOG_DEBUG("WinTLS: Writing handshake");
-
-      // Write the currently queued handshake message until all data is sent.
-      while(writeBuf_.size()) {
-        ssize_t writ = ::send(sockfd_, writeBuf_.data(), writeBuf_.size(), 0);
-        errno = ::WSAGetLastError();
-        if (writ < 0 && errno == WSAEINTR) {
-          continue;
-        }
-        if (writ < 0 && errno == WSAEWOULDBLOCK) {
-          return TLS_ERR_WOULDBLOCK;
-        }
-        if (writ <= 0) {
-          status_ = SEC_E_INCOMPLETE_MESSAGE;
-          state_ = st_error;
-          return TLS_ERR_ERROR;
-        }
-        writeBuf_.eat(writ);
-      }
-
-      if (state_ == st_handshake_write_last) {
-        state_ = st_handshake_done;
-        goto restart;
-      }
-
-      // Have to read one or more response messages.
-      state_ = st_handshake_read;
+    if (state_ == st_handshake_write_last) {
+      state_ = st_handshake_done;
+      goto restart;
     }
-    // Fall through
 
-    case st_handshake_read: {
-read:
-      A2_LOG_DEBUG("WinTLS: Reading handshake...");
+    // Have to read one or more response messages.
+    state_ = st_handshake_read;
+  }
+  // Fall through
 
-      // All write buffered data is invalid at this point!
-      writeBuf_.clear();
+  case st_handshake_read: {
+  read:
+    A2_LOG_DEBUG("WinTLS: Reading handshake...");
 
-      // Read as many bytes as possible, up to 4k new bytes.
-      // We do not know how many bytes will arrive from the server at this
-      // point.
-      readBuf_.resize(readBuf_.size() + 4096);
-      while (readBuf_.free()) {
-        ssize_t read = ::recv(sockfd_, readBuf_.end(), readBuf_.free(), 0);
-        errno = ::WSAGetLastError();
-        if (read < 0 && errno == WSAEINTR) {
-          continue;
-        }
-        if (read < 0 && errno == WSAEWOULDBLOCK) {
-          break;
-        }
-        if (read <= 0) {
-          status_ = SEC_E_INCOMPLETE_MESSAGE;
-          state_ = st_error;
-          return TLS_ERR_ERROR;
-        }
-        readBuf_.advance(read);
+    // All write buffered data is invalid at this point!
+    writeBuf_.clear();
+
+    // Read as many bytes as possible, up to 4k new bytes.
+    // We do not know how many bytes will arrive from the server at this
+    // point.
+    readBuf_.resize(readBuf_.size() + 4096);
+    while (readBuf_.free()) {
+      ssize_t read = ::recv(sockfd_, readBuf_.end(), readBuf_.free(), 0);
+      errno = ::WSAGetLastError();
+      if (read < 0 && errno == WSAEINTR) {
+        continue;
+      }
+      if (read < 0 && errno == WSAEWOULDBLOCK) {
         break;
       }
-      if (!readBuf_.size()) {
-        return TLS_ERR_WOULDBLOCK;
+      if (read <= 0) {
+        status_ = SEC_E_INCOMPLETE_MESSAGE;
+        state_ = st_error;
+        return TLS_ERR_ERROR;
       }
+      readBuf_.advance(read);
+      break;
+    }
+    if (!readBuf_.size()) {
+      return TLS_ERR_WOULDBLOCK;
+    }
 
-      // Need to copy the data, as Schannel is free to mess with it. But we
-      // might later need unmodified data from the original read buffer.
-      auto bufcopy = make_unique<char[]>(readBuf_.size());
-      memcpy(bufcopy.get(), readBuf_.data(), readBuf_.size());
+    // Need to copy the data, as Schannel is free to mess with it. But we
+    // might later need unmodified data from the original read buffer.
+    auto bufcopy = make_unique<char[]>(readBuf_.size());
+    memcpy(bufcopy.get(), readBuf_.data(), readBuf_.size());
 
-      // Set up buffers. inbufs will be the raw bytes the library has to decode.
-      // outbufs will contain generated responses, if any.
-      TLSBuffer inbufs[] = {
+    // Set up buffers. inbufs will be the raw bytes the library has to decode.
+    // outbufs will contain generated responses, if any.
+    TLSBuffer inbufs[] = {
         TLSBuffer(SECBUFFER_TOKEN, readBuf_.size(), bufcopy.get()),
         TLSBuffer(SECBUFFER_EMPTY, 0, nullptr),
-      };
-      TLSBufferDesc indesc(inbufs, 2);
-      TLSBuffer outbufs[] = {
-        TLSBuffer(SECBUFFER_TOKEN, 0, nullptr),
-        TLSBuffer(SECBUFFER_ALERT, 0, nullptr),
-      };
-      TLSBufferDesc outdesc(outbufs, 2);
-      if (side_ == TLS_CLIENT) {
-        SEC_CHAR* host = hostname_.empty() ?
-          nullptr :
-          const_cast<SEC_CHAR*>(hostname_.c_str());
-        status_ = ::InitializeSecurityContext(
-            cred_,
-            &handle_,
-            host,
-            kReqFlags,
-            0,
-            0,
-            &indesc,
-            0,
-            nullptr,
-            &outdesc,
-            &flags,
-            nullptr);
-      }
-      else {
-        status_ = ::AcceptSecurityContext(
-            cred_,
-            state_ == st_initialized ? nullptr : &handle_,
-            &indesc,
-            kReqAFlags,
-            0,
-            state_ == st_initialized ? &handle_ : nullptr,
-            &outdesc,
-            &flags,
-            nullptr);
-      }
-      if (status_ == SEC_E_INCOMPLETE_MESSAGE) {
-        // Not enough raw bytes read yet to decode a full message.
-        return TLS_ERR_WOULDBLOCK;
-      }
-      if (status_ != SEC_E_OK && status_ != SEC_I_CONTINUE_NEEDED) {
-        state_ = st_error;
-        return TLS_ERR_ERROR;
-      }
+    };
+    TLSBufferDesc indesc(inbufs, 2);
+    TLSBuffer outbufs[] = {
+      TLSBuffer(SECBUFFER_TOKEN, 0, nullptr),
+      TLSBuffer(SECBUFFER_ALERT, 0, nullptr),
+    };
+    TLSBufferDesc outdesc(outbufs, 2);
+    if (side_ == TLS_CLIENT) {
+      SEC_CHAR* host = hostname_.empty() ?
+                           nullptr :
+                           const_cast<SEC_CHAR*>(hostname_.c_str());
+      status_ = ::InitializeSecurityContext(cred_,
+                                            &handle_,
+                                            host,
+                                            kReqFlags,
+                                            0,
+                                            0,
+                                            &indesc,
+                                            0,
+                                            nullptr,
+                                            &outdesc,
+                                            &flags,
+                                            nullptr);
+    }
+    else {
+      status_ =
+          ::AcceptSecurityContext(cred_,
+                                  state_ == st_initialized ? nullptr : &handle_,
+                                  &indesc,
+                                  kReqAFlags,
+                                  0,
+                                  state_ == st_initialized ? &handle_ : nullptr,
+                                  &outdesc,
+                                  &flags,
+                                  nullptr);
+    }
+    if (status_ == SEC_E_INCOMPLETE_MESSAGE) {
+      // Not enough raw bytes read yet to decode a full message.
+      return TLS_ERR_WOULDBLOCK;
+    }
+    if (status_ != SEC_E_OK && status_ != SEC_I_CONTINUE_NEEDED) {
+      state_ = st_error;
+      return TLS_ERR_ERROR;
+    }
 
-      // Raw bytes where not entirely consumed, i.e. readBuf_ still contains
-      // unprocessed data from the next message?
-      if (inbufs[1].BufferType == SECBUFFER_EXTRA && inbufs[1].cbBuffer > 0) {
-        readBuf_.eat(readBuf_.size() - inbufs[1].cbBuffer);
-      }
-      else {
-        readBuf_.clear();
-      }
+    // Raw bytes where not entirely consumed, i.e. readBuf_ still contains
+    // unprocessed data from the next message?
+    if (inbufs[1].BufferType == SECBUFFER_EXTRA && inbufs[1].cbBuffer > 0) {
+      readBuf_.eat(readBuf_.size() - inbufs[1].cbBuffer);
+    }
+    else {
+      readBuf_.clear();
+    }
 
-      // Check if the library produced a new outgoing message and queue it.
-      for (auto& buf : outbufs) {
-        if (buf.BufferType == SECBUFFER_TOKEN && buf.cbBuffer > 0) {
-          writeBuf_.write(buf.pvBuffer, buf.cbBuffer);
-          FreeContextBuffer(buf.pvBuffer);
-          state_ = st_handshake_write;
-        }
-      }
-
-      // Need to read additional messages?
-      if (status_ == SEC_I_CONTINUE_NEEDED) {
-        A2_LOG_DEBUG("WinTLS: Continuing with handshake");
-        goto restart;
-      }
-
-      if (side_ == TLS_CLIENT && flags != kReqFlags) {
-        A2_LOG_ERROR(fmt("WinTLS: Channel setup failed. Schannel provider did "
-                         "not fulfill requested flags. "
-                         "Excepted: %lu Actual: %lu",
-                         kReqFlags, flags));
-        status_ = SEC_E_INTERNAL_ERROR;
-        state_ = st_error;
-        return TLS_ERR_ERROR;
-      }
-
-      if (state_ == st_handshake_write) {
-        A2_LOG_DEBUG("WinTLS: Continuing with handshake (last write)");
-        state_ = st_handshake_write_last;
-        goto restart;
+    // Check if the library produced a new outgoing message and queue it.
+    for (auto& buf : outbufs) {
+      if (buf.BufferType == SECBUFFER_TOKEN && buf.cbBuffer > 0) {
+        writeBuf_.write(buf.pvBuffer, buf.cbBuffer);
+        FreeContextBuffer(buf.pvBuffer);
+        state_ = st_handshake_write;
       }
     }
-    // Fall through
 
-    case st_handshake_done:
-      // All ready now :D
-      state_ = st_connected;
-      A2_LOG_INFO(fmt("WinTLS: connected with: %s",
-                      getCipherSuite(&handle_).c_str()));
-      return TLS_ERR_OK;
+    // Need to read additional messages?
+    if (status_ == SEC_I_CONTINUE_NEEDED) {
+      A2_LOG_DEBUG("WinTLS: Continuing with handshake");
+      goto restart;
+    }
+
+    if (side_ == TLS_CLIENT && flags != kReqFlags) {
+      A2_LOG_ERROR(fmt("WinTLS: Channel setup failed. Schannel provider did "
+                       "not fulfill requested flags. "
+                       "Excepted: %lu Actual: %lu",
+                       kReqFlags,
+                       flags));
+      status_ = SEC_E_INTERNAL_ERROR;
+      state_ = st_error;
+      return TLS_ERR_ERROR;
+    }
+
+    if (state_ == st_handshake_write) {
+      A2_LOG_DEBUG("WinTLS: Continuing with handshake (last write)");
+      state_ = st_handshake_write_last;
+      goto restart;
+    }
+  }
+  // Fall through
+
+  case st_handshake_done:
+    // All ready now :D
+    state_ = st_connected;
+    A2_LOG_INFO(
+        fmt("WinTLS: connected with: %s", getCipherSuite(&handle_).c_str()));
+    return TLS_ERR_OK;
   }
 
   A2_LOG_ERROR("WinTLS: Unreachable reached during tlsConnect! This is a bug!");
@@ -796,16 +795,17 @@ std::string WinTLSSession::getLastErrorString()
 {
   std::stringstream ss;
   wchar_t* buf = nullptr;
-  if (FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER |
-                    FORMAT_MESSAGE_FROM_SYSTEM |
-                    FORMAT_MESSAGE_IGNORE_INSERTS,
-                    nullptr,
-                    status_,
-                    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                    (LPWSTR)&buf,
-                    1024,
-                    nullptr) && buf) {
-    ss << "Error: " << wCharToUtf8(buf) << "(" << std::hex << status_ <<  ")";
+  auto rv = FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+                               FORMAT_MESSAGE_FROM_SYSTEM |
+                               FORMAT_MESSAGE_IGNORE_INSERTS,
+                           nullptr,
+                           status_,
+                           MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                           (LPWSTR) & buf,
+                           1024,
+                           nullptr);
+  if (rv && buf) {
+    ss << "Error: " << wCharToUtf8(buf) << "(" << std::hex << status_ << ")";
     LocalFree(buf);
   }
   else {

@@ -45,60 +45,79 @@
 namespace aria2 {
 
 namespace wintls {
-  struct Buffer {
-  private:
-    size_t off_, free_, cap_;
-    std::vector<char> buf_;
+struct Buffer
+{
+private:
+  size_t off_, free_, cap_;
+  std::vector<char> buf_;
 
-  public:
-    inline Buffer() : off_(0), free_(0), cap_(0) {}
+public:
+  inline Buffer() : off_(0), free_(0), cap_(0) {}
 
-    inline size_t size() const {
-      return off_;
+  inline size_t size() const
+  {
+    return off_;
+  }
+
+  inline size_t free() const
+  {
+    return free_;
+  }
+
+  inline void resize(size_t len)
+  {
+    if (cap_ >= len) {
+      return;
     }
-    inline size_t free() const {
-      return free_;
+    buf_.resize(len);
+    cap_ = buf_.size();
+    free_ = cap_ - off_;
+  }
+
+  inline char* data()
+  {
+    return buf_.data();
+  }
+
+  inline char* end()
+  {
+    return buf_.data() + off_;
+  }
+
+  inline void eat(size_t len)
+  {
+    off_ -= len;
+    if (off_) {
+      memmove(buf_.data(), buf_.data() + len, off_);
     }
-    inline void resize(size_t len) {
-      if (cap_ >= len) {
-        return;
-      }
-      buf_.resize(len);
-      cap_ = buf_.size();
-      free_ = cap_ - off_;
+    free_ = cap_ - off_;
+  }
+
+  inline void clear()
+  {
+    eat(off_);
+  }
+
+  inline void advance(size_t len)
+  {
+    off_ += len;
+    free_ = cap_ - off_;
+  }
+
+  inline void write(const void* data, size_t len)
+  {
+    if (!len) {
+      return;
     }
-    inline char* data() {
-      return buf_.data();
-    }
-    inline char* end() {
-      return buf_.data() + off_;
-    }
-    inline void eat(size_t len) {
-      off_ -= len;
-      if (off_) {
-        memmove(buf_.data(), buf_.data() + len, off_);
-      }
-      free_ = cap_ - off_;
-    }
-    inline void clear() {
-      eat(off_);
-    }
-    inline void advance(size_t len) {
-      off_ += len;
-      free_ = cap_ - off_;
-    }
-    inline void write(const void* data, size_t len) {
-      if (!len) {
-        return;
-      }
-      resize(off_ + len);
-      memcpy(end(), data, len);
-      advance(len);
-    }
-  };
+    resize(off_ + len);
+    memcpy(end(), data, len);
+    advance(len);
+  }
+};
 } // namespace wintls
 
-class WinTLSSession : public TLSSession {
+class WinTLSSession : public TLSSession
+{
   enum state_t {
     st_constructed,
     st_initialized,
@@ -156,7 +175,8 @@ public:
   // if the underlying transport blocks, or TLS_ERR_ERROR.
   // When returning TLS_ERR_ERROR, provide certificate validation error
   // in |handshakeErr|.
-  virtual int tlsConnect(const std::string& hostname, std::string& handshakeErr) CXX11_OVERRIDE;
+  virtual int tlsConnect(const std::string& hostname,
+                         std::string& handshakeErr) CXX11_OVERRIDE;
 
   // Performs server side handshake. This function returns TLS_ERR_OK
   // if it succeeds, or TLS_ERR_WOULDBLOCK if the underlying transport

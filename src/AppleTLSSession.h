@@ -41,7 +41,8 @@
 
 namespace aria2 {
 
-class AppleTLSSession : public TLSSession {
+class AppleTLSSession : public TLSSession
+{
   enum state_t {
     st_constructed,
     st_initialized,
@@ -49,6 +50,7 @@ class AppleTLSSession : public TLSSession {
     st_closed,
     st_error
   };
+
 public:
   AppleTLSSession(AppleTLSContext* ctx);
 
@@ -93,8 +95,8 @@ public:
   // if the underlying transport blocks, or TLS_ERR_ERROR.
   // When returning TLS_ERR_ERROR, provide certificate validation error
   // in |handshakeErr|.
-  virtual int tlsConnect
-  (const std::string& hostname, std::string& handshakeErr) CXX11_OVERRIDE;
+  virtual int tlsConnect(const std::string& hostname,
+                         std::string& handshakeErr) CXX11_OVERRIDE;
 
   // Performs server side handshake. This function returns TLS_ERR_OK
   // if it succeeds, or TLS_ERR_WOULDBLOCK if the underlying transport
@@ -105,10 +107,14 @@ public:
   virtual std::string getLastErrorString() CXX11_OVERRIDE;
 
 private:
-  static OSStatus SocketWrite(SSLConnectionRef conn, const void* data, size_t* len) {
+  static OSStatus
+  SocketWrite(SSLConnectionRef conn, const void* data, size_t* len)
+  {
     return ((AppleTLSSession*)conn)->sockWrite(data, len);
   }
-  static OSStatus SocketRead(SSLConnectionRef conn, void* data, size_t* len) {
+
+  static OSStatus SocketRead(SSLConnectionRef conn, void* data, size_t* len)
+  {
     return ((AppleTLSSession*)conn)->sockRead(data, len);
   }
 
@@ -121,7 +127,6 @@ private:
   OSStatus sockWrite(const void* data, size_t* len);
   OSStatus sockRead(void* data, size_t* len);
 };
-
 }
 
 #endif // TLS_SESSION_H
