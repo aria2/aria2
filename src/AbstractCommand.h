@@ -62,7 +62,8 @@ class AsyncNameResolver;
 class AsyncNameResolverMan;
 #endif // ENABLE_ASYNC_DNS
 
-class AbstractCommand : public Command {
+class AbstractCommand : public Command
+{
 private:
   std::shared_ptr<Request> req_;
   std::shared_ptr<FileEntry> fileEntry_;
@@ -78,7 +79,7 @@ private:
   RequestGroup* requestGroup_;
   DownloadEngine* e_;
 
-  std::vector<std::shared_ptr<Segment> > segments_;
+  std::vector<std::shared_ptr<Segment>> segments_;
 
   Timer checkPoint_;
   Timer serverStatTimer_;
@@ -90,7 +91,10 @@ private:
   bool incNumConnection_;
 
   int32_t calculateMinSplitSize() const;
+
   void useFasterRequest(const std::shared_ptr<Request>& fasterRequest);
+
+  bool shouldProcess() const;
 
 public:
   RequestGroup* getRequestGroup() const
@@ -140,7 +144,7 @@ public:
     return socketRecvBuffer_;
   }
 
-  const std::vector<std::shared_ptr<Segment> >& getSegments() const
+  const std::vector<std::shared_ptr<Segment>>& getSegments() const
   {
     return segments_;
   }
@@ -150,26 +154,32 @@ public:
   // return empty string. In this case, call this function with same
   // arguments until resolved address is returned.  Exception is
   // thrown on error. port is used for retrieving cached addresses.
-  std::string resolveHostname
-  (std::vector<std::string>& addrs, const std::string& hostname, uint16_t port);
+  std::string resolveHostname(std::vector<std::string>& addrs,
+                              const std::string& hostname,
+                              uint16_t port);
 
   void tryReserved();
 
   void setReadCheckSocket(const std::shared_ptr<SocketCore>& socket);
+
   void setWriteCheckSocket(const std::shared_ptr<SocketCore>& socket);
+
   void disableReadCheckSocket();
+
   void disableWriteCheckSocket();
 
   /**
    * If pred == true, calls setReadCheckSocket(socket). Otherwise, calls
    * disableReadCheckSocket().
    */
-  void setReadCheckSocketIf(const std::shared_ptr<SocketCore>& socket, bool pred);
+  void setReadCheckSocketIf(const std::shared_ptr<SocketCore>& socket,
+                            bool pred);
   /**
    * If pred == true, calls setWriteCheckSocket(socket). Otherwise, calls
    * disableWriteCheckSocket().
    */
-  void setWriteCheckSocketIf(const std::shared_ptr<SocketCore>& socket, bool pred);
+  void setWriteCheckSocketIf(const std::shared_ptr<SocketCore>& socket,
+                             bool pred);
 
   // Swaps socket_ with socket. This disables current read and write
   // check.
@@ -180,7 +190,10 @@ public:
     return timeout_;
   }
 
-  void setTimeout(time_t timeout) { timeout_ = timeout; }
+  void setTimeout(time_t timeout)
+  {
+    timeout_ = timeout;
+  }
 
   void prepareForNextAction(std::unique_ptr<CheckIntegrityEntry> checkEntry);
 
@@ -189,11 +202,10 @@ public:
   // InitiateConnectionCommandFactory and it is pushed to
   // DownloadEngine and returns false. If no addresses left, DlRetryEx
   // exception is thrown.
-  bool checkIfConnectionEstablished
-  (const std::shared_ptr<SocketCore>& socket,
-   const std::string& connectedHostname,
-   const std::string& connectedAddr,
-   uint16_t connectedPort);
+  bool checkIfConnectionEstablished(const std::shared_ptr<SocketCore>& socket,
+                                    const std::string& connectedHostname,
+                                    const std::string& connectedAddr,
+                                    uint16_t connectedPort);
 
   /*
    * Returns true if proxy for the procol indicated by Request::getProtocol()
@@ -225,33 +237,40 @@ public:
   void checkSocketRecvBuffer();
 
   void addCommandSelf();
+
 protected:
   virtual bool prepareForRetry(time_t wait);
+
   virtual void onAbort();
+
   virtual bool executeInternal() = 0;
+
   // Returns true if the derived class wants to execute
   // executeInternal() unconditionally
-  virtual bool noCheck()
+  virtual bool noCheck() const
   {
     return false;
   }
 
 public:
-  AbstractCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
+  AbstractCommand(cuid_t cuid,
+                  const std::shared_ptr<Request>& req,
                   const std::shared_ptr<FileEntry>& fileEntry,
-                  RequestGroup* requestGroup, DownloadEngine* e,
+                  RequestGroup* requestGroup,
+                  DownloadEngine* e,
                   const std::shared_ptr<SocketCore>& s = nullptr,
-                  const std::shared_ptr<SocketRecvBuffer>& socketRecvBuffer = nullptr,
+                  const std::shared_ptr<SocketRecvBuffer>& socketRecvBuffer =
+                      nullptr,
                   bool incNumConnection = true);
 
   virtual ~AbstractCommand();
+
   virtual bool execute() CXX11_OVERRIDE;
 };
 
 // Returns proxy URI for given protocol.  If no proxy URI is defined,
 // then returns an empty string.
-std::string getProxyUri
-(const std::string& protocol, const Option* option);
+std::string getProxyUri(const std::string& protocol, const Option* option);
 
 } // namespace aria2
 
