@@ -19,7 +19,7 @@ README.html: README.rst
 else
 README.html: README.rst
 	@echo Warning: rst2html not installed. Placing only a dummy file for $@
-	echo "<!doctype html>" >> $@
+	echo "<!doctype html>" > $@
 	echo "<p>Readme has not been built!.<br>Instead see <a href='README.rst'>README.rst</a></p>" >> $@
 endif # HAVE_RST2HTML
 
