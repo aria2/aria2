@@ -16,12 +16,12 @@ dist_doc_DATA = README README.rst README.html
 if HAVE_RST2HTML
 README.html: README.rst
 	$(RST2HTML)  $< > $@
-else
+else # !HAVE_RST2HTML
 README.html: README.rst
 	@echo Warning: rst2html not installed. Placing only a dummy file for $@
 	echo "<!doctype html>" > $@
 	echo "<p>Readme has not been built!.<br>Instead see <a href='README.rst'>README.rst</a></p>" >> $@
-endif # HAVE_RST2HTML
+endif # !HAVE_RST2HTML
 
 dist_noinst_DATA = LICENSE.OpenSSL
 
