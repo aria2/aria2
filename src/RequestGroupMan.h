@@ -90,6 +90,11 @@ private:
 
   bool queueCheck_;
 
+  // true if there is a change in at least one of requestGroups_,
+  // reservedGroups_ and downloadResults_ since the last session
+  // serialization, so we need to save session file next time.
+  bool requireSaveSession_;
+
   // The number of error DownloadResult removed because of upper limit
   // of the queue
   int removedErrorResult_;
@@ -367,6 +372,16 @@ public:
   size_t getNumStoppedTotal() const
   {
     return numStoppedTotal_;
+  }
+
+  bool getRequireSaveSession() const
+  {
+    return requireSaveSession_;
+  }
+
+  void clearRequireSaveSession()
+  {
+    requireSaveSession_ = false;
   }
 };
 

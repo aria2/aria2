@@ -60,12 +60,23 @@ void SaveSessionCommand::preProcess()
 
 void SaveSessionCommand::process()
 {
+  auto& rgman = getDownloadEngine()->getRequestGroupMan();
+
+  if(!rgman->getRequireSaveSession()) {
+    A2_LOG_INFO("No change in queues since last serialization or startup. "
+                "No serialization is necessary this time.");
+    return;
+  }
+
   const std::string& filename = getDownloadEngine()->getOption()
     ->get(PREF_SAVE_SESSION);
+
   if(!filename.empty()) {
-    SessionSerializer sessionSerializer(getDownloadEngine()->
-                                        getRequestGroupMan().get());
+    SessionSerializer sessionSerializer(rgman.get());
+
     if(sessionSerializer.save(filename)) {
+      rgman->clearRequireSaveSession();
+
       A2_LOG_NOTICE(fmt(_("Serialized session to '%s' successfully."),
                         filename.c_str()));
     } else {

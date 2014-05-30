@@ -111,6 +111,7 @@ RequestGroupMan::RequestGroupMan
                                 (PREF_MAX_OVERALL_UPLOAD_LIMIT)),
     keepRunning_(option->getAsBool(PREF_ENABLE_RPC)),
     queueCheck_(true),
+    requireSaveSession_(false),
     removedErrorResult_(0),
     removedLastErrorResult_(error_code::FINISHED),
     maxDownloadResult_(option->getAsInt(PREF_MAX_DOWNLOAD_RESULT)),
@@ -120,6 +121,9 @@ RequestGroupMan::RequestGroupMan
 {
   appendReservedGroup(reservedGroups_,
                       requestGroups.begin(), requestGroups.end());
+  if(!reservedGroups_.empty()) {
+    requireSaveSession_ = true;
+  }
 }
 
 RequestGroupMan::~RequestGroupMan()
@@ -139,6 +143,7 @@ void RequestGroupMan::addRequestGroup
 (const std::shared_ptr<RequestGroup>& group)
 {
   requestGroups_.push_back(group->getGID(), group);
+  requireSaveSession_ = true;
 }
 
 void RequestGroupMan::addReservedGroup
@@ -146,6 +151,9 @@ void RequestGroupMan::addReservedGroup
 {
   requestQueueCheck();
   appendReservedGroup(reservedGroups_, groups.begin(), groups.end());
+  if(!reservedGroups_.empty()) {
+    requireSaveSession_ = true;
+  }
 }
 
 void RequestGroupMan::addReservedGroup
@@ -153,6 +161,7 @@ void RequestGroupMan::addReservedGroup
 {
   requestQueueCheck();
   reservedGroups_.push_back(group->getGID(), group);
+  requireSaveSession_ = true;
 }
 
 namespace {
@@ -171,6 +180,7 @@ void RequestGroupMan::insertReservedGroup
   pos = std::min(reservedGroups_.size(), pos);
   reservedGroups_.insert(pos, RequestGroupKeyFunc(),
                          groups.begin(), groups.end());
+  requireSaveSession_ = true;
 }
 
 void RequestGroupMan::insertReservedGroup
@@ -179,6 +189,7 @@ void RequestGroupMan::insertReservedGroup
   requestQueueCheck();
   pos = std::min(reservedGroups_.size(), pos);
   reservedGroups_.insert(pos, group->getGID(), group);
+  requireSaveSession_ = true;
 }
 
 size_t RequestGroupMan::countRequestGroup() const
@@ -202,13 +213,16 @@ size_t RequestGroupMan::changeReservedGroupPosition
   if(dest == -1) {
     throw DL_ABORT_EX(fmt("GID#%s not found in the waiting queue.",
                           GroupId::toHex(gid).c_str()));
-  } else {
-    return dest;
   }
+
+  requireSaveSession_ = true;
+
+  return dest;
 }
 
 bool RequestGroupMan::removeReservedGroup(a2_gid_t gid)
 {
+  requireSaveSession_ = true;
   return reservedGroups_.remove(gid);
 }
 
@@ -387,6 +401,7 @@ public:
       } catch(RecoverableException& ex) {
         A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, ex);
       }
+
       if(group->isPauseRequested()) {
         group->setState(RequestGroup::STATE_WAITING);
         reservedGroups_.push_front(group->getGID(), group);
@@ -417,6 +432,7 @@ void RequestGroupMan::removeStoppedGroup(DownloadEngine* e)
   requestGroups_.remove_if(ProcessStoppedRequestGroup(e, reservedGroups_));
   size_t numRemoved = numPrev-requestGroups_.size();
   if(numRemoved > 0) {
+    requireSaveSession_ = true;
     A2_LOG_DEBUG(fmt("%lu RequestGroup(s) deleted.",
                      static_cast<unsigned long>(numRemoved)));
   }
@@ -466,6 +482,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
                                                     uriListParser_.get());
       if(ok) {
         appendReservedGroup(reservedGroups_, groups.begin(), groups.end());
+        requireSaveSession_ = true;
       } else {
         uriListParser_.reset();
         if(reservedGroups_.empty()) {
@@ -487,6 +504,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
     groupToAdd->setRequestGroupMan(this);
     groupToAdd->setState(RequestGroup::STATE_ACTIVE);
     requestGroups_.push_back(groupToAdd->getGID(), groupToAdd);
+    requireSaveSession_ = true;
     try {
       auto res = createInitialCommand(groupToAdd, e);
       ++count;
@@ -828,6 +846,7 @@ RequestGroupMan::findDownloadResult(a2_gid_t gid) const
 
 bool RequestGroupMan::removeDownloadResult(a2_gid_t gid)
 {
+  requireSaveSession_ = true;
   return downloadResults_.remove(gid);
 }
 
@@ -836,6 +855,7 @@ void RequestGroupMan::addDownloadResult(const std::shared_ptr<DownloadResult>& d
   ++numStoppedTotal_;
   bool rv = downloadResults_.push_back(dr->gid->getNumericId(), dr);
   assert(rv);
+  requireSaveSession_ = true;
   while(downloadResults_.size() > maxDownloadResult_){
     DownloadResultList::iterator i = downloadResults_.begin();
     // Save last encountered error code so that we can report it
@@ -851,6 +871,7 @@ void RequestGroupMan::addDownloadResult(const std::shared_ptr<DownloadResult>& d
 
 void RequestGroupMan::purgeDownloadResult()
 {
+  requireSaveSession_ = true;
   downloadResults_.clear();
 }
 
