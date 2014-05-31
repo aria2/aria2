@@ -35,6 +35,7 @@
 #include "SessionSerializer.h"
 
 #include <cstdio>
+#include <cassert>
 #include <iterator>
 #include <set>
 
@@ -52,6 +53,7 @@
 #include "BufferedFile.h"
 #include "OptionParser.h"
 #include "OptionHandler.h"
+#include "MessageDigest.h"
 
 #if HAVE_ZLIB
 #include "GZipFile.h"
@@ -323,6 +325,90 @@ bool SessionSerializer::save(IOFile& fp) const
     }
   }
   return true;
+}
+
+namespace {
+// Class to calculate SHA1 hash value for data written into this
+// object.  No file I/O is done in this class.
+class SHA1IOFile : public IOFile {
+public:
+  SHA1IOFile()
+    : sha1_(MessageDigest::sha1())
+  {}
+
+  std::string digest()
+  {
+    return sha1_->digest();
+  }
+protected:
+  virtual size_t onRead(void* ptr, size_t count) CXX11_OVERRIDE
+  {
+    assert(0);
+  }
+
+  virtual size_t onWrite(const void* ptr, size_t count) CXX11_OVERRIDE
+  {
+    sha1_->update(ptr, count);
+
+    return count;
+  }
+
+  virtual char* onGets(char* s, int size) CXX11_OVERRIDE
+  {
+    assert(0);
+  }
+
+  virtual int onVprintf(const char* format, va_list va) CXX11_OVERRIDE
+  {
+    assert(0);
+  }
+
+  virtual int onFlush() CXX11_OVERRIDE
+  {
+    return 0;
+  }
+
+  virtual int onClose() CXX11_OVERRIDE
+  {
+    return 0;
+  }
+
+  virtual bool onSupportsColor() CXX11_OVERRIDE
+  {
+    return false;
+  }
+
+  virtual bool isError() const CXX11_OVERRIDE
+  {
+    return false;
+  }
+
+  virtual bool isEOF() const CXX11_OVERRIDE
+  {
+    return false;
+  }
+
+  virtual bool isOpen() const CXX11_OVERRIDE
+  {
+    return true;
+  }
+
+private:
+  std::unique_ptr<MessageDigest> sha1_;
+};
+} // namespace
+
+std::string SessionSerializer::calculateHash() const
+{
+  SHA1IOFile sha1io;
+
+  auto rv = save(sha1io);
+
+  if(!rv) {
+    return "";
+  }
+
+  return sha1io.digest();
 }
 
 } // namespace aria2

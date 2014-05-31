@@ -110,6 +110,9 @@ private:
   // evicted DownloadResults.
   size_t numStoppedTotal_;
 
+  // SHA1 hash value of the content of last session serialization.
+  std::string lastSessionHash_;
+
   void formatDownloadResultFull
   (OutputFile& out,
    const char* status,
@@ -367,6 +370,16 @@ public:
   size_t getNumStoppedTotal() const
   {
     return numStoppedTotal_;
+  }
+
+  void setLastSessionHash(std::string lastSessionHash)
+  {
+    lastSessionHash_ = std::move(lastSessionHash);
+  }
+
+  const std::string& getLastSessionHash() const
+  {
+    return lastSessionHash_;
   }
 };
 

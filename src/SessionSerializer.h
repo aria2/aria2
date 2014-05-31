@@ -57,6 +57,10 @@ public:
   SessionSerializer(RequestGroupMan* requestGroupMan);
 
   bool save(const std::string& filename) const;
+
+  // Calculates and returns SHA1 hash of the contents being
+  // serialized.
+  std::string calculateHash() const;
 };
 
 } // namespace aria2

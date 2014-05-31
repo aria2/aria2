@@ -63,8 +63,19 @@ void SaveSessionCommand::process()
   const std::string& filename = getDownloadEngine()->getOption()
     ->get(PREF_SAVE_SESSION);
   if(!filename.empty()) {
-    SessionSerializer sessionSerializer(getDownloadEngine()->
-                                        getRequestGroupMan().get());
+    auto& rgman = getDownloadEngine()->getRequestGroupMan();
+
+    SessionSerializer sessionSerializer(rgman.get());
+
+    auto sessionHash = sessionSerializer.calculateHash();
+    if(rgman->getLastSessionHash() == sessionHash) {
+      A2_LOG_INFO("No change since last serialization or startup. "
+                  "No serialization is necessary this time.");
+      return;
+    }
+
+    rgman->setLastSessionHash(std::move(sessionHash));
+
     if(sessionSerializer.save(filename)) {
       A2_LOG_NOTICE(fmt(_("Serialized session to '%s' successfully."),
                         filename.c_str()));

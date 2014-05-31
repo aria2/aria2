@@ -81,6 +81,7 @@
 #include "PieceStorage.h"
 #include "DiskAdaptor.h"
 #include "SimpleRandomizer.h"
+#include "array_fun.h"
 #ifdef ENABLE_BITTORRENT
 #  include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
