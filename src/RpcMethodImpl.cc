@@ -1478,9 +1478,18 @@ void changeOption
        && !dctx->hasAttribute(CTX_ATTR_BT)
 #endif // ENABLE_BITTORRENT
        ) {
-      dctx->getFirstFileEntry()->setPath
-        (grOption->blank(PREF_OUT) ? A2STR::NIL :
-         util::applyDir(grOption->get(PREF_DIR), grOption->get(PREF_OUT)));
+
+      auto& fileEntry = dctx->getFirstFileEntry();
+
+      if(grOption->blank(PREF_OUT)) {
+        // We need to reset length to 0, so that we pretend that file
+        // name is unknown and it should be determined at next run.
+        fileEntry->setLength(0);
+        fileEntry->setPath(A2STR::NIL);
+      } else {
+        fileEntry->setPath
+          (util::applyDir(grOption->get(PREF_DIR), grOption->get(PREF_OUT)));
+      }
     }
   }
 #ifdef ENABLE_BITTORRENT
