@@ -74,15 +74,15 @@
 
 namespace aria2 {
 
-AbstractCommand::AbstractCommand(
-    cuid_t cuid,
-    const std::shared_ptr<Request>& req,
-    const std::shared_ptr<FileEntry>& fileEntry,
-    RequestGroup* requestGroup,
-    DownloadEngine* e,
-    const std::shared_ptr<SocketCore>& s,
-    const std::shared_ptr<SocketRecvBuffer>& socketRecvBuffer,
-    bool incNumConnection)
+AbstractCommand::AbstractCommand
+(cuid_t cuid,
+ const std::shared_ptr<Request>& req,
+ const std::shared_ptr<FileEntry>& fileEntry,
+ RequestGroup* requestGroup,
+ DownloadEngine* e,
+ const std::shared_ptr<SocketCore>& s,
+ const std::shared_ptr<SocketRecvBuffer>& socketRecvBuffer,
+ bool incNumConnection)
   : Command(cuid),
     req_(req),
     fileEntry_(fileEntry),
@@ -137,9 +137,9 @@ AbstractCommand::useFasterRequest(const std::shared_ptr<Request>& fasterRequest)
   // Cancel current Request object and use faster one.
   fileEntry_->removeRequest(req_);
   e_->setNoWait(true);
-  e_->addCommand(
-      InitiateConnectionCommandFactory::createInitiateConnectionCommand(
-          getCuid(), fasterRequest, fileEntry_, requestGroup_, e_));
+  e_->addCommand
+    (InitiateConnectionCommandFactory::createInitiateConnectionCommand
+     (getCuid(), fasterRequest, fileEntry_, requestGroup_, e_));
 }
 
 bool AbstractCommand::shouldProcess() const
@@ -243,8 +243,8 @@ bool AbstractCommand::execute()
         if (getOption()->getAsBool(PREF_SELECT_LEAST_USED_HOST)) {
           getDownloadEngine()->getRequestGroupMan()->getUsedHosts(usedHosts);
         }
-        auto fasterRequest = fileEntry_->findFasterRequest(
-            req_, usedHosts, e_->getRequestGroupMan()->getServerStatMan());
+        auto fasterRequest = fileEntry_->findFasterRequest
+          (req_, usedHosts, e_->getRequestGroupMan()->getServerStatMan());
         if (fasterRequest) {
           useFasterRequest(fasterRequest);
           return true;
@@ -296,8 +296,8 @@ bool AbstractCommand::execute()
         size_t minSplitSize = calculateMinSplitSize();
         size_t maxSegments = req_->getMaxPipelinedRequest();
         if (segments_.size() < maxSegments) {
-          sm->getSegment(
-              segments_, getCuid(), minSplitSize, fileEntry_, maxSegments);
+          sm->getSegment
+            (segments_, getCuid(), minSplitSize, fileEntry_, maxSegments);
         }
         if (segments_.empty()) {
           return prepareForRetry(0);
@@ -308,14 +308,14 @@ bool AbstractCommand::execute()
     }
 
     if (errorEventEnabled()) {
-      throw DL_RETRY_EX(
-          fmt(MSG_NETWORK_PROBLEM, socket_->getSocketError().c_str()));
+      throw DL_RETRY_EX
+        (fmt(MSG_NETWORK_PROBLEM, socket_->getSocketError().c_str()));
     }
 
     if (checkPoint_.difference(global::wallclock()) >= timeout_) {
       // timeout triggers ServerStat error state.
-      auto ss = e_->getRequestGroupMan()->getOrCreateServerStat(
-          req_->getHost(), req_->getProtocol());
+      auto ss = e_->getRequestGroupMan()->getOrCreateServerStat
+        (req_->getHost(), req_->getProtocol());
       ss->setError();
       // When DNS query was timeout, req_->getConnectedAddr() is
       // empty.
@@ -345,9 +345,9 @@ bool AbstractCommand::execute()
   catch (DlAbortEx& err) {
     requestGroup_->setLastErrorCode(err.getErrorCode());
     if (req_) {
-      A2_LOG_ERROR_EX(
-          fmt(MSG_DOWNLOAD_ABORTED, getCuid(), req_->getUri().c_str()),
-          DL_ABORT_EX2(fmt("URI=%s", req_->getCurrentUri().c_str()), err));
+      A2_LOG_ERROR_EX
+        (fmt(MSG_DOWNLOAD_ABORTED, getCuid(), req_->getUri().c_str()),
+         DL_ABORT_EX2(fmt("URI=%s", req_->getCurrentUri().c_str()), err));
       fileEntry_->addURIResult(req_->getUri(), err.getErrorCode());
       if (err.getErrorCode() == error_code::CANNOT_RESUME) {
         requestGroup_->increaseResumeFailureCount();
@@ -362,9 +362,9 @@ bool AbstractCommand::execute()
   }
   catch (DlRetryEx& err) {
     assert(req_);
-    A2_LOG_INFO_EX(
-        fmt(MSG_RESTARTING_DOWNLOAD, getCuid(), req_->getUri().c_str()),
-        DL_RETRY_EX2(fmt("URI=%s", req_->getCurrentUri().c_str()), err));
+    A2_LOG_INFO_EX
+      (fmt(MSG_RESTARTING_DOWNLOAD, getCuid(), req_->getUri().c_str()),
+       DL_RETRY_EX2(fmt("URI=%s", req_->getCurrentUri().c_str()), err));
     req_->addTryCount();
     req_->resetRedirectCount();
     req_->resetUri();
@@ -373,8 +373,8 @@ bool AbstractCommand::execute()
     bool isAbort = maxTries != 0 && req_->getTryCount() >= maxTries;
     if (isAbort) {
       A2_LOG_INFO(fmt(MSG_MAX_TRY, getCuid(), req_->getTryCount()));
-      A2_LOG_ERROR_EX(
-          fmt(MSG_DOWNLOAD_ABORTED, getCuid(), req_->getUri().c_str()), err);
+      A2_LOG_ERROR_EX
+        (fmt(MSG_DOWNLOAD_ABORTED, getCuid(), req_->getUri().c_str()), err);
       fileEntry_->addURIResult(req_->getUri(), err.getErrorCode());
       requestGroup_->setLastErrorCode(err.getErrorCode());
       if (err.getErrorCode() == error_code::CANNOT_RESUME) {
@@ -393,9 +393,9 @@ bool AbstractCommand::execute()
   catch (DownloadFailureException& err) {
     requestGroup_->setLastErrorCode(err.getErrorCode());
     if (req_) {
-      A2_LOG_ERROR_EX(
-          fmt(MSG_DOWNLOAD_ABORTED, getCuid(), req_->getUri().c_str()),
-          DL_ABORT_EX2(fmt("URI=%s", req_->getCurrentUri().c_str()), err));
+      A2_LOG_ERROR_EX
+        (fmt(MSG_DOWNLOAD_ABORTED, getCuid(), req_->getUri().c_str()),
+         DL_ABORT_EX2(fmt("URI=%s", req_->getCurrentUri().c_str()), err));
       fileEntry_->addURIResult(req_->getUri(), err.getErrorCode());
     } else {
       A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, err);
@@ -421,8 +421,8 @@ void AbstractCommand::tryReserved()
       return;
     }
   }
-  A2_LOG_DEBUG(
-      fmt("CUID#%" PRId64 " - Trying reserved/pooled request.", getCuid()));
+  A2_LOG_DEBUG
+    (fmt("CUID#%" PRId64 " - Trying reserved/pooled request.", getCuid()));
   std::vector<std::unique_ptr<Command>> commands;
   requestGroup_->createNextCommand(commands, e_, 1);
   e_->setNoWait(true);
@@ -603,8 +603,8 @@ AbstractCommand::setWriteCheckSocket(const std::shared_ptr<SocketCore>& socket)
   writeCheckTarget_ = socket;
 }
 
-void AbstractCommand::setWriteCheckSocketIf(
-    const std::shared_ptr<SocketCore>& socket, bool pred)
+void AbstractCommand::setWriteCheckSocketIf
+(const std::shared_ptr<SocketCore>& socket, bool pred)
 {
   if (pred) {
     setWriteCheckSocket(socket);
@@ -653,8 +653,8 @@ std::string getProxyOptionFor(PrefPtr proxyPref,
 {
   std::string uri = makeProxyUri(proxyPref, proxyUser, proxyPasswd, option);
   if (uri.empty()) {
-    return makeProxyUri(
-        PREF_ALL_PROXY, PREF_ALL_PROXY_USER, PREF_ALL_PROXY_PASSWD, option);
+    return makeProxyUri
+      (PREF_ALL_PROXY, PREF_ALL_PROXY_USER, PREF_ALL_PROXY_PASSWD, option);
   }
 
   return uri;
@@ -666,8 +666,8 @@ std::string getProxyOptionFor(PrefPtr proxyPref,
 std::string getProxyUri(const std::string& protocol, const Option* option)
 {
   if (protocol == "http") {
-    return getProxyOptionFor(
-        PREF_HTTP_PROXY, PREF_HTTP_PROXY_USER, PREF_HTTP_PROXY_PASSWD, option);
+    return getProxyOptionFor
+      (PREF_HTTP_PROXY, PREF_HTTP_PROXY_USER, PREF_HTTP_PROXY_PASSWD, option);
   }
 
   if (protocol == "https") {
@@ -678,8 +678,8 @@ std::string getProxyUri(const std::string& protocol, const Option* option)
   }
 
   if (protocol == "ftp") {
-    return getProxyOptionFor(
-        PREF_FTP_PROXY, PREF_FTP_PROXY_USER, PREF_FTP_PROXY_PASSWD, option);
+    return getProxyOptionFor
+      (PREF_FTP_PROXY, PREF_FTP_PROXY_USER, PREF_FTP_PROXY_PASSWD, option);
   }
 
   return A2STR::NIL;
@@ -700,8 +700,8 @@ namespace {
 bool inNoProxy(const std::shared_ptr<Request>& req, const std::string& noProxy)
 {
   std::vector<Scip> entries;
-  util::splitIter(
-      noProxy.begin(), noProxy.end(), std::back_inserter(entries), ',', true);
+  util::splitIter
+    (noProxy.begin(), noProxy.end(), std::back_inserter(entries), ',', true);
   if (entries.empty()) {
     return false;
   }
@@ -751,8 +751,8 @@ std::shared_ptr<Request> AbstractCommand::createProxyRequest() const
       A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - Using proxy", getCuid()));
     }
     else {
-      A2_LOG_DEBUG(
-          fmt("CUID#%" PRId64 " - Failed to parse proxy string", getCuid()));
+      A2_LOG_DEBUG
+        (fmt("CUID#%" PRId64 " - Failed to parse proxy string", getCuid()));
       proxyRequest.reset();
     }
   }
@@ -832,21 +832,21 @@ std::string AbstractCommand::resolveHostname(std::vector<std::string>& addrs,
   return ipaddr;
 }
 
-void AbstractCommand::prepareForNextAction(
-    std::unique_ptr<CheckIntegrityEntry> checkEntry)
+void AbstractCommand::prepareForNextAction
+(std::unique_ptr<CheckIntegrityEntry> checkEntry)
 {
   std::vector<std::unique_ptr<Command>> commands;
-  requestGroup_->processCheckIntegrityEntry(
-      commands, std::move(checkEntry), e_);
+  requestGroup_->processCheckIntegrityEntry
+    (commands, std::move(checkEntry), e_);
   e_->addCommand(std::move(commands));
   e_->setNoWait(true);
 }
 
-bool AbstractCommand::checkIfConnectionEstablished(
-    const std::shared_ptr<SocketCore>& socket,
-    const std::string& connectedHostname,
-    const std::string& connectedAddr,
-    uint16_t connectedPort)
+bool AbstractCommand::checkIfConnectionEstablished
+(const std::shared_ptr<SocketCore>& socket,
+ const std::string& connectedHostname,
+ const std::string& connectedAddr,
+ uint16_t connectedPort)
 {
   std::string error = socket->getSocketError();
   if (error.empty()) {
@@ -872,9 +872,9 @@ bool AbstractCommand::checkIfConnectionEstablished(
                   connectedAddr.c_str(),
                   connectedPort));
   e_->setNoWait(true);
-  e_->addCommand(
-      InitiateConnectionCommandFactory::createInitiateConnectionCommand(
-          getCuid(), req_, fileEntry_, requestGroup_, e_));
+  e_->addCommand
+    (InitiateConnectionCommandFactory::createInitiateConnectionCommand
+     (getCuid(), req_, fileEntry_, requestGroup_, e_));
   return false;
 }
 

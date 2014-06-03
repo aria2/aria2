@@ -85,9 +85,9 @@ namespace aria2 {
 
 namespace {
 
-std::unique_ptr<StreamFilter> getTransferEncodingStreamFilter(
-    HttpResponse* httpResponse,
-    std::unique_ptr<StreamFilter> delegate = nullptr)
+std::unique_ptr<StreamFilter> getTransferEncodingStreamFilter
+(HttpResponse* httpResponse,
+ std::unique_ptr<StreamFilter> delegate = nullptr)
 {
   if (httpResponse->isTransferEncodingSpecified()) {
     auto filter = httpResponse->getTransferEncodingStreamFilter();
@@ -103,9 +103,9 @@ std::unique_ptr<StreamFilter> getTransferEncodingStreamFilter(
   return delegate;
 }
 
-std::unique_ptr<StreamFilter> getContentEncodingStreamFilter(
-    HttpResponse* httpResponse,
-    std::unique_ptr<StreamFilter> delegate = nullptr)
+std::unique_ptr<StreamFilter> getContentEncodingStreamFilter
+(HttpResponse* httpResponse,
+ std::unique_ptr<StreamFilter> delegate = nullptr)
 {
   if (httpResponse->isContentEncodingSpecified()) {
     auto filter = httpResponse->getContentEncodingStreamFilter();
@@ -125,16 +125,15 @@ std::unique_ptr<StreamFilter> getContentEncodingStreamFilter(
 
 } // namespace
 
-HttpResponseCommand::HttpResponseCommand(
-    cuid_t cuid,
-    const std::shared_ptr<Request>& req,
-    const std::shared_ptr<FileEntry>& fileEntry,
-    RequestGroup* requestGroup,
-    const std::shared_ptr<HttpConnection>& httpConnection,
-    DownloadEngine* e,
-    const std::shared_ptr<SocketCore>& s)
-  :
-    AbstractCommand(cuid, req, fileEntry, requestGroup, e, s,
+HttpResponseCommand::HttpResponseCommand
+(cuid_t cuid,
+ const std::shared_ptr<Request>& req,
+ const std::shared_ptr<FileEntry>& fileEntry,
+ RequestGroup* requestGroup,
+ const std::shared_ptr<HttpConnection>& httpConnection,
+ DownloadEngine* e,
+ const std::shared_ptr<SocketCore>& s)
+  : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s,
                     httpConnection->getSocketRecvBuffer()),
     httpConnection_(httpConnection)
 {
@@ -164,11 +163,11 @@ bool HttpResponseCommand::executeInternal()
   //   Connection: close is received or the remote server is not HTTP/1.1.
   // We don't care whether non-HTTP/1.1 server returns Connection: keep-alive.
   auto& req = getRequest();
-  req->supportsPersistentConnection(
-      httpResponse->supportsPersistentConnection());
+  req->supportsPersistentConnection
+    (httpResponse->supportsPersistentConnection());
   if (req->isPipeliningEnabled()) {
-    req->setMaxPipelinedRequest(
-        getOption()->getAsInt(PREF_MAX_HTTP_PIPELINING));
+    req->setMaxPipelinedRequest
+      (getOption()->getAsInt(PREF_MAX_HTTP_PIPELINING));
   }
   else {
     req->setMaxPipelinedRequest(1);
@@ -297,18 +296,18 @@ bool HttpResponseCommand::executeInternal()
     // Also we can't resume in this case too.  So truncate the file
     // anyway.
     getPieceStorage()->getDiskAdaptor()->truncate(0);
-    auto teFilter = getTransferEncodingStreamFilter(
-        httpResponse.get(),
-        getContentEncodingStreamFilter(httpResponse.get()));
-    getDownloadEngine()->addCommand(
-        createHttpDownloadCommand(std::move(httpResponse),
-                                  std::move(teFilter)));
+    auto teFilter = getTransferEncodingStreamFilter
+      (httpResponse.get(),
+       getContentEncodingStreamFilter(httpResponse.get()));
+    getDownloadEngine()->addCommand
+      (createHttpDownloadCommand(std::move(httpResponse),
+                                 std::move(teFilter)));
   }
   else {
     auto teFilter = getTransferEncodingStreamFilter(httpResponse.get());
-    getDownloadEngine()->addCommand(
-        createHttpDownloadCommand(std::move(httpResponse),
-                                  std::move(teFilter)));
+    getDownloadEngine()->addCommand
+      (createHttpDownloadCommand(std::move(httpResponse),
+                                 std::move(teFilter)));
   }
 
   return true;
@@ -321,8 +320,8 @@ void HttpResponseCommand::updateLastModifiedTime(const Time& lastModified)
   }
 }
 
-bool HttpResponseCommand::shouldInflateContentEncoding(
-    HttpResponse* httpResponse)
+bool HttpResponseCommand::shouldInflateContentEncoding
+(HttpResponse* httpResponse)
 {
   // Basically, on the fly inflation cannot be made with segment
   // download, because in each segment we don't know where the date
@@ -336,11 +335,11 @@ bool HttpResponseCommand::shouldInflateContentEncoding(
     (ce == "gzip" || ce == "deflate");
 }
 
-bool HttpResponseCommand::handleDefaultEncoding(
-    std::unique_ptr<HttpResponse> httpResponse)
+bool HttpResponseCommand::handleDefaultEncoding
+(std::unique_ptr<HttpResponse> httpResponse)
 {
-  auto progressInfoFile = std::make_shared<DefaultBtProgressInfoFile>(
-      getDownloadContext(), std::shared_ptr<PieceStorage>{}, getOption().get());
+  auto progressInfoFile = std::make_shared<DefaultBtProgressInfoFile>
+    (getDownloadContext(), std::shared_ptr<PieceStorage>{}, getOption().get());
   getRequestGroup()->adjustFilename(progressInfoFile);
   getRequestGroup()->initPieceStorage();
 
@@ -368,9 +367,9 @@ bool HttpResponseCommand::handleDefaultEncoding(
      segment && segment->getPositionToWrite() == 0 &&
      !getRequest()->isPipeliningEnabled()) {
     auto teFilter = getTransferEncodingStreamFilter(httpResponse.get());
-    checkEntry->pushNextCommand(
-        createHttpDownloadCommand(std::move(httpResponse),
-                                  std::move(teFilter)));
+    checkEntry->pushNextCommand
+      (createHttpDownloadCommand(std::move(httpResponse),
+                                 std::move(teFilter)));
   }
   else {
     getSegmentMan()->cancelSegment(getCuid());
@@ -387,8 +386,8 @@ bool HttpResponseCommand::handleDefaultEncoding(
   return true;
 }
 
-bool HttpResponseCommand::handleOtherEncoding(
-    std::unique_ptr<HttpResponse> httpResponse)
+bool HttpResponseCommand::handleOtherEncoding
+(std::unique_ptr<HttpResponse> httpResponse)
 {
   // We assume that RequestGroup::getTotalLength() == 0 here
   if (getOption()->getAsBool(PREF_DRY_RUN)) {
@@ -406,8 +405,8 @@ bool HttpResponseCommand::handleOtherEncoding(
   // In this context, knowsTotalLength() is true only when the file is
   // really zero-length.
 
-  auto streamFilter = getTransferEncodingStreamFilter(
-      httpResponse.get(), getContentEncodingStreamFilter(httpResponse.get()));
+  auto streamFilter = getTransferEncodingStreamFilter
+    (httpResponse.get(), getContentEncodingStreamFilter(httpResponse.get()));
   // If chunked transfer-encoding is specified, we have to read end of
   // chunk markers(0\r\n\r\n, for example).
   bool chunkedUsed = streamFilter &&
@@ -469,23 +468,23 @@ bool HttpResponseCommand::handleOtherEncoding(
   // AbstractCommand::execute()
   getSegmentMan()->getSegmentWithIndex(getCuid(), 0);
 
-  getDownloadEngine()->addCommand(
-      createHttpDownloadCommand(std::move(httpResponse),
-                                std::move(streamFilter)));
+  getDownloadEngine()->addCommand
+    (createHttpDownloadCommand(std::move(httpResponse),
+                               std::move(streamFilter)));
   return true;
 }
 
-bool HttpResponseCommand::skipResponseBody(
-    std::unique_ptr<HttpResponse> httpResponse)
+bool HttpResponseCommand::skipResponseBody
+(std::unique_ptr<HttpResponse> httpResponse)
 {
   auto filter = getTransferEncodingStreamFilter(httpResponse.get());
   // We don't use Content-Encoding here because this response body is just
   // thrown away.
   auto httpResponsePtr = httpResponse.get();
-  auto command = make_unique<HttpSkipResponseCommand>(
-      getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
-      httpConnection_, std::move(httpResponse), getDownloadEngine(),
-      getSocket());
+  auto command = make_unique<HttpSkipResponseCommand>
+    (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
+     httpConnection_, std::move(httpResponse), getDownloadEngine(),
+     getSocket());
   command->installStreamFilter(std::move(filter));
 
   // If request method is HEAD or the response body is zero-length,
@@ -524,25 +523,25 @@ bool decideFileAllocation(StreamFilter* filter)
 } // namespace
 
 std::unique_ptr<HttpDownloadCommand>
-HttpResponseCommand::createHttpDownloadCommand(
-    std::unique_ptr<HttpResponse> httpResponse,
-    std::unique_ptr<StreamFilter> filter)
+HttpResponseCommand::createHttpDownloadCommand
+(std::unique_ptr<HttpResponse> httpResponse,
+ std::unique_ptr<StreamFilter> filter)
 {
 
-  auto command = make_unique<HttpDownloadCommand>(
-      getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
-      std::move(httpResponse), httpConnection_, getDownloadEngine(),
-      getSocket());
+  auto command = make_unique<HttpDownloadCommand>
+    (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
+     std::move(httpResponse), httpConnection_, getDownloadEngine(),
+     getSocket());
   command->setStartupIdleTime(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME));
-  command->setLowestDownloadSpeedLimit(
-      getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));
+  command->setLowestDownloadSpeedLimit
+    (getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));
   if (getRequestGroup()->isFileAllocationEnabled() &&
       !decideFileAllocation(filter.get())) {
     getRequestGroup()->setFileAllocationEnabled(false);
   }
   command->installStreamFilter(std::move(filter));
-  getRequestGroup()->getURISelector()->tuneDownloadCommand(
-      getFileEntry()->getRemainingUris(), command.get());
+  getRequestGroup()->getURISelector()->tuneDownloadCommand
+    (getFileEntry()->getRemainingUris(), command.get());
 
   return std::move(command);
 }
@@ -562,8 +561,8 @@ void HttpResponseCommand::onDryRunFileFound()
   poolConnection();
 }
 
-bool HttpResponseCommand::checkChecksum(
-    const std::shared_ptr<DownloadContext>& dctx, const Checksum& checksum)
+bool HttpResponseCommand::checkChecksum
+(const std::shared_ptr<DownloadContext>& dctx, const Checksum& checksum)
 {
   if (dctx->getHashType() == checksum.getHashType()) {
     if (dctx->getDigest() != checksum.getDigest()) {

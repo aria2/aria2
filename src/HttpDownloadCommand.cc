@@ -93,13 +93,13 @@ bool HttpDownloadCommand::prepareForNextSegment()
   if (getRequest()->isPipeliningEnabled() ||
       (getRequest()->isKeepAliveEnabled() &&
       (
-        // Make sure that all filters are finished to pool socket
-        (!util::endsWith(streamFilterName, SinkStreamFilter::NAME) &&
+       // Make sure that all filters are finished to pool socket
+       (!util::endsWith(streamFilterName, SinkStreamFilter::NAME) &&
         getStreamFilter()->finished()) ||
-        getRequestEndOffset() ==
-        getFileEntry()->gtoloff(getSegments().front()->getPositionToWrite())
-        )
-      )
+       getRequestEndOffset() ==
+       getFileEntry()->gtoloff(getSegments().front()->getPositionToWrite())
+       )
+       )
       ) {
     // TODO What if server sends EOF when non-SinkStreamFilter is
     // used and server didn't send Connection: close? We end up to
@@ -120,9 +120,9 @@ bool HttpDownloadCommand::prepareForNextSegment()
       !downloadFinished) {
     const std::shared_ptr<Segment>& segment = getSegments().front();
 
-    int64_t lastOffset =getFileEntry()->gtoloff(
-        std::min(segment->getPosition()+segment->getLength(),
-                 getFileEntry()->getLastOffset()));
+    int64_t lastOffset =getFileEntry()->gtoloff
+      (std::min(segment->getPosition()+segment->getLength(),
+                getFileEntry()->getLastOffset()));
     auto range = httpResponse_->getHttpHeader()->getRange();
     if (lastOffset == range.endByte + 1) {
       return prepareForRetry(0);

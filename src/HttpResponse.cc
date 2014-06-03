@@ -118,8 +118,8 @@ void HttpResponse::validateResponse() const
 
 std::string HttpResponse::determineFilename() const
 {
-  std::string contentDisposition = util::getContentDispositionFilename(
-      httpHeader_->find(HttpHeader::CONTENT_DISPOSITION));
+  std::string contentDisposition = util::getContentDispositionFilename
+    (httpHeader_->find(HttpHeader::CONTENT_DISPOSITION));
   if (contentDisposition.empty()) {
     auto file = httpRequest_->getFile();
     file = util::percentDecode(file.begin(), file.end());
@@ -140,11 +140,11 @@ void HttpResponse::retrieveCookie()
   Time now;
   auto r = httpHeader_->equalRange(HttpHeader::SET_COOKIE);
   for (; r.first != r.second; ++r.first) {
-    httpRequest_->getCookieStorage()->parseAndStore(
-        (*r.first).second,
-        httpRequest_->getHost(),
-        httpRequest_->getDir(),
-        now.getTime());
+    httpRequest_->getCookieStorage()->parseAndStore
+      ((*r.first).second,
+       httpRequest_->getHost(),
+       httpRequest_->getDir(),
+       now.getTime());
   }
 }
 
@@ -362,9 +362,9 @@ bool parseMetalinkHttpLink(MetalinkHttpEntry& result, const std::string& s)
 
 // Metalink/HTTP is defined by http://tools.ietf.org/html/rfc6249.
 // Link header field is defined by http://tools.ietf.org/html/rfc5988.
-void HttpResponse::getMetalinKHttpEntries(
-    std::vector<MetalinkHttpEntry>& result,
-    const std::shared_ptr<Option>& option) const
+void HttpResponse::getMetalinKHttpEntries
+(std::vector<MetalinkHttpEntry>& result,
+ const std::shared_ptr<Option>& option) const
 {
   auto p = httpHeader_->equalRange(HttpHeader::LINK);
   for (; p.first != p.second; ++p.first) {

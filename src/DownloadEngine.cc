@@ -672,9 +672,9 @@ bool DownloadEngine::validateToken(const std::string& token)
     std::deque<double> mm;
     for (auto i = 0; i < 10; ++i) {
       auto c = std::clock();
-      tokenExpected_ = make_unique<HMACResult>(
-          PBKDF2(tokenHMAC_.get(), option_->get(PREF_RPC_SECRET),
-                 tokenIterations_));
+      tokenExpected_ = make_unique<HMACResult>
+        (PBKDF2(tokenHMAC_.get(), option_->get(PREF_RPC_SECRET),
+                tokenIterations_));
       mm.push_back((std::clock() - c) / (double)CLOCKS_PER_SEC);
     }
     std::sort(mm.begin(), mm.end());
@@ -698,9 +698,9 @@ bool DownloadEngine::validateToken(const std::string& token)
     tokenIterations_ *= kTokenTimeSweetspot / duration;
 
     auto c = std::clock();
-    tokenExpected_ = make_unique<HMACResult>(
-        PBKDF2(tokenHMAC_.get(), option_->get(PREF_RPC_SECRET),
-               tokenIterations_));
+    tokenExpected_ = make_unique<HMACResult>
+      (PBKDF2(tokenHMAC_.get(), option_->get(PREF_RPC_SECRET),
+              tokenIterations_));
     duration = (std::clock() - c) / (double)CLOCKS_PER_SEC;
     A2_LOG_INFO(fmt("Took us %.4f secs to perform PBKDF2 with %zu iterations",
                     duration, tokenIterations_));
