@@ -99,7 +99,7 @@ private:
 public:
   FileEntry();
 
-  FileEntry(const std::string& path, int64_t length, int64_t offset,
+  FileEntry(std::string path, int64_t length, int64_t offset,
             const std::vector<std::string>& uris = std::vector<std::string>());
 
   ~FileEntry();

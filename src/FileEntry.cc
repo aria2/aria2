@@ -66,12 +66,12 @@ bool FileEntry::RequestFaster::operator()
   return lspd > rspd || (lspd == rspd && lhs.get() < rhs.get());
 }
 
-FileEntry::FileEntry(const std::string& path, int64_t length, int64_t offset,
+FileEntry::FileEntry(std::string path, int64_t length, int64_t offset,
                      const std::vector<std::string>& uris)
   : length_(length),
     offset_(offset),
     uris_(uris.begin(), uris.end()),
-    path_(path),
+    path_(std::move(path)),
     lastFasterReplace_(0),
     maxConnectionPerServer_(1),
     requested_(true),

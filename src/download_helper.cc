@@ -230,8 +230,8 @@ createBtMagnetRequestGroup
   auto option = util::copy(optionTemplate);
   auto gid = getGID(option);
   auto rg = std::make_shared<RequestGroup>(gid, option);
-  auto dctx = std::make_shared<DownloadContext>(METADATA_PIECE_SIZE, 0,
-                                                A2STR::NIL);
+  auto dctx = std::make_shared<DownloadContext>(METADATA_PIECE_SIZE, 0);
+
   // We only know info hash. Total Length is unknown at this moment.
   dctx->markTotalLengthIsUnknown();
   rg->setFileAllocationEnabled(false);

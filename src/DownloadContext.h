@@ -97,7 +97,7 @@ public:
   // should be escaped with util::escapePath(...).
   DownloadContext(int32_t pieceLength,
                   int64_t totalLength,
-                  const std::string& path = A2STR::NIL);
+                  std::string path = A2STR::NIL);
 
   ~DownloadContext();
 

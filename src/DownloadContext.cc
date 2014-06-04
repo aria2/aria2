@@ -59,7 +59,7 @@ DownloadContext::DownloadContext()
 
 DownloadContext::DownloadContext(int32_t pieceLength,
                                  int64_t totalLength,
-                                 const std::string& path)
+                                 std::string path)
   : ownerRequestGroup_(nullptr),
     attrs_(MAX_CTX_ATTR),
     downloadStopTime_(0),
@@ -68,8 +68,8 @@ DownloadContext::DownloadContext(int32_t pieceLength,
     knowsTotalLength_(true),
     acceptMetalink_(true)
 {
-  std::shared_ptr<FileEntry> fileEntry(new FileEntry(path, totalLength, 0));
-  fileEntries_.push_back(fileEntry);
+  fileEntries_.push_back
+    (std::make_shared<FileEntry>(std::move(path), totalLength, 0));
 }
 
 DownloadContext::~DownloadContext() {}
