@@ -123,7 +123,7 @@ void DownloadContext::setFilePathWithIndex
   }
 }
 
-void DownloadContext::setFileFilter(SegList<int>& sgl)
+void DownloadContext::setFileFilter(SegList<int> sgl)
 {
   using namespace std::placeholders;
 

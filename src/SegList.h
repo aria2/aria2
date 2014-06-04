@@ -49,6 +49,12 @@ public:
     : index_(0), val_(std::numeric_limits<T>::min())
   {}
 
+  // Don't allow copying
+  SegList(const SegList&) = delete;
+  SegList& operator=(const SegList&) = delete;
+
+  SegList(SegList&&) = default;
+
   void clear()
   {
     segs_.clear();
@@ -62,11 +68,11 @@ public:
   void normalize()
   {
     if(!segs_.empty()) {
-      std::sort(segs_.begin(), segs_.end());
-      std::vector<std::pair<T, T> > s;
+      std::sort(std::begin(segs_), std::end(segs_));
+      std::vector<std::pair<T, T>> s;
       s.push_back(segs_.front());
       for(size_t i = 1, len = segs_.size(); i < len; ++i) {
-        const std::pair<T, T>& x = segs_[i];
+        auto& x = segs_[i];
         if(x.first <= s.back().second) {
           if(s.back().second < x.second) {
             s.back().second = x.second;
@@ -88,7 +94,7 @@ public:
       if(segs_.empty()) {
         val_ = std::max(val_, a);
       }
-      segs_.push_back(std::make_pair(a, b));
+      segs_.emplace_back(a, b);
     }
   }
 
@@ -103,7 +109,7 @@ public:
   T next()
   {
     T res;
-    size_t len = segs_.size();
+    auto len = segs_.size();
     if(index_ < len) {
       res = val_++;
       if(val_ == segs_[index_].second) {
@@ -131,12 +137,9 @@ public:
     return res;
   }
 private:
-  std::vector<std::pair<T, T> > segs_;
+  std::vector<std::pair<T, T>> segs_;
   size_t index_;
   T val_;
-  // Don't allow copying
-  SegList(const SegList<T>&);
-  SegList& operator=(const SegList<T>&);
 };
 
 } // namespace aria2

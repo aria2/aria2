@@ -277,7 +277,7 @@ bool parseUIntNoThrow(uint32_t& res, const std::string& s, int base = 10);
 
 bool parseLLIntNoThrow(int64_t& res, const std::string& s, int base = 10);
 
-void parseIntSegments(SegList<int>& sgl, const std::string& src);
+SegList<int> parseIntSegments(const std::string& src);
 
 // Parses string which specifies the range of piece index for higher
 // priority and appends those indexes into result.  The input string

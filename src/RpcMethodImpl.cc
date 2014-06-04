@@ -1457,10 +1457,9 @@ void changeOption
     dctx->setDigest(hashType, util::fromHex(p.second.first, p.second.second));
   }
   if(option.defined(PREF_SELECT_FILE)) {
-    SegList<int> sgl;
-    util::parseIntSegments(sgl, grOption->get(PREF_SELECT_FILE));
+    auto sgl = util::parseIntSegments(grOption->get(PREF_SELECT_FILE));
     sgl.normalize();
-    dctx->setFileFilter(sgl);
+    dctx->setFileFilter(std::move(sgl));
   }
   if(option.defined(PREF_SPLIT)) {
     group->setNumConcurrentCommand(grOption->getAsInt(PREF_SPLIT));

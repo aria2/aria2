@@ -584,8 +584,9 @@ bool parseLLIntNoThrow(int64_t& res, const std::string& s, int base)
   }
 }
 
-void parseIntSegments(SegList<int>& sgl, const std::string& src)
+SegList<int> parseIntSegments(const std::string& src)
 {
+  SegList<int> sgl;
   for(std::string::const_iterator i = src.begin(), eoi = src.end(); i != eoi;) {
     std::string::const_iterator j = std::find(i, eoi, ',');
     if(j == i) {
@@ -616,6 +617,7 @@ void parseIntSegments(SegList<int>& sgl, const std::string& src)
     }
     i = j+1;
   }
+  return sgl;
 }
 
 namespace {

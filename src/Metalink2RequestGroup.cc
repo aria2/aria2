@@ -186,8 +186,7 @@ Metalink2RequestGroup::createRequestGroup
         (preferredProtocol, -MetalinkResource::getLowestPriority());
     }
   }
-  SegList<int> sgl;
-  util::parseIntSegments(sgl, optionTemplate->get(PREF_SELECT_FILE));
+  auto sgl = util::parseIntSegments(optionTemplate->get(PREF_SELECT_FILE));
   sgl.normalize();
   if(sgl.hasNext()) {
     size_t inspoint = 0;

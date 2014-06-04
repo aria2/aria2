@@ -117,8 +117,7 @@ IntegerRangeOptionHandler::~IntegerRangeOptionHandler() {}
 void IntegerRangeOptionHandler::parseArg
 (Option& option, const std::string& optarg) const
 {
-  SegList<int> sgl;
-  util::parseIntSegments(sgl, optarg);
+  auto sgl = util::parseIntSegments(optarg);
   sgl.normalize();
   while(sgl.hasNext()) {
     int v = sgl.next();

@@ -195,8 +195,8 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
         sgl.add(usedPort, usedPort+1);
         ret = command->bindPort(port, sgl);
       } else {
-        SegList<int> sgl;
-        util::parseIntSegments(sgl, e->getOption()->get(PREF_LISTEN_PORT));
+        auto sgl = util::parseIntSegments
+          (e->getOption()->get(PREF_LISTEN_PORT));
         sgl.normalize();
         ret = command->bindPort(port, sgl);
       }

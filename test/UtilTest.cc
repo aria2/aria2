@@ -1669,70 +1669,65 @@ void UtilTest::testConvertBitfield()
 
 void UtilTest::testParseIntSegments()
 {
-  SegList<int> sgl;
-  util::parseIntSegments(sgl, "1,3-8,10");
+  {
+    auto sgl = util::parseIntSegments("1,3-8,10");
 
-  CPPUNIT_ASSERT(sgl.hasNext());
-  CPPUNIT_ASSERT_EQUAL(1, sgl.next());
-  CPPUNIT_ASSERT(sgl.hasNext());
-  CPPUNIT_ASSERT_EQUAL(3, sgl.next());
-  CPPUNIT_ASSERT(sgl.hasNext());
-  CPPUNIT_ASSERT_EQUAL(4, sgl.next());
-  CPPUNIT_ASSERT(sgl.hasNext());
-  CPPUNIT_ASSERT_EQUAL(5, sgl.next());
-  CPPUNIT_ASSERT(sgl.hasNext());
-  CPPUNIT_ASSERT_EQUAL(6, sgl.next());
-  CPPUNIT_ASSERT(sgl.hasNext());
-  CPPUNIT_ASSERT_EQUAL(7, sgl.next());
-  CPPUNIT_ASSERT(sgl.hasNext());
-  CPPUNIT_ASSERT_EQUAL(8, sgl.next());
-  CPPUNIT_ASSERT(sgl.hasNext());
-  CPPUNIT_ASSERT_EQUAL(10, sgl.next());
-  CPPUNIT_ASSERT(!sgl.hasNext());
-  CPPUNIT_ASSERT_EQUAL(0, sgl.next());
-
-  sgl.clear();
-  util::parseIntSegments(sgl, ",,,1,,,3,,,");
-  CPPUNIT_ASSERT_EQUAL(1, sgl.next());
-  CPPUNIT_ASSERT_EQUAL(3, sgl.next());
-  CPPUNIT_ASSERT(!sgl.hasNext());
+    CPPUNIT_ASSERT(sgl.hasNext());
+    CPPUNIT_ASSERT_EQUAL(1, sgl.next());
+    CPPUNIT_ASSERT(sgl.hasNext());
+    CPPUNIT_ASSERT_EQUAL(3, sgl.next());
+    CPPUNIT_ASSERT(sgl.hasNext());
+    CPPUNIT_ASSERT_EQUAL(4, sgl.next());
+    CPPUNIT_ASSERT(sgl.hasNext());
+    CPPUNIT_ASSERT_EQUAL(5, sgl.next());
+    CPPUNIT_ASSERT(sgl.hasNext());
+    CPPUNIT_ASSERT_EQUAL(6, sgl.next());
+    CPPUNIT_ASSERT(sgl.hasNext());
+    CPPUNIT_ASSERT_EQUAL(7, sgl.next());
+    CPPUNIT_ASSERT(sgl.hasNext());
+    CPPUNIT_ASSERT_EQUAL(8, sgl.next());
+    CPPUNIT_ASSERT(sgl.hasNext());
+    CPPUNIT_ASSERT_EQUAL(10, sgl.next());
+    CPPUNIT_ASSERT(!sgl.hasNext());
+    CPPUNIT_ASSERT_EQUAL(0, sgl.next());
+  }
+  {
+    auto sgl = util::parseIntSegments(",,,1,,,3,,,");
+    CPPUNIT_ASSERT_EQUAL(1, sgl.next());
+    CPPUNIT_ASSERT_EQUAL(3, sgl.next());
+    CPPUNIT_ASSERT(!sgl.hasNext());
+  }
 }
 
 void UtilTest::testParseIntSegments_invalidRange()
 {
   try {
-    SegList<int> sgl;
-    util::parseIntSegments(sgl, "-1");
+    auto sgl = util::parseIntSegments("-1");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
   }
   try {
-    SegList<int> sgl;
-    util::parseIntSegments(sgl, "1-");
+    auto sgl = util::parseIntSegments("1-");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
   }
   try {
-    SegList<int> sgl;
-    util::parseIntSegments(sgl, "2147483648");
+    auto sgl = util::parseIntSegments("2147483648");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
   }
   try {
-    SegList<int> sgl;
-    util::parseIntSegments(sgl, "2147483647-2147483648");
+    auto sgl = util::parseIntSegments("2147483647-2147483648");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
   }
   try {
-    SegList<int> sgl;
-    util::parseIntSegments(sgl, "1-2x");
+    auto sgl = util::parseIntSegments("1-2x");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
   }
   try {
-    SegList<int> sgl;
-    util::parseIntSegments(sgl, "3x-4");
+    auto sgl = util::parseIntSegments("3x-4");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
   }

@@ -201,10 +201,9 @@ createBtRequestGroup(const std::string& metaInfoUri,
   if(adjustAnnounceUri) {
     bittorrent::adjustAnnounceUri(bittorrent::getTorrentAttrs(dctx), option);
   }
-  SegList<int> sgl;
-  util::parseIntSegments(sgl, option->get(PREF_SELECT_FILE));
+  auto sgl = util::parseIntSegments(option->get(PREF_SELECT_FILE));
   sgl.normalize();
-  dctx->setFileFilter(sgl);
+  dctx->setFileFilter(std::move(sgl));
   std::istringstream indexOutIn(option->get(PREF_INDEX_OUT));
   auto indexPaths = util::createIndexPaths(indexOutIn);
   for(const auto& i : indexPaths) {

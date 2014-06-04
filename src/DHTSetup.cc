@@ -123,8 +123,8 @@ std::vector<std::unique_ptr<Command>> DHTSetup::setup
       // this. We did the same thing in TCP socket. See BtSetup.cc.
       bool rv;
       if(port == 0) {
-        SegList<int> sgl;
-        util::parseIntSegments(sgl, e->getOption()->get(PREF_DHT_LISTEN_PORT));
+        auto sgl =
+          util::parseIntSegments(e->getOption()->get(PREF_DHT_LISTEN_PORT));
         sgl.normalize();
         rv = connection->bind(port, addr, sgl);
       } else {
