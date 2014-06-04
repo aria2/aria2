@@ -229,11 +229,11 @@ void DefaultBtInteractive::addBitfieldMessageToQueue() {
 
 void DefaultBtInteractive::addAllowedFastMessageToQueue() {
   if(peer_->isFastExtensionEnabled()) {
-    std::vector<size_t> fastSet;
-    bittorrent::computeFastSet(fastSet, peer_->getIPAddress(),
-                               downloadContext_->getNumPieces(),
-                               bittorrent::getInfoHash(downloadContext_),
-                               allowedFastSetSize_);
+    auto fastSet =
+      bittorrent::computeFastSet(peer_->getIPAddress(),
+                                 downloadContext_->getNumPieces(),
+                                 bittorrent::getInfoHash(downloadContext_),
+                                 allowedFastSetSize_);
     for(std::vector<size_t>::const_iterator itr = fastSet.begin(),
           eoi = fastSet.end(); itr != eoi; ++itr) {
       dispatcher_->addMessageToQueue

@@ -658,14 +658,15 @@ getInfoHashString(DownloadContext* dctx)
   return util::toHex(getTorrentAttrs(dctx)->infoHash);
 }
 
-void computeFastSet
-(std::vector<size_t>& fastSet, const std::string& ipaddr,
+std::vector<size_t> computeFastSet
+(const std::string& ipaddr,
  size_t numPieces, const unsigned char* infoHash, size_t fastSetSize)
 {
+  std::vector<size_t> fastSet;
   unsigned char compact[COMPACT_LEN_IPV6];
   int compactlen = packcompact(compact, ipaddr, 0);
   if(compactlen != COMPACT_LEN_IPV4) {
-    return;
+    return fastSet;
   }
   if(numPieces < fastSetSize) {
     fastSetSize = numPieces;
@@ -689,7 +690,9 @@ void computeFastSet
       memcpy(&ny, x+j, 4);
       uint32_t y = ntohl(ny);
       size_t index = y%numPieces;
-      if(std::find(fastSet.begin(), fastSet.end(), index) == fastSet.end()) {
+      if(std::find(std::begin(fastSet), std::end(fastSet), index) ==
+         std::end(fastSet)) {
+
         fastSet.push_back(index);
       }
     }
@@ -698,6 +701,8 @@ void computeFastSet
     message_digest::digest(temp, sizeof(temp), sha1.get(), x, sizeof(x));
     memcpy(x, temp, sizeof(x));
   }
+
+  return fastSet;
 }
 
 std::string generatePeerId(const std::string& peerIdPrefix)

@@ -144,9 +144,9 @@ const unsigned char* getStaticPeerId();
 // length.
 void setStaticPeerId(const std::string& newPeerId);
 
-// Computes fast set index and stores them in fastset.
-void computeFastSet
-(std::vector<size_t>& fastSet, const std::string& ipaddr,
+// Computes fast set index and returns them.
+std::vector<size_t> computeFastSet
+(const std::string& ipaddr,
  size_t numPieces, const unsigned char* infoHash, size_t fastSetSize);
 
 // Make sure that don't recieve return value into std::shared_ptr.
