@@ -115,10 +115,11 @@ int64_t FileEntry::gtoloff(int64_t goff) const
   return goff-offset_;
 }
 
-void FileEntry::getUris(std::vector<std::string>& uris) const
+std::vector<std::string> FileEntry::getUris() const
 {
-  uris.insert(uris.end(), spentUris_.begin(), spentUris_.end());
-  uris.insert(uris.end(), uris_.begin(), uris_.end());
+  std::vector<std::string> uris(std::begin(spentUris_), std::end(spentUris_));
+  uris.insert(std::end(uris), std::begin(uris_), std::end(uris_));
+  return uris;
 }
 
 namespace {
@@ -588,8 +589,7 @@ void writeFilePath
  bool memory)
 {
   if(entry->getPath().empty()) {
-    std::vector<std::string> uris;
-    entry->getUris(uris);
+    auto uris = entry->getUris();
     if(uris.empty()) {
       o << "n/a";
     } else {

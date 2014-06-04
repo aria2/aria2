@@ -167,8 +167,8 @@ public:
 
   bool insertUri(const std::string& uri, size_t pos);
 
-  // Inserts uris_ and spentUris_ into uris.
-  void getUris(std::vector<std::string>& uris) const;
+  // Returns uris_ and spentUris_ in single std::vector<std::string>.
+  std::vector<std::string> getUris() const;
 
   void setContentType(std::string contentType);
 

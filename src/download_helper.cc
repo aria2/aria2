@@ -532,8 +532,7 @@ createMetadataInfoFromFirstFileEntry
   if(dctx->getFileEntries().empty()) {
     return nullptr;
   } else {
-    std::vector<std::string> uris;
-    dctx->getFileEntries()[0]->getUris(uris);
+    auto uris = dctx->getFileEntries()[0]->getUris();
     if(uris.empty()) {
       return nullptr;
     }
