@@ -1473,22 +1473,35 @@ void changeOption
     }
   }
   if(option.defined(PREF_DIR) || option.defined(PREF_OUT)) {
-    if(dctx->getFileEntries().size() == 1
-#ifdef ENABLE_BITTORRENT
-       && !dctx->hasAttribute(CTX_ATTR_BT)
-#endif // ENABLE_BITTORRENT
-       ) {
+    if(!group->getMetadataInfo()) {
+
+      assert(dctx->getFileEntries().size() == 1);
 
       auto& fileEntry = dctx->getFirstFileEntry();
 
-      if(grOption->blank(PREF_OUT)) {
-        // We need to reset length to 0, so that we pretend that file
-        // name is unknown and it should be determined at next run.
-        fileEntry->setLength(0);
+      if(!grOption->blank(PREF_OUT)) {
+        fileEntry->setPath
+          (util::applyDir(grOption->get(PREF_DIR), grOption->get(PREF_OUT)));
+        fileEntry->setSuffixPath(A2STR::NIL);
+      } else if(fileEntry->getSuffixPath().empty()) {
         fileEntry->setPath(A2STR::NIL);
       } else {
         fileEntry->setPath
-          (util::applyDir(grOption->get(PREF_DIR), grOption->get(PREF_OUT)));
+          (util::applyDir(grOption->get(PREF_DIR),
+                          fileEntry->getSuffixPath()));
+      }
+    } else if(group->getMetadataInfo()
+#ifdef ENABLE_BITTORRENT
+              && !dctx->hasAttribute(CTX_ATTR_BT)
+#endif // ENABLE_BITTORRENT
+              ) {
+      // In case of Metalink
+      for(auto& fileEntry : dctx->getFileEntries()) {
+        // PREF_OUT is not applicable to Metalink.  We have always
+        // suffixPath set.
+        fileEntry->setPath
+          (util::applyDir(grOption->get(PREF_DIR),
+                          fileEntry->getSuffixPath()));
       }
     }
   }

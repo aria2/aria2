@@ -572,6 +572,11 @@ void FileEntry::setOriginalName(std::string originalName)
   originalName_ = std::move(originalName);
 }
 
+void FileEntry::setSuffixPath(std::string suffixPath)
+{
+  suffixPath_ = std::move(suffixPath);
+}
+
 bool FileEntry::emptyRequestUri() const
 {
   return uris_.empty() && inFlightRequests_.empty() && requestPool_.empty();

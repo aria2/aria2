@@ -265,6 +265,8 @@ Metalink2RequestGroup::createRequestGroup
                         entry->file->getPath()));
       dctx->getFirstFileEntry()->setUris(uris);
       dctx->getFirstFileEntry()->setMaxConnectionPerServer(maxConn);
+      dctx->getFirstFileEntry()->setSuffixPath(entry->file->getPath());
+
       if(option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)) {
         dctx->getFirstFileEntry()->setUniqueProtocol(true);
       }
@@ -307,6 +309,7 @@ Metalink2RequestGroup::createRequestGroup
           fe->setUniqueProtocol(true);
         }
         fe->setOriginalName(entry->metaurls[0]->name);
+        fe->setSuffixPath(entry->file->getPath());
         fileEntries.push_back(fe);
         if(offset >
            std::numeric_limits<int64_t>::max() - entry->file->getLength()) {

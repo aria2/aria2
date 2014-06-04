@@ -85,6 +85,9 @@ private:
   std::string path_;
   std::string contentType_;
   std::string originalName_;
+  // path_ without parent directory component.  This is primarily used
+  // to change directory (PREF_DIR option).
+  std::string suffixPath_;
 
   Timer lastFasterReplace_;
   int maxConnectionPerServer_;
@@ -262,6 +265,13 @@ public:
   const std::string& getOriginalName() const
   {
     return originalName_;
+  }
+
+  void setSuffixPath(std::string suffixPath);
+
+  const std::string& getSuffixPath() const
+  {
+    return suffixPath_;
   }
 
   bool removeUri(const std::string& uri);

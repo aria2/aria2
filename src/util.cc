@@ -1878,6 +1878,13 @@ std::string createSafePath
                         );
 }
 
+std::string createSafePath(const std::string& filename)
+{
+  return util::isUtf8(filename) ?
+    util::fixTaintedBasename(filename) :
+    util::escapePath(util::percentEncode(filename));
+}
+
 std::string encodeNonUtf8(const std::string& s)
 {
   return util::isUtf8(s)?s:util::percentEncode(s);

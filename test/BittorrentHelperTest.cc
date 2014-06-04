@@ -198,6 +198,8 @@ void BittorrentHelperTest::testGetFileEntriesSingle() {
                        fileEntry1->getPath());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.8.2.tar.bz2"),
                        fileEntry1->getOriginalName());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.8.2.tar.bz2"),
+                       fileEntry1->getSuffixPath());
   CPPUNIT_ASSERT_EQUAL(10, fileEntry1->getMaxConnectionPerServer());
 }
 
@@ -355,6 +357,8 @@ void BittorrentHelperTest::testGetFileEntries_multiFileUrlList() {
   const std::shared_ptr<FileEntry>& fileEntry1 = *itr;
   CPPUNIT_ASSERT_EQUAL(std::string("./aria2-test@/aria2@/src@/aria2c@"),
                        fileEntry1->getPath());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-test@/aria2@/src@/aria2c@"),
+                       fileEntry1->getSuffixPath());
   const std::deque<std::string>& uris1 = fileEntry1->getRemainingUris();
   CPPUNIT_ASSERT_EQUAL((size_t)2, uris1.size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/dist/aria2-test%40/aria2%40/src%40/aria2c%40"),
@@ -435,6 +439,9 @@ void BittorrentHelperTest::testLoadFromMemory_multiFileNonUtf8Path()
     (std::string("./%1B%24B%25O%25m%21%3C%1B%28B/path/%90%A2%8AE"),
      fe->getPath());
   CPPUNIT_ASSERT_EQUAL
+    (std::string("%1B%24B%25O%25m%21%3C%1B%28B/path/%90%A2%8AE"),
+     fe->getSuffixPath());
+  CPPUNIT_ASSERT_EQUAL
     (std::string("./%1B%24B%25O%25m%21%3C%1B%28B"), dctx->getBasePath());
 }
 
@@ -452,6 +459,7 @@ void BittorrentHelperTest::testLoadFromMemory_singleFileNonUtf8Path()
 
   const std::shared_ptr<FileEntry>& fe = dctx->getFirstFileEntry();
   CPPUNIT_ASSERT_EQUAL(std::string("./%90%A2%8AE"), fe->getPath());
+  CPPUNIT_ASSERT_EQUAL(std::string("%90%A2%8AE"), fe->getSuffixPath());
 }
 
 void BittorrentHelperTest::testLoadFromMemory()

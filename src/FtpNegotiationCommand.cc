@@ -361,11 +361,13 @@ bool FtpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
 {
   getFileEntry()->setLength(totalLength);
   if(getFileEntry()->getPath().empty()) {
+    auto suffixPath = util::createSafePath
+      (util::percentDecode(std::begin(getRequest()->getFile()),
+                           std::end(getRequest()->getFile())));
+
     getFileEntry()->setPath
-      (util::createSafePath
-       (getOption()->get(PREF_DIR),
-        util::percentDecode(getRequest()->getFile().begin(),
-                            getRequest()->getFile().end())));
+      (util::applyDir(getOption()->get(PREF_DIR), suffixPath));
+    getFileEntry()->setSuffixPath(suffixPath);
   }
   getRequestGroup()->preDownloadProcessing();
   if(totalLength == 0) {

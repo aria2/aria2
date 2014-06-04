@@ -249,8 +249,11 @@ bool HttpResponseCommand::executeInternal()
     int64_t totalLength = httpResponse->getEntityLength();
     fe->setLength(totalLength);
     if (fe->getPath().empty()) {
-      fe->setPath(util::createSafePath(getOption()->get(PREF_DIR),
-                                       httpResponse->determineFilename()));
+      auto suffixPath =
+        util::createSafePath(httpResponse->determineFilename());
+
+      fe->setPath(util::applyDir(getOption()->get(PREF_DIR), suffixPath));
+      fe->setSuffixPath(suffixPath);
     }
     fe->setContentType(httpResponse->getContentType());
     grp->preDownloadProcessing();

@@ -278,11 +278,15 @@ void extractFileEntries
                              (util::percentEncode)));
       std::vector<std::string> uris;
       createUri(urlList.begin(), urlList.end(),std::back_inserter(uris),pePath);
-      std::shared_ptr<FileEntry> fileEntry
-        (new FileEntry(util::applyDir(option->get(PREF_DIR),
-                                      util::escapePath(utf8Path)),
-                       fileLengthData->i(), offset, uris));
+
+      auto suffixPath = util::escapePath(utf8Path);
+
+      auto fileEntry =
+        std::make_shared<FileEntry>(util::applyDir(option->get(PREF_DIR),
+                                                   suffixPath),
+                                    fileLengthData->i(), offset, uris);
       fileEntry->setOriginalName(utf8Path);
+      fileEntry->setSuffixPath(suffixPath);
       fileEntry->setMaxConnectionPerServer(maxConn);
       fileEntries.push_back(fileEntry);
       offset += fileEntry->getLength();
@@ -316,11 +320,15 @@ void extractFileEntries
         uris.push_back(elem);
       }
     }
-    std::shared_ptr<FileEntry> fileEntry
-      (new FileEntry(util::applyDir(option->get(PREF_DIR),
-                                    util::escapePath(utf8Name)),
-                     totalLength, 0, uris));
+
+    auto suffixPath = util::escapePath(utf8Name);
+
+    auto fileEntry =
+      std::make_shared<FileEntry>(util::applyDir(option->get(PREF_DIR),
+                                                 suffixPath),
+                                  totalLength, 0, uris);
     fileEntry->setOriginalName(utf8Name);
+    fileEntry->setSuffixPath(suffixPath);
     fileEntry->setMaxConnectionPerServer(maxConn);
     fileEntries.push_back(fileEntry);
   }

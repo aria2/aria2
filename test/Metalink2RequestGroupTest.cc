@@ -163,6 +163,8 @@ void Metalink2RequestGroupTest::testGenerate_groupByMetaurl()
     CPPUNIT_ASSERT_EQUAL((size_t)2, fileEntries.size());
     CPPUNIT_ASSERT_EQUAL(std::string("./file1"), fileEntries[0]->getPath());
     CPPUNIT_ASSERT_EQUAL(std::string("file1"), fileEntries[0]->getOriginalName());
+    CPPUNIT_ASSERT_EQUAL(std::string("file1"),
+                         fileEntries[0]->getSuffixPath());
     CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntries[0]->getRemainingUris().size());
     CPPUNIT_ASSERT_EQUAL(std::string("http://file1p1"),
                          fileEntries[0]->getRemainingUris()[0]);

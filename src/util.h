@@ -791,6 +791,8 @@ void executeHookByOptName
 
 std::string createSafePath(const std::string& dir, const std::string& filename);
 
+std::string createSafePath(const std::string& filename);
+
 std::string encodeNonUtf8(const std::string& s);
 
 // Create string safely. If str is NULL, returns empty string.
