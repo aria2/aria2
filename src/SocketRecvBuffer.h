@@ -46,7 +46,7 @@ class SocketCore;
 class SocketRecvBuffer {
 public:
   SocketRecvBuffer
-  (const std::shared_ptr<SocketCore>& socket,
+  (std::shared_ptr<SocketCore> socket,
    size_t capacity = 16*1024);
   ~SocketRecvBuffer();
   // Reads data from socket as much as capacity allows. Returns the
@@ -68,7 +68,7 @@ public:
 
   const unsigned char* getBuffer() const
   {
-    return buf_;
+    return buf_.get();
   }
 
   size_t getBufferLength() const
@@ -85,7 +85,7 @@ public:
 private:
   std::shared_ptr<SocketCore> socket_;
   size_t capacity_;
-  unsigned char* buf_;
+  std::unique_ptr<unsigned char[]> buf_;
   size_t bufLen_;
 };
 

@@ -39,28 +39,27 @@
 
 #include "SocketCore.h"
 #include "LogFactory.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
 SocketRecvBuffer::SocketRecvBuffer
-(const std::shared_ptr<SocketCore>& socket,
+(std::shared_ptr<SocketCore> socket,
  size_t capacity)
-  : socket_(socket),
+  : socket_(std::move(socket)),
     capacity_(capacity),
-    buf_(new unsigned char[capacity_]),
+    buf_(make_unique<unsigned char[]>(capacity_)),
     bufLen_(0)
 {}
 
 SocketRecvBuffer::~SocketRecvBuffer()
-{
-  delete [] buf_;
-}
+{}
 
 ssize_t SocketRecvBuffer::recv()
 {
-  size_t len = capacity_-bufLen_;
+  size_t len = capacity_ - bufLen_;
   if(len > 0) {
-    socket_->readData(buf_+bufLen_, len);
+    socket_->readData(buf_.get() + bufLen_, len);
     bufLen_ += len;
   } else {
     A2_LOG_DEBUG("Buffer full");
@@ -71,7 +70,7 @@ ssize_t SocketRecvBuffer::recv()
 void SocketRecvBuffer::shiftBuffer(size_t offset)
 {
   assert(offset <= bufLen_);
-  memmove(buf_, buf_+offset, bufLen_-offset);
+  memmove(buf_.get(), buf_.get() + offset, bufLen_ - offset);
   bufLen_ -= offset;
 }
 
