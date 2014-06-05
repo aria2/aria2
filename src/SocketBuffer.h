@@ -109,13 +109,13 @@ private:
   // to the data to be sent in the next send() call.
   size_t offset_;
 public:
-  SocketBuffer(const std::shared_ptr<SocketCore>& socket);
+  SocketBuffer(std::shared_ptr<SocketCore> socket);
 
   ~SocketBuffer();
 
   // Don't allow copying
-  SocketBuffer(const SocketBuffer&);
-  SocketBuffer& operator=(const SocketBuffer&);
+  SocketBuffer(const SocketBuffer&) = delete;
+  SocketBuffer& operator=(const SocketBuffer&) = delete;
 
   // Feeds data pointered by bytes with length len into queue.  This
   // object gets ownership of bytes, so caller must not delete or
@@ -124,16 +124,14 @@ public:
   // each time the data is sent. It will be deleted by this object. It
   // can be null.
   void pushBytes(unsigned char* bytes, size_t len,
-                 std::unique_ptr<ProgressUpdate> progressUpdate =
-                 std::unique_ptr<ProgressUpdate>{});
+                 std::unique_ptr<ProgressUpdate> progressUpdate = nullptr);
 
   // Feeds data into queue. This function doesn't send data.  If
   // progressUpdate is not null, its update() function will be called
   // each time the data is sent. It will be deleted by this object. It
   // can be null.
   void pushStr(std::string data,
-               std::unique_ptr<ProgressUpdate> progressUpdate =
-               std::unique_ptr<ProgressUpdate>{});
+               std::unique_ptr<ProgressUpdate> progressUpdate = nullptr);
 
   // Sends data in queue.  Returns the number of bytes sent.
   ssize_t send();

@@ -104,8 +104,9 @@ const unsigned char* SocketBuffer::StringBufEntry::getData() const
   return reinterpret_cast<const unsigned char*>(str_.c_str());
 }
 
-SocketBuffer::SocketBuffer(const std::shared_ptr<SocketCore>& socket):
-  socket_(socket), offset_(0) {}
+SocketBuffer::SocketBuffer(std::shared_ptr<SocketCore> socket)
+  : socket_(std::move(socket)), offset_(0)
+{}
 
 SocketBuffer::~SocketBuffer() {}
 
@@ -145,15 +146,17 @@ ssize_t SocketBuffer::send()
     for(auto i = std::begin(bufq_)+1, eoi = std::end(bufq_);
         i != eoi && num < A2_IOV_MAX && num < bufqlen && amount > 0;
         ++i, ++num) {
+
       ssize_t len = (*i)->getLength();
-      if(amount >= len) {
-        amount -= len;
-        iov[num].A2IOVEC_BASE =
-          reinterpret_cast<char*>(const_cast<unsigned char*>((*i)->getData()));
-        iov[num].A2IOVEC_LEN = len;
-      } else {
+
+      if(amount < len) {
         break;
       }
+
+      amount -= len;
+      iov[num].A2IOVEC_BASE =
+        reinterpret_cast<char*>(const_cast<unsigned char*>((*i)->getData()));
+      iov[num].A2IOVEC_LEN = len;
     }
     ssize_t slen = socket_->writeVector(iov, num);
     if(slen == 0 && !socket_->wantRead() && !socket_->wantWrite()) {
@@ -167,25 +170,25 @@ ssize_t SocketBuffer::send()
       offset_ += slen;
       bufq_.front()->progressUpdate(slen, false);
       goto fin;
-    } else {
-      slen -= firstlen;
-      bufq_.front()->progressUpdate(firstlen, true);
-      bufq_.pop_front();
-      offset_ = 0;
-      for(size_t i = 1; i < num; ++i) {
-        const std::unique_ptr<BufEntry>& buf = bufq_.front();
-        ssize_t len = buf->getLength();
-        if(len > slen) {
-          offset_ = slen;
-          bufq_.front()->progressUpdate(slen, false);
-          goto fin;
-          break;
-        } else {
-          slen -= len;
-          bufq_.front()->progressUpdate(len, true);
-          bufq_.pop_front();
-        }
+    }
+
+    slen -= firstlen;
+    bufq_.front()->progressUpdate(firstlen, true);
+    bufq_.pop_front();
+    offset_ = 0;
+
+    for(size_t i = 1; i < num; ++i) {
+      auto& buf = bufq_.front();
+      ssize_t len = buf->getLength();
+      if(len > slen) {
+        offset_ = slen;
+        bufq_.front()->progressUpdate(slen, false);
+        goto fin;
       }
+
+      slen -= len;
+      bufq_.front()->progressUpdate(len, true);
+      bufq_.pop_front();
     }
   }
  fin:
