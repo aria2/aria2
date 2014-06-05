@@ -50,25 +50,25 @@ namespace aria2 {
 class AnnounceList {
 public:
 private:
-  std::deque<std::shared_ptr<AnnounceTier> > tiers_;
-  std::deque<std::shared_ptr<AnnounceTier> >::iterator currentTier_;
+  std::deque<std::shared_ptr<AnnounceTier>> tiers_;
+  std::deque<std::shared_ptr<AnnounceTier>>::iterator currentTier_;
   std::deque<std::string>::iterator currentTracker_;
   bool currentTrackerInitialized_;
 
   void resetIterator();
   void setCurrentTier
-  (const std::deque<std::shared_ptr<AnnounceTier> >::iterator& itr);
+  (std::deque<std::shared_ptr<AnnounceTier>>::iterator itr);
 public:
   AnnounceList();
-  AnnounceList(const std::vector<std::vector<std::string> >& announceList);
-  AnnounceList(const std::deque<std::shared_ptr<AnnounceTier> >& tiers);
+  AnnounceList(const std::vector<std::vector<std::string>>& announceList);
+  AnnounceList(const std::deque<std::shared_ptr<AnnounceTier>>& tiers);
   ~AnnounceList();
 
   // Don't allow copying
-  AnnounceList(const AnnounceList&);
-  AnnounceList& operator=(const AnnounceList&);
+  AnnounceList(const AnnounceList&) = delete;
+  AnnounceList& operator=(const AnnounceList&) = delete;
 
-  void reconfigure(const std::vector<std::vector<std::string> >& announceList);
+  void reconfigure(const std::vector<std::vector<std::string>>& announceList);
   void reconfigure(const std::string& url);
 
   size_t countTier() const;

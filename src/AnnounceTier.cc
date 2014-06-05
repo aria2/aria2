@@ -36,8 +36,8 @@
 
 namespace aria2 {
 
-AnnounceTier::AnnounceTier(const std::deque<std::string>& urls)
-  : event(STARTED), urls(urls)
+AnnounceTier::AnnounceTier(std::deque<std::string> urls)
+  : event(STARTED), urls(std::move(urls))
 {}
 
 AnnounceTier::~AnnounceTier() {}
