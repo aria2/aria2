@@ -82,6 +82,7 @@
 #include "DiskAdaptor.h"
 #include "SimpleRandomizer.h"
 #include "array_fun.h"
+#include "OpenedFileCounter.h"
 #ifdef ENABLE_BITTORRENT
 #  include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
@@ -116,7 +117,8 @@ RequestGroupMan::RequestGroupMan
     removedLastErrorResult_(error_code::FINISHED),
     maxDownloadResult_(option->getAsInt(PREF_MAX_DOWNLOAD_RESULT)),
     wrDiskCache_(nullptr),
-    numOpenFile_(0),
+    openedFileCounter_(std::make_shared<OpenedFileCounter>
+                       (this, option->getAsInt(PREF_BT_MAX_OPEN_FILES))),
     numStoppedTotal_(0)
 {
   appendReservedGroup(reservedGroups_,
@@ -125,6 +127,7 @@ RequestGroupMan::RequestGroupMan
 
 RequestGroupMan::~RequestGroupMan()
 {
+  openedFileCounter_->deactivate();
   delete wrDiskCache_;
 }
 
@@ -962,36 +965,6 @@ void RequestGroupMan::initWrDiskCache()
   if(limit > 0) {
     wrDiskCache_ = new WrDiskCache(limit);
   }
-}
-
-void RequestGroupMan::ensureMaxOpenFileLimit(size_t numNewFile)
-{
-  size_t max = option_->getAsInt(PREF_BT_MAX_OPEN_FILES);
-  if(numOpenFile_ + numNewFile <= max) {
-    numOpenFile_ += numNewFile;
-    return;
-  }
-  assert(numNewFile <= max);
-  size_t numClose = numOpenFile_ + numNewFile - max;
-  size_t left = numClose;
-  auto mark = std::begin(requestGroups_);
-  std::advance(mark,
-               SimpleRandomizer::getInstance()->
-               getRandomNumber(requestGroups_.size()));
-  for(auto i = mark; i != std::end(requestGroups_) && left > 0; ++i) {
-    left -= (*i)->getPieceStorage()->getDiskAdaptor()->tryCloseFile(left);
-  }
-  for(auto i = std::begin(requestGroups_); i != mark && left > 0; ++i) {
-    left -= (*i)->getPieceStorage()->getDiskAdaptor()->tryCloseFile(left);
-  }
-  assert(left == 0);
-  numOpenFile_ += numNewFile - numClose;
-}
-
-void RequestGroupMan::reduceNumOfOpenedFile(size_t numCloseFile)
-{
-  assert(numOpenFile_ >= numCloseFile);
-  numOpenFile_ -= numCloseFile;
 }
 
 } // namespace aria2

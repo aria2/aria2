@@ -48,7 +48,7 @@ namespace aria2 {
 class FileEntry;
 class FileAllocationIterator;
 class WrDiskCacheEntry;
-class RequestGroupMan;
+class OpenedFileCounter;
 
 class DiskAdaptor:public BinaryStream {
 public:
@@ -125,21 +125,23 @@ public:
   // Returns the number of closed files.
   virtual size_t tryCloseFile(size_t numClose) { return 0; }
 
-  void setRequestGroupMan(RequestGroupMan* rgman)
+  void setOpenedFileCounter
+  (std::shared_ptr<OpenedFileCounter> openedFileCounter)
   {
-    requestGroupMan_ = rgman;
+    openedFileCounter_ = std::move(openedFileCounter);
   }
 
-  RequestGroupMan* getRequestGroupMan() const
+  const std::shared_ptr<OpenedFileCounter>& getOpenedFileCounter() const
   {
-    return requestGroupMan_;
+    return openedFileCounter_;
   }
+
 private:
   std::vector<std::shared_ptr<FileEntry> > fileEntries_;
 
   FileAllocationMethod fileAllocationMethod_;
 
-  RequestGroupMan* requestGroupMan_;
+  std::shared_ptr<OpenedFileCounter> openedFileCounter_;
 };
 
 } // namespace aria2

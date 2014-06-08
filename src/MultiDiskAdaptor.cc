@@ -51,7 +51,7 @@
 #include "LogFactory.h"
 #include "SimpleRandomizer.h"
 #include "WrDiskCacheEntry.h"
-#include "RequestGroupMan.h"
+#include "OpenedFileCounter.h"
 
 namespace aria2 {
 
@@ -226,8 +226,9 @@ void MultiDiskAdaptor::openIfNot
   if(!entry->isOpen()) {
         // A2_LOG_NOTICE(fmt("DiskWriterEntry: Cache MISS. offset=%s",
         //        util::itos(entry->getFileEntry()->getOffset()).c_str()));
-    if(getRequestGroupMan()) {
-      getRequestGroupMan()->ensureMaxOpenFileLimit(1);
+    auto& openedFileCounter = getOpenedFileCounter();
+    if(openedFileCounter) {
+      openedFileCounter->ensureMaxOpenFileLimit(1);
     }
     (entry->*open)();
     openedDiskWriterEntries_.push_back(entry);
@@ -278,8 +279,9 @@ void MultiDiskAdaptor::closeFile()
       dwent->closeFile();
     }
   }
-  if(getRequestGroupMan()) {
-    getRequestGroupMan()->reduceNumOfOpenedFile(n);
+  auto& openedFileCounter = getOpenedFileCounter();
+  if(openedFileCounter) {
+    openedFileCounter->reduceNumOfOpenedFile(n);
   }
 }
 

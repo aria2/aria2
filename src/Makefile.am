@@ -264,7 +264,8 @@ SRCS =  \
 	WatchProcessCommand.cc WatchProcessCommand.h\
 	WrDiskCache.cc WrDiskCache.h\
 	WrDiskCacheEntry.cc WrDiskCacheEntry.h\
-	XmlRpcRequestParserController.cc XmlRpcRequestParserController.h
+	XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\
+	OpenedFileCounter.cc OpenedFileCounter.h
 
 if ANDROID
 SRCS += android/android.c

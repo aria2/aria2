@@ -60,6 +60,7 @@ class Option;
 class OutputFile;
 class UriListParser;
 class WrDiskCache;
+class OpenedFileCounter;
 
 typedef IndexedList<a2_gid_t,
                     std::shared_ptr<RequestGroup> > RequestGroupList;
@@ -104,7 +105,7 @@ private:
 
   WrDiskCache* wrDiskCache_;
 
-  size_t numOpenFile_;
+  std::shared_ptr<OpenedFileCounter> openedFileCounter_;
 
   // The number of stopped downloads so far in total, including
   // evicted DownloadResults.
@@ -356,17 +357,6 @@ public:
     return keepRunning_;
   }
 
-  // Keeps the number of open files under the global limit specified
-  // in the option. The caller requests that |numNewFile| files are
-  // going to be opened. This function requires that |numNewFile| is
-  // less than or equal to the limit.
-  //
-  // Currently the only download using MultiDiskAdaptor is affected by
-  // the global limit.
-  void ensureMaxOpenFileLimit(size_t numNewFile);
-  // Reduces the number of open files managed by this object.
-  void reduceNumOfOpenedFile(size_t numCloseFile);
-
   size_t getNumStoppedTotal() const
   {
     return numStoppedTotal_;
@@ -380,6 +370,11 @@ public:
   const std::string& getLastSessionHash() const
   {
     return lastSessionHash_;
+  }
+
+  const std::shared_ptr<OpenedFileCounter>& getOpenedFileCounter() const
+  {
+    return openedFileCounter_;
   }
 };
 

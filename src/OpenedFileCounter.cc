@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2014 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,16 +32,69 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "DiskAdaptor.h"
-#include "FileEntry.h"
 #include "OpenedFileCounter.h"
+
+#include <cassert>
+
+#include "RequestGroupMan.h"
+#include "RequestGroup.h"
+#include "PieceStorage.h"
+#include "DiskAdaptor.h"
+#include "SimpleRandomizer.h"
 
 namespace aria2 {
 
-DiskAdaptor::DiskAdaptor()
-  : fileAllocationMethod_(FILE_ALLOC_ADAPTIVE)
+OpenedFileCounter::OpenedFileCounter(RequestGroupMan* rgman,
+                                     size_t maxOpenFiles)
+  : rgman_(rgman),
+    maxOpenFiles_(maxOpenFiles),
+    numOpenFiles_(0)
 {}
 
-DiskAdaptor::~DiskAdaptor() {}
+void OpenedFileCounter::ensureMaxOpenFileLimit(size_t numNewFiles)
+{
+  if(!rgman_) {
+    return;
+  }
+
+  if(numOpenFiles_ + numNewFiles <= maxOpenFiles_) {
+    numOpenFiles_ += numNewFiles;
+    return;
+  }
+  assert(numNewFiles <= maxOpenFiles_);
+  size_t numClose = numOpenFiles_ + numNewFiles - maxOpenFiles_;
+  size_t left = numClose;
+
+  auto requestGroups = rgman_->getRequestGroups();
+
+  auto mark = std::begin(requestGroups);
+  std::advance(mark,
+               SimpleRandomizer::getInstance()->
+               getRandomNumber(requestGroups.size()));
+  for(auto i = mark; i != std::end(requestGroups) && left > 0; ++i) {
+    left -= (*i)->getPieceStorage()->getDiskAdaptor()->tryCloseFile(left);
+  }
+  for(auto i = std::begin(requestGroups); i != mark && left > 0; ++i) {
+    left -= (*i)->getPieceStorage()->getDiskAdaptor()->tryCloseFile(left);
+  }
+  assert(left == 0);
+  numOpenFiles_ += numNewFiles - numClose;
+}
+
+void OpenedFileCounter::reduceNumOfOpenedFile(size_t numCloseFiles)
+{
+  if(!rgman_) {
+    return;
+  }
+
+  assert(numOpenFiles_ >= numCloseFiles);
+  numOpenFiles_ -= numCloseFiles;
+}
+
+void OpenedFileCounter::deactivate()
+{
+  rgman_ = nullptr;
+}
 
 } // namespace aria2
+

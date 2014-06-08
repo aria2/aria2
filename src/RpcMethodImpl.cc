@@ -68,6 +68,7 @@
 #include "SessionSerializer.h"
 #include "MessageDigest.h"
 #include "message_digest_helper.h"
+#include "OpenedFileCounter.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 # include "BtRegistry.h"
@@ -1566,6 +1567,11 @@ void changeGlobalOption(const Option& option, DownloadEngine* e)
     } catch(RecoverableException& e) {
       // TODO no exception handling
     }
+  }
+  if(option.defined(PREF_BT_MAX_OPEN_FILES)) {
+    auto& openedFileCounter = e->getRequestGroupMan()->getOpenedFileCounter();
+    openedFileCounter->setMaxOpenFiles
+      (option.getAsInt(PREF_BT_MAX_OPEN_FILES));
   }
 }
 

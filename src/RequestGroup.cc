@@ -593,7 +593,10 @@ void RequestGroup::initPieceStorage()
     tempPieceStorage = ps;
   }
   tempPieceStorage->initStorage();
-  tempPieceStorage->getDiskAdaptor()->setRequestGroupMan(requestGroupMan_);
+  if(requestGroupMan_) {
+    tempPieceStorage->getDiskAdaptor()->setOpenedFileCounter
+      (requestGroupMan_->getOpenedFileCounter());
+  }
   segmentMan_ = std::make_shared<SegmentMan>(downloadContext_, tempPieceStorage);
   pieceStorage_ = tempPieceStorage;
 }

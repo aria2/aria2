@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2014 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,16 +32,45 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "DiskAdaptor.h"
-#include "FileEntry.h"
-#include "OpenedFileCounter.h"
+#ifndef D_OPENED_FILE_COUNTER_H
+#define D_OPENED_FILE_COUNTER_H
+
+#include "common.h"
 
 namespace aria2 {
 
-DiskAdaptor::DiskAdaptor()
-  : fileAllocationMethod_(FILE_ALLOC_ADAPTIVE)
-{}
+class RequestGroupMan;
 
-DiskAdaptor::~DiskAdaptor() {}
+class OpenedFileCounter {
+public:
+  OpenedFileCounter(RequestGroupMan* rgman, size_t maxOpenFiles);
+
+  // Keeps the number of open files under the global limit specified
+  // in the option.  The caller requests that |numNewFiles| files are
+  // going to be opened.  This function requires that |numNewFiles| is
+  // less than or equal to the limit.
+  //
+  // Currently the only download using MultiDiskAdaptor is affected by
+  // the global limit.
+  void ensureMaxOpenFileLimit(size_t numNewFiles);
+
+  // Reduces the number of open files managed by this object.
+  void reduceNumOfOpenedFile(size_t numCloseFiles);
+
+  void setMaxOpenFiles(size_t maxOpenFiles)
+  {
+    maxOpenFiles_ = maxOpenFiles;
+  }
+
+  // Deactivates this object.
+  void deactivate();
+
+private:
+  RequestGroupMan* rgman_;
+  size_t maxOpenFiles_;
+  size_t numOpenFiles_;
+};
 
 } // namespace aria2
+
+#endif // D_OPENED_FILE_COUNTER_H
