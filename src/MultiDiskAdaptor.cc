@@ -405,6 +405,9 @@ void MultiDiskAdaptor::writeCache(const WrDiskCacheEntry* entry)
   for(; dent != eod; ++dent) {
     int64_t lstart = 0, lp = 0;
     auto& fent = (*dent)->getFileEntry();
+    if(fent->getLength() == 0) {
+      continue;
+    }
     for(; i != eoi;) {
       if(std::max(fent->getOffset(),
                   static_cast<int64_t>((*i)->goff + celloff)) <
