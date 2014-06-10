@@ -34,6 +34,9 @@
 /* copyright --> */
 #include "FeatureConfig.h"
 
+#include <sstream>
+#include <cstring>
+
 #ifdef HAVE_ZLIB
 # include <zlib.h>
 #endif // HAVE_ZLIB
@@ -61,6 +64,12 @@
 #ifdef HAVE_LIBCARES
 # include <ares.h>
 #endif // HAVE_LIBCARES
+#ifdef HAVE_SYS_UTSNAME_H
+# include <sys/utsname.h>
+#endif
+#ifdef _WIN32
+# include <windows.h>
+#endif
 
 #include "util.h"
 
@@ -112,7 +121,7 @@ const char* strSupportedFeature(int feature)
 #ifdef ENABLE_BITTORRENT
     return "BitTorrent";
 #else // !ENABLE_BITTORRENT
-    return 0;
+    return nullptr;
 #endif // !ENABLE_BITTORRENT
     break;
 
@@ -128,7 +137,7 @@ const char* strSupportedFeature(int feature)
 #ifdef HAVE_ZLIB
     return "GZip";
 #else // !HAVE_ZLIB
-    return 0;
+    return nullptr;
 #endif // !HAVE_ZLIB
     break;
 
@@ -136,7 +145,7 @@ const char* strSupportedFeature(int feature)
 #ifdef ENABLE_SSL
     return "HTTPS";
 #else // !ENABLE_SSL
-    return 0;
+    return nullptr;
 #endif // !ENABLE_SSL
     break;
 
@@ -148,7 +157,7 @@ const char* strSupportedFeature(int feature)
 #ifdef ENABLE_METALINK
     return "Metalink";
 #else // !ENABLE_METALINK
-    return 0;
+    return nullptr;
 #endif // !ENABLE_METALINK
     break;
 
@@ -156,7 +165,7 @@ const char* strSupportedFeature(int feature)
 #ifdef ENABLE_XML_RPC
     return "XML-RPC";
 #else // !ENABLE_XML_RPC
-    return 0;
+    return nullptr;
 #endif // !ENABLE_XML_RPC
     break;
 
@@ -219,6 +228,121 @@ std::string usedLibs()
     res.erase(res.length()-1);
   }
   return res;
+}
+
+std::string usedCompilerAndPlatform()
+{
+  std::stringstream rv;
+#if defined(__clang_version__)
+#ifdef __apple_build_version__
+  rv << "Apple LLVM ";
+#else // __apple_build_version__
+  rv << "clang ";
+#endif // __apple_build_version__
+  rv << __clang_version__;
+#elif defined(__INTEL_COMPILER)
+  rv << "Intel ICC " << __VERSION__;
+  rv.append("Intel ICC ");
+  rv.append(__VERSION__);
+#elif defined( __MINGW64_VERSION_STR)
+  rv << "mingw-w64 " << __MINGW64_VERSION_STR;
+#ifdef __MINGW64_VERSION_STATE
+  rv << " (" << __MINGW64_VERSION_STATE << ")";
+#endif // __MINGW64_VERSION_STATE
+  rv << " / gcc " << __VERSION__;
+#elif defined(__GNUG__)
+#ifdef __MINGW32__
+  rv << "mingw "
+#ifdef __MINGW32_MAJOR_VERSION
+  rv << (int)__MINGW32_MAJOR_VERSION;
+#endif // __MINGW32_MAJOR_VERSION
+#ifdef __MINGW32_MINOR_VERSION
+  rv << "." << (int)__MINGW32_MINOR_VERSION;
+#endif // __MINGW32_MINOR_VERSION
+  rv << " / ";
+#endif // __MINGW32__
+  rv << "gcc " << __VERSION__;
+#else // defined(__clang_version__)
+  rv << "Unknown compiler/platform";
+#endif // defined(__clang_version__)
+
+  rv << "\n  built by   " << BUILD;
+  if(strcmp(BUILD, TARGET)) {
+    rv << "\n  targetting " << TARGET;
+  }
+  rv << "\n  on         " << __DATE__ << " " << __TIME__;
+
+  return rv.str();
+}
+
+std::string getOperatingSystemInfo()
+{
+#ifdef _WIN32
+  std::stringstream rv("Windows ");
+  OSVERSIONINFOEX ovi = {
+    sizeof(OSVERSIONINFOEX)
+  };
+  if(!GetVersionEx((LPOSVERSIONINFO)&ovi)) {
+    rv << "Unknown";
+    return rv.str();
+  }
+  rv << "Windows ";
+  if(ovi.dwMajorVersion < 6) {
+    rv << "Legcacy, probably XP";
+    return rv.str();
+  }
+  switch(ovi.dwMinorVersion) {
+  case 0:
+    if(ovi.wProductType == VER_NT_WORKSTATION) {
+      rv << "Vista";
+    }
+    else {
+      rv << "Server 2008";
+    }
+    break;
+
+  case 1:
+    if(ovi.wProductType == VER_NT_WORKSTATION) {
+      rv << "7";
+    }
+    else {
+      rv << "Server 2008 R2";
+    }
+    break;
+
+  default:
+    // Windows above 6.2 does not actually say so. :p
+
+    rv << ovi.dwMajorVersion;
+    if(ovi.dwMinorVersion) {
+      rv << "." << ovi.dwMinorVersion;
+    }
+    if(ovi.wProductType != VER_NT_WORKSTATION) {
+      rv << " Server";
+    }
+    break;
+  }
+  if(ovi.szCSDVersion[0]) {
+    rv << " (" << ovi.szCSDVersion << ")";
+  }
+  return rv.str();
+#else // _WIN32
+#ifdef HAVE_SYS_UTSNAME_H
+  struct utsname name;
+  if(!uname(&name)) {
+    if(!strstr(name.version, name.sysname) ||
+       !strstr(name.version, name.release) ||
+       !strstr(name.version, name.machine)) {
+      std::stringstream ss;
+      ss << name.sysname << " " << name.release << " " << name.version <<
+        " " << name.machine;
+      return ss.str();
+    }
+    return name.version;
+  }
+#endif // HAVE_SYS_UTSNAME_H
+  return "Unknown system";
+#endif // _WIN32
 }
 
 } // namespace aria2

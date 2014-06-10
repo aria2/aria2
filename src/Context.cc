@@ -174,7 +174,10 @@ Context::Context(bool standalone,
   A2_LOG_INFO("<<--- --- --- ---");
   A2_LOG_INFO("  --- --- --- ---");
   A2_LOG_INFO("  --- --- --- --->>");
-  A2_LOG_INFO(fmt("%s %s %s", PACKAGE, PACKAGE_VERSION, TARGET));
+  A2_LOG_INFO(fmt("%s %s", PACKAGE, PACKAGE_VERSION));
+  A2_LOG_INFO(usedCompilerAndPlatform());
+  A2_LOG_INFO(getOperatingSystemInfo());
+  A2_LOG_INFO(usedLibs());
   A2_LOG_INFO(MSG_LOGGING_STARTED);
 
   if(op->getAsBool(PREF_DISABLE_IPV6)) {
