@@ -348,10 +348,6 @@ SRCS += \
 	AppleTLSSession.cc AppleTLSSession.h
 endif # HAVE_APPLETLS
 
-if USE_WINDOWS_MD
-SRCS += WinMessageDigestImpl.cc
-endif # USE_WINDOWS_MD
-
 if HAVE_WINTLS
 SRCS += \
 	WinTLSContext.cc WinTLSContext.h \
