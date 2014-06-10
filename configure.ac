@@ -493,25 +493,20 @@ if test "x$have_appletls" = "xyes"; then
   use_md="apple"
   AC_DEFINE([USE_APPLE_MD], [1], [What message digest implementation to use])
 else
-  if test "x$have_wintls" = "xyes"; then
-    use_md="windows"
-    AC_DEFINE([USE_WINDOWS_MD], [1], [What message digest implementation to use])
+  if test "x$have_libnettle" = "xyes"; then
+    AC_DEFINE([USE_LIBNETTLE_MD], [1], [What message digest implementation to use])
+    use_md="libnettle"
   else
-    if test "x$have_libnettle" = "xyes"; then
-      AC_DEFINE([USE_LIBNETTLE_MD], [1], [What message digest implementation to use])
-      use_md="libnettle"
+    if test "x$have_libgcrypt" = "xyes"; then
+      AC_DEFINE([USE_LIBGCRYPT_MD], [1], [What message digest implementation to use])
+      use_md="libgcrypt"
     else
-      if test "x$have_libgcrypt" = "xyes"; then
-        AC_DEFINE([USE_LIBGCRYPT_MD], [1], [What message digest implementation to use])
-        use_md="libgcrypt"
+      if test "x$have_openssl" = "xyes"; then
+        AC_DEFINE([USE_OPENSSL_MD], [1], [What message digest implementation to use])
+        use_md="openssl"
       else
-        if test "x$have_openssl" = "xyes"; then
-          AC_DEFINE([USE_OPENSSL_MD], [1], [What message digest implementation to use])
-          use_md="openssl"
-        else
-          AC_DEFINE([USE_INTERNAL_MD], [1], [What message digest implementation to use])
-          use_md="internal"
-        fi
+        AC_DEFINE([USE_INTERNAL_MD], [1], [What message digest implementation to use])
+        use_md="internal"
       fi
     fi
   fi
