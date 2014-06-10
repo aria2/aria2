@@ -37,6 +37,7 @@
 
 #include "FatalException.h"
 #include "util.h"
+#include "crypto_endian.h"
 
 namespace {
 using namespace aria2;
@@ -156,13 +157,6 @@ HMACResult PBKDF2(HMAC* hmac,
   if (key_length == 0) {
     key_length = hmac_length;
   }
-  typedef union
-  {
-    uint8_t bytes[4];
-    uint32_t count;
-  } counter_t;
-  counter_t counter, swapped;
-  counter.count = 1;
 
   auto work = make_unique<char[]>(hmac_length);
   char* p = work.get();
@@ -170,10 +164,10 @@ HMACResult PBKDF2(HMAC* hmac,
 
   hmac->reset();
 
-  while (key_length) {
+  for (uint32_t counter = 1; key_length; ++counter) {
     hmac->update(salt, salt_length);
-    swapped.count = htonl(counter.count++);
-    hmac->update((char*)swapped.bytes, sizeof(swapped.bytes));
+    const uint32_t c = crypto::__crypto_be(counter);
+    hmac->update((char*)&c, sizeof(c));
 
     auto bytes = hmac->getResult().getBytes();
     memcpy(p, bytes.data(), bytes.length());

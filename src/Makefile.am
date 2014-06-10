@@ -58,6 +58,7 @@ SRCS =  \
 	CookieStorage.cc CookieStorage.h\
 	cookie_helper.cc cookie_helper.h\
 	CreateRequestCommand.cc CreateRequestCommand.h\
+	crypto_endian.h\
 	CUIDCounter.cc CUIDCounter.h\
 	DefaultAuthResolver.cc DefaultAuthResolver.h\
 	DefaultBtProgressInfoFile.cc DefaultBtProgressInfoFile.h\
@@ -370,8 +371,7 @@ endif
 if USE_INTERNAL_MD
 SRCS += \
 	InternalMessageDigestImpl.cc\
-	md5.c md5.h\
-	sha1.c sha1.h
+	crypto_hash.cc crypto_hash.h
 endif # USE_WINDOWS_MD
 
 if HAVE_LIBGNUTLS
