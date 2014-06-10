@@ -35,81 +35,71 @@
 
 #include "MessageDigestImpl.h"
 
-#include "md5.h"
-#include "sha1.h"
+#include "crypto_hash.h"
 
-namespace aria2 {
 namespace {
+using namespace aria2;
+using namespace crypto;
 
-template<size_t dlen,
-         typename ctx_t,
-         int (*init_fn)(ctx_t**),
-         void (*update_fn)(ctx_t*, const void*, size_t),
-         void (*final_fn)(ctx_t*, uint8_t*),
-         void (*free_fn)(ctx_t**)>
-class MessageDigestBase : public MessageDigestImpl {
+template<hash::Algorithms algo>
+class MessageDigestBase : public MessageDigestImpl
+{
 public:
-  MessageDigestBase() : ctx_(nullptr) { reset(); }
-  virtual ~MessageDigestBase()
+  MessageDigestBase() : ctx_{hash::create(algo)} {}
+  virtual ~MessageDigestBase() {}
+
+  static size_t length()
   {
-    free_fn(&ctx_);
+    auto ctx = hash::create(algo);
+    return ctx->length();
   }
 
-  static  size_t length()
-  {
-    return dlen;
-  }
   virtual size_t getDigestLength() const CXX11_OVERRIDE
   {
-    return dlen;
+    return ctx_->length();
   }
+
   virtual void reset() CXX11_OVERRIDE
   {
-    free_fn(&ctx_);
-    init_fn(&ctx_);
+    ctx_->reset();
   }
-  virtual void update(const void* data, size_t length) CXX11_OVERRIDE
+
+  virtual void update(const void *data, size_t length) CXX11_OVERRIDE
   {
-    auto bytes = reinterpret_cast<const char*>(data);
-    while (length) {
-      size_t l = std::min(length, (size_t)std::numeric_limits<uint32_t>::max());
-      update_fn(ctx_, bytes, l);
-      length -= l;
-      bytes += l;
-    }
+    ctx_->update(data, length);
   }
-  virtual void digest(unsigned char* md) CXX11_OVERRIDE
+
+  virtual void digest(unsigned char *md) CXX11_OVERRIDE
   {
-    final_fn(ctx_, md);
+    auto rv = ctx_->finalize();
+    memcpy(md, rv.data(), rv.length());
   }
+
 private:
-  ctx_t* ctx_;
+  std::unique_ptr<hash::Algorithm> ctx_;
 };
 
-typedef MessageDigestBase<MD5_LENGTH,
-                          struct MD5_CTX,
-                          MD5_Init,
-                          MD5_Update,
-                          MD5_Final,
-                          MD5_Free>
-MessageDigestMD5;
-typedef MessageDigestBase<SHA1_LENGTH,
-                          SHA1_CTX,
-                          SHA1_Init,
-                          SHA1_Update,
-                          SHA1_Final,
-                          SHA1_Free>
-MessageDigestSHA1;
+typedef MessageDigestBase<hash::algoMD5> MessageDigestMD5;
+typedef MessageDigestBase<hash::algoSHA1> MessageDigestSHA1;
+typedef MessageDigestBase<hash::algoSHA224> MessageDigestSHA224;
+typedef MessageDigestBase<hash::algoSHA256> MessageDigestSHA256;
+typedef MessageDigestBase<hash::algoSHA384> MessageDigestSHA384;
+typedef MessageDigestBase<hash::algoSHA512> MessageDigestSHA512;
 
 } // namespace
 
-std::unique_ptr<MessageDigestImpl> MessageDigestImpl::sha1()
-{
+namespace aria2 {
+
+std::unique_ptr<MessageDigestImpl> MessageDigestImpl::sha1() {
   return make_unique<MessageDigestSHA1>();
 }
 
 MessageDigestImpl::hashes_t MessageDigestImpl::hashes = {
   { "sha-1", make_hi<MessageDigestSHA1>() },
+  { "sha-224", make_hi<MessageDigestSHA224>() },
+  { "sha-256", make_hi<MessageDigestSHA256>() },
+  { "sha-384", make_hi<MessageDigestSHA384>() },
+  { "sha-512", make_hi<MessageDigestSHA512>() },
   { "md5", make_hi<MessageDigestMD5>() },
 };
 
