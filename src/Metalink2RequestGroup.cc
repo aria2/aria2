@@ -320,7 +320,11 @@ Metalink2RequestGroup::createRequestGroup
       rg->setNumConcurrentCommand(numSplit);
     }
     rg->setDownloadContext(dctx);
-    rg->setPauseRequested(option->getAsBool(PREF_PAUSE));
+
+    if(option->getAsBool(PREF_ENABLE_RPC)) {
+      rg->setPauseRequested(option->getAsBool(PREF_PAUSE));
+    }
+
     removeOneshotOption(option);
     // remove "metalink" from Accept Type list to avoid loop in
     // tranparent metalink

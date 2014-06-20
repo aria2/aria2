@@ -153,7 +153,11 @@ std::shared_ptr<RequestGroup> createRequestGroup
                     util::fromHex(std::begin(hexDigest), std::end(hexDigest)));
   }
   rg->setDownloadContext(dctx);
-  rg->setPauseRequested(option->getAsBool(PREF_PAUSE));
+
+  if(option->getAsBool(PREF_ENABLE_RPC)) {
+    rg->setPauseRequested(option->getAsBool(PREF_PAUSE));
+  }
+
   removeOneshotOption(option);
   return rg;
 }
@@ -211,7 +215,11 @@ createBtRequestGroup(const std::string& metaInfoUri,
       (i.first, util::applyDir(option->get(PREF_DIR), i.second));
   }
   rg->setDownloadContext(dctx);
-  rg->setPauseRequested(option->getAsBool(PREF_PAUSE));
+
+  if(option->getAsBool(PREF_ENABLE_RPC)) {
+    rg->setPauseRequested(option->getAsBool(PREF_PAUSE));
+  }
+
   // Remove "metalink" from Accept Type list to avoid server from
   // responding Metalink file for web-seeding URIs.
   dctx->setAcceptMetalink(false);
@@ -246,7 +254,11 @@ createBtMagnetRequestGroup
   rg->setDiskWriterFactory(std::make_shared<ByteArrayDiskWriterFactory>());
   rg->setMetadataInfo(createMetadataInfo(gid, magnetLink));
   rg->markInMemoryDownload();
-  rg->setPauseRequested(option->getAsBool(PREF_PAUSE));
+
+  if(option->getAsBool(PREF_ENABLE_RPC)) {
+    rg->setPauseRequested(option->getAsBool(PREF_PAUSE));
+  }
+
   removeOneshotOption(option);
   return rg;
 }
