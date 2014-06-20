@@ -947,6 +947,16 @@ RPC Options
   :option:`--enable-rpc=true <--enable-rpc>` is given.
   Default: ``false``
 
+.. option:: --pause-metadata[=true|false]
+
+  Pause downloads created as a result of metadata download. There are
+  3 types of metadata downloads in aria2: (1) downloading .torrent
+  file. (2) downloading torrent metadata using magnet link. (3)
+  downloading metalink file.  These metadata downloads will generate
+  downloads using their metadata. This option pauses these subsequent
+  downloads. This option is effective only when
+  :option:`--enable-rpc=true <--enable-rpc>` is given.
+  Default: ``false``
 
 .. option:: --rpc-allow-origin-all[=true|false]
 
@@ -1925,6 +1935,7 @@ of URIs. These optional lines must start with white space(s).
   * :option:`out <-o>`
   * :option:`parameterized-uri <-P>`
   * :option:`pause <--pause>`
+  * :option:`pause-metadata <--pause-metadata>`
   * :option:`piece-length <--piece-length>`
   * :option:`proxy-method <--proxy-method>`
   * :option:`realtime-chunk-checksum <--realtime-chunk-checksum>`
