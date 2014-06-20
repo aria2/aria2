@@ -363,6 +363,8 @@ PrefPtr PREF_ENABLE_COLOR = makePref("enable-color");
 PrefPtr PREF_RPC_SECRET = makePref("rpc-secret");
 // values: 1*digit
 PrefPtr PREF_DSCP = makePref("dscp");
+// values: true | false
+PrefPtr PREF_PAUSE_METADATA = makePref("pause-metadata");
 
 /**
  * FTP related preferences

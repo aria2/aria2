@@ -50,6 +50,7 @@
 #include "prefs.h"
 #include "Option.h"
 #include "fmt.h"
+#include "RequestGroupMan.h"
 
 namespace aria2 {
 
@@ -107,6 +108,16 @@ void UTMetadataPostDownloadHandler::getNextRequestGroups
       setMetadataInfo(newRgs.begin(), newRgs.end(),
                       requestGroup->getMetadataInfo());
     }
+
+    auto rgman = requestGroup->getRequestGroupMan();
+
+    if(rgman && rgman->getKeepRunning() &&
+       requestGroup->getOption()->getAsBool(PREF_PAUSE_METADATA)) {
+      for(auto& rg : newRgs) {
+        rg->setPauseRequested(true);
+      }
+    }
+
     groups.insert(groups.end(), newRgs.begin(), newRgs.end());
   }
 }

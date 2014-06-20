@@ -980,3 +980,14 @@
     "                              commonly used values from RFC, network vendors'\n" \
     "                              documentation, Wikipedia or any other source,\n" \
     "                              use them as they are.")
+#define TEXT_PAUSE_METADATA                  \
+  _(" --pause-metadata[=true|false]\n"       \
+    "                              Pause downloads created as a result of metadata\n" \
+    "                              download. There are 3 types of metadata\n" \
+    "                              downloads in aria2: (1) downloading .torrent\n" \
+    "                              file. (2) downloading torrent metadata using\n" \
+    "                              magnet link. (3) downloading metalink file.\n" \
+    "                              These metadata downloads will generate downloads\n" \
+    "                              using their metadata. This option pauses these\n" \
+    "                              subsequent downloads. This option is effective\n" \
+    "                              only when --enable-rpc=true is given.")

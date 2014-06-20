@@ -232,6 +232,7 @@ OptionParser.new do |opt|
   opt.on("--server-stat-of FILE"){|val| options["server-stat-of"]=val}
   opt.on("--save-cookies FILE"){|val| options["save-cookies"]=val}
   opt.on("--gid GID"){|val| options["gid"]=val}
+  opt.on("--pause-metadata [BOOL]",["true","false"]){|val| options["pause-metadata"]=val||"true"}
 
   opt.on("--server SERVER", "hostname of XML-RPC server. Default: localhost"){|val| options["server"]=val }
   opt.on("--port PORT", "port of XML-RPC server. Default: 6800"){|val| options["port"]=val }

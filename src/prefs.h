@@ -300,6 +300,8 @@ extern PrefPtr PREF_ENABLE_COLOR;
 extern PrefPtr PREF_RPC_SECRET;
 // values: 1*digit
 extern PrefPtr PREF_DSCP;
+// values: true | false
+extern PrefPtr PREF_PAUSE_METADATA;
 
 /**
  * FTP related preferences

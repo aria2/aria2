@@ -51,6 +51,7 @@
 #include "download_helper.h"
 #include "fmt.h"
 #include "FileEntry.h"
+#include "RequestGroupMan.h"
 
 namespace aria2 {
 
@@ -105,6 +106,16 @@ void MetalinkPostDownloadHandler::getNextRequestGroups
     if(mi) {
       setMetadataInfo(newRgs.begin(), newRgs.end(), mi);
     }
+
+    auto rgman = requestGroup->getRequestGroupMan();
+
+    if(rgman && rgman->getKeepRunning() &&
+       requestGroup->getOption()->getAsBool(PREF_PAUSE_METADATA)) {
+      for(auto& rg : newRgs) {
+        rg->setPauseRequested(true);
+      }
+    }
+
     groups.insert(groups.end(), newRgs.begin(), newRgs.end());
     diskAdaptor->closeFile();
   } catch(Exception& e) {
