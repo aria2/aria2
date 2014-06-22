@@ -179,7 +179,7 @@ well-known compilers, such as g++ and clang, the ``-std=c++11`` or
 ``-std=c++0x`` flag must be supported.
 
 In order to build aria2 from the source package, you need following
-development packages(package name may vary depending on the
+development packages (package name may vary depending on the
 distribution you use):
 
 * libgnutls-dev    (Required for HTTPS, BitTorrent, Checksum support)
