@@ -83,6 +83,18 @@ ssize_t AbstractSingleDiskAdaptor::readData
   return diskWriter_->readData(data, len, offset);
 }
 
+ssize_t AbstractSingleDiskAdaptor::readDataDropCache
+(unsigned char* data, size_t len, int64_t offset)
+{
+  auto rv = readData(data, len, offset);
+
+  if(rv > 0) {
+    diskWriter_->dropCache(len, offset);
+  }
+
+  return rv;
+}
+
 void AbstractSingleDiskAdaptor::writeCache(const WrDiskCacheEntry* entry)
 {
   // Write cached data in 4KiB aligned offset. This reduces disk

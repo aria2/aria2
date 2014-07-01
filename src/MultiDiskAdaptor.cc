@@ -367,6 +367,18 @@ void MultiDiskAdaptor::writeData(const unsigned char* data, size_t len,
 ssize_t MultiDiskAdaptor::readData
 (unsigned char* data, size_t len, int64_t offset)
 {
+  return readData(data, len, offset, false);
+}
+
+ssize_t MultiDiskAdaptor::readDataDropCache
+(unsigned char* data, size_t len, int64_t offset)
+{
+  return readData(data, len, offset, true);
+}
+
+ssize_t MultiDiskAdaptor::readData
+(unsigned char* data, size_t len, int64_t offset, bool dropCache)
+{
   auto first = findFirstDiskWriterEntry(diskWriterEntries_, offset);
   ssize_t rem = len;
   ssize_t totalReadLength = 0;
@@ -380,6 +392,9 @@ ssize_t MultiDiskAdaptor::readData
     totalReadLength +=
       (*i)->getDiskWriter()->readData(data+(len-rem), readLength, fileOffset);
     rem -= readLength;
+    if(dropCache) {
+      (*i)->getDiskWriter()->dropCache(readLength, fileOffset);
+    }
     fileOffset = 0;
     if(rem == 0) {
       break;

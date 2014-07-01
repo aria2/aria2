@@ -64,7 +64,7 @@ void IteratableChecksumValidator::validateChunk()
   // Don't guard with !finished() to allow zero-length file to be
   // verified.
   unsigned char buf[4096];
-  size_t length = pieceStorage_->getDiskAdaptor()->readData
+  size_t length = pieceStorage_->getDiskAdaptor()->readDataDropCache
     (buf, sizeof(buf), currentOffset_);
   ctx_->update(buf, length);
   currentOffset_ += length;

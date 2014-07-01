@@ -38,6 +38,7 @@
 #ifdef HAVE_MMAP
 #  include <sys/mman.h>
 #endif // HAVE_MMAP
+#include <fcntl.h>
 
 #include <cerrno>
 #include <cstring>
@@ -545,6 +546,13 @@ void AbstractDiskWriter::disableReadOnly()
 void AbstractDiskWriter::enableMmap()
 {
   enableMmap_ = true;
+}
+
+void AbstractDiskWriter::dropCache(int64_t len, int64_t offset)
+{
+#ifdef HAVE_POSIX_FADVISE
+  posix_fadvise(fd_, offset, len, POSIX_FADV_DONTNEED);
+#endif // HAVE_POSIX_FADVISE
 }
 
 } // namespace aria2

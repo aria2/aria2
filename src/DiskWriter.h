@@ -82,6 +82,9 @@ public:
 
   // Enables mmap.
   virtual void enableMmap() {}
+
+  // Drops cache in range [offset, offset + len)
+  virtual void dropCache(int64_t len, int64_t offset) {}
 };
 
 } // namespace aria2

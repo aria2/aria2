@@ -724,6 +724,7 @@ AC_CHECK_FUNCS([__argz_count \
                 mmap \
                 munmap \
                 nl_langinfo \
+		posix_fadvise \
                 posix_memalign \
 		pow \
                 putenv \

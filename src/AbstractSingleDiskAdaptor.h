@@ -66,6 +66,10 @@ public:
   virtual ssize_t readData(unsigned char* data, size_t len, int64_t offset)
     CXX11_OVERRIDE;
 
+  virtual ssize_t readDataDropCache(unsigned char* data, size_t len,
+                                    int64_t offset)
+    CXX11_OVERRIDE;
+
   virtual void writeCache(const WrDiskCacheEntry* entry) CXX11_OVERRIDE;
 
   virtual bool fileExists() CXX11_OVERRIDE;

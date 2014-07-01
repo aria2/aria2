@@ -125,7 +125,7 @@ std::string IteratableChunkChecksumValidator::digest(int64_t offset, size_t leng
   ctx_->reset();
   int64_t max = offset+length;
   while(offset < max) {
-    size_t r = pieceStorage_->getDiskAdaptor()->readData
+    size_t r = pieceStorage_->getDiskAdaptor()->readDataDropCache
       (buf, std::min(static_cast<int64_t>(sizeof(buf)), max-offset), offset);
     if(r == 0) {
       throw DL_ABORT_EX
