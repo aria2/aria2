@@ -389,12 +389,22 @@ ssize_t MultiDiskAdaptor::readData
     if(!(*i)->isOpen()) {
       throwOnDiskWriterNotOpened((*i).get(), offset+(len-rem));
     }
-    totalReadLength +=
-      (*i)->getDiskWriter()->readData(data+(len-rem), readLength, fileOffset);
-    rem -= readLength;
-    if(dropCache) {
-      (*i)->getDiskWriter()->dropCache(readLength, fileOffset);
+
+    while(readLength > 0) {
+      auto nread = (*i)->getDiskWriter()->readData(data+(len-rem),
+                                                   readLength, fileOffset);
+
+      totalReadLength += nread;
+
+      if(dropCache) {
+        (*i)->getDiskWriter()->dropCache(nread, fileOffset);
+      }
+
+      readLength -= nread;
+      rem -= nread;
+      fileOffset += nread;
     }
+
     fileOffset = 0;
     if(rem == 0) {
       break;
