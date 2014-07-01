@@ -66,10 +66,21 @@ namespace {
     delete reinterpret_cast<T*>(handle);
   }
 
+#if !defined(UV_VERSION_MINOR) || UV_VERSION_MINOR <= 10
+
   static void timer_callback(uv_timer_t* handle, int status)
   {
     uv_stop(handle->loop);
   }
+
+#else // !defined(UV_VERSION_MINOR) || UV_VERSION_MINOR <= 10
+
+  static void timer_callback(uv_timer_t* handle)
+  {
+    uv_stop(handle->loop);
+  }
+
+#endif // !defined(UV_VERSION_MINOR) || UV_VERSION_MINOR <= 10
 }
 
 namespace aria2 {
