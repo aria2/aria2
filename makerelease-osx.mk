@@ -336,6 +336,7 @@ aria2.%.build: zlib.%.build expat.%.build gmp.%.build cares.%.build sqlite.%.bui
 		LDFLAGS="$(LDFLAGS) -L$(PWD)/$(ARCH)/lib" \
 		PKG_CONFIG_PATH=$(PWD)/$(ARCH)/lib/pkgconfig \
 		)
+	$(MAKE) -C $(DEST) -sj$(CPUS)
 	$(MAKE) -C $(DEST) -sj$(CPUS) check
 	# Check that the resulting executable is Position-independent (PIE)
 	otool -hv $(DEST)/src/aria2c | grep -q PIE
