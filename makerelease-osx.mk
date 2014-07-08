@@ -90,9 +90,9 @@ endif
 endif
 
 # Set up compiler.
-CC ?= cc
+CC = cc
 export CC
-CXX ?= c++
+CXX = c++
 export CXX
 
 # Set up compiler/linker flags.
