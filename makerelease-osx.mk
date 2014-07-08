@@ -119,9 +119,9 @@ cares_hash = e44e6575d5af99cb3a38461486e1ee8b49810eb5
 cares_url = http://c-ares.haxx.se/download/c-ares-$(cares_version).tar.gz
 cares_confflags = "--enable-optimize=$(OPTFLAGS)"
 
-sqlite_version = autoconf-3080200
-sqlite_hash = 6033ef603ce221d367c665477514d972ef1dc90e
-sqlite_url = http://sqlite.org/2013/sqlite-$(sqlite_version).tar.gz
+sqlite_version = autoconf-3080500
+sqlite_hash = 7f667e10ccebc26ab2086b8a30cb0a600ca0acae
+sqlite_url = http://sqlite.org/2014/sqlite-$(sqlite_version).tar.gz
 
 gmp_version = 5.1.3
 gmp_hash = b35928e2927b272711fdfbf71b7cfd5f86a6b165
