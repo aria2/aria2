@@ -106,7 +106,7 @@ inline uint64_t __crypto_bswap(uint64_t n)
 #if LITTLE_ENDIAN == BYTE_ORDER
 #define __crypto_be(n) __crypto_bswap(n)
 #define __crypto_le(n) (n)
-#else // LITTLE_ENDIAN == WORD_ORDER
+#else // LITTLE_ENDIAN != WORD_ORDER
 #define __crypto_be(n) (n)
 #define __crypto_le(n) __crypto_bswap(n)
 #endif
