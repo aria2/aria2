@@ -167,14 +167,13 @@ public:
     }
 
     // Append length, multiplied by 8 (because bits!)
-    const uint_fast64_t bits = count_ << 3;
+    const uint_fast64_t bits = __crypto_be(count_ << 3);
     if (sizeof(word_t) == 4) {
-      *reinterpret_cast<uint64_t*>(buffer_.words + bsize - 2) =
-        __crypto_be(bits);
+      memcpy(buffer_.words + bsize - 2, &bits, sizeof(bits));
     }
     else {
       buffer_.words[bsize - 2] = 0;
-      buffer_.words[bsize - 1] = (word_t)__crypto_be(bits);
+      buffer_.words[bsize - 1] = (word_t)bits;
     }
 
     // Last transform:
@@ -340,9 +339,8 @@ public:
     }
 
     // Append length, multiplied by 8 (because bits!)
-    const uint_fast64_t bits = count_ << 3;
-    *reinterpret_cast<uint64_t*>(buffer_.words + 14) =
-      __crypto_le(bits);
+    const uint_fast64_t bits = __crypto_le(count_ << 3);
+    memcpy(buffer_.words + 14, &bits, sizeof(bits));
     transform(buffer_.words);
 #if BIG_ENDIAN == BYTE_ORDER
     state_.words[0] = __crypto_bswap(state_.words[0]);
