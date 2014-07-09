@@ -36,10 +36,11 @@
 #ifndef D_UTIL_SECURITY_H
 #define D_UTIL_SECURITY_H
 
+#include "common.h"
+
 #include <string>
 #include <stdexcept>
 
-#include "common.h"
 #include "a2functional.h"
 #include "MessageDigest.h"
 
