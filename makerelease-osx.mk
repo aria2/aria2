@@ -66,7 +66,6 @@
 # Note: The convoluted way to create separate arch builds and later merge them
 # with lipo is because of two things:
 #  1) Avoid patching c-ares, which hardcodes some sizes in its headers.
-#  2) Make it easy in the future to enable -flto (currently, -flto builds crash)
 #
 # Note: This Makefile uses resources from osx-package when creating the
 # *.pkg and *.dmg targets
@@ -104,6 +103,7 @@ export CXXFLAGS
 LDFLAGS ?= -Wl,-dead_strip
 export LDFLAGS
 
+LTO_FLAGS = -flto -ffunction-sections -fdata-sections
 
 # Dependency versions
 zlib_version = 1.2.8
@@ -113,15 +113,21 @@ zlib_url = http://zlib.net/zlib-$(zlib_version).tar.gz
 expat_version = 2.1.0
 expat_hash = b08197d146930a5543a7b99e871cba3da614f6f0
 expat_url = http://sourceforge.net/projects/expat/files/expat/$(expat_version)/expat-$(expat_version).tar.gz
+expat_cflags=$(LTO_FLAGS)
+expat_ldflags=$(CFLAGS) $(LTO_FLAGS)
 
 cares_version = 1.10.0
 cares_hash = e44e6575d5af99cb3a38461486e1ee8b49810eb5
 cares_url = http://c-ares.haxx.se/download/c-ares-$(cares_version).tar.gz
 cares_confflags = "--enable-optimize=$(OPTFLAGS)"
+cares_cflags=$(LTO_FLAGS)
+cares_ldflags=$(CFLAGS) $(LTO_FLAGS)
 
 sqlite_version = autoconf-3080500
 sqlite_hash = 7f667e10ccebc26ab2086b8a30cb0a600ca0acae
 sqlite_url = http://sqlite.org/2014/sqlite-$(sqlite_version).tar.gz
+sqlite_cflags=$(LTO_FLAGS)
+sqlite_ldflags=$(CFLAGS) $(LTO_FLAGS)
 
 gmp_version = 5.1.3
 gmp_hash = b35928e2927b272711fdfbf71b7cfd5f86a6b165
@@ -282,8 +288,8 @@ zlib.%.build: zlib.stamp
 	( cd $(DEST) && ./configure \
 		--static --prefix=$(PWD)/$(ARCH) \
 		)
-	$(MAKE) -C $(DEST) -sj$(CPUS) CFLAGS="$(CFLAGS) -arch $(ARCH)"
-	$(MAKE) -C $(DEST) -sj$(CPUS) CFLAGS="$(CFLAGS) -arch $(ARCH)" check
+	$(MAKE) -C $(DEST) -sj$(CPUS) CFLAGS="$(CFLAGS) $(LTO_FLAGS) -arch $(ARCH)"
+	$(MAKE) -C $(DEST) -sj$(CPUS) CFLAGS="$(CFLAGS) $(LTO_FLAGS) -arch $(ARCH)" check
 	$(MAKE) -C $(DEST) -s install
 	touch $@
 
@@ -301,8 +307,9 @@ $(1).%.build: $(1).stamp
 		--enable-static --disable-shared \
 		--prefix=$$(PWD)/$$(ARCH) \
 		$$($(1)_confflags) $$($(1)_confflags_$$(ARCH)) \
-		CFLAGS="$$(CFLAGS) -arch $$(ARCH)" \
-		CXXFLAGS="$$(CXXFLAGS) -arch $$(ARCH) -stdlib=libc++ -std=c++11" \
+		CFLAGS="$$(CFLAGS) $$($(1)_cflags) -arch $$(ARCH)" \
+		CXXFLAGS="$$(CXXFLAGS) $$($(1)_cxxflags) -arch $$(ARCH) -stdlib=libc++ -std=c++11" \
+		LDFLAGS="$(LDFLAGS) $$($(1)_ldflags)" \
 		)
 	$$(MAKE) -C $$(DEST) -sj$(CPUS)
 	$$(MAKE) -C $$(DEST) -sj$(CPUS) check
@@ -331,9 +338,9 @@ aria2.%.build: zlib.%.build expat.%.build gmp.%.build cares.%.build sqlite.%.bui
 		--sysconfdir=/etc \
 		--with-cppunit-prefix=$(PWD)/$(ARCH) \
 		$(ARIA2_CONFFLAGS) \
-		CFLAGS="$(CFLAGS) -arch $(ARCH) -I$(PWD)/$(ARCH)/include" \
-		CXXFLAGS="$(CXXFLAGS) -arch $(ARCH) -I$(PWD)/$(ARCH)/include" \
-		LDFLAGS="$(LDFLAGS) -L$(PWD)/$(ARCH)/lib" \
+		CFLAGS="$(CFLAGS) $(LTO_FLAGS) -arch $(ARCH) -I$(PWD)/$(ARCH)/include" \
+		CXXFLAGS="$(CXXFLAGS) $(LTO_FLAGS) -arch $(ARCH) -I$(PWD)/$(ARCH)/include" \
+		LDFLAGS="$(LDFLAGS) $(CXXFLAGS) $(LTO_FLAGS) -L$(PWD)/$(ARCH)/lib" \
 		PKG_CONFIG_PATH=$(PWD)/$(ARCH)/lib/pkgconfig \
 		)
 	$(MAKE) -C $(DEST) -sj$(CPUS)
