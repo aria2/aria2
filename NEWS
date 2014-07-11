@@ -1,3 +1,178 @@
+aria2 1.18.6
+============
+
+Release Note
+------------
+
+This release fixes several bugs reported in github issues and adds a
+feature to make RPC authentication more resilient to certain attacks.
+New option --pause-metadata is added.  The explanation is a bit log,
+so check the changelog and manual.  The session is now only saved if
+there are changes from the last saved state.
+
+From this release, MinGW32 build uses Windows native TLS
+implementation and no longer use OpenSSL library.
+
+Changes
+-------
+
+* Disard cache when checking checksum
+
+  This will slow down checksum checking but does not thrash cache.
+
+* Compat with libuv 0.11 (Unstable)
+
+  Fixes #241
+
+* Drop WinMessageDigestImpl.
+
+  The algorithms the `CryptProv` on Windows supports does not
+  currently include SHA-224, so there is a "dark spot" in this
+  implementation. Also on Win XP < SP3, most of the SHA-2 family is
+  not actually supported.  All other implementation provide support
+  for MD5, SHA-1 and all of the SHA-2 family, hence drop the
+  incomplete WinMessageDigest implementation in favor of any other
+  supported implementation (at least the internal implementation is
+  always available at compile-time).
+
+* Add --pause-metadata option
+
+  This option pauses downloads created as a result of metadata
+  download. There are 3 types of metadata downloads in aria2: (1)
+  downloading .torrent file. (2) downloading torrent metadata using
+  magnet link. (3) downloading metalink file.  These metadata
+  downloads will generate downloads using their metadata. This option
+  pauses these subsequent downloads.
+
+* Improve compiler/platform/libs information in logs
+
+  Add and use usedCompilerAndPlatform().  This adds compiler
+  information to INFO logs and the --version output, and may be
+  helpful when trying to diagnose/reproduce user-reported problems.
+
+  Also make INFO logs include usedLibs() output.
+
+  Closes #235
+
+* Fix use-after-free on exit with multi-file torrent download + DHT
+
+  DefaultPieceStorage may be referenced by one of DHT task (e.g.,
+  DHTPeerLookupTask), after RequestGroup was deleted, and even after
+  RequestGroupMan was deleted.  DefaultPieceStorage has a reference to
+  MultiDiskAdaptor which calls RequestGroupMan object on destruction.
+  So when DHT task is destroyed, DefaultPieceStorage is destroyed,
+  which in turn destroys MultiDiskAdaptor.  DHT task is destroyed
+  after RequestGroupMan was destroyed, MultiDiskAdaptor will use now
+  freed RequestGroupMan object, this is use-after-free.
+
+* Fix bug that zero length file is not opened when flushing cache
+
+  This bug was only seen when MultiDiskAdaptor was used.
+
+* Support PREF_DIR change for Metalink files
+
+  Reworked previous commit adeead6f0396e2f8551d1182972e277728fd6c8b,
+  and now support changing PREF_DIR for Metalink downloads.
+
+* Fix assertion failure when dir option of paused HTTP/FTP download is
+  changed
+
+  When the directory is changed via aria2.changeOption RPC method, we
+  directly change first FileEntry's path using FileEntry::setPath().
+  If there is no PREF_OUT option is given, basically file name is
+  unknown, so we just set empty string and let the next run determine
+  the correct file name and new directory is applied there.  But
+  previous code does not reset length property of FileEntry, so the
+  unexpected code path is taken when unpaused and its path expects
+  path is not empty string.  This commit fixes this issue by setting
+  length to 0 using FileEntry::setLength().
+
+* Save session only when there is change since the last serialization
+
+  This is a slight optimization not to cause useless disk access.
+  This only applies to saving session automatically (see
+  --save-session-interval).  aria2.saveSession and serialization at
+  the end of the session are always performed as before.
+
+  When serialization, we first check that whether there is any change
+  since the last serialization.  To do this, we first calculate hash
+  value of serialized content without writing into file.  Then compare
+  this value to the value of last serialization.  If they do not
+  match, perform serialization.
+
+* Fix (unknown length) downloads larger than 2GiB
+
+  Closes #215
+
+* Fix F_PREALLOC based allocation on some OSX versions
+
+* Use index.html as filename for conditional-get when file is missing
+  in URI
+
+  Previously we disabled conditional-get if file part is missing in
+  URI.  But we use constant string "index.html" in this case, so we
+  can do the same to determine the modification time.  In this patch,
+  if we have file part in URI, we are not going to set absolute file
+  path in FileEntry, since it prevents content-disposition from
+  working.
+
+* Always add README.html to dist_doc_DATA
+
+  rst2html is required to produce README.html from README.rst.  We
+  include generated README.html to distribution.  And rst2html is not
+  required when compiling sources in distribution and always
+  README.html is available.
+
+* Validate token using PBKDF2-HMAC-SHA1.
+
+  This change should make token validation more resilient to:
+  - timing attacks (constant time array compare)
+  - brute-force/dictionary attacks (PBKDF2)
+
+  Closes #220
+
+* Add --disable-websocket configure option
+
+* mingw32: Enable wintls and compile with GMP
+
+  By enabling wintls, we can use Windows certificate store to validate
+  server's certificate.  Previously, we built windows build using
+  openssl and since we don't bundle CA certificates, aria2 fails to
+  validate server's certificate unless user setups their CA
+  certificates.  GMP provides fast big integer calculations, whic is
+  used in BitTorrent encryption.
+
+* AppleTLS: Enable BEAST mitigations in ST
+
+  Only available in 10.9+, but since we might be building on a
+  previous version but running on 10.9+, always try to set the option.
+
+* WinTLS: Accept chains with no revocation information.
+
+  This is kind what browser do anyway (IE, Firefox, Chrome tested),
+  what AppleTLS does, what GnuTLS does and what OpenSSL
+  does. Actually, most browsers will also be OK with the CRL/OCSP
+  provider being offline.  WinTLS will still fail in that case.
+
+  Should revocation information be available in the trust chain (CRL
+  or OCSP) the certificate still will be checked!
+
+  "Real" CAs, aka. those provided by the OS or system CA bundle,
+  usually provide revocation information and are thus still checked.
+  It should be mostly (only?) custom (organization) CAs that lack
+  revocation information, but those users might want to use aria2 in
+  their intranets and VPNs anyway ;)
+
+  See #217
+
+* Fix GnuTLS 2.x compatiblity
+
+  Closes GH-216
+
+* AppleTLS: Use newer, non-deprecated API in 10.8+
+
+
+
 aria2 1.18.5
 ============
 
