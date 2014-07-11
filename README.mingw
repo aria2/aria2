@@ -5,7 +5,7 @@ aria2 Windows build is provided in 2 flavors: 32bit version and 64bit
 version. The executable was compiled using mingw-w64 cross compiler on
 Debian Linux.
 
-* gcc-mingw-w64               4.8.2-11+12
+* gcc-mingw-w64               4.9.0-2+13
 * binutils-mingw-w64-i686     2.24-2+3+b1
 * binutils-mingw-w64-x86-64   2.24-2+3+b1
 
