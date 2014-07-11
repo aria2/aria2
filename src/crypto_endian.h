@@ -45,12 +45,11 @@ namespace crypto {
 // Lets spend some quality time mucking around with byte swap and endian-ness.
 // First bswap32:
 #if (defined(__i386__) || defined(__x86_64__)) && defined(__GNUG__)
-#define __crypto_bswap32(p)                                                    \
-  ({                                                                           \
-    uint32_t t = p;                                                            \
-    __asm__ __volatile__("bswap %0" : "=r"(t) : "0"(t));                       \
-    t;                                                                         \
-  })
+forceinline uint32_t __crypto_bswap32(uint32_t p)
+{
+    __asm__ __volatile__("bswap %0" : "=r"(p) : "0"(p));
+    return p;
+}
 #elif defined(__GNUG__)
 #define __crypto_bswap32 __builtin_bswap32
 #else // defined(__GNUG__)
@@ -63,13 +62,11 @@ forceinline uint32_t __crypto_bswap32(uint32_t n)
 
 // Next up: bswap64
 #if defined(__x86_64__) && defined(__GNUG__)
-#define __crypto_bswap64(p)                                                    \
-  ({                                                                           \
-    uint64_t t = p;                                                            \
-    __asm__ __volatile__("bswapq %q0" : "=r"(t) : "0"(t));                     \
-    t;                                                                         \
-  })
-
+forceinline uint64_t __crypto_bswap64(uint64_t p)
+{
+  __asm__ __volatile__("bswapq %q0" : "=r"(p) : "0"(p));
+  return p;
+}
 #elif defined(__GNUG__)
 #define __crypto_bswap64 __builtin_bswap64
 #else // defined(__GNUG__)
@@ -109,7 +106,7 @@ inline uint64_t __crypto_bswap(uint64_t n)
 #else // LITTLE_ENDIAN != WORD_ORDER
 #define __crypto_be(n) (n)
 #define __crypto_le(n) __crypto_bswap(n)
-#endif
+#endif // LITTLE_ENDIAN != WORD_ORDER
 
 } // namespace crypto
 
