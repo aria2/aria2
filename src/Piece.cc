@@ -60,7 +60,7 @@ Piece::Piece()
     usedBySegment_(false)
 {}
 
-Piece::Piece(size_t index, int32_t length, int32_t blockLength)
+Piece::Piece(size_t index, int64_t length, int32_t blockLength)
  : bitfield_(new BitfieldMan(blockLength, length)),
    wrCache_(nullptr),
    index_(index),
@@ -181,15 +181,21 @@ bool Piece::getAllMissingBlockIndexes
 }
 
 std::string Piece::toString() const {
-  return fmt("piece: index=%lu, length=%d",
+  return fmt("piece: index=%lu, length=%" PRId64,
              static_cast<unsigned long>(index_), length_);
 }
 
-void Piece::reconfigure(int32_t length)
+void Piece::reconfigure(int64_t length)
 {
   delete bitfield_;
   length_ = length;
-  bitfield_ = new BitfieldMan(blockLength_, length_);
+  // TODO currently, this function is only called from
+  // GrowSegment::updateWrittenLength().  If we use default block
+  // length (16K), and length_ gets large (e.g., 4GB), creating
+  // BitfieldMan for each call is very expensive.  Therefore, we use
+  // maximum block length for now to reduce the overhead.  Ideally, we
+  // check the code thoroughly and remove bitfield_ if we can.
+  bitfield_ = new BitfieldMan(std::numeric_limits<int32_t>::max(), length_);
 }
 
 void Piece::setBitfield(const unsigned char* bitfield, size_t len)
@@ -197,7 +203,7 @@ void Piece::setBitfield(const unsigned char* bitfield, size_t len)
   bitfield_->setBitfield(bitfield, len);
 }
 
-int32_t Piece::getCompletedLength()
+int64_t Piece::getCompletedLength()
 {
   return bitfield_->getCompletedLength();
 }
@@ -208,13 +214,13 @@ void Piece::setHashType(const std::string& hashType)
 }
 
 bool Piece::updateHash
-(int32_t begin, const unsigned char* data, size_t dataLength)
+(int64_t begin, const unsigned char* data, size_t dataLength)
 {
   if(hashType_.empty()) {
     return false;
   }
   if(begin == nextBegin_ &&
-     nextBegin_+dataLength <= static_cast<size_t>(length_)) {
+     nextBegin_ + static_cast<int64_t>(dataLength) <= length_) {
     if(!mdctx_) {
       mdctx_ = MessageDigest::create(hashType_);
     }
