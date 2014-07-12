@@ -148,7 +148,7 @@ void DefaultBtProgressInfoFileTest::testLoad_compat()
 
   std::shared_ptr<Piece> piece1 = inFlightPieces[0];
   CPPUNIT_ASSERT_EQUAL((size_t)1, piece1->getIndex());
-  CPPUNIT_ASSERT_EQUAL(1024, piece1->getLength());
+  CPPUNIT_ASSERT_EQUAL((int64_t)1024, piece1->getLength());
   CPPUNIT_ASSERT_EQUAL((size_t)1, piece1->getBitfieldLength());
   CPPUNIT_ASSERT_EQUAL(std::string("00"), util::toHex(piece1->getBitfield(),
                                                       piece1->getBitfieldLength()));
@@ -156,7 +156,7 @@ void DefaultBtProgressInfoFileTest::testLoad_compat()
   // piece index 2
   std::shared_ptr<Piece> piece2 = inFlightPieces[1];
   CPPUNIT_ASSERT_EQUAL((size_t)2, piece2->getIndex());
-  CPPUNIT_ASSERT_EQUAL(512, piece2->getLength());
+  CPPUNIT_ASSERT_EQUAL((int64_t)512, piece2->getLength());
 }
 #endif // !WORDS_BIGENDIAN
 
@@ -197,7 +197,7 @@ void DefaultBtProgressInfoFileTest::testLoad()
 
   std::shared_ptr<Piece> piece1 = inFlightPieces[0];
   CPPUNIT_ASSERT_EQUAL((size_t)1, piece1->getIndex());
-  CPPUNIT_ASSERT_EQUAL(1024, piece1->getLength());
+  CPPUNIT_ASSERT_EQUAL((int64_t)1024, piece1->getLength());
   CPPUNIT_ASSERT_EQUAL((size_t)1, piece1->getBitfieldLength());
   CPPUNIT_ASSERT_EQUAL(std::string("00"), util::toHex(piece1->getBitfield(),
                                                       piece1->getBitfieldLength()));
@@ -205,7 +205,7 @@ void DefaultBtProgressInfoFileTest::testLoad()
   // piece index 2
   std::shared_ptr<Piece> piece2 = inFlightPieces[1];
   CPPUNIT_ASSERT_EQUAL((size_t)2, piece2->getIndex());
-  CPPUNIT_ASSERT_EQUAL(512, piece2->getLength());
+  CPPUNIT_ASSERT_EQUAL((int64_t)512, piece2->getLength());
 }
 
 void DefaultBtProgressInfoFileTest::testSave()

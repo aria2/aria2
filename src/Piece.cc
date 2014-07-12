@@ -55,7 +55,6 @@ Piece::Piece()
     wrCache_(nullptr),
     index_(0),
     length_(0),
-    blockLength_(BLOCK_LENGTH),
     nextBegin_(0),
     usedBySegment_(false)
 {}
@@ -65,7 +64,6 @@ Piece::Piece(size_t index, int64_t length, int32_t blockLength)
    wrCache_(nullptr),
    index_(index),
    length_(length),
-   blockLength_(blockLength),
    nextBegin_(0),
    usedBySegment_(false)
 {}

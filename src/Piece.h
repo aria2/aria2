@@ -63,7 +63,6 @@ private:
   size_t index_;
 
   int64_t length_;
-  int32_t blockLength_;
   int64_t nextBegin_;
 
   bool usedBySegment_;

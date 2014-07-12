@@ -238,7 +238,7 @@ void DefaultPieceStorageTest::testGetPiece() {
 
   auto pieceGot = pss.getPiece(0);
   CPPUNIT_ASSERT_EQUAL((size_t)0, pieceGot->getIndex());
-  CPPUNIT_ASSERT_EQUAL(128, pieceGot->getLength());
+  CPPUNIT_ASSERT_EQUAL((int64_t)128, pieceGot->getLength());
   CPPUNIT_ASSERT_EQUAL(false, pieceGot->pieceComplete());
 }
 
@@ -249,7 +249,7 @@ void DefaultPieceStorageTest::testGetPieceInUsedPieces() {
   pss.addUsedPiece(piece);
   auto  pieceGot = pss.getPiece(0);
   CPPUNIT_ASSERT_EQUAL((size_t)0, pieceGot->getIndex());
-  CPPUNIT_ASSERT_EQUAL(128, pieceGot->getLength());
+  CPPUNIT_ASSERT_EQUAL((int64_t)128, pieceGot->getLength());
   CPPUNIT_ASSERT_EQUAL((size_t)1, pieceGot->countCompleteBlock());
 }
 
@@ -259,7 +259,7 @@ void DefaultPieceStorageTest::testGetPieceCompletedPiece() {
   pss.completePiece(piece);
   auto pieceGot = pss.getPiece(0);
   CPPUNIT_ASSERT_EQUAL((size_t)0, pieceGot->getIndex());
-  CPPUNIT_ASSERT_EQUAL(128, pieceGot->getLength());
+  CPPUNIT_ASSERT_EQUAL((int64_t)128, pieceGot->getLength());
   CPPUNIT_ASSERT_EQUAL(true, pieceGot->pieceComplete());
 }
 
@@ -336,7 +336,7 @@ void DefaultPieceStorageTest::testGetCompletedLength()
       p->completeBlock(j);
     }
     inFlightPieces.push_back(p);
-    CPPUNIT_ASSERT_EQUAL(512*1024, p->getCompletedLength());
+    CPPUNIT_ASSERT_EQUAL((int64_t)512*1024, p->getCompletedLength());
   }
   ps.addInFlightPiece(inFlightPieces);
 
