@@ -186,11 +186,15 @@ error_code::Value option_processing(Option& op, bool standalone,
     bool noConf = false;
     std::string ucfname;
     std::stringstream cmdstream;
-    oparser->parseArg(cmdstream, uris, argc, argv);
     {
       // first evaluate --no-conf and --conf-path options.
       Option op;
-      oparser->parse(op, cmdstream);
+      if(argc == 0) {
+        oparser->parse(op, options);
+      } else {
+        oparser->parseArg(cmdstream, uris, argc, argv);
+        oparser->parse(op, cmdstream);
+      }
       noConf = op.getAsBool(PREF_NO_CONF);
       ucfname = op.get(PREF_CONF_PATH);
       if(standalone) {

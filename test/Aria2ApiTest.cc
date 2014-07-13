@@ -32,7 +32,7 @@ public:
   void setUp()
   {
     SessionConfig config;
-    KeyVals options;
+    KeyVals options = {{"no-conf", "true"}};
     session_ = sessionNew(options, config);
   }
 
