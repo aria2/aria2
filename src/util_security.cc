@@ -37,7 +37,6 @@
 
 #include "FatalException.h"
 #include "util.h"
-#include "crypto_endian.h"
 
 namespace {
 using namespace aria2;
@@ -166,7 +165,7 @@ HMACResult PBKDF2(HMAC* hmac,
 
   for (uint32_t counter = 1; key_length; ++counter) {
     hmac->update(salt, salt_length);
-    const uint32_t c = crypto::__crypto_be(counter);
+    const uint32_t c = htonl(counter);
     hmac->update((char*)&c, sizeof(c));
 
     auto bytes = hmac->getResult().getBytes();
