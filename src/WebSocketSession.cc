@@ -123,7 +123,7 @@ namespace {
 void addResponse(WebSocketSession* wsSession,
                  const std::vector<RpcResponse>& results)
 {
-  bool notauthorized = rpc::all_not_authorized(results.begin(), results.end());
+  bool notauthorized = rpc::any_not_authorized(results.begin(), results.end());
   std::string response = toJsonBatch(results, "", false);
   wsSession->addTextMessage(response, notauthorized);
 }

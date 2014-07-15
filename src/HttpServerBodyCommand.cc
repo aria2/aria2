@@ -135,7 +135,7 @@ void HttpServerBodyCommand::sendJsonRpcBatchResponse
 (const std::vector<rpc::RpcResponse>& results,
  const std::string& callback)
 {
-  bool notauthorized = rpc::all_not_authorized(results.begin(), results.end());
+  bool notauthorized = rpc::any_not_authorized(results.begin(), results.end());
   bool gzip = httpServer_->supportsGZip();
   std::string responseData = rpc::toJsonBatch(results, callback, gzip);
   httpServer_->feedResponse(std::move(responseData),

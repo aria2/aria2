@@ -72,8 +72,8 @@ bool not_authorized(const rpc::RpcResponse& res)
 }
 
 template<typename InputIterator>
-bool all_not_authorized(const InputIterator begin, const InputIterator end) {
-  return std::none_of(begin, end, not_authorized);
+bool any_not_authorized(const InputIterator begin, const InputIterator end) {
+  return std::any_of(begin, end, not_authorized);
 }
 
 std::string toXml(const RpcResponse& response, bool gzip = false);
