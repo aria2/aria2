@@ -1357,28 +1357,28 @@ std::unique_ptr<ValueBase> SaveSessionRpcMethod::process
                         filename.c_str()));
 }
 
-std::unique_ptr<ValueBase> SystemMulticallRpcMethod::process
-(const RpcRequest& req, DownloadEngine* e)
+void SystemMulticallRpcMethod::authorize
+(RpcRequest& req, DownloadEngine* e)
 {
   const List* methodSpecs = checkRequiredParam<List>(req, 0);
-  auto list = List::g();
+  list_ = List::g();
   auto auth = RpcRequest::MUST_AUTHORIZE;
   for(auto & methodSpec : *methodSpecs) {
     Dict* methodDict = downcast<Dict>(methodSpec);
     if(!methodDict) {
-      list->append(createErrorResponse
-                   (DL_ABORT_EX("system.multicall expected struct."), req));
+      list_->append(createErrorResponse
+                    (DL_ABORT_EX("system.multicall expected struct."), req));
       continue;
     }
     const String* methodName = downcast<String>(methodDict->get(KEY_METHOD_NAME));
     if(!methodName) {
-      list->append(createErrorResponse
-                   (DL_ABORT_EX("Missing methodName."), req));
+      list_->append(createErrorResponse
+                    (DL_ABORT_EX("Missing methodName."), req));
       continue;
     }
     if(methodName->s() == getMethodName()) {
-      list->append(createErrorResponse
-                   (DL_ABORT_EX("Recursive system.multicall forbidden."), req));
+      list_->append(createErrorResponse
+                    (DL_ABORT_EX("Recursive system.multicall forbidden."), req));
       continue;
     }
     // TODO what if params missing?
@@ -1398,16 +1398,24 @@ std::unique_ptr<ValueBase> SystemMulticallRpcMethod::process
       req.jsonRpc
     };
     RpcResponse res = getMethod(methodName->s())->execute(std::move(r), e);
+    if (rpc::not_authorized(res)) {
+      throw DL_ABORT_EX("Unauthorized");
+    }
+    auth = RpcRequest::PREAUTHORIZED;
     if(res.code == 0) {
       auto l = List::g();
       l->append(std::move(res.param));
-      list->append(std::move(l));
-      auth = RpcRequest::PREAUTHORIZED;
+      list_->append(std::move(l));
     } else {
-      list->append(std::move(res.param));
+      list_->append(std::move(res.param));
     }
   }
-  return std::move(list);
+}
+
+std::unique_ptr<ValueBase> SystemMulticallRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
+{
+  return std::move(list_);
 }
 
 std::unique_ptr<ValueBase> NoSuchMethodRpcMethod::process

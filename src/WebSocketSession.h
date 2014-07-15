@@ -74,7 +74,7 @@ public:
   int onWriteEvent();
   // Adds text message |msg|. The message is queued and will be sent
   // in onWriteEvent().
-  void addTextMessage(const std::string& msg);
+  void addTextMessage(const std::string& msg, bool delayed);
   // Returns true if the close frame is received.
   bool closeReceived();
   // Returns true if the close frame is sent.

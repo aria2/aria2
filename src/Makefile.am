@@ -66,6 +66,7 @@ SRCS =  \
 	DefaultDiskWriterFactory.cc DefaultDiskWriterFactory.h\
 	DefaultPieceStorage.cc DefaultPieceStorage.h\
 	DefaultStreamPieceSelector.cc DefaultStreamPieceSelector.h\
+	DelayedCommand.h\
 	Dependency.h\
 	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
 	DiskAdaptor.cc DiskAdaptor.h\

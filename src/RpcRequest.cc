@@ -51,7 +51,7 @@ RpcRequest::RpcRequest(std::string methodName,
 RpcRequest::RpcRequest(std::string methodName,
                        std::unique_ptr<List> params,
                        std::unique_ptr<ValueBase> id,
-                       RpcRequest::authorization_t authorization,
+                       RpcRequest::preauthorization_t authorization,
                        bool jsonRpc)
   : methodName{std::move(methodName)}, params{std::move(params)},
     id{std::move(id)}, authorization{authorization}, jsonRpc{jsonRpc}

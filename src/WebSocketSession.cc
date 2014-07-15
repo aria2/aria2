@@ -43,6 +43,8 @@
 #include "RecoverableException.h"
 #include "message.h"
 #include "DownloadEngine.h"
+#include "DelayedCommand.h"
+#include "WebSocketInteractionCommand.h"
 #include "rpc_helper.h"
 #include "RpcResponse.h"
 #include "json.h"
@@ -112,7 +114,7 @@ namespace {
 void addResponse(WebSocketSession* wsSession, const RpcResponse& res)
 {
   std::string response = toJson(res, "", false);
-  wsSession->addTextMessage(response);
+  wsSession->addTextMessage(response, rpc::not_authorized(res));
 }
 } // namespace
 
@@ -120,8 +122,9 @@ namespace {
 void addResponse(WebSocketSession* wsSession,
                  const std::vector<RpcResponse>& results)
 {
+  bool notauthorized = rpc::all_not_authorized(results.begin(), results.end());
   std::string response = toJsonBatch(results, "", false);
-  wsSession->addTextMessage(response);
+  wsSession->addTextMessage(response, notauthorized);
 }
 } // namespace
 
@@ -264,8 +267,35 @@ int WebSocketSession::onWriteEvent()
   }
 }
 
-void WebSocketSession::addTextMessage(const std::string& msg)
+namespace {
+class TextMessageCommand : public Command
 {
+private:
+  std::shared_ptr<WebSocketSession> session_;
+  const std::string msg_;
+public:
+  TextMessageCommand(cuid_t cuid, std::shared_ptr<WebSocketSession> session,
+                            const std::string& msg)
+    : Command(cuid), session_{std::move(session)}, msg_{msg}
+  {}
+  virtual bool execute() CXX11_OVERRIDE
+  {
+    session_->addTextMessage(msg_, false);
+    return true;
+  }
+};
+} // namespace
+
+void WebSocketSession::addTextMessage(const std::string& msg, bool delayed)
+{
+  if (delayed) {
+    auto e = getDownloadEngine();
+    auto cuid = command_->getCuid();
+    auto c = make_unique<TextMessageCommand>(cuid, command_->getSession(), msg);
+    e->addCommand(make_unique<DelayedCommand>(cuid, e, 1, std::move(c), false));
+    return;
+  }
+
   // TODO Don't add text message if the size of outbound queue in
   // wsctx_ exceeds certain limit.
   wslay_event_msg arg = {
