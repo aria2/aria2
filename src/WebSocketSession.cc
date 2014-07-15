@@ -113,8 +113,9 @@ ssize_t recvCallback(wslay_event_context_ptr wsctx,
 namespace {
 void addResponse(WebSocketSession* wsSession, const RpcResponse& res)
 {
+  bool notauthorized = rpc::not_authorized(res);
   std::string response = toJson(res, "", false);
-  wsSession->addTextMessage(response, rpc::not_authorized(res));
+  wsSession->addTextMessage(response, notauthorized);
 }
 } // namespace
 

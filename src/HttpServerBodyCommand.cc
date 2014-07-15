@@ -105,6 +105,7 @@ void HttpServerBodyCommand::sendJsonRpcResponse
 (const rpc::RpcResponse& res,
  const std::string& callback)
 {
+  bool notauthorized = rpc::not_authorized(res);
   bool gzip = httpServer_->supportsGZip();
   std::string responseData = rpc::toJson(res, callback, gzip);
   if(res.code == 0) {
@@ -127,7 +128,7 @@ void HttpServerBodyCommand::sendJsonRpcResponse
                               std::move(responseData),
                               getJsonRpcContentType(!callback.empty()));
   }
-  addHttpServerResponseCommand(rpc::not_authorized(res));
+  addHttpServerResponseCommand(notauthorized);
 }
 
 void HttpServerBodyCommand::sendJsonRpcBatchResponse
