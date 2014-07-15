@@ -50,15 +50,15 @@ namespace aria2 {
 UnknownLengthPieceStorage::UnknownLengthPieceStorage
 (const std::shared_ptr<DownloadContext>& downloadContext)
   : downloadContext_(downloadContext),
-  diskWriterFactory_(new DefaultDiskWriterFactory()),
-  totalLength_(0),
-  downloadFinished_(false) {}
+    diskWriterFactory_(std::make_shared<DefaultDiskWriterFactory>()),
+    totalLength_(0),
+    downloadFinished_(false) {}
 
 UnknownLengthPieceStorage::~UnknownLengthPieceStorage() {}
 
 void UnknownLengthPieceStorage::initStorage()
 {
-  auto directDiskAdaptor(new DirectDiskAdaptor());
+  auto directDiskAdaptor = std::make_shared<DirectDiskAdaptor>();
   directDiskAdaptor->setTotalLength(downloadContext_->getTotalLength());
   directDiskAdaptor->setFileEntries(downloadContext_->getFileEntries().begin(),
                                     downloadContext_->getFileEntries().end());
@@ -66,7 +66,7 @@ void UnknownLengthPieceStorage::initStorage()
   directDiskAdaptor->setDiskWriter
     (diskWriterFactory_->newDiskWriter(directDiskAdaptor->getFilePath()));
 
-  diskAdaptor_.reset(directDiskAdaptor);
+  diskAdaptor_ = std::move(directDiskAdaptor);
 }
 
 #ifdef ENABLE_BITTORRENT
@@ -145,7 +145,7 @@ std::shared_ptr<Piece> UnknownLengthPieceStorage::getMissingPiece
     return nullptr;
   }
   if(!piece_) {
-    piece_.reset(new Piece());
+    piece_ = std::make_shared<Piece>();
     return piece_;
   } else {
     return nullptr;
@@ -167,7 +167,7 @@ std::shared_ptr<Piece> UnknownLengthPieceStorage::getPiece(size_t index)
 {
   if(index == 0) {
     if(!piece_) {
-      return std::shared_ptr<Piece>(new Piece());
+      return std::make_shared<Piece>();
     } else {
       return piece_;
     }
