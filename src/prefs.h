@@ -302,6 +302,8 @@ extern PrefPtr PREF_RPC_SECRET;
 extern PrefPtr PREF_DSCP;
 // values: true | false
 extern PrefPtr PREF_PAUSE_METADATA;
+// values: 1*digit
+extern PrefPtr PREF_RLIMIT_NOFILE;
 
 /**
  * FTP related preferences
