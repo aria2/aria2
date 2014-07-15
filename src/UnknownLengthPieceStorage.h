@@ -43,6 +43,7 @@ class Option;
 class DownloadContext;
 class DiskWriterFactory;
 class DirectDiskAdaptor;
+class BitfieldMan;
 
 class UnknownLengthPieceStorage:public PieceStorage {
 private:
@@ -54,9 +55,14 @@ private:
 
   int64_t totalLength_;
 
+  std::unique_ptr<BitfieldMan> bitfield_;
+
   bool downloadFinished_;
 
   std::shared_ptr<Piece> piece_;
+
+  void createBitfield();
+
 public:
   UnknownLengthPieceStorage(const std::shared_ptr<DownloadContext>& downloadContext);
 
@@ -203,18 +209,12 @@ public:
    */
   virtual void initStorage() CXX11_OVERRIDE;
 
-  virtual const unsigned char* getBitfield() CXX11_OVERRIDE
-  {
-    return nullptr;
-  }
+  virtual const unsigned char* getBitfield() CXX11_OVERRIDE;
 
   virtual void setBitfield(const unsigned char* bitfield,
                            size_t bitfieldLength) CXX11_OVERRIDE {}
 
-  virtual size_t getBitfieldLength() CXX11_OVERRIDE
-  {
-    return 0;
-  }
+  virtual size_t getBitfieldLength() CXX11_OVERRIDE;
 
   virtual bool isSelectiveDownloadingMode() CXX11_OVERRIDE
   {

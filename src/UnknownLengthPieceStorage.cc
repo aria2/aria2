@@ -43,6 +43,7 @@
 #include "DownloadContext.h"
 #include "Piece.h"
 #include "FileEntry.h"
+#include "BitfieldMan.h"
 
 namespace aria2 {
 
@@ -182,6 +183,8 @@ void UnknownLengthPieceStorage::completePiece(const std::shared_ptr<Piece>& piec
     totalLength_ = piece_->getLength();
     diskAdaptor_->setTotalLength(totalLength_);
     piece_.reset();
+
+    createBitfield();
   }
 }
 
@@ -219,10 +222,17 @@ std::shared_ptr<DiskAdaptor> UnknownLengthPieceStorage::getDiskAdaptor()
 
 int32_t UnknownLengthPieceStorage::getPieceLength(size_t index)
 {
-  if(index == 0) {
-    return totalLength_;
-  } else {
-    return 0;
+  // TODO Basically, PieceStorage::getPieceLength() is only used by
+  // BitTorrent, and it does not use UnknownLengthPieceStorage.
+  abort();
+}
+
+void UnknownLengthPieceStorage::createBitfield()
+{
+  if(totalLength_ > 0) {
+    bitfield_ = make_unique<BitfieldMan>(downloadContext_->getPieceLength(),
+                                         totalLength_);
+    bitfield_->setAllBit();
   }
 }
 
@@ -232,6 +242,9 @@ void UnknownLengthPieceStorage::markAllPiecesDone()
     totalLength_ = piece_->getLength();
     piece_.reset();
   }
+
+  createBitfield();
+
   downloadFinished_ = true;
 }
 
@@ -255,6 +268,24 @@ void UnknownLengthPieceStorage::setDiskWriterFactory
 (const std::shared_ptr<DiskWriterFactory>& diskWriterFactory)
 {
   diskWriterFactory_ = diskWriterFactory;
+}
+
+const unsigned char* UnknownLengthPieceStorage::getBitfield()
+{
+  if(bitfield_) {
+    return bitfield_->getBitfield();
+  }
+
+  return nullptr;
+}
+
+size_t UnknownLengthPieceStorage::getBitfieldLength()
+{
+  if(bitfield_) {
+    return bitfield_->getBitfieldLength();
+  }
+
+  return 0;
 }
 
 } // namespace aria2
