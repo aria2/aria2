@@ -64,6 +64,11 @@ public:
 
   virtual bool execute() CXX11_OVERRIDE;
 
+  std::shared_ptr<WebSocketSession>& getSession()
+  {
+    return wsSession_;
+  }
+
   void updateWriteCheck();
 };
 

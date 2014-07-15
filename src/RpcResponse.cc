@@ -121,9 +121,10 @@ std::string encodeAll
 
 RpcResponse::RpcResponse
 (int code,
+ RpcResponse::authorization_t authorized,
  std::unique_ptr<ValueBase> param,
  std::unique_ptr<ValueBase> id)
-  : code{code}, param{std::move(param)}, id{std::move(id)}
+  : param{std::move(param)}, id{std::move(id)}, code{code}, authorized{authorized}
 {}
 
 std::string toXml(const RpcResponse& res, bool gzip)

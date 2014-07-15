@@ -47,16 +47,34 @@ namespace aria2 {
 namespace rpc {
 
 struct RpcResponse {
+  enum authorization_t {
+    NOTAUTHORIZED,
+    AUTHORIZED
+  };
+
   // 0 for success, non-zero for error
-  int code;
   std::unique_ptr<ValueBase> param;
   std::unique_ptr<ValueBase> id;
+  int code;
+  authorization_t authorized;
 
   RpcResponse
   (int code,
+   authorization_t authorized,
    std::unique_ptr<ValueBase> param,
    std::unique_ptr<ValueBase> id);
 };
+
+inline
+bool not_authorized(const rpc::RpcResponse& res)
+{
+  return res.authorized != rpc::RpcResponse::AUTHORIZED;
+}
+
+template<typename InputIterator>
+bool any_not_authorized(const InputIterator begin, const InputIterator end) {
+  return std::any_of(begin, end, not_authorized);
+}
 
 std::string toXml(const RpcResponse& response, bool gzip = false);
 

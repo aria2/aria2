@@ -586,14 +586,9 @@ class SystemMulticallRpcMethod:public RpcMethod {
 protected:
   virtual std::unique_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
+
 public:
-  virtual void authorize(RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE
-  {
-    // Batch calls (e.g., system.multicall) authorizes only nested
-    // methods. This is because XML-RPC system.multicall only accpets
-    // methods array and there is no room for us to insert token
-    // parameter.
-  }
+  virtual RpcResponse execute(RpcRequest req, DownloadEngine* e) CXX11_OVERRIDE;
 
   static const char* getMethodName()
   {
