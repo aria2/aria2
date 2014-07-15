@@ -1186,6 +1186,18 @@ Advanced Options
   you take commonly used values from RFC, network vendors'
   documentation, Wikipedia or any other source, use them as they are.
 
+.. option:: --max-open-files=NUM
+
+  Set the soft limit of open file descriptors.
+  This open will only have effect when:
+
+    a) The system supports it (posix)
+    b) The limit does not exceed the hard limit.
+    c) The specified limit is larger than the current soft limit.
+
+  This is equivalent to setting nofile via ulimit,
+  except that it will never decrease the limit.
+
 .. option:: --enable-color[=true|false]
 
   Enable color output for a terminal.

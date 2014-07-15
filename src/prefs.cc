@@ -365,6 +365,8 @@ PrefPtr PREF_RPC_SECRET = makePref("rpc-secret");
 PrefPtr PREF_DSCP = makePref("dscp");
 // values: true | false
 PrefPtr PREF_PAUSE_METADATA = makePref("pause-metadata");
+// values: 1*digit
+PrefPtr PREF_MAX_OPEN_FILES = makePref("max-open-files");
 
 /**
  * FTP related preferences

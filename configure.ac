@@ -646,6 +646,7 @@ AC_CHECK_HEADERS([argz.h \
                   strings.h \
                   sys/ioctl.h \
                   sys/param.h \
+                  sys/resource.h \
                   sys/signal.h \
                   sys/socket.h \
                   sys/time.h \

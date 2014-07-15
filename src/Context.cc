@@ -37,6 +37,11 @@
 #include <unistd.h>
 #include <getopt.h>
 
+#ifdef HAVE_SYS_RESOURCE_H
+#include <sys/resource.h>
+#endif // HAVE_SYS_RESOURCE_H
+
+
 #include <numeric>
 #include <vector>
 #include <iostream>
@@ -179,6 +184,28 @@ Context::Context(bool standalone,
   A2_LOG_INFO(getOperatingSystemInfo());
   A2_LOG_INFO(usedLibs());
   A2_LOG_INFO(MSG_LOGGING_STARTED);
+
+#if defined(HAVE_SYS_RESOURCE_H) && defined(RLIMIT_NOFILE)
+  rlimit r = { 0, 0 };
+  if (getrlimit(RLIMIT_NOFILE, &r) >= 0 && r.rlim_cur != RLIM_INFINITY) {
+    // Thanks portability, for making it easy :p
+    auto rlim_new = r.rlim_cur;
+    rlim_new = op->getAsInt(PREF_MAX_OPEN_FILES);
+    if (r.rlim_max != RLIM_INFINITY) {
+      rlim_new = op->getAsInt(PREF_MAX_OPEN_FILES);
+      rlim_new = std::max(r.rlim_cur, rlim_new);
+    }
+    else if (r.rlim_cur < r.rlim_max) {
+      rlim_new = op->getAsInt(PREF_MAX_OPEN_FILES);
+      rlim_new = std::min(r.rlim_max, std::max(r.rlim_cur, rlim_new));
+    }
+    if (rlim_new != r.rlim_cur) {
+      A2_LOG_ERROR(fmt("Setting rlimit NO_FILE from %" PRIu64 " to %" PRIu64,
+                       (uint64_t)r.rlim_cur, (uint64_t)rlim_new));
+      setrlimit(RLIMIT_NOFILE, &r);
+    }
+  }
+#endif // defined(HAVE_SYS_RESOURCE_H) && defined(RLIMIT_NOFILE)
 
   if(op->getAsBool(PREF_DISABLE_IPV6)) {
     SocketCore::setProtocolFamily(AF_INET);

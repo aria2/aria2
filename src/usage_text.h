@@ -980,6 +980,15 @@
     "                              commonly used values from RFC, network vendors'\n" \
     "                              documentation, Wikipedia or any other source,\n" \
     "                              use them as they are.")
+#define TEXT_MAX_OPEN_FILES                                             \
+  _("  --max-open-files=NUM        Set the soft limit of open file descriptors.\n" \
+    "                              This open will only have effect when:\n" \
+    "                                a) The system supports it (posix)\n" \
+    "                                b) The limit does not exceed the hard limit.\n" \
+    "                                c) The specified limit is larger than the\n" \
+    "                                   current soft limit.\n" \
+    "                              This is equivalent to setting nofile via ulimit,\n" \
+    "                              except that it will never decrease the limit.")
 #define TEXT_PAUSE_METADATA                  \
   _(" --pause-metadata[=true|false]\n"       \
     "                              Pause downloads created as a result of metadata\n" \
