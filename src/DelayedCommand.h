@@ -72,4 +72,4 @@ public:
 
 } // namespace aria2
 
-#endif // D_TIME_BASED_COMMAND_H
+#endif // D_DELAYED_COMMAND_H
