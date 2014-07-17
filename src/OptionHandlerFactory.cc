@@ -755,6 +755,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
+#ifdef HAVE_SYS_RESOURCE_H
   {
     OptionHandler* op(new NumberOptionHandler
                       (PREF_RLIMIT_NOFILE,
@@ -764,6 +765,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
+#endif // HAVE_SYS_RESOURCE_H
   {
     OptionHandler* op(new BooleanOptionHandler
                       (PREF_SELECT_LEAST_USED_HOST,

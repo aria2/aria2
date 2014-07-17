@@ -1198,6 +1198,8 @@ Advanced Options
   This is equivalent to setting nofile via ulimit,
   except that it will never decrease the limit.
 
+  This option is only available on systems supporting the rlimit API.
+
 .. option:: --enable-color[=true|false]
 
   Enable color output for a terminal.
