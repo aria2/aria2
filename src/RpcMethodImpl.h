@@ -583,15 +583,12 @@ public:
 };
 
 class SystemMulticallRpcMethod:public RpcMethod {
-private:
-  std::unique_ptr<List> list_;
-
 protected:
   virtual std::unique_ptr<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
 
 public:
-  virtual void authorize(RpcRequest& req, DownloadEngine* e) CXX11_OVERRIDE;
+  virtual RpcResponse execute(RpcRequest req, DownloadEngine* e) CXX11_OVERRIDE;
 
   static const char* getMethodName()
   {
