@@ -760,8 +760,16 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     OptionHandler* op(new NumberOptionHandler
                       (PREF_RLIMIT_NOFILE,
                        TEXT_RLIMIT_NOFILE,
-                       "4096",
-                       256));
+                       // Somewhat sane default that most *nix use.
+                       // Some other *nix, like OSX, have insane defaults like
+                       // 256, hence better *not* get the default value from
+                       // getrlimit().
+                       "1024",
+                       // 1 should not be a problem in practise, since the code
+                       // will only adjust if the specified value > the current
+                       // soft limit.
+                       // And sane systems have a default soft limit > 1.
+                       1));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
