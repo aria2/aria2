@@ -980,8 +980,8 @@
     "                              commonly used values from RFC, network vendors'\n" \
     "                              documentation, Wikipedia or any other source,\n" \
     "                              use them as they are.")
-#define TEXT_MAX_OPEN_FILES                                             \
-  _("  --max-open-files=NUM        Set the soft limit of open file descriptors.\n" \
+#define TEXT_RLIMIT_NOFILE                                              \
+  _("  --rlimit-nofile=NUM         Set the soft limit of open file descriptors.\n" \
     "                              This open will only have effect when:\n" \
     "                                a) The system supports it (posix)\n" \
     "                                b) The limit does not exceed the hard limit.\n" \

@@ -757,8 +757,8 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
   }
   {
     OptionHandler* op(new NumberOptionHandler
-                      (PREF_MAX_OPEN_FILES,
-                       TEXT_MAX_OPEN_FILES,
+                      (PREF_RLIMIT_NOFILE,
+                       TEXT_RLIMIT_NOFILE,
                        "4096",
                        256));
     op->addTag(TAG_ADVANCED);
