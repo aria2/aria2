@@ -1,3 +1,25 @@
+aria2 1.18.7
+============
+
+Release Note
+------------
+
+This release fixes regression which makes 100% CPU utilization in
+multi-file torrent download with -V option.  It also fixes build error
+on big endian platforms.
+
+Changes
+-------
+
+* Fix regression 100% CPU utility when -V is used and download is
+  multi-file bittorrent downloads.
+
+  This is regression of a3426821c8a7f9cf8d80a81726157d4eb844f661
+
+* Fix compile error on big endian platform
+
+
+
 aria2 1.18.6
 ============
 
