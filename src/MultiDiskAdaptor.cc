@@ -394,6 +394,10 @@ ssize_t MultiDiskAdaptor::readData
       auto nread = (*i)->getDiskWriter()->readData(data+(len-rem),
                                                    readLength, fileOffset);
 
+      if(nread == 0) {
+        return totalReadLength;
+      }
+
       totalReadLength += nread;
 
       if(dropCache) {
