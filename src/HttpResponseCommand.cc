@@ -115,10 +115,11 @@ std::unique_ptr<StreamFilter> getContentEncodingStreamFilter
                       "process is skipped and the downloaded content will be "
                       "still encoded.",
                       httpResponse->getContentEncoding().c_str()));
+    } else {
+      filter->init();
+      filter->installDelegate(std::move(delegate));
+      return filter;
     }
-    filter->init();
-    filter->installDelegate(std::move(delegate));
-    return filter;
   }
   return delegate;
 }
