@@ -76,13 +76,6 @@
 #include "Option.h"
 #include "util_security.h"
 
-// Lower time limit for PBKDF2 operations in validateToken.
-static const double kTokenTimeLower = 0.025;
-// Upper time limit for PBKDF2 operations in validateToken.
-static const double kTokenTimeUpper = 0.5;
-// Sweet spot time for PBKDF2 operations in validateToken.
-static const double kTokenTimeSweetspot = 0.035;
-
 namespace aria2 {
 
 namespace global {
@@ -111,9 +104,7 @@ DownloadEngine::DownloadEngine(std::unique_ptr<EventPoll> eventPoll)
     asyncDNSServers_(nullptr),
 #endif // HAVE_ARES_ADDR_NODE
     dnsCache_(make_unique<DNSCache>()),
-    option_(nullptr),
-    tokenIterations_(5000),
-    tokenAverageDuration_(0.0)
+    option_(nullptr)
 {
   unsigned char sessionId[20];
   util::generateRandomKey(sessionId);
@@ -650,76 +641,17 @@ bool DownloadEngine::validateToken(const std::string& token)
     return true;
   }
 
-  if (!tokenHMAC_ || tokenAverageDuration_ > kTokenTimeUpper ||
-      tokenAverageDuration_ < kTokenTimeLower) {
-
-    // Setup our stuff.
-    if (tokenHMAC_) {
-      A2_LOG_INFO(fmt("Recalculating iterations because avg. duration is %.4f",
-                      tokenAverageDuration_));
-    }
-
+  if (!tokenHMAC_) {
     tokenHMAC_ = HMAC::createRandom();
     if (!tokenHMAC_) {
       A2_LOG_ERROR("Failed to create HMAC");
       return false;
     }
-
-    // This should still be pretty fast on a modern system... Well, too fast
-    // with the initial 5000 iterations, and that is why we adjust it.
-    // XXX We should run this setup high priorty, so that other processes on the
-    // system don't mess up our results and let us underestimate the iterations.
-    std::deque<double> mm;
-    for (auto i = 0; i < 10; ++i) {
-      auto c = std::clock();
-      tokenExpected_ = make_unique<HMACResult>
-        (PBKDF2(tokenHMAC_.get(), option_->get(PREF_RPC_SECRET),
-                tokenIterations_));
-      mm.push_back((std::clock() - c) / (double)CLOCKS_PER_SEC);
-    }
-    std::sort(mm.begin(), mm.end());
-    // Pop outliers.
-    mm.pop_front();
-    mm.pop_back();
-    mm.pop_back();
-    auto duration = std::accumulate(mm.begin(), mm.end(), 0.0) / mm.size();
-
-    A2_LOG_INFO(fmt("Took us %.4f secs on average to perform PBKDF2 with %zu "
-                    "iterations during setup",
-                    duration, tokenIterations_));
-
-    // Adjust iterations so that an op takes about |kTokenTimeSpeetspot| sec,
-    // which would allow for a couple attempts per second (instead of
-    // potentially thousands without PBKDF2).
-    // We might overestimate the performance a bit, but should not perform
-    // worse than |kTokenTimeUpper| secs per attempt on a normally loaded system
-    // and no better than |kTokenTimeLower|. If this does not hold true anymore,
-    // the |tokenAverageDuration_| checks will force a re-calcuation.
-    tokenIterations_ *= kTokenTimeSweetspot / duration;
-
-    auto c = std::clock();
-    tokenExpected_ = make_unique<HMACResult>
-      (PBKDF2(tokenHMAC_.get(), option_->get(PREF_RPC_SECRET),
-              tokenIterations_));
-    duration = (std::clock() - c) / (double)CLOCKS_PER_SEC;
-    A2_LOG_INFO(fmt("Took us %.4f secs to perform PBKDF2 with %zu iterations",
-                    duration, tokenIterations_));
-
-    // Seed average duration.
-    tokenAverageDuration_ = duration;
+    tokenExpected_ = make_unique<HMACResult>(tokenHMAC_->getResult(
+          option_->get(PREF_RPC_SECRET)));
   }
 
-  auto c = std::clock();
-  bool rv = *tokenExpected_ == PBKDF2(tokenHMAC_.get(), token,
-                                      tokenIterations_);
-  auto duration = (std::clock() - c) / (double)CLOCKS_PER_SEC;
-  A2_LOG_DEBUG(fmt("Took us %.4f secs to perform token compare with %zu "
-                   "iterations",
-                   duration, tokenIterations_));
-
-  // Update rolling hash.
-  tokenAverageDuration_ = tokenAverageDuration_ * 0.9 + duration * 0.1;
-  return rv;
+  return *tokenExpected_ == tokenHMAC_->getResult(token);
 }
 
 } // namespace aria2

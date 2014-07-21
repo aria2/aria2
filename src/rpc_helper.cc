@@ -73,11 +73,12 @@ RpcResponse createJsonRpcErrorResponse(int code,
   auto params = Dict::g();
   params->put("code", Integer::g(code));
   params->put("message", msg);
-  return rpc::RpcResponse{code, std::move(params), std::move(id)};
+  return rpc::RpcResponse{code, rpc::RpcResponse::AUTHORIZED, std::move(params),
+                          std::move(id)};
 }
 
 RpcResponse processJsonRpcRequest(Dict* jsondict, DownloadEngine* e,
-                                  RpcRequest::authorization_t authorization)
+                                  RpcRequest::preauthorization_t authorization)
 {
   auto id = jsondict->popValue("id");
   if(!id) {

@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2011 Tatsuhiro Tsujikawa
+ * Copyright (C) 2014 Nils Maier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,43 +32,44 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_RPC_HELPER_H
-#define D_RPC_HELPER_H
 
-#include "common.h"
+#ifndef D_DELAYED_COMMAND_H
+#define D_DELAYED_COMMAND_H
 
-#include <cstdlib>
-#include <string>
-#include <memory>
+#include "TimeBasedCommand.h"
 
-#include "RpcRequest.h"
+namespace aria2
+{
 
-namespace aria2 {
+class DelayedCommand : public TimeBasedCommand
+{
+private:
+  std::unique_ptr<Command> command_;
+  bool noWait_;
 
-class ValueBase;
-class Dict;
-class DownloadEngine;
+public:
+  virtual void process() CXX11_OVERRIDE
+  {
+    auto e = getDownloadEngine();
+    e->addCommand(std::move(command_));
+    if (noWait_) {
+      e->setNoWait(true);
+    }
+    enableExit();
+  }
 
-namespace rpc {
+public:
+  DelayedCommand(cuid_t cuid, DownloadEngine* e, time_t delay,
+                 std::unique_ptr<Command> command, bool noWait)
+    : TimeBasedCommand(cuid, e, delay),
+      command_{std::move(command)},
+      noWait_{noWait}
+  {
+  }
 
-struct RpcResponse;
-
-#ifdef ENABLE_XML_RPC
-RpcRequest xmlParseMemory(const char* xml, size_t size);
-#endif // ENABLE_XML_RPC
-
-// Creates error response. The |code| is the JSON-RPC error code.  The
-// |msg| is the error message. The |id| is the id of the request .
-RpcResponse createJsonRpcErrorResponse(int code,
-                                       const std::string& msg,
-                                       std::unique_ptr<ValueBase> id);
-
-// Processes JSON-RPC request |jsondict| and returns the result.
-RpcResponse processJsonRpcRequest(Dict* jsondict, DownloadEngine* e,
-                                  RpcRequest::preauthorization_t authorization);
-
-} // namespace rpc
+  virtual ~DelayedCommand() {}
+};
 
 } // namespace aria2
 
-#endif // D_RPC_HELPER_H
+#endif // D_DELAYED_COMMAND_H

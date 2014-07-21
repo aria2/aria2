@@ -78,7 +78,7 @@ void WebSocketSessionMan::addNotification
   dict->put("params", std::move(params));
   std::string msg = json::encode(dict.get());
   for(auto& session : sessions_) {
-    session->addTextMessage(msg);
+    session->addTextMessage(msg, false);
     session->getCommand()->updateWriteCheck();
   }
 }

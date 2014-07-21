@@ -1360,54 +1360,73 @@ std::unique_ptr<ValueBase> SaveSessionRpcMethod::process
 std::unique_ptr<ValueBase> SystemMulticallRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  const List* methodSpecs = checkRequiredParam<List>(req, 0);
-  auto list = List::g();
-  auto auth = RpcRequest::MUST_AUTHORIZE;
-  for(auto & methodSpec : *methodSpecs) {
-    Dict* methodDict = downcast<Dict>(methodSpec);
-    if(!methodDict) {
-      list->append(createErrorResponse
-                   (DL_ABORT_EX("system.multicall expected struct."), req));
-      continue;
+  // Should never get here, since SystemMulticallRpcMethod overrides execute().
+  assert(false);
+  return nullptr;
+}
+
+RpcResponse SystemMulticallRpcMethod::execute(RpcRequest req, DownloadEngine *e)
+{
+  auto preauthorized = RpcRequest::MUST_AUTHORIZE;
+  auto authorized = RpcResponse::AUTHORIZED;
+  try {
+    const List* methodSpecs = checkRequiredParam<List>(req, 0);
+    auto list = List::g();
+    for(auto & methodSpec : *methodSpecs) {
+      Dict* methodDict = downcast<Dict>(methodSpec);
+      if(!methodDict) {
+        list->append(createErrorResponse
+                      (DL_ABORT_EX("system.multicall expected struct."), req));
+        continue;
+      }
+      const String* methodName = downcast<String>(methodDict->get(KEY_METHOD_NAME));
+      if(!methodName) {
+        list->append(createErrorResponse
+                      (DL_ABORT_EX("Missing methodName."), req));
+        continue;
+      }
+      if(methodName->s() == getMethodName()) {
+        list->append(createErrorResponse
+                      (DL_ABORT_EX("Recursive system.multicall forbidden."), req));
+        continue;
+      }
+      // TODO what if params missing?
+      auto tempParamsList = methodDict->get(KEY_PARAMS);
+      std::unique_ptr<List> paramsList;
+      if(downcast<List>(tempParamsList)) {
+        paramsList.reset(static_cast<List*>(methodDict->popValue(KEY_PARAMS)
+                                            .release()));
+      } else {
+        paramsList = List::g();
+      }
+      RpcRequest r = {
+        methodName->s(),
+        std::move(paramsList),
+        nullptr,
+        preauthorized,
+        req.jsonRpc
+      };
+      RpcResponse res = getMethod(methodName->s())->execute(std::move(r), e);
+      if(rpc::not_authorized(res)) {
+        authorized = RpcResponse::NOTAUTHORIZED;
+      } else {
+        preauthorized = RpcRequest::PREAUTHORIZED;
+      }
+      if(res.code == 0) {
+        auto l = List::g();
+        l->append(std::move(res.param));
+        list->append(std::move(l));
+      } else {
+        list->append(std::move(res.param));
+      }
     }
-    const String* methodName = downcast<String>(methodDict->get(KEY_METHOD_NAME));
-    if(!methodName) {
-      list->append(createErrorResponse
-                   (DL_ABORT_EX("Missing methodName."), req));
-      continue;
-    }
-    if(methodName->s() == getMethodName()) {
-      list->append(createErrorResponse
-                   (DL_ABORT_EX("Recursive system.multicall forbidden."), req));
-      continue;
-    }
-    // TODO what if params missing?
-    auto tempParamsList = methodDict->get(KEY_PARAMS);
-    std::unique_ptr<List> paramsList;
-    if(downcast<List>(tempParamsList)) {
-      paramsList.reset(static_cast<List*>(methodDict->popValue(KEY_PARAMS)
-                                          .release()));
-    } else {
-      paramsList = List::g();
-    }
-    RpcRequest r = {
-      methodName->s(),
-      std::move(paramsList),
-      nullptr,
-      auth,
-      req.jsonRpc
-    };
-    RpcResponse res = getMethod(methodName->s())->execute(std::move(r), e);
-    if(res.code == 0) {
-      auto l = List::g();
-      l->append(std::move(res.param));
-      list->append(std::move(l));
-      auth = RpcRequest::PREAUTHORIZED;
-    } else {
-      list->append(std::move(res.param));
-    }
+    return RpcResponse(0, authorized, std::move(list), std::move(req.id));
+
+  } catch(RecoverableException& ex) {
+    A2_LOG_DEBUG_EX(EX_EXCEPTION_CAUGHT, ex);
+    return RpcResponse(1, authorized, createErrorResponse(ex, req),
+                       std::move(req.id));
   }
-  return std::move(list);
 }
 
 std::unique_ptr<ValueBase> NoSuchMethodRpcMethod::process

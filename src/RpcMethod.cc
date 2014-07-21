@@ -94,13 +94,16 @@ void RpcMethod::authorize(RpcRequest& req, DownloadEngine* e)
 
 RpcResponse RpcMethod::execute(RpcRequest req, DownloadEngine* e)
 {
+  auto authorized = RpcResponse::NOTAUTHORIZED;
   try {
     authorize(req, e);
+    authorized = RpcResponse::AUTHORIZED;
     auto r = process(req, e);
-    return RpcResponse(0, std::move(r), std::move(req.id));
+    return RpcResponse(0, authorized, std::move(r), std::move(req.id));
   } catch(RecoverableException& ex) {
     A2_LOG_DEBUG_EX(EX_EXCEPTION_CAUGHT, ex);
-    return RpcResponse(1, createErrorResponse(ex, req), std::move(req.id));
+    return RpcResponse(1, authorized, createErrorResponse(ex, req),
+                       std::move(req.id));
   }
 }
 

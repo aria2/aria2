@@ -63,7 +63,7 @@ private:
   void sendJsonRpcBatchResponse
   (const std::vector<rpc::RpcResponse>& results,
    const std::string& callback);
-  void addHttpServerResponseCommand();
+  void addHttpServerResponseCommand(bool delayed);
   void updateWriteCheck();
 public:
   HttpServerBodyCommand(cuid_t cuid,

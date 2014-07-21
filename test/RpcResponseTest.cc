@@ -28,7 +28,8 @@ void RpcResponseTest::testToJson()
   {
     auto param = List::g();
     param->append(Integer::g(1));
-    RpcResponse res(0, std::move(param), String::g("9"));
+    RpcResponse res(0, RpcResponse::AUTHORIZED, std::move(param),
+                    String::g("9"));
     results.push_back(std::move(res));
     std::string s = toJson(results.back(), "", false);
     CPPUNIT_ASSERT_EQUAL(std::string("{\"id\":\"9\","
@@ -47,7 +48,7 @@ void RpcResponseTest::testToJson()
     auto param = Dict::g();
     param->put("code", Integer::g(1));
     param->put("message", "HELLO ERROR");
-    RpcResponse res(1, std::move(param), Null::g());
+    RpcResponse res(1, RpcResponse::AUTHORIZED, std::move(param), Null::g());
     results.push_back(std::move(res));
     std::string s = toJson(results.back(), "", false);
     CPPUNIT_ASSERT_EQUAL(std::string("{\"id\":null,"
@@ -101,7 +102,7 @@ void RpcResponseTest::testToXml()
   auto param = Dict::g();
   param->put("faultCode", Integer::g(1));
   param->put("faultString", "No such method: make.hamburger");
-  RpcResponse res(1, std::move(param), Null::g());
+  RpcResponse res(1, RpcResponse::AUTHORIZED, std::move(param), Null::g());
   std::string s = toXml(res, false);
   CPPUNIT_ASSERT_EQUAL
     (std::string("<?xml version=\"1.0\"?>"
