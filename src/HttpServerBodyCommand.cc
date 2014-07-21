@@ -253,7 +253,6 @@ bool HttpServerBodyCommand::execute()
         case RPC_TYPE_JSONP: {
           std::string callback;
           std::unique_ptr<ValueBase> json;
-          auto preauthorized = rpc::RpcRequest::MUST_AUTHORIZE;
           ssize_t error = 0;
           if(httpServer_->getRequestType() == RPC_TYPE_JSONP) {
             json::JsonGetParam param = json::decodeGetParams(query);
@@ -284,7 +283,7 @@ bool HttpServerBodyCommand::execute()
           }
           Dict* jsondict = downcast<Dict>(json);
           if(jsondict) {
-            auto res = rpc::processJsonRpcRequest(jsondict, e_, preauthorized);
+            auto res = rpc::processJsonRpcRequest(jsondict, e_);
             sendJsonRpcResponse(res, callback);
           } else {
             List* jsonlist = downcast<List>(json);
@@ -296,10 +295,7 @@ bool HttpServerBodyCommand::execute()
                 Dict* jsondict = downcast<Dict>(*i);
                 if (jsondict) {
                   auto resp =
-                      rpc::processJsonRpcRequest(jsondict, e_, preauthorized);
-                  if (resp.code == 0) {
-                    preauthorized = rpc::RpcRequest::PREAUTHORIZED;
-                  }
+                      rpc::processJsonRpcRequest(jsondict, e_);
                   results.push_back(std::move(resp));
                 }
               }

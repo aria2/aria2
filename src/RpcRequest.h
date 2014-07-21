@@ -46,15 +46,9 @@ namespace aria2 {
 namespace rpc {
 
 struct RpcRequest {
-  enum preauthorization_t {
-    MUST_AUTHORIZE,
-    PREAUTHORIZED
-  };
-
   std::string methodName;
   std::unique_ptr<List> params;
   std::unique_ptr<ValueBase> id;
-  preauthorization_t authorization;
   bool jsonRpc;
 
   RpcRequest();
@@ -65,7 +59,6 @@ struct RpcRequest {
   RpcRequest(std::string methodName,
              std::unique_ptr<List> params,
              std::unique_ptr<ValueBase> id,
-             preauthorization_t authorization,
              bool jsonRpc = false);
 };
 

@@ -165,7 +165,6 @@ void onMsgRecvCallback(wslay_event_context_ptr wsctx,
     // TODO Only process text frame
     ssize_t error = 0;
     auto json = wsSession->parseFinal(nullptr, 0, error);
-    auto preauthorized = RpcRequest::MUST_AUTHORIZE;
     if(error < 0) {
       A2_LOG_INFO("Failed to parse JSON-RPC request");
       RpcResponse res
@@ -177,7 +176,7 @@ void onMsgRecvCallback(wslay_event_context_ptr wsctx,
     auto e = wsSession->getDownloadEngine();
     if(jsondict) {
       RpcResponse res =
-        processJsonRpcRequest(jsondict, e, preauthorized);
+        processJsonRpcRequest(jsondict, e);
       addResponse(wsSession, res);
     } else {
       List* jsonlist = downcast<List>(json);
@@ -188,10 +187,7 @@ void onMsgRecvCallback(wslay_event_context_ptr wsctx,
               eoi = jsonlist->end(); i != eoi; ++i) {
           Dict* jsondict = downcast<Dict>(*i);
           if (jsondict) {
-            auto resp = processJsonRpcRequest(jsondict, e, preauthorized);
-            if (resp.code == 0) {
-              preauthorized = RpcRequest::PREAUTHORIZED;
-            }
+            auto resp = processJsonRpcRequest(jsondict, e);
             results.push_back(std::move(resp));
           }
         }

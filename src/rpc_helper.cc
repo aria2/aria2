@@ -77,8 +77,7 @@ RpcResponse createJsonRpcErrorResponse(int code,
                           std::move(id)};
 }
 
-RpcResponse processJsonRpcRequest(Dict* jsondict, DownloadEngine* e,
-                                  RpcRequest::preauthorization_t authorization)
+RpcResponse processJsonRpcRequest(Dict* jsondict, DownloadEngine* e)
 {
   auto id = jsondict->popValue("id");
   if(!id) {
@@ -102,7 +101,7 @@ RpcResponse processJsonRpcRequest(Dict* jsondict, DownloadEngine* e,
   }
   A2_LOG_INFO(fmt("Executing RPC method %s", methodName->s().c_str()));
   RpcRequest req =
-    {methodName->s(), std::move(params), std::move(id), authorization, true};
+    {methodName->s(), std::move(params), std::move(id), true};
   return getMethod(methodName->s())->execute(std::move(req), e);
 }
 

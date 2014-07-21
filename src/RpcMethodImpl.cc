@@ -1367,7 +1367,6 @@ std::unique_ptr<ValueBase> SystemMulticallRpcMethod::process
 
 RpcResponse SystemMulticallRpcMethod::execute(RpcRequest req, DownloadEngine *e)
 {
-  auto preauthorized = RpcRequest::MUST_AUTHORIZE;
   auto authorized = RpcResponse::AUTHORIZED;
   try {
     const List* methodSpecs = checkRequiredParam<List>(req, 0);
@@ -1403,14 +1402,11 @@ RpcResponse SystemMulticallRpcMethod::execute(RpcRequest req, DownloadEngine *e)
         methodName->s(),
         std::move(paramsList),
         nullptr,
-        preauthorized,
         req.jsonRpc
       };
       RpcResponse res = getMethod(methodName->s())->execute(std::move(r), e);
       if(rpc::not_authorized(res)) {
         authorized = RpcResponse::NOTAUTHORIZED;
-      } else {
-        preauthorized = RpcRequest::PREAUTHORIZED;
       }
       if(res.code == 0) {
         auto l = List::g();
