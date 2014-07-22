@@ -11,6 +11,10 @@ on big endian platforms.
 Changes
 -------
 
+* Fixed segfault unsupported encodings
+
+  Patch from diadistis
+
 * Fix regression 100% CPU utility when -V is used and download is
   multi-file bittorrent downloads.
 
