@@ -713,6 +713,8 @@ bool inNoProxy(const std::shared_ptr<Request>& req, const std::string& noProxy)
                                    std::string(e.first, e.second))) {
         return true;
       }
+
+      continue;
     }
     // TODO We don't resolve hostname here.  More complete
     // implementation is that we should first resolve
