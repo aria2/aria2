@@ -49,9 +49,10 @@ GZipFile::GZipFile(const char* filename, const char* mode)
 {
   FILE* fp =
 #ifdef __MINGW32__
-  a2fopen(utf8ToWChar(filename).c_str(), utf8ToWChar(mode).c_str());
+    strcmp(DEV_STDIN, filename) == 0 ?
+    stdin : a2fopen(utf8ToWChar(filename).c_str(), utf8ToWChar(mode).c_str());
 #else // !__MINGW32__
-  a2fopen(filename, mode);
+    a2fopen(filename, mode);
 #endif // !__MINGW32__
 
   if (fp) {

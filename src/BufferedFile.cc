@@ -46,7 +46,9 @@ namespace aria2 {
 BufferedFile::BufferedFile(const char* filename, const char* mode)
   :
 #ifdef __MINGW32__
-  fp_(a2fopen(utf8ToWChar(filename).c_str(), utf8ToWChar(mode).c_str())),
+  fp_(strcmp(DEV_STDIN, filename) == 0 ?
+      stdin : a2fopen(utf8ToWChar(filename).c_str(),
+                      utf8ToWChar(mode).c_str())),
 #else // !__MINGW32__
   fp_(a2fopen(filename, mode)),
 #endif // !__MINGW32__
