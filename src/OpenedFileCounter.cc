@@ -71,12 +71,32 @@ void OpenedFileCounter::ensureMaxOpenFileLimit(size_t numNewFiles)
   std::advance(mark,
                SimpleRandomizer::getInstance()->
                getRandomNumber(requestGroups.size()));
+
+  auto closeFun = [&left](const std::shared_ptr<RequestGroup>& group)
+    {
+      auto& ps = group->getPieceStorage();
+
+      if(!ps) {
+        return;
+      }
+
+      auto diskAdaptor = ps->getDiskAdaptor();
+
+      if(!diskAdaptor) {
+        return;
+      }
+
+      left -= diskAdaptor->tryCloseFile(left);
+    };
+
   for(auto i = mark; i != std::end(requestGroups) && left > 0; ++i) {
-    left -= (*i)->getPieceStorage()->getDiskAdaptor()->tryCloseFile(left);
+    closeFun(*i);
   }
+
   for(auto i = std::begin(requestGroups); i != mark && left > 0; ++i) {
-    left -= (*i)->getPieceStorage()->getDiskAdaptor()->tryCloseFile(left);
+    closeFun(*i);
   }
+
   assert(left == 0);
   numOpenFiles_ += numNewFiles - numClose;
 }
