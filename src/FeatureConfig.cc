@@ -293,7 +293,7 @@ std::string getOperatingSystemInfo()
     return rv.str();
   }
   if(ovi.dwMajorVersion < 6) {
-    rv << "Legcacy, probably XP";
+    rv << "Legacy, probably XP";
     return rv.str();
   }
   switch(ovi.dwMinorVersion) {
