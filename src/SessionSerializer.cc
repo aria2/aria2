@@ -344,6 +344,7 @@ protected:
   virtual size_t onRead(void* ptr, size_t count) CXX11_OVERRIDE
   {
     assert(0);
+    return 0;
   }
 
   virtual size_t onWrite(const void* ptr, size_t count) CXX11_OVERRIDE
@@ -356,11 +357,13 @@ protected:
   virtual char* onGets(char* s, int size) CXX11_OVERRIDE
   {
     assert(0);
+    return nullptr;
   }
 
   virtual int onVprintf(const char* format, va_list va) CXX11_OVERRIDE
   {
     assert(0);
+    return -1;
   }
 
   virtual int onFlush() CXX11_OVERRIDE
