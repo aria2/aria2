@@ -24,9 +24,7 @@ The project page is located at http://aria2.sourceforge.net/.
 See `aria2 Online Manual
 <http://aria2.sourceforge.net/manual/en/html/>`_ (`Russian translation
 <http://aria2.sourceforge.net/manual/ru/html/>`_, `Portuguese
-translation <http://aria2.sourceforge.net/manual/pt/html/>`_) and `the
-usage examples
-<http://sourceforge.net/apps/trac/aria2/wiki/UsageExample>`_ to learn
+translation <http://aria2.sourceforge.net/manual/pt/html/>`_) to learn
 how to use aria2.
 
 Features
@@ -520,7 +518,6 @@ References
 
 * `aria2 Online Manual <http://aria2.sourceforge.net/manual/en/html/>`_
 * http://aria2.sourceforge.net/
-* http://sourceforge.net/apps/trac/aria2/wiki
 * https://github.com/tatsuhiro-t/aria2
 * `RFC 959 FILE TRANSFER PROTOCOL (FTP) <http://tools.ietf.org/html/rfc959>`_
 * `RFC 1738 Uniform Resource Locators (URL) <http://tools.ietf.org/html/rfc1738>`_

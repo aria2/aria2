@@ -4072,8 +4072,6 @@ SEE ALSO
 --------
 Project Web Site: http://aria2.sourceforge.net/
 
-aria2 Wiki: http://sourceforge.net/apps/trac/aria2/wiki
-
 Metalink Homepage: http://www.metalinker.org/
 
 The Metalink Download Description Format: :rfc:`5854`
