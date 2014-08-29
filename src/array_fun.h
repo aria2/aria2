@@ -42,16 +42,11 @@
 
 namespace aria2 {
 
-// calculate length of array
 template<typename T, size_t N>
-char (&char_array_ref_fun(T (&)[N]))[N];
-
-// For 0 length array
-template<typename T>
-char (&char_array_ref_fun(T (&)[0u]))[0u];
-
-// To calculate size of array at compile time, we use macro here.
-#define A2_ARRAY_LEN(X) sizeof(char_array_ref_fun(X))
+constexpr size_t arraySize(T (&)[N])
+{
+  return N;
+}
 
 template<typename T, size_t N>
 class array_wrapper {

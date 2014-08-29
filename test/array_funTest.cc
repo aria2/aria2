@@ -61,11 +61,11 @@ void array_funTest::testArray_and()
 void array_funTest::testArrayLength()
 {
   int64_t ia[] = { 1, 2, 3, 4, 5 };
-  CPPUNIT_ASSERT_EQUAL((size_t)5, A2_ARRAY_LEN(ia));
+  CPPUNIT_ASSERT_EQUAL((size_t)5, arraySize(ia));
   // This causes compile error under clang and gcc v3.4.3 opensolaris
   // 5.11
   // int64_t zeroLengthArray[] = {};
-  // CPPUNIT_ASSERT_EQUAL((size_t)0, A2_ARRAY_LEN(zeroLengthArray));
+  // CPPUNIT_ASSERT_EQUAL((size_t)0, arraySize(zeroLengthArray));
 }
 
 namespace {

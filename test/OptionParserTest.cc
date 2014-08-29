@@ -168,7 +168,7 @@ void OptionParserTest::testParseArg()
 
   char* argv[] = { prog, optionTimeout, argTimeout, optionDir, argDir,
                    nonopt1, nonopt2 };
-  int argc = A2_ARRAY_LEN(argv);
+  int argc = arraySize(argv);
 
   std::stringstream s;
   std::vector<std::string> nonopts;

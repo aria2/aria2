@@ -108,14 +108,14 @@ void BtPortMessageTest::testDoReceivedAction()
 
   // 9 nodes to create at least 2 buckets.
   std::shared_ptr<DHTNode> nodes[9];
-  for(size_t i = 0; i < A2_ARRAY_LEN(nodes); ++i) {
+  for(size_t i = 0; i < arraySize(nodes); ++i) {
     memset(nodeID, 0, DHT_ID_LENGTH);
     nodeID[DHT_ID_LENGTH-1] = i+1;
     nodes[i].reset(new DHTNode(nodeID));
   }
 
   DHTRoutingTable routingTable(localNode);
-  for(size_t i = 0; i < A2_ARRAY_LEN(nodes); ++i) {
+  for(size_t i = 0; i < arraySize(nodes); ++i) {
     routingTable.addNode(nodes[i]);
   }
 

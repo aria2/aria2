@@ -141,7 +141,7 @@ void DefaultPeerStorageTest::testCheckoutPeer()
     std::shared_ptr<Peer>(new Peer("192.168.0.2", 1000)),
     std::shared_ptr<Peer>(new Peer("192.168.0.3", 1000))
   };
-  int len = A2_ARRAY_LEN(peers);
+  int len = arraySize(peers);
   for(int i = 0; i < len; ++i) {
     ps.addPeer(peers[i]);
   }
