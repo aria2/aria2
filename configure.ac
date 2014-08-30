@@ -32,6 +32,9 @@ case "$host" in
     # C++ headers defines __USE_MINGW_ANSI_STDIO to 1 unconditionally.
     # We have to use it as well nonetheless.
     CPPFLAGS="-D__USE_MINGW_ANSI_STDIO=1 $CPPFLAGS"
+    # Build with ASLR (dynamicbase) and NX compatiblity (nxcompat)
+    # Enable pie once upstream/binutils gets fixed to produce correct binaries with it.
+    LDFLAGS="$LDFLAGS -Wl,--dynamicbase -Wl,--nxcompat"
     ;;
 esac
 
