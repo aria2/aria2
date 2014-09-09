@@ -35,6 +35,7 @@
 
 #include "WinTLSSession.h"
 
+#include <cassert>
 #include <sstream>
 
 #include "LogFactory.h"
@@ -133,7 +134,8 @@ WinTLSSession::WinTLSSession(WinTLSContext* ctx)
     cred_(ctx->getCredHandle()),
     writeBuffered_(0),
     state_(st_constructed),
-    status_(SEC_E_OK)
+    status_(SEC_E_OK),
+    eof_(false)
 {
   memset(&handle_, 0, sizeof(handle_));
 }
@@ -442,6 +444,20 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
     return len;
   }
 
+  if(eof_) {
+    if(decBuf_.size()) {
+      A2_LOG_DEBUG("WinTLS: Sending out decrypted buffer after EOF");
+      auto nread = decBuf_.size();
+      assert(nread < len);
+      memcpy(data, decBuf_.data(), nread);
+      decBuf_.clear();
+      return nread;
+    }
+    A2_LOG_DEBUG("WinTLS: EOF was already seen");
+
+    return 0;
+  }
+
   if (state_ == st_handshake_write || state_ == st_handshake_write_last ||
       state_ == st_handshake_read) {
     // Renegotiating
@@ -469,6 +485,8 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
       break;
     }
     if (read == 0) {
+      A2_LOG_DEBUG("WinTLS: EOF sensed");
+      eof_ = true;
       break;
     }
     if (read < 0) {
