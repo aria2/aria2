@@ -559,6 +559,10 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
 
   len = std::min(decBuf_.size(), len);
   if (len == 0) {
+    if (eof_) {
+      return 0;
+    }
+
     return TLS_ERR_WOULDBLOCK;
   }
   memcpy(data, decBuf_.data(), len);
