@@ -207,9 +207,6 @@ private:
 
   SECURITY_STATUS status_;
   std::unique_ptr<SecPkgContext_StreamSizes> streamSizes_;
-
-  // true on EOF
-  bool eof_;
 };
 
 } // namespace aria2

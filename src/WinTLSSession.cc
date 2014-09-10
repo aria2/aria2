@@ -134,8 +134,7 @@ WinTLSSession::WinTLSSession(WinTLSContext* ctx)
     cred_(ctx->getCredHandle()),
     writeBuffered_(0),
     state_(st_constructed),
-    status_(SEC_E_OK),
-    eof_(false)
+    status_(SEC_E_OK)
 {
   memset(&handle_, 0, sizeof(handle_));
 }
@@ -170,11 +169,17 @@ int WinTLSSession::setSNIHostname(const std::string& hostname)
 
 int WinTLSSession::closeConnection()
 {
-  if (state_ != st_connected || state_ != st_closing) {
+  if (state_ != st_connected && state_ != st_closing) {
+    if (state_ != st_error) {
+      status_ = SEC_E_INVALID_HANDLE;
+      state_ = st_error;
+    }
+    A2_LOG_DEBUG("WinTLS: Cannot close connection");
     return TLS_ERR_ERROR;
   }
 
   if (state_ == st_connected) {
+    A2_LOG_DEBUG("WinTLS: Closing connection");
     state_ = st_closing;
 
     DWORD dwShut = SCHANNEL_SHUTDOWN;
@@ -239,6 +244,7 @@ int WinTLSSession::closeConnection()
     }
   }
 
+  A2_LOG_DEBUG("WinTLS: Closed Connection");
   state_ = st_closed;
   return TLS_ERR_OK;
 }
@@ -444,18 +450,18 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
     return len;
   }
 
-  if(eof_) {
-    if(decBuf_.size()) {
-      A2_LOG_DEBUG("WinTLS: Sending out decrypted buffer after EOF");
-      auto nread = decBuf_.size();
+  if (state_ == st_closing || state_ == st_closed || state_ == st_error) {
+    auto nread = decBuf_.size();
+    if (nread) {
       assert(nread < len);
       memcpy(data, decBuf_.data(), nread);
       decBuf_.clear();
+      A2_LOG_DEBUG("WinTLS: Sending out decrypted buffer after EOF");
       return nread;
     }
-    A2_LOG_DEBUG("WinTLS: EOF was already seen");
 
-    return 0;
+    A2_LOG_DEBUG("WinTLS: Read request aborted. Connection already closed");
+    return state_ == st_error ? TLS_ERR_ERROR : 0;
   }
 
   if (state_ == st_handshake_write || state_ == st_handshake_write_last ||
@@ -468,6 +474,7 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
     }
     // Continue.
   }
+
   if (state_ != st_connected) {
     status_ = SEC_E_INVALID_HANDLE;
     return TLS_ERR_ERROR;
@@ -484,15 +491,16 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
     if (read < 0 && errno == WSAEWOULDBLOCK) {
       break;
     }
-    if (read == 0) {
-      A2_LOG_DEBUG("WinTLS: EOF sensed");
-      eof_ = true;
-      break;
-    }
     if (read < 0) {
       status_ = SEC_E_INCOMPLETE_MESSAGE;
       state_ = st_error;
       return TLS_ERR_ERROR;
+    }
+    if (read == 0) {
+      A2_LOG_DEBUG("WinTLS: Connection abruptly closed!");
+      // At least try to gracefully close our write end.
+      closeConnection();
+      break;
     }
     readBuf_.advance(read);
   }
@@ -551,7 +559,7 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
     }
     if (status_ == SEC_I_CONTEXT_EXPIRED) {
       // Connection is gone now, but the buffered bytes are still valid.
-      A2_LOG_DEBUG("WinTLS: Connection closed!");
+      A2_LOG_DEBUG("WinTLS: Connection gracefully closed!");
       closeConnection();
       break;
     }
@@ -559,8 +567,8 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
 
   len = std::min(decBuf_.size(), len);
   if (len == 0) {
-    if (eof_) {
-      return 0;
+    if (state_ != st_connected) {
+      return state_ == st_error ? TLS_ERR_ERROR : 0;
     }
 
     return TLS_ERR_WOULDBLOCK;
@@ -685,6 +693,12 @@ restart:
         break;
       }
       if (read <= 0) {
+        status_ = SEC_E_INCOMPLETE_MESSAGE;
+        state_ = st_error;
+        return TLS_ERR_ERROR;
+      }
+      if (read == 0) {
+        A2_LOG_DEBUG("WinTLS: Connection abruptly closed during handshake!");
         status_ = SEC_E_INCOMPLETE_MESSAGE;
         state_ = st_error;
         return TLS_ERR_ERROR;
