@@ -139,14 +139,18 @@ ssize_t OpenSSLTLSSession::readData(void* data, size_t len)
   if(rv_ <= 0) {
     if(wouldblock(ssl_, rv_)) {
       return TLS_ERR_WOULDBLOCK;
-    } else {
-      return TLS_ERR_ERROR;
     }
-  } else {
-    ssize_t ret = rv_;
-    rv_ = 1;
-    return ret;
+
+    if(rv_ == 0) {
+      return 0;
+    }
+
+    return TLS_ERR_ERROR;
   }
+
+  ssize_t ret = rv_;
+  rv_ = 1;
+  return ret;
 }
 
 int OpenSSLTLSSession::handshake()
