@@ -1,3 +1,48 @@
+aria2 1.18.8
+============
+
+Release Note
+------------
+
+This releases fixes the bug that aria2 cannot read piped stdin on
+mingw32.  It also fixes busy loop on mingw32 when SSL/TLS is used.  We
+also fixed 2 crashes which can occur on all platforms.
+
+Changes
+-------
+
+* WinTLS: Fix abrupt connection closing and closing in general.
+
+  Fixes GH-277
+
+* LibsslTLSSession: Treat 0 from readData as EOF
+
+* Enable dynamicbase and nxcompat in Windows binaries
+
+* Fix crash in OpenedFileCounter::ensureMaxOpenFileLimit()
+
+  The crash happens if PieceStorage and/or DiskAdaptor are not
+  initialized in one of active RequestGroups.
+
+* mingw32: Fix bug that aria2 does not read piped stdin
+
+* Fix std::length_error when no_proxy is used
+
+  This is regression introduced in 8cada497.
+
+* Try to set sane limits for RLIMIT_NO_FILE
+
+  E.g. on OSX the default is 256, which isn't exactly compatible with
+  torrent downloads.
+
+  Closes GH-257
+
+* Delay auth failures instead of PBKDF2
+
+  Closes GH-256
+
+
+
 aria2 1.18.7
 ============
 
