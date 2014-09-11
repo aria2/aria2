@@ -76,7 +76,7 @@ void MessageDigestTest::testIsStronger()
   CPPUNIT_ASSERT(MessageDigest::isStronger("sha-1", "md5"));
   CPPUNIT_ASSERT(!MessageDigest::isStronger("md5", "sha-1"));
   CPPUNIT_ASSERT(!MessageDigest::isStronger("unknown", "sha-1"));
-  CPPUNIT_ASSERT(!MessageDigest::isStronger("sha-1", "unknown"));
+  CPPUNIT_ASSERT(MessageDigest::isStronger("sha-1", "unknown"));
 }
 
 void MessageDigestTest::testIsValidHash()

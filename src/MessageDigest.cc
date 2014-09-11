@@ -135,8 +135,11 @@ bool MessageDigest::isStronger(const std::string& lhs, const std::string& rhs)
                              FindHashTypeEntry(lhs));
   auto rEntry = std::find_if(std::begin(hashTypes), std::end(hashTypes),
                              FindHashTypeEntry(rhs));
-  if(lEntry == std::end(hashTypes) || rEntry == std::end(hashTypes)) {
+  if(lEntry == std::end(hashTypes)) {
     return false;
+  }
+  if(rEntry == std::end(hashTypes)) {
+    return true;
   }
   return lEntry->strength > rEntry->strength;
 }
