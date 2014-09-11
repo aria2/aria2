@@ -114,27 +114,18 @@ size_t MessageDigest::getDigestLength(const std::string& hashType)
   return MessageDigestImpl::getDigestLength(hashType);
 }
 
-namespace {
-class FindHashTypeEntry {
-private:
-  const std::string& hashType_;
-public:
-  FindHashTypeEntry(const std::string& hashType):hashType_(hashType)
-  {}
-
-  bool operator()(const HashTypeEntry& entry) const
-  {
-    return hashType_ == entry.hashType;
-  }
-};
-} // namespace
-
 bool MessageDigest::isStronger(const std::string& lhs, const std::string& rhs)
 {
   auto lEntry = std::find_if(std::begin(hashTypes), std::end(hashTypes),
-                             FindHashTypeEntry(lhs));
+                             [&lhs](const HashTypeEntry& entry)
+                             {
+                               return lhs == entry.hashType;
+                             });
   auto rEntry = std::find_if(std::begin(hashTypes), std::end(hashTypes),
-                             FindHashTypeEntry(rhs));
+                             [&rhs](const HashTypeEntry& entry)
+                             {
+                               return rhs == entry.hashType;
+                             });
   if(lEntry == std::end(hashTypes)) {
     return false;
   }
