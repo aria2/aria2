@@ -981,7 +981,7 @@
     "                              documentation, Wikipedia or any other source,\n" \
     "                              use them as they are.")
 #define TEXT_RLIMIT_NOFILE                                              \
-  _("  --rlimit-nofile=NUM         Set the soft limit of open file descriptors.\n" \
+  _(" --rlimit-nofile=NUM          Set the soft limit of open file descriptors.\n" \
     "                              This open will only have effect when:\n" \
     "                                a) The system supports it (posix)\n" \
     "                                b) The limit does not exceed the hard limit.\n" \

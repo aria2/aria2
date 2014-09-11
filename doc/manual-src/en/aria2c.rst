@@ -1186,7 +1186,7 @@ Advanced Options
   you take commonly used values from RFC, network vendors'
   documentation, Wikipedia or any other source, use them as they are.
 
-.. option:: --rlimit-nofile=NUM
+.. option:: --rlimit-nofile=<NUM>
 
   Set the soft limit of open file descriptors.
   This open will only have effect when:
