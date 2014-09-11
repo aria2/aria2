@@ -19,11 +19,15 @@ class MessageDigestTest:public CppUnit::TestFixture {
 
   std::unique_ptr<MessageDigest> sha1_;
   std::unique_ptr<MessageDigest> md5_;
+  std::unique_ptr<MessageDigest> adler32_;
 public:
   void setUp()
   {
     md5_ = MessageDigest::create("md5");
     sha1_ = MessageDigest::sha1();
+#ifdef HAVE_ZLIB
+    adler32_ = MessageDigest::create("adler32");
+#endif // HAVE_ZLIB
   }
 
   void testDigest();
@@ -54,6 +58,18 @@ void MessageDigestTest::testDigest()
   sha1_->update("abc", 3);
   CPPUNIT_ASSERT_EQUAL(std::string("a9993e364706816aba3e25717850c26c9cd0d89d"),
                        util::toHex(sha1_->digest()));
+
+#ifdef HAVE_ZLIB
+  adler32_->reset();
+  adler32_->update("aria2", 5);
+  CPPUNIT_ASSERT_EQUAL(std::string("05e101d0"),
+                       util::toHex(adler32_->digest()));
+
+  adler32_->reset();
+  adler32_->update("abc", 3);
+  CPPUNIT_ASSERT_EQUAL(std::string("024d0127"),
+                       util::toHex(adler32_->digest()));
+#endif // HAVE_ZLIB
 }
 
 void MessageDigestTest::testSupports()

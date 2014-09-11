@@ -37,6 +37,8 @@
 
 #include "crypto_hash.h"
 
+#include "Adler32MessageDigestImpl.h"
+
 namespace {
 using namespace aria2;
 using namespace crypto;
@@ -101,6 +103,7 @@ MessageDigestImpl::hashes_t MessageDigestImpl::hashes = {
   { "sha-384", make_hi<MessageDigestSHA384>() },
   { "sha-512", make_hi<MessageDigestSHA512>() },
   { "md5", make_hi<MessageDigestMD5>() },
+  ADLER32_MESSAGE_DIGEST
 };
 
 } // namespace aria2

@@ -59,7 +59,8 @@ HashTypeEntry hashTypes[] = {
   HashTypeEntry("sha-256", 3),
   HashTypeEntry("sha-384", 4),
   HashTypeEntry("sha-512", 5),
-  HashTypeEntry("md5", 0)
+  HashTypeEntry("md5", 0),
+  HashTypeEntry("adler32", 0),
 };
 } // namespace aria2
 

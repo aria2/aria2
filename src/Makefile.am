@@ -417,7 +417,8 @@ if HAVE_ZLIB
 SRCS += \
 	GZipDecodingStreamFilter.cc GZipDecodingStreamFilter.h\
 	GZipEncoder.cc GZipEncoder.h\
-	GZipFile.cc GZipFile.h
+	GZipFile.cc GZipFile.h \
+	Adler32MessageDigestImpl.cc Adler32MessageDigestImpl.h
 endif # HAVE_ZLIB
 
 if HAVE_SQLITE3
