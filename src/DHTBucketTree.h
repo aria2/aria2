@@ -53,9 +53,10 @@ class DHTNode;
 class DHTBucketTreeNode {
 public:
   // Ctor for internal node
-  DHTBucketTreeNode(DHTBucketTreeNode* left, DHTBucketTreeNode* right);
+  DHTBucketTreeNode(std::unique_ptr<DHTBucketTreeNode> left,
+                    std::unique_ptr<DHTBucketTreeNode> right);
   // Ctor for leaf node
-  DHTBucketTreeNode(const std::shared_ptr<DHTBucket>& bucket);
+  DHTBucketTreeNode(std::shared_ptr<DHTBucket> bucket);
   ~DHTBucketTreeNode();
   // Returns child node, left or right, which contains key.  If dig is
   // called against leaf node, then returns 0.
@@ -66,8 +67,8 @@ public:
   const unsigned char* getMaxId() const { return maxId_; }
   const unsigned char* getMinId() const { return minId_; }
   DHTBucketTreeNode* getParent() const { return parent_; }
-  DHTBucketTreeNode* getLeft() const { return left_; }
-  DHTBucketTreeNode* getRight() const { return right_; }
+  DHTBucketTreeNode* getLeft() const { return left_.get(); }
+  DHTBucketTreeNode* getRight() const { return right_.get(); }
   const std::shared_ptr<DHTBucket>& getBucket() const { return bucket_; }
   // Splits this object's bucket using DHTBucket::split() and create
   // left and right child node to hold buckets. The bucket of current
@@ -83,8 +84,8 @@ private:
   void resetRelation();
   void setParent(DHTBucketTreeNode* parent) { parent_ = parent; }
   DHTBucketTreeNode* parent_;
-  DHTBucketTreeNode* left_;
-  DHTBucketTreeNode* right_;
+  std::unique_ptr<DHTBucketTreeNode> left_;
+  std::unique_ptr<DHTBucketTreeNode> right_;
   std::shared_ptr<DHTBucket> bucket_;
   unsigned char minId_[DHT_ID_LENGTH];
   unsigned char maxId_[DHT_ID_LENGTH];

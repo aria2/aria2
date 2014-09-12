@@ -39,34 +39,30 @@
 
 #include "DHTBucket.h"
 #include "DHTNode.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
 DHTBucketTreeNode::DHTBucketTreeNode
-(DHTBucketTreeNode* left,
- DHTBucketTreeNode* right)
+(std::unique_ptr<DHTBucketTreeNode> left,
+ std::unique_ptr<DHTBucketTreeNode> right)
   : parent_(nullptr),
-    left_(left),
-    right_(right)
+    left_(std::move(left)),
+    right_(std::move(right))
 {
   resetRelation();
 }
 
-DHTBucketTreeNode::DHTBucketTreeNode(const std::shared_ptr<DHTBucket>& bucket)
+DHTBucketTreeNode::DHTBucketTreeNode(std::shared_ptr<DHTBucket> bucket)
   : parent_(nullptr),
-    left_(nullptr),
-    right_(nullptr),
-    bucket_(bucket)
+    bucket_(std::move(bucket))
 {
   memcpy(minId_, bucket_->getMinID(), DHT_ID_LENGTH);
   memcpy(maxId_, bucket_->getMaxID(), DHT_ID_LENGTH);
 }
 
 DHTBucketTreeNode::~DHTBucketTreeNode()
-{
-  delete left_;
-  delete right_;
-}
+{}
 
 void DHTBucketTreeNode::resetRelation()
 {
@@ -82,9 +78,9 @@ DHTBucketTreeNode* DHTBucketTreeNode::dig(const unsigned char* key)
     return nullptr;
   }
   if(left_->isInRange(key)) {
-    return left_;
+    return left_.get();
   } else {
-    return right_;
+    return right_.get();
   }
 }
 
@@ -99,9 +95,8 @@ bool DHTBucketTreeNode::isInRange(const unsigned char* key) const
 
 void DHTBucketTreeNode::split()
 {
-  std::shared_ptr<DHTBucket> leftBucket = bucket_->split();
-  left_ = new DHTBucketTreeNode(leftBucket);
-  right_ = new DHTBucketTreeNode(bucket_);
+  left_ = make_unique<DHTBucketTreeNode>(bucket_->split());
+  right_ = make_unique<DHTBucketTreeNode>(bucket_);
   bucket_.reset();
   resetRelation();
 }

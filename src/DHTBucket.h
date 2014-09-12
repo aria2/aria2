@@ -86,7 +86,7 @@ public:
 
   void getRandomNodeID(unsigned char* nodeID) const;
 
-  std::shared_ptr<DHTBucket> split();
+  std::unique_ptr<DHTBucket> split();
 
   bool isInRange(const std::shared_ptr<DHTNode>& node) const;
 
