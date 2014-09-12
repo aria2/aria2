@@ -748,7 +748,7 @@ std::shared_ptr<Request> AbstractCommand::createProxyRequest() const
 
   std::string proxy = getProxyUri(req_->getProtocol(), getOption().get());
   if (!proxy.empty()) {
-    proxyRequest.reset(new Request());
+    proxyRequest = std::make_shared<Request>();
     if (proxyRequest->setUri(proxy)) {
       A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - Using proxy", getCuid()));
     }
@@ -896,7 +896,7 @@ const std::shared_ptr<Option>& AbstractCommand::getOption() const
 
 void AbstractCommand::createSocket()
 {
-  socket_.reset(new SocketCore());
+  socket_ = std::make_shared<SocketCore>();
 }
 
 int32_t AbstractCommand::calculateMinSplitSize() const

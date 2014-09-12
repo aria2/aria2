@@ -53,7 +53,7 @@ class DHTRoutingTable {
 private:
   std::shared_ptr<DHTNode> localNode_;
 
-  DHTBucketTreeNode* root_;
+  std::unique_ptr<DHTBucketTreeNode> root_;
 
   int numBucket_;
 

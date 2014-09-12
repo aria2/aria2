@@ -76,7 +76,7 @@ public:
 class DefaultPieceStorage : public PieceStorage {
 private:
   std::shared_ptr<DownloadContext> downloadContext_;
-  BitfieldMan* bitfieldMan_;
+  std::unique_ptr<BitfieldMan> bitfieldMan_;
   std::shared_ptr<DiskAdaptor> diskAdaptor_;
   std::shared_ptr<DiskWriterFactory> diskWriterFactory_;
   typedef std::set<std::shared_ptr<Piece>,

@@ -123,7 +123,7 @@ std::unique_ptr<AuthResolver> AuthConfigFactory::createHttpAuthResolver
 {
   std::unique_ptr<AbstractAuthResolver> resolver;
   if(op->getAsBool(PREF_NO_NETRC)) {
-    resolver.reset(new DefaultAuthResolver());
+    resolver = make_unique<DefaultAuthResolver>();
   } else {
     auto authResolver = make_unique<NetrcAuthResolver>();
     authResolver->setNetrc(netrc_.get());
@@ -140,7 +140,7 @@ std::unique_ptr<AuthResolver> AuthConfigFactory::createFtpAuthResolver
 {
   std::unique_ptr<AbstractAuthResolver> resolver;
   if(op->getAsBool(PREF_NO_NETRC)) {
-    resolver.reset(new DefaultAuthResolver());
+    resolver = make_unique<DefaultAuthResolver>();
   } else {
     auto authResolver = make_unique<NetrcAuthResolver>();
     authResolver->setNetrc(netrc_.get());

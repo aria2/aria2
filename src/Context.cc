@@ -89,8 +89,8 @@ namespace aria2 {
 namespace {
 void showTorrentFile(const std::string& uri)
 {
-  std::shared_ptr<Option> op(new Option());
-  std::shared_ptr<DownloadContext> dctx(new DownloadContext());
+  auto op = std::make_shared<Option>();
+  auto dctx = std::make_shared<DownloadContext>();
   bittorrent::load(uri, dctx, op);
   bittorrent::print(*global::cout(), dctx);
 }
@@ -154,7 +154,7 @@ Context::Context(bool standalone,
                  int argc, char** argv, const KeyVals& options)
 {
   std::vector<std::string> args;
-  std::shared_ptr<Option> op(new Option());
+  auto op = std::make_shared<Option>();
   error_code::Value rv;
   rv = option_processing(*op.get(), standalone, args, argc, argv, options);
   if(rv != error_code::FINISHED) {
@@ -290,9 +290,8 @@ Context::Context(bool standalone,
      !uriListParser) {
     global::cout()->printf("%s\n", MSG_NO_FILES_TO_DOWNLOAD);
   } else {
-    reqinfo.reset(new MultiUrlRequestInfo(std::move(requestGroups),
-                                          op,
-                                          uriListParser));
+    reqinfo = std::make_shared<MultiUrlRequestInfo>
+      (std::move(requestGroups), op, uriListParser);
   }
 }
 

@@ -144,7 +144,7 @@ void DHTRoutingTableDeserializer::deserialize(const std::string& filename)
   readBytes(fp, buf, buf.size(), 8);
   // localnode ID
   readBytes(fp, buf, buf.size(), DHT_ID_LENGTH);
-  std::shared_ptr<DHTNode> localNode(new DHTNode(buf));
+  auto localNode = std::make_shared<DHTNode>(buf);
   // 4bytes reserved
   readBytes(fp, buf, buf.size(), 4);
 
@@ -187,7 +187,7 @@ void DHTRoutingTableDeserializer::deserialize(const std::string& filename)
     // node ID
     readBytes(fp, buf, buf.size(), DHT_ID_LENGTH);
 
-    std::shared_ptr<DHTNode> node(new DHTNode(buf));
+    auto node = std::make_shared<DHTNode>(buf);
     node->setIPAddress(peer.first);
     node->setPort(peer.second);
     // 4bytes reserved

@@ -38,8 +38,7 @@ namespace aria2 {
 
 std::shared_ptr<Exception> FatalException::copy() const
 {
-  std::shared_ptr<Exception> e(new FatalException(*this));
-  return e;
+  return std::make_shared<FatalException>(*this);
 }
 
 FatalException::FatalException

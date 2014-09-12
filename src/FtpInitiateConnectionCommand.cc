@@ -113,13 +113,9 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandProxied
     if(proxyMethod == V_GET) {
       // Use GET for FTP via HTTP proxy.
       getRequest()->setMethod(Request::METHOD_GET);
-      std::shared_ptr<HttpRequestConnectChain> chain
-        (new HttpRequestConnectChain());
-      c->setControlChain(chain);
+      c->setControlChain(std::make_shared<HttpRequestConnectChain>());
     } else if(proxyMethod == V_TUNNEL) {
-      std::shared_ptr<FtpTunnelRequestConnectChain> chain
-        (new FtpTunnelRequestConnectChain());
-      c->setControlChain(chain);
+      c->setControlChain(std::make_shared<FtpTunnelRequestConnectChain>());
     } else {
       // Unreachable
       assert(0);
@@ -150,10 +146,9 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandProxied
 
   // Use GET for FTP via HTTP proxy.
   getRequest()->setMethod(Request::METHOD_GET);
-  std::shared_ptr<SocketRecvBuffer> socketRecvBuffer
-    (new SocketRecvBuffer(pooledSocket));
-  std::shared_ptr<HttpConnection> hc
-    (new HttpConnection(getCuid(), pooledSocket, socketRecvBuffer));
+  auto socketRecvBuffer = std::make_shared<SocketRecvBuffer>(pooledSocket);
+  auto hc = std::make_shared<HttpConnection>(getCuid(), pooledSocket,
+                                             socketRecvBuffer);
 
   auto c = make_unique<HttpRequestCommand>(getCuid(),
                                            getRequest(),
@@ -191,9 +186,8 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandPlain
                                           getRequestGroup(),
                                           getDownloadEngine(),
                                           getSocket());
-    std::shared_ptr<FtpNegotiationConnectChain> chain
-      (new FtpNegotiationConnectChain());
-    c->setControlChain(chain);
+
+    c->setControlChain(std::make_shared<FtpNegotiationConnectChain>());
     setupBackupConnection(hostname, addr, port, c.get());
     return std::move(c);
   }

@@ -48,7 +48,7 @@
 namespace aria2 {
 
 DHTConnectionImpl::DHTConnectionImpl(int family)
-  : socket_(new SocketCore(SOCK_DGRAM)),
+  : socket_(std::make_shared<SocketCore>(SOCK_DGRAM)),
     family_(family)
 {}
 

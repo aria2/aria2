@@ -150,23 +150,18 @@ ares_addr_node* parseAsyncDNSServers(const std::string& serversOpt)
   ares_addr_node root;
   root.next = nullptr;
   ares_addr_node* tail = &root;
-  ares_addr_node* node = nullptr;
   for (const auto& s: servers) {
-    if(node == nullptr) {
-      node = new ares_addr_node();
-    }
+    auto node = make_unique<ares_addr_node>();
+
     size_t len = net::getBinAddr(&node->addr, s.c_str());
     if(len != 0) {
       node->next = nullptr;
       node->family = (len == 4 ? AF_INET : AF_INET6);
-      tail->next = node;
-      tail = node;
-      node = nullptr;
+      tail->next = node.release();
+      tail = tail->next;
     }
   }
-  if(node) {
-    delete node;
-  }
+
   return root.next;
 }
 

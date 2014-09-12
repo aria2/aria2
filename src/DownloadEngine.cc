@@ -96,7 +96,7 @@ DownloadEngine::DownloadEngine(std::unique_ptr<EventPoll> eventPoll)
     noWait_(true),
     refreshInterval_(DEFAULT_REFRESH_INTERVAL),
     lastRefresh_(0),
-    cookieStorage_(new CookieStorage()),
+    cookieStorage_(make_unique<CookieStorage>()),
 #ifdef ENABLE_BITTORRENT
     btRegistry_(make_unique<BtRegistry>()),
 #endif // ENABLE_BITTORRENT

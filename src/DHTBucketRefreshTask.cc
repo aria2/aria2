@@ -63,7 +63,7 @@ void DHTBucketRefreshTask::startup()
     b->notifyUpdate();
     unsigned char targetID[DHT_ID_LENGTH];
     b->getRandomNodeID(targetID);
-    std::shared_ptr<DHTNodeLookupTask> task(new DHTNodeLookupTask(targetID));
+    auto task = std::make_shared<DHTNodeLookupTask>(targetID);
     task->setRoutingTable(getRoutingTable());
     task->setMessageDispatcher(getMessageDispatcher());
     task->setMessageFactory(getMessageFactory());

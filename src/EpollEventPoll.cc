@@ -83,7 +83,7 @@ struct epoll_event EpollEventPoll::KSocketEntry::getEvents()
 
 EpollEventPoll::EpollEventPoll()
   : epEventsSize_(EPOLL_EVENTS_MAX),
-    epEvents_(new struct epoll_event[epEventsSize_])
+    epEvents_(make_unique<struct epoll_event[]>(epEventsSize_))
 {
   epfd_ = epoll_create(EPOLL_EVENTS_MAX);
 }
@@ -100,7 +100,6 @@ EpollEventPoll::~EpollEventPoll()
                        util::safeStrerror(errNum).c_str()));
     }
   }
-  delete [] epEvents_;
 }
 
 bool EpollEventPoll::good() const
@@ -114,7 +113,8 @@ void EpollEventPoll::poll(const struct timeval& tv)
   int timeout = tv.tv_sec*1000+tv.tv_usec/1000;
 
   int res;
-  while((res = epoll_wait(epfd_, epEvents_, EPOLL_EVENTS_MAX, timeout)) == -1 &&
+  while((res = epoll_wait(epfd_, epEvents_.get(),
+                          EPOLL_EVENTS_MAX, timeout)) == -1 &&
         errno == EINTR);
 
   if(res > 0) {
@@ -168,7 +168,7 @@ int translateEvents(EventPoll::EventType events)
 bool EpollEventPoll::addEvents(sock_t socket,
                                const EpollEventPoll::KEvent& event)
 {
-  std::shared_ptr<KSocketEntry> socketEntry(new KSocketEntry(socket));
+  auto socketEntry = std::make_shared<KSocketEntry>(socket);
   KSocketEntrySet::iterator i = socketEntries_.lower_bound(socketEntry);
   int r = 0;
   int errNum = 0;
@@ -191,8 +191,7 @@ bool EpollEventPoll::addEvents(sock_t socket,
     socketEntries_.insert(i, socketEntry);
     if(socketEntries_.size() > epEventsSize_) {
       epEventsSize_ *= 2;
-      delete [] epEvents_;
-      epEvents_ = new struct epoll_event[epEventsSize_];
+      epEvents_ = make_unique<struct epoll_event[]>(epEventsSize_);
     }
 
     event.addSelf(socketEntry);
@@ -229,7 +228,7 @@ bool EpollEventPoll::addEvents(sock_t socket, Command* command, int events,
 bool EpollEventPoll::deleteEvents(sock_t socket,
                                   const EpollEventPoll::KEvent& event)
 {
-  std::shared_ptr<KSocketEntry> socketEntry(new KSocketEntry(socket));
+  auto socketEntry = std::make_shared<KSocketEntry>(socket);
   KSocketEntrySet::iterator i = socketEntries_.find(socketEntry);
   if(i == socketEntries_.end()) {
     A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
@@ -285,8 +284,7 @@ bool EpollEventPoll::deleteEvents(sock_t socket, Command* command,
 bool EpollEventPoll::addNameResolver
 (const std::shared_ptr<AsyncNameResolver>& resolver, Command* command)
 {
-  std::shared_ptr<KAsyncNameResolverEntry> entry
-    (new KAsyncNameResolverEntry(resolver, command));
+  auto entry = std::make_shared<KAsyncNameResolverEntry>(resolver, command);
   KAsyncNameResolverEntrySet::iterator itr =
     nameResolverEntries_.lower_bound(entry);
   if(itr != nameResolverEntries_.end() && *(*itr) == *entry) {
@@ -301,8 +299,7 @@ bool EpollEventPoll::addNameResolver
 bool EpollEventPoll::deleteNameResolver
 (const std::shared_ptr<AsyncNameResolver>& resolver, Command* command)
 {
-  std::shared_ptr<KAsyncNameResolverEntry> entry
-    (new KAsyncNameResolverEntry(resolver, command));
+  auto entry = std::make_shared<KAsyncNameResolverEntry>(resolver, command);
   KAsyncNameResolverEntrySet::iterator itr =
     nameResolverEntries_.find(entry);
   if(itr == nameResolverEntries_.end()) {

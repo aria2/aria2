@@ -63,7 +63,7 @@ private:
 
   time_t summaryInterval_;
 
-  std::shared_ptr<SizeFormatter> sizeFormatter_;
+  std::unique_ptr<SizeFormatter> sizeFormatter_;
   bool readoutVisibility_;
   bool truncate_;
   bool isTTY_;

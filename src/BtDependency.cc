@@ -94,7 +94,7 @@ bool BtDependency::resolve()
     std::shared_ptr<RequestGroup> dependee = dependee_;
     // cut reference here
     dependee_.reset();
-    std::shared_ptr<DownloadContext> context(new DownloadContext());
+    auto context = std::make_shared<DownloadContext>();
     try {
       std::shared_ptr<DiskAdaptor> diskAdaptor =
         dependee->getPieceStorage()->getDiskAdaptor();

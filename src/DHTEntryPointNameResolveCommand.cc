@@ -151,7 +151,7 @@ bool DHTEntryPointNameResolveCommand::execute()
 void DHTEntryPointNameResolveCommand::addPingTask
 (const std::pair<std::string, uint16_t>& addr)
 {
-  std::shared_ptr<DHTNode> entryNode(new DHTNode());
+  auto entryNode = std::make_shared<DHTNode>();
   entryNode->setIPAddress(addr.first);
   entryNode->setPort(addr.second);
 

@@ -38,8 +38,7 @@ namespace aria2 {
 
 std::shared_ptr<Exception> DownloadFailureException::copy() const
 {
-  std::shared_ptr<Exception> e(new DownloadFailureException(*this));
-  return e;
+  return std::make_shared<DownloadFailureException>(*this);
 }
 
 DownloadFailureException::DownloadFailureException

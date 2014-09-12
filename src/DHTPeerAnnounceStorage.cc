@@ -67,7 +67,7 @@ bool DHTPeerAnnounceStorage::InfoHashLess::operator()
 std::shared_ptr<DHTPeerAnnounceEntry>
 DHTPeerAnnounceStorage::getPeerAnnounceEntry(const unsigned char* infoHash)
 {
-  std::shared_ptr<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(infoHash));
+  auto entry = std::make_shared<DHTPeerAnnounceEntry>(infoHash);
 
   auto i = entries_.lower_bound(entry);
 
@@ -92,7 +92,7 @@ DHTPeerAnnounceStorage::addPeerAnnounce(const unsigned char* infoHash,
 
 bool DHTPeerAnnounceStorage::contains(const unsigned char* infoHash) const
 {
-  std::shared_ptr<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(infoHash));
+  auto entry = std::make_shared<DHTPeerAnnounceEntry>(infoHash);
   return
     std::binary_search(entries_.begin(), entries_.end(), entry, InfoHashLess());
 }
@@ -100,7 +100,7 @@ bool DHTPeerAnnounceStorage::contains(const unsigned char* infoHash) const
 void DHTPeerAnnounceStorage::getPeers(std::vector<std::shared_ptr<Peer> >& peers,
                                       const unsigned char* infoHash)
 {
-  std::shared_ptr<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(infoHash));
+  auto entry = std::make_shared<DHTPeerAnnounceEntry>(infoHash);
 
   auto i = entries_.find(entry);
   if(i != entries_.end()) {

@@ -217,8 +217,8 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
      (metadataGetMode || !torrentAttrs->privateTorrent)) {
     if(!btReg->getLpdMessageReceiver()) {
       A2_LOG_INFO("Initializing LpdMessageReceiver.");
-      std::shared_ptr<LpdMessageReceiver> receiver
-        (new LpdMessageReceiver(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT));
+      auto receiver = std::make_shared<LpdMessageReceiver>
+        (LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
       bool initialized = false;
       const std::string& lpdInterface =
         e->getOption()->get(PREF_BT_LPD_INTERFACE);
@@ -255,11 +255,10 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
       const unsigned char* infoHash =
         bittorrent::getInfoHash(requestGroup->getDownloadContext());
       A2_LOG_INFO("Initializing LpdMessageDispatcher.");
-      std::shared_ptr<LpdMessageDispatcher> dispatcher
-        (new LpdMessageDispatcher
-         (std::string(&infoHash[0], &infoHash[INFO_HASH_LENGTH]),
-          btReg->getTcpPort(),
-          LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT));
+      auto dispatcher = std::make_shared<LpdMessageDispatcher>
+        (std::string(&infoHash[0], &infoHash[INFO_HASH_LENGTH]),
+         btReg->getTcpPort(),
+         LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
       if(dispatcher->init(btReg->getLpdMessageReceiver()->getLocalAddress(),
                           /*ttl*/1, /*loop*/1)) {
         A2_LOG_INFO("LpdMessageDispatcher initialized.");

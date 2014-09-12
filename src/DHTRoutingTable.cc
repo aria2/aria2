@@ -51,17 +51,15 @@ namespace aria2 {
 
 DHTRoutingTable::DHTRoutingTable(const std::shared_ptr<DHTNode>& localNode)
   : localNode_(localNode),
-    root_(new DHTBucketTreeNode
-          (std::shared_ptr<DHTBucket>(new DHTBucket(localNode_)))),
+    root_(make_unique<DHTBucketTreeNode>
+          (std::make_shared<DHTBucket>(localNode_))),
     numBucket_(1),
     taskQueue_{nullptr},
     taskFactory_{nullptr}
 {}
 
 DHTRoutingTable::~DHTRoutingTable()
-{
-  delete root_;
-}
+{}
 
 bool DHTRoutingTable::addNode(const std::shared_ptr<DHTNode>& node)
 {
@@ -80,7 +78,7 @@ bool DHTRoutingTable::addNode(const std::shared_ptr<DHTNode>& node, bool good)
     A2_LOG_DEBUG("Adding node with the same ID with localnode is not allowed.");
     return false;
   }
-  DHTBucketTreeNode* treeNode = dht::findTreeNodeFor(root_, node->getID());
+  auto treeNode = dht::findTreeNodeFor(root_.get(), node->getID());
   while(1) {
     const std::shared_ptr<DHTBucket>& bucket = treeNode->getBucket();
     if(bucket->addNode(node)) {
@@ -112,7 +110,7 @@ void DHTRoutingTable::getClosestKNodes
 (std::vector<std::shared_ptr<DHTNode> >& nodes,
  const unsigned char* key) const
 {
-  dht::findClosestKNodes(nodes, root_, key);
+  dht::findClosestKNodes(nodes, root_.get(), key);
 }
 
 int DHTRoutingTable::getNumBucket() const
@@ -131,7 +129,7 @@ void DHTRoutingTable::showBuckets() const
 
 std::shared_ptr<DHTBucket> DHTRoutingTable::getBucketFor(const unsigned char* nodeID) const
 {
-  return dht::findBucketFor(root_, nodeID);
+  return dht::findBucketFor(root_.get(), nodeID);
 }
 
 std::shared_ptr<DHTBucket> DHTRoutingTable::getBucketFor(const std::shared_ptr<DHTNode>& node) const
@@ -163,7 +161,7 @@ void DHTRoutingTable::moveBucketTail(const std::shared_ptr<DHTNode>& node)
 void DHTRoutingTable::getBuckets
 (std::vector<std::shared_ptr<DHTBucket> >& buckets) const
 {
-  dht::enumerateBucket(buckets, root_);
+  dht::enumerateBucket(buckets, root_.get());
 }
 
 void DHTRoutingTable::setTaskQueue(DHTTaskQueue* taskQueue)

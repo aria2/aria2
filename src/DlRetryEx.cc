@@ -38,8 +38,7 @@ namespace aria2 {
 
 std::shared_ptr<Exception> DlRetryEx::copy() const
 {
-  std::shared_ptr<Exception> e(new DlRetryEx(*this));
-  return e;
+  return std::make_shared<DlRetryEx>(*this);
 }
 
 DlRetryEx::DlRetryEx(const char* file, int line, const std::string& msg):

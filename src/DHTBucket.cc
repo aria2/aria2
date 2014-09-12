@@ -192,8 +192,8 @@ std::shared_ptr<DHTBucket> DHTBucket::split()
   bitfield::flipBit(min_, DHT_ID_LENGTH, prefixLength_);
 
   ++prefixLength_;
-  std::shared_ptr<DHTBucket> rBucket(new DHTBucket(prefixLength_,
-                                                rMax, rMin, localNode_));
+  auto rBucket = std::make_shared<DHTBucket>(prefixLength_, rMax, rMin,
+                                             localNode_);
 
   std::deque<std::shared_ptr<DHTNode> > lNodes;
   for(auto & elem : nodes_) {
@@ -227,7 +227,7 @@ void DHTBucket::getGoodNodes
 
 std::shared_ptr<DHTNode> DHTBucket::getNode(const unsigned char* nodeID, const std::string& ipaddr, uint16_t port) const
 {
-  std::shared_ptr<DHTNode> node(new DHTNode(nodeID));
+  auto node = std::make_shared<DHTNode>(nodeID);
   node->setIPAddress(ipaddr);
   node->setPort(port);
   auto itr =

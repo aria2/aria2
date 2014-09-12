@@ -38,8 +38,7 @@ namespace aria2 {
 
 std::shared_ptr<Exception> DlAbortEx::copy() const
 {
-  std::shared_ptr<Exception> e(new DlAbortEx(*this));
-  return e;
+  return std::make_shared<DlAbortEx>(*this);
 }
 
 DlAbortEx::DlAbortEx(const char* file, int line, const std::string& msg):

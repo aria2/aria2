@@ -115,7 +115,7 @@ bool BackupIPv4ConnectCommand::execute()
     // RFC 6555, the interval will be much longer and around 1 second
     // due to the refresh interval mechanism in DownloadEngine.
     if(startTime_.differenceInMillis(global::wallclock()) >= 300) {
-      socket_.reset(new SocketCore());
+      socket_ = std::make_shared<SocketCore>();
       try {
         socket_->establishConnection(ipaddr_, port_);
         e_->addSocketForWriteCheck(socket_, this);

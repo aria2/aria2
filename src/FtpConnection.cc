@@ -203,7 +203,7 @@ std::shared_ptr<SocketCore> FtpConnection::createServerSocket()
 {
   std::pair<std::string, uint16_t> addrinfo;
   socket_->getAddrInfo(addrinfo);
-  std::shared_ptr<SocketCore> serverSocket(new SocketCore());
+  auto serverSocket = std::make_shared<SocketCore>();
   serverSocket->bind(addrinfo.first.c_str(), 0, AF_UNSPEC);
   serverSocket->beginListen();
   return serverSocket;

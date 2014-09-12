@@ -330,7 +330,7 @@ void DefaultBtProgressInfoFile::load()
       if(!(length <= static_cast<uint32_t>(dctx_->getPieceLength()))) {
         throw DL_ABORT_EX(fmt("piece length out of range: %u", length));
       }
-      std::shared_ptr<Piece> piece(new Piece(index, length));
+      auto piece = std::make_shared<Piece>(index, length);
       uint32_t bitfieldLength;
       READ_CHECK(fp, &bitfieldLength, sizeof(bitfieldLength));
       if(version >= 1) {

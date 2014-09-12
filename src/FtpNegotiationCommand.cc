@@ -90,10 +90,11 @@ FtpNegotiationCommand::FtpNegotiationCommand
  const std::string& baseWorkingDir):
   AbstractCommand(cuid, req, fileEntry, requestGroup, e, socket),
   sequence_(seq),
-  ftp_(new FtpConnection(cuid, socket, req,
-                        e->getAuthConfigFactory()->createAuthConfig
-                        (req, requestGroup->getOption().get()),
-                         getOption().get())),
+  ftp_(std::make_shared<FtpConnection>
+       (cuid, socket, req,
+        e->getAuthConfigFactory()->createAuthConfig
+        (req, requestGroup->getOption().get()),
+        getOption().get())),
   pasvPort_(0)
 {
   ftp_->setBaseWorkingDir(baseWorkingDir);
@@ -447,9 +448,8 @@ bool FtpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
     getSegmentMan()->getSegmentWithIndex(getCuid(), 0);
     return true;
   } else {
-    std::shared_ptr<BtProgressInfoFile> progressInfoFile
-      (new DefaultBtProgressInfoFile
-       (getDownloadContext(), std::shared_ptr<PieceStorage>(), getOption().get()));
+    auto progressInfoFile = std::make_shared<DefaultBtProgressInfoFile>
+      (getDownloadContext(), nullptr, getOption().get());
     getRequestGroup()->adjustFilename(progressInfoFile);
     getRequestGroup()->initPieceStorage();
 
@@ -664,7 +664,7 @@ bool FtpNegotiationCommand::preparePasvConnect() {
                     getCuid(),
                     dataAddr.first.c_str(),
                     pasvPort_));
-    dataSocket_.reset(new SocketCore());
+    dataSocket_ = std::make_shared<SocketCore>();
     dataSocket_->establishConnection(dataAddr.first, pasvPort_, false);
     disableReadCheckSocket();
     setWriteCheckSocket(dataSocket_);
@@ -685,13 +685,13 @@ bool FtpNegotiationCommand::resolveProxy()
   A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
                   getCuid(),
                   proxyAddr_.c_str(), proxyReq->getPort()));
-  dataSocket_.reset(new SocketCore());
+  dataSocket_ = std::make_shared<SocketCore>();
   dataSocket_->establishConnection(proxyAddr_, proxyReq->getPort());
   disableReadCheckSocket();
   setWriteCheckSocket(dataSocket_);
-  std::shared_ptr<SocketRecvBuffer> socketRecvBuffer
-    (new SocketRecvBuffer(dataSocket_));
-  http_.reset(new HttpConnection(getCuid(), dataSocket_, socketRecvBuffer));
+  auto socketRecvBuffer = std::make_shared<SocketRecvBuffer>(dataSocket_);
+  http_ = std::make_shared<HttpConnection>(getCuid(), dataSocket_,
+                                           socketRecvBuffer);
   sequence_ = SEQ_SEND_TUNNEL_REQUEST;
   return false;
 }
@@ -728,7 +728,7 @@ bool FtpNegotiationCommand::sendTunnelRequest()
     }
     auto httpRequest = make_unique<HttpRequest>();
     httpRequest->setUserAgent(getOption()->get(PREF_USER_AGENT));
-    std::shared_ptr<Request> req(new Request());
+    auto req = std::make_shared<Request>();
     // Construct fake URI in order to use HttpRequest
     std::pair<std::string, uint16_t> dataAddr;
     uri::UriStruct us;

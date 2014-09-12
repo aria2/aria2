@@ -99,8 +99,7 @@ void DHTPeerAnnounceEntry::getPeers
 (std::vector<std::shared_ptr<Peer> >& peers) const
 {
   for (const auto& p: peerAddrEntries_) {
-    std::shared_ptr<Peer> peer(new Peer(p.getIPAddress(), p.getPort()));
-    peers.push_back(peer);
+    peers.push_back(std::make_shared<Peer>(p.getIPAddress(), p.getPort()));
   }
 }
 

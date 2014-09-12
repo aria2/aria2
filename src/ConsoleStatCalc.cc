@@ -279,9 +279,9 @@ ConsoleStatCalc::ConsoleStatCalc(time_t summaryInterval,
   colorOutput_(colorOutput)
 {
   if(humanReadable) {
-    sizeFormatter_.reset(new AbbrevSizeFormatter());
+    sizeFormatter_ = make_unique<AbbrevSizeFormatter>();
   } else {
-    sizeFormatter_.reset(new PlainSizeFormatter());
+    sizeFormatter_ = make_unique<PlainSizeFormatter>();
   }
 }
 

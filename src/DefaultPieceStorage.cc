@@ -76,13 +76,15 @@ namespace aria2 {
 DefaultPieceStorage::DefaultPieceStorage
 (const std::shared_ptr<DownloadContext>& downloadContext, const Option* option)
  : downloadContext_(downloadContext),
-   bitfieldMan_(new BitfieldMan(downloadContext->getPieceLength(),
-                                downloadContext->getTotalLength())),
-   diskWriterFactory_(new DefaultDiskWriterFactory()),
+   bitfieldMan_(make_unique<BitfieldMan>
+                (downloadContext->getPieceLength(),
+                 downloadContext->getTotalLength())),
+   diskWriterFactory_(std::make_shared<DefaultDiskWriterFactory>()),
    endGame_(false),
    endGamePieceNum_(END_GAME_PIECE_NUM),
    option_(option),
-   pieceStatMan_(new PieceStatMan(downloadContext->getNumPieces(), true)),
+   pieceStatMan_(std::make_shared<PieceStatMan>
+                 (downloadContext->getNumPieces(), true)),
    pieceSelector_(make_unique<RarestPieceSelector>(pieceStatMan_)),
    wrDiskCache_(nullptr)
 {
@@ -90,20 +92,18 @@ DefaultPieceStorage::DefaultPieceStorage
     option_->get(PREF_STREAM_PIECE_SELECTOR);
   if(pieceSelectorOpt.empty() || pieceSelectorOpt == A2_V_DEFAULT) {
     streamPieceSelector_ = make_unique<DefaultStreamPieceSelector>
-      (bitfieldMan_);
+      (bitfieldMan_.get());
   } else if(pieceSelectorOpt == V_INORDER) {
     streamPieceSelector_ = make_unique<InorderStreamPieceSelector>
-      (bitfieldMan_);
+      (bitfieldMan_.get());
   } else if(pieceSelectorOpt == A2_V_GEOM) {
     streamPieceSelector_ = make_unique<GeomStreamPieceSelector>
-      (bitfieldMan_, 1.5);
+      (bitfieldMan_.get(), 1.5);
   }
 }
 
 DefaultPieceStorage::~DefaultPieceStorage()
-{
-  delete bitfieldMan_;
-}
+{}
 
 std::shared_ptr<Piece> DefaultPieceStorage::checkOutPiece
 (size_t index, cuid_t cuid)
@@ -112,7 +112,8 @@ std::shared_ptr<Piece> DefaultPieceStorage::checkOutPiece
 
   std::shared_ptr<Piece> piece = findUsedPiece(index);
   if(!piece) {
-    piece.reset(new Piece(index, bitfieldMan_->getBlockLength(index)));
+    piece = std::make_shared<Piece>
+      (index, bitfieldMan_->getBlockLength(index));
     piece->setHashType(downloadContext_->getPieceHashType());
 
     addUsedPiece(piece);
@@ -138,7 +139,8 @@ std::shared_ptr<Piece> DefaultPieceStorage::getPiece(size_t index)
   if(index <= bitfieldMan_->getMaxIndex()) {
     piece = findUsedPiece(index);
     if(!piece) {
-      piece.reset(new Piece(index, bitfieldMan_->getBlockLength(index)));
+      piece = std::make_shared<Piece>(index,
+                                      bitfieldMan_->getBlockLength(index));
       if(hasPiece(index)) {
         piece->setAllBlock();
       }
@@ -156,7 +158,7 @@ void DefaultPieceStorage::addUsedPiece(const std::shared_ptr<Piece>& piece)
 
 std::shared_ptr<Piece> DefaultPieceStorage::findUsedPiece(size_t index) const
 {
-  std::shared_ptr<Piece> p(new Piece());
+  auto p = std::make_shared<Piece>();
   p->setIndex(index);
 
   auto i = usedPieces_.find(p);
@@ -769,8 +771,8 @@ void DefaultPieceStorage::markPiecesDone(int64_t length)
     }
     size_t r = (length%bitfieldMan_->getBlockLength())/Piece::BLOCK_LENGTH;
     if(r > 0) {
-      std::shared_ptr<Piece> p
-        (new Piece(numPiece, bitfieldMan_->getBlockLength(numPiece)));
+      auto p = std::make_shared<Piece>(numPiece,
+                                       bitfieldMan_->getBlockLength(numPiece));
 
       for(size_t i = 0; i < r; ++i) {
         p->completeBlock(i);

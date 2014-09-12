@@ -58,8 +58,7 @@ FtpDownloadCommand::FtpDownloadCommand
  const std::shared_ptr<SocketCore>& dataSocket,
  const std::shared_ptr<SocketCore>& ctrlSocket)
   :DownloadCommand(cuid, req, fileEntry, requestGroup, e, dataSocket,
-                   std::shared_ptr<SocketRecvBuffer>
-                   (new SocketRecvBuffer(dataSocket))),
+                   std::make_shared<SocketRecvBuffer>(dataSocket)),
    ftpConnection_(ftpConnection),
    ctrlSocket_(ctrlSocket) {}
 

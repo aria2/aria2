@@ -100,7 +100,7 @@ DownloadContext::findFileEntryByOffset(int64_t offset) const
     return nullptr;
   }
 
-  std::shared_ptr<FileEntry> obj(new FileEntry());
+  auto obj = std::make_shared<FileEntry>();
   obj->setOffset(offset);
   auto i = std::upper_bound(fileEntries_.begin(), fileEntries_.end(), obj,
                             DerefLess<std::shared_ptr<FileEntry> >());

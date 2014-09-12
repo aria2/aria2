@@ -107,7 +107,7 @@ std::vector<std::unique_ptr<Command>> DHTSetup::setup
          e);
     }
     if(!localNode) {
-      localNode.reset(new DHTNode());
+      localNode = std::make_shared<DHTNode>();
     }
 
     uint16_t port;

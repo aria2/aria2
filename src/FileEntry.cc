@@ -158,7 +158,7 @@ FileEntry::getRequest
         if(uri.empty()) {
           break;
         }
-        req.reset(new Request());
+        req = std::make_shared<Request>();
         if(req->setUri(uri)) {
           if(std::count(inFlightHosts.begin(),
                         inFlightHosts.end(),req->getHost())
@@ -293,7 +293,7 @@ FileEntry::findFasterRequest
   }
   if(!fastCands.empty()) {
     std::sort(fastCands.begin(), fastCands.end(), ServerStatFaster());
-    std::shared_ptr<Request> fastestRequest(new Request());
+    auto fastestRequest = std::make_shared<Request>();
     const std::string& uri = fastCands.front().second;
     A2_LOG_DEBUG(fmt("Selected %s from fastCands", uri.c_str()));
     // Candidate URIs where already parsed when populating fastCands.

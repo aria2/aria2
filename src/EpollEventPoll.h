@@ -84,7 +84,7 @@ private:
 
   size_t epEventsSize_;
 
-  struct epoll_event* epEvents_;
+  std::unique_ptr<struct epoll_event[]> epEvents_;
 
   static const size_t EPOLL_EVENTS_MAX = 1024;
 

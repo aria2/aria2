@@ -73,7 +73,7 @@ DHTTaskFactoryImpl::createPingTask(const std::shared_ptr<DHTNode>& remoteNode,
 std::shared_ptr<DHTTask>
 DHTTaskFactoryImpl::createNodeLookupTask(const unsigned char* targetID)
 {
-  std::shared_ptr<DHTNodeLookupTask> task(new DHTNodeLookupTask(targetID));
+  auto task = std::make_shared<DHTNodeLookupTask>(targetID);
   setCommonProperty(task);
   return task;
 }
@@ -81,7 +81,7 @@ DHTTaskFactoryImpl::createNodeLookupTask(const unsigned char* targetID)
 std::shared_ptr<DHTTask>
 DHTTaskFactoryImpl::createBucketRefreshTask()
 {
-  std::shared_ptr<DHTBucketRefreshTask> task(new DHTBucketRefreshTask());
+  auto task = std::make_shared<DHTBucketRefreshTask>();
   setCommonProperty(task);
   return task;
 }
@@ -92,7 +92,7 @@ DHTTaskFactoryImpl::createPeerLookupTask
  uint16_t tcpPort,
  const std::shared_ptr<PeerStorage>& peerStorage)
 {
-  std::shared_ptr<DHTPeerLookupTask> task(new DHTPeerLookupTask(ctx, tcpPort));
+  auto task = std::make_shared<DHTPeerLookupTask>(ctx, tcpPort);
   // TODO this may be not freed by RequestGroup::releaseRuntimeResource()
   task->setPeerStorage(peerStorage);
   setCommonProperty(task);
@@ -110,7 +110,7 @@ std::shared_ptr<DHTTask>
 DHTTaskFactoryImpl::createReplaceNodeTask(const std::shared_ptr<DHTBucket>& bucket,
                                           const std::shared_ptr<DHTNode>& newNode)
 {
-  std::shared_ptr<DHTReplaceNodeTask> task(new DHTReplaceNodeTask(bucket, newNode));
+  auto task = std::make_shared<DHTReplaceNodeTask>(bucket, newNode);
   task->setTimeout(timeout_);
   setCommonProperty(task);
   return task;
