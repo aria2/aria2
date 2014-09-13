@@ -177,8 +177,9 @@ void SelectEventPoll::poll(const struct timeval& tv)
 #endif // __MINGW32__
 #ifdef ENABLE_ASYNC_DNS
 
-  for(auto& entry : nameResolverEntries_) {
-    int fd = entry->getFds(&rfds, &wfds);
+  for(auto& i : nameResolverEntries_) {
+    auto& entry = i.second;
+    int fd = entry.getFds(&rfds, &wfds);
     // TODO force error if fd == 0
     if(fdmax_ < fd) {
       fdmax_ = fd;
@@ -196,15 +197,16 @@ void SelectEventPoll::poll(const struct timeval& tv)
 #endif // !__MINGW32__
   } while(retval == -1 && errno == EINTR);
   if(retval > 0) {
-    for(auto& e: socketEntries_) {
+    for(auto& i: socketEntries_) {
+      auto& e = i.second;
       int events = 0;
-      if(FD_ISSET(e->getSocket(), &rfds)) {
+      if(FD_ISSET(e.getSocket(), &rfds)) {
         events |= EventPoll::EVENT_READ;
       }
-      if(FD_ISSET(e->getSocket(), &wfds)) {
+      if(FD_ISSET(e.getSocket(), &wfds)) {
         events |= EventPoll::EVENT_WRITE;
       }
-      e->processEvents(events);
+      e.processEvents(events);
     }
   } else if(retval == -1) {
     int errNum = errno;
@@ -212,8 +214,8 @@ void SelectEventPoll::poll(const struct timeval& tv)
   }
 #ifdef ENABLE_ASYNC_DNS
 
-  for(auto & e: nameResolverEntries_) {
-    e->process(&rfds, &wfds);
+  for(auto& i: nameResolverEntries_) {
+    i.second.process(&rfds, &wfds);
   }
 
 #endif // ENABLE_ASYNC_DNS
@@ -240,8 +242,9 @@ void SelectEventPoll::updateFdSet()
 #endif // !__MINGW32__
   FD_ZERO(&rfdset_);
   FD_ZERO(&wfdset_);
-  for(auto& e: socketEntries_) {
-    sock_t fd = e->getSocket();
+  for(auto& i: socketEntries_) {
+    auto&e = i.second;
+    sock_t fd = e.getSocket();
 #ifndef __MINGW32__
     if(fd < 0 || FD_SETSIZE <= fd) {
       A2_LOG_WARN("Detected file descriptor >= FD_SETSIZE or < 0. "
@@ -249,7 +252,7 @@ void SelectEventPoll::updateFdSet()
       continue;
     }
 #endif // !__MINGW32__
-    int events = e->getEvents();
+    int events = e.getEvents();
     if(events&EventPoll::EVENT_READ) {
 #ifdef __MINGW32__
       checkFdCountMingw(rfdset_);
@@ -271,13 +274,12 @@ void SelectEventPoll::updateFdSet()
 bool SelectEventPoll::addEvents(sock_t socket, Command* command,
                                 EventPoll::EventType events)
 {
-  std::shared_ptr<SocketEntry> socketEntry(new SocketEntry(socket));
-  auto i = socketEntries_.lower_bound(socketEntry);
-  if(i != socketEntries_.end() && *(*i) == *socketEntry) {
-    (*i)->addCommandEvent(command, events);
+  auto i = socketEntries_.lower_bound(socket);
+  if(i != std::end(socketEntries_) && (*i).first == socket) {
+    (*i).second.addCommandEvent(command, events);
   } else {
-    socketEntries_.insert(i, socketEntry);
-    socketEntry->addCommandEvent(command, events);
+    i = socketEntries_.insert(i, std::make_pair(socket, SocketEntry(socket)));
+    (*i).second.addCommandEvent(command, events);
   }
   updateFdSet();
   return true;
@@ -286,42 +288,42 @@ bool SelectEventPoll::addEvents(sock_t socket, Command* command,
 bool SelectEventPoll::deleteEvents(sock_t socket, Command* command,
                                    EventPoll::EventType events)
 {
-  std::shared_ptr<SocketEntry> socketEntry(new SocketEntry(socket));
-  auto i = socketEntries_.find(socketEntry);
-  if(i == socketEntries_.end()) {
+  auto i = socketEntries_.find(socket);
+  if(i == std::end(socketEntries_)) {
     A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
     return false;
-  } else {
-    (*i)->removeCommandEvent(command, events);
-    if((*i)->eventEmpty()) {
-      socketEntries_.erase(i);
-    }
-    updateFdSet();
-    return true;
   }
+
+  auto& socketEntry = (*i).second;
+  socketEntry.removeCommandEvent(command, events);
+  if(socketEntry.eventEmpty()) {
+    socketEntries_.erase(i);
+  }
+  updateFdSet();
+  return true;
 }
 
 #ifdef ENABLE_ASYNC_DNS
 bool SelectEventPoll::addNameResolver
 (const std::shared_ptr<AsyncNameResolver>& resolver, Command* command)
 {
-  std::shared_ptr<AsyncNameResolverEntry> entry
-    (new AsyncNameResolverEntry(resolver, command));
-  auto itr = nameResolverEntries_.lower_bound(entry);
-  if(itr != nameResolverEntries_.end() && *(*itr) == *entry) {
+  auto key = std::make_pair(resolver.get(), command);
+  auto itr = nameResolverEntries_.lower_bound(key);
+  if(itr != std::end(nameResolverEntries_) && (*itr).first == key) {
     return false;
-  } else {
-    nameResolverEntries_.insert(itr, entry);
-    return true;
   }
+
+  nameResolverEntries_.insert
+    (itr, std::make_pair(key, AsyncNameResolverEntry(resolver, command)));
+
+  return true;
 }
 
 bool SelectEventPoll::deleteNameResolver
 (const std::shared_ptr<AsyncNameResolver>& resolver, Command* command)
 {
-  std::shared_ptr<AsyncNameResolverEntry> entry
-    (new AsyncNameResolverEntry(resolver, command));
-  return nameResolverEntries_.erase(entry) == 1;
+  auto key = std::make_pair(resolver.get(), command);
+  return nameResolverEntries_.erase(key) == 1;
 }
 #endif // ENABLE_ASYNC_DNS
 

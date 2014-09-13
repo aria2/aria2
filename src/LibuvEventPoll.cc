@@ -233,7 +233,7 @@ bool LibuvEventPoll::addEvents(sock_t socket,
   auto i = socketEntries_.lower_bound(socketEntry);
 
   if (i != socketEntries_.end() && **i == *socketEntry) {
-    event.addSelf(*i);
+    event.addSelf((*i).get());
     auto poll = polls_.find(socket);
     if (poll == polls_.end()) {
       throw std::logic_error("Invalid socket");
@@ -243,7 +243,7 @@ bool LibuvEventPoll::addEvents(sock_t socket,
   }
 
   socketEntries_.insert(i, socketEntry);
-  event.addSelf(socketEntry);
+  event.addSelf(socketEntry.get());
   auto poll = new KPoll(this, socketEntry.get(), socket);
   polls_[socket] = poll;
   poll->start();
@@ -275,7 +275,7 @@ bool LibuvEventPoll::deleteEvents(sock_t socket,
     return false;
   }
 
-  event.removeSelf(*i);
+  event.removeSelf((*i).get());
 
   auto poll = polls_.find(socket);
   if (poll == polls_.end()) {

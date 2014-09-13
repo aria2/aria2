@@ -59,10 +59,9 @@ public:
 
   virtual int getEvents() const = 0;
 
-  virtual void addSelf(const std::shared_ptr<SocketEntry>& socketEntry) const = 0;
+  virtual void addSelf(SocketEntry* socketEntry) const = 0;
 
-  virtual void removeSelf
-  (const std::shared_ptr<SocketEntry>& socketEntry) const = 0;
+  virtual void removeSelf(SocketEntry* socketEntry) const = 0;
 };
 
 template<typename SocketEntry, typename EventPoll>
@@ -124,12 +123,12 @@ public:
     }
   }
 
-  virtual void addSelf(const std::shared_ptr<SocketEntry>& socketEntry) const
+  virtual void addSelf(SocketEntry* socketEntry) const
   {
     socketEntry->addCommandEvent(*this);
   }
 
-  virtual void removeSelf(const std::shared_ptr<SocketEntry>& socketEntry) const
+  virtual void removeSelf(SocketEntry* socketEntry) const
   {
     socketEntry->removeCommandEvent(*this);
   }
@@ -179,12 +178,12 @@ public:
     command_->setStatusActive();
   }
 
-  virtual void addSelf(const std::shared_ptr<SocketEntry>& socketEntry) const
+  virtual void addSelf(SocketEntry* socketEntry) const
   {
     socketEntry->addADNSEvent(*this);
   }
 
-  virtual void removeSelf(const std::shared_ptr<SocketEntry>& socketEntry) const
+  virtual void removeSelf(SocketEntry* socketEntry) const
   {
     socketEntry->removeADNSEvent(*this);
   }
@@ -209,7 +208,8 @@ protected:
 public:
   SocketEntry(sock_t socket):socket_(socket) {}
 
-  virtual ~SocketEntry() {}
+  SocketEntry(const SocketEntry&) = delete;
+  SocketEntry(SocketEntry&&) = default;
 
   bool operator==(const SocketEntry& entry) const
   {
@@ -317,6 +317,9 @@ public:
   AsyncNameResolverEntry(std::shared_ptr<AsyncNameResolver> nameResolver,
                          Command* command):
     nameResolver_(std::move(nameResolver)), command_(command), socketsSize_(0) {}
+
+  AsyncNameResolverEntry(const AsyncNameResolverEntry&) = delete;
+  AsyncNameResolverEntry(AsyncNameResolverEntry&&) = default;
 
   bool operator==(const AsyncNameResolverEntry& entry)
   {

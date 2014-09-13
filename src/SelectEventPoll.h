@@ -38,7 +38,7 @@
 #include "EventPoll.h"
 
 #include <deque>
-#include <set>
+#include <map>
 
 #include "a2functional.h"
 #ifdef ENABLE_ASYNC_DNS
@@ -100,6 +100,9 @@ private:
   public:
     SocketEntry(sock_t socket);
 
+    SocketEntry(const SocketEntry&) = delete;
+    SocketEntry(SocketEntry&&) = default;
+
     bool operator==(const SocketEntry& entry) const
     {
       return socket_ == entry.socket_;
@@ -141,6 +144,9 @@ private:
     AsyncNameResolverEntry(const std::shared_ptr<AsyncNameResolver>& nameResolver,
                            Command* command);
 
+    AsyncNameResolverEntry(const AsyncNameResolverEntry&) = delete;
+    AsyncNameResolverEntry(AsyncNameResolverEntry&&) = default;
+
     bool operator==(const AsyncNameResolverEntry& entry)
     {
       return *nameResolver_ == *entry.nameResolver_ &&
@@ -164,13 +170,11 @@ private:
   fd_set wfdset_;
   sock_t fdmax_;
 
-  typedef std::set<std::shared_ptr<SocketEntry>,
-                   DerefLess<std::shared_ptr<SocketEntry> > > SocketEntrySet;
+  typedef std::map<sock_t, SocketEntry> SocketEntrySet;
   SocketEntrySet socketEntries_;
 #ifdef ENABLE_ASYNC_DNS
-  typedef std::set<std::shared_ptr<AsyncNameResolverEntry>,
-                   DerefLess<std::shared_ptr<AsyncNameResolverEntry> > >
-  AsyncNameResolverEntrySet;
+  typedef std::map<std::pair<AsyncNameResolver*, Command*>,
+                   AsyncNameResolverEntry> AsyncNameResolverEntrySet;
   AsyncNameResolverEntrySet nameResolverEntries_;
 #endif // ENABLE_ASYNC_DNS
 

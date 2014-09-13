@@ -179,7 +179,7 @@ bool PortEventPoll::addEvents(sock_t socket,
   int r = 0;
   int errNum = 0;
   if(i != socketEntries_.end() && *(*i) == *socketEntry) {
-    event.addSelf(*i);
+    event.addSelf((*i).get());
     A2PortEvent pv = (*i)->getEvents();
     r = port_associate(port_, PORT_SOURCE_FD, (*i)->getSocket(),
                        pv.events, pv.socketEntry);
@@ -191,7 +191,7 @@ bool PortEventPoll::addEvents(sock_t socket,
       delete [] portEvents_;
       portEvents_ = new port_event_t[portEventsSize_];
     }
-    event.addSelf(socketEntry);
+    event.addSelf(socketEntry.get());
     A2PortEvent pv = socketEntry->getEvents();
     r = port_associate(port_, PORT_SOURCE_FD, socketEntry->getSocket(),
                        pv.events, pv.socketEntry);
@@ -230,7 +230,7 @@ bool PortEventPoll::deleteEvents(sock_t socket,
     A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
     return false;
   } else {
-    event.removeSelf(*i);
+    event.removeSelf((*i).get());
     int r = 0;
     int errNum = 0;
     if((*i)->eventEmpty()) {

@@ -39,7 +39,7 @@
 
 # include <sys/epoll.h>
 
-#include <set>
+#include <map>
 
 #include "Event.h"
 #include "a2functional.h"
@@ -64,19 +64,20 @@ private:
   public:
     KSocketEntry(sock_t socket);
 
+    KSocketEntry(const KSocketEntry&) = delete;
+    KSocketEntry(KSocketEntry&&) = default;
+
     struct epoll_event getEvents();
   };
 
   friend int accumulateEvent(int events, const KEvent& event);
 
 private:
-  typedef std::set<std::shared_ptr<KSocketEntry>,
-                   DerefLess<std::shared_ptr<KSocketEntry> > > KSocketEntrySet;
+  typedef std::map<sock_t, KSocketEntry> KSocketEntrySet;
   KSocketEntrySet socketEntries_;
 #ifdef ENABLE_ASYNC_DNS
-  typedef std::set<std::shared_ptr<KAsyncNameResolverEntry>,
-                   DerefLess<std::shared_ptr<KAsyncNameResolverEntry> > >
-  KAsyncNameResolverEntrySet;
+  typedef std::map<std::pair<AsyncNameResolver*, Command*>,
+                   KAsyncNameResolverEntry> KAsyncNameResolverEntrySet;
   KAsyncNameResolverEntrySet nameResolverEntries_;
 #endif // ENABLE_ASYNC_DNS
 
