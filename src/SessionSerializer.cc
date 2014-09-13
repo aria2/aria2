@@ -77,12 +77,12 @@ bool SessionSerializer::save(const std::string& filename) const
     std::shared_ptr<IOFile> fp;
 #if HAVE_ZLIB
     if (util::endsWith(filename, ".gz")) {
-      fp.reset(new GZipFile(tempFilename.c_str(), IOFile::WRITE));
+      fp = std::make_shared<GZipFile>(tempFilename.c_str(), IOFile::WRITE);
     }
     else
 #endif
     {
-     fp.reset(new BufferedFile(tempFilename.c_str(), IOFile::WRITE));
+      fp = std::make_shared<BufferedFile>(tempFilename.c_str(), IOFile::WRITE);
     }
     if(!*fp) {
       return false;

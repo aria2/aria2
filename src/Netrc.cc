@@ -171,11 +171,11 @@ void Netrc::parse(const std::string& path)
       if(state == GET_TOKEN) {
         if(util::streq((*iter).first, (*iter).second, "machine")) {
           storeAuthenticator(std::move(authenticator));
-          authenticator.reset(new Authenticator());
+          authenticator = make_unique<Authenticator>();
           state = SET_MACHINE;
         } else if(util::streq((*iter).first, (*iter).second, "default")) {
           storeAuthenticator(std::move(authenticator));
-          authenticator.reset(new DefaultAuthenticator());
+          authenticator = make_unique<DefaultAuthenticator>();
         } else {
           if(!authenticator) {
             throw DL_ABORT_EX

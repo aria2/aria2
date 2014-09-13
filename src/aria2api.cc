@@ -69,7 +69,7 @@
 namespace aria2 {
 
 Session::Session(const KeyVals& options)
-  : context(new Context(false, 0, nullptr, options))
+  : context(std::make_shared<Context>(false, 0, nullptr, options))
 {}
 
 Session::~Session()
@@ -270,7 +270,7 @@ int addUri(Session* session,
            int position)
 {
   auto& e = session->context->reqinfo->getDownloadEngine();
-  std::shared_ptr<Option> requestOption(new Option(*e->getOption()));
+  auto requestOption = std::make_shared<Option>(*e->getOption());
   try {
     apiGatherRequestOption(requestOption.get(), options,
                            OptionParser::getInstance());
@@ -299,7 +299,7 @@ int addMetalink(Session* session,
 {
 #ifdef ENABLE_METALINK
   auto& e = session->context->reqinfo->getDownloadEngine();
-  std::shared_ptr<Option> requestOption(new Option(*e->getOption()));
+  auto requestOption = std::make_shared<Option>(*e->getOption());
   std::vector<std::shared_ptr<RequestGroup> > result;
   try {
     apiGatherRequestOption(requestOption.get(), options,
@@ -338,7 +338,7 @@ int addTorrent(Session* session,
 {
 #ifdef ENABLE_BITTORRENT
   auto& e = session->context->reqinfo->getDownloadEngine();
-  std::shared_ptr<Option> requestOption(new Option(*e->getOption()));
+  auto requestOption = std::make_shared<Option>(*e->getOption());
   std::vector<std::shared_ptr<RequestGroup> > result;
   try {
     apiGatherRequestOption(requestOption.get(), options,

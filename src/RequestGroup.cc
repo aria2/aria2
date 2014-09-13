@@ -124,7 +124,7 @@ RequestGroup::RequestGroup(const std::shared_ptr<GroupId>& gid,
   : belongsToGID_(0),
     gid_(gid),
     option_(option),
-    progressInfoFile_(new NullProgressInfoFile()),
+    progressInfoFile_(std::make_shared<NullProgressInfoFile>()),
     uriSelector_(make_unique<InorderURISelector>()),
     requestGroupMan_(nullptr),
 #ifdef ENABLE_BITTORRENT
@@ -1123,7 +1123,7 @@ std::shared_ptr<DownloadResult> RequestGroup::createDownloadResult() const
   A2_LOG_DEBUG(fmt("GID#%s - Creating DownloadResult.",
                    gid_->toHex().c_str()));
   TransferStat st = calculateStat();
-  std::shared_ptr<DownloadResult> res(new DownloadResult());
+  auto res = std::make_shared<DownloadResult>();
   res->gid = gid_;
   res->fileEntries = downloadContext_->getFileEntries();
   res->inMemoryDownload = inMemoryDownload_;

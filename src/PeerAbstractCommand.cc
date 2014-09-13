@@ -195,7 +195,7 @@ void PeerAbstractCommand::updateKeepAlive()
 
 void PeerAbstractCommand::createSocket()
 {
-  socket_.reset(new SocketCore());
+  socket_ = std::make_shared<SocketCore>();
 }
 
 void PeerAbstractCommand::addCommandSelf()

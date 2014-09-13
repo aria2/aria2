@@ -70,7 +70,7 @@ InitiatorMSEHandshakeCommand::InitiatorMSEHandshakeCommand
     requestGroup_(requestGroup),
     btRuntime_(btRuntime),
     sequence_(INITIATOR_SEND_KEY),
-    mseHandshake_(new MSEHandshake(cuid, s, getOption().get()))
+    mseHandshake_(make_unique<MSEHandshake>(cuid, s, getOption().get()))
 {
   disableReadCheckSocket();
   setWriteCheckSocket(getSocket());
@@ -84,8 +84,6 @@ InitiatorMSEHandshakeCommand::~InitiatorMSEHandshakeCommand()
 {
   requestGroup_->decreaseNumCommand();
   btRuntime_->decreaseConnections();
-
-  delete mseHandshake_;
 }
 
 bool InitiatorMSEHandshakeCommand::executeInternal() {

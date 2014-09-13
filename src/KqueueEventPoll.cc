@@ -280,8 +280,6 @@ bool KqueueEventPoll::addNameResolver
 bool KqueueEventPoll::deleteNameResolver
 (const std::shared_ptr<AsyncNameResolver>& resolver, Command* command)
 {
-  std::shared_ptr<KAsyncNameResolverEntry> entry
-    (new KAsyncNameResolverEntry(resolver, command));
   auto key = std::make_pair(resolver.get(), command);
   auto itr = nameResolverEntries_.find(key);
   if(itr == std::end(nameResolverEntries_)) {

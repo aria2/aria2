@@ -179,7 +179,7 @@ int UDPTrackerClient::receiveReply
     }
     req->state = UDPT_STA_COMPLETE;
 
-    req->reply.reset(new UDPTrackerReply());
+    req->reply = std::make_shared<UDPTrackerReply>();
     req->reply->action = action;
     req->reply->transactionId = transactionId;
     req->reply->interval = bittorrent::getIntParam(data, 8);
@@ -265,7 +265,7 @@ ssize_t UDPTrackerClient::createRequest
                                               req->remotePort,
                                               now);
     if(!c) {
-      std::shared_ptr<UDPTrackerRequest> creq(new UDPTrackerRequest());
+      auto creq = std::make_shared<UDPTrackerRequest>();
       creq->action = UDPT_ACT_CONNECT;
       creq->remoteAddr = req->remoteAddr;
       creq->remotePort = req->remotePort;

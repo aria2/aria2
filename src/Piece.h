@@ -54,8 +54,8 @@ class MessageDigest;
 
 class Piece {
 private:
-  BitfieldMan* bitfield_;
-  WrDiskCacheEntry* wrCache_;
+  std::unique_ptr<BitfieldMan> bitfield_;
+  std::unique_ptr<WrDiskCacheEntry> wrCache_;
   std::unique_ptr<MessageDigest> mdctx_;
   std::vector<cuid_t> users_;
   std::string hashType_;
@@ -204,7 +204,7 @@ public:
   void releaseWrCache(WrDiskCache* diskCache);
   WrDiskCacheEntry* getWrDiskCacheEntry() const
   {
-    return wrCache_;
+    return wrCache_.get();
   }
 };
 

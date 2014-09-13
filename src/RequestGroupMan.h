@@ -103,7 +103,7 @@ private:
   // UriListParser for deferred input.
   std::shared_ptr<UriListParser> uriListParser_;
 
-  WrDiskCache* wrDiskCache_;
+  std::unique_ptr<WrDiskCache> wrDiskCache_;
 
   std::shared_ptr<OpenedFileCounter> openedFileCounter_;
 
@@ -340,7 +340,7 @@ public:
 
   WrDiskCache* getWrDiskCache() const
   {
-    return wrDiskCache_;
+    return wrDiskCache_.get();
   }
 
   // Initializes WrDiskCache according to PREF_DISK_CACHE option.  If

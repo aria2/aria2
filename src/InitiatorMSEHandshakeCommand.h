@@ -67,7 +67,7 @@ private:
   std::shared_ptr<BtRuntime> btRuntime_;
 
   Seq sequence_;
-  MSEHandshake* mseHandshake_;
+  std::unique_ptr<MSEHandshake> mseHandshake_;
 
   const std::shared_ptr<Option>& getOption() const;
 

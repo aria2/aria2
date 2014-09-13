@@ -70,7 +70,7 @@ PeerConnection::PeerConnection
     socket_(socket),
     msgState_(BT_MSG_PREV_READ_LENGTH),
     bufferCapacity_(MAX_BUFFER_CAPACITY),
-    resbuf_(new unsigned char[bufferCapacity_]),
+    resbuf_(make_unique<unsigned char[]>(bufferCapacity_)),
     resbufLength_(0),
     currentPayloadLength_(0),
     resbufOffset_(0),
@@ -81,9 +81,7 @@ PeerConnection::PeerConnection
 {}
 
 PeerConnection::~PeerConnection()
-{
-  delete [] resbuf_;
-}
+{}
 
 void PeerConnection::pushBytes(unsigned char* data, size_t len,
                                std::unique_ptr<ProgressUpdate> progressUpdate)
@@ -142,7 +140,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength)
     resbufOffset_ = i;
     if(done) {
       if(data) {
-        memcpy(data, resbuf_ + msgOffset_ + 4, currentPayloadLength_);
+        memcpy(data, resbuf_.get() + msgOffset_ + 4, currentPayloadLength_);
       }
       dataLength = currentPayloadLength_;
       return true;
@@ -158,7 +156,8 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength)
         } else {
           // Shift buffer so that resbuf_[msgOffset_] moves to
           // rebuf_[0].
-          memmove(resbuf_, resbuf_ + msgOffset_, resbufLength_ - msgOffset_);
+          memmove(resbuf_.get(), resbuf_.get() + msgOffset_,
+                  resbufLength_ - msgOffset_);
           resbufLength_ -= msgOffset_;
           resbufOffset_ = resbufLength_;
           msgOffset_ = 0;
@@ -172,7 +171,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength)
       } else {
         nread = bufferCapacity_ - resbufLength_;
       }
-      readData(resbuf_+resbufLength_, nread, encryptionEnabled_);
+      readData(resbuf_.get() +resbufLength_, nread, encryptionEnabled_);
       if(nread == 0) {
         if(socket_->wantRead() || socket_->wantWrite()) {
           break;
@@ -198,7 +197,7 @@ bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
   size_t remaining = BtHandshakeMessage::MESSAGE_LENGTH-resbufLength_;
   if(remaining > 0) {
     size_t temp = remaining;
-    readData(resbuf_+resbufLength_, remaining, encryptionEnabled_);
+    readData(resbuf_.get()+resbufLength_, remaining, encryptionEnabled_);
     if(remaining == 0 && !socket_->wantRead() && !socket_->wantWrite()) {
       // we got EOF
       A2_LOG_DEBUG
@@ -214,7 +213,7 @@ bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
     }
   }
   size_t writeLength = std::min(resbufLength_, dataLength);
-  memcpy(data, resbuf_, writeLength);
+  memcpy(data, resbuf_.get(), writeLength);
   dataLength = writeLength;
   if(retval && !peek) {
     resbufLength_ = 0;
@@ -244,7 +243,7 @@ void PeerConnection::enableEncryption
 void PeerConnection::presetBuffer(const unsigned char* data, size_t length)
 {
   size_t nwrite = std::min(bufferCapacity_, length);
-  memcpy(resbuf_, data, nwrite);
+  memcpy(resbuf_.get(), data, nwrite);
   resbufLength_ = length;
 }
 
@@ -267,17 +266,16 @@ ssize_t PeerConnection::sendPendingData()
 
 const unsigned char* PeerConnection::getMsgPayloadBuffer() const
 {
-  return resbuf_ + msgOffset_ + 4;
+  return resbuf_.get() + msgOffset_ + 4;
 }
 
 void PeerConnection::reserveBuffer(size_t minSize)
 {
   if(bufferCapacity_ < minSize) {
     bufferCapacity_ = minSize;
-    auto buf = new unsigned char[bufferCapacity_];
-    memcpy(buf, resbuf_, resbufLength_);
-    delete [] resbuf_;
-    resbuf_ = buf;
+    auto buf = make_unique<unsigned char[]>(bufferCapacity_);
+    memcpy(buf.get(), resbuf_.get(), resbufLength_);
+    resbuf_ = std::move(buf);
   }
 }
 

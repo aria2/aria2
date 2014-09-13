@@ -221,7 +221,7 @@ error_code::Value option_processing(Option& op, bool standalone,
         }
       }
     }
-    std::shared_ptr<Option> confOption(new Option());
+    auto confOption = std::make_shared<Option>();
     oparser->parseDefaultValues(*confOption);
     if(!noConf) {
       std::string cfname =

@@ -45,7 +45,7 @@ namespace {
 template<const nettle_hash* hash>
 class MessageDigestBase : public MessageDigestImpl {
 public:
-  MessageDigestBase() : ctx_(new char[hash->context_size]) {
+  MessageDigestBase() : ctx_(make_unique<char[]>(hash->context_size)) {
     reset();
   }
   virtual ~MessageDigestBase() {}
@@ -87,7 +87,7 @@ typedef MessageDigestBase<&nettle_sha512> MessageDigestSHA512;
 
 std::unique_ptr<MessageDigestImpl> MessageDigestImpl::sha1()
 {
-  return std::unique_ptr<MessageDigestImpl>(new MessageDigestSHA1());
+  return make_unique<MessageDigestSHA1>();
 }
 
 MessageDigestImpl::hashes_t MessageDigestImpl::hashes = {

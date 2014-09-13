@@ -106,7 +106,7 @@ RequestGroupMan::RequestGroupMan
  const Option* option)
   : maxSimultaneousDownloads_(maxSimultaneousDownloads),
     option_(option),
-    serverStatMan_(new ServerStatMan()),
+    serverStatMan_(std::make_shared<ServerStatMan>()),
     maxOverallDownloadSpeedLimit_
     (option->getAsInt(PREF_MAX_OVERALL_DOWNLOAD_LIMIT)),
     maxOverallUploadSpeedLimit_(option->getAsInt
@@ -116,7 +116,6 @@ RequestGroupMan::RequestGroupMan
     removedErrorResult_(0),
     removedLastErrorResult_(error_code::FINISHED),
     maxDownloadResult_(option->getAsInt(PREF_MAX_DOWNLOAD_RESULT)),
-    wrDiskCache_(nullptr),
     openedFileCounter_(std::make_shared<OpenedFileCounter>
                        (this, option->getAsInt(PREF_BT_MAX_OPEN_FILES))),
     numStoppedTotal_(0)
@@ -128,7 +127,6 @@ RequestGroupMan::RequestGroupMan
 RequestGroupMan::~RequestGroupMan()
 {
   openedFileCounter_->deactivate();
-  delete wrDiskCache_;
 }
 
 bool RequestGroupMan::downloadFinished()
@@ -871,7 +869,7 @@ RequestGroupMan::getOrCreateServerStat(const std::string& hostname,
 {
   std::shared_ptr<ServerStat> ss = findServerStat(hostname, protocol);
   if(!ss) {
-    ss.reset(new ServerStat(hostname, protocol));
+    ss = std::make_shared<ServerStat>(hostname, protocol);
     addServerStat(ss);
   }
   return ss;
@@ -960,10 +958,10 @@ void RequestGroupMan::setUriListParser
 
 void RequestGroupMan::initWrDiskCache()
 {
-  assert(wrDiskCache_ == nullptr);
+  assert(!wrDiskCache_);
   size_t limit = option_->getAsInt(PREF_DISK_CACHE);
   if(limit > 0) {
-    wrDiskCache_ = new WrDiskCache(limit);
+    wrDiskCache_ = make_unique<WrDiskCache>(limit);
   }
 }
 

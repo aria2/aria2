@@ -147,7 +147,7 @@ InitiateConnectionCommand::createBackupIPv4ConnectCommand
   for(std::vector<std::string>::const_iterator i = addrs.begin(),
         eoi = addrs.end(); i != eoi; ++i) {
     if(inetPton(AF_INET, (*i).c_str(), &buf) == 0) {
-      info.reset(new BackupConnectInfo());
+      info = std::make_shared<BackupConnectInfo>();
       auto command = make_unique<BackupIPv4ConnectCommand>
         (getDownloadEngine()->newCUID(), *i, port, info, mainCommand,
          getRequestGroup(), getDownloadEngine());

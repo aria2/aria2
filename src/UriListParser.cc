@@ -53,9 +53,9 @@ namespace aria2 {
 
 UriListParser::UriListParser(const std::string& filename)
 #if HAVE_ZLIB
-  : fp_(new GZipFile(filename.c_str(), IOFile::READ))
+  : fp_(make_unique<GZipFile>(filename.c_str(), IOFile::READ))
 #else
-  : fp_(new BufferedFile(filename.c_str(), IOFile::READ))
+  : fp_(make_unique<BufferedFile>(filename.c_str(), IOFile::READ))
 #endif
 {}
 

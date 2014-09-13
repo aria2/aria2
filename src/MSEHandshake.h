@@ -87,7 +87,7 @@ private:
   SocketBuffer socketBuffer_;
 
   CRYPTO_TYPE negotiatedCryptoType_;
-  DHKeyExchange* dh_;
+  std::unique_ptr<DHKeyExchange> dh_;
   std::unique_ptr<ARC4Encryptor> encryptor_;
   std::unique_ptr<ARC4Encryptor> decryptor_;
   unsigned char infoHash_[INFO_HASH_LENGTH];
@@ -97,7 +97,7 @@ private:
   size_t markerIndex_;
   uint16_t padLength_;
   uint16_t iaLength_;
-  unsigned char* ia_;
+  std::unique_ptr<unsigned char[]> ia_;
   std::unique_ptr<MessageDigest> sha1_;
 
   void encryptAndSendData(unsigned char* data, size_t length);
@@ -179,7 +179,7 @@ public:
   // returns plain text IA
   const unsigned char* getIA() const
   {
-    return ia_;
+    return ia_.get();
   }
 
   size_t getIALength() const

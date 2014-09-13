@@ -64,7 +64,7 @@ private:
   // The capacity of the buffer resbuf_
   size_t bufferCapacity_;
   // The internal buffer of incoming handshakes and messages
-  unsigned char* resbuf_;
+  std::unique_ptr<unsigned char[]> resbuf_;
   // The number of bytes written in resbuf_
   size_t resbufLength_;
   // The length of message (not handshake) currently receiving
@@ -124,7 +124,7 @@ public:
 
   const unsigned char* getBuffer() const
   {
-    return resbuf_;
+    return resbuf_.get();
   }
 
   size_t getBufferLength() const

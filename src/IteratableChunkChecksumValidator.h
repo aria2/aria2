@@ -52,7 +52,7 @@ class IteratableChunkChecksumValidator:public IteratableValidator
 private:
   std::shared_ptr<DownloadContext> dctx_;
   std::shared_ptr<PieceStorage> pieceStorage_;
-  std::shared_ptr<BitfieldMan> bitfield_;
+  std::unique_ptr<BitfieldMan> bitfield_;
   size_t currentIndex_;
   std::unique_ptr<MessageDigest> ctx_;
 

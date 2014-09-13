@@ -94,7 +94,7 @@ void LogFactory::reconfigure()
 const std::shared_ptr<Logger>& LogFactory::getInstance()
 {
   if(!logger_) {
-    std::shared_ptr<Logger> slogger(new Logger());
+    auto slogger = std::make_shared<Logger>();
     openLogger(slogger);
     logger_.swap(slogger);
   }

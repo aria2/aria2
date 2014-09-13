@@ -62,7 +62,7 @@ std::unique_ptr<util::security::HMAC> HttpServer::hmac_;
 
 HttpServer::HttpServer(const std::shared_ptr<SocketCore>& socket)
  : socket_(socket),
-   socketRecvBuffer_(new SocketRecvBuffer(socket_)),
+   socketRecvBuffer_(std::make_shared<SocketRecvBuffer>(socket_)),
    socketBuffer_(socket),
    headerProcessor_(make_unique<HttpHeaderProcessor>
                     (HttpHeaderProcessor::SERVER_PARSER)),
@@ -341,7 +341,7 @@ int HttpServer::setupResponseRecv()
     if(path == "/jsonrpc") {
       if(reqType_ != RPC_TYPE_JSON) {
         reqType_ = RPC_TYPE_JSON;
-        lastBody_.reset(new json::JsonDiskWriter());
+        lastBody_ = make_unique<json::JsonDiskWriter>();
       }
       return 0;
     }
@@ -349,7 +349,7 @@ int HttpServer::setupResponseRecv()
     if(path == "/rpc") {
       if(reqType_ != RPC_TYPE_XML) {
         reqType_ = RPC_TYPE_XML;
-        lastBody_.reset(new rpc::XmlRpcDiskWriter());
+        lastBody_ = make_unique<rpc::XmlRpcDiskWriter>();
       }
       return 0;
     }

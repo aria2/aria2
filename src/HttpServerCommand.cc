@@ -67,7 +67,7 @@ HttpServerCommand::HttpServerCommand
   : Command(cuid),
     e_(e),
     socket_(socket),
-    httpServer_(new HttpServer(socket)),
+    httpServer_(std::make_shared<HttpServer>(socket)),
     writeCheck_(false)
 {
   setStatus(Command::STATUS_ONESHOT_REALTIME);

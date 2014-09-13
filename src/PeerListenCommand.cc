@@ -65,7 +65,7 @@ PeerListenCommand::~PeerListenCommand() {}
 
 bool PeerListenCommand::bindPort(uint16_t& port, SegList<int>& sgl)
 {
-  socket_.reset(new SocketCore());
+  socket_ = std::make_shared<SocketCore>();
   std::vector<uint16_t> ports;
   while(sgl.hasNext()) {
     ports.push_back(sgl.next());
@@ -114,7 +114,8 @@ bool PeerListenCommand::execute() {
       std::pair<std::string, uint16_t> peerInfo;
       peerSocket->getPeerInfo(peerInfo);
 
-      std::shared_ptr<Peer> peer(new Peer(peerInfo.first, peerInfo.second, true));
+      auto peer = std::make_shared<Peer>(peerInfo.first, peerInfo.second,
+                                         true);
       cuid_t cuid = e_->newCUID();
       e_->addCommand(make_unique<ReceiverMSEHandshakeCommand>
                      (cuid, peer, e_, peerSocket));

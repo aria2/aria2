@@ -41,6 +41,7 @@
 #include <cstring>
 
 #include "a2time.h"
+#include "a2functional.h"
 
 namespace aria2 {
 

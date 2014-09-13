@@ -41,12 +41,13 @@
 #include "A2STR.h"
 #include "BtMessageDispatcher.h"
 #include "wallclock.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
 PeerSessionResource::PeerSessionResource(int32_t pieceLength, int64_t totalLength)
   :
-  bitfieldMan_(new BitfieldMan(pieceLength, totalLength)),
+  bitfieldMan_(make_unique<BitfieldMan>(pieceLength, totalLength)),
   lastDownloadUpdate_(0),
   lastAmUnchoking_(0),
   dispatcher_(nullptr),
@@ -63,9 +64,7 @@ PeerSessionResource::PeerSessionResource(int32_t pieceLength, int64_t totalLengt
 {}
 
 PeerSessionResource::~PeerSessionResource()
-{
-  delete bitfieldMan_;
-}
+{}
 
 void PeerSessionResource::amChoking(bool b)
 {
@@ -251,8 +250,7 @@ size_t PeerSessionResource::countOutstandingUpload() const
 
 void PeerSessionResource::reconfigure(int32_t pieceLength, int64_t totalLenth)
 {
-  delete bitfieldMan_;
-  bitfieldMan_ = new BitfieldMan(pieceLength, totalLenth);
+  bitfieldMan_ = make_unique<BitfieldMan>(pieceLength, totalLenth);
 }
 
 } // namespace aria2

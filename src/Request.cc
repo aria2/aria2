@@ -168,7 +168,7 @@ const std::shared_ptr<PeerStat>& Request::initPeerStat()
   assert(v == 0);
   std::string host = uri::getFieldString(us, USR_HOST, uri_.c_str());
   std::string protocol = uri::getFieldString(us, USR_SCHEME, uri_.c_str());
-  peerStat_.reset(new PeerStat(0, host, protocol));
+  peerStat_ = std::make_shared<PeerStat>(0, host, protocol);
   return peerStat_;
 }
 

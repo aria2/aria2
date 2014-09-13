@@ -39,6 +39,7 @@
 
 #include <string>
 #include <set>
+#include <memory>
 
 #include "BtConstants.h"
 #include "NetStat.h"
@@ -52,7 +53,7 @@ class BtMessageDispatcher;
 
 class PeerSessionResource {
 private:
-  BitfieldMan* bitfieldMan_;
+  std::unique_ptr<BitfieldMan> bitfieldMan_;
   // fast index set which a peer has sent to localhost.
   std::set<size_t> peerAllowedIndexSet_;
   // fast index set which localhost has sent to a peer.

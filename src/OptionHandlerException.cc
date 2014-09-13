@@ -64,8 +64,7 @@ OptionHandlerException::~OptionHandlerException() throw() {}
 
 std::shared_ptr<Exception> OptionHandlerException::copy() const
 {
-  std::shared_ptr<Exception> e(new OptionHandlerException(*this));
-  return e;
+  return std::make_shared<OptionHandlerException>(*this);
 }
 
 } // namespace aria2

@@ -352,7 +352,7 @@ std::shared_ptr<OptionParser> OptionParser::optionParser_;
 const std::shared_ptr<OptionParser>& OptionParser::getInstance()
 {
   if(!optionParser_) {
-    optionParser_.reset(new OptionParser());
+    optionParser_ = std::make_shared<OptionParser>();
     optionParser_->setOptionHandlers(OptionHandlerFactory::createOptionHandlers());
   }
   return optionParser_;

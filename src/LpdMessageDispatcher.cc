@@ -65,7 +65,7 @@ bool LpdMessageDispatcher::init(const std::string& localAddr,
                                 unsigned char ttl, unsigned char loop)
 {
   try {
-    socket_.reset(new SocketCore(SOCK_DGRAM));
+    socket_ = std::make_shared<SocketCore>(SOCK_DGRAM);
     socket_->create(AF_INET);
     A2_LOG_DEBUG(fmt("Setting multicast outgoing interface=%s",
                      localAddr.c_str()));

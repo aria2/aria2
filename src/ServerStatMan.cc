@@ -59,7 +59,7 @@ ServerStatMan::~ServerStatMan() {}
 std::shared_ptr<ServerStat> ServerStatMan::find(const std::string& hostname,
                                              const std::string& protocol) const
 {
-  std::shared_ptr<ServerStat> ss(new ServerStat(hostname, protocol));
+  auto ss = std::make_shared<ServerStat>(hostname, protocol);
   auto i = serverStats_.find(ss);
   if(i == serverStats_.end()) {
     return nullptr;
@@ -193,7 +193,7 @@ bool ServerStatMan::load(const std::string& filename)
     if(m[S_HOST].empty() || m[S_PROTOCOL].empty()) {
       continue;
     }
-    std::shared_ptr<ServerStat> sstat(new ServerStat(m[S_HOST], m[S_PROTOCOL]));
+    auto sstat = std::make_shared<ServerStat>(m[S_HOST], m[S_PROTOCOL]);
 
     uint32_t uintval;
     if(!util::parseUIntNoThrow(uintval, m[S_DL_SPEED])) {

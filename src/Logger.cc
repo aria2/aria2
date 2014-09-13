@@ -67,7 +67,8 @@ void Logger::openFile(const std::string& filename)
   if(filename == DEV_STDOUT) {
     fpp_ = global::cout();
   } else {
-    fpp_.reset(new BufferedFile(filename.c_str(), BufferedFile::APPEND));
+    fpp_ = std::make_shared<BufferedFile>(filename.c_str(),
+                                          BufferedFile::APPEND);
     if(!*static_cast<BufferedFile*>(fpp_.get())) {
       throw DL_ABORT_EX(fmt(EX_FILE_OPEN, filename.c_str(), "n/a"));
     }

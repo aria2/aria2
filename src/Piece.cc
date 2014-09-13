@@ -51,28 +51,22 @@
 namespace aria2 {
 
 Piece::Piece()
-  : bitfield_(nullptr),
-    wrCache_(nullptr),
-    index_(0),
+  : index_(0),
     length_(0),
     nextBegin_(0),
     usedBySegment_(false)
 {}
 
 Piece::Piece(size_t index, int64_t length, int32_t blockLength)
- : bitfield_(new BitfieldMan(blockLength, length)),
-   wrCache_(nullptr),
-   index_(index),
-   length_(length),
-   nextBegin_(0),
-   usedBySegment_(false)
+  : bitfield_(make_unique<BitfieldMan>(blockLength, length)),
+    index_(index),
+    length_(length),
+    nextBegin_(0),
+    usedBySegment_(false)
 {}
 
 Piece::~Piece()
-{
-  delete wrCache_;
-  delete bitfield_;
-}
+{}
 
 void Piece::completeBlock(size_t blockIndex) {
   bitfield_->setBit(blockIndex);
@@ -185,7 +179,6 @@ std::string Piece::toString() const {
 
 void Piece::reconfigure(int64_t length)
 {
-  delete bitfield_;
   length_ = length;
   // TODO currently, this function is only called from
   // GrowSegment::updateWrittenLength().  If we use default block
@@ -193,7 +186,8 @@ void Piece::reconfigure(int64_t length)
   // BitfieldMan for each call is very expensive.  Therefore, we use
   // maximum block length for now to reduce the overhead.  Ideally, we
   // check the code thoroughly and remove bitfield_ if we can.
-  bitfield_ = new BitfieldMan(std::numeric_limits<int32_t>::max(), length_);
+  bitfield_ = make_unique<BitfieldMan>(std::numeric_limits<int32_t>::max(),
+                                       length_);
 }
 
 void Piece::setBitfield(const unsigned char* bitfield, size_t len)
@@ -323,9 +317,9 @@ void Piece::initWrCache(WrDiskCache* diskCache,
   if(!diskCache) {
     return;
   }
-  assert(wrCache_ == nullptr);
-  wrCache_ = new WrDiskCacheEntry(diskAdaptor);
-  bool rv = diskCache->add(wrCache_);
+  assert(!wrCache_);
+  wrCache_ = make_unique<WrDiskCacheEntry>(diskAdaptor);
+  bool rv = diskCache->add(wrCache_.get());
   assert(rv);
 }
 
@@ -336,7 +330,7 @@ void Piece::flushWrCache(WrDiskCache* diskCache)
   }
   assert(wrCache_);
   ssize_t size = static_cast<ssize_t>(wrCache_->getSize());
-  diskCache->update(wrCache_, -size);
+  diskCache->update(wrCache_.get(), -size);
   wrCache_->writeToDisk();
 }
 
@@ -347,7 +341,7 @@ void Piece::clearWrCache(WrDiskCache* diskCache)
   }
   assert(wrCache_);
   ssize_t size = static_cast<ssize_t>(wrCache_->getSize());
-  diskCache->update(wrCache_, -size);
+  diskCache->update(wrCache_.get(), -size);
   wrCache_->clear();
 }
 
@@ -359,7 +353,7 @@ void Piece::updateWrCache(WrDiskCache* diskCache, unsigned char* data,
     return;
   }
   assert(wrCache_);
-  A2_LOG_DEBUG(fmt("updateWrCache entry=%p", wrCache_));
+  A2_LOG_DEBUG(fmt("updateWrCache entry=%p", wrCache_.get()));
   auto cell = new WrDiskCacheEntry::DataCell();
   cell->goff = goff;
   cell->data = data;
@@ -369,7 +363,7 @@ void Piece::updateWrCache(WrDiskCache* diskCache, unsigned char* data,
   bool rv;
   rv = wrCache_->cacheData(cell);
   assert(rv);
-  rv = diskCache->update(wrCache_, len);
+  rv = diskCache->update(wrCache_.get(), len);
   assert(rv);
 }
 
@@ -383,7 +377,7 @@ size_t Piece::appendWrCache(WrDiskCache* diskCache, int64_t goff,
   size_t delta = wrCache_->append(goff, data, len);
   bool rv;
   if(delta > 0) {
-    rv = diskCache->update(wrCache_, delta);
+    rv = diskCache->update(wrCache_.get(), delta);
     assert(rv);
   }
   return delta;
@@ -392,9 +386,8 @@ size_t Piece::appendWrCache(WrDiskCache* diskCache, int64_t goff,
 void Piece::releaseWrCache(WrDiskCache* diskCache)
 {
   if(diskCache && wrCache_) {
-    diskCache->remove(wrCache_);
-    delete wrCache_;
-    wrCache_ = nullptr;
+    diskCache->remove(wrCache_.get());
+    wrCache_.reset();
   }
 }
 

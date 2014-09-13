@@ -38,8 +38,7 @@ namespace aria2 {
 
 std::shared_ptr<Exception> RecoverableException::copy() const
 {
-  std::shared_ptr<Exception> e(new RecoverableException(*this));
-  return e;
+  return std::make_shared<RecoverableException>(*this);
 }
 
 RecoverableException::RecoverableException

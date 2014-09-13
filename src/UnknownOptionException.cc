@@ -61,8 +61,7 @@ UnknownOptionException::~UnknownOptionException() throw() {}
 
 std::shared_ptr<Exception> UnknownOptionException::copy() const
 {
-  std::shared_ptr<Exception> e(new UnknownOptionException(*this));
-  return e;
+  return std::make_shared<UnknownOptionException>(*this);
 }
 
 } // namespace aria2

@@ -150,11 +150,12 @@ std::shared_ptr<Segment> SegmentMan::checkoutSegment
   piece->setUsedBySegment(true);
   std::shared_ptr<Segment> segment;
   if(piece->getLength() == 0) {
-    segment.reset(new GrowSegment(piece));
+    segment = std::make_shared<GrowSegment>(piece);
   } else {
-    segment.reset(new PiecedSegment(downloadContext_->getPieceLength(), piece));
+    segment = std::make_shared<PiecedSegment>
+      (downloadContext_->getPieceLength(), piece);
   }
-  std::shared_ptr<SegmentEntry> entry(new SegmentEntry(cuid, segment));
+  auto entry = std::make_shared<SegmentEntry>(cuid, segment);
   usedSegmentEntries_.push_back(entry);
   A2_LOG_DEBUG(fmt("index=%lu, length=%" PRId64 ", segmentLength=%" PRId64 ","
                    " writtenLength=%" PRId64,

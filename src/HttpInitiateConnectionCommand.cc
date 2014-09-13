@@ -95,13 +95,9 @@ std::unique_ptr<Command> HttpInitiateConnectionCommand::createNextCommand
                                            getDownloadEngine(),
                                            getSocket());
       if(proxyMethod == V_TUNNEL) {
-        std::shared_ptr<HttpProxyRequestConnectChain> chain
-          (new HttpProxyRequestConnectChain());
-        c->setControlChain(chain);
+        c->setControlChain(std::make_shared<HttpProxyRequestConnectChain>());
       } else if(proxyMethod == V_GET) {
-        std::shared_ptr<HttpRequestConnectChain> chain
-          (new HttpRequestConnectChain());
-        c->setControlChain(chain);
+        c->setControlChain(std::make_shared<HttpRequestConnectChain>());
       } else {
         // Unreachable
         assert(0);
@@ -110,17 +106,16 @@ std::unique_ptr<Command> HttpInitiateConnectionCommand::createNextCommand
       return std::move(c);
     } else {
       setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
-      std::shared_ptr<SocketRecvBuffer> socketRecvBuffer
-        (new SocketRecvBuffer(pooledSocket));
-      std::shared_ptr<HttpConnection> httpConnection
-        (new HttpConnection(getCuid(), pooledSocket, socketRecvBuffer));
-      auto c = make_unique<HttpRequestCommand>(getCuid(),
-                                               getRequest(),
-                                               getFileEntry(),
-                                               getRequestGroup(),
-                                               httpConnection,
-                                               getDownloadEngine(),
-                                               pooledSocket);
+      auto c = make_unique<HttpRequestCommand>
+        (getCuid(),
+         getRequest(),
+         getFileEntry(),
+         getRequestGroup(),
+         std::make_shared<HttpConnection>
+         (getCuid(), pooledSocket,
+          std::make_shared<SocketRecvBuffer>(pooledSocket)),
+         getDownloadEngine(),
+         pooledSocket);
       if(proxyMethod == V_GET) {
         c->setProxyRequest(proxyRequest);
       }
@@ -144,26 +139,23 @@ std::unique_ptr<Command> HttpInitiateConnectionCommand::createNextCommand
                                            getRequestGroup(),
                                            getDownloadEngine(),
                                            getSocket());
-      std::shared_ptr<HttpRequestConnectChain> chain
-        (new HttpRequestConnectChain());
-      c->setControlChain(chain);
+      c->setControlChain(std::make_shared<HttpRequestConnectChain>());
       setupBackupConnection(hostname, addr, port, c.get());
       return std::move(c);
     } else {
       setSocket(pooledSocket);
       setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
 
-      std::shared_ptr<SocketRecvBuffer> socketRecvBuffer
-        (new SocketRecvBuffer(getSocket()));
-      std::shared_ptr<HttpConnection> httpConnection
-        (new HttpConnection(getCuid(), getSocket(), socketRecvBuffer));
-      return make_unique<HttpRequestCommand>(getCuid(),
-                                             getRequest(),
-                                             getFileEntry(),
-                                             getRequestGroup(),
-                                             httpConnection,
-                                             getDownloadEngine(),
-                                             getSocket());
+      return make_unique<HttpRequestCommand>
+        (getCuid(),
+         getRequest(),
+         getFileEntry(),
+         getRequestGroup(),
+         std::make_shared<HttpConnection>
+         (getCuid(), getSocket(),
+          std::make_shared<SocketRecvBuffer>(getSocket())),
+         getDownloadEngine(),
+         getSocket());
     }
   }
 }

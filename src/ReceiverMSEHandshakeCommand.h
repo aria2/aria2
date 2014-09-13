@@ -60,7 +60,7 @@ public:
 private:
   Seq sequence_;
 
-  MSEHandshake* mseHandshake_;
+  std::unique_ptr<MSEHandshake> mseHandshake_;
 
   void createCommand();
 protected:

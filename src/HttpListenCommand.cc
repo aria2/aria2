@@ -96,7 +96,7 @@ bool HttpListenCommand::bindPort(uint16_t port)
   if(serverSocket_) {
     e_->deleteSocketForReadCheck(serverSocket_, this);
   }
-  serverSocket_.reset(new SocketCore());
+  serverSocket_ = std::make_shared<SocketCore>();
   const int ipv = (family_ == AF_INET) ? 4 : 6;
   try {
     int flags = 0;

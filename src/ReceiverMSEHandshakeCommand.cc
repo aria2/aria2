@@ -61,16 +61,14 @@ ReceiverMSEHandshakeCommand::ReceiverMSEHandshakeCommand
 
   PeerAbstractCommand(cuid, peer, e, s),
   sequence_(RECEIVER_IDENTIFY_HANDSHAKE),
-  mseHandshake_(new MSEHandshake(cuid, s, e->getOption()))
+  mseHandshake_(make_unique<MSEHandshake>(cuid, s, e->getOption()))
 {
   setTimeout(e->getOption()->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
   mseHandshake_->setWantRead(true);
 }
 
 ReceiverMSEHandshakeCommand::~ReceiverMSEHandshakeCommand()
-{
-  delete mseHandshake_;
-}
+{}
 
 bool ReceiverMSEHandshakeCommand::exitBeforeExecute()
 {

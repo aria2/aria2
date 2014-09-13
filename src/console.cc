@@ -52,15 +52,14 @@ Console consoleCerr;
 void initConsole(bool suppress)
 {
   if(suppress) {
-    consoleCerr.reset(new NullOutputFile());
-    consoleCout.reset(new NullOutputFile());
+    consoleCout = consoleCerr = std::make_shared<NullOutputFile>();
   } else {
 #ifdef __MINGW32__
-    consoleCout.reset(new WinConsoleFile(STD_OUTPUT_HANDLE));
-    consoleCerr.reset(new WinConsoleFile(STD_ERROR_HANDLE));
+    consoleCout = std::make_shared<WinConsoleFile>(STD_OUTPUT_HANDLE);
+    consoleCerr = std::make_shared<WinConsoleFile>(STD_ERROR_HANDLE);
 #else // !__MINGW32__
-    consoleCout.reset(new BufferedFile(stdout));
-    consoleCerr.reset(new BufferedFile(stderr));
+    consoleCout = std::make_shared<BufferedFile>(stdout);
+    consoleCerr = std::make_shared<BufferedFile>(stderr);
 #endif // !__MINGW32__
   }
 }

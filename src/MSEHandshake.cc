@@ -81,20 +81,15 @@ MSEHandshake::MSEHandshake
     rbufLength_(0),
     socketBuffer_(socket),
     negotiatedCryptoType_(CRYPTO_NONE),
-    dh_(nullptr),
     initiator_(true),
     markerIndex_(0),
     padLength_(0),
     iaLength_(0),
-    ia_(nullptr),
     sha1_(MessageDigest::sha1())
 {}
 
 MSEHandshake::~MSEHandshake()
-{
-  delete dh_;
-  delete [] ia_;
-}
+{}
 
 MSEHandshake::HANDSHAKE_TYPE MSEHandshake::identifyHandshakeType()
 {
@@ -115,8 +110,7 @@ MSEHandshake::HANDSHAKE_TYPE MSEHandshake::identifyHandshakeType()
 
 void MSEHandshake::initEncryptionFacility(bool initiator)
 {
-  delete dh_;
-  dh_ = new DHKeyExchange();
+  dh_ = make_unique<DHKeyExchange>();
   dh_->init(PRIME, PRIME_BITS, GENERATOR, 160);
   dh_->generatePublicKey();
   A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - DH initialized.", cuid_));
@@ -501,9 +495,8 @@ bool MSEHandshake::receiveReceiverIA()
     wantRead_ = true;
     return false;
   }
-  delete [] ia_;
-  ia_ = new unsigned char[iaLength_];
-  decryptor_->encrypt(iaLength_, ia_, rbuf_);
+  ia_ = make_unique<unsigned char[]>(iaLength_);
+  decryptor_->encrypt(iaLength_, ia_.get(), rbuf_);
   A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - IA received.", cuid_));
   // shift rbuf_
   shiftBuffer(iaLength_);
