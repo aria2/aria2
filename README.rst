@@ -357,9 +357,9 @@ environment variable which must fulfill the following conditions:
   For example, to install toolchain under ``$ANDROID_HOME/toolchain``,
   do this::
 
-      $NDK/build/tools/make-standalone-toolchain.sh --platform=android-18 --toolchain=arm-linux-androideabi-4.8 --install-dir=$ANDROID_HOME/toolchain
-
-      $NDK/build/tools/make-standalone-toolchain.sh --install-dir=$ANDROID_HOME/toolchain --toolchain=arm-linux-androideabi-4.8 --llvm-version=3.4
+      $NDK/build/tools/make-standalone-toolchain.sh \
+      --install-dir=$ANDROID_HOME/toolchain \
+      --toolchain=arm-linux-androideabi-4.8
 
   You may need to add ``--system=linux-x86_64`` to the above
   command-line for x86_64 Linux host.

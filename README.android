@@ -38,11 +38,11 @@ See `the online manual
 Notes
 -----
 
-aria2c executable was generated using android-ndk-r9d.
+aria2c executable was generated using android-ndk-r10b.
 
 The following libraries were statically linked.
 
- * openssl 1.0.1h
+ * openssl 1.0.1i
  * expat 2.1.0
  * c-ares 1.10.0
 
