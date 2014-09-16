@@ -97,7 +97,7 @@ typename Parser::ResultType parseFile(Parser& parser,
   if(fd == -1) {
     return Parser::ParserStateMachineType::noResult();
   }
-  auto_delete_r<int, int> fdDeleter(fd, close);
+  auto fdclose = defer(fd, close);
   char buf[4096];
   ssize_t nread;
   ssize_t nproc;

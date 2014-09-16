@@ -53,7 +53,7 @@ bool parseFile(const std::string& filename, ParserStateMachine* psm)
       return false;
     }
   }
-  auto_delete_r<int, int> fdDeleter(fd, close);
+  auto fdclose = defer(fd, close);
   XmlParser ps(psm);
   char buf[4096];
   ssize_t nread;

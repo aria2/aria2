@@ -54,33 +54,26 @@ public:
   }
 };
 
-template<typename T, typename R>
-class auto_delete_r {
-private:
-  T obj_;
-  R (*deleter_)(T);
-public:
-  auto_delete_r(T obj, R (*deleter)(T)):obj_(obj), deleter_(deleter) {}
+template<typename T, typename F>
+struct Defer {
+  Defer(T t, F f)
+    : t(t), f(std::move(f))
+  {}
 
-  ~auto_delete_r()
+  ~Defer()
   {
-    (void)deleter_(obj_);
+    f(t);
   }
+
+  T t;
+  F f;
 };
 
-template<class Container>
-class auto_delete_container {
-private:
-  Container* c_;
-public:
-  auto_delete_container(Container* c):c_(c) {}
-
-  ~auto_delete_container()
-  {
-    std::for_each(c_->begin(), c_->end(), Deleter());
-    delete c_;
-  }
-};
+template<typename T, typename F>
+Defer<T, F> defer(T&& t, F f)
+{
+  return Defer<T, F>(std::forward<T>(t), std::forward<F>(f));
+}
 
 template<typename InputIterator, typename DelimiterType>
 std::string strjoin(InputIterator first, InputIterator last,
