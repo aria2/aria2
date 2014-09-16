@@ -75,91 +75,89 @@ public:
 
 namespace expr {
 
-template<typename L, typename OpTag, typename R>
+template<typename L, typename R, typename Op>
 struct BinExpr {
-  BinExpr(L l, R r):l_(l), r_(r) {}
+  typedef typename Op::result_type value_type;
 
-  typedef typename OpTag::returnType returnType;
+  BinExpr(L lhs, R rhs, Op op)
+    : lhs(std::move(lhs)), rhs(std::move(rhs)), op(std::move(op))
+  {}
 
-  returnType operator[](size_t index) const
+  value_type operator[](size_t i) const
   {
-    return OpTag::apply(l_[index], r_[index]);
+    return op(lhs[i], rhs[i]);
   }
 
-  const L l_;
-  const R r_;
+  L lhs;
+  R rhs;
+  Op op;
 };
 
-template<typename OpTag, typename A>
+template<typename L, typename R,
+         typename Op = std::bit_and<typename L::value_type>>
+BinExpr<L, R, Op> operator&(L lhs, R rhs)
+{
+  return BinExpr<L, R, Op>(std::forward<L>(lhs), std::forward<R>(rhs), Op());
+}
+
+template<typename L, typename R,
+         typename Op = std::bit_or<typename L::value_type>>
+BinExpr<L, R, Op> operator|(L lhs, R rhs)
+{
+  return BinExpr<L, R, Op>(std::forward<L>(lhs), std::forward<R>(rhs), Op());
+}
+
+template<typename Arg, typename Op>
 struct UnExpr {
-  UnExpr(A a):a_(a) {}
+  typedef typename Op::result_type value_type;
 
-  typedef typename OpTag::returnType returnType;
+  UnExpr(Arg arg, Op op)
+    : arg(std::move(arg)), op(std::move(op))
+  {}
 
-  returnType operator[](size_t index) const
+  value_type operator[](size_t i) const
   {
-    return OpTag::apply(a_[index]);
+    return op(arg[i]);
   }
 
-  const A a_;
+  Arg arg;
+  Op op;
 };
 
 template<typename T>
-struct And
-{
-  typedef T returnType;
-  static inline returnType apply(T lhs, T rhs) { return lhs&rhs; }
+struct bit_neg : std::function<T(T)> {
+  T operator()(T t) const
+  {
+    return ~t;
+  }
 };
 
-template<typename T>
-struct Or
+template<typename Arg, typename Op = bit_neg<typename Arg::value_type>>
+UnExpr<Arg, Op> operator~(Arg arg)
 {
-  typedef T returnType;
-  static inline returnType apply(T lhs, T rhs) { return lhs|rhs; }
-};
-
-template<typename T>
-struct Negate
-{
-  typedef T returnType;
-  static inline returnType apply(T a) { return ~a; }
-};
-
-template<typename T>
-struct Array
-{
-  typedef T returnType;
-
-  Array(const T* t):t_(t) {}
-
-  const T* t_;
-
-  returnType operator[](size_t index) const { return t_[index]; }
-};
-
-template<typename T>
-Array<T>
-array(const T* t) { return Array<T>(t); }
-
-template<typename L, typename R>
-BinExpr<L, And<typename L::returnType>, R>
-operator&(const L& l, const R& r)
-{
-  return BinExpr<L, And<typename L::returnType>, R>(l, r);
+  return UnExpr<Arg, Op>(std::forward<Arg>(arg), Op());
 }
 
-template<typename L, typename R>
-BinExpr<L, Or<typename L::returnType>, R>
-operator|(const L& l, const R& r)
-{
-  return BinExpr<L, Or<typename L::returnType>, R>(l, r);
-}
+template<typename T>
+struct Array {
+  typedef T value_type;
 
-template<typename A>
-UnExpr<Negate<typename A::returnType>, A>
-operator~(const A& a)
+  Array(T* t)
+    : t(t)
+  {}
+
+  T operator[](size_t i) const
+  {
+    return t[i];
+  }
+
+  T* t;
+};
+
+template<typename T>
+Array<T> array(T *t)
 {
-  return UnExpr<Negate<typename A::returnType>, A>(a);
+  return Array<T>(t);
 }
 
 } // namespace expr
