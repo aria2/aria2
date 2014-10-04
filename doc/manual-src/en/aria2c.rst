@@ -849,7 +849,10 @@ BitTorrent Specific Options
   bytes are specified, only first 20 bytes are
   used. If less than 20 bytes are specified, random
   byte data are added to make its length 20 bytes.
-  Default: ``aria2/$VERSION-``, $VERSION is replaced by package version.
+
+  Default: ``A2-$MAJOR-$MINOR-$PATCH-``, $MAJOR, $MINOR and $PATCH are
+  replaced by major, minor and patch version number respectively.  For
+  instance, aria2 version 1.18.8 has prefix ID ``A2-1-18-8-``.
 
 .. option:: --seed-ratio=<RATIO>
 
