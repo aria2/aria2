@@ -137,7 +137,6 @@
 # define a2utime(path, times) _wutime(path, times)
 # define a2unlink(path) _wunlink(path)
 # define a2rmdir(path) _wrmdir(path)
-# define a2rename(src, dest) _wrename(src, dest)
 // For Windows, we share files for reading and writing.
 # define a2open(path, flags, mode) _wsopen(path, flags, _SH_DENYNO, mode)
 # define a2fopen(path, mode) _wfsopen(path, mode, _SH_DENYNO)
@@ -155,7 +154,6 @@
 # define a2utime(path, times) ::utime(path, times)
 # define a2unlink(path) unlink(path)
 # define a2rmdir(path) rmdir(path)
-# define a2rename(src, dest) rename(src, dest)
 # define a2open(path, flags, mode) open(path, flags, mode)
 # define a2fopen(path, mode) fopen(path, mode)
 // Android NDK R8e does not provide ftruncate64 prototype, so let's
@@ -183,7 +181,6 @@ extern int ftruncate64(int fd, off64_t length);
 # define a2utime(path, times) ::utime(path, times)
 # define a2unlink(path) unlink(path)
 # define a2rmdir(path) rmdir(path)
-# define a2rename(src, dest) rename(src, dest)
 # define a2open(path, flags, mode) open(path, flags, mode)
 # define a2fopen(path, mode) fopen(path, mode)
 # define a2ftruncate(fd, length) ftruncate(fd, length)

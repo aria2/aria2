@@ -233,19 +233,24 @@ bool File::isDir(const std::string& filename)
 bool File::renameTo(const std::string& dest)
 {
 #ifdef __MINGW32__
-  /* MinGW's rename() doesn't delete an existing destination */
-  if (_waccess(utf8ToWChar(dest).c_str(), 0) == 0) {
-    if (a2unlink(utf8ToWChar(dest).c_str()) != 0) {
-      return false;
-    }
+  // MinGW's rename() doesn't delete an existing destination.  Better
+  // to use MoveFileEx, which usually provides atomic move in aria2
+  // usecase.
+  if(MoveFileExW(utf8ToWChar(name_).c_str(), utf8ToWChar(dest).c_str(),
+                 MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING)) {
+    name_ = dest;
+    return true;
   }
-#endif // __MINGW32__
-  if(a2rename(utf8ToWChar(name_).c_str(), utf8ToWChar(dest).c_str()) == 0) {
+
+  return false;
+#else // !__MINGW32__
+  if(rename(name_.c_str(), dest.c_str()) == 0) {
     name_ = dest;
     return true;
   } else {
     return false;
   }
+#endif // !__MINGW32__
 }
 
 bool File::utime(const Time& actime, const Time& modtime) const
