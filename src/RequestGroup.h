@@ -179,6 +179,7 @@ private:
   // just sits in memory.
   bool inMemoryDownload_;
 
+  bool seedOnly_;
 
   void validateFilename(const std::string& expectedFilename,
                         const std::string& actualFilename) const;
@@ -563,6 +564,13 @@ public:
   {
     state_ = state;
   }
+
+  bool isSeedOnlyEnabled()
+  {
+    return seedOnly_;
+  }
+
+  void enableSeedOnly();
 };
 
 } // namespace aria2

@@ -105,6 +105,7 @@ RequestGroupMan::RequestGroupMan
  int maxSimultaneousDownloads,
  const Option* option)
   : maxSimultaneousDownloads_(maxSimultaneousDownloads),
+    numActive_(0),
     option_(option),
     serverStatMan_(std::make_shared<ServerStatMan>()),
     maxOverallDownloadSpeedLimit_
@@ -140,6 +141,7 @@ bool RequestGroupMan::downloadFinished()
 void RequestGroupMan::addRequestGroup
 (const std::shared_ptr<RequestGroup>& group)
 {
+  ++numActive_;
   requestGroups_.push_back(group->getGID(), group);
 }
 
@@ -320,6 +322,11 @@ public:
     if(group->getNumCommand() == 0) {
       collectStat(group);
       const std::shared_ptr<DownloadContext>& dctx = group->getDownloadContext();
+
+      if(!group->isSeedOnlyEnabled()) {
+        e_->getRequestGroupMan()->decreaseNumActive();
+      }
+
       // DownloadContext::resetDownloadStopTime() is only called when
       // download completed. If
       // DownloadContext::getDownloadStopTime().isZero() is true, then
@@ -453,11 +460,11 @@ std::vector<std::unique_ptr<Command>> createInitialCommand
 void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
 {
   removeStoppedGroup(e);
-  if(static_cast<size_t>(maxSimultaneousDownloads_) <= requestGroups_.size()) {
+  if(static_cast<size_t>(maxSimultaneousDownloads_) <= numActive_) {
     return;
   }
   int count = 0;
-  int num = maxSimultaneousDownloads_-requestGroups_.size();
+  int num = maxSimultaneousDownloads_ - numActive_;
   std::vector<std::shared_ptr<RequestGroup> > pending;
 
   while(count < num && (uriListParser_ || !reservedGroups_.empty())) {
@@ -488,6 +495,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
     configureRequestGroup(groupToAdd);
     groupToAdd->setRequestGroupMan(this);
     groupToAdd->setState(RequestGroup::STATE_ACTIVE);
+    ++numActive_;
     requestGroups_.push_back(groupToAdd->getGID(), groupToAdd);
     try {
       auto res = createInitialCommand(groupToAdd, e);
@@ -963,6 +971,12 @@ void RequestGroupMan::initWrDiskCache()
   if(limit > 0) {
     wrDiskCache_ = make_unique<WrDiskCache>(limit);
   }
+}
+
+void RequestGroupMan::decreaseNumActive()
+{
+  assert(numActive_ > 0);
+  --numActive_;
 }
 
 } // namespace aria2

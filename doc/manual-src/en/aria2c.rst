@@ -595,6 +595,16 @@ BitTorrent/Metalink Options
 BitTorrent Specific Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. option:: --bt-detach-seed-only[=true|false]
+
+  Exclude seed only downloads when counting concurrent active
+  downloads (See :option:`-j` option).  This means that if ``-j3`` is
+  given and this option is turned on and 3 downloads are active and
+  one of those enters seed mode, then it is excluded from active
+  download count (thus it becomes 2), and the next download waiting in
+  queue gets started. But be aware that seeding item is still
+  recognized as active download in RPC method.  Default: ``false``
+
 .. option:: --bt-enable-lpd[=true|false]
 
   Enable Local Peer Discovery.  If a private flag is set in a torrent,

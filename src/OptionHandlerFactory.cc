@@ -1702,6 +1702,15 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
 #ifdef ENABLE_BITTORRENT
   {
     OptionHandler* op(new BooleanOptionHandler
+                      (PREF_BT_DETACH_SEED_ONLY,
+                       TEXT_BT_DETACH_SEED_ONLY,
+                       A2_V_FALSE,
+                       OptionHandler::OPT_ARG));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
+    OptionHandler* op(new BooleanOptionHandler
                       (PREF_BT_ENABLE_LPD,
                        TEXT_BT_ENABLE_LPD,
                        A2_V_FALSE,

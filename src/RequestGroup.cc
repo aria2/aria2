@@ -149,7 +149,8 @@ RequestGroup::RequestGroup(const std::shared_ptr<GroupId>& gid,
     haltRequested_(false),
     forceHaltRequested_(false),
     pauseRequested_(false),
-    inMemoryDownload_(false)
+    inMemoryDownload_(false),
+    seedOnly_(false)
 {
   fileAllocationEnabled_ = option_->get(PREF_FILE_ALLOCATION) != V_NONE;
   if(!option_->getAsBool(PREF_DRY_RUN)) {
@@ -1263,6 +1264,20 @@ bool RequestGroup::p2pInvolved() const
 #else // !ENABLE_BITTORRENT
   return false;
 #endif // !ENABLE_BITTORRENT
+}
+
+void RequestGroup::enableSeedOnly()
+{
+  if(seedOnly_ || !option_->getAsBool(PREF_BT_DETACH_SEED_ONLY)) {
+    return;
+  }
+
+  if(requestGroupMan_) {
+    seedOnly_ = true;
+
+    requestGroupMan_->decreaseNumActive();
+    requestGroupMan_->requestQueueCheck();
+  }
 }
 
 } // namespace aria2

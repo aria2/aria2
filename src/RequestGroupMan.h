@@ -75,6 +75,13 @@ private:
 
   int maxSimultaneousDownloads_;
 
+  // The number of simultaneous active downloads, excluding seed only
+  // item if PREF_BT_DETACH_SEED_ONLY is true.  We rely on this
+  // variable to maintain the number of concurrent downloads.  If
+  // PREF_BT_DETACH_SEED_ONLY is false, this variable is equal to
+  // requestGroups_.size().
+  size_t numActive_;
+
   const Option* option_;
 
   std::shared_ptr<ServerStatMan> serverStatMan_;
@@ -376,6 +383,8 @@ public:
   {
     return openedFileCounter_;
   }
+
+  void decreaseNumActive();
 };
 
 } // namespace aria2

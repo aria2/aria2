@@ -490,11 +490,14 @@ void DefaultPieceStorage::completePiece(const std::shared_ptr<Piece>& piece)
         diskAdaptor_->enableReadOnly();
         diskAdaptor_->openFile();
 #endif // __MINGW32__
-        util::executeHookByOptName(downloadContext_->getOwnerRequestGroup(),
-                                   option_, PREF_ON_BT_DOWNLOAD_COMPLETE);
+        auto group = downloadContext_->getOwnerRequestGroup();
+
+        util::executeHookByOptName(group, option_,
+                                   PREF_ON_BT_DOWNLOAD_COMPLETE);
         SingletonHolder<Notifier>::instance()->
-          notifyDownloadEvent(EVENT_ON_BT_DOWNLOAD_COMPLETE,
-                              downloadContext_->getOwnerRequestGroup());
+          notifyDownloadEvent(EVENT_ON_BT_DOWNLOAD_COMPLETE, group);
+
+        group->enableSeedOnly();
       }
     }
 #endif // ENABLE_BITTORRENT

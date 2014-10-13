@@ -89,6 +89,7 @@ void BtFileAllocationEntry::prepareForNextAction
       diskAdaptor->openFile();
     }
 #endif // __MINGW32__
+    getRequestGroup()->enableSeedOnly();
   }
 }
 
