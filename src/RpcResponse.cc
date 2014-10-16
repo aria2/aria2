@@ -205,10 +205,12 @@ OutputStream& encodeJsonBatchAll
   if(!results.empty()) {
     encodeJsonAll(o, results[0].code, results[0].param.get(),
                   results[0].id.get());
-  }
-  for(auto i = std::begin(results)+1, eoi = std::end(results); i != eoi; ++i) {
-    o << ",";
-    encodeJsonAll(o, (*i).code, (*i).param.get(), (*i).id.get());
+
+    for(auto i = std::begin(results)+1, eoi = std::end(results); i != eoi;
+        ++i) {
+      o << ",";
+      encodeJsonAll(o, (*i).code, (*i).param.get(), (*i).id.get());
+    }
   }
   o << "]";
   if(!callback.empty()) {
