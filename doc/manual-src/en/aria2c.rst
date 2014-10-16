@@ -2118,7 +2118,7 @@ will removed from the parameter list before the request is being processed.
 For example, if the RPC secret authorization token is ``$$secret$$``,
 calling `aria2.addUri` RPC method would have to look like this::
 
-  aria2.addUri("token::$$secret$$", ["http://example.org/file"])
+  aria2.addUri("token:$$secret$$", ["http://example.org/file"])
 
 The `system.multicall` RPC method is treated specially. Since the XML-RPC
 specification only allows a single array as a parameter for this method, we
