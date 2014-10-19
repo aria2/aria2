@@ -282,6 +282,10 @@ mingw-w64 (http://mingw-w64.sourceforge.net/) cross-compiler on Debian
 Linux. The MinGW (http://www.mingw.org/) may not be able to build
 aria2.
 
+The easiest way to build Windows binary is use Dockerfile.mingw.  See
+Dockerfile.mingw how to build binary.  If you cannot use Dockerfile,
+then continue to read following paragraphs.
+
 Basically, after compiling and installing depended libraries, you can
 do cross-compile just passing appropriate ``--host`` option and
 specifying ``CPPFLAGS``, ``LDFLAGS`` and ``PKG_CONFIG_LIBDIR``
@@ -294,7 +298,6 @@ We use it to create official Windows build.  This script assumes
 following libraries have been built for cross-compile:
 
 * c-ares
-* openssl
 * expat
 * sqlite3
 * zlib
