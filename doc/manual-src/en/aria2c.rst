@@ -2334,7 +2334,7 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
   This method is equal to calling :func:`aria2.pause` for every active/waiting
   download. This methods returns ``OK``.
 
-.. function:: aria2.forcePause([secret], pid)
+.. function:: aria2.forcePause([secret], gid)
 
   This method pauses the download denoted by *gid*.  This method
   behaves just like :func:`aria2.pause` except that this method pauses
