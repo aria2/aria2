@@ -142,7 +142,11 @@ ssize_t OpenSSLTLSSession::readData(void* data, size_t len)
     }
 
     if(rv_ == 0) {
-      return 0;
+      auto err = SSL_get_error(ssl_, rv_);
+
+      if(err == SSL_ERROR_ZERO_RETURN) {
+        return 0;
+      }
     }
 
     return TLS_ERR_ERROR;
