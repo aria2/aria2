@@ -48,7 +48,7 @@ namespace aria2 {
 
 class OpenSSLTLSContext : public TLSContext {
 public:
-  OpenSSLTLSContext(TLSSessionSide side);
+  OpenSSLTLSContext(TLSSessionSide side, TLSVersion minVer);
 
   ~OpenSSLTLSContext();
 

@@ -195,9 +195,9 @@ bool checkIdentity(const SecIdentityRef id,
 
 namespace aria2 {
 
-TLSContext* TLSContext::make(TLSSessionSide side)
+TLSContext* TLSContext::make(TLSSessionSide side, TLSVersion ver)
 {
-  return new AppleTLSContext(side);
+  return new AppleTLSContext(side, ver);
 }
 
 AppleTLSContext::~AppleTLSContext()

@@ -188,7 +188,9 @@ int MultiUrlRequestInfo::prepare()
       }
       // We set server TLS context to the SocketCore before creating
       // DownloadEngine instance.
-      std::shared_ptr<TLSContext> svTlsContext(TLSContext::make(TLS_SERVER));
+      auto minTLSVer = util::toTLSVersion(option_->get(PREF_MIN_TLS_VERSION));
+      std::shared_ptr<TLSContext> svTlsContext
+        (TLSContext::make(TLS_SERVER, minTLSVer));
       if(!svTlsContext->addCredentialFile
          (option_->get(PREF_RPC_CERTIFICATE),
           option_->get(PREF_RPC_PRIVATE_KEY))) {
@@ -245,7 +247,9 @@ int MultiUrlRequestInfo::prepare()
     e_->setAuthConfigFactory(std::move(authConfigFactory));
 
 #ifdef ENABLE_SSL
-    std::shared_ptr<TLSContext> clTlsContext(TLSContext::make(TLS_CLIENT));
+    auto minTLSVer = util::toTLSVersion(option_->get(PREF_MIN_TLS_VERSION));
+    std::shared_ptr<TLSContext> clTlsContext
+      (TLSContext::make(TLS_CLIENT, minTLSVer));
     if(!option_->blank(PREF_CERTIFICATE)) {
       clTlsContext->addCredentialFile(option_->get(PREF_CERTIFICATE),
                                       option_->get(PREF_PRIVATE_KEY));

@@ -362,14 +362,36 @@ AppleTLSSession::AppleTLSSession(AppleTLSContext* ctx)
     return;
   }
 #if defined(__MAC_10_8)
-  (void)SSLSetProtocolVersionMin(sslCtx_, kSSLProtocol3);
+  switch (ctx->getMinTLSVersion()) {
+  case TLS_PROTO_SSL3:
+    (void)SSLSetProtocolVersionMin(sslCtx_, kSSLProtocol3);
+    break;
+  case TLS_PROTO_TLS10:
+    (void)SSLSetProtocolVersionMin(sslCtx_, kSSLProtocol1);
+    break;
+  case TLS_PROTO_TLS11:
+    (void)SSLSetProtocolVersionMin(sslCtx_, kSSLProtocol11);
+    break;
+  case TLS_PROTO_TLS12:
+    (void)SSLSetProtocolVersionMin(sslCtx_, kSSLProtocol12);
+    break;
+  }
   (void)SSLSetProtocolVersionMax(sslCtx_, kTLSProtocol12);
 #else
   (void)SSLSetProtocolVersionEnabled(sslCtx_, kSSLProtocolAll, false);
-  (void)SSLSetProtocolVersionEnabled(sslCtx_, kSSLProtocol3, true);
-  (void)SSLSetProtocolVersionEnabled(sslCtx_, kTLSProtocol1, true);
-  (void)SSLSetProtocolVersionEnabled(sslCtx_, kTLSProtocol11, true);
-  (void)SSLSetProtocolVersionEnabled(sslCtx_, kTLSProtocol12, true);
+  switch (ctx->getMinTLSVersion()) {
+  case TLS_PROTO_SSL3:
+    (void)SSLSetProtocolVersionEnabled(sslCtx_, kSSLProtocol3, true);
+    // fall through
+  case TLS_PROTO_TLS10:
+    (void)SSLSetProtocolVersionEnabled(sslCtx_, kTLSProtocol1, true);
+    // fall through
+  case TLS_PROTO_TLS11:
+    (void)SSLSetProtocolVersionEnabled(sslCtx_, kTLSProtocol11, true);
+    // fall through
+  case TLS_PROTO_TLS12:
+    (void)SSLSetProtocolVersionEnabled(sslCtx_, kTLSProtocol12, true);
+  }
 #endif
 
   // BEAST

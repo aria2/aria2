@@ -67,7 +67,7 @@ typedef std::unique_ptr<CredHandle, cred_deleter> CredPtr;
 class WinTLSContext : public TLSContext
 {
 public:
-  WinTLSContext(TLSSessionSide side);
+  WinTLSContext(TLSSessionSide side, TLSVersion ver);
 
   virtual ~WinTLSContext();
 

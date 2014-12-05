@@ -64,6 +64,10 @@
 #include "fmt.h"
 #include "prefs.h"
 
+#ifdef ENABLE_SSL
+#include "TLSContext.h"
+#endif // ENABLE_SSL
+
 #ifndef HAVE_SIGACTION
 #  define sigset_t int
 #endif // HAVE_SIGACTION
@@ -879,6 +883,8 @@ bool noProxyDomainMatch(const std::string& hostname, const std::string& domain);
 
 // Checks hostname matches pattern as described in RFC 6125.
 bool tlsHostnameMatch(const std::string& pattern, const std::string& hostname);
+
+TLSVersion toTLSVersion(const std::string& ver);
 
 } // namespace util
 

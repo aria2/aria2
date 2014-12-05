@@ -1321,6 +1321,12 @@ Advanced Options
   given URIs do not support resume.  See :option:`--always-resume` option.
   Default: ``0``
 
+.. option:: --min-tls-version=<VERSION>
+
+  Specify minimum SSL/TLS version to enable.
+  Possible Values: ``SSLv3``, ``TLSv1``, ``TLSv1.1``, ``TLSv1.2``
+  Default: ``TLSv1``
+
 .. option:: --log-level=<LEVEL>
 
   Set log level to output.

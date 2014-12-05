@@ -105,6 +105,10 @@ extern const std::string V_ARC4;
 extern const std::string V_HTTP;
 extern const std::string V_HTTPS;
 extern const std::string V_FTP;
+extern const std::string A2_V_SSL3;
+extern const std::string A2_V_TLS10;
+extern const std::string A2_V_TLS11;
+extern const std::string A2_V_TLS12;
 
 extern PrefPtr PREF_VERSION;
 extern PrefPtr PREF_HELP;
@@ -304,6 +308,8 @@ extern PrefPtr PREF_DSCP;
 extern PrefPtr PREF_PAUSE_METADATA;
 // values: 1*digit
 extern PrefPtr PREF_RLIMIT_NOFILE;
+// vlaues: SSLv3 | TLSv1 | TLSv1.1 | TLSv1.2
+extern PrefPtr PREF_MIN_TLS_VERSION;
 
 /**
  * FTP related preferences

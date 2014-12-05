@@ -1011,3 +1011,5 @@
   "                              and the next download waiting in queue gets\n" \
   "                              started. But be aware that seeding item is still\n" \
   "                              recognized as active download in RPC method.")
+#define TEXT_MIN_TLS_VERSION                                            \
+  _(" --min-tls-version=VERSION  Specify minimum SSL/TLS version to enable.")

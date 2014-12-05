@@ -63,28 +63,50 @@
 
 namespace aria2 {
 
-WinTLSContext::WinTLSContext(TLSSessionSide side) : side_(side), store_(0)
+WinTLSContext::WinTLSContext(TLSSessionSide side, TLSVersion ver)
+  : side_(side), store_(0)
 {
   memset(&credentials_, 0, sizeof(credentials_));
   credentials_.dwVersion = SCHANNEL_CRED_VERSION;
+  credentials_.grbitEnabledProtocols = 0;
   if (side_ == TLS_CLIENT) {
-    credentials_.grbitEnabledProtocols =
-        SP_PROT_SSL3_CLIENT | SP_PROT_TLS1_CLIENT | SP_PROT_TLS1_1_CLIENT |
-        SP_PROT_TLS1_2_CLIENT;
+    switch (ver) {
+    case TLS_PROTO_SSL3:
+      credentials_.grbitEnabledProtocols |= SP_PROT_SSL3_CLIENT;
+      // fall through
+    case TLS_PROTO_TLS10:
+      credentials_.grbitEnabledProtocols |= SP_PROT_TLS1_CLIENT;
+      // fall through
+    case TLS_PROTO_TLS11:
+      credentials_.grbitEnabledProtocols |= SP_PROT_TLS1_1_CLIENT;
+      // fall through
+    case TLS_PROTO_TLS12:
+      credentials_.grbitEnabledProtocols |= SP_PROT_TLS1_2_CLIENT;
+    }
   }
   else {
-    credentials_.grbitEnabledProtocols =
-        SP_PROT_SSL3_SERVER | SP_PROT_TLS1_SERVER | SP_PROT_TLS1_1_SERVER |
-        SP_PROT_TLS1_2_SERVER;
+    switch (ver) {
+    case TLS_PROTO_SSL3:
+      credentials_.grbitEnabledProtocols |= SP_PROT_SSL3_SERVER;
+      // fall through
+    case TLS_PROTO_TLS10:
+      credentials_.grbitEnabledProtocols |= SP_PROT_TLS1_SERVER;
+      // fall through
+    case TLS_PROTO_TLS11:
+      credentials_.grbitEnabledProtocols |= SP_PROT_TLS1_1_SERVER;
+      // fall through
+    case TLS_PROTO_TLS12:
+      credentials_.grbitEnabledProtocols |= SP_PROT_TLS1_2_SERVER;
+    }
   }
   credentials_.dwMinimumCipherStrength = 128; // bit
 
   setVerifyPeer(side_ == TLS_CLIENT);
 }
 
-TLSContext* TLSContext::make(TLSSessionSide side)
+TLSContext* TLSContext::make(TLSSessionSide side, TLSVersion ver)
 {
-  return new WinTLSContext(side);
+  return new WinTLSContext(side, ver);
 }
 
 WinTLSContext::~WinTLSContext()

@@ -46,7 +46,7 @@ namespace aria2 {
 
 class GnuTLSContext : public TLSContext {
 public:
-  GnuTLSContext(TLSSessionSide side);
+  GnuTLSContext(TLSSessionSide side, TLSVersion ver);
 
   virtual ~GnuTLSContext();
 
@@ -79,9 +79,15 @@ public:
 
   gnutls_certificate_credentials_t getCertCred() const;
 
+  TLSVersion getMinTLSVersion() const
+  {
+    return minTLSVer_;
+  }
+
 private:
   gnutls_certificate_credentials_t certCred_;
   TLSSessionSide side_;
+  TLSVersion minTLSVer_;
   bool good_;
   bool verifyPeer_;
 };

@@ -49,14 +49,15 @@
 
 namespace aria2 {
 
-TLSContext* TLSContext::make(TLSSessionSide side)
+TLSContext* TLSContext::make(TLSSessionSide side, TLSVersion ver)
 {
-  return new GnuTLSContext(side);
+  return new GnuTLSContext(side, ver);
 }
 
-GnuTLSContext::GnuTLSContext(TLSSessionSide side)
+GnuTLSContext::GnuTLSContext(TLSSessionSide side, TLSVersion ver)
   : certCred_(0),
     side_(side),
+    minTLSVer_(ver),
     verifyPeer_(true)
 {
   int r = gnutls_certificate_allocate_credentials(&certCred_);

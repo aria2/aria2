@@ -49,8 +49,8 @@ namespace aria2 {
 class AppleTLSContext : public TLSContext
 {
 public:
-  AppleTLSContext(TLSSessionSide side)
-    : side_(side), verifyPeer_(true), credentials_(nullptr)
+  AppleTLSContext(TLSSessionSide side, TLSVersion ver)
+    : side_(side), minTLSVer_(ver), verifyPeer_(true), credentials_(nullptr)
   {}
 
   virtual ~AppleTLSContext();
@@ -89,8 +89,14 @@ public:
 
   SecIdentityRef getCredentials();
 
+  TLSVersion getMinTLSVersion() const
+  {
+    return minTLSVer_;
+  }
+
 private:
   TLSSessionSide side_;
+  TLSVersion minTLSVer_;
   bool verifyPeer_;
   SecIdentityRef credentials_;
 

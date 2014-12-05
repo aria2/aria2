@@ -46,9 +46,16 @@ enum TLSSessionSide {
   TLS_SERVER
 };
 
+enum TLSVersion {
+  TLS_PROTO_SSL3,
+  TLS_PROTO_TLS10,
+  TLS_PROTO_TLS11,
+  TLS_PROTO_TLS12,
+};
+
 class TLSContext {
 public:
-  static TLSContext* make(TLSSessionSide side);
+  static TLSContext* make(TLSSessionSide side, TLSVersion minVer);
   virtual ~TLSContext() {}
 
   // private key `keyfile' must be decrypted.

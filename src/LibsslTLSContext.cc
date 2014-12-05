@@ -81,12 +81,12 @@ namespace {
 
 namespace aria2 {
 
-TLSContext* TLSContext::make(TLSSessionSide side)
+TLSContext* TLSContext::make(TLSSessionSide side, TLSVersion minVer)
 {
-  return new OpenSSLTLSContext(side);
+  return new OpenSSLTLSContext(side, minVer);
 }
 
-OpenSSLTLSContext::OpenSSLTLSContext(TLSSessionSide side)
+OpenSSLTLSContext::OpenSSLTLSContext(TLSSessionSide side, TLSVersion minVer)
   : sslCtx_(nullptr),
     side_(side),
     verifyPeer_(true)
@@ -100,8 +100,23 @@ OpenSSLTLSContext::OpenSSLTLSContext(TLSSessionSide side)
                      ERR_error_string(ERR_get_error(), nullptr)));
     return;
   }
-  // Disable SSLv2/3 and enable all workarounds for buggy servers
-  SSL_CTX_set_options(sslCtx_, SSL_OP_ALL | SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3
+
+  long ver_opts = 0;
+  switch(minVer) {
+  case TLS_PROTO_TLS12:
+    ver_opts |= SSL_OP_NO_TLSv1_1;
+    // fall through
+  case TLS_PROTO_TLS11:
+    ver_opts |= SSL_OP_NO_TLSv1;
+    // fall through
+  case TLS_PROTO_TLS10:
+    ver_opts |= SSL_OP_NO_SSLv3;
+  default:
+    break;
+  };
+
+  // Disable SSLv2 and enable all workarounds for buggy servers
+  SSL_CTX_set_options(sslCtx_, SSL_OP_ALL | SSL_OP_NO_SSLv2 | ver_opts
 #ifdef SSL_OP_SINGLE_ECDH_USE
                       | SSL_OP_SINGLE_ECDH_USE
 #endif // SSL_OP_SINGLE_ECDH_USE

@@ -169,6 +169,10 @@ const std::string V_ARC4("arc4");
 const std::string V_HTTP("http");
 const std::string V_HTTPS("https");
 const std::string V_FTP("ftp");
+const std::string A2_V_SSL3("SSLv3");
+const std::string A2_V_TLS10("TLSv1");
+const std::string A2_V_TLS11("TLSv1.1");
+const std::string A2_V_TLS12("TLSv1.2");
 
 PrefPtr PREF_VERSION = makePref("version");
 PrefPtr PREF_HELP = makePref("help");
@@ -367,6 +371,8 @@ PrefPtr PREF_DSCP = makePref("dscp");
 PrefPtr PREF_PAUSE_METADATA = makePref("pause-metadata");
 // values: 1*digit
 PrefPtr PREF_RLIMIT_NOFILE = makePref("rlimit-nofile");
+// vlaues: SSLv3 | TLSv1 | TLSv1.1 | TLSv1.2
+PrefPtr PREF_MIN_TLS_VERSION = makePref("min-tls-version");
 
 /**
  * FTP related preferences

@@ -2009,6 +2009,23 @@ bool strless(const char* a, const char* b)
   return strcmp(a, b) < 0;
 }
 
+TLSVersion toTLSVersion(const std::string& ver)
+{
+  if(ver == A2_V_SSL3) {
+    return TLS_PROTO_SSL3;
+  }
+  if(ver == A2_V_TLS10) {
+    return TLS_PROTO_TLS10;
+  }
+  if(ver == A2_V_TLS11) {
+    return TLS_PROTO_TLS11;
+  }
+  if(ver == A2_V_TLS12) {
+    return TLS_PROTO_TLS12;
+  }
+  return TLS_PROTO_TLS10;
+}
+
 } // namespace util
 
 } // namespace aria2
