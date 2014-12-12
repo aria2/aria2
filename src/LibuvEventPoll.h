@@ -66,6 +66,10 @@ private:
   class KSocketEntry: public SocketEntry<KCommandEvent, KADNSEvent> {
   public:
     KSocketEntry(sock_t socket);
+
+    KSocketEntry(const KSocketEntry&) = delete;
+    KSocketEntry(KSocketEntry&&) = default;
+
     int getEvents() const;
   };
 
@@ -105,15 +109,13 @@ private:
     }
   };
 
-  typedef std::set<std::shared_ptr<KSocketEntry>,
-                   DerefLess<std::shared_ptr<KSocketEntry> > > KSocketEntrySet;
+  typedef std::map<sock_t, KSocketEntry> KSocketEntrySet;
 
   typedef std::map<sock_t, KPoll*> KPolls;
 
 #ifdef ENABLE_ASYNC_DNS
-  typedef std::set<std::shared_ptr<KAsyncNameResolverEntry>,
-                   DerefLess<std::shared_ptr<KAsyncNameResolverEntry> > >
-  KAsyncNameResolverEntrySet;
+  typedef std::map<std::pair<AsyncNameResolver*, Command*>,
+                   KAsyncNameResolverEntry> KAsyncNameResolverEntrySet;
 #endif // ENABLE_ASYNC_DNS
 
   uv_loop_t* loop_;
