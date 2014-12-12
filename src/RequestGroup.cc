@@ -711,7 +711,7 @@ void RequestGroup::loadAndOpenFile
     setProgressInfoFile(progressInfoFile);
   }
   catch(RecoverableException& e) {
-    throw DOWNLOAD_FAILURE_EXCEPTION2(fmt(EX_DOWNLOAD_ABORTED), e);
+    throw DOWNLOAD_FAILURE_EXCEPTION2(EX_DOWNLOAD_ABORTED, e);
   }
 }
 
