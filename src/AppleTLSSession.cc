@@ -371,16 +371,15 @@ AppleTLSSession::AppleTLSSession(AppleTLSContext* ctx)
     (void)SSLSetProtocolVersionMin(sslCtx_, kSSLProtocol3);
     break;
   case TLS_PROTO_TLS10:
-    (void)SSLSetProtocolVersionMin(sslCtx_, kSSLProtocol1);
+    (void)SSLSetProtocolVersionMin(sslCtx_, kTLSProtocol1);
     break;
   case TLS_PROTO_TLS11:
-    (void)SSLSetProtocolVersionMin(sslCtx_, kSSLProtocol11);
+    (void)SSLSetProtocolVersionMin(sslCtx_, kTLSProtocol11);
     break;
   case TLS_PROTO_TLS12:
-    (void)SSLSetProtocolVersionMin(sslCtx_, kSSLProtocol12);
+    (void)SSLSetProtocolVersionMin(sslCtx_, kTLSProtocol12);
     break;
   }
-  (void)SSLSetProtocolVersionMax(sslCtx_, kTLSProtocol12);
 #else
   (void)SSLSetProtocolVersionEnabled(sslCtx_, kSSLProtocolAll, false);
   switch (ctx->getMinTLSVersion()) {
