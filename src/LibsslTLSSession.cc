@@ -267,6 +267,26 @@ int OpenSSLTLSSession::tlsConnect(const std::string& hostname,
       return TLS_ERR_ERROR;
     }
   }
+
+  switch(SSL_version(ssl_)) {
+    case SSL3_VERSION:
+    case SSL2_VERSION: {
+      std::string protoAndSuite = "Unknown";
+      auto cipher = SSL_get_current_cipher(ssl_);
+      if(cipher) {
+        auto buf = make_unique<char[]>(256);
+        auto cipherstr = SSL_CIPHER_description(cipher, buf.get(), 256);
+        if(cipherstr) {
+          protoAndSuite = cipherstr;
+        }
+      }
+      A2_LOG_WARN(fmt(MSG_WARN_OLD_TLS_CONNECTION, protoAndSuite.c_str()));
+      break;
+    }
+    default:
+      break;
+  }
+
   return TLS_ERR_OK;
 }
 

@@ -39,6 +39,9 @@
 #include "TLSContext.h"
 #include "util.h"
 #include "SocketCore.h"
+#include "LogFactory.h"
+#include "fmt.h"
+#include "message.h"
 
 namespace aria2 {
 
@@ -297,6 +300,24 @@ int GnuTLSSession::tlsConnect(const std::string& hostname,
       return TLS_ERR_ERROR;
     }
   }
+  auto proto = gnutls_protocol_get_version(sslSession_);
+  switch(proto) {
+    case GNUTLS_SSL3: {
+      std::string protoAndSuite = gnutls_protocol_get_name(proto);
+      protoAndSuite += " ";
+      protoAndSuite += gnutls_cipher_suite_get_name(
+          gnutls_kx_get(sslSession_),
+          gnutls_cipher_get(sslSession_),
+          gnutls_mac_get(sslSession_)
+          );
+      A2_LOG_WARN(fmt(MSG_WARN_OLD_TLS_CONNECTION, protoAndSuite.c_str()));
+      break;
+    }
+
+    default:
+      break;
+  }
+
   return TLS_ERR_OK;
 }
 

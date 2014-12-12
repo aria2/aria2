@@ -43,6 +43,7 @@
 #include "LogFactory.h"
 #include "a2functional.h"
 #include "fmt.h"
+#include "message.h"
 
 #define ioErr -36
 #define paramErr -50
@@ -85,7 +86,7 @@ static inline const char* protoToString(SSLProtocol proto)
   case kSSLProtocol2:
     return "SSLv2 (!)";
   case kSSLProtocol3:
-    return "SSLv3";
+    return "SSLv3 (!)";
   case kTLSProtocol1:
     return "TLSv1";
   case kTLSProtocol11:
@@ -731,6 +732,17 @@ int AppleTLSSession::tlsConnect(const std::string& hostname,
                   hostname.c_str(),
                   protoToString(proto),
                   suiteToString(suite).c_str()));
+  switch (proto) {
+    case kSSLProtocol2:
+    case kSSLProtocol3: {
+      std::string protoAndSuite = protoToString(proto);
+      protoAndSuite += " " + suiteToString(suite);
+      A2_LOG_WARN(fmt(MSG_WARN_OLD_TLS_CONNECTION, protoAndSuite.c_str()));
+      break;
+    }
+    default:
+      break;
+  }
 
   return TLS_ERR_OK;
 }

@@ -119,6 +119,17 @@ inline static std::string getCipherSuite(CtxtHandle* handle)
   return "Unknown";
 }
 
+inline static uint32_t getProtocolVersion(CtxtHandle* handle)
+{
+  WinSecPkgContext_CipherInfo info = {SECPKGCONTEXT_CIPHERINFO_V1};
+  if (QueryContextAttributes(handle, SECPKG_ATTR_CIPHER_INFO, &info) ==
+      SEC_E_OK) {
+    return info.dwProtocol;
+  }
+  // XXX Assume the best?!
+  return std::numeric_limits<uint32_t>::max();
+}
+
 } // namespace
 
 namespace aria2 {
@@ -808,12 +819,29 @@ restart:
   }
   // Fall through
 
-  case st_handshake_done:
+  case st_handshake_done: {
     // All ready now :D
     state_ = st_connected;
     A2_LOG_INFO(
         fmt("WinTLS: connected with: %s", getCipherSuite(&handle_).c_str()));
+    auto proto = getProtocolVersion(&handle_);
+    if (proto < 0x301) {
+      std::string protoAndSuite;
+      switch (proto) {
+      case 0x300:
+        protoAndSuite = "SSLv3";
+        break;
+      default:
+        protoAndSuite = "Unknown";
+        break;
+      }
+      protoAndSuite += " " + getCipherSuite(&handle_);
+      A2_LOG_WARN(fmt(MSG_WARN_OLD_TLS_CONNECTION, protoAndSuite.c_str()));
+    }
+
     return TLS_ERR_OK;
+  }
+
   }
 
   A2_LOG_ERROR("WinTLS: Unreachable reached during tlsConnect! This is a bug!");
