@@ -176,12 +176,13 @@ public:
   // When returning TLS_ERR_ERROR, provide certificate validation error
   // in |handshakeErr|.
   virtual int tlsConnect(const std::string& hostname,
+                         TLSVersion& version,
                          std::string& handshakeErr) CXX11_OVERRIDE;
 
   // Performs server side handshake. This function returns TLS_ERR_OK
   // if it succeeds, or TLS_ERR_WOULDBLOCK if the underlying transport
   // blocks, or TLS_ERR_ERROR.
-  virtual int tlsAccept() CXX11_OVERRIDE;
+  virtual int tlsAccept(TLSVersion& version) CXX11_OVERRIDE;
 
   // Returns last error string
   virtual std::string getLastErrorString() CXX11_OVERRIDE;

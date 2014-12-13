@@ -157,7 +157,7 @@ ssize_t OpenSSLTLSSession::readData(void* data, size_t len)
   return ret;
 }
 
-int OpenSSLTLSSession::handshake()
+int OpenSSLTLSSession::handshake(TLSVersion& version)
 {
   ERR_clear_error();
   if(tlsContext_->getSide() == TLS_CLIENT) {
@@ -181,15 +181,45 @@ int OpenSSLTLSSession::handshake()
       return TLS_ERR_ERROR;
     }
   }
+
+  switch(SSL_version(ssl_)) {
+    case SSL3_VERSION:
+      version = TLS_PROTO_SSL3;
+      break;
+
+#ifdef TLS1_VERSION
+    case TLS1_VERSION:
+      version = TLS_PROTO_TLS10;
+      break;
+#endif // TLS1_VERSION
+
+#ifdef TLS1_1_VERSION
+    case TLS1_1_VERSION:
+      version = TLS_PROTO_TLS11;
+      break;
+#endif // TLS1_1_VERSION
+
+#ifdef TLS1_2_VERSION
+    case TLS1_2_VERSION:
+      version = TLS_PROTO_TLS12;
+      break;
+#endif // TLS1_2_VERSION
+
+    default:
+      version = TLS_PROTO_NONE;
+      break;
+  }
+
   return TLS_ERR_OK;
 }
 
 int OpenSSLTLSSession::tlsConnect(const std::string& hostname,
-                           std::string& handshakeErr)
+                                  TLSVersion& version,
+                                  std::string& handshakeErr)
 {
   handshakeErr = "";
   int ret;
-  ret = handshake();
+  ret = handshake(version);
   if(ret != TLS_ERR_OK) {
     return ret;
   }
@@ -268,31 +298,12 @@ int OpenSSLTLSSession::tlsConnect(const std::string& hostname,
     }
   }
 
-  switch(SSL_version(ssl_)) {
-    case SSL3_VERSION:
-    case SSL2_VERSION: {
-      std::string protoAndSuite = "Unknown";
-      auto cipher = SSL_get_current_cipher(ssl_);
-      if(cipher) {
-        auto buf = make_unique<char[]>(256);
-        auto cipherstr = SSL_CIPHER_description(cipher, buf.get(), 256);
-        if(cipherstr) {
-          protoAndSuite = cipherstr;
-        }
-      }
-      A2_LOG_WARN(fmt(MSG_WARN_OLD_TLS_CONNECTION, protoAndSuite.c_str()));
-      break;
-    }
-    default:
-      break;
-  }
-
   return TLS_ERR_OK;
 }
 
-int OpenSSLTLSSession::tlsAccept()
+int OpenSSLTLSSession::tlsAccept(TLSVersion& version)
 {
-  return handshake();
+  return handshake(version);
 }
 
 std::string OpenSSLTLSSession::getLastErrorString()

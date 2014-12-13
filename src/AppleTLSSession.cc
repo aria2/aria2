@@ -43,7 +43,6 @@
 #include "LogFactory.h"
 #include "a2functional.h"
 #include "fmt.h"
-#include "message.h"
 
 #define ioErr -36
 #define paramErr -50
@@ -380,6 +379,8 @@ AppleTLSSession::AppleTLSSession(AppleTLSContext* ctx)
   case TLS_PROTO_TLS12:
     (void)SSLSetProtocolVersionMin(sslCtx_, kTLSProtocol12);
     break;
+  default:
+    break;
   }
 #else
   (void)SSLSetProtocolVersionEnabled(sslCtx_, kSSLProtocolAll, false);
@@ -395,6 +396,8 @@ AppleTLSSession::AppleTLSSession(AppleTLSContext* ctx)
     // fall through
   case TLS_PROTO_TLS12:
     (void)SSLSetProtocolVersionEnabled(sslCtx_, kTLSProtocol12, true);
+  default:
+    break;
   }
 #endif
 
@@ -696,6 +699,7 @@ OSStatus AppleTLSSession::sockRead(void* data, size_t* len)
 }
 
 int AppleTLSSession::tlsConnect(const std::string& hostname,
+                                TLSVersion& version,
                                 std::string& handshakeErr)
 {
   if (state_ != st_initialized) {
@@ -714,7 +718,7 @@ int AppleTLSSession::tlsConnect(const std::string& hostname,
     return TLS_ERR_WOULDBLOCK;
 
   case errSSLServerAuthCompleted:
-    return tlsConnect(hostname, handshakeErr);
+    return tlsConnect(hostname, version, handshakeErr);
 
   default:
     handshakeErr = getLastErrorString();
@@ -732,25 +736,32 @@ int AppleTLSSession::tlsConnect(const std::string& hostname,
                   hostname.c_str(),
                   protoToString(proto),
                   suiteToString(suite).c_str()));
+
   switch (proto) {
-    case kSSLProtocol2:
-    case kSSLProtocol3: {
-      std::string protoAndSuite = protoToString(proto);
-      protoAndSuite += " " + suiteToString(suite);
-      A2_LOG_WARN(fmt(MSG_WARN_OLD_TLS_CONNECTION, protoAndSuite.c_str()));
+    case kSSLProtocol3:
+      version = TLS_PROTO_SSL3;
       break;
-    }
+    case kTLSProtocol1:
+      version = TLS_PROTO_TLS10;
+      break;
+    case kTLSProtocol11:
+      version = TLS_PROTO_TLS11;
+      break;
+    case kTLSProtocol12:
+      version = TLS_PROTO_TLS12;
+      break;
     default:
+      version = TLS_PROTO_NONE;
       break;
   }
 
   return TLS_ERR_OK;
 }
 
-int AppleTLSSession::tlsAccept()
+int AppleTLSSession::tlsAccept(TLSVersion& version)
 {
   std::string hostname, err;
-  return tlsConnect(hostname, err);
+  return tlsConnect(hostname, version, err);
 }
 
 std::string AppleTLSSession::getLastErrorString()

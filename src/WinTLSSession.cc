@@ -283,7 +283,8 @@ ssize_t WinTLSSession::writeData(const void* data, size_t len)
       state_ == st_handshake_read) {
     // Renegotiating
     std::string hn, err;
-    auto connect = tlsConnect(hn, err);
+    TLSVersion ver;
+    auto connect = tlsConnect(hn, ver, err);
     if (connect != TLS_ERR_OK) {
       return connect;
     }
@@ -479,7 +480,8 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
       state_ == st_handshake_read) {
     // Renegotiating
     std::string hn, err;
-    auto connect = tlsConnect(hn, err);
+    TLSVersion ver;
+    auto connect = tlsConnect(hn, ver, err);
     if (connect != TLS_ERR_OK) {
       return connect;
     }
@@ -559,7 +561,8 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
       state_ = st_initialized;
       A2_LOG_INFO("WinTLS: Renegotiate");
       std::string hn, err;
-      auto connect = tlsConnect(hn, err);
+      TLSVersion ver;
+      auto connect = tlsConnect(hn, ver, err);
       if (connect == TLS_ERR_WOULDBLOCK) {
         break;
       }
@@ -590,6 +593,7 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
 }
 
 int WinTLSSession::tlsConnect(const std::string& hostname,
+                              TLSVersion& version,
                               std::string& handshakeErr)
 {
   // Handshaking will require sending multiple read/write exchanges until the
@@ -819,28 +823,29 @@ restart:
   }
   // Fall through
 
-  case st_handshake_done: {
+  case st_handshake_done:
     // All ready now :D
     state_ = st_connected;
     A2_LOG_INFO(
         fmt("WinTLS: connected with: %s", getCipherSuite(&handle_).c_str()));
-    auto proto = getProtocolVersion(&handle_);
-    if (proto < 0x301) {
-      std::string protoAndSuite;
-      switch (proto) {
+    switch (getProtocolVersion(&handle_)) {
       case 0x300:
-        protoAndSuite = "SSLv3";
+        version = TLS_PROTO_SSL3;
+        break;
+      case 0x301:
+        version = TLS_PROTO_TLS10;
+        break;
+      case 0x302:
+        version = TLS_PROTO_TLS11;
+        break;
+      case 0x303:
+        version = TLS_PROTO_TLS12;
         break;
       default:
-        protoAndSuite = "Unknown";
+        version = TLS_PROTO_NONE;
         break;
-      }
-      protoAndSuite += " " + getCipherSuite(&handle_);
-      A2_LOG_WARN(fmt(MSG_WARN_OLD_TLS_CONNECTION, protoAndSuite.c_str()));
     }
-
     return TLS_ERR_OK;
-  }
 
   }
 
@@ -849,10 +854,10 @@ restart:
   return TLS_ERR_ERROR;
 }
 
-int WinTLSSession::tlsAccept()
+int WinTLSSession::tlsAccept(TLSVersion& version)
 {
   std::string host, err;
-  return tlsConnect(host, err);
+  return tlsConnect(host, version, err);
 }
 
 std::string WinTLSSession::getLastErrorString()
