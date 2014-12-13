@@ -134,8 +134,7 @@ void showFiles
         } else
 #endif // ENABLE_METALINK
           {
-            printf(MSG_NOT_TORRENT_METALINK);
-            printf("\n\n");
+            printf("%s\n\n", MSG_NOT_TORRENT_METALINK);
           }
     } catch(RecoverableException& e) {
       global::cout()->printf("%s\n", e.stackTrace().c_str());
