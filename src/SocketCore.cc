@@ -45,6 +45,7 @@
 
 #include <cerrno>
 #include <cstring>
+#include <sstream>
 
 #include "message.h"
 #include "DlRetryEx.h"
@@ -885,12 +886,24 @@ bool SocketCore::tlsHandshake(TLSContext* tlsctx, const std::string& hostname)
     break;
   }
 
+  std::stringstream ss;
+  if (!hostname.empty()) {
+    ss << hostname << " (";
+  }
+  std::pair<std::string, uint16_t> peer;
+  getPeerInfo(peer);
+  ss << peer.first << ":" << peer.second;
+  if (!hostname.empty()) {
+    ss << ")";
+  }
+  auto peerInfo = ss.str();
+
   switch(ver) {
     case TLS_PROTO_NONE:
-      A2_LOG_WARN(MSG_WARN_UNKNOWN_TLS_CONNECTION);
+      A2_LOG_WARN(fmt(MSG_WARN_UNKNOWN_TLS_CONNECTION, peerInfo.c_str()));
       break;
     case TLS_PROTO_SSL3:
-      A2_LOG_WARN(fmt(MSG_WARN_OLD_TLS_CONNECTION, "SSLv3"));
+      A2_LOG_WARN(fmt(MSG_WARN_OLD_TLS_CONNECTION, "SSLv3", peerInfo.c_str()));
       break;
     default:
       break;

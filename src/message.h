@@ -185,11 +185,12 @@
     " See --ca-certificate and --check-certificate option.")
 #define MSG_WARN_UNKNOWN_TLS_CONNECTION \
   _("aria2c had to connect to the other side using an unknown TLS protocol. " \
-    "The integrity and confidentiality of the connection might be compromised.")
+    "The integrity and confidentiality of the connection might be " \
+    "compromised.\nPeer: %s")
 #define MSG_WARN_OLD_TLS_CONNECTION \
   _("aria2c had to connect to the other side using an old and vulnerable TLS" \
     " protocol. The integrity and confidentiality of the connection might be" \
-    " compromised.\nProtocol: %s")
+    " compromised.\nProtocol: %s, Peer: %s")
 #define MSG_SHOW_FILES _("Printing the contents of file '%s'...")
 #define MSG_NOT_TORRENT_METALINK _("This file is neither Torrent nor Metalink" \
                                    " file. Skipping.")
