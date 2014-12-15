@@ -61,6 +61,9 @@
 #define SCH_USE_STRONG_CRYPTO 0x00400000
 #endif
 
+#define WEAK_CIPHER_BITS 56
+#define STRONG_CIPHER_BITS 128
+
 namespace aria2 {
 
 WinTLSContext::WinTLSContext(TLSSessionSide side, TLSVersion ver)
@@ -82,6 +85,9 @@ WinTLSContext::WinTLSContext(TLSSessionSide side, TLSVersion ver)
       // fall through
     case TLS_PROTO_TLS12:
       credentials_.grbitEnabledProtocols |= SP_PROT_TLS1_2_CLIENT;
+      // fall through
+    default:
+      break;
     }
   }
   else {
@@ -97,9 +103,23 @@ WinTLSContext::WinTLSContext(TLSSessionSide side, TLSVersion ver)
       // fall through
     case TLS_PROTO_TLS12:
       credentials_.grbitEnabledProtocols |= SP_PROT_TLS1_2_SERVER;
+      // fall through
+    default:
+      break;
     }
   }
-  credentials_.dwMinimumCipherStrength = 128; // bit
+
+  switch (ver) {
+  case TLS_PROTO_SSL3:
+    // User explicitly wanted SSLv3 and therefore weak ciphers.
+    credentials_.dwMinimumCipherStrength = WEAK_CIPHER_BITS;
+    break;
+
+  default:
+    // Strong protocol versions: Use a minimum strength, which might be later
+    // refined using SCH_USE_STRONG_CRYPTO in the flags.
+    credentials_.dwMinimumCipherStrength = STRONG_CIPHER_BITS;
+  }
 
   setVerifyPeer(side_ == TLS_CLIENT);
 }
@@ -126,19 +146,30 @@ void WinTLSContext::setVerifyPeer(bool verify)
 {
   cred_.reset();
 
+  // Never automatically push any client or server certs. We'll do cert setup
+  // ourselves.
+  credentials_.dwFlags = SCH_CRED_NO_DEFAULT_CREDS;
+
+  if (credentials_.dwMinimumCipherStrength > WEAK_CIPHER_BITS) {
+    // Enable strong crypto if we already set a minimum cipher streams.
+    // This might actually require evem stronger algorithms, which is a good
+    // thing.
+    credentials_.dwFlags |= SCH_USE_STRONG_CRYPTO;
+  }
+
   if (side_ != TLS_CLIENT || !verify) {
-    credentials_.dwFlags = SCH_CRED_NO_DEFAULT_CREDS |
-                           SCH_CRED_MANUAL_CRED_VALIDATION |
-                           SCH_CRED_IGNORE_NO_REVOCATION_CHECK |
-                           SCH_CRED_IGNORE_REVOCATION_OFFLINE |
-                           SCH_CRED_NO_SERVERNAME_CHECK | SCH_USE_STRONG_CRYPTO;
+    // No verfication for servers and if user explicitly requested it
+    credentials_.dwFlags |= SCH_CRED_MANUAL_CRED_VALIDATION |
+                            SCH_CRED_IGNORE_NO_REVOCATION_CHECK |
+                            SCH_CRED_IGNORE_REVOCATION_OFFLINE |
+                            SCH_CRED_NO_SERVERNAME_CHECK;
     return;
   }
 
-  credentials_.dwFlags =
-      SCH_CRED_NO_DEFAULT_CREDS | SCH_CRED_AUTO_CRED_VALIDATION |
-      SCH_CRED_REVOCATION_CHECK_CHAIN | SCH_CRED_IGNORE_NO_REVOCATION_CHECK |
-      SCH_USE_STRONG_CRYPTO;
+  // Verify other side's cert chain.
+  credentials_.dwFlags |= SCH_CRED_AUTO_CRED_VALIDATION |
+                          SCH_CRED_REVOCATION_CHECK_CHAIN |
+                          SCH_CRED_IGNORE_NO_REVOCATION_CHECK;
 }
 
 CredHandle* WinTLSContext::getCredHandle()

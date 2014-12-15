@@ -56,8 +56,9 @@ public:
   virtual ssize_t writeData(const void* data, size_t len) CXX11_OVERRIDE;
   virtual ssize_t readData(void* data, size_t len) CXX11_OVERRIDE;
   virtual int tlsConnect
-  (const std::string& hostname, std::string& handshakeErr) CXX11_OVERRIDE;
-  virtual int tlsAccept() CXX11_OVERRIDE;
+  (const std::string& hostname, TLSVersion& version, std::string& handshakeErr)
+  CXX11_OVERRIDE;
+  virtual int tlsAccept(TLSVersion& version) CXX11_OVERRIDE;
   virtual std::string getLastErrorString() CXX11_OVERRIDE;
 private:
   gnutls_session_t sslSession_;

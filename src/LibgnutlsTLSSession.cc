@@ -40,6 +40,39 @@
 #include "util.h"
 #include "SocketCore.h"
 
+namespace {
+using namespace aria2;
+
+TLSVersion getProtocolFromSession(gnutls_session_t& session) {
+  auto proto = gnutls_protocol_get_version(session);
+  switch(proto) {
+    case GNUTLS_SSL3:
+      return TLS_PROTO_SSL3;
+
+#ifdef GNUTLS_TLS1_0
+    case GNUTLS_TLS1_0:
+      return TLS_PROTO_TLS10;
+#endif // GNUTLS_TLS1_0
+
+#ifdef GNUTLS_TLS1_1
+    case GNUTLS_TLS1_1:
+      return TLS_PROTO_TLS11;
+      break;
+#endif // GNUTLS_TLS1_1
+
+#ifdef GNUTLS_TLS1_2
+    case GNUTLS_TLS1_2:
+      return TLS_PROTO_TLS12;
+      break;
+#endif // GNUTLS_TLS1_2
+
+    default:
+      return TLS_PROTO_NONE;
+      break;
+  }
+}
+} // namespace
+
 namespace aria2 {
 
 TLSSession* TLSSession::make(TLSContext* ctx)
@@ -197,7 +230,8 @@ ssize_t GnuTLSSession::readData(void* data, size_t len)
 }
 
 int GnuTLSSession::tlsConnect(const std::string& hostname,
-                           std::string& handshakeErr)
+                              TLSVersion& version,
+                              std::string& handshakeErr)
 {
   handshakeErr = "";
   for(;;) {
@@ -297,14 +331,18 @@ int GnuTLSSession::tlsConnect(const std::string& hostname,
       return TLS_ERR_ERROR;
     }
   }
+
+  version = getProtocolFromSession(sslSession_);
+
   return TLS_ERR_OK;
 }
 
-int GnuTLSSession::tlsAccept()
+int GnuTLSSession::tlsAccept(TLSVersion& version)
 {
   for(;;) {
     rv_ = gnutls_handshake(sslSession_);
     if(rv_ == GNUTLS_E_SUCCESS) {
+      version = getProtocolFromSession(sslSession_);
       return TLS_ERR_OK;
     }
     if(rv_ == GNUTLS_E_AGAIN || rv_ == GNUTLS_E_INTERRUPTED) {

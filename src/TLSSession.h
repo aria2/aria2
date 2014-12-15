@@ -99,12 +99,13 @@ public:
   // if the underlying transport blocks, or TLS_ERR_ERROR.
   // When returning TLS_ERR_ERROR, provide certificate validation error
   // in |handshakeErr|.
-  virtual int tlsConnect(const std::string& hostname, std::string& handshakeErr) = 0;
+  virtual int tlsConnect(const std::string& hostname, TLSVersion& version,
+                         std::string& handshakeErr) = 0;
 
   // Performs server side handshake. This function returns TLS_ERR_OK
   // if it succeeds, or TLS_ERR_WOULDBLOCK if the underlying transport
   // blocks, or TLS_ERR_ERROR.
-  virtual int tlsAccept() = 0;
+  virtual int tlsAccept(TLSVersion& version) = 0;
 
   // Returns last error string
   virtual std::string getLastErrorString() = 0;

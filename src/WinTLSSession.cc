@@ -119,6 +119,17 @@ inline static std::string getCipherSuite(CtxtHandle* handle)
   return "Unknown";
 }
 
+inline static uint32_t getProtocolVersion(CtxtHandle* handle)
+{
+  WinSecPkgContext_CipherInfo info = {SECPKGCONTEXT_CIPHERINFO_V1};
+  if (QueryContextAttributes(handle, SECPKG_ATTR_CIPHER_INFO, &info) ==
+      SEC_E_OK) {
+    return info.dwProtocol;
+  }
+  // XXX Assume the best?!
+  return std::numeric_limits<uint32_t>::max();
+}
+
 } // namespace
 
 namespace aria2 {
@@ -272,7 +283,8 @@ ssize_t WinTLSSession::writeData(const void* data, size_t len)
       state_ == st_handshake_read) {
     // Renegotiating
     std::string hn, err;
-    auto connect = tlsConnect(hn, err);
+    TLSVersion ver;
+    auto connect = tlsConnect(hn, ver, err);
     if (connect != TLS_ERR_OK) {
       return connect;
     }
@@ -468,7 +480,8 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
       state_ == st_handshake_read) {
     // Renegotiating
     std::string hn, err;
-    auto connect = tlsConnect(hn, err);
+    TLSVersion ver;
+    auto connect = tlsConnect(hn, ver, err);
     if (connect != TLS_ERR_OK) {
       return connect;
     }
@@ -548,7 +561,8 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
       state_ = st_initialized;
       A2_LOG_INFO("WinTLS: Renegotiate");
       std::string hn, err;
-      auto connect = tlsConnect(hn, err);
+      TLSVersion ver;
+      auto connect = tlsConnect(hn, ver, err);
       if (connect == TLS_ERR_WOULDBLOCK) {
         break;
       }
@@ -579,6 +593,7 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
 }
 
 int WinTLSSession::tlsConnect(const std::string& hostname,
+                              TLSVersion& version,
                               std::string& handshakeErr)
 {
   // Handshaking will require sending multiple read/write exchanges until the
@@ -813,7 +828,25 @@ restart:
     state_ = st_connected;
     A2_LOG_INFO(
         fmt("WinTLS: connected with: %s", getCipherSuite(&handle_).c_str()));
+    switch (getProtocolVersion(&handle_)) {
+      case 0x300:
+        version = TLS_PROTO_SSL3;
+        break;
+      case 0x301:
+        version = TLS_PROTO_TLS10;
+        break;
+      case 0x302:
+        version = TLS_PROTO_TLS11;
+        break;
+      case 0x303:
+        version = TLS_PROTO_TLS12;
+        break;
+      default:
+        version = TLS_PROTO_NONE;
+        break;
+    }
     return TLS_ERR_OK;
+
   }
 
   A2_LOG_ERROR("WinTLS: Unreachable reached during tlsConnect! This is a bug!");
@@ -821,10 +854,10 @@ restart:
   return TLS_ERR_ERROR;
 }
 
-int WinTLSSession::tlsAccept()
+int WinTLSSession::tlsAccept(TLSVersion& version)
 {
   std::string host, err;
-  return tlsConnect(host, err);
+  return tlsConnect(host, version, err);
 }
 
 std::string WinTLSSession::getLastErrorString()

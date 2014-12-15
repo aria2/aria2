@@ -47,6 +47,7 @@ enum TLSSessionSide {
 };
 
 enum TLSVersion {
+  TLS_PROTO_NONE,
   TLS_PROTO_SSL3,
   TLS_PROTO_TLS10,
   TLS_PROTO_TLS11,

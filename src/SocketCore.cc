@@ -45,6 +45,7 @@
 
 #include <cerrno>
 #include <cstring>
+#include <sstream>
 
 #include "message.h"
 #include "DlRetryEx.h"
@@ -830,6 +831,7 @@ bool SocketCore::tlsConnect(const std::string& hostname)
 
 bool SocketCore::tlsHandshake(TLSContext* tlsctx, const std::string& hostname)
 {
+  TLSVersion ver = TLS_PROTO_NONE;
   int rv = 0;
   std::string handshakeError;
   wantRead_ = false;
@@ -860,9 +862,9 @@ bool SocketCore::tlsHandshake(TLSContext* tlsctx, const std::string& hostname)
     // Fall through
   case A2_TLS_HANDSHAKING:
     if(tlsctx->getSide() == TLS_CLIENT) {
-      rv = tlsSession_->tlsConnect(hostname, handshakeError);
+      rv = tlsSession_->tlsConnect(hostname, ver, handshakeError);
     } else {
-      rv = tlsSession_->tlsAccept();
+      rv = tlsSession_->tlsAccept(ver);
     }
     if(rv == TLS_ERR_OK) {
       secure_ = A2_TLS_CONNECTED;
@@ -883,6 +885,30 @@ bool SocketCore::tlsHandshake(TLSContext* tlsctx, const std::string& hostname)
   default:
     break;
   }
+
+  std::stringstream ss;
+  if (!hostname.empty()) {
+    ss << hostname << " (";
+  }
+  std::pair<std::string, uint16_t> peer;
+  getPeerInfo(peer);
+  ss << peer.first << ":" << peer.second;
+  if (!hostname.empty()) {
+    ss << ")";
+  }
+  auto peerInfo = ss.str();
+
+  switch(ver) {
+    case TLS_PROTO_NONE:
+      A2_LOG_WARN(fmt(MSG_WARN_UNKNOWN_TLS_CONNECTION, peerInfo.c_str()));
+      break;
+    case TLS_PROTO_SSL3:
+      A2_LOG_WARN(fmt(MSG_WARN_OLD_TLS_CONNECTION, "SSLv3", peerInfo.c_str()));
+      break;
+    default:
+      break;
+  }
+
   return true;
 }
 
