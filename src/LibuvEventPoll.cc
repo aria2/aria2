@@ -159,9 +159,10 @@ void LibuvEventPoll::poll(const struct timeval& tv)
   // their API. So we call ares_process_fd for all ares_channel and
   // re-register their sockets.
   for (auto& r: nameResolverEntries_) {
-    r->processTimeout();
-    r->removeSocketEvents(this);
-    r->addSocketEvents(this);
+    auto& ent = r.second;
+    ent.processTimeout();
+    ent.removeSocketEvents(this);
+    ent.addSocketEvents(this);
   }
 #endif // ENABLE_ASYNC_DNS
 
