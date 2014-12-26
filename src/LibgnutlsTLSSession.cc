@@ -48,27 +48,14 @@ TLSVersion getProtocolFromSession(gnutls_session_t& session) {
   switch(proto) {
     case GNUTLS_SSL3:
       return TLS_PROTO_SSL3;
-
-#ifdef GNUTLS_TLS1_0
     case GNUTLS_TLS1_0:
       return TLS_PROTO_TLS10;
-#endif // GNUTLS_TLS1_0
-
-#ifdef GNUTLS_TLS1_1
     case GNUTLS_TLS1_1:
       return TLS_PROTO_TLS11;
-      break;
-#endif // GNUTLS_TLS1_1
-
-#ifdef GNUTLS_TLS1_2
     case GNUTLS_TLS1_2:
       return TLS_PROTO_TLS12;
-      break;
-#endif // GNUTLS_TLS1_2
-
     default:
       return TLS_PROTO_NONE;
-      break;
   }
 }
 } // namespace
