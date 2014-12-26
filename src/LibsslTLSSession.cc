@@ -58,7 +58,7 @@ OpenSSLTLSSession::OpenSSLTLSSession(OpenSSLTLSContext* tlsContext)
 OpenSSLTLSSession::~OpenSSLTLSSession()
 {
   if(ssl_) {
-    SSL_shutdown(ssl_);
+    SSL_free(ssl_);
   }
 }
 
