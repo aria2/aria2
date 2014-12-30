@@ -720,6 +720,7 @@ AC_CHECK_FUNCS([__argz_count \
                 gethostbyname \
 		getifaddrs \
                 getpagesize \
+                getrandom \
                 memchr \
                 memmove \
                 mempcpy \
@@ -754,6 +755,19 @@ AC_CHECK_FUNCS([__argz_count \
                 usleep \
 		utime \
 		utimes])
+
+AC_MSG_CHECKING([for getrandom linux syscall interface])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+#include <linux/random.h>
+]],
+[[
+int x = GRND_NONBLOCK;
+]])],
+  [have_getrandom_interface=yes
+   AC_DEFINE([HAVE_GETRANDOM_INTERFACE], [1], [Define to 1 if getrandom linux syscall interface is available.])],
+  [have_getrandom_interface=no])
+AC_MSG_RESULT([$have_getrandom_interface])
+AM_CONDITIONAL([HAVE_GETRANDOM_INTERFACE], [test "x$have_getrandom_interface" = "xyes"])
 
 dnl Put tcmalloc/jemalloc checks after the posix_memalign check.
 dnl These libraries may implement posix_memalign, while the usual CRT may not
