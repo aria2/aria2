@@ -73,6 +73,11 @@ namespace {
     uv_stop(handle->loop);
   }
 
+  static void timer_callback(uv_timer_t* handle)
+  {
+    timer_callback(handle, 0);
+  }
+
 #else // !defined(UV_VERSION_MINOR) || UV_VERSION_MINOR <= 10
 
   static void timer_callback(uv_timer_t* handle)
