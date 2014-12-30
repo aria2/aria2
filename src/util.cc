@@ -1545,45 +1545,10 @@ std::vector<std::pair<size_t, std::string> > createIndexPaths(std::istream& i)
   return indexPaths;
 }
 
-namespace {
-void generateRandomDataRandom(unsigned char* data, size_t length)
-{
-  const auto& rd = SimpleRandomizer::getInstance();
-  rd->getRandomBytes(data, length);
-}
-} // namespace
-
-#ifndef __MINGW32__
-namespace {
-void generateRandomDataUrandom
-(unsigned char* data, size_t length, std::ifstream& devUrand)
-{
-  devUrand.read(reinterpret_cast<char*>(data), length);
-}
-} // namespace
-#endif
-
 void generateRandomData(unsigned char* data, size_t length)
 {
-#ifdef __MINGW32__
-  generateRandomDataRandom(data, length);
-#else // !__MINGW32__
-  static int method = -1;
-  static std::ifstream devUrand;
-  if(method == 0) {
-    generateRandomDataUrandom(data, length, devUrand);
-  } else if(method == 1) {
-    generateRandomDataRandom(data, length);
-  } else {
-    devUrand.open("/dev/urandom");
-    if(devUrand) {
-      method = 0;
-    } else {
-      method = 1;
-    }
-    generateRandomData(data, length);
-  }
-#endif // !__MINGW32__
+  const auto& rd = SimpleRandomizer::getInstance();
+  return rd->getRandomBytes(data, length);
 }
 
 bool saveAs

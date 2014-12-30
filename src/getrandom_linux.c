@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2014 Nils Maier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,74 +32,19 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_SIMPLE_RANDOMIZER_H
-#define D_SIMPLE_RANDOMIZER_H
 
-#include "Randomizer.h"
+#define _GNUSOURCE
+#include <unistd.h>
+#include <sys/syscall.h>
+#include <linux/random.h>
 
-#include <memory>
-#include <random>
+#include "config.h"
+#include "getrandom_linux.h"
 
-#ifdef __MINGW32__
-#  include <wincrypt.h>
-#endif
-
-namespace aria2 {
-
-class SimpleRandomizer : public Randomizer {
-private:
-  static std::unique_ptr<SimpleRandomizer> randomizer_;
-  SimpleRandomizer();
-
-private:
-#ifdef __MINGW32__
-  HCRYPTPROV provider_;
-#else // ! __MINGW32__
-  std::random_device dev_;
-#endif // ! __MINGW32__
-
-public:
-  typedef std::random_device::result_type result_type;
-
-  static const std::unique_ptr<SimpleRandomizer>& getInstance();
-
-  ~SimpleRandomizer();
-
-  /**
-   * Returns random number in [0, to).
-   */
-  virtual long int getRandomNumber(long int to) CXX11_OVERRIDE;
-
-  void getRandomBytes(unsigned char *buf, size_t len);
-
-  long int operator()(long int to)
-  {
-    return getRandomNumber(to);
-  }
-
-  result_type operator()()
-  {
-    result_type rv;
-    getRandomBytes(reinterpret_cast<unsigned char*>(&rv), sizeof(rv));
-    return rv;
-  }
-
-  static constexpr result_type min()
-  {
-    return std::numeric_limits<result_type>::min();
-  }
-
-  static constexpr result_type max()
-  {
-    return std::numeric_limits<result_type>::max();
-  }
-
-  static double entropy()
-  {
-    return 0.0;
-  }
-};
-
-} // namespace aria2
-
-#endif // D_SIMPLE_RANDOMIZER_H
+int getrandom_linux(void *buf, size_t buflen) {
+#ifdef HAVE_GETRANDOM
+  return getrandom(buf, buflen, 0);
+#else // HAVE_GETRANDOM
+  return syscall(SYS_getrandom, buf, buflen, 0);
+#endif // HAVE_GETRANDOM
+}

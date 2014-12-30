@@ -1,5 +1,6 @@
 #include "util.h"
 
+#include <cmath>
 #include <cstring>
 #include <string>
 #include <iostream>
@@ -1954,11 +1955,54 @@ void UtilTest::testCreateIndexPaths()
 
 void UtilTest::testGenerateRandomData()
 {
-  unsigned char data1[20];
+  using namespace std;
+
+  // Simple sanity check
+  unsigned char data1[25];
+  memset(data1, 0, sizeof(data1));
   util::generateRandomData(data1, sizeof(data1));
-  unsigned char data2[20];
+
+  unsigned char data2[25];
+  memset(data2, 0, sizeof(data2));
   util::generateRandomData(data2, sizeof(data2));
+
   CPPUNIT_ASSERT(memcmp(data1, data2, sizeof(data1)) != 0);
+
+  // Simple stddev/mean tests
+  map<uint8_t, size_t> counts;
+  uint8_t bytes[1 << 20];
+  for (auto i = 0; i < 10; ++i) {
+    util::generateRandomData(bytes, sizeof(bytes));
+    for (auto b : bytes) {
+      counts[b]++;
+    }
+  }
+  CPPUNIT_ASSERT_MESSAGE("Should see all kinds of bytes", counts.size() == 256);
+  if (counts.size() != 256) {
+    throw std::domain_error(
+        "Would have expected to see at one of each possible byte value!");
+  }
+  double sum = accumulate(
+    counts.begin(),
+    counts.end(),
+    0.0,
+    [](double total, const decltype(counts)::value_type & elem) {
+      return total + elem.second;
+    });
+  double mean = sum / counts.size();
+  vector<double> diff(counts.size());
+  transform(
+    counts.begin(),
+    counts.end(),
+    diff.begin(),
+    [&](const decltype(counts)::value_type & elem) -> double {
+      return (double)elem.second - mean;
+    });
+  double sq_sum = inner_product(diff.begin(), diff.end(), diff.begin(), 0.0);
+  double stddev = sqrt(sq_sum / counts.size());
+  cout << "stddev: " << fixed << stddev << endl;
+  CPPUNIT_ASSERT_MESSAGE("stddev makes sense (lower)", stddev <= 320);
+  CPPUNIT_ASSERT_MESSAGE("stddev makes sense (upper)", stddev >= 100);
 }
 
 void UtilTest::testFromHex()

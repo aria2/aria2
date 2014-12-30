@@ -43,6 +43,10 @@
 #include "a2time.h"
 #include "a2functional.h"
 
+#ifdef HAVE_GETRANDOM_INTERFACE
+#  include "getrandom_linux.h"
+#endif
+
 namespace aria2 {
 
 std::unique_ptr<SimpleRandomizer> SimpleRandomizer::randomizer_;
@@ -55,75 +59,49 @@ const std::unique_ptr<SimpleRandomizer>& SimpleRandomizer::getInstance()
   return randomizer_;
 }
 
-void SimpleRandomizer::init()
-{
-#ifndef __MINGW32__
-  // Just in case std::random_device() is fixed, add time and pid too.
-  eng_.seed(std::random_device()()^time(nullptr)^getpid());
-#endif // !__MINGW32__
-}
-
 SimpleRandomizer::SimpleRandomizer()
 {
 #ifdef __MINGW32__
-  BOOL r = CryptAcquireContext(&cryProvider_, 0, 0, PROV_RSA_FULL,
-                               CRYPT_VERIFYCONTEXT|CRYPT_SILENT);
+  BOOL r = ::CryptAcquireContext(
+      &provider_,
+      0, 0, PROV_RSA_FULL,
+      CRYPT_VERIFYCONTEXT | CRYPT_SILENT);
   assert(r);
-#endif // __MINGW32__
+#endif
 }
 
 SimpleRandomizer::~SimpleRandomizer()
 {
 #ifdef __MINGW32__
-  CryptReleaseContext(cryProvider_, 0);
-#endif // __MINGW32__
+  CryptReleaseContext(provider_, 0);
+#endif
 }
 
 long int SimpleRandomizer::getRandomNumber(long int to)
 {
   assert(to > 0);
+  return std::uniform_int_distribution<long int>(0, to - 1)(*this);
+}
+
+void SimpleRandomizer::getRandomBytes(unsigned char* buf, size_t len)
+{
 #ifdef __MINGW32__
-  int32_t val;
-  BOOL r = CryptGenRandom(cryProvider_, sizeof(val),
-                          reinterpret_cast<BYTE*>(&val));
+  BOOL r = CryptGenRandom(provider_, len, reinterpret_cast<BYTE*>(buf));
   assert(r);
-  if(val == INT32_MIN) {
-    val = INT32_MAX;
-  } else if(val < 0) {
-    val = -val;
+#elif defined(HAVE_GETRANDOM_INTERFACE)
+  auto rv = getrandom_linux(buf, len);
+  assert(rv >= 0 && (size_t)rv == len);
+#else // ! __MINGW32__
+  result_type* ubuf = reinterpret_cast<result_type*>(buf);
+  size_t q = len / sizeof(result_type);
+  auto gen = std::uniform_int_distribution<result_type>();
+  for(; q > 0; --q, ++ubuf) {
+    *ubuf = gen(dev_);
   }
-  return val % to;
-#else // !__MINGW32__
-  return std::uniform_int_distribution<long int>(0, to - 1)(eng_);
-#endif // !__MINGW32__
-}
-
-long int SimpleRandomizer::operator()(long int to)
-{
-  return getRandomNumber(to);
-}
-
-void SimpleRandomizer::getRandomBytes(unsigned char *buf, size_t len)
-{
-#ifdef __MINGW32__
-  if (!CryptGenRandom(cryProvider_, len, (PBYTE)buf)) {
-    throw std::bad_alloc();
-  }
-#else
-  uint32_t val;
-  size_t q = len / sizeof(val);
-  size_t r = len % sizeof(val);
-  auto gen = std::bind(std::uniform_int_distribution<uint32_t>
-                       (0, std::numeric_limits<uint32_t>::max()),
-                       eng_);
-  for(; q > 0; --q) {
-    val = gen();
-    memcpy(buf, &val, sizeof(val));
-    buf += sizeof(val);
-  }
-  val = gen();
-  memcpy(buf, &val, r);
-#endif
+  const size_t r = len % sizeof(result_type);
+  auto last = gen(dev_);
+  memcpy(ubuf, &last, r);
+#endif // ! __MINGW32__
 }
 
 } // namespace aria2
