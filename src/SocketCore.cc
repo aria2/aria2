@@ -831,16 +831,19 @@ bool SocketCore::tlsConnect(const std::string& hostname)
 
 bool SocketCore::tlsHandshake(TLSContext* tlsctx, const std::string& hostname)
 {
-  TLSVersion ver = TLS_PROTO_NONE;
-  int rv = 0;
-  std::string handshakeError;
   wantRead_ = false;
   wantWrite_ = false;
-  switch(secure_) {
-  case A2_TLS_NONE:
+
+  if(secure_ == A2_TLS_CONNECTED) {
+    // Already connected!
+    return true;
+  }
+
+  if(secure_ == A2_TLS_NONE) {
+    // Do some initial setup
     A2_LOG_DEBUG("Creating TLS session");
     tlsSession_.reset(TLSSession::make(tlsctx));
-    rv = tlsSession_->init(sockfd_);
+    auto rv = tlsSession_->init(sockfd_);
     if(rv != TLS_ERR_OK) {
       std::string error = tlsSession_->getLastErrorString();
       tlsSession_.reset();
@@ -857,59 +860,88 @@ bool SocketCore::tlsHandshake(TLSContext* tlsctx, const std::string& hostname)
                               tlsSession_->getLastErrorString().c_str()));
       }
     }
+    // Done with the setup, now let handshaking begin immediately.
     secure_ = A2_TLS_HANDSHAKING;
     A2_LOG_DEBUG("TLS Handshaking");
-    // Fall through
-  case A2_TLS_HANDSHAKING:
+  }
+
+  if(secure_ == A2_TLS_HANDSHAKING) {
+    // Starting handshake after intial setup or still handshaking.
+    TLSVersion ver = TLS_PROTO_NONE;
+    int rv = 0;
+    std::string handshakeError;
+
     if(tlsctx->getSide() == TLS_CLIENT) {
       rv = tlsSession_->tlsConnect(hostname, ver, handshakeError);
     } else {
       rv = tlsSession_->tlsAccept(ver);
     }
+
     if(rv == TLS_ERR_OK) {
+      // We're good, more or less.
+      // 1. Construct peerinfo
+      std::stringstream ss;
+      if (!hostname.empty()) {
+        ss << hostname << " (";
+      }
+      std::pair<std::string, uint16_t> peer;
+      getPeerInfo(peer);
+      ss << peer.first << ":" << peer.second;
+      if (!hostname.empty()) {
+        ss << ")";
+      }
+      auto peerInfo = ss.str();
+
+      // 2. Issue any warnings
+      switch(ver) {
+        case TLS_PROTO_NONE:
+          A2_LOG_WARN(fmt(MSG_WARN_UNKNOWN_TLS_CONNECTION, peerInfo.c_str()));
+          break;
+        case TLS_PROTO_SSL3:
+          A2_LOG_WARN(fmt(MSG_WARN_OLD_TLS_CONNECTION,
+                          "SSLv3", peerInfo.c_str()));
+          break;
+        default:
+          A2_LOG_DEBUG(fmt("Securely connected to %s", peerInfo.c_str()));
+          break;
+      }
+
+      // 3. We're connected now!
       secure_ = A2_TLS_CONNECTED;
-      break;
+      return true;
     }
-    if(rv != TLS_ERR_WOULDBLOCK) {
+
+    if(rv == TLS_ERR_WOULDBLOCK) {
+      // We're not done yet...
+      if(tlsSession_->checkDirection() == TLS_WANT_READ) {
+        // ... but read buffers are empty.
+        wantRead_ = true;
+      } else {
+        // ... but write buffers are full.
+        wantWrite_ = true;
+      }
+      // Returning false (instead of true==success or throwing) will cause this
+      // function to be called again once buffering is dealt with
+      return false;
+    }
+
+    if (rv == TLS_ERR_ERROR) {
+      // Damn those error.
       throw DL_ABORT_EX(fmt("SSL/TLS handshake failure: %s",
                             handshakeError.empty() ?
                             tlsSession_->getLastErrorString().c_str() :
                             handshakeError.c_str()));
     }
-    if(tlsSession_->checkDirection() == TLS_WANT_READ) {
-      wantRead_ = true;
-    } else {
-      wantWrite_ = true;
-    }
-    return false;
-  default:
-    break;
+
+    // Some implementation passed back an invalid result.
+    throw DL_ABORT_EX(fmt(EX_SSL_INIT_FAILURE,
+                          "Invalid connect state (this is a bug in the TLS "
+                          "backend!)"));
   }
 
-  std::stringstream ss;
-  if (!hostname.empty()) {
-    ss << hostname << " (";
-  }
-  std::pair<std::string, uint16_t> peer;
-  getPeerInfo(peer);
-  ss << peer.first << ":" << peer.second;
-  if (!hostname.empty()) {
-    ss << ")";
-  }
-  auto peerInfo = ss.str();
-
-  switch(ver) {
-    case TLS_PROTO_NONE:
-      A2_LOG_WARN(fmt(MSG_WARN_UNKNOWN_TLS_CONNECTION, peerInfo.c_str()));
-      break;
-    case TLS_PROTO_SSL3:
-      A2_LOG_WARN(fmt(MSG_WARN_OLD_TLS_CONNECTION, "SSLv3", peerInfo.c_str()));
-      break;
-    default:
-      break;
-  }
-
-  return true;
+  // We should never get here, i.e. all possible states should have been handled
+  // and returned from a branch before! Getting here is a bug, of course!
+  throw DL_ABORT_EX(fmt(EX_SSL_INIT_FAILURE, "Invalid state (this is a bug!)"));
 }
 
 #endif // ENABLE_SSL
