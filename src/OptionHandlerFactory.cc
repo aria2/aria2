@@ -1758,6 +1758,18 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    OptionHandler* op(new BooleanOptionHandler
+                      (PREF_BT_FORCE_ENCRYPTION,
+                       TEXT_BT_FORCE_ENCRYPTION,
+                       A2_V_FALSE,
+                       OptionHandler::OPT_ARG));
+    op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
+    op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
+    handlers.push_back(op);
+  }
+  {
     OptionHandler* op(new NumberOptionHandler
                       (PREF_BT_KEEP_ALIVE_INTERVAL,
                        NO_DESCRIPTION,

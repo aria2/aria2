@@ -1013,3 +1013,11 @@
   "                              recognized as active download in RPC method.")
 #define TEXT_MIN_TLS_VERSION                                            \
   _(" --min-tls-version=VERSION  Specify minimum SSL/TLS version to enable.")
+#define TEXT_BT_FORCE_ENCRYPTION                                        \
+  _(" --bt-force-encryption[=true|false]\n"                             \
+    "                              Requires BitTorrent message payload encryption\n" \
+    "                              with arc4. This is a shorthand of\n" \
+    "                              --bt-requre-crypto --bt-min-crypto-level=arc4.\n" \
+    "                              If true is given, deny legacy BitTorrent\n" \
+    "                              handshake and only use Obfuscation handshake and\n" \
+    "                              always encrypt message payload.")

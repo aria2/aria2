@@ -549,6 +549,7 @@ PrefPtr PREF_BT_EXCLUDE_TRACKER = makePref("bt-exclude-tracker");
 PrefPtr PREF_BT_REMOVE_UNSELECTED_FILE =
   makePref("bt-remove-unselected-file");
 PrefPtr PREF_BT_DETACH_SEED_ONLY = makePref("bt-detach-seed-only");
+PrefPtr PREF_BT_FORCE_ENCRYPTION = makePref("bt-force-encryption");
 
 /**
  * Metalink related preferences

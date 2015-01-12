@@ -486,6 +486,8 @@ extern PrefPtr PREF_BT_EXCLUDE_TRACKER;
 extern PrefPtr PREF_BT_REMOVE_UNSELECTED_FILE;
 // values: true |false
 extern PrefPtr PREF_BT_DETACH_SEED_ONLY;
+// values: true | false
+extern PrefPtr PREF_BT_FORCE_ENCRYPTION;
 
 /**
  * Metalink related preferences

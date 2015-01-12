@@ -284,7 +284,8 @@ void MSEHandshake::sendInitiatorStep2()
   ptr += sizeof(VC);
   // crypto_provide
   memset(ptr, 0, CRYPTO_BITFIELD_LENGTH);
-  if(option_->get(PREF_BT_MIN_CRYPTO_LEVEL) == V_PLAIN) {
+  if(!option_->getAsBool(PREF_BT_FORCE_ENCRYPTION) &&
+     option_->get(PREF_BT_MIN_CRYPTO_LEVEL) == V_PLAIN) {
     ptr[3] = CRYPTO_PLAIN_TEXT;
   }
   ptr[3] |= CRYPTO_ARC4;
@@ -347,7 +348,8 @@ bool MSEHandshake::receiveInitiatorCryptoSelectAndPadDLength()
   //verifyCryptoSelect
   unsigned char* rbufptr = rbuf_;
   decryptor_->encrypt(CRYPTO_BITFIELD_LENGTH, rbufptr, rbufptr);
-  if(rbufptr[3]&CRYPTO_PLAIN_TEXT &&
+  if((rbufptr[3]&CRYPTO_PLAIN_TEXT) &&
+     !option_->getAsBool(PREF_BT_FORCE_ENCRYPTION) &&
      option_->get(PREF_BT_MIN_CRYPTO_LEVEL) == V_PLAIN) {
     A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - peer prefers plaintext.",
                      cuid_));
@@ -447,7 +449,8 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength
   decryptor_->encrypt(CRYPTO_BITFIELD_LENGTH, rbufptr, rbufptr);
   // TODO choose the crypto type based on the preference.
   // For now, choose ARC4.
-  if(rbufptr[3]&CRYPTO_PLAIN_TEXT &&
+  if((rbufptr[3]&CRYPTO_PLAIN_TEXT) &&
+     !option_->getAsBool(PREF_BT_FORCE_ENCRYPTION) &&
      option_->get(PREF_BT_MIN_CRYPTO_LEVEL) == V_PLAIN) {
     A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - peer provides plaintext.",
                      cuid_));

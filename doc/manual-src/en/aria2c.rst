@@ -625,6 +625,15 @@ BitTorrent Specific Options
   tracker. Although this function is named ``external``, it can accept
   any kind of IP addresses. IPADDRESS must be a numeric IP address.
 
+.. option:: --bt-force-encryption[=true|false]
+
+  Requires BitTorrent message payload encryption with arc4.  This is a
+  shorthand of :option:`--bt-requre-crypto`
+  :option:`--bt-min-crypto-level`\=arc4.  This option does not change
+  the option value of those options.  If ``true`` is given, deny
+  legacy BitTorrent handshake and only use Obfuscation handshake and
+  always encrypt message payload.  Default: ``false``
+
 .. option:: --bt-hash-check-seed[=true|false]
 
  If ``true`` is given, after hash check using :option:`--check-integrity <-V>` option and
@@ -1894,6 +1903,7 @@ of URIs. These optional lines must start with white space(s).
   * :option:`bt-enable-lpd <--bt-enable-lpd>`
   * :option:`bt-exclude-tracker <--bt-exclude-tracker>`
   * :option:`bt-external-ip <--bt-external-ip>`
+  * :option:`bt-force-encryption <--bt-force-encryption>`
   * :option:`bt-hash-check-seed <--bt-hash-check-seed>`
   * :option:`bt-max-peers <--bt-max-peers>`
   * :option:`bt-metadata-only <--bt-metadata-only>`

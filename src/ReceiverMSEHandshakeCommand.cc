@@ -96,7 +96,9 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
         sequence_ = RECEIVER_WAIT_KEY;
         break;
       case MSEHandshake::HANDSHAKE_LEGACY: {
-        if(getDownloadEngine()->getOption()->getAsBool(PREF_BT_REQUIRE_CRYPTO)){
+        const auto option = getDownloadEngine()->getOption();
+        if(option->getAsBool(PREF_BT_FORCE_ENCRYPTION) ||
+           option->getAsBool(PREF_BT_REQUIRE_CRYPTO)){
           throw DL_ABORT_EX
             ("The legacy BitTorrent handshake is not acceptable by the"
              " preference.");
