@@ -698,7 +698,7 @@ BitTorrent Specific Options
 .. option:: --bt-require-crypto[=true|false]
 
   If true is given, aria2 doesn't accept and establish connection with legacy
-  BitTorrent handshake(\19BitTorrent protocol).
+  BitTorrent handshake(\\19BitTorrent protocol).
   Thus aria2 always uses Obfuscation handshake.
   Default: ``false`` 
 
