@@ -361,8 +361,9 @@ environment variable which must fulfill the following conditions:
   do this::
 
       $NDK/build/tools/make-standalone-toolchain.sh \
-      --install-dir=$ANDROID_HOME/toolchain \
-      --toolchain=arm-linux-androideabi-4.8
+        --install-dir=$ANDROID_HOME/toolchain \
+        --toolchain=arm-linux-androideabi-4.9 \
+        --platform=android-16
 
   You may need to add ``--system=linux-x86_64`` to the above
   command-line for x86_64 Linux host.
