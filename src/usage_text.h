@@ -1002,17 +1002,17 @@
     "                              only when --enable-rpc=true is given.")
 #define TEXT_BT_DETACH_SEED_ONLY                \
   _(" --bt-detach-seed-only[=true|false]\n"     \
-  "                              Exclude seed only downloads when counting\n" \
-  "                              concurrent active downloads (See -j option).\n" \
-  "                              This means that if -j3 is given and this option\n" \
-  "                              is turned on and 3 downloads are active and one\n" \
-  "                              of those enters seed mode, then it is excluded\n" \
-  "                              from active download count (thus it becomes 2),\n" \
-  "                              and the next download waiting in queue gets\n" \
-  "                              started. But be aware that seeding item is still\n" \
-  "                              recognized as active download in RPC method.")
+    "                              Exclude seed only downloads when counting\n" \
+    "                              concurrent active downloads (See -j option).\n" \
+    "                              This means that if -j3 is given and this option\n" \
+    "                              is turned on and 3 downloads are active and one\n" \
+    "                              of those enters seed mode, then it is excluded\n" \
+    "                              from active download count (thus it becomes 2),\n" \
+    "                              and the next download waiting in queue gets\n" \
+    "                              started. But be aware that seeding item is still\n" \
+    "                              recognized as active download in RPC method.")
 #define TEXT_MIN_TLS_VERSION                                            \
-  _(" --min-tls-version=VERSION  Specify minimum SSL/TLS version to enable.")
+  _(" --min-tls-version=VERSION    Specify minimum SSL/TLS version to enable.")
 #define TEXT_BT_FORCE_ENCRYPTION                                        \
   _(" --bt-force-encryption[=true|false]\n"                             \
     "                              Requires BitTorrent message payload encryption\n" \
