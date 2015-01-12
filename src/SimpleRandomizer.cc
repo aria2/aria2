@@ -92,7 +92,7 @@ void SimpleRandomizer::getRandomBytes(unsigned char* buf, size_t len)
   auto rv = getrandom_linux(buf, len);
   assert(rv >= 0 && (size_t)rv == len);
 #else // ! __MINGW32__
-  result_type* ubuf = reinterpret_cast<result_type*>(buf);
+  auto ubuf = reinterpret_cast<result_type*>(buf);
   size_t q = len / sizeof(result_type);
   auto gen = std::uniform_int_distribution<result_type>();
   for(; q > 0; --q, ++ubuf) {

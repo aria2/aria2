@@ -54,7 +54,9 @@ private:
 private:
 #ifdef __MINGW32__
   HCRYPTPROV provider_;
-#else // ! __MINGW32__
+#elif defined(HAVE_GETRANDOM_INTERFACE)
+  // Nothing special needed
+#else
   std::random_device dev_;
 #endif // ! __MINGW32__
 
@@ -63,7 +65,7 @@ public:
 
   static const std::unique_ptr<SimpleRandomizer>& getInstance();
 
-  ~SimpleRandomizer();
+  virtual ~SimpleRandomizer();
 
   /**
    * Returns random number in [0, to).
