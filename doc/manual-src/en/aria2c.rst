@@ -628,7 +628,7 @@ BitTorrent Specific Options
 .. option:: --bt-force-encryption[=true|false]
 
   Requires BitTorrent message payload encryption with arc4.  This is a
-  shorthand of :option:`--bt-requre-crypto`
+  shorthand of :option:`--bt-require-crypto`
   :option:`--bt-min-crypto-level`\=arc4.  This option does not change
   the option value of those options.  If ``true`` is given, deny
   legacy BitTorrent handshake and only use Obfuscation handshake and
@@ -697,7 +697,7 @@ BitTorrent Specific Options
 
 .. option:: --bt-require-crypto[=true|false]
 
-  If true is given, aria2 doesn't accept and establish connection with legacy
+  If ``true`` is given, aria2 doesn't accept and establish connection with legacy
   BitTorrent handshake(\\19BitTorrent protocol).
   Thus aria2 always uses Obfuscation handshake.
   Default: ``false`` 
