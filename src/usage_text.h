@@ -1017,7 +1017,7 @@
   _(" --bt-force-encryption[=true|false]\n"                             \
     "                              Requires BitTorrent message payload encryption\n" \
     "                              with arc4. This is a shorthand of\n" \
-    "                              --bt-requre-crypto --bt-min-crypto-level=arc4.\n" \
+    "                              --bt-require-crypto --bt-min-crypto-level=arc4.\n" \
     "                              If true is given, deny legacy BitTorrent\n" \
     "                              handshake and only use Obfuscation handshake and\n" \
     "                              always encrypt message payload.")
