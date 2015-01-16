@@ -175,11 +175,11 @@ int AsyncNameResolverMan::getStatus() const
       break;
     }
   }
-  // If we got IPv4 lookup response, we don't wait for IPv6 lookup
-  // response. This is because DNS server may drop AAAA query and we
-  // have to wait for the long time before timeout. We don't do the
-  // inverse, because, based on todays deployment of DNS server,
-  // almost all of them can respond A query just fine.
+  // If we got a IPv4 lookup response, we don't wait for a IPv6 lookup
+  // response. This is because DNS servers may drop AAAA queries and we
+  // have to wait for a long time before timeout. We don't do the
+  // inverse, because, based on today's deployment of DNS servers,
+  // almost all of them can respond to A queries just fine.
   if((success && ipv4Success) || success == numResolver_) {
     return 1;
   } else if(error == numResolver_) {

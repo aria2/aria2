@@ -371,7 +371,7 @@ PrefPtr PREF_DSCP = makePref("dscp");
 PrefPtr PREF_PAUSE_METADATA = makePref("pause-metadata");
 // values: 1*digit
 PrefPtr PREF_RLIMIT_NOFILE = makePref("rlimit-nofile");
-// vlaues: SSLv3 | TLSv1 | TLSv1.1 | TLSv1.2
+// values: SSLv3 | TLSv1 | TLSv1.1 | TLSv1.2
 PrefPtr PREF_MIN_TLS_VERSION = makePref("min-tls-version");
 
 /**
@@ -429,7 +429,7 @@ PrefPtr PREF_HTTP_PROXY = makePref("http-proxy");
 PrefPtr PREF_HTTPS_PROXY = makePref("https-proxy");
 PrefPtr PREF_FTP_PROXY = makePref("ftp-proxy");
 PrefPtr PREF_ALL_PROXY = makePref("all-proxy");
-// values: comma separeted hostname or domain
+// values: comma separated hostname or domain
 PrefPtr PREF_NO_PROXY = makePref("no-proxy");
 // values: get | tunnel
 PrefPtr PREF_PROXY_METHOD = makePref("proxy-method");

@@ -228,7 +228,7 @@ Metalink2RequestGroup::createRequestGroup
         torrentRg->clearPreDownloadHandler();
         torrentRg->clearPostDownloadHandler();
         // remove "metalink" from Accept Type list to avoid loop in
-        // tranparent metalink
+        // transparent metalink
         torrentRg->getDownloadContext()->setAcceptMetalink(false);
         // make it in-memory download
         torrentRg->addPreDownloadHandler
@@ -331,10 +331,10 @@ Metalink2RequestGroup::createRequestGroup
 
     removeOneshotOption(option);
     // remove "metalink" from Accept Type list to avoid loop in
-    // tranparent metalink
+    // transparent metalink
     dctx->setAcceptMetalink(false);
 #ifdef ENABLE_BITTORRENT
-    // Inject depenency between rg and torrentRg here if
+    // Inject dependency between rg and torrentRg here if
     // torrentRg is true
     if(torrentRg) {
       auto dep = std::make_shared<BtDependency>(rg.get(), torrentRg);

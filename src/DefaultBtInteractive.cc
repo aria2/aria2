@@ -446,7 +446,7 @@ void DefaultBtInteractive::detectMessageFlooding() {
 void DefaultBtInteractive::checkActiveInteraction()
 {
   time_t inactiveTime = inactiveTimer_.difference(global::wallclock());
-  // To allow aria2 to accept mutially interested peer, disconnect unintersted
+  // To allow aria2 to accept mutially interested peer, disconnect uninterested
   // peer.
   {
     const time_t interval = 30;

@@ -270,7 +270,7 @@ private:
 public:
   // depOptHandler is deprecated option and repOptHandler is replacing
   // new option. If there is no replacing option, specify nullptr.  If
-  // there is no replacing option, but the option still alives, give
+  // there is no replacing option, but the option still lives, give
   // true to stillWork. Set additional message to additionalMessage.
   DeprecatedOptionHandler
   (OptionHandler* depOptHandler,

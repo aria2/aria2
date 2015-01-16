@@ -308,7 +308,7 @@ extern PrefPtr PREF_DSCP;
 extern PrefPtr PREF_PAUSE_METADATA;
 // values: 1*digit
 extern PrefPtr PREF_RLIMIT_NOFILE;
-// vlaues: SSLv3 | TLSv1 | TLSv1.1 | TLSv1.2
+// values: SSLv3 | TLSv1 | TLSv1.1 | TLSv1.2
 extern PrefPtr PREF_MIN_TLS_VERSION;
 
 /**
@@ -366,7 +366,7 @@ extern PrefPtr PREF_HTTP_PROXY;
 extern PrefPtr PREF_HTTPS_PROXY;
 extern PrefPtr PREF_FTP_PROXY;
 extern PrefPtr PREF_ALL_PROXY;
-// values: comma separeted hostname or domain
+// values: comma separated hostname or domain
 extern PrefPtr PREF_NO_PROXY;
 // values: get | tunnel
 extern PrefPtr PREF_PROXY_METHOD;

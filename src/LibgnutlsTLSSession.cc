@@ -87,7 +87,7 @@ GnuTLSSession::~GnuTLSSession()
 // expect that upcoming (at the time of this writing) 3.1.19 and 3.2.9
 // will fix this bug.  See
 // http://lists.gnutls.org/pipermail/gnutls-devel/2014-January/006679.html
-// for dtails.
+// for details.
 #if (GNUTLS_VERSION_NUMBER >= 0x030103 && GNUTLS_VERSION_NUMBER <= 0x030112) \
   || (GNUTLS_VERSION_NUMBER >= 0x030200 && GNUTLS_VERSION_NUMBER <= 0x030208)
 # define A2_DISABLE_OCSP 1

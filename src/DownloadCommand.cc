@@ -211,7 +211,7 @@ bool DownloadCommand::executeInternal() {
       // used and Content-Length is known.  We check
       // streamFilter_->finished() only if the requested end offset
       // equals to written position in file local offset; in other
-      // words, data in the requested ranage is all received.  If
+      // words, data in the requested range is all received.  If
       // requested end offset is greater than this segment, then
       // streamFilter_ is not finished in this segment.
       segmentPartComplete = true;

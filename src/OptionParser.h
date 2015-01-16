@@ -98,7 +98,7 @@ public:
   const OptionHandler* findByShortName(char shortName) const;
 
   static const std::shared_ptr<OptionParser>& getInstance();
-  // Deletes statically allocated instace. Call this at the end of the
+  // Deletes statically allocated instance. Call this at the end of the
   // program.
   static void deleteInstance();
 };

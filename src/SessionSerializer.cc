@@ -177,7 +177,7 @@ namespace {
   }
 } // namespace
 
-// The downloads whose followedBy() is empty is persisited with its
+// The downloads whose followedBy() is empty is persisted with its
 // GID without no problem. For other cases, there are several patterns.
 //
 // 1. magnet URI
@@ -202,7 +202,7 @@ bool writeDownloadResult
   }
   if(!mi) {
     // With --force-save option, same gid may be saved twice. (e.g.,
-    // Downloading .meta4 followed by its conent download. First
+    // Downloading .meta4 followed by its content download. First
     // .meta4 download is saved and second content download is also
     // saved with the same gid.)
     if(metainfoCache.count(dr->gid->getNumericId()) != 0) {

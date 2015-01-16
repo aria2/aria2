@@ -866,7 +866,7 @@ bool SocketCore::tlsHandshake(TLSContext* tlsctx, const std::string& hostname)
   }
 
   if(secure_ == A2_TLS_HANDSHAKING) {
-    // Starting handshake after intial setup or still handshaking.
+    // Starting handshake after initial setup or still handshaking.
     TLSVersion ver = TLS_PROTO_NONE;
     int rv = 0;
     std::string handshakeError;

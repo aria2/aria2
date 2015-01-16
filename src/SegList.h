@@ -105,7 +105,7 @@ public:
   }
 
   // Returns next value. Advance current position to the next.  If
-  // this fuction is called when hasNext() returns false, returns 0.
+  // this function is called when hasNext() returns false, returns 0.
   T next()
   {
     T res;
@@ -125,7 +125,7 @@ public:
   }
 
   // Returns next value. Current position is not advanced.  If
-  // this fuction is called when hasNext() returns false, returns 0.
+  // this function is called when hasNext() returns false, returns 0.
   T peek() const
   {
     T res;

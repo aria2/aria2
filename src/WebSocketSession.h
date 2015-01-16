@@ -79,7 +79,7 @@ public:
   bool closeReceived();
   // Returns true if the close frame is sent.
   bool closeSent();
-  // Parses parital request body. This function returns the number of
+  // Parses partial request body. This function returns the number of
   // bytes processed if it succeeds, or negative error code.
   ssize_t parseUpdate(const uint8_t* data, size_t len);
   // Parses final part of request body and returns result.  The

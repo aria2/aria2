@@ -152,13 +152,13 @@ void WinTLSContext::setVerifyPeer(bool verify)
 
   if (credentials_.dwMinimumCipherStrength > WEAK_CIPHER_BITS) {
     // Enable strong crypto if we already set a minimum cipher streams.
-    // This might actually require evem stronger algorithms, which is a good
+    // This might actually require even stronger algorithms, which is a good
     // thing.
     credentials_.dwFlags |= SCH_USE_STRONG_CRYPTO;
   }
 
   if (side_ != TLS_CLIENT || !verify) {
-    // No verfication for servers and if user explicitly requested it
+    // No verification for servers and if user explicitly requested it
     credentials_.dwFlags |= SCH_CRED_MANUAL_CRED_VALIDATION |
                             SCH_CRED_IGNORE_NO_REVOCATION_CHECK |
                             SCH_CRED_IGNORE_REVOCATION_OFFLINE |

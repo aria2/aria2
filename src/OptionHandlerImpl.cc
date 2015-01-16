@@ -352,7 +352,7 @@ IndexOutOptionHandler::~IndexOutOptionHandler() {}
 void IndexOutOptionHandler::parseArg(Option& option, const std::string& optarg)
   const
 {
-  // See optarg is in the fomrat of "INDEX=PATH"
+  // See optarg is in the format of "INDEX=PATH"
   util::parseIndexPath(optarg);
   std::string value = option.get(pref_);
   value += optarg;
