@@ -798,7 +798,7 @@ bool FtpNegotiationCommand::recvRest(const std::shared_ptr<Segment>& segment) {
   if(status == 0) {
     return false;
   }
-  // If we recieve negative response and requested file position is not 0,
+  // If we receive negative response and requested file position is not 0,
   // then throw exception here.
   if(status != 350) {
     if(segment && segment->getPositionToWrite() != 0) {

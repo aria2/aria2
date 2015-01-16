@@ -355,9 +355,9 @@ void ResourcesMetalinkParserState::beginElement
       }
       else if(util::parseIntNoThrow(preference, std::string((*itr).value, (*itr).valueLength)) &&
               preference >= 0) {
-        // In Metalink3Spec, highest prefernce value is 100.  We
+        // In Metalink3Spec, highest preference value is 100.  We
         // use Metalink4Spec priority unit system in which 1 is
-        // higest.
+        // highest.
         preference = 101-preference;
       }
       else {

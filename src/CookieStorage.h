@@ -207,20 +207,20 @@ private:
   void updateLru(DomainNode* node, time_t now);
 
   // rootNode_ is a root node of tree structure of reversed domain
-  // labels.  rootNode_ always contans no cookie. It has the child
+  // labels.  rootNode_ always contains no cookie. It has the child
   // nodes of the top level domain label (e.g., net, com and org). And
-  // those top level domain nodes have 2nd doman label (e.g.,
-  // sourcforge, github), and so on. The numeric host name are always
+  // those top level domain nodes have 2nd domain label (e.g.,
+  // sourceforge, github), and so on. The numeric host name are always
   // stored as a child node of rootNode_. So the domain name of a
-  // paricular node is constructed as follows. First traverse the
+  // particular node is constructed as follows. First traverse the
   // target node from root node. The concatenation of the visited
   // node's label in the reverse order, delimited by ".", is the
   std::unique_ptr<DomainNode> rootNode_;
   // This object tracks the node which has cookies or it once had. The
   // order is sorted by the least recent updated node first. This
-  // object does not track the node which has not contan cookie. For
+  // object does not track the node which has not contain cookie. For
   // example, adding cookies in aria2.sourceforge.net, and no node
-  // labeled "sourceforge" is present, only node labelded "aria2" is
+  // labeled "sourceforge" is present, only node labeled "aria2" is
   // tracked and node labeled "sourceforge" and "net" are not.
   std::set<std::pair<time_t, DomainNode*>> lruTracker_;
 };

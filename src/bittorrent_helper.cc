@@ -477,7 +477,7 @@ void processRootDictionary
     torrent->privateTorrent = true;
   }
   // retrieve uri-list.
-  // This implemantation obeys HTTP-Seeding specification:
+  // This implementation obeys HTTP-Seeding specification:
   // see http://www.getright.com/seedtorrent.html
   std::vector<std::string> urlList;
   extractUrlList(torrent.get(), urlList, rootDict->get(C_URL_LIST));

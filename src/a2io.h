@@ -83,7 +83,7 @@
 # define                S_IRGRP 0000040 /* read permission, group */
 #endif /* S_IRGRP       */
 #ifndef S_IWGRP
-# define                S_IWGRP 0000020 /* write permission, grougroup */
+# define                S_IWGRP 0000020 /* write permission, group */
 #endif /* S_IWGRP       */
 #ifndef S_IXGRP
 # define                S_IXGRP 0000010/* execute/search permission, group */

@@ -120,14 +120,14 @@ void loadFromMemory(const ValueBase* torrent,
 std::unique_ptr<TorrentAttribute> parseMagnet(const std::string& magnet);
 
 // Parses BitTorrent Magnet URI and set them in ctx as a
-// bittorrent::BITTORRENT attibute. If parsing operation failed, an
+// bittorrent::BITTORRENT attribute. If parsing operation failed, an
 // RecoverableException will be thrown.
 void loadMagnet
 (const std::string& magnet, const std::shared_ptr<DownloadContext>& ctx);
 
 // Generates Peer ID. BitTorrent specification says Peer ID is 20-byte
 // length.  This function uses peerIdPrefix as a Peer ID and it is
-// less than 20bytes, random bytes are generated and appened to it. If
+// less than 20bytes, random bytes are generated and appended to it. If
 // peerIdPrefix is larger than 20bytes, first 20bytes are used.
 std::string generatePeerId(const std::string& peerIdPrefix);
 
@@ -149,7 +149,7 @@ std::vector<size_t> computeFastSet
 (const std::string& ipaddr,
  size_t numPieces, const unsigned char* infoHash, size_t fastSetSize);
 
-// Make sure that don't recieve return value into std::shared_ptr.
+// Make sure that don't receive return value into std::shared_ptr.
 TorrentAttribute* getTorrentAttrs(DownloadContext* dctx);
 TorrentAttribute* getTorrentAttrs
 (const std::shared_ptr<DownloadContext>& dctx);

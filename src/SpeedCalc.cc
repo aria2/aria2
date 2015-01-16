@@ -102,7 +102,7 @@ void SpeedCalc::update(size_t bytes)
 int SpeedCalc::calculateAvgSpeed() const
 {
   int64_t milliElapsed = start_.differenceInMillis(global::wallclock());
-  // if milliElapsed is too small, the average speed is rubish, better
+  // if milliElapsed is too small, the average speed is rubbish, better
   // return 0
   if(milliElapsed > 4) {
     int speed = accumulatedLength_*1000/milliElapsed;

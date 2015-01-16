@@ -121,7 +121,7 @@ void createRequestGroupForUriList
  const std::shared_ptr<Option>& option);
 
 // Create RequestGroup object using provided uris.  If ignoreLocalPath
-// is true, a path to torrent file abd metalink file are ignored.  If
+// is true, a path to torrent file and metalink file are ignored.  If
 // throwOnError is true, exception will be thrown when Metalink
 // Document or .torrent file cannot be parsed or unrecognized URI is
 // given. If throwOnError is false, these errors are just logged as

@@ -395,7 +395,7 @@ ssize_t WinTLSSession::writeData(const void* data, size_t len)
     }
     dl += buffers[1].cbBuffer;
     if (dl < streamSizes_->cbHeader + writeBuffered_) {
-      // Move tailer.
+      // Move trailer.
       memmove(buf.get() + dl, buffers[2].pvBuffer, buffers[2].cbBuffer);
     }
     dl += buffers[2].cbBuffer;

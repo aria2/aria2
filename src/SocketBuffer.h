@@ -117,7 +117,7 @@ public:
   SocketBuffer(const SocketBuffer&) = delete;
   SocketBuffer& operator=(const SocketBuffer&) = delete;
 
-  // Feeds data pointered by bytes with length len into queue.  This
+  // Feeds data pointed by bytes with length len into queue.  This
   // object gets ownership of bytes, so caller must not delete or
   // later bytes after this call. This function doesn't send data.  If
   // progressUpdate is not null, its update() function will be called

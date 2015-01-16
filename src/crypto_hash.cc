@@ -75,7 +75,7 @@ static forceinline T par(T b, T c, T d)
 using namespace crypto;
 using namespace crypto::hash;
 
-// Our base implementation, doing most of the work, short of |tranform|,
+// Our base implementation, doing most of the work, short of |transform|,
 // |digest| and initialization.
 template <typename word_, uint_fast8_t bsize, uint_fast8_t ssize>
 class AlgorithmImpl : public Algorithm
@@ -232,7 +232,7 @@ protected:
   a1 += a2;
 
     // Yeah, unrolled loops.
-    // This stuff is generated, but accidentially deleted the generator script.
+    // This stuff is generated, but accidentally deleted the generator script.
 
     r(f1, a, b, c, d, w00, 0xd76aa478, 7);
     r(f1, d, a, b, c, w01, 0xe8c7b756, 12);

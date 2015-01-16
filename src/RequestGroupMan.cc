@@ -405,7 +405,7 @@ public:
                                    PREF_ON_DOWNLOAD_PAUSE);
         notifyDownloadEvent(EVENT_ON_DOWNLOAD_PAUSE, group);
         // TODO Should we have to prepend spend uris to remaining uris
-        // in case PREF_REUSE_URI is disabed?
+        // in case PREF_REUSE_URI is disabled?
       } else {
         std::shared_ptr<DownloadResult> dr = group->createDownloadResult();
         e_->getRequestGroupMan()->addDownloadResult(dr);

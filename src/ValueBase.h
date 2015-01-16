@@ -101,7 +101,7 @@ public:
 
   ValueType popValue() const;
 
-  // Returns std::string.data() casted to unsigned char*.
+  // Returns std::string.data() cast to unsigned char*.
   // Use s().size() to get length.
   const unsigned char* uc() const;
 
@@ -181,7 +181,7 @@ public:
   // Appends given v to list.
   void append(std::unique_ptr<ValueBase> v);
 
-  // Appeding string is so common that we provide shortcut function.
+  // Appending string is so common that we provide shortcut function.
   void append(String::ValueType string);
 
   // Alias for append()

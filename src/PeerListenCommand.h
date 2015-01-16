@@ -59,12 +59,12 @@ public:
   virtual bool execute() CXX11_OVERRIDE;
 
   /**
-   * Binds port. If successful, the binded port number is assinged to port and
+   * Binds port. If successful, the bound port number is assinged to port and
    * returns true, otherwise port is undefined and returns false.
    */
   bool bindPort(uint16_t& port, SegList<int>& seq);
 
-  // Returns binded port
+  // Returns bound port
   uint16_t getPort() const;
 };
 

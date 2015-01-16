@@ -72,7 +72,7 @@ public:
   const std::shared_ptr<DHTBucket>& getBucket() const { return bucket_; }
   // Splits this object's bucket using DHTBucket::split() and create
   // left and right child node to hold buckets. The bucket of current
-  // node is reseted so this node becomes internal node after this
+  // node is reset so this node becomes internal node after this
   // call.
   void split();
 private:
