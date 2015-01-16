@@ -195,7 +195,7 @@ InputIterator expandLoop
 //
 // When loop through START to END, we include both START and END.
 //
-// STEP is dicimal number and it is used as loop step.  STEP can be
+// STEP is decimal number and it is used as loop step.  STEP can be
 // omitted. If omitted, preceding ':' also must be omitted.
 //
 // START, END and STEP must be less than or equal to 65535 in decimal.

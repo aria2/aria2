@@ -536,7 +536,7 @@ public:
   // the element is moved to the position |offset|. If |how| is
   // OFFSET_MODE_END, the element is moved to the position |offset|
   // relative to the end of the list.  This function returns the
-  // position the elment is moved to if it succeeds, or -1 if no
+  // position the element is moved to if it succeeds, or -1 if no
   // element with |key| is found or |how| is invalid.  Complexity:
   // O(N)
   ssize_t move(KeyType key, ssize_t offset, OffsetMode how)

@@ -352,7 +352,7 @@ int callGetaddrinfo
 (struct addrinfo** resPtr, const char* host, const char* service, int family,
  int sockType, int flags, int protocol);
 
-// Collects IP addresses of given inteface iface and stores in
+// Collects IP addresses of given interface iface and stores in
 // ifAddres. iface may be specified as a hostname, IP address or
 // interface name like eth0. You can limit the family of IP addresses
 // to collect using family argument. aiFlags is passed to

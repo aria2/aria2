@@ -102,7 +102,7 @@ std::unique_ptr<Dict> DHTGetPeersReplyMessage::getResponse()
     rDict->put(family_ == AF_INET?NODES:NODES6, String::g(buffer, offset));
   }
   if(!values_.empty()) {
-    // Limit the size of values list.  The maxmum size of UDP datagram
+    // Limit the size of values list.  The maximum size of UDP datagram
     // is limited to 65535 bytes. aria2 uses 20bytes token and 2byte
     // transaction ID. The size of get_peers reply message without
     // values list and nodes is 87bytes:
@@ -115,7 +115,7 @@ std::unique_ptr<Dict> DHTGetPeersReplyMessage::getResponse()
     //
     // Because of Path MTU Discovery, UDP packet size which need not
     // to be fragmented is much smaller. Since Linux uses Path MTU
-    // Dicoverry by default and returning ICMP message might be
+    // Discovery by default and returning ICMP message might be
     // filtered, we should avoid fragmentation.  MTU of pppoe is 1492
     // max according to RFC2516.  We use maximum packet size to be
     // 1024. Since it contains 20 bytes IP header and 8 bytes UDP

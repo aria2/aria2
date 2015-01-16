@@ -363,7 +363,7 @@ bool HttpResponseCommand::handleDefaultEncoding
   // AbstractCommand::execute()
   auto segment = getSegmentMan()->getSegmentWithIndex(getCuid(), 0);
   // pipelining requires implicit range specified. But the request for
-  // this response most likely dones't contains range header. This means
+  // this response most likely doesn't contains range header. This means
   // we can't continue to use this socket because server sends all entity
   // body instead of a segment.
   // Therefore, we shutdown the socket here if pipelining is enabled.

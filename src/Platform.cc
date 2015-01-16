@@ -185,7 +185,7 @@ bool Platform::tearDown()
   WSACleanup();
 #endif // HAVE_WINSOCK2_H
   // Deletes statically allocated resources. This is done to
-  // distinguish memory leak from them. This is handly to use
+  // distinguish memory leak from them. This is handy to use
   // valgrind.
   OptionParser::deleteInstance();
   option::deletePrefResource();

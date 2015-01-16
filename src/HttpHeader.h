@@ -149,7 +149,7 @@ public:
   // Clears table_. responseStatus_ and version_ are unchanged.
   void clearField();
 
-  // Returns true if heder field |name| contains |value|. This method
+  // Returns true if header field |name| contains |value|. This method
   // assumes the values of the header field is delimited by ','.
   bool fieldContains(int hdKey, const char* value);
 

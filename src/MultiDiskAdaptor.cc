@@ -162,13 +162,13 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
         }
       } else if(fileEntry->getOffset() < lastOffset) {
         // The files which shares last piece are not needed to be
-        // allocated. They just requre DiskWriter
+        // allocated. They just require DiskWriter
         A2_LOG_DEBUG(fmt("%s needs DiskWriter",
                          fileEntry->getPath().c_str()));
         dwent->needsDiskWriter(true);
       }
     }
-    // Check shared piece backword
+    // Check shared piece backward
     lastOffset = std::numeric_limits<int64_t>::max();
     for(auto i = diskWriterEntries_.rbegin(), eoi = diskWriterEntries_.rend();
         i != eoi; ++i) {

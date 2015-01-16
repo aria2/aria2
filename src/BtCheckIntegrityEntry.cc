@@ -73,7 +73,7 @@ void BtCheckIntegrityEntry::onDownloadFinished
 (std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
 {
   // TODO Currently,when all the checksums
-  // are valid, then aira2 goes to seeding mode. Sometimes it is better
+  // are valid, then aria2 goes to seeding mode. Sometimes it is better
   // to exit rather than doing seeding. So, it would be good to toggle this
   // behavior.
   if(!getRequestGroup()->getOption()->getAsBool(PREF_HASH_CHECK_ONLY) &&

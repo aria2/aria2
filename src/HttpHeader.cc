@@ -109,7 +109,7 @@ Range HttpHeader::getRange() const
     }
   }
   // we expect that rangeStr looks like 'bytes 100-199/100'
-  // but some server returns '100-199/100', omitting bytes-unit sepcifier
+  // but some server returns '100-199/100', omitting bytes-unit specifier
   // 'bytes'.
   auto byteRangeSpec = std::find(rangeStr.begin(), rangeStr.end(), ' ');
   if(byteRangeSpec == rangeStr.end()) {

@@ -57,7 +57,7 @@ public:
 
   /**
    * Binds port. All number in sgl are tried. All numbers in sgl must
-   * be in range [1, 65535], inclusive. If successful, the binded port
+   * be in range [1, 65535], inclusive. If successful, the bound port
    * is assigned to port and returns true.  Otherwise return false and
    * port is undefined in this case.  If non-empty string addr is
    * given, the socket is associated to the address.
@@ -66,13 +66,13 @@ public:
 
   /**
    * Binds port. The port number specified by port is used to bind.
-   * If successful, the binded port is assigned to port and returns
+   * If successful, the bound port is assigned to port and returns
    * true.  Otherwise return false and port is undefined in this case.
    * If non-empty string addr is given, the socket is associated to
    * the address.
    *
    * If you want to bind arbitrary port, give 0 as port and if successful,
-   * the binded port is assigned to port.
+   * the bound port is assigned to port.
    */
   bool bind(uint16_t& port, const std::string& addr);
 

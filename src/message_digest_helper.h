@@ -48,7 +48,7 @@ class MessageDigest;
 namespace message_digest {
 
 /**
- * ctx must be initialized or reseted before calling this function.
+ * ctx must be initialized or reset before calling this function.
  * Returns raw digest string, not hex digest
  */
 std::string digest

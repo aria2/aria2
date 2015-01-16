@@ -143,7 +143,7 @@ public:
     return spentUris_;
   }
 
-  // Exposed for unitest
+  // Exposed for unittest
   std::deque<std::string>& getSpentUris()
   {
     return spentUris_;

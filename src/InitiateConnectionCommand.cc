@@ -133,7 +133,7 @@ InitiateConnectionCommand::createBackupIPv4ConnectCommand
 (const std::string& hostname, const std::string& ipaddr, uint16_t port,
  Command* mainCommand)
 {
-  // Prepare IPv4 backup connection attemp in "Happy Eyeballs"
+  // Prepare IPv4 backup connection attempt in "Happy Eyeballs"
   // fashion.
   std::shared_ptr<BackupConnectInfo> info;
   char buf[sizeof(in6_addr)];
