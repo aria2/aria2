@@ -246,6 +246,10 @@ Metalink2RequestGroup::createRequestGroup
       auto entry = mes[0];
       A2_LOG_INFO(fmt(MSG_METALINK_QUEUEING, entry->getPath().c_str()));
       entry->reorderResourcesByPriority();
+      for(auto& mr : entry->resources) {
+        A2_LOG_DEBUG(fmt("priority=%d url=%s",
+                         mr->priority, mr->url.c_str()));
+      }
       std::vector<std::string> uris;
       std::for_each(std::begin(entry->resources), std::end(entry->resources),
                     AccumulateNonP2PUri(uris));
