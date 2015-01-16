@@ -85,7 +85,7 @@ https://github.com/tatsuhiro-t/aria2
 
 To get the latest source code, run following command::
 
-    $ git clone git://github.com/tatsuhiro-t/aria2.git
+    $ git clone https://github.com/tatsuhiro-t/aria2.git
 
 This will create aria2 directory in your current directory and source
 files are stored there.
