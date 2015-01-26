@@ -1978,10 +1978,6 @@ void UtilTest::testGenerateRandomData()
     }
   }
   CPPUNIT_ASSERT_MESSAGE("Should see all kinds of bytes", counts.size() == 256);
-  if (counts.size() != 256) {
-    throw std::domain_error(
-        "Would have expected to see at one of each possible byte value!");
-  }
   double sum = accumulate(
     counts.begin(),
     counts.end(),
