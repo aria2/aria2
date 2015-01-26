@@ -120,6 +120,10 @@ public:
   // Currently timezone is assumed to GMT.
   static Time parseRFC1123(const std::string& datetime);
 
+  // Like parseRFC1123, but only accepts trailing "+0000" instead of
+  // last 3 letters "GMT".
+  static Time parseRFC1123Alt(const std::string& datetime);
+
   // Currently timezone is assumed to GMT.
   static Time parseRFC850(const std::string& datetime);
 

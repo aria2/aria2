@@ -27,6 +27,7 @@ public:
   void tearDown() {}
 
   void testParseRFC1123();
+  void testParseRFC1123Alt();
   void testParseRFC850();
   void testParseRFC850Ext();
   void testParseAsctime();
@@ -42,6 +43,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION(TimeTest);
 void TimeTest::testParseRFC1123()
 {
   Time t1 = Time::parseRFC1123("Sat, 06 Sep 2008 15:26:33 GMT");
+  CPPUNIT_ASSERT_EQUAL((time_t)1220714793, t1.getTime());
+}
+
+void TimeTest::testParseRFC1123Alt()
+{
+  Time t1 = Time::parseRFC1123Alt("Sat, 06 Sep 2008 15:26:33 +0000");
   CPPUNIT_ASSERT_EQUAL((time_t)1220714793, t1.getTime());
 }
 
