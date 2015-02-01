@@ -1,3 +1,110 @@
+aria2 1.18.9
+============
+
+Release Note
+------------
+
+This releases fixes memory leak with OpenSSL and crash on OSX when
+proxy is used.  We added several new features.  Adler32 checksum is
+now available in --checksum option and hash element in Metalink files.
+We added --bt-detach-seed-only option, which excludes seed-only
+downloads when counting concurrent active downloads (-j option).  We
+disabled SSLv3 by default.  If you ever want to enable it or further
+tune the TLS protocols to enable, use new --min-tls-version option.
+--bt-force-encryption option was added to make requiring BitTorrent
+full encryption easier.  From this release, we build Android binary
+using API level 16.
+
+Changes
+-------
+
+* Support HTTP date ending "+0000" as well as "GMT".
+
+  Closes GH-330
+
+* Revise getRandom facilities
+
+  Use one of the following to provide random bytes:
+  - Windows CryptGenRandom
+  - Linux getrandom (syscall interface to urandom, without nasty
+    corner cases such as file descriptor exhaustion or re-linked
+    /dev/urandom)
+  - std::device_random (C++ random device, which usually will be
+    urandom)
+
+  This also equalizes util::getRandom and SimpleRandomizer (the former
+  will now use the latter) instead of having essentially two different
+  PRNG interfaces with potentially different quality.
+
+  Closes GH-320
+
+* Added debug log of all Metalink URLs with final priorities
+
+  Patch from Dan Fandrich
+
+* Use gcc-4.9 and android-16 API level for android build
+
+* Add --bt-force-encryption option
+
+  This option requires BitTorrent message payload encryption with
+  arc4. This is a shorthand of --bt-requre-crypto
+  --bt-min-crypto-level=arc4.  If true is given, deny legacy
+  BitTorrent handshake and only use Obfuscation handshake and always
+  encrypt message payload. This option defaults to false.
+
+* TLS: Fix memory leak with OpenSSL
+
+  Based on the patch submitted by midnight2k
+
+* Warn about insecure SSL connections.
+
+  Fixed GH-313
+
+* Add --min-tls-version option
+
+  The --min-tls-version option specifies minimum SSL/TLS version to
+  enable. Possible Values: SSLv3, TLSv1, TLSv1.1, TLSv1.2 Default:
+  TLSv1
+
+* LibsslTLSContext: Disable SSLv3 and enable ECDHE cipher suites
+
+* Add Dockerfile.mingw
+
+  Dockerfile.mingw builds aria2 Windows binary.  It is probably the
+  easiest way to build the Windows binary.
+
+* Fix crash when JSON batch response vector is empty
+
+* Fix doc: Wrong rpc secret token prefix
+
+* Add --bt-detach-seed-only option
+
+  This option excludes seed only downloads when counting concurrent
+  active downloads (-j option).  This means that if -j3 is given and
+  this option is turned on and 3 downloads are active and one of those
+  enters seed mode, then it is excluded from active download count
+  (thus it becomes 2), and the next download waiting in queue gets
+  started.  But be aware that seeding item is still recognized as
+  active download in RPC method.
+
+* mingw: Use MoveFileExW for better atomic move
+
+* Work around libintl's vprintf macro messing with OutputFile::vprintf
+
+  Patch from David Macek
+
+* Fix crash on OSX when proxy is used
+
+  See GH-275
+
+* Support Adler32 checksum
+
+  Adler32 checksum is available for --checksum option and hash element
+  in Metalink files.  Currently, we use Adler32 implementation in
+  Zlib.
+
+
+
 aria2 1.18.8
 ============
 
