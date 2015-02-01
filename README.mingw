@@ -14,9 +14,11 @@ necessary. The linked libraries are:
 
 * gmp 6.0.0
 * expat 2.1.0
-* sqlite 3.8.4.1
+* sqlite 3.8.8.2
 * zlib 1.2.8
-* c-ares 1.10.0
+* c-ares 1.10.0 with the dns.patch [1] applied
+
+[1] http://c-ares.haxx.se/mail/c-ares-archive-2014-05/0008.shtml
 
 This build has the following difference from the original release:
 
