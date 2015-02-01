@@ -884,7 +884,9 @@ bool noProxyDomainMatch(const std::string& hostname, const std::string& domain);
 // Checks hostname matches pattern as described in RFC 6125.
 bool tlsHostnameMatch(const std::string& pattern, const std::string& hostname);
 
+#ifdef ENABLE_SSL
 TLSVersion toTLSVersion(const std::string& ver);
+#endif // ENABLE_SSL
 
 } // namespace util
 

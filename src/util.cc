@@ -1974,6 +1974,7 @@ bool strless(const char* a, const char* b)
   return strcmp(a, b) < 0;
 }
 
+#ifdef ENABLE_SSL
 TLSVersion toTLSVersion(const std::string& ver)
 {
   if(ver == A2_V_SSL3) {
@@ -1990,6 +1991,7 @@ TLSVersion toTLSVersion(const std::string& ver)
   }
   return TLS_PROTO_TLS10;
 }
+#endif // ENABLE_SSL
 
 } // namespace util
 
