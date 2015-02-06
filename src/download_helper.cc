@@ -62,6 +62,7 @@
 #include "OptionParser.h"
 #include "SegList.h"
 #include "download_handlers.h"
+#include "SimpleRandomizer.h"
 #ifdef ENABLE_BITTORRENT
 #  include "bittorrent_helper.h"
 #  include "BtConstants.h"
@@ -197,6 +198,11 @@ createBtRequestGroup(const std::string& metaInfoUri,
   // may throw exception
   bittorrent::loadFromMemory(torrent, dctx, option, auxUris,
                              metaInfoUri.empty() ? "default" : metaInfoUri);
+  for (auto &fe : dctx->getFileEntries()) {
+    auto &uris = fe->getRemainingUris();
+    std::random_shuffle(std::begin(uris), std::end(uris),
+                        *SimpleRandomizer::getInstance());
+  }
   if(metaInfoUri.empty()) {
     rg->setMetadataInfo(createMetadataInfoDataOnly());
   } else {

@@ -324,6 +324,7 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
     std::shared_ptr<RequestGroup> group = result[0];
     auto uris =
       group->getDownloadContext()->getFirstFileEntry()->getUris();
+    std::sort(std::begin(uris), std::end(uris));
     // See -s option is ignored. See processRootDictionary() in
     // bittorrent_helper.cc
     CPPUNIT_ASSERT_EQUAL((size_t)3, uris.size());
