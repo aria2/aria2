@@ -70,8 +70,10 @@ int getrandom_linux(void *buf, size_t buflen) {
       if (err == EINTR) {
         continue;
       }
-      fprintf(stderr, "getrandom returned an unhandled error: %d\n", err);
-      return read;
+      if (err != ENOSYS) {
+        fprintf(stderr, "getrandom returned an unhandled error: %d\n", err);
+      }
+      return -err;
     }
     p += read;
     rv += read;
