@@ -54,8 +54,6 @@ private:
 private:
 #ifdef __MINGW32__
   HCRYPTPROV provider_;
-#elif defined(HAVE_GETRANDOM_INTERFACE)
-  // Nothing special needed
 #else
   std::random_device dev_;
 #endif // ! __MINGW32__

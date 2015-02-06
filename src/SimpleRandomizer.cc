@@ -42,6 +42,8 @@
 
 #include "a2time.h"
 #include "a2functional.h"
+#include "LogFactory.h"
+#include "fmt.h"
 
 #ifdef HAVE_GETRANDOM_INTERFACE
 #  include "getrandom_linux.h"
@@ -88,10 +90,24 @@ void SimpleRandomizer::getRandomBytes(unsigned char* buf, size_t len)
 #ifdef __MINGW32__
   BOOL r = CryptGenRandom(provider_, len, reinterpret_cast<BYTE*>(buf));
   assert(r);
-#elif defined(HAVE_GETRANDOM_INTERFACE)
-  auto rv = getrandom_linux(buf, len);
-  assert(rv >= 0 && (size_t)rv == len);
 #else // ! __MINGW32__
+#if defined(HAVE_GETRANDOM_INTERFACE)
+  static bool have_random_support = true;
+  if (have_random_support) {
+    auto rv = getrandom_linux(buf, len);
+    if (rv != -1 || errno != ENOSYS) {
+      if (rv < -1) {
+        A2_LOG_ERROR(fmt("Failed to produce randomness: %d", errno));
+      }
+      assert(rv >= 0 && (size_t)rv == len);
+      return;
+    }
+    have_random_support = false;
+    A2_LOG_INFO("Disabled getrandom support, because kernel does not "\
+        "implement this feature (ENOSYS)");
+  }
+  // Fall through to generic implementation
+#endif // defined(HAVE_GETRANDOM_INTERFACE)
   auto ubuf = reinterpret_cast<result_type*>(buf);
   size_t q = len / sizeof(result_type);
   auto gen = std::uniform_int_distribution<result_type>();

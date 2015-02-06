@@ -37,14 +37,42 @@
 #include <unistd.h>
 #include <sys/syscall.h>
 #include <linux/random.h>
+#include <errno.h>
+#include <linux/errno.h>
+#include <stdint.h>
+#include <stdio.h>
 
 #include "config.h"
 #include "getrandom_linux.h"
 
 int getrandom_linux(void *buf, size_t buflen) {
+  int rv = 0;
+  uint8_t* p = buf;
+  while (buflen) {
+    int read;
 #ifdef HAVE_GETRANDOM
-  return getrandom(buf, buflen, 0);
+    read = getrandom(p, buflen, 0);
 #else // HAVE_GETRANDOM
-  return syscall(SYS_getrandom, buf, buflen, 0);
+    read = syscall(SYS_getrandom, p, buflen, 0);
+    /* Some libc impl. might mess this up */
+    if (read == -EINTR || read == -ERESTART) {
+      errno = EINTR;
+      read = -1;
+    }
+    if (read < -1) {
+      errno = -read;
+      read = -1;
+    }
 #endif // HAVE_GETRANDOM
+    if (read < 0) {
+      if (errno == EINTR) {
+        continue;
+      }
+      return -1;
+    }
+    p += read;
+    rv += read;
+    buflen -= read;
+  }
+  return rv;
 }
