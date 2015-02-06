@@ -292,7 +292,7 @@ void createRequestGroupForBitTorrent
                        error_code::BENCODE_PARSE_ERROR);
   }
   createRequestGroupForBitTorrent(result, option, uris, metaInfoUri,
-                                  torrent.get());
+                                  torrent.get(), adjustAnnounceUri);
 }
 
 void createRequestGroupForBitTorrent
