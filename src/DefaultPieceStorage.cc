@@ -58,6 +58,7 @@
 #include "RarestPieceSelector.h"
 #include "DefaultStreamPieceSelector.h"
 #include "InorderStreamPieceSelector.h"
+#include "RandomStreamPieceSelector.h"
 #include "GeomStreamPieceSelector.h"
 #include "array_fun.h"
 #include "PieceStatMan.h"
@@ -95,6 +96,9 @@ DefaultPieceStorage::DefaultPieceStorage
       (bitfieldMan_.get());
   } else if(pieceSelectorOpt == V_INORDER) {
     streamPieceSelector_ = make_unique<InorderStreamPieceSelector>
+      (bitfieldMan_.get());
+  } else if(pieceSelectorOpt == A2_V_RANDOM) {
+    streamPieceSelector_ = make_unique<RandomStreamPieceSelector>
       (bitfieldMan_.get());
   } else if(pieceSelectorOpt == A2_V_GEOM) {
     streamPieceSelector_ = make_unique<GeomStreamPieceSelector>

@@ -1171,7 +1171,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
                       (PREF_STREAM_PIECE_SELECTOR,
                        TEXT_STREAM_PIECE_SELECTOR,
                        A2_V_DEFAULT,
-                       { A2_V_DEFAULT, V_INORDER, A2_V_GEOM }));
+                       { A2_V_DEFAULT, V_INORDER, A2_V_RANDOM, A2_V_GEOM }));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
