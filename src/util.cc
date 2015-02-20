@@ -146,6 +146,13 @@ std::string wCharToUtf8(const std::wstring& wsrc)
   }
 }
 
+std::string toForwardSlash(const std::string &src) {
+  auto dst = src;
+  std::transform(std::begin(dst), std::end(dst), std::begin(dst),
+                 [](char c) { return c == '\\' ? '/' : c; });
+  return dst;
+}
+
 #endif // __MINGW32__
 
 namespace util {
@@ -1288,34 +1295,46 @@ void setGlobalSignalHandler(int sig, sigset_t* mask, signal_handler_t handler,
 #endif // HAVE_SIGACTION
 }
 
+#ifndef __MINGW32__
 std::string getHomeDir()
 {
   const char* p = getenv("HOME");
   if (p) {
     return p;
   }
-#ifdef __MINGW32__
-  p = getenv("USERPROFILE");
-  if (p) {
-    return p;
-  }
-  p = getenv("HOMEDRIVE");
-  if (p) {
-    std::string homeDir = p;
-    p = getenv("HOMEPATH");
-    if (p) {
-      homeDir += p;
-      return homeDir;
-    }
-  }
-#elif HAVE_PWD_H
-  passwd* pw = getpwuid(geteuid());
-  if(pw && pw->pw_dir) {
+#ifdef HAVE_PWD_H
+  auto pw = getpwuid(geteuid());
+  if (pw && pw->pw_dir) {
     return pw->pw_dir;
   }
 #endif // HAVE_PWD_H
   return A2STR::NIL;
 }
+
+#else // __MINGW32__
+
+std::string getHomeDir()
+{
+  auto p = _wgetenv(L"HOME");
+  if (p) {
+    return toForwardSlash(wCharToUtf8(p));
+  }
+  p = _wgetenv(L"USERPROFILE");
+  if (p) {
+    return toForwardSlash(wCharToUtf8(p));
+  }
+  p = _wgetenv(L"HOMEDRIVE");
+  if (p) {
+    std::wstring homeDir = p;
+    p = _wgetenv(L"HOMEPATH");
+    if (p) {
+      homeDir += p;
+      return toForwardSlash(wCharToUtf8(homeDir));
+    }
+  }
+  return A2STR::NIL;
+}
+#endif // __MINGW32__
 
 int64_t getRealSize(const std::string& sizeWithUnit)
 {
