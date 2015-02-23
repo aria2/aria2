@@ -1,3 +1,31 @@
+aria2 1.18.10
+=============
+
+Release Note
+------------
+
+This releases fixes several bugs reported since the last release.
+
+Changes
+-------
+
+* Add encoding specifier to Russian man page
+
+  Fixes GH-341
+
+* Mingw: Use _wgetenv to get user's home directory
+
+  Fixes GH-342
+
+* Handle linux getrandom returning EINTR on interrupts/signals
+
+  Also handle ENOTSUP failures where aria2 was build with linux
+  headers newer than the actual running kernel.
+
+  Fixes GH-336
+
+
+
 aria2 1.18.9
 ============
 
