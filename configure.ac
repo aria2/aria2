@@ -758,10 +758,12 @@ AC_CHECK_FUNCS([__argz_count \
 
 AC_MSG_CHECKING([for getrandom linux syscall interface])
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+#include <sys/syscall.h>
 #include <linux/random.h>
 ]],
 [[
 int x = GRND_NONBLOCK;
+int y = (int)SYS_getrandom;
 ]])],
   [have_getrandom_interface=yes
    AC_DEFINE([HAVE_GETRANDOM_INTERFACE], [1], [Define to 1 if getrandom linux syscall interface is available.])],
