@@ -109,6 +109,7 @@ void SimpleRandomizer::getRandomBytes(unsigned char* buf, size_t len)
       if (rv < -1) {
         A2_LOG_ERROR(fmt("Failed to produce randomness: %d", errno));
       }
+      // getrandom is not supposed to fail, ever, so, we want to assert here.
       assert(rv >= 0 && (size_t)rv == len);
       return;
     }
