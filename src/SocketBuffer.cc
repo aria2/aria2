@@ -169,7 +169,10 @@ ssize_t SocketBuffer::send()
     if(firstlen > slen) {
       offset_ += slen;
       bufq_.front()->progressUpdate(slen, false);
-      goto fin;
+      if (socket_->wantRead() || socket_->wantWrite()) {
+        goto fin;
+      }
+      continue;
     }
 
     slen -= firstlen;
