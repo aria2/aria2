@@ -43,7 +43,7 @@ AC_DEFINE_UNQUOTED([HOST], ["$host"], [Define build-type])
 AC_DEFINE_UNQUOTED([TARGET], ["$target"], [Define target-type])
 
 # Checks for arguments.
-ARIA2_ARG_WITHOUT([libuv])
+ARIA2_ARG_WITH([libuv])
 ARIA2_ARG_WITHOUT([appletls])
 ARIA2_ARG_WITHOUT([wintls])
 ARIA2_ARG_WITHOUT([gnutls])
