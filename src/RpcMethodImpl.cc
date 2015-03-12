@@ -1163,7 +1163,7 @@ std::unique_ptr<ValueBase> GetGlobalOptionRpcMethod::process
   auto result = Dict::g();
   for(size_t i = 0, len = e->getOption()->getTable().size(); i < len; ++i) {
     PrefPtr pref = option::i2p(i);
-    if(!e->getOption()->defined(pref)) {
+    if(pref == PREF_RPC_SECRET || !e->getOption()->defined(pref)) {
       continue;
     }
     const OptionHandler* h = getOptionParser()->find(pref);
