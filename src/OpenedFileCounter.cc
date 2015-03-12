@@ -65,7 +65,7 @@ void OpenedFileCounter::ensureMaxOpenFileLimit(size_t numNewFiles)
   size_t numClose = numOpenFiles_ + numNewFiles - maxOpenFiles_;
   size_t left = numClose;
 
-  auto requestGroups = rgman_->getRequestGroups();
+  auto& requestGroups = rgman_->getRequestGroups();
 
   auto mark = std::begin(requestGroups);
   std::advance(mark,
