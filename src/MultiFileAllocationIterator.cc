@@ -41,6 +41,7 @@
 # include "FallocFileAllocationIterator.h"
 #endif // HAVE_SOME_FALLOCATE
 #include "DiskWriter.h"
+#include "DefaultDiskWriterFactory.h"
 
 namespace aria2 {
 
@@ -50,37 +51,57 @@ MultiFileAllocationIterator::MultiFileAllocationIterator
     entryItr_{std::begin(diskAdaptor_->getDiskWriterEntries())}
 {}
 
-MultiFileAllocationIterator::~MultiFileAllocationIterator() {}
+MultiFileAllocationIterator::~MultiFileAllocationIterator() {
+  if(diskWriter_) {
+    diskWriter_->closeFile();
+  }
+}
 
 void MultiFileAllocationIterator::allocateChunk()
 {
   while((!fileAllocationIterator_ ||
          fileAllocationIterator_->finished()) &&
         entryItr_ != std::end(diskAdaptor_->getDiskWriterEntries())) {
+    if (diskWriter_) {
+      diskWriter_->closeFile();
+      diskWriter_.reset();
+    }
+    fileAllocationIterator_.reset();
+    if(!(*entryItr_)->getDiskWriter()) {
+      ++entryItr_;
+      continue;
+    }
     auto& fileEntry = (*entryItr_)->getFileEntry();
+    // we use dedicated DiskWriter instead of
+    // (*entryItr_)->getDiskWriter().  This is because
+    // SingleFileAllocationIterator cannot reopen file if file is
+    // closed by OpenedFileCounter.
+    diskWriter_ =
+        DefaultDiskWriterFactory().newDiskWriter((*entryItr_)->getFilePath());
     // Open file before calling DiskWriterEntry::size().  Calling
     // private function of MultiDiskAdaptor.
-    diskAdaptor_->openIfNot((*entryItr_).get(), &DiskWriterEntry::openFile);
+    diskWriter_->openFile(fileEntry->getLength());
+
     if((*entryItr_)->needsFileAllocation() &&
        (*entryItr_)->size() < fileEntry->getLength()) {
       switch(diskAdaptor_->getFileAllocationMethod()) {
 #ifdef HAVE_SOME_FALLOCATE
       case(DiskAdaptor::FILE_ALLOC_FALLOC):
         fileAllocationIterator_ = make_unique<FallocFileAllocationIterator>
-          ((*entryItr_)->getDiskWriter().get(),
+          (diskWriter_.get(),
            (*entryItr_)->size(),
            fileEntry->getLength());
         break;
 #endif // HAVE_SOME_FALLOCATE
       case(DiskAdaptor::FILE_ALLOC_TRUNC):
         fileAllocationIterator_ = make_unique<TruncFileAllocationIterator>
-          ((*entryItr_)->getDiskWriter().get(),
+          (diskWriter_.get(),
            (*entryItr_)->size(),
            fileEntry->getLength());
         break;
       default:
         fileAllocationIterator_ = make_unique<AdaptiveFileAllocationIterator>
-          ((*entryItr_)->getDiskWriter().get(),
+          (diskWriter_.get(),
            (*entryItr_)->size(),
            fileEntry->getLength());
         break;
