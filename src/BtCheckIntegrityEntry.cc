@@ -40,6 +40,9 @@
 #include "DiskAdaptor.h"
 #include "prefs.h"
 #include "Option.h"
+#include "util.h"
+#include "SingletonHolder.h"
+#include "Notifier.h"
 
 namespace aria2 {
 
@@ -72,12 +75,17 @@ void BtCheckIntegrityEntry::onDownloadIncomplete
 void BtCheckIntegrityEntry::onDownloadFinished
 (std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
 {
+  auto group = getRequestGroup();
+  const auto& option = group->getOption();
+  util::executeHookByOptName(group, option.get(), PREF_ON_BT_DOWNLOAD_COMPLETE);
+  SingletonHolder<Notifier>::instance()->notifyDownloadEvent
+    (EVENT_ON_BT_DOWNLOAD_COMPLETE, group);
   // TODO Currently,when all the checksums
   // are valid, then aria2 goes to seeding mode. Sometimes it is better
   // to exit rather than doing seeding. So, it would be good to toggle this
   // behavior.
-  if(!getRequestGroup()->getOption()->getAsBool(PREF_HASH_CHECK_ONLY) &&
-     getRequestGroup()->getOption()->getAsBool(PREF_BT_HASH_CHECK_SEED)) {
+  if(!option->getAsBool(PREF_HASH_CHECK_ONLY) &&
+     option->getAsBool(PREF_BT_HASH_CHECK_SEED)) {
     proceedFileAllocation(commands,
                           make_unique<BtFileAllocationEntry>
                           (getRequestGroup()),
