@@ -206,8 +206,13 @@ You can use libexpat1-dev instead of libxml2-dev:
 On Fedora you need the following packages: gcc, gcc-c++, kernel-devel,
 libgcrypt-devel, libxml2-devel, openssl-devel, gettext-devel, cppunit
 
-If you downloaded source code from git repository, you have to run
-following command to generate configure script and other files
+If you downloaded source code from git repository, you have to install
+following packages to get autoconf macros:
+
+* libxml2-dev
+* libcppunit-dev
+
+And run following command to generate configure script and other files
 necessary to build the program::
 
     $ autoreconf -i
