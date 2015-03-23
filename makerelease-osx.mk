@@ -123,9 +123,9 @@ cares_confflags = "--enable-optimize=$(OPTFLAGS)"
 cares_cflags=$(LTO_FLAGS)
 cares_ldflags=$(CFLAGS) $(LTO_FLAGS)
 
-sqlite_version = autoconf-3080500
-sqlite_hash = 7f667e10ccebc26ab2086b8a30cb0a600ca0acae
-sqlite_url = http://sqlite.org/2014/sqlite-$(sqlite_version).tar.gz
+sqlite_version = autoconf-3081002
+sqlite_hash = c2f2c17d3dc4c4e179d35cc04e4420636d48a152
+sqlite_url = http://sqlite.org/2015/sqlite-$(sqlite_version).tar.gz
 sqlite_cflags=$(LTO_FLAGS)
 sqlite_ldflags=$(CFLAGS) $(LTO_FLAGS)
 
