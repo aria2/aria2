@@ -150,7 +150,7 @@
   _(" --no-file-allocation-limit=SIZE No file allocation is made for files whose\n" \
     "                              size is smaller than SIZE.\n"        \
     "                              You can append K or M(1K = 1024, 1M = 1024K).")
-# define TEXT_ENABLE_DIRECT_IO                                          \
+#define TEXT_ENABLE_DIRECT_IO                                          \
   _(" --enable-direct-io[=true|false] Enable directI/O, which lowers cpu usage while\n" \
     "                              allocating files.\n"                 \
     "                              Turn off if you encounter any error")
