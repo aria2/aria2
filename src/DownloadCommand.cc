@@ -187,7 +187,7 @@ bool DownloadCommand::executeInternal() {
                                getSocketRecvBuffer()->getBufferLength());
       bufSize = streamFilter_->getBytesProcessed();
     }
-    getSocketRecvBuffer()->shiftBuffer(bufSize);
+    getSocketRecvBuffer()->drain(bufSize);
     peerStat_->updateDownloadLength(bufSize);
     getDownloadContext()->updateDownloadLength(bufSize);
   }

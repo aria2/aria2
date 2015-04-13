@@ -39,17 +39,11 @@
 
 #include "SocketCore.h"
 #include "LogFactory.h"
-#include "a2functional.h"
 
 namespace aria2 {
 
-SocketRecvBuffer::SocketRecvBuffer
-(std::shared_ptr<SocketCore> socket,
- size_t capacity)
-  : socket_(std::move(socket)),
-    capacity_(capacity),
-    buf_(make_unique<unsigned char[]>(capacity_)),
-    bufLen_(0)
+SocketRecvBuffer::SocketRecvBuffer(std::shared_ptr<SocketCore> socket)
+  : socket_(std::move(socket)), pos_(buf_.data()), last_(pos_)
 {}
 
 SocketRecvBuffer::~SocketRecvBuffer()
@@ -57,21 +51,28 @@ SocketRecvBuffer::~SocketRecvBuffer()
 
 ssize_t SocketRecvBuffer::recv()
 {
-  size_t len = capacity_ - bufLen_;
-  if(len > 0) {
-    socket_->readData(buf_.get() + bufLen_, len);
-    bufLen_ += len;
-  } else {
+  size_t n = std::end(buf_) - last_;
+  if (n == 0) {
     A2_LOG_DEBUG("Buffer full");
+    return 0;
   }
-  return len;
+  socket_->readData(last_, n);
+  last_ += n;
+  return n;
 }
 
-void SocketRecvBuffer::shiftBuffer(size_t offset)
+void SocketRecvBuffer::drain(size_t n)
 {
-  assert(offset <= bufLen_);
-  memmove(buf_.get(), buf_.get() + offset, bufLen_ - offset);
-  bufLen_ -= offset;
+  assert(pos_ + n <= last_);
+  pos_ += n;
+  if (pos_ == last_) {
+    truncateBuffer();
+  }
+}
+
+void SocketRecvBuffer::truncateBuffer()
+{
+  pos_ = last_ = buf_.data();
 }
 
 } // namespace aria2

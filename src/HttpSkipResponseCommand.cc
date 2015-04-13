@@ -138,7 +138,7 @@ bool HttpSkipResponseCommand::executeInternal()
                                  getSocketRecvBuffer()->getBufferLength());
         bufSize = streamFilter_->getBytesProcessed();
       }
-      getSocketRecvBuffer()->shiftBuffer(bufSize);
+      getSocketRecvBuffer()->drain(bufSize);
     }
     if(totalLength_ != 0 && eof) {
       throw DL_RETRY_EX(EX_GOT_EOF);
