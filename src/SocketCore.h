@@ -69,6 +69,8 @@ private:
   static int ipDscp_;
 
   static std::vector<std::pair<sockaddr_union, socklen_t> > bindAddrs_;
+  static std::vector<std::vector<std::pair<sockaddr_union, socklen_t> > > bindAddrsList_;
+  static std::vector<std::vector<std::pair<sockaddr_union, socklen_t> > >::iterator bindAddrsListIt_;
 
   bool blocking_;
   int secure_;
@@ -334,6 +336,7 @@ public:
   // We cannot use interface as an argument because it is a reserved
   // keyword in MSVC.
   static void bindAddress(const std::string& iface);
+  static void bindAllAddress(const std::string& ifaces);
 
   friend void getInterfaceAddress
   (std::vector<std::pair<sockaddr_union, socklen_t> >& ifAddrs,

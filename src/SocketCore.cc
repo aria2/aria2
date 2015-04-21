@@ -134,6 +134,10 @@ int SocketCore::ipDscp_ = 0;
 
 std::vector<std::pair<sockaddr_union, socklen_t> >
 SocketCore::bindAddrs_;
+std::vector<std::vector<std::pair<sockaddr_union, socklen_t> > >
+SocketCore::bindAddrsList_;
+std::vector<std::vector<std::pair<sockaddr_union, socklen_t> > >::iterator
+SocketCore::bindAddrsListIt_;
 
 #ifdef ENABLE_SSL
 std::shared_ptr<TLSContext> SocketCore::clTlsContext_;
@@ -447,6 +451,13 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port,
         CLOSE(fd);
         continue;
       }
+    }
+    if(!bindAddrsList_.empty()) {
+      ++bindAddrsListIt_;
+      if (bindAddrsListIt_ == bindAddrsList_.end()) {
+        bindAddrsListIt_ = bindAddrsList_.begin();
+      }
+      bindAddrs_ = *bindAddrsListIt_;
     }
 
     sockfd_ = fd;
@@ -1057,6 +1068,37 @@ void SocketCore::bindAddress(const std::string& iface)
       A2_LOG_DEBUG(fmt("Sockets will bind to %s", host));
     }
   }
+}
+
+void SocketCore::bindAllAddress(const std::string& ifaces)
+{
+  std::vector<std::vector<std::pair<sockaddr_union, socklen_t> > > bindAddrsList;
+  std::vector<std::string> ifaceList;
+  util::split(ifaces.begin(), ifaces.end(), std::back_inserter(ifaceList), ',', true);
+  if (ifaceList.empty()) {
+    throw DL_ABORT_EX("List of interfaces is empty, one or more interfaces is required");
+  }
+  for (auto& iface: ifaceList) {
+    std::vector<std::pair<sockaddr_union, socklen_t> > bindAddrs;
+    getInterfaceAddress(bindAddrs, iface, protocolFamily_);
+    if(bindAddrs.empty()) {
+      throw DL_ABORT_EX(fmt(MSG_INTERFACE_NOT_FOUND, iface.c_str(),
+                            "not available"));
+    }
+    bindAddrsList.push_back(bindAddrs);
+    for (const auto& a: bindAddrs) {
+      char host[NI_MAXHOST];
+      int s;
+      s = getnameinfo(&a.first.sa, a.second, host, NI_MAXHOST, nullptr, 0,
+                      NI_NUMERICHOST);
+      if(s == 0) {
+        A2_LOG_DEBUG(fmt("Sockets will bind to %s", host));
+      }
+    }
+  }
+  bindAddrsList_.swap(bindAddrsList);
+  bindAddrsListIt_ = bindAddrsList_.begin();
+  bindAddrs_ = *bindAddrsListIt_;
 }
 
 void getInterfaceAddress

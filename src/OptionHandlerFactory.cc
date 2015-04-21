@@ -472,6 +472,16 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
   }
   {
     OptionHandler* op(new DefaultOptionHandler
+                      (PREF_MULTIPLE_INTERFACE,
+                       TEXT_MULTIPLE_INTERFACE,
+                       NO_DEFAULT_VALUE,
+                       "interface, IP address, hostname",
+                       OptionHandler::REQ_ARG));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
+    OptionHandler* op(new DefaultOptionHandler
                       (PREF_LOG,
                        TEXT_LOG,
                        NO_DEFAULT_VALUE,
