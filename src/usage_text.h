@@ -599,6 +599,11 @@
 #define TEXT_INTERFACE                                                  \
   _(" --interface=INTERFACE        Bind sockets to given interface. You can specify\n" \
     "                              interface name, IP address and hostname.")
+#define TEXT_MULTIPLE_INTERFACE                                         \
+  _(" --multiple-interface=INTERFACES Comma separated list of interfaces to bind\n" \
+    "                              sockets to. Requests will be splited among the\n" \
+    "                              interfaces to achieve link aggregation. You can\n" \
+    "                              specify interface name, IP address and hostname.")
 #define TEXT_DISABLE_IPV6                               \
   _(" --disable-ipv6[=true|false]  Disable IPv6.")
 #define TEXT_BT_SAVE_METADATA                                           \

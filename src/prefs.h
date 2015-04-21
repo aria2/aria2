@@ -244,6 +244,8 @@ extern PrefPtr PREF_ON_DOWNLOAD_COMPLETE;
 extern PrefPtr PREF_ON_DOWNLOAD_ERROR;
 // value: string
 extern PrefPtr PREF_INTERFACE;
+// value: string
+extern PrefPtr PREF_MULTIPLE_INTERFACE;
 // value: true | false
 extern PrefPtr PREF_DISABLE_IPV6;
 // value: true | false
