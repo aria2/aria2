@@ -1336,6 +1336,14 @@ Advanced Options
   Possible Values: ``SSLv3``, ``TLSv1``, ``TLSv1.1``, ``TLSv1.2``
   Default: ``TLSv1``
 
+.. option:: --multiple-interface=<INTERFACES>
+
+  Comma separated list of interfaces to bind sockets to. Requests will
+  be splited among the interfaces to achieve link aggregation. You can
+  specify interface name, IP address and hostname. If
+  :option:`--interface` is used, this option will be ignored.
+  Possible Values: interface, IP address, hostname
+
 .. option:: --log-level=<LEVEL>
 
   Set log level to output.
