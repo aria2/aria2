@@ -13,11 +13,10 @@ addons:
     - autoconf
     - automake
     - autotools-dev
+    - autopoint
     - libtool
     - pkg-config
-    - libgnutls-dev
-    - nettle-dev
-    - libgmp-dev
+    - libssl-dev
     - libc-ares-dev
     - libxml2-dev
     - zlib1g-dev
@@ -34,4 +33,5 @@ before_script:
   - ./configure
 script:
   - make
-  - make check
+# libcppunit-dev has not been white listed yet.
+#  - make check
