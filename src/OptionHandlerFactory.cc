@@ -1512,7 +1512,9 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
                        NO_DESCRIPTION,
                        util::getHomeDir()+"/.netrc",
                        PATH_TO_FILE));
-    op->hide();
+    op->setInitialOption(true);
+    op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   // Proxy options
