@@ -225,8 +225,6 @@
   _(" -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads.")
 #define TEXT_NO_NETRC                                           \
   _(" -n, --no-netrc[=true|false]  Disables netrc support.")
-#define TEXT_NETRC_PATH                                           \
-  _(" -n, --netrc-path=FILE        Specify the path to the netrc file.")
 #define TEXT_INPUT_FILE                                                 \
   _(" -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n" \
     "                              multiple URIs for a single entity: separate\n" \
