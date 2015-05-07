@@ -1,10 +1,10 @@
 {% if READTHEDOCS %}
 {# Add rst-badge after rst-versions for small badge style. #}
-  <div class="rst-versions" data-toggle="rst-versions">
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
-      <span class="icon icon-book"> Read the Docs</span>
-      v: {{ current_version }} 
-      <span class="icon icon-caret-down"></span>
+      <span class="fa fa-book"> Read the Docs</span>
+      v: {{ current_version }}
+      <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
       <dl>
