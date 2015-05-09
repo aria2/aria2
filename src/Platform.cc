@@ -56,6 +56,10 @@
 # include <ares.h>
 #endif // ENABLE_ASYNC_DNS
 
+#ifdef HAVE_LIBSSH2
+# include <libssh2.h>
+#endif // HAVE_LIBSSH2
+
 #include "a2netcompat.h"
 #include "DlAbortEx.h"
 #include "message.h"
@@ -149,6 +153,15 @@ bool Platform::setUp()
   }
 #endif // CARES_HAVE_ARES_LIBRARY_INIT
 
+#ifdef HAVE_LIBSSH2
+  {
+    auto rv = libssh2_init(0);
+    if (rv != 0) {
+      throw DL_ABORT_EX(fmt("libssh2_init() failed, code: %d", rv));
+    }
+  }
+#endif // HAVE_LIBSSH2
+
 #ifdef HAVE_WINSOCK2_H
   WSADATA wsaData;
   memset(reinterpret_cast<char*>(&wsaData), 0, sizeof(wsaData));
@@ -180,6 +193,10 @@ bool Platform::tearDown()
 #ifdef CARES_HAVE_ARES_LIBRARY_CLEANUP
   ares_library_cleanup();
 #endif // CARES_HAVE_ARES_LIBRARY_CLEANUP
+
+#ifdef HAVE_LIBSSH2
+  libssh2_exit();
+#endif // HAVE_LIBSSH2
 
 #ifdef HAVE_WINSOCK2_H
   WSACleanup();
