@@ -55,6 +55,10 @@ class TLSContext;
 class TLSSession;
 #endif // ENABLE_SSL
 
+#ifdef HAVE_LIBSSH2
+class SSHSession;
+#endif // HAVE_LIBSSH2
+
 class SocketCore {
   friend bool operator==(const SocketCore& s1, const SocketCore& s2);
   friend bool operator!=(const SocketCore& s1, const SocketCore& s2);
@@ -94,6 +98,12 @@ private:
    */
   bool tlsHandshake(TLSContext* tlsctx, const std::string& hostname);
 #endif // ENABLE_SSL
+
+#ifdef HAVE_LIBSSH2
+  std::unique_ptr<SSHSession> sshSession_;
+
+  void sshCheckDirection();
+#endif // HAVE_LIBSSH2
 
   void init();
 
@@ -289,6 +299,22 @@ public:
   // supplied.
   bool tlsConnect(const std::string& hostname);
 #endif // ENABLE_SSL
+
+#ifdef HAVE_LIBSSH2
+  // Performs SSH handshake
+  bool sshHandshake();
+  // Performs SSH authentication using username and password.
+  bool sshAuthPassword(const std::string& user, const std::string& password);
+  // Starts sftp session and open remote file |path|.
+  bool sshSFTPOpen(const std::string& path);
+  // Closes sftp remote file gracefully
+  bool sshSFTPClose();
+  // Gets total length and modified time for remote file currently
+  // opened.  |path| is used for logging.
+  bool sshSFTPStat(int64_t& totalLength, time_t& mtime,
+                   const std::string& path);
+  bool sshGracefulShutdown();
+#endif // HAVE_LIBSSH2
 
   bool operator==(const SocketCore& s) {
     return sockfd_ == s.sockfd_;

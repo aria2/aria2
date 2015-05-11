@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2015 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,49 +32,68 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "FtpTunnelResponseCommand.h"
-#include "FtpNegotiationCommand.h"
+#include "SftpDownloadCommand.h"
 #include "Request.h"
-#include "HttpConnection.h"
-#include "HttpRequest.h"
-#include "Segment.h"
 #include "SocketCore.h"
+#include "Segment.h"
+#include "DownloadEngine.h"
+#include "RequestGroup.h"
+#include "Option.h"
+#include "FileEntry.h"
 #include "SocketRecvBuffer.h"
-#ifdef HAVE_LIBSSH2
-# include "SftpNegotiationCommand.h"
-#endif // HAVE_LIBSSH2
+#include "AuthConfig.h"
+#include "SftpFinishDownloadCommand.h"
 
 namespace aria2 {
 
-FtpTunnelResponseCommand::FtpTunnelResponseCommand
+SftpDownloadCommand::SftpDownloadCommand
 (cuid_t cuid,
  const std::shared_ptr<Request>& req,
  const std::shared_ptr<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
- const std::shared_ptr<HttpConnection>& httpConnection,
  DownloadEngine* e,
- const std::shared_ptr<SocketCore>& s)
-  :AbstractProxyResponseCommand(cuid, req, fileEntry, requestGroup,
-                                httpConnection,e, s)
-{}
-
-FtpTunnelResponseCommand::~FtpTunnelResponseCommand() {}
-
-std::unique_ptr<Command> FtpTunnelResponseCommand::getNextCommand()
+ const std::shared_ptr<SocketCore>& socket,
+ std::unique_ptr<AuthConfig> authConfig)
+  : DownloadCommand(cuid, req, fileEntry, requestGroup, e, socket,
+                    std::make_shared<SocketRecvBuffer>(socket)),
+    authConfig_(std::move(authConfig))
 {
-#ifdef HAVE_LIBSSH2
-  if (getRequest()->getProtocol() == "sftp") {
-    return make_unique<SftpNegotiationCommand>
-      (getCuid(), getRequest(), getFileEntry(),
-       getRequestGroup(), getDownloadEngine(),
-       getSocket());
-  }
-#endif // HAVE_LIBSSH2
+  setWriteCheckSocket(getSocket());
+}
 
-  return make_unique<FtpNegotiationCommand>
-    (getCuid(), getRequest(), getFileEntry(),
-     getRequestGroup(), getDownloadEngine(),
-     getSocket());
+SftpDownloadCommand::~SftpDownloadCommand() {}
+
+bool SftpDownloadCommand::prepareForNextSegment()
+{
+  if(getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION) &&
+     getFileEntry()->gtoloff(getSegments().front()->getPositionToWrite()) ==
+     getFileEntry()->getLength()) {
+
+    auto c = make_unique<SftpFinishDownloadCommand>
+      (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
+       getDownloadEngine(), getSocket());
+
+    c->setStatus(Command::STATUS_ONESHOT_REALTIME);
+    getDownloadEngine()->setNoWait(true);
+    getDownloadEngine()->addCommand(std::move(c));
+
+    if(getRequestGroup()->downloadFinished()) {
+      // To run checksum checking, we had to call following function here.
+      DownloadCommand::prepareForNextSegment();
+    }
+    return true;
+  }
+
+  return DownloadCommand::prepareForNextSegment();
+}
+
+int64_t SftpDownloadCommand::getRequestEndOffset() const
+{
+  return getFileEntry()->getLength();
+}
+
+bool SftpDownloadCommand::shouldEnableWriteCheck() {
+  return getSocket()->wantWrite() || !getSocket()->wantRead();
 }
 
 } // namespace aria2

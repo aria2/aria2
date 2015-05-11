@@ -76,6 +76,12 @@ protected:
 
   // This is file local offset
   virtual int64_t getRequestEndOffset() const = 0;
+
+  // Returns true if socket should be monitored for writing.  The
+  // default implementation is return the return value of
+  // getSocket()->wantWrite().
+  virtual bool shouldEnableWriteCheck();
+
 public:
   DownloadCommand(cuid_t cuid,
                   const std::shared_ptr<Request>& req,

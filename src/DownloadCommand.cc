@@ -134,6 +134,7 @@ bool DownloadCommand::executeInternal() {
      || getRequestGroup()->doesDownloadSpeedExceed()) {
     addCommandSelf();
     disableReadCheckSocket();
+    disableWriteCheckSocket();
     return false;
   }
   setReadCheckSocket(getSocket());
@@ -195,7 +196,8 @@ bool DownloadCommand::executeInternal() {
   // Note that GrowSegment::complete() always returns false.
   if(sinkFilterOnly_) {
     if(segment->complete() ||
-       segment->getPositionToWrite() == getFileEntry()->getLastOffset()) {
+       (getFileEntry()->getLength() != 0 &&
+        segment->getPositionToWrite() == getFileEntry()->getLastOffset())) {
       segmentPartComplete = true;
     } else if(segment->getLength() == 0 && eof) {
       segmentPartComplete = true;
@@ -275,11 +277,15 @@ bool DownloadCommand::executeInternal() {
     return prepareForNextSegment();
   } else {
     checkLowestDownloadSpeed();
-    setWriteCheckSocketIf(getSocket(), getSocket()->wantWrite());
+    setWriteCheckSocketIf(getSocket(), shouldEnableWriteCheck());
     checkSocketRecvBuffer();
     addCommandSelf();
     return false;
   }
+}
+
+bool DownloadCommand::shouldEnableWriteCheck() {
+  return getSocket()->wantWrite();
 }
 
 void DownloadCommand::checkLowestDownloadSpeed() const

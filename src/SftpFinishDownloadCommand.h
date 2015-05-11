@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2015 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,49 +32,28 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "FtpTunnelResponseCommand.h"
-#include "FtpNegotiationCommand.h"
-#include "Request.h"
-#include "HttpConnection.h"
-#include "HttpRequest.h"
-#include "Segment.h"
-#include "SocketCore.h"
-#include "SocketRecvBuffer.h"
-#ifdef HAVE_LIBSSH2
-# include "SftpNegotiationCommand.h"
-#endif // HAVE_LIBSSH2
+#ifndef D_SFTP_FINISH_DOWNLOAD_COMMAND_H
+#define D_SFTP_FINISH_DOWNLOAD_COMMAND_H
+
+#include "AbstractCommand.h"
 
 namespace aria2 {
 
-FtpTunnelResponseCommand::FtpTunnelResponseCommand
-(cuid_t cuid,
- const std::shared_ptr<Request>& req,
- const std::shared_ptr<FileEntry>& fileEntry,
- RequestGroup* requestGroup,
- const std::shared_ptr<HttpConnection>& httpConnection,
- DownloadEngine* e,
- const std::shared_ptr<SocketCore>& s)
-  :AbstractProxyResponseCommand(cuid, req, fileEntry, requestGroup,
-                                httpConnection,e, s)
-{}
+class SftpFinishDownloadCommand : public AbstractCommand {
+protected:
+  virtual bool execute() CXX11_OVERRIDE;
 
-FtpTunnelResponseCommand::~FtpTunnelResponseCommand() {}
-
-std::unique_ptr<Command> FtpTunnelResponseCommand::getNextCommand()
-{
-#ifdef HAVE_LIBSSH2
-  if (getRequest()->getProtocol() == "sftp") {
-    return make_unique<SftpNegotiationCommand>
-      (getCuid(), getRequest(), getFileEntry(),
-       getRequestGroup(), getDownloadEngine(),
-       getSocket());
-  }
-#endif // HAVE_LIBSSH2
-
-  return make_unique<FtpNegotiationCommand>
-    (getCuid(), getRequest(), getFileEntry(),
-     getRequestGroup(), getDownloadEngine(),
-     getSocket());
-}
+  virtual bool executeInternal() CXX11_OVERRIDE;
+public:
+  SftpFinishDownloadCommand(cuid_t cuid,
+                            const std::shared_ptr<Request>& req,
+                            const std::shared_ptr<FileEntry>& fileEntry,
+                            RequestGroup* requestGroup,
+                            DownloadEngine* e,
+                            const std::shared_ptr<SocketCore>& socket);
+  virtual ~SftpFinishDownloadCommand();
+};
 
 } // namespace aria2
+
+#endif // D_SFTP_FINISH_DOWNLOAD_COMMAND_H

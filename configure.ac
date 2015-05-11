@@ -58,6 +58,7 @@ ARIA2_ARG_WITHOUT([libcares])
 ARIA2_ARG_WITHOUT([libz])
 ARIA2_ARG_WITH([tcmalloc])
 ARIA2_ARG_WITH([jemalloc])
+ARIA2_ARG_WITHOUT([libssh2])
 
 ARIA2_ARG_DISABLE([ssl])
 ARIA2_ARG_DISABLE([bittorrent])
@@ -294,6 +295,20 @@ if test "x$with_sqlite3" = "xyes"; then
     AC_MSG_WARN([$SQLITE3_PKG_ERRORS])
     if test "x$with_sqlite3_requested" = "xyes"; then
       ARIA2_DEP_NOT_MET([sqlite3])
+    fi
+  fi
+fi
+
+if test "x$with_libssh2" = "xyes"; then
+  PKG_CHECK_MODULES([LIBSSH2], [libssh2], [have_libssh2=yes], [have_libssh2=no])
+  if test "x$have_libssh2" = "xyes"; then
+    AC_DEFINE([HAVE_LIBSSH2], [1], [Define to 1 if you have libssh2.])
+    LIBS="$LIBSSH2_LIBS $LIBS"
+    CPPFLAGS="$LIBSSH2_CFLAGS $CPPFLAGS"
+  else
+    AC_MSG_WARN([$LIBSSH2_PKG_ERRORS])
+    if test "x$with_libssh2_requested" = "yes"; then
+      ARIA2_DEP_NOT_MET([libssh2])
     fi
   fi
 fi
@@ -612,6 +627,9 @@ AM_CONDITIONAL([HAVE_ZLIB], [test "x$have_zlib" = "xyes"])
 
 # Set conditional for sqlite3
 AM_CONDITIONAL([HAVE_SQLITE3], [test "x$have_sqlite3" = "xyes"])
+
+# Set conditional for libssh2
+AM_CONDITIONAL([HAVE_LIBSSH2], [test "x$have_libssh2" = "xyes"])
 
 AC_SEARCH_LIBS([clock_gettime], [rt])
 
@@ -1062,6 +1080,7 @@ echo "LibXML2:        $have_libxml2"
 echo "LibExpat:       $have_libexpat"
 echo "LibCares:       $have_libcares"
 echo "Zlib:           $have_zlib"
+echo "Libssh2:        $have_libssh2"
 echo "Epoll:          $have_epoll"
 echo "Bittorrent:     $enable_bittorrent"
 echo "Metalink:       $enable_metalink"
