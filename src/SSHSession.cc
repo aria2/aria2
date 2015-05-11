@@ -107,12 +107,30 @@ int SSHSession::gracefulShutdown()
   return SSH_ERR_OK;
 }
 
+int SSHSession::sftpClose()
+{
+  if (!sftph_) {
+    return SSH_ERR_OK;
+  }
+
+  auto rv = libssh2_sftp_close(sftph_);
+  if (rv == LIBSSH2_ERROR_EAGAIN) {
+    return SSH_ERR_WOULDBLOCK;
+  }
+  if (rv != 0) {
+    return SSH_ERR_ERROR;
+  }
+  sftph_ = nullptr;
+  return SSH_ERR_OK;
+}
+
 int SSHSession::init(sock_t sockfd)
 {
   ssh2_ = libssh2_session_init();
   if (!ssh2_) {
     return SSH_ERR_ERROR;
   }
+  libssh2_session_set_blocking(ssh2_, 0);
   fd_ = sockfd;
   return SSH_ERR_OK;
 }
@@ -191,6 +209,21 @@ int SSHSession::sftpOpen(const std::string& path)
       return SSH_ERR_ERROR;
     }
   }
+  return SSH_ERR_OK;
+}
+
+int SSHSession::sftpStat(int64_t& totalLength, time_t& mtime)
+{
+  LIBSSH2_SFTP_ATTRIBUTES attrs;
+  auto rv = libssh2_sftp_fstat_ex(sftph_, &attrs, 0);
+  if (rv == LIBSSH2_ERROR_EAGAIN) {
+    return SSH_ERR_WOULDBLOCK;
+  }
+  if (rv != 0) {
+    return SSH_ERR_ERROR;
+  }
+  totalLength = attrs.filesize;
+  mtime = attrs.mtime;
   return SSH_ERR_OK;
 }
 

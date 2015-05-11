@@ -60,6 +60,10 @@
 #include "FtpNegotiationConnectChain.h"
 #include "FtpTunnelRequestConnectChain.h"
 #include "HttpRequestConnectChain.h"
+#ifdef HAVE_LIBSSH2
+# include "SftpNegotiationConnectChain.h"
+# include "SftpNegotiationCommand.h"
+#endif // HAVE_LIBSSH2
 
 namespace aria2 {
 
@@ -82,6 +86,7 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandProxied
   std::shared_ptr<SocketCore> pooledSocket;
   std::string proxyMethod = resolveProxyMethod(getRequest()->getProtocol());
 
+  // sftp always use tunnel mode
   if(proxyMethod == V_GET) {
     pooledSocket = getDownloadEngine()->popPooledSocket
       (getRequest()->getHost(), getRequest()->getPort(),
@@ -180,30 +185,45 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandPlain
     getSocket()->establishConnection(addr, port);
     getRequest()->setConnectedAddrInfo(hostname, addr, port);
     auto c = make_unique<ConnectCommand>(getCuid(),
-                                          getRequest(),
-                                          nullptr,
-                                          getFileEntry(),
-                                          getRequestGroup(),
-                                          getDownloadEngine(),
-                                          getSocket());
+                                         getRequest(),
+                                         nullptr,
+                                         getFileEntry(),
+                                         getRequestGroup(),
+                                         getDownloadEngine(),
+                                         getSocket());
 
-    c->setControlChain(std::make_shared<FtpNegotiationConnectChain>());
+    if(getRequest()->getProtocol() == "sftp") {
+      c->setControlChain(std::make_shared<SftpNegotiationConnectChain>());
+    } else {
+      c->setControlChain(std::make_shared<FtpNegotiationConnectChain>());
+    }
     setupBackupConnection(hostname, addr, port, c.get());
     return std::move(c);
   }
 
-  // options contains "baseWorkingDir"
-  auto command = make_unique<FtpNegotiationCommand>
-    (getCuid(),
-      getRequest(),
-      getFileEntry(),
-      getRequestGroup(),
-      getDownloadEngine(),
-      pooledSocket,
-      FtpNegotiationCommand::SEQ_SEND_CWD_PREP,
-      options);
   setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
-  return std::move(command);
+
+  if (getRequest()->getProtocol() == "sftp") {
+    return make_unique<SftpNegotiationCommand>
+      (getCuid(),
+       getRequest(),
+       getFileEntry(),
+       getRequestGroup(),
+       getDownloadEngine(),
+       pooledSocket,
+       SftpNegotiationCommand::SEQ_SFTP_OPEN);
+  }
+
+  // options contains "baseWorkingDir"
+  return make_unique<FtpNegotiationCommand>
+    (getCuid(),
+     getRequest(),
+     getFileEntry(),
+     getRequestGroup(),
+     getDownloadEngine(),
+     pooledSocket,
+     FtpNegotiationCommand::SEQ_SEND_CWD_PREP,
+     options);
 }
 
 std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommand

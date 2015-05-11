@@ -100,8 +100,27 @@ public:
   // blocks, or SSH_ERR_ERROR.
   int handshake();
 
+  // Performs authentication using username and password.  This
+  // function returns SSH_ERR_OK if it succeeds, or SSH_ERR_WOULDBLOCK
+  // if the underlying transport blocks, or SSH_ERR_ERROR.
   int authPassword(const std::string& user, const std::string& password);
+
+  // Starts SFTP session and opens remote file |path|.  This function
+  // returns SSH_ERR_OK if it succeeds, or SSH_ERR_WOULDBLOCK if the
+  // underlying transport blocks, or SSH_ERR_ERROR.
   int sftpOpen(const std::string& path);
+
+  // Closes remote file opened by sftpOpen().  This function returns
+  // SSH_ERR_OK if it succeeds, or SSH_ERR_WOULDBLOCK if the
+  // underlying transport blocks, or SSH_ERR_ERROR.
+  int sftpClose();
+
+  // Gets total length and modified time of opened file by sftpOpen().
+  // On success, total length and modified time are assigned to
+  // |totalLength| and |mtime|.  This function returns SSH_ERR_OK if
+  // it succeeds, or SSH_ERR_WOULDBLOCK if the underlying transport
+  // blocks, or SSH_ERR_ERROR.
+  int sftpStat(int64_t& totalLength, time_t& mtime);
 
   // Returns last error string
   std::string getLastErrorString();

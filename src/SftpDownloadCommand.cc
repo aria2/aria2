@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2015 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,63 +32,68 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "InitiateConnectionCommandFactory.h"
-#include "HttpInitiateConnectionCommand.h"
-#include "FtpInitiateConnectionCommand.h"
+#include "SftpDownloadCommand.h"
 #include "Request.h"
-#include "RequestGroup.h"
-#include "DownloadEngine.h"
-#include "DlAbortEx.h"
-#include "fmt.h"
-#include "Option.h"
-#include "prefs.h"
 #include "SocketCore.h"
+#include "Segment.h"
+#include "DownloadEngine.h"
+#include "RequestGroup.h"
+#include "Option.h"
+#include "FileEntry.h"
 #include "SocketRecvBuffer.h"
+#include "AuthConfig.h"
+#include "SftpFinishDownloadCommand.h"
 
 namespace aria2 {
 
-std::unique_ptr<Command>
-InitiateConnectionCommandFactory::createInitiateConnectionCommand
+SftpDownloadCommand::SftpDownloadCommand
 (cuid_t cuid,
  const std::shared_ptr<Request>& req,
  const std::shared_ptr<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
- DownloadEngine* e)
+ DownloadEngine* e,
+ const std::shared_ptr<SocketCore>& socket,
+ std::unique_ptr<AuthConfig> authConfig)
+  : DownloadCommand(cuid, req, fileEntry, requestGroup, e, socket,
+                    std::make_shared<SocketRecvBuffer>(socket)),
+    authConfig_(std::move(authConfig))
 {
-  if(req->getProtocol() == "http"
-#ifdef ENABLE_SSL
-     // for SSL
-     || req->getProtocol() == "https"
-#endif // ENABLE_SSL
-     ) {
+  setWriteCheckSocket(getSocket());
+}
 
-    if(requestGroup->getOption()->getAsBool(PREF_ENABLE_HTTP_KEEP_ALIVE)) {
-      req->setKeepAliveHint(true);
-    }
-    if(requestGroup->getOption()->getAsBool(PREF_ENABLE_HTTP_PIPELINING)) {
-      req->setPipeliningHint(true);
-    }
+SftpDownloadCommand::~SftpDownloadCommand() {}
 
-    return make_unique<HttpInitiateConnectionCommand>(cuid, req, fileEntry,
-                                                      requestGroup, e);
-  } else if(req->getProtocol() == "ftp"
-#ifdef HAVE_LIBSSH2
-            || req->getProtocol() == "sftp"
-#endif // HAVE_LIBSSH2
-            ) {
-    if(req->getFile().empty()) {
-      throw DL_ABORT_EX
-        (fmt("FTP/SFTP URI %s doesn't contain file path.",
-             req->getUri().c_str()));
+bool SftpDownloadCommand::prepareForNextSegment()
+{
+  if(getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION) &&
+     getFileEntry()->gtoloff(getSegments().front()->getPositionToWrite()) ==
+     getFileEntry()->getLength()) {
+
+    auto c = make_unique<SftpFinishDownloadCommand>
+      (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
+       getDownloadEngine(), getSocket());
+
+    c->setStatus(Command::STATUS_ONESHOT_REALTIME);
+    getDownloadEngine()->setNoWait(true);
+    getDownloadEngine()->addCommand(std::move(c));
+
+    if(getRequestGroup()->downloadFinished()) {
+      // To run checksum checking, we had to call following function here.
+      DownloadCommand::prepareForNextSegment();
     }
-    return make_unique<FtpInitiateConnectionCommand>(cuid, req, fileEntry,
-                                                     requestGroup, e);
-  } else {
-    // these protocols are not supported yet
-    throw DL_ABORT_EX
-      (fmt("%s is not supported yet.",
-           req->getProtocol().c_str()));
+    return true;
   }
+
+  return DownloadCommand::prepareForNextSegment();
+}
+
+int64_t SftpDownloadCommand::getRequestEndOffset() const
+{
+  return getFileEntry()->getLength();
+}
+
+bool SftpDownloadCommand::shouldEnableWriteCheck() {
+  return getSocket()->wantWrite() || !getSocket()->wantRead();
 }
 
 } // namespace aria2

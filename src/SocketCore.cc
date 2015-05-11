@@ -1050,6 +1050,46 @@ bool SocketCore::sshSFTPOpen(const std::string& path)
   return true;
 }
 
+bool SocketCore::sshSFTPClose()
+{
+  assert(sshSession_);
+
+  wantRead_ = false;
+  wantWrite_ = false;
+
+  auto rv = sshSession_->sftpClose();
+  if (rv == SSH_ERR_WOULDBLOCK) {
+    sshCheckDirection();
+    return false;
+  }
+  if (rv == SSH_ERR_ERROR) {
+    throw DL_ABORT_EX(fmt("SSH closing SFTP failed: %s",
+                          sshSession_->getLastErrorString().c_str()));
+  }
+  return true;
+}
+
+bool SocketCore::sshSFTPStat(int64_t& totalLength, time_t& mtime,
+                             const std::string& path)
+{
+  assert(sshSession_);
+
+  wantRead_ = false;
+  wantWrite_ = false;
+
+  auto rv = sshSession_->sftpStat(totalLength, mtime);
+  if (rv == SSH_ERR_WOULDBLOCK) {
+    sshCheckDirection();
+    return false;
+  }
+  if (rv == SSH_ERR_ERROR) {
+    throw DL_ABORT_EX(fmt("SSH stat SFTP path %s filed: %s",
+                          path.c_str(),
+                          sshSession_->getLastErrorString().c_str()));
+  }
+  return true;
+}
+
 bool SocketCore::sshGracefulShutdown()
 {
   assert(sshSession_);

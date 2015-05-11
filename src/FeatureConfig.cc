@@ -80,6 +80,8 @@ uint16_t getDefaultPort(const std::string& protocol)
     return 443;
   } else if(protocol == "ftp") {
     return 21;
+  } else if(protocol == "sftp") {
+    return 22;
   } else {
     return 0;
   }

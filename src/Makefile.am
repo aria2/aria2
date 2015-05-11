@@ -428,7 +428,11 @@ SRCS += \
 endif # HAVE_SQLITE3
 
 if HAVE_LIBSSH2
-SRCS += SSHSession.cc SSHSession.h
+SRCS += SSHSession.cc SSHSession.h \
+	SftpNegotiationCommand.cc SftpNegotiationCommand.h \
+	SftpNegotiationConnectChain.h \
+	SftpDownloadCommand.cc SftpDownloadCommand.h \
+	SftpFinishDownloadCommand.cc SftpFinishDownloadCommand.h
 endif # HAVE_LIBSSH2
 
 if ENABLE_ASYNC_DNS

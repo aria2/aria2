@@ -301,9 +301,18 @@ public:
 #endif // ENABLE_SSL
 
 #ifdef HAVE_LIBSSH2
+  // Performs SSH handshake
   bool sshHandshake();
+  // Performs SSH authentication using username and password.
   bool sshAuthPassword(const std::string& user, const std::string& password);
+  // Starts sftp session and open remote file |path|.
   bool sshSFTPOpen(const std::string& path);
+  // Closes sftp remote file gracefully
+  bool sshSFTPClose();
+  // Gets total length and modified time for remote file currently
+  // opened.  |path| is used for logging.
+  bool sshSFTPStat(int64_t& totalLength, time_t& mtime,
+                   const std::string& path);
   bool sshGracefulShutdown();
 #endif // HAVE_LIBSSH2
 
