@@ -67,7 +67,9 @@
 #ifdef HAVE_SYS_UTSNAME_H
 # include <sys/utsname.h>
 #endif // HAVE_SYS_UTSNAME_H
-
+#ifdef HAVE_LIBSSH2
+# include <libssh2.h>
+#endif // HAVE_LIBSSH2
 #include "util.h"
 
 namespace aria2 {
@@ -168,6 +170,14 @@ const char* strSupportedFeature(int feature)
 #endif // !ENABLE_XML_RPC
     break;
 
+  case(FEATURE_SFTP):
+#ifdef HAVE_LIBSSH2
+    return "SFTP";
+#else // !HAVE_LIBSSH2
+    return nullptr;
+#endif // !HAVE_LIBSSH2
+    break;
+
   default:
     return nullptr;
   }
@@ -223,6 +233,11 @@ std::string usedLibs()
 #ifdef HAVE_LIBCARES
   res += "c-ares/" ARES_VERSION_STR " ";
 #endif // HAVE_LIBCARES
+
+#ifdef HAVE_LIBSSH2
+  res += "libssh2/" LIBSSH2_VERSION " ";
+#endif // HAVE_LIBSSH2
+
   if(!res.empty()) {
     res.erase(res.length()-1);
   }
