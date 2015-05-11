@@ -40,6 +40,7 @@
 #include "Segment.h"
 #include "SocketCore.h"
 #include "SocketRecvBuffer.h"
+#include "SftpNegotiationCommand.h"
 
 namespace aria2 {
 
@@ -59,6 +60,13 @@ FtpTunnelResponseCommand::~FtpTunnelResponseCommand() {}
 
 std::unique_ptr<Command> FtpTunnelResponseCommand::getNextCommand()
 {
+  if (getRequest()->getProtocol() == "sftp") {
+    return make_unique<SftpNegotiationCommand>
+      (getCuid(), getRequest(), getFileEntry(),
+       getRequestGroup(), getDownloadEngine(),
+       getSocket());
+  }
+
   return make_unique<FtpNegotiationCommand>
     (getCuid(), getRequest(), getFileEntry(),
      getRequestGroup(), getDownloadEngine(),

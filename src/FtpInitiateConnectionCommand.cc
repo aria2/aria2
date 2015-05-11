@@ -132,17 +132,30 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandProxied
 
   setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
   if(proxyMethod == V_TUNNEL) {
+    if (getRequest()->getProtocol() == "sftp") {
+      return make_unique<SftpNegotiationCommand>
+        (getCuid(),
+         getRequest(),
+         getFileEntry(),
+         getRequestGroup(),
+         getDownloadEngine(),
+         pooledSocket,
+         SftpNegotiationCommand::SEQ_SFTP_OPEN);
+    }
+
     // options contains "baseWorkingDir"
     return make_unique<FtpNegotiationCommand>
       (getCuid(),
-        getRequest(),
-        getFileEntry(),
-        getRequestGroup(),
-        getDownloadEngine(),
-        pooledSocket,
-        FtpNegotiationCommand::SEQ_SEND_CWD_PREP,
-        options);
+       getRequest(),
+       getFileEntry(),
+       getRequestGroup(),
+       getDownloadEngine(),
+       pooledSocket,
+       FtpNegotiationCommand::SEQ_SEND_CWD_PREP,
+       options);
   }
+
+  assert(getRequest()->getProtocol() == "ftp");
 
   if(proxyMethod != V_GET) {
     assert(0);
