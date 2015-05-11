@@ -33,10 +33,10 @@ Features
 Here is a list of features:
 
 * Command-line interface
-* Download files through HTTP(S)/FTP/BitTorrent
+* Download files through HTTP(S)/FTP/SFTP/BitTorrent
 * Segmented downloading
-* Metalink version 4 (RFC 5854) support(HTTP/FTP/BitTorrent)
-* Metalink version 3.0 support(HTTP/FTP/BitTorrent)
+* Metalink version 4 (RFC 5854) support(HTTP/FTP/SFTP/BitTorrent)
+* Metalink version 3.0 support(HTTP/FTP/SFTP/BitTorrent)
 * Metalink/HTTP (RFC 6249) support
 * HTTP/1.1 implementation
 * HTTP Proxy support
@@ -54,7 +54,7 @@ Here is a list of features:
 * Save Cookies in the Mozilla/Firefox (1.x/2.x)/Netscape format.
 * Custom HTTP Header support
 * Persistent Connections support
-* FTP through HTTP Proxy
+* FTP/SFTP through HTTP Proxy
 * Download/Upload speed throttling
 * BitTorrent extensions: Fast extension, DHT, PEX, MSE/PSE,
   Multi-Tracker, UDP tracker
@@ -98,6 +98,7 @@ Dependency
 features                  dependency
 ======================== ========================================
 HTTPS                    OSX or GnuTLS or OpenSSL or Windows
+SFTP                     libssh2
 BitTorrent               None. Optional: libnettle+libgmp or libgcrypt
                          or OpenSSL (see note)
 Metalink                 libxml2 or Expat.
@@ -183,6 +184,7 @@ distribution you use):
 * libgnutls-dev    (Required for HTTPS, BitTorrent, Checksum support)
 * nettle-dev       (Required for BitTorrent, Checksum support)
 * libgmp-dev       (Required for BitTorrent)
+* libssh2-1-dev    (Required for SFTP support)
 * libc-ares-dev    (Required for async DNS support)
 * libxml2-dev      (Required for Metalink support)
 * zlib1g-dev       (Required for gzip, deflate decoding support in HTTP)
@@ -454,9 +456,9 @@ Other things should be noted
 Metalink
 --------
 
-The current implementation supports HTTP(S)/FTP/BitTorrent.  The other
-P2P protocols are ignored. Both Metalink4 (RFC 5854) and Metalink
-version 3.0 documents are supported.
+The current implementation supports HTTP(S)/FTP/SFTP/BitTorrent.  The
+other P2P protocols are ignored. Both Metalink4 (RFC 5854) and
+Metalink version 3.0 documents are supported.
 
 For checksum verification, md5, sha-1, sha-224, sha-256, sha-384 and
 sha-512 are supported. If multiple hash algorithms are provided, aria2
@@ -502,9 +504,10 @@ which location you prefer, you can use ``--metalink-location`` option.
 
 netrc
 -----
-netrc support is enabled by default for HTTP(S)/FTP.  To disable netrc
-support, specify -n command-line option.  Your .netrc file should have
-correct permissions(600).
+
+netrc support is enabled by default for HTTP(S)/FTP/SFTP.  To disable
+netrc support, specify -n command-line option.  Your .netrc file
+should have correct permissions(600).
 
 WebSocket
 ---------
