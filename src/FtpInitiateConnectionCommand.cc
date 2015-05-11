@@ -132,6 +132,7 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandProxied
 
   setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
   if(proxyMethod == V_TUNNEL) {
+#ifdef HAVE_LIBSSH2
     if (getRequest()->getProtocol() == "sftp") {
       return make_unique<SftpNegotiationCommand>
         (getCuid(),
@@ -142,6 +143,7 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandProxied
          pooledSocket,
          SftpNegotiationCommand::SEQ_SFTP_OPEN);
     }
+#endif // HAVE_LIBSSH2
 
     // options contains "baseWorkingDir"
     return make_unique<FtpNegotiationCommand>
@@ -206,7 +208,11 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandPlain
                                          getSocket());
 
     if(getRequest()->getProtocol() == "sftp") {
+#ifdef HAVE_LIBSSH2
       c->setControlChain(std::make_shared<SftpNegotiationConnectChain>());
+#else // !HAVE_LIBSSH2
+      assert(0);
+#endif // !HAVE_LIBSSH2
     } else {
       c->setControlChain(std::make_shared<FtpNegotiationConnectChain>());
     }
@@ -216,6 +222,7 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandPlain
 
   setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
 
+#ifdef HAVE_LIBSSH2
   if (getRequest()->getProtocol() == "sftp") {
     return make_unique<SftpNegotiationCommand>
       (getCuid(),
@@ -226,6 +233,7 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandPlain
        pooledSocket,
        SftpNegotiationCommand::SEQ_SFTP_OPEN);
   }
+#endif // HAVE_LIBSSH2
 
   // options contains "baseWorkingDir"
   return make_unique<FtpNegotiationCommand>
