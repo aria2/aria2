@@ -9,16 +9,21 @@ DESCRIPTION
 -----------
 
 aria2 is a utility for downloading files. The supported protocols are
-HTTP(S), FTP, BitTorrent, and Metalink. aria2 can download a file from
-multiple sources/protocols and tries to utilize your maximum download
-bandwidth. It supports downloading a file from HTTP(S)/FTP and
-BitTorrent at the same time, while the data downloaded from
-HTTP(S)/FTP is uploaded to the BitTorrent swarm. Using Metalink
+HTTP(S), FTP, SFTP, BitTorrent, and Metalink. aria2 can download a
+file from multiple sources/protocols and tries to utilize your maximum
+download bandwidth. It supports downloading a file from HTTP(S)/FTP
+/SFTP and BitTorrent at the same time, while the data downloaded from
+HTTP(S)/FTP/SFTP is uploaded to the BitTorrent swarm. Using Metalink
 chunk checksums, aria2 automatically validates chunks of data while
 downloading a file.
 
 OPTIONS
 -------
+
+.. note::
+
+  Most FTP related options are applicable to SFTP as well.
+  Some options are not effective against SFTP (e.g., :option:`--ftp-pasv`)
 
 Basic Options
 ~~~~~~~~~~~~~
@@ -84,8 +89,9 @@ Basic Options
    ``#checksum``, ``#experimental``, ``#deprecated``, ``#help``, ``#all``
    Default: ``#basic``
 
-HTTP/FTP Options
-~~~~~~~~~~~~~~~~
+HTTP/FTP/SFTP Options
+~~~~~~~~~~~~~~~~~~~~~
+
 .. option:: --all-proxy=<PROXY>
 
   Use a proxy server for all protocols.  To override a previously
@@ -520,8 +526,8 @@ HTTP Specific Options
   Set user agent for HTTP(S) downloads.
   Default: ``aria2/$VERSION``, $VERSION is replaced by package version.
 
-FTP Specific Options
-~~~~~~~~~~~~~~~~~~~~
+FTP/SFTP Specific Options
+~~~~~~~~~~~~~~~~~~~~~~~~~
 .. option:: --ftp-user=<USER>
 
   Set FTP user. This affects all URIs.
@@ -542,6 +548,10 @@ FTP Specific Options
   If ``false`` is given, the active mode will be used.
   Default: ``true``
 
+  .. note::
+
+    This option is ignored for SFTP transfer.
+
 .. option:: --ftp-proxy=<PROXY>
 
   Use a proxy server for FTP.  To override a previously defined proxy,
@@ -561,6 +571,10 @@ FTP Specific Options
 
   Set FTP transfer type. TYPE is either ``binary`` or ``ascii``.
   Default: ``binary``
+
+  .. note::
+
+    This option is ignored for SFTP transfer.
 
 .. option:: --ftp-reuse-connection[=true|false]
 
@@ -1587,12 +1601,12 @@ treated as a separate download. Both Metalink4 and Metalink version
 3.0 are supported.
 
 You can specify both torrent file with -T option and URIs. By doing
-this, you can download a file from both torrent swarm and HTTP(S)/FTP
-server at the same time, while the data from HTTP(S)/FTP are uploaded
-to the torrent swarm.  For single file torrents, URI can be a complete
-URI pointing to the resource or if URI ends with /, name in torrent
-file in torrent is added. For multi-file torrents, name and path are
-added to form a URI for each file.
+this, you can download a file from both torrent swarm and
+HTTP(S)/FTP/SFTP server at the same time, while the data from
+HTTP(S)/FTP/SFTP are uploaded to the torrent swarm.  For single file
+torrents, URI can be a complete URI pointing to the resource or if URI
+ends with /, name in torrent file in torrent is added. For multi-file
+torrents, name and path are added to form a URI for each file.
 
 .. note::
 
@@ -1623,15 +1637,14 @@ occurred. Currently following options are available:
 
 aria2 passes 3 arguments to specified command when it is executed.
 These arguments are: GID, the number of files and file path.  For
-HTTP, FTP downloads, usually the number of files is 1.  BitTorrent
-download can contain multiple files.
-If number of files is more than one, file path is first one.  In
-other words, this is the value of path key of first struct whose
-selected key is true in the response of :func:`aria2.getFiles`
-RPC method.
-If you want to get all file paths, consider to use JSON-RPC/XML-RPC.  Please
-note that file path may change during download in HTTP because of
-redirection or Content-Disposition header.
+HTTP, FTP, and SFTP downloads, usually the number of files is 1.
+BitTorrent download can contain multiple files.  If number of files is
+more than one, file path is first one.  In other words, this is the
+value of path key of first struct whose selected key is true in the
+response of :func:`aria2.getFiles` RPC method.  If you want to get all
+file paths, consider to use JSON-RPC/XML-RPC.  Please note that file
+path may change during download in HTTP because of redirection or
+Content-Disposition header.
 
 Let's see an example of how arguments are passed to command:
 
@@ -1835,9 +1848,9 @@ the path ``$HOME/.aria2/dht6.dat``.
 Netrc
 ~~~~~
 
-Netrc support is enabled by default for HTTP(S)/FTP.  To disable netrc
-support, specify :option:`--no-netrc <-n>` option.  Your .netrc file should have correct
-permissions(600).
+Netrc support is enabled by default for HTTP(S)/FTP/SFTP.  To disable
+netrc support, specify :option:`--no-netrc <-n>` option.  Your .netrc
+file should have correct permissions(600).
 
 If machine name starts ``.``, aria2 performs domain-match instead of
 exact match. This is an extension of aria2. For example of domain
@@ -2164,19 +2177,19 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
 
 .. function:: aria2.addUri([secret], uris[, options[, position]])
 
-  This method adds a new download. *uris* is an array of HTTP/FTP/BitTorrent
-  URIs (strings) pointing to the same resource.  If you mix URIs pointing to
-  different resources, then the download may fail or be corrupted without aria2
-  complaining.
-  When adding BitTorrent Magnet URIs, *uris* must have only one element and it
-  should be BitTorrent Magnet URI.
-  *options* is a struct and its members are pairs of option name and value.
-  See :ref:`rpc_options` below for more details.
-  If *position* is given, it must be an integer starting from 0. The new
-  download will be inserted at *position* in the waiting queue. If
-  *position* is omitted or *position* is larger than the current size of the
-  queue, the new download is appended to the end of the queue.
-  This method returns the GID of the newly registered download.
+  This method adds a new download. *uris* is an array of
+  HTTP/FTP/SFTP/BitTorrent URIs (strings) pointing to the same
+  resource.  If you mix URIs pointing to different resources, then the
+  download may fail or be corrupted without aria2 complaining.  When
+  adding BitTorrent Magnet URIs, *uris* must have only one element and
+  it should be BitTorrent Magnet URI.  *options* is a struct and its
+  members are pairs of option name and value.  See :ref:`rpc_options`
+  below for more details.  If *position* is given, it must be an
+  integer starting from 0. The new download will be inserted at
+  *position* in the waiting queue. If *position* is omitted or
+  *position* is larger than the current size of the queue, the new
+  download is appended to the end of the queue.  This method returns
+  the GID of the newly registered download.
 
   **JSON-RPC Example**
 
@@ -2783,9 +2796,9 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
 
 .. function:: aria2.getServers([secret], gid)
 
-  This method returns currently connected HTTP(S)/FTP servers of the download
-  denoted by *gid* (string). The response is an array of structs and contains
-  the following keys. Values are strings.
+  This method returns currently connected HTTP(S)/FTP/SFTP servers of
+  the download denoted by *gid* (string). The response is an array of
+  structs and contains the following keys. Values are strings.
 
   ``index``
     Index of the file, starting at 1, in the same order as files appear in the
