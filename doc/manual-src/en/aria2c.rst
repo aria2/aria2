@@ -1767,6 +1767,12 @@ based on the last error encountered.
 30
   If aria2 could not parse JSON-RPC request.
 
+31
+  Reserved.  Not used.
+
+32
+  If checksum validation failed.
+
 .. note::
 
   An error occurred in a finished download will not be reported

@@ -74,7 +74,8 @@ enum Value {
   OPTION_ERROR = 28,
   HTTP_SERVICE_UNAVAILABLE = 29,
   JSON_PARSE_ERROR = 30,
-  REMOVED = 31
+  REMOVED = 31,
+  CHECKSUM_ERROR = 32,
 };
 
 } // namespace error_code
