@@ -106,7 +106,9 @@ FtpNegotiationCommand::FtpNegotiationCommand
 FtpNegotiationCommand::~FtpNegotiationCommand() {}
 
 bool FtpNegotiationCommand::executeInternal() {
-  while(processSequence(getSegments().front()));
+  auto segment = getSegments().empty() ?
+    std::shared_ptr<Segment>() : getSegments().front();
+  while(processSequence(segment));
   if(sequence_ == SEQ_RETRY) {
     return prepareForRetry(0);
   } else if(sequence_ == SEQ_NEGOTIATION_COMPLETED) {
