@@ -81,7 +81,6 @@ SftpNegotiationCommand::SftpNegotiationCommand
 
 {
   path_ = getPath();
-  disableReadCheckSocket();
   setWriteCheckSocket(getSocket());
 }
 
@@ -108,7 +107,7 @@ bool SftpNegotiationCommand::executeInternal() {
                        getCuid()));
       sequence_ = SEQ_SFTP_OPEN;
       break;
-    case SEQ_SFTP_OPEN: {
+    case SEQ_SFTP_OPEN:
       if (!getSocket()->sshSFTPOpen(path_)) {
         goto again;
       }
@@ -116,7 +115,6 @@ bool SftpNegotiationCommand::executeInternal() {
                        path_.c_str()));
       sequence_ = SEQ_SFTP_STAT;
       break;
-    }
     case SEQ_SFTP_STAT: {
       int64_t totalLength;
       time_t mtime;
@@ -134,12 +132,26 @@ bool SftpNegotiationCommand::executeInternal() {
       } else {
         getRequestGroup()->validateTotalLength(getFileEntry()->getLength(),
                                                totalLength);
-        sequence_ = SEQ_NEGOTIATION_COMPLETED;
+        sequence_ = SEQ_SFTP_SEEK;
       }
       break;
     }
-    case SEQ_FILE_PREPARATION:
+    case SEQ_SFTP_SEEK: {
       sequence_ = SEQ_NEGOTIATION_COMPLETED;
+      if (getSegments().empty()) {
+        break;
+      }
+
+      auto& segment = getSegments().front();
+
+      A2_LOG_INFO(fmt("CUID#%" PRId64 " - SFTP seek to %" PRId64,
+                      getCuid(), segment->getPositionToWrite()));
+      getSocket()->sshSFTPSeek(segment->getPositionToWrite());
+
+      break;
+    }
+    case SEQ_FILE_PREPARATION:
+      sequence_ = SEQ_SFTP_SEEK;
       disableReadCheckSocket();
       disableWriteCheckSocket();
       return false;

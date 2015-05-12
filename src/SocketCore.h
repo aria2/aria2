@@ -313,6 +313,8 @@ public:
   // opened.  |path| is used for logging.
   bool sshSFTPStat(int64_t& totalLength, time_t& mtime,
                    const std::string& path);
+  // Seeks file position to |pos|.
+  void sshSFTPSeek(int64_t pos);
   bool sshGracefulShutdown();
 #endif // HAVE_LIBSSH2
 

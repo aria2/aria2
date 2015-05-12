@@ -91,8 +91,10 @@ bool InitiateConnectionCommand::executeInternal() {
     return false;
   }
   try {
-    getDownloadEngine()->addCommand(createNextCommand(hostname, ipaddr, port,
-                                                      addrs, proxyRequest));
+    auto c = createNextCommand(hostname, ipaddr, port, addrs, proxyRequest);
+    c->setStatus(Command::STATUS_ONESHOT_REALTIME);
+    getDownloadEngine()->setNoWait(true);
+    getDownloadEngine()->addCommand(std::move(c));
     return true;
   } catch(RecoverableException& ex) {
     // Catch exception and retry another address.

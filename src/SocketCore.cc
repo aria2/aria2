@@ -1090,6 +1090,13 @@ bool SocketCore::sshSFTPStat(int64_t& totalLength, time_t& mtime,
   return true;
 }
 
+void SocketCore::sshSFTPSeek(int64_t pos)
+{
+  assert(sshSession_);
+
+  sshSession_->sftpSeek(pos);
+}
+
 bool SocketCore::sshGracefulShutdown()
 {
   assert(sshSession_);

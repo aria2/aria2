@@ -84,7 +84,14 @@ bool SftpDownloadCommand::prepareForNextSegment()
     return true;
   }
 
-  return DownloadCommand::prepareForNextSegment();
+  auto rv = DownloadCommand::prepareForNextSegment();
+  if (rv) {
+    return true;
+  }
+  // sftp may not get incoming data.  Enable write check to make this
+  // command invoke.
+  setWriteCheckSocket(getSocket());
+  return false;
 }
 
 int64_t SftpDownloadCommand::getRequestEndOffset() const

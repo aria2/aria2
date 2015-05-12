@@ -227,6 +227,11 @@ int SSHSession::sftpStat(int64_t& totalLength, time_t& mtime)
   return SSH_ERR_OK;
 }
 
+void SSHSession::sftpSeek(int64_t pos)
+{
+  libssh2_sftp_seek64(sftph_, pos);
+}
+
 std::string SSHSession::getLastErrorString()
 {
   if (!ssh2_) {
