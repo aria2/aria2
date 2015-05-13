@@ -107,14 +107,6 @@ if test "x$AR" = "x:"; then
 fi
 AC_SUBST([AR])
 
-AC_PATH_PROG([A2X], [a2x])
-AC_SUBST([A2X])
-AM_CONDITIONAL([HAVE_A2X], [ test "x$A2X" != "x" ])
-
-AC_PATH_PROG([ASCIIDOC], [asciidoc])
-AC_SUBST([ASCIIDOC])
-AM_CONDITIONAL([HAVE_ASCIIDOC], [ test "x$ASCIIDOC" != "x" ])
-
 AC_PATH_PROGS([SPHINXBUILD], [sphinx-build])
 AC_SUBST([SPHINXBUILD])
 AM_CONDITIONAL([HAVE_SPHINXBUILD], [ test "x$SPHINXBUILD" != "x" ])
