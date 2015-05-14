@@ -190,6 +190,17 @@ HTTP/FTP/SFTP Options
   1 source.  You can append ``K`` or ``M`` (1K = 1024, 1M = 1024K).
   Possible Values: ``1M`` -``1024M`` Default: ``20M``
 
+
+.. option:: --netrc-path=<FILE>
+
+   Specify the path to the netrc file.
+   Default: ``$(HOME)/.netrc``
+
+   .. note::
+
+       Permission of the .netrc file must be 600.  Otherwise, the file
+       will be ignored.
+
 .. option:: -n, --no-netrc[=true|false]
 
   Disables netrc support. netrc support is enabled by default.
