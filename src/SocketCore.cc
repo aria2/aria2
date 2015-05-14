@@ -808,8 +808,8 @@ void SocketCore::readData(void* data, size_t& len)
   wantRead_ = false;
   wantWrite_ = false;
 
-  if(sshSession_) {
 #ifdef HAVE_LIBSSH2
+  if(sshSession_) {
     ret = sshSession_->readData(data, len);
     if(ret < 0) {
       if(ret != SSH_ERR_WOULDBLOCK) {
@@ -823,8 +823,10 @@ void SocketCore::readData(void* data, size_t& len)
       }
       ret = 0;
     }
-#endif // HAVE_LIBSSH2
   } else if(!secure_) {
+#else
+    if(!secure_) {
+#endif // HAVE_LIBSSH2
     // Cast for Windows recv()
     while((ret = recv(sockfd_, reinterpret_cast<char*>(data), len, 0)) == -1 &&
           SOCKET_ERRNO == A2_EINTR);
