@@ -1509,10 +1509,9 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
   {
     OptionHandler* op(new DefaultOptionHandler
                       (PREF_NETRC_PATH,
-                       NO_DESCRIPTION,
+                       TEXT_NETRC_PATH,
                        util::getHomeDir()+"/.netrc",
                        PATH_TO_FILE));
-    op->hide();
     handlers.push_back(op);
   }
   // Proxy options
