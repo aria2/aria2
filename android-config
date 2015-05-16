@@ -44,12 +44,12 @@ PATH=$TOOLCHAIN/bin:$PATH
     --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` \
     --disable-nls \
     --without-gnutls \
-    --with-openssl --with-openssl-prefix=$PREFIX \
+    --with-openssl \
     --without-sqlite3 \
     --without-libxml2 \
-    --with-libexpat --with-libexpat-prefix=$PREFIX \
-    --with-libcares --with-libcares-prefix=$PREFIX \
-    --with-libz --with-libz-prefix=$PREFIX \
+    --with-libexpat \
+    --with-libcares \
+    --with-libz \
     --with-libssh2 \
     CXXFLAGS="-Os -g" \
     CFLAGS="-Os -g" \
