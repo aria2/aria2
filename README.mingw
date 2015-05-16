@@ -17,6 +17,7 @@ necessary. The linked libraries are:
 * sqlite 3.8.8.2
 * zlib 1.2.8
 * c-ares 1.10.0 with the dns.patch [1] applied
+* libssh2 1.5.0
 
 [1] http://c-ares.haxx.se/mail/c-ares-archive-2014-05/0008.shtml
 

@@ -309,6 +309,7 @@ following libraries have been built for cross-compile:
 * expat
 * sqlite3
 * zlib
+* libssh2
 * cppunit
 
 Some environment variables can be adjusted to change build settings:
