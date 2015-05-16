@@ -50,13 +50,16 @@ PATH=$TOOLCHAIN/bin:$PATH
     --with-libexpat --with-libexpat-prefix=$PREFIX \
     --with-libcares --with-libcares-prefix=$PREFIX \
     --with-libz --with-libz-prefix=$PREFIX \
+    --with-libssh2 \
     CXXFLAGS="-Os -g" \
     CFLAGS="-Os -g" \
     CPPFLAGS="-fPIE" \
     LDFLAGS="-fPIE -pie -L$PREFIX/lib" \
     PKG_CONFIG_LIBDIR="$PREFIX/lib/pkgconfig" \
     ZLIB_LIBS="-lz" \
-    ZLIB_CFLAGS="-I$TOOLCHAIN/sysroot/usr/include"
+    ZLIB_CFLAGS="-I$TOOLCHAIN/sysroot/usr/include" \
+    LIBSSH2_LIBS="-lssh2" \
+    LIBSSH2_CFLAGS="-I$TOOLCHAIN/sysroot/usr/include"
 
 # ZLIB_LIBS and ZLIB_CFLAGS are needed because aria2 configure script
 # checks zlib availability using pkg-config, but android toochain does

@@ -291,20 +291,6 @@ if test "x$with_sqlite3" = "xyes"; then
   fi
 fi
 
-if test "x$with_libssh2" = "xyes"; then
-  PKG_CHECK_MODULES([LIBSSH2], [libssh2], [have_libssh2=yes], [have_libssh2=no])
-  if test "x$have_libssh2" = "xyes"; then
-    AC_DEFINE([HAVE_LIBSSH2], [1], [Define to 1 if you have libssh2.])
-    LIBS="$LIBSSH2_LIBS $LIBS"
-    CPPFLAGS="$LIBSSH2_CFLAGS $CPPFLAGS"
-  else
-    AC_MSG_WARN([$LIBSSH2_PKG_ERRORS])
-    if test "x$with_libssh2_requested" = "yes"; then
-      ARIA2_DEP_NOT_MET([libssh2])
-    fi
-  fi
-fi
-
 case "$host" in
   *darwin*)
     have_osx="yes"
@@ -473,6 +459,20 @@ if test "x$have_openssl" != "xyes"; then
       AC_DEFINE([HAVE_LIBGCRYPT], [1], [Define to 1 if you have libgcrypt.])
       LIBS="$LIBGCRYPT_LIBS $LIBS"
       CPPFLAGS="$LIBGCRYPT_CFLAGS $CPPFLAGS"
+    fi
+  fi
+fi
+
+if test "x$with_libssh2" = "xyes"; then
+  PKG_CHECK_MODULES([LIBSSH2], [libssh2], [have_libssh2=yes], [have_libssh2=no])
+  if test "x$have_libssh2" = "xyes"; then
+    AC_DEFINE([HAVE_LIBSSH2], [1], [Define to 1 if you have libssh2.])
+    LIBS="$LIBSSH2_LIBS $LIBS"
+    CPPFLAGS="$LIBSSH2_CFLAGS $CPPFLAGS"
+  else
+    AC_MSG_WARN([$LIBSSH2_PKG_ERRORS])
+    if test "x$with_libssh2_requested" = "xyes"; then
+      ARIA2_DEP_NOT_MET([libssh2])
     fi
   fi
 fi
