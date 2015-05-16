@@ -302,7 +302,7 @@ public:
 
 #ifdef HAVE_LIBSSH2
   // Performs SSH handshake
-  bool sshHandshake();
+  bool sshHandshake(const std::string& hashType, const std::string& digest);
   // Performs SSH authentication using username and password.
   bool sshAuthPassword(const std::string& user, const std::string& password);
   // Starts sftp session and open remote file |path|.

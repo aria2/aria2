@@ -68,7 +68,10 @@ private:
   std::unique_ptr<AuthConfig> authConfig_;
   // remote file path
   std::string path_;
-
+  // expected host's public key message digest: hash type and digest
+  // (raw binary value).
+  std::string hashType_;
+  std::string digest_;
 protected:
   virtual bool executeInternal() CXX11_OVERRIDE;
 

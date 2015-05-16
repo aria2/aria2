@@ -177,10 +177,19 @@ public:
   ChecksumOptionHandler(PrefPtr pref,
                         const char* description,
                         char shortName = 0);
+  ChecksumOptionHandler(PrefPtr pref,
+                        const char* description,
+                        std::vector<std::string> acceptableTypes,
+                        char shortName = 0);
   virtual ~ChecksumOptionHandler();
   virtual void parseArg(Option& option, const std::string& optarg) const
     CXX11_OVERRIDE;
   virtual std::string createPossibleValuesString() const CXX11_OVERRIDE;
+
+private:
+  // message digest type acceptable for this option.  Empty means that
+  // it accepts all supported types.
+  std::vector<std::string> acceptableTypes_;
 };
 
 class ParameterOptionHandler : public AbstractOptionHandler {

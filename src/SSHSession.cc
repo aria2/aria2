@@ -36,6 +36,8 @@
 
 #include <cassert>
 
+#include "MessageDigest.h"
+
 namespace aria2 {
 
 SSHSession::SSHSession()
@@ -172,8 +174,23 @@ int SSHSession::handshake()
   if (rv != 0) {
     return SSH_ERR_ERROR;
   }
-  // TODO we have to validate server's fingerprint
   return SSH_ERR_OK;
+}
+
+std::string SSHSession::hostkeyMessageDigest(const std::string& hashType) {
+  int h;
+  if (hashType == "sha-1") {
+    h = LIBSSH2_HOSTKEY_HASH_SHA1;
+  } else if (hashType == "md5") {
+    h = LIBSSH2_HOSTKEY_HASH_MD5;
+  } else {
+    return "";
+  }
+  auto fingerprint = libssh2_hostkey_hash(ssh2_, h);
+  if (!fingerprint) {
+    return "";
+  }
+  return std::string(fingerprint, MessageDigest::getDigestLength(hashType));
 }
 
 int SSHSession::authPassword(const std::string& user,

@@ -1030,3 +1030,13 @@
     "                              If true is given, deny legacy BitTorrent\n" \
     "                              handshake and only use Obfuscation handshake and\n" \
     "                              always encrypt message payload.")
+#define TEXT_SSH_HOST_KEY_MD                                            \
+  _(" --ssh-host-key-md=TYPE=DIGEST\n"                                  \
+    "                              Set checksum for SSH host public key. TYPE is\n" \
+    "                              hash type. The supported hash type is sha-1 or\n" \
+    "                              md5. DIGEST is hex digest. For example:\n" \
+    "                              sha-1=b030503d4de4539dc7885e6f0f5e256704edf4c3\n" \
+    "                              This option can be used to validate server's\n" \
+    "                              public key when SFTP is used. If this option is\n" \
+    "                              not set, which is default, no validation takes\n" \
+    "                              place.")

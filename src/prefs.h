@@ -324,6 +324,8 @@ extern PrefPtr PREF_FTP_TYPE;
 extern PrefPtr PREF_FTP_PASV;
 // values: true | false
 extern PrefPtr PREF_FTP_REUSE_CONNECTION;
+// values: hashType=digest
+extern PrefPtr PREF_SSH_HOST_KEY_MD;
 
 /**
  * HTTP related preferences

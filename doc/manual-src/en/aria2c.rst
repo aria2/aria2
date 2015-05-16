@@ -592,6 +592,15 @@ FTP/SFTP Specific Options
   Reuse connection in FTP.
   Default: ``true``
 
+.. option:: --ssh-host-key-md=<TYPE>=<DIGEST>
+
+  Set checksum for SSH host public key. TYPE is hash type. The
+  supported hash type is ``sha-1`` or ``md5``. DIGEST is hex
+  digest. For example:
+  ``sha-1=b030503d4de4539dc7885e6f0f5e256704edf4c3``.  This option can
+  be used to validate server's public key when SFTP is used. If this
+  option is not set, which is default, no validation takes place.
+
 BitTorrent/Metalink Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. option:: --select-file=<INDEX>...
@@ -2030,6 +2039,7 @@ of URIs. These optional lines must start with white space(s).
   * :option:`seed-time <--seed-time>`
   * :option:`select-file <--select-file>`
   * :option:`split <-s>`
+  * :option:`ssh-host-key-md <--ssh-host-key-md>`
   * :option:`stream-piece-selector <--stream-piece-selector>`
   * :option:`timeout <-t>`
   * :option:`uri-selector <--uri-selector>`

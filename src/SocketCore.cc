@@ -989,7 +989,8 @@ bool SocketCore::tlsHandshake(TLSContext* tlsctx, const std::string& hostname)
 
 #ifdef HAVE_LIBSSH2
 
-bool SocketCore::sshHandshake()
+bool SocketCore::sshHandshake(const std::string& hashType,
+                              const std::string& digest)
 {
   wantRead_ = false;
   wantWrite_ = false;
@@ -1008,6 +1009,19 @@ bool SocketCore::sshHandshake()
   if (rv == SSH_ERR_ERROR) {
     throw DL_ABORT_EX(fmt("SSH handshake failure: %s",
                           sshSession_->getLastErrorString().c_str()));
+  }
+  if (!hashType.empty()) {
+    auto actualDigest = sshSession_->hostkeyMessageDigest(hashType);
+    if (actualDigest.empty()) {
+      throw DL_ABORT_EX(fmt("Empty host key fingerprint from SSH layer: "
+                            "perhaps hash type %s is not supported?",
+                            hashType.c_str()));
+    }
+    if (digest != actualDigest) {
+      throw DL_ABORT_EX(fmt("Unexpected SSH host key: expected %s, actual %s",
+                            util::toHex(digest).c_str(),
+                            util::toHex(actualDigest).c_str()));
+    }
   }
   return true;
 }

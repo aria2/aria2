@@ -82,6 +82,14 @@ SftpNegotiationCommand::SftpNegotiationCommand
 {
   path_ = getPath();
   setWriteCheckSocket(getSocket());
+
+  const std::string& checksum = getOption()->get(PREF_SSH_HOST_KEY_MD);
+  if (!checksum.empty()) {
+    auto p = util::divide(std::begin(checksum), std::end(checksum), '=');
+    hashType_.assign(p.first.first, p.first.second);
+    util::lowercase(hashType_);
+    digest_ = util::fromHex(p.second.first, p.second.second);
+  }
 }
 
 SftpNegotiationCommand::~SftpNegotiationCommand() {}
@@ -92,7 +100,7 @@ bool SftpNegotiationCommand::executeInternal() {
     switch(sequence_) {
     case SEQ_HANDSHAKE:
       setReadCheckSocket(getSocket());
-      if (!getSocket()->sshHandshake()) {
+      if (!getSocket()->sshHandshake(hashType_, digest_)) {
         goto again;
       }
       A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - SSH handshake success", getCuid()));

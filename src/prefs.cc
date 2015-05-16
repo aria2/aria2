@@ -387,6 +387,8 @@ PrefPtr PREF_FTP_TYPE = makePref("ftp-type");
 PrefPtr PREF_FTP_PASV = makePref("ftp-pasv");
 // values: true | false
 PrefPtr PREF_FTP_REUSE_CONNECTION = makePref("ftp-reuse-connection");
+// values: hashType=digest
+PrefPtr PREF_SSH_HOST_KEY_MD = makePref("ssh-host-key-md");
 
 /**
  * HTTP related preferences

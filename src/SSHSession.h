@@ -100,6 +100,10 @@ public:
   // blocks, or SSH_ERR_ERROR.
   int handshake();
 
+  // Returns message digest of host's public key.  |hashType| must be
+  // either "sha-1" or "md5".
+  std::string hostkeyMessageDigest(const std::string& hashType);
+
   // Performs authentication using username and password.  This
   // function returns SSH_ERR_OK if it succeeds, or SSH_ERR_WOULDBLOCK
   // if the underlying transport blocks, or SSH_ERR_ERROR.

@@ -373,6 +373,16 @@ ChecksumOptionHandler::ChecksumOptionHandler
                           OptionHandler::REQ_ARG, shortName)
 {}
 
+ChecksumOptionHandler::ChecksumOptionHandler
+(PrefPtr pref,
+ const char* description,
+ std::vector<std::string> acceptableTypes,
+ char shortName)
+  : AbstractOptionHandler(pref, description, NO_DEFAULT_VALUE,
+                          OptionHandler::REQ_ARG, shortName),
+    acceptableTypes_(std::move(acceptableTypes))
+{}
+
 ChecksumOptionHandler::~ChecksumOptionHandler() {}
 
 void ChecksumOptionHandler::parseArg(Option& option, const std::string& optarg)
@@ -380,6 +390,12 @@ void ChecksumOptionHandler::parseArg(Option& option, const std::string& optarg)
 {
   auto p = util::divide(std::begin(optarg), std::end(optarg), '=');
   std::string hashType(p.first.first, p.first.second);
+  if(!acceptableTypes_.empty() &&
+     std::find(std::begin(acceptableTypes_), std::end(acceptableTypes_),
+               hashType) == std::end(acceptableTypes_)) {
+    throw DL_ABORT_EX(fmt("Checksum type %s is not acceptable",
+                          hashType.c_str()));
+  }
   std::string hexDigest(p.second.first, p.second.second);
   util::lowercase(hashType);
   util::lowercase(hexDigest);
