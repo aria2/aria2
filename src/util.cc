@@ -1114,6 +1114,7 @@ ssize_t parse_content_disposition(char *dest, size_t destlen,
     }
   }
   switch(state) {
+  case CD_BEFORE_DISPOSITION_PARM_NAME:
   case CD_BEFORE_DISPOSITION_TYPE:
   case CD_AFTER_DISPOSITION_TYPE:
   case CD_DISPOSITION_TYPE:
