@@ -53,6 +53,7 @@ case "$1" in
 	build "--without-libxml2 --without-libexpat" "noxml"
 	build "--without-libz" "nozlib"
 	build "--without-sqlite3" "nosqlite3"
+	build "--without-libssh2" "nolibssh2"
 	# Feature combinations
 	build "--disable-bittorrent" "nobt"
 	build "--disable-metalink" "noml"
