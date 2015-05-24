@@ -60,5 +60,6 @@ case "$1" in
 	build "--disable-bittorrent --disable-metalink" "nobt_noml"
 	build "--disable-epoll" "noepoll"
 	build "--disable-epoll --without-libcares" "noepoll_nocares"
+	build "--enable-libaria2" "libaria2"
 	;;
 esac
