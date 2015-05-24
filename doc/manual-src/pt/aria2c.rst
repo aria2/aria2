@@ -16,6 +16,12 @@ SINOPSE
 DESCRIÇÃO
 ---------
 
+.. warning::
+
+   This translation has been outdated quite sometime now, and lacks
+   many recent changes.  Please consult English version manual for
+   updated information.
+
 Observação: Para executar o aria2 em um terminal ou no prompt da
 linha de comando do windows, utilize o comando aria2c.
 
