@@ -299,12 +299,12 @@ void SftpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
       poolConnection();
       return;
     }
-    checkIntegrityEntry->pushNextCommand(std::unique_ptr<Command>(this));
     // We have to make sure that command that has Request object must
     // have segment after PieceStorage is initialized. See
     // AbstractCommand::execute()
     getSegmentMan()->getSegmentWithIndex(getCuid(), 0);
 
+    checkIntegrityEntry->pushNextCommand(std::unique_ptr<Command>(this));
     prepareForNextAction(std::move(checkIntegrityEntry));
 
     disableReadCheckSocket();
