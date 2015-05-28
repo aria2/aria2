@@ -101,6 +101,7 @@ FtpNegotiationCommand::FtpNegotiationCommand
   if(seq == SEQ_RECV_GREETING) {
     setTimeout(getOption()->getAsInt(PREF_CONNECT_TIMEOUT));
   }
+  setWriteCheckSocket(getSocket());
 }
 
 FtpNegotiationCommand::~FtpNegotiationCommand() {}
