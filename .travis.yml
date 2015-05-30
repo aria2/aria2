@@ -21,6 +21,7 @@ addons:
     - libxml2-dev
     - zlib1g-dev
     - libsqlite3-dev
+    - libssh2-1-dev
     - libcppunit-dev
 before_install:
   - $CC --version
@@ -32,6 +33,4 @@ before_script:
   - autoconf
   - ./configure
 script:
-  - make
-# libcppunit-dev has not been white listed yet.
-#  - make check
+  - make check
