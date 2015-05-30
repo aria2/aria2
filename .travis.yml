@@ -1,0 +1,36 @@
+language: cpp
+compiler:
+  - clang
+  - gcc
+sudo: false
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-4.9
+    - libstdc++-4.9-dev
+    - autoconf
+    - automake
+    - autotools-dev
+    - autopoint
+    - libtool
+    - pkg-config
+    - libssl-dev
+    - libc-ares-dev
+    - libxml2-dev
+    - zlib1g-dev
+    - libsqlite3-dev
+    - libssh2-1-dev
+    - libcppunit-dev
+before_install:
+  - $CC --version
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
+  - $CC --version
+before_script:
+  - autoreconf -i
+  - automake
+  - autoconf
+  - ./configure
+script:
+  - make check
