@@ -1336,6 +1336,37 @@ std::string getHomeDir()
 }
 #endif // __MINGW32__
 
+std::string getXDGDir(const std::string& environmentVariable,
+                      const std::string& fallbackDirectory)
+{
+  std::string filename;
+  const char* p = getenv(environmentVariable.c_str());
+  if (p && p[0] == '/') {
+    filename = p;
+  } else {
+    filename = fallbackDirectory;
+  }
+  return filename;
+}
+
+std::string getConfigFile() {
+  std::string filename = getHomeDir() + "/.aria2/aria2.conf";
+  if (!File(filename).exists()) {
+      filename = getXDGDir("XDG_CONFIG_HOME", getHomeDir()+"/.config") +
+                 "/aria2/aria2.conf";
+  }
+  return filename;
+}
+
+std::string getDHTFile(bool ipv6) {
+  std::string filename = getHomeDir() + (ipv6 ? "/.aria2/dht6.dat" : "/.aria2/dht.dat");
+  if (!File(filename).exists()) {
+  filename = getXDGDir("XDG_CACHE_HOME", getHomeDir()+"/.cache") +
+             (ipv6 ? "/aria2/dht6.dat" : "/aria2/dht.dat");
+  }
+  return filename;
+}
+
 int64_t getRealSize(const std::string& sizeWithUnit)
 {
   std::string::size_type p = sizeWithUnit.find_first_of("KMkm");

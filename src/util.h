@@ -349,6 +349,13 @@ void setGlobalSignalHandler(int signal, sigset_t* mask,
 
 std::string getHomeDir();
 
+std::string getXDGDir(const std::string& environmentVariable,
+                      const std::string& fallbackDirectory);
+
+std::string getConfigFile();
+
+std::string getDHTFile(bool ipv6);
+
 int64_t getRealSize(const std::string& sizeWithUnit);
 
 std::string abbrevSize(int64_t size);

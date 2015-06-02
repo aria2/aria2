@@ -174,7 +174,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     OptionHandler* op(new DefaultOptionHandler
                       (PREF_CONF_PATH,
                        TEXT_CONF_PATH,
-                       util::getHomeDir()+"/.aria2/aria2.conf",
+                       util::getConfigFile(),
                        PATH_TO_FILE));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
@@ -2043,7 +2043,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     OptionHandler* op(new DefaultOptionHandler
                       (PREF_DHT_FILE_PATH,
                        TEXT_DHT_FILE_PATH,
-                       util::getHomeDir()+"/.aria2/dht.dat",
+                       util::getDHTFile(false),
                        PATH_TO_FILE));
     op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);
@@ -2052,7 +2052,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     OptionHandler* op(new DefaultOptionHandler
                       (PREF_DHT_FILE_PATH6,
                        TEXT_DHT_FILE_PATH6,
-                       util::getHomeDir()+"/.aria2/dht6.dat",
+                       util::getDHTFile(true),
                        PATH_TO_FILE));
     op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);

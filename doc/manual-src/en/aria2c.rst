@@ -801,12 +801,14 @@ BitTorrent Specific Options
 .. option:: --dht-file-path=<PATH>
 
   Change the IPv4 DHT routing table file to PATH.
-  Default: ``$HOME/.aria2/dht.dat``
+  Default: ``$HOME/.aria2/dht.dat`` if present, otherwise
+  ``$XDG_CACHE_HOME/aria2/dht.dat``.
 
 .. option:: --dht-file-path6=<PATH>
 
   Change the IPv6 DHT routing table file to PATH.
-  Default: ``$HOME/.aria2/dht6.dat``
+  Default: ``$HOME/.aria2/dht6.dat`` if present, otherwise
+  ``$XDG_CACHE_HOME/aria2/dht6.dat``.
 
 .. option:: --dht-listen-addr6=<ADDR>
 
@@ -1181,7 +1183,8 @@ Advanced Options
 .. option:: --conf-path=<PATH>
 
   Change the configuration file path to PATH.
-  Default: ``$HOME/.aria2/aria2.conf``
+  Default: ``$HOME/.aria2/aria2.conf`` if present, otherwise
+  ``$XDG_CONFIG_HOME/aria2/aria2.conf``.
 
 .. option:: --console-log-level=<LEVEL>
 
@@ -1839,10 +1842,12 @@ FILES
 aria2.conf
 ~~~~~~~~~~
 
-By default, aria2 parses ``$HOME/.aria2/aria2.conf`` as a
-configuration file. You can specify the path to configuration file
-using :option:`--conf-path` option.  If you don't want to use the
-configuration file, use :option:`--no-conf` option.
+By default, aria2 checks whether the legacy path
+``$HOME/.aria2/aria2.conf`` is present, otherwise it parses
+``$XDG_CONFIG_HOME/aria2/aria2.conf`` as its configuration file.  You
+can specify the path to configuration file using :option:`--conf-path`
+option.  If you don't want to use the configuration file, use
+:option:`--no-conf` option.
 
 The configuration file is a text file and has 1 option per each
 line. In each line, you can specify name-value pair in the format:
@@ -1867,9 +1872,11 @@ lines beginning ``#`` are treated as comments::
 dht.dat
 ~~~~~~~~
 
-By default, the routing table of IPv4 DHT is saved to the path
-``$HOME/.aria2/dht.dat`` and the routing table of IPv6 DHT is saved to
-the path ``$HOME/.aria2/dht6.dat``.
+Unless the legacy file paths ``$HOME/.aria2/dht.dat`` and
+``$HOME/.aria2/dht6.dat`` are pointing to existing files, the routing
+table of IPv4 DHT is saved to the path
+``$XDG_CACHE_HOME/aria2/dht.dat`` and the routing table of IPv6 DHT is
+saved to the path ``$XDG_CACHE_HOME/aria2/dht6.dat``.
 
 Netrc
 ~~~~~
