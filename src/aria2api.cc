@@ -383,7 +383,7 @@ int removeDownload(Session* session, A2Gid gid, bool force)
       } else {
         group->setHaltRequested(true, RequestGroup::USER_REQUEST);
       }
-      e->setRefreshInterval(0);
+      e->setRefreshInterval(std::chrono::milliseconds(0));
     } else {
       if(group->isDependencyResolved()) {
         e->getRequestGroupMan()->removeReservedGroup(gid);
@@ -404,7 +404,7 @@ int pauseDownload(Session* session, A2Gid gid, bool force)
   if(group) {
     bool reserved = group->getState() == RequestGroup::STATE_WAITING;
     if(pauseRequestGroup(group, reserved, force)) {
-      e->setRefreshInterval(0);
+      e->setRefreshInterval(std::chrono::milliseconds(0));
       return 0;
     }
   }

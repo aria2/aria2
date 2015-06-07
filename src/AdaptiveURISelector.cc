@@ -96,6 +96,10 @@ std::string AdaptiveURISelector::select
   return selected;
 }
 
+namespace {
+constexpr auto MAX_TIMEOUT = std::chrono::seconds(60);
+} // namespace
+
 void AdaptiveURISelector::mayRetryWithIncreasedTimeout(FileEntry* fileEntry)
 {
   if (requestGroup_->getTimeout()*2 >= MAX_TIMEOUT) return;
@@ -111,10 +115,11 @@ void AdaptiveURISelector::mayRetryWithIncreasedTimeout(FileEntry* fileEntry)
   if(A2_LOG_DEBUG_ENABLED) {
     for(std::deque<std::string>::const_iterator i = uris.begin(),
           eoi = uris.end(); i != eoi; ++i) {
-      A2_LOG_DEBUG(fmt("AdaptiveURISelector: will retry server with increased"
-                       " timeout (%ld s): %s",
-                       static_cast<long int>(requestGroup_->getTimeout()),
-                       (*i).c_str()));
+      A2_LOG_DEBUG(
+          fmt("AdaptiveURISelector: will retry server with increased"
+              " timeout (%ld s): %s",
+              static_cast<long int>(requestGroup_->getTimeout().count()),
+              (*i).c_str()));
     }
   }
 }

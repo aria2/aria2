@@ -43,7 +43,7 @@ void DHTMessageTrackerEntryTest::testMatch()
     DHTMessageTrackerEntry entry(msg1->getRemoteNode(),
                                  msg1->getTransactionID(),
                                  msg1->getMessageType(),
-                                 30);
+                                 std::chrono::seconds(30));
 
     CPPUNIT_ASSERT(entry.match(msg1->getTransactionID(),
                                msg1->getRemoteNode()->getIPAddress(),

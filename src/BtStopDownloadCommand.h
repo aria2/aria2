@@ -51,7 +51,7 @@ class BtStopDownloadCommand:public TimeBasedCommand {
 private:
   RequestGroup* requestGroup_;
 
-  time_t timeout_;
+  std::chrono::seconds timeout_;
 
   Timer checkPoint_;
 
@@ -63,7 +63,7 @@ public:
   (cuid_t cuid,
    RequestGroup* requestGroup,
    DownloadEngine* e,
-   time_t timeout);
+   std::chrono::seconds timeout);
 
   virtual void preProcess() CXX11_OVERRIDE;
 

@@ -253,7 +253,8 @@ bool HttpServerCommand::execute()
         return true;
       }
     } else {
-      if(timeoutTimer_.difference(global::wallclock()) >= 30) {
+      if(timeoutTimer_.difference(global::wallclock()) >=
+         std::chrono::seconds(30)) {
         A2_LOG_INFO("HTTP request timeout.");
         return true;
       } else {

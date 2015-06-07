@@ -52,8 +52,7 @@ private:
 
   uint16_t port_;
 
-  // in milli sec
-  int rtt_;
+  std::chrono::milliseconds rtt_;
 
   int condition_;
 
@@ -75,9 +74,9 @@ public:
     return id_;
   }
 
-  void updateRTT(int millisec)
+  void updateRTT(std::chrono::milliseconds t)
   {
-    rtt_ = millisec;
+    rtt_ = std::move(t);
   }
 
   const std::string& getIPAddress() const

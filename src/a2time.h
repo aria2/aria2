@@ -37,6 +37,8 @@
 #include <time.h>
 #include <sys/time.h>
 
+#include <chrono>
+
 #ifndef HAVE_LOCALTIME_R
 # include "localtime_r.h"
 #endif // HAVE_LOCALTIME_R
@@ -76,6 +78,6 @@
 #endif // !HAVE_CLOCK_GETTIME
 
 // Rounding error in millis
-#define A2_DELTA_MILLIS 10
+constexpr auto A2_DELTA_MILLIS = std::chrono::milliseconds(10);
 
 #endif // D_A2TIME_H

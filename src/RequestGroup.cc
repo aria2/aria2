@@ -337,7 +337,7 @@ void RequestGroup::createInitialCommand
     btAnnounce->setPieceStorage(pieceStorage_);
     btAnnounce->setPeerStorage(peerStorage);
     btAnnounce->setUserDefinedInterval
-      (option_->getAsInt(PREF_BT_TRACKER_INTERVAL));
+      (std::chrono::seconds(option_->getAsInt(PREF_BT_TRACKER_INTERVAL)));
     btAnnounce->shuffleAnnounce();
 
     assert(!btRegistry->get(gid_->getNumericId()));
@@ -978,7 +978,7 @@ void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
   peerStorage_ = nullptr;
 #endif // ENABLE_BITTORRENT
   if(pieceStorage_) {
-    pieceStorage_->removeAdvertisedPiece(0);
+    pieceStorage_->removeAdvertisedPiece(std::chrono::seconds(0));
   }
   // Don't reset segmentMan_ and pieceStorage_ here to provide
   // progress information via RPC
@@ -1129,7 +1129,8 @@ std::shared_ptr<DownloadResult> RequestGroup::createDownloadResult() const
   res->fileEntries = downloadContext_->getFileEntries();
   res->inMemoryDownload = inMemoryDownload_;
   res->sessionDownloadLength = st.sessionDownloadLength;
-  res->sessionTime = downloadContext_->calculateSessionTime();
+  res->sessionTime = std::chrono::duration_cast<std::chrono::milliseconds>(
+      downloadContext_->calculateSessionTime());
   res->result = downloadResult();
   res->followedBy = followedByGIDs_;
   res->belongsTo = belongsToGID_;
@@ -1219,9 +1220,9 @@ void RequestGroup::markInMemoryDownload()
   inMemoryDownload_ = true;
 }
 
-void RequestGroup::setTimeout(time_t timeout)
+void RequestGroup::setTimeout(std::chrono::seconds timeout)
 {
-  timeout_ = timeout;
+  timeout_ = std::move(timeout);
 }
 
 bool RequestGroup::doesDownloadSpeedExceed()

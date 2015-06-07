@@ -114,7 +114,8 @@ bool BackupIPv4ConnectCommand::execute()
     // TODO Although we check 300ms initial timeout as described in
     // RFC 6555, the interval will be much longer and around 1 second
     // due to the refresh interval mechanism in DownloadEngine.
-    if(startTime_.differenceInMillis(global::wallclock()) >= 300) {
+    if(startTime_.difference(global::wallclock()) >=
+       std::chrono::milliseconds(300)) {
       socket_ = std::make_shared<SocketCore>();
       try {
         socket_->establishConnection(ipaddr_, port_);

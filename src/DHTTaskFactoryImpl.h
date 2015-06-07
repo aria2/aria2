@@ -59,7 +59,7 @@ private:
 
   DHTTaskQueue* taskQueue_;
 
-  time_t timeout_;
+  std::chrono::seconds timeout_;
 
   void setCommonProperty(const std::shared_ptr<DHTAbstractTask>& task);
 public:
@@ -100,9 +100,9 @@ public:
 
   void setLocalNode(const std::shared_ptr<DHTNode>& localNode);
 
-  void setTimeout(time_t timeout)
+  void setTimeout(std::chrono::seconds timeout)
   {
-    timeout_ = timeout;
+    timeout_ = std::move(timeout);
   }
 };
 

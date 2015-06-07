@@ -61,7 +61,7 @@ void RequestGroupTest::testCreateDownloadResult()
     CPPUNIT_ASSERT_EQUAL((int64_t)1024*1024,
                          result->fileEntries.back()->getLastOffset());
     CPPUNIT_ASSERT_EQUAL((uint64_t)0, result->sessionDownloadLength);
-    CPPUNIT_ASSERT_EQUAL((int64_t)0, result->sessionTime);
+    CPPUNIT_ASSERT_EQUAL((int64_t)0, result->sessionTime.count());
     // result is UNKNOWN_ERROR if download has not completed and no specific
     // error has been reported
     CPPUNIT_ASSERT_EQUAL(error_code::UNKNOWN_ERROR, result->result);

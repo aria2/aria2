@@ -56,7 +56,7 @@ private:
   void save();
 public:
   DHTAutoSaveCommand
-  (cuid_t cuid, DownloadEngine* e, int family, time_t interval);
+  (cuid_t cuid, DownloadEngine* e, int family, std::chrono::seconds interval);
 
   virtual ~DHTAutoSaveCommand();
 

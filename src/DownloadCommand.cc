@@ -328,7 +328,7 @@ bool DownloadCommand::prepareForNextSegment() {
     // Following 2lines are needed for DownloadEngine to detect
     // completed RequestGroups without 1sec delay.
     getDownloadEngine()->setNoWait(true);
-    getDownloadEngine()->setRefreshInterval(0);
+    getDownloadEngine()->setRefreshInterval(std::chrono::milliseconds(0));
     return true;
   } else {
     // The number of segments should be 1 in order to pass through the next

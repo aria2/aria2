@@ -39,14 +39,14 @@
 namespace aria2 {
 
 TimeBasedCommand::TimeBasedCommand(cuid_t cuid, DownloadEngine* e,
-                                   time_t interval,
+                                   std::chrono::seconds interval,
                                    bool routineCommand)
   : Command(cuid),
-  e_(e),
-  checkPoint_(global::wallclock()),
-  interval_(interval),
-  exit_(false),
-  routineCommand_(routineCommand)
+    e_(e),
+    checkPoint_(global::wallclock()),
+    interval_(std::move(interval)),
+    exit_(false),
+    routineCommand_(routineCommand)
 {}
 
 TimeBasedCommand::~TimeBasedCommand() {}

@@ -63,7 +63,9 @@ public:
   virtual void shuffleAnnounce() CXX11_OVERRIDE {
   }
 
-  virtual void overrideMinInterval(time_t interval) CXX11_OVERRIDE {}
+  virtual void overrideMinInterval(std::chrono::seconds interval) CXX11_OVERRIDE
+  {
+  }
 
   virtual void setTcpPort(uint16_t port) CXX11_OVERRIDE {}
 

@@ -48,8 +48,8 @@ namespace aria2 {
 PeerSessionResource::PeerSessionResource(int32_t pieceLength, int64_t totalLength)
   :
   bitfieldMan_(make_unique<BitfieldMan>(pieceLength, totalLength)),
-  lastDownloadUpdate_(0),
-  lastAmUnchoking_(0),
+  lastDownloadUpdate_(Timer::zero()),
+  lastAmUnchoking_(Timer::zero()),
   dispatcher_(nullptr),
   amChoking_(true),
   amInterested_(false),

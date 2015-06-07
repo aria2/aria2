@@ -36,12 +36,9 @@
 
 namespace aria2 {
 
-void RequestSlot::setDispatchedTime(time_t sec) {
-  dispatchedTime_.reset(sec);
-}
-
-bool RequestSlot::isTimeout(time_t timeoutSec) const {
-  return dispatchedTime_.difference(global::wallclock()) >= timeoutSec;
+bool RequestSlot::isTimeout(const std::chrono::seconds& t) const
+{
+  return dispatchedTime_.difference(global::wallclock()) >= t;
 }
 
 } // namespace aria2

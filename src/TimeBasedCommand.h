@@ -49,7 +49,7 @@ private:
 
   Timer checkPoint_;
 
-  time_t interval_; // unit: sec
+  std::chrono::seconds interval_;
 
   /**
    * setting exit_ to true if this command's job has finished and you want to
@@ -73,7 +73,7 @@ protected:
     exit_ = true;
   }
 
-  time_t getInterval() const
+  const std::chrono::seconds& getInterval() const
   {
     return interval_;
   }
@@ -95,8 +95,8 @@ public:
   virtual void postProcess() {};
 
 public:
-  TimeBasedCommand(cuid_t cuid, DownloadEngine* e, time_t interval,
-                   bool routineCommand = false);
+  TimeBasedCommand(cuid_t cuid, DownloadEngine* e,
+                   std::chrono::seconds interval, bool routineCommand = false);
 
   virtual ~TimeBasedCommand();
 

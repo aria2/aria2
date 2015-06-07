@@ -53,7 +53,7 @@ public:
 
     RequestEntry(size_t index):index_(index) {}
 
-    bool elapsed(time_t t) const
+    bool elapsed(const std::chrono::seconds t) const
     {
       return dispatchedTime_.difference(global::wallclock()) >= t;
     }

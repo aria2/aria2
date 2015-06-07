@@ -64,7 +64,7 @@ InitiateConnectionCommand::InitiateConnectionCommand
  DownloadEngine* e)
   : AbstractCommand(cuid, req, fileEntry, requestGroup, e)
 {
-  setTimeout(getOption()->getAsInt(PREF_DNS_TIMEOUT));
+  setTimeout(std::chrono::seconds(getOption()->getAsInt(PREF_DNS_TIMEOUT)));
   // give a chance to be executed in the next loop in DownloadEngine
   setStatus(Command::STATUS_ONESHOT_REALTIME);
   disableReadCheckSocket();

@@ -35,6 +35,9 @@
 #ifndef D_DHT_CONSTANTS_H
 #define D_DHT_CONSTANTS_H
 
+#include "common.h"
+#include "TimerA2.h"
+
 // Increment this if major improvements or bug fixes are made in DHT
 // code. This is 2 bytes unsigned integer.
 #define DHT_VERSION 3U
@@ -46,20 +49,20 @@
 #define DHT_TOKEN_LENGTH 4
 
 // See --dht-message-timeout option.
-#define DHT_MESSAGE_TIMEOUT 10
+constexpr auto DHT_MESSAGE_TIMEOUT = std::chrono::seconds(10);
 
-#define DHT_NODE_CONTACT_INTERVAL (15*60)
+constexpr auto DHT_NODE_CONTACT_INTERVAL = std::chrono::minutes(15);
 
-#define DHT_BUCKET_REFRESH_INTERVAL (15*60)
+constexpr auto DHT_BUCKET_REFRESH_INTERVAL = std::chrono::minutes(15);
 
-#define DHT_BUCKET_REFRESH_CHECK_INTERVAL (5*60)
+constexpr auto DHT_BUCKET_REFRESH_CHECK_INTERVAL = std::chrono::minutes(5);
 
-#define DHT_PEER_ANNOUNCE_PURGE_INTERVAL (30*60)
+constexpr auto DHT_PEER_ANNOUNCE_PURGE_INTERVAL = std::chrono::minutes(30);
 
-#define DHT_PEER_ANNOUNCE_INTERVAL (15*60)
+constexpr auto DHT_PEER_ANNOUNCE_INTERVAL = std::chrono::minutes(15);
 
-#define DHT_PEER_ANNOUNCE_CHECK_INTERVAL (5*60)
+constexpr auto DHT_PEER_ANNOUNCE_CHECK_INTERVAL = std::chrono::minutes(5);
 
-#define DHT_TOKEN_UPDATE_INTERVAL (10*60)
+constexpr auto DHT_TOKEN_UPDATE_INTERVAL = std::chrono::minutes(10);
 
 #endif // D_DHT_CONSTANTS_H
