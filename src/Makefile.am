@@ -675,14 +675,6 @@ if !HAVE_DAEMON
 SRCS += daemon.cc daemon.h
 endif # !HAVE_DAEMON
 
-if HAVE_TIMEGETTIME
-SRCS += clock_gettime_mingw.cc clock_gettime_mingw.h
-endif # HAVE_TIMEGETTIME
-
-if HAVE_MACH_ABSOLUTE_TIME
-SRCS += clock_gettime_osx.cc clock_gettime_osx.h
-endif # HAVE_MACH_ABSOLUTE_TIME
-
 if HAVE_POLL
 SRCS += PollEventPoll.cc PollEventPoll.h
 endif # HAVE_POLL

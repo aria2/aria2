@@ -63,19 +63,9 @@
 # define suseconds_t uint64_t
 #endif
 
-#ifndef CLOCK_MONOTONIC
-# define CLOCK_MONOTONIC 0
-#endif // !CLOCK_MONOTONIC
-#ifndef HAVE_CLOCK_GETTIME
-# ifdef __MINGW32__
-#   include "clock_gettime_mingw.h"
-# elif HAVE_MACH_ABSOLUTE_TIME
-#   include "clock_gettime_osx.h"
-# else
-#   include "timespec.h"
-#   define clock_gettime(ID, TP) (-1)
-# endif // !__MINGW32__
-#endif // !HAVE_CLOCK_GETTIME
+#ifndef HAVE_A2_STRUCT_TIMESPEC
+# include "timespec.h"
+#endif // !HAVE_A2_STRUCT_TIMESPEC
 
 // Rounding error in millis
 constexpr auto A2_DELTA_MILLIS = std::chrono::milliseconds(10);
