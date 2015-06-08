@@ -336,7 +336,7 @@ std::string AdaptiveURISelector::getFirstToTestUri
     power = (int)pow(2.0, (float)counter);
     /* We test the mirror another time if it has not been
      * tested since 2^counter days */
-    if(ss->getLastUpdated().difference() > power*24*60*60) {
+    if(ss->getLastUpdated().difference() > std::chrono::hours(power * 24)) {
       return u;
     }
   }

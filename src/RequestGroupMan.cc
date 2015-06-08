@@ -897,7 +897,7 @@ bool RequestGroupMan::saveServerStat(const std::string& filename) const
   return serverStatMan_->save(filename);
 }
 
-void RequestGroupMan::removeStaleServerStat(time_t timeout)
+void RequestGroupMan::removeStaleServerStat(const std::chrono::seconds& timeout)
 {
   serverStatMan_->removeStaleServerStat(timeout);
 }

@@ -131,12 +131,12 @@ void DHTRoutingTableDeserializer::deserialize(const std::string& filename)
   // time
   if(version == 2) {
     READ_CHECK(fp, &temp32, sizeof(temp32));
-    serializedTime_.setTimeInSec(ntohl(temp32));
+    serializedTime_.setTimeFromEpoch(ntohl(temp32));
     // 4bytes reserved
     readBytes(fp, buf, buf.size(), 4);
   } else {
     READ_CHECK(fp, &temp64, sizeof(temp64));
-    serializedTime_.setTimeInSec(ntoh64(temp64));
+    serializedTime_.setTimeFromEpoch(ntoh64(temp64));
   }
 
   // localnode

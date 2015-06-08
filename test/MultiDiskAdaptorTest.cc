@@ -427,14 +427,17 @@ void MultiDiskAdaptorTest::testUtime()
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, adaptor.utime(Time(atime), Time(mtime)));
 
-  CPPUNIT_ASSERT_EQUAL((time_t)mtime,
-                       File(entries[0]->getPath()).getModifiedTime().getTime());
+  CPPUNIT_ASSERT_EQUAL(
+      (time_t)mtime,
+      File(entries[0]->getPath()).getModifiedTime().getTimeFromEpoch());
 
-  CPPUNIT_ASSERT_EQUAL((time_t)mtime,
-                       File(entries[3]->getPath()).getModifiedTime().getTime());
+  CPPUNIT_ASSERT_EQUAL(
+      (time_t)mtime,
+      File(entries[3]->getPath()).getModifiedTime().getTimeFromEpoch());
 
-  CPPUNIT_ASSERT((time_t)mtime !=
-                 File(entries[2]->getPath()).getModifiedTime().getTime());
+  CPPUNIT_ASSERT(
+      (time_t)mtime !=
+      File(entries[2]->getPath()).getModifiedTime().getTimeFromEpoch());
 }
 
 void MultiDiskAdaptorTest::testWriteCache()

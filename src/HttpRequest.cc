@@ -232,7 +232,7 @@ std::string HttpRequest::createRequest()
     std::string path = getDir();
     path += getFile();
     auto cookies = cookieStorage_->criteriaFind(getHost(), path,
-                                                Time().getTime(),
+                                                Time().getTimeFromEpoch(),
                                                 getProtocol() == "https");
     for(auto c : cookies) {
       cookiesValue += c->toString();

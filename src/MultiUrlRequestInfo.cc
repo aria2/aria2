@@ -217,7 +217,7 @@ int MultiUrlRequestInfo::prepare()
       File cookieFile(option_->get(PREF_LOAD_COOKIES));
       if(cookieFile.isFile() &&
          e_->getCookieStorage()->load(cookieFile.getPath(),
-                                      Time().getTime())) {
+                                      Time().getTimeFromEpoch())) {
         A2_LOG_INFO(fmt("Loaded cookies from '%s'.",
                         cookieFile.getPath().c_str()));
       } else {
@@ -278,7 +278,7 @@ int MultiUrlRequestInfo::prepare()
     if(!serverStatIf.empty()) {
       e_->getRequestGroupMan()->loadServerStat(serverStatIf);
       e_->getRequestGroupMan()->removeStaleServerStat
-        (option_->getAsInt(PREF_SERVER_STAT_TIMEOUT));
+        (std::chrono::seconds(option_->getAsInt(PREF_SERVER_STAT_TIMEOUT)));
     }
     e_->setStatCalc(getStatCalc(option_));
     if(uriListParser_) {
