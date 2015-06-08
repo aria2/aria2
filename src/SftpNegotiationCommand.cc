@@ -168,7 +168,7 @@ bool SftpNegotiationCommand::executeInternal() {
         (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
          getDownloadEngine(), getSocket(), std::move(authConfig_));
       command->setStartupIdleTime
-        (getOption()->getAsInt(PREF_STARTUP_IDLE_TIME));
+        (std::chrono::seconds(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME)));
       command->setLowestDownloadSpeedLimit
         (getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));
       command->setStatus(Command::STATUS_ONESHOT_REALTIME);

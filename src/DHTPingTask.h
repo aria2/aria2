@@ -52,7 +52,7 @@ private:
 
   bool pingSuccessful_;
 
-  time_t timeout_;
+  std::chrono::seconds timeout_;
 
   void addMessage();
 public:
@@ -66,9 +66,9 @@ public:
 
   void onTimeout(const std::shared_ptr<DHTNode>& node);
 
-  void setTimeout(time_t timeout)
+  void setTimeout(std::chrono::seconds timeout)
   {
-    timeout_ = timeout;
+    timeout_ = std::move(timeout);
   }
 
   bool isPingSuccessful() const;

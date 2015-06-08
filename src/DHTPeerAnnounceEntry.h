@@ -71,7 +71,7 @@ public:
     return peerAddrEntries_;
   }
 
-  void removeStalePeerAddrEntry(time_t timeout);
+  void removeStalePeerAddrEntry(const std::chrono::seconds& timeout);
 
   bool empty() const;
 

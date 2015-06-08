@@ -725,32 +725,18 @@ DefaultPieceStorage::getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
   }
 }
 
-namespace {
-class FindElapsedHave
+void
+DefaultPieceStorage::removeAdvertisedPiece(const std::chrono::seconds& elapsed)
 {
-private:
-  time_t elapsed;
-public:
-  FindElapsedHave(time_t elapsed):elapsed(elapsed) {}
+  auto itr = std::find_if(std::begin(haves_), std::end(haves_),
+                          [&elapsed](const HaveEntry& have) {
+    return have.getRegisteredTime().difference(global::wallclock()) >= elapsed;
+  });
 
-  bool operator()(const HaveEntry& have) {
-    if(have.getRegisteredTime().difference(global::wallclock()) >= elapsed) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-};
-} // namespace
-
-void DefaultPieceStorage::removeAdvertisedPiece(time_t elapsed)
-{
-  auto itr = std::find_if(haves_.begin(), haves_.end(),
-                          FindElapsedHave(elapsed));
-  if(itr != haves_.end()) {
+  if(itr != std::end(haves_)) {
     A2_LOG_DEBUG(fmt(MSG_REMOVED_HAVE_ENTRY,
-                     static_cast<unsigned long>(haves_.end()-itr)));
-    haves_.erase(itr, haves_.end());
+                     static_cast<unsigned long>(std::end(haves_) - itr)));
+    haves_.erase(itr, std::end(haves_));
   }
 }
 

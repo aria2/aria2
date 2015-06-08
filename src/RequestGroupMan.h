@@ -270,7 +270,7 @@ public:
 
   bool saveServerStat(const std::string& filename) const;
 
-  void removeStaleServerStat(time_t timeout);
+  void removeStaleServerStat(const std::chrono::seconds& timeout);
 
   // Returns true if current download speed exceeds
   // maxOverallDownloadSpeedLimit_.  Always returns false if

@@ -45,13 +45,13 @@ namespace aria2 {
 
 class SpeedCalc {
 private:
-  std::deque<std::pair<int64_t, size_t> > timeSlots_;
+  std::deque<std::pair<Timer, size_t>> timeSlots_;
   Timer start_;
   int64_t accumulatedLength_;
   int64_t bytesWindow_;
   int maxSpeed_;
 
-  void removeStaleTimeSlot(int64_t now);
+  void removeStaleTimeSlot(const Timer& now);
 public:
   SpeedCalc();
 

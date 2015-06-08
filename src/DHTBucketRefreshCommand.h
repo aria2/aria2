@@ -53,7 +53,8 @@ private:
 
   DHTTaskFactory* taskFactory_;
 public:
-  DHTBucketRefreshCommand(cuid_t cuid, DownloadEngine* e, time_t interval);
+  DHTBucketRefreshCommand(cuid_t cuid, DownloadEngine* e,
+                          std::chrono::seconds interval);
 
   virtual ~DHTBucketRefreshCommand();
 

@@ -536,7 +536,8 @@ HttpResponseCommand::createHttpDownloadCommand
     (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
      std::move(httpResponse), httpConnection_, getDownloadEngine(),
      getSocket());
-  command->setStartupIdleTime(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME));
+  command->setStartupIdleTime(
+      std::chrono::seconds(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME)));
   command->setLowestDownloadSpeedLimit
     (getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));
   if (getRequestGroup()->isFileAllocationEnabled() &&

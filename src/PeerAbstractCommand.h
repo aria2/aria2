@@ -51,7 +51,7 @@ class SocketCore;
 class PeerAbstractCommand : public Command {
 private:
   Timer checkPoint_;
-  time_t timeout_;
+  std::chrono::seconds timeout_;
   DownloadEngine* e_;
   std::shared_ptr<SocketCore> socket_;
   std::shared_ptr<Peer> peer_;
@@ -79,7 +79,11 @@ protected:
     return peer_;
   }
 
-  void setTimeout(time_t timeout) { timeout_ = timeout; }
+  void setTimeout(std::chrono::seconds timeout)
+  {
+    timeout_ = std::move(timeout);
+  }
+
   virtual bool prepareForNextPeer(time_t wait);
   virtual void onAbort() {};
   // This function is called when DownloadFailureException is caught right after

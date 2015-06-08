@@ -51,8 +51,12 @@ public:
       piece_(std::move(piece))
   {}
 
-  RequestSlot():dispatchedTime_(0), index_(0), begin_(0), length_(0),
-                blockIndex_(0)
+  RequestSlot()
+    : dispatchedTime_(Timer::zero()),
+      index_(0),
+      begin_(0),
+      length_(0),
+      blockIndex_(0)
   {}
 
   bool operator==(const RequestSlot& requestSlot) const
@@ -75,9 +79,7 @@ public:
     }
   }
 
-  void setDispatchedTime(time_t secFromEpoch);
-
-  bool isTimeout(time_t timeoutSec) const;
+  bool isTimeout(const std::chrono::seconds& t) const;
 
   size_t getIndex() const { return index_; }
   void setIndex(size_t index) { index_ = index; }
@@ -95,6 +97,10 @@ public:
   {
     return piece_;
   }
+
+  // For unit test
+  void setDispatchedTime(Timer t) { dispatchedTime_ = std::move(t); }
+
 private:
   Timer dispatchedTime_;
   size_t index_;

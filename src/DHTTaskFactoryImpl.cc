@@ -64,7 +64,7 @@ std::shared_ptr<DHTTask>
 DHTTaskFactoryImpl::createPingTask(const std::shared_ptr<DHTNode>& remoteNode,
                                    int numRetry)
 {
-  std::shared_ptr<DHTPingTask> task(new DHTPingTask(remoteNode, numRetry));
+  auto task = std::make_shared<DHTPingTask>(remoteNode, numRetry);
   task->setTimeout(timeout_);
   setCommonProperty(task);
   return task;

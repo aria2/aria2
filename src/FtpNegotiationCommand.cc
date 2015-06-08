@@ -99,7 +99,8 @@ FtpNegotiationCommand::FtpNegotiationCommand
 {
   ftp_->setBaseWorkingDir(baseWorkingDir);
   if(seq == SEQ_RECV_GREETING) {
-    setTimeout(getOption()->getAsInt(PREF_CONNECT_TIMEOUT));
+    setTimeout(
+        std::chrono::seconds(getOption()->getAsInt(PREF_CONNECT_TIMEOUT)));
   }
   setWriteCheckSocket(getSocket());
 }
@@ -116,7 +117,8 @@ bool FtpNegotiationCommand::executeInternal() {
     auto command = make_unique<FtpDownloadCommand>
       (getCuid(), getRequest(), getFileEntry(), getRequestGroup(), ftp_,
        getDownloadEngine(), dataSocket_, getSocket());
-    command->setStartupIdleTime(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME));
+    command->setStartupIdleTime(
+        std::chrono::seconds(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME)));
     command->setLowestDownloadSpeedLimit
       (getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));
     if(getFileEntry()->isUniqueProtocol()) {

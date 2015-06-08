@@ -53,7 +53,7 @@ private:
 
   std::unique_ptr<MessageDigest> messageDigest_;
 
-  time_t startupIdleTime_;
+  std::chrono::seconds startupIdleTime_;
 
   int lowestDownloadSpeedLimit_;
 
@@ -99,9 +99,9 @@ public:
 
   void installStreamFilter(std::unique_ptr<StreamFilter> streamFilter);
 
-  void setStartupIdleTime(time_t startupIdleTime)
+  void setStartupIdleTime(std::chrono::seconds startupIdleTime)
   {
-    startupIdleTime_ = startupIdleTime;
+    startupIdleTime_ = std::move(startupIdleTime);
   }
 
   void setLowestDownloadSpeedLimit(int lowestDownloadSpeedLimit)

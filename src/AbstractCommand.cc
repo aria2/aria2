@@ -237,7 +237,8 @@ bool AbstractCommand::execute()
       if (req_ && fileEntry_->getLength() > 0 &&
           e_->getRequestGroupMan()->getMaxOverallDownloadSpeedLimit() == 0 &&
           requestGroup_->getMaxDownloadSpeedLimit() == 0 &&
-          serverStatTimer_.difference(global::wallclock()) >= 10) {
+          serverStatTimer_.difference(global::wallclock()) >=
+              std::chrono::seconds(10)) {
         serverStatTimer_ = global::wallclock();
         std::vector<std::pair<size_t, std::string>> usedHosts;
         if (getOption()->getAsBool(PREF_SELECT_LEAST_USED_HOST)) {
@@ -284,7 +285,7 @@ bool AbstractCommand::execute()
             A2_LOG_DEBUG("All segments are ignored.");
             // This will execute other idle Commands and let them
             // finish quickly.
-            e_->setRefreshInterval(0);
+            e_->setRefreshInterval(std::chrono::milliseconds(0));
             return true;
           }
 
@@ -386,7 +387,8 @@ bool AbstractCommand::execute()
     }
 
     Timer wakeTime(global::wallclock());
-    wakeTime.advance(getOption()->getAsInt(PREF_RETRY_WAIT));
+    wakeTime.advance(
+        std::chrono::seconds(getOption()->getAsInt(PREF_RETRY_WAIT)));
     req_->setWakeTime(wakeTime);
     return prepareForRetry(0);
   }
@@ -401,7 +403,7 @@ bool AbstractCommand::execute()
       A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, err);
     }
     requestGroup_->setHaltRequested(true);
-    getDownloadEngine()->setRefreshInterval(0);
+    getDownloadEngine()->setRefreshInterval(std::chrono::milliseconds(0));
     return true;
   }
 }
@@ -457,7 +459,7 @@ bool AbstractCommand::prepareForRetry(time_t wait)
   }
   else {
     // We don't use wait so that Command can be executed by
-    // DownloadEngine::setRefreshInterval(0).
+    // DownloadEngine::setRefreshInterval(std::chrono::milliseconds(0)).
     command->setStatus(Command::STATUS_INACTIVE);
   }
   e_->addCommand(std::move(command));

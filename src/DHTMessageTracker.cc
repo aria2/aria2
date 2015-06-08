@@ -58,14 +58,14 @@ DHTMessageTracker::DHTMessageTracker()
 
 void DHTMessageTracker::addMessage
 (DHTMessage* message,
- time_t timeout,
+ std::chrono::seconds timeout,
  std::unique_ptr<DHTMessageCallback> callback)
 {
   entries_.push_back(make_unique<DHTMessageTrackerEntry>
                      (message->getRemoteNode(),
                       message->getTransactionID(),
                       message->getMessageType(),
-                      timeout, std::move(callback)));
+                      std::move(timeout), std::move(callback)));
 }
 
 std::pair<std::unique_ptr<DHTResponseMessage>,
@@ -93,8 +93,9 @@ DHTMessageTracker::messageArrived
                                           targetNode->getIPAddress(),
                                           targetNode->getPort());
 
-        int64_t rtt = entry->getElapsedMillis();
-        A2_LOG_DEBUG(fmt("RTT is %" PRId64 "", rtt));
+        auto rtt = std::chrono::duration_cast<std::chrono::milliseconds>(
+            entry->getElapsed());
+        A2_LOG_DEBUG(fmt("RTT is %" PRId64 "", rtt.count()));
         message->getRemoteNode()->updateRTT(rtt);
         if(*targetNode != *message->getRemoteNode()) {
           // Node ID has changed. Drop previous node ID from
@@ -124,7 +125,8 @@ void DHTMessageTracker::handleTimeoutEntry(DHTMessageTrackerEntry* entry)
     auto& node = entry->getTargetNode();
     A2_LOG_DEBUG(fmt("Message timeout: To:%s:%u",
                      node->getIPAddress().c_str(), node->getPort()));
-    node->updateRTT(entry->getElapsedMillis());
+    node->updateRTT(std::chrono::duration_cast<std::chrono::milliseconds>(
+        entry->getElapsed()));
     node->timeout();
     if(node->isBad()) {
       A2_LOG_DEBUG(fmt("Marked bad: %s:%u",

@@ -222,7 +222,7 @@ public:
     return downloadStopTime_;
   }
 
-  int64_t calculateSessionTime() const;
+  Timer::Clock::duration calculateSessionTime() const;
 
   // Returns FileEntry at given offset. std::shared_ptr<FileEntry>() is
   // returned if no such FileEntry is found.

@@ -48,13 +48,13 @@ LpdMessageDispatcher::LpdMessageDispatcher
  uint16_t port,
  const std::string& multicastAddress,
  uint16_t multicastPort,
- time_t interval)
+ std::chrono::seconds interval)
   : infoHash_(infoHash),
     port_(port),
     multicastAddress_(multicastAddress),
     multicastPort_(multicastPort),
-    timer_(0),
-    interval_(interval),
+    timer_(Timer::zero()),
+    interval_(std::move(interval)),
     request_(bittorrent::createLpdRequest(multicastAddress_, multicastPort_,
                                           infoHash_, port_))
 {}

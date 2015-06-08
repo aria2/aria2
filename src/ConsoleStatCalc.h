@@ -61,7 +61,7 @@ private:
 
   Timer lastSummaryNotified_;
 
-  time_t summaryInterval_;
+  std::chrono::seconds summaryInterval_;
 
   std::unique_ptr<SizeFormatter> sizeFormatter_;
   bool readoutVisibility_;
@@ -69,7 +69,7 @@ private:
   bool isTTY_;
   bool colorOutput_;
 public:
-  ConsoleStatCalc(time_t summaryInterval, bool colorOutput = true,
+  ConsoleStatCalc(std::chrono::seconds summaryInterval, bool colorOutput = true,
                   bool humanReadable = true);
 
   virtual ~ConsoleStatCalc() {}

@@ -101,7 +101,7 @@ void DHTRoutingTableSerializer::serialize(const std::string& filename)
 
   WRITE_CHECK(fp, header, 8);
   // write save date
-  uint64_t ntime = hton64(Time().getTime());
+  uint64_t ntime = hton64(Time().getTimeFromEpoch());
   WRITE_CHECK(fp, &ntime, sizeof(ntime));
 
   // localnode

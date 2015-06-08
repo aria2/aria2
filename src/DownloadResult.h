@@ -60,8 +60,7 @@ struct DownloadResult
 
   uint64_t sessionDownloadLength;
 
-  // milliseconds
-  int64_t sessionTime;
+  std::chrono::milliseconds sessionTime;
 
   int64_t totalLength;
 

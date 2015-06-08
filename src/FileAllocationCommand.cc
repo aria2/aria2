@@ -71,10 +71,11 @@ bool FileAllocationCommand::executeInternal()
   }
   fileAllocationEntry_->allocateChunk();
   if(fileAllocationEntry_->finished()) {
-    A2_LOG_DEBUG
-      (fmt(MSG_ALLOCATION_COMPLETED,
-           static_cast<long int>(timer_.difference(global::wallclock())),
-           getRequestGroup()->getTotalLength()));
+    A2_LOG_DEBUG(fmt(MSG_ALLOCATION_COMPLETED,
+                     static_cast<long int>(
+                         std::chrono::duration_cast<std::chrono::seconds>(
+                             timer_.difference(global::wallclock())).count()),
+                     getRequestGroup()->getTotalLength()));
     std::vector<std::unique_ptr<Command>> commands;
     fileAllocationEntry_->prepareForNextAction(commands, getDownloadEngine());
     getDownloadEngine()->addCommand(std::move(commands));

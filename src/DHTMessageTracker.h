@@ -64,7 +64,7 @@ public:
   DHTMessageTracker();
 
   void addMessage(DHTMessage* message,
-                  time_t timeout,
+                  std::chrono::seconds timeout,
                   std::unique_ptr<DHTMessageCallback> callback =
                   std::unique_ptr<DHTMessageCallback>{});
 

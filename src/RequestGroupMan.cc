@@ -524,7 +524,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
   }
   if(count > 0) {
     e->setNoWait(true);
-    e->setRefreshInterval(0);
+    e->setRefreshInterval(std::chrono::milliseconds(0));
     A2_LOG_DEBUG(fmt("%d RequestGroup(s) added.", count));
   }
 }
@@ -704,10 +704,9 @@ void formatDownloadResultCommon
   o << std::setw(3) << downloadResult->gid->toAbbrevHex() << "|"
     << std::setw(4) << status << "|"
     << std::setw(11);
-  if(downloadResult->sessionTime > 0) {
-    o << util::abbrevSize
-      (downloadResult->sessionDownloadLength*1000/downloadResult->sessionTime)+
-      "B/s";
+  if(downloadResult->sessionTime.count() > 0) {
+    o << util::abbrevSize(downloadResult->sessionDownloadLength * 1000 /
+                          downloadResult->sessionTime.count()) << "B/s";
   } else {
     o << "n/a";
   }
@@ -898,7 +897,7 @@ bool RequestGroupMan::saveServerStat(const std::string& filename) const
   return serverStatMan_->save(filename);
 }
 
-void RequestGroupMan::removeStaleServerStat(time_t timeout)
+void RequestGroupMan::removeStaleServerStat(const std::chrono::seconds& timeout)
 {
   serverStatMan_->removeStaleServerStat(timeout);
 }

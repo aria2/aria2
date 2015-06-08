@@ -47,10 +47,14 @@ namespace aria2 {
 
 BtSeederStateChoke::BtSeederStateChoke()
   : round_(0),
-    lastRound_(0)
+    lastRound_(Timer::zero())
 {}
 
 BtSeederStateChoke::~BtSeederStateChoke() {}
+
+namespace {
+constexpr auto TIME_FRAME = std::chrono::seconds(20);
+} // namespace
 
 BtSeederStateChoke::PeerEntry::PeerEntry
 (const std::shared_ptr<Peer>& peer):

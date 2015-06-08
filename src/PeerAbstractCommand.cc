@@ -57,7 +57,7 @@ PeerAbstractCommand::PeerAbstractCommand
  : Command(cuid),
    checkPoint_(global::wallclock()),
    // TODO referring global option
-   timeout_(e->getOption()->getAsInt(PREF_BT_TIMEOUT)),
+   timeout_(std::chrono::seconds(e->getOption()->getAsInt(PREF_BT_TIMEOUT))),
    e_(e),
    socket_(s),
    peer_(peer),

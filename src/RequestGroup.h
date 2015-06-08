@@ -136,7 +136,7 @@ private:
   Time lastModifiedTime_;
 
   // Timeout used for HTTP/FTP downloads.
-  time_t timeout_;
+  std::chrono::seconds timeout_;
 
   int state_;
 
@@ -444,12 +444,9 @@ public:
     return inMemoryDownload_;
   }
 
-  void setTimeout(time_t timeout);
+  void setTimeout(std::chrono::seconds timeout);
 
-  time_t getTimeout() const
-  {
-    return timeout_;
-  }
+  const std::chrono::seconds& getTimeout() const { return timeout_; }
 
   // Returns true if current download speed exceeds
   // maxDownloadSpeedLimit_.  Always returns false if

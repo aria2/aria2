@@ -49,7 +49,7 @@ private:
 
   std::deque<std::unique_ptr<DHTMessageEntry>> messageQueue_;
 
-  time_t timeout_;
+  std::chrono::seconds timeout_;
 
   bool sendMessage(DHTMessageEntry* msg);
 public:
@@ -57,7 +57,7 @@ public:
 
   virtual void
   addMessageToQueue(std::unique_ptr<DHTMessage> message,
-                    time_t timeout,
+                    std::chrono::seconds timeout,
                     std::unique_ptr<DHTMessageCallback> callback =
                     std::unique_ptr<DHTMessageCallback>{})
     CXX11_OVERRIDE;
@@ -72,9 +72,9 @@ public:
 
   virtual size_t countMessageInQueue() const CXX11_OVERRIDE;
 
-  void setTimeout(time_t timeout)
+  void setTimeout(std::chrono::seconds timeout)
   {
-    timeout_ = timeout;
+    timeout_ = std::move(timeout);
   }
 };
 

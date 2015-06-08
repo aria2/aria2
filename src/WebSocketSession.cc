@@ -290,7 +290,8 @@ void WebSocketSession::addTextMessage(const std::string& msg, bool delayed)
     auto e = getDownloadEngine();
     auto cuid = command_->getCuid();
     auto c = make_unique<TextMessageCommand>(cuid, command_->getSession(), msg);
-    e->addCommand(make_unique<DelayedCommand>(cuid, e, 1, std::move(c), false));
+    e->addCommand(make_unique<DelayedCommand>(cuid, e, std::chrono::seconds(1),
+                                              std::move(c), false));
     return;
   }
 

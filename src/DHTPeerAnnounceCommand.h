@@ -47,7 +47,8 @@ class DHTPeerAnnounceCommand:public TimeBasedCommand {
 private:
   DHTPeerAnnounceStorage* peerAnnounceStorage_;
 public:
-  DHTPeerAnnounceCommand(cuid_t cuid, DownloadEngine* e, time_t interval);
+  DHTPeerAnnounceCommand(cuid_t cuid, DownloadEngine* e,
+                         std::chrono::seconds interval);
 
   virtual ~DHTPeerAnnounceCommand();
 

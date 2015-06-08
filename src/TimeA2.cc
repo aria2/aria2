@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2015 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,140 +42,40 @@
 
 namespace aria2 {
 
-Time::Time():good_(true)
+Time::Time() : tp_(Clock::now()), good_(true)
 {
-  reset();
 }
 
-Time::Time(const Time& time)
+Time::Time(time_t t) : tp_(Clock::from_time_t(t)), good_(true)
 {
-  tv_ = time.tv_;
-  good_ = time.good_;
 }
 
-Time::Time(time_t sec):good_(true)
+void Time::reset()
 {
-  setTimeInSec(sec);
+  tp_ = Clock::now();
+  good_ = true;
 }
 
-Time::Time(const struct timeval& tv):good_(true)
+Time::Clock::duration Time::difference() const
 {
-  tv_ = tv;
+  return Clock::now() - tp_;
 }
 
-Time::~Time() {}
-
-Time& Time::operator=(const Time& time)
+Time::Clock::duration Time::difference(const Time& time) const
 {
-  if(this != &time) {
-    tv_ = time.tv_;
-    good_ = time.good_;
-  }
-  return *this;
+  return time.tp_ - tp_;
 }
 
-bool Time::operator<(const Time& time) const
+void Time::setTimeFromEpoch(time_t t)
 {
-  return util::difftv(time.tv_, tv_) > 0;
-}
-
-void Time::reset() {
-  gettimeofday(&tv_, nullptr);
-}
-
-struct timeval Time::getCurrentTime() const {
-  struct timeval now;
-  gettimeofday(&now, nullptr);
-  return now;
-}
-
-bool Time::elapsed(time_t sec) const {
-  // Because of gettimeofday called from getCurrentTime() is slow, and most of
-  // the time this function is called before specified time passes, we first do
-  // simple test using time.
-  // Then only when the further test is required, call gettimeofday.
-  time_t now = time(nullptr);
-  if(tv_.tv_sec+sec < now) {
-    return true;
-  } else if(tv_.tv_sec+sec == now) {
-    return
-      util::difftv(getCurrentTime(), tv_) >= static_cast<int64_t>(sec)*1000000;
-  } else {
-    return false;
-  }
-}
-
-bool Time::elapsedInMillis(int64_t millis) const {
-  return util::difftv(getCurrentTime(), tv_)/1000 >= millis;
-}
-
-bool Time::isNewer(const Time& time) const {
-  return util::difftv(tv_, time.tv_) > 0;
-}
-
-time_t Time::difference() const
-{
-  return util::difftv(getCurrentTime(), tv_)/1000000;
-}
-
-time_t Time::difference(const struct timeval& now) const
-{
-  return util::difftv(now, tv_)/1000000;
-}
-
-int64_t Time::differenceInMillis() const {
-  return util::difftv(getCurrentTime(), tv_)/1000;
-}
-
-int64_t Time::differenceInMillis(const struct timeval& now) const
-{
-  return util::difftv(now, tv_)/1000;
-}
-
-bool Time::isZero() const
-{
-  return tv_.tv_sec == 0 && tv_.tv_usec == 0;
-}
-
-int64_t Time::getTimeInMicros() const
-{
-  return (int64_t)tv_.tv_sec*1000*1000+tv_.tv_usec;
-}
-
-int64_t Time::getTimeInMillis() const
-{
-  return (int64_t)tv_.tv_sec*1000+tv_.tv_usec/1000;
-}
-
-time_t Time::getTime() const
-{
-  return tv_.tv_sec;
-}
-
-void Time::setTimeInSec(time_t sec) {
-  tv_.tv_sec = sec;
-  tv_.tv_usec = 0;
-}
-
-void Time::advance(time_t sec)
-{
-  tv_.tv_sec += sec;
-}
-
-bool Time::good() const
-{
-  return good_;
-}
-
-bool Time::bad() const
-{
-  return !good_;
+  tp_ = Clock::from_time_t(t);
+  good_ = true;
 }
 
 std::string Time::toHTTPDate() const
 {
   char buf[32];
-  time_t t = getTime();
+  time_t t = getTimeFromEpoch();
   struct tm* tms = gmtime(&t); // returned struct is statically allocated.
   size_t r = strftime(buf, sizeof(buf), "%a, %d %b %Y %H:%M:%S GMT", tms);
   return std::string(&buf[0], &buf[r]);
@@ -239,13 +139,6 @@ Time Time::parseHTTPDate(const std::string& datetime)
     }
   }
   return Time::null();
-}
-
-Time Time::null()
-{
-  Time t(0);
-  t.good_ = false;
-  return t;
 }
 
 } // namespace aria2

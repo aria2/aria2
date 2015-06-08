@@ -261,7 +261,7 @@ void FileTest::testUtime()
   a2_struct_stat buf;
   CPPUNIT_ASSERT(0 == a2stat(utf8ToWChar(f.getPath()).c_str(), &buf));
   CPPUNIT_ASSERT_EQUAL((time_t)atime, (time_t)buf.st_atime);
-  CPPUNIT_ASSERT_EQUAL((time_t)mtime, f.getModifiedTime().getTime());
+  CPPUNIT_ASSERT_EQUAL((time_t)mtime, f.getModifiedTime().getTimeFromEpoch());
 
   File notFound(A2_TEST_OUT_DIR"/aria2_FileTest_testUTime_notFound");
   notFound.remove();

@@ -879,14 +879,6 @@ AC_CHECK_FUNCS([timegm],
 AC_CHECK_FUNCS([daemon], [have_daemon=yes])
 AM_CONDITIONAL([HAVE_DAEMON], [test "x$have_daemon" = "xyes"])
 
-AC_CHECK_FUNCS([clock_gettime], [have_clock_gettime=yes])
-
-if test "x$have_clock_gettime" != "xyes"; then
-   AC_CHECK_FUNCS([mach_absolute_time], [have_mach_absolute_time=yes])
-fi
-AM_CONDITIONAL([HAVE_MACH_ABSOLUTE_TIME],
-		[test "x$have_mach_absolute_time" = "xyes"])
-
 AC_CHECK_FUNCS([poll], [have_poll=yes])
 AM_CONDITIONAL([HAVE_POLL], [test "x$have_poll" = "xyes"])
 
@@ -897,11 +889,9 @@ case "$host" in
     AM_CONDITIONAL([HAVE_GETADDRINFO], true)
     dnl defined in ws2tcpip.h, but missing in C:\mingw\lib\libws2_32.a
     AM_CONDITIONAL([HAVE_GAI_STRERROR], false)
-    AM_CONDITIONAL([HAVE_TIMEGETTIME], [test "x$have_clock_gettime" != "xyes"])
     ;;
   *)
     AM_CONDITIONAL([MINGW_BUILD], false)
-    AM_CONDITIONAL([HAVE_TIMEGETTIME], false)
     ;;
 esac
 

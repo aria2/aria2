@@ -72,7 +72,7 @@ FileEntry::FileEntry(std::string path, int64_t length, int64_t offset,
     offset_(offset),
     uris_(uris.begin(), uris.end()),
     path_(std::move(path)),
-    lastFasterReplace_(0),
+    lastFasterReplace_(Timer::zero()),
     maxConnectionPerServer_(1),
     requested_(true),
     uniqueProtocol_(false)
@@ -213,10 +213,13 @@ FileEntry::getRequest
   return req;
 }
 
+namespace {
+constexpr auto startupIdleTime = std::chrono::seconds(10);
+} // namespace
+
 std::shared_ptr<Request>
 FileEntry::findFasterRequest(const std::shared_ptr<Request>& base)
 {
-  const int startupIdleTime = 10;
   if(requestPool_.empty() ||
      lastFasterReplace_.difference(global::wallclock()) < startupIdleTime) {
     return nullptr;
@@ -248,7 +251,6 @@ FileEntry::findFasterRequest
  const std::vector<std::pair<size_t, std::string> >& usedHosts,
  const std::shared_ptr<ServerStatMan>& serverStatMan)
 {
-  const int startupIdleTime = 10;
   const int SPEED_THRESHOLD = 20*1024;
   if(lastFasterReplace_.difference(global::wallclock()) < startupIdleTime) {
     return nullptr;

@@ -135,9 +135,9 @@ std::unique_ptr<StatCalc> getStatCalc(const std::shared_ptr<Option>& op)
   if(op->getAsBool(PREF_QUIET)) {
     return make_unique<NullStatCalc>();
   }
-  auto impl = make_unique<ConsoleStatCalc>(op->getAsInt(PREF_SUMMARY_INTERVAL),
-                                           op->getAsBool(PREF_ENABLE_COLOR),
-                                           op->getAsBool(PREF_HUMAN_READABLE));
+  auto impl = make_unique<ConsoleStatCalc>(
+      std::chrono::seconds(op->getAsInt(PREF_SUMMARY_INTERVAL)),
+      op->getAsBool(PREF_ENABLE_COLOR), op->getAsBool(PREF_HUMAN_READABLE));
   impl->setReadoutVisibility(op->getAsBool(PREF_SHOW_CONSOLE_READOUT));
   impl->setTruncate(op->getAsBool(PREF_TRUNCATE_CONSOLE_READOUT));
   return std::move(impl);
@@ -217,7 +217,7 @@ int MultiUrlRequestInfo::prepare()
       File cookieFile(option_->get(PREF_LOAD_COOKIES));
       if(cookieFile.isFile() &&
          e_->getCookieStorage()->load(cookieFile.getPath(),
-                                      Time().getTime())) {
+                                      Time().getTimeFromEpoch())) {
         A2_LOG_INFO(fmt("Loaded cookies from '%s'.",
                         cookieFile.getPath().c_str()));
       } else {
@@ -273,16 +273,12 @@ int MultiUrlRequestInfo::prepare()
       parseAsyncDNSServers(option_->get(PREF_ASYNC_DNS_SERVER));
     e_->setAsyncDNSServers(asyncDNSServers);
 #endif // HAVE_ARES_ADDR_NODE
-    if(!Timer::monotonicClock()) {
-      A2_LOG_WARN("Don't change system time while aria2c is running."
-                  " Doing this may make aria2c hang for long time.");
-    }
 
     std::string serverStatIf = option_->get(PREF_SERVER_STAT_IF);
     if(!serverStatIf.empty()) {
       e_->getRequestGroupMan()->loadServerStat(serverStatIf);
       e_->getRequestGroupMan()->removeStaleServerStat
-        (option_->getAsInt(PREF_SERVER_STAT_TIMEOUT));
+        (std::chrono::seconds(option_->getAsInt(PREF_SERVER_STAT_TIMEOUT)));
     }
     e_->setStatCalc(getStatCalc(option_));
     if(uriListParser_) {

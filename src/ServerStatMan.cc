@@ -233,26 +233,11 @@ bool ServerStatMan::load(const std::string& filename)
   return true;
 }
 
-namespace {
-class FindStaleServerStat {
-private:
-  time_t timeout_;
-  Time time_;
-public:
-  FindStaleServerStat(time_t timeout):timeout_(timeout) {}
-
-  bool operator()(const std::shared_ptr<ServerStat>& ss) const
-  {
-    return ss->getLastUpdated().difference(time_) >= timeout_;
-  }
-};
-} // namespace
-
-void ServerStatMan::removeStaleServerStat(time_t timeout)
+void ServerStatMan::removeStaleServerStat(const std::chrono::seconds& timeout)
 {
-  FindStaleServerStat finder(timeout);
-  for(auto i = serverStats_.begin(), eoi = serverStats_.end(); i != eoi;) {
-    if(finder(*i)) {
+  auto now = Time();
+  for(auto i = std::begin(serverStats_); i != std::end(serverStats_);) {
+    if((*i)->getLastUpdated().difference(now) >= timeout) {
       serverStats_.erase(i++);
     } else {
       ++i;

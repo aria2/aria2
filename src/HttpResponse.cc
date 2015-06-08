@@ -144,7 +144,7 @@ void HttpResponse::retrieveCookie()
       ((*r.first).second,
        httpRequest_->getHost(),
        httpRequest_->getDir(),
-       now.getTime());
+       now.getTimeFromEpoch());
   }
 }
 
