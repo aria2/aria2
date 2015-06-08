@@ -129,7 +129,7 @@ std::string DHTNode::toString() const
              ipaddr_.c_str(),
              port_,
              condition_,
-             rtt_.count());
+             static_cast<long int>(rtt_.count()));
 }
 
 void DHTNode::setID(const unsigned char* id)
