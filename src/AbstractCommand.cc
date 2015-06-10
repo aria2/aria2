@@ -774,7 +774,7 @@ std::string AbstractCommand::resolveHostname(std::vector<std::string>& addrs,
 
   e_->findAllCachedIPAddresses(std::back_inserter(addrs), hostname, port);
   if (!addrs.empty()) {
-    auto ipaddr = addrs.front();
+    auto ipaddr = addrs[rand() % addrs.size()];
     A2_LOG_INFO(fmt(MSG_DNS_CACHE_HIT,
                     getCuid(),
                     hostname.c_str(),
