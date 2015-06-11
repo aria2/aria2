@@ -111,7 +111,8 @@ static inline bool isWhitespace(char c)
 
 static inline std::string stripWhitespace(std::string str)
 {
-  str.erase(std::remove_if(str.begin(), str.end(), isWhitespace), str.end());
+  str.erase(std::remove_if(std::begin(str), std::end(str), isWhitespace),
+            std::end(str));
   return str;
 }
 
@@ -185,9 +186,9 @@ bool checkIdentity(const SecIdentityRef id,
   // future-proof. Also "usually" doesn't cut it; there is already software
   // using SHA-2 class algos, and SHA-3 is standardized and potential users
   // cannot be far.
-  return std::find_if(supported.begin(),
-                      supported.end(),
-                      hash_finder(data.get(), fingerPrint)) != supported.end();
+  return std::find_if(std::begin(supported), std::end(supported),
+                      hash_finder(data.get(), fingerPrint)) !=
+         std::end(supported);
 }
 
 #endif // defined(__MAC_10_6)
@@ -243,11 +244,12 @@ bool AppleTLSContext::tryAsFingerprint(const std::string& fingerprint)
 {
   auto fp = stripWhitespace(fingerprint);
   // Verify this is a valid hex representation and normalize.
-  fp = util::toHex(util::fromHex(fp.begin(), fp.end()));
+  fp = util::toHex(util::fromHex(std::begin(fp), std::end(fp)));
 
   // Verify this can represent a hash
   auto ht = MessageDigest::getSupportedHashTypes();
-  if (std::find_if(ht.begin(), ht.end(), hash_validator(fp)) == ht.end()) {
+  if (std::find_if(std::begin(ht), std::end(ht), hash_validator(fp)) ==
+      std::end(ht)) {
     A2_LOG_INFO(fmt("%s is not a fingerprint, invalid hash representation",
                     fingerprint.c_str()));
     return false;

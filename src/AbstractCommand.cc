@@ -517,14 +517,12 @@ void AbstractCommand::onAbort()
   getPieceStorage()->markPiecesDone(0);
   std::vector<std::string> uris;
   uris.reserve(res.size());
-  std::transform(res.begin(),
-                 res.end(),
-                 std::back_inserter(uris),
+  std::transform(std::begin(res), std::end(res), std::back_inserter(uris),
                  std::mem_fn(&URIResult::getURI));
   A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - %lu URIs found.",
                    getCuid(),
                    static_cast<unsigned long int>(uris.size())));
-  fileEntry_->addUris(uris.begin(), uris.end());
+  fileEntry_->addUris(std::begin(uris), std::end(uris));
   getSegmentMan()->recognizeSegmentFor(fileEntry_);
 }
 
@@ -702,8 +700,8 @@ namespace {
 bool inNoProxy(const std::shared_ptr<Request>& req, const std::string& noProxy)
 {
   std::vector<Scip> entries;
-  util::splitIter
-    (noProxy.begin(), noProxy.end(), std::back_inserter(entries), ',', true);
+  util::splitIter(std::begin(noProxy), std::end(noProxy),
+                  std::back_inserter(entries), ',', true);
   if (entries.empty()) {
     return false;
   }
@@ -775,10 +773,8 @@ std::string AbstractCommand::resolveHostname(std::vector<std::string>& addrs,
   e_->findAllCachedIPAddresses(std::back_inserter(addrs), hostname, port);
   if (!addrs.empty()) {
     auto ipaddr = addrs.front();
-    A2_LOG_INFO(fmt(MSG_DNS_CACHE_HIT,
-                    getCuid(),
-                    hostname.c_str(),
-                    strjoin(addrs.begin(), addrs.end(), ", ").c_str()));
+    A2_LOG_INFO(fmt(MSG_DNS_CACHE_HIT, getCuid(), hostname.c_str(),
+                    strjoin(std::begin(addrs), std::end(addrs), ", ").c_str()));
     return ipaddr;
   }
 
@@ -825,10 +821,8 @@ std::string AbstractCommand::resolveHostname(std::vector<std::string>& addrs,
     }
     res.resolve(addrs, hostname);
   }
-  A2_LOG_INFO(fmt(MSG_NAME_RESOLUTION_COMPLETE,
-                  getCuid(),
-                  hostname.c_str(),
-                  strjoin(addrs.begin(), addrs.end(), ", ").c_str()));
+  A2_LOG_INFO(fmt(MSG_NAME_RESOLUTION_COMPLETE, getCuid(), hostname.c_str(),
+                  strjoin(std::begin(addrs), std::end(addrs), ", ").c_str()));
   for (const auto& addr : addrs) {
     e_->cacheIPAddress(hostname, addr, port);
   }

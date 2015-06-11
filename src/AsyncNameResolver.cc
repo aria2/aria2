@@ -143,10 +143,8 @@ void AsyncNameResolver::reset()
 ares_addr_node* parseAsyncDNSServers(const std::string& serversOpt)
 {
   std::vector<std::string> servers;
-  util::split(serversOpt.begin(), serversOpt.end(),
-              std::back_inserter(servers),
-              ',',
-              true /* doStrip */);
+  util::split(std::begin(serversOpt), std::end(serversOpt),
+              std::back_inserter(servers), ',', true /* doStrip */);
   ares_addr_node root;
   root.next = nullptr;
   ares_addr_node* tail = &root;

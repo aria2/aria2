@@ -90,9 +90,9 @@ std::string AdaptiveURISelector::select
 
   std::string selected = selectOne(uris);
 
-  if(selected != A2STR::NIL)
-    uris.erase(std::find(uris.begin(), uris.end(), selected));
-
+  if(selected != A2STR::NIL) {
+    uris.erase(std::find(std::begin(uris), std::end(uris), selected));
+  }
   return selected;
 }
 
@@ -109,17 +109,16 @@ void AdaptiveURISelector::mayRetryWithIncreasedTimeout(FileEntry* fileEntry)
   // looking for retries
   std::deque<URIResult> timeouts;
   fileEntry->extractURIResult(timeouts, error_code::TIME_OUT);
-  std::transform(timeouts.begin(), timeouts.end(), std::back_inserter(uris),
-                 std::mem_fn(&URIResult::getURI));
+  std::transform(std::begin(timeouts), std::end(timeouts),
+                 std::back_inserter(uris), std::mem_fn(&URIResult::getURI));
 
   if(A2_LOG_DEBUG_ENABLED) {
-    for(std::deque<std::string>::const_iterator i = uris.begin(),
-          eoi = uris.end(); i != eoi; ++i) {
+    for (const auto& uri : uris) {
       A2_LOG_DEBUG(
           fmt("AdaptiveURISelector: will retry server with increased"
               " timeout (%ld s): %s",
               static_cast<long int>(requestGroup_->getTimeout().count()),
-              (*i).c_str()));
+              uri.c_str()));
     }
   }
 }
@@ -305,7 +304,7 @@ std::string AdaptiveURISelector::selectRandomUri
 (const std::deque<std::string>& uris) const
 {
   int pos = SimpleRandomizer::getInstance()->getRandomNumber(uris.size());
-  auto i = uris.begin();
+  auto i = std::begin(uris);
   i = i+pos;
   return *i;
 }
