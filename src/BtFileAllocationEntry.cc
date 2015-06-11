@@ -70,7 +70,7 @@ void BtFileAllocationEntry::prepareForNextAction
     const std::vector<std::shared_ptr<FileEntry> >& fileEntries =
       getRequestGroup()->getDownloadContext()->getFileEntries();
     if(isUriSuppliedForRequsetFileEntry
-       (fileEntries.begin(), fileEntries.end())) {
+       (std::begin(fileEntries), std::end(fileEntries))) {
       getRequestGroup()->createNextCommandWithAdj(commands, e, 0);
     }
   } else {
