@@ -120,8 +120,8 @@ bool BtDependency::resolve()
         context->getFileEntries();
       for (auto &fe : fileEntries) {
         auto &uri = fe->getRemainingUris();
-        std::random_shuffle(std::begin(uri), std::end(uri),
-                            *SimpleRandomizer::getInstance());
+        std::shuffle(std::begin(uri), std::end(uri),
+                     *SimpleRandomizer::getInstance());
       }
       const std::vector<std::shared_ptr<FileEntry> >& dependantFileEntries =
         dependant_->getDownloadContext()->getFileEntries();

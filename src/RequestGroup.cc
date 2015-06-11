@@ -565,8 +565,8 @@ void RequestGroup::initPieceStorage()
                                         downloadContext_->getFileEntries(),
                                         downloadContext_->getPieceLength());
         if (!result.empty()) {
-          std::random_shuffle(std::begin(result), std::end(result),
-                              *SimpleRandomizer::getInstance());
+          std::shuffle(std::begin(result), std::end(result),
+                       *SimpleRandomizer::getInstance());
           auto priSelector = make_unique<PriorityPieceSelector>
             (ps->popPieceSelector());
           priSelector->setPriorityPiece(std::begin(result), std::end(result));

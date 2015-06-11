@@ -98,8 +98,8 @@ public:
 } // namespace
 
 void MetalinkEntry::reorderResourcesByPriority() {
-  std::random_shuffle(std::begin(resources), std::end(resources),
-                      *SimpleRandomizer::getInstance());
+  std::shuffle(std::begin(resources), std::end(resources),
+               *SimpleRandomizer::getInstance());
   std::sort(std::begin(resources), std::end(resources),
             PriorityHigher<std::unique_ptr<MetalinkResource>>{});
 }

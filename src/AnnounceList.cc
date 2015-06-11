@@ -222,8 +222,8 @@ void AnnounceList::moveToCompletedAllowedTier() {
 void AnnounceList::shuffle() {
   for (const auto& tier: tiers_) {
     auto& urls = tier->urls;
-    std::random_shuffle(std::begin(urls), std::end(urls),
-                        *SimpleRandomizer::getInstance());
+    std::shuffle(std::begin(urls), std::end(urls),
+                 *SimpleRandomizer::getInstance());
   }
 }
 

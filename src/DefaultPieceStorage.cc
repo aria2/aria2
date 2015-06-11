@@ -67,6 +67,7 @@
 #include "Notifier.h"
 #include "WrDiskCache.h"
 #include "RequestGroup.h"
+#include "SimpleRandomizer.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
@@ -201,7 +202,8 @@ void DefaultPieceStorage::getMissingPiece
         indexes.push_back(i);
       }
     }
-    std::random_shuffle(indexes.begin(), indexes.end());
+    std::shuffle(indexes.begin(), indexes.end(),
+                 *SimpleRandomizer::getInstance());
     for(std::vector<size_t>::const_iterator i = indexes.begin(),
           eoi = indexes.end(); i != eoi && misBlock < minMissingBlocks; ++i) {
       std::shared_ptr<Piece> piece = checkOutPiece(*i, cuid);
