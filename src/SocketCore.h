@@ -111,9 +111,13 @@ private:
 
   void setSockOpt(int level, int optname, void* optval, socklen_t optlen);
 
-  SocketCore(sock_t sockfd, int sockType);
 public:
   SocketCore(int sockType = SOCK_STREAM);
+
+  // Formally, private constructor, but made public to use with
+  // std::make_shared.
+  SocketCore(sock_t sockfd, int sockType);
+
   ~SocketCore();
 
   sock_t getSockfd() const { return sockfd_; }

@@ -877,7 +877,7 @@ nextParam
 template<typename T>
 std::shared_ptr<T> copy(const std::shared_ptr<T>& a)
 {
-  return std::shared_ptr<T>(new T(*a.get()));
+  return std::make_shared<T>(*a.get());
 }
 
 // This is a bit different from cookie_helper::domainMatch().  If

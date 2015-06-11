@@ -364,7 +364,7 @@ std::shared_ptr<SocketCore> SocketCore::acceptConnection() const
   if(fd == (sock_t) -1) {
     throw DL_ABORT_EX(fmt(EX_SOCKET_ACCEPT, errorMsg(errNum).c_str()));
   }
-  auto sock = std::shared_ptr<SocketCore>(new SocketCore(fd, sockType_));
+  auto sock = std::make_shared<SocketCore>(fd, sockType_);
   sock->setNonBlockingMode();
   return sock;
 }
