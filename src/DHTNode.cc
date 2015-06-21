@@ -89,7 +89,7 @@ bool DHTNode::isGood() const
   return !isBad() && !isQuestionable();
 }
 
-#define BAD_CONDITION 5
+constexpr int BAD_CONDITION = 5;
 
 bool DHTNode::isBad() const
 {

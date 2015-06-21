@@ -52,7 +52,7 @@ class ARC4Encryptor;
 // The maximum length of buffer. If the message length (including 4
 // bytes length and payload length) is larger than this value, it is
 // dropped.
-#define MAX_BUFFER_CAPACITY (16*1024+128)
+constexpr size_t MAX_BUFFER_CAPACITY = 16 * 1024 + 128;
 
 class PeerConnection {
 private:

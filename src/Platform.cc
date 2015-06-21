@@ -72,10 +72,10 @@
 #endif // HAVE_LIBGMP
 #include "LogFactory.h"
 
-#define A2_MIN_GCRYPT_VERSION "1.2.4"
+namespace aria2 {
 
-namespace {
 #ifdef HAVE_LIBGNUTLS
+namespace {
   void gnutls_log_callback(int level, const char *str)
   {
     using namespace aria2;
@@ -84,11 +84,8 @@ namespace {
     msg.resize(msg.size() - 1);
     A2_LOG_DEBUG(fmt("GnuTLS: <%d> %s", level, msg.c_str()));
   }
-#endif // HAVE_LIBGNUTLS
 }
-
-
-namespace aria2 {
+#endif // HAVE_LIBGNUTLS
 
 bool Platform::initialized_ = false;
 
@@ -126,7 +123,7 @@ bool Platform::setUp()
   OpenSSL_add_all_algorithms();
 #endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGCRYPT
-  if(!gcry_check_version(A2_MIN_GCRYPT_VERSION)) {
+  if(!gcry_check_version("1.2.4")) {
     throw DL_ABORT_EX("gcry_check_version() failed.");
   }
   gcry_control(GCRYCTL_DISABLE_SECMEM, 0);
