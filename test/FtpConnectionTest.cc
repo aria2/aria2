@@ -206,7 +206,7 @@ void FtpConnectionTest::testReceiveMdtmResponse()
 
 void FtpConnectionTest::testReceiveResponse_overflow()
 {
-  char data[1024];
+  char data[1_k];
   memset(data, 0, sizeof(data));
   memcpy(data, "213 ", 4);
   for(int i = 0; i < 64; ++i) {

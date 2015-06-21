@@ -4,6 +4,7 @@
 
 #include "BitfieldMan.h"
 #include "PieceStatMan.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -31,7 +32,7 @@ void RarestPieceSelectorTest::testSelect()
 {
   std::shared_ptr<PieceStatMan> pieceStatMan(new PieceStatMan(10, false));
   RarestPieceSelector selector(pieceStatMan);
-  BitfieldMan bf(1024, 10*1024);
+  BitfieldMan bf(1_k, 10_k);
   bf.setBitRange(0, 2);
   size_t index;
 

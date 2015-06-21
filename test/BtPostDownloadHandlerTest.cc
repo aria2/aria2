@@ -69,7 +69,7 @@ void BtPostDownloadHandlerTest::testCanHandle_contentType()
 void BtPostDownloadHandlerTest::testGetNextRequestGroups()
 {
   std::shared_ptr<DownloadContext> dctx
-    (new DownloadContext(1024, 0, A2_TEST_DIR"/test.torrent"));
+    (new DownloadContext(1_k, 0, A2_TEST_DIR"/test.torrent"));
   RequestGroup rg(GroupId::create(), option_);
   rg.setDownloadContext(dctx);
   rg.initPieceStorage();

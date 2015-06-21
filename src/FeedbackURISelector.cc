@@ -121,9 +121,9 @@ std::string FeedbackURISelector::selectFaster
  const std::vector<std::pair<size_t, std::string> >& usedHosts)
 {
   // Use first 10 good URIs to introduce some randomness.
-  const size_t NUM_URI = 10;
+  constexpr size_t NUM_URI = 10;
   // Ignore low speed server
-  const int SPEED_THRESHOLD = 20*1024;
+  constexpr int SPEED_THRESHOLD = 20_k;
   std::vector<std::pair<std::shared_ptr<ServerStat>, std::string> > fastCands;
   std::vector<std::string> normCands;
   for (const auto& u: uris) {

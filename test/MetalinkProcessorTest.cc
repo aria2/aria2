@@ -847,7 +847,7 @@ void MetalinkProcessorTest::testMultiplePieces()
     auto& e = m->getEntries()[0];
     auto& c = e->chunkChecksum;
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c->getHashType());
-    CPPUNIT_ASSERT_EQUAL(1024, c->getPieceLength());
+    CPPUNIT_ASSERT_EQUAL((int32_t)1_k, c->getPieceLength());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
@@ -878,7 +878,7 @@ void MetalinkProcessorTest::testBadPieceNo()
     auto& e = m->getEntries()[0];
     auto& c = e->chunkChecksum;
     CPPUNIT_ASSERT(c);
-    CPPUNIT_ASSERT_EQUAL(1024, c->getPieceLength());
+    CPPUNIT_ASSERT_EQUAL((int32_t)1_k, c->getPieceLength());
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c->getHashType());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
@@ -910,7 +910,7 @@ void MetalinkProcessorTest::testBadPieceLength()
     auto& e = m->getEntries()[0];
     auto& c = e->chunkChecksum;
     CPPUNIT_ASSERT(c);
-    CPPUNIT_ASSERT_EQUAL(1024, c->getPieceLength());
+    CPPUNIT_ASSERT_EQUAL((int32_t)1_k, c->getPieceLength());
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c->getHashType());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
@@ -941,7 +941,7 @@ void MetalinkProcessorTest::testUnsupportedType_piece()
     auto& e = m->getEntries()[0];
     auto& c = e->chunkChecksum;
     CPPUNIT_ASSERT(c);
-    CPPUNIT_ASSERT_EQUAL(1024, c->getPieceLength());
+    CPPUNIT_ASSERT_EQUAL((int32_t)1_k, c->getPieceLength());
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c->getHashType());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());

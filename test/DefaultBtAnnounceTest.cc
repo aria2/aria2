@@ -49,8 +49,8 @@ public:
   void setUp() {
     option_ = new Option();
 
-    int64_t totalLength = 4*1024*1024;
-    int32_t pieceLength = 256*1024;
+    int64_t totalLength = 4_m;
+    int32_t pieceLength = 256_k;
 
     static const unsigned char infoHash[] = {  0x01, 0x23, 0x45, 0x67,
                                                0x89, 0xab, 0xcd, 0xef,

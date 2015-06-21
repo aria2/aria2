@@ -37,7 +37,7 @@ std::string readFile(const std::string& path)
 {
   std::stringstream ss;
   std::ifstream in(path.c_str(), std::ios::binary);
-  char buf[4096];
+  char buf[4_k];
   while(1) {
     in.read(buf, sizeof(buf));
     ss.write(buf, in.gcount());

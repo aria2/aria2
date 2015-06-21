@@ -68,7 +68,7 @@ void BtInterestedMessageTest::testCreateMessage() {
 void BtInterestedMessageTest::testDoReceivedAction() {
   BtInterestedMessage msg;
   std::shared_ptr<Peer> peer(new Peer("host", 6969));
-  peer->allocateSessionResource(1024, 1024*1024);
+  peer->allocateSessionResource(1_k, 1_m);
   msg.setPeer(peer);
 
   auto peerStorage = make_unique<MockPeerStorage>();
@@ -88,7 +88,7 @@ void BtInterestedMessageTest::testDoReceivedAction() {
 void BtInterestedMessageTest::testOnSendComplete() {
   BtInterestedMessage msg;
   std::shared_ptr<Peer> peer(new Peer("host", 6969));
-  peer->allocateSessionResource(1024, 1024*1024);
+  peer->allocateSessionResource(1_k, 1_m);
   msg.setPeer(peer);
   CPPUNIT_ASSERT(!peer->amInterested());
   std::shared_ptr<ProgressUpdate> pu(msg.getProgressUpdate());

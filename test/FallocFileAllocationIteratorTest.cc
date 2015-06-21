@@ -39,7 +39,7 @@ void FallocFileAllocationIteratorTest::testAllocate()
 
   DefaultDiskWriter writer(fn);
   int64_t offset = 10;
-  int64_t totalLength = 40960;
+  int64_t totalLength = 40_k;
 
   // we have to open file first.
   writer.openExistingFile();
@@ -48,7 +48,7 @@ void FallocFileAllocationIteratorTest::testAllocate()
   itr.allocateChunk();
   CPPUNIT_ASSERT(itr.finished());
 
-  CPPUNIT_ASSERT_EQUAL((int64_t)40960, f.size());
+  CPPUNIT_ASSERT_EQUAL((int64_t)40_k, f.size());
 #endif // !HAVE_FALLOCATE
 }
 

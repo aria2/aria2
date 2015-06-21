@@ -135,7 +135,7 @@ ssize_t SocketBuffer::send()
   while(!bufq_.empty()) {
     size_t num;
     size_t bufqlen = bufq_.size();
-    ssize_t amount = 24*1024;
+    ssize_t amount = 24_k;
     ssize_t firstlen = bufq_.front()->getLength() - offset_;
     amount -= firstlen;
     iov[0].A2IOVEC_BASE =

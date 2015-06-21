@@ -251,7 +251,7 @@ FileEntry::findFasterRequest
  const std::vector<std::pair<size_t, std::string> >& usedHosts,
  const std::shared_ptr<ServerStatMan>& serverStatMan)
 {
-  const int SPEED_THRESHOLD = 20*1024;
+  constexpr int SPEED_THRESHOLD = 20_k;
   if(lastFasterReplace_.difference(global::wallclock()) < startupIdleTime) {
     return nullptr;
   }

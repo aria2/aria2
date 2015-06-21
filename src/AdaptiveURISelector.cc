@@ -226,7 +226,7 @@ void AdaptiveURISelector::adjustLowestSpeedLimit
   int lowest =
     requestGroup_->getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT);
   if (lowest > 0) {
-    int low_lowest = 4 * 1024;
+    int low_lowest = 4_k;
     int max = getMaxDownloadSpeed(uris);
     if (max > 0 && lowest > max / 4) {
       A2_LOG_NOTICE(fmt(_("Lowering lowest-speed-limit since known max speed is"

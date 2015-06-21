@@ -1,8 +1,10 @@
 #include "SingleFileAllocationIterator.h"
-#include "File.h"
-#include "DefaultDiskWriter.h"
 #include <fstream>
 #include <cppunit/extensions/HelperMacros.h>
+
+#include "File.h"
+#include "DefaultDiskWriter.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -36,7 +38,7 @@ void SingleFileAllocationIteratorTest::testAllocate()
 
   DefaultDiskWriter writer(fn);
   int64_t offset = 10;
-  int64_t totalLength = 16*1024*2+8*1024;
+  int64_t totalLength = 32_k + 8_k;
 
   // we have to open file first.
   writer.openExistingFile();
@@ -47,7 +49,7 @@ void SingleFileAllocationIteratorTest::testAllocate()
     itr.allocateChunk();
   }
   File f(fn);
-  CPPUNIT_ASSERT_EQUAL((int64_t)40960, f.size());
+  CPPUNIT_ASSERT_EQUAL((int64_t)40_k, f.size());
 }
 
 } // namespace aria2

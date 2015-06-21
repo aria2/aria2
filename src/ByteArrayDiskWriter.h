@@ -38,6 +38,8 @@
 #include "DiskWriter.h"
 #include <sstream>
 
+#include "a2functional.h"
+
 namespace aria2 {
 
 class ByteArrayDiskWriter : public DiskWriter {
@@ -46,7 +48,7 @@ private:
   size_t maxLength_;
   void clear();
 public:
-  ByteArrayDiskWriter(size_t maxLength = 5*1024*1024);
+  ByteArrayDiskWriter(size_t maxLength = 5_m);
   virtual ~ByteArrayDiskWriter();
 
   virtual void initAndOpenFile(int64_t totalLength = 0) CXX11_OVERRIDE;

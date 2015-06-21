@@ -574,7 +574,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
                       (PREF_MIN_SPLIT_SIZE,
                        TEXT_MIN_SPLIT_SIZE,
                        "20M",
-                       1024*1024, 1024*1024*1024,
+                       1_m, 1_g,
                        'k'));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_FTP);
@@ -1072,8 +1072,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
                       (PREF_PIECE_LENGTH,
                        TEXT_PIECE_LENGTH,
                        "1M",
-                       1024*1024,
-                       1024*1024*1024));
+                       1_m, 1_g));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);

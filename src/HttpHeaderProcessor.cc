@@ -440,7 +440,7 @@ fin:
   // http://httpd.apache.org/docs/2.2/en/mod/core.html about size
   // limit of HTTP headers. The page states that the number of request
   // fields rarely exceeds 20.
-  if (lastFieldName_.size() > 1024 || buf_.size() > 8192) {
+  if (lastFieldName_.size() > 1024 || buf_.size() > 8_k) {
     throw DL_ABORT_EX("Too large HTTP header");
   }
 

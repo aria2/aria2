@@ -110,7 +110,7 @@ void FileTest::testRemove() {
 
 void FileTest::testSize() {
   File f(A2_TEST_DIR"/4096chunk.txt");
-  CPPUNIT_ASSERT_EQUAL(4096, (int)f.size());
+  CPPUNIT_ASSERT_EQUAL((int64_t)4_k, f.size());
 }
 
 void FileTest::testMkdir() {

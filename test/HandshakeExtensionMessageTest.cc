@@ -62,7 +62,7 @@ void HandshakeExtensionMessageTest::testGetBencodedData()
   msg.setTCPPort(6889);
   msg.setExtension(ExtensionMessageRegistry::UT_PEX, 1);
   msg.setExtension(ExtensionMessageRegistry::UT_METADATA, 2);
-  msg.setMetadataSize(1024);
+  msg.setMetadataSize(1_k);
   CPPUNIT_ASSERT_EQUAL
     (std::string("d"
                  "1:md11:ut_metadatai2e6:ut_pexi1ee"
@@ -83,7 +83,7 @@ void HandshakeExtensionMessageTest::testToString()
   msg.setTCPPort(6889);
   msg.setExtension(ExtensionMessageRegistry::UT_PEX, 1);
   msg.setExtension(ExtensionMessageRegistry::UT_METADATA, 2);
-  msg.setMetadataSize(1024);
+  msg.setMetadataSize(1_k);
   CPPUNIT_ASSERT_EQUAL
     (std::string("handshake client=aria2, tcpPort=6889, metadataSize=1024,"
                  " ut_metadata=2, ut_pex=1"), msg.toString());
@@ -100,13 +100,13 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
   dctx->markTotalLengthIsUnknown();
 
   auto peer = std::make_shared<Peer>("192.168.0.1", 0);
-  peer->allocateSessionResource(1024, 1024*1024);
+  peer->allocateSessionResource(1_k, 1_m);
   HandshakeExtensionMessage msg;
   msg.setClientVersion("aria2");
   msg.setTCPPort(6889);
   msg.setExtension(ExtensionMessageRegistry::UT_PEX, 1);
   msg.setExtension(ExtensionMessageRegistry::UT_METADATA, 3);
-  msg.setMetadataSize(1024);
+  msg.setMetadataSize(1_k);
   msg.setPeer(peer);
   msg.setDownloadContext(dctx.get());
 
@@ -121,13 +121,13 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
                        (ExtensionMessageRegistry::UT_METADATA));
   CPPUNIT_ASSERT(peer->isSeeder());
   auto attrs = bittorrent::getTorrentAttrs(dctx);
-  CPPUNIT_ASSERT_EQUAL((size_t)1024, attrs->metadataSize);
-  CPPUNIT_ASSERT_EQUAL((int64_t)1024, dctx->getTotalLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)1_k, attrs->metadataSize);
+  CPPUNIT_ASSERT_EQUAL((int64_t)1_k, dctx->getTotalLength());
   CPPUNIT_ASSERT(dctx->knowsTotalLength());
 
   // See Peer is not marked as seeder if !attrs->metadata.empty()
-  peer->allocateSessionResource(1024, 1024*1024);
-  attrs->metadataSize = 1024;
+  peer->allocateSessionResource(1_k, 1_m);
+  attrs->metadataSize = 1_k;
   attrs->metadata = std::string('0', attrs->metadataSize);
   msg.doReceivedAction();
   CPPUNIT_ASSERT(!peer->isSeeder());
@@ -146,7 +146,7 @@ void HandshakeExtensionMessageTest::testCreate()
   CPPUNIT_ASSERT_EQUAL((uint8_t)1,
                        m->getExtensionMessageID
                        (ExtensionMessageRegistry::UT_PEX));
-  CPPUNIT_ASSERT_EQUAL((size_t)1024, m->getMetadataSize());
+  CPPUNIT_ASSERT_EQUAL((size_t)1_k, m->getMetadataSize());
   try {
     // bad payload format
     std::string in = "011:hello world";

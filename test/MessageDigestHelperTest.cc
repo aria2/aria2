@@ -33,7 +33,7 @@ void MessageDigestHelperTest::testDigestDiskWriter() {
   CPPUNIT_ASSERT_EQUAL(std::string("608cabc0f2fa18c260cafd974516865c772363d5"),
                        util::toHex(message_digest::digest
                                    (MessageDigest::sha1().get(),
-                                    diskio, 0, 4096)));
+                                    diskio, 0, 4_k)));
 
   CPPUNIT_ASSERT_EQUAL(std::string("7a4a9ae537ebbbb826b1060e704490ad0f365ead"),
                        util::toHex(message_digest::digest

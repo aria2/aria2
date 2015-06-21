@@ -77,7 +77,7 @@ void BtAllowedFastMessageTest::testDoReceivedAction() {
   BtAllowedFastMessage msg;
   msg.setIndex(1);
   std::shared_ptr<Peer> peer(new Peer("localhost", 6969));
-  peer->allocateSessionResource(1024, 1024*1024);
+  peer->allocateSessionResource(1_k, 1_m);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
   CPPUNIT_ASSERT(!peer->isInPeerAllowedIndexSet(1));
@@ -95,7 +95,7 @@ void BtAllowedFastMessageTest::testOnSendComplete() {
   BtAllowedFastMessage msg;
   msg.setIndex(1);
   std::shared_ptr<Peer> peer(new Peer("localhost", 6969));
-  peer->allocateSessionResource(1024, 1024*1024);
+  peer->allocateSessionResource(1_k, 1_m);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
   CPPUNIT_ASSERT(!peer->isInAmAllowedIndexSet(1));

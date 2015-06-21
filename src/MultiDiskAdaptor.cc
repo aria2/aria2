@@ -423,7 +423,7 @@ void MultiDiskAdaptor::writeCache(const WrDiskCacheEntry* entry)
 {
   // Write cached data in 4KiB aligned offset. This reduces disk
   // activity especially on Windows 7 NTFS.
-  unsigned char buf[16*1024];
+  unsigned char buf[16_k];
   size_t buflen = 0;
   size_t buffoffset = 0;
   auto& dataSet = entry->getDataSet();

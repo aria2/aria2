@@ -805,7 +805,7 @@ void UtilTest1::testGetContentDispositionFilename() {
 }
 
 void UtilTest1::testParseContentDisposition1() {
-  char dest[1024];
+  char dest[1_k];
   size_t destlen = sizeof(dest);
   const char *cs;
   size_t cslen;
@@ -1084,7 +1084,7 @@ void UtilTest1::testParseContentDisposition1() {
 }
 
 void UtilTest1::testParseContentDisposition2() {
-  char dest[1024];
+  char dest[1_k];
   size_t destlen = sizeof(dest);
   const char *cs;
   size_t cslen;

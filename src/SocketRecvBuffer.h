@@ -40,6 +40,8 @@
 #include <memory>
 #include <array>
 
+#include "a2functional.h"
+
 namespace aria2 {
 
 class SocketCore;
@@ -79,7 +81,7 @@ public:
   }
 
 private:
-  std::array<unsigned char, 16384> buf_;
+  std::array<unsigned char, 16_k> buf_;
   std::shared_ptr<SocketCore> socket_;
   unsigned char *pos_;
   unsigned char *last_;

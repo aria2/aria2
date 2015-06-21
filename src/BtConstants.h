@@ -36,6 +36,7 @@
 #define D_BT_CONSTANTS_H
 
 #include "common.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -45,14 +46,14 @@ constexpr size_t PIECE_HASH_LENGTH = 20;
 
 constexpr size_t PEER_ID_LENGTH = 20;
 
-constexpr size_t MAX_BLOCK_LENGTH = 16 * 1024;
+constexpr size_t MAX_BLOCK_LENGTH = 16_k;
 
 constexpr size_t DEFAULT_MAX_OUTSTANDING_REQUEST = 6;
 
 // Upper Bound of the number of outstanding request
 constexpr size_t UB_MAX_OUTSTANDING_REQUEST = 256;
 
-constexpr size_t METADATA_PIECE_SIZE = 16 * 1024;
+constexpr size_t METADATA_PIECE_SIZE = 16_k;
 
 constexpr const char LPD_MULTICAST_ADDR[] = "239.192.152.143";
 

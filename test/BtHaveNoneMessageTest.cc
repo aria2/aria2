@@ -68,7 +68,7 @@ void BtHaveNoneMessageTest::testCreateMessage() {
 void BtHaveNoneMessageTest::testDoReceivedAction() {
   BtHaveNoneMessage msg;
   std::shared_ptr<Peer> peer(new Peer("host", 6969));
-  peer->allocateSessionResource(1024, 1024*1024);
+  peer->allocateSessionResource(1_k, 1_m);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
   msg.doReceivedAction();

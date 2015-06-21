@@ -265,7 +265,7 @@ void DefaultPieceStorageTest::testGetPieceCompletedPiece() {
 
 void DefaultPieceStorageTest::testCancelPiece()
 {
-  size_t pieceLength = 256*1024;
+  size_t pieceLength = 256_k;
   int64_t totalLength = 32*pieceLength; // <-- make the number of piece greater than END_GAME_PIECE_NUM
   std::deque<std::string> uris1;
   uris1.push_back("http://localhost/src/file1.txt");
@@ -291,13 +291,13 @@ void DefaultPieceStorageTest::testCancelPiece()
 
 void DefaultPieceStorageTest::testMarkPiecesDone()
 {
-  size_t pieceLength = 256*1024;
-  int64_t totalLength = 4*1024*1024;
+  size_t pieceLength = 256_k;
+  int64_t totalLength = 4_m;
   auto dctx =std::make_shared<DownloadContext>(pieceLength, totalLength);
 
   DefaultPieceStorage ps(dctx, option_.get());
 
-  ps.markPiecesDone(pieceLength*10+16*1024*2+1);
+  ps.markPiecesDone(pieceLength * 10 + 32_k + 1);
 
   for(size_t i = 0; i < 10; ++i) {
     CPPUNIT_ASSERT(ps.hasPiece(i));
@@ -305,7 +305,7 @@ void DefaultPieceStorageTest::testMarkPiecesDone()
   for(size_t i = 10; i < (totalLength+pieceLength-1)/pieceLength; ++i) {
     CPPUNIT_ASSERT(!ps.hasPiece(i));
   }
-  CPPUNIT_ASSERT_EQUAL((int64_t)pieceLength*10+16*1024*2,
+  CPPUNIT_ASSERT_EQUAL((int64_t)pieceLength * 10 + (int64_t)32_k,
                        ps.getCompletedLength());
 
   ps.markPiecesDone(totalLength);
@@ -320,36 +320,36 @@ void DefaultPieceStorageTest::testMarkPiecesDone()
 
 void DefaultPieceStorageTest::testGetCompletedLength()
 {
-  auto dctx = std::make_shared<DownloadContext>(1024*1024, 256*1024*1024);
+  auto dctx = std::make_shared<DownloadContext>(1_m, 256_m);
 
   DefaultPieceStorage ps(dctx, option_.get());
 
   CPPUNIT_ASSERT_EQUAL((int64_t)0, ps.getCompletedLength());
 
-  ps.markPiecesDone(250*1024*1024);
-  CPPUNIT_ASSERT_EQUAL((int64_t)250*1024*1024, ps.getCompletedLength());
+  ps.markPiecesDone(250_m);
+  CPPUNIT_ASSERT_EQUAL((int64_t)250_m, ps.getCompletedLength());
 
   std::vector<std::shared_ptr<Piece>> inFlightPieces;
   for(int i = 0; i < 2; ++i) {
-    auto p = std::make_shared<Piece>(250+i, 1024*1024);
+    auto p = std::make_shared<Piece>(250+i, 1_m);
     for(int j = 0; j < 32; ++j) {
       p->completeBlock(j);
     }
     inFlightPieces.push_back(p);
-    CPPUNIT_ASSERT_EQUAL((int64_t)512*1024, p->getCompletedLength());
+    CPPUNIT_ASSERT_EQUAL((int64_t)512_k, p->getCompletedLength());
   }
   ps.addInFlightPiece(inFlightPieces);
 
-  CPPUNIT_ASSERT_EQUAL((int64_t)251*1024*1024, ps.getCompletedLength());
+  CPPUNIT_ASSERT_EQUAL((int64_t)251_m, ps.getCompletedLength());
 
-  ps.markPiecesDone(256*1024*1024);
+  ps.markPiecesDone(256_m);
 
-  CPPUNIT_ASSERT_EQUAL((int64_t)256*1024*1024, ps.getCompletedLength());
+  CPPUNIT_ASSERT_EQUAL((int64_t)256_m, ps.getCompletedLength());
 }
 
 void DefaultPieceStorageTest::testGetFilteredCompletedLength()
 {
-  const size_t pieceLength = 1024*1024;
+  const size_t pieceLength = 1_m;
   auto dctx = std::make_shared<DownloadContext>();
   dctx->setPieceLength(pieceLength);
   auto files = std::vector<std::shared_ptr<FileEntry>>{
@@ -373,7 +373,7 @@ void DefaultPieceStorageTest::testGetFilteredCompletedLength()
   auto piece = ps.getMissingPiece(0, 1);
   ps.completePiece(piece);
 
-  CPPUNIT_ASSERT_EQUAL((int64_t)pieceLength+16*1024,
+  CPPUNIT_ASSERT_EQUAL((int64_t)pieceLength+(int64_t)16_k,
                        ps.getFilteredCompletedLength());
 }
 

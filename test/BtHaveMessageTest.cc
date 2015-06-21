@@ -76,7 +76,7 @@ void BtHaveMessageTest::testCreateMessage() {
 
 void BtHaveMessageTest::testDoReceivedAction() {
   std::shared_ptr<Peer> peer(new Peer("host", 6969));
-  peer->allocateSessionResource(16*1024, 256*1024);
+  peer->allocateSessionResource(16_k, 256_k);
   BtHaveMessage msg;
   msg.setIndex(1);
   msg.setPeer(peer);
@@ -93,7 +93,7 @@ void BtHaveMessageTest::testDoReceivedAction() {
 void BtHaveMessageTest::testDoReceivedAction_goodByeSeeder()
 {
   std::shared_ptr<Peer> peer(new Peer("ip", 6000));
-  peer->allocateSessionResource(1024, 2*1024);
+  peer->allocateSessionResource(1_k, 2_k);
   BtHaveMessage msg;
   msg.setIndex(0);
   msg.setPeer(peer);

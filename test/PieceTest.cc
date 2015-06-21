@@ -49,7 +49,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( PieceTest );
 
 void PieceTest::testCompleteBlock()
 {
-  size_t blockLength = 32*1024;
+  size_t blockLength = 32_k;
   Piece p(0, blockLength*10, blockLength);
 
   p.completeBlock(5);
@@ -59,7 +59,7 @@ void PieceTest::testCompleteBlock()
 
 void PieceTest::testGetCompletedLength()
 {
-  int32_t blockLength = 16*1024;
+  int32_t blockLength = 16_k;
   Piece p(0, blockLength*10+100, blockLength);
 
   p.completeBlock(1);
@@ -73,7 +73,7 @@ void PieceTest::testGetCompletedLength()
 void PieceTest::testFlushWrCache()
 {
   unsigned char* data;
-  Piece p(0, 1024);
+  Piece p(0, 1_k);
   WrDiskCache dc(64);
   p.initWrCache(&dc, adaptor_);
   data = new unsigned char[3];
@@ -99,8 +99,8 @@ void PieceTest::testFlushWrCache()
 void PieceTest::testAppendWrCache()
 {
   unsigned char* data;
-  Piece p(0, 1024);
-  WrDiskCache dc(1024);
+  Piece p(0, 1_k);
+  WrDiskCache dc(1_k);
   p.initWrCache(&dc, adaptor_);
   size_t capacity = 6;
   data = new unsigned char[capacity];
@@ -139,7 +139,7 @@ void PieceTest::testGetDigestWithWrCache()
 
 void PieceTest::testUpdateHash()
 {
-  Piece p(0, 16, 2*1024*1024);
+  Piece p(0, 16, 2_m);
   p.setHashType("sha-1");
 
   std::string spam("SPAM!");

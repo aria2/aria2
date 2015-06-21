@@ -44,6 +44,7 @@
 #include "TimeA2.h"
 #include "SocketBuffer.h"
 #include "Command.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -75,7 +76,7 @@ private:
   bool bulkReceiveResponse(std::pair<int, std::string>& response);
 
   //prepare for large banners
-  static const size_t MAX_RECV_BUFFER = 65536;
+  static const size_t MAX_RECV_BUFFER = 64_k;
 public:
   FtpConnection(cuid_t cuid, const std::shared_ptr<SocketCore>& socket,
                 const std::shared_ptr<Request>& req,

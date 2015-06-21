@@ -417,13 +417,13 @@ void BittorrentHelperTest::testLoadFromMemory_multiFileNonUtf8Path()
   path->append("path");
   path->append(fromHex("90a28a")+"E");
   auto file = Dict::g();
-  file->put("length", Integer::g(1024));
+  file->put("length", Integer::g(1_k));
   file->put("path", std::move(path));
   auto files = List::g();
   files->append(std::move(file));
   auto info = Dict::g();
   info->put("files", std::move(files));
-  info->put("piece length", Integer::g(1024));
+  info->put("piece length", Integer::g(1_k));
   info->put("pieces", "01234567890123456789");
   info->put("name", fromHex("1b")+"$B%O%m!<"+fromHex("1b")+"(B");
   Dict dict;
@@ -445,10 +445,10 @@ void BittorrentHelperTest::testLoadFromMemory_multiFileNonUtf8Path()
 void BittorrentHelperTest::testLoadFromMemory_singleFileNonUtf8Path()
 {
   auto info = Dict::g();
-  info->put("piece length", Integer::g(1024));
+  info->put("piece length", Integer::g(1_k));
   info->put("pieces", "01234567890123456789");
   info->put("name", fromHex("90a28a")+"E");
-  info->put("length", Integer::g(1024));
+  info->put("length", Integer::g(1_k));
   Dict dict;
   dict.put("info", std::move(info));
   auto dctx = std::make_shared<DownloadContext>();

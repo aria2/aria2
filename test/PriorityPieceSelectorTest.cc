@@ -5,6 +5,7 @@
 #include "array_fun.h"
 #include "BitfieldMan.h"
 #include "MockPieceSelector.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -22,7 +23,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(PriorityPieceSelectorTest);
 
 void PriorityPieceSelectorTest::testSelect()
 {
-  size_t pieceLength = 1024;
+  constexpr size_t pieceLength = 1_k;
   size_t A[] = { 1,200};
   BitfieldMan bf(pieceLength, pieceLength*256);
   for(auto i : A) {

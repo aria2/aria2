@@ -157,9 +157,9 @@ void DefaultPeerStorageTest::testReturnPeer()
   DefaultPeerStorage ps;
 
   std::shared_ptr<Peer> peer1(new Peer("192.168.0.1", 0));
-  peer1->allocateSessionResource(1024*1024, 1024*1024*10);
+  peer1->allocateSessionResource(1_m, 10_m);
   std::shared_ptr<Peer> peer2(new Peer("192.168.0.2", 6889));
-  peer2->allocateSessionResource(1024*1024, 1024*1024*10);
+  peer2->allocateSessionResource(1_m, 10_m);
   std::shared_ptr<Peer> peer3(new Peer("192.168.0.1", 6889));
   peer2->setDisconnectedGracefully(true);
   ps.addPeer(peer1);

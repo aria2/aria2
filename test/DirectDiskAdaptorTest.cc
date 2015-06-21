@@ -60,7 +60,7 @@ void DirectDiskAdaptorTest::testWriteCache()
     adaptor->setDiskWriter(std::move(sdw));
   }
   WrDiskCacheEntry cache{adaptor};
-  std::string data1(4096, '1'), data2(4094, '2');
+  std::string data1(4_k, '1'), data2(4094, '2');
   cache.cacheData(createDataCell(5, data1.c_str()));
   cache.cacheData(createDataCell(5+data1.size(), data2.c_str()));
   adaptor->writeCache(&cache);
@@ -68,9 +68,9 @@ void DirectDiskAdaptorTest::testWriteCache()
 
   cache.clear();
   dw->setString("");
-  cache.cacheData(createDataCell(4096, data1.c_str()));
+  cache.cacheData(createDataCell(4_k, data1.c_str()));
   adaptor->writeCache(&cache);
-  CPPUNIT_ASSERT_EQUAL(data1, dw->getString().substr(4096));
+  CPPUNIT_ASSERT_EQUAL(data1, dw->getString().substr(4_k));
 
   cache.clear();
   dw->setString("???????");

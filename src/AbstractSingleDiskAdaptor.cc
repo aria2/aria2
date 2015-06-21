@@ -101,7 +101,7 @@ void AbstractSingleDiskAdaptor::writeCache(const WrDiskCacheEntry* entry)
   // activity especially on Windows 7 NTFS. In this code, we assume
   // that maximum length of DataCell data is 16KiB to simplify the
   // code.
-  unsigned char buf[16*1024];
+  unsigned char buf[16_k];
   int64_t start = 0;
   size_t buflen = 0;
   size_t buffoffset = 0;

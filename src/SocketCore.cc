@@ -1518,7 +1518,7 @@ void checkAddrconfig()
 {
 #ifdef HAVE_IPHLPAPI_H
   A2_LOG_INFO("Checking configured addresses");
-  ULONG bufsize = 15*1024;
+  ULONG bufsize = 15_k;
   ULONG retval = 0;
   IP_ADAPTER_ADDRESSES* buf = 0;
   int numTry = 0;

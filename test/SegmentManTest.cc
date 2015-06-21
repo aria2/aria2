@@ -32,8 +32,8 @@ private:
 public:
   void setUp()
   {
-    size_t pieceLength = 1024*1024;
-    uint64_t totalLength = 64*1024*1024;
+    size_t pieceLength = 1_m;
+    uint64_t totalLength = 64_m;
     option_.reset(new Option());
     dctx_.reset
       (new DownloadContext(pieceLength, totalLength, "aria2.tar.bz2"));
@@ -80,8 +80,8 @@ void SegmentManTest::testNullBitfield()
 void SegmentManTest::testCompleteSegment()
 {
   Option op;
-  size_t pieceLength = 1024*1024;
-  uint64_t totalLength = 64*1024*1024;
+  size_t pieceLength = 1_m;
+  uint64_t totalLength = 64_m;
   std::shared_ptr<DownloadContext> dctx
     (new DownloadContext(pieceLength, totalLength, "aria2.tar.bz2"));
   std::shared_ptr<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &op));

@@ -45,7 +45,7 @@
 
 namespace aria2 {
 
-constexpr size_t BUFSIZE = 256 * 1024;
+constexpr size_t BUFSIZE = 256_k;
 constexpr size_t ALIGNMENT = 512;
 
 SingleFileAllocationIterator::SingleFileAllocationIterator

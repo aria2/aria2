@@ -87,7 +87,7 @@ public:
     pieceStorage_ = make_unique<MockPieceStorage2>();
 
     peer_ = std::make_shared<Peer>("host", 6969);
-    peer_->allocateSessionResource(16*1024, 256*1024);
+    peer_->allocateSessionResource(16_k, 256_k);
 
     dispatcher_ = make_unique<MockBtMessageDispatcher>();
 
@@ -113,12 +113,12 @@ void BtRequestMessageTest::testCreate() {
   bittorrent::createPeerMessageString(msg, sizeof(msg), 13, 6);
   bittorrent::setIntParam(&msg[5], 12345);
   bittorrent::setIntParam(&msg[9], 256);
-  bittorrent::setIntParam(&msg[13], 1024);
+  bittorrent::setIntParam(&msg[13], 1_k);
   auto pm = BtRequestMessage::create(&msg[4], 13);
   CPPUNIT_ASSERT_EQUAL((uint8_t)6, pm->getId());
   CPPUNIT_ASSERT_EQUAL((size_t)12345, pm->getIndex());
   CPPUNIT_ASSERT_EQUAL(256, pm->getBegin());
-  CPPUNIT_ASSERT_EQUAL(1024, pm->getLength());
+  CPPUNIT_ASSERT_EQUAL((int32_t)1_k, pm->getLength());
 
   // case: payload size is wrong
   try {
@@ -142,12 +142,12 @@ void BtRequestMessageTest::testCreateMessage() {
   BtRequestMessage msg;
   msg.setIndex(12345);
   msg.setBegin(256);
-  msg.setLength(1024);
+  msg.setLength(1_k);
   unsigned char data[17];
   bittorrent::createPeerMessageString(data, sizeof(data), 13, 6);
   bittorrent::setIntParam(&data[5], 12345);
   bittorrent::setIntParam(&data[9], 256);
-  bittorrent::setIntParam(&data[13], 1024);
+  bittorrent::setIntParam(&data[13], 1_k);
   unsigned char* rawmsg = msg.createMessage();
   CPPUNIT_ASSERT(memcmp(rawmsg, data, 17) == 0);
   delete [] rawmsg;
@@ -214,21 +214,21 @@ void BtRequestMessageTest::testDoReceivedAction_doesntHavePieceAndFastExtensionD
 }
 
 void BtRequestMessageTest::testHandleAbortRequestEvent() {
-  auto piece = std::make_shared<Piece>(1, 16*1024);
+  auto piece = std::make_shared<Piece>(1, 16_k);
   CPPUNIT_ASSERT(!msg->isInvalidate());
   msg->onAbortOutstandingRequestEvent(BtAbortOutstandingRequestEvent(piece));
   CPPUNIT_ASSERT(msg->isInvalidate());
 }
 
 void BtRequestMessageTest::testHandleAbortRequestEvent_indexNoMatch() {
-  auto piece = std::make_shared<Piece>(2, 16*1024);
+  auto piece = std::make_shared<Piece>(2, 16_k);
   CPPUNIT_ASSERT(!msg->isInvalidate());
   msg->onAbortOutstandingRequestEvent(BtAbortOutstandingRequestEvent(piece));
   CPPUNIT_ASSERT(!msg->isInvalidate());
 }
 
 void BtRequestMessageTest::testHandleAbortRequestEvent_alreadyInvalidated() {
-  auto piece = std::make_shared<Piece>(1, 16*1024);
+  auto piece = std::make_shared<Piece>(1, 16_k);
   msg->setInvalidate(true);
   CPPUNIT_ASSERT(msg->isInvalidate());
   msg->onAbortOutstandingRequestEvent(BtAbortOutstandingRequestEvent(piece));
@@ -241,16 +241,16 @@ void BtRequestMessageTest::testToString() {
 }
 
 void BtRequestMessageTest::testValidate() {
-  BtRequestMessage msg(0, 0, 16*1024);
+  BtRequestMessage msg(0, 0, 16_k);
   msg.setBtMessageValidator
-    (make_unique<RangeBtMessageValidator>(&msg, 1024, 256*1024));
+    (make_unique<RangeBtMessageValidator>(&msg, 1_k, 256_k));
   msg.validate();
 }
 
 void BtRequestMessageTest::testValidate_lengthTooLong() {
-  BtRequestMessage msg(0, 0, 16*1024+1);
+  BtRequestMessage msg(0, 0, 16_k+1);
   msg.setBtMessageValidator
-    (make_unique<RangeBtMessageValidator>(&msg, 1024, 256*1024));
+    (make_unique<RangeBtMessageValidator>(&msg, 1_k, 256_k));
   try {
     msg.validate();
     CPPUNIT_FAIL("exception must be thrown.");

@@ -100,12 +100,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DefaultBtRequestFactoryTest);
 void DefaultBtRequestFactoryTest::testAddTargetPiece()
 {
   {
-    auto piece = std::make_shared<Piece>(0, 16*1024*10);
+    auto piece = std::make_shared<Piece>(0, 160_k);
     requestFactory_->addTargetPiece(piece);
     CPPUNIT_ASSERT_EQUAL((size_t)1, requestFactory_->countTargetPiece());
   }
   {
-    auto piece = std::make_shared<Piece>(1, 16*1024*9);
+    auto piece = std::make_shared<Piece>(1, 16_k * 9);
     piece->completeBlock(0);
     requestFactory_->addTargetPiece(piece);
     CPPUNIT_ASSERT_EQUAL((size_t)2, requestFactory_->countTargetPiece());
@@ -115,8 +115,8 @@ void DefaultBtRequestFactoryTest::testAddTargetPiece()
 
 void DefaultBtRequestFactoryTest::testRemoveCompletedPiece()
 {
-  auto piece1 = std::make_shared<Piece>(0, 16*1024);
-  auto piece2 = std::make_shared<Piece>(1, 16*1024);
+  auto piece1 = std::make_shared<Piece>(0, 16_k);
+  auto piece2 = std::make_shared<Piece>(1, 16_k);
   piece2->setAllBlock();
   requestFactory_->addTargetPiece(piece1);
   requestFactory_->addTargetPiece(piece2);
@@ -129,7 +129,7 @@ void DefaultBtRequestFactoryTest::testRemoveCompletedPiece()
 
 void DefaultBtRequestFactoryTest::testCreateRequestMessages()
 {
-  int PIECE_LENGTH = 16*1024*2;
+  constexpr int PIECE_LENGTH = 32_k;
   auto piece1 = std::make_shared<Piece>(0, PIECE_LENGTH);
   auto piece2 = std::make_shared<Piece>(1, PIECE_LENGTH);
   requestFactory_->addTargetPiece(piece1);
@@ -160,7 +160,7 @@ void DefaultBtRequestFactoryTest::testCreateRequestMessages_onEndGame()
 
   requestFactory_->setBtMessageDispatcher(dispatcher.get());
 
-  int PIECE_LENGTH = 16*1024*2;
+  constexpr int PIECE_LENGTH = 32_k;
   auto piece1 = std::make_shared<Piece>(0, PIECE_LENGTH);
   auto piece2 = std::make_shared<Piece>(1, PIECE_LENGTH);
   requestFactory_->addTargetPiece(piece1);
@@ -183,7 +183,7 @@ void DefaultBtRequestFactoryTest::testCreateRequestMessages_onEndGame()
 
 void DefaultBtRequestFactoryTest::testRemoveTargetPiece()
 {
-  auto piece1 = std::make_shared<Piece>(0, 16*1024);
+  auto piece1 = std::make_shared<Piece>(0, 16_k);
 
   requestFactory_->addTargetPiece(piece1);
 
@@ -202,9 +202,9 @@ void DefaultBtRequestFactoryTest::testRemoveTargetPiece()
 
 void DefaultBtRequestFactoryTest::testGetTargetPieceIndexes()
 {
-  auto piece1 = std::make_shared<Piece>(1, 16*1024);
-  auto piece3 = std::make_shared<Piece>(3, 16*1024);
-  auto piece5 = std::make_shared<Piece>(5, 16*1024);
+  auto piece1 = std::make_shared<Piece>(1, 16_k);
+  auto piece3 = std::make_shared<Piece>(3, 16_k);
+  auto piece5 = std::make_shared<Piece>(5, 16_k);
 
   requestFactory_->addTargetPiece(piece3);
   requestFactory_->addTargetPiece(piece1);
