@@ -81,14 +81,6 @@ class FileEntry;
 class RequestGroup;
 class Option;
 
-#define STRTOLL(X) strtoll(X, reinterpret_cast<char**>(0), 10)
-#define STRTOULL(X) strtoull(X, reinterpret_cast<char**>(0), 10)
-
-#define START_INDEX(OFFSET, PIECE_LENGTH) ((OFFSET)/(PIECE_LENGTH))
-#define END_INDEX(OFFSET, LENGTH, PIECE_LENGTH) (((OFFSET)+(LENGTH)-1)/(PIECE_LENGTH))
-
-#define DIV_FLOOR(X,Y) ((X)/(Y)+((X)%(Y)? 1:0))
-
 #ifdef WORDS_BIGENDIAN
 inline uint64_t ntoh64(uint64_t x) { return x; }
 inline uint64_t hton64(uint64_t x) { return x; }
