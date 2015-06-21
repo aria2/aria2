@@ -41,6 +41,7 @@
 #include <string>
 #include <algorithm>
 #include <memory>
+#include <chrono>
 
 #include "A2STR.h"
 
@@ -185,6 +186,26 @@ typename std::enable_if<std::is_array<T>::value, std::unique_ptr<T>>::type
 make_unique(size_t size)
 {
   return std::unique_ptr<T>(new typename std::remove_extent<T>::type[size]());
+}
+
+constexpr std::chrono::hours operator"" _h(unsigned long long h)
+{
+  return std::chrono::hours(h);
+}
+
+constexpr std::chrono::minutes operator"" _min(unsigned long long min)
+{
+  return std::chrono::minutes(min);
+}
+
+constexpr std::chrono::seconds operator"" _s(unsigned long long s)
+{
+  return std::chrono::seconds(s);
+}
+
+constexpr std::chrono::milliseconds operator"" _ms(unsigned long long ms)
+{
+  return std::chrono::milliseconds(ms);
 }
 
 } // namespace aria2

@@ -235,7 +235,7 @@ std::vector<std::unique_ptr<Command>> DHTSetup::setup
     }
     {
       auto command = make_unique<DHTAutoSaveCommand>(e->newCUID(), e, family,
-                                                     std::chrono::minutes(30));
+                                                     30_min);
       command->setLocalNode(localNode);
       command->setRoutingTable(routingTable.get());
       tempCommands.push_back(std::move(command));

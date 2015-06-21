@@ -65,7 +65,7 @@ void UTMetadataRequestTracker::remove(size_t index)
 }
 
 namespace {
-constexpr auto TIMEOUT = std::chrono::seconds(20);
+constexpr auto TIMEOUT = 20_s;
 } // namespace
 
 std::vector<size_t> UTMetadataRequestTracker::removeTimeoutEntry()

@@ -149,7 +149,7 @@ void HttpServerBodyCommand::addHttpServerResponseCommand(bool delayed)
     make_unique<HttpServerResponseCommand>(getCuid(), httpServer_, e_, socket_);
   if (delayed) {
     e_->addCommand(make_unique<DelayedCommand>(
-        getCuid(), e_, std::chrono::seconds(1), std::move(resp), true));
+        getCuid(), e_, 1_s, std::move(resp), true));
     return;
   }
 
@@ -320,8 +320,7 @@ bool HttpServerBodyCommand::execute()
         return false;
       }
     } else {
-      if(timeoutTimer_.difference(global::wallclock()) >=
-         std::chrono::seconds(30)) {
+      if(timeoutTimer_.difference(global::wallclock()) >= 30_s) {
         A2_LOG_INFO("HTTP request body timeout.");
         return true;
       } else {

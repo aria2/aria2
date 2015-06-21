@@ -54,6 +54,6 @@ const std::string BtAnnounce::PEERS("peers");
 
 const std::string BtAnnounce::PEERS6("peers6");
 
-constexpr std::chrono::seconds BtAnnounce::DEFAULT_ANNOUNCE_INTERVAL;
+constexpr std::chrono::minutes BtAnnounce::DEFAULT_ANNOUNCE_INTERVAL;
 
 } // namespace aria2

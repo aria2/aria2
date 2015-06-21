@@ -246,7 +246,7 @@ void UTPexExtensionMessageTest::testAddFreshPeer()
   std::shared_ptr<Peer> p1(new Peer("192.168.0.1", 6881));
   CPPUNIT_ASSERT(msg.addFreshPeer(p1));
   std::shared_ptr<Peer> p2(new Peer("10.1.1.2", 9999));
-  p2->setFirstContactTime(Timer(Timer().getTime() - std::chrono::seconds(61)));
+  p2->setFirstContactTime(Timer(Timer().getTime() - 61_s));
   CPPUNIT_ASSERT(!msg.addFreshPeer(p2));
   std::shared_ptr<Peer> p3(new Peer("10.1.1.3", 9999, true));
   CPPUNIT_ASSERT(!msg.addFreshPeer(p3));

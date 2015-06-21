@@ -255,7 +255,7 @@ void DefaultBtInteractive::decideChoking() {
 }
 
 namespace {
-constexpr auto MAX_HAVE_DELAY_SEC = std::chrono::seconds(10);
+constexpr auto MAX_HAVE_DELAY_SEC = 10_s;
 } // namespace
 
 void DefaultBtInteractive::checkHave() {
@@ -434,7 +434,7 @@ void DefaultBtInteractive::sendPendingMessage() {
 }
 
 namespace {
-constexpr auto FLOODING_CHECK_INTERVAL = std::chrono::seconds(5);
+constexpr auto FLOODING_CHECK_INTERVAL = 5_s;
 } // namespace
 
 void DefaultBtInteractive::detectMessageFlooding() {
@@ -529,8 +529,7 @@ void DefaultBtInteractive::doInteractionProcessing() {
           dispatcher_->addMessageToQueue(std::move(i));
         }
       }
-      if(perSecTimer_.difference(global::wallclock()) >=
-         std::chrono::seconds(1)) {
+      if(perSecTimer_.difference(global::wallclock()) >= 1_s) {
         perSecTimer_ = global::wallclock();
         // Drop timeout request after queuing message to give a chance
         // to other connection to request piece.
@@ -548,8 +547,7 @@ void DefaultBtInteractive::doInteractionProcessing() {
     checkActiveInteraction();
     decideChoking();
     detectMessageFlooding();
-    if(perSecTimer_.difference(global::wallclock()) >=
-       std::chrono::seconds(1)) {
+    if(perSecTimer_.difference(global::wallclock()) >= 1_s) {
       perSecTimer_ = global::wallclock();
       dispatcher_->checkRequestSlotAndDoNecessaryThing();
     }

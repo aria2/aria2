@@ -58,7 +58,7 @@ public:
   LpdMessageDispatcher(
       const std::string& infoHash, uint16_t port,
       const std::string& multicastAddr, uint16_t multicastPort,
-      std::chrono::seconds interval = std::chrono::minutes(5));
+      std::chrono::seconds interval = 5_min);
 
   ~LpdMessageDispatcher();
 

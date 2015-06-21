@@ -42,7 +42,7 @@
 namespace aria2 {
 
 namespace {
-constexpr auto WINDOW_TIME = std::chrono::seconds(15);
+constexpr auto WINDOW_TIME = 15_s;
 } // namespace
 
 SpeedCalc::SpeedCalc()
@@ -94,7 +94,7 @@ void SpeedCalc::update(size_t bytes)
   removeStaleTimeSlot(now);
   if(timeSlots_.empty() ||
      std::chrono::duration_cast<std::chrono::seconds>(
-         timeSlots_.back().first.difference(now)) >= std::chrono::seconds(1)) {
+         timeSlots_.back().first.difference(now)) >= 1_s) {
     timeSlots_.push_back(std::make_pair(now, bytes));
   } else {
     timeSlots_.back().second += bytes;

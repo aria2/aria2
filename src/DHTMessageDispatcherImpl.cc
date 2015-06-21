@@ -92,7 +92,7 @@ bool DHTMessageDispatcherImpl::sendMessage(DHTMessageEntry* entry)
     // DHTTask(such as DHTAbstractNodeLookupTask) don't finish
     // forever.
     if(!entry->message->isReply()) {
-      tracker_->addMessage(entry->message.get(), std::chrono::seconds(0),
+      tracker_->addMessage(entry->message.get(), 0_s,
                            std::move(entry->callback));
     }
   }

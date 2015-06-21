@@ -197,8 +197,7 @@ bool DefaultPeerStorage::isBadPeer(const std::string& ipaddr)
 
 void DefaultPeerStorage::addBadPeer(const std::string& ipaddr)
 {
-  if(lastBadPeerCleaned_.difference(global::wallclock()) >=
-     std::chrono::hours(1)) {
+  if(lastBadPeerCleaned_.difference(global::wallclock()) >= 1_h) {
     for(auto i = std::begin(badPeers_); i != std::end(badPeers_);) {
       if((*i).second <= global::wallclock()) {
         A2_LOG_DEBUG(fmt("Purge %s from bad peer", (*i).first.c_str()));
@@ -284,7 +283,7 @@ void DefaultPeerStorage::returnPeer(const std::shared_ptr<Peer>& peer)
 
 bool DefaultPeerStorage::chokeRoundIntervalElapsed()
 {
-  constexpr auto CHOKE_ROUND_INTERVAL = std::chrono::seconds(10);
+  constexpr auto CHOKE_ROUND_INTERVAL = 10_s;
   if(pieceStorage_->downloadFinished()) {
     return seederStateChoke_->getLastRound().
       difference(global::wallclock()) >= CHOKE_ROUND_INTERVAL;

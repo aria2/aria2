@@ -159,7 +159,7 @@ void ServerStatManTest::testRemoveStaleServerStat()
   CPPUNIT_ASSERT(ssm.add(localhost_ftp));
   CPPUNIT_ASSERT(ssm.add(mirror));
 
-  ssm.removeStaleServerStat(std::chrono::hours(24));
+  ssm.removeStaleServerStat(24_h);
 
   CPPUNIT_ASSERT(ssm.find("localhost", "http"));
   CPPUNIT_ASSERT(!ssm.find("localhost", "ftp"));

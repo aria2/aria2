@@ -97,7 +97,7 @@ std::string AdaptiveURISelector::select
 }
 
 namespace {
-constexpr auto MAX_TIMEOUT = std::chrono::seconds(60);
+constexpr auto MAX_TIMEOUT = 60_s;
 } // namespace
 
 void AdaptiveURISelector::mayRetryWithIncreasedTimeout(FileEntry* fileEntry)

@@ -42,6 +42,7 @@
 #include <memory>
 
 #include "a2time.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -120,7 +121,7 @@ public:
     return maxDroppedPeer_;
   }
 
-  constexpr static auto DEFAULT_INTERVAL = std::chrono::minutes(1);
+  constexpr static auto DEFAULT_INTERVAL = 1_min;
 };
 
 } // namespace aria2

@@ -1306,8 +1306,8 @@ std::unique_ptr<ValueBase> goingShutdown
 {
   // Schedule shutdown after 3seconds to give time to client to
   // receive RPC response.
-  e->addRoutineCommand(make_unique<TimedHaltCommand>(
-      e->newCUID(), e, std::chrono::seconds(3), forceHalt));
+  e->addRoutineCommand(
+      make_unique<TimedHaltCommand>(e->newCUID(), e, 3_s, forceHalt));
   A2_LOG_INFO("Scheduled shutdown in 3 seconds.");
   return createOKResponse();
 }

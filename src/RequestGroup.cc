@@ -978,7 +978,7 @@ void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
   peerStorage_ = nullptr;
 #endif // ENABLE_BITTORRENT
   if(pieceStorage_) {
-    pieceStorage_->removeAdvertisedPiece(std::chrono::seconds(0));
+    pieceStorage_->removeAdvertisedPiece(0_s);
   }
   // Don't reset segmentMan_ and pieceStorage_ here to provide
   // progress information via RPC

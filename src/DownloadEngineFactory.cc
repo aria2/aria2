@@ -175,8 +175,8 @@ DownloadEngineFactory::newDownloadEngine
         e->newCUID(), e.get(),
         std::chrono::seconds(op->getAsInt(PREF_SAVE_SESSION_INTERVAL))));
   }
-  e->addRoutineCommand(make_unique<HaveEraseCommand>
-                       (e->newCUID(), e.get(), std::chrono::seconds(10)));
+  e->addRoutineCommand(
+      make_unique<HaveEraseCommand>(e->newCUID(), e.get(), 10_s));
   {
     auto stopSec = op->getAsInt(PREF_STOP);
     if(stopSec > 0) {

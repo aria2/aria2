@@ -214,7 +214,7 @@ FileEntry::getRequest
 }
 
 namespace {
-constexpr auto startupIdleTime = std::chrono::seconds(10);
+constexpr auto startupIdleTime = 10_s;
 } // namespace
 
 std::shared_ptr<Request>

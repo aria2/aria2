@@ -237,8 +237,7 @@ bool AbstractCommand::execute()
       if (req_ && fileEntry_->getLength() > 0 &&
           e_->getRequestGroupMan()->getMaxOverallDownloadSpeedLimit() == 0 &&
           requestGroup_->getMaxDownloadSpeedLimit() == 0 &&
-          serverStatTimer_.difference(global::wallclock()) >=
-              std::chrono::seconds(10)) {
+          serverStatTimer_.difference(global::wallclock()) >= 10_s) {
         serverStatTimer_ = global::wallclock();
         std::vector<std::pair<size_t, std::string>> usedHosts;
         if (getOption()->getAsBool(PREF_SELECT_LEAST_USED_HOST)) {

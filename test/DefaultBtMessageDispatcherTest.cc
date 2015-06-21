@@ -209,7 +209,7 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing()
   CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(index));
   CPPUNIT_ASSERT_EQUAL((size_t)0, index);
 
-  btMessageDispatcher->setRequestTimeout(std::chrono::minutes(1));
+  btMessageDispatcher->setRequestTimeout(1_min);
   btMessageDispatcher->addOutstandingRequest
     (make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0, piece));
 
@@ -228,7 +228,7 @@ testCheckRequestSlotAndDoNecessaryThing_timeout() {
   CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(index));
   CPPUNIT_ASSERT_EQUAL((size_t)0, index);
 
-  btMessageDispatcher->setRequestTimeout(std::chrono::minutes(1));
+  btMessageDispatcher->setRequestTimeout(1_min);
   auto slot = make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0, piece);
   // make this slot timeout
   slot->setDispatchedTime(Timer::zero());
@@ -247,7 +247,7 @@ void DefaultBtMessageDispatcherTest::
 testCheckRequestSlotAndDoNecessaryThing_completeBlock() {
   auto piece = std::make_shared<Piece>(0, MY_PIECE_LENGTH);
   piece->completeBlock(0);
-  btMessageDispatcher->setRequestTimeout(std::chrono::minutes(1));
+  btMessageDispatcher->setRequestTimeout(1_min);
   btMessageDispatcher->addOutstandingRequest
     (make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0, piece));
 

@@ -41,6 +41,7 @@
 #include <memory>
 
 #include "a2time.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -138,7 +139,7 @@ public:
 
   static const std::string PEERS6;
 
-  constexpr static auto DEFAULT_ANNOUNCE_INTERVAL = std::chrono::seconds(120);
+  constexpr static auto DEFAULT_ANNOUNCE_INTERVAL = 2_min;
 };
 
 } // namespace aria2

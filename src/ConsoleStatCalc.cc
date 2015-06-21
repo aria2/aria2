@@ -318,7 +318,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   }
   ColorizedStream o;
   if(e->getRequestGroupMan()->countRequestGroup() > 0) {
-    if((summaryInterval_ > std::chrono::seconds(0)) &&
+    if((summaryInterval_ > 0_s) &&
        lastSummaryNotified_.difference(global::wallclock())+
        A2_DELTA_MILLIS >= summaryInterval_*1000) {
       lastSummaryNotified_ = global::wallclock();

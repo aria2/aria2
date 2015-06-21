@@ -269,24 +269,24 @@ public:
                   const std::string& proxyhost, uint16_t proxyport,
                   const std::shared_ptr<SocketCore>& sock,
                   const std::string& options,
-                  std::chrono::seconds timeout = std::chrono::seconds(15));
+                  std::chrono::seconds timeout = 15_s);
 
   void poolSocket(const std::shared_ptr<Request>& request,
                   const std::string& username,
                   const std::shared_ptr<Request>& proxyRequest,
                   const std::shared_ptr<SocketCore>& socket,
                   const std::string& options,
-                  std::chrono::seconds timeout = std::chrono::seconds(15));
+                  std::chrono::seconds timeout = 15_s);
 
   void poolSocket(const std::string& ipaddr, uint16_t port,
                   const std::string& proxyhost, uint16_t proxyport,
                   const std::shared_ptr<SocketCore>& sock,
-                  std::chrono::seconds timeout = std::chrono::seconds(15));
+                  std::chrono::seconds timeout = 15_s);
 
   void poolSocket(const std::shared_ptr<Request>& request,
                   const std::shared_ptr<Request>& proxyRequest,
                   const std::shared_ptr<SocketCore>& socket,
-                  std::chrono::seconds timeout = std::chrono::seconds(15));
+                  std::chrono::seconds timeout = 15_s);
 
   std::shared_ptr<SocketCore> popPooledSocket
   (const std::string& ipaddr,

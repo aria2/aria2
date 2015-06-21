@@ -56,9 +56,9 @@ BtLeecherStateChoke::PeerEntry::PeerEntry(const std::shared_ptr<Peer>& peer)
   : peer_(peer),
     downloadSpeed_(peer->calculateDownloadSpeed()),
     // peer must be interested to us and sent block in the last 30 seconds
-    regularUnchoker_(peer->peerInterested() &&
-                     peer->getLastDownloadUpdate().difference(
-                         global::wallclock()) < std::chrono::seconds(30))
+    regularUnchoker_(
+        peer->peerInterested() &&
+        peer->getLastDownloadUpdate().difference(global::wallclock()) < 30_s)
 {
 }
 

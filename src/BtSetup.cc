@@ -126,8 +126,7 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
   }
   {
     auto c = make_unique<ActivePeerConnectionCommand>(
-        e->newCUID(), requestGroup, e,
-        std::chrono::seconds(metadataGetMode ? 2 : 10));
+        e->newCUID(), requestGroup, e, metadataGetMode ? 2_s : 10_s);
     c->setBtRuntime(btRuntime);
     c->setPieceStorage(pieceStorage);
     c->setPeerStorage(peerStorage);

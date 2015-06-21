@@ -51,7 +51,7 @@ BtStopDownloadCommand::BtStopDownloadCommand
  RequestGroup* requestGroup,
  DownloadEngine* e,
  std::chrono::seconds timeout)
-  : TimeBasedCommand(cuid, e, std::chrono::seconds(1)),
+  : TimeBasedCommand(cuid, e, 1_s),
     requestGroup_(requestGroup),
     timeout_(std::move(timeout))
 {}

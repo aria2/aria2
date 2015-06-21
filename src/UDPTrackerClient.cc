@@ -370,7 +370,7 @@ struct TimeoutCheck {
   {
     auto t = req->dispatched.difference(now);
     if(req->failCount == 0) {
-      if(t >= std::chrono::seconds(15)) {
+      if(t >= 15_s) {
         switch(req->action) {
         case UDPT_ACT_CONNECT:
           A2_LOG_INFO(fmt("UDPT resend CONNECT to %s:%u transaction_id=%u",
@@ -396,7 +396,7 @@ struct TimeoutCheck {
         return false;
       }
     } else {
-      if(t >= std::chrono::minutes(1)) {
+      if(t >= 1_min) {
         switch(req->action) {
         case UDPT_ACT_CONNECT:
           A2_LOG_INFO(fmt("UDPT timeout CONNECT to %s:%u transaction_id=%u",
@@ -475,7 +475,7 @@ UDPTrackerConnection* UDPTrackerClient::getConnectionId
     return nullptr;
   }
   if((*i).second.state == UDPT_CST_CONNECTED &&
-     (*i).second.lastUpdated.difference(now) > std::chrono::minutes(1)) {
+     (*i).second.lastUpdated.difference(now) > 1_min) {
     connectionIdCache_.erase(i);
     return nullptr;
   } else {

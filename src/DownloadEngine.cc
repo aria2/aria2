@@ -91,7 +91,7 @@ volatile sig_atomic_t globalHaltRequested = 0;
 } // namespace global
 
 namespace {
-constexpr auto DEFAULT_REFRESH_INTERVAL = std::chrono::seconds(1);
+constexpr auto DEFAULT_REFRESH_INTERVAL = 1_s;
 } // namespace
 
 DownloadEngine::DownloadEngine(std::unique_ptr<EventPoll> eventPoll)
@@ -312,8 +312,7 @@ void DownloadEngine::poolSocket(const std::string& key,
   std::multimap<std::string, SocketPoolEntry>::value_type p(key, entry);
   socketPool_.insert(p);
 
-  if(lastSocketPoolScan_.difference(global::wallclock()) <
-     std::chrono::minutes(1)) {
+  if(lastSocketPoolScan_.difference(global::wallclock()) < 1_min) {
     return;
   }
   std::multimap<std::string, SocketPoolEntry> newPool;

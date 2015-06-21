@@ -63,7 +63,7 @@ void HaveEraseCommand::process()
   for(auto & group : groups) {
     const auto& ps = group->getPieceStorage();
     if(ps) {
-      ps->removeAdvertisedPiece(std::chrono::seconds(5));
+      ps->removeAdvertisedPiece(5_s);
     }
   }
 }

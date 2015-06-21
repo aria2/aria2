@@ -915,7 +915,7 @@ void RpcMethodTest::testGatherStoppedDownload()
   d->fileEntries = fileEntries;
   d->inMemoryDownload = false;
   d->sessionDownloadLength = UINT64_MAX;
-  d->sessionTime = std::chrono::seconds(1);
+  d->sessionTime = 1_s;
   d->result = error_code::FINISHED;
   d->followedBy = followedBy;
   d->belongsTo = 2;

@@ -53,7 +53,7 @@ BtSeederStateChoke::BtSeederStateChoke()
 BtSeederStateChoke::~BtSeederStateChoke() {}
 
 namespace {
-constexpr auto TIME_FRAME = std::chrono::seconds(20);
+constexpr auto TIME_FRAME = 20_s;
 } // namespace
 
 BtSeederStateChoke::PeerEntry::PeerEntry

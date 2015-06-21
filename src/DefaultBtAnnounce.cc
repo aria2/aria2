@@ -64,7 +64,7 @@ DefaultBtAnnounce::DefaultBtAnnounce
     prevAnnounceTimer_(Timer::zero()),
     interval_(DEFAULT_ANNOUNCE_INTERVAL),
     minInterval_(DEFAULT_ANNOUNCE_INTERVAL),
-    userDefinedInterval_(std::chrono::seconds(0)),
+    userDefinedInterval_(0_s),
     complete_(0),
     incomplete_(0),
     announceList_(bittorrent::getTorrentAttrs(downloadContext)->announceList),

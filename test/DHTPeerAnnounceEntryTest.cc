@@ -40,7 +40,7 @@ void DHTPeerAnnounceEntryTest::testRemoveStalePeerAddrEntry()
   entry.addPeerAddrEntry(PeerAddrEntry("192.168.0.3", 6883));
   entry.addPeerAddrEntry(PeerAddrEntry("192.168.0.4", 6884, Timer::zero()));
 
-  entry.removeStalePeerAddrEntry(std::chrono::seconds(10));
+  entry.removeStalePeerAddrEntry(10_s);
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, entry.countPeerAddrEntry());
 

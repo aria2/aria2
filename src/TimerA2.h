@@ -40,6 +40,7 @@
 #include <chrono>
 
 #include "a2time.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -92,7 +93,7 @@ public:
 
   const Clock::time_point& getTime() const { return tp_; }
 
-  constexpr static Timer zero() { return Timer(std::chrono::seconds(0)); }
+  constexpr static Timer zero() { return Timer(0_s); }
 
 private:
   Clock::time_point tp_;

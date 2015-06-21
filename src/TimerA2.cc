@@ -55,7 +55,7 @@ Timer::Clock::duration Timer::difference() const
 {
   auto now = Clock::now();
   if (now < tp_) {
-    return Timer::Clock::duration(std::chrono::seconds(0));
+    return Timer::Clock::duration(0_s);
   }
 
   return now - tp_;
@@ -64,7 +64,7 @@ Timer::Clock::duration Timer::difference() const
 Timer::Clock::duration Timer::difference(const Timer& timer) const
 {
   if (timer.tp_ < tp_) {
-    return Timer::Clock::duration(std::chrono::seconds(0));
+    return Timer::Clock::duration(0_s);
   }
 
   return timer.tp_ - tp_;
