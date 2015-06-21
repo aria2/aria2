@@ -1405,7 +1405,8 @@ std::string abbrevSize(int64_t size)
   int64_t t = size;
   size_t uidx = 0;
   int r = 0;
-  while(t >= 1_k && uidx+1 < sizeof(UNITS)/sizeof(UNITS[0])) {
+  while(t >= static_cast<int64_t>(1_k) &&
+        uidx + 1 < sizeof(UNITS) / sizeof(UNITS[0])) {
     lldiv_t d = lldiv(t, 1_k);
     t = d.quot;
     r = d.rem;

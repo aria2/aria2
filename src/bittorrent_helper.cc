@@ -792,9 +792,9 @@ void checkBegin(int32_t begin, int32_t pieceLength)
 
 void checkLength(int32_t length)
 {
-  if(length > MAX_BLOCK_LENGTH) {
-    throw DL_ABORT_EX
-      (fmt("Length too long: %d > %luKB", length, MAX_BLOCK_LENGTH/1024));
+  if(length > static_cast<int32_t>(MAX_BLOCK_LENGTH)) {
+    throw DL_ABORT_EX(fmt("Length too long: %d > %dKB", length,
+                          static_cast<int32_t>(MAX_BLOCK_LENGTH / 1024)));
   }
   if(length == 0) {
     throw DL_ABORT_EX(fmt("Invalid length: %d", length));
