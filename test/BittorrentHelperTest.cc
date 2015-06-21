@@ -886,17 +886,17 @@ void BittorrentHelperTest::testExtract2PeersFromList()
 void BittorrentHelperTest::testPackcompact()
 {
   unsigned char compact[COMPACT_LEN_IPV6];
-  CPPUNIT_ASSERT_EQUAL(18,
+  CPPUNIT_ASSERT_EQUAL((size_t)18,
                        packcompact(compact,
                                    "1002:1035:4527:3546:7854:1237:3247:3217",
                                    6881));
   CPPUNIT_ASSERT_EQUAL(std::string("100210354527354678541237324732171ae1"),
                        util::toHex(compact, 18));
 
-  CPPUNIT_ASSERT_EQUAL(6, packcompact(compact, "192.168.0.1", 6881));
+  CPPUNIT_ASSERT_EQUAL((size_t)6, packcompact(compact, "192.168.0.1", 6881));
   CPPUNIT_ASSERT_EQUAL(std::string("c0a800011ae1"), util::toHex(compact, 6));
 
-  CPPUNIT_ASSERT_EQUAL(0, packcompact(compact, "badaddr", 6881));
+  CPPUNIT_ASSERT_EQUAL((size_t)0, packcompact(compact, "badaddr", 6881));
 }
 
 void BittorrentHelperTest::testUnpackcompact()

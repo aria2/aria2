@@ -794,7 +794,7 @@ void checkLength(int32_t length)
 {
   if(length > MAX_BLOCK_LENGTH) {
     throw DL_ABORT_EX
-      (fmt("Length too long: %d > %dKB", length, MAX_BLOCK_LENGTH/1024));
+      (fmt("Length too long: %d > %luKB", length, MAX_BLOCK_LENGTH/1024));
   }
   if(length == 0) {
     throw DL_ABORT_EX(fmt("Invalid length: %d", length));
@@ -855,7 +855,7 @@ void createPeerMessageString
   msg[4] = messageId;
 }
 
-int packcompact
+size_t packcompact
 (unsigned char* compact, const std::string& addr, uint16_t port)
 {
   size_t len = net::getBinAddr(compact, addr);
