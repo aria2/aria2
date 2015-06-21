@@ -127,7 +127,7 @@ int GnuTLSSession::init(sock_t sockfd)
   // It seems err is not error message, but the argument string
   // which causes syntax error.
   const char* err;
-  std::string pri = "SECURE128";
+  std::string pri = "SECURE128:+SIGN-RSA-SHA1";
   switch(tlsContext_->getMinTLSVersion()) {
   case TLS_PROTO_TLS12:
     pri += ":-VERS-TLS1.1";
