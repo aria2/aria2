@@ -39,17 +39,15 @@
 #include "TimerA2.h"
 #include "a2functional.h"
 
+namespace aria2 {
+
 // Increment this if major improvements or bug fixes are made in DHT
 // code. This is 2 bytes unsigned integer.
-#define DHT_VERSION 3U
+constexpr uint16_t DHT_VERSION = 3U;
 
-#define DHT_ID_LENGTH 20
+constexpr size_t DHT_ID_LENGTH = 20;
 
-#define DHT_TRANSACTION_ID_LENGTH 2
-
-#define DHT_TOKEN_LENGTH 4
-
-namespace aria2 {
+constexpr size_t DHT_TRANSACTION_ID_LENGTH = 2;
 
 // See --dht-message-timeout option.
 constexpr auto DHT_MESSAGE_TIMEOUT = 10_s;
