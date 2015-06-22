@@ -702,12 +702,13 @@ void formatDownloadResultCommon
  const std::shared_ptr<DownloadResult>& downloadResult)
 {
   o << std::setw(3) << downloadResult->gid->toAbbrevHex() << "|"
-    << std::setw(4) << status << "|"
-    << std::setw(11);
+    << std::setw(4) << status << "|";
   if(downloadResult->sessionTime.count() > 0) {
-    o << util::abbrevSize(downloadResult->sessionDownloadLength * 1000 /
+    o << std::setw(8)
+      << util::abbrevSize(downloadResult->sessionDownloadLength * 1000 /
                           downloadResult->sessionTime.count()) << "B/s";
   } else {
+    o << std::setw(11);
     o << "n/a";
   }
   o << "|";
