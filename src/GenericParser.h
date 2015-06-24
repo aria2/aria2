@@ -35,6 +35,7 @@
 #ifndef D_GENERIC_PARSER_H
 #define D_GENERIC_PARSER_H
 
+#include <array>
 #include "common.h"
 #include "a2io.h"
 #include "util.h"

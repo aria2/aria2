@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "message_digest_helper.h"
 
+#include <array>
 #include <cstring>
 #include <cstdlib>
 

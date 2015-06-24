@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "metalink_helper.h"
+
+#include <array>
+
 #include "Option.h"
 #include "MetalinkEntry.h"
 #include "MetalinkParserStateMachine.h"

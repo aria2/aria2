@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "Piece.h"
 
+#include <array>
 #include <cassert>
 
 #include "util.h"

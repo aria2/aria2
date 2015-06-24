@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "IOFile.h"
 
+#include <array>
 #include <cstring>
 #include <cstdarg>
 #include <ostream>

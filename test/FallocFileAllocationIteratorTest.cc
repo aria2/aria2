@@ -3,6 +3,7 @@
 #include <fstream>
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "a2functional.h"
 #include "File.h"
 #include "DefaultDiskWriter.h"
 

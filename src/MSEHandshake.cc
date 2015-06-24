@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "MSEHandshake.h"
 
+#include <array>
 #include <cstring>
 #include <cassert>
 

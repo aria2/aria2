@@ -93,7 +93,7 @@ public:
 
   const Clock::time_point& getTime() const { return tp_; }
 
-  constexpr static Timer zero() { return Timer(0_s); }
+  static Timer zero() { return Timer(0_s); }
 
 private:
   Clock::time_point tp_;

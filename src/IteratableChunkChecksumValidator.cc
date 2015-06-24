@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "IteratableChunkChecksumValidator.h"
 
+#include <array>
 #include <cstring>
 #include <cstdlib>
 

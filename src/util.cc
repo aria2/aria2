@@ -53,6 +53,7 @@
 #  include <pwd.h>
 #endif // HAVE_PWD_H
 
+#include <array>
 #include <cerrno>
 #include <cassert>
 #include <cstring>

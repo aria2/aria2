@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "IteratableChecksumValidator.h"
 
+#include <array>
 #include <cstdlib>
 
 #include "util.h"

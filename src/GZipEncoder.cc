@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "GZipEncoder.h"
 
+#include <array>
 #include <cstring>
 
 #include "fmt.h"

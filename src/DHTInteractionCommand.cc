@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "DHTInteractionCommand.h"
+
+#include <array>
+
 #include "DownloadEngine.h"
 #include "RecoverableException.h"
 #include "DHTMessageDispatcher.h"

@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "XmlParser.h"
+
+#include <array>
+
 #include "a2io.h"
 #include "util.h"
 
