@@ -48,6 +48,7 @@
 #include "SocketRecvBuffer.h"
 #include "LogFactory.h"
 #include "wallclock.h"
+#include "DownloadFailureException.h"
 
 namespace aria2 {
 
@@ -93,6 +94,13 @@ bool CreateRequestCommand::executeInternal()
   if(!getRequest()) {
     if(getSegmentMan()) {
       getSegmentMan()->ignoreSegmentFor(getFileEntry());
+    }
+    if(getOption()->getAsBool(PREF_DRY_RUN)) {
+      // For dry run mode, just throwing DlAbortEx makes infinite
+      // loop, since we don't have SegmentMan, and we cannot tell all
+      // hopes were abandoned.
+      throw DOWNLOAD_FAILURE_EXCEPTION2("No URI available.",
+                                        getRequestGroup()->getLastErrorCode());
     }
     // In this case, the error might be already set in RequestGroup,
     // so use it here.
