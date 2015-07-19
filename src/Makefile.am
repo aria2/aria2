@@ -713,9 +713,9 @@ endif # !ENABLE_LIBARIA2
 
 libaria2_la_SOURCES = $(SRCS)
 
-libaria2_la_LIBADD = @WSLAY_LIBS@
+libaria2_la_LIBADD = @WSLAY_LIBS@ @LTLIBINTL@
 
-LDADD = libaria2.la @LIBINTL@ @ALLOCA@ #-lprofiler
+LDADD = libaria2.la @ALLOCA@ #-lprofiler
 #aria2c_LDFLAGS = -pg
 AM_CPPFLAGS =  -Wall\
 	-I$(top_srcdir)/lib -I$(top_srcdir)/intl\
