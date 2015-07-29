@@ -125,6 +125,16 @@ PKG_PROG_PKG_CONFIG([0.20])
 # Check C++ compiler supports C++0x/C++11 feature
 AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
 
+# Check C++ compiler actually supports nullptr
+AC_MSG_CHECKING([whether the c++ compiler supports nullptr])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+]],
+[[
+int *a = nullptr;
+]])],
+[],
+[AC_MSG_FAILURE([C++ compiler does not understand nullptr, perhaps C++ compiler is too old.  Try again with new one (gcc >= 4.8.3 or clang >= 3.4)])])
+
 # i686-w64-mingw32-g++ 4.6 does not support override keyword. For
 # those compilers, define CXX11_OVERRIDE to empty string. Otherwise
 # define it as override. Use CXX11_OVERRIDE instead of override.
