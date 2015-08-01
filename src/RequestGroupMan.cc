@@ -236,16 +236,24 @@ void executeStopHook
  const Option* option,
  error_code::Value result)
 {
-  if(result == error_code::FINISHED &&
-     !option->blank(PREF_ON_DOWNLOAD_COMPLETE)) {
-    util::executeHookByOptName(group, option, PREF_ON_DOWNLOAD_COMPLETE);
-  } else if(result != error_code::IN_PROGRESS &&
-            result != error_code::REMOVED &&
-            !option->blank(PREF_ON_DOWNLOAD_ERROR)) {
-    util::executeHookByOptName(group, option, PREF_ON_DOWNLOAD_ERROR);
-  } else if(!option->blank(PREF_ON_DOWNLOAD_STOP)) {
-    util::executeHookByOptName(group, option, PREF_ON_DOWNLOAD_STOP);
+  PrefPtr hookPref = nullptr;
+  if(!option->blank(PREF_ON_DOWNLOAD_STOP)) {
+    hookPref = PREF_ON_DOWNLOAD_STOP;
   }
+  if(result == error_code::FINISHED) {
+    if(!option->blank(PREF_ON_DOWNLOAD_COMPLETE)) {
+      hookPref = PREF_ON_DOWNLOAD_COMPLETE;
+    }
+  } else if(result != error_code::IN_PROGRESS &&
+            result != error_code::REMOVED) {
+    if(!option->blank(PREF_ON_DOWNLOAD_ERROR)) {
+      hookPref = PREF_ON_DOWNLOAD_ERROR;
+    }
+  }
+  if(hookPref) {
+    util::executeHookByOptName(group, option, hookPref);
+  }
+
   if(result == error_code::FINISHED) {
     notifyDownloadEvent(EVENT_ON_DOWNLOAD_COMPLETE, group);
   } else if(result != error_code::IN_PROGRESS &&
