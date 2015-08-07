@@ -250,7 +250,10 @@ int WinTLSSession::closeConnection()
   // Send remaining data.
   while (writeBuf_.size()) {
     int rv = writeData(nullptr, 0);
-    if (rv == TLS_ERR_WOULDBLOCK) {
+    if (rv == 0) {
+      break;
+    }
+    if (rv < 0) {
       return rv;
     }
   }
