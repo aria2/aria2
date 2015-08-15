@@ -115,6 +115,10 @@ void HttpServerBodyCommand::sendJsonRpcResponse
     httpServer_->disableKeepAlive();
     int httpCode;
     switch(res.code) {
+    case 1:
+      // error caught while executing RpcMethod
+      httpCode = 200;
+      break;
     case -32600:
       httpCode = 400;
       break;
