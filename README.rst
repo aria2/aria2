@@ -351,6 +351,7 @@ assumes the following libraries have been built for cross-compile:
 * openssl
 * expat
 * zlib
+* libssh2
 
 When building the above libraries, make sure that disable shared
 library and enable only static library. We are going to link those
