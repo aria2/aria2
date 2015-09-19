@@ -74,9 +74,30 @@ class StructDoc:
                 print('    {}'.format(line))
             print()
             for name, content in self.members:
-                print('''    .. {}:: {}'''.format(\
-                    'function' if name.endswith(')') else self.member_domain,
-                    name))
+                name = name.strip()
+                # For function (e.g., int foo())
+                m = re.match(r'(.+)\s+([^ ]+\(.*)', name)
+                if not m:
+                    # For variable (e.g., bool a)
+                    m = re.match(r'(.+)\s+([^ ]+)', name)
+                if m:
+                    print('''    .. {}:: {} {}::{}'''.format(
+                        'function' if name.endswith(')') else self.member_domain,
+                        m.group(1),
+                        self.name,
+                        m.group(2)))
+                else:
+                    if name.endswith(')'):
+                        # For function, without return type, like
+                        # constructor
+                        print('''    .. {}:: {}::{}'''.format(
+                            'function' if name.endswith(')') else self.member_domain,
+                            self.name, name))
+                    else:
+                        # enum
+                        print('''    .. {}:: {}'''.format(
+                            'function' if name.endswith(')') else self.member_domain,
+                            name))
                 print()
                 for line in content:
                     print('''        {}'''.format(line))
