@@ -117,7 +117,7 @@ void HttpServerBodyCommand::sendJsonRpcResponse
     switch(res.code) {
     case 1:
       // error caught while executing RpcMethod
-      httpCode = 200;
+      httpCode = 400;
       break;
     case -32600:
       httpCode = 400;
