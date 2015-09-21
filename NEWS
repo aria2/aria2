@@ -21,11 +21,11 @@ Similarly, if aria2.conf exists under $HOME/.aria2/ directory, it is
 used instead.
 
 Previously, we return 500 HTTP status if RPC method execution
-encountered error.  Now it returns with 200 HTTP status with error
+encountered error.  Now it returns with 400 HTTP status with error
 code.  This is more natural because server processed request and found
 an error, and returned error reply correctly.  This is not something
 server crashed or something.  Also, there is RPC libraries which
-throws exception if it sees 5XX status code, where 200 is better
+throws exception if it sees 5XX status code, where 400 is better
 because we can examine the error.
 
 Changes
@@ -37,7 +37,7 @@ Changes
 
   Patch from amtlib-dot-dll
 
-* Return 200 HTTP status code if exception was caught while executing RPC method
+* Return 400 HTTP status code if exception was caught while executing RPC method
 
   Previously, we returned 500 HTTP status code.  I think the found in
   RPC level, not in HTTP protocol, so 500 is not appropriate.
