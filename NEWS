@@ -1,3 +1,93 @@
+aria2 1.19.1
+============
+
+Release Note
+------------
+
+This release fixes TLS handshake error with servers which only support
+RSA-SHA1 signature algorithm.  We removed RSA-SHA1 for enchanced
+security, but many users reported there were servers which could not
+talk aria2 1.19.0, so added it again for compatibility reasons.  For
+Windows build, we fixed potential infinite loop bug when TLS is used.
+
+We changed the location where dht.dat and aria2.conf are looked up.
+The aria2 manual page described details.  Basically we now follow XDG
+specification (http://standards.freedesktop.org/basedir-spec/latest/).
+For dht.dat, the default location is $XDG_CACHE_HOME/aria2/ directory.
+For aria2.conf, the default location is $XDG_CONFIG_HOME/aria2/
+directory.  To keep the current user configuration working, if aria2
+detects dht.dat under $HOME/.aria2/ directory, it is used instead.
+Similarly, if aria2.conf exists under $HOME/.aria2/ directory, it is
+used instead.
+
+Previously, we return 500 HTTP status if RPC method execution
+encountered error.  Now it returns with 200 HTTP status with error
+code.  This is more natural because server processed request and found
+an error, and returned error reply correctly.  This is not something
+server crashed or something.  Also, there is RPC libraries which
+throws exception if it sees 5XX status code, where 200 is better
+because we can examine the error.
+
+Changes
+-------
+
+* Update README.android
+
+  Providing some workarounds about CA certificates and standard output
+
+  Patch from amtlib-dot-dll
+
+* Return 200 HTTP status code if exception was caught while executing RPC method
+
+  Previously, we returned 500 HTTP status code.  I think the found in
+  RPC level, not in HTTP protocol, so 500 is not appropriate.
+
+* WinTLS: Fix potential infinite loop
+
+* Fix on-download-error is executed even if download succeeded
+
+* Update Dockerfile.mingw
+
+  Patch from Adam Baxter
+
+* Increase --select-file upper bound to 1m for torrent containing lots of files
+
+* Fix busy loop with --dry-run and 4xx response for URI listed in metalink
+
+  See GH-430
+
+* Update sqlite in OSX build to 3.8.10.2
+
+* Make LibuvEventPoll compatible with the latest libuv again
+
+* gnutls: Allow SIGN-RSA-SHA1 for compatibility reason
+
+* Make script compatible with both Python 2 and 3
+
+  Patch from Vasilij Schneidermann
+
+* Make config and cache files conform to XDG
+
+  See http://standards.freedesktop.org/basedir-spec/latest/ for
+  further details.  This implementation decides the default based on
+  whether a file exists at the legacy location, if it doesn't, it
+  picks the XDG-conforming location instead.
+
+  Patch from Vasilij Schneidermann
+
+* ftp, sftp: Fix heap-after-free bug on exception
+
+* ftp: Fix timeout when reusing FTP connection
+
+* Various MinGW-w64 build improvements
+
+  - Fix detection of localtime_r and asctime_r on MinGW-w64
+  - Fix linking with libintl on MinGW-w64
+
+  Patch from David Macek
+
+
+
 aria2 1.19.0
 ============
 
