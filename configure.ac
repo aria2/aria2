@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ([2.67])
-AC_INIT([aria2],[1.19.0],[https://github.com/tatsuhiro-t/aria2/issues],[aria2],[http://aria2.sourceforge.net/])
+AC_INIT([aria2],[1.19.1],[https://github.com/tatsuhiro-t/aria2/issues],[aria2],[http://aria2.sourceforge.net/])
 
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
