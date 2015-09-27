@@ -28,6 +28,10 @@ build()
 	&& LANG=C make clean \
 	&& LANG=C make -j2 check 2>&1 |tee "$BUILDDIR/aria2c_$2.log" \
 	&& cp src/aria2c "$BUILDDIR/aria2c_$2"
+
+    if [ -f "test/aria2c.log" ]; then
+	cat "test/aria2c.log" >> "$BUILDDIR/aria2c_$2.log"
+    fi
 }
 
 clear()
