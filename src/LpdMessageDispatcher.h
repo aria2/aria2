@@ -52,13 +52,13 @@ private:
   std::string multicastAddress_;
   uint16_t multicastPort_;
   Timer timer_;
-  time_t interval_;
+  std::chrono::seconds interval_;
   std::string request_;
 public:
-  LpdMessageDispatcher
-  (const std::string& infoHash, uint16_t port,
-   const std::string& multicastAddr, uint16_t multicastPort,
-   time_t interval = 5*60);
+  LpdMessageDispatcher(
+      const std::string& infoHash, uint16_t port,
+      const std::string& multicastAddr, uint16_t multicastPort,
+      std::chrono::seconds interval = 5_min);
 
   ~LpdMessageDispatcher();
 

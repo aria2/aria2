@@ -50,10 +50,10 @@ BtStopDownloadCommand::BtStopDownloadCommand
 (cuid_t cuid,
  RequestGroup* requestGroup,
  DownloadEngine* e,
- time_t timeout)
-  : TimeBasedCommand(cuid, e, 1),
+ std::chrono::seconds timeout)
+  : TimeBasedCommand(cuid, e, 1_s),
     requestGroup_(requestGroup),
-    timeout_(timeout)
+    timeout_(std::move(timeout))
 {}
 
 void BtStopDownloadCommand::preProcess()
@@ -66,7 +66,7 @@ void BtStopDownloadCommand::preProcess()
                         " --bt-stop-timeout option."),
                       GroupId::toHex(requestGroup_->getGID()).c_str()));
     requestGroup_->setForceHaltRequested(true);
-    getDownloadEngine()->setRefreshInterval(0);
+    getDownloadEngine()->setRefreshInterval(std::chrono::milliseconds(0));
     enableExit();
   }
 }

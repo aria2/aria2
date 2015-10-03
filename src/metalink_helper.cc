@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "metalink_helper.h"
+
+#include <array>
+
 #include "Option.h"
 #include "MetalinkEntry.h"
 #include "MetalinkParserStateMachine.h"
@@ -42,6 +45,7 @@
 #include "DlAbortEx.h"
 #include "BinaryStream.h"
 #include "MetalinkMetaurl.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -131,12 +135,12 @@ std::unique_ptr<Metalinker> parseBinaryStream
   MetalinkParserStateMachine psm;
   psm.setBaseUri(baseUri);
   xml::XmlParser ps(&psm);
-  unsigned char buf[4096];
+  std::array<unsigned char, 4_k> buf;
   ssize_t nread;
   int64_t offread = 0;
   bool retval = true;
-  while((nread = bs->readData(buf, sizeof(buf), offread)) > 0) {
-    if(ps.parseUpdate(reinterpret_cast<const char*>(buf), nread) < 0) {
+  while((nread = bs->readData(buf.data(), buf.size(), offread)) > 0) {
+    if(ps.parseUpdate(reinterpret_cast<const char*>(buf.data()), nread) < 0) {
       retval = false;
       break;
     }

@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "message_digest_helper.h"
 
+#include <array>
 #include <cstring>
 #include <cstdlib>
 
@@ -53,25 +54,24 @@ std::string digest
  const std::shared_ptr<BinaryStream>& bs,
  int64_t offset, int64_t length)
 {
-  size_t BUFSIZE = 4096;
-  unsigned char BUF[BUFSIZE];
-  lldiv_t res = lldiv(length, BUFSIZE);
+  std::array<unsigned char, 4_k> buf;
+  lldiv_t res = lldiv(length, buf.size());
   int64_t iteration = res.quot;
   size_t tail = res.rem;
   for(int64_t i = 0; i < iteration; ++i) {
-    ssize_t readLength = bs->readData(BUF, BUFSIZE, offset);
-    if((size_t)readLength != BUFSIZE) {
+    ssize_t readLength = bs->readData(buf.data(), buf.size(), offset);
+    if((size_t)readLength != buf.size()) {
       throw DL_ABORT_EX(fmt(EX_FILE_READ, "n/a", "data is too short"));
     }
-    ctx->update(BUF, readLength);
+    ctx->update(buf.data(), readLength);
     offset += readLength;
   }
   if(tail) {
-    ssize_t readLength = bs->readData(BUF, tail, offset);
+    ssize_t readLength = bs->readData(buf.data(), tail, offset);
     if((size_t)readLength != tail) {
       throw DL_ABORT_EX(fmt(EX_FILE_READ, "n/a", "data is too short"));
     }
-    ctx->update(BUF, readLength);
+    ctx->update(buf.data(), readLength);
   }
   return ctx->digest();
 }

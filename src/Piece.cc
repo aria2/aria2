@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "Piece.h"
 
+#include <array>
 #include <cassert>
 
 #include "util.h"
@@ -245,23 +246,22 @@ void updateHashWithRead(MessageDigest* mdctx,
                         const std::shared_ptr<DiskAdaptor>& adaptor,
                         int64_t offset, size_t len)
 {
-  const size_t BUFSIZE = 4096;
-  unsigned char buf[BUFSIZE];
-  ldiv_t res = ldiv(len, BUFSIZE);
+  std::array<unsigned char, 4_k> buf;
+  ldiv_t res = ldiv(len, buf.size());
   for(int j = 0; j < res.quot; ++j) {
-    ssize_t nread = adaptor->readData(buf, BUFSIZE, offset);
-    if((size_t)nread != BUFSIZE) {
+    ssize_t nread = adaptor->readData(buf.data(), buf.size(), offset);
+    if((size_t)nread != buf.size()) {
       throw DL_ABORT_EX(fmt(EX_FILE_READ, "n/a", "data is too short"));
     }
-    mdctx->update(buf, nread);
+    mdctx->update(buf.data(), nread);
     offset += nread;
   }
   if(res.rem) {
-    ssize_t nread = adaptor->readData(buf, res.rem, offset);
+    ssize_t nread = adaptor->readData(buf.data(), res.rem, offset);
     if(nread != res.rem) {
       throw DL_ABORT_EX(fmt(EX_FILE_READ, "n/a", "data is too short"));
     }
-    mdctx->update(buf, nread);
+    mdctx->update(buf.data(), nread);
   }
 }
 } // namespace

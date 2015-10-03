@@ -45,7 +45,7 @@ UDPTrackerRequest::UDPTrackerRequest()
     transactionId(0), downloaded(0),
     left(0), uploaded(0), event(UDPT_EVT_NONE), ip(0), key(0), numWant(0),
     port(0), extensions(0), state(UDPT_STA_PENDING), error(UDPT_ERR_SUCCESS),
-    dispatched(0),
+    dispatched(Timer::zero()),
     failCount(0)
 {}
 

@@ -63,7 +63,8 @@ ReceiverMSEHandshakeCommand::ReceiverMSEHandshakeCommand
   sequence_(RECEIVER_IDENTIFY_HANDSHAKE),
   mseHandshake_(make_unique<MSEHandshake>(cuid, s, e->getOption()))
 {
-  setTimeout(e->getOption()->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
+  setTimeout(std::chrono::seconds(
+      e->getOption()->getAsInt(PREF_PEER_CONNECTION_TIMEOUT)));
   mseHandshake_->setWantRead(true);
 }
 

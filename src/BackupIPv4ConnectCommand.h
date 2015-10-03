@@ -81,7 +81,7 @@ private:
   DownloadEngine* e_;
   Timer startTime_;
   Timer timeoutCheck_;
-  time_t timeout_;
+  std::chrono::seconds timeout_;
 };
 
 } // namespace aria2

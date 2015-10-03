@@ -36,33 +36,33 @@
 #define D_BT_CONSTANTS_H
 
 #include "common.h"
-#include <vector>
+#include "a2functional.h"
 
-#define INFO_HASH_LENGTH 20
+namespace aria2 {
 
-#define PIECE_HASH_LENGTH 20
+constexpr size_t INFO_HASH_LENGTH = 20;
 
-#define PEER_ID_LENGTH 20
+constexpr size_t PIECE_HASH_LENGTH = 20;
 
-#define INFO_HASH_LENGTH 20
+constexpr size_t PEER_ID_LENGTH = 20;
 
-#define MAX_BLOCK_LENGTH (16*1024)
+constexpr size_t MAX_BLOCK_LENGTH = 16_k;
 
-#define DEFAULT_MAX_OUTSTANDING_REQUEST 6
-
-#define OUTSTANDING_REQUEST_STEP 6
+constexpr size_t DEFAULT_MAX_OUTSTANDING_REQUEST = 6;
 
 // Upper Bound of the number of outstanding request
-#define UB_MAX_OUTSTANDING_REQUEST 256
+constexpr size_t UB_MAX_OUTSTANDING_REQUEST = 256;
 
-#define METADATA_PIECE_SIZE (16*1024)
+constexpr size_t METADATA_PIECE_SIZE = 16_k;
 
-#define LPD_MULTICAST_ADDR "239.192.152.143"
+constexpr const char LPD_MULTICAST_ADDR[] = "239.192.152.143";
 
-#define LPD_MULTICAST_PORT 6771
+constexpr uint16_t LPD_MULTICAST_PORT = 6771;
 
-#define COMPACT_LEN_IPV4 6
+constexpr size_t COMPACT_LEN_IPV4 = 6;
 
-#define COMPACT_LEN_IPV6 18
+constexpr size_t COMPACT_LEN_IPV6 = 18;
+
+} // namespace aria2
 
 #endif // D_BT_CONSTANTS_H

@@ -150,7 +150,7 @@
   _(" --no-file-allocation-limit=SIZE No file allocation is made for files whose\n" \
     "                              size is smaller than SIZE.\n"        \
     "                              You can append K or M(1K = 1024, 1M = 1024K).")
-# define TEXT_ENABLE_DIRECT_IO                                          \
+#define TEXT_ENABLE_DIRECT_IO                                          \
   _(" --enable-direct-io[=true|false] Enable directI/O, which lowers cpu usage while\n" \
     "                              allocating files.\n"                 \
     "                              Turn off if you encounter any error")
@@ -225,6 +225,8 @@
   _(" -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads.")
 #define TEXT_NO_NETRC                                           \
   _(" -n, --no-netrc[=true|false]  Disables netrc support.")
+#define TEXT_NETRC_PATH                                           \
+  _(" --netrc-path=FILE            Specify the path to the netrc file.")
 #define TEXT_INPUT_FILE                                                 \
   _(" -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n" \
     "                              multiple URIs for a single entity: separate\n" \
@@ -599,6 +601,13 @@
 #define TEXT_INTERFACE                                                  \
   _(" --interface=INTERFACE        Bind sockets to given interface. You can specify\n" \
     "                              interface name, IP address and hostname.")
+#define TEXT_MULTIPLE_INTERFACE                                         \
+  _(" --multiple-interface=INTERFACES Comma separated list of interfaces to bind\n" \
+    "                              sockets to. Requests will be splited among the\n" \
+    "                              interfaces to achieve link aggregation. You can\n" \
+    "                              specify interface name, IP address and hostname.\n" \
+    "                              If --interface is used, this option will be\n" \
+    "                              ignored.")
 #define TEXT_DISABLE_IPV6                               \
   _(" --disable-ipv6[=true|false]  Disable IPv6.")
 #define TEXT_BT_SAVE_METADATA                                           \
@@ -1024,3 +1033,13 @@
     "                              If true is given, deny legacy BitTorrent\n" \
     "                              handshake and only use Obfuscation handshake and\n" \
     "                              always encrypt message payload.")
+#define TEXT_SSH_HOST_KEY_MD                                            \
+  _(" --ssh-host-key-md=TYPE=DIGEST\n"                                  \
+    "                              Set checksum for SSH host public key. TYPE is\n" \
+    "                              hash type. The supported hash type is sha-1 or\n" \
+    "                              md5. DIGEST is hex digest. For example:\n" \
+    "                              sha-1=b030503d4de4539dc7885e6f0f5e256704edf4c3\n" \
+    "                              This option can be used to validate server's\n" \
+    "                              public key when SFTP is used. If this option is\n" \
+    "                              not set, which is default, no validation takes\n" \
+    "                              place.")

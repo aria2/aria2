@@ -142,7 +142,7 @@ bool HttpServer::receiveRequest()
     lastRequestHeader_ = headerProcessor_->getResult();
     A2_LOG_INFO(fmt("HTTP Server received request\n%s",
                     headerProcessor_->getHeaderString().c_str()));
-    socketRecvBuffer_->shiftBuffer(headerProcessor_->getLastBytesProcessed());
+    socketRecvBuffer_->drain(headerProcessor_->getLastBytesProcessed());
     bodyConsumed_ = 0;
     if(setupResponseRecv() < 0) {
       A2_LOG_INFO("Request path is invaild. Ignore the request body.");
@@ -175,7 +175,7 @@ bool HttpServer::receiveRequest()
     }
     return true;
   } else {
-    socketRecvBuffer_->shiftBuffer(headerProcessor_->getLastBytesProcessed());
+    socketRecvBuffer_->drain(headerProcessor_->getLastBytesProcessed());
     return false;
   }
 }
@@ -197,7 +197,7 @@ bool HttpServer::receiveBody()
   if(lastBody_) {
     lastBody_->writeData(socketRecvBuffer_->getBuffer(), length, 0);
   }
-  socketRecvBuffer_->shiftBuffer(length);
+  socketRecvBuffer_->drain(length);
   bodyConsumed_ += length;
   return lastContentLength_ == bodyConsumed_;
 }

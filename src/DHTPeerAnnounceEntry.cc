@@ -66,28 +66,16 @@ size_t DHTPeerAnnounceEntry::countPeerAddrEntry() const
   return peerAddrEntries_.size();
 }
 
-namespace {
-class FindStaleEntry {
-private:
-  time_t timeout_;
-public:
-  FindStaleEntry(time_t timeout):timeout_(timeout) {}
-
-  bool operator()(const PeerAddrEntry& entry) const
-  {
-    if(entry.getLastUpdated().difference(global::wallclock()) >= timeout_) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-};
-} // namespace
-
-void DHTPeerAnnounceEntry::removeStalePeerAddrEntry(time_t timeout)
+void DHTPeerAnnounceEntry::removeStalePeerAddrEntry(
+    const std::chrono::seconds& timeout)
 {
-  peerAddrEntries_.erase(std::remove_if(peerAddrEntries_.begin(), peerAddrEntries_.end(),
-                                        FindStaleEntry(timeout)), peerAddrEntries_.end());
+  peerAddrEntries_.erase(
+      std::remove_if(std::begin(peerAddrEntries_), std::end(peerAddrEntries_),
+                     [&timeout](const PeerAddrEntry& entry) {
+        return entry.getLastUpdated().difference(global::wallclock()) >=
+               timeout;
+      }),
+      std::end(peerAddrEntries_));
 }
 
 bool DHTPeerAnnounceEntry::empty() const

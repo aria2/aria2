@@ -9,16 +9,21 @@ DESCRIPTION
 -----------
 
 aria2 is a utility for downloading files. The supported protocols are
-HTTP(S), FTP, BitTorrent, and Metalink. aria2 can download a file from
-multiple sources/protocols and tries to utilize your maximum download
-bandwidth. It supports downloading a file from HTTP(S)/FTP and
-BitTorrent at the same time, while the data downloaded from
-HTTP(S)/FTP is uploaded to the BitTorrent swarm. Using Metalink
+HTTP(S), FTP, SFTP, BitTorrent, and Metalink. aria2 can download a
+file from multiple sources/protocols and tries to utilize your maximum
+download bandwidth. It supports downloading a file from HTTP(S)/FTP
+/SFTP and BitTorrent at the same time, while the data downloaded from
+HTTP(S)/FTP/SFTP is uploaded to the BitTorrent swarm. Using Metalink
 chunk checksums, aria2 automatically validates chunks of data while
 downloading a file.
 
 OPTIONS
 -------
+
+.. note::
+
+  Most FTP related options are applicable to SFTP as well.
+  Some options are not effective against SFTP (e.g., :option:`--ftp-pasv`)
 
 Basic Options
 ~~~~~~~~~~~~~
@@ -84,8 +89,9 @@ Basic Options
    ``#checksum``, ``#experimental``, ``#deprecated``, ``#help``, ``#all``
    Default: ``#basic``
 
-HTTP/FTP Options
-~~~~~~~~~~~~~~~~
+HTTP/FTP/SFTP Options
+~~~~~~~~~~~~~~~~~~~~~
+
 .. option:: --all-proxy=<PROXY>
 
   Use a proxy server for all protocols.  To override a previously
@@ -183,6 +189,17 @@ HTTP/FTP Options
   since 2*15M > 20MiB, aria2 does not split file and download it using
   1 source.  You can append ``K`` or ``M`` (1K = 1024, 1M = 1024K).
   Possible Values: ``1M`` -``1024M`` Default: ``20M``
+
+
+.. option:: --netrc-path=<FILE>
+
+   Specify the path to the netrc file.
+   Default: ``$(HOME)/.netrc``
+
+   .. note::
+
+       Permission of the .netrc file must be 600.  Otherwise, the file
+       will be ignored.
 
 .. option:: -n, --no-netrc[=true|false]
 
@@ -520,8 +537,8 @@ HTTP Specific Options
   Set user agent for HTTP(S) downloads.
   Default: ``aria2/$VERSION``, $VERSION is replaced by package version.
 
-FTP Specific Options
-~~~~~~~~~~~~~~~~~~~~
+FTP/SFTP Specific Options
+~~~~~~~~~~~~~~~~~~~~~~~~~
 .. option:: --ftp-user=<USER>
 
   Set FTP user. This affects all URIs.
@@ -541,6 +558,10 @@ FTP Specific Options
   Use the passive mode in FTP.
   If ``false`` is given, the active mode will be used.
   Default: ``true``
+
+  .. note::
+
+    This option is ignored for SFTP transfer.
 
 .. option:: --ftp-proxy=<PROXY>
 
@@ -562,10 +583,23 @@ FTP Specific Options
   Set FTP transfer type. TYPE is either ``binary`` or ``ascii``.
   Default: ``binary``
 
+  .. note::
+
+    This option is ignored for SFTP transfer.
+
 .. option:: --ftp-reuse-connection[=true|false]
 
   Reuse connection in FTP.
   Default: ``true``
+
+.. option:: --ssh-host-key-md=<TYPE>=<DIGEST>
+
+  Set checksum for SSH host public key. TYPE is hash type. The
+  supported hash type is ``sha-1`` or ``md5``. DIGEST is hex
+  digest. For example:
+  ``sha-1=b030503d4de4539dc7885e6f0f5e256704edf4c3``.  This option can
+  be used to validate server's public key when SFTP is used. If this
+  option is not set, which is default, no validation takes place.
 
 BitTorrent/Metalink Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -767,12 +801,14 @@ BitTorrent Specific Options
 .. option:: --dht-file-path=<PATH>
 
   Change the IPv4 DHT routing table file to PATH.
-  Default: ``$HOME/.aria2/dht.dat``
+  Default: ``$HOME/.aria2/dht.dat`` if present, otherwise
+  ``$XDG_CACHE_HOME/aria2/dht.dat``.
 
 .. option:: --dht-file-path6=<PATH>
 
   Change the IPv6 DHT routing table file to PATH.
-  Default: ``$HOME/.aria2/dht6.dat``
+  Default: ``$HOME/.aria2/dht6.dat`` if present, otherwise
+  ``$XDG_CACHE_HOME/aria2/dht6.dat``.
 
 .. option:: --dht-listen-addr6=<ADDR>
 
@@ -1147,7 +1183,8 @@ Advanced Options
 .. option:: --conf-path=<PATH>
 
   Change the configuration file path to PATH.
-  Default: ``$HOME/.aria2/aria2.conf``
+  Default: ``$HOME/.aria2/aria2.conf`` if present, otherwise
+  ``$XDG_CONFIG_HOME/aria2/aria2.conf``.
 
 .. option:: --console-log-level=<LEVEL>
 
@@ -1335,6 +1372,14 @@ Advanced Options
   Specify minimum SSL/TLS version to enable.
   Possible Values: ``SSLv3``, ``TLSv1``, ``TLSv1.1``, ``TLSv1.2``
   Default: ``TLSv1``
+
+.. option:: --multiple-interface=<INTERFACES>
+
+  Comma separated list of interfaces to bind sockets to. Requests will
+  be splited among the interfaces to achieve link aggregation. You can
+  specify interface name, IP address and hostname. If
+  :option:`--interface` is used, this option will be ignored.
+  Possible Values: interface, IP address, hostname
 
 .. option:: --log-level=<LEVEL>
 
@@ -1579,12 +1624,12 @@ treated as a separate download. Both Metalink4 and Metalink version
 3.0 are supported.
 
 You can specify both torrent file with -T option and URIs. By doing
-this, you can download a file from both torrent swarm and HTTP(S)/FTP
-server at the same time, while the data from HTTP(S)/FTP are uploaded
-to the torrent swarm.  For single file torrents, URI can be a complete
-URI pointing to the resource or if URI ends with /, name in torrent
-file in torrent is added. For multi-file torrents, name and path are
-added to form a URI for each file.
+this, you can download a file from both torrent swarm and
+HTTP(S)/FTP/SFTP server at the same time, while the data from
+HTTP(S)/FTP/SFTP are uploaded to the torrent swarm.  For single file
+torrents, URI can be a complete URI pointing to the resource or if URI
+ends with /, name in torrent file in torrent is added. For multi-file
+torrents, name and path are added to form a URI for each file.
 
 .. note::
 
@@ -1615,15 +1660,14 @@ occurred. Currently following options are available:
 
 aria2 passes 3 arguments to specified command when it is executed.
 These arguments are: GID, the number of files and file path.  For
-HTTP, FTP downloads, usually the number of files is 1.  BitTorrent
-download can contain multiple files.
-If number of files is more than one, file path is first one.  In
-other words, this is the value of path key of first struct whose
-selected key is true in the response of :func:`aria2.getFiles`
-RPC method.
-If you want to get all file paths, consider to use JSON-RPC/XML-RPC.  Please
-note that file path may change during download in HTTP because of
-redirection or Content-Disposition header.
+HTTP, FTP, and SFTP downloads, usually the number of files is 1.
+BitTorrent download can contain multiple files.  If number of files is
+more than one, file path is first one.  In other words, this is the
+value of path key of first struct whose selected key is true in the
+response of :func:`aria2.getFiles` RPC method.  If you want to get all
+file paths, consider to use JSON-RPC/XML-RPC.  Please note that file
+path may change during download in HTTP because of redirection or
+Content-Disposition header.
 
 Let's see an example of how arguments are passed to command:
 
@@ -1746,6 +1790,12 @@ based on the last error encountered.
 30
   If aria2 could not parse JSON-RPC request.
 
+31
+  Reserved.  Not used.
+
+32
+  If checksum validation failed.
+
 .. note::
 
   An error occurred in a finished download will not be reported
@@ -1792,10 +1842,12 @@ FILES
 aria2.conf
 ~~~~~~~~~~
 
-By default, aria2 parses ``$HOME/.aria2/aria2.conf`` as a
-configuration file. You can specify the path to configuration file
-using :option:`--conf-path` option.  If you don't want to use the
-configuration file, use :option:`--no-conf` option.
+By default, aria2 checks whether the legacy path
+``$HOME/.aria2/aria2.conf`` is present, otherwise it parses
+``$XDG_CONFIG_HOME/aria2/aria2.conf`` as its configuration file.  You
+can specify the path to configuration file using :option:`--conf-path`
+option.  If you don't want to use the configuration file, use
+:option:`--no-conf` option.
 
 The configuration file is a text file and has 1 option per each
 line. In each line, you can specify name-value pair in the format:
@@ -1820,16 +1872,18 @@ lines beginning ``#`` are treated as comments::
 dht.dat
 ~~~~~~~~
 
-By default, the routing table of IPv4 DHT is saved to the path
-``$HOME/.aria2/dht.dat`` and the routing table of IPv6 DHT is saved to
-the path ``$HOME/.aria2/dht6.dat``.
+Unless the legacy file paths ``$HOME/.aria2/dht.dat`` and
+``$HOME/.aria2/dht6.dat`` are pointing to existing files, the routing
+table of IPv4 DHT is saved to the path
+``$XDG_CACHE_HOME/aria2/dht.dat`` and the routing table of IPv6 DHT is
+saved to the path ``$XDG_CACHE_HOME/aria2/dht6.dat``.
 
 Netrc
 ~~~~~
 
-Netrc support is enabled by default for HTTP(S)/FTP.  To disable netrc
-support, specify :option:`--no-netrc <-n>` option.  Your .netrc file should have correct
-permissions(600).
+Netrc support is enabled by default for HTTP(S)/FTP/SFTP.  To disable
+netrc support, specify :option:`--no-netrc <-n>` option.  Your .netrc
+file should have correct permissions(600).
 
 If machine name starts ``.``, aria2 performs domain-match instead of
 exact match. This is an extension of aria2. For example of domain
@@ -1992,6 +2046,7 @@ of URIs. These optional lines must start with white space(s).
   * :option:`seed-time <--seed-time>`
   * :option:`select-file <--select-file>`
   * :option:`split <-s>`
+  * :option:`ssh-host-key-md <--ssh-host-key-md>`
   * :option:`stream-piece-selector <--stream-piece-selector>`
   * :option:`timeout <-t>`
   * :option:`uri-selector <--uri-selector>`
@@ -2156,19 +2211,19 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
 
 .. function:: aria2.addUri([secret], uris[, options[, position]])
 
-  This method adds a new download. *uris* is an array of HTTP/FTP/BitTorrent
-  URIs (strings) pointing to the same resource.  If you mix URIs pointing to
-  different resources, then the download may fail or be corrupted without aria2
-  complaining.
-  When adding BitTorrent Magnet URIs, *uris* must have only one element and it
-  should be BitTorrent Magnet URI.
-  *options* is a struct and its members are pairs of option name and value.
-  See :ref:`rpc_options` below for more details.
-  If *position* is given, it must be an integer starting from 0. The new
-  download will be inserted at *position* in the waiting queue. If
-  *position* is omitted or *position* is larger than the current size of the
-  queue, the new download is appended to the end of the queue.
-  This method returns the GID of the newly registered download.
+  This method adds a new download. *uris* is an array of
+  HTTP/FTP/SFTP/BitTorrent URIs (strings) pointing to the same
+  resource.  If you mix URIs pointing to different resources, then the
+  download may fail or be corrupted without aria2 complaining.  When
+  adding BitTorrent Magnet URIs, *uris* must have only one element and
+  it should be BitTorrent Magnet URI.  *options* is a struct and its
+  members are pairs of option name and value.  See :ref:`rpc_options`
+  below for more details.  If *position* is given, it must be an
+  integer starting from 0. The new download will be inserted at
+  *position* in the waiting queue. If *position* is omitted or
+  *position* is larger than the current size of the queue, the new
+  download is appended to the end of the queue.  This method returns
+  the GID of the newly registered download.
 
   **JSON-RPC Example**
 
@@ -2775,9 +2830,9 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
 
 .. function:: aria2.getServers([secret], gid)
 
-  This method returns currently connected HTTP(S)/FTP servers of the download
-  denoted by *gid* (string). The response is an array of structs and contains
-  the following keys. Values are strings.
+  This method returns currently connected HTTP(S)/FTP/SFTP servers of
+  the download denoted by *gid* (string). The response is an array of
+  structs and contains the following keys. Values are strings.
 
   ``index``
     Index of the file, starting at 1, in the same order as files appear in the
@@ -4107,7 +4162,7 @@ The Metalink Download Description Format: :rfc:`5854`
 
 COPYRIGHT
 ---------
-Copyright (C) 2006, 2014 Tatsuhiro Tsujikawa
+Copyright (C) 2006, 2015 Tatsuhiro Tsujikawa
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

@@ -229,6 +229,11 @@ Context::Context(bool standalone,
     std::string iface = op->get(PREF_INTERFACE);
     SocketCore::bindAddress(iface);
   }
+  // Bind multiple interfaces
+  if(!op->get(PREF_MULTIPLE_INTERFACE).empty() && op->get(PREF_INTERFACE).empty()) {
+    std::string ifaces = op->get(PREF_MULTIPLE_INTERFACE);
+    SocketCore::bindAllAddress(ifaces);
+  }
   std::vector<std::shared_ptr<RequestGroup> > requestGroups;
   std::shared_ptr<UriListParser> uriListParser;
 #ifdef ENABLE_BITTORRENT

@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "XmlParser.h"
+
+#include <array>
+
 #include "a2io.h"
 #include "util.h"
 
@@ -55,11 +58,11 @@ bool parseFile(const std::string& filename, ParserStateMachine* psm)
   }
   auto fdclose = defer(fd, close);
   XmlParser ps(psm);
-  char buf[4096];
+  std::array<char, 4_k> buf;
   ssize_t nread;
   bool retval = true;
-  while((nread = read(fd, buf, sizeof(buf))) > 0) {
-    if(ps.parseUpdate(buf, nread) < 0) {
+  while((nread = read(fd, buf.data(), buf.size())) > 0) {
+    if(ps.parseUpdate(buf.data(), nread) < 0) {
       retval = false;
       break;
     }

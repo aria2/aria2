@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2010 Tatsuhiro Tsujikawa
+ * Copyright (C) 2015 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,70 +36,67 @@
 #define D_TIMER_A2_H
 
 #include "common.h"
+
+#include <chrono>
+
 #include "a2time.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
 class Timer {
-private:
-  timeval tv_;
-
-  time_t difference(const struct timeval& tv) const;
-
-  int64_t differenceInMillis(const struct timeval& tv) const;
 public:
+  using Clock = std::chrono::steady_clock;
+
   // The time value is initialized so that it represents the time at which
   // this object was created.
   Timer();
-  Timer(const Timer& time);
-  Timer(time_t sec);
-  Timer(const struct timeval& tv);
+  Timer(const Timer& time) = default;
+  Timer(Timer&& time) = default;
 
-  Timer& operator=(const Timer& timer);
+  template <typename duration>
+  constexpr Timer(const duration& t)
+    : tp_(t)
+  {
+  }
 
-  bool operator<(const Timer& timer) const;
+  Timer(const Clock::time_point& tp);
 
-  bool operator<=(const Timer& timer) const;
+  Timer& operator=(Timer&& timer) = default;
+  Timer& operator=(const Timer& timer) = default;
 
-  bool operator>(const Timer& timer) const;
+  bool operator<(const Timer& timer) const { return tp_ < timer.tp_; }
+  bool operator>(const Timer& timer) const { return timer < *this; }
+  bool operator<=(const Timer& timer) const { return !(timer < *this); }
+  bool operator>=(const Timer& timer) const { return !(*this < timer); }
 
   void reset();
 
-  void reset(time_t sec);
-
-  bool elapsed(time_t sec) const;
-
-  bool elapsedInMillis(int64_t millis) const;
-
-  time_t difference() const;
-
-  time_t difference(const Timer& timer) const
+  template <typename duration>
+  void reset(const duration& t)
   {
-    return difference(timer.tv_);
+    tp_ = Clock::time_point(t);
   }
 
-  int64_t differenceInMillis() const;
+  Clock::duration difference() const;
 
-  int64_t differenceInMillis(const Timer& timer) const
-  {
-    return differenceInMillis(timer.tv_);
-  }
+  Clock::duration difference(const Timer& timer) const;
 
   // Returns true if this object's time value is zero.
   bool isZero() const;
 
-  void advance(time_t sec);
+  template <typename duration>
+  void advance(const duration& t)
+  {
+    tp_ += t;
+  }
 
-  // Returns this object's time value in seconds.
-  time_t getTime() const;
+  const Clock::time_point& getTime() const { return tp_; }
 
-  int64_t getTimeInMicros() const;
+  static Timer zero() { return Timer(0_s); }
 
-  int64_t getTimeInMillis() const;
-
-  // Returns true if this Timer is not affected by system time change.
-  // Otherwise return false.
-  static bool monotonicClock();
+private:
+  Clock::time_point tp_;
 };
 
 } // namespace aria2

@@ -62,7 +62,7 @@ private:
   BtMessageFactory* messageFactory_;
   std::shared_ptr<Peer> peer_;
   RequestGroupMan* requestGroupMan_;
-  time_t requestTimeout_;
+  std::chrono::seconds requestTimeout_;
 public:
   DefaultBtMessageDispatcher();
 
@@ -140,9 +140,9 @@ public:
     cuid_ = cuid;
   }
 
-  void setRequestTimeout(time_t requestTimeout)
+  void setRequestTimeout(std::chrono::seconds requestTimeout)
   {
-    requestTimeout_ = requestTimeout;
+    requestTimeout_ = std::move(requestTimeout);
   }
 
   void setPeerConnection(PeerConnection* peerConnection)

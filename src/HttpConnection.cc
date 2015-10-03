@@ -157,12 +157,12 @@ std::unique_ptr<HttpResponse> HttpConnection::receiveResponse()
     httpResponse->setHttpHeader(proc->getResult());
     httpResponse->setHttpRequest(outstandingHttpRequests_.front()->
                                  popHttpRequest());
-    socketRecvBuffer_->shiftBuffer(proc->getLastBytesProcessed());
+    socketRecvBuffer_->drain(proc->getLastBytesProcessed());
     outstandingHttpRequests_.pop_front();
     return httpResponse;
   }
 
-  socketRecvBuffer_->shiftBuffer(proc->getLastBytesProcessed());
+  socketRecvBuffer_->drain(proc->getLastBytesProcessed());
   return nullptr;
 }
 

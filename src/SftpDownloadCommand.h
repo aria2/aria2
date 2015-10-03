@@ -1,7 +1,8 @@
+/* <!-- copyright */
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2010 Tatsuhiro Tsujikawa
+ * Copyright (C) 2015 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,11 +32,35 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_CLOCK_GETTIME_MINGW_H
-#define D_CLOCK_GETTIME_MINGW_H
+#ifndef D_SFTP_DOWNLOAD_COMMAND_H
+#define D_SFTP_DOWNLOAD_COMMAND_H
 
-#include "timespec.h"
+#include "DownloadCommand.h"
 
-int clock_gettime(int dummyid, struct timespec* tp);
+namespace aria2 {
 
-#endif // D_CLOCK_GETTIME_MINGW_H
+class AuthConfig;
+
+class SftpDownloadCommand : public DownloadCommand {
+private:
+  std::unique_ptr<AuthConfig> authConfig_;
+
+protected:
+  virtual bool prepareForNextSegment() CXX11_OVERRIDE;
+  virtual int64_t getRequestEndOffset() const CXX11_OVERRIDE;
+  virtual bool shouldEnableWriteCheck() CXX11_OVERRIDE;
+
+public:
+  SftpDownloadCommand(cuid_t cuid,
+                      const std::shared_ptr<Request>& req,
+                      const std::shared_ptr<FileEntry>& fileEntry,
+                      RequestGroup* requestGroup,
+                      DownloadEngine* e,
+                      const std::shared_ptr<SocketCore>& socket,
+                      std::unique_ptr<AuthConfig> authConfig);
+  virtual ~SftpDownloadCommand();
+};
+
+} // namespace aria2
+
+#endif // D_SFTP_DOWNLOAD_COMMAND_H

@@ -417,13 +417,13 @@ void BittorrentHelperTest::testLoadFromMemory_multiFileNonUtf8Path()
   path->append("path");
   path->append(fromHex("90a28a")+"E");
   auto file = Dict::g();
-  file->put("length", Integer::g(1024));
+  file->put("length", Integer::g(1_k));
   file->put("path", std::move(path));
   auto files = List::g();
   files->append(std::move(file));
   auto info = Dict::g();
   info->put("files", std::move(files));
-  info->put("piece length", Integer::g(1024));
+  info->put("piece length", Integer::g(1_k));
   info->put("pieces", "01234567890123456789");
   info->put("name", fromHex("1b")+"$B%O%m!<"+fromHex("1b")+"(B");
   Dict dict;
@@ -445,10 +445,10 @@ void BittorrentHelperTest::testLoadFromMemory_multiFileNonUtf8Path()
 void BittorrentHelperTest::testLoadFromMemory_singleFileNonUtf8Path()
 {
   auto info = Dict::g();
-  info->put("piece length", Integer::g(1024));
+  info->put("piece length", Integer::g(1_k));
   info->put("pieces", "01234567890123456789");
   info->put("name", fromHex("90a28a")+"E");
-  info->put("length", Integer::g(1024));
+  info->put("length", Integer::g(1_k));
   Dict dict;
   dict.put("info", std::move(info));
   auto dctx = std::make_shared<DownloadContext>();
@@ -886,17 +886,17 @@ void BittorrentHelperTest::testExtract2PeersFromList()
 void BittorrentHelperTest::testPackcompact()
 {
   unsigned char compact[COMPACT_LEN_IPV6];
-  CPPUNIT_ASSERT_EQUAL(18,
+  CPPUNIT_ASSERT_EQUAL((size_t)18,
                        packcompact(compact,
                                    "1002:1035:4527:3546:7854:1237:3247:3217",
                                    6881));
   CPPUNIT_ASSERT_EQUAL(std::string("100210354527354678541237324732171ae1"),
                        util::toHex(compact, 18));
 
-  CPPUNIT_ASSERT_EQUAL(6, packcompact(compact, "192.168.0.1", 6881));
+  CPPUNIT_ASSERT_EQUAL((size_t)6, packcompact(compact, "192.168.0.1", 6881));
   CPPUNIT_ASSERT_EQUAL(std::string("c0a800011ae1"), util::toHex(compact, 6));
 
-  CPPUNIT_ASSERT_EQUAL(0, packcompact(compact, "badaddr", 6881));
+  CPPUNIT_ASSERT_EQUAL((size_t)0, packcompact(compact, "badaddr", 6881));
 }
 
 void BittorrentHelperTest::testUnpackcompact()

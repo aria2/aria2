@@ -99,21 +99,26 @@ FtpNegotiationCommand::FtpNegotiationCommand
 {
   ftp_->setBaseWorkingDir(baseWorkingDir);
   if(seq == SEQ_RECV_GREETING) {
-    setTimeout(getOption()->getAsInt(PREF_CONNECT_TIMEOUT));
+    setTimeout(
+        std::chrono::seconds(getOption()->getAsInt(PREF_CONNECT_TIMEOUT)));
   }
+  setWriteCheckSocket(getSocket());
 }
 
 FtpNegotiationCommand::~FtpNegotiationCommand() {}
 
 bool FtpNegotiationCommand::executeInternal() {
-  while(processSequence(getSegments().front()));
+  auto segment = getSegments().empty() ?
+    std::shared_ptr<Segment>() : getSegments().front();
+  while(processSequence(segment));
   if(sequence_ == SEQ_RETRY) {
     return prepareForRetry(0);
   } else if(sequence_ == SEQ_NEGOTIATION_COMPLETED) {
     auto command = make_unique<FtpDownloadCommand>
       (getCuid(), getRequest(), getFileEntry(), getRequestGroup(), ftp_,
        getDownloadEngine(), dataSocket_, getSocket());
-    command->setStartupIdleTime(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME));
+    command->setStartupIdleTime(
+        std::chrono::seconds(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME)));
     command->setLowestDownloadSpeedLimit
       (getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));
     if(getFileEntry()->isUniqueProtocol()) {
@@ -464,12 +469,12 @@ bool FtpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
       poolConnection();
       return false;
     }
-    checkIntegrityEntry->pushNextCommand(std::unique_ptr<Command>(this));
     // We have to make sure that command that has Request object must
     // have segment after PieceStorage is initialized. See
     // AbstractCommand::execute()
     getSegmentMan()->getSegmentWithIndex(getCuid(), 0);
 
+    checkIntegrityEntry->pushNextCommand(std::unique_ptr<Command>(this));
     prepareForNextAction(std::move(checkIntegrityEntry));
 
     disableReadCheckSocket();

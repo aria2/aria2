@@ -132,7 +132,7 @@ private:
   Timer inactiveTimer_;
   Timer pexTimer_;
   Timer perSecTimer_;
-  time_t keepAliveInterval_;
+  std::chrono::seconds keepAliveInterval_;
   bool utPexEnabled_;
   bool dhtEnabled_;
 
@@ -146,8 +146,6 @@ private:
 
   std::vector<size_t> haveIndexes_;
   Timer haveLastSent_;
-
-  static const time_t FLOODING_CHECK_INTERVAL = 5;
 
   void addBitfieldMessageToQueue();
   void addAllowedFastMessageToQueue();
@@ -224,8 +222,8 @@ public:
   void setExtensionMessageRegistry
   (std::unique_ptr<ExtensionMessageRegistry> registry);
 
-  void setKeepAliveInterval(time_t keepAliveInterval) {
-    keepAliveInterval_ = keepAliveInterval;
+  void setKeepAliveInterval(std::chrono::seconds keepAliveInterval) {
+    keepAliveInterval_ = std::move(keepAliveInterval);
   }
 
   void setUTPexEnabled(bool f)

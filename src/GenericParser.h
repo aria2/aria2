@@ -35,6 +35,7 @@
 #ifndef D_GENERIC_PARSER_H
 #define D_GENERIC_PARSER_H
 
+#include <array>
 #include "common.h"
 #include "a2io.h"
 #include "util.h"
@@ -98,11 +99,11 @@ typename Parser::ResultType parseFile(Parser& parser,
     return Parser::ParserStateMachineType::noResult();
   }
   auto fdclose = defer(fd, close);
-  char buf[4096];
+  std::array<char, 4_k> buf;
   ssize_t nread;
   ssize_t nproc;
-  while((nread = read(fd, buf, sizeof(buf))) > 0) {
-    nproc = parser.parseUpdate(buf, nread);
+  while((nread = read(fd, buf.data(), buf.size())) > 0) {
+    nproc = parser.parseUpdate(buf.data(), nread);
     if(nproc < 0) {
       break;
     }

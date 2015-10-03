@@ -257,14 +257,14 @@ bool File::utime(const Time& actime, const Time& modtime) const
 {
 #if defined(HAVE_UTIMES) && !defined(__MINGW32__)
   struct timeval times[2] = {
-    { actime.getTime(), 0 },
-    { modtime.getTime(), 0 }
+    { actime.getTimeFromEpoch(), 0 },
+    { modtime.getTimeFromEpoch(), 0 }
   };
   return utimes(name_.c_str(), times) == 0;
 #else // !HAVE_UTIMES
   a2utimbuf ub;
-  ub.actime = actime.getTime();
-  ub.modtime = modtime.getTime();
+  ub.actime = actime.getTimeFromEpoch();
+  ub.modtime = modtime.getTimeFromEpoch();
   return a2utime(utf8ToWChar(name_).c_str(), &ub) == 0;
 #endif // !HAVE_UTIMES
 }

@@ -62,7 +62,7 @@ DefaultPeerStorage::DefaultPeerStorage()
   : maxPeerListSize_(MAX_PEER_LIST_SIZE),
     seederStateChoke_(make_unique<BtSeederStateChoke>()),
     leecherStateChoke_(make_unique<BtLeecherStateChoke>()),
-    lastTransferStatMapUpdated_(0)
+    lastTransferStatMapUpdated_(Timer::zero())
 {}
 
 DefaultPeerStorage::~DefaultPeerStorage()
@@ -183,11 +183,11 @@ bool DefaultPeerStorage::isPeerAvailable() {
 bool DefaultPeerStorage::isBadPeer(const std::string& ipaddr)
 {
   auto i = badPeers_.find(ipaddr);
-  if(i == badPeers_.end()) {
+  if(i == std::end(badPeers_)) {
     return false;
   }
 
-  if(global::wallclock().getTime() >= (*i).second) {
+  if((*i).second <= global::wallclock()) {
     badPeers_.erase(i);
     return false;
   }
@@ -197,10 +197,9 @@ bool DefaultPeerStorage::isBadPeer(const std::string& ipaddr)
 
 void DefaultPeerStorage::addBadPeer(const std::string& ipaddr)
 {
-  if(lastBadPeerCleaned_.difference(global::wallclock()) >= 3600) {
-    for(auto i = badPeers_.begin(),
-          eoi = badPeers_.end(); i != eoi;) {
-      if(global::wallclock().getTime() >= (*i).second) {
+  if(lastBadPeerCleaned_.difference(global::wallclock()) >= 1_h) {
+    for(auto i = std::begin(badPeers_); i != std::end(badPeers_);) {
+      if((*i).second <= global::wallclock()) {
         A2_LOG_DEBUG(fmt("Purge %s from bad peer", (*i).first.c_str()));
         badPeers_.erase(i++);
         // badPeers_.end() will not be invalidated.
@@ -212,8 +211,11 @@ void DefaultPeerStorage::addBadPeer(const std::string& ipaddr)
   }
   A2_LOG_DEBUG(fmt("Added %s as bad peer", ipaddr.c_str()));
   // We use variable timeout to avoid many bad peers wake up at once.
-  badPeers_[ipaddr] = global::wallclock().getTime()+
-    std::max(SimpleRandomizer::getInstance()->getRandomNumber(601), 120L);
+  auto t = global::wallclock();
+  t.advance(std::chrono::seconds(
+      std::max(SimpleRandomizer::getInstance()->getRandomNumber(601), 120L)));
+
+  badPeers_[ipaddr] = std::move(t);
 }
 
 void DefaultPeerStorage::deleteUnusedPeer(size_t delSize) {
@@ -281,7 +283,7 @@ void DefaultPeerStorage::returnPeer(const std::shared_ptr<Peer>& peer)
 
 bool DefaultPeerStorage::chokeRoundIntervalElapsed()
 {
-  const time_t CHOKE_ROUND_INTERVAL = 10;
+  constexpr auto CHOKE_ROUND_INTERVAL = 10_s;
   if(pieceStorage_->downloadFinished()) {
     return seederStateChoke_->getLastRound().
       difference(global::wallclock()) >= CHOKE_ROUND_INTERVAL;

@@ -68,8 +68,8 @@ void copyValues(const std::shared_ptr<FileEntry>& d,
 {
   d->setRequested(true);
   d->setPath(s->getPath());
-  d->addUris(s->getRemainingUris().begin(),
-             s->getRemainingUris().end());
+  d->addUris(std::begin(s->getRemainingUris()),
+             std::end(s->getRemainingUris()));
   d->setMaxConnectionPerServer(s->getMaxConnectionPerServer());
   d->setUniqueProtocol(s->isUniqueProtocol());
 }
@@ -120,8 +120,8 @@ bool BtDependency::resolve()
         context->getFileEntries();
       for (auto &fe : fileEntries) {
         auto &uri = fe->getRemainingUris();
-        std::random_shuffle(std::begin(uri), std::end(uri),
-                            *SimpleRandomizer::getInstance());
+        std::shuffle(std::begin(uri), std::end(uri),
+                     *SimpleRandomizer::getInstance());
       }
       const std::vector<std::shared_ptr<FileEntry> >& dependantFileEntries =
         dependant_->getDownloadContext()->getFileEntries();
@@ -138,14 +138,14 @@ bool BtDependency::resolve()
           e->setRequested(false);
           destFiles.push_back(e);
         }
-        std::sort(destFiles.begin(), destFiles.end(), EntryCmp());
+        std::sort(std::begin(destFiles), std::end(destFiles), EntryCmp());
         // Copy file path in dependant_'s FileEntries to newly created
         // context's FileEntries to endorse the path structure of
         // dependant_.  URIs and singleHostMultiConnection are also copied.
         for(const auto& e: dependantFileEntries){
-          const auto d = std::lower_bound(destFiles.begin(), destFiles.end(), e,
-                                          EntryCmp());
-          if(d == destFiles.end() ||
+          const auto d = std::lower_bound(std::begin(destFiles),
+                                          std::end(destFiles), e, EntryCmp());
+          if(d == std::end(destFiles) ||
              (*d)->getOriginalName() != e->getOriginalName()) {
             throw DL_ABORT_EX
               (fmt("No entry %s in torrent file", e->getOriginalName().c_str()));

@@ -172,10 +172,10 @@ DefaultBtInteractive::receiveAndSendHandshake()
 
 void DefaultBtInteractive::doPostHandshakeProcessing() {
   // Set time 0 to haveTimer to cache http/ftp download piece completion
-  haveTimer_.reset(0);
+  haveTimer_ = Timer::zero();
   keepAliveTimer_ = global::wallclock();
   floodingTimer_ = global::wallclock();
-  pexTimer_.reset(0);
+  pexTimer_ = Timer::zero();
   if(peer_->isExtendedMessagingEnabled()) {
     addHandshakeExtendedMessageToQueue();
   }
@@ -254,9 +254,12 @@ void DefaultBtInteractive::decideChoking() {
   }
 }
 
+namespace {
+constexpr auto MAX_HAVE_DELAY_SEC = 10_s;
+} // namespace
+
 void DefaultBtInteractive::checkHave() {
   const size_t MIN_HAVE_PACK_SIZE = 20;
-  const time_t MAX_HAVE_DELAY_SEC = 10;
   pieceStorage_->getAdvertisedPieceIndexes(haveIndexes_, cuid_, haveTimer_);
   haveTimer_ = global::wallclock();
   if(haveIndexes_.size() >= MIN_HAVE_PACK_SIZE) {
@@ -430,6 +433,10 @@ void DefaultBtInteractive::sendPendingMessage() {
   dispatcher_->sendMessages();
 }
 
+namespace {
+constexpr auto FLOODING_CHECK_INTERVAL = 5_s;
+} // namespace
+
 void DefaultBtInteractive::detectMessageFlooding() {
   if(floodingTimer_.
      difference(global::wallclock()) >= FLOODING_CHECK_INTERVAL) {
@@ -445,13 +452,13 @@ void DefaultBtInteractive::detectMessageFlooding() {
 
 void DefaultBtInteractive::checkActiveInteraction()
 {
-  time_t inactiveTime = inactiveTimer_.difference(global::wallclock());
+  auto inactiveTime = inactiveTimer_.difference(global::wallclock());
   // To allow aria2 to accept mutially interested peer, disconnect uninterested
   // peer.
   {
     const time_t interval = 30;
     if(!peer_->amInterested() && !peer_->peerInterested() &&
-       inactiveTime >= interval) {
+       inactiveTime >= std::chrono::seconds(interval)) {
       peer_->setDisconnectedGracefully(true);
       // TODO change the message
       throw DL_ABORT_EX
@@ -465,7 +472,7 @@ void DefaultBtInteractive::checkActiveInteraction()
   // are disconnected in a certain time period.
   {
     const time_t interval = 60;
-    if(inactiveTime >= interval) {
+    if(inactiveTime >= std::chrono::seconds(interval)) {
       peer_->setDisconnectedGracefully(true);
       throw DL_ABORT_EX
         (fmt(EX_DROP_INACTIVE_CONNECTION,
@@ -522,7 +529,7 @@ void DefaultBtInteractive::doInteractionProcessing() {
           dispatcher_->addMessageToQueue(std::move(i));
         }
       }
-      if(perSecTimer_.difference(global::wallclock()) >= 1) {
+      if(perSecTimer_.difference(global::wallclock()) >= 1_s) {
         perSecTimer_ = global::wallclock();
         // Drop timeout request after queuing message to give a chance
         // to other connection to request piece.
@@ -540,7 +547,7 @@ void DefaultBtInteractive::doInteractionProcessing() {
     checkActiveInteraction();
     decideChoking();
     detectMessageFlooding();
-    if(perSecTimer_.difference(global::wallclock()) >= 1) {
+    if(perSecTimer_.difference(global::wallclock()) >= 1_s) {
       perSecTimer_ = global::wallclock();
       dispatcher_->checkRequestSlotAndDoNecessaryThing();
     }

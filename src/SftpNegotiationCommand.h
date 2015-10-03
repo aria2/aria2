@@ -1,7 +1,8 @@
+/* <!-- copyright */
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2010 Tatsuhiro Tsujikawa
+ * Copyright (C) 2015 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,11 +32,60 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_CLOCK_GETTIME_OSX_H
-#define D_CLOCK_GETTIME_OSX_H
+#ifndef D_SFTP_NEGOTIATION_COMMAND_H
+#define D_SFTP_NEGOTIATION_COMMAND_H
 
-#include "timespec.h"
+#include "AbstractCommand.h"
 
-int clock_gettime(int dummyid, struct timespec* tp);
+namespace aria2 {
 
-#endif // D_CLOCK_GETTIME_OSX_H
+class SocketCore;
+class AuthConfig;
+
+class SftpNegotiationCommand : public AbstractCommand {
+public:
+  enum Seq {
+    SEQ_HANDSHAKE,
+    SEQ_AUTH_PASSWORD,
+    SEQ_SFTP_OPEN,
+    SEQ_SFTP_STAT,
+    SEQ_SFTP_SEEK,
+    SEQ_NEGOTIATION_COMPLETED,
+    SEQ_DOWNLOAD_ALREADY_COMPLETED,
+    SEQ_HEAD_OK,
+    SEQ_FILE_PREPARATION,
+    SEQ_EXIT,
+  };
+
+private:
+  void onFileSizeDetermined(int64_t totalLength);
+  void poolConnection() const;
+  void onDryRunFileFound();
+  std::string getPath() const;
+
+  std::shared_ptr<SocketCore> socket_;
+  Seq sequence_;
+  std::unique_ptr<AuthConfig> authConfig_;
+  // remote file path
+  std::string path_;
+  // expected host's public key message digest: hash type and digest
+  // (raw binary value).
+  std::string hashType_;
+  std::string digest_;
+protected:
+  virtual bool executeInternal() CXX11_OVERRIDE;
+
+public:
+  SftpNegotiationCommand(cuid_t cuid,
+                         const std::shared_ptr<Request>& req,
+                         const std::shared_ptr<FileEntry>& fileEntry,
+                         RequestGroup* requestGroup,
+                         DownloadEngine* e,
+                         const std::shared_ptr<SocketCore>& s,
+                         Seq seq = SEQ_HANDSHAKE);
+  virtual ~SftpNegotiationCommand();
+};
+
+} // namespace aria2
+
+#endif // D_SFTP_NEGOTIATION_COMMAND_H

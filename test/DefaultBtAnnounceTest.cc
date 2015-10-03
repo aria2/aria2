@@ -49,8 +49,8 @@ public:
   void setUp() {
     option_ = new Option();
 
-    int64_t totalLength = 4*1024*1024;
-    int32_t pieceLength = 256*1024;
+    int64_t totalLength = 4_m;
+    int32_t pieceLength = 256_k;
 
     static const unsigned char infoHash[] = {  0x01, 0x23, 0x45, 0x67,
                                                0x89, 0xab, 0xcd, 0xef,
@@ -443,8 +443,8 @@ void DefaultBtAnnounceTest::testProcessAnnounceResponse()
   an.setBtRuntime(btRuntime_);
   an.processAnnounceResponse(reinterpret_cast<const unsigned char*>(res.c_str()), res.size());
   CPPUNIT_ASSERT_EQUAL(std::string("foo"), an.getTrackerID());
-  CPPUNIT_ASSERT_EQUAL((time_t)3000, an.getInterval());
-  CPPUNIT_ASSERT_EQUAL((time_t)1800, an.getMinInterval());
+  CPPUNIT_ASSERT_EQUAL((int64_t)3000, an.getInterval().count());
+  CPPUNIT_ASSERT_EQUAL((int64_t)1800, an.getMinInterval().count());
   CPPUNIT_ASSERT_EQUAL(100, an.getComplete());
   CPPUNIT_ASSERT_EQUAL(200, an.getIncomplete());
   CPPUNIT_ASSERT_EQUAL((size_t)2, peerStorage_->getUnusedPeers().size());
@@ -472,8 +472,8 @@ void DefaultBtAnnounceTest::testProcessUDPTrackerResponse()
   an.setPeerStorage(peerStorage_);
   an.setBtRuntime(btRuntime_);
   an.processUDPTrackerResponse(req);
-  CPPUNIT_ASSERT_EQUAL((time_t)1800, an.getInterval());
-  CPPUNIT_ASSERT_EQUAL((time_t)1800, an.getMinInterval());
+  CPPUNIT_ASSERT_EQUAL((int64_t)1800, an.getInterval().count());
+  CPPUNIT_ASSERT_EQUAL((int64_t)1800, an.getMinInterval().count());
   CPPUNIT_ASSERT_EQUAL(100, an.getComplete());
   CPPUNIT_ASSERT_EQUAL(200, an.getIncomplete());
   CPPUNIT_ASSERT_EQUAL((size_t)2, peerStorage_->getUnusedPeers().size());

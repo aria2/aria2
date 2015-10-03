@@ -166,22 +166,22 @@ DownloadEngineFactory::newDownloadEngine
                         e.get()));
 
   if(op->getAsInt(PREF_AUTO_SAVE_INTERVAL) > 0) {
-    e->addRoutineCommand
-      (make_unique<AutoSaveCommand>(e->newCUID(), e.get(),
-                                    op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
+    e->addRoutineCommand(make_unique<AutoSaveCommand>(
+        e->newCUID(), e.get(),
+        std::chrono::seconds(op->getAsInt(PREF_AUTO_SAVE_INTERVAL))));
   }
   if(op->getAsInt(PREF_SAVE_SESSION_INTERVAL) > 0) {
-    e->addRoutineCommand(make_unique<SaveSessionCommand>
-                         (e->newCUID(), e.get(),
-                          op->getAsInt(PREF_SAVE_SESSION_INTERVAL)));
+    e->addRoutineCommand(make_unique<SaveSessionCommand>(
+        e->newCUID(), e.get(),
+        std::chrono::seconds(op->getAsInt(PREF_SAVE_SESSION_INTERVAL))));
   }
-  e->addRoutineCommand(make_unique<HaveEraseCommand>
-                       (e->newCUID(), e.get(), 10));
+  e->addRoutineCommand(
+      make_unique<HaveEraseCommand>(e->newCUID(), e.get(), 10_s));
   {
-    time_t stopSec = op->getAsInt(PREF_STOP);
+    auto stopSec = op->getAsInt(PREF_STOP);
     if(stopSec > 0) {
-      e->addRoutineCommand(make_unique<TimedHaltCommand>(e->newCUID(), e.get(),
-                                                         stopSec));
+      e->addRoutineCommand(make_unique<TimedHaltCommand>(
+          e->newCUID(), e.get(), std::chrono::seconds(stopSec)));
     }
   }
   if(op->defined(PREF_STOP_WITH_PROCESS)) {

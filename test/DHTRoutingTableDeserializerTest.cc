@@ -60,8 +60,6 @@ void DHTRoutingTableDeserializerTest::testDeserialize()
   CPPUNIT_ASSERT(memcmp(localNode->getID(), d.getLocalNode()->getID(),
                         DHT_ID_LENGTH) == 0);
 
-  std::cout << d.getSerializedTime().getTime() << std::endl;
-
   CPPUNIT_ASSERT_EQUAL((size_t)2, d.getNodes().size());
   const std::vector<std::shared_ptr<DHTNode> >& dsnodes = d.getNodes();
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), dsnodes[0]->getIPAddress());
@@ -96,8 +94,6 @@ void DHTRoutingTableDeserializerTest::testDeserialize6()
 
   CPPUNIT_ASSERT(memcmp(localNode->getID(), d.getLocalNode()->getID(),
                         DHT_ID_LENGTH) == 0);
-
-  std::cout << d.getSerializedTime().getTime() << std::endl;
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, d.getNodes().size());
   const std::vector<std::shared_ptr<DHTNode> >& dsnodes = d.getNodes();

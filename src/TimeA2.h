@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2015 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,71 +46,45 @@
 namespace aria2 {
 
 class Time {
-private:
-  struct timeval tv_;
-
-  bool good_;
-
-  struct timeval getCurrentTime() const;
 public:
+  using Clock = std::chrono::system_clock;
+
   // The time value is initialized so that it represents the time at which
   // this object was created.
   Time();
-  Time(const Time& time);
+  Time(const Time& time) = default;
+  Time(Time&& time) = default;
   Time(time_t sec);
-  Time(const struct timeval& tv);
 
-  ~Time();
+  Time& operator=(const Time& time) = default;
+  Time& operator=(Time&& time) = default;
 
-  Time& operator=(const Time& time);
-
-  bool operator<(const Time& time) const;
+  bool operator<(const Time& time) const { return tp_ < time.tp_; }
+  bool operator>(const Time& time) const { return time < *this; }
+  bool operator<=(const Time& time) const { return !(time < *this); }
+  bool operator>=(const Time& time) const { return !(*this < time); }
 
   // Makes this object's time value up to date.
   void reset();
 
-  bool elapsed(time_t sec) const;
+  Clock::duration difference() const;
+  Clock::duration difference(const Time& now) const;
 
-  bool elapsedInMillis(int64_t millis) const;
+  const Clock::time_point& getTime() const { return tp_; }
 
-  time_t difference() const;
+  void setTimeFromEpoch(time_t sec);
+  time_t getTimeFromEpoch() const { return Clock::to_time_t(tp_); }
 
-  time_t difference(const struct timeval& now) const;
-
-  time_t difference(const Time& now) const
+  template <typename duration>
+  void advance(const duration& t)
   {
-    return difference(now.tv_);
+    tp_ += t;
   }
 
-  int64_t differenceInMillis() const;
+  bool good() const { return good_; }
+  bool bad() const { return !good_; }
 
-  int64_t differenceInMillis(const struct timeval& now) const;
-
-  int64_t differenceInMillis(const Time& now) const
-  {
-    return differenceInMillis(now.tv_);
-  }
-
-  // Returns true if this object's time value is zero.
-  bool isZero() const;
-
-  int64_t getTimeInMicros() const;
-
-  int64_t getTimeInMillis() const;
-
-  // Returns this object's time value in seconds.
-  time_t getTime() const;
-
-  void setTimeInSec(time_t sec);
-
-  bool isNewer(const Time& time) const;
-
-  void advance(time_t sec);
-
-  bool good() const;
-
-  // Returns !good()
-  bool bad() const;
+  static Time null() { return Time(0, false); }
 
   std::string toHTTPDate() const;
 
@@ -142,7 +116,11 @@ public:
   // these functions.
   static Time parseHTTPDate(const std::string& datetime);
 
-  static Time null();
+private:
+  Time(time_t t, bool good) : tp_(Clock::from_time_t(t)), good_(good) {}
+
+  Clock::time_point tp_;
+  bool good_;
 };
 
 } // namespace aria2

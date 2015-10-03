@@ -38,6 +38,8 @@
 #include "StreamFilter.h"
 #include <zlib.h>
 
+#include "a2functional.h"
+
 namespace aria2 {
 
 // GZipDecodingStreamFilter can decode both gzip and deflate format.
@@ -49,7 +51,7 @@ private:
 
   size_t bytesProcessed_;
 
-  static const size_t OUTBUF_LENGTH = 16*1024;
+  static const size_t OUTBUF_LENGTH = 16_k;
 public:
   GZipDecodingStreamFilter
   (std::unique_ptr<StreamFilter> delegate = nullptr);

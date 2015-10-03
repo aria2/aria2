@@ -36,11 +36,11 @@ void DHTPeerAnnounceEntryTest::testRemoveStalePeerAddrEntry()
   DHTPeerAnnounceEntry entry(infohash);
 
   entry.addPeerAddrEntry(PeerAddrEntry("192.168.0.1", 6881));
-  entry.addPeerAddrEntry(PeerAddrEntry("192.168.0.2", 6882, Timer(0)));
+  entry.addPeerAddrEntry(PeerAddrEntry("192.168.0.2", 6882, Timer::zero()));
   entry.addPeerAddrEntry(PeerAddrEntry("192.168.0.3", 6883));
-  entry.addPeerAddrEntry(PeerAddrEntry("192.168.0.4", 6884, Timer(0)));
+  entry.addPeerAddrEntry(PeerAddrEntry("192.168.0.4", 6884, Timer::zero()));
 
-  entry.removeStalePeerAddrEntry(10);
+  entry.removeStalePeerAddrEntry(10_s);
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, entry.countPeerAddrEntry());
 
@@ -72,7 +72,7 @@ void DHTPeerAnnounceEntryTest::testAddPeerAddrEntry()
   memset(infohash, 0xff, DHT_ID_LENGTH);
 
   DHTPeerAnnounceEntry entry(infohash);
-  entry.addPeerAddrEntry(PeerAddrEntry("192.168.0.1", 6881, Timer(0)));
+  entry.addPeerAddrEntry(PeerAddrEntry("192.168.0.1", 6881, Timer::zero()));
   entry.addPeerAddrEntry(PeerAddrEntry("192.168.0.1", 6882));
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, entry.countPeerAddrEntry());
@@ -80,7 +80,7 @@ void DHTPeerAnnounceEntryTest::testAddPeerAddrEntry()
   entry.addPeerAddrEntry(PeerAddrEntry("192.168.0.1", 6881));
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, entry.countPeerAddrEntry());
-  CPPUNIT_ASSERT(0 != entry.getPeerAddrEntries()[0].getLastUpdated().getTime());
+  CPPUNIT_ASSERT(!entry.getPeerAddrEntries()[0].getLastUpdated().isZero());
 }
 
 void DHTPeerAnnounceEntryTest::testGetPeers()
@@ -95,7 +95,7 @@ void DHTPeerAnnounceEntryTest::testGetPeers()
     CPPUNIT_ASSERT_EQUAL((size_t)0, peers.size());
   }
 
-  entry.addPeerAddrEntry(PeerAddrEntry("192.168.0.1", 6881, Timer(0)));
+  entry.addPeerAddrEntry(PeerAddrEntry("192.168.0.1", 6881, Timer::zero()));
   entry.addPeerAddrEntry(PeerAddrEntry("192.168.0.2", 6882));
 
   {

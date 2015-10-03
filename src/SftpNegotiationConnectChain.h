@@ -1,7 +1,8 @@
+/* <!-- copyright */
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2010 Tatsuhiro Tsujikawa
+ * Copyright (C) 2015 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,28 +32,35 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "clock_gettime_mingw.h"
+#ifndef SFTP_NEGOTIATION_CONNECT_CHAIN_H
+#define SFTP_NEGOTIATION_CONNECT_CHAIN_H
 
-#include <windows.h>
-#include <mmsystem.h>
+#include "ControlChain.h"
+#include "ConnectCommand.h"
+#include "DownloadEngine.h"
+#include "SftpNegotiationCommand.h"
 
-int clock_gettime(int dummyid, struct timespec* tp)
-{
-  timeBeginPeriod(1);
-  static DWORD lasttime = timeGetTime();
-  timeEndPeriod(1);
-  static struct timespec monotime = {2678400, 0}; // 1month offset(24*3600*31)
-  timeBeginPeriod(1);
-  DWORD now = timeGetTime();
-  timeEndPeriod(1);
-  DWORD elapsed = now-lasttime;
-  monotime.tv_sec += elapsed/1000;
-  monotime.tv_nsec += elapsed%1000*1000000;
-  if(monotime.tv_nsec >= 1000000000) {
-    monotime.tv_sec += monotime.tv_nsec/1000000000;
-    monotime.tv_nsec %= 1000000000;
+namespace aria2 {
+
+struct SftpNegotiationConnectChain : public ControlChain<ConnectCommand*> {
+  SftpNegotiationConnectChain() {}
+  virtual ~SftpNegotiationConnectChain() {}
+  virtual int run(ConnectCommand* t, DownloadEngine* e) CXX11_OVERRIDE
+  {
+    auto c = make_unique<SftpNegotiationCommand>
+      (t->getCuid(),
+       t->getRequest(),
+       t->getFileEntry(),
+       t->getRequestGroup(),
+       t->getDownloadEngine(),
+       t->getSocket());
+    c->setStatus(Command::STATUS_ONESHOT_REALTIME);
+    e->setNoWait(true);
+    e->addCommand(std::move(c));
+    return 0;
   }
-  lasttime = now;
-  *tp = monotime;
-  return 0;
-}
+};
+
+} // namespace aria2
+
+#endif // SFTP_NEGOTIATION_CONNECT_CHAIN_H

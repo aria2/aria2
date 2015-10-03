@@ -166,7 +166,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength)
       size_t nread;
       // To reduce the amount of copy involved in buffer shift, large
       // payload will be read exactly.
-      if(currentPayloadLength_ > 4096) {
+      if(currentPayloadLength_ > 4_k) {
         nread = currentPayloadLength_ + 4 - resbufLength_;
       } else {
         nread = bufferCapacity_ - resbufLength_;

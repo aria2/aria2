@@ -74,23 +74,23 @@ CPPUNIT_TEST_SUITE_REGISTRATION( HttpRequestTest );
 void HttpRequestTest::testGetStartByte()
 {
   HttpRequest httpRequest;
-  auto p = std::make_shared<Piece>(1, 1024);
-  auto segment = std::make_shared<PiecedSegment>(1024, p);
-  auto fileEntry = std::make_shared<FileEntry>("file", 1024*10, 0);
+  auto p = std::make_shared<Piece>(1, 1_k);
+  auto segment = std::make_shared<PiecedSegment>(1_k, p);
+  auto fileEntry = std::make_shared<FileEntry>("file", 10_k, 0);
 
   CPPUNIT_ASSERT_EQUAL((int64_t)0LL, httpRequest.getStartByte());
 
   httpRequest.setSegment(segment);
   httpRequest.setFileEntry(fileEntry);
 
-  CPPUNIT_ASSERT_EQUAL((int64_t)1024LL, httpRequest.getStartByte());
+  CPPUNIT_ASSERT_EQUAL((int64_t)1_k, httpRequest.getStartByte());
 }
 
 void HttpRequestTest::testGetEndByte()
 {
   size_t index = 1;
-  size_t length = 1024*1024-1024;
-  size_t segmentLength = 1024*1024;
+  size_t length = 1_m-1_k;
+  size_t segmentLength = 1_m;
 
   HttpRequest httpRequest;
   auto piece = std::make_shared<Piece>(index, length);
@@ -130,9 +130,9 @@ void HttpRequestTest::testCreateRequest()
   request->supportsPersistentConnection(true);
   request->setUri("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
-  auto p = std::make_shared<Piece>(0, 1024);
-  auto segment = std::make_shared<PiecedSegment>(1024, p);
-  auto fileEntry = std::make_shared<FileEntry>("file", 1024*1024*10, 0);
+  auto p = std::make_shared<Piece>(0, 1_k);
+  auto segment = std::make_shared<PiecedSegment>(1_k, p);
+  auto fileEntry = std::make_shared<FileEntry>("file", 10_m, 0);
 
   HttpRequest httpRequest;
   httpRequest.disableContentEncoding();
@@ -169,8 +169,8 @@ void HttpRequestTest::testCreateRequest()
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
-  p.reset(new Piece(1, 1024*1024));
-  segment.reset(new PiecedSegment(1024*1024, p));
+  p.reset(new Piece(1, 1_m));
+  segment.reset(new PiecedSegment(1_m, p));
   httpRequest.setSegment(segment);
 
   expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
@@ -233,8 +233,8 @@ void HttpRequestTest::testCreateRequest()
 
   request->resetUri();
 
-  p.reset(new Piece(0, 1024*1024));
-  segment.reset(new PiecedSegment(1024*1024, p));
+  p.reset(new Piece(0, 1_m));
+  segment.reset(new PiecedSegment(1_m, p));
   httpRequest.setSegment(segment);
 
   // enable http auth
@@ -322,9 +322,9 @@ void HttpRequestTest::testCreateRequest_ftp()
                  ("http://localhost:9000"));
 
   HttpRequest httpRequest;
-  auto p = std::make_shared<Piece>(0, 1024*1024);
-  auto segment = std::make_shared<PiecedSegment>(1024*1024, p);
-  auto fileEntry = std::make_shared<FileEntry>("file", 1024*1024*10, 0);
+  auto p = std::make_shared<Piece>(0, 1_m);
+  auto segment = std::make_shared<PiecedSegment>(1_m, p);
+  auto fileEntry = std::make_shared<FileEntry>("file", 10_m, 0);
 
   httpRequest.disableContentEncoding();
   httpRequest.setRequest(request);
@@ -379,9 +379,9 @@ void HttpRequestTest::testCreateRequest_with_cookie()
 {
   auto request = std::make_shared<Request>();
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
-  auto p = std::make_shared<Piece>(0, 1024*1024);
-  auto segment = std::make_shared<PiecedSegment>(1024*1024, p);
-  auto fileEntry = std::make_shared<FileEntry>("file", 1024*1024*10, 0);
+  auto p = std::make_shared<Piece>(0, 1_m);
+  auto segment = std::make_shared<PiecedSegment>(1_m, p);
+  auto fileEntry = std::make_shared<FileEntry>("file", 10_m, 0);
 
   auto st = CookieStorage{};
   CPPUNIT_ASSERT(st.store(createCookie("name1", "value1", "localhost", true,
@@ -540,11 +540,11 @@ void HttpRequestTest::testCreateRequest_endOffsetOverride()
   httpRequest.setRequest(request);
   httpRequest.setAuthConfigFactory(authConfigFactory_.get());
   httpRequest.setOption(option_.get());
-  auto p = std::make_shared<Piece>(0, 1024*1024);
-  auto segment = std::make_shared<PiecedSegment>(1024*1024, p);
+  auto p = std::make_shared<Piece>(0, 1_m);
+  auto segment = std::make_shared<PiecedSegment>(1_m, p);
   httpRequest.setSegment(segment);
-  httpRequest.setEndOffsetOverride(1024*1024*1024);
-  auto fileEntry = std::make_shared<FileEntry>("file", 1024*1024*1024*10LL, 0);
+  httpRequest.setEndOffsetOverride(1_g);
+  auto fileEntry = std::make_shared<FileEntry>("file", 10_g, 0);
   httpRequest.setFileEntry(fileEntry);
   // End byte is passed if it is not 0
   std::string expectedText =
@@ -580,8 +580,8 @@ void HttpRequestTest::testCreateProxyRequest()
 {
   auto request = std::make_shared<Request>();
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
-  auto p = std::make_shared<Piece>(0, 1024*1024);
-  auto segment = std::make_shared<PiecedSegment>(1024*1024, p);
+  auto p = std::make_shared<Piece>(0, 1_m);
+  auto segment = std::make_shared<PiecedSegment>(1_m, p);
 
   auto proxyRequest = std::make_shared<Request>();
   CPPUNIT_ASSERT(proxyRequest->setUri("http://localhost:9000"));
@@ -645,8 +645,8 @@ void HttpRequestTest::testIsRangeSatisfied()
   request->supportsPersistentConnection(true);
   request->setUri("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
   request->setPipeliningHint(false); // default: false
-  auto p = std::make_shared<Piece>(0, 1024*1024);
-  auto segment = std::make_shared<PiecedSegment>(1024*1024, p);
+  auto p = std::make_shared<Piece>(0, 1_m);
+  auto segment = std::make_shared<PiecedSegment>(1_m, p);
   auto fileEntry = std::make_shared<FileEntry>("file", 0, 0);
 
   HttpRequest httpRequest;
@@ -659,8 +659,8 @@ void HttpRequestTest::testIsRangeSatisfied()
 
   CPPUNIT_ASSERT(httpRequest.isRangeSatisfied(range));
 
-  p.reset(new Piece(1, 1024*1024));
-  segment.reset(new PiecedSegment(1024*1024, p));
+  p.reset(new Piece(1, 1_m));
+  segment.reset(new PiecedSegment(1_m, p));
   httpRequest.setSegment(segment);
 
   CPPUNIT_ASSERT(!httpRequest.isRangeSatisfied(range));
@@ -707,8 +707,8 @@ void HttpRequestTest::testUserAgent()
   auto request = std::make_shared<Request>();
   request->setUri("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
-  //std::shared_ptr<Piece> p(new Piece(0, 1024));
-  //std::shared_ptr<Segment> segment(new PiecedSegment(1024, p));
+  //std::shared_ptr<Piece> p(new Piece(0, 1_k));
+  //std::shared_ptr<Segment> segment(new PiecedSegment(1_k, p));
 
   HttpRequest httpRequest;
   httpRequest.disableContentEncoding();

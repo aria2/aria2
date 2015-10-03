@@ -38,6 +38,7 @@
 #include "URISelector.h"
 
 #include <memory>
+#include <chrono>
 
 namespace aria2 {
 
@@ -52,8 +53,6 @@ private:
   RequestGroup* requestGroup_;
   int nbServerToEvaluate_;
   int nbConnections_;
-
-  static const time_t MAX_TIMEOUT = 60;
 
   void mayRetryWithIncreasedTimeout(FileEntry* fileEntry);
 

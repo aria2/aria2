@@ -37,7 +37,10 @@
 
 namespace aria2 {
 
-TimeSeedCriteria::TimeSeedCriteria(time_t duration):duration_(duration) {}
+TimeSeedCriteria::TimeSeedCriteria(std::chrono::seconds duration)
+  : duration_(std::move(duration))
+{
+}
 
 TimeSeedCriteria::~TimeSeedCriteria() {}
 

@@ -384,10 +384,10 @@ void HttpResponseTest::testValidateResponse_good_range()
   httpResponse.setHttpHeader(make_unique<HttpHeader>());
 
   auto httpRequest = make_unique<HttpRequest>();
-  auto p = std::make_shared<Piece>(1, 1024*1024);
-  auto segment = std::make_shared<PiecedSegment>(1024*1024, p);
+  auto p = std::make_shared<Piece>(1, 1_m);
+  auto segment = std::make_shared<PiecedSegment>(1_m, p);
   httpRequest->setSegment(segment);
-  auto fileEntry = std::make_shared<FileEntry>("file", 1024*1024*10, 0);
+  auto fileEntry = std::make_shared<FileEntry>("file", 10_m, 0);
   httpRequest->setFileEntry(fileEntry);
   auto request = std::make_shared<Request>();
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
@@ -412,10 +412,10 @@ void HttpResponseTest::testValidateResponse_bad_range()
   httpResponse.setHttpHeader(make_unique<HttpHeader>());
 
   auto httpRequest = make_unique<HttpRequest>();
-  auto p = std::make_shared<Piece>(1, 1024*1024);
-  auto segment = std::make_shared<PiecedSegment>(1024*1024, p);
+  auto p = std::make_shared<Piece>(1, 1_m);
+  auto segment = std::make_shared<PiecedSegment>(1_m, p);
   httpRequest->setSegment(segment);
-  auto fileEntry = std::make_shared<FileEntry>("file", 1024*1024*10, 0);
+  auto fileEntry = std::make_shared<FileEntry>("file", 10_m, 0);
   httpRequest->setFileEntry(fileEntry);
   auto request = std::make_shared<Request>();
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
@@ -438,10 +438,10 @@ void HttpResponseTest::testValidateResponse_chunked()
   httpResponse.setHttpHeader(make_unique<HttpHeader>());
 
   auto httpRequest = make_unique<HttpRequest>();
-  auto p = std::make_shared<Piece>(1, 1024*1024);
-  auto segment = std::make_shared<PiecedSegment>(1024*1024, p);
+  auto p = std::make_shared<Piece>(1, 1_m);
+  auto segment = std::make_shared<PiecedSegment>(1_m, p);
   httpRequest->setSegment(segment);
-  auto fileEntry = std::make_shared<FileEntry>("file", 1024*1024*10, 0);
+  auto fileEntry = std::make_shared<FileEntry>("file", 10_m, 0);
   httpRequest->setFileEntry(fileEntry);
   auto request = std::make_shared<Request>();
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");

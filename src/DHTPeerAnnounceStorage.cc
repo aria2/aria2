@@ -108,24 +108,16 @@ void DHTPeerAnnounceStorage::getPeers(std::vector<std::shared_ptr<Peer> >& peers
   }
 }
 
-namespace {
-class RemoveStalePeerAddrEntry
-{
-public:
-  void operator()(const std::shared_ptr<DHTPeerAnnounceEntry>& e)
-  {
-    e->removeStalePeerAddrEntry(DHT_PEER_ANNOUNCE_PURGE_INTERVAL);
-  }
-};
-} // namespace
-
 void DHTPeerAnnounceStorage::handleTimeout()
 {
   A2_LOG_DEBUG(fmt("Now purge peer announces(%lu entries) which are timed out.",
                    static_cast<unsigned long>(entries_.size())));
-  std::for_each(entries_.begin(), entries_.end(), RemoveStalePeerAddrEntry());
-  for(auto i = entries_.begin(),
-        eoi = entries_.end(); i != eoi;) {
+  std::for_each(std::begin(entries_), std::end(entries_),
+                [](const std::shared_ptr<DHTPeerAnnounceEntry>& e) {
+    e->removeStalePeerAddrEntry(DHT_PEER_ANNOUNCE_PURGE_INTERVAL);
+  });
+
+  for(auto i = std::begin(entries_); i != std::end(entries_); ) {
     if((*i)->empty()) {
       entries_.erase(i++);
     } else {
@@ -140,7 +132,8 @@ void DHTPeerAnnounceStorage::announcePeer()
 {
   A2_LOG_DEBUG("Now announcing peer.");
   for (auto& e: entries_) {
-    if(e->getLastUpdated().difference(global::wallclock()) < DHT_PEER_ANNOUNCE_INTERVAL) {
+    if (e->getLastUpdated().difference(global::wallclock()) <
+        DHT_PEER_ANNOUNCE_INTERVAL) {
       continue;
     }
     e->notifyUpdate();

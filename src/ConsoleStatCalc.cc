@@ -265,10 +265,10 @@ void printProgressSummary(const RequestGroupList& groups, size_t cols,
 }
 } // namespace
 
-ConsoleStatCalc::ConsoleStatCalc(time_t summaryInterval,
+ConsoleStatCalc::ConsoleStatCalc(std::chrono::seconds summaryInterval,
                                  bool colorOutput,
                                  bool humanReadable):
-  summaryInterval_(summaryInterval),
+  summaryInterval_(std::move(summaryInterval)),
   readoutVisibility_(true),
   truncate_(true),
 #ifdef __MINGW32__
@@ -288,7 +288,8 @@ ConsoleStatCalc::ConsoleStatCalc(time_t summaryInterval,
 void
 ConsoleStatCalc::calculateStat(const DownloadEngine* e)
 {
-  if(cp_.differenceInMillis(global::wallclock())+A2_DELTA_MILLIS < 1000) {
+  if(cp_.difference(global::wallclock()) + A2_DELTA_MILLIS <
+     std::chrono::milliseconds(1000)) {
     return;
   }
   cp_ = global::wallclock();
@@ -317,9 +318,9 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   }
   ColorizedStream o;
   if(e->getRequestGroupMan()->countRequestGroup() > 0) {
-    if((summaryInterval_ > 0) &&
-       lastSummaryNotified_.differenceInMillis(global::wallclock())+
-       A2_DELTA_MILLIS >= summaryInterval_*1000) {
+    if((summaryInterval_ > 0_s) &&
+       lastSummaryNotified_.difference(global::wallclock())+
+       A2_DELTA_MILLIS >= summaryInterval_) {
       lastSummaryNotified_ = global::wallclock();
       printProgressSummary(e->getRequestGroupMan()->getRequestGroups(), cols, e,
                            sizeFormatter);

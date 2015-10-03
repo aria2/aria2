@@ -52,7 +52,7 @@ void MetalinkParserControllerTest::testEntryTransaction()
 
   ctrl.newEntryTransaction();
   ctrl.setFileNameOfEntry("aria2.tar.bz2");
-  ctrl.setFileLengthOfEntry(1024*1024);
+  ctrl.setFileLengthOfEntry(1_m);
   ctrl.setVersionOfEntry("1.0");
   ctrl.setLanguageOfEntry("ja_JP");
   ctrl.setOSOfEntry("Linux");
@@ -64,7 +64,7 @@ void MetalinkParserControllerTest::testEntryTransaction()
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
     auto& e = m->getEntries()[0];
     CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"), e->file->getPath());
-    CPPUNIT_ASSERT_EQUAL((int64_t)(1024*1024LL), e->file->getLength());
+    CPPUNIT_ASSERT_EQUAL((int64_t)1_m, e->file->getLength());
     CPPUNIT_ASSERT_EQUAL((int64_t)0, e->file->getOffset());
     CPPUNIT_ASSERT_EQUAL(std::string("1.0"), e->version);
     CPPUNIT_ASSERT_EQUAL(std::string("ja_JP"), e->languages[0]);
@@ -215,7 +215,7 @@ void MetalinkParserControllerTest::testChunkChecksumTransaction()
   ctrl.newEntryTransaction();
   ctrl.newChunkChecksumTransaction();
   ctrl.setTypeOfChunkChecksum("md5");
-  ctrl.setLengthOfChunkChecksum(256*1024);
+  ctrl.setLengthOfChunkChecksum(256_k);
   ctrl.addHashOfChunkChecksum(4, "4cbd18db4cc2f85cedef654fccc4a4d8");
   ctrl.addHashOfChunkChecksum(1, "1cbd18db4cc2f85cedef654fccc4a4d8");
   ctrl.addHashOfChunkChecksum(3, "3cbd18db4cc2f85cedef654fccc4a4d8");
@@ -226,7 +226,7 @@ void MetalinkParserControllerTest::testChunkChecksumTransaction()
   ctrl.newEntryTransaction();
   ctrl.newChunkChecksumTransaction();
   ctrl.setTypeOfChunkChecksum("md5");
-  ctrl.setLengthOfChunkChecksum(256*1024);
+  ctrl.setLengthOfChunkChecksum(256_k);
   ctrl.addHashOfChunkChecksum(1, "badhash");
   ctrl.commitEntryTransaction();
 
@@ -238,7 +238,7 @@ void MetalinkParserControllerTest::testChunkChecksumTransaction()
     auto m = ctrl.getResult();
     auto& md = m->getEntries()[0]->chunkChecksum;
     CPPUNIT_ASSERT_EQUAL(std::string("md5"), md->getHashType());
-    CPPUNIT_ASSERT_EQUAL(256*1024, md->getPieceLength());
+    CPPUNIT_ASSERT_EQUAL((int32_t)256_k, md->getPieceLength());
     CPPUNIT_ASSERT_EQUAL((size_t)5, md->countPieceHash());
     CPPUNIT_ASSERT_EQUAL(std::string("1cbd18db4cc2f85cedef654fccc4a4d8"),
                          md->getPieceHashes()[0]);
@@ -263,7 +263,7 @@ void MetalinkParserControllerTest::testChunkChecksumTransactionV4()
   ctrl.newEntryTransaction();
   ctrl.newChunkChecksumTransactionV4();
   ctrl.setTypeOfChunkChecksumV4("sha-1");
-  ctrl.setLengthOfChunkChecksumV4(256*1024);
+  ctrl.setLengthOfChunkChecksumV4(256_k);
 
   ctrl.addHashOfChunkChecksumV4("5bd9f7248df0f3a6a86ab6c95f48787d546efa14");
   ctrl.addHashOfChunkChecksumV4("9413ee70957a09d55704123687478e07f18c7b29");
@@ -273,7 +273,7 @@ void MetalinkParserControllerTest::testChunkChecksumTransactionV4()
   ctrl.newEntryTransaction();
   ctrl.newChunkChecksumTransactionV4();
   ctrl.setTypeOfChunkChecksumV4("sha-1");
-  ctrl.setLengthOfChunkChecksumV4(256*1024);
+  ctrl.setLengthOfChunkChecksumV4(256_k);
   ctrl.addHashOfChunkChecksumV4("5bd9f7248df0f3a6a86ab6c95f48787d546efa14");
   ctrl.addHashOfChunkChecksumV4("badhash");
   ctrl.commitEntryTransaction();
@@ -286,7 +286,7 @@ void MetalinkParserControllerTest::testChunkChecksumTransactionV4()
     auto m = ctrl.getResult();
     auto& md = m->getEntries()[0]->chunkChecksum;
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), md->getHashType());
-    CPPUNIT_ASSERT_EQUAL(256*1024, md->getPieceLength());
+    CPPUNIT_ASSERT_EQUAL((int32_t)256_k, md->getPieceLength());
     CPPUNIT_ASSERT_EQUAL((size_t)3, md->countPieceHash());
     CPPUNIT_ASSERT_EQUAL
       (std::string("5bd9f7248df0f3a6a86ab6c95f48787d546efa14"),

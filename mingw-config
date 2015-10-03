@@ -52,6 +52,7 @@
 # * expat
 # * sqlite3
 # * zlib
+# * libssh2
 # * cppunit
 
 test -z "$HOST" && HOST=i686-w64-mingw32
@@ -70,6 +71,7 @@ test -z "$PREFIX" && PREFIX=/usr/local/$HOST
     --with-libexpat \
     --with-libz \
     --with-libgmp \
+    --with-libssh2 \
     --without-libgcrypt \
     --without-libnettle \
     --with-cppunit-prefix=$PREFIX \

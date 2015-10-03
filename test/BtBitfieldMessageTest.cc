@@ -82,7 +82,7 @@ void BtBitfieldMessageTest::testCreateMessage() {
 
 void BtBitfieldMessageTest::testDoReceivedAction() {
   std::shared_ptr<Peer> peer(new Peer("host1", 6969));
-  peer->allocateSessionResource(16*1024, 16*16*1024);
+  peer->allocateSessionResource(16_k, 256_k);
   BtBitfieldMessage msg;
   msg.setPeer(peer);
   auto pieceStorage = make_unique<MockPieceStorage>();
@@ -100,7 +100,7 @@ void BtBitfieldMessageTest::testDoReceivedAction() {
 void BtBitfieldMessageTest::testDoReceivedAction_goodByeSeeder()
 {
   std::shared_ptr<Peer> peer(new Peer("ip", 6000));
-  peer->allocateSessionResource(1024, 1024);
+  peer->allocateSessionResource(1_k, 1_k);
   BtBitfieldMessage msg;
   msg.setPeer(peer);
   auto pieceStorage = make_unique<MockPieceStorage>();

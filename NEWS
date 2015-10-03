@@ -1,716 +1,170 @@
-aria2 1.18.9
+aria2 1.19.1
 ============
 
 Release Note
 ------------
 
-This releases fixes memory leak with OpenSSL and crash on OSX when
-proxy is used.  We added several new features.  Adler32 checksum is
-now available in --checksum option and hash element in Metalink files.
-We added --bt-detach-seed-only option, which excludes seed-only
-downloads when counting concurrent active downloads (-j option).  We
-disabled SSLv3 by default.  If you ever want to enable it or further
-tune the TLS protocols to enable, use new --min-tls-version option.
---bt-force-encryption option was added to make requiring BitTorrent
-full encryption easier.  From this release, we build Android binary
-using API level 16.
+This release fixes TLS handshake error with servers which only support
+RSA-SHA1 signature algorithm.  We removed RSA-SHA1 for enchanced
+security, but many users reported there were servers which could not
+talk aria2 1.19.0, so added it again for compatibility reasons.  For
+Windows build, we fixed potential infinite loop bug when TLS is used.
+
+We changed the location where dht.dat and aria2.conf are looked up.
+The aria2 manual page described details.  Basically we now follow XDG
+specification (http://standards.freedesktop.org/basedir-spec/latest/).
+For dht.dat, the default location is $XDG_CACHE_HOME/aria2/ directory.
+For aria2.conf, the default location is $XDG_CONFIG_HOME/aria2/
+directory.  To keep the current user configuration working, if aria2
+detects dht.dat under $HOME/.aria2/ directory, it is used instead.
+Similarly, if aria2.conf exists under $HOME/.aria2/ directory, it is
+used instead.
+
+Previously, we return 500 HTTP status if RPC method execution
+encountered error.  Now it returns with 400 HTTP status with error
+code.  This is more natural because server processed request and found
+an error, and returned error reply correctly.  This is not something
+server crashed or something.  Also, there is RPC libraries which
+throws exception if it sees 5XX status code, where 400 is better
+because we can examine the error.
 
 Changes
 -------
 
-* Support HTTP date ending "+0000" as well as "GMT".
+* Update README.android
 
-  Closes GH-330
+  Providing some workarounds about CA certificates and standard output
 
-* Revise getRandom facilities
+  Patch from amtlib-dot-dll
 
-  Use one of the following to provide random bytes:
-  - Windows CryptGenRandom
-  - Linux getrandom (syscall interface to urandom, without nasty
-    corner cases such as file descriptor exhaustion or re-linked
-    /dev/urandom)
-  - std::device_random (C++ random device, which usually will be
-    urandom)
+* Return 400 HTTP status code if exception was caught while executing
+  RPC method
 
-  This also equalizes util::getRandom and SimpleRandomizer (the former
-  will now use the latter) instead of having essentially two different
-  PRNG interfaces with potentially different quality.
+  Previously, we returned 500 HTTP status code.  I think the found in
+  RPC level, not in HTTP protocol, so 500 is not appropriate.
 
-  Closes GH-320
+* WinTLS: Fix potential infinite loop
 
-* Added debug log of all Metalink URLs with final priorities
+* Fix on-download-error is executed even if download succeeded
 
-  Patch from Dan Fandrich
+* Update Dockerfile.mingw
 
-* Use gcc-4.9 and android-16 API level for android build
+  Patch from Adam Baxter
 
-* Add --bt-force-encryption option
+* Increase --select-file upper bound to 1m for torrent containing lots
+  of files
 
-  This option requires BitTorrent message payload encryption with
-  arc4. This is a shorthand of --bt-requre-crypto
-  --bt-min-crypto-level=arc4.  If true is given, deny legacy
-  BitTorrent handshake and only use Obfuscation handshake and always
-  encrypt message payload. This option defaults to false.
+* Fix busy loop with --dry-run and 4xx response for URI listed in
+  metalink
 
-* TLS: Fix memory leak with OpenSSL
+  See GH-430
 
-  Based on the patch submitted by midnight2k
+* Update sqlite in OSX build to 3.8.10.2
 
-* Warn about insecure SSL connections.
+* Make LibuvEventPoll compatible with the latest libuv again
 
-  Fixed GH-313
+* gnutls: Allow SIGN-RSA-SHA1 for compatibility reason
 
-* Add --min-tls-version option
+* Make script compatible with both Python 2 and 3
 
-  The --min-tls-version option specifies minimum SSL/TLS version to
-  enable. Possible Values: SSLv3, TLSv1, TLSv1.1, TLSv1.2 Default:
-  TLSv1
+  Patch from Vasilij Schneidermann
 
-* LibsslTLSContext: Disable SSLv3 and enable ECDHE cipher suites
+* Make config and cache files conform to XDG
 
-* Add Dockerfile.mingw
+  See http://standards.freedesktop.org/basedir-spec/latest/ for
+  further details.  This implementation decides the default based on
+  whether a file exists at the legacy location, if it doesn't, it
+  picks the XDG-conforming location instead.
 
-  Dockerfile.mingw builds aria2 Windows binary.  It is probably the
-  easiest way to build the Windows binary.
+  Patch from Vasilij Schneidermann
 
-* Fix crash when JSON batch response vector is empty
+* ftp, sftp: Fix heap-after-free bug on exception
 
-* Fix doc: Wrong rpc secret token prefix
+* ftp: Fix timeout when reusing FTP connection
 
-* Add --bt-detach-seed-only option
+* Various MinGW-w64 build improvements
 
-  This option excludes seed only downloads when counting concurrent
-  active downloads (-j option).  This means that if -j3 is given and
-  this option is turned on and 3 downloads are active and one of those
-  enters seed mode, then it is excluded from active download count
-  (thus it becomes 2), and the next download waiting in queue gets
-  started.  But be aware that seeding item is still recognized as
-  active download in RPC method.
-
-* mingw: Use MoveFileExW for better atomic move
-
-* Work around libintl's vprintf macro messing with OutputFile::vprintf
+  - Fix detection of localtime_r and asctime_r on MinGW-w64
+  - Fix linking with libintl on MinGW-w64
 
   Patch from David Macek
 
-* Fix crash on OSX when proxy is used
-
-  See GH-275
-
-* Support Adler32 checksum
-
-  Adler32 checksum is available for --checksum option and hash element
-  in Metalink files.  Currently, we use Adler32 implementation in
-  Zlib.
-
 
 
-aria2 1.18.8
+aria2 1.19.0
 ============
 
 Release Note
 ------------
 
-This releases fixes the bug that aria2 cannot read piped stdin on
-mingw32.  It also fixes busy loop on mingw32 when SSL/TLS is used.  We
-also fixed 2 crashes which can occur on all platforms.
+This releases adds SFTP support, and fixes several bugs.  SFTP support
+has been implemented using libssh2.  We added several new options.
+--multiple-interface option is like --interface option, but can take
+several interfaces.  They are used in round-robin manner, and it works
+like link aggregation.  Previously, .netrc search path is fixed under
+$HOME directory, and cannot be changed.  In this release, --netrc-path
+option has been added to override the search path.  The runtime bug
+concerning getrandom has been fixed in this release.  Previously if
+download failed because checksum error, aria2 exited with error code 1
+(unknown error).  Now it exits with dedicated error code 32.  We fixed
+long outstanding bug that aria2 crashes when downloading multi-file
+torrent.
 
 Changes
 -------
 
-* WinTLS: Fix abrupt connection closing and closing in general.
+* android: Build and link with zlib
 
-  Fixes GH-277
+  Previously, we linked with zlib shipped with NDK, but it seems this
+  is not part of NDK API, and thus could break our app.
 
-* LibsslTLSSession: Treat 0 from readData as EOF
+* Allow netrc-path to be specified in the config file
 
-* Enable dynamicbase and nxcompat in Windows binaries
+  Adds --netrc-path to override default .netrc search path.  Patch
+  from Ryan Steinmetz
 
-* Fix crash in OpenedFileCounter::ensureMaxOpenFileLimit()
+* Exit with 32 status code if checksum verification failed
 
-  The crash happens if PieceStorage and/or DiskAdaptor are not
-  initialized in one of active RequestGroups.
+* Add SFTP support using libssh2
 
-* mingw32: Fix bug that aria2 does not read piped stdin
+  aria2 can now download files via sftp protocol: aria2c sftp://....
+  --ssh-host-key-md option is added to specify expected server's
+  fingerprint.
 
-* Fix std::length_error when no_proxy is used
+* Added Dockerfile to cross complile aria2 for RaspberryPI (armhf)
 
-  This is regression introduced in 8cada497.
+  Patch from Igor Khomyakov
 
-* Try to set sane limits for RLIMIT_NO_FILE
+* multiple interface support for link aggregation
 
-  E.g. on OSX the default is 256, which isn't exactly compatible with
-  torrent downloads.
+  Adds --multiple-interface option.  Patch from Sarim Khan
 
-  Closes GH-257
+* Run on-bt-download-complete command when -V reports download finished
 
-* Delay auth failures instead of PBKDF2
+  Fixes GH-355
 
-  Closes GH-256
+* Use dedicated DiskWriter in MultiDiskFileAllocationIterator
 
-
+  We have to use dedicated DiskWriter instead of
+  (*entryItr_)->getDiskWriter().  This is because
+  SingleFileAllocationIterator cannot reopen file if file is closed by
+  OpenedFileCounter.  Fixes GH-350
 
-aria2 1.18.7
-============
+* Fix getrandom for system with libc not including errno or systems
 
-Release Note
-------------
+  not supporting ENOSYS in the first place.  Fixes GH-347
 
-This release fixes regression which makes 100% CPU utilization in
-multi-file torrent download with -V option.  It also fixes build error
-on big endian platforms.
+* Don't send back rpc-secret option value in aria2.getGlobalOption RPC
+  method
 
-Changes
--------
+* Make libuv default off
 
-* Fixed segfault unsupported encodings
+  See GH-241 for discussion
 
-  Patch from diadistis
+* Fixed slow RPC response
 
-* Fix regression 100% CPU utility when -V is used and download is
-  multi-file bittorrent downloads.
+  Fxies GH-345
 
-  This is regression of a3426821c8a7f9cf8d80a81726157d4eb844f661
+* Fix getrandom interface detection
 
-* Fix compile error on big endian platform
-
-
-
-aria2 1.18.6
-============
-
-Release Note
-------------
-
-This release fixes several bugs reported in github issues and adds a
-feature to make RPC authentication more resilient to certain attacks.
-New option --pause-metadata is added.  The explanation is a bit log,
-so check the changelog and manual.  The session is now only saved if
-there are changes from the last saved state.
-
-From this release, MinGW32 build uses Windows native TLS
-implementation and no longer use OpenSSL library.
-
-Changes
--------
-
-* Disard cache when checking checksum
-
-  This will slow down checksum checking but does not thrash cache.
-
-* Compat with libuv 0.11 (Unstable)
-
-  Fixes #241
-
-* Drop WinMessageDigestImpl.
-
-  The algorithms the `CryptProv` on Windows supports does not
-  currently include SHA-224, so there is a "dark spot" in this
-  implementation. Also on Win XP < SP3, most of the SHA-2 family is
-  not actually supported.  All other implementation provide support
-  for MD5, SHA-1 and all of the SHA-2 family, hence drop the
-  incomplete WinMessageDigest implementation in favor of any other
-  supported implementation (at least the internal implementation is
-  always available at compile-time).
-
-* Add --pause-metadata option
-
-  This option pauses downloads created as a result of metadata
-  download. There are 3 types of metadata downloads in aria2: (1)
-  downloading .torrent file. (2) downloading torrent metadata using
-  magnet link. (3) downloading metalink file.  These metadata
-  downloads will generate downloads using their metadata. This option
-  pauses these subsequent downloads.
-
-* Improve compiler/platform/libs information in logs
-
-  Add and use usedCompilerAndPlatform().  This adds compiler
-  information to INFO logs and the --version output, and may be
-  helpful when trying to diagnose/reproduce user-reported problems.
-
-  Also make INFO logs include usedLibs() output.
-
-  Closes #235
-
-* Fix use-after-free on exit with multi-file torrent download + DHT
-
-  DefaultPieceStorage may be referenced by one of DHT task (e.g.,
-  DHTPeerLookupTask), after RequestGroup was deleted, and even after
-  RequestGroupMan was deleted.  DefaultPieceStorage has a reference to
-  MultiDiskAdaptor which calls RequestGroupMan object on destruction.
-  So when DHT task is destroyed, DefaultPieceStorage is destroyed,
-  which in turn destroys MultiDiskAdaptor.  DHT task is destroyed
-  after RequestGroupMan was destroyed, MultiDiskAdaptor will use now
-  freed RequestGroupMan object, this is use-after-free.
-
-* Fix bug that zero length file is not opened when flushing cache
-
-  This bug was only seen when MultiDiskAdaptor was used.
-
-* Support PREF_DIR change for Metalink files
-
-  Reworked previous commit adeead6f0396e2f8551d1182972e277728fd6c8b,
-  and now support changing PREF_DIR for Metalink downloads.
-
-* Fix assertion failure when dir option of paused HTTP/FTP download is
-  changed
-
-  When the directory is changed via aria2.changeOption RPC method, we
-  directly change first FileEntry's path using FileEntry::setPath().
-  If there is no PREF_OUT option is given, basically file name is
-  unknown, so we just set empty string and let the next run determine
-  the correct file name and new directory is applied there.  But
-  previous code does not reset length property of FileEntry, so the
-  unexpected code path is taken when unpaused and its path expects
-  path is not empty string.  This commit fixes this issue by setting
-  length to 0 using FileEntry::setLength().
-
-* Save session only when there is change since the last serialization
-
-  This is a slight optimization not to cause useless disk access.
-  This only applies to saving session automatically (see
-  --save-session-interval).  aria2.saveSession and serialization at
-  the end of the session are always performed as before.
-
-  When serialization, we first check that whether there is any change
-  since the last serialization.  To do this, we first calculate hash
-  value of serialized content without writing into file.  Then compare
-  this value to the value of last serialization.  If they do not
-  match, perform serialization.
-
-* Fix (unknown length) downloads larger than 2GiB
-
-  Closes #215
-
-* Fix F_PREALLOC based allocation on some OSX versions
-
-* Use index.html as filename for conditional-get when file is missing
-  in URI
-
-  Previously we disabled conditional-get if file part is missing in
-  URI.  But we use constant string "index.html" in this case, so we
-  can do the same to determine the modification time.  In this patch,
-  if we have file part in URI, we are not going to set absolute file
-  path in FileEntry, since it prevents content-disposition from
-  working.
-
-* Always add README.html to dist_doc_DATA
-
-  rst2html is required to produce README.html from README.rst.  We
-  include generated README.html to distribution.  And rst2html is not
-  required when compiling sources in distribution and always
-  README.html is available.
-
-* Validate token using PBKDF2-HMAC-SHA1.
-
-  This change should make token validation more resilient to:
-  - timing attacks (constant time array compare)
-  - brute-force/dictionary attacks (PBKDF2)
-
-  Closes #220
-
-* Add --disable-websocket configure option
-
-* mingw32: Enable wintls and compile with GMP
-
-  By enabling wintls, we can use Windows certificate store to validate
-  server's certificate.  Previously, we built windows build using
-  openssl and since we don't bundle CA certificates, aria2 fails to
-  validate server's certificate unless user setups their CA
-  certificates.  GMP provides fast big integer calculations, whic is
-  used in BitTorrent encryption.
-
-* AppleTLS: Enable BEAST mitigations in ST
-
-  Only available in 10.9+, but since we might be building on a
-  previous version but running on 10.9+, always try to set the option.
-
-* WinTLS: Accept chains with no revocation information.
-
-  This is kind what browser do anyway (IE, Firefox, Chrome tested),
-  what AppleTLS does, what GnuTLS does and what OpenSSL
-  does. Actually, most browsers will also be OK with the CRL/OCSP
-  provider being offline.  WinTLS will still fail in that case.
-
-  Should revocation information be available in the trust chain (CRL
-  or OCSP) the certificate still will be checked!
-
-  "Real" CAs, aka. those provided by the OS or system CA bundle,
-  usually provide revocation information and are thus still checked.
-  It should be mostly (only?) custom (organization) CAs that lack
-  revocation information, but those users might want to use aria2 in
-  their intranets and VPNs anyway ;)
-
-  See #217
-
-* Fix GnuTLS 2.x compatiblity
-
-  Closes GH-216
-
-* AppleTLS: Use newer, non-deprecated API in 10.8+
-
-
-
-aria2 1.18.5
-============
-
-Release Note
-------------
-
-This release fixes BitTorrent download failure on Mingw build.
-
-Changes
--------
-
-* Ignore error when setting DSCP value
-
-  Setting DSCP is additional feature and failure to enable it should
-  not abort download entirely.  This change fixes the bug that windows
-  build does not perform bittorrent downloads.
-
-
-
-aria2 1.18.4
-============
-
-Release Note
-------------
-
-This release adds new RPC authorization mechanism using --rpc-secret
-option.  The existing --rpc-user and --rpc-passwd options are now
-deprecated, and all applications using RPC API is strongly encouraged
-to migrate to the new mechanism.  See RPC INTERFACE section in aria2
-manual page for the details.  The new RPC method, aria2.saveSession,
-was added, which tells aria2 server to save session file immediately.
-There are several enhancements and bug fixes.  See the changes for the
-details.
-
-Changes
--------
-
-* Added support for RPC channel encryption in aria2rpc
-
-  Patch from David Macek
-
-* Add aria2.saveSession RPC method
-
-  This method saves the current session to a file specified by
-  --save-session option. This method returns "OK" if it succeeds.
-
-* Add numStoppedTotal key to aria2.getGlobalStat() RPC method response
-
-  It shows the number of stopped downloads in the current session and
-  not capped by --max-download-result option. On the other hand, the
-  existing numStopped key also shows the number of stopped downloads,
-  but it is capped by --max-download-result option.
-
-* Better handling of 30x HTTP status codes
-
-  Reference: http://greenbytes.de/tech/tc/httpredirects/
-
-* Implement new RPC authorization using --rpc-secret option
-
-  Add future deprecation warning to --rpc-user and --rpc-passwd.  Warn
-  if neither --rpc-secret nor a combination of --rpc-user/rpc-passwd
-  is set.
-
-* Add --enable-color option to enable/disable terminal color output
-
-* Add DSCP support
-
-* gnutls: Don't fail handshake if returned error is not fatal
-
-* Add workaround GnuTLS bug with OCSP status extension and
-  non-blocking socket
-
-  GnuTLS version 3.1.3 - 3.1.18 and 3.2.0 - 3.2.8, inclusive, has this
-  bug. For these versions, we disable OCSP status extension.
-
-* Make GnuTLS log level dependent on the aria2 ones
-
-
-
-aria2 1.18.3
-============
-
-Release Note
-------------
-
-This release fixes the bug which may cause assertion failure after
-multi-file downloads (e.g., multi-file metalink or torrent) are
-performed several times due to the bad handling of --bt-max-open-files
-option.
-
-Changes
--------
-
-* Fix crash if unpause failed before assigning BtProgressInfoFile
-  object
-
-* Enable and check PIE in makerelease-osx
-
-* Fix bug that numOpenFile_ is not reduced when MultiDiskAdaptor is
-  deleted
-
-  This bug caused assertion error in
-  RequestGroupMan::ensureMaxOpenFileLimit
-
-
-
-aria2 1.18.2
-============
-
-Release Note
-------------
-
-This release fixes the wrong handling of return value of fork(), which
-leads to high CPU usage. The progress readout has some color output.
-Mingw32 build now receives colorized output. Mingw32 build now can
-read unicode command-line arguments. The build script of OSX was
-rewritten. The --bt-max-open-files now limits the number of opened
-file globally for multi-file downloads instead of per download basis.
-
-Changes
--------
-
-* Remove the outdated, broken build_osx_release.sh
-
-* Initial revision of the a new OSX release Makefile
-
-* Allow using libgmp with AppleTLS/WinTLS
-
-* Fix crash when metaurl contains unsupported URI or text
-
-* Fix bad fork() return value handling
-
-* Use some colors in progress reports (where available)
-
-* Implement basic color support for the Windows console
-
-  Only \033[*m (SGR) is supported, with a 16+16 color terminal.
-
-* AppleTLS: Implement PKCS12 loading.
-
-* Limit number of opened file globally with --bt-max-open-files option
-
-  This change changes the behavior of --bt-max-open-files. Previously,
-  it specifies the maximum number of opened files for each multi-file
-  download. Since it is more useful to limit the number globally, the
-  option now specifies the global limit. This change suggests that
-  aria2.changeOption() method now ignores --bt-max-open-files and
-  aria2.changeGlobalOption now reads it and dynamically change the
-  limit.
-
-* Don't fail multiple concurrent dl same file if auto-file-renaming is
-  enabled
-
-* mingw32: Use CommandLineToArgvW() and GetCommandLineW() to read
-  cmd-line args
-
-  This change enables aria2 to read unicode characters in
-  command-line.
-
-
-
-aria2 1.18.1
-============
-
-Release Note
-------------
-
-This release fixes the percent-encoding bug which affects file name
-encodings. It adds PKCS12 support in certificate import. It also adds
-experimental internal implementation of message digest functions, ARC4
-cipher and bignum. It means that no external libraries are required to
-build BitTorrent support, but this feature is still marked as
-experimental. This release also fixes the android build with NDK r9.
-
-Changes
--------
-
-* LibsslTLSContext: Remove weak cipher suite
-
-* AppleTLS: Enable --certificate
-
-* util::percentEncodeMini: Fix regression bug removed unsignedness
-
-  srange-based for around std::string is convenient but several
-  functions depend unsigned char for correctness and readability.
-
-* Log exception; throw error if loading private key and/or certificate
-  failed
-
-* Provide internal ARC4 implementation
-
-  Now you can build bittorrent support without without external
-  libraries, meaning you can skip libnettle, libgmp, libgcrypt, GnuTLS
-  and OpenSSL on OSX (for now).
-
-* Internal implementation of DHKeyExchange
-
-  Reusing a bignum (well, unsigned very-long) implementation I had
-  lying around for years and just cleaned up a bit and brought to
-  C++11 land.
-
-  It might not be the most performant implementation, but it shoud be
-  fast enough for our purposes and will go a long way of removing
-  gcrypt, nettle, gmp, openssl dependencies when using AppleTLS and
-  WinTLS (upcoming).
-
-* PKCS12 support in --certificate and --rpc-certificate options.
-
-* Add --disable-ssl configure option
-
-* Add internal md5 and sha1 message digests
-
-* Fix AppleMessageDigestImpl use with large data
-
-* Set old cookie's creation-time to new cookie on replacement
-
-  As described in http://tools.ietf.org/html/rfc6265#section-5.3
-
-* Fix link error with Android NDK r9
-
-  Since Android ndk r9, __set_errno is deprecated. It is now defined
-  as inline function in errno.h. The syscall assembly calls
-  __set_errno, but since libc.so does not export it, the link
-  fails. To workaround this, replace all occurrences of __set_errno
-  with a2_set_errno and define it as normal C function.
-
-
-
-aria2 1.18.0
-============
-
-Release Note
-------------
-
-This release changes the default disk cache size to 16 MiB. To change
-the default size, --with-disk-cache configure option was added.  Now
-used URIs are also saved by --save-session option. The control file is
-now always saved if --force-save is given. The ctrl-c handling on
-Mingw build was improved. The internal intl library is no longer
-supplied. From this release, C++11 compiler is required to build aria2
-executable. For gcc, at least 4.6.3 is required.
-
-Changes
--------
-
-* Use AM subdir-objects
-
-  Doing so in AM_INIT_AUTOMAKE seems to be the most compatible way of
-  doing so.
-
-  Closes GH-120
-
-* AM_SILENT_RULES([yes]) with backwards-compatiblity
-
-  Supported since automake-1.11. There is no point in having the very
-  verbose compile stuff running about, which cannot even silenced
-  properly with `make -s` by default. Otherwise, `make V=1` or
-  `--disable-silent-rules` are your friends
-
-* Fix automake-1.14 am_aux_dir
-
-  AC_USE_SYSTEM_EXTENSIONS will cause AC_PROG_CC, which is overridden
-  by automake-1.14, which will then init (part) of automake, in
-  particular am_aux_dir expansion, which in turn relies on ac_aux-dir,
-  which is not initialized at this point, and thus: certain doom (or
-  fun, depending on your POV and mood :p)
-
-  Hence call AC_USE_SYSTEM_EXTENSIONS only after
-  AM_INIT_AUTOMAKE. This, of course, caused a lot of related macro
-  shuffling.
-
-  Tested against automake-1.10 (OSX Lion/XCode version) and
-  automake-1.14 (homebrew version)
-
-* Require external gettext for --enable-nls
-
-  And stop using the internal flavor with ./intl
-
-* Make AX_CXX_COMPILE_STDCXX_11 test for -stdlib=libc++ via std::shared_ptr
-
-  The clang shipped with OSX XCode and clangs not build enabling
-  libcpp, will default to the libstdc++ headers and lib installed on
-  the system.  In the OSX case, that libstdc++ is the one bundles with
-  gcc-4.2, which is far too old to provide all required C++11 types,
-  such as std::shared_ptr.  Hence, the C++11 check should try to
-  compile a program with a C++11 type and try -stdlib=libc++ if the
-  default lib fails to compile said program.
-
-* Make the configure check for C++11 compiler mandatory
-
-  Remove stray "dnl", so that mandatory actually works with (my)
-  autoreconf.
-
-* Always build doc/manual-src
-
-  Should sphinx-build be not available AND the man file not be prsent,
-  then just "touch" it into existence (and warn about that)
-
-* Win: Use SetConsoleCtrlHandler for SIGINT/SIGTERM
-
-* Implement a simple resource lock (threading)
-
-  In this initial implementation Locks are no-ops on platforms other
-  than Windows.
-
-* Check for sphinx-build during configure
-
-* Add --with-disk-cache configure option
-
-  Enables packagers more fine grained control over the default value
-  without having to mess with config files.
-
-  See GH-115
-
-* Change defaults: Enable 16M disk cache by default.
-
-* Always save control file if --force-save is given
-
-* Set log level DEBUG for unittests
-
-* Check that C++ compiler supports override keyword
-
-  If the compiler supports override, define CXX11_OVERRIDE as
-  override, otherwise define it as empty. Use CXX11_OVERRIDE instead
-  of override.
-
-* AppleTLS: Fix MessageDigestImpl
-
-* AppleTLS: Fix session CFRelease stuff
-
-* Use AX_CXX_COMPILE_STDCXX_11 macro to detect C++0x/C++11 support in
-  compiler
-
-* Require -std=c++11 and use std::shared_ptr instead of SharedHandle
-
-* Join URI on redirect
-
-* Send HAVE message to the peer which the piece is downloaded from
-
-  Historically, aria2 did not send HAVE message to the peer which the
-  piece is coming from, thinking it is obvious that the peer knows we
-  have the piece. But it is not obvious if one piece is download from
-  more than 1 peers (e.g., end game mode). So it is better to send
-  HAVE to all peers connected.
-
-* Improvements to --follow-torrent=false documentation.
-
-  Patch from gt
-
-* SessionSerializer: Truly unique URIs
-
-  Before, only spent uris where sanitized not to be contained within
-  remaining uris. Change this so that each uri in the
-  union(remaining,spent) get saved once at most.  The order of the
-  uris will won't be changed, with remaining uris going first followed
-  by spent uris.
-
-  Also avoid copying the uri std::strings around during dupe checking,
-  usually resulting in better performance regarding CPU and space.
-
-* Make getOption RPC method return option for stopped downloads
-
-* SessionSerializer: Save spent URIs as well as remaining ones
+  Fixes GH-346

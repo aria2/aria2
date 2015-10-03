@@ -15,7 +15,7 @@ private:
 public:
   void setUp() {
     peer.reset(new Peer("localhost", 6969));
-    peer->allocateSessionResource(1024, 1024*1024);
+    peer->allocateSessionResource(1_k, 1_m);
   }
 
   void testPeerAllowedIndexSet();
@@ -48,7 +48,7 @@ void PeerTest::testCountSeeder()
   peers[4].reset(new Peer("192.168.0.5", 7000));
   for(std::vector<std::shared_ptr<Peer> >::iterator i = peers.begin();
       i != peers.end(); ++i) {
-    (*i)->allocateSessionResource(1024, 1024*8);
+    (*i)->allocateSessionResource(1_k, 8_k);
   }
   unsigned char bitfield[] = { 0xff };
   peers[1]->setBitfield(bitfield, 1);

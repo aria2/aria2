@@ -330,7 +330,8 @@ static SSLCipherSuiteList constructEnabledSuites(SSLContextRef ctx)
     return rv;
   }
 
-  rv.erase(std::remove_if(rv.begin(), rv.end(), isBlockedSuite), rv.end());
+  rv.erase(std::remove_if(std::begin(rv), std::end(rv), isBlockedSuite),
+           std::end(rv));
   return rv;
 }
 

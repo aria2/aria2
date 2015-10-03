@@ -57,12 +57,12 @@ void BtCancelMessageTest::testCreate() {
   bittorrent::createPeerMessageString(msg, sizeof(msg), 13, 8);
   bittorrent::setIntParam(&msg[5], 12345);
   bittorrent::setIntParam(&msg[9], 256);
-  bittorrent::setIntParam(&msg[13], 1024);
+  bittorrent::setIntParam(&msg[13], 1_k);
   auto pm = BtCancelMessage::create(&msg[4], 13);
   CPPUNIT_ASSERT_EQUAL((uint8_t)8, pm->getId());
   CPPUNIT_ASSERT_EQUAL((size_t)12345, pm->getIndex());
   CPPUNIT_ASSERT_EQUAL(256, pm->getBegin());
-  CPPUNIT_ASSERT_EQUAL(1024, pm->getLength());
+  CPPUNIT_ASSERT_EQUAL((int32_t)1_k, pm->getLength());
 
   // case: payload size is wrong
   try {
@@ -86,12 +86,12 @@ void BtCancelMessageTest::testCreateMessage() {
   BtCancelMessage msg;
   msg.setIndex(12345);
   msg.setBegin(256);
-  msg.setLength(1024);
+  msg.setLength(1_k);
   unsigned char data[17];
   bittorrent::createPeerMessageString(data, sizeof(data), 13, 8);
   bittorrent::setIntParam(&data[5], 12345);
   bittorrent::setIntParam(&data[9], 256);
-  bittorrent::setIntParam(&data[13], 1024);
+  bittorrent::setIntParam(&data[13], 1_k);
   unsigned char* rawmsg = msg.createMessage();
   CPPUNIT_ASSERT(memcmp(rawmsg, data, 17) == 0);
   delete [] rawmsg;
@@ -100,8 +100,8 @@ void BtCancelMessageTest::testCreateMessage() {
 void BtCancelMessageTest::testDoReceivedAction() {
   BtCancelMessage msg;
   msg.setIndex(1);
-  msg.setBegin(2*16*1024);
-  msg.setLength(16*1024);
+  msg.setBegin(32_k);
+  msg.setLength(16_k);
   msg.setPeer(peer);
   auto dispatcher = make_unique<MockBtMessageDispatcher2>();
   msg.setBtMessageDispatcher(dispatcher.get());

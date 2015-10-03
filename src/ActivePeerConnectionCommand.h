@@ -59,7 +59,7 @@ private:
   std::shared_ptr<PeerStorage> peerStorage_;
   std::shared_ptr<BtAnnounce> btAnnounce_;
 
-  time_t interval_; // UNIT: sec
+  std::chrono::seconds interval_;
   DownloadEngine* e_;
   Timer checkPoint_;
   int numNewConnection_; // the number of the connection to establish.
@@ -67,7 +67,7 @@ public:
   ActivePeerConnectionCommand(cuid_t cuid,
                               RequestGroup* requestGroup,
                               DownloadEngine* e,
-                              time_t interval);
+                              std::chrono::seconds interval);
 
   virtual ~ActivePeerConnectionCommand();
 

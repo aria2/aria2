@@ -17,6 +17,12 @@
 Manual Aria2
 ============
 
+.. warning::
+
+   This translation has been outdated quite sometime now, and lacks
+   many recent changes.  Please consult English version manual for
+   updated information.
+
 aria2 é um utilitário para download de arquivos, que utiliza protocolos HTTP,
 HTTPS, FTP, BitTorrent e Metalink. Pode efetuar download de um ou vários 
 arquivos, a partir de uma ou múltiplas fontes e protocolos, com ou sem 

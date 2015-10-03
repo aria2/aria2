@@ -70,7 +70,7 @@ WatchProcessCommand::WatchProcessCommand
  DownloadEngine* e,
  unsigned int pid,
  bool forceHalt)
-  : TimeBasedCommand(cuid, e, 1, true),
+  : TimeBasedCommand(cuid, e, 1_s, true),
     pid_(pid),
     forceHalt_(forceHalt)
 {}

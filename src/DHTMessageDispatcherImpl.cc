@@ -56,11 +56,11 @@ DHTMessageDispatcherImpl::DHTMessageDispatcherImpl
 void
 DHTMessageDispatcherImpl::addMessageToQueue
 (std::unique_ptr<DHTMessage> message,
- time_t timeout,
+ std::chrono::seconds timeout,
  std::unique_ptr<DHTMessageCallback> callback)
 {
-  messageQueue_.push_back(make_unique<DHTMessageEntry>
-                          (std::move(message), timeout, std::move(callback)));
+  messageQueue_.push_back(make_unique<DHTMessageEntry>(
+      std::move(message), std::move(timeout), std::move(callback)));
 }
 
 void
@@ -92,7 +92,7 @@ bool DHTMessageDispatcherImpl::sendMessage(DHTMessageEntry* entry)
     // DHTTask(such as DHTAbstractNodeLookupTask) don't finish
     // forever.
     if(!entry->message->isReply()) {
-      tracker_->addMessage(entry->message.get(), 0,
+      tracker_->addMessage(entry->message.get(), 0_s,
                            std::move(entry->callback));
     }
   }

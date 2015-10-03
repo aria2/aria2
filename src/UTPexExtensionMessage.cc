@@ -57,6 +57,8 @@ const size_t DEFAULT_MAX_DROPPED_PEER = 50;
 
 const char UTPexExtensionMessage::EXTENSION_NAME[] = "ut_pex";
 
+constexpr std::chrono::minutes UTPexExtensionMessage::DEFAULT_INTERVAL;
+
 UTPexExtensionMessage::UTPexExtensionMessage(uint8_t extensionMessageID)
   : extensionMessageID_{extensionMessageID},
     peerStorage_{nullptr},

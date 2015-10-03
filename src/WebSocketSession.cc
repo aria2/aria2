@@ -211,7 +211,8 @@ WebSocketSession::WebSocketSession(const std::shared_ptr<SocketCore>& socket,
   : socket_(socket),
     e_(e),
     ignorePayload_(false),
-    receivedLength_(0)
+    receivedLength_(0),
+    command_(nullptr)
 {
   wslay_event_callbacks callbacks;
   memset(&callbacks, 0, sizeof(wslay_event_callbacks));
@@ -289,7 +290,8 @@ void WebSocketSession::addTextMessage(const std::string& msg, bool delayed)
     auto e = getDownloadEngine();
     auto cuid = command_->getCuid();
     auto c = make_unique<TextMessageCommand>(cuid, command_->getSession(), msg);
-    e->addCommand(make_unique<DelayedCommand>(cuid, e, 1, std::move(c), false));
+    e->addCommand(
+        make_unique<DelayedCommand>(cuid, e, 1_s, std::move(c), false));
     return;
   }
 

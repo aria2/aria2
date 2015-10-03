@@ -391,7 +391,7 @@ std::unique_ptr<ValueBase> removeDownload
       } else {
         group->setHaltRequested(true, RequestGroup::USER_REQUEST);
       }
-      e->setRefreshInterval(0);
+      e->setRefreshInterval(std::chrono::milliseconds(0));
     } else {
       if(group->isDependencyResolved()) {
         e->getRequestGroupMan()->removeReservedGroup(gid);
@@ -431,7 +431,7 @@ std::unique_ptr<ValueBase> pauseDownload
   if(group) {
     bool reserved = group->getState() == RequestGroup::STATE_WAITING;
     if(pauseRequestGroup(group, reserved, forcePause)) {
-      e->setRefreshInterval(0);
+      e->setRefreshInterval(std::chrono::milliseconds(0));
       return createGIDResponse(gid);
     }
   }
@@ -1163,7 +1163,7 @@ std::unique_ptr<ValueBase> GetGlobalOptionRpcMethod::process
   auto result = Dict::g();
   for(size_t i = 0, len = e->getOption()->getTable().size(); i < len; ++i) {
     PrefPtr pref = option::i2p(i);
-    if(!e->getOption()->defined(pref)) {
+    if(pref == PREF_RPC_SECRET || !e->getOption()->defined(pref)) {
       continue;
     }
     const OptionHandler* h = getOptionParser()->find(pref);
@@ -1306,8 +1306,8 @@ std::unique_ptr<ValueBase> goingShutdown
 {
   // Schedule shutdown after 3seconds to give time to client to
   // receive RPC response.
-  e->addRoutineCommand(make_unique<TimedHaltCommand>
-                       (e->newCUID(), e, 3, forceHalt));
+  e->addRoutineCommand(
+      make_unique<TimedHaltCommand>(e->newCUID(), e, 3_s, forceHalt));
   A2_LOG_INFO("Scheduled shutdown in 3 seconds.");
   return createOKResponse();
 }

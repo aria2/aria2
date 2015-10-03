@@ -87,7 +87,8 @@ AuthConfigFactory::createAuthConfig
           createHttpAuthResolver(op)->resolveAuthConfig(request->getHost());
       }
     }
-  } else if(request->getProtocol() == "ftp") {
+  } else if(request->getProtocol() == "ftp" ||
+            request->getProtocol() == "sftp") {
     if(!request->getUsername().empty()) {
       if(request->hasPassword()) {
         return AuthConfig::create(request->getUsername(),

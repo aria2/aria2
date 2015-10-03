@@ -61,12 +61,12 @@ private:
 
   Timer dispatchedTime_;
 
-  time_t timeout_;
+  std::chrono::seconds timeout_;
 public:
   DHTMessageTrackerEntry(std::shared_ptr<DHTNode> targetNode,
                          std::string transactionID,
                          std::string messageType,
-                         time_t timeout,
+                         std::chrono::seconds timeout,
                          std::unique_ptr<DHTMessageCallback> callback =
                          std::unique_ptr<DHTMessageCallback>{});
 
@@ -80,7 +80,7 @@ public:
   const std::string& getMessageType() const;
   const std::unique_ptr<DHTMessageCallback>& getCallback() const;
   std::unique_ptr<DHTMessageCallback> popCallback();
-  int64_t getElapsedMillis() const;
+  Timer::Clock::duration getElapsed() const;
 };
 
 } // namespace aria2

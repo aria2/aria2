@@ -258,7 +258,9 @@ public:
    * Removes have entry if specified seconds have elapsed since its
    * registration.
    */
-  virtual void removeAdvertisedPiece(time_t elapsed) CXX11_OVERRIDE {}
+  virtual void
+  removeAdvertisedPiece(const std::chrono::seconds& elapsed) CXX11_OVERRIDE
+  {}
 
   /**
    * Sets all bits in bitfield to 1.

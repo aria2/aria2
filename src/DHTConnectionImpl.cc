@@ -61,8 +61,7 @@ bool DHTConnectionImpl::bind
   while(sgl.hasNext()) {
     ports.push_back(sgl.next());
   }
-  std::random_shuffle(ports.begin(), ports.end(),
-                      *SimpleRandomizer::getInstance());
+  std::shuffle(ports.begin(), ports.end(), *SimpleRandomizer::getInstance());
   for (const auto& p : ports) {
     port = p;
     if(bind(port, addr)) {

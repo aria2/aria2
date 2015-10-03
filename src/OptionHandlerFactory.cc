@@ -174,7 +174,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     OptionHandler* op(new DefaultOptionHandler
                       (PREF_CONF_PATH,
                        TEXT_CONF_PATH,
-                       util::getHomeDir()+"/.aria2/aria2.conf",
+                       util::getConfigFile(),
                        PATH_TO_FILE));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
@@ -574,7 +574,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
                       (PREF_MIN_SPLIT_SIZE,
                        TEXT_MIN_SPLIT_SIZE,
                        "20M",
-                       1024*1024, 1024*1024*1024,
+                       1_m, 1_g,
                        'k'));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_FTP);
@@ -595,6 +595,16 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
 #endif // ENABLE_SSL
+  {
+    OptionHandler* op(new DefaultOptionHandler
+                      (PREF_MULTIPLE_INTERFACE,
+                       TEXT_MULTIPLE_INTERFACE,
+                       NO_DEFAULT_VALUE,
+                       "interface, IP address, hostname",
+                       OptionHandler::REQ_ARG));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
   {
     OptionHandler* op(new BooleanOptionHandler
                       (PREF_NO_CONF,
@@ -1062,8 +1072,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
                       (PREF_PIECE_LENGTH,
                        TEXT_PIECE_LENGTH,
                        "1M",
-                       1024*1024,
-                       1024*1024*1024));
+                       1_m, 1_g));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
@@ -1497,12 +1506,22 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    OptionHandler* op(new ChecksumOptionHandler
+                      (PREF_SSH_HOST_KEY_MD,
+                       TEXT_SSH_HOST_KEY_MD,
+                       {"sha-1", "md5"}));
+    op->addTag(TAG_FTP);
+    op->setInitialOption(true);
+    op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
+    handlers.push_back(op);
+  }
+  {
     OptionHandler* op(new DefaultOptionHandler
                       (PREF_NETRC_PATH,
-                       NO_DESCRIPTION,
+                       TEXT_NETRC_PATH,
                        util::getHomeDir()+"/.netrc",
                        PATH_TO_FILE));
-    op->hide();
     handlers.push_back(op);
   }
   // Proxy options
@@ -1689,7 +1708,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
                       (PREF_SELECT_FILE,
                        TEXT_SELECT_FILE,
                        NO_DEFAULT_VALUE,
-                       1, 65535));
+                       1, 1_m));
     op->addTag(TAG_BITTORRENT);
     op->addTag(TAG_METALINK);
     op->setInitialOption(true);
@@ -2023,7 +2042,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     OptionHandler* op(new DefaultOptionHandler
                       (PREF_DHT_FILE_PATH,
                        TEXT_DHT_FILE_PATH,
-                       util::getHomeDir()+"/.aria2/dht.dat",
+                       util::getDHTFile(false),
                        PATH_TO_FILE));
     op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);
@@ -2032,7 +2051,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     OptionHandler* op(new DefaultOptionHandler
                       (PREF_DHT_FILE_PATH6,
                        TEXT_DHT_FILE_PATH6,
-                       util::getHomeDir()+"/.aria2/dht6.dat",
+                       util::getDHTFile(true),
                        PATH_TO_FILE));
     op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);

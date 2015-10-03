@@ -185,10 +185,10 @@ void UtilTest2::testPercentDecode() {
 
 void UtilTest2::testGetRealSize()
 {
-  CPPUNIT_ASSERT_EQUAL((int64_t)4294967296LL, util::getRealSize("4096M"));
-  CPPUNIT_ASSERT_EQUAL((int64_t)1024, util::getRealSize("1K"));
-  CPPUNIT_ASSERT_EQUAL((int64_t)4294967296LL, util::getRealSize("4096m"));
-  CPPUNIT_ASSERT_EQUAL((int64_t)1024, util::getRealSize("1k"));
+  CPPUNIT_ASSERT_EQUAL((int64_t)4_g, util::getRealSize("4096M"));
+  CPPUNIT_ASSERT_EQUAL((int64_t)1_k, util::getRealSize("1K"));
+  CPPUNIT_ASSERT_EQUAL((int64_t)4_g, util::getRealSize("4096m"));
+  CPPUNIT_ASSERT_EQUAL((int64_t)1_k, util::getRealSize("1k"));
   try {
     util::getRealSize("");
     CPPUNIT_FAIL("exception must be thrown.");
@@ -225,8 +225,8 @@ void UtilTest2::testAbbrevSize()
 {
   CPPUNIT_ASSERT_EQUAL(std::string("8,589,934,591Gi"),
                        util::abbrevSize(9223372036854775807LL));
-  CPPUNIT_ASSERT_EQUAL(std::string("4.0Gi"), util::abbrevSize(4294967296LL));
-  CPPUNIT_ASSERT_EQUAL(std::string("1.0Ki"), util::abbrevSize(1024));
+  CPPUNIT_ASSERT_EQUAL(std::string("4.0Gi"), util::abbrevSize(4_g));
+  CPPUNIT_ASSERT_EQUAL(std::string("1.0Ki"), util::abbrevSize(1_k));
   CPPUNIT_ASSERT_EQUAL(std::string("0.9Ki"), util::abbrevSize(1023));
   CPPUNIT_ASSERT_EQUAL(std::string("511"), util::abbrevSize(511));
   CPPUNIT_ASSERT_EQUAL(std::string("0"), util::abbrevSize(0));
@@ -325,8 +325,8 @@ void UtilTest2::testMkdirs()
 
 void UtilTest2::testConvertBitfield()
 {
-  BitfieldMan srcBitfield(384*1024, 256*1024*256+1);
-  BitfieldMan destBitfield(512*1024, srcBitfield.getTotalLength());
+  BitfieldMan srcBitfield(384_k, 256_k * 256 + 1);
+  BitfieldMan destBitfield(512_k, srcBitfield.getTotalLength());
   srcBitfield.setAllBit();
   srcBitfield.unsetBit(2);// <- range [768, 1152)
   // which corresponds to the index [1,2] in destBitfield
@@ -458,7 +458,7 @@ void UtilTest2::testParseLLIntNoThrow()
 void UtilTest2::testToString_binaryStream()
 {
   std::shared_ptr<DiskWriter> dw(new ByteArrayDiskWriter());
-  std::string data(16*1024+256, 'a');
+  std::string data(16_k + 256, 'a');
   dw->initAndOpenFile();
   dw->writeData((const unsigned char*)data.c_str(), data.size(), 0);
 
@@ -700,7 +700,7 @@ void UtilTest2::testParsePrioritizePieceRange()
   //                    file3                  |
   //                      |                    |
   //                      file4                |
-  size_t pieceLength = 1024;
+  constexpr size_t pieceLength = 1_k;
   std::vector<std::shared_ptr<FileEntry> > entries(4, std::shared_ptr<FileEntry>());
   entries[0].reset(new FileEntry("file1", 1024, 0));
   entries[1].reset(new FileEntry("file2",2560,entries[0]->getLastOffset()));
@@ -727,7 +727,7 @@ void UtilTest2::testParsePrioritizePieceRange()
   CPPUNIT_ASSERT_EQUAL((size_t)3, result[2]);
   CPPUNIT_ASSERT_EQUAL((size_t)4, result[3]);
   result.clear();
-  util::parsePrioritizePieceRange(result, "head", entries, pieceLength, 1024);
+  util::parsePrioritizePieceRange(result, "head", entries, pieceLength, 1_k);
   CPPUNIT_ASSERT_EQUAL((size_t)4, result.size());
   CPPUNIT_ASSERT_EQUAL((size_t)0, result[0]);
   CPPUNIT_ASSERT_EQUAL((size_t)1, result[1]);
@@ -741,7 +741,7 @@ void UtilTest2::testParsePrioritizePieceRange()
   CPPUNIT_ASSERT_EQUAL((size_t)3, result[2]);
   CPPUNIT_ASSERT_EQUAL((size_t)6, result[3]);
   result.clear();
-  util::parsePrioritizePieceRange(result, "tail", entries, pieceLength, 1024);
+  util::parsePrioritizePieceRange(result, "tail", entries, pieceLength, 1_k);
   CPPUNIT_ASSERT_EQUAL((size_t)4, result.size());
   CPPUNIT_ASSERT_EQUAL((size_t)0, result[0]);
   CPPUNIT_ASSERT_EQUAL((size_t)2, result[1]);

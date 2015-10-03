@@ -141,6 +141,7 @@ std::unique_ptr<DiskWriterEntry> createDiskWriterEntry
 
 void MultiDiskAdaptor::resetDiskWriterEntries()
 {
+  assert(openedDiskWriterEntries_.empty());
   diskWriterEntries_.clear();
   if(getFileEntries().empty()) {
     return;
@@ -271,18 +272,19 @@ void MultiDiskAdaptor::openExistingFile()
 
 void MultiDiskAdaptor::closeFile()
 {
-  size_t n = 0;
-  openedDiskWriterEntries_.clear();
-  for(auto& dwent : diskWriterEntries_) {
-    if(dwent->isOpen()) {
-      ++n;
-      dwent->closeFile();
+  for(auto& dwent : openedDiskWriterEntries_) {
+    auto& dw = dwent->getDiskWriter();
+    // required for unit test
+    if (!dw) {
+      continue;
     }
+    dw->closeFile();
   }
   auto& openedFileCounter = getOpenedFileCounter();
   if(openedFileCounter) {
-    openedFileCounter->reduceNumOfOpenedFile(n);
+    openedFileCounter->reduceNumOfOpenedFile(openedDiskWriterEntries_.size());
   }
+  openedDiskWriterEntries_.clear();
 }
 
 namespace {
@@ -421,7 +423,7 @@ void MultiDiskAdaptor::writeCache(const WrDiskCacheEntry* entry)
 {
   // Write cached data in 4KiB aligned offset. This reduces disk
   // activity especially on Windows 7 NTFS.
-  unsigned char buf[16*1024];
+  unsigned char buf[16_k];
   size_t buflen = 0;
   size_t buffoffset = 0;
   auto& dataSet = entry->getDataSet();

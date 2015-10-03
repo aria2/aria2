@@ -96,8 +96,10 @@ times.
 DHT routing table file format
 -----------------------------
 
-aria2 saves IPv4 DHT routing table in ``${HOME}/.aria2/dht.dat`` and
-IPv6 DHT routing table in ``${HOME}/.aria2/dht6.dat`` by default.
+aria2 saves IPv4 DHT routing table in
+``${XDG_CACHE_HOME}/aria2/dht.dat`` and IPv6 DHT routing table in
+``${XDG_CACHE_HOME}/aria2/dht6.dat`` by default unless
+``${HOME}/.aria2/dht.dat`` and ``${HOME}/.aria2/dht.dat`` are present.
 
 ``dht.dat`` and ``dht6.dat`` files use same binary encoding and have
 following fields. All multi byte integers are in network byte

@@ -67,7 +67,7 @@ void BtNotInterestedMessageTest::testCreateMessage() {
 
 void BtNotInterestedMessageTest::testDoReceivedAction() {
   std::shared_ptr<Peer> peer(new Peer("host", 6969));
-  peer->allocateSessionResource(1024, 1024*1024);
+  peer->allocateSessionResource(1_k, 1_m);
   peer->peerInterested(true);
 
   auto peerStorage = make_unique<MockPeerStorage>();
@@ -88,7 +88,7 @@ void BtNotInterestedMessageTest::testDoReceivedAction() {
 
 void BtNotInterestedMessageTest::testOnSendComplete() {
   std::shared_ptr<Peer> peer(new Peer("host", 6969));
-  peer->allocateSessionResource(1024, 1024*1024);
+  peer->allocateSessionResource(1_k, 1_m);
   peer->amInterested(true);
   BtNotInterestedMessage msg;
   msg.setPeer(peer);

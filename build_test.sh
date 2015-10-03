@@ -28,6 +28,10 @@ build()
 	&& LANG=C make clean \
 	&& LANG=C make -j2 check 2>&1 |tee "$BUILDDIR/aria2c_$2.log" \
 	&& cp src/aria2c "$BUILDDIR/aria2c_$2"
+
+    if [ -f "test/aria2c.log" ]; then
+	cat "test/aria2c.log" >> "$BUILDDIR/aria2c_$2.log"
+    fi
 }
 
 clear()
@@ -53,11 +57,13 @@ case "$1" in
 	build "--without-libxml2 --without-libexpat" "noxml"
 	build "--without-libz" "nozlib"
 	build "--without-sqlite3" "nosqlite3"
+	build "--without-libssh2" "nolibssh2"
 	# Feature combinations
 	build "--disable-bittorrent" "nobt"
 	build "--disable-metalink" "noml"
 	build "--disable-bittorrent --disable-metalink" "nobt_noml"
 	build "--disable-epoll" "noepoll"
 	build "--disable-epoll --without-libcares" "noepoll_nocares"
+	build "--enable-libaria2" "libaria2"
 	;;
 esac

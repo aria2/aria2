@@ -200,7 +200,9 @@ void DefaultBtMessageDispatcherTest::testDoCancelSendingPieceAction()
   CPPUNIT_ASSERT(evcheck2.doCancelActionCalled);
 }
 
-int MY_PIECE_LENGTH = 16*1024;
+namespace {
+int MY_PIECE_LENGTH = 16_k;
+} // namespace
 
 void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing()
 {
@@ -209,7 +211,7 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing()
   CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(index));
   CPPUNIT_ASSERT_EQUAL((size_t)0, index);
 
-  btMessageDispatcher->setRequestTimeout(60);
+  btMessageDispatcher->setRequestTimeout(1_min);
   btMessageDispatcher->addOutstandingRequest
     (make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0, piece));
 
@@ -228,10 +230,10 @@ testCheckRequestSlotAndDoNecessaryThing_timeout() {
   CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(index));
   CPPUNIT_ASSERT_EQUAL((size_t)0, index);
 
-  btMessageDispatcher->setRequestTimeout(60);
+  btMessageDispatcher->setRequestTimeout(1_min);
   auto slot = make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0, piece);
   // make this slot timeout
-  slot->setDispatchedTime(0);
+  slot->setDispatchedTime(Timer::zero());
   btMessageDispatcher->addOutstandingRequest(std::move(slot));
   btMessageDispatcher->checkRequestSlotAndDoNecessaryThing();
 
@@ -247,7 +249,7 @@ void DefaultBtMessageDispatcherTest::
 testCheckRequestSlotAndDoNecessaryThing_completeBlock() {
   auto piece = std::make_shared<Piece>(0, MY_PIECE_LENGTH);
   piece->completeBlock(0);
-  btMessageDispatcher->setRequestTimeout(60);
+  btMessageDispatcher->setRequestTimeout(1_min);
   btMessageDispatcher->addOutstandingRequest
     (make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0, piece));
 
@@ -277,23 +279,23 @@ void DefaultBtMessageDispatcherTest::testIsOutstandingRequest() {
 }
 
 void DefaultBtMessageDispatcherTest::testGetOutstandingRequest() {
-  btMessageDispatcher->addOutstandingRequest
-    (make_unique<RequestSlot>(1, 1024, 16*1024, 10));
+  btMessageDispatcher->addOutstandingRequest(
+      make_unique<RequestSlot>(1, 1_k, 16_k, 10));
 
-  CPPUNIT_ASSERT(btMessageDispatcher->getOutstandingRequest(1, 1024, 16*1024));
-
-  CPPUNIT_ASSERT(!btMessageDispatcher->
-                 getOutstandingRequest(1, 1024, 17*1024));
+  CPPUNIT_ASSERT(btMessageDispatcher->getOutstandingRequest(1, 1_k, 16_k));
 
   CPPUNIT_ASSERT(!btMessageDispatcher->
-                 getOutstandingRequest(1, 2*1024, 16*1024));
+                 getOutstandingRequest(1, 1_k, 17_k));
 
   CPPUNIT_ASSERT(!btMessageDispatcher->
-                 getOutstandingRequest(2, 1024, 16*1024));
+                 getOutstandingRequest(1, 2_k, 16_k));
+
+  CPPUNIT_ASSERT(!btMessageDispatcher->
+                 getOutstandingRequest(2, 1_k, 16_k));
 }
 
 void DefaultBtMessageDispatcherTest::testRemoveOutstandingRequest() {
-  auto piece = std::make_shared<Piece>(1, 1024*1024);
+  auto piece = std::make_shared<Piece>(1, 1_m);
   size_t blockIndex = 0;
   CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(blockIndex));
   uint32_t begin = blockIndex*piece->getBlockLength();

@@ -68,7 +68,7 @@ void BtUnchokeMessageTest::testCreateMessage() {
 
 void BtUnchokeMessageTest::testDoReceivedAction() {
   std::shared_ptr<Peer> peer(new Peer("host", 6969));
-  peer->allocateSessionResource(1024, 1024*1024);
+  peer->allocateSessionResource(1_k, 1_m);
   peer->peerChoking(true);
   BtUnchokeMessage msg;
   msg.setPeer(peer);
@@ -80,7 +80,7 @@ void BtUnchokeMessageTest::testDoReceivedAction() {
 
 void BtUnchokeMessageTest::testOnSendComplete() {
   std::shared_ptr<Peer> peer(new Peer("host", 6969));
-  peer->allocateSessionResource(1024, 1024*1024);
+  peer->allocateSessionResource(1_k, 1_m);
   peer->amChoking(true);
   BtUnchokeMessage msg;
   msg.setPeer(peer);

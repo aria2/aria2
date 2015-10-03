@@ -90,12 +90,16 @@ volatile sig_atomic_t globalHaltRequested = 0;
 
 } // namespace global
 
+namespace {
+constexpr auto DEFAULT_REFRESH_INTERVAL = 1_s;
+} // namespace
+
 DownloadEngine::DownloadEngine(std::unique_ptr<EventPoll> eventPoll)
   : eventPoll_(std::move(eventPoll)),
     haltRequested_(0),
     noWait_(true),
     refreshInterval_(DEFAULT_REFRESH_INTERVAL),
-    lastRefresh_(0),
+    lastRefresh_(Timer::zero()),
     cookieStorage_(make_unique<CookieStorage>()),
 #ifdef ENABLE_BITTORRENT
     btRegistry_(make_unique<BtRegistry>()),
@@ -164,7 +168,7 @@ int DownloadEngine::run(bool oneshot)
     noWait_ = false;
     global::wallclock().reset();
     calculateStatistics();
-    if(lastRefresh_.differenceInMillis(global::wallclock())+A2_DELTA_MILLIS >=
+    if(lastRefresh_.difference(global::wallclock())+A2_DELTA_MILLIS >=
        refreshInterval_) {
       refreshInterval_ = DEFAULT_REFRESH_INTERVAL;
       lastRefresh_ = global::wallclock();
@@ -188,9 +192,10 @@ void DownloadEngine::waitData()
   if(noWait_) {
     tv.tv_sec = tv.tv_usec = 0;
   } else {
-    lldiv_t qr = lldiv(refreshInterval_*1000, 1000000);
-    tv.tv_sec = qr.quot;
-    tv.tv_usec = qr.rem;
+    auto t =
+        std::chrono::duration_cast<std::chrono::microseconds>(refreshInterval_);
+    tv.tv_sec = t.count() / 1000000;
+    tv.tv_usec = t.count() % 1000000;
   }
   eventPoll_->poll(tv);
 }
@@ -245,7 +250,7 @@ void DownloadEngine::afterEachIteration()
     requestHalt();
     global::globalHaltRequested = 2;
     setNoWait(true);
-    setRefreshInterval(0);
+    setRefreshInterval(std::chrono::milliseconds(0));
     return;
   }
 
@@ -254,7 +259,7 @@ void DownloadEngine::afterEachIteration()
     requestForceHalt();
     global::globalHaltRequested = 4;
     setNoWait(true);
-    setRefreshInterval(0);
+    setRefreshInterval(std::chrono::milliseconds(0));
     return;
   }
 }
@@ -307,7 +312,7 @@ void DownloadEngine::poolSocket(const std::string& key,
   std::multimap<std::string, SocketPoolEntry>::value_type p(key, entry);
   socketPool_.insert(p);
 
-  if(lastSocketPoolScan_.difference(global::wallclock()) < 60) {
+  if(lastSocketPoolScan_.difference(global::wallclock()) < 1_min) {
     return;
   }
   std::multimap<std::string, SocketPoolEntry> newPool;
@@ -351,9 +356,9 @@ void DownloadEngine::poolSocket
  uint16_t proxyport,
  const std::shared_ptr<SocketCore>& sock,
  const std::string& options,
- time_t timeout)
+ std::chrono::seconds timeout)
 {
-  SocketPoolEntry e(sock, options, timeout);
+  SocketPoolEntry e(sock, options, std::move(timeout));
   poolSocket(createSockPoolKey(ipaddr, port, username, proxyhost, proxyport),e);
 }
 
@@ -363,9 +368,9 @@ void DownloadEngine::poolSocket
  const std::string& proxyhost,
  uint16_t proxyport,
  const std::shared_ptr<SocketCore>& sock,
- time_t timeout)
+ std::chrono::seconds timeout)
 {
-  SocketPoolEntry e(sock, timeout);
+  SocketPoolEntry e(sock, std::move(timeout));
   poolSocket(createSockPoolKey(ipaddr, port, A2STR::NIL,proxyhost,proxyport),e);
 }
 
@@ -388,20 +393,20 @@ bool getPeerInfo(std::pair<std::string, uint16_t>& res,
 void DownloadEngine::poolSocket(const std::shared_ptr<Request>& request,
                                 const std::shared_ptr<Request>& proxyRequest,
                                 const std::shared_ptr<SocketCore>& socket,
-                                time_t timeout)
+                                std::chrono::seconds timeout)
 {
   if(proxyRequest) {
     // If proxy is defined, then pool socket with its hostname.
     poolSocket(request->getHost(), request->getPort(),
                proxyRequest->getHost(), proxyRequest->getPort(),
-               socket, timeout);
+               socket, std::move(timeout));
     return;
   }
 
   std::pair<std::string, uint16_t> peerInfo;
   if(getPeerInfo(peerInfo, socket)) {
     poolSocket(peerInfo.first, peerInfo.second,
-                A2STR::NIL, 0, socket, timeout);
+               A2STR::NIL, 0, socket, std::move(timeout));
   }
 }
 
@@ -411,20 +416,20 @@ void DownloadEngine::poolSocket
  const std::shared_ptr<Request>& proxyRequest,
  const std::shared_ptr<SocketCore>& socket,
  const std::string& options,
- time_t timeout)
+ std::chrono::seconds timeout)
 {
   if(proxyRequest) {
     // If proxy is defined, then pool socket with its hostname.
     poolSocket(request->getHost(), request->getPort(), username,
                proxyRequest->getHost(), proxyRequest->getPort(),
-               socket, options, timeout);
+               socket, options, std::move(timeout));
     return;
   }
 
   std::pair<std::string, uint16_t> peerInfo;
   if(getPeerInfo(peerInfo, socket)) {
     poolSocket(peerInfo.first, peerInfo.second, username,
-                A2STR::NIL, 0, socket, options, timeout);
+               A2STR::NIL, 0, socket, options, std::move(timeout));
   }
 }
 
@@ -512,16 +517,16 @@ DownloadEngine::popPooledSocket
 DownloadEngine::SocketPoolEntry::SocketPoolEntry
 (const std::shared_ptr<SocketCore>& socket,
  const std::string& options,
- time_t timeout)
+ std::chrono::seconds timeout)
   : socket_(socket),
     options_(options),
-    timeout_(timeout)
+    timeout_(std::move(timeout))
 {}
 
 DownloadEngine::SocketPoolEntry::SocketPoolEntry
-(const std::shared_ptr<SocketCore>& socket, time_t timeout)
+(const std::shared_ptr<SocketCore>& socket, std::chrono::seconds timeout)
   : socket_(socket),
-    timeout_(timeout)
+    timeout_(std::move(timeout))
 {}
 
 DownloadEngine::SocketPoolEntry::~SocketPoolEntry() {}
@@ -577,9 +582,9 @@ const std::unique_ptr<CookieStorage>& DownloadEngine::getCookieStorage() const
   return cookieStorage_;
 }
 
-void DownloadEngine::setRefreshInterval(int64_t interval)
+void DownloadEngine::setRefreshInterval(std::chrono::milliseconds interval)
 {
-  refreshInterval_ = std::min(static_cast<int64_t>(999), interval);
+  refreshInterval_ = std::move(interval);
 }
 
 void DownloadEngine::addCommand

@@ -276,7 +276,10 @@ public:
     CXX11_OVERRIDE
   {}
 
-  virtual void removeAdvertisedPiece(time_t elapsed) CXX11_OVERRIDE {}
+  virtual void
+  removeAdvertisedPiece(const std::chrono::seconds& elapsed) CXX11_OVERRIDE
+  {
+  }
 
   virtual void markAllPiecesDone() CXX11_OVERRIDE {}
 

@@ -250,7 +250,10 @@ int WinTLSSession::closeConnection()
   // Send remaining data.
   while (writeBuf_.size()) {
     int rv = writeData(nullptr, 0);
-    if (rv == TLS_ERR_WOULDBLOCK) {
+    if (rv == 0) {
+      break;
+    }
+    if (rv < 0) {
       return rv;
     }
   }
@@ -494,7 +497,7 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
   }
 
   // Read as many bytes as available from the connection, up to len + 4k.
-  readBuf_.resize(len + 4096);
+  readBuf_.resize(len + 4_k);
   while (readBuf_.free()) {
     ssize_t read = ::recv(sockfd_, readBuf_.end(), readBuf_.free(), 0);
     errno = ::WSAGetLastError();
@@ -697,7 +700,7 @@ restart:
     // Read as many bytes as possible, up to 4k new bytes.
     // We do not know how many bytes will arrive from the server at this
     // point.
-    readBuf_.resize(readBuf_.size() + 4096);
+    readBuf_.resize(readBuf_.size() + 4_k);
     while (readBuf_.free()) {
       ssize_t read = ::recv(sockfd_, readBuf_.end(), readBuf_.free(), 0);
       errno = ::WSAGetLastError();

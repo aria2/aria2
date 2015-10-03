@@ -45,6 +45,7 @@
 
 #include <cerrno>
 #include <cstring>
+#include <cassert>
 #include <sstream>
 
 #include "message.h"
@@ -60,6 +61,9 @@
 # include "TLSContext.h"
 # include "TLSSession.h"
 #endif // ENABLE_SSL
+#ifdef HAVE_LIBSSH2
+# include "SSHSession.h"
+#endif // HAVE_LIBSSH2
 
 namespace aria2 {
 
@@ -134,6 +138,10 @@ int SocketCore::ipDscp_ = 0;
 
 std::vector<std::pair<sockaddr_union, socklen_t> >
 SocketCore::bindAddrs_;
+std::vector<std::vector<std::pair<sockaddr_union, socklen_t> > >
+SocketCore::bindAddrsList_;
+std::vector<std::vector<std::pair<sockaddr_union, socklen_t> > >::iterator
+SocketCore::bindAddrsListIt_;
 
 #ifdef ENABLE_SSL
 std::shared_ptr<TLSContext> SocketCore::clTlsContext_;
@@ -356,7 +364,7 @@ std::shared_ptr<SocketCore> SocketCore::acceptConnection() const
   if(fd == (sock_t) -1) {
     throw DL_ABORT_EX(fmt(EX_SOCKET_ACCEPT, errorMsg(errNum).c_str()));
   }
-  auto sock = std::shared_ptr<SocketCore>(new SocketCore(fd, sockType_));
+  auto sock = std::make_shared<SocketCore>(fd, sockType_);
   sock->setNonBlockingMode();
   return sock;
 }
@@ -447,6 +455,13 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port,
         CLOSE(fd);
         continue;
       }
+    }
+    if(!bindAddrsList_.empty()) {
+      ++bindAddrsListIt_;
+      if (bindAddrsListIt_ == bindAddrsList_.end()) {
+        bindAddrsListIt_ = bindAddrsList_.begin();
+      }
+      bindAddrs_ = *bindAddrsListIt_;
     }
 
     sockfd_ = fd;
@@ -597,6 +612,14 @@ void SocketCore::closeConnection()
     tlsSession_.reset();
   }
 #endif // ENABLE_SSL
+
+#ifdef HAVE_LIBSSH2
+  if(sshSession_) {
+    sshSession_->closeConnection();
+    sshSession_.reset();
+  }
+#endif // HAVE_LIBSSH2
+
   if(sockfd_ != (sock_t) -1) {
     shutdown(sockfd_, SHUT_WR);
     CLOSE(sockfd_);
@@ -785,35 +808,54 @@ void SocketCore::readData(void* data, size_t& len)
   wantRead_ = false;
   wantWrite_ = false;
 
-  if(!secure_) {
-    // Cast for Windows recv()
-    while((ret = recv(sockfd_, reinterpret_cast<char*>(data), len, 0)) == -1 &&
-          SOCKET_ERRNO == A2_EINTR);
-    int errNum = SOCKET_ERRNO;
-    if(ret == -1) {
-      if(!A2_WOULDBLOCK(errNum)) {
-        throw DL_RETRY_EX(fmt(EX_SOCKET_RECV, errorMsg(errNum).c_str()));
-      }
-      wantRead_ = true;
-      ret = 0;
-    }
-  } else {
-#ifdef ENABLE_SSL
-    ret = tlsSession_->readData(data, len);
+#ifdef HAVE_LIBSSH2
+  if(sshSession_) {
+    ret = sshSession_->readData(data, len);
     if(ret < 0) {
-      if(ret != TLS_ERR_WOULDBLOCK) {
+      if(ret != SSH_ERR_WOULDBLOCK) {
         throw DL_RETRY_EX(fmt(EX_SOCKET_RECV,
-                              tlsSession_->getLastErrorString().c_str()));
+                              sshSession_->getLastErrorString().c_str()));
       }
-      if(tlsSession_->checkDirection() == TLS_WANT_READ) {
+      if(sshSession_->checkDirection() == SSH_WANT_READ) {
         wantRead_ = true;
       } else {
         wantWrite_ = true;
       }
       ret = 0;
     }
+  } else
+#endif // HAVE_LIBSSH2
+    if(!secure_) {
+      // Cast for Windows recv()
+      while((ret = recv(sockfd_,
+                        reinterpret_cast<char*>(data), len, 0)) == -1 &&
+            SOCKET_ERRNO == A2_EINTR);
+      int errNum = SOCKET_ERRNO;
+      if(ret == -1) {
+        if(!A2_WOULDBLOCK(errNum)) {
+          throw DL_RETRY_EX(fmt(EX_SOCKET_RECV, errorMsg(errNum).c_str()));
+        }
+        wantRead_ = true;
+        ret = 0;
+      }
+    } else {
+#ifdef ENABLE_SSL
+      ret = tlsSession_->readData(data, len);
+      if(ret < 0) {
+        if(ret != TLS_ERR_WOULDBLOCK) {
+          throw DL_RETRY_EX(fmt(EX_SOCKET_RECV,
+                                tlsSession_->getLastErrorString().c_str()));
+        }
+        if(tlsSession_->checkDirection() == TLS_WANT_READ) {
+          wantRead_ = true;
+        } else {
+          wantWrite_ = true;
+        }
+        ret = 0;
+      }
 #endif // ENABLE_SSL
-  }
+    }
+
   len = ret;
 }
 
@@ -946,6 +988,158 @@ bool SocketCore::tlsHandshake(TLSContext* tlsctx, const std::string& hostname)
 
 #endif // ENABLE_SSL
 
+#ifdef HAVE_LIBSSH2
+
+bool SocketCore::sshHandshake(const std::string& hashType,
+                              const std::string& digest)
+{
+  wantRead_ = false;
+  wantWrite_ = false;
+
+  if (!sshSession_) {
+    sshSession_ = make_unique<SSHSession>();
+    if (sshSession_->init(sockfd_) == SSH_ERR_ERROR) {
+      throw DL_ABORT_EX("Could not create SSH session");
+    }
+  }
+  auto rv = sshSession_->handshake();
+  if (rv == SSH_ERR_WOULDBLOCK) {
+    sshCheckDirection();
+    return false;
+  }
+  if (rv == SSH_ERR_ERROR) {
+    throw DL_ABORT_EX(fmt("SSH handshake failure: %s",
+                          sshSession_->getLastErrorString().c_str()));
+  }
+  if (!hashType.empty()) {
+    auto actualDigest = sshSession_->hostkeyMessageDigest(hashType);
+    if (actualDigest.empty()) {
+      throw DL_ABORT_EX(fmt("Empty host key fingerprint from SSH layer: "
+                            "perhaps hash type %s is not supported?",
+                            hashType.c_str()));
+    }
+    if (digest != actualDigest) {
+      throw DL_ABORT_EX(fmt("Unexpected SSH host key: expected %s, actual %s",
+                            util::toHex(digest).c_str(),
+                            util::toHex(actualDigest).c_str()));
+    }
+  }
+  return true;
+}
+
+bool SocketCore::sshAuthPassword(const std::string& user,
+                                 const std::string& password)
+{
+  assert(sshSession_);
+
+  wantRead_ = false;
+  wantWrite_ = false;
+
+  auto rv = sshSession_->authPassword(user, password);
+  if (rv == SSH_ERR_WOULDBLOCK) {
+    sshCheckDirection();
+    return false;
+  }
+  if (rv == SSH_ERR_ERROR) {
+    throw DL_ABORT_EX(fmt("SSH authentication failure: %s",
+                          sshSession_->getLastErrorString().c_str()));
+  }
+  return true;
+}
+
+bool SocketCore::sshSFTPOpen(const std::string& path)
+{
+  assert(sshSession_);
+
+  wantRead_ = false;
+  wantWrite_ = false;
+
+  auto rv = sshSession_->sftpOpen(path);
+  if (rv == SSH_ERR_WOULDBLOCK) {
+    sshCheckDirection();
+    return false;
+  }
+  if (rv == SSH_ERR_ERROR) {
+    throw DL_ABORT_EX(fmt("SSH opening SFTP path %s failed: %s",
+                          path.c_str(),
+                          sshSession_->getLastErrorString().c_str()));
+  }
+  return true;
+}
+
+bool SocketCore::sshSFTPClose()
+{
+  assert(sshSession_);
+
+  wantRead_ = false;
+  wantWrite_ = false;
+
+  auto rv = sshSession_->sftpClose();
+  if (rv == SSH_ERR_WOULDBLOCK) {
+    sshCheckDirection();
+    return false;
+  }
+  if (rv == SSH_ERR_ERROR) {
+    throw DL_ABORT_EX(fmt("SSH closing SFTP failed: %s",
+                          sshSession_->getLastErrorString().c_str()));
+  }
+  return true;
+}
+
+bool SocketCore::sshSFTPStat(int64_t& totalLength, time_t& mtime,
+                             const std::string& path)
+{
+  assert(sshSession_);
+
+  wantRead_ = false;
+  wantWrite_ = false;
+
+  auto rv = sshSession_->sftpStat(totalLength, mtime);
+  if (rv == SSH_ERR_WOULDBLOCK) {
+    sshCheckDirection();
+    return false;
+  }
+  if (rv == SSH_ERR_ERROR) {
+    throw DL_ABORT_EX(fmt("SSH stat SFTP path %s filed: %s",
+                          path.c_str(),
+                          sshSession_->getLastErrorString().c_str()));
+  }
+  return true;
+}
+
+void SocketCore::sshSFTPSeek(int64_t pos)
+{
+  assert(sshSession_);
+
+  sshSession_->sftpSeek(pos);
+}
+
+bool SocketCore::sshGracefulShutdown()
+{
+  assert(sshSession_);
+  auto rv = sshSession_->gracefulShutdown();
+  if (rv == SSH_ERR_WOULDBLOCK) {
+    sshCheckDirection();
+    return false;
+  }
+  if (rv == SSH_ERR_ERROR) {
+    throw DL_ABORT_EX(fmt("SSH graceful shutdown failed: %s",
+                          sshSession_->getLastErrorString().c_str()));
+  }
+  return true;
+}
+
+void SocketCore::sshCheckDirection()
+{
+  if (sshSession_->checkDirection() == SSH_WANT_READ) {
+    wantRead_ = true;
+  } else {
+    wantWrite_ = true;
+  }
+}
+
+#endif // HAVE_LIBSSH2
+
 ssize_t SocketCore::writeData(const void* data, size_t len,
                               const std::string& host, uint16_t port)
 {
@@ -1057,6 +1251,37 @@ void SocketCore::bindAddress(const std::string& iface)
       A2_LOG_DEBUG(fmt("Sockets will bind to %s", host));
     }
   }
+}
+
+void SocketCore::bindAllAddress(const std::string& ifaces)
+{
+  std::vector<std::vector<std::pair<sockaddr_union, socklen_t> > > bindAddrsList;
+  std::vector<std::string> ifaceList;
+  util::split(ifaces.begin(), ifaces.end(), std::back_inserter(ifaceList), ',', true);
+  if (ifaceList.empty()) {
+    throw DL_ABORT_EX("List of interfaces is empty, one or more interfaces is required");
+  }
+  for (auto& iface: ifaceList) {
+    std::vector<std::pair<sockaddr_union, socklen_t> > bindAddrs;
+    getInterfaceAddress(bindAddrs, iface, protocolFamily_);
+    if(bindAddrs.empty()) {
+      throw DL_ABORT_EX(fmt(MSG_INTERFACE_NOT_FOUND, iface.c_str(),
+                            "not available"));
+    }
+    bindAddrsList.push_back(bindAddrs);
+    for (const auto& a: bindAddrs) {
+      char host[NI_MAXHOST];
+      int s;
+      s = getnameinfo(&a.first.sa, a.second, host, NI_MAXHOST, nullptr, 0,
+                      NI_NUMERICHOST);
+      if(s == 0) {
+        A2_LOG_DEBUG(fmt("Sockets will bind to %s", host));
+      }
+    }
+  }
+  bindAddrsList_.swap(bindAddrsList);
+  bindAddrsListIt_ = bindAddrsList_.begin();
+  bindAddrs_ = *bindAddrsListIt_;
 }
 
 void getInterfaceAddress
@@ -1293,7 +1518,7 @@ void checkAddrconfig()
 {
 #ifdef HAVE_IPHLPAPI_H
   A2_LOG_INFO("Checking configured addresses");
-  ULONG bufsize = 15*1024;
+  ULONG bufsize = 15_k;
   ULONG retval = 0;
   IP_ADAPTER_ADDRESSES* buf = 0;
   int numTry = 0;

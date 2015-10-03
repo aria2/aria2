@@ -41,7 +41,9 @@
 
 namespace aria2 {
 
-#define WINDOW_MSEC 15000
+namespace {
+constexpr auto WINDOW_TIME = 15_s;
+} // namespace
 
 SpeedCalc::SpeedCalc()
   : accumulatedLength_(0),
@@ -58,26 +60,26 @@ void SpeedCalc::reset()
   maxSpeed_ = 0;
 }
 
-void SpeedCalc::removeStaleTimeSlot(int64_t now)
+void SpeedCalc::removeStaleTimeSlot(const Timer& now)
 {
   while(!timeSlots_.empty()) {
-    if(now - timeSlots_[0].first <= WINDOW_MSEC) {
+    if(timeSlots_[0].first.difference(now) <= WINDOW_TIME) {
       break;
-    } else {
-      bytesWindow_ -= timeSlots_[0].second;
-      timeSlots_.pop_front();
     }
+    bytesWindow_ -= timeSlots_[0].second;
+    timeSlots_.pop_front();
   }
 }
 
 int SpeedCalc::calculateSpeed()
 {
-  int64_t now = global::wallclock().getTimeInMillis();
+  const auto& now = global::wallclock();
   removeStaleTimeSlot(now);
   if(timeSlots_.empty()) {
     return 0;
   }
-  int64_t elapsed = now - timeSlots_[0].first;
+  auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+                     timeSlots_[0].first.difference(now)).count();
   if(elapsed <= 0) {
     elapsed = 1;
   }
@@ -88,9 +90,11 @@ int SpeedCalc::calculateSpeed()
 
 void SpeedCalc::update(size_t bytes)
 {
-  int64_t now = global::wallclock().getTimeInMillis();
+  const auto& now = global::wallclock();
   removeStaleTimeSlot(now);
-  if(timeSlots_.empty() || now/1000 != timeSlots_.back().first/1000) {
+  if(timeSlots_.empty() ||
+     std::chrono::duration_cast<std::chrono::seconds>(
+         timeSlots_.back().first.difference(now)) >= 1_s) {
     timeSlots_.push_back(std::make_pair(now, bytes));
   } else {
     timeSlots_.back().second += bytes;
@@ -101,7 +105,8 @@ void SpeedCalc::update(size_t bytes)
 
 int SpeedCalc::calculateAvgSpeed() const
 {
-  int64_t milliElapsed = start_.differenceInMillis(global::wallclock());
+  auto milliElapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+                          start_.difference(global::wallclock())).count();
   // if milliElapsed is too small, the average speed is rubbish, better
   // return 0
   if(milliElapsed > 4) {

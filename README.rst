@@ -10,14 +10,15 @@ You must use this program at your own risk.
 
 Introduction
 ------------
+
 aria2 is a utility for downloading files. The supported protocols are
-HTTP(S), FTP, BitTorrent, and Metalink. aria2 can download a file from
-multiple sources/protocols and tries to utilize your maximum download
-bandwidth. It supports downloading a file from HTTP(S)/FTP and
-BitTorrent at the same time, while the data downloaded from
-HTTP(S)/FTP is uploaded to the BitTorrent swarm. Using Metalink's
-chunk checksums, aria2 automatically validates chunks of data while
-downloading a file like BitTorrent.
+HTTP(S), FTP, SFTP, BitTorrent, and Metalink. aria2 can download a
+file from multiple sources/protocols and tries to utilize your maximum
+download bandwidth. It supports downloading a file from
+HTTP(S)/FTP/SFTP and BitTorrent at the same time, while the data
+downloaded from HTTP(S)/FTP/SFTP is uploaded to the BitTorrent
+swarm. Using Metalink's chunk checksums, aria2 automatically validates
+chunks of data while downloading a file like BitTorrent.
 
 The project page is located at http://aria2.sourceforge.net/.
 
@@ -33,10 +34,10 @@ Features
 Here is a list of features:
 
 * Command-line interface
-* Download files through HTTP(S)/FTP/BitTorrent
+* Download files through HTTP(S)/FTP/SFTP/BitTorrent
 * Segmented downloading
-* Metalink version 4 (RFC 5854) support(HTTP/FTP/BitTorrent)
-* Metalink version 3.0 support(HTTP/FTP/BitTorrent)
+* Metalink version 4 (RFC 5854) support(HTTP/FTP/SFTP/BitTorrent)
+* Metalink version 3.0 support(HTTP/FTP/SFTP/BitTorrent)
 * Metalink/HTTP (RFC 6249) support
 * HTTP/1.1 implementation
 * HTTP Proxy support
@@ -54,7 +55,7 @@ Here is a list of features:
 * Save Cookies in the Mozilla/Firefox (1.x/2.x)/Netscape format.
 * Custom HTTP Header support
 * Persistent Connections support
-* FTP through HTTP Proxy
+* FTP/SFTP through HTTP Proxy
 * Download/Upload speed throttling
 * BitTorrent extensions: Fast extension, DHT, PEX, MSE/PSE,
   Multi-Tracker, UDP tracker
@@ -98,6 +99,7 @@ Dependency
 features                  dependency
 ======================== ========================================
 HTTPS                    OSX or GnuTLS or OpenSSL or Windows
+SFTP                     libssh2
 BitTorrent               None. Optional: libnettle+libgmp or libgcrypt
                          or OpenSSL (see note)
 Metalink                 libxml2 or Expat.
@@ -183,6 +185,7 @@ distribution you use):
 * libgnutls-dev    (Required for HTTPS, BitTorrent, Checksum support)
 * nettle-dev       (Required for BitTorrent, Checksum support)
 * libgmp-dev       (Required for BitTorrent)
+* libssh2-1-dev    (Required for SFTP support)
 * libc-ares-dev    (Required for async DNS support)
 * libxml2-dev      (Required for Metalink support)
 * zlib1g-dev       (Required for gzip, deflate decoding support in HTTP)
@@ -206,8 +209,13 @@ You can use libexpat1-dev instead of libxml2-dev:
 On Fedora you need the following packages: gcc, gcc-c++, kernel-devel,
 libgcrypt-devel, libxml2-devel, openssl-devel, gettext-devel, cppunit
 
-If you downloaded source code from git repository, you have to run
-following command to generate configure script and other files
+If you downloaded source code from git repository, you have to install
+following packages to get autoconf macros:
+
+* libxml2-dev
+* libcppunit-dev
+
+And run following command to generate configure script and other files
 necessary to build the program::
 
     $ autoreconf -i
@@ -301,6 +309,7 @@ following libraries have been built for cross-compile:
 * expat
 * sqlite3
 * zlib
+* libssh2
 * cppunit
 
 Some environment variables can be adjusted to change build settings:
@@ -341,6 +350,8 @@ assumes the following libraries have been built for cross-compile:
 * c-ares
 * openssl
 * expat
+* zlib
+* libssh2
 
 When building the above libraries, make sure that disable shared
 library and enable only static library. We are going to link those
@@ -419,9 +430,11 @@ DHT
 ~~~
 
 aria2 supports mainline compatible DHT. By default, the routing table
-for IPv4 DHT is saved to ``$HOME/.aria2/dht.dat`` and the routing
-table for IPv6 DHT is saved to ``$HOME/.aria2/dht6.dat``. aria2 uses
-same port number to listen on for both IPv4 and IPv6 DHT.
+for IPv4 DHT is saved to ``$XDG_CACHE_HOME/aria2/dht.dat`` and the
+routing table for IPv6 DHT is saved to
+``$XDG_CACHE_HOME/aria2/dht6.dat`` unless files exist at
+``$HOME/.aria2/dht.dat`` or ``$HOME/.aria2/dht6.dat``. aria2 uses same
+port number to listen on for both IPv4 and IPv6 DHT.
 
 UDP tracker
 ~~~~~~~~~~~
@@ -449,9 +462,9 @@ Other things should be noted
 Metalink
 --------
 
-The current implementation supports HTTP(S)/FTP/BitTorrent.  The other
-P2P protocols are ignored. Both Metalink4 (RFC 5854) and Metalink
-version 3.0 documents are supported.
+The current implementation supports HTTP(S)/FTP/SFTP/BitTorrent.  The
+other P2P protocols are ignored. Both Metalink4 (RFC 5854) and
+Metalink version 3.0 documents are supported.
 
 For checksum verification, md5, sha-1, sha-224, sha-256, sha-384 and
 sha-512 are supported. If multiple hash algorithms are provided, aria2
@@ -497,9 +510,10 @@ which location you prefer, you can use ``--metalink-location`` option.
 
 netrc
 -----
-netrc support is enabled by default for HTTP(S)/FTP.  To disable netrc
-support, specify -n command-line option.  Your .netrc file should have
-correct permissions(600).
+
+netrc support is enabled by default for HTTP(S)/FTP/SFTP.  To disable
+netrc support, specify -n command-line option.  Your .netrc file
+should have correct permissions(600).
 
 WebSocket
 ---------

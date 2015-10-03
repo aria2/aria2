@@ -71,7 +71,7 @@ private:
 
   Timer lastTransferStatMapUpdated_;
 
-  std::map<std::string, time_t> badPeers_;
+  std::map<std::string, Timer> badPeers_;
   Timer lastBadPeerCleaned_;
 
   bool isPeerAlreadyAdded(const std::shared_ptr<Peer>& peer);

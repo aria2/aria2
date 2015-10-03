@@ -60,7 +60,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(PeerSessionResourceTest);
 
 void PeerSessionResourceTest::testPeerAllowedIndexSetContains()
 {
-  PeerSessionResource res(1024, 1024*1024);
+  PeerSessionResource res(1_k, 1_m);
 
   res.addPeerAllowedIndex(567);
   res.addPeerAllowedIndex(789);
@@ -72,7 +72,7 @@ void PeerSessionResourceTest::testPeerAllowedIndexSetContains()
 
 void PeerSessionResourceTest::testAmAllowedIndexSetContains()
 {
-  PeerSessionResource res(1024, 1024*1024);
+  PeerSessionResource res(1_k, 1_m);
 
   res.addAmAllowedIndex(567);
   res.addAmAllowedIndex(789);
@@ -84,7 +84,7 @@ void PeerSessionResourceTest::testAmAllowedIndexSetContains()
 
 void PeerSessionResourceTest::testHasAllPieces()
 {
-  PeerSessionResource res(1024, 1024*1024);
+  PeerSessionResource res(1_k, 1_m);
 
   CPPUNIT_ASSERT(!res.hasAllPieces());
   res.markSeeder();
@@ -93,7 +93,7 @@ void PeerSessionResourceTest::testHasAllPieces()
 
 void PeerSessionResourceTest::testHasPiece()
 {
-  PeerSessionResource res(1024, 1024*1024);
+  PeerSessionResource res(1_k, 1_m);
 
   CPPUNIT_ASSERT(!res.hasPiece(300));
   res.updateBitfield(300, 1);
@@ -104,7 +104,7 @@ void PeerSessionResourceTest::testHasPiece()
 
 void PeerSessionResourceTest::testUpdateUploadLength()
 {
-  PeerSessionResource res(1024, 1024*1024);
+  PeerSessionResource res(1_k, 1_m);
 
   CPPUNIT_ASSERT_EQUAL((int64_t)0LL, res.uploadLength());
   res.updateUploadLength(100);
@@ -114,7 +114,7 @@ void PeerSessionResourceTest::testUpdateUploadLength()
 
 void PeerSessionResourceTest::testUpdateDownloadLength()
 {
-  PeerSessionResource res(1024, 1024*1024);
+  PeerSessionResource res(1_k, 1_m);
 
   CPPUNIT_ASSERT_EQUAL((int64_t)0LL, res.downloadLength());
   res.updateDownloadLength(100);
@@ -124,7 +124,7 @@ void PeerSessionResourceTest::testUpdateDownloadLength()
 
 void PeerSessionResourceTest::testExtendedMessageEnabled()
 {
-  PeerSessionResource res(1024, 1024*1024);
+  PeerSessionResource res(1_k, 1_m);
 
   CPPUNIT_ASSERT(!res.extendedMessagingEnabled());
   res.extendedMessagingEnabled(true);
@@ -135,7 +135,7 @@ void PeerSessionResourceTest::testExtendedMessageEnabled()
 
 void PeerSessionResourceTest::testGetExtensionMessageID()
 {
-  PeerSessionResource res(1024, 1024*1024);
+  PeerSessionResource res(1_k, 1_m);
 
   res.addExtension(ExtensionMessageRegistry::UT_PEX, 9);
   CPPUNIT_ASSERT_EQUAL((uint8_t)9,
@@ -152,7 +152,7 @@ void PeerSessionResourceTest::testGetExtensionMessageID()
 
 void PeerSessionResourceTest::testFastExtensionEnabled()
 {
-  PeerSessionResource res(1024, 1024*1024);
+  PeerSessionResource res(1_k, 1_m);
 
   CPPUNIT_ASSERT(!res.fastExtensionEnabled());
   res.fastExtensionEnabled(true);
@@ -163,7 +163,7 @@ void PeerSessionResourceTest::testFastExtensionEnabled()
 
 void PeerSessionResourceTest::testSnubbing()
 {
-  PeerSessionResource res(1024, 1024*1024);
+  PeerSessionResource res(1_k, 1_m);
 
   CPPUNIT_ASSERT(!res.snubbing());
   res.snubbing(true);
@@ -174,7 +174,7 @@ void PeerSessionResourceTest::testSnubbing()
 
 void PeerSessionResourceTest::testAmChoking()
 {
-  PeerSessionResource res(1024, 1024*1024);
+  PeerSessionResource res(1_k, 1_m);
 
   CPPUNIT_ASSERT(res.amChoking());
   res.amChoking(false);
@@ -185,7 +185,7 @@ void PeerSessionResourceTest::testAmChoking()
 
 void PeerSessionResourceTest::testAmInterested()
 {
-  PeerSessionResource res(1024, 1024*1024);
+  PeerSessionResource res(1_k, 1_m);
 
   CPPUNIT_ASSERT(!res.amInterested());
   res.amInterested(true);
@@ -196,7 +196,7 @@ void PeerSessionResourceTest::testAmInterested()
 
 void PeerSessionResourceTest::testPeerChoking()
 {
-  PeerSessionResource res(1024, 1024*1024);
+  PeerSessionResource res(1_k, 1_m);
 
   CPPUNIT_ASSERT(res.peerChoking());
   res.peerChoking(false);
@@ -207,7 +207,7 @@ void PeerSessionResourceTest::testPeerChoking()
 
 void PeerSessionResourceTest::testPeerInterested()
 {
-  PeerSessionResource res(1024, 1024*1024);
+  PeerSessionResource res(1_k, 1_m);
 
   CPPUNIT_ASSERT(!res.peerInterested());
   res.peerInterested(true);
@@ -218,7 +218,7 @@ void PeerSessionResourceTest::testPeerInterested()
 
 void PeerSessionResourceTest::testChokingRequired()
 {
-  PeerSessionResource res(1024, 1024*1024);
+  PeerSessionResource res(1_k, 1_m);
 
   CPPUNIT_ASSERT(res.chokingRequired());
   res.chokingRequired(false);
@@ -229,7 +229,7 @@ void PeerSessionResourceTest::testChokingRequired()
 
 void PeerSessionResourceTest::testOptUnchoking()
 {
-  PeerSessionResource res(1024, 1024*1024);
+  PeerSessionResource res(1_k, 1_m);
 
   CPPUNIT_ASSERT(!res.optUnchoking());
   res.optUnchoking(true);
@@ -240,7 +240,7 @@ void PeerSessionResourceTest::testOptUnchoking()
 
 void PeerSessionResourceTest::testShouldBeChoking()
 {
-  PeerSessionResource res(1024, 1024*1024);
+  PeerSessionResource res(1_k, 1_m);
 
   CPPUNIT_ASSERT(res.shouldBeChoking());
   res.chokingRequired(false);
@@ -252,7 +252,7 @@ void PeerSessionResourceTest::testShouldBeChoking()
 
 void PeerSessionResourceTest::testCountOutstandingRequest()
 {
-  PeerSessionResource res(1024, 1024*1024);
+  PeerSessionResource res(1_k, 1_m);
   std::shared_ptr<MockBtMessageDispatcher> dispatcher
     (new MockBtMessageDispatcher());
   res.setBtMessageDispatcher(dispatcher.get());

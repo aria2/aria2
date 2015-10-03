@@ -83,7 +83,7 @@ private:
 
   Timer checkPoint_;
   Timer serverStatTimer_;
-  time_t timeout_;
+  std::chrono::seconds timeout_;
 
   bool checkSocketIsReadable_;
   bool checkSocketIsWritable_;
@@ -185,14 +185,14 @@ public:
   // check.
   void swapSocket(std::shared_ptr<SocketCore>& socket);
 
-  time_t getTimeout() const
+  std::chrono::seconds getTimeout() const
   {
     return timeout_;
   }
 
-  void setTimeout(time_t timeout)
+  void setTimeout(std::chrono::seconds timeout)
   {
-    timeout_ = timeout;
+    timeout_ = std::move(timeout);
   }
 
   void prepareForNextAction(std::unique_ptr<CheckIntegrityEntry> checkEntry);

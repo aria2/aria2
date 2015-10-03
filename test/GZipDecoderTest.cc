@@ -35,7 +35,7 @@ void GZipDecoderTest::testDecode()
 
   std::string outfile(A2_TEST_OUT_DIR"/aria2_GZipDecoderTest_testDecode");
 
-  char buf[4096];
+  char buf[4_k];
   std::ifstream in(A2_TEST_DIR"/gzip_decode_test.gz", std::ios::binary);
   std::ofstream out(outfile.c_str(), std::ios::binary);
   while(in) {

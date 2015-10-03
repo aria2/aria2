@@ -34,7 +34,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( RequestGroupTest );
 void RequestGroupTest::testGetFirstFilePath()
 {
   std::shared_ptr<DownloadContext> ctx
-    (new DownloadContext(1024, 1024, "/tmp/myfile"));
+    (new DownloadContext(1_k, 1_k, "/tmp/myfile"));
 
   RequestGroup group(GroupId::create(), option_);
   group.setDownloadContext(ctx);
@@ -49,7 +49,7 @@ void RequestGroupTest::testGetFirstFilePath()
 void RequestGroupTest::testCreateDownloadResult()
 {
   std::shared_ptr<DownloadContext> ctx
-    (new DownloadContext(1024, 1024*1024, "/tmp/myfile"));
+    (new DownloadContext(1_k, 1_m, "/tmp/myfile"));
   RequestGroup group(GroupId::create(), option_);
   group.setDownloadContext(ctx);
   group.initPieceStorage();
@@ -58,10 +58,10 @@ void RequestGroupTest::testCreateDownloadResult()
 
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile"),
                          result->fileEntries[0]->getPath());
-    CPPUNIT_ASSERT_EQUAL((int64_t)1024*1024,
+    CPPUNIT_ASSERT_EQUAL((int64_t)1_m,
                          result->fileEntries.back()->getLastOffset());
     CPPUNIT_ASSERT_EQUAL((uint64_t)0, result->sessionDownloadLength);
-    CPPUNIT_ASSERT_EQUAL((int64_t)0, result->sessionTime);
+    CPPUNIT_ASSERT_EQUAL((int64_t)0, result->sessionTime.count());
     // result is UNKNOWN_ERROR if download has not completed and no specific
     // error has been reported
     CPPUNIT_ASSERT_EQUAL(error_code::UNKNOWN_ERROR, result->result);

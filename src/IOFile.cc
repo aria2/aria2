@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "IOFile.h"
 
+#include <array>
 #include <cstring>
 #include <cstdarg>
 #include <ostream>
@@ -91,15 +92,15 @@ std::string IOFile::getLine()
   if(eof()) {
     return res;
   }
-  char buf[4096];
-  while(gets(buf, sizeof(buf))) {
-    size_t len = strlen(buf);
+  std::array<char, 4_k> buf;
+  while(gets(buf.data(), buf.size())) {
+    size_t len = strlen(buf.data());
     bool lineBreak = false;
     if(buf[len-1] == '\n') {
       --len;
       lineBreak = true;
     }
-    res.append(buf, len);
+    res.append(buf.data(), len);
     if(lineBreak) {
       break;
     }
@@ -120,12 +121,12 @@ bool IOFile::eof()
 size_t IOFile::transfer(std::ostream& out)
 {
   size_t count = 0;
-  char buf[4096];
+  std::array<char, 4_k> buf;
   while(1) {
-    size_t r = this->read(buf, sizeof(buf));
-    out.write(buf, r);
+    size_t r = this->read(buf.data(), buf.size());
+    out.write(buf.data(), r);
     count += r;
-    if(r < sizeof(buf)) {
+    if(r < buf.size()) {
       break;
     }
   }

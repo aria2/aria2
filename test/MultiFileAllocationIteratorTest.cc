@@ -68,7 +68,7 @@ void MultiFileAllocationIteratorTest::testMakeDiskWriterEntries()
 
   MultiDiskAdaptor diskAdaptor;
   diskAdaptor.setFileEntries(std::begin(fs), std::end(fs));
-  diskAdaptor.setPieceLength(1024);
+  diskAdaptor.setPieceLength(1_k);
   diskAdaptor.openFile();
 
   auto allocitr = diskAdaptor.fileAllocationIterator();

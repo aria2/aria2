@@ -66,7 +66,7 @@ public:
   std::unique_ptr<BtPieceMessage> msg;
 
   void setUp() {
-    dctx_ = make_unique<DownloadContext>(16*1024, 256*1024, "/path/to/file");
+    dctx_ = make_unique<DownloadContext>(16_k, 256_k, "/path/to/file");
 
     peer = std::make_shared<Peer>("host", 6969);
     peer->allocateSessionResource(dctx_->getPieceLength(),
@@ -77,8 +77,8 @@ public:
 
     msg = make_unique<BtPieceMessage>();
     msg->setIndex(1);
-    msg->setBegin(1024);
-    msg->setBlockLength(16*1024);
+    msg->setBegin(1_k);
+    msg->setBlockLength(16_k);
     msg->setDownloadContext(dctx_.get());
     msg->setPeer(peer);
     msg->setBtMessageDispatcher(btMessageDispatcher.get());
@@ -125,9 +125,9 @@ void BtPieceMessageTest::testCreateMessageHeader() {
   BtPieceMessage msg;
   msg.setIndex(12345);
   msg.setBegin(256);
-  msg.setBlockLength(1024);
+  msg.setBlockLength(1_k);
   unsigned char data[13];
-  bittorrent::createPeerMessageString(data, sizeof(data), 9+1024, 7);
+  bittorrent::createPeerMessageString(data, sizeof(data), 9+1_k, 7);
   bittorrent::setIntParam(&data[5], 12345);
   bittorrent::setIntParam(&data[9], 256);
   unsigned char rawmsg[13];
@@ -160,8 +160,8 @@ void BtPieceMessageTest::testChokingEvent_allowedFastEnabled() {
   auto rej = static_cast<const BtRejectMessage*>
     (btMessageDispatcher->messageQueue.front().get());
   CPPUNIT_ASSERT_EQUAL((size_t)1, rej->getIndex());
-  CPPUNIT_ASSERT_EQUAL((int32_t)1024, rej->getBegin());
-  CPPUNIT_ASSERT_EQUAL((int32_t)16*1024, rej->getLength());
+  CPPUNIT_ASSERT_EQUAL((int32_t)1_k, rej->getBegin());
+  CPPUNIT_ASSERT_EQUAL((int32_t)16_k, rej->getLength());
 }
 
 void BtPieceMessageTest::testChokingEvent_inAmAllowedIndexSet() {
@@ -194,7 +194,7 @@ void BtPieceMessageTest::testCancelSendingPieceEvent() {
   CPPUNIT_ASSERT(!msg->isInvalidate());
   CPPUNIT_ASSERT(!peer->isFastExtensionEnabled());
 
-  msg->onCancelSendingPieceEvent(BtCancelSendingPieceEvent(1, 1024, 16*1024));
+  msg->onCancelSendingPieceEvent(BtCancelSendingPieceEvent(1, 1_k, 16_k));
 
   CPPUNIT_ASSERT(msg->isInvalidate());
 }
@@ -203,15 +203,15 @@ void BtPieceMessageTest::testCancelSendingPieceEvent_noMatch() {
   CPPUNIT_ASSERT(!msg->isInvalidate());
   CPPUNIT_ASSERT(!peer->isFastExtensionEnabled());
 
-  msg->onCancelSendingPieceEvent(BtCancelSendingPieceEvent(0, 1024, 16*1024));
+  msg->onCancelSendingPieceEvent(BtCancelSendingPieceEvent(0, 1_k, 16_k));
 
   CPPUNIT_ASSERT(!msg->isInvalidate());
 
-  msg->onCancelSendingPieceEvent(BtCancelSendingPieceEvent(1, 0, 16*1024));
+  msg->onCancelSendingPieceEvent(BtCancelSendingPieceEvent(1, 0, 16_k));
 
   CPPUNIT_ASSERT(!msg->isInvalidate());
 
-  msg->onCancelSendingPieceEvent(BtCancelSendingPieceEvent(1, 1024, 0));
+  msg->onCancelSendingPieceEvent(BtCancelSendingPieceEvent(1, 1_k, 0));
 
   CPPUNIT_ASSERT(!msg->isInvalidate());
 }
@@ -221,15 +221,15 @@ void BtPieceMessageTest::testCancelSendingPieceEvent_allowedFastEnabled() {
   CPPUNIT_ASSERT(!msg->isInvalidate());
   CPPUNIT_ASSERT(peer->isFastExtensionEnabled());
 
-  msg->onCancelSendingPieceEvent(BtCancelSendingPieceEvent(1, 1024, 16*1024));
+  msg->onCancelSendingPieceEvent(BtCancelSendingPieceEvent(1, 1_k, 16_k));
 
   CPPUNIT_ASSERT(msg->isInvalidate());
   CPPUNIT_ASSERT_EQUAL((size_t)1, btMessageDispatcher->messageQueue.size());
   auto rej = static_cast<const BtRejectMessage*>
     (btMessageDispatcher->messageQueue.front().get());
   CPPUNIT_ASSERT_EQUAL((size_t)1, rej->getIndex());
-  CPPUNIT_ASSERT_EQUAL((int32_t)1024, rej->getBegin());
-  CPPUNIT_ASSERT_EQUAL((int32_t)16*1024, rej->getLength());
+  CPPUNIT_ASSERT_EQUAL((int32_t)1_k, rej->getBegin());
+  CPPUNIT_ASSERT_EQUAL((int32_t)16_k, rej->getLength());
 }
 
 void BtPieceMessageTest::testCancelSendingPieceEvent_invalidate() {
@@ -238,7 +238,7 @@ void BtPieceMessageTest::testCancelSendingPieceEvent_invalidate() {
   CPPUNIT_ASSERT(msg->isInvalidate());
   CPPUNIT_ASSERT(peer->isFastExtensionEnabled());
 
-  msg->onCancelSendingPieceEvent(BtCancelSendingPieceEvent(1, 1024, 16*1024));
+  msg->onCancelSendingPieceEvent(BtCancelSendingPieceEvent(1, 1_k, 16_k));
 
   CPPUNIT_ASSERT(msg->isInvalidate());
   CPPUNIT_ASSERT_EQUAL((size_t)0, btMessageDispatcher->messageQueue.size());

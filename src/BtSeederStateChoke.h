@@ -61,7 +61,6 @@ private:
     bool recentUnchoking_;
     int uploadSpeed_;
 
-    const static time_t TIME_FRAME = 20;
   public:
     PeerEntry(const std::shared_ptr<Peer>& peer);
     PeerEntry(const PeerEntry& c);

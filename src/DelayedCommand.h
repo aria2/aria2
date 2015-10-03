@@ -59,9 +59,9 @@ public:
   }
 
 public:
-  DelayedCommand(cuid_t cuid, DownloadEngine* e, time_t delay,
+  DelayedCommand(cuid_t cuid, DownloadEngine* e, std::chrono::seconds delay,
                  std::unique_ptr<Command> command, bool noWait)
-    : TimeBasedCommand(cuid, e, delay),
+    : TimeBasedCommand(cuid, e, std::move(delay)),
       command_{std::move(command)},
       noWait_{noWait}
   {

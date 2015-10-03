@@ -125,8 +125,8 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
     commands.push_back(std::move(c));
   }
   {
-    auto c = make_unique<ActivePeerConnectionCommand>
-      (e->newCUID(), requestGroup, e, metadataGetMode?2:10);
+    auto c = make_unique<ActivePeerConnectionCommand>(
+        e->newCUID(), requestGroup, e, metadataGetMode ? 2_s : 10_s);
     c->setBtRuntime(btRuntime);
     c->setPieceStorage(pieceStorage);
     c->setPeerStorage(peerStorage);
@@ -158,8 +158,8 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
   if(!metadataGetMode) {
     auto unionCri = make_unique<UnionSeedCriteria>();
     if(option->defined(PREF_SEED_TIME)) {
-      unionCri->addSeedCriteria(make_unique<TimeSeedCriteria>
-                                (option->getAsInt(PREF_SEED_TIME)*60));
+      unionCri->addSeedCriteria(make_unique<TimeSeedCriteria>(
+          std::chrono::seconds(option->getAsInt(PREF_SEED_TIME) * 60)));
     }
     {
       double ratio = option->getAsDouble(PREF_SEED_RATIO);
@@ -271,10 +271,10 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
       }
     }
   }
-  time_t btStopTimeout = option->getAsInt(PREF_BT_STOP_TIMEOUT);
+  auto btStopTimeout = option->getAsInt(PREF_BT_STOP_TIMEOUT);
   if(btStopTimeout > 0) {
     auto stopDownloadCommand = make_unique<BtStopDownloadCommand>
-      (e->newCUID(), requestGroup, e, btStopTimeout);
+      (e->newCUID(), requestGroup, e, std::chrono::seconds(btStopTimeout));
     stopDownloadCommand->setBtRuntime(btRuntime);
     stopDownloadCommand->setPieceStorage(pieceStorage);
     commands.push_back(std::move(stopDownloadCommand));

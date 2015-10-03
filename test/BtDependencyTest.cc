@@ -60,7 +60,7 @@ class BtDependencyTest:public CppUnit::TestFixture {
     std::shared_ptr<RequestGroup> dependee(new RequestGroup(GroupId::create(),
                                                          util::copy(option)));
     std::shared_ptr<DownloadContext> dctx
-      (new DownloadContext(1024*1024, length, torrentFile));
+      (new DownloadContext(1_m, length, torrentFile));
     dependee->setDownloadContext(dctx);
     dependee->initPieceStorage();
     return dependee;

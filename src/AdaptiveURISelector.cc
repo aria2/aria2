@@ -90,11 +90,15 @@ std::string AdaptiveURISelector::select
 
   std::string selected = selectOne(uris);
 
-  if(selected != A2STR::NIL)
-    uris.erase(std::find(uris.begin(), uris.end(), selected));
-
+  if(selected != A2STR::NIL) {
+    uris.erase(std::find(std::begin(uris), std::end(uris), selected));
+  }
   return selected;
 }
+
+namespace {
+constexpr auto MAX_TIMEOUT = 60_s;
+} // namespace
 
 void AdaptiveURISelector::mayRetryWithIncreasedTimeout(FileEntry* fileEntry)
 {
@@ -105,16 +109,16 @@ void AdaptiveURISelector::mayRetryWithIncreasedTimeout(FileEntry* fileEntry)
   // looking for retries
   std::deque<URIResult> timeouts;
   fileEntry->extractURIResult(timeouts, error_code::TIME_OUT);
-  std::transform(timeouts.begin(), timeouts.end(), std::back_inserter(uris),
-                 std::mem_fn(&URIResult::getURI));
+  std::transform(std::begin(timeouts), std::end(timeouts),
+                 std::back_inserter(uris), std::mem_fn(&URIResult::getURI));
 
   if(A2_LOG_DEBUG_ENABLED) {
-    for(std::deque<std::string>::const_iterator i = uris.begin(),
-          eoi = uris.end(); i != eoi; ++i) {
-      A2_LOG_DEBUG(fmt("AdaptiveURISelector: will retry server with increased"
-                       " timeout (%ld s): %s",
-                       static_cast<long int>(requestGroup_->getTimeout()),
-                       (*i).c_str()));
+    for (const auto& uri : uris) {
+      A2_LOG_DEBUG(
+          fmt("AdaptiveURISelector: will retry server with increased"
+              " timeout (%ld s): %s",
+              static_cast<long int>(requestGroup_->getTimeout().count()),
+              uri.c_str()));
     }
   }
 }
@@ -222,7 +226,7 @@ void AdaptiveURISelector::adjustLowestSpeedLimit
   int lowest =
     requestGroup_->getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT);
   if (lowest > 0) {
-    int low_lowest = 4 * 1024;
+    int low_lowest = 4_k;
     int max = getMaxDownloadSpeed(uris);
     if (max > 0 && lowest > max / 4) {
       A2_LOG_NOTICE(fmt(_("Lowering lowest-speed-limit since known max speed is"
@@ -300,7 +304,7 @@ std::string AdaptiveURISelector::selectRandomUri
 (const std::deque<std::string>& uris) const
 {
   int pos = SimpleRandomizer::getInstance()->getRandomNumber(uris.size());
-  auto i = uris.begin();
+  auto i = std::begin(uris);
   i = i+pos;
   return *i;
 }
@@ -331,7 +335,7 @@ std::string AdaptiveURISelector::getFirstToTestUri
     power = (int)pow(2.0, (float)counter);
     /* We test the mirror another time if it has not been
      * tested since 2^counter days */
-    if(ss->getLastUpdated().difference() > power*24*60*60) {
+    if(ss->getLastUpdated().difference() > std::chrono::hours(power * 24)) {
       return u;
     }
   }

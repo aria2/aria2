@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "DHTInteractionCommand.h"
+
+#include <array>
+
 #include "DownloadEngine.h"
 #include "RecoverableException.h"
 #include "DHTMessageDispatcher.h"
@@ -100,10 +103,10 @@ bool DHTInteractionCommand::execute()
 
   std::string remoteAddr;
   uint16_t remotePort;
-  unsigned char data[64*1024];
+  std::array<unsigned char, 64_k> data;
   try {
     while(1) {
-      ssize_t length = connection_->receiveMessage(data, sizeof(data),
+      ssize_t length = connection_->receiveMessage(data.data(), data.size(),
                                                    remoteAddr, remotePort);
       if(length <= 0) {
         break;
@@ -111,11 +114,11 @@ bool DHTInteractionCommand::execute()
       if(data[0] == 'd') {
         // udp tracker response does not start with 'd', so assume
         // this message belongs to DHT. nothrow.
-        receiver_->receiveMessage(remoteAddr, remotePort, data, length);
+        receiver_->receiveMessage(remoteAddr, remotePort, data.data(), length);
       } else {
         // this may be udp tracker response. nothrow.
-        udpTrackerClient_->receiveReply(data, length, remoteAddr, remotePort,
-                                        global::wallclock());
+        udpTrackerClient_->receiveReply(data.data(), length, remoteAddr,
+                                        remotePort, global::wallclock());
       }
     }
   } catch(RecoverableException& e) {
@@ -126,7 +129,7 @@ bool DHTInteractionCommand::execute()
   dispatcher_->sendMessages();
   while(!udpTrackerClient_->getPendingRequests().empty()) {
     // no throw
-    ssize_t length = udpTrackerClient_->createRequest(data, sizeof(data),
+    ssize_t length = udpTrackerClient_->createRequest(data.data(), data.size(),
                                                       remoteAddr, remotePort,
                                                       global::wallclock());
     if(length == -1) {
@@ -134,7 +137,7 @@ bool DHTInteractionCommand::execute()
     }
     try {
       // throw
-      connection_->sendMessage(data, length, remoteAddr, remotePort);
+      connection_->sendMessage(data.data(), length, remoteAddr, remotePort);
       udpTrackerClient_->requestSent(global::wallclock());
     } catch(RecoverableException& e) {
       A2_LOG_INFO_EX("Exception thrown while sending UDP tracker request.", e);

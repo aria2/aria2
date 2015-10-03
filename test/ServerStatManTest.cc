@@ -132,7 +132,7 @@ void ServerStatManTest::testLoad()
   CPPUNIT_ASSERT_EQUAL(102, localhost_http->getMultiConnectionAvgSpeed());
   CPPUNIT_ASSERT_EQUAL(6, localhost_http->getCounter());
   CPPUNIT_ASSERT_EQUAL(static_cast<time_t>(1210000000),
-                       localhost_http->getLastUpdated().getTime());
+                       localhost_http->getLastUpdated().getTimeFromEpoch());
   CPPUNIT_ASSERT_EQUAL(ServerStat::OK, localhost_http->getStatus());
 
   std::shared_ptr<ServerStat> mirror = ssm.find("mirror", "http");
@@ -159,7 +159,7 @@ void ServerStatManTest::testRemoveStaleServerStat()
   CPPUNIT_ASSERT(ssm.add(localhost_ftp));
   CPPUNIT_ASSERT(ssm.add(mirror));
 
-  ssm.removeStaleServerStat(24*60*60);
+  ssm.removeStaleServerStat(24_h);
 
   CPPUNIT_ASSERT(ssm.find("localhost", "http"));
   CPPUNIT_ASSERT(!ssm.find("localhost", "ftp"));

@@ -43,12 +43,14 @@
 
 namespace aria2 {
 
-DHTNode::DHTNode():port_(0), rtt_(0), condition_(0), lastContact_(0)
+DHTNode::DHTNode()
+  : port_(0), rtt_(0), condition_(0), lastContact_(Timer::zero())
 {
   generateID();
 }
 
-DHTNode::DHTNode(const unsigned char* id):port_(0), rtt_(0), condition_(1), lastContact_(0)
+DHTNode::DHTNode(const unsigned char* id)
+  : port_(0), rtt_(0), condition_(1), lastContact_(Timer::zero())
 {
   memcpy(id_, id, DHT_ID_LENGTH);
 }
@@ -87,7 +89,7 @@ bool DHTNode::isGood() const
   return !isBad() && !isQuestionable();
 }
 
-#define BAD_CONDITION 5
+constexpr int BAD_CONDITION = 5;
 
 bool DHTNode::isBad() const
 {
@@ -122,12 +124,12 @@ void DHTNode::timeout()
 
 std::string DHTNode::toString() const
 {
-  return fmt("DHTNode ID=%s, Host=%s(%u), Condition=%d, RTT=%d",
+  return fmt("DHTNode ID=%s, Host=%s(%u), Condition=%d, RTT=%ld",
              util::toHex(id_, DHT_ID_LENGTH).c_str(),
              ipaddr_.c_str(),
              port_,
              condition_,
-             rtt_);
+             static_cast<long int>(rtt_.count()));
 }
 
 void DHTNode::setID(const unsigned char* id)

@@ -29,7 +29,7 @@ public:
 
   void setUp() {
     peer.reset(new Peer("host", 6969));
-    peer->allocateSessionResource(1024, 1024*1024);
+    peer->allocateSessionResource(1_k, 1_m);
   }
 
   void testCreate();

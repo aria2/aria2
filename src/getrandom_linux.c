@@ -48,17 +48,29 @@
 int getrandom_linux(void *buf, size_t buflen) {
   int rv = 0;
   uint8_t* p = buf;
+
+  /* Loop while we did not fully retrieve what the user asked for.
+   * This may happen in particular when a call was EINTRupted.
+   */
   while (buflen) {
     int read;
 #ifdef HAVE_GETRANDOM
+    /* libc already has support */
     read = getrandom(p, buflen, 0);
 #else // HAVE_GETRANDOM
+    /* libc has no support, make the syscall ourselves */
     read = syscall(SYS_getrandom, p, buflen, 0);
-    /* Some libc impl. might mess this up */
+    /* Some libc impl. might mess -ERESTART up */
     if (read == -EINTR || read == -ERESTART) {
+      /* ERESTART, like EINTR, should restart the call, later, so handle both
+       * the same way.
+       */
       errno = EINTR;
       read = -1;
     }
+    /* Some other non-interrupted error happened, put error code into errno and
+     * switch read to -1 (return value).
+     */
     if (read < -1) {
       errno = -read;
       read = -1;
@@ -66,13 +78,19 @@ int getrandom_linux(void *buf, size_t buflen) {
 #endif // HAVE_GETRANDOM
     if (read < 0) {
       if (errno == EINTR) {
+        /* Restart call */
         continue;
       }
+      /* Call failed, return -1, errno should be set up correctly at this
+       * point.
+       */
       return -1;
     }
+    /* We got some more randomness */
     p += read;
     rv += read;
     buflen -= read;
   }
+
   return rv;
 }

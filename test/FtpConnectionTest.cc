@@ -164,7 +164,7 @@ void FtpConnectionTest::testReceiveMdtmResponse()
     serverSocket_->writeData("\r\n");
     waitRead(clientSocket_);
     CPPUNIT_ASSERT_EQUAL(213, ftp_->receiveMdtmResponse(t));
-    CPPUNIT_ASSERT_EQUAL((time_t)1220877792, t.getTime());
+    CPPUNIT_ASSERT_EQUAL((time_t)1220877792, t.getTimeFromEpoch());
   }
   {
     // see milli second part is ignored
@@ -172,7 +172,7 @@ void FtpConnectionTest::testReceiveMdtmResponse()
     serverSocket_->writeData("213 20080908124312.014\r\n");
     waitRead(clientSocket_);
     CPPUNIT_ASSERT_EQUAL(213, ftp_->receiveMdtmResponse(t));
-    CPPUNIT_ASSERT_EQUAL((time_t)1220877792, t.getTime());
+    CPPUNIT_ASSERT_EQUAL((time_t)1220877792, t.getTimeFromEpoch());
   }
   {
     // hhmmss part is missing
@@ -190,10 +190,10 @@ void FtpConnectionTest::testReceiveMdtmResponse()
     CPPUNIT_ASSERT_EQUAL(213, ftp_->receiveMdtmResponse(t));
 #ifdef HAVE_TIMEGM
     // Time will be normalized. Wed Jul 8 12:43:12 2009
-    CPPUNIT_ASSERT_EQUAL((time_t)1247056992, t.getTime());
+    CPPUNIT_ASSERT_EQUAL((time_t)1247056992, t.getTimeFromEpoch());
 #else // !HAVE_TIMEGM
     // The replacement timegm does not normalize.
-    CPPUNIT_ASSERT_EQUAL((time_t)-1, t.getTime());
+    CPPUNIT_ASSERT_EQUAL((time_t)-1, t.getTimeFromEpoch());
 #endif // !HAVE_TIMEGM
   }
   {
@@ -206,7 +206,7 @@ void FtpConnectionTest::testReceiveMdtmResponse()
 
 void FtpConnectionTest::testReceiveResponse_overflow()
 {
-  char data[1024];
+  char data[1_k];
   memset(data, 0, sizeof(data));
   memcpy(data, "213 ", 4);
   for(int i = 0; i < 64; ++i) {

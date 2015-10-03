@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "GZipEncoder.h"
 
+#include <array>
 #include <cstring>
 
 #include "fmt.h"
@@ -41,10 +42,6 @@
 #include "util.h"
 
 namespace aria2 {
-
-namespace {
-const int OUTBUF_LENGTH = 4096;
-} // namespace
 
 GZipEncoder::GZipEncoder():strm_(nullptr) {}
 
@@ -84,16 +81,16 @@ std::string GZipEncoder::encode
   strm_->avail_in = length;
   strm_->next_in = const_cast<unsigned char*>(in);
   std::string out;
-  unsigned char outbuf[OUTBUF_LENGTH];
+  std::array<unsigned char, 4_k> outbuf;
   while(1) {
-    strm_->avail_out = OUTBUF_LENGTH;
-    strm_->next_out = outbuf;
+    strm_->avail_out = outbuf.size();
+    strm_->next_out = outbuf.data();
     int ret = ::deflate(strm_, flush);
     if(ret == Z_STREAM_ERROR) {
       throw DL_ABORT_EX(fmt("libz::deflate() failed. cause:%s",
                             strm_->msg));
     }
-    size_t produced = OUTBUF_LENGTH-strm_->avail_out;
+    size_t produced = outbuf.size() - strm_->avail_out;
     out.append(&outbuf[0], &outbuf[produced]);
     if(strm_->avail_out > 0) {
       break;

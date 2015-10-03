@@ -43,6 +43,7 @@
 #include <memory>
 
 #include "Command.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -71,7 +72,7 @@ private:
   Piece& operator=(const Piece& piece) = delete;
 
 public:
-  static const int32_t BLOCK_LENGTH  = 16*1024;
+  static const int32_t BLOCK_LENGTH  = 16_k;
 
   Piece();
   Piece(size_t index, int64_t length, int32_t blockLength = BLOCK_LENGTH);

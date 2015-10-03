@@ -40,8 +40,11 @@
 
 namespace aria2 {
 
-HaveEraseCommand::HaveEraseCommand(cuid_t cuid, DownloadEngine* e, time_t interval)
-  :TimeBasedCommand(cuid, e, interval, true) {}
+HaveEraseCommand::HaveEraseCommand(cuid_t cuid, DownloadEngine* e,
+                                   std::chrono::seconds interval)
+  : TimeBasedCommand(cuid, e, std::move(interval), true)
+{
+}
 
 HaveEraseCommand::~HaveEraseCommand() {}
 
@@ -60,7 +63,7 @@ void HaveEraseCommand::process()
   for(auto & group : groups) {
     const auto& ps = group->getPieceStorage();
     if(ps) {
-      ps->removeAdvertisedPiece(5);
+      ps->removeAdvertisedPiece(5_s);
     }
   }
 }

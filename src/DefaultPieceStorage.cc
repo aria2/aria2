@@ -68,6 +68,7 @@
 #include "Notifier.h"
 #include "WrDiskCache.h"
 #include "RequestGroup.h"
+#include "SimpleRandomizer.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
@@ -205,7 +206,8 @@ void DefaultPieceStorage::getMissingPiece
         indexes.push_back(i);
       }
     }
-    std::random_shuffle(indexes.begin(), indexes.end());
+    std::shuffle(indexes.begin(), indexes.end(),
+                 *SimpleRandomizer::getInstance());
     for(std::vector<size_t>::const_iterator i = indexes.begin(),
           eoi = indexes.end(); i != eoi && misBlock < minMissingBlocks; ++i) {
       std::shared_ptr<Piece> piece = checkOutPiece(*i, cuid);
@@ -729,32 +731,18 @@ DefaultPieceStorage::getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
   }
 }
 
-namespace {
-class FindElapsedHave
+void
+DefaultPieceStorage::removeAdvertisedPiece(const std::chrono::seconds& elapsed)
 {
-private:
-  time_t elapsed;
-public:
-  FindElapsedHave(time_t elapsed):elapsed(elapsed) {}
+  auto itr = std::find_if(std::begin(haves_), std::end(haves_),
+                          [&elapsed](const HaveEntry& have) {
+    return have.getRegisteredTime().difference(global::wallclock()) >= elapsed;
+  });
 
-  bool operator()(const HaveEntry& have) {
-    if(have.getRegisteredTime().difference(global::wallclock()) >= elapsed) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-};
-} // namespace
-
-void DefaultPieceStorage::removeAdvertisedPiece(time_t elapsed)
-{
-  auto itr = std::find_if(haves_.begin(), haves_.end(),
-                          FindElapsedHave(elapsed));
-  if(itr != haves_.end()) {
+  if(itr != std::end(haves_)) {
     A2_LOG_DEBUG(fmt(MSG_REMOVED_HAVE_ENTRY,
-                     static_cast<unsigned long>(haves_.end()-itr)));
-    haves_.erase(itr, haves_.end());
+                     static_cast<unsigned long>(std::end(haves_) - itr)));
+    haves_.erase(itr, std::end(haves_));
   }
 }
 

@@ -38,13 +38,14 @@ See `the online manual
 Notes
 -----
 
-aria2c executable was generated using android-ndk-r10b.
+aria2c executable was generated using android-ndk-r10d.
 
 The following libraries were statically linked.
 
- * openssl 1.0.2
- * expat 2.1.0
- * c-ares 1.10.0
+* openssl 1.0.2d
+* expat 2.1.0
+* c-ares 1.10.0
+* libssh2 1.6.0
 
 Since Android does not have ``/etc/resolv.conf``, c-ares (asynchronous
 DNS resolver) is disabled by default. But name resolution is sometimes
@@ -54,11 +55,19 @@ using ``--async-dns`` and specify DNS servers using
 
   --async-dns --async-dns-server=`getprop net.dns1`,`getprop net.dns2`
 
+Additionally, the CA certificates shipped with Android don't locate in
+the same place as those of normal Unix-like systems do, so this
+workaround might be useful to securely download files via HTTPS::
+
+   cat /etc/security/cacerts/* | aria2c --ca-certificate=/proc/self/fd/0 $@
+
 Because it is tedious to type these long parameters every time you use
 aria2c, the following wrapper shell script would be handy::
 
     #!/system/bin/sh
+    cat /etc/security/cacerts/* | \
     /data/data/jackpal.androidterm/aria2c \
+      --ca-certificate=/proc/self/fd/0 \
       --async-dns \
       --async-dns-server=`getprop net.dns1`,`getprop net.dns2` \
       "$@"
@@ -70,6 +79,7 @@ Known Issues
 ------------
 
 * Since Android does not have ``/dev/stdout``, ``-l-`` does not work.
+  ``/proc/self/fd/0`` is a workaround for Android.
 
 * Android Terminal Emulator sometimes stops updating console. It looks
   like aria2c hangs, but aria2c continues to run.

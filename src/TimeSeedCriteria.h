@@ -36,6 +36,9 @@
 #define D_TIME_SEED_CRITERIA_H
 
 #include "SeedCriteria.h"
+
+#include <memory>
+
 #include "TimerA2.h"
 
 namespace aria2 {
@@ -43,22 +46,22 @@ namespace aria2 {
 class TimeSeedCriteria : public SeedCriteria {
 private:
   // How much time the client does seeding in seconds.
-  time_t duration_;
+  std::chrono::seconds duration_;
   Timer watch_;
 public:
-  TimeSeedCriteria(time_t duration);
+  TimeSeedCriteria(std::chrono::seconds duration);
   virtual ~TimeSeedCriteria();
 
   virtual void reset() CXX11_OVERRIDE;
 
   virtual bool evaluate() CXX11_OVERRIDE;
 
-  void setDuration(time_t duration)
+  void setDuration(std::chrono::seconds duration)
   {
-    duration_ = duration;
+    duration_ = std::move(duration);
   }
 
-  time_t getDuration() const
+  const std::chrono::seconds& getDuration() const
   {
     return duration_;
   }

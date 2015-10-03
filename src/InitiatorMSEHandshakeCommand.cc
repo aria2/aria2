@@ -74,7 +74,8 @@ InitiatorMSEHandshakeCommand::InitiatorMSEHandshakeCommand
 {
   disableReadCheckSocket();
   setWriteCheckSocket(getSocket());
-  setTimeout(getOption()->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
+  setTimeout(std::chrono::seconds(
+      getOption()->getAsInt(PREF_PEER_CONNECTION_TIMEOUT)));
 
   btRuntime_->increaseConnections();
   requestGroup_->increaseNumCommand();
@@ -98,7 +99,7 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
         addCommandSelf();
         return false;
       }
-      setTimeout(getOption()->getAsInt(PREF_BT_TIMEOUT));
+      setTimeout(std::chrono::seconds(getOption()->getAsInt(PREF_BT_TIMEOUT)));
       mseHandshake_->initEncryptionFacility(true);
       mseHandshake_->sendPublicKey();
       sequence_ = INITIATOR_SEND_KEY_PENDING;

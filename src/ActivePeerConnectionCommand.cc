@@ -60,10 +60,10 @@ ActivePeerConnectionCommand::ActivePeerConnectionCommand
 (cuid_t cuid,
  RequestGroup* requestGroup,
  DownloadEngine* e,
- time_t interval)
+ std::chrono::seconds interval)
   : Command(cuid),
     requestGroup_(requestGroup),
-    interval_(interval),
+    interval_(std::move(interval)),
     e_(e),
     numNewConnection_(5)
 {

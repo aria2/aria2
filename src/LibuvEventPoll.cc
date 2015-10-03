@@ -66,7 +66,7 @@ namespace {
     delete reinterpret_cast<T*>(handle);
   }
 
-#if !defined(UV_VERSION_MINOR) || UV_VERSION_MINOR <= 10
+#if !defined(UV_VERSION_MINOR) || (UV_VERSION_MAJOR == 0 && UV_VERSION_MINOR <= 10)
 
   static void timer_callback(uv_timer_t* handle, int status)
   {
@@ -78,7 +78,7 @@ namespace {
     timer_callback(handle, 0);
   }
 
-#else // !defined(UV_VERSION_MINOR) || UV_VERSION_MINOR <= 10
+#else // !defined(UV_VERSION_MINOR) || (UV_VERSION_MAJOR == 0 && UV_VERSION_MINOR <= 10)
 
   static void timer_callback(uv_timer_t* handle)
   {

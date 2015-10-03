@@ -56,6 +56,10 @@
 # include <ares.h>
 #endif // ENABLE_ASYNC_DNS
 
+#ifdef HAVE_LIBSSH2
+# include <libssh2.h>
+#endif // HAVE_LIBSSH2
+
 #include "a2netcompat.h"
 #include "DlAbortEx.h"
 #include "message.h"
@@ -68,10 +72,10 @@
 #endif // HAVE_LIBGMP
 #include "LogFactory.h"
 
-#define A2_MIN_GCRYPT_VERSION "1.2.4"
+namespace aria2 {
 
-namespace {
 #ifdef HAVE_LIBGNUTLS
+namespace {
   void gnutls_log_callback(int level, const char *str)
   {
     using namespace aria2;
@@ -80,11 +84,8 @@ namespace {
     msg.resize(msg.size() - 1);
     A2_LOG_DEBUG(fmt("GnuTLS: <%d> %s", level, msg.c_str()));
   }
-#endif // HAVE_LIBGNUTLS
 }
-
-
-namespace aria2 {
+#endif // HAVE_LIBGNUTLS
 
 bool Platform::initialized_ = false;
 
@@ -122,7 +123,7 @@ bool Platform::setUp()
   OpenSSL_add_all_algorithms();
 #endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGCRYPT
-  if(!gcry_check_version(A2_MIN_GCRYPT_VERSION)) {
+  if(!gcry_check_version("1.2.4")) {
     throw DL_ABORT_EX("gcry_check_version() failed.");
   }
   gcry_control(GCRYCTL_DISABLE_SECMEM, 0);
@@ -148,6 +149,15 @@ bool Platform::setUp()
                            ares_strerror(aresErrorCode));
   }
 #endif // CARES_HAVE_ARES_LIBRARY_INIT
+
+#ifdef HAVE_LIBSSH2
+  {
+    auto rv = libssh2_init(0);
+    if (rv != 0) {
+      throw DL_ABORT_EX(fmt("libssh2_init() failed, code: %d", rv));
+    }
+  }
+#endif // HAVE_LIBSSH2
 
 #ifdef HAVE_WINSOCK2_H
   WSADATA wsaData;
@@ -180,6 +190,10 @@ bool Platform::tearDown()
 #ifdef CARES_HAVE_ARES_LIBRARY_CLEANUP
   ares_library_cleanup();
 #endif // CARES_HAVE_ARES_LIBRARY_CLEANUP
+
+#ifdef HAVE_LIBSSH2
+  libssh2_exit();
+#endif // HAVE_LIBSSH2
 
 #ifdef HAVE_WINSOCK2_H
   WSACleanup();

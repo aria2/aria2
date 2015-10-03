@@ -102,7 +102,8 @@ PeerInteractionCommand::PeerInteractionCommand
   if(sequence_ == INITIATOR_SEND_HANDSHAKE) {
     disableReadCheckSocket();
     setWriteCheckSocket(getSocket());
-    setTimeout(getOption()->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
+    setTimeout(std::chrono::seconds(
+        getOption()->getAsInt(PREF_PEER_CONNECTION_TIMEOUT)));
   }
 
   int family;
@@ -180,8 +181,8 @@ PeerInteractionCommand::PeerInteractionCommand
   dispatcher->setCuid(cuid);
   dispatcher->setPeer(getPeer());
   dispatcher->setDownloadContext(requestGroup_->getDownloadContext().get());
-  dispatcher->setRequestTimeout(getOption()->
-                                   getAsInt(PREF_BT_REQUEST_TIMEOUT));
+  dispatcher->setRequestTimeout(
+      std::chrono::seconds(getOption()->getAsInt(PREF_BT_REQUEST_TIMEOUT)));
   dispatcher->setBtMessageFactory(factory.get());
   dispatcher->setRequestGroupMan
     (getDownloadEngine()->getRequestGroupMan().get());
@@ -227,7 +228,7 @@ PeerInteractionCommand::PeerInteractionCommand
     (std::move(extensionMessageFactory));
   btInteractive->setExtensionMessageRegistry(std::move(exMsgRegistry));
   btInteractive->setKeepAliveInterval
-    (getOption()->getAsInt(PREF_BT_KEEP_ALIVE_INTERVAL));
+    (std::chrono::seconds(getOption()->getAsInt(PREF_BT_KEEP_ALIVE_INTERVAL)));
   btInteractive->setRequestGroupMan
     (getDownloadEngine()->getRequestGroupMan().get());
   btInteractive->setBtMessageFactory(std::move(factory));
@@ -307,7 +308,7 @@ bool PeerInteractionCommand::executeInternal() {
       disableWriteCheckSocket();
       setReadCheckSocket(getSocket());
       //socket->setBlockingMode();
-      setTimeout(getOption()->getAsInt(PREF_BT_TIMEOUT));
+      setTimeout(std::chrono::seconds(getOption()->getAsInt(PREF_BT_TIMEOUT)));
       btInteractive_->initiateHandshake();
       sequence_ = INITIATOR_WAIT_HANDSHAKE;
       break;
@@ -403,7 +404,7 @@ void PeerInteractionCommand::onFailure(const Exception& err)
 {
   requestGroup_->setLastErrorCode(err.getErrorCode());
   requestGroup_->setHaltRequested(true);
-  getDownloadEngine()->setRefreshInterval(0);
+  getDownloadEngine()->setRefreshInterval(std::chrono::milliseconds(0));
 }
 
 bool PeerInteractionCommand::exitBeforeExecute()

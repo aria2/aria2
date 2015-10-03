@@ -10,6 +10,7 @@ EXTRA_DIST = config.rpath \
 	     android-config android-make \
 	     makerelease-osx.mk osx-package/DS_Store osx-package/etc/paths.d/aria2c osx-package/etc/manpaths.d/aria2 \
 	     Dockerfile.mingw \
+	     Dockerfile.raspberrypi \
 	     examples/libaria2ex.cc examples/libaria2wx.cc
 
 dist_doc_DATA = README README.rst README.html

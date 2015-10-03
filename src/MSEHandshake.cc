@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "MSEHandshake.h"
 
+#include <array>
 #include <cstring>
 #include <cassert>
 
@@ -198,15 +199,15 @@ void MSEHandshake::initCipher(const unsigned char* infoHash)
   decryptor_->init(peerCipherKey, sizeof(peerCipherKey));
 
   // discard first 1024 bytes ARC4 output.
-  unsigned char garbage[1024];
-  encryptor_->encrypt(1024, garbage, garbage);
-  decryptor_->encrypt(1024, garbage, garbage);
+  std::array<unsigned char, 1_k> garbage;
+  encryptor_->encrypt(garbage.size(), garbage.data(), garbage.data());
+  decryptor_->encrypt(garbage.size(), garbage.data(), garbage.data());
 
   if(initiator_) {
     ARC4Encryptor enc;
     enc.init(peerCipherKey, sizeof(peerCipherKey));
     // discard first 1024 bytes ARC4 output.
-    enc.encrypt(1024, garbage, garbage);
+    enc.encrypt(garbage.size(), garbage.data(), garbage.data());
     enc.encrypt(VC_LENGTH, initiatorVCMarker_, VC);
   }
 }

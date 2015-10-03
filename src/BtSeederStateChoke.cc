@@ -47,10 +47,14 @@ namespace aria2 {
 
 BtSeederStateChoke::BtSeederStateChoke()
   : round_(0),
-    lastRound_(0)
+    lastRound_(Timer::zero())
 {}
 
 BtSeederStateChoke::~BtSeederStateChoke() {}
+
+namespace {
+constexpr auto TIME_FRAME = 20_s;
+} // namespace
 
 BtSeederStateChoke::PeerEntry::PeerEntry
 (const std::shared_ptr<Peer>& peer):
@@ -122,11 +126,10 @@ void BtSeederStateChoke::unchoke
 {
   int count = (round_ == 2) ? 4 : 3;
 
-  std::sort(peers.begin(), peers.end());
+  std::sort(std::begin(peers), std::end(peers));
 
-  auto r = peers.begin();
-  for(auto eoi = peers.end();
-      r != eoi && count; ++r, --count) {
+  auto r = std::begin(peers);
+  for(; r != std::end(peers) && count; ++r, --count) {
     (*r).getPeer()->chokingRequired(false);
     A2_LOG_INFO(fmt("RU: %s, ulspd=%d",
                     (*r).getPeer()->getIPAddress().c_str(),
@@ -134,11 +137,10 @@ void BtSeederStateChoke::unchoke
   }
 
   if(round_ < 2) {
-    std::for_each(peers.begin(), peers.end(),
+    std::for_each(std::begin(peers), std::end(peers),
                   std::mem_fn(&PeerEntry::disableOptUnchoking));
-    if(r != peers.end()) {
-      std::random_shuffle(r, peers.end(),
-                          *SimpleRandomizer::getInstance());
+    if(r != std::end(peers)) {
+      std::shuffle(r, std::end(peers), *SimpleRandomizer::getInstance());
       (*r).getPeer()->optUnchoking(true);
       A2_LOG_INFO(fmt("POU: %s", (*r).getPeer()->getIPAddress().c_str()));
     }

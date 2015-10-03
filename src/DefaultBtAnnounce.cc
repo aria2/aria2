@@ -61,10 +61,10 @@ DefaultBtAnnounce::DefaultBtAnnounce
 (DownloadContext* downloadContext, const Option* option)
   : downloadContext_{downloadContext},
     trackers_(0),
-    prevAnnounceTimer_(0),
+    prevAnnounceTimer_(Timer::zero()),
     interval_(DEFAULT_ANNOUNCE_INTERVAL),
     minInterval_(DEFAULT_ANNOUNCE_INTERVAL),
-    userDefinedInterval_(0),
+    userDefinedInterval_(0_s),
     complete_(0),
     incomplete_(0),
     announceList_(bittorrent::getTorrentAttrs(downloadContext)->announceList),
@@ -77,12 +77,11 @@ DefaultBtAnnounce::~DefaultBtAnnounce() {
 }
 
 bool DefaultBtAnnounce::isDefaultAnnounceReady() {
-  return
-    (trackers_ == 0 &&
-     prevAnnounceTimer_.
-     difference(global::wallclock()) >= (userDefinedInterval_==0?
-                                       minInterval_:userDefinedInterval_) &&
-     !announceList_.allTiersFailed());
+  return (trackers_ == 0 &&
+          prevAnnounceTimer_.difference(global::wallclock()) >=
+              (userDefinedInterval_.count() == 0 ? minInterval_
+                                                 : userDefinedInterval_) &&
+          !announceList_.allTiersFailed());
 }
 
 bool DefaultBtAnnounce::isStoppedAnnounceReady() {
@@ -305,13 +304,14 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
   }
   const Integer* ival = downcast<Integer>(dict->get(BtAnnounce::INTERVAL));
   if(ival && ival->i() > 0) {
-    interval_ = ival->i();
-    A2_LOG_DEBUG(fmt("Interval:%ld", static_cast<long int>(interval_)));
+    interval_ = std::chrono::seconds(ival->i());
+    A2_LOG_DEBUG(fmt("Interval:%ld", static_cast<long int>(interval_.count())));
   }
   const Integer* mival = downcast<Integer>(dict->get(BtAnnounce::MIN_INTERVAL));
   if(mival && mival->i() > 0) {
-    minInterval_ = mival->i();
-    A2_LOG_DEBUG(fmt("Min interval:%ld", static_cast<long int>(minInterval_)));
+    minInterval_ = std::chrono::seconds(mival->i());
+    A2_LOG_DEBUG(
+        fmt("Min interval:%ld", static_cast<long int>(minInterval_.count())));
     minInterval_ = std::min(minInterval_, interval_);
   } else {
     // Use interval as a minInterval if minInterval is not supplied.
@@ -355,8 +355,9 @@ void DefaultBtAnnounce::processUDPTrackerResponse
   const std::shared_ptr<UDPTrackerReply>& reply = req->reply;
   A2_LOG_DEBUG("Now processing UDP tracker response.");
   if(reply->interval > 0) {
-    minInterval_ = reply->interval;
-    A2_LOG_DEBUG(fmt("Min interval:%ld", static_cast<long int>(minInterval_)));
+    minInterval_ = std::chrono::seconds(reply->interval);
+    A2_LOG_DEBUG(
+        fmt("Min interval:%ld", static_cast<long int>(minInterval_.count())));
     interval_ = minInterval_;
   }
   complete_ = reply->seeders;
@@ -401,9 +402,9 @@ void DefaultBtAnnounce::setPeerStorage
   peerStorage_ = peerStorage;
 }
 
-void DefaultBtAnnounce::overrideMinInterval(time_t interval)
+void DefaultBtAnnounce::overrideMinInterval(std::chrono::seconds interval)
 {
-  minInterval_ = interval;
+  minInterval_ = std::move(interval);
 }
 
 } // namespace aria2

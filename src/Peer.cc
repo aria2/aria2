@@ -51,7 +51,7 @@ Peer::Peer(std::string ipaddr, uint16_t port, bool incoming):
   origPort_(port),
   cuid_(0),
   firstContactTime_(global::wallclock()),
-  dropStartTime_(0),
+  dropStartTime_(Timer::zero()),
   seeder_(false),
   incoming_(incoming),
   localPeer_(false),

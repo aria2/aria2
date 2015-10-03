@@ -34,7 +34,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BtExtendedMessageTest);
 
 void BtExtendedMessageTest::testCreate() {
   auto peer = std::make_shared<Peer>("192.168.0.1", 6969);
-  peer->allocateSessionResource(1024, 1024*1024);
+  peer->allocateSessionResource(1_k, 1_m);
   auto exmsgFactory = MockExtensionMessageFactory{};
 
   // payload:{4:name3:foo}->11bytes

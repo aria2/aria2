@@ -53,6 +53,23 @@ HOST=i686-w64-mingw32
 HOST=x86_64-w64-mingw32
 The configure command-line is the same as i686 version.
 
+libssh2
+-------
+
+HOST=i686-w64-mingw32
+./configure \
+    --disable-shared \
+    --enable-static \
+    --prefix=/usr/local/$HOST \
+    --host=$HOST \
+    --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` \
+    --without-openssl \
+    --with-wincng \
+    LIBS="-lws2_32"
+
+HOST=x86_64-w64-mingw32
+The configure command-line is the same as i686 version.
+
 Zlib
 ----
 

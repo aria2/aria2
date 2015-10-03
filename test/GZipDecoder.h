@@ -41,6 +41,8 @@
 
 #include <zlib.h>
 
+#include "a2functional.h"
+
 namespace aria2 {
 
 // GZipDecoder can decode both gzip and deflate format.
@@ -50,7 +52,7 @@ private:
 
   bool finished_;
 
-  static const size_t OUTBUF_LENGTH = 16*1024;
+  static const size_t OUTBUF_LENGTH = 16_k;
 
   static const std::string NAME;
 public:

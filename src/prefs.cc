@@ -309,6 +309,8 @@ PrefPtr PREF_ON_DOWNLOAD_COMPLETE = makePref("on-download-complete");
 PrefPtr PREF_ON_DOWNLOAD_ERROR = makePref("on-download-error");
 // value: string
 PrefPtr PREF_INTERFACE = makePref("interface");
+// value: string
+PrefPtr PREF_MULTIPLE_INTERFACE = makePref("multiple-interface");
 // value: true | false
 PrefPtr PREF_DISABLE_IPV6 = makePref("disable-ipv6");
 // value: true | false
@@ -386,6 +388,8 @@ PrefPtr PREF_FTP_TYPE = makePref("ftp-type");
 PrefPtr PREF_FTP_PASV = makePref("ftp-pasv");
 // values: true | false
 PrefPtr PREF_FTP_REUSE_CONNECTION = makePref("ftp-reuse-connection");
+// values: hashType=digest
+PrefPtr PREF_SSH_HOST_KEY_MD = makePref("ssh-host-key-md");
 
 /**
  * HTTP related preferences

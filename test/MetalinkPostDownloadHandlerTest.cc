@@ -70,7 +70,7 @@ void MetalinkPostDownloadHandlerTest::testCanHandle_contentType()
 void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups()
 {
   std::shared_ptr<DownloadContext> dctx
-    (new DownloadContext(1024, 0, A2_TEST_DIR"/test.xml"));
+    (new DownloadContext(1_k, 0, A2_TEST_DIR"/test.xml"));
   RequestGroup rg(GroupId::create(), option_);
   rg.setDownloadContext(dctx);
   rg.initPieceStorage();
@@ -89,7 +89,7 @@ void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups()
 void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups_withBaseUri()
 {
   std::shared_ptr<DownloadContext> dctx
-    (new DownloadContext(1024, 0, A2_TEST_DIR"/base_uri.xml"));
+    (new DownloadContext(1_k, 0, A2_TEST_DIR"/base_uri.xml"));
   dctx->getFirstFileEntry()->addUri("http://base/dir/base_uri.xml");
   RequestGroup rg(GroupId::create(), option_);
   rg.setDownloadContext(dctx);

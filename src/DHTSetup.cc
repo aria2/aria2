@@ -148,13 +148,13 @@ std::vector<std::unique_ptr<Command>> DHTSetup::setup
     auto tokenTracker = make_unique<DHTTokenTracker>();
     // For now, UDPTrackerClient was enabled along with DHT
     auto udpTrackerClient = std::make_shared<UDPTrackerClient>();
-    const time_t messageTimeout =
-      e->getOption()->getAsInt(PREF_DHT_MESSAGE_TIMEOUT);
+    const auto messageTimeout =
+        e->getOption()->getAsInt(PREF_DHT_MESSAGE_TIMEOUT);
     // wiring up
     tracker->setRoutingTable(routingTable.get());
     tracker->setMessageFactory(factory.get());
 
-    dispatcher->setTimeout(messageTimeout);
+    dispatcher->setTimeout(std::chrono::seconds(messageTimeout));
 
     receiver->setMessageFactory(factory.get());
     receiver->setRoutingTable(routingTable.get());
@@ -164,7 +164,7 @@ std::vector<std::unique_ptr<Command>> DHTSetup::setup
     taskFactory->setMessageDispatcher(dispatcher.get());
     taskFactory->setMessageFactory(factory.get());
     taskFactory->setTaskQueue(taskQueue.get());
-    taskFactory->setTimeout(messageTimeout);
+    taskFactory->setTimeout(std::chrono::seconds(messageTimeout));
 
     routingTable->setTaskQueue(taskQueue.get());
     routingTable->setTaskFactory(taskFactory.get());
@@ -234,8 +234,8 @@ std::vector<std::unique_ptr<Command>> DHTSetup::setup
       tempCommands.push_back(std::move(command));
     }
     {
-      auto command = make_unique<DHTAutoSaveCommand>
-        (e->newCUID(), e, family, 30*60);
+      auto command = make_unique<DHTAutoSaveCommand>(e->newCUID(), e, family,
+                                                     30_min);
       command->setLocalNode(localNode);
       command->setRoutingTable(routingTable.get());
       tempCommands.push_back(std::move(command));

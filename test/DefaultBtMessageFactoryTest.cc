@@ -34,7 +34,7 @@ public:
     dctx_ = make_unique<DownloadContext>();
 
     peer_ = std::make_shared<Peer>("192.168.0.1", 6969);
-    peer_->allocateSessionResource(1024, 1024*1024);
+    peer_->allocateSessionResource(1_k, 1_m);
     peer_->setExtendedMessagingEnabled(true);
 
     exmsgFactory_ = std::make_shared<MockExtensionMessageFactory>();

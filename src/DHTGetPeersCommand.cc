@@ -55,13 +55,13 @@ namespace aria2 {
 
 namespace {
 
-const time_t GET_PEER_INTERVAL = (15*60);
+constexpr auto GET_PEER_INTERVAL = 15_min;
 // Interval when the size of peer list is low.
-const time_t GET_PEER_INTERVAL_LOW = (5*60);
+constexpr auto GET_PEER_INTERVAL_LOW = 5_min;
 // Interval when the peer list is empty.
-const time_t GET_PEER_INTERVAL_ZERO = 60;
+constexpr auto GET_PEER_INTERVAL_ZERO = 1_min;
 // Interval for retry.
-const time_t GET_PEER_INTERVAL_RETRY = 5;
+constexpr auto GET_PEER_INTERVAL_RETRY = 5_s;
 // Maximum retries. Try more than 5 to drop bad node.
 const int MAX_RETRIES = 10;
 
@@ -77,7 +77,7 @@ DHTGetPeersCommand::DHTGetPeersCommand
     taskQueue_{nullptr},
     taskFactory_{nullptr},
     numRetry_{0},
-    lastGetPeerTime_{0}
+    lastGetPeerTime_{Timer::zero()}
 {
   requestGroup_->increaseNumCommand();
 }
@@ -92,7 +92,7 @@ bool DHTGetPeersCommand::execute()
   if(btRuntime_->isHalt()) {
     return true;
   }
-  time_t elapsed = lastGetPeerTime_.difference(global::wallclock());
+  auto elapsed = lastGetPeerTime_.difference(global::wallclock());
   if(!task_ &&
      (elapsed >= GET_PEER_INTERVAL ||
       (((btRuntime_->lessThanMinPeers() &&

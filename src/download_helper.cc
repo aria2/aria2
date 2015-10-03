@@ -200,8 +200,8 @@ createBtRequestGroup(const std::string& metaInfoUri,
                              metaInfoUri.empty() ? "default" : metaInfoUri);
   for (auto &fe : dctx->getFileEntries()) {
     auto &uris = fe->getRemainingUris();
-    std::random_shuffle(std::begin(uris), std::end(uris),
-                        *SimpleRandomizer::getInstance());
+    std::shuffle(std::begin(uris), std::end(uris),
+                 *SimpleRandomizer::getInstance());
   }
   if(metaInfoUri.empty()) {
     rg->setMetadataInfo(createMetadataInfoDataOnly());

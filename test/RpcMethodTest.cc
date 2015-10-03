@@ -611,8 +611,7 @@ void RpcMethodTest::testChangeOption()
   auto option = group->getOption();
 
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  CPPUNIT_ASSERT_EQUAL(100*1024,
-                       group->getMaxDownloadSpeedLimit());
+  CPPUNIT_ASSERT_EQUAL((int)100_k, group->getMaxDownloadSpeedLimit());
   CPPUNIT_ASSERT_EQUAL(std::string("102400"),
                        option->get(PREF_MAX_DOWNLOAD_LIMIT));
 #ifdef ENABLE_BITTORRENT
@@ -624,8 +623,7 @@ void RpcMethodTest::testChangeOption()
                        e_->getBtRegistry()->get(group->getGID())
                        ->btRuntime->getMaxPeers());
 
-  CPPUNIT_ASSERT_EQUAL(50*1024,
-                       group->getMaxUploadSpeedLimit());
+  CPPUNIT_ASSERT_EQUAL((int)50_k, group->getMaxUploadSpeedLimit());
   CPPUNIT_ASSERT_EQUAL(std::string("51200"),
                        option->get(PREF_MAX_UPLOAD_LIMIT));
 #endif // ENABLE_BITTORRENT
@@ -683,15 +681,13 @@ void RpcMethodTest::testChangeGlobalOption()
   auto res = m.execute(std::move(req), e_.get());
 
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  CPPUNIT_ASSERT_EQUAL
-    (100*1024,
-     e_->getRequestGroupMan()->getMaxOverallDownloadSpeedLimit());
+  CPPUNIT_ASSERT_EQUAL(
+      (int)100_k, e_->getRequestGroupMan()->getMaxOverallDownloadSpeedLimit());
   CPPUNIT_ASSERT_EQUAL(std::string("102400"),
                        e_->getOption()->get(PREF_MAX_OVERALL_DOWNLOAD_LIMIT));
 #ifdef ENABLE_BITTORRENT
-  CPPUNIT_ASSERT_EQUAL
-    (50*1024,
-     e_->getRequestGroupMan()->getMaxOverallUploadSpeedLimit());
+  CPPUNIT_ASSERT_EQUAL(
+      (int)50_k, e_->getRequestGroupMan()->getMaxOverallUploadSpeedLimit());
   CPPUNIT_ASSERT_EQUAL(std::string("51200"),
                        e_->getOption()->get(PREF_MAX_OVERALL_UPLOAD_LIMIT));
 #endif // ENABLE_BITTORRENT
@@ -915,7 +911,7 @@ void RpcMethodTest::testGatherStoppedDownload()
   d->fileEntries = fileEntries;
   d->inMemoryDownload = false;
   d->sessionDownloadLength = UINT64_MAX;
-  d->sessionTime = 1000;
+  d->sessionTime = 1_s;
   d->result = error_code::FINISHED;
   d->followedBy = followedBy;
   d->belongsTo = 2;

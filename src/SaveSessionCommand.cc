@@ -44,8 +44,8 @@
 namespace aria2 {
 
 SaveSessionCommand::SaveSessionCommand
-(cuid_t cuid, DownloadEngine* e, time_t interval)
-  : TimeBasedCommand(cuid, e, interval, true)
+(cuid_t cuid, DownloadEngine* e, std::chrono::seconds interval)
+  : TimeBasedCommand(cuid, e, std::move(interval), true)
 {}
 
 SaveSessionCommand::~SaveSessionCommand() {}

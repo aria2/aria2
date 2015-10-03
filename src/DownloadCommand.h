@@ -53,7 +53,7 @@ private:
 
   std::unique_ptr<MessageDigest> messageDigest_;
 
-  time_t startupIdleTime_;
+  std::chrono::seconds startupIdleTime_;
 
   int lowestDownloadSpeedLimit_;
 
@@ -76,6 +76,12 @@ protected:
 
   // This is file local offset
   virtual int64_t getRequestEndOffset() const = 0;
+
+  // Returns true if socket should be monitored for writing.  The
+  // default implementation is return the return value of
+  // getSocket()->wantWrite().
+  virtual bool shouldEnableWriteCheck();
+
 public:
   DownloadCommand(cuid_t cuid,
                   const std::shared_ptr<Request>& req,
@@ -93,9 +99,9 @@ public:
 
   void installStreamFilter(std::unique_ptr<StreamFilter> streamFilter);
 
-  void setStartupIdleTime(time_t startupIdleTime)
+  void setStartupIdleTime(std::chrono::seconds startupIdleTime)
   {
-    startupIdleTime_ = startupIdleTime;
+    startupIdleTime_ = std::move(startupIdleTime);
   }
 
   void setLowestDownloadSpeedLimit(int lowestDownloadSpeedLimit)

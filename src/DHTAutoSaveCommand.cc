@@ -57,8 +57,8 @@
 namespace aria2 {
 
 DHTAutoSaveCommand::DHTAutoSaveCommand
-(cuid_t cuid, DownloadEngine* e, int family, time_t interval)
-  : TimeBasedCommand{cuid, e, interval},
+(cuid_t cuid, DownloadEngine* e, int family, std::chrono::seconds interval)
+  : TimeBasedCommand{cuid, e, std::move(interval)},
     family_{family},
     routingTable_{nullptr}
 {}

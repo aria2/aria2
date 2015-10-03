@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "IteratableChunkChecksumValidator.h"
 
+#include <array>
 #include <cstring>
 #include <cstdlib>
 
@@ -121,18 +122,19 @@ void IteratableChunkChecksumValidator::init()
 
 std::string IteratableChunkChecksumValidator::digest(int64_t offset, size_t length)
 {
-  unsigned char buf[4096];
+  std::array<unsigned char, 4_k> buf;
   ctx_->reset();
   int64_t max = offset+length;
   while(offset < max) {
-    size_t r = pieceStorage_->getDiskAdaptor()->readDataDropCache
-      (buf, std::min(static_cast<int64_t>(sizeof(buf)), max-offset), offset);
+    size_t r = pieceStorage_->getDiskAdaptor()->readDataDropCache(
+        buf.data(), std::min(static_cast<int64_t>(buf.size()), max - offset),
+        offset);
     if(r == 0) {
       throw DL_ABORT_EX
         (fmt(EX_FILE_READ, dctx_->getBasePath().c_str(),
              "data is too short"));
     }
-    ctx_->update(buf, r);
+    ctx_->update(buf.data(), r);
     offset += r;
   }
   return ctx_->digest();

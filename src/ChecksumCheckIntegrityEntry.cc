@@ -82,7 +82,11 @@ ChecksumCheckIntegrityEntry::onDownloadIncomplete
                           make_unique<StreamFileAllocationEntry>
                           (getRequestGroup(), popNextCommand()),
                           e);
+    return;
   }
+
+  // If we don't redownload, set error code to indicate checksum error
+  getRequestGroup()->setLastErrorCode(error_code::CHECKSUM_ERROR);
 }
 
 } // namespace aria2

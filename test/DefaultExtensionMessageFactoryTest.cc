@@ -52,7 +52,7 @@ public:
     peerStorage_ = make_unique<MockPeerStorage>();
 
     peer_ = std::make_shared<Peer>("192.168.0.1", 6969);
-    peer_->allocateSessionResource(1024, 1024*1024);
+    peer_->allocateSessionResource(1_k, 1_m);
     peer_->setExtension(ExtensionMessageRegistry::UT_PEX, 1);
 
     registry_ = make_unique<ExtensionMessageRegistry>();

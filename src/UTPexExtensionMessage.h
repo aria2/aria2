@@ -42,6 +42,7 @@
 #include <memory>
 
 #include "a2time.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -58,7 +59,7 @@ private:
 
   PeerStorage* peerStorage_;
 
-  time_t interval_;
+  std::chrono::seconds interval_;
 
   size_t maxFreshPeer_;
 
@@ -120,7 +121,7 @@ public:
     return maxDroppedPeer_;
   }
 
-  static const time_t DEFAULT_INTERVAL = 60;
+  constexpr static auto DEFAULT_INTERVAL = 1_min;
 };
 
 } // namespace aria2

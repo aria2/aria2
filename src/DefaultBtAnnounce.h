@@ -53,9 +53,9 @@ private:
   DownloadContext* downloadContext_;
   int trackers_;
   Timer prevAnnounceTimer_;
-  time_t interval_;
-  time_t minInterval_;
-  time_t userDefinedInterval_;
+  std::chrono::seconds interval_;
+  std::chrono::seconds minInterval_;
+  std::chrono::seconds userDefinedInterval_;
   int complete_;
   int incomplete_;
   AnnounceList announceList_;
@@ -129,7 +129,8 @@ public:
 
   virtual void shuffleAnnounce() CXX11_OVERRIDE;
 
-  virtual void overrideMinInterval(time_t interval) CXX11_OVERRIDE;
+  virtual void
+  overrideMinInterval(std::chrono::seconds interval) CXX11_OVERRIDE;
 
   virtual void setTcpPort(uint16_t port) CXX11_OVERRIDE
   {
@@ -138,12 +139,12 @@ public:
 
   void setRandomizer(Randomizer* randomizer);
 
-  time_t getInterval() const
+  const std::chrono::seconds& getInterval() const
   {
     return interval_;
   }
 
-  time_t getMinInterval() const
+  const std::chrono::seconds& getMinInterval() const
   {
     return minInterval_;
   }
@@ -163,9 +164,9 @@ public:
     return trackerId_;
   }
 
-  void setUserDefinedInterval(time_t interval)
+  void setUserDefinedInterval(std::chrono::seconds interval)
   {
-    userDefinedInterval_ = interval;
+    userDefinedInterval_ = std::move(interval);
   }
 };
 

@@ -51,6 +51,7 @@ class MultiFileAllocationIterator:public FileAllocationIterator
 private:
   MultiDiskAdaptor* diskAdaptor_;
   DiskWriterEntries::const_iterator entryItr_;
+  std::shared_ptr<DiskWriter> diskWriter_;
   std::unique_ptr<FileAllocationIterator> fileAllocationIterator_;
 public:
   MultiFileAllocationIterator(MultiDiskAdaptor* diskAdaptor);

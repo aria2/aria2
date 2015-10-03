@@ -254,7 +254,7 @@ public:
    * Removes have entry if specified seconds have elapsed since its
    * registration.
    */
-  virtual void removeAdvertisedPiece(time_t elapsed) = 0;
+  virtual void removeAdvertisedPiece(const std::chrono::seconds& elapsed) = 0;
 
   /**
    * Sets all bits in bitfield to 1.

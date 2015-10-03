@@ -44,9 +44,9 @@ namespace aria2 {
 
 TimedHaltCommand::TimedHaltCommand
 (cuid_t cuid, DownloadEngine* e,
- time_t secondsToHalt,
+ std::chrono::seconds secondsToHalt,
  bool forceHalt)
-  : TimeBasedCommand(cuid, e, secondsToHalt, true),
+  : TimeBasedCommand(cuid, e, std::move(secondsToHalt), true),
     forceHalt_(forceHalt)
 {}
 
@@ -64,7 +64,7 @@ void TimedHaltCommand::process()
 {
   if(!getDownloadEngine()->isHaltRequested()) {
     A2_LOG_NOTICE(fmt(MSG_TIME_HAS_PASSED,
-                      static_cast<long int>(getInterval())));
+                      static_cast<long int>(getInterval().count())));
     if(forceHalt_) {
       getDownloadEngine()->requestForceHalt();
     } else {

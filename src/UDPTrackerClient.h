@@ -62,7 +62,7 @@ struct UDPTrackerConnection {
   UDPTrackerConnection()
     : state(UDPT_CST_CONNECTING),
       connectionId(UDPT_INITIAL_CONNECTION_ID),
-      lastUpdated(0)
+      lastUpdated(Timer::zero())
   {}
   UDPTrackerConnection(int state, int64_t connectionId,
                        const Timer& lastUpdated)

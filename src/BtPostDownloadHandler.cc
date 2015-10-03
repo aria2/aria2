@@ -102,12 +102,12 @@ void BtPostDownloadHandler::getNextRequestGroups
                                   std::vector<std::string>(),
                                   "",
                                   torrent.get());
-  requestGroup->followedBy(newRgs.begin(), newRgs.end());
+  requestGroup->followedBy(std::begin(newRgs), std::end(newRgs));
   auto mi =
     createMetadataInfoFromFirstFileEntry(requestGroup->getGroupId(),
                                          requestGroup->getDownloadContext());
   if(mi) {
-    setMetadataInfo(newRgs.begin(), newRgs.end(), mi);
+    setMetadataInfo(std::begin(newRgs), std::end(newRgs), mi);
   }
 
   auto rgman = requestGroup->getRequestGroupMan();
@@ -119,7 +119,7 @@ void BtPostDownloadHandler::getNextRequestGroups
     }
   }
 
-  groups.insert(groups.end(), newRgs.begin(), newRgs.end());
+  groups.insert(std::end(groups), std::begin(newRgs), std::end(newRgs));
 }
 
 } // namespace aria2

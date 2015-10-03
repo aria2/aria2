@@ -213,7 +213,7 @@ void createPeerMessageString
  * pre-allocated.  Returns the number of written bytes; for IPv4
  * address, it is 6 and for IPv6, it is 18. On failure, returns 0.
  */
-int packcompact
+size_t packcompact
 (unsigned char* compact, const std::string& addr, uint16_t port);
 
 /**

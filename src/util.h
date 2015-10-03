@@ -81,14 +81,6 @@ class FileEntry;
 class RequestGroup;
 class Option;
 
-#define STRTOLL(X) strtoll(X, reinterpret_cast<char**>(0), 10)
-#define STRTOULL(X) strtoull(X, reinterpret_cast<char**>(0), 10)
-
-#define START_INDEX(OFFSET, PIECE_LENGTH) ((OFFSET)/(PIECE_LENGTH))
-#define END_INDEX(OFFSET, LENGTH, PIECE_LENGTH) (((OFFSET)+(LENGTH)-1)/(PIECE_LENGTH))
-
-#define DIV_FLOOR(X,Y) ((X)/(Y)+((X)%(Y)? 1:0))
-
 #ifdef WORDS_BIGENDIAN
 inline uint64_t ntoh64(uint64_t x) { return x; }
 inline uint64_t hton64(uint64_t x) { return x; }
@@ -108,6 +100,9 @@ std::wstring utf8ToWChar(const std::string& src);
 std::wstring utf8ToWChar(const char* str);
 
 std::string wCharToUtf8(const std::wstring& wsrc);
+
+// replace any backslash '\' in |src| with '/' and returns it.
+std::string toForwardSlash(const std::string &src);
 #else // !__MINGW32__
 # define utf8ToWChar(src) src
 # define utf8ToNative(src) src
@@ -345,6 +340,13 @@ void setGlobalSignalHandler(int signal, sigset_t* mask,
                             signal_handler_t handler, int flags);
 
 std::string getHomeDir();
+
+std::string getXDGDir(const std::string& environmentVariable,
+                      const std::string& fallbackDirectory);
+
+std::string getConfigFile();
+
+std::string getDHTFile(bool ipv6);
 
 int64_t getRealSize(const std::string& sizeWithUnit);
 
@@ -867,7 +869,7 @@ nextParam
 template<typename T>
 std::shared_ptr<T> copy(const std::shared_ptr<T>& a)
 {
-  return std::shared_ptr<T>(new T(*a.get()));
+  return std::make_shared<T>(*a.get());
 }
 
 // This is a bit different from cookie_helper::domainMatch().  If

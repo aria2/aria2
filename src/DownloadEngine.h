@@ -99,16 +99,16 @@ private:
     // protocol specific option string
     std::string options_;
 
-    time_t timeout_;
+    std::chrono::seconds timeout_;
 
     Timer registeredTime_;
   public:
     SocketPoolEntry(const std::shared_ptr<SocketCore>& socket,
                     const std::string& option,
-                    time_t timeout);
+                    std::chrono::seconds timeout);
 
     SocketPoolEntry(const std::shared_ptr<SocketCore>& socket,
-                    time_t timeout);
+                    std::chrono::seconds timeout);
 
     ~SocketPoolEntry();
 
@@ -132,10 +132,7 @@ private:
 
   bool noWait_;
 
-  static const int64_t DEFAULT_REFRESH_INTERVAL = 1000;
-
-  // Milliseconds
-  int64_t refreshInterval_;
+  std::chrono::milliseconds refreshInterval_;
   Timer lastRefresh_;
 
   std::unique_ptr<CookieStorage> cookieStorage_;
@@ -272,24 +269,24 @@ public:
                   const std::string& proxyhost, uint16_t proxyport,
                   const std::shared_ptr<SocketCore>& sock,
                   const std::string& options,
-                  time_t timeout = 15);
+                  std::chrono::seconds timeout = 15_s);
 
   void poolSocket(const std::shared_ptr<Request>& request,
                   const std::string& username,
                   const std::shared_ptr<Request>& proxyRequest,
                   const std::shared_ptr<SocketCore>& socket,
                   const std::string& options,
-                  time_t timeout = 15);
+                  std::chrono::seconds timeout = 15_s);
 
   void poolSocket(const std::string& ipaddr, uint16_t port,
                   const std::string& proxyhost, uint16_t proxyport,
                   const std::shared_ptr<SocketCore>& sock,
-                  time_t timeout = 15);
+                  std::chrono::seconds timeout = 15_s);
 
   void poolSocket(const std::shared_ptr<Request>& request,
                   const std::shared_ptr<Request>& proxyRequest,
                   const std::shared_ptr<SocketCore>& socket,
-                  time_t timeout = 15);
+                  std::chrono::seconds timeout = 15_s);
 
   std::shared_ptr<SocketCore> popPooledSocket
   (const std::string& ipaddr,
@@ -347,7 +344,7 @@ public:
 
   const std::unique_ptr<AuthConfigFactory>& getAuthConfigFactory() const;
 
-  void setRefreshInterval(int64_t interval);
+  void setRefreshInterval(std::chrono::milliseconds interval);
 
   const std::string getSessionId() const
   {

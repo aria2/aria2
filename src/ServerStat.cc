@@ -211,7 +211,7 @@ std::string ServerStat::toString() const
              getDownloadSpeed(),
              getSingleConnectionAvgSpeed(),
              getMultiConnectionAvgSpeed(),
-             getLastUpdated().getTime(),
+             getLastUpdated().getTimeFromEpoch(),
              getCounter(),
              STATUS_STRING[getStatus()]);
 }

@@ -115,6 +115,10 @@ void HttpServerBodyCommand::sendJsonRpcResponse
     httpServer_->disableKeepAlive();
     int httpCode;
     switch(res.code) {
+    case 1:
+      // error caught while executing RpcMethod
+      httpCode = 400;
+      break;
     case -32600:
       httpCode = 400;
       break;
@@ -148,8 +152,8 @@ void HttpServerBodyCommand::addHttpServerResponseCommand(bool delayed)
   auto resp =
     make_unique<HttpServerResponseCommand>(getCuid(), httpServer_, e_, socket_);
   if (delayed) {
-    e_->addCommand(
-        make_unique<DelayedCommand>(getCuid(), e_, 1, std::move(resp), true));
+    e_->addCommand(make_unique<DelayedCommand>(
+        getCuid(), e_, 1_s, std::move(resp), true));
     return;
   }
 
@@ -320,7 +324,7 @@ bool HttpServerBodyCommand::execute()
         return false;
       }
     } else {
-      if(timeoutTimer_.difference(global::wallclock()) >= 30) {
+      if(timeoutTimer_.difference(global::wallclock()) >= 30_s) {
         A2_LOG_INFO("HTTP request body timeout.");
         return true;
       } else {

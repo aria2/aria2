@@ -209,7 +209,7 @@ bool TrackerWatcherCommand::execute() {
       return true;
     } else {
       trackerRequest_->stop(e_);
-      e_->setRefreshInterval(0);
+      e_->setRefreshInterval(std::chrono::milliseconds(0));
       e_->addCommand(std::unique_ptr<Command>(this));
       return false;
     }
@@ -357,7 +357,8 @@ TrackerWatcherCommand::createHTTPAnnRequest(const std::string& uri)
   // PREF_DRY_RUN=false too.
   option->put(PREF_USE_HEAD, A2_V_FALSE);
   // Setting tracker timeouts
-  rg->setTimeout(option->getAsInt(PREF_BT_TRACKER_TIMEOUT));
+  rg->setTimeout(
+      std::chrono::seconds(option->getAsInt(PREF_BT_TRACKER_TIMEOUT)));
   option->put(PREF_CONNECT_TIMEOUT,
               option->get(PREF_BT_TRACKER_CONNECT_TIMEOUT));
   option->put(PREF_REUSE_URI, A2_V_FALSE);

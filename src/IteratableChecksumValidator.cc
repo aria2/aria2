@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "IteratableChecksumValidator.h"
 
+#include <array>
 #include <cstdlib>
 
 #include "util.h"
@@ -63,10 +64,10 @@ void IteratableChecksumValidator::validateChunk()
 {
   // Don't guard with !finished() to allow zero-length file to be
   // verified.
-  unsigned char buf[4096];
+  std::array<unsigned char, 4_k> buf;
   size_t length = pieceStorage_->getDiskAdaptor()->readDataDropCache
-    (buf, sizeof(buf), currentOffset_);
-  ctx_->update(buf, length);
+    (buf.data(), buf.size(), currentOffset_);
+  ctx_->update(buf.data(), length);
   currentOffset_ += length;
   if(finished()) {
     std::string actualDigest = ctx_->digest();

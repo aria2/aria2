@@ -270,7 +270,7 @@ void UDPTrackerClientTest::testConnectFollowedByAnnounce()
   req4->infohash = "bittorrent-infohash4";
   tr.addRequest(req4);
   Timer future = now;
-  future.advance(3600);
+  future.advance(1_h);
   rv = tr.createRequest(data, sizeof(data), remoteAddr, remotePort,
                         future);
   // connection ID is stale because of the timeout
@@ -384,7 +384,7 @@ void UDPTrackerClientTest::testTimeout()
     CPPUNIT_ASSERT_EQUAL((int)UDPT_ACT_CONNECT,
                          (int)bittorrent::getIntParam(data, 8));
     tr.requestSent(now);
-    now.advance(20);
+    now.advance(20_s);
     // 15 seconds 1st stage timeout passed
     tr.handleTimeout(now);
     CPPUNIT_ASSERT(tr.getConnectRequests().empty());
@@ -396,7 +396,7 @@ void UDPTrackerClientTest::testTimeout()
     CPPUNIT_ASSERT_EQUAL((int)UDPT_ACT_CONNECT,
                          (int)bittorrent::getIntParam(data, 8));
     tr.requestSent(now);
-    now.advance(65);
+    now.advance(65_s);
     // 60 seconds 2nd stage timeout passed
     tr.handleTimeout(now);
     CPPUNIT_ASSERT(tr.getConnectRequests().empty());
@@ -428,7 +428,7 @@ void UDPTrackerClientTest::testTimeout()
     CPPUNIT_ASSERT_EQUAL((int)UDPT_ACT_ANNOUNCE,
                          (int)bittorrent::getIntParam(data, 8));
     tr.requestSent(now);
-    now.advance(20);
+    now.advance(20_s);
     // 15 seconds 1st stage timeout passed
     tr.handleTimeout(now);
     CPPUNIT_ASSERT(tr.getConnectRequests().empty());
@@ -439,7 +439,7 @@ void UDPTrackerClientTest::testTimeout()
     CPPUNIT_ASSERT_EQUAL((int)UDPT_ACT_ANNOUNCE,
                          (int)bittorrent::getIntParam(data, 8));
     tr.requestSent(now);
-    now.advance(65);
+    now.advance(65_s);
     // 60 seconds 2nd stage timeout passed
     tr.handleTimeout(now);
     CPPUNIT_ASSERT(tr.getConnectRequests().empty());

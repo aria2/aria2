@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "FtpConnection.h"
 
+#include <array>
 #include <cstring>
 #include <cstdio>
 #include <cassert>
@@ -332,10 +333,10 @@ FtpConnection::findEndOfResponse
 
 bool FtpConnection::bulkReceiveResponse(std::pair<int, std::string>& response)
 {
-  char buf[1024];
+  std::array<char, 1_k> buf;
   while(1) {
-    size_t size = sizeof(buf);
-    socket_->readData(buf, size);
+    size_t size = buf.size();
+    socket_->readData(buf.data(), size);
     if(size == 0) {
       if(socket_->wantRead() || socket_->wantWrite()) {
         break;
@@ -348,7 +349,7 @@ bool FtpConnection::bulkReceiveResponse(std::pair<int, std::string>& response)
         (fmt("Max FTP recv buffer reached. length=%lu",
              static_cast<unsigned long>(strbuf_.size()+size)));
     }
-    strbuf_.append(&buf[0], &buf[size]);
+    strbuf_.append(std::begin(buf), std::begin(buf) + size);
   }
   int status;
   if(strbuf_.size() >= 4) {
