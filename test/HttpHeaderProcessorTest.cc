@@ -22,6 +22,7 @@ class HttpHeaderProcessorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetHttpResponseHeader_statusOnly);
   CPPUNIT_TEST(testGetHttpResponseHeader_insufficientStatusLength);
   CPPUNIT_TEST(testGetHttpResponseHeader_nameStartsWs);
+  CPPUNIT_TEST(testGetHttpResponseHeader_teAndCl);
   CPPUNIT_TEST(testBeyondLimit);
   CPPUNIT_TEST(testGetHeaderString);
   CPPUNIT_TEST(testGetHttpRequestHeader);
@@ -37,6 +38,7 @@ public:
   void testGetHttpResponseHeader_statusOnly();
   void testGetHttpResponseHeader_insufficientStatusLength();
   void testGetHttpResponseHeader_nameStartsWs();
+  void testGetHttpResponseHeader_teAndCl();
   void testBeyondLimit();
   void testGetHeaderString();
   void testGetHttpRequestHeader();
@@ -208,6 +210,26 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader_nameStartsWs()
   } catch(DlAbortEx& ex) {
     // Success
   }
+}
+
+void HttpHeaderProcessorTest::testGetHttpResponseHeader_teAndCl()
+{
+  HttpHeaderProcessor proc(HttpHeaderProcessor::CLIENT_PARSER);
+
+  std::string hd =
+    "HTTP/1.1 200\r\n"
+    "Content-Length: 200\r\n"
+    "Transfer-Encoding: chunked\r\n"
+    "Content-Range: 1-200/300\r\n"
+    "\r\n";
+
+  CPPUNIT_ASSERT(proc.parse(hd));
+
+  auto httpHeader = proc.getResult();
+  CPPUNIT_ASSERT_EQUAL(std::string("chunked"),
+                       httpHeader->find(HttpHeader::TRANSFER_ENCODING));
+  CPPUNIT_ASSERT(!httpHeader->defined(HttpHeader::CONTENT_LENGTH));
+  CPPUNIT_ASSERT(!httpHeader->defined(HttpHeader::CONTENT_RANGE));
 }
 
 void HttpHeaderProcessorTest::testBeyondLimit()

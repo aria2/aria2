@@ -106,6 +106,8 @@ public:
             std::multimap<int, std::string>::const_iterator>
   equalRange(int hdKey) const;
 
+  void remove(int hdKey);
+
   Range getRange() const;
 
   int getStatusCode() const;

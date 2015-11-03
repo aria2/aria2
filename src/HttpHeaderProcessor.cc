@@ -446,7 +446,24 @@ fin:
 
   lastBytesProcessed_ = i;
   headers_.append(&data[0], &data[i]);
-  return state_ == HEADERS_COMPLETE;
+
+  if (state_ != HEADERS_COMPLETE) {
+    return false;
+  }
+
+  // If both transfer-encoding and (content-length or content-range)
+  // are present, delete content-length and content-range.  RFC 7230
+  // says that sender must not send both transfer-encoding and
+  // content-length.  If both present, transfer-encoding overrides
+  // content-length.  There is no text about transfer-encoding and
+  // content-range.  But there is no reason to send transfer-encoding
+  // when range is set.
+  if (result_->defined(HttpHeader::TRANSFER_ENCODING)) {
+    result_->remove(HttpHeader::CONTENT_LENGTH);
+    result_->remove(HttpHeader::CONTENT_RANGE);
+  }
+
+  return true;
 }
 
 bool HttpHeaderProcessor::parse(const std::string& data)

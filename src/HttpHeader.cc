@@ -53,6 +53,11 @@ void HttpHeader::put(int hdKey, const std::string& value)
   table_.insert(vt);
 }
 
+void HttpHeader::remove(int hdKey)
+{
+  table_.erase(hdKey);
+}
+
 bool HttpHeader::defined(int hdKey) const
 {
   return table_.count(hdKey);

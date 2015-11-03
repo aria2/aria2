@@ -263,7 +263,8 @@ bool HttpResponseCommand::executeInternal()
     updateLastModifiedTime(httpResponse->getLastModifiedTime());
 
     // If both transfer-encoding and total length is specified, we
-    // assume we can do segmented downloading
+    // should have ignored total length.  In this case, we can not do
+    // segmented downloading
     if (totalLength == 0 || shouldInflateContentEncoding(httpResponse.get())) {
       // we ignore content-length when inflate is required
       fe->setLength(0);

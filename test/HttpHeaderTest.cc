@@ -14,6 +14,7 @@ class HttpHeaderTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testFindAll);
   CPPUNIT_TEST(testClearField);
   CPPUNIT_TEST(testFieldContains);
+  CPPUNIT_TEST(testRemove);
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -21,6 +22,7 @@ public:
   void testFindAll();
   void testClearField();
   void testFieldContains();
+  void testRemove();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( HttpHeaderTest );
@@ -165,6 +167,19 @@ void HttpHeaderTest::testFieldContains()
   CPPUNIT_ASSERT(h.fieldContains(HttpHeader::SEC_WEBSOCKET_VERSION, "13"));
   CPPUNIT_ASSERT(h.fieldContains(HttpHeader::SEC_WEBSOCKET_VERSION, "8"));
   CPPUNIT_ASSERT(!h.fieldContains(HttpHeader::SEC_WEBSOCKET_VERSION, "6"));
+}
+
+void HttpHeaderTest::testRemove()
+{
+  HttpHeader h;
+  h.put(HttpHeader::CONNECTION, "close");
+  h.put(HttpHeader::TRANSFER_ENCODING, "chunked");
+  h.put(HttpHeader::TRANSFER_ENCODING, "gzip");
+
+  h.remove(HttpHeader::TRANSFER_ENCODING);
+
+  CPPUNIT_ASSERT(!h.defined(HttpHeader::TRANSFER_ENCODING));
+  CPPUNIT_ASSERT(h.defined(HttpHeader::CONNECTION));
 }
 
 } // namespace aria2
