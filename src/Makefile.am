@@ -267,7 +267,8 @@ SRCS =  \
 	WrDiskCache.cc WrDiskCache.h\
 	WrDiskCacheEntry.cc WrDiskCacheEntry.h\
 	XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\
-	OpenedFileCounter.cc OpenedFileCounter.h
+	OpenedFileCounter.cc OpenedFileCounter.h \
+	SHA1IOFile.cc SHA1IOFile.h
 
 if ANDROID
 SRCS += android/android.c

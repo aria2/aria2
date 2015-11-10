@@ -46,6 +46,7 @@ class PieceStorage;
 class PeerStorage;
 class BtRuntime;
 class Option;
+class IOFile;
 
 class DefaultBtProgressInfoFile : public BtProgressInfoFile {
 private:
@@ -57,8 +58,14 @@ private:
 #endif // ENABLE_BITTORRENT
   const Option* option_;
   std::string filename_;
+  // Last SHA1 digest value of the content written.  Initially, this
+  // is empty string.  This is used to avoid to write same content
+  // repeatedly, which could wake up disk that may be sleeping.
+  std::string lastDigest_;
 
   bool isTorrentDownload();
+  void save(IOFile& fp);
+
 public:
   DefaultBtProgressInfoFile(const std::shared_ptr<DownloadContext>& btContext,
                             const std::shared_ptr<PieceStorage>& pieceStorage,

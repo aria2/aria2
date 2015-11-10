@@ -55,6 +55,7 @@
 #include "array_fun.h"
 #include "DownloadContext.h"
 #include "BufferedFile.h"
+#include "SHA1IOFile.h"
 #ifdef ENABLE_BITTORRENT
 # include "PeerStorage.h"
 # include "BtRuntime.h"
@@ -105,95 +106,116 @@ bool DefaultBtProgressInfoFile::isTorrentDownload()
   }
 
 // Since version 0001, Integers are saved in binary form, network byte order.
+void DefaultBtProgressInfoFile::save(IOFile& fp)
+{
+#ifdef ENABLE_BITTORRENT
+  bool torrentDownload = isTorrentDownload();
+#else  // !ENABLE_BITTORRENT
+  bool torrentDownload = false;
+#endif // !ENABLE_BITTORRENT
+  // file version: 16 bits
+  // values: '1'
+  char version[] = {0x00u, 0x01u};
+  WRITE_CHECK(fp, version, sizeof(version));
+  // extension: 32 bits
+  // If this is BitTorrent download, then 0x00000001
+  // Otherwise, 0x00000000
+  char extension[4];
+  memset(extension, 0, sizeof(extension));
+  if (torrentDownload) {
+    extension[3] = 1;
+  }
+  WRITE_CHECK(fp, extension, sizeof(extension));
+  if (torrentDownload) {
+#ifdef ENABLE_BITTORRENT
+    // infoHashLength:
+    // length: 32 bits
+    const unsigned char* infoHash = bittorrent::getInfoHash(dctx_);
+    uint32_t infoHashLengthNL = htonl(INFO_HASH_LENGTH);
+    WRITE_CHECK(fp, &infoHashLengthNL, sizeof(infoHashLengthNL));
+    // infoHash:
+    WRITE_CHECK(fp, infoHash, INFO_HASH_LENGTH);
+#endif // ENABLE_BITTORRENT
+  } else {
+    // infoHashLength:
+    // length: 32 bits
+    uint32_t infoHashLength = 0;
+    WRITE_CHECK(fp, &infoHashLength, sizeof(infoHashLength));
+  }
+  // pieceLength: 32 bits
+  uint32_t pieceLengthNL = htonl(dctx_->getPieceLength());
+  WRITE_CHECK(fp, &pieceLengthNL, sizeof(pieceLengthNL));
+  // totalLength: 64 bits
+  uint64_t totalLengthNL = hton64(dctx_->getTotalLength());
+  WRITE_CHECK(fp, &totalLengthNL, sizeof(totalLengthNL));
+  // uploadLength: 64 bits
+  uint64_t uploadLengthNL = 0;
+#ifdef ENABLE_BITTORRENT
+  if (torrentDownload) {
+    uploadLengthNL = hton64(btRuntime_->getUploadLengthAtStartup() +
+                            dctx_->getNetStat().getSessionUploadLength());
+  }
+#endif // ENABLE_BITTORRENT
+  WRITE_CHECK(fp, &uploadLengthNL, sizeof(uploadLengthNL));
+  // bitfieldLength: 32 bits
+  uint32_t bitfieldLengthNL = htonl(pieceStorage_->getBitfieldLength());
+  WRITE_CHECK(fp, &bitfieldLengthNL, sizeof(bitfieldLengthNL));
+  // bitfield
+  WRITE_CHECK(fp, pieceStorage_->getBitfield(),
+              pieceStorage_->getBitfieldLength());
+  // the number of in-flight piece: 32 bits
+  // TODO implement this
+  uint32_t numInFlightPieceNL = htonl(pieceStorage_->countInFlightPiece());
+  WRITE_CHECK(fp, &numInFlightPieceNL, sizeof(numInFlightPieceNL));
+  std::vector<std::shared_ptr<Piece>> inFlightPieces;
+  inFlightPieces.reserve(pieceStorage_->countInFlightPiece());
+  pieceStorage_->getInFlightPieces(inFlightPieces);
+  for (std::vector<std::shared_ptr<Piece>>::const_iterator
+           itr = inFlightPieces.begin(),
+           eoi = inFlightPieces.end();
+       itr != eoi; ++itr) {
+    uint32_t indexNL = htonl((*itr)->getIndex());
+    WRITE_CHECK(fp, &indexNL, sizeof(indexNL));
+    uint32_t lengthNL = htonl((*itr)->getLength());
+    WRITE_CHECK(fp, &lengthNL, sizeof(lengthNL));
+    uint32_t bitfieldLengthNL = htonl((*itr)->getBitfieldLength());
+    WRITE_CHECK(fp, &bitfieldLengthNL, sizeof(bitfieldLengthNL));
+    WRITE_CHECK(fp, (*itr)->getBitfield(), (*itr)->getBitfieldLength());
+  }
+  if (fp.close() == EOF) {
+    throw DL_ABORT_EX(fmt(EX_SEGMENT_FILE_WRITE, filename_.c_str()));
+  }
+}
+
 void DefaultBtProgressInfoFile::save()
 {
+  SHA1IOFile sha1io;
+
+  save(sha1io);
+
+  auto digest = sha1io.digest();
+  if (digest == lastDigest_) {
+    // We don't write control file if the content is not changed.
+    return;
+  }
+
+  lastDigest_ = std::move(digest);
+
   A2_LOG_INFO(fmt(MSG_SAVING_SEGMENT_FILE, filename_.c_str()));
   std::string filenameTemp = filename_;
   filenameTemp += "__temp";
   {
     BufferedFile fp(filenameTemp.c_str(), BufferedFile::WRITE);
-    if(!fp) {
+    if (!fp) {
       throw DL_ABORT_EX(fmt(EX_SEGMENT_FILE_WRITE, filename_.c_str()));
     }
-#ifdef ENABLE_BITTORRENT
-    bool torrentDownload = isTorrentDownload();
-#else // !ENABLE_BITTORRENT
-    bool torrentDownload = false;
-#endif // !ENABLE_BITTORRENT
-    // file version: 16 bits
-    // values: '1'
-    char version[] = { 0x00u, 0x01u };
-    WRITE_CHECK(fp, version, sizeof(version));
-    // extension: 32 bits
-    // If this is BitTorrent download, then 0x00000001
-    // Otherwise, 0x00000000
-    char extension[4];
-    memset(extension, 0, sizeof(extension));
-    if(torrentDownload) {
-      extension[3] = 1;
-    }
-    WRITE_CHECK(fp, extension, sizeof(extension));
-    if(torrentDownload) {
-#ifdef ENABLE_BITTORRENT
-      // infoHashLength:
-      // length: 32 bits
-      const unsigned char* infoHash = bittorrent::getInfoHash(dctx_);
-      uint32_t infoHashLengthNL = htonl(INFO_HASH_LENGTH);
-      WRITE_CHECK(fp, &infoHashLengthNL, sizeof(infoHashLengthNL));
-      // infoHash:
-      WRITE_CHECK(fp, infoHash, INFO_HASH_LENGTH);
-#endif // ENABLE_BITTORRENT
-    } else {
-      // infoHashLength:
-      // length: 32 bits
-      uint32_t infoHashLength = 0;
-      WRITE_CHECK(fp, &infoHashLength, sizeof(infoHashLength));
-    }
-    // pieceLength: 32 bits
-    uint32_t pieceLengthNL = htonl(dctx_->getPieceLength());
-    WRITE_CHECK(fp, &pieceLengthNL, sizeof(pieceLengthNL));
-    // totalLength: 64 bits
-    uint64_t totalLengthNL = hton64(dctx_->getTotalLength());
-    WRITE_CHECK(fp, &totalLengthNL, sizeof(totalLengthNL));
-    // uploadLength: 64 bits
-    uint64_t uploadLengthNL = 0;
-#ifdef ENABLE_BITTORRENT
-    if(torrentDownload) {
-      uploadLengthNL = hton64(btRuntime_->getUploadLengthAtStartup()+
-                              dctx_->getNetStat().getSessionUploadLength());
-    }
-#endif // ENABLE_BITTORRENT
-    WRITE_CHECK(fp, &uploadLengthNL, sizeof(uploadLengthNL));
-    // bitfieldLength: 32 bits
-    uint32_t bitfieldLengthNL = htonl(pieceStorage_->getBitfieldLength());
-    WRITE_CHECK(fp, &bitfieldLengthNL, sizeof(bitfieldLengthNL));
-    // bitfield
-    WRITE_CHECK(fp, pieceStorage_->getBitfield(),
-                pieceStorage_->getBitfieldLength());
-    // the number of in-flight piece: 32 bits
-    // TODO implement this
-    uint32_t numInFlightPieceNL = htonl(pieceStorage_->countInFlightPiece());
-    WRITE_CHECK(fp, &numInFlightPieceNL, sizeof(numInFlightPieceNL));
-    std::vector<std::shared_ptr<Piece> > inFlightPieces;
-    inFlightPieces.reserve(pieceStorage_->countInFlightPiece());
-    pieceStorage_->getInFlightPieces(inFlightPieces);
-    for(std::vector<std::shared_ptr<Piece> >::const_iterator itr =
-          inFlightPieces.begin(), eoi = inFlightPieces.end();
-        itr != eoi; ++itr) {
-      uint32_t indexNL = htonl((*itr)->getIndex());
-      WRITE_CHECK(fp, &indexNL, sizeof(indexNL));
-      uint32_t lengthNL = htonl((*itr)->getLength());
-      WRITE_CHECK(fp, &lengthNL, sizeof(lengthNL));
-      uint32_t bitfieldLengthNL = htonl((*itr)->getBitfieldLength());
-      WRITE_CHECK(fp, &bitfieldLengthNL, sizeof(bitfieldLengthNL));
-      WRITE_CHECK(fp, (*itr)->getBitfield(), (*itr)->getBitfieldLength());
-    }
-    if(fp.close() == EOF) {
-      throw DL_ABORT_EX(fmt(EX_SEGMENT_FILE_WRITE, filename_.c_str()));
-    }
-    A2_LOG_INFO(MSG_SAVED_SEGMENT_FILE);
+
+    save(fp);
   }
-  if(!File(filenameTemp).renameTo(filename_)) {
+
+  A2_LOG_INFO(MSG_SAVED_SEGMENT_FILE);
+
+  if (!File(filenameTemp).renameTo(filename_)) {
     throw DL_ABORT_EX(fmt(EX_SEGMENT_FILE_WRITE, filename_.c_str()));
   }
 }
