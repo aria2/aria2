@@ -311,6 +311,8 @@ public:
    uint16_t port,
    const std::string& username);
 
+  void evictSocketPool();
+
   const std::unique_ptr<CookieStorage>& getCookieStorage() const;
 
 #ifdef ENABLE_BITTORRENT

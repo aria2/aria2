@@ -311,22 +311,25 @@ void DownloadEngine::poolSocket(const std::string& key,
   A2_LOG_INFO(fmt("Pool socket for %s", key.c_str()));
   std::multimap<std::string, SocketPoolEntry>::value_type p(key, entry);
   socketPool_.insert(p);
+}
 
-  if(lastSocketPoolScan_.difference(global::wallclock()) < 1_min) {
+void DownloadEngine::evictSocketPool()
+{
+  if (socketPool_.empty()) {
     return;
   }
+
   std::multimap<std::string, SocketPoolEntry> newPool;
   A2_LOG_DEBUG("Scaning SocketPool and erasing timed out entry.");
-  lastSocketPoolScan_ = global::wallclock();
-  for(auto & elem : socketPool_) {
-    if(!elem.second.isTimeout()) {
+  for (auto& elem : socketPool_) {
+    if (!elem.second.isTimeout()) {
       newPool.insert(elem);
     }
   }
   A2_LOG_DEBUG(fmt("%lu entries removed.",
-                    static_cast<unsigned long>
-                    (socketPool_.size()-newPool.size())));
-  socketPool_ = newPool;
+                   static_cast<unsigned long>
+                   (socketPool_.size() - newPool.size())));
+  socketPool_ = std::move(newPool);
 }
 
 namespace {

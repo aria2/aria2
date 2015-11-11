@@ -57,6 +57,7 @@
 #include "a2io.h"
 #include "DownloadContext.h"
 #include "array_fun.h"
+#include "EvictSocketPoolCommand.h"
 #ifdef HAVE_LIBUV
 # include "LibuvEventPoll.h"
 #endif // HAVE_LIBUV
@@ -164,6 +165,8 @@ DownloadEngineFactory::newDownloadEngine
   e->addRoutineCommand(make_unique<CheckIntegrityDispatcherCommand>
                        (e->newCUID(), e->getCheckIntegrityMan().get(),
                         e.get()));
+  e->addRoutineCommand(make_unique<EvictSocketPoolCommand>
+                       (e->newCUID(), e.get(), 30_s));
 
   if(op->getAsInt(PREF_AUTO_SAVE_INTERVAL) > 0) {
     e->addRoutineCommand(make_unique<AutoSaveCommand>(
