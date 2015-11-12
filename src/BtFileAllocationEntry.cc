@@ -58,9 +58,11 @@ BtFileAllocationEntry::~BtFileAllocationEntry() {}
 void BtFileAllocationEntry::prepareForNextAction
 (std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
 {
-  BtSetup().setup(commands, getRequestGroup(), e,
-                  getRequestGroup()->getOption().get());
-  if(getRequestGroup()->getOption()->getAsBool(PREF_ENABLE_MMAP)) {
+  auto &option = getRequestGroup()->getOption();
+
+  BtSetup().setup(commands, getRequestGroup(), e, option.get());
+  if(option->getAsBool(PREF_ENABLE_MMAP) &&
+     option->get(PREF_FILE_ALLOCATION) != V_NONE) {
     getRequestGroup()->getPieceStorage()->getDiskAdaptor()->enableMmap();
   }
   if(!getRequestGroup()->downloadFinished()) {

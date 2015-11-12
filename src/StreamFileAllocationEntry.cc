@@ -60,10 +60,13 @@ void StreamFileAllocationEntry::prepareForNextAction
 (std::vector<std::unique_ptr<Command>>& commands,
  DownloadEngine* e)
 {
+  auto &option = getRequestGroup()->getOption();
+
   // For DownloadContext::resetDownloadStartTime(), see also
   // RequestGroup::createInitialCommand()
   getRequestGroup()->getDownloadContext()->resetDownloadStartTime();
-  if(getRequestGroup()->getOption()->getAsBool(PREF_ENABLE_MMAP)) {
+  if(option->getAsBool(PREF_ENABLE_MMAP) &&
+     option->get(PREF_FILE_ALLOCATION) != V_NONE) {
     getRequestGroup()->getPieceStorage()->getDiskAdaptor()->enableMmap();
   }
   if(getNextCommand()) {

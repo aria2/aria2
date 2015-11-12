@@ -284,12 +284,10 @@ ssize_t AbstractDiskWriter::readDataInternal(unsigned char* data, size_t len,
                                              int64_t offset)
 {
   if(mapaddr_) {
-    ssize_t readlen;
-    if(offset > maplen_) {
-      readlen = 0;
-    } else {
-      readlen = std::min(static_cast<size_t>(maplen_ - offset), len);
+    if (offset >= maplen_) {
+      return 0;
     }
+    auto readlen = std::min(maplen_ - offset, static_cast<int64_t>(len));
     memcpy(data, mapaddr_ + offset, readlen);
     return readlen;
   } else {
@@ -355,6 +353,14 @@ void AbstractDiskWriter::ensureMmapWrite(size_t len, int64_t offset)
       }
     } else {
       int64_t filesize = size();
+
+      if (filesize == 0) {
+        // mapping 0 length file is useless.  Also munmap with size ==
+        // 0 will fail with EINVAL.
+        enableMmap_ = false;
+        return;
+      }
+
       int errNum = 0;
       if(static_cast<int64_t>(len + offset) <= filesize) {
 #ifdef __MINGW32__
