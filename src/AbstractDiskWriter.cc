@@ -380,7 +380,7 @@ void AbstractDiskWriter::ensureMmapWrite(size_t len, int64_t offset)
         }
 #else // !__MINGW32__
         mapaddr_ = reinterpret_cast<unsigned char*>
-          (mmap(nullptr, size(), PROT_READ | PROT_WRITE, MAP_SHARED, fd_, 0));
+          (mmap(nullptr, filesize, PROT_READ | PROT_WRITE, MAP_SHARED, fd_, 0));
         if(!mapaddr_) {
           errNum = errno;
         }
