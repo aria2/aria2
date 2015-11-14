@@ -214,6 +214,11 @@ following packages to get autoconf macros:
 
 * libxml2-dev
 * libcppunit-dev
+* autoconf
+* automake
+* autotools-dev
+* autopoint
+* libtool
 
 And run following command to generate configure script and other files
 necessary to build the program::
