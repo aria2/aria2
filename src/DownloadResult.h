@@ -92,6 +92,8 @@ struct DownloadResult
 
   error_code::Value result;
 
+  std::string resultMessage;
+
   bool inMemoryDownload;
 
   DownloadResult();

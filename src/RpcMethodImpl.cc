@@ -96,6 +96,7 @@ const char VLB_ZERO[] = "0";
 
 const char KEY_GID[] = "gid";
 const char KEY_ERROR_CODE[] = "errorCode";
+const char KEY_ERROR_MESSAGE[] = "errorMessage";
 const char KEY_STATUS[] = "status";
 const char KEY_TOTAL_LENGTH[] = "totalLength";
 const char KEY_COMPLETED_LENGTH[] = "completedLength";
@@ -811,6 +812,9 @@ void gatherStoppedDownload
   }
   if(requested_key(keys, KEY_ERROR_CODE)) {
     entryDict->put(KEY_ERROR_CODE, util::itos(static_cast<int>(ds->result)));
+  }
+  if(requested_key(keys, KEY_ERROR_MESSAGE)) {
+    entryDict->put(KEY_ERROR_MESSAGE, ds->resultMessage);
   }
   if(requested_key(keys, KEY_STATUS)) {
     if(ds->result == error_code::REMOVED) {

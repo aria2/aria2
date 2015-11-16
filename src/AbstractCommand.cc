@@ -343,7 +343,7 @@ bool AbstractCommand::execute()
     return false;
   }
   catch (DlAbortEx& err) {
-    requestGroup_->setLastErrorCode(err.getErrorCode());
+    requestGroup_->setLastErrorCode(err.getErrorCode(), err.what());
     if (req_) {
       A2_LOG_ERROR_EX
         (fmt(MSG_DOWNLOAD_ABORTED, getCuid(), req_->getUri().c_str()),
@@ -376,7 +376,7 @@ bool AbstractCommand::execute()
       A2_LOG_ERROR_EX
         (fmt(MSG_DOWNLOAD_ABORTED, getCuid(), req_->getUri().c_str()), err);
       fileEntry_->addURIResult(req_->getUri(), err.getErrorCode());
-      requestGroup_->setLastErrorCode(err.getErrorCode());
+      requestGroup_->setLastErrorCode(err.getErrorCode(), err.what());
       if (err.getErrorCode() == error_code::CANNOT_RESUME) {
         requestGroup_->increaseResumeFailureCount();
       }
@@ -392,7 +392,7 @@ bool AbstractCommand::execute()
     return prepareForRetry(0);
   }
   catch (DownloadFailureException& err) {
-    requestGroup_->setLastErrorCode(err.getErrorCode());
+    requestGroup_->setLastErrorCode(err.getErrorCode(), err.what());
     if (req_) {
       A2_LOG_ERROR_EX
         (fmt(MSG_DOWNLOAD_ABORTED, getCuid(), req_->getUri().c_str()),
