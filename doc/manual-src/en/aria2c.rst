@@ -2305,7 +2305,7 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
 
     >>> import xmlrpclib
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
-    >>> s.aria2.addTorrent(xmlrpclib.Binary(open('file.torrent').read()))
+    >>> s.aria2.addTorrent(xmlrpclib.Binary(open('file.torrent', mode='rb').read()))
     '2089b05ecca3d829'
 
 .. function:: aria2.addMetalink([secret], metalink[, options[, position]])
@@ -2351,7 +2351,7 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
 
     >>> import xmlrpclib
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
-    >>> s.aria2.addMetalink(xmlrpclib.Binary(open('file.meta4').read()))
+    >>> s.aria2.addMetalink(xmlrpclib.Binary(open('file.meta4', mode='rb').read()))
     ['2089b05ecca3d829']
 
 .. function:: aria2.remove([secret], gid)
@@ -3395,7 +3395,7 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
     >>> mc = xmlrpclib.MultiCall(s)
     >>> mc.aria2.addUri(['http://example.org/file'])
-    >>> mc.aria2.addTorrent(xmlrpclib.Binary(open('file.torrent').read()))
+    >>> mc.aria2.addTorrent(xmlrpclib.Binary(open('file.torrent', mode='rb').read()))
     >>> r = mc()
     >>> tuple(r)
     ('2089b05ecca3d829', 'd2703803b52216d1')
