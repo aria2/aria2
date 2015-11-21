@@ -516,7 +516,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
     } catch(RecoverableException& ex) {
       A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, ex);
       A2_LOG_DEBUG("Deleting temporal commands.");
-      groupToAdd->setLastErrorCode(ex.getErrorCode());
+      groupToAdd->setLastErrorCode(ex.getErrorCode(), ex.what());
       // We add groupToAdd to e later in order to it is processed in
       // removeStoppedGroup().
       requestQueueCheck();

@@ -402,7 +402,7 @@ void PeerInteractionCommand::onAbort() {
 
 void PeerInteractionCommand::onFailure(const Exception& err)
 {
-  requestGroup_->setLastErrorCode(err.getErrorCode());
+  requestGroup_->setLastErrorCode(err.getErrorCode(), err.what());
   requestGroup_->setHaltRequested(true);
   getDownloadEngine()->setRefreshInterval(std::chrono::milliseconds(0));
 }

@@ -2492,6 +2492,10 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
     is a string. The error codes are defined in the `EXIT STATUS`_ section.
     This value is only available for stopped/completed downloads.
 
+  ``errorMessage``
+    The (hopefully) human readable error message associated to
+    ``errorCode``.
+
   ``followedBy``
     List of GIDs which are generated as the result of this
     download. For example, when aria2 downloads a Metalink file, it

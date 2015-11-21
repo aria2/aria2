@@ -41,6 +41,7 @@
 #include <algorithm>
 #include <vector>
 #include <memory>
+#include <utility>
 
 #include "TransferStat.h"
 #include "TimeA2.h"
@@ -163,6 +164,8 @@ private:
 
   error_code::Value lastErrorCode_;
 
+  std::string lastErrorMessage_;
+
   bool saveControlFile_;
 
   bool fileAllocationEnabled_;
@@ -195,7 +198,7 @@ private:
   // download didn't finish and error result is available in
   // _uriResults, then last result code is returned.  Otherwise
   // returns error_code::UNKNOWN_ERROR.
-  error_code::Value downloadResult() const;
+  std::pair<error_code::Value, std::string> downloadResult() const;
 
   void removeDefunctControlFile
   (const std::shared_ptr<BtProgressInfoFile>& progressInfoFile);
@@ -478,9 +481,10 @@ public:
     maxUploadSpeedLimit_ = speed;
   }
 
-  void setLastErrorCode(error_code::Value code)
+  void setLastErrorCode(error_code::Value code, const char *message = "")
   {
     lastErrorCode_ = code;
+    lastErrorMessage_ = message;
   }
 
   error_code::Value getLastErrorCode() const

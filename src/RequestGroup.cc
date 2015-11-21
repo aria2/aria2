@@ -185,24 +185,24 @@ bool RequestGroup::allDownloadFinished() const
   return pieceStorage_->allDownloadFinished();
 }
 
-error_code::Value RequestGroup::downloadResult() const
+std::pair<error_code::Value, std::string> RequestGroup::downloadResult() const
 {
   if(downloadFinished() && !downloadContext_->isChecksumVerificationNeeded()) {
-    return error_code::FINISHED;
+    return std::make_pair(error_code::FINISHED, "");
   }
 
   if(haltReason_ == RequestGroup::USER_REQUEST) {
-    return error_code::REMOVED;
+    return std::make_pair(error_code::REMOVED, "");
   }
 
   if(lastErrorCode_ == error_code::UNDEFINED) {
     if(haltReason_ == RequestGroup::SHUTDOWN_SIGNAL) {
-      return error_code::IN_PROGRESS;
+      return std::make_pair(error_code::IN_PROGRESS, "");
     }
-    return error_code::UNKNOWN_ERROR;
+    return std::make_pair(error_code::UNKNOWN_ERROR, "");
   }
 
-  return lastErrorCode_;
+  return std::make_pair(lastErrorCode_, lastErrorMessage_);
 }
 
 void RequestGroup::closeFile()
@@ -1131,7 +1131,10 @@ std::shared_ptr<DownloadResult> RequestGroup::createDownloadResult() const
   res->sessionDownloadLength = st.sessionDownloadLength;
   res->sessionTime = std::chrono::duration_cast<std::chrono::milliseconds>(
       downloadContext_->calculateSessionTime());
-  res->result = downloadResult();
+
+  auto result = downloadResult();
+  res->result = result.first;
+  res->resultMessage = result.second;
   res->followedBy = followedByGIDs_;
   res->belongsTo = belongsToGID_;
   res->option = option_;
