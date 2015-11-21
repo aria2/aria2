@@ -42,6 +42,7 @@
 #endif // HAVE_SOME_FALLOCATE
 #include "DiskWriter.h"
 #include "DefaultDiskWriterFactory.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
@@ -59,18 +60,26 @@ MultiFileAllocationIterator::~MultiFileAllocationIterator() {
 
 void MultiFileAllocationIterator::allocateChunk()
 {
-  while((!fileAllocationIterator_ ||
-         fileAllocationIterator_->finished()) &&
-        entryItr_ != std::end(diskAdaptor_->getDiskWriterEntries())) {
+  if (fileAllocationIterator_) {
+    if (!fileAllocationIterator_->finished()) {
+      fileAllocationIterator_->allocateChunk();
+      return;
+    }
+
     if (diskWriter_) {
       diskWriter_->closeFile();
       diskWriter_.reset();
     }
     fileAllocationIterator_.reset();
+    ++entryItr_;
+  }
+
+  while(entryItr_ != std::end(diskAdaptor_->getDiskWriterEntries())) {
     if(!(*entryItr_)->getDiskWriter()) {
       ++entryItr_;
       continue;
     }
+
     auto& fileEntry = (*entryItr_)->getFileEntry();
     // we use dedicated DiskWriter instead of
     // (*entryItr_)->getDiskWriter().  This is because
@@ -84,6 +93,10 @@ void MultiFileAllocationIterator::allocateChunk()
 
     if((*entryItr_)->needsFileAllocation() &&
        (*entryItr_)->size() < fileEntry->getLength()) {
+      A2_LOG_INFO(fmt("Allocating file %s: target size=%" PRId64
+                      ", current size=%" PRId64,
+                      (*entryItr_)->getFilePath().c_str(),
+                      fileEntry->getLength(), (*entryItr_)->size()));
       switch(diskAdaptor_->getFileAllocationMethod()) {
 #ifdef HAVE_SOME_FALLOCATE
       case(DiskAdaptor::FILE_ALLOC_FALLOC):
@@ -106,14 +119,15 @@ void MultiFileAllocationIterator::allocateChunk()
            fileEntry->getLength());
         break;
       }
-      break;
+      fileAllocationIterator_->allocateChunk();
+      return;
     }
+
+    diskWriter_->closeFile();
+    diskWriter_.reset();
+
     ++entryItr_;
   }
-  if(finished()) {
-    return;
-  }
-  fileAllocationIterator_->allocateChunk();
 }
 
 bool MultiFileAllocationIterator::finished()
