@@ -103,12 +103,46 @@ bool File::remove() {
   }
 }
 
-int64_t File::size() {
+#ifdef __MINGW32__
+namespace {
+HANDLE openFile(const std::string& filename)
+{
+  DWORD desiredAccess = GENERIC_READ;
+  DWORD sharedMode = FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE;
+  DWORD creationDisp = OPEN_EXISTING;
+  return CreateFileW(utf8ToWChar(filename).c_str(), desiredAccess, sharedMode,
+                     /* lpSecurityAttributes */ nullptr, creationDisp,
+                     FILE_ATTRIBUTE_NORMAL, /* hTemplateFile */ nullptr);
+}
+} // namespace
+#endif // __MINGW32__
+
+int64_t File::size()
+{
+#ifdef __MINGW32__
+  // _wstat cannot be used for symlink.  It always returns 0.  Quoted
+  // from https://msdn.microsoft.com/en-us/library/14h5k7ff.aspx:
+  //
+  //   _wstat does not work with Windows Vista symbolic links. In
+  //   these cases, _wstat will always report a file size of 0. _stat
+  //   does work correctly with symbolic links.
+  auto hn = openFile(name_);
+  if (hn == INVALID_HANDLE_VALUE) {
+    return 0;
+  }
+  LARGE_INTEGER fileSize;
+  if (!GetFileSizeEx(hn, &fileSize)) {
+    return 0;
+  }
+  CloseHandle(hn);
+  return fileSize.QuadPart;
+#else  // !__MINGW32__
   a2_struct_stat fstat;
   if(fillStat(fstat) < 0) {
     return 0;
   }
   return fstat.st_size;
+#endif // !__MINGW32__
 }
 
 bool File::mkdirs() {
