@@ -48,6 +48,9 @@ void Base32Test::testDecode()
   s = "GEZDGNBV";
   CPPUNIT_ASSERT_EQUAL(std::string("12345"),
                        base32::decode(s.begin(), s.end()));
+  s = "gezdgnbv";
+  CPPUNIT_ASSERT_EQUAL(std::string("12345"),
+                       base32::decode(s.begin(), s.end()));
 }
 
 } // namespace aria2

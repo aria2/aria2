@@ -64,6 +64,8 @@ std::string decode(InputIterator first, InputIterator last)
       unsigned char value;
       if('A' <= ch && ch <= 'Z') {
         value = ch-'A';
+      } else if('a' <= ch && ch <= 'z') {
+        value = ch-'a';
       } else if('2' <= ch && ch <= '7') {
         value = ch-'2'+26;
       } else if(ch == '=') {
