@@ -76,6 +76,8 @@ public:
   double getAsDouble(PrefPtr pref) const;
   // Removes |pref| from this object. This function does not modify
   // parent_.
+  void removeLocal(PrefPtr pref);
+  // Removes |pref| from this object from all option hierarchy.
   void remove(PrefPtr pref);
   // Removes all option values from this object. This function does
   // not modify parent_.

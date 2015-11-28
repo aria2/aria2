@@ -147,10 +147,18 @@ double Option::getAsDouble(PrefPtr pref) const {
   }
 }
 
-void Option::remove(PrefPtr pref)
+void Option::removeLocal(PrefPtr pref)
 {
   unsetBit(use_, pref);
   table_[pref->i].clear();
+}
+
+void Option::remove(PrefPtr pref)
+{
+  removeLocal(pref);
+  if (parent_) {
+    parent_->remove(pref);
+  }
 }
 
 void Option::clear()

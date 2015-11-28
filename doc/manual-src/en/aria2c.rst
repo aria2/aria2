@@ -1207,6 +1207,11 @@ Advanced Options
   and options at startup.
   Default: ``false``
 
+  .. Warning::
+
+    :option:`--deferred-input` option will be disabled when
+    :option:`--save-session` is used together.
+
 .. option:: --disable-ipv6[=true|false]
 
   Disable IPv6. This is useful if you have to use broken DNS and want

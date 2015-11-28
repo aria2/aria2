@@ -18,6 +18,7 @@ class OptionTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testBlank);
   CPPUNIT_TEST(testMerge);
   CPPUNIT_TEST(testParent);
+  CPPUNIT_TEST(testRemove);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -32,6 +33,7 @@ public:
   void testBlank();
   void testMerge();
   void testParent();
+  void testRemove();
 };
 
 
@@ -118,9 +120,31 @@ void OptionTest::testParent()
   CPPUNIT_ASSERT(child.defined(PREF_TIMEOUT));
   CPPUNIT_ASSERT(child.definedLocal(PREF_TIMEOUT));
   CPPUNIT_ASSERT_EQUAL(std::string("200"), child.get(PREF_TIMEOUT));
-  child.remove(PREF_TIMEOUT);
+  child.removeLocal(PREF_TIMEOUT);
   CPPUNIT_ASSERT(child.defined(PREF_TIMEOUT));
   CPPUNIT_ASSERT(!child.definedLocal(PREF_TIMEOUT));
+}
+
+void OptionTest::testRemove()
+{
+  Option child;
+  auto parent = std::make_shared<Option>();
+  child.setParent(parent);
+
+  child.put(PREF_DIR, "foo");
+  child.put(PREF_TIMEOUT, "200");
+  parent->put(PREF_DIR, "bar");
+  parent->put(PREF_TIMEOUT, "400");
+
+  child.remove(PREF_DIR);
+
+  CPPUNIT_ASSERT(!child.defined(PREF_DIR));
+
+  child.removeLocal(PREF_TIMEOUT);
+
+  CPPUNIT_ASSERT(!child.definedLocal(PREF_TIMEOUT));
+  CPPUNIT_ASSERT(child.defined(PREF_TIMEOUT));
+  CPPUNIT_ASSERT(parent->defined(PREF_TIMEOUT));
 }
 
 } // namespace aria2
