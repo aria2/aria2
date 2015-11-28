@@ -143,6 +143,8 @@ SocketCore::bindAddrsList_;
 std::vector<std::vector<std::pair<sockaddr_union, socklen_t> > >::iterator
 SocketCore::bindAddrsListIt_;
 
+int SocketCore::socketRecvBufferSize_ = 0;
+
 #ifdef ENABLE_SSL
 std::shared_ptr<TLSContext> SocketCore::clTlsContext_;
 std::shared_ptr<TLSContext> SocketCore::svTlsContext_;
@@ -187,6 +189,23 @@ SocketCore::~SocketCore() {
   closeConnection();
 }
 
+namespace {
+void applySocketBufferSize(sock_t fd)
+{
+  auto recvBufSize = SocketCore::getSocketRecvBufferSize();
+  if (recvBufSize == 0) {
+    return;
+  }
+
+  if (setsockopt(fd, SOL_SOCKET, SO_RCVBUF, (a2_sockopt_t)&recvBufSize,
+                 sizeof(recvBufSize)) < 0) {
+    auto errNum = SOCKET_ERRNO;
+    A2_LOG_WARN(fmt("Failed to set socket buffer size. Cause: %s",
+                    errorMsg(errNum).c_str()));
+  }
+}
+} // namespace
+
 void SocketCore::create(int family, int protocol)
 {
   int errNum;
@@ -205,6 +224,9 @@ void SocketCore::create(int family, int protocol)
     throw DL_ABORT_EX
       (fmt("Failed to create socket. Cause:%s", errorMsg(errNum).c_str()));
   }
+
+  applySocketBufferSize(fd);
+
   sockfd_ = fd;
 }
 
@@ -240,6 +262,9 @@ static sock_t bindInternal
     }
   }
 #endif // IPV6_V6ONLY
+
+  applySocketBufferSize(fd);
+
   if(::bind(fd, addr, addrlen) == -1) {
     errNum = SOCKET_ERRNO;
     error = errorMsg(errNum);
@@ -364,6 +389,9 @@ std::shared_ptr<SocketCore> SocketCore::acceptConnection() const
   if(fd == (sock_t) -1) {
     throw DL_ABORT_EX(fmt(EX_SOCKET_ACCEPT, errorMsg(errNum).c_str()));
   }
+
+  applySocketBufferSize(fd);
+
   auto sock = std::make_shared<SocketCore>(fd, sockType_);
   sock->setNonBlockingMode();
   return sock;
@@ -437,6 +465,9 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port,
       CLOSE(fd);
       continue;
     }
+
+    applySocketBufferSize(fd);
+
     if(!bindAddrs_.empty()) {
       bool bindSuccess = false;
       for(std::vector<std::pair<sockaddr_union, socklen_t> >::
@@ -1282,6 +1313,16 @@ void SocketCore::bindAllAddress(const std::string& ifaces)
   bindAddrsList_.swap(bindAddrsList);
   bindAddrsListIt_ = bindAddrsList_.begin();
   bindAddrs_ = *bindAddrsListIt_;
+}
+
+void SocketCore::setSocketRecvBufferSize(int size)
+{
+  socketRecvBufferSize_ = size;
+}
+
+int SocketCore::getSocketRecvBufferSize()
+{
+  return socketRecvBufferSize_;
 }
 
 void getInterfaceAddress

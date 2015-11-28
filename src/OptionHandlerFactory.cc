@@ -812,6 +812,16 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    OptionHandler* op(new UnitNumberOptionHandler
+                      (PREF_SOCKET_RECV_BUFFER_SIZE,
+                       TEXT_SOCKET_RECV_BUFFER_SIZE,
+                       "0",
+                       0,
+                       16_m));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
     OptionHandler* op(new NumberOptionHandler
                       (PREF_STOP,
                        TEXT_STOP,

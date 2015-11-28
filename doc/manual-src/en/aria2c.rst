@@ -1562,6 +1562,14 @@ Advanced Options
   :option:`--save-session` option every SEC seconds. If ``0`` is
   given, file will be saved only when aria2 exits. Default: ``0``
 
+
+.. option:: --socket-recv-buffer-size=<SIZE>
+
+  Set the maximum socket receive buffer in bytes.  Specifing ``0``
+  will disable this option. This value will be set to socket file
+  descriptor using ``SO_RCVBUF`` socket option with ``setsockopt()``
+  call.  Default: ``0``
+
 .. option:: --stop=<SEC>
 
   Stop application after SEC seconds has passed.

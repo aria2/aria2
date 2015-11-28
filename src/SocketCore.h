@@ -76,6 +76,8 @@ private:
   static std::vector<std::vector<std::pair<sockaddr_union, socklen_t> > > bindAddrsList_;
   static std::vector<std::vector<std::pair<sockaddr_union, socklen_t> > >::iterator bindAddrsListIt_;
 
+  static int socketRecvBufferSize_;
+
   bool blocking_;
   int secure_;
 
@@ -358,6 +360,9 @@ public:
   {
     protocolFamily_ = protocolFamily;
   }
+
+  static void setSocketRecvBufferSize(int size);
+  static int getSocketRecvBufferSize();
 
   // Bind socket to interface. interface may be specified as a
   // hostname, IP address or interface name like eth0.  If the given

@@ -1040,3 +1040,9 @@
     "                              public key when SFTP is used. If this option is\n" \
     "                              not set, which is default, no validation takes\n" \
     "                              place.")
+#define TEXT_SOCKET_RECV_BUFFER_SIZE                                    \
+  _(" --socket-recv-buffer-size=SIZE\n"                                 \
+    "                              Set the maximum socket receive buffer in bytes.\n" \
+    "                              Specifing 0 will disable this option. This value\n" \
+    "                              will be set to socket file descriptor using\n" \
+    "                              SO_RCVBUF socket option with setsockopt() call.")

@@ -223,6 +223,8 @@ Context::Context(bool standalone,
     setDefaultAIFlags(0);
   }
   SocketCore::setIpDscp(op->getAsInt(PREF_DSCP));
+  SocketCore::setSocketRecvBufferSize(op->getAsInt
+                                      (PREF_SOCKET_RECV_BUFFER_SIZE));
   net::checkAddrconfig();
   // Bind interface
   if(!op->get(PREF_INTERFACE).empty()) {

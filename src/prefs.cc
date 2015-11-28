@@ -375,6 +375,8 @@ PrefPtr PREF_PAUSE_METADATA = makePref("pause-metadata");
 PrefPtr PREF_RLIMIT_NOFILE = makePref("rlimit-nofile");
 // values: SSLv3 | TLSv1 | TLSv1.1 | TLSv1.2
 PrefPtr PREF_MIN_TLS_VERSION = makePref("min-tls-version");
+// value: 1*digit
+PrefPtr PREF_SOCKET_RECV_BUFFER_SIZE = makePref("socket-recv-buffer-size");
 
 /**
  * FTP related preferences
