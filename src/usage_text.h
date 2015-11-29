@@ -1046,3 +1046,10 @@
     "                              Specifing 0 will disable this option. This value\n" \
     "                              will be set to socket file descriptor using\n" \
     "                              SO_RCVBUF socket option with setsockopt() call.")
+#define TEXT_BT_ENABLE_HOOK_AFTER_HASH_CHECK                            \
+  _(" --bt-enable-hook-after-hash-check[=true|false] Allow hook command invocation\n" \
+    "                              after hash check (see -V option) in BitTorrent\n" \
+    "                              download. By default, when hash check succeeds,\n" \
+    "                              the command given by --on-bt-download-complete\n" \
+    "                              is executed. To disable this action, give false\n" \
+    "                              to this option.")

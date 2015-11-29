@@ -639,6 +639,14 @@ BitTorrent Specific Options
   queue gets started. But be aware that seeding item is still
   recognized as active download in RPC method.  Default: ``false``
 
+.. option:: --bt-enable-hook-after-hash-check[=true|false]
+
+  Allow hook command invocation after hash check (see :option:`-V`
+  option) in BitTorrent download. By default, when hash check
+  succeeds, the command given by :option:`--on-bt-download-complete`
+  is executed. To disable this action, give ``false`` to this option.
+  Default: ``true``
+
 .. option:: --bt-enable-lpd[=true|false]
 
   Enable Local Peer Discovery.  If a private flag is set in a torrent,
@@ -1967,6 +1975,7 @@ of URIs. These optional lines must start with white space(s).
   * :option:`always-resume <--always-resume>`
   * :option:`async-dns <--async-dns>`
   * :option:`auto-file-renaming <--auto-file-renaming>`
+  * :option:`bt-enable-hook-after-hash-check <--bt-enable-hook-after-hash-check>`
   * :option:`bt-enable-lpd <--bt-enable-lpd>`
   * :option:`bt-exclude-tracker <--bt-exclude-tracker>`
   * :option:`bt-external-ip <--bt-external-ip>`

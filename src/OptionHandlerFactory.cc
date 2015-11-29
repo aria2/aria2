@@ -1751,6 +1751,18 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
   }
   {
     OptionHandler* op(new BooleanOptionHandler
+                      (PREF_BT_ENABLE_HOOK_AFTER_HASH_CHECK,
+                       TEXT_BT_ENABLE_HOOK_AFTER_HASH_CHECK,
+                       A2_V_TRUE,
+                       OptionHandler::OPT_ARG));
+    op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
+    op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
+    handlers.push_back(op);
+  }
+  {
+    OptionHandler* op(new BooleanOptionHandler
                       (PREF_BT_ENABLE_LPD,
                        TEXT_BT_ENABLE_LPD,
                        A2_V_FALSE,

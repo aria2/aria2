@@ -556,6 +556,9 @@ PrefPtr PREF_BT_REMOVE_UNSELECTED_FILE =
   makePref("bt-remove-unselected-file");
 PrefPtr PREF_BT_DETACH_SEED_ONLY = makePref("bt-detach-seed-only");
 PrefPtr PREF_BT_FORCE_ENCRYPTION = makePref("bt-force-encryption");
+// values: true | false
+PrefPtr PREF_BT_ENABLE_HOOK_AFTER_HASH_CHECK =
+  makePref("bt-enable-hook-after-hash-check");
 
 /**
  * Metalink related preferences
