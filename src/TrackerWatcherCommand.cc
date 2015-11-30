@@ -127,7 +127,13 @@ bool HTTPAnnRequest::processResponse
       (reinterpret_cast<const unsigned char*>(res.c_str()), res.size());
     return true;
   } catch(RecoverableException& e) {
-    A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
+    const auto& dctx = rg_->getDownloadContext();
+    const auto& fe = dctx->getFirstFileEntry();
+    auto uris = fe->getUris();
+
+    A2_LOG_ERROR_EX(fmt("GID#%s - Tracker request %s failed",
+                        GroupId::toHex(rg_->getGID()).c_str(),
+                        uris[0].c_str()), e);
     return false;
   }
 }
