@@ -131,11 +131,9 @@ int64_t File::size()
     return 0;
   }
   LARGE_INTEGER fileSize;
-  if (!GetFileSizeEx(hn, &fileSize)) {
-    return 0;
-  }
+  const auto rv = GetFileSizeEx(hn, &fileSize);
   CloseHandle(hn);
-  return fileSize.QuadPart;
+  return rv ? fileSize.QuadPart : 0;
 #else  // !__MINGW32__
   a2_struct_stat fstat;
   if(fillStat(fstat) < 0) {
