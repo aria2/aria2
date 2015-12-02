@@ -984,6 +984,9 @@ void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
   // progress information via RPC
   progressInfoFile_ = std::make_shared<NullProgressInfoFile>();
   downloadContext_->releaseRuntimeResource();
+  // Reset seedOnly_, so that we can handle pause/unpause-ing seeding
+  // torrent with --bt-detach-seed-only.
+  seedOnly_ = false;
 }
 
 void RequestGroup::preDownloadProcessing()
