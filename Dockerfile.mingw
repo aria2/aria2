@@ -4,9 +4,12 @@
 # $ sudo docker build -t aria2-mingw - < Dockerfile.mingw
 #
 # After successful build, windows binary is located at
-# /aria2/src/aria2c.exe.  You can copy the binary using
+# /aria2/src/aria2c.exe.  You can copy the binary using following
+# commands:
 #
-# $ sudo docker cp <containerId>:/aria2/src/aria2c.exe <dest>
+# $ sudo id=$(docker create aria2-mingw)
+# $ sudo docker cp $id:/aria2/src/aria2c.exe <dest>
+# $ sudo docker rm -v $id
 
 FROM ubuntu
 
