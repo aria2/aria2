@@ -1,3 +1,108 @@
+aria2 1.19.3
+============
+
+Release Note
+------------
+
+This release fixes lots of bugs.  See the Changes section below.
+
+Changes
+-------
+
+* Fix bug that pause/unpause seeding torrent prevents new downloads
+  from starting
+
+  Previously, with --bt-detach-seed-only, when user issued pause and
+  unpause command to seeding torrent, and it was started again, and it
+  immediately got seeding status, but aria2 did not start new download
+  waiting in the queue.  This commit fixes this bug.
+
+  See GH-490
+
+* Add --bt-enable-hook-after-hash-check option
+
+  This option sets flag which allows hook command invocation after
+  hash check (see -V option) in BitTorrent download.  By default, when
+  hash check succeeds, the command given by --on-bt-download-complete
+  is executed.  To disable this action, give false to this option.
+
+* Add --socket-recv-buffer-size option
+
+  Set the maximum socket receive buffer in bytes. Specifing 0 will
+  disable this option. This value will be set to socket file
+  descriptor using SO_RCVBUF socket option with setsockopt() call.
+
+  See GH-487 about the usecase of this option
+
+* Disable --deferred-input when --save-session is used together
+
+  With --deferred-input=true, aria2 only reads input file to fill
+  active download slots, while keeping input file open.  Meanwhile,
+  --save-session saves all download info inside memory, but this does
+  not take into account of unread item in input file.  This will lead
+  to lose input data in saved session file.  Also current BufferedFile
+  implementation used to read/write input/output file take a lock on
+  Windows.  This effectively prevents session serializer from writing
+  session data to the same file which is still kept open because of
+  --deferred-input.  See GH-493
+
+* base32: decode lowercased characters as well
+
+  This fixes the bug that magnet URI with lowercased btih is treated
+  as malformed.
+
+* mingw: Use GetFileSize to get file size
+
+  _wstat family does not work with symbolic links.  They always
+  returns size 0.  To workaround this, we now use GetFileSize to get
+  file size.  To do that, we need to first obtain file HANDLE, which
+  is a bit tedious because of the messy interface of CreateFileW, but
+  we have no way to get around it.
+
+* Fix bug that file allocation=trunc does not work with Windows
+  symlink
+
+* Send the last error message as part of tellStatus RPC response
+
+  Patch from Jarda Snajdr
+
+* Don't enable mmap if file allocation is disabled
+
+  Without file allocation, we cannot map file because file length
+  could be zero.
+
+  This could fix bug reported at GH-478
+
+* Evict timed out pooled socket periodically
+
+  Previously we only scanned pool socket to check they are timed out
+  when we pooled another socket.  This means that pooled socket is not
+  closed long time (stays in CLOSE-WAIT state) if we don't pool any
+  more socket.  In this commit, we now check pooled socket
+  periodically (30 seconds) to avoid the sockets hanging in CLOSE-WAIT
+  state long time.
+
+  See GH-477
+
+* Don't write control file if content is not changed from previous one
+
+  This is desirable so that we don't have to wake up disk if control
+  file is not changed, and it is not have to be written again.  We use
+  the same method (SHA1 hash) to check the content is the same.  The
+  limitation is the hash is stored in memory, so we have to write the
+  first time in each session.
+
+  See GH-382
+
+* Remove content-length and content-range if transfer-encoding is
+  given
+
+  See GH-473
+
+* Retry after 404 status if --max-file-not-found > 0
+
+
+
 aria2 1.19.2
 ============
 
