@@ -41,15 +41,37 @@
 
 namespace aria2 {
 
+#if OPENSSL_VERSION_NUMBER < 0x10100001L
+namespace {
+EVP_MD_CTX* EVP_MD_CTX_new() {
+  return EVP_MD_CTX_create();
+}
+} // namespace
+
+namespace {
+void EVP_MD_CTX_free(EVP_MD_CTX* ctx) {
+  EVP_MD_CTX_destroy(ctx);
+}
+} // namespace
+
+namespace {
+int EVP_MD_CTX_reset(EVP_MD_CTX* ctx) {
+  EVP_MD_CTX_init(ctx);
+  return 1;
+}
+} // namespace
+#endif // OPENSSL_VERSION_NUMBER < 0x10100001L
+
 template<const EVP_MD* (*init_fn)()>
 class MessageDigestBase : public MessageDigestImpl {
 public:
-  MessageDigestBase() :  md_(init_fn()), len_(EVP_MD_size(md_)) {
-    EVP_MD_CTX_init(&ctx_);
+  MessageDigestBase()
+    : ctx_(EVP_MD_CTX_new()), md_(init_fn()), len_(EVP_MD_size(md_)) {
+    EVP_MD_CTX_reset(ctx_);
     reset();
   }
   virtual ~MessageDigestBase() {
-    EVP_MD_CTX_cleanup(&ctx_);
+    EVP_MD_CTX_free(ctx_);
   }
 
   static size_t length() {
@@ -59,24 +81,24 @@ public:
     return len_;
   }
   virtual void reset() CXX11_OVERRIDE {
-    EVP_DigestInit_ex(&ctx_, md_, nullptr);
+    EVP_DigestInit_ex(ctx_, md_, nullptr);
   }
   virtual void update(const void* data, size_t length) CXX11_OVERRIDE {
     auto bytes = reinterpret_cast<const char*>(data);
     while (length) {
       size_t l = std::min(length, (size_t)std::numeric_limits<uint32_t>::max());
-      EVP_DigestUpdate(&ctx_, bytes, l);
+      EVP_DigestUpdate(ctx_, bytes, l);
       length -= l;
       bytes += l;
     }
   }
   virtual void digest(unsigned char* md) CXX11_OVERRIDE {
     unsigned int len;
-    EVP_DigestFinal_ex(&ctx_, md, &len);
+    EVP_DigestFinal_ex(ctx_, md, &len);
   }
 
 private:
-  EVP_MD_CTX ctx_;
+  EVP_MD_CTX *ctx_;
   const EVP_MD* md_;
   const size_t len_;
 };
