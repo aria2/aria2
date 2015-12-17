@@ -41,7 +41,7 @@
 
 namespace aria2 {
 
-#if OPENSSL_VERSION_NUMBER < 0x10100001L
+#if defined(LIBRESSL_VERSION_NUMBER) || OPENSSL_VERSION_NUMBER < 0x10100001L
 namespace {
 EVP_MD_CTX* EVP_MD_CTX_new() {
   return EVP_MD_CTX_create();
@@ -60,7 +60,8 @@ int EVP_MD_CTX_reset(EVP_MD_CTX* ctx) {
   return 1;
 }
 } // namespace
-#endif // OPENSSL_VERSION_NUMBER < 0x10100001L
+#endif // defined(LIBRESSL_VERSION_NUMBER) || OPENSSL_VERSION_NUMBER <
+       // 0x10100001L
 
 template<const EVP_MD* (*init_fn)()>
 class MessageDigestBase : public MessageDigestImpl {
