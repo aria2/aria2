@@ -170,8 +170,11 @@ HTTP/FTP/SFTP Options
 
   If aria2 receives "file not found" status from the remote HTTP/FTP
   servers NUM times without getting a single byte, then force the
-  download to fail. Specify ``0`` to disable this option. This options is
-  effective only when using HTTP/FTP servers.
+  download to fail. Specify ``0`` to disable this option. This options
+  is effective only when using HTTP/FTP servers.  The number of retry
+  attempt is counted toward :option:`--max-tries`, so it should be
+  configured too.
+
   Default: ``0``
 
 .. option:: -m, --max-tries=<N>

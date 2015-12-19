@@ -453,7 +453,9 @@
     "                              a single byte, then force the download to fail.\n" \
     "                              Specify 0 to disable this option.\n" \
     "                              This options is effective only when using\n" \
-    "                              HTTP/FTP servers.")
+    "                              HTTP/FTP servers. The number of retry attempt is\n" \
+    "                              counted toward --max-tries, so it should be\n" \
+    "                              configured too.")
 #define TEXT_URI_SELECTOR                                               \
   _(" --uri-selector=SELECTOR      Specify URI selection algorithm.\n"  \
     "                              If 'inorder' is given, URI is tried in the order\n" \
