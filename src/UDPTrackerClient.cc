@@ -370,7 +370,7 @@ struct TimeoutCheck {
   {
     auto t = req->dispatched.difference(now);
     if(req->failCount == 0) {
-      if(t >= 15_s) {
+      if(t >= 5_s) {
         switch(req->action) {
         case UDPT_ACT_CONNECT:
           A2_LOG_INFO(fmt("UDPT resend CONNECT to %s:%u transaction_id=%u",
@@ -396,7 +396,7 @@ struct TimeoutCheck {
         return false;
       }
     } else {
-      if(t >= 1_min) {
+      if(t >= 10_s) {
         switch(req->action) {
         case UDPT_ACT_CONNECT:
           A2_LOG_INFO(fmt("UDPT timeout CONNECT to %s:%u transaction_id=%u",
