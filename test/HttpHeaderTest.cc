@@ -102,6 +102,17 @@ void HttpHeaderTest::testGetRange()
     CPPUNIT_ASSERT_EQUAL((int64_t)0, range.entityLength);
   }
   {
+    // Support for non-compliant server
+    HttpHeader httpHeader;
+    httpHeader.put(HttpHeader::CONTENT_RANGE, "bytes=0-1023/1024");
+
+    Range range = httpHeader.getRange();
+
+    CPPUNIT_ASSERT_EQUAL((int64_t)0, range.startByte);
+    CPPUNIT_ASSERT_EQUAL((int64_t)1023, range.endByte);
+    CPPUNIT_ASSERT_EQUAL((int64_t)1024, range.entityLength);
+  }
+  {
     HttpHeader httpHeader;
     httpHeader.put(HttpHeader::CONTENT_RANGE, "bytes 0-/3");
     try {
