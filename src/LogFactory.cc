@@ -104,7 +104,7 @@ const std::shared_ptr<Logger>& LogFactory::getInstance()
 void LogFactory::setLogFile(const std::string& name)
 {
   if(name == "-") {
-    filename_ = DEV_STDOUT;
+    filename_ = DEV_STDERR;
   } else if(name == "") {
     filename_ = DEV_NULL;
   } else {

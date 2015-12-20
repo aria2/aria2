@@ -54,7 +54,7 @@ Logger::Logger()
   : logLevel_(Logger::A2_DEBUG),
     consoleLogLevel_(Logger::A2_NOTICE),
     consoleOutput_(true),
-    colorOutput_(global::cout()->supportsColor())
+    colorOutput_(global::cerr()->supportsColor())
 {}
 
 Logger::~Logger()
@@ -212,11 +212,11 @@ void Logger::writeLog
     fpp_->flush();
   }
   if(consoleLogEnabled(level)) {
-    global::cout()->printf("\n");
-    writeHeaderConsole(*global::cout(), level, colorOutput_);
-    global::cout()->printf("%s\n", msg);
-    writeStackTrace(*global::cout(), trace);
-    global::cout()->flush();
+    global::cerr()->printf("\n");
+    writeHeaderConsole(*global::cerr(), level, colorOutput_);
+    global::cerr()->printf("%s\n", msg);
+    writeStackTrace(*global::cerr(), trace);
+    global::cerr()->flush();
   }
 }
 

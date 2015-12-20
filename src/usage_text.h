@@ -41,7 +41,7 @@
     "                              ignored.")
 #define TEXT_LOG                                                        \
   _(" -l, --log=LOG                The file name of the log file. If '-' is\n" \
-    "                              specified, log is written to stdout.")
+    "                              specified, log is written to stderr.")
 #define TEXT_DAEMON                                                     \
   _(" -D, --daemon[=true|false]    Run as daemon. The current working directory will\n" \
     "                              be changed to \"/\" and standard input, standard\n" \
