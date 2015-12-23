@@ -188,7 +188,6 @@ void HttpSkipResponseCommand::poolConnection() const
 
 bool HttpSkipResponseCommand::processResponse()
 {
-  int statusCode;
   if(httpResponse_->isRedirect()) {
     int rnum =
       httpResponse_->getHttpRequest()->getRequest()->getRedirectCount();
@@ -198,42 +197,43 @@ bool HttpSkipResponseCommand::processResponse()
     }
     httpResponse_->processRedirect();
     return prepareForRetry(0);
-  } else if((statusCode = httpResponse_->getStatusCode()) >= 400) {
-    if(statusCode == 401) {
-      if(getOption()->getAsBool(PREF_HTTP_AUTH_CHALLENGE) &&
-         !httpResponse_->getHttpRequest()->authenticationUsed() &&
-         getDownloadEngine()->getAuthConfigFactory()->activateBasicCred
-         (getRequest()->getHost(), getRequest()->getPort(),
-          getRequest()->getDir(), getOption().get())) {
+  }
+
+  auto statusCode = httpResponse_->getStatusCode();
+  if (statusCode >= 400) {
+    switch (statusCode) {
+    case 401:
+      if (getOption()->getAsBool(PREF_HTTP_AUTH_CHALLENGE) &&
+          !httpResponse_->getHttpRequest()->authenticationUsed() &&
+          getDownloadEngine()->getAuthConfigFactory()->activateBasicCred(
+              getRequest()->getHost(), getRequest()->getPort(),
+              getRequest()->getDir(), getOption().get())) {
         return prepareForRetry(0);
-      } else {
-        throw DL_ABORT_EX2(EX_AUTH_FAILED,
-                           error_code::HTTP_AUTH_FAILED);
       }
-    } else if(statusCode == 404) {
-      if(getOption()->getAsInt(PREF_MAX_FILE_NOT_FOUND) == 0) {
+      throw DL_ABORT_EX2(EX_AUTH_FAILED, error_code::HTTP_AUTH_FAILED);
+    case 404:
+      if (getOption()->getAsInt(PREF_MAX_FILE_NOT_FOUND) == 0) {
         throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
                            error_code::RESOURCE_NOT_FOUND);
       }
       throw DL_RETRY_EX2(MSG_RESOURCE_NOT_FOUND,
                          error_code::RESOURCE_NOT_FOUND);
-    } else if(statusCode == 503) {
+    case 503:
       // Only retry if pretry-wait > 0. Hammering 'busy' server is not
       // a good idea.
-      if(getOption()->getAsInt(PREF_RETRY_WAIT) > 0) {
+      if (getOption()->getAsInt(PREF_RETRY_WAIT) > 0) {
         throw DL_RETRY_EX2(fmt(EX_BAD_STATUS, statusCode),
                            error_code::HTTP_SERVICE_UNAVAILABLE);
-      } else {
-        throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, statusCode),
-                           error_code::HTTP_SERVICE_UNAVAILABLE);
       }
-    } else {
       throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, statusCode),
-                         error_code::HTTP_PROTOCOL_ERROR);
-    }
-  } else {
-    return prepareForRetry(0);
+                         error_code::HTTP_SERVICE_UNAVAILABLE);
+    };
+
+    throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, statusCode),
+                       error_code::HTTP_PROTOCOL_ERROR);
   }
+
+  return prepareForRetry(0);
 }
 
 void HttpSkipResponseCommand::disableSocketCheck()
