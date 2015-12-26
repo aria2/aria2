@@ -39,12 +39,15 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 
 namespace aria2 {
 
 namespace rpc {
 
 class RpcMethod;
+
+const std::vector<std::string>& allMethodNames();
 
 RpcMethod* getMethod(const std::string& methodName);
 

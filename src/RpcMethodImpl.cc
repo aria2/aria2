@@ -1429,6 +1429,24 @@ RpcResponse SystemMulticallRpcMethod::execute(RpcRequest req, DownloadEngine *e)
   }
 }
 
+std::unique_ptr<ValueBase> SystemListMethodsRpcMethod::process
+(const RpcRequest&req, DownloadEngine *e) {
+  auto list = List::g();
+  for (auto &s : allMethodNames()) {
+    list->append(s);
+  }
+
+  return list;
+}
+
+RpcResponse SystemListMethodsRpcMethod::execute(RpcRequest req,
+                                                DownloadEngine* e)
+{
+  auto r = process(req, e);
+  return RpcResponse(0, RpcResponse::AUTHORIZED, std::move(r),
+                     std::move(req.id));
+}
+
 std::unique_ptr<ValueBase> NoSuchMethodRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {

@@ -2228,6 +2228,10 @@ to provide the token as the first parameter as described above.
   interface. Therefore it is recommended to prefer Batch or `system.multicall`
   requests when appropriate.
 
+  `system.listMethods` can be executed without token.  Since it just
+  returns the all available methods, and does not alter anything, it
+  is safe without secret token.
+
 Methods
 ~~~~~~~
 
@@ -3428,6 +3432,36 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
     >>> r = mc()
     >>> tuple(r)
     ('2089b05ecca3d829', 'd2703803b52216d1')
+
+.. function:: system.listMethods()
+
+  This method returns the all available RPC methods in an array of
+  string.  Unlike other methods, this method does not require secret
+  token.  This is safe because this method jsut returns the available
+  method names.
+
+  **JSON-RPC Example**
+  ::
+
+    >>> import urllib2, json
+    >>> from pprint import pprint
+    >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
+    ...                       'method':'system.listMethods'})
+    >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+    >>> pprint(json.loads(c.read()))
+    {u'id': u'qwer',
+     u'jsonrpc': u'2.0',
+     u'result': [u'aria2.addUri',
+                 u'aria2.addTorrent',
+    ...
+
+  **XML-RPC Example**
+  ::
+
+    >>> import xmlrpclib
+    >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+    >>> s.system.listMethods()
+    ['aria2.addUri', 'aria2.addTorrent', ...
 
 Error Handling
 ~~~~~~~~~~~~~~

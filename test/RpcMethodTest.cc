@@ -20,6 +20,7 @@
 #include "array_fun.h"
 #include "download_helper.h"
 #include "FileEntry.h"
+#include "RpcMethodFactory.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtRegistry.h"
 # include "BtRuntime.h"
@@ -78,6 +79,7 @@ class RpcMethodTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testPause);
   CPPUNIT_TEST(testSystemMulticall);
   CPPUNIT_TEST(testSystemMulticall_fail);
+  CPPUNIT_TEST(testSystemListMethods);
   CPPUNIT_TEST_SUITE_END();
 private:
   std::shared_ptr<DownloadEngine> e_;
@@ -142,6 +144,7 @@ public:
   void testPause();
   void testSystemMulticall();
   void testSystemMulticall_fail();
+  void testSystemListMethods();
 };
 
 
@@ -1361,6 +1364,24 @@ void RpcMethodTest::testSystemMulticall_fail()
   SystemMulticallRpcMethod m;
   auto res = m.execute(createReq("system.multicall"), e_.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
+}
+
+void RpcMethodTest::testSystemListMethods()
+{
+  SystemListMethodsRpcMethod m;
+  auto res = m.execute(createReq("system.listMethods"), e_.get());
+  CPPUNIT_ASSERT_EQUAL(0, res.code);
+
+  const auto resParams = downcast<List>(res.param);
+  auto &allNames = allMethodNames();
+
+  CPPUNIT_ASSERT_EQUAL(allNames.size(), resParams->size());
+
+  for (size_t i = 0; i < allNames.size(); ++i) {
+    const auto s = downcast<String>(resParams->get(i));
+    CPPUNIT_ASSERT(s);
+    CPPUNIT_ASSERT_EQUAL(allNames[i], s->s());
+  }
 }
 
 } // namespace rpc
