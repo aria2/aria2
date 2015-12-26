@@ -50,109 +50,170 @@ std::unique_ptr<RpcMethod> noSuchRpcMethod;
 } // namespace
 
 namespace {
-std::unique_ptr<RpcMethod>
-createMethod(const std::string& methodName)
+std::unique_ptr<RpcMethod> createMethod(const std::string& methodName)
 {
-  if(methodName == AddUriRpcMethod::getMethodName()) {
+  if (methodName == AddUriRpcMethod::getMethodName()) {
     return make_unique<AddUriRpcMethod>();
+  }
+
 #ifdef ENABLE_BITTORRENT
-  } else if(methodName == AddTorrentRpcMethod::getMethodName()) {
+  if (methodName == AddTorrentRpcMethod::getMethodName()) {
     return make_unique<AddTorrentRpcMethod>();
-#endif // ENABLE_BITTORRENT
-#ifdef ENABLE_METALINK
   }
-  else if(methodName == AddMetalinkRpcMethod::getMethodName()) {
-    return make_unique<AddMetalinkRpcMethod>();
-#endif // ENABLE_METALINK
-  }
-  else if(methodName == RemoveRpcMethod::getMethodName()) {
-    return make_unique<RemoveRpcMethod>();
-  } else if(methodName == PauseRpcMethod::getMethodName()) {
-    return make_unique<PauseRpcMethod>();
-  } else if(methodName == ForcePauseRpcMethod::getMethodName()) {
-    return make_unique<ForcePauseRpcMethod>();
-  } else if(methodName == PauseAllRpcMethod::getMethodName()) {
-    return make_unique<PauseAllRpcMethod>();
-  } else if(methodName == ForcePauseAllRpcMethod::getMethodName()) {
-    return make_unique<ForcePauseAllRpcMethod>();
-  } else if(methodName == UnpauseRpcMethod::getMethodName()) {
-    return make_unique<UnpauseRpcMethod>();
-  } else if(methodName == UnpauseAllRpcMethod::getMethodName()) {
-    return make_unique<UnpauseAllRpcMethod>();
-  } else if(methodName == ForceRemoveRpcMethod::getMethodName()) {
-    return make_unique<ForceRemoveRpcMethod>();
-  } else if(methodName == ChangePositionRpcMethod::getMethodName()) {
-    return make_unique<ChangePositionRpcMethod>();
-  } else if(methodName == TellStatusRpcMethod::getMethodName()) {
-    return make_unique<TellStatusRpcMethod>();
-  } else if(methodName == GetUrisRpcMethod::getMethodName()) {
-    return make_unique<GetUrisRpcMethod>();
-  } else if(methodName == GetFilesRpcMethod::getMethodName()) {
-    return make_unique<GetFilesRpcMethod>();
-#ifdef ENABLE_BITTORRENT
-  }
-  else if(methodName == GetPeersRpcMethod::getMethodName()) {
+
+  if (methodName == GetPeersRpcMethod::getMethodName()) {
     return make_unique<GetPeersRpcMethod>();
-#endif // ENABLE_BITTORRENT
-  } else if(methodName == GetServersRpcMethod::getMethodName()) {
-    return make_unique<GetServersRpcMethod>();
-  } else if(methodName == TellActiveRpcMethod::getMethodName()) {
-    return make_unique<TellActiveRpcMethod>();
-  } else if(methodName == TellWaitingRpcMethod::getMethodName()) {
-    return make_unique<TellWaitingRpcMethod>();
-  } else if(methodName == TellStoppedRpcMethod::getMethodName()) {
-    return make_unique<TellStoppedRpcMethod>();
-  } else if(methodName == GetOptionRpcMethod::getMethodName()) {
-    return make_unique<GetOptionRpcMethod>();
-  } else if(methodName == ChangeUriRpcMethod::getMethodName()) {
-    return make_unique<ChangeUriRpcMethod>();
-  } else if(methodName == ChangeOptionRpcMethod::getMethodName()) {
-    return make_unique<ChangeOptionRpcMethod>();
-  } else if(methodName == GetGlobalOptionRpcMethod::getMethodName()) {
-    return make_unique<GetGlobalOptionRpcMethod>();
-  } else if(methodName == ChangeGlobalOptionRpcMethod::getMethodName()) {
-    return make_unique<ChangeGlobalOptionRpcMethod>();
-  } else if(methodName == PurgeDownloadResultRpcMethod::getMethodName()) {
-    return make_unique<PurgeDownloadResultRpcMethod>();
-  } else if(methodName == RemoveDownloadResultRpcMethod::getMethodName()) {
-    return make_unique<RemoveDownloadResultRpcMethod>();
-  } else if(methodName == GetVersionRpcMethod::getMethodName()) {
-    return make_unique<GetVersionRpcMethod>();
-  } else if(methodName == GetSessionInfoRpcMethod::getMethodName()) {
-    return make_unique<GetSessionInfoRpcMethod>();
-  } else if(methodName == ShutdownRpcMethod::getMethodName()) {
-    return make_unique<ShutdownRpcMethod>();
-  } else if(methodName == ForceShutdownRpcMethod::getMethodName()) {
-    return make_unique<ForceShutdownRpcMethod>();
-  } else if(methodName == GetGlobalStatRpcMethod::getMethodName()) {
-    return make_unique<GetGlobalStatRpcMethod>();
-  } else if(methodName == SaveSessionRpcMethod::getMethodName()) {
-    return make_unique<SaveSessionRpcMethod>();
-  } else if(methodName == SystemMulticallRpcMethod::getMethodName()) {
-    return make_unique<SystemMulticallRpcMethod>();
-  } else {
-    return nullptr;
   }
+#endif // ENABLE_BITTORRENT
+
+#ifdef ENABLE_METALINK
+  if (methodName == AddMetalinkRpcMethod::getMethodName()) {
+    return make_unique<AddMetalinkRpcMethod>();
+  }
+#endif // ENABLE_METALINK
+
+  if (methodName == RemoveRpcMethod::getMethodName()) {
+    return make_unique<RemoveRpcMethod>();
+  }
+
+  if (methodName == PauseRpcMethod::getMethodName()) {
+    return make_unique<PauseRpcMethod>();
+  }
+
+  if (methodName == ForcePauseRpcMethod::getMethodName()) {
+    return make_unique<ForcePauseRpcMethod>();
+  }
+
+  if (methodName == PauseAllRpcMethod::getMethodName()) {
+    return make_unique<PauseAllRpcMethod>();
+  }
+
+  if (methodName == ForcePauseAllRpcMethod::getMethodName()) {
+    return make_unique<ForcePauseAllRpcMethod>();
+  }
+
+  if (methodName == UnpauseRpcMethod::getMethodName()) {
+    return make_unique<UnpauseRpcMethod>();
+  }
+
+  if (methodName == UnpauseAllRpcMethod::getMethodName()) {
+    return make_unique<UnpauseAllRpcMethod>();
+  }
+
+  if (methodName == ForceRemoveRpcMethod::getMethodName()) {
+    return make_unique<ForceRemoveRpcMethod>();
+  }
+
+  if (methodName == ChangePositionRpcMethod::getMethodName()) {
+    return make_unique<ChangePositionRpcMethod>();
+  }
+
+  if (methodName == TellStatusRpcMethod::getMethodName()) {
+    return make_unique<TellStatusRpcMethod>();
+  }
+
+  if (methodName == GetUrisRpcMethod::getMethodName()) {
+    return make_unique<GetUrisRpcMethod>();
+  }
+
+  if (methodName == GetFilesRpcMethod::getMethodName()) {
+    return make_unique<GetFilesRpcMethod>();
+  }
+
+  if (methodName == GetServersRpcMethod::getMethodName()) {
+    return make_unique<GetServersRpcMethod>();
+  }
+
+  if (methodName == TellActiveRpcMethod::getMethodName()) {
+    return make_unique<TellActiveRpcMethod>();
+  }
+
+  if (methodName == TellWaitingRpcMethod::getMethodName()) {
+    return make_unique<TellWaitingRpcMethod>();
+  }
+
+  if (methodName == TellStoppedRpcMethod::getMethodName()) {
+    return make_unique<TellStoppedRpcMethod>();
+  }
+
+  if (methodName == GetOptionRpcMethod::getMethodName()) {
+    return make_unique<GetOptionRpcMethod>();
+  }
+
+  if (methodName == ChangeUriRpcMethod::getMethodName()) {
+    return make_unique<ChangeUriRpcMethod>();
+  }
+
+  if (methodName == ChangeOptionRpcMethod::getMethodName()) {
+    return make_unique<ChangeOptionRpcMethod>();
+  }
+
+  if (methodName == GetGlobalOptionRpcMethod::getMethodName()) {
+    return make_unique<GetGlobalOptionRpcMethod>();
+  }
+
+  if (methodName == ChangeGlobalOptionRpcMethod::getMethodName()) {
+    return make_unique<ChangeGlobalOptionRpcMethod>();
+  }
+
+  if (methodName == PurgeDownloadResultRpcMethod::getMethodName()) {
+    return make_unique<PurgeDownloadResultRpcMethod>();
+  }
+
+  if (methodName == RemoveDownloadResultRpcMethod::getMethodName()) {
+    return make_unique<RemoveDownloadResultRpcMethod>();
+  }
+
+  if (methodName == GetVersionRpcMethod::getMethodName()) {
+    return make_unique<GetVersionRpcMethod>();
+  }
+
+  if (methodName == GetSessionInfoRpcMethod::getMethodName()) {
+    return make_unique<GetSessionInfoRpcMethod>();
+  }
+
+  if (methodName == ShutdownRpcMethod::getMethodName()) {
+    return make_unique<ShutdownRpcMethod>();
+  }
+
+  if (methodName == ForceShutdownRpcMethod::getMethodName()) {
+    return make_unique<ForceShutdownRpcMethod>();
+  }
+
+  if (methodName == GetGlobalStatRpcMethod::getMethodName()) {
+    return make_unique<GetGlobalStatRpcMethod>();
+  }
+
+  if (methodName == SaveSessionRpcMethod::getMethodName()) {
+    return make_unique<SaveSessionRpcMethod>();
+  }
+
+  if (methodName == SystemMulticallRpcMethod::getMethodName()) {
+    return make_unique<SystemMulticallRpcMethod>();
+  }
+
+  return nullptr;
 }
 } // namespace
 
 RpcMethod* getMethod(const std::string& methodName)
 {
   auto itr = cache.find(methodName);
-  if(itr == cache.end()) {
+  if (itr == std::end(cache)) {
     auto m = createMethod(methodName);
-    if(m) {
+    if (m) {
       auto rv = cache.insert(std::make_pair(methodName, std::move(m)));
       return (*rv.first).second.get();
-    } else {
-      if(!noSuchRpcMethod) {
-        noSuchRpcMethod = make_unique<NoSuchMethodRpcMethod>();
-      }
-      return noSuchRpcMethod.get();
     }
-  } else {
-    return (*itr).second.get();
+
+    if (!noSuchRpcMethod) {
+      noSuchRpcMethod = make_unique<NoSuchMethodRpcMethod>();
+    }
+
+    return noSuchRpcMethod.get();
   }
+
+  return (*itr).second.get();
 }
 
 } // namespace rpc
