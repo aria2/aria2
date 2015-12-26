@@ -1436,7 +1436,7 @@ std::unique_ptr<ValueBase> SystemListMethodsRpcMethod::process
     list->append(s);
   }
 
-  return list;
+  return std::move(list);
 }
 
 RpcResponse SystemListMethodsRpcMethod::execute(RpcRequest req,
