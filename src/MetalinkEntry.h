@@ -66,6 +66,7 @@ public:
 
 private:
   std::unique_ptr<Signature> signature_;
+
 public:
   MetalinkEntry();
 
@@ -75,10 +76,7 @@ public:
 
   int64_t getLength() const;
 
-  const std::unique_ptr<FileEntry>& getFile() const
-  {
-    return file;
-  }
+  const std::unique_ptr<FileEntry>& getFile() const { return file; }
 
   std::unique_ptr<FileEntry> popFile();
 
@@ -92,20 +90,17 @@ public:
 
   bool containsOS(const std::string& os) const;
 
-  void setLocationPriority
-  (const std::vector<std::string>& locations, int priorityToAdd);
+  void setLocationPriority(const std::vector<std::string>& locations,
+                           int priorityToAdd);
 
   void setProtocolPriority(const std::string& protocol, int priorityToAdd);
 
-  static std::vector<std::unique_ptr<FileEntry>> toFileEntry
-  (std::vector<std::unique_ptr<MetalinkEntry>> metalinkEntries);
+  static std::vector<std::unique_ptr<FileEntry>>
+  toFileEntry(std::vector<std::unique_ptr<MetalinkEntry>> metalinkEntries);
 
   void setSignature(std::unique_ptr<Signature> signature);
 
-  const std::unique_ptr<Signature>& getSignature() const
-  {
-    return signature_;
-  }
+  const std::unique_ptr<Signature>& getSignature() const { return signature_; }
 
   std::unique_ptr<Signature> popSignature();
 };

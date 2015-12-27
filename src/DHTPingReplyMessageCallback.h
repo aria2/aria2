@@ -43,12 +43,13 @@
 
 namespace aria2 {
 
-template<class Task>
-class DHTPingReplyMessageCallback:public DHTMessageCallback {
+template <class Task>
+class DHTPingReplyMessageCallback : public DHTMessageCallback {
 private:
   Task* task_;
+
 public:
-  DHTPingReplyMessageCallback(Task* task):task_(task) {}
+  DHTPingReplyMessageCallback(Task* task) : task_(task) {}
 
   virtual void visit(const DHTAnnouncePeerReplyMessage* message) CXX11_OVERRIDE
   {
@@ -70,8 +71,8 @@ public:
     task_->onReceived(message);
   }
 
-  virtual void onTimeout(const std::shared_ptr<DHTNode>& remoteNode)
-    CXX11_OVERRIDE
+  virtual void
+  onTimeout(const std::shared_ptr<DHTNode>& remoteNode) CXX11_OVERRIDE
   {
     task_->onTimeout(remoteNode);
   }

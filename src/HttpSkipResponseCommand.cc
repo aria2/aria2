@@ -63,33 +63,30 @@
 
 namespace aria2 {
 
-HttpSkipResponseCommand::HttpSkipResponseCommand
-(cuid_t cuid,
- const std::shared_ptr<Request>& req,
- const std::shared_ptr<FileEntry>& fileEntry,
- RequestGroup* requestGroup,
- const std::shared_ptr<HttpConnection>& httpConnection,
- std::unique_ptr<HttpResponse> httpResponse,
- DownloadEngine* e,
- const std::shared_ptr<SocketCore>& s)
-  : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s,
-                    httpConnection->getSocketRecvBuffer()),
-    sinkFilterOnly_(true),
-    totalLength_(httpResponse->getEntityLength()),
-    receivedBytes_(0),
-    httpConnection_(httpConnection),
-    httpResponse_(std::move(httpResponse)),
-    streamFilter_(make_unique<NullSinkStreamFilter>())
+HttpSkipResponseCommand::HttpSkipResponseCommand(
+    cuid_t cuid, const std::shared_ptr<Request>& req,
+    const std::shared_ptr<FileEntry>& fileEntry, RequestGroup* requestGroup,
+    const std::shared_ptr<HttpConnection>& httpConnection,
+    std::unique_ptr<HttpResponse> httpResponse, DownloadEngine* e,
+    const std::shared_ptr<SocketCore>& s)
+    : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s,
+                      httpConnection->getSocketRecvBuffer()),
+      sinkFilterOnly_(true),
+      totalLength_(httpResponse->getEntityLength()),
+      receivedBytes_(0),
+      httpConnection_(httpConnection),
+      httpResponse_(std::move(httpResponse)),
+      streamFilter_(make_unique<NullSinkStreamFilter>())
 {
   checkSocketRecvBuffer();
 }
 
 HttpSkipResponseCommand::~HttpSkipResponseCommand() {}
 
-void HttpSkipResponseCommand::installStreamFilter
-(std::unique_ptr<StreamFilter> streamFilter)
+void HttpSkipResponseCommand::installStreamFilter(
+    std::unique_ptr<StreamFilter> streamFilter)
 {
-  if(!streamFilter) {
+  if (!streamFilter) {
     return;
   }
   streamFilter->installDelegate(std::move(streamFilter_));
@@ -100,14 +97,14 @@ void HttpSkipResponseCommand::installStreamFilter
 
 bool HttpSkipResponseCommand::executeInternal()
 {
-  if(getRequest()->getMethod() == Request::METHOD_HEAD ||
-     (totalLength_ == 0 && sinkFilterOnly_)) {
+  if (getRequest()->getMethod() == Request::METHOD_HEAD ||
+      (totalLength_ == 0 && sinkFilterOnly_)) {
     // If request method is HEAD or content-length header is present and
     // it's value is 0, then pool socket for reuse.
     // If content-length header is not present, then EOF is expected in the end.
     // In this case, the content is thrown away and socket cannot be pooled.
-    if(getRequest()->getMethod() == Request::METHOD_HEAD ||
-       httpResponse_->getHttpHeader()->defined(HttpHeader::CONTENT_LENGTH)) {
+    if (getRequest()->getMethod() == Request::METHOD_HEAD ||
+        httpResponse_->getHttpHeader()->defined(HttpHeader::CONTENT_LENGTH)) {
       poolConnection();
     }
     return processResponse();
@@ -115,21 +112,23 @@ bool HttpSkipResponseCommand::executeInternal()
   bool eof = false;
   try {
     size_t bufSize;
-    if(getSocketRecvBuffer()->bufferEmpty()) {
-      eof = getSocketRecvBuffer()->recv() == 0 &&
-        !getSocket()->wantRead() && !getSocket()->wantWrite();
+    if (getSocketRecvBuffer()->bufferEmpty()) {
+      eof = getSocketRecvBuffer()->recv() == 0 && !getSocket()->wantRead() &&
+            !getSocket()->wantWrite();
     }
-    if(!eof) {
-      if(sinkFilterOnly_) {
-        if(totalLength_ > 0) {
-          bufSize = std::min
-            (totalLength_-receivedBytes_,
-             static_cast<int64_t>(getSocketRecvBuffer()->getBufferLength()));
-        } else {
+    if (!eof) {
+      if (sinkFilterOnly_) {
+        if (totalLength_ > 0) {
+          bufSize = std::min(
+              totalLength_ - receivedBytes_,
+              static_cast<int64_t>(getSocketRecvBuffer()->getBufferLength()));
+        }
+        else {
           bufSize = getSocketRecvBuffer()->getBufferLength();
         }
         receivedBytes_ += bufSize;
-      } else {
+      }
+      else {
         // receivedBytes_ is not updated if transferEncoding is set.
         // The return value is safely ignored here.
         streamFilter_->transform(std::shared_ptr<BinaryStream>(),
@@ -140,15 +139,16 @@ bool HttpSkipResponseCommand::executeInternal()
       }
       getSocketRecvBuffer()->drain(bufSize);
     }
-    if(totalLength_ != 0 && eof) {
+    if (totalLength_ != 0 && eof) {
       throw DL_RETRY_EX(EX_GOT_EOF);
     }
-  } catch(RecoverableException& e) {
+  }
+  catch (RecoverableException& e) {
     A2_LOG_DEBUG_EX(EX_EXCEPTION_CAUGHT, e)
     return processResponse();
   }
 
-  if(eof) {
+  if (eof) {
     // we may get EOF before non-sink streamFilter reports its
     // completion. There are some broken servers to prevent
     // streamFilter from completion. Since we just discard the
@@ -157,13 +157,14 @@ bool HttpSkipResponseCommand::executeInternal()
     return processResponse();
   }
   bool finished = false;
-  if(sinkFilterOnly_) {
+  if (sinkFilterOnly_) {
     finished = (totalLength_ == receivedBytes_);
-  } else {
+  }
+  else {
     finished = streamFilter_->finished();
   }
-  if(finished) {
-    if(getSegments().size() <= 1) {
+  if (finished) {
+    if (getSegments().size() <= 1) {
       // Don't pool connection if the command has multiple
       // segments. This means it did HTTP pipelined request. If this
       // response is for the first request, then successive response
@@ -171,7 +172,8 @@ bool HttpSkipResponseCommand::executeInternal()
       poolConnection();
     }
     return processResponse();
-  } else {
+  }
+  else {
     setWriteCheckSocketIf(getSocket(), getSocket()->wantWrite());
     addCommandSelf();
     return false;
@@ -180,18 +182,18 @@ bool HttpSkipResponseCommand::executeInternal()
 
 void HttpSkipResponseCommand::poolConnection() const
 {
-  if(getRequest()->supportsPersistentConnection()) {
-    getDownloadEngine()->poolSocket
-      (getRequest(), createProxyRequest(), getSocket());
+  if (getRequest()->supportsPersistentConnection()) {
+    getDownloadEngine()->poolSocket(getRequest(), createProxyRequest(),
+                                    getSocket());
   }
 }
 
 bool HttpSkipResponseCommand::processResponse()
 {
-  if(httpResponse_->isRedirect()) {
+  if (httpResponse_->isRedirect()) {
     int rnum =
-      httpResponse_->getHttpRequest()->getRequest()->getRedirectCount();
-    if(rnum >= Request::MAX_REDIRECT) {
+        httpResponse_->getHttpRequest()->getRequest()->getRedirectCount();
+    if (rnum >= Request::MAX_REDIRECT) {
       throw DL_ABORT_EX2(fmt("Too many redirects: count=%u", rnum),
                          error_code::HTTP_TOO_MANY_REDIRECTS);
     }

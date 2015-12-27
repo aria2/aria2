@@ -38,22 +38,23 @@ namespace aria2 {
 
 namespace rpc {
 
-RpcRequest::RpcRequest()
-  : jsonRpc{false}
-{}
+RpcRequest::RpcRequest() : jsonRpc{false} {}
 
-RpcRequest::RpcRequest(std::string methodName,
-                       std::unique_ptr<List> params)
-  : methodName{std::move(methodName)}, params{std::move(params)}, jsonRpc{false}
-{}
+RpcRequest::RpcRequest(std::string methodName, std::unique_ptr<List> params)
+    : methodName{std::move(methodName)},
+      params{std::move(params)},
+      jsonRpc{false}
+{
+}
 
-RpcRequest::RpcRequest(std::string methodName,
-                       std::unique_ptr<List> params,
-                       std::unique_ptr<ValueBase> id,
-                       bool jsonRpc)
-  : methodName{std::move(methodName)}, params{std::move(params)},
-    id{std::move(id)}, jsonRpc{jsonRpc}
-{}
+RpcRequest::RpcRequest(std::string methodName, std::unique_ptr<List> params,
+                       std::unique_ptr<ValueBase> id, bool jsonRpc)
+    : methodName{std::move(methodName)},
+      params{std::move(params)},
+      id{std::move(id)},
+      jsonRpc{jsonRpc}
+{
+}
 
 } // namespace rpc
 

@@ -66,7 +66,7 @@ public:
 
 private:
   typedef std::set<std::shared_ptr<ServerStat>,
-                   DerefLess<std::shared_ptr<ServerStat> > > ServerStatSet;
+                   DerefLess<std::shared_ptr<ServerStat>>> ServerStatSet;
   ServerStatSet serverStats_;
 };
 

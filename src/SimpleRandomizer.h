@@ -41,7 +41,7 @@
 #include <random>
 
 #ifdef __MINGW32__
-#  include <wincrypt.h>
+#include <wincrypt.h>
 #endif
 
 namespace aria2 {
@@ -70,12 +70,9 @@ public:
    */
   virtual long int getRandomNumber(long int to) CXX11_OVERRIDE;
 
-  void getRandomBytes(unsigned char *buf, size_t len);
+  void getRandomBytes(unsigned char* buf, size_t len);
 
-  long int operator()(long int to)
-  {
-    return getRandomNumber(to);
-  }
+  long int operator()(long int to) { return getRandomNumber(to); }
 
   result_type operator()()
   {
@@ -94,10 +91,7 @@ public:
     return std::numeric_limits<result_type>::max();
   }
 
-  static double entropy()
-  {
-    return 0.0;
-  }
+  static double entropy() { return 0.0; }
 };
 
 } // namespace aria2

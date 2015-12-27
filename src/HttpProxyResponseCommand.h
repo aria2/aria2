@@ -43,13 +43,11 @@ class SocketCore;
 
 class HttpProxyResponseCommand : public AbstractProxyResponseCommand {
 public:
-  HttpProxyResponseCommand(cuid_t cuid,
-                           const std::shared_ptr<Request>& req,
-                           const std::shared_ptr<FileEntry>& fileEntry,
-                           RequestGroup* requestGroup,
-                           const std::shared_ptr<HttpConnection>& httpConnection,
-                           DownloadEngine* e,
-                           const std::shared_ptr<SocketCore>& s);
+  HttpProxyResponseCommand(
+      cuid_t cuid, const std::shared_ptr<Request>& req,
+      const std::shared_ptr<FileEntry>& fileEntry, RequestGroup* requestGroup,
+      const std::shared_ptr<HttpConnection>& httpConnection, DownloadEngine* e,
+      const std::shared_ptr<SocketCore>& s);
   virtual ~HttpProxyResponseCommand();
 
   virtual std::unique_ptr<Command> getNextCommand() CXX11_OVERRIDE;

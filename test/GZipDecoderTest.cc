@@ -12,11 +12,12 @@
 
 namespace aria2 {
 
-class GZipDecoderTest:public CppUnit::TestFixture {
+class GZipDecoderTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(GZipDecoderTest);
   CPPUNIT_TEST(testDecode);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -25,7 +26,6 @@ public:
   void testDecode();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(GZipDecoderTest);
 
 void GZipDecoderTest::testDecode()
@@ -33,16 +33,16 @@ void GZipDecoderTest::testDecode()
   GZipDecoder decoder;
   decoder.init();
 
-  std::string outfile(A2_TEST_OUT_DIR"/aria2_GZipDecoderTest_testDecode");
+  std::string outfile(A2_TEST_OUT_DIR "/aria2_GZipDecoderTest_testDecode");
 
   char buf[4_k];
-  std::ifstream in(A2_TEST_DIR"/gzip_decode_test.gz", std::ios::binary);
+  std::ifstream in(A2_TEST_DIR "/gzip_decode_test.gz", std::ios::binary);
   std::ofstream out(outfile.c_str(), std::ios::binary);
-  while(in) {
+  while (in) {
     in.read(buf, sizeof(buf));
 
-    std::string r = decoder.decode
-      (reinterpret_cast<const unsigned char*>(buf), in.gcount());
+    std::string r = decoder.decode(reinterpret_cast<const unsigned char*>(buf),
+                                   in.gcount());
 
     out.write(r.data(), r.size());
   }

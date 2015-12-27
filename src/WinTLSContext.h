@@ -51,8 +51,7 @@
 namespace aria2 {
 
 namespace wintls {
-struct cred_deleter
-{
+struct cred_deleter {
   void operator()(CredHandle* handle)
   {
     if (handle) {
@@ -64,8 +63,7 @@ struct cred_deleter
 typedef std::unique_ptr<CredHandle, cred_deleter> CredPtr;
 } // namespace wintls
 
-class WinTLSContext : public TLSContext
-{
+class WinTLSContext : public TLSContext {
 public:
   WinTLSContext(TLSSessionSide side, TLSVersion ver);
 
@@ -75,23 +73,14 @@ public:
   virtual bool addCredentialFile(const std::string& certfile,
                                  const std::string& keyfile) CXX11_OVERRIDE;
 
-  virtual bool addSystemTrustedCACerts() CXX11_OVERRIDE
-  {
-    return true;
-  }
+  virtual bool addSystemTrustedCACerts() CXX11_OVERRIDE { return true; }
 
   // certfile can contain multiple certificates.
   virtual bool addTrustedCACertFile(const std::string& certfile) CXX11_OVERRIDE;
 
-  virtual bool good() const CXX11_OVERRIDE
-  {
-    return true;
-  }
+  virtual bool good() const CXX11_OVERRIDE { return true; }
 
-  virtual TLSSessionSide getSide() const CXX11_OVERRIDE
-  {
-    return side_;
-  }
+  virtual TLSSessionSide getSide() const CXX11_OVERRIDE { return side_; }
 
   virtual bool getVerifyPeer() const CXX11_OVERRIDE;
 

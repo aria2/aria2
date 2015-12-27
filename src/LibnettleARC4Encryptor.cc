@@ -45,10 +45,8 @@ void ARC4Encryptor::init(const unsigned char* key, size_t keyLength)
   arcfour_set_key(&ctx_, keyLength, key);
 }
 
-void ARC4Encryptor::encrypt
-(size_t len,
- unsigned char* out,
- const unsigned char* in)
+void ARC4Encryptor::encrypt(size_t len, unsigned char* out,
+                            const unsigned char* in)
 {
   arcfour_crypt(&ctx_, len, out, in);
 }

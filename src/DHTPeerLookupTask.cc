@@ -55,36 +55,35 @@
 
 namespace aria2 {
 
-DHTPeerLookupTask::DHTPeerLookupTask
-(const std::shared_ptr<DownloadContext>& downloadContext,
- uint16_t tcpPort)
-  : DHTAbstractNodeLookupTask<DHTGetPeersReplyMessage>
-    (bittorrent::getInfoHash(downloadContext)),
-    tcpPort_(tcpPort)
-{}
+DHTPeerLookupTask::DHTPeerLookupTask(
+    const std::shared_ptr<DownloadContext>& downloadContext, uint16_t tcpPort)
+    : DHTAbstractNodeLookupTask<DHTGetPeersReplyMessage>(
+          bittorrent::getInfoHash(downloadContext)),
+      tcpPort_(tcpPort)
+{
+}
 
-void
-DHTPeerLookupTask::getNodesFromMessage
-(std::vector<std::shared_ptr<DHTNode>>& nodes,
- const DHTGetPeersReplyMessage* message)
+void DHTPeerLookupTask::getNodesFromMessage(
+    std::vector<std::shared_ptr<DHTNode>>& nodes,
+    const DHTGetPeersReplyMessage* message)
 {
   auto& knodes = message->getClosestKNodes();
   nodes.insert(std::end(nodes), std::begin(knodes), std::end(knodes));
 }
 
-void DHTPeerLookupTask::onReceivedInternal
-(const DHTGetPeersReplyMessage* message)
+void DHTPeerLookupTask::onReceivedInternal(
+    const DHTGetPeersReplyMessage* message)
 {
   std::shared_ptr<DHTNode> remoteNode = message->getRemoteNode();
   tokenStorage_[util::toHex(remoteNode->getID(), DHT_ID_LENGTH)] =
-    message->getToken();
+      message->getToken();
   peerStorage_->addPeer(message->getValues());
   A2_LOG_INFO(fmt("Received %lu peers.",
                   static_cast<unsigned long>(message->getValues().size())));
 }
 
-std::unique_ptr<DHTMessage> DHTPeerLookupTask::createMessage
-(const std::shared_ptr<DHTNode>& remoteNode)
+std::unique_ptr<DHTMessage>
+DHTPeerLookupTask::createMessage(const std::shared_ptr<DHTNode>& remoteNode)
 {
   return getMessageFactory()->createGetPeersMessage(remoteNode, getTargetID());
 }
@@ -100,24 +99,23 @@ void DHTPeerLookupTask::onFinish()
                    util::toHex(getTargetID(), DHT_ID_LENGTH).c_str()));
   // send announce_peer message to K closest nodes
   size_t num = DHTBucket::K;
-  for(auto i = std::begin(getEntries()), eoi = std::end(getEntries());
-      i != eoi && num > 0; ++i) {
-    if(!(*i)->used) {
+  for (auto i = std::begin(getEntries()), eoi = std::end(getEntries());
+       i != eoi && num > 0; ++i) {
+    if (!(*i)->used) {
       continue;
     }
     auto& node = (*i)->node;
     std::string idHex = util::toHex(node->getID(), DHT_ID_LENGTH);
     std::string token = tokenStorage_[idHex];
-    if(token.empty()) {
+    if (token.empty()) {
       A2_LOG_DEBUG(fmt("Token is empty for ID:%s", idHex.c_str()));
       continue;
     }
-    getMessageDispatcher()->addMessageToQueue
-      (getMessageFactory()->createAnnouncePeerMessage
-       (node,
-        getTargetID(), // this is infoHash
-        tcpPort_,
-        token));
+    getMessageDispatcher()->addMessageToQueue(
+        getMessageFactory()->createAnnouncePeerMessage(
+            node,
+            getTargetID(), // this is infoHash
+            tcpPort_, token));
     --num;
   }
 }

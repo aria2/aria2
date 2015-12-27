@@ -78,6 +78,7 @@ private:
   void addUniqPeer(const std::shared_ptr<Peer>& peer);
 
   void addDroppedPeer(const std::shared_ptr<Peer>& peer);
+
 public:
   DefaultPeerStorage();
 
@@ -90,15 +91,15 @@ public:
 
   std::shared_ptr<Peer> getPeer(const std::string& ipaddr, uint16_t port) const;
 
-  virtual void addPeer(const std::vector<std::shared_ptr<Peer>>& peers)
-    CXX11_OVERRIDE;
+  virtual void
+  addPeer(const std::vector<std::shared_ptr<Peer>>& peers) CXX11_OVERRIDE;
 
   const std::deque<std::shared_ptr<Peer>>& getUnusedPeers();
 
   virtual const PeerSet& getUsedPeers() CXX11_OVERRIDE;
 
-  virtual const std::deque<std::shared_ptr<Peer>>& getDroppedPeers()
-    CXX11_OVERRIDE;
+  virtual const std::deque<std::shared_ptr<Peer>>&
+  getDroppedPeers() CXX11_OVERRIDE;
 
   virtual bool isPeerAvailable() CXX11_OVERRIDE;
 

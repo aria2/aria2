@@ -8,11 +8,12 @@
 
 namespace aria2 {
 
-class ARC4Test:public CppUnit::TestFixture {
+class ARC4Test : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(ARC4Test);
   CPPUNIT_TEST(testEncrypt);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -20,7 +21,6 @@ public:
 
   void testEncrypt();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ARC4Test);
 

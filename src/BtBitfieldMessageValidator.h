@@ -45,9 +45,9 @@ class BtBitfieldMessageValidator : public BtMessageValidator {
 private:
   const BtBitfieldMessage* message_;
   size_t numPiece_;
+
 public:
-  BtBitfieldMessageValidator(const BtBitfieldMessage* message,
-                             size_t numPiece);
+  BtBitfieldMessageValidator(const BtBitfieldMessage* message, size_t numPiece);
   ~BtBitfieldMessageValidator();
 
   virtual void validate() CXX11_OVERRIDE;

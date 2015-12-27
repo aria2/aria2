@@ -38,8 +38,8 @@
 
 namespace aria2 {
 
-std::unique_ptr<DiskWriter> DefaultDiskWriterFactory::newDiskWriter
-(const std::string& filename)
+std::unique_ptr<DiskWriter>
+DefaultDiskWriterFactory::newDiskWriter(const std::string& filename)
 {
   return make_unique<DefaultDiskWriter>(filename);
 }

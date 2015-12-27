@@ -76,10 +76,8 @@ public:
   virtual void beginElement(int elementType) CXX11_OVERRIDE;
   virtual void endElement(int elementType) CXX11_OVERRIDE;
 
-  virtual void charactersCallback(const char* data, size_t len)
-    CXX11_OVERRIDE;
-  virtual void numberCallback(int64_t number, int frac, int exp)
-    CXX11_OVERRIDE;
+  virtual void charactersCallback(const char* data, size_t len) CXX11_OVERRIDE;
+  virtual void numberCallback(int64_t number, int frac, int exp) CXX11_OVERRIDE;
   virtual void boolCallback(bool bval) CXX11_OVERRIDE;
 
   std::unique_ptr<ValueBase> getResult();
@@ -107,6 +105,7 @@ public:
   void pushNumberState();
   void pushBoolState();
   void pushNullState();
+
 private:
   std::unique_ptr<rpc::XmlRpcRequestParserController> ctrl_;
   std::stack<ValueBaseStructParserState*> stateStack_;

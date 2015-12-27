@@ -19,7 +19,7 @@
 
 namespace aria2 {
 
-class DefaultPieceStorageTest:public CppUnit::TestFixture {
+class DefaultPieceStorageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DefaultPieceStorageTest);
   CPPUNIT_TEST(testGetTotalLength);
@@ -40,17 +40,20 @@ class DefaultPieceStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetFilteredCompletedLength);
   CPPUNIT_TEST(testGetNextUsedIndex);
   CPPUNIT_TEST_SUITE_END();
+
 private:
   std::shared_ptr<DownloadContext> dctx_;
   std::shared_ptr<Peer> peer;
   std::shared_ptr<Option> option_;
   std::unique_ptr<PieceSelector> pieceSelector_;
+
 public:
-  void setUp() {
+  void setUp()
+  {
     option_ = std::make_shared<Option>();
     option_->put(PREF_DIR, ".");
     dctx_ = std::make_shared<DownloadContext>();
-    bittorrent::load(A2_TEST_DIR"/test.torrent", dctx_, option_);
+    bittorrent::load(A2_TEST_DIR "/test.torrent", dctx_, option_);
     peer = std::make_shared<Peer>("192.168.0.1", 6889);
     peer->allocateSessionResource(dctx_->getPieceLength(),
                                   dctx_->getTotalLength());
@@ -76,16 +79,17 @@ public:
   void testGetNextUsedIndex();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(DefaultPieceStorageTest);
 
-void DefaultPieceStorageTest::testGetTotalLength() {
+void DefaultPieceStorageTest::testGetTotalLength()
+{
   DefaultPieceStorage pss(dctx_, option_.get());
 
   CPPUNIT_ASSERT_EQUAL((int64_t)384LL, pss.getTotalLength());
 }
 
-void DefaultPieceStorageTest::testGetMissingPiece() {
+void DefaultPieceStorageTest::testGetMissingPiece()
+{
   DefaultPieceStorage pss(dctx_, option_.get());
   pss.setPieceSelector(std::move(pieceSelector_));
   peer->setAllBitfield();
@@ -104,7 +108,8 @@ void DefaultPieceStorageTest::testGetMissingPiece() {
   CPPUNIT_ASSERT(!piece);
 }
 
-void DefaultPieceStorageTest::testGetMissingPiece_many() {
+void DefaultPieceStorageTest::testGetMissingPiece_many()
+{
   DefaultPieceStorage pss(dctx_, option_.get());
   pss.setPieceSelector(std::move(pieceSelector_));
   peer->setAllBitfield();
@@ -146,7 +151,8 @@ void DefaultPieceStorageTest::testGetMissingPiece_excludedIndexes()
   CPPUNIT_ASSERT(!piece);
 }
 
-void DefaultPieceStorageTest::testGetMissingPiece_manyWithExcludedIndexes() {
+void DefaultPieceStorageTest::testGetMissingPiece_manyWithExcludedIndexes()
+{
   DefaultPieceStorage pss(dctx_, option_.get());
   pss.setPieceSelector(std::move(pieceSelector_));
   peer->setAllBitfield();
@@ -164,7 +170,8 @@ void DefaultPieceStorageTest::testGetMissingPiece_manyWithExcludedIndexes() {
   CPPUNIT_ASSERT(pieces.empty());
 }
 
-void DefaultPieceStorageTest::testGetMissingFastPiece() {
+void DefaultPieceStorageTest::testGetMissingFastPiece()
+{
   DefaultPieceStorage pss(dctx_, option_.get());
   pss.setPieceSelector(std::move(pieceSelector_));
   pss.setEndGamePieceNum(0);
@@ -201,7 +208,8 @@ void DefaultPieceStorageTest::testGetMissingFastPiece_excludedIndexes()
   CPPUNIT_ASSERT(!pss.getMissingFastPiece(peer, excludedIndexes, 1));
 }
 
-void DefaultPieceStorageTest::testHasMissingPiece() {
+void DefaultPieceStorageTest::testHasMissingPiece()
+{
   DefaultPieceStorage pss(dctx_, option_.get());
 
   CPPUNIT_ASSERT(!pss.hasMissingPiece(peer));
@@ -211,7 +219,8 @@ void DefaultPieceStorageTest::testHasMissingPiece() {
   CPPUNIT_ASSERT(pss.hasMissingPiece(peer));
 }
 
-void DefaultPieceStorageTest::testCompletePiece() {
+void DefaultPieceStorageTest::testCompletePiece()
+{
   DefaultPieceStorage pss(dctx_, option_.get());
   pss.setPieceSelector(std::move(pieceSelector_));
   pss.setEndGamePieceNum(0);
@@ -233,7 +242,8 @@ void DefaultPieceStorageTest::testCompletePiece() {
   CPPUNIT_ASSERT_EQUAL((int64_t)256LL, pss.getCompletedLength());
 }
 
-void DefaultPieceStorageTest::testGetPiece() {
+void DefaultPieceStorageTest::testGetPiece()
+{
   DefaultPieceStorage pss(dctx_, option_.get());
 
   auto pieceGot = pss.getPiece(0);
@@ -242,18 +252,20 @@ void DefaultPieceStorageTest::testGetPiece() {
   CPPUNIT_ASSERT_EQUAL(false, pieceGot->pieceComplete());
 }
 
-void DefaultPieceStorageTest::testGetPieceInUsedPieces() {
+void DefaultPieceStorageTest::testGetPieceInUsedPieces()
+{
   DefaultPieceStorage pss(dctx_, option_.get());
   auto piece = std::make_shared<Piece>(0, 128);
   piece->completeBlock(0);
   pss.addUsedPiece(piece);
-  auto  pieceGot = pss.getPiece(0);
+  auto pieceGot = pss.getPiece(0);
   CPPUNIT_ASSERT_EQUAL((size_t)0, pieceGot->getIndex());
   CPPUNIT_ASSERT_EQUAL((int64_t)128, pieceGot->getLength());
   CPPUNIT_ASSERT_EQUAL((size_t)1, pieceGot->countCompleteBlock());
 }
 
-void DefaultPieceStorageTest::testGetPieceCompletedPiece() {
+void DefaultPieceStorageTest::testGetPieceCompletedPiece()
+{
   DefaultPieceStorage pss(dctx_, option_.get());
   auto piece = std::make_shared<Piece>(0, 128);
   pss.completePiece(piece);
@@ -266,11 +278,12 @@ void DefaultPieceStorageTest::testGetPieceCompletedPiece() {
 void DefaultPieceStorageTest::testCancelPiece()
 {
   size_t pieceLength = 256_k;
-  int64_t totalLength = 32*pieceLength; // <-- make the number of piece greater than END_GAME_PIECE_NUM
+  int64_t totalLength = 32 * pieceLength; // <-- make the number of piece
+                                          // greater than END_GAME_PIECE_NUM
   std::deque<std::string> uris1;
   uris1.push_back("http://localhost/src/file1.txt");
-  auto file1 = std::make_shared<FileEntry>("src/file1.txt", totalLength,
-                                           0 /*, uris1*/);
+  auto file1 =
+      std::make_shared<FileEntry>("src/file1.txt", totalLength, 0 /*, uris1*/);
 
   auto dctx = std::make_shared<DownloadContext>(pieceLength, totalLength,
                                                 "src/file1.txt");
@@ -293,16 +306,16 @@ void DefaultPieceStorageTest::testMarkPiecesDone()
 {
   size_t pieceLength = 256_k;
   int64_t totalLength = 4_m;
-  auto dctx =std::make_shared<DownloadContext>(pieceLength, totalLength);
+  auto dctx = std::make_shared<DownloadContext>(pieceLength, totalLength);
 
   DefaultPieceStorage ps(dctx, option_.get());
 
   ps.markPiecesDone(pieceLength * 10 + 32_k + 1);
 
-  for(size_t i = 0; i < 10; ++i) {
+  for (size_t i = 0; i < 10; ++i) {
     CPPUNIT_ASSERT(ps.hasPiece(i));
   }
-  for(size_t i = 10; i < (totalLength+pieceLength-1)/pieceLength; ++i) {
+  for (size_t i = 10; i < (totalLength + pieceLength - 1) / pieceLength; ++i) {
     CPPUNIT_ASSERT(!ps.hasPiece(i));
   }
   CPPUNIT_ASSERT_EQUAL((int64_t)pieceLength * 10 + (int64_t)32_k,
@@ -310,7 +323,7 @@ void DefaultPieceStorageTest::testMarkPiecesDone()
 
   ps.markPiecesDone(totalLength);
 
-  for(size_t i = 0; i < (totalLength+pieceLength-1)/pieceLength; ++i) {
+  for (size_t i = 0; i < (totalLength + pieceLength - 1) / pieceLength; ++i) {
     CPPUNIT_ASSERT(ps.hasPiece(i));
   }
 
@@ -330,9 +343,9 @@ void DefaultPieceStorageTest::testGetCompletedLength()
   CPPUNIT_ASSERT_EQUAL((int64_t)250_m, ps.getCompletedLength());
 
   std::vector<std::shared_ptr<Piece>> inFlightPieces;
-  for(int i = 0; i < 2; ++i) {
-    auto p = std::make_shared<Piece>(250+i, 1_m);
-    for(int j = 0; j < 32; ++j) {
+  for (int i = 0; i < 2; ++i) {
+    auto p = std::make_shared<Piece>(250 + i, 1_m);
+    for (int j = 0; j < 32; ++j) {
       p->completeBlock(j);
     }
     inFlightPieces.push_back(p);
@@ -353,9 +366,8 @@ void DefaultPieceStorageTest::testGetFilteredCompletedLength()
   auto dctx = std::make_shared<DownloadContext>();
   dctx->setPieceLength(pieceLength);
   auto files = std::vector<std::shared_ptr<FileEntry>>{
-    std::make_shared<FileEntry>("foo", 2*pieceLength, 0),
-    std::make_shared<FileEntry>("bar", 4*pieceLength, 2*pieceLength)
-  };
+      std::make_shared<FileEntry>("foo", 2 * pieceLength, 0),
+      std::make_shared<FileEntry>("bar", 4 * pieceLength, 2 * pieceLength)};
   files[1]->setRequested(false);
   dctx->setFileEntries(std::begin(files), std::end(files));
 
@@ -373,7 +385,7 @@ void DefaultPieceStorageTest::testGetFilteredCompletedLength()
   auto piece = ps.getMissingPiece(0, 1);
   ps.completePiece(piece);
 
-  CPPUNIT_ASSERT_EQUAL((int64_t)pieceLength+(int64_t)16_k,
+  CPPUNIT_ASSERT_EQUAL((int64_t)pieceLength + (int64_t)16_k,
                        ps.getFilteredCompletedLength());
 }
 

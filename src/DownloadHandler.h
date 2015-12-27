@@ -45,14 +45,14 @@ namespace aria2 {
 class RequestGroup;
 class RequestGroupCriteria;
 
-class DownloadHandler
-{
+class DownloadHandler {
 public:
   virtual ~DownloadHandler() {}
 
   bool canHandle(const RequestGroup* requestGroup) const;
 
   void setCriteria(std::unique_ptr<RequestGroupCriteria> criteria);
+
 private:
   std::unique_ptr<RequestGroupCriteria> criteria_;
 };

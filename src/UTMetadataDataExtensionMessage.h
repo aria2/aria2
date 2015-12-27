@@ -45,7 +45,7 @@ class DownloadContext;
 class PieceStorage;
 class UTMetadataRequestTracker;
 
-class UTMetadataDataExtensionMessage:public UTMetadataExtensionMessage {
+class UTMetadataDataExtensionMessage : public UTMetadataExtensionMessage {
 private:
   size_t totalSize_;
 
@@ -56,6 +56,7 @@ private:
   PieceStorage* pieceStorage_;
 
   UTMetadataRequestTracker* tracker_;
+
 public:
   UTMetadataDataExtensionMessage(uint8_t extensionMessageID);
 
@@ -71,7 +72,7 @@ public:
 
   void setData(const std::string& data);
 
-  template<typename InputIterator>
+  template <typename InputIterator>
   void setData(InputIterator first, InputIterator last)
   {
     data_.assign(first, last);

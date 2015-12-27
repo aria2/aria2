@@ -12,7 +12,7 @@
 
 namespace aria2 {
 
-class BtHaveAllMessageTest:public CppUnit::TestFixture {
+class BtHaveAllMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtHaveAllMessageTest);
   CPPUNIT_TEST(testCreate);
@@ -20,11 +20,10 @@ class BtHaveAllMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST(testDoReceivedAction_goodByeSeeder);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
-  void setUp() {
-  }
+  void setUp() {}
 
   void testCreate();
   void testCreateMessage();
@@ -32,10 +31,10 @@ public:
   void testDoReceivedAction_goodByeSeeder();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(BtHaveAllMessageTest);
 
-void BtHaveAllMessageTest::testCreate() {
+void BtHaveAllMessageTest::testCreate()
+{
   unsigned char msg[5];
   bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 14);
   std::shared_ptr<BtHaveAllMessage> pm(BtHaveAllMessage::create(&msg[4], 1));
@@ -47,7 +46,8 @@ void BtHaveAllMessageTest::testCreate() {
     bittorrent::createPeerMessageString(msg, sizeof(msg), 2, 14);
     BtHaveAllMessage::create(&msg[4], 2);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(...) {
+  }
+  catch (...) {
   }
   // case: id is wrong
   try {
@@ -55,20 +55,23 @@ void BtHaveAllMessageTest::testCreate() {
     bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 15);
     BtHaveAllMessage::create(&msg[4], 1);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(...) {
+  }
+  catch (...) {
   }
 }
 
-void BtHaveAllMessageTest::testCreateMessage() {
+void BtHaveAllMessageTest::testCreateMessage()
+{
   BtHaveAllMessage msg;
   unsigned char data[5];
   bittorrent::createPeerMessageString(data, sizeof(data), 1, 14);
   unsigned char* rawmsg = msg.createMessage();
   CPPUNIT_ASSERT(memcmp(rawmsg, data, 5) == 0);
-  delete [] rawmsg;
+  delete[] rawmsg;
 }
 
-void BtHaveAllMessageTest::testDoReceivedAction() {
+void BtHaveAllMessageTest::testDoReceivedAction()
+{
   BtHaveAllMessage msg;
   std::shared_ptr<Peer> peer(new Peer("host", 6969));
   peer->allocateSessionResource(16_k, 256_k);
@@ -86,7 +89,9 @@ void BtHaveAllMessageTest::testDoReceivedAction() {
   try {
     msg.doReceivedAction();
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(...) {}
+  }
+  catch (...) {
+  }
 }
 
 void BtHaveAllMessageTest::testDoReceivedAction_goodByeSeeder()
@@ -104,7 +109,8 @@ void BtHaveAllMessageTest::testDoReceivedAction_goodByeSeeder()
   try {
     msg.doReceivedAction();
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(DlAbortEx& e) {
+  }
+  catch (DlAbortEx& e) {
     // success
   }
 }

@@ -9,7 +9,7 @@
 
 namespace aria2 {
 
-class RequestTest:public CppUnit::TestFixture {
+class RequestTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(RequestTest);
   CPPUNIT_TEST(testSetUri1);
@@ -43,16 +43,15 @@ public:
   void testGetURIHost();
 };
 
+CPPUNIT_TEST_SUITE_REGISTRATION(RequestTest);
 
-CPPUNIT_TEST_SUITE_REGISTRATION( RequestTest );
-
-void RequestTest::testSetUri1() {
+void RequestTest::testSetUri1()
+{
   Request req;
   bool v = req.setUri("http://aria.rednoah.com/");
 
   CPPUNIT_ASSERT(v);
-  CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com/"),
-                       req.getUri());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com/"), req.getUri());
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com/"),
                        req.getCurrentUri());
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getReferer());
@@ -67,7 +66,8 @@ void RequestTest::testSetUri1() {
   CPPUNIT_ASSERT(!req.isIPv6LiteralAddress());
 }
 
-void RequestTest::testSetUri2() {
+void RequestTest::testSetUri2()
+{
   Request req;
   bool v = req.setUri("http://aria.rednoah.com:8080/index.html");
   req.setReferer("http://aria.rednoah.com:8080");
@@ -85,7 +85,8 @@ void RequestTest::testSetUri2() {
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getQuery());
 }
 
-void RequestTest::testSetUri7() {
+void RequestTest::testSetUri7()
+{
   Request req;
   bool v = req.setUri("http://");
 
@@ -170,9 +171,9 @@ void RequestTest::testResetUri()
   bool v3 = req.resetUri();
   CPPUNIT_ASSERT(v3);
   // currentUri must equal to uri
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("http://aria.rednoah.com:8080/aria2/index.html"),
-     req.getUri());
+  CPPUNIT_ASSERT_EQUAL(
+      std::string("http://aria.rednoah.com:8080/aria2/index.html"),
+      req.getUri());
   CPPUNIT_ASSERT_EQUAL(req.getUri(), req.getCurrentUri());
   // referer is unchanged
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com:8080/"),

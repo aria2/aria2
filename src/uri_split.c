@@ -59,64 +59,61 @@ typedef enum {
   URI_FRAGMENT
 } uri_split_state;
 
-static void uri_set_field(uri_split_result *res, int field,
-                          const char *first, const char *last, const char *uri)
+static void uri_set_field(uri_split_result* res, int field, const char* first,
+                          const char* last, const char* uri)
 {
-  if(first) {
+  if (first) {
     res->field_set |= 1 << field;
     res->fields[field].off = first - uri;
     res->fields[field].len = last - first;
   }
 }
 
-static int is_digit(char c)
-{
-  return '0' <= c && c <= '9';
-}
+static int is_digit(char c) { return '0' <= c && c <= '9'; }
 
-int uri_split(uri_split_result *res, const char *uri)
+int uri_split(uri_split_result* res, const char* uri)
 {
   int state = URI_BEFORE_SCHEME;
-  const char *scheme_first = NULL, *scheme_last = NULL,
-    *host_first = NULL, *host_last = NULL,
-    *path_first = NULL, *path_last = NULL,
-    *query_first = NULL, *query_last = NULL,
-    *fragment_first = NULL, *fragment_last = NULL,
-    *user_first = NULL, *user_last = NULL,
-    *passwd_first = NULL, *passwd_last = NULL,
-    *last_atmark = NULL, *last_slash = NULL,
-    *p = uri;
+  const char* scheme_first = NULL, * scheme_last = NULL, * host_first = NULL,
+              * host_last = NULL, * path_first = NULL, * path_last = NULL,
+              * query_first = NULL, * query_last = NULL,
+              * fragment_first = NULL, * fragment_last = NULL,
+              * user_first = NULL, * user_last = NULL, * passwd_first = NULL,
+              * passwd_last = NULL, * last_atmark = NULL, * last_slash = NULL,
+              * p = uri;
   int32_t port = -1;
   uint8_t flags = 0;
 
-  for(; *p; ++p) {
-    switch(state) {
+  for (; *p; ++p) {
+    switch (state) {
     case URI_BEFORE_SCHEME:
       scheme_first = p;
       state = URI_SCHEME;
       break;
     case URI_SCHEME:
-      if(*p == ':') {
+      if (*p == ':') {
         scheme_last = p;
         state = URI_SCHEME_SLASH1;
       }
       break;
     case URI_SCHEME_SLASH1:
-      if(*p == '/') {
+      if (*p == '/') {
         state = URI_SCHEME_SLASH2;
-      } else {
+      }
+      else {
         return -1;
       }
       break;
     case URI_SCHEME_SLASH2:
-      if(*p == '/') {
+      if (*p == '/') {
         state = URI_BEFORE_MAYBE_USER;
-      } else {
+      }
+      else {
         return -1;
       }
       break;
     case URI_BEFORE_MAYBE_USER:
-      switch(*p) {
+      switch (*p) {
       case '@':
       case ':':
       case '/':
@@ -130,7 +127,7 @@ int uri_split(uri_split_result *res, const char *uri)
       }
       break;
     case URI_MAYBE_USER:
-      switch(*p) {
+      switch (*p) {
       case '@':
         last_atmark = p;
         break;
@@ -139,10 +136,11 @@ int uri_split(uri_split_result *res, const char *uri)
         state = URI_BEFORE_MAYBE_PASSWD;
         break;
       case '[':
-        if(last_atmark == p - 1) {
+        if (last_atmark == p - 1) {
           user_last = last_atmark;
           state = URI_BEFORE_IPV6HOST;
-        } else {
+        }
+        else {
           return -1;
         }
         break;
@@ -151,16 +149,17 @@ int uri_split(uri_split_result *res, const char *uri)
       case '#':
         /* It turns out that this is only host or user + host if
            last_atmark is not NULL. */
-        if(last_atmark) {
+        if (last_atmark) {
           host_first = last_atmark + 1;
           host_last = p;
           user_last = last_atmark;
-        } else {
+        }
+        else {
           host_first = user_first;
           host_last = p;
           user_first = user_last = NULL;
         }
-        switch(*p) {
+        switch (*p) {
         case '/':
           path_first = last_slash = p;
           state = URI_PATH;
@@ -177,7 +176,7 @@ int uri_split(uri_split_result *res, const char *uri)
       break;
     case URI_BEFORE_MAYBE_PASSWD:
       passwd_first = p;
-      switch(*p) {
+      switch (*p) {
       case '@':
         passwd_last = last_atmark = p;
         state = URI_BEFORE_HOST;
@@ -186,14 +185,14 @@ int uri_split(uri_split_result *res, const char *uri)
         return -1;
       default:
         /* sums up port number in case of port. */
-        if(is_digit(*p)) {
+        if (is_digit(*p)) {
           port = *p - '0';
         }
         state = URI_MAYBE_PASSWD;
       }
       break;
     case URI_MAYBE_PASSWD:
-      switch(*p) {
+      switch (*p) {
       case '@':
         passwd_last = last_atmark = p;
         /* Passwd confirmed, reset port to -1. */
@@ -206,20 +205,21 @@ int uri_split(uri_split_result *res, const char *uri)
       case '?':
       case '#':
         /* This is port not password.  port is in [passwd_first, p) */
-        if(port == -1) {
+        if (port == -1) {
           return -1;
         }
-        if(last_atmark) {
+        if (last_atmark) {
           host_first = last_atmark + 1;
           host_last = passwd_first - 1;
           user_last = last_atmark;
-        } else {
+        }
+        else {
           host_first = user_first;
           host_last = passwd_first - 1;
           user_first = user_last = NULL;
         }
         passwd_first = passwd_last = NULL;
-        switch(*p) {
+        switch (*p) {
         case '/':
           path_first = last_slash = p;
           state = URI_PATH;
@@ -233,14 +233,15 @@ int uri_split(uri_split_result *res, const char *uri)
         }
         break;
       default:
-        if(port != -1) {
-          if(is_digit(*p)) {
+        if (port != -1) {
+          if (is_digit(*p)) {
             port *= 10;
             port += *p - '0';
-            if(port > UINT16_MAX) {
+            if (port > UINT16_MAX) {
               port = -1;
             }
-          } else {
+          }
+          else {
             port = -1;
           }
         }
@@ -248,7 +249,7 @@ int uri_split(uri_split_result *res, const char *uri)
       }
       break;
     case URI_BEFORE_HOST:
-      switch(*p) {
+      switch (*p) {
       case ':':
       case '/':
         return -1;
@@ -262,7 +263,7 @@ int uri_split(uri_split_result *res, const char *uri)
       }
       break;
     case URI_HOST:
-      switch(*p) {
+      switch (*p) {
       case ':':
         host_last = p;
         state = URI_BEFORE_PORT;
@@ -282,21 +283,21 @@ int uri_split(uri_split_result *res, const char *uri)
       }
       break;
     case URI_BEFORE_IPV6HOST:
-      if(*p == ']') {
+      if (*p == ']') {
         return -1;
       }
       host_first = p;
       state = URI_IPV6HOST;
       break;
     case URI_IPV6HOST:
-      if(*p == ']') {
+      if (*p == ']') {
         flags |= USF_IPV6ADDR;
         host_last = p;
         state = URI_AFTER_IPV6HOST;
       }
       break;
     case URI_AFTER_IPV6HOST:
-      switch(*p) {
+      switch (*p) {
       case ':':
         state = URI_BEFORE_PORT;
         break;
@@ -315,15 +316,16 @@ int uri_split(uri_split_result *res, const char *uri)
       }
       break;
     case URI_BEFORE_PORT:
-      if(is_digit(*p)) {
+      if (is_digit(*p)) {
         port = *p - '0';
         state = URI_PORT;
-      } else {
+      }
+      else {
         return -1;
       }
       break;
     case URI_PORT:
-      switch(*p) {
+      switch (*p) {
       case '/':
         path_first = last_slash = p;
         state = URI_PATH;
@@ -335,19 +337,20 @@ int uri_split(uri_split_result *res, const char *uri)
         state = URI_BEFORE_FRAGMENT;
         break;
       default:
-        if(is_digit(*p)) {
+        if (is_digit(*p)) {
           port *= 10;
           port += *p - '0';
-          if(port > UINT16_MAX) {
+          if (port > UINT16_MAX) {
             return -1;
           }
-        } else {
+        }
+        else {
           return -1;
         }
       }
       break;
     case URI_PATH:
-      switch(*p) {
+      switch (*p) {
       case '/':
         last_slash = p;
         break;
@@ -363,15 +366,16 @@ int uri_split(uri_split_result *res, const char *uri)
       break;
     case URI_BEFORE_QUERY:
       query_first = p;
-      if(*p == '#') {
+      if (*p == '#') {
         query_last = p;
         state = URI_BEFORE_FRAGMENT;
-      } else {
+      }
+      else {
         state = URI_QUERY;
       }
       break;
     case URI_QUERY:
-      if(*p == '#') {
+      if (*p == '#') {
         query_last = p;
         state = URI_BEFORE_FRAGMENT;
       }
@@ -385,7 +389,7 @@ int uri_split(uri_split_result *res, const char *uri)
     }
   }
   /* Handle premature states */
-  switch(state) {
+  switch (state) {
   case URI_BEFORE_SCHEME:
   case URI_SCHEME:
   case URI_SCHEME_SLASH1:
@@ -394,14 +398,15 @@ int uri_split(uri_split_result *res, const char *uri)
   case URI_BEFORE_MAYBE_USER:
     return -1;
   case URI_MAYBE_USER:
-    if(last_atmark) {
+    if (last_atmark) {
       host_first = last_atmark + 1;
       host_last = p;
-      if(host_first == host_last) {
+      if (host_first == host_last) {
         return -1;
       }
       user_last = last_atmark;
-    } else {
+    }
+    else {
       host_first = user_first;
       host_last = p;
       user_first = user_last = NULL;
@@ -410,14 +415,15 @@ int uri_split(uri_split_result *res, const char *uri)
   case URI_BEFORE_MAYBE_PASSWD:
     return -1;
   case URI_MAYBE_PASSWD:
-    if(port == -1) {
+    if (port == -1) {
       return -1;
     }
-    if(last_atmark) {
+    if (last_atmark) {
       host_first = last_atmark + 1;
       host_last = passwd_first - 1;
       user_last = last_atmark;
-    } else {
+    }
+    else {
       host_first = user_first;
       host_last = passwd_first - 1;
       user_first = user_last = NULL;
@@ -437,7 +443,7 @@ int uri_split(uri_split_result *res, const char *uri)
   case URI_BEFORE_PORT:
     return -1;
   case URI_PORT:
-    if(port == -1) {
+    if (port == -1) {
       return -1;
     }
     break;
@@ -460,7 +466,7 @@ int uri_split(uri_split_result *res, const char *uri)
     return -1;
   };
 
-  if(res) {
+  if (res) {
     res->field_set = 0;
     res->port = 0;
     res->flags = flags;
@@ -472,13 +478,13 @@ int uri_split(uri_split_result *res, const char *uri)
     uri_set_field(res, USR_FRAGMENT, fragment_first, fragment_last, uri);
     uri_set_field(res, USR_USER, user_first, user_last, uri);
     uri_set_field(res, USR_PASSWD, passwd_first, passwd_last, uri);
-    if(res->field_set & (1 << USR_USER)) {
+    if (res->field_set & (1 << USR_USER)) {
       uri_set_field(res, USR_USERINFO, user_first, last_atmark, uri);
     }
-    if(last_slash && last_slash + 1 != path_last) {
+    if (last_slash && last_slash + 1 != path_last) {
       uri_set_field(res, USR_BASENAME, last_slash + 1, path_last, uri);
     }
-    if(port != -1) {
+    if (port != -1) {
       res->field_set |= 1 << USR_PORT;
       res->port = port;
     }

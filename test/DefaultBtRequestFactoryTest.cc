@@ -16,7 +16,7 @@
 
 namespace aria2 {
 
-class DefaultBtRequestFactoryTest:public CppUnit::TestFixture {
+class DefaultBtRequestFactoryTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DefaultBtRequestFactoryTest);
   CPPUNIT_TEST(testAddTargetPiece);
@@ -26,12 +26,14 @@ class DefaultBtRequestFactoryTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testRemoveTargetPiece);
   CPPUNIT_TEST(testGetTargetPieceIndexes);
   CPPUNIT_TEST_SUITE_END();
+
 private:
   std::shared_ptr<Peer> peer_;
   std::unique_ptr<DefaultBtRequestFactory> requestFactory_;
   std::unique_ptr<MockPieceStorage> pieceStorage_;
   std::unique_ptr<MockBtMessageFactory> messageFactory_;
   std::unique_ptr<MockBtMessageDispatcher> dispatcher_;
+
 public:
   void testAddTargetPiece();
   void testRemoveCompletedPiece();
@@ -45,8 +47,10 @@ public:
     size_t index;
     size_t blockIndex;
 
-    MockBtRequestMessage(size_t index, size_t blockIndex):
-      index(index), blockIndex(blockIndex) {}
+    MockBtRequestMessage(size_t index, size_t blockIndex)
+        : index(index), blockIndex(blockIndex)
+    {
+    }
   };
 
   class MockBtMessageFactory2 : public MockBtMessageFactory {
@@ -55,15 +59,14 @@ public:
     createRequestMessage(const std::shared_ptr<Piece>& piece,
                          size_t blockIndex) CXX11_OVERRIDE
     {
-      return make_unique<BtRequestMessage>(piece->getIndex(), 0, 0,
-                                           blockIndex);
+      return make_unique<BtRequestMessage>(piece->getIndex(), 0, 0, blockIndex);
     }
   };
 
   class MockBtMessageDispatcher2 : public MockBtMessageDispatcher {
   public:
-    virtual bool isOutstandingRequest(size_t index, size_t blockIndex)
-      CXX11_OVERRIDE
+    virtual bool isOutstandingRequest(size_t index,
+                                      size_t blockIndex) CXX11_OVERRIDE
     {
       return index == 0 && blockIndex == 0;
     }
@@ -75,8 +78,8 @@ public:
                     const std::unique_ptr<BtRequestMessage>& b)
     {
       return a->getIndex() < b->getIndex() ||
-        (a->getIndex() == b->getIndex() &&
-         a->getBlockIndex() < b->getBlockIndex());
+             (a->getIndex() == b->getIndex() &&
+              a->getBlockIndex() < b->getBlockIndex());
     }
   };
 
@@ -93,7 +96,6 @@ public:
     requestFactory_->setBtMessageFactory(messageFactory_.get());
   }
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DefaultBtRequestFactoryTest);
 

@@ -52,6 +52,7 @@ private:
   std::string encode(const unsigned char* in, size_t length, int flush);
   // Not implemented
   GZipEncoder& operator<<(char c);
+
 public:
   GZipEncoder();
 

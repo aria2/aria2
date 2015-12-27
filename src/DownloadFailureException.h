@@ -42,30 +42,28 @@ namespace aria2 {
  * Throw this exception when a RequestGroup should aborted.
  * FYI, DlAbortEx is the exception to abort 1 Request.
  */
-class DownloadFailureException:public RecoverableException {
+class DownloadFailureException : public RecoverableException {
 protected:
   virtual std::shared_ptr<Exception> copy() const CXX11_OVERRIDE;
+
 public:
   DownloadFailureException(const char* file, int line, const std::string& msg);
 
   DownloadFailureException(const char* file, int line, const std::string& msg,
                            const Exception& cause);
 
-  DownloadFailureException(const char* file, int line,
-                           const std::string& msg,
+  DownloadFailureException(const char* file, int line, const std::string& msg,
                            error_code::Value code);
 
-  DownloadFailureException(const char* file, int line,
-                           int errNum,
-                           const std::string& msg,
-                           error_code::Value code);
+  DownloadFailureException(const char* file, int line, int errNum,
+                           const std::string& msg, error_code::Value code);
 };
 
-#define DOWNLOAD_FAILURE_EXCEPTION(arg)                 \
+#define DOWNLOAD_FAILURE_EXCEPTION(arg)                                        \
   DownloadFailureException(__FILE__, __LINE__, arg)
-#define DOWNLOAD_FAILURE_EXCEPTION2(arg1, arg2)                 \
+#define DOWNLOAD_FAILURE_EXCEPTION2(arg1, arg2)                                \
   DownloadFailureException(__FILE__, __LINE__, arg1, arg2)
-#define DOWNLOAD_FAILURE_EXCEPTION3(arg1, arg2, arg3)                   \
+#define DOWNLOAD_FAILURE_EXCEPTION3(arg1, arg2, arg3)                          \
   DownloadFailureException(__FILE__, __LINE__, arg1, arg2, arg3)
 
 } // namespace aria2

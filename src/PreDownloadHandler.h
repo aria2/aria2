@@ -39,8 +39,7 @@
 
 namespace aria2 {
 
-class PreDownloadHandler:public DownloadHandler
-{
+class PreDownloadHandler : public DownloadHandler {
 public:
   PreDownloadHandler() {}
 

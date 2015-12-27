@@ -67,15 +67,15 @@ auto memberState = new MemberXmlRpcRequestParserState();
 
 auto nameState = new NameXmlRpcRequestParserState();
 
-auto arrayState =  new ArrayXmlRpcRequestParserState();
+auto arrayState = new ArrayXmlRpcRequestParserState();
 
 auto dataState = new DataXmlRpcRequestParserState();
 
 auto arrayValueState = new ArrayValueXmlRpcRequestParserState();
 } // namespace
 
-XmlRpcRequestParserStateMachine::XmlRpcRequestParserStateMachine():
-  controller_(new XmlRpcRequestParserController())
+XmlRpcRequestParserStateMachine::XmlRpcRequestParserStateMachine()
+    : controller_(new XmlRpcRequestParserController())
 {
   stateStack_.push(initialState);
 }
@@ -88,7 +88,7 @@ XmlRpcRequestParserStateMachine::~XmlRpcRequestParserStateMachine()
 void XmlRpcRequestParserStateMachine::reset()
 {
   controller_->reset();
-  while(!stateStack_.empty()) {
+  while (!stateStack_.empty()) {
     stateStack_.pop();
   }
   stateStack_.push(initialState);
@@ -104,20 +104,17 @@ bool XmlRpcRequestParserStateMachine::finished() const
   return stateStack_.top() == initialState;
 }
 
-void XmlRpcRequestParserStateMachine::beginElement
-(const char* localname,
- const char* prefix,
- const char* nsUri,
- const std::vector<XmlAttr>& attrs)
+void XmlRpcRequestParserStateMachine::beginElement(
+    const char* localname, const char* prefix, const char* nsUri,
+    const std::vector<XmlAttr>& attrs)
 {
   stateStack_.top()->beginElement(this, localname, attrs);
 }
 
-void XmlRpcRequestParserStateMachine::endElement
-(const char* localname,
- const char* prefix,
- const char* nsUri,
- std::string characters)
+void XmlRpcRequestParserStateMachine::endElement(const char* localname,
+                                                 const char* prefix,
+                                                 const char* nsUri,
+                                                 std::string characters)
 {
   stateStack_.top()->endElement(this, localname, std::move(characters));
   stateStack_.pop();
@@ -143,13 +140,10 @@ void XmlRpcRequestParserStateMachine::popStructFrame()
   controller_->popStructFrame();
 }
 
-void XmlRpcRequestParserStateMachine::pushFrame()
-{
-  controller_->pushFrame();
-}
+void XmlRpcRequestParserStateMachine::pushFrame() { controller_->pushFrame(); }
 
-void XmlRpcRequestParserStateMachine::setCurrentFrameValue
-(std::unique_ptr<ValueBase> value)
+void XmlRpcRequestParserStateMachine::setCurrentFrameValue(
+    std::unique_ptr<ValueBase> value)
 {
   controller_->setCurrentFrameValue(std::move(value));
 }

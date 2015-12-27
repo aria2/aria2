@@ -56,14 +56,16 @@ ServerStatMan::ServerStatMan() {}
 
 ServerStatMan::~ServerStatMan() {}
 
-std::shared_ptr<ServerStat> ServerStatMan::find(const std::string& hostname,
-                                             const std::string& protocol) const
+std::shared_ptr<ServerStat>
+ServerStatMan::find(const std::string& hostname,
+                    const std::string& protocol) const
 {
   auto ss = std::make_shared<ServerStat>(hostname, protocol);
   auto i = serverStats_.find(ss);
-  if(i == serverStats_.end()) {
+  if (i == serverStats_.end()) {
     return nullptr;
-  } else {
+  }
+  else {
     return *i;
   }
 }
@@ -71,9 +73,10 @@ std::shared_ptr<ServerStat> ServerStatMan::find(const std::string& hostname,
 bool ServerStatMan::add(const std::shared_ptr<ServerStat>& serverStat)
 {
   auto i = serverStats_.lower_bound(serverStat);
-  if(i != serverStats_.end() && *(*i) == *serverStat) {
+  if (i != serverStats_.end() && *(*i) == *serverStat) {
     return false;
-  } else {
+  }
+  else {
     serverStats_.insert(i, serverStat);
     return true;
   }
@@ -85,28 +88,29 @@ bool ServerStatMan::save(const std::string& filename) const
   tempfile += "__temp";
   {
     BufferedFile fp(tempfile.c_str(), BufferedFile::WRITE);
-    if(!fp) {
-      A2_LOG_ERROR(fmt(MSG_OPENING_WRITABLE_SERVER_STAT_FILE_FAILED,
-                       filename.c_str()));
+    if (!fp) {
+      A2_LOG_ERROR(
+          fmt(MSG_OPENING_WRITABLE_SERVER_STAT_FILE_FAILED, filename.c_str()));
       return false;
     }
-    for(auto& e: serverStats_) {
+    for (auto& e : serverStats_) {
       std::string l = e->toString();
       l += "\n";
-      if(fp.write(l.data(), l.size()) != l.size()) {
-        A2_LOG_ERROR(fmt(MSG_WRITING_SERVER_STAT_FILE_FAILED,
-                         filename.c_str()));
+      if (fp.write(l.data(), l.size()) != l.size()) {
+        A2_LOG_ERROR(
+            fmt(MSG_WRITING_SERVER_STAT_FILE_FAILED, filename.c_str()));
       }
     }
-    if(fp.close() == EOF) {
+    if (fp.close() == EOF) {
       A2_LOG_ERROR(fmt(MSG_WRITING_SERVER_STAT_FILE_FAILED, filename.c_str()));
       return false;
     }
   }
-  if(File(tempfile).renameTo(filename)) {
+  if (File(tempfile).renameTo(filename)) {
     A2_LOG_NOTICE(fmt(MSG_SERVER_STAT_SAVED, filename.c_str()));
     return true;
-  } else {
+  }
+  else {
     A2_LOG_ERROR(fmt(MSG_WRITING_SERVER_STAT_FILE_FAILED, filename.c_str()));
     return false;
   }
@@ -127,24 +131,17 @@ enum Field {
 };
 
 const char* FIELD_NAMES[] = {
-  "counter",
-  "dl_speed",
-  "host",
-  "last_updated",
-  "mc_avg_speed",
-  "protocol",
-  "sc_avg_speed",
-  "status",
+    "counter",      "dl_speed", "host",         "last_updated",
+    "mc_avg_speed", "protocol", "sc_avg_speed", "status",
 };
 } // namespace
 
 namespace {
-int idField(std::string::const_iterator first,
-            std::string::const_iterator last)
+int idField(std::string::const_iterator first, std::string::const_iterator last)
 {
   int i;
-  for(i = 0; i < MAX_FIELD; ++i) {
-    if(util::streq(first, last, FIELD_NAMES[i])) {
+  for (i = 0; i < MAX_FIELD; ++i) {
+    if (util::streq(first, last, FIELD_NAMES[i])) {
       return i;
     }
   }
@@ -155,74 +152,75 @@ int idField(std::string::const_iterator first,
 bool ServerStatMan::load(const std::string& filename)
 {
   BufferedFile fp(filename.c_str(), BufferedFile::READ);
-  if(!fp) {
-    A2_LOG_ERROR(fmt(MSG_OPENING_READABLE_SERVER_STAT_FILE_FAILED,
-                     filename.c_str()));
+  if (!fp) {
+    A2_LOG_ERROR(
+        fmt(MSG_OPENING_READABLE_SERVER_STAT_FILE_FAILED, filename.c_str()));
     return false;
   }
-  while(1) {
+  while (1) {
     std::string line = fp.getLine();
-    if(line.empty()) {
-      if(fp.eof()) {
+    if (line.empty()) {
+      if (fp.eof()) {
         break;
-      } else if(!fp) {
-        A2_LOG_ERROR(fmt(MSG_READING_SERVER_STAT_FILE_FAILED,
-                         filename.c_str()));
+      }
+      else if (!fp) {
+        A2_LOG_ERROR(
+            fmt(MSG_READING_SERVER_STAT_FILE_FAILED, filename.c_str()));
         return false;
-      } else {
+      }
+      else {
         continue;
       }
     }
-    std::pair<std::string::const_iterator,
-              std::string::const_iterator> p =
-      util::stripIter(line.begin(), line.end());
-    if(p.first == p.second) {
+    std::pair<std::string::const_iterator, std::string::const_iterator> p =
+        util::stripIter(line.begin(), line.end());
+    if (p.first == p.second) {
       continue;
     }
     std::vector<Scip> items;
     util::splitIter(p.first, p.second, std::back_inserter(items), ',');
     std::vector<std::string> m(MAX_FIELD);
-    for(std::vector<Scip>::const_iterator i = items.begin(),
-          eoi = items.end(); i != eoi; ++i) {
+    for (std::vector<Scip>::const_iterator i = items.begin(), eoi = items.end();
+         i != eoi; ++i) {
       auto p = util::divide((*i).first, (*i).second, '=');
       int id = idField(p.first.first, p.first.second);
-      if(id != MAX_FIELD) {
+      if (id != MAX_FIELD) {
         m[id].assign(p.second.first, p.second.second);
       }
     }
-    if(m[S_HOST].empty() || m[S_PROTOCOL].empty()) {
+    if (m[S_HOST].empty() || m[S_PROTOCOL].empty()) {
       continue;
     }
     auto sstat = std::make_shared<ServerStat>(m[S_HOST], m[S_PROTOCOL]);
 
     uint32_t uintval;
-    if(!util::parseUIntNoThrow(uintval, m[S_DL_SPEED])) {
+    if (!util::parseUIntNoThrow(uintval, m[S_DL_SPEED])) {
       continue;
     }
     sstat->setDownloadSpeed(uintval);
     // Old serverstat file doesn't contains SC_AVG_SPEED
-    if(!m[S_SC_AVG_SPEED].empty()) {
-      if(!util::parseUIntNoThrow(uintval, m[S_SC_AVG_SPEED])) {
+    if (!m[S_SC_AVG_SPEED].empty()) {
+      if (!util::parseUIntNoThrow(uintval, m[S_SC_AVG_SPEED])) {
         continue;
       }
       sstat->setSingleConnectionAvgSpeed(uintval);
     }
     // Old serverstat file doesn't contains MC_AVG_SPEED
-    if(!m[S_MC_AVG_SPEED].empty()) {
-      if(!util::parseUIntNoThrow(uintval, m[S_MC_AVG_SPEED])) {
+    if (!m[S_MC_AVG_SPEED].empty()) {
+      if (!util::parseUIntNoThrow(uintval, m[S_MC_AVG_SPEED])) {
         continue;
       }
       sstat->setMultiConnectionAvgSpeed(uintval);
     }
     // Old serverstat file doesn't contains COUNTER_SPEED
-    if(!m[S_COUNTER].empty()) {
-      if(!util::parseUIntNoThrow(uintval, m[S_COUNTER])) {
+    if (!m[S_COUNTER].empty()) {
+      if (!util::parseUIntNoThrow(uintval, m[S_COUNTER])) {
         continue;
       }
       sstat->setCounter(uintval);
     }
     int32_t intval;
-    if(!util::parseIntNoThrow(intval, m[S_LAST_UPDATED])) {
+    if (!util::parseIntNoThrow(intval, m[S_LAST_UPDATED])) {
       continue;
     }
     sstat->setLastUpdated(Time(intval));
@@ -236,10 +234,11 @@ bool ServerStatMan::load(const std::string& filename)
 void ServerStatMan::removeStaleServerStat(const std::chrono::seconds& timeout)
 {
   auto now = Time();
-  for(auto i = std::begin(serverStats_); i != std::end(serverStats_);) {
-    if((*i)->getLastUpdated().difference(now) >= timeout) {
+  for (auto i = std::begin(serverStats_); i != std::end(serverStats_);) {
+    if ((*i)->getLastUpdated().difference(now) >= timeout) {
       serverStats_.erase(i++);
-    } else {
+    }
+    else {
       ++i;
     }
   }

@@ -45,18 +45,16 @@
 
 namespace aria2 {
 
-DHTAbstractTask::DHTAbstractTask():
-  finished_(false),
-  routingTable_(nullptr),
-  dispatcher_(nullptr),
-  factory_(nullptr),
-  taskQueue_(nullptr)
-{}
-
-bool DHTAbstractTask::finished()
+DHTAbstractTask::DHTAbstractTask()
+    : finished_(false),
+      routingTable_(nullptr),
+      dispatcher_(nullptr),
+      factory_(nullptr),
+      taskQueue_(nullptr)
 {
-  return finished_;
 }
+
+bool DHTAbstractTask::finished() { return finished_; }
 
 void DHTAbstractTask::setRoutingTable(DHTRoutingTable* routingTable)
 {

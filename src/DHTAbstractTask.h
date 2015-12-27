@@ -50,7 +50,7 @@ class DHTMessageFactory;
 class DHTMessage;
 class DHTTaskQueue;
 
-class DHTAbstractTask:public DHTTask {
+class DHTAbstractTask : public DHTTask {
 private:
   bool finished_;
 
@@ -63,48 +63,32 @@ private:
   DHTMessageFactory* factory_;
 
   DHTTaskQueue* taskQueue_;
+
 protected:
-  void setFinished(bool f)
-  {
-    finished_ = f;
-  }
+  void setFinished(bool f) { finished_ = f; }
+
 public:
   DHTAbstractTask();
 
   virtual bool finished() CXX11_OVERRIDE;
 
-  DHTRoutingTable* getRoutingTable() const
-  {
-    return routingTable_;
-  }
+  DHTRoutingTable* getRoutingTable() const { return routingTable_; }
 
   void setRoutingTable(DHTRoutingTable* routingTable);
 
-  DHTMessageDispatcher* getMessageDispatcher() const
-  {
-    return dispatcher_;
-  }
+  DHTMessageDispatcher* getMessageDispatcher() const { return dispatcher_; }
 
   void setMessageDispatcher(DHTMessageDispatcher* dispatcher);
 
-  DHTMessageFactory* getMessageFactory() const
-  {
-    return factory_;
-  }
+  DHTMessageFactory* getMessageFactory() const { return factory_; }
 
   void setMessageFactory(DHTMessageFactory* factory);
 
-  DHTTaskQueue* getTaskQueue() const
-  {
-    return taskQueue_;
-  }
+  DHTTaskQueue* getTaskQueue() const { return taskQueue_; }
 
   void setTaskQueue(DHTTaskQueue* taskQueue);
 
-  const std::shared_ptr<DHTNode>& getLocalNode() const
-  {
-    return localNode_;
-  }
+  const std::shared_ptr<DHTNode>& getLocalNode() const { return localNode_; }
 
   void setLocalNode(const std::shared_ptr<DHTNode>& localNode);
 };

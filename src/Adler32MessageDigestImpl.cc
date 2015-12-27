@@ -43,23 +43,18 @@
 namespace aria2 {
 
 Adler32MessageDigestImpl::Adler32MessageDigestImpl()
-  : adler_(adler32(0, Z_NULL, 0))
-{}
-
-size_t Adler32MessageDigestImpl::getDigestLength() const
+    : adler_(adler32(0, Z_NULL, 0))
 {
-  return length();
 }
 
-void Adler32MessageDigestImpl::reset()
-{
-  adler_ = adler32(0, Z_NULL, 0);
-}
+size_t Adler32MessageDigestImpl::getDigestLength() const { return length(); }
+
+void Adler32MessageDigestImpl::reset() { adler_ = adler32(0, Z_NULL, 0); }
 
 void Adler32MessageDigestImpl::update(const void* data, size_t length)
 {
-  adler_ = adler32(adler_, reinterpret_cast<const unsigned char*>(data),
-                   length);
+  adler_ =
+      adler32(adler_, reinterpret_cast<const unsigned char*>(data), length);
 }
 
 void Adler32MessageDigestImpl::digest(unsigned char* md)
@@ -68,9 +63,6 @@ void Adler32MessageDigestImpl::digest(unsigned char* md)
   memcpy(md, &adler, getDigestLength());
 }
 
-size_t Adler32MessageDigestImpl::length()
-{
-  return 4;
-}
+size_t Adler32MessageDigestImpl::length() { return 4; }
 
 } // namespace aria2

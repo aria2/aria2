@@ -73,7 +73,7 @@ public:
   virtual void visit(const Dict& dict) = 0;
 };
 
-class String:public ValueBase {
+class String : public ValueBase {
 public:
   typedef std::string ValueType;
 
@@ -86,10 +86,11 @@ public:
 
   String(const unsigned char* data, size_t length);
 
-  template<typename InputIterator>
+  template <typename InputIterator>
   String(InputIterator first, InputIterator last)
-    : str_(first, last)
-  {}
+      : str_(first, last)
+  {
+  }
 
   String();
 
@@ -110,18 +111,19 @@ public:
 
   static std::unique_ptr<String> g(const unsigned char* data, size_t length);
 
-  template<typename InputIterator>
+  template <typename InputIterator>
   static std::unique_ptr<String> g(InputIterator first, InputIterator last)
   {
     return make_unique<String>(first, last);
   }
 
   virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
+
 private:
   ValueType str_;
 };
 
-class Integer:public ValueBase {
+class Integer : public ValueBase {
 public:
   typedef int64_t ValueType;
 
@@ -139,17 +141,19 @@ public:
   static std::unique_ptr<Integer> g(ValueType integer);
 
   virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
+
 private:
   ValueType integer_;
 };
 
-class Bool:public ValueBase {
+class Bool : public ValueBase {
 public:
   static std::unique_ptr<Bool> gTrue();
   static std::unique_ptr<Bool> gFalse();
   Bool(bool val);
   bool val() const;
   virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
+
 private:
   // Don't allow copying
   Bool(const Bool&) = delete;
@@ -157,18 +161,19 @@ private:
   bool val_;
 };
 
-class Null:public ValueBase {
+class Null : public ValueBase {
 public:
   static std::unique_ptr<Null> g();
   Null();
   virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
+
 private:
   // Don't allow copying
   Null(const Null&);
   Null& operator=(const Null&);
 };
 
-class List:public ValueBase {
+class List : public ValueBase {
 public:
   typedef std::deque<std::unique_ptr<ValueBase>> ValueType;
 
@@ -235,11 +240,12 @@ public:
   static std::unique_ptr<List> g();
 
   virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
+
 private:
   ValueType list_;
 };
 
-class Dict:public ValueBase {
+class Dict : public ValueBase {
 public:
   typedef std::map<std::string, std::unique_ptr<ValueBase>> ValueType;
 
@@ -302,11 +308,12 @@ public:
   static std::unique_ptr<Dict> g();
 
   virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
+
 private:
   ValueType dict_;
 };
 
-class EmptyDowncastValueBaseVisitor:public ValueBaseVisitor {
+class EmptyDowncastValueBaseVisitor : public ValueBaseVisitor {
 public:
   EmptyDowncastValueBaseVisitor() {}
   virtual void visit(const String& v) CXX11_OVERRIDE {}
@@ -317,37 +324,29 @@ public:
   virtual void visit(const Dict& v) CXX11_OVERRIDE {}
 };
 
-template<typename T>
-class DowncastValueBaseVisitor:public EmptyDowncastValueBaseVisitor {
+template <typename T>
+class DowncastValueBaseVisitor : public EmptyDowncastValueBaseVisitor {
 public:
   DowncastValueBaseVisitor() : result_{nullptr} {}
 
-  virtual void visit(const T& t)
-  {
-    result_ = &t;
-  }
+  virtual void visit(const T& t) { result_ = &t; }
 
-  const T* getResult() const
-  {
-    return result_;
-  }
+  const T* getResult() const { return result_; }
 
-  void setResult(const T* r)
-  {
-    result_ = r;
-  }
+  void setResult(const T* r) { result_ = r; }
+
 private:
   const T* result_;
 };
 
-template<typename T, typename VPtr>
-T* downcast(const VPtr& v)
+template <typename T, typename VPtr> T* downcast(const VPtr& v)
 {
-  if(v) {
+  if (v) {
     DowncastValueBaseVisitor<T> visitor;
     v->accept(visitor);
     return const_cast<T*>(visitor.getResult());
-  } else {
+  }
+  else {
     return 0;
   }
 }

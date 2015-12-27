@@ -10,11 +10,12 @@
 
 namespace aria2 {
 
-class GeomStreamPieceSelectorTest:public CppUnit::TestFixture {
+class GeomStreamPieceSelectorTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(GeomStreamPieceSelectorTest);
   CPPUNIT_TEST(testOnBitfieldInit);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void testOnBitfieldInit();
 };

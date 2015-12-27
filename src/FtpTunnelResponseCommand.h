@@ -43,13 +43,11 @@ class SocketCore;
 
 class FtpTunnelResponseCommand : public AbstractProxyResponseCommand {
 public:
-  FtpTunnelResponseCommand(cuid_t cuid,
-                           const std::shared_ptr<Request>& req,
-                           const std::shared_ptr<FileEntry>& fileEntry,
-                           RequestGroup* requestGroup,
-                           const std::shared_ptr<HttpConnection>& httpConnection,
-                           DownloadEngine* e,
-                           const std::shared_ptr<SocketCore>& s);
+  FtpTunnelResponseCommand(
+      cuid_t cuid, const std::shared_ptr<Request>& req,
+      const std::shared_ptr<FileEntry>& fileEntry, RequestGroup* requestGroup,
+      const std::shared_ptr<HttpConnection>& httpConnection, DownloadEngine* e,
+      const std::shared_ptr<SocketCore>& s);
   virtual ~FtpTunnelResponseCommand();
 
   virtual std::unique_ptr<Command> getNextCommand() CXX11_OVERRIDE;
@@ -58,4 +56,3 @@ public:
 } // namespace aria2
 
 #endif // D_FTP_TUNNEL_RESPONSE_COMMAND_H
-

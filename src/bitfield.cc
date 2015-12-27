@@ -40,9 +40,9 @@ namespace bitfield {
 
 void flipBit(unsigned char* data, size_t length, size_t bitIndex)
 {
-  size_t byteIndex = bitIndex/8;
+  size_t byteIndex = bitIndex / 8;
   assert(byteIndex <= length);
-  unsigned char mask = 128 >> (bitIndex%8);
+  unsigned char mask = 128 >> (bitIndex % 8);
   data[byteIndex] ^= mask;
 }
 

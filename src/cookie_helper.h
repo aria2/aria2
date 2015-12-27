@@ -48,20 +48,16 @@ class Cookie;
 
 namespace cookie {
 
-bool parseDate
-(time_t& time,
- std::string::const_iterator first,
- std::string::const_iterator last);
+bool parseDate(time_t& time, std::string::const_iterator first,
+               std::string::const_iterator last);
 
-std::unique_ptr<Cookie> parse
-(const std::string& cookieStr,
- const std::string& requestHost,
- const std::string& defaultPath,
- time_t creationTime);
+std::unique_ptr<Cookie> parse(const std::string& cookieStr,
+                              const std::string& requestHost,
+                              const std::string& defaultPath,
+                              time_t creationTime);
 
-bool goodPath
-(std::string::const_iterator first,
- std::string::const_iterator last);
+bool goodPath(std::string::const_iterator first,
+              std::string::const_iterator last);
 
 std::string canonicalizeHost(const std::string& host);
 

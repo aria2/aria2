@@ -43,13 +43,14 @@ namespace aria2 {
 
 FileAllocationEntry::FileAllocationEntry(RequestGroup* requestGroup,
                                          std::unique_ptr<Command> nextCommand)
-  : RequestGroupEntry{requestGroup, std::move(nextCommand)},
-    fileAllocationIterator_{requestGroup->getPieceStorage()->getDiskAdaptor()
-                            ->fileAllocationIterator()}
-{}
+    : RequestGroupEntry{requestGroup, std::move(nextCommand)},
+      fileAllocationIterator_{requestGroup->getPieceStorage()
+                                  ->getDiskAdaptor()
+                                  ->fileAllocationIterator()}
+{
+}
 
-FileAllocationEntry:: ~FileAllocationEntry()
-{}
+FileAllocationEntry::~FileAllocationEntry() {}
 
 int64_t FileAllocationEntry::getCurrentLength()
 {

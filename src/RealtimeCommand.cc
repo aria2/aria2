@@ -40,20 +40,15 @@
 namespace aria2 {
 
 RealtimeCommand::RealtimeCommand(cuid_t cuid, RequestGroup* requestGroup,
-                                 DownloadEngine* e):
-  Command(cuid),
-  requestGroup_(requestGroup),
-  e_(e)
+                                 DownloadEngine* e)
+    : Command(cuid), requestGroup_(requestGroup), e_(e)
 {
   setStatusRealtime();
 
   requestGroup_->increaseNumCommand();
 }
 
-RealtimeCommand::~RealtimeCommand()
-{
-  requestGroup_->decreaseNumCommand();
-}
+RealtimeCommand::~RealtimeCommand() { requestGroup_->decreaseNumCommand(); }
 
 bool RealtimeCommand::execute()
 {
@@ -61,8 +56,9 @@ bool RealtimeCommand::execute()
   e_->setNoWait(true);
   try {
     return executeInternal();
-  } catch(RecoverableException& e) {
-    bool r =  handleException(e);
+  }
+  catch (RecoverableException& e) {
+    bool r = handleException(e);
     return r;
   }
 }

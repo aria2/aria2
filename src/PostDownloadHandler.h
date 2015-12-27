@@ -41,8 +41,7 @@
 
 namespace aria2 {
 
-class PostDownloadHandler:public DownloadHandler
-{
+class PostDownloadHandler : public DownloadHandler {
 public:
   virtual ~PostDownloadHandler() {}
 

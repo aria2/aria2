@@ -24,7 +24,7 @@
 
 namespace aria2 {
 
-class DHTMessageFactoryImplTest:public CppUnit::TestFixture {
+class DHTMessageFactoryImplTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTMessageFactoryImplTest);
   CPPUNIT_TEST(testCreatePingMessage);
@@ -39,6 +39,7 @@ class DHTMessageFactoryImplTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreateAnnouncePeerReplyMessage);
   CPPUNIT_TEST(testReceivedErrorMessage);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   std::unique_ptr<DHTMessageFactoryImpl> factory;
 
@@ -87,7 +88,6 @@ public:
   void testReceivedErrorMessage();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(DHTMessageFactoryImplTest);
 
 void DHTMessageFactoryImplTest::testCreatePingMessage()
@@ -118,9 +118,8 @@ void DHTMessageFactoryImplTest::testCreatePingReplyMessage()
   rDict->put("id", String::g(remoteNodeID, DHT_ID_LENGTH));
   dict.put("r", std::move(rDict));
 
-  auto r = factory->createResponseMessage("ping", &dict,
-                                          remoteNode_->getIPAddress(),
-                                          remoteNode_->getPort());
+  auto r = factory->createResponseMessage(
+      "ping", &dict, remoteNode_->getIPAddress(), remoteNode_->getPort());
   auto m = dynamic_cast<DHTPingReplyMessage*>(r.get());
 
   CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
@@ -163,19 +162,18 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage()
     rDict->put("id", String::g(remoteNodeID, DHT_ID_LENGTH));
     std::string compactNodeInfo;
     std::shared_ptr<DHTNode> nodes[8];
-    for(size_t i = 0; i < DHTBucket::K; ++i) {
+    for (size_t i = 0; i < DHTBucket::K; ++i) {
       nodes[i] = std::make_shared<DHTNode>();
-      nodes[i]->setIPAddress("192.168.0."+util::uitos(i+1));
-      nodes[i]->setPort(6881+i);
+      nodes[i]->setIPAddress("192.168.0." + util::uitos(i + 1));
+      nodes[i]->setPort(6881 + i);
 
       unsigned char buf[COMPACT_LEN_IPV6];
-      CPPUNIT_ASSERT_EQUAL
-        (COMPACT_LEN_IPV4,
-         bittorrent::packcompact
-         (buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
-      compactNodeInfo +=
-        std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
-        std::string(&buf[0], &buf[COMPACT_LEN_IPV4]);
+      CPPUNIT_ASSERT_EQUAL(COMPACT_LEN_IPV4, bittorrent::packcompact(
+                                                 buf, nodes[i]->getIPAddress(),
+                                                 nodes[i]->getPort()));
+      compactNodeInfo += std::string(&nodes[i]->getID()[0],
+                                     &nodes[i]->getID()[DHT_ID_LENGTH]) +
+                         std::string(&buf[0], &buf[COMPACT_LEN_IPV4]);
     }
     rDict->put("nodes", compactNodeInfo);
     dict.put("r", std::move(rDict));
@@ -192,7 +190,8 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage()
     CPPUNIT_ASSERT(*nodes[7] == *m->getClosestKNodes()[7]);
     CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
                          util::toHex(m->getTransactionID()));
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
 }
@@ -210,19 +209,18 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage6()
     rDict->put("id", String::g(remoteNodeID, DHT_ID_LENGTH));
     std::string compactNodeInfo;
     std::shared_ptr<DHTNode> nodes[8];
-    for(size_t i = 0; i < DHTBucket::K; ++i) {
+    for (size_t i = 0; i < DHTBucket::K; ++i) {
       nodes[i] = std::make_shared<DHTNode>();
-      nodes[i]->setIPAddress("2001::000"+util::uitos(i+1));
-      nodes[i]->setPort(6881+i);
+      nodes[i]->setIPAddress("2001::000" + util::uitos(i + 1));
+      nodes[i]->setPort(6881 + i);
 
       unsigned char buf[COMPACT_LEN_IPV6];
-      CPPUNIT_ASSERT_EQUAL
-        (COMPACT_LEN_IPV6,
-         bittorrent::packcompact
-         (buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
-      compactNodeInfo +=
-        std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
-        std::string(&buf[0], &buf[COMPACT_LEN_IPV6]);
+      CPPUNIT_ASSERT_EQUAL(COMPACT_LEN_IPV6, bittorrent::packcompact(
+                                                 buf, nodes[i]->getIPAddress(),
+                                                 nodes[i]->getPort()));
+      compactNodeInfo += std::string(&nodes[i]->getID()[0],
+                                     &nodes[i]->getID()[DHT_ID_LENGTH]) +
+                         std::string(&buf[0], &buf[COMPACT_LEN_IPV6]);
     }
     rDict->put("nodes6", compactNodeInfo);
     dict.put("r", std::move(rDict));
@@ -239,7 +237,8 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage6()
     CPPUNIT_ASSERT(*nodes[7] == *m->getClosestKNodes()[7]);
     CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
                          util::toHex(m->getTransactionID()));
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
 }
@@ -278,32 +277,30 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage()
     rDict->put("id", String::g(remoteNodeID, DHT_ID_LENGTH));
     std::string compactNodeInfo;
     std::shared_ptr<DHTNode> nodes[8];
-    for(size_t i = 0; i < DHTBucket::K; ++i) {
+    for (size_t i = 0; i < DHTBucket::K; ++i) {
       nodes[i] = std::make_shared<DHTNode>();
-      nodes[i]->setIPAddress("192.168.0."+util::uitos(i+1));
-      nodes[i]->setPort(6881+i);
+      nodes[i]->setIPAddress("192.168.0." + util::uitos(i + 1));
+      nodes[i]->setPort(6881 + i);
 
       unsigned char buf[COMPACT_LEN_IPV6];
-      CPPUNIT_ASSERT_EQUAL
-        (COMPACT_LEN_IPV4,
-         bittorrent::packcompact
-         (buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
-      compactNodeInfo +=
-        std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
-        std::string(&buf[0], &buf[COMPACT_LEN_IPV4]);
+      CPPUNIT_ASSERT_EQUAL(COMPACT_LEN_IPV4, bittorrent::packcompact(
+                                                 buf, nodes[i]->getIPAddress(),
+                                                 nodes[i]->getPort()));
+      compactNodeInfo += std::string(&nodes[i]->getID()[0],
+                                     &nodes[i]->getID()[DHT_ID_LENGTH]) +
+                         std::string(&buf[0], &buf[COMPACT_LEN_IPV4]);
     }
     rDict->put("nodes", compactNodeInfo);
 
-    std::deque<std::shared_ptr<Peer> > peers;
+    std::deque<std::shared_ptr<Peer>> peers;
     auto valuesList = List::g();
-    for(size_t i = 0; i < 4; ++i) {
-      auto peer = std::make_shared<Peer>("192.168.0."+util::uitos(i+1),
-                                         6881+i);
+    for (size_t i = 0; i < 4; ++i) {
+      auto peer =
+          std::make_shared<Peer>("192.168.0." + util::uitos(i + 1), 6881 + i);
       unsigned char buffer[COMPACT_LEN_IPV6];
-      CPPUNIT_ASSERT_EQUAL
-        (COMPACT_LEN_IPV4,
-         bittorrent::packcompact
-         (buffer, peer->getIPAddress(), peer->getPort()));
+      CPPUNIT_ASSERT_EQUAL(COMPACT_LEN_IPV4,
+                           bittorrent::packcompact(buffer, peer->getIPAddress(),
+                                                   peer->getPort()));
       valuesList->append(String::g(buffer, COMPACT_LEN_IPV4));
       peers.push_back(peer);
     }
@@ -323,14 +320,15 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage()
     CPPUNIT_ASSERT(*nodes[0] == *m->getClosestKNodes()[0]);
     CPPUNIT_ASSERT(*nodes[7] == *m->getClosestKNodes()[7]);
     CPPUNIT_ASSERT_EQUAL((size_t)4, m->getValues().size());
-    for(int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 4; ++i) {
       CPPUNIT_ASSERT_EQUAL(peers[i]->getIPAddress(),
                            m->getValues()[i]->getIPAddress());
       CPPUNIT_ASSERT_EQUAL(peers[i]->getPort(), m->getValues()[i]->getPort());
     }
     CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
                          util::toHex(m->getTransactionID()));
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
 }
@@ -348,31 +346,30 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage6()
     rDict->put("id", String::g(remoteNodeID, DHT_ID_LENGTH));
     std::string compactNodeInfo;
     std::shared_ptr<DHTNode> nodes[8];
-    for(size_t i = 0; i < DHTBucket::K; ++i) {
+    for (size_t i = 0; i < DHTBucket::K; ++i) {
       nodes[i] = std::make_shared<DHTNode>();
-      nodes[i]->setIPAddress("2001::000"+util::uitos(i+1));
-      nodes[i]->setPort(6881+i);
+      nodes[i]->setIPAddress("2001::000" + util::uitos(i + 1));
+      nodes[i]->setPort(6881 + i);
 
       unsigned char buf[COMPACT_LEN_IPV6];
-      CPPUNIT_ASSERT_EQUAL
-        (COMPACT_LEN_IPV6,
-         bittorrent::packcompact
-         (buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
-      compactNodeInfo +=
-        std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
-        std::string(&buf[0], &buf[COMPACT_LEN_IPV6]);
+      CPPUNIT_ASSERT_EQUAL(COMPACT_LEN_IPV6, bittorrent::packcompact(
+                                                 buf, nodes[i]->getIPAddress(),
+                                                 nodes[i]->getPort()));
+      compactNodeInfo += std::string(&nodes[i]->getID()[0],
+                                     &nodes[i]->getID()[DHT_ID_LENGTH]) +
+                         std::string(&buf[0], &buf[COMPACT_LEN_IPV6]);
     }
     rDict->put("nodes6", compactNodeInfo);
 
     std::deque<std::shared_ptr<Peer>> peers;
     auto valuesList = List::g();
-    for(size_t i = 0; i < 4; ++i) {
-      auto peer = std::make_shared<Peer>("2001::100"+util::uitos(i+1), 6881+i);
+    for (size_t i = 0; i < 4; ++i) {
+      auto peer =
+          std::make_shared<Peer>("2001::100" + util::uitos(i + 1), 6881 + i);
       unsigned char buffer[COMPACT_LEN_IPV6];
-      CPPUNIT_ASSERT_EQUAL
-        (COMPACT_LEN_IPV6,
-         bittorrent::packcompact
-         (buffer, peer->getIPAddress(), peer->getPort()));
+      CPPUNIT_ASSERT_EQUAL(COMPACT_LEN_IPV6,
+                           bittorrent::packcompact(buffer, peer->getIPAddress(),
+                                                   peer->getPort()));
       valuesList->append(String::g(buffer, COMPACT_LEN_IPV6));
       peers.push_back(peer);
     }
@@ -392,14 +389,15 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage6()
     CPPUNIT_ASSERT(*nodes[0] == *m->getClosestKNodes()[0]);
     CPPUNIT_ASSERT(*nodes[7] == *m->getClosestKNodes()[7]);
     CPPUNIT_ASSERT_EQUAL((size_t)4, m->getValues().size());
-    for(int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 4; ++i) {
       CPPUNIT_ASSERT_EQUAL(peers[i]->getIPAddress(),
                            m->getValues()[i]->getIPAddress());
       CPPUNIT_ASSERT_EQUAL(peers[i]->getPort(), m->getValues()[i]->getPort());
     }
     CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
                          util::toHex(m->getTransactionID()));
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
 }
@@ -435,7 +433,8 @@ void DHTMessageFactoryImplTest::testCreateAnnouncePeerMessage()
     CPPUNIT_ASSERT_EQUAL(util::toHex(infoHash, DHT_ID_LENGTH),
                          util::toHex(m->getInfoHash(), DHT_ID_LENGTH));
     CPPUNIT_ASSERT_EQUAL(port, m->getTCPPort());
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
 }
@@ -475,7 +474,8 @@ void DHTMessageFactoryImplTest::testReceivedErrorMessage()
                                    remoteNode_->getIPAddress(),
                                    remoteNode_->getPort());
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(RecoverableException& e) {
+  }
+  catch (RecoverableException& e) {
     std::cerr << e.stackTrace() << std::endl;
   }
 }

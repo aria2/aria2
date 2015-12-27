@@ -40,7 +40,7 @@
 
 namespace aria2 {
 
-class DHTPingMessage:public DHTQueryMessage {
+class DHTPingMessage : public DHTQueryMessage {
 public:
   DHTPingMessage(const std::shared_ptr<DHTNode>& localNode,
                  const std::shared_ptr<DHTNode>& remoteNode,

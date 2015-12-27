@@ -13,7 +13,7 @@
 
 namespace aria2 {
 
-class DefaultPeerStorageTest:public CppUnit::TestFixture {
+class DefaultPeerStorageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DefaultPeerStorageTest);
   CPPUNIT_TEST(testCountAllPeer);
@@ -25,18 +25,19 @@ class DefaultPeerStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testOnErasingPeer);
   CPPUNIT_TEST(testAddBadPeer);
   CPPUNIT_TEST_SUITE_END();
+
 private:
   std::shared_ptr<BtRuntime> btRuntime;
   Option* option;
+
 public:
-  void setUp() {
+  void setUp()
+  {
     option = new Option();
     btRuntime.reset(new BtRuntime());
   }
 
-  void tearDown() {
-    delete option;
-  }
+  void tearDown() { delete option; }
 
   void testCountAllPeer();
   void testDeleteUnusedPeer();
@@ -48,7 +49,6 @@ public:
   void testAddBadPeer();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(DefaultPeerStorageTest);
 
 void DefaultPeerStorageTest::testCountAllPeer()
@@ -56,8 +56,8 @@ void DefaultPeerStorageTest::testCountAllPeer()
   DefaultPeerStorage ps;
 
   CPPUNIT_ASSERT_EQUAL((size_t)0, ps.countAllPeer());
-  for(int i = 0; i < 2; ++i) {
-    std::shared_ptr<Peer> peer(new Peer("192.168.0.1", 6889+i));
+  for (int i = 0; i < 2; ++i) {
+    std::shared_ptr<Peer> peer(new Peer("192.168.0.1", 6889 + i));
     ps.addPeer(peer);
   }
   CPPUNIT_ASSERT_EQUAL((size_t)2, ps.countAllPeer());
@@ -121,7 +121,8 @@ void DefaultPeerStorageTest::testAddPeer()
   CPPUNIT_ASSERT(!ps.addPeer(peer1));
 }
 
-void DefaultPeerStorageTest::testIsPeerAvailable() {
+void DefaultPeerStorageTest::testIsPeerAvailable()
+{
   DefaultPeerStorage ps;
   ps.setBtRuntime(btRuntime);
   std::shared_ptr<Peer> peer1(new Peer("192.168.0.1", 6889));
@@ -137,19 +138,19 @@ void DefaultPeerStorageTest::testCheckoutPeer()
 {
   DefaultPeerStorage ps;
   std::shared_ptr<Peer> peers[] = {
-    std::shared_ptr<Peer>(new Peer("192.168.0.1", 1000)),
-    std::shared_ptr<Peer>(new Peer("192.168.0.2", 1000)),
-    std::shared_ptr<Peer>(new Peer("192.168.0.3", 1000))
-  };
+      std::shared_ptr<Peer>(new Peer("192.168.0.1", 1000)),
+      std::shared_ptr<Peer>(new Peer("192.168.0.2", 1000)),
+      std::shared_ptr<Peer>(new Peer("192.168.0.3", 1000))};
   int len = arraySize(peers);
-  for(int i = 0; i < len; ++i) {
+  for (int i = 0; i < len; ++i) {
     ps.addPeer(peers[i]);
   }
-  for(int i = 0; i < len; ++i) {
-    std::shared_ptr<Peer> peer = ps.checkoutPeer(i+1);
-    CPPUNIT_ASSERT_EQUAL(peers[len-i-1]->getIPAddress(), peer->getIPAddress());
+  for (int i = 0; i < len; ++i) {
+    std::shared_ptr<Peer> peer = ps.checkoutPeer(i + 1);
+    CPPUNIT_ASSERT_EQUAL(peers[len - i - 1]->getIPAddress(),
+                         peer->getIPAddress());
   }
-  CPPUNIT_ASSERT(!ps.checkoutPeer(len+1));
+  CPPUNIT_ASSERT(!ps.checkoutPeer(len + 1));
 }
 
 void DefaultPeerStorageTest::testReturnPeer()
@@ -165,7 +166,7 @@ void DefaultPeerStorageTest::testReturnPeer()
   ps.addPeer(peer1);
   ps.addPeer(peer2);
   ps.addPeer(peer3);
-  for(int i = 1; i <= 3; ++i) {
+  for (int i = 1; i <= 3; ++i) {
     CPPUNIT_ASSERT(ps.checkoutPeer(i));
   }
   CPPUNIT_ASSERT_EQUAL((size_t)3, ps.getUsedPeers().size());

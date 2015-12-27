@@ -11,7 +11,7 @@
 
 namespace aria2 {
 
-class CookieTest:public CppUnit::TestFixture {
+class CookieTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(CookieTest);
   CPPUNIT_TEST(testOperatorEqual);
@@ -19,6 +19,7 @@ class CookieTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testIsExpired);
   CPPUNIT_TEST(testToNsCookieFormat);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -30,7 +31,6 @@ public:
   void testToNsCookieFormat();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(CookieTest);
 
 void CookieTest::testOperatorEqual()
@@ -40,8 +40,8 @@ void CookieTest::testOperatorEqual()
   auto wrongPath = createCookie("k", "v", "localhost", true, "/a", false);
   auto wrongDomain = createCookie("k", "v", "mydomain", true, "/", false);
   auto wrongName = createCookie("h", "v", "localhost", true, "/a", false);
-  auto caseSensitiveName = createCookie("K", "v", "localhost", true,
-                                        "/a", false);
+  auto caseSensitiveName =
+      createCookie("K", "v", "localhost", true, "/a", false);
   CPPUNIT_ASSERT(*a == *b);
   CPPUNIT_ASSERT(!(*a == *wrongPath));
   CPPUNIT_ASSERT(!(*a == *wrongDomain));
@@ -66,21 +66,21 @@ void CookieTest::testMatch()
   CPPUNIT_ASSERT(!c3->match("www.aria2.org", "/downloads", 0, false));
   CPPUNIT_ASSERT(c4->match("localhost", "/downloads", 0, false));
 
-  auto secureCookie = createCookie("k", "v", "secure.aria2.org", false,
-                                   "/", true);
+  auto secureCookie =
+      createCookie("k", "v", "secure.aria2.org", false, "/", true);
   CPPUNIT_ASSERT(secureCookie->match("secure.aria2.org", "/", 0, true));
   CPPUNIT_ASSERT(!secureCookie->match("secure.aria2.org", "/", 0, false));
   CPPUNIT_ASSERT(!secureCookie->match("ssecure.aria2.org", "/", 0, true));
   CPPUNIT_ASSERT(secureCookie->match("www.secure.aria2.org", "/", 0, true));
 
-  auto expireTest = createCookie("k", "v", 1000, "aria2.org", false,
-                                 "/", false);
+  auto expireTest =
+      createCookie("k", "v", 1000, "aria2.org", false, "/", false);
   CPPUNIT_ASSERT(expireTest->match("www.aria2.org", "/", 999, false));
   CPPUNIT_ASSERT(expireTest->match("www.aria2.org", "/", 1000, false));
   CPPUNIT_ASSERT(!expireTest->match("www.aria2.org", "/", 1001, false));
 
-  auto fromNumericHost = createCookie("k", "v", "192.168.1.1", true,
-                                      "/foo", false);
+  auto fromNumericHost =
+      createCookie("k", "v", "192.168.1.1", true, "/foo", false);
   CPPUNIT_ASSERT(fromNumericHost->match("192.168.1.1", "/foo", 0, false));
   CPPUNIT_ASSERT(!fromNumericHost->match("www.aria2.org", "/foo", 0, false));
   CPPUNIT_ASSERT(!fromNumericHost->match("1.192.168.1.1", "/foo", 0, false));
@@ -99,15 +99,15 @@ void CookieTest::testIsExpired()
 
 void CookieTest::testToNsCookieFormat()
 {
-  CPPUNIT_ASSERT_EQUAL
-    (std::string(".domain.org\tTRUE\t/\tFALSE\t12345678\thello\tworld"),
-     createCookie("hello", "world", 12345678, "domain.org", false, "/",false)
-     ->toNsCookieFormat());
+  CPPUNIT_ASSERT_EQUAL(
+      std::string(".domain.org\tTRUE\t/\tFALSE\t12345678\thello\tworld"),
+      createCookie("hello", "world", 12345678, "domain.org", false, "/", false)
+          ->toNsCookieFormat());
   // Session cookie
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("domain.org\tFALSE\t/\tTRUE\t0\thello\tworld"),
-     createCookie("hello", "world", "domain.org", true, "/", true)
-     ->toNsCookieFormat());
+  CPPUNIT_ASSERT_EQUAL(
+      std::string("domain.org\tFALSE\t/\tTRUE\t0\thello\tworld"),
+      createCookie("hello", "world", "domain.org", true, "/", true)
+          ->toNsCookieFormat());
 }
 
 } // namespace aria2

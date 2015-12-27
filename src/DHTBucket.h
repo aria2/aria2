@@ -61,21 +61,22 @@ private:
   std::shared_ptr<DHTNode> localNode_;
 
   // sorted in ascending order
-  std::deque<std::shared_ptr<DHTNode> > nodes_;
+  std::deque<std::shared_ptr<DHTNode>> nodes_;
 
   // a replacement cache. The maximum size is specified by CACHE_SIZE.
   // This is sorted by last time seen.
-  std::deque<std::shared_ptr<DHTNode> > cachedNodes_;
+  std::deque<std::shared_ptr<DHTNode>> cachedNodes_;
 
   Timer lastUpdated_;
 
-  bool isInRange(const unsigned char* nodeID,
-                 const unsigned char* max, const unsigned char* min) const;
+  bool isInRange(const unsigned char* nodeID, const unsigned char* max,
+                 const unsigned char* min) const;
+
 public:
   DHTBucket(const std::shared_ptr<DHTNode>& localNode);
 
-  DHTBucket(size_t prefixLength,
-            const unsigned char* max, const unsigned char* min,
+  DHTBucket(size_t prefixLength, const unsigned char* max,
+            const unsigned char* min,
             const std::shared_ptr<DHTNode>& localNode);
 
   ~DHTBucket();
@@ -98,32 +99,20 @@ public:
 
   bool splitAllowed() const;
 
-  size_t getPrefixLength() const
-  {
-    return prefixLength_;
-  }
+  size_t getPrefixLength() const { return prefixLength_; }
 
-  const unsigned char* getMaxID() const
-  {
-    return max_;
-  }
+  const unsigned char* getMaxID() const { return max_; }
 
-  const unsigned char* getMinID() const
-  {
-    return min_;
-  }
+  const unsigned char* getMinID() const { return min_; }
 
-  size_t countNode() const
-  {
-    return nodes_.size();
-  }
+  size_t countNode() const { return nodes_.size(); }
 
-  const std::deque<std::shared_ptr<DHTNode> >& getNodes() const
+  const std::deque<std::shared_ptr<DHTNode>>& getNodes() const
   {
     return nodes_;
   }
 
-  void getGoodNodes(std::vector<std::shared_ptr<DHTNode> >& nodes) const;
+  void getGoodNodes(std::vector<std::shared_ptr<DHTNode>>& nodes) const;
 
   void dropNode(const std::shared_ptr<DHTNode>& node);
 
@@ -133,7 +122,9 @@ public:
 
   bool contains(const std::shared_ptr<DHTNode>& node) const;
 
-  std::shared_ptr<DHTNode> getNode(const unsigned char* nodeID, const std::string& ipaddr, uint16_t port) const;
+  std::shared_ptr<DHTNode> getNode(const unsigned char* nodeID,
+                                   const std::string& ipaddr,
+                                   uint16_t port) const;
 
   bool operator==(const DHTBucket& bucket) const;
 
@@ -145,11 +136,10 @@ public:
 
   std::shared_ptr<DHTNode> getLRUQuestionableNode() const;
 
-  const std::deque<std::shared_ptr<DHTNode> >& getCachedNodes() const
+  const std::deque<std::shared_ptr<DHTNode>>& getCachedNodes() const
   {
     return cachedNodes_;
   }
-
 };
 
 } // namespace aria2

@@ -48,16 +48,14 @@ namespace aria2 {
 
 namespace rpc {
 
-WebSocketInteractionCommand::WebSocketInteractionCommand
-(cuid_t cuid,
- const std::shared_ptr<WebSocketSession>& wsSession,
- DownloadEngine* e,
- const std::shared_ptr<SocketCore>& socket)
- : Command(cuid),
-   e_(e),
-   socket_(socket),
-   writeCheck_(false),
-   wsSession_(wsSession)
+WebSocketInteractionCommand::WebSocketInteractionCommand(
+    cuid_t cuid, const std::shared_ptr<WebSocketSession>& wsSession,
+    DownloadEngine* e, const std::shared_ptr<SocketCore>& socket)
+    : Command(cuid),
+      e_(e),
+      socket_(socket),
+      writeCheck_(false),
+      wsSession_(wsSession)
 {
   e_->getWebSocketSessionMan()->addSession(wsSession_);
   e_->addSocketForReadCheck(socket_, this);
@@ -66,7 +64,7 @@ WebSocketInteractionCommand::WebSocketInteractionCommand
 WebSocketInteractionCommand::~WebSocketInteractionCommand()
 {
   e_->deleteSocketForReadCheck(socket_, this);
-  if(writeCheck_) {
+  if (writeCheck_) {
     e_->deleteSocketForWriteCheck(socket_, this);
   }
   e_->getWebSocketSessionMan()->removeSession(wsSession_);
@@ -74,12 +72,13 @@ WebSocketInteractionCommand::~WebSocketInteractionCommand()
 
 void WebSocketInteractionCommand::updateWriteCheck()
 {
-  if(socket_->wantWrite() || wsSession_->wantWrite()) {
-    if(!writeCheck_) {
+  if (socket_->wantWrite() || wsSession_->wantWrite()) {
+    if (!writeCheck_) {
       writeCheck_ = true;
       e_->addSocketForWriteCheck(socket_, this);
     }
-  } else if(writeCheck_) {
+  }
+  else if (writeCheck_) {
     writeCheck_ = false;
     e_->deleteSocketForWriteCheck(socket_, this);
   }
@@ -87,20 +86,22 @@ void WebSocketInteractionCommand::updateWriteCheck()
 
 bool WebSocketInteractionCommand::execute()
 {
-  if(e_->isHaltRequested()) {
+  if (e_->isHaltRequested()) {
     return true;
   }
-  if(wsSession_->onReadEvent() == -1 || wsSession_->onWriteEvent() == -1) {
-    if(wsSession_->closeSent() || wsSession_->closeReceived()) {
-      A2_LOG_INFO(fmt("CUID#%" PRId64 " - WebSocket session terminated.",
-                      getCuid()));
-    } else {
+  if (wsSession_->onReadEvent() == -1 || wsSession_->onWriteEvent() == -1) {
+    if (wsSession_->closeSent() || wsSession_->closeReceived()) {
+      A2_LOG_INFO(
+          fmt("CUID#%" PRId64 " - WebSocket session terminated.", getCuid()));
+    }
+    else {
       A2_LOG_INFO(fmt("CUID#%" PRId64 " - WebSocket session terminated"
-                      " (Possibly due to EOF).", getCuid()));
+                      " (Possibly due to EOF).",
+                      getCuid()));
     }
     return true;
   }
-  if(wsSession_->finish()) {
+  if (wsSession_->finish()) {
     return true;
   }
   updateWriteCheck();

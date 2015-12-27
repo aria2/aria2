@@ -11,12 +11,13 @@
 
 namespace aria2 {
 
-class DHTFindNodeReplyMessageTest:public CppUnit::TestFixture {
+class DHTFindNodeReplyMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTFindNodeReplyMessageTest);
   CPPUNIT_TEST(testGetBencodedMessage);
   CPPUNIT_TEST(testGetBencodedMessage6);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -26,7 +27,6 @@ public:
 
   void testGetBencodedMessage6();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DHTFindNodeReplyMessageTest);
 
@@ -43,20 +43,21 @@ void DHTFindNodeReplyMessageTest::testGetBencodedMessage()
   msg.setVersion("A200");
   std::string compactNodeInfo;
   std::shared_ptr<DHTNode> nodes[8];
-  for(size_t i = 0; i < DHTBucket::K; ++i) {
+  for (size_t i = 0; i < DHTBucket::K; ++i) {
     nodes[i].reset(new DHTNode());
-    nodes[i]->setIPAddress("192.168.0."+util::uitos(i+1));
-    nodes[i]->setPort(6881+i);
+    nodes[i]->setIPAddress("192.168.0." + util::uitos(i + 1));
+    nodes[i]->setPort(6881 + i);
 
     unsigned char buf[COMPACT_LEN_IPV6];
-    CPPUNIT_ASSERT_EQUAL(COMPACT_LEN_IPV4, bittorrent::packcompact
-                         (buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
+    CPPUNIT_ASSERT_EQUAL(COMPACT_LEN_IPV4,
+                         bittorrent::packcompact(buf, nodes[i]->getIPAddress(),
+                                                 nodes[i]->getPort()));
     compactNodeInfo +=
-      std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
-      std::string(&buf[0], &buf[COMPACT_LEN_IPV4]);
+        std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH]) +
+        std::string(&buf[0], &buf[COMPACT_LEN_IPV4]);
   }
-  msg.setClosestKNodes
-    (std::vector<std::shared_ptr<DHTNode> >(&nodes[0], &nodes[DHTBucket::K]));
+  msg.setClosestKNodes(
+      std::vector<std::shared_ptr<DHTNode>>(&nodes[0], &nodes[DHTBucket::K]));
 
   std::string msgbody = msg.getBencodedMessage();
 
@@ -85,20 +86,21 @@ void DHTFindNodeReplyMessageTest::testGetBencodedMessage6()
   msg.setVersion("A200");
   std::string compactNodeInfo;
   std::shared_ptr<DHTNode> nodes[8];
-  for(size_t i = 0; i < DHTBucket::K; ++i) {
+  for (size_t i = 0; i < DHTBucket::K; ++i) {
     nodes[i].reset(new DHTNode());
-    nodes[i]->setIPAddress("2001::000"+util::uitos(i+1));
-    nodes[i]->setPort(6881+i);
+    nodes[i]->setIPAddress("2001::000" + util::uitos(i + 1));
+    nodes[i]->setPort(6881 + i);
 
     unsigned char buf[COMPACT_LEN_IPV6];
-    CPPUNIT_ASSERT_EQUAL(COMPACT_LEN_IPV6, bittorrent::packcompact
-                         (buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
+    CPPUNIT_ASSERT_EQUAL(COMPACT_LEN_IPV6,
+                         bittorrent::packcompact(buf, nodes[i]->getIPAddress(),
+                                                 nodes[i]->getPort()));
     compactNodeInfo +=
-      std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
-      std::string(&buf[0], &buf[COMPACT_LEN_IPV6]);
+        std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH]) +
+        std::string(&buf[0], &buf[COMPACT_LEN_IPV6]);
   }
-  msg.setClosestKNodes
-    (std::vector<std::shared_ptr<DHTNode> >(&nodes[0], &nodes[DHTBucket::K]));
+  msg.setClosestKNodes(
+      std::vector<std::shared_ptr<DHTNode>>(&nodes[0], &nodes[DHTBucket::K]));
 
   std::string msgbody = msg.getBencodedMessage();
 

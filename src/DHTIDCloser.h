@@ -46,10 +46,11 @@ namespace aria2 {
 class DHTIDCloser {
 private:
   XORCloser closer_;
+
 public:
-  DHTIDCloser(const unsigned char* targetID)
-    : closer_{targetID, DHT_ID_LENGTH}
-  {}
+  DHTIDCloser(const unsigned char* targetID) : closer_{targetID, DHT_ID_LENGTH}
+  {
+  }
 
   bool operator()(const std::unique_ptr<DHTNodeLookupEntry>& m1,
                   const std::unique_ptr<DHTNodeLookupEntry>& m2) const

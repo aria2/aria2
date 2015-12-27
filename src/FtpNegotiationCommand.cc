@@ -79,26 +79,21 @@
 
 namespace aria2 {
 
-FtpNegotiationCommand::FtpNegotiationCommand
-(cuid_t cuid,
- const std::shared_ptr<Request>& req,
- const std::shared_ptr<FileEntry>& fileEntry,
- RequestGroup* requestGroup,
- DownloadEngine* e,
- const std::shared_ptr<SocketCore>& socket,
- Seq seq,
- const std::string& baseWorkingDir):
-  AbstractCommand(cuid, req, fileEntry, requestGroup, e, socket),
-  sequence_(seq),
-  ftp_(std::make_shared<FtpConnection>
-       (cuid, socket, req,
-        e->getAuthConfigFactory()->createAuthConfig
-        (req, requestGroup->getOption().get()),
-        getOption().get())),
-  pasvPort_(0)
+FtpNegotiationCommand::FtpNegotiationCommand(
+    cuid_t cuid, const std::shared_ptr<Request>& req,
+    const std::shared_ptr<FileEntry>& fileEntry, RequestGroup* requestGroup,
+    DownloadEngine* e, const std::shared_ptr<SocketCore>& socket, Seq seq,
+    const std::string& baseWorkingDir)
+    : AbstractCommand(cuid, req, fileEntry, requestGroup, e, socket),
+      sequence_(seq),
+      ftp_(std::make_shared<FtpConnection>(
+          cuid, socket, req, e->getAuthConfigFactory()->createAuthConfig(
+                                 req, requestGroup->getOption().get()),
+          getOption().get())),
+      pasvPort_(0)
 {
   ftp_->setBaseWorkingDir(baseWorkingDir);
-  if(seq == SEQ_RECV_GREETING) {
+  if (seq == SEQ_RECV_GREETING) {
     setTimeout(
         std::chrono::seconds(getOption()->getAsInt(PREF_CONNECT_TIMEOUT)));
   }
@@ -107,56 +102,65 @@ FtpNegotiationCommand::FtpNegotiationCommand
 
 FtpNegotiationCommand::~FtpNegotiationCommand() {}
 
-bool FtpNegotiationCommand::executeInternal() {
-  auto segment = getSegments().empty() ?
-    std::shared_ptr<Segment>() : getSegments().front();
-  while(processSequence(segment));
-  if(sequence_ == SEQ_RETRY) {
+bool FtpNegotiationCommand::executeInternal()
+{
+  auto segment = getSegments().empty() ? std::shared_ptr<Segment>()
+                                       : getSegments().front();
+  while (processSequence(segment))
+    ;
+  if (sequence_ == SEQ_RETRY) {
     return prepareForRetry(0);
-  } else if(sequence_ == SEQ_NEGOTIATION_COMPLETED) {
-    auto command = make_unique<FtpDownloadCommand>
-      (getCuid(), getRequest(), getFileEntry(), getRequestGroup(), ftp_,
-       getDownloadEngine(), dataSocket_, getSocket());
+  }
+  else if (sequence_ == SEQ_NEGOTIATION_COMPLETED) {
+    auto command = make_unique<FtpDownloadCommand>(
+        getCuid(), getRequest(), getFileEntry(), getRequestGroup(), ftp_,
+        getDownloadEngine(), dataSocket_, getSocket());
     command->setStartupIdleTime(
         std::chrono::seconds(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME)));
-    command->setLowestDownloadSpeedLimit
-      (getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));
-    if(getFileEntry()->isUniqueProtocol()) {
+    command->setLowestDownloadSpeedLimit(
+        getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));
+    if (getFileEntry()->isUniqueProtocol()) {
       getFileEntry()->removeURIWhoseHostnameIs(getRequest()->getHost());
     }
-    getRequestGroup()->getURISelector()->tuneDownloadCommand
-      (getFileEntry()->getRemainingUris(), command.get());
+    getRequestGroup()->getURISelector()->tuneDownloadCommand(
+        getFileEntry()->getRemainingUris(), command.get());
     getDownloadEngine()->addCommand(std::move(command));
     return true;
-  } else if(sequence_ == SEQ_HEAD_OK ||
-            sequence_ == SEQ_DOWNLOAD_ALREADY_COMPLETED) {
+  }
+  else if (sequence_ == SEQ_HEAD_OK ||
+           sequence_ == SEQ_DOWNLOAD_ALREADY_COMPLETED) {
     return true;
-  } else if(sequence_ == SEQ_FILE_PREPARATION) {
-    if(getOption()->getAsBool(PREF_FTP_PASV)) {
+  }
+  else if (sequence_ == SEQ_FILE_PREPARATION) {
+    if (getOption()->getAsBool(PREF_FTP_PASV)) {
       sequence_ = SEQ_PREPARE_PASV;
-    } else {
+    }
+    else {
       sequence_ = SEQ_PREPARE_PORT;
     }
     return false;
-  } else if(sequence_ == SEQ_EXIT) {
+  }
+  else if (sequence_ == SEQ_EXIT) {
     return true;
-  } else {
+  }
+  else {
     addCommandSelf();
     return false;
   }
 }
 
-bool FtpNegotiationCommand::recvGreeting() {
+bool FtpNegotiationCommand::recvGreeting()
+{
   setTimeout(getRequestGroup()->getTimeout());
-  //socket->setBlockingMode();
+  // socket->setBlockingMode();
   disableWriteCheckSocket();
   setReadCheckSocket(getSocket());
 
   int status = ftp_->receiveResponse();
-  if(status == 0) {
+  if (status == 0) {
     return false;
   }
-  if(status != 220) {
+  if (status != 220) {
     throw DL_ABORT_EX2(EX_CONNECTION_FAILED, error_code::FTP_PROTOCOL_ERROR);
   }
   sequence_ = SEQ_SEND_USER;
@@ -164,19 +168,22 @@ bool FtpNegotiationCommand::recvGreeting() {
   return true;
 }
 
-bool FtpNegotiationCommand::sendUser() {
-  if(ftp_->sendUser()) {
+bool FtpNegotiationCommand::sendUser()
+{
+  if (ftp_->sendUser()) {
     disableWriteCheckSocket();
     sequence_ = SEQ_RECV_USER;
-  } else {
+  }
+  else {
     setWriteCheckSocket(getSocket());
   }
   return false;
 }
 
-bool FtpNegotiationCommand::recvUser() {
+bool FtpNegotiationCommand::recvUser()
+{
   int status = ftp_->receiveResponse();
-  switch(status) {
+  switch (status) {
   case 0:
     return false;
   case 230:
@@ -192,22 +199,25 @@ bool FtpNegotiationCommand::recvUser() {
   return true;
 }
 
-bool FtpNegotiationCommand::sendPass() {
-  if(ftp_->sendPass()) {
+bool FtpNegotiationCommand::sendPass()
+{
+  if (ftp_->sendPass()) {
     disableWriteCheckSocket();
     sequence_ = SEQ_RECV_PASS;
-  } else {
+  }
+  else {
     setWriteCheckSocket(getSocket());
   }
   return false;
 }
 
-bool FtpNegotiationCommand::recvPass() {
+bool FtpNegotiationCommand::recvPass()
+{
   int status = ftp_->receiveResponse();
-  if(status == 0) {
+  if (status == 0) {
     return false;
   }
-  if(status != 230) {
+  if (status != 230) {
     throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, status),
                        error_code::FTP_PROTOCOL_ERROR);
   }
@@ -215,22 +225,25 @@ bool FtpNegotiationCommand::recvPass() {
   return true;
 }
 
-bool FtpNegotiationCommand::sendType() {
-  if(ftp_->sendType()) {
+bool FtpNegotiationCommand::sendType()
+{
+  if (ftp_->sendType()) {
     disableWriteCheckSocket();
     sequence_ = SEQ_RECV_TYPE;
-  } else {
+  }
+  else {
     setWriteCheckSocket(getSocket());
   }
   return false;
 }
 
-bool FtpNegotiationCommand::recvType() {
+bool FtpNegotiationCommand::recvType()
+{
   int status = ftp_->receiveResponse();
-  if(status == 0) {
+  if (status == 0) {
     return false;
   }
-  if(status != 200) {
+  if (status != 200) {
     throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, status),
                        error_code::FTP_PROTOCOL_ERROR);
   }
@@ -240,10 +253,11 @@ bool FtpNegotiationCommand::recvType() {
 
 bool FtpNegotiationCommand::sendPwd()
 {
-  if(ftp_->sendPwd()) {
+  if (ftp_->sendPwd()) {
     disableWriteCheckSocket();
     sequence_ = SEQ_RECV_PWD;
-  } else {
+  }
+  else {
     setWriteCheckSocket(getSocket());
   }
   return false;
@@ -253,10 +267,10 @@ bool FtpNegotiationCommand::recvPwd()
 {
   std::string pwd;
   int status = ftp_->receivePwdResponse(pwd);
-  if(status == 0) {
+  if (status == 0) {
     return false;
   }
-  if(status != 257) {
+  if (status != 257) {
     throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, status),
                        error_code::FTP_PROTOCOL_ERROR);
   }
@@ -280,10 +294,11 @@ bool FtpNegotiationCommand::sendCwdPrep()
 
 bool FtpNegotiationCommand::sendCwd()
 {
-  if(ftp_->sendCwd(cwdDirs_.front())) {
+  if (ftp_->sendCwd(cwdDirs_.front())) {
     disableWriteCheckSocket();
     sequence_ = SEQ_RECV_CWD;
-  } else {
+  }
+  else {
     setWriteCheckSocket(getSocket());
   }
   return false;
@@ -292,10 +307,10 @@ bool FtpNegotiationCommand::sendCwd()
 bool FtpNegotiationCommand::recvCwd()
 {
   int status = ftp_->receiveResponse();
-  if(status == 0) {
+  if (status == 0) {
     return false;
   }
-  if(status != 250) {
+  if (status != 250) {
     poolConnection();
     getRequestGroup()->increaseAndValidateFileNotFoundCount();
     if (status == 550)
@@ -306,13 +321,15 @@ bool FtpNegotiationCommand::recvCwd()
                          error_code::FTP_PROTOCOL_ERROR);
   }
   cwdDirs_.pop_front();
-  if(cwdDirs_.empty()) {
-    if(getOption()->getAsBool(PREF_REMOTE_TIME)) {
+  if (cwdDirs_.empty()) {
+    if (getOption()->getAsBool(PREF_REMOTE_TIME)) {
       sequence_ = SEQ_SEND_MDTM;
-    } else {
+    }
+    else {
       sequence_ = SEQ_SEND_SIZE;
     }
-  } else {
+  }
+  else {
     sequence_ = SEQ_SEND_CWD;
   }
   return true;
@@ -320,10 +337,11 @@ bool FtpNegotiationCommand::recvCwd()
 
 bool FtpNegotiationCommand::sendMdtm()
 {
-  if(ftp_->sendMdtm()) {
+  if (ftp_->sendMdtm()) {
     disableWriteCheckSocket();
     sequence_ = SEQ_RECV_MDTM;
-  } else {
+  }
+  else {
     setWriteCheckSocket(getSocket());
   }
   return false;
@@ -333,31 +351,34 @@ bool FtpNegotiationCommand::recvMdtm()
 {
   Time lastModifiedTime = Time::null();
   int status = ftp_->receiveMdtmResponse(lastModifiedTime);
-  if(status == 0) {
+  if (status == 0) {
     return false;
   }
-  if(status == 213) {
-    if(lastModifiedTime.good()) {
+  if (status == 213) {
+    if (lastModifiedTime.good()) {
       getRequestGroup()->updateLastModifiedTime(lastModifiedTime);
       A2_LOG_DEBUG(fmt("MDTM result was parsed as: %s",
                        lastModifiedTime.toHTTPDate().c_str()));
-    } else {
+    }
+    else {
       A2_LOG_DEBUG("MDTM response was returned, but it seems not to be"
                    " a time value as in specified in RFC3659.");
     }
-  } else {
-    A2_LOG_INFO(fmt("CUID#%" PRId64 " - MDTM command failed.",
-                    getCuid()));
+  }
+  else {
+    A2_LOG_INFO(fmt("CUID#%" PRId64 " - MDTM command failed.", getCuid()));
   }
   sequence_ = SEQ_SEND_SIZE;
   return true;
 }
 
-bool FtpNegotiationCommand::sendSize() {
-  if(ftp_->sendSize()) {
+bool FtpNegotiationCommand::sendSize()
+{
+  if (ftp_->sendSize()) {
     disableWriteCheckSocket();
     sequence_ = SEQ_RECV_SIZE;
-  } else {
+  }
+  else {
     setWriteCheckSocket(getSocket());
   }
   return false;
@@ -366,84 +387,83 @@ bool FtpNegotiationCommand::sendSize() {
 bool FtpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
 {
   getFileEntry()->setLength(totalLength);
-  if(getFileEntry()->getPath().empty()) {
-    auto suffixPath = util::createSafePath
-      (util::percentDecode(std::begin(getRequest()->getFile()),
-                           std::end(getRequest()->getFile())));
+  if (getFileEntry()->getPath().empty()) {
+    auto suffixPath = util::createSafePath(
+        util::percentDecode(std::begin(getRequest()->getFile()),
+                            std::end(getRequest()->getFile())));
 
-    getFileEntry()->setPath
-      (util::applyDir(getOption()->get(PREF_DIR), suffixPath));
+    getFileEntry()->setPath(
+        util::applyDir(getOption()->get(PREF_DIR), suffixPath));
     getFileEntry()->setSuffixPath(suffixPath);
   }
   getRequestGroup()->preDownloadProcessing();
-  if(totalLength == 0) {
+  if (totalLength == 0) {
 
-    if(getOption()->getAsBool(PREF_FTP_PASV)) {
+    if (getOption()->getAsBool(PREF_FTP_PASV)) {
       sequence_ = SEQ_PREPARE_PASV;
-    } else {
+    }
+    else {
       sequence_ = SEQ_PREPARE_PORT;
     }
 
-    if(getOption()->getAsBool(PREF_DRY_RUN)) {
+    if (getOption()->getAsBool(PREF_DRY_RUN)) {
       getRequestGroup()->initPieceStorage();
       onDryRunFileFound();
       return false;
     }
 
-    if(getDownloadContext()->knowsTotalLength() &&
-       getRequestGroup()->downloadFinishedByFileLength()) {
+    if (getDownloadContext()->knowsTotalLength() &&
+        getRequestGroup()->downloadFinishedByFileLength()) {
       // TODO Known issue: if .aria2 file exists, it will not be
       // deleted on successful verification, because .aria2 file is
       // not loaded.  See also
       // HttpResponseCommand::handleOtherEncoding()
       getRequestGroup()->initPieceStorage();
-      if(getDownloadContext()->isChecksumVerificationNeeded()) {
+      if (getDownloadContext()->isChecksumVerificationNeeded()) {
         A2_LOG_DEBUG("Zero length file exists. Verify checksum.");
-        auto entry = make_unique<ChecksumCheckIntegrityEntry>
-          (getRequestGroup());
+        auto entry =
+            make_unique<ChecksumCheckIntegrityEntry>(getRequestGroup());
         entry->initValidator();
         getPieceStorage()->getDiskAdaptor()->openExistingFile();
-        getDownloadEngine()->getCheckIntegrityMan()->pushEntry
-          (std::move(entry));
+        getDownloadEngine()->getCheckIntegrityMan()->pushEntry(
+            std::move(entry));
         sequence_ = SEQ_EXIT;
       }
       else {
-          getPieceStorage()->markAllPiecesDone();
-          getDownloadContext()->setChecksumVerified(true);
-          sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
-          A2_LOG_NOTICE
-            (fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                 GroupId::toHex(getRequestGroup()->getGID()).c_str(),
-                 getRequestGroup()->getFirstFilePath().c_str()));
-        }
+        getPieceStorage()->markAllPiecesDone();
+        getDownloadContext()->setChecksumVerified(true);
+        sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
+        A2_LOG_NOTICE(fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
+                          GroupId::toHex(getRequestGroup()->getGID()).c_str(),
+                          getRequestGroup()->getFirstFilePath().c_str()));
+      }
       poolConnection();
       return false;
     }
 
-    getRequestGroup()->adjustFilename
-      (std::make_shared<NullProgressInfoFile>());
+    getRequestGroup()->adjustFilename(std::make_shared<NullProgressInfoFile>());
     getRequestGroup()->initPieceStorage();
     getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
 
-    if(getDownloadContext()->knowsTotalLength()) {
+    if (getDownloadContext()->knowsTotalLength()) {
       A2_LOG_DEBUG("File length becomes zero and it means download completed.");
       // TODO Known issue: if .aria2 file exists, it will not be
       // deleted on successful verification, because .aria2 file is
       // not loaded.  See also
       // HttpResponseCommand::handleOtherEncoding()
-      if(getDownloadContext()->isChecksumVerificationNeeded()) {
+      if (getDownloadContext()->isChecksumVerificationNeeded()) {
         A2_LOG_DEBUG("Verify checksum for zero-length file");
-        auto entry = make_unique<ChecksumCheckIntegrityEntry>
-          (getRequestGroup());
+        auto entry =
+            make_unique<ChecksumCheckIntegrityEntry>(getRequestGroup());
         entry->initValidator();
-        getDownloadEngine()->getCheckIntegrityMan()->pushEntry
-          (std::move(entry));
+        getDownloadEngine()->getCheckIntegrityMan()->pushEntry(
+            std::move(entry));
         sequence_ = SEQ_EXIT;
-      } else
-        {
-          sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
-          getPieceStorage()->markAllPiecesDone();
-        }
+      }
+      else {
+        sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
+        getPieceStorage()->markAllPiecesDone();
+      }
       poolConnection();
       return false;
     }
@@ -452,19 +472,20 @@ bool FtpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
     // AbstractCommand::execute()
     getSegmentMan()->getSegmentWithIndex(getCuid(), 0);
     return true;
-  } else {
-    auto progressInfoFile = std::make_shared<DefaultBtProgressInfoFile>
-      (getDownloadContext(), nullptr, getOption().get());
+  }
+  else {
+    auto progressInfoFile = std::make_shared<DefaultBtProgressInfoFile>(
+        getDownloadContext(), nullptr, getOption().get());
     getRequestGroup()->adjustFilename(progressInfoFile);
     getRequestGroup()->initPieceStorage();
 
-    if(getOption()->getAsBool(PREF_DRY_RUN)) {
+    if (getOption()->getAsBool(PREF_DRY_RUN)) {
       onDryRunFileFound();
       return false;
     }
 
     auto checkIntegrityEntry = getRequestGroup()->createCheckIntegrityEntry();
-    if(!checkIntegrityEntry) {
+    if (!checkIntegrityEntry) {
       sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
       poolConnection();
       return false;
@@ -482,43 +503,46 @@ bool FtpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
   return false;
 }
 
-bool FtpNegotiationCommand::recvSize() {
+bool FtpNegotiationCommand::recvSize()
+{
   int64_t size = 0;
   int status = ftp_->receiveSizeResponse(size);
-  if(status == 0) {
+  if (status == 0) {
     return false;
   }
-  if(status == 213) {
-    if(size > std::numeric_limits<a2_off_t>::max()) {
+  if (status == 213) {
+    if (size > std::numeric_limits<a2_off_t>::max()) {
       throw DL_ABORT_EX2(fmt(EX_TOO_LARGE_FILE, size),
                          error_code::FTP_PROTOCOL_ERROR);
     }
-    if(!getPieceStorage()) {
+    if (!getPieceStorage()) {
 
       sequence_ = SEQ_FILE_PREPARATION;
       return onFileSizeDetermined(size);
-
-    } else {
+    }
+    else {
       getRequestGroup()->validateTotalLength(getFileEntry()->getLength(), size);
     }
-
-  } else {
-    A2_LOG_INFO(fmt("CUID#%" PRId64 " - The remote FTP Server doesn't recognize SIZE"
-                    " command. Continue.", getCuid()));
+  }
+  else {
+    A2_LOG_INFO(fmt("CUID#%" PRId64
+                    " - The remote FTP Server doesn't recognize SIZE"
+                    " command. Continue.",
+                    getCuid()));
     // Even if one of the other servers waiting in the queue supports SIZE
     // command, resuming and segmented downloading are disabled when the first
     // contacted FTP server doesn't support it.
-    if(!getPieceStorage()) {
+    if (!getPieceStorage()) {
       getDownloadContext()->markTotalLengthIsUnknown();
       return onFileSizeDetermined(0);
-
     }
     // TODO Skipping RequestGroup::validateTotalLength(0) here will allow
     // wrong file to be downloaded if user-specified URL is wrong.
   }
-  if(getOption()->getAsBool(PREF_FTP_PASV)) {
+  if (getOption()->getAsBool(PREF_FTP_PASV)) {
     sequence_ = SEQ_PREPARE_PASV;
-  } else {
+  }
+  else {
     sequence_ = SEQ_PREPARE_PORT;
   }
   return true;
@@ -529,17 +553,20 @@ void FtpNegotiationCommand::afterFileAllocation()
   setReadCheckSocket(getSocket());
 }
 
-bool FtpNegotiationCommand::preparePort() {
+bool FtpNegotiationCommand::preparePort()
+{
   afterFileAllocation();
-  if(getSocket()->getAddressFamily() == AF_INET6) {
+  if (getSocket()->getAddressFamily() == AF_INET6) {
     sequence_ = SEQ_PREPARE_SERVER_SOCKET_EPRT;
-  } else {
+  }
+  else {
     sequence_ = SEQ_PREPARE_SERVER_SOCKET;
   }
   return true;
 }
 
-bool FtpNegotiationCommand::prepareServerSocketEprt() {
+bool FtpNegotiationCommand::prepareServerSocketEprt()
+{
   serverSocket_ = ftp_->createServerSocket();
   sequence_ = SEQ_SEND_EPRT;
   return true;
@@ -552,45 +579,52 @@ bool FtpNegotiationCommand::prepareServerSocket()
   return true;
 }
 
-bool FtpNegotiationCommand::sendEprt() {
-  if(ftp_->sendEprt(serverSocket_)) {
+bool FtpNegotiationCommand::sendEprt()
+{
+  if (ftp_->sendEprt(serverSocket_)) {
     disableWriteCheckSocket();
     sequence_ = SEQ_RECV_EPRT;
-  } else {
+  }
+  else {
     setWriteCheckSocket(getSocket());
   }
   return false;
 }
 
-bool FtpNegotiationCommand::recvEprt() {
+bool FtpNegotiationCommand::recvEprt()
+{
   int status = ftp_->receiveResponse();
-  if(status == 0) {
+  if (status == 0) {
     return false;
   }
-  if(status == 200) {
+  if (status == 200) {
     sequence_ = SEQ_SEND_REST;
-  } else {
+  }
+  else {
     sequence_ = SEQ_PREPARE_SERVER_SOCKET;
   }
   return true;
 }
 
-bool FtpNegotiationCommand::sendPort() {
-  if(ftp_->sendPort(serverSocket_)) {
+bool FtpNegotiationCommand::sendPort()
+{
+  if (ftp_->sendPort(serverSocket_)) {
     disableWriteCheckSocket();
     sequence_ = SEQ_RECV_PORT;
-  } else {
+  }
+  else {
     setWriteCheckSocket(getSocket());
   }
   return false;
 }
 
-bool FtpNegotiationCommand::recvPort() {
+bool FtpNegotiationCommand::recvPort()
+{
   int status = ftp_->receiveResponse();
-  if(status == 0) {
+  if (status == 0) {
     return false;
   }
-  if(status != 200) {
+  if (status != 200) {
     throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, status),
                        error_code::FTP_PROTOCOL_ERROR);
   }
@@ -598,76 +632,86 @@ bool FtpNegotiationCommand::recvPort() {
   return true;
 }
 
-bool FtpNegotiationCommand::preparePasv() {
+bool FtpNegotiationCommand::preparePasv()
+{
   afterFileAllocation();
-  if(getSocket()->getAddressFamily() == AF_INET6) {
+  if (getSocket()->getAddressFamily() == AF_INET6) {
     sequence_ = SEQ_SEND_EPSV;
-  } else {
+  }
+  else {
     sequence_ = SEQ_SEND_PASV;
   }
   return true;
 }
 
-bool FtpNegotiationCommand::sendEpsv() {
-  if(ftp_->sendEpsv()) {
+bool FtpNegotiationCommand::sendEpsv()
+{
+  if (ftp_->sendEpsv()) {
     disableWriteCheckSocket();
     sequence_ = SEQ_RECV_EPSV;
-  } else {
+  }
+  else {
     setWriteCheckSocket(getSocket());
   }
   return true;
 }
 
-bool FtpNegotiationCommand::recvEpsv() {
+bool FtpNegotiationCommand::recvEpsv()
+{
   uint16_t port;
   int status = ftp_->receiveEpsvResponse(port);
-  if(status == 0) {
+  if (status == 0) {
     return false;
   }
-  if(status == 229) {
+  if (status == 229) {
     pasvPort_ = port;
     return preparePasvConnect();
-  } else {
+  }
+  else {
     sequence_ = SEQ_SEND_PASV;
     return true;
   }
 }
 
-bool FtpNegotiationCommand::sendPasv() {
-  if(ftp_->sendPasv()) {
+bool FtpNegotiationCommand::sendPasv()
+{
+  if (ftp_->sendPasv()) {
     disableWriteCheckSocket();
     sequence_ = SEQ_RECV_PASV;
-  } else {
+  }
+  else {
     setWriteCheckSocket(getSocket());
   }
   return false;
 }
 
-bool FtpNegotiationCommand::recvPasv() {
+bool FtpNegotiationCommand::recvPasv()
+{
   std::pair<std::string, uint16_t> dest;
   int status = ftp_->receivePasvResponse(dest);
-  if(status == 0) {
+  if (status == 0) {
     return false;
   }
-  if(status != 227) {
+  if (status != 227) {
     throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, status),
                        error_code::FTP_PROTOCOL_ERROR);
   }
-  pasvPort_ = dest.second;;
+  pasvPort_ = dest.second;
+  ;
   return preparePasvConnect();
 }
 
-bool FtpNegotiationCommand::preparePasvConnect() {
-  if(isProxyDefined()) {
+bool FtpNegotiationCommand::preparePasvConnect()
+{
+  if (isProxyDefined()) {
     sequence_ = SEQ_RESOLVE_PROXY;
     return true;
-  } else {
+  }
+  else {
     std::pair<std::string, uint16_t> dataAddr;
     getSocket()->getPeerInfo(dataAddr);
     // make a data connection to the server.
-    A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
-                    getCuid(),
-                    dataAddr.first.c_str(),
+    A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER, getCuid(), dataAddr.first.c_str(),
                     pasvPort_));
     dataSocket_ = std::make_shared<SocketCore>();
     dataSocket_->establishConnection(dataAddr.first, pasvPort_, false);
@@ -682,14 +726,12 @@ bool FtpNegotiationCommand::resolveProxy()
 {
   std::shared_ptr<Request> proxyReq = createProxyRequest();
   std::vector<std::string> addrs;
-  proxyAddr_ = resolveHostname
-    (addrs, proxyReq->getHost(), proxyReq->getPort());
-  if(proxyAddr_.empty()) {
+  proxyAddr_ = resolveHostname(addrs, proxyReq->getHost(), proxyReq->getPort());
+  if (proxyAddr_.empty()) {
     return false;
   }
-  A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
-                  getCuid(),
-                  proxyAddr_.c_str(), proxyReq->getPort()));
+  A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER, getCuid(), proxyAddr_.c_str(),
+                  proxyReq->getPort()));
   dataSocket_ = std::make_shared<SocketCore>();
   dataSocket_->establishConnection(proxyAddr_, proxyReq->getPort());
   disableReadCheckSocket();
@@ -703,28 +745,26 @@ bool FtpNegotiationCommand::resolveProxy()
 
 bool FtpNegotiationCommand::sendTunnelRequest()
 {
-  if(http_->sendBufferIsEmpty()) {
-    if(dataSocket_->isReadable(0)) {
+  if (http_->sendBufferIsEmpty()) {
+    if (dataSocket_->isReadable(0)) {
       std::string error = getSocket()->getSocketError();
-      if(!error.empty()) {
+      if (!error.empty()) {
         std::shared_ptr<Request> proxyReq = createProxyRequest();
-        getDownloadEngine()->markBadIPAddress(proxyReq->getHost(),
-                                              proxyAddr_,proxyReq->getPort());
-        std::string nextProxyAddr = getDownloadEngine()->findCachedIPAddress
-          (proxyReq->getHost(), proxyReq->getPort());
-        if(nextProxyAddr.empty()) {
+        getDownloadEngine()->markBadIPAddress(proxyReq->getHost(), proxyAddr_,
+                                              proxyReq->getPort());
+        std::string nextProxyAddr = getDownloadEngine()->findCachedIPAddress(
+            proxyReq->getHost(), proxyReq->getPort());
+        if (nextProxyAddr.empty()) {
           getDownloadEngine()->removeCachedIPAddress(proxyReq->getHost(),
                                                      proxyReq->getPort());
-          throw DL_RETRY_EX
-            (fmt(MSG_ESTABLISHING_CONNECTION_FAILED,
-                 error.c_str()));
-        } else {
-          A2_LOG_INFO(fmt(MSG_CONNECT_FAILED_AND_RETRY,
-                          getCuid(),
+          throw DL_RETRY_EX(
+              fmt(MSG_ESTABLISHING_CONNECTION_FAILED, error.c_str()));
+        }
+        else {
+          A2_LOG_INFO(fmt(MSG_CONNECT_FAILED_AND_RETRY, getCuid(),
                           proxyAddr_.c_str(), proxyReq->getPort()));
           proxyAddr_ = nextProxyAddr;
-          A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
-                          getCuid(),
+          A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER, getCuid(),
                           proxyAddr_.c_str(), proxyReq->getPort()));
           dataSocket_->establishConnection(proxyAddr_, proxyReq->getPort());
           return false;
@@ -741,21 +781,23 @@ bool FtpNegotiationCommand::sendTunnelRequest()
     us.host = getRequest()->getHost();
     us.port = pasvPort_;
     us.ipv6LiteralAddress = getRequest()->isIPv6LiteralAddress();
-    if(!req->setUri(uri::construct(us))) {
+    if (!req->setUri(uri::construct(us))) {
       throw DL_RETRY_EX("Something wrong with FTP URI");
     }
     httpRequest->setRequest(req);
     httpRequest->setProxyRequest(createProxyRequest());
     http_->sendProxyRequest(std::move(httpRequest));
-  } else {
+  }
+  else {
     http_->sendPendingData();
   }
-  if(http_->sendBufferIsEmpty()) {
+  if (http_->sendBufferIsEmpty()) {
     disableWriteCheckSocket();
     setReadCheckSocket(dataSocket_);
     sequence_ = SEQ_RECV_TUNNEL_RESPONSE;
     return false;
-  } else {
+  }
+  else {
     setWriteCheckSocket(dataSocket_);
     return false;
   }
@@ -764,49 +806,53 @@ bool FtpNegotiationCommand::sendTunnelRequest()
 bool FtpNegotiationCommand::recvTunnelResponse()
 {
   std::shared_ptr<HttpResponse> httpResponse = http_->receiveResponse();
-  if(!httpResponse) {
+  if (!httpResponse) {
     return false;
   }
-  if(httpResponse->getStatusCode() != 200) {
+  if (httpResponse->getStatusCode() != 200) {
     throw DL_RETRY_EX(EX_PROXY_CONNECTION_FAILED);
   }
   sequence_ = SEQ_SEND_REST_PASV;
   return true;
 }
 
-bool FtpNegotiationCommand::sendRestPasv(const std::shared_ptr<Segment>& segment) {
-  //dataSocket_->setBlockingMode();
+bool FtpNegotiationCommand::sendRestPasv(
+    const std::shared_ptr<Segment>& segment)
+{
+  // dataSocket_->setBlockingMode();
   // Check connection is made properly
-  if(dataSocket_->isReadable(0)) {
+  if (dataSocket_->isReadable(0)) {
     std::string error = dataSocket_->getSocketError();
-    throw DL_ABORT_EX2
-      (fmt(MSG_ESTABLISHING_CONNECTION_FAILED, error.c_str()),
-       error_code::FTP_PROTOCOL_ERROR);
+    throw DL_ABORT_EX2(fmt(MSG_ESTABLISHING_CONNECTION_FAILED, error.c_str()),
+                       error_code::FTP_PROTOCOL_ERROR);
   }
   setReadCheckSocket(getSocket());
   disableWriteCheckSocket();
   return sendRest(segment);
 }
 
-bool FtpNegotiationCommand::sendRest(const std::shared_ptr<Segment>& segment) {
-  if(ftp_->sendRest(segment)) {
+bool FtpNegotiationCommand::sendRest(const std::shared_ptr<Segment>& segment)
+{
+  if (ftp_->sendRest(segment)) {
     disableWriteCheckSocket();
     sequence_ = SEQ_RECV_REST;
-  } else {
+  }
+  else {
     setWriteCheckSocket(getSocket());
   }
   return false;
 }
 
-bool FtpNegotiationCommand::recvRest(const std::shared_ptr<Segment>& segment) {
+bool FtpNegotiationCommand::recvRest(const std::shared_ptr<Segment>& segment)
+{
   int status = ftp_->receiveResponse();
-  if(status == 0) {
+  if (status == 0) {
     return false;
   }
   // If we receive negative response and requested file position is not 0,
   // then throw exception here.
-  if(status != 350) {
-    if(segment && segment->getPositionToWrite() != 0) {
+  if (status != 350) {
+    if (segment && segment->getPositionToWrite() != 0) {
       throw DL_ABORT_EX2("FTP server doesn't support resuming.",
                          error_code::CANNOT_RESUME);
     }
@@ -815,22 +861,25 @@ bool FtpNegotiationCommand::recvRest(const std::shared_ptr<Segment>& segment) {
   return true;
 }
 
-bool FtpNegotiationCommand::sendRetr() {
-  if(ftp_->sendRetr()) {
+bool FtpNegotiationCommand::sendRetr()
+{
+  if (ftp_->sendRetr()) {
     disableWriteCheckSocket();
     sequence_ = SEQ_RECV_RETR;
-  } else {
+  }
+  else {
     setWriteCheckSocket(getSocket());
   }
   return false;
 }
 
-bool FtpNegotiationCommand::recvRetr() {
+bool FtpNegotiationCommand::recvRetr()
+{
   int status = ftp_->receiveResponse();
-  if(status == 0) {
+  if (status == 0) {
     return false;
   }
-  if(status != 150 && status != 125) {
+  if (status != 150 && status != 125) {
     getRequestGroup()->increaseAndValidateFileNotFoundCount();
     if (status == 550)
       throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
@@ -839,10 +888,11 @@ bool FtpNegotiationCommand::recvRetr() {
       throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, status),
                          error_code::FTP_PROTOCOL_ERROR);
   }
-  if(getOption()->getAsBool(PREF_FTP_PASV)) {
+  if (getOption()->getAsBool(PREF_FTP_PASV)) {
     sequence_ = SEQ_NEGOTIATION_COMPLETED;
     return false;
-  } else {
+  }
+  else {
     disableReadCheckSocket();
     setReadCheckSocket(serverSocket_);
     sequence_ = SEQ_WAIT_CONNECTION;
@@ -859,10 +909,11 @@ bool FtpNegotiationCommand::waitConnection()
   return false;
 }
 
-bool FtpNegotiationCommand::processSequence
-(const std::shared_ptr<Segment>& segment) {
+bool FtpNegotiationCommand::processSequence(
+    const std::shared_ptr<Segment>& segment)
+{
   bool doNextSequence = true;
-  switch(sequence_) {
+  switch (sequence_) {
   case SEQ_RECV_GREETING:
     return recvGreeting();
   case SEQ_SEND_USER:
@@ -945,7 +996,7 @@ bool FtpNegotiationCommand::processSequence
 
 void FtpNegotiationCommand::poolConnection() const
 {
-  if(getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
+  if (getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
     // Store ftp_->getBaseWorkingDir() as options
     getDownloadEngine()->poolSocket(getRequest(), ftp_->getUser(),
                                     createProxyRequest(), getSocket(),

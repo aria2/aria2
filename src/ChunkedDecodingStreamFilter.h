@@ -45,18 +45,18 @@ private:
   int64_t chunkSize_;
   int64_t chunkRemaining_;
   size_t bytesProcessed_;
+
 public:
-  ChunkedDecodingStreamFilter
-  (std::unique_ptr<StreamFilter> delegate = nullptr);
+  ChunkedDecodingStreamFilter(std::unique_ptr<StreamFilter> delegate = nullptr);
 
   virtual ~ChunkedDecodingStreamFilter();
 
   virtual void init() CXX11_OVERRIDE;
 
-  virtual ssize_t transform
-  (const std::shared_ptr<BinaryStream>& out,
-   const std::shared_ptr<Segment>& segment,
-   const unsigned char* inbuf, size_t inlen) CXX11_OVERRIDE;
+  virtual ssize_t transform(const std::shared_ptr<BinaryStream>& out,
+                            const std::shared_ptr<Segment>& segment,
+                            const unsigned char* inbuf,
+                            size_t inlen) CXX11_OVERRIDE;
 
   virtual bool finished() CXX11_OVERRIDE;
 

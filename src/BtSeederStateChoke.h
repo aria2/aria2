@@ -80,6 +80,7 @@ private:
   };
 
   void unchoke(std::vector<PeerEntry>& peers);
+
 public:
   BtSeederStateChoke();
 
@@ -92,9 +93,7 @@ public:
   friend void swap(PeerEntry& a, PeerEntry& b);
 };
 
-void swap
-(BtSeederStateChoke::PeerEntry& a,
- BtSeederStateChoke::PeerEntry& b);
+void swap(BtSeederStateChoke::PeerEntry& a, BtSeederStateChoke::PeerEntry& b);
 
 } // namespace aria2
 

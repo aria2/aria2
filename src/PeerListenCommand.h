@@ -51,6 +51,7 @@ private:
   DownloadEngine* e_;
   int family_;
   std::shared_ptr<SocketCore> socket_;
+
 public:
   PeerListenCommand(cuid_t cuid, DownloadEngine* e, int family);
 

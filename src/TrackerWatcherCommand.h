@@ -65,10 +65,11 @@ public:
   // Stop this request.
   virtual void stop(DownloadEngine* e) = 0;
   // Returns true if processing tracker response is successful.
-  virtual bool processResponse(const std::shared_ptr<BtAnnounce>& btAnnounce) = 0;
+  virtual bool
+  processResponse(const std::shared_ptr<BtAnnounce>& btAnnounce) = 0;
 };
 
-class HTTPAnnRequest:public AnnRequest {
+class HTTPAnnRequest : public AnnRequest {
 public:
   HTTPAnnRequest(std::unique_ptr<RequestGroup> rg);
   virtual ~HTTPAnnRequest();
@@ -76,13 +77,14 @@ public:
   virtual bool success() const CXX11_OVERRIDE;
   virtual bool issue(DownloadEngine* e) CXX11_OVERRIDE;
   virtual void stop(DownloadEngine* e) CXX11_OVERRIDE;
-  virtual bool processResponse(const std::shared_ptr<BtAnnounce>& btAnnounce)
-    CXX11_OVERRIDE;
+  virtual bool
+  processResponse(const std::shared_ptr<BtAnnounce>& btAnnounce) CXX11_OVERRIDE;
+
 private:
   std::unique_ptr<RequestGroup> rg_;
 };
 
-class UDPAnnRequest:public AnnRequest {
+class UDPAnnRequest : public AnnRequest {
 public:
   UDPAnnRequest(const std::shared_ptr<UDPTrackerRequest>& req);
   virtual ~UDPAnnRequest();
@@ -90,14 +92,14 @@ public:
   virtual bool success() const CXX11_OVERRIDE;
   virtual bool issue(DownloadEngine* e) CXX11_OVERRIDE;
   virtual void stop(DownloadEngine* e) CXX11_OVERRIDE;
-  virtual bool processResponse(const std::shared_ptr<BtAnnounce>& btAnnounce)
-    CXX11_OVERRIDE;
+  virtual bool
+  processResponse(const std::shared_ptr<BtAnnounce>& btAnnounce) CXX11_OVERRIDE;
+
 private:
   std::shared_ptr<UDPTrackerRequest> req_;
 };
 
-class TrackerWatcherCommand : public Command
-{
+class TrackerWatcherCommand : public Command {
 private:
   RequestGroup* requestGroup_;
 
@@ -119,19 +121,18 @@ private:
    * Returns a command for announce request. Returns 0 if no announce request
    * is needed.
    */
-  std::unique_ptr<AnnRequest>
-  createHTTPAnnRequest(const std::string& uri);
+  std::unique_ptr<AnnRequest> createHTTPAnnRequest(const std::string& uri);
 
-  std::unique_ptr<AnnRequest>
-  createUDPAnnRequest(const std::string& host, uint16_t port,
-                      uint16_t localPort);
+  std::unique_ptr<AnnRequest> createUDPAnnRequest(const std::string& host,
+                                                  uint16_t port,
+                                                  uint16_t localPort);
 
   void addConnection();
 
   const std::shared_ptr<Option>& getOption() const;
+
 public:
-  TrackerWatcherCommand(cuid_t cuid,
-                        RequestGroup* requestGroup,
+  TrackerWatcherCommand(cuid_t cuid, RequestGroup* requestGroup,
                         DownloadEngine* e);
 
   virtual ~TrackerWatcherCommand();

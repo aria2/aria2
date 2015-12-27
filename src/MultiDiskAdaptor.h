@@ -50,6 +50,7 @@ private:
   bool open_;
   bool needsFileAllocation_;
   bool needsDiskWriter_;
+
 public:
   DiskWriterEntry(const std::shared_ptr<FileEntry>& fileEntry);
 
@@ -63,19 +64,13 @@ public:
 
   void closeFile();
 
-  bool isOpen() const
-  {
-    return open_;
-  }
+  bool isOpen() const { return open_; }
 
   bool fileExists();
 
   int64_t size() const;
 
-  const std::shared_ptr<FileEntry>& getFileEntry() const
-  {
-    return fileEntry_;
-  }
+  const std::shared_ptr<FileEntry>& getFileEntry() const { return fileEntry_; }
 
   void setDiskWriter(std::unique_ptr<DiskWriter> diskWriter);
 
@@ -86,31 +81,20 @@ public:
 
   bool operator<(const DiskWriterEntry& entry) const;
 
-  bool needsFileAllocation() const
-  {
-    return needsFileAllocation_;
-  }
+  bool needsFileAllocation() const { return needsFileAllocation_; }
 
-  void needsFileAllocation(bool f)
-  {
-    needsFileAllocation_ = f;
-  }
+  void needsFileAllocation(bool f) { needsFileAllocation_ = f; }
 
-  bool needsDiskWriter() const
-  {
-    return needsDiskWriter_;
-  }
+  bool needsDiskWriter() const { return needsDiskWriter_; }
 
-  void needsDiskWriter(bool f)
-  {
-    needsDiskWriter_ = f;
-  }
+  void needsDiskWriter(bool f) { needsDiskWriter_ = f; }
 };
 
 typedef std::vector<std::unique_ptr<DiskWriterEntry>> DiskWriterEntries;
 
 class MultiDiskAdaptor : public DiskAdaptor {
   friend class MultiFileAllocationIterator;
+
 private:
   int32_t pieceLength_;
   DiskWriterEntries diskWriterEntries_;
@@ -143,12 +127,11 @@ public:
   virtual void writeData(const unsigned char* data, size_t len,
                          int64_t offset) CXX11_OVERRIDE;
 
-  virtual ssize_t readData(unsigned char* data, size_t len, int64_t offset)
-    CXX11_OVERRIDE;
+  virtual ssize_t readData(unsigned char* data, size_t len,
+                           int64_t offset) CXX11_OVERRIDE;
 
   virtual ssize_t readDataDropCache(unsigned char* data, size_t len,
-                                    int64_t offset)
-    CXX11_OVERRIDE;
+                                    int64_t offset) CXX11_OVERRIDE;
 
   virtual void writeCache(const WrDiskCacheEntry* entry) CXX11_OVERRIDE;
 
@@ -156,8 +139,8 @@ public:
 
   virtual int64_t size() CXX11_OVERRIDE;
 
-  virtual std::unique_ptr<FileAllocationIterator> fileAllocationIterator()
-    CXX11_OVERRIDE;
+  virtual std::unique_ptr<FileAllocationIterator>
+  fileAllocationIterator() CXX11_OVERRIDE;
 
   virtual void enableReadOnly() CXX11_OVERRIDE;
 
@@ -169,14 +152,9 @@ public:
   // opened.
   virtual void enableMmap() CXX11_OVERRIDE;
 
-  void setPieceLength(int32_t pieceLength)
-  {
-    pieceLength_ = pieceLength;
-  }
+  void setPieceLength(int32_t pieceLength) { pieceLength_ = pieceLength; }
 
-  int32_t getPieceLength() const {
-    return pieceLength_;
-  }
+  int32_t getPieceLength() const { return pieceLength_; }
 
   virtual void cutTrailingGarbage() CXX11_OVERRIDE;
 

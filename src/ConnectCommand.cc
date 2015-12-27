@@ -47,15 +47,13 @@
 
 namespace aria2 {
 
-ConnectCommand::ConnectCommand(cuid_t cuid,
-                               const std::shared_ptr<Request>& req,
+ConnectCommand::ConnectCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
                                const std::shared_ptr<Request>& proxyRequest,
                                const std::shared_ptr<FileEntry>& fileEntry,
-                               RequestGroup* requestGroup,
-                               DownloadEngine* e,
+                               RequestGroup* requestGroup, DownloadEngine* e,
                                const std::shared_ptr<SocketCore>& s)
-  : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
-    proxyRequest_(proxyRequest)
+    : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
+      proxyRequest_(proxyRequest)
 {
   setTimeout(std::chrono::seconds(getOption()->getAsInt(PREF_CONNECT_TIMEOUT)));
   disableReadCheckSocket();
@@ -64,19 +62,19 @@ ConnectCommand::ConnectCommand(cuid_t cuid,
 
 ConnectCommand::~ConnectCommand()
 {
-  if(backupConnectionInfo_) {
+  if (backupConnectionInfo_) {
     backupConnectionInfo_->cancel = true;
   }
 }
 
-void ConnectCommand::setControlChain
-(const std::shared_ptr<ControlChain<ConnectCommand*> >& chain)
+void ConnectCommand::setControlChain(
+    const std::shared_ptr<ControlChain<ConnectCommand*>>& chain)
 {
   chain_ = chain;
 }
 
-void ConnectCommand::setBackupConnectInfo
-(const std::shared_ptr<BackupConnectInfo>& info)
+void ConnectCommand::setBackupConnectInfo(
+    const std::shared_ptr<BackupConnectInfo>& info)
 {
   backupConnectionInfo_ = info;
 }
@@ -88,13 +86,12 @@ const std::shared_ptr<Request>& ConnectCommand::getProxyRequest() const
 
 bool ConnectCommand::executeInternal()
 {
-  if(backupConnectionInfo_ && !backupConnectionInfo_->ipaddr.empty()) {
+  if (backupConnectionInfo_ && !backupConnectionInfo_->ipaddr.empty()) {
     A2_LOG_INFO(fmt("CUID#%" PRId64 " - Use backup connection address %s",
                     getCuid(), backupConnectionInfo_->ipaddr.c_str()));
-    getDownloadEngine()->markBadIPAddress
-      (getRequest()->getConnectedHostname(),
-       getRequest()->getConnectedAddr(),
-       getRequest()->getConnectedPort());
+    getDownloadEngine()->markBadIPAddress(getRequest()->getConnectedHostname(),
+                                          getRequest()->getConnectedAddr(),
+                                          getRequest()->getConnectedPort());
 
     getRequest()->setConnectedAddrInfo(getRequest()->getConnectedHostname(),
                                        backupConnectionInfo_->ipaddr,
@@ -102,12 +99,12 @@ bool ConnectCommand::executeInternal()
     swapSocket(backupConnectionInfo_->socket);
     backupConnectionInfo_.reset();
   }
-  if(!checkIfConnectionEstablished
-     (getSocket(), getRequest()->getConnectedHostname(),
-      getRequest()->getConnectedAddr(), getRequest()->getConnectedPort())) {
+  if (!checkIfConnectionEstablished(
+          getSocket(), getRequest()->getConnectedHostname(),
+          getRequest()->getConnectedAddr(), getRequest()->getConnectedPort())) {
     return true;
   }
-  if(backupConnectionInfo_) {
+  if (backupConnectionInfo_) {
     backupConnectionInfo_->cancel = true;
     backupConnectionInfo_.reset();
   }

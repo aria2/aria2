@@ -41,17 +41,11 @@ namespace aria2 {
 
 namespace rpc {
 
-XmlRpcDiskWriter::XmlRpcDiskWriter()
-  : parser_(&psm_)
-{}
+XmlRpcDiskWriter::XmlRpcDiskWriter() : parser_(&psm_) {}
 
-XmlRpcDiskWriter::~XmlRpcDiskWriter()
-{}
+XmlRpcDiskWriter::~XmlRpcDiskWriter() {}
 
-void XmlRpcDiskWriter::initAndOpenFile(int64_t totalLength)
-{
-  parser_.reset();
-}
+void XmlRpcDiskWriter::initAndOpenFile(int64_t totalLength) { parser_.reset(); }
 
 void XmlRpcDiskWriter::writeData(const unsigned char* data, size_t len,
                                  int64_t offset)
@@ -60,26 +54,21 @@ void XmlRpcDiskWriter::writeData(const unsigned char* data, size_t len,
   parser_.parseUpdate(reinterpret_cast<const char*>(data), len);
 }
 
-int XmlRpcDiskWriter::finalize()
-{
-  return parser_.parseFinal(nullptr, 0);
-}
+int XmlRpcDiskWriter::finalize() { return parser_.parseFinal(nullptr, 0); }
 
 RpcRequest XmlRpcDiskWriter::getResult()
 {
   std::unique_ptr<List> params;
-  if(downcast<List>(psm_.getCurrentFrameValue())) {
+  if (downcast<List>(psm_.getCurrentFrameValue())) {
     params.reset(static_cast<List*>(psm_.popCurrentFrameValue().release()));
-  } else {
+  }
+  else {
     params = List::g();
   }
   return RpcRequest{psm_.getMethodName(), std::move(params)};
 }
 
-int XmlRpcDiskWriter::reset()
-{
-  return parser_.reset();
-}
+int XmlRpcDiskWriter::reset() { return parser_.reset(); }
 
 } // namespace rpc
 

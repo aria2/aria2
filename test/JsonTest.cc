@@ -9,20 +9,20 @@
 
 namespace aria2 {
 
-class JsonTest:public CppUnit::TestFixture {
+class JsonTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(JsonTest);
   CPPUNIT_TEST(testEncode);
   CPPUNIT_TEST(testDecodeGetParams);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
   void testEncode();
   void testDecodeGetParams();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( JsonTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(JsonTest);
 
 void JsonTest::testEncode()
 {

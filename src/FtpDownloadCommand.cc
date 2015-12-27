@@ -48,38 +48,37 @@
 
 namespace aria2 {
 
-FtpDownloadCommand::FtpDownloadCommand
-(cuid_t cuid,
- const std::shared_ptr<Request>& req,
- const std::shared_ptr<FileEntry>& fileEntry,
- RequestGroup* requestGroup,
- const std::shared_ptr<FtpConnection>& ftpConnection,
- DownloadEngine* e,
- const std::shared_ptr<SocketCore>& dataSocket,
- const std::shared_ptr<SocketCore>& ctrlSocket)
-  :DownloadCommand(cuid, req, fileEntry, requestGroup, e, dataSocket,
-                   std::make_shared<SocketRecvBuffer>(dataSocket)),
-   ftpConnection_(ftpConnection),
-   ctrlSocket_(ctrlSocket) {}
+FtpDownloadCommand::FtpDownloadCommand(
+    cuid_t cuid, const std::shared_ptr<Request>& req,
+    const std::shared_ptr<FileEntry>& fileEntry, RequestGroup* requestGroup,
+    const std::shared_ptr<FtpConnection>& ftpConnection, DownloadEngine* e,
+    const std::shared_ptr<SocketCore>& dataSocket,
+    const std::shared_ptr<SocketCore>& ctrlSocket)
+    : DownloadCommand(cuid, req, fileEntry, requestGroup, e, dataSocket,
+                      std::make_shared<SocketRecvBuffer>(dataSocket)),
+      ftpConnection_(ftpConnection),
+      ctrlSocket_(ctrlSocket)
+{
+}
 
 FtpDownloadCommand::~FtpDownloadCommand() {}
 
 bool FtpDownloadCommand::prepareForNextSegment()
 {
-  if(getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION) &&
-     getFileEntry()->gtoloff(getSegments().front()->getPositionToWrite()) ==
-     getFileEntry()->getLength()) {
-    getDownloadEngine()->addCommand
-      (make_unique<FtpFinishDownloadCommand>
-       (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
+  if (getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION) &&
+      getFileEntry()->gtoloff(getSegments().front()->getPositionToWrite()) ==
+          getFileEntry()->getLength()) {
+    getDownloadEngine()->addCommand(make_unique<FtpFinishDownloadCommand>(
+        getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
         ftpConnection_, getDownloadEngine(), ctrlSocket_));
 
-    if(getRequestGroup()->downloadFinished()) {
+    if (getRequestGroup()->downloadFinished()) {
       // To run checksum checking, we had to call following function here.
       DownloadCommand::prepareForNextSegment();
     }
     return true;
-  } else {
+  }
+  else {
     return DownloadCommand::prepareForNextSegment();
   }
 }

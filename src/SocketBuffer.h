@@ -55,59 +55,65 @@ private:
   class BufEntry {
   public:
     BufEntry(std::unique_ptr<ProgressUpdate> progressUpdate)
-      : progressUpdate_(std::move(progressUpdate)) {}
+        : progressUpdate_(std::move(progressUpdate))
+    {
+    }
     virtual ~BufEntry() {}
-    virtual ssize_t send
-    (const std::shared_ptr<SocketCore>& socket, size_t offset) = 0;
+    virtual ssize_t send(const std::shared_ptr<SocketCore>& socket,
+                         size_t offset) = 0;
     virtual bool final(size_t offset) const = 0;
     virtual size_t getLength() const = 0;
     virtual const unsigned char* getData() const = 0;
     void progressUpdate(size_t length, bool complete)
     {
-      if(progressUpdate_) {
+      if (progressUpdate_) {
         progressUpdate_->update(length, complete);
       }
     }
+
   private:
     std::unique_ptr<ProgressUpdate> progressUpdate_;
   };
 
-  class ByteArrayBufEntry:public BufEntry {
+  class ByteArrayBufEntry : public BufEntry {
   public:
     ByteArrayBufEntry(unsigned char* bytes, size_t length,
                       std::unique_ptr<ProgressUpdate> progressUpdate);
     virtual ~ByteArrayBufEntry();
-    virtual ssize_t send
-    (const std::shared_ptr<SocketCore>& socket, size_t offset) CXX11_OVERRIDE;
+    virtual ssize_t send(const std::shared_ptr<SocketCore>& socket,
+                         size_t offset) CXX11_OVERRIDE;
     virtual bool final(size_t offset) const CXX11_OVERRIDE;
     virtual size_t getLength() const CXX11_OVERRIDE;
     virtual const unsigned char* getData() const CXX11_OVERRIDE;
+
   private:
     unsigned char* bytes_;
     size_t length_;
   };
 
-  class StringBufEntry:public BufEntry {
+  class StringBufEntry : public BufEntry {
   public:
     StringBufEntry(std::string s,
                    std::unique_ptr<ProgressUpdate> progressUpdate);
-    virtual ssize_t send
-    (const std::shared_ptr<SocketCore>& socket, size_t offset) CXX11_OVERRIDE;
+    virtual ssize_t send(const std::shared_ptr<SocketCore>& socket,
+                         size_t offset) CXX11_OVERRIDE;
     virtual bool final(size_t offset) const CXX11_OVERRIDE;
     virtual size_t getLength() const CXX11_OVERRIDE;
     virtual const unsigned char* getData() const CXX11_OVERRIDE;
+
   private:
     std::string str_;
   };
 
   std::shared_ptr<SocketCore> socket_;
 
-  std::deque<std::unique_ptr<BufEntry> > bufq_;
+  std::deque<std::unique_ptr<BufEntry>> bufq_;
 
   // Offset of data in bufq_[0]. SocketBuffer tries to send bufq_[0],
   // but it cannot always send whole data. In this case, offset points
   // to the data to be sent in the next send() call.
   size_t offset_;
+
 public:
   SocketBuffer(std::shared_ptr<SocketCore> socket);
 
@@ -139,10 +145,7 @@ public:
   // Returns true if queue is empty.
   bool sendBufferIsEmpty() const;
 
-  size_t getBufferEntrySize() const
-  {
-    return bufq_.size();
-  }
+  size_t getBufferEntrySize() const { return bufq_.size(); }
 };
 
 } // namespace aria2

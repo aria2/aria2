@@ -58,17 +58,13 @@ public:
   virtual bool needsCharactersBuffering() const CXX11_OVERRIDE;
   virtual bool finished() const CXX11_OVERRIDE;
 
-  virtual void beginElement
-  (const char* localname,
-   const char* prefix,
-   const char* nsUri,
-   const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
+  virtual void beginElement(const char* localname, const char* prefix,
+                            const char* nsUri,
+                            const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
 
-  virtual void endElement
-  (const char* localname,
-   const char* prefix,
-   const char* nsUri,
-   std::string characters) CXX11_OVERRIDE;
+  virtual void endElement(const char* localname, const char* prefix,
+                          const char* nsUri,
+                          std::string characters) CXX11_OVERRIDE;
 
   virtual void reset() CXX11_OVERRIDE;
 
@@ -97,6 +93,7 @@ public:
   void pushArrayState();
   void pushDataState();
   void pushArrayValueState();
+
 private:
   std::stack<XmlRpcRequestParserState*> stateStack_;
   XmlRpcRequestParserController* controller_;

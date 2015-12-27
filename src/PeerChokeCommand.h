@@ -52,9 +52,9 @@ private:
   std::shared_ptr<PeerStorage> peerStorage_;
 
   std::shared_ptr<BtRuntime> btRuntime_;
+
 public:
-  PeerChokeCommand(cuid_t cuid,
-                   DownloadEngine* e);
+  PeerChokeCommand(cuid_t cuid, DownloadEngine* e);
 
   virtual ~PeerChokeCommand();
 

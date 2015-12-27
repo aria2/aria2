@@ -7,11 +7,12 @@
 
 namespace aria2 {
 
-class TimegmTest:public CppUnit::TestFixture {
+class TimegmTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(TimegmTest);
   CPPUNIT_TEST(testTimegm);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -26,7 +27,7 @@ namespace {
 void setTime(struct tm* tm, int yr, int mon, int day, int h, int m, int s)
 {
   tm->tm_year = yr - 1900;
-  tm->tm_mon = mon-1;
+  tm->tm_mon = mon - 1;
   tm->tm_mday = day;
   tm->tm_hour = h;
   tm->tm_min = m;
@@ -49,9 +50,10 @@ void TimegmTest::testTimegm()
   setTime(&tm, 1970, 13, 1, 0, 0, 0);
   CPPUNIT_ASSERT_EQUAL((time_t)-1, timegm(&tm));
   setTime(&tm, 2039, 1, 1, 0, 0, 0);
-  if(sizeof(time_t) == 4) {
+  if (sizeof(time_t) == 4) {
     CPPUNIT_ASSERT_EQUAL((time_t)-1, timegm(&tm));
-  } else if(sizeof(time_t) == 8) {
+  }
+  else if (sizeof(time_t) == 8) {
     CPPUNIT_ASSERT_EQUAL((time_t)2177452800LL, timegm(&tm));
   }
 }

@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-class DefaultDiskWriter:public AbstractDiskWriter {
+class DefaultDiskWriter : public AbstractDiskWriter {
 public:
   DefaultDiskWriter(const std::string& filename);
 

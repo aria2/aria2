@@ -9,11 +9,12 @@
 
 namespace aria2 {
 
-class DHTAnnouncePeerReplyMessageTest:public CppUnit::TestFixture {
+class DHTAnnouncePeerReplyMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTAnnouncePeerReplyMessageTest);
   CPPUNIT_TEST(testGetBencodedMessage);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -21,7 +22,6 @@ public:
 
   void testGetBencodedMessage();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DHTAnnouncePeerReplyMessageTest);
 

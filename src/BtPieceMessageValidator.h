@@ -46,9 +46,9 @@ private:
   const BtPieceMessage* message_;
   size_t numPiece_;
   int32_t pieceLength_;
+
 public:
-  BtPieceMessageValidator(const BtPieceMessage* message,
-                          size_t numPiece,
+  BtPieceMessageValidator(const BtPieceMessage* message, size_t numPiece,
                           int32_t pieceLength);
 
   ~BtPieceMessageValidator();

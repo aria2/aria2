@@ -46,50 +46,47 @@ namespace aria2 {
 void callback(void* arg, int status, int timeouts, struct hostent* host)
 {
   AsyncNameResolver* resolverPtr = reinterpret_cast<AsyncNameResolver*>(arg);
-  if(status != ARES_SUCCESS) {
+  if (status != ARES_SUCCESS) {
     resolverPtr->error_ = ares_strerror(status);
     resolverPtr->status_ = AsyncNameResolver::STATUS_ERROR;
     return;
   }
-  for(char** ap = host->h_addr_list; *ap; ++ap) {
+  for (char** ap = host->h_addr_list; *ap; ++ap) {
     char addrstring[NI_MAXHOST];
-    if(inetNtop(host->h_addrtype, *ap, addrstring, sizeof(addrstring)) == 0) {
+    if (inetNtop(host->h_addrtype, *ap, addrstring, sizeof(addrstring)) == 0) {
       resolverPtr->resolvedAddresses_.push_back(addrstring);
     }
   }
-  if(resolverPtr->resolvedAddresses_.empty()) {
+  if (resolverPtr->resolvedAddresses_.empty()) {
     resolverPtr->error_ = "no address returned or address conversion failed";
     resolverPtr->status_ = AsyncNameResolver::STATUS_ERROR;
-  } else {
+  }
+  else {
     resolverPtr->status_ = AsyncNameResolver::STATUS_SUCCESS;
   }
 }
 
-AsyncNameResolver::AsyncNameResolver
-(int family
+AsyncNameResolver::AsyncNameResolver(int family
 #ifdef HAVE_ARES_ADDR_NODE
- , ares_addr_node* servers
+                                     ,
+                                     ares_addr_node* servers
 #endif // HAVE_ARES_ADDR_NODE
- )
-  : status_(STATUS_READY),
-    family_(family)
+                                     )
+    : status_(STATUS_READY), family_(family)
 {
   // TODO evaluate return value
   ares_init(&channel_);
 #if defined(HAVE_ARES_SET_SERVERS) && defined(HAVE_ARES_ADDR_NODE)
-  if(servers) {
+  if (servers) {
     // ares_set_servers has been added since c-ares 1.7.1
-    if(ares_set_servers(channel_, servers) != ARES_SUCCESS) {
+    if (ares_set_servers(channel_, servers) != ARES_SUCCESS) {
       A2_LOG_DEBUG("ares_set_servers failed");
     }
   }
 #endif // HAVE_ARES_SET_SERVERS && HAVE_ARES_ADDR_NODE
 }
 
-AsyncNameResolver::~AsyncNameResolver()
-{
-  ares_destroy(channel_);
-}
+AsyncNameResolver::~AsyncNameResolver() { ares_destroy(channel_); }
 
 void AsyncNameResolver::resolve(const std::string& name)
 {
@@ -148,11 +145,11 @@ ares_addr_node* parseAsyncDNSServers(const std::string& serversOpt)
   ares_addr_node root;
   root.next = nullptr;
   ares_addr_node* tail = &root;
-  for (const auto& s: servers) {
+  for (const auto& s : servers) {
     auto node = make_unique<ares_addr_node>();
 
     size_t len = net::getBinAddr(&node->addr, s.c_str());
-    if(len != 0) {
+    if (len != 0) {
       node->next = nullptr;
       node->family = (len == 4 ? AF_INET : AF_INET6);
       tail->next = node.release();

@@ -51,7 +51,8 @@ private:
 
   std::shared_ptr<DHTNode> localNode_;
 
-  std::vector<std::shared_ptr<DHTNode> > nodes_;
+  std::vector<std::shared_ptr<DHTNode>> nodes_;
+
 public:
   DHTRoutingTableSerializer(int family);
 
@@ -59,7 +60,7 @@ public:
 
   void setLocalNode(const std::shared_ptr<DHTNode>& localNode);
 
-  void setNodes(const std::vector<std::shared_ptr<DHTNode> >& nodes);
+  void setNodes(const std::vector<std::shared_ptr<DHTNode>>& nodes);
 
   void serialize(const std::string& filename);
 };

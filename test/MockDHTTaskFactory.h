@@ -5,7 +5,7 @@
 
 namespace aria2 {
 
-class MockDHTTaskFactory:public DHTTaskFactory {
+class MockDHTTaskFactory : public DHTTaskFactory {
 public:
   virtual ~MockDHTTaskFactory() {}
 
@@ -27,11 +27,9 @@ public:
     return nullptr;
   }
 
-  virtual std::shared_ptr<DHTTask>
-  createPeerLookupTask(const std::shared_ptr<DownloadContext>& ctx,
-                       uint16_t tcpPort,
-                       const std::shared_ptr<PeerStorage>& peerStorage)
-    CXX11_OVERRIDE
+  virtual std::shared_ptr<DHTTask> createPeerLookupTask(
+      const std::shared_ptr<DownloadContext>& ctx, uint16_t tcpPort,
+      const std::shared_ptr<PeerStorage>& peerStorage) CXX11_OVERRIDE
   {
     return nullptr;
   }

@@ -48,15 +48,14 @@ private:
   mpz_t generator_;
   mpz_t privateKey_;
   mpz_t publicKey_;
+
 public:
   DHKeyExchange();
 
   ~DHKeyExchange();
 
-  void init
-  (const unsigned char* prime, size_t primeBits,
-   const unsigned char* generator,
-   size_t privateKeyBits);
+  void init(const unsigned char* prime, size_t primeBits,
+            const unsigned char* generator, size_t privateKeyBits);
 
   void generatePublicKey();
 
@@ -64,10 +63,9 @@ public:
 
   void generateNonce(unsigned char* out, size_t outLength) const;
 
-  size_t computeSecret
-  (unsigned char* out, size_t outLength,
-   const unsigned char* peerPublicKeyData,
-   size_t peerPublicKeyLength) const;
+  size_t computeSecret(unsigned char* out, size_t outLength,
+                       const unsigned char* peerPublicKeyData,
+                       size_t peerPublicKeyLength) const;
 };
 
 } // namespace aria2

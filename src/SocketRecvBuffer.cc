@@ -43,11 +43,11 @@
 namespace aria2 {
 
 SocketRecvBuffer::SocketRecvBuffer(std::shared_ptr<SocketCore> socket)
-  : socket_(std::move(socket)), pos_(buf_.data()), last_(pos_)
-{}
+    : socket_(std::move(socket)), pos_(buf_.data()), last_(pos_)
+{
+}
 
-SocketRecvBuffer::~SocketRecvBuffer()
-{}
+SocketRecvBuffer::~SocketRecvBuffer() {}
 
 ssize_t SocketRecvBuffer::recv()
 {
@@ -70,9 +70,6 @@ void SocketRecvBuffer::drain(size_t n)
   }
 }
 
-void SocketRecvBuffer::truncateBuffer()
-{
-  pos_ = last_ = buf_.data();
-}
+void SocketRecvBuffer::truncateBuffer() { pos_ = last_ = buf_.data(); }
 
 } // namespace aria2

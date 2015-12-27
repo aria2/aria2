@@ -60,10 +60,7 @@ enum UDPTrackerError {
   UDPT_ERR_SHUTDOWN
 };
 
-enum UDPTrackerState {
-  UDPT_STA_PENDING,
-  UDPT_STA_COMPLETE
-};
+enum UDPTrackerState { UDPT_STA_PENDING, UDPT_STA_COMPLETE };
 
 enum UDPTrackerEvent {
   UDPT_EVT_NONE = 0,
@@ -78,7 +75,7 @@ struct UDPTrackerReply {
   int32_t interval;
   int32_t leechers;
   int32_t seeders;
-  std::vector<std::pair<std::string, uint16_t> > peers;
+  std::vector<std::pair<std::string, uint16_t>> peers;
   UDPTrackerReply();
 };
 

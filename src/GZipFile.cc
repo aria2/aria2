@@ -44,15 +44,15 @@
 namespace aria2 {
 
 GZipFile::GZipFile(const char* filename, const char* mode)
-  : fp_(nullptr),
-    buflen_(1_k), buf_(reinterpret_cast<char*>(malloc(buflen_)))
+    : fp_(nullptr), buflen_(1_k), buf_(reinterpret_cast<char*>(malloc(buflen_)))
 {
   FILE* fp =
 #ifdef __MINGW32__
-    strcmp(DEV_STDIN, filename) == 0 ?
-    stdin : a2fopen(utf8ToWChar(filename).c_str(), utf8ToWChar(mode).c_str());
-#else // !__MINGW32__
-    a2fopen(filename, mode);
+      strcmp(DEV_STDIN, filename) == 0
+          ? stdin
+          : a2fopen(utf8ToWChar(filename).c_str(), utf8ToWChar(mode).c_str());
+#else  // !__MINGW32__
+      a2fopen(filename, mode);
 #endif // !__MINGW32__
 
   if (fp) {
@@ -60,14 +60,15 @@ GZipFile::GZipFile(const char* filename, const char* mode)
     if (fd != -1) {
       fp_ = gzdopen(fd, mode);
       if (fp_) {
-        // fp_ retains fd and gzclose() will close fd as well.
+// fp_ retains fd and gzclose() will close fd as well.
 #if HAVE_GZBUFFER
-        gzbuffer(fp_, 1<<17);
+        gzbuffer(fp_, 1 << 17);
 #endif
 #if HAVE_GZSETPARAMS
         gzsetparams(fp_, 2, Z_DEFAULT_STRATEGY);
 #endif
-      } else {
+      }
+      else {
         ::close(fd);
       }
     }
@@ -91,31 +92,22 @@ int GZipFile::onClose()
   return rv;
 }
 
-bool GZipFile::onSupportsColor()
-{
-  return false;
-}
+bool GZipFile::onSupportsColor() { return false; }
 
 bool GZipFile::isError() const
 {
   int rv = 0;
-  const char *e = gzerror(fp_, &rv);
+  const char* e = gzerror(fp_, &rv);
   return (e != nullptr && *e != 0) || rv != 0;
 }
 
-bool GZipFile::isEOF() const
-{
-  return gzeof(fp_);
-}
+bool GZipFile::isEOF() const { return gzeof(fp_); }
 
-bool GZipFile::isOpen() const
-{
-  return fp_;
-}
+bool GZipFile::isOpen() const { return fp_; }
 
 size_t GZipFile::onRead(void* ptr, size_t count)
 {
-  char *data = reinterpret_cast<char*>(ptr);
+  char* data = reinterpret_cast<char*>(ptr);
   size_t read = 0;
   while (count) {
     size_t len = std::min(count, (size_t)std::numeric_limits<unsigned>::max());
@@ -132,7 +124,7 @@ size_t GZipFile::onRead(void* ptr, size_t count)
 
 size_t GZipFile::onWrite(const void* ptr, size_t count)
 {
-  const char *data = reinterpret_cast<const char*>(ptr);
+  const char* data = reinterpret_cast<const char*>(ptr);
   size_t written = 0;
   while (count) {
     size_t len = std::min(count, (size_t)std::numeric_limits<unsigned>::max());
@@ -147,34 +139,30 @@ size_t GZipFile::onWrite(const void* ptr, size_t count)
   return written;
 }
 
-char* GZipFile::onGets(char* s, int size)
-{
-  return gzgets(fp_, s, size);
-}
+char* GZipFile::onGets(char* s, int size) { return gzgets(fp_, s, size); }
 
-int GZipFile::onFlush()
-{
-  return gzflush(fp_, 0);
-}
+int GZipFile::onFlush() { return gzflush(fp_, 0); }
 
 int GZipFile::onVprintf(const char* format, va_list va)
 {
   ssize_t len;
 
-  for(;;) {
+  for (;;) {
     len = vsnprintf(buf_, buflen_, format, va);
     // len does not include terminating null
-    if(len >= static_cast<ssize_t>(buflen_)) {
+    if (len >= static_cast<ssize_t>(buflen_)) {
       // Include terminate null
       ++len;
       // truncated; reallocate buf and try again
-      while(static_cast<ssize_t>(buflen_) < len) {
+      while (static_cast<ssize_t>(buflen_) < len) {
         buflen_ *= 2;
       }
       buf_ = reinterpret_cast<char*>(realloc(buf_, buflen_));
-    } else if(len < 0) {
+    }
+    else if (len < 0) {
       return len;
-    } else {
+    }
+    else {
       break;
     }
   }

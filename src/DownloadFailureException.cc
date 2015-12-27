@@ -41,26 +41,32 @@ std::shared_ptr<Exception> DownloadFailureException::copy() const
   return std::make_shared<DownloadFailureException>(*this);
 }
 
-DownloadFailureException::DownloadFailureException
-(const char* file, int line, const std::string& msg):
-  RecoverableException(file, line, msg) {}
+DownloadFailureException::DownloadFailureException(const char* file, int line,
+                                                   const std::string& msg)
+    : RecoverableException(file, line, msg)
+{
+}
 
-DownloadFailureException::DownloadFailureException
-(const char* file, int line, const std::string& msg,
- const Exception& cause):
-  RecoverableException(file, line, msg, cause) {}
+DownloadFailureException::DownloadFailureException(const char* file, int line,
+                                                   const std::string& msg,
+                                                   const Exception& cause)
+    : RecoverableException(file, line, msg, cause)
+{
+}
 
-DownloadFailureException::DownloadFailureException
-(const char* file, int line,
- const std::string& msg,
- error_code::Value code):
-  RecoverableException(file, line, msg, code) {}
+DownloadFailureException::DownloadFailureException(const char* file, int line,
+                                                   const std::string& msg,
+                                                   error_code::Value code)
+    : RecoverableException(file, line, msg, code)
+{
+}
 
-DownloadFailureException::DownloadFailureException
-(const char* file, int line,
- int errNum,
- const std::string& msg,
- error_code::Value code):
-  RecoverableException(file, line, errNum, msg, code) {}
+DownloadFailureException::DownloadFailureException(const char* file, int line,
+                                                   int errNum,
+                                                   const std::string& msg,
+                                                   error_code::Value code)
+    : RecoverableException(file, line, errNum, msg, code)
+{
+}
 
 } // namespace aria2

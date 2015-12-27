@@ -36,13 +36,13 @@
 
 namespace aria2 {
 
-CUIDCounter::CUIDCounter():count_(0) {}
+CUIDCounter::CUIDCounter() : count_(0) {}
 
 CUIDCounter::~CUIDCounter() {}
 
 cuid_t CUIDCounter::newID()
 {
-  if(count_ == INT64_MAX) {
+  if (count_ == INT64_MAX) {
     count_ = 0;
   }
   return ++count_;

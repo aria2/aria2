@@ -59,11 +59,12 @@ const size_t MAX_PEER_LIST_UPDATE = 100;
 } // namespace
 
 DefaultPeerStorage::DefaultPeerStorage()
-  : maxPeerListSize_(MAX_PEER_LIST_SIZE),
-    seederStateChoke_(make_unique<BtSeederStateChoke>()),
-    leecherStateChoke_(make_unique<BtLeecherStateChoke>()),
-    lastTransferStatMapUpdated_(Timer::zero())
-{}
+    : maxPeerListSize_(MAX_PEER_LIST_SIZE),
+      seederStateChoke_(make_unique<BtSeederStateChoke>()),
+      leecherStateChoke_(make_unique<BtLeecherStateChoke>()),
+      lastTransferStatMapUpdated_(Timer::zero())
+{
+}
 
 DefaultPeerStorage::~DefaultPeerStorage()
 {
@@ -77,8 +78,8 @@ size_t DefaultPeerStorage::countAllPeer() const
 
 bool DefaultPeerStorage::isPeerAlreadyAdded(const std::shared_ptr<Peer>& peer)
 {
-  return uniqPeers_.count(std::make_pair(peer->getIPAddress(),
-                                         peer->getOrigPort()));
+  return uniqPeers_.count(
+      std::make_pair(peer->getIPAddress(), peer->getOrigPort()));
 }
 
 void DefaultPeerStorage::addUniqPeer(const std::shared_ptr<Peer>& peer)
@@ -88,20 +89,20 @@ void DefaultPeerStorage::addUniqPeer(const std::shared_ptr<Peer>& peer)
 
 bool DefaultPeerStorage::addPeer(const std::shared_ptr<Peer>& peer)
 {
-  if(isPeerAlreadyAdded(peer)) {
+  if (isPeerAlreadyAdded(peer)) {
     A2_LOG_DEBUG(fmt("Adding %s:%u is rejected because it has been already"
                      " added.",
                      peer->getIPAddress().c_str(), peer->getPort()));
     return false;
   }
-  if(isBadPeer(peer->getIPAddress())) {
+  if (isBadPeer(peer->getIPAddress())) {
     A2_LOG_DEBUG(fmt("Adding %s:%u is rejected because it is marked bad.",
                      peer->getIPAddress().c_str(), peer->getPort()));
     return false;
   }
   const size_t peerListSize = unusedPeers_.size();
-  if(peerListSize >= maxPeerListSize_) {
-    deleteUnusedPeer(peerListSize-maxPeerListSize_+1);
+  if (peerListSize >= maxPeerListSize_) {
+    deleteUnusedPeer(peerListSize - maxPeerListSize_ + 1);
   }
   unusedPeers_.push_front(peer);
   addUniqPeer(peer);
@@ -110,34 +111,36 @@ bool DefaultPeerStorage::addPeer(const std::shared_ptr<Peer>& peer)
   return true;
 }
 
-void DefaultPeerStorage::addPeer
-(const std::vector<std::shared_ptr<Peer>>& peers)
+void DefaultPeerStorage::addPeer(
+    const std::vector<std::shared_ptr<Peer>>& peers)
 {
   size_t added = 0;
   size_t addMax = std::min(maxPeerListSize_, MAX_PEER_LIST_UPDATE);
-  for(auto itr = std::begin(peers), eoi = std::end(peers);
-      itr != eoi && added < addMax; ++itr) {
+  for (auto itr = std::begin(peers), eoi = std::end(peers);
+       itr != eoi && added < addMax; ++itr) {
     auto& peer = *itr;
-    if(isPeerAlreadyAdded(peer)) {
+    if (isPeerAlreadyAdded(peer)) {
       A2_LOG_DEBUG(fmt("Adding %s:%u is rejected because it has been already"
                        " added.",
                        peer->getIPAddress().c_str(), peer->getPort()));
       continue;
-    } else if(isBadPeer(peer->getIPAddress())) {
+    }
+    else if (isBadPeer(peer->getIPAddress())) {
       A2_LOG_DEBUG(fmt("Adding %s:%u is rejected because it is marked bad.",
                        peer->getIPAddress().c_str(), peer->getPort()));
       continue;
-    } else {
-      A2_LOG_DEBUG(fmt(MSG_ADDING_PEER,
-                       peer->getIPAddress().c_str(), peer->getPort()));
+    }
+    else {
+      A2_LOG_DEBUG(
+          fmt(MSG_ADDING_PEER, peer->getIPAddress().c_str(), peer->getPort()));
     }
     unusedPeers_.push_front(peer);
     addUniqPeer(peer);
     ++added;
   }
   const size_t peerListSize = unusedPeers_.size();
-  if(peerListSize > maxPeerListSize_) {
-    deleteUnusedPeer(peerListSize-maxPeerListSize_);
+  if (peerListSize > maxPeerListSize_) {
+    deleteUnusedPeer(peerListSize - maxPeerListSize_);
   }
   A2_LOG_DEBUG(fmt("Now unused peer list contains %lu peers",
                    static_cast<unsigned long>(unusedPeers_.size())));
@@ -147,16 +150,16 @@ void DefaultPeerStorage::addDroppedPeer(const std::shared_ptr<Peer>& peer)
 {
   // Make sure that no duplicated peer exists in droppedPeers_. If
   // exists, erase older one.
-  for(auto i = std::begin(droppedPeers_), eoi = std::end(droppedPeers_);
-      i != eoi; ++i) {
-    if((*i)->getIPAddress() == peer->getIPAddress() &&
-       (*i)->getPort() == peer->getPort()) {
+  for (auto i = std::begin(droppedPeers_), eoi = std::end(droppedPeers_);
+       i != eoi; ++i) {
+    if ((*i)->getIPAddress() == peer->getIPAddress() &&
+        (*i)->getPort() == peer->getPort()) {
       droppedPeers_.erase(i);
       break;
     }
   }
   droppedPeers_.push_front(peer);
-  if(droppedPeers_.size() > 50) {
+  if (droppedPeers_.size() > 50) {
     droppedPeers_.pop_back();
   }
 }
@@ -166,28 +169,23 @@ const std::deque<std::shared_ptr<Peer>>& DefaultPeerStorage::getUnusedPeers()
   return unusedPeers_;
 }
 
-const PeerSet& DefaultPeerStorage::getUsedPeers()
-{
-  return usedPeers_;
-}
+const PeerSet& DefaultPeerStorage::getUsedPeers() { return usedPeers_; }
 
 const std::deque<std::shared_ptr<Peer>>& DefaultPeerStorage::getDroppedPeers()
 {
   return droppedPeers_;
 }
 
-bool DefaultPeerStorage::isPeerAvailable() {
-  return !unusedPeers_.empty();
-}
+bool DefaultPeerStorage::isPeerAvailable() { return !unusedPeers_.empty(); }
 
 bool DefaultPeerStorage::isBadPeer(const std::string& ipaddr)
 {
   auto i = badPeers_.find(ipaddr);
-  if(i == std::end(badPeers_)) {
+  if (i == std::end(badPeers_)) {
     return false;
   }
 
-  if((*i).second <= global::wallclock()) {
+  if ((*i).second <= global::wallclock()) {
     badPeers_.erase(i);
     return false;
   }
@@ -197,13 +195,14 @@ bool DefaultPeerStorage::isBadPeer(const std::string& ipaddr)
 
 void DefaultPeerStorage::addBadPeer(const std::string& ipaddr)
 {
-  if(lastBadPeerCleaned_.difference(global::wallclock()) >= 1_h) {
-    for(auto i = std::begin(badPeers_); i != std::end(badPeers_);) {
-      if((*i).second <= global::wallclock()) {
+  if (lastBadPeerCleaned_.difference(global::wallclock()) >= 1_h) {
+    for (auto i = std::begin(badPeers_); i != std::end(badPeers_);) {
+      if ((*i).second <= global::wallclock()) {
         A2_LOG_DEBUG(fmt("Purge %s from bad peer", (*i).first.c_str()));
         badPeers_.erase(i++);
         // badPeers_.end() will not be invalidated.
-      } else {
+      }
+      else {
         ++i;
       }
     }
@@ -218,8 +217,9 @@ void DefaultPeerStorage::addBadPeer(const std::string& ipaddr)
   badPeers_[ipaddr] = std::move(t);
 }
 
-void DefaultPeerStorage::deleteUnusedPeer(size_t delSize) {
-  for(; delSize > 0 && !unusedPeers_.empty(); --delSize) {
+void DefaultPeerStorage::deleteUnusedPeer(size_t delSize)
+{
+  for (; delSize > 0 && !unusedPeers_.empty(); --delSize) {
     onErasingPeer(unusedPeers_.back());
     unusedPeers_.pop_back();
   }
@@ -227,15 +227,15 @@ void DefaultPeerStorage::deleteUnusedPeer(size_t delSize) {
 
 std::shared_ptr<Peer> DefaultPeerStorage::checkoutPeer(cuid_t cuid)
 {
-  if(!isPeerAvailable()) {
+  if (!isPeerAvailable()) {
     return nullptr;
   }
   auto peer = unusedPeers_.front();
   unusedPeers_.pop_front();
-  if(peer->usedBy() != 0) {
+  if (peer->usedBy() != 0) {
     A2_LOG_WARN(fmt("CUID#%" PRId64 " is already set for peer %s:%u",
-                    peer->usedBy(),
-                    peer->getIPAddress().c_str(), peer->getOrigPort()));
+                    peer->usedBy(), peer->getIPAddress().c_str(),
+                    peer->getOrigPort()));
   }
   peer->usedBy(cuid);
   usedPeers_.insert(peer);
@@ -247,20 +247,19 @@ std::shared_ptr<Peer> DefaultPeerStorage::checkoutPeer(cuid_t cuid)
 
 void DefaultPeerStorage::onErasingPeer(const std::shared_ptr<Peer>& peer)
 {
-  uniqPeers_.erase(std::make_pair(peer->getIPAddress(),
-                                  peer->getOrigPort()));
+  uniqPeers_.erase(std::make_pair(peer->getIPAddress(), peer->getOrigPort()));
 }
 
 void DefaultPeerStorage::onReturningPeer(const std::shared_ptr<Peer>& peer)
 {
-  if(peer->isActive()) {
-    if(peer->isDisconnectedGracefully() && !peer->isIncomingPeer()) {
+  if (peer->isActive()) {
+    if (peer->isDisconnectedGracefully() && !peer->isIncomingPeer()) {
       peer->startDrop();
       addDroppedPeer(peer);
     }
     // Execute choking algorithm if unchoked and interested peer is
     // disconnected.
-    if(!peer->amChoking() && peer->peerInterested()) {
+    if (!peer->amChoking() && peer->peerInterested()) {
       executeChoke();
     }
   }
@@ -272,10 +271,11 @@ void DefaultPeerStorage::returnPeer(const std::shared_ptr<Peer>& peer)
   A2_LOG_DEBUG(fmt("Peer %s:%u returned from CUID#%" PRId64,
                    peer->getIPAddress().c_str(), peer->getOrigPort(),
                    peer->usedBy()));
-  if(usedPeers_.erase(peer)) {
+  if (usedPeers_.erase(peer)) {
     onReturningPeer(peer);
     onErasingPeer(peer);
-  } else {
+  }
+  else {
     A2_LOG_WARN(fmt("Cannot find peer %s:%u in usedPeers_",
                     peer->getIPAddress().c_str(), peer->getOrigPort()));
   }
@@ -284,30 +284,34 @@ void DefaultPeerStorage::returnPeer(const std::shared_ptr<Peer>& peer)
 bool DefaultPeerStorage::chokeRoundIntervalElapsed()
 {
   constexpr auto CHOKE_ROUND_INTERVAL = 10_s;
-  if(pieceStorage_->downloadFinished()) {
-    return seederStateChoke_->getLastRound().
-      difference(global::wallclock()) >= CHOKE_ROUND_INTERVAL;
-  } else {
-    return leecherStateChoke_->getLastRound().
-      difference(global::wallclock()) >= CHOKE_ROUND_INTERVAL;
+  if (pieceStorage_->downloadFinished()) {
+    return seederStateChoke_->getLastRound().difference(global::wallclock()) >=
+           CHOKE_ROUND_INTERVAL;
+  }
+  else {
+    return leecherStateChoke_->getLastRound().difference(global::wallclock()) >=
+           CHOKE_ROUND_INTERVAL;
   }
 }
 
 void DefaultPeerStorage::executeChoke()
 {
-  if(pieceStorage_->downloadFinished()) {
+  if (pieceStorage_->downloadFinished()) {
     return seederStateChoke_->executeChoke(usedPeers_);
-  } else {
+  }
+  else {
     return leecherStateChoke_->executeChoke(usedPeers_);
   }
 }
 
-void DefaultPeerStorage::setPieceStorage(const std::shared_ptr<PieceStorage>& ps)
+void DefaultPeerStorage::setPieceStorage(
+    const std::shared_ptr<PieceStorage>& ps)
 {
   pieceStorage_ = ps;
 }
 
-void DefaultPeerStorage::setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime)
+void DefaultPeerStorage::setBtRuntime(
+    const std::shared_ptr<BtRuntime>& btRuntime)
 {
   btRuntime_ = btRuntime;
 }

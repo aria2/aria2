@@ -44,7 +44,7 @@
 
 namespace aria2 {
 
-class Exception:public std::exception {
+class Exception : public std::exception {
 private:
   const char* file_;
 
@@ -58,6 +58,7 @@ private:
   // Exception that this object wraps. Normally this cause_ is the
   // root cause of this exception.
   std::shared_ptr<Exception> cause_;
+
 protected:
   virtual std::shared_ptr<Exception> copy() const = 0;
 
@@ -65,8 +66,7 @@ public:
   Exception(const char* file, int line, const std::string& msg);
 
   Exception(const char* file, int line, const std::string& msg,
-            error_code::Value errorCode,
-            const Exception& cause);
+            error_code::Value errorCode, const Exception& cause);
   // errorCode_ is initializedwith cause.errorCode_.
   Exception(const char* file, int line, const std::string& msg,
             const Exception& cause);
@@ -85,15 +85,9 @@ public:
 
   std::string stackTrace() const;
 
-  int getErrNum() const
-  {
-    return errNum_;
-  }
+  int getErrNum() const { return errNum_; }
 
-  error_code::Value getErrorCode() const
-  {
-    return errorCode_;
-  }
+  error_code::Value getErrorCode() const { return errorCode_; }
 };
 
 } // namespace aria2

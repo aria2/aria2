@@ -10,7 +10,7 @@
 
 namespace aria2 {
 
-class ValueBaseTest:public CppUnit::TestFixture {
+class ValueBaseTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(ValueBaseTest);
   CPPUNIT_TEST(testString);
@@ -20,6 +20,7 @@ class ValueBaseTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testListIter);
   CPPUNIT_TEST(testDowncast);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -33,7 +34,6 @@ public:
   void testDowncast();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(ValueBaseTest);
 
 void ValueBaseTest::testString()
@@ -41,10 +41,10 @@ void ValueBaseTest::testString()
   String s(std::string("aria2"));
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"), s.s());
 
-  unsigned char dataWithNull[] = { 0xf0, '\0', 0x0f };
+  unsigned char dataWithNull[] = {0xf0, '\0', 0x0f};
   String sWithNull(dataWithNull, sizeof(dataWithNull));
-  CPPUNIT_ASSERT(memcmp(dataWithNull, sWithNull.s().c_str(),
-                        sizeof(dataWithNull)) == 0);
+  CPPUNIT_ASSERT(
+      memcmp(dataWithNull, sWithNull.s().c_str(), sizeof(dataWithNull)) == 0);
 
   String zero("");
   CPPUNIT_ASSERT_EQUAL(std::string(""), zero.s());
@@ -52,7 +52,7 @@ void ValueBaseTest::testString()
   String z;
   CPPUNIT_ASSERT_EQUAL(std::string(""), z.s());
 
-  const unsigned char uc[] = { 0x08, 0x19, 0x2a, 0x3b };
+  const unsigned char uc[] = {0x08, 0x19, 0x2a, 0x3b};
   String data(uc, sizeof(uc));
   CPPUNIT_ASSERT_EQUAL(util::toHex(uc, sizeof(uc)),
                        util::toHex(data.uc(), data.s().size()));
@@ -95,8 +95,7 @@ void ValueBaseTest::testDict()
   CPPUNIT_ASSERT_EQUAL(static_cast<Integer::ValueType>(7),
                        downcast<Integer>(dict["ki"])->i());
   CPPUNIT_ASSERT(dict.containsKey("ks"));
-  CPPUNIT_ASSERT_EQUAL(std::string("abc"),
-                       downcast<String>(dict["ks"])->s());
+  CPPUNIT_ASSERT_EQUAL(std::string("abc"), downcast<String>(dict["ks"])->s());
 
   CPPUNIT_ASSERT(!dict["kn"]); // This does not adds kn key
   CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), dict.size());
@@ -160,9 +159,7 @@ void ValueBaseTest::testList()
 void ValueBaseTest::testListIter()
 {
   List list;
-  list << String::g("alpha2")
-       << String::g("charlie")
-       << String::g("bravo")
+  list << String::g("alpha2") << String::g("charlie") << String::g("bravo")
        << String::g("alpha");
 
   List::ValueType::iterator i = list.begin();

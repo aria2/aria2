@@ -45,6 +45,7 @@ public:
   static const unsigned char* BT_PSTR;
   static const size_t RESERVED_LENGTH = 8;
   static const size_t MESSAGE_LENGTH = 68;
+
 private:
   uint8_t pstrlen_;
   unsigned char* pstr_;
@@ -52,29 +53,32 @@ private:
   unsigned char* infoHash_;
   unsigned char* peerId_;
   void init();
+
 public:
   BtHandshakeMessage();
   /**
    * infoHash must be 20 byte length.
    * peerId must be 20 byte length.
    */
-  BtHandshakeMessage(const unsigned char* infoHash, const unsigned char* peerId);
+  BtHandshakeMessage(const unsigned char* infoHash,
+                     const unsigned char* peerId);
 
-  static std::unique_ptr<BtHandshakeMessage>
-  create(const unsigned char* data, size_t dataLength);
+  static std::unique_ptr<BtHandshakeMessage> create(const unsigned char* data,
+                                                    size_t dataLength);
 
-  virtual ~BtHandshakeMessage() {
-    delete [] pstr_;
-    delete [] reserved_;
-    delete [] infoHash_;
-    delete [] peerId_;
+  virtual ~BtHandshakeMessage()
+  {
+    delete[] pstr_;
+    delete[] reserved_;
+    delete[] infoHash_;
+    delete[] peerId_;
   }
 
   static const uint8_t ID = INT8_MAX;
 
   static const char NAME[];
 
-  virtual void doReceivedAction() CXX11_OVERRIDE {};
+  virtual void doReceivedAction() CXX11_OVERRIDE{};
 
   virtual unsigned char* createMessage() CXX11_OVERRIDE;
 
@@ -90,34 +94,25 @@ public:
 
   void setDHTEnabled(bool enabled)
   {
-    if(enabled) {
+    if (enabled) {
       reserved_[7] |= 0x01u;
-    } else {
+    }
+    else {
       reserved_[7] &= ~0x01u;
     }
   }
 
-  uint8_t getPstrlen() const {
-    return pstrlen_;
-  }
+  uint8_t getPstrlen() const { return pstrlen_; }
 
-  const unsigned char* getPstr() const {
-    return pstr_;
-  }
+  const unsigned char* getPstr() const { return pstr_; }
 
-  const unsigned char* getReserved() const {
-    return reserved_;
-  }
+  const unsigned char* getReserved() const { return reserved_; }
 
-  const unsigned char* getInfoHash() const {
-    return infoHash_;
-  }
+  const unsigned char* getInfoHash() const { return infoHash_; }
 
   void setInfoHash(const unsigned char* infoHash);
 
-  const unsigned char* getPeerId() const {
-    return peerId_;
-  }
+  const unsigned char* getPeerId() const { return peerId_; }
 
   void setPeerId(const unsigned char* peerId);
 };

@@ -47,17 +47,16 @@
 
 namespace aria2 {
 
-DHTBucketRefreshTask::DHTBucketRefreshTask():
-  forceRefresh_(false) {}
+DHTBucketRefreshTask::DHTBucketRefreshTask() : forceRefresh_(false) {}
 
 DHTBucketRefreshTask::~DHTBucketRefreshTask() {}
 
 void DHTBucketRefreshTask::startup()
 {
-  std::vector<std::shared_ptr<DHTBucket> > buckets;
+  std::vector<std::shared_ptr<DHTBucket>> buckets;
   getRoutingTable()->getBuckets(buckets);
   for (auto& b : buckets) {
-    if(!forceRefresh_ && ! b->needsRefresh()) {
+    if (!forceRefresh_ && !b->needsRefresh()) {
       continue;
     }
     b->notifyUpdate();

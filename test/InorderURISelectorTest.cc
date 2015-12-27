@@ -9,11 +9,12 @@
 
 namespace aria2 {
 
-class InorderURISelectorTest:public CppUnit::TestFixture {
+class InorderURISelectorTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(InorderURISelectorTest);
   CPPUNIT_TEST(testSelect);
   CPPUNIT_TEST_SUITE_END();
+
 private:
   FileEntry fileEntry_;
 
@@ -22,11 +23,8 @@ private:
 public:
   void setUp()
   {
-    fileEntry_.setUris({
-      "http://alpha/file",
-      "ftp://alpha/file",
-      "http://bravo/file"
-    });
+    fileEntry_.setUris(
+        {"http://alpha/file", "ftp://alpha/file", "http://bravo/file"});
 
     sel.reset(new InorderURISelector());
   }
@@ -36,12 +34,11 @@ public:
   void testSelect();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(InorderURISelectorTest);
 
 void InorderURISelectorTest::testSelect()
 {
-  std::vector<std::pair<size_t, std::string> > usedHosts;
+  std::vector<std::pair<size_t, std::string>> usedHosts;
   CPPUNIT_ASSERT_EQUAL(std::string("http://alpha/file"),
                        sel->select(&fileEntry_, usedHosts));
   CPPUNIT_ASSERT_EQUAL(std::string("ftp://alpha/file"),

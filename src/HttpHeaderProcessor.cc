@@ -75,18 +75,19 @@ enum {
 } // namespace
 
 HttpHeaderProcessor::HttpHeaderProcessor(ParserMode mode)
-  : mode_(mode),
-    state_(mode == CLIENT_PARSER ? PREV_RES_VERSION : PREV_METHOD),
-    lastBytesProcessed_(0),
-    lastFieldHdKey_(HttpHeader::MAX_INTERESTING_HEADER),
-    result_(new HttpHeader())
-{}
+    : mode_(mode),
+      state_(mode == CLIENT_PARSER ? PREV_RES_VERSION : PREV_METHOD),
+      lastBytesProcessed_(0),
+      lastFieldHdKey_(HttpHeader::MAX_INTERESTING_HEADER),
+      result_(new HttpHeader())
+{
+}
 
 HttpHeaderProcessor::~HttpHeaderProcessor() {}
 
 namespace {
-size_t
-getToken(std::string& buf, const unsigned char* data, size_t length, size_t off)
+size_t getToken(std::string& buf, const unsigned char* data, size_t length,
+                size_t off)
 {
   size_t j = off;
   while (j < length && !util::isLws(data[j]) && !util::isCRLF(data[j])) {
@@ -98,10 +99,8 @@ getToken(std::string& buf, const unsigned char* data, size_t length, size_t off)
 } // namespace
 
 namespace {
-size_t getFieldNameToken(std::string& buf,
-                         const unsigned char* data,
-                         size_t length,
-                         size_t off)
+size_t getFieldNameToken(std::string& buf, const unsigned char* data,
+                         size_t length, size_t off)
 {
   size_t j = off;
   while (j < length && data[j] != ':' && !util::isLws(data[j]) &&
@@ -114,8 +113,8 @@ size_t getFieldNameToken(std::string& buf,
 } // namespace
 
 namespace {
-size_t
-getText(std::string& buf, const unsigned char* data, size_t length, size_t off)
+size_t getText(std::string& buf, const unsigned char* data, size_t length,
+               size_t off)
 {
   size_t j = off;
   while (j < length && !util::isCRLF(data[j])) {
@@ -127,9 +126,7 @@ getText(std::string& buf, const unsigned char* data, size_t length, size_t off)
 } // namespace
 
 namespace {
-size_t ignoreText(std::string& buf,
-                  const unsigned char* data,
-                  size_t length,
+size_t ignoreText(std::string& buf, const unsigned char* data, size_t length,
                   size_t off)
 {
   size_t j = off;
@@ -493,9 +490,6 @@ std::unique_ptr<HttpHeader> HttpHeaderProcessor::getResult()
   return std::move(result_);
 }
 
-std::string HttpHeaderProcessor::getHeaderString() const
-{
-  return headers_;
-}
+std::string HttpHeaderProcessor::getHeaderString() const { return headers_; }
 
 } // namespace aria2

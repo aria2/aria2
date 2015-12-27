@@ -45,30 +45,24 @@
 
 namespace aria2 {
 
-Peer::Peer(std::string ipaddr, uint16_t port, bool incoming):
-  ipaddr_(std::move(ipaddr)),
-  port_(port),
-  origPort_(port),
-  cuid_(0),
-  firstContactTime_(global::wallclock()),
-  dropStartTime_(Timer::zero()),
-  seeder_(false),
-  incoming_(incoming),
-  localPeer_(false),
-  disconnectedGracefully_(false)
+Peer::Peer(std::string ipaddr, uint16_t port, bool incoming)
+    : ipaddr_(std::move(ipaddr)),
+      port_(port),
+      origPort_(port),
+      cuid_(0),
+      firstContactTime_(global::wallclock()),
+      dropStartTime_(Timer::zero()),
+      seeder_(false),
+      incoming_(incoming),
+      localPeer_(false),
+      disconnectedGracefully_(false)
 {
   memset(peerId_, 0, PEER_ID_LENGTH);
 }
 
-Peer::~Peer()
-{
-  releaseSessionResource();
-}
+Peer::~Peer() { releaseSessionResource(); }
 
-void Peer::usedBy(cuid_t cuid)
-{
-  cuid_ = cuid;
-}
+void Peer::usedBy(cuid_t cuid) { cuid_ = cuid; }
 
 void Peer::allocateSessionResource(int32_t pieceLength, int64_t totalLength)
 {
@@ -83,10 +77,7 @@ void Peer::reconfigureSessionResource(int32_t pieceLength, int64_t totalLength)
   res_->reconfigure(pieceLength, totalLength);
 }
 
-void Peer::releaseSessionResource()
-{
-  res_.reset();
-}
+void Peer::releaseSessionResource() { res_.reset(); }
 
 void Peer::setPeerId(const unsigned char* peerId)
 {
@@ -201,7 +192,8 @@ void Peer::updateSeeder()
   seeder_ = res_->hasAllPieces();
 }
 
-void Peer::updateBitfield(size_t index, int operation) {
+void Peer::updateBitfield(size_t index, int operation)
+{
   assert(res_);
   res_->updateBitfield(index, operation);
   updateSeeder();
@@ -250,12 +242,14 @@ size_t Peer::getBitfieldLength() const
   return res_->getBitfieldLength();
 }
 
-bool Peer::shouldBeChoking() const {
+bool Peer::shouldBeChoking() const
+{
   assert(res_);
   return res_->shouldBeChoking();
 }
 
-bool Peer::hasPiece(size_t index) const {
+bool Peer::hasPiece(size_t index) const
+{
   assert(res_);
   return res_->hasPiece(index);
 }
@@ -308,16 +302,14 @@ void Peer::addAmAllowedIndex(size_t index)
   res_->addAmAllowedIndex(index);
 }
 
-void Peer::setAllBitfield() {
+void Peer::setAllBitfield()
+{
   assert(res_);
   res_->markSeeder();
   updateSeeder();
 }
 
-void Peer::startDrop()
-{
-  dropStartTime_ = global::wallclock();
-}
+void Peer::startDrop() { dropStartTime_ = global::wallclock(); }
 
 uint8_t Peer::getExtensionMessageID(int key) const
 {
@@ -379,15 +371,9 @@ int64_t Peer::getCompletedLength() const
   return res_->getCompletedLength();
 }
 
-void Peer::setIncomingPeer(bool incoming)
-{
-  incoming_ = incoming;
-}
+void Peer::setIncomingPeer(bool incoming) { incoming_ = incoming; }
 
-void Peer::setFirstContactTime(const Timer& time)
-{
-  firstContactTime_ = time;
-}
+void Peer::setFirstContactTime(const Timer& time) { firstContactTime_ = time; }
 
 void Peer::setBtMessageDispatcher(BtMessageDispatcher* dpt)
 {

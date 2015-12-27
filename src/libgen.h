@@ -42,13 +42,13 @@ extern "C" {
 
 #ifdef __MINGW32__
 
-char *basename (char *path);
-char *dirname (char *path);
+char* basename(char* path);
+char* dirname(char* path);
 
 #else
 
-char *basename (const char *path);
-char *dirname (const char *path);
+char* basename(const char* path);
+char* dirname(const char* path);
 
 #endif // __MINGW32__
 
@@ -57,4 +57,3 @@ char *dirname (const char *path);
 #endif /* __cplusplus */
 
 #endif /* not _D_LIBGEN_H */
-

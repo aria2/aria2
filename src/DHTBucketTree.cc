@@ -43,26 +43,21 @@
 
 namespace aria2 {
 
-DHTBucketTreeNode::DHTBucketTreeNode
-(std::unique_ptr<DHTBucketTreeNode> left,
- std::unique_ptr<DHTBucketTreeNode> right)
-  : parent_(nullptr),
-    left_(std::move(left)),
-    right_(std::move(right))
+DHTBucketTreeNode::DHTBucketTreeNode(std::unique_ptr<DHTBucketTreeNode> left,
+                                     std::unique_ptr<DHTBucketTreeNode> right)
+    : parent_(nullptr), left_(std::move(left)), right_(std::move(right))
 {
   resetRelation();
 }
 
 DHTBucketTreeNode::DHTBucketTreeNode(std::shared_ptr<DHTBucket> bucket)
-  : parent_(nullptr),
-    bucket_(std::move(bucket))
+    : parent_(nullptr), bucket_(std::move(bucket))
 {
   memcpy(minId_, bucket_->getMinID(), DHT_ID_LENGTH);
   memcpy(maxId_, bucket_->getMaxID(), DHT_ID_LENGTH);
 }
 
-DHTBucketTreeNode::~DHTBucketTreeNode()
-{}
+DHTBucketTreeNode::~DHTBucketTreeNode() {}
 
 void DHTBucketTreeNode::resetRelation()
 {
@@ -74,23 +69,23 @@ void DHTBucketTreeNode::resetRelation()
 
 DHTBucketTreeNode* DHTBucketTreeNode::dig(const unsigned char* key)
 {
-  if(leaf()) {
+  if (leaf()) {
     return nullptr;
   }
-  if(left_->isInRange(key)) {
+  if (left_->isInRange(key)) {
     return left_.get();
-  } else {
+  }
+  else {
     return right_.get();
   }
 }
 
 bool DHTBucketTreeNode::isInRange(const unsigned char* key) const
 {
-  return
-    !std::lexicographical_compare(&key[0], &key[DHT_ID_LENGTH],
-                                  &minId_[0], &minId_[DHT_ID_LENGTH]) &&
-    !std::lexicographical_compare(&maxId_[0], &maxId_[DHT_ID_LENGTH],
-                                  &key[0], &key[DHT_ID_LENGTH]);
+  return !std::lexicographical_compare(&key[0], &key[DHT_ID_LENGTH], &minId_[0],
+                                       &minId_[DHT_ID_LENGTH]) &&
+         !std::lexicographical_compare(&maxId_[0], &maxId_[DHT_ID_LENGTH],
+                                       &key[0], &key[DHT_ID_LENGTH]);
 }
 
 void DHTBucketTreeNode::split()
@@ -103,120 +98,124 @@ void DHTBucketTreeNode::split()
 
 namespace dht {
 
-DHTBucketTreeNode* findTreeNodeFor
-(DHTBucketTreeNode* root, const unsigned char* key)
+DHTBucketTreeNode* findTreeNodeFor(DHTBucketTreeNode* root,
+                                   const unsigned char* key)
 {
-  if(root->leaf()) {
+  if (root->leaf()) {
     return root;
-  } else {
+  }
+  else {
     return findTreeNodeFor(root->dig(key), key);
   }
 }
 
-std::shared_ptr<DHTBucket> findBucketFor
-(DHTBucketTreeNode* root, const unsigned char* key)
+std::shared_ptr<DHTBucket> findBucketFor(DHTBucketTreeNode* root,
+                                         const unsigned char* key)
 {
   DHTBucketTreeNode* leaf = findTreeNodeFor(root, key);
   return leaf->getBucket();
 }
 
 namespace {
-void collectNodes
-(std::vector<std::shared_ptr<DHTNode> >& nodes,
- const std::shared_ptr<DHTBucket>& bucket)
+void collectNodes(std::vector<std::shared_ptr<DHTNode>>& nodes,
+                  const std::shared_ptr<DHTBucket>& bucket)
 {
-  std::vector<std::shared_ptr<DHTNode> > goodNodes;
+  std::vector<std::shared_ptr<DHTNode>> goodNodes;
   bucket->getGoodNodes(goodNodes);
   nodes.insert(nodes.end(), goodNodes.begin(), goodNodes.end());
 }
 } // namespace
 
 namespace {
-void collectDownwardLeftFirst
-(std::vector<std::shared_ptr<DHTNode> >& nodes,  DHTBucketTreeNode* tnode)
+void collectDownwardLeftFirst(std::vector<std::shared_ptr<DHTNode>>& nodes,
+                              DHTBucketTreeNode* tnode)
 {
-  if(tnode->leaf()) {
+  if (tnode->leaf()) {
     collectNodes(nodes, tnode->getBucket());
-  } else {
+  }
+  else {
     collectDownwardLeftFirst(nodes, tnode->getLeft());
-    if(nodes.size() < DHTBucket::K) {
+    if (nodes.size() < DHTBucket::K) {
       collectDownwardLeftFirst(nodes, tnode->getRight());
     }
   }
 }
-} //namespace
+} // namespace
 
 namespace {
-void collectDownwardRightFirst
-(std::vector<std::shared_ptr<DHTNode> >& nodes,  DHTBucketTreeNode* tnode)
+void collectDownwardRightFirst(std::vector<std::shared_ptr<DHTNode>>& nodes,
+                               DHTBucketTreeNode* tnode)
 {
-  if(tnode->leaf()) {
+  if (tnode->leaf()) {
     collectNodes(nodes, tnode->getBucket());
-  } else {
+  }
+  else {
     collectDownwardRightFirst(nodes, tnode->getRight());
-    if(nodes.size() < DHTBucket::K) {
+    if (nodes.size() < DHTBucket::K) {
       collectDownwardRightFirst(nodes, tnode->getLeft());
     }
   }
 }
-} //namespace
+} // namespace
 
 namespace {
-void collectUpward
-(std::vector<std::shared_ptr<DHTNode> >& nodes, DHTBucketTreeNode* from)
+void collectUpward(std::vector<std::shared_ptr<DHTNode>>& nodes,
+                   DHTBucketTreeNode* from)
 {
-  while(1) {
+  while (1) {
     DHTBucketTreeNode* parent = from->getParent();
-    if(!parent) {
+    if (!parent) {
       break;
     }
-    if(parent->getLeft() == from) {
+    if (parent->getLeft() == from) {
       collectNodes(nodes, parent->getRight()->getBucket());
-    } else {
+    }
+    else {
       collectNodes(nodes, parent->getLeft()->getBucket());
     }
     from = parent;
-    if(DHTBucket::K <= nodes.size()) {
+    if (DHTBucket::K <= nodes.size()) {
       break;
     }
   }
 }
 } // namespace
 
-void findClosestKNodes
-(std::vector<std::shared_ptr<DHTNode> >& nodes,
- DHTBucketTreeNode* root,
- const unsigned char* key)
+void findClosestKNodes(std::vector<std::shared_ptr<DHTNode>>& nodes,
+                       DHTBucketTreeNode* root, const unsigned char* key)
 {
   size_t nodesSize = nodes.size();
-  if(DHTBucket::K <= nodesSize) {
+  if (DHTBucket::K <= nodesSize) {
     return;
   }
   DHTBucketTreeNode* leaf = findTreeNodeFor(root, key);
-  if(leaf == root) {
+  if (leaf == root) {
     collectNodes(nodes, leaf->getBucket());
-  } else {
+  }
+  else {
     DHTBucketTreeNode* parent = leaf->getParent();
-    if(parent->getLeft() == leaf) {
+    if (parent->getLeft() == leaf) {
       collectDownwardLeftFirst(nodes, parent);
-    } else {
+    }
+    else {
       collectDownwardRightFirst(nodes, parent);
     }
-    if(nodes.size() < DHTBucket::K) {
+    if (nodes.size() < DHTBucket::K) {
       collectUpward(nodes, parent);
     }
   }
-  if(DHTBucket::K < nodes.size()) {
-    nodes.erase(nodes.begin()+DHTBucket::K, nodes.end());
+  if (DHTBucket::K < nodes.size()) {
+    nodes.erase(nodes.begin() + DHTBucket::K, nodes.end());
   }
 }
 
-void enumerateBucket
-(std::vector<std::shared_ptr<DHTBucket> >& buckets,  DHTBucketTreeNode* root)
+void enumerateBucket(std::vector<std::shared_ptr<DHTBucket>>& buckets,
+                     DHTBucketTreeNode* root)
 {
-  if(root->leaf()) {
+  if (root->leaf()) {
     buckets.push_back(root->getBucket());
-  } else {
+  }
+  else {
     enumerateBucket(buckets, root->getLeft());
     enumerateBucket(buckets, root->getRight());
   }

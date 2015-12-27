@@ -75,6 +75,7 @@ public:
   // node is reset so this node becomes internal node after this
   // call.
   void split();
+
 private:
   // Do not allow copying
   DHTBucketTreeNode(const DHTBucketTreeNode&);
@@ -95,27 +96,25 @@ namespace dht {
 
 // Returns leaf node where key fits between node's min and max ID
 // range.
-DHTBucketTreeNode* findTreeNodeFor
-(DHTBucketTreeNode* root, const unsigned char* key);
+DHTBucketTreeNode* findTreeNodeFor(DHTBucketTreeNode* root,
+                                   const unsigned char* key);
 
 // Returns bucket where key fits between bucket's min and max ID
 // range. This function first use findTreeNodeFor and returns its
 // bucket_.
-std::shared_ptr<DHTBucket> findBucketFor
-(DHTBucketTreeNode* root, const unsigned char* key);
+std::shared_ptr<DHTBucket> findBucketFor(DHTBucketTreeNode* root,
+                                         const unsigned char* key);
 
 // Stores most closest K nodes against key in nodes. K is
 // DHTBucket::K. This function may returns less than K nodes because
 // the routing tree contains less than K nodes. The order of nodes is
 // arbitrary.  Caller must pass empty nodes.
-void findClosestKNodes
-(std::vector<std::shared_ptr<DHTNode> >& nodes,
- DHTBucketTreeNode* root,
- const unsigned char* key);
+void findClosestKNodes(std::vector<std::shared_ptr<DHTNode>>& nodes,
+                       DHTBucketTreeNode* root, const unsigned char* key);
 
 // Stores all buckets in buckets.
-void enumerateBucket
-(std::vector<std::shared_ptr<DHTBucket> >& buckets, DHTBucketTreeNode* root);
+void enumerateBucket(std::vector<std::shared_ptr<DHTBucket>>& buckets,
+                     DHTBucketTreeNode* root);
 
 } // namespace dht
 

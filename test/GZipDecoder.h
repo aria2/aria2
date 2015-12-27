@@ -55,6 +55,7 @@ private:
   static const size_t OUTBUF_LENGTH = 16_k;
 
   static const std::string NAME;
+
 public:
   GZipDecoder();
 
@@ -69,7 +70,6 @@ public:
   void release();
 
   const std::string& getName() const;
-
 };
 
 } // namespace aria2

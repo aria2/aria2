@@ -72,22 +72,16 @@ private:
   Piece& operator=(const Piece& piece) = delete;
 
 public:
-  static const int32_t BLOCK_LENGTH  = 16_k;
+  static const int32_t BLOCK_LENGTH = 16_k;
 
   Piece();
   Piece(size_t index, int64_t length, int32_t blockLength = BLOCK_LENGTH);
 
   ~Piece();
 
-  bool operator==(const Piece& piece) const
-  {
-    return index_ == piece.index_;
-  }
+  bool operator==(const Piece& piece) const { return index_ == piece.index_; }
 
-  bool operator<(const Piece& piece) const
-  {
-    return index_ < piece.index_;
-  }
+  bool operator<(const Piece& piece) const { return index_ < piece.index_; }
 
   // TODO This function only used by unit tests
   bool getMissingUnusedBlockIndex(size_t& index) const;
@@ -96,8 +90,8 @@ public:
   // i in retrieved indexes, call bitfield->setUseBit(i). This
   // function just append index to indexes and it doesn't remove
   // anything from it. Returns the number of indexes to retrieved.
-  size_t getMissingUnusedBlockIndex
-  (std::vector<size_t>& indexes, size_t n) const;
+  size_t getMissingUnusedBlockIndex(std::vector<size_t>& indexes,
+                                    size_t n) const;
 
   bool getFirstMissingBlockIndexWithoutLock(size_t& index) const;
   bool getAllMissingBlockIndexes(unsigned char* misbitfield,
@@ -175,38 +169,26 @@ public:
 
   void addUser(cuid_t cuid);
   void removeUser(cuid_t cuid);
-  bool getUsed() const
-  {
-    return !users_.empty();
-  }
+  bool getUsed() const { return !users_.empty(); }
   bool usedBy(cuid_t cuid) const;
-  bool getUsedBySegment() const
-  {
-    return usedBySegment_;
-  }
-  void setUsedBySegment(bool f)
-  {
-    usedBySegment_ = f;
-  }
+  bool getUsedBySegment() const { return usedBySegment_; }
+  void setUsedBySegment(bool f) { usedBySegment_ = f; }
 
   void initWrCache(WrDiskCache* diskCache,
                    const std::shared_ptr<DiskAdaptor>& diskAdaptor);
   void flushWrCache(WrDiskCache* diskCache);
   void clearWrCache(WrDiskCache* diskCache);
-  void updateWrCache(WrDiskCache* diskCache, unsigned char* data,
-                     size_t offset, size_t len, size_t capacity, int64_t goff);
-  void updateWrCache(WrDiskCache* diskCache, unsigned char* data,
-                     size_t offset, size_t len, int64_t goff)
+  void updateWrCache(WrDiskCache* diskCache, unsigned char* data, size_t offset,
+                     size_t len, size_t capacity, int64_t goff);
+  void updateWrCache(WrDiskCache* diskCache, unsigned char* data, size_t offset,
+                     size_t len, int64_t goff)
   {
     updateWrCache(diskCache, data, offset, len, len, goff);
   }
   size_t appendWrCache(WrDiskCache* diskCache, int64_t goff,
                        const unsigned char* data, size_t len);
   void releaseWrCache(WrDiskCache* diskCache);
-  WrDiskCacheEntry* getWrDiskCacheEntry() const
-  {
-    return wrCache_.get();
-  }
+  WrDiskCacheEntry* getWrDiskCacheEntry() const { return wrCache_.get(); }
 };
 
 } // namespace aria2

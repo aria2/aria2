@@ -6,12 +6,11 @@
 namespace aria2 {
 
 struct MockExtensionMessageEventCheck {
-  MockExtensionMessageEventCheck() : doReceivedActionCalled{false}
-  {}
+  MockExtensionMessageEventCheck() : doReceivedActionCalled{false} {}
   bool doReceivedActionCalled;
 };
 
-class MockExtensionMessage:public ExtensionMessage {
+class MockExtensionMessage : public ExtensionMessage {
 public:
   std::string extensionName_;
   uint8_t extensionMessageID_;
@@ -19,30 +18,26 @@ public:
   MockExtensionMessageEventCheck* evcheck_;
 
   MockExtensionMessage(const std::string& extensionName,
-                       uint8_t extensionMessageID,
-                       const unsigned char* data,
-                       size_t length,
-                       MockExtensionMessageEventCheck* evcheck)
-    : extensionName_{extensionName},
-      extensionMessageID_{extensionMessageID},
-      data_{&data[0], &data[length]},
-      evcheck_{evcheck}
-  {}
+                       uint8_t extensionMessageID, const unsigned char* data,
+                       size_t length, MockExtensionMessageEventCheck* evcheck)
+      : extensionName_{extensionName},
+        extensionMessageID_{extensionMessageID},
+        data_{&data[0], &data[length]},
+        evcheck_{evcheck}
+  {
+  }
 
   MockExtensionMessage(const std::string& extensionName,
-                       uint8_t extensionMessageID,
-                       const std::string& data,
+                       uint8_t extensionMessageID, const std::string& data,
                        MockExtensionMessageEventCheck* evcheck)
-    : extensionName_{extensionName},
-      extensionMessageID_{extensionMessageID},
-      data_{data},
-      evcheck_{evcheck}
-  {}
-
-  virtual std::string getPayload() CXX11_OVERRIDE
+      : extensionName_{extensionName},
+        extensionMessageID_{extensionMessageID},
+        data_{data},
+        evcheck_{evcheck}
   {
-    return data_;
   }
+
+  virtual std::string getPayload() CXX11_OVERRIDE { return data_; }
 
   virtual uint8_t getExtensionMessageID() const CXX11_OVERRIDE
   {
@@ -54,14 +49,11 @@ public:
     return extensionName_.c_str();
   }
 
-  virtual std::string toString() const CXX11_OVERRIDE
-  {
-    return extensionName_;
-  }
+  virtual std::string toString() const CXX11_OVERRIDE { return extensionName_; }
 
   virtual void doReceivedAction() CXX11_OVERRIDE
   {
-    if(evcheck_) {
+    if (evcheck_) {
       evcheck_->doReceivedActionCalled = true;
     }
   }

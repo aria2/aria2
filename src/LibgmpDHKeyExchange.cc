@@ -46,13 +46,12 @@ namespace aria2 {
 namespace {
 void handleError(int err)
 {
-  throw DL_ABORT_EX
-    (fmt("Exception in libgmp routine(DHKeyExchange class): code%d", err));
+  throw DL_ABORT_EX(
+      fmt("Exception in libgmp routine(DHKeyExchange class): code%d", err));
 }
 } // namespace
 
-DHKeyExchange::DHKeyExchange()
-  : keyLength_(0)
+DHKeyExchange::DHKeyExchange() : keyLength_(0)
 {
   mpz_init(prime_);
   mpz_init(generator_);
@@ -68,44 +67,42 @@ DHKeyExchange::~DHKeyExchange()
   mpz_clear(publicKey_);
 }
 
-void DHKeyExchange::init
-(const unsigned char* prime, size_t primeBits,
- const unsigned char* generator,
- size_t privateKeyBits)
+void DHKeyExchange::init(const unsigned char* prime, size_t primeBits,
+                         const unsigned char* generator, size_t privateKeyBits)
 {
-  if(mpz_set_str(prime_, reinterpret_cast<const char*>(prime), 16) == -1) {
+  if (mpz_set_str(prime_, reinterpret_cast<const char*>(prime), 16) == -1) {
     handleError(-1);
   }
-  if(mpz_set_str
-     (generator_, reinterpret_cast<const char*>(generator), 16) == -1) {
+  if (mpz_set_str(generator_, reinterpret_cast<const char*>(generator), 16) ==
+      -1) {
     handleError(-1);
   }
   mpz_urandomb(privateKey_, global::gmpRandstate, privateKeyBits);
-  keyLength_ = (primeBits+7)/8;
+  keyLength_ = (primeBits + 7) / 8;
 }
 
 void DHKeyExchange::generatePublicKey()
 {
 #if HAVE_GMP_SEC
   mpz_powm_sec(publicKey_, generator_, privateKey_, prime_);
-#else // HAVE_GMP_SEC
+#else  // HAVE_GMP_SEC
   mpz_powm(publicKey_, generator_, privateKey_, prime_);
 #endif // HAVE_GMP_SEC
 }
 
 size_t DHKeyExchange::getPublicKey(unsigned char* out, size_t outLength) const
 {
-  if(outLength < keyLength_) {
-    throw DL_ABORT_EX
-      (fmt("Insufficient buffer for public key. expect:%lu, actual:%lu",
-           static_cast<unsigned long>(keyLength_),
-           static_cast<unsigned long>(outLength)));
+  if (outLength < keyLength_) {
+    throw DL_ABORT_EX(
+        fmt("Insufficient buffer for public key. expect:%lu, actual:%lu",
+            static_cast<unsigned long>(keyLength_),
+            static_cast<unsigned long>(outLength)));
   }
   memset(out, 0, outLength);
-  size_t publicKeyBytes = (mpz_sizeinbase(publicKey_, 2)+7)/8;
-  size_t offset = keyLength_-publicKeyBytes;
+  size_t publicKeyBytes = (mpz_sizeinbase(publicKey_, 2) + 7) / 8;
+  size_t offset = keyLength_ - publicKeyBytes;
   size_t nwritten;
-  mpz_export(out+offset, &nwritten, 1, 1, 1, 0, publicKey_);
+  mpz_export(out + offset, &nwritten, 1, 1, 1, 0, publicKey_);
   return nwritten;
 }
 
@@ -114,16 +111,15 @@ void DHKeyExchange::generateNonce(unsigned char* out, size_t outLength) const
   util::generateRandomData(out, outLength);
 }
 
-size_t DHKeyExchange::computeSecret
-(unsigned char* out, size_t outLength,
- const unsigned char* peerPublicKeyData,
- size_t peerPublicKeyLength) const
+size_t DHKeyExchange::computeSecret(unsigned char* out, size_t outLength,
+                                    const unsigned char* peerPublicKeyData,
+                                    size_t peerPublicKeyLength) const
 {
-  if(outLength < keyLength_) {
-    throw DL_ABORT_EX
-      (fmt("Insufficient buffer for secret. expect:%lu, actual:%lu",
-           static_cast<unsigned long>(keyLength_),
-           static_cast<unsigned long>(outLength)));
+  if (outLength < keyLength_) {
+    throw DL_ABORT_EX(
+        fmt("Insufficient buffer for secret. expect:%lu, actual:%lu",
+            static_cast<unsigned long>(keyLength_),
+            static_cast<unsigned long>(outLength)));
   }
   mpz_t peerPublicKey;
   mpz_init(peerPublicKey);
@@ -133,17 +129,17 @@ size_t DHKeyExchange::computeSecret
 
 #if HAVE_GMP_SEC
   mpz_powm_sec(secret, peerPublicKey, privateKey_, prime_);
-#else // HAVE_GMP_SEC
+#else  // HAVE_GMP_SEC
   mpz_powm(secret, peerPublicKey, privateKey_, prime_);
 #endif // HAVE_GMP_SEC
 
   mpz_clear(peerPublicKey);
 
   memset(out, 0, outLength);
-  size_t secretBytes = (mpz_sizeinbase(secret, 2)+7)/8;
-  size_t offset = keyLength_-secretBytes;
+  size_t secretBytes = (mpz_sizeinbase(secret, 2) + 7) / 8;
+  size_t offset = keyLength_ - secretBytes;
   size_t nwritten;
-  mpz_export(out+offset, &nwritten, 1, 1, 1, 0, secret);
+  mpz_export(out + offset, &nwritten, 1, 1, 1, 0, secret);
   mpz_clear(secret);
   return nwritten;
 }

@@ -42,191 +42,132 @@ namespace aria2 {
 
 extern const char METALINK4_NAMESPACE_URI[];
 
-class MetalinkMetalinkParserStateV4:public MetalinkParserState
-{
+class MetalinkMetalinkParserStateV4 : public MetalinkParserState {
 public:
   virtual void beginElement(MetalinkParserStateMachine* psm,
-                            const char* localname,
-                            const char* prefix,
+                            const char* localname, const char* prefix,
                             const char* nsUri,
                             const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
 };
 
-class FileMetalinkParserStateV4:public MetalinkParserState
-{
+class FileMetalinkParserStateV4 : public MetalinkParserState {
 public:
   virtual void beginElement(MetalinkParserStateMachine* psm,
-                            const char* localname,
-                            const char* prefix,
+                            const char* localname, const char* prefix,
                             const char* nsUri,
                             const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
 
   virtual void endElement(MetalinkParserStateMachine* psm,
-                          const char* localname,
-                          const char* prefix,
+                          const char* localname, const char* prefix,
                           const char* nsUri,
                           std::string characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
-  {
-    return true;
-  }
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return true; }
 };
 
-class SizeMetalinkParserStateV4:public SkipTagMetalinkParserState
-{
+class SizeMetalinkParserStateV4 : public SkipTagMetalinkParserState {
 public:
   virtual void endElement(MetalinkParserStateMachine* psm,
-                          const char* localname,
-                          const char* prefix,
+                          const char* localname, const char* prefix,
                           const char* nsUri,
                           std::string characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
-  {
-    return true;
-  }
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return true; }
 };
 
-class VersionMetalinkParserStateV4:public SkipTagMetalinkParserState
-{
+class VersionMetalinkParserStateV4 : public SkipTagMetalinkParserState {
 public:
   virtual void endElement(MetalinkParserStateMachine* psm,
-                          const char* localname,
-                          const char* prefix,
+                          const char* localname, const char* prefix,
                           const char* nsUri,
                           std::string characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
-  {
-    return true;
-  }
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return true; }
 };
 
-class LanguageMetalinkParserStateV4:public SkipTagMetalinkParserState
-{
+class LanguageMetalinkParserStateV4 : public SkipTagMetalinkParserState {
 public:
   virtual void endElement(MetalinkParserStateMachine* psm,
-                          const char* localname,
-                          const char* prefix,
+                          const char* localname, const char* prefix,
                           const char* nsUri,
                           std::string characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
-  {
-    return true;
-  }
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return true; }
 };
 
-class OSMetalinkParserStateV4:public SkipTagMetalinkParserState
-{
+class OSMetalinkParserStateV4 : public SkipTagMetalinkParserState {
 public:
   virtual void endElement(MetalinkParserStateMachine* psm,
-                          const char* localname,
-                          const char* prefix,
+                          const char* localname, const char* prefix,
                           const char* nsUri,
                           std::string characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
-  {
-    return true;
-  }
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return true; }
 };
 
-class HashMetalinkParserStateV4:public SkipTagMetalinkParserState
-{
+class HashMetalinkParserStateV4 : public SkipTagMetalinkParserState {
 public:
   virtual void endElement(MetalinkParserStateMachine* psm,
-                          const char* localname,
-                          const char* prefix,
+                          const char* localname, const char* prefix,
                           const char* nsUri,
                           std::string characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
-  {
-    return true;
-  }
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return true; }
 };
 
-class PiecesMetalinkParserStateV4:public MetalinkParserState
-{
+class PiecesMetalinkParserStateV4 : public MetalinkParserState {
 public:
   virtual void beginElement(MetalinkParserStateMachine* psm,
-                            const char* localname,
-                            const char* prefix,
+                            const char* localname, const char* prefix,
                             const char* nsUri,
                             const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
 
   virtual void endElement(MetalinkParserStateMachine* psm,
-                          const char* localname,
-                          const char* prefix,
+                          const char* localname, const char* prefix,
                           const char* nsUri,
                           std::string characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
-  {
-    return true;
-  }
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return true; }
 };
 
-class PieceHashMetalinkParserStateV4:public SkipTagMetalinkParserState
-{
+class PieceHashMetalinkParserStateV4 : public SkipTagMetalinkParserState {
 public:
   virtual void endElement(MetalinkParserStateMachine* psm,
-                          const char* localname,
-                          const char* prefix,
-                          const char* nsUri,
-			  std::string characters) CXX11_OVERRIDE;
-
-  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
-  {
-    return true;
-  }
-};
-
-class SignatureMetalinkParserStateV4:public SkipTagMetalinkParserState
-{
-public:
-  virtual void endElement(MetalinkParserStateMachine* psm,
-                          const char* localname,
-                          const char* prefix,
+                          const char* localname, const char* prefix,
                           const char* nsUri,
                           std::string characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
-  {
-    return true;
-  }
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return true; }
 };
 
-class URLMetalinkParserStateV4:public SkipTagMetalinkParserState
-{
+class SignatureMetalinkParserStateV4 : public SkipTagMetalinkParserState {
 public:
   virtual void endElement(MetalinkParserStateMachine* psm,
-                          const char* localname,
-                          const char* prefix,
+                          const char* localname, const char* prefix,
                           const char* nsUri,
                           std::string characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
-  {
-    return true;
-  }
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return true; }
 };
 
-class MetaurlMetalinkParserStateV4:public SkipTagMetalinkParserState
-{
+class URLMetalinkParserStateV4 : public SkipTagMetalinkParserState {
 public:
   virtual void endElement(MetalinkParserStateMachine* psm,
-                          const char* localname,
-                          const char* prefix,
+                          const char* localname, const char* prefix,
                           const char* nsUri,
                           std::string characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
-  {
-    return true;
-  }
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return true; }
+};
+
+class MetaurlMetalinkParserStateV4 : public SkipTagMetalinkParserState {
+public:
+  virtual void endElement(MetalinkParserStateMachine* psm,
+                          const char* localname, const char* prefix,
+                          const char* nsUri,
+                          std::string characters) CXX11_OVERRIDE;
+
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return true; }
 };
 
 } // namespace aria2

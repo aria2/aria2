@@ -38,12 +38,12 @@
 
 namespace aria2 {
 
-BtPieceMessageValidator::BtPieceMessageValidator
-(const BtPieceMessage* message, size_t numPiece, int32_t pieceLength)
-  : message_(message),
-    numPiece_(numPiece),
-    pieceLength_(pieceLength)
-{}
+BtPieceMessageValidator::BtPieceMessageValidator(const BtPieceMessage* message,
+                                                 size_t numPiece,
+                                                 int32_t pieceLength)
+    : message_(message), numPiece_(numPiece), pieceLength_(pieceLength)
+{
+}
 
 BtPieceMessageValidator::~BtPieceMessageValidator() {}
 

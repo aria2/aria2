@@ -40,8 +40,9 @@ namespace aria2 {
 
 MetadataInfo::MetadataInfo(const std::shared_ptr<GroupId>& gid,
                            const std::string& uri)
-  : gid_(gid), uri_(uri)
-{}
+    : gid_(gid), uri_(uri)
+{
+}
 
 MetadataInfo::MetadataInfo() {}
 

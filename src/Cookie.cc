@@ -46,28 +46,30 @@ Cookie::Cookie(std::string name, std::string value, time_t expiryTime,
                bool persistent, std::string domain, bool hostOnly,
                std::string path, bool secure, bool httpOnly,
                time_t creationTime)
-  : expiryTime_(expiryTime),
-    creationTime_(creationTime),
-    lastAccessTime_(creationTime),
-    name_(std::move(name)),
-    value_(std::move(value)),
-    domain_(std::move(domain)),
-    path_(std::move(path)),
-    persistent_(persistent),
-    hostOnly_(hostOnly),
-    secure_(secure),
-    httpOnly_(httpOnly)
-{}
+    : expiryTime_(expiryTime),
+      creationTime_(creationTime),
+      lastAccessTime_(creationTime),
+      name_(std::move(name)),
+      value_(std::move(value)),
+      domain_(std::move(domain)),
+      path_(std::move(path)),
+      persistent_(persistent),
+      hostOnly_(hostOnly),
+      secure_(secure),
+      httpOnly_(httpOnly)
+{
+}
 
 Cookie::Cookie()
-  : expiryTime_(0),
-    creationTime_(0),
-    lastAccessTime_(0),
-    persistent_(false),
-    hostOnly_(false),
-    secure_(false),
-    httpOnly_(false)
-{}
+    : expiryTime_(0),
+      creationTime_(0),
+      lastAccessTime_(0),
+      persistent_(false),
+      hostOnly_(false),
+      secure_(false),
+      httpOnly_(false)
+{
+}
 
 std::string Cookie::toString() const
 {
@@ -78,16 +80,17 @@ std::string Cookie::toString() const
 }
 
 bool Cookie::match(const std::string& requestHost,
-                   const std::string& requestPath,
-                   time_t date, bool secure) const
+                   const std::string& requestPath, time_t date,
+                   bool secure) const
 {
-  if((secure_ && !secure) || isExpired(date) ||
-     !cookie::pathMatch(requestPath, path_)) {
+  if ((secure_ && !secure) || isExpired(date) ||
+      !cookie::pathMatch(requestPath, path_)) {
     return false;
   }
-  if(hostOnly_) {
-    return requestHost == domain_ ;
-  } else {
+  if (hostOnly_) {
+    return requestHost == domain_;
+  }
+  else {
     return cookie::domainMatch(requestHost, domain_);
   }
 }
@@ -95,7 +98,7 @@ bool Cookie::match(const std::string& requestHost,
 bool Cookie::operator==(const Cookie& cookie) const
 {
   return domain_ == cookie.domain_ && path_ == cookie.path_ &&
-    name_ == cookie.name_;
+         name_ == cookie.name_;
 }
 
 bool Cookie::operator!=(const Cookie& cookie) const
@@ -111,26 +114,29 @@ bool Cookie::isExpired(time_t base) const
 std::string Cookie::toNsCookieFormat() const
 {
   std::stringstream ss;
-  if(!hostOnly_) {
+  if (!hostOnly_) {
     ss << ".";
   }
   ss << domain_ << "\t";
-  if(hostOnly_) {
+  if (hostOnly_) {
     ss << "FALSE";
-  } else {
+  }
+  else {
     ss << "TRUE";
   }
   ss << "\t";
   ss << path_ << "\t";
-  if(secure_) {
+  if (secure_) {
     ss << "TRUE";
-  } else {
+  }
+  else {
     ss << "FALSE";
   }
   ss << "\t";
-  if(persistent_) {
+  if (persistent_) {
     ss << expiryTime_;
-  } else {
+  }
+  else {
     ss << 0;
   }
   ss << "\t";
@@ -139,24 +145,12 @@ std::string Cookie::toNsCookieFormat() const
   return ss.str();
 }
 
-void Cookie::setName(std::string name)
-{
-  name_ = std::move(name);
-}
+void Cookie::setName(std::string name) { name_ = std::move(name); }
 
-void Cookie::setValue(std::string value)
-{
-  value_ = std::move(value);
-}
+void Cookie::setValue(std::string value) { value_ = std::move(value); }
 
-void Cookie::setDomain(std::string domain)
-{
-  domain_ = std::move(domain);
-}
+void Cookie::setDomain(std::string domain) { domain_ = std::move(domain); }
 
-void Cookie::setPath(std::string path)
-{
-  path_ = std::move(path);
-}
+void Cookie::setPath(std::string path) { path_ = std::move(path); }
 
 } // namespace aria2

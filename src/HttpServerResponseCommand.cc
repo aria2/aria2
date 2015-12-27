@@ -44,27 +44,22 @@
 
 namespace aria2 {
 
-HttpServerResponseCommand::HttpServerResponseCommand
-(cuid_t cuid,
- const std::shared_ptr<HttpServer>& httpServer,
- DownloadEngine* e,
- const std::shared_ptr<SocketCore>& socket)
-  : AbstractHttpServerResponseCommand(cuid, httpServer, e, socket)
-{}
-
-HttpServerResponseCommand::~HttpServerResponseCommand()
-{}
-
-void HttpServerResponseCommand::afterSend
-(const std::shared_ptr<HttpServer>& httpServer,
- DownloadEngine* e)
+HttpServerResponseCommand::HttpServerResponseCommand(
+    cuid_t cuid, const std::shared_ptr<HttpServer>& httpServer,
+    DownloadEngine* e, const std::shared_ptr<SocketCore>& socket)
+    : AbstractHttpServerResponseCommand(cuid, httpServer, e, socket)
 {
-  if(httpServer->supportsPersistentConnection()) {
-    A2_LOG_INFO(fmt("CUID#%" PRId64 " - Persist connection.",
-                    getCuid()));
-    e->addCommand
-      (make_unique<HttpServerCommand>(getCuid(), httpServer, e,
-                                      httpServer->getSocket()));
+}
+
+HttpServerResponseCommand::~HttpServerResponseCommand() {}
+
+void HttpServerResponseCommand::afterSend(
+    const std::shared_ptr<HttpServer>& httpServer, DownloadEngine* e)
+{
+  if (httpServer->supportsPersistentConnection()) {
+    A2_LOG_INFO(fmt("CUID#%" PRId64 " - Persist connection.", getCuid()));
+    e->addCommand(make_unique<HttpServerCommand>(getCuid(), httpServer, e,
+                                                 httpServer->getSocket()));
   }
 }
 

@@ -51,59 +51,46 @@
 
 namespace aria2 {
 
-Piece::Piece()
-  : index_(0),
-    length_(0),
-    nextBegin_(0),
-    usedBySegment_(false)
-{}
+Piece::Piece() : index_(0), length_(0), nextBegin_(0), usedBySegment_(false) {}
 
 Piece::Piece(size_t index, int64_t length, int32_t blockLength)
-  : bitfield_(make_unique<BitfieldMan>(blockLength, length)),
-    index_(index),
-    length_(length),
-    nextBegin_(0),
-    usedBySegment_(false)
-{}
+    : bitfield_(make_unique<BitfieldMan>(blockLength, length)),
+      index_(index),
+      length_(length),
+      nextBegin_(0),
+      usedBySegment_(false)
+{
+}
 
-Piece::~Piece()
-{}
+Piece::~Piece() {}
 
-void Piece::completeBlock(size_t blockIndex) {
+void Piece::completeBlock(size_t blockIndex)
+{
   bitfield_->setBit(blockIndex);
   bitfield_->unsetUseBit(blockIndex);
 }
 
-void Piece::clearAllBlock(WrDiskCache* diskCache) {
+void Piece::clearAllBlock(WrDiskCache* diskCache)
+{
   bitfield_->clearAllBit();
   bitfield_->clearAllUseBit();
-  if(diskCache && wrCache_) {
+  if (diskCache && wrCache_) {
     clearWrCache(diskCache);
   }
 }
 
-void Piece::setAllBlock() {
-  bitfield_->setAllBit();
-}
+void Piece::setAllBlock() { bitfield_->setAllBit(); }
 
-bool Piece::pieceComplete() const {
-  return bitfield_->isAllBitSet();
-}
+bool Piece::pieceComplete() const { return bitfield_->isAllBitSet(); }
 
-size_t Piece::countBlock() const
-{
-  return bitfield_->countBlock();
-}
+size_t Piece::countBlock() const { return bitfield_->countBlock(); }
 
 int32_t Piece::getBlockLength(size_t index) const
 {
   return bitfield_->getBlockLength(index);
 }
 
-int32_t Piece::getBlockLength() const
-{
-  return bitfield_->getBlockLength();
-}
+int32_t Piece::getBlockLength() const { return bitfield_->getBlockLength(); }
 
 const unsigned char* Piece::getBitfield() const
 {
@@ -120,13 +107,14 @@ bool Piece::isBlockUsed(size_t index) const
   return bitfield_->isUseBitSet(index);
 }
 
-void Piece::cancelBlock(size_t blockIndex) {
+void Piece::cancelBlock(size_t blockIndex)
+{
   bitfield_->unsetUseBit(blockIndex);
 }
 
 size_t Piece::countCompleteBlock() const
 {
-  return bitfield_->countBlock()-bitfield_->countMissingBlock();
+  return bitfield_->countBlock() - bitfield_->countMissingBlock();
 }
 
 size_t Piece::countMissingBlock() const
@@ -141,21 +129,23 @@ bool Piece::hasBlock(size_t blockIndex) const
 
 bool Piece::getMissingUnusedBlockIndex(size_t& index) const
 {
-  if(bitfield_->getFirstMissingUnusedIndex(index)) {
+  if (bitfield_->getFirstMissingUnusedIndex(index)) {
     bitfield_->setUseBit(index);
     return true;
-  } else {
+  }
+  else {
     return false;
   }
 }
 
-size_t Piece::getMissingUnusedBlockIndex
-(std::vector<size_t>& indexes, size_t n) const
+size_t Piece::getMissingUnusedBlockIndex(std::vector<size_t>& indexes,
+                                         size_t n) const
 {
   size_t num = bitfield_->getFirstNMissingUnusedIndex(indexes, n);
-  if(num) {
-    for(std::vector<size_t>::const_iterator i = indexes.end()-num,
-          eoi = indexes.end(); i != eoi; ++i) {
+  if (num) {
+    for (std::vector<size_t>::const_iterator i = indexes.end() - num,
+                                             eoi = indexes.end();
+         i != eoi; ++i) {
       bitfield_->setUseBit(*i);
     }
   }
@@ -167,13 +157,14 @@ bool Piece::getFirstMissingBlockIndexWithoutLock(size_t& index) const
   return bitfield_->getFirstMissingIndex(index);
 }
 
-bool Piece::getAllMissingBlockIndexes
-(unsigned char* misbitfield, size_t mislen) const
+bool Piece::getAllMissingBlockIndexes(unsigned char* misbitfield,
+                                      size_t mislen) const
 {
   return bitfield_->getAllMissingIndexes(misbitfield, mislen);
 }
 
-std::string Piece::toString() const {
+std::string Piece::toString() const
+{
   return fmt("piece: index=%lu, length=%" PRId64,
              static_cast<unsigned long>(index_), length_);
 }
@@ -187,8 +178,8 @@ void Piece::reconfigure(int64_t length)
   // BitfieldMan for each call is very expensive.  Therefore, we use
   // maximum block length for now to reduce the overhead.  Ideally, we
   // check the code thoroughly and remove bitfield_ if we can.
-  bitfield_ = make_unique<BitfieldMan>(std::numeric_limits<int32_t>::max(),
-                                       length_);
+  bitfield_ =
+      make_unique<BitfieldMan>(std::numeric_limits<int32_t>::max(), length_);
 }
 
 void Piece::setBitfield(const unsigned char* bitfield, size_t len)
@@ -196,45 +187,38 @@ void Piece::setBitfield(const unsigned char* bitfield, size_t len)
   bitfield_->setBitfield(bitfield, len);
 }
 
-int64_t Piece::getCompletedLength()
-{
-  return bitfield_->getCompletedLength();
-}
+int64_t Piece::getCompletedLength() { return bitfield_->getCompletedLength(); }
 
-void Piece::setHashType(const std::string& hashType)
-{
-  hashType_ = hashType;
-}
+void Piece::setHashType(const std::string& hashType) { hashType_ = hashType; }
 
-bool Piece::updateHash
-(int64_t begin, const unsigned char* data, size_t dataLength)
+bool Piece::updateHash(int64_t begin, const unsigned char* data,
+                       size_t dataLength)
 {
-  if(hashType_.empty()) {
+  if (hashType_.empty()) {
     return false;
   }
-  if(begin == nextBegin_ &&
-     nextBegin_ + static_cast<int64_t>(dataLength) <= length_) {
-    if(!mdctx_) {
+  if (begin == nextBegin_ &&
+      nextBegin_ + static_cast<int64_t>(dataLength) <= length_) {
+    if (!mdctx_) {
       mdctx_ = MessageDigest::create(hashType_);
     }
     mdctx_->update(data, dataLength);
     nextBegin_ += dataLength;
     return true;
-  } else {
+  }
+  else {
     return false;
   }
 }
 
-bool Piece::isHashCalculated() const
-{
-  return mdctx_ && nextBegin_ == length_;
-}
+bool Piece::isHashCalculated() const { return mdctx_ && nextBegin_ == length_; }
 
 std::string Piece::getDigest()
 {
-  if(!mdctx_) {
+  if (!mdctx_) {
     return A2STR::NIL;
-  } else {
+  }
+  else {
     std::string hash = mdctx_->digest();
     destroyHashContext();
     return hash;
@@ -248,17 +232,17 @@ void updateHashWithRead(MessageDigest* mdctx,
 {
   std::array<unsigned char, 4_k> buf;
   ldiv_t res = ldiv(len, buf.size());
-  for(int j = 0; j < res.quot; ++j) {
+  for (int j = 0; j < res.quot; ++j) {
     ssize_t nread = adaptor->readData(buf.data(), buf.size(), offset);
-    if((size_t)nread != buf.size()) {
+    if ((size_t)nread != buf.size()) {
       throw DL_ABORT_EX(fmt(EX_FILE_READ, "n/a", "data is too short"));
     }
     mdctx->update(buf.data(), nread);
     offset += nread;
   }
-  if(res.rem) {
+  if (res.rem) {
     ssize_t nread = adaptor->readData(buf.data(), res.rem, offset);
-    if(nread != res.rem) {
+    if (nread != res.rem) {
       throw DL_ABORT_EX(fmt(EX_FILE_READ, "n/a", "data is too short"));
     }
     mdctx->update(buf.data(), nread);
@@ -266,23 +250,25 @@ void updateHashWithRead(MessageDigest* mdctx,
 }
 } // namespace
 
-std::string Piece::getDigestWithWrCache
-(size_t pieceLength, const std::shared_ptr<DiskAdaptor>& adaptor)
+std::string
+Piece::getDigestWithWrCache(size_t pieceLength,
+                            const std::shared_ptr<DiskAdaptor>& adaptor)
 {
   auto mdctx = MessageDigest::create(hashType_);
-  int64_t start = static_cast<int64_t>(index_)*pieceLength;
+  int64_t start = static_cast<int64_t>(index_) * pieceLength;
   int64_t goff = start;
-  if(wrCache_) {
+  if (wrCache_) {
     const WrDiskCacheEntry::DataCellSet& dataSet = wrCache_->getDataSet();
-    for(auto& d : dataSet) {
-      if(goff < d->goff) {
+    for (auto& d : dataSet) {
+      if (goff < d->goff) {
         updateHashWithRead(mdctx.get(), adaptor, goff, d->goff - goff);
       }
       mdctx->update(d->data + d->offset, d->len);
       goff = d->goff + d->len;
     }
-    updateHashWithRead(mdctx.get(), adaptor, goff, start+length_-goff);
-  } else {
+    updateHashWithRead(mdctx.get(), adaptor, goff, start + length_ - goff);
+  }
+  else {
     updateHashWithRead(mdctx.get(), adaptor, goff, length_);
   }
   return mdctx->digest();
@@ -301,7 +287,7 @@ bool Piece::usedBy(cuid_t cuid) const
 
 void Piece::addUser(cuid_t cuid)
 {
-  if(std::find(users_.begin(), users_.end(), cuid) == users_.end()) {
+  if (std::find(users_.begin(), users_.end(), cuid) == users_.end()) {
     users_.push_back(cuid);
   }
 }
@@ -314,7 +300,7 @@ void Piece::removeUser(cuid_t cuid)
 void Piece::initWrCache(WrDiskCache* diskCache,
                         const std::shared_ptr<DiskAdaptor>& diskAdaptor)
 {
-  if(!diskCache) {
+  if (!diskCache) {
     return;
   }
   assert(!wrCache_);
@@ -325,7 +311,7 @@ void Piece::initWrCache(WrDiskCache* diskCache,
 
 void Piece::flushWrCache(WrDiskCache* diskCache)
 {
-  if(!diskCache) {
+  if (!diskCache) {
     return;
   }
   assert(wrCache_);
@@ -336,7 +322,7 @@ void Piece::flushWrCache(WrDiskCache* diskCache)
 
 void Piece::clearWrCache(WrDiskCache* diskCache)
 {
-  if(!diskCache) {
+  if (!diskCache) {
     return;
   }
   assert(wrCache_);
@@ -349,7 +335,7 @@ void Piece::updateWrCache(WrDiskCache* diskCache, unsigned char* data,
                           size_t offset, size_t len, size_t capacity,
                           int64_t goff)
 {
-  if(!diskCache) {
+  if (!diskCache) {
     return;
   }
   assert(wrCache_);
@@ -370,13 +356,13 @@ void Piece::updateWrCache(WrDiskCache* diskCache, unsigned char* data,
 size_t Piece::appendWrCache(WrDiskCache* diskCache, int64_t goff,
                             const unsigned char* data, size_t len)
 {
-  if(!diskCache) {
+  if (!diskCache) {
     return 0;
   }
   assert(wrCache_);
   size_t delta = wrCache_->append(goff, data, len);
   bool rv;
-  if(delta > 0) {
+  if (delta > 0) {
     rv = diskCache->update(wrCache_.get(), delta);
     assert(rv);
   }
@@ -385,7 +371,7 @@ size_t Piece::appendWrCache(WrDiskCache* diskCache, int64_t goff,
 
 void Piece::releaseWrCache(WrDiskCache* diskCache)
 {
-  if(diskCache && wrCache_) {
+  if (diskCache && wrCache_) {
     diskCache->remove(wrCache_.get());
     wrCache_.reset();
   }

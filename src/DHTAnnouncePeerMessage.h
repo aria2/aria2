@@ -44,7 +44,7 @@ namespace aria2 {
 class DHTPeerAnnounceStorage;
 class DHTTokenTracker;
 
-class DHTAnnouncePeerMessage:public DHTQueryMessage {
+class DHTAnnouncePeerMessage : public DHTQueryMessage {
 private:
   std::string token_;
 
@@ -55,13 +55,14 @@ private:
   DHTPeerAnnounceStorage* peerAnnounceStorage_;
 
   DHTTokenTracker* tokenTracker_;
+
 protected:
   virtual std::string toStringOptional() const CXX11_OVERRIDE;
+
 public:
   DHTAnnouncePeerMessage(const std::shared_ptr<DHTNode>& localNode,
                          const std::shared_ptr<DHTNode>& remoteNode,
-                         const unsigned char* infoHash,
-                         uint16_t tcpPort,
+                         const unsigned char* infoHash, uint16_t tcpPort,
                          const std::string& token,
                          const std::string& transactionID = A2STR::NIL);
 
@@ -73,20 +74,11 @@ public:
 
   virtual void validate() const CXX11_OVERRIDE;
 
-  const unsigned char* getInfoHash() const
-  {
-    return infoHash_;
-  }
+  const unsigned char* getInfoHash() const { return infoHash_; }
 
-  const std::string& getToken() const
-  {
-    return token_;
-  }
+  const std::string& getToken() const { return token_; }
 
-  uint16_t getTCPPort() const
-  {
-    return tcpPort_;
-  }
+  uint16_t getTCPPort() const { return tcpPort_; }
 
   void setPeerAnnounceStorage(DHTPeerAnnounceStorage* storage);
 

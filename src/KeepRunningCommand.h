@@ -48,6 +48,7 @@ public:
   KeepRunningCommand(cuid_t cuid, DownloadEngine* e);
   virtual ~KeepRunningCommand();
   virtual bool execute() CXX11_OVERRIDE;
+
 private:
   DownloadEngine* e_;
 };

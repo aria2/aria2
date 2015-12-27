@@ -66,18 +66,14 @@
 
 namespace aria2 {
 
-SftpNegotiationCommand::SftpNegotiationCommand
-(cuid_t cuid,
- const std::shared_ptr<Request>& req,
- const std::shared_ptr<FileEntry>& fileEntry,
- RequestGroup* requestGroup,
- DownloadEngine* e,
- const std::shared_ptr<SocketCore>& socket,
- Seq seq)
-  : AbstractCommand(cuid, req, fileEntry, requestGroup, e, socket),
-    sequence_(seq),
-    authConfig_(e->getAuthConfigFactory()->createAuthConfig
-                (req, requestGroup->getOption().get()))
+SftpNegotiationCommand::SftpNegotiationCommand(
+    cuid_t cuid, const std::shared_ptr<Request>& req,
+    const std::shared_ptr<FileEntry>& fileEntry, RequestGroup* requestGroup,
+    DownloadEngine* e, const std::shared_ptr<SocketCore>& socket, Seq seq)
+    : AbstractCommand(cuid, req, fileEntry, requestGroup, e, socket),
+      sequence_(seq),
+      authConfig_(e->getAuthConfigFactory()->createAuthConfig(
+          req, requestGroup->getOption().get()))
 
 {
   path_ = getPath();
@@ -94,10 +90,11 @@ SftpNegotiationCommand::SftpNegotiationCommand
 
 SftpNegotiationCommand::~SftpNegotiationCommand() {}
 
-bool SftpNegotiationCommand::executeInternal() {
+bool SftpNegotiationCommand::executeInternal()
+{
   disableWriteCheckSocket();
   for (;;) {
-    switch(sequence_) {
+    switch (sequence_) {
     case SEQ_HANDSHAKE:
       setReadCheckSocket(getSocket());
       if (!getSocket()->sshHandshake(hashType_, digest_)) {
@@ -111,8 +108,8 @@ bool SftpNegotiationCommand::executeInternal() {
                                         authConfig_->getPassword())) {
         goto again;
       }
-      A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - SSH authentication success",
-                       getCuid()));
+      A2_LOG_DEBUG(
+          fmt("CUID#%" PRId64 " - SSH authentication success", getCuid()));
       sequence_ = SEQ_SFTP_OPEN;
       break;
     case SEQ_SFTP_OPEN:
@@ -130,14 +127,14 @@ bool SftpNegotiationCommand::executeInternal() {
         goto again;
       }
       Time t(mtime);
-      A2_LOG_INFO(fmt("CUID#%" PRId64 " - SFTP File %s, size=%" PRId64
-                      ", mtime=%s",
-                      getCuid(), path_.c_str(), totalLength,
-                      t.toHTTPDate().c_str()));
+      A2_LOG_INFO(
+          fmt("CUID#%" PRId64 " - SFTP File %s, size=%" PRId64 ", mtime=%s",
+              getCuid(), path_.c_str(), totalLength, t.toHTTPDate().c_str()));
       if (!getPieceStorage()) {
         getRequestGroup()->updateLastModifiedTime(Time(mtime));
         onFileSizeDetermined(totalLength);
-      } else {
+      }
+      else {
         getRequestGroup()->validateTotalLength(getFileEntry()->getLength(),
                                                totalLength);
         sequence_ = SEQ_SFTP_SEEK;
@@ -152,8 +149,8 @@ bool SftpNegotiationCommand::executeInternal() {
 
       auto& segment = getSegments().front();
 
-      A2_LOG_INFO(fmt("CUID#%" PRId64 " - SFTP seek to %" PRId64,
-                      getCuid(), segment->getPositionToWrite()));
+      A2_LOG_INFO(fmt("CUID#%" PRId64 " - SFTP seek to %" PRId64, getCuid(),
+                      segment->getPositionToWrite()));
       getSocket()->sshSFTPSeek(segment->getPositionToWrite());
 
       break;
@@ -164,22 +161,22 @@ bool SftpNegotiationCommand::executeInternal() {
       disableWriteCheckSocket();
       return false;
     case SEQ_NEGOTIATION_COMPLETED: {
-      auto command = make_unique<SftpDownloadCommand>
-        (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
-         getDownloadEngine(), getSocket(), std::move(authConfig_));
-      command->setStartupIdleTime
-        (std::chrono::seconds(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME)));
-      command->setLowestDownloadSpeedLimit
-        (getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));
+      auto command = make_unique<SftpDownloadCommand>(
+          getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
+          getDownloadEngine(), getSocket(), std::move(authConfig_));
+      command->setStartupIdleTime(
+          std::chrono::seconds(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME)));
+      command->setLowestDownloadSpeedLimit(
+          getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));
       command->setStatus(Command::STATUS_ONESHOT_REALTIME);
 
       getDownloadEngine()->setNoWait(true);
 
-      if(getFileEntry()->isUniqueProtocol()) {
+      if (getFileEntry()->isUniqueProtocol()) {
         getFileEntry()->removeURIWhoseHostnameIs(getRequest()->getHost());
       }
-      getRequestGroup()->getURISelector()->tuneDownloadCommand
-        (getFileEntry()->getRemainingUris(), command.get());
+      getRequestGroup()->getURISelector()->tuneDownloadCommand(
+          getFileEntry()->getRemainingUris(), command.get());
       getDownloadEngine()->addCommand(std::move(command));
       return true;
     }
@@ -189,7 +186,7 @@ bool SftpNegotiationCommand::executeInternal() {
       return true;
     };
   }
- again:
+again:
   addCommandSelf();
   if (getSocket()->wantWrite()) {
     setWriteCheckSocket(getSocket());
@@ -200,80 +197,78 @@ bool SftpNegotiationCommand::executeInternal() {
 void SftpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
 {
   getFileEntry()->setLength(totalLength);
-  if(getFileEntry()->getPath().empty()) {
-    auto suffixPath = util::createSafePath
-      (util::percentDecode(std::begin(getRequest()->getFile()),
-                           std::end(getRequest()->getFile())));
+  if (getFileEntry()->getPath().empty()) {
+    auto suffixPath = util::createSafePath(
+        util::percentDecode(std::begin(getRequest()->getFile()),
+                            std::end(getRequest()->getFile())));
 
-    getFileEntry()->setPath
-      (util::applyDir(getOption()->get(PREF_DIR), suffixPath));
+    getFileEntry()->setPath(
+        util::applyDir(getOption()->get(PREF_DIR), suffixPath));
     getFileEntry()->setSuffixPath(suffixPath);
   }
   getRequestGroup()->preDownloadProcessing();
 
-  if(totalLength == 0) {
+  if (totalLength == 0) {
     sequence_ = SEQ_NEGOTIATION_COMPLETED;
 
-    if(getOption()->getAsBool(PREF_DRY_RUN)) {
+    if (getOption()->getAsBool(PREF_DRY_RUN)) {
       getRequestGroup()->initPieceStorage();
       onDryRunFileFound();
       return;
     }
 
-    if(getDownloadContext()->knowsTotalLength() &&
-       getRequestGroup()->downloadFinishedByFileLength()) {
+    if (getDownloadContext()->knowsTotalLength() &&
+        getRequestGroup()->downloadFinishedByFileLength()) {
       // TODO Known issue: if .aria2 file exists, it will not be
       // deleted on successful verification, because .aria2 file is
       // not loaded.  See also
       // HttpResponseCommand::handleOtherEncoding()
       getRequestGroup()->initPieceStorage();
-      if(getDownloadContext()->isChecksumVerificationNeeded()) {
+      if (getDownloadContext()->isChecksumVerificationNeeded()) {
         A2_LOG_DEBUG("Zero length file exists. Verify checksum.");
-        auto entry = make_unique<ChecksumCheckIntegrityEntry>
-          (getRequestGroup());
+        auto entry =
+            make_unique<ChecksumCheckIntegrityEntry>(getRequestGroup());
         entry->initValidator();
         getPieceStorage()->getDiskAdaptor()->openExistingFile();
-        getDownloadEngine()->getCheckIntegrityMan()->pushEntry
-          (std::move(entry));
+        getDownloadEngine()->getCheckIntegrityMan()->pushEntry(
+            std::move(entry));
         sequence_ = SEQ_EXIT;
       }
       else {
         getPieceStorage()->markAllPiecesDone();
         getDownloadContext()->setChecksumVerified(true);
         sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
-        A2_LOG_NOTICE
-          (fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
-               GroupId::toHex(getRequestGroup()->getGID()).c_str(),
-               getRequestGroup()->getFirstFilePath().c_str()));
+        A2_LOG_NOTICE(fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
+                          GroupId::toHex(getRequestGroup()->getGID()).c_str(),
+                          getRequestGroup()->getFirstFilePath().c_str()));
       }
       poolConnection();
       return;
     }
 
-    getRequestGroup()->adjustFilename
-      (std::make_shared<NullProgressInfoFile>());
+    getRequestGroup()->adjustFilename(std::make_shared<NullProgressInfoFile>());
     getRequestGroup()->initPieceStorage();
     getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
 
-    if(getDownloadContext()->knowsTotalLength()) {
+    if (getDownloadContext()->knowsTotalLength()) {
       A2_LOG_DEBUG("File length becomes zero and it means download completed.");
       // TODO Known issue: if .aria2 file exists, it will not be
       // deleted on successful verification, because .aria2 file is
       // not loaded.  See also
       // HttpResponseCommand::handleOtherEncoding()
-      if(getDownloadContext()->isChecksumVerificationNeeded()) {
+      if (getDownloadContext()->isChecksumVerificationNeeded()) {
         A2_LOG_DEBUG("Verify checksum for zero-length file");
-        auto entry = make_unique<ChecksumCheckIntegrityEntry>
-          (getRequestGroup());
+        auto entry =
+            make_unique<ChecksumCheckIntegrityEntry>(getRequestGroup());
         entry->initValidator();
-        getDownloadEngine()->getCheckIntegrityMan()->pushEntry
-          (std::move(entry));
+        getDownloadEngine()->getCheckIntegrityMan()->pushEntry(
+            std::move(entry));
         sequence_ = SEQ_EXIT;
-      } else
-        {
-          sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
-          getPieceStorage()->markAllPiecesDone();
-        }
+      }
+      else {
+        sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
+        getPieceStorage()->markAllPiecesDone();
+      }
       poolConnection();
       return;
     }
@@ -282,19 +277,20 @@ void SftpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
     // AbstractCommand::execute()
     getSegmentMan()->getSegmentWithIndex(getCuid(), 0);
     return;
-  } else {
-    auto progressInfoFile = std::make_shared<DefaultBtProgressInfoFile>
-      (getDownloadContext(), nullptr, getOption().get());
+  }
+  else {
+    auto progressInfoFile = std::make_shared<DefaultBtProgressInfoFile>(
+        getDownloadContext(), nullptr, getOption().get());
     getRequestGroup()->adjustFilename(progressInfoFile);
     getRequestGroup()->initPieceStorage();
 
-    if(getOption()->getAsBool(PREF_DRY_RUN)) {
+    if (getOption()->getAsBool(PREF_DRY_RUN)) {
       onDryRunFileFound();
       return;
     }
 
     auto checkIntegrityEntry = getRequestGroup()->createCheckIntegrityEntry();
-    if(!checkIntegrityEntry) {
+    if (!checkIntegrityEntry) {
       sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
       poolConnection();
       return;
@@ -315,7 +311,7 @@ void SftpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
 
 void SftpNegotiationCommand::poolConnection() const
 {
-  if(getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
+  if (getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
     // TODO we don't need options.  Probably, we need to pool socket
     // using scheme, port and auth info as key
     getDownloadEngine()->poolSocket(getRequest(), authConfig_->getUser(),
@@ -331,8 +327,9 @@ void SftpNegotiationCommand::onDryRunFileFound()
   sequence_ = SEQ_HEAD_OK;
 }
 
-std::string SftpNegotiationCommand::getPath() const {
-  auto &req = getRequest();
+std::string SftpNegotiationCommand::getPath() const
+{
+  auto& req = getRequest();
   auto path = req->getDir() + req->getFile();
   return util::percentDecode(std::begin(path), std::end(path));
 }

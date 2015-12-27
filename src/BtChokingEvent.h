@@ -39,7 +39,8 @@
 
 namespace aria2 {
 
-class BtChokingEvent {};
+class BtChokingEvent {
+};
 
 } // namespace aria2
 

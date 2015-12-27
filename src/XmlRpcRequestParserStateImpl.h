@@ -41,7 +41,7 @@ namespace aria2 {
 
 namespace rpc {
 
-class InitialXmlRpcRequestParserState:public XmlRpcRequestParserState {
+class InitialXmlRpcRequestParserState : public XmlRpcRequestParserState {
 public:
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
@@ -51,11 +51,10 @@ public:
                           const char* name,
                           std::string characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
-  { return false; }
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return false; }
 };
 
-class UnknownElementXmlRpcRequestParserState:public XmlRpcRequestParserState {
+class UnknownElementXmlRpcRequestParserState : public XmlRpcRequestParserState {
 public:
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
@@ -63,13 +62,14 @@ public:
 
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
-                          std::string characters) CXX11_OVERRIDE {}
+                          std::string characters) CXX11_OVERRIDE
+  {
+  }
 
-  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
-  { return false; }
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return false; }
 };
 
-class MethodCallXmlRpcRequestParserState:public XmlRpcRequestParserState {
+class MethodCallXmlRpcRequestParserState : public XmlRpcRequestParserState {
 public:
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
@@ -77,13 +77,14 @@ public:
 
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
-                          std::string characters) CXX11_OVERRIDE {}
+                          std::string characters) CXX11_OVERRIDE
+  {
+  }
 
-  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
-  { return false; }
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return false; }
 };
 
-class MethodNameXmlRpcRequestParserState:public XmlRpcRequestParserState {
+class MethodNameXmlRpcRequestParserState : public XmlRpcRequestParserState {
 public:
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
@@ -96,20 +97,21 @@ public:
   virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return true; }
 };
 
-class ParamsXmlRpcRequestParserState:public XmlRpcRequestParserState {
+class ParamsXmlRpcRequestParserState : public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
 
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
-                          std::string characters) CXX11_OVERRIDE {}
+                          std::string characters) CXX11_OVERRIDE
+  {
+  }
 
-  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
-  { return false; }
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return false; }
 };
 
-class ParamXmlRpcRequestParserState:public XmlRpcRequestParserState {
+class ParamXmlRpcRequestParserState : public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
@@ -118,14 +120,14 @@ class ParamXmlRpcRequestParserState:public XmlRpcRequestParserState {
                           const char* name,
                           std::string characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
-  { return false; }
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return false; }
 };
 
-class ValueXmlRpcRequestParserState:public XmlRpcRequestParserState {
+class ValueXmlRpcRequestParserState : public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
+
 protected:
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
@@ -134,7 +136,7 @@ protected:
   virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return true; }
 };
 
-class IntXmlRpcRequestParserState:public XmlRpcRequestParserState {
+class IntXmlRpcRequestParserState : public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
@@ -146,7 +148,7 @@ class IntXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return true; }
 };
 
-class StringXmlRpcRequestParserState:public XmlRpcRequestParserState {
+class StringXmlRpcRequestParserState : public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
@@ -158,7 +160,7 @@ class StringXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return true; }
 };
 
-class Base64XmlRpcRequestParserState:public XmlRpcRequestParserState {
+class Base64XmlRpcRequestParserState : public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
@@ -170,20 +172,21 @@ class Base64XmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return true; }
 };
 
-class StructXmlRpcRequestParserState:public XmlRpcRequestParserState {
+class StructXmlRpcRequestParserState : public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
 
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
-                          std::string characters) CXX11_OVERRIDE {}
+                          std::string characters) CXX11_OVERRIDE
+  {
+  }
 
-  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
-  { return false; }
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return false; }
 };
 
-class MemberXmlRpcRequestParserState:public XmlRpcRequestParserState {
+class MemberXmlRpcRequestParserState : public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
@@ -192,11 +195,10 @@ class MemberXmlRpcRequestParserState:public XmlRpcRequestParserState {
                           const char* name,
                           std::string characters) CXX11_OVERRIDE;
 
-  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
-  { return false; }
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return false; }
 };
 
-class NameXmlRpcRequestParserState:public XmlRpcRequestParserState {
+class NameXmlRpcRequestParserState : public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
@@ -208,33 +210,36 @@ class NameXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return true; }
 };
 
-class ArrayXmlRpcRequestParserState:public XmlRpcRequestParserState {
+class ArrayXmlRpcRequestParserState : public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
 
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
-                          std::string characters) CXX11_OVERRIDE {}
+                          std::string characters) CXX11_OVERRIDE
+  {
+  }
 
-  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
-  { return false; }
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return false; }
 };
 
-class DataXmlRpcRequestParserState:public XmlRpcRequestParserState {
+class DataXmlRpcRequestParserState : public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
                             const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
 
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
-                          std::string characters) CXX11_OVERRIDE {}
+                          std::string characters) CXX11_OVERRIDE
+  {
+  }
 
-  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE
-  { return false; }
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE { return false; }
 };
 
-class ArrayValueXmlRpcRequestParserState:public ValueXmlRpcRequestParserState {
+class ArrayValueXmlRpcRequestParserState
+    : public ValueXmlRpcRequestParserState {
   virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
                           std::string characters) CXX11_OVERRIDE;

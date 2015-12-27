@@ -36,30 +36,25 @@
 
 namespace aria2 {
 
-String::String(const ValueType& string):str_{string} {}
-String::String(ValueType&& string):str_{std::move(string)} {}
+String::String(const ValueType& string) : str_{string} {}
+String::String(ValueType&& string) : str_{std::move(string)} {}
 
-String::String(const char* cstring):str_{cstring} {}
+String::String(const char* cstring) : str_{cstring} {}
 
-String::String(const char* data, size_t length)
-  : str_{&data[0], &data[length]}
- {}
+String::String(const char* data, size_t length) : str_{&data[0], &data[length]}
+{
+}
 
 String::String(const unsigned char* data, size_t length)
-  : str_{&data[0], &data[length]}
- {}
+    : str_{&data[0], &data[length]}
+{
+}
 
 String::String() {}
 
-const String::ValueType& String::s() const
-{
-  return str_;
-}
+const String::ValueType& String::s() const { return str_; }
 
-String::ValueType String::popValue() const
-{
-  return std::move(str_);
-}
+String::ValueType String::popValue() const { return std::move(str_); }
 
 const unsigned char* String::uc() const
 {
@@ -81,85 +76,49 @@ std::unique_ptr<String> String::g(const unsigned char* data, size_t length)
   return make_unique<String>(data, length);
 }
 
-void String::accept(ValueBaseVisitor& v) const
-{
-  v.visit(*this);
-}
+void String::accept(ValueBaseVisitor& v) const { v.visit(*this); }
 
 Integer::Integer(ValueType integer) : integer_{integer} {}
 
 Integer::Integer() : integer_{0} {}
 
-Integer::ValueType Integer::i() const
-{
-  return integer_;
-}
+Integer::ValueType Integer::i() const { return integer_; }
 
 std::unique_ptr<Integer> Integer::g(ValueType integer)
 {
   return make_unique<Integer>(integer);
 }
 
-void Integer::accept(ValueBaseVisitor& v) const
-{
-  v.visit(*this);
-}
+void Integer::accept(ValueBaseVisitor& v) const { v.visit(*this); }
 
-Bool::Bool(bool val):val_{val} {}
+Bool::Bool(bool val) : val_{val} {}
 
-std::unique_ptr<Bool> Bool::gTrue()
-{
-  return make_unique<Bool>(true);
-}
+std::unique_ptr<Bool> Bool::gTrue() { return make_unique<Bool>(true); }
 
-std::unique_ptr<Bool> Bool::gFalse()
-{
-  return make_unique<Bool>(false);
-}
+std::unique_ptr<Bool> Bool::gFalse() { return make_unique<Bool>(false); }
 
-bool Bool::val() const
-{
-  return val_;
-}
+bool Bool::val() const { return val_; }
 
-void Bool::accept(ValueBaseVisitor& v) const
-{
-  v.visit(*this);
-}
+void Bool::accept(ValueBaseVisitor& v) const { v.visit(*this); }
 
 Null::Null() {}
 
-std::unique_ptr<Null> Null::g()
-{
-  return make_unique<Null>();
-}
+std::unique_ptr<Null> Null::g() { return make_unique<Null>(); }
 
-void Null::accept(ValueBaseVisitor& v) const
-{
-  v.visit(*this);
-}
+void Null::accept(ValueBaseVisitor& v) const { v.visit(*this); }
 
 List::List() {}
 
-ValueBase* List::get(size_t index) const
-{
-  return list_[index].get();
-}
+ValueBase* List::get(size_t index) const { return list_[index].get(); }
 
 void List::set(size_t index, std::unique_ptr<ValueBase> v)
 {
   list_[index] = std::move(v);
 }
 
-void List::pop_front()
-{
-  list_.pop_front();
-}
+void List::pop_front() { list_.pop_front(); }
 
-void List::pop_back()
-{
-  list_.pop_back();
-}
+void List::pop_back() { list_.pop_back(); }
 
 void List::append(std::unique_ptr<ValueBase> v)
 {
@@ -177,60 +136,27 @@ List& List::operator<<(std::unique_ptr<ValueBase> v)
   return *this;
 }
 
-ValueBase* List::operator[](size_t index) const
-{
-  return list_[index].get();
-}
+ValueBase* List::operator[](size_t index) const { return list_[index].get(); }
 
-List::ValueType::iterator List::begin()
-{
-  return list_.begin();
-}
+List::ValueType::iterator List::begin() { return list_.begin(); }
 
-List::ValueType::iterator List::end()
-{
-  return list_.end();
-}
+List::ValueType::iterator List::end() { return list_.end(); }
 
-List::ValueType::const_iterator List::begin() const
-{
-  return list_.begin();
-}
+List::ValueType::const_iterator List::begin() const { return list_.begin(); }
 
-List::ValueType::const_iterator List::end() const
-{
-  return list_.end();
-}
+List::ValueType::const_iterator List::end() const { return list_.end(); }
 
-List::ValueType::const_iterator List::cbegin() const
-{
-  return list_.cbegin();
-}
+List::ValueType::const_iterator List::cbegin() const { return list_.cbegin(); }
 
-List::ValueType::const_iterator List::cend() const
-{
-  return list_.cend();
-}
+List::ValueType::const_iterator List::cend() const { return list_.cend(); }
 
-size_t List::size() const
-{
-  return list_.size();
-}
+size_t List::size() const { return list_.size(); }
 
-bool List::empty() const
-{
-  return list_.empty();
-}
+bool List::empty() const { return list_.empty(); }
 
-std::unique_ptr<List> List::g()
-{
-  return make_unique<List>();
-}
+std::unique_ptr<List> List::g() { return make_unique<List>(); }
 
-void List::accept(ValueBaseVisitor& v) const
-{
-  v.visit(*this);
-}
+void List::accept(ValueBaseVisitor& v) const { v.visit(*this); }
 
 Dict::Dict() {}
 
@@ -238,7 +164,7 @@ void Dict::put(std::string key, std::unique_ptr<ValueBase> vlb)
 {
   auto p = std::make_pair(std::move(key), std::move(vlb));
   auto r = dict_.insert(std::move(p));
-  if(!r.second) {
+  if (!r.second) {
     (*r.first).second = std::move(vlb);
   }
 }
@@ -251,88 +177,54 @@ void Dict::put(std::string key, String::ValueType string)
 ValueBase* Dict::get(const std::string& key) const
 {
   auto itr = dict_.find(key);
-  if(itr == std::end(dict_)) {
+  if (itr == std::end(dict_)) {
     return nullptr;
-  } else {
+  }
+  else {
     return (*itr).second.get();
   }
 }
 
-ValueBase* Dict::operator[](const std::string& key) const
-{
-  return get(key);
-}
+ValueBase* Dict::operator[](const std::string& key) const { return get(key); }
 
 bool Dict::containsKey(const std::string& key) const
 {
   return dict_.count(key);
 }
 
-void Dict::removeKey(const std::string& key)
-{
-  dict_.erase(key);
-}
+void Dict::removeKey(const std::string& key) { dict_.erase(key); }
 
 std::unique_ptr<ValueBase> Dict::popValue(const std::string& key)
 {
   auto i = dict_.find(key);
-  if(i == std::end(dict_)) {
+  if (i == std::end(dict_)) {
     return nullptr;
-  } else {
+  }
+  else {
     auto res = std::move((*i).second);
     dict_.erase(i);
     return res;
   }
 }
 
-Dict::ValueType::iterator Dict::begin()
-{
-  return dict_.begin();
-}
+Dict::ValueType::iterator Dict::begin() { return dict_.begin(); }
 
-Dict::ValueType::iterator Dict::end()
-{
-  return dict_.end();
-}
+Dict::ValueType::iterator Dict::end() { return dict_.end(); }
 
-Dict::ValueType::const_iterator Dict::begin() const
-{
-  return dict_.begin();
-}
+Dict::ValueType::const_iterator Dict::begin() const { return dict_.begin(); }
 
-Dict::ValueType::const_iterator Dict::end() const
-{
-  return dict_.end();
-}
+Dict::ValueType::const_iterator Dict::end() const { return dict_.end(); }
 
-Dict::ValueType::const_iterator Dict::cbegin() const
-{
-  return dict_.cbegin();
-}
+Dict::ValueType::const_iterator Dict::cbegin() const { return dict_.cbegin(); }
 
-Dict::ValueType::const_iterator Dict::cend() const
-{
-  return dict_.cend();
-}
+Dict::ValueType::const_iterator Dict::cend() const { return dict_.cend(); }
 
-size_t Dict::size() const
-{
-  return dict_.size();
-}
+size_t Dict::size() const { return dict_.size(); }
 
-bool Dict::empty() const
-{
-  return dict_.empty();
-}
+bool Dict::empty() const { return dict_.empty(); }
 
-std::unique_ptr<Dict> Dict::g()
-{
-  return make_unique<Dict>();
-}
+std::unique_ptr<Dict> Dict::g() { return make_unique<Dict>(); }
 
-void Dict::accept(ValueBaseVisitor& v) const
-{
-  v.visit(*this);
-}
+void Dict::accept(ValueBaseVisitor& v) const { v.visit(*this); }
 
 } // namespace aria2

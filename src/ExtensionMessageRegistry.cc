@@ -40,17 +40,14 @@
 namespace aria2 {
 
 ExtensionMessageRegistry::ExtensionMessageRegistry()
-  : extensions_(MAX_EXTENSION)
-{}
+    : extensions_(MAX_EXTENSION)
+{
+}
 
 ExtensionMessageRegistry::~ExtensionMessageRegistry() {}
 
 namespace {
-const char* EXTENSION_NAMES[] = {
-  "ut_metadata",
-  "ut_pex",
-  nullptr
-};
+const char* EXTENSION_NAMES[] = {"ut_metadata", "ut_pex", nullptr};
 } // namespace
 
 uint8_t ExtensionMessageRegistry::getExtensionMessageID(int key) const
@@ -62,11 +59,11 @@ uint8_t ExtensionMessageRegistry::getExtensionMessageID(int key) const
 const char* ExtensionMessageRegistry::getExtensionName(uint8_t id) const
 {
   int i;
-  if(id == 0) {
+  if (id == 0) {
     return nullptr;
   }
-  for(i = 0; i < MAX_EXTENSION; ++i) {
-    if(extensions_[i] == id) {
+  for (i = 0; i < MAX_EXTENSION; ++i) {
+    if (extensions_[i] == id) {
       break;
     }
   }
@@ -92,9 +89,10 @@ void ExtensionMessageRegistry::setExtensions(const Extensions& extensions)
 
 const char* strBtExtension(int key)
 {
-  if(key >= ExtensionMessageRegistry::MAX_EXTENSION) {
+  if (key >= ExtensionMessageRegistry::MAX_EXTENSION) {
     return nullptr;
-  } else {
+  }
+  else {
     return EXTENSION_NAMES[key];
   }
 }
@@ -102,8 +100,8 @@ const char* strBtExtension(int key)
 int keyBtExtension(const char* name)
 {
   int i;
-  for(i = 0; i < ExtensionMessageRegistry::MAX_EXTENSION; ++i) {
-    if(strcmp(EXTENSION_NAMES[i], name) == 0) {
+  for (i = 0; i < ExtensionMessageRegistry::MAX_EXTENSION; ++i) {
+    if (strcmp(EXTENSION_NAMES[i], name) == 0) {
       break;
     }
   }

@@ -5,7 +5,7 @@ using namespace aria2::expr;
 
 namespace aria2 {
 
-class array_funTest:public CppUnit::TestFixture {
+class array_funTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(array_funTest);
   CPPUNIT_TEST(testArray_negate);
@@ -22,18 +22,16 @@ public:
   void testArrayLength();
   void testArrayWrapper();
 
-  struct X{
+  struct X {
     int m;
   };
-
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(array_funTest);
 
 void array_funTest::testArray_negate()
 {
-  unsigned char a[] = { 0xaa, 0x55 };
+  unsigned char a[] = {0xaa, 0x55};
   CPPUNIT_ASSERT_EQUAL((unsigned char)0x55, (~array(a))[0]);
   CPPUNIT_ASSERT_EQUAL((unsigned char)0xaa, (~array((unsigned char*)a))[1]);
 
@@ -43,24 +41,24 @@ void array_funTest::testArray_negate()
 
 void array_funTest::testArray_and()
 {
-  unsigned char a1[] = { 0xaa, 0x55 };
-  unsigned char a2[] = { 0x1a, 0x25 };
-  CPPUNIT_ASSERT_EQUAL((unsigned char)0x0a, (array(a1)&array(a2))[0]);
-  CPPUNIT_ASSERT_EQUAL((unsigned char)0x05, (array(a1)&array(a2))[1]);
+  unsigned char a1[] = {0xaa, 0x55};
+  unsigned char a2[] = {0x1a, 0x25};
+  CPPUNIT_ASSERT_EQUAL((unsigned char)0x0a, (array(a1) & array(a2))[0]);
+  CPPUNIT_ASSERT_EQUAL((unsigned char)0x05, (array(a1) & array(a2))[1]);
 
-  CPPUNIT_ASSERT_EQUAL((unsigned char)0xa0, (array(a1)&~array(a2))[0]);
-  CPPUNIT_ASSERT_EQUAL((unsigned char)0x50, (array(a1)&~array(a2))[1]);
+  CPPUNIT_ASSERT_EQUAL((unsigned char)0xa0, (array(a1) & ~array(a2))[0]);
+  CPPUNIT_ASSERT_EQUAL((unsigned char)0x50, (array(a1) & ~array(a2))[1]);
 
-  CPPUNIT_ASSERT_EQUAL((unsigned char)0xa0, (~array(a2)&array(a1))[0]);
-  CPPUNIT_ASSERT_EQUAL((unsigned char)0x50, (~array(a2)&array(a1))[1]);
+  CPPUNIT_ASSERT_EQUAL((unsigned char)0xa0, (~array(a2) & array(a1))[0]);
+  CPPUNIT_ASSERT_EQUAL((unsigned char)0x50, (~array(a2) & array(a1))[1]);
 
-  CPPUNIT_ASSERT_EQUAL((unsigned char)0x45, (~array(a1)&~array(a2))[0]);
-  CPPUNIT_ASSERT_EQUAL((unsigned char)0x8a, (~array(a1)&~array(a2))[1]);
+  CPPUNIT_ASSERT_EQUAL((unsigned char)0x45, (~array(a1) & ~array(a2))[0]);
+  CPPUNIT_ASSERT_EQUAL((unsigned char)0x8a, (~array(a1) & ~array(a2))[1]);
 }
 
 void array_funTest::testArrayLength()
 {
-  int64_t ia[] = { 1, 2, 3, 4, 5 };
+  int64_t ia[] = {1, 2, 3, 4, 5};
   CPPUNIT_ASSERT_EQUAL((size_t)5, arraySize(ia));
   // This causes compile error under clang and gcc v3.4.3 opensolaris
   // 5.11
@@ -87,7 +85,7 @@ void array_funTest::testArrayWrapper()
 {
   array_wrapper<int, 10> a1;
   CPPUNIT_ASSERT_EQUAL((size_t)10, a1.size());
-  for(size_t i = 0; i < a1.size(); ++i) {
+  for (size_t i = 0; i < a1.size(); ++i) {
     a1[i] = i;
   }
   CPPUNIT_ASSERT_EQUAL(9, a1[9]);

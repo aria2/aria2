@@ -39,9 +39,10 @@
 
 namespace aria2 {
 
-class TimedHaltCommand:public TimeBasedCommand {
+class TimedHaltCommand : public TimeBasedCommand {
 private:
   bool forceHalt_;
+
 public:
   TimedHaltCommand(cuid_t cuid, DownloadEngine* e,
                    std::chrono::seconds secondsToHalt, bool forceHalt = false);

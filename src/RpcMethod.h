@@ -65,29 +65,31 @@ struct RpcResponse;
 class RpcMethod {
 private:
   std::shared_ptr<OptionParser> optionParser_;
+
 protected:
   // Subclass must implement this function to fulfil RpcRequest req.
   // The return value of this method is used as a return value of RPC
   // request.
-  virtual std::unique_ptr<ValueBase> process
-  (const RpcRequest& req, DownloadEngine* e) = 0;
+  virtual std::unique_ptr<ValueBase> process(const RpcRequest& req,
+                                             DownloadEngine* e) = 0;
 
   void gatherRequestOption(Option* option, const Dict* optionsDict);
 
   void gatherChangeableOption(Option* option, const Dict* optionDict);
 
-  void gatherChangeableOptionForReserved
-  (Option* option, const Dict* optionsDict);
+  void gatherChangeableOptionForReserved(Option* option,
+                                         const Dict* optionsDict);
 
   void gatherChangeableGlobalOption(Option* option, const Dict* optionDict);
 
-  std::unique_ptr<ValueBase> createErrorResponse
-  (const Exception& e, const RpcRequest& req);
+  std::unique_ptr<ValueBase> createErrorResponse(const Exception& e,
+                                                 const RpcRequest& req);
 
   const std::shared_ptr<OptionParser>& getOptionParser() const
   {
     return optionParser_;
   }
+
 public:
   RpcMethod();
 

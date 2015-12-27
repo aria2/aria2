@@ -48,23 +48,23 @@
 namespace aria2 {
 
 DHTConnectionImpl::DHTConnectionImpl(int family)
-  : socket_(std::make_shared<SocketCore>(SOCK_DGRAM)),
-    family_(family)
-{}
+    : socket_(std::make_shared<SocketCore>(SOCK_DGRAM)), family_(family)
+{
+}
 
 DHTConnectionImpl::~DHTConnectionImpl() {}
 
-bool DHTConnectionImpl::bind
-(uint16_t& port, const std::string& addr, SegList<int>& sgl)
+bool DHTConnectionImpl::bind(uint16_t& port, const std::string& addr,
+                             SegList<int>& sgl)
 {
   std::vector<uint16_t> ports;
-  while(sgl.hasNext()) {
+  while (sgl.hasNext()) {
     ports.push_back(sgl.next());
   }
   std::shuffle(ports.begin(), ports.end(), *SimpleRandomizer::getInstance());
   for (const auto& p : ports) {
     port = p;
-    if(bind(port, addr)) {
+    if (bind(port, addr)) {
       return true;
     }
   }
@@ -82,7 +82,8 @@ bool DHTConnectionImpl::bind(uint16_t& port, const std::string& addr)
     port = svaddr.second;
     A2_LOG_NOTICE(fmt(_("IPv%d DHT: listening on UDP port %u"), ipv, port));
     return true;
-  } catch(RecoverableException& e) {
+  }
+  catch (RecoverableException& e) {
     A2_LOG_ERROR_EX(fmt("IPv%d DHT: failed to bind UDP port %u", ipv, port), e);
   }
   return false;
@@ -93,9 +94,10 @@ ssize_t DHTConnectionImpl::receiveMessage(unsigned char* data, size_t len,
 {
   std::pair<std::string, uint16_t> remoteHost;
   ssize_t length = socket_->readDataFrom(data, len, remoteHost);
-  if(length == 0) {
+  if (length == 0) {
     return length;
-  } else {
+  }
+  else {
     host = remoteHost.first;
     port = remoteHost.second;
     return length;

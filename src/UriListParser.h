@@ -52,6 +52,7 @@ private:
   std::unique_ptr<IOFile> fp_;
 
   std::string line_;
+
 public:
   UriListParser(const std::string& filename);
 

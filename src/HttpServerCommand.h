@@ -57,13 +57,12 @@ private:
 
   void checkSocketRecvBuffer();
   void updateWriteCheck();
+
 public:
   HttpServerCommand(cuid_t cuid, DownloadEngine* e,
-                    const std::shared_ptr<SocketCore>& socket,
-                    bool secure);
+                    const std::shared_ptr<SocketCore>& socket, bool secure);
 
-  HttpServerCommand(cuid_t cuid,
-                    const std::shared_ptr<HttpServer>& httpServer,
+  HttpServerCommand(cuid_t cuid, const std::shared_ptr<HttpServer>& httpServer,
                     DownloadEngine* e,
                     const std::shared_ptr<SocketCore>& socket);
 

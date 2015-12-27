@@ -6,18 +6,18 @@
 
 namespace aria2 {
 
-class Bencode2Test:public CppUnit::TestFixture {
+class Bencode2Test : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(Bencode2Test);
   CPPUNIT_TEST(testEncode);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
   void testEncode();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( Bencode2Test );
+CPPUNIT_TEST_SUITE_REGISTRATION(Bencode2Test);
 
 void Bencode2Test::testEncode()
 {

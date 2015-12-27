@@ -62,6 +62,7 @@ private:
   DHTTaskFactory* taskFactory_;
 
   bool addNode(const std::shared_ptr<DHTNode>& node, bool good);
+
 public:
   DHTRoutingTable(const std::shared_ptr<DHTNode>& localNode);
 
@@ -71,7 +72,7 @@ public:
 
   bool addGoodNode(const std::shared_ptr<DHTNode>& node);
 
-  void getClosestKNodes(std::vector<std::shared_ptr<DHTNode> >& nodes,
+  void getClosestKNodes(std::vector<std::shared_ptr<DHTNode>>& nodes,
                         const unsigned char* key) const;
 
   int getNumBucket() const;
@@ -86,11 +87,14 @@ public:
 
   std::shared_ptr<DHTBucket> getBucketFor(const unsigned char* nodeID) const;
 
-  std::shared_ptr<DHTBucket> getBucketFor(const std::shared_ptr<DHTNode>& node) const;
+  std::shared_ptr<DHTBucket>
+  getBucketFor(const std::shared_ptr<DHTNode>& node) const;
 
-  std::shared_ptr<DHTNode> getNode(const unsigned char* id, const std::string& ipaddr, uint16_t port) const;
+  std::shared_ptr<DHTNode> getNode(const unsigned char* id,
+                                   const std::string& ipaddr,
+                                   uint16_t port) const;
 
-  void getBuckets(std::vector<std::shared_ptr<DHTBucket> >& buckets) const;
+  void getBuckets(std::vector<std::shared_ptr<DHTBucket>>& buckets) const;
 
   void setTaskQueue(DHTTaskQueue* taskQueue);
 

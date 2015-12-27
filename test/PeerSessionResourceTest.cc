@@ -8,7 +8,7 @@
 
 namespace aria2 {
 
-class PeerSessionResourceTest:public CppUnit::TestFixture {
+class PeerSessionResourceTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(PeerSessionResourceTest);
   CPPUNIT_TEST(testPeerAllowedIndexSetContains);
@@ -30,6 +30,7 @@ class PeerSessionResourceTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testShouldBeChoking);
   CPPUNIT_TEST(testCountOutstandingRequest);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -54,7 +55,6 @@ public:
   void testShouldBeChoking();
   void testCountOutstandingRequest();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(PeerSessionResourceTest);
 
@@ -138,12 +138,10 @@ void PeerSessionResourceTest::testGetExtensionMessageID()
   PeerSessionResource res(1_k, 1_m);
 
   res.addExtension(ExtensionMessageRegistry::UT_PEX, 9);
-  CPPUNIT_ASSERT_EQUAL((uint8_t)9,
-                       res.getExtensionMessageID
-                       (ExtensionMessageRegistry::UT_PEX));
-  CPPUNIT_ASSERT_EQUAL((uint8_t)0,
-                       res.getExtensionMessageID
-                       (ExtensionMessageRegistry::UT_METADATA));
+  CPPUNIT_ASSERT_EQUAL(
+      (uint8_t)9, res.getExtensionMessageID(ExtensionMessageRegistry::UT_PEX));
+  CPPUNIT_ASSERT_EQUAL((uint8_t)0, res.getExtensionMessageID(
+                                       ExtensionMessageRegistry::UT_METADATA));
 
   CPPUNIT_ASSERT_EQUAL(std::string("ut_pex"),
                        std::string(res.getExtensionName(9)));
@@ -253,8 +251,8 @@ void PeerSessionResourceTest::testShouldBeChoking()
 void PeerSessionResourceTest::testCountOutstandingRequest()
 {
   PeerSessionResource res(1_k, 1_m);
-  std::shared_ptr<MockBtMessageDispatcher> dispatcher
-    (new MockBtMessageDispatcher());
+  std::shared_ptr<MockBtMessageDispatcher> dispatcher(
+      new MockBtMessageDispatcher());
   res.setBtMessageDispatcher(dispatcher.get());
 
   CPPUNIT_ASSERT_EQUAL((size_t)0, res.countOutstandingUpload());

@@ -39,27 +39,22 @@
 
 namespace aria2 {
 
-std::vector<XmlAttr>::const_iterator findAttr
-(const std::vector<XmlAttr>& attrs,
- const char* localname,
- const char* nsUri);
+std::vector<XmlAttr>::const_iterator findAttr(const std::vector<XmlAttr>& attrs,
+                                              const char* localname,
+                                              const char* nsUri);
 
-class SkipTagMetalinkParserState:public MetalinkParserState
-{
+class SkipTagMetalinkParserState : public MetalinkParserState {
 public:
   virtual void beginElement(MetalinkParserStateMachine* psm,
-                            const char* localname,
-                            const char* prefix,
+                            const char* localname, const char* prefix,
                             const char* nsUri,
                             const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
 };
 
-class InitialMetalinkParserState:public MetalinkParserState
-{
+class InitialMetalinkParserState : public MetalinkParserState {
 public:
   virtual void beginElement(MetalinkParserStateMachine* psm,
-                            const char* localname,
-                            const char* prefix,
+                            const char* localname, const char* prefix,
                             const char* nsUri,
                             const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
 };

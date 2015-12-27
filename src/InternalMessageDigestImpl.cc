@@ -43,9 +43,8 @@ namespace {
 using namespace aria2;
 using namespace crypto;
 
-template<hash::Algorithms algo>
-class MessageDigestBase : public MessageDigestImpl
-{
+template <hash::Algorithms algo>
+class MessageDigestBase : public MessageDigestImpl {
 public:
   MessageDigestBase() : ctx_{hash::create(algo)} {}
   virtual ~MessageDigestBase() {}
@@ -61,17 +60,14 @@ public:
     return ctx_->length();
   }
 
-  virtual void reset() CXX11_OVERRIDE
-  {
-    ctx_->reset();
-  }
+  virtual void reset() CXX11_OVERRIDE { ctx_->reset(); }
 
-  virtual void update(const void *data, size_t length) CXX11_OVERRIDE
+  virtual void update(const void* data, size_t length) CXX11_OVERRIDE
   {
     ctx_->update(data, length);
   }
 
-  virtual void digest(unsigned char *md) CXX11_OVERRIDE
+  virtual void digest(unsigned char* md) CXX11_OVERRIDE
   {
     auto rv = ctx_->finalize();
     memcpy(md, rv.data(), rv.length());
@@ -92,18 +88,18 @@ typedef MessageDigestBase<hash::algoSHA512> MessageDigestSHA512;
 
 namespace aria2 {
 
-std::unique_ptr<MessageDigestImpl> MessageDigestImpl::sha1() {
+std::unique_ptr<MessageDigestImpl> MessageDigestImpl::sha1()
+{
   return make_unique<MessageDigestSHA1>();
 }
 
 MessageDigestImpl::hashes_t MessageDigestImpl::hashes = {
-  { "sha-1", make_hi<MessageDigestSHA1>() },
-  { "sha-224", make_hi<MessageDigestSHA224>() },
-  { "sha-256", make_hi<MessageDigestSHA256>() },
-  { "sha-384", make_hi<MessageDigestSHA384>() },
-  { "sha-512", make_hi<MessageDigestSHA512>() },
-  { "md5", make_hi<MessageDigestMD5>() },
-  ADLER32_MESSAGE_DIGEST
-};
+    {"sha-1", make_hi<MessageDigestSHA1>()},
+    {"sha-224", make_hi<MessageDigestSHA224>()},
+    {"sha-256", make_hi<MessageDigestSHA256>()},
+    {"sha-384", make_hi<MessageDigestSHA384>()},
+    {"sha-512", make_hi<MessageDigestSHA512>()},
+    {"md5", make_hi<MessageDigestMD5>()},
+    ADLER32_MESSAGE_DIGEST};
 
 } // namespace aria2

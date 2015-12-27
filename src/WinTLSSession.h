@@ -45,8 +45,7 @@
 namespace aria2 {
 
 namespace wintls {
-struct Buffer
-{
+struct Buffer {
 private:
   size_t off_, free_, cap_;
   std::vector<char> buf_;
@@ -54,15 +53,9 @@ private:
 public:
   inline Buffer() : off_(0), free_(0), cap_(0) {}
 
-  inline size_t size() const
-  {
-    return off_;
-  }
+  inline size_t size() const { return off_; }
 
-  inline size_t free() const
-  {
-    return free_;
-  }
+  inline size_t free() const { return free_; }
 
   inline void resize(size_t len)
   {
@@ -74,15 +67,9 @@ public:
     free_ = cap_ - off_;
   }
 
-  inline char* data()
-  {
-    return buf_.data();
-  }
+  inline char* data() { return buf_.data(); }
 
-  inline char* end()
-  {
-    return buf_.data() + off_;
-  }
+  inline char* end() { return buf_.data() + off_; }
 
   inline void eat(size_t len)
   {
@@ -93,10 +80,7 @@ public:
     free_ = cap_ - off_;
   }
 
-  inline void clear()
-  {
-    eat(off_);
-  }
+  inline void clear() { eat(off_); }
 
   inline void advance(size_t len)
   {
@@ -116,8 +100,7 @@ public:
 };
 } // namespace wintls
 
-class WinTLSSession : public TLSSession
-{
+class WinTLSSession : public TLSSession {
   enum state_t {
     st_constructed,
     st_initialized,
@@ -175,8 +158,7 @@ public:
   // if the underlying transport blocks, or TLS_ERR_ERROR.
   // When returning TLS_ERR_ERROR, provide certificate validation error
   // in |handshakeErr|.
-  virtual int tlsConnect(const std::string& hostname,
-                         TLSVersion& version,
+  virtual int tlsConnect(const std::string& hostname, TLSVersion& version,
                          std::string& handshakeErr) CXX11_OVERRIDE;
 
   // Performs server side handshake. This function returns TLS_ERR_OK

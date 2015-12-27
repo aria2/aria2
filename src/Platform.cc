@@ -35,29 +35,29 @@
 #include "Platform.h"
 
 #include <stdlib.h> /* _fmode */
-#include <fcntl.h> /*  _O_BINARY */
+#include <fcntl.h>  /*  _O_BINARY */
 
 #include <locale.h> // For setlocale, LC_*
 
 #include <iostream>
 
 #ifdef HAVE_OPENSSL
-# include <openssl/err.h>
-# include <openssl/ssl.h>
+#include <openssl/err.h>
+#include <openssl/ssl.h>
 #endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGCRYPT
-# include <gcrypt.h>
+#include <gcrypt.h>
 #endif // HAVE_LIBGCRYPT
 #ifdef HAVE_LIBGNUTLS
-# include <gnutls/gnutls.h>
+#include <gnutls/gnutls.h>
 #endif // HAVE_LIBGNUTLS
 
 #ifdef ENABLE_ASYNC_DNS
-# include <ares.h>
+#include <ares.h>
 #endif // ENABLE_ASYNC_DNS
 
 #ifdef HAVE_LIBSSH2
-# include <libssh2.h>
+#include <libssh2.h>
 #endif // HAVE_LIBSSH2
 
 #include "a2netcompat.h"
@@ -68,7 +68,7 @@
 #include "OptionParser.h"
 #include "prefs.h"
 #ifdef HAVE_LIBGMP
-# include "a2gmp.h"
+#include "a2gmp.h"
 #endif // HAVE_LIBGMP
 #include "LogFactory.h"
 
@@ -76,28 +76,22 @@ namespace aria2 {
 
 #ifdef HAVE_LIBGNUTLS
 namespace {
-  void gnutls_log_callback(int level, const char *str)
-  {
-    using namespace aria2;
-    // GnuTLS adds a newline. Drop it.
-    std::string msg(str);
-    msg.resize(msg.size() - 1);
-    A2_LOG_DEBUG(fmt("GnuTLS: <%d> %s", level, msg.c_str()));
-  }
+void gnutls_log_callback(int level, const char* str)
+{
+  using namespace aria2;
+  // GnuTLS adds a newline. Drop it.
+  std::string msg(str);
+  msg.resize(msg.size() - 1);
+  A2_LOG_DEBUG(fmt("GnuTLS: <%d> %s", level, msg.c_str()));
+}
 }
 #endif // HAVE_LIBGNUTLS
 
 bool Platform::initialized_ = false;
 
-Platform::Platform()
-{
-  setUp();
-}
+Platform::Platform() { setUp(); }
 
-Platform::~Platform()
-{
-  tearDown();
-}
+Platform::~Platform() { tearDown(); }
 
 bool Platform::setUp()
 {
@@ -109,10 +103,10 @@ bool Platform::setUp()
   global::initGmp();
 #endif // HAVE_LIBGMP
 #ifdef ENABLE_NLS
-  setlocale (LC_CTYPE, "");
-  setlocale (LC_MESSAGES, "");
-  bindtextdomain (PACKAGE, LOCALEDIR);
-  textdomain (PACKAGE);
+  setlocale(LC_CTYPE, "");
+  setlocale(LC_MESSAGES, "");
+  bindtextdomain(PACKAGE, LOCALEDIR);
+  textdomain(PACKAGE);
 #endif // ENABLE_NLS
 
 #ifdef HAVE_OPENSSL
@@ -123,7 +117,7 @@ bool Platform::setUp()
   OpenSSL_add_all_algorithms();
 #endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGCRYPT
-  if(!gcry_check_version("1.2.4")) {
+  if (!gcry_check_version("1.2.4")) {
     throw DL_ABORT_EX("gcry_check_version() failed.");
   }
   gcry_control(GCRYCTL_DISABLE_SECMEM, 0);
@@ -132,9 +126,9 @@ bool Platform::setUp()
 #ifdef HAVE_LIBGNUTLS
   {
     int r = gnutls_global_init();
-    if(r != GNUTLS_E_SUCCESS) {
-      throw DL_ABORT_EX(fmt("gnutls_global_init() failed, cause:%s",
-                            gnutls_strerror(r)));
+    if (r != GNUTLS_E_SUCCESS) {
+      throw DL_ABORT_EX(
+          fmt("gnutls_global_init() failed, cause:%s", gnutls_strerror(r)));
     }
 
     gnutls_global_set_log_function(gnutls_log_callback);
@@ -144,7 +138,7 @@ bool Platform::setUp()
 
 #ifdef CARES_HAVE_ARES_LIBRARY_INIT
   int aresErrorCode;
-  if((aresErrorCode = ares_library_init(ARES_LIB_INIT_ALL)) != 0) {
+  if ((aresErrorCode = ares_library_init(ARES_LIB_INIT_ALL)) != 0) {
     global::cerr()->printf("ares_library_init() failed:%s\n",
                            ares_strerror(aresErrorCode));
   }
@@ -206,9 +200,6 @@ bool Platform::tearDown()
   return true;
 }
 
-bool Platform::isInitialized()
-{
-  return initialized_;
-}
+bool Platform::isInitialized() { return initialized_; }
 
 } // namespace aria2

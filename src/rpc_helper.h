@@ -59,8 +59,7 @@ RpcRequest xmlParseMemory(const char* xml, size_t size);
 
 // Creates error response. The |code| is the JSON-RPC error code.  The
 // |msg| is the error message. The |id| is the id of the request .
-RpcResponse createJsonRpcErrorResponse(int code,
-                                       const std::string& msg,
+RpcResponse createJsonRpcErrorResponse(int code, const std::string& msg,
                                        std::unique_ptr<ValueBase> id);
 
 // Processes JSON-RPC request |jsondict| and returns the result.

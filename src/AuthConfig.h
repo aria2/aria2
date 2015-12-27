@@ -48,6 +48,7 @@ private:
   std::string authScheme_;
   std::string user_;
   std::string password_;
+
 public:
   AuthConfig();
   AuthConfig(std::string user, std::string password);
@@ -59,18 +60,12 @@ public:
 
   std::string getAuthText() const;
 
-  const std::string& getUser() const
-  {
-    return user_;
-  }
+  const std::string& getUser() const { return user_; }
 
-  const std::string& getPassword() const
-  {
-    return password_;
-  }
+  const std::string& getPassword() const { return password_; }
 
-  static std::unique_ptr<AuthConfig> create
-  (std::string user, std::string password);
+  static std::unique_ptr<AuthConfig> create(std::string user,
+                                            std::string password);
 };
 
 std::ostream& operator<<(std::ostream& o,

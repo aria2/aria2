@@ -14,7 +14,7 @@
 
 namespace aria2 {
 
-class Aria2ApiTest:public CppUnit::TestFixture {
+class Aria2ApiTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(Aria2ApiTest);
   CPPUNIT_TEST(testAddUri);
@@ -28,6 +28,7 @@ class Aria2ApiTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE_END();
 
   Session* session_;
+
 public:
   void setUp()
   {
@@ -36,10 +37,7 @@ public:
     session_ = sessionNew(options, config);
   }
 
-  void tearDown()
-  {
-    sessionFinal(session_);
-  }
+  void tearDown() { sessionFinal(session_); }
 
   void testAddUri();
   void testAddMetalink();
@@ -76,30 +74,28 @@ void Aria2ApiTest::testAddUri()
 
 void Aria2ApiTest::testAddMetalink()
 {
-  std::string metalinkPath = A2_TEST_DIR"/metalink4.xml";
+  std::string metalinkPath = A2_TEST_DIR "/metalink4.xml";
   std::vector<A2Gid> gids;
   KeyVals options;
 #ifdef ENABLE_METALINK
   CPPUNIT_ASSERT_EQUAL(0, addMetalink(session_, &gids, metalinkPath, options));
 #ifdef ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL((size_t)2, gids.size());
-#else // !ENABLE_BITTORRENT
+#else  // !ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL((size_t)1, gids.size());
 #endif // !ENABLE_BITTORRENT
 
   gids.clear();
   options.push_back(KeyVals::value_type("file-allocation", "foo"));
-  CPPUNIT_ASSERT_EQUAL(-1, addMetalink(session_, &gids, metalinkPath,
-                                       options));
-#else // !ENABLE_METALINK
-  CPPUNIT_ASSERT_EQUAL(-1, addMetalink(session_, &gids, metalinkPath,
-                                       options));
+  CPPUNIT_ASSERT_EQUAL(-1, addMetalink(session_, &gids, metalinkPath, options));
+#else  // !ENABLE_METALINK
+  CPPUNIT_ASSERT_EQUAL(-1, addMetalink(session_, &gids, metalinkPath, options));
 #endif // !ENABLE_METALINK
 }
 
 void Aria2ApiTest::testAddTorrent()
 {
-  std::string torrentPath = A2_TEST_DIR"/test.torrent";
+  std::string torrentPath = A2_TEST_DIR "/test.torrent";
   A2Gid gid;
   KeyVals options;
 #ifdef ENABLE_BITTORRENT
@@ -108,7 +104,7 @@ void Aria2ApiTest::testAddTorrent()
 
   options.push_back(KeyVals::value_type("file-allocation", "foo"));
   CPPUNIT_ASSERT_EQUAL(-1, addTorrent(session_, &gid, torrentPath, options));
-#else // !ENABLE_BITTORRENT
+#else  // !ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL(-1, addTorrent(session_, &gid, torrentPath, options));
 #endif // !ENABLE_BITTORRENT
 }
@@ -153,20 +149,19 @@ void Aria2ApiTest::testChangePosition()
   std::vector<std::string> uris(1);
   KeyVals options;
   uris[0] = "http://localhost/";
-  for(int i = 0; i < N; ++i) {
+  for (int i = 0; i < N; ++i) {
     CPPUNIT_ASSERT_EQUAL(0, addUri(session_, &gids[i], uris, options));
   }
-  CPPUNIT_ASSERT_EQUAL(-1, changePosition(session_, (A2Gid)0, -2,
-                                          OFFSET_MODE_CUR));
-  CPPUNIT_ASSERT_EQUAL(2, changePosition(session_, gids[4], -2,
-                                         OFFSET_MODE_CUR));
+  CPPUNIT_ASSERT_EQUAL(-1,
+                       changePosition(session_, (A2Gid)0, -2, OFFSET_MODE_CUR));
+  CPPUNIT_ASSERT_EQUAL(2,
+                       changePosition(session_, gids[4], -2, OFFSET_MODE_CUR));
 
-  CPPUNIT_ASSERT_EQUAL(5, changePosition(session_, gids[4], 5,
-                                         OFFSET_MODE_SET));
+  CPPUNIT_ASSERT_EQUAL(5,
+                       changePosition(session_, gids[4], 5, OFFSET_MODE_SET));
 
-  CPPUNIT_ASSERT_EQUAL(7, changePosition(session_, gids[4], -2,
-                                         OFFSET_MODE_END));
-
+  CPPUNIT_ASSERT_EQUAL(7,
+                       changePosition(session_, gids[4], -2, OFFSET_MODE_END));
 }
 
 void Aria2ApiTest::testChangeOption()
@@ -189,8 +184,8 @@ void Aria2ApiTest::testChangeOption()
   CPPUNIT_ASSERT(hd->getOption("unknown").empty());
   KeyVals retopts = hd->getOptions();
   CPPUNIT_ASSERT(std::find(retopts.begin(), retopts.end(),
-                           KeyVals::value_type("dir", "mydownload"))
-                 != retopts.end());
+                           KeyVals::value_type("dir", "mydownload")) !=
+                 retopts.end());
   // Don't return hidden option
   CPPUNIT_ASSERT(hd->getOption(PREF_STARTUP_IDLE_TIME->k).empty());
   deleteDownloadHandle(hd);
@@ -211,8 +206,9 @@ void Aria2ApiTest::testChangeOption()
 
 void Aria2ApiTest::testChangeGlobalOption()
 {
-  CPPUNIT_ASSERT_EQUAL(OptionParser::getInstance()->find(PREF_FILE_ALLOCATION)
-                       ->getDefaultValue(),
+  CPPUNIT_ASSERT_EQUAL(OptionParser::getInstance()
+                           ->find(PREF_FILE_ALLOCATION)
+                           ->getDefaultValue(),
                        getGlobalOption(session_, PREF_FILE_ALLOCATION->k));
   KeyVals options;
   options.push_back(KeyVals::value_type(PREF_FILE_ALLOCATION->k, "none"));
@@ -230,27 +226,25 @@ void Aria2ApiTest::testChangeGlobalOption()
 void Aria2ApiTest::testDownloadResultDH()
 {
   std::shared_ptr<DownloadResult> dr1 =
-    createDownloadResult(error_code::TIME_OUT, "http://example.org/timeout");
+      createDownloadResult(error_code::TIME_OUT, "http://example.org/timeout");
   dr1->option->put(PREF_DIR, "mydownload");
-  std::shared_ptr<DownloadResult> dr2 =
-    createDownloadResult(error_code::NETWORK_PROBLEM,
-                         "http://example.org/network");
+  std::shared_ptr<DownloadResult> dr2 = createDownloadResult(
+      error_code::NETWORK_PROBLEM, "http://example.org/network");
   auto& gman =
-    session_->context->reqinfo->getDownloadEngine()->getRequestGroupMan();
+      session_->context->reqinfo->getDownloadEngine()->getRequestGroupMan();
   gman->addDownloadResult(dr1);
   gman->addDownloadResult(dr2);
 
   DownloadHandle* hd = getDownloadHandle(session_, dr1->gid->getNumericId());
   CPPUNIT_ASSERT_EQUAL(DOWNLOAD_ERROR, hd->getStatus());
   CPPUNIT_ASSERT_EQUAL((int)error_code::TIME_OUT, hd->getErrorCode());
-  CPPUNIT_ASSERT_EQUAL(std::string("mydownload"),
-                       hd->getOption(PREF_DIR->k));
+  CPPUNIT_ASSERT_EQUAL(std::string("mydownload"), hd->getOption(PREF_DIR->k));
   // Don't return hidden option
   CPPUNIT_ASSERT(hd->getOption(PREF_STARTUP_IDLE_TIME->k).empty());
   KeyVals retopts = hd->getOptions();
   CPPUNIT_ASSERT(std::find(retopts.begin(), retopts.end(),
-                           KeyVals::value_type(PREF_DIR->k, "mydownload"))
-                 != retopts.end());
+                           KeyVals::value_type(PREF_DIR->k, "mydownload")) !=
+                 retopts.end());
   deleteDownloadHandle(hd);
 }
 

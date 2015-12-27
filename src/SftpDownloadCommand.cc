@@ -46,17 +46,14 @@
 
 namespace aria2 {
 
-SftpDownloadCommand::SftpDownloadCommand
-(cuid_t cuid,
- const std::shared_ptr<Request>& req,
- const std::shared_ptr<FileEntry>& fileEntry,
- RequestGroup* requestGroup,
- DownloadEngine* e,
- const std::shared_ptr<SocketCore>& socket,
- std::unique_ptr<AuthConfig> authConfig)
-  : DownloadCommand(cuid, req, fileEntry, requestGroup, e, socket,
-                    std::make_shared<SocketRecvBuffer>(socket)),
-    authConfig_(std::move(authConfig))
+SftpDownloadCommand::SftpDownloadCommand(
+    cuid_t cuid, const std::shared_ptr<Request>& req,
+    const std::shared_ptr<FileEntry>& fileEntry, RequestGroup* requestGroup,
+    DownloadEngine* e, const std::shared_ptr<SocketCore>& socket,
+    std::unique_ptr<AuthConfig> authConfig)
+    : DownloadCommand(cuid, req, fileEntry, requestGroup, e, socket,
+                      std::make_shared<SocketRecvBuffer>(socket)),
+      authConfig_(std::move(authConfig))
 {
   setWriteCheckSocket(getSocket());
 }
@@ -65,19 +62,19 @@ SftpDownloadCommand::~SftpDownloadCommand() {}
 
 bool SftpDownloadCommand::prepareForNextSegment()
 {
-  if(getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION) &&
-     getFileEntry()->gtoloff(getSegments().front()->getPositionToWrite()) ==
-     getFileEntry()->getLength()) {
+  if (getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION) &&
+      getFileEntry()->gtoloff(getSegments().front()->getPositionToWrite()) ==
+          getFileEntry()->getLength()) {
 
-    auto c = make_unique<SftpFinishDownloadCommand>
-      (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
-       getDownloadEngine(), getSocket());
+    auto c = make_unique<SftpFinishDownloadCommand>(
+        getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
+        getDownloadEngine(), getSocket());
 
     c->setStatus(Command::STATUS_ONESHOT_REALTIME);
     getDownloadEngine()->setNoWait(true);
     getDownloadEngine()->addCommand(std::move(c));
 
-    if(getRequestGroup()->downloadFinished()) {
+    if (getRequestGroup()->downloadFinished()) {
       // To run checksum checking, we had to call following function here.
       DownloadCommand::prepareForNextSegment();
     }
@@ -99,7 +96,8 @@ int64_t SftpDownloadCommand::getRequestEndOffset() const
   return getFileEntry()->getLength();
 }
 
-bool SftpDownloadCommand::shouldEnableWriteCheck() {
+bool SftpDownloadCommand::shouldEnableWriteCheck()
+{
   return getSocket()->wantWrite() || !getSocket()->wantRead();
 }
 

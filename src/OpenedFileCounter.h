@@ -57,10 +57,7 @@ public:
   // Reduces the number of open files managed by this object.
   void reduceNumOfOpenedFile(size_t numCloseFiles);
 
-  void setMaxOpenFiles(size_t maxOpenFiles)
-  {
-    maxOpenFiles_ = maxOpenFiles;
-  }
+  void setMaxOpenFiles(size_t maxOpenFiles) { maxOpenFiles_ = maxOpenFiles; }
 
   // Deactivates this object.
   void deactivate();

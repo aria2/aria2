@@ -39,11 +39,12 @@
 
 namespace aria2 {
 
-class UTMetadataExtensionMessage:public ExtensionMessage {
+class UTMetadataExtensionMessage : public ExtensionMessage {
 private:
   uint8_t extensionMessageID_;
 
   size_t index_;
+
 public:
   UTMetadataExtensionMessage(uint8_t extensionMessageID);
 
@@ -59,15 +60,9 @@ public:
 
   static const char EXTENSION_NAME[];
 
-  void setIndex(size_t index)
-  {
-    index_ = index;
-  }
+  void setIndex(size_t index) { index_ = index; }
 
-  size_t getIndex() const
-  {
-    return index_;
-  }
+  size_t getIndex() const { return index_; }
 };
 
 } // namespace aria2

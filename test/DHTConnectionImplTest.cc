@@ -9,11 +9,12 @@
 
 namespace aria2 {
 
-class DHTConnectionImplTest:public CppUnit::TestFixture {
+class DHTConnectionImplTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTConnectionImplTest);
   CPPUNIT_TEST(testWriteAndReadData);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -21,7 +22,6 @@ public:
 
   void testWriteAndReadData();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DHTConnectionImplTest);
 
@@ -45,13 +45,16 @@ void DHTConnectionImplTest::testWriteAndReadData()
     std::string remoteHost;
     uint16_t remotePort;
     {
-      while(!con2.getSocket()->isReadable(0));
-      ssize_t rlength = con2.receiveMessage(readbuffer, sizeof(readbuffer), remoteHost, remotePort);
+      while (!con2.getSocket()->isReadable(0))
+        ;
+      ssize_t rlength = con2.receiveMessage(readbuffer, sizeof(readbuffer),
+                                            remoteHost, remotePort);
       CPPUNIT_ASSERT_EQUAL((ssize_t)message1.size(), rlength);
       CPPUNIT_ASSERT_EQUAL(message1,
                            std::string(&readbuffer[0], &readbuffer[rlength]));
     }
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
 }

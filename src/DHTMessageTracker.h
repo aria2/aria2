@@ -60,18 +60,17 @@ private:
   DHTRoutingTable* routingTable_;
 
   DHTMessageFactory* factory_;
+
 public:
   DHTMessageTracker();
 
-  void addMessage(DHTMessage* message,
-                  std::chrono::seconds timeout,
+  void addMessage(DHTMessage* message, std::chrono::seconds timeout,
                   std::unique_ptr<DHTMessageCallback> callback =
-                  std::unique_ptr<DHTMessageCallback>{});
+                      std::unique_ptr<DHTMessageCallback>{});
 
   std::pair<std::unique_ptr<DHTResponseMessage>,
             std::unique_ptr<DHTMessageCallback>>
-  messageArrived(const Dict* dict,
-                 const std::string& ipaddr, uint16_t port);
+  messageArrived(const Dict* dict, const std::string& ipaddr, uint16_t port);
 
   void handleTimeout();
 

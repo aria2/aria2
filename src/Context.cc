@@ -41,7 +41,6 @@
 #include <sys/resource.h>
 #endif // HAVE_SYS_RESOURCE_H
 
-
 #include <numeric>
 #include <vector>
 #include <iostream>
@@ -73,11 +72,11 @@
 #include "UriListParser.h"
 #include "message_digest_helper.h"
 #ifdef ENABLE_BITTORRENT
-# include "bittorrent_helper.h"
+#include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
-# include "metalink_helper.h"
-# include "MetalinkEntry.h"
+#include "metalink_helper.h"
+#include "MetalinkEntry.h"
 #endif // ENABLE_METALINK
 
 extern char* optarg;
@@ -99,11 +98,10 @@ void showTorrentFile(const std::string& uri)
 
 #ifdef ENABLE_METALINK
 namespace {
-void showMetalinkFile
-(const std::string& uri, const std::shared_ptr<Option>& op)
+void showMetalinkFile(const std::string& uri, const std::shared_ptr<Option>& op)
 {
-  auto fileEntries = MetalinkEntry::toFileEntry
-    (metalink::parseAndQuery(uri, op.get(), op->get(PREF_METALINK_BASE_URI)));
+  auto fileEntries = MetalinkEntry::toFileEntry(
+      metalink::parseAndQuery(uri, op.get(), op->get(PREF_METALINK_BASE_URI)));
   util::toStream(std::begin(fileEntries), std::end(fileEntries),
                  *global::cout());
   global::cout()->write("\n");
@@ -114,29 +112,32 @@ void showMetalinkFile
 
 #if defined(ENABLE_BITTORRENT) || defined(ENABLE_METALINK)
 namespace {
-void showFiles
-(const std::vector<std::string>& uris, const std::shared_ptr<Option>& op)
+void showFiles(const std::vector<std::string>& uris,
+               const std::shared_ptr<Option>& op)
 {
   ProtocolDetector dt;
-  for(const auto & uri : uris) {
+  for (const auto& uri : uris) {
     printf(">>> ");
     printf(MSG_SHOW_FILES, (uri).c_str());
     printf("\n");
     try {
 #ifdef ENABLE_BITTORRENT
-      if(dt.guessTorrentFile(uri)) {
+      if (dt.guessTorrentFile(uri)) {
         showTorrentFile(uri);
-      } else
+      }
+      else
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
-        if(dt.guessMetalinkFile(uri)) {
-          showMetalinkFile(uri, op);
-        } else
+          if (dt.guessMetalinkFile(uri)) {
+        showMetalinkFile(uri, op);
+      }
+      else
 #endif // ENABLE_METALINK
-          {
-            printf("%s\n\n", MSG_NOT_TORRENT_METALINK);
-          }
-    } catch(RecoverableException& e) {
+      {
+        printf("%s\n\n", MSG_NOT_TORRENT_METALINK);
+      }
+    }
+    catch (RecoverableException& e) {
       global::cout()->printf("%s\n", e.stackTrace().c_str());
     }
   }
@@ -149,17 +150,17 @@ extern error_code::Value option_processing(Option& option, bool standalone,
                                            int argc, char** argv,
                                            const KeyVals& options);
 
-Context::Context(bool standalone,
-                 int argc, char** argv, const KeyVals& options)
+Context::Context(bool standalone, int argc, char** argv, const KeyVals& options)
 {
   std::vector<std::string> args;
   auto op = std::make_shared<Option>();
   error_code::Value rv;
   rv = option_processing(*op.get(), standalone, args, argc, argv, options);
-  if(rv != error_code::FINISHED) {
-    if(standalone) {
+  if (rv != error_code::FINISHED) {
+    if (standalone) {
       exit(rv);
-    } else {
+    }
+    else {
       throw DL_ABORT_EX("Option processing failed");
     }
   }
@@ -170,7 +171,7 @@ Context::Context(bool standalone,
   LogFactory::setLogLevel(op->get(PREF_LOG_LEVEL));
   LogFactory::setConsoleLogLevel(op->get(PREF_CONSOLE_LOG_LEVEL));
   LogFactory::setColorOutput(op->getAsBool(PREF_ENABLE_COLOR));
-  if(op->getAsBool(PREF_QUIET)) {
+  if (op->getAsBool(PREF_QUIET)) {
     LogFactory::setConsoleOutput(false);
   }
   LogFactory::reconfigure();
@@ -184,7 +185,7 @@ Context::Context(bool standalone,
   A2_LOG_INFO(MSG_LOGGING_STARTED);
 
 #if defined(HAVE_SYS_RESOURCE_H) && defined(RLIMIT_NOFILE)
-  rlimit r = { 0, 0 };
+  rlimit r = {0, 0};
   if (getrlimit(RLIMIT_NOFILE, &r) >= 0 && r.rlim_cur != RLIM_INFINITY) {
     // Thanks portability, for making it easy :p
     auto rlim_new = r.rlim_cur; // So we get the right type for free.
@@ -216,34 +217,36 @@ Context::Context(bool standalone,
   }
 #endif // defined(HAVE_SYS_RESOURCE_H) && defined(RLIMIT_NOFILE)
 
-  if(op->getAsBool(PREF_DISABLE_IPV6)) {
+  if (op->getAsBool(PREF_DISABLE_IPV6)) {
     SocketCore::setProtocolFamily(AF_INET);
     // Get rid of AI_ADDRCONFIG. It causes name resolution error
     // when none of network interface has IPv4 address.
     setDefaultAIFlags(0);
   }
   SocketCore::setIpDscp(op->getAsInt(PREF_DSCP));
-  SocketCore::setSocketRecvBufferSize(op->getAsInt
-                                      (PREF_SOCKET_RECV_BUFFER_SIZE));
+  SocketCore::setSocketRecvBufferSize(
+      op->getAsInt(PREF_SOCKET_RECV_BUFFER_SIZE));
   net::checkAddrconfig();
   // Bind interface
-  if(!op->get(PREF_INTERFACE).empty()) {
+  if (!op->get(PREF_INTERFACE).empty()) {
     std::string iface = op->get(PREF_INTERFACE);
     SocketCore::bindAddress(iface);
   }
   // Bind multiple interfaces
-  if(!op->get(PREF_MULTIPLE_INTERFACE).empty() && op->get(PREF_INTERFACE).empty()) {
+  if (!op->get(PREF_MULTIPLE_INTERFACE).empty() &&
+      op->get(PREF_INTERFACE).empty()) {
     std::string ifaces = op->get(PREF_MULTIPLE_INTERFACE);
     SocketCore::bindAllAddress(ifaces);
   }
-  std::vector<std::shared_ptr<RequestGroup> > requestGroups;
+  std::vector<std::shared_ptr<RequestGroup>> requestGroups;
   std::shared_ptr<UriListParser> uriListParser;
 #ifdef ENABLE_BITTORRENT
-  if(!op->blank(PREF_TORRENT_FILE)) {
-    if(op->get(PREF_SHOW_FILES) == A2_V_TRUE) {
+  if (!op->blank(PREF_TORRENT_FILE)) {
+    if (op->get(PREF_SHOW_FILES) == A2_V_TRUE) {
       showTorrentFile(op->get(PREF_TORRENT_FILE));
       return;
-    } else {
+    }
+    else {
       createRequestGroupForBitTorrent(requestGroups, op, args,
                                       op->get(PREF_TORRENT_FILE));
     }
@@ -251,30 +254,34 @@ Context::Context(bool standalone,
   else
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
-    if(!op->blank(PREF_METALINK_FILE)) {
-      if(op->get(PREF_SHOW_FILES) == A2_V_TRUE) {
-        showMetalinkFile(op->get(PREF_METALINK_FILE), op);
-        return;
-      } else {
-        createRequestGroupForMetalink(requestGroups, op);
-      }
+      if (!op->blank(PREF_METALINK_FILE)) {
+    if (op->get(PREF_SHOW_FILES) == A2_V_TRUE) {
+      showMetalinkFile(op->get(PREF_METALINK_FILE), op);
+      return;
     }
-    else
+    else {
+      createRequestGroupForMetalink(requestGroups, op);
+    }
+  }
+  else
 #endif // ENABLE_METALINK
-      if(!op->blank(PREF_INPUT_FILE)) {
-        if(op->getAsBool(PREF_DEFERRED_INPUT)) {
-          uriListParser = openUriListParser(op->get(PREF_INPUT_FILE));
-        } else {
-          createRequestGroupForUriList(requestGroups, op);
-        }
+      if (!op->blank(PREF_INPUT_FILE)) {
+    if (op->getAsBool(PREF_DEFERRED_INPUT)) {
+      uriListParser = openUriListParser(op->get(PREF_INPUT_FILE));
+    }
+    else {
+      createRequestGroupForUriList(requestGroups, op);
+    }
 #if defined(ENABLE_BITTORRENT) || defined(ENABLE_METALINK)
-      } else if(op->get(PREF_SHOW_FILES) == A2_V_TRUE) {
-        showFiles(args, op);
-        return;
+  }
+  else if (op->get(PREF_SHOW_FILES) == A2_V_TRUE) {
+    showFiles(args, op);
+    return;
 #endif // ENABLE_METALINK || ENABLE_METALINK
-      } else {
-        createRequestGroupForUri(requestGroups, op, args, false, false, true);
-      }
+  }
+  else {
+    createRequestGroupForUri(requestGroups, op, args, false, false, true);
+  }
 
   // Remove option values which is only valid for URIs specified in
   // command-line. If they are left, because op is used as a template
@@ -289,18 +296,16 @@ Context::Context(bool standalone,
   op->remove(PREF_CHECKSUM);
   op->remove(PREF_GID);
 
-  if(standalone &&
-     !op->getAsBool(PREF_ENABLE_RPC) && requestGroups.empty() &&
-     !uriListParser) {
+  if (standalone && !op->getAsBool(PREF_ENABLE_RPC) && requestGroups.empty() &&
+      !uriListParser) {
     global::cout()->printf("%s\n", MSG_NO_FILES_TO_DOWNLOAD);
-  } else {
-    reqinfo = std::make_shared<MultiUrlRequestInfo>
-      (std::move(requestGroups), op, uriListParser);
+  }
+  else {
+    reqinfo = std::make_shared<MultiUrlRequestInfo>(std::move(requestGroups),
+                                                    op, uriListParser);
   }
 }
 
-Context::~Context()
-{
-}
+Context::~Context() {}
 
 } // namespace aria2

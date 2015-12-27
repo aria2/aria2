@@ -6,19 +6,19 @@
 
 namespace aria2 {
 
-class Base32Test:public CppUnit::TestFixture {
+class Base32Test : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(Base32Test);
   CPPUNIT_TEST(testEncode);
   CPPUNIT_TEST(testDecode);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void testEncode();
   void testDecode();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( Base32Test );
+CPPUNIT_TEST_SUITE_REGISTRATION(Base32Test);
 
 void Base32Test::testEncode()
 {

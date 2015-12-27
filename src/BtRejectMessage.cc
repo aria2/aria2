@@ -43,36 +43,37 @@ namespace aria2 {
 
 const char BtRejectMessage::NAME[] = "reject";
 
-BtRejectMessage::BtRejectMessage
-(size_t index, int32_t begin, int32_t length):
-  RangeBtMessage(ID, NAME, index, begin, length) {}
+BtRejectMessage::BtRejectMessage(size_t index, int32_t begin, int32_t length)
+    : RangeBtMessage(ID, NAME, index, begin, length)
+{
+}
 
-std::unique_ptr<BtRejectMessage> BtRejectMessage::create
-(const unsigned char* data, size_t dataLength)
+std::unique_ptr<BtRejectMessage>
+BtRejectMessage::create(const unsigned char* data, size_t dataLength)
 {
   return RangeBtMessage::create<BtRejectMessage>(data, dataLength);
 }
 
 void BtRejectMessage::doReceivedAction()
 {
-  if(!getPeer()->isFastExtensionEnabled()) {
-    throw DL_ABORT_EX
-      (fmt("%s received while fast extension is disabled.",
-           toString().c_str()));
+  if (!getPeer()->isFastExtensionEnabled()) {
+    throw DL_ABORT_EX(fmt("%s received while fast extension is disabled.",
+                          toString().c_str()));
   }
-  if(isMetadataGetMode()) {
+  if (isMetadataGetMode()) {
     return;
   }
   // TODO Current implementation does not close a connection even if
   // a request for this reject message has never sent.
-  auto slot = getBtMessageDispatcher()->getOutstandingRequest
-    (getIndex(), getBegin(), getLength());
-  if(slot) {
+  auto slot = getBtMessageDispatcher()->getOutstandingRequest(
+      getIndex(), getBegin(), getLength());
+  if (slot) {
     getBtMessageDispatcher()->removeOutstandingRequest(slot);
-  } else {
-    //throw DL_ABORT_EX("reject received, but it is not in the request slots.");
   }
-
+  else {
+    // throw DL_ABORT_EX("reject received, but it is not in the request
+    // slots.");
+  }
 }
 
 } // namespace aria2

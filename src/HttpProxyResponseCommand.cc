@@ -43,26 +43,23 @@
 
 namespace aria2 {
 
-HttpProxyResponseCommand::HttpProxyResponseCommand
-(cuid_t cuid,
- const std::shared_ptr<Request>& req,
- const std::shared_ptr<FileEntry>& fileEntry,
- RequestGroup* requestGroup,
- const std::shared_ptr<HttpConnection>& httpConnection,
- DownloadEngine* e,
- const std::shared_ptr<SocketCore>& s)
-  :AbstractProxyResponseCommand(cuid, req, fileEntry, requestGroup,
-                                httpConnection, e, s)
-{}
+HttpProxyResponseCommand::HttpProxyResponseCommand(
+    cuid_t cuid, const std::shared_ptr<Request>& req,
+    const std::shared_ptr<FileEntry>& fileEntry, RequestGroup* requestGroup,
+    const std::shared_ptr<HttpConnection>& httpConnection, DownloadEngine* e,
+    const std::shared_ptr<SocketCore>& s)
+    : AbstractProxyResponseCommand(cuid, req, fileEntry, requestGroup,
+                                   httpConnection, e, s)
+{
+}
 
 HttpProxyResponseCommand::~HttpProxyResponseCommand() {}
 
 std::unique_ptr<Command> HttpProxyResponseCommand::getNextCommand()
 {
-  return make_unique<HttpRequestCommand>
-    (getCuid(), getRequest(), getFileEntry(),
-     getRequestGroup(), getHttpConnection(),
-     getDownloadEngine(), getSocket());
+  return make_unique<HttpRequestCommand>(
+      getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
+      getHttpConnection(), getDownloadEngine(), getSocket());
 }
 
 } // namespace aria2

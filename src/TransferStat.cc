@@ -70,10 +70,9 @@ TransferStat& TransferStat::operator-=(const TransferStat& b)
 
   downloadSpeed = std::max(0, downloadSpeed);
   uploadSpeed = std::max(0, uploadSpeed);
-  sessionDownloadLength = std::max(static_cast<int64_t>(0),
-                                   sessionDownloadLength);
-  sessionUploadLength = std::max(static_cast<int64_t>(0),
-                                 sessionUploadLength);
+  sessionDownloadLength =
+      std::max(static_cast<int64_t>(0), sessionDownloadLength);
+  sessionUploadLength = std::max(static_cast<int64_t>(0), sessionUploadLength);
   return *this;
 }
 

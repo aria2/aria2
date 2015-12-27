@@ -5,11 +5,10 @@
 
 namespace aria2 {
 
-class WrapExtBtMessageFactory:public MockBtMessageFactory {
+class WrapExtBtMessageFactory : public MockBtMessageFactory {
 public:
-  virtual std::unique_ptr<BtExtendedMessage>
-  createBtExtendedMessage(std::unique_ptr<ExtensionMessage> extmsg)
-    CXX11_OVERRIDE
+  virtual std::unique_ptr<BtExtendedMessage> createBtExtendedMessage(
+      std::unique_ptr<ExtensionMessage> extmsg) CXX11_OVERRIDE
   {
     return make_unique<BtExtendedMessage>(std::move(extmsg));
   }

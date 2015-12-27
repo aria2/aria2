@@ -75,6 +75,7 @@ private:
   Timer wakeTime_;
 
   bool parseUri(const std::string& uri);
+
 public:
   Request();
   ~Request();
@@ -102,7 +103,7 @@ public:
   std::string getURIHost() const;
   uint16_t getPort() const { return us_.port; }
   const std::string& getDir() const { return us_.dir; }
-  const std::string& getFile() const { return us_.file;}
+  const std::string& getFile() const { return us_.file; }
   const std::string& getQuery() const { return us_.query; }
   bool isIPv6LiteralAddress() const { return us_.ipv6LiteralAddress; }
 
@@ -111,20 +112,14 @@ public:
     supportsPersistentConnection_ = f;
   }
 
-  bool supportsPersistentConnection()
-  {
-    return supportsPersistentConnection_;
-  }
+  bool supportsPersistentConnection() { return supportsPersistentConnection_; }
 
   bool isKeepAliveEnabled() const
   {
     return supportsPersistentConnection_ && keepAliveHint_;
   }
 
-  void setKeepAliveHint(bool keepAliveHint)
-  {
-    keepAliveHint_ = keepAliveHint;
-  }
+  void setKeepAliveHint(bool keepAliveHint) { keepAliveHint_ = keepAliveHint; }
 
   bool isPipeliningEnabled()
   {
@@ -136,85 +131,43 @@ public:
     pipeliningHint_ = pipeliningHint;
   }
 
-  bool isPipeliningHint() const
-  {
-    return pipeliningHint_;
-  }
+  bool isPipeliningHint() const { return pipeliningHint_; }
 
   void setMaxPipelinedRequest(int num);
 
-  int getMaxPipelinedRequest() const
-  {
-    return maxPipelinedRequest_;
-  }
+  int getMaxPipelinedRequest() const { return maxPipelinedRequest_; }
 
   void setMethod(const std::string& method);
 
-  const std::string& getUsername() const
-  {
-    return us_.username;
-  }
+  const std::string& getUsername() const { return us_.username; }
 
-  const std::string& getPassword() const
-  {
-    return us_.password;
-  }
+  const std::string& getPassword() const { return us_.password; }
 
   // Returns true if current URI has embedded password.
-  bool hasPassword() const
-  {
-    return us_.hasPassword;
-  }
+  bool hasPassword() const { return us_.hasPassword; }
 
-  const std::string& getMethod() const
-  {
-    return method_;
-  }
+  const std::string& getMethod() const { return method_; }
 
-  const std::shared_ptr<PeerStat>& getPeerStat() const
-  {
-    return peerStat_;
-  }
+  const std::shared_ptr<PeerStat>& getPeerStat() const { return peerStat_; }
 
   const std::shared_ptr<PeerStat>& initPeerStat();
 
-  void requestRemoval()
-  {
-    removalRequested_ = true;
-  }
+  void requestRemoval() { removalRequested_ = true; }
 
-  bool removalRequested() const
-  {
-    return removalRequested_;
-  }
+  bool removalRequested() const { return removalRequested_; }
 
-  void setConnectedAddrInfo
-  (const std::string& hostname, const std::string& addr, uint16_t port);
+  void setConnectedAddrInfo(const std::string& hostname,
+                            const std::string& addr, uint16_t port);
 
-  const std::string& getConnectedHostname() const
-  {
-    return connectedHostname_;
-  }
+  const std::string& getConnectedHostname() const { return connectedHostname_; }
 
-  const std::string& getConnectedAddr() const
-  {
-    return connectedAddr_;
-  }
+  const std::string& getConnectedAddr() const { return connectedAddr_; }
 
-  uint16_t getConnectedPort() const
-  {
-    return connectedPort_;
-  }
+  uint16_t getConnectedPort() const { return connectedPort_; }
 
-  void setWakeTime(Timer timer)
-  {
-    wakeTime_ = timer;
-  }
+  void setWakeTime(Timer timer) { wakeTime_ = timer; }
 
-  const Timer& getWakeTime()
-  {
-    return wakeTime_;
-  }
+  const Timer& getWakeTime() { return wakeTime_; }
 
   static const std::string METHOD_GET;
   static const std::string METHOD_HEAD;

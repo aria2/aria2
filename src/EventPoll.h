@@ -68,12 +68,13 @@ public:
                             EventType events) = 0;
 #ifdef ENABLE_ASYNC_DNS
 
-  virtual bool addNameResolver(const std::shared_ptr<AsyncNameResolver>& resolver,
-                               Command* command) = 0;
-  virtual bool deleteNameResolver
-  (const std::shared_ptr<AsyncNameResolver>& resolver, Command* command) = 0;
+  virtual bool
+  addNameResolver(const std::shared_ptr<AsyncNameResolver>& resolver,
+                  Command* command) = 0;
+  virtual bool
+  deleteNameResolver(const std::shared_ptr<AsyncNameResolver>& resolver,
+                     Command* command) = 0;
 #endif // ENABLE_ASYNC_DNS
-
 };
 
 } // namespace aria2

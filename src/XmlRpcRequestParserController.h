@@ -48,15 +48,11 @@ namespace rpc {
 
 class XmlRpcRequestParserController {
 private:
-
   struct StateFrame {
     std::unique_ptr<ValueBase> value_;
     std::string name_;
 
-    bool validMember() const
-    {
-      return value_ && !name_.empty();
-    }
+    bool validMember() const { return value_ && !name_.empty(); }
 
     void reset()
     {
@@ -70,6 +66,7 @@ private:
   StateFrame currentFrame_;
 
   std::string methodName_;
+
 public:
   void pushFrame();
 

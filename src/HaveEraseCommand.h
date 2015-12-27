@@ -39,8 +39,7 @@
 
 namespace aria2 {
 
-class HaveEraseCommand : public TimeBasedCommand
-{
+class HaveEraseCommand : public TimeBasedCommand {
 public:
   HaveEraseCommand(cuid_t cuid, DownloadEngine* e,
                    std::chrono::seconds interval);

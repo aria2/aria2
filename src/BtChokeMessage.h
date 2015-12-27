@@ -49,8 +49,8 @@ public:
 
   virtual void doReceivedAction() CXX11_OVERRIDE;
 
-  static std::unique_ptr<BtChokeMessage> create
-  (const unsigned char* data, size_t dataLength);
+  static std::unique_ptr<BtChokeMessage> create(const unsigned char* data,
+                                                size_t dataLength);
 
   virtual bool sendPredicate() const CXX11_OVERRIDE;
 

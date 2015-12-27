@@ -55,6 +55,7 @@ private:
   std::vector<PeerAddrEntry> peerAddrEntries_;
 
   Timer lastUpdated_;
+
 public:
   DHTPeerAnnounceEntry(const unsigned char* infoHash);
 
@@ -75,20 +76,13 @@ public:
 
   bool empty() const;
 
-  const Timer& getLastUpdated() const
-  {
-    return lastUpdated_;
-  }
+  const Timer& getLastUpdated() const { return lastUpdated_; }
 
   void notifyUpdate();
 
-  const unsigned char* getInfoHash() const
-  {
-    return infoHash_;
-  }
+  const unsigned char* getInfoHash() const { return infoHash_; }
 
-  void getPeers(std::vector<std::shared_ptr<Peer> >& peers) const;
-
+  void getPeers(std::vector<std::shared_ptr<Peer>>& peers) const;
 };
 
 } // namespace aria2

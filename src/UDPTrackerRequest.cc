@@ -37,16 +37,29 @@
 namespace aria2 {
 
 UDPTrackerReply::UDPTrackerReply()
-  : action(0), transactionId(0), interval(0), leechers(0), seeders(0)
-{}
+    : action(0), transactionId(0), interval(0), leechers(0), seeders(0)
+{
+}
 
 UDPTrackerRequest::UDPTrackerRequest()
-  : remotePort(0), connectionId(0), action(UDPT_ACT_CONNECT),
-    transactionId(0), downloaded(0),
-    left(0), uploaded(0), event(UDPT_EVT_NONE), ip(0), key(0), numWant(0),
-    port(0), extensions(0), state(UDPT_STA_PENDING), error(UDPT_ERR_SUCCESS),
-    dispatched(Timer::zero()),
-    failCount(0)
-{}
+    : remotePort(0),
+      connectionId(0),
+      action(UDPT_ACT_CONNECT),
+      transactionId(0),
+      downloaded(0),
+      left(0),
+      uploaded(0),
+      event(UDPT_EVT_NONE),
+      ip(0),
+      key(0),
+      numWant(0),
+      port(0),
+      extensions(0),
+      state(UDPT_STA_PENDING),
+      error(UDPT_ERR_SUCCESS),
+      dispatched(Timer::zero()),
+      failCount(0)
+{
+}
 
 } // namespace aria2

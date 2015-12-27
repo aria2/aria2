@@ -8,11 +8,12 @@
 
 namespace aria2 {
 
-class RarestPieceSelectorTest:public CppUnit::TestFixture {
+class RarestPieceSelectorTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(RarestPieceSelectorTest);
   CPPUNIT_TEST(testSelect);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -24,7 +25,6 @@ public:
   void testSubtractPieceStats();
   void testSelect();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(RarestPieceSelectorTest);
 
@@ -38,14 +38,12 @@ void RarestPieceSelectorTest::testSelect()
 
   pieceStatMan->addPieceStats(0);
 
-  CPPUNIT_ASSERT(selector.select(index, bf.getBitfield(),
-                                 bf.countBlock()));
+  CPPUNIT_ASSERT(selector.select(index, bf.getBitfield(), bf.countBlock()));
   CPPUNIT_ASSERT_EQUAL((size_t)1, index);
 
   pieceStatMan->addPieceStats(1);
 
-  CPPUNIT_ASSERT(selector.select(index, bf.getBitfield(),
-                                 bf.countBlock()));
+  CPPUNIT_ASSERT(selector.select(index, bf.getBitfield(), bf.countBlock()));
   CPPUNIT_ASSERT_EQUAL((size_t)2, index);
 }
 

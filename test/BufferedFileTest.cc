@@ -8,26 +8,26 @@
 
 namespace aria2 {
 
-class BufferedFileTest:public CppUnit::TestFixture {
+class BufferedFileTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BufferedFileTest);
   CPPUNIT_TEST(testOpen);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void testOpen();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(BufferedFileTest);
 
 void BufferedFileTest::testOpen()
 {
-  File f(A2_TEST_OUT_DIR"/aria2_BufferedFileTest_testOpen");
+  File f(A2_TEST_OUT_DIR "/aria2_BufferedFileTest_testOpen");
   f.remove();
   BufferedFile fail(f.getPath().c_str(), IOFile::READ);
   CPPUNIT_ASSERT(!fail);
 
-  BufferedFile wr(f.getPath().c_str(),  IOFile::WRITE);
+  BufferedFile wr(f.getPath().c_str(), IOFile::WRITE);
   CPPUNIT_ASSERT(wr);
   std::string msg = "aria2 rules\nalpha\nbravo\ncharlie";
   wr.write(msg.data(), msg.size());

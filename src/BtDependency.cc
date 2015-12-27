@@ -53,12 +53,11 @@
 
 namespace aria2 {
 
-BtDependency::BtDependency
-(RequestGroup* dependant,
- const std::shared_ptr<RequestGroup>& dependee)
-  : dependant_(dependant),
-    dependee_(dependee)
-{}
+BtDependency::BtDependency(RequestGroup* dependant,
+                           const std::shared_ptr<RequestGroup>& dependee)
+    : dependant_(dependant), dependee_(dependee)
+{
+}
 
 BtDependency::~BtDependency() {}
 
@@ -77,9 +76,8 @@ void copyValues(const std::shared_ptr<FileEntry>& d,
 
 namespace {
 struct EntryCmp {
-  bool operator()
-  (const std::shared_ptr<FileEntry>& lhs,
-   const std::shared_ptr<FileEntry>& rhs) const
+  bool operator()(const std::shared_ptr<FileEntry>& lhs,
+                  const std::shared_ptr<FileEntry>& rhs) const
   {
     return lhs->getOriginalName() < rhs->getOriginalName();
   }
@@ -88,53 +86,54 @@ struct EntryCmp {
 
 bool BtDependency::resolve()
 {
-  if(!dependee_) {
+  if (!dependee_) {
     return true;
   }
-  if(dependee_->getNumCommand() == 0 && dependee_->downloadFinished()) {
+  if (dependee_->getNumCommand() == 0 && dependee_->downloadFinished()) {
     std::shared_ptr<RequestGroup> dependee = dependee_;
     // cut reference here
     dependee_.reset();
     auto context = std::make_shared<DownloadContext>();
     try {
       std::shared_ptr<DiskAdaptor> diskAdaptor =
-        dependee->getPieceStorage()->getDiskAdaptor();
+          dependee->getPieceStorage()->getDiskAdaptor();
       diskAdaptor->openExistingFile();
       std::string content = util::toString(diskAdaptor);
-      if(dependee->getDownloadContext()->hasAttribute(CTX_ATTR_BT)) {
+      if (dependee->getDownloadContext()->hasAttribute(CTX_ATTR_BT)) {
         auto attrs =
-          bittorrent::getTorrentAttrs(dependee->getDownloadContext());
-        bittorrent::loadFromMemory
-          (bittorrent::metadata2Torrent(content, attrs), context,
-           dependant_->getOption(), "default");
+            bittorrent::getTorrentAttrs(dependee->getDownloadContext());
+        bittorrent::loadFromMemory(bittorrent::metadata2Torrent(content, attrs),
+                                   context, dependant_->getOption(), "default");
         // We don't call bittorrent::adjustAnnounceUri() because it
         // has already been called with attrs.
-      } else {
-        bittorrent::loadFromMemory
-          (content, context, dependant_->getOption(),
-           File(dependee->getFirstFilePath()).getBasename());
+      }
+      else {
+        bittorrent::loadFromMemory(
+            content, context, dependant_->getOption(),
+            File(dependee->getFirstFilePath()).getBasename());
         bittorrent::adjustAnnounceUri(bittorrent::getTorrentAttrs(context),
                                       dependant_->getOption());
       }
-      const std::vector<std::shared_ptr<FileEntry> >& fileEntries =
-        context->getFileEntries();
-      for (auto &fe : fileEntries) {
-        auto &uri = fe->getRemainingUris();
+      const std::vector<std::shared_ptr<FileEntry>>& fileEntries =
+          context->getFileEntries();
+      for (auto& fe : fileEntries) {
+        auto& uri = fe->getRemainingUris();
         std::shuffle(std::begin(uri), std::end(uri),
                      *SimpleRandomizer::getInstance());
       }
-      const std::vector<std::shared_ptr<FileEntry> >& dependantFileEntries =
-        dependant_->getDownloadContext()->getFileEntries();
+      const std::vector<std::shared_ptr<FileEntry>>& dependantFileEntries =
+          dependant_->getDownloadContext()->getFileEntries();
       // If dependant's FileEntry::getOriginalName() is empty, we
       // assume that torrent is single file. In Metalink3, this is
       // always assumed.
-      if(fileEntries.size() == 1 && dependantFileEntries.size() == 1 &&
-         dependantFileEntries[0]->getOriginalName().empty()) {
+      if (fileEntries.size() == 1 && dependantFileEntries.size() == 1 &&
+          dependantFileEntries[0]->getOriginalName().empty()) {
         copyValues(fileEntries[0], dependantFileEntries[0]);
-      } else {
-        std::vector<std::shared_ptr<FileEntry> > destFiles;
+      }
+      else {
+        std::vector<std::shared_ptr<FileEntry>> destFiles;
         destFiles.reserve(fileEntries.size());
-        for(auto & e : fileEntries) {
+        for (auto& e : fileEntries) {
           e->setRequested(false);
           destFiles.push_back(e);
         }
@@ -142,19 +141,21 @@ bool BtDependency::resolve()
         // Copy file path in dependant_'s FileEntries to newly created
         // context's FileEntries to endorse the path structure of
         // dependant_.  URIs and singleHostMultiConnection are also copied.
-        for(const auto& e: dependantFileEntries){
+        for (const auto& e : dependantFileEntries) {
           const auto d = std::lower_bound(std::begin(destFiles),
                                           std::end(destFiles), e, EntryCmp());
-          if(d == std::end(destFiles) ||
-             (*d)->getOriginalName() != e->getOriginalName()) {
-            throw DL_ABORT_EX
-              (fmt("No entry %s in torrent file", e->getOriginalName().c_str()));
-          } else {
+          if (d == std::end(destFiles) ||
+              (*d)->getOriginalName() != e->getOriginalName()) {
+            throw DL_ABORT_EX(fmt("No entry %s in torrent file",
+                                  e->getOriginalName().c_str()));
+          }
+          else {
             copyValues(*d, e);
           }
         }
       }
-    } catch(RecoverableException& e) {
+    }
+    catch (RecoverableException& e) {
       A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
       A2_LOG_INFO(fmt("BtDependency for GID#%s failed. Go without Bt.",
                       GroupId::toHex(dependant_->getGID()).c_str()));
@@ -164,14 +165,16 @@ bool BtDependency::resolve()
                     GroupId::toHex(dependant_->getGID()).c_str()));
     dependant_->setDownloadContext(context);
     return true;
-  } else if(dependee_->getNumCommand() == 0) {
+  }
+  else if (dependee_->getNumCommand() == 0) {
     // dependee_'s download failed.
     // cut reference here
     dependee_.reset();
     A2_LOG_INFO(fmt("BtDependency for GID#%s failed. Go without Bt.",
                     GroupId::toHex(dependant_->getGID()).c_str()));
     return true;
-  } else {
+  }
+  else {
     return false;
   }
 }

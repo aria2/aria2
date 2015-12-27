@@ -41,36 +41,38 @@ namespace aria2 {
 TimeBasedCommand::TimeBasedCommand(cuid_t cuid, DownloadEngine* e,
                                    std::chrono::seconds interval,
                                    bool routineCommand)
-  : Command(cuid),
-    e_(e),
-    checkPoint_(global::wallclock()),
-    interval_(std::move(interval)),
-    exit_(false),
-    routineCommand_(routineCommand)
-{}
+    : Command(cuid),
+      e_(e),
+      checkPoint_(global::wallclock()),
+      interval_(std::move(interval)),
+      exit_(false),
+      routineCommand_(routineCommand)
+{
+}
 
 TimeBasedCommand::~TimeBasedCommand() {}
 
 bool TimeBasedCommand::execute()
 {
   preProcess();
-  if(exit_) {
+  if (exit_) {
     return true;
   }
-  if(checkPoint_.difference(global::wallclock()) >= interval_) {
+  if (checkPoint_.difference(global::wallclock()) >= interval_) {
     checkPoint_ = global::wallclock();
     process();
-    if(exit_) {
+    if (exit_) {
       return true;
     }
   }
   postProcess();
-  if(exit_) {
+  if (exit_) {
     return true;
   }
-  if(routineCommand_) {
+  if (routineCommand_) {
     e_->addRoutineCommand(std::unique_ptr<Command>(this));
-  } else {
+  }
+  else {
     e_->addCommand(std::unique_ptr<Command>(this));
   }
   return false;

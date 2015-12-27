@@ -52,15 +52,15 @@
 
 namespace aria2 {
 
-NameResolveCommand::NameResolveCommand
-(cuid_t cuid, DownloadEngine* e,
- const std::shared_ptr<UDPTrackerRequest>& req)
-  : Command(cuid),
-    e_(e),
+NameResolveCommand::NameResolveCommand(
+    cuid_t cuid, DownloadEngine* e,
+    const std::shared_ptr<UDPTrackerRequest>& req)
+    : Command(cuid),
+      e_(e),
 #ifdef ENABLE_ASYNC_DNS
-    asyncNameResolverMan_(make_unique<AsyncNameResolverMan>()),
+      asyncNameResolverMan_(make_unique<AsyncNameResolverMan>()),
 #endif // ENABLE_ASYNC_DNS
-    req_(req)
+      req_(req)
 {
 #ifdef ENABLE_ASYNC_DNS
   configureAsyncNameResolverMan(asyncNameResolverMan_.get(), e_->getOption());
@@ -83,36 +83,40 @@ bool NameResolveCommand::execute()
   // alive until force shutdown is
   // commencing. RequestGroupMan::downloadFinished() is useless here
   // at the moment.
-  if(e_->isForceHaltRequested()) {
+  if (e_->isForceHaltRequested()) {
     onShutdown();
     return true;
   }
   const std::string& hostname = req_->remoteAddr;
   std::vector<std::string> res;
-  if(util::isNumericHost(hostname)) {
+  if (util::isNumericHost(hostname)) {
     res.push_back(hostname);
-  } else {
+  }
+  else {
 #ifdef ENABLE_ASYNC_DNS
-    if(e_->getOption()->getAsBool(PREF_ASYNC_DNS)) {
-      if(resolveHostname(res, hostname) == 0) {
+    if (e_->getOption()->getAsBool(PREF_ASYNC_DNS)) {
+      if (resolveHostname(res, hostname) == 0) {
         e_->addCommand(std::unique_ptr<Command>(this));
         return false;
       }
-    } else
+    }
+    else
 #endif // ENABLE_ASYNC_DNS
-      {
-        NameResolver resolver;
-        resolver.setSocktype(SOCK_DGRAM);
-        try {
-          resolver.resolve(res, hostname);
-        } catch(RecoverableException& e) {
-          A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
-        }
+    {
+      NameResolver resolver;
+      resolver.setSocktype(SOCK_DGRAM);
+      try {
+        resolver.resolve(res, hostname);
       }
+      catch (RecoverableException& e) {
+        A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
+      }
+    }
   }
-  if(res.empty()) {
+  if (res.empty()) {
     onFailure();
-  } else {
+  }
+  else {
     onSuccess(res, e_);
   }
   return true;
@@ -130,8 +134,8 @@ void NameResolveCommand::onFailure()
   req_->error = UDPT_ERR_NETWORK;
 }
 
-void NameResolveCommand::onSuccess
-(const std::vector<std::string>& addrs, DownloadEngine* e)
+void NameResolveCommand::onSuccess(const std::vector<std::string>& addrs,
+                                   DownloadEngine* e)
 {
   req_->remoteAddr = addrs[0];
   e->getBtRegistry()->getUDPTrackerClient()->addRequest(req_);
@@ -139,31 +143,31 @@ void NameResolveCommand::onSuccess
 
 #ifdef ENABLE_ASYNC_DNS
 
-int NameResolveCommand::resolveHostname
-(std::vector<std::string>& res, const std::string& hostname)
+int NameResolveCommand::resolveHostname(std::vector<std::string>& res,
+                                        const std::string& hostname)
 {
-  if(!asyncNameResolverMan_->started()) {
+  if (!asyncNameResolverMan_->started()) {
     asyncNameResolverMan_->startAsync(hostname, e_, this);
     return 0;
-  } else {
-    switch(asyncNameResolverMan_->getStatus()) {
+  }
+  else {
+    switch (asyncNameResolverMan_->getStatus()) {
     case -1:
-      A2_LOG_INFO
-        (fmt(MSG_NAME_RESOLUTION_FAILED, getCuid(), hostname.c_str(),
-             asyncNameResolverMan_->getLastError().c_str()));
+      A2_LOG_INFO(fmt(MSG_NAME_RESOLUTION_FAILED, getCuid(), hostname.c_str(),
+                      asyncNameResolverMan_->getLastError().c_str()));
       return -1;
     case 0:
       return 0;
     case 1:
       asyncNameResolverMan_->getResolvedAddress(res);
-      if(res.empty()) {
-        A2_LOG_INFO
-          (fmt(MSG_NAME_RESOLUTION_FAILED, getCuid(), hostname.c_str(),
-               "No address returned"));
+      if (res.empty()) {
+        A2_LOG_INFO(fmt(MSG_NAME_RESOLUTION_FAILED, getCuid(), hostname.c_str(),
+                        "No address returned"));
         return -1;
-      } else {
-        A2_LOG_INFO(fmt(MSG_NAME_RESOLUTION_COMPLETE,
-                        getCuid(), hostname.c_str(), res.front().c_str()));
+      }
+      else {
+        A2_LOG_INFO(fmt(MSG_NAME_RESOLUTION_COMPLETE, getCuid(),
+                        hostname.c_str(), res.front().c_str()));
         return 1;
       }
     }

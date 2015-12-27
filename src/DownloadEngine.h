@@ -51,7 +51,7 @@
 #include "CheckIntegrityMan.h"
 #include "DNSCache.h"
 #ifdef ENABLE_ASYNC_DNS
-# include "AsyncNameResolver.h"
+#include "AsyncNameResolver.h"
 #endif // ENABLE_ASYNC_DNS
 
 namespace aria2 {
@@ -75,10 +75,10 @@ class WebSocketSessionMan;
 #endif // ENABLE_WEBSOCKET
 
 namespace util {
-  namespace security {
-    class HMAC;
-    class HMACResult;
-  } // namespace security
+namespace security {
+class HMAC;
+class HMACResult;
+} // namespace security
 } // namespace util
 
 class DownloadEngine {
@@ -102,10 +102,10 @@ private:
     std::chrono::seconds timeout_;
 
     Timer registeredTime_;
+
   public:
     SocketPoolEntry(const std::shared_ptr<SocketCore>& socket,
-                    const std::string& option,
-                    std::chrono::seconds timeout);
+                    const std::string& option, std::chrono::seconds timeout);
 
     SocketPoolEntry(const std::shared_ptr<SocketCore>& socket,
                     std::chrono::seconds timeout);
@@ -114,15 +114,9 @@ private:
 
     bool isTimeout() const;
 
-    const std::shared_ptr<SocketCore>& getSocket() const
-    {
-      return socket_;
-    }
+    const std::shared_ptr<SocketCore>& getSocket() const { return socket_; }
 
-    const std::string& getOptions() const
-    {
-      return options_;
-    }
+    const std::string& getOptions() const { return options_; }
   };
 
   // key = IP address:port, value = SocketPoolEntry
@@ -190,7 +184,7 @@ public:
   // and performing action for them. This function returns 1 when
   // oneshot is true and there are still downloads to be
   // processed. Otherwise, returns 0.
-  int run(bool oneshot=false);
+  int run(bool oneshot = false);
 
   bool addSocketForReadCheck(const std::shared_ptr<SocketCore>& socket,
                              Command* command);
@@ -205,8 +199,9 @@ public:
 
   bool addNameResolverCheck(const std::shared_ptr<AsyncNameResolver>& resolver,
                             Command* command);
-  bool deleteNameResolverCheck(const std::shared_ptr<AsyncNameResolver>& resolver,
-                               Command* command);
+  bool
+  deleteNameResolverCheck(const std::shared_ptr<AsyncNameResolver>& resolver,
+                          Command* command);
 #endif // ENABLE_ASYNC_DNS
 
   void addCommand(std::vector<std::unique_ptr<Command>> commands);
@@ -234,27 +229,15 @@ public:
 
   void setCheckIntegrityMan(std::unique_ptr<CheckIntegrityMan> ciman);
 
-  Option* getOption() const
-  {
-    return option_;
-  }
+  Option* getOption() const { return option_; }
 
-  void setOption(Option* op)
-  {
-    option_ = op;
-  }
+  void setOption(Option* op) { option_ = op; }
 
   void setStatCalc(std::unique_ptr<StatCalc> statCalc);
 
-  bool isHaltRequested() const
-  {
-    return haltRequested_;
-  }
+  bool isHaltRequested() const { return haltRequested_; }
 
-  bool isForceHaltRequested() const
-  {
-    return haltRequested_ >= 2;
-  }
+  bool isForceHaltRequested() const { return haltRequested_ >= 2; }
 
   void requestHalt();
 
@@ -265,9 +248,8 @@ public:
   void addRoutineCommand(std::unique_ptr<Command> command);
 
   void poolSocket(const std::string& ipaddr, uint16_t port,
-                  const std::string& username,
-                  const std::string& proxyhost, uint16_t proxyport,
-                  const std::shared_ptr<SocketCore>& sock,
+                  const std::string& username, const std::string& proxyhost,
+                  uint16_t proxyport, const std::shared_ptr<SocketCore>& sock,
                   const std::string& options,
                   std::chrono::seconds timeout = 15_s);
 
@@ -288,28 +270,22 @@ public:
                   const std::shared_ptr<SocketCore>& socket,
                   std::chrono::seconds timeout = 15_s);
 
-  std::shared_ptr<SocketCore> popPooledSocket
-  (const std::string& ipaddr,
-   uint16_t port,
-   const std::string& proxyhost, uint16_t proxyport);
-
-  std::shared_ptr<SocketCore> popPooledSocket
-  (std::string& options,
-   const std::string& ipaddr,
-   uint16_t port,
-   const std::string& username,
-   const std::string& proxyhost, uint16_t proxyport);
+  std::shared_ptr<SocketCore> popPooledSocket(const std::string& ipaddr,
+                                              uint16_t port,
+                                              const std::string& proxyhost,
+                                              uint16_t proxyport);
 
   std::shared_ptr<SocketCore>
-  popPooledSocket
-  (const std::vector<std::string>& ipaddrs, uint16_t port);
+  popPooledSocket(std::string& options, const std::string& ipaddr,
+                  uint16_t port, const std::string& username,
+                  const std::string& proxyhost, uint16_t proxyport);
 
   std::shared_ptr<SocketCore>
-  popPooledSocket
-  (std::string& options,
-   const std::vector<std::string>& ipaddrs,
-   uint16_t port,
-   const std::string& username);
+  popPooledSocket(const std::vector<std::string>& ipaddrs, uint16_t port);
+
+  std::shared_ptr<SocketCore>
+  popPooledSocket(std::string& options, const std::vector<std::string>& ipaddrs,
+                  uint16_t port, const std::string& username);
 
   void evictSocketPool();
 
@@ -324,21 +300,21 @@ public:
 
   cuid_t newCUID();
 
-  const std::string& findCachedIPAddress
-  (const std::string& hostname, uint16_t port) const;
+  const std::string& findCachedIPAddress(const std::string& hostname,
+                                         uint16_t port) const;
 
-  template<typename OutputIterator>
-  void findAllCachedIPAddresses
-  (OutputIterator out, const std::string& hostname, uint16_t port) const
+  template <typename OutputIterator>
+  void findAllCachedIPAddresses(OutputIterator out, const std::string& hostname,
+                                uint16_t port) const
   {
     dnsCache_->findAll(out, hostname, port);
   }
 
-  void cacheIPAddress
-  (const std::string& hostname, const std::string& ipaddr, uint16_t port);
+  void cacheIPAddress(const std::string& hostname, const std::string& ipaddr,
+                      uint16_t port);
 
-  void markBadIPAddress
-  (const std::string& hostname, const std::string& ipaddr, uint16_t port);
+  void markBadIPAddress(const std::string& hostname, const std::string& ipaddr,
+                        uint16_t port);
 
   void removeCachedIPAddress(const std::string& hostname, uint16_t port);
 
@@ -348,24 +324,18 @@ public:
 
   void setRefreshInterval(std::chrono::milliseconds interval);
 
-  const std::string getSessionId() const
-  {
-    return sessionId_;
-  }
+  const std::string getSessionId() const { return sessionId_; }
 
 #ifdef HAVE_ARES_ADDR_NODE
   void setAsyncDNSServers(ares_addr_node* asyncDNSServers);
 
-  ares_addr_node* getAsyncDNSServers() const
-  {
-    return asyncDNSServers_;
-  }
+  ares_addr_node* getAsyncDNSServers() const { return asyncDNSServers_; }
 #endif // HAVE_ARES_ADDR_NODE
 
 #ifdef ENABLE_WEBSOCKET
   void setWebSocketSessionMan(std::unique_ptr<rpc::WebSocketSessionMan> wsman);
-  const std::unique_ptr<rpc::WebSocketSessionMan>& getWebSocketSessionMan()
-    const
+  const std::unique_ptr<rpc::WebSocketSessionMan>&
+  getWebSocketSessionMan() const
   {
     return webSocketSessionMan_;
   }
@@ -377,4 +347,3 @@ public:
 } // namespace aria2
 
 #endif // D_DOWNLOAD_ENGINE_H
-

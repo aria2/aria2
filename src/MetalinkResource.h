@@ -52,6 +52,7 @@ public:
   };
 
   static std::string type2String[];
+
 public:
   std::string url;
   TYPE type;
@@ -71,10 +72,7 @@ public:
     return type2String[type];
   }
 
-  static int getLowestPriority()
-  {
-    return 999999;
-  }
+  static int getLowestPriority() { return 999999; }
 };
 
 } // namespace aria2

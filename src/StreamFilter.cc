@@ -37,17 +37,19 @@
 namespace aria2 {
 
 StreamFilter::StreamFilter(std::unique_ptr<StreamFilter> delegate)
-  : delegate_(std::move(delegate))
-{}
+    : delegate_(std::move(delegate))
+{
+}
 
 StreamFilter::~StreamFilter() {}
 
 bool StreamFilter::installDelegate(std::unique_ptr<StreamFilter> filter)
 {
-  if(!delegate_) {
+  if (!delegate_) {
     delegate_ = std::move(filter);
     return true;
-  } else {
+  }
+  else {
     return delegate_->installDelegate(std::move(filter));
   }
 }

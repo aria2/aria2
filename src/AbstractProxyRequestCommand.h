@@ -47,6 +47,7 @@ private:
   std::shared_ptr<Request> proxyRequest_;
 
   std::shared_ptr<HttpConnection> httpConnection_;
+
 protected:
   virtual bool executeInternal() CXX11_OVERRIDE;
 
@@ -59,12 +60,11 @@ protected:
   {
     return proxyRequest_;
   }
+
 public:
-  AbstractProxyRequestCommand(cuid_t cuid,
-                              const std::shared_ptr<Request>& req,
+  AbstractProxyRequestCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
                               const std::shared_ptr<FileEntry>& fileEntry,
-                              RequestGroup* requestGroup,
-                              DownloadEngine* e,
+                              RequestGroup* requestGroup, DownloadEngine* e,
                               const std::shared_ptr<Request>& proxyRequest,
                               const std::shared_ptr<SocketCore>& s);
 

@@ -16,21 +16,19 @@ class NetrcAuthResolverTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testResolveAuthConfig_with_userDefined);
   CPPUNIT_TEST(testResolveAuthConfig_ignoreDefault);
   CPPUNIT_TEST_SUITE_END();
+
 private:
   std::unique_ptr<Netrc> netrc_;
   std::unique_ptr<NetrcAuthResolver> resolver_;
+
 public:
   void setUp()
   {
     netrc_.reset(new Netrc());
-    netrc_->addAuthenticator(make_unique<Authenticator>("localhost",
-                                                        "name",
-                                                        "passwd",
-                                                        "account"));
-    netrc_->addAuthenticator(make_unique<DefaultAuthenticator>
-                             ("default",
-                              "defaultpasswd",
-                              "defaultaccount"));
+    netrc_->addAuthenticator(
+        make_unique<Authenticator>("localhost", "name", "passwd", "account"));
+    netrc_->addAuthenticator(make_unique<DefaultAuthenticator>(
+        "default", "defaultpasswd", "defaultaccount"));
 
     resolver_.reset(new NetrcAuthResolver());
     resolver_->setNetrc(netrc_.get());
@@ -42,8 +40,7 @@ public:
   void testResolveAuthConfig_ignoreDefault();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( NetrcAuthResolverTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(NetrcAuthResolverTest);
 
 void NetrcAuthResolverTest::testResolveAuthConfig_without_userDefined()
 {
@@ -57,7 +54,6 @@ void NetrcAuthResolverTest::testResolveAuthConfig_without_userDefined()
   resolver_->setNetrc(nullptr);
   authConfig = resolver_->resolveAuthConfig("localhost");
   CPPUNIT_ASSERT_EQUAL(std::string("foo:bar"), authConfig->getAuthText());
-
 }
 
 void NetrcAuthResolverTest::testResolveAuthConfig_with_userDefined()

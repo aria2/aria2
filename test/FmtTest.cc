@@ -4,15 +4,15 @@
 
 namespace aria2 {
 
-class FmtTest:public CppUnit::TestFixture {
+class FmtTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(FmtTest);
   CPPUNIT_TEST(testFmt);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void testFmt();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(FmtTest);
 

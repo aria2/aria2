@@ -41,8 +41,8 @@ namespace aria2 {
 
 class DefaultAuthResolver : public AbstractAuthResolver {
 public:
-  virtual std::unique_ptr<AuthConfig> resolveAuthConfig
-  (const std::string& hostname) CXX11_OVERRIDE;
+  virtual std::unique_ptr<AuthConfig>
+  resolveAuthConfig(const std::string& hostname) CXX11_OVERRIDE;
 };
 
 } // namespace aria2

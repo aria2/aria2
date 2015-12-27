@@ -40,11 +40,13 @@
 
 namespace aria2 {
 
-class DHTFindNodeMessage:public DHTQueryMessage {
+class DHTFindNodeMessage : public DHTQueryMessage {
 private:
   unsigned char targetNodeID_[DHT_ID_LENGTH];
+
 protected:
   virtual std::string toStringOptional() const CXX11_OVERRIDE;
+
 public:
   DHTFindNodeMessage(const std::shared_ptr<DHTNode>& localNode,
                      const std::shared_ptr<DHTNode>& remoteNode,
@@ -57,10 +59,7 @@ public:
 
   virtual const std::string& getMessageType() const CXX11_OVERRIDE;
 
-  const unsigned char* getTargetNodeID() const
-  {
-    return targetNodeID_;
-  }
+  const unsigned char* getTargetNodeID() const { return targetNodeID_; }
 
   static const std::string FIND_NODE;
 

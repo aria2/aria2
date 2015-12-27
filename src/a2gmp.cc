@@ -40,10 +40,7 @@ namespace global {
 
 gmp_randstate_t gmpRandstate;
 
-void initGmp()
-{
-  gmp_randinit_default(gmpRandstate);
-}
+void initGmp() { gmp_randinit_default(gmpRandstate); }
 
 } // namespace global
 

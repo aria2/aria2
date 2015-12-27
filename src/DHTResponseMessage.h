@@ -43,9 +43,10 @@ namespace aria2 {
 
 class DHTMessageCallback;
 
-class DHTResponseMessage:public DHTAbstractMessage {
+class DHTResponseMessage : public DHTAbstractMessage {
 protected:
   virtual std::string toStringOptional() const { return A2STR::NIL; }
+
 public:
   DHTResponseMessage(const std::shared_ptr<DHTNode>& localNode,
                      const std::shared_ptr<DHTNode>& remoteNode,

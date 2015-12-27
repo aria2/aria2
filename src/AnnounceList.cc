@@ -42,64 +42,71 @@
 
 namespace aria2 {
 
-AnnounceList::AnnounceList():currentTrackerInitialized_(false) {}
+AnnounceList::AnnounceList() : currentTrackerInitialized_(false) {}
 
-AnnounceList::AnnounceList
-(const std::vector<std::vector<std::string>>& announceList):
-  currentTrackerInitialized_(false) {
+AnnounceList::AnnounceList(
+    const std::vector<std::vector<std::string>>& announceList)
+    : currentTrackerInitialized_(false)
+{
   reconfigure(announceList);
 }
 
-AnnounceList::AnnounceList
-(const std::deque<std::shared_ptr<AnnounceTier>>& announceTiers):
-  tiers_(announceTiers), currentTrackerInitialized_(false)  {
+AnnounceList::AnnounceList(
+    const std::deque<std::shared_ptr<AnnounceTier>>& announceTiers)
+    : tiers_(announceTiers), currentTrackerInitialized_(false)
+{
   resetIterator();
 }
 
 AnnounceList::~AnnounceList() {}
 
-void AnnounceList::reconfigure
-(const std::vector<std::vector<std::string>>& announceList)
+void AnnounceList::reconfigure(
+    const std::vector<std::vector<std::string>>& announceList)
 {
-  for (const auto& vec: announceList) {
-    if(vec.empty()) {
+  for (const auto& vec : announceList) {
+    if (vec.empty()) {
       continue;
     }
 
     std::deque<std::string> uris(std::begin(vec), std::end(vec));
-    auto tier =
-      std::make_shared<AnnounceTier>(std::move(uris));
+    auto tier = std::make_shared<AnnounceTier>(std::move(uris));
     tiers_.push_back(std::move(tier));
   }
   resetIterator();
 }
 
-void AnnounceList::reconfigure(const std::string& url) {
-  std::deque<std::string> urls{ url };
+void AnnounceList::reconfigure(const std::string& url)
+{
+  std::deque<std::string> urls{url};
   tiers_.push_back(std::make_shared<AnnounceTier>(std::move(urls)));
   resetIterator();
 }
 
-void AnnounceList::resetIterator() {
+void AnnounceList::resetIterator()
+{
   currentTier_ = std::begin(tiers_);
-  if(currentTier_ != std::end(tiers_) && (*currentTier_)->urls.size()) {
+  if (currentTier_ != std::end(tiers_) && (*currentTier_)->urls.size()) {
     currentTracker_ = std::begin((*currentTier_)->urls);
     currentTrackerInitialized_ = true;
-  } else {
+  }
+  else {
     currentTrackerInitialized_ = false;
   }
 }
 
-std::string AnnounceList::getAnnounce() const {
-  if(currentTrackerInitialized_) {
+std::string AnnounceList::getAnnounce() const
+{
+  if (currentTrackerInitialized_) {
     return *currentTracker_;
-  } else {
+  }
+  else {
     return A2STR::NIL;
   }
 }
 
-void AnnounceList::announceSuccess() {
-  if(currentTrackerInitialized_) {
+void AnnounceList::announceSuccess()
+{
+  if (currentTrackerInitialized_) {
     (*currentTier_)->nextEvent();
     auto url = *currentTracker_;
     (*currentTier_)->urls.erase(currentTracker_);
@@ -109,39 +116,45 @@ void AnnounceList::announceSuccess() {
   }
 }
 
-void AnnounceList::announceFailure() {
-  if(currentTrackerInitialized_) {
+void AnnounceList::announceFailure()
+{
+  if (currentTrackerInitialized_) {
     ++currentTracker_;
-    if(currentTracker_ == std::end((*currentTier_)->urls)) {
+    if (currentTracker_ == std::end((*currentTier_)->urls)) {
       // force next event
       (*currentTier_)->nextEventIfAfterStarted();
       ++currentTier_;
-      if(currentTier_ == std::end(tiers_)) {
+      if (currentTier_ == std::end(tiers_)) {
         currentTrackerInitialized_ = false;
-      } else {
+      }
+      else {
         currentTracker_ = std::begin((*currentTier_)->urls);
       }
     }
   }
 }
 
-AnnounceTier::AnnounceEvent AnnounceList::getEvent() const {
-  if(currentTrackerInitialized_) {
+AnnounceTier::AnnounceEvent AnnounceList::getEvent() const
+{
+  if (currentTrackerInitialized_) {
     return (*currentTier_)->event;
-  } else {
+  }
+  else {
     return AnnounceTier::STARTED;
   }
 }
 
-void AnnounceList::setEvent(AnnounceTier::AnnounceEvent event) {
-  if(currentTrackerInitialized_) {
+void AnnounceList::setEvent(AnnounceTier::AnnounceEvent event)
+{
+  if (currentTrackerInitialized_) {
     (*currentTier_)->event = event;
   }
 }
 
-const char* AnnounceList::getEventString() const {
-  if(currentTrackerInitialized_) {
-    switch((*currentTier_)->event) {
+const char* AnnounceList::getEventString() const
+{
+  if (currentTrackerInitialized_) {
+    switch ((*currentTier_)->event) {
     case AnnounceTier::STARTED:
     case AnnounceTier::STARTED_AFTER_COMPLETION:
       return "started";
@@ -152,7 +165,8 @@ const char* AnnounceList::getEventString() const {
     default:
       return "";
     }
-  } else {
+  }
+  else {
     return "";
   }
 }
@@ -160,8 +174,9 @@ const char* AnnounceList::getEventString() const {
 namespace {
 class FindStoppedAllowedTier {
 public:
-  bool operator()(const std::shared_ptr<AnnounceTier>& tier) const {
-    switch(tier->event) {
+  bool operator()(const std::shared_ptr<AnnounceTier>& tier) const
+  {
+    switch (tier->event) {
     case AnnounceTier::DOWNLOADING:
     case AnnounceTier::STOPPED:
     case AnnounceTier::COMPLETED:
@@ -177,8 +192,9 @@ public:
 namespace {
 class FindCompletedAllowedTier {
 public:
-  bool operator()(const std::shared_ptr<AnnounceTier>& tier) const {
-    switch(tier->event) {
+  bool operator()(const std::shared_ptr<AnnounceTier>& tier) const
+  {
+    switch (tier->event) {
     case AnnounceTier::DOWNLOADING:
     case AnnounceTier::COMPLETED:
       return true;
@@ -189,38 +205,44 @@ public:
 };
 } // namespace
 
-size_t AnnounceList::countStoppedAllowedTier() const {
+size_t AnnounceList::countStoppedAllowedTier() const
+{
   return count_if(std::begin(tiers_), std::end(tiers_),
                   FindStoppedAllowedTier());
 }
 
-size_t AnnounceList::countCompletedAllowedTier() const {
+size_t AnnounceList::countCompletedAllowedTier() const
+{
   return count_if(std::begin(tiers_), std::end(tiers_),
                   FindCompletedAllowedTier());
 }
 
-void AnnounceList::setCurrentTier
-(std::deque<std::shared_ptr<AnnounceTier>>::iterator itr) {
-  if(itr != std::end(tiers_)) {
+void AnnounceList::setCurrentTier(
+    std::deque<std::shared_ptr<AnnounceTier>>::iterator itr)
+{
+  if (itr != std::end(tiers_)) {
     currentTier_ = std::move(itr);
     currentTracker_ = std::begin((*currentTier_)->urls);
   }
 }
 
-void AnnounceList::moveToStoppedAllowedTier() {
+void AnnounceList::moveToStoppedAllowedTier()
+{
   auto itr = find_wrap_if(std::begin(tiers_), std::end(tiers_), currentTier_,
                           FindStoppedAllowedTier());
   setCurrentTier(std::move(itr));
 }
 
-void AnnounceList::moveToCompletedAllowedTier() {
+void AnnounceList::moveToCompletedAllowedTier()
+{
   auto itr = find_wrap_if(std::begin(tiers_), std::end(tiers_), currentTier_,
                           FindCompletedAllowedTier());
   setCurrentTier(std::move(itr));
 }
 
-void AnnounceList::shuffle() {
-  for (const auto& tier: tiers_) {
+void AnnounceList::shuffle()
+{
+  for (const auto& tier : tiers_) {
     auto& urls = tier->urls;
     std::shuffle(std::begin(urls), std::end(urls),
                  *SimpleRandomizer::getInstance());
@@ -232,14 +254,11 @@ bool AnnounceList::allTiersFailed() const
   return currentTier_ == std::end(tiers_);
 }
 
-void AnnounceList::resetTier()
-{
-  resetIterator();
-}
+void AnnounceList::resetTier() { resetIterator(); }
 
 bool AnnounceList::currentTierAcceptsStoppedEvent() const
 {
-  if(currentTrackerInitialized_) {
+  if (currentTrackerInitialized_) {
     return FindStoppedAllowedTier()(*currentTier_);
   }
 
@@ -248,16 +267,13 @@ bool AnnounceList::currentTierAcceptsStoppedEvent() const
 
 bool AnnounceList::currentTierAcceptsCompletedEvent() const
 {
-  if(currentTrackerInitialized_) {
+  if (currentTrackerInitialized_) {
     return FindCompletedAllowedTier()(*currentTier_);
   }
 
   return false;
 }
 
-size_t AnnounceList::countTier() const
-{
-  return tiers_.size();
-}
+size_t AnnounceList::countTier() const { return tiers_.size(); }
 
 } // namespace aria2

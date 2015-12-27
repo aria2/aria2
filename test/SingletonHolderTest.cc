@@ -13,29 +13,26 @@ class SingletonHolderTest : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(SingletonHolderTest);
   CPPUNIT_TEST(testInstance);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
-  void setUp() {
-  }
+  void setUp() {}
 
   void testInstance();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( SingletonHolderTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(SingletonHolderTest);
 
 class M {
 private:
   std::string greeting_;
+
 public:
-  M(const std::string& greeting):greeting_(greeting) {}
+  M(const std::string& greeting) : greeting_(greeting) {}
 
   const std::string& greeting() const { return greeting_; }
 
-  void greeting(const std::string& greeting) {
-    greeting_ = greeting;
-  }
+  void greeting(const std::string& greeting) { greeting_ = greeting; }
 };
 
 void SingletonHolderTest::testInstance()

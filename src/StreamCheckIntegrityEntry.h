@@ -39,22 +39,21 @@
 
 namespace aria2 {
 
-class StreamCheckIntegrityEntry:public PieceHashCheckIntegrityEntry
-{
+class StreamCheckIntegrityEntry : public PieceHashCheckIntegrityEntry {
 public:
-  StreamCheckIntegrityEntry(RequestGroup* requestGroup,
-                            std::unique_ptr<Command> nextCommand =
-                            std::unique_ptr<Command>());
+  StreamCheckIntegrityEntry(
+      RequestGroup* requestGroup,
+      std::unique_ptr<Command> nextCommand = std::unique_ptr<Command>());
 
   virtual ~StreamCheckIntegrityEntry();
 
-  virtual void onDownloadFinished
-  (std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
-    CXX11_OVERRIDE;
+  virtual void
+  onDownloadFinished(std::vector<std::unique_ptr<Command>>& commands,
+                     DownloadEngine* e) CXX11_OVERRIDE;
 
-  virtual void onDownloadIncomplete
-  (std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
-    CXX11_OVERRIDE;
+  virtual void
+  onDownloadIncomplete(std::vector<std::unique_ptr<Command>>& commands,
+                       DownloadEngine* e) CXX11_OVERRIDE;
 };
 
 } // namespace aria2

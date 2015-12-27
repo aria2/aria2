@@ -41,10 +41,7 @@
 
 namespace aria2 {
 
-enum TLSDirection {
-  TLS_WANT_READ = 1,
-  TLS_WANT_WRITE
-};
+enum TLSDirection { TLS_WANT_READ = 1, TLS_WANT_WRITE };
 
 enum TLSErrorCode {
   TLS_ERR_OK = 0,
@@ -112,11 +109,11 @@ public:
 
 protected:
   TLSSession() {}
+
 private:
   TLSSession(const TLSSession&);
   TLSSession& operator=(const TLSSession&);
 };
-
 }
 
 #endif // TLS_SESSION_H

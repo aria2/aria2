@@ -53,28 +53,23 @@ private:
 
   std::shared_ptr<DHTNode> localNode_;
 
-  std::vector<std::shared_ptr<DHTNode> > nodes_;
+  std::vector<std::shared_ptr<DHTNode>> nodes_;
 
   Time serializedTime_;
+
 public:
   DHTRoutingTableDeserializer(int family);
 
   ~DHTRoutingTableDeserializer();
 
-  const std::shared_ptr<DHTNode>& getLocalNode() const
-  {
-    return localNode_;
-  }
+  const std::shared_ptr<DHTNode>& getLocalNode() const { return localNode_; }
 
-  const std::vector<std::shared_ptr<DHTNode> >& getNodes() const
+  const std::vector<std::shared_ptr<DHTNode>>& getNodes() const
   {
     return nodes_;
   }
 
-  Time getSerializedTime() const
-  {
-    return serializedTime_;
-  }
+  Time getSerializedTime() const { return serializedTime_; }
 
   void deserialize(const std::string& filename);
 };

@@ -41,16 +41,11 @@
 namespace aria2 {
 
 SSHSession::SSHSession()
-  : ssh2_(nullptr),
-    sftp_(nullptr),
-    sftph_(nullptr),
-    fd_(-1)
-{}
-
-SSHSession::~SSHSession()
+    : ssh2_(nullptr), sftp_(nullptr), sftph_(nullptr), fd_(-1)
 {
-  closeConnection();
 }
+
+SSHSession::~SSHSession() { closeConnection(); }
 
 int SSHSession::closeConnection()
 {
@@ -137,7 +132,6 @@ int SSHSession::init(sock_t sockfd)
   return SSH_ERR_OK;
 }
 
-
 int SSHSession::checkDirection()
 {
   auto dir = libssh2_session_block_directions(ssh2_);
@@ -177,13 +171,16 @@ int SSHSession::handshake()
   return SSH_ERR_OK;
 }
 
-std::string SSHSession::hostkeyMessageDigest(const std::string& hashType) {
+std::string SSHSession::hostkeyMessageDigest(const std::string& hashType)
+{
   int h;
   if (hashType == "sha-1") {
     h = LIBSSH2_HOSTKEY_HASH_SHA1;
-  } else if (hashType == "md5") {
+  }
+  else if (hashType == "md5") {
     h = LIBSSH2_HOSTKEY_HASH_MD5;
-  } else {
+  }
+  else {
     return "";
   }
   auto fingerprint = libssh2_hostkey_hash(ssh2_, h);
@@ -194,7 +191,7 @@ std::string SSHSession::hostkeyMessageDigest(const std::string& hashType) {
 }
 
 int SSHSession::authPassword(const std::string& user,
-                                const std::string& password)
+                             const std::string& password)
 {
   auto rv = libssh2_userauth_password(ssh2_, user.c_str(), password.c_str());
   if (rv == LIBSSH2_ERROR_EAGAIN) {
@@ -244,10 +241,7 @@ int SSHSession::sftpStat(int64_t& totalLength, time_t& mtime)
   return SSH_ERR_OK;
 }
 
-void SSHSession::sftpSeek(int64_t pos)
-{
-  libssh2_sftp_seek64(sftph_, pos);
-}
+void SSHSession::sftpSeek(int64_t pos) { libssh2_sftp_seek64(sftph_, pos); }
 
 std::string SSHSession::getLastErrorString()
 {

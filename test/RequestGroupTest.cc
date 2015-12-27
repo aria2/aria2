@@ -16,25 +16,23 @@ class RequestGroupTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetFirstFilePath);
   CPPUNIT_TEST(testCreateDownloadResult);
   CPPUNIT_TEST_SUITE_END();
+
 private:
   std::shared_ptr<Option> option_;
+
 public:
-  void setUp()
-  {
-    option_.reset(new Option());
-  }
+  void setUp() { option_.reset(new Option()); }
 
   void testGetFirstFilePath();
   void testCreateDownloadResult();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( RequestGroupTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(RequestGroupTest);
 
 void RequestGroupTest::testGetFirstFilePath()
 {
-  std::shared_ptr<DownloadContext> ctx
-    (new DownloadContext(1_k, 1_k, "/tmp/myfile"));
+  std::shared_ptr<DownloadContext> ctx(
+      new DownloadContext(1_k, 1_k, "/tmp/myfile"));
 
   RequestGroup group(GroupId::create(), option_);
   group.setDownloadContext(ctx);
@@ -48,8 +46,8 @@ void RequestGroupTest::testGetFirstFilePath()
 
 void RequestGroupTest::testCreateDownloadResult()
 {
-  std::shared_ptr<DownloadContext> ctx
-    (new DownloadContext(1_k, 1_m, "/tmp/myfile"));
+  std::shared_ptr<DownloadContext> ctx(
+      new DownloadContext(1_k, 1_m, "/tmp/myfile"));
   RequestGroup group(GroupId::create(), option_);
   group.setDownloadContext(ctx);
   group.initPieceStorage();

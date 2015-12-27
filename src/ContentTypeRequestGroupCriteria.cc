@@ -41,28 +41,30 @@
 
 namespace aria2 {
 
-ContentTypeRequestGroupCriteria::ContentTypeRequestGroupCriteria
-(const char** contentTypes, const char** extensions)
-  : contentTypes_(contentTypes),
-    extensions_(extensions)
-{}
+ContentTypeRequestGroupCriteria::ContentTypeRequestGroupCriteria(
+    const char** contentTypes, const char** extensions)
+    : contentTypes_(contentTypes), extensions_(extensions)
+{
+}
 
 ContentTypeRequestGroupCriteria::~ContentTypeRequestGroupCriteria() {}
 
-bool ContentTypeRequestGroupCriteria::match
-(const RequestGroup* requestGroup) const
+bool ContentTypeRequestGroupCriteria::match(
+    const RequestGroup* requestGroup) const
 {
-  if(requestGroup->getDownloadContext()->getFileEntries().size() != 1) {
+  if (requestGroup->getDownloadContext()->getFileEntries().size() != 1) {
     return false;
   }
-  for(size_t i = 0; extensions_[i]; ++i) {
-    if(util::iendsWith(requestGroup->getFirstFilePath(), extensions_[i])) {
+  for (size_t i = 0; extensions_[i]; ++i) {
+    if (util::iendsWith(requestGroup->getFirstFilePath(), extensions_[i])) {
       return true;
     }
   }
-  for(size_t i = 0; contentTypes_[i]; ++i) {
-    if(util::strieq(requestGroup->getDownloadContext()->getFirstFileEntry()->
-                    getContentType(), contentTypes_[i])) {
+  for (size_t i = 0; contentTypes_[i]; ++i) {
+    if (util::strieq(requestGroup->getDownloadContext()
+                         ->getFirstFileEntry()
+                         ->getContentType(),
+                     contentTypes_[i])) {
       return true;
     }
   }

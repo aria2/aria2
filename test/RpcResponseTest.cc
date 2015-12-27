@@ -6,13 +6,14 @@ namespace aria2 {
 
 namespace rpc {
 
-class RpcResponseTest:public CppUnit::TestFixture {
+class RpcResponseTest : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(RpcResponseTest);
   CPPUNIT_TEST(testToJson);
 #ifdef ENABLE_XML_RPC
   CPPUNIT_TEST(testToXml);
 #endif // ENABLE_XML_RPC
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void testToJson();
 #ifdef ENABLE_XML_RPC
@@ -104,26 +105,26 @@ void RpcResponseTest::testToXml()
   param->put("faultString", "No such method: make.hamburger");
   RpcResponse res(1, RpcResponse::AUTHORIZED, std::move(param), Null::g());
   std::string s = toXml(res, false);
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("<?xml version=\"1.0\"?>"
-                 "<methodResponse>"
-                 "<fault>"
-                 "<value>"
-                 "<struct>"
-                 "<member>"
-                 "<name>faultCode</name><value><int>1</int></value>"
-                 "</member>"
-                 "<member>"
-                 "<name>faultString</name>"
-                 "<value>"
-                 "<string>No such method: make.hamburger</string>"
-                 "</value>"
-                 "</member>"
-                 "</struct>"
-                 "</value>"
-                 "</fault>"
-                 "</methodResponse>"),
-     s);
+  CPPUNIT_ASSERT_EQUAL(
+      std::string("<?xml version=\"1.0\"?>"
+                  "<methodResponse>"
+                  "<fault>"
+                  "<value>"
+                  "<struct>"
+                  "<member>"
+                  "<name>faultCode</name><value><int>1</int></value>"
+                  "</member>"
+                  "<member>"
+                  "<name>faultString</name>"
+                  "<value>"
+                  "<string>No such method: make.hamburger</string>"
+                  "</value>"
+                  "</member>"
+                  "</struct>"
+                  "</value>"
+                  "</fault>"
+                  "</methodResponse>"),
+      s);
 }
 #endif // ENABLE_XML_RPC
 

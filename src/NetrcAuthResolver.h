@@ -47,13 +47,14 @@ private:
 
   bool ignoreDefault_;
 
-  std::unique_ptr<AuthConfig> findNetrcAuthenticator
-  (const std::string& hostname) const;
+  std::unique_ptr<AuthConfig>
+  findNetrcAuthenticator(const std::string& hostname) const;
+
 public:
   NetrcAuthResolver();
 
-  virtual std::unique_ptr<AuthConfig> resolveAuthConfig
-  (const std::string& hostname) CXX11_OVERRIDE;
+  virtual std::unique_ptr<AuthConfig>
+  resolveAuthConfig(const std::string& hostname) CXX11_OVERRIDE;
 
   void setNetrc(Netrc* netrc);
 

@@ -43,7 +43,7 @@ namespace aria2 {
  * Interface for writing to a binary stream of bytes.
  *
  */
-class DiskWriter:public BinaryStream {
+class DiskWriter : public BinaryStream {
 public:
   DiskWriter() {}
 
@@ -51,7 +51,7 @@ public:
   /**
    * Opens file. If the file exists, then it is truncated to 0 length.
    */
-  virtual void initAndOpenFile(int64_t totalLength = 0)  = 0;
+  virtual void initAndOpenFile(int64_t totalLength = 0) = 0;
 
   virtual void openFile(int64_t totalLength = 0) = 0;
 

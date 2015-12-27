@@ -50,9 +50,6 @@ unsigned char* BtKeepAliveMessage::createMessage()
   return msg;
 }
 
-size_t BtKeepAliveMessage::getMessageLength()
-{
-  return MESSAGE_LENGTH;
-}
+size_t BtKeepAliveMessage::getMessageLength() { return MESSAGE_LENGTH; }
 
 } // namespace aria2

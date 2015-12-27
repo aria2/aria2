@@ -49,21 +49,15 @@ private:
   std::string uri_;
 
   error_code::Value result_;
+
 public:
   URIResult(const std::string& uri, error_code::Value result);
 
   ~URIResult();
 
-  const std::string& getURI() const
-  {
-    return uri_;
-  }
+  const std::string& getURI() const { return uri_; }
 
-  error_code::Value getResult() const
-  {
-    return result_;
-  }
-
+  error_code::Value getResult() const { return result_; }
 };
 
 } // namespace aria2

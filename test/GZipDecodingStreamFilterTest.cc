@@ -16,17 +16,18 @@
 
 namespace aria2 {
 
-class GZipDecodingStreamFilterTest:public CppUnit::TestFixture {
+class GZipDecodingStreamFilterTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(GZipDecodingStreamFilterTest);
   CPPUNIT_TEST(testTransform);
   CPPUNIT_TEST_SUITE_END();
 
-  class MockSegment2:public MockSegment {
+  class MockSegment2 : public MockSegment {
   private:
     int64_t positionToWrite_;
+
   public:
-    MockSegment2():positionToWrite_(0) {}
+    MockSegment2() : positionToWrite_(0) {}
 
     virtual void updateWrittenLength(int64_t bytes) CXX11_OVERRIDE
     {
@@ -42,6 +43,7 @@ class GZipDecodingStreamFilterTest:public CppUnit::TestFixture {
   std::unique_ptr<GZipDecodingStreamFilter> filter_;
   std::shared_ptr<ByteArrayDiskWriter> writer_;
   std::shared_ptr<MockSegment2> segment_;
+
 public:
   void setUp()
   {
@@ -56,14 +58,13 @@ public:
   void testTransform();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(GZipDecodingStreamFilterTest);
 
 void GZipDecodingStreamFilterTest::testTransform()
 {
   unsigned char buf[4_k];
-  std::ifstream in(A2_TEST_DIR"/gzip_decode_test.gz", std::ios::binary);
-  while(in) {
+  std::ifstream in(A2_TEST_DIR "/gzip_decode_test.gz", std::ios::binary);
+  while (in) {
     in.read(reinterpret_cast<char*>(buf), sizeof(buf));
     filter_->transform(writer_, segment_, buf, in.gcount());
   }

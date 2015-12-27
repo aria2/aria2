@@ -40,7 +40,7 @@
 #include "util.h"
 #include "json.h"
 #ifdef HAVE_ZLIB
-# include "GZipEncoder.h"
+#include "GZipEncoder.h"
 #endif // HAVE_ZLIB
 
 namespace aria2 {
@@ -48,14 +48,15 @@ namespace aria2 {
 namespace rpc {
 
 namespace {
-template<typename OutputStream>
+template <typename OutputStream>
 void encodeValue(const ValueBase* value, OutputStream& o)
 {
-  class XmlValueBaseVisitor:public ValueBaseVisitor {
+  class XmlValueBaseVisitor : public ValueBaseVisitor {
   private:
     OutputStream& o_;
+
   public:
-    XmlValueBaseVisitor(OutputStream& o):o_(o) {}
+    XmlValueBaseVisitor(OutputStream& o) : o_(o) {}
 
     virtual ~XmlValueBaseVisitor() {}
 
@@ -76,7 +77,7 @@ void encodeValue(const ValueBase* value, OutputStream& o)
     virtual void visit(const List& v) CXX11_OVERRIDE
     {
       o_ << "<value><array><data>";
-      for(const auto& e: v) {
+      for (const auto& e : v) {
         e->accept(*this);
       }
       o_ << "</data></array></value>";
@@ -85,7 +86,7 @@ void encodeValue(const ValueBase* value, OutputStream& o)
     virtual void visit(const Dict& v) CXX11_OVERRIDE
     {
       o_ << "<value><struct>";
-      for(const auto& e: v) {
+      for (const auto& e : v) {
         o_ << "<member><name>" << util::htmlEscape(e.first) << "</name>";
         e.second->accept(*this);
         o_ << "</member>";
@@ -100,16 +101,19 @@ void encodeValue(const ValueBase* value, OutputStream& o)
 } // namespace
 
 namespace {
-template<typename OutputStream>
-std::string encodeAll
-(OutputStream& o, int code, const ValueBase* param)
+template <typename OutputStream>
+std::string encodeAll(OutputStream& o, int code, const ValueBase* param)
 {
-  o << "<?xml version=\"1.0\"?>" << "<methodResponse>";
-  if(code == 0) {
-    o << "<params>" << "<param>";
+  o << "<?xml version=\"1.0\"?>"
+    << "<methodResponse>";
+  if (code == 0) {
+    o << "<params>"
+      << "<param>";
     encodeValue(param, o);
-    o << "</param>" << "</params>";
-  } else {
+    o << "</param>"
+      << "</params>";
+  }
+  else {
     o << "<fault>";
     encodeValue(param, o);
     o << "</fault>";
@@ -119,121 +123,121 @@ std::string encodeAll
 }
 } // namespace
 
-RpcResponse::RpcResponse
-(int code,
- RpcResponse::authorization_t authorized,
- std::unique_ptr<ValueBase> param,
- std::unique_ptr<ValueBase> id)
-  : param{std::move(param)}, id{std::move(id)}, code{code}, authorized{authorized}
-{}
+RpcResponse::RpcResponse(int code, RpcResponse::authorization_t authorized,
+                         std::unique_ptr<ValueBase> param,
+                         std::unique_ptr<ValueBase> id)
+    : param{std::move(param)},
+      id{std::move(id)},
+      code{code},
+      authorized{authorized}
+{
+}
 
 std::string toXml(const RpcResponse& res, bool gzip)
 {
-  if(gzip) {
+  if (gzip) {
 #ifdef HAVE_ZLIB
     GZipEncoder o;
     o.init();
     return encodeAll(o, res.code, res.param.get());
-#else // !HAVE_ZLIB
+#else  // !HAVE_ZLIB
     abort();
 #endif // !HAVE_ZLIB
-  } else {
+  }
+  else {
     std::stringstream o;
     return encodeAll(o, res.code, res.param.get());
   }
 }
 
 namespace {
-template<typename OutputStream>
-OutputStream& encodeJsonAll
-(OutputStream& o,
- int code,
- const ValueBase* param,
- const ValueBase* id,
- const std::string& callback = A2STR::NIL)
+template <typename OutputStream>
+OutputStream& encodeJsonAll(OutputStream& o, int code, const ValueBase* param,
+                            const ValueBase* id,
+                            const std::string& callback = A2STR::NIL)
 {
-  if(!callback.empty()) {
+  if (!callback.empty()) {
     o << callback << "(";
   }
   o << "{\"id\":";
   json::encode(o, id);
   o << ",\"jsonrpc\":\"2.0\",";
-  if(code == 0) {
+  if (code == 0) {
     o << "\"result\":";
-  } else {
+  }
+  else {
     o << "\"error\":";
   }
   json::encode(o, param);
   o << "}";
-  if(!callback.empty()) {
+  if (!callback.empty()) {
     o << ")";
   }
   return o;
 }
 } // namespace
 
-std::string toJson
-(const RpcResponse& res, const std::string& callback, bool gzip)
+std::string toJson(const RpcResponse& res, const std::string& callback,
+                   bool gzip)
 {
-  if(gzip) {
+  if (gzip) {
 #ifdef HAVE_ZLIB
     GZipEncoder o;
     o.init();
-    return encodeJsonAll(o, res.code, res.param.get(), res.id.get(),
-                         callback).str();
-#else // !HAVE_ZLIB
+    return encodeJsonAll(o, res.code, res.param.get(), res.id.get(), callback)
+        .str();
+#else  // !HAVE_ZLIB
     abort();
 #endif // !HAVE_ZLIB
-  } else {
+  }
+  else {
     std::stringstream o;
-    return encodeJsonAll(o, res.code, res.param.get(), res.id.get(),
-                         callback).str();
+    return encodeJsonAll(o, res.code, res.param.get(), res.id.get(), callback)
+        .str();
   }
 }
 
 namespace {
-template<typename OutputStream>
-OutputStream& encodeJsonBatchAll
-(OutputStream& o,
- const std::vector<RpcResponse>& results,
- const std::string& callback)
+template <typename OutputStream>
+OutputStream& encodeJsonBatchAll(OutputStream& o,
+                                 const std::vector<RpcResponse>& results,
+                                 const std::string& callback)
 {
-  if(!callback.empty()) {
+  if (!callback.empty()) {
     o << callback << "(";
   }
   o << "[";
-  if(!results.empty()) {
+  if (!results.empty()) {
     encodeJsonAll(o, results[0].code, results[0].param.get(),
                   results[0].id.get());
 
-    for(auto i = std::begin(results)+1, eoi = std::end(results); i != eoi;
-        ++i) {
+    for (auto i = std::begin(results) + 1, eoi = std::end(results); i != eoi;
+         ++i) {
       o << ",";
       encodeJsonAll(o, (*i).code, (*i).param.get(), (*i).id.get());
     }
   }
   o << "]";
-  if(!callback.empty()) {
+  if (!callback.empty()) {
     o << ")";
   }
   return o;
 }
 } // namespace
 
-std::string toJsonBatch
-(const std::vector<RpcResponse>& results,
- const std::string& callback,
- bool gzip)
+std::string toJsonBatch(const std::vector<RpcResponse>& results,
+                        const std::string& callback, bool gzip)
 {
-  if(gzip) {
+  if (gzip) {
 #ifdef HAVE_ZLIB
     GZipEncoder o;
     o.init();
     return encodeJsonBatchAll(o, results, callback).str();
-#else // !HAVE_ZLIB
+#else  // !HAVE_ZLIB
     abort();
 #endif // !HAVE_ZLIB
-  } else {
+  }
+  else {
     std::stringstream o;
     return encodeJsonBatchAll(o, results, callback).str();
   }

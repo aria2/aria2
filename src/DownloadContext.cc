@@ -48,28 +48,28 @@
 namespace aria2 {
 
 DownloadContext::DownloadContext()
-  : ownerRequestGroup_(nullptr),
-    attrs_(MAX_CTX_ATTR),
-    downloadStopTime_(Timer::zero()),
-    pieceLength_(0),
-    checksumVerified_(false),
-    knowsTotalLength_(true),
-    acceptMetalink_(true)
-{}
-
-DownloadContext::DownloadContext(int32_t pieceLength,
-                                 int64_t totalLength,
-                                 std::string path)
-  : ownerRequestGroup_(nullptr),
-    attrs_(MAX_CTX_ATTR),
-    downloadStopTime_(Timer::zero()),
-    pieceLength_(pieceLength),
-    checksumVerified_(false),
-    knowsTotalLength_(true),
-    acceptMetalink_(true)
+    : ownerRequestGroup_(nullptr),
+      attrs_(MAX_CTX_ATTR),
+      downloadStopTime_(Timer::zero()),
+      pieceLength_(0),
+      checksumVerified_(false),
+      knowsTotalLength_(true),
+      acceptMetalink_(true)
 {
-  fileEntries_.push_back
-    (std::make_shared<FileEntry>(std::move(path), totalLength, 0));
+}
+
+DownloadContext::DownloadContext(int32_t pieceLength, int64_t totalLength,
+                                 std::string path)
+    : ownerRequestGroup_(nullptr),
+      attrs_(MAX_CTX_ATTR),
+      downloadStopTime_(Timer::zero()),
+      pieceLength_(pieceLength),
+      checksumVerified_(false),
+      knowsTotalLength_(true),
+      acceptMetalink_(true)
+{
+  fileEntries_.push_back(
+      std::make_shared<FileEntry>(std::move(path), totalLength, 0));
 }
 
 DownloadContext::~DownloadContext() {}
@@ -95,31 +95,33 @@ Timer::Clock::duration DownloadContext::calculateSessionTime() const
 std::shared_ptr<FileEntry>
 DownloadContext::findFileEntryByOffset(int64_t offset) const
 {
-  if(fileEntries_.empty() ||
-     (offset > 0 && fileEntries_.back()->getLastOffset() <= offset)) {
+  if (fileEntries_.empty() ||
+      (offset > 0 && fileEntries_.back()->getLastOffset() <= offset)) {
     return nullptr;
   }
 
   auto obj = std::make_shared<FileEntry>();
   obj->setOffset(offset);
   auto i = std::upper_bound(fileEntries_.begin(), fileEntries_.end(), obj,
-                            DerefLess<std::shared_ptr<FileEntry> >());
-  if(i != fileEntries_.end() && (*i)->getOffset() == offset) {
+                            DerefLess<std::shared_ptr<FileEntry>>());
+  if (i != fileEntries_.end() && (*i)->getOffset() == offset) {
     return *i;
-  } else {
+  }
+  else {
     return *(--i);
   }
 }
 
-void DownloadContext::setFilePathWithIndex
-(size_t index, const std::string& path)
+void DownloadContext::setFilePathWithIndex(size_t index,
+                                           const std::string& path)
 {
-  if(0 < index && index <= fileEntries_.size()) {
+  if (0 < index && index <= fileEntries_.size()) {
     // We don't escape path because path may come from users.
-    fileEntries_[index-1]->setPath(path);
-  } else {
-    throw DL_ABORT_EX(fmt("No such file with index=%u",
-                          static_cast<unsigned int>(index)));
+    fileEntries_[index - 1]->setPath(path);
+  }
+  else {
+    throw DL_ABORT_EX(
+        fmt("No such file with index=%u", static_cast<unsigned int>(index)));
   }
 }
 
@@ -127,7 +129,7 @@ void DownloadContext::setFileFilter(SegList<int> sgl)
 {
   using namespace std::placeholders;
 
-  if(!sgl.hasNext() || fileEntries_.size() == 1) {
+  if (!sgl.hasNext() || fileEntries_.size() == 1) {
     std::for_each(fileEntries_.begin(), fileEntries_.end(),
                   std::bind(&FileEntry::setRequested, _1, true));
     return;
@@ -135,37 +137,39 @@ void DownloadContext::setFileFilter(SegList<int> sgl)
   assert(sgl.peek() >= 1);
   size_t len = fileEntries_.size();
   size_t i = 0;
-  for(; i < len && sgl.hasNext(); ++i) {
-    size_t idx = sgl.peek()-1;
-    if(i == idx) {
+  for (; i < len && sgl.hasNext(); ++i) {
+    size_t idx = sgl.peek() - 1;
+    if (i == idx) {
       fileEntries_[i]->setRequested(true);
       sgl.next();
-    } else if(i < idx) {
+    }
+    else if (i < idx) {
       fileEntries_[i]->setRequested(false);
     }
   }
-  for(; i < len; ++i) {
+  for (; i < len; ++i) {
     fileEntries_[i]->setRequested(false);
   }
 }
 
-void DownloadContext::setAttribute
-(ContextAttributeType key, std::unique_ptr<ContextAttribute> value)
+void DownloadContext::setAttribute(ContextAttributeType key,
+                                   std::unique_ptr<ContextAttribute> value)
 {
   assert(key < MAX_CTX_ATTR);
   attrs_[key] = std::move(value);
 }
 
-const std::unique_ptr<ContextAttribute>& DownloadContext::getAttribute
-(ContextAttributeType key)
+const std::unique_ptr<ContextAttribute>&
+DownloadContext::getAttribute(ContextAttributeType key)
 {
   assert(key < MAX_CTX_ATTR);
   const std::unique_ptr<ContextAttribute>& attr = attrs_[key];
-  if(attr) {
+  if (attr) {
     return attr;
-  } else {
-    throw DL_ABORT_EX(fmt("No attribute named %s",
-                          strContextAttributeType(key)));
+  }
+  else {
+    throw DL_ABORT_EX(
+        fmt("No attribute named %s", strContextAttributeType(key)));
   }
 }
 
@@ -177,8 +181,10 @@ bool DownloadContext::hasAttribute(ContextAttributeType key) const
 
 void DownloadContext::releaseRuntimeResource()
 {
-  for(std::vector<std::shared_ptr<FileEntry> >::const_iterator i =
-        fileEntries_.begin(), eoi = fileEntries_.end(); i != eoi; ++i) {
+  for (std::vector<std::shared_ptr<FileEntry>>::const_iterator
+           i = fileEntries_.begin(),
+           eoi = fileEntries_.end();
+       i != eoi; ++i) {
     (*i)->putBackRequest();
     (*i)->releaseRuntimeResource();
   }
@@ -186,38 +192,41 @@ void DownloadContext::releaseRuntimeResource()
 
 size_t DownloadContext::getNumPieces() const
 {
-  if(pieceLength_ == 0) {
+  if (pieceLength_ == 0) {
     return 0;
-  } else {
+  }
+  else {
     assert(!fileEntries_.empty());
-    return (fileEntries_.back()->getLastOffset()+pieceLength_-1)/pieceLength_;
+    return (fileEntries_.back()->getLastOffset() + pieceLength_ - 1) /
+           pieceLength_;
   }
 }
 
 int64_t DownloadContext::getTotalLength() const
 {
-  if(fileEntries_.empty()) {
+  if (fileEntries_.empty()) {
     return 0;
-  } else {
+  }
+  else {
     return fileEntries_.back()->getLastOffset();
   }
 }
 
 const std::string& DownloadContext::getBasePath() const
 {
-  if(basePath_.empty()) {
+  if (basePath_.empty()) {
     assert(!fileEntries_.empty());
     return getFirstFileEntry()->getPath();
-  } else {
+  }
+  else {
     return basePath_;
   }
 }
 
-std::shared_ptr<FileEntry>
-DownloadContext::getFirstRequestedFileEntry() const
+std::shared_ptr<FileEntry> DownloadContext::getFirstRequestedFileEntry() const
 {
   for (auto& e : fileEntries_) {
-    if(e->isRequested()) {
+    if (e->isRequested()) {
       return e;
     }
   }
@@ -227,8 +236,8 @@ DownloadContext::getFirstRequestedFileEntry() const
 size_t DownloadContext::countRequestedFileEntry() const
 {
   size_t numFiles = 0;
-  for (const auto& e: fileEntries_) {
-    if(e->isRequested()) {
+  for (const auto& e : fileEntries_) {
+    if (e->isRequested()) {
       ++numFiles;
     }
   }
@@ -237,8 +246,8 @@ size_t DownloadContext::countRequestedFileEntry() const
 
 bool DownloadContext::isChecksumVerificationNeeded() const
 {
-  return pieceHashType_.empty() &&
-    !digest_.empty() && !hashType_.empty() && !checksumVerified_;
+  return pieceHashType_.empty() && !digest_.empty() && !hashType_.empty() &&
+         !checksumVerified_;
 }
 
 bool DownloadContext::isChecksumVerificationAvailable() const
@@ -248,22 +257,22 @@ bool DownloadContext::isChecksumVerificationAvailable() const
 
 bool DownloadContext::isPieceHashVerificationAvailable() const
 {
-  return !pieceHashType_.empty() &&
-    pieceHashes_.size() > 0 && pieceHashes_.size() == getNumPieces();
+  return !pieceHashType_.empty() && pieceHashes_.size() > 0 &&
+         pieceHashes_.size() == getNumPieces();
 }
 
 const std::string& DownloadContext::getPieceHash(size_t index) const
 {
-  if(index < pieceHashes_.size()) {
+  if (index < pieceHashes_.size()) {
     return pieceHashes_[index];
-  } else {
+  }
+  else {
     return A2STR::NIL;
   }
 }
 
-void DownloadContext::setDigest
-(const std::string& hashType,
- const std::string& digest)
+void DownloadContext::setDigest(const std::string& hashType,
+                                const std::string& digest)
 {
   hashType_ = hashType;
   digest_ = digest;
@@ -283,7 +292,7 @@ void DownloadContext::updateDownloadLength(size_t bytes)
 {
   netStat_.updateDownloadLength(bytes);
   RequestGroupMan* rgman = ownerRequestGroup_->getRequestGroupMan();
-  if(rgman) {
+  if (rgman) {
     rgman->getNetStat().updateDownloadLength(bytes);
   }
 }
@@ -292,7 +301,7 @@ void DownloadContext::updateUploadLength(size_t bytes)
 {
   netStat_.updateUploadLength(bytes);
   RequestGroupMan* rgman = ownerRequestGroup_->getRequestGroupMan();
-  if(rgman) {
+  if (rgman) {
     rgman->getNetStat().updateUploadLength(bytes);
   }
 }

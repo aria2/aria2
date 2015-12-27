@@ -21,14 +21,14 @@
 
 namespace aria2 {
 
-class DefaultBtMessageDispatcherTest:public CppUnit::TestFixture {
+class DefaultBtMessageDispatcherTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DefaultBtMessageDispatcherTest);
   CPPUNIT_TEST(testAddMessage);
   CPPUNIT_TEST(testSendMessages);
   CPPUNIT_TEST(testSendMessages_underUploadLimit);
   // See the comment on the definition
-  //CPPUNIT_TEST(testSendMessages_overUploadLimit);
+  // CPPUNIT_TEST(testSendMessages_overUploadLimit);
   CPPUNIT_TEST(testDoCancelSendingPieceAction);
   CPPUNIT_TEST(testCheckRequestSlotAndDoNecessaryThing);
   CPPUNIT_TEST(testCheckRequestSlotAndDoNecessaryThing_timeout);
@@ -38,6 +38,7 @@ class DefaultBtMessageDispatcherTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetOutstandingRequest);
   CPPUNIT_TEST(testRemoveOutstandingRequest);
   CPPUNIT_TEST_SUITE_END();
+
 private:
   std::shared_ptr<DownloadContext> dctx_;
   std::shared_ptr<Peer> peer;
@@ -46,6 +47,7 @@ private:
   std::unique_ptr<RequestGroupMan> rgman_;
   std::shared_ptr<Option> option_;
   std::unique_ptr<RequestGroup> rg_;
+
 public:
   void tearDown() {}
 
@@ -63,9 +65,10 @@ public:
   void testRemoveOutstandingRequest();
 
   struct EventCheck {
-    EventCheck() : onQueuedCalled{false}, sendCalled{false},
-      doCancelActionCalled{false}
-    {}
+    EventCheck()
+        : onQueuedCalled{false}, sendCalled{false}, doCancelActionCalled{false}
+    {
+    }
     bool onQueuedCalled;
     bool sendCalled;
     bool doCancelActionCalled;
@@ -75,28 +78,26 @@ public:
   public:
     EventCheck* evcheck;
     std::string type;
-    MockBtMessage2(EventCheck* evcheck = nullptr)
-      : evcheck{evcheck}
-    {}
+    MockBtMessage2(EventCheck* evcheck = nullptr) : evcheck{evcheck} {}
 
     virtual void onQueued() CXX11_OVERRIDE
     {
-      if(evcheck){
+      if (evcheck) {
         evcheck->onQueuedCalled = true;
       }
     }
 
     virtual void send() CXX11_OVERRIDE
     {
-      if(evcheck) {
+      if (evcheck) {
         evcheck->sendCalled = true;
       }
     }
 
-    virtual void onCancelSendingPieceEvent
-    (const BtCancelSendingPieceEvent& event) CXX11_OVERRIDE
+    virtual void onCancelSendingPieceEvent(
+        const BtCancelSendingPieceEvent& event) CXX11_OVERRIDE
     {
-      if(evcheck) {
+      if (evcheck) {
         evcheck->doCancelActionCalled = true;
       }
     }
@@ -105,8 +106,8 @@ public:
   class MockBtMessageFactory2 : public MockBtMessageFactory {
   public:
     virtual std::unique_ptr<BtCancelMessage>
-    createCancelMessage(size_t index, int32_t begin, int32_t length)
-      CXX11_OVERRIDE
+    createCancelMessage(size_t index, int32_t begin,
+                        int32_t length) CXX11_OVERRIDE
     {
       return make_unique<BtCancelMessage>(index, begin, length);
     }
@@ -120,17 +121,17 @@ public:
     rg_ = make_unique<RequestGroup>(GroupId::create(), option_);
 
     dctx_ = std::make_shared<DownloadContext>();
-    bittorrent::load(A2_TEST_DIR"/test.torrent", dctx_, option_);
+    bittorrent::load(A2_TEST_DIR "/test.torrent", dctx_, option_);
 
     rg_->setDownloadContext(dctx_);
 
     peer = std::make_shared<Peer>("192.168.0.1", 6969);
-    peer->allocateSessionResource
-      (dctx_->getPieceLength(), dctx_->getTotalLength());
+    peer->allocateSessionResource(dctx_->getPieceLength(),
+                                  dctx_->getTotalLength());
     messageFactory_ = make_unique<MockBtMessageFactory2>();
 
-    rgman_ = make_unique<RequestGroupMan>
-      (std::vector<std::shared_ptr<RequestGroup>>{}, 0, option_.get());
+    rgman_ = make_unique<RequestGroupMan>(
+        std::vector<std::shared_ptr<RequestGroup>>{}, 0, option_.get());
 
     btMessageDispatcher = make_unique<DefaultBtMessageDispatcher>();
     btMessageDispatcher->setPeer(peer);
@@ -141,11 +142,10 @@ public:
   }
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(DefaultBtMessageDispatcherTest);
 
 void DefaultBtMessageDispatcherTest::testAddMessage()
-  {
+{
   auto evcheck = EventCheck{};
   auto msg = make_unique<MockBtMessage2>(&evcheck);
   btMessageDispatcher->addMessageToQueue(std::move(msg));
@@ -154,7 +154,8 @@ void DefaultBtMessageDispatcherTest::testAddMessage()
                        btMessageDispatcher->getMessageQueue().size());
 }
 
-void DefaultBtMessageDispatcherTest::testSendMessages() {
+void DefaultBtMessageDispatcherTest::testSendMessages()
+{
   auto evcheck1 = EventCheck{};
   auto msg1 = make_unique<MockBtMessage2>(&evcheck1);
   msg1->setUploading(false);
@@ -169,7 +170,8 @@ void DefaultBtMessageDispatcherTest::testSendMessages() {
   CPPUNIT_ASSERT(evcheck2.sendCalled);
 }
 
-void DefaultBtMessageDispatcherTest::testSendMessages_underUploadLimit() {
+void DefaultBtMessageDispatcherTest::testSendMessages_underUploadLimit()
+{
   auto evcheck1 = EventCheck{};
   auto msg1 = make_unique<MockBtMessage2>(&evcheck1);
   msg1->setUploading(true);
@@ -212,8 +214,8 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing()
   CPPUNIT_ASSERT_EQUAL((size_t)0, index);
 
   btMessageDispatcher->setRequestTimeout(1_min);
-  btMessageDispatcher->addOutstandingRequest
-    (make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0, piece));
+  btMessageDispatcher->addOutstandingRequest(
+      make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0, piece));
 
   btMessageDispatcher->checkRequestSlotAndDoNecessaryThing();
 
@@ -224,7 +226,8 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing()
 }
 
 void DefaultBtMessageDispatcherTest::
-testCheckRequestSlotAndDoNecessaryThing_timeout() {
+    testCheckRequestSlotAndDoNecessaryThing_timeout()
+{
   auto piece = std::make_shared<Piece>(0, MY_PIECE_LENGTH);
   size_t index;
   CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(index));
@@ -246,12 +249,13 @@ testCheckRequestSlotAndDoNecessaryThing_timeout() {
 }
 
 void DefaultBtMessageDispatcherTest::
-testCheckRequestSlotAndDoNecessaryThing_completeBlock() {
+    testCheckRequestSlotAndDoNecessaryThing_completeBlock()
+{
   auto piece = std::make_shared<Piece>(0, MY_PIECE_LENGTH);
   piece->completeBlock(0);
   btMessageDispatcher->setRequestTimeout(1_min);
-  btMessageDispatcher->addOutstandingRequest
-    (make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0, piece));
+  btMessageDispatcher->addOutstandingRequest(
+      make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0, piece));
 
   btMessageDispatcher->checkRequestSlotAndDoNecessaryThing();
 
@@ -261,16 +265,18 @@ testCheckRequestSlotAndDoNecessaryThing_completeBlock() {
                        btMessageDispatcher->getRequestSlots().size());
 }
 
-void DefaultBtMessageDispatcherTest::testCountOutstandingRequest() {
-  btMessageDispatcher->addOutstandingRequest
-    (make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0));
+void DefaultBtMessageDispatcherTest::testCountOutstandingRequest()
+{
+  btMessageDispatcher->addOutstandingRequest(
+      make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0));
   CPPUNIT_ASSERT_EQUAL((size_t)1,
                        btMessageDispatcher->countOutstandingRequest());
 }
 
-void DefaultBtMessageDispatcherTest::testIsOutstandingRequest() {
-  btMessageDispatcher->addOutstandingRequest
-    (make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0));
+void DefaultBtMessageDispatcherTest::testIsOutstandingRequest()
+{
+  btMessageDispatcher->addOutstandingRequest(
+      make_unique<RequestSlot>(0, 0, MY_PIECE_LENGTH, 0));
 
   CPPUNIT_ASSERT(btMessageDispatcher->isOutstandingRequest(0, 0));
   CPPUNIT_ASSERT(!btMessageDispatcher->isOutstandingRequest(0, 1));
@@ -278,42 +284,40 @@ void DefaultBtMessageDispatcherTest::testIsOutstandingRequest() {
   CPPUNIT_ASSERT(!btMessageDispatcher->isOutstandingRequest(1, 1));
 }
 
-void DefaultBtMessageDispatcherTest::testGetOutstandingRequest() {
+void DefaultBtMessageDispatcherTest::testGetOutstandingRequest()
+{
   btMessageDispatcher->addOutstandingRequest(
       make_unique<RequestSlot>(1, 1_k, 16_k, 10));
 
   CPPUNIT_ASSERT(btMessageDispatcher->getOutstandingRequest(1, 1_k, 16_k));
 
-  CPPUNIT_ASSERT(!btMessageDispatcher->
-                 getOutstandingRequest(1, 1_k, 17_k));
+  CPPUNIT_ASSERT(!btMessageDispatcher->getOutstandingRequest(1, 1_k, 17_k));
 
-  CPPUNIT_ASSERT(!btMessageDispatcher->
-                 getOutstandingRequest(1, 2_k, 16_k));
+  CPPUNIT_ASSERT(!btMessageDispatcher->getOutstandingRequest(1, 2_k, 16_k));
 
-  CPPUNIT_ASSERT(!btMessageDispatcher->
-                 getOutstandingRequest(2, 1_k, 16_k));
+  CPPUNIT_ASSERT(!btMessageDispatcher->getOutstandingRequest(2, 1_k, 16_k));
 }
 
-void DefaultBtMessageDispatcherTest::testRemoveOutstandingRequest() {
+void DefaultBtMessageDispatcherTest::testRemoveOutstandingRequest()
+{
   auto piece = std::make_shared<Piece>(1, 1_m);
   size_t blockIndex = 0;
   CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(blockIndex));
-  uint32_t begin = blockIndex*piece->getBlockLength();
+  uint32_t begin = blockIndex * piece->getBlockLength();
   size_t length = piece->getBlockLength(blockIndex);
   RequestSlot slot;
-  btMessageDispatcher->addOutstandingRequest
-    (make_unique<RequestSlot>(piece->getIndex(), begin, length, blockIndex,
-                              piece));
+  btMessageDispatcher->addOutstandingRequest(make_unique<RequestSlot>(
+      piece->getIndex(), begin, length, blockIndex, piece));
 
-  auto s2 = btMessageDispatcher->getOutstandingRequest(piece->getIndex(),
-                                                       begin, length);
+  auto s2 = btMessageDispatcher->getOutstandingRequest(piece->getIndex(), begin,
+                                                       length);
   CPPUNIT_ASSERT(s2);
   CPPUNIT_ASSERT(piece->isBlockUsed(blockIndex));
 
   btMessageDispatcher->removeOutstandingRequest(s2);
 
-  auto s3 = btMessageDispatcher->getOutstandingRequest(piece->getIndex(),
-                                                       begin, length);
+  auto s3 = btMessageDispatcher->getOutstandingRequest(piece->getIndex(), begin,
+                                                       length);
   CPPUNIT_ASSERT(!s3);
   CPPUNIT_ASSERT(!piece->isBlockUsed(blockIndex));
 }

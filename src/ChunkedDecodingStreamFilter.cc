@@ -43,8 +43,8 @@
 
 namespace aria2 {
 
-const std::string ChunkedDecodingStreamFilter::NAME
-("ChunkedDecodingStreamFilter");
+const std::string
+    ChunkedDecodingStreamFilter::NAME("ChunkedDecodingStreamFilter");
 
 namespace {
 enum {
@@ -64,128 +64,141 @@ enum {
 };
 } // namespace
 
-ChunkedDecodingStreamFilter::ChunkedDecodingStreamFilter
-(std::unique_ptr<StreamFilter> delegate)
-  : StreamFilter{std::move(delegate)},
-    state_{PREV_CHUNK_SIZE},
-    chunkSize_{0},
-    chunkRemaining_{0},
-    bytesProcessed_{0}
-{}
+ChunkedDecodingStreamFilter::ChunkedDecodingStreamFilter(
+    std::unique_ptr<StreamFilter> delegate)
+    : StreamFilter{std::move(delegate)},
+      state_{PREV_CHUNK_SIZE},
+      chunkSize_{0},
+      chunkRemaining_{0},
+      bytesProcessed_{0}
+{
+}
 
 ChunkedDecodingStreamFilter::~ChunkedDecodingStreamFilter() {}
 
 void ChunkedDecodingStreamFilter::init() {}
 
-ssize_t ChunkedDecodingStreamFilter::transform
-(const std::shared_ptr<BinaryStream>& out,
- const std::shared_ptr<Segment>& segment,
- const unsigned char* inbuf, size_t inlen)
+ssize_t
+ChunkedDecodingStreamFilter::transform(const std::shared_ptr<BinaryStream>& out,
+                                       const std::shared_ptr<Segment>& segment,
+                                       const unsigned char* inbuf, size_t inlen)
 {
   ssize_t outlen = 0;
   size_t i;
   bytesProcessed_ = 0;
-  for(i = 0; i < inlen; ++i) {
+  for (i = 0; i < inlen; ++i) {
     unsigned char c = inbuf[i];
-    switch(state_) {
+    switch (state_) {
     case PREV_CHUNK_SIZE:
-      if(util::isHexDigit(c)) {
+      if (util::isHexDigit(c)) {
         chunkSize_ = util::hexCharToUInt(c);
         state_ = CHUNK_SIZE;
-      } else {
+      }
+      else {
         throw DL_ABORT_EX("Bad chunk size: not hex string");
       }
       break;
     case CHUNK_SIZE:
-      if(util::isHexDigit(c)) {
-        if(chunkSize_ & 0x7800000000000000LL) {
+      if (util::isHexDigit(c)) {
+        if (chunkSize_ & 0x7800000000000000LL) {
           throw DL_ABORT_EX("Too big chunk size");
         }
         chunkSize_ <<= 4;
         chunkSize_ += util::hexCharToUInt(c);
-      } else if(c == ';') {
+      }
+      else if (c == ';') {
         state_ = CHUNK_EXTENSION;
-      } else if(c == '\r') {
+      }
+      else if (c == '\r') {
         state_ = PREV_CHUNK_SIZE_LF;
-      } else {
+      }
+      else {
         throw DL_ABORT_EX("Bad chunk size: not hex string");
       }
       break;
     case CHUNK_EXTENSION:
-      if(c == '\r') {
+      if (c == '\r') {
         state_ = PREV_CHUNK_SIZE_LF;
       }
       break;
     case PREV_CHUNK_SIZE_LF:
-      if(c == '\n') {
+      if (c == '\n') {
         chunkRemaining_ = chunkSize_;
-        if(chunkSize_ == 0) {
+        if (chunkSize_ == 0) {
           state_ = PREV_TRAILER;
-        } else {
+        }
+        else {
           state_ = CHUNK;
         }
-      } else {
+      }
+      else {
         throw DL_ABORT_EX("Bad chunk encoding: "
                           "missing LF at the end of chunk size");
       }
       break;
     case CHUNK: {
-      int64_t readlen = std::min(chunkRemaining_,
-                                 static_cast<int64_t>(inlen-i));
-      outlen += getDelegate()->transform(out, segment, inbuf+i, readlen);
+      int64_t readlen =
+          std::min(chunkRemaining_, static_cast<int64_t>(inlen - i));
+      outlen += getDelegate()->transform(out, segment, inbuf + i, readlen);
       chunkRemaining_ -= readlen;
-      i += readlen-1;
-      if(chunkRemaining_ == 0) {
+      i += readlen - 1;
+      if (chunkRemaining_ == 0) {
         state_ = PREV_CHUNK_CR;
       }
       break;
     }
     case PREV_CHUNK_CR:
-      if(c == '\r') {
+      if (c == '\r') {
         state_ = PREV_CHUNK_LF;
-      } else {
+      }
+      else {
         throw DL_ABORT_EX("Bad chunk encoding: "
                           "missing CR at the end of chunk");
       }
       break;
     case PREV_CHUNK_LF:
-      if(c == '\n') {
-        if(chunkSize_ == 0) {
+      if (c == '\n') {
+        if (chunkSize_ == 0) {
           state_ = PREV_TRAILER;
-        } else {
+        }
+        else {
           chunkSize_ = chunkRemaining_ = 0;
           state_ = PREV_CHUNK_SIZE;
         }
-      } else {
+      }
+      else {
         throw DL_ABORT_EX("Bad chunk encoding: "
                           "missing LF at the end of chunk");
       }
       break;
     case PREV_TRAILER:
-      if(c == '\r') {
+      if (c == '\r') {
         // No trailer
         state_ = PREV_END_LF;
-      } else {
-        state_= TRAILER;
+      }
+      else {
+        state_ = TRAILER;
       }
       break;
     case TRAILER:
-      if(c == '\r') {
+      if (c == '\r') {
         state_ = PREV_TRAILER_LF;
       }
       break;
     case PREV_TRAILER_LF:
-      if(c == '\n') {
+      if (c == '\n') {
         state_ = PREV_TRAILER;
-      } else {
+      }
+      else {
         throw DL_ABORT_EX("Bad chunk encoding: "
                           "missing LF at the end of trailer");
       }
       break;
     case PREV_END_LF:
-      if(c == '\n') {
+      if (c == '\n') {
         state_ = CHUNKS_COMPLETE;
-      } else {
+      }
+      else {
         throw DL_ABORT_EX("Bad chunk encoding: "
                           "missing LF at the end of chunks");
       }
@@ -197,7 +210,7 @@ ssize_t ChunkedDecodingStreamFilter::transform
       assert(0);
     }
   }
- fin:
+fin:
   bytesProcessed_ += i;
   return outlen;
 }
@@ -209,9 +222,6 @@ bool ChunkedDecodingStreamFilter::finished()
 
 void ChunkedDecodingStreamFilter::release() {}
 
-const std::string& ChunkedDecodingStreamFilter::getName() const
-{
-  return NAME;
-}
+const std::string& ChunkedDecodingStreamFilter::getName() const { return NAME; }
 
 } // namespace aria2

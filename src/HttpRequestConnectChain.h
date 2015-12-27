@@ -49,17 +49,13 @@ struct HttpRequestConnectChain : public ControlChain<ConnectCommand*> {
   virtual ~HttpRequestConnectChain() {}
   virtual int run(ConnectCommand* t, DownloadEngine* e) CXX11_OVERRIDE
   {
-    std::shared_ptr<SocketRecvBuffer> socketRecvBuffer
-      (new SocketRecvBuffer(t->getSocket()));
-    std::shared_ptr<HttpConnection> httpConnection
-      (new HttpConnection(t->getCuid(), t->getSocket(), socketRecvBuffer));
-    auto c = make_unique<HttpRequestCommand>(t->getCuid(),
-                                             t->getRequest(),
-                                             t->getFileEntry(),
-                                             t->getRequestGroup(),
-                                             httpConnection,
-                                             e,
-                                             t->getSocket());
+    std::shared_ptr<SocketRecvBuffer> socketRecvBuffer(
+        new SocketRecvBuffer(t->getSocket()));
+    std::shared_ptr<HttpConnection> httpConnection(
+        new HttpConnection(t->getCuid(), t->getSocket(), socketRecvBuffer));
+    auto c = make_unique<HttpRequestCommand>(
+        t->getCuid(), t->getRequest(), t->getFileEntry(), t->getRequestGroup(),
+        httpConnection, e, t->getSocket());
     c->setProxyRequest(t->getProxyRequest());
     c->setStatus(Command::STATUS_ONESHOT_REALTIME);
     e->setNoWait(true);

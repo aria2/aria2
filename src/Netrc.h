@@ -56,43 +56,30 @@ private:
   std::string login_;
   std::string password_;
   std::string account_;
+
 public:
   Authenticator();
 
-  Authenticator(std::string machine,
-                std::string login,
-                std::string password,
+  Authenticator(std::string machine, std::string login, std::string password,
                 std::string account);
 
   virtual ~Authenticator();
 
   virtual bool match(const std::string& hostname) const CXX11_OVERRIDE;
 
-  const std::string& getMachine() const
-  {
-    return machine_;
-  }
+  const std::string& getMachine() const { return machine_; }
 
   void setMachine(std::string machine);
 
-  const std::string& getLogin() const
-  {
-    return login_;
-  }
+  const std::string& getLogin() const { return login_; }
 
   void setLogin(std::string login);
 
-  const std::string& getPassword() const
-  {
-    return password_;
-  }
+  const std::string& getPassword() const { return password_; }
 
   void setPassword(std::string password);
 
-  const std::string& getAccount() const
-  {
-    return account_;
-  }
+  const std::string& getAccount() const { return account_; }
 
   void setAccount(std::string account);
 };
@@ -101,8 +88,7 @@ class DefaultAuthenticator : public Authenticator {
 public:
   DefaultAuthenticator();
 
-  DefaultAuthenticator(std::string login,
-                       std::string password,
+  DefaultAuthenticator(std::string login, std::string password,
                        std::string account);
 
   virtual ~DefaultAuthenticator();
@@ -115,6 +101,7 @@ private:
   std::vector<std::unique_ptr<Authenticator>> authenticators_;
 
   void storeAuthenticator(std::unique_ptr<Authenticator> authenticator);
+
 public:
   Netrc();
 

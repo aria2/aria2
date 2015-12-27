@@ -9,11 +9,12 @@
 
 namespace aria2 {
 
-class DHTPingReplyMessageTest:public CppUnit::TestFixture {
+class DHTPingReplyMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTPingReplyMessageTest);
   CPPUNIT_TEST(testGetBencodedMessage);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -21,7 +22,6 @@ public:
 
   void testGetBencodedMessage();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DHTPingReplyMessageTest);
 

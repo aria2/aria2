@@ -12,12 +12,13 @@
 
 namespace aria2 {
 
-class DirectDiskAdaptorTest:public CppUnit::TestFixture {
+class DirectDiskAdaptorTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DirectDiskAdaptorTest);
   CPPUNIT_TEST(testCutTrailingGarbage);
   CPPUNIT_TEST(testWriteCache);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -27,16 +28,14 @@ public:
   void testWriteCache();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(DirectDiskAdaptorTest);
 
 void DirectDiskAdaptorTest::testCutTrailingGarbage()
 {
   std::string dir = A2_TEST_OUT_DIR;
-  auto entry = std::make_shared<FileEntry>
-    (dir+"/aria2_DirectDiskAdaptorTest_testCutTrailingGarbage",
-     256, 0);
-  createFile(entry->getPath(), entry->getLength()+100);
+  auto entry = std::make_shared<FileEntry>(
+      dir + "/aria2_DirectDiskAdaptorTest_testCutTrailingGarbage", 256, 0);
+  createFile(entry->getPath(), entry->getLength() + 100);
   auto fileEntries = std::vector<std::shared_ptr<FileEntry>>{entry};
   DirectDiskAdaptor adaptor;
   adaptor.setDiskWriter(make_unique<DefaultDiskWriter>(entry->getPath()));
@@ -62,9 +61,9 @@ void DirectDiskAdaptorTest::testWriteCache()
   WrDiskCacheEntry cache{adaptor};
   std::string data1(4_k, '1'), data2(4094, '2');
   cache.cacheData(createDataCell(5, data1.c_str()));
-  cache.cacheData(createDataCell(5+data1.size(), data2.c_str()));
+  cache.cacheData(createDataCell(5 + data1.size(), data2.c_str()));
   adaptor->writeCache(&cache);
-  CPPUNIT_ASSERT_EQUAL(data1+data2, dw->getString().substr(5));
+  CPPUNIT_ASSERT_EQUAL(data1 + data2, dw->getString().substr(5));
 
   cache.clear();
   dw->setString("");

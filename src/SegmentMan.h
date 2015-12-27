@@ -68,7 +68,7 @@ struct SegmentEntry {
   SegmentEntry& operator=(const SegmentEntry&);
 };
 
-typedef std::deque<std::shared_ptr<SegmentEntry> > SegmentEntries;
+typedef std::deque<std::shared_ptr<SegmentEntry>> SegmentEntries;
 
 /**
  * This class holds the download progress of the one download entry.
@@ -86,23 +86,24 @@ private:
   std::map<size_t, int64_t> segmentWrittenLengthMemo_;
 
   // Used for calculating download speed.
-  std::vector<std::shared_ptr<PeerStat> > peerStats_;
+  std::vector<std::shared_ptr<PeerStat>> peerStats_;
 
   // Keep track of fastest PeerStat for each server
-  std::vector<std::shared_ptr<PeerStat> > fastestPeerStats_;
+  std::vector<std::shared_ptr<PeerStat>> fastestPeerStats_;
 
   BitfieldMan ignoreBitfield_;
 
   std::shared_ptr<Segment> checkoutSegment(cuid_t cuid,
-                                        const std::shared_ptr<Piece>& piece);
+                                           const std::shared_ptr<Piece>& piece);
 
-  void cancelSegmentInternal(cuid_t cuid, const std::shared_ptr<Segment>& segment);
+  void cancelSegmentInternal(cuid_t cuid,
+                             const std::shared_ptr<Segment>& segment);
+
 public:
   SegmentMan(const std::shared_ptr<DownloadContext>& downloadContext,
              const std::shared_ptr<PieceStorage>& pieceStorage);
 
   ~SegmentMan();
-
 
   // Initializes totalSize, isSplittable, downloadStarted, errors.
   // Clears command queue. Also, closes diskWriter.
@@ -126,15 +127,14 @@ public:
    * Fill segments which are assigned to the command whose CUID is cuid.
    * This function doesn't clear passed segments.
    */
-  void getInFlightSegment(std::vector<std::shared_ptr<Segment> >& segments,
+  void getInFlightSegment(std::vector<std::shared_ptr<Segment>>& segments,
                           cuid_t cuid);
 
   std::shared_ptr<Segment> getSegment(cuid_t cuid, size_t minSplitSize);
 
   // Checkouts segments in the range of fileEntry and push back to
   // segments until segments.size() < maxSegments holds false
-  void getSegment(std::vector<std::shared_ptr<Segment> >& segments,
-                  cuid_t cuid,
+  void getSegment(std::vector<std::shared_ptr<Segment>>& segments, cuid_t cuid,
                   size_t minSplitSize,
                   const std::shared_ptr<FileEntry>& fileEntry,
                   size_t maxSegments);
@@ -151,12 +151,13 @@ public:
   // length is 0.  The current owner(in idle state) of segment cancels
   // the segment and cuid command acquires the ownership of the
   // segment.  If no such segment exists, returns null.
-  std::shared_ptr<Segment> getCleanSegmentIfOwnerIsIdle(cuid_t cuid, size_t index);
+  std::shared_ptr<Segment> getCleanSegmentIfOwnerIsIdle(cuid_t cuid,
+                                                        size_t index);
 
   /**
    * Updates download status.
    */
-  //bool updateSegment(int cuid, const Segment& segment);
+  // bool updateSegment(int cuid, const Segment& segment);
   /**
    * Cancels all the segment which the command having given cuid
    * uses.
@@ -182,7 +183,8 @@ public:
   /**
    * Injects DownloadContext.
    */
-  void setDownloadContext(const std::shared_ptr<DownloadContext>& downloadContext);
+  void
+  setDownloadContext(const std::shared_ptr<DownloadContext>& downloadContext);
 
   /**
    * Returns true if the segment whose index is index has been downloaded.
@@ -193,13 +195,12 @@ public:
    */
   int64_t getDownloadLength() const;
 
-
   // If there is inactive PeerStat in peerStats_, it is replaced with
   // given peerStat. If no such PeerStat exist, the given peerStat is
   // inserted.
   void registerPeerStat(const std::shared_ptr<PeerStat>& peerStat);
 
-  const std::vector<std::shared_ptr<PeerStat> >& getPeerStats() const
+  const std::vector<std::shared_ptr<PeerStat>>& getPeerStats() const
   {
     return peerStats_;
   }
@@ -212,7 +213,7 @@ public:
   // and protocol with given peerStat, given peerStat is inserted.
   void updateFastestPeerStat(const std::shared_ptr<PeerStat>& peerStat);
 
-  const std::vector<std::shared_ptr<PeerStat> >& getFastestPeerStats() const
+  const std::vector<std::shared_ptr<PeerStat>>& getFastestPeerStats() const
   {
     return fastestPeerStats_;
   }

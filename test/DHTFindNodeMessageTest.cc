@@ -13,12 +13,13 @@
 
 namespace aria2 {
 
-class DHTFindNodeMessageTest:public CppUnit::TestFixture {
+class DHTFindNodeMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTFindNodeMessageTest);
   CPPUNIT_TEST(testGetBencodedMessage);
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   std::shared_ptr<DHTNode> localNode_;
   std::shared_ptr<DHTNode> remoteNode_;
@@ -34,22 +35,20 @@ public:
   void testGetBencodedMessage();
   void testDoReceivedAction();
 
-  class MockDHTMessageFactory2:public MockDHTMessageFactory {
+  class MockDHTMessageFactory2 : public MockDHTMessageFactory {
   public:
-    virtual std::unique_ptr<DHTFindNodeReplyMessage>
-    createFindNodeReplyMessage
-    (const std::shared_ptr<DHTNode>& remoteNode,
-     std::vector<std::shared_ptr<DHTNode>> closestKNodes,
-     const std::string& transactionID) CXX11_OVERRIDE
+    virtual std::unique_ptr<DHTFindNodeReplyMessage> createFindNodeReplyMessage(
+        const std::shared_ptr<DHTNode>& remoteNode,
+        std::vector<std::shared_ptr<DHTNode>> closestKNodes,
+        const std::string& transactionID) CXX11_OVERRIDE
     {
-      auto m = make_unique<DHTFindNodeReplyMessage>
-        (AF_INET, localNode_, remoteNode, transactionID);
+      auto m = make_unique<DHTFindNodeReplyMessage>(AF_INET, localNode_,
+                                                    remoteNode, transactionID);
       m->setClosestKNodes(std::move(closestKNodes));
       return m;
     }
   };
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DHTFindNodeMessageTest);
 
@@ -102,8 +101,8 @@ void DHTFindNodeMessageTest::testDoReceivedAction()
   msg.doReceivedAction();
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher.messageQueue_.size());
-  auto m = dynamic_cast<DHTFindNodeReplyMessage*>
-    (dispatcher.messageQueue_[0].message_.get());
+  auto m = dynamic_cast<DHTFindNodeReplyMessage*>(
+      dispatcher.messageQueue_[0].message_.get());
   CPPUNIT_ASSERT(*localNode_ == *m->getLocalNode());
   CPPUNIT_ASSERT(*remoteNode_ == *m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(std::string("find_node"), m->getMessageType());

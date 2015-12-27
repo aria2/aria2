@@ -71,7 +71,7 @@ private:
   static MetalinkParserState* osState_;
   static MetalinkParserState* verificationState_; // Metalink3Spec
   static MetalinkParserState* hashState_;
-  static MetalinkParserState* piecesState_; // Metalink3Spec
+  static MetalinkParserState* piecesState_;    // Metalink3Spec
   static MetalinkParserState* pieceHashState_; // Metalink3Spec
   static MetalinkParserState* signatureState_;
   static MetalinkParserState* resourcesState_; // Metalink3Spec
@@ -85,11 +85,12 @@ private:
   static MetalinkParserState* languageStateV4_;
   static MetalinkParserState* osStateV4_;
   static MetalinkParserState* hashStateV4_;
-  static MetalinkParserState* piecesStateV4_; // Metalink4Spec
+  static MetalinkParserState* piecesStateV4_;    // Metalink4Spec
   static MetalinkParserState* pieceHashStateV4_; // Metalink4Spec
   static MetalinkParserState* signatureStateV4_;
   static MetalinkParserState* urlStateV4_;
   static MetalinkParserState* metaurlStateV4_;
+
 public:
   MetalinkParserStateMachine();
 
@@ -99,17 +100,13 @@ public:
 
   virtual bool finished() const CXX11_OVERRIDE;
 
-  virtual void beginElement
-  (const char* localname,
-   const char* prefix,
-   const char* nsUri,
-   const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
+  virtual void beginElement(const char* localname, const char* prefix,
+                            const char* nsUri,
+                            const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
 
-  virtual void endElement
-  (const char* localname,
-   const char* prefix,
-   const char* nsUri,
-   std::string characters) CXX11_OVERRIDE;
+  virtual void endElement(const char* localname, const char* prefix,
+                          const char* nsUri,
+                          std::string characters) CXX11_OVERRIDE;
 
   virtual void reset() CXX11_OVERRIDE;
 
@@ -151,7 +148,7 @@ public:
   void setLanguageStateV4();
   void setOSStateV4();
   void setHashStateV4();
-  void setPiecesStateV4(); // Metalink4Spec
+  void setPiecesStateV4();    // Metalink4Spec
   void setPieceHashStateV4(); // Metalink4Spec
   void setSignatureStateV4();
   void setURLStateV4();
@@ -258,10 +255,7 @@ public:
   // Only stores first 10 errors.
   void logError(std::string log);
 
-  const std::vector<std::string>& getErrors() const
-  {
-    return errors_;
-  }
+  const std::vector<std::string>& getErrors() const { return errors_; }
 
   std::string getErrorString() const;
 

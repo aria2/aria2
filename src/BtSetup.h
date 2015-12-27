@@ -52,8 +52,7 @@ public:
   BtSetup();
 
   void setup(std::vector<std::unique_ptr<Command>>& commands,
-             RequestGroup* requestGroup,
-             DownloadEngine* e,
+             RequestGroup* requestGroup, DownloadEngine* e,
              const Option* option);
 };
 

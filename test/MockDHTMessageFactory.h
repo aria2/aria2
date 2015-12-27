@@ -16,31 +16,30 @@
 
 namespace aria2 {
 
-class MockDHTMessageFactory:public DHTMessageFactory {
+class MockDHTMessageFactory : public DHTMessageFactory {
 protected:
   std::shared_ptr<DHTNode> localNode_;
+
 public:
   MockDHTMessageFactory() {}
 
   virtual std::unique_ptr<DHTQueryMessage>
-  createQueryMessage(const Dict* dict,
-                     const std::string& ipaddr, uint16_t port) CXX11_OVERRIDE
+  createQueryMessage(const Dict* dict, const std::string& ipaddr,
+                     uint16_t port) CXX11_OVERRIDE
   {
     return nullptr;
   }
 
   virtual std::unique_ptr<DHTResponseMessage>
-  createResponseMessage(const std::string& messageType,
-                        const Dict* dict,
-                        const std::string& ipaddr, uint16_t port)
-    CXX11_OVERRIDE
+  createResponseMessage(const std::string& messageType, const Dict* dict,
+                        const std::string& ipaddr, uint16_t port) CXX11_OVERRIDE
   {
     auto remoteNode = std::make_shared<DHTNode>();
     // TODO At this point, removeNode's ID is random.
     remoteNode->setIPAddress(ipaddr);
     remoteNode->setPort(port);
-    return make_unique<MockDHTResponseMessage>
-      (localNode_, remoteNode, downcast<String>(dict->get("t"))->s());
+    return make_unique<MockDHTResponseMessage>(
+        localNode_, remoteNode, downcast<String>(dict->get("t"))->s());
   }
 
   virtual std::unique_ptr<DHTPingMessage>
@@ -66,11 +65,10 @@ public:
     return nullptr;
   }
 
-  virtual std::unique_ptr<DHTFindNodeReplyMessage>
-  createFindNodeReplyMessage
-  (const std::shared_ptr<DHTNode>& remoteNode,
-   std::vector<std::shared_ptr<DHTNode>> closestKNodes,
-   const std::string& transactionID) CXX11_OVERRIDE
+  virtual std::unique_ptr<DHTFindNodeReplyMessage> createFindNodeReplyMessage(
+      const std::shared_ptr<DHTNode>& remoteNode,
+      std::vector<std::shared_ptr<DHTNode>> closestKNodes,
+      const std::string& transactionID) CXX11_OVERRIDE
   {
     return nullptr;
   }
@@ -83,24 +81,19 @@ public:
     return nullptr;
   }
 
-  virtual std::unique_ptr<DHTGetPeersReplyMessage>
-  createGetPeersReplyMessage
-  (const std::shared_ptr<DHTNode>& remoteNode,
-   std::vector<std::shared_ptr<DHTNode>> closestKNodes,
-   std::vector<std::shared_ptr<Peer>> peers,
-   const std::string& token,
-   const std::string& transactionID) CXX11_OVERRIDE
+  virtual std::unique_ptr<DHTGetPeersReplyMessage> createGetPeersReplyMessage(
+      const std::shared_ptr<DHTNode>& remoteNode,
+      std::vector<std::shared_ptr<DHTNode>> closestKNodes,
+      std::vector<std::shared_ptr<Peer>> peers, const std::string& token,
+      const std::string& transactionID) CXX11_OVERRIDE
   {
     return nullptr;
   }
 
-  virtual std::unique_ptr<DHTAnnouncePeerMessage>
-  createAnnouncePeerMessage(const std::shared_ptr<DHTNode>& remoteNode,
-                            const unsigned char* infoHash,
-                            uint16_t tcpPort,
-                            const std::string& token,
-                            const std::string& transactionID = "")
-    CXX11_OVERRIDE
+  virtual std::unique_ptr<DHTAnnouncePeerMessage> createAnnouncePeerMessage(
+      const std::shared_ptr<DHTNode>& remoteNode, const unsigned char* infoHash,
+      uint16_t tcpPort, const std::string& token,
+      const std::string& transactionID = "") CXX11_OVERRIDE
   {
     return nullptr;
   }
@@ -108,7 +101,7 @@ public:
   virtual std::unique_ptr<DHTAnnouncePeerReplyMessage>
   createAnnouncePeerReplyMessage(const std::shared_ptr<DHTNode>& remoteNode,
                                  const std::string& transactionID)
-    CXX11_OVERRIDE
+      CXX11_OVERRIDE
   {
     return nullptr;
   }
@@ -120,10 +113,7 @@ public:
     return nullptr;
   }
 
-  void setLocalNode(const std::shared_ptr<DHTNode>& node)
-  {
-    localNode_ = node;
-  }
+  void setLocalNode(const std::shared_ptr<DHTNode>& node) { localNode_ = node; }
 };
 
 } // namespace aria2

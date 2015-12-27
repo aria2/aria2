@@ -92,10 +92,7 @@ public:
 
   BitfieldMan& operator=(const BitfieldMan& bitfieldMan);
 
-  int32_t getBlockLength() const
-  {
-    return blockLength_;
-  }
+  int32_t getBlockLength() const { return blockLength_; }
 
   int32_t getLastBlockLength() const;
 
@@ -131,11 +128,9 @@ public:
   // if such bit index is found. Otherwise returns false.
   //
   // affected by filter
-  bool getSparseMissingUnusedIndex
-  (size_t& index,
-   int32_t minSplitSize,
-   const unsigned char* ignoreBitfield,
-   size_t ignoreBitfieldLength) const;
+  bool getSparseMissingUnusedIndex(size_t& index, int32_t minSplitSize,
+                                   const unsigned char* ignoreBitfield,
+                                   size_t ignoreBitfieldLength) const;
 
   // Stores missing bit index to index. This function first try to
   // select smallest index starting offsetIndex in the order:
@@ -151,13 +146,10 @@ public:
   // result.
   //
   // affected by filter
-  bool getGeomMissingUnusedIndex
-  (size_t& index,
-   int32_t minSplitSize,
-   const unsigned char* ignoreBitfield,
-   size_t ignoreBitfieldLength,
-   double base,
-   size_t offsetIndex) const;
+  bool getGeomMissingUnusedIndex(size_t& index, int32_t minSplitSize,
+                                 const unsigned char* ignoreBitfield,
+                                 size_t ignoreBitfieldLength, double base,
+                                 size_t offsetIndex) const;
 
   // Stores missing bit index to index. This function selects smallest
   // index of missing piece, considering minSplitSize.  Set bits in
@@ -165,11 +157,9 @@ public:
   // found. Otherwise returns false.
   //
   // affected by filter
-  bool getInorderMissingUnusedIndex
-  (size_t& index,
-   int32_t minSplitSize,
-   const unsigned char* ignoreBitfield,
-   size_t ignoreBitfieldLength) const;
+  bool getInorderMissingUnusedIndex(size_t& index, int32_t minSplitSize,
+                                    const unsigned char* ignoreBitfield,
+                                    size_t ignoreBitfieldLength) const;
 
   // affected by filter
   bool getAllMissingIndexes(unsigned char* misbitfield, size_t mislen) const;
@@ -206,34 +196,19 @@ public:
   // filterBitfield_ is NULL, returns false.
   bool isFilterBitSet(size_t index) const;
 
-  const unsigned char* getBitfield() const
-  {
-    return bitfield_;
-  }
+  const unsigned char* getBitfield() const { return bitfield_; }
 
-  size_t getBitfieldLength() const
-  {
-    return bitfieldLength_;
-  }
+  size_t getBitfieldLength() const { return bitfieldLength_; }
 
   // affected by filter
-  size_t countFilteredBlock() const
-  {
-    return cachedNumFilteredBlock_;
-  }
+  size_t countFilteredBlock() const { return cachedNumFilteredBlock_; }
 
-  size_t countBlock() const
-  {
-    return blocks_;
-  }
+  size_t countBlock() const { return blocks_; }
 
   // affected by filter
   size_t countFilteredBlockNow() const;
 
-  size_t getMaxIndex() const
-  {
-    return blocks_-1;
-  }
+  size_t getMaxIndex() const { return blocks_ - 1; }
 
   void setBitfield(const unsigned char* bitfield, size_t bitfieldLength);
 
@@ -253,24 +228,15 @@ public:
 
   void enableFilter();
   void disableFilter();
-  bool isFilterEnabled() const
-  {
-    return filterEnabled_;
-  }
+  bool isFilterEnabled() const { return filterEnabled_; }
 
   // affected by filter
-  int64_t getFilteredTotalLength() const
-  {
-    return cachedFilteredTotalLength_;
-  }
+  int64_t getFilteredTotalLength() const { return cachedFilteredTotalLength_; }
 
   // affected by filter
   int64_t getFilteredTotalLengthNow() const;
 
-  int64_t getCompletedLength() const
-  {
-    return cachedCompletedLength_;
-  }
+  int64_t getCompletedLength() const { return cachedCompletedLength_; }
 
   int64_t getCompletedLengthNow() const;
 
@@ -299,10 +265,7 @@ public:
 
   int64_t getMissingUnusedLength(size_t startingIndex) const;
 
-  const unsigned char* getFilterBitfield() const
-  {
-    return filterBitfield_;
-  }
+  const unsigned char* getFilterBitfield() const { return filterBitfield_; }
 };
 
 } // namespace aria2

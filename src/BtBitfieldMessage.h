@@ -43,6 +43,7 @@ class BtBitfieldMessage : public SimpleBtMessage {
 private:
   std::unique_ptr<unsigned char[]> bitfield_;
   size_t bitfieldLength_;
+
 public:
   BtBitfieldMessage();
 
@@ -60,8 +61,8 @@ public:
 
   size_t getBitfieldLength() const { return bitfieldLength_; }
 
-  static std::unique_ptr<BtBitfieldMessage> create
-  (const unsigned char* data, size_t dataLength);
+  static std::unique_ptr<BtBitfieldMessage> create(const unsigned char* data,
+                                                   size_t dataLength);
 
   virtual void doReceivedAction() CXX11_OVERRIDE;
 

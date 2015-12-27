@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-class DHTAnnouncePeerReplyMessage:public DHTResponseMessage {
+class DHTAnnouncePeerReplyMessage : public DHTResponseMessage {
 public:
   DHTAnnouncePeerReplyMessage(const std::shared_ptr<DHTNode>& localNode,
                               const std::shared_ptr<DHTNode>& remoteNode,

@@ -40,7 +40,7 @@
 extern "C" {
 #endif
 
-int getrandom_linux(void *buf, size_t buflen);
+int getrandom_linux(void* buf, size_t buflen);
 
 #ifdef __cplusplus
 }

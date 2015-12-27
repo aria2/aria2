@@ -49,12 +49,12 @@ class URISelector {
 public:
   virtual ~URISelector() {}
 
-  virtual std::string select
-  (FileEntry* fileEntry,
-   const std::vector<std::pair<size_t, std::string> >& usedHosts) = 0;
+  virtual std::string
+  select(FileEntry* fileEntry,
+         const std::vector<std::pair<size_t, std::string>>& usedHosts) = 0;
 
   virtual void tuneDownloadCommand(const std::deque<std::string>& uris,
-                                   DownloadCommand* command) {};
+                                   DownloadCommand* command){};
 
   virtual void resetCounters() { return; };
 };

@@ -42,10 +42,11 @@
 
 namespace aria2 {
 
-class GZipFile: public IOFile {
+class GZipFile : public IOFile {
 public:
   GZipFile(const char* filename, const char* mode);
   virtual ~GZipFile();
+
 protected:
   virtual size_t onRead(void* ptr, size_t count) CXX11_OVERRIDE;
   virtual size_t onWrite(const void* ptr, size_t count) CXX11_OVERRIDE;
@@ -57,6 +58,7 @@ protected:
   virtual bool isError() const CXX11_OVERRIDE;
   virtual bool isEOF() const CXX11_OVERRIDE;
   virtual bool isOpen() const CXX11_OVERRIDE;
+
 private:
   // Don't allow copying
   GZipFile(const GZipFile&);

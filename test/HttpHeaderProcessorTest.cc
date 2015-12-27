@@ -10,7 +10,7 @@
 
 namespace aria2 {
 
-class HttpHeaderProcessorTest:public CppUnit::TestFixture {
+class HttpHeaderProcessorTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(HttpHeaderProcessorTest);
   CPPUNIT_TEST(testParse1);
@@ -44,8 +44,7 @@ public:
   void testGetHttpRequestHeader();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( HttpHeaderProcessorTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(HttpHeaderProcessorTest);
 
 void HttpHeaderProcessorTest::testParse1()
 {
@@ -66,17 +65,16 @@ void HttpHeaderProcessorTest::testParse2()
 void HttpHeaderProcessorTest::testParse3()
 {
   HttpHeaderProcessor proc(HttpHeaderProcessor::SERVER_PARSER);
-  std::string s =
-    "GET / HTTP/1.1\r\n"
-    "Host: aria2.sourceforge.net\r\n"
-    "Connection: close \r\n" // trailing white space (BWS)
-    "Accept-Encoding: text1\r\n" // Multi-line header
-    "  text2\r\n"
-    "  text3\r\n"
-    "Authorization: foo\r\n"
-    "Authorization: bar\r\n"
-    "Content-Type:\r\n"
-    "\r\n";
+  std::string s = "GET / HTTP/1.1\r\n"
+                  "Host: aria2.sourceforge.net\r\n"
+                  "Connection: close \r\n"     // trailing white space (BWS)
+                  "Accept-Encoding: text1\r\n" // Multi-line header
+                  "  text2\r\n"
+                  "  text3\r\n"
+                  "Authorization: foo\r\n"
+                  "Authorization: bar\r\n"
+                  "Content-Type:\r\n"
+                  "\r\n";
   CPPUNIT_ASSERT(proc.parse(s));
   auto h = proc.getResult();
   CPPUNIT_ASSERT_EQUAL(std::string("close"), h->find(HttpHeader::CONNECTION));
@@ -93,17 +91,15 @@ void HttpHeaderProcessorTest::testParse3()
 void HttpHeaderProcessorTest::testGetLastBytesProcessed()
 {
   HttpHeaderProcessor proc(HttpHeaderProcessor::CLIENT_PARSER);
-  std::string hd1 =
-    "HTTP/1.1 200 OK\r\n"
-    "\r\nputbackme";
+  std::string hd1 = "HTTP/1.1 200 OK\r\n"
+                    "\r\nputbackme";
   CPPUNIT_ASSERT(proc.parse(hd1));
   CPPUNIT_ASSERT_EQUAL((size_t)19, proc.getLastBytesProcessed());
 
   proc.clear();
 
-  std::string hd2 =
-    "HTTP/1.1 200 OK\n"
-    "\nputbackme";
+  std::string hd2 = "HTTP/1.1 200 OK\n"
+                    "\nputbackme";
   CPPUNIT_ASSERT(proc.parse(hd2));
   CPPUNIT_ASSERT_EQUAL((size_t)17, proc.getLastBytesProcessed());
 }
@@ -111,11 +107,10 @@ void HttpHeaderProcessorTest::testGetLastBytesProcessed()
 void HttpHeaderProcessorTest::testGetLastBytesProcessed_nullChar()
 {
   HttpHeaderProcessor proc(HttpHeaderProcessor::CLIENT_PARSER);
-  const char x[] =
-    "HTTP/1.1 200 OK\r\n"
-    "foo: foo\0bar\r\n"
-    "\r\nputbackme";
-  std::string hd1(&x[0], &x[sizeof(x)-1]);
+  const char x[] = "HTTP/1.1 200 OK\r\n"
+                   "foo: foo\0bar\r\n"
+                   "\r\nputbackme";
+  std::string hd1(&x[0], &x[sizeof(x) - 1]);
   CPPUNIT_ASSERT(proc.parse(hd1));
   CPPUNIT_ASSERT_EQUAL((size_t)33, proc.getLastBytesProcessed());
 }
@@ -123,18 +118,17 @@ void HttpHeaderProcessorTest::testGetLastBytesProcessed_nullChar()
 void HttpHeaderProcessorTest::testGetHttpResponseHeader()
 {
   HttpHeaderProcessor proc(HttpHeaderProcessor::CLIENT_PARSER);
-  std::string hd =
-    "HTTP/1.1 404 Not Found\r\n"
-    "Date: Mon, 25 Jun 2007 16:04:59 GMT\r\n"
-    "Server: Apache/2.2.3 (Debian)\r\n"
-    "Last-Modified: Tue, 12 Jun 2007 14:28:43 GMT\r\n"
-    "ETag: \"594065-23e3-50825cc0\"\r\n"
-    "Accept-Ranges: bytes\r\n"
-    "Content-Length: 9187\r\n"
-    "Connection: close\r\n"
-    "Content-Type: text/html; charset=UTF-8\r\n"
-    "\r\n"
-    "Content-Encoding: body";
+  std::string hd = "HTTP/1.1 404 Not Found\r\n"
+                   "Date: Mon, 25 Jun 2007 16:04:59 GMT\r\n"
+                   "Server: Apache/2.2.3 (Debian)\r\n"
+                   "Last-Modified: Tue, 12 Jun 2007 14:28:43 GMT\r\n"
+                   "ETag: \"594065-23e3-50825cc0\"\r\n"
+                   "Accept-Ranges: bytes\r\n"
+                   "Content-Length: 9187\r\n"
+                   "Connection: close\r\n"
+                   "Content-Type: text/html; charset=UTF-8\r\n"
+                   "\r\n"
+                   "Content-Encoding: body";
 
   CPPUNIT_ASSERT(proc.parse(hd));
 
@@ -159,7 +153,8 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader_statusOnly()
   CPPUNIT_ASSERT_EQUAL(200, header->getStatusCode());
 }
 
-void HttpHeaderProcessorTest::testGetHttpResponseHeader_insufficientStatusLength()
+void HttpHeaderProcessorTest::
+    testGetHttpResponseHeader_insufficientStatusLength()
 {
   HttpHeaderProcessor proc(HttpHeaderProcessor::CLIENT_PARSER);
 
@@ -167,7 +162,8 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader_insufficientStatusLength
   try {
     proc.parse(hd);
     CPPUNIT_FAIL("Exception must be thrown.");
-  } catch(DlAbortEx& ex) {
+  }
+  catch (DlAbortEx& ex) {
     // Success
   }
 }
@@ -176,38 +172,38 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader_nameStartsWs()
 {
   HttpHeaderProcessor proc(HttpHeaderProcessor::CLIENT_PARSER);
 
-  std::string hd =
-    "HTTP/1.1 200\r\n"
-    " foo:bar\r\n"
-    "\r\n";
+  std::string hd = "HTTP/1.1 200\r\n"
+                   " foo:bar\r\n"
+                   "\r\n";
   try {
     proc.parse(hd);
     CPPUNIT_FAIL("Exception must be thrown.");
-  } catch(DlAbortEx& ex) {
+  }
+  catch (DlAbortEx& ex) {
     // Success
   }
 
   proc.clear();
-  hd =
-    "HTTP/1.1 200\r\n"
-    ":foo:bar\r\n"
-    "\r\n";
+  hd = "HTTP/1.1 200\r\n"
+       ":foo:bar\r\n"
+       "\r\n";
   try {
     proc.parse(hd);
     CPPUNIT_FAIL("Exception must be thrown.");
-  } catch(DlAbortEx& ex) {
+  }
+  catch (DlAbortEx& ex) {
     // Success
   }
 
   proc.clear();
-  hd =
-    "HTTP/1.1 200\r\n"
-    ":foo\r\n"
-    "\r\n";
+  hd = "HTTP/1.1 200\r\n"
+       ":foo\r\n"
+       "\r\n";
   try {
     proc.parse(hd);
     CPPUNIT_FAIL("Exception must be thrown.");
-  } catch(DlAbortEx& ex) {
+  }
+  catch (DlAbortEx& ex) {
     // Success
   }
 }
@@ -216,12 +212,11 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader_teAndCl()
 {
   HttpHeaderProcessor proc(HttpHeaderProcessor::CLIENT_PARSER);
 
-  std::string hd =
-    "HTTP/1.1 200\r\n"
-    "Content-Length: 200\r\n"
-    "Transfer-Encoding: chunked\r\n"
-    "Content-Range: 1-200/300\r\n"
-    "\r\n";
+  std::string hd = "HTTP/1.1 200\r\n"
+                   "Content-Length: 200\r\n"
+                   "Transfer-Encoding: chunked\r\n"
+                   "Content-Range: 1-200/300\r\n"
+                   "\r\n";
 
   CPPUNIT_ASSERT(proc.parse(hd));
 
@@ -243,7 +238,8 @@ void HttpHeaderProcessorTest::testBeyondLimit()
   try {
     proc.parse(hd2);
     CPPUNIT_FAIL("Exception must be thrown.");
-  } catch(DlAbortEx& ex) {
+  }
+  catch (DlAbortEx& ex) {
     // Success
   }
 }
@@ -251,49 +247,48 @@ void HttpHeaderProcessorTest::testBeyondLimit()
 void HttpHeaderProcessorTest::testGetHeaderString()
 {
   HttpHeaderProcessor proc(HttpHeaderProcessor::CLIENT_PARSER);
-  std::string hd =
-    "HTTP/1.1 200 OK\r\n"
-    "Date: Mon, 25 Jun 2007 16:04:59 GMT\r\n"
-    "Server: Apache/2.2.3 (Debian)\r\n"
-    "Last-Modified: Tue, 12 Jun 2007 14:28:43 GMT\r\n"
-    "ETag: \"594065-23e3-50825cc0\"\r\n"
-    "Accept-Ranges: bytes\r\n"
-    "Content-Length: 9187\r\n"
-    "Connection: close\r\n"
-    "Content-Type: text/html; charset=UTF-8\r\n"
-    "\r\nputbackme";
+  std::string hd = "HTTP/1.1 200 OK\r\n"
+                   "Date: Mon, 25 Jun 2007 16:04:59 GMT\r\n"
+                   "Server: Apache/2.2.3 (Debian)\r\n"
+                   "Last-Modified: Tue, 12 Jun 2007 14:28:43 GMT\r\n"
+                   "ETag: \"594065-23e3-50825cc0\"\r\n"
+                   "Accept-Ranges: bytes\r\n"
+                   "Content-Length: 9187\r\n"
+                   "Connection: close\r\n"
+                   "Content-Type: text/html; charset=UTF-8\r\n"
+                   "\r\nputbackme";
 
   CPPUNIT_ASSERT(proc.parse(hd));
 
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("HTTP/1.1 200 OK\r\n"
-                 "Date: Mon, 25 Jun 2007 16:04:59 GMT\r\n"
-                 "Server: Apache/2.2.3 (Debian)\r\n"
-                 "Last-Modified: Tue, 12 Jun 2007 14:28:43 GMT\r\n"
-                 "ETag: \"594065-23e3-50825cc0\"\r\n"
-                 "Accept-Ranges: bytes\r\n"
-                 "Content-Length: 9187\r\n"
-                 "Connection: close\r\n"
-                 "Content-Type: text/html; charset=UTF-8\r\n"
-                 "\r\n"),
-     proc.getHeaderString());
+  CPPUNIT_ASSERT_EQUAL(
+      std::string("HTTP/1.1 200 OK\r\n"
+                  "Date: Mon, 25 Jun 2007 16:04:59 GMT\r\n"
+                  "Server: Apache/2.2.3 (Debian)\r\n"
+                  "Last-Modified: Tue, 12 Jun 2007 14:28:43 GMT\r\n"
+                  "ETag: \"594065-23e3-50825cc0\"\r\n"
+                  "Accept-Ranges: bytes\r\n"
+                  "Content-Length: 9187\r\n"
+                  "Connection: close\r\n"
+                  "Content-Type: text/html; charset=UTF-8\r\n"
+                  "\r\n"),
+      proc.getHeaderString());
 }
 
 void HttpHeaderProcessorTest::testGetHttpRequestHeader()
 {
   HttpHeaderProcessor proc(HttpHeaderProcessor::SERVER_PARSER);
-  std::string request =
-    "GET /index.html HTTP/1.1\r\n"
-    "Host: host\r\n"
-    "Connection: close\r\n"
-    "\r\n"
-    "Content-Encoding: body";
+  std::string request = "GET /index.html HTTP/1.1\r\n"
+                        "Host: host\r\n"
+                        "Connection: close\r\n"
+                        "\r\n"
+                        "Content-Encoding: body";
 
   CPPUNIT_ASSERT(proc.parse(request));
 
   auto httpHeader = proc.getResult();
   CPPUNIT_ASSERT_EQUAL(std::string("GET"), httpHeader->getMethod());
-  CPPUNIT_ASSERT_EQUAL(std::string("/index.html"),httpHeader->getRequestPath());
+  CPPUNIT_ASSERT_EQUAL(std::string("/index.html"),
+                       httpHeader->getRequestPath());
   CPPUNIT_ASSERT_EQUAL(std::string("HTTP/1.1"), httpHeader->getVersion());
   CPPUNIT_ASSERT_EQUAL(std::string("close"),
                        httpHeader->find(HttpHeader::CONNECTION));

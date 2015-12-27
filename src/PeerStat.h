@@ -46,8 +46,8 @@ namespace aria2 {
 
 class PeerStat {
 public:
-  PeerStat
-  (cuid_t cuid, const std::string& hostname, const::std::string& protocol);
+  PeerStat(cuid_t cuid, const std::string& hostname,
+           const ::std::string& protocol);
 
   PeerStat(cuid_t cuid = 0);
 
@@ -98,20 +98,12 @@ public:
 
   TransferStat toTransferStat();
 
-  cuid_t getCuid() const
-  {
-    return cuid_;
-  }
+  cuid_t getCuid() const { return cuid_; }
 
-  const std::string& getHostname() const
-  {
-    return hostname_;
-  }
+  const std::string& getHostname() const { return hostname_; }
 
-  const std::string& getProtocol() const
-  {
-    return protocol_;
-  }
+  const std::string& getProtocol() const { return protocol_; }
+
 private:
   cuid_t cuid_;
   std::string hostname_;

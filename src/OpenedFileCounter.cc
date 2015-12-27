@@ -46,18 +46,17 @@ namespace aria2 {
 
 OpenedFileCounter::OpenedFileCounter(RequestGroupMan* rgman,
                                      size_t maxOpenFiles)
-  : rgman_(rgman),
-    maxOpenFiles_(maxOpenFiles),
-    numOpenFiles_(0)
-{}
+    : rgman_(rgman), maxOpenFiles_(maxOpenFiles), numOpenFiles_(0)
+{
+}
 
 void OpenedFileCounter::ensureMaxOpenFileLimit(size_t numNewFiles)
 {
-  if(!rgman_) {
+  if (!rgman_) {
     return;
   }
 
-  if(numOpenFiles_ + numNewFiles <= maxOpenFiles_) {
+  if (numOpenFiles_ + numNewFiles <= maxOpenFiles_) {
     numOpenFiles_ += numNewFiles;
     return;
   }
@@ -68,32 +67,30 @@ void OpenedFileCounter::ensureMaxOpenFileLimit(size_t numNewFiles)
   auto& requestGroups = rgman_->getRequestGroups();
 
   auto mark = std::begin(requestGroups);
-  std::advance(mark,
-               SimpleRandomizer::getInstance()->
-               getRandomNumber(requestGroups.size()));
+  std::advance(mark, SimpleRandomizer::getInstance()->getRandomNumber(
+                         requestGroups.size()));
 
-  auto closeFun = [&left](const std::shared_ptr<RequestGroup>& group)
-    {
-      auto& ps = group->getPieceStorage();
+  auto closeFun = [&left](const std::shared_ptr<RequestGroup>& group) {
+    auto& ps = group->getPieceStorage();
 
-      if(!ps) {
-        return;
-      }
+    if (!ps) {
+      return;
+    }
 
-      auto diskAdaptor = ps->getDiskAdaptor();
+    auto diskAdaptor = ps->getDiskAdaptor();
 
-      if(!diskAdaptor) {
-        return;
-      }
+    if (!diskAdaptor) {
+      return;
+    }
 
-      left -= diskAdaptor->tryCloseFile(left);
-    };
+    left -= diskAdaptor->tryCloseFile(left);
+  };
 
-  for(auto i = mark; i != std::end(requestGroups) && left > 0; ++i) {
+  for (auto i = mark; i != std::end(requestGroups) && left > 0; ++i) {
     closeFun(*i);
   }
 
-  for(auto i = std::begin(requestGroups); i != mark && left > 0; ++i) {
+  for (auto i = std::begin(requestGroups); i != mark && left > 0; ++i) {
     closeFun(*i);
   }
 
@@ -103,7 +100,7 @@ void OpenedFileCounter::ensureMaxOpenFileLimit(size_t numNewFiles)
 
 void OpenedFileCounter::reduceNumOfOpenedFile(size_t numCloseFiles)
 {
-  if(!rgman_) {
+  if (!rgman_) {
     return;
   }
 
@@ -111,10 +108,6 @@ void OpenedFileCounter::reduceNumOfOpenedFile(size_t numCloseFiles)
   numOpenFiles_ -= numCloseFiles;
 }
 
-void OpenedFileCounter::deactivate()
-{
-  rgman_ = nullptr;
-}
+void OpenedFileCounter::deactivate() { rgman_ = nullptr; }
 
 } // namespace aria2
-

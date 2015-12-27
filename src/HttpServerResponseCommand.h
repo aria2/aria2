@@ -43,6 +43,7 @@ class HttpServerResponseCommand : public AbstractHttpServerResponseCommand {
 protected:
   virtual void afterSend(const std::shared_ptr<HttpServer>& httpServer,
                          DownloadEngine* e) CXX11_OVERRIDE;
+
 public:
   HttpServerResponseCommand(cuid_t cuid,
                             const std::shared_ptr<HttpServer>& httpServer,

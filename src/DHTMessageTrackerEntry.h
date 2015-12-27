@@ -62,19 +62,20 @@ private:
   Timer dispatchedTime_;
 
   std::chrono::seconds timeout_;
+
 public:
   DHTMessageTrackerEntry(std::shared_ptr<DHTNode> targetNode,
-                         std::string transactionID,
-                         std::string messageType,
+                         std::string transactionID, std::string messageType,
                          std::chrono::seconds timeout,
                          std::unique_ptr<DHTMessageCallback> callback =
-                         std::unique_ptr<DHTMessageCallback>{});
+                             std::unique_ptr<DHTMessageCallback>{});
 
   bool isTimeout() const;
 
   void extendTimeout();
 
-  bool match(const std::string& transactionID, const std::string& ipaddr, uint16_t port) const;
+  bool match(const std::string& transactionID, const std::string& ipaddr,
+             uint16_t port) const;
 
   const std::shared_ptr<DHTNode>& getTargetNode() const;
   const std::string& getMessageType() const;

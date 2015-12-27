@@ -38,14 +38,9 @@
 
 namespace aria2 {
 
-SHA1IOFile::SHA1IOFile() : sha1_(MessageDigest::sha1())
-{
-}
+SHA1IOFile::SHA1IOFile() : sha1_(MessageDigest::sha1()) {}
 
-std::string SHA1IOFile::digest()
-{
-  return sha1_->digest();
-}
+std::string SHA1IOFile::digest() { return sha1_->digest(); }
 
 size_t SHA1IOFile::onRead(void* ptr, size_t count)
 {
@@ -72,34 +67,16 @@ int SHA1IOFile::onVprintf(const char* format, va_list va)
   return -1;
 }
 
-int SHA1IOFile::onFlush()
-{
-  return 0;
-}
+int SHA1IOFile::onFlush() { return 0; }
 
-int SHA1IOFile::onClose()
-{
-  return 0;
-}
+int SHA1IOFile::onClose() { return 0; }
 
-bool SHA1IOFile::onSupportsColor()
-{
-  return false;
-}
+bool SHA1IOFile::onSupportsColor() { return false; }
 
-bool SHA1IOFile::isError() const
-{
-  return false;
-}
+bool SHA1IOFile::isError() const { return false; }
 
-bool SHA1IOFile::isEOF() const
-{
-  return false;
-}
+bool SHA1IOFile::isEOF() const { return false; }
 
-bool SHA1IOFile::isOpen() const
-{
-  return true;
-}
+bool SHA1IOFile::isOpen() const { return true; }
 
 } // namespace aria2

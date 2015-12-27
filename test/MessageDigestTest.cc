@@ -6,7 +6,7 @@
 
 namespace aria2 {
 
-class MessageDigestTest:public CppUnit::TestFixture {
+class MessageDigestTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(MessageDigestTest);
   CPPUNIT_TEST(testDigest);
@@ -20,6 +20,7 @@ class MessageDigestTest:public CppUnit::TestFixture {
   std::unique_ptr<MessageDigest> sha1_;
   std::unique_ptr<MessageDigest> md5_;
   std::unique_ptr<MessageDigest> adler32_;
+
 public:
   void setUp()
   {
@@ -38,8 +39,7 @@ public:
   void testGetCanonicalHashType();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( MessageDigestTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(MessageDigestTest);
 
 void MessageDigestTest::testDigest()
 {
@@ -97,10 +97,10 @@ void MessageDigestTest::testIsStronger()
 
 void MessageDigestTest::testIsValidHash()
 {
-  CPPUNIT_ASSERT(MessageDigest::isValidHash
-                 ("sha-1", "f36003f22b462ffa184390533c500d8989e9f681"));
-  CPPUNIT_ASSERT(!MessageDigest::isValidHash
-                 ("sha-1", "f36003f22b462ffa184390533c500d89"));
+  CPPUNIT_ASSERT(MessageDigest::isValidHash(
+      "sha-1", "f36003f22b462ffa184390533c500d8989e9f681"));
+  CPPUNIT_ASSERT(
+      !MessageDigest::isValidHash("sha-1", "f36003f22b462ffa184390533c500d89"));
 }
 
 void MessageDigestTest::testGetCanonicalHashType()

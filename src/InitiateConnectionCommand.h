@@ -58,28 +58,29 @@ protected:
   // use this address this time.  resolvedAddresses are all addresses
   // resolved.  proxyRequest is set if we are going to use proxy
   // server.
-  virtual std::unique_ptr<Command> createNextCommand
-  (const std::string& hostname, const std::string& addr, uint16_t port,
-   const std::vector<std::string>& resolvedAddresses,
-   const std::shared_ptr<Request>& proxyRequest) = 0;
+  virtual std::unique_ptr<Command>
+  createNextCommand(const std::string& hostname, const std::string& addr,
+                    uint16_t port,
+                    const std::vector<std::string>& resolvedAddresses,
+                    const std::shared_ptr<Request>& proxyRequest) = 0;
 
-  void setConnectedAddrInfo
-  (const std::shared_ptr<Request>& req,
-   const std::string& hostname,
-   const std::shared_ptr<SocketCore>& socket);
+  void setConnectedAddrInfo(const std::shared_ptr<Request>& req,
+                            const std::string& hostname,
+                            const std::shared_ptr<SocketCore>& socket);
 
-  std::shared_ptr<BackupConnectInfo> createBackupIPv4ConnectCommand
-  (const std::string& hostname, const std::string& ipaddr, uint16_t port,
-   Command* mainCommand);
+  std::shared_ptr<BackupConnectInfo>
+  createBackupIPv4ConnectCommand(const std::string& hostname,
+                                 const std::string& ipaddr, uint16_t port,
+                                 Command* mainCommand);
 
-  void setupBackupConnection
-  (const std::string& hostname, const std::string& addr, uint16_t port,
-   ConnectCommand* c);
+  void setupBackupConnection(const std::string& hostname,
+                             const std::string& addr, uint16_t port,
+                             ConnectCommand* c);
+
 public:
   InitiateConnectionCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
                             const std::shared_ptr<FileEntry>& fileEntry,
-                            RequestGroup* requestGroup,
-                            DownloadEngine* e);
+                            RequestGroup* requestGroup, DownloadEngine* e);
 
   virtual ~InitiateConnectionCommand();
 };

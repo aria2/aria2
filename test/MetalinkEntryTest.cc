@@ -7,7 +7,7 @@
 
 namespace aria2 {
 
-class MetalinkEntryTest:public CppUnit::TestFixture {
+class MetalinkEntryTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(MetalinkEntryTest);
   CPPUNIT_TEST(testDropUnsupportedResource);
@@ -15,13 +15,11 @@ class MetalinkEntryTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSetLocationPriority);
   CPPUNIT_TEST(testSetProtocolPriority);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
-  void setUp() {
-  }
-  void tearDown() {
-  }
+  void setUp() {}
+  void tearDown() {}
 
   void testDropUnsupportedResource();
   void testReorderResourcesByPriority();
@@ -29,8 +27,7 @@ public:
   void testSetProtocolPriority();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkEntryTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(MetalinkEntryTest);
 
 std::unique_ptr<MetalinkEntry> createTestEntry()
 {
@@ -78,22 +75,18 @@ void MetalinkEntryTest::testDropUnsupportedResource()
   CPPUNIT_ASSERT_EQUAL((size_t)4, entry->resources.size());
 #elif defined(ENABLE_SSL) || defined(ENABLE_BITTORRENT)
   CPPUNIT_ASSERT_EQUAL((size_t)3, entry->resources.size());
-#else // defined(ENABLE_SSL) || defined(ENABLE_BITTORRENT)
+#else  // defined(ENABLE_SSL) || defined(ENABLE_BITTORRENT)
   CPPUNIT_ASSERT_EQUAL((size_t)2, entry->resources.size());
 #endif // defined(ENABLE_SSL) || defined(ENABLE_BITTORRENT)
 
   auto itr = std::begin(entry->resources);
-  CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP,
-                       (*itr++)->type);
-  CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTP,
-                       (*itr++)->type);
+  CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP, (*itr++)->type);
+  CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTP, (*itr++)->type);
 #ifdef ENABLE_BITTORRENT
-  CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_BITTORRENT,
-                       (*itr++)->type);
+  CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_BITTORRENT, (*itr++)->type);
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_SSL
-  CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTPS,
-                       (*itr++)->type);
+  CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTPS, (*itr++)->type);
 #endif // ENABLE_SSL
 }
 
@@ -114,7 +107,7 @@ void MetalinkEntryTest::testSetLocationPriority()
 {
   auto entry = createTestEntry();
 
-  auto locations = std::vector<std::string>{ "jp", "al", "ro" };
+  auto locations = std::vector<std::string>{"jp", "al", "ro"};
 
   entry->setLocationPriority(locations, -100);
 
@@ -135,7 +128,7 @@ void MetalinkEntryTest::testSetProtocolPriority()
   auto entry = createTestEntry();
   entry->setProtocolPriority("http", -1);
   CPPUNIT_ASSERT_EQUAL(50, entry->resources[0]->priority); // ftp
-  CPPUNIT_ASSERT_EQUAL(0, entry->resources[1]->priority); // http, -1
+  CPPUNIT_ASSERT_EQUAL(0, entry->resources[1]->priority);  // http, -1
   CPPUNIT_ASSERT_EQUAL(40, entry->resources[2]->priority); // bittorrent
   CPPUNIT_ASSERT_EQUAL(90, entry->resources[3]->priority); // not supported
   CPPUNIT_ASSERT_EQUAL(10, entry->resources[4]->priority); // https

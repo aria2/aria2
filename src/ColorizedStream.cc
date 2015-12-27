@@ -35,7 +35,6 @@
 
 #include "ColorizedStream.h"
 
-
 namespace aria2 {
 namespace colors {
 
@@ -63,7 +62,7 @@ const Color clear("0");
 std::string ColorizedStreamBuf::str(bool color) const
 {
   std::stringstream rv;
-  for (const auto& e: elems) {
+  for (const auto& e : elems) {
     if (color || e.first != eColor) {
       rv << e.second;
     }
@@ -77,7 +76,7 @@ std::string ColorizedStreamBuf::str(bool color) const
 std::string ColorizedStreamBuf::str(bool color, size_t max) const
 {
   std::stringstream rv;
-  for (const auto& e: elems) {
+  for (const auto& e : elems) {
     if (e.first == eColor) {
       if (color) {
         rv << e.second;

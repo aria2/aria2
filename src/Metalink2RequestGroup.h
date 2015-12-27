@@ -51,10 +51,10 @@ class MetalinkEntry;
 
 class Metalink2RequestGroup {
 private:
-  void
-  createRequestGroup(std::vector<std::shared_ptr<RequestGroup>>& groups,
-                     std::vector<std::unique_ptr<MetalinkEntry>> entries,
-                     const std::shared_ptr<Option>& option);
+  void createRequestGroup(std::vector<std::shared_ptr<RequestGroup>>& groups,
+                          std::vector<std::unique_ptr<MetalinkEntry>> entries,
+                          const std::shared_ptr<Option>& option);
+
 public:
   Metalink2RequestGroup();
 

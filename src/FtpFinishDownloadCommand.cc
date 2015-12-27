@@ -54,17 +54,15 @@
 
 namespace aria2 {
 
-FtpFinishDownloadCommand::FtpFinishDownloadCommand
-(cuid_t cuid,
- const std::shared_ptr<Request>& req,
- const std::shared_ptr<FileEntry>& fileEntry,
- RequestGroup* requestGroup,
- const std::shared_ptr<FtpConnection>& ftpConnection,
- DownloadEngine* e,
- const std::shared_ptr<SocketCore>& socket)
-  :AbstractCommand(cuid, req, fileEntry, requestGroup, e, socket),
-   ftpConnection_(ftpConnection)
-{}
+FtpFinishDownloadCommand::FtpFinishDownloadCommand(
+    cuid_t cuid, const std::shared_ptr<Request>& req,
+    const std::shared_ptr<FileEntry>& fileEntry, RequestGroup* requestGroup,
+    const std::shared_ptr<FtpConnection>& ftpConnection, DownloadEngine* e,
+    const std::shared_ptr<SocketCore>& socket)
+    : AbstractCommand(cuid, req, fileEntry, requestGroup, e, socket),
+      ftpConnection_(ftpConnection)
+{
+}
 
 FtpFinishDownloadCommand::~FtpFinishDownloadCommand() {}
 
@@ -72,43 +70,50 @@ FtpFinishDownloadCommand::~FtpFinishDownloadCommand() {}
 // AbstractCommand::_segments is empty.
 bool FtpFinishDownloadCommand::execute()
 {
-  if(getRequestGroup()->isHaltRequested()) {
+  if (getRequestGroup()->isHaltRequested()) {
     return true;
   }
   try {
-    if(readEventEnabled() || hupEventEnabled()) {
+    if (readEventEnabled() || hupEventEnabled()) {
       getCheckPoint() = global::wallclock();
       int status = ftpConnection_->receiveResponse();
-      if(status == 0) {
+      if (status == 0) {
         addCommandSelf();
         return false;
       }
-      if(status == 226) {
-        if(getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
-          getDownloadEngine()->poolSocket
-            (getRequest(), ftpConnection_->getUser(), createProxyRequest(),
-             getSocket(), ftpConnection_->getBaseWorkingDir());
+      if (status == 226) {
+        if (getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
+          getDownloadEngine()->poolSocket(
+              getRequest(), ftpConnection_->getUser(), createProxyRequest(),
+              getSocket(), ftpConnection_->getBaseWorkingDir());
         }
-      } else {
+      }
+      else {
         A2_LOG_INFO(fmt("CUID#%" PRId64 " - Bad status for transfer complete.",
                         getCuid()));
       }
-    } else if(getCheckPoint().difference(global::wallclock()) >= getTimeout()) {
-      A2_LOG_INFO(fmt("CUID#%" PRId64 " - Timeout before receiving transfer complete.",
+    }
+    else if (getCheckPoint().difference(global::wallclock()) >= getTimeout()) {
+      A2_LOG_INFO(fmt("CUID#%" PRId64
+                      " - Timeout before receiving transfer complete.",
                       getCuid()));
-    } else {
+    }
+    else {
       addCommandSelf();
       return false;
     }
-  } catch(RecoverableException& e) {
-    A2_LOG_INFO_EX(fmt("CUID#%" PRId64 " - Exception was thrown, but download was"
+  }
+  catch (RecoverableException& e) {
+    A2_LOG_INFO_EX(fmt("CUID#%" PRId64
+                       " - Exception was thrown, but download was"
                        " finished, so we can ignore the exception.",
                        getCuid()),
                    e);
   }
-  if(getRequestGroup()->downloadFinished()) {
+  if (getRequestGroup()->downloadFinished()) {
     return true;
-  } else {
+  }
+  else {
     return prepareForRetry(0);
   }
 }

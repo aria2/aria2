@@ -43,8 +43,7 @@ namespace aria2 {
 
 // Returns const reference of std::shared_ptr<T>().  Static variable null
 // is shared by all instantiation of this function template.
-template<typename T>
-const std::shared_ptr<T>& getNull()
+template <typename T> const std::shared_ptr<T>& getNull()
 {
   static std::shared_ptr<T> null;
   return null;

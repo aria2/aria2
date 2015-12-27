@@ -45,49 +45,51 @@ namespace aria2 {
 
 const char BtRequestMessage::NAME[] = "request";
 
-BtRequestMessage::BtRequestMessage
-(size_t index, int32_t begin, int32_t length, size_t blockIndex):
-  RangeBtMessage(ID, NAME, index, begin, length),
-  blockIndex_(blockIndex) {}
+BtRequestMessage::BtRequestMessage(size_t index, int32_t begin, int32_t length,
+                                   size_t blockIndex)
+    : RangeBtMessage(ID, NAME, index, begin, length), blockIndex_(blockIndex)
+{
+}
 
-std::unique_ptr<BtRequestMessage> BtRequestMessage::create
-(const unsigned char* data, size_t dataLength)
+std::unique_ptr<BtRequestMessage>
+BtRequestMessage::create(const unsigned char* data, size_t dataLength)
 {
   return RangeBtMessage::create<BtRequestMessage>(data, dataLength);
 }
 
 void BtRequestMessage::doReceivedAction()
 {
-  if(isMetadataGetMode()) {
+  if (isMetadataGetMode()) {
     return;
   }
-  if(getPieceStorage()->hasPiece(getIndex()) &&
-     (!getPeer()->amChoking() ||
-      (getPeer()->amChoking() &&
-       getPeer()->isInAmAllowedIndexSet(getIndex())))) {
-    getBtMessageDispatcher()->addMessageToQueue
-      (getBtMessageFactory()->createPieceMessage
-       (getIndex(), getBegin(), getLength()));
-  } else {
-    if(getPeer()->isFastExtensionEnabled()) {
-      getBtMessageDispatcher()->addMessageToQueue
-        (getBtMessageFactory()->createRejectMessage
-         (getIndex(), getBegin(), getLength()));
+  if (getPieceStorage()->hasPiece(getIndex()) &&
+      (!getPeer()->amChoking() ||
+       (getPeer()->amChoking() &&
+        getPeer()->isInAmAllowedIndexSet(getIndex())))) {
+    getBtMessageDispatcher()->addMessageToQueue(
+        getBtMessageFactory()->createPieceMessage(getIndex(), getBegin(),
+                                                  getLength()));
+  }
+  else {
+    if (getPeer()->isFastExtensionEnabled()) {
+      getBtMessageDispatcher()->addMessageToQueue(
+          getBtMessageFactory()->createRejectMessage(getIndex(), getBegin(),
+                                                     getLength()));
     }
   }
 }
 
 void BtRequestMessage::onQueued()
 {
-  getBtMessageDispatcher()->addOutstandingRequest
-    (make_unique<RequestSlot>(getIndex(), getBegin(), getLength(), blockIndex_,
-                              getPieceStorage()->getPiece(getIndex())));
+  getBtMessageDispatcher()->addOutstandingRequest(
+      make_unique<RequestSlot>(getIndex(), getBegin(), getLength(), blockIndex_,
+                               getPieceStorage()->getPiece(getIndex())));
 }
 
-void BtRequestMessage::onAbortOutstandingRequestEvent
-(const BtAbortOutstandingRequestEvent& event)
+void BtRequestMessage::onAbortOutstandingRequestEvent(
+    const BtAbortOutstandingRequestEvent& event)
 {
-  if(getIndex() == event.getPiece()->getIndex() && !isInvalidate()) {
+  if (getIndex() == event.getPiece()->getIndex() && !isInvalidate()) {
     setInvalidate(true);
   }
 }

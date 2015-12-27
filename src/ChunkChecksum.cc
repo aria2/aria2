@@ -37,20 +37,19 @@
 
 namespace aria2 {
 
-ChunkChecksum::ChunkChecksum():pieceLength_(0) {}
+ChunkChecksum::ChunkChecksum() : pieceLength_(0) {}
 
-ChunkChecksum::ChunkChecksum
-(std::string hashType,
- std::vector<std::string> pieceHashes,
- int32_t pieceLength)
-  : hashType_(std::move(hashType)),
-    pieceHashes_(std::move(pieceHashes)),
-    pieceLength_(pieceLength)
-{}
+ChunkChecksum::ChunkChecksum(std::string hashType,
+                             std::vector<std::string> pieceHashes,
+                             int32_t pieceLength)
+    : hashType_(std::move(hashType)),
+      pieceHashes_(std::move(pieceHashes)),
+      pieceLength_(pieceLength)
+{
+}
 
-bool ChunkChecksum::validateChunk
-(const std::string& actualDigest,
- size_t index) const
+bool ChunkChecksum::validateChunk(const std::string& actualDigest,
+                                  size_t index) const
 {
   const std::string& digest = getPieceHash(index);
   return !digest.empty() && actualDigest == digest;
@@ -58,19 +57,17 @@ bool ChunkChecksum::validateChunk
 
 int64_t ChunkChecksum::getEstimatedDataLength() const
 {
-  return static_cast<int64_t>(pieceLength_)*pieceHashes_.size();
+  return static_cast<int64_t>(pieceLength_) * pieceHashes_.size();
 }
 
-size_t ChunkChecksum::countPieceHash() const
-{
-  return pieceHashes_.size();
-}
+size_t ChunkChecksum::countPieceHash() const { return pieceHashes_.size(); }
 
 const std::string& ChunkChecksum::getPieceHash(size_t index) const
 {
-  if(index < pieceHashes_.size()) {
+  if (index < pieceHashes_.size()) {
     return pieceHashes_[index];
-  } else {
+  }
+  else {
     return A2STR::NIL;
   }
 }

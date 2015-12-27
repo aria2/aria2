@@ -43,8 +43,7 @@ namespace aria2 {
 
 class BinaryStream;
 
-class AdaptiveFileAllocationIterator:public FileAllocationIterator
-{
+class AdaptiveFileAllocationIterator : public FileAllocationIterator {
 private:
   std::unique_ptr<FileAllocationIterator> allocator_;
 
@@ -53,9 +52,10 @@ private:
   int64_t offset_;
 
   int64_t totalLength_;
+
 public:
-  AdaptiveFileAllocationIterator
-  (BinaryStream* stream, int64_t offset, int64_t totalLength);
+  AdaptiveFileAllocationIterator(BinaryStream* stream, int64_t offset,
+                                 int64_t totalLength);
 
   virtual ~AdaptiveFileAllocationIterator();
 

@@ -47,7 +47,7 @@ class DHTMessageFactory;
 class DHTTaskQueue;
 class DHTAbstractTask;
 
-class DHTTaskFactoryImpl:public DHTTaskFactory {
+class DHTTaskFactoryImpl : public DHTTaskFactory {
 private:
   std::shared_ptr<DHTNode> localNode_;
 
@@ -62,6 +62,7 @@ private:
   std::chrono::seconds timeout_;
 
   void setCommonProperty(const std::shared_ptr<DHTAbstractTask>& task);
+
 public:
   DHTTaskFactoryImpl();
 
@@ -76,19 +77,16 @@ public:
 
   virtual std::shared_ptr<DHTTask> createBucketRefreshTask() CXX11_OVERRIDE;
 
-  virtual std::shared_ptr<DHTTask>
-  createPeerLookupTask(const std::shared_ptr<DownloadContext>& ctx,
-                       uint16_t tcpPort,
-                       const std::shared_ptr<PeerStorage>& peerStorage)
-    CXX11_OVERRIDE;
+  virtual std::shared_ptr<DHTTask> createPeerLookupTask(
+      const std::shared_ptr<DownloadContext>& ctx, uint16_t tcpPort,
+      const std::shared_ptr<PeerStorage>& peerStorage) CXX11_OVERRIDE;
 
   virtual std::shared_ptr<DHTTask>
   createPeerAnnounceTask(const unsigned char* infoHash) CXX11_OVERRIDE;
 
   virtual std::shared_ptr<DHTTask>
   createReplaceNodeTask(const std::shared_ptr<DHTBucket>& bucket,
-                        const std::shared_ptr<DHTNode>& newNode)
-    CXX11_OVERRIDE;
+                        const std::shared_ptr<DHTNode>& newNode) CXX11_OVERRIDE;
 
   void setRoutingTable(DHTRoutingTable* routingTable);
 

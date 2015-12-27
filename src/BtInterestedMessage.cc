@@ -42,25 +42,25 @@ namespace aria2 {
 const char BtInterestedMessage::NAME[] = "interested";
 
 BtInterestedMessage::BtInterestedMessage()
-  : ZeroBtMessage(ID, NAME),
-    peerStorage_(nullptr)
-{}
+    : ZeroBtMessage(ID, NAME), peerStorage_(nullptr)
+{
+}
 
 BtInterestedMessage::~BtInterestedMessage() {}
 
-std::unique_ptr<BtInterestedMessage> BtInterestedMessage::create
-(const unsigned char* data, size_t dataLength)
+std::unique_ptr<BtInterestedMessage>
+BtInterestedMessage::create(const unsigned char* data, size_t dataLength)
 {
   return ZeroBtMessage::create<BtInterestedMessage>(data, dataLength);
 }
 
 void BtInterestedMessage::doReceivedAction()
 {
-  if(isMetadataGetMode()) {
+  if (isMetadataGetMode()) {
     return;
   }
   getPeer()->peerInterested(true);
-  if(!getPeer()->amChoking()) {
+  if (!getPeer()->amChoking()) {
     peerStorage_->executeChoke();
   }
 }
@@ -72,11 +72,10 @@ bool BtInterestedMessage::sendPredicate() const
 
 namespace {
 struct ThisProgressUpdate : public ProgressUpdate {
-  ThisProgressUpdate(std::shared_ptr<Peer>  peer)
-    : peer(std::move(peer)) {}
+  ThisProgressUpdate(std::shared_ptr<Peer> peer) : peer(std::move(peer)) {}
   virtual void update(size_t length, bool complete) CXX11_OVERRIDE
   {
-    if(complete) {
+    if (complete) {
       peer->amInterested(true);
     }
   }

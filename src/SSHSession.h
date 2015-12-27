@@ -45,10 +45,7 @@
 
 namespace aria2 {
 
-enum SSHDirection {
-  SSH_WANT_READ = 1,
-  SSH_WANT_WRITE
-};
+enum SSHDirection { SSH_WANT_READ = 1, SSH_WANT_WRITE };
 
 enum SSHErrorCode {
   SSH_ERR_OK = 0,
@@ -138,7 +135,6 @@ private:
   LIBSSH2_SFTP_HANDLE* sftph_;
   sock_t fd_;
 };
-
 }
 
 #endif // SSH_SESSION_H

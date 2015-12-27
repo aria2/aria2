@@ -7,24 +7,21 @@
 
 namespace aria2 {
 
-class MetalinkerTest:public CppUnit::TestFixture {
+class MetalinkerTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(MetalinkerTest);
   CPPUNIT_TEST(testQueryEntry);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
-  void setUp() {
-  }
-  void tearDown() {
-  }
+  void setUp() {}
+  void tearDown() {}
 
   void testQueryEntry();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkerTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(MetalinkerTest);
 
 void MetalinkerTest::testQueryEntry()
 {

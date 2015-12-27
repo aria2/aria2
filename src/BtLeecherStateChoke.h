@@ -58,6 +58,7 @@ private:
     std::shared_ptr<Peer> peer_;
     int downloadSpeed_;
     bool regularUnchoker_;
+
   public:
     PeerEntry(const std::shared_ptr<Peer>& peer);
     PeerEntry(const PeerEntry& c);
@@ -92,13 +93,16 @@ private:
   private:
     bool amChoking_;
     bool peerInterested_;
+
   public:
-    PeerFilter(bool amChoking, bool peerInterested):
-      amChoking_(amChoking),
-      peerInterested_(peerInterested) {}
+    PeerFilter(bool amChoking, bool peerInterested)
+        : amChoking_(amChoking), peerInterested_(peerInterested)
+    {
+    }
 
     bool operator()(const PeerEntry& peerEntry) const;
   };
+
 public:
   BtLeecherStateChoke();
 
@@ -111,9 +115,7 @@ public:
   friend void swap(PeerEntry& a, PeerEntry& b);
 };
 
-void swap
-(BtLeecherStateChoke::PeerEntry& a,
- BtLeecherStateChoke::PeerEntry& b);
+void swap(BtLeecherStateChoke::PeerEntry& a, BtLeecherStateChoke::PeerEntry& b);
 
 } // namespace aria2
 

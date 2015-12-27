@@ -40,14 +40,13 @@
 
 namespace aria2 {
 
-class UTMetadataPostDownloadHandler:public PostDownloadHandler
-{
+class UTMetadataPostDownloadHandler : public PostDownloadHandler {
 private:
 public:
   UTMetadataPostDownloadHandler();
 
   virtual void
-  getNextRequestGroups(std::vector<std::shared_ptr<RequestGroup> >& groups,
+  getNextRequestGroups(std::vector<std::shared_ptr<RequestGroup>>& groups,
                        RequestGroup* requestGroup) const CXX11_OVERRIDE;
 };
 

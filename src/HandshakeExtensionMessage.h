@@ -47,7 +47,7 @@ namespace aria2 {
 class Peer;
 class DownloadContext;
 
-class HandshakeExtensionMessage:public ExtensionMessage {
+class HandshakeExtensionMessage : public ExtensionMessage {
 private:
   std::string clientVersion_;
 
@@ -60,15 +60,13 @@ private:
   DownloadContext* dctx_;
 
   std::shared_ptr<Peer> peer_;
+
 public:
   HandshakeExtensionMessage();
 
   virtual std::string getPayload() CXX11_OVERRIDE;
 
-  virtual uint8_t getExtensionMessageID() const CXX11_OVERRIDE
-  {
-    return 0;
-  }
+  virtual uint8_t getExtensionMessageID() const CXX11_OVERRIDE { return 0; }
 
   virtual const char* getExtensionName() const CXX11_OVERRIDE
   {
@@ -86,35 +84,17 @@ public:
     clientVersion_ = version;
   }
 
-  const std::string& getClientVersion() const
-  {
-    return clientVersion_;
-  }
+  const std::string& getClientVersion() const { return clientVersion_; }
 
-  void setTCPPort(uint16_t port)
-  {
-    tcpPort_ = port;
-  }
+  void setTCPPort(uint16_t port) { tcpPort_ = port; }
 
-  uint16_t getTCPPort() const
-  {
-    return tcpPort_;
-  }
+  uint16_t getTCPPort() const { return tcpPort_; }
 
-  size_t getMetadataSize()
-  {
-    return metadataSize_;
-  }
+  size_t getMetadataSize() { return metadataSize_; }
 
-  void setMetadataSize(size_t size)
-  {
-    metadataSize_ = size;
-  }
+  void setMetadataSize(size_t size) { metadataSize_ = size; }
 
-  void setDownloadContext(DownloadContext* dctx)
-  {
-    dctx_ = dctx;
-  }
+  void setDownloadContext(DownloadContext* dctx) { dctx_ = dctx; }
 
   void setExtension(int key, uint8_t id);
 

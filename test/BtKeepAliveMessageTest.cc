@@ -4,17 +4,16 @@
 
 namespace aria2 {
 
-class BtKeepAliveMessageTest:public CppUnit::TestFixture {
+class BtKeepAliveMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtKeepAliveMessageTest);
   CPPUNIT_TEST(testCreateMessage);
   CPPUNIT_TEST(testToString);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
-  void setUp() {
-  }
+  void setUp() {}
 
   void testCreateMessage();
   void testToString();
@@ -22,7 +21,8 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(BtKeepAliveMessageTest);
 
-void BtKeepAliveMessageTest::testCreateMessage() {
+void BtKeepAliveMessageTest::testCreateMessage()
+{
   char data[4];
   memset(data, 0, sizeof(data));
   BtKeepAliveMessage message;
@@ -30,10 +30,11 @@ void BtKeepAliveMessageTest::testCreateMessage() {
   CPPUNIT_ASSERT_EQUAL((size_t)4, message.getMessageLength());
   unsigned char* rawmsg = message.createMessage();
   CPPUNIT_ASSERT(memcmp(rawmsg, data, 4) == 0);
-  delete [] rawmsg;
+  delete[] rawmsg;
 }
 
-void BtKeepAliveMessageTest::testToString() {
+void BtKeepAliveMessageTest::testToString()
+{
   BtKeepAliveMessage msg;
   CPPUNIT_ASSERT_EQUAL(std::string("keep alive"), msg.toString());
 }

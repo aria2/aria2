@@ -36,17 +36,14 @@
 
 namespace aria2 {
 
-MetalinkHttpEntry::MetalinkHttpEntry()
-  : pri(999999),
-    pref(false)
-{}
+MetalinkHttpEntry::MetalinkHttpEntry() : pri(999999), pref(false) {}
 
 MetalinkHttpEntry::~MetalinkHttpEntry() {}
 
 void MetalinkHttpEntry::swap(MetalinkHttpEntry& other)
 {
   using std::swap;
-  if(this != &other) {
+  if (this != &other) {
     swap(uri, other.uri);
     swap(pri, other.pri);
     swap(pref, other.pref);
@@ -56,16 +53,14 @@ void MetalinkHttpEntry::swap(MetalinkHttpEntry& other)
 
 bool MetalinkHttpEntry::operator<(const MetalinkHttpEntry& rhs) const
 {
-  if(pref^rhs.pref) {
+  if (pref ^ rhs.pref) {
     return pref;
-  } else {
+  }
+  else {
     return pri < rhs.pri;
   }
 }
 
-void swap(MetalinkHttpEntry& a, MetalinkHttpEntry& b)
-{
-  a.swap(b);
-}
+void swap(MetalinkHttpEntry& a, MetalinkHttpEntry& b) { a.swap(b); }
 
 } // namespace aria2

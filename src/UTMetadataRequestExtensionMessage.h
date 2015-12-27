@@ -46,7 +46,7 @@ class BtMessageDispatcher;
 class BtMessageFactory;
 class Peer;
 
-class UTMetadataRequestExtensionMessage:public UTMetadataExtensionMessage {
+class UTMetadataRequestExtensionMessage : public UTMetadataExtensionMessage {
 private:
   DownloadContext* dctx_;
 
@@ -55,6 +55,7 @@ private:
   BtMessageDispatcher* dispatcher_;
 
   BtMessageFactory* messageFactory_;
+
 public:
   UTMetadataRequestExtensionMessage(uint8_t extensionMessageID);
 

@@ -61,23 +61,21 @@
 
 namespace aria2 {
 
-PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand
-(cuid_t cuid,
- const std::shared_ptr<Peer>& peer,
- DownloadEngine* e,
- const std::shared_ptr<SocketCore>& s,
- std::unique_ptr<PeerConnection> peerConnection)
-  : PeerAbstractCommand{cuid, peer, e, s},
-    peerConnection_{std::move(peerConnection)}
+PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand(
+    cuid_t cuid, const std::shared_ptr<Peer>& peer, DownloadEngine* e,
+    const std::shared_ptr<SocketCore>& s,
+    std::unique_ptr<PeerConnection> peerConnection)
+    : PeerAbstractCommand{cuid, peer, e, s},
+      peerConnection_{std::move(peerConnection)}
 {
-  if(peerConnection_) {
-    if(peerConnection_->getBufferLength() > 0) {
+  if (peerConnection_) {
+    if (peerConnection_->getBufferLength() > 0) {
       setStatus(Command::STATUS_ONESHOT_REALTIME);
       getDownloadEngine()->setNoWait(true);
     }
-  } else {
-    peerConnection_ = make_unique<PeerConnection>
-      (cuid, getPeer(), getSocket());
+  }
+  else {
+    peerConnection_ = make_unique<PeerConnection>(cuid, getPeer(), getSocket());
   }
 }
 
@@ -86,80 +84,72 @@ PeerReceiveHandshakeCommand::~PeerReceiveHandshakeCommand() {}
 bool PeerReceiveHandshakeCommand::exitBeforeExecute()
 {
   return getDownloadEngine()->isHaltRequested() ||
-    getDownloadEngine()->getRequestGroupMan()->downloadFinished();
+         getDownloadEngine()->getRequestGroupMan()->downloadFinished();
 }
 
 bool PeerReceiveHandshakeCommand::executeInternal()
 {
   // Handle tracker's NAT-checking feature
-  if(peerConnection_->getBufferLength() < 48) {
+  if (peerConnection_->getBufferLength() < 48) {
     size_t dataLength = 0;
     // Ignore return value. The received data is kept in
     // PeerConnection object because of peek = true.
     peerConnection_->receiveHandshake(nullptr, dataLength, true);
   }
-  if(peerConnection_->getBufferLength() >= 48) {
+  if (peerConnection_->getBufferLength() >= 48) {
     const unsigned char* data = peerConnection_->getBuffer();
     // check info_hash
-    std::string infoHash(&data[28], &data[28+INFO_HASH_LENGTH]);
+    std::string infoHash(&data[28], &data[28 + INFO_HASH_LENGTH]);
 
     std::shared_ptr<DownloadContext> downloadContext =
-      getDownloadEngine()->getBtRegistry()->getDownloadContext(infoHash);
-    if(!downloadContext) {
-      throw DL_ABORT_EX
-        (fmt("Unknown info hash %s",
-             util::toHex(infoHash).c_str()));
+        getDownloadEngine()->getBtRegistry()->getDownloadContext(infoHash);
+    if (!downloadContext) {
+      throw DL_ABORT_EX(
+          fmt("Unknown info hash %s", util::toHex(infoHash).c_str()));
     }
-    auto btObject = getDownloadEngine()->getBtRegistry()->get
-      (downloadContext->getOwnerRequestGroup()->getGID());
+    auto btObject = getDownloadEngine()->getBtRegistry()->get(
+        downloadContext->getOwnerRequestGroup()->getGID());
     const std::shared_ptr<BtRuntime>& btRuntime = btObject->btRuntime;
     const std::shared_ptr<PieceStorage>& pieceStorage = btObject->pieceStorage;
     const std::shared_ptr<PeerStorage>& peerStorage = btObject->peerStorage;
-    if(!btRuntime->ready()) {
-      throw DL_ABORT_EX
-        (fmt("Unknown info hash %s",
-             util::toHex(infoHash).c_str()));
+    if (!btRuntime->ready()) {
+      throw DL_ABORT_EX(
+          fmt("Unknown info hash %s", util::toHex(infoHash).c_str()));
     }
-    if(btRuntime->isHalt()) {
+    if (btRuntime->isHalt()) {
       A2_LOG_DEBUG("Info hash found but the download is over."
                    " Dropping connection.");
       return true;
     }
     NetStat& stat = downloadContext->getNetStat();
     const int maxDownloadLimit =
-      downloadContext->getOwnerRequestGroup()->getMaxDownloadSpeedLimit();
+        downloadContext->getOwnerRequestGroup()->getMaxDownloadSpeedLimit();
     int thresholdSpeed =
-      downloadContext->getOwnerRequestGroup()->
-      getOption()->getAsInt(PREF_BT_REQUEST_PEER_SPEED_LIMIT);
-    if(maxDownloadLimit > 0) {
+        downloadContext->getOwnerRequestGroup()->getOption()->getAsInt(
+            PREF_BT_REQUEST_PEER_SPEED_LIMIT);
+    if (maxDownloadLimit > 0) {
       thresholdSpeed = std::min(maxDownloadLimit, thresholdSpeed);
     }
 
-    if((!pieceStorage->downloadFinished() &&
-        stat.calculateDownloadSpeed() < thresholdSpeed) ||
-       btRuntime->lessThanMaxPeers()) {
+    if ((!pieceStorage->downloadFinished() &&
+         stat.calculateDownloadSpeed() < thresholdSpeed) ||
+        btRuntime->lessThanMaxPeers()) {
       // TODO addPeer and checkoutPeer must be "atomic", in a sense
       // that the added peer must be checked out.
-      if(peerStorage->addPeer(getPeer()) &&
-         peerStorage->checkoutPeer(getCuid())) {
-        getDownloadEngine()->addCommand(make_unique<PeerInteractionCommand>
-          (getCuid(),
-           downloadContext->getOwnerRequestGroup(),
-           getPeer(),
-           getDownloadEngine(),
-           btRuntime,
-           pieceStorage,
-           peerStorage,
-           getSocket(),
-           PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE,
-           std::move(peerConnection_)));
-        A2_LOG_DEBUG(fmt(MSG_INCOMING_PEER_CONNECTION,
-                         getCuid(),
-                         getPeer()->usedBy()));
+      if (peerStorage->addPeer(getPeer()) &&
+          peerStorage->checkoutPeer(getCuid())) {
+        getDownloadEngine()->addCommand(make_unique<PeerInteractionCommand>(
+            getCuid(), downloadContext->getOwnerRequestGroup(), getPeer(),
+            getDownloadEngine(), btRuntime, pieceStorage, peerStorage,
+            getSocket(), PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE,
+            std::move(peerConnection_)));
+        A2_LOG_DEBUG(
+            fmt(MSG_INCOMING_PEER_CONNECTION, getCuid(), getPeer()->usedBy()));
       }
     }
     return true;
-  } else {
+  }
+  else {
     addCommandSelf();
     return false;
   }

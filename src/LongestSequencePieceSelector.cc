@@ -38,53 +38,54 @@
 namespace aria2 {
 
 namespace {
-size_t getStartIndex
-(size_t from, const unsigned char* bitfield, size_t nbits)
+size_t getStartIndex(size_t from, const unsigned char* bitfield, size_t nbits)
 {
-  while(from < nbits && !bitfield::test(bitfield, nbits, from)) {
+  while (from < nbits && !bitfield::test(bitfield, nbits, from)) {
     ++from;
   }
-  if(nbits <= from) {
+  if (nbits <= from) {
     return nbits;
-  } else {
+  }
+  else {
     return from;
   }
 }
 } // namespace
 
 namespace {
-size_t getEndIndex
-(size_t from, const unsigned char* bitfield, size_t nbits)
+size_t getEndIndex(size_t from, const unsigned char* bitfield, size_t nbits)
 {
-  while(from < nbits && bitfield::test(bitfield, nbits, from)) {
+  while (from < nbits && bitfield::test(bitfield, nbits, from)) {
     ++from;
   }
   return from;
 }
 } // namespace
 
-bool LongestSequencePieceSelector::select
-(size_t& index, const unsigned char* bitfield, size_t nbits) const
+bool LongestSequencePieceSelector::select(size_t& index,
+                                          const unsigned char* bitfield,
+                                          size_t nbits) const
 {
   size_t mstartindex = 0;
   size_t mendindex = 0;
   size_t nextIndex = 0;
-  while(nextIndex < nbits) {
+  while (nextIndex < nbits) {
     size_t startindex = getStartIndex(nextIndex, bitfield, nbits);
-    if(startindex == nbits) {
+    if (startindex == nbits) {
       break;
     }
     size_t endindex = getEndIndex(startindex, bitfield, nbits);
-    if(mendindex-mstartindex < endindex-startindex) {
+    if (mendindex - mstartindex < endindex - startindex) {
       mstartindex = startindex;
       mendindex = endindex;
     }
     nextIndex = endindex;
   }
-  if(mendindex-mstartindex > 0) {
-    index = mendindex-1;
+  if (mendindex - mstartindex > 0) {
+    index = mendindex - 1;
     return true;
-  } else {
+  }
+  else {
     return false;
   }
 }

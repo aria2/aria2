@@ -64,6 +64,7 @@ public:
   {
     notifyDownloadEvent(event, group.get());
   }
+
 private:
   std::vector<DownloadEventListener*> listeners_;
 };

@@ -9,7 +9,7 @@
 
 namespace aria2 {
 
-class OptionHandlerTest:public CppUnit::TestFixture {
+class OptionHandlerTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(OptionHandlerTest);
   CPPUNIT_TEST(testBooleanOptionHandler);
@@ -45,7 +45,7 @@ public:
   void testDeprecatedOptionHandler();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( OptionHandlerTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(OptionHandlerTest);
 
 void OptionHandlerTest::testBooleanOptionHandler()
 {
@@ -58,7 +58,9 @@ void OptionHandlerTest::testBooleanOptionHandler()
   try {
     handler.parse(option, "hello");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {}
+  }
+  catch (Exception& e) {
+  }
   CPPUNIT_ASSERT_EQUAL(std::string("true, false"),
                        handler.createPossibleValuesString());
 }
@@ -82,7 +84,9 @@ void OptionHandlerTest::testNumberOptionHandler_min()
   try {
     handler.parse(option, "0");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {}
+  }
+  catch (Exception& e) {
+  }
   CPPUNIT_ASSERT_EQUAL(std::string("1-*"),
                        handler.createPossibleValuesString());
 }
@@ -96,7 +100,9 @@ void OptionHandlerTest::testNumberOptionHandler_max()
   try {
     handler.parse(option, "101");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {}
+  }
+  catch (Exception& e) {
+  }
   CPPUNIT_ASSERT_EQUAL(std::string("*-100"),
                        handler.createPossibleValuesString());
 }
@@ -112,11 +118,15 @@ void OptionHandlerTest::testNumberOptionHandler_min_max()
   try {
     handler.parse(option, "0");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {}
+  }
+  catch (Exception& e) {
+  }
   try {
     handler.parse(option, "101");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {}
+  }
+  catch (Exception& e) {
+  }
   CPPUNIT_ASSERT_EQUAL(std::string("1-100"),
                        handler.createPossibleValuesString());
 }
@@ -134,14 +144,20 @@ void OptionHandlerTest::testUnitNumberOptionHandler()
   try {
     handler.parse(option, "K");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {}
+  }
+  catch (Exception& e) {
+  }
   try {
     handler.parse(option, "M");
-  } catch(Exception& e) {}
+  }
+  catch (Exception& e) {
+  }
   try {
     handler.parse(option, "");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {}
+  }
+  catch (Exception& e) {
+  }
 }
 
 void OptionHandlerTest::testParameterOptionHandler()
@@ -155,7 +171,9 @@ void OptionHandlerTest::testParameterOptionHandler()
   try {
     handler.parse(option, "value3");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {}
+  }
+  catch (Exception& e) {
+  }
   CPPUNIT_ASSERT_EQUAL(std::string("value1, value2"),
                        handler.createPossibleValuesString());
 }
@@ -198,7 +216,9 @@ void OptionHandlerTest::testFloatNumberOptionHandler_min()
   try {
     handler.parse(option, "-0.1");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {}
+  }
+  catch (Exception& e) {
+  }
   CPPUNIT_ASSERT_EQUAL(std::string("0.0-*"),
                        handler.createPossibleValuesString());
 }
@@ -212,7 +232,9 @@ void OptionHandlerTest::testFloatNumberOptionHandler_max()
   try {
     handler.parse(option, "10.1");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {}
+  }
+  catch (Exception& e) {
+  }
   CPPUNIT_ASSERT_EQUAL(std::string("*-10.0"),
                        handler.createPossibleValuesString());
 }
@@ -228,11 +250,15 @@ void OptionHandlerTest::testFloatNumberOptionHandler_min_max()
   try {
     handler.parse(option, "-0.1");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {}
+  }
+  catch (Exception& e) {
+  }
   try {
     handler.parse(option, "10.1");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {}
+  }
+  catch (Exception& e) {
+  }
   CPPUNIT_ASSERT_EQUAL(std::string("0.0-10.0"),
                        handler.createPossibleValuesString());
 }
@@ -256,7 +282,9 @@ void OptionHandlerTest::testHttpProxyOptionHandler()
   try {
     handler.parse(option, "http://bar:65536");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {}
+  }
+  catch (Exception& e) {
+  }
   CPPUNIT_ASSERT_EQUAL(std::string("[http://][USER:PASSWORD@]HOST[:PORT]"),
                        handler.createPossibleValuesString());
 

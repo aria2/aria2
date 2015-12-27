@@ -51,19 +51,15 @@ namespace message_digest {
  * ctx must be initialized or reset before calling this function.
  * Returns raw digest string, not hex digest
  */
-std::string digest
-(MessageDigest* ctx,
- const std::shared_ptr<BinaryStream>& bs,
- int64_t offset, int64_t length);
+std::string digest(MessageDigest* ctx, const std::shared_ptr<BinaryStream>& bs,
+                   int64_t offset, int64_t length);
 
 /**
  * Stores *raw* message digest into md.
  * Throws exception when mdLength is less than the size of message digest.
  */
-void digest
-(unsigned char* md, size_t mdLength,
- MessageDigest* ctx,
- const void* data, size_t length);
+void digest(unsigned char* md, size_t mdLength, MessageDigest* ctx,
+            const void* data, size_t length);
 
 } // namespace message_digest
 

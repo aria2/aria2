@@ -48,13 +48,15 @@ class FileAllocationIterator;
 class Command;
 class DownloadEngine;
 
-class FileAllocationEntry : public RequestGroupEntry, public ProgressAwareEntry {
+class FileAllocationEntry : public RequestGroupEntry,
+                            public ProgressAwareEntry {
 private:
   std::unique_ptr<FileAllocationIterator> fileAllocationIterator_;
+
 public:
-  FileAllocationEntry(RequestGroup* requestGroup,
-                      std::unique_ptr<Command> nextCommand =
-                      std::unique_ptr<Command>());
+  FileAllocationEntry(
+      RequestGroup* requestGroup,
+      std::unique_ptr<Command> nextCommand = std::unique_ptr<Command>());
 
   ~FileAllocationEntry();
 
@@ -66,9 +68,9 @@ public:
 
   void allocateChunk();
 
-  virtual void prepareForNextAction
-  (std::vector<std::unique_ptr<Command>>& commands,
-   DownloadEngine* e) = 0;
+  virtual void
+  prepareForNextAction(std::vector<std::unique_ptr<Command>>& commands,
+                       DownloadEngine* e) = 0;
 };
 
 } // namespace aria2

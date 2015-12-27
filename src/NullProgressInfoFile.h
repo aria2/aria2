@@ -40,14 +40,11 @@
 
 namespace aria2 {
 
-class NullProgressInfoFile:public BtProgressInfoFile {
+class NullProgressInfoFile : public BtProgressInfoFile {
 public:
   virtual ~NullProgressInfoFile() {}
 
-  virtual std::string getFilename() CXX11_OVERRIDE
-  {
-    return A2STR::NIL;
-  }
+  virtual std::string getFilename() CXX11_OVERRIDE { return A2STR::NIL; }
 
   virtual bool exists() CXX11_OVERRIDE { return false; }
 

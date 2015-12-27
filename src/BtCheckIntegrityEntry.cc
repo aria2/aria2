@@ -46,55 +46,52 @@
 
 namespace aria2 {
 
-BtCheckIntegrityEntry::BtCheckIntegrityEntry(RequestGroup* requestGroup):
-  PieceHashCheckIntegrityEntry(requestGroup, nullptr) {}
+BtCheckIntegrityEntry::BtCheckIntegrityEntry(RequestGroup* requestGroup)
+    : PieceHashCheckIntegrityEntry(requestGroup, nullptr)
+{
+}
 
 BtCheckIntegrityEntry::~BtCheckIntegrityEntry() {}
 
-void BtCheckIntegrityEntry::onDownloadIncomplete
-(std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
+void BtCheckIntegrityEntry::onDownloadIncomplete(
+    std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
 {
   auto& ps = getRequestGroup()->getPieceStorage();
   ps->onDownloadIncomplete();
-  if(getRequestGroup()->getOption()->getAsBool(PREF_HASH_CHECK_ONLY)) {
+  if (getRequestGroup()->getOption()->getAsBool(PREF_HASH_CHECK_ONLY)) {
     return;
   }
   const auto& diskAdaptor = ps->getDiskAdaptor();
-  if(diskAdaptor->isReadOnlyEnabled()) {
+  if (diskAdaptor->isReadOnlyEnabled()) {
     // Now reopen DiskAdaptor with read only disabled.
     diskAdaptor->closeFile();
     diskAdaptor->disableReadOnly();
     diskAdaptor->openFile();
   }
-  proceedFileAllocation(commands,
-                        make_unique<BtFileAllocationEntry>
-                        (getRequestGroup()),
-                        e);
+  proceedFileAllocation(
+      commands, make_unique<BtFileAllocationEntry>(getRequestGroup()), e);
 }
 
-void BtCheckIntegrityEntry::onDownloadFinished
-(std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
+void BtCheckIntegrityEntry::onDownloadFinished(
+    std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
 {
   auto group = getRequestGroup();
   const auto& option = group->getOption();
-  if(option->getAsBool(PREF_BT_ENABLE_HOOK_AFTER_HASH_CHECK)) {
+  if (option->getAsBool(PREF_BT_ENABLE_HOOK_AFTER_HASH_CHECK)) {
     util::executeHookByOptName(group, option.get(),
                                PREF_ON_BT_DOWNLOAD_COMPLETE);
-    SingletonHolder<Notifier>::instance()->notifyDownloadEvent
-      (EVENT_ON_BT_DOWNLOAD_COMPLETE, group);
+    SingletonHolder<Notifier>::instance()->notifyDownloadEvent(
+        EVENT_ON_BT_DOWNLOAD_COMPLETE, group);
   }
   // TODO Currently,when all the checksums
   // are valid, then aria2 goes to seeding mode. Sometimes it is better
   // to exit rather than doing seeding. So, it would be good to toggle this
   // behavior.
-  if(!option->getAsBool(PREF_HASH_CHECK_ONLY) &&
-     option->getAsBool(PREF_BT_HASH_CHECK_SEED)) {
-    proceedFileAllocation(commands,
-                          make_unique<BtFileAllocationEntry>
-                          (getRequestGroup()),
-                          e);
+  if (!option->getAsBool(PREF_HASH_CHECK_ONLY) &&
+      option->getAsBool(PREF_BT_HASH_CHECK_SEED)) {
+    proceedFileAllocation(
+        commands, make_unique<BtFileAllocationEntry>(getRequestGroup()), e);
   }
 }
-
 
 } // namespace aria2

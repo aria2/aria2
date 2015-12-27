@@ -47,16 +47,12 @@ class RealtimeCommand : public Command {
 private:
   RequestGroup* requestGroup_;
   DownloadEngine* e_;
-protected:
-  DownloadEngine* getDownloadEngine() const
-  {
-    return e_;
-  }
 
-  RequestGroup* getRequestGroup() const
-  {
-    return requestGroup_;
-  }
+protected:
+  DownloadEngine* getDownloadEngine() const { return e_; }
+
+  RequestGroup* getRequestGroup() const { return requestGroup_; }
+
 public:
   RealtimeCommand(cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e);
 

@@ -10,7 +10,7 @@
 
 namespace aria2 {
 
-class DHTBucketTreeTest:public CppUnit::TestFixture {
+class DHTBucketTreeTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTBucketTreeTest);
   CPPUNIT_TEST(testDig);
@@ -18,13 +18,13 @@ class DHTBucketTreeTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testFindClosestKNodes);
   CPPUNIT_TEST(testEnumerateBucket);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void testDig();
   void testFindBucketFor();
   void testFindClosestKNodes();
   void testEnumerateBucket();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DHTBucketTreeTest);
 
@@ -132,7 +132,7 @@ void DHTBucketTreeTest::testFindClosestKNodes()
     auto bp3 = make_unique<DHTBucketTreeNode>(std::move(bp2), std::move(b1));
     DHTBucketTreeNode bp4(std::move(b2), std::move(bp3));
 
-    for(size_t i = 0; i < 2; ++i) {
+    for (size_t i = 0; i < 2; ++i) {
       bucket1->getRandomNodeID(id);
       bucket1->addNode(std::make_shared<DHTNode>(id));
       bucket2->getRandomNodeID(id);
@@ -175,7 +175,7 @@ void DHTBucketTreeTest::testFindClosestKNodes()
       CPPUNIT_ASSERT(bucket4->isInRange(nodes[7]));
     }
     {
-      for(size_t i = 0; i < 6; ++i) {
+      for (size_t i = 0; i < 6; ++i) {
         bucket4->getRandomNodeID(id);
         bucket4->addNode(std::make_shared<DHTNode>(id));
       }
@@ -184,13 +184,12 @@ void DHTBucketTreeTest::testFindClosestKNodes()
       std::vector<std::shared_ptr<DHTNode>> nodes;
       dht::findClosestKNodes(nodes, &bp4, targetID);
       CPPUNIT_ASSERT_EQUAL((size_t)8, nodes.size());
-      for(size_t i = 0; i < DHTBucket::K; ++i) {
+      for (size_t i = 0; i < DHTBucket::K; ++i) {
         CPPUNIT_ASSERT(bucket4->isInRange(nodes[i]));
       }
     }
   }
 }
-
 
 void DHTBucketTreeTest::testEnumerateBucket()
 {

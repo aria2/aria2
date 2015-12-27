@@ -50,29 +50,30 @@
 namespace aria2 {
 
 UTMetadataRequestFactory::UTMetadataRequestFactory()
-  : dctx_{nullptr},
-    dispatcher_{nullptr},
-    messageFactory_{nullptr},
-    tracker_{nullptr},
-    cuid_{0}
-{}
+    : dctx_{nullptr},
+      dispatcher_{nullptr},
+      messageFactory_{nullptr},
+      tracker_{nullptr},
+      cuid_{0}
+{
+}
 
-std::vector<std::unique_ptr<BtMessage>> UTMetadataRequestFactory::create
-(size_t num, PieceStorage* pieceStorage)
+std::vector<std::unique_ptr<BtMessage>>
+UTMetadataRequestFactory::create(size_t num, PieceStorage* pieceStorage)
 {
   auto msgs = std::vector<std::unique_ptr<BtMessage>>{};
-  while(num) {
+  while (num) {
     auto metadataRequests = tracker_->getAllTrackedIndex();
     auto p = pieceStorage->getMissingPiece(peer_, metadataRequests, cuid_);
-    if(!p) {
+    if (!p) {
       A2_LOG_DEBUG("No ut_metadata piece is available to download.");
       break;
     }
     --num;
     A2_LOG_DEBUG(fmt("Creating ut_metadata request index=%lu",
                      static_cast<unsigned long>(p->getIndex())));
-    auto m = make_unique<UTMetadataRequestExtensionMessage>
-      (peer_->getExtensionMessageID(ExtensionMessageRegistry::UT_METADATA));
+    auto m = make_unique<UTMetadataRequestExtensionMessage>(
+        peer_->getExtensionMessageID(ExtensionMessageRegistry::UT_METADATA));
     m->setIndex(p->getIndex());
     m->setDownloadContext(dctx_);
     m->setBtMessageDispatcher(dispatcher_);

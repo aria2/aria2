@@ -42,20 +42,21 @@
 
 namespace aria2 {
 
-DHTBucketRefreshCommand::DHTBucketRefreshCommand
-(cuid_t cuid, DownloadEngine* e, std::chrono::seconds interval)
-  : TimeBasedCommand{cuid, e, std::move(interval)},
-    routingTable_{nullptr},
-    taskQueue_{nullptr},
-    taskFactory_{nullptr}
-{}
+DHTBucketRefreshCommand::DHTBucketRefreshCommand(cuid_t cuid, DownloadEngine* e,
+                                                 std::chrono::seconds interval)
+    : TimeBasedCommand{cuid, e, std::move(interval)},
+      routingTable_{nullptr},
+      taskQueue_{nullptr},
+      taskFactory_{nullptr}
+{
+}
 
 DHTBucketRefreshCommand::~DHTBucketRefreshCommand() {}
 
 void DHTBucketRefreshCommand::preProcess()
 {
-  if(getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
-     getDownloadEngine()->isHaltRequested()) {
+  if (getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
+      getDownloadEngine()->isHaltRequested()) {
     enableExit();
   }
 }

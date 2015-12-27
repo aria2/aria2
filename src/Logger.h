@@ -48,12 +48,13 @@ class OutputFile;
 class Logger {
 public:
   enum LEVEL {
-    A2_DEBUG  = 1 << 0,
-    A2_INFO   = 1 << 1,
+    A2_DEBUG = 1 << 0,
+    A2_INFO = 1 << 1,
     A2_NOTICE = 1 << 2,
-    A2_WARN   = 1 << 3,
-    A2_ERROR  = 1 << 4,
+    A2_WARN = 1 << 3,
+    A2_ERROR = 1 << 4,
   };
+
 private:
   // Minimum log level for file log output.
   LEVEL logLevel_;
@@ -67,12 +68,8 @@ private:
   Logger(const Logger&);
   Logger& operator=(const Logger&);
 
-  void writeLog
-  (Logger::LEVEL level,
-   const char* sourceFile,
-   int lineNum,
-   const char* msg,
-   const char* trace);
+  void writeLog(Logger::LEVEL level, const char* sourceFile, int lineNum,
+                const char* msg, const char* trace);
 
   // Returns true if message with log level |level| will be outputted
   // to file.
@@ -80,50 +77,30 @@ private:
   // Returns true if message with log level |level| will be outputted
   // to console.
   bool consoleLogEnabled(LEVEL level);
+
 public:
   Logger();
 
   ~Logger();
 
-  void log
-  (LEVEL level,
-   const char* sourceFile,
-   int lineNum,
-   const char* msg);
+  void log(LEVEL level, const char* sourceFile, int lineNum, const char* msg);
 
-  void log
-  (LEVEL level,
-   const char* sourceFile,
-   int lineNum,
-   const std::string& msg);
+  void log(LEVEL level, const char* sourceFile, int lineNum,
+           const std::string& msg);
 
-  void log
-  (LEVEL level,
-   const char* sourceFile,
-   int lineNum,
-   const char* msg,
-   const Exception& ex);
+  void log(LEVEL level, const char* sourceFile, int lineNum, const char* msg,
+           const Exception& ex);
 
-  void log
-  (LEVEL level,
-   const char* sourceFile,
-   int lineNum,
-   const std::string& msg,
-   const Exception& ex);
+  void log(LEVEL level, const char* sourceFile, int lineNum,
+           const std::string& msg, const Exception& ex);
 
   void openFile(const std::string& filename);
 
   void closeFile();
 
-  void setLogLevel(LEVEL level)
-  {
-    logLevel_ = level;
-  }
+  void setLogLevel(LEVEL level) { logLevel_ = level; }
 
-  void setConsoleLogLevel(LEVEL level)
-  {
-    consoleLogLevel_ = level;
-  }
+  void setConsoleLogLevel(LEVEL level) { consoleLogLevel_ = level; }
 
   void setConsoleOutput(bool enabled);
 

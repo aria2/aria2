@@ -4,7 +4,7 @@
 
 namespace aria2 {
 
-class UTMetadataRequestTrackerTest:public CppUnit::TestFixture {
+class UTMetadataRequestTrackerTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(UTMetadataRequestTrackerTest);
   CPPUNIT_TEST(testAdd);
@@ -13,6 +13,7 @@ class UTMetadataRequestTrackerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCount);
   CPPUNIT_TEST(testAvail);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void testAdd();
   void testRemove();
@@ -20,7 +21,6 @@ public:
   void testCount();
   void testAvail();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(UTMetadataRequestTrackerTest);
 

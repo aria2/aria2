@@ -47,16 +47,14 @@ private:
   std::string hashType_;
   std::vector<std::string> pieceHashes_;
   int32_t pieceLength_;
+
 public:
   ChunkChecksum();
 
-  ChunkChecksum
-  (std::string hashType,
-   std::vector<std::string> pieceHashes,
-   int32_t pieceLength);
+  ChunkChecksum(std::string hashType, std::vector<std::string> pieceHashes,
+                int32_t pieceLength);
 
-  bool validateChunk(const std::string& actualDigest,
-                     size_t index) const;
+  bool validateChunk(const std::string& actualDigest, size_t index) const;
 
   int64_t getEstimatedDataLength() const;
 
@@ -71,20 +69,11 @@ public:
   }
 
   void setHashType(std::string hashType);
-  const std::string& getHashType() const
-  {
-    return hashType_;
-  }
+  const std::string& getHashType() const { return hashType_; }
 
-  int32_t getPieceLength() const
-  {
-    return pieceLength_;
-  }
+  int32_t getPieceLength() const { return pieceLength_; }
 
-  void setPieceLength(int32_t length)
-  {
-    pieceLength_ = length;
-  }
+  void setPieceLength(int32_t length) { pieceLength_ = length; }
 };
 
 } // namespace aria2

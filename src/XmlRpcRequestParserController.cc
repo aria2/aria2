@@ -54,7 +54,7 @@ void XmlRpcRequestParserController::popStructFrame()
   Dict* dict = downcast<Dict>(parentFrame.value_);
   assert(dict);
   frameStack_.pop();
-  if(currentFrame_.validMember()) {
+  if (currentFrame_.validMember()) {
     dict->put(std::move(currentFrame_.name_), std::move(currentFrame_.value_));
   }
   currentFrame_ = std::move(parentFrame);
@@ -68,20 +68,19 @@ void XmlRpcRequestParserController::popArrayFrame()
   List* list = downcast<List>(parentFrame.value_);
   assert(list);
   frameStack_.pop();
-  if(currentFrame_.value_) {
+  if (currentFrame_.value_) {
     list->append(std::move(currentFrame_.value_));
   }
   currentFrame_ = std::move(parentFrame);
 }
 
-void XmlRpcRequestParserController::setCurrentFrameValue
-(std::unique_ptr<ValueBase> value)
+void XmlRpcRequestParserController::setCurrentFrameValue(
+    std::unique_ptr<ValueBase> value)
 {
   currentFrame_.value_ = std::move(value);
 }
 
-void XmlRpcRequestParserController::setCurrentFrameName
-(std::string name)
+void XmlRpcRequestParserController::setCurrentFrameName(std::string name)
 {
   currentFrame_.name_ = std::move(name);
 }
@@ -92,15 +91,14 @@ XmlRpcRequestParserController::getCurrentFrameValue() const
   return currentFrame_.value_;
 }
 
-std::unique_ptr<ValueBase>
-XmlRpcRequestParserController::popCurrentFrameValue()
+std::unique_ptr<ValueBase> XmlRpcRequestParserController::popCurrentFrameValue()
 {
   return std::move(currentFrame_.value_);
 }
 
 void XmlRpcRequestParserController::reset()
 {
-  while(!frameStack_.empty()) {
+  while (!frameStack_.empty()) {
     frameStack_.pop();
   }
   currentFrame_.reset();

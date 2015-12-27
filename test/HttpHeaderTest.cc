@@ -7,7 +7,7 @@
 
 namespace aria2 {
 
-class HttpHeaderTest:public CppUnit::TestFixture {
+class HttpHeaderTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(HttpHeaderTest);
   CPPUNIT_TEST(testGetRange);
@@ -25,14 +25,15 @@ public:
   void testRemove();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( HttpHeaderTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(HttpHeaderTest);
 
 void HttpHeaderTest::testGetRange()
 {
   {
     HttpHeader httpHeader;
-    httpHeader.put(HttpHeader::CONTENT_RANGE,
-                   "9223372036854775800-9223372036854775801/9223372036854775807");
+    httpHeader.put(
+        HttpHeader::CONTENT_RANGE,
+        "9223372036854775800-9223372036854775801/9223372036854775807");
 
     Range range = httpHeader.getRange();
 
@@ -42,8 +43,9 @@ void HttpHeaderTest::testGetRange()
   }
   {
     HttpHeader httpHeader;
-    httpHeader.put(HttpHeader::CONTENT_RANGE,
-                   "9223372036854775800-9223372036854775801/9223372036854775807");
+    httpHeader.put(
+        HttpHeader::CONTENT_RANGE,
+        "9223372036854775800-9223372036854775801/9223372036854775807");
 
     Range range = httpHeader.getRange();
 
@@ -118,7 +120,8 @@ void HttpHeaderTest::testGetRange()
     try {
       httpHeader.getRange();
       CPPUNIT_FAIL("Exception must be thrown");
-    } catch(const DlAbortEx& e) {
+    }
+    catch (const DlAbortEx& e) {
       // success
     }
   }
@@ -128,7 +131,8 @@ void HttpHeaderTest::testGetRange()
     try {
       httpHeader.getRange();
       CPPUNIT_FAIL("Exception must be thrown");
-    } catch(const DlAbortEx& e) {
+    }
+    catch (const DlAbortEx& e) {
       // success
     }
   }

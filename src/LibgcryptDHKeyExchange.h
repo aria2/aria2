@@ -52,14 +52,14 @@ private:
   gcry_mpi_t privateKey_;
 
   gcry_mpi_t publicKey_;
+
 public:
   DHKeyExchange();
 
   ~DHKeyExchange();
 
   void init(const unsigned char* prime, size_t primeBits,
-            const unsigned char* generator,
-            size_t privateKeyBits);
+            const unsigned char* generator, size_t privateKeyBits);
 
   void generatePublicKey();
 

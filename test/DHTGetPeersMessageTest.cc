@@ -15,12 +15,13 @@
 
 namespace aria2 {
 
-class DHTGetPeersMessageTest:public CppUnit::TestFixture {
+class DHTGetPeersMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTGetPeersMessageTest);
   CPPUNIT_TEST(testGetBencodedMessage);
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   std::shared_ptr<DHTNode> localNode_;
   std::shared_ptr<DHTNode> remoteNode_;
@@ -36,26 +37,22 @@ public:
   void testGetBencodedMessage();
   void testDoReceivedAction();
 
-  class MockDHTMessageFactory2:public MockDHTMessageFactory {
+  class MockDHTMessageFactory2 : public MockDHTMessageFactory {
   public:
-    virtual std::unique_ptr<DHTGetPeersReplyMessage>
-    createGetPeersReplyMessage
-    (const std::shared_ptr<DHTNode>& remoteNode,
-     std::vector<std::shared_ptr<DHTNode>> closestKNodes,
-     std::vector<std::shared_ptr<Peer>> peers,
-     const std::string& token,
-     const std::string& transactionID) CXX11_OVERRIDE
+    virtual std::unique_ptr<DHTGetPeersReplyMessage> createGetPeersReplyMessage(
+        const std::shared_ptr<DHTNode>& remoteNode,
+        std::vector<std::shared_ptr<DHTNode>> closestKNodes,
+        std::vector<std::shared_ptr<Peer>> peers, const std::string& token,
+        const std::string& transactionID) CXX11_OVERRIDE
     {
-      auto m = make_unique<DHTGetPeersReplyMessage>(AF_INET, localNode_,
-                                                    remoteNode, token,
-                                                    transactionID);
+      auto m = make_unique<DHTGetPeersReplyMessage>(
+          AF_INET, localNode_, remoteNode, token, transactionID);
       m->setClosestKNodes(closestKNodes);
       m->setValues(peers);
       return m;
     }
   };
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DHTGetPeersMessageTest);
 
@@ -121,15 +118,15 @@ void DHTGetPeersMessageTest::testDoReceivedAction()
     msg.doReceivedAction();
 
     CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher.messageQueue_.size());
-    auto m = dynamic_cast<DHTGetPeersReplyMessage*>
-      (dispatcher.messageQueue_[0].message_.get());
+    auto m = dynamic_cast<DHTGetPeersReplyMessage*>(
+        dispatcher.messageQueue_[0].message_.get());
     CPPUNIT_ASSERT(*localNode_ == *m->getLocalNode());
     CPPUNIT_ASSERT(*remoteNode_ == *m->getRemoteNode());
     CPPUNIT_ASSERT_EQUAL(std::string("get_peers"), m->getMessageType());
     CPPUNIT_ASSERT_EQUAL(msg.getTransactionID(), m->getTransactionID());
-    CPPUNIT_ASSERT_EQUAL(tokenTracker.generateToken
-                         (infoHash, remoteNode_->getIPAddress(),
-                          remoteNode_->getPort()),
+    CPPUNIT_ASSERT_EQUAL(tokenTracker.generateToken(infoHash,
+                                                    remoteNode_->getIPAddress(),
+                                                    remoteNode_->getPort()),
                          m->getToken());
     CPPUNIT_ASSERT_EQUAL((size_t)0, m->getClosestKNodes().size());
     CPPUNIT_ASSERT_EQUAL((size_t)2, m->getValues().size());
@@ -158,15 +155,15 @@ void DHTGetPeersMessageTest::testDoReceivedAction()
     msg.doReceivedAction();
 
     CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher.messageQueue_.size());
-    auto m = dynamic_cast<DHTGetPeersReplyMessage*>
-      (dispatcher.messageQueue_[0].message_.get());
+    auto m = dynamic_cast<DHTGetPeersReplyMessage*>(
+        dispatcher.messageQueue_[0].message_.get());
     CPPUNIT_ASSERT(*localNode_ == *m->getLocalNode());
     CPPUNIT_ASSERT(*remoteNode_ == *m->getRemoteNode());
     CPPUNIT_ASSERT_EQUAL(std::string("get_peers"), m->getMessageType());
     CPPUNIT_ASSERT_EQUAL(msg.getTransactionID(), m->getTransactionID());
-    CPPUNIT_ASSERT_EQUAL(tokenTracker.generateToken
-                         (infoHash, remoteNode_->getIPAddress(),
-                          remoteNode_->getPort()),
+    CPPUNIT_ASSERT_EQUAL(tokenTracker.generateToken(infoHash,
+                                                    remoteNode_->getIPAddress(),
+                                                    remoteNode_->getPort()),
                          m->getToken());
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getClosestKNodes().size());
     CPPUNIT_ASSERT(*returnNode1 == *m->getClosestKNodes()[0]);

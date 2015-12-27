@@ -40,18 +40,16 @@ namespace aria2 {
 
 EvictSocketPoolCommand::EvictSocketPoolCommand(cuid_t cuid, DownloadEngine* e,
                                                std::chrono::seconds interval)
-  : TimeBasedCommand(cuid, e, std::move(interval), true)
+    : TimeBasedCommand(cuid, e, std::move(interval), true)
 {
 }
 
-EvictSocketPoolCommand::~EvictSocketPoolCommand()
-{
-}
+EvictSocketPoolCommand::~EvictSocketPoolCommand() {}
 
 void EvictSocketPoolCommand::preProcess()
 {
-  if(getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
-     getDownloadEngine()->isHaltRequested()) {
+  if (getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
+      getDownloadEngine()->isHaltRequested()) {
     enableExit();
   }
 }

@@ -41,7 +41,6 @@
 #include <pthread.h>
 #endif
 
-
 namespace aria2 {
 
 class Lock {
@@ -53,7 +52,8 @@ private:
 #endif
 
 public:
-  Lock() {
+  Lock()
+  {
 #if defined(_WIN32)
     ::InitializeCriticalSection(&section_);
 #elif defined(ENABLE_PTHREAD)
@@ -61,7 +61,8 @@ public:
 #endif
   }
 
-  ~Lock() {
+  ~Lock()
+  {
 #if defined(_WIN32)
     ::DeleteCriticalSection(&section_);
 #elif defined(ENABLE_PTHREAD)
@@ -69,7 +70,8 @@ public:
 #endif
   }
 
-  inline void aquire() {
+  inline void aquire()
+  {
 #if defined(_WIN32)
     ::EnterCriticalSection(&section_);
 #elif defined(ENABLE_PTHREAD)
@@ -77,7 +79,8 @@ public:
 #endif
   }
 
-  inline bool tryAquire() {
+  inline bool tryAquire()
+  {
 #if defined(_WIN32)
     return ::TryEnterCriticalSection(&section_) == TRUE;
 #elif defined(ENABLE_PTHREAD)
@@ -87,26 +90,23 @@ public:
 #endif
   }
 
-  inline void release() {
+  inline void release()
+  {
 #if defined(_WIN32)
     ::LeaveCriticalSection(&section_);
 #elif defined(ENABLE_PTHREAD)
     ::pthread_mutex_unlock(&mutex_);
 #endif
   }
-
 };
 
 class LockGuard {
 private:
   Lock& lock_;
+
 public:
-  inline LockGuard(Lock& lock) : lock_(lock) {
-    lock_.aquire();
-  }
-  inline ~LockGuard() {
-    lock_.release();
-  }
+  inline LockGuard(Lock& lock) : lock_(lock) { lock_.aquire(); }
+  inline ~LockGuard() { lock_.release(); }
 };
 
 } // namespace aria2

@@ -61,8 +61,8 @@
 #include "download_handlers.h"
 #include "RequestGroupCriteria.h"
 #ifdef ENABLE_BITTORRENT
-# include "BtDependency.h"
-# include "download_helper.h"
+#include "BtDependency.h"
+#include "download_helper.h"
 #endif // ENABLE_BITTORRENT
 #include "Checksum.h"
 #include "ChunkChecksum.h"
@@ -75,12 +75,13 @@ namespace {
 class AccumulateNonP2PUri {
 private:
   std::vector<std::string>& urisPtr;
-public:
-  AccumulateNonP2PUri(std::vector<std::string>& urisPtr)
-    :urisPtr(urisPtr) {}
 
-  void operator()(const std::unique_ptr<MetalinkResource>& resource) {
-    switch(resource->type) {
+public:
+  AccumulateNonP2PUri(std::vector<std::string>& urisPtr) : urisPtr(urisPtr) {}
+
+  void operator()(const std::unique_ptr<MetalinkResource>& resource)
+  {
+    switch (resource->type) {
     case MetalinkResource::TYPE_HTTP:
     case MetalinkResource::TYPE_HTTPS:
     case MetalinkResource::TYPE_FTP:
@@ -98,102 +99,96 @@ class FindBitTorrentUri {
 public:
   FindBitTorrentUri() {}
 
-  bool operator()(const std::shared_ptr<MetalinkResource>& resource) {
-    if(resource->type == MetalinkResource::TYPE_BITTORRENT) {
+  bool operator()(const std::shared_ptr<MetalinkResource>& resource)
+  {
+    if (resource->type == MetalinkResource::TYPE_BITTORRENT) {
       return true;
-    } else {
+    }
+    else {
       return false;
     }
   }
 };
 } // namespace
 
-void
-Metalink2RequestGroup::generate
-(std::vector<std::shared_ptr<RequestGroup>>& groups,
- const std::string& metalinkFile,
- const std::shared_ptr<Option>& option,
- const std::string& baseUri)
+void Metalink2RequestGroup::generate(
+    std::vector<std::shared_ptr<RequestGroup>>& groups,
+    const std::string& metalinkFile, const std::shared_ptr<Option>& option,
+    const std::string& baseUri)
 {
   std::vector<std::shared_ptr<RequestGroup>> tempgroups;
-  createRequestGroup(tempgroups,
-                     metalink::parseAndQuery(metalinkFile, option.get(),
-                                             baseUri),
-                     option);
+  createRequestGroup(
+      tempgroups, metalink::parseAndQuery(metalinkFile, option.get(), baseUri),
+      option);
   std::shared_ptr<MetadataInfo> mi;
-  if(metalinkFile == DEV_STDIN) {
+  if (metalinkFile == DEV_STDIN) {
     mi = std::make_shared<MetadataInfo>();
-  } else {
+  }
+  else {
     // TODO Downloads from local metalink file does not save neither
     // its gid nor MetadataInfo's gid.
     mi = std::make_shared<MetadataInfo>(GroupId::create(), metalinkFile);
   }
   setMetadataInfo(std::begin(tempgroups), std::end(tempgroups), mi);
-  groups.insert(std::end(groups),
-                std::begin(tempgroups), std::end(tempgroups));
+  groups.insert(std::end(groups), std::begin(tempgroups), std::end(tempgroups));
 }
 
-void
-Metalink2RequestGroup::generate
-(std::vector<std::shared_ptr<RequestGroup>>& groups,
- const std::shared_ptr<BinaryStream>& binaryStream,
- const std::shared_ptr<Option>& option,
- const std::string& baseUri)
+void Metalink2RequestGroup::generate(
+    std::vector<std::shared_ptr<RequestGroup>>& groups,
+    const std::shared_ptr<BinaryStream>& binaryStream,
+    const std::shared_ptr<Option>& option, const std::string& baseUri)
 {
   std::vector<std::shared_ptr<RequestGroup>> tempgroups;
-  createRequestGroup(tempgroups,
-                     metalink::parseAndQuery(binaryStream.get(), option.get(),
-                                             baseUri),
+  createRequestGroup(tempgroups, metalink::parseAndQuery(binaryStream.get(),
+                                                         option.get(), baseUri),
                      option);
   auto mi = std::make_shared<MetadataInfo>();
   setMetadataInfo(std::begin(tempgroups), std::end(tempgroups), mi);
-  groups.insert(std::end(groups),
-                std::begin(tempgroups), std::end(tempgroups));
+  groups.insert(std::end(groups), std::begin(tempgroups), std::end(tempgroups));
 }
 
-void
-Metalink2RequestGroup::createRequestGroup
-(std::vector<std::shared_ptr<RequestGroup>>& groups,
- std::vector<std::unique_ptr<MetalinkEntry>> entries,
- const std::shared_ptr<Option>& optionTemplate)
+void Metalink2RequestGroup::createRequestGroup(
+    std::vector<std::shared_ptr<RequestGroup>>& groups,
+    std::vector<std::unique_ptr<MetalinkEntry>> entries,
+    const std::shared_ptr<Option>& optionTemplate)
 {
-  if(entries.empty()) {
+  if (entries.empty()) {
     A2_LOG_NOTICE(EX_NO_RESULT_WITH_YOUR_PREFS);
     return;
   }
   std::vector<std::string> locations;
-  if(optionTemplate->defined(PREF_METALINK_LOCATION)) {
+  if (optionTemplate->defined(PREF_METALINK_LOCATION)) {
     auto& loc = optionTemplate->get(PREF_METALINK_LOCATION);
-    util::split(std::begin(loc), std::end(loc),
-                std::back_inserter(locations), ',', true);
-    for(auto& s : locations) {
+    util::split(std::begin(loc), std::end(loc), std::back_inserter(locations),
+                ',', true);
+    for (auto& s : locations) {
       util::lowercase(s);
     }
   }
   std::string preferredProtocol;
-  if(optionTemplate->get(PREF_METALINK_PREFERRED_PROTOCOL) != V_NONE) {
+  if (optionTemplate->get(PREF_METALINK_PREFERRED_PROTOCOL) != V_NONE) {
     preferredProtocol = optionTemplate->get(PREF_METALINK_PREFERRED_PROTOCOL);
   }
-  for(auto& entry : entries) {
+  for (auto& entry : entries) {
     entry->dropUnsupportedResource();
-    if(entry->resources.empty() && entry->metaurls.empty()) {
+    if (entry->resources.empty() && entry->metaurls.empty()) {
       continue;
     }
-    entry->setLocationPriority
-      (locations, -MetalinkResource::getLowestPriority());
-    if(!preferredProtocol.empty()) {
-      entry->setProtocolPriority
-        (preferredProtocol, -MetalinkResource::getLowestPriority());
+    entry->setLocationPriority(locations,
+                               -MetalinkResource::getLowestPriority());
+    if (!preferredProtocol.empty()) {
+      entry->setProtocolPriority(preferredProtocol,
+                                 -MetalinkResource::getLowestPriority());
     }
   }
   auto sgl = util::parseIntSegments(optionTemplate->get(PREF_SELECT_FILE));
   sgl.normalize();
-  if(sgl.hasNext()) {
+  if (sgl.hasNext()) {
     size_t inspoint = 0;
-    for(size_t i = 0, len = entries.size(); i < len && sgl.hasNext(); ++i) {
+    for (size_t i = 0, len = entries.size(); i < len && sgl.hasNext(); ++i) {
       size_t j = sgl.peek() - 1;
-      if(i == j) {
-        if(inspoint != i) {
+      if (i == j) {
+        if (inspoint != i) {
           entries[inspoint] = std::move(entries[i]);
         }
         ++inspoint;
@@ -205,25 +200,25 @@ Metalink2RequestGroup::createRequestGroup
   std::for_each(std::begin(entries), std::end(entries),
                 std::mem_fn(&MetalinkEntry::reorderMetaurlsByPriority));
   auto entryGroups = metalink::groupEntryByMetaurlName(entries);
-  for(auto& entryGroup : entryGroups) {
+  for (auto& entryGroup : entryGroups) {
     auto& metaurl = entryGroup.first;
     auto& mes = entryGroup.second;
     A2_LOG_INFO(fmt("Processing metaurl group metaurl=%s", metaurl.c_str()));
 #ifdef ENABLE_BITTORRENT
     std::shared_ptr<RequestGroup> torrentRg;
-    if(!metaurl.empty()) {
+    if (!metaurl.empty()) {
       std::vector<std::string> uris;
       uris.push_back(metaurl);
       {
         std::vector<std::shared_ptr<RequestGroup>> result;
         createRequestGroupForUri(result, optionTemplate, uris,
-                                 /* ignoreForceSequential = */true,
-                                 /* ignoreLocalPath = */true);
-        if(!result.empty()) {
+                                 /* ignoreForceSequential = */ true,
+                                 /* ignoreLocalPath = */ true);
+        if (!result.empty()) {
           torrentRg = result[0];
         }
       }
-      if(torrentRg) {
+      if (torrentRg) {
         torrentRg->setNumConcurrentCommand(1);
         torrentRg->clearPreDownloadHandler();
         torrentRg->clearPostDownloadHandler();
@@ -231,8 +226,8 @@ Metalink2RequestGroup::createRequestGroup
         // transparent metalink
         torrentRg->getDownloadContext()->setAcceptMetalink(false);
         // make it in-memory download
-        torrentRg->addPreDownloadHandler
-          (download_handlers::getMemoryPreDownloadHandler());
+        torrentRg->addPreDownloadHandler(
+            download_handlers::getMemoryPreDownloadHandler());
         groups.push_back(torrentRg);
       }
     }
@@ -242,13 +237,12 @@ Metalink2RequestGroup::createRequestGroup
     std::shared_ptr<DownloadContext> dctx;
     int numSplit = option->getAsInt(PREF_SPLIT);
     int maxConn = option->getAsInt(PREF_MAX_CONNECTION_PER_SERVER);
-    if(mes.size() == 1) {
+    if (mes.size() == 1) {
       auto entry = mes[0];
       A2_LOG_INFO(fmt(MSG_METALINK_QUEUEING, entry->getPath().c_str()));
       entry->reorderResourcesByPriority();
-      for(auto& mr : entry->resources) {
-        A2_LOG_DEBUG(fmt("priority=%d url=%s",
-                         mr->priority, mr->url.c_str()));
+      for (auto& mr : entry->resources) {
+        A2_LOG_DEBUG(fmt("priority=%d url=%s", mr->priority, mr->url.c_str()));
       }
       std::vector<std::string> uris;
       std::for_each(std::begin(entry->resources), std::end(entry->resources),
@@ -256,66 +250,64 @@ Metalink2RequestGroup::createRequestGroup
       // If piece hash is specified in the metalink,
       // make segment size equal to piece hash size.
       int32_t pieceLength;
-      if(!entry->chunkChecksum) {
+      if (!entry->chunkChecksum) {
         pieceLength = option->getAsInt(PREF_PIECE_LENGTH);
-      } else {
+      }
+      else {
         pieceLength = entry->chunkChecksum->getPieceLength();
       }
-      dctx = std::make_shared<DownloadContext>
-        (pieceLength,
-         entry->getLength(),
-         util::applyDir(option->get(PREF_DIR),
-                        entry->file->getPath()));
+      dctx = std::make_shared<DownloadContext>(
+          pieceLength, entry->getLength(),
+          util::applyDir(option->get(PREF_DIR), entry->file->getPath()));
       dctx->getFirstFileEntry()->setUris(uris);
       dctx->getFirstFileEntry()->setMaxConnectionPerServer(maxConn);
       dctx->getFirstFileEntry()->setSuffixPath(entry->file->getPath());
 
-      if(option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)) {
+      if (option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)) {
         dctx->getFirstFileEntry()->setUniqueProtocol(true);
       }
-      if(entry->checksum) {
+      if (entry->checksum) {
         dctx->setDigest(entry->checksum->getHashType(),
                         entry->checksum->getDigest());
       }
-      if(entry->chunkChecksum) {
-        dctx->setPieceHashes
-          (entry->chunkChecksum->getHashType(),
-           std::begin(entry->chunkChecksum->getPieceHashes()),
-           std::end(entry->chunkChecksum->getPieceHashes()));
+      if (entry->chunkChecksum) {
+        dctx->setPieceHashes(entry->chunkChecksum->getHashType(),
+                             std::begin(entry->chunkChecksum->getPieceHashes()),
+                             std::end(entry->chunkChecksum->getPieceHashes()));
       }
       dctx->setSignature(entry->popSignature());
-      rg->setNumConcurrentCommand
-        (entry->maxConnections < 0 ?
-         numSplit : std::min(numSplit, entry->maxConnections));
-    } else {
+      rg->setNumConcurrentCommand(
+          entry->maxConnections < 0
+              ? numSplit
+              : std::min(numSplit, entry->maxConnections));
+    }
+    else {
       dctx = std::make_shared<DownloadContext>();
       // piece length is overridden by the one in torrent file.
       dctx->setPieceLength(option->getAsInt(PREF_PIECE_LENGTH));
       std::vector<std::shared_ptr<FileEntry>> fileEntries;
       int64_t offset = 0;
-      for(auto entry : mes) {
+      for (auto entry : mes) {
         A2_LOG_INFO(fmt("Metalink: Queueing %s for download as a member.",
                         entry->getPath().c_str()));
-        A2_LOG_DEBUG(fmt("originalName = %s",
-                         entry->metaurls[0]->name.c_str()));
+        A2_LOG_DEBUG(
+            fmt("originalName = %s", entry->metaurls[0]->name.c_str()));
         entry->reorderResourcesByPriority();
         std::vector<std::string> uris;
-        std::for_each(std::begin(entry->resources),
-                      std::end(entry->resources),
+        std::for_each(std::begin(entry->resources), std::end(entry->resources),
                       AccumulateNonP2PUri(uris));
-        auto fe = std::make_shared<FileEntry>
-          (util::applyDir(option->get(PREF_DIR),
-                          entry->file->getPath()),
-           entry->file->getLength(), offset, uris);
+        auto fe = std::make_shared<FileEntry>(
+            util::applyDir(option->get(PREF_DIR), entry->file->getPath()),
+            entry->file->getLength(), offset, uris);
         fe->setMaxConnectionPerServer(maxConn);
-        if(option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)) {
+        if (option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)) {
           fe->setUniqueProtocol(true);
         }
         fe->setOriginalName(entry->metaurls[0]->name);
         fe->setSuffixPath(entry->file->getPath());
         fileEntries.push_back(fe);
-        if(offset >
-           std::numeric_limits<int64_t>::max() - entry->file->getLength()) {
+        if (offset >
+            std::numeric_limits<int64_t>::max() - entry->file->getLength()) {
           throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, offset));
         }
         offset += entry->file->getLength();
@@ -325,7 +317,7 @@ Metalink2RequestGroup::createRequestGroup
     }
     rg->setDownloadContext(dctx);
 
-    if(option->getAsBool(PREF_ENABLE_RPC)) {
+    if (option->getAsBool(PREF_ENABLE_RPC)) {
       rg->setPauseRequested(option->getAsBool(PREF_PAUSE));
     }
 
@@ -336,7 +328,7 @@ Metalink2RequestGroup::createRequestGroup
 #ifdef ENABLE_BITTORRENT
     // Inject dependency between rg and torrentRg here if
     // torrentRg is true
-    if(torrentRg) {
+    if (torrentRg) {
       auto dep = std::make_shared<BtDependency>(rg.get(), torrentRg);
       rg->dependsOn(dep);
       torrentRg->belongsTo(rg->getGID());
@@ -344,18 +336,18 @@ Metalink2RequestGroup::createRequestGroup
       // available, give up metadata download in at most 30 seconds.
       const time_t btStopTimeout = 30;
       time_t currentBtStopTimeout =
-        torrentRg->getOption()->getAsInt(PREF_BT_STOP_TIMEOUT);
-      if(currentBtStopTimeout == 0 || currentBtStopTimeout > btStopTimeout) {
+          torrentRg->getOption()->getAsInt(PREF_BT_STOP_TIMEOUT);
+      if (currentBtStopTimeout == 0 || currentBtStopTimeout > btStopTimeout) {
         bool allHaveUri = true;
-        for(auto& fe : dctx->getFileEntries()) {
-          if(fe->getRemainingUris().empty()) {
+        for (auto& fe : dctx->getFileEntries()) {
+          if (fe->getRemainingUris().empty()) {
             allHaveUri = false;
             break;
           }
         }
-        if(allHaveUri) {
-          torrentRg->getOption()->put
-            (PREF_BT_STOP_TIMEOUT, util::itos(btStopTimeout));
+        if (allHaveUri) {
+          torrentRg->getOption()->put(PREF_BT_STOP_TIMEOUT,
+                                      util::itos(btStopTimeout));
         }
       }
     }

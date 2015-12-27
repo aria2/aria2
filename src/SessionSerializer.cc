@@ -61,13 +61,13 @@
 
 namespace aria2 {
 
-SessionSerializer::SessionSerializer
-(RequestGroupMan* requestGroupMan)
-  : rgman_{requestGroupMan},
-    saveError_{true},
-    saveInProgress_{true},
-    saveWaiting_{true}
-{}
+SessionSerializer::SessionSerializer(RequestGroupMan* requestGroupMan)
+    : rgman_{requestGroupMan},
+      saveError_{true},
+      saveInProgress_{true},
+      saveWaiting_{true}
+{
+}
 
 bool SessionSerializer::save(const std::string& filename) const
 {
@@ -84,10 +84,10 @@ bool SessionSerializer::save(const std::string& filename) const
     {
       fp = make_unique<BufferedFile>(tempFilename.c_str(), IOFile::WRITE);
     }
-    if(!*fp) {
+    if (!*fp) {
       return false;
     }
-    if(!save(*fp) || fp->close() == EOF) {
+    if (!save(*fp) || fp->close() == EOF) {
       return false;
     }
   }
@@ -97,15 +97,13 @@ bool SessionSerializer::save(const std::string& filename) const
 namespace {
 // Write 1 line of option name/value pair. This function returns true
 // if it succeeds, or false.
-bool writeOptionLine(IOFile& fp, PrefPtr pref,
-                     const std::string& val)
+bool writeOptionLine(IOFile& fp, PrefPtr pref, const std::string& val)
 {
   size_t prefLen = strlen(pref->k);
-  return fp.write(" ", 1) == 1 &&
-    fp.write(pref->k, prefLen) == prefLen &&
-    fp.write("=", 1) == 1 &&
-    fp.write(val.c_str(), val.size()) == val.size() &&
-    fp.write("\n", 1) == 1;
+  return fp.write(" ", 1) == 1 && fp.write(pref->k, prefLen) == prefLen &&
+         fp.write("=", 1) == 1 &&
+         fp.write(val.c_str(), val.size()) == val.size() &&
+         fp.write("\n", 1) == 1;
 }
 } // namespace
 
@@ -113,23 +111,25 @@ namespace {
 bool writeOption(IOFile& fp, const std::shared_ptr<Option>& op)
 {
   const std::shared_ptr<OptionParser>& oparser = OptionParser::getInstance();
-  for(size_t i = 1, len = option::countOption(); i < len; ++i) {
+  for (size_t i = 1, len = option::countOption(); i < len; ++i) {
     PrefPtr pref = option::i2p(i);
     const OptionHandler* h = oparser->find(pref);
-    if(h && h->getInitialOption() && op->definedLocal(pref)) {
-      if(h->getCumulative()) {
+    if (h && h->getInitialOption() && op->definedLocal(pref)) {
+      if (h->getCumulative()) {
         const std::string& val = op->get(pref);
         std::vector<std::string> v;
-        util::split(val.begin(), val.end(), std::back_inserter(v), '\n',
-                    false, false);
-        for(std::vector<std::string>::const_iterator j = v.begin(),
-              eoj = v.end(); j != eoj; ++j) {
-          if(!writeOptionLine(fp, pref, *j)) {
+        util::split(val.begin(), val.end(), std::back_inserter(v), '\n', false,
+                    false);
+        for (std::vector<std::string>::const_iterator j = v.begin(),
+                                                      eoj = v.end();
+             j != eoj; ++j) {
+          if (!writeOptionLine(fp, pref, *j)) {
             return false;
           }
         }
-      } else {
-        if(!writeOptionLine(fp, pref, op->get(pref))) {
+      }
+      else {
+        if (!writeOptionLine(fp, pref, op->get(pref))) {
           return false;
         }
       }
@@ -140,41 +140,37 @@ bool writeOption(IOFile& fp, const std::shared_ptr<Option>& op)
 } // namespace
 
 namespace {
-  template<typename T>
-  class Unique {
-    typedef T type;
-    struct PointerCmp {
-      inline bool operator()(const type* x, const type* y) {
-        return *x < *y;
-      }
-    };
-    std::set<const type*, PointerCmp> known;
-  public:
-    inline bool operator()(const type& v) {
-      return known.insert(&v).second;
-    }
+template <typename T> class Unique {
+  typedef T type;
+  struct PointerCmp {
+    inline bool operator()(const type* x, const type* y) { return *x < *y; }
   };
+  std::set<const type*, PointerCmp> known;
 
-  bool writeUri(IOFile& fp, const std::string& uri)
-  {
-    return fp.write(uri.c_str(), uri.size()) == uri.size() &&
-      fp.write("\t", 1) == 1;
-  }
+public:
+  inline bool operator()(const type& v) { return known.insert(&v).second; }
+};
 
-  template<typename InputIterator, class UnaryPredicate>
-  bool writeUri(IOFile& fp, InputIterator first, InputIterator last,
-                UnaryPredicate& filter)
-  {
-    for(; first != last; ++first) {
-      if (!filter(*first)) {
-        continue;
-      }
-      if(!writeUri(fp, *first)) {
-        return false;
-      }
+bool writeUri(IOFile& fp, const std::string& uri)
+{
+  return fp.write(uri.c_str(), uri.size()) == uri.size() &&
+         fp.write("\t", 1) == 1;
+}
+
+template <typename InputIterator, class UnaryPredicate>
+bool writeUri(IOFile& fp, InputIterator first, InputIterator last,
+              UnaryPredicate& filter)
+{
+  for (; first != last; ++first) {
+    if (!filter(*first)) {
+      continue;
     }
-    return true;
+    if (!writeUri(fp, *first)) {
+      return false;
+    }
   }
+  return true;
+}
 } // namespace
 
 // The downloads whose followedBy() is empty is persisted with its
@@ -192,26 +188,26 @@ namespace {
 //  No GID is persisted. GID is saved but it is just a random GID.
 
 namespace {
-bool writeDownloadResult
-(IOFile& fp, std::set<a2_gid_t>& metainfoCache,
- const std::shared_ptr<DownloadResult>& dr)
+bool writeDownloadResult(IOFile& fp, std::set<a2_gid_t>& metainfoCache,
+                         const std::shared_ptr<DownloadResult>& dr)
 {
   const std::shared_ptr<MetadataInfo>& mi = dr->metadataInfo;
-  if(dr->belongsTo != 0 || (mi && mi->dataOnly())) {
+  if (dr->belongsTo != 0 || (mi && mi->dataOnly())) {
     return true;
   }
-  if(!mi) {
+  if (!mi) {
     // With --force-save option, same gid may be saved twice. (e.g.,
     // Downloading .meta4 followed by its content download. First
     // .meta4 download is saved and second content download is also
     // saved with the same gid.)
-    if(metainfoCache.count(dr->gid->getNumericId()) != 0) {
+    if (metainfoCache.count(dr->gid->getNumericId()) != 0) {
       return true;
-    } else {
+    }
+    else {
       metainfoCache.insert(dr->gid->getNumericId());
     }
     // only save first file entry
-    if(dr->fileEntries.empty()) {
+    if (dr->fileEntries.empty()) {
       return true;
     }
     const std::shared_ptr<FileEntry>& file = dr->fileEntries[0];
@@ -226,36 +222,38 @@ bool writeDownloadResult
     // also exists in remaining URIs.
     {
       Unique<std::string> unique;
-      if (hasRemaining && !writeUri(fp, file->getRemainingUris().begin(),
-                                    file->getRemainingUris().end(),
-                                    unique)) {
+      if (hasRemaining &&
+          !writeUri(fp, file->getRemainingUris().begin(),
+                    file->getRemainingUris().end(), unique)) {
         return false;
       }
-      if (hasSpent && !writeUri(fp, file->getSpentUris().begin(),
-                                file->getSpentUris().end(),
-                                unique)) {
+      if (hasSpent &&
+          !writeUri(fp, file->getSpentUris().begin(),
+                    file->getSpentUris().end(), unique)) {
         return false;
       }
     }
-    if(fp.write("\n", 1) != 1) {
+    if (fp.write("\n", 1) != 1) {
       return false;
     }
-    if(!writeOptionLine(fp, PREF_GID, dr->gid->toHex())) {
+    if (!writeOptionLine(fp, PREF_GID, dr->gid->toHex())) {
       return false;
     }
-  } else {
-    if(metainfoCache.count(mi->getGID()) != 0) {
+  }
+  else {
+    if (metainfoCache.count(mi->getGID()) != 0) {
       return true;
-    } else {
+    }
+    else {
       metainfoCache.insert(mi->getGID());
-      if (fp.write(mi->getUri().c_str(),
-                   mi->getUri().size()) != mi->getUri().size() ||
+      if (fp.write(mi->getUri().c_str(), mi->getUri().size()) !=
+              mi->getUri().size() ||
           fp.write("\n", 1) != 1) {
         return false;
       }
       // For downloads generated by metadata (e.g., BitTorrent,
       // Metalink), save gid of Metadata download.
-      if(!writeOptionLine(fp, PREF_GID, GroupId::toHex(mi->getGID()))) {
+      if (!writeOptionLine(fp, PREF_GID, GroupId::toHex(mi->getGID()))) {
         return false;
       }
     }
@@ -268,26 +266,29 @@ bool SessionSerializer::save(IOFile& fp) const
 {
   std::set<a2_gid_t> metainfoCache;
   const DownloadResultList& results = rgman_->getDownloadResults();
-  for(const auto& dr : results) {
-    if(dr->result == error_code::FINISHED ||
-       dr->result == error_code::REMOVED) {
-      if(dr->option->getAsBool(PREF_FORCE_SAVE)) {
-        if(!writeDownloadResult(fp, metainfoCache, dr)) {
+  for (const auto& dr : results) {
+    if (dr->result == error_code::FINISHED ||
+        dr->result == error_code::REMOVED) {
+      if (dr->option->getAsBool(PREF_FORCE_SAVE)) {
+        if (!writeDownloadResult(fp, metainfoCache, dr)) {
           return false;
         }
-      } else {
+      }
+      else {
         continue;
       }
-    } else if(dr->result == error_code::IN_PROGRESS) {
-      if(saveInProgress_) {
-        if(!writeDownloadResult(fp, metainfoCache, dr)) {
+    }
+    else if (dr->result == error_code::IN_PROGRESS) {
+      if (saveInProgress_) {
+        if (!writeDownloadResult(fp, metainfoCache, dr)) {
           return false;
         }
       }
-    } else {
+    }
+    else {
       // error download
-      if(saveError_) {
-        if(!writeDownloadResult(fp, metainfoCache, dr)) {
+      if (saveError_) {
+        if (!writeDownloadResult(fp, metainfoCache, dr)) {
           return false;
         }
       }
@@ -296,29 +297,29 @@ bool SessionSerializer::save(IOFile& fp) const
   {
     // Save active downloads.
     const RequestGroupList& groups = rgman_->getRequestGroups();
-    for(const auto& rg : groups) {
+    for (const auto& rg : groups) {
       std::shared_ptr<DownloadResult> dr = rg->createDownloadResult();
       bool stopped = dr->result == error_code::FINISHED ||
-        dr->result == error_code::REMOVED;
-      if((!stopped && saveInProgress_) ||
-         (stopped && dr->option->getAsBool(PREF_FORCE_SAVE))) {
-        if(!writeDownloadResult(fp, metainfoCache, dr)) {
+                     dr->result == error_code::REMOVED;
+      if ((!stopped && saveInProgress_) ||
+          (stopped && dr->option->getAsBool(PREF_FORCE_SAVE))) {
+        if (!writeDownloadResult(fp, metainfoCache, dr)) {
           return false;
         }
       }
     }
   }
-  if(saveWaiting_) {
+  if (saveWaiting_) {
     const RequestGroupList& groups = rgman_->getReservedGroups();
-    for(const auto& rg : groups) {
+    for (const auto& rg : groups) {
       std::shared_ptr<DownloadResult> result = rg->createDownloadResult();
-      if(!writeDownloadResult(fp, metainfoCache, result)) {
+      if (!writeDownloadResult(fp, metainfoCache, result)) {
         return false;
       }
       // PREF_PAUSE was removed from option, so save it here looking
       // property separately.
-      if(rg->isPauseRequested()) {
-        if(!writeOptionLine(fp, PREF_PAUSE, A2_V_TRUE)) {
+      if (rg->isPauseRequested()) {
+        if (!writeOptionLine(fp, PREF_PAUSE, A2_V_TRUE)) {
           return false;
         }
       }
@@ -333,7 +334,7 @@ std::string SessionSerializer::calculateHash() const
 
   auto rv = save(sha1io);
 
-  if(!rv) {
+  if (!rv) {
     return "";
   }
 

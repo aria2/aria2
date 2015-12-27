@@ -45,19 +45,23 @@ class XORCloser {
 private:
   const unsigned char* key_;
   size_t length_;
+
 public:
-  XORCloser(const unsigned char* key, size_t length):key_(key), length_(length) {}
-
-  bool operator()(const unsigned char* key1,
-                  const unsigned char* key2) const
+  XORCloser(const unsigned char* key, size_t length)
+      : key_(key), length_(length)
   {
-    for(size_t i = 0; i < length_; ++i) {
-      unsigned char c1 = key_[i]^key1[i];
-      unsigned char c2 = key_[i]^key2[i];
+  }
 
-      if(c1 < c2) {
+  bool operator()(const unsigned char* key1, const unsigned char* key2) const
+  {
+    for (size_t i = 0; i < length_; ++i) {
+      unsigned char c1 = key_[i] ^ key1[i];
+      unsigned char c2 = key_[i] ^ key2[i];
+
+      if (c1 < c2) {
         return true;
-      } else if(c1 > c2) {
+      }
+      else if (c1 > c2) {
         return false;
       }
     }

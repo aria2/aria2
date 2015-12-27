@@ -8,24 +8,22 @@
 
 namespace aria2 {
 
-class a2functionalTest:public CppUnit::TestFixture {
+class a2functionalTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(a2functionalTest);
   CPPUNIT_TEST(testStrjoin);
   CPPUNIT_TEST(testLeastRecentAccess);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void testStrjoin();
   void testLeastRecentAccess();
 
   struct LastAccess {
     time_t lastAccess_;
-    LastAccess(time_t lastAccess):lastAccess_(lastAccess) {}
+    LastAccess(time_t lastAccess) : lastAccess_(lastAccess) {}
 
-    time_t getLastAccessTime() const
-    {
-      return lastAccess_;
-    }
+    time_t getLastAccessTime() const { return lastAccess_; }
   };
 };
 
@@ -51,11 +49,11 @@ void a2functionalTest::testStrjoin()
 void a2functionalTest::testLeastRecentAccess()
 {
   std::vector<LastAccess> v;
-  for(int i = 99; i >= 0; --i) {
+  for (int i = 99; i >= 0; --i) {
     v.push_back(LastAccess(i));
   }
   std::sort(v.begin(), v.end(), LeastRecentAccess<LastAccess>());
-  for(int i = 0; i < 100; ++i) {
+  for (int i = 0; i < 100; ++i) {
     CPPUNIT_ASSERT_EQUAL((time_t)i, v[i].lastAccess_);
   }
 }

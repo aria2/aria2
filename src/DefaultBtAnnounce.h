@@ -68,6 +68,7 @@ private:
   uint16_t tcpPort_;
 
   bool adjustAnnounceList();
+
 public:
   DefaultBtAnnounce(DownloadContext* downloadContext, const Option* option);
 
@@ -75,10 +76,7 @@ public:
 
   void setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime);
 
-  const std::shared_ptr<BtRuntime>& getBtRuntime() const
-  {
-    return btRuntime_;
-  }
+  const std::shared_ptr<BtRuntime>& getBtRuntime() const { return btRuntime_; }
 
   void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage);
 
@@ -118,12 +116,12 @@ public:
 
   virtual void resetAnnounce() CXX11_OVERRIDE;
 
-  virtual void processAnnounceResponse(const unsigned char* trackerResponse,
-                                       size_t trackerResponseLength)
-    CXX11_OVERRIDE;
+  virtual void
+  processAnnounceResponse(const unsigned char* trackerResponse,
+                          size_t trackerResponseLength) CXX11_OVERRIDE;
 
-  virtual void processUDPTrackerResponse
-  (const std::shared_ptr<UDPTrackerRequest>& req) CXX11_OVERRIDE;
+  virtual void processUDPTrackerResponse(
+      const std::shared_ptr<UDPTrackerRequest>& req) CXX11_OVERRIDE;
 
   virtual bool noMoreAnnounce() CXX11_OVERRIDE;
 
@@ -132,37 +130,19 @@ public:
   virtual void
   overrideMinInterval(std::chrono::seconds interval) CXX11_OVERRIDE;
 
-  virtual void setTcpPort(uint16_t port) CXX11_OVERRIDE
-  {
-    tcpPort_ = port;
-  }
+  virtual void setTcpPort(uint16_t port) CXX11_OVERRIDE { tcpPort_ = port; }
 
   void setRandomizer(Randomizer* randomizer);
 
-  const std::chrono::seconds& getInterval() const
-  {
-    return interval_;
-  }
+  const std::chrono::seconds& getInterval() const { return interval_; }
 
-  const std::chrono::seconds& getMinInterval() const
-  {
-    return minInterval_;
-  }
+  const std::chrono::seconds& getMinInterval() const { return minInterval_; }
 
-  int getComplete() const
-  {
-    return complete_;
-  }
+  int getComplete() const { return complete_; }
 
-  int getIncomplete() const
-  {
-    return incomplete_;
-  }
+  int getIncomplete() const { return incomplete_; }
 
-  const std::string& getTrackerID() const
-  {
-    return trackerId_;
-  }
+  const std::string& getTrackerID() const { return trackerId_; }
 
   void setUserDefinedInterval(std::chrono::seconds interval)
   {

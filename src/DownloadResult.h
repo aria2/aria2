@@ -52,8 +52,7 @@ class Option;
 class FileEntry;
 class MetadataInfo;
 
-struct DownloadResult
-{
+struct DownloadResult {
   // This field contains GID. See comment in
   // RequestGroup.cc::belongsToGID_.
   a2_gid_t belongsTo;
@@ -74,7 +73,7 @@ struct DownloadResult
 
   std::shared_ptr<MetadataInfo> metadataInfo;
 
-  std::vector<std::shared_ptr<FileEntry> > fileEntries;
+  std::vector<std::shared_ptr<FileEntry>> fileEntries;
 
   // This field contains GIDs. See comment in
   // RequestGroup.cc::followedByGIDs_.

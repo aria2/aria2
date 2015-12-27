@@ -16,7 +16,7 @@
 
 namespace aria2 {
 
-class CookieStorageTest:public CppUnit::TestFixture {
+class CookieStorageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(CookieStorageTest);
   CPPUNIT_TEST(testStore);
@@ -32,6 +32,7 @@ class CookieStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testDomainIsFull);
   CPPUNIT_TEST(testEviction);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -50,7 +51,6 @@ public:
   void testDomainIsFull();
   void testEviction();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CookieStorageTest);
 
@@ -77,9 +77,8 @@ void CookieStorageTest::testStore()
   CPPUNIT_ASSERT_EQUAL((size_t)1, st.size());
   CPPUNIT_ASSERT(st.contains(*goodCookie()));
 
-  auto anotherCookie = []() {
-    return createCookie("k", "v", "mirror",  true, "/", true);
-  };
+  auto anotherCookie =
+      []() { return createCookie("k", "v", "mirror", true, "/", true); };
   CPPUNIT_ASSERT(st.store(anotherCookie(), now));
   CPPUNIT_ASSERT_EQUAL((size_t)2, st.size());
   CPPUNIT_ASSERT(st.contains(*anotherCookie()));
@@ -87,7 +86,7 @@ void CookieStorageTest::testStore()
 
   ++now;
   auto updateGoodCookie = [&]() {
-    auto c = createCookie("k", "v2", "localhost",  true, "/", false);
+    auto c = createCookie("k", "v2", "localhost", true, "/", false);
     c->setCreationTime(now);
     return c;
   };
@@ -108,9 +107,8 @@ void CookieStorageTest::testStore()
   CPPUNIT_ASSERT_EQUAL((size_t)1, st.size());
   CPPUNIT_ASSERT(st.contains(*anotherCookie()));
 
-  auto fromNumericHost = []() {
-    return createCookie("k", "v", "192.168.1.1", true, "/", false);
-  };
+  auto fromNumericHost =
+      []() { return createCookie("k", "v", "192.168.1.1", true, "/", false); };
   CPPUNIT_ASSERT(st.store(fromNumericHost(), now));
   CPPUNIT_ASSERT_EQUAL((size_t)2, st.size());
   CPPUNIT_ASSERT(st.contains(*fromNumericHost()));
@@ -120,25 +118,26 @@ void CookieStorageTest::testParseAndStore()
 {
   auto st = CookieStorage{};
   time_t now = 1000;
-  std::string localhostCookieStr = "k=v;"
-    " expires=Fri, 01 Jan 2038 00:00:00 GMT; path=/; domain=localhost;";
-  CPPUNIT_ASSERT
-    (st.parseAndStore(localhostCookieStr, "localhost", "/downloads", now));
-  CPPUNIT_ASSERT
-    (!st.parseAndStore(localhostCookieStr, "mirror", "/downloads", now));
-  CPPUNIT_ASSERT
-    (!st.parseAndStore(localhostCookieStr, "127.0.0.1", "/downloads", now));
+  std::string localhostCookieStr =
+      "k=v;"
+      " expires=Fri, 01 Jan 2038 00:00:00 GMT; path=/; domain=localhost;";
+  CPPUNIT_ASSERT(
+      st.parseAndStore(localhostCookieStr, "localhost", "/downloads", now));
+  CPPUNIT_ASSERT(
+      !st.parseAndStore(localhostCookieStr, "mirror", "/downloads", now));
+  CPPUNIT_ASSERT(
+      !st.parseAndStore(localhostCookieStr, "127.0.0.1", "/downloads", now));
 
-  std::string numericHostCookieStr = "k=v;"
-    " expires=Fri, 01 Jan 2038 00:00:00 GMT; path=/; domain=192.168.1.1;";
-  CPPUNIT_ASSERT
-    (st.parseAndStore(numericHostCookieStr, "192.168.1.1", "/", now));
+  std::string numericHostCookieStr =
+      "k=v;"
+      " expires=Fri, 01 Jan 2038 00:00:00 GMT; path=/; domain=192.168.1.1;";
+  CPPUNIT_ASSERT(
+      st.parseAndStore(numericHostCookieStr, "192.168.1.1", "/", now));
 
   // No domain and no path are specified.
   std::string noDomainPathCookieStr = "k=v";
-  CPPUNIT_ASSERT
-    (st.parseAndStore(noDomainPathCookieStr,
-                      "aria2.sf.net", "/downloads", now));
+  CPPUNIT_ASSERT(st.parseAndStore(noDomainPathCookieStr, "aria2.sf.net",
+                                  "/downloads", now));
 }
 
 void CookieStorageTest::testCriteriaFind()
@@ -147,59 +146,51 @@ void CookieStorageTest::testCriteriaFind()
   time_t now = 1000;
 
   auto alpha = []() {
-    return createCookie("alpha", "ALPHA", "aria2.org", false,  "/", false);
+    return createCookie("alpha", "ALPHA", "aria2.org", false, "/", false);
   };
   auto bravo = []() {
-    return createCookie("bravo", "BRAVO", 1060, "aria2.org", false,
-                        "/foo", false);
+    return createCookie("bravo", "BRAVO", 1060, "aria2.org", false, "/foo",
+                        false);
   };
   auto charlie = []() {
-    return createCookie("charlie", "CHARLIE", "aria2.org", false,
-                        "/", true);
+    return createCookie("charlie", "CHARLIE", "aria2.org", false, "/", true);
   };
   auto delta = []() {
-    return createCookie("delta", "DELTA", "aria2.org", false,
-                        "/foo/bar", false);
+    return createCookie("delta", "DELTA", "aria2.org", false, "/foo/bar",
+                        false);
   };
   auto echo = []() {
-    return createCookie("echo", "ECHO", "www.dl.aria2.org", false,
-                        "/", false);
+    return createCookie("echo", "ECHO", "www.dl.aria2.org", false, "/", false);
   };
   auto foxtrot = []() {
-    return createCookie("foxtrot", "FOXTROT", "sf.net", false,
-                        "/", false);
+    return createCookie("foxtrot", "FOXTROT", "sf.net", false, "/", false);
   };
   auto golf = []() {
-    return createCookie("golf", "GOLF", "192.168.1.1",  true,
-                        "/", false);
+    return createCookie("golf", "GOLF", "192.168.1.1", true, "/", false);
   };
   auto hotel1 = []() {
-    return createCookie("hotel", "HOTEL1", "samename.x", false,
-                        "/", false);
+    return createCookie("hotel", "HOTEL1", "samename.x", false, "/", false);
   };
   auto hotel2 = []() {
-    return createCookie("hotel", "HOTEL2", "samename.x", false,
-                        "/hotel", false);
+    return createCookie("hotel", "HOTEL2", "samename.x", false, "/hotel",
+                        false);
   };
   auto hotel3 = []() {
-    return createCookie("hotel", "HOTEL3", "samename.x", false,
-                        "/bar/wine", false);
+    return createCookie("hotel", "HOTEL3", "samename.x", false, "/bar/wine",
+                        false);
   };
   auto hotel4 = []() {
-    return createCookie("hotel", "HOTEL4", "samename.x", false,
-                        "/bar/", false);
+    return createCookie("hotel", "HOTEL4", "samename.x", false, "/bar/", false);
   };
   auto india1 = []() {
-    return createCookie("india", "INDIA1", "default.domain",  true,
-                        "/foo", false);
+    return createCookie("india", "INDIA1", "default.domain", true, "/foo",
+                        false);
   };
   auto india2 = []() {
-    return createCookie("india", "INDIA2", "default.domain", false,
-                        "/",  false);
+    return createCookie("india", "INDIA2", "default.domain", false, "/", false);
   };
   auto juliet1 = []() {
-    return createCookie("juliet", "JULIET1", "localhost", true,
-                        "/foo", false);
+    return createCookie("juliet", "JULIET1", "localhost", true, "/foo", false);
   };
 
   CPPUNIT_ASSERT(st.store(alpha(), now));
@@ -222,7 +213,7 @@ void CookieStorageTest::testCriteriaFind()
   CPPUNIT_ASSERT(derefFind(aria2Slash, alpha()));
   CPPUNIT_ASSERT(derefFind(aria2Slash, echo()));
 
-  auto aria2SlashFoo = st.criteriaFind("www.dl.aria2.org","/foo", 0, false);
+  auto aria2SlashFoo = st.criteriaFind("www.dl.aria2.org", "/foo", 0, false);
   CPPUNIT_ASSERT_EQUAL((size_t)3, aria2SlashFoo.size());
   CPPUNIT_ASSERT_EQUAL(std::string("bravo"), aria2SlashFoo[0]->getName());
   CPPUNIT_ASSERT(derefFind(aria2SlashFoo, alpha()));
@@ -240,7 +231,7 @@ void CookieStorageTest::testCriteriaFind()
   auto tailmatchAria2 = st.criteriaFind("myaria2.org", "/", 0, false);
   CPPUNIT_ASSERT(tailmatchAria2.empty());
 
-  auto numericHostCookies = st.criteriaFind("192.168.1.1", "/",0, false);
+  auto numericHostCookies = st.criteriaFind("192.168.1.1", "/", 0, false);
   CPPUNIT_ASSERT_EQUAL((size_t)1, numericHostCookies.size());
   CPPUNIT_ASSERT_EQUAL(std::string("golf"), numericHostCookies[0]->getName());
 
@@ -250,15 +241,15 @@ void CookieStorageTest::testCriteriaFind()
   CPPUNIT_ASSERT_EQUAL(std::string("HOTEL4"), sameNameCookies[1]->getValue());
   CPPUNIT_ASSERT_EQUAL(std::string("HOTEL1"), sameNameCookies[2]->getValue());
 
-  auto defaultDomainCookies = st.criteriaFind("default.domain", "/foo", 0,
-                                              false);
+  auto defaultDomainCookies =
+      st.criteriaFind("default.domain", "/foo", 0, false);
   CPPUNIT_ASSERT_EQUAL((size_t)2, defaultDomainCookies.size());
   CPPUNIT_ASSERT_EQUAL(std::string("INDIA1"),
                        defaultDomainCookies[0]->getValue());
   CPPUNIT_ASSERT_EQUAL(std::string("INDIA2"),
                        defaultDomainCookies[1]->getValue());
   defaultDomainCookies =
-    st.criteriaFind("sub.default.domain", "/foo", 0, false);
+      st.criteriaFind("sub.default.domain", "/foo", 0, false);
   CPPUNIT_ASSERT_EQUAL((size_t)1, defaultDomainCookies.size());
   CPPUNIT_ASSERT_EQUAL(std::string("INDIA2"),
                        defaultDomainCookies[0]->getValue());
@@ -299,7 +290,7 @@ void CookieStorageTest::testLoad()
 {
   auto st = CookieStorage{};
 
-  st.load(A2_TEST_DIR"/nscookietest.txt", 1001);
+  st.load(A2_TEST_DIR "/nscookietest.txt", 1001);
 
   CPPUNIT_ASSERT_EQUAL((size_t)4, st.size());
 
@@ -348,7 +339,7 @@ void CookieStorageTest::testLoad_sqlite3()
 {
   auto st = CookieStorage{};
 #ifdef HAVE_SQLITE3
-  st.load(A2_TEST_DIR"/cookies.sqlite", 1000);
+  st.load(A2_TEST_DIR "/cookies.sqlite", 1000);
   CPPUNIT_ASSERT_EQUAL((size_t)2, st.size());
   auto cookies = dumpCookie(st);
   auto c = cookies[0];
@@ -372,27 +363,30 @@ void CookieStorageTest::testLoad_sqlite3()
   CPPUNIT_ASSERT(!c->getSecure());
 
 #else // !HAVE_SQLITE3
-  CPPUNIT_ASSERT(!st.load(A2_TEST_DIR"/cookies.sqlite", 1000));
+  CPPUNIT_ASSERT(!st.load(A2_TEST_DIR "/cookies.sqlite", 1000));
 #endif // !HAVE_SQLITE3
 }
 
 void CookieStorageTest::testLoad_fileNotfound()
 {
   auto st = CookieStorage{};
-  CPPUNIT_ASSERT(!st.load("./aria2_CookieStorageTest_testLoad_fileNotfound",0));
+  CPPUNIT_ASSERT(
+      !st.load("./aria2_CookieStorageTest_testLoad_fileNotfound", 0));
 }
 
 void CookieStorageTest::testSaveNsFormat()
 {
   // TODO add cookie with default domain
-  std::string filename = A2_TEST_OUT_DIR"/aria2_CookieStorageTest_testSaveNsFormat";
+  std::string filename =
+      A2_TEST_OUT_DIR "/aria2_CookieStorageTest_testSaveNsFormat";
   File(filename).remove();
   auto st = CookieStorage{};
   time_t now = 1000;
-  st.store(createCookie("favorite", "classic", "domain.org", false,
-                        "/config",true), now);
-  st.store(createCookie("uid", "tujikawa", now, "domain.org", true,
-                        "/",false), now);
+  st.store(
+      createCookie("favorite", "classic", "domain.org", false, "/config", true),
+      now);
+  st.store(createCookie("uid", "tujikawa", now, "domain.org", true, "/", false),
+           now);
   CPPUNIT_ASSERT(st.saveNsFormat(filename));
   auto loadst = CookieStorage{};
   loadst.load(filename, now);
@@ -408,7 +402,7 @@ void CookieStorageTest::testSaveNsFormat()
 void CookieStorageTest::testSaveNsFormat_fail()
 {
   std::string filename =
-    A2_TEST_OUT_DIR"/aria2_CookieStorageTest_testSaveNsFormat_fail";
+      A2_TEST_OUT_DIR "/aria2_CookieStorageTest_testSaveNsFormat_fail";
   File f(filename);
   f.remove();
   f.mkdirs();
@@ -420,9 +414,10 @@ void CookieStorageTest::testSaveNsFormat_fail()
 void CookieStorageTest::testCookieIsFull()
 {
   auto st = CookieStorage{};
-  for(size_t i = 0; i < CookieStorage::MAX_COOKIE_PER_DOMAIN+1; ++i) {
-    st.store(createCookie("k"+util::itos(i), "v", "aria2.org", false,
-                          "/", false), 0);
+  for (size_t i = 0; i < CookieStorage::MAX_COOKIE_PER_DOMAIN + 1; ++i) {
+    st.store(
+        createCookie("k" + util::itos(i), "v", "aria2.org", false, "/", false),
+        0);
   }
   CPPUNIT_ASSERT_EQUAL((size_t)CookieStorage::MAX_COOKIE_PER_DOMAIN, st.size());
 }
@@ -432,9 +427,9 @@ void CookieStorageTest::testDomainIsFull()
   // See DOMAIN_EVICTION_TRIGGER and DOMAIN_EVICTION_RATE in
   // CookieStorage.cc
   auto st = CookieStorage{};
-  for(size_t i = 0; i < 2001; ++i) {
-    st.store(createCookie("k", "v", "domain"+util::itos(i), true,
-                          "/", false), 0);
+  for (size_t i = 0; i < 2001; ++i) {
+    st.store(createCookie("k", "v", "domain" + util::itos(i), true, "/", false),
+             0);
   }
   CPPUNIT_ASSERT_EQUAL((size_t)1801, st.size());
 }

@@ -84,66 +84,46 @@ private:
   bool fastExtensionEnabled_;
   bool extendedMessagingEnabled_;
   bool dhtEnabled_;
+
 public:
   PeerSessionResource(int32_t pieceLength, int64_t totalLength);
 
   ~PeerSessionResource();
 
   // localhost is choking this peer
-  bool amChoking() const
-  {
-    return amChoking_;
-  }
+  bool amChoking() const { return amChoking_; }
 
   void amChoking(bool b);
 
   // localhost is interested in this peer
-  bool amInterested() const
-  {
-    return amInterested_;
-  }
+  bool amInterested() const { return amInterested_; }
 
   void amInterested(bool b);
 
   // this peer is choking localhost
-  bool peerChoking() const
-  {
-    return peerChoking_;
-  }
+  bool peerChoking() const { return peerChoking_; }
 
   void peerChoking(bool b);
 
   // this peer is interested in localhost
-  bool peerInterested() const
-  {
-    return peerInterested_;
-  }
+  bool peerInterested() const { return peerInterested_; }
 
   void peerInterested(bool b);
 
   // this peer should be choked
-  bool chokingRequired() const
-  {
-    return chokingRequired_;
-  }
+  bool chokingRequired() const { return chokingRequired_; }
 
   void chokingRequired(bool b);
 
   // this peer is eligible for unchoking optionally.
-  bool optUnchoking() const
-  {
-    return optUnchoking_;
-  }
+  bool optUnchoking() const { return optUnchoking_; }
 
   void optUnchoking(bool b);
 
   bool shouldBeChoking() const;
 
   // this peer is snubbing.
-  bool snubbing() const
-  {
-    return snubbing_;
-  }
+  bool snubbing() const { return snubbing_; }
 
   void snubbing(bool b);
 
@@ -163,10 +143,7 @@ public:
 
   void markSeeder();
 
-  bool fastExtensionEnabled() const
-  {
-    return fastExtensionEnabled_;
-  }
+  bool fastExtensionEnabled() const { return fastExtensionEnabled_; }
 
   void fastExtensionEnabled(bool b);
 
@@ -187,10 +164,7 @@ public:
 
   bool amAllowedIndexSetContains(size_t index) const;
 
-  bool extendedMessagingEnabled() const
-  {
-    return extendedMessagingEnabled_;
-  }
+  bool extendedMessagingEnabled() const { return extendedMessagingEnabled_; }
 
   void extendedMessagingEnabled(bool b);
 
@@ -200,17 +174,11 @@ public:
 
   void addExtension(int key, uint8_t id);
 
-  bool dhtEnabled() const
-  {
-    return dhtEnabled_;
-  }
+  bool dhtEnabled() const { return dhtEnabled_; }
 
   void dhtEnabled(bool b);
 
-  NetStat& getNetStat()
-  {
-    return netStat_;
-  }
+  NetStat& getNetStat() { return netStat_; }
 
   int64_t uploadLength() const;
 
@@ -220,15 +188,9 @@ public:
 
   void updateDownloadLength(int32_t bytes);
 
-  const Timer& getLastDownloadUpdate() const
-  {
-    return lastDownloadUpdate_;
-  }
+  const Timer& getLastDownloadUpdate() const { return lastDownloadUpdate_; }
 
-  const Timer& getLastAmUnchoking() const
-  {
-    return lastAmUnchoking_;
-  }
+  const Timer& getLastAmUnchoking() const { return lastAmUnchoking_; }
 
   int64_t getCompletedLength() const;
 

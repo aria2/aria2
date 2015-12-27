@@ -58,16 +58,17 @@ namespace aria2 {
 const std::string HttpRequest::USER_AGENT("aria2");
 
 HttpRequest::HttpRequest()
-  : cookieStorage_(nullptr),
-    authConfigFactory_(nullptr),
-    option_(nullptr),
-    endOffsetOverride_(0),
-    userAgent_(USER_AGENT),
-    contentEncodingEnabled_(true),
-    acceptMetalink_(false),
-    noCache_(true),
-    acceptGzip_(false)
-{}
+    : cookieStorage_(nullptr),
+      authConfigFactory_(nullptr),
+      option_(nullptr),
+      endOffsetOverride_(0),
+      userAgent_(USER_AGENT),
+      contentEncodingEnabled_(true),
+      acceptMetalink_(false),
+      noCache_(true),
+      acceptGzip_(false)
+{
+}
 
 HttpRequest::~HttpRequest() {}
 
@@ -83,24 +84,25 @@ void HttpRequest::setRequest(const std::shared_ptr<Request>& request)
 
 int64_t HttpRequest::getStartByte() const
 {
-  if(!segment_) {
+  if (!segment_) {
     return 0;
-  } else {
+  }
+  else {
     return fileEntry_->gtoloff(segment_->getPositionToWrite());
   }
 }
 
 int64_t HttpRequest::getEndByte() const
 {
-  if(!segment_ || !request_) {
+  if (!segment_ || !request_) {
     return 0;
   }
-  if(request_->isPipeliningEnabled()) {
-    int64_t endByte =
-      fileEntry_->gtoloff(segment_->getPosition()+segment_->getLength()-1);
-    return std::min(endByte, fileEntry_->getLength()-1);
+  if (request_->isPipeliningEnabled()) {
+    int64_t endByte = fileEntry_->gtoloff(segment_->getPosition() +
+                                          segment_->getLength() - 1);
+    return std::min(endByte, fileEntry_->getLength() - 1);
   }
-  if(endOffsetOverride_ > 0) {
+  if (endOffsetOverride_ > 0) {
     return endOffsetOverride_ - 1;
   }
   return 0;
@@ -109,7 +111,7 @@ int64_t HttpRequest::getEndByte() const
 Range HttpRequest::getRange() const
 {
   // content-length is always 0
-  if(!segment_) {
+  if (!segment_) {
     return Range();
   }
   return Range(getStartByte(), getEndByte(), fileEntry_->getLength());
@@ -117,14 +119,13 @@ Range HttpRequest::getRange() const
 
 bool HttpRequest::isRangeSatisfied(const Range& range) const
 {
-  if(!segment_) {
+  if (!segment_) {
     return true;
   }
-  if((getStartByte() == range.startByte) &&
-     ((getEndByte() == 0) ||
-      (getEndByte() == range.endByte)) &&
-     ((fileEntry_->getLength() == 0) ||
-      (fileEntry_->getLength() == range.entityLength))) {
+  if ((getStartByte() == range.startByte) &&
+      ((getEndByte() == 0) || (getEndByte() == range.endByte)) &&
+      ((fileEntry_->getLength() == 0) ||
+       (fileEntry_->getLength() == range.entityLength))) {
     return true;
   }
   return false;
@@ -134,8 +135,9 @@ namespace {
 std::string getHostText(const std::string& host, uint16_t port)
 {
   std::string hosttext = host;
-  if(!(port == 80 || port == 443)) {
-    hosttext += fmt(":%u", port);;
+  if (!(port == 80 || port == 443)) {
+    hosttext += fmt(":%u", port);
+    ;
   }
   return hosttext;
 }
@@ -146,63 +148,65 @@ std::string HttpRequest::createRequest()
   authConfig_ = authConfigFactory_->createAuthConfig(request_, option_);
   std::string requestLine = request_->getMethod();
   requestLine += " ";
-  if(proxyRequest_) {
-    if(getProtocol() == "ftp" &&
-       request_->getUsername().empty() && authConfig_) {
+  if (proxyRequest_) {
+    if (getProtocol() == "ftp" && request_->getUsername().empty() &&
+        authConfig_) {
       // Insert user into URI, like ftp://USER@host/
       std::string uri = getCurrentURI();
       assert(uri.size() >= 6);
-      uri.insert(6, util::percentEncode(authConfig_->getUser())+"@");
+      uri.insert(6, util::percentEncode(authConfig_->getUser()) + "@");
       requestLine += uri;
-    } else {
+    }
+    else {
       requestLine += getCurrentURI();
     }
-  } else {
+  }
+  else {
     requestLine += getDir();
     requestLine += getFile();
     requestLine += getQuery();
   }
   requestLine += " HTTP/1.1\r\n";
 
-  std::vector<std::pair<std::string, std::string> > builtinHds;
+  std::vector<std::pair<std::string, std::string>> builtinHds;
   builtinHds.reserve(20);
   builtinHds.push_back(std::make_pair("User-Agent:", userAgent_));
   std::string acceptTypes = "*/*";
-  if(acceptMetalink_) {
+  if (acceptMetalink_) {
     // The mime types of Metalink are used for "transparent metalink".
     const char** metalinkTypes = getMetalinkContentTypes();
-    for(size_t i = 0; metalinkTypes[i]; ++i) {
+    for (size_t i = 0; metalinkTypes[i]; ++i) {
       acceptTypes += ",";
       acceptTypes += metalinkTypes[i];
     }
   }
   builtinHds.push_back(std::make_pair("Accept:", acceptTypes));
-  if(contentEncodingEnabled_) {
+  if (contentEncodingEnabled_) {
     std::string acceptableEncodings;
 #ifdef HAVE_ZLIB
-    if(acceptGzip_) {
+    if (acceptGzip_) {
       acceptableEncodings += "deflate, gzip";
     }
 #endif // HAVE_ZLIB
-    if(!acceptableEncodings.empty()) {
-      builtinHds.push_back
-        (std::make_pair("Accept-Encoding:", acceptableEncodings));
+    if (!acceptableEncodings.empty()) {
+      builtinHds.push_back(
+          std::make_pair("Accept-Encoding:", acceptableEncodings));
     }
   }
-  builtinHds.push_back
-    (std::make_pair("Host:", getHostText(getURIHost(), getPort())));
-  if(noCache_) {
+  builtinHds.push_back(
+      std::make_pair("Host:", getHostText(getURIHost(), getPort())));
+  if (noCache_) {
     builtinHds.push_back(std::make_pair("Pragma:", "no-cache"));
     builtinHds.push_back(std::make_pair("Cache-Control:", "no-cache"));
   }
-  if(!request_->isKeepAliveEnabled() && !request_->isPipeliningEnabled()) {
+  if (!request_->isKeepAliveEnabled() && !request_->isPipeliningEnabled()) {
     builtinHds.push_back(std::make_pair("Connection:", "close"));
   }
-  if(segment_ && segment_->getLength() > 0 &&
-     (request_->isPipeliningEnabled() || getStartByte() > 0 ||
-      getEndByte() > 0)) {
+  if (segment_ && segment_->getLength() > 0 &&
+      (request_->isPipeliningEnabled() || getStartByte() > 0 ||
+       getEndByte() > 0)) {
     std::string rangeHeader(fmt("bytes=%" PRId64 "-", getStartByte()));
-    if(request_->isPipeliningEnabled() || getEndByte() > 0) {
+    if (request_->isPipeliningEnabled() || getEndByte() > 0) {
       // FTP via http proxy does not support endbytes, but in that
       // case, request_->isPipeliningEnabled() is false and
       // getEndByte() is 0.
@@ -210,52 +214,53 @@ std::string HttpRequest::createRequest()
     }
     builtinHds.push_back(std::make_pair("Range:", rangeHeader));
   }
-  if(proxyRequest_) {
-    if(request_->isKeepAliveEnabled() || request_->isPipeliningEnabled()) {
+  if (proxyRequest_) {
+    if (request_->isKeepAliveEnabled() || request_->isPipeliningEnabled()) {
       builtinHds.push_back(std::make_pair("Connection:", "Keep-Alive"));
     }
   }
-  if(proxyRequest_ && !proxyRequest_->getUsername().empty()) {
+  if (proxyRequest_ && !proxyRequest_->getUsername().empty()) {
     builtinHds.push_back(getProxyAuthString());
   }
-  if(authConfig_) {
+  if (authConfig_) {
     std::string authText = authConfig_->getAuthText();
     std::string val = "Basic ";
     val += base64::encode(authText.begin(), authText.end());
     builtinHds.push_back(std::make_pair("Authorization:", val));
   }
-  if(!request_->getReferer().empty()) {
+  if (!request_->getReferer().empty()) {
     builtinHds.push_back(std::make_pair("Referer:", request_->getReferer()));
   }
-  if(cookieStorage_) {
+  if (cookieStorage_) {
     std::string cookiesValue;
     std::string path = getDir();
     path += getFile();
-    auto cookies = cookieStorage_->criteriaFind(getHost(), path,
-                                                Time().getTimeFromEpoch(),
-                                                getProtocol() == "https");
-    for(auto c : cookies) {
+    auto cookies = cookieStorage_->criteriaFind(
+        getHost(), path, Time().getTimeFromEpoch(), getProtocol() == "https");
+    for (auto c : cookies) {
       cookiesValue += c->toString();
       cookiesValue += ";";
     }
-    if(!cookiesValue.empty()) {
+    if (!cookiesValue.empty()) {
       builtinHds.push_back(std::make_pair("Cookie:", cookiesValue));
     }
   }
-  if(!ifModSinceHeader_.empty()) {
-    builtinHds.push_back
-      (std::make_pair("If-Modified-Since:", ifModSinceHeader_));
+  if (!ifModSinceHeader_.empty()) {
+    builtinHds.push_back(
+        std::make_pair("If-Modified-Since:", ifModSinceHeader_));
   }
-  for(std::vector<std::pair<std::string, std::string> >::const_iterator i =
-        builtinHds.begin(), eoi = builtinHds.end(); i != eoi; ++i) {
+  for (std::vector<std::pair<std::string, std::string>>::const_iterator
+           i = builtinHds.begin(),
+           eoi = builtinHds.end();
+       i != eoi; ++i) {
     std::vector<std::string>::const_iterator j = headers_.begin();
     std::vector<std::string>::const_iterator jend = headers_.end();
-    for(; j != jend; ++j) {
-      if(util::startsWith(*j, (*i).first)) {
+    for (; j != jend; ++j) {
+      if (util::startsWith(*j, (*i).first)) {
         break;
       }
     }
-    if(j == jend) {
+    if (j == jend) {
       requestLine += (*i).first;
       requestLine += " ";
       requestLine += (*i).second;
@@ -263,8 +268,9 @@ std::string HttpRequest::createRequest()
     }
   }
   // append additional headers given by user.
-  for(std::vector<std::string>::const_iterator i = headers_.begin(),
-        eoi = headers_.end(); i != eoi; ++i) {
+  for (std::vector<std::string>::const_iterator i = headers_.begin(),
+                                                eoi = headers_.end();
+       i != eoi; ++i) {
     requestLine += *i;
     requestLine += "\r\n";
   }
@@ -278,12 +284,10 @@ std::string HttpRequest::createProxyRequest() const
   std::string requestLine(fmt("CONNECT %s:%u HTTP/1.1\r\n"
                               "User-Agent: %s\r\n"
                               "Host: %s:%u\r\n",
-                              getURIHost().c_str(),
-                              getPort(),
-                              userAgent_.c_str(),
-                              getURIHost().c_str(),
+                              getURIHost().c_str(), getPort(),
+                              userAgent_.c_str(), getURIHost().c_str(),
                               getPort()));
-  if(!proxyRequest_->getUsername().empty()) {
+  if (!proxyRequest_->getUsername().empty()) {
     std::pair<std::string, std::string> auth = getProxyAuthString();
     requestLine += auth.first;
     requestLine += " ";
@@ -304,15 +308,9 @@ std::pair<std::string, std::string> HttpRequest::getProxyAuthString() const
   return std::make_pair("Proxy-Authorization:", val);
 }
 
-void HttpRequest::enableContentEncoding()
-{
-  contentEncodingEnabled_ = true;
-}
+void HttpRequest::enableContentEncoding() { contentEncodingEnabled_ = true; }
 
-void HttpRequest::disableContentEncoding()
-{
-  contentEncodingEnabled_ = false;
-}
+void HttpRequest::disableContentEncoding() { contentEncodingEnabled_ = false; }
 
 void HttpRequest::addHeader(const std::string& headersString)
 {
@@ -320,45 +318,30 @@ void HttpRequest::addHeader(const std::string& headersString)
               std::back_inserter(headers_), '\n', true);
 }
 
-void HttpRequest::clearHeader()
-{
-  headers_.clear();
-}
+void HttpRequest::clearHeader() { headers_.clear(); }
 
 void HttpRequest::setCookieStorage(CookieStorage* cookieStorage)
 {
   cookieStorage_ = cookieStorage;
 }
 
-CookieStorage* HttpRequest::getCookieStorage() const
-{
-  return cookieStorage_;
-}
+CookieStorage* HttpRequest::getCookieStorage() const { return cookieStorage_; }
 
 void HttpRequest::setAuthConfigFactory(AuthConfigFactory* factory)
 {
   authConfigFactory_ = factory;
 }
 
-void HttpRequest::setOption(const Option* option)
-{
-  option_ = option;
-}
+void HttpRequest::setOption(const Option* option) { option_ = option; }
 
 void HttpRequest::setProxyRequest(const std::shared_ptr<Request>& proxyRequest)
 {
   proxyRequest_ = proxyRequest;
 }
 
-bool HttpRequest::isProxyRequestSet() const
-{
-  return proxyRequest_.get();
-}
+bool HttpRequest::isProxyRequestSet() const { return proxyRequest_.get(); }
 
-bool HttpRequest::authenticationUsed() const
-{
-  return authConfig_.get();
-}
+bool HttpRequest::authenticationUsed() const { return authConfig_.get(); }
 
 const std::unique_ptr<AuthConfig>& HttpRequest::getAuthConfig() const
 {
@@ -371,15 +354,9 @@ int64_t HttpRequest::getEntityLength() const
   return fileEntry_->getLength();
 }
 
-const std::string& HttpRequest::getHost() const
-{
-  return request_->getHost();
-}
+const std::string& HttpRequest::getHost() const { return request_->getHost(); }
 
-uint16_t HttpRequest::getPort() const
-{
-  return request_->getPort();
-}
+uint16_t HttpRequest::getPort() const { return request_->getPort(); }
 
 const std::string& HttpRequest::getMethod() const
 {
@@ -396,25 +373,16 @@ const std::string& HttpRequest::getCurrentURI() const
   return request_->getCurrentUri();
 }
 
-const std::string& HttpRequest::getDir() const
-{
-  return request_->getDir();
-}
+const std::string& HttpRequest::getDir() const { return request_->getDir(); }
 
-const std::string& HttpRequest::getFile() const
-{
-  return request_->getFile();
-}
+const std::string& HttpRequest::getFile() const { return request_->getFile(); }
 
 const std::string& HttpRequest::getQuery() const
 {
   return request_->getQuery();
 }
 
-std::string HttpRequest::getURIHost() const
-{
-  return request_->getURIHost();
-}
+std::string HttpRequest::getURIHost() const { return request_->getURIHost(); }
 
 void HttpRequest::setUserAgent(const std::string& userAgent)
 {
@@ -433,12 +401,12 @@ void HttpRequest::setIfModifiedSinceHeader(const std::string& hd)
 
 bool HttpRequest::conditionalRequest() const
 {
-  if(!ifModSinceHeader_.empty()) {
+  if (!ifModSinceHeader_.empty()) {
     return true;
   }
-  for(auto& h : headers_) {
-    if(util::istartsWith(h, "if-modified-since") ||
-       util::istartsWith(h, "if-none-match")) {
+  for (auto& h : headers_) {
+    if (util::istartsWith(h, "if-modified-since") ||
+        util::istartsWith(h, "if-none-match")) {
       return true;
     }
   }

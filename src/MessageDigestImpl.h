@@ -54,8 +54,8 @@ public:
   typedef std::tuple<factory_t, size_t> hash_info_t;
   typedef std::map<std::string, hash_info_t> hashes_t;
 
-  template<typename T>
-  inline static hash_info_t make_hi() {
+  template <typename T> inline static hash_info_t make_hi()
+  {
     return std::make_tuple([]() { return make_unique<T>(); }, T::length());
   }
 
@@ -69,8 +69,9 @@ public:
   virtual ~MessageDigestImpl() {}
   static std::unique_ptr<MessageDigestImpl> sha1();
 
-  inline static std::unique_ptr<MessageDigestImpl> create(
-      const std::string& hashType) {
+  inline static std::unique_ptr<MessageDigestImpl>
+  create(const std::string& hashType)
+  {
     auto i = hashes.find(hashType);
     if (i == hashes.end()) {
       return nullptr;
@@ -78,12 +79,14 @@ public:
     return std::get<0>(i->second)();
   }
 
-  inline static bool supports(const std::string& hashType) {
+  inline static bool supports(const std::string& hashType)
+  {
     auto i = hashes.find(hashType);
     return i != hashes.end();
   }
 
-  inline static size_t getDigestLength(const std::string& hashType) {
+  inline static size_t getDigestLength(const std::string& hashType)
+  {
     auto i = hashes.find(hashType);
     if (i == hashes.end()) {
       return 0;

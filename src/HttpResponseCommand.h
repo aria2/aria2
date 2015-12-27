@@ -86,13 +86,11 @@ protected:
   bool shouldInflateContentEncoding(HttpResponse* httpResponse);
 
 public:
-  HttpResponseCommand(cuid_t cuid,
-                      const std::shared_ptr<Request>& req,
+  HttpResponseCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
                       const std::shared_ptr<FileEntry>& fileEntry,
                       RequestGroup* requestGroup,
                       const std::shared_ptr<HttpConnection>& httpConnection,
-                      DownloadEngine* e,
-                      const std::shared_ptr<SocketCore>& s);
+                      DownloadEngine* e, const std::shared_ptr<SocketCore>& s);
   ~HttpResponseCommand();
 };
 

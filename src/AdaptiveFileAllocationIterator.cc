@@ -40,68 +40,71 @@
 #include "Logger.h"
 #include "a2functional.h"
 #ifdef HAVE_FALLOCATE
-# include "FallocFileAllocationIterator.h"
+#include "FallocFileAllocationIterator.h"
 #endif // HAVE_FALLOCATE
 
 namespace aria2 {
 
-AdaptiveFileAllocationIterator::AdaptiveFileAllocationIterator
-(BinaryStream* stream, int64_t offset, int64_t totalLength)
- : stream_(stream),
-   offset_(offset),
-   totalLength_(totalLength)
-{}
+AdaptiveFileAllocationIterator::AdaptiveFileAllocationIterator(
+    BinaryStream* stream, int64_t offset, int64_t totalLength)
+    : stream_(stream), offset_(offset), totalLength_(totalLength)
+{
+}
 
 AdaptiveFileAllocationIterator::~AdaptiveFileAllocationIterator() {}
 
 void AdaptiveFileAllocationIterator::allocateChunk()
 {
-  if(!allocator_) {
+  if (!allocator_) {
 #ifdef HAVE_FALLOCATE
     try {
       A2_LOG_DEBUG("Testing file system supports fallocate.");
-      if(offset_ < totalLength_) {
+      if (offset_ < totalLength_) {
         int64_t len =
             std::min(totalLength_ - offset_, static_cast<int64_t>(4_k));
         stream_->allocate(offset_, len, false);
         offset_ += len;
       }
       A2_LOG_DEBUG("File system supports fallocate.");
-      allocator_ = make_unique<FallocFileAllocationIterator>
-        (stream_, offset_, totalLength_);
-    } catch(RecoverableException& e) {
+      allocator_ = make_unique<FallocFileAllocationIterator>(stream_, offset_,
+                                                             totalLength_);
+    }
+    catch (RecoverableException& e) {
       A2_LOG_DEBUG("File system does not support fallocate.");
-      auto salloc = make_unique<SingleFileAllocationIterator>
-        (stream_, offset_, totalLength_);
+      auto salloc = make_unique<SingleFileAllocationIterator>(stream_, offset_,
+                                                              totalLength_);
       salloc->init();
       allocator_ = std::move(salloc);
     }
-#else // !HAVE_FALLOCATE
-    auto salloc = make_unique<SingleFileAllocationIterator>
-      (stream_, offset_, totalLength_);
+#else  // !HAVE_FALLOCATE
+    auto salloc = make_unique<SingleFileAllocationIterator>(stream_, offset_,
+                                                            totalLength_);
     salloc->init();
     allocator_ = std::move(salloc);
 #endif // !HAVE_FALLOCATE
     allocator_->allocateChunk();
-  } else {
+  }
+  else {
     allocator_->allocateChunk();
   }
 }
 
 bool AdaptiveFileAllocationIterator::finished()
 {
-  if(!allocator_) {
+  if (!allocator_) {
     return offset_ == totalLength_;
-  } else {
+  }
+  else {
     return allocator_->finished();
   }
 }
 
 int64_t AdaptiveFileAllocationIterator::getCurrentLength()
 {
-  if(!allocator_) {
+  if (!allocator_) {
     return offset_;
-  } else {
+  }
+  else {
     return allocator_->getCurrentLength();
   }
 }

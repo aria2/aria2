@@ -50,12 +50,10 @@ class FileEntry;
 
 class InitiateConnectionCommandFactory {
 public:
-  static std::unique_ptr<Command>
-  createInitiateConnectionCommand(cuid_t cuid,
-                                  const std::shared_ptr<Request>& req,
-                                  const std::shared_ptr<FileEntry>& fileEntry,
-                                  RequestGroup* requestGroup,
-                                  DownloadEngine* e);
+  static std::unique_ptr<Command> createInitiateConnectionCommand(
+      cuid_t cuid, const std::shared_ptr<Request>& req,
+      const std::shared_ptr<FileEntry>& fileEntry, RequestGroup* requestGroup,
+      DownloadEngine* e);
 };
 
 } // namespace aria2

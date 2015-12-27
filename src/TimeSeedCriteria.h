@@ -48,6 +48,7 @@ private:
   // How much time the client does seeding in seconds.
   std::chrono::seconds duration_;
   Timer watch_;
+
 public:
   TimeSeedCriteria(std::chrono::seconds duration);
   virtual ~TimeSeedCriteria();
@@ -61,10 +62,7 @@ public:
     duration_ = std::move(duration);
   }
 
-  const std::chrono::seconds& getDuration() const
-  {
-    return duration_;
-  }
+  const std::chrono::seconds& getDuration() const { return duration_; }
 };
 
 } // namespace aria2

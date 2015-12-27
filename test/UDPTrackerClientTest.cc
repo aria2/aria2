@@ -11,7 +11,7 @@
 
 namespace aria2 {
 
-class UDPTrackerClientTest:public CppUnit::TestFixture {
+class UDPTrackerClientTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(UDPTrackerClientTest);
   CPPUNIT_TEST(testCreateUDPTrackerConnect);
@@ -20,10 +20,9 @@ class UDPTrackerClientTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testRequestFailure);
   CPPUNIT_TEST(testTimeout);
   CPPUNIT_TEST_SUITE_END();
+
 public:
-  void setUp()
-  {
-  }
+  void setUp() {}
 
   void testCreateUDPTrackerConnect();
   void testCreateUDPTrackerAnnounce();
@@ -32,12 +31,12 @@ public:
   void testTimeout();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( UDPTrackerClientTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(UDPTrackerClientTest);
 
 namespace {
 std::shared_ptr<UDPTrackerRequest> createAnnounce(const std::string& remoteAddr,
-                                               uint16_t remotePort,
-                                               int32_t transactionId)
+                                                  uint16_t remotePort,
+                                                  int32_t transactionId)
 {
   std::shared_ptr<UDPTrackerRequest> req(new UDPTrackerRequest());
   req->connectionId = INT64_MAX;
@@ -46,7 +45,7 @@ std::shared_ptr<UDPTrackerRequest> createAnnounce(const std::string& remoteAddr,
   req->remotePort = remotePort;
   req->transactionId = transactionId;
   req->infohash = "bittorrent-infohash-";
-  req->peerId =   "bittorrent-peer-id--";
+  req->peerId = "bittorrent-peer-id--";
   req->downloaded = INT64_MAX - 1;
   req->left = INT64_MAX - 2;
   req->uploaded = INT64_MAX - 3;
@@ -61,13 +60,13 @@ std::shared_ptr<UDPTrackerRequest> createAnnounce(const std::string& remoteAddr,
 } // namespace
 
 namespace {
-ssize_t createErrorReply(unsigned char* data, size_t len,
-                         int32_t transactionId, const std::string& errorString)
+ssize_t createErrorReply(unsigned char* data, size_t len, int32_t transactionId,
+                         const std::string& errorString)
 {
   bittorrent::setIntParam(data, UDPT_ACT_ERROR);
-  bittorrent::setIntParam(data+4, transactionId);
-  memcpy(data+8, errorString.c_str(), errorString.size());
-  return 8+errorString.size();
+  bittorrent::setIntParam(data + 4, transactionId);
+  memcpy(data + 8, errorString.c_str(), errorString.size());
+  return 8 + errorString.size();
 }
 } // namespace
 
@@ -76,24 +75,24 @@ ssize_t createConnectReply(unsigned char* data, size_t len,
                            uint64_t connectionId, int32_t transactionId)
 {
   bittorrent::setIntParam(data, UDPT_ACT_CONNECT);
-  bittorrent::setIntParam(data+4, transactionId);
-  bittorrent::setLLIntParam(data+8, connectionId);
+  bittorrent::setIntParam(data + 4, transactionId);
+  bittorrent::setLLIntParam(data + 8, connectionId);
   return 16;
 }
 } // namespace
 
 namespace {
-ssize_t createAnnounceReply(unsigned char*data, size_t len,
+ssize_t createAnnounceReply(unsigned char* data, size_t len,
                             int32_t transactionId, int numPeers = 0)
 {
   bittorrent::setIntParam(data, UDPT_ACT_ANNOUNCE);
-  bittorrent::setIntParam(data+4, transactionId);
-  bittorrent::setIntParam(data+8, 1800);
-  bittorrent::setIntParam(data+12, 100);
-  bittorrent::setIntParam(data+16, 256);
-  for(int i = 0; i < numPeers; ++i) {
-    bittorrent::packcompact(data+20+6*i, "192.168.0."+util::uitos(i+1),
-                            6990+i);
+  bittorrent::setIntParam(data + 4, transactionId);
+  bittorrent::setIntParam(data + 8, 1800);
+  bittorrent::setIntParam(data + 12, 100);
+  bittorrent::setIntParam(data + 16, 256);
+  for (int i = 0; i < numPeers; ++i) {
+    bittorrent::packcompact(data + 20 + 6 * i,
+                            "192.168.0." + util::uitos(i + 1), 6990 + i);
   }
   return 20 + 6 * numPeers;
 }
@@ -109,8 +108,8 @@ void UDPTrackerClientTest::testCreateUDPTrackerConnect()
   req->remoteAddr = "192.168.0.1";
   req->remotePort = 6991;
   req->transactionId = 1000000009;
-  ssize_t rv = createUDPTrackerConnect(data, sizeof(data), remoteAddr,
-                                       remotePort, req);
+  ssize_t rv =
+      createUDPTrackerConnect(data, sizeof(data), remoteAddr, remotePort, req);
   CPPUNIT_ASSERT_EQUAL((ssize_t)16, rv);
   CPPUNIT_ASSERT_EQUAL(req->remoteAddr, remoteAddr);
   CPPUNIT_ASSERT_EQUAL(req->remotePort, remotePort);
@@ -126,10 +125,10 @@ void UDPTrackerClientTest::testCreateUDPTrackerAnnounce()
   unsigned char data[100];
   std::string remoteAddr;
   uint16_t remotePort = 0;
-  std::shared_ptr<UDPTrackerRequest> req(createAnnounce("192.168.0.1", 6991,
-                                                     1000000009));
-  ssize_t rv = createUDPTrackerAnnounce(data, sizeof(data), remoteAddr,
-                                        remotePort, req);
+  std::shared_ptr<UDPTrackerRequest> req(
+      createAnnounce("192.168.0.1", 6991, 1000000009));
+  ssize_t rv =
+      createUDPTrackerAnnounce(data, sizeof(data), remoteAddr, remotePort, req);
   CPPUNIT_ASSERT_EQUAL((ssize_t)100, rv);
   CPPUNIT_ASSERT_EQUAL(req->connectionId,
                        (int64_t)bittorrent::getLLIntParam(data, 0));
@@ -140,8 +139,7 @@ void UDPTrackerClientTest::testCreateUDPTrackerAnnounce()
   CPPUNIT_ASSERT_EQUAL(req->peerId, std::string(&data[36], &data[56]));
   CPPUNIT_ASSERT_EQUAL(req->downloaded,
                        (int64_t)bittorrent::getLLIntParam(data, 56));
-  CPPUNIT_ASSERT_EQUAL(req->left,
-                       (int64_t)bittorrent::getLLIntParam(data, 64));
+  CPPUNIT_ASSERT_EQUAL(req->left, (int64_t)bittorrent::getLLIntParam(data, 64));
   CPPUNIT_ASSERT_EQUAL(req->uploaded,
                        (int64_t)bittorrent::getLLIntParam(data, 72));
   CPPUNIT_ASSERT_EQUAL(req->event, (int32_t)bittorrent::getIntParam(data, 80));
@@ -162,8 +160,10 @@ void UDPTrackerClientTest::testConnectFollowedByAnnounce()
   uint16_t remotePort;
   Timer now;
 
-  std::shared_ptr<UDPTrackerRequest> req1(createAnnounce("192.168.0.1", 6991, 0));
-  std::shared_ptr<UDPTrackerRequest> req2(createAnnounce("192.168.0.1", 6991, 0));
+  std::shared_ptr<UDPTrackerRequest> req1(
+      createAnnounce("192.168.0.1", 6991, 0));
+  std::shared_ptr<UDPTrackerRequest> req2(
+      createAnnounce("192.168.0.1", 6991, 0));
   req2->infohash = "bittorrent-infohash2";
 
   tr.addRequest(req1);
@@ -206,8 +206,7 @@ void UDPTrackerClientTest::testConnectFollowedByAnnounce()
                        (int64_t)bittorrent::getLLIntParam(data, 0));
   CPPUNIT_ASSERT_EQUAL((int)UDPT_ACT_ANNOUNCE,
                        (int)bittorrent::getIntParam(data, 8));
-  CPPUNIT_ASSERT_EQUAL(req1->infohash,
-                       std::string(&data[16], &data[36]));
+  CPPUNIT_ASSERT_EQUAL(req1->infohash, std::string(&data[16], &data[36]));
 
   rv = tr.createRequest(data, sizeof(data), remoteAddr, remotePort, now);
   // Don't duplicate same request data
@@ -227,8 +226,7 @@ void UDPTrackerClientTest::testConnectFollowedByAnnounce()
                        (int64_t)bittorrent::getLLIntParam(data, 0));
   CPPUNIT_ASSERT_EQUAL((int)UDPT_ACT_ANNOUNCE,
                        (int)bittorrent::getIntParam(data, 8));
-  CPPUNIT_ASSERT_EQUAL(req2->infohash,
-                       std::string(&data[16], &data[36]));
+  CPPUNIT_ASSERT_EQUAL(req2->infohash, std::string(&data[16], &data[36]));
 
   tr.requestSent(now);
   // Now all requests are inflight
@@ -248,31 +246,31 @@ void UDPTrackerClientTest::testConnectFollowedByAnnounce()
   CPPUNIT_ASSERT_EQUAL((int)UDPT_STA_COMPLETE, req1->state);
   CPPUNIT_ASSERT_EQUAL((int)UDPT_ERR_SUCCESS, req1->error);
   CPPUNIT_ASSERT_EQUAL((size_t)2, req1->reply->peers.size());
-  for(int i = 0; i < 2; ++i) {
-    CPPUNIT_ASSERT_EQUAL("192.168.0."+util::uitos(i+1),
+  for (int i = 0; i < 2; ++i) {
+    CPPUNIT_ASSERT_EQUAL("192.168.0." + util::uitos(i + 1),
                          req1->reply->peers[i].first);
-    CPPUNIT_ASSERT_EQUAL((uint16_t)(6990+i), req1->reply->peers[i].second);
+    CPPUNIT_ASSERT_EQUAL((uint16_t)(6990 + i), req1->reply->peers[i].second);
   }
 
   // Since we have connection ID, next announce request can be sent
   // immediately
-  std::shared_ptr<UDPTrackerRequest> req3(createAnnounce("192.168.0.1", 6991, 0));
+  std::shared_ptr<UDPTrackerRequest> req3(
+      createAnnounce("192.168.0.1", 6991, 0));
   req3->infohash = "bittorrent-infohash3";
   tr.addRequest(req3);
   rv = tr.createRequest(data, sizeof(data), remoteAddr, remotePort, now);
   CPPUNIT_ASSERT_EQUAL((ssize_t)100, rv);
-  CPPUNIT_ASSERT_EQUAL(req3->infohash,
-                       std::string(&data[16], &data[36]));
+  CPPUNIT_ASSERT_EQUAL(req3->infohash, std::string(&data[16], &data[36]));
 
   tr.requestSent(now);
 
-  std::shared_ptr<UDPTrackerRequest> req4(createAnnounce("192.168.0.1", 6991, 0));
+  std::shared_ptr<UDPTrackerRequest> req4(
+      createAnnounce("192.168.0.1", 6991, 0));
   req4->infohash = "bittorrent-infohash4";
   tr.addRequest(req4);
   Timer future = now;
   future.advance(1_h);
-  rv = tr.createRequest(data, sizeof(data), remoteAddr, remotePort,
-                        future);
+  rv = tr.createRequest(data, sizeof(data), remoteAddr, remotePort, future);
   // connection ID is stale because of the timeout
   CPPUNIT_ASSERT_EQUAL((ssize_t)16, rv);
   CPPUNIT_ASSERT_EQUAL((int64_t)UDPT_INITIAL_CONNECTION_ID,
@@ -288,10 +286,10 @@ void UDPTrackerClientTest::testRequestFailure()
   uint16_t remotePort;
   Timer now;
   {
-    std::shared_ptr<UDPTrackerRequest> req1
-      (createAnnounce("192.168.0.1", 6991, 0));
-    std::shared_ptr<UDPTrackerRequest> req2
-      (createAnnounce("192.168.0.1", 6991, 0));
+    std::shared_ptr<UDPTrackerRequest> req1(
+        createAnnounce("192.168.0.1", 6991, 0));
+    std::shared_ptr<UDPTrackerRequest> req2(
+        createAnnounce("192.168.0.1", 6991, 0));
 
     tr.addRequest(req1);
     tr.addRequest(req2);
@@ -308,10 +306,10 @@ void UDPTrackerClientTest::testRequestFailure()
     CPPUNIT_ASSERT(tr.getInflightRequests().empty());
   }
   {
-    std::shared_ptr<UDPTrackerRequest> req1
-      (createAnnounce("192.168.0.1", 6991, 0));
-    std::shared_ptr<UDPTrackerRequest> req2
-      (createAnnounce("192.168.0.1", 6991, 0));
+    std::shared_ptr<UDPTrackerRequest> req1(
+        createAnnounce("192.168.0.1", 6991, 0));
+    std::shared_ptr<UDPTrackerRequest> req2(
+        createAnnounce("192.168.0.1", 6991, 0));
 
     tr.addRequest(req1);
     tr.addRequest(req2);
@@ -332,8 +330,8 @@ void UDPTrackerClientTest::testRequestFailure()
     CPPUNIT_ASSERT(tr.getInflightRequests().empty());
   }
   {
-    std::shared_ptr<UDPTrackerRequest> req1
-      (createAnnounce("192.168.0.1", 6991, 0));
+    std::shared_ptr<UDPTrackerRequest> req1(
+        createAnnounce("192.168.0.1", 6991, 0));
 
     tr.addRequest(req1);
     rv = tr.createRequest(data, sizeof(data), remoteAddr, remotePort, now);
@@ -373,10 +371,10 @@ void UDPTrackerClientTest::testTimeout()
   Timer now;
   UDPTrackerClient tr;
   {
-    std::shared_ptr<UDPTrackerRequest> req1
-      (createAnnounce("192.168.0.1", 6991, 0));
-    std::shared_ptr<UDPTrackerRequest> req2
-      (createAnnounce("192.168.0.1", 6991, 0));
+    std::shared_ptr<UDPTrackerRequest> req1(
+        createAnnounce("192.168.0.1", 6991, 0));
+    std::shared_ptr<UDPTrackerRequest> req2(
+        createAnnounce("192.168.0.1", 6991, 0));
 
     tr.addRequest(req1);
     tr.addRequest(req2);
@@ -408,8 +406,8 @@ void UDPTrackerClientTest::testTimeout()
     CPPUNIT_ASSERT_EQUAL((int)UDPT_ERR_TIMEOUT, req2->error);
   }
   {
-    std::shared_ptr<UDPTrackerRequest> req1
-      (createAnnounce("192.168.0.1", 6991, 0));
+    std::shared_ptr<UDPTrackerRequest> req1(
+        createAnnounce("192.168.0.1", 6991, 0));
 
     tr.addRequest(req1);
     rv = tr.createRequest(data, sizeof(data), remoteAddr, remotePort, now);

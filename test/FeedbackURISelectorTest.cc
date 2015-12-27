@@ -11,7 +11,7 @@
 
 namespace aria2 {
 
-class FeedbackURISelectorTest:public CppUnit::TestFixture {
+class FeedbackURISelectorTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(FeedbackURISelectorTest);
   CPPUNIT_TEST(testSelect_withoutServerStat);
@@ -19,6 +19,7 @@ class FeedbackURISelectorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSelect_withUsedHosts);
   CPPUNIT_TEST(testSelect_skipErrorHost);
   CPPUNIT_TEST_SUITE_END();
+
 private:
   FileEntry fileEntry_;
 
@@ -29,11 +30,8 @@ private:
 public:
   void setUp()
   {
-    fileEntry_.setUris({
-        "http://alpha/file",
-        "ftp://alpha/file",
-        "http://bravo/file"
-    });
+    fileEntry_.setUris(
+        {"http://alpha/file", "ftp://alpha/file", "http://bravo/file"});
 
     ssm.reset(new ServerStatMan());
     sel.reset(new FeedbackURISelector(ssm));
@@ -50,12 +48,11 @@ public:
   void testSelect_skipErrorHost();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(FeedbackURISelectorTest);
 
 void FeedbackURISelectorTest::testSelect_withoutServerStat()
 {
-  std::vector<std::pair<size_t, std::string> > usedHosts;
+  std::vector<std::pair<size_t, std::string>> usedHosts;
   // Without ServerStat and usedHosts, selector returns first URI
   std::string uri = sel->select(&fileEntry_, usedHosts);
   CPPUNIT_ASSERT_EQUAL(std::string("http://alpha/file"), uri);
@@ -71,7 +68,7 @@ void FeedbackURISelectorTest::testSelect()
   std::shared_ptr<ServerStat> alphaHTTP(new ServerStat("alpha", "http"));
   alphaHTTP->updateDownloadSpeed(180000);
   alphaHTTP->setError();
-  std::vector<std::pair<size_t, std::string> > usedHosts;
+  std::vector<std::pair<size_t, std::string>> usedHosts;
 
   ssm->add(bravo);
   ssm->add(alphaFTP);
@@ -88,7 +85,7 @@ void FeedbackURISelectorTest::testSelect()
 
 void FeedbackURISelectorTest::testSelect_withUsedHosts()
 {
-  std::vector<std::pair<size_t, std::string> > usedHosts;
+  std::vector<std::pair<size_t, std::string>> usedHosts;
   usedHosts.push_back(std::make_pair(1, "bravo"));
   usedHosts.push_back(std::make_pair(2, "alpha"));
 
@@ -111,7 +108,7 @@ void FeedbackURISelectorTest::testSelect_skipErrorHost()
   alphaHTTP->setError();
   std::shared_ptr<ServerStat> alphaFTP(new ServerStat("alpha", "ftp"));
   alphaFTP->setError();
-  std::vector<std::pair<size_t, std::string> > usedHosts;
+  std::vector<std::pair<size_t, std::string>> usedHosts;
 
   ssm->add(alphaHTTP);
   ssm->add(alphaFTP);

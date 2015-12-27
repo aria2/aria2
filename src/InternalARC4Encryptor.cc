@@ -40,7 +40,8 @@ namespace aria2 {
 void ARC4Encryptor::init(const unsigned char* key, size_t keyLength)
 {
   j = 0;
-  for (auto& c : state_) c = j++;
+  for (auto& c : state_)
+    c = j++;
 
   j = 0;
   for (i = 0; i < sizeof(state_); ++i) {

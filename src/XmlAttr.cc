@@ -37,11 +37,12 @@
 namespace aria2 {
 
 XmlAttr::XmlAttr()
-  : localname(nullptr),
-    prefix(nullptr),
-    nsUri(nullptr),
-    value(nullptr),
-    valueLength(0)
-{}
+    : localname(nullptr),
+      prefix(nullptr),
+      nsUri(nullptr),
+      value(nullptr),
+      valueLength(0)
+{
+}
 
 } // namespace aria2

@@ -17,7 +17,7 @@
 
 namespace aria2 {
 
-class FtpConnectionTest:public CppUnit::TestFixture {
+class FtpConnectionTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(FtpConnectionTest);
   CPPUNIT_TEST(testReceiveResponse);
@@ -34,6 +34,7 @@ class FtpConnectionTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSendRetr);
   CPPUNIT_TEST(testReceiveEpsvResponse);
   CPPUNIT_TEST_SUITE_END();
+
 private:
   std::shared_ptr<SocketCore> serverSocket_;
   uint16_t listenPort_;
@@ -42,6 +43,7 @@ private:
   std::shared_ptr<Option> option_;
   std::shared_ptr<AuthConfigFactory> authConfigFactory_;
   std::shared_ptr<Request> req_;
+
 public:
   void setUp()
   {
@@ -63,14 +65,15 @@ public:
     clientSocket_.reset(new SocketCore());
     clientSocket_->establishConnection("localhost", listenPort_);
 
-    while(!clientSocket_->isWritable(0));
+    while (!clientSocket_->isWritable(0))
+      ;
 
     serverSocket_ = listenSocket->acceptConnection();
     serverSocket_->setBlockingMode();
-    ftp_.reset(new FtpConnection(1, clientSocket_, req_,
-                                 authConfigFactory_->createAuthConfig
-                                 (req_, option_.get()),
-                                 option_.get()));
+    ftp_.reset(new FtpConnection(
+        1, clientSocket_, req_,
+        authConfigFactory_->createAuthConfig(req_, option_.get()),
+        option_.get()));
   }
 
   void tearDown() {}
@@ -90,13 +93,13 @@ public:
   void testReceiveEpsvResponse();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(FtpConnectionTest);
 
 namespace {
 void waitRead(const std::shared_ptr<SocketCore>& socket)
 {
-  while(!socket->isReadable(0));
+  while (!socket->isReadable(0))
+    ;
 }
 } // namespace
 
@@ -191,7 +194,7 @@ void FtpConnectionTest::testReceiveMdtmResponse()
 #ifdef HAVE_TIMEGM
     // Time will be normalized. Wed Jul 8 12:43:12 2009
     CPPUNIT_ASSERT_EQUAL((time_t)1247056992, t.getTimeFromEpoch());
-#else // !HAVE_TIMEGM
+#else  // !HAVE_TIMEGM
     // The replacement timegm does not normalize.
     CPPUNIT_ASSERT_EQUAL((time_t)-1, t.getTimeFromEpoch());
 #endif // !HAVE_TIMEGM
@@ -209,7 +212,7 @@ void FtpConnectionTest::testReceiveResponse_overflow()
   char data[1_k];
   memset(data, 0, sizeof(data));
   memcpy(data, "213 ", 4);
-  for(int i = 0; i < 64; ++i) {
+  for (int i = 0; i < 64; ++i) {
     serverSocket_->writeData(data, sizeof(data));
     waitRead(clientSocket_);
     CPPUNIT_ASSERT_EQUAL(0, ftp_->receiveResponse());
@@ -219,7 +222,8 @@ void FtpConnectionTest::testReceiveResponse_overflow()
   try {
     ftp_->receiveResponse();
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(DlRetryEx& e) {
+  }
+  catch (DlRetryEx& e) {
     // success
   }
 }
@@ -256,7 +260,8 @@ void FtpConnectionTest::testReceivePwdResponse_unquotedResponse()
   try {
     ftp_->receivePwdResponse(pwd);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(DlAbortEx& e) {
+  }
+  catch (DlAbortEx& e) {
     // success
   }
 }

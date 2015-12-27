@@ -54,20 +54,17 @@ private:
   std::shared_ptr<SocketCore> socket_;
   bool writeCheck_;
   std::shared_ptr<WebSocketSession> wsSession_;
+
 public:
-  WebSocketInteractionCommand(cuid_t cuid,
-                              const std::shared_ptr<WebSocketSession>& wsSession,
-                              DownloadEngine* e,
-                              const std::shared_ptr<SocketCore>& socket);
+  WebSocketInteractionCommand(
+      cuid_t cuid, const std::shared_ptr<WebSocketSession>& wsSession,
+      DownloadEngine* e, const std::shared_ptr<SocketCore>& socket);
 
   virtual ~WebSocketInteractionCommand();
 
   virtual bool execute() CXX11_OVERRIDE;
 
-  std::shared_ptr<WebSocketSession>& getSession()
-  {
-    return wsSession_;
-  }
+  std::shared_ptr<WebSocketSession>& getSession() { return wsSession_; }
 
   void updateWriteCheck();
 };

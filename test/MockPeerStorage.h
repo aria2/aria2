@@ -11,13 +11,14 @@ namespace aria2 {
 
 class MockPeerStorage : public PeerStorage {
 private:
-  std::deque<std::shared_ptr<Peer> > unusedPeers;
+  std::deque<std::shared_ptr<Peer>> unusedPeers;
   PeerSet usedPeers;
-  std::deque<std::shared_ptr<Peer> > droppedPeers;
-  std::vector<std::shared_ptr<Peer> > activePeers;
+  std::deque<std::shared_ptr<Peer>> droppedPeers;
+  std::vector<std::shared_ptr<Peer>> activePeers;
   int numChokeExecuted_;
+
 public:
-  MockPeerStorage():numChokeExecuted_(0) {}
+  MockPeerStorage() : numChokeExecuted_(0) {}
   virtual ~MockPeerStorage() {}
 
   virtual bool addPeer(const std::shared_ptr<Peer>& peer) CXX11_OVERRIDE
@@ -26,13 +27,13 @@ public:
     return true;
   }
 
-  virtual void addPeer(const std::vector<std::shared_ptr<Peer> >& peers)
-    CXX11_OVERRIDE
+  virtual void
+  addPeer(const std::vector<std::shared_ptr<Peer>>& peers) CXX11_OVERRIDE
   {
     unusedPeers.insert(unusedPeers.end(), peers.begin(), peers.end());
   }
 
-  const std::deque<std::shared_ptr<Peer> >& getUnusedPeers()
+  const std::deque<std::shared_ptr<Peer>>& getUnusedPeers()
   {
     return unusedPeers;
   }
@@ -42,67 +43,50 @@ public:
     return unusedPeers.size() + usedPeers.size();
   }
 
-  virtual const std::deque<std::shared_ptr<Peer> >& getDroppedPeers()
-    CXX11_OVERRIDE
+  virtual const std::deque<std::shared_ptr<Peer>>&
+  getDroppedPeers() CXX11_OVERRIDE
   {
     return droppedPeers;
   }
 
-  void addDroppedPeer(const std::shared_ptr<Peer>& peer) {
+  void addDroppedPeer(const std::shared_ptr<Peer>& peer)
+  {
     droppedPeers.push_back(peer);
   }
 
-  virtual bool isPeerAvailable() CXX11_OVERRIDE
-  {
-    return false;
-  }
+  virtual bool isPeerAvailable() CXX11_OVERRIDE { return false; }
 
-  void setActivePeers(const std::vector<std::shared_ptr<Peer> >& activePeers)
+  void setActivePeers(const std::vector<std::shared_ptr<Peer>>& activePeers)
   {
     this->activePeers = activePeers;
   }
 
-  void getActivePeers(std::vector<std::shared_ptr<Peer> >& peers) {
+  void getActivePeers(std::vector<std::shared_ptr<Peer>>& peers)
+  {
     peers.insert(peers.end(), activePeers.begin(), activePeers.end());
   }
 
-  virtual const PeerSet& getUsedPeers() CXX11_OVERRIDE
-  {
-    return usedPeers;
-  }
+  virtual const PeerSet& getUsedPeers() CXX11_OVERRIDE { return usedPeers; }
 
   virtual bool isBadPeer(const std::string& ipaddr) CXX11_OVERRIDE
   {
     return false;
   }
 
-  virtual void addBadPeer(const std::string& ipaddr) CXX11_OVERRIDE
-  {
-  }
+  virtual void addBadPeer(const std::string& ipaddr) CXX11_OVERRIDE {}
 
   virtual std::shared_ptr<Peer> checkoutPeer(cuid_t cuid) CXX11_OVERRIDE
   {
     return nullptr;
   }
 
-  virtual void returnPeer(const std::shared_ptr<Peer>& peer) CXX11_OVERRIDE
-  {
-  }
+  virtual void returnPeer(const std::shared_ptr<Peer>& peer) CXX11_OVERRIDE {}
 
-  virtual bool chokeRoundIntervalElapsed() CXX11_OVERRIDE
-  {
-    return false;
-  }
+  virtual bool chokeRoundIntervalElapsed() CXX11_OVERRIDE { return false; }
 
-  virtual void executeChoke() CXX11_OVERRIDE
-  {
-    ++numChokeExecuted_;
-  }
+  virtual void executeChoke() CXX11_OVERRIDE { ++numChokeExecuted_; }
 
-  int getNumChokeExecuted() const
-  {
-    return numChokeExecuted_;
-  }
+  int getNumChokeExecuted() const { return numChokeExecuted_; }
 };
 
 #endif // D_MOCK_PEER_STORAGE_H

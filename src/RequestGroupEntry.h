@@ -48,17 +48,15 @@ class RequestGroupEntry {
 private:
   RequestGroup* requestGroup_;
   std::unique_ptr<Command> nextCommand_;
+
 public:
-  RequestGroupEntry(RequestGroup* requestGroup,
-                    std::unique_ptr<Command> nextCommand =
-                    std::unique_ptr<Command>());
+  RequestGroupEntry(
+      RequestGroup* requestGroup,
+      std::unique_ptr<Command> nextCommand = std::unique_ptr<Command>());
 
   virtual ~RequestGroupEntry();
 
-  RequestGroup* getRequestGroup() const
-  {
-    return requestGroup_;
-  }
+  RequestGroup* getRequestGroup() const { return requestGroup_; }
 
   const std::unique_ptr<Command>& getNextCommand() const;
 

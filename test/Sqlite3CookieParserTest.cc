@@ -11,7 +11,7 @@
 
 namespace aria2 {
 
-class Sqlite3CookieParserTest:public CppUnit::TestFixture {
+class Sqlite3CookieParserTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(Sqlite3CookieParserTest);
   CPPUNIT_TEST(testMozParse);
@@ -19,6 +19,7 @@ class Sqlite3CookieParserTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testMozParse_badfile);
   CPPUNIT_TEST(testChromumParse);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -30,12 +31,11 @@ public:
   void testChromumParse();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(Sqlite3CookieParserTest);
 
 void Sqlite3CookieParserTest::testMozParse()
 {
-  auto parser = Sqlite3MozCookieParser{A2_TEST_DIR"/cookies.sqlite"};
+  auto parser = Sqlite3MozCookieParser{A2_TEST_DIR "/cookies.sqlite"};
   auto cookies = parser.parse();
   CPPUNIT_ASSERT_EQUAL((size_t)3, cookies.size());
 
@@ -83,29 +83,32 @@ void Sqlite3CookieParserTest::testMozParse_fileNotFound()
   try {
     parser.parse();
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(RecoverableException& e) {
+  }
+  catch (RecoverableException& e) {
     // SUCCESS
     const char A2_SQLITE_ERR[] = "SQLite3 database is not opened";
-    CPPUNIT_ASSERT(util::startsWith(e.what(), e.what()+strlen(e.what()),
-                                    A2_SQLITE_ERR, std::end(A2_SQLITE_ERR)-1));
+    CPPUNIT_ASSERT(util::startsWith(e.what(), e.what() + strlen(e.what()),
+                                    A2_SQLITE_ERR,
+                                    std::end(A2_SQLITE_ERR) - 1));
   }
 }
 
 void Sqlite3CookieParserTest::testMozParse_badfile()
 {
-  auto parser = Sqlite3MozCookieParser{A2_TEST_DIR"/badcookies.sqlite"};
+  auto parser = Sqlite3MozCookieParser{A2_TEST_DIR "/badcookies.sqlite"};
   try {
     parser.parse();
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(RecoverableException& e) {
+  }
+  catch (RecoverableException& e) {
     // SUCCESS
   }
 }
 
 void Sqlite3CookieParserTest::testChromumParse()
 {
-  auto parser = Sqlite3ChromiumCookieParser
-    {A2_TEST_DIR"/chromium_cookies.sqlite"};
+  auto parser =
+      Sqlite3ChromiumCookieParser{A2_TEST_DIR "/chromium_cookies.sqlite"};
   auto cookies = parser.parse();
   CPPUNIT_ASSERT_EQUAL((size_t)3, cookies.size());
 

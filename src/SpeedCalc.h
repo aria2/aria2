@@ -52,6 +52,7 @@ private:
   int maxSpeed_;
 
   void removeStaleTimeSlot(const Timer& now);
+
 public:
   SpeedCalc();
 
@@ -60,9 +61,7 @@ public:
    */
   int calculateSpeed();
 
-  int getMaxSpeed() const {
-    return maxSpeed_;
-  }
+  int getMaxSpeed() const { return maxSpeed_; }
 
   int calculateAvgSpeed() const;
 

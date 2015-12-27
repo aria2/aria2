@@ -72,15 +72,14 @@ private:
   // (raw binary value).
   std::string hashType_;
   std::string digest_;
+
 protected:
   virtual bool executeInternal() CXX11_OVERRIDE;
 
 public:
-  SftpNegotiationCommand(cuid_t cuid,
-                         const std::shared_ptr<Request>& req,
+  SftpNegotiationCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
                          const std::shared_ptr<FileEntry>& fileEntry,
-                         RequestGroup* requestGroup,
-                         DownloadEngine* e,
+                         RequestGroup* requestGroup, DownloadEngine* e,
                          const std::shared_ptr<SocketCore>& s,
                          Seq seq = SEQ_HANDSHAKE);
   virtual ~SftpNegotiationCommand();

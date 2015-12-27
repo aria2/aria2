@@ -75,15 +75,9 @@ public:
 
   int getMaxUploadSpeed() const;
 
-  int getAvgDownloadSpeed() const
-  {
-    return avgDownloadSpeed_;
-  }
+  int getAvgDownloadSpeed() const { return avgDownloadSpeed_; }
 
-  int getAvgUploadSpeed() const
-  {
-    return avgUploadSpeed_;
-  }
+  int getAvgUploadSpeed() const { return avgUploadSpeed_; }
 
   void reset();
 
@@ -91,25 +85,13 @@ public:
 
   void downloadStop();
 
-  const Timer& getDownloadStartTime() const
-  {
-    return downloadStartTime_;
-  }
+  const Timer& getDownloadStartTime() const { return downloadStartTime_; }
 
-  STATUS getStatus() const
-  {
-    return status_;
-  }
+  STATUS getStatus() const { return status_; }
 
-  uint64_t getSessionDownloadLength() const
-  {
-    return sessionDownloadLength_;
-  }
+  uint64_t getSessionDownloadLength() const { return sessionDownloadLength_; }
 
-  uint64_t getSessionUploadLength() const
-  {
-    return sessionUploadLength_;
-  }
+  uint64_t getSessionUploadLength() const { return sessionUploadLength_; }
 
   void addSessionDownloadLength(uint64_t length)
   {
@@ -117,6 +99,7 @@ public:
   }
 
   TransferStat toTransferStat();
+
 private:
   SpeedCalc downloadSpeed_;
   SpeedCalc uploadSpeed_;

@@ -62,10 +62,7 @@ public:
 
   ~ExtensionMessageRegistry();
 
-  const Extensions& getExtensions() const
-  {
-    return extensions_;
-  }
+  const Extensions& getExtensions() const { return extensions_; }
 
   void setExtensions(const Extensions& extensions);
 
@@ -86,6 +83,7 @@ public:
   // InterestingExtension other than MAX_EXTENSION. After this call,
   // getExtensionMessageID(key) returns 0.
   void removeExtension(int key);
+
 private:
   Extensions extensions_;
 };

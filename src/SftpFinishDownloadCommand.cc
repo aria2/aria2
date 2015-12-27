@@ -51,14 +51,11 @@
 
 namespace aria2 {
 
-SftpFinishDownloadCommand::SftpFinishDownloadCommand
-(cuid_t cuid,
- const std::shared_ptr<Request>& req,
- const std::shared_ptr<FileEntry>& fileEntry,
- RequestGroup* requestGroup,
- DownloadEngine* e,
- const std::shared_ptr<SocketCore>& socket)
-  : AbstractCommand(cuid, req, fileEntry, requestGroup, e, socket)
+SftpFinishDownloadCommand::SftpFinishDownloadCommand(
+    cuid_t cuid, const std::shared_ptr<Request>& req,
+    const std::shared_ptr<FileEntry>& fileEntry, RequestGroup* requestGroup,
+    DownloadEngine* e, const std::shared_ptr<SocketCore>& socket)
+    : AbstractCommand(cuid, req, fileEntry, requestGroup, e, socket)
 {
   disableReadCheckSocket();
   setWriteCheckSocket(getSocket());
@@ -70,11 +67,11 @@ SftpFinishDownloadCommand::~SftpFinishDownloadCommand() {}
 // AbstractCommand::_segments is empty.
 bool SftpFinishDownloadCommand::execute()
 {
-  if(getRequestGroup()->isHaltRequested()) {
+  if (getRequestGroup()->isHaltRequested()) {
     return true;
   }
   try {
-    if(readEventEnabled() || writeEventEnabled() || hupEventEnabled()) {
+    if (readEventEnabled() || writeEventEnabled() || hupEventEnabled()) {
       getCheckPoint() = global::wallclock();
 
       if (!getSocket()->sshSFTPClose()) {
@@ -85,30 +82,33 @@ bool SftpFinishDownloadCommand::execute()
       }
 
       auto authConfig =
-        getDownloadEngine()->getAuthConfigFactory()->createAuthConfig
-        (getRequest(), getRequestGroup()->getOption().get());
+          getDownloadEngine()->getAuthConfigFactory()->createAuthConfig(
+              getRequest(), getRequestGroup()->getOption().get());
 
-      getDownloadEngine()->poolSocket
-        (getRequest(), authConfig->getUser(), createProxyRequest(),
-         getSocket(), "");
-    } else if(getCheckPoint().difference(global::wallclock()) >= getTimeout()) {
+      getDownloadEngine()->poolSocket(getRequest(), authConfig->getUser(),
+                                      createProxyRequest(), getSocket(), "");
+    }
+    else if (getCheckPoint().difference(global::wallclock()) >= getTimeout()) {
       A2_LOG_INFO(fmt("CUID#%" PRId64
                       " - Timeout before receiving transfer complete.",
                       getCuid()));
-    } else {
+    }
+    else {
       addCommandSelf();
       return false;
     }
-  } catch(RecoverableException& e) {
+  }
+  catch (RecoverableException& e) {
     A2_LOG_INFO_EX(fmt("CUID#%" PRId64
                        " - Exception was thrown, but download was"
                        " finished, so we can ignore the exception.",
                        getCuid()),
                    e);
   }
-  if(getRequestGroup()->downloadFinished()) {
+  if (getRequestGroup()->downloadFinished()) {
     return true;
-  } else {
+  }
+  else {
     return prepareForRetry(0);
   }
 }

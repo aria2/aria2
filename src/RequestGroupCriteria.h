@@ -41,8 +41,7 @@ namespace aria2 {
 
 class RequestGroup;
 
-class RequestGroupCriteria
-{
+class RequestGroupCriteria {
 public:
   virtual ~RequestGroupCriteria() {}
 

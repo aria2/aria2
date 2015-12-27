@@ -53,10 +53,7 @@ unsigned char* IndexBtMessage::createMessage()
   return msg;
 }
 
-size_t IndexBtMessage::getMessageLength()
-{
-  return MESSAGE_LENGTH;
-}
+size_t IndexBtMessage::getMessageLength() { return MESSAGE_LENGTH; }
 
 std::string IndexBtMessage::toString() const
 {

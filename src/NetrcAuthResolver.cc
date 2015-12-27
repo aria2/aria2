@@ -39,16 +39,18 @@
 
 namespace aria2 {
 
-NetrcAuthResolver::NetrcAuthResolver()
-  : netrc_(nullptr), ignoreDefault_(false) {}
+NetrcAuthResolver::NetrcAuthResolver() : netrc_(nullptr), ignoreDefault_(false)
+{
+}
 
 std::unique_ptr<AuthConfig>
 NetrcAuthResolver::resolveAuthConfig(const std::string& hostname)
 {
   auto authConfig = getUserDefinedAuthConfig();
-  if(authConfig) {
+  if (authConfig) {
     return authConfig;
-  } else {
+  }
+  else {
     return findNetrcAuthenticator(hostname);
   }
 }
@@ -56,35 +58,29 @@ NetrcAuthResolver::resolveAuthConfig(const std::string& hostname)
 std::unique_ptr<AuthConfig>
 NetrcAuthResolver::findNetrcAuthenticator(const std::string& hostname) const
 {
-  if(!netrc_) {
+  if (!netrc_) {
     return getDefaultAuthConfig();
-  } else {
+  }
+  else {
     auto auth = netrc_->findAuthenticator(hostname);
-    if(!auth) {
+    if (!auth) {
       return getDefaultAuthConfig();
-    } else {
-      if(ignoreDefault_ && auth->getMachine().empty()) {
+    }
+    else {
+      if (ignoreDefault_ && auth->getMachine().empty()) {
         return getDefaultAuthConfig();
-      } else {
+      }
+      else {
         return make_unique<AuthConfig>(auth->getLogin(), auth->getPassword());
       }
     }
   }
 }
 
-void NetrcAuthResolver::setNetrc(Netrc* netrc)
-{
-  netrc_ = netrc;
-}
+void NetrcAuthResolver::setNetrc(Netrc* netrc) { netrc_ = netrc; }
 
-void NetrcAuthResolver::ignoreDefault()
-{
-  ignoreDefault_ = true;
-}
+void NetrcAuthResolver::ignoreDefault() { ignoreDefault_ = true; }
 
-void NetrcAuthResolver::useDefault()
-{
-  ignoreDefault_ = false;
-}
+void NetrcAuthResolver::useDefault() { ignoreDefault_ = false; }
 
 } // namespace aria2

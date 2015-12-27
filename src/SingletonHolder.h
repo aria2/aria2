@@ -41,33 +41,23 @@
 
 namespace aria2 {
 
-template<typename T>
-class SingletonHolder {
+template <typename T> class SingletonHolder {
 private:
   static std::unique_ptr<T> instance_;
 
   SingletonHolder() {}
+
 public:
   ~SingletonHolder() {}
 
-  static std::unique_ptr<T>& instance()
-  {
-    return instance_;
-  }
+  static std::unique_ptr<T>& instance() { return instance_; }
 
-  static void instance(std::unique_ptr<T> ptr)
-  {
-    instance_ = std::move(ptr);
-  }
+  static void instance(std::unique_ptr<T> ptr) { instance_ = std::move(ptr); }
 
-  static void clear()
-  {
-    instance_.reset();
-  }
+  static void clear() { instance_.reset(); }
 };
 
-template<typename T>
-std::unique_ptr<T> SingletonHolder<T>::instance_;
+template <typename T> std::unique_ptr<T> SingletonHolder<T>::instance_;
 
 } // namespace aria2
 

@@ -49,52 +49,53 @@ class FindAttr {
 private:
   const char* localname_;
   const char* nsUri_;
+
 public:
   FindAttr(const char* localname, const char* nsUri)
-    : localname_(localname),
-      nsUri_(nsUri)
-  {}
+      : localname_(localname), nsUri_(nsUri)
+  {
+  }
 
   bool operator()(const XmlAttr& attr) const
   {
     return strcmp(attr.localname, localname_) == 0 &&
-      (attr.nsUri == nullptr || strcmp(attr.nsUri, nsUri_) == 0);
+           (attr.nsUri == nullptr || strcmp(attr.nsUri, nsUri_) == 0);
   }
 };
 } // namespace
 
-std::vector<XmlAttr>::const_iterator findAttr
-(const std::vector<XmlAttr>& attrs,
- const char* localname,
- const char* nsUri)
+std::vector<XmlAttr>::const_iterator findAttr(const std::vector<XmlAttr>& attrs,
+                                              const char* localname,
+                                              const char* nsUri)
 {
   return std::find_if(attrs.begin(), attrs.end(), FindAttr(localname, nsUri));
 }
 
-void InitialMetalinkParserState::beginElement
-(MetalinkParserStateMachine* psm,
- const char* localname,
- const char* prefix,
- const char* nsUri,
- const std::vector<XmlAttr>& attrs)
+void InitialMetalinkParserState::beginElement(MetalinkParserStateMachine* psm,
+                                              const char* localname,
+                                              const char* prefix,
+                                              const char* nsUri,
+                                              const std::vector<XmlAttr>& attrs)
 {
-  if(!nsUri || strcmp(localname, "metalink") != 0) {
+  if (!nsUri || strcmp(localname, "metalink") != 0) {
     psm->setSkipTagState();
-  } else if(strcmp(nsUri, METALINK4_NAMESPACE_URI) == 0) {
+  }
+  else if (strcmp(nsUri, METALINK4_NAMESPACE_URI) == 0) {
     psm->setMetalinkStateV4();
-  } else if(strcmp(nsUri, METALINK3_NAMESPACE_URI) == 0) {
+  }
+  else if (strcmp(nsUri, METALINK3_NAMESPACE_URI) == 0) {
     psm->setMetalinkState();
-  } else {
+  }
+  else {
     psm->setSkipTagState();
   }
 }
 
-void SkipTagMetalinkParserState::beginElement
-(MetalinkParserStateMachine* psm,
- const char* localname,
- const char* prefix,
- const char* nsUri,
- const std::vector<XmlAttr>& attrs)
+void SkipTagMetalinkParserState::beginElement(MetalinkParserStateMachine* psm,
+                                              const char* localname,
+                                              const char* prefix,
+                                              const char* nsUri,
+                                              const std::vector<XmlAttr>& attrs)
 {
   psm->setSkipTagState();
 }

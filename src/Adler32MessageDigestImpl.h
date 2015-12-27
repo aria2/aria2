@@ -41,8 +41,11 @@ namespace aria2 {
 
 #ifdef HAVE_ZLIB
 
-#define ADLER32_MESSAGE_DIGEST                          \
-  { "adler32", make_hi<Adler32MessageDigestImpl>() },
+#define ADLER32_MESSAGE_DIGEST                                                 \
+  {                                                                            \
+    "adler32", make_hi<Adler32MessageDigestImpl>()                             \
+  }                                                                            \
+  ,
 
 class Adler32MessageDigestImpl : public MessageDigestImpl {
 public:
@@ -52,6 +55,7 @@ public:
   virtual void update(const void* data, size_t length) CXX11_OVERRIDE;
   virtual void digest(unsigned char* md) CXX11_OVERRIDE;
   static size_t length();
+
 private:
   unsigned long adler_;
 };

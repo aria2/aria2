@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-class PiecedSegment:public Segment {
+class PiecedSegment : public Segment {
 private:
   std::shared_ptr<Piece> piece_;
   /**
@@ -77,10 +77,8 @@ public:
   virtual void updateWrittenLength(int64_t bytes) CXX11_OVERRIDE;
 
   // `begin' is a offset inside this segment.
-  virtual bool updateHash
-  (int64_t begin,
-   const unsigned char* data,
-   size_t dataLength) CXX11_OVERRIDE;
+  virtual bool updateHash(int64_t begin, const unsigned char* data,
+                          size_t dataLength) CXX11_OVERRIDE;
 
   virtual bool isHashCalculated() const CXX11_OVERRIDE;
 
@@ -94,4 +92,3 @@ public:
 } // namespace aria2
 
 #endif // D_PIECED_SEGMENT_H
-

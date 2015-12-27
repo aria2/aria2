@@ -39,23 +39,24 @@ namespace aria2 {
 
 const char BtCancelMessage::NAME[] = "cancel";
 
-BtCancelMessage::BtCancelMessage
-(size_t index, int32_t begin, int32_t length)
-  :RangeBtMessage(ID, NAME, index, begin, length) {}
+BtCancelMessage::BtCancelMessage(size_t index, int32_t begin, int32_t length)
+    : RangeBtMessage(ID, NAME, index, begin, length)
+{
+}
 
-std::unique_ptr<BtCancelMessage> BtCancelMessage::create
-(const unsigned char* data, size_t dataLength)
+std::unique_ptr<BtCancelMessage>
+BtCancelMessage::create(const unsigned char* data, size_t dataLength)
 {
   return RangeBtMessage::create<BtCancelMessage>(data, dataLength);
 }
 
 void BtCancelMessage::doReceivedAction()
 {
-  if(isMetadataGetMode()) {
+  if (isMetadataGetMode()) {
     return;
   }
-  getBtMessageDispatcher()->doCancelSendingPieceAction
-    (getIndex(), getBegin(), getLength());
+  getBtMessageDispatcher()->doCancelSendingPieceAction(getIndex(), getBegin(),
+                                                       getLength());
 }
 
 } // namespace aria2

@@ -40,8 +40,7 @@
 
 namespace aria2 {
 
-typedef AnonDiskWriterFactory<ByteArrayDiskWriter>
-ByteArrayDiskWriterFactory;
+typedef AnonDiskWriterFactory<ByteArrayDiskWriter> ByteArrayDiskWriterFactory;
 
 } // namespace aria2
 

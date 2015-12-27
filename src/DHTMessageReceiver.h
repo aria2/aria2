@@ -61,12 +61,14 @@ private:
                        const std::string& remoteAddr, uint16_t remotePort);
 
   void onMessageReceived(DHTMessage* message);
+
 public:
   DHTMessageReceiver(const std::shared_ptr<DHTMessageTracker>& tracker);
 
-  std::unique_ptr<DHTMessage> receiveMessage
-  (const std::string& remoteAddr, uint16_t remotePort, unsigned char *data,
-   size_t length);
+  std::unique_ptr<DHTMessage> receiveMessage(const std::string& remoteAddr,
+                                             uint16_t remotePort,
+                                             unsigned char* data,
+                                             size_t length);
 
   void handleTimeout();
 

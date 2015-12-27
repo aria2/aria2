@@ -45,29 +45,24 @@ namespace aria2 {
 class MetalinkParserStateMachine;
 struct XmlAttr;
 
-class MetalinkParserState
-{
+class MetalinkParserState {
 public:
   virtual ~MetalinkParserState() {}
 
-  virtual void beginElement
-  (MetalinkParserStateMachine* stm,
-   const char* localname,
-   const char* prefix,
-   const char* nsUri,
-   const std::vector<XmlAttr>& attrs) {}
-
-  virtual void endElement
-  (MetalinkParserStateMachine* stm,
-   const char* localname,
-   const char* prefix,
-   const char* nsUri,
-   std::string characters) {}
-
-  virtual bool needsCharactersBuffering() const
+  virtual void beginElement(MetalinkParserStateMachine* stm,
+                            const char* localname, const char* prefix,
+                            const char* nsUri,
+                            const std::vector<XmlAttr>& attrs)
   {
-    return false;
   }
+
+  virtual void endElement(MetalinkParserStateMachine* stm,
+                          const char* localname, const char* prefix,
+                          const char* nsUri, std::string characters)
+  {
+  }
+
+  virtual bool needsCharactersBuffering() const { return false; }
 };
 
 } // namespace aria2

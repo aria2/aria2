@@ -47,33 +47,29 @@ namespace aria2 {
 
 class DownloadEngine;
 
-template<typename T>
-class SequentialDispatcherCommand : public Command {
+template <typename T> class SequentialDispatcherCommand : public Command {
 private:
   SequentialPicker<T>* picker_;
 
   DownloadEngine* e_;
+
 protected:
-  DownloadEngine* getDownloadEngine() const
-  {
-    return e_;
-  }
+  DownloadEngine* getDownloadEngine() const { return e_; }
+
 public:
-  SequentialDispatcherCommand
-  (cuid_t cuid,
-   SequentialPicker<T>* picker,
-   DownloadEngine* e)
-    : Command{cuid}, picker_{picker}, e_{e}
+  SequentialDispatcherCommand(cuid_t cuid, SequentialPicker<T>* picker,
+                              DownloadEngine* e)
+      : Command{cuid}, picker_{picker}, e_{e}
   {
     setStatusRealtime();
   }
 
   virtual bool execute() CXX11_OVERRIDE
   {
-    if(e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
+    if (e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
       return true;
     }
-    if(picker_->hasNext() && !picker_->isPicked()) {
+    if (picker_->hasNext() && !picker_->isPicked()) {
       e_->addCommand(createCommand(picker_->pickNext()));
 
       e_->setNoWait(true);
