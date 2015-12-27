@@ -4217,7 +4217,7 @@ Encrypt the whole payload using ARC4 (obfuscation):
 
 SEE ALSO
 --------
-Project Web Site: http://aria2.sourceforge.net/
+Project Web Site: https://aria2.github.io/
 
 Metalink Homepage: http://www.metalinker.org/
 

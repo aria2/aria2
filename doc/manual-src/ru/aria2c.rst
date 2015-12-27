@@ -4292,7 +4292,7 @@ RPC
 
 СМОТРИТЕ ТАКЖЕ
 --------------
-Веб-сайт проекта: http://aria2.sourceforge.net/
+Веб-сайт проекта: https://aria2.github.io/
 
 Домашняя страница Metalink: http://www.metalinker.org/
 
