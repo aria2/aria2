@@ -33,6 +33,8 @@
  */
 /* copyright --> */
 
+// clang-format off
+
 #define TEXT_DIR                                                        \
   _(" -d, --dir=DIR                The directory to store the downloaded file.")
 #define TEXT_OUT                                                        \
@@ -1055,3 +1057,5 @@
     "                              the command given by --on-bt-download-complete\n" \
     "                              is executed. To disable this action, give false\n" \
     "                              to this option.")
+
+// clang-format on
