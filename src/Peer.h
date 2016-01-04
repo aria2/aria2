@@ -171,9 +171,11 @@ public:
 
   void snubbing(bool b);
 
+  void updateUploadSpeed(int32_t bytes);
+
   void updateUploadLength(int32_t bytes);
 
-  void updateDownloadLength(int32_t bytes);
+  void updateDownload(int32_t bytes);
 
   /**
    * Returns the transfer rate from localhost to remote host.

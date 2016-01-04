@@ -68,9 +68,9 @@ public:
 
   int calculateAvgUploadSpeed();
 
-  void updateDownloadLength(size_t bytes);
+  void updateDownload(size_t bytes);
 
-  void updateUploadLength(size_t bytes);
+  void updateUpload(size_t bytes);
 
   int getMaxDownloadSpeed() const;
 

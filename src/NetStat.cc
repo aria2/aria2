@@ -68,15 +68,22 @@ int NetStat::calculateAvgUploadSpeed()
   return avgUploadSpeed_ = uploadSpeed_.calculateAvgSpeed();
 }
 
-void NetStat::updateDownloadLength(size_t bytes)
+void NetStat::updateDownload(size_t bytes)
 {
   downloadSpeed_.update(bytes);
   sessionDownloadLength_ += bytes;
 }
 
-void NetStat::updateUploadLength(size_t bytes)
+void NetStat::updateUpload(size_t bytes)
 {
   uploadSpeed_.update(bytes);
+  sessionUploadLength_ += bytes;
+}
+
+void NetStat::updateUploadSpeed(size_t bytes) { uploadSpeed_.update(bytes); }
+
+void NetStat::updateUploadLength(size_t bytes)
+{
   sessionUploadLength_ += bytes;
 }
 

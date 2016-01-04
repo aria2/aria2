@@ -67,15 +67,9 @@ int PeerStat::calculateAvgUploadSpeed()
   return netStat_.calculateAvgUploadSpeed();
 }
 
-void PeerStat::updateDownloadLength(size_t bytes)
-{
-  netStat_.updateDownloadLength(bytes);
-}
+void PeerStat::updateDownload(size_t bytes) { netStat_.updateDownload(bytes); }
 
-void PeerStat::updateUploadLength(size_t bytes)
-{
-  netStat_.updateUploadLength(bytes);
-}
+void PeerStat::updateUpload(size_t bytes) { netStat_.updateUpload(bytes); }
 
 int PeerStat::getMaxDownloadSpeed() const
 {

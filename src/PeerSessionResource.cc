@@ -196,6 +196,11 @@ int64_t PeerSessionResource::uploadLength() const
   return netStat_.getSessionUploadLength();
 }
 
+void PeerSessionResource::updateUploadSpeed(int32_t bytes)
+{
+  netStat_.updateUploadSpeed(bytes);
+}
+
 void PeerSessionResource::updateUploadLength(int32_t bytes)
 {
   netStat_.updateUploadLength(bytes);
@@ -206,9 +211,9 @@ int64_t PeerSessionResource::downloadLength() const
   return netStat_.getSessionDownloadLength();
 }
 
-void PeerSessionResource::updateDownloadLength(int32_t bytes)
+void PeerSessionResource::updateDownload(int32_t bytes)
 {
-  netStat_.updateDownloadLength(bytes);
+  netStat_.updateDownload(bytes);
   lastDownloadUpdate_ = global::wallclock();
 }
 

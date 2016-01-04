@@ -117,8 +117,8 @@ void PeerSessionResourceTest::testUpdateDownloadLength()
   PeerSessionResource res(1_k, 1_m);
 
   CPPUNIT_ASSERT_EQUAL((int64_t)0LL, res.downloadLength());
-  res.updateDownloadLength(100);
-  res.updateDownloadLength(200);
+  res.updateDownload(100);
+  res.updateDownload(200);
   CPPUNIT_ASSERT_EQUAL((int64_t)300LL, res.downloadLength());
 }
 

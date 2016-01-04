@@ -194,8 +194,8 @@ bool DownloadCommand::executeInternal()
       bufSize = streamFilter_->getBytesProcessed();
     }
     getSocketRecvBuffer()->drain(bufSize);
-    peerStat_->updateDownloadLength(bufSize);
-    getDownloadContext()->updateDownloadLength(bufSize);
+    peerStat_->updateDownload(bufSize);
+    getDownloadContext()->updateDownload(bufSize);
   }
   bool segmentPartComplete = false;
   // Note that GrowSegment::complete() always returns false.

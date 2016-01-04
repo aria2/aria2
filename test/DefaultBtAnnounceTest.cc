@@ -67,8 +67,8 @@ public:
       torrentAttrs->infoHash.assign(std::begin(infoHash), std::end(infoHash));
       dctx_->setAttribute(CTX_ATTR_BT, std::move(torrentAttrs));
     }
-    dctx_->getNetStat().updateDownloadLength(pieceLength * 5);
-    dctx_->getNetStat().updateUploadLength(pieceLength * 6);
+    dctx_->getNetStat().updateDownload(pieceLength * 5);
+    dctx_->getNetStat().updateUpload(pieceLength * 6);
     bittorrent::setStaticPeerId(peerId);
 
     pieceStorage_.reset(new MockPieceStorage());

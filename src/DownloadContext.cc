@@ -288,19 +288,28 @@ void DownloadContext::setSignature(std::unique_ptr<Signature> signature)
   signature_ = std::move(signature);
 }
 
-void DownloadContext::updateDownloadLength(size_t bytes)
+void DownloadContext::updateDownload(size_t bytes)
 {
-  netStat_.updateDownloadLength(bytes);
+  netStat_.updateDownload(bytes);
   RequestGroupMan* rgman = ownerRequestGroup_->getRequestGroupMan();
   if (rgman) {
-    rgman->getNetStat().updateDownloadLength(bytes);
+    rgman->getNetStat().updateDownload(bytes);
+  }
+}
+
+void DownloadContext::updateUploadSpeed(size_t bytes)
+{
+  netStat_.updateUploadSpeed(bytes);
+  auto rgman = ownerRequestGroup_->getRequestGroupMan();
+  if (rgman) {
+    rgman->getNetStat().updateUploadSpeed(bytes);
   }
 }
 
 void DownloadContext::updateUploadLength(size_t bytes)
 {
   netStat_.updateUploadLength(bytes);
-  RequestGroupMan* rgman = ownerRequestGroup_->getRequestGroupMan();
+  auto rgman = ownerRequestGroup_->getRequestGroupMan();
   if (rgman) {
     rgman->getNetStat().updateUploadLength(bytes);
   }

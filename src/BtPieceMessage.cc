@@ -99,8 +99,8 @@ void BtPieceMessage::doReceivedAction()
   }
   auto slot = getBtMessageDispatcher()->getOutstandingRequest(index_, begin_,
                                                               blockLength_);
-  getPeer()->updateDownloadLength(blockLength_);
-  downloadContext_->updateDownloadLength(blockLength_);
+  getPeer()->updateDownload(blockLength_);
+  downloadContext_->updateDownload(blockLength_);
   if (slot) {
     getPeer()->snubbing(false);
     std::shared_ptr<Piece> piece = getPieceStorage()->getPiece(index_);
@@ -175,8 +175,9 @@ size_t BtPieceMessage::getMessageHeaderLength()
 
 namespace {
 struct PieceSendUpdate : public ProgressUpdate {
-  PieceSendUpdate(std::shared_ptr<Peer> peer, size_t headerLength)
-      : peer(std::move(peer)), headerLength(headerLength)
+  PieceSendUpdate(DownloadContext* dctx, std::shared_ptr<Peer> peer,
+                  size_t headerLength)
+      : dctx(dctx), peer(std::move(peer)), headerLength(headerLength)
   {
   }
   virtual void update(size_t length, bool complete) CXX11_OVERRIDE
@@ -187,7 +188,9 @@ struct PieceSendUpdate : public ProgressUpdate {
       length -= m;
     }
     peer->updateUploadLength(length);
+    dctx->updateUploadLength(length);
   }
+  DownloadContext* dctx;
   std::shared_ptr<Peer> peer;
   size_t headerLength;
 };
@@ -216,12 +219,13 @@ void BtPieceMessage::pushPieceData(int64_t offset, int32_t length) const
   r = getPieceStorage()->getDiskAdaptor()->readData(
       buf.get() + MESSAGE_HEADER_LENGTH, length, offset);
   if (r == length) {
+    const auto& peer = getPeer();
     getPeerConnection()->pushBytes(
         buf.release(), length + MESSAGE_HEADER_LENGTH,
-        make_unique<PieceSendUpdate>(getPeer(), MESSAGE_HEADER_LENGTH));
-    // To avoid upload rate overflow, we update the length here at
-    // once.
-    downloadContext_->updateUploadLength(length);
+        make_unique<PieceSendUpdate>(downloadContext_, peer,
+                                     MESSAGE_HEADER_LENGTH));
+    peer->updateUploadSpeed(length);
+    downloadContext_->updateUploadSpeed(length);
   }
   else {
     throw DL_ABORT_EX(EX_DATA_READ);

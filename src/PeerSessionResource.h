@@ -182,11 +182,13 @@ public:
 
   int64_t uploadLength() const;
 
+  void updateUploadSpeed(int32_t bytes);
+
   void updateUploadLength(int32_t bytes);
 
   int64_t downloadLength() const;
 
-  void updateDownloadLength(int32_t bytes);
+  void updateDownload(int32_t bytes);
 
   const Timer& getLastDownloadUpdate() const { return lastDownloadUpdate_; }
 

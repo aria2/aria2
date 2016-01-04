@@ -174,16 +174,22 @@ void Peer::snubbing(bool b)
   res_->snubbing(b);
 }
 
+void Peer::updateUploadSpeed(int32_t bytes)
+{
+  assert(res_);
+  res_->updateUploadSpeed(bytes);
+}
+
 void Peer::updateUploadLength(int32_t bytes)
 {
   assert(res_);
   res_->updateUploadLength(bytes);
 }
 
-void Peer::updateDownloadLength(int32_t bytes)
+void Peer::updateDownload(int32_t bytes)
 {
   assert(res_);
-  res_->updateDownloadLength(bytes);
+  res_->updateDownload(bytes);
 }
 
 void Peer::updateSeeder()

@@ -214,7 +214,7 @@ void DefaultBtProgressInfoFileTest::testSave()
   initializeMembers(1_k, 80_k);
 
   dctx_->setBasePath(A2_TEST_OUT_DIR "/save-temp");
-  dctx_->getNetStat().updateUploadLength(768);
+  dctx_->getNetStat().updateUpload(768);
   btRuntime_->setUploadLengthAtStartup(256);
   bitfield_->setAllBit();
   bitfield_->unsetBit(79);
