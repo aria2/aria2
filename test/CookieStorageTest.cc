@@ -362,7 +362,7 @@ void CookieStorageTest::testLoad_sqlite3()
   CPPUNIT_ASSERT_EQUAL(std::string("/path/to"), c->getPath());
   CPPUNIT_ASSERT(!c->getSecure());
 
-#else // !HAVE_SQLITE3
+#else  // !HAVE_SQLITE3
   CPPUNIT_ASSERT(!st.load(A2_TEST_DIR "/cookies.sqlite", 1000));
 #endif // !HAVE_SQLITE3
 }
