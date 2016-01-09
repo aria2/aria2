@@ -169,12 +169,9 @@ public:
   void beginListen();
 
   /**
-   * Stores host address and port of this socket to addrinfo and
-   * returns address family.
-   *
-   * @param addrinfo placeholder to store host address and port.
+   * Returns host address, family and port of this socket.
    */
-  int getAddrInfo(std::pair<std::string, uint16_t>& addrinfo) const;
+  Endpoint getAddrInfo() const;
 
   /**
    * Stores address of this socket to sockaddr.  len must be
@@ -191,12 +188,9 @@ public:
   int getAddressFamily() const;
 
   /**
-   * Stores peer's address and port to peerinfo and returns address
-   * family.
-   *
-   * @param peerinfo placeholder to store peer's address and port.
+   * Returns peer's address, family and port.
    */
-  int getPeerInfo(std::pair<std::string, uint16_t>& peerinfo) const;
+  Endpoint getPeerInfo() const;
 
   /**
    * Accepts incoming connection on this socket.
@@ -288,9 +282,8 @@ public:
    */
   void readData(void* data, size_t& len);
 
-  ssize_t readDataFrom(
-      void* data, size_t len,
-      std::pair<std::string /* numerichost */, uint16_t /* port */>& sender);
+  // sender.addr will be numerihost assigned.
+  ssize_t readDataFrom(void* data, size_t len, Endpoint& sender);
 
 #ifdef ENABLE_SSL
   // Performs TLS server side handshake. If handshake is completed,

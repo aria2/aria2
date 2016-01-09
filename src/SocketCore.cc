@@ -387,13 +387,12 @@ std::shared_ptr<SocketCore> SocketCore::acceptConnection() const
   return sock;
 }
 
-int SocketCore::getAddrInfo(std::pair<std::string, uint16_t>& addrinfo) const
+Endpoint SocketCore::getAddrInfo() const
 {
   sockaddr_union sockaddr;
   socklen_t len = sizeof(sockaddr);
   getAddrInfo(sockaddr, len);
-  addrinfo = util::getNumericNameInfo(&sockaddr.sa, len);
-  return sockaddr.storage.ss_family;
+  return util::getNumericNameInfo(&sockaddr.sa, len);
 }
 
 void SocketCore::getAddrInfo(sockaddr_union& sockaddr, socklen_t& len) const
@@ -412,7 +411,7 @@ int SocketCore::getAddressFamily() const
   return sockaddr.storage.ss_family;
 }
 
-int SocketCore::getPeerInfo(std::pair<std::string, uint16_t>& peerinfo) const
+Endpoint SocketCore::getPeerInfo() const
 {
   sockaddr_union sockaddr;
   socklen_t len = sizeof(sockaddr);
@@ -420,8 +419,7 @@ int SocketCore::getPeerInfo(std::pair<std::string, uint16_t>& peerinfo) const
     int errNum = SOCKET_ERRNO;
     throw DL_ABORT_EX(fmt(EX_SOCKET_GET_NAME, errorMsg(errNum).c_str()));
   }
-  peerinfo = util::getNumericNameInfo(&sockaddr.sa, len);
-  return sockaddr.storage.ss_family;
+  return util::getNumericNameInfo(&sockaddr.sa, len);
 }
 
 void SocketCore::establishConnection(const std::string& host, uint16_t port,
@@ -965,9 +963,8 @@ bool SocketCore::tlsHandshake(TLSContext* tlsctx, const std::string& hostname)
       if (!hostname.empty()) {
         ss << hostname << " (";
       }
-      std::pair<std::string, uint16_t> peer;
-      getPeerInfo(peer);
-      ss << peer.first << ":" << peer.second;
+      auto peerEndpoint = getPeerInfo();
+      ss << peerEndpoint.addr << ":" << peerEndpoint.port;
       if (!hostname.empty()) {
         ss << ")";
       }
@@ -1219,9 +1216,7 @@ ssize_t SocketCore::writeData(const void* data, size_t len,
   return r;
 }
 
-ssize_t SocketCore::readDataFrom(
-    void* data, size_t len,
-    std::pair<std::string /* numerichost */, uint16_t /* port */>& sender)
+ssize_t SocketCore::readDataFrom(void* data, size_t len, Endpoint& sender)
 {
   wantRead_ = false;
   wantWrite_ = false;

@@ -124,9 +124,8 @@ void InitiateConnectionCommand::setConnectedAddrInfo(
     const std::shared_ptr<Request>& req, const std::string& hostname,
     const std::shared_ptr<SocketCore>& socket)
 {
-  std::pair<std::string, uint16_t> peerAddr;
-  socket->getPeerInfo(peerAddr);
-  req->setConnectedAddrInfo(hostname, peerAddr.first, peerAddr.second);
+  auto endpoint = socket->getPeerInfo();
+  req->setConnectedAddrInfo(hostname, endpoint.addr, endpoint.port);
 }
 
 std::shared_ptr<BackupConnectInfo>

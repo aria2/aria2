@@ -60,11 +60,11 @@ void LpdMessageDispatcherTest::testSendMessage()
 
   unsigned char buf[200];
 
-  std::pair<std::string, uint16_t> peer;
+  Endpoint remoteEndpoint;
   ssize_t nbytes;
   int trycnt;
   for (trycnt = 0; trycnt < 5; ++trycnt) {
-    nbytes = recvsock->readDataFrom(buf, sizeof(buf), peer);
+    nbytes = recvsock->readDataFrom(buf, sizeof(buf), remoteEndpoint);
     if (nbytes == 0) {
       util::sleep(1);
     }

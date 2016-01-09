@@ -193,10 +193,9 @@ bool FtpConnection::sendPasv()
 
 std::shared_ptr<SocketCore> FtpConnection::createServerSocket()
 {
-  std::pair<std::string, uint16_t> addrinfo;
-  socket_->getAddrInfo(addrinfo);
+  auto endpoint = socket_->getAddrInfo();
   auto serverSocket = std::make_shared<SocketCore>();
-  serverSocket->bind(addrinfo.first.c_str(), 0, AF_UNSPEC);
+  serverSocket->bind(endpoint.addr.c_str(), 0, AF_UNSPEC);
   serverSocket->beginListen();
   return serverSocket;
 }
@@ -204,14 +203,10 @@ std::shared_ptr<SocketCore> FtpConnection::createServerSocket()
 bool FtpConnection::sendEprt(const std::shared_ptr<SocketCore>& serverSocket)
 {
   if (socketBuffer_.sendBufferIsEmpty()) {
-    sockaddr_union sockaddr;
-    socklen_t len = sizeof(sockaddr);
-    serverSocket->getAddrInfo(sockaddr, len);
-    std::pair<std::string, uint16_t> addrinfo =
-        util::getNumericNameInfo(&sockaddr.sa, len);
-    std::string request = fmt("EPRT |%d|%s|%u|\r\n",
-                              sockaddr.storage.ss_family == AF_INET ? 1 : 2,
-                              addrinfo.first.c_str(), addrinfo.second);
+    auto endpoint = serverSocket->getAddrInfo();
+    auto request =
+        fmt("EPRT |%d|%s|%u|\r\n", endpoint.family == AF_INET ? 1 : 2,
+            endpoint.addr.c_str(), endpoint.port);
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST, cuid_, request.c_str()));
     socketBuffer_.pushStr(std::move(request));
   }
@@ -222,15 +217,14 @@ bool FtpConnection::sendEprt(const std::shared_ptr<SocketCore>& serverSocket)
 bool FtpConnection::sendPort(const std::shared_ptr<SocketCore>& serverSocket)
 {
   if (socketBuffer_.sendBufferIsEmpty()) {
-    std::pair<std::string, uint16_t> addrinfo;
-    socket_->getAddrInfo(addrinfo);
+    auto endpoint = socket_->getAddrInfo();
     int ipaddr[4];
-    sscanf(addrinfo.first.c_str(), "%d.%d.%d.%d", &ipaddr[0], &ipaddr[1],
+    sscanf(endpoint.addr.c_str(), "%d.%d.%d.%d", &ipaddr[0], &ipaddr[1],
            &ipaddr[2], &ipaddr[3]);
-    serverSocket->getAddrInfo(addrinfo);
-    std::string request =
+    auto svEndpoint = serverSocket->getAddrInfo();
+    auto request =
         fmt("PORT %d,%d,%d,%d,%d,%d\r\n", ipaddr[0], ipaddr[1], ipaddr[2],
-            ipaddr[3], addrinfo.second / 256, addrinfo.second % 256);
+            ipaddr[3], svEndpoint.port / 256, svEndpoint.port % 256);
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST, cuid_, request.c_str()));
     socketBuffer_.pushStr(std::move(request));
   }

@@ -22,11 +22,10 @@ namespace {
 std::unique_ptr<HttpServer> performHttpRequest(SocketCore& server,
                                                std::string request)
 {
-  std::pair<std::string, uint16_t> addr;
-  server.getAddrInfo(addr);
+  auto endpoint = server.getAddrInfo();
 
   SocketCore client;
-  client.establishConnection("localhost", addr.second);
+  client.establishConnection("localhost", endpoint.port);
   while (!client.isWritable(0)) {
   }
 

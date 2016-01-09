@@ -55,9 +55,7 @@ public:
     listenSocket->bind(0);
     listenSocket->beginListen();
     listenSocket->setBlockingMode();
-    std::pair<std::string, uint16_t> addrinfo;
-    listenSocket->getAddrInfo(addrinfo);
-    listenPort_ = addrinfo.second;
+    listenPort_ = listenSocket->getAddrInfo().port;
 
     req_.reset(new Request());
     req_->setUri("ftp://localhost/dir%20sp/hello%20world.img");

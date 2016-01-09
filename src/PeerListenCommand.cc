@@ -93,11 +93,8 @@ uint16_t PeerListenCommand::getPort() const
   if (!socket_) {
     return 0;
   }
-  else {
-    std::pair<std::string, uint16_t> addr;
-    socket_->getAddrInfo(addr);
-    return addr.second;
-  }
+
+  return socket_->getAddrInfo().port;
 }
 
 bool PeerListenCommand::execute()
@@ -110,10 +107,9 @@ bool PeerListenCommand::execute()
     try {
       peerSocket = socket_->acceptConnection();
       peerSocket->applyIpDscp();
-      std::pair<std::string, uint16_t> peerInfo;
-      peerSocket->getPeerInfo(peerInfo);
+      auto endpoint = peerSocket->getPeerInfo();
 
-      auto peer = std::make_shared<Peer>(peerInfo.first, peerInfo.second, true);
+      auto peer = std::make_shared<Peer>(endpoint.addr, endpoint.port, true);
       cuid_t cuid = e_->newCUID();
       e_->addCommand(
           make_unique<ReceiverMSEHandshakeCommand>(cuid, peer, e_, peerSocket));

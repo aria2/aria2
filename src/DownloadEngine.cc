@@ -371,11 +371,10 @@ void DownloadEngine::poolSocket(const std::string& ipaddr, uint16_t port,
 }
 
 namespace {
-bool getPeerInfo(std::pair<std::string, uint16_t>& res,
-                 const std::shared_ptr<SocketCore>& socket)
+bool getPeerInfo(Endpoint& res, const std::shared_ptr<SocketCore>& socket)
 {
   try {
-    socket->getPeerInfo(res);
+    res = socket->getPeerInfo();
     return true;
   }
   catch (RecoverableException& e) {
@@ -399,9 +398,9 @@ void DownloadEngine::poolSocket(const std::shared_ptr<Request>& request,
     return;
   }
 
-  std::pair<std::string, uint16_t> peerInfo;
+  Endpoint peerInfo;
   if (getPeerInfo(peerInfo, socket)) {
-    poolSocket(peerInfo.first, peerInfo.second, A2STR::NIL, 0, socket,
+    poolSocket(peerInfo.addr, peerInfo.port, A2STR::NIL, 0, socket,
                std::move(timeout));
   }
 }
@@ -421,9 +420,9 @@ void DownloadEngine::poolSocket(const std::shared_ptr<Request>& request,
     return;
   }
 
-  std::pair<std::string, uint16_t> peerInfo;
+  Endpoint peerInfo;
   if (getPeerInfo(peerInfo, socket)) {
-    poolSocket(peerInfo.first, peerInfo.second, username, A2STR::NIL, 0, socket,
+    poolSocket(peerInfo.addr, peerInfo.port, username, A2STR::NIL, 0, socket,
                options, std::move(timeout));
   }
 }

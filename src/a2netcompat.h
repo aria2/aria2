@@ -90,6 +90,8 @@
 #include "gai_strerror.h"
 #endif // HAVE_GAI_STRERROR
 
+#include <string>
+
 #ifdef HAVE_WINSOCK2_H
 #define sock_t SOCKET
 #else
@@ -118,6 +120,16 @@ union sockaddr_union {
 struct SockAddr {
   sockaddr_union su;
   socklen_t suLength;
+};
+
+// Human readable address, family and port.  In other words, addr is
+// text name, usually obtained from getnameinfo(3).  The family field
+// is the protocol family if it is known when generating this object.
+// If it is unknown, this is AF_UNSPEC.
+struct Endpoint {
+  std::string addr;
+  int family;
+  uint16_t port;
 };
 
 #define A2_DEFAULT_IOV_MAX 128

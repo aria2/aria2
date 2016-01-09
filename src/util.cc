@@ -1595,8 +1595,7 @@ void* allocateAlignedMemory(size_t alignment, size_t size)
 }
 #endif // HAVE_POSIX_MEMALIGN
 
-std::pair<std::string, uint16_t>
-getNumericNameInfo(const struct sockaddr* sockaddr, socklen_t len)
+Endpoint getNumericNameInfo(const struct sockaddr* sockaddr, socklen_t len)
 {
   char host[NI_MAXHOST];
   char service[NI_MAXSERV];
@@ -1606,7 +1605,8 @@ getNumericNameInfo(const struct sockaddr* sockaddr, socklen_t len)
     throw DL_ABORT_EX(
         fmt("Failed to get hostname and port. cause: %s", gai_strerror(s)));
   }
-  return std::pair<std::string, uint16_t>(host, atoi(service)); // TODO
+  return {host, sockaddr->sa_family,
+          static_cast<uint16_t>(strtoul(service, nullptr, 10))};
 }
 
 std::string htmlEscape(const std::string& src)

@@ -444,8 +444,7 @@ std::string toString(const std::shared_ptr<BinaryStream>& binaryStream);
 void* allocateAlignedMemory(size_t alignment, size_t size);
 #endif // HAVE_POSIX_MEMALIGN
 
-std::pair<std::string, uint16_t>
-getNumericNameInfo(const struct sockaddr* sockaddr, socklen_t len);
+Endpoint getNumericNameInfo(const struct sockaddr* sockaddr, socklen_t len);
 
 std::string htmlEscape(const std::string& src);
 

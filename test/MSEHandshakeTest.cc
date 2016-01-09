@@ -57,9 +57,8 @@ createSocketPair()
   receiverServerSock.beginListen();
   receiverServerSock.setBlockingMode();
 
-  std::pair<std::string, uint16_t> receiverAddrInfo;
-  receiverServerSock.getAddrInfo(receiverAddrInfo);
-  initiatorSock->establishConnection("localhost", receiverAddrInfo.second);
+  auto endpoint = receiverServerSock.getAddrInfo();
+  initiatorSock->establishConnection("localhost", endpoint.port);
   initiatorSock->setBlockingMode();
 
   std::shared_ptr<SocketCore> receiverSock(

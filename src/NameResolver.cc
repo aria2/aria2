@@ -63,9 +63,8 @@ void NameResolver::resolve(std::vector<std::string>& resolvedAddresses,
                                                                 freeaddrinfo);
   struct addrinfo* rp;
   for (rp = res; rp; rp = rp->ai_next) {
-    std::pair<std::string, uint16_t> addressPort =
-        util::getNumericNameInfo(rp->ai_addr, rp->ai_addrlen);
-    resolvedAddresses.push_back(addressPort.first);
+    auto endpoint = util::getNumericNameInfo(rp->ai_addr, rp->ai_addrlen);
+    resolvedAddresses.push_back(endpoint.addr);
   }
 }
 

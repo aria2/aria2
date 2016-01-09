@@ -72,11 +72,10 @@ bool HttpListenCommand::execute()
     if (serverSocket_->isReadable(0)) {
       std::shared_ptr<SocketCore> socket(serverSocket_->acceptConnection());
       socket->setTcpNodelay(true);
-      std::pair<std::string, uint16_t> peerInfo;
-      socket->getPeerInfo(peerInfo);
+      auto endpoint = socket->getPeerInfo();
 
       A2_LOG_INFO(fmt("RPC: Accepted the connection from %s:%u.",
-                      peerInfo.first.c_str(), peerInfo.second));
+                      endpoint.addr.c_str(), endpoint.port));
 
       e_->setNoWait(true);
       e_->addCommand(

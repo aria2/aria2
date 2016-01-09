@@ -77,9 +77,8 @@ bool DHTConnectionImpl::bind(uint16_t& port, const std::string& addr)
   try {
     socket_->bind(addr.c_str(), port, family_);
     socket_->setNonBlockingMode();
-    std::pair<std::string, uint16_t> svaddr;
-    socket_->getAddrInfo(svaddr);
-    port = svaddr.second;
+    auto endpoint = socket_->getAddrInfo();
+    port = endpoint.port;
     A2_LOG_NOTICE(fmt(_("IPv%d DHT: listening on UDP port %u"), ipv, port));
     return true;
   }
@@ -92,16 +91,15 @@ bool DHTConnectionImpl::bind(uint16_t& port, const std::string& addr)
 ssize_t DHTConnectionImpl::receiveMessage(unsigned char* data, size_t len,
                                           std::string& host, uint16_t& port)
 {
-  std::pair<std::string, uint16_t> remoteHost;
-  ssize_t length = socket_->readDataFrom(data, len, remoteHost);
+  Endpoint remoteEndpoint;
+  ssize_t length = socket_->readDataFrom(data, len, remoteEndpoint);
   if (length == 0) {
     return length;
   }
-  else {
-    host = remoteHost.first;
-    port = remoteHost.second;
-    return length;
-  }
+
+  host = remoteEndpoint.addr;
+  port = remoteEndpoint.port;
+  return length;
 }
 
 ssize_t DHTConnectionImpl::sendMessage(const unsigned char* data, size_t len,

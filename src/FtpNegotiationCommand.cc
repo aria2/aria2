@@ -708,13 +708,12 @@ bool FtpNegotiationCommand::preparePasvConnect()
     return true;
   }
   else {
-    std::pair<std::string, uint16_t> dataAddr;
-    getSocket()->getPeerInfo(dataAddr);
+    auto endpoint = getSocket()->getPeerInfo();
     // make a data connection to the server.
-    A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER, getCuid(), dataAddr.first.c_str(),
+    A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER, getCuid(), endpoint.addr.c_str(),
                     pasvPort_));
     dataSocket_ = std::make_shared<SocketCore>();
-    dataSocket_->establishConnection(dataAddr.first, pasvPort_, false);
+    dataSocket_->establishConnection(endpoint.addr, pasvPort_, false);
     disableReadCheckSocket();
     setWriteCheckSocket(dataSocket_);
     sequence_ = SEQ_SEND_REST_PASV;
