@@ -115,6 +115,11 @@ union sockaddr_union {
   sockaddr_in in;
 };
 
+struct SockAddr {
+  sockaddr_union su;
+  socklen_t suLength;
+};
+
 #define A2_DEFAULT_IOV_MAX 128
 
 #if defined(IOV_MAX) && IOV_MAX < A2_DEFAULT_IOV_MAX

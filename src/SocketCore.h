@@ -73,11 +73,9 @@ private:
   static int protocolFamily_;
   static int ipDscp_;
 
-  static std::vector<std::pair<sockaddr_union, socklen_t>> bindAddrs_;
-  static std::vector<std::vector<std::pair<sockaddr_union, socklen_t>>>
-      bindAddrsList_;
-  static std::vector<std::vector<std::pair<sockaddr_union, socklen_t>>>::
-      iterator bindAddrsListIt_;
+  static std::vector<SockAddr> bindAddrs_;
+  static std::vector<std::vector<SockAddr>> bindAddrsList_;
+  static std::vector<std::vector<SockAddr>>::iterator bindAddrsListIt_;
 
   static int socketRecvBufferSize_;
 
@@ -372,9 +370,14 @@ public:
   static void bindAddress(const std::string& iface);
   static void bindAllAddress(const std::string& ifaces);
 
-  friend void getInterfaceAddress(
-      std::vector<std::pair<sockaddr_union, socklen_t>>& ifAddrs,
-      const std::string& iface, int family, int aiFlags);
+  // Collects IP addresses of given interface iface and stores in
+  // ifAddres. iface may be specified as a hostname, IP address or
+  // interface name like eth0. You can limit the family of IP
+  // addresses to collect using family argument. aiFlags is passed to
+  // getaddrinfo() as hints.ai_flags. No throw.
+  static std::vector<SockAddr> getInterfaceAddress(const std::string& iface,
+                                                   int family = AF_UNSPEC,
+                                                   int aiFlags = 0);
 };
 
 // Set default ai_flags. hints.ai_flags is initialized with this
@@ -388,15 +391,6 @@ void setDefaultAIFlags(int flags);
 int callGetaddrinfo(struct addrinfo** resPtr, const char* host,
                     const char* service, int family, int sockType, int flags,
                     int protocol);
-
-// Collects IP addresses of given interface iface and stores in
-// ifAddres. iface may be specified as a hostname, IP address or
-// interface name like eth0. You can limit the family of IP addresses
-// to collect using family argument. aiFlags is passed to
-// getaddrinfo() as hints.ai_flags. No throw.
-void getInterfaceAddress(
-    std::vector<std::pair<sockaddr_union, socklen_t>>& ifAddrs,
-    const std::string& iface, int family = AF_UNSPEC, int aiFlags = 0);
 
 // Provides functionality of inet_ntop using getnameinfo.  The return
 // value is the exact value of getnameinfo returns. You can get error

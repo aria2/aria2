@@ -228,11 +228,11 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
         }
       }
       else {
-        std::vector<std::pair<sockaddr_union, socklen_t>> ifAddrs;
-        getInterfaceAddress(ifAddrs, lpdInterface, AF_INET, AI_NUMERICHOST);
-        for (const auto& i : ifAddrs) {
+        auto ifAddrs = SocketCore::getInterfaceAddress(lpdInterface, AF_INET,
+                                                       AI_NUMERICHOST);
+        for (const auto& soaddr : ifAddrs) {
           char host[NI_MAXHOST];
-          if (inetNtop(AF_INET, &i.first.in.sin_addr, host, sizeof(host)) ==
+          if (inetNtop(AF_INET, &soaddr.su.in.sin_addr, host, sizeof(host)) ==
                   0 &&
               receiver->init(host)) {
             initialized = true;
