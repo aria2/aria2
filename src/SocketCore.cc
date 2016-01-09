@@ -306,7 +306,7 @@ void SocketCore::bind(const char* addr, uint16_t port, int family, int flags)
   else {
     addrp = nullptr;
   }
-  if (!(flags & AI_PASSIVE) || bindAddrs_.empty()) {
+  if (addrp || !(flags & AI_PASSIVE) || bindAddrsList_.empty()) {
     sock_t fd = bindTo(addrp, port, family, sockType_, flags, error);
     if (fd == (sock_t)-1) {
       throw DL_ABORT_EX(fmt(EX_SOCKET_BIND, error.c_str()));
@@ -315,25 +315,30 @@ void SocketCore::bind(const char* addr, uint16_t port, int family, int flags)
     return;
   }
 
-  for (const auto& a : bindAddrs_) {
-    char host[NI_MAXHOST];
-    int s;
-    s = getnameinfo(&a.first.sa, a.second, host, NI_MAXHOST, nullptr, 0,
-                    NI_NUMERICHOST);
-    if (s) {
-      error = gai_strerror(s);
-      continue;
-    }
-    if (addrp && strcmp(host, addrp) != 0) {
-      error = "Given address and resolved address do not match.";
-      continue;
-    }
-    sock_t fd = bindTo(host, port, family, sockType_, flags, error);
-    if (fd != (sock_t)-1) {
-      sockfd_ = fd;
-      break;
+  std::array<char, NI_MAXHOST> host;
+  for (const auto& bindAddrs : bindAddrsList_) {
+    for (const auto& a : bindAddrs) {
+      if (family != AF_UNSPEC && family != a.first.storage.ss_family) {
+        continue;
+      }
+      auto s = getnameinfo(&a.first.sa, a.second, host.data(), NI_MAXHOST,
+                           nullptr, 0, NI_NUMERICHOST);
+      if (s) {
+        error = gai_strerror(s);
+        continue;
+      }
+      if (addrp && strcmp(host.data(), addrp) != 0) {
+        error = "Given address and resolved address do not match.";
+        continue;
+      }
+      auto fd = bindTo(host.data(), port, family, sockType_, flags, error);
+      if (fd != (sock_t)-1) {
+        sockfd_ = fd;
+        return;
+      }
     }
   }
+
   if (sockfd_ == (sock_t)-1) {
     throw DL_ABORT_EX(fmt(EX_SOCKET_BIND, error.c_str()));
   }
@@ -1287,6 +1292,8 @@ void SocketCore::bindAddress(const std::string& iface)
       A2_LOG_DEBUG(fmt("Sockets will bind to %s", host));
     }
   }
+  bindAddrsList_.push_back(bindAddrs_);
+  bindAddrsListIt_ = std::begin(bindAddrsList_);
 }
 
 void SocketCore::bindAllAddress(const std::string& ifaces)
