@@ -16,6 +16,7 @@
 #include "util.h"
 #include "AuthConfig.h"
 #include "TestUtil.h"
+#include "MessageDigest.h"
 
 namespace aria2 {
 
@@ -31,6 +32,7 @@ class HttpRequestTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreateRequest_head);
   CPPUNIT_TEST(testCreateRequest_ipv6LiteralAddr);
   CPPUNIT_TEST(testCreateRequest_endOffsetOverride);
+  CPPUNIT_TEST(testCreateRequest_wantDigest);
   CPPUNIT_TEST(testCreateProxyRequest);
   CPPUNIT_TEST(testIsRangeSatisfied);
   CPPUNIT_TEST(testUserAgent);
@@ -61,6 +63,7 @@ public:
   void testCreateRequest_head();
   void testCreateRequest_ipv6LiteralAddr();
   void testCreateRequest_endOffsetOverride();
+  void testCreateRequest_wantDigest();
   void testCreateProxyRequest();
   void testIsRangeSatisfied();
   void testUserAgent();
@@ -142,6 +145,7 @@ void HttpRequestTest::testCreateRequest()
   httpRequest.setFileEntry(fileEntry);
   httpRequest.setAuthConfigFactory(authConfigFactory_.get());
   httpRequest.setOption(option_.get());
+  httpRequest.setNoWantDigest(true);
 
   // remove "Connection: close" and add end byte range
   request->setPipeliningHint(true);
@@ -339,6 +343,7 @@ void HttpRequestTest::testCreateRequest_ftp()
   httpRequest.setAuthConfigFactory(authConfigFactory_.get());
   httpRequest.setOption(option_.get());
   httpRequest.setProxyRequest(proxyRequest);
+  httpRequest.setNoWantDigest(true);
 
   std::string expectedText =
       "GET ftp://aria2user@localhost:8080/archives/aria2-1.0.0.tar.bz2"
@@ -415,6 +420,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
   httpRequest.setCookieStorage(&st);
   httpRequest.setAuthConfigFactory(authConfigFactory_.get());
   httpRequest.setOption(option_.get());
+  httpRequest.setNoWantDigest(true);
 
   std::string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
                              "User-Agent: aria2\r\n"
@@ -511,6 +517,7 @@ void HttpRequestTest::testCreateRequest_query()
   httpRequest.setRequest(request);
   httpRequest.setAuthConfigFactory(authConfigFactory_.get());
   httpRequest.setOption(option_.get());
+  httpRequest.setNoWantDigest(true);
 
   std::string expectedText =
       "GET /wiki?id=9ad5109a-b8a5-4edf-9373-56a1c34ae138 HTTP/1.1\r\n"
@@ -552,6 +559,7 @@ void HttpRequestTest::testCreateRequest_endOffsetOverride()
   httpRequest.setRequest(request);
   httpRequest.setAuthConfigFactory(authConfigFactory_.get());
   httpRequest.setOption(option_.get());
+  httpRequest.setNoWantDigest(true);
   auto p = std::make_shared<Piece>(0, 1_m);
   auto segment = std::make_shared<PiecedSegment>(1_m, p);
   httpRequest.setSegment(segment);
@@ -582,6 +590,43 @@ void HttpRequestTest::testCreateRequest_endOffsetOverride()
                  "Connection: close\r\n"
                  "Range: bytes=1-1073741823\r\n"
                  "\r\n";
+
+  CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
+}
+
+void HttpRequestTest::testCreateRequest_wantDigest()
+{
+  auto request = std::make_shared<Request>();
+  request->setUri("http://localhost/");
+  HttpRequest httpRequest;
+  httpRequest.setRequest(request);
+  httpRequest.setAuthConfigFactory(authConfigFactory_.get());
+  httpRequest.setOption(option_.get());
+
+  std::string wantDigest;
+  if (MessageDigest::supports("sha-512")) {
+    wantDigest += "SHA-512;q=1, ";
+  }
+  if (MessageDigest::supports("sha-256")) {
+    wantDigest += "SHA-256;q=1, ";
+  }
+  if (MessageDigest::supports("sha-1")) {
+    wantDigest += "SHA;q=0.1, ";
+  }
+  if (!wantDigest.empty()) {
+    wantDigest.erase(wantDigest.size() - 2);
+  }
+
+  std::string expectedText = "GET / HTTP/1.1\r\n"
+                             "User-Agent: aria2\r\n"
+                             "Accept: */*\r\n"
+                             "Host: localhost\r\n"
+                             "Pragma: no-cache\r\n"
+                             "Cache-Control: no-cache\r\n"
+                             "Connection: close\r\n"
+                             "Want-Digest: " +
+                             wantDigest + "\r\n"
+                                          "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 }
@@ -726,6 +771,7 @@ void HttpRequestTest::testUserAgent()
   httpRequest.setUserAgent("aria2 (Linux)");
   httpRequest.setAuthConfigFactory(authConfigFactory_.get());
   httpRequest.setOption(option_.get());
+  httpRequest.setNoWantDigest(true);
 
   std::string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
                              "User-Agent: aria2 (Linux)\r\n"
@@ -764,6 +810,7 @@ void HttpRequestTest::testAddHeader()
   httpRequest.setOption(option_.get());
   httpRequest.addHeader("X-ARIA2: v0.13\nX-ARIA2-DISTRIBUTE: enabled\n");
   httpRequest.addHeader("Accept: text/html");
+  httpRequest.setNoWantDigest(true);
   std::string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
                              "User-Agent: aria2\r\n"
                              "Host: localhost\r\n"
@@ -789,6 +836,7 @@ void HttpRequestTest::testAcceptMetalink()
   httpRequest.setAuthConfigFactory(authConfigFactory_.get());
   httpRequest.setOption(option_.get());
   httpRequest.setAcceptMetalink(true);
+  httpRequest.setNoWantDigest(true);
 
   std::string expectedText =
       "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
@@ -812,6 +860,7 @@ void HttpRequestTest::testEnableAcceptEncoding()
   httpRequest.setRequest(request);
   httpRequest.setAuthConfigFactory(authConfigFactory_.get());
   httpRequest.setOption(option_.get());
+  httpRequest.setNoWantDigest(true);
 
   std::string acceptEncodings;
 #ifdef HAVE_ZLIB

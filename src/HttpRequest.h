@@ -98,6 +98,9 @@ private:
 
   bool acceptGzip_;
 
+  // Don't send Want-Digest header field
+  bool noWantDigest_;
+
   std::pair<std::string, std::string> getProxyAuthString() const;
 
 public:
@@ -228,6 +231,8 @@ public:
   // request is considered to be conditional if the client sent
   // "If-Modified-Since" or "If-None-Match" request-header field.
   bool conditionalRequest() const;
+
+  void setNoWantDigest(bool b) { noWantDigest_ = b; }
 };
 
 } // namespace aria2

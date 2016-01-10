@@ -52,6 +52,7 @@
 #include "array_fun.h"
 #include "Request.h"
 #include "DownloadHandlerConstants.h"
+#include "MessageDigest.h"
 
 namespace aria2 {
 
@@ -66,7 +67,8 @@ HttpRequest::HttpRequest()
       contentEncodingEnabled_(true),
       acceptMetalink_(false),
       noCache_(true),
-      acceptGzip_(false)
+      acceptGzip_(false),
+      noWantDigest_(false)
 {
 }
 
@@ -248,6 +250,24 @@ std::string HttpRequest::createRequest()
   if (!ifModSinceHeader_.empty()) {
     builtinHds.push_back(
         std::make_pair("If-Modified-Since:", ifModSinceHeader_));
+  }
+  if (!noWantDigest_) {
+    // Send Want-Digest header field with only limited hash algorithms:
+    // SHA-512, SHA-256, and SHA-1.
+    std::string wantDigest;
+    if (MessageDigest::supports("sha-512")) {
+      wantDigest += "SHA-512;q=1, ";
+    }
+    if (MessageDigest::supports("sha-256")) {
+      wantDigest += "SHA-256;q=1, ";
+    }
+    if (MessageDigest::supports("sha-1")) {
+      wantDigest += "SHA;q=0.1, ";
+    }
+    if (!wantDigest.empty()) {
+      wantDigest.erase(wantDigest.size() - 2);
+      builtinHds.emplace_back("Want-Digest:", wantDigest);
+    }
   }
   for (std::vector<std::pair<std::string, std::string>>::const_iterator
            i = builtinHds.begin(),
