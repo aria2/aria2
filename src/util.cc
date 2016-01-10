@@ -2041,6 +2041,11 @@ bool istartsWith(const std::string& a, const char* b)
   return istartsWith(a.begin(), a.end(), b);
 }
 
+bool istartsWith(const std::string& a, const std::string& b)
+{
+  return istartsWith(std::begin(a), std::end(a), std::begin(b), std::end(b));
+}
+
 bool endsWith(const std::string& a, const char* b)
 {
   return endsWith(a.begin(), a.end(), b, b + strlen(b));

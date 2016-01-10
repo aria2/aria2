@@ -109,9 +109,9 @@ public:
 
   const std::shared_ptr<Segment>& getSegment() const { return segment_; }
 
-  void setSegment(const std::shared_ptr<Segment>& segment);
+  void setSegment(std::shared_ptr<Segment> segment);
 
-  void setRequest(const std::shared_ptr<Request>& request);
+  void setRequest(std::shared_ptr<Request> request);
 
   int64_t getEntityLength() const;
 
@@ -166,7 +166,7 @@ public:
 
   void disableContentEncoding();
 
-  void setUserAgent(const std::string& userAgent);
+  void setUserAgent(std::string userAgent);
 
   // accepts multiline headers, delimited by LF
   void addHeader(const std::string& headers);
@@ -188,7 +188,7 @@ public:
    * To use proxy, pass proxy string to Request::setUri() and set it this
    * object.
    */
-  void setProxyRequest(const std::shared_ptr<Request>& proxyRequest);
+  void setProxyRequest(std::shared_ptr<Request> proxyRequest);
 
   /*
    * Returns true if non-Null proxy request is set by setProxyRequest().
@@ -204,7 +204,7 @@ public:
   // createRequest().
   const std::unique_ptr<AuthConfig>& getAuthConfig() const;
 
-  void setFileEntry(const std::shared_ptr<FileEntry>& fileEntry);
+  void setFileEntry(std::shared_ptr<FileEntry> fileEntry);
 
   const std::shared_ptr<FileEntry>& getFileEntry() const { return fileEntry_; }
 
@@ -220,7 +220,7 @@ public:
 
   void setEndOffsetOverride(int64_t offset) { endOffsetOverride_ = offset; }
 
-  void setIfModifiedSinceHeader(const std::string& hd);
+  void setIfModifiedSinceHeader(std::string value);
 
   const std::string& getIfModifiedSinceHeader() const
   {

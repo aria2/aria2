@@ -674,6 +674,7 @@ bool istartsWith(InputIterator first, InputIterator last, const char* b)
 }
 
 bool istartsWith(const std::string& a, const char* b);
+bool istartsWith(const std::string& a, const std::string& b);
 
 template <typename InputIterator1, typename InputIterator2>
 bool endsWith(InputIterator1 first1, InputIterator1 last1,
