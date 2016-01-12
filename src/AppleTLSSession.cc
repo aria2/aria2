@@ -105,9 +105,10 @@ static struct {
   SSLCipherSuite suite;
   const char* name;
 } kSuites[] = {
-    // From CipherSuite.h (10.9)
+    // From CipherSuite.h (10.11)
     SUITE(SSL_NULL_WITH_NULL_NULL, 0x0000),
-    SUITE(SSL_RSA_WITH_NULL_MD5, 0x0001), SUITE(SSL_RSA_WITH_NULL_SHA, 0x0002),
+    SUITE(SSL_RSA_WITH_NULL_MD5, 0x0001),
+    SUITE(SSL_RSA_WITH_NULL_SHA, 0x0002),
     SUITE(SSL_RSA_EXPORT_WITH_RC4_40_MD5, 0x0003),
     SUITE(SSL_RSA_WITH_RC4_128_MD5, 0x0004),
     SUITE(SSL_RSA_WITH_RC4_128_SHA, 0x0005),
@@ -173,10 +174,13 @@ static struct {
     SUITE(TLS_ECDH_anon_WITH_AES_128_CBC_SHA, 0xC018),
     SUITE(TLS_ECDH_anon_WITH_AES_256_CBC_SHA, 0xC019),
     SUITE(TLS_NULL_WITH_NULL_NULL, 0x0000),
-    SUITE(TLS_RSA_WITH_NULL_MD5, 0x0001), SUITE(TLS_RSA_WITH_NULL_SHA, 0x0002),
+    SUITE(TLS_RSA_WITH_NULL_MD5, 0x0001),
+    SUITE(TLS_RSA_WITH_NULL_SHA, 0x0002),
     SUITE(TLS_RSA_WITH_RC4_128_MD5, 0x0004),
     SUITE(TLS_RSA_WITH_RC4_128_SHA, 0x0005),
     SUITE(TLS_RSA_WITH_3DES_EDE_CBC_SHA, 0x000A),
+    SUITE(TLS_RSA_WITH_AES_128_CBC_SHA, 0x002F),
+    SUITE(TLS_RSA_WITH_AES_256_CBC_SHA, 0x0035),
     SUITE(TLS_RSA_WITH_NULL_SHA256, 0x003B),
     SUITE(TLS_RSA_WITH_AES_128_CBC_SHA256, 0x003C),
     SUITE(TLS_RSA_WITH_AES_256_CBC_SHA256, 0x003D),
@@ -184,6 +188,14 @@ static struct {
     SUITE(TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA, 0x0010),
     SUITE(TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA, 0x0013),
     SUITE(TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA, 0x0016),
+    SUITE(TLS_DH_DSS_WITH_AES_128_CBC_SHA, 0x0030),
+    SUITE(TLS_DH_RSA_WITH_AES_128_CBC_SHA, 0x0031),
+    SUITE(TLS_DHE_DSS_WITH_AES_128_CBC_SHA, 0x0032),
+    SUITE(TLS_DHE_RSA_WITH_AES_128_CBC_SHA, 0x0033),
+    SUITE(TLS_DH_DSS_WITH_AES_256_CBC_SHA, 0x0036),
+    SUITE(TLS_DH_RSA_WITH_AES_256_CBC_SHA, 0x0037),
+    SUITE(TLS_DHE_DSS_WITH_AES_256_CBC_SHA, 0x0038),
+    SUITE(TLS_DHE_RSA_WITH_AES_256_CBC_SHA, 0x0039),
     SUITE(TLS_DH_DSS_WITH_AES_128_CBC_SHA256, 0x003E),
     SUITE(TLS_DH_RSA_WITH_AES_128_CBC_SHA256, 0x003F),
     SUITE(TLS_DHE_DSS_WITH_AES_128_CBC_SHA256, 0x0040),
@@ -194,6 +206,8 @@ static struct {
     SUITE(TLS_DHE_RSA_WITH_AES_256_CBC_SHA256, 0x006B),
     SUITE(TLS_DH_anon_WITH_RC4_128_MD5, 0x0018),
     SUITE(TLS_DH_anon_WITH_3DES_EDE_CBC_SHA, 0x001B),
+    SUITE(TLS_DH_anon_WITH_AES_128_CBC_SHA, 0x0034),
+    SUITE(TLS_DH_anon_WITH_AES_256_CBC_SHA, 0x003A),
     SUITE(TLS_DH_anon_WITH_AES_128_CBC_SHA256, 0x006C),
     SUITE(TLS_DH_anon_WITH_AES_256_CBC_SHA256, 0x006D),
     SUITE(TLS_PSK_WITH_RC4_128_SHA, 0x008A),
@@ -262,7 +276,8 @@ static struct {
     SUITE(SSL_RSA_WITH_IDEA_CBC_MD5, 0xFF81),
     SUITE(SSL_RSA_WITH_DES_CBC_MD5, 0xFF82),
     SUITE(SSL_RSA_WITH_3DES_EDE_CBC_MD5, 0xFF83),
-    SUITE(SSL_NO_SUCH_CIPHERSUITE, 0xFFFF)};
+    SUITE(SSL_NO_SUCH_CIPHERSUITE, 0xFFFF)
+};
 #undef SUITE
 
 static inline std::string suiteToString(const SSLCipherSuite suite)
@@ -280,7 +295,7 @@ static inline std::string suiteToString(const SSLCipherSuite suite)
 }
 
 static const char* kBlocked[] = {"NULL", "anon",    "MD5",   "EXPORT", "DES",
-                                 "IDEA", "NO_SUCH", "EMPTY", "PSK"};
+                                 "IDEA", "NO_SUCH", "PSK"};
 
 static inline bool isBlockedSuite(SSLCipherSuite suite)
 {
@@ -404,6 +419,11 @@ AppleTLSSession::AppleTLSSession(AppleTLSContext* ctx)
                             (SSLSessionOption)0x4, // kSSLSessionOptionSendOneByteRecord
 #endif
                             true);
+  // False Start, if available
+#if defined(__MAC_10_9)
+  (void)SSLSetSessionOption(sslCtx_, kSSLSessionOptionFalseStart, true);
+#endif
+
 
 #if defined(__MAC_10_8)
   if (!ctx->getVerifyPeer()) {
