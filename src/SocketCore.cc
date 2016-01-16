@@ -47,6 +47,7 @@
 #include <cstring>
 #include <cassert>
 #include <sstream>
+#include <array>
 
 #include "message.h"
 #include "DlRetryEx.h"
