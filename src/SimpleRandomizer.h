@@ -55,11 +55,11 @@ private:
 #ifdef __MINGW32__
   HCRYPTPROV provider_;
 #else
-  std::random_device dev_;
+  std::mt19937 gen_;
 #endif // ! __MINGW32__
 
 public:
-  typedef std::random_device::result_type result_type;
+  typedef std::mt19937::result_type result_type;
 
   static const std::unique_ptr<SimpleRandomizer>& getInstance();
 

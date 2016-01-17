@@ -63,7 +63,11 @@ const std::unique_ptr<SimpleRandomizer>& SimpleRandomizer::getInstance()
   return randomizer_;
 }
 
-SimpleRandomizer::SimpleRandomizer()
+namespace {
+std::random_device rd;
+} // namespace
+
+SimpleRandomizer::SimpleRandomizer() : gen_(rd())
 {
 #ifdef __MINGW32__
   BOOL r = ::CryptAcquireContext(&provider_, 0, 0, PROV_RSA_FULL,
@@ -120,12 +124,12 @@ void SimpleRandomizer::getRandomBytes(unsigned char* buf, size_t len)
 #endif // defined(HAVE_GETRANDOM_INTERFACE)
   auto ubuf = reinterpret_cast<result_type*>(buf);
   size_t q = len / sizeof(result_type);
-  auto gen = std::uniform_int_distribution<result_type>();
+  auto dis = std::uniform_int_distribution<result_type>();
   for (; q > 0; --q, ++ubuf) {
-    *ubuf = gen(dev_);
+    *ubuf = dis(gen_);
   }
   const size_t r = len % sizeof(result_type);
-  auto last = gen(dev_);
+  auto last = dis(gen_);
   memcpy(ubuf, &last, r);
 #endif // ! __MINGW32__
 }
