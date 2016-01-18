@@ -136,7 +136,7 @@ public:
 private:
   std::shared_ptr<UDPTrackerRequest>
   findInflightRequest(const std::string& remoteAddr, uint16_t remotePort,
-                      int32_t transactionId, bool remove);
+                      uint32_t transactionId, bool remove);
 
   UDPTrackerConnection* getConnectionId(const std::string& remoteAddr,
                                         uint16_t remotePort, const Timer& now);

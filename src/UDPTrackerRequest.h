@@ -71,7 +71,7 @@ enum UDPTrackerEvent {
 
 struct UDPTrackerReply {
   int32_t action;
-  int32_t transactionId;
+  uint32_t transactionId;
   int32_t interval;
   int32_t leechers;
   int32_t seeders;
@@ -82,9 +82,9 @@ struct UDPTrackerReply {
 struct UDPTrackerRequest {
   std::string remoteAddr;
   uint16_t remotePort;
-  int64_t connectionId;
+  uint64_t connectionId;
   int32_t action;
-  int32_t transactionId;
+  uint32_t transactionId;
   std::string infohash;
   std::string peerId;
   int64_t downloaded;

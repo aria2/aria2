@@ -36,10 +36,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION(UDPTrackerClientTest);
 namespace {
 std::shared_ptr<UDPTrackerRequest> createAnnounce(const std::string& remoteAddr,
                                                   uint16_t remotePort,
-                                                  int32_t transactionId)
+                                                  uint32_t transactionId)
 {
   std::shared_ptr<UDPTrackerRequest> req(new UDPTrackerRequest());
-  req->connectionId = INT64_MAX;
+  req->connectionId = std::numeric_limits<uint64_t>::max();
   req->action = UDPT_ACT_ANNOUNCE;
   req->remoteAddr = remoteAddr;
   req->remotePort = remotePort;
@@ -60,8 +60,8 @@ std::shared_ptr<UDPTrackerRequest> createAnnounce(const std::string& remoteAddr,
 } // namespace
 
 namespace {
-ssize_t createErrorReply(unsigned char* data, size_t len, int32_t transactionId,
-                         const std::string& errorString)
+ssize_t createErrorReply(unsigned char* data, size_t len,
+                         uint32_t transactionId, const std::string& errorString)
 {
   bittorrent::setIntParam(data, UDPT_ACT_ERROR);
   bittorrent::setIntParam(data + 4, transactionId);
@@ -72,7 +72,7 @@ ssize_t createErrorReply(unsigned char* data, size_t len, int32_t transactionId,
 
 namespace {
 ssize_t createConnectReply(unsigned char* data, size_t len,
-                           uint64_t connectionId, int32_t transactionId)
+                           uint64_t connectionId, uint32_t transactionId)
 {
   bittorrent::setIntParam(data, UDPT_ACT_CONNECT);
   bittorrent::setIntParam(data + 4, transactionId);
@@ -83,7 +83,7 @@ ssize_t createConnectReply(unsigned char* data, size_t len,
 
 namespace {
 ssize_t createAnnounceReply(unsigned char* data, size_t len,
-                            int32_t transactionId, int numPeers = 0)
+                            uint32_t transactionId, int numPeers = 0)
 {
   bittorrent::setIntParam(data, UDPT_ACT_ANNOUNCE);
   bittorrent::setIntParam(data + 4, transactionId);
@@ -116,8 +116,7 @@ void UDPTrackerClientTest::testCreateUDPTrackerConnect()
   CPPUNIT_ASSERT_EQUAL((int64_t)UDPT_INITIAL_CONNECTION_ID,
                        (int64_t)bittorrent::getLLIntParam(data, 0));
   CPPUNIT_ASSERT_EQUAL((int)req->action, (int)bittorrent::getIntParam(data, 8));
-  CPPUNIT_ASSERT_EQUAL(req->transactionId,
-                       (int32_t)bittorrent::getIntParam(data, 12));
+  CPPUNIT_ASSERT_EQUAL(req->transactionId, bittorrent::getIntParam(data, 12));
 }
 
 void UDPTrackerClientTest::testCreateUDPTrackerAnnounce()
@@ -130,11 +129,9 @@ void UDPTrackerClientTest::testCreateUDPTrackerAnnounce()
   ssize_t rv =
       createUDPTrackerAnnounce(data, sizeof(data), remoteAddr, remotePort, req);
   CPPUNIT_ASSERT_EQUAL((ssize_t)100, rv);
-  CPPUNIT_ASSERT_EQUAL(req->connectionId,
-                       (int64_t)bittorrent::getLLIntParam(data, 0));
+  CPPUNIT_ASSERT_EQUAL(req->connectionId, bittorrent::getLLIntParam(data, 0));
   CPPUNIT_ASSERT_EQUAL((int)req->action, (int)bittorrent::getIntParam(data, 8));
-  CPPUNIT_ASSERT_EQUAL(req->transactionId,
-                       (int32_t)bittorrent::getIntParam(data, 12));
+  CPPUNIT_ASSERT_EQUAL(req->transactionId, bittorrent::getIntParam(data, 12));
   CPPUNIT_ASSERT_EQUAL(req->infohash, std::string(&data[16], &data[36]));
   CPPUNIT_ASSERT_EQUAL(req->peerId, std::string(&data[36], &data[56]));
   CPPUNIT_ASSERT_EQUAL(req->downloaded,
@@ -177,7 +174,7 @@ void UDPTrackerClientTest::testConnectFollowedByAnnounce()
   CPPUNIT_ASSERT_EQUAL(req1->remotePort, remotePort);
   CPPUNIT_ASSERT_EQUAL((int64_t)UDPT_INITIAL_CONNECTION_ID,
                        (int64_t)bittorrent::getLLIntParam(data, 0));
-  int32_t transactionId = bittorrent::getIntParam(data, 12);
+  uint32_t transactionId = bittorrent::getIntParam(data, 12);
   rv = tr.createRequest(data, sizeof(data), remoteAddr, remotePort, now);
   // Duplicate CONNECT request was not inserted
   CPPUNIT_ASSERT_EQUAL((size_t)3, tr.getPendingRequests().size());
@@ -191,7 +188,7 @@ void UDPTrackerClientTest::testConnectFollowedByAnnounce()
   CPPUNIT_ASSERT_EQUAL((ssize_t)-1, rv);
   CPPUNIT_ASSERT(tr.getPendingRequests().empty());
 
-  int64_t connectionId = 12345;
+  uint64_t connectionId = 12345;
   rv = createConnectReply(data, sizeof(data), connectionId, transactionId);
   rv = tr.receiveReply(data, rv, req1->remoteAddr, req1->remotePort, now);
   CPPUNIT_ASSERT_EQUAL(0, (int)rv);
@@ -202,8 +199,7 @@ void UDPTrackerClientTest::testConnectFollowedByAnnounce()
   // Creates announce for req1
   CPPUNIT_ASSERT_EQUAL((ssize_t)100, rv);
   CPPUNIT_ASSERT_EQUAL((size_t)2, tr.getPendingRequests().size());
-  CPPUNIT_ASSERT_EQUAL(connectionId,
-                       (int64_t)bittorrent::getLLIntParam(data, 0));
+  CPPUNIT_ASSERT_EQUAL(connectionId, bittorrent::getLLIntParam(data, 0));
   CPPUNIT_ASSERT_EQUAL((int)UDPT_ACT_ANNOUNCE,
                        (int)bittorrent::getIntParam(data, 8));
   CPPUNIT_ASSERT_EQUAL(req1->infohash, std::string(&data[16], &data[36]));
@@ -212,18 +208,17 @@ void UDPTrackerClientTest::testConnectFollowedByAnnounce()
   // Don't duplicate same request data
   CPPUNIT_ASSERT_EQUAL((ssize_t)100, rv);
   CPPUNIT_ASSERT_EQUAL((size_t)2, tr.getPendingRequests().size());
-  int32_t transactionId1 = bittorrent::getIntParam(data, 12);
+  uint32_t transactionId1 = bittorrent::getIntParam(data, 12);
 
   tr.requestSent(now);
   CPPUNIT_ASSERT_EQUAL((size_t)1, tr.getPendingRequests().size());
 
   rv = tr.createRequest(data, sizeof(data), remoteAddr, remotePort, now);
-  int32_t transactionId2 = bittorrent::getIntParam(data, 12);
+  uint32_t transactionId2 = bittorrent::getIntParam(data, 12);
   // Creates announce for req2
   CPPUNIT_ASSERT_EQUAL((ssize_t)100, rv);
   CPPUNIT_ASSERT_EQUAL((size_t)1, tr.getPendingRequests().size());
-  CPPUNIT_ASSERT_EQUAL(connectionId,
-                       (int64_t)bittorrent::getLLIntParam(data, 0));
+  CPPUNIT_ASSERT_EQUAL(connectionId, bittorrent::getLLIntParam(data, 0));
   CPPUNIT_ASSERT_EQUAL((int)UDPT_ACT_ANNOUNCE,
                        (int)bittorrent::getIntParam(data, 8));
   CPPUNIT_ASSERT_EQUAL(req2->infohash, std::string(&data[16], &data[36]));
@@ -316,7 +311,7 @@ void UDPTrackerClientTest::testRequestFailure()
     rv = tr.createRequest(data, sizeof(data), remoteAddr, remotePort, now);
     CPPUNIT_ASSERT_EQUAL((int)UDPT_ACT_CONNECT,
                          (int)bittorrent::getIntParam(data, 8));
-    int32_t transactionId = bittorrent::getIntParam(data, 12);
+    uint32_t transactionId = bittorrent::getIntParam(data, 12);
     tr.requestSent(now);
 
     rv = createErrorReply(data, sizeof(data), transactionId, "error");
@@ -338,10 +333,10 @@ void UDPTrackerClientTest::testRequestFailure()
     CPPUNIT_ASSERT_EQUAL((ssize_t)16, rv);
     CPPUNIT_ASSERT_EQUAL((int)UDPT_ACT_CONNECT,
                          (int)bittorrent::getIntParam(data, 8));
-    int32_t transactionId = bittorrent::getIntParam(data, 12);
+    uint32_t transactionId = bittorrent::getIntParam(data, 12);
     tr.requestSent(now);
 
-    int64_t connectionId = 12345;
+    uint64_t connectionId = 12345;
     rv = createConnectReply(data, sizeof(data), connectionId, transactionId);
     rv = tr.receiveReply(data, rv, req1->remoteAddr, req1->remotePort, now);
     CPPUNIT_ASSERT_EQUAL(0, (int)rv);
@@ -414,10 +409,10 @@ void UDPTrackerClientTest::testTimeout()
     CPPUNIT_ASSERT_EQUAL((ssize_t)16, rv);
     CPPUNIT_ASSERT_EQUAL((int)UDPT_ACT_CONNECT,
                          (int)bittorrent::getIntParam(data, 8));
-    int32_t transactionId = bittorrent::getIntParam(data, 12);
+    uint32_t transactionId = bittorrent::getIntParam(data, 12);
     tr.requestSent(now);
 
-    int64_t connectionId = 12345;
+    uint64_t connectionId = 12345;
     rv = createConnectReply(data, sizeof(data), connectionId, transactionId);
     rv = tr.receiveReply(data, rv, req1->remoteAddr, req1->remotePort, now);
     CPPUNIT_ASSERT_EQUAL(0, (int)rv);
