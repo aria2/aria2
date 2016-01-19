@@ -124,6 +124,9 @@ bool DHTEntryPointNameResolveCommand::execute()
     {
       NameResolver res;
       res.setSocktype(SOCK_DGRAM);
+      if (e_->getOption()->getAsBool(PREF_DISABLE_IPV6)) {
+        res.setFamily(AF_INET);
+      }
       while (!entryPoints_.empty()) {
         std::string hostname = entryPoints_.front().first;
         try {

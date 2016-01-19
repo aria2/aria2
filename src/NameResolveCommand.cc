@@ -105,6 +105,9 @@ bool NameResolveCommand::execute()
     {
       NameResolver resolver;
       resolver.setSocktype(SOCK_DGRAM);
+      if (e_->getOption()->getAsBool(PREF_DISABLE_IPV6)) {
+        resolver.setFamily(AF_INET);
+      }
       try {
         resolver.resolve(res, hostname);
       }
