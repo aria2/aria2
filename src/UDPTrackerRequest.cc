@@ -58,7 +58,8 @@ UDPTrackerRequest::UDPTrackerRequest()
       state(UDPT_STA_PENDING),
       error(UDPT_ERR_SUCCESS),
       dispatched(Timer::zero()),
-      failCount(0)
+      failCount(0),
+      user_data(nullptr)
 {
 }
 

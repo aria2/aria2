@@ -156,6 +156,7 @@ void UDPTrackerClientTest::testConnectFollowedByAnnounce()
   std::string remoteAddr;
   uint16_t remotePort;
   Timer now;
+  std::shared_ptr<UDPTrackerRequest> recvReq;
 
   std::shared_ptr<UDPTrackerRequest> req1(
       createAnnounce("192.168.0.1", 6991, 0));
@@ -190,8 +191,12 @@ void UDPTrackerClientTest::testConnectFollowedByAnnounce()
 
   uint64_t connectionId = 12345;
   rv = createConnectReply(data, sizeof(data), connectionId, transactionId);
-  rv = tr.receiveReply(data, rv, req1->remoteAddr, req1->remotePort, now);
+  rv = tr.receiveReply(recvReq, data, rv, req1->remoteAddr, req1->remotePort,
+                       now);
   CPPUNIT_ASSERT_EQUAL(0, (int)rv);
+  if (rv == 0) {
+    CPPUNIT_ASSERT_EQUAL((int32_t)UDPT_ACT_CONNECT, recvReq->action);
+  }
   // Now 2 requests get back to pending
   CPPUNIT_ASSERT_EQUAL((size_t)2, tr.getPendingRequests().size());
 
@@ -229,15 +234,23 @@ void UDPTrackerClientTest::testConnectFollowedByAnnounce()
 
   // Reply for req2
   rv = createAnnounceReply(data, sizeof(data), transactionId2);
-  rv = tr.receiveReply(data, rv, req2->remoteAddr, req2->remotePort, now);
+  rv = tr.receiveReply(recvReq, data, rv, req2->remoteAddr, req2->remotePort,
+                       now);
   CPPUNIT_ASSERT_EQUAL(0, (int)rv);
+  if (rv == 0) {
+    CPPUNIT_ASSERT_EQUAL((int32_t)UDPT_ACT_ANNOUNCE, recvReq->action);
+  }
   CPPUNIT_ASSERT_EQUAL((int)UDPT_STA_COMPLETE, req2->state);
   CPPUNIT_ASSERT_EQUAL((int)UDPT_ERR_SUCCESS, req2->error);
 
   // Reply for req1
   rv = createAnnounceReply(data, sizeof(data), transactionId1, 2);
-  rv = tr.receiveReply(data, rv, req1->remoteAddr, req1->remotePort, now);
+  rv = tr.receiveReply(recvReq, data, rv, req1->remoteAddr, req1->remotePort,
+                       now);
   CPPUNIT_ASSERT_EQUAL(0, (int)rv);
+  if (rv == 0) {
+    CPPUNIT_ASSERT_EQUAL((int32_t)UDPT_ACT_ANNOUNCE, recvReq->action);
+  }
   CPPUNIT_ASSERT_EQUAL((int)UDPT_STA_COMPLETE, req1->state);
   CPPUNIT_ASSERT_EQUAL((int)UDPT_ERR_SUCCESS, req1->error);
   CPPUNIT_ASSERT_EQUAL((size_t)2, req1->reply->peers.size());
@@ -280,6 +293,8 @@ void UDPTrackerClientTest::testRequestFailure()
   std::string remoteAddr;
   uint16_t remotePort;
   Timer now;
+  std::shared_ptr<UDPTrackerRequest> recvReq;
+
   {
     std::shared_ptr<UDPTrackerRequest> req1(
         createAnnounce("192.168.0.1", 6991, 0));
@@ -315,7 +330,12 @@ void UDPTrackerClientTest::testRequestFailure()
     tr.requestSent(now);
 
     rv = createErrorReply(data, sizeof(data), transactionId, "error");
-    rv = tr.receiveReply(data, rv, req1->remoteAddr, req1->remotePort, now);
+    rv = tr.receiveReply(recvReq, data, rv, req1->remoteAddr, req1->remotePort,
+                         now);
+    CPPUNIT_ASSERT_EQUAL((ssize_t)0, rv);
+    if (rv == 0) {
+      CPPUNIT_ASSERT_EQUAL((int32_t)UDPT_ACT_CONNECT, recvReq->action);
+    }
     CPPUNIT_ASSERT_EQUAL((int)UDPT_STA_COMPLETE, req1->state);
     CPPUNIT_ASSERT_EQUAL((int)UDPT_ERR_TRACKER, req1->error);
     CPPUNIT_ASSERT_EQUAL((int)UDPT_STA_COMPLETE, req2->state);
@@ -338,7 +358,8 @@ void UDPTrackerClientTest::testRequestFailure()
 
     uint64_t connectionId = 12345;
     rv = createConnectReply(data, sizeof(data), connectionId, transactionId);
-    rv = tr.receiveReply(data, rv, req1->remoteAddr, req1->remotePort, now);
+    rv = tr.receiveReply(recvReq, data, rv, req1->remoteAddr, req1->remotePort,
+                         now);
     CPPUNIT_ASSERT_EQUAL(0, (int)rv);
 
     rv = tr.createRequest(data, sizeof(data), remoteAddr, remotePort, now);
@@ -348,7 +369,8 @@ void UDPTrackerClientTest::testRequestFailure()
     tr.requestSent(now);
 
     rv = createErrorReply(data, sizeof(data), transactionId, "announce error");
-    rv = tr.receiveReply(data, rv, req1->remoteAddr, req1->remotePort, now);
+    rv = tr.receiveReply(recvReq, data, rv, req1->remoteAddr, req1->remotePort,
+                         now);
     CPPUNIT_ASSERT_EQUAL((int)UDPT_STA_COMPLETE, req1->state);
     CPPUNIT_ASSERT_EQUAL((int)UDPT_ERR_TRACKER, req1->error);
     CPPUNIT_ASSERT(tr.getConnectRequests().empty());
@@ -365,6 +387,8 @@ void UDPTrackerClientTest::testTimeout()
   uint16_t remotePort;
   Timer now;
   UDPTrackerClient tr;
+  std::shared_ptr<UDPTrackerRequest> recvReq;
+
   {
     std::shared_ptr<UDPTrackerRequest> req1(
         createAnnounce("192.168.0.1", 6991, 0));
@@ -414,7 +438,8 @@ void UDPTrackerClientTest::testTimeout()
 
     uint64_t connectionId = 12345;
     rv = createConnectReply(data, sizeof(data), connectionId, transactionId);
-    rv = tr.receiveReply(data, rv, req1->remoteAddr, req1->remotePort, now);
+    rv = tr.receiveReply(recvReq, data, rv, req1->remoteAddr, req1->remotePort,
+                         now);
     CPPUNIT_ASSERT_EQUAL(0, (int)rv);
 
     rv = tr.createRequest(data, sizeof(data), remoteAddr, remotePort, now);

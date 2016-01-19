@@ -74,7 +74,8 @@ public:
   UDPTrackerClient();
   ~UDPTrackerClient();
 
-  int receiveReply(const unsigned char* data, size_t length,
+  int receiveReply(std::shared_ptr<UDPTrackerRequest>& req,
+                   const unsigned char* data, size_t length,
                    const std::string& remoteAddr, uint16_t remotePort,
                    const Timer& now);
 

@@ -80,14 +80,16 @@ DHTSetup::DHTSetup() {}
 
 DHTSetup::~DHTSetup() {}
 
-std::vector<std::unique_ptr<Command>> DHTSetup::setup(DownloadEngine* e,
-                                                      int family)
+std::pair<std::vector<std::unique_ptr<Command>>,
+          std::vector<std::unique_ptr<Command>>>
+DHTSetup::setup(DownloadEngine* e, int family)
 {
   std::vector<std::unique_ptr<Command>> tempCommands;
+  std::vector<std::unique_ptr<Command>> tempRoutineCommands;
   if ((family != AF_INET && family != AF_INET6) ||
       (family == AF_INET && DHTRegistry::isInitialized()) ||
       (family == AF_INET6 && DHTRegistry::isInitialized6())) {
-    return tempCommands;
+    return {};
   }
   try {
     // load routing table and localnode id here
@@ -212,7 +214,7 @@ std::vector<std::unique_ptr<Command>> DHTSetup::setup(DownloadEngine* e,
       command->setReadCheckSocket(connection->getSocket());
       command->setConnection(std::move(connection));
       command->setUDPTrackerClient(udpTrackerClient);
-      tempCommands.push_back(std::move(command));
+      tempRoutineCommands.push_back(std::move(command));
     }
     {
       auto command = make_unique<DHTTokenUpdateCommand>(
@@ -290,6 +292,7 @@ std::vector<std::unique_ptr<Command>> DHTSetup::setup(DownloadEngine* e,
                         " DHT is disabled."),
                     ex);
     tempCommands.clear();
+    tempRoutineCommands.clear();
     if (family == AF_INET) {
       DHTRegistry::clearData();
       e->getBtRegistry()->setUDPTrackerClient(
@@ -299,7 +302,8 @@ std::vector<std::unique_ptr<Command>> DHTSetup::setup(DownloadEngine* e,
       DHTRegistry::clearData6();
     }
   }
-  return tempCommands;
+  return std::make_pair(std::move(tempCommands),
+                        std::move(tempRoutineCommands));
 }
 
 } // namespace aria2

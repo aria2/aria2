@@ -229,6 +229,7 @@ bool TrackerWatcherCommand::execute()
     trackerRequest_ = createAnnounce(e_);
     if (trackerRequest_) {
       trackerRequest_->issue(e_);
+      A2_LOG_DEBUG("tracker request created");
     }
   }
   else if (trackerRequest_->stopped()) {
@@ -259,6 +260,12 @@ bool TrackerWatcherCommand::execute()
       }
     }
   }
+
+  if (!trackerRequest_ && btAnnounce_->noMoreAnnounce()) {
+    A2_LOG_DEBUG("no more announce");
+    return true;
+  }
+
   e_->addCommand(std::unique_ptr<Command>(this));
   return false;
 }
@@ -325,8 +332,10 @@ std::unique_ptr<AnnRequest>
 TrackerWatcherCommand::createUDPAnnRequest(const std::string& host,
                                            uint16_t port, uint16_t localPort)
 {
-  return make_unique<UDPAnnRequest>(
-      btAnnounce_->createUDPTrackerRequest(host, port, localPort));
+  auto req = btAnnounce_->createUDPTrackerRequest(host, port, localPort);
+  req->user_data = this;
+
+  return make_unique<UDPAnnRequest>(std::move(req));
 }
 
 namespace {

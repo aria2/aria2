@@ -349,12 +349,24 @@ void RequestGroup::createInitialCommand(
          option_->getAsBool(PREF_ENABLE_DHT6))) {
 
       if (option_->getAsBool(PREF_ENABLE_DHT)) {
-        e->addCommand(DHTSetup().setup(e, AF_INET));
+        std::vector<std::unique_ptr<Command>> c, rc;
+        std::tie(c, rc) = DHTSetup().setup(e, AF_INET);
+
+        e->addCommand(std::move(c));
+        for (auto& a : rc) {
+          e->addRoutineCommand(std::move(a));
+        }
       }
 
       if (!e->getOption()->getAsBool(PREF_DISABLE_IPV6) &&
           option_->getAsBool(PREF_ENABLE_DHT6)) {
-        e->addCommand(DHTSetup().setup(e, AF_INET6));
+        std::vector<std::unique_ptr<Command>> c, rc;
+        std::tie(c, rc) = DHTSetup().setup(e, AF_INET6);
+
+        e->addCommand(std::move(c));
+        for (auto& a : rc) {
+          e->addRoutineCommand(std::move(a));
+        }
       }
       const auto& nodes = torrentAttrs->nodes;
       // TODO Are nodes in torrent IPv4 only?

@@ -101,6 +101,7 @@ struct UDPTrackerRequest {
   Timer dispatched;
   int failCount;
   std::shared_ptr<UDPTrackerReply> reply;
+  void *user_data;
   UDPTrackerRequest();
 };
 

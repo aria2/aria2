@@ -132,7 +132,8 @@ struct CollectAddrPortMatch {
 };
 } // namespace
 
-int UDPTrackerClient::receiveReply(const unsigned char* data, size_t length,
+int UDPTrackerClient::receiveReply(std::shared_ptr<UDPTrackerRequest>& recvReq,
+                                   const unsigned char* data, size_t length,
                                    const std::string& remoteAddr,
                                    uint16_t remotePort, const Timer& now)
 {
@@ -167,6 +168,9 @@ int UDPTrackerClient::receiveReply(const unsigned char* data, size_t length,
                        CollectAddrPortMatch(reqs, remoteAddr, remotePort)),
         connectRequests_.end());
     pendingRequests_.insert(pendingRequests_.begin(), reqs.begin(), reqs.end());
+
+    recvReq = std::move(req);
+
     break;
   }
   case UDPT_ACT_ANNOUNCE: {
@@ -209,6 +213,9 @@ int UDPTrackerClient::receiveReply(const unsigned char* data, size_t length,
             getUDPTrackerEventStr(req->event),
             util::toHex(req->infohash).c_str(), req->reply->interval,
             req->reply->leechers, req->reply->seeders, numPeers));
+
+    recvReq = std::move(req);
+
     break;
   }
   case UDPT_ACT_ERROR: {
@@ -236,6 +243,9 @@ int UDPTrackerClient::receiveReply(const unsigned char* data, size_t length,
     if (req->action == UDPT_ACT_CONNECT) {
       failConnect(req->remoteAddr, req->remotePort, UDPT_ERR_TRACKER);
     }
+
+    recvReq = std::move(req);
+
     break;
   }
   case UDPT_ACT_SCRAPE:

@@ -54,6 +54,7 @@
 #include "UDPTrackerRequest.h"
 #include "fmt.h"
 #include "wallclock.h"
+#include "TrackerWatcherCommand.h"
 
 namespace aria2 {
 
@@ -66,6 +67,7 @@ DHTInteractionCommand::DHTInteractionCommand(cuid_t cuid, DownloadEngine* e)
       receiver_{nullptr},
       taskQueue_{nullptr}
 {
+  setStatusRealtime();
 }
 
 DHTInteractionCommand::~DHTInteractionCommand()
@@ -96,10 +98,12 @@ bool DHTInteractionCommand::execute()
   // needs this.
   if (e_->getRequestGroupMan()->downloadFinished() ||
       (e_->isHaltRequested() && udpTrackerClient_->getNumWatchers() == 0)) {
+    A2_LOG_DEBUG("DHTInteractionCommand exiting");
     return true;
   }
   else if (e_->isForceHaltRequested()) {
     udpTrackerClient_->failAll();
+    A2_LOG_DEBUG("DHTInteractionCommand exiting");
     return true;
   }
 
@@ -122,8 +126,18 @@ bool DHTInteractionCommand::execute()
       }
       else {
         // this may be udp tracker response. nothrow.
-        udpTrackerClient_->receiveReply(data.data(), length, remoteAddr,
-                                        remotePort, global::wallclock());
+        std::shared_ptr<UDPTrackerRequest> req;
+        if (udpTrackerClient_->receiveReply(req, data.data(), length,
+                                            remoteAddr, remotePort,
+                                            global::wallclock()) == 0) {
+          if (req->action == UDPT_ACT_ANNOUNCE) {
+            auto c = static_cast<TrackerWatcherCommand*>(req->user_data);
+            if (c) {
+              c->setStatus(Command::STATUS_ONESHOT_REALTIME);
+              e_->setNoWait(true);
+            }
+          }
+        }
       }
     }
   }
@@ -150,7 +164,7 @@ bool DHTInteractionCommand::execute()
       udpTrackerClient_->requestFail(UDPT_ERR_NETWORK);
     }
   }
-  e_->addCommand(std::unique_ptr<Command>(this));
+  e_->addRoutineCommand(std::unique_ptr<Command>(this));
   return false;
 }
 
