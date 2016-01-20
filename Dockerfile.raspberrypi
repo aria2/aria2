@@ -1,4 +1,3 @@
-
 FROM ubuntu:trusty
 
 MAINTAINER Igor Khomyakov
