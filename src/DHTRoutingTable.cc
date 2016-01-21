@@ -119,13 +119,15 @@ void DHTRoutingTable::getClosestKNodes(
 int DHTRoutingTable::getNumBucket() const { return numBucket_; }
 
 void DHTRoutingTable::showBuckets() const
-{ /*
+{
+  /*
     for(std::deque<std::shared_ptr<DHTBucket> >::const_iterator itr =
     buckets_.begin(); itr != buckets_.end(); ++itr) {
     cerr << "prefix = " << (*itr)->getPrefixLength() << ", "
     << "nodes = " << (*itr)->countNode() << endl;
     }
-  */}
+  */
+}
 
 std::shared_ptr<DHTBucket>
 DHTRoutingTable::getBucketFor(const unsigned char* nodeID) const
