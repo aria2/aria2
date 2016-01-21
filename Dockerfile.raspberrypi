@@ -17,7 +17,7 @@ ENV TOOL_BIN_DIR /tools/arm-bcm2708/gcc-linaro-$HOST-raspbian-x64/bin
 ENV PATH ${TOOL_BIN_DIR}:$PATH
 
 RUN mkdir $LOCAL_DIR && mkdir zlib && cd zlib && \
-   curl -Ls -o - 'http://prdownloads.sourceforge.net/libpng/zlib-1.2.8.tar.gz?download'  | \
+   curl -Ls -o - 'http://zlib.net/zlib-1.2.8.tar.gz'  | \
         tar xzf - --strip-components=1 && \
    prefix=${LOCAL_DIR} \
    CC=$HOST-gcc \
@@ -43,7 +43,7 @@ RUN mkdir -p expat && cd expat && \
     make -s install
 
 RUN mkdir c-ares && cd c-ares && \
-    curl -Ls -o -  http://c-ares.haxx.se/download/c-ares-1.10.0.tar.gz | \
+    curl -Ls -o - 'http://c-ares.haxx.se/download/c-ares-1.10.0.tar.gz' | \
         tar xzf - --strip-components=1 && \
     ./configure \
         --host=$HOST \
@@ -55,7 +55,7 @@ RUN mkdir c-ares && cd c-ares && \
     make -s install
 
 RUN mkdir gmp && cd gmp && \
-    curl -Ls -o - 'https://gmplib.org/download/gmp/gmp-6.0.0a.tar.lz' | \
+    curl -Ls -o - 'https://gmplib.org/download/gmp/gmp-6.1.0.tar.lz' | \
         lzip -d | tar xf - --strip-components=1 && \
     ./configure \
         --disable-shared \
@@ -68,7 +68,7 @@ RUN mkdir gmp && cd gmp && \
     make -s install
 
 RUN mkdir sqlite && cd sqlite && \
-    curl -Ls -o - https://www.sqlite.org/2015/sqlite-autoconf-3080900.tar.gz | \
+    curl -Ls -o - 'https://www.sqlite.org/2016/sqlite-autoconf-3100100.tar.gz' | \
         tar xzf - --strip-components=1 && \
     ./configure \
         --disable-shared \
@@ -78,10 +78,11 @@ RUN mkdir sqlite && cd sqlite && \
         --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` && \
     make -s && \
     make -s install
-   
+
 RUN mkdir aria && cd aria && \
-    curl -Ls -o - http://sourceforge.net/projects/aria2/files/latest/download | \
-        tar xjf - --strip-components=1 && \
+    curl -s 'https://api.github.com/repos/tatsuhiro-t/aria2/releases/latest' | \
+        grep 'browser_download_url.*[0-9]\.tar\.bz2' | sed -e 's/^[[:space:]]*//' | \
+        cut -d ' ' -f 2 | xargs -I % curl -Ls -o - '%' | tar xjf - --strip-components=1 && \
     ./configure \
         --host=$HOST \
         --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` \
