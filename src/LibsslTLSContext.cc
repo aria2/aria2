@@ -203,20 +203,36 @@ bool OpenSSLTLSContext::addP12CredentialFile(const std::string& p12file)
   }
   p12_t p12(d2i_PKCS12_bio(bio.get(), nullptr));
   if (!p12) {
-    A2_LOG_ERROR(fmt("Failed to open PKCS12 file: %s. "
-                     "If you meant to use PEM, you'll also have to specify "
-                     "--rpc-private-key. See the manual.",
-                     ERR_error_string(ERR_get_error(), nullptr)));
+    if (side_ == TLS_SERVER) {
+      A2_LOG_ERROR(fmt("Failed to open PKCS12 file: %s. "
+                       "If you meant to use PEM, you'll also have to specify "
+                       "--rpc-private-key. See the manual.",
+                       ERR_error_string(ERR_get_error(), nullptr)));
+    }
+    else {
+      A2_LOG_ERROR(fmt("Failed to open PKCS12 file: %s. "
+                       "If you meant to use PEM, you'll also have to specify "
+                       "--private-key. See the manual.",
+                       ERR_error_string(ERR_get_error(), nullptr)));
+    }
     return false;
   }
   EVP_PKEY* pkey;
   X509* cert;
   STACK_OF(X509)* ca = nullptr;
   if (!PKCS12_parse(p12.get(), "", &pkey, &cert, &ca)) {
-    A2_LOG_ERROR(fmt("Failed to parse PKCS12 file: %s. "
-                     "If you meant to use PEM, you'll also have to specify "
-                     "--rpc-private-key. See the manual.",
-                     ERR_error_string(ERR_get_error(), nullptr)));
+    if (side_ == TLS_SERVER) {
+      A2_LOG_ERROR(fmt("Failed to parse PKCS12 file: %s. "
+                       "If you meant to use PEM, you'll also have to specify "
+                       "--rpc-private-key. See the manual.",
+                       ERR_error_string(ERR_get_error(), nullptr)));
+    }
+    else {
+      A2_LOG_ERROR(fmt("Failed to parse PKCS12 file: %s. "
+                       "If you meant to use PEM, you'll also have to specify "
+                       "--private-key. See the manual.",
+                       ERR_error_string(ERR_get_error(), nullptr)));
+    }
     return false;
   }
 

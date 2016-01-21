@@ -111,9 +111,16 @@ bool GnuTLSContext::addP12CredentialFile(const std::string& p12file)
   int err = gnutls_certificate_set_x509_simple_pkcs12_mem(
       certCred_, &data, GNUTLS_X509_FMT_DER, "");
   if (err != GNUTLS_E_SUCCESS) {
-    A2_LOG_ERROR("Failed to import PKCS12 file. "
-                 "If you meant to use PEM, you'll also have to specify "
-                 "--rpc-private-key. See the manual.");
+    if (side_ == TLS_SERVER) {
+      A2_LOG_ERROR("Failed to import PKCS12 file. "
+                   "If you meant to use PEM, you'll also have to specify "
+                   "--rpc-private-key. See the manual.");
+    }
+    else {
+      A2_LOG_ERROR("Failed to import PKCS12 file. "
+                   "If you meant to use PEM, you'll also have to specify "
+                   "--private-key. See the manual.");
+    }
     return false;
   }
   return true;
