@@ -570,7 +570,7 @@ void reactor(int sfd)
             } else {
               perror("epoll_ctl");
               delete next;
-            }              
+            }
           }
         }
         if(eh->finish()) {

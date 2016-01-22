@@ -50,6 +50,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include <nettle/base64.h>
 #include <nettle/sha.h>
@@ -159,6 +160,80 @@ void create_accept_key(char *dst, const char *client_key)
   dst[BASE64_ENCODE_RAW_LENGTH(20)] = '\0';
 }
 
+/* We parse HTTP header lines of the format
+ *   \r\nfield_name: value1, value2, ... \r\n
+ *
+ * If the caller is looking for a specific value, we return a pointer to the
+ * start of that value, else we simply return the start of values list.
+ */
+static char*
+http_header_find_field_value(char *header, char *field_name, char *value)
+{
+  char *header_end,
+       *field_start,
+       *field_end,
+       *next_crlf,
+       *value_start;
+  int field_name_len;
+
+  /* Pointer to the last character in the header */
+  header_end = header + strlen(header) - 1;
+
+  field_name_len = strlen(field_name);
+
+  field_start = header;
+
+  do{
+    field_start = strstr(field_start+1, field_name);
+
+    field_end = field_start + field_name_len - 1;
+
+    if(field_start != NULL
+       && field_start - header >= 2
+       && field_start[-2] == '\r'
+       && field_start[-1] == '\n'
+       && header_end - field_end >= 1
+       && field_end[1] == ':')
+    {
+      break; /* Found the field */
+    }
+    else
+    {
+      continue; /* This is not the one; keep looking. */
+    }
+  } while(field_start != NULL);
+
+  if(field_start == NULL)
+    return NULL;
+
+  /* Find the field terminator */
+  next_crlf = strstr(field_start, "\r\n");
+
+  /* A field is expected to end with \r\n */
+  if(next_crlf == NULL)
+    return NULL; /* Malformed HTTP header! */
+
+  /* If not looking for a value, then return a pointer to the start of values string */
+  if(value == NULL)
+    return field_end+2;
+
+  value_start = strstr(field_start, value);
+
+  /* Value not found */
+  if(value_start == NULL)
+    return NULL;
+
+  /* Found the value we're looking for */
+  if(value_start > next_crlf)
+    return NULL; /* ... but after the CRLF terminator of the field. */
+
+  /* The value we found should be properly delineated from the other tokens */
+  if(isalnum(value_start[-1]) || isalnum(value_start[strlen(value)]))
+    return NULL;
+
+  return value_start;
+}
+
 /*
  * Performs HTTP handshake. *fd* is the file descriptor of the
  * connection to the client. This function returns 0 if it succeeds,
@@ -195,13 +270,13 @@ int http_handshake(int fd)
       }
     }
   }
-  if(strstr(header, "\r\nUpgrade: websocket\r\n") == NULL ||
-     strstr(header, "\r\nConnection: Upgrade\r\n") == NULL ||
-     (keyhdstart = strstr(header, "\r\nSec-WebSocket-Key:")) == NULL) {
+
+  if(http_header_find_field_value(header, "Upgrade", "websocket") == NULL ||
+     http_header_find_field_value(header, "Connection", "Upgrade") == NULL ||
+     (keyhdstart = http_header_find_field_value(header, "Sec-WebSocket-Key", NULL)) == NULL) {
     fprintf(stderr, "HTTP Handshake: Missing required header fields");
     return -1;
   }
-  keyhdstart += 20;
   for(; *keyhdstart == ' '; ++keyhdstart);
   keyhdend = keyhdstart;
   for(; *keyhdend != '\r' && *keyhdend != ' '; ++keyhdend);
@@ -281,7 +356,7 @@ ssize_t recv_callback(wslay_event_context_ptr ctx, uint8_t *buf, size_t len,
     r = -1;
   }
   return r;
-}    
+}
 
 void on_msg_recv_callback(wslay_event_context_ptr ctx,
                           const struct wslay_event_on_msg_recv_arg *arg,

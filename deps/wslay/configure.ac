@@ -21,14 +21,14 @@ dnl LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 dnl OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 dnl WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 AC_PREREQ(2.61)
-AC_INIT([wslay], [0.1.1], [t-tujikawa@users.sourceforge.net])
+AC_INIT([wslay], [1.0.1-DEV], [t-tujikawa@users.sourceforge.net])
 LT_PREREQ([2.2.6])
 LT_INIT()
 AC_CONFIG_AUX_DIR([.])
 dnl See versioning rule:
 dnl  http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
 AC_SUBST(LT_CURRENT, 0)
-AC_SUBST(LT_REVISION, 0)
+AC_SUBST(LT_REVISION, 1)
 AC_SUBST(LT_AGE, 0)
 
 AC_CANONICAL_BUILD
@@ -42,15 +42,21 @@ AC_CONFIG_HEADERS([config.h])
 
 dnl Checks for programs
 AC_PROG_CC
+AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
+PKG_PROG_PKG_CONFIG([0.20])
 
 AC_PATH_PROG([SPHINX_BUILD], [sphinx-build])
 AC_SUBST([SPHINX_BUILD])
 AM_CONDITIONAL([HAVE_SPHINX_BUILD], [ test "x$SPHINX_BUILD" != "x" ])
 
 # Checks for libraries.
+
+# Nettle used in examples
+PKG_CHECK_MODULES([NETTLE], [nettle >= 2.4], [have_nettle=yes], [have_nettle=no])
+
 AC_CHECK_LIB([cunit], [CU_initialize_registry],
              [have_cunit=yes], [have_cunit=no])
 AM_CONDITIONAL([HAVE_CUNIT], [ test "x${have_cunit}" = "xyes" ])
@@ -91,9 +97,6 @@ AC_CHECK_TYPES([ptrdiff_t])
 AC_C_BIGENDIAN
 
 # Checks for library functions.
-if test "x$cross_compiling" != "xyes"; then
-  AC_FUNC_MALLOC
-fi
 AC_CHECK_FUNCS([ \
   memmove \
   memset \
@@ -102,6 +105,17 @@ AC_CHECK_FUNCS([ \
   htons
 ])
 
+build_examples=no
+if test "x${have_nettle}" = "xyes"; then
+  case $host_os in
+    linux*)
+      # the examples uses epoll
+      build_examples=yes
+      ;;
+  esac
+fi
+AM_CONDITIONAL([ENABLE_EXAMPLES], [ test "x${build_examples}" = "xyes" ])
+
 AC_CONFIG_FILES([
   Makefile
   lib/Makefile
@@ -109,6 +123,9 @@ AC_CONFIG_FILES([
   lib/includes/Makefile
   lib/includes/wslay/wslayver.h
   tests/Makefile
+  examples/Makefile
+  doc/Makefile
+  doc/sphinx/conf.py
 ])
 AC_OUTPUT
 
@@ -121,4 +138,6 @@ AC_MSG_NOTICE([summary of build options:
     CFlags:         ${CFLAGS}
     Library types:  Shared=${enable_shared}, Static=${enable_static}
     CUnit:          ${have_cunit}
+    Nettle:         ${have_nettle}
+    Build examples: ${build_examples}
 ])
