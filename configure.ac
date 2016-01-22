@@ -25,17 +25,25 @@ AM_PATH_CPPUNIT(1.10.2)
 AC_CONFIG_SRCDIR([src/a2io.h])
 AC_CONFIG_HEADERS([config.h])
 
+# extra flags
+EXTRACFLAGS=
+EXTRACXXFLAGS=
+EXTRACPPFLAGS=
+EXTRALDFLAGS=
+EXTRALIBS=
+
 case "$host" in
   *mingw*)
     win_build=yes
-    LIBS="$LIBS -lws2_32 -lwsock32 -lgdi32 -lwinmm -liphlpapi -lpsapi"
-    # Define _POSIX_C_SOURCE to 1. This makes {asc,local}time_r available
-    # from <time.h> even without (un)helpful interference from <pthread.h>,
-    # and also defines __USE_MINGW_ANSI_STDIO.
-    CPPFLAGS="-D_POSIX_C_SOURCE=1 $CPPFLAGS"
+    EXTRALIBS="-lws2_32 -lwsock32 -lgdi32 -lwinmm -liphlpapi -lpsapi $EXTRALIBS"
+    # Define _POSIX_C_SOURCE to 1. This makes {asc,local}time_r
+    # available from <time.h> even without (un)helpful interference
+    # from <pthread.h>, and also defines __USE_MINGW_ANSI_STDIO.
+    EXTRACPPFLAGS="$EXTRACPPFLAGS -D_POSIX_C_SOURCE=1"
     # Build with ASLR (dynamicbase) and NX compatiblity (nxcompat)
-    # Enable pie once upstream/binutils gets fixed to produce correct binaries with it.
-    LDFLAGS="$LDFLAGS -Wl,--dynamicbase -Wl,--nxcompat"
+    # Enable pie once upstream/binutils gets fixed to produce correct
+    # binaries with it.
+    EXTRALDFLAGS="$EXTRALDFLAGS -Wl,--dynamicbase -Wl,--nxcompat"
     ;;
 esac
 
@@ -96,10 +104,10 @@ AM_PROG_AS
 
 # Speed GCC compilation up.
 if test "$GCC" = yes; then
-  CFLAGS="$CFLAGS -pipe"
+  EXTRACFLAGS="$EXTRACFLAGS -pipe"
 fi
 if test "$GXX" = yes; then
-  CXXFLAGS="$CXXFLAGS -pipe"
+  EXTRACXXFLAGS="$EXTRACXXFLAGS -pipe"
 fi
 
 AC_CHECK_TOOL([AR], [ar], [:])
@@ -162,14 +170,14 @@ if test "x$ARIA2_STATIC" = "xyes"; then
     i686*mingw*)
       dnl Define _USE_32BIT_TIME_T because 32bit library of MinGW-w64
       dnl does not implement many 64bit version functions.
-      CPPFLAGS="-D_USE_32BIT_TIME_T $CPPFLAGS"
+      EXTRACPPFLAGS="$EXTRACPPFLAGS -D_USE_32BIT_TIME_T"
     ;;
   esac
   # Make pkg-config produce static linking variables
   PKG_CONFIG="$PKG_CONFIG --static"
 else
   dnl Make variable empty to avoid confusion
-  ARIA2_STATIC=
+  ARIA2_STATIC=no
 fi
 
 # Checks for libraries.
@@ -177,14 +185,15 @@ fi
 # Check availability of libz
 if test "x$with_libz" = "xyes"; then
   PKG_CHECK_MODULES([ZLIB], [zlib >= 1.2.3], [have_zlib=yes], [have_zlib=no])
-  if test "x$have_zlib" = "xyes"; then
-    LIBS="$ZLIB_LIBS $LIBS"
-    CPPFLAGS="$ZLIB_CFLAGS $CPPFLAGS"
-  else
+  if test "x$have_zlib" != "xyes"; then
     AC_MSG_WARN([$ZLIB_PKG_ERRORS])
     AC_CHECK_LIB([z], [zlibVersion], [have_zlib=yes], [have_zlib=no])
+
     if test "x$have_zlib" = "xyes"; then
-      LIBS="-lz $LIBS"
+      ZLIB_CFLAGS=
+      ZLIB_LIBS="-lz"
+      AC_SUBST([ZLIB_CFLAGS])
+      AC_SUBST([ZLIB_LIBS])
     elif test "x$with_libz_requested" = "xyes"; then
       ARIA2_DEP_NOT_MET([libz])
     fi
@@ -193,64 +202,82 @@ if test "x$with_libz" = "xyes"; then
     AC_DEFINE([HAVE_ZLIB], [1], [Define to 1 if you have zlib.])
     # Android NDK arch-mips contains gzbuffer symbol but it is missing
     # in zlib.h
+    old_CFLAGS=$CFLAGS
+    old_LIBS=$LIBS
+    CFLAGS="$CFLAGS $ZLIB_CFLAGS"
+    LIBS="$ZLIB_LIBS $LIBS"
     AC_CHECK_DECL([gzbuffer], [have_decl_gzbuffer=yes], [],
                   [[#include <zlib.h>]])
     if test "x$have_decl_gzbuffer" = "xyes"; then
       AC_CHECK_FUNC([gzbuffer])
     fi
     AC_CHECK_FUNCS([gzsetparams])
+    CFLAGS=$old_CFLAGS
+    LIBS=$old_LIBS
   fi
 fi
 
+have_libuv=no
 if test "x$with_libuv" = "xyes"; then
   case "$host" in
     *mingw*|*msvc*)
+      libuv_cflags="-D_WIN32_WINNT=0x0600"
       old_CPPFLAGS=$CPPFLAGS
-      CPPFLAGS="$CPPFLAGS -D_WIN32_WINNT=0x0600"
+      old_LIBS=$LIBS
+      CPPFLAGS="$CPPFLAGS $libuv_cflags"
       AC_SEARCH_LIBS([uv_poll_init_socket], [uv], [
                       AC_CHECK_HEADER([uv.h], [have_libuv=yes], [have_libuv=no])
-                      break;
                       ], [have_libuv=no])
-      if test "x$have_libuv" != "xyes"; then
-        CPPFLAGS=$old_CPPFLAGS
+      if test "x$have_libuv" = "xyes"; then
+        LIBUV_CFLAGS=$libuv_cflags
+        LIBUV_LIBS=-luv
+	AC_SUBST([LIBUV_CFLAGS])
+	AC_SUBST([LIBUV_LIBS])
       fi
+      CPPFLAGS=$old_CPPFLAGS
+      CPPLIBS=$old_LIBS
     ;;
 
     *darwin*)
+      libuv_ldflags="-framework Foundation -framework CoreServices -framework ApplicationServices"
       old_LDFLAGS=$LDFLAGS
-      LDFLAGS="$LDFLAGS -framework Foundation -framework CoreServices -framework ApplicationServices"
       old_LIBS=$LIBS
-      LIBS="$LIBS -lm"
+      LDFLAGS="$LDFLAGS $libuv_ldflags"
       AC_SEARCH_LIBS([uv_poll_init_socket], [uv], [
                       AC_CHECK_HEADER([uv.h], [have_libuv=yes], [have_libuv=no])
-                      break;
-                      ], [have_libuv=no])
-      if test "x$have_libuv" != "xyes"; then
-        LDFLAGS=$old_LDFLAGS
-        LIBS=$old_LIBS
+                      ], [have_libuv=no], [-lm])
+      if test "x$have_libuv" = "xyes"; then
+        LIBUV_CFLAGS=
+        LIBUV_LIBS="$libuv_ldflags -luv -lm"
+        AC_SUBST([LIBUV_CFLAGS])
+        AC_SUBST([LIBUV_LIBS])
       fi
+      LDFLAGS=$old_LDFLAGS
+      LIBS=$old_LIBS
       ;;
 
     *)
       dnl Yeah, sucks that luv does not bring a pkg-config or config-tool
       AC_MSG_CHECKING([for libuv])
+      old_LIBS=$LIBS
       for combo in "" "-lrt" "-ldl -lrt" "-ldl -lrt -lpthread" "-lkvm"; do
-        old_LIBS=$LIBS
-        LIBS="-luv $combo $LIBS -lm"
+        LIBS="-luv $combo $old_LIBS -lm"
         AC_LINK_IFELSE([AC_LANG_SOURCE([
 extern "C" int uv_poll_init_socket(void);
 int main() { return uv_poll_init_socket(); }
                        ])], [
                         AC_MSG_RESULT(-luv $combo -lm)
                         AC_CHECK_HEADER([uv.h], [have_libuv=yes], [have_libuv=no])
-                        break;
                         ], [have_libuv=no])
         if test "x$have_libuv" = "xyes"; then
+          LIBUV_CFLAGS=
+          LIBUV_LIBS="-luv $combo -lm"
+          AC_SUBST([LIBUV_CFLAGS])
+          AC_SUBST([LIBUV_LIBS])
           break;
-        else
-          LIBS=$old_LIBS
         fi
       done
+      LIBS=$old_LIBS
       if test "x$have_libuv" != "xyes"; then
         AC_MSG_RESULT("no")
       fi
@@ -259,41 +286,44 @@ int main() { return uv_poll_init_socket(); }
 
   if test "x$have_libuv" = "xyes"; then
     AC_DEFINE([HAVE_LIBUV], [1], [Define to 1 if you have libuv.])
+    old_LIBS=$LIBS
+    LIBS="$LIBUV_LIBS $LIBS"
     AC_CHECK_FUNCS([uv_last_error])
+    LIBS=$old_LIBS
   elif test "x$with_libuv_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([libuv])
   fi
 fi
 AM_CONDITIONAL([HAVE_LIBUV], [test "x$have_libuv" = "xyes"])
 
+have_libxml2=no
 if test "x$with_libxml2" = "xyes"; then
   AM_PATH_XML2([2.6.24], [have_libxml2=yes])
   if test "x$have_libxml2" = "xyes"; then
     AC_DEFINE([HAVE_LIBXML2], [1], [Define to 1 if you have libxml2.])
-    LIBS="$XML_LIBS $LIBS"
-    CPPFLAGS="$XML_CPPFLAGS $CPPFLAGS"
   elif test "x$with_libxml2_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([libxml2])
   fi
 fi
 
+have_libexpat=no
 if test "x$with_libexpat" = "xyes" && test "x$have_libxml2" != "xyes"; then
   AM_PATH_LIBEXPAT
-  if test "x$have_libexpat" = "xyes"; then
-    LIBS="$EXPAT_LIBS $LIBS"
-    CPPFLAGS="$EXPAT_CFLAGS $CPPFLAGS"
-  elif test "x$with_libexpat_requested" = "xyes"; then
+  if test "x$have_libexpat" != "xyes" &&
+     test "x$with_libexpat_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([libexpat])
   fi
 fi
 
+have_sqlite3=no
 if test "x$with_sqlite3" = "xyes"; then
   PKG_CHECK_MODULES([SQLITE3],[sqlite3],[have_sqlite3=yes],[have_sqlite3=no])
   if test "x$have_sqlite3" = "xyes"; then
     AC_DEFINE([HAVE_SQLITE3], [1], [Define to 1 if you have sqlite3.])
+    old_LIBS=$LIBS
     LIBS="$SQLITE3_LIBS $LIBS"
-    CPPFLAGS="$SQLITE3_CFLAGS $CPPFLAGS"
     AC_CHECK_FUNCS([sqlite3_open_v2])
+    LIBS=$old_LIBS
   else
     AC_MSG_WARN([$SQLITE3_PKG_ERRORS])
     if test "x$with_sqlite3_requested" = "xyes"; then
@@ -339,11 +369,13 @@ if test "x$enable_ssl" != "xyes"; then
   with_openssl=no
 fi
 
+have_appletls=no
 if test "x$with_appletls" = "xyes"; then
   AC_MSG_CHECKING([whether to enable Mac OS X native SSL/TLS])
   if test "x$have_osx" = "xyes"; then
     AC_DEFINE([HAVE_APPLETLS], [1], [Define to 1 if you have Apple TLS])
-    LDFLAGS="$LDFLAGS -framework CoreFoundation -framework Security"
+    APPLETLS_LDFLAGS="-framework CoreFoundation -framework Security"
+    AC_SUBST([APPLETLS_LDFLAGS])
     have_appletls="yes"
     have_ssl=yes
     have_nativetls=yes
@@ -356,6 +388,7 @@ if test "x$with_appletls" = "xyes"; then
   fi
 fi
 
+have_wintls=no
 if test "x$with_wintls" = "xyes"; then
   AC_HAVE_LIBRARY([crypt32],[have_wintls_libs=yes],[have_wintls_libs=no])
   AC_HAVE_LIBRARY([secur32],[have_wintls_libs=$have_wintls_libs],[have_wintls_libs=no])
@@ -377,7 +410,8 @@ if test "x$with_wintls" = "xyes"; then
   if test "x$have_wintls_libs" = "xyes" &&
      test "x$have_wintls_headers" = "xyes"; then
     AC_DEFINE([SECURITY_WIN32], [1], [Use security.h in WIN32 mode])
-    LIBS="$LIBS -lcrypt32 -lsecur32 -ladvapi32"
+    WINTLS_LIBS="-lcrypt32 -lsecur32 -ladvapi32"
+    AC_SUBST([WINTLS_LIBS])
     have_wintls=yes
     have_ssl=yes
     have_nativetls=yes
@@ -391,6 +425,7 @@ if test "x$with_wintls" = "xyes"; then
   fi
 fi
 
+have_libgnutls=no
 if test "x$with_gnutls" = "xyes" && test "x$have_ssl" != "xyes"; then
   # gnutls >= 2.8 doesn't have libgnutls-config anymore. We require
   # 2.2.0 because we use gnutls_priority_set_direct()
@@ -399,9 +434,10 @@ if test "x$with_gnutls" = "xyes" && test "x$have_ssl" != "xyes"; then
   if test "x$have_libgnutls" = "xyes"; then
     have_ssl=yes
     AC_DEFINE([HAVE_LIBGNUTLS], [1], [Define to 1 if you have libgnutls.])
+    old_LIBS=$LIBS
     LIBS="$LIBGNUTLS_LIBS $LIBS"
-    CPPFLAGS="$LIBGNUTLS_CFLAGS $CPPFLAGS"
     AC_CHECK_FUNCS([gnutls_certificate_set_x509_system_trust])
+    LIBS=$old_LIBS
   else
     AC_MSG_WARN([$LIBGNUTLS_PKG_ERRORS])
     if test "x$with_gnutls_requested" = "xyes"; then
@@ -410,15 +446,16 @@ if test "x$with_gnutls" = "xyes" && test "x$have_ssl" != "xyes"; then
   fi
 fi
 
+have_openssl=no
 if test "x$with_openssl" = "xyes" && test "x$have_ssl" != "xyes"; then
   PKG_CHECK_MODULES([OPENSSL], [openssl >= 0.9.8],
                     [have_openssl=yes], [have_openssl=no])
   if test "x$have_openssl" = "xyes"; then
     have_ssl=yes
     AC_DEFINE([HAVE_OPENSSL], [1], [Define to 1 if you have openssl.])
-    LIBS="$OPENSSL_LIBS $LIBS"
-    CPPFLAGS="$OPENSSL_CFLAGS $CPPFLAGS"
 
+    old_LIBS=$LIBS
+    LIBS="$OPENSSL_LIBS $LIBS"
     AC_CHECK_FUNCS([EVP_DigestInit_ex], [have_digestinit_ex=yes])
     if test "x$have_digestinit_ex" = "x"; then
       AC_DEFINE([HAVE_OLD_OPENSSL], [1], [Define to 1 if you have old openssl.])
@@ -427,6 +464,7 @@ if test "x$with_openssl" = "xyes" && test "x$have_ssl" != "xyes"; then
     AC_CHECK_FUNCS([EVP_sha256])
     AC_CHECK_FUNCS([EVP_sha384])
     AC_CHECK_FUNCS([EVP_sha512])
+    LIBS=$old_LIBS
   else
     AC_MSG_WARN([$OPENSSL_PKG_ERRORS])
     if test "x$with_openssl_requested" = "xyes"; then
@@ -435,12 +473,19 @@ if test "x$with_openssl" = "xyes" && test "x$have_ssl" != "xyes"; then
   fi
 fi
 
+have_libnettle=no
+have_libgmp=no
+have_libgcrypt=no
 if test "x$have_openssl" != "xyes"; then
   if test "x$with_libnettle" = "xyes" &&
      test "x$have_nativetls" != "xyes"; then
-    AC_SEARCH_LIBS([nettle_sha1_init], [nettle],
-                   [have_libnettle=yes], [have_libnettle=no])
+    AC_CHECK_LIB([nettle], [nettle_sha1_init],
+                 [have_libnettle=yes], [have_libnettle=no])
     if test "x$have_libnettle" = "xyes"; then
+      LIBNETTLE_CFLAGS=
+      LIBNETTLE_LIBS="-lnettle"
+      AC_SUBST([LIBNETTLE_CFLAGS])
+      AC_SUBST([LIBNETTLE_LIBS])
       AC_DEFINE([HAVE_LIBNETTLE], [1], [Define to 1 if you have libnettle.])
     fi
   fi
@@ -448,10 +493,17 @@ if test "x$have_openssl" != "xyes"; then
      (test "x$have_libnettle" = "xyes" ||
       test "x$have_nativetls" = "xyes") &&
      test "x$enable_bittorrent" = "xyes"; then
-    AC_SEARCH_LIBS([__gmpz_init], [gmp], [have_libgmp=yes], [have_libgmp=no])
+    AC_CHECK_LIB([gmp], [__gmpz_init], [have_libgmp=yes], [have_libgmp=no])
     if test "x$have_libgmp" = "xyes"; then
+      LIBGMP_CFLAGS=
+      LIBGMP_LIBS=-lgmp
+      AC_SUBST([LIBGMP_CFLAGS])
+      AC_SUBST([LIBGMP_LIBS])
       AC_DEFINE([HAVE_LIBGMP], [1], [Define to 1 if you have libgmp.])
+      old_LIBS=$LIBS
+      LIBS="$LIBGMP_LIBS $LIBS"
       AC_CHECK_FUNCS([__gmpz_powm_sec], [have_mpz_powm_sec=yes])
+      LIBS=$old_LIBS
       if test "x$have_mpz_powm_sec" = "xyes"; then
         AC_DEFINE([HAVE_GMP_SEC], [1], [Define to 1 if you have a GMP with sec functions.])
       fi
@@ -468,18 +520,15 @@ if test "x$have_openssl" != "xyes"; then
     AM_PATH_LIBGCRYPT([1.2.4], [have_libgcrypt=yes])
     if test "x$have_libgcrypt" = "xyes"; then
       AC_DEFINE([HAVE_LIBGCRYPT], [1], [Define to 1 if you have libgcrypt.])
-      LIBS="$LIBGCRYPT_LIBS $LIBS"
-      CPPFLAGS="$LIBGCRYPT_CFLAGS $CPPFLAGS"
     fi
   fi
 fi
 
+have_libssh2=no
 if test "x$with_libssh2" = "xyes"; then
   PKG_CHECK_MODULES([LIBSSH2], [libssh2], [have_libssh2=yes], [have_libssh2=no])
   if test "x$have_libssh2" = "xyes"; then
     AC_DEFINE([HAVE_LIBSSH2], [1], [Define to 1 if you have libssh2.])
-    LIBS="$LIBSSH2_LIBS $LIBS"
-    CPPFLAGS="$LIBSSH2_CFLAGS $CPPFLAGS"
   else
     AC_MSG_WARN([$LIBSSH2_PKG_ERRORS])
     if test "x$with_libssh2_requested" = "xyes"; then
@@ -488,19 +537,22 @@ if test "x$with_libssh2" = "xyes"; then
   fi
 fi
 
+have_libcares=no
 if test "x$with_libcares" = "xyes"; then
   PKG_CHECK_MODULES([LIBCARES], [libcares >= 1.7.0], [have_libcares=yes],
                     [have_libcares=no])
   if test "x$have_libcares" = "xyes"; then
     AC_DEFINE([HAVE_LIBCARES], [1], [Define to 1 if you have libcares.])
+    old_LIBS=$LIBS
+    old_CPPFLAGS=$CPPFLAGS
     LIBS="$LIBCARES_LIBS $LIBS"
     CPPFLAGS="$LIBCARES_CFLAGS $CPPFLAGS"
     AC_CHECK_TYPES([ares_addr_node], [], [], [[#include <ares.h>]])
     AC_CHECK_FUNCS([ares_set_servers])
+    LIBS=$old_LIBS
+    CPPFLAGS=$old_CPPFLAGS
 
-    if test "x$ARIA2_STATIC" = "xyes"; then
-      CPPFLAGS="-DCARES_STATICLIB $CPPFLAGS"
-    fi
+    # -DCARES_STATICLIB is appended by pkg-config file libcares.pc
   else
     AC_MSG_WARN([$LIBCARES_PKG_ERRORS])
     if test "x$with_libcares_requested" = "xyes"; then
@@ -606,6 +658,8 @@ AM_CONDITIONAL([HAVE_SOME_XMLLIB],
 
 if test "x$have_libxml2" = "xyes" || test "x$have_libexpat" = "xyes"; then
   enable_xml_rpc=yes
+else
+  enable_xml_rpc=no
 fi
 
 if test "x$enable_xml_rpc" = "xyes"; then
@@ -634,11 +688,13 @@ AM_CONDITIONAL([HAVE_SQLITE3], [test "x$have_sqlite3" = "xyes"])
 # Set conditional for libssh2
 AM_CONDITIONAL([HAVE_LIBSSH2], [test "x$have_libssh2" = "xyes"])
 
-AC_SEARCH_LIBS([clock_gettime], [rt])
-
 case "$host" in
   *solaris*)
-    AC_SEARCH_LIBS([getaddrinfo], [nsl socket])
+    old_LIBS=$LIBS
+    LIBS=
+    AC_SEARCH_LIBS([getaddrinfo], [nsl socket], [], [$old_LIBS])
+    EXTRALIBS="$LIBS $EXTRALIBS"
+    LIBS=$old_LIBS
     ;;
 esac
 
@@ -801,17 +857,18 @@ if test "x$with_tcmalloc_requested" = "xyes" &&
   AC_MSG_FAILURE([Cannot use both, tcmalloc and jemalloc!])
 fi
 
+have_tcmalloc=no
 if test "x$with_tcmalloc" = "xyes"; then
   dnl Important: put malloc libs at the very end.
   dnl Only newish versions have a .pc, thus try CHECK_LIB as well.
   PKG_CHECK_MODULES([TCMALLOC], [libtcmalloc_minimal], [have_tcmalloc=yes], [have_tcmalloc=no])
-  if test "x$have_tcmalloc" = "xyes"; then
-    CPPFLAGS="$TCMALLOC_CFLAGS $CPPFLAGS"
-    LIBS="$LIBS $TCMALLOC_LIBS"
-  else
+  if test "x$have_tcmalloc" != "xyes"; then
     AC_CHECK_LIB([tcmalloc_minimal], [malloc], [have_tcmalloc=yes], [have_tcmalloc=no])
     if test "x$have_tcmalloc" = "xyes"; then
-      LIBS="$LIBS -ltcmalloc_minimal"
+      TCMALLOC_CFLAGS=
+      TCMALLOC_LIBS="-ltcmalloc_minimal"
+      AC_SUBST([TCMALLOC_CFLAGS])
+      AC_SUBST([TCMALLOC_LIBS])
     else
       if test "x$with_tcmalloc_requested" = "xyes"; then
         ARIA2_DEP_NOT_MET([tcmalloc_minimal])
@@ -820,18 +877,19 @@ if test "x$with_tcmalloc" = "xyes"; then
   fi
 fi
 
-if test "x$have_tcmalloc" != "xyes" && test "x$with_jemalloc" = "xyes"; then
+have_jemalloc=no
+if test "x$with_jemalloc" = "xyes"; then
   dnl Important: put malloc libs at the very end.
   dnl Usually jemalloc does not come with a .pc, as the official source does not
   dnl generate one.
   PKG_CHECK_MODULES([JEMALLOC], [jemalloc], [have_jemalloc=yes], [have_jemalloc=no])
-  if test "x$have_jemalloc" = "xyes"; then
-    CPPFLAGS="$JEMALLOC_CFLAGS $CPPFLAGS"
-    LIBS="$LIBS $JEMALLOC_LIBS"
-  else
+  if test "x$have_jemalloc" != "xyes"; then
     AC_CHECK_LIB([jemalloc], [malloc], [have_jemalloc=yes], [have_jemalloc=no])
     if test "x$have_jemalloc" = "xyes"; then
-      LIBS="$LIBS -ljemalloc"
+      JEMALLOC_CFLAGS=
+      JEMALLOC_LIBS="-ljemalloc"
+      AC_SUBST([JEMALLOC_CFLAGS])
+      AC_SUBST([JEMALLOC_LIBS])
     else
       if test "x$with_jemalloc_requested" = "xyes"; then
         ARIA2_DEP_NOT_MET([jemalloc (unprefixed)])
@@ -840,7 +898,7 @@ if test "x$have_tcmalloc" != "xyes" && test "x$with_jemalloc" = "xyes"; then
   fi
 fi
 
-
+have_epoll=no
 if test "x$enable_epoll" = "xyes"; then
   AC_CHECK_FUNCS([epoll_create], [have_epoll=yes])
   if test "x$have_epoll" = "xyes"; then
@@ -862,6 +920,9 @@ AM_CONDITIONAL([HAVE_SOME_FALLOCATE],
   [test "x$have_posix_fallocate" = "xyes" || test "x$have_fallocate" = "xyes" \
   || test "x$have_osx" = "xyes" || test "x$win_build" = "xyes"])
 
+# mingw needs this
+old_CPPFLAGS=$CPPFLAGS
+CPPFLAGS="$CPPFLAGS $EXTRACPPFLAGS"
 AC_MSG_CHECKING([for asctime_r])
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[
     #include <time.h>
@@ -887,6 +948,7 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[
    AC_DEFINE([HAVE_LOCALTIME_R], [1], [Define to 1 if you have the `localtime_r' function or macro.])],
   [AC_MSG_RESULT([no])
    AM_CONDITIONAL([HAVE_LOCALTIME_R], false)])
+CPPFLAGS=$old_CPPFLAGS
 
 AC_CHECK_FUNCS([basename],
 	[AM_CONDITIONAL([HAVE_BASENAME], true)],
@@ -992,10 +1054,11 @@ if test "x$enable_websocket" = "xyes"; then
   enable_websocket=yes
   AC_DEFINE([ENABLE_WEBSOCKET], [1],
             [Define 1 if WebSocket support is enabled.])
-  WSLAY_LIBS="\$(top_builddir)/deps/wslay/lib/libwslay.la"
-  AC_SUBST([WSLAY_LIBS])
   # $(top_srcdir) for `make distcheck`
-  CPPFLAGS="-I\$(top_builddir)/deps/wslay/lib/includes -I\$(top_srcdir)/deps/wslay/lib/includes $CPPFLAGS"
+  WSLAY_CFLAGS="-I\$(top_builddir)/deps/wslay/lib/includes -I\$(top_srcdir)/deps/wslay/lib/includes"
+  WSLAY_LIBS="\$(top_builddir)/deps/wslay/lib/libwslay.la"
+  AC_SUBST([WSLAY_CFLAGS])
+  AC_SUBST([WSLAY_LIBS])
 fi
 AM_CONDITIONAL([ENABLE_WEBSOCKET], [test "x$enable_websocket" = "xyes"])
 
@@ -1031,22 +1094,28 @@ AM_CONDITIONAL([ANDROID_X86], [test "x$android_x86" = "xyes"])
 if test "x$ARIA2_STATIC" = "xyes"; then
   # -static-libgcc and -static-libstdc++ are linker flags and not for
   # libtool.
-  LDFLAGS="$LDFLAGS -all-static"
+  EXTRALDFLAGS="$EXTRALDFLAGS -all-static"
   dnl For non-MinGW build, we need additional libs for static build.
   case "$host" in
     *mingw*|*msvc*|*darwin*)
     ;;
 
     *)
-      LIBS="$LIBS -lpthread -ldl -lrt"
+      EXTRALIBS="$EXTRALIBS -lpthread -ldl -lrt"
     ;;
   esac
 fi
 
 if test "x$win_build" = "xyes" && test "x$enable_libaria2" = "xyes"; then
   # Creating dll needs this
-  LDFLAGS="$LDFLAGS -no-undefined"
+  EXTRALDFLAGS="$EXTRALDFLAGS -no-undefined"
 fi
+
+AC_SUBST([EXTRACFLAGS])
+AC_SUBST([EXTRACXXFLAGS])
+AC_SUBST([EXTRACPPFLAGS])
+AC_SUBST([EXTRALDFLAGS])
+AC_SUBST([EXTRALIBS])
 
 AC_CONFIG_FILES([Makefile
 		src/Makefile
@@ -1066,42 +1135,51 @@ AC_CONFIG_FILES([Makefile
 		deps/Makefile])
 AC_OUTPUT
 
-echo " "
-echo "Build:          $build"
-echo "Host:           $host"
-echo "Target:         $target"
-echo "Install prefix: $prefix"
-echo "CC:             $CC"
-echo "CXX:            $CXX"
-echo "CPP:            $CPP"
-echo "CXXFLAGS:       $CXXFLAGS"
-echo "CFLAGS:         $CFLAGS"
-echo "CPPFLAGS:       $CPPFLAGS"
-echo "LDFLAGS:        $LDFLAGS"
-echo "LIBS:           $LIBS"
-echo "DEFS:           $DEFS"
-echo "LibUV:          $have_libuv"
-echo "SQLite3:        $have_sqlite3"
-echo "SSL Support:    $have_ssl"
-echo "AppleTLS:       $have_appletls"
-echo "WinTLS:         $have_wintls"
-echo "GnuTLS:         $have_libgnutls"
-echo "OpenSSL:        $have_openssl"
-echo "CA Bundle:      $ca_bundle"
-echo "LibXML2:        $have_libxml2"
-echo "LibExpat:       $have_libexpat"
-echo "LibCares:       $have_libcares"
-echo "Zlib:           $have_zlib"
-echo "Libssh2:        $have_libssh2"
-echo "Epoll:          $have_epoll"
-echo "Bittorrent:     $enable_bittorrent"
-echo "Metalink:       $enable_metalink"
-echo "XML-RPC:        $enable_xml_rpc"
-echo "Message Digest: $use_md"
-echo "WebSocket:      $enable_websocket"
-echo "Libaria2:       $enable_libaria2"
-if test "x$enable_libaria2" = "xyes"; then
-  echo "Library types:  Shared=${enable_shared}, Static=${enable_static}"
-fi
-echo "bash_completion dir: $bashcompletiondir"
-echo "Static build:   $ARIA2_STATIC"
+AC_MSG_NOTICE([summary of build options:
+
+Build:          $build
+Host:           $host
+Target:         $target
+Install prefix: $prefix
+CC:             $CC
+CXX:            $CXX
+CPP:            $CPP
+CXXFLAGS:       $CXXFLAGS
+CFLAGS:         $CFLAGS
+CPPFLAGS:       $CPPFLAGS
+LDFLAGS:        $LDFLAGS
+LIBS:           $LIBS
+DEFS:           $DEFS
+EXTRACXXFLAGS:  $EXTRACXXFLAGS
+EXTRACFLAGS:    $EXTRACFLAGS
+EXTRACPPFLAGS:  $EXTRACPPFLAGS
+EXTRALDFLAGS:   $EXTRALDFLAGS
+EXTRALIBS:      $EXTRALIBS
+LibUV:          $have_libuv (CFLAGS='$LIBUV_CFLAGS' LIBS='$LIBUV_LIBS')
+SQLite3:        $have_sqlite3 (CFLAGS='$SQLITE3_CFLAGS' LIBS='$SQLITE3_LIBS')
+SSL Support:    $have_ssl
+AppleTLS:       $have_appletls (LDFLAGS='$APPLETLS_LDFLAGS')
+WinTLS:         $have_wintls (LIBS='$WINTLS_LIBS')
+GnuTLS:         $have_libgnutls (CFLAGS='$LIBGNUTLS_CFLAGS' LIBS='$LIBGNUTLS_LIBS')
+OpenSSL:        $have_openssl (CFLAGS='$OPENSSL_CFLAGS' LIBS='$OPENSSL_LIBS')
+CA Bundle:      $ca_bundle
+LibNettle:      $have_libnettle (CFLAGS='$LIBNETTLE_CFLAGS' LIBS='$LIBNETTLE_LIBS')
+LibGmp:         $have_libgmp (CFLAGS='$LIBGMP_CFLAGS' LIBS='$LIBGMP_LIBS')
+LibGcrypt:      $have_libgcrypt (CFLAGS='$LIBGCRYPT_CFLAGS' LIBS='$LIBGCRYPT_LIBS')
+LibXML2:        $have_libxml2 (CFLAGS='$XML_CPPFLAGS' LIBS='$XML_LIBS')
+LibExpat:       $have_libexpat (CFLAGS='$EXPAT_CFLAGS' LIBS='$EXPAT_LIBS')
+LibCares:       $have_libcares (CFLAGS='$LIBCARES_CFLAGS' LIBS='$LIBCARES_LIBS')
+Zlib:           $have_zlib (CFLAGS='$ZLIB_CFLAGS' LIBS='$ZLIB_LIBS')
+Libssh2:        $have_libssh2 (CFLAGS='$LIBSSH2_CFLAGS' LIBS='$LIBSSH2_LIBS')
+Tcmalloc:       $have_tcmalloc (CFLAGS='$TCMALLOC_CFLAGS' LIBS='$TCMALLOC_LIBS')
+Jemalloc:       $have_jemalloc (CFLAGS='$JEMALLOC_CFLAGS' LIBS='$JEMALLOC_LIBS')
+Epoll:          $have_epoll
+Bittorrent:     $enable_bittorrent
+Metalink:       $enable_metalink
+XML-RPC:        $enable_xml_rpc
+Message Digest: $use_md
+WebSocket:      $enable_websocket (CFLAGS='$WSLAY_CFLAGS' LIBS='$WSLAY_LIBS')
+Libaria2:       $enable_libaria2 (shared=${enable_shared} static=${enable_static})
+bash_completion dir: $bashcompletiondir
+Static build:   $ARIA2_STATIC
+])
