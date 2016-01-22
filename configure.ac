@@ -75,6 +75,7 @@ ARIA2_ARG_DISABLE([metalink])
 ARIA2_ARG_DISABLE([websocket])
 ARIA2_ARG_DISABLE([epoll])
 ARIA2_ARG_ENABLE([libaria2])
+ARIA2_ARG_ENABLE([werror])
 
 AC_ARG_WITH([ca-bundle],
   AS_HELP_STRING([--with-ca-bundle=FILE],[Use FILE as default CA bundle.]),
@@ -1117,6 +1118,20 @@ AC_SUBST([EXTRACPPFLAGS])
 AC_SUBST([EXTRALDFLAGS])
 AC_SUBST([EXTRALIBS])
 
+old_CXXFLAGS=$CXXFLAGS
+CXXFLAGS=
+
+if test "x$enable_werror" = "xyes"; then
+  AX_CHECK_COMPILE_FLAG([-Wall], [CXXFLAGS="$CXXFLAGS -Wall"])
+  AX_CHECK_COMPILE_FLAG([-Werror], [CXXFLAGS="$CXXFLAGS -Werror"])
+  AX_CHECK_COMPILE_FLAG([-Wformat-security], [CXXFLAGS="$CXXFLAGS -Wformat-security"])
+fi
+
+WARNCXXFLAGS=$CXXFLAGS
+CXXFLAGS=$old_CXXFLAGS
+
+AC_SUBST([WARNCXXFLAGS])
+
 AC_CONFIG_FILES([Makefile
                 src/Makefile
                 src/libaria2.pc
@@ -1155,6 +1170,7 @@ EXTRACFLAGS:    $EXTRACFLAGS
 EXTRACPPFLAGS:  $EXTRACPPFLAGS
 EXTRALDFLAGS:   $EXTRALDFLAGS
 EXTRALIBS:      $EXTRALIBS
+WARNCXXFLAGS:   $WARNCXXFLAGS
 LibUV:          $have_libuv (CFLAGS='$LIBUV_CFLAGS' LIBS='$LIBUV_LIBS')
 SQLite3:        $have_sqlite3 (CFLAGS='$SQLITE3_CFLAGS' LIBS='$SQLITE3_LIBS')
 SSL Support:    $have_ssl
