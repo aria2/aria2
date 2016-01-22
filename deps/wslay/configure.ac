@@ -123,9 +123,6 @@ AC_CONFIG_FILES([
   lib/includes/Makefile
   lib/includes/wslay/wslayver.h
   tests/Makefile
-  examples/Makefile
-  doc/Makefile
-  doc/sphinx/conf.py
 ])
 AC_OUTPUT
 
