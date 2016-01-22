@@ -231,8 +231,8 @@ if test "x$with_libuv" = "xyes"; then
       if test "x$have_libuv" = "xyes"; then
         LIBUV_CFLAGS=$libuv_cflags
         LIBUV_LIBS=-luv
-	AC_SUBST([LIBUV_CFLAGS])
-	AC_SUBST([LIBUV_LIBS])
+        AC_SUBST([LIBUV_CFLAGS])
+        AC_SUBST([LIBUV_LIBS])
       fi
       CPPFLAGS=$old_CPPFLAGS
       CPPLIBS=$old_LIBS
@@ -795,7 +795,7 @@ AC_CHECK_FUNCS([__argz_count \
                 getcwd \
                 gethostbyaddr \
                 gethostbyname \
-		getifaddrs \
+                getifaddrs \
                 getpagesize \
                 getrandom \
                 memchr \
@@ -806,9 +806,9 @@ AC_CHECK_FUNCS([__argz_count \
                 mmap \
                 munmap \
                 nl_langinfo \
-		posix_fadvise \
+                posix_fadvise \
                 posix_memalign \
-		pow \
+                pow \
                 putenv \
                 rmdir \
                 select \
@@ -830,8 +830,8 @@ AC_CHECK_FUNCS([__argz_count \
                 tzset \
                 unsetenv \
                 usleep \
-		utime \
-		utimes])
+                utime \
+                utimes])
 
 AC_MSG_CHECKING([for getrandom linux syscall interface])
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[
@@ -951,23 +951,23 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 CPPFLAGS=$old_CPPFLAGS
 
 AC_CHECK_FUNCS([basename],
-	[AM_CONDITIONAL([HAVE_BASENAME], true)],
-	[AM_CONDITIONAL([HAVE_BASENAME], false)])
+        [AM_CONDITIONAL([HAVE_BASENAME], true)],
+        [AM_CONDITIONAL([HAVE_BASENAME], false)])
 AC_CHECK_FUNCS([gai_strerror],
-	[AM_CONDITIONAL([HAVE_GAI_STRERROR], true)],
- 	[AM_CONDITIONAL([HAVE_GAI_STRERROR], false)])
+        [AM_CONDITIONAL([HAVE_GAI_STRERROR], true)],
+        [AM_CONDITIONAL([HAVE_GAI_STRERROR], false)])
 AC_CHECK_FUNCS([getaddrinfo],
-	[AM_CONDITIONAL([HAVE_GETADDRINFO], true)],
-	[AM_CONDITIONAL([HAVE_GETADDRINFO], false)])
+        [AM_CONDITIONAL([HAVE_GETADDRINFO], true)],
+        [AM_CONDITIONAL([HAVE_GETADDRINFO], false)])
 AC_CHECK_FUNCS([gettimeofday],
-	[AM_CONDITIONAL([HAVE_GETTIMEOFDAY], true)],
-	[AM_CONDITIONAL([HAVE_GETTIMEOFDAY], false)])
+        [AM_CONDITIONAL([HAVE_GETTIMEOFDAY], true)],
+        [AM_CONDITIONAL([HAVE_GETTIMEOFDAY], false)])
 AC_CHECK_FUNCS([strptime],
-	[AM_CONDITIONAL([HAVE_STRPTIME], true)],
-	[AM_CONDITIONAL([HAVE_STRPTIME], false)])
+        [AM_CONDITIONAL([HAVE_STRPTIME], true)],
+        [AM_CONDITIONAL([HAVE_STRPTIME], false)])
 AC_CHECK_FUNCS([timegm],
-	[AM_CONDITIONAL([HAVE_TIMEGM], true)],
-	[AM_CONDITIONAL([HAVE_TIMEGM], false)])
+        [AM_CONDITIONAL([HAVE_TIMEGM], true)],
+        [AM_CONDITIONAL([HAVE_TIMEGM], false)])
 AC_CHECK_FUNCS([daemon], [have_daemon=yes])
 AM_CONDITIONAL([HAVE_DAEMON], [test "x$have_daemon" = "xyes"])
 
@@ -1118,21 +1118,21 @@ AC_SUBST([EXTRALDFLAGS])
 AC_SUBST([EXTRALIBS])
 
 AC_CONFIG_FILES([Makefile
-		src/Makefile
-		src/libaria2.pc
-		src/includes/Makefile
-		test/Makefile
-		po/Makefile.in
-		lib/Makefile
-		doc/Makefile
-		doc/manual-src/Makefile
-		doc/manual-src/en/Makefile
-		doc/manual-src/en/conf.py
-		doc/manual-src/ru/Makefile
-		doc/manual-src/ru/conf.py
-		doc/manual-src/pt/Makefile
-		doc/manual-src/pt/conf.py
-		deps/Makefile])
+                src/Makefile
+                src/libaria2.pc
+                src/includes/Makefile
+                test/Makefile
+                po/Makefile.in
+                lib/Makefile
+                doc/Makefile
+                doc/manual-src/Makefile
+                doc/manual-src/en/Makefile
+                doc/manual-src/en/conf.py
+                doc/manual-src/ru/Makefile
+                doc/manual-src/ru/conf.py
+                doc/manual-src/pt/Makefile
+                doc/manual-src/pt/conf.py
+                deps/Makefile])
 AC_OUTPUT
 
 AC_MSG_NOTICE([summary of build options:
