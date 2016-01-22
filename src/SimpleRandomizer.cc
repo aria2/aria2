@@ -67,14 +67,16 @@ namespace {
 std::random_device rd;
 } // namespace
 
-SimpleRandomizer::SimpleRandomizer() : gen_(rd())
-{
 #ifdef __MINGW32__
+SimpleRandomizer::SimpleRandomizer()
+{
   BOOL r = ::CryptAcquireContext(&provider_, 0, 0, PROV_RSA_FULL,
                                  CRYPT_VERIFYCONTEXT | CRYPT_SILENT);
   assert(r);
-#endif
 }
+#else  // !__MINGW32__
+SimpleRandomizer::SimpleRandomizer() : gen_(rd()) {}
+#endif // !__MINGW32__
 
 SimpleRandomizer::~SimpleRandomizer()
 {
