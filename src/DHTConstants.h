@@ -47,7 +47,7 @@ constexpr uint16_t DHT_VERSION = 3U;
 
 constexpr size_t DHT_ID_LENGTH = 20;
 
-constexpr size_t DHT_TRANSACTION_ID_LENGTH = 2;
+constexpr size_t DHT_TRANSACTION_ID_LENGTH = 4;
 
 // See --dht-message-timeout option.
 constexpr auto DHT_MESSAGE_TIMEOUT = 10_s;
