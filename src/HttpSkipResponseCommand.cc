@@ -229,6 +229,10 @@ bool HttpSkipResponseCommand::processResponse()
       }
       throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, statusCode),
                          error_code::HTTP_SERVICE_UNAVAILABLE);
+    case 504:
+      // This is Gateway Timeout, so try again
+      throw DL_RETRY_EX2(fmt(EX_BAD_STATUS, statusCode),
+                         error_code::HTTP_SERVICE_UNAVAILABLE);
     };
 
     throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, statusCode),
