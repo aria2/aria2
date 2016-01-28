@@ -71,6 +71,7 @@
 #include "a2gmp.h"
 #endif // HAVE_LIBGMP
 #include "LogFactory.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -92,6 +93,79 @@ bool Platform::initialized_ = false;
 Platform::Platform() { setUp(); }
 
 Platform::~Platform() { tearDown(); }
+
+#ifdef __MINGW32__
+namespace {
+bool gainPrivilege(LPCTSTR privName)
+{
+  LUID luid;
+  TOKEN_PRIVILEGES tp;
+
+  if (!LookupPrivilegeValue(nullptr, privName, &luid)) {
+    auto errNum = GetLastError();
+    A2_LOG_WARN(fmt("Lookup for privilege name %s failed. cause: %s", privName,
+                    util::formatLastError(errNum).c_str()));
+    return false;
+  }
+
+  tp.PrivilegeCount = 1;
+  tp.Privileges[0].Luid = luid;
+  tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+
+  HANDLE token;
+  if (!OpenProcessToken(GetCurrentProcess(),
+                        TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token)) {
+    auto errNum = GetLastError();
+    A2_LOG_WARN(fmt("Getting process token failed. cause: %s",
+                    util::formatLastError(errNum).c_str()));
+    return false;
+  }
+
+  auto tokenCloser = defer(token, CloseHandle);
+
+  if (!AdjustTokenPrivileges(token, FALSE, &tp, 0, NULL, NULL)) {
+    auto errNum = GetLastError();
+    A2_LOG_WARN(fmt("Gaining privilege %s failed. cause: %s", privName,
+                    util::formatLastError(errNum).c_str()));
+    return false;
+  }
+
+  // Check privilege was really gained
+  DWORD bufsize = 0;
+  GetTokenInformation(token, TokenPrivileges, nullptr, 0, &bufsize);
+  if (bufsize == 0) {
+    A2_LOG_WARN("Checking privilege failed.");
+    return false;
+  }
+
+  auto buf = make_unique<char[]>(bufsize);
+  if (!GetTokenInformation(token, TokenPrivileges, buf.get(), bufsize,
+                           &bufsize)) {
+    auto errNum = GetLastError();
+    A2_LOG_WARN(fmt("Checking privilege failed. cause: %s",
+                    util::formatLastError(errNum).c_str()));
+    return false;
+  }
+
+  auto privs = reinterpret_cast<TOKEN_PRIVILEGES*>(buf.get());
+  for (size_t i = 0; i < privs->PrivilegeCount; ++i) {
+    auto& priv = privs->Privileges[i];
+    if (memcmp(&priv.Luid, &luid, sizeof(luid)) != 0) {
+      continue;
+    }
+    if (priv.Attributes == SE_PRIVILEGE_ENABLED) {
+      return true;
+    }
+
+    break;
+  }
+
+  A2_LOG_WARN(fmt("Gaining privilege %s failed.", privName));
+
+  return false;
+}
+} // namespace
+#endif // __MINGW32__
 
 bool Platform::setUp()
 {
@@ -165,6 +239,15 @@ bool Platform::setUp()
   (void)_setmode(_fileno(stdin), _O_BINARY);
   (void)_setmode(_fileno(stdout), _O_BINARY);
   (void)_setmode(_fileno(stderr), _O_BINARY);
+
+  // Windows build: --file-allocation=falloc uses SetFileValidData
+  // which requires SE_MANAGE_VOLUME_NAME privilege.  SetFileValidData
+  // has security implications (see
+  // https://msdn.microsoft.com/en-us/library/windows/desktop/aa365544%28v=vs.85%29.aspx).
+  if (!gainPrivilege(SE_MANAGE_VOLUME_NAME)) {
+    A2_LOG_WARN("--file-allocation=falloc will not work properly.");
+  }
+
 #endif // __MINGW32__
 
   return true;

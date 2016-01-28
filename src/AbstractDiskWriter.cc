@@ -494,6 +494,15 @@ void AbstractDiskWriter::allocate(int64_t offset, int64_t length, bool sparse)
 #ifdef HAVE_SOME_FALLOCATE
 #ifdef __MINGW32__
   truncate(offset + length);
+  if (!SetFileValidData(fd_, offset + length)) {
+    auto errNum = fileError();
+    A2_LOG_WARN(fmt(
+        "File allocation (SetFileValidData) failed (cause: %s). File will be "
+        "allocated by filling zero, which blocks whole aria2 execution. Run "
+        "aria2 as an administrator or use a different file allocation method "
+        "(see --file-allocation).",
+        fileStrerror(errNum).c_str()));
+  }
 #elif defined(__APPLE__) && defined(__MACH__)
   auto toalloc = offset + length - size();
   while (toalloc > 0) {

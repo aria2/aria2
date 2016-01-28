@@ -29,6 +29,12 @@ This build has the following difference from the original release:
 Known Issues
 ------------
 
+* --file-allocation=falloc uses SetFileValidData function to allocate
+    disk space without filling zero.  But it has security
+    implications.  Refer to
+    https://msdn.microsoft.com/en-us/library/windows/desktop/aa365544%28v=vs.85%29.aspx
+    for more details.
+
 * When Ctrl-C is pressed, aria2 shows "Shutdown sequence
   commencing... Press Ctrl-C again for emergency shutdown." But
   mingw32 build cannot handle second Ctrl-C properly. The second
