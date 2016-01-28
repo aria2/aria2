@@ -93,15 +93,13 @@ namespace {
 std::string fileStrerror(int errNum)
 {
 #ifdef __MINGW32__
-  static char buf[256];
-  if (FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                    0, errNum,
-                    // Default language
-                    MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), (LPTSTR)&buf,
-                    sizeof(buf), 0) == 0) {
+  auto msg = util::formatLastError(errNum);
+  if (msg.empty()) {
+    char buf[256];
     snprintf(buf, sizeof(buf), "File I/O error %x", errNum);
+    return buf;
   }
-  return buf;
+  return msg;
 #else  // !__MINGW32__
   return util::safeStrerror(errNum);
 #endif // !__MINGW32__

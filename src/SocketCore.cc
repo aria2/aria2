@@ -105,14 +105,13 @@ std::string errorMsg(int errNum)
 #ifndef __MINGW32__
   return util::safeStrerror(errNum);
 #else
-  static char buf[256];
-  if (FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                    nullptr, errNum,
-                    MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), (LPTSTR)&buf,
-                    sizeof(buf), nullptr) == 0) {
+  auto msg = util::formatLastError(errNum);
+  if (msg.empty()) {
+    char buf[256];
     snprintf(buf, sizeof(buf), EX_SOCKET_UNKNOWN_ERROR, errNum, errNum);
+    return buf;
   }
-  return buf;
+  return msg;
 #endif // __MINGW32__
 }
 } // namespace

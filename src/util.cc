@@ -2087,6 +2087,24 @@ TLSVersion toTLSVersion(const std::string& ver)
 }
 #endif // ENABLE_SSL
 
+
+#ifdef __MINGW32__
+std::string formatLastError(int errNum)
+{
+  std::array<char, 4_k> buf;
+  if (FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                    nullptr, errNum,
+                    // Default language
+                    MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),
+                    static_cast<LPTSTR>(buf.data()), buf.size(),
+                    nullptr) == 0) {
+    return "";
+  }
+
+  return buf.data();
+}
+#endif // __MINGW32__
+
 } // namespace util
 
 } // namespace aria2

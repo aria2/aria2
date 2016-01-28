@@ -855,6 +855,13 @@ bool tlsHostnameMatch(const std::string& pattern, const std::string& hostname);
 TLSVersion toTLSVersion(const std::string& ver);
 #endif // ENABLE_SSL
 
+#ifdef __MINGW32__
+// Formats error message for error code errNum, which is the return
+// value of GetLastError().  On error, this function returns empty
+// string.
+std::string formatLastError(int errNum);
+#endif // __MINGW32__
+
 } // namespace util
 
 } // namespace aria2
