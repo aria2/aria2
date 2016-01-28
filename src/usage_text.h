@@ -1057,5 +1057,14 @@
     "                              the command given by --on-bt-download-complete\n" \
     "                              is executed. To disable this action, give false\n" \
     "                              to this option.")
+#define TEXT_MAX_MMAP_LIMIT                                             \
+  _(" --max-mmap-limit=SIZE        Set the maximum file size to enable mmap (see\n" \
+    "                              --enable-mmap option). The file size is\n" \
+    "                              determined by the sum of all files contained in\n" \
+    "                              one download. For example, if a download\n" \
+    "                              contains 5 files, then file size is the total\n" \
+    "                              size of those files. If file size is strictly\n" \
+    "                              greater than the size specified in this option,\n" \
+    "                              mmap will be disabled.")
 
 // clang-format on

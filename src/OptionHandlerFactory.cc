@@ -448,6 +448,16 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    OptionHandler* op(new UnitNumberOptionHandler(
+        PREF_MAX_MMAP_LIMIT, TEXT_MAX_MMAP_LIMIT,
+        util::itos(std::numeric_limits<int64_t>::max()), 0));
+    op->addTag(TAG_ADVANCED);
+    op->setInitialOption(true);
+    op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
+    handlers.push_back(op);
+  }
+  {
     OptionHandler* op(
         new UnitNumberOptionHandler(PREF_MAX_OVERALL_DOWNLOAD_LIMIT,
                                     TEXT_MAX_OVERALL_DOWNLOAD_LIMIT, "0", 0));

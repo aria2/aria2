@@ -64,7 +64,9 @@ void BtFileAllocationEntry::prepareForNextAction(
 
   BtSetup().setup(commands, getRequestGroup(), e, option.get());
   if (option->getAsBool(PREF_ENABLE_MMAP) &&
-      option->get(PREF_FILE_ALLOCATION) != V_NONE) {
+      option->get(PREF_FILE_ALLOCATION) != V_NONE &&
+      getRequestGroup()->getPieceStorage()->getDiskAdaptor()->size() <=
+          option->getAsLLInt(PREF_MAX_MMAP_LIMIT)) {
     getRequestGroup()->getPieceStorage()->getDiskAdaptor()->enableMmap();
   }
   if (!getRequestGroup()->downloadFinished()) {

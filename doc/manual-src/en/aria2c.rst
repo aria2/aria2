@@ -1375,6 +1375,16 @@ Advanced Options
   downloads. Specifying 0 means no download result is kept. Default:
   ``1000``
 
+.. option:: --max-mmap-limit=<SIZE>
+
+  Set the maximum file size to enable mmap (see
+  :option:`--enable-mmap` option). The file size is determined by the
+  sum of all files contained in one download. For example, if a
+  download contains 5 files, then file size is the total size of those
+  files. If file size is strictly greater than the size specified in
+  this option, mmap will be disabled.
+  Default: ``9223372036854775807``
+
 .. option:: --max-resume-failure-tries=<N>
 
   When used with :option:`--always-resume=false, <--always-resume>` aria2 downloads file from
@@ -2040,6 +2050,7 @@ of URIs. These optional lines must start with white space(s).
   * :option:`max-connection-per-server <-x>`
   * :option:`max-download-limit <--max-download-limit>`
   * :option:`max-file-not-found <--max-file-not-found>`
+  * :option:`max-mmap-limit <--max-mmap-limit>`
   * :option:`max-resume-failure-tries <--max-resume-failure-tries>`
   * :option:`max-tries <-m>`
   * :option:`max-upload-limit <-u>`

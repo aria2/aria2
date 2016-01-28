@@ -314,6 +314,8 @@ extern PrefPtr PREF_RLIMIT_NOFILE;
 extern PrefPtr PREF_MIN_TLS_VERSION;
 // value: 1*digit
 extern PrefPtr PREF_SOCKET_RECV_BUFFER_SIZE;
+// value: 1*digit
+extern PrefPtr PREF_MAX_MMAP_LIMIT;
 
 /**
  * FTP related preferences
