@@ -43,7 +43,7 @@ Basic Options
   When ``FILE`` is specified as ``-``, aria2 will read the input from ``stdin``.
   See the `Input File`_ subsection for details.
   See also the :option:`--deferred-input` option.
-  See also the :option:`--save-session-file` option.
+  See also the :option:`--save-session` option.
 
 .. option:: -l, --log=<LOG>
 
