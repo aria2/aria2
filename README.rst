@@ -78,6 +78,22 @@ Here is a list of features:
 * IPv6 support with Happy Eyeballs
 * Disk cache to reduce disk activity
 
+
+Versioning and release schedule
+-------------------------------
+
+We use 3 numbers for aria2 version: MAJOR.MINOR.PATCH.  We will ship
+MINOR update on 15th of every month.  We may skip a release if we have
+no changes since the last release.  The feature and documentation
+freeze happens 10 days before the release day (5th day of the month)
+for translation teams.  We will raise an issue about the upcoming
+release around that day.
+
+We may release PATCH releases between regular releases if we have
+security issues.
+
+MAJOR version will stay at 1 for the time being.
+
 How to get source code
 ----------------------
 
