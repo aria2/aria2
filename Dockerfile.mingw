@@ -7,7 +7,7 @@
 # /aria2/src/aria2c.exe.  You can copy the binary using following
 # commands:
 #
-# $ sudo id=$(docker create aria2-mingw)
+# $ id=$(sudo docker create aria2-mingw)
 # $ sudo docker cp $id:/aria2/src/aria2c.exe <dest>
 # $ sudo docker rm -v $id
 
