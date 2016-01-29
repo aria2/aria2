@@ -105,6 +105,8 @@ public:
   // Returns last error string
   virtual std::string getLastErrorString() CXX11_OVERRIDE;
 
+  virtual size_t getRecvBufferedLength() CXX11_OVERRIDE { return 0; }
+
 private:
   static OSStatus SocketWrite(SSLConnectionRef conn, const void* data,
                               size_t* len)

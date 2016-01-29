@@ -107,10 +107,13 @@ HttpServerCommand::~HttpServerCommand()
 
 void HttpServerCommand::checkSocketRecvBuffer()
 {
-  if (!httpServer_->getSocketRecvBuffer()->bufferEmpty()) {
-    setStatus(Command::STATUS_ONESHOT_REALTIME);
-    e_->setNoWait(true);
+  if (httpServer_->getSocketRecvBuffer()->bufferEmpty() &&
+      socket_->getRecvBufferedLength() == 0) {
+    return;
   }
+
+  setStatus(Command::STATUS_ONESHOT_REALTIME);
+  e_->setNoWait(true);
 }
 
 #ifdef ENABLE_WEBSOCKET
@@ -172,6 +175,7 @@ bool HttpServerCommand::execute()
   }
   try {
     if (socket_->isReadable(0) || (writeCheck_ && socket_->isWritable(0)) ||
+        socket_->getRecvBufferedLength() ||
         !httpServer_->getSocketRecvBuffer()->bufferEmpty()) {
       timeoutTimer_ = global::wallclock();
 

@@ -148,6 +148,10 @@ bool AbstractCommand::shouldProcess() const
     if (socketRecvBuffer_ && !socketRecvBuffer_->bufferEmpty()) {
       return true;
     }
+
+    if (socket_ && socket_->getRecvBufferedLength()) {
+      return true;
+    }
   }
 
   if (checkSocketIsWritable_ && writeEventEnabled()) {
@@ -916,7 +920,8 @@ const std::shared_ptr<PieceStorage>& AbstractCommand::getPieceStorage() const
 
 void AbstractCommand::checkSocketRecvBuffer()
 {
-  if (socketRecvBuffer_->bufferEmpty()) {
+  if (socketRecvBuffer_->bufferEmpty() &&
+      socket_->getRecvBufferedLength() == 0) {
     return;
   }
 

@@ -832,4 +832,6 @@ std::string WinTLSSession::getLastErrorString()
   return ss.str();
 }
 
+size_t WinTLSSession::getRecvBufferedLength() { return decBuf_.size(); }
+
 } // namespace aria2

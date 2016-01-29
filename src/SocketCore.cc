@@ -1324,6 +1324,15 @@ void SocketCore::setSocketRecvBufferSize(int size)
 
 int SocketCore::getSocketRecvBufferSize() { return socketRecvBufferSize_; }
 
+size_t SocketCore::getRecvBufferedLength() const
+{
+  if (!tlsSession_) {
+    return 0;
+  }
+
+  return tlsSession_->getRecvBufferedLength();
+}
+
 std::vector<SockAddr> SocketCore::getInterfaceAddress(const std::string& iface,
                                                       int family, int aiFlags)
 {

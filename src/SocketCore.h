@@ -337,6 +337,11 @@ public:
    */
   bool wantWrite() const;
 
+  // Returns buffered data which are already received.  This data was
+  // already read from socket, and ready to read without reading
+  // socket.
+  size_t getRecvBufferedLength() const;
+
 #ifdef ENABLE_SSL
   static void
   setClientTLSContext(const std::shared_ptr<TLSContext>& tlsContext);

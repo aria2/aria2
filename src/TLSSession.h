@@ -107,6 +107,10 @@ public:
   // Returns last error string
   virtual std::string getLastErrorString() = 0;
 
+  // Returns buffered length, which can be read immediately without
+  // contacting network.
+  virtual size_t getRecvBufferedLength() = 0;
+
 protected:
   TLSSession() {}
 

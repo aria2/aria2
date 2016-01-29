@@ -59,6 +59,7 @@ public:
                          std::string& handshakeErr) CXX11_OVERRIDE;
   virtual int tlsAccept(TLSVersion& version) CXX11_OVERRIDE;
   virtual std::string getLastErrorString() CXX11_OVERRIDE;
+  virtual size_t getRecvBufferedLength() CXX11_OVERRIDE { return 0; }
 
 private:
   gnutls_session_t sslSession_;

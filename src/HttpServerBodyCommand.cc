@@ -79,7 +79,8 @@ HttpServerBodyCommand::HttpServerBodyCommand(
   // To handle Content-Length == 0 case
   setStatus(Command::STATUS_ONESHOT_REALTIME);
   e_->addSocketForReadCheck(socket_, this);
-  if (!httpServer_->getSocketRecvBuffer()->bufferEmpty()) {
+  if (!httpServer_->getSocketRecvBuffer()->bufferEmpty() ||
+      socket_->getRecvBufferedLength()) {
     e_->setNoWait(true);
   }
 }
@@ -178,6 +179,7 @@ bool HttpServerBodyCommand::execute()
   }
   try {
     if (socket_->isReadable(0) || (writeCheck_ && socket_->isWritable(0)) ||
+        socket_->getRecvBufferedLength() ||
         !httpServer_->getSocketRecvBuffer()->bufferEmpty() ||
         httpServer_->getContentLength() == 0) {
       timeoutTimer_ = global::wallclock();
