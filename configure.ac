@@ -132,9 +132,19 @@ AC_LANG([C++])
 PKG_PROG_PKG_CONFIG([0.20])
 
 # Check C++ compiler supports C++0x/C++11 feature
+ac_save_CXXFLAGS="$CXXFLAGS"
+CXXFLAGS=
+
 AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
 
+CXX1XCXXFLAGS="$CXXFLAGS"
+CXXFLAGS="$ac_save_CXXFLAGS"
+AC_SUBST([CXX1XCXXFLAGS])
+
 # Check C++ compiler actually supports nullptr
+ac_save_CXXFLAGS=$CXXFLAGS
+CXXFLAGS="$CXXFLAGS $CXX1XCXXFLAGS"
+
 AC_MSG_CHECKING([whether the c++ compiler supports nullptr])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 ]],
@@ -164,6 +174,8 @@ Derived x;
     [AC_MSG_RESULT([no])])
 AC_DEFINE_UNQUOTED([CXX11_OVERRIDE], [$cxx11_override],
                    [Define `override` keyword if the compiler supports it])
+
+CXXFLAGS=$ac_save_CXXFLAGS
 
 # Check static build is requested
 if test "x$ARIA2_STATIC" = "xyes"; then
@@ -1165,6 +1177,7 @@ CPPFLAGS:       $CPPFLAGS
 LDFLAGS:        $LDFLAGS
 LIBS:           $LIBS
 DEFS:           $DEFS
+CXX1XCXXFLAGS:  $CXX1XCXXFLAGS
 EXTRACXXFLAGS:  $EXTRACXXFLAGS
 EXTRACFLAGS:    $EXTRACFLAGS
 EXTRACPPFLAGS:  $EXTRACPPFLAGS
