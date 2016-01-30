@@ -203,8 +203,8 @@ if test "x$with_libz" = "xyes"; then
     AC_DEFINE([HAVE_ZLIB], [1], [Define to 1 if you have zlib.])
     # Android NDK arch-mips contains gzbuffer symbol but it is missing
     # in zlib.h
-    old_CFLAGS=$CFLAGS
-    old_LIBS=$LIBS
+    ac_save_CFLAGS=$CFLAGS
+    ac_save_LIBS=$LIBS
     CFLAGS="$CFLAGS $ZLIB_CFLAGS"
     LIBS="$ZLIB_LIBS $LIBS"
     AC_CHECK_DECL([gzbuffer], [have_decl_gzbuffer=yes], [],
@@ -213,8 +213,8 @@ if test "x$with_libz" = "xyes"; then
       AC_CHECK_FUNC([gzbuffer])
     fi
     AC_CHECK_FUNCS([gzsetparams])
-    CFLAGS=$old_CFLAGS
-    LIBS=$old_LIBS
+    CFLAGS=$ac_save_CFLAGS
+    LIBS=$ac_save_LIBS
   fi
 fi
 
@@ -223,8 +223,8 @@ if test "x$with_libuv" = "xyes"; then
   case "$host" in
     *mingw*|*msvc*)
       libuv_cflags="-D_WIN32_WINNT=0x0600"
-      old_CPPFLAGS=$CPPFLAGS
-      old_LIBS=$LIBS
+      ac_save_CPPFLAGS=$CPPFLAGS
+      ac_save_LIBS=$LIBS
       CPPFLAGS="$CPPFLAGS $libuv_cflags"
       AC_SEARCH_LIBS([uv_poll_init_socket], [uv], [
                       AC_CHECK_HEADER([uv.h], [have_libuv=yes], [have_libuv=no])
@@ -235,14 +235,14 @@ if test "x$with_libuv" = "xyes"; then
         AC_SUBST([LIBUV_CFLAGS])
         AC_SUBST([LIBUV_LIBS])
       fi
-      CPPFLAGS=$old_CPPFLAGS
-      CPPLIBS=$old_LIBS
+      CPPFLAGS=$ac_save_CPPFLAGS
+      CPPLIBS=$ac_save_LIBS
     ;;
 
     *darwin*)
       libuv_ldflags="-framework Foundation -framework CoreServices -framework ApplicationServices"
-      old_LDFLAGS=$LDFLAGS
-      old_LIBS=$LIBS
+      ac_save_LDFLAGS=$LDFLAGS
+      ac_save_LIBS=$LIBS
       LDFLAGS="$LDFLAGS $libuv_ldflags"
       AC_SEARCH_LIBS([uv_poll_init_socket], [uv], [
                       AC_CHECK_HEADER([uv.h], [have_libuv=yes], [have_libuv=no])
@@ -253,16 +253,16 @@ if test "x$with_libuv" = "xyes"; then
         AC_SUBST([LIBUV_CFLAGS])
         AC_SUBST([LIBUV_LIBS])
       fi
-      LDFLAGS=$old_LDFLAGS
-      LIBS=$old_LIBS
+      LDFLAGS=$ac_save_LDFLAGS
+      LIBS=$ac_save_LIBS
       ;;
 
     *)
       dnl Yeah, sucks that luv does not bring a pkg-config or config-tool
       AC_MSG_CHECKING([for libuv])
-      old_LIBS=$LIBS
+      ac_save_LIBS=$LIBS
       for combo in "" "-lrt" "-ldl -lrt" "-ldl -lrt -lpthread" "-lkvm"; do
-        LIBS="-luv $combo $old_LIBS -lm"
+        LIBS="-luv $combo $ac_save_LIBS -lm"
         AC_LINK_IFELSE([AC_LANG_SOURCE([
 extern "C" int uv_poll_init_socket(void);
 int main() { return uv_poll_init_socket(); }
@@ -278,7 +278,7 @@ int main() { return uv_poll_init_socket(); }
           break;
         fi
       done
-      LIBS=$old_LIBS
+      LIBS=$ac_save_LIBS
       if test "x$have_libuv" != "xyes"; then
         AC_MSG_RESULT("no")
       fi
@@ -287,10 +287,10 @@ int main() { return uv_poll_init_socket(); }
 
   if test "x$have_libuv" = "xyes"; then
     AC_DEFINE([HAVE_LIBUV], [1], [Define to 1 if you have libuv.])
-    old_LIBS=$LIBS
+    ac_save_LIBS=$LIBS
     LIBS="$LIBUV_LIBS $LIBS"
     AC_CHECK_FUNCS([uv_last_error])
-    LIBS=$old_LIBS
+    LIBS=$ac_save_LIBS
   elif test "x$with_libuv_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([libuv])
   fi
@@ -321,10 +321,10 @@ if test "x$with_sqlite3" = "xyes"; then
   PKG_CHECK_MODULES([SQLITE3],[sqlite3],[have_sqlite3=yes],[have_sqlite3=no])
   if test "x$have_sqlite3" = "xyes"; then
     AC_DEFINE([HAVE_SQLITE3], [1], [Define to 1 if you have sqlite3.])
-    old_LIBS=$LIBS
+    ac_save_LIBS=$LIBS
     LIBS="$SQLITE3_LIBS $LIBS"
     AC_CHECK_FUNCS([sqlite3_open_v2])
-    LIBS=$old_LIBS
+    LIBS=$ac_save_LIBS
   else
     AC_MSG_WARN([$SQLITE3_PKG_ERRORS])
     if test "x$with_sqlite3_requested" = "xyes"; then
@@ -435,10 +435,10 @@ if test "x$with_gnutls" = "xyes" && test "x$have_ssl" != "xyes"; then
   if test "x$have_libgnutls" = "xyes"; then
     have_ssl=yes
     AC_DEFINE([HAVE_LIBGNUTLS], [1], [Define to 1 if you have libgnutls.])
-    old_LIBS=$LIBS
+    ac_save_LIBS=$LIBS
     LIBS="$LIBGNUTLS_LIBS $LIBS"
     AC_CHECK_FUNCS([gnutls_certificate_set_x509_system_trust])
-    LIBS=$old_LIBS
+    LIBS=$ac_save_LIBS
   else
     AC_MSG_WARN([$LIBGNUTLS_PKG_ERRORS])
     if test "x$with_gnutls_requested" = "xyes"; then
@@ -455,7 +455,7 @@ if test "x$with_openssl" = "xyes" && test "x$have_ssl" != "xyes"; then
     have_ssl=yes
     AC_DEFINE([HAVE_OPENSSL], [1], [Define to 1 if you have openssl.])
 
-    old_LIBS=$LIBS
+    ac_save_LIBS=$LIBS
     LIBS="$OPENSSL_LIBS $LIBS"
     AC_CHECK_FUNCS([EVP_DigestInit_ex], [have_digestinit_ex=yes])
     if test "x$have_digestinit_ex" = "x"; then
@@ -465,7 +465,7 @@ if test "x$with_openssl" = "xyes" && test "x$have_ssl" != "xyes"; then
     AC_CHECK_FUNCS([EVP_sha256])
     AC_CHECK_FUNCS([EVP_sha384])
     AC_CHECK_FUNCS([EVP_sha512])
-    LIBS=$old_LIBS
+    LIBS=$ac_save_LIBS
   else
     AC_MSG_WARN([$OPENSSL_PKG_ERRORS])
     if test "x$with_openssl_requested" = "xyes"; then
@@ -501,10 +501,10 @@ if test "x$have_openssl" != "xyes"; then
       AC_SUBST([LIBGMP_CFLAGS])
       AC_SUBST([LIBGMP_LIBS])
       AC_DEFINE([HAVE_LIBGMP], [1], [Define to 1 if you have libgmp.])
-      old_LIBS=$LIBS
+      ac_save_LIBS=$LIBS
       LIBS="$LIBGMP_LIBS $LIBS"
       AC_CHECK_FUNCS([__gmpz_powm_sec], [have_mpz_powm_sec=yes])
-      LIBS=$old_LIBS
+      LIBS=$ac_save_LIBS
       if test "x$have_mpz_powm_sec" = "xyes"; then
         AC_DEFINE([HAVE_GMP_SEC], [1], [Define to 1 if you have a GMP with sec functions.])
       fi
@@ -544,14 +544,14 @@ if test "x$with_libcares" = "xyes"; then
                     [have_libcares=no])
   if test "x$have_libcares" = "xyes"; then
     AC_DEFINE([HAVE_LIBCARES], [1], [Define to 1 if you have libcares.])
-    old_LIBS=$LIBS
-    old_CPPFLAGS=$CPPFLAGS
+    ac_save_LIBS=$LIBS
+    ac_save_CPPFLAGS=$CPPFLAGS
     LIBS="$LIBCARES_LIBS $LIBS"
     CPPFLAGS="$LIBCARES_CFLAGS $CPPFLAGS"
     AC_CHECK_TYPES([ares_addr_node], [], [], [[#include <ares.h>]])
     AC_CHECK_FUNCS([ares_set_servers])
-    LIBS=$old_LIBS
-    CPPFLAGS=$old_CPPFLAGS
+    LIBS=$ac_save_LIBS
+    CPPFLAGS=$ac_save_CPPFLAGS
 
     # -DCARES_STATICLIB is appended by pkg-config file libcares.pc
   else
@@ -691,11 +691,11 @@ AM_CONDITIONAL([HAVE_LIBSSH2], [test "x$have_libssh2" = "xyes"])
 
 case "$host" in
   *solaris*)
-    old_LIBS=$LIBS
+    ac_save_LIBS=$LIBS
     LIBS=
-    AC_SEARCH_LIBS([getaddrinfo], [nsl socket], [], [$old_LIBS])
+    AC_SEARCH_LIBS([getaddrinfo], [nsl socket], [], [$ac_save_LIBS])
     EXTRALIBS="$LIBS $EXTRALIBS"
-    LIBS=$old_LIBS
+    LIBS=$ac_save_LIBS
     ;;
 esac
 
@@ -922,7 +922,7 @@ AM_CONDITIONAL([HAVE_SOME_FALLOCATE],
   || test "x$have_osx" = "xyes" || test "x$win_build" = "xyes"])
 
 # mingw needs this
-old_CPPFLAGS=$CPPFLAGS
+ac_save_CPPFLAGS=$CPPFLAGS
 CPPFLAGS="$CPPFLAGS $EXTRACPPFLAGS"
 AC_MSG_CHECKING([for asctime_r])
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[
@@ -949,7 +949,7 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[
    AC_DEFINE([HAVE_LOCALTIME_R], [1], [Define to 1 if you have the `localtime_r' function or macro.])],
   [AC_MSG_RESULT([no])
    AM_CONDITIONAL([HAVE_LOCALTIME_R], false)])
-CPPFLAGS=$old_CPPFLAGS
+CPPFLAGS=$ac_save_CPPFLAGS
 
 AC_CHECK_FUNCS([basename],
         [AM_CONDITIONAL([HAVE_BASENAME], true)],
@@ -1118,7 +1118,7 @@ AC_SUBST([EXTRACPPFLAGS])
 AC_SUBST([EXTRALDFLAGS])
 AC_SUBST([EXTRALIBS])
 
-old_CXXFLAGS=$CXXFLAGS
+ac_save_CXXFLAGS=$CXXFLAGS
 CXXFLAGS=
 
 if test "x$enable_werror" = "xyes"; then
@@ -1128,7 +1128,7 @@ if test "x$enable_werror" = "xyes"; then
 fi
 
 WARNCXXFLAGS=$CXXFLAGS
-CXXFLAGS=$old_CXXFLAGS
+CXXFLAGS=$ac_save_CXXFLAGS
 
 AC_SUBST([WARNCXXFLAGS])
 
