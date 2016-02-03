@@ -1264,4 +1264,10 @@ void RequestGroup::enableSeedOnly()
   }
 }
 
+bool RequestGroup::isSeeder() const {
+  return downloadContext_->hasAttribute(CTX_ATTR_BT) &&
+         !bittorrent::getTorrentAttrs(downloadContext_)->metadata.empty() &&
+         downloadFinished();
+}
+
 } // namespace aria2

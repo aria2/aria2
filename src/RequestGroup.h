@@ -489,6 +489,9 @@ public:
   bool isSeedOnlyEnabled() { return seedOnly_; }
 
   void enableSeedOnly();
+
+  // Returns true if this download is now seeding.
+  bool isSeeder() const;
 };
 
 } // namespace aria2

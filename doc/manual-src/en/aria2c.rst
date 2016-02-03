@@ -2518,6 +2518,10 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
   ``numSeeders``
     The number of seeders aria2 has connected to. BitTorrent only.
 
+  ``seeder``
+    ``true`` if the local endpoint is a seeder. Otherwise ``false``.
+    BitTorrent only.
+
   ``pieceLength``
     Piece length in bytes.
 

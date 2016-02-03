@@ -105,10 +105,7 @@ void printSizeProgress(ColorizedStream& o,
                        const SizeFormatter& sizeFormatter)
 {
 #ifdef ENABLE_BITTORRENT
-  if (rg->getDownloadContext()->hasAttribute(CTX_ATTR_BT) &&
-      !bittorrent::getTorrentAttrs(rg->getDownloadContext())
-           ->metadata.empty() &&
-      rg->downloadFinished()) {
+  if (rg->isSeeder()) {
     o << "SEED(";
     if (rg->getCompletedLength() > 0) {
       std::streamsize oldprec = o.precision();

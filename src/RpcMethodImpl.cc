@@ -710,7 +710,9 @@ void gatherBitTorrentMetadata(Dict* btDict, TorrentAttribute* torrentAttrs)
 }
 
 namespace {
-void gatherProgressBitTorrent(Dict* entryDict, TorrentAttribute* torrentAttrs,
+void gatherProgressBitTorrent(Dict* entryDict,
+                              const std::shared_ptr<RequestGroup>& group,
+                              TorrentAttribute* torrentAttrs,
                               BtObject* btObject,
                               const std::vector<std::string>& keys)
 {
@@ -733,6 +735,9 @@ void gatherProgressBitTorrent(Dict* entryDict, TorrentAttribute* torrentAttrs,
       entryDict->put(KEY_NUM_SEEDERS,
                      util::uitos(countSeeder(peers.begin(), peers.end())));
     }
+  }
+  if (requested_key(keys, KEY_SEEDER)) {
+    entryDict->put(KEY_SEEDER, group->isSeeder() ? VLB_TRUE : VLB_FALSE);
   }
 }
 } // namespace
@@ -777,9 +782,9 @@ void gatherProgress(Dict* entryDict, const std::shared_ptr<RequestGroup>& group,
   gatherProgressCommon(entryDict, group, keys);
 #ifdef ENABLE_BITTORRENT
   if (group->getDownloadContext()->hasAttribute(CTX_ATTR_BT)) {
-    gatherProgressBitTorrent(
-        entryDict, bittorrent::getTorrentAttrs(group->getDownloadContext()),
-        e->getBtRegistry()->get(group->getGID()), keys);
+    gatherProgressBitTorrent(entryDict, group, bittorrent::getTorrentAttrs(
+                                                   group->getDownloadContext()),
+                             e->getBtRegistry()->get(group->getGID()), keys);
   }
 #endif // ENABLE_BITTORRENT
 }
