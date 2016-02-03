@@ -2816,7 +2816,7 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
     Upload speed(byte/sec) that this client uploads to the peer.
 
   ``seeder``
-    ``true`` is this peer is a seeder. Otherwise ``false``.
+    ``true`` if this peer is a seeder. Otherwise ``false``.
 
   **JSON-RPC Example**
   ::
