@@ -1900,7 +1900,7 @@ void executeHook(const std::string& command, a2_gid_t gid, size_t numFiles,
   assert(cmdlineLen > 0);
   A2_LOG_INFO(fmt("Executing user command: %s", cmdline.c_str()));
   DWORD rc = CreateProcessW(batch ? utf8ToWChar(cmdexe).c_str() : nullptr,
-                            wcharCmdline.get(), nullptr, nullptr, true, 0,
+                            wcharCmdline.get(), nullptr, nullptr, false, 0,
                             nullptr, 0, &si, &pi);
 
   if (!rc) {
@@ -2087,7 +2087,6 @@ TLSVersion toTLSVersion(const std::string& ver)
 }
 #endif // ENABLE_SSL
 
-
 #ifdef __MINGW32__
 std::string formatLastError(int errNum)
 {
@@ -2104,6 +2103,25 @@ std::string formatLastError(int errNum)
   return buf.data();
 }
 #endif // __MINGW32__
+
+void make_fd_cloexec(int fd)
+{
+#ifndef __MINGW32__
+  int flags;
+
+  // TODO from linux man page, fcntl() with F_GETFD or F_SETFD does
+  // not return -1 with errno == EINTR.  Historically, aria2 code base
+  // checks this case.  Probably, it is not needed.
+  while ((flags = fcntl(fd, F_GETFD)) == -1 && errno == EINTR)
+    ;
+  if (flags == -1) {
+    return;
+  }
+
+  while (fcntl(fd, F_SETFD, flags | FD_CLOEXEC) == -1 && errno == EINTR)
+    ;
+#endif // !__MINGW32__
+}
 
 } // namespace util
 

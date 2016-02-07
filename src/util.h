@@ -862,6 +862,11 @@ TLSVersion toTLSVersion(const std::string& ver);
 std::string formatLastError(int errNum);
 #endif // __MINGW32__
 
+// Sets file descriptor file FD_CLOEXEC to |fd|.  This function is
+// noop for Mingw32 build, since we disable inheritance in
+// CreateProcess call.
+void make_fd_cloexec(int fd);
+
 } // namespace util
 
 } // namespace aria2

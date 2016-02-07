@@ -221,6 +221,7 @@ int openFileWithFlags(const std::string& filename, int flags,
                                    util::safeStrerror(errNum).c_str()),
                        errCode);
   }
+  util::make_fd_cloexec(fd);
 #if defined(__APPLE__) && defined(__MACH__)
   // This may reduce memory consumption on Mac OS X.
   fcntl(fd, F_NOCACHE, 1);

@@ -202,6 +202,7 @@ void SocketCore::create(int family, int protocol)
     throw DL_ABORT_EX(
         fmt("Failed to create socket. Cause:%s", errorMsg(errNum).c_str()));
   }
+  util::make_fd_cloexec(fd);
   int sockopt = 1;
   if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (a2_sockopt_t)&sockopt,
                  sizeof(sockopt)) < 0) {
@@ -227,6 +228,7 @@ static sock_t bindInternal(int family, int socktype, int protocol,
     error = errorMsg(errNum);
     return -1;
   }
+  util::make_fd_cloexec(fd);
   int sockopt = 1;
   if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (a2_sockopt_t)&sockopt,
                  sizeof(sockopt)) < 0) {
@@ -445,6 +447,7 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port,
       error = errorMsg(errNum);
       continue;
     }
+    util::make_fd_cloexec(fd);
     int sockopt = 1;
     if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (a2_sockopt_t)&sockopt,
                    sizeof(sockopt)) < 0) {
