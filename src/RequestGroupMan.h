@@ -73,6 +73,9 @@ private:
   DownloadResultList downloadResults_;
 
   int maxSimultaneousDownloads_;
+  bool optimizeSimultaneousDownloads_;
+  double optimizeSimultaneousDownloadsCoeffA_;
+  double optimizeSimultaneousDownloadsCoeffB_;
 
   // The number of simultaneous active downloads, excluding seed only
   // item if PREF_BT_DETACH_SEED_ONLY is true.  We rely on this
@@ -194,6 +197,18 @@ public:
   size_t changeReservedGroupPosition(a2_gid_t gid, int pos, OffsetMode how);
 
   bool removeReservedGroup(a2_gid_t gid);
+
+  bool getOptimizeSimultaneousDownloads() const
+  {
+    return optimizeSimultaneousDownloads_;
+  }
+
+  void setOptimizeSimultaneousDownloads(bool flag)
+  {
+    optimizeSimultaneousDownloads_=flag;
+  }
+
+  bool setOptimizeSimultaneousDownloads();
 
   void showDownloadResults(OutputFile& o, bool full) const;
 

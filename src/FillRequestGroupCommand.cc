@@ -80,6 +80,17 @@ bool FillRequestGroupCommand::execute()
     }
   }
   e_->addRoutineCommand(std::unique_ptr<Command>(this));
+
+  // let's make sure we come back here every second or so
+  // if we use the optimize-concurrent-download option
+  if(rgman->getOptimizeSimultaneousDownloads()) {
+    const Timer now;
+    if(std::chrono::duration_cast<std::chrono::seconds>(lastExecTime.difference(now)) >= 1_s) {
+       lastExecTime=now;
+       rgman->requestQueueCheck();
+    }
+  }
+
   return false;
 }
 

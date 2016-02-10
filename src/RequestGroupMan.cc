@@ -105,6 +105,9 @@ RequestGroupMan::RequestGroupMan(
     int maxSimultaneousDownloads, const Option* option)
     : maxSimultaneousDownloads_(maxSimultaneousDownloads),
       numActive_(0),
+      optimizeSimultaneousDownloads_(false),
+      optimizeSimultaneousDownloadsCoeffA_(5.),
+      optimizeSimultaneousDownloadsCoeffB_(25.),
       option_(option),
       serverStatMan_(std::make_shared<ServerStatMan>()),
       maxOverallDownloadSpeedLimit_(
@@ -120,11 +123,18 @@ RequestGroupMan::RequestGroupMan(
           this, option->getAsInt(PREF_BT_MAX_OPEN_FILES))),
       numStoppedTotal_(0)
 {
+  setOptimizeSimultaneousDownloads();
   appendReservedGroup(reservedGroups_, requestGroups.begin(),
                       requestGroups.end());
 }
 
 RequestGroupMan::~RequestGroupMan() { openedFileCounter_->deactivate(); }
+
+bool RequestGroupMan::setOptimizeSimultaneousDownloads(void)
+{
+    optimizeSimultaneousDownloads_=option_->getAsBool(PREF_OPTIMIZE_CONCURRENT_DOWNLOADS);
+    return optimizeSimultaneousDownloads_;
+}
 
 bool RequestGroupMan::downloadFinished()
 {
@@ -474,11 +484,43 @@ createInitialCommand(const std::shared_ptr<RequestGroup>& requestGroup,
 void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
 {
   removeStoppedGroup(e);
-  if (static_cast<size_t>(maxSimultaneousDownloads_) <= numActive_) {
+
+  int maxSimultaneousDownloads=maxSimultaneousDownloads_;
+
+  if(optimizeSimultaneousDownloads_) {
+    // optimize method is requested, so gauge current speed
+    int currentSpeed=getNetStat().calculateDownloadSpeed();
+    if(currentSpeed>0) {
+      // apply the rule
+      int speed=currentSpeed;
+      if((maxOverallDownloadSpeedLimit_>0) && (speed>maxOverallDownloadSpeedLimit_)) {
+        speed=maxOverallDownloadSpeedLimit_;
+      }
+      maxSimultaneousDownloads=ceil(
+        optimizeSimultaneousDownloadsCoeffA_
+        +optimizeSimultaneousDownloadsCoeffB_ * log10(speed*8./1000000.)
+      );
+      if((maxSimultaneousDownloads_>0)&&(maxSimultaneousDownloads>maxSimultaneousDownloads_)) {
+        maxSimultaneousDownloads=maxSimultaneousDownloads_;
+      }
+      if(maxSimultaneousDownloads<1) {
+        maxSimultaneousDownloads=1;
+      }
+      A2_LOG_DEBUG
+        (fmt("Number of concurrent downloads adapted to speed (%d B/s) with max %d"
+             " (%lu currently active)",
+             speed, maxSimultaneousDownloads, numActive_));
+    }
+    else {
+      maxSimultaneousDownloads=1;
+    }
+  }
+
+  if (static_cast<size_t>(maxSimultaneousDownloads) <= numActive_) {
     return;
   }
   int count = 0;
-  int num = maxSimultaneousDownloads_ - numActive_;
+  int num = maxSimultaneousDownloads - numActive_;
   std::vector<std::shared_ptr<RequestGroup>> pending;
 
   while (count < num && (uriListParser_ || !reservedGroups_.empty())) {
