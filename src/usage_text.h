@@ -242,7 +242,21 @@
 #define TEXT_MAX_CONCURRENT_DOWNLOADS                                   \
   _(" -j, --max-concurrent-downloads=N Set maximum number of parallel downloads for\n" \
     "                              every static (HTTP/FTP) URL, torrent and metalink.\n" \
-    "                              See also --split option.")
+    "                              See also --split and --optimize-concurrent-downloads options.")
+#define TEXT_OPTIMIZE_CONCURRENT_DOWNLOADS\
+  _(" --optimize-concurrent-downloads[=true|false|A:B] Optimizes the number of\n" \
+    "                              concurrent downloads according to the bandwidth\n" \
+    "                              available. aria2 uses the download speed observed\n" \
+    "                              in the previous downloads to adapt the number of\n" \
+    "                              downloads launched in parallel according to the rule\n" \
+    "                              N = A + B Log10(speed in Mbps). The coefficients\n" \
+    "                              A and B can be customized in the option arguments\n" \
+    "                              with A and B separated by a colon. The default values\n" \
+    "                              (A=5,B=25) lead to using typically 5 parallel\n" \
+    "                              downloads on 1Mbps networks and above 50 on 100Mbps\n" \
+    "                              networks. The number of parallel downloads remains\n" \
+    "                              constrained under the maximum defined by the\n" \
+    "                              max-concurrent-downloads parameter.")
 #define TEXT_LOAD_COOKIES                                               \
   _(" --load-cookies=FILE          Load Cookies from FILE using the Firefox3 format\n" \
     "                              and Mozilla/Firefox(1.x/2.x)/Netscape format.")

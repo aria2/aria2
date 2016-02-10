@@ -61,9 +61,13 @@ public:
    */
   int calculateDownloadSpeed();
 
+  int calculateNewestDownloadSpeed(int seconds);
+
   int calculateAvgDownloadSpeed();
 
   int calculateUploadSpeed();
+
+  int calculateNewestUploadSpeed(int seconds);
 
   int calculateAvgUploadSpeed();
 
