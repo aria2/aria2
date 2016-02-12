@@ -62,6 +62,8 @@ const WORD kForeground[] = {
     FOREGROUND_WHITE                    // white
 };
 
+const int kForegroundSize = sizeof (kForeground) / sizeof (kForeground[0]);
+
 const WORD kBackground[] = {
     BACKGROUND_BLACK,                   // black
     BACKGROUND_RED,                     // red
@@ -73,6 +75,8 @@ const WORD kBackground[] = {
     BACKGROUND_WHITE                    // white
 };
 
+const int kBackgroundSize = sizeof (kBackground) / sizeof (kBackground[0]);
+
 } // namespace
 
 namespace aria2 {
@@ -82,30 +86,34 @@ WinConsoleFile::WinConsoleFile(DWORD stdHandle)
       bold_(false),
       underline_(false),
       reverse_(false),
-      fg_(FOREGROUND_WHITE),
-      bg_(BACKGROUND_BLACK)
+      deffg_(FOREGROUND_WHITE),
+      defbg_(BACKGROUND_BLACK)
 {
   if (supportsColor()) {
     CONSOLE_SCREEN_BUFFER_INFO info;
     GetConsoleScreenBufferInfo(handle(), &info);
-    info.wAttributes &=
-        ~(COMMON_LVB_LEADING_BYTE | COMMON_LVB_TRAILING_BYTE |
-          COMMON_LVB_GRID_HORIZONTAL | COMMON_LVB_GRID_LVERTICAL |
-          COMMON_LVB_GRID_RVERTICAL | COMMON_LVB_REVERSE_VIDEO |
-          COMMON_LVB_UNDERSCORE);
-    fg_ = info.wAttributes &
-          ~(BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED |
-            BACKGROUND_INTENSITY);
-    bg_ = info.wAttributes &
-          ~(FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED |
-            FOREGROUND_INTENSITY);
-    bg_ = (bg_ >> 4) & 0x0F;
+    deffg_ = info.wAttributes &
+             (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
+    defbg_ = info.wAttributes &
+             (BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);
     bold_ = info.wAttributes & FOREGROUND_INTENSITY;
     underline_ = info.wAttributes & BACKGROUND_INTENSITY;
   }
 
-  deffg_ = fg_;
-  defbg_ = bg_;
+  for (int i = 0; i < kForegroundSize; i++) {
+    if (deffg_ == kForeground[i]) {
+      deffg_ = i;
+      break;
+    }
+  }
+  for (int i = 0; i < kBackgroundSize; i++) {
+    if (defbg_ == kBackground[i]) {
+      defbg_ = i;
+      break;
+    }
+  }
+  fg_ = deffg_;
+  bg_ = defbg_;
 }
 
 bool WinConsoleFile::supportsColor()
