@@ -111,6 +111,7 @@ WinConsoleFile::WinConsoleFile(DWORD stdHandle)
       }
     }
   }
+
   deffg_ = fg_;
   defbg_ = bg_;
 }
