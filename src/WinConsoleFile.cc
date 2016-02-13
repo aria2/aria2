@@ -86,34 +86,33 @@ WinConsoleFile::WinConsoleFile(DWORD stdHandle)
       bold_(false),
       underline_(false),
       reverse_(false),
-      deffg_(FOREGROUND_WHITE),
-      defbg_(BACKGROUND_BLACK)
+      fg_(7),
+      bg_(0)
 {
   if (supportsColor()) {
     CONSOLE_SCREEN_BUFFER_INFO info;
     GetConsoleScreenBufferInfo(handle(), &info);
-    deffg_ = info.wAttributes &
-             (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-    defbg_ = info.wAttributes &
-             (BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);
     bold_ = info.wAttributes & FOREGROUND_INTENSITY;
     underline_ = info.wAttributes & BACKGROUND_INTENSITY;
-  }
-
-  for (int i = 0; i < kForegroundSize; i++) {
-    if (deffg_ == kForeground[i]) {
-      deffg_ = i;
-      break;
+    int fgcolor = info.wAttributes &
+                  (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
+    for (int fg = 0; fg < kForegroundSize; fg++) {
+      if (kForeground[fg] == fgcolor) {
+        fg_ = fg;
+        break;
+      }
+    }
+    int bgcolor = info.wAttributes &
+                  (BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);
+    for (int bg = 0; bg < kBackgroundSize; bg++) {
+      if (kBackground[bg] == bgcolor) {
+        bg_ = bg;
+        break;
+      }
     }
   }
-  for (int i = 0; i < kBackgroundSize; i++) {
-    if (defbg_ == kBackground[i]) {
-      defbg_ = i;
-      break;
-    }
-  }
-  fg_ = deffg_;
-  bg_ = defbg_;
+  deffg_ = fg_;
+  defbg_ = bg_;
 }
 
 bool WinConsoleFile::supportsColor()
