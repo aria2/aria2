@@ -1,290 +1,139 @@
-aria2 1.19.3
+aria2 1.20.0
 ============
 
 Release Note
 ------------
 
 This release fixes lots of bugs.  See the Changes section below.
+There are new features in this release.  We added "seeder" key in
+aria2.tellStatus RPC response.  We added system.listMethods RPC method
+to return all RPC method supported.  We added --max-mmap-limit option
+to avoid mmap if total file size is greater than given size.
 
 Changes
 -------
 
-* Fix bug that pause/unpause seeding torrent prevents new downloads
-  from starting
+* src/WinConsoleFile.cc: fix colour
 
-  Previously, with --bt-detach-seed-only, when user issued pause and
-  unpause command to seeding torrent, and it was started again, and it
-  immediately got seeding status, but aria2 did not start new download
-  waiting in the queue.  This commit fixes this bug.
+  Set default foreground/background colour correctly
 
-  See GH-490
+  Patch from kwkam
 
-* Add --bt-enable-hook-after-hash-check option
+* configure.ac: fix autoreconf error
 
-  This option sets flag which allows hook command invocation after
-  hash check (see -V option) in BitTorrent download.  By default, when
-  hash check succeeds, the command given by --on-bt-download-complete
-  is executed.  To disable this action, give false to this option.
+  Use m4_ifdef so we do not have to install optional libraries
 
-* Add --socket-recv-buffer-size option
+  Patch from kwkam
 
-  Set the maximum socket receive buffer in bytes. Specifing 0 will
-  disable this option. This value will be set to socket file
-  descriptor using SO_RCVBUF socket option with setsockopt() call.
+* Don't inherit file descriptor to child process
 
-  See GH-487 about the usecase of this option
+  For non-Mingw32 build, set FD_CLOEXEC to file descriptors which live
+  beyond function scope.  For Mingw32 build, just pass false to
+  bInheritHandles parameter of CreateProcessW.
 
-* Disable --deferred-input when --save-session is used together
+* Update Russian version documentation
 
-  With --deferred-input=true, aria2 only reads input file to fill
-  active download slots, while keeping input file open.  Meanwhile,
-  --save-session saves all download info inside memory, but this does
-  not take into account of unread item in input file.  This will lead
-  to lose input data in saved session file.  Also current BufferedFile
-  implementation used to read/write input/output file take a lock on
-  Windows.  This effectively prevents session serializer from writing
-  session data to the same file which is still kept open because of
-  --deferred-input.  See GH-493
+  Patch from ITriskTI
 
-* base32: decode lowercased characters as well
+* Add "seeder" key to tellStatus RPC response
 
-  This fixes the bug that magnet URI with lowercased btih is treated
-  as malformed.
+* WinTLS: Fix hang because of buffered received data
 
-* mingw: Use GetFileSize to get file size
+  WinTLSSession buffers received decrypted data into its own buffer.
+  If read is requested, it copies the data from its buffer.  But if
+  requested buffer size is less than decrypted buffer, some of the
+  data is left in the buffer.  Previously, we had no facility to check
+  the existence of this pending data.  If this data is the last
+  requested data from remote server, we may end up waiting for read
+  event even if we have already data in our buffer, which may cause
+  hang.  This commit fixes this issue by introducing function to
+  return the buffered length in TLSSession.  SocketCore also provides
+  the same function, which delegates to TLSSession object.
 
-  _wstat family does not work with symbolic links.  They always
-  returns size 0.  To workaround this, we now use GetFileSize to get
-  file size.  To do that, we need to first obtain file HANDLE, which
-  is a bit tedious because of the messy interface of CreateFileW, but
-  we have no way to get around it.
+* Add --max-mmap-limit option
 
-* Fix bug that file allocation=trunc does not work with Windows
-  symlink
+  Set the maximum file size to enable mmap (see --enable-mmap
+  option). The file size is determined by the sum of all files
+  contained in one download. For example, if a download contains 5
+  files, then file size is the total size of those files. If file size
+  is strictly greater than the size specified in this option, mmap
+  will be disabled.
 
-* Send the last error message as part of tellStatus RPC response
+* mingw: Use SetFileValidData to make --file-allocation=falloc work
 
-  Patch from Jarda Snajdr
+* Retry with 504 status code
 
-* Don't enable mmap if file allocation is disabled
+* Increase DHT transaction ID from 2 to 4 bytes to avoid conflict
 
-  Without file allocation, we cannot map file because file length
-  could be zero.
+* Update wslay
 
-  This could fix bug reported at GH-478
+* Add --enable-werror option to configure to enable warning flags
 
-* Evict timed out pooled socket periodically
+* Don't modify user variables (e.g., CFLAGS, LIBS, etc)
 
-  Previously we only scanned pool socket to check they are timed out
-  when we pooled another socket.  This means that pooled socket is not
-  closed long time (stays in CLOSE-WAIT state) if we don't pool any
-  more socket.  In this commit, we now check pooled socket
-  periodically (30 seconds) to avoid the sockets hanging in CLOSE-WAIT
-  state long time.
+* Improve error message when loading pkcs12 file failed
 
-  See GH-477
+* Updated dependency and source url's
 
-* Don't write control file if content is not changed from previous one
+  The RaspberryPi Dockerfile had some out-of-date dependency packages
+  and was downloading an outdated aria2 source from Sourceforge, which
+  resulted in a build for version 1.19.0.  The new
+  fetch-latest-release-from-GitHub script I've cooked up should always
+  work as long as GitHub doesn't change their API and aria2's platform
+  agnostic releases follow the "{version number}.tar.bz2" naming
+  format.
 
-  This is desirable so that we don't have to wake up disk if control
-  file is not changed, and it is not have to be written again.  We use
-  the same method (SHA1 hash) to check the content is the same.  The
-  limitation is the hash is stored in memory, so we have to write the
-  first time in each session.
+  Patch from c3mb0
 
-  See GH-382
+* Reduce delay in tracker request
 
-* Remove content-length and content-range if transfer-encoding is
-  given
+  We eliminated 1 second delay between completion of name resolution
+  for tracker request and time when it is actually issued.  We also
+  elimited 1 second delay after last torrent download exists and it is
+  told to DHTInteractionCommand.
 
-  See GH-473
+* Disable IPv6 on non-async NameResolver if configuration wants
 
-* Retry after 404 status if --max-file-not-found > 0
+* Fix mysterious 1 second delay with async DNS
 
-
+* Fix bug that UDP port was incorrectly used in UDP tracker announce request
 
-aria2 1.19.2
-============
+* Refactor HttpRequest
 
-Release Note
-------------
+  This also makes comparison performed when replacing builtin header
+  field with user-defined one case-insensitive.
 
-This release fixes the bug that progress summary is not shown timely.
+* Send Want-Digest as per RFC 3230
 
-Changes
--------
+* Try all found address set to bind sockets with --multiple-interface
 
-* Fix bug that progress summary is not shown timely
+  Fixes GH-523
 
-
+* Replace sourceforge references with aria2.github.io
 
-aria2 1.19.1
-============
+* Add system.listMethods RPC method
 
-Release Note
-------------
+  system.listMethods just returns the available RPC method names.  It
+  can be executed without secret token, because it just returns the
+  method names, and does not alter anything.
 
-This release fixes TLS handshake error with servers which only support
-RSA-SHA1 signature algorithm.  We removed RSA-SHA1 for enchanced
-security, but many users reported there were servers which could not
-talk aria2 1.19.0, so added it again for compatibility reasons.  For
-Windows build, we fixed potential infinite loop bug when TLS is used.
+  See GH-437
 
-We changed the location where dht.dat and aria2.conf are looked up.
-The aria2 manual page described details.  Basically we now follow XDG
-specification (http://standards.freedesktop.org/basedir-spec/latest/).
-For dht.dat, the default location is $XDG_CACHE_HOME/aria2/ directory.
-For aria2.conf, the default location is $XDG_CONFIG_HOME/aria2/
-directory.  To keep the current user configuration working, if aria2
-detects dht.dat under $HOME/.aria2/ directory, it is used instead.
-Similarly, if aria2.conf exists under $HOME/.aria2/ directory, it is
-used instead.
+* Support content-range from non-compliant server
 
-Previously, we return 500 HTTP status if RPC method execution
-encountered error.  Now it returns with 400 HTTP status with error
-code.  This is more natural because server processed request and found
-an error, and returned error reply correctly.  This is not something
-server crashed or something.  Also, there is RPC libraries which
-throws exception if it sees 5XX status code, where 400 is better
-because we can examine the error.
+  See GH-509
 
-Changes
--------
+* Reduce UDP tracker request timeout
 
-* Update README.android
+  See GH-507
 
-  Providing some workarounds about CA certificates and standard output
+* Apply --retry-wait when retrying after 404
 
-  Patch from amtlib-dot-dll
+  Previously, --retry-wait was not used when retrying after 404
+  (--max-file-not-found).  The retry was done without delay.  Also the
+  maximum retry count (--max-retries) was ignored when retrying with
+  404.
 
-* Return 400 HTTP status code if exception was caught while executing
-  RPC method
-
-  Previously, we returned 500 HTTP status code.  I think the found in
-  RPC level, not in HTTP protocol, so 500 is not appropriate.
-
-* WinTLS: Fix potential infinite loop
-
-* Fix on-download-error is executed even if download succeeded
-
-* Update Dockerfile.mingw
-
-  Patch from Adam Baxter
-
-* Increase --select-file upper bound to 1m for torrent containing lots
-  of files
-
-* Fix busy loop with --dry-run and 4xx response for URI listed in
-  metalink
-
-  See GH-430
-
-* Update sqlite in OSX build to 3.8.10.2
-
-* Make LibuvEventPoll compatible with the latest libuv again
-
-* gnutls: Allow SIGN-RSA-SHA1 for compatibility reason
-
-* Make script compatible with both Python 2 and 3
-
-  Patch from Vasilij Schneidermann
-
-* Make config and cache files conform to XDG
-
-  See http://standards.freedesktop.org/basedir-spec/latest/ for
-  further details.  This implementation decides the default based on
-  whether a file exists at the legacy location, if it doesn't, it
-  picks the XDG-conforming location instead.
-
-  Patch from Vasilij Schneidermann
-
-* ftp, sftp: Fix heap-after-free bug on exception
-
-* ftp: Fix timeout when reusing FTP connection
-
-* Various MinGW-w64 build improvements
-
-  - Fix detection of localtime_r and asctime_r on MinGW-w64
-  - Fix linking with libintl on MinGW-w64
-
-  Patch from David Macek
-
-
-
-aria2 1.19.0
-============
-
-Release Note
-------------
-
-This releases adds SFTP support, and fixes several bugs.  SFTP support
-has been implemented using libssh2.  We added several new options.
---multiple-interface option is like --interface option, but can take
-several interfaces.  They are used in round-robin manner, and it works
-like link aggregation.  Previously, .netrc search path is fixed under
-$HOME directory, and cannot be changed.  In this release, --netrc-path
-option has been added to override the search path.  The runtime bug
-concerning getrandom has been fixed in this release.  Previously if
-download failed because checksum error, aria2 exited with error code 1
-(unknown error).  Now it exits with dedicated error code 32.  We fixed
-long outstanding bug that aria2 crashes when downloading multi-file
-torrent.
-
-Changes
--------
-
-* android: Build and link with zlib
-
-  Previously, we linked with zlib shipped with NDK, but it seems this
-  is not part of NDK API, and thus could break our app.
-
-* Allow netrc-path to be specified in the config file
-
-  Adds --netrc-path to override default .netrc search path.  Patch
-  from Ryan Steinmetz
-
-* Exit with 32 status code if checksum verification failed
-
-* Add SFTP support using libssh2
-
-  aria2 can now download files via sftp protocol: aria2c sftp://....
-  --ssh-host-key-md option is added to specify expected server's
-  fingerprint.
-
-* Added Dockerfile to cross complile aria2 for RaspberryPI (armhf)
-
-  Patch from Igor Khomyakov
-
-* multiple interface support for link aggregation
-
-  Adds --multiple-interface option.  Patch from Sarim Khan
-
-* Run on-bt-download-complete command when -V reports download finished
-
-  Fixes GH-355
-
-* Use dedicated DiskWriter in MultiDiskFileAllocationIterator
-
-  We have to use dedicated DiskWriter instead of
-  (*entryItr_)->getDiskWriter().  This is because
-  SingleFileAllocationIterator cannot reopen file if file is closed by
-  OpenedFileCounter.  Fixes GH-350
-
-* Fix getrandom for system with libc not including errno or systems
-
-  not supporting ENOSYS in the first place.  Fixes GH-347
-
-* Don't send back rpc-secret option value in aria2.getGlobalOption RPC
-  method
-
-* Make libuv default off
-
-  See GH-241 for discussion
-
-* Fixed slow RPC response
-
-  Fxies GH-345
-
-* Fix getrandom interface detection
-
-  Fixes GH-346
+  This commit makes --retry-wait apply for retrying with 404 as well.
+  It also combines --max-retries and --max-file-not-found.  When
+  retrying with 404, it is counted toward retry count.
