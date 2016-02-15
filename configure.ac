@@ -312,6 +312,7 @@ AM_CONDITIONAL([HAVE_LIBUV], [test "x$have_libuv" = "xyes"])
 have_libxml2=no
 if test "x$with_libxml2" = "xyes"; then
   m4_ifdef([AM_PATH_XML2], [AM_PATH_XML2([2.6.24], [have_libxml2=yes])], [
+    AC_MSG_WARN([configure was generated without libxml2 detection.  libxml2 detection is disabled])
     XML_CPPFLAGS=
     XML_LIBS=
     AC_SUBST([XML_CPPFLAGS])
@@ -327,6 +328,7 @@ fi
 have_libexpat=no
 if test "x$with_libexpat" = "xyes" && test "x$have_libxml2" != "xyes"; then
   m4_ifdef([AM_PATH_LIBEXPAT], [AM_PATH_LIBEXPAT], [
+    AC_MSG_WARN([configure was generated without libexpat detection.  libexpat detection is disabled])
     EXPAT_CFLAGS=
     EXPAT_LIBS=
     AC_SUBST([EXPAT_CFLAGS])
@@ -541,6 +543,7 @@ if test "x$have_openssl" != "xyes"; then
      test "x$have_nativetls" != "xyes" &&
      test "x$have_libnettle" != "xyes"; then
     m4_ifdef([AM_PATH_LIBGCRYPT], [AM_PATH_LIBGCRYPT([1.2.4], [have_libgcrypt=yes])], [
+    AC_MSG_WARN([configure was generated without libgcrypt detection.  libgcrypt detection is disabled])
       LIBGCRYPT_CFLAGS=
       LIBGCRYPT_LIBS=
       AC_SUBST([LIBGCRYPT_CFLAGS])
