@@ -62,7 +62,7 @@ const WORD kForeground[] = {
     FOREGROUND_WHITE                    // white
 };
 
-const int kForegroundSize = sizeof (kForeground) / sizeof (kForeground[0]);
+const int kForegroundSize = sizeof(kForeground) / sizeof(kForeground[0]);
 
 const WORD kBackground[] = {
     BACKGROUND_BLACK,                   // black
@@ -75,7 +75,7 @@ const WORD kBackground[] = {
     BACKGROUND_WHITE                    // white
 };
 
-const int kBackgroundSize = sizeof (kBackground) / sizeof (kBackground[0]);
+const int kBackgroundSize = sizeof(kBackground) / sizeof(kBackground[0]);
 
 } // namespace
 
