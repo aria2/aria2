@@ -145,7 +145,7 @@ int GnuTLSSession::init(sock_t sockfd)
     break;
   };
   rv_ = gnutls_priority_set_direct(sslSession_, pri.c_str(), &err);
-#endif  
+#endif
   if (rv_ != GNUTLS_E_SUCCESS) {
     return TLS_ERR_ERROR;
   }
