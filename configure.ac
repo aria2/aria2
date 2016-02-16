@@ -95,6 +95,13 @@ AC_ARG_WITH([bashcompletiondir],
 
 AC_ARG_VAR([ARIA2_STATIC], [Set 'yes' to build a statically linked aria2])
 
+AC_ARG_ENABLE([gnutls-system-crypto-policy],
+    AS_HELP_STRING([--enable-gnutls-system-crypto-policy], [Enable gnutls system wide crypto policy]))
+
+AS_IF([test "x$enable_gnutls_system_crypto_policy" = "xyes"], [
+  AC_DEFINE([USE_GNUTLS_SYSTEM_CRYPTO_POLICY], [1], [Define to 1 if using gnutls system wide crypto policy .])
+])
+
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC

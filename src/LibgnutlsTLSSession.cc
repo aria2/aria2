@@ -128,6 +128,9 @@ int GnuTLSSession::init(sock_t sockfd)
   // It seems err is not error message, but the argument string
   // which causes syntax error.
   const char* err;
+#ifdef USE_GNUTLS_SYSTEM_CRYPTO_POLICY
+  rv_ = gnutls_priority_set_direct(sslSession_, "@SYSTEM", &err);
+#else
   std::string pri = "SECURE128:+SIGN-RSA-SHA1";
   switch (tlsContext_->getMinTLSVersion()) {
   case TLS_PROTO_TLS12:
@@ -142,6 +145,7 @@ int GnuTLSSession::init(sock_t sockfd)
     break;
   };
   rv_ = gnutls_priority_set_direct(sslSession_, pri.c_str(), &err);
+#endif  
   if (rv_ != GNUTLS_E_SUCCESS) {
     return TLS_ERR_ERROR;
   }
