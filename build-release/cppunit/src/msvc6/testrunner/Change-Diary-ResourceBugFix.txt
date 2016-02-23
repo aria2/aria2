@@ -1,0 +1,111 @@
+Diary of making test runner DLL resource safe.
+
+Repeat everything, that was done for version 1.8.0. This is point 1) to 9).
+
+0) With the unit-tests for the test runner DLL all four tests fail with the original 
+   version 1.9.8 of CPP-Unit.
+
+1) Replace the original integer dialog ids with new string ids
+    CPP_UNIT_TEST_RUNNER_IDD_DIALOG_TEST_HIERARCHY
+    CPP_UNIT_TEST_RUNNER_IDD_DIALOG_TESTRUNNER
+   Because these are not in resource.h VC++ interpretes these values
+   as string ids.
+
+2) TestRunnerDlg.cpp:
+   - Make a copy of the constructor and replace the integer id with a string id. 
+   - Move the initialization code in the two constructors to the new private member 
+     function init().
+   - Put an ASSERT in the old constructor.
+   - Remove the enum IDD=IDD_DIALOG_TESTRUNNER from the resource.h and TestRunnerDlg.h 
+     header files. Accordingly remove the default value nDialogResourceId in the
+     constructor, that uses the integer id.
+
+3) TreeHierarchyDlg.cpp:
+   - Replace the integer id in the call to the base class constructor with
+     the new string id.
+   - Remove the enum IDD=IDD_DIALOG_TEST_HIERARCHY from the resource.h and 
+     TreeHierarchyDlg.h header file.
+
+4) Test. Two of the four tests still fail. The remaining errors result from
+   the conflicts in the string table.
+
+5) Since strings ids don't work for the string table I created the new function
+   loadCString to load the strings from the correct resource module which is of 
+   course the test runner module. The new function is in the files 
+   ResourceLoaders.[cpp|h] since I didn't find a good existing place. Baptiste, 
+   if you know of a good existing place simply move the function and remove the 
+   two new files.
+
+6) Check all occurences of the strings and replace the original string refernces 
+   with the new function loadCString.
+    IDS_ERROR_SELECT_TEST  
+    IDS_ERRORLIST_TYPE     
+    IDS_ERRORLIST_NAME     
+    IDS_ERRORLIST_FAILED_CONDITION 
+    IDS_ERRORLIST_LINE_NUMBER 
+    IDS_ERRORLIST_FILE_NAME 
+
+7) Test. No more errors are found.
+
+8) Change the two bitmaps that are used in the list and the tree to use
+   string ids instead of integer ids.
+   - First changed the unit test so that the originally incorrect behaviour
+     is shown. Inserted red circles in the bitmaps in the unit test.
+     Then added the new test checkListBitmaps() and changed checkBrowseDlg()
+     to let the user visually check, if the correct bitmaps are used.
+     This has to be done by the user visually, because I couldn't think of
+     an automatic test, that could be implemented easily.
+     The last test for the correct bitmaps will ALWAYS fail, so that the
+     bitmaps can be checked visually.
+   - Changed the RC-file of the test runner DLL:
+        CPP_UNIT_TEST_RUNNER_IDB_TEST_TYPE           
+        CPP_UNIT_TEST_RUNNER_IDB_ERROR_TYPE     
+     Removed the original string ids from resource.h and changed TreeHierarchyDlg.cpp
+     and TestRunnerDlg.cpp so that the new string ids are used.
+
+
+9) Changed the TestPlugInRunner. I don't know, how I can test this and would
+   ask you Baptiste to check it or let me know, how I can check it.
+   I did the following:
+   - Change the dialog id to the string id
+        CPP_UNIT_TEST_RUNNER_PLUG_IN_IDD_TEST_PLUG_IN_RUNNER
+                             ^^^^^^^ => This is different from the string id used 
+                                        in the test runner DLL!
+   - Removed the original integer id from resource.h and TestPlugInRunnerDlg.h.
+   - Changed the constructor in TestPlugInRunnerDlg.cpp to use the new string id.
+   - Replaced the integer id IDR_TEST_PLUGIN_RUNNER for the icon with the string
+     id CPP_UNIT_TEST_RUNNER_PLUG_IN_IDR_TEST_PLUGIN_RUNNER in the RC-file and in
+     the constructor TestPlugInRunnerDlg and removed the original id from resource.h.
+
+
+Here start the changes, that were only needed for version 1.9.8.
+
+10) TestRunner is OK now. But I saw, that TestPlugInRunner has now more
+   resources than in version 1.8.0. After looking at it more carefully
+   it turned out that the sources of the test runner DLL have been 
+   included in the test plug-in runner. In version 1.8.0 the test runner
+   was used through the testrunner.dll. This means that some additional
+   changes have to be made to the test plug-in runner.
+   - Additionally changed IDD_DIALOG_TEST_HIERARCHY to 
+     CPP_UNIT_TEST_RUNNER_IDD_DIALOG_TEST_HIERARCHY. This is the same
+     name as in the original test runner because the dialog is created
+     with the original code. I don't know how to check this, thus I'm 
+     not sure wether this is OK.
+   - Replaced the ids for the bitmaps. Here the same applies as in the 
+     previous point, I'm not sure, if it works. 
+   - Include ResourceLoaders.cpp in the subproject
+        TestPlugInRunner/TestRunner-Was-In-Dll/UserInterface
+   - Removed the original #include "TestRunnerApp.h" in ResourceLoaders.cpp
+     and replaced it with 
+        extern HINSTANCE g_testRunnerResource;
+   - Included 
+        HINSTANCE g_testRunnerResource;
+     in TestPlugInRunnerApp.cpp and set the variable in InitInstance() with 
+        g_testRunnerResource = AfxGetResourceHandle();
+   - Replaced the integer id for the icon with a string id 
+        m_hIcon = AfxGetApp()->LoadIcon("CPP_UNIT_TEST_RUNNER_PLUG_IN_IDR_TEST_PLUGIN_RUNNER");
+     in the constructor in TestPlugInRunnerDlg.cpp and in the RC-file.
+
+11) FINISHED.
+
+-- Steven Mitter

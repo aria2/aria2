@@ -1,0 +1,5 @@
+USEUNIT("..\lib\xmlparse.c");
+USEUNIT("..\lib\xmlrole.c");
+USEUNIT("..\lib\xmltok.c");
+//---------------------------------------------------------------------------
+#define Library

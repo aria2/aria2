@@ -1,0 +1,558 @@
+/*! \page money_example Money, a step by step example
+
+\section Table of contents
+
+  - \ref sec_setting_vc
+  - \ref sec_setting_unix
+  - \ref sec_running_test
+  - \ref sec_adding_testfixture
+  - \ref sec_first_tests
+  - \ref sec_more_tests
+  - \ref sec_credits
+
+  The example explored in this article can be found in \c examples/Money/.
+
+
+
+\section sec_setting_vc Setting up your project (VC++)
+
+\subsection sec_install Compiling and installing CppUnit libaries
+
+In the following document, $CPPUNIT is the directory where you unpacked %CppUnit:
+$CPPUNIT/:
+	include/
+	lib/
+	src/
+		cppunit/
+
+First, you need to compile %CppUnit libraries:
+- Open the $CPPUNIT/src/CppUnitLibraries.dsw workspace in VC++.
+- In the 'Build' menu, select 'Batch Build...'
+- In the batch build dialog, select all projects and press the build button.
+- The resulting libraries can be found in the $CPPUNIT/lib/ directory.
+
+Once it is done, you need to tell VC++ where are the includes and libraries
+to use them in other projects. Open the 'Tools/Options...' dialog, and in the
+'Directories' tab, select 'include files' in the combo. Add a new entry that
+points to $CPPUNIT/include/. Change to 'libraries files' in the combo and 
+add a new entry for $CPPUNIT/lib/. Repeat the process with 'source files' 
+and add $CPPUNIT/src/cppunit/.
+
+\subsection sec_getting_started Getting started
+
+Creates a new console application ('a simple application' template will do).
+Let's link %CppUnit library to our project. In the project settings:
+- In tab 'C++', combo 'Code generation', set the combo to 'Multithreaded DLL'
+for the release configuration, and 'Debug Multithreaded DLL' for the debug
+configure,
+- In tab 'C++', combo 'C++ langage', for All Configurations, check 
+'enable Run-Time Type Information (RTTI)',
+- In tab 'Link', in the 'Object/library modules' field, add cppunitd.lib for
+the debug configuration, and cppunit.lib for the release configuration.
+
+We're done !
+
+
+  
+    
+      
+        
+          
+\section sec_setting_unix Setting up your project (Unix)
+We'll use \c autoconf and \c automake to make it simple to 
+create our build environment. Create a directory somewhere to 
+hold the code we're going to build. Create \c configure.in and 
+\c Makefile.am in that directory to get started.
+
+<tt>configure.in</tt>
+\verbatim
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(Makefile.am)
+AM_INIT_AUTOMAKE(money,0.1)
+AM_PATH_CPPUNIT(1.9.6)
+AC_PROG_CXX
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_OUTPUT(Makefile)\endverbatim
+
+<tt>Makefile.am</tt>
+\verbatim
+# Rules for the test code (use `make check` to execute)
+TESTS = MoneyApp
+check_PROGRAMS = $(TESTS)
+MoneyApp_SOURCES = Money.h MoneyTest.h MoneyTest.cpp MoneyApp.cpp
+MoneyApp_CXXFLAGS = $(CPPUNIT_CFLAGS)
+MoneyApp_LDFLAGS = $(CPPUNIT_LIBS) -ldl\endverbatim
+
+
+  
+    
+      
+        
+          
+            
+\section sec_running_test Running our tests
+
+We have a main that doesn't do anything. Let's start by adding the mechanics
+to run our tests (remember, test before you code ;-) ). For this example, 
+we will use a TextTestRunner with the CompilerOutputter for post-build 
+testing:
+
+<tt>MoneyApp.cpp</tt>
+\code
+#include "stdafx.h"
+#include <cppunit/CompilerOutputter.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/ui/text/TestRunner.h>
+
+
+int main(int argc, char* argv[])
+{
+  // Get the top level suite from the registry
+  CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
+
+  // Adds the test to the list of test to run
+  CppUnit::TextUi::TestRunner runner;
+  runner.addTest( suite );
+
+  // Change the default outputter to a compiler error format outputter
+  runner.setOutputter( new CppUnit::CompilerOutputter( &runner.result(),
+                                                       std::cerr ) );
+  // Run the tests.
+  bool wasSucessful = runner.run();
+
+  // Return error code 1 if the one of test failed.
+  return wasSucessful ? 0 : 1;
+}\endcode
+
+  VC++: Compile and run (Ctrl+F5).
+
+  Unix: First build. Since we don't have all the file yet, let's create them
+  and build our application for the first time:
+\verbatim
+touch Money.h MoneyTest.h MoneyTest.cpp
+aclocal -I /usr/local/share/aclocal
+autoconf
+automake -a
+touch NEWS README AUTHORS ChangeLog # To make automake happy
+./configure
+make check\endverbatim
+
+  Our application will report that everything
+is fine and no test were run. So let's add some tests...
+
+
+
+\subsection sec_post_build Setting up automated post-build testing (VC++)
+
+What does post-build testing means? It means that each time you compile,
+the test are automatically run when the build finish. This is very
+useful, if you compile often you can know that you just 'broke' something,
+or that everything is still working fine.
+
+Let's adds that to our project, In the project settings, in the 
+'post-build step' tab:
+- Select 'All configurations' (upper left combo)
+- In the 'Post-build description', enter 'Unit testing...'
+- In 'post-build command(s)', add a new line: <tt>\$(TargetPath)</tt>
+
+<tt>\$(TargetPath)</tt> expands into the name of your application:
+Debug\\MoneyApp.exe in debug configuration and Release\\MoneyApp.exe in release
+configuration.
+
+What we are doing is say to VC++ to run our application for each build. 
+Notices the last line of \c main(), it returns a different error code, 
+depending on weither or not a test failed. If the code returned by
+an application is not 0 in post-build step, it tell VC++ that the build
+step failed.
+
+Compile. Notice that the application's output is now in the build window.
+How convenient!
+
+  (Unix: tips to integrate make check into various IDE?)
+
+
+  
+    
+      
+        
+          
+\section sec_adding_testfixture Adding the TestFixture
+
+For this example, we are going to write a simple money class. Money
+has an amount and a currency. Let's begin by creating a fixture where
+we can put our tests, and add single test to test Money constructor:
+
+<tt>MoneyTest.h:</tt>
+\code
+#ifndef MONEYTEST_H
+#define MONEYTEST_H
+
+#include <cppunit/extensions/HelperMacros.h>
+
+class MoneyTest : public CppUnit::TestFixture
+{
+  CPPUNIT_TEST_SUITE( MoneyTest );
+  CPPUNIT_TEST( testConstructor );
+  CPPUNIT_TEST_SUITE_END();
+
+public:
+  void setUp();
+  void tearDown();
+
+  void testConstructor();
+};
+
+#endif  // MONEYTEST_H\endcode
+
+- CPPUNIT_TEST_SUITE declares that our Fixture's test suite.
+- CPPUNIT_TEST adds a test to our test suite. The test is implemented 
+by a method named testConstructor().
+- setUp() and tearDown() are use to setUp/tearDown some fixtures. We are
+not using any for now.
+
+<tt>MoneyTest.cpp</tt>
+\code
+#include "stdafx.h"
+#include "MoneyTest.h"
+
+// Registers the fixture into the 'registry'
+CPPUNIT_TEST_SUITE_REGISTRATION( MoneyTest );
+
+
+void 
+MoneyTest::setUp()
+{
+}
+
+
+void 
+MoneyTest::tearDown()
+{
+}
+
+
+void 
+MoneyTest::testConstructor()
+{
+  CPPUNIT_FAIL( "not implemented" );
+}
+\endcode
+
+Compile. As expected, it reports that a test failed. Press the \c F4 key
+(Go to next Error). VC++ jump right to our failed assertion CPPUNIT_FAIL.
+We can not ask better in term of integration!
+\verbatim
+Compiling...
+MoneyTest.cpp
+Linking...
+Unit testing...
+.F
+G:\prg\vc\Lib\cppunit\examples\money\MoneyTest.cpp(26):Assertion
+Test name: MoneyTest.testConstructor
+not implemented
+Failures !!!
+Run: 1   Failure total: 1   Failures: 1   Errors: 0
+Error executing d:\winnt\system32\cmd.exe.
+
+moneyappd.exe - 1 error(s), 0 warning(s)
+\endverbatim
+
+Well, we have everything set up, let's start doing some real testing.
+
+
+  
+    
+      
+
+  
+\section sec_first_tests Our first tests
+
+Let's write our first real test. A test is usually decomposed in three parts:
+- setting up datas used by the test
+- doing some processing based on those datas
+- checking the result of the processing
+
+\code
+void 
+MoneyTest::testConstructor()
+{
+  // Set up
+  const std::string currencyFF( "FF" );
+  const double longNumber = 12345678.90123;
+
+  // Process
+  Money money( longNumber, currencyFF );
+
+  // Check
+  CPPUNIT_ASSERT_EQUAL( longNumber, money.getAmount() );
+  CPPUNIT_ASSERT_EQUAL( currencyFF, money.getCurrency() );
+}\endcode
+
+Well, we finally have a good start of what our Money class will
+look like. Let's start implementing...
+
+<tt>Money.h</tt>
+\code
+#ifndef MONEY_H
+#define MONEY_H
+
+#include <string>
+
+class Money
+{
+public:
+  Money( double amount, std::string currency )
+    : m_amount( amount )
+    , m_currency( currency )
+  {
+  }
+
+  double getAmount() const
+  {
+    return m_amount;
+  }
+
+  std::string getCurrency() const
+  {
+    return m_currency;
+  }
+
+private:
+  double m_amount;
+  std::string m_currency;
+};
+
+#endif\endcode
+
+Include <tt>Money.h</tt> in MoneyTest.cpp and compile.
+
+Hum, an assertion failed! Press F4, and we jump to the assertion
+that checks the currency of the constructed money object. The report
+indicates that string is not equal to expected value. There is only
+two ways for this to happen: the member was badly initialized or we
+returned the wrong value. After a quick check, we find out it is the former.
+Let's fix that:
+
+<tt>Money.h</tt>
+\code
+  Money( double amount, std::string currency )
+    : m_amount( amount )
+    , m_currency( currency )
+  {
+  }\endcode
+
+Compile. Our test finally pass!
+Let's add some functionnality to our Money class.
+
+
+  
+    
+      
+        
+          
+            
+\section sec_more_tests Adding more tests
+
+\subsection sec_equal Testing for equality
+
+  We want to check if to Money object are equal. Let's start by adding
+a new test to the suite, then add our method:
+
+<tt>MoneyTest.h</tt>
+\code
+  CPPUNIT_TEST_SUITE( MoneyTest );
+  CPPUNIT_TEST( testConstructor );
+  CPPUNIT_TEST( testEqual );
+  CPPUNIT_TEST_SUITE_END();
+public:
+  ...
+  void testEqual();
+\endcode
+
+<tt>MoneyTest.cpp</tt>
+\code
+void
+MoneyTest::testEqual()
+{
+  // Set up
+  const Money money123FF( 123, "FF" );
+  const Money money123USD( 123, "USD" );
+  const Money money12FF( 12, "FF" );
+  const Money money12USD( 12, "USD" );
+
+  // Process & Check
+  CPPUNIT_ASSERT( money123FF == money123FF );     // ==
+  CPPUNIT_ASSERT( money12FF != money123FF );      // != amount
+  CPPUNIT_ASSERT( money123USD != money123FF );    // != currency
+  CPPUNIT_ASSERT( money12USD != money123FF );     // != currency and != amount
+}\endcode
+
+  Let's implements \c operator \c == and \c operator \c != in Money.h:
+
+<tt>Money.h</tt>
+\code
+class Money
+{
+public:
+...
+  bool operator ==( const Money &other ) const
+  {
+    return m_amount == other.m_amount  &&  
+           m_currency == other.m_currency;
+  }
+
+  bool operator !=( const Money &other ) const
+  {
+    return (*this == other);
+  }
+};
+\endcode
+
+  Compile, run... Ooops... Press F4, it seems we're having trouble 
+with \c operator \c !=. Let's fix that:
+\code
+  bool operator !=( const Money &other ) const
+  {
+    return !(*this == other);
+  }\endcode
+
+Compile, run. Finally got it working!
+
+
+
+\subsection sec_opadd Adding moneys
+
+  Let's add our test 'testAdd' to MoneyTest. You know the routine...
+
+<tt>MoneyTest.cpp</tt>
+\code
+void 
+MoneyTest::testAdd()
+{
+  // Set up
+  const Money money12FF( 12, "FF" );
+  const Money expectedMoney( 135, "FF" );
+
+  // Process
+  Money money( 123, "FF" );
+  money += money12FF;
+
+  // Check
+  CPPUNIT_ASSERT( expectedMoney == money );           // add works
+  CPPUNIT_ASSERT( &money == &(money += money12FF) );  // add returns ref. on 'this'.
+}\endcode
+
+  While writing that test case, you ask yourself, what is the result of
+adding money of currencies. Obviously this is an error and it should be
+reported, say let throw an exception, say \c IncompatibleMoneyError, 
+when the currencies are not equal. We will write another test case
+for this later. For now let get our testAdd() case working:
+
+<tt>Money.h</tt>
+\code
+class Money
+{
+public:
+...
+  Money &operator +=( const Money &other )
+  {
+    m_amount += other.m_amount;
+    return *this;
+  }
+}; \endcode
+
+Compile, run. Miracle, everything is fine! Just to be sure the test is indeed
+working, in the above code, change \c m_amount \c += to \c -=. Build and 
+check that it fails (always be suspicious of test that work the first 
+time: you may have forgotten to add it to the suite for example)! 
+Change the code back so that all the tests are working.
+  
+  Let's the incompatible money test case before we forget about it...
+That test case expect an \c IncompatibleMoneyError exception to be thrown. 
+%CppUnit can test that for us, you need to specify that the test case
+expect an exception when you add it to the suite:
+  
+<tt>MoneyTest.h</tt>
+\code
+class MoneyTest : public CppUnit::TestFixture
+{
+  CPPUNIT_TEST_SUITE( MoneyTest );
+  CPPUNIT_TEST( testConstructor );
+  CPPUNIT_TEST( testEqual );
+  CPPUNIT_TEST( testAdd );
+  CPPUNIT_TEST_EXCEPTION( testAddThrow, IncompatibleMoneyError );
+  CPPUNIT_TEST_SUITE_END();
+public:
+  ...
+  void testAddThrow();
+};\endcode
+
+By convention, you end the name of such tests with \c 'Throw', that way, you
+know that the test expect an exception to be thrown. Let's write our test case:
+
+<tt>MoneyTest.cpp</tt>
+\code
+void 
+MoneyTest::testAddThrow()
+{
+  // Set up
+  const Money money123FF( 123, "FF" );
+
+  // Process
+  Money money( 123, "USD" );
+  money += money123FF;        // should throw an exception
+}
+\endcode
+
+  Compile... Ooops, forgot to declare the exception class. Let's do that:
+
+<tt>Money.h</tt>
+\code
+#include <string>
+#include <stdexcept>
+
+class IncompatibleMoneyError : public std::runtime_error
+{
+public:
+  IncompatibleMoneyError() : runtime_error( "Incompatible moneys" )
+  {
+  }
+};
+\endcode
+
+  Compile. As expected testAddThrow() fail... Let's fix that:
+  
+<tt>Money.h</tt>
+\code
+  Money &operator +=( const Money &other )
+  {
+    if ( m_currency != other.m_currency )
+      throw IncompatibleMoneyError();
+
+    m_amount += other.m_amount;
+    return *this;
+  }\endcode
+
+  Compile. Our test finaly passes!
+
+  TODO:
+- How to use CPPUNIT_ASSERT_EQUALS with Money
+- Copy constructor/Assignment operator
+- Introducing fixtures
+- ?
+
+
+  
+    
+      
+        
+\section sec_credits Credits
+This article was written by Baptiste Lepilleur. Unix configuration & set up 
+by Phil Verghese. Inspired from many others (JUnit, Phil's cookbook...), 
+and all the newbies around that keep asking me for the 
+'Hello world' example ;-)
+
+
+
+*/

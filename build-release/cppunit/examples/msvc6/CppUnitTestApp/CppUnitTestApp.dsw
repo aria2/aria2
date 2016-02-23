@@ -1,0 +1,80 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "CppUnitTestApp"=.\CppUnitTestApp.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name cppunit
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name TestRunner
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name DSPlugIn
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "DSPlugIn"=..\..\..\src\msvc6\DSPlugIn\DSPlugIn.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "TestRunner"=..\..\..\src\msvc6\testrunner\TestRunner.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name cppunit
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name DSPlugIn
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "cppunit"=..\..\..\src\cppunit\cppunit.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

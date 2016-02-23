@@ -1,0 +1,6 @@
+		KNOWN BUGS
+		----------
+
+The handling of html and man pages in doc/Makefile.am is
+flawed.  It will not pass "make distcheck".
+

@@ -1,0 +1,5 @@
+*.Tags.WW
+Debug Release ReleaseUnicode DebugUnicode
+*.ncb *.opt *.aps *.clw
+SunWS_cache
+ir.out

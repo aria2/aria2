@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.05.03"/>
+    <PROJECT value="Release\libexpat_mtd.dll"/>
+    <OBJFILES value="Release\obj\libexpat\xmlparse.obj Release\obj\libexpat\xmlrole.obj 
+      Release\obj\libexpat\xmltok.obj"/>
+    <RESFILES value=""/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value="libexpat_mtd.def"/>
+    <RESDEPEN value="$(RESFILES)"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
+    <PACKAGES value="VCL50.bpi VCLX50.bpi bcbsmp50.bpi QRPT50.bpi VCLDB50.bpi VCLBDE50.bpi 
+      ibsmp50.bpi VCLDBX50.bpi TEEUI50.bpi TEEDB50.bpi TEE50.bpi TEEQR50.bpi 
+      VCLIB50.bpi bcbie50.bpi VCLIE50.bpi INETDB50.bpi INET50.bpi NMFAST50.bpi 
+      dclocx50.bpi bcb2kaxserver50.bpi dclusr50.bpi"/>
+    <PATHCPP value=".;..\lib"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="_WINDOWS;WIN32;NDEBUG;_USRDLL;COMPILED_FROM_DSP;EXPAT_EXPORTS"/>
+    <SYSDEFINES value="_NO_VCL;_ASSERTE;NO_STRICT;_RTLDLL"/>
+    <MAINSOURCE value="expat.bpf"/>
+    <INCLUDEPATH value="..\lib;$(BCB)\include"/>
+    <LIBPATH value="..\lib;$(BCB)\lib;$(RELEASELIBPATH)"/>
+    <WARNINGS value="-w-rch -w-par -w-8027 -w-8026 -w-ccc"/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I$(BCB)\include"/>
+    <CFLAG1 value="-WD -O2 -X- -a8 -b -k- -vi -q -tWM -c -tWD"/>
+    <PFLAGS value="-N2Release\obj\libexpat -N0Release\obj\libexpat -$Y- -$L- -$D-"/>
+    <RFLAGS value="/l 0x409 /d &quot;NDEBUG&quot; /i$(BCB)\include"/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-IRelease\obj\libexpat -D&quot;&quot; -aa -Tpd -x -Gn -Gi -q"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0d32.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cw32mti.lib"/>
+  </LINKER>
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1033
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[HistoryLists\hlIncludePath]
+Count=4
+Item0=..\lib;$(BCB)\include
+Item1=$(BCB)\include
+Item2=$(BCB)\include;$(BCB)\include\mfc;$(BCB)\include\atl
+Item3=$(BCB)\include;$(BCB)\include\mfc;$(BCB)\include\atl;
+
+[HistoryLists\hlLibraryPath]
+Count=5
+Item0=..\lib;$(BCB)\lib;$(RELEASELIBPATH)
+Item1=..\lib;$(BCB)\lib;..\lib\$(RELEASELIBPATH)
+Item2=$(BCB)\lib;$(RELEASELIBPATH)
+Item3=$(BCB)\lib;$(RELEASELIBPATH);$(BCB)\lib\psdk
+Item4=$(BCB)\lib;$(RELEASELIBPATH);;$(BCB)\lib\psdk;
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=8
+Item0=_WINDOWS;WIN32;NDEBUG;_USRDLL;COMPILED_FROM_DSP;EXPAT_EXPORTS
+Item1=_WINDOWS;WIN32;NDEBUG;_DEBUG;_USRDLL;COMPILED_FROM_DSP;EXPAT_EXPORTS
+Item2=WIN32;_WINDOWS;NDEBUG;_DEBUG;_USRDLL;COMPILED_FROM_DSP;EXPAT_EXPORTS
+Item3=WIN32;_WINDOWS;NDEBUG;_DEBUG;_USRDLL;EXPAT_EXPORTS;COMPILED_FROM_DSP
+Item4=NDEBUG;WIN32;_WINDOWS;_USRDLL;_DEBUG;EXPAT_EXPORTS;COMPILED_FROM_DSP
+Item5=NDEBUG;WIN32;_WINDOWS;_USRDLL;EXPAT_EXPORTS;COMPILED_FROM_DSP;_DEBUG
+Item6=NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;EXPAT_EXPORTS;COMPILED_FROM_DSP;_DEBUG
+Item7=NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;EXPAT_EXPORTS;COMPILED_FROM_DSP
+
+[HistoryLists\hlIntOutputDir]
+Count=7
+Item0=Release\obj\libexpat
+Item1=Release\obj\libexpat_static
+Item2=Release\obj\mtd
+Item3=Release\obj\mt
+Item4=Release\obj
+Item5=Release
+Item6=..\lib\Release
+
+[HistoryLists\hlFinalOutputDir]
+Count=1
+Item0=Release\
+
+[Debugging]
+DebugSourceDirs=
+
+[Parameters]
+RunParams=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+  </IDEOPTIONS>
+</PROJECT>

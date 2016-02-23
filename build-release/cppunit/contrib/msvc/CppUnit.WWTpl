@@ -1,0 +1,486 @@
+Baptiste Lepilleur's template file.
+(@)Copyright 2001, Baptiste Lepilleur <gaiacrtn@free.fr>.
+
+
+
+[-ExtractPath]
+!!Memo
+Extract the path from a full filename.
+path is the filename we need to extract the path from.
+returns: extracted path.
+Algo: we iterates the filename from the end until we found a character '\'.
+!!End
+
+!!Params 
+path @@(ProjectPath)@@
+!!End
+
+!!Code
+Input path: "@@path@@"
+!!Set index @@(Strlen @@path@@)@@
+!!//
+!!Set finalpath
+!!Label LoopExtractPath
+!!Sub index 1
+!!If @@index@@ < 0
+!!Goto EndExtractPath
+!!Endif
+!!//
+!!Set lastchar @@(StrSub @@path@@ @@index@@ 1)@@
+!!If @@lastchar@@ != "\"
+!!Goto LoopExtractPath
+!!Endif
+!!//
+!!Add index 1
+!!Set finalpath @@(StrSub @@path@@ 0 @@index@@)@@
+!!//
+!!Label EndExtractPath
+!!Return @@finalpath@@
+!!End
+
+
+
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+[+01 Create Class in file]
+!!Memo
+Creates a new class in new files (.h/.cpp) and adds them to the project.
+!!End
+
+!!Params
+classname Ttr
+parentclassname =
+classdesc This class represents
+objectkind Reference Object
+hasserialize 0
+isrefobj 0
+inlinectordtor 0
+createfile 1
+isunittest 0
+!!End
+
+!!Dialog
+<html><body>
+Class name: <input type=text id=classname size=40><br>
+Brief description: <input type=text id=classdesc size=68><br>
+Object Kind: 
+  <select name="Object Kind" id=objectkind>
+      <option>Default Value Object</option>
+      <option>Explicit Value Object</option>
+      <option>Reference Object</option>
+  </select><br>
+
+Parent class name: <input type=text id=parentclassname size=40><br>
+
+<input type=checkbox id=createfile>
+   Create a new file ? (otherwise Insert in current file).<br>
+<br>
+<input type=checkbox id=hasserialize>
+   Has: virtual void Serialize( CArchive &ar )<br>
+<input type=checkbox id=isrefobj>
+   Is a reference counted object (inherit ERefObj)<br>
+<input type=checkbox id=inlinectordtor>
+   Inline ctor/dtor, copy ctor/operator.<br>
+<input type=checkbox id=isunittest>
+   Is a CppUnit unit test.<br>
+
+<!--Base filename: <input type=text id=classbasepath size=64><br> -->
+
+
+<!--<p>Filename: <input type=file id=classhfn accept="*.h" size=40></p> -->
+<!--<p>Filename: <input type=file id=classcppfn accept="*.h" size=40></p> -->
+</body></html>
+!!End
+
+!!Code
+!!// Set variable that indicates the kind of object we are working on.
+!!Set defvalobject 0
+!!If @@objectkind@@ == "Default Value Object"
+!!Set defvalobject 1
+!!Endif
+!!//
+!!Set valobject 0
+!!If @@objectkind@@ == "Explicit Value Object"
+!!Set valobject 1
+!!Endif
+!!//
+!!Set refobject 0
+!!If @@objectkind@@ == "Reference Object"
+!!Set refobject 1
+!!Endif
+!!//
+!!// Set class filename (relative to dsp)
+!!Set headerfn @@classname@@.h
+!!Set implfn @@classname@@.cpp
+!!Set headerdefine @@(String @@(Call -MakeHeaderDefined fn @@headerfn@@)@@:U)@@
+!!//
+!!// hasparentclass indicates if a parent class has been defined.
+!!Set hasparentclass 0
+!!If @@parentclassname@@ != =
+!!Set hasparentclass 1
+!!Else
+!!If @@isunittest@@
+!!Set parentclassname CppUnit::TestFixture
+!!Set hasparentclass 1
+!!Endif
+!!Endif
+!!//
+!!// hasparent is set to 1 if the class has some parent (ERefObj or parentclass).
+!!Set hasparent @@hasparentclass@@
+!!If @@isrefobj@@
+!!Set hasparent 1
+!!Endif
+!!//
+!!//
+!!// All variables are set, we can now generates the class.
+!!//
+!!//
+!!//
+!!//
+!!// ----------------------------------------------------------------------------
+!!// ------------------------------ header file ---------------------------------
+!!// ----------------------------------------------------------------------------
+!!//
+!!//
+!!//
+!!If @@createfile@@
+!!FileNew @@headerfn@@ dsp
+!!Set headerpath @@(FilePath)@@
+// //////////////////////////////////////////////////////////////////////////
+// Header file @@headerfn@@ for class @@classname@@
+// (c)Copyright 2000, Baptiste Lepilleur.
+// Created: @@(Date "yyyy/MM/dd")@@
+// //////////////////////////////////////////////////////////////////////////
+#ifndef @@headerdefine@@
+#define @@headerdefine@@
+!!Else
+// //////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////
+// Definition of class @@classname@@
+// //////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////
+!!Endif
+!!If @@hasparentclass@@
+
+!!If @@isunittest@@
+#include <cppunit/extensions/HelperMacros.h>
+!!Else
+#include "@@parentclassname@@.h"
+!!Endif
+!!Endif
+
+
+!!If @@isrefobj@@
+/*! Declare @@classname@@Ref as a reference pointer on @@classname@@.
+ */
+EDECL_REF( @@classname@@ );
+
+
+
+!!Endif
+/*! \class @@classname@@
+ * \brief @@classdesc@@
+ */
+class @@classname@@@@\
+!!// Write inherited class list (parent class first, then ERefObj if inherited).
+!!If @@hasparent@@
+ : @@\
+!!// xpos contains the indentation level for inheritance declarations...
+!!GetPos xpos ypos
+!!Sub xpos 1
+public @@\
+!!Else
+
+!!Endif
+!!If @@hasparentclass@@
+@@parentclassname@@@@\
+!!If @@isrefobj@@
+,
+@@(Call -MakeFiller filler " " count @@xpos@@)@@@@\
+public @@\
+!!Else
+
+!!Endif
+!!Endif
+!!If @@isrefobj@@
+ERefObj
+!!Endif
+{
+!!//
+!!//
+!!// ------------ Done with inheritance, declare the class body... ----------
+!!//
+!!//
+!!If @@isunittest@@
+  CPPUNIT_TEST_SUITE( @@classname@@ );
+  CPPUNIT_TEST( putTestMethodNameHere );
+  CPPUNIT_TEST_SUITE_END();
+
+!!Endif
+public:
+!!If !@@defvalobject@@
+  /*! Constructs a @@classname@@ object.
+   */
+  @@classname@@();
+
+!!Endif
+!!If @@valobject@@
+  /*! Copy constructor.
+   * @param copy Object to copy.
+   */
+  @@classname@@( const @@classname@@ &copy );
+
+!!Endif
+  /// Destructor.
+  virtual ~@@classname@@();
+!!If @@valobject@@
+
+  /*! Copy operator.
+   * @param copy Object to copy.
+   * @return Reference on this object.
+   */
+  @@classname@@ &operator =( const @@classname@@ &copy );
+!!Endif
+!!If @@isunittest@@
+
+  void setUp();
+  void tearDown();
+!!Endif
+!!// Private for methods
+!!If @@refobject@@
+
+private:
+  /// Prevents the use of the copy constructor.
+  @@classname@@( const @@classname@@ &copy );
+
+  /// Prevents the use of the copy operator.
+  void operator =( const @@classname@@ &copy );
+!!Endif
+!!// Private for member datas
+
+private:
+};
+
+
+
+!!If @@createfile@@
+// Inlines methods for @@classname@@:@@\
+!!GetPos xpos ypos
+!!Sub xpos 4
+
+// @@(Call -MakeFiller filler - count @@xpos@@)@@
+!!Endif  //@@createfile@@
+!!If @@inlinectordtor@@
+!!If !@@defvalobject@@
+
+
+inline
+@@classname@@::@@classname@@()@@\
+!!If @@hasparentclass@@
+ : 
+    @@parentclassname@@()
+!!Else
+
+!!Endif
+{
+}
+!!Endif  //!@@defvalobject@@
+!!If @@valobject@@
+
+
+inline
+@@classname@@::@@classname@@( const @@classname@@ &copy )@@\
+!!If @@hasparentclass@@
+ : 
+    @@parentclassname@@( copy )
+!!Else
+
+!!Endif
+!!Endif  //@@valobject@@
+
+
+inline
+@@classname@@::~@@classname@@()
+{
+}
+!!If @@valobject@@
+
+
+inline @@classname@@ &
+@@classname@@::operator =( const @@classname@@ &copy )
+{
+
+  return *this;
+}
+!!Endif  //@@valobject@@
+!!Endif  //@@inlinectordtor@@
+
+
+!!If @@createfile@@
+
+#endif  // @@headerdefine@@
+!!FileSave
+!!ProjectFileAdd
+!!Endif
+!!//
+!!//
+!!//
+!!// ----------------------------------------------------------------------------
+!!// -------------------------- Implementation file -----------------------------
+!!// ----------------------------------------------------------------------------
+!!//
+!!//
+!!//
+!!If @@createfile@@
+!!FileNew @@implfn@@ dsp
+// //////////////////////////////////////////////////////////////////////////
+// Implementation file @@implfn@@ for class @@classname@@
+// (c)Copyright 2000, Baptiste Lepilleur.
+// Created: @@(Date "yyyy/MM/dd")@@
+// //////////////////////////////////////////////////////////////////////////
+
+#include "StdAfx.h"
+#include "@@headerfn@@"
+!!Else
+
+
+// //////////////////////////////////////////////////////////////////////////
+// Implementation of class @@classname@@
+// //////////////////////////////////////////////////////////////////////////
+!!Endif
+!!If @@isunittest@@
+
+CPPUNIT_TEST_SUITE_REGISTRATION( @@classname@@ );
+!!Endif
+!!If !@@inlinectordtor@@
+!!If !@@defvalobject@@
+
+
+@@classname@@::@@classname@@()@@\
+!!If @@hasparentclass@@
+ : 
+    @@parentclassname@@()
+!!Else
+
+!!Endif
+{
+}
+!!Endif
+!!If @@valobject@@
+
+
+@@classname@@::@@classname@@( const @@classname@@ &copy )@@\
+!!If @@hasparentclass@@
+ : 
+    @@parentclassname@@( copy )
+!!Else
+
+!!Endif
+{
+}
+!!Endif
+
+
+@@classname@@::~@@classname@@()
+{
+}
+!!If @@valobject@@
+
+
+@@classname@@ &
+@@classname@@::operator =( const @@classname@@ &copy )
+{
+
+  return *this;
+}
+!!Endif
+!!Endif
+!!If @@isunittest@@
+
+
+void 
+@@classname@@::setUp()
+{
+}
+
+
+void 
+@@classname@@::tearDown()
+{
+}
+!!Endif
+
+!!If @@createfile@@
+!!FileSave
+!!ProjectFileAdd
+!!//ExecuteCommand FileOpen "@@headerpath@@"
+!!Endif
+!!End
+
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+[-Dummy]
+!!Code
+!!End
+
+---------------------------------------------------------------------------------
+------------------------   [-MakeHeaderDefined]   -------------------------------
+---------------------------------------------------------------------------------
+[-MakeHeaderDefined]
+!!Memo
+This template replace all occurences of '.' in the specified filename "fn" by '_'.
+This is typically used to make the #ifndef at the beginning of header files.
+Parameters: "fn" filename in which each occurence of '.' is replaced by '_'.
+Returns: Transformed filename.
+!!End
+
+!!Params
+fn TestDoIt
+!!End
+
+!!Code
+!!Set result @@fn@@
+!!Label LoopMakeHeaderDefined
+!!Set fn @@result@@
+!!// Check if there is any occurence left of '.'
+!!Set index @@(StrFind @@fn@@ ".")@@
+!!If @@index@@ < 0
+!!Goto  EndMakeHeaderDefined
+!!Endif
+!!// Replace occurences of '.' in fb by '_' and set to result.
+!!Set result @@(StrSub @@fn@@ 0 @@index@@ )@@_
+!!Add index 1
+!!Set result @@result@@@@(StrSub @@fn@@ @@index@@)@@
+!!Goto LoopMakeHeaderDefined
+!!Label EndMakeHeaderDefined
+!!Return @@result@@
+!!End
+
+---------------------------------------------------------------------------------
+----------------------------   [-MakeFiller]   ----------------------------------
+---------------------------------------------------------------------------------
+[-MakeFiller]
+!!Memo
+Make a string that contains "count" occurrence of "filler".
+Parameters: "filler" String that is repeated.
+            "count" Number of times the "filler" is repeated.
+Returns: A string that contains "count" times the string "filler".
+!!End
+
+!!Params
+filler -
+count 10
+!!End
+
+!!Code
+!!Set result
+!!Label LoopMakerFiller
+!!If @@count@@ > 0
+!!Set result @@result@@@@filler@@
+!!Sub count 1
+!!Goto LoopMakerFiller
+!!Endif
+!!Return @@result@@
+!!End

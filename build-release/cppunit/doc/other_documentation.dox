@@ -1,0 +1,147 @@
+/**
+ \mainpage
+ 
+ \section _history History
+ The first port of JUnit to C++ was done
+ by Michael Feathers. His versions
+ can be found on the 
+ <a href="http://www.xprogramming.com/software.htm">
+ XProgramming software page</a>. They are os-specific,
+ so Jerome Lacoste provided a port to Unix/Solaris.
+ His version can be found on the same page.
+ The %CppUnit project has combined and built on this work.
+
+ \section _usage Usage
+ Take a look into the \ref cppunit_cookbook.
+ It gives a quick start into using this 
+ testing framework. <a href="modules.html">Modules</a> give
+ you a organized view of %CppUnit classes.
+
+ (Notes to newbies, you may want to check out \ref money_example,
+ a work in progress, but the project is provided with %CppUnit).
+
+ For a discussion on %CppUnit, check 
+ <a href="http://c2.com/cgi/wiki?CppUnit">
+ the WikiWiki Pages on CppUnit</a>. There you can also
+ find the original versions and various ports to other
+ OSses and languages.
+ 
+ \section _license License
+ This library is released under
+ the GNU
+ <a href="http://www.gnu.org/copyleft/lesser.html">
+ Lesser General Public License</a>.
+
+ \author Eric Sommerlade (sommerlade@gmx.net)
+ \author Michael Feathers (mfeathers@objectmentor.com)
+ \author Jerome Lacoste (lacostej@altern.org)
+ \author Baptiste Lepilleur <blep@users.sourceforge.net>
+ \author Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+ \author Steve Robbins <smr99@sourceforge.net>
+ */
+
+
+
+/*! \defgroup WritingTestFixture Writing test fixture
+ */
+
+/*! \defgroup Assertions Making assertions
+ */
+
+/*! \defgroup CreatingTestSuite Creating TestSuite
+ */
+
+/*! \defgroup ExecutingTest Executing test
+ */
+
+/*! \defgroup TrackingTestExecution Tracking test execution
+ */
+
+/*! \defgroup WritingTestResult Writing test result
+ */
+
+/*! \defgroup BrowsingCollectedTestResult Browsing collected test result
+ */
+
+/*! \defgroup CreatingNewAssertions Creating custom assertions
+ */
+
+/*! \defgroup WritingTestPlugIn Writing Test Plug-in
+ *
+ * Creating a test plug-in is really simple:
+ * - make your project a dynamic library (with VC++, choose Win32 Dynamic Library in
+ *   the project wizard), and link against the dynamic library version of %CppUnit
+ *   (cppunit*_dll.lib for VC++).
+ * - in a cpp file, include TestPlugIn.h, and use the macro CPPUNIT_PLUGIN_IMPLEMENT()
+ *   to declare the test plug-in.
+ * - That's it, you're done! All the tests registered using the TestFactoryRegistry,
+ *   CPPUNIT_TEST_SUITE_NAMED_REGISTRATION, or CPPUNIT_TEST_SUITE_REGISTRATION will
+ *   be visible to other plug-in and to the DllPlugInRunner.
+ *
+ * Example:
+ * \code
+ * #include <cppunit/include/plugin/TestPlugIn.h>
+ *
+ * CPPUNIT_PLUGIN_IMPLEMENT();
+ * \endcode
+ *
+ * The interface CppUnitTestPlugIn is automatically implemented by the previous
+ * macro. You can define your own implementation.
+ *
+ * To provide your custom implementation of the plug-in interface, you must:
+ * - create a class that implements the CppUnitTestPlugIn interface
+ * - use CPPUNIT_PLUGIN_EXPORTED_FUNCTION_IMPL() with your class to export
+ *   the plug-in interface
+ * - implements the 'main' function with CPPUNIT_PLUGIN_IMPLEMENT_MAIN().
+ *
+ * Some of the reason you may want to do this:
+ * - You do not use the TestFactoryRegistry to register your test.
+ * - You want to create a custom listener to use with DllPlugInRunner.
+ * - You want to do initialize some globale resources before running the test
+ *   (setting up COM for example).
+ *   
+ * See CppUnitTestPlugIn for further detail on how to do this.
+ *
+ * Creating your own test plug-in with VC++:
+ * - Create a new "Win32 Dynamic Library" project, choose the empty template
+ * - For the Debug Configuration, add cppunitd_dll.lib to 
+ *   'Project Settings/Link/Object/Libariries modules', and for the Release
+ *   Configuration, add cppunit_dll.lib.
+ * - For All Configuration, in 'C++/Preprocessor/Preprocessors definitions',
+ *   add the symbol 'CPPUNIT_DLL' at the end of the line (it means that
+ *   you are linking against cppunit dll).
+ * - Create a 'main' file that contains:
+\verbatim
+#include <cppunit/plugin/TestPlugIn.h>
+
+CPPUNIT_PLUGIN_IMPLEMENT();\endverbatim
+ * - Add your tests
+ * - You're done !
+ *
+ * See examples/simple/simple_plugin.dsp for an example.
+ *
+ * Notes to VC++ users: 
+ * - you can run a post-build check on the plug-in. Add the following line to your
+ *   post-build tab: "DllPlugInTesterd_dll.exe $(TargetPath)". DllPlugInTesterd_dll.exe
+ *   need to be some place were it can be found (path, ...), or you need to
+ *   indicate the correct path. 
+ *   $(TargetPath) is the filename of your plug-in.
+ * - you can debug your DLL, set the executable for debug session to the plug-in 
+ *   runner, and the name of the DLL in the program arguments ($(xxx) won't work
+ *   this time).
+ *
+ * How does it works ?
+ *
+ * When %CppUnit is linked as a DLL, the singleton used for the TestFactoryRegistry
+ * is the same for the plug-in runner (also linked against %CppUnit DLL). This means
+ * that the tests registered with the macros (at static initialization) are 
+ * registered in the same registry. As soon as a DLL is loaded by the PlugInManager,
+ * the DLL static variable are constructed and the test registered to the 
+ * TestFactoryRegistry.
+ *
+ * After loading the DLL, the PlugInManager look-up a specific function exported by
+ * the DLL. That function returns a pointer on the plug-in interface, which is later
+ * used by the PlugInManager.
+ *
+ * \see CreatingTestSuite.
+ */

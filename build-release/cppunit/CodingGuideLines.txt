@@ -1,0 +1,61 @@
+CppUnit's coding guidelines for portability:
+--------------------------------------------
+
+- don't explicitly declare CppUnit namespace, instead use macro
+  CPPUNIT_NS_BEGIN and CPPUNIT_NS_END.
+
+- don't explicitly use 'CppUnit' to refer to class in CppUnit namespace,
+  instead use macro CPPUNIT_NS which expands to either 'CppUnit' or 
+  nothing depending on the configuration.
+
+- don't use the 'using directive', always use full qualification. For STL,
+  always use std::.
+
+- don't use C++ style cast directly, instead use CppUnit's cast macro
+  (CPPUNIT_CONST_CAST).
+
+- don't use the mutable keyword, instead do a const cast.
+
+- don't use the typename keyword in template declaration, instead use 'class'.
+
+- don't make use of RTTI (typeid) or dynamic_cast mandatory.
+
+- don't use STL container directly, instead use CppUnit's wrapper located
+  in include/cppunit/portability. This help support compilers that don't 
+  support default template parameter and require an allocator to be 
+  specified.
+
+- don't use default template parameters. If needed, use STLPort wrapper
+  technic (see include/cppunit/portability/).
+
+- don't use templatized member functions (template method declared inside a
+  class), instead declares them as simple template functions (even
+  mainstream compiler such as VC++ 6 as trouble with them).
+
+- don't use default parameter value in template function. Not supported
+  by all compiler (on OS/390 for instance).
+
+- don't use STL container at() method, instead use the array accessor [].
+  at() is not supported on some gcc versions.
+
+- dereferencing containers must be done by (*ref_ptr).data instead of
+  ref_ptr->data.
+
+In brief, it should be possible to compile CppUnit on a C++ compiler that do
+not have the following features:
+- C++ style cast
+- mutable and typename keyword
+- RTTI
+- template default parameters
+- templatized member functions (that is a template function declared within a
+  class).
+- namespace
+
+As such, usage of those features should always be optional.
+
+Following those guidelines should allow to compile on most compilers, as long
+as STL are available (in std namespace or not), with some form of strstream and
+iostream, as well as exception support.
+
+--
+Baptiste Lepilleur <gaiacrtn@free.fr>

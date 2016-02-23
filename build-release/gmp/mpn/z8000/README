@@ -1,0 +1,34 @@
+Copyright 2003, 2004 Free Software Foundation, Inc.
+
+This file is part of the GNU MP Library.
+
+The GNU MP Library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+The GNU MP Library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with the GNU MP Library.  If not, see http://www.gnu.org/licenses/.
+
+
+
+
+
+                      Z8000 MPN SUBROUTINES
+
+
+This directory contains mpn functions for the Zilog Z8000.
+
+
+STATUS
+
+This code is old and has not been used for a long time.
+
+mpn/z8000 uses a 16-bit limb, it's possible this doesn't really work, on
+account of various bits of C code assuming limb>=long and of course long is
+invariably at least 32 bits.

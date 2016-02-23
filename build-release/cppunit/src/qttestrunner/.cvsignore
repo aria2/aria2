@@ -1,0 +1,10 @@
+*.ncb
+*.WW
+Debug Release
+moc_*.cpp
+testbrowserdlg.cpp testbrowserdlg.h
+testrunnerdlg.cpp testrunnerdlg.h
+*.obj
+Makefile
+SunWS_cache
+ir.out

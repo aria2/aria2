@@ -1,0 +1,180 @@
+
+
+<!-- This must be included -->
+<html>
+<head>
+	<title>The Code Project - CSizingControlBar - a resizable control bar</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta HTTP-EQUIV="Reply-to" CONTENT="mailto:webmaster@codeproject.com">
+	<meta NAME="Description" CONTENT="Free source code and tutorials for Windows developers.">
+	<meta Name="keywords" Content="Free source code, Visual C++, MFC, Windows, GUI, MFC, docking">
+	<meta NAME="Robots" CONTENT="ALL">
+	<meta NAME="Copyright" CONTENT="Copyright © 1999-2000 CodeProject.com, All Rights Reserved.">
+	<meta NAME="Rating" CONTENT="Safe For Kids">
+	<meta NAME="Revisit-after" CONTENT="1 days">
+	<meta NAME="Classification" CONTENT="Software">
+	<meta NAME="Distribution" CONTENT="Global">
+	<meta NAME="Author" CONTENT="Chris Maunder">
+	<meta NAME="Language" CONTENT="english">
+	<link rel="stylesheet" href="/styles/global.css">
+</head>
+
+
+<body text=black bgColor=white aLink=red link=blue vLink=navy>
+
+<!-- Header-->
+<table width="100%" border=0 cellspacing=1 cellpadding=3>
+
+<tr>
+
+<td width="80%" bgcolor=#FBEDBB>
+<h1 align=center>CSizingControlBar - a resizable control bar</h1>
+<h4 align=center><a href="mailto:cristi@datamekanix.com">Cristi Posea</a></h4>
+<p align=center><i><font size=-1 style="font-size:9pt">DevStudio-like docking window&nbsp;</font></i></p>
+<p align=center><font style="font-size:8pt">
+<a href="/script/Newsletter/subscribe.asp">Newsletter</a> | 
+<a href="/General/vsforum.asp">Forums</a> | 
+<a href="/Search.asp">Search</a> | 
+<a href="/latest.asp">Latest Updates</a> | 
+<a href="/submit.html">Submit an Article</a> |
+<a href="/contest.asp"><b style="color:red">Win a Prize!</b></a>
+</font></p>
+</td>
+
+<td width="20%" valign="top" align="left" bgcolor=#FBEDBB>
+<p><font size=1>
+Level: &nbsp;&nbsp; Advanced<br>
+Posted: &nbsp; 17 Nov 1999<br>
+Updated: 12 Jan 2000<br>
+<dl>
+<dt>Platform:</dt><dd>VC++ 5.0-6.0, NT 4.0, Win95/98/2k</dd>
+<dt>Keywords:</dt><dd>GUI, MFC, docking</dd>
+</dl>
+</font>
+</td>
+
+</tr>
+ 
+<!-- Quick nav links -->
+<tr><td nowrap><font style="font-size:65%;"><a href='http://www.codeproject.com'>Home</a>
+
+&gt;&gt; <a href='http://www.codeproject.com/docking/'>Toolbars &amp; Docking Windows</a>
+
+&gt;&gt; <a href='http://www.codeproject.com/docking/index.asp#General'>General</a>
+
+</font></td>
+<td align=right nowrap><font style="font-size:65%;">Problems? Suggestions?
+<a href="mailto:webmaster@codeproject.com">Email us</a></font></td></tr>
+
+</table>
+<hr noshade size=1>
+
+<!-- Article Starts -->
+
+<h3>Features of CSizingControlBar 2.31</h3>
+
+<ul>
+<li>Resizable control bar, that can be resized both when docked and when floating.
+<li>Multiple sizing control bars can be docked on the same row/column.
+<li>Full dynamic resizing, both when docked and floating, including diagonal resizing when floating.
+<li>State persistence support (SaveState/LoadState).
+<li>Gripper with "hide bar" flat button.
+<li>Memory DC flickerless NC painting.
+<li>Sample extension class with focus autosensing text caption. On Win98/Win2k, the caption is painted with gradient.
+<li>No custom resources were used (bitmaps, cursors, strings, etc.), so the integration is easier and you have full control over the resources you eventually use in derived classes.
+<li>Easy to use: just derive your own control bar(s) from CSizingControlBar then add your child controls.
+</ul>
+
+<h3>Instructions</h3>
+<p>Derive a class from CSizingControlBar (you have an example in mybar.h and mybar.cpp).<br>
+Add a member variable to CMainFrame (in mainfrm.h).
+
+<pre>
+CMyBar m_wndMyBar;
+</pre>
+
+<p>Create the bar in CMainFrame::OnCreate(). Then set bar styles, enable it to dock... like any control bar. 
+<p>Some experience in working with control bars (like toolbars) is required.
+
+<pre>
+if (!m_wndMyBar.Create(_T("My Bar"), this, CSize(200, 100),
+    TRUE /*bHasGripper*/, AFX_IDW_CONTROLBAR_FIRST + 32))
+{
+    TRACE0("Failed to create mybar\n");
+    return -1;
+    // fail to create
+}
+m_wndMyBar.SetBarStyle(m_wndMyBar.GetBarStyle() |
+    CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC);
+m_wndMyBar.EnableDocking(CBRS_ALIGN_ANY);
+EnableDocking(CBRS_ALIGN_ANY);
+
+m_pFloatingFrameClass = RUNTIME_CLASS(CSCBMiniDockFrameWnd);
+
+DockControlBar(&m_wndMyBar, AFX_IDW_DOCKBAR_LEFT);
+</pre>
+
+Note: Starting with version 2.3, the line
+
+<pre>
+m_pFloatingFrameClass = RUNTIME_CLASS(CSCBMiniDockFrameWnd);
+</pre>
+
+must be added to CMainFrame::OnCreate(), <i>after</i> the EnableDocking() call. This is required!
+
+<h3>Plugging in the CSizingControlBarCF class</h3>
+
+<p>1. Add scbarcf.h and scbarcf.cpp to your project.
+<p>2. In your derived class header file change the "#include "sizecbar.h" to "#include "scbarcf.h".
+<p>3. Replace the base class for your custom bar from CSizingControlBar to CSizingControlBarCF. If you used the baseCMyBar trick, you only have to change a line. Otherwise, replace all occurences of CSizingControlBar with CSizingControlBarCF in your derived class.
+<p>4. Rebuild and run. Easy, huh?
+
+<h3>Remarks</h3>
+<p>This class is intended to be used as a base class.
+Do not simply add your code to the sizecbar.* files - instead create a new class derived from CSizingControlBar and put there what you need.
+
+<p><b>Window IDs</b>: You can see above that the control bar is created with the ID AFX_IDW_CONTROLBAR_FIRST + 32.
+The usage of IDs in the range of AFX_IDW_CONTROLBAR_FIRST + 32 .. AFX_IDW_CONTROLBAR_LAST is required only if the bar will not be enabled for docking (that's is - it will stay fixed right under the frame's menu).
+But in this situation you won't be able to fully use the features of this class, so if you will enable it to dock (a reasonable guess :) then you can use any valid window ID.<br>
+Another place where the IDs are important is the saving/loading of the bar's state. 
+You must use different IDs for each control bar that is enabled to dock, and this includes the other bars too.
+For example, if you have two toolbars, you can create the first one with the default ID (which is AFX_IDW_TOOLBAR = AFX_IDW_CONTROLBAR_FIRST), but the second one must have a different ID.
+
+<p><b>OnUpdateCmdUI</b>: This member function is pure virtual in CControlBar (the base class of CSizingControlBar).
+Its purpose is to allow updating of controls at idle time (from here CCmdUI::DoUpdate() is called for the toolbars' buttons, dialogbars' controls, the panes of status bar, etc.).<br>
+However, I found it very useful to update the look of the "x" flat button (no timers needed).
+So, if you will use this function, don't forget to call the base class' member (see mybar.cpp).
+
+<p><b>Dynamic resizing</b>: This feature allows redrawing of the bar during resizing.
+Also all the bars are repositioned and redrawn if necessary.<br>
+The SPI_GETDRAGFULLWINDOWS system parameter is queried for this (it is enabled by the "Show window contents while dragging" checkbox in Display Properties).
+
+<p><b>CBRS_SIZE_DYNAMIC</b>: This bar style is required. Make sure you add it to the bar, otherwise the application will crash when the user floats a bar. You can add it using SetBarStyle() after Create(), or by changing the default style for Create() to something like: WS_VISIBLE | WS_CHILD | CBRS_TOP | CBRS_SIZE_DYNAMIC.
+
+<p><b>State persistence</b>: The common MFC control bars' docking state is saved using CMainFrame::SaveBarState(). In addition to the info saved by this function, the CSizingControlBar class needs to save 3 sizes. This is done in CSizingControlBar::SaveState() function, so a m_wndMyBar.SaveState() call is required. Please note that the state storing code must be placed in CMainFrame's OnClose() or DestroyWindow(), not in OnDestroy(), because at the time WM_DESTROY message is received, the floating bars are already destroyed.<br>
+In CMainFrame::OnCreate(), the m_wndMyBar.LoadState() call must be placed before LoadBarState().<br>
+Alternatively, if you have multiple CSizingControlBar derived bars, you can call once the static member SizingControlBar::GlobalSaveState() instead of calling each bar's SaveState(). The same for LoadState() - there is a CSizingControlBar::GlobalLoadState() function. See both samples here for more details.
+
+<p>See also <a href="http://www.datamekanix.com">www.datamekanix.com</a> for a full changelog, FAQ, a dedicated message board and more.
+
+<!-- Article Ends -->
+<hr size="1" noshade align="center">
+
+
+
+<table width="100%">
+	<tr>
+	<td align="left" valign="top">
+	<h6><a href='http://www.codeproject.com'>Home</a>
+      &gt;&gt; <a href='http://www.codeproject.com/docking/'>Toolbars &amp; Docking Windows</a>
+      <br>last updated 12 Jan 2000</h6></td>
+	<td nowrap align="center" valign="top"> 
+	<h6>Copyright © CodeProject, 1999-2000.<br>All rights reserved</h6>
+	</td>
+	<td align="right" valign="top"> 
+	<h6><a href="mailto:webmaster@codeproject.com">webmaster@codeproject.com</a></h6>
+	</td>
+	</tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,43 @@
+// BCProto.idl : IDL source for BCProto.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (BCProto.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(3ADE0E37-5A56-4a68-BD8D-67E9E7502971),
+	helpstring("ITestRunnerDSPlugin Interface"),
+	pointer_default(unique),
+  oleautomation
+]
+interface ITestRunnerDSPlugin : IUnknown
+{
+	// please let me know whether get_current is accessible through VB
+	[helpstring("command goToLineInSourceCode")] 
+  HRESULT goToLineInSourceCode( [in] BSTR fileName, [in] int lineNumber);
+};
+
+
+[
+	uuid(3ADE0E38-5A56-4a68-BD8D-67E9E7502971),
+	version(1.0),
+	helpstring("TestRunnerDSPlugin 1.0 Type Library")
+]
+library TestRunnerDSPluginLib
+{
+	importlib("stdole32.tlb");
+
+  [
+    uuid( F193CE54-716C-41CB-80B2-FA74CA3EE2AC),
+    version(1.0),
+	  helpstring("TestRunner Developer Studio Plugin")
+  ]
+  coclass DSAddIn
+  {
+    [default] interface ITestRunnerDSPlugin;
+  }
+};

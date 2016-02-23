@@ -1,0 +1,9 @@
+This directory contains mpn functions for Intel i960 processors.
+
+RELEVANT OPTIMIZATION ISSUES
+
+The code in this directory is not well optimized.
+
+STATUS
+
+The code in this directory has not been tested.

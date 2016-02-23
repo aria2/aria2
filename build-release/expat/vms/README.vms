@@ -1,0 +1,23 @@
+4-jun-2002	Craig A. Berry
+		Added rudimentary build procedures for 
+		OpenVMS based on work by Martin Vorlaender.
+
+
+You'll need MMS or its freeware equivalent MMK.  Just go to the 
+top-level directory and type
+
+$ MMS/DESCRIPTION=[.vms]
+ 
+  or
+
+$ MMK/DESCRIPTION=[.vms]
+
+You'll end up with the object library expat.olb.  For now, installation
+consists merely of copying the object library, include files, and
+documentation to a suitable location.  
+
+To-do list:
+
+	-- create a shareable image
+	-- build and run the tests and build the xmlwf utility
+	-- create an install target

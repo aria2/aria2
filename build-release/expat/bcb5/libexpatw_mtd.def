@@ -1,0 +1,140 @@
+; DEF file for BCB5
+LIBRARY   LIBEXPATW_MTD
+DESCRIPTION "Implements an XML parser."
+EXPORTS
+  _XML_DefaultCurrent @1
+  _XML_ErrorString @2
+  _XML_ExpatVersion @3
+  _XML_ExpatVersionInfo @4
+  _XML_ExternalEntityParserCreate @5
+  _XML_GetBase @6
+  _XML_GetBuffer @7
+  _XML_GetCurrentByteCount @8
+  _XML_GetCurrentByteIndex @9
+  _XML_GetCurrentColumnNumber @10
+  _XML_GetCurrentLineNumber @11
+  _XML_GetErrorCode @12
+  _XML_GetIdAttributeIndex @13
+  _XML_GetInputContext @14
+  _XML_GetSpecifiedAttributeCount @15
+  _XML_Parse @16
+  _XML_ParseBuffer @17
+  _XML_ParserCreate @18
+  _XML_ParserCreateNS @19
+  _XML_ParserCreate_MM @20
+  _XML_ParserFree @21
+  _XML_SetAttlistDeclHandler @22
+  _XML_SetBase @23
+  _XML_SetCdataSectionHandler @24
+  _XML_SetCharacterDataHandler @25
+  _XML_SetCommentHandler @26
+  _XML_SetDefaultHandler @27
+  _XML_SetDefaultHandlerExpand @28
+  _XML_SetDoctypeDeclHandler @29
+  _XML_SetElementDeclHandler @30
+  _XML_SetElementHandler @31
+  _XML_SetEncoding @32
+  _XML_SetEndCdataSectionHandler @33
+  _XML_SetEndDoctypeDeclHandler @34
+  _XML_SetEndElementHandler @35
+  _XML_SetEndNamespaceDeclHandler @36
+  _XML_SetEntityDeclHandler @37
+  _XML_SetExternalEntityRefHandler @38
+  _XML_SetExternalEntityRefHandlerArg @39
+  _XML_SetNamespaceDeclHandler @40
+  _XML_SetNotStandaloneHandler @41
+  _XML_SetNotationDeclHandler @42
+  _XML_SetParamEntityParsing @43
+  _XML_SetProcessingInstructionHandler @44
+  _XML_SetReturnNSTriplet @45
+  _XML_SetStartCdataSectionHandler @46
+  _XML_SetStartDoctypeDeclHandler @47
+  _XML_SetStartElementHandler @48
+  _XML_SetStartNamespaceDeclHandler @49
+  _XML_SetUnknownEncodingHandler @50
+  _XML_SetUnparsedEntityDeclHandler @51
+  _XML_SetUserData @52
+  _XML_SetXmlDeclHandler @53
+  _XML_UseParserAsHandlerArg @54
+; added with version 1.95.3
+  _XML_ParserReset @55
+  _XML_SetSkippedEntityHandler @56
+; added with version 1.95.5
+  _XML_GetFeatureList @57
+  _XML_UseForeignDTD @58
+; added with version 1.95.6
+  _XML_FreeContentModel @59
+  _XML_MemMalloc @60
+  _XML_MemRealloc @61
+  _XML_MemFree @62
+; added with version 1.95.8
+  _XML_StopParser @63
+  _XML_ResumeParser @64
+  _XML_GetParsingStatus @65
+
+; Aliases for MS compatible names
+  XML_DefaultCurrent = _XML_DefaultCurrent
+  XML_ErrorString = _XML_ErrorString
+  XML_ExpatVersion = _XML_ExpatVersion
+  XML_ExpatVersionInfo = _XML_ExpatVersionInfo
+  XML_ExternalEntityParserCreate = _XML_ExternalEntityParserCreate
+  XML_GetBase = _XML_GetBase
+  XML_GetBuffer = _XML_GetBuffer
+  XML_GetCurrentByteCount = _XML_GetCurrentByteCount
+  XML_GetCurrentByteIndex = _XML_GetCurrentByteIndex
+  XML_GetCurrentColumnNumber = _XML_GetCurrentColumnNumber
+  XML_GetCurrentLineNumber = _XML_GetCurrentLineNumber
+  XML_GetErrorCode = _XML_GetErrorCode
+  XML_GetIdAttributeIndex = _XML_GetIdAttributeIndex
+  XML_GetInputContext = _XML_GetInputContext
+  XML_GetSpecifiedAttributeCount = _XML_GetSpecifiedAttributeCount
+  XML_Parse = _XML_Parse
+  XML_ParseBuffer = _XML_ParseBuffer
+  XML_ParserCreate = _XML_ParserCreate
+  XML_ParserCreateNS = _XML_ParserCreateNS
+  XML_ParserCreate_MM = _XML_ParserCreate_MM
+  XML_ParserFree = _XML_ParserFree
+  XML_SetAttlistDeclHandler = _XML_SetAttlistDeclHandler
+  XML_SetBase = _XML_SetBase
+  XML_SetCdataSectionHandler = _XML_SetCdataSectionHandler
+  XML_SetCharacterDataHandler = _XML_SetCharacterDataHandler
+  XML_SetCommentHandler = _XML_SetCommentHandler
+  XML_SetDefaultHandler = _XML_SetDefaultHandler
+  XML_SetDefaultHandlerExpand = _XML_SetDefaultHandlerExpand
+  XML_SetDoctypeDeclHandler = _XML_SetDoctypeDeclHandler
+  XML_SetElementDeclHandler = _XML_SetElementDeclHandler
+  XML_SetElementHandler = _XML_SetElementHandler
+  XML_SetEncoding = _XML_SetEncoding
+  XML_SetEndCdataSectionHandler = _XML_SetEndCdataSectionHandler
+  XML_SetEndDoctypeDeclHandler = _XML_SetEndDoctypeDeclHandler
+  XML_SetEndElementHandler = _XML_SetEndElementHandler
+  XML_SetEndNamespaceDeclHandler = _XML_SetEndNamespaceDeclHandler
+  XML_SetEntityDeclHandler = _XML_SetEntityDeclHandler
+  XML_SetExternalEntityRefHandler = _XML_SetExternalEntityRefHandler
+  XML_SetExternalEntityRefHandlerArg = _XML_SetExternalEntityRefHandlerArg
+  XML_SetNamespaceDeclHandler = _XML_SetNamespaceDeclHandler
+  XML_SetNotStandaloneHandler = _XML_SetNotStandaloneHandler
+  XML_SetNotationDeclHandler = _XML_SetNotationDeclHandler
+  XML_SetParamEntityParsing = _XML_SetParamEntityParsing
+  XML_SetProcessingInstructionHandler = _XML_SetProcessingInstructionHandler
+  XML_SetReturnNSTriplet = _XML_SetReturnNSTriplet
+  XML_SetStartCdataSectionHandler = _XML_SetStartCdataSectionHandler
+  XML_SetStartDoctypeDeclHandler = _XML_SetStartDoctypeDeclHandler
+  XML_SetStartElementHandler = _XML_SetStartElementHandler
+  XML_SetStartNamespaceDeclHandler = _XML_SetStartNamespaceDeclHandler
+  XML_SetUnknownEncodingHandler = _XML_SetUnknownEncodingHandler
+  XML_SetUnparsedEntityDeclHandler = _XML_SetUnparsedEntityDeclHandler
+  XML_SetUserData = _XML_SetUserData
+  XML_SetXmlDeclHandler = _XML_SetXmlDeclHandler
+  XML_UseParserAsHandlerArg = _XML_UseParserAsHandlerArg
+  XML_ParserReset = _XML_ParserReset
+  XML_SetSkippedEntityHandler = _XML_SetSkippedEntityHandler
+  XML_GetFeatureList = _XML_GetFeatureList
+  XML_UseForeignDTD = _XML_UseForeignDTD
+  XML_FreeContentModel = _XML_FreeContentModel
+  XML_MemMalloc = _XML_MemMalloc
+  XML_MemRealloc = _XML_MemRealloc
+  XML_MemFree = _XML_MemFree
+  XML_StopParser = _XML_StopParser
+  XML_ResumeParser = _XML_ResumeParser
+  XML_GetParsingStatus = _XML_GetParsingStatus

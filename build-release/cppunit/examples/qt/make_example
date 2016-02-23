@@ -1,0 +1,10 @@
+#!/bin/tcsh
+###########################################################################
+# FILE:    make_example
+# PURPOSE: Create Makefile from project file and then make QtTestRunner
+#          example.
+###########################################################################
+
+qmake qt_example.pro
+make distclean
+make

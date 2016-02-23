@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding='ISO-8859-1' standalone='yes' ?>
+<?xml-stylesheet type="text/xsl" href="report.xsl"?>
+<TestRun>
+  <FailedTests>
+    <FailedTest id="1">
+      <Name>ExampleTestCase.example</Name>
+      <FailureType>Assertion</FailureType>
+      <Location>
+        <File>exampletestcase.cpp</File>
+        <Line>7</Line>
+      </Location>
+      <Message>- Expected : { 0; 7; 8; 9; 10; 11; 1; 2; 3; 4; 5; 6; 12; 13; 14; 15; 16; 17; 18; 19 }
+- Actual   : { 0; 1; 2; 3; 4; 5; 7; 8; 9; 10; 11; 6; 12; 13; 14; 15; 16; 17; 18; 19 }
+- Difference at index 1
+->Expected : { 7; 8; 9; 10; 11; 1; 2; 3; 4; 5; 6; 12; 13; 14; 15; 16; 17; 18; 19 }
+->Actual   : { 1; 2; 3; 4; 5; 7; 8; 9; 10; 11; 6; 12; 13; 14; 15; 16; 17; 18; 19 }</Message>
+    </FailedTest>
+    <FailedTest id="2">
+      <Name>ExampleTestCase.anotherExample</Name>
+      <FailureType>Assertion</FailureType>
+      <Location>
+        <File>exampletestcase.cpp</File>
+        <Line>15</Line>
+      </Location>
+      <Message>1 == 2</Message>
+    </FailedTest>
+    <FailedTest id="3">
+      <Name>ExampleTestCase.testAdd</Name>
+      <FailureType>Assertion</FailureType>
+      <Location>
+        <File>exampletestcase.cpp</File>
+        <Line>27</Line>
+      </Location>
+      <Message>result == 6.0</Message>
+    </FailedTest>
+    <FailedTest id="4">
+      <Name>ExampleTestCase.testDivideByZero</Name>
+      <FailureType>Error</FailureType>
+      <Message>caught unknown exception</Message>
+    </FailedTest>
+    <FailedTest id="5">
+      <Name>ExampleTestCase.testEquals</Name>
+      <FailureType>Assertion</FailureType>
+      <Location>
+        <File>exampletestcase.cpp</File>
+        <Line>48</Line>
+      </Location>
+      <Message>Expected: 12, but was: 13.</Message>
+    </FailedTest>
+  </FailedTests>
+  <SuccessfulTests></SuccessfulTests>
+  <Statistics>
+    <Tests>5</Tests>
+    <FailuresTotal>5</FailuresTotal>
+    <Errors>1</Errors>
+    <Failures>4</Failures>
+  </Statistics>
+</TestRun>

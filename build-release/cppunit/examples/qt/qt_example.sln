@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "qt_example", "qt_example.vcproj", "{84D9CB1F-5FD9-4794-BF6F-58DB10CCB8FD}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SampleUnitTest_with_DLL", "qt_example_dll.vcproj", "{44077776-21C3-4271-A74A-1ED1CDA862A4}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{84D9CB1F-5FD9-4794-BF6F-58DB10CCB8FD}.Debug.ActiveCfg = Debug|Win32
+		{84D9CB1F-5FD9-4794-BF6F-58DB10CCB8FD}.Debug.Build.0 = Debug|Win32
+		{84D9CB1F-5FD9-4794-BF6F-58DB10CCB8FD}.Release.ActiveCfg = Release|Win32
+		{84D9CB1F-5FD9-4794-BF6F-58DB10CCB8FD}.Release.Build.0 = Release|Win32
+		{44077776-21C3-4271-A74A-1ED1CDA862A4}.Debug.ActiveCfg = Debug|Win32
+		{44077776-21C3-4271-A74A-1ED1CDA862A4}.Debug.Build.0 = Debug|Win32
+		{44077776-21C3-4271-A74A-1ED1CDA862A4}.Release.ActiveCfg = Release|Win32
+		{44077776-21C3-4271-A74A-1ED1CDA862A4}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

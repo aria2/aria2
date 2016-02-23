@@ -1,0 +1,268 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+CPP_UNIT_TEST_RUNNER_PLUG_IN_IDD_TEST_PLUG_IN_RUNNER DIALOG DISCARDABLE  0, 0, 330, 226
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Test plug-in runner"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "&Choose DLL",IDC_CHOOSE_DLL,273,72,50,14
+    PUSHBUTTON      "Re&load DLL",IDC_RELOAD_DLL,273,88,50,14
+    LTEXT           "&Test:",IDC_STATIC_TEST_NAME,7,7,17,8
+    COMBOBOX        IDC_COMBO_TEST,28,7,235,157,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "&Browse",IDC_BROWSE_TEST,273,7,50,14
+    DEFPUSHBUTTON   "&Run",ID_RUN,273,23,50,14
+    LTEXT           "Progress:",IDC_STATIC_PROGRESS,7,23,33,9
+    LTEXT           "none",IDC_RUNNING_TEST_CASE_LABEL,43,23,220,9
+    LTEXT           "Progress Bar",IDC_STATIC_PROGRESS_BAR,7,34,256,15,NOT 
+                    WS_VISIBLE
+    LTEXT           "Runs:",IDC_STATIC_LABEL_RUNS,7,55,29,10
+    LTEXT           "0",IDC_STATIC_RUNS,48,55,30,8
+    LTEXT           "Errors:",IDC_STATIC_LABEL_ERRORS,89,55,29,10
+    LTEXT           "0",IDC_STATIC_ERRORS,127,55,19,8
+    LTEXT           "Failures:",IDC_STATIC_LABEL_FAILURES,174,55,29,10
+    LTEXT           "0",IDC_STATIC_FAILURES,212,55,19,8
+    LTEXT           "&Errors and Failures:",IDC_STATIC,7,70,67,9
+    CONTROL         "List1",IDC_LIST,"SysListView32",LVS_REPORT | 
+                    LVS_SINGLESEL | LVS_SHOWSELALWAYS | WS_BORDER | 
+                    WS_TABSTOP,7,81,257,60
+    LTEXT           "&Details:",IDC_STATIC_DETAILS,7,145,24,8
+    EDITTEXT        IDC_DETAILS,7,156,316,48,ES_MULTILINE | ES_AUTOVSCROLL | 
+                    ES_AUTOHSCROLL | ES_READONLY
+    CONTROL         "&Autorun at startup",IDC_CHECK_AUTORUN,"Button",
+                    BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,273,46,49,19
+    PUSHBUTTON      "&Stop",ID_STOP,273,112,50,14
+    PUSHBUTTON      "&Close",IDOK,273,128,50,14
+    EDITTEXT        IDC_EDIT_TIME,7,206,316,13,ES_AUTOHSCROLL | ES_READONLY
+END
+
+CPP_UNIT_TEST_RUNNER_IDD_DIALOG_TEST_HIERARCHY DIALOG DISCARDABLE  0, 0, 259, 250
+STYLE DS_MODALFRAME | WS_POPUP | WS_CLIPCHILDREN | WS_CAPTION | WS_SYSMENU
+CAPTION "Test hierarchy"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "Select",IDOK,202,7,50,14
+    CONTROL         "Tree1",IDC_TREE_TEST,"SysTreeView32",TVS_HASBUTTONS | 
+                    TVS_HASLINES | TVS_LINESATROOT | TVS_FULLROWSELECT | 
+                    WS_BORDER | WS_TABSTOP,7,7,189,236
+    PUSHBUTTON      "&Close",IDCANCEL,202,34,50,14
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "TestPlugInRunner MFC Application\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "TestPlugInRunner\0"
+            VALUE "LegalCopyright", "Copyright (C) 2001\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "TestPlugInRunner.EXE\0"
+            VALUE "ProductName", "TestPlugInRunner Application\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    "CPP_UNIT_TEST_RUNNER_PLUG_IN_IDD_TEST_PLUG_IN_RUNNER", DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 323
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 219
+    END
+
+    "CPP_UNIT_TEST_RUNNER_IDD_DIALOG_TEST_HIERARCHY", DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 252
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 243
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_ACCELERATOR_TEST_RUNNER ACCELERATORS DISCARDABLE 
+BEGIN
+    "Q",            ID_QUIT_APPLICATION,    VIRTKEY, NOINVERT
+    VK_SPACE,       ID_RUN,                 VIRTKEY, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+CPP_UNIT_TEST_RUNNER_IDB_ERROR_TYPE BITMAP  DISCARDABLE     "res\\errortype.bmp"
+CPP_UNIT_TEST_RUNNER_IDB_TEST_TYPE BITMAP  DISCARDABLE     "res\\test_type.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+CPP_UNIT_TEST_RUNNER_PLUG_IN_IDR_TEST_PLUGIN_RUNNER ICON    DISCARDABLE     "res\\TestPlugInRunner.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ERROR_SELECT_TEST   "You must select a test!"
+    IDS_ERRORLIST_TYPE      "Type"
+    IDS_ERRORLIST_NAME      "Name"
+    IDS_ERRORLIST_FAILED_CONDITION "Failed Condition"
+    IDS_ERRORLIST_LINE_NUMBER "Line Number"
+    IDS_ERRORLIST_FILE_NAME "File Name"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// French (France) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
+#ifdef _WIN32
+LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\TestPlugInRunner.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // French (France) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res\TestPlugInRunner.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

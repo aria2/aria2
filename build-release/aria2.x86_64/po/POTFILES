@@ -1,0 +1,21 @@
+     ../../../src/DownloadEngine.cc \
+     ../../../src/MultiUrlRequestInfo.cc \
+     ../../../src/RequestGroupMan.cc \
+     ../../../src/OptionHandler.cc \
+     ../../../src/OptionHandlerImpl.h \
+     ../../../src/usage_text.h \
+     ../../../src/version_usage.cc \
+     ../../../src/option_processing.cc \
+     ../../../src/OptionHandlerException.cc \
+     ../../../src/UnknownOptionException.cc \
+     ../../../src/BtSetup.cc \
+     ../../../src/AbstractCommand.cc \
+     ../../../src/AdaptiveURISelector.cc \
+     ../../../src/BtStopDownloadCommand.cc \
+     ../../../src/DHTConnectionImpl.cc \
+     ../../../src/HttpListenCommand.cc \
+     ../../../src/PeerListenCommand.cc \
+     ../../../src/RequestGroup.cc \
+     ../../../src/SingleFileAllocationIterator.cc \
+     ../../../src/TimedHaltCommand.cc \
+     ../../../src/message.h

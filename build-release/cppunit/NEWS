@@ -1,0 +1,1151 @@
+  New in CppUnit 1.12.1:
+  ----------------------
+
+* Assertion:
+
+  - CPPUNIT_ASSERT_DOUBLES_EQUAL() now properly handles non-finite
+    values, specifically NaN, +Inf, and -Inf.
+
+* Portability: 
+
+  - Fixed some compilation issue for QtTestRunner.
+  - Code should build on Windows in UNICODE mode.
+
+  New in CppUnit 1.12.0:
+  ----------------------
+
+* Portability:
+
+  - autogen.sh can now be run on Mac OS X (patch #1449380
+    contributed by Sander Temme).
+    
+* MFC Test runner:
+
+  - fixed bug #1498175: double click on failure would sometime 
+    not goto failed assertion in visual studio.
+
+* Documentation:
+
+  - now generated with doxygen 1.4.7 new 'tabs' style.
+
+
+  New in CppUnit 1.11.4:
+  ----------------------
+
+
+* Portability:
+
+  - Support for Embedded Visual C++ 4 added. For this purpose, CppUnit now
+    provides a very simple stream implementation if none is provided.
+    This should also help porting on other platforms which have STL but
+    no stream support. Just make sure that CPPUNIT_NO_STREAM is defined
+    to 1 in your config header.
+
+* Assertion:
+
+  - Added missing _MESSAGE variants for the following assertions:
+  
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE
+    CPPUNIT_ASSERT_THROW_MESSAGE
+    CPPUNIT_ASSERT_NO_THROW_MESSAGE
+    CPPUNIT_ASSERT_ASSERTION_FAIL_MESSAGE
+    CPPUNIT_ASSERT_ASSERTION_PASS_MESSAGE
+
+    Notes: change made to CPPUNIT_ASSERT_THROW may cause compilation error 
+    if you're expecting std::exception as it would be caught twice. Contact us
+    if it is an issue (we don't see much use for such a test).
+
+    Some assertions failure message are now more detailed (exception, 
+    expression).
+    Thanks to Neil Ferguson who contributed this patch.
+
+  - Assertion on real number now output expected and actual value using the
+    maximum available precision instead of the previous strategy of rounding 
+    to 6 digits.
+
+    Thanks to Neil Ferguson who contributed this patch.
+
+* Outputter:
+
+  - XML Ouputter: patch #997006 contributed by Akos Maroy makes the
+    'stand-alone' attribute of the XML header optional. 
+    See XmlOutputter::setStandalone() & XmlDocument::setStandalone().
+
+  - Better integration of compiler output for gcc on Mac OS X with Xcode
+    (contributed by Claus Broch).
+
+* MFC Test Runner
+
+  - Integration with VC++ 7.0 & 7.1. Double clicking on a failure will now
+    to the failure location in the open IDE (no add-in necessary). 
+    This was contributed by Max Quatember and Andreas Pfaffenbichler.
+
+  - Progress bar: now use system color to draw border 
+    (patch from bug #1165875 contributed by Pieter Van Dyck).
+
+* QT Test Runner
+
+  - Fixed display of multi-line messages (patch contributed by Karol Szkudlarek).
+
+* Compilation:
+
+  - The standard pkg-config file is now generated on unix (contributed by 
+    Robert Leight).
+
+  - MinGW: patch #1024428 contributed by astar, fixed compilation issue in
+    Win32DynamicLibraryManager.cpp.
+
+  - MinGW, cygwin: enable build of shared library when using libtool. 
+    patch #1194394 contributed by Stéphane Fillod.
+
+  - autotool: applied patch #1076398 contributed by Henner Sudek. Quote:
+		 "This patch allows AM_PATH_CPPUNIT to accept version
+		numbers without minor and micro version.
+		Now you can do:
+		AM_PATH_CPPUNIT(1.9)
+		instead of
+		AM_PATH_CPPUNIT(1.9.0)"
+		
+  - Visual Studio 2005: removed deprecated warning.
+
+* Documentation:
+
+  - Corrected many typos in cookbook and money example. Thanks to all
+    those who helped !
+
+* Bug Fix:
+
+  - cppunit.m4: patch #946302, AM_PATH_CPPUNIT doesn't report result 
+    if CppUnit is missing.
+
+  - Message/SourceLine: copy constructor have been specifically implemented
+    to ensure they are thread-safe even if std::string copy constructor
+    is not (usually on reference count based implementation).
+
+  - TestResultCollector: fixed memory leak occuring when calling reset().
+
+* Contrib:
+
+  - added XSLT for compatibility with Ant junit xml formatter.
+    Patch #1112053 contributed by Norbert Barbosa.
+    See xml-xsl/cppunit2junit.xsl and cppunit2junit.txt for details.
+
+  - xml-xsl/report.xsl has been fixed to work with current xml output.
+
+* (Possible) Compatiblity break:
+
+  - All text output is now done on cout() instead of sometime cerr & 
+    sometime cout depending on the component.
+
+  - OStringStream definition has been removed from Portability.h. This
+    means that <sstream> is no longer included, and that ostringstream and
+    string might not be defined. In practice this should have no impact 
+    since those includes have been moved to other CppUnit headers.
+
+* Notes:
+
+  - CppUnit now uses the alias OStream when refering to std::ostream for 
+    portability.
+
+
+
+  New in CppUnit 1.10.2:
+  ----------------------
+
+* Bug Fix:
+
+  - Memory checker: bug #938753, array bound read in 
+    splitPathString() with substr if an empty string is passed.
+
+  - Memory leaks: bug #952912, many memory leaks removed in the
+    MFC test plug-in runner.
+
+  - Crash when using CPPUNIT_TEST_SUITE_REGISTRATION with cppunit dll.
+    Bug #921843. This bug was caused by a known STL bug in VC++ 6. 
+    See http://www.dinkumware.com/vc_fixes.html <xtree> issue with shared
+    std::map in dll.
+
+* Compilation:
+
+  - mingw & cigwin, bug #930338 & #945737 fixed.
+
+  - make install does not work on SunOS. Bug #940650 fixed.
+
+  - bug #933154, post-build step fails in directory with spaces
+    with Visual C++.
+
+  - DllPlugInTester, bug #941625 (char * string literal). Applied patch
+    contribued by Curt Arnold.
+
+
+  New in CppUnit 1.10.0 (same as 1.9.14):
+  --------------------------------------
+
+* Assertions
+
+  - Ported exception assertion macros from cppunit 2 to the 1.9.x series:
+    CPPUNIT_ASSERT_THROW, CPPUNIT_ASSERT_NO_THROW, 
+    CPPUNIT_ASSERT_ASSERTION_FAIL, CPPUNIT_ASSERT_ASSERTION_PASS.
+
+* Deprecated:
+
+  - The helper macros: CPPUNIT_TEST_FAIL & CPPUNIT_TEST_EXCEPTION have
+    been deprecated. Use the new exception assertion macros instead.
+
+* Bug Fix:
+
+  - cppunit-config: bug #903363, missing -ldl from the output of
+    cppunit-config --libs. Fixed thanks Eric Blossom patch.
+
+  - test plug-in(unix): Adding RTLD_GLOBAL allows test plug-ins 
+    to provide symbols to shared objects they load themselves.
+    Thanks goes to Gareth Sylvester for this patch (#816563).
+
+
+  New in CppUnit 1.9.12:
+  ---------------------
+
+* Test Plug-in
+
+  - added support contributed support for UNIX systems that
+    have libdld and not libdl (e.g. hp-ux). Contributed by
+    Abdessattar Sassi.
+
+* RTTI
+
+  - TypeInfoHelper now used gcc c++ abi to demangle typeinfo name thanks to
+    Neil Ferguson contribution.
+
+* Bug Fix:
+
+  - MFC TestRunner: integrated bug fix from Tim Threlkeld for bug 
+    #610191 and #610162. Fixed assertion when minizing dialog 
+    (bug #643612).
+
+  - XMLOutputter: Fixed bug #676505: no space inserted between attributes
+    of XmlElement.
+
+  - CppUnit portability: fixed many mistakes relating to compilation
+    without type info or namespace reported by Philip Craig.
+
+  - Missing destructor with no throw specification for 
+    DynamicLibraryManagerException. Bug #619059.
+
+  - Fixed missing export for operator <<(TextTestResult). Bug #610119.
+
+  - Missing include for typeinfo in TestNamer.h. Bug #662666.
+
+* Compilation
+
+  - Fixed compilation issues for Borland C++ 6 and STLPort. Bug #694971,
+    #699794 and #662666.
+
+  - Fixed compilation issues for AIX.
+
+  - Fixed compilation issues for Visual C++ .NET 2002.
+
+  - Fixed doxygen usage in mingw environment (space not allowed in 
+    doxygen path). Bug #700730.
+
+  - Fixed compilation issue for mingw (bug #711583).
+
+
+  New in CppUnit 1.9.10:
+  ---------------------
+
+  - Major portability improvement
+  - Protector
+  - HelperMacros
+  - MFC TestRunner bug fixes
+  - Failure diagnostic
+  - Asserter
+
+* Major portability improvement:
+
+  - Much work has been done to reduce C++ feature requirement to compile
+    CppUnit. It should now be possible to compile CppUnit on most 
+    compilers, as long as STL are available (in std namespace or not), 
+    with some form of strstream and iostream, as well as exception support.
+    See CodingGuideLines.txt for details.
+
+* Protector
+
+  - Protector can be passed to the TestResult to 'protect' call to
+    setUp(), runTest() and tearDown() method. With this, it is easy to
+    capture exceptions which do not have std::exception as a base class,
+    such as CException or RWXMsg for example. TestResult and Protector 
+    class documentation. Look at src/cppunit/DefaultProtector.cpp for
+    an example of implementation.
+
+* Helper macros
+
+  - Mostly rewritten. It no longer use TestSuiteBuilder. A new object
+    TestSuiteBuilderContext was introduced. It is used to name test case,
+    create test fixture instance and add test to the fixture suite. It
+    is now much more easier to add custom test cases using
+    CPPUNIT_TEST_SUITE_ADD_CUSTOM_TESTS. Should also prevent most 
+    compability break concerning that macro.
+
+  - Useful typedef are now public: TestFixtureType, ParentTestFixtureType.
+
+  - New typedef for custom test method parameter: 
+    typedef TestSuiteBuilderContext<TestFixtureType> 
+       TestSuiteBuilderContextType;
+
+  - added support for abstract test fixture with
+    CPPUNIT_TEST_SUITE_END_ABSTRACT(). See documentation for further
+    detail.
+
+* Failure diagnostic
+
+  - setUp() and tearDown() now provides a detailed diagnostic of the
+    failure (assertion, exception...)
+
+  - If RTTI is allowed to extract type info, CppUnit will report the
+    actual exception type in the diagnostic.
+
+* Asserter:
+  
+  - A new AdditionalMessage class has been introduced. It is used for
+    assertion that takes an additional 'message' argument 
+    (CPPUNIT_ASSERT_MESSAGE...). Since this macro has an implicit 
+    constructor that take a string, which creates a Message with the 
+    specified string as detail. That way, additional message can be a 
+    single string or a complex Message object. See documentation for 
+    example of use.
+
+* Bug Fix:
+
+  - MFC TestRunner: bug #530426 (conflict between TestRunner and host 
+    application's resources). A huge thanks to Steven Mitter for that one.
+
+  - MFC TestRunner: Browse button is now disabled while running test.
+
+* Deprecated
+
+  - CppUnit::TextUi::TestRunner moved to CppUnit::TextTestRunner.
+  - CppUnit::MfcUi::TestRunner moved to CppUnit::MfcTestRunner.
+  - CppUnit::QtUi::TestRunner moved to CppUnit::QtTestRunner.
+
+* Compatiblity break:
+
+  - CppUnitTextUi::TestRunner, removed runTestByName() and runTest().
+  - TestSuiteBuilder: removed templatized method 
+    addTestCallerForException(). See implementation of 
+    CPPUNIT_TEST_EXCEPTION implementation for an alternative.
+  - TestAssert: removed deprecated functions (those not using SourceLine) 
+    assertImplementation(), assertNotEqualImplementation(), 
+    assertEquals(). Moved non deprecated functions assertEquals() and
+    assertEquals() into CppUnit namespace.
+  - Plug-ins 'Parameters' typedef has been replaced by class 
+    PlugInParameters. The method commandLine() returns what used to be in
+    Parameters[0]. This should avoid future compatibility break when the 
+    parameters passing API will be defined.
+  - TestPlugIn::initialize() now takes a PlugInParameters in argument 
+    instead of a Parameters.
+  - template <class T> void assertEquals() no longer has a default message 
+    value (no impact, unless you used this function directly instead of
+    assertion macros).
+  - HelperMacros: renamed CPPUNIT_TEST_ADD to 
+    CPPUNIT_TEST_SUITE_ADD_TEST.
+  - HelperMacros: removed CPPUNIT_TEST_CUSTOM. Instead use 
+    CPPUNIT_TEST_SUITE_ADD_CUSTOM_TESTS and call context.addTest() 
+    passing the test that was returned.
+  - HelperMacros: renamed CPPUNIT_TEST_CUSTOMS to 
+    CPPUNIT_TEST_SUITE_ADD_CUSTOM_TESTS. Changed method signature to
+    static void aMethodName( TestSuiteBuilderContextType &context ).
+    You can replace the 3 previous parameters by context. (See 
+    documentation for further detail).
+
+
+
+  New in CppUnit 1.9.8:
+  ---------------------
+
+  - New custom test macros for fixture suite
+  - Exception message are now structured
+  - Added detail field to MFC TestRunner
+  - New XmlDocument class to easily create new XML output format
+  - XmlOutputter customization
+  - Test plug-in XMLOutputter hook
+  - ClockerPlugIn example includes test time in XML output
+  - DllPlugInTester allows test plug-in to hook the XmlOutputter
+  - Configurable CompilerOutputter wrapping
+
+* New custom test macros
+
+  - 3 new macros have been added for use when declaring test fixture suite:
+    - CPPUNIT_TEST_CUSTOM : to specify a method that returns an instance of 
+      Test to add to the suite
+    - CPPUNIT_TEST_CUSTOM : to specify a method that add some tests to the 
+      suite
+    - CPPUNIT_TEST_ADD : to add a test to the suite. Used this to create custom 
+      CPPUNIT_TEST_xxx macros.
+
+    See macros documentation for examples and details.
+
+* Exception message
+
+  - Exception message are now stored in a Message object instead of a string.
+    A message is composed of two items:
+    - a short description (~20/30 characters)
+    - a list of detail strings
+
+    The short description is used to indicate how the detail strings should be
+    interpreted. It usually indicates the failure types, such as
+    "assertion failed", "forced failure", "unexpected exception caught",
+    "equality assertion failed"... It should not contains new line characters 
+    (\n).
+
+    Detail strings are used to provide more information about the failure. It
+    can contains the asserted expression, the expected and actual values in an
+    equality assertion, some addional messages... Detail strings can contains
+    new line characters (\n).
+
+    This change allow ouputters to deal with all failure the same way (there is
+    no special case for the equality assertion any more).
+
+* New XmlDocument class to easily create new XML output format
+
+  - Classes XmlDocument and XmlElement where extracted from XmlOutputter. This
+    help writing outputters that use a completly different XML format.
+
+  - XmlDocument represents a XML file, and XmlElement represents a XML element.
+
+* XmlOutputter customization
+
+  - Xml output can be customized using XmlOutputterHook. To do so, subclass
+    XmlOutputterHook and register it to the XmlOutputter with addHook() before
+    call XmlOutputter::write().
+
+    Hook can be used to add some datas to the XmlDocument or the XmlElement of
+    a specific hook. Methods have been added to XmlElement to help navigating
+    and modifying the XmlDocument.
+
+    See ClockerPlugIn example.
+
+* MFC TestRunner
+
+  - The name of the test is displayed just before being run.
+  - Browse Test Hierarchy dialog is resizable.
+  - Better (and cleaner) handling of windows resizing
+  - Failure list now only show the short description of the failure.
+  - Edit field added to display the details of the selected failure.
+
+* MFC test plug-in runner (TestPlugInRunner):
+  
+  - command line: a dll name can be specified on the command after -testsuite:
+    example: TestPlugInRunnerd.exe -testsuite Simpled.dll
+
+  - Layout configuration is stored/restored.
+
+* Test plug-in XML output Hook
+
+  - TestPlugIn interface provides a mean for plug-in to register hook for
+    XML output. Practically, this allow plug-in to add specific data to the
+    output. See ClockerPlugIn example, which add timing datas to the xml
+    output.
+
+* DllPlugInTester:
+
+  - added option -w / --wait to wait for the user to press a key before exiting.
+
+  - plug-in can now provides XmlOutputterHook to add specific datas to the 
+    XML ouput. See ClockerPlugIn example.
+
+* CompilerOutputter wrapping is parametrized
+
+  - Wrap column can be set with setWrapColumn(). Default is now 79 instead of 80.
+
+  - Wrapping can be disabled with setNoWrap().
+
+* Examples:
+
+  - ClockerPlugIn: the example now use the new XmlOutputterHook. Test time are
+    now included in the XML output. See examples/ClockerPlugIn/ReadMe.txt for
+    details.
+
+* Bug Fix:
+
+  - CompilerOutputter: fixed wrapping issues (UT magic!)
+
+  - DllPlugInTester: use ISO-LATIN1 encoding if none is given. Flag --xsl was
+    ignored.
+
+  - MfcUi plug-in runner (TesTPlugInRunner): better handling of history when
+    loading and reloading a dll. 
+
+  - Qt Test Runner: minor bug fixes. Should compile on Unix.
+
+  - XmlOutputter: use the default encoding if an empty string is given as
+    encoding
+
+* Compatibility Break:
+
+  - CompilerOutputter: removed printNotEqualMessage() and printDefaultMessage().
+    No longer needed since Exception message are processed in a generic way.
+    Removed wrap(). Extracted to StringTools.
+
+  - Exception constructor takes a Message instead of a string. Notes that the
+    first argument in Message constructor is a short description, not the message.
+    Therefore, the change will usualy have the following form:
+      Exception( Message( "assertion failed", oldMessage ) );
+    You may want to use Asserter functions instead of constructing and throwing
+    the exception manually.
+
+  - TestPlugInAdapter: renamed TestPlugInDefaultImpl.
+
+  - TestSuiteBuilder: removed default constructor. All remaining constructors
+    take an additional argument of type TestNamer used to specify the fixture
+    named and generate test case name. Remove template method 
+    addTestCallerForException(). Use addTest() instead (see 
+    CPPUNIT_TEST_EXCEPTION implementation).
+
+  - TextTestResult: most printing method were removed. This task is now delegated
+    to TextOuputter.
+
+  - XmlElement: renamed addNode() to addElement().
+
+  - XmlOutputter: removed methods writeProlog() and writeTestResult() which
+    are replaced by XmlDocument. Renamed makeRootNode() to setRootNode(). It
+    no longer returns the root node, but set the root node of the XML document.
+
+  - XmlOuputter::Node: class has been extracted and renamed XmlElement.
+
+* Deprecated:
+
+  - Asserter: all functions that use a string for the failure message. Construct
+    a Message instead (see Exception constructor compatiblity break and
+    Exception message feature).
+
+
+  New in CppUnit 1.9.6:
+  ---------------------
+
+  - DllPlugInTester can be parametrized from command line
+  - Two test listener plug-in examples
+  - An 'hello world' example & getting started document : Money
+  - Contribution: generic makefile for Borland 5.5 free compiler.
+  - Bug fixes
+
+* DllPlugInTester:
+
+  - Advanced command line to support miscellaneous listener outputer.
+    Parameters can now be passed to test plug-in:
+
+    -c --compiler
+      Use CompilerOutputter
+    -x --xml [filename]
+      Use XmlOutputter (if filename is omitted, then output to cout or
+      cerr.
+    -s --xsl stylesheet
+      XML style sheet for XML Outputter
+    -e --encoding encoding
+      XML file encoding (UTF8, shift_jis, ISO-8859-1...)
+    -b --brief-progress
+      Use BriefTestProgressListener (default is TextTestProgressListener)
+    -n --no-progress
+      Show no test progress (disable default TextTestProgressListener)
+    -t --text
+      Use TextOutputter
+    -o --cout
+      Ouputters output to cout instead of the default cerr.
+    filename[="options"]
+      Many filenames can be specified. They are the name of the 
+      test plug-ins to load. Optional plug-ins parameters can be 
+      specified after the filename by adding '='.
+    [:testpath]
+      Optional. Only one test path can be specified. It must 
+      be prefixed with ':'. See TestPath constructor for syntax.
+
+    'parameters' (test plug-in or XML filename, test path...) may contains 
+    spaces if double quoted. Quote may be escaped with \".
+
+    Some examples of command lines:
+DllPlugInTesterd_dll.exe -b -x tests.xml -c simple_plugind.dll CppUnitTestPlugInd.dll
+    Will load 2 tests plug-ins (available in lib/), use the brief test
+    progress, output the result in XML in file tests.xml and also
+    output the result using the compiler outputter.
+
+DllPlugInTesterd_dll.exe ClockerPlugInd.dll="flat" -n CppUnitTestPlugInd.dll
+    Will load the 2 test plug-ins, and pass the parameter string "flat"
+    to the Clocker plug-in, disable test progress. Clocker being a test
+    listener plug-ins (it doesn't implements any tests, it just register
+    a TestListener), this is equivalent to say 'run all the test
+    of CppUnitTestPlugIn and use ClockerPlugIn as a TestLisener'.
+
+DllPlugInTesterd_dll.exe CppUnitTestPlugInd.dll :Core
+    Will run the test named "Core" (a suite in the present case ) of the 
+    test plug-in.
+
+* Documentation
+
+  - New getting started documentation. Not completed yet, but probably
+    a good complement to the current cookbook. Explore the creation
+    of the Money example.
+
+* Examples
+
+  - Money (examples/Money): the 'hello world' example. Unit tests for 
+    a simple Money class.
+
+  - DllPlugInTesterTest (src/DllPlugInTester/DllPlugInTester.dsp):
+    unit tests for CommandLineParser. Not really an example, but only
+    slightly more complex than Money.
+
+  - ClockerPlugIn (examples/ClockerPlugIn): a test listener plug-in 
+    that track tests and test suites running time. Parameter: "flat" 
+    for a reporting with a flattened tree.
+
+  - DumperPlugIn (examples/DumperPlugIn): a test listener plug-in that 
+    dump the test tree as it run. Paramater: "flat" for a reporting 
+    with a flattened tree.
+
+  - CppUnitTestPlugIn (examples/cppunitest/CppUnitTestPlugIn.dsp):
+    CppUnit's test suite as a test plug-in.
+
+* Contribution
+
+  - Contributed by project cuppa team (http://sourceforge.jp/projects/cuppa/):
+
+  - Makefile for CppUnit with Borland C++ 5.5 free compiler: does not
+    depend on a specific CppUnit version.
+
+* Compatiblity breaks
+
+  - DllPlugInTester: (1.9.4 only), should add -c to DllPlugInTester 
+    command line.
+
+* Bug Fix:
+
+  - DynamicLibaryManager did not report the library name when loading a
+    a library.
+
+  - BeosDynamicLibraryManager: fixed thanks to Shibu Yoshiki 
+    ('cuppa' project team).
+
+  - Broken build on Unix should be fixed for most (thanks to 
+    Jeffrey Morgan).
+
+
+  New in CppUnit 1.9.4:
+  ----------------------
+
+  - More versatile, easier to make test plug-in.
+  - A PlugInManager to manage multiple test plug-ins.
+  - Crossplatform test plug-in runner.
+  - Crossplatform test plug-in example.
+  - A brief progress listener 
+  - Easier test hierarchy creation
+  - Improved documentation.
+  - Tracking of test run start/end.
+  - Contribution: XML style sheet & borland 5.5 makefile.
+  - Help needed on the Unix side!
+
+* Buildling on Unix:
+
+  - I did not get any feed back on the previous build issue on Unix. Using
+    a simple autobook example was useless to try to solve the problem. Here
+  is the issue:
+
+  CppUnit library build fine, it is the example I'm having trouble with.
+
+  Since the test plug-in have been added, CppUnit use the function
+  dlopen(), dlsym() and dlclose() on unix to load/unload the plug-in.
+
+  Those functions apparently requires to link another library when
+  building an exectuable. Here is was should be done:
+  - linking against the said library for each example.
+  - generates the shared library for the examples/simple/simple_plugin 
+    example (source files are ExampleTestCase.cpp, ExampleTestCase.cpp 
+    and SimplePlugIn.cpp).
+  - if possible, makes the above optionnal if --disable-test-plug-in 
+    is defined:
+    - don't link the dlXXX library 
+    - don't compile the plug-in example
+    - add #define CPPUNIT_NO_TESTPLUGIN 1 to the config file
+
+  Contact me on the mailing-list for more details.
+
+* TestPlugIn:
+
+  - A simple fact I realised while testing: if you link your test plug-in 
+    against the DLL version of cppunit (or shared library on Unix), then
+  test registered to the TestFactoryRegistry (it is what's hide behind
+  CPPUNIT_TEST_SUITE_REGISTRATION) are automatically shared. Changes
+  have been made to support that usage (CppUnit was crashing badly).
+  Using the TestFactoryRegistry provides much more flexiblity that
+  providing a single suite for the plug-in. As such:
+
+  - CppUnit plug-in should be linked against the dll version of CppUnit library.
+
+  - Plug-in should register their tests using the CPPUNIT_TEST_SUITE_xxx macros.
+
+  - 'homemade' suite can still be registred to the TestFactoryRegistry that is
+     passed as parameter on plug-in initialization. Notes that you must 
+   unregister those suites during plug-in uninitialization, otherwise on
+   destruction, the TestFactoryRegistry will attempt to destroy them... Your
+   plug-in would have been already unloaded...
+
+  - Plug-in can accept parameters on initialization (notes that the Parameters
+    object is far from being stabilized, but whatever form it takes, it will be
+  a list of string).
+    
+  - Plug-in can register their one listener for a test run. This means that you
+    can extends 'DllPlugInTester' by creating test plug-in... This also means
+  than you can listen to startTestRun()/endTestRun() to do some global
+  setUp/tearDown (to initialize globales resources, such as COM...)
+
+  - Why all this fuss around test plug-in ? Test plug-in are the incarnation of
+    an old concept: testable components...
+
+* PlugInManager:
+
+  - The PlugInManager is used to load/unload plug-ins. It takes care of all
+    the 'plug-in' protocol and makes it easy to use multiple plug-ins at the
+  same time. It dispatches the addListener()/removeListener() message to
+  each plug-in.
+
+* Crossplatform test plug-in runner (src/DllPlugInRunner):
+
+  - This application can be used to run your test plug-ins. It can load
+    multiple test plug-ins and run all or a specific test in the test
+  hierarchy returned by TestFactoryRegistry::getRegistry().makeTest().
+
+  - Plug-in loaded by the plug-in may also be custom TestListener.
+
+  - It can be use for post-build check and to debug the plug-in.
+
+  - Why use it? It keep you away from CppUnit API changes!
+
+* Easier test hierarchy creation (TestFactoryRegistry/HelperMacros):
+
+  - added method addRegistry(name) to add a named registry to the registry.
+    see TestFactoryRegistry for an example of use.
+
+  - added macros CPPUNIT_REGISTRY_ADD( which, to ) and 
+    CPPUNIT_REGISTRY_ADD_TO_DEFAULT( which ) to create test hierarchy at static
+  initialization (in the spirit of CPPUNIT_TEST_SUITE_xxx() macros).
+
+* VerboseTestProgressListener:
+
+  - A new TestListener that prints the test name before running it. Most useful when
+    a test crashing, mean a application crash.
+
+* Documentation:
+
+  - More details about the test plug-in, how to use it, how does it works...
+    See module/Writing Test Plug-in.
+
+* Examples:
+
+  - examAdded crossplatform simple example. Equivalent to VC++ HostApp example.
+  - examples/simple: a very simple example, demonstrating the use of CppUnit
+    with a single TestFixture. Demonstrate both how to build an application
+  using TestRunner, and how to build a test plug-in to use with the
+  test plug-in runner.
+
+* Contribution
+
+  - Contributed by project cuppa team (http://sourceforge.jp/projects/cuppa/):
+
+  - XML style sheet: transform CppUnit XML output into HTML.
+  - Makefile for CppUnit with Borland C++ 5.5 free compiler.
+
+* Behavior changes:
+
+  - Test runner should call TestResult::runTest() to run the 'top level' test. This
+    will inform the TestListener of the test run start/end.
+
+* Compatiblity break:
+
+  - TestFactoryRegistry don't own register test anymore. AutoRegisterSuite has
+    been updated to preverse its apparent behavior. It should be of concern
+  if you created and registered custom TestFactory.
+
+  - Removed TextTestProgressListener::done(). No longer needed, it listens
+    for endTestRun().
+
+* Compatiblity Break for 1.9.2 users:
+
+  - TestPlugIn.h: CppUnitTestPlugIn as been completly rewritten.
+
+  - TestPlugIn.h: macro CPPUNIT_PLUGIN_IMPLEMENT() don't take any arguments.
+
+  - TestSuitePlugIn: removed. A similar functionnality is provided by 
+    PlugInManager.
+
+  - TestPlugInDefaultImpl: renamed TestPlugInAdapter. It does not implements
+    any default behavior anymore.
+
+  - DllPlugInRunner: no longer support multiple specific tests. The test path must
+    be prefixed with ':'. Release and Debug configuration links against cppunit_dll.
+
+* Bug Fix:
+
+  - Crash when linking CppUnit DLL within another DLL that registered test. Caused
+    by the destruction of tests registered to TestFactoryRegistry. Fixed by
+  providing a register/unregister interface and removing the ownership of 
+  TestFactory to TestFactoryRegistry.
+ 
+
+
+  New in CppUnit 1.9.2:
+  ----------------------
+
+  In short:
+  - Cleaner XML output
+  - Crossplatform Test plug-in
+  - TestPlugInSuite to wrap test plug-in
+  - More TestPlugIn documentation.
+
+* TestPlugIn:
+  - The test plug-in functionnality has been rewritten from scrash. 
+    TestPlugIn related macro are now crossplatform (exporting the plug-in
+  function from the dynamic library...).
+
+  - Class DynamicLibraryManager provides a generic way to access dynamic 
+    library. Platform specific implementation provided for WIN32, unix, BeOs.
+  Can be very easily ported to new platform.
+  
+  - A More flexible and hopefully extensible interface has been introduced
+    (CppUnitPlugIn). 
+  
+  - A default implementation using the test factory registry is provided 
+    (TestPlugInDefaultImpl). Can be easily customized.
+
+  - The one line test plug-in declaration was renamed CPPUNIT_PLUGIN_IMPLEMENT.
+
+  See modules/Writing Test Plug-in documentation and examples/EasyTestPlugIn.
+
+* XmlOutputter:
+
+  - XML output is now indented. Nodes that don't have children are one line 
+    tag. The output can now easily be read.
+
+* Compatibility break:
+
+  - class TestSucessListener was renamed to TestSuccessListener.
+
+  - XmlOutput: renamed tag <SuccessfulTests> to <SuccessfulTests>
+
+  - Global fix of the 'success' typo (was misspelled 'sucess'). Main impacts are listed
+    above, but check your own code in case you override some protected/private methods.
+
+  - TestPlugInInterface (include/msvc6/TestPlugInInterface.h): this header and class
+    are now obsolete. You should use include/cppunit/plugin/TestPlugIn.h instead.
+  Macro CPPUNIT_TESTPLUGIN_IMPL have been replaced by CPPUNIT_PLUGIN_IMPLEMENT.
+
+  - TestDecorator inherits Test instead of TestLeaf.
+
+  - DllPlugInTester only run DLL implementing the new new TestPlugIn interface.
+
+
+  New in CppUnit 1.9.0:
+  ----------------------
+
+  In short:
+  - Exploration of the test hierarchy without RTTI support
+  - Utility methods to find a test in the hierarchy
+  - TestPath to store/load the path to a specific test in the hierarchy
+  - Generic TestRunner
+  - Style sheet support added to XML ouput.
+  - CompilerOutputter supports run-time parametrization of error location format.
+  - Tracking of test suite run.
+  - Debugging and post-build testing of DLL using DllPlugInTester.
+  - Easy creation a test plug-in and test plug-in new example
+
+* Test:
+
+  - Exploration of the test hierarchy without RTTI support:
+    Added Test::getChildTestCount() and Test::getChildTestAt() to walk the test hierarchy
+  without RTTI.
+
+  - Utility methods to find a test in the hierarchy:
+  Added Test::findTest(), Test::findTestPath() and Test::resolveTestPath().
+
+* TestPath:
+
+  - A new class that store the path to a specific test (list of pointer). Can be
+    converted into a string and constructed from a string. Typically used with 
+  TestRunner.
+
+* TestListener:
+
+  - Added startSuite() and endSuite() callback that are called before and after a
+    test suite runs its child tests. See TestListener for detail and new example.
+
+* CompilerOutputter:
+
+  - Support run-time parametrization of compiler error format. Support for gcc error
+    format added. See CompilerOutputter::setLocationFormat().
+
+* XmlOutputter:
+
+  - Added style sheet support.
+
+  - XML structure change (see Compatibility break)
+
+* DllPlugInTester: (src/msvc6/DllPlugInTester, in src/CppUnitLibraries.dsw)
+
+  - An application to load a DLL test plug-in and run the specified test. Test
+    result are reported using a CompilerOutputter. It can be used for post-build
+  testing, but to debug DLL too! See examples/msvc6/TestPlugIn/TestPlugIn.dsp
+  which demonstrate both.
+
+* TestPlugInInterface (include/msvc6/TestPlugInInterface.h):
+
+  - Easy creation a test plug-in with the new macro CPPUNIT_TESTPLUGIN_IMPL
+    that implements and exports everything for you. 
+  See examples/msvc6/EasyTestPlugIn for an example.
+
+
+* Compatibility break:
+
+  - Test::toString() has been removed. Applies to all subclass of Test. 
+    It was not used by the framework and was source of confusion with getName().
+
+  - TestCase::run(void) and TestCase::defaultResult() have been removed. Using the
+    run() method with a TestResult instead.
+
+  - XmlOutput: added a message element to the XML structure. The message associated
+    to a failure is now in the content of <Message> element instead of in the content
+  of the <FailedTest> element.
+  Changed from:
+        <FailedTest id="6">
+          <Name>test6</Name>
+          <FailureType>Error</FailureType>
+          error2
+        </FailedTest>
+  To:
+        <FailedTest id="6">
+          <Name>test6</Name>
+          <FailureType>Error</FailureType>
+          <Message>error2</Message>
+        </FailedTest>
+
+
+* Deprecated:
+
+  - CompilerOutputter::defaultOutputter(): use default constructor instead.
+
+
+* Bug fix:
+
+  - XmlOutputter: did not escape content (bug #540944).
+
+  - Included qt/examples in distribution
+
+  - Removed dependency of MfcTestRunner on DSPlugIn. It should now compile with
+    VC++ 7.
+
+
+  New in CppUnit 1.8.0:
+  ----------------------
+
+  In short:
+  - new assertions
+  - new facilities to write custom assertions
+  - new macros to define test case in your fixture
+  - registration of test fixture in named suite
+  - xml & compiler format test result output
+  - a new graphic test runner for the QT library
+  - MFC test runner window is resizable
+  - cppunit as a DLL
+  - Unicode support for MFC test runner.
+  - architecture clean-up: TestResultCollector extracted from TestResult.
+  - architecture clean-up: TestFixture extracted from TestCase.
+  - cookbook and documentation updated.
+
+* New assertion (TestAssert.h):
+
+  CPPUNIT_FAIL(message) : equivalent to CPPUNIT_ASSERT_MESSAGE( message, false )
+
+  CPPUNIT_ASSERT_EQUAL_MESSAGE( expectedValue, actualValue, additionalMessage ):
+  behave like CPPUNIT_ASSERT_EQUAL but allow to add some contextual information.
+
+* New macros to write test case (HelperMacros.h):
+
+  CPPUNIT_TEST_EXCEPTION that expect an exception of a specified type to
+  be thrown.
+
+  CPPUNIT_TEST_FAIL that expect a test to fail.
+
+  CPPUNIT_TEST_SUITE_NAMED_REGISTRATION to register a suite in a named suite. See
+  cppunittest example for a demo.
+
+* TextTestRunner (TextTestRunner.h):
+  -run() returns a boolean indicating is the run was successful.
+  -the constructor and setOutputter() allow you do define a specific outputter
+  to print the test result (CompilerOutputter, TextOutputter, XmlOutputter...)
+  -result() provide access to the result of the test run.
+  -eventManager() give access to the TestResult, allowing you to register others
+  TestListener.
+
+* TestResult (TestResult.h):
+  - That class has been splitted in two: TestResult and TestResultCollector.
+
+  - TestResult manages the TestListener (registration and event dispatch), as
+  well as the stop flag indicating if the current test run should be interrupted.
+  All other responsabilites have been moved to TestResultCollector.
+
+  - TestResult no longer hold the result of the test run (this is done by
+  TestResultCollector which is a TestListener).
+
+* TestListener (TestListener.h):
+  - all failures and errors are reported using a single method:
+    virtual void addFailure( const TestFailure &failure )
+  => the failure object life time is limited to that of the method call.
+  Use TestFailure::isError() to distinguish error from failure.
+  Use TestFailure::clone() to obtain a duplicate of the failure.
+
+* New helpers to construct your own assertion (Asserter.h):
+
+  It is now very easy to create your own assertion macro with failure
+  location.
+
+  Asserter namespace contains functions used to construct and throw exception
+  to report failure. See Asserter documentation for an example of usage, and
+  examples/cppunittest/XmlUniformiser.h for a real life example.
+
+  CPPUNIT_SOURCELINE() macro have been added (SourceLine.h). It captures the 
+  failure location in a SourceLine object. Use it to write your own macros.
+
+  Asserter namespace contains functions used to construct and throw exception
+  to report failure. See Asserter documentation for an example of usage, and
+  examples/cppunittest/XmlUniformiser.h for a real life example.
+
+* TestListener (TestListener.h):
+
+  - TestSucesssListener : a simple listener that checks if a test has failed.
+
+  - TestResultCollector : store all the test result. This class has been 
+  extracted from the hold TestResult class.
+
+  - TextTestProgressListener : print dot on cout to each time a test ends.
+  Letter 'F' and 'E' are printed when a failure or an error occurs.
+
+* Output (Outputter.h):
+
+  - XML output: You can dump the TestResult as an XML document using 
+  XmlOutputter. See examples/cppunittest/XmlOutputterTest.cpp for document
+  structure and usage.
+
+  - Compiler compatible output : CompilerOutputter print the result in a 
+  compiler compatible format. You can use your IDE to jump to the first 
+  failure. See examples/cppunittest/CppUniTestMain.cpp for an example of usage.
+
+  - Text output : replace the deprecated TextTestResult. Print the result in
+  a human readable format.
+
+* NotEqualException constructor take an additional message (usually used to
+point out where the difference occured between the expected and actual value)
+that can be retreived with additionalMessage(). See Asserter documentation for
+an example of usage.
+
+* CppUnit
+
+  - CppUnit can be compiled as a DLL (WIN32 platform). 
+  DLL can be generated by the cppunit_dll.dsp project. You must define the 
+  pre-processor symbol CPPUNIT_DLL when linking against CppUnit DLL.
+  See cppunittests examples for an example.
+
+* TestRunner
+
+  - Qt TestRunner : a test runner for the Qt library (http://www.trolltech.com).
+    See examples/qt for an example of use.
+
+  - MFC TestRunner : the dialog can now be resized. List view column sizes, 
+  as well as the dialog size, are saved. Unicode configurations have been added.
+
+* Deprecated
+
+  - TextTestResult : use the test listener TextTestProgressListener and the
+  ouputter TextOuputter instead.
+
+  - Methods having fileName, lineNumber as parameter. Usually replaced by
+  a similar method that take a SourceLine parameter. Exception and
+  TestAssert are impacted.
+
+  - TestRegistryFactory::registerFactory( const std::string &name,
+                                          TestFactory *factory ).
+  
+    You must define the symbol CPPUNIT_ENABLE_SOURCELINE_DEPRECATED to enable
+  old Exception constructor, UNKNOWNFILENAME and UNKNOWNLINENUMBER, as well
+  as function defined in the TestAssert namespace. The exception construction
+  and throwing as been moved to Asserter namespace.
+
+* Compatibility break:
+
+  TestResult has been splitted in two class. TestResultCollector compatibility
+  breaks refer to the methods that were previously in TestResult.
+
+  - TestListener::addError() was removed. addFailure() is used to report
+any kind of failure.
+  - TestResultCollector::errors() was removed. Use failures() instead.
+  - TestResultCollector::failures() now reports all kind of failures.
+  - TestResultCollector::failures() returns a const reference.
+  - void TestListener::addFailure( TestFailure *failure ) was removed.
+  - void TestListener::addError( TestFailure *failure ) signature changed.
+
+  - CPPUNIT_ASSERT_EQUAL_MESSAGE: changed arguments order. 'message' is now 
+    the first argument instead of the last (like CPPUNIT_ASSERT_MESSAGE).
+  Notes that CPPUNIT_ASSERT_EQUAL was introduced in release 1.7.3.
+
+  - directory for TestRunners as moved from cppunitui/ to cppunit/ui/ (concern
+  only users of release 1.7.10)
+
+* Bug fix:
+  - test ExceptionTest.testAssignment() don't fail anymore on VC++. See FAQ
+    for detail.
+
+
+  New in CppUnit 1.6.1
+  --------------------
+
+* This is a bug-fixing release.
+
+
+  New in CppUnit 1.6.0
+  --------------------
+
+* All CppUnit macros now begin with "CPPUNIT_".  
+
+  Macros CU_TEST_SUITE, CU_TEST, CU_TEST_SUITE_END, CU_TEST_SUB_SUITE,
+  and CU_TEST_SUITE_REGISTRATION are renamed but are otherwise unchanged;
+  they take the same arguments, and have the same effect.  The old-style
+  macros can be used if your sources #define CPPUNIT_ENABLE_CU_TEST_MACROS
+  to 1 before including any CppUnit headers.
+
+  Macros assert, assertEqual, and assertDoublesEqual, have been replaced
+  by CPPUNIT_ASSERT, CPPUNIT_ASSERT_EQUAL, and CPPUNIT_ASSERT_DOUBLES_EQUAL,
+  respectively.  Macro assertLongsEqual is replaced by CPPUNIT_ASSERT_EQUAL.
+  The old assert macros can be used if your sources #define
+  CPPUNIT_ENABLE_NAKED_ASSERT to 1 before including any CppUnit headers.
+
+  The old macro names are deprecated and will vanish in a future version
+  of CppUnit.
+
+
+* Equality assertion CPPUNIT_ASSERT_EQUAL(expected,actual) can test
+  any type of expression.  The types of "expected" and "actual" must
+  be the same; use a cast if necessary.
+
+
+* Equality tested using CPPUNIT_ASSERT_EQUAL may be re-defined using
+  a traits class.  Ditto for the string representation used in the
+  diagnostic messages.
+
+
+* New assertion with arbitrary message: CPPUNIT_ASSERT_MESSAGE.
+
+
+* A test case obtained using class TestCaller may check that
+  a particular exception is thrown.
+
+
+* CppUnit has a test suite for itself!
+
+
+* VC++ integration for MFC TestRunner.
+

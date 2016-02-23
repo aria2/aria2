@@ -1,0 +1,104 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "DSPlugIn"=.\msvc6\DSPlugIn\DSPlugIn.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "DllPlugInTester"=.\DllPlugInTester\DllPlugInTester.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name cppunit
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name cppunit_dll
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "TestPlugInRunner"=.\msvc6\testpluginrunner\TestPlugInRunner.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name TestRunner
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name cppunit_dll
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "TestRunner"=.\msvc6\testrunner\TestRunner.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name cppunit
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "cppunit"=.\cppunit\cppunit.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "cppunit_dll"=.\cppunit\cppunit_dll.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

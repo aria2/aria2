@@ -1,0 +1,307 @@
+#!/bin/sh
+
+#--------------------------------------------------------------------------
+# die prints argument string to stdout and exits this shell script.
+#
+die(){
+  echo "buildconf: $@"
+  exit 1
+}
+
+#--------------------------------------------------------------------------
+# findtool works as 'which' but we use a different name to make it more
+# obvious we aren't using 'which'! ;-)
+#
+findtool(){
+  file="$1"
+
+  if { echo "$file" | grep "/" >/dev/null 2>&1; } then
+    # when file is given with a path check it first
+    if test -f "$file"; then
+      echo "$file"
+      return
+    fi
+  fi
+
+  old_IFS=$IFS; IFS=':'
+  for path in $PATH
+  do
+    IFS=$old_IFS
+    # echo "checks for $file in $path" >&2
+    if test -f "$path/$file"; then
+      echo "$path/$file"
+      return
+    fi
+  done
+  IFS=$old_IFS
+}
+
+#--------------------------------------------------------------------------
+# removethis() removes all files and subdirectories with the given name,
+# inside and below the current subdirectory at invocation time.
+#
+removethis(){
+  if test "$#" = "1"; then
+    find . -depth -name $1 -print > buildconf.tmp.$$
+    while read fdname
+    do
+      if test -f "$fdname"; then
+        rm -f "$fdname"
+      elif test -d "$fdname"; then
+        rm -f -r "$fdname"
+      fi
+    done < buildconf.tmp.$$
+    rm -f buildconf.tmp.$$
+  fi
+}
+
+#--------------------------------------------------------------------------
+# Ensure that buildconf runs from the subdirectory where configure.ac lives
+#
+if test ! -f configure.ac ||
+  test ! -f ares_init.c ||
+  test ! -f m4/cares-functions.m4; then
+  echo "Can not run buildconf from outside of c-ares source subdirectory!"
+  echo "Change to the subdirectory where buildconf is found, and try again."
+  exit 1
+fi
+
+#--------------------------------------------------------------------------
+# GNU libtool preliminary check
+#
+want_lt_major=1
+want_lt_minor=4
+want_lt_patch=2
+want_lt_version=1.4.2
+
+# This approach that tries 'glibtool' first is intended for systems that
+# have GNU libtool named as 'glibtool' and libtool not being GNU's.
+
+libtool=`findtool glibtool 2>/dev/null`
+if test ! -x "$libtool"; then
+  libtool=`findtool ${LIBTOOL:-libtool}`
+fi
+if test -z "$libtool"; then
+  echo "buildconf: libtool not found."
+  echo "            You need GNU libtool $want_lt_version or newer installed."
+  exit 1
+fi
+
+lt_pver=`$libtool --version 2>/dev/null|head -n 1`
+lt_qver=`echo $lt_pver|sed -e "s/([^)]*)//g" -e "s/^[^0-9]*//g"`
+lt_version=`echo $lt_qver|sed -e "s/[- ].*//" -e "s/\([a-z]*\)$//"`
+if test -z "$lt_version"; then
+  echo "buildconf: libtool not found."
+  echo "            You need GNU libtool $want_lt_version or newer installed."
+  exit 1
+fi
+old_IFS=$IFS; IFS='.'; set $lt_version; IFS=$old_IFS
+lt_major=$1
+lt_minor=$2
+lt_patch=$3
+
+if test -z "$lt_major"; then
+  lt_status="bad"
+elif test "$lt_major" -gt "$want_lt_major"; then
+  lt_status="good"
+elif test "$lt_major" -lt "$want_lt_major"; then
+  lt_status="bad"
+elif test -z "$lt_minor"; then
+  lt_status="bad"
+elif test "$lt_minor" -gt "$want_lt_minor"; then
+  lt_status="good"
+elif test "$lt_minor" -lt "$want_lt_minor"; then
+  lt_status="bad"
+elif test -z "$lt_patch"; then
+  lt_status="bad"
+elif test "$lt_patch" -gt "$want_lt_patch"; then
+  lt_status="good"
+elif test "$lt_patch" -lt "$want_lt_patch"; then
+  lt_status="bad"
+else
+  lt_status="good"
+fi
+if test "$lt_status" != "good"; then
+  echo "buildconf: libtool version $lt_version found."
+  echo "            You need GNU libtool $want_lt_version or newer installed."
+  exit 1
+fi
+
+#--------------------------------------------------------------------------
+# GNU libtoolize check
+#
+if test -z "$LIBTOOLIZE"; then
+  # use (g)libtoolize from same location as (g)libtool
+  libtoolize="${libtool}ize"
+else
+  libtoolize=`findtool $LIBTOOLIZE`
+fi
+if test ! -f "$libtoolize"; then
+  echo "buildconf: libtoolize not found."
+  echo "            You need GNU libtoolize $want_lt_version or newer installed."
+  exit 1
+fi
+
+#--------------------------------------------------------------------------
+# perl check
+#
+PERL=`findtool ${PERL:-perl}`
+if test -z "$PERL"; then
+  echo "buildconf: perl not found"
+  exit 1
+fi
+
+#--------------------------------------------------------------------------
+# Remove files generated on previous buildconf/configure run.
+#
+for fname in .deps \
+    .libs \
+    *.la \
+    *.lo \
+    *.a \
+    *.o \
+    Makefile \
+    Makefile.in \
+    aclocal.m4 \
+    aclocal.m4.bak \
+    ares_build.h \
+    ares_config.h \
+    ares_config.h.in \
+    autom4te.cache \
+    compile \
+    config.guess \
+    config.log \
+    config.lt \
+    config.status \
+    config.sub \
+    configure \
+    depcomp \
+    libcares.pc \
+    libtool \
+    libtool.m4 \
+    libtool.m4.tmp \
+    ltmain.sh \
+    ltoptions.m4 \
+    ltsugar.m4 \
+    ltversion.m4 \
+    lt~obsolete.m4 \
+    missing \
+    stamp-h1 \
+    stamp-h2 ; do
+  removethis "$fname"
+done
+
+#--------------------------------------------------------------------------
+# run the correct scripts now
+#
+
+echo "buildconf: running libtoolize"
+${libtoolize} --copy --automake --force || die "libtoolize command failed"
+
+# When using libtool 1.5.X (X < 26) we copy libtool.m4 to our local m4
+# subdirectory and this local copy is patched to fix some warnings that
+# are triggered when running aclocal and using autoconf 2.62 or later.
+
+if test "$lt_major" = "1" && test "$lt_minor" = "5"; then
+  if test -z "$lt_patch" || test "$lt_patch" -lt "26"; then
+    echo "buildconf: copying libtool.m4 to local m4 subdir"
+    ac_dir=`${ACLOCAL:-aclocal} --print-ac-dir`
+    if test -f $ac_dir/libtool.m4; then
+      cp -f $ac_dir/libtool.m4 m4/libtool.m4
+    else
+      echo "buildconf: $ac_dir/libtool.m4 not found"
+    fi
+    if test -f m4/libtool.m4; then
+      echo "buildconf: renaming some variables in local m4/libtool.m4"
+      $PERL -i.tmp -pe \
+        's/lt_prog_compiler_pic_works/lt_cv_prog_compiler_pic_works/g; \
+         s/lt_prog_compiler_static_works/lt_cv_prog_compiler_static_works/g;' \
+        m4/libtool.m4
+      rm -f m4/libtool.m4.tmp
+    fi
+  fi
+fi
+
+if test -f m4/libtool.m4; then
+  echo "buildconf: converting all mv to mv -f in local m4/libtool.m4"
+  $PERL -i.tmp -pe 's/\bmv +([^-\s])/mv -f $1/g' m4/libtool.m4
+  rm -f m4/libtool.m4.tmp
+fi
+
+echo "buildconf: running aclocal"
+${ACLOCAL:-aclocal} -I m4 $ACLOCAL_FLAGS || die "aclocal command failed"
+
+echo "buildconf: converting all mv to mv -f in local aclocal.m4"
+$PERL -i.bak -pe 's/\bmv +([^-\s])/mv -f $1/g' aclocal.m4
+
+echo "buildconf: running autoheader"
+${AUTOHEADER:-autoheader} || die "autoheader command failed"
+
+echo "buildconf: running autoconf"
+${AUTOCONF:-autoconf} || die "autoconf command failed"
+
+echo "buildconf: running automake"
+${AUTOMAKE:-automake} --add-missing --copy || die "automake command failed"
+
+#--------------------------------------------------------------------------
+# GNU libtool complementary check
+#
+# Depending on the libtool and automake versions being used, config.guess
+# might not be installed in the subdirectory until automake has finished.
+# So we can not attempt to use it until this very last buildconf stage.
+#
+if test ! -f ./config.guess; then
+  echo "buildconf: config.guess not found"
+else
+  buildhost=`./config.guess 2>/dev/null|head -n 1`
+  case $buildhost in
+    *-*-darwin*)
+      need_lt_major=1
+      need_lt_minor=5
+      need_lt_patch=26
+      need_lt_check="yes"
+      ;;
+    *-*-hpux*)
+      need_lt_major=1
+      need_lt_minor=5
+      need_lt_patch=24
+      need_lt_check="yes"
+      ;;
+  esac
+  if test ! -z "$need_lt_check"; then
+    if test -z "$lt_major"; then
+      lt_status="bad"
+    elif test "$lt_major" -gt "$need_lt_major"; then
+      lt_status="good"
+    elif test "$lt_major" -lt "$need_lt_major"; then
+      lt_status="bad"
+    elif test -z "$lt_minor"; then
+      lt_status="bad"
+    elif test "$lt_minor" -gt "$need_lt_minor"; then
+      lt_status="good"
+    elif test "$lt_minor" -lt "$need_lt_minor"; then
+      lt_status="bad"
+    elif test -z "$lt_patch"; then
+      lt_status="bad"
+    elif test "$lt_patch" -gt "$need_lt_patch"; then
+      lt_status="good"
+    elif test "$lt_patch" -lt "$need_lt_patch"; then
+      lt_status="bad"
+    else
+      lt_status="good"
+    fi
+    if test "$lt_status" != "good"; then
+      need_lt_version="$need_lt_major.$need_lt_minor.$need_lt_patch"
+      echo "buildconf: libtool version $lt_version found."
+      echo "            $buildhost requires GNU libtool $need_lt_version or newer installed."
+      rm -f configure
+      exit 1
+    fi
+  fi
+fi
+
+#--------------------------------------------------------------------------
+# Finished successfully.
+#
+echo "buildconf: OK"
+exit 0

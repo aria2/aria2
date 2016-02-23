@@ -1,0 +1,33 @@
+Copyright 1996, 1999 Free Software Foundation, Inc.
+
+This file is part of the GNU MP Library.
+
+The GNU MP Library is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+The GNU MP Library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with the GNU MP Library.  If not, see http://www.gnu.org/licenses/.
+
+
+
+
+This directory contains all code for the mpn layer of GMP.
+
+Most subdirectories contain machine-dependent code, written in assembly or C.
+The `generic' subdirectory contains default code, used when there is no
+machine-dependent replacement for a particular machine.
+
+There is one subdirectory for each ISA family.  Note that e.g., 32-bit SPARC
+and 64-bit SPARC are very different ISA's, and thus cannot share any code.
+
+A particular compile will only use code from one subdirectory, and the
+`generic' subdirectory.  The ISA-specific subdirectories contain hierachies of
+directories for various architecture variants and implementations; the
+top-most level contains code that runs correctly on all variants.
