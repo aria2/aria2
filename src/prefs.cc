@@ -218,6 +218,10 @@ PrefPtr PREF_DEFERRED_INPUT = makePref("deferred-input");
 PrefPtr PREF_MAX_CONCURRENT_DOWNLOADS = makePref("max-concurrent-downloads");
 // value: true | false | NUM:NUM
 PrefPtr PREF_OPTIMIZE_CONCURRENT_DOWNLOADS = makePref("optimize-concurrent-downloads");
+// values: 1*digit ['.' [ 1*digit ] ]
+PrefPtr PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFA = makePref("optimize-concurrent-downloads-coeffA");
+// values: 1*digit ['.' [ 1*digit ] ]
+PrefPtr PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFB = makePref("optimize-concurrent-downloads-coeffB");
 // value: true | false
 PrefPtr PREF_FORCE_SEQUENTIAL = makePref("force-sequential");
 // value: true | false

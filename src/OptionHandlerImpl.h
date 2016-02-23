@@ -254,6 +254,17 @@ public:
   virtual std::string createPossibleValuesString() const CXX11_OVERRIDE;
 };
 
+class OptimizeConcurrentDownloadsOptionHandler : public AbstractOptionHandler {
+public:
+  OptimizeConcurrentDownloadsOptionHandler(
+      PrefPtr pref, const char* description = NO_DESCRIPTION,
+      const std::string& defaultValue = NO_DEFAULT_VALUE, char shortName = 0);
+  virtual void parseArg(Option& option,
+                        const std::string& optarg) const CXX11_OVERRIDE;
+  virtual std::string createPossibleValuesString() const CXX11_OVERRIDE;
+};
+
+
 // This class is used to deprecate option and optionally handle its
 // option value using replacing option.
 class DeprecatedOptionHandler : public OptionHandler {

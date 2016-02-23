@@ -417,7 +417,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(new BooleanOptionHandler
+    OptionHandler* op(new OptimizeConcurrentDownloadsOptionHandler
                       (PREF_OPTIMIZE_CONCURRENT_DOWNLOADS,
                        TEXT_OPTIMIZE_CONCURRENT_DOWNLOADS,
                        A2_V_FALSE,

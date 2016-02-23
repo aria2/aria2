@@ -61,6 +61,8 @@ public:
    */
   int calculateSpeed();
 
+  int calculateNewestSpeed(int seconds);
+
   int getMaxSpeed() const { return maxSpeed_; }
 
   int calculateAvgSpeed() const;

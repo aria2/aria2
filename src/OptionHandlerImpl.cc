@@ -586,6 +586,61 @@ std::string PrioritizePieceOptionHandler::createPossibleValuesString() const
   return "head[=SIZE], tail[=SIZE]";
 }
 
+OptimizeConcurrentDownloadsOptionHandler::OptimizeConcurrentDownloadsOptionHandler(
+    PrefPtr pref, const char* description, const std::string& defaultValue, char shortName)
+    : AbstractOptionHandler(pref, description, defaultValue,
+                            OptionHandler::OPT_ARG, shortName)
+{
+}
+
+void OptimizeConcurrentDownloadsOptionHandler::parseArg(Option& option,
+                                     const std::string& optarg) const
+{
+  if (optarg == "true" || ((argType_ == OptionHandler::OPT_ARG ||
+                            argType_ == OptionHandler::NO_ARG) &&
+                           optarg.empty())) {
+    option.put(pref_, A2_V_TRUE);
+  }
+  else if (optarg == "false") {
+    option.put(pref_, A2_V_FALSE);
+  }
+  else {
+    auto p = util::divide(std::begin(optarg), std::end(optarg), ':');
+
+    std::string coeff_b(p.second.first,p.second.second);
+    if(coeff_b.empty()) {
+      std::string msg = pref_->k;
+      msg += " ";
+      msg += _("must be either 'true', 'false' or a pair numeric coefficients A and B under the form 'A:B'.");
+      throw DL_ABORT_EX(msg);
+    }
+
+    std::string coeff_a(p.first.first,p.first.second);
+
+
+    PrefPtr pref=PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFA;
+    std::string *sptr = &coeff_a;
+    for(;;) {
+      try {
+        double dbl=std::stod (*sptr);
+      } catch(std::invalid_argument &ex) {
+        throw DL_ABORT_EX(fmt("Bad number '%s'", sptr->c_str()));
+      }
+      option.put(pref,*sptr);
+
+      if(pref==PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFB) break;
+      pref=PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFB;
+      sptr = &coeff_b;
+    }
+    option.put(pref_, A2_V_TRUE);
+  }
+}
+
+std::string OptimizeConcurrentDownloadsOptionHandler::createPossibleValuesString() const
+{
+  return "true, false, NUM:NUM";
+}
+
 DeprecatedOptionHandler::DeprecatedOptionHandler(
     OptionHandler* depOptHandler, const OptionHandler* repOptHandler,
     bool stillWork, std::string additionalMessage)

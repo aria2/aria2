@@ -72,10 +72,13 @@ private:
   RequestGroupList reservedGroups_;
   DownloadResultList downloadResults_;
 
-  int maxSimultaneousDownloads_;
-  bool optimizeSimultaneousDownloads_;
-  double optimizeSimultaneousDownloadsCoeffA_;
-  double optimizeSimultaneousDownloadsCoeffB_;
+  int maxConcurrentDownloads_;
+
+  bool optimizeConcurrentDownloads_;
+  double optimizeConcurrentDownloadsCoeffA_;
+  double optimizeConcurrentDownloadsCoeffB_;
+  int optimizationBandwidth_;
+  Timer optimizationBandwidthTimer_;
 
   // The number of simultaneous active downloads, excluding seed only
   // item if PREF_BT_DETACH_SEED_ONLY is true.  We rely on this
@@ -138,9 +141,11 @@ private:
   void addRequestGroupIndex(
       const std::vector<std::shared_ptr<RequestGroup>>& groups);
 
+  int optimizeConcurrentDownloads();
+
 public:
   RequestGroupMan(std::vector<std::shared_ptr<RequestGroup>> requestGroups,
-                  int maxSimultaneousDownloads, const Option* option);
+                  int maxConcurrentDownloads, const Option* option);
 
   ~RequestGroupMan();
 
@@ -198,17 +203,12 @@ public:
 
   bool removeReservedGroup(a2_gid_t gid);
 
-  bool getOptimizeSimultaneousDownloads() const
+  bool getOptimizeConcurrentDownloads() const
   {
-    return optimizeSimultaneousDownloads_;
+    return optimizeConcurrentDownloads_;
   }
 
-  void setOptimizeSimultaneousDownloads(bool flag)
-  {
-    optimizeSimultaneousDownloads_=flag;
-  }
-
-  bool setOptimizeSimultaneousDownloads();
+  bool setupOptimizeConcurrentDownloads();
 
   void showDownloadResults(OutputFile& o, bool full) const;
 
@@ -306,7 +306,7 @@ public:
     return maxOverallUploadSpeedLimit_;
   }
 
-  void setMaxSimultaneousDownloads(int max) { maxSimultaneousDownloads_ = max; }
+  void setMaxConcurrentDownloads(int max) { maxConcurrentDownloads_ = max; }
 
   // Call this function if requestGroups_ queue should be maintained.
   // This function is added to reduce the call of maintenance, but at

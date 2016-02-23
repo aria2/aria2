@@ -1581,12 +1581,12 @@ void changeGlobalOption(const Option& option, DownloadEngine* e)
         option.getAsInt(PREF_MAX_OVERALL_UPLOAD_LIMIT));
   }
   if (option.defined(PREF_MAX_CONCURRENT_DOWNLOADS)) {
-    e->getRequestGroupMan()->setMaxSimultaneousDownloads(
+    e->getRequestGroupMan()->setMaxConcurrentDownloads(
         option.getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS));
     e->getRequestGroupMan()->requestQueueCheck();
   }
   if(option.defined(PREF_OPTIMIZE_CONCURRENT_DOWNLOADS)) {
-    e->getRequestGroupMan()->setOptimizeSimultaneousDownloads();
+    e->getRequestGroupMan()->setupOptimizeConcurrentDownloads();
     e->getRequestGroupMan()->requestQueueCheck();
   }
   if (option.defined(PREF_MAX_DOWNLOAD_RESULT)) {

@@ -83,6 +83,7 @@
 #include "SimpleRandomizer.h"
 #include "array_fun.h"
 #include "OpenedFileCounter.h"
+#include "wallclock.h"
 #ifdef ENABLE_BITTORRENT
 #include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
@@ -102,12 +103,13 @@ void appendReservedGroup(RequestGroupList& list, InputIterator first,
 
 RequestGroupMan::RequestGroupMan(
     std::vector<std::shared_ptr<RequestGroup>> requestGroups,
-    int maxSimultaneousDownloads, const Option* option)
-    : maxSimultaneousDownloads_(maxSimultaneousDownloads),
+    int maxConcurrentDownloads, const Option* option)
+    : maxConcurrentDownloads_(maxConcurrentDownloads),
+      optimizeConcurrentDownloads_(false),
+      optimizeConcurrentDownloadsCoeffA_(5.),
+      optimizeConcurrentDownloadsCoeffB_(25.),
+      optimizationBandwidth_(0),
       numActive_(0),
-      optimizeSimultaneousDownloads_(false),
-      optimizeSimultaneousDownloadsCoeffA_(5.),
-      optimizeSimultaneousDownloadsCoeffB_(25.),
       option_(option),
       serverStatMan_(std::make_shared<ServerStatMan>()),
       maxOverallDownloadSpeedLimit_(
@@ -123,17 +125,23 @@ RequestGroupMan::RequestGroupMan(
           this, option->getAsInt(PREF_BT_MAX_OPEN_FILES))),
       numStoppedTotal_(0)
 {
-  setOptimizeSimultaneousDownloads();
+  setupOptimizeConcurrentDownloads();
   appendReservedGroup(reservedGroups_, requestGroups.begin(),
                       requestGroups.end());
 }
 
 RequestGroupMan::~RequestGroupMan() { openedFileCounter_->deactivate(); }
 
-bool RequestGroupMan::setOptimizeSimultaneousDownloads(void)
+bool RequestGroupMan::setupOptimizeConcurrentDownloads(void)
 {
-    optimizeSimultaneousDownloads_=option_->getAsBool(PREF_OPTIMIZE_CONCURRENT_DOWNLOADS);
-    return optimizeSimultaneousDownloads_;
+    optimizeConcurrentDownloads_=option_->getAsBool(PREF_OPTIMIZE_CONCURRENT_DOWNLOADS);
+    if(optimizeConcurrentDownloads_) {
+      if(option_->defined(PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFA)) { 
+        optimizeConcurrentDownloadsCoeffA_=std::stod(option_->get(PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFA));
+        optimizeConcurrentDownloadsCoeffB_=std::stod(option_->get(PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFB));
+      }
+    }
+    return optimizeConcurrentDownloads_;
 }
 
 bool RequestGroupMan::downloadFinished()
@@ -485,42 +493,13 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
 {
   removeStoppedGroup(e);
 
-  int maxSimultaneousDownloads=maxSimultaneousDownloads_;
+  int maxConcurrentDownloads=optimizeConcurrentDownloads_?optimizeConcurrentDownloads():maxConcurrentDownloads_;
 
-  if(optimizeSimultaneousDownloads_) {
-    // optimize method is requested, so gauge current speed
-    int currentSpeed=getNetStat().calculateDownloadSpeed();
-    if(currentSpeed>0) {
-      // apply the rule
-      int speed=currentSpeed;
-      if((maxOverallDownloadSpeedLimit_>0) && (speed>maxOverallDownloadSpeedLimit_)) {
-        speed=maxOverallDownloadSpeedLimit_;
-      }
-      maxSimultaneousDownloads=ceil(
-        optimizeSimultaneousDownloadsCoeffA_
-        +optimizeSimultaneousDownloadsCoeffB_ * log10(speed*8./1000000.)
-      );
-      if((maxSimultaneousDownloads_>0)&&(maxSimultaneousDownloads>maxSimultaneousDownloads_)) {
-        maxSimultaneousDownloads=maxSimultaneousDownloads_;
-      }
-      if(maxSimultaneousDownloads<1) {
-        maxSimultaneousDownloads=1;
-      }
-      A2_LOG_DEBUG
-        (fmt("Number of concurrent downloads adapted to speed (%d B/s) with max %d"
-             " (%lu currently active)",
-             speed, maxSimultaneousDownloads, numActive_));
-    }
-    else {
-      maxSimultaneousDownloads=1;
-    }
-  }
-
-  if (static_cast<size_t>(maxSimultaneousDownloads) <= numActive_) {
+  if (static_cast<size_t>(maxConcurrentDownloads) <= numActive_) {
     return;
   }
   int count = 0;
-  int num = maxSimultaneousDownloads - numActive_;
+  int num = maxConcurrentDownloads - numActive_;
   std::vector<std::shared_ptr<RequestGroup>> pending;
 
   while (count < num && (uriListParser_ || !reservedGroups_.empty())) {
@@ -1047,4 +1026,58 @@ void RequestGroupMan::decreaseNumActive()
   --numActive_;
 }
 
+
+int RequestGroupMan::optimizeConcurrentDownloads()
+{
+  // gauge the current speed
+  int currentSpeed=getNetStat().calculateDownloadSpeed();
+
+  // estimate the actual bandwidth consumed including connection overheads, assuming 4KiB of overhead for each connection initialisation
+  int bandwidth=currentSpeed;
+  double speedUndervalueRatio(0.);
+  uint64_t dl(getNetStat().getSessionDownloadLength());
+  if(dl>0) {
+    speedUndervalueRatio=4096.*(numActive_+numStoppedTotal_)/dl;
+    bandwidth*=(1+speedUndervalueRatio);
+  }
+
+  const auto& now = global::wallclock();
+  if(bandwidth >= optimizationBandwidth_) {
+    optimizationBandwidth_=bandwidth;
+    optimizationBandwidthTimer_=now;
+  } else if(std::chrono::duration_cast<std::chrono::seconds>(optimizationBandwidthTimer_.difference(now)) >= 5_s) {
+    // we keep using the reference bandwidth for minimum 5 seconds so reset the timer
+    optimizationBandwidthTimer_=now;
+
+    // keep the reference bandwidth as long as the speed tends to augment or to maintain itself within 10%
+    if(currentSpeed >= 1.1*getNetStat().calculateNewestDownloadSpeed(5)) {
+      // else assume a possible congestion and record a new optimization bandwidth by dichotomy
+      optimizationBandwidth_=(optimizationBandwidth_+bandwidth)/2.;
+    } else {
+      bandwidth=optimizationBandwidth_;
+    }
+  }
+
+  if(optimizationBandwidth_<=0) return 1;
+
+  // apply the rule
+  if((maxOverallDownloadSpeedLimit_>0) && (bandwidth>maxOverallDownloadSpeedLimit_)) {
+    optimizationBandwidth_=maxOverallDownloadSpeedLimit_;
+  }
+  int maxConcurrentDownloads=ceil(
+    optimizeConcurrentDownloadsCoeffA_
+    +optimizeConcurrentDownloadsCoeffB_ * log10(optimizationBandwidth_*8./1000000.)
+  );
+
+  // bring the value in bound between 1 and the defined maximum
+  maxConcurrentDownloads=std::min(std::max(1, maxConcurrentDownloads), maxConcurrentDownloads_);
+  
+  A2_LOG_DEBUG
+    (fmt("Max concurrent downloads optimized at %d (%lu currently active) "
+         "[target bandwidth %sB/s, current speed %sB/s + %.2lf%% overhead]",
+         maxConcurrentDownloads, numActive_, util::abbrevSize(optimizationBandwidth_).c_str(), 
+         util::abbrevSize(currentSpeed).c_str(), speedUndervalueRatio*100));
+  
+  return maxConcurrentDownloads;
+}
 } // namespace aria2
