@@ -77,8 +77,8 @@ private:
   bool optimizeConcurrentDownloads_;
   double optimizeConcurrentDownloadsCoeffA_;
   double optimizeConcurrentDownloadsCoeffB_;
-  int optimizationBandwidth_;
-  Timer optimizationBandwidthTimer_;
+  int optimizationSpeed_;
+  Timer optimizationSpeedTimer_;
 
   // The number of simultaneous active downloads, excluding seed only
   // item if PREF_BT_DETACH_SEED_ONLY is true.  We rely on this

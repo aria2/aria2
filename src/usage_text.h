@@ -244,7 +244,7 @@
     "                              every static (HTTP/FTP) URL, torrent and metalink.\n" \
     "                              See also --split and --optimize-concurrent-downloads options.")
 #define TEXT_OPTIMIZE_CONCURRENT_DOWNLOADS\
-  _(" --optimize-concurrent-downloads[=true|false|NUM:NUM] Optimizes the number of\n" \
+  _(" --optimize-concurrent-downloads[=true|false|A:B] Optimizes the number of\n" \
     "                              concurrent downloads according to the bandwidth\n" \
     "                              available. aria2 uses the download speed observed\n" \
     "                              in the previous downloads to adapt the number of\n" \

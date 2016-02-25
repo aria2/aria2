@@ -596,9 +596,7 @@ OptimizeConcurrentDownloadsOptionHandler::OptimizeConcurrentDownloadsOptionHandl
 void OptimizeConcurrentDownloadsOptionHandler::parseArg(Option& option,
                                      const std::string& optarg) const
 {
-  if (optarg == "true" || ((argType_ == OptionHandler::OPT_ARG ||
-                            argType_ == OptionHandler::NO_ARG) &&
-                           optarg.empty())) {
+  if (optarg == "true" || optarg.empty()) {
     option.put(pref_, A2_V_TRUE);
   }
   else if (optarg == "false") {
@@ -628,7 +626,9 @@ void OptimizeConcurrentDownloadsOptionHandler::parseArg(Option& option,
       }
       option.put(pref,*sptr);
 
-      if(pref==PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFB) break;
+      if(pref==PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFB) {
+        break;
+      }
       pref=PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFB;
       sptr = &coeff_b;
     }
@@ -638,7 +638,7 @@ void OptimizeConcurrentDownloadsOptionHandler::parseArg(Option& option,
 
 std::string OptimizeConcurrentDownloadsOptionHandler::createPossibleValuesString() const
 {
-  return "true, false, NUM:NUM";
+  return "true, false, A:B";
 }
 
 DeprecatedOptionHandler::DeprecatedOptionHandler(

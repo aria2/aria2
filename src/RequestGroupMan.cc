@@ -108,7 +108,7 @@ RequestGroupMan::RequestGroupMan(
       optimizeConcurrentDownloads_(false),
       optimizeConcurrentDownloadsCoeffA_(5.),
       optimizeConcurrentDownloadsCoeffB_(25.),
-      optimizationBandwidth_(0),
+      optimizationSpeed_(0),
       numActive_(0),
       option_(option),
       serverStatMan_(std::make_shared<ServerStatMan>()),
@@ -1032,41 +1032,30 @@ int RequestGroupMan::optimizeConcurrentDownloads()
   // gauge the current speed
   int currentSpeed=getNetStat().calculateDownloadSpeed();
 
-  // estimate the actual bandwidth consumed including connection overheads, assuming 4KiB of overhead for each connection initialisation
-  int bandwidth=currentSpeed;
-  double speedUndervalueRatio(0.);
-  uint64_t dl(getNetStat().getSessionDownloadLength());
-  if(dl>0) {
-    speedUndervalueRatio=4096.*(numActive_+numStoppedTotal_)/dl;
-    bandwidth*=(1+speedUndervalueRatio);
-  }
-
   const auto& now = global::wallclock();
-  if(bandwidth >= optimizationBandwidth_) {
-    optimizationBandwidth_=bandwidth;
-    optimizationBandwidthTimer_=now;
-  } else if(std::chrono::duration_cast<std::chrono::seconds>(optimizationBandwidthTimer_.difference(now)) >= 5_s) {
-    // we keep using the reference bandwidth for minimum 5 seconds so reset the timer
-    optimizationBandwidthTimer_=now;
+  if(currentSpeed >= optimizationSpeed_) {
+    optimizationSpeed_=currentSpeed;
+    optimizationSpeedTimer_=now;
+  } else if(std::chrono::duration_cast<std::chrono::seconds>(optimizationSpeedTimer_.difference(now)) >= 5_s) {
+    // we keep using the reference speed for minimum 5 seconds so reset the timer
+    optimizationSpeedTimer_=now;
 
-    // keep the reference bandwidth as long as the speed tends to augment or to maintain itself within 10%
+    // keep the reference speed as long as the speed tends to augment or to maintain itself within 10%
     if(currentSpeed >= 1.1*getNetStat().calculateNewestDownloadSpeed(5)) {
-      // else assume a possible congestion and record a new optimization bandwidth by dichotomy
-      optimizationBandwidth_=(optimizationBandwidth_+bandwidth)/2.;
-    } else {
-      bandwidth=optimizationBandwidth_;
+      // else assume a possible congestion and record a new optimization speed by dichotomy
+      optimizationSpeed_=(optimizationSpeed_+currentSpeed)/2.;
     }
   }
 
-  if(optimizationBandwidth_<=0) return 1;
+  if(optimizationSpeed_<=0) return 1;
 
   // apply the rule
-  if((maxOverallDownloadSpeedLimit_>0) && (bandwidth>maxOverallDownloadSpeedLimit_)) {
-    optimizationBandwidth_=maxOverallDownloadSpeedLimit_;
+  if((maxOverallDownloadSpeedLimit_>0) && (optimizationSpeed_>maxOverallDownloadSpeedLimit_)) {
+    optimizationSpeed_=maxOverallDownloadSpeedLimit_;
   }
   int maxConcurrentDownloads=ceil(
     optimizeConcurrentDownloadsCoeffA_
-    +optimizeConcurrentDownloadsCoeffB_ * log10(optimizationBandwidth_*8./1000000.)
+    +optimizeConcurrentDownloadsCoeffB_ * log10(optimizationSpeed_*8./1000000.)
   );
 
   // bring the value in bound between 1 and the defined maximum
@@ -1074,9 +1063,9 @@ int RequestGroupMan::optimizeConcurrentDownloads()
   
   A2_LOG_DEBUG
     (fmt("Max concurrent downloads optimized at %d (%lu currently active) "
-         "[target bandwidth %sB/s, current speed %sB/s + %.2lf%% overhead]",
-         maxConcurrentDownloads, numActive_, util::abbrevSize(optimizationBandwidth_).c_str(), 
-         util::abbrevSize(currentSpeed).c_str(), speedUndervalueRatio*100));
+         "[optimization speed %sB/s, current speed %sB/s]",
+         maxConcurrentDownloads, numActive_, util::abbrevSize(optimizationSpeed_).c_str(), 
+         util::abbrevSize(currentSpeed).c_str()));
   
   return maxConcurrentDownloads;
 }
