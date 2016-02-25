@@ -1329,11 +1329,15 @@ int SocketCore::getSocketRecvBufferSize() { return socketRecvBufferSize_; }
 
 size_t SocketCore::getRecvBufferedLength() const
 {
+#ifdef ENABLE_SSL
   if (!tlsSession_) {
     return 0;
   }
 
   return tlsSession_->getRecvBufferedLength();
+#else  // !ENABLE_SSL
+  return 0;
+#endif // !ENABLE_SSL
 }
 
 std::vector<SockAddr> SocketCore::getInterfaceAddress(const std::string& iface,

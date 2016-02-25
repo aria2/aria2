@@ -90,7 +90,8 @@ DHTMessageTracker::messageArrived(const Dict* dict, const std::string& ipaddr,
 
         auto rtt = std::chrono::duration_cast<std::chrono::milliseconds>(
             entry->getElapsed());
-        A2_LOG_DEBUG(fmt("RTT is %" PRId64 "", rtt.count()));
+        A2_LOG_DEBUG(
+            fmt("RTT is %" PRId64 "", static_cast<int64_t>(rtt.count())));
         message->getRemoteNode()->updateRTT(rtt);
         if (*targetNode != *message->getRemoteNode()) {
           // Node ID has changed. Drop previous node ID from

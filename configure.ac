@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ([2.67])
-AC_INIT([aria2],[1.19.3],[https://github.com/tatsuhiro-t/aria2/issues],[aria2],[https://aria2.github.io/])
+AC_INIT([aria2],[1.20.0],[https://github.com/tatsuhiro-t/aria2/issues],[aria2],[https://aria2.github.io/])
 
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
@@ -21,7 +21,7 @@ AC_SUBST(LT_REVISION, 0)
 AC_SUBST(LT_AGE, 0)
 
 AC_CONFIG_MACRO_DIR([m4])
-AM_PATH_CPPUNIT(1.10.2)
+m4_ifdef([AM_PATH_CPPUNIT], [AM_PATH_CPPUNIT(1.10.2)])
 AC_CONFIG_SRCDIR([src/a2io.h])
 AC_CONFIG_HEADERS([config.h])
 
@@ -94,6 +94,13 @@ AC_ARG_WITH([bashcompletiondir],
   [bashcompletiondir=$withval], [bashcompletiondir=$docdir/bash_completion])
 
 AC_ARG_VAR([ARIA2_STATIC], [Set 'yes' to build a statically linked aria2])
+
+AC_ARG_ENABLE([gnutls-system-crypto-policy],
+    AS_HELP_STRING([--enable-gnutls-system-crypto-policy], [Enable gnutls system wide crypto policy]))
+
+AS_IF([test "x$enable_gnutls_system_crypto_policy" = "xyes"], [
+  AC_DEFINE([USE_GNUTLS_SYSTEM_CRYPTO_POLICY], [1], [Define to 1 if using gnutls system wide crypto policy .])
+])
 
 # Checks for programs.
 AC_PROG_CXX
@@ -311,7 +318,13 @@ AM_CONDITIONAL([HAVE_LIBUV], [test "x$have_libuv" = "xyes"])
 
 have_libxml2=no
 if test "x$with_libxml2" = "xyes"; then
-  AM_PATH_XML2([2.6.24], [have_libxml2=yes])
+  m4_ifdef([AM_PATH_XML2], [AM_PATH_XML2([2.6.24], [have_libxml2=yes])], [
+    AC_MSG_WARN([configure was generated without libxml2 detection.  libxml2 detection is disabled])
+    XML_CPPFLAGS=
+    XML_LIBS=
+    AC_SUBST([XML_CPPFLAGS])
+    AC_SUBST([XML_LIBS])
+  ])
   if test "x$have_libxml2" = "xyes"; then
     AC_DEFINE([HAVE_LIBXML2], [1], [Define to 1 if you have libxml2.])
   elif test "x$with_libxml2_requested" = "xyes"; then
@@ -321,7 +334,13 @@ fi
 
 have_libexpat=no
 if test "x$with_libexpat" = "xyes" && test "x$have_libxml2" != "xyes"; then
-  AM_PATH_LIBEXPAT
+  m4_ifdef([AM_PATH_LIBEXPAT], [AM_PATH_LIBEXPAT], [
+    AC_MSG_WARN([configure was generated without libexpat detection.  libexpat detection is disabled])
+    EXPAT_CFLAGS=
+    EXPAT_LIBS=
+    AC_SUBST([EXPAT_CFLAGS])
+    AC_SUBST([EXPAT_LIBS])
+  ])
   if test "x$have_libexpat" != "xyes" &&
      test "x$with_libexpat_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([libexpat])
@@ -530,7 +549,13 @@ if test "x$have_openssl" != "xyes"; then
   if test "x$with_libgcrypt" = "xyes" &&
      test "x$have_nativetls" != "xyes" &&
      test "x$have_libnettle" != "xyes"; then
-    AM_PATH_LIBGCRYPT([1.2.4], [have_libgcrypt=yes])
+    m4_ifdef([AM_PATH_LIBGCRYPT], [AM_PATH_LIBGCRYPT([1.2.4], [have_libgcrypt=yes])], [
+    AC_MSG_WARN([configure was generated without libgcrypt detection.  libgcrypt detection is disabled])
+      LIBGCRYPT_CFLAGS=
+      LIBGCRYPT_LIBS=
+      AC_SUBST([LIBGCRYPT_CFLAGS])
+      AC_SUBST([LIBGCRYPT_LIBS])
+    ])
     if test "x$have_libgcrypt" = "xyes"; then
       AC_DEFINE([HAVE_LIBGCRYPT], [1], [Define to 1 if you have libgcrypt.])
     fi

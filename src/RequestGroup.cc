@@ -1264,10 +1264,15 @@ void RequestGroup::enableSeedOnly()
   }
 }
 
-bool RequestGroup::isSeeder() const {
+bool RequestGroup::isSeeder() const
+{
+#ifdef ENABLE_BITTORRENT
   return downloadContext_->hasAttribute(CTX_ATTR_BT) &&
          !bittorrent::getTorrentAttrs(downloadContext_)->metadata.empty() &&
          downloadFinished();
+#else  // !ENABLE_BITTORRENT
+  return false;
+#endif // !ENABLE_BITTORRENT
 }
 
 } // namespace aria2
