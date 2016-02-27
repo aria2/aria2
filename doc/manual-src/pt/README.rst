@@ -8,17 +8,17 @@
               windows, linux, manual download aria2, torrent, download stream,
               como compilar programa no android, como executar download no
               android
-   :author: t-tujikawa_at_users_dot_sourceforge_dot_net english version
+   :author: tatsuhiro.t_at_gmail_dot_com english version
    :author: gsavix@gmail.com tradução para português do brasil
 
 
 aria2 - Utilitário para Download Super Ultra Rápido
 ===================================================
 :Author:     Tatsuhiro Tsujikawa
-:Email:      t-tujikawa_at_users_dot_sourceforge_dot_net
+:Email:      tatsuhiro.t_at_gmail_dot_com
 :translator: pt_BR Portuguese, tradutor: gsavix@gmail.com
 
-.. index:: double: author; t-tujikawa_at_users_dot_sourceforge_dot_net
+.. index:: double: author; tatsuhiro.t_at_gmail_dot_com
 .. index:: triple: tradutor; tradução; gsavix@gmail.com;
 
 Renúncia
@@ -39,10 +39,9 @@ para você ir assistindo um filme enquanto o download prossegue.  Através da
 verificação (checksum) de partes dos dados dos Metalink's, aria2
 automaticamente valida partes (chunks) do BitTorrent.
 
-A página do projeto está em http://aria2.sourceforge.net/.
+A página do projeto está em https://aria2.github.io/.
 
-Veja `aria2 Manual Online <http://aria2.sourceforge.net/manual/pt/html/>`_
-e `Exemplos de Uso <http://sourceforge.net/apps/trac/aria2/wiki/UsageExample>`_ 
+Veja `aria2 Manual Online <https://aria2.github.io/manual/pt/html/>`_
 para aprender como a usar aria2.
 
 Funcionalidades
@@ -396,9 +395,9 @@ Como usar comandos do aria2 no Android
 --------------------------------------
 
 Ver o manual do aria2 online nos seguintes idiomas:
-`Tradução em Português <http://aria2.sourceforge.net/manual/pt/html/>`_.
-`Original em Inglês    <http://aria2.sourceforge.net/manual/en/html/>`_.
-`Tradução em Russo     <http://aria2.sourceforge.net/manual/ru/html/>`_.
+`Tradução em Português <https://aria2.github.io/manual/pt/html/>`_.
+`Original em Inglês    <https://aria2.github.io/manual/en/html/>`_.
+`Tradução em Russo     <https://aria2.github.io/manual/ru/html/>`_.
 
 Notas sobre uso do aria2 no Android
 -----------------------------------
@@ -463,10 +462,10 @@ certifique-se de que os pré-requisitos de fontes usados pelo latex
 estejam presentes.
 
 A versão online HTML também está disponível em:
-`Original em Inglês <http://aria2.sourceforge.net/manual/en/html/>`_ 
+`Original em Inglês <https://aria2.github.io/manual/en/html/>`_ 
 e nas traduções em:
-(`Português <http://aria2.sourceforge.net/manual/pt/html/>`_ e
-`Russo <http://aria2.sourceforge.net/manual/ru/html/>`_).
+(`Português <https://aria2.github.io/manual/pt/html/>`_ e
+`Russo <https://aria2.github.io/manual/ru/html/>`_).
 
 BitTorrrent
 ===========
@@ -597,17 +596,15 @@ Referências
 ===========
 
 * `aria2 Manual Inglês 
-  <http://aria2.sourceforge.net/manual/en/html/>`_ original inglês
+  <https://aria2.github.io/manual/en/html/>`_ original inglês
   
 * `aria2 Manual Russo 
-  <http://aria2.sourceforge.net/manual/ru/html/>`_ versão russo
+  <https://aria2.github.io/manual/ru/html/>`_ versão russo
   
 * `aria2 Manual Português 
-  <http://aria2.sourceforce.net/manual/pt/html/>`_ versão português
+  <https://aria2.github.io/manual/pt/html/>`_ versão português
   
-* http://aria2.sourceforge.net/
-* http://sourceforge.net/apps/trac/aria2/wiki
-* https://github.com/tatsuhiro-t/aria2
+* https://aria2.github.io/
 * `RFC 959 FILE TRANSFER PROTOCOL (FTP) 
   <http://tools.ietf.org/html/rfc959>`_
 * `RFC 1738 Uniform Resource Locators (URL) 

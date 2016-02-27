@@ -48,15 +48,11 @@ namespace rpc {
 
 class XmlRpcRequestParserController {
 private:
-
   struct StateFrame {
-    SharedHandle<ValueBase> value_;
+    std::unique_ptr<ValueBase> value_;
     std::string name_;
 
-    bool validMember() const
-    {
-      return value_ && !name_.empty();
-    }
+    bool validMember() const { return value_ && !name_.empty(); }
 
     void reset()
     {
@@ -70,6 +66,7 @@ private:
   StateFrame currentFrame_;
 
   std::string methodName_;
+
 public:
   void pushFrame();
 
@@ -81,16 +78,15 @@ public:
   // to p and currentFrame_ = p;
   void popArrayFrame();
 
-  void setCurrentFrameValue(const SharedHandle<ValueBase>& value);
+  void setCurrentFrameValue(std::unique_ptr<ValueBase> value);
 
-  void setCurrentFrameName(const std::string& name);
+  void setCurrentFrameName(std::string name);
 
-  const SharedHandle<ValueBase>& getCurrentFrameValue() const;
+  const std::unique_ptr<ValueBase>& getCurrentFrameValue() const;
 
-  void setMethodName(const std::string& methodName)
-  {
-    methodName_ = methodName;
-  }
+  std::unique_ptr<ValueBase> popCurrentFrameValue();
+
+  void setMethodName(std::string methodName);
 
   const std::string& getMethodName() const { return methodName_; }
 

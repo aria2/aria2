@@ -12,47 +12,52 @@
 
 namespace aria2 {
 
-class DHTPingMessageTest:public CppUnit::TestFixture {
+class DHTPingMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTPingMessageTest);
   CPPUNIT_TEST(testGetBencodedMessage);
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST_SUITE_END();
+
 public:
-  void setUp() {}
+  std::shared_ptr<DHTNode> localNode_;
+  std::shared_ptr<DHTNode> remoteNode_;
+
+  void setUp()
+  {
+    localNode_ = std::make_shared<DHTNode>();
+    remoteNode_ = std::make_shared<DHTNode>();
+  }
 
   void tearDown() {}
 
   void testGetBencodedMessage();
   void testDoReceivedAction();
 
-  class MockDHTMessageFactory2:public MockDHTMessageFactory {
+  class MockDHTMessageFactory2 : public MockDHTMessageFactory {
   public:
-    virtual SharedHandle<DHTResponseMessage>
-    createPingReplyMessage(const SharedHandle<DHTNode>& remoteNode,
+    virtual std::unique_ptr<DHTPingReplyMessage>
+    createPingReplyMessage(const std::shared_ptr<DHTNode>& remoteNode,
                            const unsigned char* remoteNodeID,
-                           const std::string& transactionID)
+                           const std::string& transactionID) CXX11_OVERRIDE
     {
-      return SharedHandle<MockDHTResponseMessage>
-        (new MockDHTResponseMessage(localNode_, remoteNode, "ping_reply",
-                                    transactionID));
+      unsigned char id[DHT_ID_LENGTH];
+      std::fill(std::begin(id), std::end(id), '0');
+      return make_unique<DHTPingReplyMessage>(localNode_, remoteNode, id,
+                                              transactionID);
     }
   };
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DHTPingMessageTest);
 
 void DHTPingMessageTest::testGetBencodedMessage()
 {
-  SharedHandle<DHTNode> localNode(new DHTNode());
-  SharedHandle<DHTNode> remoteNode(new DHTNode());
-
   unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   util::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
   std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 
-  DHTPingMessage msg(localNode, remoteNode, transactionID);
+  DHTPingMessage msg(localNode_, remoteNode_, transactionID);
   msg.setVersion("A200");
 
   std::string msgbody = msg.getBencodedMessage();
@@ -62,39 +67,35 @@ void DHTPingMessageTest::testGetBencodedMessage()
   dict.put("v", "A200");
   dict.put("y", "q");
   dict.put("q", "ping");
-  SharedHandle<Dict> aDict = Dict::g();
-  aDict->put("id", String::g(localNode->getID(), DHT_ID_LENGTH));
-  dict.put("a", aDict);
+  auto aDict = Dict::g();
+  aDict->put("id", String::g(localNode_->getID(), DHT_ID_LENGTH));
+  dict.put("a", std::move(aDict));
 
   CPPUNIT_ASSERT_EQUAL(bencode2::encode(&dict), msgbody);
 }
 
 void DHTPingMessageTest::testDoReceivedAction()
 {
-  SharedHandle<DHTNode> localNode(new DHTNode());
-  SharedHandle<DHTNode> remoteNode(new DHTNode());
-
   unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   util::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
   std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 
   MockDHTMessageDispatcher dispatcher;
   MockDHTMessageFactory2 factory;
-  factory.setLocalNode(localNode);
+  factory.setLocalNode(localNode_);
 
-  DHTPingMessage msg(localNode, remoteNode, transactionID);
+  DHTPingMessage msg(localNode_, remoteNode_, transactionID);
   msg.setMessageDispatcher(&dispatcher);
   msg.setMessageFactory(&factory);
 
   msg.doReceivedAction();
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher.messageQueue_.size());
-  SharedHandle<MockDHTResponseMessage> m
-    (dynamic_pointer_cast<MockDHTResponseMessage>
-     (dispatcher.messageQueue_[0].message_));
-  CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
-  CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
-  CPPUNIT_ASSERT_EQUAL(std::string("ping_reply"), m->getMessageType());
+  auto m = dynamic_cast<DHTPingReplyMessage*>(
+      dispatcher.messageQueue_[0].message_.get());
+  CPPUNIT_ASSERT(*localNode_ == *m->getLocalNode());
+  CPPUNIT_ASSERT(*remoteNode_ == *m->getRemoteNode());
+  CPPUNIT_ASSERT_EQUAL(std::string("ping"), m->getMessageType());
   CPPUNIT_ASSERT_EQUAL(msg.getTransactionID(), m->getTransactionID());
 }
 

@@ -47,32 +47,31 @@
 
 namespace aria2 {
 
-DHTBucketRefreshTask::DHTBucketRefreshTask():
-  forceRefresh_(false) {}
+DHTBucketRefreshTask::DHTBucketRefreshTask() : forceRefresh_(false) {}
 
 DHTBucketRefreshTask::~DHTBucketRefreshTask() {}
 
 void DHTBucketRefreshTask::startup()
 {
-  std::vector<SharedHandle<DHTBucket> > buckets;
+  std::vector<std::shared_ptr<DHTBucket>> buckets;
   getRoutingTable()->getBuckets(buckets);
-  for(std::vector<SharedHandle<DHTBucket> >::iterator i = buckets.begin(),
-        eoi = buckets.end(); i != eoi; ++i) {
-    if(forceRefresh_ || (*i)->needsRefresh()) {
-      (*i)->notifyUpdate();
-      unsigned char targetID[DHT_ID_LENGTH];
-      (*i)->getRandomNodeID(targetID);
-      SharedHandle<DHTNodeLookupTask> task(new DHTNodeLookupTask(targetID));
-      task->setRoutingTable(getRoutingTable());
-      task->setMessageDispatcher(getMessageDispatcher());
-      task->setMessageFactory(getMessageFactory());
-      task->setTaskQueue(getTaskQueue());
-      task->setLocalNode(getLocalNode());
-
-      A2_LOG_INFO(fmt("Dispating bucket refresh. targetID=%s",
-                      util::toHex(targetID, DHT_ID_LENGTH).c_str()));
-      getTaskQueue()->addPeriodicTask1(task);
+  for (auto& b : buckets) {
+    if (!forceRefresh_ && !b->needsRefresh()) {
+      continue;
     }
+    b->notifyUpdate();
+    unsigned char targetID[DHT_ID_LENGTH];
+    b->getRandomNodeID(targetID);
+    auto task = std::make_shared<DHTNodeLookupTask>(targetID);
+    task->setRoutingTable(getRoutingTable());
+    task->setMessageDispatcher(getMessageDispatcher());
+    task->setMessageFactory(getMessageFactory());
+    task->setTaskQueue(getTaskQueue());
+    task->setLocalNode(getLocalNode());
+
+    A2_LOG_INFO(fmt("Dispating bucket refresh. targetID=%s",
+                    util::toHex(targetID, DHT_ID_LENGTH).c_str()));
+    getTaskQueue()->addPeriodicTask1(task);
   }
   setFinished(true);
 }

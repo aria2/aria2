@@ -37,50 +37,37 @@
 
 namespace aria2 {
 
-Checksum::Checksum
-(const std::string& hashType,
- const std::string& digest)
-    : hashType_(hashType),
-      digest_(digest)
-{}
+Checksum::Checksum(std::string hashType, std::string digest)
+    : hashType_(std::move(hashType)), digest_(std::move(digest))
+{
+}
 
-Checksum::Checksum()
-    : hashType_("sha-1")
-{}
+Checksum::Checksum() : hashType_("sha-1") {}
 
 Checksum::~Checksum() {}
 
-bool Checksum::isEmpty() const
-{
-  return digest_.empty();
-}
+bool Checksum::isEmpty() const { return digest_.empty(); }
 
-void Checksum::setDigest(const std::string& digest)
-{
-  digest_ = digest;
-}
+void Checksum::setDigest(std::string digest) { digest_ = std::move(digest); }
 
-void Checksum::setHashType(const std::string& hashType)
+void Checksum::setHashType(std::string hashType)
 {
-  hashType_ = hashType;
+  hashType_ = std::move(hashType);
 }
 
 void Checksum::swap(Checksum& other)
 {
   using std::swap;
-  if(this != &other) {
+  if (this != &other) {
     swap(hashType_, other.hashType_);
     swap(digest_, other.digest_);
   }
 }
 
-void swap(Checksum& a, Checksum& b)
-{
-  a.swap(b);
-}
+void swap(Checksum& a, Checksum& b) { a.swap(b); }
 
-bool HashTypeStronger::operator()
-  (const Checksum& lhs, const Checksum& rhs) const
+bool HashTypeStronger::operator()(const Checksum& lhs,
+                                  const Checksum& rhs) const
 {
   return MessageDigest::isStronger(lhs.getHashType(), rhs.getHashType());
 }

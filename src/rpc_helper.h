@@ -39,8 +39,9 @@
 
 #include <cstdlib>
 #include <string>
+#include <memory>
 
-#include "SharedHandle.h"
+#include "RpcRequest.h"
 
 namespace aria2 {
 
@@ -50,7 +51,6 @@ class DownloadEngine;
 
 namespace rpc {
 
-struct RpcRequest;
 struct RpcResponse;
 
 #ifdef ENABLE_XML_RPC
@@ -59,12 +59,11 @@ RpcRequest xmlParseMemory(const char* xml, size_t size);
 
 // Creates error response. The |code| is the JSON-RPC error code.  The
 // |msg| is the error message. The |id| is the id of the request .
-RpcResponse createJsonRpcErrorResponse(int code,
-                                       const std::string& msg,
-                                       const SharedHandle<ValueBase>& id);
+RpcResponse createJsonRpcErrorResponse(int code, const std::string& msg,
+                                       std::unique_ptr<ValueBase> id);
 
 // Processes JSON-RPC request |jsondict| and returns the result.
-RpcResponse processJsonRpcRequest(const Dict* jsondict, DownloadEngine* e);
+RpcResponse processJsonRpcRequest(Dict* jsondict, DownloadEngine* e);
 
 } // namespace rpc
 

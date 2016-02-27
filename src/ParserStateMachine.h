@@ -52,17 +52,12 @@ public:
 
   virtual bool finished() const = 0;
 
-  virtual void beginElement
-  (const char* localname,
-   const char* prefix,
-   const char* nsUri,
-   const std::vector<XmlAttr>& attrs) = 0;
+  virtual void beginElement(const char* localname, const char* prefix,
+                            const char* nsUri,
+                            const std::vector<XmlAttr>& attrs) = 0;
 
-  virtual void endElement
-  (const char* localname,
-   const char* prefix,
-   const char* nsUri,
-   const std::string& characters) = 0;
+  virtual void endElement(const char* localname, const char* prefix,
+                          const char* nsUri, std::string characters) = 0;
 
   // Resets internal state of the object and make it ready for new
   // parser session.

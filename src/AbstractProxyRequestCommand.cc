@@ -49,46 +49,44 @@
 
 namespace aria2 {
 
-AbstractProxyRequestCommand::AbstractProxyRequestCommand
-(cuid_t cuid,
- const SharedHandle<Request>& req,
- const SharedHandle<FileEntry>& fileEntry,
- RequestGroup* requestGroup,
- DownloadEngine* e,
- const SharedHandle<Request>& proxyRequest,
- const SharedHandle<SocketCore>& s)
-  :
-  AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
-  proxyRequest_(proxyRequest),
-  httpConnection_
-  (new HttpConnection
-   (cuid, s, SharedHandle<SocketRecvBuffer>(new SocketRecvBuffer(s))))
+AbstractProxyRequestCommand::AbstractProxyRequestCommand(
+    cuid_t cuid, const std::shared_ptr<Request>& req,
+    const std::shared_ptr<FileEntry>& fileEntry, RequestGroup* requestGroup,
+    DownloadEngine* e, const std::shared_ptr<Request>& proxyRequest,
+    const std::shared_ptr<SocketCore>& s)
+    : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
+      proxyRequest_(proxyRequest),
+      httpConnection_(std::make_shared<HttpConnection>(
+          cuid, s, std::make_shared<SocketRecvBuffer>(s)))
 {
-  setTimeout(getOption()->getAsInt(PREF_CONNECT_TIMEOUT));
+  setTimeout(std::chrono::seconds(getOption()->getAsInt(PREF_CONNECT_TIMEOUT)));
   disableReadCheckSocket();
   setWriteCheckSocket(getSocket());
 }
 
 AbstractProxyRequestCommand::~AbstractProxyRequestCommand() {}
 
-bool AbstractProxyRequestCommand::executeInternal() {
-  //socket->setBlockingMode();
-  if(httpConnection_->sendBufferIsEmpty()) {
-    SharedHandle<HttpRequest> httpRequest(new HttpRequest());
+bool AbstractProxyRequestCommand::executeInternal()
+{
+  // socket->setBlockingMode();
+  if (httpConnection_->sendBufferIsEmpty()) {
+    auto httpRequest = make_unique<HttpRequest>();
     httpRequest->setUserAgent(getOption()->get(PREF_USER_AGENT));
     httpRequest->setRequest(getRequest());
     httpRequest->setProxyRequest(proxyRequest_);
 
-    httpConnection_->sendProxyRequest(httpRequest);
-  } else {
+    httpConnection_->sendProxyRequest(std::move(httpRequest));
+  }
+  else {
     httpConnection_->sendPendingData();
   }
-  if(httpConnection_->sendBufferIsEmpty()) {
+  if (httpConnection_->sendBufferIsEmpty()) {
     getDownloadEngine()->addCommand(getNextCommand());
     return true;
-  } else {
+  }
+  else {
     setWriteCheckSocket(getSocket());
-    getDownloadEngine()->addCommand(this);
+    addCommandSelf();
     return false;
   }
 }

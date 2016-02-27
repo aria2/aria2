@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "AbstractAuthResolver.h"
 #include "AuthConfig.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -41,16 +42,29 @@ AbstractAuthResolver::AbstractAuthResolver() {}
 
 AbstractAuthResolver::~AbstractAuthResolver() {}
 
-void AbstractAuthResolver::setUserDefinedAuthConfig
-(const SharedHandle<AuthConfig>& authConfig)
+void AbstractAuthResolver::setUserDefinedCred(std::string user,
+                                              std::string password)
 {
-  userDefinedAuthConfig_ = authConfig;
+  userDefinedUser_ = std::move(user);
+  userDefinedPassword_ = std::move(password);
 }
 
-void AbstractAuthResolver::setDefaultAuthConfig
-(const SharedHandle<AuthConfig>& authConfig)
+std::unique_ptr<AuthConfig>
+AbstractAuthResolver::getUserDefinedAuthConfig() const
 {
-  defaultAuthConfig_ = authConfig;
+  return AuthConfig::create(userDefinedUser_, userDefinedPassword_);
+}
+
+void AbstractAuthResolver::setDefaultCred(std::string user,
+                                          std::string password)
+{
+  defaultUser_ = std::move(user);
+  defaultPassword_ = std::move(password);
+}
+
+std::unique_ptr<AuthConfig> AbstractAuthResolver::getDefaultAuthConfig() const
+{
+  return AuthConfig::create(defaultUser_, defaultPassword_);
 }
 
 } // namespace aria2

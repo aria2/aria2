@@ -42,9 +42,9 @@ namespace aria2 {
 
 class DHTPingReplyMessage;
 
-class DHTPingTask:public DHTAbstractTask {
+class DHTPingTask : public DHTAbstractTask {
 private:
-  SharedHandle<DHTNode> remoteNode_;
+  std::shared_ptr<DHTNode> remoteNode_;
 
   int numMaxRetry_;
 
@@ -52,23 +52,24 @@ private:
 
   bool pingSuccessful_;
 
-  time_t timeout_;
+  std::chrono::seconds timeout_;
 
   void addMessage();
+
 public:
-  DHTPingTask(const SharedHandle<DHTNode>& remoteNode, int numMaxRetry = 0);
+  DHTPingTask(const std::shared_ptr<DHTNode>& remoteNode, int numMaxRetry = 0);
 
   virtual ~DHTPingTask();
 
-  virtual void startup();
+  virtual void startup() CXX11_OVERRIDE;
 
   void onReceived(const DHTPingReplyMessage* message);
 
-  void onTimeout(const SharedHandle<DHTNode>& node);
+  void onTimeout(const std::shared_ptr<DHTNode>& node);
 
-  void setTimeout(time_t timeout)
+  void setTimeout(std::chrono::seconds timeout)
   {
-    timeout_ = timeout;
+    timeout_ = std::move(timeout);
   }
 
   bool isPingSuccessful() const;

@@ -39,19 +39,15 @@
 
 namespace aria2 {
 
-DownloadHandler::DownloadHandler() {}
-
-DownloadHandler::~DownloadHandler() {}
-
 bool DownloadHandler::canHandle(const RequestGroup* requestGroup) const
 {
-  return criteria_ && criteria_->match(requestGroup);
+  return !criteria_ || criteria_->match(requestGroup);
 }
 
-void DownloadHandler::setCriteria
-(const SharedHandle<RequestGroupCriteria>& criteria)
+void DownloadHandler::setCriteria(
+    std::unique_ptr<RequestGroupCriteria> criteria)
 {
-  criteria_ = criteria;
+  criteria_ = std::move(criteria);
 }
 
 } // namespace aria2

@@ -43,32 +43,33 @@ namespace aria2 {
 class DHTBucket;
 class DHTPingReplyMessage;
 
-class DHTReplaceNodeTask:public DHTAbstractTask {
+class DHTReplaceNodeTask : public DHTAbstractTask {
 private:
-  SharedHandle<DHTBucket> bucket_;
+  std::shared_ptr<DHTBucket> bucket_;
 
-  SharedHandle<DHTNode> newNode_;
+  std::shared_ptr<DHTNode> newNode_;
 
   int numRetry_;
 
-  time_t timeout_;
+  std::chrono::seconds timeout_;
 
   void sendMessage();
+
 public:
-  DHTReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
-                     const SharedHandle<DHTNode>& newNode);
+  DHTReplaceNodeTask(const std::shared_ptr<DHTBucket>& bucket,
+                     const std::shared_ptr<DHTNode>& newNode);
 
   virtual ~DHTReplaceNodeTask();
 
-  virtual void startup();
+  virtual void startup() CXX11_OVERRIDE;
 
   void onReceived(const DHTPingReplyMessage* message);
 
-  void onTimeout(const SharedHandle<DHTNode>& node);
+  void onTimeout(const std::shared_ptr<DHTNode>& node);
 
-  void setTimeout(time_t timeout)
+  void setTimeout(std::chrono::seconds timeout)
   {
-    timeout_ = timeout;
+    timeout_ = std::move(timeout);
   }
 };
 

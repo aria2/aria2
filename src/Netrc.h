@@ -39,8 +39,7 @@
 
 #include <string>
 #include <vector>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -57,89 +56,52 @@ private:
   std::string login_;
   std::string password_;
   std::string account_;
+
 public:
   Authenticator();
 
-  Authenticator(const std::string& machine,
-                const std::string& login,
-                const std::string& password,
-                const std::string& account);
+  Authenticator(std::string machine, std::string login, std::string password,
+                std::string account);
 
   virtual ~Authenticator();
 
-  virtual bool match(const std::string& hostname) const;
+  virtual bool match(const std::string& hostname) const CXX11_OVERRIDE;
 
-  const std::string& getMachine() const
-  {
-    return machine_;
-  }
+  const std::string& getMachine() const { return machine_; }
 
-  void setMachine(const std::string& machine);
+  void setMachine(std::string machine);
 
-  template<typename InputIterator>
-  void setMachine(InputIterator first, InputIterator last)
-  {
-    machine_.assign(first, last);
-  }
+  const std::string& getLogin() const { return login_; }
 
-  const std::string& getLogin() const
-  {
-    return login_;
-  }
+  void setLogin(std::string login);
 
-  void setLogin(const std::string& login);
+  const std::string& getPassword() const { return password_; }
 
-  template<typename InputIterator>
-  void setLogin(InputIterator first, InputIterator last)
-  {
-    login_.assign(first, last);
-  }
+  void setPassword(std::string password);
 
-  const std::string& getPassword() const
-  {
-    return password_;
-  }
+  const std::string& getAccount() const { return account_; }
 
-  void setPassword(const std::string& password);
-
-  template<typename InputIterator>
-  void setPassword(InputIterator first, InputIterator last)
-  {
-    password_.assign(first, last);
-  }
-
-  const std::string& getAccount() const
-  {
-    return account_;
-  }
-
-  void setAccount(const std::string& account);
-
-  template<typename InputIterator>
-  void setAccount(InputIterator first, InputIterator last)
-  {
-    account_.assign(first, last);
-  }
+  void setAccount(std::string account);
 };
 
 class DefaultAuthenticator : public Authenticator {
 public:
   DefaultAuthenticator();
 
-  DefaultAuthenticator(const std::string& login,
-                       const std::string& password,
-                       const std::string& account);
+  DefaultAuthenticator(std::string login, std::string password,
+                       std::string account);
 
   virtual ~DefaultAuthenticator();
 
-  virtual bool match(const std::string& hostname) const;
+  virtual bool match(const std::string& hostname) const CXX11_OVERRIDE;
 };
 
 class Netrc {
 private:
-  std::vector<SharedHandle<Authenticator> > authenticators_;
+  std::vector<std::unique_ptr<Authenticator>> authenticators_;
 
-  void storeAuthenticator(const SharedHandle<Authenticator>& authenticator);
+  void storeAuthenticator(std::unique_ptr<Authenticator> authenticator);
+
 public:
   Netrc();
 
@@ -147,15 +109,11 @@ public:
 
   void parse(const std::string& path);
 
-  SharedHandle<Authenticator> findAuthenticator
-  (const std::string& hostname) const;
+  const Authenticator* findAuthenticator(const std::string& hostname) const;
 
-  const std::vector<SharedHandle<Authenticator> >& getAuthenticators() const
-  {
-    return authenticators_;
-  }
+  const std::vector<std::unique_ptr<Authenticator>>& getAuthenticators() const;
 
-  void addAuthenticator(const SharedHandle<Authenticator>& authenticator);
+  void addAuthenticator(std::unique_ptr<Authenticator> authenticator);
 };
 
 } // namespace aria2

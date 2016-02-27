@@ -40,29 +40,29 @@
 
 namespace aria2 {
 
-class BackupConnectInfo;
+struct BackupConnectInfo;
 
 class ConnectCommand : public AbstractCommand {
 public:
-  ConnectCommand(cuid_t cuid,
-                 const SharedHandle<Request>& req,
-                 const SharedHandle<Request>& proxyRequest,
-                 const SharedHandle<FileEntry>& fileEntry,
-                 RequestGroup* requestGroup,
-                 DownloadEngine* e,
-                 const SharedHandle<SocketCore>& s);
+  ConnectCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
+                 const std::shared_ptr<Request>& proxyRequest,
+                 const std::shared_ptr<FileEntry>& fileEntry,
+                 RequestGroup* requestGroup, DownloadEngine* e,
+                 const std::shared_ptr<SocketCore>& s);
   virtual ~ConnectCommand();
-  void setControlChain
-  (const SharedHandle<ControlChain<ConnectCommand*> >& chain);
-  void setBackupConnectInfo(const SharedHandle<BackupConnectInfo>& info);
-  const SharedHandle<Request>& getProxyRequest() const;
+  void
+  setControlChain(const std::shared_ptr<ControlChain<ConnectCommand*>>& chain);
+  void setBackupConnectInfo(const std::shared_ptr<BackupConnectInfo>& info);
+  const std::shared_ptr<Request>& getProxyRequest() const;
+
 protected:
-  virtual bool executeInternal();
-  virtual bool noCheck();
+  virtual bool executeInternal() CXX11_OVERRIDE;
+  virtual bool noCheck() const CXX11_OVERRIDE;
+
 private:
-  SharedHandle<Request> proxyRequest_;
-  SharedHandle<BackupConnectInfo> backupConnectionInfo_;
-  SharedHandle<ControlChain<ConnectCommand*> > chain_;
+  std::shared_ptr<Request> proxyRequest_;
+  std::shared_ptr<BackupConnectInfo> backupConnectionInfo_;
+  std::shared_ptr<ControlChain<ConnectCommand*>> chain_;
 };
 
 } // namespace aria2

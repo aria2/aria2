@@ -40,36 +40,34 @@
 
 namespace aria2 {
 
-class DHTFindNodeReplyMessage:public DHTResponseMessage {
+class DHTFindNodeReplyMessage : public DHTResponseMessage {
 private:
   int family_;
 
-  std::vector<SharedHandle<DHTNode> > closestKNodes_;
+  std::vector<std::shared_ptr<DHTNode>> closestKNodes_;
+
 protected:
-  virtual std::string toStringOptional() const;
+  virtual std::string toStringOptional() const CXX11_OVERRIDE;
+
 public:
-  DHTFindNodeReplyMessage(int family,
-                          const SharedHandle<DHTNode>& localNode,
-                          const SharedHandle<DHTNode>& remoteNode,
+  DHTFindNodeReplyMessage(int family, const std::shared_ptr<DHTNode>& localNode,
+                          const std::shared_ptr<DHTNode>& remoteNode,
                           const std::string& transactionID);
 
-  virtual ~DHTFindNodeReplyMessage();
+  virtual void doReceivedAction() CXX11_OVERRIDE;
 
-  virtual void doReceivedAction();
+  virtual std::unique_ptr<Dict> getResponse() CXX11_OVERRIDE;
 
-  virtual SharedHandle<Dict> getResponse();
+  virtual const std::string& getMessageType() const CXX11_OVERRIDE;
 
-  virtual const std::string& getMessageType() const;
+  virtual void accept(DHTMessageCallback* callback) CXX11_OVERRIDE;
 
-  virtual void accept(DHTMessageCallback* callback);
-
-  const std::vector<SharedHandle<DHTNode> >& getClosestKNodes() const
+  const std::vector<std::shared_ptr<DHTNode>>& getClosestKNodes() const
   {
     return closestKNodes_;
   }
 
-  void setClosestKNodes
-  (const std::vector<SharedHandle<DHTNode> >& closestKNodes);
+  void setClosestKNodes(std::vector<std::shared_ptr<DHTNode>> closestKNodes);
 
   static const std::string FIND_NODE;
 

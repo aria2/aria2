@@ -45,9 +45,7 @@ class HttpDownloadCommand;
 class HttpResponse;
 class SocketCore;
 class StreamFilter;
-#ifdef ENABLE_MESSAGE_DIGEST
 class Checksum;
-#endif // ENABLE_MESSAGE_DIGEST
 
 // HttpResponseCommand receives HTTP response header from remote
 // server.  Because network I/O is non-blocking, execute() returns
@@ -61,44 +59,38 @@ class Checksum;
 // HttpSkipResponseCommand.
 class HttpResponseCommand : public AbstractCommand {
 private:
-  SharedHandle<HttpConnection> httpConnection_;
+  std::shared_ptr<HttpConnection> httpConnection_;
 
-  bool handleDefaultEncoding(const SharedHandle<HttpResponse>& httpResponse);
-  bool handleOtherEncoding(const SharedHandle<HttpResponse>& httpResponse);
-  bool skipResponseBody(const SharedHandle<HttpResponse>& httpResponse);
+  bool handleDefaultEncoding(std::unique_ptr<HttpResponse> httpResponse);
+  bool handleOtherEncoding(std::unique_ptr<HttpResponse> httpResponse);
+  bool skipResponseBody(std::unique_ptr<HttpResponse> httpResponse);
 
-  HttpDownloadCommand*
-  createHttpDownloadCommand
-  (const SharedHandle<HttpResponse>& httpResponse,
-   const SharedHandle<StreamFilter>& streamFilter);
+  std::unique_ptr<HttpDownloadCommand>
+  createHttpDownloadCommand(std::unique_ptr<HttpResponse> httpResponse,
+                            std::unique_ptr<StreamFilter> streamFilter);
 
   void updateLastModifiedTime(const Time& lastModified);
 
   void poolConnection();
 
   void onDryRunFileFound();
-#ifdef ENABLE_MESSAGE_DIGEST
   // Returns true if dctx and checksum has same hash type and hash
   // value.  If they have same hash type but different hash value,
   // throws exception.  Otherwise returns false.
-  bool checkChecksum
-  (const SharedHandle<DownloadContext>& dctx,
-   const Checksum& checksum);
-#endif // ENABLE_MESSAGE_DIGEST
-protected:
-  bool executeInternal();
+  bool checkChecksum(const std::shared_ptr<DownloadContext>& dctx,
+                     const Checksum& checksum);
 
-  bool shouldInflateContentEncoding
-  (const SharedHandle<HttpResponse>& httpResponse);
+protected:
+  bool executeInternal() CXX11_OVERRIDE;
+
+  bool shouldInflateContentEncoding(HttpResponse* httpResponse);
 
 public:
-  HttpResponseCommand(cuid_t cuid,
-                      const SharedHandle<Request>& req,
-                      const SharedHandle<FileEntry>& fileEntry,
+  HttpResponseCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
+                      const std::shared_ptr<FileEntry>& fileEntry,
                       RequestGroup* requestGroup,
-                      const SharedHandle<HttpConnection>& httpConnection,
-                      DownloadEngine* e,
-                      const SharedHandle<SocketCore>& s);
+                      const std::shared_ptr<HttpConnection>& httpConnection,
+                      DownloadEngine* e, const std::shared_ptr<SocketCore>& s);
   ~HttpResponseCommand();
 };
 

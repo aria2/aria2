@@ -40,30 +40,27 @@
 namespace aria2 {
 
 RequestGroupEntry::RequestGroupEntry(RequestGroup* requestGroup,
-                                     Command* nextCommand):
-  requestGroup_(requestGroup),
-  nextCommand_(nextCommand)
+                                     std::unique_ptr<Command> nextCommand)
+    : requestGroup_(requestGroup), nextCommand_(std::move(nextCommand))
 {
   requestGroup_->increaseNumCommand();
 }
 
-RequestGroupEntry::~RequestGroupEntry()
+RequestGroupEntry::~RequestGroupEntry() { requestGroup_->decreaseNumCommand(); }
+
+const std::unique_ptr<Command>& RequestGroupEntry::getNextCommand() const
 {
-  requestGroup_->decreaseNumCommand();
-  delete nextCommand_;
+  return nextCommand_;
 }
 
-Command* RequestGroupEntry::popNextCommand()
+std::unique_ptr<Command> RequestGroupEntry::popNextCommand()
 {
-  Command* temp = nextCommand_;
-  nextCommand_ = 0;
-  return temp;
+  return std::move(nextCommand_);
 }
 
-void RequestGroupEntry::pushNextCommand(Command* nextCommand)
+void RequestGroupEntry::pushNextCommand(std::unique_ptr<Command> nextCommand)
 {
-  delete nextCommand_;
-  nextCommand_ = nextCommand;
+  nextCommand_ = std::move(nextCommand);
 }
 
 } // namespace aria2

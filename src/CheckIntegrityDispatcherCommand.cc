@@ -43,23 +43,22 @@
 
 namespace aria2 {
 
-CheckIntegrityDispatcherCommand::CheckIntegrityDispatcherCommand
-(cuid_t cuid,
- const SharedHandle<CheckIntegrityMan>& fileAllocMan,
- DownloadEngine* e)
-  : SequentialDispatcherCommand<CheckIntegrityEntry>(cuid, fileAllocMan, e)
+CheckIntegrityDispatcherCommand::CheckIntegrityDispatcherCommand(
+    cuid_t cuid, CheckIntegrityMan* fileAllocMan, DownloadEngine* e)
+    : SequentialDispatcherCommand<CheckIntegrityEntry>{cuid, fileAllocMan, e}
 {
   setStatusRealtime();
 }
 
-Command* CheckIntegrityDispatcherCommand::createCommand
-(const SharedHandle<CheckIntegrityEntry>& entry)
+std::unique_ptr<Command>
+CheckIntegrityDispatcherCommand::createCommand(CheckIntegrityEntry* entry)
 {
   cuid_t newCUID = getDownloadEngine()->newCUID();
-  A2_LOG_INFO(fmt("CUID#%" PRId64 " - Dispatching CheckIntegrityCommand CUID#%" PRId64 ".",
+  A2_LOG_INFO(fmt("CUID#%" PRId64 " - Dispatching CheckIntegrityCommand "
+                  "CUID#%" PRId64 ".",
                   getCuid(), newCUID));
-  return new CheckIntegrityCommand
-    (newCUID, entry->getRequestGroup(), getDownloadEngine(), entry);
+  return make_unique<CheckIntegrityCommand>(newCUID, entry->getRequestGroup(),
+                                            getDownloadEngine(), entry);
 }
 
 } // namespace aria2

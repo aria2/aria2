@@ -7,7 +7,7 @@
 
 namespace aria2 {
 
-class GroupIdTest:public CppUnit::TestFixture {
+class GroupIdTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(GroupIdTest);
   CPPUNIT_TEST(testCreate);
@@ -16,11 +16,9 @@ class GroupIdTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testToHex);
   CPPUNIT_TEST(testToAbbrevHex);
   CPPUNIT_TEST_SUITE_END();
+
 public:
-  void setUp()
-  {
-    GroupId::clear();
-  }
+  void setUp() { GroupId::clear(); }
 
   void testCreate();
   void testToNumericId();
@@ -29,11 +27,11 @@ public:
   void testToAbbrevHex();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( GroupIdTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(GroupIdTest);
 
 void GroupIdTest::testCreate()
 {
-  SharedHandle<GroupId> gid = GroupId::create();
+  std::shared_ptr<GroupId> gid = GroupId::create();
   CPPUNIT_ASSERT(gid);
   CPPUNIT_ASSERT(0 != gid->getNumericId());
   CPPUNIT_ASSERT(!GroupId::import(gid->getNumericId()));
@@ -69,14 +67,11 @@ void GroupIdTest::testToNumericId()
 void GroupIdTest::testExpandUnique()
 {
   a2_gid_t gid;
-  SharedHandle<GroupId> ids[] = {
-    GroupId::import(0xff80000000010000LL),
-    GroupId::import(0xff80000000020001LL),
-    GroupId::import(0xfff8000000030000LL)
-  };
-  for(SharedHandle<GroupId>* i = vbegin(ids), *eoi = vend(ids); i != eoi;
-      ++i) {
-    CPPUNIT_ASSERT(*i);
+  std::shared_ptr<GroupId> ids[] = {GroupId::import(0xff80000000010000LL),
+                                    GroupId::import(0xff80000000020001LL),
+                                    GroupId::import(0xfff8000000030000LL)};
+  for (const auto& i : ids) {
+    CPPUNIT_ASSERT(i);
   }
 
   CPPUNIT_ASSERT_EQUAL((int)GroupId::ERR_NOT_UNIQUE,
@@ -85,9 +80,9 @@ void GroupIdTest::testExpandUnique()
   CPPUNIT_ASSERT_EQUAL((int)GroupId::ERR_INVALID,
                        GroupId::expandUnique(gid, "ffg"));
 
-  CPPUNIT_ASSERT_EQUAL((int)GroupId::ERR_INVALID,
-                       GroupId::expandUnique(gid,
-                                             std::string(17, 'a').c_str()));
+  CPPUNIT_ASSERT_EQUAL(
+      (int)GroupId::ERR_INVALID,
+      GroupId::expandUnique(gid, std::string(17, 'a').c_str()));
 
   CPPUNIT_ASSERT_EQUAL((int)GroupId::ERR_INVALID,
                        GroupId::expandUnique(gid, ""));

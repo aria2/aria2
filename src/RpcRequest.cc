@@ -38,34 +38,22 @@ namespace aria2 {
 
 namespace rpc {
 
-RpcRequest::RpcRequest()
-  : jsonRpc(false)
-{}
+RpcRequest::RpcRequest() : jsonRpc{false} {}
 
-RpcRequest::RpcRequest(const std::string& methodName,
-                       const SharedHandle<List>& params)
-  : methodName(methodName), params(params), jsonRpc(false)
-{}
-
-RpcRequest::RpcRequest(const std::string& methodName,
-                       const SharedHandle<List>& params,
-                       const SharedHandle<ValueBase>& id)
-  : methodName(methodName), params(params), id(id), jsonRpc(false)
-{}
-
-RpcRequest::RpcRequest(const RpcRequest& c)
-  : methodName(c.methodName), params(c.params), id(c.id), jsonRpc(c.jsonRpc)
-{}
-
-RpcRequest::~RpcRequest() {}
-
-RpcRequest& RpcRequest::operator=(const RpcRequest& c)
+RpcRequest::RpcRequest(std::string methodName, std::unique_ptr<List> params)
+    : methodName{std::move(methodName)},
+      params{std::move(params)},
+      jsonRpc{false}
 {
-  if(this != &c) {
-    methodName = c.methodName;
-    params = c.params;
-  }
-  return *this;
+}
+
+RpcRequest::RpcRequest(std::string methodName, std::unique_ptr<List> params,
+                       std::unique_ptr<ValueBase> id, bool jsonRpc)
+    : methodName{std::move(methodName)},
+      params{std::move(params)},
+      id{std::move(id)},
+      jsonRpc{jsonRpc}
+{
 }
 
 } // namespace rpc

@@ -48,63 +48,50 @@ namespace aria2 {
 namespace xml {
 
 namespace {
-void mlStartElement
-(void* userData,
- const xmlChar* localname,
- const xmlChar* prefix,
- const xmlChar* nsUri,
- int numNamespaces,
- const xmlChar** namespaces,
- int numAttrs,
- int numDefaulted,
- const xmlChar** attrs)
+void mlStartElement(void* userData, const xmlChar* localname,
+                    const xmlChar* prefix, const xmlChar* nsUri,
+                    int numNamespaces, const xmlChar** namespaces, int numAttrs,
+                    int numDefaulted, const xmlChar** attrs)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   std::vector<XmlAttr> xmlAttrs;
   const char** pattrs = reinterpret_cast<const char**>(attrs);
-  for(size_t i = 0, max = numAttrs*5; i < max; i += 5) {
+  for (size_t i = 0, max = numAttrs * 5; i < max; i += 5) {
     XmlAttr xmlAttr;
     assert(pattrs[i]);
     xmlAttr.localname = pattrs[i];
-    if(pattrs[i+1]) {
-      xmlAttr.prefix = pattrs[i+1];
+    if (pattrs[i + 1]) {
+      xmlAttr.prefix = pattrs[i + 1];
     }
-    if(attrs[i+2]) {
-      xmlAttr.nsUri = pattrs[i+2];
+    if (attrs[i + 2]) {
+      xmlAttr.nsUri = pattrs[i + 2];
     }
-    xmlAttr.value = pattrs[i+3];
-    xmlAttr.valueLength = pattrs[i+4]-xmlAttr.value;
+    xmlAttr.value = pattrs[i + 3];
+    xmlAttr.valueLength = pattrs[i + 4] - xmlAttr.value;
     xmlAttrs.push_back(xmlAttr);
   }
-  sd->psm->beginElement
-    (reinterpret_cast<const char*>(localname),
-     reinterpret_cast<const char*>(prefix),
-     reinterpret_cast<const char*>(nsUri),
-     xmlAttrs);
-  if(sd->psm->needsCharactersBuffering()) {
+  sd->psm->beginElement(reinterpret_cast<const char*>(localname),
+                        reinterpret_cast<const char*>(prefix),
+                        reinterpret_cast<const char*>(nsUri), xmlAttrs);
+  if (sd->psm->needsCharactersBuffering()) {
     sd->charactersStack.push_front(A2STR::NIL);
   }
 }
 } // namespace
 
 namespace {
-void mlEndElement
-(void* userData,
- const xmlChar* localname,
- const xmlChar* prefix,
- const xmlChar* nsUri)
+void mlEndElement(void* userData, const xmlChar* localname,
+                  const xmlChar* prefix, const xmlChar* nsUri)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   std::string characters;
-  if(sd->psm->needsCharactersBuffering()) {
-    characters = sd->charactersStack.front();
+  if (sd->psm->needsCharactersBuffering()) {
+    characters = std::move(sd->charactersStack.front());
     sd->charactersStack.pop_front();
   }
-  sd->psm->endElement
-    (reinterpret_cast<const char*>(localname),
-     reinterpret_cast<const char*>(prefix),
-     reinterpret_cast<const char*>(nsUri),
-     characters);
+  sd->psm->endElement(reinterpret_cast<const char*>(localname),
+                      reinterpret_cast<const char*>(prefix),
+                      reinterpret_cast<const char*>(nsUri), characters);
 }
 } // namespace
 
@@ -112,84 +99,84 @@ namespace {
 void mlCharacters(void* userData, const xmlChar* ch, int len)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
-  if(sd->psm->needsCharactersBuffering()) {
+  if (sd->psm->needsCharactersBuffering()) {
     sd->charactersStack.front().append(&ch[0], &ch[len]);
   }
 }
 } // namespace
 
 namespace {
-xmlSAXHandler mySAXHandler =
-  {
-    0, // internalSubsetSAXFunc
-    0, // isStandaloneSAXFunc
-    0, // hasInternalSubsetSAXFunc
-    0, // hasExternalSubsetSAXFunc
-    0, // resolveEntitySAXFunc
-    0, // getEntitySAXFunc
-    0, // entityDeclSAXFunc
-    0, // notationDeclSAXFunc
-    0, // attributeDeclSAXFunc
-    0, // elementDeclSAXFunc
-    0, //   unparsedEntityDeclSAXFunc
-    0, //   setDocumentLocatorSAXFunc
-    0, //   startDocumentSAXFunc
-    0, //   endDocumentSAXFunc
-    0, //   startElementSAXFunc
-    0, //   endElementSAXFunc
-    0, //   referenceSAXFunc
-    &mlCharacters, //   charactersSAXFunc
-    0, //   ignorableWhitespaceSAXFunc
-    0, //   processingInstructionSAXFunc
-    0, //   commentSAXFunc
-    0, //   warningSAXFunc
-    0, //   errorSAXFunc
-    0, //   fatalErrorSAXFunc
-    0, //   getParameterEntitySAXFunc
-    0, //   cdataBlockSAXFunc
-    0, //   externalSubsetSAXFunc
-    XML_SAX2_MAGIC, //   unsigned int        initialized
-    0, //   void *      _private
+xmlSAXHandler mySAXHandler = {
+    nullptr,         // internalSubsetSAXFunc
+    nullptr,         // isStandaloneSAXFunc
+    nullptr,         // hasInternalSubsetSAXFunc
+    nullptr,         // hasExternalSubsetSAXFunc
+    nullptr,         // resolveEntitySAXFunc
+    nullptr,         // getEntitySAXFunc
+    nullptr,         // entityDeclSAXFunc
+    nullptr,         // notationDeclSAXFunc
+    nullptr,         // attributeDeclSAXFunc
+    nullptr,         // elementDeclSAXFunc
+    nullptr,         //   unparsedEntityDeclSAXFunc
+    nullptr,         //   setDocumentLocatorSAXFunc
+    nullptr,         //   startDocumentSAXFunc
+    nullptr,         //   endDocumentSAXFunc
+    nullptr,         //   startElementSAXFunc
+    nullptr,         //   endElementSAXFunc
+    nullptr,         //   referenceSAXFunc
+    &mlCharacters,   //   charactersSAXFunc
+    nullptr,         //   ignorableWhitespaceSAXFunc
+    nullptr,         //   processingInstructionSAXFunc
+    nullptr,         //   commentSAXFunc
+    nullptr,         //   warningSAXFunc
+    nullptr,         //   errorSAXFunc
+    nullptr,         //   fatalErrorSAXFunc
+    nullptr,         //   getParameterEntitySAXFunc
+    nullptr,         //   cdataBlockSAXFunc
+    nullptr,         //   externalSubsetSAXFunc
+    XML_SAX2_MAGIC,  //   unsigned int        initialized
+    nullptr,         //   void *      _private
     &mlStartElement, //   startElementNsSAX2Func
-    &mlEndElement, //   endElementNsSAX2Func
-    0, //   xmlStructuredErrorFunc
-  };
+    &mlEndElement,   //   endElementNsSAX2Func
+    nullptr,         //   xmlStructuredErrorFunc
+};
 } // namespace
 
 XmlParser::XmlParser(ParserStateMachine* psm)
-  : psm_(psm),
-    sessionData_(psm),
-    ctx_(xmlCreatePushParserCtxt(&mySAXHandler, &sessionData_, 0, 0, 0)),
-    lastError_(0)
-{}
-
-XmlParser::~XmlParser()
+    : psm_(psm),
+      sessionData_(psm),
+      ctx_(xmlCreatePushParserCtxt(&mySAXHandler, &sessionData_, nullptr, 0,
+                                   nullptr)),
+      lastError_(0)
 {
-  xmlFreeParserCtxt(ctx_);
 }
+
+XmlParser::~XmlParser() { xmlFreeParserCtxt(ctx_); }
 
 ssize_t XmlParser::parseUpdate(const char* data, size_t size)
 {
-  if(lastError_ != 0) {
+  if (lastError_ != 0) {
     return lastError_;
   }
   int rv = xmlParseChunk(ctx_, data, size, 0);
-  if(rv != 0) {
+  if (rv != 0) {
     return lastError_ = ERR_XML_PARSE;
-  } else {
+  }
+  else {
     return size;
   }
 }
 
 ssize_t XmlParser::parseFinal(const char* data, size_t size)
 {
-  if(lastError_ != 0) {
+  if (lastError_ != 0) {
     return lastError_;
   }
   int rv = xmlParseChunk(ctx_, data, size, 1);
-  if(rv != 0) {
+  if (rv != 0) {
     return lastError_ = ERR_XML_PARSE;
-  } else {
+  }
+  else {
     return size;
   }
 }
@@ -198,10 +185,11 @@ int XmlParser::reset()
 {
   psm_->reset();
   sessionData_.reset();
-  int rv = xmlCtxtResetPush(ctx_, 0, 0, 0, 0);
-  if(rv != 0) {
+  int rv = xmlCtxtResetPush(ctx_, nullptr, 0, nullptr, nullptr);
+  if (rv != 0) {
     return lastError_ = ERR_RESET;
-  } else {
+  }
+  else {
     return 0;
   }
 }

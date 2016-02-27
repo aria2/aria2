@@ -35,7 +35,7 @@
 #define D_TIMEGM_H
 
 #ifdef HAVE_CONFIG_H
-#  include "config.h"
+#include "config.h"
 #endif // HAVE_CONFIG_H
 
 #ifdef __cplusplus
@@ -46,7 +46,7 @@ extern "C" {
 
 #ifndef HAVE_TIMEGM
 
-time_t timegm(struct tm *tm);
+time_t timegm(struct tm* tm);
 
 #endif // HAVE_TIMEGM
 

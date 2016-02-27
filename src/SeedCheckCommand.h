@@ -36,7 +36,8 @@
 #define D_SEED_CHECK_COMMAND_H
 
 #include "Command.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -46,30 +47,26 @@ class SeedCriteria;
 class BtRuntime;
 class PieceStorage;
 
-class SeedCheckCommand : public Command
-{
+class SeedCheckCommand : public Command {
 private:
   RequestGroup* requestGroup_;
   DownloadEngine* e_;
-  SharedHandle<PieceStorage> pieceStorage_;
-  SharedHandle<BtRuntime> btRuntime_;
-  SharedHandle<SeedCriteria> seedCriteria_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
+  std::shared_ptr<BtRuntime> btRuntime_;
+  std::unique_ptr<SeedCriteria> seedCriteria_;
   bool checkStarted_;
+
 public:
-  SeedCheckCommand(cuid_t cuid,
-                   RequestGroup* requestGroup,
-                   DownloadEngine* e,
-                   const SharedHandle<SeedCriteria>& seedCriteria);
+  SeedCheckCommand(cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e,
+                   std::unique_ptr<SeedCriteria> seedCriteria);
 
   virtual ~SeedCheckCommand();
 
-  virtual bool execute();
+  virtual bool execute() CXX11_OVERRIDE;
 
-  void setSeedCriteria(const SharedHandle<SeedCriteria>& seedCriteria);
+  void setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime);
 
-  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
-
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+  void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage);
 };
 
 } // namespace aria2

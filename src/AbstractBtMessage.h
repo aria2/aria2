@@ -56,9 +56,9 @@ private:
 
   const char* name_;
 
-  SharedHandle<PieceStorage> pieceStorage_;
+  PieceStorage* pieceStorage_;
 
-  SharedHandle<Peer> peer_;
+  std::shared_ptr<Peer> peer_;
 
   BtMessageDispatcher* dispatcher_;
 
@@ -68,92 +68,65 @@ private:
 
   PeerConnection* peerConnection_;
 
-  SharedHandle<BtMessageValidator> validator_;
+  std::unique_ptr<BtMessageValidator> validator_;
 
   bool metadataGetMode_;
+
 protected:
-  const SharedHandle<PieceStorage>& getPieceStorage() const
-  {
-    return pieceStorage_;
-  }
+  PieceStorage* getPieceStorage() const { return pieceStorage_; }
 
-  PeerConnection* getPeerConnection() const
-  {
-    return peerConnection_;
-  }
+  PeerConnection* getPeerConnection() const { return peerConnection_; }
 
-  BtMessageDispatcher* getBtMessageDispatcher() const
-  {
-    return dispatcher_;
-  }
+  BtMessageDispatcher* getBtMessageDispatcher() const { return dispatcher_; }
 
-  BtRequestFactory* getBtRequestFactory() const
-  {
-    return requestFactory_;
-  }
+  BtRequestFactory* getBtRequestFactory() const { return requestFactory_; }
 
-  BtMessageFactory* getBtMessageFactory() const
-  {
-    return messageFactory_;
-  }
+  BtMessageFactory* getBtMessageFactory() const { return messageFactory_; }
 
-  bool isMetadataGetMode() const
-  {
-    return metadataGetMode_;
-  }
+  bool isMetadataGetMode() const { return metadataGetMode_; }
+
 public:
   AbstractBtMessage(uint8_t id, const char* name);
 
   virtual ~AbstractBtMessage();
 
-  virtual bool isInvalidate() {
-    return invalidate_;
-  }
+  virtual bool isInvalidate() CXX11_OVERRIDE { return invalidate_; }
 
-  void setInvalidate(bool invalidate) {
-    invalidate_ = invalidate;
-  }
+  void setInvalidate(bool invalidate) { invalidate_ = invalidate; }
 
-  virtual bool isUploading() {
-    return uploading_;
-  }
+  virtual bool isUploading() CXX11_OVERRIDE { return uploading_; }
 
-  void setUploading(bool uploading) {
-    uploading_ = uploading;
-  }
+  void setUploading(bool uploading) { uploading_ = uploading; }
 
-  cuid_t getCuid() const {
-    return cuid_;
-  }
+  cuid_t getCuid() const { return cuid_; }
 
-  void setCuid(cuid_t cuid) {
-    cuid_ = cuid;
-  }
+  void setCuid(cuid_t cuid) { cuid_ = cuid; }
 
-  const SharedHandle<Peer>& getPeer() const
+  const std::shared_ptr<Peer>& getPeer() const { return peer_; }
+
+  void setPeer(const std::shared_ptr<Peer>& peer);
+
+  virtual void doReceivedAction() CXX11_OVERRIDE {}
+
+  virtual void validate() CXX11_OVERRIDE;
+
+  virtual void onQueued() CXX11_OVERRIDE {}
+
+  virtual void onAbortOutstandingRequestEvent(
+      const BtAbortOutstandingRequestEvent& event) CXX11_OVERRIDE
   {
-    return peer_;
   }
 
-  void setPeer(const SharedHandle<Peer>& peer);
+  virtual void onCancelSendingPieceEvent(const BtCancelSendingPieceEvent& event)
+      CXX11_OVERRIDE
+  {
+  }
 
-  virtual void doReceivedAction() {}
+  virtual void onChokingEvent(const BtChokingEvent& event) CXX11_OVERRIDE {}
 
-  virtual void validate();
+  void setBtMessageValidator(std::unique_ptr<BtMessageValidator> validator);
 
-  virtual void onQueued() {}
-
-  virtual void onAbortOutstandingRequestEvent
-  (const BtAbortOutstandingRequestEvent& event) {}
-
-  virtual void onCancelSendingPieceEvent
-  (const BtCancelSendingPieceEvent& event) {}
-
-  virtual void onChokingEvent(const BtChokingEvent& event) {}
-
-  void setBtMessageValidator(const SharedHandle<BtMessageValidator>& validator);
-
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+  void setPieceStorage(PieceStorage* pieceStorage);
 
   void setBtMessageDispatcher(BtMessageDispatcher* dispatcher);
 
@@ -163,15 +136,9 @@ public:
 
   void setBtRequestFactory(BtRequestFactory* factory);
 
-  const char* getName() const
-  {
-    return name_;
-  }
+  const char* getName() const { return name_; }
 
-  void enableMetadataGetMode()
-  {
-    metadataGetMode_ = true;
-  }
+  void enableMetadataGetMode() { metadataGetMode_ = true; }
 };
 
 } // namespace aria2

@@ -39,21 +39,21 @@
 
 namespace aria2 {
 
-class DHTAnnouncePeerReplyMessage:public DHTResponseMessage {
+class DHTAnnouncePeerReplyMessage : public DHTResponseMessage {
 public:
-  DHTAnnouncePeerReplyMessage(const SharedHandle<DHTNode>& localNode,
-                              const SharedHandle<DHTNode>& remoteNode,
+  DHTAnnouncePeerReplyMessage(const std::shared_ptr<DHTNode>& localNode,
+                              const std::shared_ptr<DHTNode>& remoteNode,
                               const std::string& transactionID);
 
   virtual ~DHTAnnouncePeerReplyMessage();
 
-  virtual void doReceivedAction();
+  virtual void doReceivedAction() CXX11_OVERRIDE;
 
-  virtual SharedHandle<Dict> getResponse();
+  virtual std::unique_ptr<Dict> getResponse() CXX11_OVERRIDE;
 
-  virtual const std::string& getMessageType() const;
+  virtual const std::string& getMessageType() const CXX11_OVERRIDE;
 
-  virtual void accept(DHTMessageCallback* callback);
+  virtual void accept(DHTMessageCallback* callback) CXX11_OVERRIDE;
 
   static const std::string ANNOUNCE_PEER;
 };

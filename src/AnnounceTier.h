@@ -40,8 +40,6 @@
 #include <string>
 #include <deque>
 
-#include "SharedHandle.h"
-
 namespace aria2 {
 
 class AnnounceTier {
@@ -59,13 +57,13 @@ public:
   AnnounceEvent event;
   std::deque<std::string> urls;
 
-  AnnounceTier(const std::deque<std::string>& urls);
+  AnnounceTier(std::deque<std::string> urls);
 
   ~AnnounceTier();
 
   // Don't allow copying
-  AnnounceTier(const AnnounceTier&);
-  AnnounceTier& operator=(const AnnounceTier&);
+  AnnounceTier(const AnnounceTier&) = delete;
+  AnnounceTier& operator=(const AnnounceTier&) = delete;
 
   void nextEvent();
 

@@ -48,54 +48,61 @@
 #include "SimpleRandomizer.h"
 #include "array_fun.h"
 #include "fmt.h"
+#include "BtRequestMessage.h"
 
 namespace aria2 {
 
 DefaultBtRequestFactory::DefaultBtRequestFactory()
-  : dispatcher_(0),
-    messageFactory_(0),
-    cuid_(0)
-{}
+    : pieceStorage_(nullptr),
+      dispatcher_(nullptr),
+      messageFactory_(nullptr),
+      cuid_(0)
+{
+}
 
 DefaultBtRequestFactory::~DefaultBtRequestFactory() {}
 
-void DefaultBtRequestFactory::addTargetPiece(const SharedHandle<Piece>& piece)
+void DefaultBtRequestFactory::addTargetPiece(
+    const std::shared_ptr<Piece>& piece)
 {
   pieces_.push_back(piece);
 }
 
 namespace {
-class AbortCompletedPieceRequest
-{
+class AbortCompletedPieceRequest {
 private:
   BtMessageDispatcher* dispatcher_;
-public:
-  AbortCompletedPieceRequest(BtMessageDispatcher* dispatcher):
-    dispatcher_(dispatcher) {}
 
-  void operator()(const SharedHandle<Piece>& piece)
+public:
+  AbortCompletedPieceRequest(BtMessageDispatcher* dispatcher)
+      : dispatcher_(dispatcher)
   {
-    if(piece->pieceComplete()) {
+  }
+
+  void operator()(const std::shared_ptr<Piece>& piece)
+  {
+    if (piece->pieceComplete()) {
       dispatcher_->doAbortOutstandingRequestAction(piece);
     }
   }
 };
 } // namespace
 
-void DefaultBtRequestFactory::removeCompletedPiece() {
+void DefaultBtRequestFactory::removeCompletedPiece()
+{
   std::for_each(pieces_.begin(), pieces_.end(),
                 AbortCompletedPieceRequest(dispatcher_));
   pieces_.erase(std::remove_if(pieces_.begin(), pieces_.end(),
-                              mem_fun_sh(&Piece::pieceComplete)),
-               pieces_.end());
+                               std::mem_fn(&Piece::pieceComplete)),
+                pieces_.end());
 }
 
-void DefaultBtRequestFactory::removeTargetPiece
-(const SharedHandle<Piece>& piece)
+void DefaultBtRequestFactory::removeTargetPiece(
+    const std::shared_ptr<Piece>& piece)
 {
-  pieces_.erase(std::remove_if(pieces_.begin(), pieces_.end(),
-                               derefEqual(piece)),
-                pieces_.end());
+  pieces_.erase(
+      std::remove_if(pieces_.begin(), pieces_.end(), derefEqual(piece)),
+      pieces_.end());
   dispatcher_->doAbortOutstandingRequestAction(piece);
   pieceStorage_->cancelPiece(piece, cuid_);
 }
@@ -103,21 +110,20 @@ void DefaultBtRequestFactory::removeTargetPiece
 namespace {
 class ProcessChokedPiece {
 private:
-  SharedHandle<Peer> peer_;
-  SharedHandle<PieceStorage> pieceStorage_;
+  std::shared_ptr<Peer> peer_;
+  PieceStorage* pieceStorage_;
   cuid_t cuid_;
-public:
-  ProcessChokedPiece(const SharedHandle<Peer>& peer,
-                     const SharedHandle<PieceStorage>& pieceStorage,
-                     cuid_t cuid):
-    peer_(peer),
-    pieceStorage_(pieceStorage),
-    cuid_(cuid)
-  {}
 
-  void operator()(const SharedHandle<Piece>& piece)
+public:
+  ProcessChokedPiece(std::shared_ptr<Peer> peer, PieceStorage* pieceStorage,
+                     cuid_t cuid)
+      : peer_(std::move(peer)), pieceStorage_(pieceStorage), cuid_(cuid)
   {
-    if(!peer_->isInPeerAllowedIndexSet(piece->getIndex())) {
+  }
+
+  void operator()(const std::shared_ptr<Piece>& piece)
+  {
+    if (!peer_->isInPeerAllowedIndexSet(piece->getIndex())) {
       pieceStorage_->cancelPiece(piece, cuid_);
     }
   }
@@ -127,11 +133,12 @@ public:
 namespace {
 class FindChokedPiece {
 private:
-  SharedHandle<Peer> peer_;
-public:
-  FindChokedPiece(const SharedHandle<Peer>& peer):peer_(peer) {}
+  std::shared_ptr<Peer> peer_;
 
-  bool operator()(const SharedHandle<Piece>& piece)
+public:
+  FindChokedPiece(std::shared_ptr<Peer> peer) : peer_(std::move(peer)) {}
+
+  bool operator()(const std::shared_ptr<Piece>& piece)
   {
     return !peer_->isInPeerAllowedIndexSet(piece->getIndex());
   }
@@ -142,107 +149,106 @@ void DefaultBtRequestFactory::doChokedAction()
 {
   std::for_each(pieces_.begin(), pieces_.end(),
                 ProcessChokedPiece(peer_, pieceStorage_, cuid_));
-  pieces_.erase(std::remove_if(pieces_.begin(), pieces_.end(),
-                              FindChokedPiece(peer_)),
-               pieces_.end());
+  pieces_.erase(
+      std::remove_if(pieces_.begin(), pieces_.end(), FindChokedPiece(peer_)),
+      pieces_.end());
 }
 
-void DefaultBtRequestFactory::removeAllTargetPiece() {
-  for(std::deque<SharedHandle<Piece> >::iterator itr = pieces_.begin(),
-        eoi = pieces_.end(); itr != eoi; ++itr) {
-    dispatcher_->doAbortOutstandingRequestAction(*itr);
-    pieceStorage_->cancelPiece(*itr, cuid_);
+void DefaultBtRequestFactory::removeAllTargetPiece()
+{
+  for (auto& elem : pieces_) {
+    dispatcher_->doAbortOutstandingRequestAction(elem);
+    pieceStorage_->cancelPiece(elem, cuid_);
   }
   pieces_.clear();
 }
 
-void DefaultBtRequestFactory::createRequestMessages
-(std::vector<SharedHandle<BtMessage> >& requests, size_t max)
+std::vector<std::unique_ptr<BtRequestMessage>>
+DefaultBtRequestFactory::createRequestMessages(size_t max, bool endGame)
 {
-  if(requests.size() >= max) {
-    return;
+  if (endGame) {
+    return createRequestMessagesOnEndGame(max);
   }
-  size_t getnum = max-requests.size();
-  std::vector<size_t> blockIndexes;
+  auto requests = std::vector<std::unique_ptr<BtRequestMessage>>{};
+  size_t getnum = max - requests.size();
+  auto blockIndexes = std::vector<size_t>{};
   blockIndexes.reserve(getnum);
-  for(std::deque<SharedHandle<Piece> >::iterator itr = pieces_.begin(),
-        eoi = pieces_.end(); itr != eoi && getnum; ++itr) {
-    SharedHandle<Piece>& piece = *itr;
-    if(piece->getMissingUnusedBlockIndex(blockIndexes, getnum)) {
+  for (auto itr = std::begin(pieces_), eoi = std::end(pieces_);
+       itr != eoi && getnum; ++itr) {
+    auto& piece = *itr;
+    if (piece->getMissingUnusedBlockIndex(blockIndexes, getnum)) {
       getnum -= blockIndexes.size();
-      for(std::vector<size_t>::const_iterator i = blockIndexes.begin(),
-            eoi2 = blockIndexes.end(); i != eoi2; ++i) {
-        A2_LOG_DEBUG
-          (fmt("Creating RequestMessage index=%lu, begin=%u,"
-               " blockIndex=%lu",
-               static_cast<unsigned long>(piece->getIndex()),
-               static_cast<unsigned int>((*i)*piece->getBlockLength()),
-               static_cast<unsigned long>(*i)));
-        requests.push_back
-          (messageFactory_->createRequestMessage(piece, *i));
+      for (auto i = std::begin(blockIndexes), eoi2 = std::end(blockIndexes);
+           i != eoi2; ++i) {
+        A2_LOG_DEBUG(
+            fmt("Creating RequestMessage index=%lu, begin=%u,"
+                " blockIndex=%lu",
+                static_cast<unsigned long>(piece->getIndex()),
+                static_cast<unsigned int>((*i) * piece->getBlockLength()),
+                static_cast<unsigned long>(*i)));
+        requests.push_back(messageFactory_->createRequestMessage(piece, *i));
       }
       blockIndexes.clear();
     }
   }
+  return requests;
 }
 
-void DefaultBtRequestFactory::createRequestMessagesOnEndGame
-(std::vector<SharedHandle<BtMessage> >& requests, size_t max)
+std::vector<std::unique_ptr<BtRequestMessage>>
+DefaultBtRequestFactory::createRequestMessagesOnEndGame(size_t max)
 {
-  for(std::deque<SharedHandle<Piece> >::iterator itr = pieces_.begin(),
-        eoi = pieces_.end(); itr != eoi && requests.size() < max; ++itr) {
-    SharedHandle<Piece>& piece = *itr;
+  auto requests = std::vector<std::unique_ptr<BtRequestMessage>>{};
+  for (auto itr = std::begin(pieces_), eoi = std::end(pieces_);
+       itr != eoi && requests.size() < max; ++itr) {
+    auto& piece = *itr;
     const size_t mislen = piece->getBitfieldLength();
-    array_ptr<unsigned char> misbitfield(new unsigned char[mislen]);
+    auto misbitfield = make_unique<unsigned char[]>(mislen);
 
-    piece->getAllMissingBlockIndexes(misbitfield, mislen);
+    piece->getAllMissingBlockIndexes(misbitfield.get(), mislen);
 
-    std::vector<size_t> missingBlockIndexes;
+    auto missingBlockIndexes = std::vector<size_t>{};
     size_t blockIndex = 0;
-    for(size_t i = 0; i < mislen; ++i) {
+    for (size_t i = 0; i < mislen; ++i) {
       unsigned char bits = misbitfield[i];
       unsigned char mask = 128;
-      for(size_t bi = 0; bi < 8; ++bi, mask >>= 1, ++blockIndex) {
-        if(bits & mask) {
+      for (size_t bi = 0; bi < 8; ++bi, mask >>= 1, ++blockIndex) {
+        if (bits & mask) {
           missingBlockIndexes.push_back(blockIndex);
         }
       }
     }
-    std::random_shuffle(missingBlockIndexes.begin(), missingBlockIndexes.end(),
-                        *(SimpleRandomizer::getInstance().get()));
-    for(std::vector<size_t>::const_iterator bitr = missingBlockIndexes.begin(),
-          eoi2 = missingBlockIndexes.end();
-        bitr != eoi2 && requests.size() < max; ++bitr) {
-      const size_t& blockIndex = *bitr;
-      if(!dispatcher_->isOutstandingRequest(piece->getIndex(),
-                                           blockIndex)) {
-        A2_LOG_DEBUG
-          (fmt("Creating RequestMessage index=%lu, begin=%u,"
-               " blockIndex=%lu",
-               static_cast<unsigned long>(piece->getIndex()),
-               static_cast<unsigned int>(blockIndex*piece->getBlockLength()),
-               static_cast<unsigned long>(blockIndex)));
-        requests.push_back(messageFactory_->createRequestMessage
-                           (piece, blockIndex));
+    std::shuffle(std::begin(missingBlockIndexes), std::end(missingBlockIndexes),
+                 *SimpleRandomizer::getInstance());
+    for (auto bitr = std::begin(missingBlockIndexes),
+              eoi2 = std::end(missingBlockIndexes);
+         bitr != eoi2 && requests.size() < max; ++bitr) {
+      size_t blockIndex = *bitr;
+      if (!dispatcher_->isOutstandingRequest(piece->getIndex(), blockIndex)) {
+        A2_LOG_DEBUG(
+            fmt("Creating RequestMessage index=%lu, begin=%u,"
+                " blockIndex=%lu",
+                static_cast<unsigned long>(piece->getIndex()),
+                static_cast<unsigned int>(blockIndex * piece->getBlockLength()),
+                static_cast<unsigned long>(blockIndex)));
+        requests.push_back(
+            messageFactory_->createRequestMessage(piece, blockIndex));
       }
     }
   }
+  return requests;
 }
 
 namespace {
-class CountMissingBlock
-{
+class CountMissingBlock {
 private:
   size_t numMissingBlock_;
+
 public:
-  CountMissingBlock():numMissingBlock_(0) {}
+  CountMissingBlock() : numMissingBlock_(0) {}
 
-  size_t getNumMissingBlock()
-  {
-    return numMissingBlock_;
-  }
+  size_t getNumMissingBlock() { return numMissingBlock_; }
 
-  void operator()(const SharedHandle<Piece>& piece)
+  void operator()(const std::shared_ptr<Piece>& piece)
   {
     numMissingBlock_ += piece->countMissingBlock();
   }
@@ -251,30 +257,31 @@ public:
 
 size_t DefaultBtRequestFactory::countMissingBlock()
 {
-  return std::for_each(pieces_.begin(), pieces_.end(),
-                       CountMissingBlock()).getNumMissingBlock();
+  return std::for_each(pieces_.begin(), pieces_.end(), CountMissingBlock())
+      .getNumMissingBlock();
 }
 
-void DefaultBtRequestFactory::getTargetPieceIndexes
-(std::vector<size_t>& indexes) const
+std::vector<size_t> DefaultBtRequestFactory::getTargetPieceIndexes() const
 {
-  std::transform(pieces_.begin(), pieces_.end(), std::back_inserter(indexes),
-                 mem_fun_sh(&Piece::getIndex));
+  auto res = std::vector<size_t>{};
+  res.reserve(pieces_.size());
+  std::transform(std::begin(pieces_), std::end(pieces_),
+                 std::back_inserter(res), std::mem_fn(&Piece::getIndex));
+  return res;
 }
 
-void DefaultBtRequestFactory::setPieceStorage
-(const SharedHandle<PieceStorage>& pieceStorage)
+void DefaultBtRequestFactory::setPieceStorage(PieceStorage* pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }
 
-void DefaultBtRequestFactory::setPeer(const SharedHandle<Peer>& peer)
+void DefaultBtRequestFactory::setPeer(const std::shared_ptr<Peer>& peer)
 {
   peer_ = peer;
 }
 
-void DefaultBtRequestFactory::setBtMessageDispatcher
-(BtMessageDispatcher* dispatcher)
+void DefaultBtRequestFactory::setBtMessageDispatcher(
+    BtMessageDispatcher* dispatcher)
 {
   dispatcher_ = dispatcher;
 }

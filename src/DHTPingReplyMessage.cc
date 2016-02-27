@@ -43,31 +43,25 @@ namespace aria2 {
 
 const std::string DHTPingReplyMessage::PING("ping");
 
-DHTPingReplyMessage::DHTPingReplyMessage
-(const SharedHandle<DHTNode>& localNode,
- const SharedHandle<DHTNode>& remoteNode,
- const unsigned char* id,
- const std::string& transactionID):
-  DHTResponseMessage(localNode, remoteNode, transactionID)
+DHTPingReplyMessage::DHTPingReplyMessage(
+    const std::shared_ptr<DHTNode>& localNode,
+    const std::shared_ptr<DHTNode>& remoteNode, const unsigned char* id,
+    const std::string& transactionID)
+    : DHTResponseMessage(localNode, remoteNode, transactionID)
 {
   memcpy(id_, id, DHT_ID_LENGTH);
 }
 
-DHTPingReplyMessage::~DHTPingReplyMessage() {}
-
 void DHTPingReplyMessage::doReceivedAction() {}
 
-SharedHandle<Dict> DHTPingReplyMessage::getResponse()
+std::unique_ptr<Dict> DHTPingReplyMessage::getResponse()
 {
-  SharedHandle<Dict> rDict = Dict::g();
+  auto rDict = Dict::g();
   rDict->put(DHTMessage::ID, String::g(id_, DHT_ID_LENGTH));
   return rDict;
 }
 
-const std::string& DHTPingReplyMessage::getMessageType() const
-{
-  return PING;
-}
+const std::string& DHTPingReplyMessage::getMessageType() const { return PING; }
 
 void DHTPingReplyMessage::accept(DHTMessageCallback* callback)
 {

@@ -33,11 +33,14 @@
  */
 /* copyright --> */
 
+// clang-format off
+
 #define TEXT_DIR                                                        \
   _(" -d, --dir=DIR                The directory to store the downloaded file.")
 #define TEXT_OUT                                                        \
-  _(" -o, --out=FILE               The file name of the downloaded file. When -Z\n"\
-    "                              option is used, this option is ignored.")
+  _(" -o, --out=FILE               The file name of the downloaded file. When \n" \
+    "                              the -Z option is used, this option will be \n" \
+    "                              ignored.")
 #define TEXT_LOG                                                        \
   _(" -l, --log=LOG                The file name of the log file. If '-' is\n" \
     "                              specified, log is written to stdout.")
@@ -48,13 +51,13 @@
     "                              \"/dev/null\".")
 #define TEXT_SPLIT                                                      \
   _(" -s, --split=N                Download a file using N connections. If more\n" \
-    "                              than N URLs are given, first N URLs are used and\n" \
+    "                              than N URIs are given, first N URIs are used and\n" \
     "                              remaining URLs are used for backup. If less than\n" \
-    "                              N URLs are given, those URLs are used more than\n" \
+    "                              N URIs are given, those URLs are used more than\n" \
     "                              once so that N connections total are made\n" \
     "                              simultaneously. The number of connections to the\n" \
-    "                              same host is restricted by\n"        \
-    "                              --max-connection-per-server option. See also\n" \
+    "                              same host is restricted by the \n"        \
+    "                              --max-connection-per-server option. See also the\n" \
     "                              --min-split-size option.")
 #define TEXT_RETRY_WAIT                                                 \
   _(" --retry-wait=SEC             Set the seconds to wait between retries. \n" \
@@ -65,28 +68,28 @@
 #define TEXT_MAX_TRIES                                                  \
   _(" -m, --max-tries=N            Set number of tries. 0 means unlimited.")
 #define TEXT_HTTP_PROXY                                                 \
-  _(" --http-proxy=PROXY           Use this proxy server for HTTP. To erase\n"\
+  _(" --http-proxy=PROXY           Use a proxy server for HTTP. To override a\n"\
     "                              previously defined proxy, use \"\".\n"   \
-    "                              See also  --all-proxy option.\n"     \
-    "                              This affects all URLs.")
+    "                              See also the --all-proxy option.\n"     \
+    "                              This affects all http downloads.")
 #define TEXT_HTTPS_PROXY                                                \
-  _(" --https-proxy=PROXY          Use this proxy server for HTTPS. To erase\n"  \
+  _(" --https-proxy=PROXY          Use a proxy server for HTTPS. To override a \n"  \
     "                              previously defined proxy, use \"\".\n" \
-    "                              See also  --all-proxy option.\n"     \
-    "                              This affects all URLs.")
+    "                              See also the --all-proxy option.\n"     \
+    "                              This affects all https downloads.")
 #define TEXT_FTP_PROXY                                                  \
-  _(" --ftp-proxy=PROXY            Use this proxy server for FTP. To erase previously\n"    \
-    "                              defined proxy, use \"\".\n" \
-    "                              See also  --all-proxy option.\n"     \
-    "                              This affects all URLs.")
-#define TEXT_ALL_PROXY                                                  \
-  _(" --all-proxy=PROXY            Use this proxy server for all protocols. To erase\n" \
+  _(" --ftp-proxy=PROXY            Use a proxy server for FTP. To override a \n" \
     "                              previously defined proxy, use \"\".\n" \
-    "                              You can override this setting and specify a\n" \
-    "                              proxy server for a particular protocol using\n" \
+    "                              See also the --all-proxy option.\n"     \
+    "                              This affects all ftp downloads.")
+#define TEXT_ALL_PROXY                                                  \
+  _(" --all-proxy=PROXY            Use a proxy server for all protocols. To override\n" \
+    "                              a previously defined proxy, use \"\".\n" \
+    "                              You also can override this setting and specify a\n" \
+    "                              proxy server for a particular protocol using the\n" \
     "                              --http-proxy, --https-proxy and --ftp-proxy\n" \
     "                              options.\n"                          \
-    "                              This affects all URLs.")
+    "                              This affects all downloads.")
 #define TEXT_HTTP_USER                                                  \
   _(" --http-user=USER             Set HTTP user. This affects all URLs.")
 #define TEXT_HTTP_PASSWD                                                \
@@ -94,9 +97,11 @@
 #define TEXT_PROXY_METHOD                                               \
   _(" --proxy-method=METHOD        Set the method to use in proxy request.")
 #define TEXT_REFERER                                                    \
-  _(" --referer=REFERER            Set Referer. This affects all URLs. If \"*\" is\n" \
-    "                              given, each request URI is used as a referer.\n" \
-    "                              This may be useful when used with -P option.")
+  _(" --referer=REFERER            Set an http referrrer (Referer). This affects\n" \
+    "                              all http/https downloads. If \"*\" is given,\n" \
+    "                              the download URI is also used as the referrer.\n" \
+    "                              This may be useful when used together with\n" \
+    "                              the -P option.")
 #define TEXT_FTP_USER                                                   \
   _(" --ftp-user=USER              Set FTP user. This affects all URLs.")
 #define TEXT_FTP_PASSWD                                                 \
@@ -147,7 +152,7 @@
   _(" --no-file-allocation-limit=SIZE No file allocation is made for files whose\n" \
     "                              size is smaller than SIZE.\n"        \
     "                              You can append K or M(1K = 1024, 1M = 1024K).")
-# define TEXT_ENABLE_DIRECT_IO                                          \
+#define TEXT_ENABLE_DIRECT_IO                                          \
   _(" --enable-direct-io[=true|false] Enable directI/O, which lowers cpu usage while\n" \
     "                              allocating files.\n"                 \
     "                              Turn off if you encounter any error")
@@ -222,6 +227,8 @@
   _(" -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads.")
 #define TEXT_NO_NETRC                                           \
   _(" -n, --no-netrc[=true|false]  Disables netrc support.")
+#define TEXT_NETRC_PATH                                           \
+  _(" --netrc-path=FILE            Specify the path to the netrc file.")
 #define TEXT_INPUT_FILE                                                 \
   _(" -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n" \
     "                              multiple URIs for a single entity: separate\n" \
@@ -268,8 +275,9 @@
     "                              mentioned in it.\n"                  \
     "                              If mem is specified, a torrent file is not\n" \
     "                              written to the disk, but is just kept in memory.\n" \
-    "                              If false is specified, the action mentioned above\n" \
-    "                              is not taken.")
+    "                              If false is specified, the .torrent file is\n" \
+    "                              downloaded to the disk, but is not parsed as a\n" \
+    "                              torrent and its contents are not downloaded.")
 #define TEXT_LISTEN_PORT                                                \
   _(" --listen-port=PORT...        Set TCP port number for BitTorrent downloads.\n" \
     "                              Multiple ports can be specified by using ',',\n" \
@@ -343,8 +351,9 @@
     "                              download speed in some cases.\n"     \
     "                              You can append K or M(1K = 1024, 1M = 1024K).")
 #define TEXT_BT_MAX_OPEN_FILES                                          \
-  _(" --bt-max-open-files=NUM      Specify maximum number of files to open in each\n" \
-    "                              BitTorrent download.")
+  _(" --bt-max-open-files=NUM      Specify maximum number of files to open in\n" \
+    "                              multi-file BitTorrent/Metalink downloads\n" \
+    "                              globally.")
 #define TEXT_BT_SEED_UNVERIFIED                                         \
   _(" --bt-seed-unverified[=true|false] Seed previously downloaded files without\n" \
     "                              verifying piece hashes.")
@@ -387,8 +396,10 @@
     "                              mentioned in it.\n"                  \
     "                              If mem is specified, a metalink file is not\n" \
     "                              written to the disk, but is just kept in memory.\n" \
-    "                              If false is specified, the action mentioned above\n" \
-    "                              is not taken.")
+    "                              If false is specified, the .metalink file is\n" \
+    "                              downloaded to the disk, but is not parsed as a\n" \
+    "                              metalink file and its contents are not\n" \
+    "                              downloaded.")
 #define TEXT_METALINK_ENABLE_UNIQUE_PROTOCOL                            \
   _(" --metalink-enable-unique-protocol[=true|false] If true is given and several\n" \
     "                              protocols are available for a mirror in a metalink\n" \
@@ -444,7 +455,9 @@
     "                              a single byte, then force the download to fail.\n" \
     "                              Specify 0 to disable this option.\n" \
     "                              This options is effective only when using\n" \
-    "                              HTTP/FTP servers.")
+    "                              HTTP/FTP servers. The number of retry attempt is\n" \
+    "                              counted toward --max-tries, so it should be\n" \
+    "                              configured too.")
 #define TEXT_URI_SELECTOR                                               \
   _(" --uri-selector=SELECTOR      Specify URI selection algorithm.\n"  \
     "                              If 'inorder' is given, URI is tried in the order\n" \
@@ -592,6 +605,13 @@
 #define TEXT_INTERFACE                                                  \
   _(" --interface=INTERFACE        Bind sockets to given interface. You can specify\n" \
     "                              interface name, IP address and hostname.")
+#define TEXT_MULTIPLE_INTERFACE                                         \
+  _(" --multiple-interface=INTERFACES Comma separated list of interfaces to bind\n" \
+    "                              sockets to. Requests will be splited among the\n" \
+    "                              interfaces to achieve link aggregation. You can\n" \
+    "                              specify interface name, IP address and hostname.\n" \
+    "                              If --interface is used, this option will be\n" \
+    "                              ignored.")
 #define TEXT_DISABLE_IPV6                               \
   _(" --disable-ipv6[=true|false]  Disable IPv6.")
 #define TEXT_BT_SAVE_METADATA                                           \
@@ -627,21 +647,21 @@
   _(" --reuse-uri[=true|false]     Reuse already used URIs if no unused URIs are\n" \
     "                              left.")
 #define TEXT_ALL_PROXY_USER                                             \
-  _(" --all-proxy-user=USER        Set user for --all-proxy option.")
+  _(" --all-proxy-user=USER        Set user for --all-proxy.")
 #define TEXT_ALL_PROXY_PASSWD                                           \
-  _(" --all-proxy-passwd=PASSWD    Set password for --all-proxy option.")
+  _(" --all-proxy-passwd=PASSWD    Set password for --all-proxy.")
 #define TEXT_HTTP_PROXY_USER                                            \
-  _(" --http-proxy-user=USER       Set user for --http-proxy option.")
+  _(" --http-proxy-user=USER       Set user for --http-proxy.")
 #define TEXT_HTTP_PROXY_PASSWD                                          \
-  _(" --http-proxy-passwd=PASSWD   Set password for --http-proxy option.")
+  _(" --http-proxy-passwd=PASSWD   Set password for --http-proxy.")
 #define TEXT_HTTPS_PROXY_USER                                           \
-  _(" --https-proxy-user=USER      Set user for --https-proxy option.")
+  _(" --https-proxy-user=USER      Set user for --https-proxy.")
 #define TEXT_HTTPS_PROXY_PASSWD                                         \
-  _(" --https-proxy-passwd=PASSWD  Set password for --https-proxy option.")
+  _(" --https-proxy-passwd=PASSWD  Set password for --https-proxy.")
 #define TEXT_FTP_PROXY_USER                                             \
-  _(" --ftp-proxy-user=USER        Set user for --ftp-proxy option.")
+  _(" --ftp-proxy-user=USER        Set user for --ftp-proxy.")
 #define TEXT_FTP_PROXY_PASSWD                                           \
-  _(" --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option.")
+  _(" --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy.")
 #define TEXT_REMOVE_CONTROL_FILE                \
   _(" --remove-control-file[=true|false] Remove control file before download. Using\n" \
     "                              with --allow-overwrite=true, download always\n" \
@@ -766,19 +786,23 @@
     "                              option is useful when the system does not have\n" \
     "                              /etc/resolv.conf and user does not have the\n" \
     "                              permission to create it.")
-#define TEXT_ENABLE_RPC                                             \
-  _(" --enable-rpc[=true|false]    Enable JSON-RPC/XML-RPC server.\n"   \
-    "                              It is strongly recommended to set username and\n" \
-    "                              password using --rpc-user and --rpc-passwd\n" \
-    "                              option. See also --rpc-listen-port option.")
+#define TEXT_ENABLE_RPC                                               \
+  _(" --enable-rpc[=true|false]    Enable JSON-RPC/XML-RPC server.\n" \
+    "                              It is strongly recommended to set secret\n" \
+    "                              authorization token using --rpc-secret option.\n" \
+    "                              See also --rpc-listen-port option.")
 #define TEXT_RPC_MAX_REQUEST_SIZE                                   \
   _(" --rpc-max-request-size=SIZE  Set max size of JSON-RPC/XML-RPC request. If aria2\n" \
     "                              detects the request is more than SIZE bytes, it\n" \
     "                              drops connection.")
 #define TEXT_RPC_USER                               \
-  _(" --rpc-user=USER              Set JSON-RPC/XML-RPC user.")
+  _(" --rpc-user=USER              Set JSON-RPC/XML-RPC user. This option will be\n" \
+    "                              deprecated in the future release. Migrate to\n" \
+    "                              --rpc-secret option as soon as possible.")
 #define TEXT_RPC_PASSWD                                     \
-  _(" --rpc-passwd=PASSWD          Set JSON-RPC/XML-RPC password.")
+  _(" --rpc-passwd=PASSWD          Set JSON-RPC/XML-RPC password. This option will\n" \
+    "                              be deprecated in the future release. Migrate to\n" \
+    "                              --rpc-secret option as soon as possible.")
 #define TEXT_RPC_LISTEN_ALL                                         \
   _(" --rpc-listen-all[=true|false] Listen incoming JSON-RPC/XML-RPC requests on all\n" \
     "                              network interfaces. If false is given, listen only\n" \
@@ -918,8 +942,10 @@
 #define TEXT_FORCE_SAVE                         \
   _(" --force-save[=true|false]    Save download with --save-session option even\n" \
     "                              if the download is completed or removed. This\n" \
-    "                              may be useful to save BitTorrent seeding which\n" \
-    "                              is recognized as completed state.")
+    "                              option also saves control file in that\n" \
+    "                              situations. This may be useful to save\n" \
+    "                              BitTorrent seeding which is recognized as\n" \
+    "                              completed state.")
 #define TEXT_DISK_CACHE                         \
   _(" --disk-cache=SIZE            Enable disk cache. If SIZE is 0, the disk cache\n" \
     "                              is disabled. This feature caches the downloaded\n" \
@@ -952,3 +978,93 @@
     "                              specified by --save-session option every SEC\n" \
     "                              seconds. If 0 is given, file will be saved only\n" \
     "                              when aria2 exits.")
+#define TEXT_ENABLE_COLOR                                               \
+  _(" --enable-color[=true|false]  Enable color output for a terminal.")
+#define TEXT_RPC_SECRET                                                 \
+  _(" --rpc-secret=TOKEN           Set RPC secret authorization token.")
+#define TEXT_DSCP                                                       \
+  _(" --dscp=DSCP                  Set DSCP value in outgoing IP packets of\n" \
+    "                              BitTorrent traffic for QoS. This parameter sets\n" \
+    "                              only DSCP bits in TOS field of IP packets,\n" \
+    "                              not the whole field. If you take values\n" \
+    "                              from /usr/include/netinet/ip.h divide them by 4\n" \
+    "                              (otherwise values would be incorrect, e.g. your\n" \
+    "                              CS1 class would turn into CS4). If you take\n" \
+    "                              commonly used values from RFC, network vendors'\n" \
+    "                              documentation, Wikipedia or any other source,\n" \
+    "                              use them as they are.")
+#define TEXT_RLIMIT_NOFILE                                              \
+  _(" --rlimit-nofile=NUM          Set the soft limit of open file descriptors.\n" \
+    "                              This open will only have effect when:\n" \
+    "                                a) The system supports it (posix)\n" \
+    "                                b) The limit does not exceed the hard limit.\n" \
+    "                                c) The specified limit is larger than the\n" \
+    "                                   current soft limit.\n" \
+    "                              This is equivalent to setting nofile via ulimit,\n" \
+    "                              except that it will never decrease the limit.")
+#define TEXT_PAUSE_METADATA                  \
+  _(" --pause-metadata[=true|false]\n"       \
+    "                              Pause downloads created as a result of metadata\n" \
+    "                              download. There are 3 types of metadata\n" \
+    "                              downloads in aria2: (1) downloading .torrent\n" \
+    "                              file. (2) downloading torrent metadata using\n" \
+    "                              magnet link. (3) downloading metalink file.\n" \
+    "                              These metadata downloads will generate downloads\n" \
+    "                              using their metadata. This option pauses these\n" \
+    "                              subsequent downloads. This option is effective\n" \
+    "                              only when --enable-rpc=true is given.")
+#define TEXT_BT_DETACH_SEED_ONLY                \
+  _(" --bt-detach-seed-only[=true|false]\n"     \
+    "                              Exclude seed only downloads when counting\n" \
+    "                              concurrent active downloads (See -j option).\n" \
+    "                              This means that if -j3 is given and this option\n" \
+    "                              is turned on and 3 downloads are active and one\n" \
+    "                              of those enters seed mode, then it is excluded\n" \
+    "                              from active download count (thus it becomes 2),\n" \
+    "                              and the next download waiting in queue gets\n" \
+    "                              started. But be aware that seeding item is still\n" \
+    "                              recognized as active download in RPC method.")
+#define TEXT_MIN_TLS_VERSION                                            \
+  _(" --min-tls-version=VERSION    Specify minimum SSL/TLS version to enable.")
+#define TEXT_BT_FORCE_ENCRYPTION                                        \
+  _(" --bt-force-encryption[=true|false]\n"                             \
+    "                              Requires BitTorrent message payload encryption\n" \
+    "                              with arc4. This is a shorthand of\n" \
+    "                              --bt-require-crypto --bt-min-crypto-level=arc4.\n" \
+    "                              If true is given, deny legacy BitTorrent\n" \
+    "                              handshake and only use Obfuscation handshake and\n" \
+    "                              always encrypt message payload.")
+#define TEXT_SSH_HOST_KEY_MD                                            \
+  _(" --ssh-host-key-md=TYPE=DIGEST\n"                                  \
+    "                              Set checksum for SSH host public key. TYPE is\n" \
+    "                              hash type. The supported hash type is sha-1 or\n" \
+    "                              md5. DIGEST is hex digest. For example:\n" \
+    "                              sha-1=b030503d4de4539dc7885e6f0f5e256704edf4c3\n" \
+    "                              This option can be used to validate server's\n" \
+    "                              public key when SFTP is used. If this option is\n" \
+    "                              not set, which is default, no validation takes\n" \
+    "                              place.")
+#define TEXT_SOCKET_RECV_BUFFER_SIZE                                    \
+  _(" --socket-recv-buffer-size=SIZE\n"                                 \
+    "                              Set the maximum socket receive buffer in bytes.\n" \
+    "                              Specifing 0 will disable this option. This value\n" \
+    "                              will be set to socket file descriptor using\n" \
+    "                              SO_RCVBUF socket option with setsockopt() call.")
+#define TEXT_BT_ENABLE_HOOK_AFTER_HASH_CHECK                            \
+  _(" --bt-enable-hook-after-hash-check[=true|false] Allow hook command invocation\n" \
+    "                              after hash check (see -V option) in BitTorrent\n" \
+    "                              download. By default, when hash check succeeds,\n" \
+    "                              the command given by --on-bt-download-complete\n" \
+    "                              is executed. To disable this action, give false\n" \
+    "                              to this option.")
+#define TEXT_MAX_MMAP_LIMIT                                             \
+  _(" --max-mmap-limit=SIZE        Set the maximum file size to enable mmap (see\n" \
+    "                              --enable-mmap option). The file size is\n" \
+    "                              determined by the sum of all files contained in\n" \
+    "                              one download. For example, if a download\n" \
+    "                              contains 5 files, then file size is the total\n" \
+    "                              size of those files. If file size is strictly\n" \
+    "                              greater than the size specified in this option,\n" \
+    "                              mmap will be disabled.")
+
+// clang-format on

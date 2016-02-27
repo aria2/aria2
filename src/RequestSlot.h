@@ -43,64 +43,31 @@
 namespace aria2 {
 
 class RequestSlot {
-private:
-  Timer dispatchedTime_;
-  size_t index_;
-  int32_t begin_;
-  int32_t length_;
-  size_t blockIndex_;
-
-  // This is the piece whose index is index of this RequestSlot has.
-  // To detect duplicate RequestSlot, we have to find the piece using
-  // PieceStorage::getPiece() repeatedly. It turns out that this process
-  // takes time(about 1.7% of processing time). To reduce it, we put piece here
-  // at the construction of RequestSlot as a cache.
-  SharedHandle<Piece> piece_;
-
-  // inlined for performance reason
-  void copy(const RequestSlot& requestSlot)
-  {
-    dispatchedTime_ = requestSlot.dispatchedTime_;
-    index_ = requestSlot.index_;
-    begin_ = requestSlot.begin_;
-    length_ = requestSlot.length_;
-    blockIndex_ = requestSlot.blockIndex_;
-    piece_ = requestSlot.piece_;
-  }
 public:
-
   RequestSlot(size_t index, int32_t begin, int32_t length, size_t blockIndex,
-              const SharedHandle<Piece>& piece = SharedHandle<Piece>()):
-    dispatchedTime_(global::wallclock()),
-    index_(index), begin_(begin), length_(length), blockIndex_(blockIndex),
-    piece_(piece) {}
-
-  RequestSlot(const RequestSlot& requestSlot):
-    dispatchedTime_(requestSlot.dispatchedTime_),
-    index_(requestSlot.index_),
-    begin_(requestSlot.begin_),
-    length_(requestSlot.length_),
-    blockIndex_(requestSlot.blockIndex_),
-    piece_(requestSlot.piece_) {}
-
-  RequestSlot():dispatchedTime_(0), index_(0), begin_(0), length_(0),
-                blockIndex_(0)
-  {}
-
-  ~RequestSlot() {}
-
-  RequestSlot& operator=(const RequestSlot& requestSlot)
+              std::shared_ptr<Piece> piece = nullptr)
+      : dispatchedTime_(global::wallclock()),
+        index_(index),
+        begin_(begin),
+        length_(length),
+        blockIndex_(blockIndex),
+        piece_(std::move(piece))
   {
-    if(this != &requestSlot) {
-      copy(requestSlot);
-    }
-    return *this;
+  }
+
+  RequestSlot()
+      : dispatchedTime_(Timer::zero()),
+        index_(0),
+        begin_(0),
+        length_(0),
+        blockIndex_(0)
+  {
   }
 
   bool operator==(const RequestSlot& requestSlot) const
   {
-    return index_ == requestSlot.index_ && begin_ == requestSlot.begin_
-      && length_ == requestSlot.length_;
+    return index_ == requestSlot.index_ && begin_ == requestSlot.begin_ &&
+           length_ == requestSlot.length_;
   }
 
   bool operator!=(const RequestSlot& requestSlot) const
@@ -110,16 +77,15 @@ public:
 
   bool operator<(const RequestSlot& requestSlot) const
   {
-    if(index_ == requestSlot.index_) {
+    if (index_ == requestSlot.index_) {
       return begin_ < requestSlot.begin_;
-    } else {
+    }
+    else {
       return index_ < requestSlot.index_;
     }
   }
 
-  void setDispatchedTime(time_t secFromEpoch);
-
-  bool isTimeout(time_t timeoutSec) const;
+  bool isTimeout(const std::chrono::seconds& t) const;
 
   size_t getIndex() const { return index_; }
   void setIndex(size_t index) { index_ = index; }
@@ -133,14 +99,24 @@ public:
   size_t getBlockIndex() const { return blockIndex_; }
   void setBlockIndex(size_t blockIndex) { blockIndex_ = blockIndex; }
 
-  const SharedHandle<Piece>& getPiece() const
-  {
-    return piece_;
-  }
+  const std::shared_ptr<Piece>& getPiece() const { return piece_; }
 
-  static RequestSlot nullSlot;
+  // For unit test
+  void setDispatchedTime(Timer t) { dispatchedTime_ = std::move(t); }
 
-  static bool isNull(const RequestSlot& requestSlot);
+private:
+  Timer dispatchedTime_;
+  size_t index_;
+  int32_t begin_;
+  int32_t length_;
+  size_t blockIndex_;
+
+  // This is the piece whose index is index of this RequestSlot has.
+  // To detect duplicate RequestSlot, we have to find the piece using
+  // PieceStorage::getPiece() repeatedly. It turns out that this process
+  // takes time(about 1.7% of processing time). To reduce it, we put piece here
+  // at the construction of RequestSlot as a cache.
+  std::shared_ptr<Piece> piece_;
 };
 
 } // namespace aria2

@@ -39,8 +39,7 @@
 
 #include <set>
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -48,26 +47,20 @@ typedef uint64_t a2_gid_t;
 
 class GroupId {
 public:
-  static SharedHandle<GroupId> create();
-  static SharedHandle<GroupId> import(a2_gid_t n);
+  static std::shared_ptr<GroupId> create();
+  static std::shared_ptr<GroupId> import(a2_gid_t n);
   static void clear();
-  enum {
-    ERR_NOT_UNIQUE = -1,
-    ERR_NOT_FOUND = -2,
-    ERR_INVALID = -3
-  };
+  enum { ERR_NOT_UNIQUE = -1, ERR_NOT_FOUND = -2, ERR_INVALID = -3 };
   static int expandUnique(a2_gid_t& n, const char* hex);
   static int toNumericId(a2_gid_t& n, const char* hex);
   static std::string toHex(a2_gid_t n);
   static std::string toAbbrevHex(a2_gid_t n);
 
   ~GroupId();
-  a2_gid_t getNumericId() const
-  {
-    return gid_;
-  }
+  a2_gid_t getNumericId() const { return gid_; }
   std::string toHex() const;
   std::string toAbbrevHex() const;
+
 private:
   static std::set<a2_gid_t> set_;
 

@@ -38,19 +38,18 @@
 
 namespace aria2 {
 
-BtBitfieldMessageValidator::BtBitfieldMessageValidator
-(const BtBitfieldMessage* message, size_t numPiece)
-  : message_(message),
-    numPiece_(numPiece)
-{}
+BtBitfieldMessageValidator::BtBitfieldMessageValidator(
+    const BtBitfieldMessage* message, size_t numPiece)
+    : message_(message), numPiece_(numPiece)
+{
+}
 
 BtBitfieldMessageValidator::~BtBitfieldMessageValidator() {}
 
 void BtBitfieldMessageValidator::validate()
 {
   bittorrent::checkBitfield(message_->getBitfield(),
-                            message_->getBitfieldLength(),
-                            numPiece_);
+                            message_->getBitfieldLength(), numPiece_);
 }
 
 } // namespace aria2

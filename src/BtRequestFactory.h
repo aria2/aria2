@@ -38,21 +38,20 @@
 #include "common.h"
 
 #include <vector>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
 class Piece;
-class BtMessage;
+class BtRequestMessage;
 
 class BtRequestFactory {
 public:
   virtual ~BtRequestFactory() {}
 
-  virtual void addTargetPiece(const SharedHandle<Piece>& piece) = 0;
+  virtual void addTargetPiece(const std::shared_ptr<Piece>& piece) = 0;
 
-  virtual void removeTargetPiece(const SharedHandle<Piece>& piece) = 0;
+  virtual void removeTargetPiece(const std::shared_ptr<Piece>& piece) = 0;
 
   virtual void removeAllTargetPiece() = 0;
 
@@ -66,25 +65,18 @@ public:
 
   /**
    * Creates RequestMessage objects associated to the pieces added by
-   * addTargetPiece() and returns them.
-   * The number of objects returned is capped by max.
+   * addTargetPiece() and returns them.  The number of objects
+   * returned is capped by max.  If |endGame| is true, returns
+   * requests in end game mode.
    */
-  virtual void createRequestMessages
-  (std::vector<SharedHandle<BtMessage> >& requests, size_t max) = 0;
+  virtual std::vector<std::unique_ptr<BtRequestMessage>>
+  createRequestMessages(size_t max, bool endGame) = 0;
 
   /**
-   * Use this method in end game mode.
-   *
+   * Returns the list of index of pieces added using addTargetPiece()
+   * into indexes.
    */
-  virtual void createRequestMessagesOnEndGame
-  (std::vector<SharedHandle<BtMessage> >& requests, size_t max) = 0;
-
-  /**
-   * Stores the list of index of pieces added using addTargetPiece() into
-   * indexes.
-   */
-  virtual void getTargetPieceIndexes(std::vector<size_t>& indexes) const = 0;
-
+  virtual std::vector<size_t> getTargetPieceIndexes() const = 0;
 };
 
 } // namespace aria2

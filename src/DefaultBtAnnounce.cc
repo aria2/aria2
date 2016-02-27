@@ -57,161 +57,165 @@
 
 namespace aria2 {
 
-DefaultBtAnnounce::DefaultBtAnnounce
-(const SharedHandle<DownloadContext>& downloadContext,
- const Option* option)
-  : downloadContext_(downloadContext),
-    trackers_(0),
-    prevAnnounceTimer_(0),
-    interval_(DEFAULT_ANNOUNCE_INTERVAL),
-    minInterval_(DEFAULT_ANNOUNCE_INTERVAL),
-    userDefinedInterval_(0),
-    complete_(0),
-    incomplete_(0),
-    announceList_(bittorrent::getTorrentAttrs(downloadContext)->announceList),
-    option_(option),
-    randomizer_(SimpleRandomizer::getInstance()),
-    tcpPort_(0)
-{}
-
-DefaultBtAnnounce::~DefaultBtAnnounce() {
+DefaultBtAnnounce::DefaultBtAnnounce(DownloadContext* downloadContext,
+                                     const Option* option)
+    : downloadContext_{downloadContext},
+      trackers_(0),
+      prevAnnounceTimer_(Timer::zero()),
+      interval_(DEFAULT_ANNOUNCE_INTERVAL),
+      minInterval_(DEFAULT_ANNOUNCE_INTERVAL),
+      userDefinedInterval_(0_s),
+      complete_(0),
+      incomplete_(0),
+      announceList_(bittorrent::getTorrentAttrs(downloadContext)->announceList),
+      option_(option),
+      randomizer_(SimpleRandomizer::getInstance().get()),
+      tcpPort_(0)
+{
 }
 
-bool DefaultBtAnnounce::isDefaultAnnounceReady() {
-  return
-    (trackers_ == 0 &&
-     prevAnnounceTimer_.
-     difference(global::wallclock()) >= (userDefinedInterval_==0?
-                                       minInterval_:userDefinedInterval_) &&
-     !announceList_.allTiersFailed());
-}
+DefaultBtAnnounce::~DefaultBtAnnounce() {}
 
-bool DefaultBtAnnounce::isStoppedAnnounceReady() {
+bool DefaultBtAnnounce::isDefaultAnnounceReady()
+{
   return (trackers_ == 0 &&
-          btRuntime_->isHalt() &&
+          prevAnnounceTimer_.difference(global::wallclock()) >=
+              (userDefinedInterval_.count() == 0 ? minInterval_
+                                                 : userDefinedInterval_) &&
+          !announceList_.allTiersFailed());
+}
+
+bool DefaultBtAnnounce::isStoppedAnnounceReady()
+{
+  return (trackers_ == 0 && btRuntime_->isHalt() &&
           announceList_.countStoppedAllowedTier());
 }
 
-bool DefaultBtAnnounce::isCompletedAnnounceReady() {
-  return (trackers_ == 0 &&
-          pieceStorage_->allDownloadFinished() &&
+bool DefaultBtAnnounce::isCompletedAnnounceReady()
+{
+  return (trackers_ == 0 && pieceStorage_->allDownloadFinished() &&
           announceList_.countCompletedAllowedTier());
 }
 
-bool DefaultBtAnnounce::isAnnounceReady() {
-  return
-    isStoppedAnnounceReady() ||
-    isCompletedAnnounceReady() ||
-    isDefaultAnnounceReady();
+bool DefaultBtAnnounce::isAnnounceReady()
+{
+  return isStoppedAnnounceReady() || isCompletedAnnounceReady() ||
+         isDefaultAnnounceReady();
 }
 
 namespace {
 bool uriHasQuery(const std::string& uri)
 {
   uri_split_result us;
-  if(uri_split(&us, uri.c_str()) == 0) {
+  if (uri_split(&us, uri.c_str()) == 0) {
     return (us.field_set & (1 << USR_QUERY)) && us.fields[USR_QUERY].len > 0;
-  } else {
+  }
+  else {
     return false;
   }
 }
 } // namespace
 
-bool DefaultBtAnnounce::adjustAnnounceList() {
-  if(isStoppedAnnounceReady()) {
-    if(!announceList_.currentTierAcceptsStoppedEvent()) {
+bool DefaultBtAnnounce::adjustAnnounceList()
+{
+  if (isStoppedAnnounceReady()) {
+    if (!announceList_.currentTierAcceptsStoppedEvent()) {
       announceList_.moveToStoppedAllowedTier();
     }
     announceList_.setEvent(AnnounceTier::STOPPED);
-  } else if(isCompletedAnnounceReady()) {
-    if(!announceList_.currentTierAcceptsCompletedEvent()) {
+  }
+  else if (isCompletedAnnounceReady()) {
+    if (!announceList_.currentTierAcceptsCompletedEvent()) {
       announceList_.moveToCompletedAllowedTier();
     }
     announceList_.setEvent(AnnounceTier::COMPLETED);
-  } else if(isDefaultAnnounceReady()) {
+  }
+  else if (isDefaultAnnounceReady()) {
     // If download completed before "started" event is sent to a tracker,
     // we change the event to something else to prevent us from
     // sending "completed" event.
-    if(pieceStorage_->allDownloadFinished() &&
-       announceList_.getEvent() == AnnounceTier::STARTED) {
+    if (pieceStorage_->allDownloadFinished() &&
+        announceList_.getEvent() == AnnounceTier::STARTED) {
       announceList_.setEvent(AnnounceTier::STARTED_AFTER_COMPLETION);
     }
-  } else {
+  }
+  else {
     return false;
   }
   return true;
 }
 
-std::string DefaultBtAnnounce::getAnnounceUrl() {
-  if(!adjustAnnounceList()) {
+std::string DefaultBtAnnounce::getAnnounceUrl()
+{
+  if (!adjustAnnounceList()) {
     return A2STR::NIL;
   }
   int numWant = 50;
-  if(!btRuntime_->lessThanMinPeers() || btRuntime_->isHalt()) {
+  if (!btRuntime_->lessThanMinPeers() || btRuntime_->isHalt()) {
     numWant = 0;
   }
   NetStat& stat = downloadContext_->getNetStat();
   int64_t left =
-    pieceStorage_->getTotalLength()-pieceStorage_->getCompletedLength();
+      pieceStorage_->getTotalLength() - pieceStorage_->getCompletedLength();
   // Use last 8 bytes of peer ID as a key
   const size_t keyLen = 8;
   std::string uri = announceList_.getAnnounce();
   uri += uriHasQuery(uri) ? "&" : "?";
-  uri += fmt("info_hash=%s&"
-             "peer_id=%s&"
-             "uploaded=%" PRId64 "&"
-             "downloaded=%" PRId64 "&"
-             "left=%" PRId64 "&"
-             "compact=1&"
-             "key=%s&"
-             "numwant=%d&"
-             "no_peer_id=1",
-             util::torrentPercentEncode
-             (bittorrent::getInfoHash(downloadContext_),
-              INFO_HASH_LENGTH).c_str(),
-             util::torrentPercentEncode
-             (bittorrent::getStaticPeerId(), PEER_ID_LENGTH).c_str(),
-             stat.getSessionUploadLength(),
-             stat.getSessionDownloadLength(),
-             left,
-             util::torrentPercentEncode
-             (bittorrent::getStaticPeerId()+PEER_ID_LENGTH-keyLen,
-              keyLen).c_str(),
-             numWant);
-  if(tcpPort_) {
+  uri +=
+      fmt("info_hash=%s&"
+          "peer_id=%s&"
+          "uploaded=%" PRId64 "&"
+          "downloaded=%" PRId64 "&"
+          "left=%" PRId64 "&"
+          "compact=1&"
+          "key=%s&"
+          "numwant=%d&"
+          "no_peer_id=1",
+          util::torrentPercentEncode(bittorrent::getInfoHash(downloadContext_),
+                                     INFO_HASH_LENGTH).c_str(),
+          util::torrentPercentEncode(bittorrent::getStaticPeerId(),
+                                     PEER_ID_LENGTH).c_str(),
+          stat.getSessionUploadLength(), stat.getSessionDownloadLength(), left,
+          util::torrentPercentEncode(bittorrent::getStaticPeerId() +
+                                         PEER_ID_LENGTH - keyLen,
+                                     keyLen).c_str(),
+          numWant);
+  if (tcpPort_) {
     uri += fmt("&port=%u", tcpPort_);
   }
   const char* event = announceList_.getEventString();
-  if(event[0]) {
+  if (event[0]) {
     uri += "&event=";
     uri += event;
   }
-  if(!trackerId_.empty()) {
+  if (!trackerId_.empty()) {
     uri += "&trackerid=";
     uri += util::torrentPercentEncode(trackerId_);
   }
-  if(option_->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
+  if (option_->getAsBool(PREF_BT_FORCE_ENCRYPTION) ||
+      option_->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
     uri += "&requirecrypto=1";
-  } else {
+  }
+  else {
     uri += "&supportcrypto=1";
   }
-  if(!option_->blank(PREF_BT_EXTERNAL_IP)) {
+  if (!option_->blank(PREF_BT_EXTERNAL_IP)) {
     uri += "&ip=";
     uri += option_->get(PREF_BT_EXTERNAL_IP);
   }
   return uri;
 }
 
-SharedHandle<UDPTrackerRequest> DefaultBtAnnounce::createUDPTrackerRequest
-(const std::string& remoteAddr, uint16_t remotePort, uint16_t localPort)
+std::shared_ptr<UDPTrackerRequest> DefaultBtAnnounce::createUDPTrackerRequest(
+    const std::string& remoteAddr, uint16_t remotePort, uint16_t localPort)
 {
-  if(!adjustAnnounceList()) {
-    return SharedHandle<UDPTrackerRequest>();
+  if (!adjustAnnounceList()) {
+    return nullptr;
   }
   NetStat& stat = downloadContext_->getNetStat();
   int64_t left =
-    pieceStorage_->getTotalLength()-pieceStorage_->getCompletedLength();
-  SharedHandle<UDPTrackerRequest> req(new UDPTrackerRequest());
+      pieceStorage_->getTotalLength() - pieceStorage_->getCompletedLength();
+  auto req = std::make_shared<UDPTrackerRequest>();
   req->remoteAddr = remoteAddr;
   req->remotePort = remotePort;
   req->action = UDPT_ACT_ANNOUNCE;
@@ -221,7 +225,7 @@ SharedHandle<UDPTrackerRequest> DefaultBtAnnounce::createUDPTrackerRequest
   req->downloaded = stat.getSessionDownloadLength();
   req->left = left;
   req->uploaded = stat.getSessionUploadLength();
-  switch(announceList_.getEvent()) {
+  switch (announceList_.getEvent()) {
   case AnnounceTier::STARTED:
   case AnnounceTier::STARTED_AFTER_COMPLETION:
     req->event = UDPT_EVT_STARTED;
@@ -235,19 +239,21 @@ SharedHandle<UDPTrackerRequest> DefaultBtAnnounce::createUDPTrackerRequest
   default:
     req->event = 0;
   }
-  if(!option_->blank(PREF_BT_EXTERNAL_IP)) {
+  if (!option_->blank(PREF_BT_EXTERNAL_IP)) {
     unsigned char dest[16];
-    if(net::getBinAddr(dest, option_->get(PREF_BT_EXTERNAL_IP)) == 4) {
+    if (net::getBinAddr(dest, option_->get(PREF_BT_EXTERNAL_IP)) == 4) {
       memcpy(&req->ip, dest, 4);
-    } else {
+    }
+    else {
       req->ip = 0;
     }
-  } else {
+  }
+  else {
     req->ip = 0;
   }
   req->key = randomizer_->getRandomNumber(INT32_MAX);
   int numWant = 50;
-  if(!btRuntime_->lessThanMinPeers() || btRuntime_->isHalt()) {
+  if (!btRuntime_->lessThanMinPeers() || btRuntime_->isHalt()) {
     numWant = 0;
   }
   req->numWant = numWant;
@@ -256,159 +262,160 @@ SharedHandle<UDPTrackerRequest> DefaultBtAnnounce::createUDPTrackerRequest
   return req;
 }
 
-void DefaultBtAnnounce::announceStart() {
-  ++trackers_;
-}
+void DefaultBtAnnounce::announceStart() { ++trackers_; }
 
-void DefaultBtAnnounce::announceSuccess() {
+void DefaultBtAnnounce::announceSuccess()
+{
   trackers_ = 0;
   announceList_.announceSuccess();
 }
 
-void DefaultBtAnnounce::announceFailure() {
+void DefaultBtAnnounce::announceFailure()
+{
   trackers_ = 0;
   announceList_.announceFailure();
 }
 
-bool DefaultBtAnnounce::isAllAnnounceFailed() {
+bool DefaultBtAnnounce::isAllAnnounceFailed()
+{
   return announceList_.allTiersFailed();
 }
 
-void DefaultBtAnnounce::resetAnnounce() {
+void DefaultBtAnnounce::resetAnnounce()
+{
   prevAnnounceTimer_ = global::wallclock();
   announceList_.resetTier();
 }
 
-void
-DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
-                                           size_t trackerResponseLength)
+void DefaultBtAnnounce::processAnnounceResponse(
+    const unsigned char* trackerResponse, size_t trackerResponseLength)
 {
   A2_LOG_DEBUG("Now processing tracker response.");
-  SharedHandle<ValueBase> decodedValue =
-    bencode2::decode(trackerResponse, trackerResponseLength);
+  auto decodedValue = bencode2::decode(trackerResponse, trackerResponseLength);
   const Dict* dict = downcast<Dict>(decodedValue);
-  if(!dict) {
+  if (!dict) {
     throw DL_ABORT_EX(MSG_NULL_TRACKER_RESPONSE);
   }
-  const String* failure = downcast<String>(dict->get(BtAnnounce::FAILURE_REASON));
-  if(failure) {
-    throw DL_ABORT_EX
-      (fmt(EX_TRACKER_FAILURE, failure->s().c_str()));
+  const String* failure =
+      downcast<String>(dict->get(BtAnnounce::FAILURE_REASON));
+  if (failure) {
+    throw DL_ABORT_EX(fmt(EX_TRACKER_FAILURE, failure->s().c_str()));
   }
   const String* warn = downcast<String>(dict->get(BtAnnounce::WARNING_MESSAGE));
-  if(warn) {
+  if (warn) {
     A2_LOG_WARN(fmt(MSG_TRACKER_WARNING_MESSAGE, warn->s().c_str()));
   }
   const String* tid = downcast<String>(dict->get(BtAnnounce::TRACKER_ID));
-  if(tid) {
+  if (tid) {
     trackerId_ = tid->s();
     A2_LOG_DEBUG(fmt("Tracker ID:%s", trackerId_.c_str()));
   }
   const Integer* ival = downcast<Integer>(dict->get(BtAnnounce::INTERVAL));
-  if(ival && ival->i() > 0) {
-    interval_ = ival->i();
-    A2_LOG_DEBUG(fmt("Interval:%ld", static_cast<long int>(interval_)));
+  if (ival && ival->i() > 0) {
+    interval_ = std::chrono::seconds(ival->i());
+    A2_LOG_DEBUG(fmt("Interval:%ld", static_cast<long int>(interval_.count())));
   }
   const Integer* mival = downcast<Integer>(dict->get(BtAnnounce::MIN_INTERVAL));
-  if(mival && mival->i() > 0) {
-    minInterval_ = mival->i();
-    A2_LOG_DEBUG(fmt("Min interval:%ld", static_cast<long int>(minInterval_)));
+  if (mival && mival->i() > 0) {
+    minInterval_ = std::chrono::seconds(mival->i());
+    A2_LOG_DEBUG(
+        fmt("Min interval:%ld", static_cast<long int>(minInterval_.count())));
     minInterval_ = std::min(minInterval_, interval_);
-  } else {
+  }
+  else {
     // Use interval as a minInterval if minInterval is not supplied.
     minInterval_ = interval_;
   }
   const Integer* comp = downcast<Integer>(dict->get(BtAnnounce::COMPLETE));
-  if(comp) {
+  if (comp && comp->i() >= 0) {
     complete_ = comp->i();
     A2_LOG_DEBUG(fmt("Complete:%d", complete_));
   }
   const Integer* incomp = downcast<Integer>(dict->get(BtAnnounce::INCOMPLETE));
-  if(incomp) {
+  if (incomp && incomp->i() >= 0) {
     incomplete_ = incomp->i();
     A2_LOG_DEBUG(fmt("Incomplete:%d", incomplete_));
   }
-  const SharedHandle<ValueBase>& peerData = dict->get(BtAnnounce::PEERS);
-  if(!peerData) {
+  auto peerData = dict->get(BtAnnounce::PEERS);
+  if (!peerData) {
     A2_LOG_INFO(MSG_NO_PEER_LIST_RECEIVED);
-  } else {
-    if(!btRuntime_->isHalt() && btRuntime_->lessThanMinPeers()) {
-      std::vector<SharedHandle<Peer> > peers;
+  }
+  else {
+    if (!btRuntime_->isHalt() && btRuntime_->lessThanMinPeers()) {
+      std::vector<std::shared_ptr<Peer>> peers;
       bittorrent::extractPeer(peerData, AF_INET, std::back_inserter(peers));
       peerStorage_->addPeer(peers);
     }
   }
-  const SharedHandle<ValueBase>& peer6Data = dict->get(BtAnnounce::PEERS6);
-  if(!peer6Data) {
+  auto peer6Data = dict->get(BtAnnounce::PEERS6);
+  if (!peer6Data) {
     A2_LOG_INFO("No peers6 received.");
-  } else {
-    if(!btRuntime_->isHalt() && btRuntime_->lessThanMinPeers()) {
-      std::vector<SharedHandle<Peer> > peers;
+  }
+  else {
+    if (!btRuntime_->isHalt() && btRuntime_->lessThanMinPeers()) {
+      std::vector<std::shared_ptr<Peer>> peers;
       bittorrent::extractPeer(peer6Data, AF_INET6, std::back_inserter(peers));
       peerStorage_->addPeer(peers);
     }
   }
 }
 
-void DefaultBtAnnounce::processUDPTrackerResponse
-(const SharedHandle<UDPTrackerRequest>& req)
+void DefaultBtAnnounce::processUDPTrackerResponse(
+    const std::shared_ptr<UDPTrackerRequest>& req)
 {
-  const SharedHandle<UDPTrackerReply>& reply = req->reply;
+  const std::shared_ptr<UDPTrackerReply>& reply = req->reply;
   A2_LOG_DEBUG("Now processing UDP tracker response.");
-  if(reply->interval > 0) {
-    minInterval_ = reply->interval;
-    A2_LOG_DEBUG(fmt("Min interval:%ld", static_cast<long int>(minInterval_)));
+  if (reply->interval > 0) {
+    minInterval_ = std::chrono::seconds(reply->interval);
+    A2_LOG_DEBUG(
+        fmt("Min interval:%ld", static_cast<long int>(minInterval_.count())));
     interval_ = minInterval_;
   }
   complete_ = reply->seeders;
   A2_LOG_DEBUG(fmt("Complete:%d", reply->seeders));
   incomplete_ = reply->leechers;
   A2_LOG_DEBUG(fmt("Incomplete:%d", reply->leechers));
-  if(!btRuntime_->isHalt() && btRuntime_->lessThanMinPeers()) {
-    for(std::vector<std::pair<std::string, uint16_t> >::iterator i =
-          reply->peers.begin(), eoi = reply->peers.end(); i != eoi;
-        ++i) {
-      peerStorage_->addPeer(SharedHandle<Peer>(new Peer((*i).first,
-                                                        (*i).second)));
+  if (!btRuntime_->isHalt() && btRuntime_->lessThanMinPeers()) {
+    for (auto& elem : reply->peers) {
+      peerStorage_->addPeer(std::make_shared<Peer>(elem.first, elem.second));
     }
   }
 }
 
-bool DefaultBtAnnounce::noMoreAnnounce() {
-  return (trackers_ == 0 &&
-          btRuntime_->isHalt() &&
+bool DefaultBtAnnounce::noMoreAnnounce()
+{
+  return (trackers_ == 0 && btRuntime_->isHalt() &&
           !announceList_.countStoppedAllowedTier());
 }
 
-void DefaultBtAnnounce::shuffleAnnounce() {
-  announceList_.shuffle();
-}
+void DefaultBtAnnounce::shuffleAnnounce() { announceList_.shuffle(); }
 
-void DefaultBtAnnounce::setRandomizer
-(const SharedHandle<Randomizer>& randomizer)
+void DefaultBtAnnounce::setRandomizer(Randomizer* randomizer)
 {
   randomizer_ = randomizer;
 }
 
-void DefaultBtAnnounce::setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
+void DefaultBtAnnounce::setBtRuntime(
+    const std::shared_ptr<BtRuntime>& btRuntime)
 {
   btRuntime_ = btRuntime;
 }
 
-void DefaultBtAnnounce::setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage)
+void DefaultBtAnnounce::setPieceStorage(
+    const std::shared_ptr<PieceStorage>& pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }
 
-void DefaultBtAnnounce::setPeerStorage
-(const SharedHandle<PeerStorage>& peerStorage)
+void DefaultBtAnnounce::setPeerStorage(
+    const std::shared_ptr<PeerStorage>& peerStorage)
 {
   peerStorage_ = peerStorage;
 }
 
-void DefaultBtAnnounce::overrideMinInterval(time_t interval)
+void DefaultBtAnnounce::overrideMinInterval(std::chrono::seconds interval)
 {
-  minInterval_ = interval;
+  minInterval_ = std::move(interval);
 }
 
 } // namespace aria2

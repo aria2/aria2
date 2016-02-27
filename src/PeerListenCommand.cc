@@ -52,39 +52,36 @@
 
 namespace aria2 {
 
-PeerListenCommand::PeerListenCommand
-(cuid_t cuid,
- DownloadEngine* e,
- int family)
-  : Command(cuid),
-    e_(e),
-    family_(family)
-{}
+PeerListenCommand::PeerListenCommand(cuid_t cuid, DownloadEngine* e, int family)
+    : Command(cuid), e_(e), family_(family)
+{
+}
 
 PeerListenCommand::~PeerListenCommand() {}
 
 bool PeerListenCommand::bindPort(uint16_t& port, SegList<int>& sgl)
 {
-  socket_.reset(new SocketCore());
+  socket_ = std::make_shared<SocketCore>();
   std::vector<uint16_t> ports;
-  while(sgl.hasNext()) {
+  while (sgl.hasNext()) {
     ports.push_back(sgl.next());
   }
-  std::random_shuffle(ports.begin(), ports.end(),
-                      *SimpleRandomizer::getInstance().get());
+  std::shuffle(ports.begin(), ports.end(), *SimpleRandomizer::getInstance());
   const int ipv = (family_ == AF_INET) ? 4 : 6;
-  for(std::vector<uint16_t>::const_iterator i = ports.begin(),
-        eoi = ports.end(); i != eoi; ++i) {
+  for (std::vector<uint16_t>::const_iterator i = ports.begin(),
+                                             eoi = ports.end();
+       i != eoi; ++i) {
     port = *i;
     try {
-      socket_->bind(0, port, family_);
+      socket_->bind(nullptr, port, family_);
       socket_->beginListen();
-      A2_LOG_NOTICE(fmt(_("IPv%d BitTorrent: listening on TCP port %u"),
-                        ipv, port));
+      A2_LOG_NOTICE(
+          fmt(_("IPv%d BitTorrent: listening on TCP port %u"), ipv, port));
       return true;
-    } catch(RecoverableException& ex) {
-      A2_LOG_ERROR_EX(fmt("IPv%d BitTorrent: failed to bind TCP port %u",
-                          ipv, port), ex);
+    }
+    catch (RecoverableException& ex) {
+      A2_LOG_ERROR_EX(
+          fmt("IPv%d BitTorrent: failed to bind TCP port %u", ipv, port), ex);
       socket_->closeConnection();
     }
   }
@@ -93,43 +90,39 @@ bool PeerListenCommand::bindPort(uint16_t& port, SegList<int>& sgl)
 
 uint16_t PeerListenCommand::getPort() const
 {
-  if(!socket_) {
+  if (!socket_) {
     return 0;
-  } else {
-    std::pair<std::string, uint16_t> addr;
-    socket_->getAddrInfo(addr);
-    return addr.second;
   }
+
+  return socket_->getAddrInfo().port;
 }
 
-bool PeerListenCommand::execute() {
-  if(e_->isHaltRequested() || e_->getRequestGroupMan()->downloadFinished()) {
+bool PeerListenCommand::execute()
+{
+  if (e_->isHaltRequested() || e_->getRequestGroupMan()->downloadFinished()) {
     return true;
   }
-  for(int i = 0; i < 3 && socket_->isReadable(0); ++i) {
-    SharedHandle<SocketCore> peerSocket;
+  for (int i = 0; i < 3 && socket_->isReadable(0); ++i) {
+    std::shared_ptr<SocketCore> peerSocket;
     try {
       peerSocket = socket_->acceptConnection();
-      std::pair<std::string, uint16_t> peerInfo;
-      peerSocket->getPeerInfo(peerInfo);
+      peerSocket->applyIpDscp();
+      auto endpoint = peerSocket->getPeerInfo();
 
-      SharedHandle<Peer> peer(new Peer(peerInfo.first, peerInfo.second, true));
+      auto peer = std::make_shared<Peer>(endpoint.addr, endpoint.port, true);
       cuid_t cuid = e_->newCUID();
-      Command* command =
-        new ReceiverMSEHandshakeCommand(cuid, peer, e_, peerSocket);
-      e_->addCommand(command);
+      e_->addCommand(
+          make_unique<ReceiverMSEHandshakeCommand>(cuid, peer, e_, peerSocket));
       A2_LOG_DEBUG(fmt("Accepted the connection from %s:%u.",
-                       peer->getIPAddress().c_str(),
-                       peer->getPort()));
-      A2_LOG_DEBUG(fmt("Added CUID#%" PRId64 " to receive BitTorrent/MSE handshake.",
-                       cuid));
-    } catch(RecoverableException& ex) {
-      A2_LOG_DEBUG_EX(fmt(MSG_ACCEPT_FAILURE,
-                          getCuid()),
-                      ex);
+                       peer->getIPAddress().c_str(), peer->getPort()));
+      A2_LOG_DEBUG(fmt(
+          "Added CUID#%" PRId64 " to receive BitTorrent/MSE handshake.", cuid));
+    }
+    catch (RecoverableException& ex) {
+      A2_LOG_DEBUG_EX(fmt(MSG_ACCEPT_FAILURE, getCuid()), ex);
     }
   }
-  e_->addCommand(this);
+  e_->addCommand(std::unique_ptr<Command>(this));
   return false;
 }
 

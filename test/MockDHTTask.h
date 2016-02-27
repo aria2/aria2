@@ -10,26 +10,24 @@
 
 namespace aria2 {
 
-class MockDHTTask:public DHTTask {
+class MockDHTTask : public DHTTask {
 public:
-  SharedHandle<DHTNode> remoteNode_;
+  std::shared_ptr<DHTNode> remoteNode_;
 
   unsigned char targetID_[DHT_ID_LENGTH];
 
   bool finished_;
 
-  MockDHTTask(const SharedHandle<DHTNode>& remoteNode):
-    remoteNode_(remoteNode),
-    finished_(false) {}
+  MockDHTTask(const std::shared_ptr<DHTNode>& remoteNode)
+      : remoteNode_(remoteNode), finished_(false)
+  {
+  }
 
   virtual ~MockDHTTask() {}
 
-  virtual void startup() {}
+  virtual void startup() CXX11_OVERRIDE {}
 
-  virtual bool finished()
-  {
-    return finished_;
-  }
+  virtual bool finished() CXX11_OVERRIDE { return finished_; }
 
   void setTargetID(const unsigned char* targetID)
   {

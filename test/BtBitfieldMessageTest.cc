@@ -13,7 +13,7 @@
 
 namespace aria2 {
 
-class BtBitfieldMessageTest:public CppUnit::TestFixture {
+class BtBitfieldMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtBitfieldMessageTest);
   CPPUNIT_TEST(testCreate);
@@ -22,11 +22,10 @@ class BtBitfieldMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testDoReceivedAction_goodByeSeeder);
   CPPUNIT_TEST(testToString);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
-  void setUp() {
-  }
+  void setUp() {}
 
   void testCreate();
   void testCreateMessage();
@@ -35,16 +34,16 @@ public:
   void testToString();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(BtBitfieldMessageTest);
 
-void BtBitfieldMessageTest::testCreate() {
-  unsigned char msg[5+2];
+void BtBitfieldMessageTest::testCreate()
+{
+  unsigned char msg[5 + 2];
   bittorrent::createPeerMessageString(msg, sizeof(msg), 3, 5);
   unsigned char bitfield[2];
   memset(bitfield, 0xff, sizeof(bitfield));
   memcpy(&msg[5], bitfield, sizeof(bitfield));
-  SharedHandle<BtBitfieldMessage> pm(BtBitfieldMessage::create(&msg[4], 3));
+  std::shared_ptr<BtBitfieldMessage> pm(BtBitfieldMessage::create(&msg[4], 3));
   CPPUNIT_ASSERT_EQUAL((uint8_t)5, pm->getId());
   CPPUNIT_ASSERT(memcmp(bitfield, pm->getBitfield(), sizeof(bitfield)) == 0);
   CPPUNIT_ASSERT_EQUAL((size_t)2, pm->getBitfieldLength());
@@ -54,58 +53,64 @@ void BtBitfieldMessageTest::testCreate() {
     bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 5);
     BtBitfieldMessage::create(&msg[4], 1);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(...) {
+  }
+  catch (...) {
   }
   // case: id is wrong
   try {
-    unsigned char msg[5+2];
+    unsigned char msg[5 + 2];
     bittorrent::createPeerMessageString(msg, sizeof(msg), 3, 6);
     BtBitfieldMessage::create(&msg[4], 3);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(...) {
+  }
+  catch (...) {
   }
 }
 
-void BtBitfieldMessageTest::testCreateMessage() {
+void BtBitfieldMessageTest::testCreateMessage()
+{
   BtBitfieldMessage msg;
   unsigned char bitfield[2];
   memset(bitfield, 0xff, sizeof(bitfield));
   msg.setBitfield(bitfield, sizeof(bitfield));
-  unsigned char data[5+2];
+  unsigned char data[5 + 2];
   bittorrent::createPeerMessageString(data, sizeof(data), 3, 5);
   memcpy(&data[5], bitfield, sizeof(bitfield));
   unsigned char* rawmsg = msg.createMessage();
   CPPUNIT_ASSERT(memcmp(rawmsg, data, 7) == 0);
-  delete [] rawmsg;
+  delete[] rawmsg;
   CPPUNIT_ASSERT_EQUAL((size_t)7, msg.getMessageLength());
 }
 
-void BtBitfieldMessageTest::testDoReceivedAction() {
-  SharedHandle<Peer> peer(new Peer("host1", 6969));
-  peer->allocateSessionResource(16*1024, 16*16*1024);
+void BtBitfieldMessageTest::testDoReceivedAction()
+{
+  std::shared_ptr<Peer> peer(new Peer("host1", 6969));
+  peer->allocateSessionResource(16_k, 256_k);
   BtBitfieldMessage msg;
   msg.setPeer(peer);
-  SharedHandle<MockPieceStorage> pieceStorage(new MockPieceStorage());
-  msg.setPieceStorage(pieceStorage);
-  unsigned char bitfield[] = { 0xff, 0xff };
+  auto pieceStorage = make_unique<MockPieceStorage>();
+  msg.setPieceStorage(pieceStorage.get());
+  unsigned char bitfield[] = {0xff, 0xff};
   msg.setBitfield(bitfield, sizeof(bitfield));
 
-  CPPUNIT_ASSERT_EQUAL(std::string("0000"), util::toHex(peer->getBitfield(),
-                                                        peer->getBitfieldLength()));
+  CPPUNIT_ASSERT_EQUAL(
+      std::string("0000"),
+      util::toHex(peer->getBitfield(), peer->getBitfieldLength()));
   msg.doReceivedAction();
-  CPPUNIT_ASSERT_EQUAL(std::string("ffff"), util::toHex(peer->getBitfield(),
-                                                        peer->getBitfieldLength()));
+  CPPUNIT_ASSERT_EQUAL(
+      std::string("ffff"),
+      util::toHex(peer->getBitfield(), peer->getBitfieldLength()));
 }
 
 void BtBitfieldMessageTest::testDoReceivedAction_goodByeSeeder()
 {
-  SharedHandle<Peer> peer(new Peer("ip", 6000));
-  peer->allocateSessionResource(1024, 1024);
+  std::shared_ptr<Peer> peer(new Peer("ip", 6000));
+  peer->allocateSessionResource(1_k, 1_k);
   BtBitfieldMessage msg;
   msg.setPeer(peer);
-  SharedHandle<MockPieceStorage> pieceStorage(new MockPieceStorage());
-  msg.setPieceStorage(pieceStorage);
-  unsigned char bitfield[] = { 0x00 };
+  auto pieceStorage = make_unique<MockPieceStorage>();
+  msg.setPieceStorage(pieceStorage.get());
+  unsigned char bitfield[] = {0x00};
   msg.setBitfield(bitfield, sizeof(bitfield));
 
   // peer is not seeder and client have not completed download
@@ -127,14 +132,16 @@ void BtBitfieldMessageTest::testDoReceivedAction_goodByeSeeder()
   try {
     msg.doReceivedAction();
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(DlAbortEx& e) {
+  }
+  catch (DlAbortEx& e) {
     // success
   }
 }
 
-void BtBitfieldMessageTest::testToString() {
+void BtBitfieldMessageTest::testToString()
+{
   BtBitfieldMessage msg;
-  unsigned char bitfield[] = { 0xff, 0xff };
+  unsigned char bitfield[] = {0xff, 0xff};
   msg.setBitfield(bitfield, sizeof(bitfield));
 
   CPPUNIT_ASSERT_EQUAL(std::string("bitfield ffff"), msg.toString());

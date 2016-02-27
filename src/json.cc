@@ -48,104 +48,117 @@ namespace json {
 std::string jsonEscape(const std::string& s)
 {
   std::string t;
-  for(std::string::const_iterator i = s.begin(), eoi = s.end(); i != eoi;
-      ++i) {
-    if(*i == '"' || *i == '\\' || *i == '/') {
+  for (std::string::const_iterator i = s.begin(), eoi = s.end(); i != eoi;
+       ++i) {
+    if (*i == '"' || *i == '\\' || *i == '/') {
       t += "\\";
       t += *i;
-    } else if(*i == '\b') {
+    }
+    else if (*i == '\b') {
       t += "\\b";
-    } else if(*i == '\f') {
+    }
+    else if (*i == '\f') {
       t += "\\f";
-    } else if(*i == '\n') {
+    }
+    else if (*i == '\n') {
       t += "\\n";
-    } else if(*i == '\r') {
+    }
+    else if (*i == '\r') {
       t += "\\r";
-    } else if(*i == '\t') {
+    }
+    else if (*i == '\t') {
       t += "\\t";
-    } else if(in(static_cast<unsigned char>(*i), 0x00u, 0x1Fu)) {
+    }
+    else if (in(static_cast<unsigned char>(*i), 0x00u, 0x1Fu)) {
       t += "\\u00";
       char temp[3];
       temp[2] = '\0';
       temp[0] = (*i >> 4);
-      temp[1] = (*i)&0x0Fu;
-      for(int j = 0; j < 2; ++j) {
-        if(temp[j] < 10) {
+      temp[1] = (*i) & 0x0Fu;
+      for (int j = 0; j < 2; ++j) {
+        if (temp[j] < 10) {
           temp[j] += '0';
-        } else {
-          temp[j] += 'A'-10;
+        }
+        else {
+          temp[j] += 'A' - 10;
         }
       }
       t += temp;
-    } else {
-      t.append(i, i+1);
+    }
+    else {
+      t.append(i, i + 1);
     }
   }
   return t;
 }
 
 // Serializes JSON object or array.
-std::string encode(const SharedHandle<ValueBase>& json)
+std::string encode(const ValueBase* json)
 {
   std::ostringstream out;
-  return encode(out, json.get()).str();
+  return encode(out, json).str();
 }
 
-JsonGetParam::JsonGetParam
-(const std::string& request, const std::string& callback)
-  : request(request), callback(callback)
-{}
+JsonGetParam::JsonGetParam(const std::string& request,
+                           const std::string& callback)
+    : request(request), callback(callback)
+{
+}
 
-JsonGetParam
-decodeGetParams(const std::string& query)
+JsonGetParam decodeGetParams(const std::string& query)
 {
   std::string jsonRequest;
   std::string callback;
-  if(!query.empty() && query[0] == '?') {
-    Scip method;
-    Scip id;
-    Scip params;
-    std::vector<Scip> getParams;
-    util::splitIter(query.begin()+1, query.end(), std::back_inserter(getParams),
-                    '&');
-    for(std::vector<Scip>::const_iterator i =
-          getParams.begin(), eoi = getParams.end(); i != eoi; ++i) {
-      if(util::startsWith((*i).first, (*i).second, "method=")) {
-        method.first = (*i).first+7;
-        method.second = (*i).second;
-      } else if(util::startsWith((*i).first, (*i).second, "id=")) {
-        id.first = (*i).first+3;
-        id.second = (*i).second;
-      } else if(util::startsWith((*i).first, (*i).second, "params=")) {
-        params.first = (*i).first+7;
-        params.second = (*i).second;
-      } else if(util::startsWith((*i).first, (*i).second, "jsoncallback=")) {
-        callback.assign((*i).first+13, (*i).second);
-      }
+  if (query.empty() || query[0] != '?') {
+    return JsonGetParam(jsonRequest, callback);
+  }
+
+  Scip method = std::make_pair(query.end(), query.end());
+  Scip id = std::make_pair(query.end(), query.end());
+  Scip params = std::make_pair(query.end(), query.end());
+  std::vector<Scip> getParams;
+  util::splitIter(query.begin() + 1, query.end(), std::back_inserter(getParams),
+                  '&');
+  for (const auto& i : getParams) {
+    if (util::startsWith(i.first, i.second, "method=")) {
+      method.first = i.first + 7;
+      method.second = i.second;
     }
-    std::string decparam = util::percentDecode(params.first, params.second);
-    std::string jsonParam = base64::decode(decparam.begin(), decparam.end());
-    if(method.first == method.second && id.first == id.second) {
-      // Assume batch call.
-      jsonRequest = jsonParam;
-    } else {
-      jsonRequest = "{";
-      if(method.first != method.second) {
-        jsonRequest += "\"method\":\"";
-        jsonRequest.append(method.first, method.second);
-        jsonRequest += "\"";
-      }
-      if(id.first != id.second) {
-        jsonRequest += ",\"id\":\"";
-        jsonRequest.append(id.first, id.second);
-        jsonRequest += "\"";
-      }
-      if(params.first != params.second) {
-        jsonRequest += ",\"params\":";
-        jsonRequest += jsonParam;
-      }
-      jsonRequest += "}";
+    else if (util::startsWith(i.first, i.second, "id=")) {
+      id.first = i.first + 3;
+      id.second = i.second;
     }
+    else if (util::startsWith(i.first, i.second, "params=")) {
+      params.first = i.first + 7;
+      params.second = i.second;
+    }
+    else if (util::startsWith(i.first, i.second, "jsoncallback=")) {
+      callback.assign(i.first + 13, i.second);
+    }
+  }
+  std::string decparam = util::percentDecode(params.first, params.second);
+  std::string jsonParam = base64::decode(decparam.begin(), decparam.end());
+  if (method.first == method.second && id.first == id.second) {
+    // Assume batch call.
+    jsonRequest = jsonParam;
+  }
+  else {
+    jsonRequest = "{";
+    if (method.first != method.second) {
+      jsonRequest += "\"method\":\"";
+      jsonRequest.append(method.first, method.second);
+      jsonRequest += "\"";
+    }
+    if (id.first != id.second) {
+      jsonRequest += ",\"id\":\"";
+      jsonRequest.append(id.first, id.second);
+      jsonRequest += "\"";
+    }
+    if (params.first != params.second) {
+      jsonRequest += ",\"params\":";
+      jsonRequest += jsonParam;
+    }
+    jsonRequest += "}";
   }
   return JsonGetParam(jsonRequest, callback);
 }

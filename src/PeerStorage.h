@@ -40,8 +40,8 @@
 #include <deque>
 #include <vector>
 #include <set>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "TransferStat.h"
 #include "Command.h"
 #include "a2functional.h"
@@ -50,7 +50,7 @@ namespace aria2 {
 
 class Peer;
 
-typedef std::set<SharedHandle<Peer>, RefLess<Peer> > PeerSet;
+typedef std::set<std::shared_ptr<Peer>, RefLess<Peer>> PeerSet;
 
 class PeerStorage {
 public:
@@ -60,12 +60,12 @@ public:
    * Adds new peer to the internal peer list.
    * If the peer is added successfully, returns true. Otherwise returns false.
    */
-  virtual bool addPeer(const SharedHandle<Peer>& peer) = 0;
+  virtual bool addPeer(const std::shared_ptr<Peer>& peer) = 0;
 
   /**
    * Adds all peers in peers to internal peer list.
    */
-  virtual void addPeer(const std::vector<SharedHandle<Peer> >& peers) = 0;
+  virtual void addPeer(const std::vector<std::shared_ptr<Peer>>& peers) = 0;
 
   /**
    * Returns the number of peers, including used and unused ones.
@@ -75,7 +75,7 @@ public:
   /**
    * Returns internal dropped peer list.
    */
-  virtual const std::deque<SharedHandle<Peer> >& getDroppedPeers() = 0;
+  virtual const std::deque<std::shared_ptr<Peer>>& getDroppedPeers() = 0;
 
   /**
    * Returns true if at least one unused peer exists.
@@ -102,14 +102,14 @@ public:
   /**
    * Moves first peer in unused peer list to used peer set and calls
    * Peer::usedBy(cuid). If there is no peer available, returns
-   * SharedHandle<Peer>().
+   * std::shared_ptr<Peer>().
    */
-  virtual SharedHandle<Peer> checkoutPeer(cuid_t cuid) = 0;
+  virtual std::shared_ptr<Peer> checkoutPeer(cuid_t cuid) = 0;
 
   /**
    * Tells PeerStorage object that peer is no longer used in the session.
    */
-  virtual void returnPeer(const SharedHandle<Peer>& peer) = 0;
+  virtual void returnPeer(const std::shared_ptr<Peer>& peer) = 0;
 
   virtual bool chokeRoundIntervalElapsed() = 0;
 

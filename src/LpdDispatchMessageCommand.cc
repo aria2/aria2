@@ -45,49 +45,49 @@
 
 namespace aria2 {
 
-LpdDispatchMessageCommand::LpdDispatchMessageCommand
-(cuid_t cuid,
- const SharedHandle<LpdMessageDispatcher>& dispatcher,
- DownloadEngine* e)
-  : Command(cuid),
-    dispatcher_(dispatcher),
-    e_(e),
-    tryCount_(0)
-{}
+LpdDispatchMessageCommand::LpdDispatchMessageCommand(
+    cuid_t cuid, const std::shared_ptr<LpdMessageDispatcher>& dispatcher,
+    DownloadEngine* e)
+    : Command(cuid), dispatcher_(dispatcher), e_(e), tryCount_(0)
+{
+}
 
 LpdDispatchMessageCommand::~LpdDispatchMessageCommand() {}
 
 bool LpdDispatchMessageCommand::execute()
 {
-  if(btRuntime_->isHalt()) {
+  if (btRuntime_->isHalt()) {
     return true;
   }
-  if(dispatcher_->isAnnounceReady()) {
+  if (dispatcher_->isAnnounceReady()) {
     try {
       A2_LOG_INFO(fmt("Dispatching LPD message for infohash=%s",
                       util::toHex(dispatcher_->getInfoHash()).c_str()));
-      if(dispatcher_->sendMessage()) {
+      if (dispatcher_->sendMessage()) {
         A2_LOG_INFO("Sending LPD message is complete.");
         dispatcher_->resetAnnounceTimer();
         tryCount_ = 0;
-      } else {
+      }
+      else {
         ++tryCount_;
-        if(tryCount_ >= 5) {
-          A2_LOG_INFO(fmt("Sending LPD message %u times but all failed.",
-                          tryCount_));
+        if (tryCount_ >= 5) {
+          A2_LOG_INFO(
+              fmt("Sending LPD message %u times but all failed.", tryCount_));
           dispatcher_->resetAnnounceTimer();
           tryCount_ = 0;
-        } else {
+        }
+        else {
           A2_LOG_INFO("Could not send LPD message, retry shortly.");
         }
       }
-    } catch(RecoverableException& e) {
+    }
+    catch (RecoverableException& e) {
       A2_LOG_INFO_EX("Failed to send LPD message.", e);
       dispatcher_->resetAnnounceTimer();
       tryCount_ = 0;
     }
   }
-  e_->addCommand(this);
+  e_->addCommand(std::unique_ptr<Command>(this));
   return false;
 }
 

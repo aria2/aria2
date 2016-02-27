@@ -36,7 +36,9 @@
 #ifndef D_ADAPTIVE_URI_SELECTOR_H
 #define D_ADAPTIVE_URI_SELECTOR_H
 #include "URISelector.h"
-#include "SharedHandle.h"
+
+#include <memory>
+#include <chrono>
 
 namespace aria2 {
 
@@ -44,15 +46,13 @@ class ServerStatMan;
 class RequestGroup;
 class ServerStat;
 
-class AdaptiveURISelector:public URISelector {
+class AdaptiveURISelector : public URISelector {
 private:
-  SharedHandle<ServerStatMan> serverStatMan_;
+  std::shared_ptr<ServerStatMan> serverStatMan_;
   // No need to delete requestGroup_
   RequestGroup* requestGroup_;
   int nbServerToEvaluate_;
   int nbConnections_;
-
-  static const time_t MAX_TIMEOUT = 60;
 
   void mayRetryWithIncreasedTimeout(FileEntry* fileEntry);
 
@@ -66,23 +66,25 @@ private:
   std::string selectRandomUri(const std::deque<std::string>& uris) const;
   std::string getFirstNotTestedUri(const std::deque<std::string>& uris) const;
   std::string getFirstToTestUri(const std::deque<std::string>& uris) const;
-  SharedHandle<ServerStat> getServerStats(const std::string& uri) const;
+  std::shared_ptr<ServerStat> getServerStats(const std::string& uri) const;
   int getNbTestedServers(const std::deque<std::string>& uris) const;
   std::string getBestMirror(const std::deque<std::string>& uris) const;
+
 public:
-  AdaptiveURISelector(const SharedHandle<ServerStatMan>& serverStatMan,
+  AdaptiveURISelector(std::shared_ptr<ServerStatMan> serverStatMan,
                       RequestGroup* requestGroup);
 
   virtual ~AdaptiveURISelector();
 
-  virtual std::string select
-  (FileEntry* fileEntry,
-   const std::vector<std::pair<size_t, std::string> >& usedHosts);
+  virtual std::string
+  select(FileEntry* fileEntry,
+         const std::vector<std::pair<size_t, std::string>>& usedHosts)
+      CXX11_OVERRIDE;
 
   virtual void tuneDownloadCommand(const std::deque<std::string>& uris,
-                                   DownloadCommand* command);
+                                   DownloadCommand* command) CXX11_OVERRIDE;
 
-  virtual void resetCounters();
+  virtual void resetCounters() CXX11_OVERRIDE;
 };
 
 } // namespace aria2

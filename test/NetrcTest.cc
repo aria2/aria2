@@ -4,6 +4,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "Exception.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -16,11 +17,10 @@ class NetrcTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testParse_emptyfile);
   CPPUNIT_TEST(testParse_malformedNetrc);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
-  void setUp() {
-  }
+  void setUp() {}
 
   void testFindAuthenticator();
   void testParse();
@@ -29,40 +29,39 @@ public:
   void testParse_malformedNetrc();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( NetrcTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(NetrcTest);
 
 void NetrcTest::testFindAuthenticator()
 {
   Netrc netrc;
-  netrc.addAuthenticator
-    (SharedHandle<Authenticator>(new Authenticator("host1", "tujikawa", "tujikawapasswd", "tujikawaaccount")));
-  netrc.addAuthenticator
-    (SharedHandle<Authenticator>(new Authenticator("host2", "aria2", "aria2password", "aria2account")));
-  netrc.addAuthenticator
-    (SharedHandle<Authenticator>(new Authenticator(".my.domain", "dmname", "dmpass", "dmaccount")));
-  netrc.addAuthenticator
-    (SharedHandle<Authenticator>(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount")));
+  netrc.addAuthenticator(make_unique<Authenticator>(
+      "host1", "tujikawa", "tujikawapasswd", "tujikawaaccount"));
+  netrc.addAuthenticator(make_unique<Authenticator>(
+      "host2", "aria2", "aria2password", "aria2account"));
+  netrc.addAuthenticator(make_unique<Authenticator>(".my.domain", "dmname",
+                                                    "dmpass", "dmaccount"));
+  netrc.addAuthenticator(make_unique<DefaultAuthenticator>(
+      "default", "defaultpassword", "defaultaccount"));
 
-  SharedHandle<Authenticator> aria2auth = netrc.findAuthenticator("host2");
+  auto aria2auth = netrc.findAuthenticator("host2");
   CPPUNIT_ASSERT(aria2auth);
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"), aria2auth->getLogin());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2password"), aria2auth->getPassword());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2account"), aria2auth->getAccount());
 
-  SharedHandle<Authenticator> defaultauth = netrc.findAuthenticator("host3");
+  auto defaultauth = netrc.findAuthenticator("host3");
   CPPUNIT_ASSERT(defaultauth);
   CPPUNIT_ASSERT_EQUAL(std::string("default"), defaultauth->getLogin());
-  CPPUNIT_ASSERT_EQUAL(std::string("defaultpassword"), defaultauth->getPassword());
-  CPPUNIT_ASSERT_EQUAL(std::string("defaultaccount"), defaultauth->getAccount());
+  CPPUNIT_ASSERT_EQUAL(std::string("defaultpassword"),
+                       defaultauth->getPassword());
+  CPPUNIT_ASSERT_EQUAL(std::string("defaultaccount"),
+                       defaultauth->getAccount());
 
-  SharedHandle<Authenticator> domainMatchAuth =
-    netrc.findAuthenticator("host3.my.domain");
+  auto domainMatchAuth = netrc.findAuthenticator("host3.my.domain");
   CPPUNIT_ASSERT(domainMatchAuth);
   CPPUNIT_ASSERT_EQUAL(std::string("dmname"), domainMatchAuth->getLogin());
 
-  SharedHandle<Authenticator> domainMatchAuth2 =
-    netrc.findAuthenticator("my.domain");
+  auto domainMatchAuth2 = netrc.findAuthenticator("my.domain");
   CPPUNIT_ASSERT(domainMatchAuth2);
   CPPUNIT_ASSERT_EQUAL(std::string("default"), domainMatchAuth2->getLogin());
 }
@@ -70,25 +69,26 @@ void NetrcTest::testFindAuthenticator()
 void NetrcTest::testParse()
 {
   Netrc netrc;
-  netrc.parse(A2_TEST_DIR"/sample.netrc");
-  std::vector<SharedHandle<Authenticator> >::const_iterator itr =
-    netrc.getAuthenticators().begin();
+  netrc.parse(A2_TEST_DIR "/sample.netrc");
+  auto itr = std::begin(netrc.getAuthenticators());
 
-  SharedHandle<Authenticator> tujikawaauth = *itr;
+  const auto& tujikawaauth = *itr;
   CPPUNIT_ASSERT(tujikawaauth);
   CPPUNIT_ASSERT_EQUAL(std::string("host1"), tujikawaauth->getMachine());
   CPPUNIT_ASSERT_EQUAL(std::string("tujikawa"), tujikawaauth->getLogin());
-  CPPUNIT_ASSERT_EQUAL(std::string("tujikawapassword"), tujikawaauth->getPassword());
-  CPPUNIT_ASSERT_EQUAL(std::string("tujikawaaccount"), tujikawaauth->getAccount());
+  CPPUNIT_ASSERT_EQUAL(std::string("tujikawapassword"),
+                       tujikawaauth->getPassword());
+  CPPUNIT_ASSERT_EQUAL(std::string("tujikawaaccount"),
+                       tujikawaauth->getAccount());
   ++itr;
-  SharedHandle<Authenticator> aria2auth = *itr;
+  const auto& aria2auth = *itr;
   CPPUNIT_ASSERT(aria2auth);
   CPPUNIT_ASSERT_EQUAL(std::string("host2"), aria2auth->getMachine());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"), aria2auth->getLogin());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2password"), aria2auth->getPassword());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2account"), aria2auth->getAccount());
   ++itr;
-  SharedHandle<Authenticator> defaultauth = *itr;
+  const auto& defaultauth = *itr;
   CPPUNIT_ASSERT(defaultauth);
   CPPUNIT_ASSERT_EQUAL(std::string("anonymous"), defaultauth->getLogin());
   CPPUNIT_ASSERT_EQUAL(std::string("ARIA2@USER"), defaultauth->getPassword());
@@ -101,7 +101,8 @@ void NetrcTest::testParse_fileNotFound()
   try {
     netrc.parse("");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
   }
 }
@@ -109,7 +110,7 @@ void NetrcTest::testParse_fileNotFound()
 void NetrcTest::testParse_emptyfile()
 {
   Netrc netrc;
-  netrc.parse(A2_TEST_DIR"/emptyfile");
+  netrc.parse(A2_TEST_DIR "/emptyfile");
 
   CPPUNIT_ASSERT_EQUAL((size_t)0, netrc.getAuthenticators().size());
 }
@@ -118,9 +119,10 @@ void NetrcTest::testParse_malformedNetrc()
 {
   Netrc netrc;
   try {
-    netrc.parse(A2_TEST_DIR"/malformed.netrc");
+    netrc.parse(A2_TEST_DIR "/malformed.netrc");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
   }
 }

@@ -41,68 +41,52 @@
 #include "A2STR.h"
 #include "BtMessageDispatcher.h"
 #include "wallclock.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
-PeerSessionResource::PeerSessionResource(int32_t pieceLength, int64_t totalLength)
-  :
-  bitfieldMan_(new BitfieldMan(pieceLength, totalLength)),
-  lastDownloadUpdate_(0),
-  lastAmUnchoking_(0),
-  dispatcher_(0),
-  amChoking_(true),
-  amInterested_(false),
-  peerChoking_(true),
-  peerInterested_(false),
-  chokingRequired_(true),
-  optUnchoking_(false),
-  snubbing_(false),
-  fastExtensionEnabled_(false),
-  extendedMessagingEnabled_(false),
-  dhtEnabled_(false)
-{}
-
-PeerSessionResource::~PeerSessionResource()
+PeerSessionResource::PeerSessionResource(int32_t pieceLength,
+                                         int64_t totalLength)
+    : bitfieldMan_(make_unique<BitfieldMan>(pieceLength, totalLength)),
+      lastDownloadUpdate_(Timer::zero()),
+      lastAmUnchoking_(Timer::zero()),
+      dispatcher_(nullptr),
+      amChoking_(true),
+      amInterested_(false),
+      peerChoking_(true),
+      peerInterested_(false),
+      chokingRequired_(true),
+      optUnchoking_(false),
+      snubbing_(false),
+      fastExtensionEnabled_(false),
+      extendedMessagingEnabled_(false),
+      dhtEnabled_(false)
 {
-  delete bitfieldMan_;
 }
+
+PeerSessionResource::~PeerSessionResource() {}
 
 void PeerSessionResource::amChoking(bool b)
 {
   amChoking_ = b;
-  if(!b) {
+  if (!b) {
     lastAmUnchoking_ = global::wallclock();
   }
 }
 
-void PeerSessionResource::amInterested(bool b)
-{
-  amInterested_ = b;
-}
+void PeerSessionResource::amInterested(bool b) { amInterested_ = b; }
 
-void PeerSessionResource::peerChoking(bool b)
-{
-  peerChoking_ = b;
-}
+void PeerSessionResource::peerChoking(bool b) { peerChoking_ = b; }
 
-void PeerSessionResource::peerInterested(bool b)
-{
-  peerInterested_ = b;
-}
+void PeerSessionResource::peerInterested(bool b) { peerInterested_ = b; }
 
-void PeerSessionResource::chokingRequired(bool b)
-{
-  chokingRequired_ = b;
-}
+void PeerSessionResource::chokingRequired(bool b) { chokingRequired_ = b; }
 
-void PeerSessionResource::optUnchoking(bool b)
-{
-  optUnchoking_ = b;
-}
+void PeerSessionResource::optUnchoking(bool b) { optUnchoking_ = b; }
 
 bool PeerSessionResource::shouldBeChoking() const
 {
-  if(optUnchoking_) {
+  if (optUnchoking_) {
     return false;
   }
   return chokingRequired_;
@@ -111,7 +95,7 @@ bool PeerSessionResource::shouldBeChoking() const
 void PeerSessionResource::snubbing(bool b)
 {
   snubbing_ = b;
-  if(snubbing_) {
+  if (snubbing_) {
     chokingRequired(true);
     optUnchoking(false);
   }
@@ -124,15 +108,16 @@ bool PeerSessionResource::hasAllPieces() const
 
 void PeerSessionResource::updateBitfield(size_t index, int operation)
 {
-  if(operation == 1) {
+  if (operation == 1) {
     bitfieldMan_->setBit(index);
-  } else if(operation == 0) {
+  }
+  else if (operation == 0) {
     bitfieldMan_->unsetBit(index);
   }
 }
 
-void PeerSessionResource::setBitfield
-(const unsigned char* bitfield, size_t bitfieldLength)
+void PeerSessionResource::setBitfield(const unsigned char* bitfield,
+                                      size_t bitfieldLength)
 {
   bitfieldMan_->setBitfield(bitfield, bitfieldLength);
 }
@@ -152,10 +137,7 @@ bool PeerSessionResource::hasPiece(size_t index) const
   return bitfieldMan_->isBitSet(index);
 }
 
-void PeerSessionResource::markSeeder()
-{
-  bitfieldMan_->setAllBit();
-}
+void PeerSessionResource::markSeeder() { bitfieldMan_->setAllBit(); }
 
 void PeerSessionResource::fastExtensionEnabled(bool b)
 {
@@ -207,14 +189,16 @@ void PeerSessionResource::addExtension(int key, uint8_t id)
   extreg_.setExtensionMessageID(key, id);
 }
 
-void PeerSessionResource::dhtEnabled(bool b)
-{
-  dhtEnabled_ = b;
-}
+void PeerSessionResource::dhtEnabled(bool b) { dhtEnabled_ = b; }
 
 int64_t PeerSessionResource::uploadLength() const
 {
   return netStat_.getSessionUploadLength();
+}
+
+void PeerSessionResource::updateUploadSpeed(int32_t bytes)
+{
+  netStat_.updateUploadSpeed(bytes);
 }
 
 void PeerSessionResource::updateUploadLength(int32_t bytes)
@@ -227,9 +211,9 @@ int64_t PeerSessionResource::downloadLength() const
   return netStat_.getSessionDownloadLength();
 }
 
-void PeerSessionResource::updateDownloadLength(int32_t bytes)
+void PeerSessionResource::updateDownload(int32_t bytes)
 {
-  netStat_.updateDownloadLength(bytes);
+  netStat_.updateDownload(bytes);
   lastDownloadUpdate_ = global::wallclock();
 }
 
@@ -251,8 +235,7 @@ size_t PeerSessionResource::countOutstandingUpload() const
 
 void PeerSessionResource::reconfigure(int32_t pieceLength, int64_t totalLenth)
 {
-  delete bitfieldMan_;
-  bitfieldMan_ = new BitfieldMan(pieceLength, totalLenth);
+  bitfieldMan_ = make_unique<BitfieldMan>(pieceLength, totalLenth);
 }
 
 } // namespace aria2

@@ -50,47 +50,44 @@ class Randomizer;
 
 class DefaultBtAnnounce : public BtAnnounce {
 private:
-  SharedHandle<DownloadContext> downloadContext_;
+  DownloadContext* downloadContext_;
   int trackers_;
   Timer prevAnnounceTimer_;
-  time_t interval_;
-  time_t minInterval_;
-  time_t userDefinedInterval_;
+  std::chrono::seconds interval_;
+  std::chrono::seconds minInterval_;
+  std::chrono::seconds userDefinedInterval_;
   int complete_;
   int incomplete_;
   AnnounceList announceList_;
   std::string trackerId_;
   const Option* option_;
-  SharedHandle<Randomizer> randomizer_;
-  SharedHandle<BtRuntime> btRuntime_;
-  SharedHandle<PieceStorage> pieceStorage_;
-  SharedHandle<PeerStorage> peerStorage_;
+  Randomizer* randomizer_;
+  std::shared_ptr<BtRuntime> btRuntime_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
+  std::shared_ptr<PeerStorage> peerStorage_;
   uint16_t tcpPort_;
 
   bool adjustAnnounceList();
+
 public:
-  DefaultBtAnnounce(const SharedHandle<DownloadContext>& downloadContext,
-                    const Option* option);
+  DefaultBtAnnounce(DownloadContext* downloadContext, const Option* option);
 
   virtual ~DefaultBtAnnounce();
 
-  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
+  void setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime);
 
-  const SharedHandle<BtRuntime>& getBtRuntime() const
-  {
-    return btRuntime_;
-  }
+  const std::shared_ptr<BtRuntime>& getBtRuntime() const { return btRuntime_; }
 
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+  void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage);
 
-  const SharedHandle<PieceStorage>& getPieceStorage() const
+  const std::shared_ptr<PieceStorage>& getPieceStorage() const
   {
     return pieceStorage_;
   }
 
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
 
-  const SharedHandle<PeerStorage>& getPeerStorage() const
+  const std::shared_ptr<PeerStorage>& getPeerStorage() const
   {
     return peerStorage_;
   }
@@ -101,71 +98,55 @@ public:
 
   bool isCompletedAnnounceReady();
 
-  virtual bool isAnnounceReady();
+  virtual bool isAnnounceReady() CXX11_OVERRIDE;
 
-  virtual std::string getAnnounceUrl();
+  virtual std::string getAnnounceUrl() CXX11_OVERRIDE;
 
-  virtual SharedHandle<UDPTrackerRequest>
+  virtual std::shared_ptr<UDPTrackerRequest>
   createUDPTrackerRequest(const std::string& remoteAddr, uint16_t remotePort,
-                          uint16_t localPort);
+                          uint16_t localPort) CXX11_OVERRIDE;
 
-  virtual void announceStart();
+  virtual void announceStart() CXX11_OVERRIDE;
 
-  virtual void announceSuccess();
+  virtual void announceSuccess() CXX11_OVERRIDE;
 
-  virtual void announceFailure();
+  virtual void announceFailure() CXX11_OVERRIDE;
 
-  virtual bool isAllAnnounceFailed();
+  virtual bool isAllAnnounceFailed() CXX11_OVERRIDE;
 
-  virtual void resetAnnounce();
+  virtual void resetAnnounce() CXX11_OVERRIDE;
 
-  virtual void processAnnounceResponse(const unsigned char* trackerResponse,
-                                       size_t trackerResponseLength);
+  virtual void
+  processAnnounceResponse(const unsigned char* trackerResponse,
+                          size_t trackerResponseLength) CXX11_OVERRIDE;
 
-  virtual void processUDPTrackerResponse
-  (const SharedHandle<UDPTrackerRequest>& req);
+  virtual void processUDPTrackerResponse(
+      const std::shared_ptr<UDPTrackerRequest>& req) CXX11_OVERRIDE;
 
-  virtual bool noMoreAnnounce();
+  virtual bool noMoreAnnounce() CXX11_OVERRIDE;
 
-  virtual void shuffleAnnounce();
+  virtual void shuffleAnnounce() CXX11_OVERRIDE;
 
-  virtual void overrideMinInterval(time_t interval);
+  virtual void
+  overrideMinInterval(std::chrono::seconds interval) CXX11_OVERRIDE;
 
-  virtual void setTcpPort(uint16_t port)
+  virtual void setTcpPort(uint16_t port) CXX11_OVERRIDE { tcpPort_ = port; }
+
+  void setRandomizer(Randomizer* randomizer);
+
+  const std::chrono::seconds& getInterval() const { return interval_; }
+
+  const std::chrono::seconds& getMinInterval() const { return minInterval_; }
+
+  int getComplete() const { return complete_; }
+
+  int getIncomplete() const { return incomplete_; }
+
+  const std::string& getTrackerID() const { return trackerId_; }
+
+  void setUserDefinedInterval(std::chrono::seconds interval)
   {
-    tcpPort_ = port;
-  }
-
-  void setRandomizer(const SharedHandle<Randomizer>& randomizer);
-
-  time_t getInterval() const
-  {
-    return interval_;
-  }
-
-  time_t getMinInterval() const
-  {
-    return minInterval_;
-  }
-
-  int getComplete() const
-  {
-    return complete_;
-  }
-
-  int getIncomplete() const
-  {
-    return incomplete_;
-  }
-
-  const std::string& getTrackerID() const
-  {
-    return trackerId_;
-  }
-
-  void setUserDefinedInterval(time_t interval)
-  {
-    userDefinedInterval_ = interval;
+    userDefinedInterval_ = std::move(interval);
   }
 };
 

@@ -41,19 +41,20 @@ namespace aria2 {
 namespace {
 void handleError(gcry_error_t err)
 {
-  throw DL_ABORT_EX
-    (fmt("Exception in libgcrypt routine(DHKeyExchange class): %s",
-         gcry_strerror(err)));
+  throw DL_ABORT_EX(
+      fmt("Exception in libgcrypt routine(DHKeyExchange class): %s",
+          gcry_strerror(err)));
 }
 } // namespace
 
 DHKeyExchange::DHKeyExchange()
-  : keyLength_(0),
-    prime_(0),
-    generator_(0),
-    privateKey_(0),
-    publicKey_(0)
-{}
+    : keyLength_(0),
+      prime_(nullptr),
+      generator_(nullptr),
+      privateKey_(nullptr),
+      publicKey_(nullptr)
+{
+}
 
 DHKeyExchange::~DHKeyExchange()
 {
@@ -64,29 +65,27 @@ DHKeyExchange::~DHKeyExchange()
 }
 
 void DHKeyExchange::init(const unsigned char* prime, size_t primeBits,
-                         const unsigned char* generator,
-                         size_t privateKeyBits)
+                         const unsigned char* generator, size_t privateKeyBits)
 {
   gcry_mpi_release(prime_);
   gcry_mpi_release(generator_);
   gcry_mpi_release(privateKey_);
   {
-    gcry_error_t r = gcry_mpi_scan(&prime_, GCRYMPI_FMT_HEX,
-                                   prime, 0, 0);
-    if(r) {
+    gcry_error_t r = gcry_mpi_scan(&prime_, GCRYMPI_FMT_HEX, prime, 0, nullptr);
+    if (r) {
       handleError(r);
     }
   }
   {
-    gcry_error_t r = gcry_mpi_scan(&generator_, GCRYMPI_FMT_HEX,
-                                   generator, 0, 0);
-    if(r) {
+    gcry_error_t r =
+        gcry_mpi_scan(&generator_, GCRYMPI_FMT_HEX, generator, 0, nullptr);
+    if (r) {
       handleError(r);
     }
   }
   privateKey_ = gcry_mpi_new(0);
   gcry_mpi_randomize(privateKey_, privateKeyBits, GCRY_STRONG_RANDOM);
-  keyLength_ = (primeBits+7)/8;
+  keyLength_ = (primeBits + 7) / 8;
 }
 
 void DHKeyExchange::generatePublicKey()
@@ -98,19 +97,19 @@ void DHKeyExchange::generatePublicKey()
 
 size_t DHKeyExchange::getPublicKey(unsigned char* out, size_t outLength) const
 {
-  if(outLength < keyLength_) {
-    throw DL_ABORT_EX
-      (fmt("Insufficient buffer for public key. expect:%lu, actual:%lu",
-           static_cast<unsigned long>(keyLength_),
-           static_cast<unsigned long>(outLength)));
+  if (outLength < keyLength_) {
+    throw DL_ABORT_EX(
+        fmt("Insufficient buffer for public key. expect:%lu, actual:%lu",
+            static_cast<unsigned long>(keyLength_),
+            static_cast<unsigned long>(outLength)));
   }
   memset(out, 0, outLength);
-  size_t publicKeyBytes = (gcry_mpi_get_nbits(publicKey_)+7)/8;
-  size_t offset = keyLength_-publicKeyBytes;
+  size_t publicKeyBytes = (gcry_mpi_get_nbits(publicKey_) + 7) / 8;
+  size_t offset = keyLength_ - publicKeyBytes;
   size_t nwritten;
-  gcry_error_t r = gcry_mpi_print(GCRYMPI_FMT_USG, out+offset,
-                                  outLength-offset, &nwritten, publicKey_);
-  if(r) {
+  gcry_error_t r = gcry_mpi_print(GCRYMPI_FMT_USG, out + offset,
+                                  outLength - offset, &nwritten, publicKey_);
+  if (r) {
     handleError(r);
   }
   return nwritten;
@@ -125,20 +124,18 @@ size_t DHKeyExchange::computeSecret(unsigned char* out, size_t outLength,
                                     const unsigned char* peerPublicKeyData,
                                     size_t peerPublicKeyLength) const
 {
-  if(outLength < keyLength_) {
-    throw DL_ABORT_EX
-      (fmt("Insufficient buffer for secret. expect:%lu, actual:%lu",
-           static_cast<unsigned long>(keyLength_),
-           static_cast<unsigned long>(outLength)));
+  if (outLength < keyLength_) {
+    throw DL_ABORT_EX(
+        fmt("Insufficient buffer for secret. expect:%lu, actual:%lu",
+            static_cast<unsigned long>(keyLength_),
+            static_cast<unsigned long>(outLength)));
   }
   gcry_mpi_t peerPublicKey;
   {
-    gcry_error_t r = gcry_mpi_scan(&peerPublicKey,
-                                   GCRYMPI_FMT_USG,
-                                   peerPublicKeyData,
-                                   peerPublicKeyLength,
-                                   0);
-    if(r) {
+    gcry_error_t r =
+        gcry_mpi_scan(&peerPublicKey, GCRYMPI_FMT_USG, peerPublicKeyData,
+                      peerPublicKeyLength, nullptr);
+    if (r) {
       handleError(r);
     }
   }
@@ -147,14 +144,14 @@ size_t DHKeyExchange::computeSecret(unsigned char* out, size_t outLength,
   gcry_mpi_release(peerPublicKey);
 
   memset(out, 0, outLength);
-  size_t secretBytes = (gcry_mpi_get_nbits(secret)+7)/8;
-  size_t offset = keyLength_-secretBytes;
+  size_t secretBytes = (gcry_mpi_get_nbits(secret) + 7) / 8;
+  size_t offset = keyLength_ - secretBytes;
   size_t nwritten;
   {
-    gcry_error_t r = gcry_mpi_print(GCRYMPI_FMT_USG, out+offset,
-                                    outLength-offset, &nwritten, secret);
+    gcry_error_t r = gcry_mpi_print(GCRYMPI_FMT_USG, out + offset,
+                                    outLength - offset, &nwritten, secret);
     gcry_mpi_release(secret);
-    if(r) {
+    if (r) {
       handleError(r);
     }
   }

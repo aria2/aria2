@@ -41,57 +41,41 @@ namespace aria2 {
 namespace rpc {
 
 namespace {
-InitialXmlRpcRequestParserState*
-initialState = new InitialXmlRpcRequestParserState();
+auto initialState = new InitialXmlRpcRequestParserState();
 
-UnknownElementXmlRpcRequestParserState*
-unknownElementState = new UnknownElementXmlRpcRequestParserState();
+auto unknownElementState = new UnknownElementXmlRpcRequestParserState();
 
-MethodCallXmlRpcRequestParserState*
-methodCallState = new MethodCallXmlRpcRequestParserState();
+auto methodCallState = new MethodCallXmlRpcRequestParserState();
 
-MethodNameXmlRpcRequestParserState*
-methodNameState = new MethodNameXmlRpcRequestParserState();
+auto methodNameState = new MethodNameXmlRpcRequestParserState();
 
-ParamsXmlRpcRequestParserState*
-paramsState = new ParamsXmlRpcRequestParserState();
+auto paramsState = new ParamsXmlRpcRequestParserState();
 
-ParamXmlRpcRequestParserState*
-paramState = new ParamXmlRpcRequestParserState();
+auto paramState = new ParamXmlRpcRequestParserState();
 
-ValueXmlRpcRequestParserState*
-valueState = new ValueXmlRpcRequestParserState();
+auto valueState = new ValueXmlRpcRequestParserState();
 
-IntXmlRpcRequestParserState*
-intState = new IntXmlRpcRequestParserState();
+auto intState = new IntXmlRpcRequestParserState();
 
-StringXmlRpcRequestParserState*
-stringState = new StringXmlRpcRequestParserState();
+auto stringState = new StringXmlRpcRequestParserState();
 
-Base64XmlRpcRequestParserState*
-base64State = new Base64XmlRpcRequestParserState();
+auto base64State = new Base64XmlRpcRequestParserState();
 
-StructXmlRpcRequestParserState*
-structState = new StructXmlRpcRequestParserState();
+auto structState = new StructXmlRpcRequestParserState();
 
-MemberXmlRpcRequestParserState*
-memberState = new MemberXmlRpcRequestParserState();
+auto memberState = new MemberXmlRpcRequestParserState();
 
-NameXmlRpcRequestParserState*
-nameState = new NameXmlRpcRequestParserState();
+auto nameState = new NameXmlRpcRequestParserState();
 
-ArrayXmlRpcRequestParserState*
-arrayState =  new ArrayXmlRpcRequestParserState();
+auto arrayState = new ArrayXmlRpcRequestParserState();
 
-DataXmlRpcRequestParserState*
-dataState = new DataXmlRpcRequestParserState();
+auto dataState = new DataXmlRpcRequestParserState();
 
-ArrayValueXmlRpcRequestParserState*
-arrayValueState = new ArrayValueXmlRpcRequestParserState();
+auto arrayValueState = new ArrayValueXmlRpcRequestParserState();
 } // namespace
 
-XmlRpcRequestParserStateMachine::XmlRpcRequestParserStateMachine():
-  controller_(new XmlRpcRequestParserController())
+XmlRpcRequestParserStateMachine::XmlRpcRequestParserStateMachine()
+    : controller_(new XmlRpcRequestParserController())
 {
   stateStack_.push(initialState);
 }
@@ -104,7 +88,7 @@ XmlRpcRequestParserStateMachine::~XmlRpcRequestParserStateMachine()
 void XmlRpcRequestParserStateMachine::reset()
 {
   controller_->reset();
-  while(!stateStack_.empty()) {
+  while (!stateStack_.empty()) {
     stateStack_.pop();
   }
   stateStack_.push(initialState);
@@ -120,29 +104,25 @@ bool XmlRpcRequestParserStateMachine::finished() const
   return stateStack_.top() == initialState;
 }
 
-void XmlRpcRequestParserStateMachine::beginElement
-(const char* localname,
- const char* prefix,
- const char* nsUri,
- const std::vector<XmlAttr>& attrs)
+void XmlRpcRequestParserStateMachine::beginElement(
+    const char* localname, const char* prefix, const char* nsUri,
+    const std::vector<XmlAttr>& attrs)
 {
   stateStack_.top()->beginElement(this, localname, attrs);
 }
 
-void XmlRpcRequestParserStateMachine::endElement
-(const char* localname,
- const char* prefix,
- const char* nsUri,
- const std::string& characters)
+void XmlRpcRequestParserStateMachine::endElement(const char* localname,
+                                                 const char* prefix,
+                                                 const char* nsUri,
+                                                 std::string characters)
 {
-  stateStack_.top()->endElement(this, localname, characters);
+  stateStack_.top()->endElement(this, localname, std::move(characters));
   stateStack_.pop();
 }
 
-void XmlRpcRequestParserStateMachine::setMethodName
-(const std::string& methodName)
+void XmlRpcRequestParserStateMachine::setMethodName(std::string methodName)
 {
-  controller_->setMethodName(methodName);
+  controller_->setMethodName(std::move(methodName));
 }
 
 const std::string& XmlRpcRequestParserStateMachine::getMethodName() const
@@ -160,27 +140,29 @@ void XmlRpcRequestParserStateMachine::popStructFrame()
   controller_->popStructFrame();
 }
 
-void XmlRpcRequestParserStateMachine::pushFrame()
+void XmlRpcRequestParserStateMachine::pushFrame() { controller_->pushFrame(); }
+
+void XmlRpcRequestParserStateMachine::setCurrentFrameValue(
+    std::unique_ptr<ValueBase> value)
 {
-  controller_->pushFrame();
+  controller_->setCurrentFrameValue(std::move(value));
 }
 
-void XmlRpcRequestParserStateMachine::setCurrentFrameValue
-(const SharedHandle<ValueBase>& value)
-{
-  controller_->setCurrentFrameValue(value);
-}
-
-const SharedHandle<ValueBase>&
+const std::unique_ptr<ValueBase>&
 XmlRpcRequestParserStateMachine::getCurrentFrameValue() const
 {
   return controller_->getCurrentFrameValue();
 }
 
-void XmlRpcRequestParserStateMachine::setCurrentFrameName
-(const std::string& name)
+std::unique_ptr<ValueBase>
+XmlRpcRequestParserStateMachine::popCurrentFrameValue()
 {
-  controller_->setCurrentFrameName(name);
+  return controller_->popCurrentFrameValue();
+}
+
+void XmlRpcRequestParserStateMachine::setCurrentFrameName(std::string name)
+{
+  controller_->setCurrentFrameName(std::move(name));
 }
 
 void XmlRpcRequestParserStateMachine::pushUnknownElementState()

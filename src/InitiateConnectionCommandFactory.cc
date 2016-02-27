@@ -47,43 +47,46 @@
 
 namespace aria2 {
 
-Command*
-InitiateConnectionCommandFactory::createInitiateConnectionCommand
-(cuid_t cuid,
- const SharedHandle<Request>& req,
- const SharedHandle<FileEntry>& fileEntry,
- RequestGroup* requestGroup,
- DownloadEngine* e)
+std::unique_ptr<Command>
+InitiateConnectionCommandFactory::createInitiateConnectionCommand(
+    cuid_t cuid, const std::shared_ptr<Request>& req,
+    const std::shared_ptr<FileEntry>& fileEntry, RequestGroup* requestGroup,
+    DownloadEngine* e)
 {
-  if(req->getProtocol() == "http"
+  if (req->getProtocol() == "http"
 #ifdef ENABLE_SSL
-     // for SSL
-     || req->getProtocol() == "https"
+      // for SSL
+      ||
+      req->getProtocol() == "https"
 #endif // ENABLE_SSL
-     ) {
+      ) {
 
-    if(requestGroup->getOption()->getAsBool(PREF_ENABLE_HTTP_KEEP_ALIVE)) {
+    if (requestGroup->getOption()->getAsBool(PREF_ENABLE_HTTP_KEEP_ALIVE)) {
       req->setKeepAliveHint(true);
     }
-    if(requestGroup->getOption()->getAsBool(PREF_ENABLE_HTTP_PIPELINING)) {
+    if (requestGroup->getOption()->getAsBool(PREF_ENABLE_HTTP_PIPELINING)) {
       req->setPipeliningHint(true);
     }
 
-    return
-      new HttpInitiateConnectionCommand(cuid, req, fileEntry, requestGroup, e);
-  } else if(req->getProtocol() == "ftp") {
-    if(req->getFile().empty()) {
-      throw DL_ABORT_EX
-        (fmt("FTP URI %s doesn't contain file path.",
-             req->getUri().c_str()));
+    return make_unique<HttpInitiateConnectionCommand>(cuid, req, fileEntry,
+                                                      requestGroup, e);
+  }
+  else if (req->getProtocol() == "ftp"
+#ifdef HAVE_LIBSSH2
+           || req->getProtocol() == "sftp"
+#endif // HAVE_LIBSSH2
+           ) {
+    if (req->getFile().empty()) {
+      throw DL_ABORT_EX(fmt("FTP/SFTP URI %s doesn't contain file path.",
+                            req->getUri().c_str()));
     }
-    return
-      new FtpInitiateConnectionCommand(cuid, req, fileEntry, requestGroup, e);
-  } else {
+    return make_unique<FtpInitiateConnectionCommand>(cuid, req, fileEntry,
+                                                     requestGroup, e);
+  }
+  else {
     // these protocols are not supported yet
-    throw DL_ABORT_EX
-      (fmt("%s is not supported yet.",
-           req->getProtocol().c_str()));
+    throw DL_ABORT_EX(
+        fmt("%s is not supported yet.", req->getProtocol().c_str()));
   }
 }
 

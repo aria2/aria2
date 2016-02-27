@@ -1,3 +1,5 @@
 aria2c
 aria2c.exe
 test_outdir/
+aria2c.log
+aria2c.trs

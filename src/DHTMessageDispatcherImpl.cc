@@ -43,59 +43,56 @@
 #include "DHTConstants.h"
 #include "fmt.h"
 #include "DHTNode.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
-DHTMessageDispatcherImpl::DHTMessageDispatcherImpl
-(const SharedHandle<DHTMessageTracker>& tracker)
-  : tracker_(tracker),
-    timeout_(DHT_MESSAGE_TIMEOUT)
-{}
-
-DHTMessageDispatcherImpl::~DHTMessageDispatcherImpl() {}
-
-void
-DHTMessageDispatcherImpl::addMessageToQueue
-(const SharedHandle<DHTMessage>& message,
- time_t timeout,
- const SharedHandle<DHTMessageCallback>& callback)
+DHTMessageDispatcherImpl::DHTMessageDispatcherImpl(
+    const std::shared_ptr<DHTMessageTracker>& tracker)
+    : tracker_{tracker}, timeout_{DHT_MESSAGE_TIMEOUT}
 {
-  SharedHandle<DHTMessageEntry> e
-    (new DHTMessageEntry(message, timeout, callback));
-  messageQueue_.push_back(e);
 }
 
-void
-DHTMessageDispatcherImpl::addMessageToQueue
-(const SharedHandle<DHTMessage>& message,
- const SharedHandle<DHTMessageCallback>& callback)
+void DHTMessageDispatcherImpl::addMessageToQueue(
+    std::unique_ptr<DHTMessage> message, std::chrono::seconds timeout,
+    std::unique_ptr<DHTMessageCallback> callback)
 {
-  addMessageToQueue(message, timeout_, callback);
+  messageQueue_.push_back(make_unique<DHTMessageEntry>(
+      std::move(message), std::move(timeout), std::move(callback)));
 }
 
-bool
-DHTMessageDispatcherImpl::sendMessage
-(const SharedHandle<DHTMessageEntry>& entry)
+void DHTMessageDispatcherImpl::addMessageToQueue(
+    std::unique_ptr<DHTMessage> message,
+    std::unique_ptr<DHTMessageCallback> callback)
+{
+  addMessageToQueue(std::move(message), timeout_, std::move(callback));
+}
+
+bool DHTMessageDispatcherImpl::sendMessage(DHTMessageEntry* entry)
 {
   try {
-    if(entry->message->send()) {
-      if(!entry->message->isReply()) {
-        tracker_->addMessage(entry->message, entry->timeout, entry->callback);
+    if (entry->message->send()) {
+      if (!entry->message->isReply()) {
+        tracker_->addMessage(entry->message.get(), entry->timeout,
+                             std::move(entry->callback));
       }
       A2_LOG_INFO(fmt("Message sent: %s", entry->message->toString().c_str()));
-    } else {
+    }
+    else {
       return false;
     }
-  } catch(RecoverableException& e) {
-    A2_LOG_INFO_EX(fmt("Failed to send message: %s",
-                       entry->message->toString().c_str()),
-                   e);
+  }
+  catch (RecoverableException& e) {
+    A2_LOG_INFO_EX(
+        fmt("Failed to send message: %s", entry->message->toString().c_str()),
+        e);
     // Add message to DHTMessageTracker with timeout 0 to treat it as
     // time out. Without this, we have untracked message and some of
     // DHTTask(such as DHTAbstractNodeLookupTask) don't finish
     // forever.
-    if(!entry->message->isReply()) {
-      tracker_->addMessage(entry->message, 0, entry->callback);
+    if (!entry->message->isReply()) {
+      tracker_->addMessage(entry->message.get(), 0_s,
+                           std::move(entry->callback));
     }
   }
   return true;
@@ -103,16 +100,13 @@ DHTMessageDispatcherImpl::sendMessage
 
 void DHTMessageDispatcherImpl::sendMessages()
 {
-  // TODO I can't use bind1st and mem_fun here because bind1st cannot bind a
-  // function which takes a reference as an argument..
-  std::deque<SharedHandle<DHTMessageEntry> >::iterator itr =
-    messageQueue_.begin();
-  for(; itr != messageQueue_.end(); ++itr) {
-    if(!sendMessage(*itr)) {
+  auto itr = std::begin(messageQueue_);
+  for (; itr != std::end(messageQueue_); ++itr) {
+    if (!sendMessage((*itr).get())) {
       break;
     }
   }
-  messageQueue_.erase(messageQueue_.begin(), itr);
+  messageQueue_.erase(std::begin(messageQueue_), itr);
   A2_LOG_DEBUG(fmt("%lu dht messages remaining in the queue.",
                    static_cast<unsigned long>(messageQueue_.size())));
 }

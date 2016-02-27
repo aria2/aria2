@@ -37,6 +37,7 @@
 #include <unistd.h>
 #include <cstring>
 #include <cstdio>
+#include <cassert>
 
 #include "DlAbortEx.h"
 #include "fmt.h"
@@ -50,30 +51,25 @@
 namespace aria2 {
 
 Logger::Logger()
-  : logLevel_(Logger::A2_DEBUG),
-    consoleLogLevel_(Logger::A2_NOTICE),
-    consoleOutput_(true),
-#ifdef __MINGW32__
-    // Windows DOS prompt does not handle ANSI color code, so make
-    // this false.
-    useColor_(false)
-#else // !__MINGW32__
-    useColor_(isatty(STDOUT_FILENO) == 1)
-#endif // !__MINGW32__
-{}
-
-Logger::~Logger()
+    : logLevel_(Logger::A2_DEBUG),
+      consoleLogLevel_(Logger::A2_NOTICE),
+      consoleOutput_(true),
+      colorOutput_(global::cout()->supportsColor())
 {
 }
+
+Logger::~Logger() {}
 
 void Logger::openFile(const std::string& filename)
 {
   closeFile();
-  if(filename == DEV_STDOUT) {
+  if (filename == DEV_STDOUT) {
     fpp_ = global::cout();
-  } else {
-    fpp_.reset(new BufferedFile(filename.c_str(), BufferedFile::APPEND));
-    if(!*static_cast<BufferedFile*>(fpp_.get())) {
+  }
+  else {
+    fpp_ =
+        std::make_shared<BufferedFile>(filename.c_str(), BufferedFile::APPEND);
+    if (!*static_cast<BufferedFile*>(fpp_.get())) {
       throw DL_ABORT_EX(fmt(EX_FILE_OPEN, filename.c_str(), "n/a"));
     }
   }
@@ -81,20 +77,16 @@ void Logger::openFile(const std::string& filename)
 
 void Logger::closeFile()
 {
-  if(fpp_) {
+  if (fpp_) {
     fpp_.reset();
   }
 }
 
-void Logger::setConsoleOutput(bool enabled)
-{
-  consoleOutput_ = enabled;
-}
+void Logger::setConsoleOutput(bool enabled) { consoleOutput_ = enabled; }
 
-bool Logger::fileLogEnabled(LEVEL level)
-{
-  return level >= logLevel_ && fpp_;
-}
+void Logger::setColorOutput(bool enabled) { colorOutput_ = enabled; }
+
+bool Logger::fileLogEnabled(LEVEL level) { return level >= logLevel_ && fpp_; }
 
 bool Logger::consoleLogEnabled(LEVEL level)
 {
@@ -109,7 +101,7 @@ bool Logger::levelEnabled(LEVEL level)
 namespace {
 const char* levelToString(Logger::LEVEL level)
 {
-  switch(level) {
+  switch (level) {
   case Logger::A2_DEBUG:
     return "DEBUG";
   case Logger::A2_INFO:
@@ -127,19 +119,19 @@ const char* levelToString(Logger::LEVEL level)
 } // namespace
 
 namespace {
-template<typename Output>
-void writeHeader
-(Output& fp, Logger::LEVEL level, const char* sourceFile, int lineNum)
+template <typename Output>
+void writeHeader(Output& fp, Logger::LEVEL level, const char* sourceFile,
+                 int lineNum)
 {
   struct timeval tv;
-  gettimeofday(&tv, 0);
+  gettimeofday(&tv, nullptr);
   char datestr[20]; // 'YYYY-MM-DD hh:mm:ss'+'\0' = 20 bytes
   struct tm tm;
-  //tv.tv_sec may not be of type time_t.
+  // tv.tv_sec may not be of type time_t.
   time_t timesec = tv.tv_sec;
   localtime_r(&timesec, &tm);
   size_t dateLength =
-    strftime(datestr, sizeof(datestr), "%Y-%m-%d %H:%M:%S", &tm);
+      strftime(datestr, sizeof(datestr), "%Y-%m-%d %H:%M:%S", &tm);
   assert(dateLength <= (size_t)20);
   fp.printf("%s.%06ld [%s] [%s:%d] ", datestr, tv.tv_usec, levelToString(level),
             sourceFile, lineNum);
@@ -149,7 +141,7 @@ void writeHeader
 namespace {
 const char* levelColor(Logger::LEVEL level)
 {
-  switch(level) {
+  switch (level) {
   case Logger::A2_DEBUG:
     return "\033[1;37m";
   case Logger::A2_INFO:
@@ -167,92 +159,74 @@ const char* levelColor(Logger::LEVEL level)
 } // namespace
 
 namespace {
-template<typename Output>
+template <typename Output>
 void writeHeaderConsole(Output& fp, Logger::LEVEL level, bool useColor)
 {
   struct timeval tv;
-  gettimeofday(&tv, 0);
+  gettimeofday(&tv, nullptr);
   char datestr[15]; // 'MM/DD hh:mm:ss'+'\0' = 15 bytes
   struct tm tm;
-  //tv.tv_sec may not be of type time_t.
+  // tv.tv_sec may not be of type time_t.
   time_t timesec = tv.tv_sec;
   localtime_r(&timesec, &tm);
-  size_t dateLength =
-    strftime(datestr, sizeof(datestr), "%m/%d %H:%M:%S", &tm);
+  size_t dateLength = strftime(datestr, sizeof(datestr), "%m/%d %H:%M:%S", &tm);
   assert(dateLength <= (size_t)15);
-  if(useColor) {
+  if (useColor) {
     fp.printf("%s [%s%s\033[0m] ", datestr, levelColor(level),
               levelToString(level));
-  } else {
+  }
+  else {
     fp.printf("%s [%s] ", datestr, levelToString(level));
   }
 }
 } // namespace
 
 namespace {
-template<typename Output>
+template <typename Output>
 void writeStackTrace(Output& fp, const char* stackTrace)
 {
   fp.write(stackTrace);
 }
 } // namespace
 
-void Logger::writeLog
-(Logger::LEVEL level,
- const char* sourceFile,
- int lineNum,
- const char* msg,
- const char* trace)
+void Logger::writeLog(Logger::LEVEL level, const char* sourceFile, int lineNum,
+                      const char* msg, const char* trace)
 {
-  if(fileLogEnabled(level)) {
+  if (fileLogEnabled(level)) {
     writeHeader(*fpp_, level, sourceFile, lineNum);
     fpp_->printf("%s\n", msg);
     writeStackTrace(*fpp_, trace);
     fpp_->flush();
   }
-  if(consoleLogEnabled(level)) {
+  if (consoleLogEnabled(level)) {
     global::cout()->printf("\n");
-    writeHeaderConsole(*global::cout(), level, useColor_);
+    writeHeaderConsole(*global::cout(), level, colorOutput_);
     global::cout()->printf("%s\n", msg);
     writeStackTrace(*global::cout(), trace);
     global::cout()->flush();
   }
 }
 
-void Logger::log
-(LEVEL level,
- const char* sourceFile,
- int lineNum,
- const char* msg)
+void Logger::log(LEVEL level, const char* sourceFile, int lineNum,
+                 const char* msg)
 {
   writeLog(level, sourceFile, lineNum, msg, "");
 }
 
-void Logger::log
-(LEVEL level,
- const char* sourceFile,
- int lineNum,
- const std::string& msg)
+void Logger::log(LEVEL level, const char* sourceFile, int lineNum,
+                 const std::string& msg)
 {
   log(level, sourceFile, lineNum, msg.c_str());
 }
 
-void Logger::log
-(LEVEL level,
- const char* sourceFile,
- int lineNum,
- const char* msg,
- const Exception& ex)
+void Logger::log(LEVEL level, const char* sourceFile, int lineNum,
+                 const char* msg, const Exception& ex)
 {
   writeLog(level, sourceFile, lineNum, msg, ex.stackTrace().c_str());
 }
 
-void Logger::log
-(LEVEL level,
- const char* sourceFile,
- int lineNum,
- const std::string& msg,
- const Exception& ex)
+void Logger::log(LEVEL level, const char* sourceFile, int lineNum,
+                 const std::string& msg, const Exception& ex)
 {
   log(level, sourceFile, lineNum, msg.c_str(), ex);
 }

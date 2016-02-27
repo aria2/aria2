@@ -36,34 +36,37 @@
 #define D_MULTI_FILE_ALLOCATION_ITERATOR_H
 
 #include "FileAllocationIterator.h"
+
 #include <deque>
+#include <memory>
+
+#include "MultiDiskAdaptor.h"
 
 namespace aria2 {
 
-class MultiDiskAdaptor;
 class DiskWriterEntry;
 
-class MultiFileAllocationIterator:public FileAllocationIterator
-{
+class MultiFileAllocationIterator : public FileAllocationIterator {
 private:
   MultiDiskAdaptor* diskAdaptor_;
-  std::deque<SharedHandle<DiskWriterEntry> > entries_;
-  SharedHandle<FileAllocationIterator> fileAllocationIterator_;
+  DiskWriterEntries::const_iterator entryItr_;
+  std::shared_ptr<DiskWriter> diskWriter_;
+  std::unique_ptr<FileAllocationIterator> fileAllocationIterator_;
+
 public:
   MultiFileAllocationIterator(MultiDiskAdaptor* diskAdaptor);
 
   virtual ~MultiFileAllocationIterator();
 
-  virtual void allocateChunk();
+  virtual void allocateChunk() CXX11_OVERRIDE;
 
-  virtual bool finished();
+  virtual bool finished() CXX11_OVERRIDE;
 
-  virtual int64_t getCurrentLength();
+  virtual int64_t getCurrentLength() CXX11_OVERRIDE;
 
-  virtual int64_t getTotalLength();
+  virtual int64_t getTotalLength() CXX11_OVERRIDE;
 
-  const std::deque<SharedHandle<DiskWriterEntry> >&
-  getDiskWriterEntries() const;
+  const DiskWriterEntries& getDiskWriterEntries() const;
 };
 
 } // namespace aria2

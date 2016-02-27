@@ -39,17 +39,18 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "TimeA2.h"
-#include "SharedHandle.h"
 
 namespace aria2 {
 
 class FileEntry;
 class FileAllocationIterator;
 class WrDiskCacheEntry;
+class OpenedFileCounter;
 
-class DiskAdaptor:public BinaryStream {
+class DiskAdaptor : public BinaryStream {
 public:
   enum FileAllocationMethod {
     FILE_ALLOC_ADAPTIVE,
@@ -72,18 +73,18 @@ public:
 
   virtual int64_t size() = 0;
 
-  template<typename InputIterator>
+  template <typename InputIterator>
   void setFileEntries(InputIterator first, InputIterator last)
   {
     fileEntries_.assign(first, last);
   }
 
-  const std::vector<SharedHandle<FileEntry> >& getFileEntries() const
+  const std::vector<std::shared_ptr<FileEntry>>& getFileEntries() const
   {
     return fileEntries_;
   }
 
-  virtual SharedHandle<FileAllocationIterator> fileAllocationIterator() = 0;
+  virtual std::unique_ptr<FileAllocationIterator> fileAllocationIterator() = 0;
 
   virtual void enableReadOnly() {}
 
@@ -106,6 +107,10 @@ public:
   // successfully changed.
   virtual size_t utime(const Time& actime, const Time& modtime) = 0;
 
+  // Just like readData(), but drop cache after read.
+  virtual ssize_t readDataDropCache(unsigned char* data, size_t len,
+                                    int64_t offset) = 0;
+
   // Writes cached data to the underlying disk.
   virtual void writeCache(const WrDiskCacheEntry* entry) = 0;
 
@@ -114,15 +119,30 @@ public:
     fileAllocationMethod_ = method;
   }
 
-  int getFileAllocationMethod() const
+  int getFileAllocationMethod() const { return fileAllocationMethod_; }
+
+  // Closes at most |numClose| files if possible. This method is used to
+  // ensure that global number of open file stays under certain limit.
+  // Returns the number of closed files.
+  virtual size_t tryCloseFile(size_t numClose) { return 0; }
+
+  void
+  setOpenedFileCounter(std::shared_ptr<OpenedFileCounter> openedFileCounter)
   {
-    return fileAllocationMethod_;
+    openedFileCounter_ = std::move(openedFileCounter);
+  }
+
+  const std::shared_ptr<OpenedFileCounter>& getOpenedFileCounter() const
+  {
+    return openedFileCounter_;
   }
 
 private:
-  std::vector<SharedHandle<FileEntry> > fileEntries_;
+  std::vector<std::shared_ptr<FileEntry>> fileEntries_;
 
   FileAllocationMethod fileAllocationMethod_;
+
+  std::shared_ptr<OpenedFileCounter> openedFileCounter_;
 };
 
 } // namespace aria2

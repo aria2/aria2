@@ -51,11 +51,11 @@ DHTPeerAnnounceEntry::~DHTPeerAnnounceEntry() {}
 
 void DHTPeerAnnounceEntry::addPeerAddrEntry(const PeerAddrEntry& entry)
 {
-  std::vector<PeerAddrEntry>::iterator i =
-    std::find(peerAddrEntries_.begin(), peerAddrEntries_.end(), entry);
-  if(i == peerAddrEntries_.end()) {
+  auto i = std::find(peerAddrEntries_.begin(), peerAddrEntries_.end(), entry);
+  if (i == peerAddrEntries_.end()) {
     peerAddrEntries_.push_back(entry);
-  } else {
+  }
+  else {
     (*i).notifyUpdate();
   }
   notifyUpdate();
@@ -66,42 +66,25 @@ size_t DHTPeerAnnounceEntry::countPeerAddrEntry() const
   return peerAddrEntries_.size();
 }
 
-namespace {
-class FindStaleEntry {
-private:
-  time_t timeout_;
-public:
-  FindStaleEntry(time_t timeout):timeout_(timeout) {}
-
-  bool operator()(const PeerAddrEntry& entry) const
-  {
-    if(entry.getLastUpdated().difference(global::wallclock()) >= timeout_) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-};
-} // namespace
-
-void DHTPeerAnnounceEntry::removeStalePeerAddrEntry(time_t timeout)
+void DHTPeerAnnounceEntry::removeStalePeerAddrEntry(
+    const std::chrono::seconds& timeout)
 {
-  peerAddrEntries_.erase(std::remove_if(peerAddrEntries_.begin(), peerAddrEntries_.end(),
-                                        FindStaleEntry(timeout)), peerAddrEntries_.end());
+  peerAddrEntries_.erase(
+      std::remove_if(std::begin(peerAddrEntries_), std::end(peerAddrEntries_),
+                     [&timeout](const PeerAddrEntry& entry) {
+                       return entry.getLastUpdated().difference(
+                                  global::wallclock()) >= timeout;
+                     }),
+      std::end(peerAddrEntries_));
 }
 
-bool DHTPeerAnnounceEntry::empty() const
-{
-  return peerAddrEntries_.empty();
-}
+bool DHTPeerAnnounceEntry::empty() const { return peerAddrEntries_.empty(); }
 
-void DHTPeerAnnounceEntry::getPeers
-(std::vector<SharedHandle<Peer> >& peers) const
+void DHTPeerAnnounceEntry::getPeers(
+    std::vector<std::shared_ptr<Peer>>& peers) const
 {
-  for(std::vector<PeerAddrEntry>::const_iterator i = peerAddrEntries_.begin(),
-        eoi = peerAddrEntries_.end(); i != eoi; ++i) {
-    SharedHandle<Peer> peer(new Peer((*i).getIPAddress(), (*i).getPort()));
-    peers.push_back(peer);
+  for (const auto& p : peerAddrEntries_) {
+    peers.push_back(std::make_shared<Peer>(p.getIPAddress(), p.getPort()));
   }
 }
 

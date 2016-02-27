@@ -19,28 +19,29 @@ class UriListParserTest : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(UriListParserTest);
   CPPUNIT_TEST(testHasNext);
   CPPUNIT_TEST_SUITE_END();
+
 private:
   std::string list2String(const std::vector<std::string>& src);
+
 public:
-  void setUp() {
-  }
+  void setUp() {}
 
   void testHasNext();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( UriListParserTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(UriListParserTest);
 
 std::string UriListParserTest::list2String(const std::vector<std::string>& src)
 {
   std::ostringstream strm;
-  std::copy(src.begin(), src.end(), std::ostream_iterator<std::string>(strm, " "));
+  std::copy(src.begin(), src.end(),
+            std::ostream_iterator<std::string>(strm, " "));
   return util::strip(strm.str());
 }
 
 void UriListParserTest::testHasNext()
 {
-  std::string filename = A2_TEST_DIR"/filelist1.txt";
+  std::string filename = A2_TEST_DIR "/filelist1.txt";
 
   UriListParser flp(filename);
 
@@ -50,9 +51,9 @@ void UriListParserTest::testHasNext()
   CPPUNIT_ASSERT(flp.hasNext());
 
   flp.parseNext(uris, reqOp);
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("http://localhost/index.html http://localhost2/index.html"),
-     list2String(uris));
+  CPPUNIT_ASSERT_EQUAL(
+      std::string("http://localhost/index.html http://localhost2/index.html"),
+      list2String(uris));
 
   uris.clear();
   reqOp.clear();

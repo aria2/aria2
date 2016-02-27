@@ -39,8 +39,8 @@
 
 #include <stdint.h>
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "TimeA2.h"
 #include "Command.h"
 
@@ -56,12 +56,11 @@ class Checksum;
 class HttpResponse {
 private:
   cuid_t cuid_;
-  SharedHandle<HttpRequest> httpRequest_;
-  SharedHandle<HttpHeader> httpHeader_;
+  std::unique_ptr<HttpRequest> httpRequest_;
+  std::unique_ptr<HttpHeader> httpHeader_;
+
 public:
   HttpResponse();
-
-  ~HttpResponse();
 
   void validateResponse() const;
 
@@ -71,7 +70,7 @@ public:
    * this function returns the filename from it.
    * If it is not there, returns the part of filename from the request URL.
    */
-  std::string determinFilename() const;
+  std::string determineFilename() const;
 
   void retrieveCookie();
 
@@ -88,13 +87,13 @@ public:
 
   const std::string& getTransferEncoding() const;
 
-  SharedHandle<StreamFilter> getTransferEncodingStreamFilter() const;
+  std::unique_ptr<StreamFilter> getTransferEncodingStreamFilter() const;
 
   bool isContentEncodingSpecified() const;
 
   const std::string& getContentEncoding() const;
 
-  SharedHandle<StreamFilter> getContentEncodingStreamFilter() const;
+  std::unique_ptr<StreamFilter> getContentEncodingStreamFilter() const;
 
   int64_t getContentLength() const;
 
@@ -103,41 +102,33 @@ public:
   // Returns type "/" subtype. The parameter is removed.
   std::string getContentType() const;
 
-  void setHttpHeader(const SharedHandle<HttpHeader>& httpHeader);
+  void setHttpHeader(std::unique_ptr<HttpHeader> httpHeader);
 
-  const SharedHandle<HttpHeader>& getHttpHeader() const
-  {
-    return httpHeader_;
-  }
+  const std::unique_ptr<HttpHeader>& getHttpHeader() const;
 
   int getStatusCode() const;
 
-  void setHttpRequest(const SharedHandle<HttpRequest>& httpRequest);
+  void setHttpRequest(std::unique_ptr<HttpRequest> httpRequest);
 
-  const SharedHandle<HttpRequest>& getHttpRequest() const
+  const std::unique_ptr<HttpRequest>& getHttpRequest() const
   {
     return httpRequest_;
   }
 
-  void setCuid(cuid_t cuid)
-  {
-    cuid_ = cuid;
-  }
+  void setCuid(cuid_t cuid) { cuid_ = cuid; }
 
   Time getLastModifiedTime() const;
 
   bool supportsPersistentConnection() const;
 
-  void getMetalinKHttpEntries
-  (std::vector<MetalinkHttpEntry>& result,
-   const SharedHandle<Option>& option) const;
-#ifdef ENABLE_MESSAGE_DIGEST
+  void getMetalinKHttpEntries(std::vector<MetalinkHttpEntry>& result,
+                              const std::shared_ptr<Option>& option) const;
+
   // Returns all digests specified in Digest header field.  Sort
   // strong algorithm first. Strength is defined in MessageDigest. If
   // several same digest algorithms are available, but they have
   // different value, they are all ignored.
   void getDigest(std::vector<Checksum>& result) const;
-#endif // ENABLE_MESSAGE_DIGEST
 };
 
 } // namespace aria2

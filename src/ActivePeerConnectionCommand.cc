@@ -56,16 +56,14 @@
 
 namespace aria2 {
 
-ActivePeerConnectionCommand::ActivePeerConnectionCommand
-(cuid_t cuid,
- RequestGroup* requestGroup,
- DownloadEngine* e,
- time_t interval)
-  : Command(cuid),
-    requestGroup_(requestGroup),
-    interval_(interval),
-    e_(e),
-    numNewConnection_(5)
+ActivePeerConnectionCommand::ActivePeerConnectionCommand(
+    cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e,
+    std::chrono::seconds interval)
+    : Command(cuid),
+      requestGroup_(requestGroup),
+      interval_(std::move(interval)),
+      e_(e),
+      numNewConnection_(5)
 {
   requestGroup_->increaseNumCommand();
 }
@@ -75,98 +73,100 @@ ActivePeerConnectionCommand::~ActivePeerConnectionCommand()
   requestGroup_->decreaseNumCommand();
 }
 
-bool ActivePeerConnectionCommand::execute() {
-  if(btRuntime_->isHalt()) {
+bool ActivePeerConnectionCommand::execute()
+{
+  if (btRuntime_->isHalt()) {
     return true;
   }
-  if(checkPoint_.difference(global::wallclock()) >= interval_) {
+  if (checkPoint_.difference(global::wallclock()) >= interval_) {
     checkPoint_ = global::wallclock();
     NetStat& stat = requestGroup_->getDownloadContext()->getNetStat();
     const int maxDownloadLimit = requestGroup_->getMaxDownloadSpeedLimit();
     const int maxUploadLimit = requestGroup_->getMaxUploadSpeedLimit();
     int thresholdSpeed;
-    if(!bittorrent::getTorrentAttrs
-       (requestGroup_->getDownloadContext())->metadata.empty()) {
-      thresholdSpeed =
-        requestGroup_->getOption()->getAsInt(PREF_BT_REQUEST_PEER_SPEED_LIMIT);
-    } else {
+    if (!bittorrent::getTorrentAttrs(requestGroup_->getDownloadContext())
+             ->metadata.empty()) {
+      thresholdSpeed = requestGroup_->getOption()->getAsInt(
+          PREF_BT_REQUEST_PEER_SPEED_LIMIT);
+    }
+    else {
       thresholdSpeed = 0;
     }
-    if(maxDownloadLimit > 0) {
+    if (maxDownloadLimit > 0) {
       thresholdSpeed = std::min(maxDownloadLimit, thresholdSpeed);
     }
-    if(// for seeder state
-       (pieceStorage_->downloadFinished() && btRuntime_->lessThanMaxPeers() &&
-        (maxUploadLimit == 0 ||
-         stat.calculateUploadSpeed() < maxUploadLimit*0.8)) ||
-       // for leecher state
-       (!pieceStorage_->downloadFinished() &&
-        (stat.calculateDownloadSpeed() < thresholdSpeed ||
-         btRuntime_->lessThanMinPeers()))) {
+    if ( // for seeder state
+        (pieceStorage_->downloadFinished() && btRuntime_->lessThanMaxPeers() &&
+         (maxUploadLimit == 0 ||
+          stat.calculateUploadSpeed() < maxUploadLimit * 0.8)) ||
+        // for leecher state
+        (!pieceStorage_->downloadFinished() &&
+         (stat.calculateDownloadSpeed() < thresholdSpeed ||
+          btRuntime_->lessThanMinPeers()))) {
 
       int numConnection = 0;
-      if(pieceStorage_->downloadFinished()) {
-        if(btRuntime_->getMaxPeers() > btRuntime_->getConnections()) {
+      if (pieceStorage_->downloadFinished()) {
+        if (btRuntime_->getMaxPeers() > btRuntime_->getConnections()) {
           numConnection =
-            std::min(numNewConnection_,
-                     btRuntime_->getMaxPeers()-btRuntime_->getConnections());
+              std::min(numNewConnection_, btRuntime_->getMaxPeers() -
+                                              btRuntime_->getConnections());
         }
-      } else {
+      }
+      else {
         numConnection = numNewConnection_;
       }
 
       makeNewConnections(numConnection);
 
-      if(btRuntime_->getConnections() == 0 &&
-         !pieceStorage_->downloadFinished()) {
+      if (btRuntime_->getConnections() == 0 &&
+          !pieceStorage_->downloadFinished()) {
         btAnnounce_->overrideMinInterval(BtAnnounce::DEFAULT_ANNOUNCE_INTERVAL);
       }
     }
   }
-  e_->addCommand(this);
+  e_->addCommand(std::unique_ptr<Command>(this));
   return false;
 }
 
 void ActivePeerConnectionCommand::makeNewConnections(int num)
 {
-  for(; num && peerStorage_->isPeerAvailable(); --num) {
+  for (; num && peerStorage_->isPeerAvailable(); --num) {
     cuid_t ncuid = e_->newCUID();
-    SharedHandle<Peer> peer = peerStorage_->checkoutPeer(ncuid);
+    std::shared_ptr<Peer> peer = peerStorage_->checkoutPeer(ncuid);
     // sanity check
-    if(!peer) {
+    if (!peer) {
       break;
     }
-    PeerInitiateConnectionCommand* command;
-    command = new PeerInitiateConnectionCommand(ncuid, requestGroup_, peer, e_,
-                                                btRuntime_);
+    auto command = make_unique<PeerInitiateConnectionCommand>(
+        ncuid, requestGroup_, peer, e_, btRuntime_);
     command->setPeerStorage(peerStorage_);
     command->setPieceStorage(pieceStorage_);
-    e_->addCommand(command);
-    A2_LOG_INFO(fmt(MSG_CONNECTING_TO_PEER, getCuid(),
-                    peer->getIPAddress().c_str()));
+    e_->addCommand(std::move(command));
+    A2_LOG_INFO(
+        fmt(MSG_CONNECTING_TO_PEER, getCuid(), peer->getIPAddress().c_str()));
   }
 }
 
-void ActivePeerConnectionCommand::setBtRuntime
-(const SharedHandle<BtRuntime>& btRuntime)
+void ActivePeerConnectionCommand::setBtRuntime(
+    const std::shared_ptr<BtRuntime>& btRuntime)
 {
   btRuntime_ = btRuntime;
 }
 
-void ActivePeerConnectionCommand::setPieceStorage
-(const SharedHandle<PieceStorage>& pieceStorage)
+void ActivePeerConnectionCommand::setPieceStorage(
+    const std::shared_ptr<PieceStorage>& pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }
 
-void ActivePeerConnectionCommand::setPeerStorage
-(const SharedHandle<PeerStorage>& peerStorage)
+void ActivePeerConnectionCommand::setPeerStorage(
+    const std::shared_ptr<PeerStorage>& peerStorage)
 {
   peerStorage_ = peerStorage;
 }
 
-void ActivePeerConnectionCommand::setBtAnnounce
-(const SharedHandle<BtAnnounce>& btAnnounce)
+void ActivePeerConnectionCommand::setBtAnnounce(
+    const std::shared_ptr<BtAnnounce>& btAnnounce)
 {
   btAnnounce_ = btAnnounce;
 }

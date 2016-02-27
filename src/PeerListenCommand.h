@@ -36,7 +36,9 @@
 #define D_PEER_LISTEN_COMMAND_H
 
 #include "Command.h"
-#include "SharedHandle.h"
+
+#include <memory>
+
 #include "SegList.h"
 
 namespace aria2 {
@@ -48,21 +50,22 @@ class PeerListenCommand : public Command {
 private:
   DownloadEngine* e_;
   int family_;
-  SharedHandle<SocketCore> socket_;
+  std::shared_ptr<SocketCore> socket_;
+
 public:
   PeerListenCommand(cuid_t cuid, DownloadEngine* e, int family);
 
   virtual ~PeerListenCommand();
 
-  virtual bool execute();
+  virtual bool execute() CXX11_OVERRIDE;
 
   /**
-   * Binds port. If successful, the binded port number is assinged to port and
+   * Binds port. If successful, the bound port number is assinged to port and
    * returns true, otherwise port is undefined and returns false.
    */
   bool bindPort(uint16_t& port, SegList<int>& seq);
 
-  // Returns binded port
+  // Returns bound port
   uint16_t getPort() const;
 };
 

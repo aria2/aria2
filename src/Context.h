@@ -36,8 +36,10 @@
 #define CONTEXT_H
 
 #include "common.h"
+
+#include <memory>
+
 #include <aria2/aria2.h>
-#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -51,7 +53,7 @@ struct Context {
   // as a part of command-line arguments.
   Context(bool standalone, int argc, char** argv, const KeyVals& options);
   ~Context();
-  SharedHandle<MultiUrlRequestInfo> reqinfo;
+  std::shared_ptr<MultiUrlRequestInfo> reqinfo;
 };
 
 } // namespace aria2

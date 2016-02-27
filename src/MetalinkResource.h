@@ -52,6 +52,7 @@ public:
   };
 
   static std::string type2String[];
+
 public:
   std::string url;
   TYPE type;
@@ -63,18 +64,15 @@ public:
   ~MetalinkResource();
 
   // Don't allow copying
-  MetalinkResource(const MetalinkResource&);
-  MetalinkResource& operator=(const MetalinkResource&);
+  MetalinkResource(const MetalinkResource&) = delete;
+  MetalinkResource& operator=(const MetalinkResource&) = delete;
 
   static const std::string& getTypeString(TYPE type)
   {
     return type2String[type];
   }
 
-  static int getLowestPriority()
-  {
-    return 999999;
-  }
+  static int getLowestPriority() { return 999999; }
 };
 
 } // namespace aria2

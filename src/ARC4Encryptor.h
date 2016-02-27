@@ -36,31 +36,15 @@
 #define D_ARC4_ENCRYPTOR_H
 
 #include "common.h"
-#ifdef HAVE_LIBNETTLE
-# include "LibnettleARC4Encryptor.h"
+
+#ifdef USE_INTERNAL_ARC4
+#include "InternalARC4Encryptor.h"
+#elif HAVE_LIBNETTLE
+#include "LibnettleARC4Encryptor.h"
 #elif HAVE_LIBGCRYPT
-# include "LibgcryptARC4Encryptor.h"
+#include "LibgcryptARC4Encryptor.h"
 #elif HAVE_OPENSSL
-# include "LibsslARC4Encryptor.h"
-#else
-
-// provide empty implementation to compile sources without both libgcrypt and
-// openssl installed
-namespace aria2 {
-
-class ARC4Encryptor {
-public:
-  ARC4Encryptor() {}
-
-  ~ARC4Encryptor() {}
-
-  void init(const unsigned char* key, size_t keyLength) {}
-
-  void encrypt(size_t len, unsigned char* out, const unsigned char* in);
-};
-
-} // namespace aria2
-
+#include "LibsslARC4Encryptor.h"
 #endif
 
 #endif // D_ARC4_ENCRYPTOR_H

@@ -47,38 +47,38 @@ namespace aria2 {
 namespace rpc {
 
 struct RpcResponse {
+  enum authorization_t { NOTAUTHORIZED, AUTHORIZED };
+
   // 0 for success, non-zero for error
+  std::unique_ptr<ValueBase> param;
+  std::unique_ptr<ValueBase> id;
   int code;
+  authorization_t authorized;
 
-  SharedHandle<ValueBase> param;
-
-  SharedHandle<ValueBase> id;
-
-  RpcResponse
-  (int code,
-   const SharedHandle<ValueBase>& param,
-   const SharedHandle<ValueBase>& id);
-
-  RpcResponse(const RpcResponse& c);
-
-  ~RpcResponse();
-
-  RpcResponse& operator=(const RpcResponse& c);
+  RpcResponse(int code, authorization_t authorized,
+              std::unique_ptr<ValueBase> param, std::unique_ptr<ValueBase> id);
 };
+
+inline bool not_authorized(const rpc::RpcResponse& res)
+{
+  return res.authorized != rpc::RpcResponse::AUTHORIZED;
+}
+
+template <typename InputIterator>
+bool any_not_authorized(const InputIterator begin, const InputIterator end)
+{
+  return std::any_of(begin, end, not_authorized);
+}
 
 std::string toXml(const RpcResponse& response, bool gzip = false);
 
 // Encodes RPC response in JSON. If callback is not empty, the
 // resulting string is JSONP.
-std::string toJson
-(const RpcResponse& response,
- const std::string& callback,
- bool gzip = false);
+std::string toJson(const RpcResponse& response, const std::string& callback,
+                   bool gzip = false);
 
-std::string toJsonBatch
-(const std::vector<RpcResponse>& results,
- const std::string& callback,
- bool gzip = false);
+std::string toJsonBatch(const std::vector<RpcResponse>& results,
+                        const std::string& callback, bool gzip = false);
 
 } // namespace rpc
 

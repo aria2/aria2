@@ -38,7 +38,6 @@
 #include <utility>
 
 #include "DHTMessageTracker.h"
-#include "DHTConnection.h"
 #include "DHTMessage.h"
 #include "DHTQueryMessage.h"
 #include "DHTResponseMessage.h"
@@ -56,70 +55,70 @@
 
 namespace aria2 {
 
-DHTMessageReceiver::DHTMessageReceiver
-(const SharedHandle<DHTMessageTracker>& tracker)
-  : tracker_(tracker)
-{}
+DHTMessageReceiver::DHTMessageReceiver(
+    const std::shared_ptr<DHTMessageTracker>& tracker)
+    : tracker_{tracker}, factory_{nullptr}, routingTable_{nullptr}
+{
+}
 
-DHTMessageReceiver::~DHTMessageReceiver() {}
-
-SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage
-(const std::string& remoteAddr, uint16_t remotePort, unsigned char *data,
- size_t length)
+std::unique_ptr<DHTMessage>
+DHTMessageReceiver::receiveMessage(const std::string& remoteAddr,
+                                   uint16_t remotePort, unsigned char* data,
+                                   size_t length)
 {
   try {
     bool isReply = false;
-    SharedHandle<ValueBase> decoded = bencode2::decode(data, length);
+    auto decoded = bencode2::decode(data, length);
     const Dict* dict = downcast<Dict>(decoded);
-    if(dict) {
+    if (dict) {
       const String* y = downcast<String>(dict->get(DHTMessage::Y));
-      if(y) {
-        if(y->s() == DHTResponseMessage::R || y->s() == DHTUnknownMessage::E) {
+      if (y) {
+        if (y->s() == DHTResponseMessage::R || y->s() == DHTUnknownMessage::E) {
           isReply = true;
         }
-      } else {
+      }
+      else {
         A2_LOG_INFO(fmt("Malformed DHT message. Missing 'y' key. From:%s:%u",
                         remoteAddr.c_str(), remotePort));
         return handleUnknownMessage(data, length, remoteAddr, remotePort);
       }
-    } else {
+    }
+    else {
       A2_LOG_INFO(fmt("Malformed DHT message. This is not a bencoded directory."
                       " From:%s:%u",
                       remoteAddr.c_str(), remotePort));
       return handleUnknownMessage(data, length, remoteAddr, remotePort);
     }
-    if(isReply) {
-      std::pair<SharedHandle<DHTResponseMessage>,
-                SharedHandle<DHTMessageCallback> > p =
-        tracker_->messageArrived(dict, remoteAddr, remotePort);
-      if(!p.first) {
+    if (isReply) {
+      auto p = tracker_->messageArrived(dict, remoteAddr, remotePort);
+      if (!p.first) {
         // timeout or malicious? message
         return handleUnknownMessage(data, length, remoteAddr, remotePort);
       }
-      onMessageReceived(p.first);
-      if(p.second) {
-        p.second->onReceived(p.first);
+      onMessageReceived(p.first.get());
+      if (p.second) {
+        p.second->onReceived(p.first.get());
       }
-      return p.first;
-    } else {
-      SharedHandle<DHTQueryMessage> message =
-        factory_->createQueryMessage(dict, remoteAddr, remotePort);
-      if(*message->getLocalNode() == *message->getRemoteNode()) {
+      return std::move(p.first);
+    }
+    else {
+      auto message = factory_->createQueryMessage(dict, remoteAddr, remotePort);
+      if (*message->getLocalNode() == *message->getRemoteNode()) {
         // drop message from localnode
         A2_LOG_INFO("Received DHT message from localnode.");
         return handleUnknownMessage(data, length, remoteAddr, remotePort);
       }
-      onMessageReceived(message);
-      return message;
+      onMessageReceived(message.get());
+      return std::move(message);
     }
-  } catch(RecoverableException& e) {
+  }
+  catch (RecoverableException& e) {
     A2_LOG_INFO_EX("Exception thrown while receiving DHT message.", e);
     return handleUnknownMessage(data, length, remoteAddr, remotePort);
   }
 }
 
-void DHTMessageReceiver::onMessageReceived
-(const SharedHandle<DHTMessage>& message)
+void DHTMessageReceiver::onMessageReceived(DHTMessage* message)
 {
   A2_LOG_INFO(fmt("Message received: %s", message->toString().c_str()));
   message->validate();
@@ -129,34 +128,23 @@ void DHTMessageReceiver::onMessageReceived
   routingTable_->addGoodNode(message->getRemoteNode());
 }
 
-void DHTMessageReceiver::handleTimeout()
-{
-  tracker_->handleTimeout();
-}
+void DHTMessageReceiver::handleTimeout() { tracker_->handleTimeout(); }
 
-SharedHandle<DHTMessage>
-DHTMessageReceiver::handleUnknownMessage(const unsigned char* data,
-                                         size_t length,
-                                         const std::string& remoteAddr,
-                                         uint16_t remotePort)
+std::unique_ptr<DHTUnknownMessage> DHTMessageReceiver::handleUnknownMessage(
+    const unsigned char* data, size_t length, const std::string& remoteAddr,
+    uint16_t remotePort)
 {
-  SharedHandle<DHTMessage> m =
-    factory_->createUnknownMessage(data, length, remoteAddr, remotePort);
+  auto m = factory_->createUnknownMessage(data, length, remoteAddr, remotePort);
   A2_LOG_INFO(fmt("Message received: %s", m->toString().c_str()));
   return m;
 }
 
-void DHTMessageReceiver::setConnection(const SharedHandle<DHTConnection>& connection)
-{
-  connection_ = connection;
-}
-
-void DHTMessageReceiver::setMessageFactory(const SharedHandle<DHTMessageFactory>& factory)
+void DHTMessageReceiver::setMessageFactory(DHTMessageFactory* factory)
 {
   factory_ = factory;
 }
 
-void DHTMessageReceiver::setRoutingTable(const SharedHandle<DHTRoutingTable>& routingTable)
+void DHTMessageReceiver::setRoutingTable(DHTRoutingTable* routingTable)
 {
   routingTable_ = routingTable;
 }

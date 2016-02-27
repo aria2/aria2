@@ -36,7 +36,9 @@
 #define D_HTTP_SERVER_COMMAND_H
 
 #include "Command.h"
-#include "SharedHandle.h"
+
+#include <memory>
+
 #include "TimerA2.h"
 
 namespace aria2 {
@@ -48,26 +50,25 @@ class HttpServer;
 class HttpServerCommand : public Command {
 private:
   DownloadEngine* e_;
-  SharedHandle<SocketCore> socket_;
-  SharedHandle<HttpServer> httpServer_;
+  std::shared_ptr<SocketCore> socket_;
+  std::shared_ptr<HttpServer> httpServer_;
   Timer timeoutTimer_;
   bool writeCheck_;
 
   void checkSocketRecvBuffer();
   void updateWriteCheck();
+
 public:
   HttpServerCommand(cuid_t cuid, DownloadEngine* e,
-                    const SharedHandle<SocketCore>& socket,
-                    bool secure);
+                    const std::shared_ptr<SocketCore>& socket, bool secure);
 
-  HttpServerCommand(cuid_t cuid,
-                    const SharedHandle<HttpServer>& httpServer,
+  HttpServerCommand(cuid_t cuid, const std::shared_ptr<HttpServer>& httpServer,
                     DownloadEngine* e,
-                    const SharedHandle<SocketCore>& socket);
+                    const std::shared_ptr<SocketCore>& socket);
 
   virtual ~HttpServerCommand();
 
-  virtual bool execute();
+  virtual bool execute() CXX11_OVERRIDE;
 };
 
 } // namespace aria2

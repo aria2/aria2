@@ -35,35 +35,31 @@
 #ifndef D_OPTION_HANDLER_EXCEPTION_H
 #define D_OPTION_HANDLER_EXCEPTION_H
 #include "RecoverableException.h"
+#include "prefs.h"
 
 namespace aria2 {
 
-struct Pref;
-
-class OptionHandlerException:public RecoverableException {
+class OptionHandlerException : public RecoverableException {
 private:
-  const Pref* pref_;
-protected:
-  virtual SharedHandle<Exception> copy() const;
-public:
-  OptionHandlerException(const char* file, int line,
-                         const Pref* pref);
+  PrefPtr pref_;
 
-  OptionHandlerException(const char* file, int line,
-                         const Pref* pref,
+protected:
+  virtual std::shared_ptr<Exception> copy() const CXX11_OVERRIDE;
+
+public:
+  OptionHandlerException(const char* file, int line, PrefPtr pref);
+
+  OptionHandlerException(const char* file, int line, PrefPtr pref,
                          const Exception& cause);
 
   virtual ~OptionHandlerException() throw();
 
-  const Pref* getPref() const
-  {
-    return pref_;
-  }
+  PrefPtr getPref() const { return pref_; }
 };
 
-#define OPTION_HANDLER_EXCEPTION(arg)                   \
+#define OPTION_HANDLER_EXCEPTION(arg)                                          \
   OptionHandlerException(__FILE__, __LINE__, arg)
-#define OPTION_HANDLER_EXCEPTION2(arg1, arg2)                   \
+#define OPTION_HANDLER_EXCEPTION2(arg1, arg2)                                  \
   OptionHandlerException(__FILE__, __LINE__, arg1, arg2)
 
 } // namespace aria2

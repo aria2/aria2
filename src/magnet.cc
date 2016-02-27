@@ -40,29 +40,29 @@ namespace aria2 {
 
 namespace magnet {
 
-SharedHandle<Dict> parse(const std::string& magnet)
+std::unique_ptr<Dict> parse(const std::string& magnet)
 {
-  SharedHandle<Dict> dict;
-  if(!util::startsWith(magnet, "magnet:?")) {
-    return dict;
+  if (!util::startsWith(magnet, "magnet:?")) {
+    return nullptr;
   }
-  dict.reset(new Dict());
+  auto dict = Dict::g();
   std::vector<Scip> queries;
-  util::splitIter(magnet.begin()+8, magnet.end(), std::back_inserter(queries),
+  util::splitIter(magnet.begin() + 8, magnet.end(), std::back_inserter(queries),
                   '&');
-  for(std::vector<Scip>::const_iterator i = queries.begin(),
-        eoi = queries.end(); i != eoi; ++i) {
-    std::pair<Scip, Scip> p;
-    util::divide(p, (*i).first, (*i).second, '=');
+  for (std::vector<Scip>::const_iterator i = queries.begin(),
+                                         eoi = queries.end();
+       i != eoi; ++i) {
+    auto p = util::divide((*i).first, (*i).second, '=');
     std::string name(p.first.first, p.first.second);
     std::string value(util::percentDecode(p.second.first, p.second.second));
     List* l = downcast<List>(dict->get(name));
-    if(l) {
+    if (l) {
       l->append(String::g(value));
-    } else {
-      SharedHandle<List> l = List::g();
+    }
+    else {
+      auto l = List::g();
       l->append(String::g(value));
-      dict->put(name, l);
+      dict->put(name, std::move(l));
     }
   }
   return dict;

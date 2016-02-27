@@ -39,8 +39,8 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "A2STR.h"
 
 namespace aria2 {
@@ -52,30 +52,23 @@ class Metalinker;
 
 namespace metalink {
 
-void parseAndQuery
-(std::vector<SharedHandle<MetalinkEntry> >& result,
- const std::string& filename,
- const Option* option,
- const std::string& baseUri = A2STR::NIL);
+std::vector<std::unique_ptr<MetalinkEntry>>
+parseAndQuery(const std::string& filename, const Option* option,
+              const std::string& baseUri = A2STR::NIL);
 
-void parseAndQuery
-(std::vector<SharedHandle<MetalinkEntry> >& result,
- BinaryStream* bs,
- const Option* option,
- const std::string& baseUri = A2STR::NIL);
+std::vector<std::unique_ptr<MetalinkEntry>>
+parseAndQuery(BinaryStream* bs, const Option* option,
+              const std::string& baseUri = A2STR::NIL);
 
-void groupEntryByMetaurlName
-(std::vector<
-  std::pair<std::string, std::vector<SharedHandle<MetalinkEntry> > > >& result,
- const std::vector<SharedHandle<MetalinkEntry> >& entries);
+std::vector<std::pair<std::string, std::vector<MetalinkEntry*>>>
+groupEntryByMetaurlName(
+    const std::vector<std::unique_ptr<MetalinkEntry>>& entries);
 
-SharedHandle<Metalinker> parseFile
-(const std::string& filename,
- const std::string& baseUri = A2STR::NIL);
+std::unique_ptr<Metalinker> parseFile(const std::string& filename,
+                                      const std::string& baseUri = A2STR::NIL);
 
-SharedHandle<Metalinker> parseBinaryStream
-(BinaryStream* bs,
- const std::string& baseUri = A2STR::NIL);
+std::unique_ptr<Metalinker>
+parseBinaryStream(BinaryStream* bs, const std::string& baseUri = A2STR::NIL);
 
 } // namespace metalink
 

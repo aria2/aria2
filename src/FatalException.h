@@ -38,9 +38,10 @@
 
 namespace aria2 {
 
-class FatalException:public Exception {
+class FatalException : public Exception {
 protected:
-  virtual SharedHandle<Exception> copy() const;
+  virtual std::shared_ptr<Exception> copy() const CXX11_OVERRIDE;
+
 public:
   FatalException(const char* file, int line, const std::string& msg);
 
@@ -48,9 +49,8 @@ public:
                  const Exception& cause);
 };
 
-#define FATAL_EXCEPTION(arg)                    \
-  FatalException(__FILE__, __LINE__, arg)
-#define FATAL_EXCEPTION2(arg1, arg2)                    \
+#define FATAL_EXCEPTION(arg) FatalException(__FILE__, __LINE__, arg)
+#define FATAL_EXCEPTION2(arg1, arg2)                                           \
   FatalException(__FILE__, __LINE__, arg1, arg2)
 
 } // namespace aria2

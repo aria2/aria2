@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2010 Tatsuhiro Tsujikawa
+ * Copyright (C) 2013 Nils Maier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,18 +32,78 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
+
 #ifndef D_MESSAGE_DIGEST_IMPL_H
 #define D_MESSAGE_DIGEST_IMPL_H
 
+#include "common.h"
 
-#ifdef USE_APPLE_MD
-# include "AppleMessageDigestImpl.h"
-#elif defined(USE_LIBNETTLE_MD)
-# include "LibnettleMessageDigestImpl.h"
-#elif defined(USE_LIBGCRYPT_MD)
-# include "LibgcryptMessageDigestImpl.h"
-#elif defined(USE_OPENSSL_MD)
-# include "LibsslMessageDigestImpl.h"
-#endif
+#include <string>
+#include <memory>
+#include <functional>
+#include <map>
+#include <tuple>
+
+#include "a2functional.h"
+
+namespace aria2 {
+
+class MessageDigestImpl {
+public:
+  typedef std::function<std::unique_ptr<MessageDigestImpl>()> factory_t;
+  typedef std::tuple<factory_t, size_t> hash_info_t;
+  typedef std::map<std::string, hash_info_t> hashes_t;
+
+  template <typename T> inline static hash_info_t make_hi()
+  {
+    return std::make_tuple([]() { return make_unique<T>(); }, T::length());
+  }
+
+private:
+  static hashes_t hashes;
+
+  MessageDigestImpl(const MessageDigestImpl&) = delete;
+  MessageDigestImpl& operator=(const MessageDigestImpl&) = delete;
+
+public:
+  virtual ~MessageDigestImpl() {}
+  static std::unique_ptr<MessageDigestImpl> sha1();
+
+  inline static std::unique_ptr<MessageDigestImpl>
+  create(const std::string& hashType)
+  {
+    auto i = hashes.find(hashType);
+    if (i == hashes.end()) {
+      return nullptr;
+    }
+    return std::get<0>(i->second)();
+  }
+
+  inline static bool supports(const std::string& hashType)
+  {
+    auto i = hashes.find(hashType);
+    return i != hashes.end();
+  }
+
+  inline static size_t getDigestLength(const std::string& hashType)
+  {
+    auto i = hashes.find(hashType);
+    if (i == hashes.end()) {
+      return 0;
+    }
+    return std::get<1>(i->second);
+  }
+
+public:
+  virtual size_t getDigestLength() const = 0;
+  virtual void reset() = 0;
+  virtual void update(const void* data, size_t length) = 0;
+  virtual void digest(unsigned char* md) = 0;
+
+protected:
+  MessageDigestImpl() {}
+};
+
+} // namespace aria2
 
 #endif // D_MESSAGE_DIGEST_IMPL_H

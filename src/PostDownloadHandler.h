@@ -41,16 +41,13 @@
 
 namespace aria2 {
 
-class PostDownloadHandler:public DownloadHandler
-{
+class PostDownloadHandler : public DownloadHandler {
 public:
-  PostDownloadHandler() {}
-
   virtual ~PostDownloadHandler() {}
 
   virtual void
-  getNextRequestGroups(std::vector<SharedHandle<RequestGroup> >& groups,
-                       RequestGroup* requestGroup) = 0;
+  getNextRequestGroups(std::vector<std::shared_ptr<RequestGroup>>& groups,
+                       RequestGroup* requestGroup) const = 0;
 };
 
 } // namespace aria2

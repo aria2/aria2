@@ -37,11 +37,12 @@
 
 namespace aria2 {
 
-DHTNodeLookupEntry::DHTNodeLookupEntry(const SharedHandle<DHTNode>& node):
-  node(node), used(false) {}
+DHTNodeLookupEntry::DHTNodeLookupEntry(const std::shared_ptr<DHTNode>& node)
+    : node(node), used(false)
+{
+}
 
-DHTNodeLookupEntry::DHTNodeLookupEntry():
-  used(false) {}
+DHTNodeLookupEntry::DHTNodeLookupEntry() : used(false) {}
 
 bool DHTNodeLookupEntry::operator==(const DHTNodeLookupEntry& entry) const
 {

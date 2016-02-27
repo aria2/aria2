@@ -41,20 +41,19 @@ namespace aria2 {
 
 const char BtHaveNoneMessage::NAME[] = "have none";
 
-BtHaveNoneMessage::BtHaveNoneMessage():ZeroBtMessage(ID, NAME) {}
+BtHaveNoneMessage::BtHaveNoneMessage() : ZeroBtMessage(ID, NAME) {}
 
-BtHaveNoneMessage* BtHaveNoneMessage::create
-(const unsigned char* data, size_t dataLength)
+std::unique_ptr<BtHaveNoneMessage>
+BtHaveNoneMessage::create(const unsigned char* data, size_t dataLength)
 {
   return ZeroBtMessage::create<BtHaveNoneMessage>(data, dataLength);
 }
 
 void BtHaveNoneMessage::doReceivedAction()
 {
-  if(!getPeer()->isFastExtensionEnabled()) {
-    throw DL_ABORT_EX
-      (fmt("%s received while fast extension is disabled",
-           toString().c_str()));
+  if (!getPeer()->isFastExtensionEnabled()) {
+    throw DL_ABORT_EX(fmt("%s received while fast extension is disabled",
+                          toString().c_str()));
   }
 }
 

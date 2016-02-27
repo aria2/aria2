@@ -36,12 +36,14 @@
 #define D_CONSOLE_H
 
 #include "common.h"
-#include "SharedHandle.h"
+
+#include <memory>
+
 #include "OutputFile.h"
 
 namespace aria2 {
 
-typedef SharedHandle<OutputFile> Console;
+typedef std::shared_ptr<OutputFile> Console;
 
 namespace global {
 

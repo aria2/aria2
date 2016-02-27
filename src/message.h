@@ -37,6 +37,8 @@
 
 #include "common.h"
 
+// clang-format off
+
 #define MSG_SEGMENT_DOWNLOAD_COMPLETED                                  \
   "CUID#%" PRId64 " - The download for one segment completed successfully."
 #define MSG_NO_SEGMENT_AVAILABLE "CUID#%" PRId64 " - No segment available."
@@ -149,6 +151,7 @@
 #define MSG_REMOVED_DEFUNCT_CONTROL_FILE _("Removed the defunct control file %s because the download file %s doesn't exist.")
 #define MSG_SHARE_RATIO_REPORT _("Your share ratio was %.1f, uploaded/downloaded=%sB/%sB")
 #define MSG_MISSING_BT_INFO _("Missing %s in torrent metainfo.")
+#define MSG_NEGATIVE_LENGTH_BT_INFO _("%s does not allow negative integer %" PRId64 "")
 #define MSG_NULL_TRACKER_RESPONSE _("Tracker returned null data.")
 #define MSG_WINSOCK_INIT_FAILD _("Windows socket library initialization failed")
 #define MSG_TIME_HAS_PASSED _("%ld second(s) has passed. Stopping application.")
@@ -182,6 +185,14 @@
 #define MSG_WARN_NO_CA_CERT                                             \
   _("You may encounter the certificate verification error with HTTPS server." \
     " See --ca-certificate and --check-certificate option.")
+#define MSG_WARN_UNKNOWN_TLS_CONNECTION \
+  _("aria2c had to connect to the other side using an unknown TLS protocol. " \
+    "The integrity and confidentiality of the connection might be " \
+    "compromised.\nPeer: %s")
+#define MSG_WARN_OLD_TLS_CONNECTION \
+  _("aria2c had to connect to the other side using an old and vulnerable TLS" \
+    " protocol. The integrity and confidentiality of the connection might be" \
+    " compromised.\nProtocol: %s, Peer: %s")
 #define MSG_SHOW_FILES _("Printing the contents of file '%s'...")
 #define MSG_NOT_TORRENT_METALINK _("This file is neither Torrent nor Metalink" \
                                    " file. Skipping.")
@@ -277,4 +288,7 @@
 #define EX_EXCEPTION_CAUGHT _("Exception caught")
 #define EX_TOO_LONG_PAYLOAD _("Max payload length exceeded or invalid. length = %u")
 #define EX_FILE_LENGTH_MISMATCH_BETWEEN_LOCAL_AND_REMOTE _("Invalid file length. Cannot continue download %s: local %s, remote %s")
+
+// clang-format on
+
 #endif // D_MESSAGE_H

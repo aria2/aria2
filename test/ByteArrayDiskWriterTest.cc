@@ -4,26 +4,25 @@
 
 namespace aria2 {
 
-class ByteArrayDiskWriterTest:public CppUnit::TestFixture {
+class ByteArrayDiskWriterTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(ByteArrayDiskWriterTest);
   CPPUNIT_TEST(testWriteAndRead);
   CPPUNIT_TEST(testWriteAndRead2);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
-  void setUp() {
-  }
+  void setUp() {}
 
   void testWriteAndRead();
   void testWriteAndRead2();
 };
 
+CPPUNIT_TEST_SUITE_REGISTRATION(ByteArrayDiskWriterTest);
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ByteArrayDiskWriterTest );
-
-void ByteArrayDiskWriterTest::testWriteAndRead() {
+void ByteArrayDiskWriterTest::testWriteAndRead()
+{
   ByteArrayDiskWriter bw;
 
   std::string msg1 = "Hello";
@@ -46,7 +45,8 @@ void ByteArrayDiskWriterTest::testWriteAndRead() {
   CPPUNIT_ASSERT_EQUAL((int64_t)14, bw.size());
 }
 
-void ByteArrayDiskWriterTest::testWriteAndRead2() {
+void ByteArrayDiskWriterTest::testWriteAndRead2()
+{
   ByteArrayDiskWriter bw;
 
   std::string msg1 = "Hello World";

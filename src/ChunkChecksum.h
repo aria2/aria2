@@ -40,8 +40,6 @@
 #include <string>
 #include <vector>
 
-#include "SharedHandle.h"
-
 namespace aria2 {
 
 class ChunkChecksum {
@@ -49,16 +47,14 @@ private:
   std::string hashType_;
   std::vector<std::string> pieceHashes_;
   int32_t pieceLength_;
+
 public:
   ChunkChecksum();
 
-  ChunkChecksum
-  (const std::string& hashType,
-   const std::vector<std::string>& pieceHashes,
-   int32_t pieceLength);
+  ChunkChecksum(std::string hashType, std::vector<std::string> pieceHashes,
+                int32_t pieceLength);
 
-  bool validateChunk(const std::string& actualDigest,
-                     size_t index) const;
+  bool validateChunk(const std::string& actualDigest, size_t index) const;
 
   int64_t getEstimatedDataLength() const;
 
@@ -66,27 +62,18 @@ public:
 
   const std::string& getPieceHash(size_t index) const;
 
-  void setPieceHashes(const std::vector<std::string>& pieceHashes);
+  void setPieceHashes(std::vector<std::string> pieceHashes);
   const std::vector<std::string>& getPieceHashes() const
   {
     return pieceHashes_;
   }
 
-  void setHashType(const std::string& hashType);
-  const std::string& getHashType() const
-  {
-    return hashType_;
-  }
+  void setHashType(std::string hashType);
+  const std::string& getHashType() const { return hashType_; }
 
-  int32_t getPieceLength() const
-  {
-    return pieceLength_;
-  }
+  int32_t getPieceLength() const { return pieceLength_; }
 
-  void setPieceLength(int32_t length)
-  {
-    pieceLength_ = length;
-  }
+  void setPieceLength(int32_t length) { pieceLength_ = length; }
 };
 
 } // namespace aria2

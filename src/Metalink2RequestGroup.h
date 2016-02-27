@@ -38,8 +38,8 @@
 #include "common.h"
 #include <string>
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "A2STR.h"
 
 namespace aria2 {
@@ -51,21 +51,21 @@ class MetalinkEntry;
 
 class Metalink2RequestGroup {
 private:
-  void
-  createRequestGroup(std::vector<SharedHandle<RequestGroup> >& groups,
-                     const std::vector<SharedHandle<MetalinkEntry> >& entries,
-                     const SharedHandle<Option>& option);
+  void createRequestGroup(std::vector<std::shared_ptr<RequestGroup>>& groups,
+                          std::vector<std::unique_ptr<MetalinkEntry>> entries,
+                          const std::shared_ptr<Option>& option);
+
 public:
   Metalink2RequestGroup();
 
-  void generate(std::vector<SharedHandle<RequestGroup> >& groups,
+  void generate(std::vector<std::shared_ptr<RequestGroup>>& groups,
                 const std::string& metalinkFile,
-                const SharedHandle<Option>& option,
+                const std::shared_ptr<Option>& option,
                 const std::string& baseUri = A2STR::NIL);
 
-  void generate(std::vector<SharedHandle<RequestGroup> >& groups,
-                const SharedHandle<BinaryStream>& binaryStream,
-                const SharedHandle<Option>& option,
+  void generate(std::vector<std::shared_ptr<RequestGroup>>& groups,
+                const std::shared_ptr<BinaryStream>& binaryStream,
+                const std::shared_ptr<Option>& option,
                 const std::string& baseUri = A2STR::NIL);
 };
 

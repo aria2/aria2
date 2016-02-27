@@ -39,6 +39,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include <sqlite3.h>
 
@@ -55,13 +56,15 @@ public:
   // Loads cookies from sqlite3 database and stores them in cookies.
   // When loading is successful, cookies stored in cookies initially
   // are removed. Otherwise, the content of cookies is unchanged.
-  void parse(std::vector<Cookie>& cookies);
+  std::vector<std::unique_ptr<Cookie>> parse();
+
 protected:
   // Returns SQL select statement to get 1 record of cookie.  The sql
   // must return 6 columns in the following order: host, path,
   // secure(1 for secure, 0 for not), expiry(utc, unix time), name,
   // value, last access time(utc, unix time)
   virtual const char* getQuery() const = 0;
+
 private:
   sqlite3* db_;
 };

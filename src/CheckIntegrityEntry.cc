@@ -45,61 +45,58 @@
 namespace aria2 {
 
 CheckIntegrityEntry::CheckIntegrityEntry(RequestGroup* requestGroup,
-                                         Command* nextCommand):
-  RequestGroupEntry(requestGroup, nextCommand)
-{}
+                                         std::unique_ptr<Command> nextCommand)
+    : RequestGroupEntry{requestGroup, std::move(nextCommand)}
+{
+}
 
 CheckIntegrityEntry::~CheckIntegrityEntry() {}
 
-void CheckIntegrityEntry::validateChunk()
-{
-  validator_->validateChunk();
-}
+void CheckIntegrityEntry::validateChunk() { validator_->validateChunk(); }
 
 int64_t CheckIntegrityEntry::getTotalLength()
 {
-  if(!validator_) {
+  if (!validator_) {
     return 0;
-  } else {
+  }
+  else {
     return validator_->getTotalLength();
   }
 }
 
 int64_t CheckIntegrityEntry::getCurrentLength()
 {
-  if(!validator_) {
+  if (!validator_) {
     return 0;
-  } else {
+  }
+  else {
     return validator_->getCurrentOffset();
   }
 }
 
-bool CheckIntegrityEntry::finished()
-{
-  return validator_->finished();
-}
+bool CheckIntegrityEntry::finished() { return validator_->finished(); }
 
 void CheckIntegrityEntry::cutTrailingGarbage()
 {
   getRequestGroup()->getPieceStorage()->getDiskAdaptor()->cutTrailingGarbage();
 }
 
-void CheckIntegrityEntry::proceedFileAllocation
-(std::vector<Command*>& commands,
- const SharedHandle<FileAllocationEntry>& entry,
- DownloadEngine* e)
+void CheckIntegrityEntry::proceedFileAllocation(
+    std::vector<std::unique_ptr<Command>>& commands,
+    std::unique_ptr<FileAllocationEntry> entry, DownloadEngine* e)
 {
-  if(getRequestGroup()->needsFileAllocation()) {
-    e->getFileAllocationMan()->pushEntry(entry);
-  } else {
+  if (getRequestGroup()->needsFileAllocation()) {
+    e->getFileAllocationMan()->pushEntry(std::move(entry));
+  }
+  else {
     entry->prepareForNextAction(commands, e);
   }
 }
 
-void CheckIntegrityEntry::setValidator
-(const SharedHandle<IteratableValidator>& validator)
+void CheckIntegrityEntry::setValidator(
+    std::unique_ptr<IteratableValidator> validator)
 {
-  validator_ = validator;
+  validator_ = std::move(validator);
 }
 
 } // namespace aria2

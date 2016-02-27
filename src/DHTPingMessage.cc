@@ -38,37 +38,34 @@
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageFactory.h"
 #include "DHTMessageCallback.h"
+#include "DHTPingReplyMessage.h"
 
 namespace aria2 {
 
 const std::string DHTPingMessage::PING("ping");
 
-DHTPingMessage::DHTPingMessage(const SharedHandle<DHTNode>& localNode,
-                               const SharedHandle<DHTNode>& remoteNode,
-                               const std::string& transactionID):
-  DHTQueryMessage(localNode, remoteNode, transactionID) {}
-
-DHTPingMessage::~DHTPingMessage() {}
+DHTPingMessage::DHTPingMessage(const std::shared_ptr<DHTNode>& localNode,
+                               const std::shared_ptr<DHTNode>& remoteNode,
+                               const std::string& transactionID)
+    : DHTQueryMessage(localNode, remoteNode, transactionID)
+{
+}
 
 void DHTPingMessage::doReceivedAction()
 {
   // send back ping reply
-  SharedHandle<DHTMessage> reply =
-    getMessageFactory()->createPingReplyMessage
-    (getRemoteNode(), getLocalNode()->getID(), getTransactionID());
-  getMessageDispatcher()->addMessageToQueue(reply);
+  getMessageDispatcher()->addMessageToQueue(
+      getMessageFactory()->createPingReplyMessage(
+          getRemoteNode(), getLocalNode()->getID(), getTransactionID()));
 }
 
-SharedHandle<Dict> DHTPingMessage::getArgument()
+std::unique_ptr<Dict> DHTPingMessage::getArgument()
 {
-  SharedHandle<Dict> aDict = Dict::g();
+  auto aDict = Dict::g();
   aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
   return aDict;
 }
 
-const std::string& DHTPingMessage::getMessageType() const
-{
-  return PING;
-}
+const std::string& DHTPingMessage::getMessageType() const { return PING; }
 
 } // namespace aria2

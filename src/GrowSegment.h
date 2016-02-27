@@ -39,77 +39,53 @@
 
 namespace aria2 {
 
-class GrowSegment:public Segment {
+class GrowSegment : public Segment {
 private:
-  SharedHandle<Piece> piece_;
-  int32_t writtenLength_;
+  std::shared_ptr<Piece> piece_;
+  int64_t writtenLength_;
+
 public:
-  GrowSegment(const SharedHandle<Piece>& piece);
+  GrowSegment(const std::shared_ptr<Piece>& piece);
 
   virtual ~GrowSegment();
 
-  virtual bool complete() const
-  {
-    return false;
-  }
+  virtual bool complete() const CXX11_OVERRIDE { return false; }
 
-  virtual size_t getIndex() const
-  {
-    return 0;
-  }
+  virtual size_t getIndex() const CXX11_OVERRIDE { return 0; }
 
-  virtual int64_t getPosition() const
-  {
-    return 0;
-  }
+  virtual int64_t getPosition() const CXX11_OVERRIDE { return 0; }
 
-  virtual int64_t getPositionToWrite() const
+  virtual int64_t getPositionToWrite() const CXX11_OVERRIDE
   {
     return writtenLength_;
   }
 
-  virtual int32_t getLength() const
-  {
-    return 0;
-  }
+  virtual int64_t getLength() const CXX11_OVERRIDE { return 0; }
 
-  virtual int32_t getSegmentLength() const
-  {
-    return 0;
-  }
+  virtual int64_t getSegmentLength() const CXX11_OVERRIDE { return 0; }
 
-  virtual int32_t getWrittenLength() const
+  virtual int64_t getWrittenLength() const CXX11_OVERRIDE
   {
     return writtenLength_;
   }
 
-  virtual void updateWrittenLength(int32_t bytes);
+  virtual void updateWrittenLength(int64_t bytes) CXX11_OVERRIDE;
 
-#ifdef ENABLE_MESSAGE_DIGEST
-
-  virtual bool updateHash
-  (int32_t begin,
-   const unsigned char* data,
-   size_t dataLength)
+  virtual bool updateHash(int64_t begin, const unsigned char* data,
+                          size_t dataLength) CXX11_OVERRIDE
   {
     return false;
   }
 
-  virtual bool isHashCalculated() const
-  {
-    return false;
-  }
+  virtual bool isHashCalculated() const CXX11_OVERRIDE { return false; }
 
-  virtual std::string getDigest();
+  virtual std::string getDigest() CXX11_OVERRIDE;
 
-#endif // ENABLE_MESSAGE_DIGEST
+  virtual void clear(WrDiskCache* diskCache) CXX11_OVERRIDE;
 
-  virtual void clear(WrDiskCache* diskCache);
-
-  virtual SharedHandle<Piece> getPiece() const;
+  virtual std::shared_ptr<Piece> getPiece() const CXX11_OVERRIDE;
 };
 
 } // namespace aria2
 
 #endif // D_GROW_SEGMENT_H
-

@@ -35,6 +35,7 @@
 #include "SinkStreamFilter.h"
 
 #include <cstring>
+#include <cassert>
 
 #include "BinaryStream.h"
 #include "Segment.h"
@@ -45,55 +46,54 @@ namespace aria2 {
 
 const std::string SinkStreamFilter::NAME("SinkStreamFilter");
 
-SinkStreamFilter::SinkStreamFilter(WrDiskCache* wrDiskCache, bool hashUpdate):
-  wrDiskCache_(wrDiskCache),
-  hashUpdate_(hashUpdate),
-  bytesProcessed_(0) {}
+SinkStreamFilter::SinkStreamFilter(WrDiskCache* wrDiskCache, bool hashUpdate)
+    : wrDiskCache_(wrDiskCache), hashUpdate_(hashUpdate), bytesProcessed_(0)
+{
+}
 
-ssize_t SinkStreamFilter::transform
-(const SharedHandle<BinaryStream>& out,
- const SharedHandle<Segment>& segment,
- const unsigned char* inbuf, size_t inlen)
+ssize_t SinkStreamFilter::transform(const std::shared_ptr<BinaryStream>& out,
+                                    const std::shared_ptr<Segment>& segment,
+                                    const unsigned char* inbuf, size_t inlen)
 {
   size_t wlen;
-  if(inlen > 0) {
-    if(segment->getLength() > 0) {
+  if (inlen > 0) {
+    if (segment->getLength() > 0) {
       // We must not write data larger than available space in
       // segment.
       assert(segment->getLength() >= segment->getWrittenLength());
-      size_t lenAvail = segment->getLength()-segment->getWrittenLength();
+      size_t lenAvail = segment->getLength() - segment->getWrittenLength();
       wlen = std::min(inlen, lenAvail);
-    } else {
+    }
+    else {
       wlen = inlen;
     }
-    const SharedHandle<Piece>& piece = segment->getPiece();
-    if(piece->getWrDiskCacheEntry()) {
+    const std::shared_ptr<Piece>& piece = segment->getPiece();
+    if (piece->getWrDiskCacheEntry()) {
       assert(wrDiskCache_);
       // If we receive small data (e.g., 1 or 2 bytes), cache entry
       // becomes a headache. To mitigate this problem, we allocate
       // cache buffer at least 4KiB and append the data to the
       // contagious cache data.
-      size_t alen = piece->appendWrCache(wrDiskCache_,
-                                         segment->getPositionToWrite(),
-                                         inbuf, wlen);
-      if(alen < wlen) {
+      size_t alen = piece->appendWrCache(
+          wrDiskCache_, segment->getPositionToWrite(), inbuf, wlen);
+      if (alen < wlen) {
         size_t len = wlen - alen;
-        size_t capacity = std::max(len, static_cast<size_t>(4096));
-        unsigned char* dataCopy = new unsigned char[capacity];
+        size_t capacity = std::max(len, static_cast<size_t>(4_k));
+        auto dataCopy = new unsigned char[capacity];
         memcpy(dataCopy, inbuf + alen, len);
         piece->updateWrCache(wrDiskCache_, dataCopy, 0, len, capacity,
                              segment->getPositionToWrite() + alen);
       }
-    } else {
+    }
+    else {
       out->writeData(inbuf, wlen, segment->getPositionToWrite());
     }
-#ifdef ENABLE_MESSAGE_DIGEST
-    if(hashUpdate_) {
+    if (hashUpdate_) {
       segment->updateHash(segment->getWrittenLength(), inbuf, wlen);
     }
-#endif // ENABLE_MESSAGE_DIGEST
     segment->updateWrittenLength(wlen);
-  } else {
+  }
+  else {
     wlen = 0;
   }
   bytesProcessed_ = wlen;

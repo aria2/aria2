@@ -44,20 +44,15 @@ PATH=$TOOLCHAIN/bin:$PATH
     --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` \
     --disable-nls \
     --without-gnutls \
-    --with-openssl --with-openssl-prefix=$PREFIX \
+    --with-openssl \
     --without-sqlite3 \
     --without-libxml2 \
-    --with-libexpat --with-libexpat-prefix=$PREFIX \
-    --with-libcares --with-libcares-prefix=$PREFIX \
-    --with-libz --with-libz-prefix=$PREFIX \
+    --with-libexpat \
+    --with-libcares \
+    --with-libz \
+    --with-libssh2 \
     CXXFLAGS="-Os -g" \
     CFLAGS="-Os -g" \
-    LDFLAGS="-L$PREFIX/lib" \
-    PKG_CONFIG_LIBDIR="$PREFIX/lib/pkgconfig" \
-    ZLIB_LIBS="-lz" \
-    ZLIB_CFLAGS="-I$TOOLCHAIN/sysroot/usr/include"
-
-# ZLIB_LIBS and ZLIB_CFLAGS are needed because aria2 configure script
-# checks zlib availability using pkg-config, but android toochain does
-# not provide pkg-config file. We need to specify these variables
-# manually.
+    CPPFLAGS="-fPIE" \
+    LDFLAGS="-fPIE -pie -L$PREFIX/lib" \
+    PKG_CONFIG_LIBDIR="$PREFIX/lib/pkgconfig"

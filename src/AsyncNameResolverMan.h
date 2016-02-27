@@ -39,8 +39,7 @@
 
 #include <vector>
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -56,15 +55,9 @@ public:
   // must call it before the destruction of this object.
   ~AsyncNameResolverMan();
   // Enable IPv4 address lookup. default: true
-  void setIPv4(bool ipv4)
-  {
-    ipv4_ = ipv4;
-  }
+  void setIPv4(bool ipv4) { ipv4_ = ipv4; }
   // Enable IPv6 address lookup. default: true
-  void setIPv6(bool ipv6)
-  {
-    ipv6_ = ipv6;
-  }
+  void setIPv6(bool ipv6) { ipv6_ = ipv6; }
   // Returns true if asynchronous name resolution has been started.
   bool started() const;
   // Starts asynchronous name resolution.
@@ -77,10 +70,7 @@ public:
   // Removes resolvers from DownloadEngine.
   void disableNameResolverCheck(DownloadEngine* e, Command* command);
   // Returns true if any of resolvers are added in DownloadEngine.
-  bool resolverChecked() const
-  {
-    return resolverCheck_;
-  }
+  bool resolverChecked() const { return resolverCheck_; }
   // Returns status value: 0 for inprogress, 1 for success and -1 for
   // failure.
   int getStatus() const;
@@ -88,16 +78,16 @@ public:
   const std::string& getLastError() const;
   // Resets state. Also removes resolvers from DownloadEngine.
   void reset(DownloadEngine* e, Command* command);
+
 private:
-  void startAsyncFamily(const std::string& hostname,
-                        int family,
+  void startAsyncFamily(const std::string& hostname, int family,
                         DownloadEngine* e, Command* command);
   void setNameResolverCheck(size_t resolverIndex, DownloadEngine* e,
                             Command* command);
   void disableNameResolverCheck(size_t index, DownloadEngine* e,
                                 Command* command);
 
-  SharedHandle<AsyncNameResolver> asyncNameResolver_[2];
+  std::shared_ptr<AsyncNameResolver> asyncNameResolver_[2];
   size_t numResolver_;
   int resolverCheck_;
   bool ipv4_;

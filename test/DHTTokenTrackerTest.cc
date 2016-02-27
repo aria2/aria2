@@ -8,11 +8,12 @@
 
 namespace aria2 {
 
-class DHTTokenTrackerTest:public CppUnit::TestFixture {
+class DHTTokenTrackerTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTTokenTrackerTest);
   CPPUNIT_TEST(testGenerateToken);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -20,7 +21,6 @@ public:
 
   void testGenerateToken();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DHTTokenTrackerTest);
 

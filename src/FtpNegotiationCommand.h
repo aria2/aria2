@@ -92,6 +92,7 @@ public:
     SEQ_FILE_PREPARATION, // File allocation after SIZE command
     SEQ_EXIT
   };
+
 private:
   bool recvGreeting();
   bool sendUser();
@@ -125,13 +126,13 @@ private:
   bool resolveProxy();
   bool sendTunnelRequest();
   bool recvTunnelResponse();
-  bool sendRest(const SharedHandle<Segment>& segment);
-  bool sendRestPasv(const SharedHandle<Segment>& segment);
-  bool recvRest(const SharedHandle<Segment>& segment);
+  bool sendRest(const std::shared_ptr<Segment>& segment);
+  bool sendRestPasv(const std::shared_ptr<Segment>& segment);
+  bool recvRest(const std::shared_ptr<Segment>& segment);
   bool sendRetr();
   bool recvRetr();
   bool waitConnection();
-  bool processSequence(const SharedHandle<Segment>& segment);
+  bool processSequence(const std::shared_ptr<Segment>& segment);
 
   void afterFileAllocation();
 
@@ -141,27 +142,27 @@ private:
 
   void onDryRunFileFound();
 
-  SharedHandle<SocketCore> dataSocket_;
-  SharedHandle<SocketCore> serverSocket_;
+  std::shared_ptr<SocketCore> dataSocket_;
+  std::shared_ptr<SocketCore> serverSocket_;
   Seq sequence_;
-  SharedHandle<FtpConnection> ftp_;
+  std::shared_ptr<FtpConnection> ftp_;
   // For tunneling
-  SharedHandle<HttpConnection> http_;
+  std::shared_ptr<HttpConnection> http_;
   // Port number in PASV/EPSV response
   uint16_t pasvPort_;
   // Resolved address for proxy
   std::string proxyAddr_;
 
   std::deque<std::string> cwdDirs_;
+
 protected:
-  virtual bool executeInternal();
+  virtual bool executeInternal() CXX11_OVERRIDE;
+
 public:
-  FtpNegotiationCommand(cuid_t cuid,
-                        const SharedHandle<Request>& req,
-                        const SharedHandle<FileEntry>& fileEntry,
-                        RequestGroup* requestGroup,
-                        DownloadEngine* e,
-                        const SharedHandle<SocketCore>& s,
+  FtpNegotiationCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
+                        const std::shared_ptr<FileEntry>& fileEntry,
+                        RequestGroup* requestGroup, DownloadEngine* e,
+                        const std::shared_ptr<SocketCore>& s,
                         Seq seq = SEQ_RECV_GREETING,
                         const std::string& baseWorkingDir = "/");
   virtual ~FtpNegotiationCommand();

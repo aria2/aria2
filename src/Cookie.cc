@@ -42,70 +42,33 @@
 
 namespace aria2 {
 
-Cookie::Cookie
-(const std::string& name,
- const std::string& value,
- time_t  expiryTime,
- bool persistent,
- const std::string& domain,
- bool hostOnly,
- const std::string& path,
- bool secure,
- bool httpOnly,
- time_t creationTime):
-  name_(name),
-  value_(value),
-  expiryTime_(expiryTime),
-  persistent_(persistent),
-  domain_(domain),
-  hostOnly_(hostOnly),
-  path_(path),
-  secure_(secure),
-  httpOnly_(httpOnly),
-  creationTime_(creationTime),
-  lastAccessTime_(creationTime) {}
-
-Cookie::Cookie():
-  expiryTime_(0),
-  persistent_(false),
-  hostOnly_(false),
-  secure_(false),
-  httpOnly_(false),
-  creationTime_(0),
-  lastAccessTime_(0) {}
-
-Cookie::Cookie(const Cookie& c)
-  : name_(c.name_),
-    value_(c.value_),
-    expiryTime_(c.expiryTime_),
-    persistent_(c.persistent_),
-    domain_(c.domain_),
-    hostOnly_(c.hostOnly_),
-    path_(c.path_),
-    secure_(c.secure_),
-    httpOnly_(c.httpOnly_),
-    creationTime_(c.creationTime_),
-    lastAccessTime_(c.lastAccessTime_)
-{}
-
-Cookie::~Cookie() {}
-
-Cookie& Cookie::operator=(const Cookie& c)
+Cookie::Cookie(std::string name, std::string value, time_t expiryTime,
+               bool persistent, std::string domain, bool hostOnly,
+               std::string path, bool secure, bool httpOnly,
+               time_t creationTime)
+    : expiryTime_(expiryTime),
+      creationTime_(creationTime),
+      lastAccessTime_(creationTime),
+      name_(std::move(name)),
+      value_(std::move(value)),
+      domain_(std::move(domain)),
+      path_(std::move(path)),
+      persistent_(persistent),
+      hostOnly_(hostOnly),
+      secure_(secure),
+      httpOnly_(httpOnly)
 {
-  if(this != &c) {
-    name_ = c.name_;
-    value_ = c.value_;
-    expiryTime_ = c.expiryTime_;
-    persistent_ = c.persistent_;
-    domain_ = c.domain_;
-    hostOnly_ = c.hostOnly_;
-    path_ = c.path_;
-    secure_ = c.secure_;
-    httpOnly_ = c.httpOnly_;
-    creationTime_ = c.creationTime_;
-    lastAccessTime_ = c.lastAccessTime_;
-  }
-  return *this;
+}
+
+Cookie::Cookie()
+    : expiryTime_(0),
+      creationTime_(0),
+      lastAccessTime_(0),
+      persistent_(false),
+      hostOnly_(false),
+      secure_(false),
+      httpOnly_(false)
+{
 }
 
 std::string Cookie::toString() const
@@ -116,18 +79,18 @@ std::string Cookie::toString() const
   return s;
 }
 
-bool Cookie::match
-(const std::string& requestHost,
- const std::string& requestPath,
- time_t date, bool secure) const
+bool Cookie::match(const std::string& requestHost,
+                   const std::string& requestPath, time_t date,
+                   bool secure) const
 {
-  if((secure_ && !secure) || isExpired(date) ||
-     !cookie::pathMatch(requestPath, path_)) {
+  if ((secure_ && !secure) || isExpired(date) ||
+      !cookie::pathMatch(requestPath, path_)) {
     return false;
   }
-  if(hostOnly_) {
-    return requestHost == domain_ ;
-  } else {
+  if (hostOnly_) {
+    return requestHost == domain_;
+  }
+  else {
     return cookie::domainMatch(requestHost, domain_);
   }
 }
@@ -135,7 +98,12 @@ bool Cookie::match
 bool Cookie::operator==(const Cookie& cookie) const
 {
   return domain_ == cookie.domain_ && path_ == cookie.path_ &&
-    name_ == cookie.name_;
+         name_ == cookie.name_;
+}
+
+bool Cookie::operator!=(const Cookie& cookie) const
+{
+  return !(*this == cookie);
 }
 
 bool Cookie::isExpired(time_t base) const
@@ -146,26 +114,29 @@ bool Cookie::isExpired(time_t base) const
 std::string Cookie::toNsCookieFormat() const
 {
   std::stringstream ss;
-  if(!hostOnly_) {
+  if (!hostOnly_) {
     ss << ".";
   }
   ss << domain_ << "\t";
-  if(hostOnly_) {
+  if (hostOnly_) {
     ss << "FALSE";
-  } else {
+  }
+  else {
     ss << "TRUE";
   }
   ss << "\t";
   ss << path_ << "\t";
-  if(secure_) {
+  if (secure_) {
     ss << "TRUE";
-  } else {
+  }
+  else {
     ss << "FALSE";
   }
   ss << "\t";
-  if(persistent_) {
+  if (persistent_) {
     ss << expiryTime_;
-  } else {
+  }
+  else {
     ss << 0;
   }
   ss << "\t";
@@ -174,24 +145,12 @@ std::string Cookie::toNsCookieFormat() const
   return ss.str();
 }
 
-void Cookie::setName(const std::string& name)
-{
-  name_ = name;
-}
+void Cookie::setName(std::string name) { name_ = std::move(name); }
 
-void Cookie::setValue(const std::string& value)
-{
-  value_ = value;
-}
+void Cookie::setValue(std::string value) { value_ = std::move(value); }
 
-void Cookie::setDomain(const std::string& domain)
-{
-  domain_ = domain;
-}
+void Cookie::setDomain(std::string domain) { domain_ = std::move(domain); }
 
-void Cookie::setPath(const std::string& path)
-{
-  path_ = path;
-}
+void Cookie::setPath(std::string path) { path_ = std::move(path); }
 
 } // namespace aria2

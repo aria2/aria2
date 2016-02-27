@@ -46,24 +46,28 @@
 namespace aria2 {
 
 BtLeecherStateChoke::BtLeecherStateChoke()
-  : round_(0),
-    lastRound_(0)
-{}
+    : round_(0), lastRound_(Timer::zero())
+{
+}
 
 BtLeecherStateChoke::~BtLeecherStateChoke() {}
 
-BtLeecherStateChoke::PeerEntry::PeerEntry(const SharedHandle<Peer>& peer):
-  peer_(peer), downloadSpeed_(peer->calculateDownloadSpeed()),
-  // peer must be interested to us and sent block in the last 30 seconds
-  regularUnchoker_
-  (peer->peerInterested() &&
-   peer->getLastDownloadUpdate().difference(global::wallclock()) < 30) {}
+BtLeecherStateChoke::PeerEntry::PeerEntry(const std::shared_ptr<Peer>& peer)
+    : peer_(peer),
+      downloadSpeed_(peer->calculateDownloadSpeed()),
+      // peer must be interested to us and sent block in the last 30 seconds
+      regularUnchoker_(
+          peer->peerInterested() &&
+          peer->getLastDownloadUpdate().difference(global::wallclock()) < 30_s)
+{
+}
 
 BtLeecherStateChoke::PeerEntry::PeerEntry(const PeerEntry& c)
-  : peer_(c.peer_),
-    downloadSpeed_(c.downloadSpeed_),
-    regularUnchoker_(c.regularUnchoker_)
-{}
+    : peer_(c.peer_),
+      downloadSpeed_(c.downloadSpeed_),
+      regularUnchoker_(c.regularUnchoker_)
+{
+}
 
 void BtLeecherStateChoke::PeerEntry::swap(PeerEntry& c)
 {
@@ -73,10 +77,10 @@ void BtLeecherStateChoke::PeerEntry::swap(PeerEntry& c)
   swap(regularUnchoker_, c.regularUnchoker_);
 }
 
-BtLeecherStateChoke::PeerEntry& BtLeecherStateChoke::PeerEntry::operator=
-(const PeerEntry& c)
+BtLeecherStateChoke::PeerEntry& BtLeecherStateChoke::PeerEntry::
+operator=(const PeerEntry& c)
 {
-  if(this != &c) {
+  if (this != &c) {
     peer_ = c.peer_;
     downloadSpeed_ = c.downloadSpeed_;
     regularUnchoker_ = c.regularUnchoker_;
@@ -86,7 +90,7 @@ BtLeecherStateChoke::PeerEntry& BtLeecherStateChoke::PeerEntry::operator=
 
 BtLeecherStateChoke::PeerEntry::~PeerEntry() {}
 
-const SharedHandle<Peer>& BtLeecherStateChoke::PeerEntry::getPeer() const
+const std::shared_ptr<Peer>& BtLeecherStateChoke::PeerEntry::getPeer() const
 {
   return peer_;
 }
@@ -126,73 +130,69 @@ bool BtLeecherStateChoke::PeerEntry::operator<(const PeerEntry& peerEntry) const
   return downloadSpeed_ > peerEntry.downloadSpeed_;
 }
 
-void swap
-(BtLeecherStateChoke::PeerEntry& a,
- BtLeecherStateChoke::PeerEntry& b)
+void swap(BtLeecherStateChoke::PeerEntry& a, BtLeecherStateChoke::PeerEntry& b)
 {
   a.swap(b);
 }
 
-bool BtLeecherStateChoke::PeerFilter::operator()
-  (const PeerEntry& peerEntry) const
+bool BtLeecherStateChoke::PeerFilter::
+operator()(const PeerEntry& peerEntry) const
 {
   return peerEntry.getPeer()->amChoking() == amChoking_ &&
-    peerEntry.getPeer()->peerInterested() == peerInterested_;
+         peerEntry.getPeer()->peerInterested() == peerInterested_;
 }
 
-void BtLeecherStateChoke::plannedOptimisticUnchoke
-(std::vector<PeerEntry>& peerEntries)
+void BtLeecherStateChoke::plannedOptimisticUnchoke(
+    std::vector<PeerEntry>& peerEntries)
 {
-  std::for_each(peerEntries.begin(), peerEntries.end(),
-                std::mem_fun_ref(&PeerEntry::disableOptUnchoking));
+  std::for_each(std::begin(peerEntries), std::end(peerEntries),
+                std::mem_fn(&PeerEntry::disableOptUnchoking));
 
-  std::vector<PeerEntry>::iterator i =
-    std::partition(peerEntries.begin(), peerEntries.end(),
-                   PeerFilter(true, true));
-  if(i != peerEntries.begin()) {
-    std::random_shuffle(peerEntries.begin(), i,
-                        *(SimpleRandomizer::getInstance().get()));
-    (*peerEntries.begin()).enableOptUnchoking();
-    A2_LOG_INFO(fmt("POU: %s",
-                    (*peerEntries.begin()).getPeer()->getIPAddress().c_str()));
+  auto i = std::partition(std::begin(peerEntries), std::end(peerEntries),
+                          PeerFilter(true, true));
+  if (i != std::begin(peerEntries)) {
+    std::shuffle(std::begin(peerEntries), i, *SimpleRandomizer::getInstance());
+    (*std::begin(peerEntries)).enableOptUnchoking();
+    A2_LOG_INFO(
+        fmt("POU: %s",
+            (*std::begin(peerEntries)).getPeer()->getIPAddress().c_str()));
   }
 }
 
 void BtLeecherStateChoke::regularUnchoke(std::vector<PeerEntry>& peerEntries)
 {
-  std::vector<PeerEntry>::iterator rest =
-    std::partition(peerEntries.begin(), peerEntries.end(),
-                   std::mem_fun_ref(&PeerEntry::isRegularUnchoker));
+  auto rest = std::partition(std::begin(peerEntries), std::end(peerEntries),
+                             std::mem_fn(&PeerEntry::isRegularUnchoker));
 
-  std::sort(peerEntries.begin(), rest);
+  std::sort(std::begin(peerEntries), rest);
 
   // the number of regular unchokers
   int count = 3;
 
   bool fastOptUnchoker = false;
-  std::vector<PeerEntry>::iterator peerIter = peerEntries.begin();
-  for(;peerIter != rest && count; ++peerIter, --count) {
-    (*peerIter).disableChokingRequired();
+  auto peerIter = std::begin(peerEntries);
+  for (; peerIter != rest && count; ++peerIter, --count) {
+    peerIter->disableChokingRequired();
     A2_LOG_INFO(fmt("RU: %s, dlspd=%d",
                     (*peerIter).getPeer()->getIPAddress().c_str(),
                     (*peerIter).getDownloadSpeed()));
-    if((*peerIter).getPeer()->optUnchoking()) {
+    if (peerIter->getPeer()->optUnchoking()) {
       fastOptUnchoker = true;
-      (*peerIter).disableOptUnchoking();
+      peerIter->disableOptUnchoking();
     }
   }
-  if(fastOptUnchoker) {
-    std::random_shuffle(peerIter, peerEntries.end(),
-                        *(SimpleRandomizer::getInstance().get()));
-    for(std::vector<PeerEntry>::iterator i = peerIter,
-          eoi = peerEntries.end(); i != eoi; ++i) {
-      if((*i).getPeer()->peerInterested()) {
-        (*i).enableOptUnchoking();
-        A2_LOG_INFO(fmt("OU: %s", (*i).getPeer()->getIPAddress().c_str()));
+  if (fastOptUnchoker) {
+    std::shuffle(peerIter, std::end(peerEntries),
+                 *SimpleRandomizer::getInstance());
+    for (auto& p : peerEntries) {
+      if (p.getPeer()->peerInterested()) {
+        p.enableOptUnchoking();
+        A2_LOG_INFO(fmt("OU: %s", p.getPeer()->getIPAddress().c_str()));
         break;
-      } else {
-        (*i).disableChokingRequired();
-        A2_LOG_INFO(fmt("OU: %s", (*i).getPeer()->getIPAddress().c_str()));
+      }
+      else {
+        p.disableChokingRequired();
+        A2_LOG_INFO(fmt("OU: %s", p.getPeer()->getIPAddress().c_str()));
       }
     }
   }
@@ -204,28 +204,24 @@ void BtLeecherStateChoke::executeChoke(const PeerSet& peerSet)
   lastRound_ = global::wallclock();
 
   std::vector<PeerEntry> peerEntries;
-  for(PeerSet::const_iterator i = peerSet.begin(), eoi = peerSet.end();
-      i != eoi; ++i) {
-    if((*i)->isActive() && !(*i)->snubbing()) {
-      (*i)->chokingRequired(true);
-      peerEntries.push_back(PeerEntry(*i));
+  for (const auto& p : peerSet) {
+    if (p->isActive() && !p->snubbing()) {
+      p->chokingRequired(true);
+      peerEntries.push_back(PeerEntry(p));
     }
   }
 
   // planned optimistic unchoke
-  if(round_ == 0) {
+  if (round_ == 0) {
     plannedOptimisticUnchoke(peerEntries);
   }
   regularUnchoke(peerEntries);
 
-  if(++round_ == 3) {
+  if (++round_ == 3) {
     round_ = 0;
   }
 }
 
-const Timer& BtLeecherStateChoke::getLastRound() const
-{
-  return lastRound_;
-}
+const Timer& BtLeecherStateChoke::getLastRound() const { return lastRound_; }
 
 } // namespace aria2

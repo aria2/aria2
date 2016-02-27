@@ -6,11 +6,12 @@
 
 namespace aria2 {
 
-class DHTNodeTest:public CppUnit::TestFixture {
+class DHTNodeTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTNodeTest);
   CPPUNIT_TEST(testGenerateID);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -18,7 +19,6 @@ public:
 
   void testGenerateID();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DHTNodeTest);
 

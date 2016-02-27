@@ -35,8 +35,8 @@
 #include "OptionHandler.h"
 #include <ostream>
 
-#define DEFAULT_MSG   _("                              Default: ")
-#define    TAGS_MSG   _("                              Tags: ")
+#define DEFAULT_MSG _("                              Default: ")
+#define TAGS_MSG _("                              Tags: ")
 #define POSSIBLE_MSG _("                              Possible Values: ")
 
 namespace aria2 {
@@ -54,10 +54,10 @@ std::ostream& operator<<(std::ostream& o, const OptionHandler& optionHandler)
 {
   o << optionHandler.getDescription() << "\n\n";
   std::string possibleValues = optionHandler.createPossibleValuesString();
-  if(!possibleValues.empty()) {
+  if (!possibleValues.empty()) {
     o << POSSIBLE_MSG << possibleValues << "\n";
   }
-  if(!optionHandler.getDefaultValue().empty()) {
+  if (!optionHandler.getDefaultValue().empty()) {
     o << DEFAULT_MSG << optionHandler.getDefaultValue() << "\n";
   }
   o << TAGS_MSG << optionHandler.toTagString();
@@ -68,10 +68,10 @@ void write(const Console& out, const OptionHandler& optionHandler)
 {
   out->printf("%s\n\n", optionHandler.getDescription());
   std::string possibleValues = optionHandler.createPossibleValuesString();
-  if(!possibleValues.empty()) {
+  if (!possibleValues.empty()) {
     out->printf("%s%s\n", POSSIBLE_MSG, possibleValues.c_str());
   }
-  if(!optionHandler.getDefaultValue().empty()) {
+  if (!optionHandler.getDefaultValue().empty()) {
     out->printf("%s%s\n", DEFAULT_MSG, optionHandler.getDefaultValue().c_str());
   }
   out->printf("%s%s\n", TAGS_MSG, optionHandler.toTagString().c_str());

@@ -47,29 +47,35 @@ namespace base32 {
 
 std::string encode(const std::string& src);
 
-template<typename InputIterator>
+template <typename InputIterator>
 std::string decode(InputIterator first, InputIterator last)
 {
   std::string ret;
-  size_t len = last-first;
-  if(len%8) {
+  size_t len = last - first;
+  if (len % 8) {
     return ret;
   }
   bool done = false;
-  for(; first != last && !done; first += 8) {
+  for (; first != last && !done; first += 8) {
     uint64_t buf = 0;
     size_t bits = 0;
-    for(size_t i = 0; i < 8; ++i) {
-      char ch = *(first+i);
+    for (size_t i = 0; i < 8; ++i) {
+      char ch = *(first + i);
       unsigned char value;
-      if('A' <= ch && ch <= 'Z') {
-        value = ch-'A';
-      } else if('2' <= ch && ch <= '7') {
-        value = ch-'2'+26;
-      } else if(ch == '=') {
+      if ('A' <= ch && ch <= 'Z') {
+        value = ch - 'A';
+      }
+      else if ('a' <= ch && ch <= 'z') {
+        value = ch - 'a';
+      }
+      else if ('2' <= ch && ch <= '7') {
+        value = ch - '2' + 26;
+      }
+      else if (ch == '=') {
         done = true;
         break;
-      } else {
+      }
+      else {
         ret.clear();
         return ret;
       }
@@ -77,11 +83,11 @@ std::string decode(InputIterator first, InputIterator last)
       buf += value;
       bits += 5;
     }
-    buf >>= (bits%8);
-    bits = bits/8*8;
+    buf >>= (bits % 8);
+    bits = bits / 8 * 8;
     buf = hton64(buf);
     char* p = reinterpret_cast<char*>(&buf);
-    ret.append(&p[(64-bits)/8], &p[8]);
+    ret.append(&p[(64 - bits) / 8], &p[8]);
   }
   return ret;
 }

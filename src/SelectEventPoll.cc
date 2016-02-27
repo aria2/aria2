@@ -35,7 +35,7 @@
 #include "SelectEventPoll.h"
 
 #ifdef __MINGW32__
-# include <cassert>
+#include <cassert>
 #endif // __MINGW32__
 #include <cstring>
 #include <algorithm>
@@ -50,96 +50,96 @@
 
 namespace aria2 {
 
-SelectEventPoll::CommandEvent::CommandEvent(Command* command, int events):
-  command_(command), events_(events) {}
+SelectEventPoll::CommandEvent::CommandEvent(Command* command, int events)
+    : command_(command), events_(events)
+{
+}
 
 void SelectEventPoll::CommandEvent::processEvents(int events)
 {
-  if((events_&events) ||
-     ((EventPoll::EVENT_ERROR|EventPoll::EVENT_HUP)&events)) {
+  if ((events_ & events) ||
+      ((EventPoll::EVENT_ERROR | EventPoll::EVENT_HUP) & events)) {
     command_->setStatusActive();
   }
-  if(EventPoll::EVENT_READ&events) {
+  if (EventPoll::EVENT_READ & events) {
     command_->readEventReceived();
   }
-  if(EventPoll::EVENT_WRITE&events) {
+  if (EventPoll::EVENT_WRITE & events) {
     command_->writeEventReceived();
   }
-  if(EventPoll::EVENT_ERROR&events) {
+  if (EventPoll::EVENT_ERROR & events) {
     command_->errorEventReceived();
   }
-  if(EventPoll::EVENT_HUP&events) {
+  if (EventPoll::EVENT_HUP & events) {
     command_->hupEventReceived();
   }
 }
 
-SelectEventPoll::SocketEntry::SocketEntry(sock_t socket):socket_(socket) {}
+SelectEventPoll::SocketEntry::SocketEntry(sock_t socket) : socket_(socket) {}
 
-void SelectEventPoll::SocketEntry::addCommandEvent
-(Command* command, int events)
+void SelectEventPoll::SocketEntry::addCommandEvent(Command* command, int events)
 {
   CommandEvent cev(command, events);
-  std::deque<CommandEvent>::iterator i = std::find(commandEvents_.begin(),
-                                                   commandEvents_.end(),
-                                                   cev);
-  if(i == commandEvents_.end()) {
+  auto i = std::find(commandEvents_.begin(), commandEvents_.end(), cev);
+  if (i == commandEvents_.end()) {
     commandEvents_.push_back(cev);
-  } else {
+  }
+  else {
     (*i).addEvents(events);
   }
 }
-void SelectEventPoll::SocketEntry::removeCommandEvent
-(Command* command, int events)
+void SelectEventPoll::SocketEntry::removeCommandEvent(Command* command,
+                                                      int events)
 {
   CommandEvent cev(command, events);
-  std::deque<CommandEvent>::iterator i = std::find(commandEvents_.begin(),
-                                                   commandEvents_.end(),
-                                                   cev);
-  if(i == commandEvents_.end()) {
+  auto i = std::find(commandEvents_.begin(), commandEvents_.end(), cev);
+  if (i == commandEvents_.end()) {
     // not found
-  } else {
+  }
+  else {
     (*i).removeEvents(events);
-    if((*i).eventsEmpty()) {
+    if ((*i).eventsEmpty()) {
       commandEvents_.erase(i);
     }
   }
 }
 void SelectEventPoll::SocketEntry::processEvents(int events)
 {
+  using namespace std::placeholders;
   std::for_each(commandEvents_.begin(), commandEvents_.end(),
-                std::bind2nd(std::mem_fun_ref(&CommandEvent::processEvents),
-                             events));
+                std::bind(&CommandEvent::processEvents, _1, events));
 }
 
 int accumulateEvent(int events, const SelectEventPoll::CommandEvent& event)
 {
-  return events|event.getEvents();
+  return events | event.getEvents();
 }
 
 int SelectEventPoll::SocketEntry::getEvents()
 {
-  return
-    std::accumulate(commandEvents_.begin(), commandEvents_.end(), 0,
-                    accumulateEvent);
+  return std::accumulate(commandEvents_.begin(), commandEvents_.end(), 0,
+                         accumulateEvent);
 }
 
 #ifdef ENABLE_ASYNC_DNS
 
-SelectEventPoll::AsyncNameResolverEntry::AsyncNameResolverEntry
-(const SharedHandle<AsyncNameResolver>& nameResolver, Command* command):
-  nameResolver_(nameResolver), command_(command) {}
+SelectEventPoll::AsyncNameResolverEntry::AsyncNameResolverEntry(
+    const std::shared_ptr<AsyncNameResolver>& nameResolver, Command* command)
+    : nameResolver_(nameResolver), command_(command)
+{
+}
 
-int SelectEventPoll::AsyncNameResolverEntry::getFds
-(fd_set* rfdsPtr, fd_set* wfdsPtr)
+int SelectEventPoll::AsyncNameResolverEntry::getFds(fd_set* rfdsPtr,
+                                                    fd_set* wfdsPtr)
 {
   return nameResolver_->getFds(rfdsPtr, wfdsPtr);
 }
 
-void SelectEventPoll::AsyncNameResolverEntry::process
-(fd_set* rfdsPtr, fd_set* wfdsPtr)
+void SelectEventPoll::AsyncNameResolverEntry::process(fd_set* rfdsPtr,
+                                                      fd_set* wfdsPtr)
 {
   nameResolver_->process(rfdsPtr, wfdsPtr);
-  switch(nameResolver_->getStatus()) {
+  switch (nameResolver_->getStatus()) {
   case AsyncNameResolver::STATUS_SUCCESS:
   case AsyncNameResolver::STATUS_ERROR:
     command_->setStatusActive();
@@ -181,12 +181,11 @@ void SelectEventPoll::poll(const struct timeval& tv)
 #endif // __MINGW32__
 #ifdef ENABLE_ASYNC_DNS
 
-  for(AsyncNameResolverEntrySet::iterator itr = nameResolverEntries_.begin(),
-        eoi = nameResolverEntries_.end(); itr != eoi; ++itr) {
-    const SharedHandle<AsyncNameResolverEntry>& entry = *itr;
-    int fd = entry->getFds(&rfds, &wfds);
+  for (auto& i : nameResolverEntries_) {
+    auto& entry = i.second;
+    int fd = entry.getFds(&rfds, &wfds);
     // TODO force error if fd == 0
-    if(fdmax_ < fd) {
+    if (fdmax_ < fd) {
       fdmax_ = fd;
     }
   }
@@ -196,32 +195,32 @@ void SelectEventPoll::poll(const struct timeval& tv)
   do {
     struct timeval ttv = tv;
 #ifdef __MINGW32__
-    retval = select(fdmax_+1, &rfds, &wfds, &efds, &ttv);
+    retval = select(fdmax_ + 1, &rfds, &wfds, &efds, &ttv);
 #else // !__MINGW32__
-    retval = select(fdmax_+1, &rfds, &wfds, NULL, &ttv);
+    retval = select(fdmax_ + 1, &rfds, &wfds, nullptr, &ttv);
 #endif // !__MINGW32__
-  } while(retval == -1 && errno == EINTR);
-  if(retval > 0) {
-    for(SocketEntrySet::iterator i = socketEntries_.begin(),
-          eoi = socketEntries_.end(); i != eoi; ++i) {
+  } while (retval == -1 && errno == EINTR);
+  if (retval > 0) {
+    for (auto& i : socketEntries_) {
+      auto& e = i.second;
       int events = 0;
-      if(FD_ISSET((*i)->getSocket(), &rfds)) {
+      if (FD_ISSET(e.getSocket(), &rfds)) {
         events |= EventPoll::EVENT_READ;
       }
-      if(FD_ISSET((*i)->getSocket(), &wfds)) {
+      if (FD_ISSET(e.getSocket(), &wfds)) {
         events |= EventPoll::EVENT_WRITE;
       }
-      (*i)->processEvents(events);
+      e.processEvents(events);
     }
-  } else if(retval == -1) {
+  }
+  else if (retval == -1) {
     int errNum = errno;
     A2_LOG_INFO(fmt("select error: %s", util::safeStrerror(errNum).c_str()));
   }
 #ifdef ENABLE_ASYNC_DNS
 
-  for(AsyncNameResolverEntrySet::iterator i = nameResolverEntries_.begin(),
-        eoi = nameResolverEntries_.end(); i != eoi; ++i) {
-    (*i)->process(&rfds, &wfds);
+  for (auto& i : nameResolverEntries_) {
+    i.second.process(&rfds, &wfds);
   }
 
 #endif // ENABLE_ASYNC_DNS
@@ -231,7 +230,7 @@ void SelectEventPoll::poll(const struct timeval& tv)
 namespace {
 void checkFdCountMingw(const fd_set& fdset)
 {
-  if(fdset.fd_count >= FD_SETSIZE) {
+  if (fdset.fd_count >= FD_SETSIZE) {
     A2_LOG_WARN("The number of file descriptor exceeded FD_SETSIZE. "
                 "Download may slow down or fail.");
   }
@@ -243,35 +242,35 @@ void SelectEventPoll::updateFdSet()
 {
 #ifdef __MINGW32__
   fdmax_ = dummySocket_;
-#else // !__MINGW32__
+#else  // !__MINGW32__
   fdmax_ = 0;
 #endif // !__MINGW32__
   FD_ZERO(&rfdset_);
   FD_ZERO(&wfdset_);
-  for(SocketEntrySet::iterator i = socketEntries_.begin(),
-        eoi = socketEntries_.end(); i != eoi; ++i) {
-    sock_t fd = (*i)->getSocket();
+  for (auto& i : socketEntries_) {
+    auto& e = i.second;
+    sock_t fd = e.getSocket();
 #ifndef __MINGW32__
-    if(fd < 0 || FD_SETSIZE <= fd) {
+    if (fd < 0 || FD_SETSIZE <= fd) {
       A2_LOG_WARN("Detected file descriptor >= FD_SETSIZE or < 0. "
                   "Download may slow down or fail.");
       continue;
     }
 #endif // !__MINGW32__
-    int events = (*i)->getEvents();
-    if(events&EventPoll::EVENT_READ) {
+    int events = e.getEvents();
+    if (events & EventPoll::EVENT_READ) {
 #ifdef __MINGW32__
       checkFdCountMingw(rfdset_);
 #endif // __MINGW32__
       FD_SET(fd, &rfdset_);
     }
-    if(events&EventPoll::EVENT_WRITE) {
+    if (events & EventPoll::EVENT_WRITE) {
 #ifdef __MINGW32__
       checkFdCountMingw(wfdset_);
 #endif // __MINGW32__
       FD_SET(fd, &wfdset_);
     }
-    if(fdmax_ < fd) {
+    if (fdmax_ < fd) {
       fdmax_ = fd;
     }
   }
@@ -280,13 +279,13 @@ void SelectEventPoll::updateFdSet()
 bool SelectEventPoll::addEvents(sock_t socket, Command* command,
                                 EventPoll::EventType events)
 {
-  SharedHandle<SocketEntry> socketEntry(new SocketEntry(socket));
-  SocketEntrySet::iterator i = socketEntries_.lower_bound(socketEntry);
-  if(i != socketEntries_.end() && *(*i) == *socketEntry) {
-    (*i)->addCommandEvent(command, events);
-  } else {
-    socketEntries_.insert(i, socketEntry);
-    socketEntry->addCommandEvent(command, events);
+  auto i = socketEntries_.lower_bound(socket);
+  if (i != std::end(socketEntries_) && (*i).first == socket) {
+    (*i).second.addCommandEvent(command, events);
+  }
+  else {
+    i = socketEntries_.insert(i, std::make_pair(socket, SocketEntry(socket)));
+    (*i).second.addCommandEvent(command, events);
   }
   updateFdSet();
   return true;
@@ -295,43 +294,42 @@ bool SelectEventPoll::addEvents(sock_t socket, Command* command,
 bool SelectEventPoll::deleteEvents(sock_t socket, Command* command,
                                    EventPoll::EventType events)
 {
-  SharedHandle<SocketEntry> socketEntry(new SocketEntry(socket));
-  SocketEntrySet::iterator i = socketEntries_.find(socketEntry);
-  if(i == socketEntries_.end()) {
+  auto i = socketEntries_.find(socket);
+  if (i == std::end(socketEntries_)) {
     A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
     return false;
-  } else {
-    (*i)->removeCommandEvent(command, events);
-    if((*i)->eventEmpty()) {
-      socketEntries_.erase(i);
-    }
-    updateFdSet();
-    return true;
   }
+
+  auto& socketEntry = (*i).second;
+  socketEntry.removeCommandEvent(command, events);
+  if (socketEntry.eventEmpty()) {
+    socketEntries_.erase(i);
+  }
+  updateFdSet();
+  return true;
 }
 
 #ifdef ENABLE_ASYNC_DNS
-bool SelectEventPoll::addNameResolver
-(const SharedHandle<AsyncNameResolver>& resolver, Command* command)
+bool SelectEventPoll::addNameResolver(
+    const std::shared_ptr<AsyncNameResolver>& resolver, Command* command)
 {
-  SharedHandle<AsyncNameResolverEntry> entry
-    (new AsyncNameResolverEntry(resolver, command));
-  AsyncNameResolverEntrySet::iterator itr =
-    nameResolverEntries_.lower_bound(entry);
-  if(itr != nameResolverEntries_.end() && *(*itr) == *entry) {
+  auto key = std::make_pair(resolver.get(), command);
+  auto itr = nameResolverEntries_.lower_bound(key);
+  if (itr != std::end(nameResolverEntries_) && (*itr).first == key) {
     return false;
-  } else {
-    nameResolverEntries_.insert(itr, entry);
-    return true;
   }
+
+  nameResolverEntries_.insert(
+      itr, std::make_pair(key, AsyncNameResolverEntry(resolver, command)));
+
+  return true;
 }
 
-bool SelectEventPoll::deleteNameResolver
-(const SharedHandle<AsyncNameResolver>& resolver, Command* command)
+bool SelectEventPoll::deleteNameResolver(
+    const std::shared_ptr<AsyncNameResolver>& resolver, Command* command)
 {
-  SharedHandle<AsyncNameResolverEntry> entry
-    (new AsyncNameResolverEntry(resolver, command));
-  return nameResolverEntries_.erase(entry) == 1;
+  auto key = std::make_pair(resolver.get(), command);
+  return nameResolverEntries_.erase(key) == 1;
 }
 #endif // ENABLE_ASYNC_DNS
 

@@ -40,8 +40,8 @@
 #include <signal.h>
 
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "DownloadResult.h"
 #include "util.h"
 
@@ -49,24 +49,18 @@ namespace aria2 {
 
 class RequestGroup;
 class Option;
-class StatCalc;
-class OutputFile;
 class UriListParser;
 class DownloadEngine;
 
 class MultiUrlRequestInfo {
 private:
-  std::vector<SharedHandle<RequestGroup> > requestGroups_;
+  std::vector<std::shared_ptr<RequestGroup>> requestGroups_;
 
-  SharedHandle<Option> option_;
+  std::shared_ptr<Option> option_;
 
-  SharedHandle<StatCalc> statCalc_;
+  std::shared_ptr<UriListParser> uriListParser_;
 
-  SharedHandle<OutputFile> summaryOut_;
-
-  SharedHandle<UriListParser> uriListParser_;
-
-  SharedHandle<DownloadEngine> e_;
+  std::unique_ptr<DownloadEngine> e_;
 
   sigset_t mask_;
 
@@ -75,19 +69,17 @@ private:
   void printMessageForContinue();
   void setupSignalHandlers();
   void resetSignalHandlers();
+
 public:
   /*
    * MultiRequestInfo effectively takes ownership of the
    * requestGroups.
    */
-  MultiUrlRequestInfo
-  (std::vector<SharedHandle<RequestGroup> >& requestGroups,
-   const SharedHandle<Option>& op,
-   const SharedHandle<StatCalc>& statCalc,
-   const SharedHandle<OutputFile>& summaryOut,
-   const SharedHandle<UriListParser>& uriListParser);
+  MultiUrlRequestInfo(std::vector<std::shared_ptr<RequestGroup>> requestGroups,
+                      const std::shared_ptr<Option>& op,
+                      const std::shared_ptr<UriListParser>& uriListParser);
 
-  virtual ~MultiUrlRequestInfo();
+  ~MultiUrlRequestInfo();
 
   // Returns FINISHED if all downloads have completed, otherwise returns the
   // last download result.
@@ -107,7 +99,7 @@ public:
   // have completed.
   error_code::Value getResult();
 
-  const SharedHandle<DownloadEngine>& getDownloadEngine() const;
+  const std::unique_ptr<DownloadEngine>& getDownloadEngine() const;
 
   // Signal handlers are not prepared if false is given.
   void setUseSignalHandler(bool useSignalHandler)

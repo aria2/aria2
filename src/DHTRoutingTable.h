@@ -39,8 +39,7 @@
 
 #include <string>
 #include <vector>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -52,50 +51,54 @@ class DHTBucketTreeNode;
 
 class DHTRoutingTable {
 private:
-  SharedHandle<DHTNode> localNode_;
+  std::shared_ptr<DHTNode> localNode_;
 
-  DHTBucketTreeNode* root_;
+  std::unique_ptr<DHTBucketTreeNode> root_;
 
   int numBucket_;
 
-  SharedHandle<DHTTaskQueue> taskQueue_;
+  DHTTaskQueue* taskQueue_;
 
-  SharedHandle<DHTTaskFactory> taskFactory_;
+  DHTTaskFactory* taskFactory_;
 
-  bool addNode(const SharedHandle<DHTNode>& node, bool good);
+  bool addNode(const std::shared_ptr<DHTNode>& node, bool good);
+
 public:
-  DHTRoutingTable(const SharedHandle<DHTNode>& localNode);
+  DHTRoutingTable(const std::shared_ptr<DHTNode>& localNode);
 
   ~DHTRoutingTable();
 
-  bool addNode(const SharedHandle<DHTNode>& node);
+  bool addNode(const std::shared_ptr<DHTNode>& node);
 
-  bool addGoodNode(const SharedHandle<DHTNode>& node);
+  bool addGoodNode(const std::shared_ptr<DHTNode>& node);
 
-  void getClosestKNodes(std::vector<SharedHandle<DHTNode> >& nodes,
+  void getClosestKNodes(std::vector<std::shared_ptr<DHTNode>>& nodes,
                         const unsigned char* key) const;
 
   int getNumBucket() const;
 
   void showBuckets() const;
 
-  void dropNode(const SharedHandle<DHTNode>& node);
+  void dropNode(const std::shared_ptr<DHTNode>& node);
 
-  void moveBucketHead(const SharedHandle<DHTNode>& node);
+  void moveBucketHead(const std::shared_ptr<DHTNode>& node);
 
-  void moveBucketTail(const SharedHandle<DHTNode>& node);
+  void moveBucketTail(const std::shared_ptr<DHTNode>& node);
 
-  SharedHandle<DHTBucket> getBucketFor(const unsigned char* nodeID) const;
+  std::shared_ptr<DHTBucket> getBucketFor(const unsigned char* nodeID) const;
 
-  SharedHandle<DHTBucket> getBucketFor(const SharedHandle<DHTNode>& node) const;
+  std::shared_ptr<DHTBucket>
+  getBucketFor(const std::shared_ptr<DHTNode>& node) const;
 
-  SharedHandle<DHTNode> getNode(const unsigned char* id, const std::string& ipaddr, uint16_t port) const;
+  std::shared_ptr<DHTNode> getNode(const unsigned char* id,
+                                   const std::string& ipaddr,
+                                   uint16_t port) const;
 
-  void getBuckets(std::vector<SharedHandle<DHTBucket> >& buckets) const;
+  void getBuckets(std::vector<std::shared_ptr<DHTBucket>>& buckets) const;
 
-  void setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue);
+  void setTaskQueue(DHTTaskQueue* taskQueue);
 
-  void setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory);
+  void setTaskFactory(DHTTaskFactory* taskFactory);
 };
 
 } // namespace aria2

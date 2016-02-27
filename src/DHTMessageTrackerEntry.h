@@ -38,8 +38,8 @@
 #include "common.h"
 
 #include <string>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "DHTConstants.h"
 #include "TimerA2.h"
 
@@ -51,47 +51,37 @@ class DHTMessageCallback;
 
 class DHTMessageTrackerEntry {
 private:
-  SharedHandle<DHTNode> targetNode_;
+  std::shared_ptr<DHTNode> targetNode_;
 
   std::string transactionID_;
 
   std::string messageType_;
 
-  SharedHandle<DHTMessageCallback> callback_;
+  std::unique_ptr<DHTMessageCallback> callback_;
 
   Timer dispatchedTime_;
 
-  time_t timeout_;
-public:
-  DHTMessageTrackerEntry(const SharedHandle<DHTMessage>& sentMessage,
-                         time_t timeout,
-                         const SharedHandle<DHTMessageCallback>& callback =
-                         SharedHandle<DHTMessageCallback>());
+  std::chrono::seconds timeout_;
 
-  ~DHTMessageTrackerEntry();
+public:
+  DHTMessageTrackerEntry(std::shared_ptr<DHTNode> targetNode,
+                         std::string transactionID, std::string messageType,
+                         std::chrono::seconds timeout,
+                         std::unique_ptr<DHTMessageCallback> callback =
+                             std::unique_ptr<DHTMessageCallback>{});
 
   bool isTimeout() const;
 
   void extendTimeout();
 
-  bool match(const std::string& transactionID, const std::string& ipaddr, uint16_t port) const;
+  bool match(const std::string& transactionID, const std::string& ipaddr,
+             uint16_t port) const;
 
-  const SharedHandle<DHTNode>& getTargetNode() const
-  {
-    return targetNode_;
-  }
-
-  const std::string& getMessageType() const
-  {
-    return messageType_;
-  }
-
-  const SharedHandle<DHTMessageCallback>& getCallback() const
-  {
-    return callback_;
-  }
-
-  int64_t getElapsedMillis() const;
+  const std::shared_ptr<DHTNode>& getTargetNode() const;
+  const std::string& getMessageType() const;
+  const std::unique_ptr<DHTMessageCallback>& getCallback() const;
+  std::unique_ptr<DHTMessageCallback> popCallback();
+  Timer::Clock::duration getElapsed() const;
 };
 
 } // namespace aria2

@@ -35,69 +35,43 @@
 #ifndef D_BUFFERED_FILE_H
 #define D_BUFFERED_FILE_H
 
-#include "OutputFile.h"
+#include "IOFile.h"
 
 #include <cstdio>
-#include <string>
-#include <iosfwd>
 
 namespace aria2 {
 
-// This is a wrapper class for fopen/fclose/fread/fwrite/fgets.
-class BufferedFile:public OutputFile {
-private:
-  typedef void (BufferedFile::*unspecified_bool_type)() const;
-  void good_state() const {}
+// IOFILE implementation using standard I/O functions.
+class BufferedFile : public IOFile {
 public:
   BufferedFile(const char* filename, const char* mode);
   BufferedFile(FILE* fp);
   virtual ~BufferedFile();
-  // Returns true if file is opened and ferror returns 0. Otherwise
-  // returns false.
-  operator unspecified_bool_type() const;
+
+protected:
   // wrapper for fread. Using 1 for 2nd argument of fread.
-  virtual size_t read(void* ptr, size_t count);
+  virtual size_t onRead(void* ptr, size_t count) CXX11_OVERRIDE;
   // wrapper for fwrite. Using 1 for 2nd argument of fwrite.
-  virtual size_t write(const void* ptr, size_t count);
-  virtual size_t write(const char* str);
+  virtual size_t onWrite(const void* ptr, size_t count) CXX11_OVERRIDE;
   // wrapper for fgets
-  virtual char* gets(char* s, int size);
-  // wrapper for fgets, but trailing '\n' is replaced with '\0'.
-  char* getsn(char* s, int size);
-  // Reads one line and returns it. The last '\n' is removed.
-  std::string getLine();
-  // wrapper for fclose
-  virtual int close();
-  // Return true if open_ && feof(fp_) != 0. Otherwise returns false.
-  bool eof();
-  // Convenient method. Read data to end of file and write them into
-  // given stream. Returns written size.
-  size_t transfer(std::ostream& out);
-  virtual int vprintf(const char* format, va_list va);
+  virtual char* onGets(char* s, int size) CXX11_OVERRIDE;
+  virtual int onVprintf(const char* format, va_list va) CXX11_OVERRIDE;
   // wrapper for fflush
-  virtual int flush();
-  virtual bool supportsColor();
-  // Mode for reading
-  static const char READ[];
-  // Mode for writing
-  static const char WRITE[];
-  // Mode for append
-  static const char APPEND[];
+  virtual int onFlush() CXX11_OVERRIDE;
+  // wrapper for fclose
+  virtual int onClose() CXX11_OVERRIDE;
+  virtual bool onSupportsColor() CXX11_OVERRIDE;
+  virtual bool isError() const CXX11_OVERRIDE;
+  virtual bool isEOF() const CXX11_OVERRIDE;
+  virtual bool isOpen() const CXX11_OVERRIDE;
 
 private:
-  // Don't allow copying
+  // Don't allow copying;
   BufferedFile(const BufferedFile&);
   BufferedFile& operator=(const BufferedFile&);
 
   FILE* fp_;
-  bool open_;
   bool supportsColor_;
-
-protected:
-  virtual bool isError() const { return ferror(fp_); }
-  virtual bool isEOF() const { return feof(fp_); }
-  virtual bool isOpen() const { return open_; }
-
 };
 
 } // namespace aria2

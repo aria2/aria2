@@ -43,16 +43,14 @@ class SocketCore;
 
 class FtpTunnelRequestCommand : public AbstractProxyRequestCommand {
 public:
-  FtpTunnelRequestCommand(cuid_t cuid,
-                          const SharedHandle<Request>& req,
-                          const SharedHandle<FileEntry>& fileEntry,
-                          RequestGroup* requestGroup,
-                          DownloadEngine* e,
-                          const SharedHandle<Request>& proxyRequest,
-                          const SharedHandle<SocketCore>& s);
+  FtpTunnelRequestCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
+                          const std::shared_ptr<FileEntry>& fileEntry,
+                          RequestGroup* requestGroup, DownloadEngine* e,
+                          const std::shared_ptr<Request>& proxyRequest,
+                          const std::shared_ptr<SocketCore>& s);
   virtual ~FtpTunnelRequestCommand();
 
-  virtual Command* getNextCommand();
+  virtual std::unique_ptr<Command> getNextCommand() CXX11_OVERRIDE;
 };
 
 } // namespace aria2

@@ -43,10 +43,6 @@ class Randomizer {
 public:
   virtual ~Randomizer() {}
 
-  virtual long int getRandomNumber() = 0;
-
-  virtual long int getMaxRandomNumber() = 0;
-
   /**
    * Returns random number in [0, to).
    */

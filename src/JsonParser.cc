@@ -33,8 +33,10 @@
  */
 /* copyright --> */
 #include "JsonParser.h"
-#include "StructParserStateMachine.h"
 
+#include <cassert>
+
+#include "StructParserStateMachine.h"
 #include "util.h"
 
 namespace aria2 {
@@ -74,64 +76,63 @@ const char JSON_NULL_STR[] = "null";
 } // namespace
 
 JsonParser::JsonParser(StructParserStateMachine* psm)
-  : psm_(psm),
-    currentState_(JSON_VALUE),
-    codepoint_(0),
-    codepoint2_(0),
-    numberSign_(1),
-    number_(0),
-    frac_(0),
-    expSign_(1),
-    exp_(0),
-    numConsumed_(0),
-    lastError_(0)
+    : psm_(psm),
+      currentState_(JSON_VALUE),
+      codepoint_(0),
+      codepoint2_(0),
+      numberSign_(1),
+      number_(0),
+      frac_(0),
+      expSign_(1),
+      exp_(0),
+      numConsumed_(0),
+      lastError_(0)
 {
   stateStack_.push(JSON_FINISH);
 }
 
-JsonParser::~JsonParser()
-{}
+JsonParser::~JsonParser() {}
 
 namespace {
-bool isSpace(char c)
-{
-  return util::isLws(c) || util::isCRLF(c);
-}
+bool isSpace(char c) { return util::isLws(c) || util::isCRLF(c); }
 } // namespace
 
 ssize_t JsonParser::parseUpdate(const char* data, size_t size)
 {
   size_t i;
-  if(currentState_ == JSON_FINISH) {
+  if (currentState_ == JSON_FINISH) {
     return 0;
-  } else if(currentState_ == JSON_ERROR) {
+  }
+  else if (currentState_ == JSON_ERROR) {
     return lastError_;
   }
-  for(i = 0; i < size && currentState_ != JSON_FINISH; ++i) {
+  for (i = 0; i < size && currentState_ != JSON_FINISH; ++i) {
     char c = data[i];
-    switch(currentState_) {
+    switch (currentState_) {
     case JSON_ARRAY:
-      if(c == ']') {
+      if (c == ']') {
         onArrayEnd();
         break;
-      } else if(isSpace(c)) {
+      }
+      else if (isSpace(c)) {
         break;
-      } else {
+      }
+      else {
         int rv = pushState(currentState_);
-        if(rv < 0) {
+        if (rv < 0) {
           return rv;
         }
         currentState_ = JSON_VALUE;
         runBeginCallback(STRUCT_ARRAY_DATA_T);
       }
-      // Fall through
+    // Fall through
     case JSON_VALUE:
-      switch(c) {
+      switch (c) {
       case '{':
         currentState_ = JSON_OBJECT_KEY;
         runBeginCallback(STRUCT_DICT_T);
         break;
-      case'[':
+      case '[':
         currentState_ = JSON_ARRAY;
         runBeginCallback(STRUCT_ARRAY_T);
         break;
@@ -162,58 +163,62 @@ ssize_t JsonParser::parseUpdate(const char* data, size_t size)
         runBeginCallback(STRUCT_NULL_T);
         break;
       default:
-        if(util::isDigit(c)) {
+        if (util::isDigit(c)) {
           number_ = c - '0';
           numberSign_ = 1;
           numConsumed_ = 1;
           currentState_ = JSON_NUMBER;
           runBeginCallback(STRUCT_NUMBER_T);
-        } else if(!isSpace(c)) {
+        }
+        else if (!isSpace(c)) {
           currentState_ = JSON_ERROR;
           return lastError_ = ERR_UNEXPECTED_CHAR_BEFORE_VAL;
         }
       }
       break;
     case JSON_TRUE:
-      if(JSON_TRUE_STR[numConsumed_] == c) {
+      if (JSON_TRUE_STR[numConsumed_] == c) {
         ++numConsumed_;
-        if(numConsumed_ == sizeof(JSON_TRUE_STR)-1) {
+        if (numConsumed_ == sizeof(JSON_TRUE_STR) - 1) {
           runBoolCallback(true);
           onBoolEnd();
         }
-      } else {
+      }
+      else {
         currentState_ = JSON_ERROR;
         return lastError_ = ERR_UNEXPECTED_LITERAL;
       }
       break;
     case JSON_FALSE:
-      if(JSON_FALSE_STR[numConsumed_] == c) {
+      if (JSON_FALSE_STR[numConsumed_] == c) {
         ++numConsumed_;
-        if(numConsumed_ == sizeof(JSON_FALSE_STR)-1) {
+        if (numConsumed_ == sizeof(JSON_FALSE_STR) - 1) {
           runBoolCallback(false);
           onBoolEnd();
         }
-      } else {
+      }
+      else {
         currentState_ = JSON_ERROR;
         return lastError_ = ERR_UNEXPECTED_LITERAL;
       }
       break;
     case JSON_NULL:
-      if(JSON_NULL_STR[numConsumed_] == c) {
+      if (JSON_NULL_STR[numConsumed_] == c) {
         ++numConsumed_;
-        if(numConsumed_ == sizeof(JSON_NULL_STR)-1) {
+        if (numConsumed_ == sizeof(JSON_NULL_STR) - 1) {
           onNullEnd();
         }
-      } else {
+      }
+      else {
         currentState_ = JSON_ERROR;
         return lastError_ = ERR_UNEXPECTED_LITERAL;
       }
       break;
     case JSON_OBJECT_KEY:
-      switch(c) {
+      switch (c) {
       case '"': {
         int rv = pushState(currentState_);
-        if(rv < 0) {
+        if (rv < 0) {
           return rv;
         }
         currentState_ = JSON_STRING;
@@ -224,7 +229,7 @@ ssize_t JsonParser::parseUpdate(const char* data, size_t size)
         onObjectEnd();
         break;
       default:
-        if(!isSpace(c)) {
+        if (!isSpace(c)) {
           currentState_ = JSON_ERROR;
           return lastError_ = ERR_UNEXPECTED_CHAR_BEFORE_OBJ_KEY;
         }
@@ -232,21 +237,21 @@ ssize_t JsonParser::parseUpdate(const char* data, size_t size)
       break;
 
     case JSON_OBJECT_VAL:
-      switch(c) {
+      switch (c) {
       case ':':
         pushState(currentState_);
         currentState_ = JSON_VALUE;
         runBeginCallback(STRUCT_DICT_DATA_T);
         break;
       default:
-        if(!isSpace(c)) {
+        if (!isSpace(c)) {
           currentState_ = JSON_ERROR;
           return lastError_ = ERR_UNEXPECTED_CHAR_BEFORE_OBJ_VAL;
         }
       }
       break;
     case JSON_OBJECT_SEP:
-      switch(c) {
+      switch (c) {
       case ',':
         currentState_ = JSON_OBJECT_KEY;
         break;
@@ -254,14 +259,14 @@ ssize_t JsonParser::parseUpdate(const char* data, size_t size)
         onObjectEnd();
         break;
       default:
-        if(!isSpace(c)) {
+        if (!isSpace(c)) {
           currentState_ = JSON_ERROR;
           return lastError_ = ERR_UNEXPECTED_CHAR_BEFORE_OBJ_SEP;
         }
       }
       break;
     case JSON_ARRAY_SEP:
-      switch(c) {
+      switch (c) {
       case ',':
         pushState(JSON_ARRAY);
         currentState_ = JSON_VALUE;
@@ -271,14 +276,14 @@ ssize_t JsonParser::parseUpdate(const char* data, size_t size)
         onArrayEnd();
         break;
       default:
-        if(!isSpace(c)) {
+        if (!isSpace(c)) {
           currentState_ = JSON_ERROR;
           return lastError_ = ERR_UNEXPECTED_CHAR_BEFORE_ARRAY_SEP;
         }
       }
       break;
     case JSON_STRING:
-      switch(c) {
+      switch (c) {
       case '"':
         onStringEnd();
         break;
@@ -287,8 +292,9 @@ ssize_t JsonParser::parseUpdate(const char* data, size_t size)
         break;
       default: {
         size_t j;
-        for(j = i; j < size && data[j] != '\\' && data[j] != '"'; ++j);
-        if(j - i >= 1) {
+        for (j = i; j < size && data[j] != '\\' && data[j] != '"'; ++j)
+          ;
+        if (j - i >= 1) {
           runCharactersCallback(&data[i], j - i);
         }
         i = j - 1;
@@ -297,14 +303,14 @@ ssize_t JsonParser::parseUpdate(const char* data, size_t size)
       }
       break;
     case JSON_STRING_ESCAPE:
-      switch(c) {
+      switch (c) {
       case 'u':
         codepoint_ = 0;
         numConsumed_ = 0;
         currentState_ = JSON_STRING_UNICODE;
         break;
       default:
-        switch(c) {
+        switch (c) {
         case 'b':
           runCharactersCallback("\b", 1);
           break;
@@ -332,10 +338,11 @@ ssize_t JsonParser::parseUpdate(const char* data, size_t size)
       break;
     case JSON_STRING_UNICODE: {
       size_t j;
-      for(j = i; j < size && currentState_ == JSON_STRING_UNICODE; ++j) {
-        if(util::isHexDigit(data[j])) {
+      for (j = i; j < size && currentState_ == JSON_STRING_UNICODE; ++j) {
+        if (util::isHexDigit(data[j])) {
           consumeUnicode(data[j]);
-        } else {
+        }
+        else {
           currentState_ = JSON_ERROR;
           return lastError_ = ERR_INVALID_UNICODE_POINT;
         }
@@ -344,7 +351,7 @@ ssize_t JsonParser::parseUpdate(const char* data, size_t size)
       break;
     }
     case JSON_STRING_LOW_SURROGATE_ESCAPE:
-      switch(c) {
+      switch (c) {
       case '\\':
         currentState_ = JSON_STRING_LOW_SURROGATE_U;
         break;
@@ -354,7 +361,7 @@ ssize_t JsonParser::parseUpdate(const char* data, size_t size)
       }
       break;
     case JSON_STRING_LOW_SURROGATE_U:
-      switch(c) {
+      switch (c) {
       case 'u':
         codepoint2_ = 0;
         numConsumed_ = 0;
@@ -367,15 +374,16 @@ ssize_t JsonParser::parseUpdate(const char* data, size_t size)
       break;
     case JSON_STRING_LOW_SURROGATE: {
       size_t j;
-      for(j = i; j < size && currentState_ == JSON_STRING_LOW_SURROGATE; ++j) {
-        if(util::isHexDigit(data[j])) {
+      for (j = i; j < size && currentState_ == JSON_STRING_LOW_SURROGATE; ++j) {
+        if (util::isHexDigit(data[j])) {
           int rv = consumeLowSurrogate(data[j]);
-          if(rv != 0) {
+          if (rv != 0) {
             currentState_ = JSON_ERROR;
             lastError_ = rv;
             return rv;
           }
-        } else {
+        }
+        else {
           currentState_ = JSON_ERROR;
           return lastError_ = ERR_INVALID_UNICODE_POINT;
         }
@@ -385,8 +393,8 @@ ssize_t JsonParser::parseUpdate(const char* data, size_t size)
     }
     case JSON_NUMBER: {
       size_t j;
-      for(j = i; j < size && in(data[j], '0', '9'); ++j) {
-        if((INT64_MAX - (data[j] - '0'))/ 10 < number_) {
+      for (j = i; j < size && in(data[j], '0', '9'); ++j) {
+        if ((INT64_MAX - (data[j] - '0')) / 10 < number_) {
           currentState_ = JSON_ERROR;
           return lastError_ = ERR_NUMBER_OUT_OF_RANGE;
         }
@@ -394,12 +402,12 @@ ssize_t JsonParser::parseUpdate(const char* data, size_t size)
         number_ += data[j] - '0';
       }
       numConsumed_ += j - i;
-      if(j != size) {
-        if(numConsumed_ == 0) {
+      if (j != size) {
+        if (numConsumed_ == 0) {
           currentState_ = JSON_ERROR;
           return lastError_ = ERR_INVALID_NUMBER;
         }
-        switch(data[j]) {
+        switch (data[j]) {
         case '.':
           frac_ = 0;
           numConsumed_ = 0;
@@ -418,27 +426,28 @@ ssize_t JsonParser::parseUpdate(const char* data, size_t size)
           onNumberEnd();
           i = j - 1;
         }
-      } else {
+      }
+      else {
         i = j - 1;
       }
       break;
     }
     case JSON_NUMBER_FRAC: {
       size_t j;
-      for(j = i; j < size && in(data[j], '0', '9'); ++j) {
+      for (j = i; j < size && in(data[j], '0', '9'); ++j) {
         // Take into account at most 8 digits
-        if(frac_ < 100000000) {
+        if (frac_ < 100000000) {
           frac_ *= 10;
           frac_ += data[j] - '0';
         }
       }
       numConsumed_ += j - i;
-      if(j != size) {
-        if(numConsumed_ == 0) {
+      if (j != size) {
+        if (numConsumed_ == 0) {
           currentState_ = JSON_ERROR;
           return lastError_ = ERR_INVALID_NUMBER;
         }
-        switch(data[j]) {
+        switch (data[j]) {
         case 'e':
         case 'E':
           exp_ = 0;
@@ -450,13 +459,14 @@ ssize_t JsonParser::parseUpdate(const char* data, size_t size)
           i = j - 1;
           onNumberEnd();
         }
-      } else {
+      }
+      else {
         i = j - 1;
       }
       break;
     }
     case JSON_NUMBER_EXP_SIGN:
-      switch(c) {
+      switch (c) {
       case '+':
         currentState_ = JSON_NUMBER_EXP;
         break;
@@ -467,30 +477,31 @@ ssize_t JsonParser::parseUpdate(const char* data, size_t size)
       default:
         break;
       }
-      if(currentState_ == JSON_NUMBER_EXP) {
+      if (currentState_ == JSON_NUMBER_EXP) {
         break;
-      } else {
+      }
+      else {
         currentState_ = JSON_NUMBER_EXP;
         // Fall through
       }
     case JSON_NUMBER_EXP: {
       size_t j;
-      for(j = i; j < size && in(data[j], '0', '9'); ++j) {
+      for (j = i; j < size && in(data[j], '0', '9'); ++j) {
         // Take into account at most 8 digits
         exp_ *= 10;
         exp_ += data[j] - '0';
-        if(exp_ > 18) {
+        if (exp_ > 18) {
           currentState_ = JSON_ERROR;
           return lastError_ = ERR_NUMBER_OUT_OF_RANGE;
         }
       }
       numConsumed_ += j - i;
-      if(j != size) {
-        if(numConsumed_ == 0) {
+      if (j != size) {
+        if (numConsumed_ == 0) {
           currentState_ = JSON_ERROR;
           return lastError_ = ERR_INVALID_NUMBER;
         }
-        switch(data[j]) {
+        switch (data[j]) {
         default:
           onNumberEnd();
         }
@@ -507,8 +518,8 @@ ssize_t JsonParser::parseFinal(const char* data, size_t len)
 {
   ssize_t rv;
   rv = parseUpdate(data, len);
-  if(rv >= 0) {
-    if(currentState_ != JSON_FINISH) {
+  if (rv >= 0) {
+    if (currentState_ != JSON_FINISH) {
       rv = ERR_PREMATURE_DATA;
     }
   }
@@ -520,7 +531,7 @@ void JsonParser::reset()
   psm_->reset();
   currentState_ = JSON_VALUE;
   lastError_ = 0;
-  while(!stateStack_.empty()) {
+  while (!stateStack_.empty()) {
     stateStack_.pop();
   }
   stateStack_.push(JSON_FINISH);
@@ -528,8 +539,8 @@ void JsonParser::reset()
 
 void JsonParser::onStringEnd()
 {
-  runEndCallback(stateTop() == JSON_OBJECT_KEY ?
-                 STRUCT_DICT_KEY_T : STRUCT_STRING_T);
+  runEndCallback(stateTop() == JSON_OBJECT_KEY ? STRUCT_DICT_KEY_T
+                                               : STRUCT_STRING_T);
   onValueEnd();
 }
 
@@ -566,7 +577,7 @@ void JsonParser::onNullEnd()
 
 void JsonParser::onValueEnd()
 {
-  switch(stateTop()) {
+  switch (stateTop()) {
   case JSON_OBJECT_KEY:
     popState();
     currentState_ = JSON_OBJECT_VAL;
@@ -590,18 +601,16 @@ void JsonParser::onValueEnd()
 
 int JsonParser::pushState(int state)
 {
-  if(stateStack_.size() >= 50) {
+  if (stateStack_.size() >= 50) {
     return ERR_STRUCTURE_TOO_DEEP;
-  } else {
+  }
+  else {
     stateStack_.push(state);
     return 0;
   }
 }
 
-int JsonParser::stateTop() const
-{
-  return stateStack_.top();
-}
+int JsonParser::stateTop() const { return stateStack_.top(); }
 
 int JsonParser::popState()
 {
@@ -615,21 +624,24 @@ void JsonParser::consumeUnicode(char c)
   codepoint_ *= 16;
   codepoint_ += util::hexCharToUInt(c);
   ++numConsumed_;
-  if(numConsumed_ == 4) {
-    if(in(codepoint_, 0xD800u, 0xDBFFu)) {
+  if (numConsumed_ == 4) {
+    if (in(codepoint_, 0xD800u, 0xDBFFu)) {
       // This is high-surrogate codepoint
       currentState_ = JSON_STRING_LOW_SURROGATE_ESCAPE;
-    } else {
+    }
+    else {
       char temp[3];
       size_t len;
-      if(codepoint_ <= 0x007fu) {
+      if (codepoint_ <= 0x007fu) {
         temp[0] = static_cast<char>(codepoint_);
         len = 1;
-      } else if(codepoint_ <= 0x07ffu) {
+      }
+      else if (codepoint_ <= 0x07ffu) {
         temp[0] = 0xC0u | (codepoint_ >> 6);
         temp[1] = 0x80u | (codepoint_ & 0x003fu);
         len = 2;
-      } else {
+      }
+      else {
         temp[0] = 0xE0u | (codepoint_ >> 12);
         temp[1] = 0x80u | ((codepoint_ >> 6) & 0x003Fu);
         temp[2] = 0x80u | (codepoint_ & 0x003Fu);
@@ -646,8 +658,8 @@ int JsonParser::consumeLowSurrogate(char c)
   codepoint2_ *= 16;
   codepoint2_ += util::hexCharToUInt(c);
   ++numConsumed_;
-  if(numConsumed_ == 4) {
-    if(!in(codepoint2_, 0xDC00u, 0xDFFFu)) {
+  if (numConsumed_ == 4) {
+    if (!in(codepoint2_, 0xDC00u, 0xDFFFu)) {
       return ERR_INVALID_UNICODE_POINT;
     }
     uint32_t fullcodepoint = 0x010000u;
@@ -746,10 +758,7 @@ void JsonParser::runNumberCallback(int64_t number, int frac, int exp)
   psm_->numberCallback(number, frac, exp);
 }
 
-void JsonParser::runBoolCallback(bool bval)
-{
-  psm_->boolCallback(bval);
-}
+void JsonParser::runBoolCallback(bool bval) { psm_->boolCallback(bval); }
 
 } // namespace json
 

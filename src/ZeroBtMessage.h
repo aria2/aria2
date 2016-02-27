@@ -43,25 +43,24 @@ namespace aria2 {
 class ZeroBtMessage : public SimpleBtMessage {
 private:
   static const size_t MESSAGE_LENGTH = 5;
+
 protected:
-  template<typename T>
-  static T* create(const unsigned char* data, size_t dataLength)
+  template <typename T>
+  static std::unique_ptr<T> create(const unsigned char* data, size_t dataLength)
   {
     bittorrent::assertPayloadLengthEqual(1, dataLength, T::NAME);
     bittorrent::assertID(T::ID, data, T::NAME);
-    T* message(new T());
-    return message;
+    return make_unique<T>();
   }
 
 public:
-  ZeroBtMessage(uint8_t id, const char* name):
-    SimpleBtMessage(id, name) {}
+  ZeroBtMessage(uint8_t id, const char* name);
 
-  virtual unsigned char* createMessage();
+  virtual unsigned char* createMessage() CXX11_OVERRIDE;
 
-  virtual size_t getMessageLength();
+  virtual size_t getMessageLength() CXX11_OVERRIDE;
 
-  virtual std::string toString() const;
+  virtual std::string toString() const CXX11_OVERRIDE;
 };
 
 } // namespace aria2

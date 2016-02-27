@@ -45,11 +45,7 @@ class StreamFilter;
 
 class HttpSkipResponseCommand : public AbstractCommand {
 private:
-  SharedHandle<HttpConnection> httpConnection_;
-
-  SharedHandle<HttpResponse> httpResponse_;
-
-  SharedHandle<StreamFilter> streamFilter_;
+  // hole from AbstractCommand (5 bytes on x86_64)
 
   bool sinkFilterOnly_;
 
@@ -57,25 +53,31 @@ private:
 
   int64_t receivedBytes_;
 
+  std::shared_ptr<HttpConnection> httpConnection_;
+
+  std::unique_ptr<HttpResponse> httpResponse_;
+
+  std::unique_ptr<StreamFilter> streamFilter_;
+
   bool processResponse();
 
   void poolConnection() const;
+
 protected:
-  virtual bool executeInternal();
+  virtual bool executeInternal() CXX11_OVERRIDE;
+
 public:
-  HttpSkipResponseCommand
-  (cuid_t cuid,
-   const SharedHandle<Request>& req,
-   const SharedHandle<FileEntry>& fileEntry,
-   RequestGroup* requestGroup,
-   const SharedHandle<HttpConnection>& httpConnection,
-   const SharedHandle<HttpResponse>& httpResponse,
-   DownloadEngine* e,
-   const SharedHandle<SocketCore>& s);
+  HttpSkipResponseCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
+                          const std::shared_ptr<FileEntry>& fileEntry,
+                          RequestGroup* requestGroup,
+                          const std::shared_ptr<HttpConnection>& httpConnection,
+                          std::unique_ptr<HttpResponse> httpResponse,
+                          DownloadEngine* e,
+                          const std::shared_ptr<SocketCore>& s);
 
   virtual ~HttpSkipResponseCommand();
 
-  void installStreamFilter(const SharedHandle<StreamFilter>& streamFilter);
+  void installStreamFilter(std::unique_ptr<StreamFilter> streamFilter);
 
   void disableSocketCheck();
 };

@@ -45,10 +45,8 @@ void ARC4Encryptor::init(const unsigned char* key, size_t keyLength)
   RC4_set_key(&key_, keyLength, key);
 }
 
-void ARC4Encryptor::encrypt
-(size_t len,
- unsigned char* out,
- const unsigned char* in)
+void ARC4Encryptor::encrypt(size_t len, unsigned char* out,
+                            const unsigned char* in)
 {
   RC4(&key_, len, in, out);
 }

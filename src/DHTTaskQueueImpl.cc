@@ -44,10 +44,11 @@ const size_t NUM_CONCURRENT_TASK = 5;
 } // namespace
 
 DHTTaskQueueImpl::DHTTaskQueueImpl()
-  : periodicTaskQueue1_(NUM_CONCURRENT_TASK),
-    periodicTaskQueue2_(NUM_CONCURRENT_TASK),
-    immediateTaskQueue_(NUM_CONCURRENT_TASK)
-{}
+    : periodicTaskQueue1_(NUM_CONCURRENT_TASK),
+      periodicTaskQueue2_(NUM_CONCURRENT_TASK),
+      immediateTaskQueue_(NUM_CONCURRENT_TASK)
+{
+}
 
 DHTTaskQueueImpl::~DHTTaskQueueImpl() {}
 
@@ -61,17 +62,17 @@ void DHTTaskQueueImpl::executeTask()
   immediateTaskQueue_.update();
 }
 
-void DHTTaskQueueImpl::addPeriodicTask1(const SharedHandle<DHTTask>& task)
+void DHTTaskQueueImpl::addPeriodicTask1(const std::shared_ptr<DHTTask>& task)
 {
   periodicTaskQueue1_.addTask(task);
 }
 
-void DHTTaskQueueImpl::addPeriodicTask2(const SharedHandle<DHTTask>& task)
+void DHTTaskQueueImpl::addPeriodicTask2(const std::shared_ptr<DHTTask>& task)
 {
   periodicTaskQueue2_.addTask(task);
 }
 
-void DHTTaskQueueImpl::addImmediateTask(const SharedHandle<DHTTask>& task)
+void DHTTaskQueueImpl::addImmediateTask(const std::shared_ptr<DHTTask>& task)
 {
   immediateTaskQueue_.addTask(task);
 }

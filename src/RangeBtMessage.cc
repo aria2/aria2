@@ -39,13 +39,11 @@
 
 namespace aria2 {
 
-RangeBtMessage::RangeBtMessage(uint8_t id,
-                               const char* name,
-                               size_t index, int32_t begin, int32_t length)
-  :SimpleBtMessage(id, name),
-   index_(index),
-   begin_(begin),
-   length_(length) {}
+RangeBtMessage::RangeBtMessage(uint8_t id, const char* name, size_t index,
+                               int32_t begin, int32_t length)
+    : SimpleBtMessage(id, name), index_(index), begin_(begin), length_(length)
+{
+}
 
 unsigned char* RangeBtMessage::createMessage()
 {
@@ -57,7 +55,7 @@ unsigned char* RangeBtMessage::createMessage()
    * length -- length, 4bytes
    * total: 17bytes
    */
-  unsigned char* msg = new unsigned char[MESSAGE_LENGTH];
+  auto msg = new unsigned char[MESSAGE_LENGTH];
   bittorrent::createPeerMessageString(msg, MESSAGE_LENGTH, 13, getId());
   bittorrent::setIntParam(&msg[5], index_);
   bittorrent::setIntParam(&msg[9], begin_);
@@ -65,17 +63,12 @@ unsigned char* RangeBtMessage::createMessage()
   return msg;
 }
 
-size_t RangeBtMessage::getMessageLength()
-{
-  return MESSAGE_LENGTH;
-}
+size_t RangeBtMessage::getMessageLength() { return MESSAGE_LENGTH; }
 
 std::string RangeBtMessage::toString() const
 {
-  return fmt("%s index=%lu, begin=%d, length=%d",
-             getName(),
-             static_cast<unsigned long>(index_),
-             begin_, length_);
+  return fmt("%s index=%lu, begin=%d, length=%d", getName(),
+             static_cast<unsigned long>(index_), begin_, length_);
 }
 
 } // namespace aria2

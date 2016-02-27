@@ -6,13 +6,14 @@ namespace aria2 {
 
 namespace rpc {
 
-class RpcResponseTest:public CppUnit::TestFixture {
+class RpcResponseTest : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(RpcResponseTest);
   CPPUNIT_TEST(testToJson);
 #ifdef ENABLE_XML_RPC
   CPPUNIT_TEST(testToXml);
 #endif // ENABLE_XML_RPC
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void testToJson();
 #ifdef ENABLE_XML_RPC
@@ -26,18 +27,18 @@ void RpcResponseTest::testToJson()
 {
   std::vector<RpcResponse> results;
   {
-    SharedHandle<List> param = List::g();
+    auto param = List::g();
     param->append(Integer::g(1));
-    SharedHandle<String> id = String::g("9");
-    RpcResponse res(0, param, id);
-    results.push_back(res);
-    std::string s = toJson(res, "", false);
+    RpcResponse res(0, RpcResponse::AUTHORIZED, std::move(param),
+                    String::g("9"));
+    results.push_back(std::move(res));
+    std::string s = toJson(results.back(), "", false);
     CPPUNIT_ASSERT_EQUAL(std::string("{\"id\":\"9\","
                                      "\"jsonrpc\":\"2.0\","
                                      "\"result\":[1]}"),
                          s);
     // with callback
-    s = toJson(res, "cb", false);
+    s = toJson(results.back(), "cb", false);
     CPPUNIT_ASSERT_EQUAL(std::string("cb({\"id\":\"9\","
                                      "\"jsonrpc\":\"2.0\","
                                      "\"result\":[1]})"),
@@ -45,24 +46,24 @@ void RpcResponseTest::testToJson()
   }
   {
     // error response
-    SharedHandle<Dict> param = Dict::g();
+    auto param = Dict::g();
     param->put("code", Integer::g(1));
     param->put("message", "HELLO ERROR");
-    RpcResponse res(1, param, Null::g());
-    results.push_back(res);
-    std::string s = toJson(res, "", false);
-    CPPUNIT_ASSERT_EQUAL(std::string("{\"error\":{\"code\":1,"
-                                     "\"message\":\"HELLO ERROR\"},"
-                                     "\"id\":null,"
-                                     "\"jsonrpc\":\"2.0\""
+    RpcResponse res(1, RpcResponse::AUTHORIZED, std::move(param), Null::g());
+    results.push_back(std::move(res));
+    std::string s = toJson(results.back(), "", false);
+    CPPUNIT_ASSERT_EQUAL(std::string("{\"id\":null,"
+                                     "\"jsonrpc\":\"2.0\","
+                                     "\"error\":{\"code\":1,"
+                                     "\"message\":\"HELLO ERROR\"}"
                                      "}"),
                          s);
     // with callback
-    s = toJson(res, "cb", false);
-    CPPUNIT_ASSERT_EQUAL(std::string("cb({\"error\":{\"code\":1,"
-                                     "\"message\":\"HELLO ERROR\"},"
-                                     "\"id\":null,"
-                                     "\"jsonrpc\":\"2.0\""
+    s = toJson(results.back(), "cb", false);
+    CPPUNIT_ASSERT_EQUAL(std::string("cb({\"id\":null,"
+                                     "\"jsonrpc\":\"2.0\","
+                                     "\"error\":{\"code\":1,"
+                                     "\"message\":\"HELLO ERROR\"}"
                                      "})"),
                          s);
   }
@@ -73,10 +74,10 @@ void RpcResponseTest::testToJson()
                                      "{\"id\":\"9\","
                                      "\"jsonrpc\":\"2.0\","
                                      "\"result\":[1]},"
-                                     "{\"error\":{\"code\":1,"
-                                     "\"message\":\"HELLO ERROR\"},"
-                                     "\"id\":null,"
-                                     "\"jsonrpc\":\"2.0\""
+                                     "{\"id\":null,"
+                                     "\"jsonrpc\":\"2.0\","
+                                     "\"error\":{\"code\":1,"
+                                     "\"message\":\"HELLO ERROR\"}"
                                      "}"
                                      "]"),
                          s);
@@ -86,10 +87,10 @@ void RpcResponseTest::testToJson()
                                      "{\"id\":\"9\","
                                      "\"jsonrpc\":\"2.0\","
                                      "\"result\":[1]},"
-                                     "{\"error\":{\"code\":1,"
-                                     "\"message\":\"HELLO ERROR\"},"
-                                     "\"id\":null,"
-                                     "\"jsonrpc\":\"2.0\""
+                                     "{\"id\":null,"
+                                     "\"jsonrpc\":\"2.0\","
+                                     "\"error\":{\"code\":1,"
+                                     "\"message\":\"HELLO ERROR\"}"
                                      "}"
                                      "])"),
                          s);
@@ -99,31 +100,31 @@ void RpcResponseTest::testToJson()
 #ifdef ENABLE_XML_RPC
 void RpcResponseTest::testToXml()
 {
-  SharedHandle<Dict> param = Dict::g();
+  auto param = Dict::g();
   param->put("faultCode", Integer::g(1));
   param->put("faultString", "No such method: make.hamburger");
-  RpcResponse res(1, param, Null::g());
+  RpcResponse res(1, RpcResponse::AUTHORIZED, std::move(param), Null::g());
   std::string s = toXml(res, false);
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("<?xml version=\"1.0\"?>"
-                 "<methodResponse>"
-                 "<fault>"
-                 "<value>"
-                 "<struct>"
-                 "<member>"
-                 "<name>faultCode</name><value><int>1</int></value>"
-                 "</member>"
-                 "<member>"
-                 "<name>faultString</name>"
-                 "<value>"
-                 "<string>No such method: make.hamburger</string>"
-                 "</value>"
-                 "</member>"
-                 "</struct>"
-                 "</value>"
-                 "</fault>"
-                 "</methodResponse>"),
-     s);
+  CPPUNIT_ASSERT_EQUAL(
+      std::string("<?xml version=\"1.0\"?>"
+                  "<methodResponse>"
+                  "<fault>"
+                  "<value>"
+                  "<struct>"
+                  "<member>"
+                  "<name>faultCode</name><value><int>1</int></value>"
+                  "</member>"
+                  "<member>"
+                  "<name>faultString</name>"
+                  "<value>"
+                  "<string>No such method: make.hamburger</string>"
+                  "</value>"
+                  "</member>"
+                  "</struct>"
+                  "</value>"
+                  "</fault>"
+                  "</methodResponse>"),
+      s);
 }
 #endif // ENABLE_XML_RPC
 

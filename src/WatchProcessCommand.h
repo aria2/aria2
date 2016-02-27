@@ -41,17 +41,15 @@ namespace aria2 {
 
 class DownloadEngine;
 
-class WatchProcessCommand:public TimeBasedCommand {
+class WatchProcessCommand : public TimeBasedCommand {
 public:
-  WatchProcessCommand
-  (cuid_t cuid,
-   DownloadEngine* e,
-   unsigned int pid,
-   bool forceHalt = false);
+  WatchProcessCommand(cuid_t cuid, DownloadEngine* e, unsigned int pid,
+                      bool forceHalt = false);
 
-  virtual void preProcess();
+  virtual void preProcess() CXX11_OVERRIDE;
 
-  virtual void process();
+  virtual void process() CXX11_OVERRIDE;
+
 private:
   unsigned int pid_;
   bool forceHalt_;

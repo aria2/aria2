@@ -9,7 +9,7 @@
 
 namespace aria2 {
 
-class RequestTest:public CppUnit::TestFixture {
+class RequestTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(RequestTest);
   CPPUNIT_TEST(testSetUri1);
@@ -19,6 +19,7 @@ class RequestTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testRedirectUri);
   CPPUNIT_TEST(testRedirectUri2);
   CPPUNIT_TEST(testRedirectUri_supportsPersistentConnection);
+  CPPUNIT_TEST(testRedirectUri_uriNormalization);
   CPPUNIT_TEST(testResetUri);
   CPPUNIT_TEST(testResetUri_supportsPersistentConnection);
   CPPUNIT_TEST(testInnerLink);
@@ -34,6 +35,7 @@ public:
   void testRedirectUri();
   void testRedirectUri2();
   void testRedirectUri_supportsPersistentConnection();
+  void testRedirectUri_uriNormalization();
   void testResetUri();
   void testResetUri_supportsPersistentConnection();
   void testInnerLink();
@@ -41,19 +43,18 @@ public:
   void testGetURIHost();
 };
 
+CPPUNIT_TEST_SUITE_REGISTRATION(RequestTest);
 
-CPPUNIT_TEST_SUITE_REGISTRATION( RequestTest );
-
-void RequestTest::testSetUri1() {
+void RequestTest::testSetUri1()
+{
   Request req;
   bool v = req.setUri("http://aria.rednoah.com/");
 
   CPPUNIT_ASSERT(v);
-  CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com/"),
-                       req.getUri());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com/"), req.getUri());
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com/"),
                        req.getCurrentUri());
-  CPPUNIT_ASSERT_EQUAL(std::string(""), req.getPreviousUri());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), req.getReferer());
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req.getProtocol());
   CPPUNIT_ASSERT_EQUAL((uint16_t)80, req.getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("aria.rednoah.com"), req.getHost());
@@ -65,7 +66,8 @@ void RequestTest::testSetUri1() {
   CPPUNIT_ASSERT(!req.isIPv6LiteralAddress());
 }
 
-void RequestTest::testSetUri2() {
+void RequestTest::testSetUri2()
+{
   Request req;
   bool v = req.setUri("http://aria.rednoah.com:8080/index.html");
   req.setReferer("http://aria.rednoah.com:8080");
@@ -75,8 +77,6 @@ void RequestTest::testSetUri2() {
   // referer is unchaged
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com:8080"),
                        req.getReferer());
-  // previousUri must equal to referer;
-  CPPUNIT_ASSERT_EQUAL(req.getReferer(), req.getPreviousUri());
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req.getProtocol());
   CPPUNIT_ASSERT_EQUAL((uint16_t)8080, req.getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("aria.rednoah.com"), req.getHost());
@@ -85,7 +85,8 @@ void RequestTest::testSetUri2() {
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getQuery());
 }
 
-void RequestTest::testSetUri7() {
+void RequestTest::testSetUri7()
+{
   Request req;
   bool v = req.setUri("http://");
 
@@ -114,8 +115,6 @@ void RequestTest::testRedirectUri()
   // currentUri must be updated
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.co.jp/"),
                        req.getCurrentUri());
-  // previousUri is "" because no referer is set.
-  CPPUNIT_ASSERT_EQUAL(std::string(""), req.getPreviousUri());
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req.getProtocol());
   CPPUNIT_ASSERT_EQUAL(std::string("aria.rednoah.co.jp"), req.getHost());
   CPPUNIT_ASSERT_EQUAL((uint16_t)80, req.getPort());
@@ -154,25 +153,12 @@ void RequestTest::testRedirectUri2()
 {
   Request req;
   req.setUri("http://aria.rednoah.com/download.html");
-  CPPUNIT_ASSERT_EQUAL(std::string(""), req.getPreviousUri());
   req.setReferer("http://aria.rednoah.com/");
-  // previousUri is updated when referer is specified
-  CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com/"),
-                       req.getPreviousUri());
   req.redirectUri("http://aria.rednoah.com/403.html");
 
-  // previousUri must not be changed in redirection
-  CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com/"),
-                       req.getPreviousUri());
-  // referer is unchagned
+  // referer must not be changed in redirection
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com/"),
                        req.getReferer());
-
-  req.redirectUri("http://aria.rednoah.com/error.html");
-
-  // previousUri must not be changed in redirection
-  CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com/"),
-                       req.getPreviousUri());
 }
 
 void RequestTest::testResetUri()
@@ -185,13 +171,10 @@ void RequestTest::testResetUri()
   bool v3 = req.resetUri();
   CPPUNIT_ASSERT(v3);
   // currentUri must equal to uri
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("http://aria.rednoah.com:8080/aria2/index.html"),
-     req.getUri());
+  CPPUNIT_ASSERT_EQUAL(
+      std::string("http://aria.rednoah.com:8080/aria2/index.html"),
+      req.getUri());
   CPPUNIT_ASSERT_EQUAL(req.getUri(), req.getCurrentUri());
-  // previousUri must equal to referer
-  CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com:8080/"),
-                       req.getPreviousUri());
   // referer is unchanged
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com:8080/"),
                        req.getReferer());
@@ -253,6 +236,31 @@ void RequestTest::testRedirectUri_supportsPersistentConnection()
   CPPUNIT_ASSERT(!req.supportsPersistentConnection());
   req.redirectUri("http://host/file");
   CPPUNIT_ASSERT(req.supportsPersistentConnection());
+}
+
+void RequestTest::testRedirectUri_uriNormalization()
+{
+  Request req;
+  CPPUNIT_ASSERT(req.setUri("http://host/file?a"));
+
+  CPPUNIT_ASSERT(req.redirectUri("/redir1"));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host/redir1"), req.getCurrentUri());
+
+  CPPUNIT_ASSERT(req.redirectUri("/redir2?b"));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host/redir2?b"),
+                       req.getCurrentUri());
+
+  CPPUNIT_ASSERT(req.redirectUri("/redir3?c#d"));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host/redir3?c"),
+                       req.getCurrentUri());
+
+  CPPUNIT_ASSERT(req.redirectUri("/redir4/gone/.././2nd/foo?a"));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host/redir4/2nd/foo?a"),
+                       req.getCurrentUri());
+
+  CPPUNIT_ASSERT(req.redirectUri("../new2nd/bar?b"));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host/redir4/new2nd/bar?b"),
+                       req.getCurrentUri());
 }
 
 void RequestTest::testGetURIHost()

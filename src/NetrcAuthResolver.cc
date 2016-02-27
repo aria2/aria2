@@ -35,54 +35,52 @@
 #include "NetrcAuthResolver.h"
 #include "AuthConfig.h"
 #include "Netrc.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
-NetrcAuthResolver::NetrcAuthResolver():ignoreDefault_(false) {}
+NetrcAuthResolver::NetrcAuthResolver() : netrc_(nullptr), ignoreDefault_(false)
+{
+}
 
-SharedHandle<AuthConfig>
+std::unique_ptr<AuthConfig>
 NetrcAuthResolver::resolveAuthConfig(const std::string& hostname)
 {
-  if(!getUserDefinedAuthConfig()) {
+  auto authConfig = getUserDefinedAuthConfig();
+  if (authConfig) {
+    return authConfig;
+  }
+  else {
     return findNetrcAuthenticator(hostname);
-  } else {
-    return getUserDefinedAuthConfig();
   }
 }
 
-SharedHandle<AuthConfig>
+std::unique_ptr<AuthConfig>
 NetrcAuthResolver::findNetrcAuthenticator(const std::string& hostname) const
 {
-  if(!netrc_) {
+  if (!netrc_) {
     return getDefaultAuthConfig();
-  } else {
-    SharedHandle<Authenticator> auth = netrc_->findAuthenticator(hostname);
-    if(!auth) {
+  }
+  else {
+    auto auth = netrc_->findAuthenticator(hostname);
+    if (!auth) {
       return getDefaultAuthConfig();
-    } else {
-      if(ignoreDefault_ && auth->getMachine().empty()) {
+    }
+    else {
+      if (ignoreDefault_ && auth->getMachine().empty()) {
         return getDefaultAuthConfig();
-      } else {
-        return SharedHandle<AuthConfig>
-          (new AuthConfig(auth->getLogin(), auth->getPassword()));
+      }
+      else {
+        return make_unique<AuthConfig>(auth->getLogin(), auth->getPassword());
       }
     }
   }
 }
 
-void NetrcAuthResolver::setNetrc(const SharedHandle<Netrc>& netrc)
-{
-  netrc_ = netrc;
-}
+void NetrcAuthResolver::setNetrc(Netrc* netrc) { netrc_ = netrc; }
 
-void NetrcAuthResolver::ignoreDefault()
-{
-  ignoreDefault_ = true;
-}
+void NetrcAuthResolver::ignoreDefault() { ignoreDefault_ = true; }
 
-void NetrcAuthResolver::useDefault()
-{
-  ignoreDefault_ = false;
-}
+void NetrcAuthResolver::useDefault() { ignoreDefault_ = false; }
 
 } // namespace aria2

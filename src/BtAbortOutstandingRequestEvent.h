@@ -36,7 +36,8 @@
 #define D_BT_ABORT_OUTSTANDING_REQUEST_EVENT_H
 
 #include "common.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -44,12 +45,13 @@ class Piece;
 
 class BtAbortOutstandingRequestEvent {
 private:
-  SharedHandle<Piece> piece_;
+  std::shared_ptr<Piece> piece_;
+
 public:
-  BtAbortOutstandingRequestEvent(const SharedHandle<Piece>& piece);
+  BtAbortOutstandingRequestEvent(const std::shared_ptr<Piece>& piece);
   ~BtAbortOutstandingRequestEvent();
 
-  const SharedHandle<Piece>& getPiece() const { return piece_; }
+  const std::shared_ptr<Piece>& getPiece() const { return piece_; }
 };
 
 } // namespace aria2

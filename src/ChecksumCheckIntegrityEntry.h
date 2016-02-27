@@ -39,29 +39,30 @@
 
 namespace aria2 {
 
-class ChecksumCheckIntegrityEntry:public CheckIntegrityEntry
-{
+class ChecksumCheckIntegrityEntry : public CheckIntegrityEntry {
 private:
   bool redownload_;
+
 public:
-  ChecksumCheckIntegrityEntry(RequestGroup* requestGroup, Command* nextCommand = 0);
+  ChecksumCheckIntegrityEntry(
+      RequestGroup* requestGroup,
+      std::unique_ptr<Command> nextCommand = std::unique_ptr<Command>());
 
   virtual ~ChecksumCheckIntegrityEntry();
 
-  virtual bool isValidationReady();
+  virtual bool isValidationReady() CXX11_OVERRIDE;
 
-  virtual void initValidator();
+  virtual void initValidator() CXX11_OVERRIDE;
 
-  virtual void onDownloadFinished(std::vector<Command*>& commands,
-                                  DownloadEngine* e);
+  virtual void
+  onDownloadFinished(std::vector<std::unique_ptr<Command>>& commands,
+                     DownloadEngine* e) CXX11_OVERRIDE;
 
-  virtual void onDownloadIncomplete(std::vector<Command*>& commands,
-                                    DownloadEngine* e);
+  virtual void
+  onDownloadIncomplete(std::vector<std::unique_ptr<Command>>& commands,
+                       DownloadEngine* e) CXX11_OVERRIDE;
 
-  void setRedownload(bool redownload)
-  {
-    redownload_ = redownload;
-  }
+  void setRedownload(bool redownload) { redownload_ = redownload; }
 };
 
 } // namespace aria2

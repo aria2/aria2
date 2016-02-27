@@ -36,7 +36,9 @@
 #define D_DHT_GET_PEERS_COMMAND_H
 
 #include "Command.h"
-#include "SharedHandle.h"
+
+#include <memory>
+
 #include "TimerA2.h"
 
 namespace aria2 {
@@ -50,40 +52,41 @@ class RequestGroup;
 class BtRuntime;
 class PeerStorage;
 
-class DHTGetPeersCommand:public Command {
+class DHTGetPeersCommand : public Command {
 private:
   RequestGroup* requestGroup_;
 
-  SharedHandle<BtRuntime> btRuntime_;
+  std::shared_ptr<BtRuntime> btRuntime_;
 
-  SharedHandle<PeerStorage> peerStorage_;
+  std::shared_ptr<PeerStorage> peerStorage_;
 
   DownloadEngine* e_;
 
-  SharedHandle<DHTTaskQueue> taskQueue_;
+  DHTTaskQueue* taskQueue_;
 
-  SharedHandle<DHTTaskFactory> taskFactory_;
+  DHTTaskFactory* taskFactory_;
 
-  SharedHandle<DHTTask> task_;
+  std::shared_ptr<DHTTask> task_;
 
   int numRetry_;
 
   Timer lastGetPeerTime_;
+
 public:
   DHTGetPeersCommand(cuid_t cuid, RequestGroup* requestGroup,
                      DownloadEngine* e);
 
   virtual ~DHTGetPeersCommand();
 
-  virtual bool execute();
+  virtual bool execute() CXX11_OVERRIDE;
 
-  void setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue);
+  void setTaskQueue(DHTTaskQueue* taskQueue);
 
-  void setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory);
+  void setTaskFactory(DHTTaskFactory* taskFactory);
 
-  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
+  void setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime);
 
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
 };
 
 } // namespace aria2

@@ -38,29 +38,33 @@
 #include "common.h"
 
 #include <string>
+#include <memory>
 
 #include "Logger.h"
-#include "SharedHandle.h"
 
 namespace aria2 {
 
 class LogFactory {
 private:
   static std::string filename_;
-  static SharedHandle<Logger> logger_;
+  static std::shared_ptr<Logger> logger_;
   static bool consoleOutput_;
   static Logger::LEVEL logLevel_;
   static Logger::LEVEL consoleLogLevel_;
+  static bool colorOutput_;
 
-  static void openLogger(const SharedHandle<Logger>& logger);
+  static void openLogger(const std::shared_ptr<Logger>& logger);
+
+  static void adjustDependentLevels();
 
   LogFactory();
+
 public:
   /**
    * Get logger instance. Returned logger is singleton.
    * This function is not thread-safe.
    */
-  static const SharedHandle<Logger>& getInstance();
+  static const std::shared_ptr<Logger>& getInstance();
 
   /**
    * Set a filename to write log. If name is "-", log is written to
@@ -72,10 +76,7 @@ public:
    * Set flag whether the log is printed in console.
    * If f is false, log is not printed in console.
    */
-  static void setConsoleOutput(bool f)
-  {
-    consoleOutput_ = f;
-  }
+  static void setConsoleOutput(bool f) { consoleOutput_ = f; }
 
   /**
    * Set log level to output to file.
@@ -100,6 +101,12 @@ public:
   static void setConsoleLogLevel(const std::string& level);
 
   /**
+   * Enable color output if |enabled| is true. By default, color
+   * output is enabled for terminal.
+   */
+  static void setColorOutput(bool enabled);
+
+  /**
    * Releases used resources
    */
   static void release();
@@ -107,22 +114,22 @@ public:
   static void reconfigure();
 };
 
-#define A2_LOG_DEBUG_ENABLED                                            \
+#define A2_LOG_DEBUG_ENABLED                                                   \
   aria2::LogFactory::getInstance()->levelEnabled(Logger::A2_DEBUG)
 
-#define A2_LOG(level, msg)                                              \
-  {                                                                     \
-    const aria2::SharedHandle<aria2::Logger>& logger =                  \
-      aria2::LogFactory::getInstance();                                 \
-    if(logger->levelEnabled(level))                                     \
-      logger->log(level, __FILE__, __LINE__, msg);                      \
+#define A2_LOG(level, msg)                                                     \
+  {                                                                            \
+    const std::shared_ptr<aria2::Logger>& logger =                             \
+        aria2::LogFactory::getInstance();                                      \
+    if (logger->levelEnabled(level))                                           \
+      logger->log(level, __FILE__, __LINE__, msg);                             \
   }
-#define A2_LOG_EX(level, msg, ex)                                       \
-  {                                                                     \
-    const aria2::SharedHandle<aria2::Logger>& logger =                  \
-      aria2::LogFactory::getInstance();                                 \
-    if(logger->levelEnabled(level))                                     \
-      logger->log(level, __FILE__, __LINE__, msg, ex);                  \
+#define A2_LOG_EX(level, msg, ex)                                              \
+  {                                                                            \
+    const std::shared_ptr<aria2::Logger>& logger =                             \
+        aria2::LogFactory::getInstance();                                      \
+    if (logger->levelEnabled(level))                                           \
+      logger->log(level, __FILE__, __LINE__, msg, ex);                         \
   }
 
 #define A2_LOG_DEBUG(msg) A2_LOG(Logger::A2_DEBUG, msg)

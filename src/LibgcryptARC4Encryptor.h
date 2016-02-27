@@ -46,6 +46,7 @@ namespace aria2 {
 class ARC4Encryptor {
 private:
   gcry_cipher_hd_t hdl_;
+
 public:
   ARC4Encryptor();
 

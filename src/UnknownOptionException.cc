@@ -41,28 +41,28 @@ namespace {
 const char* MESSAGE = _("Unknown option '%s'");
 } // namespace
 
-UnknownOptionException::UnknownOptionException
-(const char* file, int line, const std::string& unknownOption)
-  : RecoverableException
-    (file, line, fmt(MESSAGE, unknownOption.c_str()), error_code::OPTION_ERROR),
-    unknownOption_(unknownOption)
-{}
+UnknownOptionException::UnknownOptionException(const char* file, int line,
+                                               const std::string& unknownOption)
+    : RecoverableException(file, line, fmt(MESSAGE, unknownOption.c_str()),
+                           error_code::OPTION_ERROR),
+      unknownOption_(unknownOption)
+{
+}
 
-UnknownOptionException::UnknownOptionException
-(const char* file, int line, const std::string& unknownOption,
- const Exception& cause)
-  : RecoverableException
-    (file, line, fmt(MESSAGE, unknownOption.c_str()), error_code::OPTION_ERROR,
-     cause),
-    unknownOption_(unknownOption)
-{}
+UnknownOptionException::UnknownOptionException(const char* file, int line,
+                                               const std::string& unknownOption,
+                                               const Exception& cause)
+    : RecoverableException(file, line, fmt(MESSAGE, unknownOption.c_str()),
+                           error_code::OPTION_ERROR, cause),
+      unknownOption_(unknownOption)
+{
+}
 
 UnknownOptionException::~UnknownOptionException() throw() {}
 
-SharedHandle<Exception> UnknownOptionException::copy() const
+std::shared_ptr<Exception> UnknownOptionException::copy() const
 {
-  SharedHandle<Exception> e(new UnknownOptionException(*this));
-  return e;
+  return std::make_shared<UnknownOptionException>(*this);
 }
 
 } // namespace aria2

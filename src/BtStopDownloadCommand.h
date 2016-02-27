@@ -36,7 +36,8 @@
 #define D_BT_STOP_DOWNLOAD_COMMAND_H
 
 #include "TimeBasedCommand.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -46,34 +47,32 @@ class BtRuntime;
 
 // Stop downloading torrent if in consecutive timeout_ seconds,
 // download speed is zero and the number of seeder is 0.
-class BtStopDownloadCommand:public TimeBasedCommand {
+class BtStopDownloadCommand : public TimeBasedCommand {
 private:
   RequestGroup* requestGroup_;
 
-  time_t timeout_;
+  std::chrono::seconds timeout_;
 
   Timer checkPoint_;
 
-  SharedHandle<BtRuntime> btRuntime_;
+  std::shared_ptr<BtRuntime> btRuntime_;
 
-  SharedHandle<PieceStorage> pieceStorage_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
+
 public:
-  BtStopDownloadCommand
-  (cuid_t cuid,
-   RequestGroup* requestGroup,
-   DownloadEngine* e,
-   time_t timeout);
+  BtStopDownloadCommand(cuid_t cuid, RequestGroup* requestGroup,
+                        DownloadEngine* e, std::chrono::seconds timeout);
 
-  virtual void preProcess();
+  virtual void preProcess() CXX11_OVERRIDE;
 
-  virtual void process();
+  virtual void process() CXX11_OVERRIDE;
 
-  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
+  void setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime)
   {
     btRuntime_ = btRuntime;
   }
 
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage)
+  void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage)
   {
     pieceStorage_ = pieceStorage;
   }

@@ -38,11 +38,13 @@
 
 namespace aria2 {
 
-class UnknownOptionException:public RecoverableException {
+class UnknownOptionException : public RecoverableException {
 private:
   std::string unknownOption_;
+
 protected:
-  virtual SharedHandle<Exception> copy() const;
+  virtual std::shared_ptr<Exception> copy() const CXX11_OVERRIDE;
+
 public:
   UnknownOptionException(const char* file, int line,
                          const std::string& unknownOption);
@@ -53,15 +55,12 @@ public:
 
   virtual ~UnknownOptionException() throw();
 
-  const std::string& getUnknownOption() const
-  {
-    return unknownOption_;
-  }
+  const std::string& getUnknownOption() const { return unknownOption_; }
 };
 
-#define UNKNOWN_OPTION_EXCEPTION(arg)                   \
+#define UNKNOWN_OPTION_EXCEPTION(arg)                                          \
   UnknownOptionException(__FILE__, __LINE__, arg)
-#define UNKNOWN_OPTION_EXCEPTION2(arg1, arg2)                   \
+#define UNKNOWN_OPTION_EXCEPTION2(arg1, arg2)                                  \
   UnknownOptionException(__FILE__, __LINE__, arg1, arg2)
 
 } // namespace aria2

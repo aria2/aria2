@@ -36,7 +36,11 @@
 #define D_SOCKET_RECV_BUFFER_H
 
 #include "common.h"
-#include "SharedHandle.h"
+
+#include <memory>
+#include <array>
+
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -44,48 +48,31 @@ class SocketCore;
 
 class SocketRecvBuffer {
 public:
-  SocketRecvBuffer
-  (const SharedHandle<SocketCore>& socket,
-   size_t capacity = 16*1024);
+  SocketRecvBuffer(std::shared_ptr<SocketCore> socket);
   ~SocketRecvBuffer();
   // Reads data from socket as much as capacity allows. Returns the
   // number of bytes read.
   ssize_t recv();
-  // Shifts buffer by offset bytes. offset must satisfy offset <=
-  // getBufferLength().
-  void shiftBuffer(size_t offset);
   // Truncates the contents of buffer to 0.
-  void clearBuffer()
-  {
-    bufLen_ = 0;
-  }
+  void truncateBuffer();
+  // Drains first n bytes of data from buffer.  It is an programmer's
+  // responsibility to ensure that n is smaller or equal to the
+  // buffered data.
+  void drain(size_t n);
 
-  const SharedHandle<SocketCore>& getSocket() const
-  {
-    return socket_;
-  }
+  const std::shared_ptr<SocketCore>& getSocket() const { return socket_; }
 
-  const unsigned char* getBuffer() const
-  {
-    return buf_;
-  }
+  const unsigned char* getBuffer() const { return pos_; }
 
-  size_t getBufferLength() const
-  {
-    return bufLen_;
-  }
+  size_t getBufferLength() const { return last_ - pos_; }
 
-  bool bufferEmpty() const
-  {
-    return bufLen_ == 0;
-  }
+  bool bufferEmpty() const { return pos_ == last_; }
 
-  void pushBuffer(const unsigned char* data, size_t len);
 private:
-  SharedHandle<SocketCore> socket_;
-  size_t capacity_;
-  unsigned char* buf_;
-  size_t bufLen_;
+  std::array<unsigned char, 16_k> buf_;
+  std::shared_ptr<SocketCore> socket_;
+  unsigned char* pos_;
+  unsigned char* last_;
 };
 
 } // namespace aria2

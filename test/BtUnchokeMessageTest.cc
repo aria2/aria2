@@ -9,7 +9,7 @@
 
 namespace aria2 {
 
-class BtUnchokeMessageTest:public CppUnit::TestFixture {
+class BtUnchokeMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtUnchokeMessageTest);
   CPPUNIT_TEST(testCreate);
@@ -18,11 +18,10 @@ class BtUnchokeMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testOnSendComplete);
   CPPUNIT_TEST(testToString);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
-  void setUp() {
-  }
+  void setUp() {}
 
   void testCreate();
   void testCreateMessage();
@@ -33,10 +32,11 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(BtUnchokeMessageTest);
 
-void BtUnchokeMessageTest::testCreate() {
+void BtUnchokeMessageTest::testCreate()
+{
   unsigned char msg[5];
   bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 1);
-  SharedHandle<BtUnchokeMessage> pm(BtUnchokeMessage::create(&msg[4], 1));
+  std::shared_ptr<BtUnchokeMessage> pm(BtUnchokeMessage::create(&msg[4], 1));
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, pm->getId());
 
   // case: payload size is wrong
@@ -45,7 +45,8 @@ void BtUnchokeMessageTest::testCreate() {
     bittorrent::createPeerMessageString(msg, sizeof(msg), 2, 1);
     BtUnchokeMessage::create(&msg[4], 2);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(...) {
+  }
+  catch (...) {
   }
   // case: id is wrong
   try {
@@ -53,22 +54,25 @@ void BtUnchokeMessageTest::testCreate() {
     bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 2);
     BtUnchokeMessage::create(&msg[4], 1);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(...) {
+  }
+  catch (...) {
   }
 }
 
-void BtUnchokeMessageTest::testCreateMessage() {
+void BtUnchokeMessageTest::testCreateMessage()
+{
   BtUnchokeMessage msg;
   unsigned char data[5];
   bittorrent::createPeerMessageString(data, sizeof(data), 1, 1);
   unsigned char* rawmsg = msg.createMessage();
   CPPUNIT_ASSERT(memcmp(rawmsg, data, 5) == 0);
-  delete [] rawmsg;
+  delete[] rawmsg;
 }
 
-void BtUnchokeMessageTest::testDoReceivedAction() {
-  SharedHandle<Peer> peer(new Peer("host", 6969));
-  peer->allocateSessionResource(1024, 1024*1024);
+void BtUnchokeMessageTest::testDoReceivedAction()
+{
+  std::shared_ptr<Peer> peer(new Peer("host", 6969));
+  peer->allocateSessionResource(1_k, 1_m);
   peer->peerChoking(true);
   BtUnchokeMessage msg;
   msg.setPeer(peer);
@@ -78,20 +82,22 @@ void BtUnchokeMessageTest::testDoReceivedAction() {
   CPPUNIT_ASSERT(!peer->peerChoking());
 }
 
-void BtUnchokeMessageTest::testOnSendComplete() {
-  SharedHandle<Peer> peer(new Peer("host", 6969));
-  peer->allocateSessionResource(1024, 1024*1024);
+void BtUnchokeMessageTest::testOnSendComplete()
+{
+  std::shared_ptr<Peer> peer(new Peer("host", 6969));
+  peer->allocateSessionResource(1_k, 1_m);
   peer->amChoking(true);
   BtUnchokeMessage msg;
   msg.setPeer(peer);
 
   CPPUNIT_ASSERT(peer->amChoking());
-  SharedHandle<ProgressUpdate> pu(msg.getProgressUpdate());
+  std::shared_ptr<ProgressUpdate> pu(msg.getProgressUpdate());
   pu->update(0, true);
   CPPUNIT_ASSERT(!peer->amChoking());
 }
 
-void BtUnchokeMessageTest::testToString() {
+void BtUnchokeMessageTest::testToString()
+{
   BtUnchokeMessage msg;
   CPPUNIT_ASSERT_EQUAL(std::string("unchoke"), msg.toString());
 }

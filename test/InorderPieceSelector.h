@@ -6,13 +6,13 @@
 
 namespace aria2 {
 
-class InorderPieceSelector:public PieceSelector {
+class InorderPieceSelector : public PieceSelector {
 public:
-  virtual bool select
-  (size_t& index, const unsigned char* bitfield, size_t nbits) const
+  virtual bool select(size_t& index, const unsigned char* bitfield,
+                      size_t nbits) const CXX11_OVERRIDE
   {
-    for(size_t i = 0; i < nbits; ++i) {
-      if(bitfield::test(bitfield, nbits, i)) {
+    for (size_t i = 0; i < nbits; ++i) {
+      if (bitfield::test(bitfield, nbits, i)) {
         index = i;
         return true;
       }

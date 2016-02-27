@@ -8,11 +8,12 @@
 
 namespace aria2 {
 
-class ARC4Test:public CppUnit::TestFixture {
+class ARC4Test : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(ARC4Test);
   CPPUNIT_TEST(testEncrypt);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -20,7 +21,6 @@ public:
 
   void testEncrypt();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ARC4Test);
 
@@ -37,14 +37,16 @@ void ARC4Test::testEncrypt()
 
   unsigned char encrypted[LEN];
   unsigned char decrypted[LEN];
-  enc.encrypt(LEN, encrypted, key);
-  dec.encrypt(LEN, decrypted, encrypted);
 
+  enc.encrypt(LEN, encrypted, key);
+  CPPUNIT_ASSERT(memcmp(key, encrypted, LEN) != 0);
+  dec.encrypt(LEN, decrypted, encrypted);
   CPPUNIT_ASSERT(memcmp(key, decrypted, LEN) == 0);
+
   // once more
   enc.encrypt(LEN, encrypted, key);
+  CPPUNIT_ASSERT(memcmp(key, encrypted, LEN) != 0);
   dec.encrypt(LEN, decrypted, encrypted);
-
   CPPUNIT_ASSERT(memcmp(key, decrypted, LEN) == 0);
 }
 

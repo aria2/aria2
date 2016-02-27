@@ -44,6 +44,7 @@
 #include "DHTPeerAnnounceStorage.h"
 #include "Peer.h"
 #include "DHTTokenTracker.h"
+#include "DHTGetPeersReplyMessage.h"
 #include "util.h"
 
 namespace aria2 {
@@ -52,37 +53,35 @@ const std::string DHTGetPeersMessage::GET_PEERS("get_peers");
 
 const std::string DHTGetPeersMessage::INFO_HASH("info_hash");
 
-DHTGetPeersMessage::DHTGetPeersMessage(const SharedHandle<DHTNode>& localNode,
-                                       const SharedHandle<DHTNode>& remoteNode,
-                                       const unsigned char* infoHash,
-                                       const std::string& transactionID):
-  DHTQueryMessage(localNode, remoteNode, transactionID),
-  peerAnnounceStorage_(0),
-  tokenTracker_(0)
+DHTGetPeersMessage::DHTGetPeersMessage(
+    const std::shared_ptr<DHTNode>& localNode,
+    const std::shared_ptr<DHTNode>& remoteNode, const unsigned char* infoHash,
+    const std::string& transactionID)
+    : DHTQueryMessage{localNode, remoteNode, transactionID},
+      peerAnnounceStorage_{nullptr},
+      tokenTracker_{nullptr}
 {
   memcpy(infoHash_, infoHash, DHT_ID_LENGTH);
 }
 
-DHTGetPeersMessage::~DHTGetPeersMessage() {}
-
 void DHTGetPeersMessage::doReceivedAction()
 {
-  std::string token = tokenTracker_->generateToken
-    (infoHash_, getRemoteNode()->getIPAddress(), getRemoteNode()->getPort());
+  std::string token = tokenTracker_->generateToken(
+      infoHash_, getRemoteNode()->getIPAddress(), getRemoteNode()->getPort());
   // Check to see localhost has the contents which has same infohash
-  std::vector<SharedHandle<Peer> > peers;
+  std::vector<std::shared_ptr<Peer>> peers;
   peerAnnounceStorage_->getPeers(peers, infoHash_);
-  std::vector<SharedHandle<DHTNode> > nodes;
+  std::vector<std::shared_ptr<DHTNode>> nodes;
   getRoutingTable()->getClosestKNodes(nodes, infoHash_);
-  SharedHandle<DHTMessage> reply =
-    getMessageFactory()->createGetPeersReplyMessage
-    (getRemoteNode(), nodes, peers, token, getTransactionID());
-  getMessageDispatcher()->addMessageToQueue(reply);
+  getMessageDispatcher()->addMessageToQueue(
+      getMessageFactory()->createGetPeersReplyMessage(
+          getRemoteNode(), std::move(nodes), std::move(peers), token,
+          getTransactionID()));
 }
 
-SharedHandle<Dict> DHTGetPeersMessage::getArgument()
+std::unique_ptr<Dict> DHTGetPeersMessage::getArgument()
 {
-  SharedHandle<Dict> aDict = Dict::g();
+  auto aDict = Dict::g();
   aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
   aDict->put(INFO_HASH, String::g(infoHash_, DHT_ID_LENGTH));
   return aDict;
@@ -105,7 +104,7 @@ void DHTGetPeersMessage::setTokenTracker(DHTTokenTracker* tokenTracker)
 
 std::string DHTGetPeersMessage::toStringOptional() const
 {
-  return "info_hash="+util::toHex(infoHash_, INFO_HASH_LENGTH);
+  return "info_hash=" + util::toHex(infoHash_, INFO_HASH_LENGTH);
 }
 
 } // namespace aria2

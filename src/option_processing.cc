@@ -59,6 +59,7 @@
 #include "BufferedFile.h"
 #include "console.h"
 #include "array_fun.h"
+#include "LogFactory.h"
 #ifndef HAVE_DAEMON
 #include "daemon.h"
 #endif // !HAVE_DAEMON
@@ -66,26 +67,24 @@
 namespace aria2 {
 
 extern void showVersion();
-extern void showUsage
-(const std::string& keyword,
- const SharedHandle<OptionParser>& oparser,
- const Console& out);
+extern void showUsage(const std::string& keyword,
+                      const std::shared_ptr<OptionParser>& oparser,
+                      const Console& out);
 
 namespace {
-void overrideWithEnv
-(Option& op,
- const SharedHandle<OptionParser>& optionParser,
- const Pref* pref,
- const std::string& envName)
+void overrideWithEnv(Option& op,
+                     const std::shared_ptr<OptionParser>& optionParser,
+                     PrefPtr pref, const std::string& envName)
 {
   char* value = getenv(envName.c_str());
-  if(value) {
+  if (value) {
     try {
       optionParser->find(pref)->parse(op, value);
-    } catch(Exception& e) {
-      global::cerr()->printf
-        (_("Caught Error while parsing environment variable '%s'"),
-         envName.c_str());
+    }
+    catch (Exception& e) {
+      global::cerr()->printf(
+          _("Caught Error while parsing environment variable '%s'"),
+          envName.c_str());
       global::cerr()->printf("\n%s\n", e.stackTrace().c_str());
     }
   }
@@ -97,32 +96,27 @@ namespace {
 // with given costs.  swapcost, subcost, addcost and delcost are cost
 // to swap 2 adjacent characters, substitute characters, add character
 // and delete character respectively.
-int levenshtein
-(const char* a,
- const char* b,
- int swapcost,
- int subcost,
- int addcost,
- int delcost)
+int levenshtein(const char* a, const char* b, int swapcost, int subcost,
+                int addcost, int delcost)
 {
   int alen = strlen(a);
   int blen = strlen(b);
-  std::vector<std::vector<int> > dp(3, std::vector<int>(blen+1));
-  for(int i = 0; i <= blen; ++i) {
+  std::vector<std::vector<int>> dp(3, std::vector<int>(blen + 1));
+  for (int i = 0; i <= blen; ++i) {
     dp[1][i] = i;
   }
-  for(int i = 1; i <= alen; ++i) {
+  for (int i = 1; i <= alen; ++i) {
     dp[0][0] = i;
-    for(int j = 1; j <= blen; ++j) {
-      dp[0][j] = dp[1][j-1]+(a[i-1] == b[j-1] ? 0 : subcost);
-      if(i >= 2 && j >= 2 && a[i-1] != b[j-1] &&
-         a[i-2] == b[j-1] && a[i-1] == b[j-2]) {
-        dp[0][j] = std::min(dp[0][j], dp[2][j-2]+swapcost);
+    for (int j = 1; j <= blen; ++j) {
+      dp[0][j] = dp[1][j - 1] + (a[i - 1] == b[j - 1] ? 0 : subcost);
+      if (i >= 2 && j >= 2 && a[i - 1] != b[j - 1] && a[i - 2] == b[j - 1] &&
+          a[i - 1] == b[j - 2]) {
+        dp[0][j] = std::min(dp[0][j], dp[2][j - 2] + swapcost);
       }
       dp[0][j] = std::min(dp[0][j],
-                          std::min(dp[1][j]+delcost, dp[0][j-1]+addcost));
+                          std::min(dp[1][j] + delcost, dp[0][j - 1] + addcost));
     }
-    std::rotate(dp.begin(), dp.begin()+2, dp.end());
+    std::rotate(dp.begin(), dp.begin() + 2, dp.end());
   }
   return dp[1][blen];
 }
@@ -130,25 +124,26 @@ int levenshtein
 
 namespace {
 
-void showCandidates
-(const std::string& unknownOption, const SharedHandle<OptionParser>& parser)
+void showCandidates(const std::string& unknownOption,
+                    const std::shared_ptr<OptionParser>& parser)
 {
   const char* optstr = unknownOption.c_str();
-  for(; *optstr == '-'; ++optstr);
-  if(*optstr == '\0') {
+  for (; *optstr == '-'; ++optstr)
+    ;
+  if (*optstr == '\0') {
     return;
   }
   int optstrlen = strlen(optstr);
-  std::vector<std::pair<int, const Pref*> > cands;
-  for(int i = 1, len = option::countOption(); i < len; ++i) {
-    const Pref* pref = option::i2p(i);
+  std::vector<std::pair<int, PrefPtr>> cands;
+  for (int i = 1, len = option::countOption(); i < len; ++i) {
+    PrefPtr pref = option::i2p(i);
     const OptionHandler* h = parser->find(pref);
-    if(!h || h->isHidden()) {
+    if (!h || h->isHidden()) {
       continue;
     }
     // Use cost 0 for prefix match
-    if(util::startsWith(pref->k, pref->k+strlen(pref->k),
-                        optstr, optstr+optstrlen)) {
+    if (util::startsWith(pref->k, pref->k + strlen(pref->k), optstr,
+                         optstr + optstrlen)) {
       cands.push_back(std::make_pair(0, pref));
       continue;
     }
@@ -156,74 +151,65 @@ void showCandidates
     int sim = levenshtein(optstr, pref->k, 0, 2, 1, 4);
     cands.push_back(std::make_pair(sim, pref));
   }
-  if(cands.empty()) {
+  if (cands.empty()) {
     return;
   }
   std::sort(cands.begin(), cands.end());
   int threshold = cands[0].first;
   // threshold value 12 is a magic value.
-  if(threshold > 12) {
+  if (threshold > 12) {
     return;
   }
   global::cerr()->printf("\n");
   global::cerr()->printf(_("Did you mean:"));
   global::cerr()->printf("\n");
-  for(std::vector<std::pair<int, const Pref*> >::iterator i = cands.begin(),
-        eoi = cands.end(); i != eoi && (*i).first <= threshold; ++i) {
+  for (auto i = cands.begin(), eoi = cands.end();
+       i != eoi && (*i).first <= threshold; ++i) {
     global::cerr()->printf("\t--%s\n", (*i).second->k);
   }
 }
 
 } // namespace
 
-#ifdef __MINGW32__
-namespace {
-void optionNativeToUtf8(Option& op)
-{
-  for(size_t i = 1, len = option::countOption(); i < len; ++i) {
-    const Pref* pref = option::i2p(i);
-    if(op.definedLocal(pref) && !util::isUtf8(op.get(pref))) {
-      op.put(pref, nativeToUtf8(op.get(pref)));
-    }
-  }
-}
-} // namespace
-#endif // __MINGW32__
-
 error_code::Value option_processing(Option& op, bool standalone,
-                                    std::vector<std::string>& uris,
-                                    int argc, char** argv,
-                                    const KeyVals& options)
+                                    std::vector<std::string>& uris, int argc,
+                                    char** argv, const KeyVals& options)
 {
-  const SharedHandle<OptionParser>& oparser = OptionParser::getInstance();
+  const std::shared_ptr<OptionParser>& oparser = OptionParser::getInstance();
   try {
     bool noConf = false;
     std::string ucfname;
     std::stringstream cmdstream;
-    oparser->parseArg(cmdstream, uris, argc, argv);
     {
       // first evaluate --no-conf and --conf-path options.
       Option op;
-      oparser->parse(op, cmdstream);
+      if (argc == 0) {
+        oparser->parse(op, options);
+      }
+      else {
+        oparser->parseArg(cmdstream, uris, argc, argv);
+        oparser->parse(op, cmdstream);
+      }
       noConf = op.getAsBool(PREF_NO_CONF);
       ucfname = op.get(PREF_CONF_PATH);
-      if(standalone) {
-        if(op.defined(PREF_VERSION)) {
+      if (standalone) {
+        if (op.defined(PREF_VERSION)) {
           showVersion();
           exit(error_code::FINISHED);
         }
-        if(op.defined(PREF_HELP)) {
+        if (op.defined(PREF_HELP)) {
           std::string keyword;
-          if(op.get(PREF_HELP).empty()) {
+          if (op.get(PREF_HELP).empty()) {
             keyword = strHelpTag(TAG_BASIC);
-          } else {
+          }
+          else {
             keyword = op.get(PREF_HELP);
-            if(util::startsWith(keyword, "--")) {
-              keyword.erase(keyword.begin(), keyword.begin()+2);
+            if (util::startsWith(keyword, "--")) {
+              keyword.erase(keyword.begin(), keyword.begin() + 2);
             }
             std::string::size_type eqpos = keyword.find("=");
-            if(eqpos != std::string::npos) {
-              keyword.erase(keyword.begin()+eqpos, keyword.end());
+            if (eqpos != std::string::npos) {
+              keyword.erase(keyword.begin() + eqpos, keyword.end());
             }
           }
           showUsage(keyword, oparser, global::cout());
@@ -231,38 +217,41 @@ error_code::Value option_processing(Option& op, bool standalone,
         }
       }
     }
-    SharedHandle<Option> confOption(new Option());
+    auto confOption = std::make_shared<Option>();
     oparser->parseDefaultValues(*confOption);
-    if(!noConf) {
+    if (!noConf) {
       std::string cfname =
-        ucfname.empty() ?
-        oparser->find(PREF_CONF_PATH)->getDefaultValue() : ucfname;
+          ucfname.empty() ? oparser->find(PREF_CONF_PATH)->getDefaultValue()
+                          : ucfname;
 
-      if(File(cfname).isFile()) {
+      if (File(cfname).isFile()) {
         std::stringstream ss;
         {
           BufferedFile fp(cfname.c_str(), BufferedFile::READ);
-          if(fp) {
+          if (fp) {
             fp.transfer(ss);
           }
         }
         try {
           oparser->parse(*confOption, ss);
-        } catch(OptionHandlerException& e) {
+        }
+        catch (OptionHandlerException& e) {
           global::cerr()->printf(_("Parse error in %s"), cfname.c_str());
           global::cerr()->printf("\n%s", e.stackTrace().c_str());
           const OptionHandler* h = oparser->find(e.getPref());
-          if(h) {
+          if (h) {
             global::cerr()->printf(_("Usage:"));
             global::cerr()->printf("\n%s\n", h->getDescription());
           }
           return e.getErrorCode();
-        } catch(Exception& e) {
+        }
+        catch (Exception& e) {
           global::cerr()->printf(_("Parse error in %s"), cfname.c_str());
           global::cerr()->printf("\n%s", e.stackTrace().c_str());
           return e.getErrorCode();
         }
-      } else if(!ucfname.empty()) {
+      }
+      else if (!ucfname.empty()) {
         global::cerr()->printf(_("Configuration file %s is not found."),
                                cfname.c_str());
         global::cerr()->printf("\n");
@@ -276,7 +265,7 @@ error_code::Value option_processing(Option& op, bool standalone,
     overrideWithEnv(*confOption, oparser, PREF_FTP_PROXY, "ftp_proxy");
     overrideWithEnv(*confOption, oparser, PREF_ALL_PROXY, "all_proxy");
     overrideWithEnv(*confOption, oparser, PREF_NO_PROXY, "no_proxy");
-    if(!standalone) {
+    if (!standalone) {
       // For non-standalone mode, set PREF_QUIET to true to suppress
       // output. The caller can override this by including PREF_QUIET
       // in options argument.
@@ -290,49 +279,63 @@ error_code::Value option_processing(Option& op, bool standalone,
     op.setParent(confOption);
     oparser->parse(op, cmdstream);
     oparser->parse(op, options);
-#ifdef __MINGW32__
-    optionNativeToUtf8(op);
-    optionNativeToUtf8(*confOption);
-#endif // __MINGW32__
-  } catch(OptionHandlerException& e) {
+  }
+  catch (OptionHandlerException& e) {
     global::cerr()->printf("%s", e.stackTrace().c_str());
     const OptionHandler* h = oparser->find(e.getPref());
-    if(h) {
+    if (h) {
       global::cerr()->printf(_("Usage:"));
       global::cerr()->printf("\n");
       write(global::cerr(), *h);
     }
     return e.getErrorCode();
-  } catch(UnknownOptionException& e) {
+  }
+  catch (UnknownOptionException& e) {
     showUsage("", oparser, global::cerr());
     showCandidates(e.getUnknownOption(), oparser);
     return e.getErrorCode();
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     global::cerr()->printf("%s", e.stackTrace().c_str());
     showUsage("", oparser, global::cerr());
     return e.getErrorCode();
   }
-  if(standalone &&
-     !op.getAsBool(PREF_ENABLE_RPC) &&
+  if (standalone && !op.getAsBool(PREF_ENABLE_RPC) &&
 #ifdef ENABLE_BITTORRENT
-     op.blank(PREF_TORRENT_FILE) &&
+      op.blank(PREF_TORRENT_FILE) &&
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
-     op.blank(PREF_METALINK_FILE) &&
+      op.blank(PREF_METALINK_FILE) &&
 #endif // ENABLE_METALINK
-     op.blank(PREF_INPUT_FILE)) {
-    if(uris.empty()) {
+      op.blank(PREF_INPUT_FILE)) {
+    if (uris.empty()) {
       global::cerr()->printf(MSG_URI_REQUIRED);
       global::cerr()->printf("\n");
       showUsage("", oparser, global::cerr());
       return error_code::UNKNOWN_ERROR;
     }
   }
-  if(standalone && op.getAsBool(PREF_DAEMON)) {
-    if(daemon(0, 0) < 0) {
+  if (standalone && op.getAsBool(PREF_DAEMON)) {
+#if defined(__GNUC__) && defined(__APPLE__)
+// daemon() is deprecated on OSX since... forever.
+// Silence the warning for good, so that -Werror becomes feasible.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif // defined(__GNUC__) && defined(__APPLE__)
+    const auto daemonized = daemon(0, 0);
+#if defined(__GNUC__) && defined(__APPLE__)
+#pragma GCC diagnostic pop
+#endif // defined(__GNUC__) && defined(__APPLE__)
+
+    if (daemonized < 0) {
       perror(MSG_DAEMON_FAILED);
       return error_code::UNKNOWN_ERROR;
     }
+  }
+  if (op.getAsBool(PREF_DEFERRED_INPUT) && op.defined(PREF_SAVE_SESSION)) {
+    A2_LOG_WARN("--deferred-input is disabled because of the presence of "
+                "--save-session");
+    op.remove(PREF_DEFERRED_INPUT);
   }
   return error_code::FINISHED;
 }

@@ -38,8 +38,8 @@
 #include "common.h"
 
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "TimerA2.h"
 #include "PeerStorage.h"
 
@@ -55,11 +55,12 @@ private:
 
   class PeerEntry {
   private:
-    SharedHandle<Peer> peer_;
+    std::shared_ptr<Peer> peer_;
     int downloadSpeed_;
     bool regularUnchoker_;
+
   public:
-    PeerEntry(const SharedHandle<Peer>& peer);
+    PeerEntry(const std::shared_ptr<Peer>& peer);
     PeerEntry(const PeerEntry& c);
     ~PeerEntry();
 
@@ -69,7 +70,7 @@ private:
 
     void swap(PeerEntry& c);
 
-    const SharedHandle<Peer>& getPeer() const;
+    const std::shared_ptr<Peer>& getPeer() const;
 
     int getDownloadSpeed() const;
 
@@ -92,13 +93,16 @@ private:
   private:
     bool amChoking_;
     bool peerInterested_;
+
   public:
-    PeerFilter(bool amChoking, bool peerInterested):
-      amChoking_(amChoking),
-      peerInterested_(peerInterested) {}
+    PeerFilter(bool amChoking, bool peerInterested)
+        : amChoking_(amChoking), peerInterested_(peerInterested)
+    {
+    }
 
     bool operator()(const PeerEntry& peerEntry) const;
   };
+
 public:
   BtLeecherStateChoke();
 
@@ -111,9 +115,7 @@ public:
   friend void swap(PeerEntry& a, PeerEntry& b);
 };
 
-void swap
-(BtLeecherStateChoke::PeerEntry& a,
- BtLeecherStateChoke::PeerEntry& b);
+void swap(BtLeecherStateChoke::PeerEntry& a, BtLeecherStateChoke::PeerEntry& b);
 
 } // namespace aria2
 

@@ -38,8 +38,7 @@
 #include "common.h"
 
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -49,31 +48,28 @@ class OutputFile;
 class Logger {
 public:
   enum LEVEL {
-    A2_DEBUG  = 1 << 0,
-    A2_INFO   = 1 << 1,
+    A2_DEBUG = 1 << 0,
+    A2_INFO = 1 << 1,
     A2_NOTICE = 1 << 2,
-    A2_WARN   = 1 << 3,
-    A2_ERROR  = 1 << 4,
+    A2_WARN = 1 << 3,
+    A2_ERROR = 1 << 4,
   };
+
 private:
   // Minimum log level for file log output.
   LEVEL logLevel_;
-  SharedHandle<OutputFile> fpp_;
+  std::shared_ptr<OutputFile> fpp_;
   // Minimum log level for console log output.
   LEVEL consoleLogLevel_;
   // true if console log output is enabled.
   bool consoleOutput_;
-  bool useColor_;
+  bool colorOutput_;
   // Don't allow copying
   Logger(const Logger&);
   Logger& operator=(const Logger&);
 
-  void writeLog
-  (Logger::LEVEL level,
-   const char* sourceFile,
-   int lineNum,
-   const char* msg,
-   const char* trace);
+  void writeLog(Logger::LEVEL level, const char* sourceFile, int lineNum,
+                const char* msg, const char* trace);
 
   // Returns true if message with log level |level| will be outputted
   // to file.
@@ -81,52 +77,34 @@ private:
   // Returns true if message with log level |level| will be outputted
   // to console.
   bool consoleLogEnabled(LEVEL level);
+
 public:
   Logger();
 
   ~Logger();
 
-  void log
-  (LEVEL level,
-   const char* sourceFile,
-   int lineNum,
-   const char* msg);
+  void log(LEVEL level, const char* sourceFile, int lineNum, const char* msg);
 
-  void log
-  (LEVEL level,
-   const char* sourceFile,
-   int lineNum,
-   const std::string& msg);
+  void log(LEVEL level, const char* sourceFile, int lineNum,
+           const std::string& msg);
 
-  void log
-  (LEVEL level,
-   const char* sourceFile,
-   int lineNum,
-   const char* msg,
-   const Exception& ex);
+  void log(LEVEL level, const char* sourceFile, int lineNum, const char* msg,
+           const Exception& ex);
 
-  void log
-  (LEVEL level,
-   const char* sourceFile,
-   int lineNum,
-   const std::string& msg,
-   const Exception& ex);
+  void log(LEVEL level, const char* sourceFile, int lineNum,
+           const std::string& msg, const Exception& ex);
 
   void openFile(const std::string& filename);
 
   void closeFile();
 
-  void setLogLevel(LEVEL level)
-  {
-    logLevel_ = level;
-  }
+  void setLogLevel(LEVEL level) { logLevel_ = level; }
 
-  void setConsoleLogLevel(LEVEL level)
-  {
-    consoleLogLevel_ = level;
-  }
+  void setConsoleLogLevel(LEVEL level) { consoleLogLevel_ = level; }
 
   void setConsoleOutput(bool enabled);
+
+  void setColorOutput(bool enabled);
 
   // Returns true if this logger actually writes debug log message to
   // either file or stdout.

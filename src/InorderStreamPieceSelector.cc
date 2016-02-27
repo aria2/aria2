@@ -37,21 +37,19 @@
 
 namespace aria2 {
 
-InorderStreamPieceSelector::InorderStreamPieceSelector
-(BitfieldMan* bitfieldMan)
-  : bitfieldMan_(bitfieldMan)
-{}
+InorderStreamPieceSelector::InorderStreamPieceSelector(BitfieldMan* bitfieldMan)
+    : bitfieldMan_(bitfieldMan)
+{
+}
 
 InorderStreamPieceSelector::~InorderStreamPieceSelector() {}
 
-bool InorderStreamPieceSelector::select
-(size_t& index,
- size_t minSplitSize,
- const unsigned char* ignoreBitfield,
- size_t length)
+bool InorderStreamPieceSelector::select(size_t& index, size_t minSplitSize,
+                                        const unsigned char* ignoreBitfield,
+                                        size_t length)
 {
-  return bitfieldMan_->getInorderMissingUnusedIndex
-    (index, minSplitSize, ignoreBitfield, length);
+  return bitfieldMan_->getInorderMissingUnusedIndex(index, minSplitSize,
+                                                    ignoreBitfield, length);
 }
 
 void InorderStreamPieceSelector::onBitfieldInit() {}

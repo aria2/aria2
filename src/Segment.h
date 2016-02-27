@@ -39,8 +39,7 @@
 
 #include <stdint.h>
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -59,31 +58,25 @@ public:
 
   virtual int64_t getPositionToWrite() const = 0;
 
-  virtual int32_t getLength() const = 0;
+  virtual int64_t getLength() const = 0;
 
-  virtual int32_t getSegmentLength() const = 0;
+  virtual int64_t getSegmentLength() const = 0;
 
-  virtual int32_t getWrittenLength() const = 0;
+  virtual int64_t getWrittenLength() const = 0;
 
-  virtual void updateWrittenLength(int32_t bytes) = 0;
-
-#ifdef ENABLE_MESSAGE_DIGEST
+  virtual void updateWrittenLength(int64_t bytes) = 0;
 
   // `begin' is a offset inside this segment.
-  virtual bool updateHash
-  (int32_t begin,
-   const unsigned char* data,
-   size_t dataLength) = 0;
+  virtual bool updateHash(int64_t begin, const unsigned char* data,
+                          size_t dataLength) = 0;
 
   virtual bool isHashCalculated() const = 0;
 
   virtual std::string getDigest() = 0;
 
-#endif // ENABLE_MESSAGE_DIGEST
-
   virtual void clear(WrDiskCache* diskCache) = 0;
 
-  virtual SharedHandle<Piece> getPiece() const = 0;
+  virtual std::shared_ptr<Piece> getPiece() const = 0;
 
   bool operator==(const Segment& segment) const
   {
@@ -94,4 +87,3 @@ public:
 } // namespace aria2
 
 #endif // D_SEGMENT_H
-

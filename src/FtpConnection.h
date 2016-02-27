@@ -39,11 +39,12 @@
 
 #include <utility>
 #include <string>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "TimeA2.h"
 #include "SocketBuffer.h"
 #include "Command.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -56,10 +57,10 @@ class AuthConfig;
 class FtpConnection {
 private:
   cuid_t cuid_;
-  SharedHandle<SocketCore> socket_;
-  SharedHandle<Request> req_;
+  std::shared_ptr<SocketCore> socket_;
+  std::shared_ptr<Request> req_;
 
-  SharedHandle<AuthConfig> authConfig_;
+  std::shared_ptr<AuthConfig> authConfig_;
 
   const Option* option_;
 
@@ -70,16 +71,17 @@ private:
   std::string baseWorkingDir_;
 
   int getStatus(const std::string& response) const;
-  std::string::size_type findEndOfResponse
-  (int status, const std::string& buf) const;
+  std::string::size_type findEndOfResponse(int status,
+                                           const std::string& buf) const;
   bool bulkReceiveResponse(std::pair<int, std::string>& response);
 
-  //prepare for large banners
-  static const size_t MAX_RECV_BUFFER = 65536;
+  // prepare for large banners
+  static const size_t MAX_RECV_BUFFER = 64_k;
+
 public:
-  FtpConnection(cuid_t cuid, const SharedHandle<SocketCore>& socket,
-                const SharedHandle<Request>& req,
-                const SharedHandle<AuthConfig>& authConfig,
+  FtpConnection(cuid_t cuid, const std::shared_ptr<SocketCore>& socket,
+                const std::shared_ptr<Request>& req,
+                const std::shared_ptr<AuthConfig>& authConfig,
                 const Option* op);
   ~FtpConnection();
   bool sendUser();
@@ -91,10 +93,10 @@ public:
   bool sendSize();
   bool sendEpsv();
   bool sendPasv();
-  SharedHandle<SocketCore> createServerSocket();
-  bool sendEprt(const SharedHandle<SocketCore>& serverSocket);
-  bool sendPort(const SharedHandle<SocketCore>& serverSocket);
-  bool sendRest(const SharedHandle<Segment>& segment);
+  std::shared_ptr<SocketCore> createServerSocket();
+  bool sendEprt(const std::shared_ptr<SocketCore>& serverSocket);
+  bool sendPort(const std::shared_ptr<SocketCore>& serverSocket);
+  bool sendRest(const std::shared_ptr<Segment>& segment);
   bool sendRetr();
 
   int receiveResponse();
@@ -112,10 +114,7 @@ public:
 
   void setBaseWorkingDir(const std::string& baseWorkingDir);
 
-  const std::string& getBaseWorkingDir() const
-  {
-    return baseWorkingDir_;
-  }
+  const std::string& getBaseWorkingDir() const { return baseWorkingDir_; }
 
   const std::string& getUser() const;
 };

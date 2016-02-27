@@ -9,11 +9,12 @@
 
 namespace aria2 {
 
-class DHTPingReplyMessageTest:public CppUnit::TestFixture {
+class DHTPingReplyMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTPingReplyMessageTest);
   CPPUNIT_TEST(testGetBencodedMessage);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -22,13 +23,12 @@ public:
   void testGetBencodedMessage();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(DHTPingReplyMessageTest);
 
 void DHTPingReplyMessageTest::testGetBencodedMessage()
 {
-  SharedHandle<DHTNode> localNode(new DHTNode());
-  SharedHandle<DHTNode> remoteNode(new DHTNode());
+  std::shared_ptr<DHTNode> localNode(new DHTNode());
+  std::shared_ptr<DHTNode> remoteNode(new DHTNode());
 
   unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   util::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
@@ -45,9 +45,9 @@ void DHTPingReplyMessageTest::testGetBencodedMessage()
   dict.put("t", transactionID);
   dict.put("v", "A200");
   dict.put("y", "r");
-  SharedHandle<Dict> rDict = Dict::g();
+  auto rDict = Dict::g();
   rDict->put("id", String::g(id, DHT_ID_LENGTH));
-  dict.put("r", rDict);
+  dict.put("r", std::move(rDict));
 
   CPPUNIT_ASSERT_EQUAL(bencode2::encode(&dict), msgbody);
 }

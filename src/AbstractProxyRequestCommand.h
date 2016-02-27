@@ -44,33 +44,33 @@ class SocketCore;
 
 class AbstractProxyRequestCommand : public AbstractCommand {
 private:
-  SharedHandle<Request> proxyRequest_;
+  std::shared_ptr<Request> proxyRequest_;
 
-  SharedHandle<HttpConnection> httpConnection_;
+  std::shared_ptr<HttpConnection> httpConnection_;
+
 protected:
-  virtual bool executeInternal();
+  virtual bool executeInternal() CXX11_OVERRIDE;
 
-  const SharedHandle<HttpConnection>& getHttpConnection() const
+  const std::shared_ptr<HttpConnection>& getHttpConnection() const
   {
     return httpConnection_;
   }
 
-  const SharedHandle<Request>& getProxyRequest() const
+  const std::shared_ptr<Request>& getProxyRequest() const
   {
     return proxyRequest_;
   }
+
 public:
-  AbstractProxyRequestCommand(cuid_t cuid,
-                              const SharedHandle<Request>& req,
-                              const SharedHandle<FileEntry>& fileEntry,
-                              RequestGroup* requestGroup,
-                              DownloadEngine* e,
-                              const SharedHandle<Request>& proxyRequest,
-                              const SharedHandle<SocketCore>& s);
+  AbstractProxyRequestCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
+                              const std::shared_ptr<FileEntry>& fileEntry,
+                              RequestGroup* requestGroup, DownloadEngine* e,
+                              const std::shared_ptr<Request>& proxyRequest,
+                              const std::shared_ptr<SocketCore>& s);
 
   virtual ~AbstractProxyRequestCommand();
 
-  virtual Command* getNextCommand() = 0;
+  virtual std::unique_ptr<Command> getNextCommand() = 0;
 };
 
 } // namespace aria2

@@ -35,12 +35,12 @@
 #ifndef D_WEB_SOCKET_SESSION_MAN_H
 #define D_WEB_SOCKET_SESSION_MAN_H
 
-#include "common.h"
+#include "Notifier.h"
 
 #include <set>
 #include <string>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "a2functional.h"
 
 namespace aria2 {
@@ -51,15 +51,18 @@ namespace rpc {
 
 class WebSocketSession;
 
-class WebSocketSessionMan {
+class WebSocketSessionMan : public DownloadEventListener {
 public:
-  typedef std::set<SharedHandle<WebSocketSession>,
-                   RefLess<WebSocketSession> > WebSocketSessions;
+  typedef std::set<std::shared_ptr<WebSocketSession>, RefLess<WebSocketSession>>
+      WebSocketSessions;
   WebSocketSessionMan();
   ~WebSocketSessionMan();
-  void addSession(const SharedHandle<WebSocketSession>& wsSession);
-  void removeSession(const SharedHandle<WebSocketSession>& wsSession);
+  void addSession(const std::shared_ptr<WebSocketSession>& wsSession);
+  void removeSession(const std::shared_ptr<WebSocketSession>& wsSession);
   void addNotification(const std::string& method, const RequestGroup* group);
+  virtual void onEvent(DownloadEvent event,
+                       const RequestGroup* group) CXX11_OVERRIDE;
+
 private:
   WebSocketSessions sessions_;
 };

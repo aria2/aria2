@@ -51,69 +51,78 @@
 #include "download_helper.h"
 #include "fmt.h"
 #include "FileEntry.h"
+#include "RequestGroupMan.h"
 
 namespace aria2 {
 
 MetalinkPostDownloadHandler::MetalinkPostDownloadHandler()
 {
-  SharedHandle<RequestGroupCriteria> cri
-    (new ContentTypeRequestGroupCriteria
-     (getMetalinkContentTypes(), getMetalinkExtensions()));
-  setCriteria(cri);
+  setCriteria(make_unique<ContentTypeRequestGroupCriteria>(
+      getMetalinkContentTypes(), getMetalinkExtensions()));
 }
-
-MetalinkPostDownloadHandler::~MetalinkPostDownloadHandler() {}
 
 namespace {
 const std::string& getBaseUri(RequestGroup* requestGroup)
 {
-  const SharedHandle<DownloadContext>& dctx =
-    requestGroup->getDownloadContext();
-  if(dctx->getFileEntries().empty()) {
+  auto& dctx = requestGroup->getDownloadContext();
+  if (dctx->getFileEntries().empty()) {
     return A2STR::NIL;
-  } else {
+  }
+  else {
     // TODO Check download result for each URI
-    const SharedHandle<FileEntry>& entry = dctx->getFirstFileEntry();
-    const std::deque<std::string>& spentUris = entry->getSpentUris();
-    if(spentUris.empty()) {
-      const std::deque<std::string>& remainingUris = entry->getRemainingUris();
-      if(remainingUris.empty()) {
+    auto& entry = dctx->getFirstFileEntry();
+    auto& spentUris = entry->getSpentUris();
+    if (spentUris.empty()) {
+      auto& remainingUris = entry->getRemainingUris();
+      if (remainingUris.empty()) {
         return A2STR::NIL;
-      } else {
+      }
+      else {
         return remainingUris.front();
       }
-    } else {
+    }
+    else {
       return spentUris.back();
     }
   }
 }
 } // namespace
 
-void MetalinkPostDownloadHandler::getNextRequestGroups
-(std::vector<SharedHandle<RequestGroup> >& groups,
- RequestGroup* requestGroup)
+void MetalinkPostDownloadHandler::getNextRequestGroups(
+    std::vector<std::shared_ptr<RequestGroup>>& groups,
+    RequestGroup* requestGroup) const
 {
   A2_LOG_DEBUG(fmt("Generating RequestGroups for Metalink file %s",
                    requestGroup->getFirstFilePath().c_str()));
-  SharedHandle<DiskAdaptor> diskAdaptor =
-    requestGroup->getPieceStorage()->getDiskAdaptor();
+  auto diskAdaptor = requestGroup->getPieceStorage()->getDiskAdaptor();
   try {
     diskAdaptor->openExistingFile();
-    //requestOption.put(PREF_DIR, requestGroup->getDownloadContext()->getDir());
+    // requestOption.put(PREF_DIR,
+    // requestGroup->getDownloadContext()->getDir());
     const std::string& baseUri = getBaseUri(requestGroup);
-    std::vector<SharedHandle<RequestGroup> > newRgs;
+    std::vector<std::shared_ptr<RequestGroup>> newRgs;
     Metalink2RequestGroup().generate(newRgs, diskAdaptor,
                                      requestGroup->getOption(), baseUri);
     requestGroup->followedBy(newRgs.begin(), newRgs.end());
-    SharedHandle<MetadataInfo> mi =
-      createMetadataInfoFromFirstFileEntry(requestGroup->getGroupId(),
-                                           requestGroup->getDownloadContext());
-    if(mi) {
+    auto mi = createMetadataInfoFromFirstFileEntry(
+        requestGroup->getGroupId(), requestGroup->getDownloadContext());
+    if (mi) {
       setMetadataInfo(newRgs.begin(), newRgs.end(), mi);
     }
+
+    auto rgman = requestGroup->getRequestGroupMan();
+
+    if (rgman && rgman->getKeepRunning() &&
+        requestGroup->getOption()->getAsBool(PREF_PAUSE_METADATA)) {
+      for (auto& rg : newRgs) {
+        rg->setPauseRequested(true);
+      }
+    }
+
     groups.insert(groups.end(), newRgs.begin(), newRgs.end());
     diskAdaptor->closeFile();
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     diskAdaptor->closeFile();
     throw;
   }

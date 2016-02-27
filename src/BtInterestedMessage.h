@@ -44,7 +44,8 @@ class BtInterestedMessage;
 
 class BtInterestedMessage : public ZeroBtMessage {
 private:
-  SharedHandle<PeerStorage> peerStorage_;
+  PeerStorage* peerStorage_;
+
 public:
   BtInterestedMessage();
   virtual ~BtInterestedMessage();
@@ -53,16 +54,16 @@ public:
 
   static const char NAME[];
 
-  static BtInterestedMessage* create
-  (const unsigned char* data, size_t dataLength);
+  static std::unique_ptr<BtInterestedMessage> create(const unsigned char* data,
+                                                     size_t dataLength);
 
-  virtual void doReceivedAction();
+  virtual void doReceivedAction() CXX11_OVERRIDE;
 
-  virtual bool sendPredicate() const;
+  virtual bool sendPredicate() const CXX11_OVERRIDE;
 
-  virtual ProgressUpdate* getProgressUpdate();
+  virtual std::unique_ptr<ProgressUpdate> getProgressUpdate() CXX11_OVERRIDE;
 
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+  void setPeerStorage(PeerStorage* peerStorage);
 };
 
 } // namespace aria2

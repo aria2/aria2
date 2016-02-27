@@ -37,14 +37,14 @@
 
 #include "EventPoll.h"
 
-# include <poll.h>
+#include <poll.h>
 
-#include <set>
+#include <map>
 
 #include "Event.h"
 #include "a2functional.h"
 #ifdef ENABLE_ASYNC_DNS
-# include "AsyncNameResolver.h"
+#include "AsyncNameResolver.h"
 #endif // ENABLE_ASYNC_DNS
 
 namespace aria2 {
@@ -59,10 +59,12 @@ private:
   typedef AsyncNameResolverEntry<PollEventPoll> KAsyncNameResolverEntry;
   friend class AsyncNameResolverEntry<PollEventPoll>;
 
-  class KSocketEntry:
-    public SocketEntry<KCommandEvent, KADNSEvent> {
+  class KSocketEntry : public SocketEntry<KCommandEvent, KADNSEvent> {
   public:
     KSocketEntry(sock_t socket);
+
+    KSocketEntry(const KSocketEntry&) = delete;
+    KSocketEntry(KSocketEntry&&) = default;
 
     struct pollfd getEvents();
   };
@@ -70,13 +72,11 @@ private:
   friend int accumulateEvent(int events, const KEvent& event);
 
 private:
-  typedef std::set<SharedHandle<KSocketEntry>,
-                   DerefLess<SharedHandle<KSocketEntry> > > KSocketEntrySet;
+  typedef std::map<sock_t, KSocketEntry> KSocketEntrySet;
   KSocketEntrySet socketEntries_;
 #ifdef ENABLE_ASYNC_DNS
-  typedef std::set<SharedHandle<KAsyncNameResolverEntry>,
-                   DerefLess<SharedHandle<KAsyncNameResolverEntry> > >
-  KAsyncNameResolverEntrySet;
+  typedef std::map<std::pair<AsyncNameResolver*, Command*>,
+                   KAsyncNameResolverEntry> KAsyncNameResolverEntrySet;
   KAsyncNameResolverEntrySet nameResolverEntries_;
 #endif // ENABLE_ASYNC_DNS
 
@@ -86,37 +86,40 @@ private:
   // The number of valid struct pollfd in pollfds_.
   int pollfdNum_;
 
-  struct pollfd* pollfds_;
+  std::unique_ptr<struct pollfd[]> pollfds_;
 
   bool addEvents(sock_t socket, const KEvent& event);
 
   bool deleteEvents(sock_t socket, const KEvent& event);
 
   bool addEvents(sock_t socket, Command* command, int events,
-                 const SharedHandle<AsyncNameResolver>& rs);
+                 const std::shared_ptr<AsyncNameResolver>& rs);
 
   bool deleteEvents(sock_t socket, Command* command,
-                    const SharedHandle<AsyncNameResolver>& rs);
+                    const std::shared_ptr<AsyncNameResolver>& rs);
 
   static int translateEvents(EventPoll::EventType events);
+
 public:
   PollEventPoll();
 
   virtual ~PollEventPoll();
 
-  virtual void poll(const struct timeval& tv);
+  virtual void poll(const struct timeval& tv) CXX11_OVERRIDE;
 
-  virtual bool addEvents(sock_t socket,
-                         Command* command, EventPoll::EventType events);
+  virtual bool addEvents(sock_t socket, Command* command,
+                         EventPoll::EventType events) CXX11_OVERRIDE;
 
-  virtual bool deleteEvents(sock_t socket,
-                            Command* command, EventPoll::EventType events);
+  virtual bool deleteEvents(sock_t socket, Command* command,
+                            EventPoll::EventType events) CXX11_OVERRIDE;
 #ifdef ENABLE_ASYNC_DNS
 
-  virtual bool addNameResolver(const SharedHandle<AsyncNameResolver>& resolver,
-                               Command* command);
-  virtual bool deleteNameResolver
-  (const SharedHandle<AsyncNameResolver>& resolver, Command* command);
+  virtual bool
+  addNameResolver(const std::shared_ptr<AsyncNameResolver>& resolver,
+                  Command* command) CXX11_OVERRIDE;
+  virtual bool
+  deleteNameResolver(const std::shared_ptr<AsyncNameResolver>& resolver,
+                     Command* command) CXX11_OVERRIDE;
 #endif // ENABLE_ASYNC_DNS
 
   static const int IEV_READ = POLLIN;

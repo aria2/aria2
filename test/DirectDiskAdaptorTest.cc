@@ -12,12 +12,13 @@
 
 namespace aria2 {
 
-class DirectDiskAdaptorTest:public CppUnit::TestFixture {
+class DirectDiskAdaptorTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DirectDiskAdaptorTest);
   CPPUNIT_TEST(testCutTrailingGarbage);
   CPPUNIT_TEST(testWriteCache);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -27,23 +28,17 @@ public:
   void testWriteCache();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(DirectDiskAdaptorTest);
 
 void DirectDiskAdaptorTest::testCutTrailingGarbage()
 {
   std::string dir = A2_TEST_OUT_DIR;
-  SharedHandle<FileEntry> entry
-    (new FileEntry(dir+"/aria2_DirectDiskAdaptorTest_testCutTrailingGarbage",
-                   256, 0));
-  createFile(entry->getPath(), entry->getLength()+100);
-
-  std::vector<SharedHandle<FileEntry> > fileEntries;
-  fileEntries.push_back(entry);
-
+  auto entry = std::make_shared<FileEntry>(
+      dir + "/aria2_DirectDiskAdaptorTest_testCutTrailingGarbage", 256, 0);
+  createFile(entry->getPath(), entry->getLength() + 100);
+  auto fileEntries = std::vector<std::shared_ptr<FileEntry>>{entry};
   DirectDiskAdaptor adaptor;
-  adaptor.setDiskWriter
-    (SharedHandle<DiskWriter>(new DefaultDiskWriter(entry->getPath())));
+  adaptor.setDiskWriter(make_unique<DefaultDiskWriter>(entry->getPath()));
   adaptor.setTotalLength(entry->getLength());
   adaptor.setFileEntries(fileEntries.begin(), fileEntries.end());
   adaptor.openFile();
@@ -56,21 +51,25 @@ void DirectDiskAdaptorTest::testCutTrailingGarbage()
 
 void DirectDiskAdaptorTest::testWriteCache()
 {
-  SharedHandle<DirectDiskAdaptor> adaptor(new DirectDiskAdaptor());
-  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  adaptor->setDiskWriter(dw);
-  WrDiskCacheEntry cache(adaptor);
-  std::string data1(4096, '1'), data2(4094, '2');
+  auto adaptor = std::make_shared<DirectDiskAdaptor>();
+  ByteArrayDiskWriter* dw;
+  {
+    auto sdw = make_unique<ByteArrayDiskWriter>();
+    dw = sdw.get();
+    adaptor->setDiskWriter(std::move(sdw));
+  }
+  WrDiskCacheEntry cache{adaptor};
+  std::string data1(4_k, '1'), data2(4094, '2');
   cache.cacheData(createDataCell(5, data1.c_str()));
-  cache.cacheData(createDataCell(5+data1.size(), data2.c_str()));
+  cache.cacheData(createDataCell(5 + data1.size(), data2.c_str()));
   adaptor->writeCache(&cache);
-  CPPUNIT_ASSERT_EQUAL(data1+data2, dw->getString().substr(5));
+  CPPUNIT_ASSERT_EQUAL(data1 + data2, dw->getString().substr(5));
 
   cache.clear();
   dw->setString("");
-  cache.cacheData(createDataCell(4096, data1.c_str()));
+  cache.cacheData(createDataCell(4_k, data1.c_str()));
   adaptor->writeCache(&cache);
-  CPPUNIT_ASSERT_EQUAL(data1, dw->getString().substr(4096));
+  CPPUNIT_ASSERT_EQUAL(data1, dw->getString().substr(4_k));
 
   cache.clear();
   dw->setString("???????");

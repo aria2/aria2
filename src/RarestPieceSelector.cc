@@ -42,26 +42,30 @@
 
 namespace aria2 {
 
-RarestPieceSelector::RarestPieceSelector
-(const SharedHandle<PieceStatMan>& pieceStatMan):pieceStatMan_(pieceStatMan) {}
+RarestPieceSelector::RarestPieceSelector(
+    const std::shared_ptr<PieceStatMan>& pieceStatMan)
+    : pieceStatMan_(pieceStatMan)
+{
+}
 
-bool RarestPieceSelector::select
-(size_t& index, const unsigned char* bitfield, size_t nbits) const
+bool RarestPieceSelector::select(size_t& index, const unsigned char* bitfield,
+                                 size_t nbits) const
 {
   const std::vector<size_t>& order = pieceStatMan_->getOrder();
   const std::vector<int>& counts = pieceStatMan_->getCounts();
   int min = std::numeric_limits<int>::max();
   size_t bestIdx = nbits;
-  for(size_t i = 0; i < nbits; ++i) {
+  for (size_t i = 0; i < nbits; ++i) {
     size_t idx = order[i];
-    if(bitfield::test(bitfield, nbits, idx) && counts[idx] < min) {
+    if (bitfield::test(bitfield, nbits, idx) && counts[idx] < min) {
       min = counts[idx];
       bestIdx = idx;
     }
   }
-  if(bestIdx == nbits) {
+  if (bestIdx == nbits) {
     return false;
-  } else {
+  }
+  else {
     index = bestIdx;
     return true;
   }

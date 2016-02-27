@@ -36,7 +36,8 @@
 #define D_DHT_REGISTRY_H
 
 #include "common.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -55,25 +56,25 @@ private:
   struct Data {
     bool initialized;
 
-    SharedHandle<DHTNode> localNode;
+    std::shared_ptr<DHTNode> localNode;
 
-    SharedHandle<DHTRoutingTable> routingTable;
+    std::unique_ptr<DHTRoutingTable> routingTable;
 
-    SharedHandle<DHTTaskQueue> taskQueue;
+    std::unique_ptr<DHTTaskQueue> taskQueue;
 
-    SharedHandle<DHTTaskFactory> taskFactory;
+    std::unique_ptr<DHTTaskFactory> taskFactory;
 
-    SharedHandle<DHTPeerAnnounceStorage> peerAnnounceStorage;
+    std::unique_ptr<DHTPeerAnnounceStorage> peerAnnounceStorage;
 
-    SharedHandle<DHTTokenTracker> tokenTracker;
+    std::unique_ptr<DHTTokenTracker> tokenTracker;
 
-    SharedHandle<DHTMessageDispatcher> messageDispatcher;
+    std::unique_ptr<DHTMessageDispatcher> messageDispatcher;
 
-    SharedHandle<DHTMessageReceiver> messageReceiver;
+    std::unique_ptr<DHTMessageReceiver> messageReceiver;
 
-    SharedHandle<DHTMessageFactory> messageFactory;
+    std::unique_ptr<DHTMessageFactory> messageFactory;
 
-    Data():initialized(false) {}
+    Data() : initialized(false) {}
   };
 
   static Data data_;
@@ -82,50 +83,27 @@ private:
   static void clear(Data& data);
 
   DHTRegistry();
-public:
-  static const Data& getData()
-  {
-    return data_;
-  }
 
-  static Data& getMutableData()
-  {
-    return data_;
-  }
+public:
+  static const Data& getData() { return data_; }
+
+  static Data& getMutableData() { return data_; }
 
   static void clearData();
 
-  static bool isInitialized()
-  {
-    return data_.initialized;
-  }
+  static bool isInitialized() { return data_.initialized; }
 
-  static void setInitialized(bool f)
-  {
-    data_.initialized = f;
-  }
+  static void setInitialized(bool f) { data_.initialized = f; }
 
-  static const Data& getData6()
-  {
-    return data6_;
-  }
+  static const Data& getData6() { return data6_; }
 
-  static Data& getMutableData6()
-  {
-    return data6_;
-  }
+  static Data& getMutableData6() { return data6_; }
 
   static void clearData6();
 
-  static bool isInitialized6()
-  {
-    return data6_.initialized;
-  }
+  static bool isInitialized6() { return data6_.initialized; }
 
-  static void setInitialized6(bool f)
-  {
-    data6_.initialized = f;
-  }
+  static void setInitialized6(bool f) { data6_.initialized = f; }
 };
 
 } // namespace aria2

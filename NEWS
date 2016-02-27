@@ -1,81 +1,139 @@
-aria2 1.17.0
+aria2 1.20.0
 ============
 
 Release Note
 ------------
 
-This release adds Mac OS X native SSL/TLS library support.  The IPv6
-asynchronous DNS is enabled by default and A/AAAA lookups are done in
-parallel. The simple Happy Eyeballs algorithm was implemented to
-mitigate long timeout when connecting to IPv6 host on dual-stack host.
---save-session option only saves the options specified by command-line
-or RPC.
+This release fixes lots of bugs.  See the Changes section below.
+There are new features in this release.  We added "seeder" key in
+aria2.tellStatus RPC response.  We added system.listMethods RPC method
+to return all RPC method supported.  We added --max-mmap-limit option
+to avoid mmap if total file size is greater than given size.
 
 Changes
 -------
 
-* Updated Russian manual
+* src/WinConsoleFile.cc: fix colour
 
-  Contributed by ITriskTI
+  Set default foreground/background colour correctly
 
-* Updated Portuguese manual
+  Patch from kwkam
 
-  Contributed by Gilberto dos Santos Alves
+* configure.ac: fix autoreconf error
 
-* Append --static to pkg-config arguments when ARIA2_STATIC=yes
+  Use m4_ifdef so we do not have to install optional libraries
 
-* Save options directly specified for download in --save-session
+  Patch from kwkam
 
-  This change makes --save-session save only options specified for
-  download, more specifically, options in command-line, -i file and
-  via RPC. The other options from conf file and default values are not
-  saved.  This will drastically decrease the size of session file.
+* Don't inherit file descriptor to child process
 
-* Save URI returned only from FileEntry::getRemainingUris()
+  For non-Mingw32 build, set FD_CLOEXEC to file descriptors which live
+  beyond function scope.  For Mingw32 build, just pass false to
+  bInheritHandles parameter of CreateProcessW.
 
-  The currently used URIs are inserted back into remaining URI list in
-  FileEntry::putBackRequest(), which overlaps to some of the URIs in
-  spentUris_. If we save spent URIs, each time save is performed, the
-  number of URIs are increased due to this overlap. This change fixes
-  this bug.
+* Update Russian version documentation
 
-* Print linked 3rd party libraries with version in `aria2c -v` output
+  Patch from ITriskTI
 
-* AppleTLS: Support credentials via KeyChain fingerprints
+* Add "seeder" key to tellStatus RPC response
 
-  Contributed by Nils Maier
+* WinTLS: Fix hang because of buffered received data
 
-* AppleTLS: Implement AppleTLS and Apple Message Digest
+  WinTLSSession buffers received decrypted data into its own buffer.
+  If read is requested, it copies the data from its buffer.  But if
+  requested buffer size is less than decrypted buffer, some of the
+  data is left in the buffer.  Previously, we had no facility to check
+  the existence of this pending data.  If this data is the last
+  requested data from remote server, we may end up waiting for read
+  event even if we have already data in our buffer, which may cause
+  hang.  This commit fixes this issue by introducing function to
+  return the buffered length in TLSSession.  SocketCore also provides
+  the same function, which delegates to TLSSession object.
 
-  Contributed by Nils Maier
+* Add --max-mmap-limit option
 
-* Use info level log for system trusted ca imports failure
+  Set the maximum file size to enable mmap (see --enable-mmap
+  option). The file size is determined by the sum of all files
+  contained in one download. For example, if a download contains 5
+  files, then file size is the total size of those files. If file size
+  is strictly greater than the size specified in this option, mmap
+  will be disabled.
 
-  This is because on some platforms (gnutls on cygwin for example),
-  library always fails for this function and getting ERROR every time
-  aria2c invoked is too hard.
+* mingw: Use SetFileValidData to make --file-allocation=falloc work
 
-* Don't add Windows native DLLs for Cygwin build
+* Retry with 504 status code
 
-* Remove deprecated options: --enable-direct-io and --metalink-servers
+* Increase DHT transaction ID from 2 to 4 bytes to avoid conflict
 
-* Deprecate --enable-async-dns6
+* Update wslay
 
-  The IPv6 asynchronous name resolver is enabled if the host has at
-  least one interface with IPv6 address configured (the loopback
-  address will not be counted), which is roughly the same behaviour of
-  the standard getaddrinfo(3). To disable IPv6 asynchronous name
-  resolver, use --disable-ipv6.
+* Add --enable-werror option to configure to enable warning flags
 
-* Fix uninitialized UDPTrackerClient::numWatchers_
+* Don't modify user variables (e.g., CFLAGS, LIBS, etc)
 
-* Implement simple Happy Eyeballs for HTTP/FTP downloads
+* Improve error message when loading pkcs12 file failed
 
-* Parallel A and AAAA record lookups with c-ares
+* Updated dependency and source url's
 
-  But we don't wait for AAAA query response if A query response has
-  been received.  If we got IPv4 lookup response, we don't wait for
-  IPv6 lookup response. This is because DNS server may drop AAAA query
-  and we have to wait for the long time before timeout. We don't do
-  the inverse, because, based on todays deployment of DNS server,
-  almost all of them can respond A query just fine.
+  The RaspberryPi Dockerfile had some out-of-date dependency packages
+  and was downloading an outdated aria2 source from Sourceforge, which
+  resulted in a build for version 1.19.0.  The new
+  fetch-latest-release-from-GitHub script I've cooked up should always
+  work as long as GitHub doesn't change their API and aria2's platform
+  agnostic releases follow the "{version number}.tar.bz2" naming
+  format.
+
+  Patch from c3mb0
+
+* Reduce delay in tracker request
+
+  We eliminated 1 second delay between completion of name resolution
+  for tracker request and time when it is actually issued.  We also
+  elimited 1 second delay after last torrent download exists and it is
+  told to DHTInteractionCommand.
+
+* Disable IPv6 on non-async NameResolver if configuration wants
+
+* Fix mysterious 1 second delay with async DNS
+
+* Fix bug that UDP port was incorrectly used in UDP tracker announce request
+
+* Refactor HttpRequest
+
+  This also makes comparison performed when replacing builtin header
+  field with user-defined one case-insensitive.
+
+* Send Want-Digest as per RFC 3230
+
+* Try all found address set to bind sockets with --multiple-interface
+
+  Fixes GH-523
+
+* Replace sourceforge references with aria2.github.io
+
+* Add system.listMethods RPC method
+
+  system.listMethods just returns the available RPC method names.  It
+  can be executed without secret token, because it just returns the
+  method names, and does not alter anything.
+
+  See GH-437
+
+* Support content-range from non-compliant server
+
+  See GH-509
+
+* Reduce UDP tracker request timeout
+
+  See GH-507
+
+* Apply --retry-wait when retrying after 404
+
+  Previously, --retry-wait was not used when retrying after 404
+  (--max-file-not-found).  The retry was done without delay.  Also the
+  maximum retry count (--max-retries) was ignored when retrying with
+  404.
+
+  This commit makes --retry-wait apply for retrying with 404 as well.
+  It also combines --max-retries and --max-file-not-found.  When
+  retrying with 404, it is counted toward retry count.

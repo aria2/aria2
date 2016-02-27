@@ -45,59 +45,48 @@ namespace aria2 {
 
 class Peer;
 
-class DHTGetPeersReplyMessage:public DHTResponseMessage {
+class DHTGetPeersReplyMessage : public DHTResponseMessage {
 private:
   int family_;
 
   std::string token_;
 
-  std::vector<SharedHandle<DHTNode> > closestKNodes_;
+  std::vector<std::shared_ptr<DHTNode>> closestKNodes_;
 
-  std::vector<SharedHandle<Peer> > values_;
+  std::vector<std::shared_ptr<Peer>> values_;
+
 protected:
-  virtual std::string toStringOptional() const;
+  virtual std::string toStringOptional() const CXX11_OVERRIDE;
+
 public:
-  DHTGetPeersReplyMessage(int family,
-                          const SharedHandle<DHTNode>& localNode,
-                          const SharedHandle<DHTNode>& remoteNode,
+  DHTGetPeersReplyMessage(int family, const std::shared_ptr<DHTNode>& localNode,
+                          const std::shared_ptr<DHTNode>& remoteNode,
                           const std::string& token,
                           const std::string& transactionID);
 
-  virtual ~DHTGetPeersReplyMessage();
+  virtual void doReceivedAction() CXX11_OVERRIDE;
 
-  virtual void doReceivedAction();
+  virtual std::unique_ptr<Dict> getResponse() CXX11_OVERRIDE;
 
-  virtual SharedHandle<Dict> getResponse();
+  virtual const std::string& getMessageType() const CXX11_OVERRIDE;
 
-  virtual const std::string& getMessageType() const;
+  virtual void accept(DHTMessageCallback* callback) CXX11_OVERRIDE;
 
-  virtual void accept(DHTMessageCallback* callback);
-
-  const std::vector<SharedHandle<DHTNode> >& getClosestKNodes() const
+  const std::vector<std::shared_ptr<DHTNode>>& getClosestKNodes() const
   {
     return closestKNodes_;
   }
 
-  const std::vector<SharedHandle<Peer> >& getValues() const
+  const std::vector<std::shared_ptr<Peer>>& getValues() const
   {
     return values_;
   }
 
-  void setClosestKNodes
-  (const std::vector<SharedHandle<DHTNode> >& closestKNodes)
-  {
-    closestKNodes_ = closestKNodes;
-  }
+  void setClosestKNodes(std::vector<std::shared_ptr<DHTNode>> closestKNodes);
 
-  void setValues(const std::vector<SharedHandle<Peer> >& peers)
-  {
-    values_ = peers;
-  }
+  void setValues(std::vector<std::shared_ptr<Peer>> peers);
 
-  const std::string& getToken() const
-  {
-    return token_;
-  }
+  const std::string& getToken() const { return token_; }
 
   static const std::string GET_PEERS;
 

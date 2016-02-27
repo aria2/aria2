@@ -16,7 +16,7 @@
 
 namespace aria2 {
 
-class BtPortMessageTest:public CppUnit::TestFixture {
+class BtPortMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtPortMessageTest);
   CPPUNIT_TEST(testCreate);
@@ -25,11 +25,10 @@ class BtPortMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST(testDoReceivedAction_bootstrap);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
-  void setUp() {
-  }
+  void setUp() {}
 
   void testCreate();
   void testToString();
@@ -37,32 +36,34 @@ public:
   void testDoReceivedAction();
   void testDoReceivedAction_bootstrap();
 
-  class MockDHTTaskFactory2:public MockDHTTaskFactory {
+  class MockDHTTaskFactory2 : public MockDHTTaskFactory {
   public:
-    virtual SharedHandle<DHTTask>
-    createPingTask(const SharedHandle<DHTNode>& remoteNode, int numRetry)
+    virtual std::shared_ptr<DHTTask>
+    createPingTask(const std::shared_ptr<DHTNode>& remoteNode,
+                   int numRetry) CXX11_OVERRIDE
     {
-      return SharedHandle<DHTTask>(new MockDHTTask(remoteNode));
+      return std::shared_ptr<DHTTask>(new MockDHTTask(remoteNode));
     }
 
-    virtual SharedHandle<DHTTask>
-    createNodeLookupTask(const unsigned char* targetID)
+    virtual std::shared_ptr<DHTTask>
+    createNodeLookupTask(const unsigned char* targetID) CXX11_OVERRIDE
     {
-      SharedHandle<MockDHTTask> task(new MockDHTTask(SharedHandle<DHTNode>()));
+      std::shared_ptr<MockDHTTask> task(
+          new MockDHTTask(std::shared_ptr<DHTNode>()));
       task->setTargetID(targetID);
       return task;
     }
   };
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(BtPortMessageTest);
 
-void BtPortMessageTest::testCreate() {
+void BtPortMessageTest::testCreate()
+{
   unsigned char msg[7];
   bittorrent::createPeerMessageString(msg, sizeof(msg), 3, 9);
   bittorrent::setShortIntParam(&msg[5], 12345);
-  SharedHandle<BtPortMessage> pm(BtPortMessage::create(&msg[4], 3));
+  std::shared_ptr<BtPortMessage> pm(BtPortMessage::create(&msg[4], 3));
   CPPUNIT_ASSERT_EQUAL((uint8_t)9, pm->getId());
   CPPUNIT_ASSERT_EQUAL((uint16_t)12345, pm->getPort());
 
@@ -72,7 +73,8 @@ void BtPortMessageTest::testCreate() {
     bittorrent::createPeerMessageString(msg, sizeof(msg), 4, 9);
     BtPortMessage::create(&msg[4], 4);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(...) {
+  }
+  catch (...) {
   }
   // case: id is wrong
   try {
@@ -80,45 +82,48 @@ void BtPortMessageTest::testCreate() {
     bittorrent::createPeerMessageString(msg, sizeof(msg), 3, 10);
     BtPortMessage::create(&msg[4], 3);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(...) {
+  }
+  catch (...) {
   }
 }
 
-void BtPortMessageTest::testToString() {
+void BtPortMessageTest::testToString()
+{
   BtPortMessage msg(1);
   CPPUNIT_ASSERT_EQUAL(std::string("port port=1"), msg.toString());
 }
 
-void BtPortMessageTest::testCreateMessage() {
+void BtPortMessageTest::testCreateMessage()
+{
   BtPortMessage msg(6881);
   unsigned char data[7];
   bittorrent::createPeerMessageString(data, sizeof(data), 3, 9);
   bittorrent::setShortIntParam(&data[5], 6881);
   unsigned char* rawmsg = msg.createMessage();
   CPPUNIT_ASSERT(memcmp(rawmsg, data, 7) == 0);
-  delete [] rawmsg;
+  delete[] rawmsg;
 }
 
 void BtPortMessageTest::testDoReceivedAction()
 {
   unsigned char nodeID[DHT_ID_LENGTH];
   memset(nodeID, 0, DHT_ID_LENGTH);
-  SharedHandle<DHTNode> localNode(new DHTNode(nodeID));
+  std::shared_ptr<DHTNode> localNode(new DHTNode(nodeID));
 
   // 9 nodes to create at least 2 buckets.
-  SharedHandle<DHTNode> nodes[9];
-  for(size_t i = 0; i < A2_ARRAY_LEN(nodes); ++i) {
+  std::shared_ptr<DHTNode> nodes[9];
+  for (size_t i = 0; i < arraySize(nodes); ++i) {
     memset(nodeID, 0, DHT_ID_LENGTH);
-    nodeID[DHT_ID_LENGTH-1] = i+1;
+    nodeID[DHT_ID_LENGTH - 1] = i + 1;
     nodes[i].reset(new DHTNode(nodeID));
   }
 
   DHTRoutingTable routingTable(localNode);
-  for(size_t i = 0; i < A2_ARRAY_LEN(nodes); ++i) {
+  for (size_t i = 0; i < arraySize(nodes); ++i) {
     routingTable.addNode(nodes[i]);
   }
 
-  SharedHandle<Peer> peer(new Peer("192.168.0.1", 6881));
+  std::shared_ptr<Peer> peer(new Peer("192.168.0.1", 6881));
   BtPortMessage msg(6881);
   MockDHTTaskQueue taskQueue;
   MockDHTTaskFactory2 taskFactory;
@@ -132,9 +137,9 @@ void BtPortMessageTest::testDoReceivedAction()
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, taskQueue.immediateTaskQueue_.size());
 
-  SharedHandle<MockDHTTask> task
-    (dynamic_pointer_cast<MockDHTTask>(taskQueue.immediateTaskQueue_[0]));
-  SharedHandle<DHTNode> node = task->remoteNode_;
+  auto task =
+      std::dynamic_pointer_cast<MockDHTTask>(taskQueue.immediateTaskQueue_[0]);
+  std::shared_ptr<DHTNode> node = task->remoteNode_;
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), node->getIPAddress());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, node->getPort());
 }
@@ -144,10 +149,10 @@ void BtPortMessageTest::testDoReceivedAction_bootstrap()
   unsigned char nodeID[DHT_ID_LENGTH];
   memset(nodeID, 0, DHT_ID_LENGTH);
   nodeID[0] = 0xff;
-  SharedHandle<DHTNode> localNode(new DHTNode(nodeID));
+  std::shared_ptr<DHTNode> localNode(new DHTNode(nodeID));
   DHTRoutingTable routingTable(localNode); // no nodes , 1 bucket.
 
-  SharedHandle<Peer> peer(new Peer("192.168.0.1", 6881));
+  std::shared_ptr<Peer> peer(new Peer("192.168.0.1", 6881));
   BtPortMessage msg(6881);
   MockDHTTaskQueue taskQueue;
   MockDHTTaskFactory2 taskFactory;
@@ -160,14 +165,14 @@ void BtPortMessageTest::testDoReceivedAction_bootstrap()
   msg.doReceivedAction();
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, taskQueue.immediateTaskQueue_.size());
-  SharedHandle<MockDHTTask> task
-    (dynamic_pointer_cast<MockDHTTask>(taskQueue.immediateTaskQueue_[0]));
-  SharedHandle<DHTNode> node(task->remoteNode_);
+  auto task =
+      std::dynamic_pointer_cast<MockDHTTask>(taskQueue.immediateTaskQueue_[0]);
+  std::shared_ptr<DHTNode> node(task->remoteNode_);
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), node->getIPAddress());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, node->getPort());
 
-  SharedHandle<MockDHTTask> task2
-    (dynamic_pointer_cast<MockDHTTask>(taskQueue.immediateTaskQueue_[1]));
+  auto task2 =
+      std::dynamic_pointer_cast<MockDHTTask>(taskQueue.immediateTaskQueue_[1]);
   CPPUNIT_ASSERT(memcmp(nodeID, task2->targetID_, DHT_ID_LENGTH) == 0);
 }
 

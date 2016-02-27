@@ -6,15 +6,15 @@
 
 namespace aria2 {
 
-class MockExtensionMessageFactory:public ExtensionMessageFactory {
+class MockExtensionMessageFactory : public ExtensionMessageFactory {
 public:
   virtual ~MockExtensionMessageFactory() {}
 
-  virtual SharedHandle<ExtensionMessage> createMessage(const unsigned char* data,
-                                                       size_t length)
+  virtual std::unique_ptr<ExtensionMessage>
+  createMessage(const unsigned char* data, size_t length) CXX11_OVERRIDE
   {
-    return SharedHandle<ExtensionMessage>
-      (new MockExtensionMessage("a2_mock", *data, data+1, length-1));
+    return make_unique<MockExtensionMessage>("a2_mock", *data, data + 1,
+                                             length - 1, nullptr);
   }
 };
 

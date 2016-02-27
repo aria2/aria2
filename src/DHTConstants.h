@@ -35,31 +35,37 @@
 #ifndef D_DHT_CONSTANTS_H
 #define D_DHT_CONSTANTS_H
 
+#include "common.h"
+#include "TimerA2.h"
+#include "a2functional.h"
+
+namespace aria2 {
+
 // Increment this if major improvements or bug fixes are made in DHT
 // code. This is 2 bytes unsigned integer.
-#define DHT_VERSION 3U
+constexpr uint16_t DHT_VERSION = 3U;
 
-#define DHT_ID_LENGTH 20
+constexpr size_t DHT_ID_LENGTH = 20;
 
-#define DHT_TRANSACTION_ID_LENGTH 2
-
-#define DHT_TOKEN_LENGTH 4
+constexpr size_t DHT_TRANSACTION_ID_LENGTH = 4;
 
 // See --dht-message-timeout option.
-#define DHT_MESSAGE_TIMEOUT 10
+constexpr auto DHT_MESSAGE_TIMEOUT = 10_s;
 
-#define DHT_NODE_CONTACT_INTERVAL (15*60)
+constexpr auto DHT_NODE_CONTACT_INTERVAL = 15_min;
 
-#define DHT_BUCKET_REFRESH_INTERVAL (15*60)
+constexpr auto DHT_BUCKET_REFRESH_INTERVAL = 15_min;
 
-#define DHT_BUCKET_REFRESH_CHECK_INTERVAL (5*60)
+constexpr auto DHT_BUCKET_REFRESH_CHECK_INTERVAL = 5_min;
 
-#define DHT_PEER_ANNOUNCE_PURGE_INTERVAL (30*60)
+constexpr auto DHT_PEER_ANNOUNCE_PURGE_INTERVAL = 30_min;
 
-#define DHT_PEER_ANNOUNCE_INTERVAL (15*60)
+constexpr auto DHT_PEER_ANNOUNCE_INTERVAL = 15_min;
 
-#define DHT_PEER_ANNOUNCE_CHECK_INTERVAL (5*60)
+constexpr auto DHT_PEER_ANNOUNCE_CHECK_INTERVAL = 5_min;
 
-#define DHT_TOKEN_UPDATE_INTERVAL (10*60)
+constexpr auto DHT_TOKEN_UPDATE_INTERVAL = 10_min;
+
+} // namespace aria2
 
 #endif // D_DHT_CONSTANTS_H

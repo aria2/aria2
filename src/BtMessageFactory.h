@@ -36,65 +36,85 @@
 #define D_BT_MESSAGE_FACTORY_H
 
 #include "common.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
 class BtMessage;
 class BtHandshakeMessage;
-class Piece;
+class BtAllowedFastMessage;
+class BtBitfieldMessage;
+class BtCancelMessage;
+class BtChokeMessage;
+class BtHaveAllMessage;
+class BtHaveMessage;
+class BtHaveNoneMessage;
+class BtInterestedMessage;
+class BtKeepAliveMessage;
+class BtNotInterestedMessage;
+class BtPieceMessage;
+class BtPortMessage;
+class BtRejectMessage;
+class BtRequestMessage;
+class BtUnchokeMessage;
+class BtExtendedMessage;
 class ExtensionMessage;
+class Piece;
 
 class BtMessageFactory {
 public:
   virtual ~BtMessageFactory() {}
 
-  virtual SharedHandle<BtMessage>
-  createBtMessage(const unsigned char* msg, size_t msgLength) = 0;
+  virtual std::unique_ptr<BtMessage> createBtMessage(const unsigned char* msg,
+                                                     size_t msgLength) = 0;
 
-  virtual SharedHandle<BtHandshakeMessage>
+  virtual std::unique_ptr<BtHandshakeMessage>
   createHandshakeMessage(const unsigned char* msg, size_t msgLength) = 0;
 
-  virtual SharedHandle<BtHandshakeMessage>
+  virtual std::unique_ptr<BtHandshakeMessage>
   createHandshakeMessage(const unsigned char* infoHash,
                          const unsigned char* peerId) = 0;
 
-  virtual SharedHandle<BtMessage>
-  createRequestMessage(const SharedHandle<Piece>& piece, size_t blockIndex) = 0;
+  virtual std::unique_ptr<BtRequestMessage>
+  createRequestMessage(const std::shared_ptr<Piece>& piece,
+                       size_t blockIndex) = 0;
 
-  virtual SharedHandle<BtMessage>
+  virtual std::unique_ptr<BtCancelMessage>
   createCancelMessage(size_t index, int32_t begin, int32_t length) = 0;
 
-  virtual SharedHandle<BtMessage>
+  virtual std::unique_ptr<BtPieceMessage>
   createPieceMessage(size_t index, int32_t begin, int32_t length) = 0;
 
-  virtual SharedHandle<BtMessage> createHaveMessage(size_t index) = 0;
+  virtual std::unique_ptr<BtHaveMessage> createHaveMessage(size_t index) = 0;
 
-  virtual SharedHandle<BtMessage> createChokeMessage() = 0;
+  virtual std::unique_ptr<BtChokeMessage> createChokeMessage() = 0;
 
-  virtual SharedHandle<BtMessage> createUnchokeMessage() = 0;
+  virtual std::unique_ptr<BtUnchokeMessage> createUnchokeMessage() = 0;
 
-  virtual SharedHandle<BtMessage> createInterestedMessage() = 0;
+  virtual std::unique_ptr<BtInterestedMessage> createInterestedMessage() = 0;
 
-  virtual SharedHandle<BtMessage> createNotInterestedMessage() = 0;
+  virtual std::unique_ptr<BtNotInterestedMessage>
+  createNotInterestedMessage() = 0;
 
-  virtual SharedHandle<BtMessage> createBitfieldMessage() = 0;
+  virtual std::unique_ptr<BtBitfieldMessage> createBitfieldMessage() = 0;
 
-  virtual SharedHandle<BtMessage> createKeepAliveMessage() = 0;
+  virtual std::unique_ptr<BtKeepAliveMessage> createKeepAliveMessage() = 0;
 
-  virtual SharedHandle<BtMessage> createHaveAllMessage() = 0;
+  virtual std::unique_ptr<BtHaveAllMessage> createHaveAllMessage() = 0;
 
-  virtual SharedHandle<BtMessage> createHaveNoneMessage() = 0;
+  virtual std::unique_ptr<BtHaveNoneMessage> createHaveNoneMessage() = 0;
 
-  virtual SharedHandle<BtMessage>
+  virtual std::unique_ptr<BtRejectMessage>
   createRejectMessage(size_t index, int32_t begin, int32_t length) = 0;
 
-  virtual SharedHandle<BtMessage> createAllowedFastMessage(size_t index) = 0;
+  virtual std::unique_ptr<BtAllowedFastMessage>
+  createAllowedFastMessage(size_t index) = 0;
 
-  virtual SharedHandle<BtMessage> createPortMessage(uint16_t port) = 0;
+  virtual std::unique_ptr<BtPortMessage> createPortMessage(uint16_t port) = 0;
 
-  virtual SharedHandle<BtMessage>
-  createBtExtendedMessage(const SharedHandle<ExtensionMessage>& msg) = 0;
+  virtual std::unique_ptr<BtExtendedMessage>
+  createBtExtendedMessage(std::unique_ptr<ExtensionMessage> msg) = 0;
 };
 
 } // namespace aria2

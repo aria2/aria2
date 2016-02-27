@@ -43,17 +43,18 @@
 
 namespace aria2 {
 
-DHTTokenUpdateCommand::DHTTokenUpdateCommand
-(cuid_t cuid, DownloadEngine* e, time_t interval)
-  : TimeBasedCommand(cuid, e, interval)
-{}
+DHTTokenUpdateCommand::DHTTokenUpdateCommand(cuid_t cuid, DownloadEngine* e,
+                                             std::chrono::seconds interval)
+    : TimeBasedCommand{cuid, e, std::move(interval)}, tokenTracker_{nullptr}
+{
+}
 
 DHTTokenUpdateCommand::~DHTTokenUpdateCommand() {}
 
 void DHTTokenUpdateCommand::preProcess()
 {
-  if(getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
-     getDownloadEngine()->isHaltRequested()) {
+  if (getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
+      getDownloadEngine()->isHaltRequested()) {
     enableExit();
   }
 }
@@ -62,12 +63,13 @@ void DHTTokenUpdateCommand::process()
 {
   try {
     tokenTracker_->updateTokenSecret();
-  } catch(RecoverableException& e) {
+  }
+  catch (RecoverableException& e) {
     A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
   }
 }
 
-void DHTTokenUpdateCommand::setTokenTracker(const SharedHandle<DHTTokenTracker>& tokenTracker)
+void DHTTokenUpdateCommand::setTokenTracker(DHTTokenTracker* tokenTracker)
 {
   tokenTracker_ = tokenTracker;
 }

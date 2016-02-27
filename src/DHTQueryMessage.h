@@ -41,25 +41,26 @@
 
 namespace aria2 {
 
-class DHTQueryMessage:public DHTAbstractMessage {
+class DHTQueryMessage : public DHTAbstractMessage {
 protected:
   virtual std::string toStringOptional() const { return A2STR::NIL; }
+
 public:
-  DHTQueryMessage(const SharedHandle<DHTNode>& localNode,
-                  const SharedHandle<DHTNode>& remoteNode,
+  DHTQueryMessage(const std::shared_ptr<DHTNode>& localNode,
+                  const std::shared_ptr<DHTNode>& remoteNode,
                   const std::string& transactionID = A2STR::NIL);
 
   virtual ~DHTQueryMessage();
 
-  virtual const std::string& getType() const;
+  virtual const std::string& getType() const CXX11_OVERRIDE;
 
-  virtual void fillMessage(Dict* msgDict);
+  virtual void fillMessage(Dict* msgDict) CXX11_OVERRIDE;
 
-  virtual SharedHandle<Dict> getArgument() = 0;
+  virtual std::unique_ptr<Dict> getArgument() = 0;
 
-  virtual bool isReply() const;
+  virtual bool isReply() const CXX11_OVERRIDE;
 
-  virtual std::string toString() const;
+  virtual std::string toString() const CXX11_OVERRIDE;
 
   static const std::string Q;
 

@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "metalink_helper.h"
+
+#include <array>
+
 #include "Option.h"
 #include "MetalinkEntry.h"
 #include "MetalinkParserStateMachine.h"
@@ -42,6 +45,7 @@
 #include "DlAbortEx.h"
 #include "BinaryStream.h"
 #include "MetalinkMetaurl.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -49,123 +53,104 @@ namespace metalink {
 
 namespace {
 
-void query
-(std::vector<SharedHandle<MetalinkEntry> >& result,
- const SharedHandle<Metalinker>& metalinker,
- const Option* option)
+std::vector<std::unique_ptr<MetalinkEntry>>
+query(const std::shared_ptr<Metalinker>& metalinker, const Option* option)
 {
-  metalinker->queryEntry(result,
-                         option->get(PREF_METALINK_VERSION),
-                         option->get(PREF_METALINK_LANGUAGE),
-                         option->get(PREF_METALINK_OS));
+  return metalinker->queryEntry(option->get(PREF_METALINK_VERSION),
+                                option->get(PREF_METALINK_LANGUAGE),
+                                option->get(PREF_METALINK_OS));
 }
 
 } // namespace
 
-void parseAndQuery
-(std::vector<SharedHandle<MetalinkEntry> >& result,
- const std::string& filename,
- const Option* option,
- const std::string& baseUri)
+std::vector<std::unique_ptr<MetalinkEntry>>
+parseAndQuery(const std::string& filename, const Option* option,
+              const std::string& baseUri)
 {
-  SharedHandle<Metalinker> metalinker = parseFile(filename, baseUri);
-  query(result, metalinker, option);
+  return query(parseFile(filename, baseUri), option);
 }
 
-void parseAndQuery
-(std::vector<SharedHandle<MetalinkEntry> >& result,
- BinaryStream* bs,
- const Option* option,
- const std::string& baseUri)
+std::vector<std::unique_ptr<MetalinkEntry>>
+parseAndQuery(BinaryStream* bs, const Option* option,
+              const std::string& baseUri)
 {
-  SharedHandle<Metalinker> metalinker = parseBinaryStream(bs, baseUri);
-  query(result, metalinker, option);
+  return query(parseBinaryStream(bs, baseUri), option);
 }
 
-void groupEntryByMetaurlName
-(std::vector<
-  std::pair<std::string, std::vector<SharedHandle<MetalinkEntry> > > >& result,
- const std::vector<SharedHandle<MetalinkEntry> >& entries)
+std::vector<std::pair<std::string, std::vector<MetalinkEntry*>>>
+groupEntryByMetaurlName(
+    const std::vector<std::unique_ptr<MetalinkEntry>>& entries)
 {
-  for(std::vector<SharedHandle<MetalinkEntry> >::const_iterator eiter =
-        entries.begin(), eoi = entries.end(); eiter != eoi; ++eiter) {
-    if((*eiter)->metaurls.empty()) {
-      std::pair<std::string, std::vector<SharedHandle<MetalinkEntry> > > p;
-      p.second.push_back(*eiter);
-      result.push_back(p);
-    } else {
-      std::vector<
-      std::pair<std::string,
-        std::vector<SharedHandle<MetalinkEntry> > > >::iterator i =
-        result.begin();
-      if((*eiter)->metaurls[0]->name.empty() ||
-         !(*eiter)->sizeKnown) {
-        i = result.end();
+  std::vector<std::pair<std::string, std::vector<MetalinkEntry*>>> result;
+  for (auto& entry : entries) {
+    if (entry->metaurls.empty()) {
+      // std::pair<std::string, std::vector<MetalinkEntry*>> p;
+      // p.second.push_back(entry.get());
+      result.push_back({"", {entry.get()}});
+    }
+    else {
+      auto i = std::begin(result);
+      if (entry->metaurls[0]->name.empty() || !entry->sizeKnown) {
+        i = std::end(result);
       }
-      for(; i != result.end(); ++i) {
-        if((*i).first == (*eiter)->metaurls[0]->url &&
-           !(*i).second[0]->metaurls[0]->name.empty()) {
-          (*i).second.push_back(*eiter);
+      for (; i != std::end(result); ++i) {
+        if ((*i).first == entry->metaurls[0]->url &&
+            !(*i).second[0]->metaurls[0]->name.empty()) {
+          (*i).second.push_back(entry.get());
           break;
         }
       }
-      if(i == result.end()) {
-        std::pair<std::string, std::vector<SharedHandle<MetalinkEntry> > > p;
-        p.first = (*eiter)->metaurls[0]->url;
-        p.second.push_back(*eiter);
-        result.push_back(p);
+      if (i == std::end(result)) {
+        result.push_back({entry->metaurls[0]->url, {entry.get()}});
       }
     }
   }
+  return result;
 }
 
-SharedHandle<Metalinker> parseFile
-(const std::string& filename,
- const std::string& baseUri)
+std::unique_ptr<Metalinker> parseFile(const std::string& filename,
+                                      const std::string& baseUri)
 {
   MetalinkParserStateMachine psm;
   psm.setBaseUri(baseUri);
-  if(!xml::parseFile(filename, &psm)) {
+  if (!xml::parseFile(filename, &psm)) {
     throw DL_ABORT_EX2("Could not parse Metalink XML document.",
                        error_code::METALINK_PARSE_ERROR);
   }
-  if(!psm.getErrors().empty()) {
-    throw DL_ABORT_EX2(psm.getErrorString(),
-                       error_code::METALINK_PARSE_ERROR);
+  if (!psm.getErrors().empty()) {
+    throw DL_ABORT_EX2(psm.getErrorString(), error_code::METALINK_PARSE_ERROR);
   }
   return psm.getResult();
 }
 
-SharedHandle<Metalinker> parseBinaryStream
-(BinaryStream* bs,
- const std::string& baseUri)
+std::unique_ptr<Metalinker> parseBinaryStream(BinaryStream* bs,
+                                              const std::string& baseUri)
 {
   MetalinkParserStateMachine psm;
   psm.setBaseUri(baseUri);
   xml::XmlParser ps(&psm);
-  unsigned char buf[4096];
+  std::array<unsigned char, 4_k> buf;
   ssize_t nread;
   int64_t offread = 0;
   bool retval = true;
-  while((nread = bs->readData(buf, sizeof(buf), offread)) > 0) {
-    if(ps.parseUpdate(reinterpret_cast<const char*>(buf), nread) < 0) {
+  while ((nread = bs->readData(buf.data(), buf.size(), offread)) > 0) {
+    if (ps.parseUpdate(reinterpret_cast<const char*>(buf.data()), nread) < 0) {
       retval = false;
       break;
     }
     offread += nread;
   }
-  if(nread == 0 && retval) {
-    if(ps.parseFinal(0, 0) < 0) {
+  if (nread == 0 && retval) {
+    if (ps.parseFinal(nullptr, 0) < 0) {
       retval = false;
     }
   }
-  if(!retval) {
+  if (!retval) {
     throw DL_ABORT_EX2("Could not parse Metalink XML document.",
                        error_code::METALINK_PARSE_ERROR);
   }
-  if(!psm.getErrors().empty()) {
-    throw DL_ABORT_EX2(psm.getErrorString(),
-                       error_code::METALINK_PARSE_ERROR);
+  if (!psm.getErrors().empty()) {
+    throw DL_ABORT_EX2(psm.getErrorString(), error_code::METALINK_PARSE_ERROR);
   }
   return psm.getResult();
 }

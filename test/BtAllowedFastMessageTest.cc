@@ -10,7 +10,7 @@
 
 namespace aria2 {
 
-class BtAllowedFastMessageTest:public CppUnit::TestFixture {
+class BtAllowedFastMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtAllowedFastMessageTest);
   CPPUNIT_TEST(testCreate);
@@ -19,11 +19,10 @@ class BtAllowedFastMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testOnSendComplete);
   CPPUNIT_TEST(testToString);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
-  void setUp() {
-  }
+  void setUp() {}
 
   void testCreate();
   void testCreateMessage();
@@ -32,15 +31,15 @@ public:
   void testToString();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(BtAllowedFastMessageTest);
 
-void BtAllowedFastMessageTest::testCreate() {
+void BtAllowedFastMessageTest::testCreate()
+{
   unsigned char msg[9];
   bittorrent::createPeerMessageString(msg, sizeof(msg), 5, 17);
   bittorrent::setIntParam(&msg[5], 12345);
-  SharedHandle<BtAllowedFastMessage> pm
-    (BtAllowedFastMessage::create(&msg[4], 5));
+  std::shared_ptr<BtAllowedFastMessage> pm(
+      BtAllowedFastMessage::create(&msg[4], 5));
   CPPUNIT_ASSERT_EQUAL((uint8_t)17, pm->getId());
   CPPUNIT_ASSERT_EQUAL((size_t)12345, pm->getIndex());
 
@@ -50,7 +49,8 @@ void BtAllowedFastMessageTest::testCreate() {
     bittorrent::createPeerMessageString(msg, sizeof(msg), 6, 17);
     BtAllowedFastMessage::create(&msg[4], 6);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(...) {
+  }
+  catch (...) {
   }
   // case: id is wrong
   try {
@@ -58,11 +58,13 @@ void BtAllowedFastMessageTest::testCreate() {
     bittorrent::createPeerMessageString(msg, sizeof(msg), 5, 18);
     BtAllowedFastMessage::create(&msg[4], 5);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(...) {
+  }
+  catch (...) {
   }
 }
 
-void BtAllowedFastMessageTest::testCreateMessage() {
+void BtAllowedFastMessageTest::testCreateMessage()
+{
   BtAllowedFastMessage msg;
   msg.setIndex(12345);
   unsigned char data[9];
@@ -70,14 +72,15 @@ void BtAllowedFastMessageTest::testCreateMessage() {
   bittorrent::setIntParam(&data[5], 12345);
   unsigned char* rawmsg = msg.createMessage();
   CPPUNIT_ASSERT(memcmp(rawmsg, data, 9) == 0);
-  delete [] rawmsg;
+  delete[] rawmsg;
 }
 
-void BtAllowedFastMessageTest::testDoReceivedAction() {
+void BtAllowedFastMessageTest::testDoReceivedAction()
+{
   BtAllowedFastMessage msg;
   msg.setIndex(1);
-  SharedHandle<Peer> peer(new Peer("localhost", 6969));
-  peer->allocateSessionResource(1024, 1024*1024);
+  std::shared_ptr<Peer> peer(new Peer("localhost", 6969));
+  peer->allocateSessionResource(1_k, 1_m);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
   CPPUNIT_ASSERT(!peer->isInPeerAllowedIndexSet(1));
@@ -88,23 +91,27 @@ void BtAllowedFastMessageTest::testDoReceivedAction() {
   try {
     msg.doReceivedAction();
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(...) {}
+  }
+  catch (...) {
+  }
 }
 
-void BtAllowedFastMessageTest::testOnSendComplete() {
+void BtAllowedFastMessageTest::testOnSendComplete()
+{
   BtAllowedFastMessage msg;
   msg.setIndex(1);
-  SharedHandle<Peer> peer(new Peer("localhost", 6969));
-  peer->allocateSessionResource(1024, 1024*1024);
+  std::shared_ptr<Peer> peer(new Peer("localhost", 6969));
+  peer->allocateSessionResource(1_k, 1_m);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
   CPPUNIT_ASSERT(!peer->isInAmAllowedIndexSet(1));
-  SharedHandle<ProgressUpdate> pu(msg.getProgressUpdate());
+  std::shared_ptr<ProgressUpdate> pu(msg.getProgressUpdate());
   pu->update(0, true);
   CPPUNIT_ASSERT(peer->isInAmAllowedIndexSet(1));
 }
 
-void BtAllowedFastMessageTest::testToString() {
+void BtAllowedFastMessageTest::testToString()
+{
   BtAllowedFastMessage msg;
   msg.setIndex(1);
   CPPUNIT_ASSERT_EQUAL(std::string("allowed fast index=1"), msg.toString());

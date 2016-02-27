@@ -42,10 +42,9 @@ namespace aria2 {
 class BtRequestMessage : public RangeBtMessage {
 private:
   size_t blockIndex_;
+
 public:
-  BtRequestMessage(size_t index = 0,
-                   int32_t begin = 0,
-                   int32_t length = 0,
+  BtRequestMessage(size_t index = 0, int32_t begin = 0, int32_t length = 0,
                    size_t blockIndex = 0);
 
   static const uint8_t ID = 6;
@@ -55,15 +54,15 @@ public:
   size_t getBlockIndex() const { return blockIndex_; }
   void setBlockIndex(size_t blockIndex) { blockIndex_ = blockIndex; }
 
-  static BtRequestMessage* create
-  (const unsigned char* data, size_t dataLength);
+  static std::unique_ptr<BtRequestMessage> create(const unsigned char* data,
+                                                  size_t dataLength);
 
-  virtual void doReceivedAction();
+  virtual void doReceivedAction() CXX11_OVERRIDE;
 
-  virtual void onQueued();
+  virtual void onQueued() CXX11_OVERRIDE;
 
-  virtual void onAbortOutstandingRequestEvent
-  (const BtAbortOutstandingRequestEvent& event);
+  virtual void onAbortOutstandingRequestEvent(
+      const BtAbortOutstandingRequestEvent& event) CXX11_OVERRIDE;
 };
 
 } // namespace aria2

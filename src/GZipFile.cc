@@ -44,32 +44,33 @@
 namespace aria2 {
 
 GZipFile::GZipFile(const char* filename, const char* mode)
-  : BufferedFile(0), fp_(0), open_(false),
-    buflen_(1024), buf_(reinterpret_cast<char*>(malloc(buflen_)))
+    : fp_(nullptr), buflen_(1_k), buf_(reinterpret_cast<char*>(malloc(buflen_)))
 {
   FILE* fp =
 #ifdef __MINGW32__
-  a2fopen(utf8ToWChar(filename).c_str(), utf8ToWChar(mode).c_str());
-#else // !__MINGW32__
-  a2fopen(filename, mode);
+      strcmp(DEV_STDIN, filename) == 0
+          ? stdin
+          : a2fopen(utf8ToWChar(filename).c_str(), utf8ToWChar(mode).c_str());
+#else  // !__MINGW32__
+      a2fopen(filename, mode);
 #endif // !__MINGW32__
 
-  open_  = fp;
-  if (open_) {
+  if (fp) {
     int fd = dup(fileno(fp));
-    if ((open_ = fd) >= 0) {
-      open_ = (fp_ = gzdopen(fd, mode));
-      if (!open_) {
-        ::close(fd);
-      }
-    }
-    if (open_) {
+    if (fd != -1) {
+      fp_ = gzdopen(fd, mode);
+      if (fp_) {
+// fp_ retains fd and gzclose() will close fd as well.
 #if HAVE_GZBUFFER
-      gzbuffer(fp_, 1<<17);
+        gzbuffer(fp_, 1 << 17);
 #endif
 #if HAVE_GZSETPARAMS
-      gzsetparams(fp_, 2, Z_DEFAULT_STRATEGY);
+        gzsetparams(fp_, 2, Z_DEFAULT_STRATEGY);
 #endif
+      }
+      else {
+        ::close(fd);
+      }
     }
     fclose(fp);
   }
@@ -77,28 +78,36 @@ GZipFile::GZipFile(const char* filename, const char* mode)
 
 GZipFile::~GZipFile()
 {
+  close();
   free(buf_);
 }
 
-int GZipFile::close()
+int GZipFile::onClose()
 {
-  if (open_) {
-    open_ = false;
-    return gzclose(fp_);
+  int rv = 0;
+  if (fp_) {
+    rv = gzclose(fp_);
+    fp_ = nullptr;
   }
-  return 0;
+  return rv;
 }
+
+bool GZipFile::onSupportsColor() { return false; }
 
 bool GZipFile::isError() const
 {
   int rv = 0;
-  const char *e = gzerror(fp_, &rv);
-  return (e != 0 && *e != 0) || rv != 0;
+  const char* e = gzerror(fp_, &rv);
+  return (e != nullptr && *e != 0) || rv != 0;
 }
 
-size_t GZipFile::read(void* ptr, size_t count)
+bool GZipFile::isEOF() const { return gzeof(fp_); }
+
+bool GZipFile::isOpen() const { return fp_; }
+
+size_t GZipFile::onRead(void* ptr, size_t count)
 {
-  char *data = reinterpret_cast<char*>(ptr);
+  char* data = reinterpret_cast<char*>(ptr);
   size_t read = 0;
   while (count) {
     size_t len = std::min(count, (size_t)std::numeric_limits<unsigned>::max());
@@ -113,9 +122,9 @@ size_t GZipFile::read(void* ptr, size_t count)
   return read;
 }
 
-size_t GZipFile::write(const void* ptr, size_t count)
+size_t GZipFile::onWrite(const void* ptr, size_t count)
 {
-  const char *data = reinterpret_cast<const char*>(ptr);
+  const char* data = reinterpret_cast<const char*>(ptr);
   size_t written = 0;
   while (count) {
     size_t len = std::min(count, (size_t)std::numeric_limits<unsigned>::max());
@@ -130,57 +139,34 @@ size_t GZipFile::write(const void* ptr, size_t count)
   return written;
 }
 
-char* GZipFile::gets(char* s, int size)
-{
-  return gzgets(fp_, s, size);
-}
+char* GZipFile::onGets(char* s, int size) { return gzgets(fp_, s, size); }
 
-int GZipFile::flush()
-{
-  return gzflush(fp_, 0);
-}
+int GZipFile::onFlush() { return gzflush(fp_, 0); }
 
-int GZipFile::vprintf(const char* format, va_list va)
+int GZipFile::onVprintf(const char* format, va_list va)
 {
   ssize_t len;
-#ifdef __MINGW32__
-  // Windows vsnprintf returns -1 when output is truncated, so we
-  // cannot use same logic in non-MINGW32 code.
-  len = _vscprintf(format, va);
-  if(len == 0) {
-    return 0;
-  }
-  // Include terminate null
-  ++len;
-  if(len > static_cast<ssize_t>(buflen_)) {
-    while(static_cast<ssize_t>(buflen_) < len) {
-      buflen_ *= 2;
-    }
-    buf_ = reinterpret_cast<char*>(realloc(buf_, buflen_));
-  }
-  len = vsnprintf(buf_, buflen_, format, va);
-  if(len < 0) {
-    return len;
-  }
-#else // !__MINGW32__
-  for(;;) {
+
+  for (;;) {
     len = vsnprintf(buf_, buflen_, format, va);
     // len does not include terminating null
-    if(len >= static_cast<ssize_t>(buflen_)) {
+    if (len >= static_cast<ssize_t>(buflen_)) {
       // Include terminate null
       ++len;
       // truncated; reallocate buf and try again
-      while(static_cast<ssize_t>(buflen_) < len) {
+      while (static_cast<ssize_t>(buflen_) < len) {
         buflen_ *= 2;
       }
       buf_ = reinterpret_cast<char*>(realloc(buf_, buflen_));
-    } else if(len < 0) {
+    }
+    else if (len < 0) {
       return len;
-    } else {
+    }
+    else {
       break;
     }
   }
-#endif // !__MINGW32__
+
   return gzwrite(fp_, buf_, len);
 }
 

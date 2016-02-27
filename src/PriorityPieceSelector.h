@@ -38,23 +38,23 @@
 #include "PieceSelector.h"
 
 #include <vector>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
-class PriorityPieceSelector:public PieceSelector {
+class PriorityPieceSelector : public PieceSelector {
 private:
   std::vector<size_t> prioritizedPieces_;
 
-  SharedHandle<PieceSelector> selector_;
+  std::shared_ptr<PieceSelector> selector_;
+
 public:
-  PriorityPieceSelector(const SharedHandle<PieceSelector>& selector);
+  PriorityPieceSelector(const std::shared_ptr<PieceSelector>& selector);
 
-  virtual bool select
-  (size_t& index, const unsigned char* bitfield, size_t nbits) const;
+  virtual bool select(size_t& index, const unsigned char* bitfield,
+                      size_t nbits) const CXX11_OVERRIDE;
 
-  template<typename InputIterator>
+  template <typename InputIterator>
   void setPriorityPiece(InputIterator first, InputIterator last)
   {
     std::vector<size_t> t(first, last);

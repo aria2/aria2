@@ -37,27 +37,25 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "prefs.h"
 #include "bitfield.h"
 
 namespace aria2 {
 
 Option::Option()
-  : table_(option::countOption()),
-    use_((option::countOption()+7)/8)
-{}
+    : table_(option::countOption()), use_((option::countOption() + 7) / 8)
+{
+}
 
 Option::~Option() {}
 
 Option::Option(const Option& option)
-  : table_(option.table_),
-    use_(option.use_),
-    parent_(option.parent_)
-{}
+    : table_(option.table_), use_(option.use_), parent_(option.parent_)
+{
+}
 
 Option& Option::operator=(const Option& option)
 {
-  if(this != &option) {
+  if (this != &option) {
     table_ = option.table_;
     use_ = option.use_;
     parent_ = option.parent_;
@@ -67,91 +65,105 @@ Option& Option::operator=(const Option& option)
 
 namespace {
 
-template<typename V>
-void setBit(V& b, const Pref* pref)
+template <typename V> void setBit(V& b, PrefPtr pref)
 {
-  b[pref->i/8] |= 128 >> (pref->i%8);
+  b[pref->i / 8] |= 128 >> (pref->i % 8);
 }
 
-template<typename V>
-void unsetBit(V& b, const Pref* pref)
+template <typename V> void unsetBit(V& b, PrefPtr pref)
 {
-  b[pref->i/8] &= ~(128 >> (pref->i%8));
+  b[pref->i / 8] &= ~(128 >> (pref->i % 8));
 }
 
 } // namespace
 
-void Option::put(const Pref* pref, const std::string& value) {
+void Option::put(PrefPtr pref, const std::string& value)
+{
   setBit(use_, pref);
   table_[pref->i] = value;
 }
 
-bool Option::defined(const Pref* pref) const
+bool Option::defined(PrefPtr pref) const
 {
-  return bitfield::test(use_, use_.size()*8, pref->i) ||
-    (parent_ && parent_->defined(pref));
+  return bitfield::test(use_, use_.size() * 8, pref->i) ||
+         (parent_ && parent_->defined(pref));
 }
 
-bool Option::definedLocal(const Pref* pref) const
+bool Option::definedLocal(PrefPtr pref) const
 {
-  return bitfield::test(use_, use_.size()*8, pref->i);
+  return bitfield::test(use_, use_.size() * 8, pref->i);
 }
 
-bool Option::blank(const Pref* pref) const
+bool Option::blank(PrefPtr pref) const
 {
-  if(bitfield::test(use_, use_.size()*8, pref->i)) {
+  if (bitfield::test(use_, use_.size() * 8, pref->i)) {
     return table_[pref->i].empty();
-  } else {
+  }
+  else {
     return !parent_ || parent_->blank(pref);
   }
 }
 
-const std::string& Option::get(const Pref* pref) const
+const std::string& Option::get(PrefPtr pref) const
 {
-  if(bitfield::test(use_, use_.size()*8, pref->i)) {
+  if (bitfield::test(use_, use_.size() * 8, pref->i)) {
     return table_[pref->i];
-  } else if(parent_) {
+  }
+  else if (parent_) {
     return parent_->get(pref);
-  } else {
+  }
+  else {
     return A2STR::NIL;
   }
 }
 
-int32_t Option::getAsInt(const Pref* pref) const {
+int32_t Option::getAsInt(PrefPtr pref) const
+{
   const std::string& value = get(pref);
-  if(value.empty()) {
+  if (value.empty()) {
     return 0;
-  } else {
-    return strtol(value.c_str(), 0, 10);
+  }
+  else {
+    return strtol(value.c_str(), nullptr, 10);
   }
 }
 
-int64_t Option::getAsLLInt(const Pref* pref) const {
+int64_t Option::getAsLLInt(PrefPtr pref) const
+{
   const std::string& value = get(pref);
-  if(value.empty()) {
+  if (value.empty()) {
     return 0;
-  } else {
-    return strtoll(value.c_str(), 0, 10);
+  }
+  else {
+    return strtoll(value.c_str(), nullptr, 10);
   }
 }
 
-bool Option::getAsBool(const Pref* pref) const {
-  return get(pref) == A2_V_TRUE;
-}
+bool Option::getAsBool(PrefPtr pref) const { return get(pref) == A2_V_TRUE; }
 
-double Option::getAsDouble(const Pref* pref) const {
+double Option::getAsDouble(PrefPtr pref) const
+{
   const std::string& value = get(pref);
-  if(value.empty()) {
+  if (value.empty()) {
     return 0.0;
-  } else {
-    return strtod(value.c_str(), 0);
+  }
+  else {
+    return strtod(value.c_str(), nullptr);
   }
 }
 
-void Option::remove(const Pref* pref)
+void Option::removeLocal(PrefPtr pref)
 {
   unsetBit(use_, pref);
   table_[pref->i].clear();
+}
+
+void Option::remove(PrefPtr pref)
+{
+  removeLocal(pref);
+  if (parent_) {
+    parent_->remove(pref);
+  }
 }
 
 void Option::clear()
@@ -162,23 +174,20 @@ void Option::clear()
 
 void Option::merge(const Option& option)
 {
-  size_t bits = option.use_.size()*8;
-  for(size_t i = 1, len = table_.size(); i < len; ++i) {
-    if(bitfield::test(option.use_, bits, i)) {
-      use_[i/8] |= 128 >> (i%8);
+  size_t bits = option.use_.size() * 8;
+  for (size_t i = 1, len = table_.size(); i < len; ++i) {
+    if (bitfield::test(option.use_, bits, i)) {
+      use_[i / 8] |= 128 >> (i % 8);
       table_[i] = option.table_[i];
     }
   }
 }
 
-void Option::setParent(const SharedHandle<Option>& parent)
+void Option::setParent(const std::shared_ptr<Option>& parent)
 {
   parent_ = parent;
 }
 
-const SharedHandle<Option>& Option::getParent() const
-{
-  return parent_;
-}
+const std::shared_ptr<Option>& Option::getParent() const { return parent_; }
 
 } // namespace aria2

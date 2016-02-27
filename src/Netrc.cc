@@ -49,16 +49,14 @@ namespace aria2 {
 
 Authenticator::Authenticator() {}
 
-Authenticator::Authenticator
-(const std::string& machine,
- const std::string& login,
- const std::string& password,
- const std::string& account)
-  : machine_(machine),
-    login_(login),
-    password_(password),
-    account_(account)
-{}
+Authenticator::Authenticator(std::string machine, std::string login,
+                             std::string password, std::string account)
+    : machine_(std::move(machine)),
+      login_(std::move(login)),
+      password_(std::move(password)),
+      account_(std::move(account))
+{
+}
 
 Authenticator::~Authenticator() {}
 
@@ -67,34 +65,32 @@ bool Authenticator::match(const std::string& hostname) const
   return util::noProxyDomainMatch(hostname, machine_);
 }
 
-void Authenticator::setMachine(const std::string& machine)
+void Authenticator::setMachine(std::string machine)
 {
-  machine_ = machine;
+  machine_ = std::move(machine);
 }
 
-void Authenticator::setLogin(const std::string& login)
+void Authenticator::setLogin(std::string login) { login_ = std::move(login); }
+
+void Authenticator::setPassword(std::string password)
 {
-  login_ = login;
+  password_ = std::move(password);
 }
 
-void Authenticator::setPassword(const std::string& password)
+void Authenticator::setAccount(std::string account)
 {
-  password_ = password;
-}
-
-void Authenticator::setAccount(const std::string& account)
-{
-  account_ = account;
+  account_ = std::move(account);
 }
 
 DefaultAuthenticator::DefaultAuthenticator() {}
 
-DefaultAuthenticator::DefaultAuthenticator
-(const std::string& login,
- const std::string& password,
- const std::string& account)
-  : Authenticator(A2STR::NIL, login, password, account)
-{}
+DefaultAuthenticator::DefaultAuthenticator(std::string login,
+                                           std::string password,
+                                           std::string account)
+    : Authenticator("", std::move(login), std::move(password),
+                    std::move(account))
+{
+}
 
 DefaultAuthenticator::~DefaultAuthenticator() {}
 
@@ -107,24 +103,24 @@ Netrc::Netrc() {}
 
 Netrc::~Netrc() {}
 
-void Netrc::addAuthenticator(const SharedHandle<Authenticator>& authenticator)
+void Netrc::addAuthenticator(std::unique_ptr<Authenticator> authenticator)
 {
-  authenticators_.push_back(authenticator);
+  authenticators_.push_back(std::move(authenticator));
 }
 
 namespace {
 void skipMacdef(BufferedFile& fp)
 {
   std::string s;
-  while(1) {
+  while (1) {
     s = fp.getLine();
-    if(s.empty() || fp.eof()) {
+    if (s.empty() || fp.eof()) {
       break;
     }
-    if(!fp) {
+    if (!fp) {
       throw DL_ABORT_EX("Netrc:I/O error.");
     }
-    if(s[0] == '\n' || s[0] == '\r') {
+    if (s[0] == '\n' || s[0] == '\r') {
       break;
     }
   }
@@ -135,7 +131,7 @@ void Netrc::parse(const std::string& path)
 {
   authenticators_.clear();
   BufferedFile fp(path.c_str(), BufferedFile::READ);
-  if(!fp) {
+  if (!fp) {
     throw DL_ABORT_EX(fmt("Cannot open file: %s", path.c_str()));
   }
   enum STATE {
@@ -146,79 +142,91 @@ void Netrc::parse(const std::string& path)
     SET_ACCOUNT,
     SET_MACDEF
   };
-  SharedHandle<Authenticator> authenticator;
+  std::unique_ptr<Authenticator> authenticator;
   STATE state = GET_TOKEN;
-  while(1) {
+  while (1) {
     std::string line = fp.getLine();
-    if(line.empty()) {
-      if(fp.eof()) {
+    if (line.empty()) {
+      if (fp.eof()) {
         break;
-      } else if(!fp) {
+      }
+      else if (!fp) {
         throw DL_ABORT_EX("Netrc:I/O error.");
-      } else {
+      }
+      else {
         continue;
       }
     }
-    if(line[0] == '#') {
+    if (line[0] == '#') {
       continue;
     }
     std::vector<Scip> tokens;
     util::splitIterM(line.begin(), line.end(), std::back_inserter(tokens),
                      " \t", true);
-    for(std::vector<Scip>::const_iterator iter = tokens.begin(),
-          eoi = tokens.end(); iter != eoi; ++iter) {
-      if(state == GET_TOKEN) {
-        if(util::streq((*iter).first, (*iter).second, "machine")) {
-          storeAuthenticator(authenticator);
-          authenticator.reset(new Authenticator());
+    for (std::vector<Scip>::const_iterator iter = tokens.begin(),
+                                           eoi = tokens.end();
+         iter != eoi; ++iter) {
+      if (state == GET_TOKEN) {
+        if (util::streq((*iter).first, (*iter).second, "machine")) {
+          storeAuthenticator(std::move(authenticator));
+          authenticator = make_unique<Authenticator>();
           state = SET_MACHINE;
-        } else if(util::streq((*iter).first, (*iter).second, "default")) {
-          storeAuthenticator(authenticator);
-          authenticator.reset(new DefaultAuthenticator());
-        } else {
-          if(!authenticator) {
-            throw DL_ABORT_EX
-              (fmt("Netrc:parse error. %s encounterd where 'machine'"
-                   " or 'default' expected.",
-                   std::string((*iter).first, (*iter).second).c_str()));
+        }
+        else if (util::streq((*iter).first, (*iter).second, "default")) {
+          storeAuthenticator(std::move(authenticator));
+          authenticator = make_unique<DefaultAuthenticator>();
+        }
+        else {
+          if (!authenticator) {
+            throw DL_ABORT_EX(
+                fmt("Netrc:parse error. %s encounterd where 'machine'"
+                    " or 'default' expected.",
+                    std::string((*iter).first, (*iter).second).c_str()));
           }
-          if(util::streq((*iter).first, (*iter).second, "login")) {
+          if (util::streq((*iter).first, (*iter).second, "login")) {
             state = SET_LOGIN;
-          } else if(util::streq((*iter).first, (*iter).second, "password")) {
+          }
+          else if (util::streq((*iter).first, (*iter).second, "password")) {
             state = SET_PASSWORD;
-          } else if(util::streq((*iter).first, (*iter).second, "account")) {
+          }
+          else if (util::streq((*iter).first, (*iter).second, "account")) {
             state = SET_ACCOUNT;
-          } else if(util::streq((*iter).first, (*iter).second, "macdef")) {
+          }
+          else if (util::streq((*iter).first, (*iter).second, "macdef")) {
             state = SET_MACDEF;
           }
         }
-      } else {
-        if(state == SET_MACHINE) {
-          authenticator->setMachine((*iter).first, (*iter).second);
-        } else if(state == SET_LOGIN) {
-          authenticator->setLogin((*iter).first, (*iter).second);
-        } else if(state == SET_PASSWORD) {
-          authenticator->setPassword((*iter).first, (*iter).second);
-        } else if(state == SET_ACCOUNT) {
-          authenticator->setAccount((*iter).first, (*iter).second);
-        } else if(state == SET_MACDEF) {
+      }
+      else {
+        if (state == SET_MACHINE) {
+          authenticator->setMachine({(*iter).first, (*iter).second});
+        }
+        else if (state == SET_LOGIN) {
+          authenticator->setLogin({(*iter).first, (*iter).second});
+        }
+        else if (state == SET_PASSWORD) {
+          authenticator->setPassword({(*iter).first, (*iter).second});
+        }
+        else if (state == SET_ACCOUNT) {
+          authenticator->setAccount({(*iter).first, (*iter).second});
+        }
+        else if (state == SET_MACDEF) {
           skipMacdef(fp);
         }
         state = GET_TOKEN;
       }
     }
   }
-  if(state != GET_TOKEN) {
-    throw DL_ABORT_EX
-      ("Netrc:parse error. EOF reached where a token expected.");
+  if (state != GET_TOKEN) {
+    throw DL_ABORT_EX("Netrc:parse error. EOF reached where a token expected.");
   }
-  storeAuthenticator(authenticator);
+  storeAuthenticator(std::move(authenticator));
 }
 
-void Netrc::storeAuthenticator(const SharedHandle<Authenticator>& authenticator)
+void Netrc::storeAuthenticator(std::unique_ptr<Authenticator> authenticator)
 {
-  if(authenticator) {
-    authenticators_.push_back(authenticator);
+  if (authenticator) {
+    authenticators_.push_back(std::move(authenticator));
   }
 }
 
@@ -226,27 +234,34 @@ namespace {
 class AuthHostMatch {
 private:
   std::string hostname;
-public:
-  AuthHostMatch(const std::string& hostname):hostname(hostname) {}
 
-  bool operator()(const SharedHandle<Authenticator>& authenticator)
+public:
+  AuthHostMatch(std::string hostname) : hostname(std::move(hostname)) {}
+
+  bool operator()(const std::unique_ptr<Authenticator>& authenticator)
   {
     return authenticator->match(hostname);
   }
 };
 } // namespace
 
-SharedHandle<Authenticator>
-Netrc::findAuthenticator(const std::string& hostname) const
+const Authenticator* Netrc::findAuthenticator(const std::string& hostname) const
 {
-  SharedHandle<Authenticator> res;
-  std::vector<SharedHandle<Authenticator> >::const_iterator itr =
-    std::find_if(authenticators_.begin(), authenticators_.end(),
-                 AuthHostMatch(hostname));
-  if(itr != authenticators_.end()) {
-    res = *itr;
+  std::unique_ptr<Authenticator> res;
+  auto itr = std::find_if(std::begin(authenticators_),
+                          std::end(authenticators_), AuthHostMatch(hostname));
+  if (itr == std::end(authenticators_)) {
+    return nullptr;
   }
-  return res;
+  else {
+    return (*itr).get();
+  }
+}
+
+const std::vector<std::unique_ptr<Authenticator>>&
+Netrc::getAuthenticators() const
+{
+  return authenticators_;
 }
 
 } // namespace aria2

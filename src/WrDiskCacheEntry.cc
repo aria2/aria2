@@ -44,19 +44,20 @@
 
 namespace aria2 {
 
-WrDiskCacheEntry::WrDiskCacheEntry
-(const SharedHandle<DiskAdaptor>& diskAdaptor)
-  : sizeKey_(0),
-    lastUpdate_(0),
-    size_(0),
-    error_(CACHE_ERR_SUCCESS),
-    errorCode_(error_code::UNDEFINED),
-    diskAdaptor_(diskAdaptor)
-{}
+WrDiskCacheEntry::WrDiskCacheEntry(
+    const std::shared_ptr<DiskAdaptor>& diskAdaptor)
+    : sizeKey_(0),
+      lastUpdate_(0),
+      size_(0),
+      error_(CACHE_ERR_SUCCESS),
+      errorCode_(error_code::UNDEFINED),
+      diskAdaptor_(diskAdaptor)
+{
+}
 
 WrDiskCacheEntry::~WrDiskCacheEntry()
 {
-  if(!set_.empty()) {
+  if (!set_.empty()) {
     A2_LOG_WARN(fmt("WrDiskCacheEntry is not empty size=%lu",
                     static_cast<unsigned long>(size_)));
   }
@@ -65,10 +66,9 @@ WrDiskCacheEntry::~WrDiskCacheEntry()
 
 void WrDiskCacheEntry::deleteDataCells()
 {
-  for(DataCellSet::iterator i = set_.begin(), eoi = set_.end(); i != eoi;
-      ++i) {
-    delete [] (*i)->data;
-    delete *i;
+  for (auto& e : set_) {
+    delete[] e->data;
+    delete e;
   }
   set_.clear();
   size_ = 0;
@@ -78,46 +78,46 @@ void WrDiskCacheEntry::writeToDisk()
 {
   try {
     diskAdaptor_->writeCache(this);
-  } catch(RecoverableException& e) {
-    A2_LOG_ERROR("WrDiskCacheEntry flush error");
+  }
+  catch (RecoverableException& e) {
+    A2_LOG_ERROR_EX("Error when trying to flush write cache", e);
     error_ = CACHE_ERR_ERROR;
     errorCode_ = e.getErrorCode();
   }
   deleteDataCells();
 }
 
-void WrDiskCacheEntry::clear()
-{
-  deleteDataCells();
-}
+void WrDiskCacheEntry::clear() { deleteDataCells(); }
 
 bool WrDiskCacheEntry::cacheData(DataCell* dataCell)
 {
-  A2_LOG_DEBUG(fmt("WrDiskCacheEntry cache goff=%"PRId64", len=%lu",
+  A2_LOG_DEBUG(fmt("WrDiskCacheEntry cache goff=%" PRId64 ", len=%lu",
                    dataCell->goff, static_cast<unsigned long>(dataCell->len)));
-  if(set_.insert(dataCell).second) {
+  if (set_.insert(dataCell).second) {
     size_ += dataCell->len;
     return true;
-  } else {
+  }
+  else {
     return false;
   }
 }
 
-size_t WrDiskCacheEntry::append(int64_t goff, const unsigned char *data,
+size_t WrDiskCacheEntry::append(int64_t goff, const unsigned char* data,
                                 size_t len)
 {
-  if(set_.empty()) {
+  if (set_.empty()) {
     return 0;
   }
-  DataCellSet::iterator i = set_.end();
+  auto i = set_.end();
   --i;
-  if(static_cast<int64_t>((*i)->goff + (*i)->len) == goff) {
+  if (static_cast<int64_t>((*i)->goff + (*i)->len) == goff) {
     size_t wlen = std::min((*i)->capacity - (*i)->len, len);
     memcpy((*i)->data + (*i)->offset + (*i)->len, data, wlen);
     (*i)->len += wlen;
     size_ += wlen;
     return wlen;
-  } else {
+  }
+  else {
     return 0;
   }
 }

@@ -35,16 +35,17 @@
 #ifndef D_NULL_HANDLE_H
 #define D_NULL_HANDLE_H
 
-#include "SharedHandle.h"
+#include "common.h"
+
+#include <memory>
 
 namespace aria2 {
 
-// Returns const reference of SharedHandle<T>().  Static variable null
+// Returns const reference of std::shared_ptr<T>().  Static variable null
 // is shared by all instantiation of this function template.
-template<typename T>
-const SharedHandle<T>& getNull()
+template <typename T> const std::shared_ptr<T>& getNull()
 {
-  static SharedHandle<T> null;
+  static std::shared_ptr<T> null;
   return null;
 }
 

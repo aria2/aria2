@@ -54,35 +54,35 @@ public:
 
   virtual ~XmlRpcDiskWriter();
 
-  virtual void initAndOpenFile(int64_t totalLength = 0);
+  virtual void initAndOpenFile(int64_t totalLength = 0) CXX11_OVERRIDE;
 
-  virtual void openFile(int64_t totalLength = 0)
+  virtual void openFile(int64_t totalLength = 0) CXX11_OVERRIDE
   {
     initAndOpenFile(totalLength);
   }
 
-  virtual void closeFile() {}
+  virtual void closeFile() CXX11_OVERRIDE {}
 
-  virtual void openExistingFile(int64_t totalLength = 0)
+  virtual void openExistingFile(int64_t totalLength = 0) CXX11_OVERRIDE
   {
     initAndOpenFile(totalLength);
   }
 
-  virtual int64_t size()
-  {
-    return 0;
-  }
+  virtual int64_t size() CXX11_OVERRIDE { return 0; }
 
-  virtual void writeData(const unsigned char* data, size_t len, int64_t offset);
+  virtual void writeData(const unsigned char* data, size_t len,
+                         int64_t offset) CXX11_OVERRIDE;
 
-  virtual ssize_t readData(unsigned char* data, size_t len, int64_t offset)
+  virtual ssize_t readData(unsigned char* data, size_t len,
+                           int64_t offset) CXX11_OVERRIDE
   {
     return 0;
   }
 
   int finalize();
-  RpcRequest getResult() const;
+  RpcRequest getResult();
   int reset();
+
 private:
   XmlRpcRequestParserStateMachine psm_;
   xml::XmlParser parser_;

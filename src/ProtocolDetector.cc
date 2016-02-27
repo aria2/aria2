@@ -44,7 +44,7 @@
 #include "uri.h"
 #include "BufferedFile.h"
 #ifdef ENABLE_BITTORRENT
-# include "bittorrent_helper.h"
+#include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
 
 namespace aria2 {
@@ -55,20 +55,22 @@ ProtocolDetector::~ProtocolDetector() {}
 
 bool ProtocolDetector::isStreamProtocol(const std::string& uri) const
 {
-  return uri_split(NULL, uri.c_str()) == 0;
+  return uri_split(nullptr, uri.c_str()) == 0;
 }
 
 bool ProtocolDetector::guessTorrentFile(const std::string& uri) const
 {
   BufferedFile fp(uri.c_str(), BufferedFile::READ);
-  if(fp) {
+  if (fp) {
     char head[1];
-    if(fp.read(head, sizeof(head)) == sizeof(head)) {
+    if (fp.read(head, sizeof(head)) == sizeof(head)) {
       return head[0] == 'd';
-    } else {
+    }
+    else {
       return false;
     }
-  } else {
+  }
+  else {
     return false;
   }
 }
@@ -79,10 +81,11 @@ bool ProtocolDetector::guessTorrentMagnet(const std::string& uri) const
   try {
     bittorrent::parseMagnet(uri);
     return true;
-  } catch(RecoverableException& e) {
+  }
+  catch (RecoverableException& e) {
     return false;
   }
-#else // !ENABLE_BITTORRENT
+#else  // !ENABLE_BITTORRENT
   return false;
 #endif // !ENABLE_BITTORRENT
 }
@@ -90,14 +93,16 @@ bool ProtocolDetector::guessTorrentMagnet(const std::string& uri) const
 bool ProtocolDetector::guessMetalinkFile(const std::string& uri) const
 {
   BufferedFile fp(uri.c_str(), BufferedFile::READ);
-  if(fp) {
+  if (fp) {
     char head[5];
-    if(fp.read(head, sizeof(head)) == sizeof(head)) {
+    if (fp.read(head, sizeof(head)) == sizeof(head)) {
       return memcmp(head, "<?xml", 5) == 0;
-    } else {
+    }
+    else {
       return false;
     }
-  } else {
+  }
+  else {
     return false;
   }
 }

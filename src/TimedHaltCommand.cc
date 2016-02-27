@@ -42,32 +42,33 @@
 
 namespace aria2 {
 
-TimedHaltCommand::TimedHaltCommand
-(cuid_t cuid, DownloadEngine* e,
- time_t secondsToHalt,
- bool forceHalt)
-  : TimeBasedCommand(cuid, e, secondsToHalt, true),
-    forceHalt_(forceHalt)
-{}
+TimedHaltCommand::TimedHaltCommand(cuid_t cuid, DownloadEngine* e,
+                                   std::chrono::seconds secondsToHalt,
+                                   bool forceHalt)
+    : TimeBasedCommand(cuid, e, std::move(secondsToHalt), true),
+      forceHalt_(forceHalt)
+{
+}
 
 TimedHaltCommand::~TimedHaltCommand() {}
 
 void TimedHaltCommand::preProcess()
 {
-  if(getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
-     getDownloadEngine()->isHaltRequested()) {
+  if (getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
+      getDownloadEngine()->isHaltRequested()) {
     enableExit();
   }
 }
 
 void TimedHaltCommand::process()
 {
-  if(!getDownloadEngine()->isHaltRequested()) {
-    A2_LOG_NOTICE(fmt(MSG_TIME_HAS_PASSED,
-                      static_cast<long int>(getInterval())));
-    if(forceHalt_) {
+  if (!getDownloadEngine()->isHaltRequested()) {
+    A2_LOG_NOTICE(
+        fmt(MSG_TIME_HAS_PASSED, static_cast<long int>(getInterval().count())));
+    if (forceHalt_) {
       getDownloadEngine()->requestForceHalt();
-    } else {
+    }
+    else {
       getDownloadEngine()->requestHalt();
     }
     enableExit();

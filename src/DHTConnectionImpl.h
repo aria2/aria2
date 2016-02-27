@@ -36,18 +36,21 @@
 #define D_DHT_CONNECTION_IMPL_H
 
 #include "DHTConnection.h"
-#include "SharedHandle.h"
+
+#include <memory>
+
 #include "SegList.h"
 
 namespace aria2 {
 
 class SocketCore;
 
-class DHTConnectionImpl:public DHTConnection {
+class DHTConnectionImpl : public DHTConnection {
 private:
-  SharedHandle<SocketCore> socket_;
+  std::shared_ptr<SocketCore> socket_;
 
   int family_;
+
 public:
   DHTConnectionImpl(int family);
 
@@ -55,7 +58,7 @@ public:
 
   /**
    * Binds port. All number in sgl are tried. All numbers in sgl must
-   * be in range [1, 65535], inclusive. If successful, the binded port
+   * be in range [1, 65535], inclusive. If successful, the bound port
    * is assigned to port and returns true.  Otherwise return false and
    * port is undefined in this case.  If non-empty string addr is
    * given, the socket is associated to the address.
@@ -64,26 +67,25 @@ public:
 
   /**
    * Binds port. The port number specified by port is used to bind.
-   * If successful, the binded port is assigned to port and returns
+   * If successful, the bound port is assigned to port and returns
    * true.  Otherwise return false and port is undefined in this case.
    * If non-empty string addr is given, the socket is associated to
    * the address.
    *
    * If you want to bind arbitrary port, give 0 as port and if successful,
-   * the binded port is assigned to port.
+   * the bound port is assigned to port.
    */
   bool bind(uint16_t& port, const std::string& addr);
 
   virtual ssize_t receiveMessage(unsigned char* data, size_t len,
-                                 std::string& host, uint16_t& port);
+                                 std::string& host,
+                                 uint16_t& port) CXX11_OVERRIDE;
 
   virtual ssize_t sendMessage(const unsigned char* data, size_t len,
-                              const std::string& host, uint16_t port);
+                              const std::string& host,
+                              uint16_t port) CXX11_OVERRIDE;
 
-  const SharedHandle<SocketCore>& getSocket() const
-  {
-    return socket_;
-  }
+  const std::shared_ptr<SocketCore>& getSocket() const { return socket_; }
 };
 
 } // namespace aria2

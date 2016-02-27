@@ -39,6 +39,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 namespace aria2 {
 
@@ -50,7 +51,8 @@ public:
 
   ~NsCookieParser();
 
-  std::vector<Cookie> parse(const std::string& filename, time_t creationTime);
+  std::vector<std::unique_ptr<Cookie>> parse(const std::string& filename,
+                                             time_t creationTime);
 };
 
 } // namespace aria2

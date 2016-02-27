@@ -36,7 +36,9 @@
 #define D_SEQUENTIAL_DISPATCHER_COMMAND_H
 
 #include "Command.h"
-#include "SharedHandle.h"
+
+#include <memory>
+
 #include "SequentialPicker.h"
 #include "DownloadEngine.h"
 #include "RequestGroupMan.h"
@@ -45,43 +47,40 @@ namespace aria2 {
 
 class DownloadEngine;
 
-template<typename T>
-class SequentialDispatcherCommand : public Command {
+template <typename T> class SequentialDispatcherCommand : public Command {
 private:
-  SharedHandle<SequentialPicker<T> > picker_;
+  SequentialPicker<T>* picker_;
 
   DownloadEngine* e_;
+
 protected:
-  DownloadEngine* getDownloadEngine() const
-  {
-    return e_;
-  }
+  DownloadEngine* getDownloadEngine() const { return e_; }
+
 public:
-  SequentialDispatcherCommand(cuid_t cuid,
-                              const SharedHandle<SequentialPicker<T> >& picker,
-                              DownloadEngine* e):
-    Command(cuid), picker_(picker), e_(e)
+  SequentialDispatcherCommand(cuid_t cuid, SequentialPicker<T>* picker,
+                              DownloadEngine* e)
+      : Command{cuid}, picker_{picker}, e_{e}
   {
     setStatusRealtime();
   }
 
-  virtual bool execute()
+  virtual bool execute() CXX11_OVERRIDE
   {
-    if(e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
+    if (e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
       return true;
     }
-    if(picker_->hasNext() && !picker_->isPicked()) {
+    if (picker_->hasNext() && !picker_->isPicked()) {
       e_->addCommand(createCommand(picker_->pickNext()));
 
       e_->setNoWait(true);
     }
 
-    e_->addRoutineCommand(this);
+    e_->addRoutineCommand(std::unique_ptr<Command>(this));
     return false;
   }
 
 protected:
-  virtual Command* createCommand(const SharedHandle<T>& entry) = 0;
+  virtual std::unique_ptr<Command> createCommand(T* entry) = 0;
 };
 
 } // namespace aria2

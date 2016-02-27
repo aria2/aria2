@@ -41,11 +41,10 @@
 
 namespace aria2 {
 
-typedef std::pair<std::string::const_iterator,
-                  std::string::const_iterator> Scip;
+typedef std::pair<std::string::const_iterator, std::string::const_iterator>
+    Scip;
 
-typedef std::pair<std::string::iterator,
-                  std::string::iterator> Sip;
+typedef std::pair<std::string::iterator, std::string::iterator> Sip;
 
 } // namespace aria2
 

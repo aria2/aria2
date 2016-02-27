@@ -42,36 +42,34 @@
 #include "LogFactory.h"
 #include "DHTPingReplyMessageCallback.h"
 #include "DHTQueryMessage.h"
+#include "DHTPingMessage.h"
 #include "fmt.h"
 
 namespace aria2 {
 
-DHTReplaceNodeTask::DHTReplaceNodeTask
-(const SharedHandle<DHTBucket>& bucket, const SharedHandle<DHTNode>& newNode)
-  : bucket_(bucket),
-    newNode_(newNode),
-    numRetry_(0),
-    timeout_(DHT_MESSAGE_TIMEOUT)
-{}
+DHTReplaceNodeTask::DHTReplaceNodeTask(const std::shared_ptr<DHTBucket>& bucket,
+                                       const std::shared_ptr<DHTNode>& newNode)
+    : bucket_(bucket),
+      newNode_(newNode),
+      numRetry_(0),
+      timeout_(DHT_MESSAGE_TIMEOUT)
+{
+}
 
 DHTReplaceNodeTask::~DHTReplaceNodeTask() {}
 
-void DHTReplaceNodeTask::startup()
-{
-  sendMessage();
-}
+void DHTReplaceNodeTask::startup() { sendMessage(); }
 
 void DHTReplaceNodeTask::sendMessage()
 {
-  SharedHandle<DHTNode> questionableNode = bucket_->getLRUQuestionableNode();
-  if(!questionableNode) {
+  std::shared_ptr<DHTNode> questionableNode = bucket_->getLRUQuestionableNode();
+  if (!questionableNode) {
     setFinished(true);
-  } else {
-    SharedHandle<DHTMessage> m =
-      getMessageFactory()->createPingMessage(questionableNode);
-    SharedHandle<DHTMessageCallback> callback
-      (new DHTPingReplyMessageCallback<DHTReplaceNodeTask>(this));
-    getMessageDispatcher()->addMessageToQueue(m, timeout_, callback);
+  }
+  else {
+    getMessageDispatcher()->addMessageToQueue(
+        getMessageFactory()->createPingMessage(questionableNode), timeout_,
+        make_unique<DHTPingReplyMessageCallback<DHTReplaceNodeTask>>(this));
   }
 }
 
@@ -84,20 +82,20 @@ void DHTReplaceNodeTask::onReceived(const DHTPingReplyMessage* message)
 
 namespace {
 const int MAX_RETRY = 2;
-} //namespace
+} // namespace
 
-void DHTReplaceNodeTask::onTimeout(const SharedHandle<DHTNode>& node)
+void DHTReplaceNodeTask::onTimeout(const std::shared_ptr<DHTNode>& node)
 {
   ++numRetry_;
-  if(numRetry_ >= MAX_RETRY) {
+  if (numRetry_ >= MAX_RETRY) {
     A2_LOG_INFO(fmt("ReplaceNode: Ping failed %d times. Replace %s with %s.",
-                    numRetry_,
-                    node->toString().c_str(),
+                    numRetry_, node->toString().c_str(),
                     newNode_->toString().c_str()));
     node->markBad();
     bucket_->addNode(newNode_);
     setFinished(true);
-  } else {
+  }
+  else {
     A2_LOG_INFO(fmt("ReplaceNode: Ping reply timeout from %s. Try once more.",
                     node->toString().c_str()));
     sendMessage();

@@ -46,17 +46,17 @@
 
 namespace aria2 {
 
-DHTAbstractMessage::DHTAbstractMessage(const SharedHandle<DHTNode>& localNode,
-                                       const SharedHandle<DHTNode>& remoteNode,
-                                       const std::string& transactionID):
-  DHTMessage(localNode, remoteNode, transactionID),
-  connection_(0),
-  dispatcher_(0),
-  factory_(0),
-  routingTable_(0)
- {}
-
-DHTAbstractMessage::~DHTAbstractMessage() {}
+DHTAbstractMessage::DHTAbstractMessage(
+    const std::shared_ptr<DHTNode>& localNode,
+    const std::shared_ptr<DHTNode>& remoteNode,
+    const std::string& transactionID)
+    : DHTMessage{localNode, remoteNode, transactionID},
+      connection_{nullptr},
+      dispatcher_{nullptr},
+      factory_{nullptr},
+      routingTable_{nullptr}
+{
+}
 
 std::string DHTAbstractMessage::getBencodedMessage()
 {
@@ -71,11 +71,9 @@ std::string DHTAbstractMessage::getBencodedMessage()
 bool DHTAbstractMessage::send()
 {
   std::string message = getBencodedMessage();
-  ssize_t r = connection_->sendMessage
-    (reinterpret_cast<const unsigned char*>(message.c_str()),
-     message.size(),
-     getRemoteNode()->getIPAddress(),
-     getRemoteNode()->getPort());
+  ssize_t r = connection_->sendMessage(
+      reinterpret_cast<const unsigned char*>(message.c_str()), message.size(),
+      getRemoteNode()->getIPAddress(), getRemoteNode()->getPort());
   assert(r >= 0);
   return r == static_cast<ssize_t>(message.size());
 }

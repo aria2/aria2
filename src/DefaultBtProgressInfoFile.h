@@ -36,7 +36,8 @@
 #define D_DEFAULT_BT_PROGRESS_INFO_FILE_H
 
 #include "BtProgressInfoFile.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -45,44 +46,51 @@ class PieceStorage;
 class PeerStorage;
 class BtRuntime;
 class Option;
+class IOFile;
 
 class DefaultBtProgressInfoFile : public BtProgressInfoFile {
 private:
-  SharedHandle<DownloadContext> dctx_;
-  SharedHandle<PieceStorage> pieceStorage_;
+  std::shared_ptr<DownloadContext> dctx_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
 #ifdef ENABLE_BITTORRENT
-  SharedHandle<PeerStorage> peerStorage_;
-  SharedHandle<BtRuntime> btRuntime_;
+  std::shared_ptr<PeerStorage> peerStorage_;
+  std::shared_ptr<BtRuntime> btRuntime_;
 #endif // ENABLE_BITTORRENT
   const Option* option_;
   std::string filename_;
+  // Last SHA1 digest value of the content written.  Initially, this
+  // is empty string.  This is used to avoid to write same content
+  // repeatedly, which could wake up disk that may be sleeping.
+  std::string lastDigest_;
 
   bool isTorrentDownload();
+  void save(IOFile& fp);
+
 public:
-  DefaultBtProgressInfoFile(const SharedHandle<DownloadContext>& btContext,
-                            const SharedHandle<PieceStorage>& pieceStorage,
+  DefaultBtProgressInfoFile(const std::shared_ptr<DownloadContext>& btContext,
+                            const std::shared_ptr<PieceStorage>& pieceStorage,
                             const Option* option);
 
   virtual ~DefaultBtProgressInfoFile();
 
-  virtual std::string getFilename() { return filename_; }
+  virtual std::string getFilename() CXX11_OVERRIDE { return filename_; }
 
-  virtual bool exists();
+  virtual bool exists() CXX11_OVERRIDE;
 
-  virtual void save();
+  virtual void save() CXX11_OVERRIDE;
 
-  virtual void load();
+  virtual void load() CXX11_OVERRIDE;
 
-  virtual void removeFile();
+  virtual void removeFile() CXX11_OVERRIDE;
 
   // re-set filename using current dctx_.
-  virtual void updateFilename();
+  virtual void updateFilename() CXX11_OVERRIDE;
 
 #ifdef ENABLE_BITTORRENT
   // for torrents
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
 
-  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
+  void setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime);
 #endif // ENABLE_BITTORRENT
 
   static const std::string& getSuffix()

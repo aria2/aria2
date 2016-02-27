@@ -36,7 +36,8 @@
 #define D_BT_MESSAGE_RECEIVER_H
 
 #include "common.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -47,11 +48,12 @@ class BtMessageReceiver {
 public:
   virtual ~BtMessageReceiver() {}
 
-  virtual SharedHandle<BtHandshakeMessage> receiveHandshake(bool quickReply = false) = 0;
+  virtual std::unique_ptr<BtHandshakeMessage>
+  receiveHandshake(bool quickReply = false) = 0;
 
-  virtual SharedHandle<BtHandshakeMessage> receiveAndSendHandshake() = 0;
+  virtual std::unique_ptr<BtHandshakeMessage> receiveAndSendHandshake() = 0;
 
-  virtual SharedHandle<BtMessage> receiveMessage() = 0;
+  virtual std::unique_ptr<BtMessage> receiveMessage() = 0;
 };
 
 } // namespace aria2

@@ -41,36 +41,37 @@ namespace aria2 {
 
 namespace uri {
 
-UriStruct::UriStruct()
-  : port(0), hasPassword(false), ipv6LiteralAddress(false)
-{}
+UriStruct::UriStruct() : port(0), hasPassword(false), ipv6LiteralAddress(false)
+{
+}
 
 UriStruct::UriStruct(const UriStruct& c)
-  : protocol(c.protocol),
-    host(c.host),
-    port(c.port),
-    dir(c.dir),
-    file(c.file),
-    query(c.query),
-    username(c.username),
-    password(c.password),
-    hasPassword(c.hasPassword),
-    ipv6LiteralAddress(c.ipv6LiteralAddress)
-{}
+    : protocol(c.protocol),
+      host(c.host),
+      dir(c.dir),
+      file(c.file),
+      query(c.query),
+      username(c.username),
+      password(c.password),
+      port(c.port),
+      hasPassword(c.hasPassword),
+      ipv6LiteralAddress(c.ipv6LiteralAddress)
+{
+}
 
 UriStruct::~UriStruct() {}
 
 UriStruct& UriStruct::operator=(const UriStruct& c)
 {
-  if(this != &c) {
+  if (this != &c) {
     protocol = c.protocol;
     host = c.host;
-    port = c.port;
     dir = c.dir;
     file = c.file;
     query = c.query;
     username = c.username;
     password = c.password;
+    port = c.port;
     hasPassword = c.hasPassword;
     ipv6LiteralAddress = c.ipv6LiteralAddress;
   }
@@ -80,24 +81,21 @@ UriStruct& UriStruct::operator=(const UriStruct& c)
 void UriStruct::swap(UriStruct& other)
 {
   using std::swap;
-  if(this != &other) {
+  if (this != &other) {
     swap(protocol, other.protocol);
     swap(host, other.host);
-    swap(port, other.port);
     swap(dir, other.dir);
     swap(file, other.file);
     swap(query, other.query);
     swap(username, other.username);
     swap(password, other.password);
+    swap(port, other.port);
     swap(hasPassword, other.hasPassword);
     swap(ipv6LiteralAddress, other.ipv6LiteralAddress);
   }
 }
 
-void swap(UriStruct& lhs, UriStruct& rhs)
-{
-  lhs.swap(rhs);
-}
+void swap(UriStruct& lhs, UriStruct& rhs) { lhs.swap(rhs); }
 
 bool parse(UriStruct& result, const std::string& uri)
 {
@@ -105,75 +103,84 @@ bool parse(UriStruct& result, const std::string& uri)
   int rv;
   const char* p = uri.c_str();
   rv = uri_split(&res, p);
-  if(rv == 0) {
-    result.protocol.assign(p + res.fields[USR_SCHEME].off,
-                           res.fields[USR_SCHEME].len);
-    result.host.assign(p + res.fields[USR_HOST].off, res.fields[USR_HOST].len);
-    if(res.port == 0) {
-      uint16_t defPort;
-      if((defPort = getDefaultPort(result.protocol)) == 0) {
-        return false;
-      }
-      result.port = defPort;
-    } else {
-      result.port = res.port;
-    }
-    if(res.field_set & (1 << USR_PATH)) {
-      if(res.field_set & (1 << USR_BASENAME)) {
-        result.dir.assign(p + res.fields[USR_PATH].off,
-                          res.fields[USR_PATH].len -
-                          res.fields[USR_BASENAME].len);
-        result.file.assign(p + res.fields[USR_BASENAME].off,
-                           res.fields[USR_BASENAME].len);
-      } else {
-        result.dir.assign(p + res.fields[USR_PATH].off,
-                          res.fields[USR_PATH].len);
-        result.file = A2STR::NIL;
-      }
-    } else {
-      result.dir = "/";
-      result.file = A2STR::NIL;
-    }
-    if(res.field_set & (1 << USR_QUERY)) {
-      result.query = "?";
-      result.query.append(p + res.fields[USR_QUERY].off,
-                          res.fields[USR_QUERY].len);
-    } else {
-      result.query = A2STR::NIL;
-    }
-    if(res.field_set & (1 << USR_USER)) {
-      result.username.assign(p + res.fields[USR_USER].off,
-                             res.fields[USR_USER].len);
-      result.username = util::percentDecode(result.username.begin(),
-                                            result.username.end());
-    } else {
-      result.username = A2STR::NIL;
-    }
-    if(res.field_set & (1 << USR_PASSWD)) {
-      result.hasPassword = true;
-      result.password.assign(p + res.fields[USR_PASSWD].off,
-                             res.fields[USR_PASSWD].len);
-      result.password = util::percentDecode(result.password.begin(),
-                                            result.password.end());
-    } else {
-      result.hasPassword = false;
-      result.password = A2STR::NIL;
-    }
-    result.ipv6LiteralAddress = res.flags & USF_IPV6ADDR;
-    return true;
-  } else {
+  if (rv != 0) {
     return false;
   }
+
+  result.protocol.assign(p + res.fields[USR_SCHEME].off,
+                         res.fields[USR_SCHEME].len);
+  result.host.assign(p + res.fields[USR_HOST].off, res.fields[USR_HOST].len);
+  if (res.port == 0) {
+    uint16_t defPort;
+    if ((defPort = getDefaultPort(result.protocol)) == 0) {
+      return false;
+    }
+    result.port = defPort;
+  }
+  else {
+    result.port = res.port;
+  }
+
+  if (res.field_set & (1 << USR_PATH)) {
+    if (res.field_set & (1 << USR_BASENAME)) {
+      result.dir.assign(p + res.fields[USR_PATH].off,
+                        res.fields[USR_PATH].len -
+                            res.fields[USR_BASENAME].len);
+      result.file.assign(p + res.fields[USR_BASENAME].off,
+                         res.fields[USR_BASENAME].len);
+    }
+    else {
+      result.dir.assign(p + res.fields[USR_PATH].off, res.fields[USR_PATH].len);
+      result.file = A2STR::NIL;
+    }
+  }
+  else {
+    result.dir = "/";
+    result.file = A2STR::NIL;
+  }
+
+  if (res.field_set & (1 << USR_QUERY)) {
+    result.query = "?";
+    result.query.append(p + res.fields[USR_QUERY].off,
+                        res.fields[USR_QUERY].len);
+  }
+  else {
+    result.query = A2STR::NIL;
+  }
+
+  if (res.field_set & (1 << USR_USER)) {
+    result.username.assign(p + res.fields[USR_USER].off,
+                           res.fields[USR_USER].len);
+    result.username =
+        util::percentDecode(result.username.begin(), result.username.end());
+  }
+  else {
+    result.username = A2STR::NIL;
+  }
+
+  if (res.field_set & (1 << USR_PASSWD)) {
+    result.hasPassword = true;
+    result.password.assign(p + res.fields[USR_PASSWD].off,
+                           res.fields[USR_PASSWD].len);
+    result.password =
+        util::percentDecode(result.password.begin(), result.password.end());
+  }
+  else {
+    result.hasPassword = false;
+    result.password = A2STR::NIL;
+  }
+
+  result.ipv6LiteralAddress = res.flags & USF_IPV6ADDR;
+  return true;
 }
 
 std::string getFieldString(const uri_split_result& res, int field,
                            const char* base)
 {
-  if(res.field_set & (1 << field)) {
+  if (res.field_set & (1 << field)) {
     return std::string(base + res.fields[field].off, res.fields[field].len);
-  } else {
-    return "";
   }
+  return "";
 }
 
 std::string construct(const UriStruct& us)
@@ -181,73 +188,222 @@ std::string construct(const UriStruct& us)
   std::string res;
   res += us.protocol;
   res += "://";
-  if(!us.username.empty()) {
+  if (!us.username.empty()) {
     res += util::percentEncode(us.username);
-    if(us.hasPassword) {
+    if (us.hasPassword) {
       res += ":";
       res += util::percentEncode(us.password);
     }
     res += "@";
   }
-  if(us.ipv6LiteralAddress) {
+  if (us.ipv6LiteralAddress) {
     res += "[";
     res += us.host;
     res += "]";
-  } else {
+  }
+  else {
     res += us.host;
   }
-  uint16_t defPort= getDefaultPort(us.protocol);
-  if(us.port != 0 && defPort != us.port) {
+
+  uint16_t defPort = getDefaultPort(us.protocol);
+  if (us.port != 0 && defPort != us.port) {
     res += fmt(":%u", us.port);
   }
+
   res += us.dir;
-  if(us.dir.empty() || us.dir[us.dir.size()-1] != '/') {
+  if (us.dir.empty() || us.dir[us.dir.size() - 1] != '/') {
     res += "/";
   }
+
   res += us.file;
   res += us.query;
   return res;
 }
 
+namespace {
+enum { NPATH_START, NPATH_SLASH, NPATH_SDOT, NPATH_DDOT, NPATH_PATHCOMP };
+}
+
+std::string normalizePath(std::string path)
+{
+  auto begin = path.begin(), out = begin;
+  int state = NPATH_START;
+  bool startWithSlash = false;
+  std::vector<int> range;
+  // 32 is arbitrary
+  range.reserve(32);
+
+  for (auto in = begin, eoi = path.end(); in != eoi; ++in) {
+    switch (state) {
+    case NPATH_START:
+      switch (*in) {
+      case '.':
+        state = NPATH_SDOT;
+        range.push_back(in - begin);
+        break;
+      case '/':
+        startWithSlash = true;
+        state = NPATH_SLASH;
+        break;
+      default:
+        state = NPATH_PATHCOMP;
+        range.push_back(in - begin);
+        break;
+      }
+      break;
+    case NPATH_SLASH:
+      switch (*in) {
+      case '.':
+        state = NPATH_SDOT;
+        range.push_back(in - begin);
+        break;
+      case '/':
+        // drop duplicate '/'
+        break;
+      default:
+        state = NPATH_PATHCOMP;
+        range.push_back(in - begin);
+        break;
+      }
+      break;
+    case NPATH_SDOT:
+      switch (*in) {
+      case '.':
+        state = NPATH_DDOT;
+        break;
+      case '/':
+        // drop path component '.'
+        state = NPATH_SLASH;
+        range.pop_back();
+        break;
+      default:
+        state = NPATH_PATHCOMP;
+        break;
+      }
+      break;
+    case NPATH_DDOT:
+      switch (*in) {
+      case '/':
+        // drop previous path component before '..'
+        for (int i = 0; i < 3 && !range.empty(); ++i) {
+          range.pop_back();
+        }
+        state = NPATH_SLASH;
+        break;
+      default:
+        state = NPATH_PATHCOMP;
+        break;
+      }
+      break;
+    case NPATH_PATHCOMP:
+      if (*in == '/') {
+        range.push_back(in + 1 - begin);
+        state = NPATH_SLASH;
+      }
+      break;
+    }
+  }
+
+  switch (state) {
+  case NPATH_SDOT:
+    range.pop_back();
+    break;
+  case NPATH_DDOT:
+    for (int i = 0; i < 3 && !range.empty(); ++i) {
+      range.pop_back();
+    }
+    break;
+  case NPATH_PATHCOMP:
+    range.push_back(path.end() - begin);
+    break;
+  default:
+    break;
+  }
+
+  if (startWithSlash) {
+    ++out;
+  }
+
+  for (int i = 0; i < (int)range.size(); i += 2) {
+    auto a = begin + range[i];
+    auto b = begin + range[i + 1];
+    if (a == out) {
+      out = b;
+    }
+    else {
+      out = std::copy(a, b, out);
+    }
+  }
+
+  path.erase(out, path.end());
+  return path;
+}
+
+namespace {
+std::string joinPath(std::string basePath,
+                     std::string::const_iterator newPathFirst,
+                     std::string::const_iterator newPathLast)
+{
+  if (newPathFirst == newPathLast) {
+    return basePath;
+  }
+
+  if (basePath.empty() || *newPathFirst == '/') {
+    return normalizePath(std::string(newPathFirst, newPathLast));
+  }
+
+  if (basePath[basePath.size() - 1] == '/') {
+    basePath.append(newPathFirst, newPathLast);
+    return normalizePath(basePath);
+  }
+
+  basePath += "/";
+  basePath.append(newPathFirst, newPathLast);
+  return normalizePath(basePath);
+}
+} // namespace
+
+std::string joinPath(const std::string& basePath, const std::string& newPath)
+{
+  return joinPath(basePath, newPath.begin(), newPath.end());
+}
+
 std::string joinUri(const std::string& baseUri, const std::string& uri)
 {
   UriStruct us;
-  if(parse(us, uri)) {
+  if (parse(us, uri)) {
     return uri;
-  } else {
-    UriStruct bus;
-    if(!parse(bus, baseUri)) {
-      return uri;
-    }
-    std::vector<std::string> parts;
-    if(uri.empty() || uri[0] != '/') {
-      util::split(bus.dir.begin(), bus.dir.end(), std::back_inserter(parts),
-                  '/');
-    }
-    std::string::const_iterator qend;
-    for(qend = uri.begin(); qend != uri.end(); ++qend) {
-      if(*qend == '#') {
-        break;
-      }
-    }
-    std::string::const_iterator end;
-    for(end = uri.begin(); end != qend; ++end) {
-      if(*end == '?') {
-        break;
-      }
-    }
-    util::split(uri.begin(), end, std::back_inserter(parts), '/');
-    bus.dir.clear();
-    bus.file.clear();
-    bus.query.clear();
-    std::string res = construct(bus);
-    res += util::joinPath(parts.begin(), parts.end());
-    if((uri.begin() == end || *(end-1) == '/') && *(res.end()-1) != '/') {
-      res += "/";
-    }
-    res.append(end, qend);
-    return res;
   }
+
+  UriStruct bus;
+  if (!parse(bus, baseUri)) {
+    return uri;
+  }
+
+  std::string::const_iterator qend;
+  for (qend = uri.begin(); qend != uri.end(); ++qend) {
+    if (*qend == '#') {
+      break;
+    }
+  }
+  std::string::const_iterator end;
+  for (end = uri.begin(); end != qend; ++end) {
+    if (*end == '?') {
+      break;
+    }
+  }
+  std::string newpath = joinPath(bus.dir, uri.begin(), end);
+  bus.dir.clear();
+  bus.file.clear();
+  bus.query.clear();
+  std::string res = construct(bus);
+  if (!newpath.empty()) {
+    // res always ends with '/'. Since bus.dir also starts with '/',
+    // regardless of uri, newpath always starts with '/'.
+    res.append(newpath.begin() + 1, newpath.end());
+  }
+  res.append(end, qend);
+  return res;
 }
 
 } // namespace uri

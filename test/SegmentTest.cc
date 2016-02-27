@@ -14,8 +14,8 @@ class SegmentTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testUpdateWrittenLength_incompleteLastPiece);
   CPPUNIT_TEST(testClear);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
   void setUp() {}
 
@@ -25,27 +25,26 @@ public:
   void testClear();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( SegmentTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(SegmentTest);
 
 void SegmentTest::testUpdateWrittenLength()
 {
-  SharedHandle<Piece> p(new Piece(0, 16*1024*10));
-  PiecedSegment s(16*1024*10, p);
-  CPPUNIT_ASSERT_EQUAL(0, s.getWrittenLength());
+  std::shared_ptr<Piece> p(new Piece(0, 160_k));
+  PiecedSegment s(160_k, p);
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, s.getWrittenLength());
 
-  s.updateWrittenLength(16*1024);
+  s.updateWrittenLength(16_k);
   CPPUNIT_ASSERT(p->hasBlock(0));
   CPPUNIT_ASSERT(!p->hasBlock(1));
 
-  s.updateWrittenLength(16*1024*9);
+  s.updateWrittenLength(16_k * 9);
   CPPUNIT_ASSERT(p->pieceComplete());
 }
 
 void SegmentTest::testUpdateWrittenLength_lastPiece()
 {
-  SharedHandle<Piece> p(new Piece(0, 16*1024*9+1));
-  PiecedSegment s(16*1024*10, p);
+  std::shared_ptr<Piece> p(new Piece(0, 16_k * 9 + 1));
+  PiecedSegment s(160_k, p);
 
   s.updateWrittenLength(p->getLength());
   CPPUNIT_ASSERT(p->pieceComplete());
@@ -53,10 +52,10 @@ void SegmentTest::testUpdateWrittenLength_lastPiece()
 
 void SegmentTest::testUpdateWrittenLength_incompleteLastPiece()
 {
-  SharedHandle<Piece> p(new Piece(0, 16*1024*9+2));
-  PiecedSegment s(16*1024*10, p);
+  std::shared_ptr<Piece> p(new Piece(0, 16_k * 9 + 2));
+  PiecedSegment s(160_k, p);
 
-  s.updateWrittenLength(16*1024*9+1);
+  s.updateWrittenLength(16_k * 9 + 1);
   CPPUNIT_ASSERT(!p->pieceComplete());
   s.updateWrittenLength(1);
   CPPUNIT_ASSERT(p->pieceComplete());
@@ -64,12 +63,12 @@ void SegmentTest::testUpdateWrittenLength_incompleteLastPiece()
 
 void SegmentTest::testClear()
 {
-  SharedHandle<Piece> p(new Piece(0, 16*1024*10));
-  PiecedSegment s(16*1024*10, p);
-  s.updateWrittenLength(16*1024*10);
-  CPPUNIT_ASSERT_EQUAL(16*1024*10, s.getWrittenLength());
-  s.clear(0);
-  CPPUNIT_ASSERT_EQUAL(0, s.getWrittenLength());
+  std::shared_ptr<Piece> p(new Piece(0, 160_k));
+  PiecedSegment s(160_k, p);
+  s.updateWrittenLength(160_k);
+  CPPUNIT_ASSERT_EQUAL((int64_t)160_k, s.getWrittenLength());
+  s.clear(nullptr);
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, s.getWrittenLength());
 }
 
 } // namespace aria2

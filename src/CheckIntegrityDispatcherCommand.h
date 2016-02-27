@@ -42,16 +42,15 @@ namespace aria2 {
 
 class CheckIntegrityEntry;
 
-class CheckIntegrityDispatcherCommand :
-    public SequentialDispatcherCommand<CheckIntegrityEntry> {
+class CheckIntegrityDispatcherCommand
+    : public SequentialDispatcherCommand<CheckIntegrityEntry> {
 public:
-  CheckIntegrityDispatcherCommand
-  (cuid_t cuid,
-   const SharedHandle<CheckIntegrityMan>& checkMan,
-   DownloadEngine* e);
+  CheckIntegrityDispatcherCommand(cuid_t cuid, CheckIntegrityMan* checkMan,
+                                  DownloadEngine* e);
+
 protected:
-  virtual Command* createCommand
-  (const SharedHandle<CheckIntegrityEntry>& entry);
+  virtual std::unique_ptr<Command>
+  createCommand(CheckIntegrityEntry* entry) CXX11_OVERRIDE;
 };
 
 } // namespace aria2

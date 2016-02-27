@@ -47,16 +47,13 @@ unsigned char* IndexBtMessage::createMessage()
    * piece index --- index, 4bytes
    * total: 9bytes
    */
-  unsigned char* msg = new unsigned char[MESSAGE_LENGTH];
+  auto msg = new unsigned char[MESSAGE_LENGTH];
   bittorrent::createPeerMessageString(msg, MESSAGE_LENGTH, 5, getId());
   bittorrent::setIntParam(&msg[5], index_);
   return msg;
 }
 
-size_t IndexBtMessage::getMessageLength()
-{
-  return MESSAGE_LENGTH;
-}
+size_t IndexBtMessage::getMessageLength() { return MESSAGE_LENGTH; }
 
 std::string IndexBtMessage::toString() const
 {

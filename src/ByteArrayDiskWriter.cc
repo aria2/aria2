@@ -40,44 +40,37 @@
 namespace aria2 {
 
 ByteArrayDiskWriter::ByteArrayDiskWriter(size_t maxLength)
-  : maxLength_(maxLength)
-{}
+    : maxLength_(maxLength)
+{
+}
 
 ByteArrayDiskWriter::~ByteArrayDiskWriter() {}
 
-void ByteArrayDiskWriter::clear()
-{
-  buf_.str(A2STR::NIL);
-}
+void ByteArrayDiskWriter::clear() { buf_.str(A2STR::NIL); }
 
-void ByteArrayDiskWriter::initAndOpenFile(int64_t totalLength)
-{
-  clear();
-}
+void ByteArrayDiskWriter::initAndOpenFile(int64_t totalLength) { clear(); }
 
 void ByteArrayDiskWriter::openFile(int64_t totalLength) {}
 
 void ByteArrayDiskWriter::closeFile() {}
 
-void ByteArrayDiskWriter::openExistingFile(int64_t totalLength)
-{
-  openFile();
-}
+void ByteArrayDiskWriter::openExistingFile(int64_t totalLength) { openFile(); }
 
 void ByteArrayDiskWriter::writeData(const unsigned char* data,
                                     size_t dataLength, int64_t offset)
 {
-  if(offset+dataLength > maxLength_) {
+  if (offset + dataLength > maxLength_) {
     throw DL_ABORT_EX(fmt("Maximum length(%lu) exceeded.",
                           static_cast<unsigned long>(maxLength_)));
   }
   int64_t length = size();
-  if(length < offset) {
+  if (length < offset) {
     buf_.seekp(length, std::ios::beg);
-    for(int64_t i = length; i < offset; ++i) {
+    for (int64_t i = length; i < offset; ++i) {
       buf_.put('\0');
     }
-  } else {
+  }
+  else {
     buf_.seekp(offset, std::ios::beg);
   }
   buf_.write(reinterpret_cast<const char*>(data), dataLength);
@@ -99,14 +92,8 @@ int64_t ByteArrayDiskWriter::size()
   return buf_.tellg();
 }
 
-void ByteArrayDiskWriter::setString(const std::string& s)
-{
-  buf_.str(s);
-}
+void ByteArrayDiskWriter::setString(const std::string& s) { buf_.str(s); }
 
-std::string ByteArrayDiskWriter::getString() const
-{
-  return buf_.str();
-}
+std::string ByteArrayDiskWriter::getString() const { return buf_.str(); }
 
 } // namespace aria2

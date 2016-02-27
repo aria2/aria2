@@ -37,8 +37,8 @@
 #include "common.h"
 
 #include <string>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "TimerA2.h"
 #include "uri.h"
 
@@ -52,11 +52,7 @@ private:
   std::string uri_;
   std::string currentUri_;
   /**
-   * URI previously requested to the server. This is used as Referer
-   */
-  std::string previousUri_;
-  /**
-   * URI used as Referer in the initial request
+   * URI used as Referer header field
    */
   std::string referer_;
   std::string method_;
@@ -73,12 +69,13 @@ private:
   bool pipeliningHint_;
   // maximum number of pipelined requests
   int maxPipelinedRequest_;
-  SharedHandle<PeerStat> peerStat_;
+  std::shared_ptr<PeerStat> peerStat_;
   bool removalRequested_;
   uint16_t connectedPort_;
   Timer wakeTime_;
 
   bool parseUri(const std::string& uri);
+
 public:
   Request();
   ~Request();
@@ -97,7 +94,6 @@ public:
   // Returns URI passed by setUri()
   const std::string& getUri() const { return uri_; }
   const std::string& getCurrentUri() const { return currentUri_; }
-  const std::string& getPreviousUri() const { return previousUri_; }
   const std::string& getReferer() const { return referer_; }
   void setReferer(const std::string& uri);
   const std::string& getProtocol() const { return us_.protocol; }
@@ -107,7 +103,7 @@ public:
   std::string getURIHost() const;
   uint16_t getPort() const { return us_.port; }
   const std::string& getDir() const { return us_.dir; }
-  const std::string& getFile() const { return us_.file;}
+  const std::string& getFile() const { return us_.file; }
   const std::string& getQuery() const { return us_.query; }
   bool isIPv6LiteralAddress() const { return us_.ipv6LiteralAddress; }
 
@@ -116,20 +112,14 @@ public:
     supportsPersistentConnection_ = f;
   }
 
-  bool supportsPersistentConnection()
-  {
-    return supportsPersistentConnection_;
-  }
+  bool supportsPersistentConnection() { return supportsPersistentConnection_; }
 
   bool isKeepAliveEnabled() const
   {
     return supportsPersistentConnection_ && keepAliveHint_;
   }
 
-  void setKeepAliveHint(bool keepAliveHint)
-  {
-    keepAliveHint_ = keepAliveHint;
-  }
+  void setKeepAliveHint(bool keepAliveHint) { keepAliveHint_ = keepAliveHint; }
 
   bool isPipeliningEnabled()
   {
@@ -141,90 +131,50 @@ public:
     pipeliningHint_ = pipeliningHint;
   }
 
-  bool isPipeliningHint() const
-  {
-    return pipeliningHint_;
-  }
+  bool isPipeliningHint() const { return pipeliningHint_; }
 
   void setMaxPipelinedRequest(int num);
 
-  int getMaxPipelinedRequest() const
-  {
-    return maxPipelinedRequest_;
-  }
+  int getMaxPipelinedRequest() const { return maxPipelinedRequest_; }
 
   void setMethod(const std::string& method);
 
-  const std::string& getUsername() const
-  {
-    return us_.username;
-  }
+  const std::string& getUsername() const { return us_.username; }
 
-  const std::string& getPassword() const
-  {
-    return us_.password;
-  }
+  const std::string& getPassword() const { return us_.password; }
 
   // Returns true if current URI has embedded password.
-  bool hasPassword() const
-  {
-    return us_.hasPassword;
-  }
+  bool hasPassword() const { return us_.hasPassword; }
 
-  const std::string& getMethod() const
-  {
-    return method_;
-  }
+  const std::string& getMethod() const { return method_; }
 
-  const SharedHandle<PeerStat>& getPeerStat() const
-  {
-    return peerStat_;
-  }
+  const std::shared_ptr<PeerStat>& getPeerStat() const { return peerStat_; }
 
-  const SharedHandle<PeerStat>& initPeerStat();
+  const std::shared_ptr<PeerStat>& initPeerStat();
 
-  void requestRemoval()
-  {
-    removalRequested_ = true;
-  }
+  void requestRemoval() { removalRequested_ = true; }
 
-  bool removalRequested() const
-  {
-    return removalRequested_;
-  }
+  bool removalRequested() const { return removalRequested_; }
 
-  void setConnectedAddrInfo
-  (const std::string& hostname, const std::string& addr, uint16_t port);
+  void setConnectedAddrInfo(const std::string& hostname,
+                            const std::string& addr, uint16_t port);
 
-  const std::string& getConnectedHostname() const
-  {
-    return connectedHostname_;
-  }
+  const std::string& getConnectedHostname() const { return connectedHostname_; }
 
-  const std::string& getConnectedAddr() const
-  {
-    return connectedAddr_;
-  }
+  const std::string& getConnectedAddr() const { return connectedAddr_; }
 
-  uint16_t getConnectedPort() const
-  {
-    return connectedPort_;
-  }
+  uint16_t getConnectedPort() const { return connectedPort_; }
 
-  void setWakeTime(Timer timer)
-  {
-    wakeTime_ = timer;
-  }
+  void setWakeTime(Timer timer) { wakeTime_ = timer; }
 
-  const Timer& getWakeTime()
-  {
-    return wakeTime_;
-  }
+  const Timer& getWakeTime() { return wakeTime_; }
 
   static const std::string METHOD_GET;
   static const std::string METHOD_HEAD;
 
   static const int MAX_REDIRECT = 20;
+
+  static const std::string DEFAULT_FILE;
 };
 
 } // namespace aria2

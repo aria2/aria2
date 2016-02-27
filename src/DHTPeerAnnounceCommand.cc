@@ -43,17 +43,19 @@
 
 namespace aria2 {
 
-DHTPeerAnnounceCommand::DHTPeerAnnounceCommand
-(cuid_t cuid, DownloadEngine* e, time_t interval)
-  : TimeBasedCommand(cuid, e, interval)
-{}
+DHTPeerAnnounceCommand::DHTPeerAnnounceCommand(cuid_t cuid, DownloadEngine* e,
+                                               std::chrono::seconds interval)
+    : TimeBasedCommand{cuid, e, std::move(interval)},
+      peerAnnounceStorage_{nullptr}
+{
+}
 
 DHTPeerAnnounceCommand::~DHTPeerAnnounceCommand() {}
 
 void DHTPeerAnnounceCommand::preProcess()
 {
-  if(getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
-     getDownloadEngine()->isHaltRequested()) {
+  if (getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
+      getDownloadEngine()->isHaltRequested()) {
     enableExit();
   }
 }
@@ -62,13 +64,14 @@ void DHTPeerAnnounceCommand::process()
 {
   try {
     peerAnnounceStorage_->handleTimeout();
-  } catch(RecoverableException& e) {
+  }
+  catch (RecoverableException& e) {
     A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
   }
 }
 
-void DHTPeerAnnounceCommand::setPeerAnnounceStorage
-(const SharedHandle<DHTPeerAnnounceStorage>& storage)
+void DHTPeerAnnounceCommand::setPeerAnnounceStorage(
+    DHTPeerAnnounceStorage* storage)
 {
   peerAnnounceStorage_ = storage;
 }

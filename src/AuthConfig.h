@@ -39,8 +39,7 @@
 
 #include <string>
 #include <iosfwd>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -49,9 +48,10 @@ private:
   std::string authScheme_;
   std::string user_;
   std::string password_;
+
 public:
   AuthConfig();
-  AuthConfig(const std::string& user, const std::string& password);
+  AuthConfig(std::string user, std::string password);
   ~AuthConfig();
 
   // Don't allow copying
@@ -60,19 +60,16 @@ public:
 
   std::string getAuthText() const;
 
-  const std::string& getUser() const
-  {
-    return user_;
-  }
+  const std::string& getUser() const { return user_; }
 
-  const std::string& getPassword() const
-  {
-    return password_;
-  }
+  const std::string& getPassword() const { return password_; }
+
+  static std::unique_ptr<AuthConfig> create(std::string user,
+                                            std::string password);
 };
 
 std::ostream& operator<<(std::ostream& o,
-                         const SharedHandle<AuthConfig>& authConfig);
+                         const std::shared_ptr<AuthConfig>& authConfig);
 
 } // namespace aria2
 

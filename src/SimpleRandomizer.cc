@@ -34,84 +34,106 @@
 /* copyright --> */
 #include "SimpleRandomizer.h"
 
-#include <cstdlib>
 #include <sys/types.h>
 #include <unistd.h>
+#include <cstdlib>
+#include <cassert>
+#include <cstring>
 
 #include "a2time.h"
+#include "a2functional.h"
+#include "LogFactory.h"
+#include "fmt.h"
+
+#ifdef HAVE_GETRANDOM_INTERFACE
+#include <errno.h>
+#include <linux/errno.h>
+#include "getrandom_linux.h"
+#endif
 
 namespace aria2 {
 
-SharedHandle<SimpleRandomizer> SimpleRandomizer::randomizer_;
+std::unique_ptr<SimpleRandomizer> SimpleRandomizer::randomizer_;
 
-const SharedHandle<SimpleRandomizer>& SimpleRandomizer::getInstance()
+const std::unique_ptr<SimpleRandomizer>& SimpleRandomizer::getInstance()
 {
-  if(!randomizer_) {
+  if (!randomizer_) {
     randomizer_.reset(new SimpleRandomizer());
   }
   return randomizer_;
 }
 
-void SimpleRandomizer::init()
-{
-#ifndef __MINGW32__
-  srandom(time(0)^getpid());
-#endif // !__MINGW32__
-}
+namespace {
+std::random_device rd;
+} // namespace
 
+#ifdef __MINGW32__
 SimpleRandomizer::SimpleRandomizer()
 {
-#ifdef __MINGW32__
-  BOOL r = CryptAcquireContext(&cryProvider_, 0, 0, PROV_RSA_FULL,
-                               CRYPT_VERIFYCONTEXT|CRYPT_SILENT);
+  BOOL r = ::CryptAcquireContext(&provider_, 0, 0, PROV_RSA_FULL,
+                                 CRYPT_VERIFYCONTEXT | CRYPT_SILENT);
   assert(r);
-#endif // __MINGW32__
 }
+#else  // !__MINGW32__
+SimpleRandomizer::SimpleRandomizer() : gen_(rd()) {}
+#endif // !__MINGW32__
 
 SimpleRandomizer::~SimpleRandomizer()
 {
 #ifdef __MINGW32__
-  CryptReleaseContext(cryProvider_, 0);
-#endif // __MINGW32__
-}
-
-long int SimpleRandomizer::getRandomNumber()
-{
-#ifdef __MINGW32__
-  int32_t val;
-  BOOL r = CryptGenRandom(cryProvider_, sizeof(val),
-                          reinterpret_cast<BYTE*>(&val));
-  assert(r);
-  if(val == INT32_MIN) {
-    val = INT32_MAX;
-  } else if(val < 0) {
-    val = -val;
-  }
-  return val;
-#else // !__MINGW32__
-  return random();
-#endif // !__MINGW32__
-}
-
-long int SimpleRandomizer::getMaxRandomNumber()
-{
-#ifdef __MINGW32__
-  return INT32_MAX;
-#else // !__MINGW32__
-  // TODO Warning: The maximum value of random() in some sytems (e.g.,
-  // Solaris and openbsd) is (2**31)-1.
-  return RAND_MAX;
-#endif // !__MINGW32__
+  CryptReleaseContext(provider_, 0);
+#endif
 }
 
 long int SimpleRandomizer::getRandomNumber(long int to)
 {
-  return getRandomNumber() % to;
+  assert(to > 0);
+  return std::uniform_int_distribution<long int>(0, to - 1)(*this);
 }
 
-long int SimpleRandomizer::operator()(long int to)
+void SimpleRandomizer::getRandomBytes(unsigned char* buf, size_t len)
 {
-  return getRandomNumber(to);
+#ifdef __MINGW32__
+  BOOL r = CryptGenRandom(provider_, len, reinterpret_cast<BYTE*>(buf));
+  assert(r);
+#else // ! __MINGW32__
+#if defined(HAVE_GETRANDOM_INTERFACE)
+  static bool have_random_support = true;
+  if (have_random_support) {
+    auto rv = getrandom_linux(buf, len);
+    if (rv != -1
+#ifdef ENOSYS
+        /* If the system does not know ENOSYS at this point, just leave the
+         * check out. If the call failed, we'll not take this branch at all
+         * and disable support below.
+         */
+        ||
+        errno != ENOSYS
+#endif
+        ) {
+      if (rv < -1) {
+        A2_LOG_ERROR(fmt("Failed to produce randomness: %d", errno));
+      }
+      // getrandom is not supposed to fail, ever, so, we want to assert here.
+      assert(rv >= 0 && (size_t)rv == len);
+      return;
+    }
+    have_random_support = false;
+    A2_LOG_INFO("Disabled getrandom support, because kernel does not "
+                "implement this feature (ENOSYS)");
+  }
+// Fall through to generic implementation
+#endif // defined(HAVE_GETRANDOM_INTERFACE)
+  auto ubuf = reinterpret_cast<result_type*>(buf);
+  size_t q = len / sizeof(result_type);
+  auto dis = std::uniform_int_distribution<result_type>();
+  for (; q > 0; --q, ++ubuf) {
+    *ubuf = dis(gen_);
+  }
+  const size_t r = len % sizeof(result_type);
+  auto last = dis(gen_);
+  memcpy(ubuf, &last, r);
+#endif // ! __MINGW32__
 }
 
 } // namespace aria2

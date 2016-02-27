@@ -39,8 +39,8 @@
 
 #include <utility>
 #include <deque>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "a2time.h"
 #include "ValueBase.h"
 
@@ -55,38 +55,36 @@ class DHTMessageTrackerEntry;
 
 class DHTMessageTracker {
 private:
-  std::deque<SharedHandle<DHTMessageTrackerEntry> > entries_;
+  std::deque<std::unique_ptr<DHTMessageTrackerEntry>> entries_;
 
-  SharedHandle<DHTRoutingTable> routingTable_;
+  DHTRoutingTable* routingTable_;
 
-  SharedHandle<DHTMessageFactory> factory_;
+  DHTMessageFactory* factory_;
+
 public:
   DHTMessageTracker();
 
-  ~DHTMessageTracker();
+  void addMessage(DHTMessage* message, std::chrono::seconds timeout,
+                  std::unique_ptr<DHTMessageCallback> callback =
+                      std::unique_ptr<DHTMessageCallback>{});
 
-  void addMessage(const SharedHandle<DHTMessage>& message,
-                  time_t timeout,
-                  const SharedHandle<DHTMessageCallback>& callback =
-                  SharedHandle<DHTMessageCallback>());
-
-  std::pair<SharedHandle<DHTResponseMessage>, SharedHandle<DHTMessageCallback> >
-  messageArrived(const Dict* dict,
-                 const std::string& ipaddr, uint16_t port);
+  std::pair<std::unique_ptr<DHTResponseMessage>,
+            std::unique_ptr<DHTMessageCallback>>
+  messageArrived(const Dict* dict, const std::string& ipaddr, uint16_t port);
 
   void handleTimeout();
 
   // Made public so that unnamed functor can access this
-  void handleTimeoutEntry(const SharedHandle<DHTMessageTrackerEntry>& entry);
+  void handleTimeoutEntry(DHTMessageTrackerEntry* entry);
 
-  SharedHandle<DHTMessageTrackerEntry> getEntryFor
-  (const SharedHandle<DHTMessage>& message) const;
+  // // For unittest only
+  const DHTMessageTrackerEntry* getEntryFor(const DHTMessage* message) const;
 
   size_t countEntry() const;
 
-  void setRoutingTable(const SharedHandle<DHTRoutingTable>& routingTable);
+  void setRoutingTable(DHTRoutingTable* routingTable);
 
-  void setMessageFactory(const SharedHandle<DHTMessageFactory>& factory);
+  void setMessageFactory(DHTMessageFactory* factory);
 };
 
 } // namespace aria2

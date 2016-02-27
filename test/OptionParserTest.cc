@@ -15,7 +15,7 @@
 
 namespace aria2 {
 
-class OptionParserTest:public CppUnit::TestFixture {
+class OptionParserTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(OptionParserTest);
   CPPUNIT_TEST(testFindAll);
@@ -29,16 +29,18 @@ class OptionParserTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testParse);
   CPPUNIT_TEST(testParseKeyVals);
   CPPUNIT_TEST_SUITE_END();
+
 private:
-  SharedHandle<OptionParser> oparser_;
+  std::shared_ptr<OptionParser> oparser_;
+
 public:
   void setUp()
   {
     oparser_.reset(new OptionParser());
 
-    OptionHandler* timeout
-      (new DefaultOptionHandler(PREF_TIMEOUT, NO_DESCRIPTION, "ALPHA", "",
-                                OptionHandler::REQ_ARG, 'A'));
+    OptionHandler* timeout(
+        new DefaultOptionHandler(PREF_TIMEOUT, NO_DESCRIPTION, "ALPHA", "",
+                                 OptionHandler::REQ_ARG, 'A'));
     timeout->addTag(TAG_BASIC);
     timeout->setEraseAfterParse(true);
     oparser_->addOptionHandler(timeout);
@@ -49,16 +51,15 @@ public:
     dir->addTag(TAG_FILE);
     oparser_->addOptionHandler(dir);
 
-    DefaultOptionHandler* daemon
-      (new DefaultOptionHandler(PREF_DAEMON, NO_DESCRIPTION, "CHARLIE", "",
-                                OptionHandler::REQ_ARG, 'C'));
+    DefaultOptionHandler* daemon(
+        new DefaultOptionHandler(PREF_DAEMON, NO_DESCRIPTION, "CHARLIE", "",
+                                 OptionHandler::REQ_ARG, 'C'));
     daemon->hide();
     daemon->addTag(TAG_FILE);
     oparser_->addOptionHandler(daemon);
 
-    OptionHandler* out
-      (new UnitNumberOptionHandler(PREF_OUT, NO_DESCRIPTION, "1M",
-                                   -1, -1, 'D'));
+    OptionHandler* out(new UnitNumberOptionHandler(PREF_OUT, NO_DESCRIPTION,
+                                                   "1M", -1, -1, 'D'));
     out->addTag(TAG_FILE);
     oparser_->addOptionHandler(out);
   }
@@ -76,7 +77,6 @@ public:
   void testParse();
   void testParseKeyVals();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(OptionParserTest);
 
@@ -166,9 +166,9 @@ void OptionParserTest::testParseArg()
   char nonopt2[8];
   strncpy(nonopt2, "nonopt2", sizeof(nonopt2));
 
-  char* argv[] = { prog, optionTimeout, argTimeout, optionDir, argDir,
-                   nonopt1, nonopt2 };
-  int argc = A2_ARRAY_LEN(argv);
+  char* argv[] = {prog,   optionTimeout, argTimeout, optionDir,
+                  argDir, nonopt1,       nonopt2};
+  int argc = arraySize(argv);
 
   std::stringstream s;
   std::vector<std::string> nonopts;
@@ -176,7 +176,8 @@ void OptionParserTest::testParseArg()
   oparser_->parseArg(s, nonopts, argc, argv);
 
   CPPUNIT_ASSERT_EQUAL(std::string("timeout=ALPHA\n"
-                                   "dir=BRAVO\n"), s.str());
+                                   "dir=BRAVO\n"),
+                       s.str());
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, nonopts.size());
   CPPUNIT_ASSERT_EQUAL(std::string("nonopt1"), nonopts[0]);

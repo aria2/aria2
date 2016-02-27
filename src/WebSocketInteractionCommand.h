@@ -36,7 +36,8 @@
 #define D_WEB_SOCKET_INTERACTION_COMMAND_H
 
 #include "Command.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -50,18 +51,20 @@ class WebSocketSession;
 class WebSocketInteractionCommand : public Command {
 private:
   DownloadEngine* e_;
-  SharedHandle<SocketCore> socket_;
+  std::shared_ptr<SocketCore> socket_;
   bool writeCheck_;
-  SharedHandle<WebSocketSession> wsSession_;
+  std::shared_ptr<WebSocketSession> wsSession_;
+
 public:
-  WebSocketInteractionCommand(cuid_t cuid,
-                              const SharedHandle<WebSocketSession>& wsSession,
-                              DownloadEngine* e,
-                              const SharedHandle<SocketCore>& socket);
+  WebSocketInteractionCommand(
+      cuid_t cuid, const std::shared_ptr<WebSocketSession>& wsSession,
+      DownloadEngine* e, const std::shared_ptr<SocketCore>& socket);
 
   virtual ~WebSocketInteractionCommand();
 
-  virtual bool execute();
+  virtual bool execute() CXX11_OVERRIDE;
+
+  std::shared_ptr<WebSocketSession>& getSession() { return wsSession_; }
 
   void updateWriteCheck();
 };

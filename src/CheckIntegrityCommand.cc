@@ -48,65 +48,61 @@
 
 namespace aria2 {
 
-CheckIntegrityCommand::CheckIntegrityCommand
-(cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e,
- const SharedHandle<CheckIntegrityEntry>& entry):
-  RealtimeCommand(cuid, requestGroup, e),
-  entry_(entry)
-{}
+CheckIntegrityCommand::CheckIntegrityCommand(cuid_t cuid,
+                                             RequestGroup* requestGroup,
+                                             DownloadEngine* e,
+                                             CheckIntegrityEntry* entry)
+    : RealtimeCommand{cuid, requestGroup, e}, entry_{entry}
+{
+}
 
-CheckIntegrityCommand::~CheckIntegrityCommand() {}
+CheckIntegrityCommand::~CheckIntegrityCommand()
+{
+  getDownloadEngine()->getCheckIntegrityMan()->dropPickedEntry();
+}
 
 bool CheckIntegrityCommand::executeInternal()
 {
-  if(getRequestGroup()->isHaltRequested()) {
-    getDownloadEngine()->getCheckIntegrityMan()->dropPickedEntry();
+  if (getRequestGroup()->isHaltRequested()) {
     return true;
   }
   entry_->validateChunk();
-  if(entry_->finished()) {
-    getDownloadEngine()->getCheckIntegrityMan()->dropPickedEntry();
+  if (entry_->finished()) {
     // Enable control file saving here. See also
     // RequestGroup::processCheckIntegrityEntry() to know why this is
     // needed.
     getRequestGroup()->enableSaveControlFile();
-    if(getRequestGroup()->downloadFinished()) {
-      A2_LOG_NOTICE
-        (fmt(MSG_VERIFICATION_SUCCESSFUL,
-             getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
-      std::vector<Command*>* commands = new std::vector<Command*>();
-      auto_delete_container<std::vector<Command*> > commandsDel(commands);
-      entry_->onDownloadFinished(*commands, getDownloadEngine());
-      getDownloadEngine()->addCommand(*commands);
-      commands->clear();
-    } else {
-      A2_LOG_ERROR
-        (fmt(MSG_VERIFICATION_FAILED,
-             getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
-      std::vector<Command*>* commands = new std::vector<Command*>();
-      auto_delete_container<std::vector<Command*> > commandsDel(commands);
-      entry_->onDownloadIncomplete(*commands, getDownloadEngine());
-      getDownloadEngine()->addCommand(*commands);
-      commands->clear();
+    if (getRequestGroup()->downloadFinished()) {
+      A2_LOG_NOTICE(
+          fmt(MSG_VERIFICATION_SUCCESSFUL,
+              getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
+      std::vector<std::unique_ptr<Command>> commands;
+      entry_->onDownloadFinished(commands, getDownloadEngine());
+      getDownloadEngine()->addCommand(std::move(commands));
+    }
+    else {
+      A2_LOG_ERROR(
+          fmt(MSG_VERIFICATION_FAILED,
+              getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
+      std::vector<std::unique_ptr<Command>> commands;
+      entry_->onDownloadIncomplete(commands, getDownloadEngine());
+      getDownloadEngine()->addCommand(std::move(commands));
     }
     getDownloadEngine()->setNoWait(true);
     return true;
-  } else {
-    getDownloadEngine()->addCommand(this);
+  }
+  else {
+    getDownloadEngine()->addCommand(std::unique_ptr<Command>(this));
     return false;
   }
 }
 
 bool CheckIntegrityCommand::handleException(Exception& e)
 {
-  getDownloadEngine()->getCheckIntegrityMan()->dropPickedEntry();
-  A2_LOG_ERROR_EX(fmt(MSG_FILE_VALIDATION_FAILURE,
-                   getCuid()),
-                  e);
-  A2_LOG_ERROR
-    (fmt(MSG_DOWNLOAD_NOT_COMPLETE,
-         getCuid(),
-         getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
+  A2_LOG_ERROR_EX(fmt(MSG_FILE_VALIDATION_FAILURE, getCuid()), e);
+  A2_LOG_ERROR(
+      fmt(MSG_DOWNLOAD_NOT_COMPLETE, getCuid(),
+          getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
   return true;
 }
 

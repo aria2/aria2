@@ -43,196 +43,203 @@
 #include "DownloadContext.h"
 #include "Piece.h"
 #include "FileEntry.h"
+#include "BitfieldMan.h"
 
 namespace aria2 {
 
-UnknownLengthPieceStorage::UnknownLengthPieceStorage
-(const SharedHandle<DownloadContext>& downloadContext)
-  : downloadContext_(downloadContext),
-  diskWriterFactory_(new DefaultDiskWriterFactory()),
-  totalLength_(0),
-  downloadFinished_(false) {}
+UnknownLengthPieceStorage::UnknownLengthPieceStorage(
+    const std::shared_ptr<DownloadContext>& downloadContext)
+    : downloadContext_(downloadContext),
+      diskWriterFactory_(std::make_shared<DefaultDiskWriterFactory>()),
+      totalLength_(0),
+      downloadFinished_(false)
+{
+}
 
 UnknownLengthPieceStorage::~UnknownLengthPieceStorage() {}
 
 void UnknownLengthPieceStorage::initStorage()
 {
-  DirectDiskAdaptor* directDiskAdaptor(new DirectDiskAdaptor());
+  auto directDiskAdaptor = std::make_shared<DirectDiskAdaptor>();
   directDiskAdaptor->setTotalLength(downloadContext_->getTotalLength());
   directDiskAdaptor->setFileEntries(downloadContext_->getFileEntries().begin(),
                                     downloadContext_->getFileEntries().end());
 
-  SharedHandle<DiskWriter> writer =
-    diskWriterFactory_->newDiskWriter(directDiskAdaptor->getFilePath());
-  directDiskAdaptor->setDiskWriter(writer);
+  directDiskAdaptor->setDiskWriter(
+      diskWriterFactory_->newDiskWriter(directDiskAdaptor->getFilePath()));
 
-  diskAdaptor_.reset(directDiskAdaptor);
+  diskAdaptor_ = std::move(directDiskAdaptor);
 }
 
 #ifdef ENABLE_BITTORRENT
 
-bool UnknownLengthPieceStorage::hasMissingPiece(const SharedHandle<Peer>& peer)
+bool UnknownLengthPieceStorage::hasMissingPiece(
+    const std::shared_ptr<Peer>& peer)
 {
   abort();
 }
 
-void UnknownLengthPieceStorage::getMissingPiece
-(std::vector<SharedHandle<Piece> >& pieces,
- size_t minMissingBlocks,
- const SharedHandle<Peer>& peer,
- cuid_t cuid)
+void UnknownLengthPieceStorage::getMissingPiece(
+    std::vector<std::shared_ptr<Piece>>& pieces, size_t minMissingBlocks,
+    const std::shared_ptr<Peer>& peer, cuid_t cuid)
 {
   abort();
 }
 
-void UnknownLengthPieceStorage::getMissingPiece
-(std::vector<SharedHandle<Piece> >& pieces,
- size_t minMissingBlocks,
- const SharedHandle<Peer>& peer,
- const std::vector<size_t>& excludedIndexes,
- cuid_t cuid)
+void UnknownLengthPieceStorage::getMissingPiece(
+    std::vector<std::shared_ptr<Piece>>& pieces, size_t minMissingBlocks,
+    const std::shared_ptr<Peer>& peer,
+    const std::vector<size_t>& excludedIndexes, cuid_t cuid)
 {
   abort();
 }
 
-void UnknownLengthPieceStorage::getMissingFastPiece
-(std::vector<SharedHandle<Piece> >& pieces,
- size_t minMissingBlocks,
- const SharedHandle<Peer>& peer,
- cuid_t cuid)
+void UnknownLengthPieceStorage::getMissingFastPiece(
+    std::vector<std::shared_ptr<Piece>>& pieces, size_t minMissingBlocks,
+    const std::shared_ptr<Peer>& peer, cuid_t cuid)
 {
   abort();
 }
 
-void UnknownLengthPieceStorage::getMissingFastPiece
-(std::vector<SharedHandle<Piece> >& pieces,
- size_t minMissingBlocks,
- const SharedHandle<Peer>& peer,
- const std::vector<size_t>& excludedIndexes,
- cuid_t cuid)
+void UnknownLengthPieceStorage::getMissingFastPiece(
+    std::vector<std::shared_ptr<Piece>>& pieces, size_t minMissingBlocks,
+    const std::shared_ptr<Peer>& peer,
+    const std::vector<size_t>& excludedIndexes, cuid_t cuid)
 {
   abort();
 }
 
-SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece
-(const SharedHandle<Peer>& peer,
- cuid_t cuid)
+std::shared_ptr<Piece>
+UnknownLengthPieceStorage::getMissingPiece(const std::shared_ptr<Peer>& peer,
+                                           cuid_t cuid)
 {
   abort();
 }
 
-SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece
-(const SharedHandle<Peer>& peer,
- const std::vector<size_t>& excludedIndexes,
- cuid_t cuid)
+std::shared_ptr<Piece> UnknownLengthPieceStorage::getMissingPiece(
+    const std::shared_ptr<Peer>& peer,
+    const std::vector<size_t>& excludedIndexes, cuid_t cuid)
 {
   abort();
 }
 #endif // ENABLE_BITTORRENT
 
-bool UnknownLengthPieceStorage::hasMissingUnusedPiece()
-{
-  abort();
-}
+bool UnknownLengthPieceStorage::hasMissingUnusedPiece() { abort(); }
 
-SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece
-(size_t minSplitSize,
- const unsigned char* ignoreBitfield,
- size_t length,
- cuid_t cuid)
+std::shared_ptr<Piece>
+UnknownLengthPieceStorage::getMissingPiece(size_t minSplitSize,
+                                           const unsigned char* ignoreBitfield,
+                                           size_t length, cuid_t cuid)
 {
-  if(downloadFinished_) {
-    return SharedHandle<Piece>();
+  if (downloadFinished_) {
+    return nullptr;
   }
-  if(!piece_) {
-    piece_.reset(new Piece());
+  if (!piece_) {
+    piece_ = std::make_shared<Piece>();
     return piece_;
-  } else {
-    return SharedHandle<Piece>();
+  }
+  else {
+    return nullptr;
   }
 }
 
-SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece
-(size_t index,
- cuid_t cuid)
+std::shared_ptr<Piece> UnknownLengthPieceStorage::getMissingPiece(size_t index,
+                                                                  cuid_t cuid)
 {
-  if(index == 0) {
-    return getMissingPiece(0, 0, 0, cuid);
-  } else {
-    return SharedHandle<Piece>();
+  if (index == 0) {
+    return getMissingPiece(0, nullptr, 0, cuid);
+  }
+  else {
+    return nullptr;
   }
 }
 
-SharedHandle<Piece> UnknownLengthPieceStorage::getPiece(size_t index)
+std::shared_ptr<Piece> UnknownLengthPieceStorage::getPiece(size_t index)
 {
-  if(index == 0) {
-    if(!piece_) {
-      return SharedHandle<Piece>(new Piece());
-    } else {
+  if (index == 0) {
+    if (!piece_) {
+      return std::make_shared<Piece>();
+    }
+    else {
       return piece_;
     }
-  } else {
-    return SharedHandle<Piece>();
+  }
+  else {
+    return nullptr;
   }
 }
 
-void UnknownLengthPieceStorage::completePiece(const SharedHandle<Piece>& piece)
+void UnknownLengthPieceStorage::completePiece(
+    const std::shared_ptr<Piece>& piece)
 {
-  if(*piece_ == *piece) {
+  if (*piece_ == *piece) {
     downloadFinished_ = true;
     totalLength_ = piece_->getLength();
     diskAdaptor_->setTotalLength(totalLength_);
     piece_.reset();
+
+    createBitfield();
   }
 }
 
-void UnknownLengthPieceStorage::cancelPiece
-(const SharedHandle<Piece>& piece,
- cuid_t cuid)
+void UnknownLengthPieceStorage::cancelPiece(const std::shared_ptr<Piece>& piece,
+                                            cuid_t cuid)
 {
-  if(*piece_ == *piece) {
+  if (*piece_ == *piece) {
     piece_.reset();
   }
 }
 
 bool UnknownLengthPieceStorage::hasPiece(size_t index)
 {
-  if(index == 0 && downloadFinished_) {
+  if (index == 0 && downloadFinished_) {
     return true;
-  } else {
+  }
+  else {
     return false;
   }
 }
 
 bool UnknownLengthPieceStorage::isPieceUsed(size_t index)
 {
-  if(index == 0 && piece_) {
+  if (index == 0 && piece_) {
     return true;
-  } else {
+  }
+  else {
     return false;
   }
 }
 
-SharedHandle<DiskAdaptor> UnknownLengthPieceStorage::getDiskAdaptor()
+std::shared_ptr<DiskAdaptor> UnknownLengthPieceStorage::getDiskAdaptor()
 {
   return diskAdaptor_;
 }
 
 int32_t UnknownLengthPieceStorage::getPieceLength(size_t index)
 {
-  if(index == 0) {
-    return totalLength_;
-  } else {
-    return 0;
+  // TODO Basically, PieceStorage::getPieceLength() is only used by
+  // BitTorrent, and it does not use UnknownLengthPieceStorage.
+  abort();
+}
+
+void UnknownLengthPieceStorage::createBitfield()
+{
+  if (totalLength_ > 0) {
+    bitfield_ = make_unique<BitfieldMan>(downloadContext_->getPieceLength(),
+                                         totalLength_);
+    bitfield_->setAllBit();
   }
 }
 
 void UnknownLengthPieceStorage::markAllPiecesDone()
 {
-  if(piece_) {
+  if (piece_) {
     totalLength_ = piece_->getLength();
     piece_.reset();
   }
+
+  createBitfield();
+
   downloadFinished_ = true;
 }
 
@@ -248,14 +255,33 @@ void UnknownLengthPieceStorage::markPieceMissing(size_t index)
   abort();
 }
 
-void UnknownLengthPieceStorage::getInFlightPieces
-(std::vector<SharedHandle<Piece> >& pieces)
-{}
+void UnknownLengthPieceStorage::getInFlightPieces(
+    std::vector<std::shared_ptr<Piece>>& pieces)
+{
+}
 
-void UnknownLengthPieceStorage::setDiskWriterFactory
-(const SharedHandle<DiskWriterFactory>& diskWriterFactory)
+void UnknownLengthPieceStorage::setDiskWriterFactory(
+    const std::shared_ptr<DiskWriterFactory>& diskWriterFactory)
 {
   diskWriterFactory_ = diskWriterFactory;
+}
+
+const unsigned char* UnknownLengthPieceStorage::getBitfield()
+{
+  if (bitfield_) {
+    return bitfield_->getBitfield();
+  }
+
+  return nullptr;
+}
+
+size_t UnknownLengthPieceStorage::getBitfieldLength()
+{
+  if (bitfield_) {
+    return bitfield_->getBitfieldLength();
+  }
+
+  return 0;
 }
 
 } // namespace aria2

@@ -39,49 +39,50 @@
 
 #include <string>
 #include <functional>
+#include <memory>
 
 #include "TimerA2.h"
 
 namespace aria2 {
 
-class SizeFormatter:public std::unary_function<int64_t, std::string> {
+class SizeFormatter : public std::unary_function<int64_t, std::string> {
 protected:
   virtual std::string format(int64_t size) const = 0;
+
 public:
   virtual ~SizeFormatter() {}
 
   std::string operator()(int64_t size) const;
 };
 
-class ConsoleStatCalc:public StatCalc
-{
+class ConsoleStatCalc : public StatCalc {
 private:
   Timer cp_;
 
   Timer lastSummaryNotified_;
 
-  time_t summaryInterval_;
+  std::chrono::seconds summaryInterval_;
 
-  SharedHandle<SizeFormatter> sizeFormatter_;
+  std::unique_ptr<SizeFormatter> sizeFormatter_;
   bool readoutVisibility_;
   bool truncate_;
   bool isTTY_;
+  bool colorOutput_;
+
 public:
-  ConsoleStatCalc(time_t summaryInterval, bool humanReadable = true);
+  ConsoleStatCalc(std::chrono::seconds summaryInterval, bool colorOutput = true,
+                  bool humanReadable = true);
 
   virtual ~ConsoleStatCalc() {}
 
-  virtual void calculateStat(const DownloadEngine* e);
+  virtual void calculateStat(const DownloadEngine* e) CXX11_OVERRIDE;
 
   void setReadoutVisibility(bool visibility)
   {
     readoutVisibility_ = visibility;
   }
 
-  void setTruncate(bool truncate)
-  {
-    truncate_ = truncate;
-  }
+  void setTruncate(bool truncate) { truncate_ = truncate; }
 };
 
 } // namespace aria2

@@ -4,14 +4,16 @@
 
 #include "array_fun.h"
 #include "BitfieldMan.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
-class LongestSequencePieceSelectorTest:public CppUnit::TestFixture {
+class LongestSequencePieceSelectorTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(LongestSequencePieceSelectorTest);
   CPPUNIT_TEST(testSelect);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -20,14 +22,13 @@ public:
   void testSelect();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(LongestSequencePieceSelectorTest);
 
 void LongestSequencePieceSelectorTest::testSelect()
 {
-  size_t A[] = { 1,2,3,4,7,10,11,12,13,14,15,100,112,113,114 };
-  BitfieldMan bf(1024, 1024*256);
-  for(size_t i = 0; i < A2_ARRAY_LEN(A); ++i) {
+  size_t A[] = {1, 2, 3, 4, 7, 10, 11, 12, 13, 14, 15, 100, 112, 113, 114};
+  BitfieldMan bf(1_k, 256_k);
+  for (size_t i = 0; i < arraySize(A); ++i) {
     bf.setBit(A[i]);
   }
 

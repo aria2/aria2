@@ -48,7 +48,7 @@ private:
   HANDLE fd_;
   // The handle for memory mapped file. mmap equivalent in Windows.
   HANDLE mapView_;
-#else // !__MINGW32__
+#else  // !__MINGW32__
   int fd_;
 #endif // !__MINGW32__
 
@@ -65,34 +65,41 @@ private:
   void seek(int64_t offset);
 
   void ensureMmapWrite(size_t len, int64_t offset);
+
 protected:
   void createFile(int addFlags = 0);
+
 public:
   AbstractDiskWriter(const std::string& filename);
   virtual ~AbstractDiskWriter();
 
-  virtual void openFile(int64_t totalLength = 0);
+  virtual void openFile(int64_t totalLength = 0) CXX11_OVERRIDE;
 
-  virtual void closeFile();
+  virtual void closeFile() CXX11_OVERRIDE;
 
-  virtual void openExistingFile(int64_t totalLength = 0);
+  virtual void openExistingFile(int64_t totalLength = 0) CXX11_OVERRIDE;
 
-  virtual void writeData(const unsigned char* data, size_t len, int64_t offset);
+  virtual void writeData(const unsigned char* data, size_t len,
+                         int64_t offset) CXX11_OVERRIDE;
 
-  virtual ssize_t readData(unsigned char* data, size_t len, int64_t offset);
+  virtual ssize_t readData(unsigned char* data, size_t len,
+                           int64_t offset) CXX11_OVERRIDE;
 
-  virtual void truncate(int64_t length);
+  virtual void truncate(int64_t length) CXX11_OVERRIDE;
 
   // File must be opened before calling this function.
-  virtual void allocate(int64_t offset, int64_t length, bool sparse);
+  virtual void allocate(int64_t offset, int64_t length,
+                        bool sparse) CXX11_OVERRIDE;
 
-  virtual int64_t size();
+  virtual int64_t size() CXX11_OVERRIDE;
 
-  virtual void enableReadOnly();
+  virtual void enableReadOnly() CXX11_OVERRIDE;
 
-  virtual void disableReadOnly();
+  virtual void disableReadOnly() CXX11_OVERRIDE;
 
-  virtual void enableMmap();
+  virtual void enableMmap() CXX11_OVERRIDE;
+
+  virtual void dropCache(int64_t len, int64_t offset) CXX11_OVERRIDE;
 };
 
 } // namespace aria2

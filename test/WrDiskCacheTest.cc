@@ -10,26 +10,28 @@
 
 namespace aria2 {
 
-class WrDiskCacheTest:public CppUnit::TestFixture {
+class WrDiskCacheTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(WrDiskCacheTest);
   CPPUNIT_TEST(testAdd);
   CPPUNIT_TEST_SUITE_END();
 
-  SharedHandle<DirectDiskAdaptor> adaptor_;
-  SharedHandle<ByteArrayDiskWriter> writer_;
+  std::shared_ptr<DirectDiskAdaptor> adaptor_;
+  ByteArrayDiskWriter* writer_;
+
 public:
   void setUp()
   {
-    adaptor_.reset(new DirectDiskAdaptor());
-    writer_.reset(new ByteArrayDiskWriter());
-    adaptor_->setDiskWriter(writer_);
+    adaptor_ = std::make_shared<DirectDiskAdaptor>();
+    auto dw = make_unique<ByteArrayDiskWriter>();
+    writer_ = dw.get();
+    adaptor_->setDiskWriter(std::move(dw));
   }
 
   void testAdd();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( WrDiskCacheTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(WrDiskCacheTest);
 
 void WrDiskCacheTest::testAdd()
 {
@@ -65,8 +67,9 @@ void WrDiskCacheTest::testAdd()
   e2.cacheData(createDataCell(31, "01234567890"));
   CPPUNIT_ASSERT(dc.update(&e2, 11));
   // e2 is flushed to the disk
-  CPPUNIT_ASSERT_EQUAL(std::string("who knows?hello worldseconddata01234567890"),
-                       writer_->getString());
+  CPPUNIT_ASSERT_EQUAL(
+      std::string("who knows?hello worldseconddata01234567890"),
+      writer_->getString());
   CPPUNIT_ASSERT_EQUAL((size_t)0, e2.getSize());
   CPPUNIT_ASSERT_EQUAL((size_t)0, dc.getSize());
 }

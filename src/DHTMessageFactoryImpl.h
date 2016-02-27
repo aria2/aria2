@@ -48,11 +48,11 @@ class DHTTokenTracker;
 class DHTMessage;
 class DHTAbstractMessage;
 
-class DHTMessageFactoryImpl:public DHTMessageFactory {
+class DHTMessageFactoryImpl : public DHTMessageFactory {
 private:
   int family_;
 
-  SharedHandle<DHTNode> localNode_;
+  std::shared_ptr<DHTNode> localNode_;
 
   DHTConnection* connection_;
 
@@ -65,92 +65,83 @@ private:
   DHTTokenTracker* tokenTracker_;
 
   // search node in routingTable. If it is not found, create new one.
-  SharedHandle<DHTNode> getRemoteNode
-  (const unsigned char* id, const std::string& ipaddr, uint16_t port) const;
+  std::shared_ptr<DHTNode> getRemoteNode(const unsigned char* id,
+                                         const std::string& ipaddr,
+                                         uint16_t port) const;
 
   void validateID(const String* id) const;
 
   void validatePort(const Integer* i) const;
 
-  void extractNodes
-  (std::vector<SharedHandle<DHTNode> >& nodes,
-   const unsigned char* src, size_t length);
+  void extractNodes(std::vector<std::shared_ptr<DHTNode>>& nodes,
+                    const unsigned char* src, size_t length);
 
   void setCommonProperty(DHTAbstractMessage* m);
 
 public:
   DHTMessageFactoryImpl(int family);
 
-  virtual ~DHTMessageFactoryImpl();
+  virtual std::unique_ptr<DHTQueryMessage>
+  createQueryMessage(const Dict* dict, const std::string& ipaddr,
+                     uint16_t port) CXX11_OVERRIDE;
 
-  virtual SharedHandle<DHTQueryMessage>
-  createQueryMessage(const Dict* dict,
-                     const std::string& ipaddr, uint16_t port);
+  virtual std::unique_ptr<DHTResponseMessage>
+  createResponseMessage(const std::string& messageType, const Dict* dict,
+                        const std::string& ipaddr,
+                        uint16_t port) CXX11_OVERRIDE;
 
-  virtual SharedHandle<DHTResponseMessage>
-  createResponseMessage(const std::string& messageType,
-                        const Dict* dict,
-                        const std::string& ipaddr, uint16_t port);
+  virtual std::unique_ptr<DHTPingMessage> createPingMessage(
+      const std::shared_ptr<DHTNode>& remoteNode,
+      const std::string& transactionID = A2STR::NIL) CXX11_OVERRIDE;
 
-  virtual SharedHandle<DHTQueryMessage>
-  createPingMessage(const SharedHandle<DHTNode>& remoteNode,
-                    const std::string& transactionID = A2STR::NIL);
-
-  virtual SharedHandle<DHTResponseMessage>
-  createPingReplyMessage(const SharedHandle<DHTNode>& remoteNode,
+  virtual std::unique_ptr<DHTPingReplyMessage>
+  createPingReplyMessage(const std::shared_ptr<DHTNode>& remoteNode,
                          const unsigned char* id,
-                         const std::string& transactionID);
+                         const std::string& transactionID) CXX11_OVERRIDE;
 
-  virtual SharedHandle<DHTQueryMessage>
-  createFindNodeMessage(const SharedHandle<DHTNode>& remoteNode,
-                        const unsigned char* targetNodeID,
-                        const std::string& transactionID = A2STR::NIL);
+  virtual std::unique_ptr<DHTFindNodeMessage> createFindNodeMessage(
+      const std::shared_ptr<DHTNode>& remoteNode,
+      const unsigned char* targetNodeID,
+      const std::string& transactionID = A2STR::NIL) CXX11_OVERRIDE;
 
-  SharedHandle<DHTResponseMessage>
-  createFindNodeReplyMessage(const SharedHandle<DHTNode>& remoteNode,
+  std::unique_ptr<DHTFindNodeReplyMessage>
+  createFindNodeReplyMessage(const std::shared_ptr<DHTNode>& remoteNode,
                              const Dict* dict,
                              const std::string& transactionID);
 
+  virtual std::unique_ptr<DHTFindNodeReplyMessage> createFindNodeReplyMessage(
+      const std::shared_ptr<DHTNode>& remoteNode,
+      std::vector<std::shared_ptr<DHTNode>> closestKNodes,
+      const std::string& transactionID) CXX11_OVERRIDE;
 
-  virtual SharedHandle<DHTResponseMessage>
-  createFindNodeReplyMessage
-  (const SharedHandle<DHTNode>& remoteNode,
-   const std::vector<SharedHandle<DHTNode> >& closestKNodes,
-   const std::string& transactionID);
+  virtual std::unique_ptr<DHTGetPeersMessage> createGetPeersMessage(
+      const std::shared_ptr<DHTNode>& remoteNode, const unsigned char* infoHash,
+      const std::string& transactionID = A2STR::NIL) CXX11_OVERRIDE;
 
-  virtual SharedHandle<DHTQueryMessage>
-  createGetPeersMessage(const SharedHandle<DHTNode>& remoteNode,
-                        const unsigned char* infoHash,
-                        const std::string& transactionID = A2STR::NIL);
+  virtual std::unique_ptr<DHTGetPeersReplyMessage> createGetPeersReplyMessage(
+      const std::shared_ptr<DHTNode>& remoteNode,
+      std::vector<std::shared_ptr<DHTNode>> closestKNodes,
+      std::vector<std::shared_ptr<Peer>> peers, const std::string& token,
+      const std::string& transactionID) CXX11_OVERRIDE;
 
-  virtual SharedHandle<DHTResponseMessage>
-  createGetPeersReplyMessage
-  (const SharedHandle<DHTNode>& remoteNode,
-   const std::vector<SharedHandle<DHTNode> >& closestKNodes,
-   const std::vector<SharedHandle<Peer> >& peers,
-   const std::string& token,
-   const std::string& transactionID);
+  std::unique_ptr<DHTGetPeersReplyMessage>
+  createGetPeersReplyMessage(const std::shared_ptr<DHTNode>& remoteNode,
+                             const Dict* dict,
+                             const std::string& transactionID);
 
-  SharedHandle<DHTResponseMessage>
-  createGetPeersReplyMessage
-  (const SharedHandle<DHTNode>& remoteNode,
-   const Dict* dict,
-   const std::string& transactionID);
+  virtual std::unique_ptr<DHTAnnouncePeerMessage> createAnnouncePeerMessage(
+      const std::shared_ptr<DHTNode>& remoteNode, const unsigned char* infoHash,
+      uint16_t tcpPort, const std::string& token,
+      const std::string& transactionID = A2STR::NIL) CXX11_OVERRIDE;
 
-  virtual SharedHandle<DHTQueryMessage>
-  createAnnouncePeerMessage(const SharedHandle<DHTNode>& remoteNode,
-                            const unsigned char* infoHash,
-                            uint16_t tcpPort,
-                            const std::string& token,
-                            const std::string& transactionID = A2STR::NIL);
+  virtual std::unique_ptr<DHTAnnouncePeerReplyMessage>
+  createAnnouncePeerReplyMessage(const std::shared_ptr<DHTNode>& remoteNode,
+                                 const std::string& transactionID)
+      CXX11_OVERRIDE;
 
-  virtual SharedHandle<DHTResponseMessage>
-  createAnnouncePeerReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-                                 const std::string& transactionID);
-
-  virtual SharedHandle<DHTMessage>
+  virtual std::unique_ptr<DHTUnknownMessage>
   createUnknownMessage(const unsigned char* data, size_t length,
-                       const std::string& ipaddr, uint16_t port);
+                       const std::string& ipaddr, uint16_t port) CXX11_OVERRIDE;
 
   void setRoutingTable(DHTRoutingTable* routingTable);
 
@@ -162,7 +153,7 @@ public:
 
   void setTokenTracker(DHTTokenTracker* tokenTracker);
 
-  void setLocalNode(const SharedHandle<DHTNode>& localNode);
+  void setLocalNode(const std::shared_ptr<DHTNode>& localNode);
 };
 
 } // namespace aria2

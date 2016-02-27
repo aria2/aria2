@@ -42,16 +42,15 @@ namespace aria2 {
 
 class FileAllocationEntry;
 
-class FileAllocationDispatcherCommand :
-    public SequentialDispatcherCommand<FileAllocationEntry> {
+class FileAllocationDispatcherCommand
+    : public SequentialDispatcherCommand<FileAllocationEntry> {
 public:
-  FileAllocationDispatcherCommand
-  (cuid_t cuid,
-   const SharedHandle<FileAllocationMan>& fileAllocMan,
-   DownloadEngine* e);
+  FileAllocationDispatcherCommand(cuid_t cuid, FileAllocationMan* fileAllocMan,
+                                  DownloadEngine* e);
+
 protected:
-  virtual Command* createCommand
-  (const SharedHandle<FileAllocationEntry>& entry);
+  virtual std::unique_ptr<Command>
+  createCommand(FileAllocationEntry* entry) CXX11_OVERRIDE;
 };
 
 } // namespace aria2

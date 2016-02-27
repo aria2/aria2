@@ -50,15 +50,14 @@ TLSSession* TLSSession::make(TLSContext* ctx)
 }
 
 OpenSSLTLSSession::OpenSSLTLSSession(OpenSSLTLSContext* tlsContext)
-  : ssl_(0),
-    tlsContext_(tlsContext),
-    rv_(1)
-{}
+    : ssl_(nullptr), tlsContext_(tlsContext), rv_(1)
+{
+}
 
 OpenSSLTLSSession::~OpenSSLTLSSession()
 {
-  if(ssl_) {
-    SSL_shutdown(ssl_);
+  if (ssl_) {
+    SSL_free(ssl_);
   }
 }
 
@@ -66,11 +65,11 @@ int OpenSSLTLSSession::init(sock_t sockfd)
 {
   ERR_clear_error();
   ssl_ = SSL_new(tlsContext_->getSSLCtx());
-  if(!ssl_) {
+  if (!ssl_) {
     return TLS_ERR_ERROR;
   }
   rv_ = SSL_set_fd(ssl_, sockfd);
-  if(rv_ == 0) {
+  if (rv_ == 0) {
     return TLS_ERR_ERROR;
   }
   return TLS_ERR_OK;
@@ -99,9 +98,10 @@ int OpenSSLTLSSession::closeConnection()
 int OpenSSLTLSSession::checkDirection()
 {
   int error = SSL_get_error(ssl_, rv_);
-  if(error == SSL_ERROR_WANT_WRITE) {
+  if (error == SSL_ERROR_WANT_WRITE) {
     return TLS_WANT_WRITE;
-  } else {
+  }
+  else {
     // TODO We ignore error other than SSL_ERR_WANT_READ here for now
     return TLS_WANT_READ;
   }
@@ -119,13 +119,15 @@ ssize_t OpenSSLTLSSession::writeData(const void* data, size_t len)
 {
   ERR_clear_error();
   rv_ = SSL_write(ssl_, data, len);
-  if(rv_ <= 0) {
-    if(wouldblock(ssl_, rv_)) {
+  if (rv_ <= 0) {
+    if (wouldblock(ssl_, rv_)) {
       return TLS_ERR_WOULDBLOCK;
-    } else {
+    }
+    else {
       return TLS_ERR_ERROR;
     }
-  } else {
+  }
+  else {
     ssize_t ret = rv_;
     rv_ = 1;
     return ret;
@@ -136,30 +138,39 @@ ssize_t OpenSSLTLSSession::readData(void* data, size_t len)
 {
   ERR_clear_error();
   rv_ = SSL_read(ssl_, data, len);
-  if(rv_ <= 0) {
-    if(wouldblock(ssl_, rv_)) {
+  if (rv_ <= 0) {
+    if (wouldblock(ssl_, rv_)) {
       return TLS_ERR_WOULDBLOCK;
-    } else {
-      return TLS_ERR_ERROR;
     }
-  } else {
-    ssize_t ret = rv_;
-    rv_ = 1;
-    return ret;
+
+    if (rv_ == 0) {
+      auto err = SSL_get_error(ssl_, rv_);
+
+      if (err == SSL_ERROR_ZERO_RETURN) {
+        return 0;
+      }
+    }
+
+    return TLS_ERR_ERROR;
   }
+
+  ssize_t ret = rv_;
+  rv_ = 1;
+  return ret;
 }
 
-int OpenSSLTLSSession::handshake()
+int OpenSSLTLSSession::handshake(TLSVersion& version)
 {
   ERR_clear_error();
-  if(tlsContext_->getSide() == TLS_CLIENT) {
+  if (tlsContext_->getSide() == TLS_CLIENT) {
     rv_ = SSL_connect(ssl_);
-  } else {
+  }
+  else {
     rv_ = SSL_accept(ssl_);
   }
-  if(rv_ <= 0) {
+  if (rv_ <= 0) {
     int sslError = SSL_get_error(ssl_, rv_);
-    switch(sslError) {
+    switch (sslError) {
     case SSL_ERROR_NONE:
     case SSL_ERROR_WANT_X509_LOOKUP:
     case SSL_ERROR_ZERO_RETURN:
@@ -173,29 +184,59 @@ int OpenSSLTLSSession::handshake()
       return TLS_ERR_ERROR;
     }
   }
+
+  switch (SSL_version(ssl_)) {
+  case SSL3_VERSION:
+    version = TLS_PROTO_SSL3;
+    break;
+
+#ifdef TLS1_VERSION
+  case TLS1_VERSION:
+    version = TLS_PROTO_TLS10;
+    break;
+#endif // TLS1_VERSION
+
+#ifdef TLS1_1_VERSION
+  case TLS1_1_VERSION:
+    version = TLS_PROTO_TLS11;
+    break;
+#endif // TLS1_1_VERSION
+
+#ifdef TLS1_2_VERSION
+  case TLS1_2_VERSION:
+    version = TLS_PROTO_TLS12;
+    break;
+#endif // TLS1_2_VERSION
+
+  default:
+    version = TLS_PROTO_NONE;
+    break;
+  }
+
   return TLS_ERR_OK;
 }
 
 int OpenSSLTLSSession::tlsConnect(const std::string& hostname,
-                           std::string& handshakeErr)
+                                  TLSVersion& version,
+                                  std::string& handshakeErr)
 {
   handshakeErr = "";
   int ret;
-  ret = handshake();
-  if(ret != TLS_ERR_OK) {
+  ret = handshake(version);
+  if (ret != TLS_ERR_OK) {
     return ret;
   }
-  if(tlsContext_->getSide() == TLS_CLIENT &&
-     tlsContext_->getVerifyPeer()) {
+  if (tlsContext_->getSide() == TLS_CLIENT && tlsContext_->getVerifyPeer()) {
     // verify peer
     X509* peerCert = SSL_get_peer_certificate(ssl_);
-    if(!peerCert) {
+    if (!peerCert) {
       handshakeErr = "certificate not found";
       return TLS_ERR_ERROR;
     }
-    auto_delete<X509*> certDeleter(peerCert, X509_free);
+    std::unique_ptr<X509, decltype(&X509_free)> certDeleter(peerCert,
+                                                            X509_free);
     long verifyResult = SSL_get_verify_result(ssl_);
-    if(verifyResult != X509_V_OK) {
+    if (verifyResult != X509_V_OK) {
       handshakeErr = X509_verify_cert_error_string(verifyResult);
       return TLS_ERR_ERROR;
     }
@@ -203,74 +244,75 @@ int OpenSSLTLSSession::tlsConnect(const std::string& hostname,
     std::vector<std::string> dnsNames;
     std::vector<std::string> ipAddrs;
     GENERAL_NAMES* altNames;
-    altNames = reinterpret_cast<GENERAL_NAMES*>
-      (X509_get_ext_d2i(peerCert, NID_subject_alt_name, NULL, NULL));
-    if(altNames) {
-      auto_delete<GENERAL_NAMES*> altNamesDeleter
-        (altNames, GENERAL_NAMES_free);
+    altNames = reinterpret_cast<GENERAL_NAMES*>(
+        X509_get_ext_d2i(peerCert, NID_subject_alt_name, nullptr, NULL));
+    if (altNames) {
+      std::unique_ptr<GENERAL_NAMES, decltype(&GENERAL_NAMES_free)>
+          altNamesDeleter(altNames, GENERAL_NAMES_free);
       size_t n = sk_GENERAL_NAME_num(altNames);
-      for(size_t i = 0; i < n; ++i) {
+      for (size_t i = 0; i < n; ++i) {
         const GENERAL_NAME* altName = sk_GENERAL_NAME_value(altNames, i);
-        if(altName->type == GEN_DNS) {
+        if (altName->type == GEN_DNS) {
           const char* name =
-            reinterpret_cast<char*>(ASN1_STRING_data(altName->d.ia5));
-          if(!name) {
+              reinterpret_cast<char*>(ASN1_STRING_data(altName->d.ia5));
+          if (!name) {
             continue;
           }
           size_t len = ASN1_STRING_length(altName->d.ia5);
           dnsNames.push_back(std::string(name, len));
-        } else if(altName->type == GEN_IPADD) {
+        }
+        else if (altName->type == GEN_IPADD) {
           const unsigned char* ipAddr = altName->d.iPAddress->data;
-          if(!ipAddr) {
+          if (!ipAddr) {
             continue;
           }
           size_t len = altName->d.iPAddress->length;
-          ipAddrs.push_back(std::string(reinterpret_cast<const char*>(ipAddr),
-                                        len));
+          ipAddrs.push_back(
+              std::string(reinterpret_cast<const char*>(ipAddr), len));
         }
       }
     }
     X509_NAME* subjectName = X509_get_subject_name(peerCert);
-    if(!subjectName) {
+    if (!subjectName) {
       handshakeErr = "could not get X509 name object from the certificate.";
       return TLS_ERR_ERROR;
     }
     int lastpos = -1;
-    while(1) {
-      lastpos = X509_NAME_get_index_by_NID(subjectName, NID_commonName,
-                                           lastpos);
-      if(lastpos == -1) {
+    while (1) {
+      lastpos =
+          X509_NAME_get_index_by_NID(subjectName, NID_commonName, lastpos);
+      if (lastpos == -1) {
         break;
       }
       X509_NAME_ENTRY* entry = X509_NAME_get_entry(subjectName, lastpos);
       unsigned char* out;
-      int outlen = ASN1_STRING_to_UTF8(&out,
-                                       X509_NAME_ENTRY_get_data(entry));
-      if(outlen < 0) {
+      int outlen = ASN1_STRING_to_UTF8(&out, X509_NAME_ENTRY_get_data(entry));
+      if (outlen < 0) {
         continue;
       }
       commonName.assign(&out[0], &out[outlen]);
       OPENSSL_free(out);
       break;
     }
-    if(!net::verifyHostname(hostname, dnsNames, ipAddrs, commonName)) {
+    if (!net::verifyHostname(hostname, dnsNames, ipAddrs, commonName)) {
       handshakeErr = "hostname does not match";
       return TLS_ERR_ERROR;
     }
   }
+
   return TLS_ERR_OK;
 }
 
-int OpenSSLTLSSession::tlsAccept()
+int OpenSSLTLSSession::tlsAccept(TLSVersion& version)
 {
-  return handshake();
+  return handshake(version);
 }
 
 std::string OpenSSLTLSSession::getLastErrorString()
 {
-  if(rv_ <= 0) {
+  if (rv_ <= 0) {
     int sslError = SSL_get_error(ssl_, rv_);
-    switch(sslError) {
+    switch (sslError) {
     case SSL_ERROR_NONE:
     case SSL_ERROR_WANT_READ:
     case SSL_ERROR_WANT_WRITE:
@@ -279,16 +321,19 @@ std::string OpenSSLTLSSession::getLastErrorString()
       return "";
     case SSL_ERROR_SYSCALL: {
       int err = ERR_get_error();
-      if(err == 0) {
-        if(rv_ == 0) {
+      if (err == 0) {
+        if (rv_ == 0) {
           return "EOF was received";
-        } else if(rv_ == -1) {
+        }
+        else if (rv_ == -1) {
           return "SSL I/O error";
-        } else {
+        }
+        else {
           return "unknown syscall error";
         }
-      } else {
-        return ERR_error_string(err, 0);
+      }
+      else {
+        return ERR_error_string(err, nullptr);
       }
     }
     case SSL_ERROR_SSL:
@@ -296,7 +341,8 @@ std::string OpenSSLTLSSession::getLastErrorString()
     default:
       return "unknown error";
     }
-  } else {
+  }
+  else {
     return "";
   }
 }

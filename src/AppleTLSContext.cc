@@ -36,8 +36,14 @@
 
 #include <algorithm>
 #include <functional>
+#include <sstream>
+
+#ifdef __MAC_10_6
+#include <Security/SecImportExport.h>
+#endif
 
 #include "LogFactory.h"
+#include "BufferedFile.h"
 #include "Logger.h"
 #include "MessageDigest.h"
 #include "fmt.h"
@@ -45,152 +51,206 @@
 #include "util.h"
 
 namespace {
-  using namespace aria2;
+using namespace aria2;
 
 #if defined(__MAC_10_6)
-  static const void *query_keys[] = {
-    kSecClass,
-    kSecReturnRef,
-    kSecMatchPolicy,
-    kSecMatchLimit
-  };
 
-  class cfrelease {
-    const void *ptr_;
-  public:
-    inline cfrelease(const void *ptr) : ptr_(ptr) {}
-    inline ~cfrelease() { if (ptr_) CFRelease(ptr_); }
-  };
+#if defined(__MAC_10_7)
+static const void* query_keys[] = {kSecClass, kSecReturnRef, kSecMatchPolicy,
+                                   kSecMatchLimit};
+#endif // defined(__MAC_10_7)
 
-  static inline bool isWhitespace(char c)
+template <typename T> class CFRef {
+  T ref_;
+
+public:
+  CFRef() : ref_(nullptr) {}
+
+  CFRef(T ref) : ref_(ref) {}
+
+  ~CFRef() { reset(nullptr); }
+
+  void reset(T ref)
   {
-    // Fingerprints are often separated by colons
-    return isspace(c) || c == ':';
-  }
-  static inline std::string stripWhitespace(std::string str)
-  {
-    str.erase(std::remove_if(str.begin(), str.end(), isWhitespace), str.end());
-    return str;
-  }
-
-  struct hash_validator {
-    const std::string& hash_;
-    hash_validator(const std::string& hash) : hash_(hash) {}
-    inline bool operator()(std::string type) const {
-      return MessageDigest::isValidHash(type, hash_);
+    if (ref_) {
+      CFRelease(ref_);
     }
-  };
+    ref_ = ref;
+  }
 
-  struct hash_finder {
-    CFDataRef data_;
-    const std::string& hash_;
-    hash_finder(CFDataRef data, const std::string& hash)
+  T get() { return ref_; }
+
+  const T get() const { return ref_; }
+
+  operator bool() const { return !!ref_; }
+};
+
+static inline bool isWhitespace(char c)
+{
+  // Fingerprints are often separated by colons
+  return isspace(c) || c == ':';
+}
+
+static inline std::string stripWhitespace(std::string str)
+{
+  str.erase(std::remove_if(std::begin(str), std::end(str), isWhitespace),
+            std::end(str));
+  return str;
+}
+
+struct hash_validator {
+  const std::string& hash_;
+
+  hash_validator(const std::string& hash) : hash_(hash) {}
+
+  inline bool operator()(std::string type) const
+  {
+    return MessageDigest::isValidHash(type, hash_);
+  }
+};
+
+struct hash_finder {
+  CFDataRef data_;
+  const std::string& hash_;
+
+  hash_finder(CFDataRef data, const std::string& hash)
       : data_(data), hash_(hash)
-    {}
-    inline bool operator()(std::string type) const {
-      std::string hash = MessageDigest::create(type)->update(
-          CFDataGetBytePtr(data_), CFDataGetLength(data_)).digest();
-      hash = util::toHex(hash);
-      return hash == hash_;
-    }
-  };
-
-
-  std::string errToString(OSStatus err)
   {
-    std::string rv = "Unkown error";
-    CFStringRef cerr = SecCopyErrorMessageString(err, 0);
-    if (cerr) {
-      size_t len = CFStringGetLength(cerr) * 4;
-      char *buf = new char[len];
-      if (CFStringGetCString(cerr, buf, len, kCFStringEncodingUTF8)) {
-        rv = buf;
-      }
-      delete [] buf;
-      CFRelease(cerr);
-    }
+  }
+
+  inline bool operator()(std::string type) const
+  {
+    std::string hash =
+        MessageDigest::create(type)
+            ->update(CFDataGetBytePtr(data_), CFDataGetLength(data_))
+            .digest();
+    hash = util::toHex(hash);
+    return hash == hash_;
+  }
+};
+
+std::string errToString(OSStatus err)
+{
+  std::string rv = "Unkown error";
+  CFRef<CFStringRef> cerr(SecCopyErrorMessageString(err, nullptr));
+  if (!cerr) {
     return rv;
   }
+  size_t len = CFStringGetLength(cerr.get()) * 4;
+  auto buf = make_unique<char[]>(len);
+  if (CFStringGetCString(cerr.get(), buf.get(), len, kCFStringEncodingUTF8)) {
+    rv = buf.get();
+  }
+  return rv;
+}
+
+bool checkIdentity(const SecIdentityRef id, const std::string& fingerPrint,
+                   const std::vector<std::string> supported)
+{
+  CFRef<SecCertificateRef> ref;
+  SecCertificateRef raw_ref = nullptr;
+  if (SecIdentityCopyCertificate(id, &raw_ref) != errSecSuccess) {
+    A2_LOG_ERROR("Failed to get a certref!");
+    return false;
+  }
+  ref.reset(raw_ref);
+
+  CFRef<CFDataRef> data(SecCertificateCopyData(ref.get()));
+  if (!data) {
+    A2_LOG_ERROR("Failed to get a data!");
+    return false;
+  }
+
+  // Do try all supported hash algorithms.
+  // Usually the fingerprint would be sha1 or md5, however this is more
+  // future-proof. Also "usually" doesn't cut it; there is already software
+  // using SHA-2 class algos, and SHA-3 is standardized and potential users
+  // cannot be far.
+  return std::find_if(std::begin(supported), std::end(supported),
+                      hash_finder(data.get(), fingerPrint)) !=
+         std::end(supported);
+}
 
 #endif // defined(__MAC_10_6)
-
-}
+} // namespace
 
 namespace aria2 {
 
-TLSContext* TLSContext::make(TLSSessionSide side)
+TLSContext* TLSContext::make(TLSSessionSide side, TLSVersion ver)
 {
-  return new AppleTLSContext(side);
+  return new AppleTLSContext(side, ver);
 }
 
 AppleTLSContext::~AppleTLSContext()
 {
   if (credentials_) {
     CFRelease(credentials_);
-    credentials_ = 0;
+    credentials_ = nullptr;
   }
 }
 
 bool AppleTLSContext::addCredentialFile(const std::string& certfile,
                                         const std::string& keyfile)
 {
+  if (certfile.empty()) {
+    return false;
+  }
+
   if (tryAsFingerprint(certfile)) {
     return true;
   }
+  if (tryAsPKCS12(certfile)) {
+    return true;
+  }
 
-  A2_LOG_WARN("TLS credential files are not supported. Use the KeyChain to manage your certificates and provide a fingerprint. See the manual.");
+  A2_LOG_WARN("Only PKCS12/PFX files with a blank password and fingerprints of "
+              "certificates in your KeyChain are supported. See the manual.");
   return false;
 }
 
 bool AppleTLSContext::addTrustedCACertFile(const std::string& certfile)
 {
-  A2_LOG_INFO("TLS CA bundle files are not supported. Use the KeyChain to manage your certificates.");
+  A2_LOG_INFO("TLS CA bundle files are not supported. Use the KeyChain to "
+              "manage your certificates.");
   return false;
 }
 
-SecIdentityRef AppleTLSContext::getCredentials()
-{
-  return credentials_;
-}
+SecIdentityRef AppleTLSContext::getCredentials() { return credentials_; }
 
 bool AppleTLSContext::tryAsFingerprint(const std::string& fingerprint)
 {
-  std::string fp = stripWhitespace(fingerprint);
+  auto fp = stripWhitespace(fingerprint);
   // Verify this is a valid hex representation and normalize.
-  fp = util::toHex(util::fromHex(fp.begin(), fp.end()));
+  fp = util::toHex(util::fromHex(std::begin(fp), std::end(fp)));
 
   // Verify this can represent a hash
-  std::vector<std::string> ht = MessageDigest::getSupportedHashTypes();
-  if (std::find_if(ht.begin(), ht.end(), hash_validator(fp)) == ht.end()) {
-    A2_LOG_INFO(fmt("%s is not a fingerprint, invalid hash representation", fingerprint.c_str()));
+  auto ht = MessageDigest::getSupportedHashTypes();
+  if (std::find_if(std::begin(ht), std::end(ht), hash_validator(fp)) ==
+      std::end(ht)) {
+    A2_LOG_INFO(fmt("%s is not a fingerprint, invalid hash representation",
+                    fingerprint.c_str()));
     return false;
   }
 
-#if defined(__MAC_10_6)
+#if defined(__MAC_10_7)
   A2_LOG_DEBUG(fmt("Looking for cert with fingerprint %s", fp.c_str()));
 
   // Build and run the KeyChain the query.
-  SecPolicyRef policy = SecPolicyCreateSSL(true, 0);
+  CFRef<SecPolicyRef> policy(SecPolicyCreateSSL(true, nullptr));
   if (!policy) {
     A2_LOG_ERROR("Failed to create SecPolicy");
     return false;
   }
-  cfrelease del_policy(policy);
-  const void *query_values[] = {
-    kSecClassIdentity,
-    kCFBooleanTrue,
-    policy,
-    kSecMatchLimitAll
-  };
-  CFDictionaryRef query = CFDictionaryCreate(0, query_keys, query_values,
-                                             4, 0, 0);
+  const void* query_values[] = {kSecClassIdentity, kCFBooleanTrue, policy.get(),
+                                kSecMatchLimitAll};
+  CFRef<CFDictionaryRef> query(CFDictionaryCreate(
+      nullptr, query_keys, query_values, 4, nullptr, nullptr));
   if (!query) {
     A2_LOG_ERROR("Failed to create identity query");
     return false;
   }
-  cfrelease del_query(query);
   CFArrayRef identities;
-  OSStatus err = SecItemCopyMatching(query, (CFTypeRef*)&identities);
+  OSStatus err = SecItemCopyMatching(query.get(), (CFTypeRef*)&identities);
   if (err != errSecSuccess) {
     A2_LOG_ERROR("Query failed: " + errToString(err));
     return false;
@@ -204,25 +264,7 @@ bool AppleTLSContext::tryAsFingerprint(const std::string& fingerprint)
       A2_LOG_ERROR("Failed to get a value!");
       continue;
     }
-    SecCertificateRef ref = 0;
-    if (SecIdentityCopyCertificate(id, &ref) != errSecSuccess) {
-      A2_LOG_ERROR("Failed to get a certref!");
-      continue;
-    }
-    cfrelease del_ref(ref);
-    CFDataRef data = SecCertificateCopyData(ref);
-    if (!data) {
-      A2_LOG_ERROR("Failed to get a data!");
-      continue;
-    }
-    cfrelease del_data(data);
-
-    // Do try all supported hash algorithms.
-    // Usually the fingerprint would be sha1 or md5, however this is more
-    // future-proof. Also "usually" doesn't cut it; there is already software
-    // using SHA-2 class algos, and SHA-3 is standardized and potential users
-    // cannot be far.
-    if (std::find_if(ht.begin(), ht.end(), hash_finder(data, fp)) == ht.end()) {
+    if (!checkIdentity(id, fp, ht)) {
       continue;
     }
     A2_LOG_INFO("Found cert with matching fingerprint");
@@ -231,12 +273,118 @@ bool AppleTLSContext::tryAsFingerprint(const std::string& fingerprint)
     return true;
   }
 
-  A2_LOG_ERROR(fmt("Failed to lookup %s in your KeyChain", fingerprint.c_str()));
+  A2_LOG_ERROR(
+      fmt("Failed to lookup %s in your KeyChain", fingerprint.c_str()));
+  return false;
+
+#else // defined(__MAC_10_7)
+#if defined(__MAC_10_6)
+
+  CFRef<SecIdentitySearchRef> search;
+  SecIdentitySearchRef raw_search;
+
+  // Deprecated as of 10.7
+  OSStatus err = SecIdentitySearchCreate(0, CSSM_KEYUSE_SIGN, &raw_search);
+  if (err != errSecSuccess) {
+    A2_LOG_ERROR("Certificate search failed: " + errToString(err));
+  }
+  search.reset(raw_search);
+
+  SecIdentityRef id;
+  while (SecIdentitySearchCopyNext(search, &id) == errSecSuccess) {
+    if (!checkIdentity(id, fp, ht)) {
+      continue;
+    }
+    A2_LOG_INFO("Found cert with matching fingerprint");
+    credentials_ = id;
+    return true;
+  }
+
+  A2_LOG_ERROR(
+      fmt("Failed to lookup %s in your KeyChain", fingerprint.c_str()));
   return false;
 
 #else // defined(__MAC_10_6)
 
-  A2_LOG_ERROR("Your system does not support creditials via fingerprints; Upgrade to OSX 10.6 or later");
+  A2_LOG_ERROR("Your system does not support creditials via fingerprints; "
+               "Upgrade to OSX 10.6 or later");
+  return false;
+
+#endif // defined(__MAC_10_6)
+#endif // defined(__MAC_10_7)
+}
+
+bool AppleTLSContext::tryAsPKCS12(const std::string& certfile)
+{
+#if defined(__MAC_10_6)
+  std::stringstream ss;
+  BufferedFile(certfile.c_str(), BufferedFile::READ).transfer(ss);
+  auto data = ss.str();
+  if (data.empty()) {
+    A2_LOG_ERROR("Couldn't read certificate file.");
+    return false;
+  }
+  CFRef<CFDataRef> dataRef(
+      CFDataCreate(nullptr, (const UInt8*)data.c_str(), data.size()));
+  if (!dataRef) {
+    A2_LOG_ERROR("Couldn't allocate PKCS12 data");
+    return false;
+  }
+
+  return tryAsPKCS12(dataRef.get(), "") || tryAsPKCS12(dataRef.get(), nullptr);
+
+#else // defined(__MAC_10_6)
+  A2_LOG_INFO("PKCS12 files are only supported in OSX 10.6 or later.");
+  return false;
+
+#endif // defined(__MAC_10_6)
+}
+
+bool AppleTLSContext::tryAsPKCS12(CFDataRef data, const char* password)
+{
+#if defined(__MAC_10_6)
+  CFRef<CFStringRef> passwordRef;
+  if (password) {
+    passwordRef.reset(CFStringCreateWithBytes(nullptr, (const UInt8*)password,
+                                              strlen(password),
+                                              kCFStringEncodingUTF8, false));
+  }
+  const void* keys[] = {kSecImportExportPassphrase};
+  const void* values[] = {passwordRef.get()};
+  CFRef<CFDictionaryRef> options(
+      CFDictionaryCreate(nullptr, keys, values, 1, nullptr, nullptr));
+  if (!options) {
+    A2_LOG_ERROR("Failed to create options");
+    return false;
+  }
+
+  CFRef<CFArrayRef> items;
+  CFArrayRef raw_items = nullptr;
+  OSStatus rv = SecPKCS12Import(data, options.get(), &raw_items);
+  if (rv != errSecSuccess) {
+    A2_LOG_DEBUG(
+        fmt("Failed to parse PKCS12 data: %s", errToString(rv).c_str()));
+    return false;
+  }
+  items.reset(raw_items);
+
+  CFDictionaryRef idAndTrust =
+      (CFDictionaryRef)CFArrayGetValueAtIndex(items.get(), 0);
+  if (!idAndTrust) {
+    A2_LOG_ERROR("Failed to get identity and trust from PKCS12 data");
+    return false;
+  }
+  credentials_ =
+      (SecIdentityRef)CFDictionaryGetValue(idAndTrust, kSecImportItemIdentity);
+  if (!credentials_) {
+    A2_LOG_ERROR("Failed to get credentials PKCS12 data");
+    return false;
+  }
+  CFRetain(credentials_);
+  A2_LOG_INFO("Loaded certificate from file");
+  return true;
+
+#else // defined(__MAC_10_6)
   return false;
 
 #endif // defined(__MAC_10_6)

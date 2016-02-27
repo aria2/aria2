@@ -38,8 +38,8 @@
 #include "RequestGroupEntry.h"
 
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "ProgressAwareEntry.h"
 
 namespace aria2 {
@@ -48,24 +48,29 @@ class FileAllocationIterator;
 class Command;
 class DownloadEngine;
 
-class FileAllocationEntry : public RequestGroupEntry, public ProgressAwareEntry {
+class FileAllocationEntry : public RequestGroupEntry,
+                            public ProgressAwareEntry {
 private:
-  SharedHandle<FileAllocationIterator> fileAllocationIterator_;
+  std::unique_ptr<FileAllocationIterator> fileAllocationIterator_;
+
 public:
-  FileAllocationEntry(RequestGroup* requestGroup, Command* nextCommand = 0);
+  FileAllocationEntry(
+      RequestGroup* requestGroup,
+      std::unique_ptr<Command> nextCommand = std::unique_ptr<Command>());
 
   ~FileAllocationEntry();
 
-  virtual int64_t getCurrentLength();
+  virtual int64_t getCurrentLength() CXX11_OVERRIDE;
 
-  virtual int64_t getTotalLength();
+  virtual int64_t getTotalLength() CXX11_OVERRIDE;
 
-  virtual bool finished();
+  virtual bool finished() CXX11_OVERRIDE;
 
   void allocateChunk();
 
-  virtual void prepareForNextAction(std::vector<Command*>& commands,
-                                    DownloadEngine* e) = 0;
+  virtual void
+  prepareForNextAction(std::vector<std::unique_ptr<Command>>& commands,
+                       DownloadEngine* e) = 0;
 };
 
 } // namespace aria2

@@ -53,49 +53,50 @@ namespace aria2 {
 const char BtPortMessage::NAME[] = "port";
 
 BtPortMessage::BtPortMessage(uint16_t port)
-  : SimpleBtMessage(ID, NAME),
-    port_(port),
-    localNode_(0),
-    routingTable_(0),
-    taskQueue_(0),
-    taskFactory_(0)
-{}
+    : SimpleBtMessage(ID, NAME),
+      port_(port),
+      localNode_(nullptr),
+      routingTable_(nullptr),
+      taskQueue_(nullptr),
+      taskFactory_(nullptr)
+{
+}
 
-BtPortMessage* BtPortMessage::create
-(const unsigned char* data, size_t dataLength)
+std::unique_ptr<BtPortMessage> BtPortMessage::create(const unsigned char* data,
+                                                     size_t dataLength)
 {
   bittorrent::assertPayloadLengthEqual(3, dataLength, NAME);
   bittorrent::assertID(ID, data, NAME);
   uint16_t port = bittorrent::getShortIntParam(data, 1);
-  BtPortMessage* message(new BtPortMessage(port));
-  return message;
+  return make_unique<BtPortMessage>(port);
 }
 
 void BtPortMessage::doReceivedAction()
 {
-  if(taskFactory_ && taskQueue_) {
-    if(port_ == 0) {
+  if (taskFactory_ && taskQueue_) {
+    if (port_ == 0) {
       A2_LOG_DEBUG("Ignored port 0.");
       return;
     }
     // node id is random at this point. When ping reply received, new DHTNode
     // instance created with proper node ID and is added to a routing table.
-    SharedHandle<DHTNode> node(new DHTNode());
+    auto node = std::make_shared<DHTNode>();
     node->setIPAddress(getPeer()->getIPAddress());
     node->setPort(port_);
     {
-      SharedHandle<DHTTask> task = taskFactory_->createPingTask(node);
+      std::shared_ptr<DHTTask> task = taskFactory_->createPingTask(node);
       taskQueue_->addImmediateTask(task);
     }
-    if(routingTable_->getNumBucket() == 1) {
+    if (routingTable_->getNumBucket() == 1) {
       // initiate bootstrap
       A2_LOG_INFO("Dispatch node_lookup since too few buckets.");
-      taskQueue_->addImmediateTask
-        (taskFactory_->createNodeLookupTask(localNode_->getID()));
+      taskQueue_->addImmediateTask(
+          taskFactory_->createNodeLookupTask(localNode_->getID()));
     }
-  } else {
-    A2_LOG_INFO
-      ("DHT port message received while localhost didn't declare support it.");
+  }
+  else {
+    A2_LOG_INFO(
+        "DHT port message received while localhost didn't declare support it.");
   }
 }
 
@@ -107,24 +108,20 @@ unsigned char* BtPortMessage::createMessage()
    * port --- port number, 2bytes
    * total: 7bytes
    */
-  unsigned char* msg = new unsigned char[MESSAGE_LENGTH];
+  auto msg = new unsigned char[MESSAGE_LENGTH];
   bittorrent::createPeerMessageString(msg, MESSAGE_LENGTH, 3, ID);
   bittorrent::setShortIntParam(&msg[5], port_);
   return msg;
 }
 
-size_t BtPortMessage::getMessageLength() {
-  return MESSAGE_LENGTH;
-}
+size_t BtPortMessage::getMessageLength() { return MESSAGE_LENGTH; }
 
-std::string BtPortMessage::toString() const {
+std::string BtPortMessage::toString() const
+{
   return fmt("%s port=%u", NAME, port_);
 }
 
-void BtPortMessage::setLocalNode(DHTNode* localNode)
-{
-  localNode_ = localNode;
-}
+void BtPortMessage::setLocalNode(DHTNode* localNode) { localNode_ = localNode; }
 
 void BtPortMessage::setRoutingTable(DHTRoutingTable* routingTable)
 {

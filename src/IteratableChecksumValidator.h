@@ -36,7 +36,8 @@
 #define D_ITERATABLE_CHECKSUM_VALIDATOR_H
 
 #include "IteratableValidator.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -44,34 +45,35 @@ class DownloadContext;
 class PieceStorage;
 class MessageDigest;
 
-class IteratableChecksumValidator:public IteratableValidator
-{
+class IteratableChecksumValidator : public IteratableValidator {
 private:
-  SharedHandle<DownloadContext> dctx_;
+  std::shared_ptr<DownloadContext> dctx_;
 
-  SharedHandle<PieceStorage> pieceStorage_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
 
   int64_t currentOffset_;
 
-  SharedHandle<MessageDigest> ctx_;
+  std::unique_ptr<MessageDigest> ctx_;
+
 public:
-  IteratableChecksumValidator(const SharedHandle<DownloadContext>& dctx,
-                              const SharedHandle<PieceStorage>& pieceStorage);
+  IteratableChecksumValidator(
+      const std::shared_ptr<DownloadContext>& dctx,
+      const std::shared_ptr<PieceStorage>& pieceStorage);
 
   virtual ~IteratableChecksumValidator();
 
-  virtual void init();
+  virtual void init() CXX11_OVERRIDE;
 
-  virtual void validateChunk();
+  virtual void validateChunk() CXX11_OVERRIDE;
 
-  virtual bool finished() const;
+  virtual bool finished() const CXX11_OVERRIDE;
 
-  virtual int64_t getCurrentOffset() const
+  virtual int64_t getCurrentOffset() const CXX11_OVERRIDE
   {
     return currentOffset_;
   }
 
-  virtual int64_t getTotalLength() const;
+  virtual int64_t getTotalLength() const CXX11_OVERRIDE;
 };
 
 } // namespace aria2

@@ -43,17 +43,16 @@ const std::string DHTQueryMessage::Q("q");
 
 const std::string DHTQueryMessage::A("a");
 
-DHTQueryMessage::DHTQueryMessage(const SharedHandle<DHTNode>& localNode,
-                                 const SharedHandle<DHTNode>& remoteNode,
-                                 const std::string& transactionID):
-  DHTAbstractMessage(localNode, remoteNode, transactionID) {}
+DHTQueryMessage::DHTQueryMessage(const std::shared_ptr<DHTNode>& localNode,
+                                 const std::shared_ptr<DHTNode>& remoteNode,
+                                 const std::string& transactionID)
+    : DHTAbstractMessage(localNode, remoteNode, transactionID)
+{
+}
 
 DHTQueryMessage::~DHTQueryMessage() {}
 
-const std::string& DHTQueryMessage::getType() const
-{
-  return Q;
-}
+const std::string& DHTQueryMessage::getType() const { return Q; }
 
 void DHTQueryMessage::fillMessage(Dict* msgDict)
 {
@@ -61,16 +60,12 @@ void DHTQueryMessage::fillMessage(Dict* msgDict)
   msgDict->put(A, getArgument());
 }
 
-bool DHTQueryMessage::isReply() const
-{
-  return false;
-}
+bool DHTQueryMessage::isReply() const { return false; }
 
 std::string DHTQueryMessage::toString() const
 {
   return fmt("dht query %s TransactionID=%s Remote:%s(%u), id=%s, v=%s, %s",
-             getMessageType().c_str(),
-             util::toHex(getTransactionID()).c_str(),
+             getMessageType().c_str(), util::toHex(getTransactionID()).c_str(),
              getRemoteNode()->getIPAddress().c_str(),
              getRemoteNode()->getPort(),
              util::toHex(getRemoteNode()->getID(), DHT_ID_LENGTH).c_str(),

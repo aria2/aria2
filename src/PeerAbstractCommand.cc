@@ -49,23 +49,22 @@
 
 namespace aria2 {
 
-PeerAbstractCommand::PeerAbstractCommand
-(cuid_t cuid,
- const SharedHandle<Peer>& peer,
- DownloadEngine* e,
- const SharedHandle<SocketCore>& s)
- : Command(cuid),
-   checkPoint_(global::wallclock()),
-   // TODO referring global option
-   timeout_(e->getOption()->getAsInt(PREF_BT_TIMEOUT)),
-   e_(e),
-   socket_(s),
-   peer_(peer),
-   checkSocketIsReadable_(false),
-   checkSocketIsWritable_(false),
-   noCheck_(false)
+PeerAbstractCommand::PeerAbstractCommand(cuid_t cuid,
+                                         const std::shared_ptr<Peer>& peer,
+                                         DownloadEngine* e,
+                                         const std::shared_ptr<SocketCore>& s)
+    : Command(cuid),
+      checkPoint_(global::wallclock()),
+      // TODO referring global option
+      timeout_(std::chrono::seconds(e->getOption()->getAsInt(PREF_BT_TIMEOUT))),
+      e_(e),
+      socket_(s),
+      peer_(peer),
+      checkSocketIsReadable_(false),
+      checkSocketIsWritable_(false),
+      noCheck_(false)
 {
-  if(socket_ && socket_->isOpen()) {
+  if (socket_ && socket_->isOpen()) {
     setReadCheckSocket(socket_);
   }
 }
@@ -80,41 +79,35 @@ bool PeerAbstractCommand::execute()
 {
   A2_LOG_DEBUG(fmt("CUID#%" PRId64 " -"
                    " socket: read:%d, write:%d, hup:%d, err:%d, noCheck:%d",
-                   getCuid(),
-                   readEventEnabled(), writeEventEnabled(),
-                   hupEventEnabled(), errorEventEnabled(),
-                   noCheck_));
-  if(exitBeforeExecute()) {
+                   getCuid(), readEventEnabled(), writeEventEnabled(),
+                   hupEventEnabled(), errorEventEnabled(), noCheck_));
+  if (exitBeforeExecute()) {
     onAbort();
     return true;
   }
   try {
-    if(noCheck_ ||
-       (checkSocketIsReadable_ && readEventEnabled()) ||
-       (checkSocketIsWritable_ && writeEventEnabled()) ||
-       hupEventEnabled()) {
+    if (noCheck_ || (checkSocketIsReadable_ && readEventEnabled()) ||
+        (checkSocketIsWritable_ && writeEventEnabled()) || hupEventEnabled()) {
       checkPoint_ = global::wallclock();
-    } else if(errorEventEnabled()) {
-      throw DL_ABORT_EX
-        (fmt(MSG_NETWORK_PROBLEM,
-             socket_->getSocketError().c_str()));
     }
-    if(checkPoint_.difference(global::wallclock()) >= timeout_) {
+    else if (errorEventEnabled()) {
+      throw DL_ABORT_EX(
+          fmt(MSG_NETWORK_PROBLEM, socket_->getSocketError().c_str()));
+    }
+    if (checkPoint_.difference(global::wallclock()) >= timeout_) {
       throw DL_ABORT_EX(EX_TIME_OUT);
     }
     return executeInternal();
-  } catch(DownloadFailureException& err) {
+  }
+  catch (DownloadFailureException& err) {
     A2_LOG_ERROR_EX(EX_DOWNLOAD_ABORTED, err);
     onAbort();
     onFailure(err);
     return true;
-  } catch(RecoverableException& err) {
-    A2_LOG_DEBUG_EX(fmt(MSG_TORRENT_DOWNLOAD_ABORTED,
-                        getCuid()),
-                    err);
-    A2_LOG_DEBUG(fmt(MSG_PEER_BANNED,
-                     getCuid(),
-                     peer_->getIPAddress().c_str(),
+  }
+  catch (RecoverableException& err) {
+    A2_LOG_DEBUG_EX(fmt(MSG_TORRENT_DOWNLOAD_ABORTED, getCuid()), err);
+    A2_LOG_DEBUG(fmt(MSG_PEER_BANNED, getCuid(), peer_->getIPAddress().c_str(),
                      peer_->getPort()));
     onAbort();
     return prepareForNextPeer(0);
@@ -122,32 +115,32 @@ bool PeerAbstractCommand::execute()
 }
 
 // TODO this method removed when PeerBalancerCommand is implemented
-bool PeerAbstractCommand::prepareForNextPeer(time_t wait)
-{
-  return true;
-}
+bool PeerAbstractCommand::prepareForNextPeer(time_t wait) { return true; }
 
 void PeerAbstractCommand::disableReadCheckSocket()
 {
-  if(checkSocketIsReadable_) {
+  if (checkSocketIsReadable_) {
     e_->deleteSocketForReadCheck(readCheckTarget_, this);
     checkSocketIsReadable_ = false;
     readCheckTarget_.reset();
   }
 }
 
-void PeerAbstractCommand::setReadCheckSocket(const SharedHandle<SocketCore>& socket)
+void PeerAbstractCommand::setReadCheckSocket(
+    const std::shared_ptr<SocketCore>& socket)
 {
-  if(!socket->isOpen()) {
+  if (!socket->isOpen()) {
     disableReadCheckSocket();
-  } else {
-    if(checkSocketIsReadable_) {
-      if(*readCheckTarget_ != *socket) {
+  }
+  else {
+    if (checkSocketIsReadable_) {
+      if (*readCheckTarget_ != *socket) {
         e_->deleteSocketForReadCheck(readCheckTarget_, this);
         e_->addSocketForReadCheck(socket, this);
         readCheckTarget_ = socket;
       }
-    } else {
+    }
+    else {
       e_->addSocketForReadCheck(socket, this);
       checkSocketIsReadable_ = true;
       readCheckTarget_ = socket;
@@ -157,25 +150,28 @@ void PeerAbstractCommand::setReadCheckSocket(const SharedHandle<SocketCore>& soc
 
 void PeerAbstractCommand::disableWriteCheckSocket()
 {
-  if(checkSocketIsWritable_) {
+  if (checkSocketIsWritable_) {
     e_->deleteSocketForWriteCheck(writeCheckTarget_, this);
     checkSocketIsWritable_ = false;
     writeCheckTarget_.reset();
   }
 }
 
-void PeerAbstractCommand::setWriteCheckSocket(const SharedHandle<SocketCore>& socket)
+void PeerAbstractCommand::setWriteCheckSocket(
+    const std::shared_ptr<SocketCore>& socket)
 {
-  if(!socket->isOpen()) {
+  if (!socket->isOpen()) {
     disableWriteCheckSocket();
-  } else {
-    if(checkSocketIsWritable_) {
-      if(*writeCheckTarget_ != *socket) {
+  }
+  else {
+    if (checkSocketIsWritable_) {
+      if (*writeCheckTarget_ != *socket) {
         e_->deleteSocketForWriteCheck(writeCheckTarget_, this);
         e_->addSocketForWriteCheck(socket, this);
         writeCheckTarget_ = socket;
       }
-    } else {
+    }
+    else {
       e_->addSocketForWriteCheck(socket, this);
       checkSocketIsWritable_ = true;
       writeCheckTarget_ = socket;
@@ -183,10 +179,7 @@ void PeerAbstractCommand::setWriteCheckSocket(const SharedHandle<SocketCore>& so
   }
 }
 
-void PeerAbstractCommand::setNoCheck(bool check)
-{
-  noCheck_ = check;
-}
+void PeerAbstractCommand::setNoCheck(bool check) { noCheck_ = check; }
 
 void PeerAbstractCommand::updateKeepAlive()
 {
@@ -195,7 +188,12 @@ void PeerAbstractCommand::updateKeepAlive()
 
 void PeerAbstractCommand::createSocket()
 {
-  socket_.reset(new SocketCore());
+  socket_ = std::make_shared<SocketCore>();
+}
+
+void PeerAbstractCommand::addCommandSelf()
+{
+  e_->addCommand(std::unique_ptr<Command>(this));
 }
 
 } // namespace aria2

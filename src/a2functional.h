@@ -40,208 +40,42 @@
 #include <functional>
 #include <string>
 #include <algorithm>
+#include <memory>
+#include <chrono>
 
-#include "SharedHandle.h"
 #include "A2STR.h"
 
 namespace aria2 {
 
-// mem_fun_t for SharedHandle
-template <class ReturnType, typename ClassType>
-class mem_fun_sh_t:public std::unary_function< SharedHandle<ClassType>, ReturnType>
-{
-private:
-  ReturnType (ClassType::*f)();
-
-public:
-  mem_fun_sh_t(ReturnType (ClassType::*f)()):f(f) {}
-
-  ReturnType operator()(const SharedHandle<ClassType>& x) const
-  {
-    return (x.get()->*f)();
-  }
-};
-
-// const_mem_fun_t for SharedHandle
-template <class ReturnType, typename ClassType>
-class const_mem_fun_sh_t:public std::unary_function< SharedHandle<ClassType>, ReturnType>
-{
-private:
-  ReturnType (ClassType::*f)() const;
-
-public:
-  const_mem_fun_sh_t(ReturnType (ClassType::*f)() const):f(f) {}
-
-  ReturnType operator()(const SharedHandle<ClassType>& x) const
-  {
-    return (x.get()->*f)();
-  }
-};
-
-template <class ReturnType, typename ClassType>
-mem_fun_sh_t<ReturnType, ClassType>
-mem_fun_sh(ReturnType (ClassType::*f)())
-{
-  return mem_fun_sh_t<ReturnType, ClassType>(f);
-};
-
-template <class ReturnType, typename ClassType>
-const_mem_fun_sh_t<ReturnType, ClassType>
-mem_fun_sh(ReturnType (ClassType::*f)() const)
-{
-  return const_mem_fun_sh_t<ReturnType, ClassType>(f);
-};
-
-// mem_fun1_t for SharedHandle
-template<typename ReturnType, typename ClassType, typename ArgType>
-class mem_fun1_sh_t:public std::binary_function<SharedHandle<ClassType>,
-                                                ArgType,
-                                                ReturnType>
-{
-private:
-  ReturnType (ClassType::*f)(ArgType);
-
-public:
-  mem_fun1_sh_t(ReturnType (ClassType::*f)(ArgType)):f(f) {}
-
-  ReturnType operator()(const SharedHandle<ClassType>& x, ArgType a) const
-  {
-    return (x.get()->*f)(a);
-  }
-};
-
-template<typename ReturnType, typename ClassType, typename ArgType>
-mem_fun1_sh_t<ReturnType, ClassType, ArgType>
-mem_fun_sh(ReturnType (ClassType::*f)(ArgType))
-{
-  return mem_fun1_sh_t<ReturnType, ClassType, ArgType>(f);
-};
-
-template<class BinaryOp, class UnaryOp>
-class adopt2nd_t:public std::binary_function<typename BinaryOp::first_argument_type,
-                                             typename UnaryOp::argument_type,
-                                             typename BinaryOp::result_type> {
-private:
-  BinaryOp binaryOp_;
-  UnaryOp unaryOp_;
-public:
-  adopt2nd_t(const BinaryOp& b, const UnaryOp& u):
-    binaryOp_(b), unaryOp_(u) {}
-
-  typename BinaryOp::result_type
-  operator()(const typename BinaryOp::first_argument_type& x,
-             const typename UnaryOp::argument_type& y)
-  {
-    return binaryOp_(x, unaryOp_(y));
-  }
-
-};
-
-template <class BinaryOp, class UnaryOp>
-inline adopt2nd_t<BinaryOp, UnaryOp>
-adopt2nd(const BinaryOp& binaryOp, const UnaryOp& unaryOp)
-{
-  return adopt2nd_t<BinaryOp, UnaryOp>(binaryOp, unaryOp);
-};
-
-template<typename Pair>
-class Ascend1st:public std::binary_function<Pair, Pair, bool>
-{
-public:
-  bool operator()(const Pair& p1, const Pair& p2) const
-  {
-    return p1.first < p2.first;
-  }
-};
-
-template<typename Pair>
-class select2nd
-{
-public:
-  typename Pair::second_type operator()(const Pair& p) const
-  {
-    return p.second;
-  }
-
-  typename Pair::second_type operator()(Pair& p) const
-  {
-    return p.second;
-  }
-};
-
 class Deleter {
 public:
-  template<class T>
-  void operator()(T* ptr) {
-    delete ptr;
-  }
+  template <class T> void operator()(T* ptr) { delete ptr; }
 };
 
-template<typename T>
-class auto_delete {
-private:
-  T obj_;
-  void (*deleter_)(T);
-public:
-  auto_delete(T obj, void (*deleter)(T)):obj_(obj), deleter_(deleter) {}
+template <typename T, typename F> struct Defer {
+  Defer(T t, F f) : t(t), f(std::move(f)) {}
 
-  ~auto_delete()
-  {
-    deleter_(obj_);
-  }
+  ~Defer() { f(t); }
+
+  T t;
+  F f;
 };
 
-template<typename T>
-class auto_delete_d {
-private:
-  T obj_;
-public:
-  auto_delete_d(T obj):obj_(obj) {}
+template <typename T, typename F> Defer<T, F> defer(T&& t, F f)
+{
+  return Defer<T, F>(std::forward<T>(t), std::forward<F>(f));
+}
 
-  ~auto_delete_d()
-  {
-    delete obj_;
-  }
-};
-
-template<typename T, typename R>
-class auto_delete_r {
-private:
-  T obj_;
-  R (*deleter_)(T);
-public:
-  auto_delete_r(T obj, R (*deleter)(T)):obj_(obj), deleter_(deleter) {}
-
-  ~auto_delete_r()
-  {
-    (void)deleter_(obj_);
-  }
-};
-
-template<class Container>
-class auto_delete_container {
-private:
-  Container* c_;
-public:
-  auto_delete_container(Container* c):c_(c) {}
-
-  ~auto_delete_container()
-  {
-    std::for_each(c_->begin(), c_->end(), Deleter());
-    delete c_;
-  }
-};
-
-template<typename InputIterator, typename DelimiterType>
+template <typename InputIterator, typename DelimiterType>
 std::string strjoin(InputIterator first, InputIterator last,
                     const DelimiterType& delim)
 {
   std::string result;
-  if(first == last) {
+  if (first == last) {
     return result;
   }
-  InputIterator beforeLast = last-1;
-  for(; first != beforeLast; ++first) {
+  InputIterator beforeLast = last - 1;
+  for (; first != beforeLast; ++first) {
     result += *first;
     result += delim;
   }
@@ -251,16 +85,16 @@ std::string strjoin(InputIterator first, InputIterator last,
 
 // Applies unaryOp through first to last and joins the result with
 // delimiter delim.
-template<typename InputIterator, typename DelimiterType, typename UnaryOp>
+template <typename InputIterator, typename DelimiterType, typename UnaryOp>
 std::string strjoin(InputIterator first, InputIterator last,
                     const DelimiterType& delim, const UnaryOp& unaryOp)
 {
   std::string result;
-  if(first == last) {
+  if (first == last) {
     return result;
   }
-  InputIterator beforeLast = last-1;
-  for(; first != beforeLast; ++first) {
+  InputIterator beforeLast = last - 1;
+  for (; first != beforeLast; ++first) {
     result += unaryOp(*first);
     result += delim;
   }
@@ -268,11 +102,11 @@ std::string strjoin(InputIterator first, InputIterator last,
   return result;
 }
 
-template<typename T>
-class LeastRecentAccess:public std::binary_function<T, T, bool> {
+template <typename T>
+class LeastRecentAccess : public std::binary_function<T, T, bool> {
 public:
-  bool operator()(const SharedHandle<T>& lhs,
-                  const SharedHandle<T>& rhs) const
+  bool operator()(const std::shared_ptr<T>& lhs,
+                  const std::shared_ptr<T>& rhs) const
   {
     return lhs->getLastAccessTime() < rhs->getLastAccessTime();
   }
@@ -283,52 +117,93 @@ public:
   }
 };
 
-template<typename T, typename S>
-bool in(T x, S s, S t)
+template <typename T, typename S> bool in(T x, S s, S t)
 {
   return s <= x && x <= t;
 }
 
-template<typename T>
-struct DerefLess {
-  bool operator()(const T& lhs, const T& rhs) const
-  {
-    return *lhs < *rhs;
-  }
+template <typename T> struct DerefLess {
+  bool operator()(const T& lhs, const T& rhs) const { return *lhs < *rhs; }
 };
 
-template<typename T>
-struct DerefEqualTo {
-  bool operator()(const T& lhs, const T& rhs) const
-  {
-    return *lhs == *rhs;
-  }
+template <typename T> struct DerefEqualTo {
+  bool operator()(const T& lhs, const T& rhs) const { return *lhs == *rhs; }
 };
 
-template<typename T>
-struct DerefEqual {
+template <typename T> struct DerefEqual {
   T target;
 
-  DerefEqual(const T& t):target(t) {}
-  bool operator()(const T& other) const
-  {
-    return *target == *other;
-  }
+  DerefEqual(const T& t) : target(t) {}
+  bool operator()(const T& other) const { return *target == *other; }
 };
 
-template<typename T>
-struct DerefEqual<T> derefEqual(const T& t)
-{
+template <typename T> struct DerefEqual<T> derefEqual(const T& t) {
   return DerefEqual<T>(t);
 }
 
-template<typename T>
+template <typename T>
 struct RefLess {
-  bool operator()(const SharedHandle<T>& lhs, const SharedHandle<T>& rhs) const
+  bool operator()(const std::shared_ptr<T>& lhs,
+                  const std::shared_ptr<T>& rhs) const
   {
     return lhs.get() < rhs.get();
   }
 };
+
+#if __cplusplus > 201103L
+using std::make_unique;
+#else  // __cplusplus <= 201103L
+template <typename T, typename... U>
+typename std::enable_if<!std::is_array<T>::value, std::unique_ptr<T>>::type
+make_unique(U&&... u)
+{
+  return std::unique_ptr<T>(new T(std::forward<U>(u)...));
+}
+
+template <typename T>
+typename std::enable_if<std::is_array<T>::value, std::unique_ptr<T>>::type
+make_unique(size_t size)
+{
+  return std::unique_ptr<T>(new typename std::remove_extent<T>::type[size]());
+}
+#endif // __cplusplus <= 201103L
+
+// User-defined literals for K, M, and G (powers of 1024)
+
+constexpr unsigned long long operator"" _k(unsigned long long k)
+{
+  return k * 1024;
+}
+
+constexpr unsigned long long operator"" _m(unsigned long long m)
+{
+  return m * 1024 * 1024;
+}
+
+constexpr unsigned long long operator"" _g(unsigned long long g)
+{
+  return g * 1024 * 1024 * 1024;
+}
+
+constexpr std::chrono::hours operator"" _h(unsigned long long h)
+{
+  return std::chrono::hours(h);
+}
+
+constexpr std::chrono::minutes operator"" _min(unsigned long long min)
+{
+  return std::chrono::minutes(min);
+}
+
+constexpr std::chrono::seconds operator"" _s(unsigned long long s)
+{
+  return std::chrono::seconds(s);
+}
+
+constexpr std::chrono::milliseconds operator"" _ms(unsigned long long ms)
+{
+  return std::chrono::milliseconds(ms);
+}
 
 } // namespace aria2
 

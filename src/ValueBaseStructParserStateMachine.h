@@ -39,8 +39,7 @@
 
 #include <string>
 #include <stack>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -56,8 +55,8 @@ class ValueBaseStructParserState;
 // value holder.
 class ValueBaseStructParserStateMachine : public StructParserStateMachine {
 public:
-  typedef SharedHandle<ValueBase> ResultType;
-  static const SharedHandle<ValueBase>& noResult();
+  typedef std::unique_ptr<ValueBase> ResultType;
+  static std::unique_ptr<ValueBase> noResult();
 
   struct NumberData {
     int64_t number;
@@ -74,16 +73,16 @@ public:
   ValueBaseStructParserStateMachine();
   virtual ~ValueBaseStructParserStateMachine();
 
-  virtual void beginElement(int elementType);
-  virtual void endElement(int elementType);
+  virtual void beginElement(int elementType) CXX11_OVERRIDE;
+  virtual void endElement(int elementType) CXX11_OVERRIDE;
 
-  virtual void charactersCallback(const char* data, size_t len);
-  virtual void numberCallback(int64_t number, int frac, int exp);
-  virtual void boolCallback(bool bval);
+  virtual void charactersCallback(const char* data, size_t len) CXX11_OVERRIDE;
+  virtual void numberCallback(int64_t number, int frac, int exp) CXX11_OVERRIDE;
+  virtual void boolCallback(bool bval) CXX11_OVERRIDE;
 
-  SharedHandle<ValueBase> getResult() const;
+  std::unique_ptr<ValueBase> getResult();
 
-  virtual void reset();
+  virtual void reset() CXX11_OVERRIDE;
 
   const std::string& getCharacters() const;
   const NumberData& getNumber() const;
@@ -92,9 +91,10 @@ public:
   void popArrayFrame();
   void popDictFrame();
   void pushFrame();
-  void setCurrentFrameValue(const SharedHandle<ValueBase>& value);
-  const SharedHandle<ValueBase>& getCurrentFrameValue() const;
-  void setCurrentFrameName(const std::string& name);
+  void setCurrentFrameValue(std::unique_ptr<ValueBase> value);
+  const std::unique_ptr<ValueBase>& getCurrentFrameValue() const;
+  std::unique_ptr<ValueBase> popCurrentFrameValue();
+  void setCurrentFrameName(std::string name);
 
   void pushDictState();
   void pushDictKeyState();
@@ -105,8 +105,9 @@ public:
   void pushNumberState();
   void pushBoolState();
   void pushNullState();
+
 private:
-  rpc::XmlRpcRequestParserController* ctrl_;
+  std::unique_ptr<rpc::XmlRpcRequestParserController> ctrl_;
   std::stack<ValueBaseStructParserState*> stateStack_;
   SessionData sessionData_;
 };

@@ -36,18 +36,17 @@
 #include "common.h"
 
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
 class Peer;
 
 struct LpdMessage {
-  SharedHandle<Peer> peer;
+  std::shared_ptr<Peer> peer;
   std::string infoHash;
   LpdMessage();
-  LpdMessage(const SharedHandle<Peer>& peer, const std::string& infoHash);
+  LpdMessage(const std::shared_ptr<Peer>& peer, const std::string& infoHash);
   ~LpdMessage();
 };
 

@@ -42,116 +42,206 @@ namespace aria2 {
 namespace rpc {
 
 namespace {
-SharedHandle<RpcMethod> getNoSuchMethod()
-{
-  static SharedHandle<RpcMethod> m(new NoSuchMethodRpcMethod());
-  return m;
-}
+std::map<std::string, std::unique_ptr<RpcMethod>> cache;
 } // namespace
 
 namespace {
-SharedHandle<RpcMethod>
-createMethod(const std::string& methodName)
-{
-  if(methodName == AddUriRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new AddUriRpcMethod());
+std::unique_ptr<RpcMethod> noSuchRpcMethod;
+} // namespace
+
+namespace {
+std::vector<std::string> rpcMethodNames = {
+    "aria2.addUri",
 #ifdef ENABLE_BITTORRENT
-  } else if(methodName == AddTorrentRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new AddTorrentRpcMethod());
+    "aria2.addTorrent", "aria2.getPeers",
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
-  }
-  else if(methodName == AddMetalinkRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new AddMetalinkRpcMethod());
+    "aria2.addMetalink",
 #endif // ENABLE_METALINK
+    "aria2.remove", "aria2.pause", "aria2.forcePause", "aria2.pauseAll",
+    "aria2.forcePauseAll", "aria2.unpause", "aria2.unpauseAll",
+    "aria2.forceRemove", "aria2.changePosition", "aria2.tellStatus",
+    "aria2.getUris", "aria2.getFiles", "aria2.getServers", "aria2.tellActive",
+    "aria2.tellWaiting", "aria2.tellStopped", "aria2.getOption",
+    "aria2.changeUri", "aria2.changeOption", "aria2.getGlobalOption",
+    "aria2.changeGlobalOption", "aria2.purgeDownloadResult",
+    "aria2.removeDownloadResult", "aria2.getVersion", "aria2.getSessionInfo",
+    "aria2.shutdown", "aria2.forceShutdown", "aria2.getGlobalStat",
+    "aria2.saveSession", "system.multicall", "system.listMethods",
+};
+} // namespace
+
+const std::vector<std::string>& allMethodNames() { return rpcMethodNames; }
+
+namespace {
+std::unique_ptr<RpcMethod> createMethod(const std::string& methodName)
+{
+  if (methodName == AddUriRpcMethod::getMethodName()) {
+    return make_unique<AddUriRpcMethod>();
   }
-  else if(methodName == RemoveRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new RemoveRpcMethod());
-  } else if(methodName == PauseRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new PauseRpcMethod());
-  } else if(methodName == ForcePauseRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new ForcePauseRpcMethod());
-  } else if(methodName == PauseAllRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new PauseAllRpcMethod());
-  } else if(methodName == ForcePauseAllRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new ForcePauseAllRpcMethod());
-  } else if(methodName == UnpauseRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new UnpauseRpcMethod());
-  } else if(methodName == UnpauseAllRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new UnpauseAllRpcMethod());
-  } else if(methodName == ForceRemoveRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new ForceRemoveRpcMethod());
-  } else if(methodName == ChangePositionRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new ChangePositionRpcMethod());
-  } else if(methodName == TellStatusRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new TellStatusRpcMethod());
-  } else if(methodName == GetUrisRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new GetUrisRpcMethod());
-  } else if(methodName == GetFilesRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new GetFilesRpcMethod());
+
 #ifdef ENABLE_BITTORRENT
+  if (methodName == AddTorrentRpcMethod::getMethodName()) {
+    return make_unique<AddTorrentRpcMethod>();
   }
-  else if(methodName == GetPeersRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new GetPeersRpcMethod());
+
+  if (methodName == GetPeersRpcMethod::getMethodName()) {
+    return make_unique<GetPeersRpcMethod>();
+  }
 #endif // ENABLE_BITTORRENT
-  } else if(methodName == GetServersRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new GetServersRpcMethod());
-  } else if(methodName == TellActiveRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new TellActiveRpcMethod());
-  } else if(methodName == TellWaitingRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new TellWaitingRpcMethod());
-  } else if(methodName == TellStoppedRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new TellStoppedRpcMethod());
-  } else if(methodName == GetOptionRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new GetOptionRpcMethod());
-  } else if(methodName == ChangeUriRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new ChangeUriRpcMethod());
-  } else if(methodName == ChangeOptionRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new ChangeOptionRpcMethod());
-  } else if(methodName == GetGlobalOptionRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new GetGlobalOptionRpcMethod());
-  } else if(methodName == ChangeGlobalOptionRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new ChangeGlobalOptionRpcMethod());
-  } else if(methodName == PurgeDownloadResultRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new PurgeDownloadResultRpcMethod());
-  } else if(methodName == RemoveDownloadResultRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new RemoveDownloadResultRpcMethod());
-  } else if(methodName == GetVersionRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new GetVersionRpcMethod());
-  } else if(methodName == GetSessionInfoRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new GetSessionInfoRpcMethod());
-  } else if(methodName == ShutdownRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new ShutdownRpcMethod());
-  } else if(methodName == ForceShutdownRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new ForceShutdownRpcMethod());
-  } else if(methodName == GetGlobalStatRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new GetGlobalStatRpcMethod());
-  } else if(methodName == SystemMulticallRpcMethod::getMethodName()) {
-    return SharedHandle<RpcMethod>(new SystemMulticallRpcMethod());
-  } else {
-    return SharedHandle<RpcMethod>();
+
+#ifdef ENABLE_METALINK
+  if (methodName == AddMetalinkRpcMethod::getMethodName()) {
+    return make_unique<AddMetalinkRpcMethod>();
   }
+#endif // ENABLE_METALINK
+
+  if (methodName == RemoveRpcMethod::getMethodName()) {
+    return make_unique<RemoveRpcMethod>();
+  }
+
+  if (methodName == PauseRpcMethod::getMethodName()) {
+    return make_unique<PauseRpcMethod>();
+  }
+
+  if (methodName == ForcePauseRpcMethod::getMethodName()) {
+    return make_unique<ForcePauseRpcMethod>();
+  }
+
+  if (methodName == PauseAllRpcMethod::getMethodName()) {
+    return make_unique<PauseAllRpcMethod>();
+  }
+
+  if (methodName == ForcePauseAllRpcMethod::getMethodName()) {
+    return make_unique<ForcePauseAllRpcMethod>();
+  }
+
+  if (methodName == UnpauseRpcMethod::getMethodName()) {
+    return make_unique<UnpauseRpcMethod>();
+  }
+
+  if (methodName == UnpauseAllRpcMethod::getMethodName()) {
+    return make_unique<UnpauseAllRpcMethod>();
+  }
+
+  if (methodName == ForceRemoveRpcMethod::getMethodName()) {
+    return make_unique<ForceRemoveRpcMethod>();
+  }
+
+  if (methodName == ChangePositionRpcMethod::getMethodName()) {
+    return make_unique<ChangePositionRpcMethod>();
+  }
+
+  if (methodName == TellStatusRpcMethod::getMethodName()) {
+    return make_unique<TellStatusRpcMethod>();
+  }
+
+  if (methodName == GetUrisRpcMethod::getMethodName()) {
+    return make_unique<GetUrisRpcMethod>();
+  }
+
+  if (methodName == GetFilesRpcMethod::getMethodName()) {
+    return make_unique<GetFilesRpcMethod>();
+  }
+
+  if (methodName == GetServersRpcMethod::getMethodName()) {
+    return make_unique<GetServersRpcMethod>();
+  }
+
+  if (methodName == TellActiveRpcMethod::getMethodName()) {
+    return make_unique<TellActiveRpcMethod>();
+  }
+
+  if (methodName == TellWaitingRpcMethod::getMethodName()) {
+    return make_unique<TellWaitingRpcMethod>();
+  }
+
+  if (methodName == TellStoppedRpcMethod::getMethodName()) {
+    return make_unique<TellStoppedRpcMethod>();
+  }
+
+  if (methodName == GetOptionRpcMethod::getMethodName()) {
+    return make_unique<GetOptionRpcMethod>();
+  }
+
+  if (methodName == ChangeUriRpcMethod::getMethodName()) {
+    return make_unique<ChangeUriRpcMethod>();
+  }
+
+  if (methodName == ChangeOptionRpcMethod::getMethodName()) {
+    return make_unique<ChangeOptionRpcMethod>();
+  }
+
+  if (methodName == GetGlobalOptionRpcMethod::getMethodName()) {
+    return make_unique<GetGlobalOptionRpcMethod>();
+  }
+
+  if (methodName == ChangeGlobalOptionRpcMethod::getMethodName()) {
+    return make_unique<ChangeGlobalOptionRpcMethod>();
+  }
+
+  if (methodName == PurgeDownloadResultRpcMethod::getMethodName()) {
+    return make_unique<PurgeDownloadResultRpcMethod>();
+  }
+
+  if (methodName == RemoveDownloadResultRpcMethod::getMethodName()) {
+    return make_unique<RemoveDownloadResultRpcMethod>();
+  }
+
+  if (methodName == GetVersionRpcMethod::getMethodName()) {
+    return make_unique<GetVersionRpcMethod>();
+  }
+
+  if (methodName == GetSessionInfoRpcMethod::getMethodName()) {
+    return make_unique<GetSessionInfoRpcMethod>();
+  }
+
+  if (methodName == ShutdownRpcMethod::getMethodName()) {
+    return make_unique<ShutdownRpcMethod>();
+  }
+
+  if (methodName == ForceShutdownRpcMethod::getMethodName()) {
+    return make_unique<ForceShutdownRpcMethod>();
+  }
+
+  if (methodName == GetGlobalStatRpcMethod::getMethodName()) {
+    return make_unique<GetGlobalStatRpcMethod>();
+  }
+
+  if (methodName == SaveSessionRpcMethod::getMethodName()) {
+    return make_unique<SaveSessionRpcMethod>();
+  }
+
+  if (methodName == SystemMulticallRpcMethod::getMethodName()) {
+    return make_unique<SystemMulticallRpcMethod>();
+  }
+
+  if (methodName == SystemListMethodsRpcMethod::getMethodName()) {
+    return make_unique<SystemListMethodsRpcMethod>();
+  }
+
+  return nullptr;
 }
 } // namespace
 
-std::map<std::string, SharedHandle<RpcMethod> > RpcMethodFactory::cache_;
-
-SharedHandle<RpcMethod>
-RpcMethodFactory::create(const std::string& methodName)
+RpcMethod* getMethod(const std::string& methodName)
 {
-  std::map<std::string, SharedHandle<RpcMethod> >::const_iterator itr =
-    cache_.find(methodName);
-  if(itr == cache_.end()) {
-    SharedHandle<RpcMethod> m = createMethod(methodName);
-    if(m) {
-      cache_.insert(std::make_pair(methodName, m));
-      return m;
-    } else {
-      return getNoSuchMethod();
+  auto itr = cache.find(methodName);
+  if (itr == std::end(cache)) {
+    auto m = createMethod(methodName);
+    if (m) {
+      auto rv = cache.insert(std::make_pair(methodName, std::move(m)));
+      return (*rv.first).second.get();
     }
-  } else {
-    return (*itr).second;
+
+    if (!noSuchRpcMethod) {
+      noSuchRpcMethod = make_unique<NoSuchMethodRpcMethod>();
+    }
+
+    return noSuchRpcMethod.get();
   }
+
+  return (*itr).second.get();
 }
 
 } // namespace rpc

@@ -48,17 +48,19 @@ struct Pref {
   size_t i;
 };
 
+typedef const Pref* PrefPtr;
+
 namespace option {
 
 // Returns the number of options.
 size_t countOption();
 
 // Returns Pref whose ID is id. id must be less than countOption().
-const Pref* i2p(size_t id);
+PrefPtr i2p(size_t id);
 
 // Returns Pref whose keyword is k. If no such Pref is found, returns
 // special null Pref whose ID is 0.
-const Pref* k2p(const std::string& k);
+PrefPtr k2p(const std::string& k);
 
 // Deletes resources allocated for preferences. Call this function at
 // the end of the program only once.
@@ -88,6 +90,7 @@ extern const std::string V_ERROR;
 extern const std::string V_INORDER;
 extern const std::string V_FEEDBACK;
 extern const std::string V_ADAPTIVE;
+extern const std::string V_LIBUV;
 extern const std::string V_EPOLL;
 extern const std::string V_KQUEUE;
 extern const std::string V_PORT;
@@ -102,391 +105,421 @@ extern const std::string V_ARC4;
 extern const std::string V_HTTP;
 extern const std::string V_HTTPS;
 extern const std::string V_FTP;
+extern const std::string A2_V_SSL3;
+extern const std::string A2_V_TLS10;
+extern const std::string A2_V_TLS11;
+extern const std::string A2_V_TLS12;
 
-extern const Pref* PREF_VERSION;
-extern const Pref* PREF_HELP;
+extern PrefPtr PREF_VERSION;
+extern PrefPtr PREF_HELP;
 
 /**
  * General preferences
  */
 // values: 1*digit
-extern const Pref* PREF_TIMEOUT;
+extern PrefPtr PREF_TIMEOUT;
 // values: 1*digit
-extern const Pref* PREF_DNS_TIMEOUT;
+extern PrefPtr PREF_DNS_TIMEOUT;
 // values: 1*digit
-extern const Pref* PREF_CONNECT_TIMEOUT;
+extern PrefPtr PREF_CONNECT_TIMEOUT;
 // values: 1*digit
-extern const Pref* PREF_MAX_TRIES;
+extern PrefPtr PREF_MAX_TRIES;
 // values: 1*digit
-extern const Pref* PREF_AUTO_SAVE_INTERVAL;
+extern PrefPtr PREF_AUTO_SAVE_INTERVAL;
 // values: a string that your file system recognizes as a file name.
-extern const Pref* PREF_LOG;
+extern PrefPtr PREF_LOG;
 // values: a string that your file system recognizes as a directory.
-extern const Pref* PREF_DIR;
+extern PrefPtr PREF_DIR;
 // values: a string that your file system recognizes as a file name.
-extern const Pref* PREF_OUT;
+extern PrefPtr PREF_OUT;
 // values: 1*digit
-extern const Pref* PREF_SPLIT;
+extern PrefPtr PREF_SPLIT;
 // value: true | false
-extern const Pref* PREF_DAEMON;
+extern PrefPtr PREF_DAEMON;
 // value: a string
-extern const Pref* PREF_REFERER;
+extern PrefPtr PREF_REFERER;
 // value: 1*digit
-extern const Pref* PREF_LOWEST_SPEED_LIMIT;
+extern PrefPtr PREF_LOWEST_SPEED_LIMIT;
 // value: 1*digit
-extern const Pref* PREF_PIECE_LENGTH;
+extern PrefPtr PREF_PIECE_LENGTH;
 // value: 1*digit
-extern const Pref* PREF_MAX_DOWNLOAD_LIMIT;
+extern PrefPtr PREF_MAX_DOWNLOAD_LIMIT;
 // value: 1*digit
-extern const Pref* PREF_STARTUP_IDLE_TIME;
+extern PrefPtr PREF_STARTUP_IDLE_TIME;
 // value: prealloc | falloc | none
-extern const Pref* PREF_FILE_ALLOCATION;
+extern PrefPtr PREF_FILE_ALLOCATION;
 // value: 1*digit
-extern const Pref* PREF_NO_FILE_ALLOCATION_LIMIT;
+extern PrefPtr PREF_NO_FILE_ALLOCATION_LIMIT;
 // value: true | false
-extern const Pref* PREF_ALLOW_OVERWRITE;
+extern PrefPtr PREF_ALLOW_OVERWRITE;
 // value: true | false
-extern const Pref* PREF_REALTIME_CHUNK_CHECKSUM;
+extern PrefPtr PREF_REALTIME_CHUNK_CHECKSUM;
 // value: true | false
-extern const Pref* PREF_CHECK_INTEGRITY;
+extern PrefPtr PREF_CHECK_INTEGRITY;
 // value: string that your file system recognizes as a file name.
-extern const Pref* PREF_NETRC_PATH;
+extern PrefPtr PREF_NETRC_PATH;
 // value:
-extern const Pref* PREF_CONTINUE;
+extern PrefPtr PREF_CONTINUE;
 // value:
-extern const Pref* PREF_NO_NETRC;
+extern PrefPtr PREF_NO_NETRC;
 // value: 1*digit
-extern const Pref* PREF_MAX_OVERALL_DOWNLOAD_LIMIT;
+extern PrefPtr PREF_MAX_OVERALL_DOWNLOAD_LIMIT;
 // value: 1*digit
-extern const Pref* PREF_MAX_DOWNLOADS;
+extern PrefPtr PREF_MAX_DOWNLOADS;
 // value: string that your file system recognizes as a file name.
-extern const Pref* PREF_INPUT_FILE;
+extern PrefPtr PREF_INPUT_FILE;
 // value: true | false
-extern const Pref* PREF_DEFERRED_INPUT;
+extern PrefPtr PREF_DEFERRED_INPUT;
 // value: 1*digit
-extern const Pref* PREF_MAX_CONCURRENT_DOWNLOADS;
+extern PrefPtr PREF_MAX_CONCURRENT_DOWNLOADS;
 // value: true | false
-extern const Pref* PREF_FORCE_SEQUENTIAL;
+extern PrefPtr PREF_FORCE_SEQUENTIAL;
 // value: true | false
-extern const Pref* PREF_AUTO_FILE_RENAMING;
+extern PrefPtr PREF_AUTO_FILE_RENAMING;
 // value: true | false
-extern const Pref* PREF_PARAMETERIZED_URI;
+extern PrefPtr PREF_PARAMETERIZED_URI;
 // value: true | false
-extern const Pref* PREF_ALLOW_PIECE_LENGTH_CHANGE;
+extern PrefPtr PREF_ALLOW_PIECE_LENGTH_CHANGE;
 // value: true | false
-extern const Pref* PREF_NO_CONF;
+extern PrefPtr PREF_NO_CONF;
 // value: string
-extern const Pref* PREF_CONF_PATH;
+extern PrefPtr PREF_CONF_PATH;
 // value: 1*digit
-extern const Pref* PREF_STOP;
+extern PrefPtr PREF_STOP;
 // value: true | false
-extern const Pref* PREF_QUIET;
+extern PrefPtr PREF_QUIET;
 // value: true | false
-extern const Pref* PREF_ASYNC_DNS;
+extern PrefPtr PREF_ASYNC_DNS;
 // value: 1*digit
-extern const Pref* PREF_SUMMARY_INTERVAL;
+extern PrefPtr PREF_SUMMARY_INTERVAL;
 // value: debug, info, notice, warn, error
-extern const Pref* PREF_LOG_LEVEL;
+extern PrefPtr PREF_LOG_LEVEL;
 // value: debug, info, notice, warn, error
-extern const Pref* PREF_CONSOLE_LOG_LEVEL;
+extern PrefPtr PREF_CONSOLE_LOG_LEVEL;
 // value: inorder | feedback | adaptive
-extern const Pref* PREF_URI_SELECTOR;
+extern PrefPtr PREF_URI_SELECTOR;
 // value: 1*digit
-extern const Pref* PREF_SERVER_STAT_TIMEOUT;
+extern PrefPtr PREF_SERVER_STAT_TIMEOUT;
 // value: string that your file system recognizes as a file name.
-extern const Pref* PREF_SERVER_STAT_IF;
+extern PrefPtr PREF_SERVER_STAT_IF;
 // value: string that your file system recognizes as a file name.
-extern const Pref* PREF_SERVER_STAT_OF;
+extern PrefPtr PREF_SERVER_STAT_OF;
 // value: true | false
-extern const Pref* PREF_REMOTE_TIME;
+extern PrefPtr PREF_REMOTE_TIME;
 // value: 1*digit
-extern const Pref* PREF_MAX_FILE_NOT_FOUND;
+extern PrefPtr PREF_MAX_FILE_NOT_FOUND;
 // value: epoll | select
-extern const Pref* PREF_EVENT_POLL;
+extern PrefPtr PREF_EVENT_POLL;
 // value: true | false
-extern const Pref* PREF_ENABLE_RPC;
+extern PrefPtr PREF_ENABLE_RPC;
 // value: 1*digit
-extern const Pref* PREF_RPC_LISTEN_PORT;
+extern PrefPtr PREF_RPC_LISTEN_PORT;
 // value: string
-extern const Pref* PREF_RPC_USER;
+extern PrefPtr PREF_RPC_USER;
 // value: string
-extern const Pref* PREF_RPC_PASSWD;
+extern PrefPtr PREF_RPC_PASSWD;
 // value: 1*digit
-extern const Pref* PREF_RPC_MAX_REQUEST_SIZE;
+extern PrefPtr PREF_RPC_MAX_REQUEST_SIZE;
 // value: true | false
-extern const Pref* PREF_RPC_LISTEN_ALL;
+extern PrefPtr PREF_RPC_LISTEN_ALL;
 // value: true | false
-extern const Pref* PREF_RPC_ALLOW_ORIGIN_ALL;
+extern PrefPtr PREF_RPC_ALLOW_ORIGIN_ALL;
 // value: string that your file system recognizes as a file name.
-extern const Pref* PREF_RPC_CERTIFICATE;
+extern PrefPtr PREF_RPC_CERTIFICATE;
 // value: string that your file system recognizes as a file name.
-extern const Pref* PREF_RPC_PRIVATE_KEY;
+extern PrefPtr PREF_RPC_PRIVATE_KEY;
 // value: true | false
-extern const Pref* PREF_RPC_SECURE;
+extern PrefPtr PREF_RPC_SECURE;
 // value: true | false
-extern const Pref* PREF_RPC_SAVE_UPLOAD_METADATA;
+extern PrefPtr PREF_RPC_SAVE_UPLOAD_METADATA;
 // value: true | false
-extern const Pref* PREF_DRY_RUN;
+extern PrefPtr PREF_DRY_RUN;
 // value: true | false
-extern const Pref* PREF_REUSE_URI;
+extern PrefPtr PREF_REUSE_URI;
 // value: string
-extern const Pref* PREF_ON_DOWNLOAD_START;
-extern const Pref* PREF_ON_DOWNLOAD_PAUSE;
-extern const Pref* PREF_ON_DOWNLOAD_STOP;
-extern const Pref* PREF_ON_DOWNLOAD_COMPLETE;
-extern const Pref* PREF_ON_DOWNLOAD_ERROR;
+extern PrefPtr PREF_ON_DOWNLOAD_START;
+extern PrefPtr PREF_ON_DOWNLOAD_PAUSE;
+extern PrefPtr PREF_ON_DOWNLOAD_STOP;
+extern PrefPtr PREF_ON_DOWNLOAD_COMPLETE;
+extern PrefPtr PREF_ON_DOWNLOAD_ERROR;
 // value: string
-extern const Pref* PREF_INTERFACE;
+extern PrefPtr PREF_INTERFACE;
+// value: string
+extern PrefPtr PREF_MULTIPLE_INTERFACE;
 // value: true | false
-extern const Pref* PREF_DISABLE_IPV6;
+extern PrefPtr PREF_DISABLE_IPV6;
 // value: true | false
-extern const Pref* PREF_HUMAN_READABLE;
+extern PrefPtr PREF_HUMAN_READABLE;
 // value: true | false
-extern const Pref* PREF_REMOVE_CONTROL_FILE;
+extern PrefPtr PREF_REMOVE_CONTROL_FILE;
 // value: true | false
-extern const Pref* PREF_ALWAYS_RESUME;
+extern PrefPtr PREF_ALWAYS_RESUME;
 // value: 1*digit
-extern const Pref* PREF_MAX_RESUME_FAILURE_TRIES;
+extern PrefPtr PREF_MAX_RESUME_FAILURE_TRIES;
 // value: string that your file system recognizes as a file name.
-extern const Pref* PREF_SAVE_SESSION;
+extern PrefPtr PREF_SAVE_SESSION;
 // value: 1*digit
-extern const Pref* PREF_MAX_CONNECTION_PER_SERVER;
+extern PrefPtr PREF_MAX_CONNECTION_PER_SERVER;
 // value: 1*digit
-extern const Pref* PREF_MIN_SPLIT_SIZE;
+extern PrefPtr PREF_MIN_SPLIT_SIZE;
 // value: true | false
-extern const Pref* PREF_CONDITIONAL_GET;
+extern PrefPtr PREF_CONDITIONAL_GET;
 // value: true | false
-extern const Pref* PREF_SELECT_LEAST_USED_HOST;
+extern PrefPtr PREF_SELECT_LEAST_USED_HOST;
 // value: true | false
-extern const Pref* PREF_ENABLE_ASYNC_DNS6;
+extern PrefPtr PREF_ENABLE_ASYNC_DNS6;
 // value: 1*digit
-extern const Pref* PREF_MAX_DOWNLOAD_RESULT;
+extern PrefPtr PREF_MAX_DOWNLOAD_RESULT;
 // value: 1*digit
-extern const Pref* PREF_RETRY_WAIT;
+extern PrefPtr PREF_RETRY_WAIT;
 // value: string
-extern const Pref* PREF_ASYNC_DNS_SERVER;
+extern PrefPtr PREF_ASYNC_DNS_SERVER;
 // value: true | false
-extern const Pref* PREF_SHOW_CONSOLE_READOUT;
+extern PrefPtr PREF_SHOW_CONSOLE_READOUT;
 // value: default | inorder | geom
-extern const Pref* PREF_STREAM_PIECE_SELECTOR;
+extern PrefPtr PREF_STREAM_PIECE_SELECTOR;
 // value: true | false
-extern const Pref* PREF_TRUNCATE_CONSOLE_READOUT;
+extern PrefPtr PREF_TRUNCATE_CONSOLE_READOUT;
 // value: true | false
-extern const Pref* PREF_PAUSE;
+extern PrefPtr PREF_PAUSE;
 // value: default | full
-extern const Pref* PREF_DOWNLOAD_RESULT;
+extern PrefPtr PREF_DOWNLOAD_RESULT;
 // value: true | false
-extern const Pref* PREF_HASH_CHECK_ONLY;
+extern PrefPtr PREF_HASH_CHECK_ONLY;
 // values: hashType=digest
-extern const Pref* PREF_CHECKSUM;
+extern PrefPtr PREF_CHECKSUM;
 // value: pid
-extern const Pref* PREF_STOP_WITH_PROCESS;
+extern PrefPtr PREF_STOP_WITH_PROCESS;
 // value: true | false
-extern const Pref* PREF_ENABLE_MMAP;
+extern PrefPtr PREF_ENABLE_MMAP;
 // value: true | false
-extern const Pref* PREF_FORCE_SAVE;
+extern PrefPtr PREF_FORCE_SAVE;
 // value: 1*digit
-extern const Pref* PREF_DISK_CACHE;
+extern PrefPtr PREF_DISK_CACHE;
 // value: string
-extern const Pref* PREF_GID;
+extern PrefPtr PREF_GID;
 // values: 1*digit
-extern const Pref* PREF_SAVE_SESSION_INTERVAL;
+extern PrefPtr PREF_SAVE_SESSION_INTERVAL;
+// value: true |false
+extern PrefPtr PREF_ENABLE_COLOR;
+// value: string
+extern PrefPtr PREF_RPC_SECRET;
+// values: 1*digit
+extern PrefPtr PREF_DSCP;
+// values: true | false
+extern PrefPtr PREF_PAUSE_METADATA;
+// values: 1*digit
+extern PrefPtr PREF_RLIMIT_NOFILE;
+// values: SSLv3 | TLSv1 | TLSv1.1 | TLSv1.2
+extern PrefPtr PREF_MIN_TLS_VERSION;
+// value: 1*digit
+extern PrefPtr PREF_SOCKET_RECV_BUFFER_SIZE;
+// value: 1*digit
+extern PrefPtr PREF_MAX_MMAP_LIMIT;
 
 /**
  * FTP related preferences
  */
-extern const Pref* PREF_FTP_USER;
-extern const Pref* PREF_FTP_PASSWD;
+extern PrefPtr PREF_FTP_USER;
+extern PrefPtr PREF_FTP_PASSWD;
 // values: binary | ascii
-extern const Pref* PREF_FTP_TYPE;
+extern PrefPtr PREF_FTP_TYPE;
 // values: true | false
-extern const Pref* PREF_FTP_PASV;
+extern PrefPtr PREF_FTP_PASV;
 // values: true | false
-extern const Pref* PREF_FTP_REUSE_CONNECTION;
+extern PrefPtr PREF_FTP_REUSE_CONNECTION;
+// values: hashType=digest
+extern PrefPtr PREF_SSH_HOST_KEY_MD;
 
 /**
  * HTTP related preferences
  */
-extern const Pref* PREF_HTTP_USER;
-extern const Pref* PREF_HTTP_PASSWD;
+extern PrefPtr PREF_HTTP_USER;
+extern PrefPtr PREF_HTTP_PASSWD;
 // values: string
-extern const Pref* PREF_USER_AGENT;
+extern PrefPtr PREF_USER_AGENT;
 // value: string that your file system recognizes as a file name.
-extern const Pref* PREF_LOAD_COOKIES;
+extern PrefPtr PREF_LOAD_COOKIES;
 // value: string that your file system recognizes as a file name.
-extern const Pref* PREF_SAVE_COOKIES;
+extern PrefPtr PREF_SAVE_COOKIES;
 // values: true | false
-extern const Pref* PREF_ENABLE_HTTP_KEEP_ALIVE;
+extern PrefPtr PREF_ENABLE_HTTP_KEEP_ALIVE;
 // values: true | false
-extern const Pref* PREF_ENABLE_HTTP_PIPELINING;
+extern PrefPtr PREF_ENABLE_HTTP_PIPELINING;
 // value: 1*digit
-extern const Pref* PREF_MAX_HTTP_PIPELINING;
+extern PrefPtr PREF_MAX_HTTP_PIPELINING;
 // value: string
-extern const Pref* PREF_HEADER;
+extern PrefPtr PREF_HEADER;
 // value: string that your file system recognizes as a file name.
-extern const Pref* PREF_CERTIFICATE;
+extern PrefPtr PREF_CERTIFICATE;
 // value: string that your file system recognizes as a file name.
-extern const Pref* PREF_PRIVATE_KEY;
+extern PrefPtr PREF_PRIVATE_KEY;
 // value: string that your file system recognizes as a file name.
-extern const Pref* PREF_CA_CERTIFICATE;
+extern PrefPtr PREF_CA_CERTIFICATE;
 // value: true | false
-extern const Pref* PREF_CHECK_CERTIFICATE;
+extern PrefPtr PREF_CHECK_CERTIFICATE;
 // value: true | false
-extern const Pref* PREF_USE_HEAD;
+extern PrefPtr PREF_USE_HEAD;
 // value: true | false
-extern const Pref* PREF_HTTP_AUTH_CHALLENGE;
+extern PrefPtr PREF_HTTP_AUTH_CHALLENGE;
 // value: true | false
-extern const Pref* PREF_HTTP_NO_CACHE;
+extern PrefPtr PREF_HTTP_NO_CACHE;
 // value: true | false
-extern const Pref* PREF_HTTP_ACCEPT_GZIP;
+extern PrefPtr PREF_HTTP_ACCEPT_GZIP;
 
 /**;
  * Proxy related preferences
  */
-extern const Pref* PREF_HTTP_PROXY;
-extern const Pref* PREF_HTTPS_PROXY;
-extern const Pref* PREF_FTP_PROXY;
-extern const Pref* PREF_ALL_PROXY;
-// values: comma separeted hostname or domain
-extern const Pref* PREF_NO_PROXY;
+extern PrefPtr PREF_HTTP_PROXY;
+extern PrefPtr PREF_HTTPS_PROXY;
+extern PrefPtr PREF_FTP_PROXY;
+extern PrefPtr PREF_ALL_PROXY;
+// values: comma separated hostname or domain
+extern PrefPtr PREF_NO_PROXY;
 // values: get | tunnel
-extern const Pref* PREF_PROXY_METHOD;
-extern const Pref* PREF_HTTP_PROXY_USER;
-extern const Pref* PREF_HTTP_PROXY_PASSWD;
-extern const Pref* PREF_HTTPS_PROXY_USER;
-extern const Pref* PREF_HTTPS_PROXY_PASSWD;
-extern const Pref* PREF_FTP_PROXY_USER;
-extern const Pref* PREF_FTP_PROXY_PASSWD;
-extern const Pref* PREF_ALL_PROXY_USER;
-extern const Pref* PREF_ALL_PROXY_PASSWD;
+extern PrefPtr PREF_PROXY_METHOD;
+extern PrefPtr PREF_HTTP_PROXY_USER;
+extern PrefPtr PREF_HTTP_PROXY_PASSWD;
+extern PrefPtr PREF_HTTPS_PROXY_USER;
+extern PrefPtr PREF_HTTPS_PROXY_PASSWD;
+extern PrefPtr PREF_FTP_PROXY_USER;
+extern PrefPtr PREF_FTP_PROXY_PASSWD;
+extern PrefPtr PREF_ALL_PROXY_USER;
+extern PrefPtr PREF_ALL_PROXY_PASSWD;
 
 /**
  * BitTorrent related preferences
  */
 // values: 1*digit
-extern const Pref* PREF_PEER_CONNECTION_TIMEOUT;
+extern PrefPtr PREF_PEER_CONNECTION_TIMEOUT;
 // values: 1*digit
-extern const Pref* PREF_BT_TIMEOUT;
+extern PrefPtr PREF_BT_TIMEOUT;
 // values: 1*digit
-extern const Pref* PREF_BT_REQUEST_TIMEOUT;
+extern PrefPtr PREF_BT_REQUEST_TIMEOUT;
 // values: true | false
-extern const Pref* PREF_SHOW_FILES;
+extern PrefPtr PREF_SHOW_FILES;
 // values: 1*digit
-extern const Pref* PREF_MAX_OVERALL_UPLOAD_LIMIT;
+extern PrefPtr PREF_MAX_OVERALL_UPLOAD_LIMIT;
 // values: 1*digit
-extern const Pref* PREF_MAX_UPLOAD_LIMIT;
+extern PrefPtr PREF_MAX_UPLOAD_LIMIT;
 // values: a string that your file system recognizes as a file name.
-extern const Pref* PREF_TORRENT_FILE;
+extern PrefPtr PREF_TORRENT_FILE;
 // values: 1*digit
-extern const Pref* PREF_LISTEN_PORT;
+extern PrefPtr PREF_LISTEN_PORT;
 // values: true | false | mem
-extern const Pref* PREF_FOLLOW_TORRENT;
+extern PrefPtr PREF_FOLLOW_TORRENT;
 // values: 1*digit *( (,|-) 1*digit)
-extern const Pref* PREF_SELECT_FILE;
+extern PrefPtr PREF_SELECT_FILE;
 // values: 1*digit
-extern const Pref* PREF_SEED_TIME;
+extern PrefPtr PREF_SEED_TIME;
 // values: 1*digit ['.' [ 1*digit ] ]
-extern const Pref* PREF_SEED_RATIO;
+extern PrefPtr PREF_SEED_RATIO;
 // values: 1*digit
-extern const Pref* PREF_BT_KEEP_ALIVE_INTERVAL;
+extern PrefPtr PREF_BT_KEEP_ALIVE_INTERVAL;
 // values: a string, less than or equals to 20 bytes length
-extern const Pref* PREF_PEER_ID_PREFIX;
+extern PrefPtr PREF_PEER_ID_PREFIX;
 // values: true | false
-extern const Pref* PREF_ENABLE_PEER_EXCHANGE;
+extern PrefPtr PREF_ENABLE_PEER_EXCHANGE;
 // values: true | false
-extern const Pref* PREF_ENABLE_DHT;
+extern PrefPtr PREF_ENABLE_DHT;
 // values: a string
-extern const Pref* PREF_DHT_LISTEN_ADDR;
+extern PrefPtr PREF_DHT_LISTEN_ADDR;
 // values: 1*digit
-extern const Pref* PREF_DHT_LISTEN_PORT;
+extern PrefPtr PREF_DHT_LISTEN_PORT;
 // values: a string
-extern const Pref* PREF_DHT_ENTRY_POINT_HOST;
+extern PrefPtr PREF_DHT_ENTRY_POINT_HOST;
 // values: 1*digit
-extern const Pref* PREF_DHT_ENTRY_POINT_PORT;
+extern PrefPtr PREF_DHT_ENTRY_POINT_PORT;
 // values: a string (hostname:port)
-extern const Pref* PREF_DHT_ENTRY_POINT;
+extern PrefPtr PREF_DHT_ENTRY_POINT;
 // values: a string
-extern const Pref* PREF_DHT_FILE_PATH;
+extern PrefPtr PREF_DHT_FILE_PATH;
 // values: true | false
-extern const Pref* PREF_ENABLE_DHT6;
+extern PrefPtr PREF_ENABLE_DHT6;
 // values: a string
-extern const Pref* PREF_DHT_LISTEN_ADDR6;
+extern PrefPtr PREF_DHT_LISTEN_ADDR6;
 // values: a string
-extern const Pref* PREF_DHT_ENTRY_POINT_HOST6;
+extern PrefPtr PREF_DHT_ENTRY_POINT_HOST6;
 // values: 1*digit
-extern const Pref* PREF_DHT_ENTRY_POINT_PORT6;
+extern PrefPtr PREF_DHT_ENTRY_POINT_PORT6;
 // values: a string (hostname:port)
-extern const Pref* PREF_DHT_ENTRY_POINT6;
+extern PrefPtr PREF_DHT_ENTRY_POINT6;
 // values: a string
-extern const Pref* PREF_DHT_FILE_PATH6;
+extern PrefPtr PREF_DHT_FILE_PATH6;
 // values: plain | arc4
-extern const Pref* PREF_BT_MIN_CRYPTO_LEVEL;
+extern PrefPtr PREF_BT_MIN_CRYPTO_LEVEL;
 // values:: true | false
-extern const Pref* PREF_BT_REQUIRE_CRYPTO;
+extern PrefPtr PREF_BT_REQUIRE_CRYPTO;
 // values: 1*digit
-extern const Pref* PREF_BT_REQUEST_PEER_SPEED_LIMIT;
+extern PrefPtr PREF_BT_REQUEST_PEER_SPEED_LIMIT;
 // values: 1*digit
-extern const Pref* PREF_BT_MAX_OPEN_FILES;
+extern PrefPtr PREF_BT_MAX_OPEN_FILES;
 // values: true | false
-extern const Pref* PREF_BT_SEED_UNVERIFIED;
+extern PrefPtr PREF_BT_SEED_UNVERIFIED;
 // values: true | false
-extern const Pref* PREF_BT_HASH_CHECK_SEED;
+extern PrefPtr PREF_BT_HASH_CHECK_SEED;
 // values: 1*digit
-extern const Pref* PREF_BT_MAX_PEERS;
+extern PrefPtr PREF_BT_MAX_PEERS;
 // values: a string (IP address)
-extern const Pref* PREF_BT_EXTERNAL_IP;
+extern PrefPtr PREF_BT_EXTERNAL_IP;
 // values: 1*digit '=' a string that your file system recognizes as a file name.
-extern const Pref* PREF_INDEX_OUT;
+extern PrefPtr PREF_INDEX_OUT;
 // values: 1*digit
-extern const Pref* PREF_BT_TRACKER_INTERVAL;
+extern PrefPtr PREF_BT_TRACKER_INTERVAL;
 // values: 1*digit
-extern const Pref* PREF_BT_STOP_TIMEOUT;
+extern PrefPtr PREF_BT_STOP_TIMEOUT;
 // values: head[=SIZE]|tail[=SIZE], ...
-extern const Pref* PREF_BT_PRIORITIZE_PIECE;
+extern PrefPtr PREF_BT_PRIORITIZE_PIECE;
 // values: true | false
-extern const Pref* PREF_BT_SAVE_METADATA;
+extern PrefPtr PREF_BT_SAVE_METADATA;
 // values: true | false
-extern const Pref* PREF_BT_METADATA_ONLY;
+extern PrefPtr PREF_BT_METADATA_ONLY;
 // values: true | false
-extern const Pref* PREF_BT_ENABLE_LPD;
+extern PrefPtr PREF_BT_ENABLE_LPD;
 // values: string
-extern const Pref* PREF_BT_LPD_INTERFACE;
+extern PrefPtr PREF_BT_LPD_INTERFACE;
 // values: 1*digit
-extern const Pref* PREF_BT_TRACKER_TIMEOUT;
+extern PrefPtr PREF_BT_TRACKER_TIMEOUT;
 // values: 1*digit
-extern const Pref* PREF_BT_TRACKER_CONNECT_TIMEOUT;
+extern PrefPtr PREF_BT_TRACKER_CONNECT_TIMEOUT;
 // values: 1*digit
-extern const Pref* PREF_DHT_MESSAGE_TIMEOUT;
+extern PrefPtr PREF_DHT_MESSAGE_TIMEOUT;
 // values: string
-extern const Pref* PREF_ON_BT_DOWNLOAD_COMPLETE;
+extern PrefPtr PREF_ON_BT_DOWNLOAD_COMPLETE;
 // values: string
-extern const Pref* PREF_BT_TRACKER;
+extern PrefPtr PREF_BT_TRACKER;
 // values: string
-extern const Pref* PREF_BT_EXCLUDE_TRACKER;
+extern PrefPtr PREF_BT_EXCLUDE_TRACKER;
 // values: true | false
-extern const Pref* PREF_BT_REMOVE_UNSELECTED_FILE;
+extern PrefPtr PREF_BT_REMOVE_UNSELECTED_FILE;
+// values: true |false
+extern PrefPtr PREF_BT_DETACH_SEED_ONLY;
+// values: true | false
+extern PrefPtr PREF_BT_FORCE_ENCRYPTION;
+// values: true | false
+extern PrefPtr PREF_BT_ENABLE_HOOK_AFTER_HASH_CHECK;
 
 /**
  * Metalink related preferences
  */
 // values: a string that your file system recognizes as a file name.
-extern const Pref* PREF_METALINK_FILE;
+extern PrefPtr PREF_METALINK_FILE;
 // values: a string
-extern const Pref* PREF_METALINK_VERSION;
+extern PrefPtr PREF_METALINK_VERSION;
 // values: a string
-extern const Pref* PREF_METALINK_LANGUAGE;
+extern PrefPtr PREF_METALINK_LANGUAGE;
 // values: a string
-extern const Pref* PREF_METALINK_OS;
+extern PrefPtr PREF_METALINK_OS;
 // values: a string
-extern const Pref* PREF_METALINK_LOCATION;
+extern PrefPtr PREF_METALINK_LOCATION;
 // values: true | false | mem
-extern const Pref* PREF_FOLLOW_METALINK;
+extern PrefPtr PREF_FOLLOW_METALINK;
 // values: http | https | ftp | none
-extern const Pref* PREF_METALINK_PREFERRED_PROTOCOL;
+extern PrefPtr PREF_METALINK_PREFERRED_PROTOCOL;
 // values: true | false
-extern const Pref* PREF_METALINK_ENABLE_UNIQUE_PROTOCOL;
+extern PrefPtr PREF_METALINK_ENABLE_UNIQUE_PROTOCOL;
 // values: a string
-extern const Pref* PREF_METALINK_BASE_URI;
+extern PrefPtr PREF_METALINK_BASE_URI;
 
 } // namespace aria2
 

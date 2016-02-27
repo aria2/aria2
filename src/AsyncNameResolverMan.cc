@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "AsyncNameResolverMan.h"
+
+#include <cassert>
+
 #include "AsyncNameResolver.h"
 #include "DownloadEngine.h"
 #include "Command.h"
@@ -46,21 +49,16 @@
 namespace aria2 {
 
 AsyncNameResolverMan::AsyncNameResolverMan()
-  : numResolver_(0),
-    resolverCheck_(0),
-    ipv4_(true),
-    ipv6_(true)
-{}
-
-AsyncNameResolverMan::~AsyncNameResolverMan()
+    : numResolver_(0), resolverCheck_(0), ipv4_(true), ipv6_(true)
 {
-  assert(!resolverCheck_);
 }
+
+AsyncNameResolverMan::~AsyncNameResolverMan() { assert(!resolverCheck_); }
 
 bool AsyncNameResolverMan::started() const
 {
-  for(size_t i = 0; i < numResolver_; ++i) {
-    if(asyncNameResolver_[i]) {
+  for (size_t i = 0; i < numResolver_; ++i) {
+    if (asyncNameResolver_[i]) {
       return true;
     }
   }
@@ -68,49 +66,46 @@ bool AsyncNameResolverMan::started() const
 }
 
 void AsyncNameResolverMan::startAsync(const std::string& hostname,
-                                      DownloadEngine* e,
-                                      Command* command)
+                                      DownloadEngine* e, Command* command)
 {
   numResolver_ = 0;
   // Set IPv6 resolver first, so that we can push IPv6 address in
   // front of IPv6 address in getResolvedAddress().
-  if(ipv6_) {
+  if (ipv6_) {
     startAsyncFamily(hostname, AF_INET6, e, command);
     ++numResolver_;
   }
-  if(ipv4_) {
+  if (ipv4_) {
     startAsyncFamily(hostname, AF_INET, e, command);
     ++numResolver_;
   }
-  A2_LOG_INFO(fmt(MSG_RESOLVING_HOSTNAME, command->getCuid(),
-                  hostname.c_str()));
+  A2_LOG_INFO(
+      fmt(MSG_RESOLVING_HOSTNAME, command->getCuid(), hostname.c_str()));
 }
 
 void AsyncNameResolverMan::startAsyncFamily(const std::string& hostname,
-                                            int family,
-                                            DownloadEngine* e,
+                                            int family, DownloadEngine* e,
                                             Command* command)
 {
-  asyncNameResolver_[numResolver_].reset
-    (new AsyncNameResolver(family
+  asyncNameResolver_[numResolver_] =
+      std::make_shared<AsyncNameResolver>(family
 #ifdef HAVE_ARES_ADDR_NODE
-                           ,
-                           e->getAsyncDNSServers()
+                                          ,
+                                          e->getAsyncDNSServers()
 #endif // HAVE_ARES_ADDR_NODE
-                           ));
+                                              );
   asyncNameResolver_[numResolver_]->resolve(hostname);
   setNameResolverCheck(numResolver_, e, command);
 }
 
-void AsyncNameResolverMan::getResolvedAddress(std::vector<std::string>& res)
-const
+void AsyncNameResolverMan::getResolvedAddress(
+    std::vector<std::string>& res) const
 {
-  for(size_t i = 0; i < numResolver_; ++i) {
-    if(asyncNameResolver_[i]->getStatus() ==
-       AsyncNameResolver::STATUS_SUCCESS) {
-      const std::vector<std::string>& addrs =
-        asyncNameResolver_[i]->getResolvedAddresses();
-      res.insert(res.end(), addrs.begin(), addrs.end());
+  for (size_t i = 0; i < numResolver_; ++i) {
+    if (asyncNameResolver_[i]->getStatus() ==
+        AsyncNameResolver::STATUS_SUCCESS) {
+      auto& addrs = asyncNameResolver_[i]->getResolvedAddresses();
+      res.insert(std::end(res), std::begin(addrs), std::end(addrs));
     }
   }
   return;
@@ -119,16 +114,15 @@ const
 void AsyncNameResolverMan::setNameResolverCheck(DownloadEngine* e,
                                                 Command* command)
 {
-  for(size_t i = 0; i < numResolver_; ++i) {
+  for (size_t i = 0; i < numResolver_; ++i) {
     setNameResolverCheck(i, e, command);
   }
 }
 
-void AsyncNameResolverMan::setNameResolverCheck(size_t index,
-                                                DownloadEngine* e,
+void AsyncNameResolverMan::setNameResolverCheck(size_t index, DownloadEngine* e,
                                                 Command* command)
 {
-  if(asyncNameResolver_[index]) {
+  if (asyncNameResolver_[index]) {
     assert((resolverCheck_ & (1 << index)) == 0);
     resolverCheck_ |= 1 << index;
     e->addNameResolverCheck(asyncNameResolver_[index], command);
@@ -138,7 +132,7 @@ void AsyncNameResolverMan::setNameResolverCheck(size_t index,
 void AsyncNameResolverMan::disableNameResolverCheck(DownloadEngine* e,
                                                     Command* command)
 {
-  for(size_t i = 0; i < numResolver_; ++i) {
+  for (size_t i = 0; i < numResolver_; ++i) {
     disableNameResolverCheck(i, e, command);
   }
 }
@@ -147,7 +141,7 @@ void AsyncNameResolverMan::disableNameResolverCheck(size_t index,
                                                     DownloadEngine* e,
                                                     Command* command)
 {
-  if(asyncNameResolver_[index] && (resolverCheck_ & (1 << index))) {
+  if (asyncNameResolver_[index] && (resolverCheck_ & (1 << index))) {
     resolverCheck_ &= ~(1 << index);
     e->deleteNameResolverCheck(asyncNameResolver_[index], command);
   }
@@ -158,11 +152,11 @@ int AsyncNameResolverMan::getStatus() const
   size_t success = 0;
   size_t error = 0;
   bool ipv4Success = false;
-  for(size_t i = 0; i < numResolver_; ++i) {
-    switch(asyncNameResolver_[i]->getStatus()) {
+  for (size_t i = 0; i < numResolver_; ++i) {
+    switch (asyncNameResolver_[i]->getStatus()) {
     case AsyncNameResolver::STATUS_SUCCESS:
       ++success;
-      if(asyncNameResolver_[i]->getFamily() == AF_INET) {
+      if (asyncNameResolver_[i]->getFamily() == AF_INET) {
         ipv4Success = true;
       }
       break;
@@ -173,24 +167,26 @@ int AsyncNameResolverMan::getStatus() const
       break;
     }
   }
-  // If we got IPv4 lookup response, we don't wait for IPv6 lookup
-  // response. This is because DNS server may drop AAAA query and we
-  // have to wait for the long time before timeout. We don't do the
-  // inverse, because, based on todays deployment of DNS server,
-  // almost all of them can respond A query just fine.
-  if((success && ipv4Success) || success == numResolver_) {
+  // If we got a IPv4 lookup response, we don't wait for a IPv6 lookup
+  // response. This is because DNS servers may drop AAAA queries and we
+  // have to wait for a long time before timeout. We don't do the
+  // inverse, because, based on today's deployment of DNS servers,
+  // almost all of them can respond to A queries just fine.
+  if ((success && ipv4Success) || success == numResolver_) {
     return 1;
-  } else if(error == numResolver_) {
+  }
+  else if (error == numResolver_) {
     return -1;
-  } else {
+  }
+  else {
     return 0;
   }
 }
 
 const std::string& AsyncNameResolverMan::getLastError() const
 {
-  for(size_t i = 0; i < numResolver_; ++i) {
-    if(asyncNameResolver_[i]->getStatus() == AsyncNameResolver::STATUS_ERROR) {
+  for (size_t i = 0; i < numResolver_; ++i) {
+    if (asyncNameResolver_[i]->getStatus() == AsyncNameResolver::STATUS_ERROR) {
       // TODO This is not last error chronologically.
       return asyncNameResolver_[i]->getError();
     }
@@ -202,7 +198,7 @@ void AsyncNameResolverMan::reset(DownloadEngine* e, Command* command)
 {
   disableNameResolverCheck(e, command);
   assert(resolverCheck_ == 0);
-  for(size_t i = 0; i < numResolver_; ++i) {
+  for (size_t i = 0; i < numResolver_; ++i) {
     asyncNameResolver_[i].reset();
   }
   numResolver_ = 0;
@@ -217,14 +213,13 @@ void configureAsyncNameResolverMan(AsyncNameResolverMan* asyncNameResolverMan,
   // before network interfaces up. To workaround this, we check
   // addresses again if both addresses are not configured at the
   // startup.
-  if(!net::getIPv4AddrConfigured() && !net::getIPv6AddrConfigured()) {
+  if (!net::getIPv4AddrConfigured() && !net::getIPv6AddrConfigured()) {
     net::checkAddrconfig();
   }
-  if(!net::getIPv4AddrConfigured()) {
+  if (!net::getIPv4AddrConfigured()) {
     asyncNameResolverMan->setIPv4(false);
   }
-  if(!net::getIPv6AddrConfigured() ||
-     option->getAsBool(PREF_DISABLE_IPV6)) {
+  if (!net::getIPv6AddrConfigured() || option->getAsBool(PREF_DISABLE_IPV6)) {
     asyncNameResolverMan->setIPv6(false);
   }
 }

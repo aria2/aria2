@@ -48,297 +48,289 @@ namespace rpc {
 
 // InitialXmlRpcRequestParserState
 
-void InitialXmlRpcRequestParserState::beginElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::vector<XmlAttr>& attrs)
+void InitialXmlRpcRequestParserState::beginElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    const std::vector<XmlAttr>& attrs)
 {
-  if(strcmp(name, "methodCall") == 0) {
+  if (strcmp(name, "methodCall") == 0) {
     psm->pushMethodCallState();
-  } else {
+  }
+  else {
     psm->pushUnknownElementState();
   }
 }
 
-void InitialXmlRpcRequestParserState::endElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::string& characters)
-{}
+void InitialXmlRpcRequestParserState::endElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    std::string characters)
+{
+}
 
 // UnknownElementXmlRpcRequestParserState
 
-void UnknownElementXmlRpcRequestParserState::beginElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::vector<XmlAttr>& attrs)
+void UnknownElementXmlRpcRequestParserState::beginElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    const std::vector<XmlAttr>& attrs)
 {
   psm->pushUnknownElementState();
 }
 
 // MethodCallXmlRpcRequestParserState
 
-void MethodCallXmlRpcRequestParserState::beginElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::vector<XmlAttr>& attrs)
+void MethodCallXmlRpcRequestParserState::beginElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    const std::vector<XmlAttr>& attrs)
 {
-  if(strcmp(name, "methodName") == 0) {
+  if (strcmp(name, "methodName") == 0) {
     psm->pushMethodNameState();
-  } else if(strcmp(name, "params") == 0) {
+  }
+  else if (strcmp(name, "params") == 0) {
     psm->setCurrentFrameValue(List::g());
     psm->pushParamsState();
-  } else {
+  }
+  else {
     psm->pushUnknownElementState();
   }
 }
 
 // MethodNameXmlRpcRequestParserState
 
-void MethodNameXmlRpcRequestParserState::beginElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::vector<XmlAttr>& attrs)
+void MethodNameXmlRpcRequestParserState::beginElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    const std::vector<XmlAttr>& attrs)
 {
   psm->pushUnknownElementState();
 }
 
-void MethodNameXmlRpcRequestParserState::endElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::string& characters)
+void MethodNameXmlRpcRequestParserState::endElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    std::string characters)
 {
-  psm->setMethodName(characters);
+  psm->setMethodName(std::move(characters));
 }
 
 // ParamsXmlRpcRequestParserState
 
-void ParamsXmlRpcRequestParserState::beginElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::vector<XmlAttr>& attrs)
+void ParamsXmlRpcRequestParserState::beginElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    const std::vector<XmlAttr>& attrs)
 {
-  if(strcmp(name, "param") == 0) {
+  if (strcmp(name, "param") == 0) {
     psm->pushFrame();
     psm->pushParamState();
-  } else {
+  }
+  else {
     psm->pushUnknownElementState();
   }
 }
 
 // ParamXmlRpcRequestParserState
 
-void ParamXmlRpcRequestParserState::beginElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::vector<XmlAttr>& attrs)
+void ParamXmlRpcRequestParserState::beginElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    const std::vector<XmlAttr>& attrs)
 {
-  if(strcmp(name, "value") == 0) {
+  if (strcmp(name, "value") == 0) {
     psm->pushValueState();
-  } else {
+  }
+  else {
     psm->pushUnknownElementState();
   }
 }
 
-void ParamXmlRpcRequestParserState::endElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::string& characters)
+void ParamXmlRpcRequestParserState::endElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    std::string characters)
 {
   psm->popArrayFrame();
 }
 
 // ValueXmlRpcRequestParserState
 
-void ValueXmlRpcRequestParserState::beginElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::vector<XmlAttr>& attrs)
+void ValueXmlRpcRequestParserState::beginElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    const std::vector<XmlAttr>& attrs)
 {
-  if(strcmp(name, "i4") == 0 || strcmp(name, "int") == 0) {
+  if (strcmp(name, "i4") == 0 || strcmp(name, "int") == 0) {
     psm->pushIntState();
-  } else if(strcmp(name, "struct") == 0) {
+  }
+  else if (strcmp(name, "struct") == 0) {
     psm->setCurrentFrameValue(Dict::g());
     psm->pushStructState();
-  } else if(strcmp(name, "array") == 0) {
+  }
+  else if (strcmp(name, "array") == 0) {
     psm->setCurrentFrameValue(List::g());
     psm->pushArrayState();
-  } else if(strcmp(name, "string") == 0 || strcmp(name, "double") == 0) {
+  }
+  else if (strcmp(name, "string") == 0 || strcmp(name, "double") == 0) {
     psm->pushStringState();
-  } else if(strcmp(name, "base64") == 0) {
+  }
+  else if (strcmp(name, "base64") == 0) {
     psm->pushBase64State();
-  } else {
+  }
+  else {
     psm->pushUnknownElementState();
   }
 }
 
-void ValueXmlRpcRequestParserState::endElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::string& characters)
+void ValueXmlRpcRequestParserState::endElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    std::string characters)
 {
   // XML-RPC specification says that if no data type tag is used, the
   // data must be treated as string.  To prevent from overwriting
   // current frame value, we first check it is still null.
-  if(!psm->getCurrentFrameValue() && !characters.empty()) {
-    psm->setCurrentFrameValue(String::g(characters));
+  if (!psm->getCurrentFrameValue() && !characters.empty()) {
+    psm->setCurrentFrameValue(String::g(std::move(characters)));
   }
 }
 
 // IntXmlRpcRequestParserState
 
-void IntXmlRpcRequestParserState::beginElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::vector<XmlAttr>& attrs)
+void IntXmlRpcRequestParserState::beginElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    const std::vector<XmlAttr>& attrs)
 {
   psm->pushUnknownElementState();
 }
 
-void IntXmlRpcRequestParserState::endElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::string& characters)
+void IntXmlRpcRequestParserState::endElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    std::string characters)
 {
   int32_t value;
-  if(util::parseIntNoThrow(value, characters)) {
+  if (util::parseIntNoThrow(value, characters)) {
     psm->setCurrentFrameValue(Integer::g(value));
-  } else {
+  }
+  else {
     // nothing to do here: We just leave current frame value to null.
   }
 }
 
 // StringXmlRpcRequestParserState
 
-void StringXmlRpcRequestParserState::beginElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::vector<XmlAttr>& attrs)
+void StringXmlRpcRequestParserState::beginElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    const std::vector<XmlAttr>& attrs)
 {
   psm->pushUnknownElementState();
 }
 
-void StringXmlRpcRequestParserState::endElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::string& characters)
+void StringXmlRpcRequestParserState::endElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    std::string characters)
 {
-  psm->setCurrentFrameValue(String::g(characters));
+  psm->setCurrentFrameValue(String::g(std::move(characters)));
 }
 
 // Base64XmlRpcRequestParserState
 
-void Base64XmlRpcRequestParserState::beginElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::vector<XmlAttr>& attrs)
+void Base64XmlRpcRequestParserState::beginElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    const std::vector<XmlAttr>& attrs)
 {
   psm->pushUnknownElementState();
 }
 
-void Base64XmlRpcRequestParserState::endElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::string& characters)
+void Base64XmlRpcRequestParserState::endElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    std::string characters)
 {
-  psm->setCurrentFrameValue
-    (String::g(base64::decode(characters.begin(), characters.end())));
+  psm->setCurrentFrameValue(
+      String::g(base64::decode(characters.begin(), characters.end())));
 }
 
 // StructXmlRpcRequestParserState
 
-void StructXmlRpcRequestParserState::beginElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::vector<XmlAttr>& attrs)
+void StructXmlRpcRequestParserState::beginElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    const std::vector<XmlAttr>& attrs)
 {
-  if(strcmp(name, "member") == 0) {
+  if (strcmp(name, "member") == 0) {
     psm->pushFrame();
     psm->pushMemberState();
-  } else {
+  }
+  else {
     psm->pushUnknownElementState();
   }
 }
 
 // MemberXmlRpcRequestParserState
 
-void MemberXmlRpcRequestParserState::beginElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::vector<XmlAttr>& attrs)
+void MemberXmlRpcRequestParserState::beginElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    const std::vector<XmlAttr>& attrs)
 {
-  if(strcmp(name, "name") == 0) {
+  if (strcmp(name, "name") == 0) {
     psm->pushNameState();
-  } else if(strcmp(name, "value") == 0) {
+  }
+  else if (strcmp(name, "value") == 0) {
     psm->pushValueState();
-  } else {
+  }
+  else {
     psm->pushUnknownElementState();
   }
 }
 
-void MemberXmlRpcRequestParserState::endElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::string& characters)
+void MemberXmlRpcRequestParserState::endElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    std::string characters)
 {
   psm->popStructFrame();
 }
 
 // NameXmlRpcRequestParserState
 
-void NameXmlRpcRequestParserState::beginElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::vector<XmlAttr>& attrs)
+void NameXmlRpcRequestParserState::beginElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    const std::vector<XmlAttr>& attrs)
 {
   psm->pushUnknownElementState();
 }
 
-void NameXmlRpcRequestParserState::endElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::string& characters)
+void NameXmlRpcRequestParserState::endElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    std::string characters)
 {
-  psm->setCurrentFrameName(characters);
+  psm->setCurrentFrameName(std::move(characters));
 }
 
 // ArrayXmlRpcRequestParserState
 
-void ArrayXmlRpcRequestParserState::beginElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::vector<XmlAttr>& attrs)
+void ArrayXmlRpcRequestParserState::beginElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    const std::vector<XmlAttr>& attrs)
 {
-  if(strcmp(name, "data") == 0) {
+  if (strcmp(name, "data") == 0) {
     psm->pushDataState();
-  } else {
+  }
+  else {
     psm->pushUnknownElementState();
   }
 }
 
 // DataXmlRpcRequestParserState
 
-void DataXmlRpcRequestParserState::beginElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::vector<XmlAttr>& attrs)
+void DataXmlRpcRequestParserState::beginElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    const std::vector<XmlAttr>& attrs)
 {
-  if(strcmp(name, "value") == 0) {
+  if (strcmp(name, "value") == 0) {
     psm->pushFrame();
     psm->pushArrayValueState();
-  } else {
+  }
+  else {
     psm->pushUnknownElementState();
   }
 }
 
 // ArrayValueXmlRpcRequestParserState
 
-void ArrayValueXmlRpcRequestParserState::endElement
-(XmlRpcRequestParserStateMachine* psm,
- const char* name,
- const std::string& characters)
+void ArrayValueXmlRpcRequestParserState::endElement(
+    XmlRpcRequestParserStateMachine* psm, const char* name,
+    std::string characters)
 {
-  ValueXmlRpcRequestParserState::endElement(psm, name, characters);
+  ValueXmlRpcRequestParserState::endElement(psm, name, std::move(characters));
   psm->popArrayFrame();
 }
 

@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "IteratableChecksumValidator.h"
 
+#include <array>
 #include <cstdlib>
 
 #include "util.h"
@@ -49,13 +50,12 @@
 
 namespace aria2 {
 
-IteratableChecksumValidator::IteratableChecksumValidator
-(const SharedHandle<DownloadContext>& dctx,
- const SharedHandle<PieceStorage>& pieceStorage)
-  : dctx_(dctx),
-    pieceStorage_(pieceStorage),
-    currentOffset_(0)
-{}
+IteratableChecksumValidator::IteratableChecksumValidator(
+    const std::shared_ptr<DownloadContext>& dctx,
+    const std::shared_ptr<PieceStorage>& pieceStorage)
+    : dctx_(dctx), pieceStorage_(pieceStorage), currentOffset_(0)
+{
+}
 
 IteratableChecksumValidator::~IteratableChecksumValidator() {}
 
@@ -63,31 +63,34 @@ void IteratableChecksumValidator::validateChunk()
 {
   // Don't guard with !finished() to allow zero-length file to be
   // verified.
-  unsigned char buf[4096];
-  size_t length = pieceStorage_->getDiskAdaptor()->readData
-    (buf, sizeof(buf), currentOffset_);
-  ctx_->update(buf, length);
+  std::array<unsigned char, 4_k> buf;
+  size_t length = pieceStorage_->getDiskAdaptor()->readDataDropCache(
+      buf.data(), buf.size(), currentOffset_);
+  ctx_->update(buf.data(), length);
   currentOffset_ += length;
-  if(finished()) {
+  if (finished()) {
     std::string actualDigest = ctx_->digest();
-    if(dctx_->getDigest() == actualDigest) {
+    if (dctx_->getDigest() == actualDigest) {
       pieceStorage_->markAllPiecesDone();
       dctx_->setChecksumVerified(true);
-    } else {
+    }
+    else {
       A2_LOG_INFO(fmt("Checksum validation failed. expected=%s, actual=%s",
                       util::toHex(dctx_->getDigest()).c_str(),
                       util::toHex(actualDigest).c_str()));
       BitfieldMan bitfield(dctx_->getPieceLength(), dctx_->getTotalLength());
-      pieceStorage_->setBitfield(bitfield.getBitfield(), bitfield.getBitfieldLength());
+      pieceStorage_->setBitfield(bitfield.getBitfield(),
+                                 bitfield.getBitfieldLength());
     }
   }
 }
 
 bool IteratableChecksumValidator::finished() const
 {
-  if(currentOffset_ >= dctx_->getTotalLength()) {
+  if (currentOffset_ >= dctx_->getTotalLength()) {
     return true;
-  } else {
+  }
+  else {
     return false;
   }
 }

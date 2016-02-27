@@ -40,8 +40,7 @@
 #include <string>
 #include <vector>
 #include <set>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -60,25 +59,21 @@ class GroupId;
 // file instead. If adjustAnnounceUri is true, announce URIs are
 // adjusted using bittorrent::adjustAnnounceUri().  In this function,
 // force-sequential is ignored.
-void createRequestGroupForBitTorrent
-(std::vector<SharedHandle<RequestGroup> >& result,
- const SharedHandle<Option>& option,
- const std::vector<std::string>& uris,
- const std::string& metaInfoUri,
- const std::string& torrentData = "",
- bool adjustAnnounceUri = true);
+void createRequestGroupForBitTorrent(
+    std::vector<std::shared_ptr<RequestGroup>>& result,
+    const std::shared_ptr<Option>& option, const std::vector<std::string>& uris,
+    const std::string& metaInfoUri, const std::string& torrentData = "",
+    bool adjustAnnounceUri = true);
 
 // Create RequestGroup object using already decoded torrent metainfo
 // structure.  If adjustAnnounceUri is true, announce URIs are
 // adjusted using bittorrent::adjustAnnounceUri().  In this function,
 // force-sequential is ignored.
-void createRequestGroupForBitTorrent
-(std::vector<SharedHandle<RequestGroup> >& result,
- const SharedHandle<Option>& option,
- const std::vector<std::string>& uris,
- const std::string& metaInfoUri,
- const SharedHandle<ValueBase>& torrent,
- bool adjustAnnounceUri = true);
+void createRequestGroupForBitTorrent(
+    std::vector<std::shared_ptr<RequestGroup>>& result,
+    const std::shared_ptr<Option>& option, const std::vector<std::string>& uris,
+    const std::string& metaInfoUri, const ValueBase* torrent,
+    bool adjustAnnounceUri = true);
 
 #endif // ENABLE_BITTORRENT
 
@@ -86,10 +81,10 @@ void createRequestGroupForBitTorrent
 // Create RequestGroup objects using Metalink file specified by
 // metalink-file option. If non-empty metalinkData is specified, it is
 // used as a content of metalink file instead.
-void createRequestGroupForMetalink
-(std::vector<SharedHandle<RequestGroup> >& result,
- const SharedHandle<Option>& option,
- const std::string& metalinkData = "");
+void createRequestGroupForMetalink(
+    std::vector<std::shared_ptr<RequestGroup>>& result,
+    const std::shared_ptr<Option>& option,
+    const std::string& metalinkData = "");
 #endif // ENABLE_METALINK
 
 // Reads one entry from uriListParser and creates RequestGroups from
@@ -99,58 +94,55 @@ void createRequestGroupForMetalink
 // and created RequestGroups are stored in result. If no RequestGroup
 // is created and uriListParser reads all input, this function returns
 // false. The option is used as a option template.
-bool createRequestGroupFromUriListParser
-(std::vector<SharedHandle<RequestGroup> >& result,
- const Option* option,
- UriListParser* uriListParser);
+bool createRequestGroupFromUriListParser(
+    std::vector<std::shared_ptr<RequestGroup>>& result, const Option* option,
+    UriListParser* uriListParser);
 
 // Creates UriListParser using given filename.  If filename is "-",
 // then UriListParser is configured to read from standard input.
 // Otherwise, this function first checks file denoted by filename
 // exists.  If it does not exist, this function throws exception.
-// This function returns SharedHandle<UriListParser> object if it
+// This function returns std::shared_ptr<UriListParser> object if it
 // succeeds.
-SharedHandle<UriListParser> openUriListParser(const std::string& filename);
+std::shared_ptr<UriListParser> openUriListParser(const std::string& filename);
 
 // Create RequestGroup objects from reading file specified by input-file option.
 // If the value of input-file option is "-", stdin is used as a input source.
 // Each line is treated as if it is provided in command-line argument.
 // The additional out and dir options can be specified after each line of URIs.
 // This optional line must start with white space(s).
-void createRequestGroupForUriList
-(std::vector<SharedHandle<RequestGroup> >& result,
- const SharedHandle<Option>& option);
+void createRequestGroupForUriList(
+    std::vector<std::shared_ptr<RequestGroup>>& result,
+    const std::shared_ptr<Option>& option);
 
 // Create RequestGroup object using provided uris.  If ignoreLocalPath
-// is true, a path to torrent file abd metalink file are ignored.  If
+// is true, a path to torrent file and metalink file are ignored.  If
 // throwOnError is true, exception will be thrown when Metalink
 // Document or .torrent file cannot be parsed or unrecognized URI is
 // given. If throwOnError is false, these errors are just logged as
 // error.
-void createRequestGroupForUri
-(std::vector<SharedHandle<RequestGroup> >& result,
- const SharedHandle<Option>& option,
- const std::vector<std::string>& uris,
- bool ignoreForceSequential = false,
- bool ignoreLocalPath = false,
- bool throwOnError = false);
+void createRequestGroupForUri(
+    std::vector<std::shared_ptr<RequestGroup>>& result,
+    const std::shared_ptr<Option>& option, const std::vector<std::string>& uris,
+    bool ignoreForceSequential = false, bool ignoreLocalPath = false,
+    bool throwOnError = false);
 
-template<typename InputIterator>
-void setMetadataInfo
-(InputIterator first, InputIterator last, const SharedHandle<MetadataInfo>& mi)
+template <typename InputIterator>
+void setMetadataInfo(InputIterator first, InputIterator last,
+                     const std::shared_ptr<MetadataInfo>& mi)
 {
-  for(; first != last; ++first) {
+  for (; first != last; ++first) {
     (*first)->setMetadataInfo(mi);
   }
 }
 
-SharedHandle<MetadataInfo>
-createMetadataInfoFromFirstFileEntry(const SharedHandle<GroupId>& gid,
-                                     const SharedHandle<DownloadContext>& dctx);
+std::shared_ptr<MetadataInfo> createMetadataInfoFromFirstFileEntry(
+    const std::shared_ptr<GroupId>& gid,
+    const std::shared_ptr<DownloadContext>& dctx);
 
 // Removes option value which is only effective at the first
 // construction time.
-void removeOneshotOption(const SharedHandle<Option>& option);
+void removeOneshotOption(const std::shared_ptr<Option>& option);
 
 } // namespace aria2
 

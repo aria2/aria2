@@ -37,41 +37,61 @@
 
 #include "Randomizer.h"
 
-#ifdef __MINGW32__
-# include <wincrypt.h>
-#endif // __MINGW32__
+#include <memory>
+#include <random>
 
-#include "SharedHandle.h"
+#ifdef __MINGW32__
+#include <wincrypt.h>
+#endif
 
 namespace aria2 {
 
 class SimpleRandomizer : public Randomizer {
 private:
-  static SharedHandle<SimpleRandomizer> randomizer_;
-
-#ifdef __MINGW32__
-  HCRYPTPROV cryProvider_;
-#endif //__MINGW32__
-
+  static std::unique_ptr<SimpleRandomizer> randomizer_;
   SimpleRandomizer();
+
+private:
+#ifdef __MINGW32__
+  HCRYPTPROV provider_;
+#else
+  std::mt19937 gen_;
+#endif // ! __MINGW32__
+
 public:
+  typedef std::mt19937::result_type result_type;
 
-  static const SharedHandle<SimpleRandomizer>& getInstance();
-
-  static void init();
+  static const std::unique_ptr<SimpleRandomizer>& getInstance();
 
   virtual ~SimpleRandomizer();
-
-  virtual long int getRandomNumber();
-
-  virtual long int getMaxRandomNumber();
 
   /**
    * Returns random number in [0, to).
    */
-  virtual long int getRandomNumber(long int to);
+  virtual long int getRandomNumber(long int to) CXX11_OVERRIDE;
 
-  long int operator()(long int to);
+  void getRandomBytes(unsigned char* buf, size_t len);
+
+  long int operator()(long int to) { return getRandomNumber(to); }
+
+  result_type operator()()
+  {
+    result_type rv;
+    getRandomBytes(reinterpret_cast<unsigned char*>(&rv), sizeof(rv));
+    return rv;
+  }
+
+  static constexpr result_type min()
+  {
+    return std::numeric_limits<result_type>::min();
+  }
+
+  static constexpr result_type max()
+  {
+    return std::numeric_limits<result_type>::max();
+  }
+
+  static double entropy() { return 0.0; }
 };
 
 } // namespace aria2

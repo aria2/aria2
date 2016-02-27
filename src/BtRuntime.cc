@@ -38,21 +38,22 @@
 namespace aria2 {
 
 BtRuntime::BtRuntime()
-  : uploadLengthAtStartup_(0),
-    halt_(false),
-    connections_(0),
-    ready_(false),
-    maxPeers_(DEFAULT_MAX_PEERS),
-    minPeers_(DEFAULT_MIN_PEERS)
-{}
+    : uploadLengthAtStartup_(0),
+      halt_(false),
+      connections_(0),
+      ready_(false),
+      maxPeers_(DEFAULT_MAX_PEERS),
+      minPeers_(DEFAULT_MIN_PEERS)
+{
+}
 
 BtRuntime::~BtRuntime() {}
 
 void BtRuntime::setMaxPeers(int maxPeers)
 {
   maxPeers_ = maxPeers;
-  minPeers_ = maxPeers*0.8;
-  if(minPeers_ == 0 && maxPeers != 0) {
+  minPeers_ = maxPeers * 0.8;
+  if (minPeers_ == 0 && maxPeers != 0) {
     minPeers_ = maxPeers;
   }
 }

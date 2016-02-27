@@ -58,23 +58,33 @@
 #include "RpcMethodImpl.h"
 #include "console.h"
 #include "KeepRunningCommand.h"
+#include "A2STR.h"
+#include "SingletonHolder.h"
+#include "Notifier.h"
+#include "ApiCallbackDownloadEventListener.h"
+#ifdef ENABLE_BITTORRENT
+#include "bittorrent_helper.h"
+#endif // ENABLE_BITTORRENT
 
 namespace aria2 {
 
 Session::Session(const KeyVals& options)
-  : context(new Context(false, 0, 0, options))
-{}
+    : context(std::make_shared<Context>(false, 0, nullptr, options))
+{
+}
 
-Session::~Session()
-{}
+Session::~Session() {}
 
 SessionConfig::SessionConfig()
-  : keepRunning(false),
-    useSignalHandler(true)
-{}
+    : keepRunning(false),
+      useSignalHandler(true),
+      downloadEventCallback(nullptr),
+      userData(nullptr)
+{
+}
 
 namespace {
-Platform* platform = 0;
+Platform* platform = nullptr;
 } // namespace
 
 int libraryInit()
@@ -82,7 +92,8 @@ int libraryInit()
   global::initConsole(true);
   try {
     platform = new Platform();
-  } catch(RecoverableException& e) {
+  }
+  catch (RecoverableException& e) {
     A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
     return -1;
   }
@@ -99,33 +110,38 @@ int libraryDeinit()
 Session* sessionNew(const KeyVals& options, const SessionConfig& config)
 {
   int rv;
-  Session* session;
+  std::unique_ptr<Session> session;
   try {
-    session = new Session(options);
-  } catch(RecoverableException& e) {
-    return 0;
+    session = make_unique<Session>(options);
   }
-  if(session->context->reqinfo) {
-    if(!config.useSignalHandler) {
+  catch (RecoverableException& e) {
+    return nullptr;
+  }
+  if (session->context->reqinfo) {
+    if (!config.useSignalHandler) {
       session->context->reqinfo->setUseSignalHandler(false);
     }
     rv = session->context->reqinfo->prepare();
-    if(rv != 0) {
-      delete session;
-      session = 0;
+    if (rv != 0) {
+      return nullptr;
     }
-    const SharedHandle<DownloadEngine>& e =
-      session->context->reqinfo->getDownloadEngine();
-    if(config.keepRunning) {
+    auto& e = session->context->reqinfo->getDownloadEngine();
+    if (config.keepRunning) {
       e->getRequestGroupMan()->setKeepRunning(true);
       // Add command to make aria2 keep event polling
-      e->addCommand(new KeepRunningCommand(e->newCUID(), e.get()));
+      e->addCommand(make_unique<KeepRunningCommand>(e->newCUID(), e.get()));
     }
-  } else {
-    delete session;
-    session = 0;
+    if (config.downloadEventCallback) {
+      session->listener = make_unique<ApiCallbackDownloadEventListener>(
+          session.get(), config.downloadEventCallback, config.userData);
+      SingletonHolder<Notifier>::instance()->addDownloadEventListener(
+          session->listener.get());
+    }
   }
-  return session;
+  else {
+    return nullptr;
+  }
+  return session.release();
 }
 
 int sessionFinal(Session* session)
@@ -137,18 +153,17 @@ int sessionFinal(Session* session)
 
 int run(Session* session, RUN_MODE mode)
 {
-  const SharedHandle<DownloadEngine>& e =
-    session->context->reqinfo->getDownloadEngine();
+  auto& e = session->context->reqinfo->getDownloadEngine();
   return e->run(mode == RUN_ONCE);
 }
 
 int shutdown(Session* session, bool force)
 {
-  const SharedHandle<DownloadEngine>& e =
-    session->context->reqinfo->getDownloadEngine();
-  if(force) {
+  auto& e = session->context->reqinfo->getDownloadEngine();
+  if (force) {
     e->requestForceHalt();
-  } else {
+  }
+  else {
     e->requestHalt();
   }
   // Skip next polling timeout. This avoids 1 second delay when there
@@ -157,43 +172,32 @@ int shutdown(Session* session, bool force)
   return 0;
 }
 
-std::string gidToHex(const A2Gid& gid)
-{
-  return GroupId::toHex(gid);
-}
+std::string gidToHex(A2Gid gid) { return GroupId::toHex(gid); }
 
 A2Gid hexToGid(const std::string& hex)
 {
   A2Gid gid;
-  if(GroupId::toNumericId(gid, hex.c_str()) == 0) {
+  if (GroupId::toNumericId(gid, hex.c_str()) == 0) {
     return gid;
-  } else {
+  }
+  else {
     return 0;
   }
 }
 
-bool isNull(const A2Gid& gid)
-{
-  return gid == 0;
-}
+bool isNull(A2Gid gid) { return gid == 0; }
 
 namespace {
-template<typename InputIterator, typename Pred>
-void apiGatherOption
-(InputIterator first, InputIterator last,
- Pred pred,
- Option* option,
- const SharedHandle<OptionParser>& optionParser)
+template <typename InputIterator, typename Pred>
+void apiGatherOption(InputIterator first, InputIterator last, Pred pred,
+                     Option* option,
+                     const std::shared_ptr<OptionParser>& optionParser)
 {
-  for(; first != last; ++first) {
+  for (; first != last; ++first) {
     const std::string& optionName = (*first).first;
-    const Pref* pref = option::k2p(optionName);
-    if(!pref) {
-      throw DL_ABORT_EX
-        (fmt("We don't know how to deal with %s option", optionName.c_str()));
-    }
+    PrefPtr pref = option::k2p(optionName);
     const OptionHandler* handler = optionParser->find(pref);
-    if(!handler || !pred(handler)) {
+    if (!handler || !pred(handler)) {
       // Just ignore the unacceptable options in this context.
       continue;
     }
@@ -204,169 +208,337 @@ void apiGatherOption
 
 namespace {
 void apiGatherRequestOption(Option* option, const KeyVals& options,
-                            const SharedHandle<OptionParser>& optionParser)
+                            const std::shared_ptr<OptionParser>& optionParser)
 {
   apiGatherOption(options.begin(), options.end(),
-                  std::mem_fun(&OptionHandler::getInitialOption),
+                  std::mem_fn(&OptionHandler::getInitialOption), option,
+                  optionParser);
+}
+} // namespace
+
+namespace {
+void apiGatherChangeableOption(
+    Option* option, const KeyVals& options,
+    const std::shared_ptr<OptionParser>& optionParser)
+{
+  apiGatherOption(options.begin(), options.end(),
+                  std::mem_fn(&OptionHandler::getChangeOption), option,
+                  optionParser);
+}
+} // namespace
+
+namespace {
+void apiGatherChangeableOptionForReserved(
+    Option* option, const KeyVals& options,
+    const std::shared_ptr<OptionParser>& optionParser)
+{
+  apiGatherOption(options.begin(), options.end(),
+                  std::mem_fn(&OptionHandler::getChangeOptionForReserved),
                   option, optionParser);
 }
 } // namespace
 
 namespace {
-void addRequestGroup(const SharedHandle<RequestGroup>& group,
-                     const SharedHandle<DownloadEngine>& e,
-                     int position)
+void apiGatherChangeableGlobalOption(
+    Option* option, const KeyVals& options,
+    const std::shared_ptr<OptionParser>& optionParser)
 {
-  if(position >= 0) {
+  apiGatherOption(options.begin(), options.end(),
+                  std::mem_fn(&OptionHandler::getChangeGlobalOption), option,
+                  optionParser);
+}
+} // namespace
+
+namespace {
+void addRequestGroup(const std::shared_ptr<RequestGroup>& group,
+                     DownloadEngine* e, int position)
+{
+  if (position >= 0) {
     e->getRequestGroupMan()->insertReservedGroup(position, group);
-  } else {
+  }
+  else {
     e->getRequestGroupMan()->addReservedGroup(group);
   }
 }
 } // namespace
 
-int addUri(Session* session,
-           A2Gid& gid,
-           const std::vector<std::string>& uris,
-           const KeyVals& options,
-           int position)
+int addUri(Session* session, A2Gid* gid, const std::vector<std::string>& uris,
+           const KeyVals& options, int position)
 {
-  const SharedHandle<DownloadEngine>& e =
-    session->context->reqinfo->getDownloadEngine();
-  SharedHandle<Option> requestOption(new Option(*e->getOption()));
+  auto& e = session->context->reqinfo->getDownloadEngine();
+  auto requestOption = std::make_shared<Option>(*e->getOption());
   try {
     apiGatherRequestOption(requestOption.get(), options,
                            OptionParser::getInstance());
-  } catch(RecoverableException& e) {
+  }
+  catch (RecoverableException& e) {
     A2_LOG_INFO_EX(EX_EXCEPTION_CAUGHT, e);
     return -1;
   }
-  std::vector<SharedHandle<RequestGroup> > result;
+  std::vector<std::shared_ptr<RequestGroup>> result;
   createRequestGroupForUri(result, requestOption, uris,
                            /* ignoreForceSeq = */ true,
                            /* ignoreLocalPath = */ true);
-  if(!result.empty()) {
-    gid = result.front()->getGID();
-    addRequestGroup(result.front(), e, position);
+  if (!result.empty()) {
+    addRequestGroup(result.front(), e.get(), position);
+    if (gid) {
+      *gid = result.front()->getGID();
+    }
   }
   return 0;
 }
 
-int addMetalink(Session* session,
-                std::vector<A2Gid>& gids,
-                const std::string& metalinkFile,
-                const KeyVals& options,
+int addMetalink(Session* session, std::vector<A2Gid>* gids,
+                const std::string& metalinkFile, const KeyVals& options,
                 int position)
 {
 #ifdef ENABLE_METALINK
-  const SharedHandle<DownloadEngine>& e =
-    session->context->reqinfo->getDownloadEngine();
-  SharedHandle<Option> requestOption(new Option(*e->getOption()));
-  std::vector<SharedHandle<RequestGroup> > result;
+  auto& e = session->context->reqinfo->getDownloadEngine();
+  auto requestOption = std::make_shared<Option>(*e->getOption());
+  std::vector<std::shared_ptr<RequestGroup>> result;
   try {
     apiGatherRequestOption(requestOption.get(), options,
                            OptionParser::getInstance());
     requestOption->put(PREF_METALINK_FILE, metalinkFile);
     createRequestGroupForMetalink(result, requestOption);
-  } catch(RecoverableException& e) {
+  }
+  catch (RecoverableException& e) {
     A2_LOG_INFO_EX(EX_EXCEPTION_CAUGHT, e);
     return -1;
   }
-  if(!result.empty()) {
-    if(position >= 0) {
+  if (!result.empty()) {
+    if (position >= 0) {
       e->getRequestGroupMan()->insertReservedGroup(position, result);
-    } else {
+    }
+    else {
       e->getRequestGroupMan()->addReservedGroup(result);
     }
-    for(std::vector<SharedHandle<RequestGroup> >::const_iterator i =
-          result.begin(), eoi = result.end(); i != eoi; ++i) {
-      gids.push_back((*i)->getGID());
+    if (gids) {
+      for (std::vector<std::shared_ptr<RequestGroup>>::const_iterator
+               i = result.begin(),
+               eoi = result.end();
+           i != eoi; ++i) {
+        (*gids).push_back((*i)->getGID());
+      }
     }
   }
   return 0;
-#else // !ENABLE_METALINK
+#else  // !ENABLE_METALINK
   return -1;
 #endif // !ENABLE_METALINK
 }
 
-int removeDownload(Session* session, const A2Gid& gid, bool force)
+int addTorrent(Session* session, A2Gid* gid, const std::string& torrentFile,
+               const std::vector<std::string>& webSeedUris,
+               const KeyVals& options, int position)
 {
-  const SharedHandle<DownloadEngine>& e =
-    session->context->reqinfo->getDownloadEngine();
-  SharedHandle<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
-  if(group) {
-    if(group->getState() == RequestGroup::STATE_ACTIVE) {
-      if(force) {
+#ifdef ENABLE_BITTORRENT
+  auto& e = session->context->reqinfo->getDownloadEngine();
+  auto requestOption = std::make_shared<Option>(*e->getOption());
+  std::vector<std::shared_ptr<RequestGroup>> result;
+  try {
+    apiGatherRequestOption(requestOption.get(), options,
+                           OptionParser::getInstance());
+    requestOption->put(PREF_TORRENT_FILE, torrentFile);
+    createRequestGroupForBitTorrent(result, requestOption, webSeedUris,
+                                    torrentFile);
+  }
+  catch (RecoverableException& e) {
+    A2_LOG_INFO_EX(EX_EXCEPTION_CAUGHT, e);
+    return -1;
+  }
+  if (!result.empty()) {
+    addRequestGroup(result.front(), e.get(), position);
+    if (gid) {
+      *gid = result.front()->getGID();
+    }
+  }
+  return 0;
+#else  // !ENABLE_BITTORRENT
+  return -1;
+#endif // !ENABLE_BITTORRENT
+}
+
+int addTorrent(Session* session, A2Gid* gid, const std::string& torrentFile,
+               const KeyVals& options, int position)
+{
+  return addTorrent(session, gid, torrentFile, std::vector<std::string>(),
+                    options, position);
+}
+
+int removeDownload(Session* session, A2Gid gid, bool force)
+{
+  auto& e = session->context->reqinfo->getDownloadEngine();
+  std::shared_ptr<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
+  if (group) {
+    if (group->getState() == RequestGroup::STATE_ACTIVE) {
+      if (force) {
         group->setForceHaltRequested(true, RequestGroup::USER_REQUEST);
-      } else {
+      }
+      else {
         group->setHaltRequested(true, RequestGroup::USER_REQUEST);
       }
-      e->setRefreshInterval(0);
-    } else {
-      if(group->isDependencyResolved()) {
+      e->setRefreshInterval(std::chrono::milliseconds(0));
+    }
+    else {
+      if (group->isDependencyResolved()) {
         e->getRequestGroupMan()->removeReservedGroup(gid);
-      } else {
+      }
+      else {
         return -1;
       }
     }
-  } else {
+  }
+  else {
     return -1;
   }
   return 0;
 }
 
-int pauseDownload(Session* session, const A2Gid& gid, bool force)
+int pauseDownload(Session* session, A2Gid gid, bool force)
 {
-  const SharedHandle<DownloadEngine>& e =
-    session->context->reqinfo->getDownloadEngine();
-  SharedHandle<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
-  if(group) {
+  auto& e = session->context->reqinfo->getDownloadEngine();
+  std::shared_ptr<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
+  if (group) {
     bool reserved = group->getState() == RequestGroup::STATE_WAITING;
-    if(pauseRequestGroup(group, reserved, force)) {
-      e->setRefreshInterval(0);
+    if (pauseRequestGroup(group, reserved, force)) {
+      e->setRefreshInterval(std::chrono::milliseconds(0));
       return 0;
     }
   }
   return -1;
 }
 
-int unpauseDownload(Session* session, const A2Gid& gid)
+int unpauseDownload(Session* session, A2Gid gid)
 {
-  const SharedHandle<DownloadEngine>& e =
-    session->context->reqinfo->getDownloadEngine();
-  SharedHandle<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
-  if(!group ||
-     group->getState() != RequestGroup::STATE_WAITING ||
-     !group->isPauseRequested()) {
+  auto& e = session->context->reqinfo->getDownloadEngine();
+  std::shared_ptr<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
+  if (!group || group->getState() != RequestGroup::STATE_WAITING ||
+      !group->isPauseRequested()) {
     return -1;
-  } else {
+  }
+  else {
     group->setPauseRequested(false);
     e->getRequestGroupMan()->requestQueueCheck();
   }
   return 0;
 }
 
+int changePosition(Session* session, A2Gid gid, int pos, OffsetMode how)
+{
+  auto& e = session->context->reqinfo->getDownloadEngine();
+  try {
+    return e->getRequestGroupMan()->changeReservedGroupPosition(gid, pos, how);
+  }
+  catch (RecoverableException& e) {
+    A2_LOG_INFO_EX(EX_EXCEPTION_CAUGHT, e);
+    return -1;
+  }
+}
+
+int changeOption(Session* session, A2Gid gid, const KeyVals& options)
+{
+  auto& e = session->context->reqinfo->getDownloadEngine();
+  std::shared_ptr<RequestGroup> group = e->getRequestGroupMan()->findGroup(gid);
+  if (group) {
+    Option option;
+    try {
+      if (group->getState() == RequestGroup::STATE_ACTIVE) {
+        apiGatherChangeableOption(&option, options,
+                                  OptionParser::getInstance());
+      }
+      else {
+        apiGatherChangeableOptionForReserved(&option, options,
+                                             OptionParser::getInstance());
+      }
+    }
+    catch (RecoverableException& err) {
+      A2_LOG_INFO_EX(EX_EXCEPTION_CAUGHT, err);
+      return -1;
+    }
+    changeOption(group, option, e.get());
+    return 0;
+  }
+  else {
+    return -1;
+  }
+}
+
+const std::string& getGlobalOption(Session* session, const std::string& name)
+{
+  auto& e = session->context->reqinfo->getDownloadEngine();
+  PrefPtr pref = option::k2p(name);
+  if (OptionParser::getInstance()->find(pref)) {
+    return e->getOption()->get(pref);
+  }
+  else {
+    return A2STR::NIL;
+  }
+}
+
+KeyVals getGlobalOptions(Session* session)
+{
+  auto& e = session->context->reqinfo->getDownloadEngine();
+  const std::shared_ptr<OptionParser>& optionParser =
+      OptionParser::getInstance();
+  const Option* option = e->getOption();
+  KeyVals options;
+  for (size_t i = 1, len = option::countOption(); i < len; ++i) {
+    PrefPtr pref = option::i2p(i);
+    if (option->defined(pref) && optionParser->find(pref)) {
+      options.push_back(KeyVals::value_type(pref->k, option->get(pref)));
+    }
+  }
+  return options;
+}
+
+int changeGlobalOption(Session* session, const KeyVals& options)
+{
+  auto& e = session->context->reqinfo->getDownloadEngine();
+  Option option;
+  try {
+    apiGatherChangeableGlobalOption(&option, options,
+                                    OptionParser::getInstance());
+  }
+  catch (RecoverableException& err) {
+    A2_LOG_INFO_EX(EX_EXCEPTION_CAUGHT, err);
+    return -1;
+  }
+  changeGlobalOption(option, e.get());
+  return 0;
+}
+
+GlobalStat getGlobalStat(Session* session)
+{
+  auto& e = session->context->reqinfo->getDownloadEngine();
+  auto& rgman = e->getRequestGroupMan();
+  TransferStat ts = rgman->calculateStat();
+  GlobalStat res;
+  res.downloadSpeed = ts.downloadSpeed;
+  res.uploadSpeed = ts.uploadSpeed;
+  res.numActive = rgman->getRequestGroups().size();
+  res.numWaiting = rgman->getReservedGroups().size();
+  res.numStopped = rgman->getDownloadResults().size();
+  return res;
+}
+
 std::vector<A2Gid> getActiveDownload(Session* session)
 {
-  const SharedHandle<DownloadEngine>& e =
-    session->context->reqinfo->getDownloadEngine();
+  auto& e = session->context->reqinfo->getDownloadEngine();
   const RequestGroupList& groups = e->getRequestGroupMan()->getRequestGroups();
   std::vector<A2Gid> res;
-  for(RequestGroupList::const_iterator i = groups.begin(),
-        eoi = groups.end(); i != eoi; ++i) {
-    res.push_back((*i)->getGID());
+  for (const auto& group : groups) {
+    res.push_back(group->getGID());
   }
   return res;
 }
 
 namespace {
-template<typename OutputIterator, typename InputIterator>
-void createUriEntry
-(OutputIterator out,
- InputIterator first, InputIterator last,
- UriStatus status)
+template <typename OutputIterator, typename InputIterator>
+void createUriEntry(OutputIterator out, InputIterator first, InputIterator last,
+                    UriStatus status)
 {
-  for(; first != last; ++first) {
+  for (; first != last; ++first) {
     UriData uriData;
     uriData.uri = *first;
     uriData.status = status;
@@ -376,51 +548,49 @@ void createUriEntry
 } // namespace
 
 namespace {
-template<typename OutputIterator>
-void createUriEntry
-(OutputIterator out, const SharedHandle<FileEntry>& file)
+template <typename OutputIterator>
+void createUriEntry(OutputIterator out, const std::shared_ptr<FileEntry>& file)
 {
-  createUriEntry(out,
-                 file->getSpentUris().begin(),
-                 file->getSpentUris().end(),
+  createUriEntry(out, file->getSpentUris().begin(), file->getSpentUris().end(),
                  URI_USED);
-  createUriEntry(out,
-                 file->getRemainingUris().begin(),
-                 file->getRemainingUris().end(),
-                 URI_WAITING);
+  createUriEntry(out, file->getRemainingUris().begin(),
+                 file->getRemainingUris().end(), URI_WAITING);
 }
 } // namespace
 
 namespace {
-template<typename OutputIterator, typename InputIterator>
-void createFileEntry
-(OutputIterator out,
- InputIterator first, InputIterator last,
- const BitfieldMan* bf)
+FileData createFileData(const std::shared_ptr<FileEntry>& fe, int index,
+                        const BitfieldMan* bf)
+{
+  FileData file;
+  file.index = index;
+  file.path = fe->getPath();
+  file.length = fe->getLength();
+  file.completedLength =
+      bf->getOffsetCompletedLength(fe->getOffset(), fe->getLength());
+  file.selected = fe->isRequested();
+  createUriEntry(std::back_inserter(file.uris), fe);
+  return file;
+}
+} // namespace
+
+namespace {
+template <typename OutputIterator, typename InputIterator>
+void createFileEntry(OutputIterator out, InputIterator first,
+                     InputIterator last, const BitfieldMan* bf)
 {
   size_t index = 1;
-  for(; first != last; ++first) {
-    FileData file;
-    file.index = index++;
-    file.path = (*first)->getPath();
-    file.length = (*first)->getLength();
-    file.completedLength = bf->getOffsetCompletedLength
-      ((*first)->getOffset(), (*first)->getLength());
-    file.selected = (*first)->isRequested();
-    createUriEntry(std::back_inserter(file.uris), *first);
-    out++ = file;
+  for (; first != last; ++first) {
+    out++ = createFileData(*first, index++, bf);
   }
 }
 } // namespace
 
 namespace {
-template<typename OutputIterator, typename InputIterator>
-void createFileEntry
-(OutputIterator out,
- InputIterator first, InputIterator last,
- int64_t totalLength,
- int32_t pieceLength,
- const std::string& bitfield)
+template <typename OutputIterator, typename InputIterator>
+void createFileEntry(OutputIterator out, InputIterator first,
+                     InputIterator last, int64_t totalLength,
+                     int32_t pieceLength, const std::string& bitfield)
 {
   BitfieldMan bf(pieceLength, totalLength);
   bf.setBitfield(reinterpret_cast<const unsigned char*>(bitfield.data()),
@@ -430,16 +600,14 @@ void createFileEntry
 } // namespace
 
 namespace {
-template<typename OutputIterator, typename InputIterator>
-void createFileEntry
-(OutputIterator out,
- InputIterator first, InputIterator last,
- int64_t totalLength,
- int32_t pieceLength,
- const SharedHandle<PieceStorage>& ps)
+template <typename OutputIterator, typename InputIterator>
+void createFileEntry(OutputIterator out, InputIterator first,
+                     InputIterator last, int64_t totalLength,
+                     int32_t pieceLength,
+                     const std::shared_ptr<PieceStorage>& ps)
 {
   BitfieldMan bf(pieceLength, totalLength);
-  if(ps) {
+  if (ps) {
     bf.setBitfield(ps->getBitfield(), ps->getBitfieldLength());
   }
   createFileEntry(out, first, last, &bf);
@@ -447,103 +615,190 @@ void createFileEntry
 } // namespace
 
 namespace {
+template <typename OutputIterator>
+void pushRequestOption(OutputIterator out,
+                       const std::shared_ptr<Option>& option,
+                       const std::shared_ptr<OptionParser>& oparser)
+{
+  for (size_t i = 1, len = option::countOption(); i < len; ++i) {
+    PrefPtr pref = option::i2p(i);
+    const OptionHandler* h = oparser->find(pref);
+    if (h && h->getInitialOption() && option->defined(pref)) {
+      out++ = KeyVals::value_type(pref->k, option->get(pref));
+    }
+  }
+}
+} // namespace
+
+namespace {
+const std::string& getRequestOption(const std::shared_ptr<Option>& option,
+                                    const std::string& name)
+{
+  PrefPtr pref = option::k2p(name);
+  if (OptionParser::getInstance()->find(pref)) {
+    return option->get(pref);
+  }
+  else {
+    return A2STR::NIL;
+  }
+}
+} // namespace
+
+namespace {
+KeyVals getRequestOptions(const std::shared_ptr<Option>& option)
+{
+  KeyVals res;
+  pushRequestOption(std::back_inserter(res), option,
+                    OptionParser::getInstance());
+  return res;
+}
+} // namespace
+
+namespace {
 struct RequestGroupDH : public DownloadHandle {
-  RequestGroupDH(const SharedHandle<RequestGroup>& group)
-    : group(group),
-      ts(group->calculateStat())
-  {}
-  virtual ~RequestGroupDH() {}
-  virtual DownloadStatus getStatus()
+  RequestGroupDH(const std::shared_ptr<RequestGroup>& group)
+      : group(group), ts(group->calculateStat())
   {
-    if(group->getState() == RequestGroup::STATE_ACTIVE) {
+  }
+  virtual ~RequestGroupDH() {}
+  virtual DownloadStatus getStatus() CXX11_OVERRIDE
+  {
+    if (group->getState() == RequestGroup::STATE_ACTIVE) {
       return DOWNLOAD_ACTIVE;
-    } else {
-      if(group->isPauseRequested()) {
+    }
+    else {
+      if (group->isPauseRequested()) {
         return DOWNLOAD_PAUSED;
-      } else {
+      }
+      else {
         return DOWNLOAD_WAITING;
       }
     }
   }
-  virtual int64_t getTotalLength()
+  virtual int64_t getTotalLength() CXX11_OVERRIDE
   {
     return group->getTotalLength();
   }
-  virtual int64_t getCompletedLength()
+  virtual int64_t getCompletedLength() CXX11_OVERRIDE
   {
     return group->getCompletedLength();
   }
-  virtual int64_t getUploadLength()
+  virtual int64_t getUploadLength() CXX11_OVERRIDE
   {
     return ts.allTimeUploadLength;
   }
-  virtual std::string getBitfield()
+  virtual std::string getBitfield() CXX11_OVERRIDE
   {
-    const SharedHandle<PieceStorage>& ps = group->getPieceStorage();
-    if(ps) {
+    const std::shared_ptr<PieceStorage>& ps = group->getPieceStorage();
+    if (ps) {
       return std::string(reinterpret_cast<const char*>(ps->getBitfield()),
                          ps->getBitfieldLength());
-    } else {
+    }
+    else {
       return "";
     }
   }
-  virtual int getDownloadSpeed()
+  virtual int getDownloadSpeed() CXX11_OVERRIDE { return ts.downloadSpeed; }
+  virtual int getUploadSpeed() CXX11_OVERRIDE { return ts.uploadSpeed; }
+  virtual const std::string& getInfoHash() CXX11_OVERRIDE
   {
-    return ts.downloadSpeed;
+#ifdef ENABLE_BITTORRENT
+    if (group->getDownloadContext()->hasAttribute(CTX_ATTR_BT)) {
+      return bittorrent::getTorrentAttrs(group->getDownloadContext())->infoHash;
+    }
+#endif // ENABLE_BITTORRENT
+    return A2STR::NIL;
   }
-  virtual int getUploadSpeed()
+  virtual size_t getPieceLength() CXX11_OVERRIDE
   {
-    return ts.uploadSpeed;
+    const std::shared_ptr<DownloadContext>& dctx = group->getDownloadContext();
+    return dctx->getPieceLength();
   }
-  virtual size_t getNumPieces()
+  virtual int getNumPieces() CXX11_OVERRIDE
   {
     return group->getDownloadContext()->getNumPieces();
   }
-  virtual int getConnections()
+  virtual int getConnections() CXX11_OVERRIDE
   {
     return group->getNumConnection();
   }
-  virtual int getErrorCode()
-  {
-    return 0;
-  }
-  virtual const std::vector<A2Gid>& getFollowedBy()
+  virtual int getErrorCode() CXX11_OVERRIDE { return 0; }
+  virtual const std::vector<A2Gid>& getFollowedBy() CXX11_OVERRIDE
   {
     return group->followedBy();
   }
-  virtual A2Gid getBelongsTo()
-  {
-    return group->belongsTo();
-  }
-  virtual const std::string& getDir()
+  virtual A2Gid getBelongsTo() CXX11_OVERRIDE { return group->belongsTo(); }
+  virtual const std::string& getDir() CXX11_OVERRIDE
   {
     return group->getOption()->get(PREF_DIR);
   }
-  virtual std::vector<FileData> getFiles()
+  virtual std::vector<FileData> getFiles() CXX11_OVERRIDE
   {
     std::vector<FileData> res;
-    const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
-    createFileEntry(std::back_inserter(res),
-                    dctx->getFileEntries().begin(),
-                    dctx->getFileEntries().end(),
-                    dctx->getTotalLength(), dctx->getPieceLength(),
-                    group->getPieceStorage());
+    const std::shared_ptr<DownloadContext>& dctx = group->getDownloadContext();
+    createFileEntry(std::back_inserter(res), dctx->getFileEntries().begin(),
+                    dctx->getFileEntries().end(), dctx->getTotalLength(),
+                    dctx->getPieceLength(), group->getPieceStorage());
     return res;
   }
-  SharedHandle<RequestGroup> group;
+  virtual int getNumFiles() CXX11_OVERRIDE
+  {
+    const std::shared_ptr<DownloadContext>& dctx = group->getDownloadContext();
+    return dctx->getFileEntries().size();
+  }
+  virtual FileData getFile(int index) CXX11_OVERRIDE
+  {
+    const std::shared_ptr<DownloadContext>& dctx = group->getDownloadContext();
+    BitfieldMan bf(dctx->getPieceLength(), dctx->getTotalLength());
+    const std::shared_ptr<PieceStorage>& ps = group->getPieceStorage();
+    if (ps) {
+      bf.setBitfield(ps->getBitfield(), ps->getBitfieldLength());
+    }
+    return createFileData(dctx->getFileEntries()[index - 1], index, &bf);
+  }
+  virtual BtMetaInfoData getBtMetaInfo() CXX11_OVERRIDE
+  {
+    BtMetaInfoData res;
+#ifdef ENABLE_BITTORRENT
+    if (group->getDownloadContext()->hasAttribute(CTX_ATTR_BT)) {
+      auto torrentAttrs =
+          bittorrent::getTorrentAttrs(group->getDownloadContext());
+      res.announceList = torrentAttrs->announceList;
+      res.comment = torrentAttrs->comment;
+      res.creationDate = torrentAttrs->creationDate;
+      res.mode = torrentAttrs->mode;
+      if (!torrentAttrs->metadata.empty()) {
+        res.name = torrentAttrs->name;
+      }
+    }
+    else
+#endif // ENABLE_BITTORRENT
+    {
+      res.creationDate = 0;
+      res.mode = BT_FILE_MODE_NONE;
+    }
+    return res;
+  }
+  virtual const std::string& getOption(const std::string& name) CXX11_OVERRIDE
+  {
+    return getRequestOption(group->getOption(), name);
+  }
+  virtual KeyVals getOptions() CXX11_OVERRIDE
+  {
+    return getRequestOptions(group->getOption());
+  }
+  std::shared_ptr<RequestGroup> group;
   TransferStat ts;
 };
 } // namespace
 
 namespace {
 struct DownloadResultDH : public DownloadHandle {
-  DownloadResultDH(const SharedHandle<DownloadResult>& dr)
-    : dr(dr)
-  {}
+  DownloadResultDH(std::shared_ptr<DownloadResult> dr) : dr(std::move(dr)) {}
   virtual ~DownloadResultDH() {}
-  virtual DownloadStatus getStatus()
+  virtual DownloadStatus getStatus() CXX11_OVERRIDE
   {
-    switch(dr->result) {
+    switch (dr->result) {
     case error_code::FINISHED:
       return DOWNLOAD_COMPLETE;
     case error_code::REMOVED:
@@ -552,86 +807,78 @@ struct DownloadResultDH : public DownloadHandle {
       return DOWNLOAD_ERROR;
     }
   }
-  virtual int64_t getTotalLength()
-  {
-    return dr->totalLength;
-  }
-  virtual int64_t getCompletedLength()
+  virtual int64_t getTotalLength() CXX11_OVERRIDE { return dr->totalLength; }
+  virtual int64_t getCompletedLength() CXX11_OVERRIDE
   {
     return dr->completedLength;
   }
-  virtual int64_t getUploadLength()
+  virtual int64_t getUploadLength() CXX11_OVERRIDE { return dr->uploadLength; }
+  virtual std::string getBitfield() CXX11_OVERRIDE { return dr->bitfield; }
+  virtual int getDownloadSpeed() CXX11_OVERRIDE { return 0; }
+  virtual int getUploadSpeed() CXX11_OVERRIDE { return 0; }
+  virtual const std::string& getInfoHash() CXX11_OVERRIDE
   {
-    return dr->uploadLength;
+    return dr->infoHash;
   }
-  virtual std::string getBitfield()
-  {
-    return dr->bitfield;
-  }
-  virtual int getDownloadSpeed()
-  {
-    return 0;
-  }
-  virtual int getUploadSpeed()
-  {
-    return 0;
-  }
-  virtual size_t getNumPieces()
-  {
-    return dr->numPieces;
-  }
-  virtual int getConnections()
-  {
-    return 0;
-  }
-  virtual int getErrorCode()
-  {
-    return dr->result;
-  }
-  virtual const std::vector<A2Gid>& getFollowedBy()
+  virtual size_t getPieceLength() CXX11_OVERRIDE { return dr->pieceLength; }
+  virtual int getNumPieces() CXX11_OVERRIDE { return dr->numPieces; }
+  virtual int getConnections() CXX11_OVERRIDE { return 0; }
+  virtual int getErrorCode() CXX11_OVERRIDE { return dr->result; }
+  virtual const std::vector<A2Gid>& getFollowedBy() CXX11_OVERRIDE
   {
     return dr->followedBy;
   }
-  virtual A2Gid getBelongsTo()
-  {
-    return dr->belongsTo;
-  }
-  virtual const std::string& getDir()
-  {
-    return dr->dir;
-  }
-  virtual std::vector<FileData> getFiles()
+  virtual A2Gid getBelongsTo() CXX11_OVERRIDE { return dr->belongsTo; }
+  virtual const std::string& getDir() CXX11_OVERRIDE { return dr->dir; }
+  virtual std::vector<FileData> getFiles() CXX11_OVERRIDE
   {
     std::vector<FileData> res;
-    createFileEntry(std::back_inserter(res),
-                    dr->fileEntries.begin(), dr->fileEntries.end(),
-                    dr->totalLength, dr->pieceLength, dr->bitfield);
+    createFileEntry(std::back_inserter(res), dr->fileEntries.begin(),
+                    dr->fileEntries.end(), dr->totalLength, dr->pieceLength,
+                    dr->bitfield);
     return res;
   }
-  SharedHandle<DownloadResult> dr;
+  virtual int getNumFiles() CXX11_OVERRIDE { return dr->fileEntries.size(); }
+  virtual FileData getFile(int index) CXX11_OVERRIDE
+  {
+    BitfieldMan bf(dr->pieceLength, dr->totalLength);
+    bf.setBitfield(reinterpret_cast<const unsigned char*>(dr->bitfield.data()),
+                   dr->bitfield.size());
+    return createFileData(dr->fileEntries[index - 1], index, &bf);
+  }
+  virtual BtMetaInfoData getBtMetaInfo() CXX11_OVERRIDE
+  {
+    return BtMetaInfoData();
+  }
+  virtual const std::string& getOption(const std::string& name) CXX11_OVERRIDE
+  {
+    return getRequestOption(dr->option, name);
+  }
+  virtual KeyVals getOptions() CXX11_OVERRIDE
+  {
+    return getRequestOptions(dr->option);
+  }
+  std::shared_ptr<DownloadResult> dr;
 };
 } // namespace
 
-DownloadHandle* getDownloadHandle(Session* session, const A2Gid& gid)
+DownloadHandle* getDownloadHandle(Session* session, A2Gid gid)
 {
-  const SharedHandle<DownloadEngine>& e =
-    session->context->reqinfo->getDownloadEngine();
-  const SharedHandle<RequestGroupMan>& rgman = e->getRequestGroupMan();
-  SharedHandle<RequestGroup> group = rgman->findGroup(gid);
-  if(group) {
+  auto& e = session->context->reqinfo->getDownloadEngine();
+  auto& rgman = e->getRequestGroupMan();
+  std::shared_ptr<RequestGroup> group = rgman->findGroup(gid);
+  if (group) {
     return new RequestGroupDH(group);
-  } else {
-    SharedHandle<DownloadResult> ds = rgman->findDownloadResult(gid);
-    if(ds) {
+  }
+  else {
+    std::shared_ptr<DownloadResult> ds = rgman->findDownloadResult(gid);
+    if (ds) {
       return new DownloadResultDH(ds);
     }
   }
-  return 0;
+  return nullptr;
 }
 
-void deleteDownloadHandle(DownloadHandle* dh)
-{
-  delete dh;
-}
+void deleteDownloadHandle(DownloadHandle* dh) { delete dh; }
 
 } // namespace aria2

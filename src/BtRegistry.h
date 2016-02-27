@@ -38,8 +38,8 @@
 #include "common.h"
 
 #include <map>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "RequestGroup.h"
 
 namespace aria2 {
@@ -54,58 +54,51 @@ class LpdMessageReceiver;
 class UDPTrackerClient;
 
 struct BtObject {
-  SharedHandle<DownloadContext> downloadContext;
-  SharedHandle<PieceStorage> pieceStorage;
-  SharedHandle<PeerStorage> peerStorage;
-  SharedHandle<BtAnnounce> btAnnounce;
-  SharedHandle<BtRuntime> btRuntime;
-  SharedHandle<BtProgressInfoFile> btProgressInfoFile;
+  std::shared_ptr<DownloadContext> downloadContext;
+  std::shared_ptr<PieceStorage> pieceStorage;
+  std::shared_ptr<PeerStorage> peerStorage;
+  std::shared_ptr<BtAnnounce> btAnnounce;
+  std::shared_ptr<BtRuntime> btRuntime;
+  std::shared_ptr<BtProgressInfoFile> btProgressInfoFile;
 
-  BtObject(const SharedHandle<DownloadContext>& downloadContext,
-           const SharedHandle<PieceStorage>& pieceStorage,
-           const SharedHandle<PeerStorage>& peerStorage,
-           const SharedHandle<BtAnnounce>& btAnnounce,
-           const SharedHandle<BtRuntime>& btRuntime,
-           const SharedHandle<BtProgressInfoFile>& btProgressInfoFile);
+  BtObject(const std::shared_ptr<DownloadContext>& downloadContext,
+           const std::shared_ptr<PieceStorage>& pieceStorage,
+           const std::shared_ptr<PeerStorage>& peerStorage,
+           const std::shared_ptr<BtAnnounce>& btAnnounce,
+           const std::shared_ptr<BtRuntime>& btRuntime,
+           const std::shared_ptr<BtProgressInfoFile>& btProgressInfoFile);
 
   BtObject();
-
-  BtObject(const BtObject& c);
-
-  ~BtObject();
-
-  BtObject& operator=(const BtObject& c);
 };
 
 class BtRegistry {
 private:
-  std::map<a2_gid_t, SharedHandle<BtObject> > pool_;
+  std::map<a2_gid_t, std::unique_ptr<BtObject>> pool_;
   uint16_t tcpPort_;
   // This is UDP port for DHT and UDP tracker. But currently UDP
   // tracker is not supported in IPv6.
   uint16_t udpPort_;
-  SharedHandle<LpdMessageReceiver> lpdMessageReceiver_;
-  SharedHandle<UDPTrackerClient> udpTrackerClient_;
+  std::shared_ptr<LpdMessageReceiver> lpdMessageReceiver_;
+  std::shared_ptr<UDPTrackerClient> udpTrackerClient_;
+
 public:
   BtRegistry();
-  ~BtRegistry();
 
-  const SharedHandle<DownloadContext>&
+  const std::shared_ptr<DownloadContext>&
   getDownloadContext(a2_gid_t gid) const;
 
-  const SharedHandle<DownloadContext>&
+  const std::shared_ptr<DownloadContext>&
   getDownloadContext(const std::string& infoHash) const;
 
-  void put(a2_gid_t gid, const SharedHandle<BtObject>& obj);
+  void put(a2_gid_t gid, std::unique_ptr<BtObject> obj);
 
-  const SharedHandle<BtObject>& get(a2_gid_t gid) const;
+  BtObject* get(a2_gid_t gid) const;
 
-  template<typename OutputIterator>
+  template <typename OutputIterator>
   OutputIterator getAllDownloadContext(OutputIterator dest)
   {
-    for(std::map<a2_gid_t, SharedHandle<BtObject> >::const_iterator i =
-          pool_.begin(), eoi = pool_.end(); i != eoi; ++i) {
-      *dest++ = (*i).second->downloadContext;
+    for (auto& kv : pool_) {
+      *dest++ = kv.second->downloadContext;
     }
     return dest;
   }
@@ -114,32 +107,21 @@ public:
 
   bool remove(a2_gid_t gid);
 
-  void setTcpPort(uint16_t port)
-  {
-    tcpPort_ = port;
-  }
-  uint16_t getTcpPort() const
-  {
-    return tcpPort_;
-  }
+  void setTcpPort(uint16_t port) { tcpPort_ = port; }
+  uint16_t getTcpPort() const { return tcpPort_; }
 
-  void setUdpPort(uint16_t port)
-  {
-    udpPort_ = port;
-  }
-  uint16_t getUdpPort() const
-  {
-    return udpPort_;
-  }
+  void setUdpPort(uint16_t port) { udpPort_ = port; }
+  uint16_t getUdpPort() const { return udpPort_; }
 
-  void setLpdMessageReceiver(const SharedHandle<LpdMessageReceiver>& receiver);
-  const SharedHandle<LpdMessageReceiver>& getLpdMessageReceiver() const
+  void
+  setLpdMessageReceiver(const std::shared_ptr<LpdMessageReceiver>& receiver);
+  const std::shared_ptr<LpdMessageReceiver>& getLpdMessageReceiver() const
   {
     return lpdMessageReceiver_;
   }
 
-  void setUDPTrackerClient(const SharedHandle<UDPTrackerClient>& tracker);
-  const SharedHandle<UDPTrackerClient>& getUDPTrackerClient() const
+  void setUDPTrackerClient(const std::shared_ptr<UDPTrackerClient>& tracker);
+  const std::shared_ptr<UDPTrackerClient>& getUDPTrackerClient() const
   {
     return udpTrackerClient_;
   }

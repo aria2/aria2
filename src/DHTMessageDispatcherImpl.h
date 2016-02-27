@@ -43,38 +43,36 @@ namespace aria2 {
 class DHTMessageTracker;
 struct DHTMessageEntry;
 
-class DHTMessageDispatcherImpl:public DHTMessageDispatcher {
+class DHTMessageDispatcherImpl : public DHTMessageDispatcher {
 private:
-  SharedHandle<DHTMessageTracker> tracker_;
+  std::shared_ptr<DHTMessageTracker> tracker_;
 
-  std::deque<SharedHandle<DHTMessageEntry> > messageQueue_;
+  std::deque<std::unique_ptr<DHTMessageEntry>> messageQueue_;
 
-  time_t timeout_;
+  std::chrono::seconds timeout_;
 
-  bool sendMessage(const SharedHandle<DHTMessageEntry>& msg);
+  bool sendMessage(DHTMessageEntry* msg);
+
 public:
-  DHTMessageDispatcherImpl(const SharedHandle<DHTMessageTracker>& tracker);
+  DHTMessageDispatcherImpl(const std::shared_ptr<DHTMessageTracker>& tracker);
 
-  virtual ~DHTMessageDispatcherImpl();
+  virtual void addMessageToQueue(
+      std::unique_ptr<DHTMessage> message, std::chrono::seconds timeout,
+      std::unique_ptr<DHTMessageCallback>
+          callback = std::unique_ptr<DHTMessageCallback>{}) CXX11_OVERRIDE;
 
-  virtual void
-  addMessageToQueue(const SharedHandle<DHTMessage>& message,
-                    time_t timeout,
-                    const SharedHandle<DHTMessageCallback>& callback =
-                    SharedHandle<DHTMessageCallback>());
+  virtual void addMessageToQueue(
+      std::unique_ptr<DHTMessage> message,
+      std::unique_ptr<DHTMessageCallback>
+          callback = std::unique_ptr<DHTMessageCallback>{}) CXX11_OVERRIDE;
 
-  virtual void
-  addMessageToQueue(const SharedHandle<DHTMessage>& message,
-                    const SharedHandle<DHTMessageCallback>& callback =
-                    SharedHandle<DHTMessageCallback>());
+  virtual void sendMessages() CXX11_OVERRIDE;
 
-  virtual void sendMessages();
+  virtual size_t countMessageInQueue() const CXX11_OVERRIDE;
 
-  virtual size_t countMessageInQueue() const;
-
-  void setTimeout(time_t timeout)
+  void setTimeout(std::chrono::seconds timeout)
   {
-    timeout_ = timeout;
+    timeout_ = std::move(timeout);
   }
 };
 

@@ -35,32 +35,35 @@
 #ifndef D_FEEDBACK_URI_SELECTOR_H
 #define D_FEEDBACK_URI_SELECTOR_H
 #include "URISelector.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
 class ServerStatMan;
 
-class FeedbackURISelector:public URISelector {
+class FeedbackURISelector : public URISelector {
 private:
-  SharedHandle<ServerStatMan> serverStatMan_;
+  std::shared_ptr<ServerStatMan> serverStatMan_;
 
-  std::string selectRarer
-  (const std::deque<std::string>& uris,
-   const std::vector<std::pair<size_t, std::string> >& usedHosts);
+  std::string
+  selectRarer(const std::deque<std::string>& uris,
+              const std::vector<std::pair<size_t, std::string>>& usedHosts);
 
-  std::string selectFaster
-  (const std::deque<std::string>& uris,
-   const std::vector<std::pair<size_t, std::string> >& usedHosts);
+  std::string
+  selectFaster(const std::deque<std::string>& uris,
+               const std::vector<std::pair<size_t, std::string>>& usedHosts);
+
 public:
-  FeedbackURISelector(const SharedHandle<ServerStatMan>& serverStatMan);
+  FeedbackURISelector(const std::shared_ptr<ServerStatMan>& serverStatMan);
 
   virtual ~FeedbackURISelector();
 
   // This function expects ignoreHosts are ordered in ascending order.
-  virtual std::string select
-  (FileEntry* fileEntry,
-   const std::vector<std::pair<size_t, std::string> >& usedHosts);
+  virtual std::string
+  select(FileEntry* fileEntry,
+         const std::vector<std::pair<size_t, std::string>>& usedHosts)
+      CXX11_OVERRIDE;
 };
 
 } // namespace aria2

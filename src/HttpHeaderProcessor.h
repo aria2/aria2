@@ -39,8 +39,7 @@
 
 #include <utility>
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -48,10 +47,7 @@ class HttpHeader;
 
 class HttpHeaderProcessor {
 public:
-  enum ParserMode {
-    CLIENT_PARSER,
-    SERVER_PARSER
-  };
+  enum ParserMode { CLIENT_PARSER, SERVER_PARSER };
 
   HttpHeaderProcessor(ParserMode mode);
 
@@ -71,10 +67,11 @@ public:
   size_t getLastBytesProcessed() const;
 
   /**
-   * Processes the received header as a http response header and returns
-   * HttpHeader object.
+   * Processes the received header as a http response header and
+   * returns HttpHeader object. This method transfers the ownership of
+   * resulting HttpHeader to the caller.
    */
-  const SharedHandle<HttpHeader>& getResult() const;
+  std::unique_ptr<HttpHeader> getResult();
 
   std::string getHeaderString() const;
 
@@ -82,6 +79,7 @@ public:
    * Resets internal status and ready for next header processing.
    */
   void clear();
+
 private:
   ParserMode mode_;
   int state_;
@@ -89,7 +87,7 @@ private:
   std::string buf_;
   std::string lastFieldName_;
   int lastFieldHdKey_;
-  SharedHandle<HttpHeader> result_;
+  std::unique_ptr<HttpHeader> result_;
   std::string headers_;
 };
 

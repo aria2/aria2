@@ -41,33 +41,32 @@
 #include "util.h"
 #include "DHTNodeLookupTaskCallback.h"
 #include "DHTQueryMessage.h"
+#include "DHTFindNodeMessage.h"
 
 namespace aria2 {
 
-DHTNodeLookupTask::DHTNodeLookupTask(const unsigned char* targetNodeID):
-  DHTAbstractNodeLookupTask<DHTFindNodeReplyMessage>(targetNodeID)
-{}
-
-void
-DHTNodeLookupTask::getNodesFromMessage
-(std::vector<SharedHandle<DHTNode> >& nodes,
- const DHTFindNodeReplyMessage* message)
+DHTNodeLookupTask::DHTNodeLookupTask(const unsigned char* targetNodeID)
+    : DHTAbstractNodeLookupTask<DHTFindNodeReplyMessage>(targetNodeID)
 {
-  const std::vector<SharedHandle<DHTNode> >& knodes =
-    message->getClosestKNodes();
-  nodes.insert(nodes.end(), knodes.begin(), knodes.end());
 }
 
-SharedHandle<DHTMessage>
-DHTNodeLookupTask::createMessage(const SharedHandle<DHTNode>& remoteNode)
+void DHTNodeLookupTask::getNodesFromMessage(
+    std::vector<std::shared_ptr<DHTNode>>& nodes,
+    const DHTFindNodeReplyMessage* message)
+{
+  auto& knodes = message->getClosestKNodes();
+  nodes.insert(std::end(nodes), std::begin(knodes), std::end(knodes));
+}
+
+std::unique_ptr<DHTMessage>
+DHTNodeLookupTask::createMessage(const std::shared_ptr<DHTNode>& remoteNode)
 {
   return getMessageFactory()->createFindNodeMessage(remoteNode, getTargetID());
 }
 
-SharedHandle<DHTMessageCallback> DHTNodeLookupTask::createCallback()
+std::unique_ptr<DHTMessageCallback> DHTNodeLookupTask::createCallback()
 {
-  return SharedHandle<DHTNodeLookupTaskCallback>
-    (new DHTNodeLookupTaskCallback(this));
+  return make_unique<DHTNodeLookupTaskCallback>(this);
 }
 
 } // namespace aria2

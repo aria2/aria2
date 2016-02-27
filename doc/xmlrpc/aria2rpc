@@ -232,12 +232,17 @@ OptionParser.new do |opt|
   opt.on("--server-stat-of FILE"){|val| options["server-stat-of"]=val}
   opt.on("--save-cookies FILE"){|val| options["save-cookies"]=val}
   opt.on("--gid GID"){|val| options["gid"]=val}
+  opt.on("--pause-metadata [BOOL]",["true","false"]){|val| options["pause-metadata"]=val||"true"}
 
   opt.on("--server SERVER", "hostname of XML-RPC server. Default: localhost"){|val| options["server"]=val }
   opt.on("--port PORT", "port of XML-RPC server. Default: 6800"){|val| options["port"]=val }
 
   opt.on("--user USERNAME", "XML-RPC username"){|val| options["user"]=val }
   opt.on("--passwd PASSWORD", "XML-RPC password"){|val| options["passwd"]=val }
+  opt.on("--secure [BOOL]",["true","false"]){|val| options["secure"]=val||"true" }
+  opt.on("--check-rpc-cert [BOOL]",["true","false"]){|val| options["check-rpc-cert"]=val||"true" }
+
+  opt.on("--secret SECRET", "XML-RPC secret authorization token"){|val| options["secret"]=val }
 
   opt.banner=<<EOS
 Usage: #{program_name} addUri URI... [options]
@@ -271,6 +276,7 @@ Usage: #{program_name} addUri URI... [options]
        #{program_name} shutdown [options]
        #{program_name} forceShutdown [options]
        #{program_name} getGlobalStat [options]
+       #{program_name} saveSession [options]
        #{program_name} appendUri GID fileIndex URI... [options]
            This command calls aria2.changeUri(GID, fileIndex, [], [URI,...])
            internally.
@@ -300,90 +306,116 @@ end
 if not options.has_key?("port") then
   options["port"]="6800"
 end
+if not options.has_key?("secure") then
+  options["secure"]="false"
+end
+if not options.has_key?("check-rpc-cert") then
+  options["check-rpc-cert"]="true"
+end
+secret = if options.has_key?("secret") then "token:"+options["secret"] else nil end
 
 client=XMLRPC::Client.new3({:host => options["server"],
                              :port => options["port"],
                              :path => "/rpc",
                              :user => options["user"],
-                             :password => options["passwd"]})
+                             :password => options["passwd"],
+                             :use_ssl => options["secure"] == "true"})
+
+if options["check-rpc-cert"] == "false" then
+  client.instance_variable_get(:@http).instance_variable_set(:@verify_mode, OpenSSL::SSL::VERIFY_NONE)
+end
 
 options.delete("server")
 options.delete("port")
 options.delete("user")
 options.delete("passwd")
+options.delete("secret")
+options.delete("secure")
+options.delete("check-rpc-cert")
+
+def client_call client, secret, method, *params
+  if secret.nil?
+    client.call(method, *params)
+  else
+    client.call(method, secret, *params)
+  end
+end
 
 if command == "addUri" then
-  result=client.call("aria2."+command, resources, options)
+  result=client_call(client, secret, "aria2."+command, resources, options)
 elsif command == "addTorrent" then
   torrentData=IO.read(resources[0])
-  result=client.call("aria2."+command,
+  result=client_call(client, secret, "aria2."+command,
                      XMLRPC::Base64.new(torrentData), resources[1..-1], options)
 elsif command == "addMetalink" then
   metalinkData=IO.read(resources[0])
-  result=client.call("aria2."+command,
+  result=client_call(client, secret, "aria2."+command,
                      XMLRPC::Base64.new(metalinkData), options)
 elsif command == "tellStatus" then
-  result=client.call("aria2."+command, resources[0], resources[1..-1])
+  result=client_call(client, secret, "aria2."+command,
+                     resources[0], resources[1..-1])
 elsif command == "tellActive" then
-  result=client.call("aria2."+command, resources[0..-1])
+  result=client_call(client, secret, "aria2."+command, resources[0..-1])
 elsif command == "tellWaiting" then
-  result=client.call("aria2."+command, resources[0].to_i(), resources[1].to_i(),
-                     resources[2..-1])
+  result=client_call(client, secret, "aria2."+command, resources[0].to_i(),
+                     resources[1].to_i(), resources[2..-1])
 elsif command == "tellStopped" then
-  result=client.call("aria2."+command, resources[0].to_i(), resources[1].to_i(),
-                     resources[2..-1])
+  result=client_call(client, secret, "aria2."+command, resources[0].to_i(),
+                     resources[1].to_i(), resources[2..-1])
 elsif command == "getOption" then
-  result=client.call("aria2."+command, resources[0])
+  result=client_call(client, secret, "aria2."+command, resources[0])
 elsif command == "getGlobalOption" then
-  result=client.call("aria2."+command)
+  result=client_call(client, secret, "aria2."+command)
 elsif command == "pause" then
-  result=client.call("aria2."+command, resources[0])
+  result=client_call(client, secret, "aria2."+command, resources[0])
 elsif command == "pauseAll" then
-  result=client.call("aria2."+command)
+  result=client_call(client, secret, "aria2."+command)
 elsif command == "forcePause" then
-  result=client.call("aria2."+command, resources[0])
+  result=client_call(client, secret, "aria2."+command, resources[0])
 elsif command == "forcePauseAll" then
-  result=client.call("aria2."+command)
+  result=client_call(client, secret, "aria2."+command)
 elsif command == "unpause" then
-  result=client.call("aria2."+command, resources[0])
+  result=client_call(client, secret, "aria2."+command, resources[0])
 elsif command == "unpauseAll" then
-  result=client.call("aria2."+command)
+  result=client_call(client, secret, "aria2."+command)
 elsif command == "remove" then
-  result=client.call("aria2."+command, resources[0])
+  result=client_call(client, secret, "aria2."+command, resources[0])
 elsif command == "forceRemove" then
-  result=client.call("aria2."+command, resources[0])
+  result=client_call(client, secret, "aria2."+command, resources[0])
 elsif command == "changePosition" then
-  result=client.call("aria2."+command, resources[0], resources[1].to_i(),
-                     resources[2])
+  result=client_call(client, secret, "aria2."+command, resources[0],
+                     resources[1].to_i(), resources[2])
 elsif command == "getFiles" then
-  result=client.call("aria2."+command, resources[0])
+  result=client_call(client, secret, "aria2."+command, resources[0])
 elsif command == "getUris" then
-  result=client.call("aria2."+command, resources[0])
+  result=client_call(client, secret, "aria2."+command, resources[0])
 elsif command == "getPeers" then
-  result=client.call("aria2."+command, resources[0])
+  result=client_call(client, secret, "aria2."+command, resources[0])
 elsif command == "getServers" then
-  result=client.call("aria2."+command, resources[0])
+  result=client_call(client, secret, "aria2."+command, resources[0])
 elsif command == "purgeDownloadResult" then
-  result=client.call("aria2."+command)
+  result=client_call(client, secret, "aria2."+command)
 elsif command == "removeDownloadResult" then
-  result=client.call("aria2."+command, resources[0])
+  result=client_call(client, secret, "aria2."+command, resources[0])
 elsif command == "changeOption" then
-  result=client.call("aria2."+command, resources[0], options)
+  result=client_call(client, secret, "aria2."+command, resources[0], options)
 elsif command == "changeGlobalOption" then
-  result=client.call("aria2."+command, options)
+  result=client_call(client, secret, "aria2."+command, options)
 elsif command == "getVersion" then
-  result=client.call("aria2."+command)
+  result=client_call(client, secret, "aria2."+command)
 elsif command == "getSessionInfo" then
-  result=client.call("aria2."+command)
+  result=client_call(client, secret, "aria2."+command)
 elsif command == "shutdown" then
-  result=client.call("aria2."+command)
+  result=client_call(client, secret, "aria2."+command)
 elsif command == "forceShutdown" then
-  result=client.call("aria2."+command)
+  result=client_call(client, secret, "aria2."+command)
 elsif command == "getGlobalStat" then
-  result=client.call("aria2."+command)
+  result=client_call(client, secret, "aria2."+command)
+elsif command == "saveSession" then
+  result=client_call(client, secret, "aria2."+command)
 elsif command == "appendUri" then
-  result=client.call("aria2.changeUri", resources[0], resources[1].to_i(), [],
-                     resources[2..-1])
+  result=client_call(client, secret, "aria2.changeUri", resources[0],
+                     resources[1].to_i(), [], resources[2..-1])
 else
   puts "Command not recognized"
   exit 1

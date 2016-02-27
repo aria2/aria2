@@ -40,9 +40,10 @@
 #include <stdint.h>
 #include <vector>
 #include <string>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "Command.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -50,54 +51,37 @@ class BitfieldMan;
 class WrDiskCache;
 class WrDiskCacheEntry;
 class DiskAdaptor;
-
-#ifdef ENABLE_MESSAGE_DIGEST
-
 class MessageDigest;
-
-#endif // ENABLE_MESSAGE_DIGEST
 
 class Piece {
 private:
-  size_t index_;
-  int32_t length_;
-  int32_t blockLength_;
-  BitfieldMan* bitfield_;
+  std::unique_ptr<BitfieldMan> bitfield_;
+  std::unique_ptr<WrDiskCacheEntry> wrCache_;
+  std::unique_ptr<MessageDigest> mdctx_;
   std::vector<cuid_t> users_;
-  bool usedBySegment_;
-  WrDiskCacheEntry* wrCache_;
-#ifdef ENABLE_MESSAGE_DIGEST
-
-  int32_t nextBegin_;
-
   std::string hashType_;
 
-  SharedHandle<MessageDigest> mdctx_;
+  size_t index_;
 
-#endif // ENABLE_MESSAGE_DIGEST
+  int64_t length_;
+  int64_t nextBegin_;
 
-  Piece(const Piece& piece);
+  bool usedBySegment_;
 
-  Piece& operator=(const Piece& piece);
+  Piece(const Piece& piece) = delete;
+  Piece& operator=(const Piece& piece) = delete;
+
 public:
-
-  static const int32_t BLOCK_LENGTH  = 16*1024;
+  static const int32_t BLOCK_LENGTH = 16_k;
 
   Piece();
-
-  Piece(size_t index, int32_t length, int32_t blockLength = BLOCK_LENGTH);
+  Piece(size_t index, int64_t length, int32_t blockLength = BLOCK_LENGTH);
 
   ~Piece();
 
-  bool operator==(const Piece& piece) const
-  {
-    return index_ == piece.index_;
-  }
+  bool operator==(const Piece& piece) const { return index_ == piece.index_; }
 
-  bool operator<(const Piece& piece) const
-  {
-    return index_ < piece.index_;
-  }
+  bool operator<(const Piece& piece) const { return index_ < piece.index_; }
 
   // TODO This function only used by unit tests
   bool getMissingUnusedBlockIndex(size_t& index) const;
@@ -106,8 +90,8 @@ public:
   // i in retrieved indexes, call bitfield->setUseBit(i). This
   // function just append index to indexes and it doesn't remove
   // anything from it. Returns the number of indexes to retrieved.
-  size_t getMissingUnusedBlockIndex
-  (std::vector<size_t>& indexes, size_t n) const;
+  size_t getMissingUnusedBlockIndex(std::vector<size_t>& indexes,
+                                    size_t n) const;
 
   bool getFirstMissingBlockIndexWithoutLock(size_t& index) const;
   bool getAllMissingBlockIndexes(unsigned char* misbitfield,
@@ -137,9 +121,9 @@ public:
 
   void setIndex(size_t index) { index_ = index; }
 
-  int32_t getLength() const { return length_; }
+  int64_t getLength() const { return length_; }
 
-  void setLength(int32_t length) { length_ = length; }
+  void setLength(int64_t length) { length_ = length; }
 
   const unsigned char* getBitfield() const;
 
@@ -155,16 +139,14 @@ public:
   bool isBlockUsed(size_t index) const;
 
   // Calculates completed length
-  int32_t getCompletedLength();
-
-#ifdef ENABLE_MESSAGE_DIGEST
+  int64_t getCompletedLength();
 
   void setHashType(const std::string& hashType);
 
   // Updates hash value. This function compares begin and private variable
   // nextBegin_ and only when they are equal, hash is updated eating data and
   // returns true. Otherwise returns false.
-  bool updateHash(int32_t begin, const unsigned char* data, size_t dataLength);
+  bool updateHash(int64_t begin, const unsigned char* data, size_t dataLength);
 
   bool isHashCalculated() const;
 
@@ -179,48 +161,34 @@ public:
   // Returns raw hash value, not hex digest, which is calculated using
   // cached data and data on disk.
   std::string getDigestWithWrCache(size_t pieceLength,
-                                   const SharedHandle<DiskAdaptor>& adaptor);
-#endif // ENABLE_MESSAGE_DIGEST
-
+                                   const std::shared_ptr<DiskAdaptor>& adaptor);
   /**
    * Loses current bitfield state.
    */
-  void reconfigure(int32_t length);
+  void reconfigure(int64_t length);
 
   void addUser(cuid_t cuid);
   void removeUser(cuid_t cuid);
-  bool getUsed() const
-  {
-    return !users_.empty();
-  }
+  bool getUsed() const { return !users_.empty(); }
   bool usedBy(cuid_t cuid) const;
-  bool getUsedBySegment() const
-  {
-    return usedBySegment_;
-  }
-  void setUsedBySegment(bool f)
-  {
-    usedBySegment_ = f;
-  }
+  bool getUsedBySegment() const { return usedBySegment_; }
+  void setUsedBySegment(bool f) { usedBySegment_ = f; }
 
   void initWrCache(WrDiskCache* diskCache,
-                   const SharedHandle<DiskAdaptor>& diskAdaptor);
+                   const std::shared_ptr<DiskAdaptor>& diskAdaptor);
   void flushWrCache(WrDiskCache* diskCache);
   void clearWrCache(WrDiskCache* diskCache);
-  void updateWrCache(WrDiskCache* diskCache, unsigned char* data,
-                     size_t offset, size_t len, size_t capacity, int64_t goff);
-  void updateWrCache(WrDiskCache* diskCache, unsigned char* data,
-                     size_t offset, size_t len, int64_t goff)
+  void updateWrCache(WrDiskCache* diskCache, unsigned char* data, size_t offset,
+                     size_t len, size_t capacity, int64_t goff);
+  void updateWrCache(WrDiskCache* diskCache, unsigned char* data, size_t offset,
+                     size_t len, int64_t goff)
   {
     updateWrCache(diskCache, data, offset, len, len, goff);
   }
   size_t appendWrCache(WrDiskCache* diskCache, int64_t goff,
                        const unsigned char* data, size_t len);
   void releaseWrCache(WrDiskCache* diskCache);
-  WrDiskCacheEntry* getWrDiskCacheEntry() const
-  {
-    return wrCache_;
-  }
+  WrDiskCacheEntry* getWrDiskCacheEntry() const { return wrCache_.get(); }
 };
 
 } // namespace aria2

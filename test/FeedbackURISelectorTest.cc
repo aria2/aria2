@@ -11,7 +11,7 @@
 
 namespace aria2 {
 
-class FeedbackURISelectorTest:public CppUnit::TestFixture {
+class FeedbackURISelectorTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(FeedbackURISelectorTest);
   CPPUNIT_TEST(testSelect_withoutServerStat);
@@ -19,25 +19,19 @@ class FeedbackURISelectorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSelect_withUsedHosts);
   CPPUNIT_TEST(testSelect_skipErrorHost);
   CPPUNIT_TEST_SUITE_END();
+
 private:
   FileEntry fileEntry_;
 
-  SharedHandle<ServerStatMan> ssm;
+  std::shared_ptr<ServerStatMan> ssm;
 
-  SharedHandle<FeedbackURISelector> sel;
+  std::shared_ptr<FeedbackURISelector> sel;
 
 public:
   void setUp()
   {
-    static const char* urisSrc[] = {
-      "http://alpha/file",
-      "ftp://alpha/file",
-      "http://bravo/file"
-    };
-    std::vector<std::string> uris;
-    uris.assign(vbegin(urisSrc), vend(urisSrc));
-
-    fileEntry_.setUris(uris);
+    fileEntry_.setUris(
+        {"http://alpha/file", "ftp://alpha/file", "http://bravo/file"});
 
     ssm.reset(new ServerStatMan());
     sel.reset(new FeedbackURISelector(ssm));
@@ -54,12 +48,11 @@ public:
   void testSelect_skipErrorHost();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(FeedbackURISelectorTest);
 
 void FeedbackURISelectorTest::testSelect_withoutServerStat()
 {
-  std::vector<std::pair<size_t, std::string> > usedHosts;
+  std::vector<std::pair<size_t, std::string>> usedHosts;
   // Without ServerStat and usedHosts, selector returns first URI
   std::string uri = sel->select(&fileEntry_, usedHosts);
   CPPUNIT_ASSERT_EQUAL(std::string("http://alpha/file"), uri);
@@ -68,14 +61,14 @@ void FeedbackURISelectorTest::testSelect_withoutServerStat()
 
 void FeedbackURISelectorTest::testSelect()
 {
-  SharedHandle<ServerStat> bravo(new ServerStat("bravo", "http"));
+  std::shared_ptr<ServerStat> bravo(new ServerStat("bravo", "http"));
   bravo->updateDownloadSpeed(100000);
-  SharedHandle<ServerStat> alphaFTP(new ServerStat("alpha", "ftp"));
+  std::shared_ptr<ServerStat> alphaFTP(new ServerStat("alpha", "ftp"));
   alphaFTP->updateDownloadSpeed(80000);
-  SharedHandle<ServerStat> alphaHTTP(new ServerStat("alpha", "http"));
+  std::shared_ptr<ServerStat> alphaHTTP(new ServerStat("alpha", "http"));
   alphaHTTP->updateDownloadSpeed(180000);
   alphaHTTP->setError();
-  std::vector<std::pair<size_t, std::string> > usedHosts;
+  std::vector<std::pair<size_t, std::string>> usedHosts;
 
   ssm->add(bravo);
   ssm->add(alphaFTP);
@@ -92,7 +85,7 @@ void FeedbackURISelectorTest::testSelect()
 
 void FeedbackURISelectorTest::testSelect_withUsedHosts()
 {
-  std::vector<std::pair<size_t, std::string> > usedHosts;
+  std::vector<std::pair<size_t, std::string>> usedHosts;
   usedHosts.push_back(std::make_pair(1, "bravo"));
   usedHosts.push_back(std::make_pair(2, "alpha"));
 
@@ -111,11 +104,11 @@ void FeedbackURISelectorTest::testSelect_withUsedHosts()
 
 void FeedbackURISelectorTest::testSelect_skipErrorHost()
 {
-  SharedHandle<ServerStat> alphaHTTP(new ServerStat("alpha", "http"));
+  std::shared_ptr<ServerStat> alphaHTTP(new ServerStat("alpha", "http"));
   alphaHTTP->setError();
-  SharedHandle<ServerStat> alphaFTP(new ServerStat("alpha", "ftp"));
+  std::shared_ptr<ServerStat> alphaFTP(new ServerStat("alpha", "ftp"));
   alphaFTP->setError();
-  std::vector<std::pair<size_t, std::string> > usedHosts;
+  std::vector<std::pair<size_t, std::string>> usedHosts;
 
   ssm->add(alphaHTTP);
   ssm->add(alphaFTP);

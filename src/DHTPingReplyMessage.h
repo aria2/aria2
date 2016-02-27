@@ -40,29 +40,25 @@
 
 namespace aria2 {
 
-class DHTPingReplyMessage:public DHTResponseMessage {
+class DHTPingReplyMessage : public DHTResponseMessage {
 private:
   unsigned char id_[DHT_ID_LENGTH];
+
 public:
-  DHTPingReplyMessage(const SharedHandle<DHTNode>& localNode,
-                      const SharedHandle<DHTNode>& remoteNode,
+  DHTPingReplyMessage(const std::shared_ptr<DHTNode>& localNode,
+                      const std::shared_ptr<DHTNode>& remoteNode,
                       const unsigned char* id,
                       const std::string& transactionID);
 
-  virtual ~DHTPingReplyMessage();
+  virtual void doReceivedAction() CXX11_OVERRIDE;
 
-  virtual void doReceivedAction();
+  virtual std::unique_ptr<Dict> getResponse() CXX11_OVERRIDE;
 
-  virtual SharedHandle<Dict> getResponse();
+  virtual const std::string& getMessageType() const CXX11_OVERRIDE;
 
-  virtual const std::string& getMessageType() const;
+  virtual void accept(DHTMessageCallback* callback) CXX11_OVERRIDE;
 
-  virtual void accept(DHTMessageCallback* callback);
-
-  const unsigned char* getRemoteID()
-  {
-    return id_;
-  }
+  const unsigned char* getRemoteID() { return id_; }
 
   static const std::string PING;
 };

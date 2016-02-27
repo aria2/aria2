@@ -34,13 +34,14 @@
 /* copyright --> */
 #include "DefaultDiskWriterFactory.h"
 #include "DefaultDiskWriter.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
-SharedHandle<DiskWriter> DefaultDiskWriterFactory::newDiskWriter
-(const std::string& filename)
+std::unique_ptr<DiskWriter>
+DefaultDiskWriterFactory::newDiskWriter(const std::string& filename)
 {
-  return SharedHandle<DiskWriter>(new DefaultDiskWriter(filename));
+  return make_unique<DefaultDiskWriter>(filename);
 }
 
 } // namespace aria2

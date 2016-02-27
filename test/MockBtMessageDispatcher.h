@@ -12,64 +12,71 @@ namespace aria2 {
 
 class MockBtMessageDispatcher : public BtMessageDispatcher {
 public:
-  std::deque<SharedHandle<BtMessage> > messageQueue;
+  std::deque<std::unique_ptr<BtMessage>> messageQueue;
 
   virtual ~MockBtMessageDispatcher() {}
 
-  virtual void addMessageToQueue(const SharedHandle<BtMessage>& btMessage) {
-    messageQueue.push_back(btMessage);
-  }
-
-  virtual void addMessageToQueue
-  (const std::vector<SharedHandle<BtMessage> >& btMessages)
+  virtual void
+  addMessageToQueue(std::unique_ptr<BtMessage> btMessage) CXX11_OVERRIDE
   {
-    std::copy(btMessages.begin(), btMessages.end(), back_inserter(messageQueue));
+    messageQueue.push_back(std::move(btMessage));
   }
 
-  virtual void sendMessages() {}
+  virtual void sendMessages() CXX11_OVERRIDE {}
 
-  virtual void doCancelSendingPieceAction
-  (size_t index, int32_t begin, int32_t length) {}
-
-  virtual void doCancelSendingPieceAction(const SharedHandle<Piece>& piece) {}
-
-  virtual void doAbortOutstandingRequestAction(const SharedHandle<Piece>& piece) {}
-
-  virtual void doChokedAction() {}
-
-  virtual void doChokingAction() {}
-
-  virtual void checkRequestSlotAndDoNecessaryThing() {}
-
-  virtual bool isSendingInProgress() {
-    return false;
+  virtual void doCancelSendingPieceAction(size_t index, int32_t begin,
+                                          int32_t length) CXX11_OVERRIDE
+  {
   }
 
-  virtual size_t countMessageInQueue() {
+  virtual void
+  doCancelSendingPieceAction(const std::shared_ptr<Piece>& piece) CXX11_OVERRIDE
+  {
+  }
+
+  virtual void doAbortOutstandingRequestAction(
+      const std::shared_ptr<Piece>& piece) CXX11_OVERRIDE
+  {
+  }
+
+  virtual void doChokedAction() CXX11_OVERRIDE {}
+
+  virtual void doChokingAction() CXX11_OVERRIDE {}
+
+  virtual void checkRequestSlotAndDoNecessaryThing() CXX11_OVERRIDE {}
+
+  virtual bool isSendingInProgress() CXX11_OVERRIDE { return false; }
+
+  virtual size_t countMessageInQueue() CXX11_OVERRIDE
+  {
     return messageQueue.size();
   }
 
-  virtual size_t countOutstandingRequest() {
-    return 0;
-  }
+  virtual size_t countOutstandingRequest() CXX11_OVERRIDE { return 0; }
 
-  virtual bool isOutstandingRequest(size_t index, size_t blockIndex) {
+  virtual bool isOutstandingRequest(size_t index,
+                                    size_t blockIndex) CXX11_OVERRIDE
+  {
     return false;
   }
 
-  virtual RequestSlot getOutstandingRequest
-  (size_t index, int32_t begin, int32_t length) {
-    return RequestSlot::nullSlot;
-  }
-
-  virtual void removeOutstandingRequest(const RequestSlot& slot) {}
-
-  virtual void addOutstandingRequest(const RequestSlot& slot) {}
-
-  virtual size_t countOutstandingUpload()
+  virtual const RequestSlot*
+  getOutstandingRequest(size_t index, int32_t begin,
+                        int32_t length) CXX11_OVERRIDE
   {
-    return 0;
+    return nullptr;
   }
+
+  virtual void removeOutstandingRequest(const RequestSlot* slot) CXX11_OVERRIDE
+  {
+  }
+
+  virtual void
+  addOutstandingRequest(std::unique_ptr<RequestSlot> slot) CXX11_OVERRIDE
+  {
+  }
+
+  virtual size_t countOutstandingUpload() CXX11_OVERRIDE { return 0; }
 };
 
 } // namespace aria2

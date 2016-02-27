@@ -62,19 +62,16 @@
 
 namespace aria2 {
 
-HttpRequestCommand::HttpRequestCommand
-(cuid_t cuid,
- const SharedHandle<Request>& req,
- const SharedHandle<FileEntry>& fileEntry,
- RequestGroup* requestGroup,
- const SharedHandle<HttpConnection>& httpConnection,
- DownloadEngine* e,
- const SharedHandle<SocketCore>& s)
-  : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s,
-                    httpConnection->getSocketRecvBuffer()),
-    httpConnection_(httpConnection)
+HttpRequestCommand::HttpRequestCommand(
+    cuid_t cuid, const std::shared_ptr<Request>& req,
+    const std::shared_ptr<FileEntry>& fileEntry, RequestGroup* requestGroup,
+    const std::shared_ptr<HttpConnection>& httpConnection, DownloadEngine* e,
+    const std::shared_ptr<SocketCore>& s)
+    : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s,
+                      httpConnection->getSocketRecvBuffer()),
+      httpConnection_(httpConnection)
 {
-  setTimeout(getOption()->getAsInt(PREF_CONNECT_TIMEOUT));
+  setTimeout(std::chrono::seconds(getOption()->getAsInt(PREF_CONNECT_TIMEOUT)));
   disableReadCheckSocket();
   setWriteCheckSocket(getSocket());
 }
@@ -82,150 +79,138 @@ HttpRequestCommand::HttpRequestCommand
 HttpRequestCommand::~HttpRequestCommand() {}
 
 namespace {
-SharedHandle<HttpRequest>
-createHttpRequest(const SharedHandle<Request>& req,
-                  const SharedHandle<FileEntry>& fileEntry,
-                  const SharedHandle<Segment>& segment,
-                  int64_t totalLength,
-                  const SharedHandle<Option>& option,
-                  const RequestGroup* rg,
-                  const SharedHandle<CookieStorage>& cookieStorage,
-                  const SharedHandle<AuthConfigFactory>& authConfigFactory,
-                  const SharedHandle<Request>& proxyRequest,
+std::unique_ptr<HttpRequest>
+createHttpRequest(const std::shared_ptr<Request>& req,
+                  const std::shared_ptr<FileEntry>& fileEntry,
+                  const std::shared_ptr<Segment>& segment,
+                  const std::shared_ptr<Option>& option, const RequestGroup* rg,
+                  const DownloadEngine* e,
+                  const std::shared_ptr<Request>& proxyRequest,
                   int64_t endOffset = 0)
 {
-  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
+  auto httpRequest = make_unique<HttpRequest>();
   httpRequest->setUserAgent(option->get(PREF_USER_AGENT));
   httpRequest->setRequest(req);
   httpRequest->setFileEntry(fileEntry);
   httpRequest->setSegment(segment);
   httpRequest->addHeader(option->get(PREF_HEADER));
-  httpRequest->setCookieStorage(cookieStorage);
-  httpRequest->setAuthConfigFactory(authConfigFactory, option.get());
+  httpRequest->setCookieStorage(e->getCookieStorage().get());
+  httpRequest->setAuthConfigFactory(e->getAuthConfigFactory().get());
+  httpRequest->setOption(option.get());
   httpRequest->setProxyRequest(proxyRequest);
-  httpRequest->setAcceptMetalink(rg->getDownloadContext()->
-                                 getAcceptMetalink());
-  if(option->getAsBool(PREF_HTTP_ACCEPT_GZIP)) {
+  httpRequest->setAcceptMetalink(rg->getDownloadContext()->getAcceptMetalink());
+  if (option->getAsBool(PREF_HTTP_ACCEPT_GZIP)) {
     httpRequest->enableAcceptGZip();
-  } else {
+  }
+  else {
     httpRequest->disableAcceptGZip();
   }
-  if(option->getAsBool(PREF_HTTP_NO_CACHE)) {
+  if (option->getAsBool(PREF_HTTP_NO_CACHE)) {
     httpRequest->enableNoCache();
-  } else {
+  }
+  else {
     httpRequest->disableNoCache();
   }
-  if(endOffset > 0) {
+  if (endOffset > 0) {
     httpRequest->setEndOffsetOverride(endOffset);
   }
   return httpRequest;
 }
 } // namespace
 
-bool HttpRequestCommand::executeInternal() {
-  //socket->setBlockingMode();
-  if(httpConnection_->sendBufferIsEmpty()) {
+bool HttpRequestCommand::executeInternal()
+{
+  // socket->setBlockingMode();
+  if (httpConnection_->sendBufferIsEmpty()) {
 #ifdef ENABLE_SSL
-    if(getRequest()->getProtocol() == "https") {
-      if(!getSocket()->tlsConnect(getRequest()->getHost())) {
+    if (getRequest()->getProtocol() == "https") {
+      if (!getSocket()->tlsConnect(getRequest()->getHost())) {
         setReadCheckSocketIf(getSocket(), getSocket()->wantRead());
         setWriteCheckSocketIf(getSocket(), getSocket()->wantWrite());
-        getDownloadEngine()->addCommand(this);
+        addCommandSelf();
         return false;
       }
     }
 #endif // ENABLE_SSL
-    if(getSegments().empty()) {
-      SharedHandle<HttpRequest> httpRequest
-        (createHttpRequest(getRequest(),
-                           getFileEntry(),
-                           SharedHandle<Segment>(),
-                           getRequestGroup()->getTotalLength(),
-                           getOption(),
-                           getRequestGroup(),
-                           getDownloadEngine()->getCookieStorage(),
-                           getDownloadEngine()->getAuthConfigFactory(),
-                           proxyRequest_));
-      if(getOption()->getAsBool(PREF_CONDITIONAL_GET) &&
-         (getRequest()->getProtocol() == "http" ||
-          getRequest()->getProtocol() == "https")) {
-        if(getFileEntry()->getPath().empty() &&
-           getRequest()->getFile().empty()) {
-          A2_LOG_DEBUG("Conditional-Get is disabled because file name"
-                       " is not available.");
-        } else {
-          if(getFileEntry()->getPath().empty()) {
-            getFileEntry()->setPath
-              (util::createSafePath
-               (getOption()->get(PREF_DIR),
-                util::percentDecode(getRequest()->getFile().begin(),
-                                    getRequest()->getFile().end())));
-          }
-          File ctrlfile(getFileEntry()->getPath()+
-                        DefaultBtProgressInfoFile::getSuffix());
-          File file(getFileEntry()->getPath());
-          if(!ctrlfile.exists() && file.exists()) {
-            httpRequest->setIfModifiedSinceHeader
-              (file.getModifiedTime().toHTTPDate());
-          }
+    if (getSegments().empty()) {
+      auto httpRequest = createHttpRequest(
+          getRequest(), getFileEntry(), std::shared_ptr<Segment>(), getOption(),
+          getRequestGroup(), getDownloadEngine(), proxyRequest_);
+      if (getOption()->getAsBool(PREF_CONDITIONAL_GET) &&
+          (getRequest()->getProtocol() == "http" ||
+           getRequest()->getProtocol() == "https")) {
+
+        std::string path;
+
+        if (getFileEntry()->getPath().empty()) {
+          auto& file = getRequest()->getFile();
+
+          // If filename part of URI is empty, we just use
+          // Request::DEFAULT_FILE, since it is the name we use to
+          // store file in disk.
+
+          path = util::createSafePath(
+              getOption()->get(PREF_DIR),
+              (getRequest()->getFile().empty()
+                   ? Request::DEFAULT_FILE
+                   : util::percentDecode(std::begin(file), std::end(file))));
+        }
+        else {
+          path = getFileEntry()->getPath();
+        }
+
+        File ctrlfile(path + DefaultBtProgressInfoFile::getSuffix());
+        File file(path);
+
+        if (!ctrlfile.exists() && file.exists()) {
+          httpRequest->setIfModifiedSinceHeader(
+              file.getModifiedTime().toHTTPDate());
         }
       }
-      httpConnection_->sendRequest(httpRequest);
-    } else {
-      for(std::vector<SharedHandle<Segment> >::const_iterator itr =
-            getSegments().begin(), eoi = getSegments().end();
-          itr != eoi; ++itr) {
-        const SharedHandle<Segment>& segment = *itr;
-        if(!httpConnection_->isIssued(segment)) {
+      httpConnection_->sendRequest(std::move(httpRequest));
+    }
+    else {
+      for (auto& segment : getSegments()) {
+        if (!httpConnection_->isIssued(segment)) {
           int64_t endOffset = 0;
           // FTP via HTTP proxy does not support end byte marker
-          if(getRequest()->getProtocol() != "ftp" &&
-             getRequestGroup()->getTotalLength() > 0 && getPieceStorage()) {
+          if (getRequest()->getProtocol() != "ftp" &&
+              getRequestGroup()->getTotalLength() > 0 && getPieceStorage()) {
             size_t nextIndex =
-              getPieceStorage()->getNextUsedIndex(segment->getIndex());
-            endOffset = std::min
-              (getFileEntry()->getLength(),
-               getFileEntry()->gtoloff
-               (static_cast<int64_t>(segment->getSegmentLength())*nextIndex));
+                getPieceStorage()->getNextUsedIndex(segment->getIndex());
+            endOffset =
+                std::min(getFileEntry()->getLength(),
+                         getFileEntry()->gtoloff(
+                             static_cast<int64_t>(segment->getSegmentLength()) *
+                             nextIndex));
           }
-          SharedHandle<HttpRequest> httpRequest
-            (createHttpRequest(getRequest(),
-                               getFileEntry(),
-                               segment,
-                               getRequestGroup()->getTotalLength(),
-                               getOption(),
-                               getRequestGroup(),
-                               getDownloadEngine()->getCookieStorage(),
-                               getDownloadEngine()->getAuthConfigFactory(),
-                               proxyRequest_,
-                               endOffset));
-          httpConnection_->sendRequest(httpRequest);
+          httpConnection_->sendRequest(
+              createHttpRequest(getRequest(), getFileEntry(), segment,
+                                getOption(), getRequestGroup(),
+                                getDownloadEngine(), proxyRequest_, endOffset));
         }
       }
     }
-  } else {
+  }
+  else {
     httpConnection_->sendPendingData();
   }
-  if(httpConnection_->sendBufferIsEmpty()) {
-    Command* command = new HttpResponseCommand(getCuid(),
-                                               getRequest(),
-                                               getFileEntry(),
-                                               getRequestGroup(),
-                                               httpConnection_,
-                                               getDownloadEngine(),
-                                               getSocket());
-    getDownloadEngine()->addCommand(command);
+  if (httpConnection_->sendBufferIsEmpty()) {
+    getDownloadEngine()->addCommand(make_unique<HttpResponseCommand>(
+        getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
+        httpConnection_, getDownloadEngine(), getSocket()));
     return true;
-  } else {
+  }
+  else {
     setReadCheckSocketIf(getSocket(), getSocket()->wantRead());
     setWriteCheckSocketIf(getSocket(), getSocket()->wantWrite());
-    getDownloadEngine()->addCommand(this);
+    addCommandSelf();
     return false;
   }
 }
 
-void HttpRequestCommand::setProxyRequest
-(const SharedHandle<Request>& proxyRequest)
+void HttpRequestCommand::setProxyRequest(
+    const std::shared_ptr<Request>& proxyRequest)
 {
   proxyRequest_ = proxyRequest;
 }

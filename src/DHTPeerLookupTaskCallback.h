@@ -41,21 +41,23 @@ namespace aria2 {
 
 class DHTPeerLookupTask;
 
-class DHTPeerLookupTaskCallback:public DHTMessageCallback {
+class DHTPeerLookupTaskCallback : public DHTMessageCallback {
 private:
   DHTPeerLookupTask* task_;
+
 public:
   DHTPeerLookupTaskCallback(DHTPeerLookupTask* task);
 
-  virtual void visit(const DHTAnnouncePeerReplyMessage* message);
+  virtual void visit(const DHTAnnouncePeerReplyMessage* message) CXX11_OVERRIDE;
 
-  virtual void visit(const DHTFindNodeReplyMessage* message);
+  virtual void visit(const DHTFindNodeReplyMessage* message) CXX11_OVERRIDE;
 
-  virtual void visit(const DHTGetPeersReplyMessage* message);
+  virtual void visit(const DHTGetPeersReplyMessage* message) CXX11_OVERRIDE;
 
-  virtual void visit(const DHTPingReplyMessage* message);
+  virtual void visit(const DHTPingReplyMessage* message) CXX11_OVERRIDE;
 
-  virtual void onTimeout(const SharedHandle<DHTNode>& remoteNode);
+  virtual void
+  onTimeout(const std::shared_ptr<DHTNode>& remoteNode) CXX11_OVERRIDE;
 };
 
 } // namespace aria2

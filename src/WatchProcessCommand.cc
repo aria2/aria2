@@ -65,21 +65,16 @@
 
 namespace aria2 {
 
-WatchProcessCommand::WatchProcessCommand
-(cuid_t cuid,
- DownloadEngine* e,
- unsigned int pid,
- bool forceHalt)
-  : TimeBasedCommand(cuid, e, 1, true),
-    pid_(pid),
-    forceHalt_(forceHalt)
-{}
-
+WatchProcessCommand::WatchProcessCommand(cuid_t cuid, DownloadEngine* e,
+                                         unsigned int pid, bool forceHalt)
+    : TimeBasedCommand(cuid, e, 1_s, true), pid_(pid), forceHalt_(forceHalt)
+{
+}
 
 void WatchProcessCommand::preProcess()
 {
-  if(getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
-     getDownloadEngine()->isHaltRequested()) {
+  if (getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
+      getDownloadEngine()->isHaltRequested()) {
     enableExit();
   }
 }
@@ -102,12 +97,12 @@ void WatchProcessCommand::process()
   struct kinfo_proc kp;
   size_t len = sizeof(kp);
 
-  mib[0]=CTL_KERN;
-  mib[1]=KERN_PROC;
-  mib[2]=KERN_PROC_PID;
-  mib[3]=pid_;
+  mib[0] = CTL_KERN;
+  mib[1] = KERN_PROC;
+  mib[2] = KERN_PROC_PID;
+  mib[3] = pid_;
 
-  int ret = sysctl(mib, MIBSIZE, &kp, &len, NULL, 0);
+  int ret = sysctl(mib, MIBSIZE, &kp, &len, nullptr, 0);
   if (ret == -1 || len <= 0) {
     waiting = false;
   }
@@ -116,13 +111,14 @@ void WatchProcessCommand::process()
     waiting = false;
   }
 #endif
-  if(!waiting) {
-    A2_LOG_INFO
-      (fmt("CUID#%" PRId64 " - Process %u is not running. Commencing shutdown.",
-           getCuid(), pid_));
-    if(forceHalt_) {
+  if (!waiting) {
+    A2_LOG_INFO(fmt("CUID#%" PRId64
+                    " - Process %u is not running. Commencing shutdown.",
+                    getCuid(), pid_));
+    if (forceHalt_) {
       getDownloadEngine()->requestForceHalt();
-    } else {
+    }
+    else {
       getDownloadEngine()->requestHalt();
     }
     enableExit();

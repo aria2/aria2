@@ -36,7 +36,8 @@
 #define D_EXTENSION_MESSAGE_FACTORY_H
 
 #include "common.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -46,7 +47,7 @@ class ExtensionMessageFactory {
 public:
   virtual ~ExtensionMessageFactory() {}
 
-  virtual SharedHandle<ExtensionMessage>
+  virtual std::unique_ptr<ExtensionMessage>
   createMessage(const unsigned char* data, size_t length) = 0;
 };
 

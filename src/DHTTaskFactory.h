@@ -36,7 +36,8 @@
 #define D_DHT_TASK_FACTORY_H
 
 #include "common.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -50,26 +51,26 @@ class DHTTaskFactory {
 public:
   virtual ~DHTTaskFactory() {}
 
-  virtual SharedHandle<DHTTask>
-  createPingTask(const SharedHandle<DHTNode>& remoteNode,
+  virtual std::shared_ptr<DHTTask>
+  createPingTask(const std::shared_ptr<DHTNode>& remoteNode,
                  int numRetry = 0) = 0;
 
-  virtual SharedHandle<DHTTask>
+  virtual std::shared_ptr<DHTTask>
   createNodeLookupTask(const unsigned char* targetID) = 0;
 
-  virtual SharedHandle<DHTTask> createBucketRefreshTask() = 0;
+  virtual std::shared_ptr<DHTTask> createBucketRefreshTask() = 0;
 
-  virtual SharedHandle<DHTTask>
-  createPeerLookupTask(const SharedHandle<DownloadContext>& ctx,
+  virtual std::shared_ptr<DHTTask>
+  createPeerLookupTask(const std::shared_ptr<DownloadContext>& ctx,
                        uint16_t tcpPort,
-                       const SharedHandle<PeerStorage>& peerStorage) = 0;
+                       const std::shared_ptr<PeerStorage>& peerStorage) = 0;
 
-  virtual SharedHandle<DHTTask>
+  virtual std::shared_ptr<DHTTask>
   createPeerAnnounceTask(const unsigned char* infoHash) = 0;
 
-  virtual SharedHandle<DHTTask>
-  createReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
-                        const SharedHandle<DHTNode>& newNode) = 0;
+  virtual std::shared_ptr<DHTTask>
+  createReplaceNodeTask(const std::shared_ptr<DHTBucket>& bucket,
+                        const std::shared_ptr<DHTNode>& newNode) = 0;
 };
 
 } // namespace aria2

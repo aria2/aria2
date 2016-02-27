@@ -10,8 +10,8 @@ class GrowSegmentTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testUpdateWrittenLength);
   CPPUNIT_TEST(testClear);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
   void setUp() {}
 
@@ -19,26 +19,25 @@ public:
   void testClear();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( GrowSegmentTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(GrowSegmentTest);
 
 void GrowSegmentTest::testUpdateWrittenLength()
 {
-  GrowSegment segment(SharedHandle<Piece>(new Piece()));
-  segment.updateWrittenLength(32*1024);
+  GrowSegment segment(std::shared_ptr<Piece>(new Piece()));
+  segment.updateWrittenLength(32_k);
 
-  CPPUNIT_ASSERT_EQUAL((int64_t)32*1024, segment.getPositionToWrite());
+  CPPUNIT_ASSERT_EQUAL((int64_t)32_k, segment.getPositionToWrite());
   CPPUNIT_ASSERT(!segment.complete());
   CPPUNIT_ASSERT(segment.getPiece()->pieceComplete());
 }
 
 void GrowSegmentTest::testClear()
 {
-  GrowSegment segment(SharedHandle<Piece>(new Piece()));
-  segment.updateWrittenLength(32*1024);
-  CPPUNIT_ASSERT_EQUAL(32*1024, segment.getWrittenLength());
-  segment.clear(0);
-  CPPUNIT_ASSERT_EQUAL(0, segment.getWrittenLength());
+  GrowSegment segment(std::shared_ptr<Piece>(new Piece()));
+  segment.updateWrittenLength(32_k);
+  CPPUNIT_ASSERT_EQUAL((int64_t)32_k, segment.getWrittenLength());
+  segment.clear(nullptr);
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, segment.getWrittenLength());
 }
 
 } // namespace aria2

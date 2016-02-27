@@ -43,56 +43,31 @@ Metalinker::Metalinker() {}
 
 Metalinker::~Metalinker() {}
 
-namespace {
-class EntryQuery:
-    public std::unary_function<SharedHandle<MetalinkEntry>, bool> {
-private:
-  std::string version;
-  std::string language;
-  std::string os;
-public:
-  EntryQuery(const std::string& version,
-             const std::string& language,
-             const std::string& os):
-    version(version),
-    language(language),
-    os(os) {}
-
-  bool operator()(const SharedHandle<MetalinkEntry>& entry) const {
-    if(!version.empty()) {
-      if(version != entry->version) {
-        return false;
-      }
-    }
-    if(!language.empty()) {
-      if(!entry->containsLanguage(language)) {
-        return false;
-      }
-    }
-    if(!os.empty()) {
-      if(!entry->containsOS(os)) {
-        return false;
-      }
-    }
-    return true;
-  }
-};
-} // namespace
-
-void Metalinker::queryEntry
-(std::vector<SharedHandle<MetalinkEntry> >& queryResult,
- const std::string& version,
- const std::string& language,
- const std::string& os) const
+std::vector<std::unique_ptr<MetalinkEntry>>
+Metalinker::queryEntry(const std::string& version, const std::string& language,
+                       const std::string& os)
 {
-  std::remove_copy_if(entries_.begin(), entries_.end(),
-                      std::back_inserter(queryResult),
-                      std::not1(EntryQuery(version, language, os)));
+  std::vector<std::unique_ptr<MetalinkEntry>> res;
+  for (auto& entry : entries_) {
+    if ((!version.empty() && version != entry->version) ||
+        (!language.empty() && !entry->containsLanguage(language)) ||
+        (!os.empty() && !entry->containsOS(os))) {
+      continue;
+    }
+    res.push_back(std::move(entry));
+  }
+  entries_.erase(
+      std::remove_if(std::begin(entries_), std::end(entries_),
+                     [](const std::unique_ptr<MetalinkEntry>& entry) {
+                       return !entry.get();
+                     }),
+      std::end(entries_));
+  return res;
 }
 
-void Metalinker::addEntry(const SharedHandle<MetalinkEntry>& entry)
+void Metalinker::addEntry(std::unique_ptr<MetalinkEntry> entry)
 {
-  entries_.push_back(entry);
+  entries_.push_back(std::move(entry));
 }
 
 } // namespace aria2

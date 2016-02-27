@@ -5,47 +5,46 @@
 
 namespace aria2 {
 
-class MockDHTTaskFactory:public DHTTaskFactory {
+class MockDHTTaskFactory : public DHTTaskFactory {
 public:
   virtual ~MockDHTTaskFactory() {}
 
-  virtual SharedHandle<DHTTask>
-  createPingTask(const SharedHandle<DHTNode>& remoteNode,
-                 int numRetry = 0)
+  virtual std::shared_ptr<DHTTask>
+  createPingTask(const std::shared_ptr<DHTNode>& remoteNode,
+                 int numRetry = 0) CXX11_OVERRIDE
   {
-    return SharedHandle<DHTTask>();
+    return nullptr;
   }
 
-  virtual SharedHandle<DHTTask>
-  createNodeLookupTask(const unsigned char* targetID)
+  virtual std::shared_ptr<DHTTask>
+  createNodeLookupTask(const unsigned char* targetID) CXX11_OVERRIDE
   {
-    return SharedHandle<DHTTask>();
+    return nullptr;
   }
 
-  virtual SharedHandle<DHTTask> createBucketRefreshTask()
+  virtual std::shared_ptr<DHTTask> createBucketRefreshTask() CXX11_OVERRIDE
   {
-    return SharedHandle<DHTTask>();
+    return nullptr;
   }
 
-  virtual SharedHandle<DHTTask>
-  createPeerLookupTask(const SharedHandle<DownloadContext>& ctx,
-                       uint16_t tcpPort,
-                       const SharedHandle<PeerStorage>& peerStorage)
+  virtual std::shared_ptr<DHTTask> createPeerLookupTask(
+      const std::shared_ptr<DownloadContext>& ctx, uint16_t tcpPort,
+      const std::shared_ptr<PeerStorage>& peerStorage) CXX11_OVERRIDE
   {
-    return SharedHandle<DHTTask>();
+    return nullptr;
   }
 
-  virtual SharedHandle<DHTTask>
-  createPeerAnnounceTask(const unsigned char* infoHash)
+  virtual std::shared_ptr<DHTTask>
+  createPeerAnnounceTask(const unsigned char* infoHash) CXX11_OVERRIDE
   {
-    return SharedHandle<DHTTask>();
+    return nullptr;
   }
 
-  virtual SharedHandle<DHTTask>
-  createReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
-                        const SharedHandle<DHTNode>& newNode)
+  virtual std::shared_ptr<DHTTask>
+  createReplaceNodeTask(const std::shared_ptr<DHTBucket>& bucket,
+                        const std::shared_ptr<DHTNode>& newNode) CXX11_OVERRIDE
   {
-    return SharedHandle<DHTTask>();
+    return nullptr;
   }
 };
 

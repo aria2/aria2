@@ -50,27 +50,28 @@
 
 namespace aria2 {
 
-AbstractProxyResponseCommand::AbstractProxyResponseCommand
-(cuid_t cuid,
- const SharedHandle<Request>& req,
- const SharedHandle<FileEntry>& fileEntry,
- RequestGroup* requestGroup,
- const SharedHandle<HttpConnection>& httpConnection,
- DownloadEngine* e,
- const SharedHandle<SocketCore>& s)
-  :AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
-   httpConnection_(httpConnection) {}
+AbstractProxyResponseCommand::AbstractProxyResponseCommand(
+    cuid_t cuid, const std::shared_ptr<Request>& req,
+    const std::shared_ptr<FileEntry>& fileEntry, RequestGroup* requestGroup,
+    const std::shared_ptr<HttpConnection>& httpConnection, DownloadEngine* e,
+    const std::shared_ptr<SocketCore>& s)
+    : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
+      httpConnection_(httpConnection)
+{
+}
 
 AbstractProxyResponseCommand::~AbstractProxyResponseCommand() {}
 
-bool AbstractProxyResponseCommand::executeInternal() {
-  SharedHandle<HttpResponse> httpResponse = httpConnection_->receiveResponse();
-  if(!httpResponse) {
+bool AbstractProxyResponseCommand::executeInternal()
+{
+  std::shared_ptr<HttpResponse> httpResponse =
+      httpConnection_->receiveResponse();
+  if (!httpResponse) {
     // the server has not responded our request yet.
-    getDownloadEngine()->addCommand(this);
+    addCommandSelf();
     return false;
   }
-  if(httpResponse->getStatusCode() != 200) {
+  if (httpResponse->getStatusCode() != 200) {
     throw DL_RETRY_EX(EX_PROXY_CONNECTION_FAILED);
   }
   getDownloadEngine()->addCommand(getNextCommand());

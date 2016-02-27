@@ -43,6 +43,7 @@ namespace aria2 {
 class CUIDCounter {
 private:
   cuid_t count_;
+
 public:
   CUIDCounter();
   ~CUIDCounter();

@@ -36,25 +36,28 @@
 #define D_DHT_TOKEN_UPDATE_COMMAND_H
 
 #include "TimeBasedCommand.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
 class DHTTokenTracker;
 
-class DHTTokenUpdateCommand:public TimeBasedCommand {
+class DHTTokenUpdateCommand : public TimeBasedCommand {
 private:
-  SharedHandle<DHTTokenTracker> tokenTracker_;
+  DHTTokenTracker* tokenTracker_;
+
 public:
-  DHTTokenUpdateCommand(cuid_t cuid, DownloadEngine* e, time_t interval);
+  DHTTokenUpdateCommand(cuid_t cuid, DownloadEngine* e,
+                        std::chrono::seconds interval);
 
   virtual ~DHTTokenUpdateCommand();
 
-  virtual void preProcess();
+  virtual void preProcess() CXX11_OVERRIDE;
 
-  virtual void process();
+  virtual void process() CXX11_OVERRIDE;
 
-  void setTokenTracker(const SharedHandle<DHTTokenTracker>& tokenTracker);
+  void setTokenTracker(DHTTokenTracker* tokenTracker);
 };
 
 } // namespace aria2

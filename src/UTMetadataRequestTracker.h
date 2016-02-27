@@ -51,20 +51,19 @@ public:
     size_t index_;
     Timer dispatchedTime_;
 
-    RequestEntry(size_t index):index_(index) {}
+    RequestEntry(size_t index) : index_(index) {}
 
-    bool elapsed(time_t t) const
+    bool elapsed(const std::chrono::seconds t) const
     {
       return dispatchedTime_.difference(global::wallclock()) >= t;
     }
 
-    bool operator==(const RequestEntry& e) const
-    {
-      return index_ == e.index_;
-    }
+    bool operator==(const RequestEntry& e) const { return index_ == e.index_; }
   };
+
 private:
   std::vector<RequestEntry> trackedRequests_;
+
 public:
   UTMetadataRequestTracker();
 
@@ -84,10 +83,7 @@ public:
   std::vector<size_t> removeTimeoutEntry();
 
   // Returns the number of tracking list.
-  size_t count() const
-  {
-    return trackedRequests_.size();
-  }
+  size_t count() const { return trackedRequests_.size(); }
 
   // Returns the number of additional index this tracker can track.
   size_t avail() const;

@@ -52,12 +52,13 @@ private:
   std::string encode(const unsigned char* in, size_t length, int flush);
   // Not implemented
   GZipEncoder& operator<<(char c);
+
 public:
   GZipEncoder();
 
   ~GZipEncoder();
 
-  // Initializes deflator.
+  // Initializes deflater.
   void init();
 
   // Feeds NULL-terminated c-string s to deflater.  The deflated
@@ -72,12 +73,12 @@ public:
   // deflated result is kept in this class.
   GZipEncoder& write(const char* s, size_t length);
 
-  // Feeds integer to deflator. Before passed to deflator, i is
+  // Feeds integer to deflater. Before passed to deflater, i is
   // converted to std::string using util::itos().  The deflated result
   // is kept in this class.
   GZipEncoder& operator<<(int64_t i);
 
-  // Feeds binary data pointed by in with size length to deflator and
+  // Feeds binary data pointed by in with size length to deflater and
   // returns compressed output available so far.  Don't use this
   // method with operator<< methods.
   std::string encode(const unsigned char* in, size_t length)

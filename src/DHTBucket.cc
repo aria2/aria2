@@ -51,22 +51,19 @@
 
 namespace aria2 {
 
-DHTBucket::DHTBucket
-(size_t prefixLength,
- const unsigned char* max, const unsigned char* min,
- const SharedHandle<DHTNode>& localNode)
-  : prefixLength_(prefixLength),
-    localNode_(localNode),
-    lastUpdated_(global::wallclock())
+DHTBucket::DHTBucket(size_t prefixLength, const unsigned char* max,
+                     const unsigned char* min,
+                     const std::shared_ptr<DHTNode>& localNode)
+    : prefixLength_(prefixLength),
+      localNode_(localNode),
+      lastUpdated_(global::wallclock())
 {
   memcpy(max_, max, DHT_ID_LENGTH);
   memcpy(min_, min, DHT_ID_LENGTH);
 }
 
-DHTBucket::DHTBucket(const SharedHandle<DHTNode>& localNode)
-  : prefixLength_(0),
-    localNode_(localNode),
-    lastUpdated_(global::wallclock())
+DHTBucket::DHTBucket(const std::shared_ptr<DHTNode>& localNode)
+    : prefixLength_(0), localNode_(localNode), lastUpdated_(global::wallclock())
 {
   memset(max_, 0xffu, DHT_ID_LENGTH);
   memset(min_, 0, DHT_ID_LENGTH);
@@ -76,16 +73,17 @@ DHTBucket::~DHTBucket() {}
 
 void DHTBucket::getRandomNodeID(unsigned char* nodeID) const
 {
-  if(prefixLength_ == 0) {
+  if (prefixLength_ == 0) {
     util::generateRandomKey(nodeID);
-  } else {
-    size_t lastByteIndex = (prefixLength_-1)/8;
+  }
+  else {
+    size_t lastByteIndex = (prefixLength_ - 1) / 8;
     util::generateRandomKey(nodeID);
-    memcpy(nodeID, min_, lastByteIndex+1);
+    memcpy(nodeID, min_, lastByteIndex + 1);
   }
 }
 
-bool DHTBucket::isInRange(const SharedHandle<DHTNode>& node) const
+bool DHTBucket::isInRange(const std::shared_ptr<DHTNode>& node) const
 {
   return isInRange(node->getID(), max_, min_);
 }
@@ -96,57 +94,56 @@ bool DHTBucket::isInRange(const unsigned char* nodeID) const
 }
 
 // Returns true if nodeID is in [min, max] (inclusive).
-bool DHTBucket::isInRange(const unsigned char* nodeID,
-                          const unsigned char* max,
+bool DHTBucket::isInRange(const unsigned char* nodeID, const unsigned char* max,
                           const unsigned char* min) const
 {
-  return
-    !std::lexicographical_compare(&nodeID[0], &nodeID[DHT_ID_LENGTH],
-                                  &min[0], &min[DHT_ID_LENGTH]) &&
-    !std::lexicographical_compare(&max[0], &max[DHT_ID_LENGTH],
-                                  &nodeID[0], &nodeID[DHT_ID_LENGTH]);
+  return !std::lexicographical_compare(&nodeID[0], &nodeID[DHT_ID_LENGTH],
+                                       &min[0], &min[DHT_ID_LENGTH]) &&
+         !std::lexicographical_compare(&max[0], &max[DHT_ID_LENGTH], &nodeID[0],
+                                       &nodeID[DHT_ID_LENGTH]);
 }
 
-bool DHTBucket::addNode(const SharedHandle<DHTNode>& node)
+bool DHTBucket::addNode(const std::shared_ptr<DHTNode>& node)
 {
   notifyUpdate();
-  std::deque<SharedHandle<DHTNode> >::iterator itr =
-    std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
-  if(itr == nodes_.end()) {
-    if(nodes_.size() < K) {
+  auto itr = std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
+  if (itr == nodes_.end()) {
+    if (nodes_.size() < K) {
       nodes_.push_back(node);
       return true;
-    } else {
-      if(nodes_.front()->isBad()) {
+    }
+    else {
+      if (nodes_.front()->isBad()) {
         nodes_.erase(nodes_.begin());
         nodes_.push_back(node);
         return true;
-      } else {
+      }
+      else {
         return false;
       }
     }
-  } else {
+  }
+  else {
     nodes_.erase(itr);
     nodes_.push_back(node);
     return true;
   }
 }
 
-void DHTBucket::cacheNode(const SharedHandle<DHTNode>& node)
+void DHTBucket::cacheNode(const std::shared_ptr<DHTNode>& node)
 {
   // cachedNodes_ are sorted by last time seen
   cachedNodes_.push_front(node);
-  if(cachedNodes_.size() > CACHE_SIZE) {
-    cachedNodes_.resize(CACHE_SIZE, SharedHandle<DHTNode>());
+  if (cachedNodes_.size() > CACHE_SIZE) {
+    cachedNodes_.resize(CACHE_SIZE, std::shared_ptr<DHTNode>());
   }
 }
 
-void DHTBucket::dropNode(const SharedHandle<DHTNode>& node)
+void DHTBucket::dropNode(const std::shared_ptr<DHTNode>& node)
 {
-  if(!cachedNodes_.empty()) {
-    std::deque<SharedHandle<DHTNode> >::iterator itr =
-      std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
-    if(itr != nodes_.end()) {
+  if (!cachedNodes_.empty()) {
+    auto itr = std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
+    if (itr != nodes_.end()) {
       nodes_.erase(itr);
       nodes_.push_back(cachedNodes_.front());
       cachedNodes_.erase(cachedNodes_.begin());
@@ -154,21 +151,19 @@ void DHTBucket::dropNode(const SharedHandle<DHTNode>& node)
   }
 }
 
-void DHTBucket::moveToHead(const SharedHandle<DHTNode>& node)
+void DHTBucket::moveToHead(const std::shared_ptr<DHTNode>& node)
 {
-  std::deque<SharedHandle<DHTNode> >::iterator itr =
-    std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
-  if(itr != nodes_.end()) {
+  auto itr = std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
+  if (itr != nodes_.end()) {
     nodes_.erase(itr);
     nodes_.push_front(node);
   }
 }
 
-void DHTBucket::moveToTail(const SharedHandle<DHTNode>& node)
+void DHTBucket::moveToTail(const std::shared_ptr<DHTNode>& node)
 {
-  std::deque<SharedHandle<DHTNode> >::iterator itr =
-    std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
-  if(itr != nodes_.end()) {
+  auto itr = std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
+  if (itr != nodes_.end()) {
     nodes_.erase(itr);
     nodes_.push_back(node);
   }
@@ -176,10 +171,10 @@ void DHTBucket::moveToTail(const SharedHandle<DHTNode>& node)
 
 bool DHTBucket::splitAllowed() const
 {
-  return prefixLength_ < DHT_ID_LENGTH*8-1 && isInRange(localNode_);
+  return prefixLength_ < DHT_ID_LENGTH * 8 - 1 && isInRange(localNode_);
 }
 
-SharedHandle<DHTBucket> DHTBucket::split()
+std::unique_ptr<DHTBucket> DHTBucket::split()
 {
   assert(splitAllowed());
 
@@ -192,16 +187,15 @@ SharedHandle<DHTBucket> DHTBucket::split()
   bitfield::flipBit(min_, DHT_ID_LENGTH, prefixLength_);
 
   ++prefixLength_;
-  SharedHandle<DHTBucket> rBucket(new DHTBucket(prefixLength_,
-                                                rMax, rMin, localNode_));
+  auto rBucket = make_unique<DHTBucket>(prefixLength_, rMax, rMin, localNode_);
 
-  std::deque<SharedHandle<DHTNode> > lNodes;
-  for(std::deque<SharedHandle<DHTNode> >::iterator i = nodes_.begin(),
-        eoi = nodes_.end(); i != eoi; ++i) {
-    if(rBucket->isInRange(*i)) {
-      assert(rBucket->addNode(*i));
-    } else {
-      lNodes.push_back(*i);
+  std::deque<std::shared_ptr<DHTNode>> lNodes;
+  for (auto& elem : nodes_) {
+    if (rBucket->isInRange(elem)) {
+      assert(rBucket->addNode(elem));
+    }
+    else {
+      lNodes.push_back(elem);
     }
   }
   nodes_ = lNodes;
@@ -217,25 +211,28 @@ SharedHandle<DHTBucket> DHTBucket::split()
   return rBucket;
 }
 
-void DHTBucket::getGoodNodes
-(std::vector<SharedHandle<DHTNode> >& goodNodes) const
+void DHTBucket::getGoodNodes(
+    std::vector<std::shared_ptr<DHTNode>>& goodNodes) const
 {
   goodNodes.insert(goodNodes.end(), nodes_.begin(), nodes_.end());
   goodNodes.erase(std::remove_if(goodNodes.begin(), goodNodes.end(),
-                                 mem_fun_sh(&DHTNode::isBad)), goodNodes.end());
+                                 std::mem_fn(&DHTNode::isBad)),
+                  goodNodes.end());
 }
 
-SharedHandle<DHTNode> DHTBucket::getNode(const unsigned char* nodeID, const std::string& ipaddr, uint16_t port) const
+std::shared_ptr<DHTNode> DHTBucket::getNode(const unsigned char* nodeID,
+                                            const std::string& ipaddr,
+                                            uint16_t port) const
 {
-  SharedHandle<DHTNode> node(new DHTNode(nodeID));
+  auto node = std::make_shared<DHTNode>(nodeID);
   node->setIPAddress(ipaddr);
   node->setPort(port);
-  std::deque<SharedHandle<DHTNode> >::const_iterator itr =
-    std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
-  if(itr == nodes_.end() ||
-     (*itr)->getIPAddress() != ipaddr || (*itr)->getPort() != port) {
-    return SharedHandle<DHTNode>();
-  } else {
+  auto itr = std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
+  if (itr == nodes_.end() || (*itr)->getIPAddress() != ipaddr ||
+      (*itr)->getPort() != port) {
+    return nullptr;
+  }
+  else {
     return *itr;
   }
 }
@@ -243,24 +240,22 @@ SharedHandle<DHTNode> DHTBucket::getNode(const unsigned char* nodeID, const std:
 bool DHTBucket::operator==(const DHTBucket& bucket) const
 {
   return memcmp(max_, bucket.max_, DHT_ID_LENGTH) == 0 &&
-    memcmp(min_, bucket.min_, DHT_ID_LENGTH) == 0;
+         memcmp(min_, bucket.min_, DHT_ID_LENGTH) == 0;
 }
 
 bool DHTBucket::needsRefresh() const
 {
   return nodes_.size() < K ||
-    lastUpdated_.difference(global::wallclock()) >= DHT_BUCKET_REFRESH_INTERVAL;
+         lastUpdated_.difference(global::wallclock()) >=
+             DHT_BUCKET_REFRESH_INTERVAL;
 }
 
-void DHTBucket::notifyUpdate()
-{
-  lastUpdated_ = global::wallclock();
-}
+void DHTBucket::notifyUpdate() { lastUpdated_ = global::wallclock(); }
 
 namespace {
 class FindQuestionableNode {
 public:
-  bool operator()(const SharedHandle<DHTNode>& node) const
+  bool operator()(const std::shared_ptr<DHTNode>& node) const
   {
     return node->isQuestionable();
   }
@@ -269,16 +264,17 @@ public:
 
 bool DHTBucket::containsQuestionableNode() const
 {
-  return std::find_if(nodes_.begin(), nodes_.end(), FindQuestionableNode()) != nodes_.end();
+  return std::find_if(nodes_.begin(), nodes_.end(), FindQuestionableNode()) !=
+         nodes_.end();
 }
 
-SharedHandle<DHTNode> DHTBucket::getLRUQuestionableNode() const
+std::shared_ptr<DHTNode> DHTBucket::getLRUQuestionableNode() const
 {
-  std::deque<SharedHandle<DHTNode> >::const_iterator i =
-    std::find_if(nodes_.begin(), nodes_.end(), FindQuestionableNode());
-  if(i == nodes_.end()) {
-    return SharedHandle<DHTNode>();
-  } else {
+  auto i = std::find_if(nodes_.begin(), nodes_.end(), FindQuestionableNode());
+  if (i == nodes_.end()) {
+    return nullptr;
+  }
+  else {
     return *i;
   }
 }

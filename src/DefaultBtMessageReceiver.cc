@@ -53,87 +53,88 @@
 
 namespace aria2 {
 
-DefaultBtMessageReceiver::DefaultBtMessageReceiver():
-  handshakeSent_(false),
-  peerConnection_(0),
-  dispatcher_(0),
-  messageFactory_(0)
-{}
-
-SharedHandle<BtHandshakeMessage>
-DefaultBtMessageReceiver::receiveHandshake(bool quickReply)
+DefaultBtMessageReceiver::DefaultBtMessageReceiver()
+    : handshakeSent_{false},
+      downloadContext_{nullptr},
+      peerConnection_{nullptr},
+      dispatcher_{nullptr},
+      messageFactory_{nullptr}
 {
-  A2_LOG_DEBUG
-    (fmt("Receiving handshake bufferLength=%lu",
-         static_cast<unsigned long>(peerConnection_->getBufferLength())));
-  unsigned char data[BtHandshakeMessage::MESSAGE_LENGTH];
-  size_t dataLength = BtHandshakeMessage::MESSAGE_LENGTH;
-  SharedHandle<BtHandshakeMessage> msg;
-  if(handshakeSent_ || !quickReply || peerConnection_->getBufferLength() < 48) {
-    if(peerConnection_->receiveHandshake(data, dataLength)) {
-      msg = messageFactory_->createHandshakeMessage(data, dataLength);
-      msg->validate();
-    }
-  }
-  // Handle tracker's NAT-checking feature
-  if(!handshakeSent_ && quickReply && peerConnection_->getBufferLength() >= 48){
-    handshakeSent_ = true;
-    // check info_hash
-    if(memcmp(bittorrent::getInfoHash(downloadContext_),
-              peerConnection_->getBuffer()+28,
-              INFO_HASH_LENGTH) == 0) {
-      sendHandshake();
-    } else {
-      throw DL_ABORT_EX
-        (fmt("Bad Info Hash %s",
-             util::toHex(peerConnection_->getBuffer()+28,
-                         INFO_HASH_LENGTH).c_str()));
-    }
-    if(!msg &&
-       peerConnection_->getBufferLength() ==
-       BtHandshakeMessage::MESSAGE_LENGTH &&
-       peerConnection_->receiveHandshake(data, dataLength)) {
-      msg = messageFactory_->createHandshakeMessage(data, dataLength);
-      msg->validate();
-    }
-  }
-  return msg;
 }
 
-SharedHandle<BtHandshakeMessage>
+std::unique_ptr<BtHandshakeMessage>
+DefaultBtMessageReceiver::receiveHandshake(bool quickReply)
+{
+  A2_LOG_DEBUG(
+      fmt("Receiving handshake bufferLength=%lu",
+          static_cast<unsigned long>(peerConnection_->getBufferLength())));
+  unsigned char data[BtHandshakeMessage::MESSAGE_LENGTH];
+  size_t dataLength = BtHandshakeMessage::MESSAGE_LENGTH;
+  if (handshakeSent_ || !quickReply ||
+      peerConnection_->getBufferLength() < 48) {
+    if (peerConnection_->receiveHandshake(data, dataLength)) {
+      auto msg = messageFactory_->createHandshakeMessage(data, dataLength);
+      msg->validate();
+      return msg;
+    }
+  }
+  else {
+    // Handle tracker's NAT-checking feature
+    handshakeSent_ = true;
+    // check info_hash
+    if (memcmp(bittorrent::getInfoHash(downloadContext_),
+               peerConnection_->getBuffer() + 28, INFO_HASH_LENGTH) == 0) {
+      sendHandshake();
+    }
+    else {
+      throw DL_ABORT_EX(
+          fmt("Bad Info Hash %s", util::toHex(peerConnection_->getBuffer() + 28,
+                                              INFO_HASH_LENGTH).c_str()));
+    }
+    if (peerConnection_->getBufferLength() ==
+            BtHandshakeMessage::MESSAGE_LENGTH &&
+        peerConnection_->receiveHandshake(data, dataLength)) {
+      auto msg = messageFactory_->createHandshakeMessage(data, dataLength);
+      msg->validate();
+      return msg;
+    }
+  }
+  return nullptr;
+}
+
+std::unique_ptr<BtHandshakeMessage>
 DefaultBtMessageReceiver::receiveAndSendHandshake()
 {
   return receiveHandshake(true);
 }
 
-void DefaultBtMessageReceiver::sendHandshake() {
-  SharedHandle<BtMessage> msg =
-    messageFactory_->createHandshakeMessage
-    (bittorrent::getInfoHash(downloadContext_), bittorrent::getStaticPeerId());
-  dispatcher_->addMessageToQueue(msg);
+void DefaultBtMessageReceiver::sendHandshake()
+{
+  dispatcher_->addMessageToQueue(messageFactory_->createHandshakeMessage(
+      bittorrent::getInfoHash(downloadContext_),
+      bittorrent::getStaticPeerId()));
   dispatcher_->sendMessages();
 }
 
-SharedHandle<BtMessage> DefaultBtMessageReceiver::receiveMessage() {
+std::unique_ptr<BtMessage> DefaultBtMessageReceiver::receiveMessage()
+{
   size_t dataLength = 0;
   // Give 0 to PeerConnection::receiveMessage() to prevent memcpy.
-  if(!peerConnection_->receiveMessage(0, dataLength)) {
-    return SharedHandle<BtMessage>();
+  if (!peerConnection_->receiveMessage(nullptr, dataLength)) {
+    return nullptr;
   }
-  SharedHandle<BtMessage> msg =
-    messageFactory_->createBtMessage(peerConnection_->getMsgPayloadBuffer(),
-                                     dataLength);
+  auto msg = messageFactory_->createBtMessage(
+      peerConnection_->getMsgPayloadBuffer(), dataLength);
   msg->validate();
-  if(msg->getId() == BtPieceMessage::ID) {
-    SharedHandle<BtPieceMessage> piecemsg =
-      static_pointer_cast<BtPieceMessage>(msg);
+  if (msg->getId() == BtPieceMessage::ID) {
+    auto piecemsg = static_cast<BtPieceMessage*>(msg.get());
     piecemsg->setMsgPayload(peerConnection_->getMsgPayloadBuffer());
   }
   return msg;
 }
 
-void DefaultBtMessageReceiver::setDownloadContext
-(const SharedHandle<DownloadContext>& downloadContext)
+void DefaultBtMessageReceiver::setDownloadContext(
+    DownloadContext* downloadContext)
 {
   downloadContext_ = downloadContext;
 }

@@ -15,7 +15,9 @@ aria2c_SOURCES = AllTest.cc\
 	SingleFileAllocationIteratorTest.cc\
 	DefaultBtProgressInfoFileTest.cc\
 	RequestGroupTest.cc\
-	UtilTest.cc\
+	UtilTest1.cc\
+	UtilTest2.cc\
+	UtilSecurityTest.cc\
 	UriListParserTest.cc\
 	HttpHeaderProcessorTest.cc\
 	RequestTest.cc\
@@ -31,7 +33,6 @@ aria2c_SOURCES = AllTest.cc\
 	SingletonHolderTest.cc\
 	HttpHeaderTest.cc\
 	HttpResponseTest.cc\
-	SharedHandleTest.cc\
 	FileTest.cc\
 	OptionTest.cc\
 	DefaultDiskWriterTest.cc\
@@ -43,7 +44,7 @@ aria2c_SOURCES = AllTest.cc\
 	ProtocolDetectorTest.cc\
 	ExceptionTest.cc\
 	FmtTest.cc\
-	DownloadHandlerFactoryTest.cc\
+	DownloadHandlersTest.cc\
 	SignatureTest.cc\
 	ServerStatManTest.cc\
 	FeedbackURISelectorTest.cc\
@@ -72,12 +73,12 @@ aria2c_SOURCES = AllTest.cc\
 	UriTest.cc\
 	UriSplitTest.cc\
 	MockSegment.h\
-	TripletTest.cc\
 	CookieHelperTest.cc\
 	JsonTest.cc\
 	ValueBaseJsonParserTest.cc\
 	RpcResponseTest.cc\
 	RpcMethodTest.cc\
+	HttpServerTest.cc\
 	BufferedFileTest.cc\
 	GeomStreamPieceSelectorTest.cc\
 	SegListTest.cc\
@@ -110,12 +111,10 @@ if HAVE_SQLITE3
 aria2c_SOURCES += Sqlite3CookieParserTest.cc
 endif # HAVE_SQLITE3
 
-if ENABLE_MESSAGE_DIGEST
 aria2c_SOURCES += MessageDigestHelperTest.cc\
 	IteratableChunkChecksumValidatorTest.cc\
 	IteratableChecksumValidatorTest.cc\
 	MessageDigestTest.cc
-endif # ENABLE_MESSAGE_DIGEST
 
 if ENABLE_BITTORRENT
 aria2c_SOURCES += BtAllowedFastMessageTest.cc\
@@ -237,16 +236,65 @@ if !HAVE_TIMEGM
 aria2c_SOURCES += TimegmTest.cc
 endif # !HAVE_TIMEGM
 
-aria2c_LDADD = ../src/libaria2.la @LIBINTL@ @CPPUNIT_LIBS@
-AM_CPPFLAGS =  -Wall\
-	-I$(top_srcdir)/src\
-	-I$(top_srcdir)/src/includes -I$(top_builddir)/src/includes\
-	-I$(top_srcdir)/lib -I$(top_srcdir)/intl\
-        -DLOCALEDIR=\"$(localedir)\"\
-	-DA2_TEST_DIR=\"$(top_srcdir)/test\"\
-	-DA2_TEST_OUT_DIR=\"${a2_test_outdir}\"\
-	@CPPUNIT_CFLAGS@\
-	@DEFS@
+if ENABLE_LIBARIA2
+aria2c_SOURCES += Aria2ApiTest.cc
+endif # ENABLE_LIBARIA2
+
+aria2c_LDADD = \
+	../src/libaria2.la \
+	@LIBINTL@ \
+	@CPPUNIT_LIBS@ \
+	@EXTRALIBS@ \
+	@ZLIB_LIBS@ \
+	@LIBUV_LIBS@ \
+	@XML_LIBS@ \
+	@EXPAT_LIBS@ \
+	@SQLITE3_LIBS@ \
+	@WINTLS_LIBS@ \
+	@LIBGNUTLS_LIBS@ \
+	@OPENSSL_LIBS@ \
+	@LIBNETTLE_LIBS@ \
+	@LIBGMP_LIBS@ \
+	@LIBGCRYPT_LIBS@ \
+	@LIBSSH2_LIBS@ \
+	@LIBCARES_LIBS@ \
+	@WSLAY_LIBS@ \
+	@TCMALLOC_LIBS@ \
+	@JEMALLOC_LIBS@
+
+AM_CPPFLAGS = \
+	-I$(top_srcdir)/src \
+	-I$(top_srcdir)/src/includes -I$(top_builddir)/src/includes \
+	-I$(top_srcdir)/lib -I$(top_srcdir)/intl \
+        -DLOCALEDIR=\"$(localedir)\" \
+	-DA2_TEST_DIR=\"$(top_srcdir)/test\" \
+	-DA2_TEST_OUT_DIR=\"${a2_test_outdir}\" \
+	@CPPUNIT_CFLAGS@ \
+	@DEFS@ \
+	@EXTRACPPFLAGS@ \
+	@ZLIB_CFLAGS@ \
+	@LIBUV_CFLAGS@ \
+	@XML_CPPFLAGS@ \
+	@EXPAT_CFLAGS@ \
+	@SQLITE3_CFLAGS@ \
+	@LIBGNUTLS_CFLAGS@ \
+	@OPENSSL_CFLAGS@ \
+	@LIBNETTLE_CFLAGS@ \
+	@LIBGMP_CFLAGS@ \
+	@LIBGCRYPT_CFLAGS@ \
+	@LIBSSH2_CFLAGS@ \
+	@LIBCARES_CFLAGS@ \
+	@WSLAY_CFLAGS@ \
+	@TCMALLOC_CFLAGS@ \
+	@JEMALLOC_CFLAGS@
+
+AM_LDFLAGS = \
+	@EXTRALDFLAGS@ \
+	@APPLETLS_LDFLAGS@
+
+AM_CFLAGS = @EXTRACFLAGS@
+
+AM_CXXFLAGS = @WARNCXXFLAGS@ @CXX1XCXXFLAGS@ @EXTRACXXFLAGS@
 
 EXTRA_DIST = 4096chunk.txt\
 	chunkChecksumTestFile250.txt\
@@ -280,7 +328,8 @@ EXTRA_DIST = 4096chunk.txt\
 	metalink4-groupbymetaurl.xml\
 	serialize_session.meta4\
 	metalink4-dosdirtraversal.xml\
-	base_uri.xml
+	base_uri.xml\
+	local-metaurl.meta4
 
 clean-local:
 	-rm -rf ${a2_test_outdir}

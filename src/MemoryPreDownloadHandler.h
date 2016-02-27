@@ -40,17 +40,12 @@
 
 namespace aria2 {
 
-template<class DiskWriterFactoryType>
-class MemoryPreDownloadHandler:public PreDownloadHandler
-{
+template <class DiskWriterFactoryType>
+class MemoryPreDownloadHandler : public PreDownloadHandler {
 public:
-  MemoryPreDownloadHandler() {}
-
-  virtual ~MemoryPreDownloadHandler() {}
-
-  virtual void execute(RequestGroup* requestGroup)
+  virtual void execute(RequestGroup* requestGroup) const CXX11_OVERRIDE
   {
-    SharedHandle<DiskWriterFactory> dwf(new DiskWriterFactoryType());
+    auto dwf = std::make_shared<DiskWriterFactoryType>();
     requestGroup->setDiskWriterFactory(dwf);
     requestGroup->setFileAllocationEnabled(false);
     requestGroup->setPreLocalFileCheckEnabled(false);

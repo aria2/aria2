@@ -45,12 +45,13 @@ class IndexBtMessageValidator : public BtMessageValidator {
 private:
   const IndexBtMessage* message_;
   size_t numPiece_;
+
 public:
   IndexBtMessageValidator(const IndexBtMessage* message, size_t numPiece);
 
   ~IndexBtMessageValidator();
 
-  virtual void validate();
+  virtual void validate() CXX11_OVERRIDE;
 };
 
 } // namespace aria2

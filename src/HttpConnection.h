@@ -39,8 +39,8 @@
 
 #include <string>
 #include <deque>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "SocketBuffer.h"
 #include "Command.h"
 
@@ -56,41 +56,40 @@ class SocketRecvBuffer;
 
 class HttpRequestEntry {
 private:
-  SharedHandle<HttpRequest> httpRequest_;
-  SharedHandle<HttpHeaderProcessor> proc_;
+  std::unique_ptr<HttpRequest> httpRequest_;
+  std::unique_ptr<HttpHeaderProcessor> proc_;
+
 public:
-  HttpRequestEntry(const SharedHandle<HttpRequest>& httpRequest);
+  HttpRequestEntry(std::unique_ptr<HttpRequest> httpRequest);
 
-  ~HttpRequestEntry();
-
-  const SharedHandle<HttpRequest>& getHttpRequest() const
+  const std::unique_ptr<HttpRequest>& getHttpRequest() const
   {
     return httpRequest_;
   }
 
-  const SharedHandle<HttpHeaderProcessor>& getHttpHeaderProcessor() const
-  {
-    return proc_;
-  }
+  std::unique_ptr<HttpRequest> popHttpRequest();
+
+  const std::unique_ptr<HttpHeaderProcessor>& getHttpHeaderProcessor() const;
 };
 
-typedef std::deque<SharedHandle<HttpRequestEntry> > HttpRequestEntries;
+typedef std::deque<std::unique_ptr<HttpRequestEntry>> HttpRequestEntries;
 
 class HttpConnection {
 private:
   cuid_t cuid_;
-  SharedHandle<SocketCore> socket_;
-  SharedHandle<SocketRecvBuffer> socketRecvBuffer_;
+  std::shared_ptr<SocketCore> socket_;
+  std::shared_ptr<SocketRecvBuffer> socketRecvBuffer_;
   SocketBuffer socketBuffer_;
 
   HttpRequestEntries outstandingHttpRequests_;
 
   std::string eraseConfidentialInfo(const std::string& request);
+  void sendRequest(std::unique_ptr<HttpRequest> httpRequest,
+                   std::string request);
+
 public:
-  HttpConnection
-  (cuid_t cuid,
-   const SharedHandle<SocketCore>& socket,
-   const SharedHandle<SocketRecvBuffer>& socketRecvBuffer);
+  HttpConnection(cuid_t cuid, const std::shared_ptr<SocketCore>& socket,
+                 const std::shared_ptr<SocketRecvBuffer>& socketRecvBuffer);
   ~HttpConnection();
 
   /**
@@ -100,12 +99,12 @@ public:
    * HTTP proxy(GET method).
    * @param segment indicates starting postion of the file for downloading
    */
-  void sendRequest(const SharedHandle<HttpRequest>& httpRequest);
+  void sendRequest(std::unique_ptr<HttpRequest> httpRequest);
 
   /**
    * Sends Http proxy request using CONNECT method.
    */
-  void sendProxyRequest(const SharedHandle<HttpRequest>& httpRequest);
+  void sendProxyRequest(std::unique_ptr<HttpRequest> httpRequest);
 
   /**
    * Receives HTTP response from the server and returns HttpResponseHandle
@@ -118,17 +117,15 @@ public:
    *
    * @return HttpResponse or 0 if whole response header is not received
    */
-  SharedHandle<HttpResponse> receiveResponse();
+  std::unique_ptr<HttpResponse> receiveResponse();
 
-  SharedHandle<HttpRequest> getFirstHttpRequest() const;
-
-  bool isIssued(const SharedHandle<Segment>& segment) const;
+  bool isIssued(const std::shared_ptr<Segment>& segment) const;
 
   bool sendBufferIsEmpty() const;
 
   void sendPendingData();
 
-  const SharedHandle<SocketRecvBuffer>& getSocketRecvBuffer() const
+  const std::shared_ptr<SocketRecvBuffer>& getSocketRecvBuffer() const
   {
     return socketRecvBuffer_;
   }

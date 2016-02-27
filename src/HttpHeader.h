@@ -41,8 +41,6 @@
 #include <vector>
 #include <string>
 
-#include "SharedHandle.h"
-
 namespace aria2 {
 
 struct Range;
@@ -65,6 +63,7 @@ private:
 
   // Request Path
   std::string requestPath_;
+
 public:
   HttpHeader();
   ~HttpHeader();
@@ -108,6 +107,8 @@ public:
             std::multimap<int, std::string>::const_iterator>
   equalRange(int hdKey) const;
 
+  void remove(int hdKey);
+
   Range getRange() const;
 
   int getStatusCode() const;
@@ -122,7 +123,7 @@ public:
 
   void setVersion(const std::string& version);
 
-  template<typename InputIterator>
+  template <typename InputIterator>
   void setVersion(InputIterator first, InputIterator last)
   {
     version_.assign(first, last);
@@ -132,7 +133,7 @@ public:
 
   void setMethod(const std::string& method);
 
-  template<typename InputIterator>
+  template <typename InputIterator>
   void setMethod(InputIterator first, InputIterator last)
   {
     method_.assign(first, last);
@@ -142,7 +143,7 @@ public:
 
   void setRequestPath(const std::string& requestPath);
 
-  template<typename InputIterator>
+  template <typename InputIterator>
   void setRequestPath(InputIterator first, InputIterator last)
   {
     requestPath_.assign(first, last);
@@ -151,7 +152,7 @@ public:
   // Clears table_. responseStatus_ and version_ are unchanged.
   void clearField();
 
-  // Returns true if heder field |name| contains |value|. This method
+  // Returns true if header field |name| contains |value|. This method
   // assumes the values of the header field is delimited by ','.
   bool fieldContains(int hdKey, const char* value);
 

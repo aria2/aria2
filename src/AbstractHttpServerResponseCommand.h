@@ -36,7 +36,9 @@
 #define D_ABSTRACT_HTTP_SERVER_RESPONSE_COMMAND_H
 
 #include "Command.h"
-#include "SharedHandle.h"
+
+#include <memory>
+
 #include "TimerA2.h"
 
 namespace aria2 {
@@ -48,30 +50,28 @@ class HttpServer;
 class AbstractHttpServerResponseCommand : public Command {
 private:
   DownloadEngine* e_;
-  SharedHandle<SocketCore> socket_;
-  SharedHandle<HttpServer> httpServer_;
+  std::shared_ptr<SocketCore> socket_;
+  std::shared_ptr<HttpServer> httpServer_;
   Timer timeoutTimer_;
   bool readCheck_;
   bool writeCheck_;
 
   void updateReadWriteCheck();
+
 protected:
-  DownloadEngine* getDownloadEngine()
-  {
-    return e_;
-  }
+  DownloadEngine* getDownloadEngine() { return e_; }
   // Called after content body is completely sent.
-  virtual void afterSend(const SharedHandle<HttpServer>& httpServer,
+  virtual void afterSend(const std::shared_ptr<HttpServer>& httpServer,
                          DownloadEngine* e) = 0;
+
 public:
-  AbstractHttpServerResponseCommand(cuid_t cuid,
-                                    const SharedHandle<HttpServer>& httpServer,
-                                    DownloadEngine* e,
-                                    const SharedHandle<SocketCore>& socket);
+  AbstractHttpServerResponseCommand(
+      cuid_t cuid, const std::shared_ptr<HttpServer>& httpServer,
+      DownloadEngine* e, const std::shared_ptr<SocketCore>& socket);
 
   virtual ~AbstractHttpServerResponseCommand();
 
-  virtual bool execute();
+  virtual bool execute() CXX11_OVERRIDE;
 };
 
 } // namespace aria2

@@ -33,11 +33,15 @@
  */
 /* copyright --> */
 #include "WebSocketSessionMan.h"
+
+#include <cassert>
+
 #include "WebSocketSession.h"
 #include "RequestGroup.h"
 #include "json.h"
 #include "util.h"
 #include "WebSocketInteractionCommand.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
@@ -47,35 +51,77 @@ WebSocketSessionMan::WebSocketSessionMan() {}
 
 WebSocketSessionMan::~WebSocketSessionMan() {}
 
-void WebSocketSessionMan::addSession
-(const SharedHandle<WebSocketSession>& wsSession)
+void WebSocketSessionMan::addSession(
+    const std::shared_ptr<WebSocketSession>& wsSession)
 {
+  A2_LOG_DEBUG("WebSocket session added.");
   sessions_.insert(wsSession);
 }
 
-void WebSocketSessionMan::removeSession
-(const SharedHandle<WebSocketSession>& wsSession)
+void WebSocketSessionMan::removeSession(
+    const std::shared_ptr<WebSocketSession>& wsSession)
 {
+  A2_LOG_DEBUG("WebSocket session removed.");
   sessions_.erase(wsSession);
 }
 
-void WebSocketSessionMan::addNotification
-(const std::string& method, const RequestGroup* group)
+void WebSocketSessionMan::addNotification(const std::string& method,
+                                          const RequestGroup* group)
 {
-  SharedHandle<Dict> dict = Dict::g();
+  auto dict = Dict::g();
   dict->put("jsonrpc", "2.0");
   dict->put("method", method);
-  SharedHandle<Dict> eventSpec = Dict::g();
+  auto eventSpec = Dict::g();
   eventSpec->put("gid", GroupId::toHex((group->getGID())));
-  SharedHandle<List> params = List::g();
-  params->append(eventSpec);
-  dict->put("params", params);
-  std::string msg = json::encode(dict);
-  for(WebSocketSessions::const_iterator i = sessions_.begin(),
-        eoi = sessions_.end(); i != eoi; ++i) {
-    (*i)->addTextMessage(msg);
-    (*i)->getCommand()->updateWriteCheck();
+  auto params = List::g();
+  params->append(std::move(eventSpec));
+  dict->put("params", std::move(params));
+  std::string msg = json::encode(dict.get());
+  for (auto& session : sessions_) {
+    session->addTextMessage(msg, false);
+    session->getCommand()->updateWriteCheck();
   }
+}
+
+namespace {
+// The string constants for download events.
+const std::string ON_DOWNLOAD_START = "aria2.onDownloadStart";
+const std::string ON_DOWNLOAD_PAUSE = "aria2.onDownloadPause";
+const std::string ON_DOWNLOAD_STOP = "aria2.onDownloadStop";
+const std::string ON_DOWNLOAD_COMPLETE = "aria2.onDownloadComplete";
+const std::string ON_DOWNLOAD_ERROR = "aria2.onDownloadError";
+const std::string ON_BT_DOWNLOAD_COMPLETE = "aria2.onBtDownloadComplete";
+} // namespace
+
+namespace {
+const std::string& getMethodName(DownloadEvent event)
+{
+  switch (event) {
+  case EVENT_ON_DOWNLOAD_START:
+    return ON_DOWNLOAD_START;
+  case EVENT_ON_DOWNLOAD_PAUSE:
+    return ON_DOWNLOAD_PAUSE;
+  case EVENT_ON_DOWNLOAD_STOP:
+    return ON_DOWNLOAD_STOP;
+  case EVENT_ON_DOWNLOAD_COMPLETE:
+    return ON_DOWNLOAD_COMPLETE;
+  case EVENT_ON_DOWNLOAD_ERROR:
+    return ON_DOWNLOAD_ERROR;
+  case EVENT_ON_BT_DOWNLOAD_COMPLETE:
+    return ON_BT_DOWNLOAD_COMPLETE;
+  default:
+    // Not reachable
+    assert(0);
+    // For suppress compiler warning
+    return A2STR::NIL;
+  }
+}
+} // namespace
+
+void WebSocketSessionMan::onEvent(DownloadEvent event,
+                                  const RequestGroup* group)
+{
+  addNotification(getMethodName(event), group);
 }
 
 } // namespace rpc

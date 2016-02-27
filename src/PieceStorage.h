@@ -39,8 +39,8 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "TimerA2.h"
 #include "Command.h"
 
@@ -62,30 +62,28 @@ public:
    * Returns true if the peer has a piece that localhost doesn't have.
    * Otherwise returns false.
    */
-  virtual bool hasMissingPiece(const SharedHandle<Peer>& peer) = 0;
+  virtual bool hasMissingPiece(const std::shared_ptr<Peer>& peer) = 0;
 
-   // Stores pieces that the peer has but localhost doesn't.  Those
-   // pieces will be marked "used" status in order to prevent other
-   // command from get the same piece. But in end game mode, same
-   // piece may be got by several commands. This function stores N
-   // pieces where the sum of missing block of first N-1 pieces is
-   // less than minMissingBlocks and the sum of missing block of N
-   // pieces is greater than or equal to minMissingBlocks. If there is
-   // M missing pieces left where M < N, M pieces are stored.
-  virtual void getMissingPiece
-  (std::vector<SharedHandle<Piece> >& pieces,
-   size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer,
-   cuid_t cuid) = 0;
+  // Stores pieces that the peer has but localhost doesn't.  Those
+  // pieces will be marked "used" status in order to prevent other
+  // command from get the same piece. But in end game mode, same
+  // piece may be got by several commands. This function stores N
+  // pieces where the sum of missing block of first N-1 pieces is
+  // less than minMissingBlocks and the sum of missing block of N
+  // pieces is greater than or equal to minMissingBlocks. If there is
+  // M missing pieces left where M < N, M pieces are stored.
+  virtual void getMissingPiece(std::vector<std::shared_ptr<Piece>>& pieces,
+                               size_t minMissingBlocks,
+                               const std::shared_ptr<Peer>& peer,
+                               cuid_t cuid) = 0;
 
   // Same as getMissingPiece(pieces, minMissingBlocks, peer), but the
   // indexes in excludedIndexes are excluded.
-  virtual void getMissingPiece
-  (std::vector<SharedHandle<Piece> >& pieces,
-   size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer,
-   const std::vector<size_t>& excludedIndexes,
-   cuid_t cuid) = 0;
+  virtual void getMissingPiece(std::vector<std::shared_ptr<Piece>>& pieces,
+                               size_t minMissingBlocks,
+                               const std::shared_ptr<Peer>& peer,
+                               const std::vector<size_t>& excludedIndexes,
+                               cuid_t cuid) = 0;
 
   // Stores pieces that the peer has but localhost doesn't.  Only
   // pieces that declared as "fast" are stored.  Those pieces stored
@@ -96,20 +94,18 @@ public:
   // minMissingBlocks and the sum of missing block of N pieces is
   // greater than or equal to minMissingBlocks. If there is M missing
   // pieces left where M < N, M pieces are stored.
-  virtual void getMissingFastPiece
-  (std::vector<SharedHandle<Piece> >& pieces,
-   size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer,
-   cuid_t cuid) = 0;
+  virtual void getMissingFastPiece(std::vector<std::shared_ptr<Piece>>& pieces,
+                                   size_t minMissingBlocks,
+                                   const std::shared_ptr<Peer>& peer,
+                                   cuid_t cuid) = 0;
 
   // Same as getMissingFastPiece(pieces, minMissingBlocks, peer), but
   // the indexes in excludedIndexes are excluded.
-  virtual void getMissingFastPiece
-  (std::vector<SharedHandle<Piece> >& pieces,
-   size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer,
-   const std::vector<size_t>& excludedIndexes,
-   cuid_t cuid) = 0;
+  virtual void getMissingFastPiece(std::vector<std::shared_ptr<Piece>>& pieces,
+                                   size_t minMissingBlocks,
+                                   const std::shared_ptr<Peer>& peer,
+                                   const std::vector<size_t>& excludedIndexes,
+                                   cuid_t cuid) = 0;
 
   /**
    * Returns a piece that the peer has but localhost doesn't.
@@ -117,17 +113,17 @@ public:
    * from get the same piece. But in end game mode, same piece may be returned
    * to several commands.
    */
-  virtual SharedHandle<Piece>
-  getMissingPiece(const SharedHandle<Peer>& peer, cuid_t cuid) = 0;
+  virtual std::shared_ptr<Piece>
+  getMissingPiece(const std::shared_ptr<Peer>& peer, cuid_t cuid) = 0;
 
   /**
-   * Same as getMissingPiece(const SharedHandle<Peer>& peer), but the indexes in
+   * Same as getMissingPiece(const std::shared_ptr<Peer>& peer), but the indexes
+   * in
    * excludedIndexes are excluded.
    */
-  virtual SharedHandle<Piece> getMissingPiece
-  (const SharedHandle<Peer>& peer,
-   const std::vector<size_t>& excludedIndexes,
-   cuid_t cuid) = 0;
+  virtual std::shared_ptr<Piece>
+  getMissingPiece(const std::shared_ptr<Peer>& peer,
+                  const std::vector<size_t>& excludedIndexes, cuid_t cuid) = 0;
 #endif // ENABLE_BITTORRENT
 
   // Returns true if there is at least one missing and unused piece.
@@ -137,11 +133,9 @@ public:
    * Returns a missing piece if available. Otherwise returns 0;
    * If ignoreBitfield is set, indexes of true bit are excluded.
    */
-  virtual SharedHandle<Piece> getMissingPiece
-  (size_t minSplitSize,
-   const unsigned char* ignoreBitfield,
-   size_t length,
-   cuid_t cuid) = 0;
+  virtual std::shared_ptr<Piece>
+  getMissingPiece(size_t minSplitSize, const unsigned char* ignoreBitfield,
+                  size_t length, cuid_t cuid) = 0;
 
   /**
    * Returns a missing piece whose index is index.
@@ -149,13 +143,13 @@ public:
    * then returns 0.
    * Also returns 0 if any of missing piece is not available.
    */
-  virtual SharedHandle<Piece> getMissingPiece(size_t index, cuid_t cuid) = 0;
+  virtual std::shared_ptr<Piece> getMissingPiece(size_t index, cuid_t cuid) = 0;
 
   /**
    * Returns the piece denoted by index.
    * No status of the piece is changed in this method.
    */
-  virtual SharedHandle<Piece> getPiece(size_t index) = 0;
+  virtual std::shared_ptr<Piece> getPiece(size_t index) = 0;
 
   /**
    * Marks the piece whose index is index as missing.
@@ -165,12 +159,13 @@ public:
   /**
    * Tells that the download of the specfied piece completes.
    */
-  virtual void completePiece(const SharedHandle<Piece>& piece) = 0;
+  virtual void completePiece(const std::shared_ptr<Piece>& piece) = 0;
 
   /**
    * Tells that the download of the specified piece is canceled.
    */
-  virtual void cancelPiece(const SharedHandle<Piece>& piece, cuid_t cuid) = 0;
+  virtual void cancelPiece(const std::shared_ptr<Piece>& piece,
+                           cuid_t cuid) = 0;
 
   /**
    * Returns true if the specified piece is already downloaded.
@@ -227,7 +222,7 @@ public:
   // TODO We can remove this.
   virtual void setEndGamePieceNum(size_t num) = 0;
 
-  virtual SharedHandle<DiskAdaptor> getDiskAdaptor() = 0;
+  virtual std::shared_ptr<DiskAdaptor> getDiskAdaptor() = 0;
 
   virtual WrDiskCache* getWrDiskCache() = 0;
 
@@ -254,7 +249,7 @@ public:
    * Removes have entry if specified seconds have elapsed since its
    * registration.
    */
-  virtual void removeAdvertisedPiece(time_t elapsed) = 0;
+  virtual void removeAdvertisedPiece(const std::chrono::seconds& elapsed) = 0;
 
   /**
    * Sets all bits in bitfield to 1.
@@ -267,11 +262,12 @@ public:
   virtual void markPiecesDone(int64_t length) = 0;
 
   virtual void
-  addInFlightPiece(const std::vector<SharedHandle<Piece> >& pieces) = 0;
+  addInFlightPiece(const std::vector<std::shared_ptr<Piece>>& pieces) = 0;
 
   virtual size_t countInFlightPiece() = 0;
 
-  virtual void getInFlightPieces(std::vector<SharedHandle<Piece> >& pieces) = 0;
+  virtual void
+  getInFlightPieces(std::vector<std::shared_ptr<Piece>>& pieces) = 0;
 
   virtual void addPieceStats(size_t index) = 0;
 

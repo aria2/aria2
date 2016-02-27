@@ -38,13 +38,13 @@
 #include "common.h"
 
 #include <string>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "error_code.h"
 
 namespace aria2 {
 
-class Exception:public std::exception {
+class Exception : public std::exception {
 private:
   const char* file_;
 
@@ -57,16 +57,16 @@ private:
   error_code::Value errorCode_;
   // Exception that this object wraps. Normally this cause_ is the
   // root cause of this exception.
-  SharedHandle<Exception> cause_;
+  std::shared_ptr<Exception> cause_;
+
 protected:
-  virtual SharedHandle<Exception> copy() const = 0;
+  virtual std::shared_ptr<Exception> copy() const = 0;
 
 public:
   Exception(const char* file, int line, const std::string& msg);
 
   Exception(const char* file, int line, const std::string& msg,
-            error_code::Value errorCode,
-            const Exception& cause);
+            error_code::Value errorCode, const Exception& cause);
   // errorCode_ is initializedwith cause.errorCode_.
   Exception(const char* file, int line, const std::string& msg,
             const Exception& cause);
@@ -81,19 +81,13 @@ public:
 
   virtual ~Exception() throw();
 
-  virtual const char* what() const throw();
+  virtual const char* what() const throw() CXX11_OVERRIDE;
 
   std::string stackTrace() const;
 
-  int getErrNum() const
-  {
-    return errNum_;
-  }
+  int getErrNum() const { return errNum_; }
 
-  error_code::Value getErrorCode() const
-  {
-    return errorCode_;
-  }
+  error_code::Value getErrorCode() const { return errorCode_; }
 };
 
 } // namespace aria2

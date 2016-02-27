@@ -37,7 +37,7 @@ int wslay_frame_context_init(wslay_frame_context_ptr *ctx,
                              void *user_data)
 {
   *ctx = (wslay_frame_context_ptr)malloc(sizeof(struct wslay_frame_context));
-  if(ctx == NULL) {
+  if(*ctx == NULL) {
     return -1;
   }
   memset(*ctx, 0, sizeof(struct wslay_frame_context));

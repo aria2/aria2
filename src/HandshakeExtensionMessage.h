@@ -37,16 +37,17 @@
 
 #include "ExtensionMessage.h"
 
+#include <memory>
+
 #include "BtConstants.h"
 #include "ExtensionMessageRegistry.h"
-#include "SharedHandle.h"
 
 namespace aria2 {
 
 class Peer;
 class DownloadContext;
 
-class HandshakeExtensionMessage:public ExtensionMessage {
+class HandshakeExtensionMessage : public ExtensionMessage {
 private:
   std::string clientVersion_;
 
@@ -56,66 +57,44 @@ private:
 
   ExtensionMessageRegistry extreg_;
 
-  SharedHandle<DownloadContext> dctx_;
+  DownloadContext* dctx_;
 
-  SharedHandle<Peer> peer_;
+  std::shared_ptr<Peer> peer_;
+
 public:
   HandshakeExtensionMessage();
 
-  virtual ~HandshakeExtensionMessage();
+  virtual std::string getPayload() CXX11_OVERRIDE;
 
-  virtual std::string getPayload();
+  virtual uint8_t getExtensionMessageID() const CXX11_OVERRIDE { return 0; }
 
-  virtual uint8_t getExtensionMessageID()
-  {
-    return 0;
-  }
-
-  virtual const char* getExtensionName() const
+  virtual const char* getExtensionName() const CXX11_OVERRIDE
   {
     return EXTENSION_NAME;
   }
 
   static const char EXTENSION_NAME[];
 
-  virtual std::string toString() const;
+  virtual std::string toString() const CXX11_OVERRIDE;
 
-  virtual void doReceivedAction();
+  virtual void doReceivedAction() CXX11_OVERRIDE;
 
   void setClientVersion(const std::string& version)
   {
     clientVersion_ = version;
   }
 
-  const std::string& getClientVersion() const
-  {
-    return clientVersion_;
-  }
+  const std::string& getClientVersion() const { return clientVersion_; }
 
-  void setTCPPort(uint16_t port)
-  {
-    tcpPort_ = port;
-  }
+  void setTCPPort(uint16_t port) { tcpPort_ = port; }
 
-  uint16_t getTCPPort() const
-  {
-    return tcpPort_;
-  }
+  uint16_t getTCPPort() const { return tcpPort_; }
 
-  size_t getMetadataSize()
-  {
-    return metadataSize_;
-  }
+  size_t getMetadataSize() { return metadataSize_; }
 
-  void setMetadataSize(size_t size)
-  {
-    metadataSize_ = size;
-  }
+  void setMetadataSize(size_t size) { metadataSize_ = size; }
 
-  void setDownloadContext(const SharedHandle<DownloadContext>& dctx)
-  {
-    dctx_ = dctx;
-  }
+  void setDownloadContext(DownloadContext* dctx) { dctx_ = dctx; }
 
   void setExtension(int key, uint8_t id);
 
@@ -123,9 +102,9 @@ public:
 
   uint8_t getExtensionMessageID(int key) const;
 
-  void setPeer(const SharedHandle<Peer>& peer);
+  void setPeer(const std::shared_ptr<Peer>& peer);
 
-  static HandshakeExtensionMessage*
+  static std::unique_ptr<HandshakeExtensionMessage>
   create(const unsigned char* data, size_t dataLength);
 };
 

@@ -52,27 +52,29 @@
 
 namespace aria2 {
 
-DHTRoutingTableSerializer::DHTRoutingTableSerializer(int family):
-  family_(family) {}
+DHTRoutingTableSerializer::DHTRoutingTableSerializer(int family)
+    : family_(family)
+{
+}
 
 DHTRoutingTableSerializer::~DHTRoutingTableSerializer() {}
 
-void DHTRoutingTableSerializer::setLocalNode
-(const SharedHandle<DHTNode>& localNode)
+void DHTRoutingTableSerializer::setLocalNode(
+    const std::shared_ptr<DHTNode>& localNode)
 {
   localNode_ = localNode;
 }
 
-void DHTRoutingTableSerializer::setNodes
-(const std::vector<SharedHandle<DHTNode> >& nodes)
+void DHTRoutingTableSerializer::setNodes(
+    const std::vector<std::shared_ptr<DHTNode>>& nodes)
 {
   nodes_ = nodes;
 }
 
-#define WRITE_CHECK(fp, ptr, count)                                     \
-  if(fp.write((ptr), (count)) != (count)) {                             \
-    throw DL_ABORT_EX(fmt("Failed to save DHT routing table to %s.",    \
-                          filename.c_str()));                           \
+#define WRITE_CHECK(fp, ptr, count)                                            \
+  if (fp.write((ptr), (count)) != (count)) {                                   \
+    throw DL_ABORT_EX(                                                         \
+        fmt("Failed to save DHT routing table to %s.", filename.c_str()));     \
   }
 
 void DHTRoutingTableSerializer::serialize(const std::string& filename)
@@ -81,9 +83,9 @@ void DHTRoutingTableSerializer::serialize(const std::string& filename)
   std::string filenameTemp = filename;
   filenameTemp += "__temp";
   BufferedFile fp(filenameTemp.c_str(), BufferedFile::WRITE);
-  if(!fp) {
-    throw DL_ABORT_EX(fmt("Failed to save DHT routing table to %s.",
-                          filename.c_str()));
+  if (!fp) {
+    throw DL_ABORT_EX(
+        fmt("Failed to save DHT routing table to %s.", filename.c_str()));
   }
   char header[8];
   memset(header, 0, sizeof(header));
@@ -101,7 +103,7 @@ void DHTRoutingTableSerializer::serialize(const std::string& filename)
 
   WRITE_CHECK(fp, header, 8);
   // write save date
-  uint64_t ntime = hton64(Time().getTime());
+  uint64_t ntime = hton64(Time().getTimeFromEpoch());
   WRITE_CHECK(fp, &ntime, sizeof(ntime));
 
   // localnode
@@ -120,14 +122,15 @@ void DHTRoutingTableSerializer::serialize(const std::string& filename)
 
   const int clen = bittorrent::getCompactLength(family_);
   // nodes
-  for(std::vector<SharedHandle<DHTNode> >::const_iterator i = nodes_.begin(),
-        eoi = nodes_.end(); i != eoi; ++i) {
-    const SharedHandle<DHTNode>& node = *i;
+  for (std::vector<std::shared_ptr<DHTNode>>::const_iterator i = nodes_.begin(),
+                                                             eoi = nodes_.end();
+       i != eoi; ++i) {
+    const std::shared_ptr<DHTNode>& node = *i;
     // Write IP address + port in Compact IP-address/port info form.
     unsigned char compactPeer[COMPACT_LEN_IPV6];
-    int compactlen = bittorrent::packcompact
-      (compactPeer, node->getIPAddress(), node->getPort());
-    if(compactlen != clen) {
+    int compactlen = bittorrent::packcompact(compactPeer, node->getIPAddress(),
+                                             node->getPort());
+    if (compactlen != clen) {
       memset(compactPeer, 0, clen);
     }
     uint8_t clen1 = clen;
@@ -138,19 +141,19 @@ void DHTRoutingTableSerializer::serialize(const std::string& filename)
     // clen bytes compact peer
     WRITE_CHECK(fp, compactPeer, static_cast<size_t>(clen));
     // 24-clen bytes reserved
-    WRITE_CHECK(fp, zero, static_cast<size_t>(24-clen));
+    WRITE_CHECK(fp, zero, static_cast<size_t>(24 - clen));
     // 20bytes: node ID
     WRITE_CHECK(fp, node->getID(), DHT_ID_LENGTH);
     // 4bytes reserved
     WRITE_CHECK(fp, zero, 4);
   }
-  if(fp.close() == EOF) {
-    throw DL_ABORT_EX(fmt("Failed to save DHT routing table to %s.",
-                          filename.c_str()));
+  if (fp.close() == EOF) {
+    throw DL_ABORT_EX(
+        fmt("Failed to save DHT routing table to %s.", filename.c_str()));
   }
-  if(!File(filenameTemp).renameTo(filename)) {
-    throw DL_ABORT_EX(fmt("Failed to save DHT routing table to %s.",
-                          filename.c_str()));
+  if (!File(filenameTemp).renameTo(filename)) {
+    throw DL_ABORT_EX(
+        fmt("Failed to save DHT routing table to %s.", filename.c_str()));
   }
   A2_LOG_INFO("DHT routing table was saved successfully");
 }

@@ -16,25 +16,23 @@ class RequestGroupTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetFirstFilePath);
   CPPUNIT_TEST(testCreateDownloadResult);
   CPPUNIT_TEST_SUITE_END();
+
 private:
-  SharedHandle<Option> option_;
+  std::shared_ptr<Option> option_;
+
 public:
-  void setUp()
-  {
-    option_.reset(new Option());
-  }
+  void setUp() { option_.reset(new Option()); }
 
   void testGetFirstFilePath();
   void testCreateDownloadResult();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( RequestGroupTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(RequestGroupTest);
 
 void RequestGroupTest::testGetFirstFilePath()
 {
-  SharedHandle<DownloadContext> ctx
-    (new DownloadContext(1024, 1024, "/tmp/myfile"));
+  std::shared_ptr<DownloadContext> ctx(
+      new DownloadContext(1_k, 1_k, "/tmp/myfile"));
 
   RequestGroup group(GroupId::create(), option_);
   group.setDownloadContext(ctx);
@@ -48,20 +46,20 @@ void RequestGroupTest::testGetFirstFilePath()
 
 void RequestGroupTest::testCreateDownloadResult()
 {
-  SharedHandle<DownloadContext> ctx
-    (new DownloadContext(1024, 1024*1024, "/tmp/myfile"));
+  std::shared_ptr<DownloadContext> ctx(
+      new DownloadContext(1_k, 1_m, "/tmp/myfile"));
   RequestGroup group(GroupId::create(), option_);
   group.setDownloadContext(ctx);
   group.initPieceStorage();
   {
-    SharedHandle<DownloadResult> result = group.createDownloadResult();
+    std::shared_ptr<DownloadResult> result = group.createDownloadResult();
 
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile"),
                          result->fileEntries[0]->getPath());
-    CPPUNIT_ASSERT_EQUAL((int64_t)1024*1024,
+    CPPUNIT_ASSERT_EQUAL((int64_t)1_m,
                          result->fileEntries.back()->getLastOffset());
     CPPUNIT_ASSERT_EQUAL((uint64_t)0, result->sessionDownloadLength);
-    CPPUNIT_ASSERT_EQUAL((int64_t)0, result->sessionTime);
+    CPPUNIT_ASSERT_EQUAL((int64_t)0, result->sessionTime.count());
     // result is UNKNOWN_ERROR if download has not completed and no specific
     // error has been reported
     CPPUNIT_ASSERT_EQUAL(error_code::UNKNOWN_ERROR, result->result);
@@ -80,14 +78,14 @@ void RequestGroupTest::testCreateDownloadResult()
   {
     group.setLastErrorCode(error_code::RESOURCE_NOT_FOUND);
 
-    SharedHandle<DownloadResult> result = group.createDownloadResult();
+    std::shared_ptr<DownloadResult> result = group.createDownloadResult();
 
     CPPUNIT_ASSERT_EQUAL(error_code::RESOURCE_NOT_FOUND, result->result);
   }
   {
     group.getPieceStorage()->markAllPiecesDone();
 
-    SharedHandle<DownloadResult> result = group.createDownloadResult();
+    std::shared_ptr<DownloadResult> result = group.createDownloadResult();
 
     CPPUNIT_ASSERT_EQUAL(error_code::FINISHED, result->result);
   }

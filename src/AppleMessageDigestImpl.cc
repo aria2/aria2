@@ -32,123 +32,75 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "AppleMessageDigestImpl.h"
+
+#include "MessageDigestImpl.h"
 
 #include <CommonCrypto/CommonDigest.h>
 
-#include "array_fun.h"
-#include "HashFuncEntry.h"
+#include "Adler32MessageDigestImpl.h"
 
 namespace aria2 {
+namespace {
 
-template<size_t dlen,
-         typename ctx_t,
-         int (*init_fn)(ctx_t*),
-         int (*update_fn)(ctx_t*, const void*, CC_LONG),
-         int(*final_fn)(unsigned char*, ctx_t*)>
+template <size_t dlen, typename ctx_t, int (*init_fn)(ctx_t*),
+          int (*update_fn)(ctx_t*, const void*, CC_LONG),
+          int (*final_fn)(unsigned char*, ctx_t*)>
 class MessageDigestBase : public MessageDigestImpl {
 public:
   MessageDigestBase() { reset(); }
   virtual ~MessageDigestBase() {}
 
-  virtual size_t getDigestLength() const {
-    return dlen;
-  }
-  virtual void reset() {
-    init_fn(&ctx_);
-  }
-  virtual void update(const void* data, size_t length) {
+  static size_t length() { return dlen; }
+  virtual size_t getDigestLength() const CXX11_OVERRIDE { return dlen; }
+  virtual void reset() CXX11_OVERRIDE { init_fn(&ctx_); }
+  virtual void update(const void* data, size_t length) CXX11_OVERRIDE
+  {
+    auto bytes = reinterpret_cast<const char*>(data);
     while (length) {
-      CC_LONG l = std::min(length, (size_t)std::numeric_limits<uint32_t>::max());
-      update_fn(&ctx_, data, l);
+      CC_LONG l =
+          std::min(length, (size_t)std::numeric_limits<uint32_t>::max());
+      update_fn(&ctx_, bytes, l);
       length -= l;
+      bytes += l;
     }
   }
-  virtual void digest(unsigned char* md) {
-    final_fn(md, &ctx_);
-  }
+  virtual void digest(unsigned char* md) CXX11_OVERRIDE { final_fn(md, &ctx_); }
+
 private:
   ctx_t ctx_;
 };
 
-typedef MessageDigestBase<CC_MD5_DIGEST_LENGTH,
-                          CC_MD5_CTX,
-                          CC_MD5_Init,
-                          CC_MD5_Update,
-                          CC_MD5_Final>
-MessageDigestMD5;
-typedef MessageDigestBase<CC_SHA1_DIGEST_LENGTH,
-                          CC_SHA1_CTX,
-                          CC_SHA1_Init,
-                          CC_SHA1_Update,
-                          CC_SHA1_Final>
-MessageDigestSHA1;
-typedef MessageDigestBase<CC_SHA224_DIGEST_LENGTH,
-                          CC_SHA256_CTX,
-                          CC_SHA224_Init,
-                          CC_SHA224_Update,
-                          CC_SHA224_Final>
-MessageDigestSHA224;
-typedef MessageDigestBase<CC_SHA256_DIGEST_LENGTH,
-                          CC_SHA256_CTX,
-                          CC_SHA256_Init,
-                          CC_SHA256_Update,
-                          CC_SHA256_Final>
-MessageDigestSHA256;
-typedef MessageDigestBase<CC_SHA384_DIGEST_LENGTH,
-                          CC_SHA512_CTX,
-                          CC_SHA384_Init,
-                          CC_SHA384_Update,
-                          CC_SHA384_Final>
-MessageDigestSHA384;
-typedef MessageDigestBase<CC_SHA512_DIGEST_LENGTH,
-                          CC_SHA512_CTX,
-                          CC_SHA512_Init,
-                          CC_SHA512_Update,
-                          CC_SHA512_Final>
-MessageDigestSHA512;
+typedef MessageDigestBase<CC_MD5_DIGEST_LENGTH, CC_MD5_CTX, CC_MD5_Init,
+                          CC_MD5_Update, CC_MD5_Final> MessageDigestMD5;
+typedef MessageDigestBase<CC_SHA1_DIGEST_LENGTH, CC_SHA1_CTX, CC_SHA1_Init,
+                          CC_SHA1_Update, CC_SHA1_Final> MessageDigestSHA1;
+typedef MessageDigestBase<CC_SHA224_DIGEST_LENGTH, CC_SHA256_CTX,
+                          CC_SHA224_Init, CC_SHA224_Update,
+                          CC_SHA224_Final> MessageDigestSHA224;
+typedef MessageDigestBase<CC_SHA256_DIGEST_LENGTH, CC_SHA256_CTX,
+                          CC_SHA256_Init, CC_SHA256_Update,
+                          CC_SHA256_Final> MessageDigestSHA256;
+typedef MessageDigestBase<CC_SHA384_DIGEST_LENGTH, CC_SHA512_CTX,
+                          CC_SHA384_Init, CC_SHA384_Update,
+                          CC_SHA384_Final> MessageDigestSHA384;
+typedef MessageDigestBase<CC_SHA512_DIGEST_LENGTH, CC_SHA512_CTX,
+                          CC_SHA512_Init, CC_SHA512_Update,
+                          CC_SHA512_Final> MessageDigestSHA512;
 
-SharedHandle<MessageDigestImpl> MessageDigestImpl::sha1()
+} // namespace
+
+std::unique_ptr<MessageDigestImpl> MessageDigestImpl::sha1()
 {
-  return SharedHandle<MessageDigestImpl>(new MessageDigestSHA1());
+  return make_unique<MessageDigestSHA1>();
 }
 
-SharedHandle<MessageDigestImpl> MessageDigestImpl::create
-(const std::string& hashType)
-{
-  if (hashType == "sha-1") {
-    return SharedHandle<MessageDigestImpl>(new MessageDigestSHA1());
-  }
-  if (hashType == "sha-224") {
-    return SharedHandle<MessageDigestImpl>(new MessageDigestSHA224());
-  }
-  if (hashType == "sha-256") {
-    return SharedHandle<MessageDigestImpl>(new MessageDigestSHA256());
-  }
-  if (hashType == "sha-384") {
-    return SharedHandle<MessageDigestImpl>(new MessageDigestSHA384());
-  }
-  if (hashType == "sha-512") {
-    return SharedHandle<MessageDigestImpl>(new MessageDigestSHA512());
-  }
-  if (hashType == "md5") {
-    return SharedHandle<MessageDigestImpl>(new MessageDigestMD5());
-  }
-  return SharedHandle<MessageDigestImpl>();
-}
-
-bool MessageDigestImpl::supports(const std::string& hashType)
-{
-  return hashType == "sha-1" || hashType == "sha-224" || hashType == "sha-256" || hashType == "sha-384" || hashType == "sha-512" || hashType == "md5";
-}
-
-size_t MessageDigestImpl::getDigestLength(const std::string& hashType)
-{
-  SharedHandle<MessageDigestImpl> impl = create(hashType);
-  if (!impl) {
-    return 0;
-  }
-  return impl->getDigestLength();
-}
+MessageDigestImpl::hashes_t MessageDigestImpl::hashes = {
+    {"sha-1", make_hi<MessageDigestSHA1>()},
+    {"sha-224", make_hi<MessageDigestSHA224>()},
+    {"sha-256", make_hi<MessageDigestSHA256>()},
+    {"sha-384", make_hi<MessageDigestSHA384>()},
+    {"sha-512", make_hi<MessageDigestSHA512>()},
+    {"md5", make_hi<MessageDigestMD5>()},
+    ADLER32_MESSAGE_DIGEST};
 
 } // namespace aria2

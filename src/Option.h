@@ -39,60 +39,59 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
+#include "prefs.h"
 
 namespace aria2 {
-
-struct Pref;
 
 class Option {
 private:
   std::vector<std::string> table_;
   std::vector<unsigned char> use_;
-  SharedHandle<Option> parent_;
+  std::shared_ptr<Option> parent_;
+
 public:
   Option();
   ~Option();
   Option(const Option& option);
   Option& operator=(const Option& option);
 
-  void put(const Pref* pref, const std::string& value);
+  void put(PrefPtr pref, const std::string& value);
   // Returns true if name is defined. Otherwise returns false.  Note
   // that even if the value is a empty string, this method returns
   // true.  If option is not defined in this object and parent_ is not
   // NULL, lookup parent_ to check |pref| is defined.
-  bool defined(const Pref* pref) const;
+  bool defined(PrefPtr pref) const;
   // Just like defined(), but this function does not lookup parent_.
-  bool definedLocal(const Pref* pref) const;
+  bool definedLocal(PrefPtr pref) const;
   // Returns true if name is not defined or the value is a empty string.
   // Otherwise returns false.
-  bool blank(const Pref* pref) const;
+  bool blank(PrefPtr pref) const;
   // Returns option value for |pref|. If the |pref| is not defined in
   // this object, parent_ is looked up.
-  const std::string& get(const Pref* pref) const;
-  int32_t getAsInt(const Pref* pref) const;
-  int64_t getAsLLInt(const Pref* pref) const;
-  bool getAsBool(const Pref* pref) const;
-  double getAsDouble(const Pref* pref) const;
+  const std::string& get(PrefPtr pref) const;
+  int32_t getAsInt(PrefPtr pref) const;
+  int64_t getAsLLInt(PrefPtr pref) const;
+  bool getAsBool(PrefPtr pref) const;
+  double getAsDouble(PrefPtr pref) const;
   // Removes |pref| from this object. This function does not modify
   // parent_.
-  void remove(const Pref* pref);
+  void removeLocal(PrefPtr pref);
+  // Removes |pref| from this object from all option hierarchy.
+  void remove(PrefPtr pref);
   // Removes all option values from this object. This function does
   // not modify parent_.
   void clear();
   // Returns the option value table of this object. It does not
   // contain option values in parent_ and so forth.
-  const std::vector<std::string>& getTable() const
-  {
-    return table_;
-  }
+  const std::vector<std::string>& getTable() const { return table_; }
   // Copy option values defined in option to this option. parent_ is
   // left unmodified for this object.
   void merge(const Option& option);
   // Sets parent Option object for this object.
-  void setParent(const SharedHandle<Option>& parent);
-  const SharedHandle<Option>& getParent() const;
+  void setParent(const std::shared_ptr<Option>& parent);
+  const std::shared_ptr<Option>& getParent() const;
 };
 
 } // namespace aria2

@@ -36,7 +36,9 @@
 #define D_DHT_MESSAGE_CALLBACK_H
 
 #include "common.h"
-#include "SharedHandle.h"
+
+#include <memory>
+
 #include "DHTResponseMessage.h"
 
 namespace aria2 {
@@ -51,10 +53,7 @@ class DHTMessageCallback {
 public:
   virtual ~DHTMessageCallback() {}
 
-  void onReceived(const SharedHandle<DHTResponseMessage>& message)
-  {
-    message->accept(this);
-  }
+  void onReceived(DHTResponseMessage* message) { message->accept(this); }
 
   virtual void visit(const DHTAnnouncePeerReplyMessage* message) = 0;
 
@@ -64,7 +63,7 @@ public:
 
   virtual void visit(const DHTPingReplyMessage* message) = 0;
 
-  virtual void onTimeout(const SharedHandle<DHTNode>& remoteNode) = 0;
+  virtual void onTimeout(const std::shared_ptr<DHTNode>& remoteNode) = 0;
 };
 
 } // namespace aria2

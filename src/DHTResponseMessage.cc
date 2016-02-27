@@ -41,33 +41,29 @@ namespace aria2 {
 
 const std::string DHTResponseMessage::R("r");
 
-DHTResponseMessage::DHTResponseMessage(const SharedHandle<DHTNode>& localNode,
-                                       const SharedHandle<DHTNode>& remoteNode,
-                                       const std::string& transactionID):
-  DHTAbstractMessage(localNode, remoteNode, transactionID) {}
+DHTResponseMessage::DHTResponseMessage(
+    const std::shared_ptr<DHTNode>& localNode,
+    const std::shared_ptr<DHTNode>& remoteNode,
+    const std::string& transactionID)
+    : DHTAbstractMessage(localNode, remoteNode, transactionID)
+{
+}
 
 DHTResponseMessage::~DHTResponseMessage() {}
 
-const std::string& DHTResponseMessage::getType() const
-{
-  return R;
-}
+const std::string& DHTResponseMessage::getType() const { return R; }
 
 void DHTResponseMessage::fillMessage(Dict* msgDict)
 {
   msgDict->put(R, getResponse());
 }
 
-bool DHTResponseMessage::isReply() const
-{
-  return true;
-}
+bool DHTResponseMessage::isReply() const { return true; }
 
 std::string DHTResponseMessage::toString() const
 {
   return fmt("dht response %s TransactionID=%s Remote:%s(%u), id=%s, v=%s, %s",
-             getMessageType().c_str(),
-             util::toHex(getTransactionID()).c_str(),
+             getMessageType().c_str(), util::toHex(getTransactionID()).c_str(),
              getRemoteNode()->getIPAddress().c_str(),
              getRemoteNode()->getPort(),
              util::toHex(getRemoteNode()->getID(), DHT_ID_LENGTH).c_str(),

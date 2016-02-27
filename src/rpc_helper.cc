@@ -53,62 +53,56 @@ namespace rpc {
 RpcRequest xmlParseMemory(const char* xml, size_t size)
 {
   XmlRpcRequestParserStateMachine psm;
-  if(xml::XmlParser(&psm).parseFinal(xml, size) < 0) {
+  if (xml::XmlParser(&psm).parseFinal(xml, size) < 0) {
     throw DL_ABORT_EX(MSG_CANNOT_PARSE_XML_RPC_REQUEST);
   }
-  SharedHandle<List> params;
-  if(downcast<List>(psm.getCurrentFrameValue())) {
-    params = static_pointer_cast<List>(psm.getCurrentFrameValue());
-  } else {
+  std::unique_ptr<List> params;
+  if (downcast<List>(psm.getCurrentFrameValue())) {
+    params.reset(static_cast<List*>(psm.popCurrentFrameValue().release()));
+  }
+  else {
     params = List::g();
   }
-  return RpcRequest(psm.getMethodName(), params);
+  return {psm.getMethodName(), std::move(params)};
 }
 #endif // ENABLE_XML_RPC
 
-RpcResponse createJsonRpcErrorResponse(int code,
-                                       const std::string& msg,
-                                       const SharedHandle<ValueBase>& id)
+RpcResponse createJsonRpcErrorResponse(int code, const std::string& msg,
+                                       std::unique_ptr<ValueBase> id)
 {
-  SharedHandle<Dict> params = Dict::g();
+  auto params = Dict::g();
   params->put("code", Integer::g(code));
   params->put("message", msg);
-  rpc::RpcResponse res(code, params, id);
-  return res;
+  return rpc::RpcResponse{code, rpc::RpcResponse::AUTHORIZED, std::move(params),
+                          std::move(id)};
 }
 
-RpcResponse processJsonRpcRequest(const Dict* jsondict, DownloadEngine* e)
+RpcResponse processJsonRpcRequest(Dict* jsondict, DownloadEngine* e)
 {
-  SharedHandle<ValueBase> id = jsondict->get("id");
-  if(!id) {
+  auto id = jsondict->popValue("id");
+  if (!id) {
     return createJsonRpcErrorResponse(-32600, "Invalid Request.", Null::g());
   }
   const String* methodName = downcast<String>(jsondict->get("method"));
-  if(!methodName) {
-    return createJsonRpcErrorResponse(-32600, "Invalid Request.", id);
+  if (!methodName) {
+    return createJsonRpcErrorResponse(-32600, "Invalid Request.",
+                                      std::move(id));
   }
-  SharedHandle<List> params;
-  const SharedHandle<ValueBase>& tempParams = jsondict->get("params");
-  if(downcast<List>(tempParams)) {
-    params = static_pointer_cast<List>(tempParams);
-  } else if(!tempParams) {
+  std::unique_ptr<List> params;
+  auto tempParams = jsondict->popValue("params");
+  if (downcast<List>(tempParams)) {
+    params.reset(static_cast<List*>(tempParams.release()));
+  }
+  else if (!tempParams) {
     params = List::g();
-  } else {
+  }
+  else {
     // TODO No support for Named params
-    return createJsonRpcErrorResponse(-32602, "Invalid params.", id);
+    return createJsonRpcErrorResponse(-32602, "Invalid params.", std::move(id));
   }
-  rpc::RpcRequest req(methodName->s(), params, id);
-  req.jsonRpc = true;
-  SharedHandle<rpc::RpcMethod> method;
-  try {
-    method = rpc::RpcMethodFactory::create(req.methodName);
-  } catch(RecoverableException& e) {
-    A2_LOG_INFO_EX(EX_EXCEPTION_CAUGHT, e);
-    return createJsonRpcErrorResponse(-32601, "Method not found.", id);
-  }
-  A2_LOG_INFO(fmt("Executing RPC method %s", req.methodName.c_str()));
-  rpc::RpcResponse res = method->execute(req, e);
-  return res;
+  A2_LOG_INFO(fmt("Executing RPC method %s", methodName->s().c_str()));
+  RpcRequest req = {methodName->s(), std::move(params), std::move(id), true};
+  return getMethod(methodName->s())->execute(std::move(req), e);
 }
 
 } // namespace rpc

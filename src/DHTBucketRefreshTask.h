@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-class DHTBucketRefreshTask:public DHTAbstractTask {
+class DHTBucketRefreshTask : public DHTAbstractTask {
 private:
   bool forceRefresh_;
 
@@ -48,7 +48,7 @@ public:
 
   virtual ~DHTBucketRefreshTask();
 
-  virtual void startup();
+  virtual void startup() CXX11_OVERRIDE;
 
   void setForceRefresh(bool forceRefresh);
 };

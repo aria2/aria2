@@ -39,8 +39,7 @@
 
 #include <vector>
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -50,17 +49,18 @@ class DHTRoutingTableSerializer {
 private:
   int family_;
 
-  SharedHandle<DHTNode> localNode_;
+  std::shared_ptr<DHTNode> localNode_;
 
-  std::vector<SharedHandle<DHTNode> > nodes_;
+  std::vector<std::shared_ptr<DHTNode>> nodes_;
+
 public:
   DHTRoutingTableSerializer(int family);
 
   ~DHTRoutingTableSerializer();
 
-  void setLocalNode(const SharedHandle<DHTNode>& localNode);
+  void setLocalNode(const std::shared_ptr<DHTNode>& localNode);
 
-  void setNodes(const std::vector<SharedHandle<DHTNode> >& nodes);
+  void setNodes(const std::vector<std::shared_ptr<DHTNode>>& nodes);
 
   void serialize(const std::string& filename);
 };

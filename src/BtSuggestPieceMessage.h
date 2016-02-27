@@ -41,16 +41,17 @@ namespace aria2 {
 
 class BtSuggestPieceMessage : public IndexBtMessage {
 public:
-  BtSuggestPieceMessage():IndexBtMessage(ID, NAME, 0) {}
+  BtSuggestPieceMessage(size_t index = 0);
 
   static const uint8_t ID = 13;
 
   static const char NAME[];
 
-  static BtSuggestPieceMessage* create
-  (const unsigned char* data, size_t dataLength);
+  static std::unique_ptr<BtSuggestPieceMessage>
+  create(const unsigned char* data, size_t dataLength);
 
-  virtual void doReceivedAction() {
+  virtual void doReceivedAction() CXX11_OVERRIDE
+  {
     // TODO Current implementation ignores this message.
   }
 };

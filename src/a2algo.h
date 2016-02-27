@@ -41,12 +41,12 @@
 
 namespace aria2 {
 
-template<typename InputIterator, typename OutputIterator>
-OutputIterator ncopy(InputIterator first, InputIterator last,
-                     size_t count, OutputIterator destination)
+template <typename InputIterator, typename OutputIterator>
+OutputIterator ncopy(InputIterator first, InputIterator last, size_t count,
+                     OutputIterator destination)
 {
   OutputIterator x = destination;
-  while(count--) {
+  while (count--) {
     x = std::copy(first, last, destination);
   }
   return x;
@@ -62,23 +62,23 @@ OutputIterator ncopy(InputIterator first, InputIterator last,
 // 1,2,3,4,7,10,11,12,13,14,15,100,112,113,114} is
 // {10,11,12,13,14,15}.  Therefore, returns the iterator points to 10
 // and the length 6.
-template<typename InputIterator>
+template <typename InputIterator>
 std::pair<InputIterator, size_t> max_sequence(InputIterator first,
                                               InputIterator last)
 {
   InputIterator maxfirst = last;
   size_t maxlen = 0;
-  while(first != last) {
+  while (first != last) {
     InputIterator seqfirst = first;
     size_t len = 1;
     InputIterator prev = seqfirst;
     ++first;
-    while(first != last && *prev+1 == *first) {
+    while (first != last && *prev + 1 == *first) {
       ++len;
       prev = first;
       ++first;
     }
-    if(maxlen < len) {
+    if (maxlen < len) {
       maxlen = len;
       maxfirst = seqfirst;
     }
@@ -86,35 +86,23 @@ std::pair<InputIterator, size_t> max_sequence(InputIterator first,
   return std::pair<InputIterator, size_t>(maxfirst, maxlen);
 }
 
-template<typename InputIterator, typename R, typename C, typename A,
-         typename ACompat>
-static void forEachMemFunSH(InputIterator first, InputIterator last,
-                            R (C::*f)(A), ACompat arg)
+template <typename InputIterator, typename T>
+InputIterator findSecond(InputIterator first, InputIterator last, const T& t)
 {
-  for(; first != last; ++first) {
-    ((*first).get()->*f)(arg);
-  }
-}
-
-template<typename InputIterator, typename T>
-InputIterator findSecond
-(InputIterator first, InputIterator last, const T& t)
-{
-  for(; first != last; ++first) {
-    if((*first).second == t) {
+  for (; first != last; ++first) {
+    if ((*first).second == t) {
       return first;
     }
   }
   return last;
 }
 
-template<class InputIterator, class Predicate>
-InputIterator find_wrap_if
-(InputIterator first, InputIterator last,
- InputIterator current, Predicate pred)
+template <class InputIterator, class Predicate>
+InputIterator find_wrap_if(InputIterator first, InputIterator last,
+                           InputIterator current, Predicate pred)
 {
   InputIterator itr = std::find_if(current, last, pred);
-  if(itr == last) {
+  if (itr == last) {
     itr = std::find_if(first, current, pred);
   }
   return itr;

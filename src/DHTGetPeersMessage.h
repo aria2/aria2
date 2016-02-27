@@ -44,33 +44,30 @@ namespace aria2 {
 class DHTPeerAnnounceStorage;
 class DHTTokenTracker;
 
-class DHTGetPeersMessage:public DHTQueryMessage {
+class DHTGetPeersMessage : public DHTQueryMessage {
 private:
   unsigned char infoHash_[DHT_ID_LENGTH];
 
   DHTPeerAnnounceStorage* peerAnnounceStorage_;
 
   DHTTokenTracker* tokenTracker_;
+
 protected:
-  virtual std::string toStringOptional() const;
+  virtual std::string toStringOptional() const CXX11_OVERRIDE;
+
 public:
-  DHTGetPeersMessage(const SharedHandle<DHTNode>& localNode,
-                     const SharedHandle<DHTNode>& remoteNode,
+  DHTGetPeersMessage(const std::shared_ptr<DHTNode>& localNode,
+                     const std::shared_ptr<DHTNode>& remoteNode,
                      const unsigned char* infoHash,
                      const std::string& transactionID = A2STR::NIL);
 
-  virtual ~DHTGetPeersMessage();
+  virtual void doReceivedAction() CXX11_OVERRIDE;
 
-  virtual void doReceivedAction();
+  virtual std::unique_ptr<Dict> getArgument() CXX11_OVERRIDE;
 
-  virtual SharedHandle<Dict> getArgument();
+  virtual const std::string& getMessageType() const CXX11_OVERRIDE;
 
-  virtual const std::string& getMessageType() const;
-
-  const unsigned char* getInfoHash() const
-  {
-    return infoHash_;
-  }
+  const unsigned char* getInfoHash() const { return infoHash_; }
 
   void setPeerAnnounceStorage(DHTPeerAnnounceStorage* storage);
 
@@ -79,7 +76,6 @@ public:
   static const std::string GET_PEERS;
 
   static const std::string INFO_HASH;
-
 };
 
 } // namespace aria2

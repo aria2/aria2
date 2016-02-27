@@ -41,9 +41,9 @@
 #include <cstdlib>
 #include <utility>
 #include <vector>
+#include <memory>
 
 #include "a2netcompat.h"
-#include "SharedHandle.h"
 #include "a2io.h"
 #include "a2netcompat.h"
 #include "a2time.h"
@@ -55,10 +55,15 @@ class TLSContext;
 class TLSSession;
 #endif // ENABLE_SSL
 
+#ifdef HAVE_LIBSSH2
+class SSHSession;
+#endif // HAVE_LIBSSH2
+
 class SocketCore {
   friend bool operator==(const SocketCore& s1, const SocketCore& s2);
   friend bool operator!=(const SocketCore& s1, const SocketCore& s2);
   friend bool operator<(const SocketCore& s1, const SocketCore& s2);
+
 private:
   // socket type defined in <sys/socket.h>
   int sockType_;
@@ -66,8 +71,13 @@ private:
   sock_t sockfd_;
 
   static int protocolFamily_;
+  static int ipDscp_;
 
-  static std::vector<std::pair<sockaddr_union, socklen_t> > bindAddrs_;
+  static std::vector<SockAddr> bindAddrs_;
+  static std::vector<std::vector<SockAddr>> bindAddrsList_;
+  static std::vector<std::vector<SockAddr>>::iterator bindAddrsListIt_;
+
+  static int socketRecvBufferSize_;
 
   bool blocking_;
   int secure_;
@@ -77,11 +87,11 @@ private:
 
 #if ENABLE_SSL
   // TLS context for client side
-  static SharedHandle<TLSContext> clTlsContext_;
+  static std::shared_ptr<TLSContext> clTlsContext_;
   // TLS context for server side
-  static SharedHandle<TLSContext> svTlsContext_;
+  static std::shared_ptr<TLSContext> svTlsContext_;
 
-  SharedHandle<TLSSession> tlsSession_;
+  std::shared_ptr<TLSSession> tlsSession_;
 
   /**
    * Makes this socket secure. The connection must be established
@@ -92,20 +102,30 @@ private:
   bool tlsHandshake(TLSContext* tlsctx, const std::string& hostname);
 #endif // ENABLE_SSL
 
+#ifdef HAVE_LIBSSH2
+  std::unique_ptr<SSHSession> sshSession_;
+
+  void sshCheckDirection();
+#endif // HAVE_LIBSSH2
+
   void init();
 
   void bind(const struct sockaddr* addr, socklen_t addrlen);
 
   void setSockOpt(int level, int optname, void* optval, socklen_t optlen);
 
-  SocketCore(sock_t sockfd, int sockType);
 public:
   SocketCore(int sockType = SOCK_STREAM);
+
+  // Formally, private constructor, but made public to use with
+  // std::make_shared.
+  SocketCore(sock_t sockfd, int sockType);
+
   ~SocketCore();
 
   sock_t getSockfd() const { return sockfd_; }
 
-  bool isOpen() const { return sockfd_ != (sock_t) -1; }
+  bool isOpen() const { return sockfd_ != (sock_t)-1; }
 
   void setMulticastInterface(const std::string& localAddr);
 
@@ -113,12 +133,19 @@ public:
 
   void setMulticastLoop(unsigned char loop);
 
-  void joinMulticastGroup
-  (const std::string& multicastAddr, uint16_t multicastPort,
-   const std::string& localAddr);
+  void joinMulticastGroup(const std::string& multicastAddr,
+                          uint16_t multicastPort, const std::string& localAddr);
 
   // Enables TCP_NODELAY socket option if f == true.
   void setTcpNodelay(bool f);
+
+  // Set DSCP byte
+  void applyIpDscp();
+  static void setIpDscp(int ipDscp)
+  {
+    // Here we prepare DSCP value for IPTOS option, which sets whole DS field
+    ipDscp_ = ipDscp << 2;
+  }
 
   void create(int family, int protocol = 0);
 
@@ -132,8 +159,8 @@ public:
    */
   void bind(uint16_t port, int flags = AI_PASSIVE);
 
-  void bind
-  (const char* addrp, uint16_t port, int family, int flags = AI_PASSIVE);
+  void bind(const char* addrp, uint16_t port, int family,
+            int flags = AI_PASSIVE);
 
   /**
    * Listens form connection on it.
@@ -142,12 +169,9 @@ public:
   void beginListen();
 
   /**
-   * Stores host address and port of this socket to addrinfo and
-   * returns address family.
-   *
-   * @param addrinfo placeholder to store host address and port.
+   * Returns host address, family and port of this socket.
    */
-  int getAddrInfo(std::pair<std::string, uint16_t>& addrinfo) const;
+  Endpoint getAddrInfo() const;
 
   /**
    * Stores address of this socket to sockaddr.  len must be
@@ -155,8 +179,7 @@ public:
    * stored in sockaddr and actual size of address structure is stored
    * in len.
    */
-  void getAddrInfo
-  (sockaddr_union& sockaddr, socklen_t& len) const;
+  void getAddrInfo(sockaddr_union& sockaddr, socklen_t& len) const;
 
   /**
    * Returns address family of this socket.
@@ -165,19 +188,16 @@ public:
   int getAddressFamily() const;
 
   /**
-   * Stores peer's address and port to peerinfo and returns address
-   * family.
-   *
-   * @param peerinfo placeholder to store peer's address and port.
+   * Returns peer's address, family and port.
    */
-  int getPeerInfo(std::pair<std::string, uint16_t>& peerinfo) const;
+  Endpoint getPeerInfo() const;
 
   /**
    * Accepts incoming connection on this socket.
    * You must call beginListen() before calling this method.
    * @return accepted socket.
    */
-  SharedHandle<SocketCore> acceptConnection() const;
+  std::shared_ptr<SocketCore> acceptConnection() const;
 
   /**
    * Connects to the server named host and the destination port is port.
@@ -239,10 +259,10 @@ public:
     return writeData(msg.c_str(), msg.size());
   }
 
-  ssize_t writeData(const void* data, size_t len,
-                    const std::string& host, uint16_t port);
+  ssize_t writeData(const void* data, size_t len, const std::string& host,
+                    uint16_t port);
 
-  ssize_t writeVector(a2iovec *iov, size_t iovcnt);
+  ssize_t writeVector(a2iovec* iov, size_t iovcnt);
 
   /**
    * Reads up to len bytes from this socket.
@@ -262,9 +282,8 @@ public:
    */
   void readData(void* data, size_t& len);
 
-  ssize_t readDataFrom(void* data, size_t len,
-                       std::pair<std::string /* numerichost */,
-                       uint16_t /* port */>& sender);
+  // sender.addr will be numerihost assigned.
+  ssize_t readDataFrom(void* data, size_t len, Endpoint& sender);
 
 #ifdef ENABLE_SSL
   // Performs TLS server side handshake. If handshake is completed,
@@ -279,17 +298,29 @@ public:
   bool tlsConnect(const std::string& hostname);
 #endif // ENABLE_SSL
 
-  bool operator==(const SocketCore& s) {
-    return sockfd_ == s.sockfd_;
-  }
+#ifdef HAVE_LIBSSH2
+  // Performs SSH handshake
+  bool sshHandshake(const std::string& hashType, const std::string& digest);
+  // Performs SSH authentication using username and password.
+  bool sshAuthPassword(const std::string& user, const std::string& password);
+  // Starts sftp session and open remote file |path|.
+  bool sshSFTPOpen(const std::string& path);
+  // Closes sftp remote file gracefully
+  bool sshSFTPClose();
+  // Gets total length and modified time for remote file currently
+  // opened.  |path| is used for logging.
+  bool sshSFTPStat(int64_t& totalLength, time_t& mtime,
+                   const std::string& path);
+  // Seeks file position to |pos|.
+  void sshSFTPSeek(int64_t pos);
+  bool sshGracefulShutdown();
+#endif // HAVE_LIBSSH2
 
-  bool operator!=(const SocketCore& s) {
-    return !(*this == s);
-  }
+  bool operator==(const SocketCore& s) { return sockfd_ == s.sockfd_; }
 
-  bool operator<(const SocketCore& s) {
-    return sockfd_ < s.sockfd_;
-  }
+  bool operator!=(const SocketCore& s) { return !(*this == s); }
+
+  bool operator<(const SocketCore& s) { return sockfd_ < s.sockfd_; }
 
   std::string getSocketError() const;
 
@@ -306,15 +337,25 @@ public:
    */
   bool wantWrite() const;
 
+  // Returns buffered data which are already received.  This data was
+  // already read from socket, and ready to read without reading
+  // socket.
+  size_t getRecvBufferedLength() const;
+
 #ifdef ENABLE_SSL
-  static void setClientTLSContext(const SharedHandle<TLSContext>& tlsContext);
-  static void setServerTLSContext(const SharedHandle<TLSContext>& tlsContext);
+  static void
+  setClientTLSContext(const std::shared_ptr<TLSContext>& tlsContext);
+  static void
+  setServerTLSContext(const std::shared_ptr<TLSContext>& tlsContext);
 #endif // ENABLE_SSL
 
   static void setProtocolFamily(int protocolFamily)
   {
     protocolFamily_ = protocolFamily;
   }
+
+  static void setSocketRecvBufferSize(int size);
+  static int getSocketRecvBufferSize();
 
   // Bind socket to interface. interface may be specified as a
   // hostname, IP address or interface name like eth0.  If the given
@@ -325,10 +366,16 @@ public:
   // We cannot use interface as an argument because it is a reserved
   // keyword in MSVC.
   static void bindAddress(const std::string& iface);
+  static void bindAllAddress(const std::string& ifaces);
 
-  friend void getInterfaceAddress
-  (std::vector<std::pair<sockaddr_union, socklen_t> >& ifAddrs,
-   const std::string& iface, int family, int aiFlags);
+  // Collects IP addresses of given interface iface and stores in
+  // ifAddres. iface may be specified as a hostname, IP address or
+  // interface name like eth0. You can limit the family of IP
+  // addresses to collect using family argument. aiFlags is passed to
+  // getaddrinfo() as hints.ai_flags. No throw.
+  static std::vector<SockAddr> getInterfaceAddress(const std::string& iface,
+                                                   int family = AF_UNSPEC,
+                                                   int aiFlags = 0);
 };
 
 // Set default ai_flags. hints.ai_flags is initialized with this
@@ -339,18 +386,9 @@ void setDefaultAIFlags(int flags);
 // flags|DEFAULT_AI_FLAGS is used as ai_flags.  You can override
 // DEFAULT_AI_FLAGS value by calling setDefaultAIFlags() with new
 // flags.
-int callGetaddrinfo
-(struct addrinfo** resPtr, const char* host, const char* service, int family,
- int sockType, int flags, int protocol);
-
-// Collects IP addresses of given inteface iface and stores in
-// ifAddres. iface may be specified as a hostname, IP address or
-// interface name like eth0. You can limit the family of IP addresses
-// to collect using family argument. aiFlags is passed to
-// getaddrinfo() as hints.ai_flags. No throw.
-void getInterfaceAddress
-(std::vector<std::pair<sockaddr_union, socklen_t> >& ifAddrs,
- const std::string& iface, int family = AF_UNSPEC, int aiFlags = 0);
+int callGetaddrinfo(struct addrinfo** resPtr, const char* host,
+                    const char* service, int family, int sockType, int flags,
+                    int protocol);
 
 // Provides functionality of inet_ntop using getnameinfo.  The return
 // value is the exact value of getnameinfo returns. You can get error

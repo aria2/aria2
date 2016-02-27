@@ -10,15 +10,18 @@
 #include "SocketCore.h"
 #include "util.h"
 #include "console.h"
+#include "LogFactory.h"
+#include "prefs.h"
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[])
+{
   aria2::global::initConsole(false);
   aria2::Platform platform;
 
 #ifdef ENABLE_NLS
   // Set locale to C to prevent the messages to be localized.
-  setlocale (LC_CTYPE, "C");
-  setlocale (LC_MESSAGES, "C");
+  setlocale(LC_CTYPE, "C");
+  setlocale(LC_MESSAGES, "C");
 #endif // ENABLE_NLS
 
   // By default, SocketCore uses AF_UNSPEC for getaddrinfo hints to
@@ -33,11 +36,15 @@ int main(int argc, char* argv[]) {
   // Create output directory
   aria2::util::mkdirs(A2_TEST_OUT_DIR);
 
+  aria2::LogFactory::setConsoleLogLevel(aria2::V_DEBUG);
+  aria2::LogFactory::reconfigure();
+
   CppUnit::Test* suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
   CppUnit::TextUi::TestRunner runner;
   runner.addTest(suite);
 
-  runner.setOutputter(new CppUnit::CompilerOutputter(&runner.result(), std::cerr));
+  runner.setOutputter(
+      new CppUnit::CompilerOutputter(&runner.result(), std::cerr));
 
   // Run the tests.
   bool successfull = runner.run();

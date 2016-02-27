@@ -48,10 +48,11 @@
 # In this configuration, the following dependent libraries are used:
 #
 # * c-ares
-# * openssl
+# * gmp
 # * expat
 # * sqlite3
 # * zlib
+# * libssh2
 # * cppunit
 
 test -z "$HOST" && HOST=i686-w64-mingw32
@@ -64,13 +65,17 @@ test -z "$PREFIX" && PREFIX=/usr/local/$HOST
     --disable-nls \
     --with-libcares \
     --without-gnutls \
-    --with-openssl \
+    --without-openssl \
     --with-sqlite3 \
     --without-libxml2 \
     --with-libexpat \
     --with-libz \
+    --with-libgmp \
+    --with-libssh2 \
+    --without-libgcrypt \
+    --without-libnettle \
     --with-cppunit-prefix=$PREFIX \
     ARIA2_STATIC=yes \
     CPPFLAGS="-I$PREFIX/include" \
     LDFLAGS="-L$PREFIX/lib" \
-    PKG_CONFIG_LIBDIR="$PREFIX/lib/pkgconfig"
+    PKG_CONFIG_PATH="$PREFIX/lib/pkgconfig"

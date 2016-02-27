@@ -44,6 +44,7 @@
 #include "util.h"
 #include "DHTPeerAnnounceStorage.h"
 #include "DHTTokenTracker.h"
+#include "DHTAnnouncePeerReplyMessage.h"
 #include "DlAbortEx.h"
 #include "BtConstants.h"
 #include "fmt.h"
@@ -59,38 +60,33 @@ const std::string DHTAnnouncePeerMessage::PORT("port");
 
 const std::string DHTAnnouncePeerMessage::TOKEN("token");
 
-DHTAnnouncePeerMessage::DHTAnnouncePeerMessage
-(const SharedHandle<DHTNode>& localNode,
- const SharedHandle<DHTNode>& remoteNode,
- const unsigned char* infoHash,
- uint16_t tcpPort,
- const std::string& token,
- const std::string& transactionID):
-  DHTQueryMessage(localNode, remoteNode, transactionID),
-  token_(token),
-  tcpPort_(tcpPort),
-  peerAnnounceStorage_(0),
-  tokenTracker_(0)
+DHTAnnouncePeerMessage::DHTAnnouncePeerMessage(
+    const std::shared_ptr<DHTNode>& localNode,
+    const std::shared_ptr<DHTNode>& remoteNode, const unsigned char* infoHash,
+    uint16_t tcpPort, const std::string& token,
+    const std::string& transactionID)
+    : DHTQueryMessage{localNode, remoteNode, transactionID},
+      token_{token},
+      tcpPort_{tcpPort},
+      peerAnnounceStorage_{nullptr},
+      tokenTracker_{nullptr}
 {
   memcpy(infoHash_, infoHash, DHT_ID_LENGTH);
 }
 
-DHTAnnouncePeerMessage::~DHTAnnouncePeerMessage() {}
-
 void DHTAnnouncePeerMessage::doReceivedAction()
 {
-  peerAnnounceStorage_->addPeerAnnounce
-    (infoHash_, getRemoteNode()->getIPAddress(), tcpPort_);
+  peerAnnounceStorage_->addPeerAnnounce(
+      infoHash_, getRemoteNode()->getIPAddress(), tcpPort_);
 
-  SharedHandle<DHTMessage> reply =
-    getMessageFactory()->createAnnouncePeerReplyMessage
-    (getRemoteNode(), getTransactionID());
-  getMessageDispatcher()->addMessageToQueue(reply);
+  getMessageDispatcher()->addMessageToQueue(
+      getMessageFactory()->createAnnouncePeerReplyMessage(getRemoteNode(),
+                                                          getTransactionID()));
 }
 
-SharedHandle<Dict> DHTAnnouncePeerMessage::getArgument()
+std::unique_ptr<Dict> DHTAnnouncePeerMessage::getArgument()
 {
-  SharedHandle<Dict> aDict = Dict::g();
+  auto aDict = Dict::g();
   aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
   aDict->put(INFO_HASH, String::g(infoHash_, DHT_ID_LENGTH));
   aDict->put(PORT, Integer::g(tcpPort_));
@@ -105,19 +101,17 @@ const std::string& DHTAnnouncePeerMessage::getMessageType() const
 
 void DHTAnnouncePeerMessage::validate() const
 {
-  if(!tokenTracker_->validateToken(token_, infoHash_,
-                                   getRemoteNode()->getIPAddress(),
-                                   getRemoteNode()->getPort())) {
-    throw DL_ABORT_EX
-      (fmt("Invalid token=%s from %s:%u",
-           util::toHex(token_).c_str(),
-           getRemoteNode()->getIPAddress().c_str(),
-           getRemoteNode()->getPort()));
+  if (!tokenTracker_->validateToken(token_, infoHash_,
+                                    getRemoteNode()->getIPAddress(),
+                                    getRemoteNode()->getPort())) {
+    throw DL_ABORT_EX(fmt(
+        "Invalid token=%s from %s:%u", util::toHex(token_).c_str(),
+        getRemoteNode()->getIPAddress().c_str(), getRemoteNode()->getPort()));
   }
 }
 
-void DHTAnnouncePeerMessage::setPeerAnnounceStorage
-(DHTPeerAnnounceStorage* storage)
+void DHTAnnouncePeerMessage::setPeerAnnounceStorage(
+    DHTPeerAnnounceStorage* storage)
 {
   peerAnnounceStorage_ = storage;
 }
@@ -129,10 +123,8 @@ void DHTAnnouncePeerMessage::setTokenTracker(DHTTokenTracker* tokenTracker)
 
 std::string DHTAnnouncePeerMessage::toStringOptional() const
 {
-  return fmt("token=%s, info_hash=%s, tcpPort=%u",
-             util::toHex(token_).c_str(),
-             util::toHex(infoHash_, INFO_HASH_LENGTH).c_str(),
-             tcpPort_);
+  return fmt("token=%s, info_hash=%s, tcpPort=%u", util::toHex(token_).c_str(),
+             util::toHex(infoHash_, INFO_HASH_LENGTH).c_str(), tcpPort_);
 }
 
 } // namespace aria2

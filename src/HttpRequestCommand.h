@@ -48,24 +48,24 @@ class SocketCore;
 // remaining header and when all headers are completely sent,
 // execute() creates next Command object, HttpResponseCommand, and
 // returns true.
-class HttpRequestCommand:public AbstractCommand {
+class HttpRequestCommand : public AbstractCommand {
 private:
-  SharedHandle<Request> proxyRequest_;
+  std::shared_ptr<Request> proxyRequest_;
 
-  SharedHandle<HttpConnection> httpConnection_;
+  std::shared_ptr<HttpConnection> httpConnection_;
+
 protected:
-  virtual bool executeInternal();
+  virtual bool executeInternal() CXX11_OVERRIDE;
+
 public:
-  HttpRequestCommand(cuid_t cuid,
-                     const SharedHandle<Request>& req,
-                     const SharedHandle<FileEntry>& fileEntry,
+  HttpRequestCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
+                     const std::shared_ptr<FileEntry>& fileEntry,
                      RequestGroup* requestGroup,
-                     const SharedHandle<HttpConnection>& httpConnection,
-                     DownloadEngine* e,
-                     const SharedHandle<SocketCore>& s);
+                     const std::shared_ptr<HttpConnection>& httpConnection,
+                     DownloadEngine* e, const std::shared_ptr<SocketCore>& s);
   virtual ~HttpRequestCommand();
 
-  void setProxyRequest(const SharedHandle<Request>& proxyRequest);
+  void setProxyRequest(const std::shared_ptr<Request>& proxyRequest);
 };
 
 } // namespace aria2

@@ -38,8 +38,8 @@
 #include "common.h"
 
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "TimerA2.h"
 #include "PeerStorage.h"
 
@@ -55,15 +55,14 @@ private:
 
   class PeerEntry {
   private:
-    SharedHandle<Peer> peer_;
+    std::shared_ptr<Peer> peer_;
     size_t outstandingUpload_;
     Timer lastAmUnchoking_;
     bool recentUnchoking_;
     int uploadSpeed_;
 
-    const static time_t TIME_FRAME = 20;
   public:
-    PeerEntry(const SharedHandle<Peer>& peer);
+    PeerEntry(const std::shared_ptr<Peer>& peer);
     PeerEntry(const PeerEntry& c);
     ~PeerEntry();
 
@@ -73,7 +72,7 @@ private:
 
     bool operator<(const PeerEntry& rhs) const;
 
-    const SharedHandle<Peer>& getPeer() const { return peer_; }
+    const std::shared_ptr<Peer>& getPeer() const { return peer_; }
 
     int getUploadSpeed() const { return uploadSpeed_; }
 
@@ -81,6 +80,7 @@ private:
   };
 
   void unchoke(std::vector<PeerEntry>& peers);
+
 public:
   BtSeederStateChoke();
 
@@ -93,9 +93,7 @@ public:
   friend void swap(PeerEntry& a, PeerEntry& b);
 };
 
-void swap
-(BtSeederStateChoke::PeerEntry& a,
- BtSeederStateChoke::PeerEntry& b);
+void swap(BtSeederStateChoke::PeerEntry& a, BtSeederStateChoke::PeerEntry& b);
 
 } // namespace aria2
 

@@ -16,6 +16,12 @@ SINOPSE
 DESCRIÇÃO
 ---------
 
+.. warning::
+
+   This translation has been outdated quite sometime now, and lacks
+   many recent changes.  Please consult English version manual for
+   updated information.
+
 Observação: Para executar o aria2 em um terminal ou no prompt da
 linha de comando do windows, utilize o comando aria2c.
 
@@ -1154,7 +1160,7 @@ Opções Avançadas
   unit and it is reordered by the offset of the file.  If hash
   checking is involved and the data are cached in memory, we don't
   need to read them from the disk.  SIZE can include ``K`` or ``M``
-  (1K = 1024, 1M = 1024K). Default: ``0``
+  (1K = 1024, 1M = 1024K). Default: ``16M``
 
 .. option:: --download-result=<OPT>
 
@@ -3953,9 +3959,7 @@ Criptografar todo conjunto usando ARC4:
 Ver Também
 ----------
 
-Site do Projeto aria2: http://aria2.sourceforge.net/
-
-Wiki aria2: http://sourceforge.net/apps/trac/aria2/wiki
+Site do Projeto aria2: https://aria2.github.io/
 
 Site do Projeto Metalink: http://www.metalinker.org/
 
@@ -3964,7 +3968,7 @@ Descrição do Formato Download Metalink: :rfc:`5854`
 COPYRIGHT
 ---------
 
-Copyright (C) 2006, 2013 Tatsuhiro Tsujikawa
+Copyright (C) 2006, 2014 Tatsuhiro Tsujikawa
 Tradução para Português do Brasil 2013, Gilberto dos Santos Alves
 utilizando editor kate e gedit no Debian squeeze 6.0.6 novembro de 2012
 revisado em março de 2013 usando editor kate e gedit no ubuntu 12.04 LTS

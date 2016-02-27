@@ -57,10 +57,10 @@ class DHTTaskFactory;
 class DefaultBtMessageFactory : public BtMessageFactory {
 private:
   cuid_t cuid_;
-  SharedHandle<DownloadContext> downloadContext_;
-  SharedHandle<PieceStorage> pieceStorage_;
-  SharedHandle<PeerStorage> peerStorage_;
-  SharedHandle<Peer> peer_;
+  DownloadContext* downloadContext_;
+  PieceStorage* pieceStorage_;
+  PeerStorage* peerStorage_;
+  std::shared_ptr<Peer> peer_;
 
   bool dhtEnabled_;
 
@@ -70,7 +70,7 @@ private:
 
   PeerConnection* peerConnection_;
 
-  SharedHandle<ExtensionMessageFactory> extensionMessageFactory_;
+  ExtensionMessageFactory* extensionMessageFactory_;
 
   DHTNode* localNode_;
 
@@ -83,84 +83,91 @@ private:
   bool metadataGetMode_;
 
   void setCommonProperty(AbstractBtMessage* msg);
+
 public:
   DefaultBtMessageFactory();
 
-  virtual ~DefaultBtMessageFactory();
+  virtual std::unique_ptr<BtMessage>
+  createBtMessage(const unsigned char* msg, size_t msgLength) CXX11_OVERRIDE;
 
-  virtual SharedHandle<BtMessage>
-  createBtMessage(const unsigned char* msg, size_t msgLength);
+  virtual std::unique_ptr<BtHandshakeMessage>
+  createHandshakeMessage(const unsigned char* msg,
+                         size_t msgLength) CXX11_OVERRIDE;
 
-  virtual SharedHandle<BtHandshakeMessage>
-  createHandshakeMessage(const unsigned char* msg, size_t msgLength);
-
-  virtual SharedHandle<BtHandshakeMessage>
+  virtual std::unique_ptr<BtHandshakeMessage>
   createHandshakeMessage(const unsigned char* infoHash,
-                         const unsigned char* peerId);
+                         const unsigned char* peerId) CXX11_OVERRIDE;
 
-  virtual SharedHandle<BtMessage>
-  createRequestMessage(const SharedHandle<Piece>& piece, size_t blockIndex);
+  virtual std::unique_ptr<BtRequestMessage>
+  createRequestMessage(const std::shared_ptr<Piece>& piece,
+                       size_t blockIndex) CXX11_OVERRIDE;
 
-  virtual SharedHandle<BtMessage>
-  createCancelMessage(size_t index, int32_t begin, int32_t length);
+  virtual std::unique_ptr<BtCancelMessage>
+  createCancelMessage(size_t index, int32_t begin,
+                      int32_t length) CXX11_OVERRIDE;
 
-  virtual SharedHandle<BtMessage>
-  createPieceMessage(size_t index, int32_t begin, int32_t length);
+  virtual std::unique_ptr<BtPieceMessage>
+  createPieceMessage(size_t index, int32_t begin,
+                     int32_t length) CXX11_OVERRIDE;
 
-  virtual SharedHandle<BtMessage> createHaveMessage(size_t index);
+  virtual std::unique_ptr<BtHaveMessage>
+  createHaveMessage(size_t index) CXX11_OVERRIDE;
 
-  virtual SharedHandle<BtMessage> createChokeMessage();
+  virtual std::unique_ptr<BtChokeMessage> createChokeMessage() CXX11_OVERRIDE;
 
-  virtual SharedHandle<BtMessage> createUnchokeMessage();
+  virtual std::unique_ptr<BtUnchokeMessage>
+  createUnchokeMessage() CXX11_OVERRIDE;
 
-  virtual SharedHandle<BtMessage> createInterestedMessage();
+  virtual std::unique_ptr<BtInterestedMessage>
+  createInterestedMessage() CXX11_OVERRIDE;
 
-  virtual SharedHandle<BtMessage> createNotInterestedMessage();
+  virtual std::unique_ptr<BtNotInterestedMessage>
+  createNotInterestedMessage() CXX11_OVERRIDE;
 
-  virtual SharedHandle<BtMessage> createBitfieldMessage();
+  virtual std::unique_ptr<BtBitfieldMessage>
+  createBitfieldMessage() CXX11_OVERRIDE;
 
-  virtual SharedHandle<BtMessage> createKeepAliveMessage();
+  virtual std::unique_ptr<BtKeepAliveMessage>
+  createKeepAliveMessage() CXX11_OVERRIDE;
 
-  virtual SharedHandle<BtMessage> createHaveAllMessage();
+  virtual std::unique_ptr<BtHaveAllMessage>
+  createHaveAllMessage() CXX11_OVERRIDE;
 
-  virtual SharedHandle<BtMessage> createHaveNoneMessage();
+  virtual std::unique_ptr<BtHaveNoneMessage>
+  createHaveNoneMessage() CXX11_OVERRIDE;
 
-  virtual SharedHandle<BtMessage>
-  createRejectMessage(size_t index, int32_t begin, int32_t length);
+  virtual std::unique_ptr<BtRejectMessage>
+  createRejectMessage(size_t index, int32_t begin,
+                      int32_t length) CXX11_OVERRIDE;
 
-  virtual SharedHandle<BtMessage> createAllowedFastMessage(size_t index);
+  virtual std::unique_ptr<BtAllowedFastMessage>
+  createAllowedFastMessage(size_t index) CXX11_OVERRIDE;
 
-  virtual SharedHandle<BtMessage> createPortMessage(uint16_t port);
+  virtual std::unique_ptr<BtPortMessage>
+  createPortMessage(uint16_t port) CXX11_OVERRIDE;
 
-  virtual SharedHandle<BtMessage>
-  createBtExtendedMessage(const SharedHandle<ExtensionMessage>& msg);
+  virtual std::unique_ptr<BtExtendedMessage>
+  createBtExtendedMessage(std::unique_ptr<ExtensionMessage> msg) CXX11_OVERRIDE;
 
-  void setPeer(const SharedHandle<Peer>& peer);
+  void setPeer(const std::shared_ptr<Peer>& peer);
 
-  void setDownloadContext(const SharedHandle<DownloadContext>& downloadContext);
+  void setDownloadContext(DownloadContext* downloadContext);
 
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+  void setPieceStorage(PieceStorage* pieceStorage);
 
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+  void setPeerStorage(PeerStorage* peerStorage);
 
-  void setCuid(cuid_t cuid)
-  {
-    cuid_ = cuid;
-  }
+  void setCuid(cuid_t cuid) { cuid_ = cuid; }
 
-  void setDHTEnabled(bool enabled) {
-    dhtEnabled_ = enabled;
-  }
+  void setDHTEnabled(bool enabled) { dhtEnabled_ = enabled; }
 
-  void setBtMessageDispatcher
-  (BtMessageDispatcher* dispatcher);
+  void setBtMessageDispatcher(BtMessageDispatcher* dispatcher);
 
   void setBtRequestFactory(BtRequestFactory* factory);
 
   void setPeerConnection(PeerConnection* connection);
 
-  void setExtensionMessageFactory
-  (const SharedHandle<ExtensionMessageFactory>& factory);
+  void setExtensionMessageFactory(ExtensionMessageFactory* factory);
 
   void setLocalNode(DHTNode* localNode);
 
@@ -170,10 +177,7 @@ public:
 
   void setTaskFactory(DHTTaskFactory* taskFactory);
 
-  void enableMetadataGetMode()
-  {
-    metadataGetMode_ = true;
-  }
+  void enableMetadataGetMode() { metadataGetMode_ = true; }
 };
 
 } // namespace aria2

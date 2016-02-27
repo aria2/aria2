@@ -36,48 +36,50 @@
 
 namespace aria2 {
 
-SharedHandle<Exception> RecoverableException::copy() const
+std::shared_ptr<Exception> RecoverableException::copy() const
 {
-  SharedHandle<Exception> e(new RecoverableException(*this));
-  return e;
+  return std::make_shared<RecoverableException>(*this);
 }
 
-RecoverableException::RecoverableException
-(const char* file, int line, const std::string& msg)
-  : Exception(file, line, msg)
-{}
+RecoverableException::RecoverableException(const char* file, int line,
+                                           const std::string& msg)
+    : Exception(file, line, msg)
+{
+}
 
-RecoverableException::RecoverableException
-(const char* file, int line, const std::string& msg,
- error_code::Value errorCode,
- const Exception& cause)
-  : Exception(file, line, msg, errorCode, cause)
-{}
+RecoverableException::RecoverableException(const char* file, int line,
+                                           const std::string& msg,
+                                           error_code::Value errorCode,
+                                           const Exception& cause)
+    : Exception(file, line, msg, errorCode, cause)
+{
+}
 
-RecoverableException::RecoverableException
-(const char* file, int line, const std::string& msg,
- const Exception& cause)
-  : Exception(file, line, msg, cause)
-{}
+RecoverableException::RecoverableException(const char* file, int line,
+                                           const std::string& msg,
+                                           const Exception& cause)
+    : Exception(file, line, msg, cause)
+{
+}
 
-RecoverableException::RecoverableException
-(const char* file, int line, const std::string& msg,
- error_code::Value errorCode)
-  : Exception(file, line, msg, errorCode)
-{}
+RecoverableException::RecoverableException(const char* file, int line,
+                                           const std::string& msg,
+                                           error_code::Value errorCode)
+    : Exception(file, line, msg, errorCode)
+{
+}
 
-RecoverableException::RecoverableException
-(const char* file, int line, int errNum, const std::string& msg)
-  : Exception(file, line, errNum, msg)
-{}
+RecoverableException::RecoverableException(const char* file, int line,
+                                           int errNum, const std::string& msg)
+    : Exception(file, line, errNum, msg)
+{
+}
 
-RecoverableException::RecoverableException
-(const char* file,
- int line,
- int errNum,
- const std::string& msg,
- error_code::Value errorCode)
-  : Exception(file, line, errNum, msg, errorCode)
-{}
+RecoverableException::RecoverableException(const char* file, int line,
+                                           int errNum, const std::string& msg,
+                                           error_code::Value errorCode)
+    : Exception(file, line, errNum, msg, errorCode)
+{
+}
 
 } // namespace aria2

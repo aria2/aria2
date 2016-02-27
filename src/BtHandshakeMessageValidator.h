@@ -49,13 +49,14 @@ class BtHandshakeMessageValidator : public BtMessageValidator {
 private:
   const BtHandshakeMessage* message_;
   unsigned char infoHash_[INFO_HASH_LENGTH];
+
 public:
   BtHandshakeMessageValidator(const BtHandshakeMessage* message,
                               const unsigned char* infoHash);
 
   ~BtHandshakeMessageValidator();
 
-  virtual void validate();
+  virtual void validate() CXX11_OVERRIDE;
 };
 
 } // namespace aria2

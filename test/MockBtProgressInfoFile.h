@@ -8,29 +8,24 @@ namespace aria2 {
 class MockBtProgressInfoFile : public BtProgressInfoFile {
 private:
   std::string filename;
+
 public:
   MockBtProgressInfoFile() {}
   virtual ~MockBtProgressInfoFile() {}
 
-  virtual std::string getFilename() {
-    return filename;
-  }
+  virtual std::string getFilename() CXX11_OVERRIDE { return filename; }
 
-  virtual void setFilename(const std::string& filename) {
-    this->filename = filename;
-  }
+  void setFilename(const std::string& filename) { this->filename = filename; }
 
-  virtual bool exists() {
-    return false;
-  }
+  virtual bool exists() CXX11_OVERRIDE { return false; }
 
-  virtual void save() {}
+  virtual void save() CXX11_OVERRIDE {}
 
-  virtual void load() {}
+  virtual void load() CXX11_OVERRIDE {}
 
-  virtual void removeFile() {}
+  virtual void removeFile() CXX11_OVERRIDE {}
 
-  virtual void updateFilename() {}
+  virtual void updateFilename() CXX11_OVERRIDE {}
 };
 
 } // namespace aria2

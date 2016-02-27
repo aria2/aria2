@@ -42,7 +42,9 @@ extern "C" {
 
 #include <time.h>
 
-struct tm * localtime_r(const time_t *clock, struct tm *result);
+#undef localtime_r
+
+struct tm* localtime_r(const time_t* clock, struct tm* result);
 
 #ifdef __cplusplus
 }

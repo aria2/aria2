@@ -38,29 +38,27 @@
 #include "SocketCore.h"
 #include "DownloadContext.h"
 #include "SocketRecvBuffer.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
-FtpTunnelRequestCommand::FtpTunnelRequestCommand
-(cuid_t cuid,
- const SharedHandle<Request>& req,
- const SharedHandle<FileEntry>& fileEntry,
- RequestGroup* requestGroup,
- DownloadEngine* e,
- const SharedHandle<Request>& proxyRequest,
- const SharedHandle<SocketCore>& s)
-  :
-  AbstractProxyRequestCommand(cuid, req, fileEntry, requestGroup, e,
-                              proxyRequest, s)
-{}
+FtpTunnelRequestCommand::FtpTunnelRequestCommand(
+    cuid_t cuid, const std::shared_ptr<Request>& req,
+    const std::shared_ptr<FileEntry>& fileEntry, RequestGroup* requestGroup,
+    DownloadEngine* e, const std::shared_ptr<Request>& proxyRequest,
+    const std::shared_ptr<SocketCore>& s)
+    : AbstractProxyRequestCommand(cuid, req, fileEntry, requestGroup, e,
+                                  proxyRequest, s)
+{
+}
 
 FtpTunnelRequestCommand::~FtpTunnelRequestCommand() {}
 
-Command* FtpTunnelRequestCommand::getNextCommand()
+std::unique_ptr<Command> FtpTunnelRequestCommand::getNextCommand()
 {
-  return new FtpTunnelResponseCommand
-    (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
-     getHttpConnection(), getDownloadEngine(), getSocket());
+  return make_unique<FtpTunnelResponseCommand>(
+      getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
+      getHttpConnection(), getDownloadEngine(), getSocket());
 }
 
 } // namespace aria2

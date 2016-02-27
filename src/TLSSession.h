@@ -41,10 +41,7 @@
 
 namespace aria2 {
 
-enum TLSDirection {
-  TLS_WANT_READ = 1,
-  TLS_WANT_WRITE
-};
+enum TLSDirection { TLS_WANT_READ = 1, TLS_WANT_WRITE };
 
 enum TLSErrorCode {
   TLS_ERR_OK = 0,
@@ -62,7 +59,7 @@ public:
   virtual ~TLSSession() {}
 
   // Initializes SSL/TLS session. The |sockfd| is the underlying
-  // tranport socket. This function returns TLS_ERR_OK if it
+  // transport socket. This function returns TLS_ERR_OK if it
   // succeeds, or TLS_ERR_ERROR.
   virtual int init(sock_t sockfd) = 0;
 
@@ -85,12 +82,12 @@ public:
 
   // Sends |data| with length |len|. This function returns the number
   // of bytes sent if it succeeds, or TLS_ERR_WOULDBLOCK if the
-  // underlying tranport blocks, or TLS_ERR_ERROR.
+  // underlying transport blocks, or TLS_ERR_ERROR.
   virtual ssize_t writeData(const void* data, size_t len) = 0;
 
   // Receives data into |data| with length |len|. This function returns
   // the number of bytes received if it succeeds, or TLS_ERR_WOULDBLOCK
-  // if the underlying tranport blocks, or TLS_ERR_ERROR.
+  // if the underlying transport blocks, or TLS_ERR_ERROR.
   virtual ssize_t readData(void* data, size_t len) = 0;
 
   // Performs client side handshake. The |hostname| is the hostname of
@@ -99,23 +96,28 @@ public:
   // if the underlying transport blocks, or TLS_ERR_ERROR.
   // When returning TLS_ERR_ERROR, provide certificate validation error
   // in |handshakeErr|.
-  virtual int tlsConnect(const std::string& hostname, std::string& handshakeErr) = 0;
+  virtual int tlsConnect(const std::string& hostname, TLSVersion& version,
+                         std::string& handshakeErr) = 0;
 
   // Performs server side handshake. This function returns TLS_ERR_OK
   // if it succeeds, or TLS_ERR_WOULDBLOCK if the underlying transport
   // blocks, or TLS_ERR_ERROR.
-  virtual int tlsAccept() = 0;
+  virtual int tlsAccept(TLSVersion& version) = 0;
 
   // Returns last error string
   virtual std::string getLastErrorString() = 0;
 
+  // Returns buffered length, which can be read immediately without
+  // contacting network.
+  virtual size_t getRecvBufferedLength() = 0;
+
 protected:
   TLSSession() {}
+
 private:
   TLSSession(const TLSSession&);
   TLSSession& operator=(const TLSSession&);
 };
-
 }
 
 #endif // TLS_SESSION_H

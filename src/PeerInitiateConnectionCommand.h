@@ -48,32 +48,32 @@ class PeerInitiateConnectionCommand : public PeerAbstractCommand {
 private:
   RequestGroup* requestGroup_;
 
-  SharedHandle<BtRuntime> btRuntime_;
+  std::shared_ptr<BtRuntime> btRuntime_;
 
-  SharedHandle<PeerStorage> peerStorage_;
+  std::shared_ptr<PeerStorage> peerStorage_;
 
-  SharedHandle<PieceStorage> pieceStorage_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
 
   bool mseHandshakeEnabled_;
+
 protected:
-  virtual bool executeInternal();
-  virtual bool prepareForNextPeer(time_t wait);
-  virtual void onAbort();
-  virtual bool exitBeforeExecute();
+  virtual bool executeInternal() CXX11_OVERRIDE;
+  virtual bool prepareForNextPeer(time_t wait) CXX11_OVERRIDE;
+  virtual void onAbort() CXX11_OVERRIDE;
+  virtual bool exitBeforeExecute() CXX11_OVERRIDE;
 
 public:
-  PeerInitiateConnectionCommand(cuid_t cuid,
-                                RequestGroup* requestGroup,
-                                const SharedHandle<Peer>& peer,
+  PeerInitiateConnectionCommand(cuid_t cuid, RequestGroup* requestGroup,
+                                const std::shared_ptr<Peer>& peer,
                                 DownloadEngine* e,
-                                const SharedHandle<BtRuntime>& btRuntime,
+                                const std::shared_ptr<BtRuntime>& btRuntime,
                                 bool mseHandshakeEnabled = true);
 
   virtual ~PeerInitiateConnectionCommand();
 
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
 
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+  void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage);
 };
 
 } // namespace aria2

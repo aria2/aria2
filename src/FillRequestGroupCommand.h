@@ -36,7 +36,6 @@
 #define D_FILL_REQUEST_GROUP_COMMAND_H
 
 #include "Command.h"
-#include "SharedHandle.h"
 #include "a2time.h"
 
 namespace aria2 {
@@ -47,12 +46,13 @@ class DownloadEngine;
 class FillRequestGroupCommand : public Command {
 private:
   DownloadEngine* e_;
+
 public:
   FillRequestGroupCommand(cuid_t cuid, DownloadEngine* e);
 
   virtual ~FillRequestGroupCommand();
 
-  virtual bool execute();
+  virtual bool execute() CXX11_OVERRIDE;
 };
 
 } // namespace aria2

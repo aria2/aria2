@@ -42,28 +42,30 @@
 
 namespace aria2 {
 
-StreamCheckIntegrityEntry::StreamCheckIntegrityEntry(RequestGroup* requestGroup,
-                                                     Command* nextCommand):
-  PieceHashCheckIntegrityEntry(requestGroup, nextCommand)
-{}
+StreamCheckIntegrityEntry::StreamCheckIntegrityEntry(
+    RequestGroup* requestGroup, std::unique_ptr<Command> nextCommand)
+    : PieceHashCheckIntegrityEntry(requestGroup, std::move(nextCommand))
+{
+}
 
 StreamCheckIntegrityEntry::~StreamCheckIntegrityEntry() {}
 
-void StreamCheckIntegrityEntry::onDownloadIncomplete
-(std::vector<Command*>& commands, DownloadEngine* e)
+void StreamCheckIntegrityEntry::onDownloadIncomplete(
+    std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
 {
-  const SharedHandle<PieceStorage>& ps = getRequestGroup()->getPieceStorage();
+  auto& ps = getRequestGroup()->getPieceStorage();
   ps->onDownloadIncomplete();
-  if(getRequestGroup()->getOption()->getAsBool(PREF_HASH_CHECK_ONLY)) {
+  if (getRequestGroup()->getOption()->getAsBool(PREF_HASH_CHECK_ONLY)) {
     return;
   }
-  SharedHandle<FileAllocationEntry> entry
-    (new StreamFileAllocationEntry(getRequestGroup(), popNextCommand()));
-  proceedFileAllocation(commands, entry, e);
+  proceedFileAllocation(commands, make_unique<StreamFileAllocationEntry>(
+                                      getRequestGroup(), popNextCommand()),
+                        e);
 }
 
-void StreamCheckIntegrityEntry::onDownloadFinished
-(std::vector<Command*>& commands, DownloadEngine* e)
-{}
+void StreamCheckIntegrityEntry::onDownloadFinished(
+    std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
+{
+}
 
 } // namespace aria2

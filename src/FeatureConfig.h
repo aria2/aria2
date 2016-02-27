@@ -53,6 +53,7 @@ enum FeatureType {
   FEATURE_MESSAGE_DIGEST,
   FEATURE_METALINK,
   FEATURE_XML_RPC,
+  FEATURE_SFTP,
   MAX_FEATURE
 };
 
@@ -66,6 +67,12 @@ const char* strSupportedFeature(int feature);
 // Returns summary string of 3rd party libraries directly used by
 // aria2.
 std::string usedLibs();
+
+// Returns a summary string of the used compiler/platform.
+std::string usedCompilerAndPlatform();
+
+// Returns the system information about the OS this binary is running on.
+std::string getOperatingSystemInfo();
 
 } // namespace aria2
 

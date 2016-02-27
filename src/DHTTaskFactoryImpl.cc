@@ -51,72 +51,71 @@
 namespace aria2 {
 
 DHTTaskFactoryImpl::DHTTaskFactoryImpl()
-  : routingTable_(0),
-    dispatcher_(0),
-    factory_(0),
-    taskQueue_(0),
-    timeout_(DHT_MESSAGE_TIMEOUT)
-{}
+    : routingTable_(nullptr),
+      dispatcher_(nullptr),
+      factory_(nullptr),
+      taskQueue_(nullptr),
+      timeout_(DHT_MESSAGE_TIMEOUT)
+{
+}
 
 DHTTaskFactoryImpl::~DHTTaskFactoryImpl() {}
 
-SharedHandle<DHTTask>
-DHTTaskFactoryImpl::createPingTask(const SharedHandle<DHTNode>& remoteNode,
+std::shared_ptr<DHTTask>
+DHTTaskFactoryImpl::createPingTask(const std::shared_ptr<DHTNode>& remoteNode,
                                    int numRetry)
 {
-  SharedHandle<DHTPingTask> task(new DHTPingTask(remoteNode, numRetry));
+  auto task = std::make_shared<DHTPingTask>(remoteNode, numRetry);
   task->setTimeout(timeout_);
   setCommonProperty(task);
   return task;
 }
 
-SharedHandle<DHTTask>
+std::shared_ptr<DHTTask>
 DHTTaskFactoryImpl::createNodeLookupTask(const unsigned char* targetID)
 {
-  SharedHandle<DHTNodeLookupTask> task(new DHTNodeLookupTask(targetID));
+  auto task = std::make_shared<DHTNodeLookupTask>(targetID);
   setCommonProperty(task);
   return task;
 }
 
-SharedHandle<DHTTask>
-DHTTaskFactoryImpl::createBucketRefreshTask()
+std::shared_ptr<DHTTask> DHTTaskFactoryImpl::createBucketRefreshTask()
 {
-  SharedHandle<DHTBucketRefreshTask> task(new DHTBucketRefreshTask());
+  auto task = std::make_shared<DHTBucketRefreshTask>();
   setCommonProperty(task);
   return task;
 }
 
-SharedHandle<DHTTask>
-DHTTaskFactoryImpl::createPeerLookupTask
-(const SharedHandle<DownloadContext>& ctx,
- uint16_t tcpPort,
- const SharedHandle<PeerStorage>& peerStorage)
+std::shared_ptr<DHTTask> DHTTaskFactoryImpl::createPeerLookupTask(
+    const std::shared_ptr<DownloadContext>& ctx, uint16_t tcpPort,
+    const std::shared_ptr<PeerStorage>& peerStorage)
 {
-  SharedHandle<DHTPeerLookupTask> task(new DHTPeerLookupTask(ctx, tcpPort));
+  auto task = std::make_shared<DHTPeerLookupTask>(ctx, tcpPort);
   // TODO this may be not freed by RequestGroup::releaseRuntimeResource()
   task->setPeerStorage(peerStorage);
   setCommonProperty(task);
   return task;
 }
 
-SharedHandle<DHTTask>
+std::shared_ptr<DHTTask>
 DHTTaskFactoryImpl::createPeerAnnounceTask(const unsigned char* infoHash)
 {
   // TODO
-  return SharedHandle<DHTTask>();
+  return nullptr;
 }
 
-SharedHandle<DHTTask>
-DHTTaskFactoryImpl::createReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
-                                          const SharedHandle<DHTNode>& newNode)
+std::shared_ptr<DHTTask> DHTTaskFactoryImpl::createReplaceNodeTask(
+    const std::shared_ptr<DHTBucket>& bucket,
+    const std::shared_ptr<DHTNode>& newNode)
 {
-  SharedHandle<DHTReplaceNodeTask> task(new DHTReplaceNodeTask(bucket, newNode));
+  auto task = std::make_shared<DHTReplaceNodeTask>(bucket, newNode);
   task->setTimeout(timeout_);
   setCommonProperty(task);
   return task;
 }
 
-void DHTTaskFactoryImpl::setCommonProperty(const SharedHandle<DHTAbstractTask>& task)
+void DHTTaskFactoryImpl::setCommonProperty(
+    const std::shared_ptr<DHTAbstractTask>& task)
 {
   task->setRoutingTable(routingTable_);
   task->setMessageDispatcher(dispatcher_);
@@ -145,7 +144,7 @@ void DHTTaskFactoryImpl::setTaskQueue(DHTTaskQueue* taskQueue)
   taskQueue_ = taskQueue;
 }
 
-void DHTTaskFactoryImpl::setLocalNode(const SharedHandle<DHTNode>& localNode)
+void DHTTaskFactoryImpl::setLocalNode(const std::shared_ptr<DHTNode>& localNode)
 {
   localNode_ = localNode;
 }

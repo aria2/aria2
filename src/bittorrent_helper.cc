@@ -68,43 +68,26 @@ namespace aria2 {
 namespace bittorrent {
 
 namespace {
-const std::string C_NAME("name");
+const char C_NAME[] = "name";
+const char C_NAME_UTF8[] = "name.utf-8";
+const char C_FILES[] = "files";
+const char C_LENGTH[] = "length";
+const char C_PATH[] = "path";
+const char C_PATH_UTF8[] = "path.utf-8";
+const char C_INFO[] = "info";
+const char C_PIECES[] = "pieces";
+const char C_PIECE_LENGTH[] = "piece length";
+const char C_PRIVATE[] = "private";
+const char C_URL_LIST[] = "url-list";
+const char C_ANNOUNCE[] = "announce";
+const char C_ANNOUNCE_LIST[] = "announce-list";
+const char C_NODES[] = "nodes";
+const char C_CREATION_DATE[] = "creation date";
+const char C_COMMENT[] = "comment";
+const char C_COMMENT_UTF8[] = "comment.utf-8";
+const char C_CREATED_BY[] = "created by";
 
-const std::string C_NAME_UTF8("name.utf-8");
-
-const std::string C_FILES("files");
-
-const std::string C_LENGTH("length");
-
-const std::string C_PATH("path");
-
-const std::string C_PATH_UTF8("path.utf-8");
-
-const std::string C_INFO("info");
-
-const std::string C_PIECES("pieces");
-
-const std::string C_PIECE_LENGTH("piece length");
-
-const std::string C_PRIVATE("private");
-
-const std::string C_URL_LIST("url-list");
-
-const std::string C_ANNOUNCE("announce");
-
-const std::string C_ANNOUNCE_LIST("announce-list");
-
-const std::string C_NODES("nodes");
-
-const std::string C_CREATION_DATE("creation date");
-
-const std::string C_COMMENT("comment");
-
-const std::string C_COMMENT_UTF8("comment.utf-8");
-
-const std::string C_CREATED_BY("created by");
-
-const std::string DEFAULT_PEER_ID_PREFIX("aria2-");
+const char DEFAULT_PEER_ID_PREFIX[] = "aria2-";
 } // namespace
 
 const std::string MULTI("multi");
@@ -112,63 +95,61 @@ const std::string MULTI("multi");
 const std::string SINGLE("single");
 
 namespace {
-void extractPieceHash(const SharedHandle<DownloadContext>& ctx,
-                      const std::string& hashData,
-                      size_t hashLength,
+void extractPieceHash(const std::shared_ptr<DownloadContext>& ctx,
+                      const std::string& hashData, size_t hashLength,
                       size_t numPieces)
 {
   std::vector<std::string> pieceHashes;
   pieceHashes.reserve(numPieces);
-  for(size_t i = 0; i < numPieces; ++i) {
-    const char* p = hashData.data()+i*hashLength;
-    pieceHashes.push_back(std::string(p, p+hashLength));
+  for (size_t i = 0; i < numPieces; ++i) {
+    const char* p = hashData.data() + i * hashLength;
+    pieceHashes.push_back(std::string(p, p + hashLength));
   }
   ctx->setPieceHashes("sha-1", pieceHashes.begin(), pieceHashes.end());
 }
 } // namespace
 
 namespace {
-void extractUrlList
-(const SharedHandle<TorrentAttribute>& torrent, std::vector<std::string>& uris,
- const ValueBase* v)
+void extractUrlList(TorrentAttribute* torrent, std::vector<std::string>& uris,
+                    const ValueBase* v)
 {
-  class UrlListVisitor:public ValueBaseVisitor {
+  class UrlListVisitor : public ValueBaseVisitor {
   private:
     std::vector<std::string>& uris_;
-    const SharedHandle<TorrentAttribute>& torrent_;
-  public:
-    UrlListVisitor
-    (std::vector<std::string>& uris,
-     const SharedHandle<TorrentAttribute>& torrent):
-      uris_(uris), torrent_(torrent) {}
+    TorrentAttribute* torrent_;
 
-    virtual void visit(const String& v)
+  public:
+    UrlListVisitor(std::vector<std::string>& uris, TorrentAttribute* torrent)
+        : uris_(uris), torrent_(torrent)
+    {
+    }
+
+    virtual void visit(const String& v) CXX11_OVERRIDE
     {
       std::string utf8Uri = util::encodeNonUtf8(v.s());
       uris_.push_back(utf8Uri);
       torrent_->urlList.push_back(utf8Uri);
     }
 
-    virtual void visit(const Integer& v) {}
-    virtual void visit(const Bool& v) {}
-    virtual void visit(const Null& v) {}
+    virtual void visit(const Integer& v) CXX11_OVERRIDE {}
+    virtual void visit(const Bool& v) CXX11_OVERRIDE {}
+    virtual void visit(const Null& v) CXX11_OVERRIDE {}
 
-    virtual void visit(const List& v)
+    virtual void visit(const List& v) CXX11_OVERRIDE
     {
-      for(List::ValueType::const_iterator itr = v.begin(), eoi = v.end();
-          itr != eoi; ++itr) {
-        const String* uri = downcast<String>(*itr);
-        if(uri) {
+      for (auto& elem : v) {
+        const String* uri = downcast<String>(elem);
+        if (uri) {
           std::string utf8Uri = util::encodeNonUtf8(uri->s());
           uris_.push_back(utf8Uri);
           torrent_->urlList.push_back(utf8Uri);
         }
       }
     }
-    virtual void visit(const Dict& v) {}
+    virtual void visit(const Dict& v) CXX11_OVERRIDE {}
   };
 
-  if(v) {
+  if (v) {
     UrlListVisitor visitor(uris, torrent);
     v->accept(visitor);
   }
@@ -176,16 +157,16 @@ void extractUrlList
 } // namespace
 
 namespace {
-template<typename InputIterator, typename OutputIterator>
-OutputIterator createUri
-(InputIterator first, InputIterator last, OutputIterator out,
- const std::string& filePath)
+template <typename InputIterator, typename OutputIterator>
+OutputIterator createUri(InputIterator first, InputIterator last,
+                         OutputIterator out, const std::string& filePath)
 {
-  for(; first != last; ++first) {
-    if(!(*first).empty() && (*first)[(*first).size()-1] == '/') {
-      *out++ = (*first)+filePath;
-    } else {
-      *out++ = (*first)+"/"+filePath;
+  for (; first != last; ++first) {
+    if (!(*first).empty() && (*first)[(*first).size() - 1] == '/') {
+      *out++ = (*first) + filePath;
+    }
+    else {
+      *out++ = (*first) + "/" + filePath;
     }
   }
   return out;
@@ -193,180 +174,201 @@ OutputIterator createUri
 } // namespace
 
 namespace {
-void extractFileEntries
-(const SharedHandle<DownloadContext>& ctx,
- const SharedHandle<TorrentAttribute>& torrent,
- const Dict* infoDict,
- const SharedHandle<Option>& option,
- const std::string& defaultName,
- const std::string& overrideName,
- const std::vector<std::string>& urlList)
+void extractFileEntries(const std::shared_ptr<DownloadContext>& ctx,
+                        TorrentAttribute* torrent, const Dict* infoDict,
+                        const std::shared_ptr<Option>& option,
+                        const std::string& defaultName,
+                        const std::string& overrideName,
+                        const std::vector<std::string>& urlList)
 {
   std::string utf8Name;
-  if(overrideName.empty()) {
+  if (overrideName.empty()) {
     std::string nameKey;
-    if(infoDict->containsKey(C_NAME_UTF8)) {
+    if (infoDict->containsKey(C_NAME_UTF8)) {
       nameKey = C_NAME_UTF8;
-    } else {
+    }
+    else {
       nameKey = C_NAME;
     }
     const String* nameData = downcast<String>(infoDict->get(nameKey));
-    if(nameData) {
+    if (nameData) {
       utf8Name = util::encodeNonUtf8(nameData->s());
-      if(util::detectDirTraversal(utf8Name)) {
-        throw DL_ABORT_EX2
-          (fmt(MSG_DIR_TRAVERSAL_DETECTED,
-               nameData->s().c_str()),
-           error_code::BITTORRENT_PARSE_ERROR);
+      if (util::detectDirTraversal(utf8Name)) {
+        throw DL_ABORT_EX2(
+            fmt(MSG_DIR_TRAVERSAL_DETECTED, nameData->s().c_str()),
+            error_code::BITTORRENT_PARSE_ERROR);
       }
-    } else {
+    }
+    else {
       utf8Name = File(defaultName).getBasename();
       utf8Name += ".file";
     }
-  } else {
+  }
+  else {
     utf8Name = overrideName;
   }
   torrent->name = utf8Name;
   int maxConn = option->getAsInt(PREF_MAX_CONNECTION_PER_SERVER);
-  std::vector<SharedHandle<FileEntry> > fileEntries;
+  std::vector<std::shared_ptr<FileEntry>> fileEntries;
   const List* filesList = downcast<List>(infoDict->get(C_FILES));
-  if(filesList) {
+  if (filesList) {
     fileEntries.reserve(filesList->size());
     int64_t length = 0;
     int64_t offset = 0;
     // multi-file mode
-    torrent->mode = MULTI;
-    for(List::ValueType::const_iterator itr = filesList->begin(),
-          eoi = filesList->end(); itr != eoi; ++itr) {
-      const Dict* fileDict = downcast<Dict>(*itr);
-      if(!fileDict) {
+    torrent->mode = BT_FILE_MODE_MULTI;
+    for (auto& f : *filesList) {
+      const Dict* fileDict = downcast<Dict>(f);
+      if (!fileDict) {
         continue;
       }
-      const Integer* fileLengthData = downcast<Integer>(fileDict->get(C_LENGTH));
-      if(!fileLengthData) {
-        throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_LENGTH.c_str()),
+      const Integer* fileLengthData =
+          downcast<Integer>(fileDict->get(C_LENGTH));
+      if (!fileLengthData) {
+        throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_LENGTH),
                            error_code::BITTORRENT_PARSE_ERROR);
       }
-      if(length > std::numeric_limits<int64_t>::max() - fileLengthData->i()) {
+
+      if (fileLengthData->i() < 0) {
+        throw DL_ABORT_EX2(
+            fmt(MSG_NEGATIVE_LENGTH_BT_INFO, C_LENGTH, fileLengthData->i()),
+            error_code::BITTORRENT_PARSE_ERROR);
+      }
+
+      if (length > std::numeric_limits<int64_t>::max() - fileLengthData->i()) {
         throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, length));
       }
       length += fileLengthData->i();
-      if(fileLengthData->i() > std::numeric_limits<off_t>::max()) {
+      if (fileLengthData->i() > std::numeric_limits<a2_off_t>::max()) {
         throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, length));
       }
       std::string pathKey;
-      if(fileDict->containsKey(C_PATH_UTF8)) {
+      if (fileDict->containsKey(C_PATH_UTF8)) {
         pathKey = C_PATH_UTF8;
-      } else {
+      }
+      else {
         pathKey = C_PATH;
       }
       const List* pathList = downcast<List>(fileDict->get(pathKey));
-      if(!pathList || pathList->empty()) {
+      if (!pathList || pathList->empty()) {
         throw DL_ABORT_EX2("Path is empty.",
                            error_code::BITTORRENT_PARSE_ERROR);
       }
 
-      std::vector<std::string> pathelem(pathList->size()+1);
+      std::vector<std::string> pathelem(pathList->size() + 1);
       pathelem[0] = utf8Name;
-      std::vector<std::string>::iterator pathelemOutItr = pathelem.begin();
+      auto pathelemOutItr = pathelem.begin();
       ++pathelemOutItr;
-      for(List::ValueType::const_iterator itr = pathList->begin(),
-            eoi = pathList->end(); itr != eoi; ++itr) {
-        const String* elem = downcast<String>(*itr);
-        if(elem) {
+      for (auto& p : *pathList) {
+        const String* elem = downcast<String>(p);
+        if (elem) {
           (*pathelemOutItr++) = elem->s();
-        } else {
+        }
+        else {
           throw DL_ABORT_EX2("Path element is not string.",
                              error_code::BITTORRENT_PARSE_ERROR);
         }
       }
       std::string utf8Path = strjoin(pathelem.begin(), pathelem.end(), "/",
                                      std::ptr_fun(util::encodeNonUtf8));
-      if(util::detectDirTraversal(utf8Path)) {
+      if (util::detectDirTraversal(utf8Path)) {
         throw DL_ABORT_EX2(fmt(MSG_DIR_TRAVERSAL_DETECTED, utf8Path.c_str()),
                            error_code::BITTORRENT_PARSE_ERROR);
       }
       std::string pePath =
-        strjoin(pathelem.begin(), pathelem.end(), "/",
-                std::ptr_fun(static_cast<std::string (*)(const std::string&)>
-                             (util::percentEncode)));
+          strjoin(pathelem.begin(), pathelem.end(), "/",
+                  std::ptr_fun(static_cast<std::string (*)(const std::string&)>(
+                      util::percentEncode)));
       std::vector<std::string> uris;
-      createUri(urlList.begin(), urlList.end(),std::back_inserter(uris),pePath);
-      SharedHandle<FileEntry> fileEntry
-        (new FileEntry(util::applyDir(option->get(PREF_DIR),
-                                      util::escapePath(utf8Path)),
-                       fileLengthData->i(), offset, uris));
+      createUri(urlList.begin(), urlList.end(), std::back_inserter(uris),
+                pePath);
+
+      auto suffixPath = util::escapePath(utf8Path);
+
+      auto fileEntry = std::make_shared<FileEntry>(
+          util::applyDir(option->get(PREF_DIR), suffixPath),
+          fileLengthData->i(), offset, uris);
       fileEntry->setOriginalName(utf8Path);
+      fileEntry->setSuffixPath(suffixPath);
       fileEntry->setMaxConnectionPerServer(maxConn);
       fileEntries.push_back(fileEntry);
       offset += fileEntry->getLength();
     }
-  } else {
+  }
+  else {
     // single-file mode;
-    torrent->mode = SINGLE;
+    torrent->mode = BT_FILE_MODE_SINGLE;
     const Integer* lengthData = downcast<Integer>(infoDict->get(C_LENGTH));
-    if(!lengthData) {
-      throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_LENGTH.c_str()),
+    if (!lengthData) {
+      throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_LENGTH),
                          error_code::BITTORRENT_PARSE_ERROR);
     }
     int64_t totalLength = lengthData->i();
-    if(totalLength > std::numeric_limits<off_t>::max()) {
+
+    if (totalLength < 0) {
+      throw DL_ABORT_EX2(
+          fmt(MSG_NEGATIVE_LENGTH_BT_INFO, C_LENGTH, totalLength),
+          error_code::BITTORRENT_PARSE_ERROR);
+    }
+
+    if (totalLength > std::numeric_limits<a2_off_t>::max()) {
       throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, totalLength));
     }
     // For each uri in urlList, if it ends with '/', then
     // concatenate name to it. Specification just says so.
     std::vector<std::string> uris;
-    for(std::vector<std::string>::const_iterator i = urlList.begin(),
-          eoi = urlList.end(); i != eoi; ++i) {
-      if(!(*i).empty() && (*i)[(*i).size()-1] == '/') {
-        uris.push_back((*i)+util::percentEncode(utf8Name));
-      } else {
-        uris.push_back(*i);
+    for (auto& elem : urlList) {
+      if (!elem.empty() && elem[elem.size() - 1] == '/') {
+        uris.push_back(elem + util::percentEncode(utf8Name));
+      }
+      else {
+        uris.push_back(elem);
       }
     }
-    SharedHandle<FileEntry> fileEntry
-      (new FileEntry(util::applyDir(option->get(PREF_DIR),
-                                    util::escapePath(utf8Name)),
-                     totalLength, 0, uris));
+
+    auto suffixPath = util::escapePath(utf8Name);
+
+    auto fileEntry = std::make_shared<FileEntry>(
+        util::applyDir(option->get(PREF_DIR), suffixPath), totalLength, 0,
+        uris);
     fileEntry->setOriginalName(utf8Name);
+    fileEntry->setSuffixPath(suffixPath);
     fileEntry->setMaxConnectionPerServer(maxConn);
     fileEntries.push_back(fileEntry);
   }
   ctx->setFileEntries(fileEntries.begin(), fileEntries.end());
-  if(torrent->mode == MULTI) {
-    ctx->setBasePath(util::applyDir(option->get(PREF_DIR),
-                                    util::escapePath(utf8Name)));
+  if (torrent->mode == BT_FILE_MODE_MULTI) {
+    ctx->setBasePath(
+        util::applyDir(option->get(PREF_DIR), util::escapePath(utf8Name)));
   }
 }
 } // namespace
 
 namespace {
-void extractAnnounce
-(const SharedHandle<TorrentAttribute>& torrent, const Dict* rootDict)
+void extractAnnounce(TorrentAttribute* torrent, const Dict* rootDict)
 {
   const List* announceList = downcast<List>(rootDict->get(C_ANNOUNCE_LIST));
-  if(announceList) {
-    for(List::ValueType::const_iterator tierIter = announceList->begin(),
-          eoi = announceList->end(); tierIter != eoi; ++tierIter) {
-      const List* tier = downcast<List>(*tierIter);
-      if(!tier) {
+  if (announceList) {
+    for (auto& elem : *announceList) {
+      const List* tier = downcast<List>(elem);
+      if (!tier) {
         continue;
       }
       std::vector<std::string> ntier;
-      for(List::ValueType::const_iterator uriIter = tier->begin(),
-            eoi2 = tier->end(); uriIter != eoi2; ++uriIter) {
-        const String* uri = downcast<String>(*uriIter);
-        if(uri) {
+      for (auto& t : *tier) {
+        const String* uri = downcast<String>(t);
+        if (uri) {
           ntier.push_back(util::encodeNonUtf8(util::strip(uri->s())));
         }
       }
-      if(!ntier.empty()) {
+      if (!ntier.empty()) {
         torrent->announceList.push_back(ntier);
       }
     }
-  } else {
+  }
+  else {
     const String* announce = downcast<String>(rootDict->get(C_ANNOUNCE));
-    if(announce) {
+    if (announce) {
       std::vector<std::string> tier;
       tier.push_back(util::encodeNonUtf8(util::strip(announce->s())));
       torrent->announceList.push_back(tier);
@@ -376,28 +378,26 @@ void extractAnnounce
 } // namespace
 
 namespace {
-void extractNodes
-(const SharedHandle<TorrentAttribute>& torrent, const ValueBase* nodesListSrc)
+void extractNodes(TorrentAttribute* torrent, const ValueBase* nodesListSrc)
 {
   const List* nodesList = downcast<List>(nodesListSrc);
-  if(nodesList) {
-    for(List::ValueType::const_iterator i = nodesList->begin(),
-          eoi = nodesList->end(); i != eoi; ++i) {
-      const List* addrPairList = downcast<List>(*i);
-      if(!addrPairList || addrPairList->size() != 2) {
+  if (nodesList) {
+    for (auto& elem : *nodesList) {
+      const List* addrPairList = downcast<List>(elem);
+      if (!addrPairList || addrPairList->size() != 2) {
         continue;
       }
       const String* hostname = downcast<String>(addrPairList->get(0));
-      if(!hostname) {
+      if (!hostname) {
         continue;
       }
       std::string utf8Hostname =
-        util::encodeNonUtf8(util::strip(hostname->s()));
-      if(utf8Hostname.empty()) {
+          util::encodeNonUtf8(util::strip(hostname->s()));
+      if (utf8Hostname.empty()) {
         continue;
       }
       const Integer* port = downcast<Integer>(addrPairList->get(1));
-      if(!port || !(0 < port->i() && port->i() < 65536)) {
+      if (!port || !(0 < port->i() && port->i() < 65536)) {
         continue;
       }
       torrent->nodes.push_back(std::make_pair(utf8Hostname, port->i()));
@@ -407,32 +407,30 @@ void extractNodes
 } // namespace
 
 namespace {
-void processRootDictionary
-(const SharedHandle<DownloadContext>& ctx,
- const SharedHandle<ValueBase>& root,
- const SharedHandle<Option>& option,
- const std::string& defaultName,
- const std::string& overrideName,
- const std::vector<std::string>& uris)
+void processRootDictionary(const std::shared_ptr<DownloadContext>& ctx,
+                           const ValueBase* root,
+                           const std::shared_ptr<Option>& option,
+                           const std::string& defaultName,
+                           const std::string& overrideName,
+                           const std::vector<std::string>& uris)
 {
   const Dict* rootDict = downcast<Dict>(root);
-  if(!rootDict) {
+  if (!rootDict) {
     throw DL_ABORT_EX2("torrent file does not contain a root dictionary.",
                        error_code::BITTORRENT_PARSE_ERROR);
   }
   const Dict* infoDict = downcast<Dict>(rootDict->get(C_INFO));
-  if(!infoDict) {
-    throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_INFO.c_str()),
+  if (!infoDict) {
+    throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_INFO),
                        error_code::BITTORRENT_PARSE_ERROR);
   }
-  SharedHandle<TorrentAttribute> torrent(new TorrentAttribute());
+  auto torrent = make_unique<TorrentAttribute>();
 
   // retrieve infoHash
   std::string encodedInfoDict = bencode2::encode(infoDict);
   unsigned char infoHash[INFO_HASH_LENGTH];
   message_digest::digest(infoHash, INFO_HASH_LENGTH,
-                         MessageDigest::sha1(),
-                         encodedInfoDict.data(),
+                         MessageDigest::sha1().get(), encodedInfoDict.data(),
                          encodedInfoDict.size());
   torrent->infoHash.assign(&infoHash[0], &infoHash[INFO_HASH_LENGTH]);
   torrent->metadata = encodedInfoDict;
@@ -440,25 +438,33 @@ void processRootDictionary
 
   // calculate the number of pieces
   const String* piecesData = downcast<String>(infoDict->get(C_PIECES));
-  if(!piecesData) {
-    throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_PIECES.c_str()),
+  if (!piecesData) {
+    throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_PIECES),
                        error_code::BITTORRENT_PARSE_ERROR);
   }
   // Commented out To download 0 length torrent.
   //   if(piecesData.s().empty()) {
   //     throw DL_ABORT_EX("The length of piece hash is 0.");
   //   }
-  size_t numPieces = piecesData->s().size()/PIECE_HASH_LENGTH;
+  size_t numPieces = piecesData->s().size() / PIECE_HASH_LENGTH;
   // Commented out to download 0 length torrent.
   //   if(numPieces == 0) {
   //     throw DL_ABORT_EX("The number of pieces is 0.");
   //   }
   // retrieve piece length
-  const Integer* pieceLengthData = downcast<Integer>(infoDict->get(C_PIECE_LENGTH));
-  if(!pieceLengthData) {
-    throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_PIECE_LENGTH.c_str()),
+  const Integer* pieceLengthData =
+      downcast<Integer>(infoDict->get(C_PIECE_LENGTH));
+  if (!pieceLengthData) {
+    throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_PIECE_LENGTH),
                        error_code::BITTORRENT_PARSE_ERROR);
   }
+
+  if (pieceLengthData->i() < 0) {
+    throw DL_ABORT_EX2(
+        fmt(MSG_NEGATIVE_LENGTH_BT_INFO, C_PIECE_LENGTH, pieceLengthData->i()),
+        error_code::BITTORRENT_PARSE_ERROR);
+  }
+
   size_t pieceLength = pieceLengthData->i();
   ctx->setPieceLength(pieceLength);
   // retrieve piece hashes
@@ -466,231 +472,220 @@ void processRootDictionary
   // private flag
   const Integer* privateData = downcast<Integer>(infoDict->get(C_PRIVATE));
   int privatefg = 0;
-  if(privateData) {
-    if(privateData->i() == 1) {
+  if (privateData) {
+    if (privateData->i() == 1) {
       privatefg = 1;
     }
   }
-  if(privatefg) {
+  if (privatefg) {
     torrent->privateTorrent = true;
   }
   // retrieve uri-list.
-  // This implemantation obeys HTTP-Seeding specification:
+  // This implementation obeys HTTP-Seeding specification:
   // see http://www.getright.com/seedtorrent.html
   std::vector<std::string> urlList;
-  extractUrlList(torrent, urlList, rootDict->get(C_URL_LIST).get());
+  extractUrlList(torrent.get(), urlList, rootDict->get(C_URL_LIST));
   urlList.insert(urlList.end(), uris.begin(), uris.end());
   std::sort(urlList.begin(), urlList.end());
   urlList.erase(std::unique(urlList.begin(), urlList.end()), urlList.end());
 
   // retrieve file entries
-  extractFileEntries
-    (ctx, torrent, infoDict, option, defaultName, overrideName, urlList);
-  if((ctx->getTotalLength()+pieceLength-1)/pieceLength != numPieces) {
+  extractFileEntries(ctx, torrent.get(), infoDict, option, defaultName,
+                     overrideName, urlList);
+  if ((ctx->getTotalLength() + pieceLength - 1) / pieceLength != numPieces) {
     throw DL_ABORT_EX2("Too few/many piece hash.",
                        error_code::BITTORRENT_PARSE_ERROR);
   }
   // retrieve announce
-  extractAnnounce(torrent, rootDict);
+  extractAnnounce(torrent.get(), rootDict);
   // retrieve nodes
-  extractNodes(torrent, rootDict->get(C_NODES).get());
+  extractNodes(torrent.get(), rootDict->get(C_NODES));
 
-  const Integer* creationDate = downcast<Integer>(rootDict->get(C_CREATION_DATE));
-  if(creationDate) {
+  const Integer* creationDate =
+      downcast<Integer>(rootDict->get(C_CREATION_DATE));
+  if (creationDate) {
     torrent->creationDate = creationDate->i();
   }
   const String* commentUtf8 = downcast<String>(rootDict->get(C_COMMENT_UTF8));
-  if(commentUtf8) {
+  if (commentUtf8) {
     torrent->comment = util::encodeNonUtf8(commentUtf8->s());
-  } else {
+  }
+  else {
     const String* comment = downcast<String>(rootDict->get(C_COMMENT));
-    if(comment) {
+    if (comment) {
       torrent->comment = util::encodeNonUtf8(comment->s());
     }
   }
   const String* createdBy = downcast<String>(rootDict->get(C_CREATED_BY));
-  if(createdBy) {
+  if (createdBy) {
     torrent->createdBy = util::encodeNonUtf8(createdBy->s());
   }
 
-  ctx->setAttribute(CTX_ATTR_BT, torrent);
+  ctx->setAttribute(CTX_ATTR_BT, std::move(torrent));
 }
 } // namespace
 
 void load(const std::string& torrentFile,
-          const SharedHandle<DownloadContext>& ctx,
-          const SharedHandle<Option>& option,
+          const std::shared_ptr<DownloadContext>& ctx,
+          const std::shared_ptr<Option>& option,
           const std::string& overrideName)
 {
   ValueBaseBencodeParser parser;
-  processRootDictionary(ctx,
-                        parseFile(parser, torrentFile),
-                        option,
-                        torrentFile,
-                        overrideName,
-                        std::vector<std::string>());
+  processRootDictionary(ctx, parseFile(parser, torrentFile).get(), option,
+                        torrentFile, overrideName, std::vector<std::string>());
 }
 
 void load(const std::string& torrentFile,
-          const SharedHandle<DownloadContext>& ctx,
-          const SharedHandle<Option>& option,
-          const std::vector<std::string>& uris,
-          const std::string& overrideName)
+          const std::shared_ptr<DownloadContext>& ctx,
+          const std::shared_ptr<Option>& option,
+          const std::vector<std::string>& uris, const std::string& overrideName)
 {
   ValueBaseBencodeParser parser;
-  processRootDictionary(ctx,
-                        parseFile(parser, torrentFile),
-                        option,
-                        torrentFile,
-                        overrideName,
-                        uris);
+  processRootDictionary(ctx, parseFile(parser, torrentFile).get(), option,
+                        torrentFile, overrideName, uris);
 }
 
-void loadFromMemory(const unsigned char* content,
-                    size_t length,
-                    const SharedHandle<DownloadContext>& ctx,
-                    const SharedHandle<Option>& option,
+void loadFromMemory(const unsigned char* content, size_t length,
+                    const std::shared_ptr<DownloadContext>& ctx,
+                    const std::shared_ptr<Option>& option,
                     const std::string& defaultName,
                     const std::string& overrideName)
 {
-  processRootDictionary(ctx,
-                        bencode2::decode(content, length),
-                        option,
-                        defaultName,
-                        overrideName,
-                        std::vector<std::string>());
+  processRootDictionary(ctx, bencode2::decode(content, length).get(), option,
+                        defaultName, overrideName, std::vector<std::string>());
 }
 
-void loadFromMemory(const unsigned char* content,
-                    size_t length,
-                    const SharedHandle<DownloadContext>& ctx,
-                    const SharedHandle<Option>& option,
+void loadFromMemory(const unsigned char* content, size_t length,
+                    const std::shared_ptr<DownloadContext>& ctx,
+                    const std::shared_ptr<Option>& option,
                     const std::vector<std::string>& uris,
                     const std::string& defaultName,
                     const std::string& overrideName)
 {
-  processRootDictionary(ctx,
-                        bencode2::decode(content, length),
-                        option,
-                        defaultName,
-                        overrideName,
-                        uris);
+  processRootDictionary(ctx, bencode2::decode(content, length).get(), option,
+                        defaultName, overrideName, uris);
 }
 
 void loadFromMemory(const std::string& context,
-                    const SharedHandle<DownloadContext>& ctx,
-                    const SharedHandle<Option>& option,
+                    const std::shared_ptr<DownloadContext>& ctx,
+                    const std::shared_ptr<Option>& option,
                     const std::string& defaultName,
                     const std::string& overrideName)
 {
-  processRootDictionary
-    (ctx,
-     bencode2::decode(context),
-     option,
-     defaultName, overrideName,
-     std::vector<std::string>());
+  processRootDictionary(ctx, bencode2::decode(context).get(), option,
+                        defaultName, overrideName, std::vector<std::string>());
 }
 
 void loadFromMemory(const std::string& context,
-                    const SharedHandle<DownloadContext>& ctx,
-                    const SharedHandle<Option>& option,
+                    const std::shared_ptr<DownloadContext>& ctx,
+                    const std::shared_ptr<Option>& option,
                     const std::vector<std::string>& uris,
                     const std::string& defaultName,
                     const std::string& overrideName)
 {
-  processRootDictionary
-    (ctx,
-     bencode2::decode(context),
-     option,
-     defaultName, overrideName,
-     uris);
+  processRootDictionary(ctx, bencode2::decode(context).get(), option,
+                        defaultName, overrideName, uris);
 }
 
-void loadFromMemory(const SharedHandle<ValueBase>& torrent,
-                    const SharedHandle<DownloadContext>& ctx,
-                    const SharedHandle<Option>& option,
+void loadFromMemory(const ValueBase* torrent,
+                    const std::shared_ptr<DownloadContext>& ctx,
+                    const std::shared_ptr<Option>& option,
                     const std::vector<std::string>& uris,
                     const std::string& defaultName,
                     const std::string& overrideName)
 {
-  processRootDictionary
-    (ctx,
-     torrent,
-     option,
-     defaultName, overrideName,
-     uris);
+  processRootDictionary(ctx, torrent, option, defaultName, overrideName, uris);
 }
 
-SharedHandle<TorrentAttribute> getTorrentAttrs
-(const SharedHandle<DownloadContext>& dctx)
+TorrentAttribute* getTorrentAttrs(const std::shared_ptr<DownloadContext>& dctx)
 {
-  return static_pointer_cast<TorrentAttribute>(dctx->getAttribute(CTX_ATTR_BT));
+  return getTorrentAttrs(dctx.get());
 }
 
-const unsigned char*
-getInfoHash(const SharedHandle<DownloadContext>& dctx)
+TorrentAttribute* getTorrentAttrs(DownloadContext* dctx)
 {
-  return reinterpret_cast<const unsigned char*>
-    (getTorrentAttrs(dctx)->infoHash.data());
+  return static_cast<TorrentAttribute*>(dctx->getAttribute(CTX_ATTR_BT).get());
 }
 
-std::string
-getInfoHashString(const SharedHandle<DownloadContext>& dctx)
+const unsigned char* getInfoHash(const std::shared_ptr<DownloadContext>& dctx)
+{
+  return getInfoHash(dctx.get());
+}
+
+const unsigned char* getInfoHash(DownloadContext* dctx)
+{
+  return reinterpret_cast<const unsigned char*>(
+      getTorrentAttrs(dctx)->infoHash.data());
+}
+
+std::string getInfoHashString(const std::shared_ptr<DownloadContext>& dctx)
+{
+  return getInfoHashString(dctx.get());
+}
+
+std::string getInfoHashString(DownloadContext* dctx)
 {
   return util::toHex(getTorrentAttrs(dctx)->infoHash);
 }
 
-void computeFastSet
-(std::vector<size_t>& fastSet, const std::string& ipaddr,
- size_t numPieces, const unsigned char* infoHash, size_t fastSetSize)
+std::vector<size_t> computeFastSet(const std::string& ipaddr, size_t numPieces,
+                                   const unsigned char* infoHash,
+                                   size_t fastSetSize)
 {
+  std::vector<size_t> fastSet;
   unsigned char compact[COMPACT_LEN_IPV6];
   int compactlen = packcompact(compact, ipaddr, 0);
-  if(compactlen != COMPACT_LEN_IPV4) {
-    return;
+  if (compactlen != COMPACT_LEN_IPV4) {
+    return fastSet;
   }
-  if(numPieces < fastSetSize) {
+  if (numPieces < fastSetSize) {
     fastSetSize = numPieces;
   }
   unsigned char tx[24];
   memcpy(tx, compact, 4);
-  if((tx[0] & 0x80u) == 0 || (tx[0] & 0x40u) == 0) {
+  if ((tx[0] & 0x80u) == 0 || (tx[0] & 0x40u) == 0) {
     tx[2] = 0x00u;
     tx[3] = 0x00u;
-  } else {
+  }
+  else {
     tx[3] = 0x00u;
   }
-  memcpy(tx+4, infoHash, 20);
+  memcpy(tx + 4, infoHash, 20);
   unsigned char x[20];
-  SharedHandle<MessageDigest> sha1 = MessageDigest::sha1();
-  message_digest::digest(x, sizeof(x), sha1, tx, 24);
-  while(fastSet.size() < fastSetSize) {
-    for(size_t i = 0; i < 5 && fastSet.size() < fastSetSize; ++i) {
-      size_t j = i*4;
+  auto sha1 = MessageDigest::sha1();
+  message_digest::digest(x, sizeof(x), sha1.get(), tx, 24);
+  while (fastSet.size() < fastSetSize) {
+    for (size_t i = 0; i < 5 && fastSet.size() < fastSetSize; ++i) {
+      size_t j = i * 4;
       uint32_t ny;
-      memcpy(&ny, x+j, 4);
+      memcpy(&ny, x + j, 4);
       uint32_t y = ntohl(ny);
-      size_t index = y%numPieces;
-      if(std::find(fastSet.begin(), fastSet.end(), index) == fastSet.end()) {
+      size_t index = y % numPieces;
+      if (std::find(std::begin(fastSet), std::end(fastSet), index) ==
+          std::end(fastSet)) {
+
         fastSet.push_back(index);
       }
     }
     unsigned char temp[20];
     sha1->reset();
-    message_digest::digest(temp, sizeof(temp), sha1, x, sizeof(x));
+    message_digest::digest(temp, sizeof(temp), sha1.get(), x, sizeof(x));
     memcpy(x, temp, sizeof(x));
   }
+
+  return fastSet;
 }
 
 std::string generatePeerId(const std::string& peerIdPrefix)
 {
   std::string peerId = peerIdPrefix;
   unsigned char buf[20];
-  int len = 20-peerIdPrefix.size();
-  if(len > 0) {
+  int len = 20 - peerIdPrefix.size();
+  if (len > 0) {
     util::generateRandomData(buf, len);
     peerId.append(&buf[0], &buf[len]);
-  } if(peerId.size() > 20) {
+  }
+  if (peerId.size() > 20) {
     peerId.erase(20);
   }
   return peerId;
@@ -702,105 +697,96 @@ std::string peerId;
 
 const std::string& generateStaticPeerId(const std::string& peerIdPrefix)
 {
-  if(peerId.empty()) {
+  if (peerId.empty()) {
     peerId = generatePeerId(peerIdPrefix);
   }
   return peerId;
 }
 
-void setStaticPeerId(const std::string& newPeerId)
-{
-  peerId = newPeerId;
-}
+void setStaticPeerId(const std::string& newPeerId) { peerId = newPeerId; }
 
 // If PeerID is not generated, it is created with default peerIdPrefix
 // (aria2-).
 const unsigned char* getStaticPeerId()
 {
-  if(peerId.empty()) {
-    return
-      reinterpret_cast<const unsigned char*>
-      (generateStaticPeerId(DEFAULT_PEER_ID_PREFIX).data());
-  } else {
+  if (peerId.empty()) {
+    return reinterpret_cast<const unsigned char*>(
+        generateStaticPeerId(DEFAULT_PEER_ID_PREFIX).data());
+  }
+  else {
     return reinterpret_cast<const unsigned char*>(peerId.data());
   }
 }
 
-uint8_t getId(const unsigned char* msg)
-{
-  return msg[0];
-}
+uint8_t getId(const unsigned char* msg) { return msg[0]; }
 
 uint64_t getLLIntParam(const unsigned char* msg, size_t pos)
 {
   uint64_t nParam;
-  memcpy(&nParam, msg+pos, sizeof(nParam));
+  memcpy(&nParam, msg + pos, sizeof(nParam));
   return ntoh64(nParam);
 }
 
 uint32_t getIntParam(const unsigned char* msg, size_t pos)
 {
   uint32_t nParam;
-  memcpy(&nParam, msg+pos, sizeof(nParam));
+  memcpy(&nParam, msg + pos, sizeof(nParam));
   return ntohl(nParam);
 }
 
 uint16_t getShortIntParam(const unsigned char* msg, size_t pos)
 {
   uint16_t nParam;
-  memcpy(&nParam, msg+pos, sizeof(nParam));
+  memcpy(&nParam, msg + pos, sizeof(nParam));
   return ntohs(nParam);
 }
 
 void checkIndex(size_t index, size_t pieces)
 {
-  if(!(index < pieces)) {
-    throw DL_ABORT_EX(fmt("Invalid index: %lu",
-                          static_cast<unsigned long>(index)));
+  if (!(index < pieces)) {
+    throw DL_ABORT_EX(
+        fmt("Invalid index: %lu", static_cast<unsigned long>(index)));
   }
 }
 
 void checkBegin(int32_t begin, int32_t pieceLength)
 {
-  if(!(begin < pieceLength)) {
+  if (!(begin < pieceLength)) {
     throw DL_ABORT_EX(fmt("Invalid begin: %d", begin));
   }
 }
 
 void checkLength(int32_t length)
 {
-  if(length > MAX_BLOCK_LENGTH) {
-    throw DL_ABORT_EX
-      (fmt("Length too long: %d > %dKB", length, MAX_BLOCK_LENGTH/1024));
+  if (length > static_cast<int32_t>(MAX_BLOCK_LENGTH)) {
+    throw DL_ABORT_EX(fmt("Length too long: %d > %dKB", length,
+                          static_cast<int32_t>(MAX_BLOCK_LENGTH / 1024)));
   }
-  if(length == 0) {
+  if (length == 0) {
     throw DL_ABORT_EX(fmt("Invalid length: %d", length));
   }
 }
 
 void checkRange(int32_t begin, int32_t length, int32_t pieceLength)
 {
-  if(!(0 < length)) {
-    throw DL_ABORT_EX
-      (fmt("Invalid range: begin=%d, length=%d", begin, length));
+  if (!(0 < length)) {
+    throw DL_ABORT_EX(fmt("Invalid range: begin=%d, length=%d", begin, length));
   }
-  int32_t end = begin+length;
-  if(!(end <= pieceLength)) {
-    throw DL_ABORT_EX
-      (fmt("Invalid range: begin=%d, length=%d", begin, length));
+  int32_t end = begin + length;
+  if (!(end <= pieceLength)) {
+    throw DL_ABORT_EX(fmt("Invalid range: begin=%d, length=%d", begin, length));
   }
 }
 
-void checkBitfield
-(const unsigned char* bitfield, size_t bitfieldLength, size_t pieces)
+void checkBitfield(const unsigned char* bitfield, size_t bitfieldLength,
+                   size_t pieces)
 {
-  if(!(bitfieldLength == (pieces+7)/8)) {
-    throw DL_ABORT_EX
-      (fmt("Invalid bitfield length: %lu",
-           static_cast<unsigned long>(bitfieldLength)));
+  if (!(bitfieldLength == (pieces + 7) / 8)) {
+    throw DL_ABORT_EX(fmt("Invalid bitfield length: %lu",
+                          static_cast<unsigned long>(bitfieldLength)));
   }
   // Check if last byte contains garbage set bit.
-  if(bitfield[bitfieldLength-1]&~bitfield::lastByteMask(pieces)) {
+  if (bitfield[bitfieldLength - 1] & ~bitfield::lastByteMask(pieces)) {
     throw DL_ABORT_EX("Invalid bitfield");
   }
 }
@@ -823,8 +809,8 @@ void setShortIntParam(unsigned char* dest, uint16_t param)
   memcpy(dest, &nParam, sizeof(nParam));
 }
 
-void createPeerMessageString
-(unsigned char* msg, size_t msgLength, size_t payloadLength, uint8_t messageId)
+void createPeerMessageString(unsigned char* msg, size_t msgLength,
+                             size_t payloadLength, uint8_t messageId)
 {
   assert(msgLength >= 5);
   memset(msg, 0, msgLength);
@@ -832,116 +818,114 @@ void createPeerMessageString
   msg[4] = messageId;
 }
 
-int packcompact
-(unsigned char* compact, const std::string& addr, uint16_t port)
+size_t packcompact(unsigned char* compact, const std::string& addr,
+                   uint16_t port)
 {
   size_t len = net::getBinAddr(compact, addr);
-  if(len == 0) {
+  if (len == 0) {
     return 0;
   }
   uint16_t portN = htons(port);
-  memcpy(compact+len, &portN, sizeof(portN));
-  return len+2;
+  memcpy(compact + len, &portN, sizeof(portN));
+  return len + 2;
 }
 
-std::pair<std::string, uint16_t> unpackcompact
-(const unsigned char* compact, int family)
+std::pair<std::string, uint16_t> unpackcompact(const unsigned char* compact,
+                                               int family)
 {
   std::pair<std::string, uint16_t> r;
-  int portOffset = family == AF_INET?4:16;
+  int portOffset = family == AF_INET ? 4 : 16;
   char buf[NI_MAXHOST];
-  if(inetNtop(family, compact, buf, sizeof(buf)) == 0) {
+  if (inetNtop(family, compact, buf, sizeof(buf)) == 0) {
     r.first = buf;
     uint16_t portN;
-    memcpy(&portN, compact+portOffset, sizeof(portN));
+    memcpy(&portN, compact + portOffset, sizeof(portN));
     r.second = ntohs(portN);
   }
   return r;
 }
 
-void assertPayloadLengthGreater
-(size_t threshold, size_t actual, const char* msgName)
+void assertPayloadLengthGreater(size_t threshold, size_t actual,
+                                const char* msgName)
 {
-  if(actual <= threshold) {
-    throw DL_ABORT_EX
-      (fmt(MSG_TOO_SMALL_PAYLOAD_SIZE, msgName,
-           static_cast<unsigned long>(actual)));
+  if (actual <= threshold) {
+    throw DL_ABORT_EX(fmt(MSG_TOO_SMALL_PAYLOAD_SIZE, msgName,
+                          static_cast<unsigned long>(actual)));
   }
 }
 
-void assertPayloadLengthEqual
-(size_t expected, size_t actual, const char* msgName)
+void assertPayloadLengthEqual(size_t expected, size_t actual,
+                              const char* msgName)
 {
-  if(expected != actual) {
-    throw DL_ABORT_EX
-      (fmt(EX_INVALID_PAYLOAD_SIZE, msgName,
-           static_cast<unsigned long>(actual),
-           static_cast<unsigned long>(expected)));
+  if (expected != actual) {
+    throw DL_ABORT_EX(fmt(EX_INVALID_PAYLOAD_SIZE, msgName,
+                          static_cast<unsigned long>(actual),
+                          static_cast<unsigned long>(expected)));
   }
 }
 
-void assertID
-(uint8_t expected, const unsigned char* data, const char* msgName)
+void assertID(uint8_t expected, const unsigned char* data, const char* msgName)
 {
   uint8_t id = getId(data);
-  if(expected != id) {
-    throw DL_ABORT_EX
-      (fmt(EX_INVALID_BT_MESSAGE_ID, id, msgName, expected));
+  if (expected != id) {
+    throw DL_ABORT_EX(fmt(EX_INVALID_BT_MESSAGE_ID, id, msgName, expected));
   }
 }
 
-SharedHandle<TorrentAttribute> parseMagnet(const std::string& magnet)
+std::unique_ptr<TorrentAttribute> parseMagnet(const std::string& magnet)
 {
-  SharedHandle<Dict> r = magnet::parse(magnet);
-  if(!r) {
+  auto r = magnet::parse(magnet);
+  if (!r) {
     throw DL_ABORT_EX2("Bad BitTorrent Magnet URI.",
                        error_code::MAGNET_PARSE_ERROR);
   }
   const List* xts = downcast<List>(r->get("xt"));
-  if(!xts) {
+  if (!xts) {
     throw DL_ABORT_EX2("Missing xt parameter in Magnet URI.",
                        error_code::MAGNET_PARSE_ERROR);
   }
-  SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
+  auto attrs = make_unique<TorrentAttribute>();
   std::string infoHash;
-  for(List::ValueType::const_iterator xtiter = xts->begin(),
-        eoi = xts->end(); xtiter != eoi && infoHash.empty(); ++xtiter) {
+  for (auto xtiter = xts->begin(), eoi = xts->end();
+       xtiter != eoi && infoHash.empty(); ++xtiter) {
     const String* xt = downcast<String>(*xtiter);
-    if(util::startsWith(xt->s(), "urn:btih:")) {
-      size_t size = xt->s().end()-xt->s().begin()-9;
-      if(size == 32) {
-        std::string rawhash = base32::decode(xt->s().begin()+9, xt->s().end());
-        if(rawhash.size() == 20) {
+    if (util::startsWith(xt->s(), "urn:btih:")) {
+      size_t size = xt->s().end() - xt->s().begin() - 9;
+      if (size == 32) {
+        std::string rawhash =
+            base32::decode(xt->s().begin() + 9, xt->s().end());
+        if (rawhash.size() == 20) {
           infoHash.swap(rawhash);
         }
-      } else if(size == 40) {
-        std::string rawhash = util::fromHex(xt->s().begin()+9, xt->s().end());
-        if(!rawhash.empty()) {
+      }
+      else if (size == 40) {
+        std::string rawhash = util::fromHex(xt->s().begin() + 9, xt->s().end());
+        if (!rawhash.empty()) {
           infoHash.swap(rawhash);
         }
       }
     }
   }
-  if(infoHash.empty()) {
+  if (infoHash.empty()) {
     throw DL_ABORT_EX2("Bad BitTorrent Magnet URI. "
                        "No valid BitTorrent Info Hash found.",
                        error_code::MAGNET_PARSE_ERROR);
   }
   const List* trs = downcast<List>(r->get("tr"));
-  if(trs) {
-    for(List::ValueType::const_iterator i = trs->begin(), eoi = trs->end();
-        i != eoi; ++i) {
+  if (trs) {
+    for (auto& tr : *trs) {
       std::vector<std::string> tier;
-      tier.push_back(util::encodeNonUtf8(downcast<String>(*i)->s()));
+      tier.push_back(util::encodeNonUtf8(downcast<String>(tr)->s()));
       attrs->announceList.push_back(tier);
     }
   }
   std::string name = "[METADATA]";
   const List* dns = downcast<List>(r->get("dn"));
-  if(dns && !dns->empty()) {
+  if (dns && !dns->empty()) {
     const String* dn = downcast<String>(dns->get(0));
     name += util::encodeNonUtf8(dn->s());
-  } else {
+  }
+  else {
     name += util::toHex(infoHash);
   }
   attrs->infoHash = infoHash;
@@ -949,32 +933,28 @@ SharedHandle<TorrentAttribute> parseMagnet(const std::string& magnet)
   return attrs;
 }
 
-void loadMagnet
-(const std::string& magnet, const SharedHandle<DownloadContext>& dctx)
+void loadMagnet(const std::string& magnet,
+                const std::shared_ptr<DownloadContext>& dctx)
 {
-  SharedHandle<TorrentAttribute> attrs = parseMagnet(magnet);
-  dctx->setAttribute(CTX_ATTR_BT, attrs);
+  dctx->setAttribute(CTX_ATTR_BT, parseMagnet(magnet));
 }
 
-std::string metadata2Torrent
-(const std::string& metadata, const SharedHandle<TorrentAttribute>& attrs)
+std::string metadata2Torrent(const std::string& metadata,
+                             const TorrentAttribute* attrs)
 {
   std::string torrent = "d";
 
   List announceList;
-  for(std::vector<std::vector<std::string> >::const_iterator tierIter =
-        attrs->announceList.begin(),
-        eoi = attrs->announceList.end(); tierIter != eoi; ++tierIter) {
-    SharedHandle<List> tier = List::g();
-    for(std::vector<std::string>::const_iterator uriIter = (*tierIter).begin(),
-          eoi2 = (*tierIter).end(); uriIter != eoi2; ++uriIter) {
-      tier->append(String::g(*uriIter));
+  for (auto& elem : attrs->announceList) {
+    auto tier = List::g();
+    for (auto& uri : elem) {
+      tier->append(uri);
     }
-    if(!tier->empty()) {
-      announceList.append(tier);
+    if (!tier->empty()) {
+      announceList.append(std::move(tier));
     }
   }
-  if(!announceList.empty()) {
+  if (!announceList.empty()) {
     torrent += "13:announce-list";
     torrent += bencode2::encode(&announceList);
   }
@@ -984,26 +964,24 @@ std::string metadata2Torrent
   return torrent;
 }
 
-std::string torrent2Magnet(const SharedHandle<TorrentAttribute>& attrs)
+std::string torrent2Magnet(const TorrentAttribute* attrs)
 {
   std::string uri = "magnet:?";
-  if(!attrs->infoHash.empty()) {
+  if (!attrs->infoHash.empty()) {
     uri += "xt=urn:btih:";
     uri += util::toUpper(util::toHex(attrs->infoHash));
-  } else {
+  }
+  else {
     return A2STR::NIL;
   }
-  if(!attrs->name.empty()) {
+  if (!attrs->name.empty()) {
     uri += "&dn=";
     uri += util::percentEncode(attrs->name);
   }
-  for(std::vector<std::vector<std::string> >::const_iterator tierIter =
-        attrs->announceList.begin(),
-        eoi = attrs->announceList.end(); tierIter != eoi; ++tierIter) {
-    for(std::vector<std::string>::const_iterator uriIter = (*tierIter).begin(),
-          eoi2 = (*tierIter).end(); uriIter != eoi2; ++uriIter) {
+  for (auto& elem : attrs->announceList) {
+    for (auto& e : elem) {
       uri += "&tr=";
-      uri += util::percentEncode(*uriIter);
+      uri += util::percentEncode(e);
     }
   }
   return uri;
@@ -1011,58 +989,59 @@ std::string torrent2Magnet(const SharedHandle<TorrentAttribute>& attrs)
 
 int getCompactLength(int family)
 {
-  if(family == AF_INET) {
+  if (family == AF_INET) {
     return COMPACT_LEN_IPV4;
-  } else if(family == AF_INET6) {
+  }
+  else if (family == AF_INET6) {
     return COMPACT_LEN_IPV6;
-  } else {
+  }
+  else {
     return 0;
   }
 }
 
-void removeAnnounceUri
-(const SharedHandle<TorrentAttribute>& attrs,
- const std::vector<std::string>& uris)
+void removeAnnounceUri(TorrentAttribute* attrs,
+                       const std::vector<std::string>& uris)
 {
-  if(uris.empty()) {
+  if (uris.empty()) {
     return;
   }
-  if(std::find(uris.begin(), uris.end(), "*") == uris.end()) {
-    for(std::vector<std::vector<std::string> >::iterator i =
-          attrs->announceList.begin(); i != attrs->announceList.end();) {
-      for(std::vector<std::string>::iterator j =(*i).begin();j != (*i).end();) {
-        if(std::find(uris.begin(), uris.end(), *j) == uris.end()) {
+  if (std::find(uris.begin(), uris.end(), "*") == uris.end()) {
+    for (auto i = attrs->announceList.begin();
+         i != attrs->announceList.end();) {
+      for (auto j = (*i).begin(); j != (*i).end();) {
+        if (std::find(uris.begin(), uris.end(), *j) == uris.end()) {
           ++j;
-        } else {
+        }
+        else {
           j = (*i).erase(j);
         }
       }
-      if((*i).empty()) {
+      if ((*i).empty()) {
         i = attrs->announceList.erase(i);
-      } else {
+      }
+      else {
         ++i;
       }
     }
-  } else {
+  }
+  else {
     attrs->announceList.clear();
   }
 }
 
-void addAnnounceUri
-(const SharedHandle<TorrentAttribute>& attrs,
- const std::vector<std::string>& uris)
+void addAnnounceUri(TorrentAttribute* attrs,
+                    const std::vector<std::string>& uris)
 {
-  for(std::vector<std::string>::const_iterator i = uris.begin(),
-        eoi = uris.end(); i != eoi; ++i) {
+  for (auto& uri : uris) {
     std::vector<std::string> tier;
-    tier.push_back(*i);
+    tier.push_back(uri);
     attrs->announceList.push_back(tier);
   }
 }
 
-void adjustAnnounceUri
-(const SharedHandle<TorrentAttribute>& attrs,
- const SharedHandle<Option>& option)
+void adjustAnnounceUri(TorrentAttribute* attrs,
+                       const std::shared_ptr<Option>& option)
 {
   std::vector<std::string> excludeUris;
   std::vector<std::string> addUris;
@@ -1070,10 +1049,22 @@ void adjustAnnounceUri
   util::split(exTracker.begin(), exTracker.end(),
               std::back_inserter(excludeUris), ',', true);
   const std::string& btTracker = option->get(PREF_BT_TRACKER);
-  util::split(btTracker.begin(), btTracker.end(),
-              std::back_inserter(addUris), ',', true);
+  util::split(btTracker.begin(), btTracker.end(), std::back_inserter(addUris),
+              ',', true);
   removeAnnounceUri(attrs, excludeUris);
   addAnnounceUri(attrs, addUris);
+}
+
+const char* getModeString(BtFileMode mode)
+{
+  switch (mode) {
+  case BT_FILE_MODE_SINGLE:
+    return "single";
+  case BT_FILE_MODE_MULTI:
+    return "multi";
+  default:
+    return "";
+  }
 }
 
 } // namespace bittorrent

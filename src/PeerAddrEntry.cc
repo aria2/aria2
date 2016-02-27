@@ -37,22 +37,22 @@
 
 namespace aria2 {
 
-PeerAddrEntry::PeerAddrEntry
-(const std::string& ipaddr, uint16_t port, Timer updated)
-  : ipaddr_(ipaddr), port_(port), lastUpdated_(updated)
-{}
+PeerAddrEntry::PeerAddrEntry(const std::string& ipaddr, uint16_t port,
+                             Timer updated)
+    : ipaddr_(ipaddr), port_(port), lastUpdated_(updated)
+{
+}
 
 PeerAddrEntry::PeerAddrEntry(const PeerAddrEntry& c)
-  : ipaddr_(c.ipaddr_),
-    port_(c.port_),
-    lastUpdated_(c.lastUpdated_)
-{}
+    : ipaddr_(c.ipaddr_), port_(c.port_), lastUpdated_(c.lastUpdated_)
+{
+}
 
 PeerAddrEntry::~PeerAddrEntry() {}
 
 PeerAddrEntry& PeerAddrEntry::operator=(const PeerAddrEntry& c)
 {
-  if(this != &c) {
+  if (this != &c) {
     ipaddr_ = c.ipaddr_;
     port_ = c.port_;
     lastUpdated_ = c.lastUpdated_;
@@ -60,10 +60,7 @@ PeerAddrEntry& PeerAddrEntry::operator=(const PeerAddrEntry& c)
   return *this;
 }
 
-void PeerAddrEntry::notifyUpdate()
-{
-  lastUpdated_ = global::wallclock();
-}
+void PeerAddrEntry::notifyUpdate() { lastUpdated_ = global::wallclock(); }
 
 bool PeerAddrEntry::operator==(const PeerAddrEntry& entry) const
 {

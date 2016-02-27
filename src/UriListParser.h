@@ -40,18 +40,19 @@
 #include <string>
 #include <deque>
 #include <iosfwd>
+#include <memory>
 
 #include "Option.h"
-#include "BufferedFile.h"
-#include "SharedHandle.h"
+#include "IOFile.h"
 
 namespace aria2 {
 
 class UriListParser {
 private:
-  SharedHandle<BufferedFile> fp_;
+  std::unique_ptr<IOFile> fp_;
 
   std::string line_;
+
 public:
   UriListParser(const std::string& filename);
 

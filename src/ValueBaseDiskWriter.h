@@ -44,63 +44,50 @@ namespace aria2 {
 // consumed by ValueBaseParser. It is only capable of sequential write
 // so offset argument in write() will be ignored. It also does not
 // offer read().
-template<class ValueBaseParser>
-class ValueBaseDiskWriter : public DiskWriter {
+template <class ValueBaseParser> class ValueBaseDiskWriter : public DiskWriter {
 public:
-  ValueBaseDiskWriter()
-    : parser_(&psm_)
-  {}
+  ValueBaseDiskWriter() : parser_(&psm_) {}
 
-  virtual ~ValueBaseDiskWriter()
-  {}
+  virtual ~ValueBaseDiskWriter() {}
 
-  virtual void initAndOpenFile(int64_t totalLength = 0)
+  virtual void initAndOpenFile(int64_t totalLength = 0) CXX11_OVERRIDE
   {
     parser_.reset();
   }
 
-  virtual void openFile(int64_t totalLength = 0)
+  virtual void openFile(int64_t totalLength = 0) CXX11_OVERRIDE
   {
     initAndOpenFile(totalLength);
   }
 
-  virtual void closeFile() {}
+  virtual void closeFile() CXX11_OVERRIDE {}
 
-  virtual void openExistingFile(int64_t totalLength = 0)
+  virtual void openExistingFile(int64_t totalLength = 0) CXX11_OVERRIDE
   {
     initAndOpenFile(totalLength);
   }
 
-  virtual int64_t size()
-  {
-    return 0;
-  }
+  virtual int64_t size() CXX11_OVERRIDE { return 0; }
 
-  virtual void writeData(const unsigned char* data, size_t len, int64_t offset)
+  virtual void writeData(const unsigned char* data, size_t len,
+                         int64_t offset) CXX11_OVERRIDE
   {
     // Return value is ignored here but handled in finalize()
     parser_.parseUpdate(reinterpret_cast<const char*>(data), len);
   }
 
-  virtual ssize_t readData(unsigned char* data, size_t len, int64_t offset)
+  virtual ssize_t readData(unsigned char* data, size_t len,
+                           int64_t offset) CXX11_OVERRIDE
   {
     return 0;
   }
 
-  int finalize()
-  {
-    return parser_.parseFinal(0, 0);
-  }
+  int finalize() { return parser_.parseFinal(0, 0); }
 
-  SharedHandle<ValueBase> getResult() const
-  {
-    return psm_.getResult();
-  }
+  std::unique_ptr<ValueBase> getResult() { return psm_.getResult(); }
 
-  void reset()
-  {
-    parser_.reset();
-  }
+  void reset() { parser_.reset(); }
+
 private:
   ValueBaseStructParserStateMachine psm_;
   ValueBaseParser parser_;

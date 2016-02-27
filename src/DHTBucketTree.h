@@ -38,8 +38,8 @@
 #include "common.h"
 
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "DHTConstants.h"
 
 namespace aria2 {
@@ -53,27 +53,29 @@ class DHTNode;
 class DHTBucketTreeNode {
 public:
   // Ctor for internal node
-  DHTBucketTreeNode(DHTBucketTreeNode* left, DHTBucketTreeNode* right);
+  DHTBucketTreeNode(std::unique_ptr<DHTBucketTreeNode> left,
+                    std::unique_ptr<DHTBucketTreeNode> right);
   // Ctor for leaf node
-  DHTBucketTreeNode(const SharedHandle<DHTBucket>& bucket);
+  DHTBucketTreeNode(std::shared_ptr<DHTBucket> bucket);
   ~DHTBucketTreeNode();
   // Returns child node, left or right, which contains key.  If dig is
   // called against leaf node, then returns 0.
   DHTBucketTreeNode* dig(const unsigned char* key);
   bool isInRange(const unsigned char* key) const;
   // Returns true iff this is a leaf node.
-  bool leaf() const { return bucket_; }
+  bool leaf() const { return bucket_.get(); }
   const unsigned char* getMaxId() const { return maxId_; }
   const unsigned char* getMinId() const { return minId_; }
   DHTBucketTreeNode* getParent() const { return parent_; }
-  DHTBucketTreeNode* getLeft() const { return left_; }
-  DHTBucketTreeNode* getRight() const { return right_; }
-  const SharedHandle<DHTBucket>& getBucket() const { return bucket_; }
+  DHTBucketTreeNode* getLeft() const { return left_.get(); }
+  DHTBucketTreeNode* getRight() const { return right_.get(); }
+  const std::shared_ptr<DHTBucket>& getBucket() const { return bucket_; }
   // Splits this object's bucket using DHTBucket::split() and create
   // left and right child node to hold buckets. The bucket of current
-  // node is reseted so this node becomes internal node after this
+  // node is reset so this node becomes internal node after this
   // call.
   void split();
+
 private:
   // Do not allow copying
   DHTBucketTreeNode(const DHTBucketTreeNode&);
@@ -83,9 +85,9 @@ private:
   void resetRelation();
   void setParent(DHTBucketTreeNode* parent) { parent_ = parent; }
   DHTBucketTreeNode* parent_;
-  DHTBucketTreeNode* left_;
-  DHTBucketTreeNode* right_;
-  SharedHandle<DHTBucket> bucket_;
+  std::unique_ptr<DHTBucketTreeNode> left_;
+  std::unique_ptr<DHTBucketTreeNode> right_;
+  std::shared_ptr<DHTBucket> bucket_;
   unsigned char minId_[DHT_ID_LENGTH];
   unsigned char maxId_[DHT_ID_LENGTH];
 };
@@ -94,27 +96,25 @@ namespace dht {
 
 // Returns leaf node where key fits between node's min and max ID
 // range.
-DHTBucketTreeNode* findTreeNodeFor
-(DHTBucketTreeNode* root, const unsigned char* key);
+DHTBucketTreeNode* findTreeNodeFor(DHTBucketTreeNode* root,
+                                   const unsigned char* key);
 
 // Returns bucket where key fits between bucket's min and max ID
 // range. This function first use findTreeNodeFor and returns its
 // bucket_.
-SharedHandle<DHTBucket> findBucketFor
-(DHTBucketTreeNode* root, const unsigned char* key);
+std::shared_ptr<DHTBucket> findBucketFor(DHTBucketTreeNode* root,
+                                         const unsigned char* key);
 
 // Stores most closest K nodes against key in nodes. K is
 // DHTBucket::K. This function may returns less than K nodes because
 // the routing tree contains less than K nodes. The order of nodes is
 // arbitrary.  Caller must pass empty nodes.
-void findClosestKNodes
-(std::vector<SharedHandle<DHTNode> >& nodes,
- DHTBucketTreeNode* root,
- const unsigned char* key);
+void findClosestKNodes(std::vector<std::shared_ptr<DHTNode>>& nodes,
+                       DHTBucketTreeNode* root, const unsigned char* key);
 
 // Stores all buckets in buckets.
-void enumerateBucket
-(std::vector<SharedHandle<DHTBucket> >& buckets, DHTBucketTreeNode* root);
+void enumerateBucket(std::vector<std::shared_ptr<DHTBucket>>& buckets,
+                     DHTBucketTreeNode* root);
 
 } // namespace dht
 

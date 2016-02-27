@@ -11,7 +11,7 @@
 
 namespace aria2 {
 
-class DHTBucketTest:public CppUnit::TestFixture {
+class DHTBucketTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTBucketTest);
   CPPUNIT_TEST(testGetRandomNodeID);
@@ -26,6 +26,7 @@ class DHTBucketTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testDropNode);
   CPPUNIT_TEST(testGetNode);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -44,30 +45,26 @@ public:
   void testGetNode();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(DHTBucketTest);
 
 void DHTBucketTest::testGetRandomNodeID()
 {
-  unsigned char localNodeID[] = { 0x00, 0x00, 0x00, 0x00, 0x00,
-                                  0x00, 0x00, 0x00, 0x00, 0x00,
-                                  0x00, 0x00, 0x00, 0x00, 0x00,
-                                  0x00, 0x00, 0x00, 0x00, 0x00 };
-  SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
+  unsigned char localNodeID[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  std::shared_ptr<DHTNode> localNode(new DHTNode(localNodeID));
   {
     DHTBucket bucket(localNode);
     unsigned char nodeID[DHT_ID_LENGTH];
     bucket.getRandomNodeID(nodeID);
   }
   {
-    unsigned char max[] = { 0x01, 0x01, 0xff, 0xff, 0xff,
-                            0xff, 0xff, 0xff, 0xff, 0xff,
-                            0xff, 0xff, 0xff, 0xff, 0xff,
-                            0xff, 0xff, 0xff, 0xff, 0xff };
-    unsigned char min[] = { 0x01, 0x01, 0x00, 0x00, 0x00,
-                            0x00, 0x00, 0x00, 0x00, 0x00,
-                            0x00, 0x00, 0x00, 0x00, 0x00,
-                            0x00, 0x00, 0x00, 0x00, 0x00 };
+    unsigned char max[] = {0x01, 0x01, 0xff, 0xff, 0xff, 0xff, 0xff,
+                           0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+                           0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+    unsigned char min[] = {0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+                           0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                           0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
     DHTBucket bucket(16, max, min, localNode);
     unsigned char nodeID[DHT_ID_LENGTH];
     bucket.getRandomNodeID(nodeID);
@@ -78,77 +75,68 @@ void DHTBucketTest::testGetRandomNodeID()
 
 void DHTBucketTest::testIsInRange()
 {
-  unsigned char localNodeID[] = { 0x00, 0x00, 0x00, 0x00, 0x00,
-                                  0x00, 0x00, 0x00, 0x00, 0x00,
-                                  0x00, 0x00, 0x00, 0x00, 0x00,
-                                  0x00, 0x00, 0x00, 0x00, 0x00 };
-  SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
+  unsigned char localNodeID[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  std::shared_ptr<DHTNode> localNode(new DHTNode(localNodeID));
   {
-    unsigned char nodeID[] = { 0x00, 0x00, 0x00, 0x00, 0x00,
-                               0x00, 0x00, 0x00, 0x00, 0x00,
-                               0x00, 0x00, 0x00, 0x00, 0x00,
-                               0x00, 0x00, 0x00, 0x00, 0x00 };
-    SharedHandle<DHTNode> node(new DHTNode(nodeID));
+    unsigned char nodeID[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                              0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+    std::shared_ptr<DHTNode> node(new DHTNode(nodeID));
     DHTBucket bucket(localNode);
     CPPUNIT_ASSERT(bucket.isInRange(node));
     memset(nodeID, 0xff, sizeof(nodeID));
     CPPUNIT_ASSERT(bucket.isInRange(node));
   }
   {
-    unsigned char max[] = { 0x01, 0x01, 0xff, 0xff, 0xff,
-                            0xff, 0xff, 0xff, 0xff, 0xff,
-                            0xff, 0xff, 0xff, 0xff, 0xff,
-                            0xff, 0xff, 0xff, 0xff, 0xff };
-    unsigned char min[] = { 0x01, 0x01, 0x00, 0x00, 0x00,
-                            0x00, 0x00, 0x00, 0x00, 0x00,
-                            0x00, 0x00, 0x00, 0x00, 0x00,
-                            0x00, 0x00, 0x00, 0x00, 0x00 };
+    unsigned char max[] = {0x01, 0x01, 0xff, 0xff, 0xff, 0xff, 0xff,
+                           0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+                           0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+    unsigned char min[] = {0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+                           0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                           0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
     {
-      //min
-      unsigned char nodeID[] = { 0x01, 0x01, 0x00, 0x00, 0x00,
-                                 0x00, 0x00, 0x00, 0x00, 0x00,
-                                 0x00, 0x00, 0x00, 0x00, 0x00,
-                                 0x00, 0x00, 0x00, 0x00, 0x00 };
-      SharedHandle<DHTNode> node(new DHTNode(nodeID));
+      // min
+      unsigned char nodeID[] = {0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+      std::shared_ptr<DHTNode> node(new DHTNode(nodeID));
       DHTBucket bucket(16, max, min, localNode);
       CPPUNIT_ASSERT(bucket.isInRange(node));
     }
     {
-      //max
-      unsigned char nodeID[] = { 0x01, 0x01, 0xff, 0xff, 0xff,
-                                 0xff, 0xff, 0xff, 0xff, 0xff,
-                                 0xff, 0xff, 0xff, 0xff, 0xff,
-                                 0xff, 0xff, 0xff, 0xff, 0xff };
-      SharedHandle<DHTNode> node(new DHTNode(nodeID));
+      // max
+      unsigned char nodeID[] = {0x01, 0x01, 0xff, 0xff, 0xff, 0xff, 0xff,
+                                0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+                                0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+      std::shared_ptr<DHTNode> node(new DHTNode(nodeID));
       DHTBucket bucket(16, max, min, localNode);
       CPPUNIT_ASSERT(bucket.isInRange(node));
     }
     {
-      unsigned char nodeID[] = { 0x01, 0x01, 0x00, 0x00, 0x00,
-                                 0x00, 0x00, 0x00, 0x00, 0x00,
-                                 0xff, 0xff, 0xff, 0xff, 0xff,
-                                 0xff, 0xff, 0xff, 0xff, 0xff };
-      SharedHandle<DHTNode> node(new DHTNode(nodeID));
+      unsigned char nodeID[] = {0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff,
+                                0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+      std::shared_ptr<DHTNode> node(new DHTNode(nodeID));
       DHTBucket bucket(16, max, min, localNode);
       CPPUNIT_ASSERT(bucket.isInRange(node));
     }
     {
       // nodeID is out of range: smaller than this range
-      unsigned char nodeID[] = { 0x00, 0x00, 0x00, 0x00, 0x00,
-                                 0x00, 0x00, 0x00, 0x00, 0x00,
-                                 0x00, 0x00, 0x00, 0x00, 0x00,
-                                 0x00, 0x00, 0x00, 0x00, 0x00 };
-      SharedHandle<DHTNode> node(new DHTNode(nodeID));
+      unsigned char nodeID[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+      std::shared_ptr<DHTNode> node(new DHTNode(nodeID));
       DHTBucket bucket(16, max, min, localNode);
       CPPUNIT_ASSERT(!bucket.isInRange(node));
     }
     {
       // nodeID is out of range: larger than this range
-      unsigned char nodeID[] = { 0x01, 0x02, 0xff, 0xff, 0xff,
-                                 0xff, 0xff, 0xff, 0xff, 0xff,
-                                 0xff, 0xff, 0xff, 0xff, 0xff,
-                                 0xff, 0xff, 0xff, 0xff, 0xff };
-      SharedHandle<DHTNode> node(new DHTNode(nodeID));
+      unsigned char nodeID[] = {0x01, 0x02, 0xff, 0xff, 0xff, 0xff, 0xff,
+                                0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+                                0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+      std::shared_ptr<DHTNode> node(new DHTNode(nodeID));
       DHTBucket bucket(16, max, min, localNode);
       CPPUNIT_ASSERT(!bucket.isInRange(node));
     }
@@ -158,38 +146,33 @@ void DHTBucketTest::testIsInRange()
 void DHTBucketTest::testSplitAllowed()
 {
   {
-    unsigned char localNodeID[] = { 0x00, 0x00, 0x00, 0x00, 0x00,
-                                    0x00, 0x00, 0x00, 0x00, 0x00,
-                                    0x00, 0x00, 0x00, 0x00, 0x00,
-                                    0x00, 0x00, 0x00, 0x00, 0x00 };
-    SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
+    unsigned char localNodeID[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+    std::shared_ptr<DHTNode> localNode(new DHTNode(localNodeID));
     DHTBucket bucket(localNode);
     CPPUNIT_ASSERT(bucket.splitAllowed());
   }
   {
-    unsigned char max[] = { 0xff, 0xff, 0xff, 0xff, 0xff,
-                            0xff, 0xff, 0xff, 0xff, 0xff,
-                            0xff, 0xff, 0xff, 0xff, 0xff,
-                            0xff, 0xff, 0xff, 0xff, 0xff };
-    unsigned char min[] = { 0xe0, 0x00, 0x00, 0x00, 0x00,
-                            0x00, 0x00, 0x00, 0x00, 0x00,
-                            0x00, 0x00, 0x00, 0x00, 0x00,
-                            0x00, 0x00, 0x00, 0x00, 0x00 };
+    unsigned char max[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+                           0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+                           0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+    unsigned char min[] = {0xe0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                           0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                           0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
     {
-      unsigned char localNodeID[] = { 0x00, 0x00, 0x00, 0x00, 0x00,
-                                      0x00, 0x00, 0x00, 0x00, 0x00,
-                                      0x00, 0x00, 0x00, 0x00, 0x00,
-                                      0x00, 0x00, 0x00, 0x00, 0x00 };
-      SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
+      unsigned char localNodeID[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+      std::shared_ptr<DHTNode> localNode(new DHTNode(localNodeID));
       DHTBucket bucket(3, max, min, localNode);
       CPPUNIT_ASSERT(!bucket.splitAllowed());
     }
     {
-      unsigned char localNodeID[] = { 0xe0, 0x00, 0x00, 0x00, 0x00,
-                                      0x00, 0x00, 0x00, 0x00, 0x00,
-                                      0x00, 0x00, 0x00, 0x00, 0x00,
-                                      0x00, 0x00, 0x00, 0x00, 0x01 };
-      SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
+      unsigned char localNodeID[] = {0xe0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                     0x00, 0x00, 0x00, 0x00, 0x00, 0x01};
+      std::shared_ptr<DHTNode> localNode(new DHTNode(localNodeID));
       DHTBucket bucket(3, max, min, localNode);
       CPPUNIT_ASSERT(bucket.splitAllowed());
     }
@@ -201,15 +184,14 @@ void DHTBucketTest::testSplit()
   {
     unsigned char localNodeID[DHT_ID_LENGTH];
     memset(localNodeID, 0, DHT_ID_LENGTH);
-    SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
+    std::shared_ptr<DHTNode> localNode(new DHTNode(localNodeID));
     {
       DHTBucket bucket(localNode);
-      SharedHandle<DHTBucket> r = bucket.split();
+      std::shared_ptr<DHTBucket> r = bucket.split();
       {
-        unsigned char expectedRMax[] = { 0x7f, 0xff, 0xff, 0xff, 0xff,
-                                         0xff, 0xff, 0xff, 0xff, 0xff,
-                                         0xff, 0xff, 0xff, 0xff, 0xff,
-                                         0xff, 0xff, 0xff, 0xff, 0xff };
+        unsigned char expectedRMax[] = {
+            0x7f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
         unsigned char expectedRMin[DHT_ID_LENGTH];
         memset(expectedRMin, 0, DHT_ID_LENGTH);
         CPPUNIT_ASSERT_EQUAL(util::toHex(expectedRMax, DHT_ID_LENGTH),
@@ -221,10 +203,9 @@ void DHTBucketTest::testSplit()
       {
         unsigned char expectedLMax[DHT_ID_LENGTH];
         memset(expectedLMax, 0xff, DHT_ID_LENGTH);
-        unsigned char expectedLMin[] = { 0x80, 0x00, 0x00, 0x00, 0x00,
-                                         0x00, 0x00, 0x00, 0x00, 0x00,
-                                         0x00, 0x00, 0x00, 0x00, 0x00,
-                                         0x00, 0x00, 0x00, 0x00, 0x00 };
+        unsigned char expectedLMin[] = {
+            0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
         CPPUNIT_ASSERT_EQUAL(util::toHex(expectedLMax, DHT_ID_LENGTH),
                              util::toHex(bucket.getMaxID(), DHT_ID_LENGTH));
         CPPUNIT_ASSERT_EQUAL(util::toHex(expectedLMin, DHT_ID_LENGTH),
@@ -233,18 +214,17 @@ void DHTBucketTest::testSplit()
       }
     }
     {
-      SharedHandle<DHTBucket> bucket(new DHTBucket(localNode));
-      for(int i = 0; i < 159; ++i) {
+      std::shared_ptr<DHTBucket> bucket(new DHTBucket(localNode));
+      for (int i = 0; i < 159; ++i) {
         CPPUNIT_ASSERT(bucket->splitAllowed());
-        SharedHandle<DHTBucket> t = bucket;
+        std::shared_ptr<DHTBucket> t = bucket;
         bucket = bucket->split();
         CPPUNIT_ASSERT(!t->splitAllowed());
       }
       CPPUNIT_ASSERT(!bucket->splitAllowed());
-      unsigned char expectedMax[] = { 0x00, 0x00, 0x00, 0x00, 0x00,
-                                      0x00, 0x00, 0x00, 0x00, 0x00,
-                                      0x00, 0x00, 0x00, 0x00, 0x00,
-                                      0x00, 0x00, 0x00, 0x00, 0x01 };
+      unsigned char expectedMax[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                     0x00, 0x00, 0x00, 0x00, 0x00, 0x01};
       unsigned char expectedMin[DHT_ID_LENGTH];
       memset(expectedMin, 0, DHT_ID_LENGTH);
       CPPUNIT_ASSERT_EQUAL(util::toHex(expectedMax, DHT_ID_LENGTH),
@@ -258,14 +238,13 @@ void DHTBucketTest::testSplit()
     unsigned char localNodeID[DHT_ID_LENGTH];
     memset(localNodeID, 0, DHT_ID_LENGTH);
     localNodeID[0] = 0x80;
-    SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
+    std::shared_ptr<DHTNode> localNode(new DHTNode(localNodeID));
     DHTBucket bucket(localNode);
-    SharedHandle<DHTBucket> r = bucket.split();
+    std::shared_ptr<DHTBucket> r = bucket.split();
     {
-      unsigned char expectedRMax[] = { 0x7f, 0xff, 0xff, 0xff, 0xff,
-                                       0xff, 0xff, 0xff, 0xff, 0xff,
-                                       0xff, 0xff, 0xff, 0xff, 0xff,
-                                       0xff, 0xff, 0xff, 0xff, 0xff };
+      unsigned char expectedRMax[] = {0x7f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+                                      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+                                      0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
       unsigned char expectedRMin[DHT_ID_LENGTH];
       memset(expectedRMin, 0, DHT_ID_LENGTH);
       CPPUNIT_ASSERT_EQUAL(util::toHex(expectedRMax, DHT_ID_LENGTH),
@@ -277,10 +256,9 @@ void DHTBucketTest::testSplit()
     {
       unsigned char expectedLMax[DHT_ID_LENGTH];
       memset(expectedLMax, 0xff, DHT_ID_LENGTH);
-      unsigned char expectedLMin[] = { 0x80, 0x00, 0x00, 0x00, 0x00,
-                                       0x00, 0x00, 0x00, 0x00, 0x00,
-                                       0x00, 0x00, 0x00, 0x00, 0x00,
-                                       0x00, 0x00, 0x00, 0x00, 0x00 };
+      unsigned char expectedLMin[] = {0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                      0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
       CPPUNIT_ASSERT_EQUAL(util::toHex(expectedLMax, DHT_ID_LENGTH),
                            util::toHex(bucket.getMaxID(), DHT_ID_LENGTH));
       CPPUNIT_ASSERT_EQUAL(util::toHex(expectedLMin, DHT_ID_LENGTH),
@@ -288,15 +266,15 @@ void DHTBucketTest::testSplit()
       CPPUNIT_ASSERT_EQUAL((size_t)1, bucket.getPrefixLength());
     }
   }
-
 }
 
 namespace {
-void createID(unsigned char* id, unsigned char firstChar, unsigned char lastChar)
+void createID(unsigned char* id, unsigned char firstChar,
+              unsigned char lastChar)
 {
   memset(id, 0, DHT_ID_LENGTH);
   id[0] = firstChar;
-  id[DHT_ID_LENGTH-1] = lastChar;
+  id[DHT_ID_LENGTH - 1] = lastChar;
 }
 } // namespace
 
@@ -304,18 +282,18 @@ void DHTBucketTest::testAddNode()
 {
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0, DHT_ID_LENGTH);
-  SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
+  std::shared_ptr<DHTNode> localNode(new DHTNode(localNodeID));
   DHTBucket bucket(localNode);
 
   unsigned char id[DHT_ID_LENGTH];
-  SharedHandle<DHTNode> nodes[8];
-  for(size_t i = 0; i < DHTBucket::K; ++i) {
+  std::shared_ptr<DHTNode> nodes[8];
+  for (size_t i = 0; i < DHTBucket::K; ++i) {
     createID(id, 0xf0, i);
     nodes[i].reset(new DHTNode(id));
     CPPUNIT_ASSERT(bucket.addNode(nodes[i]));
   }
   createID(id, 0xf0, 0xff);
-  SharedHandle<DHTNode> newNode(new DHTNode(id));
+  std::shared_ptr<DHTNode> newNode(new DHTNode(id));
   CPPUNIT_ASSERT(!bucket.addNode(newNode));
 
   // nodes[0] is located at the tail of the bucket(least recent seen)
@@ -328,30 +306,30 @@ void DHTBucketTest::testMoveToHead()
 {
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0, DHT_ID_LENGTH);
-  SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
+  std::shared_ptr<DHTNode> localNode(new DHTNode(localNodeID));
   DHTBucket bucket(localNode);
 
   unsigned char id[DHT_ID_LENGTH];
-  SharedHandle<DHTNode> nodes[8];
-  for(size_t i = 0; i < DHTBucket::K; ++i) {
+  std::shared_ptr<DHTNode> nodes[8];
+  for (size_t i = 0; i < DHTBucket::K; ++i) {
     createID(id, 0xf0, i);
     nodes[i].reset(new DHTNode(id));
     CPPUNIT_ASSERT(bucket.addNode(nodes[i]));
   }
-  bucket.moveToHead(nodes[DHTBucket::K-1]);
-  CPPUNIT_ASSERT(*bucket.getNodes().front() == *nodes[DHTBucket::K-1]);
+  bucket.moveToHead(nodes[DHTBucket::K - 1]);
+  CPPUNIT_ASSERT(*bucket.getNodes().front() == *nodes[DHTBucket::K - 1]);
 }
 
 void DHTBucketTest::testMoveToTail()
 {
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0, DHT_ID_LENGTH);
-  SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
+  std::shared_ptr<DHTNode> localNode(new DHTNode(localNodeID));
   DHTBucket bucket(localNode);
 
   unsigned char id[DHT_ID_LENGTH];
-  SharedHandle<DHTNode> nodes[8];
-  for(size_t i = 0; i < DHTBucket::K; ++i) {
+  std::shared_ptr<DHTNode> nodes[8];
+  for (size_t i = 0; i < DHTBucket::K; ++i) {
     createID(id, 0xf0, i);
     nodes[i].reset(new DHTNode(id));
     CPPUNIT_ASSERT(bucket.addNode(nodes[i]));
@@ -364,20 +342,20 @@ void DHTBucketTest::testGetGoodNodes()
 {
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0, DHT_ID_LENGTH);
-  SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
+  std::shared_ptr<DHTNode> localNode(new DHTNode(localNodeID));
   DHTBucket bucket(localNode);
 
   unsigned char id[DHT_ID_LENGTH];
-  SharedHandle<DHTNode> nodes[8];
-  for(size_t i = 0; i < DHTBucket::K; ++i) {
+  std::shared_ptr<DHTNode> nodes[8];
+  for (size_t i = 0; i < DHTBucket::K; ++i) {
     createID(id, 0xf0, i);
     nodes[i].reset(new DHTNode(id));
-    nodes[i]->setPort(6881+i);
+    nodes[i]->setPort(6881 + i);
     CPPUNIT_ASSERT(bucket.addNode(nodes[i]));
   }
   nodes[3]->markBad();
   nodes[5]->markBad();
-  std::vector<SharedHandle<DHTNode> > goodNodes;
+  std::vector<std::shared_ptr<DHTNode>> goodNodes;
   bucket.getGoodNodes(goodNodes);
   CPPUNIT_ASSERT_EQUAL((size_t)6, goodNodes.size());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, goodNodes[0]->getPort());
@@ -392,12 +370,12 @@ void DHTBucketTest::testCacheNode()
 {
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0, DHT_ID_LENGTH);
-  SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
+  std::shared_ptr<DHTNode> localNode(new DHTNode(localNodeID));
   DHTBucket bucket(localNode);
 
-  SharedHandle<DHTNode> n1(new DHTNode());
-  SharedHandle<DHTNode> n2(new DHTNode());
-  SharedHandle<DHTNode> n3(new DHTNode());
+  std::shared_ptr<DHTNode> n1(new DHTNode());
+  std::shared_ptr<DHTNode> n2(new DHTNode());
+  std::shared_ptr<DHTNode> n3(new DHTNode());
 
   bucket.cacheNode(n1);
   bucket.cacheNode(n2);
@@ -414,25 +392,25 @@ void DHTBucketTest::testDropNode()
 {
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0, DHT_ID_LENGTH);
-  SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
+  std::shared_ptr<DHTNode> localNode(new DHTNode(localNodeID));
   DHTBucket bucket(localNode);
 
   unsigned char id[DHT_ID_LENGTH];
-  SharedHandle<DHTNode> nodes[8];
-  for(size_t i = 0; i < DHTBucket::K; ++i) {
+  std::shared_ptr<DHTNode> nodes[8];
+  for (size_t i = 0; i < DHTBucket::K; ++i) {
     createID(id, 0xf0, i);
     nodes[i].reset(new DHTNode(id));
-    nodes[i]->setPort(6881+i);
+    nodes[i]->setPort(6881 + i);
     CPPUNIT_ASSERT(bucket.addNode(nodes[i]));
   }
 
-  SharedHandle<DHTNode> cachedNode1(new DHTNode());
-  SharedHandle<DHTNode> cachedNode2(new DHTNode());
+  std::shared_ptr<DHTNode> cachedNode1(new DHTNode());
+  std::shared_ptr<DHTNode> cachedNode2(new DHTNode());
 
   bucket.dropNode(nodes[3]);
   // nothing happens because the replacement cache is empty.
   {
-    std::deque<SharedHandle<DHTNode> > tnodes = bucket.getNodes();
+    std::deque<std::shared_ptr<DHTNode>> tnodes = bucket.getNodes();
     CPPUNIT_ASSERT_EQUAL((size_t)8, tnodes.size());
     CPPUNIT_ASSERT(*nodes[3] == *tnodes[3]);
   }
@@ -442,11 +420,10 @@ void DHTBucketTest::testDropNode()
 
   bucket.dropNode(nodes[3]);
   {
-    std::deque<SharedHandle<DHTNode> > tnodes = bucket.getNodes();
+    std::deque<std::shared_ptr<DHTNode>> tnodes = bucket.getNodes();
     CPPUNIT_ASSERT_EQUAL((size_t)8, tnodes.size());
-    CPPUNIT_ASSERT(tnodes.end() ==
-                   std::find_if(tnodes.begin(), tnodes.end(),
-                                derefEqual(nodes[3])));
+    CPPUNIT_ASSERT(tnodes.end() == std::find_if(tnodes.begin(), tnodes.end(),
+                                                derefEqual(nodes[3])));
     CPPUNIT_ASSERT(*cachedNode2 == *tnodes[7]);
   }
   CPPUNIT_ASSERT_EQUAL((size_t)1, bucket.getCachedNodes().size());
@@ -457,12 +434,12 @@ void DHTBucketTest::testGetNode()
 {
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0, DHT_ID_LENGTH);
-  SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
+  std::shared_ptr<DHTNode> localNode(new DHTNode(localNodeID));
   DHTBucket bucket(localNode);
 
   unsigned char id[DHT_ID_LENGTH];
   createID(id, 0xf0, 0);
-  SharedHandle<DHTNode> node(new DHTNode(id));
+  std::shared_ptr<DHTNode> node(new DHTNode(id));
   node->setIPAddress("192.168.0.1");
   node->setPort(6881);
   CPPUNIT_ASSERT(bucket.addNode(node));

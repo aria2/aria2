@@ -52,51 +52,49 @@
 
 namespace aria2 {
 
-FileAllocationCommand::FileAllocationCommand
-(cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e,
- const SharedHandle<FileAllocationEntry>& fileAllocationEntry):
-  RealtimeCommand(cuid, requestGroup, e),
-  fileAllocationEntry_(fileAllocationEntry) {}
+FileAllocationCommand::FileAllocationCommand(
+    cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e,
+    FileAllocationEntry* fileAllocationEntry)
+    : RealtimeCommand{cuid, requestGroup, e},
+      fileAllocationEntry_{fileAllocationEntry}
+{
+}
 
-FileAllocationCommand::~FileAllocationCommand() {}
+FileAllocationCommand::~FileAllocationCommand()
+{
+  getDownloadEngine()->getFileAllocationMan()->dropPickedEntry();
+}
 
 bool FileAllocationCommand::executeInternal()
 {
-  if(getRequestGroup()->isHaltRequested()) {
-    getDownloadEngine()->getFileAllocationMan()->dropPickedEntry();
+  if (getRequestGroup()->isHaltRequested()) {
     return true;
   }
   fileAllocationEntry_->allocateChunk();
-  if(fileAllocationEntry_->finished()) {
-    A2_LOG_DEBUG
-      (fmt(MSG_ALLOCATION_COMPLETED,
-           static_cast<long int>(timer_.difference(global::wallclock())),
-           getRequestGroup()->getTotalLength()));
-    getDownloadEngine()->getFileAllocationMan()->dropPickedEntry();
-
-    std::vector<Command*>* commands = new std::vector<Command*>();
-    auto_delete_container<std::vector<Command*> > commandsDel(commands);
-    fileAllocationEntry_->prepareForNextAction(*commands, getDownloadEngine());
-    getDownloadEngine()->addCommand(*commands);
-    commands->clear();
+  if (fileAllocationEntry_->finished()) {
+    A2_LOG_DEBUG(fmt(MSG_ALLOCATION_COMPLETED,
+                     static_cast<long int>(
+                         std::chrono::duration_cast<std::chrono::seconds>(
+                             timer_.difference(global::wallclock())).count()),
+                     getRequestGroup()->getTotalLength()));
+    std::vector<std::unique_ptr<Command>> commands;
+    fileAllocationEntry_->prepareForNextAction(commands, getDownloadEngine());
+    getDownloadEngine()->addCommand(std::move(commands));
     getDownloadEngine()->setNoWait(true);
     return true;
-  } else {
-    getDownloadEngine()->addCommand(this);
+  }
+  else {
+    getDownloadEngine()->addCommand(std::unique_ptr<Command>(this));
     return false;
   }
 }
 
 bool FileAllocationCommand::handleException(Exception& e)
 {
-  getDownloadEngine()->getFileAllocationMan()->dropPickedEntry();
-  A2_LOG_ERROR_EX(fmt(MSG_FILE_ALLOCATION_FAILURE,
-                      getCuid()),
-                  e);
-  A2_LOG_ERROR
-    (fmt(MSG_DOWNLOAD_NOT_COMPLETE,
-         getCuid(),
-         getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
+  A2_LOG_ERROR_EX(fmt(MSG_FILE_ALLOCATION_FAILURE, getCuid()), e);
+  A2_LOG_ERROR(
+      fmt(MSG_DOWNLOAD_NOT_COMPLETE, getCuid(),
+          getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
   return true;
 }
 

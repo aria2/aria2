@@ -49,38 +49,40 @@
 
 namespace aria2 {
 
-StreamFileAllocationEntry::StreamFileAllocationEntry(RequestGroup* requestGroup,
-                                                     Command* nextCommand):
-  FileAllocationEntry(requestGroup, nextCommand)
-{}
+StreamFileAllocationEntry::StreamFileAllocationEntry(
+    RequestGroup* requestGroup, std::unique_ptr<Command> nextCommand)
+    : FileAllocationEntry(requestGroup, std::move(nextCommand))
+{
+}
 
 StreamFileAllocationEntry::~StreamFileAllocationEntry() {}
 
-void StreamFileAllocationEntry::prepareForNextAction
-(std::vector<Command*>& commands,
- DownloadEngine* e)
+void StreamFileAllocationEntry::prepareForNextAction(
+    std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
 {
+  auto& option = getRequestGroup()->getOption();
+
   // For DownloadContext::resetDownloadStartTime(), see also
   // RequestGroup::createInitialCommand()
   getRequestGroup()->getDownloadContext()->resetDownloadStartTime();
-  if(getRequestGroup()->getOption()->getAsBool(PREF_ENABLE_MMAP)) {
+  if (option->getAsBool(PREF_ENABLE_MMAP) &&
+      option->get(PREF_FILE_ALLOCATION) != V_NONE &&
+      getRequestGroup()->getPieceStorage()->getDiskAdaptor()->size() <=
+          option->getAsLLInt(PREF_MAX_MMAP_LIMIT)) {
     getRequestGroup()->getPieceStorage()->getDiskAdaptor()->enableMmap();
   }
-  if(getNextCommand()) {
+  if (getNextCommand()) {
     // Reset download start time of PeerStat because it is started
     // before file allocation begins.
-    const SharedHandle<DownloadContext>& dctx =
-      getRequestGroup()->getDownloadContext();
-    const std::vector<SharedHandle<FileEntry> >& fileEntries =
-      dctx->getFileEntries();
-    for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
-          fileEntries.begin(), eoi = fileEntries.end(); i != eoi; ++i) {
-      const FileEntry::InFlightRequestSet& reqs =
-        (*i)->getInFlightRequests();
-      for(FileEntry::InFlightRequestSet::iterator j =
-            reqs.begin(), eoj = reqs.end(); j != eoj; ++j) {
-        const SharedHandle<PeerStat>& peerStat = (*j)->getPeerStat();
-        if(peerStat) {
+    const std::shared_ptr<DownloadContext>& dctx =
+        getRequestGroup()->getDownloadContext();
+    const std::vector<std::shared_ptr<FileEntry>>& fileEntries =
+        dctx->getFileEntries();
+    for (auto& f : fileEntries) {
+      const auto& reqs = f->getInFlightRequests();
+      for (auto& req : reqs) {
+        const std::shared_ptr<PeerStat>& peerStat = req->getPeerStat();
+        if (peerStat) {
           peerStat->downloadStart();
         }
       }
@@ -91,7 +93,8 @@ void StreamFileAllocationEntry::prepareForNextAction
     commands.push_back(popNextCommand());
     // try remaining uris
     getRequestGroup()->createNextCommandWithAdj(commands, e, -1);
-  } else {
+  }
+  else {
     getRequestGroup()->createNextCommandWithAdj(commands, e, 0);
   }
 }

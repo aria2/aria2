@@ -36,13 +36,12 @@
 #define D_FILE_ALLOCATION_ITERATOR_H
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <unistd.h>
 
 namespace aria2 {
 
-class FileAllocationIterator
-{
+class FileAllocationIterator {
 public:
   virtual ~FileAllocationIterator() {}
 

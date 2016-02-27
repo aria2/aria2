@@ -36,276 +36,195 @@
 
 namespace aria2 {
 
-const SharedHandle<ValueBase> ValueBase::none;
+String::String(const ValueType& string) : str_{string} {}
+String::String(ValueType&& string) : str_{std::move(string)} {}
 
-String::String(const ValueType& string):str_(string) {}
+String::String(const char* cstring) : str_{cstring} {}
 
-String::String(const char* cstring):str_(cstring) {}
+String::String(const char* data, size_t length) : str_{&data[0], &data[length]}
+{
+}
 
-String::String(const char* data, size_t length):str_(&data[0], &data[length]) {}
-
-String::String(const unsigned char* data, size_t length):
-  str_(&data[0], &data[length]) {}
+String::String(const unsigned char* data, size_t length)
+    : str_{&data[0], &data[length]}
+{
+}
 
 String::String() {}
 
-String::~String() {}
+const String::ValueType& String::s() const { return str_; }
 
-const String::ValueType& String::s() const
-{
-  return str_;
-}
+String::ValueType String::popValue() const { return std::move(str_); }
 
 const unsigned char* String::uc() const
 {
   return reinterpret_cast<const unsigned char*>(str_.data());
 }
 
-SharedHandle<String> String::g(const ValueType& string)
+std::unique_ptr<String> String::g(const ValueType& string)
 {
-  return SharedHandle<String>(new String(string));
+  return make_unique<String>(string);
 }
 
-SharedHandle<String> String::g(const unsigned char* data, size_t length)
+std::unique_ptr<String> String::g(ValueType&& string)
 {
-  return SharedHandle<String>(new String(data, length));
+  return make_unique<String>(std::move(string));
 }
 
-void String::accept(ValueBaseVisitor& v) const
+std::unique_ptr<String> String::g(const unsigned char* data, size_t length)
 {
-  v.visit(*this);
+  return make_unique<String>(data, length);
 }
 
-Integer::Integer(ValueType integer):integer_(integer) {}
+void String::accept(ValueBaseVisitor& v) const { v.visit(*this); }
 
-Integer::Integer():integer_(0) {}
+Integer::Integer(ValueType integer) : integer_{integer} {}
 
-Integer::~Integer() {}
+Integer::Integer() : integer_{0} {}
 
-Integer::ValueType Integer::i() const
+Integer::ValueType Integer::i() const { return integer_; }
+
+std::unique_ptr<Integer> Integer::g(ValueType integer)
 {
-  return integer_;
+  return make_unique<Integer>(integer);
 }
 
-SharedHandle<Integer> Integer::g(ValueType integer)
-{
-  return SharedHandle<Integer>(new Integer(integer));
-}
+void Integer::accept(ValueBaseVisitor& v) const { v.visit(*this); }
 
-void Integer::accept(ValueBaseVisitor& v) const
-{
-  v.visit(*this);
-}
+Bool::Bool(bool val) : val_{val} {}
 
-const SharedHandle<Bool> Bool::trueValue_(new Bool(true));
-const SharedHandle<Bool> Bool::falseValue_(new Bool(false));
+std::unique_ptr<Bool> Bool::gTrue() { return make_unique<Bool>(true); }
 
-SharedHandle<Bool> Bool::gTrue()
-{
-  return trueValue_;
-}
+std::unique_ptr<Bool> Bool::gFalse() { return make_unique<Bool>(false); }
 
-SharedHandle<Bool> Bool::gFalse()
-{
-  return falseValue_;
-}
+bool Bool::val() const { return val_; }
 
-bool Bool::val() const
-{
-  return val_;
-}
-
-void Bool::accept(ValueBaseVisitor& v) const
-{
-  v.visit(*this);
-}
-
-Bool::Bool(bool val):val_(val) {}
-
-const SharedHandle<Null> Null::nullValue_(new Null());
-
-SharedHandle<Null> Null::g()
-{
-  return nullValue_;
-}
-
-void Null::accept(ValueBaseVisitor& v) const
-{
-  v.visit(*this);
-}
+void Bool::accept(ValueBaseVisitor& v) const { v.visit(*this); }
 
 Null::Null() {}
 
+std::unique_ptr<Null> Null::g() { return make_unique<Null>(); }
+
+void Null::accept(ValueBaseVisitor& v) const { v.visit(*this); }
+
 List::List() {}
 
-List::~List() {}
+ValueBase* List::get(size_t index) const { return list_[index].get(); }
 
-const SharedHandle<ValueBase>& List::get(size_t index) const
+void List::set(size_t index, std::unique_ptr<ValueBase> v)
 {
-  return list_[index];
+  list_[index] = std::move(v);
 }
 
-void List::set(size_t index, const SharedHandle<ValueBase>& v)
+void List::pop_front() { list_.pop_front(); }
+
+void List::pop_back() { list_.pop_back(); }
+
+void List::append(std::unique_ptr<ValueBase> v)
 {
-  list_[index] = v;
+  list_.push_back(std::move(v));
 }
 
-void List::append(const SharedHandle<ValueBase>& v)
+void List::append(String::ValueType string)
 {
-  list_.push_back(v);
+  list_.push_back(String::g(std::move(string)));
 }
 
-void List::append(const String::ValueType& string)
+List& List::operator<<(std::unique_ptr<ValueBase> v)
 {
-  list_.push_back(String::g(string));
-}
-
-List& List::operator<<(const SharedHandle<ValueBase>& v)
-{
-  list_.push_back(v);
+  list_.push_back(std::move(v));
   return *this;
 }
 
-const SharedHandle<ValueBase>& List::operator[](size_t index) const
-{
-  return list_[index];
-}
+ValueBase* List::operator[](size_t index) const { return list_[index].get(); }
 
-List::ValueType::iterator List::begin()
-{
-  return list_.begin();
-}
+List::ValueType::iterator List::begin() { return list_.begin(); }
 
-List::ValueType::iterator List::end()
-{
-  return list_.end();
-}
+List::ValueType::iterator List::end() { return list_.end(); }
 
-List::ValueType::const_iterator List::begin() const
-{
-  return list_.begin();
-}
+List::ValueType::const_iterator List::begin() const { return list_.begin(); }
 
-List::ValueType::const_iterator List::end() const
-{
-  return list_.end();
-}
+List::ValueType::const_iterator List::end() const { return list_.end(); }
 
-size_t List::size() const
-{
-  return list_.size();
-}
+List::ValueType::const_iterator List::cbegin() const { return list_.cbegin(); }
 
-bool List::empty() const
-{
-  return list_.empty();
-}
+List::ValueType::const_iterator List::cend() const { return list_.cend(); }
 
-SharedHandle<List> List::g()
-{
-  return SharedHandle<List>(new List());
-}
+size_t List::size() const { return list_.size(); }
 
-void List::accept(ValueBaseVisitor& v) const
-{
-  v.visit(*this);
-}
+bool List::empty() const { return list_.empty(); }
+
+std::unique_ptr<List> List::g() { return make_unique<List>(); }
+
+void List::accept(ValueBaseVisitor& v) const { v.visit(*this); }
 
 Dict::Dict() {}
 
-Dict::~Dict() {}
-
-void Dict::put(const std::string& key, const SharedHandle<ValueBase>& vlb)
+void Dict::put(std::string key, std::unique_ptr<ValueBase> vlb)
 {
-  ValueType::value_type p = std::make_pair(key, vlb);
-  std::pair<ValueType::iterator, bool> r = dict_.insert(p);
-  if(!r.second) {
-    (*r.first).second = vlb;
+  auto p = std::make_pair(std::move(key), std::move(vlb));
+  auto r = dict_.insert(std::move(p));
+  if (!r.second) {
+    (*r.first).second = std::move(vlb);
   }
 }
 
-void Dict::put(const std::string& key, const String::ValueType& string)
+void Dict::put(std::string key, String::ValueType string)
 {
-  put(key, String::g(string));
+  put(std::move(key), String::g(std::move(string)));
 }
 
-const SharedHandle<ValueBase>& Dict::get(const std::string& key) const
+ValueBase* Dict::get(const std::string& key) const
 {
-  ValueType::const_iterator itr = dict_.find(key);
-  if(itr == dict_.end()) {
-    return ValueBase::none;
-  } else {
-    return (*itr).second;
+  auto itr = dict_.find(key);
+  if (itr == std::end(dict_)) {
+    return nullptr;
+  }
+  else {
+    return (*itr).second.get();
   }
 }
 
-SharedHandle<ValueBase>& Dict::get(const std::string& key)
-{
-  ValueType::iterator itr = dict_.find(key);
-  if(itr == dict_.end()) {
-    return dict_[key];
-  } else {
-    return (*itr).second;
-  }
-}
-
-SharedHandle<ValueBase>& Dict::operator[](const std::string& key)
-{
-  return get(key);
-}
-
-const SharedHandle<ValueBase>& Dict::operator[](const std::string& key) const
-{
-  return get(key);
-}
+ValueBase* Dict::operator[](const std::string& key) const { return get(key); }
 
 bool Dict::containsKey(const std::string& key) const
 {
-  return dict_.count(key) == 1;
+  return dict_.count(key);
 }
 
-void Dict::removeKey(const std::string& key)
+void Dict::removeKey(const std::string& key) { dict_.erase(key); }
+
+std::unique_ptr<ValueBase> Dict::popValue(const std::string& key)
 {
-  dict_.erase(key);
+  auto i = dict_.find(key);
+  if (i == std::end(dict_)) {
+    return nullptr;
+  }
+  else {
+    auto res = std::move((*i).second);
+    dict_.erase(i);
+    return res;
+  }
 }
 
-Dict::ValueType::iterator Dict::begin()
-{
-  return dict_.begin();
-}
+Dict::ValueType::iterator Dict::begin() { return dict_.begin(); }
 
-Dict::ValueType::iterator Dict::end()
-{
-  return dict_.end();
-}
+Dict::ValueType::iterator Dict::end() { return dict_.end(); }
 
-Dict::ValueType::const_iterator Dict::begin() const
-{
-  return dict_.begin();
-}
+Dict::ValueType::const_iterator Dict::begin() const { return dict_.begin(); }
 
-Dict::ValueType::const_iterator Dict::end() const
-{
-  return dict_.end();
-}
+Dict::ValueType::const_iterator Dict::end() const { return dict_.end(); }
 
-size_t Dict::size() const
-{
-  return dict_.size();
-}
+Dict::ValueType::const_iterator Dict::cbegin() const { return dict_.cbegin(); }
 
-bool Dict::empty() const
-{
-  return dict_.empty();
-}
+Dict::ValueType::const_iterator Dict::cend() const { return dict_.cend(); }
 
-SharedHandle<Dict> Dict::g()
-{
-  return SharedHandle<Dict>(new Dict());
-}
-void Dict::accept(ValueBaseVisitor& v) const
-{
-  v.visit(*this);
-}
+size_t Dict::size() const { return dict_.size(); }
+
+bool Dict::empty() const { return dict_.empty(); }
+
+std::unique_ptr<Dict> Dict::g() { return make_unique<Dict>(); }
+
+void Dict::accept(ValueBaseVisitor& v) const { v.visit(*this); }
 
 } // namespace aria2

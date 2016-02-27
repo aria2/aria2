@@ -56,9 +56,7 @@ typedef enum {
   USR_MAX
 } uri_split_field;
 
-typedef enum {
-  USF_IPV6ADDR = 1
-} uri_split_flag;
+typedef enum { USF_IPV6ADDR = 1 } uri_split_flag;
 
 /* The structure is based on http-parser by Joyent, Inc and other Node
    contributors. https://github.com/joyent/http-parser */
@@ -83,7 +81,7 @@ typedef struct {
  *
  * This function returns 0 if it succeeds, or -1.
  */
-int uri_split(uri_split_result *res, const char *uri);
+int uri_split(uri_split_result* res, const char* uri);
 
 #ifdef __cplusplus
 }

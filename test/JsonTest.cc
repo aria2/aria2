@@ -9,61 +9,61 @@
 
 namespace aria2 {
 
-class JsonTest:public CppUnit::TestFixture {
+class JsonTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(JsonTest);
   CPPUNIT_TEST(testEncode);
   CPPUNIT_TEST(testDecodeGetParams);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
   void testEncode();
   void testDecodeGetParams();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( JsonTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(JsonTest);
 
 void JsonTest::testEncode()
 {
   {
-    SharedHandle<Dict> dict = Dict::g();
+    auto dict = Dict::g();
     dict->put("name", String::g("aria2"));
     dict->put("loc", Integer::g(80000));
-    SharedHandle<List> files = List::g();
+    auto files = List::g();
     files->append(String::g("aria2c"));
-    dict->put("files", files);
-    SharedHandle<Dict> attrs = Dict::g();
+    dict->put("files", std::move(files));
+    auto attrs = Dict::g();
     attrs->put("license", String::g("GPL"));
-    dict->put("attrs", attrs);
+    dict->put("attrs", std::move(attrs));
 
     CPPUNIT_ASSERT_EQUAL(std::string("{\"attrs\":{\"license\":\"GPL\"},"
                                      "\"files\":[\"aria2c\"],"
                                      "\"loc\":80000,"
                                      "\"name\":\"aria2\"}"),
-                         json::encode(dict));
+                         json::encode(dict.get()));
   }
   {
-    SharedHandle<List> list = List::g();
+    auto list = List::g();
     list->append("\"\\/\b\f\n\r\t");
     CPPUNIT_ASSERT_EQUAL(std::string("[\"\\\"\\\\\\/\\b\\f\\n\\r\\t\"]"),
-                         json::encode(list));
+                         json::encode(list.get()));
   }
   {
-    SharedHandle<List> list = List::g();
+    auto list = List::g();
     std::string s;
     s += 0x1Fu;
     list->append(s);
     CPPUNIT_ASSERT_EQUAL(std::string("[\"\\u001F\"]"),
-                         json::encode(list));
+                         json::encode(list.get()));
   }
   {
-    SharedHandle<List> list = List::g();
+    auto list = List::g();
     list->append(Bool::gTrue());
     list->append(Bool::gFalse());
     list->append(Null::g());
     CPPUNIT_ASSERT_EQUAL(std::string("[true,false,null]"),
-                         json::encode(list));
+                         json::encode(list.get()));
   }
 }
 

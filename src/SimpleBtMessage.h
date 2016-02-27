@@ -45,16 +45,15 @@ class SimpleBtMessage : public AbstractBtMessage {
 public:
   SimpleBtMessage(uint8_t id, const char* name);
 
-  virtual void send();
+  virtual void send() CXX11_OVERRIDE;
 
   virtual unsigned char* createMessage() = 0;
 
   virtual size_t getMessageLength() = 0;
 
-  virtual ProgressUpdate* getProgressUpdate() { return 0; };
+  virtual std::unique_ptr<ProgressUpdate> getProgressUpdate();
 
   virtual bool sendPredicate() const { return true; };
-
 };
 
 } // namespace aria2

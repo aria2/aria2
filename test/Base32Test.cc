@@ -6,19 +6,19 @@
 
 namespace aria2 {
 
-class Base32Test:public CppUnit::TestFixture {
+class Base32Test : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(Base32Test);
   CPPUNIT_TEST(testEncode);
   CPPUNIT_TEST(testDecode);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void testEncode();
   void testDecode();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( Base32Test );
+CPPUNIT_TEST_SUITE_REGISTRATION(Base32Test);
 
 void Base32Test::testEncode()
 {
@@ -46,6 +46,9 @@ void Base32Test::testDecode()
   s = "GEZDGNA=";
   CPPUNIT_ASSERT_EQUAL(std::string("1234"), base32::decode(s.begin(), s.end()));
   s = "GEZDGNBV";
+  CPPUNIT_ASSERT_EQUAL(std::string("12345"),
+                       base32::decode(s.begin(), s.end()));
+  s = "gezdgnbv";
   CPPUNIT_ASSERT_EQUAL(std::string("12345"),
                        base32::decode(s.begin(), s.end()));
 }

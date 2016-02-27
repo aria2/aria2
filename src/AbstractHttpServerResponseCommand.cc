@@ -47,17 +47,15 @@
 
 namespace aria2 {
 
-AbstractHttpServerResponseCommand::AbstractHttpServerResponseCommand
-(cuid_t cuid,
- const SharedHandle<HttpServer>& httpServer,
- DownloadEngine* e,
- const SharedHandle<SocketCore>& socket)
- : Command(cuid),
-   e_(e),
-   socket_(socket),
-   httpServer_(httpServer),
-   readCheck_(false),
-   writeCheck_(true)
+AbstractHttpServerResponseCommand::AbstractHttpServerResponseCommand(
+    cuid_t cuid, const std::shared_ptr<HttpServer>& httpServer,
+    DownloadEngine* e, const std::shared_ptr<SocketCore>& socket)
+    : Command(cuid),
+      e_(e),
+      socket_(socket),
+      httpServer_(httpServer),
+      readCheck_(false),
+      writeCheck_(true)
 {
   setStatus(Command::STATUS_ONESHOT_REALTIME);
   e_->addSocketForWriteCheck(socket_, this);
@@ -65,31 +63,33 @@ AbstractHttpServerResponseCommand::AbstractHttpServerResponseCommand
 
 AbstractHttpServerResponseCommand::~AbstractHttpServerResponseCommand()
 {
-  if(readCheck_) {
+  if (readCheck_) {
     e_->deleteSocketForReadCheck(socket_, this);
   }
-  if(writeCheck_) {
+  if (writeCheck_) {
     e_->deleteSocketForWriteCheck(socket_, this);
   }
 }
 
 void AbstractHttpServerResponseCommand::updateReadWriteCheck()
 {
-  if(httpServer_->wantRead()) {
-    if(!readCheck_) {
+  if (httpServer_->wantRead()) {
+    if (!readCheck_) {
       readCheck_ = true;
       e_->addSocketForReadCheck(socket_, this);
     }
-  } else if(readCheck_) {
+  }
+  else if (readCheck_) {
     readCheck_ = false;
     e_->deleteSocketForReadCheck(socket_, this);
   }
-  if(httpServer_->wantWrite()) {
-    if(!writeCheck_) {
+  if (httpServer_->wantWrite()) {
+    if (!writeCheck_) {
       writeCheck_ = true;
       e_->addSocketForWriteCheck(socket_, this);
     }
-  } else if(writeCheck_) {
+  }
+  else if (writeCheck_) {
     writeCheck_ = false;
     e_->deleteSocketForWriteCheck(socket_, this);
   }
@@ -97,35 +97,38 @@ void AbstractHttpServerResponseCommand::updateReadWriteCheck()
 
 bool AbstractHttpServerResponseCommand::execute()
 {
-  if(e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
+  if (e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
     return true;
   }
   try {
     ssize_t len = httpServer_->sendResponse();
-    if(len > 0) {
+    if (len > 0) {
       timeoutTimer_ = global::wallclock();
     }
-  } catch(RecoverableException& e) {
-    A2_LOG_INFO_EX
-      (fmt("CUID#%"PRId64" - Error occurred while transmitting response body.",
-           getCuid()),
-       e);
+  }
+  catch (RecoverableException& e) {
+    A2_LOG_INFO_EX(fmt("CUID#%" PRId64
+                       " - Error occurred while transmitting response body.",
+                       getCuid()),
+                   e);
     return true;
   }
-  if(httpServer_->sendBufferIsEmpty()) {
-    A2_LOG_INFO(fmt("CUID#%"PRId64" - HttpServer: all response transmitted.",
+  if (httpServer_->sendBufferIsEmpty()) {
+    A2_LOG_INFO(fmt("CUID#%" PRId64 " - HttpServer: all response transmitted.",
                     getCuid()));
     afterSend(httpServer_, e_);
     return true;
-  } else {
-    if(timeoutTimer_.difference(global::wallclock()) >= 30) {
-      A2_LOG_INFO(fmt("CUID#%"PRId64" - HttpServer: Timeout while trasmitting"
-                      " response.",
+  }
+  else {
+    if (timeoutTimer_.difference(global::wallclock()) >= 30_s) {
+      A2_LOG_INFO(fmt("CUID#%" PRId64
+                      " - HttpServer: Timeout while trasmitting response.",
                       getCuid()));
       return true;
-    } else {
+    }
+    else {
       updateReadWriteCheck();
-      e_->addCommand(this);
+      e_->addCommand(std::unique_ptr<Command>(this));
       return false;
     }
   }

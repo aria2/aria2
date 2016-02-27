@@ -41,7 +41,7 @@
 namespace aria2 {
 
 typedef MemoryPreDownloadHandler<ByteArrayDiskWriterFactory>
-MemoryBufferPreDownloadHandler;
+    MemoryBufferPreDownloadHandler;
 
 } // namespace aria2
 

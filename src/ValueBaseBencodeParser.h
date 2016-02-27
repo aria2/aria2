@@ -44,7 +44,7 @@ namespace aria2 {
 namespace bittorrent {
 
 typedef GenericParser<BencodeParser, ValueBaseStructParserStateMachine>
-ValueBaseBencodeParser;
+    ValueBaseBencodeParser;
 
 } // namespace bittorrent
 

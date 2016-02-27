@@ -38,10 +38,11 @@
 #include "common.h"
 
 #include <string>
-#include <vector>
+#include <deque>
 #include <map>
+#include <memory>
 
-#include "SharedHandle.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -52,8 +53,6 @@ public:
   virtual ~ValueBase() {}
 
   virtual void accept(ValueBaseVisitor& visitor) const = 0;
-
-  static const SharedHandle<ValueBase> none;
 };
 
 class String;
@@ -74,11 +73,12 @@ public:
   virtual void visit(const Dict& dict) = 0;
 };
 
-class String:public ValueBase {
+class String : public ValueBase {
 public:
   typedef std::string ValueType;
 
   String(const ValueType& string);
+  String(ValueType&& string);
 
   explicit String(const char* cstring);
 
@@ -86,41 +86,44 @@ public:
 
   String(const unsigned char* data, size_t length);
 
-  template<typename InputIterator>
+  template <typename InputIterator>
   String(InputIterator first, InputIterator last)
-    : str_(first, last)
-  {}
+      : str_(first, last)
+  {
+  }
 
   String();
 
-  ~String();
-
   // Don't allow copying
-  String(const String&);
-  String& operator=(const String&);
+  String(const String&) = delete;
+  String& operator=(const String&) = delete;
 
   const ValueType& s() const;
 
-  // Returns std::string.data() casted to unsigned char*.
+  ValueType popValue() const;
+
+  // Returns std::string.data() cast to unsigned char*.
   // Use s().size() to get length.
   const unsigned char* uc() const;
 
-  static SharedHandle<String> g(const ValueType& string);
+  static std::unique_ptr<String> g(const ValueType& string);
+  static std::unique_ptr<String> g(ValueType&& string);
 
-  static SharedHandle<String> g(const unsigned char* data, size_t length);
+  static std::unique_ptr<String> g(const unsigned char* data, size_t length);
 
-  template<typename InputIterator>
-  static SharedHandle<String> g(InputIterator first, InputIterator last)
+  template <typename InputIterator>
+  static std::unique_ptr<String> g(InputIterator first, InputIterator last)
   {
-    return SharedHandle<String>(new String(first, last));
+    return make_unique<String>(first, last);
   }
 
-  virtual void accept(ValueBaseVisitor& visitor) const;
+  virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
+
 private:
   ValueType str_;
 };
 
-class Integer:public ValueBase {
+class Integer : public ValueBase {
 public:
   typedef int64_t ValueType;
 
@@ -128,79 +131,81 @@ public:
 
   Integer();
 
-  ~Integer();
-
   // Don't allow copying
-  Integer(const Integer&);
-  Integer& operator=(const Integer&);
+  Integer(const Integer&) = delete;
+  Integer& operator=(const Integer&) = delete;
 
   // Returns Integer.
   ValueType i() const;
 
-  static SharedHandle<Integer> g(ValueType integer);
+  static std::unique_ptr<Integer> g(ValueType integer);
 
-  virtual void accept(ValueBaseVisitor& visitor) const;
+  virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
+
 private:
   ValueType integer_;
 };
 
-class Bool:public ValueBase {
+class Bool : public ValueBase {
 public:
-  static SharedHandle<Bool> gTrue();
-  static SharedHandle<Bool> gFalse();
-  bool val() const;
-  virtual void accept(ValueBaseVisitor& visitor) const;
-private:
+  static std::unique_ptr<Bool> gTrue();
+  static std::unique_ptr<Bool> gFalse();
   Bool(bool val);
+  bool val() const;
+  virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
+
+private:
   // Don't allow copying
-  Bool(const Bool&);
-  Bool& operator=(const Bool&);
+  Bool(const Bool&) = delete;
+  Bool& operator=(const Bool&) = delete;
   bool val_;
-  static const SharedHandle<Bool> trueValue_;
-  static const SharedHandle<Bool> falseValue_;
 };
 
-class Null:public ValueBase {
+class Null : public ValueBase {
 public:
-  static SharedHandle<Null> g();
-  virtual void accept(ValueBaseVisitor& visitor) const;
-private:
+  static std::unique_ptr<Null> g();
   Null();
+  virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
+
+private:
   // Don't allow copying
   Null(const Null&);
   Null& operator=(const Null&);
-  static const SharedHandle<Null> nullValue_;
 };
 
-class List:public ValueBase {
+class List : public ValueBase {
 public:
-  typedef std::vector<SharedHandle<ValueBase> > ValueType;
+  typedef std::deque<std::unique_ptr<ValueBase>> ValueType;
 
   List();
 
-  ~List();
-
   // Don't allow copying
-  List(const List&);
-  List& operator=(const List&);
+  List(const List&) = delete;
+  List& operator=(const List&) = delete;
 
   // Appends given v to list.
-  void append(const SharedHandle<ValueBase>& v);
+  void append(std::unique_ptr<ValueBase> v);
 
-  // Appeding string is so common that we provide shortcut function.
-  void append(const String::ValueType& string);
+  // Appending string is so common that we provide shortcut function.
+  void append(String::ValueType string);
 
   // Alias for append()
-  List& operator<<(const SharedHandle<ValueBase>& v);
+  List& operator<<(std::unique_ptr<ValueBase> v);
 
   // Returns the object at given index.
-  const SharedHandle<ValueBase>& get(size_t index) const;
+  ValueBase* get(size_t index) const;
 
   // Set the object at given index.
-  void set(size_t index, const SharedHandle<ValueBase>& v);
+  void set(size_t index, std::unique_ptr<ValueBase> v);
 
   // Returns the const reference of the object at the given index.
-  const SharedHandle<ValueBase>& operator[](size_t index) const;
+  ValueBase* operator[](size_t index) const;
+
+  // Pops the value in the front of the list.
+  void pop_front();
+
+  // Pops the value in the back of the list.
+  void pop_back();
 
   // Returns a read/write iterator that points to the first object in
   // list.
@@ -218,55 +223,57 @@ public:
   // past the last object in list.
   ValueType::const_iterator end() const;
 
+  // Returns a read/write read-only iterator that points to the first
+  // object in list.
+  ValueType::const_iterator cbegin() const;
+
+  // Returns a read/write read-only iterator that points to the one
+  // past the last object in list.
+  ValueType::const_iterator cend() const;
+
   // Returns size of list.
   size_t size() const;
 
   // Returns true if size of list is 0.
   bool empty() const;
 
-  static SharedHandle<List> g();
+  static std::unique_ptr<List> g();
 
-  virtual void accept(ValueBaseVisitor& visitor) const;
+  virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
+
 private:
   ValueType list_;
 };
 
-class Dict:public ValueBase {
+class Dict : public ValueBase {
 public:
-  typedef std::map<std::string, SharedHandle<ValueBase> > ValueType;
+  typedef std::map<std::string, std::unique_ptr<ValueBase>> ValueType;
 
   Dict();
 
-  ~Dict();
-
   // Don't allow copying
-  Dict(const Dict&);
-  Dict& operator=(const Dict&);
+  Dict(const Dict&) = delete;
+  Dict& operator=(const Dict&) = delete;
 
-  void put(const std::string& key, const SharedHandle<ValueBase>& vlb);
+  void put(std::string key, std::unique_ptr<ValueBase> vlb);
 
   // Putting string is so common that we provide shortcut function.
-  void put(const std::string& key, const String::ValueType& string);
+  void put(std::string key, String::ValueType string);
 
-  const SharedHandle<ValueBase>& get(const std::string& key) const;
-
-  SharedHandle<ValueBase>& get(const std::string& key);
+  ValueBase* get(const std::string& key) const;
 
   // Returns the reference to object associated with given key.  If
-  // the key is not found, new pair with that key is created using
-  // default values, which is then returned. In other words, this is
-  // the same behavior of std::map's operator[].
-  SharedHandle<ValueBase>& operator[](const std::string& key);
-
-  // Returns the const reference to ojbect associated with given key.
-  // If the key is not found, ValueBase::none is returned.
-  const SharedHandle<ValueBase>& operator[](const std::string& key) const;
+  // the key is not found, nullptr is returned.
+  ValueBase* operator[](const std::string& key) const;
 
   // Returns true if the given key is found in dict.
   bool containsKey(const std::string& key) const;
 
   // Removes specified key from dict.
   void removeKey(const std::string& key);
+
+  // Removes specified key from dict and return its associated value.
+  std::unique_ptr<ValueBase> popValue(const std::string& key);
 
   // Returns a read/write iterator that points to the first pair in
   // the dict.
@@ -284,61 +291,62 @@ public:
   // the last pair in the dict.
   ValueType::const_iterator end() const;
 
+  // Returns a read/write read-only iterator that points to the first
+  // pair in the dict.
+  ValueType::const_iterator cbegin() const;
+
+  // Returns a read/write read-only iterator that points to one past
+  // the last pair in the dict.
+  ValueType::const_iterator cend() const;
+
   // Returns size of Dict.
   size_t size() const;
 
   // Returns true if size of Dict is 0.
   bool empty() const;
 
-  static SharedHandle<Dict> g();
+  static std::unique_ptr<Dict> g();
 
-  virtual void accept(ValueBaseVisitor& visitor) const;
+  virtual void accept(ValueBaseVisitor& visitor) const CXX11_OVERRIDE;
+
 private:
   ValueType dict_;
 };
 
-class EmptyDowncastValueBaseVisitor:public ValueBaseVisitor {
+class EmptyDowncastValueBaseVisitor : public ValueBaseVisitor {
 public:
   EmptyDowncastValueBaseVisitor() {}
-  virtual void visit(const String& v) {}
-  virtual void visit(const Integer& v) {}
-  virtual void visit(const Bool& v) {}
-  virtual void visit(const Null& v) {}
-  virtual void visit(const List& v) {}
-  virtual void visit(const Dict& v) {}
+  virtual void visit(const String& v) CXX11_OVERRIDE {}
+  virtual void visit(const Integer& v) CXX11_OVERRIDE {}
+  virtual void visit(const Bool& v) CXX11_OVERRIDE {}
+  virtual void visit(const Null& v) CXX11_OVERRIDE {}
+  virtual void visit(const List& v) CXX11_OVERRIDE {}
+  virtual void visit(const Dict& v) CXX11_OVERRIDE {}
 };
 
-template<typename T>
-class DowncastValueBaseVisitor:public EmptyDowncastValueBaseVisitor {
+template <typename T>
+class DowncastValueBaseVisitor : public EmptyDowncastValueBaseVisitor {
 public:
-  DowncastValueBaseVisitor():result_(0) {}
+  DowncastValueBaseVisitor() : result_{nullptr} {}
 
-  virtual void visit(const T& t)
-  {
-    result_ = &t;
-  }
+  virtual void visit(const T& t) { result_ = &t; }
 
-  const T* getResult() const
-  {
-    return result_;
-  }
+  const T* getResult() const { return result_; }
 
-  void setResult(const T* r)
-  {
-    result_ = r;
-  }
+  void setResult(const T* r) { result_ = r; }
+
 private:
   const T* result_;
 };
 
-template<typename T, typename VPtr>
-T* downcast(const VPtr& v)
+template <typename T, typename VPtr> T* downcast(const VPtr& v)
 {
-  if(v) {
+  if (v) {
     DowncastValueBaseVisitor<T> visitor;
     v->accept(visitor);
     return const_cast<T*>(visitor.getResult());
-  } else {
+  }
+  else {
     return 0;
   }
 }

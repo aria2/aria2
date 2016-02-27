@@ -45,24 +45,22 @@
 
 namespace aria2 {
 
-BackupConnectInfo::BackupConnectInfo()
-  : cancel(false)
-{}
+BackupConnectInfo::BackupConnectInfo() : cancel(false) {}
 
-BackupIPv4ConnectCommand::BackupIPv4ConnectCommand
-(cuid_t cuid, const std::string& ipaddr, uint16_t port,
- const SharedHandle<BackupConnectInfo>& info, Command* mainCommand,
- RequestGroup* requestGroup, DownloadEngine* e)
-: Command(cuid),
-  ipaddr_(ipaddr),
-  port_(port),
-  info_(info),
-  mainCommand_(mainCommand),
-  requestGroup_(requestGroup),
-  e_(e),
-  startTime_(global::wallclock()),
-  timeoutCheck_(global::wallclock()),
-  timeout_(requestGroup_->getOption()->getAsInt(PREF_CONNECT_TIMEOUT))
+BackupIPv4ConnectCommand::BackupIPv4ConnectCommand(
+    cuid_t cuid, const std::string& ipaddr, uint16_t port,
+    const std::shared_ptr<BackupConnectInfo>& info, Command* mainCommand,
+    RequestGroup* requestGroup, DownloadEngine* e)
+    : Command(cuid),
+      ipaddr_(ipaddr),
+      port_(port),
+      info_(info),
+      mainCommand_(mainCommand),
+      requestGroup_(requestGroup),
+      e_(e),
+      startTime_(global::wallclock()),
+      timeoutCheck_(global::wallclock()),
+      timeout_(requestGroup_->getOption()->getAsInt(PREF_CONNECT_TIMEOUT))
 {
   requestGroup_->increaseStreamCommand();
   requestGroup_->increaseNumCommand();
@@ -72,7 +70,7 @@ BackupIPv4ConnectCommand::~BackupIPv4ConnectCommand()
 {
   requestGroup_->decreaseNumCommand();
   requestGroup_->decreaseStreamCommand();
-  if(socket_) {
+  if (socket_) {
     e_->deleteSocketForWriteCheck(socket_, this);
   }
 }
@@ -80,59 +78,69 @@ BackupIPv4ConnectCommand::~BackupIPv4ConnectCommand()
 bool BackupIPv4ConnectCommand::execute()
 {
   bool retval = false;
-  if(requestGroup_->downloadFinished() || requestGroup_->isHaltRequested()) {
+  if (requestGroup_->downloadFinished() || requestGroup_->isHaltRequested()) {
     retval = true;
-  } else if(info_->cancel) {
-    A2_LOG_INFO(fmt("CUID#%"PRId64" - Backup connection canceled", getCuid()));
+  }
+  else if (info_->cancel) {
+    A2_LOG_INFO(
+        fmt("CUID#%" PRId64 " - Backup connection canceled", getCuid()));
     retval = true;
-  } else if(socket_) {
-    if(writeEventEnabled()) {
+  }
+  else if (socket_) {
+    if (writeEventEnabled()) {
       try {
         std::string error = socket_->getSocketError();
-        if(error.empty()) {
-          A2_LOG_INFO(fmt("CUID#%"PRId64" - Backup connection to %s "
-                          "established", getCuid(), ipaddr_.c_str()));
+        if (error.empty()) {
+          A2_LOG_INFO(fmt("CUID#%" PRId64 " - Backup connection to %s "
+                          "established",
+                          getCuid(), ipaddr_.c_str()));
           info_->ipaddr = ipaddr_;
           e_->deleteSocketForWriteCheck(socket_, this);
           info_->socket.swap(socket_);
           mainCommand_->setStatus(STATUS_ONESHOT_REALTIME);
           e_->setNoWait(true);
           retval = true;
-        } else {
-          A2_LOG_INFO(fmt("CUID#%"PRId64" - Backup connection failed: %s",
+        }
+        else {
+          A2_LOG_INFO(fmt("CUID#%" PRId64 " - Backup connection failed: %s",
                           getCuid(), error.c_str()));
           retval = true;
         }
-      } catch(RecoverableException& e) {
-        A2_LOG_INFO_EX(fmt("CUID#%"PRId64" - Backup connection failed",
-                           getCuid()), e);
+      }
+      catch (RecoverableException& e) {
+        A2_LOG_INFO_EX(
+            fmt("CUID#%" PRId64 " - Backup connection failed", getCuid()), e);
         retval = true;
       }
     }
-  } else if(!socket_) {
+  }
+  else if (!socket_) {
     // TODO Although we check 300ms initial timeout as described in
     // RFC 6555, the interval will be much longer and around 1 second
     // due to the refresh interval mechanism in DownloadEngine.
-    if(startTime_.differenceInMillis(global::wallclock()) >= 300) {
-      socket_.reset(new SocketCore());
+    if (startTime_.difference(global::wallclock()) >=
+        std::chrono::milliseconds(300)) {
+      socket_ = std::make_shared<SocketCore>();
       try {
         socket_->establishConnection(ipaddr_, port_);
         e_->addSocketForWriteCheck(socket_, this);
         timeoutCheck_ = global::wallclock();
-      } catch(RecoverableException& e) {
-        A2_LOG_INFO_EX(fmt("CUID#%"PRId64" - Backup connection failed",
-                           getCuid()), e);
+      }
+      catch (RecoverableException& e) {
+        A2_LOG_INFO_EX(
+            fmt("CUID#%" PRId64 " - Backup connection failed", getCuid()), e);
         socket_.reset();
         retval = true;
       }
     }
-  } else if(timeoutCheck_.difference(global::wallclock()) >= timeout_) {
-    A2_LOG_INFO(fmt("CUID#%"PRId64" - Backup connection command timeout",
-                    getCuid()));
+  }
+  else if (timeoutCheck_.difference(global::wallclock()) >= timeout_) {
+    A2_LOG_INFO(
+        fmt("CUID#%" PRId64 " - Backup connection command timeout", getCuid()));
     retval = true;
   }
-  if(!retval) {
-    e_->addCommand(this);
+  if (!retval) {
+    e_->addCommand(std::unique_ptr<Command>(this));
   }
   return retval;
 }

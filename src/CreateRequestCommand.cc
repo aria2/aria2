@@ -48,17 +48,17 @@
 #include "SocketRecvBuffer.h"
 #include "LogFactory.h"
 #include "wallclock.h"
+#include "DownloadFailureException.h"
 
 namespace aria2 {
 
 CreateRequestCommand::CreateRequestCommand(cuid_t cuid,
                                            RequestGroup* requestGroup,
-                                           DownloadEngine* e):
-  AbstractCommand
-  (cuid, SharedHandle<Request>(), SharedHandle<FileEntry>(), requestGroup, e,
-   SharedHandle<SocketCore>(),
-   SharedHandle<SocketRecvBuffer>(),
-   false)
+                                           DownloadEngine* e)
+    : AbstractCommand(cuid, std::shared_ptr<Request>(),
+                      std::shared_ptr<FileEntry>(), requestGroup, e,
+                      std::shared_ptr<SocketCore>(),
+                      std::shared_ptr<SocketRecvBuffer>(), false)
 {
   setStatus(Command::STATUS_ONESHOT_REALTIME);
   disableReadCheckSocket();
@@ -67,54 +67,62 @@ CreateRequestCommand::CreateRequestCommand(cuid_t cuid,
 
 bool CreateRequestCommand::executeInternal()
 {
-  if(getSegments().empty()) {
+  if (getSegments().empty()) {
     setFileEntry(getDownloadContext()->findFileEntryByOffset(0));
-  } else {
-    // We assume all segments belongs to same file.
-    setFileEntry(getDownloadContext()->findFileEntryByOffset
-                 (getSegments().front()->getPositionToWrite()));
   }
-  std::vector<std::pair<size_t, std::string> > usedHosts;
-  if(getOption()->getAsBool(PREF_SELECT_LEAST_USED_HOST)) {
+  else {
+    // We assume all segments belongs to same file.
+    setFileEntry(getDownloadContext()->findFileEntryByOffset(
+        getSegments().front()->getPositionToWrite()));
+  }
+  std::vector<std::pair<size_t, std::string>> usedHosts;
+  if (getOption()->getAsBool(PREF_SELECT_LEAST_USED_HOST)) {
     getDownloadEngine()->getRequestGroupMan()->getUsedHosts(usedHosts);
   }
-  setRequest
-    (getFileEntry()->getRequest(getRequestGroup()->getURISelector(),
-                                getOption()->getAsBool(PREF_REUSE_URI),
-                                usedHosts,
-                                getOption()->get(PREF_REFERER),
-                                // Don't use HEAD request when file
-                                // size is known.
-                                // Use HEAD for dry-run mode.
-                                (getFileEntry()->getLength() == 0 &&
-                                 getOption()->getAsBool(PREF_USE_HEAD)) ||
-                                getOption()->getAsBool(PREF_DRY_RUN)?
-                                Request::METHOD_HEAD:Request::METHOD_GET));
-  if(!getRequest()) {
-    if(getSegmentMan()) {
+  setRequest(
+      getFileEntry()->getRequest(getRequestGroup()->getURISelector().get(),
+                                 getOption()->getAsBool(PREF_REUSE_URI),
+                                 usedHosts, getOption()->get(PREF_REFERER),
+                                 // Don't use HEAD request when file
+                                 // size is known.
+                                 // Use HEAD for dry-run mode.
+                                 (getFileEntry()->getLength() == 0 &&
+                                  getOption()->getAsBool(PREF_USE_HEAD)) ||
+                                         getOption()->getAsBool(PREF_DRY_RUN)
+                                     ? Request::METHOD_HEAD
+                                     : Request::METHOD_GET));
+  if (!getRequest()) {
+    if (getSegmentMan()) {
       getSegmentMan()->ignoreSegmentFor(getFileEntry());
+    }
+    if (getOption()->getAsBool(PREF_DRY_RUN)) {
+      // For dry run mode, just throwing DlAbortEx makes infinite
+      // loop, since we don't have SegmentMan, and we cannot tell all
+      // hopes were abandoned.
+      throw DOWNLOAD_FAILURE_EXCEPTION2("No URI available.",
+                                        getRequestGroup()->getLastErrorCode());
     }
     // In this case, the error might be already set in RequestGroup,
     // so use it here.
     throw DL_ABORT_EX2("No URI available.",
                        getRequestGroup()->getLastErrorCode());
-  } else if(getRequest()->getWakeTime() > global::wallclock()) {
+  }
+  else if (getRequest()->getWakeTime() > global::wallclock()) {
     A2_LOG_DEBUG("This request object is still sleeping.");
     getFileEntry()->poolRequest(getRequest());
     // Reset request of this command. Without this, request is doubly
     // counted (1 for pooled and another one in this command) and
     // AbstractCommand::execute() will behave badly.
     resetRequest();
-    getDownloadEngine()->addCommand(this);
+    addCommandSelf();
     return false;
   }
 
-  Command* command =
-    InitiateConnectionCommandFactory::createInitiateConnectionCommand
-    (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
-     getDownloadEngine());
   getDownloadEngine()->setNoWait(true);
-  getDownloadEngine()->addCommand(command);
+  getDownloadEngine()->addCommand(
+      InitiateConnectionCommandFactory::createInitiateConnectionCommand(
+          getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
+          getDownloadEngine()));
   return true;
 }
 

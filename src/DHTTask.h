@@ -37,7 +37,7 @@
 
 #include "common.h"
 
-namespace aria2  {
+namespace aria2 {
 
 class DHTTask {
 public:

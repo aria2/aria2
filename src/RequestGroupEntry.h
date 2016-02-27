@@ -37,6 +37,8 @@
 
 #include "common.h"
 
+#include <memory>
+
 namespace aria2 {
 
 class RequestGroup;
@@ -45,26 +47,22 @@ class Command;
 class RequestGroupEntry {
 private:
   RequestGroup* requestGroup_;
-  Command* nextCommand_;
+  std::unique_ptr<Command> nextCommand_;
+
 public:
-  RequestGroupEntry(RequestGroup* requestGroup,
-                    Command* nextCommand = 0);
+  RequestGroupEntry(
+      RequestGroup* requestGroup,
+      std::unique_ptr<Command> nextCommand = std::unique_ptr<Command>());
 
   virtual ~RequestGroupEntry();
 
-  RequestGroup* getRequestGroup() const
-  {
-    return requestGroup_;
-  }
+  RequestGroup* getRequestGroup() const { return requestGroup_; }
 
-  Command* getNextCommand() const
-  {
-    return nextCommand_;
-  }
+  const std::unique_ptr<Command>& getNextCommand() const;
 
-  Command* popNextCommand();
+  std::unique_ptr<Command> popNextCommand();
 
-  void pushNextCommand(Command* nextCommand);
+  void pushNextCommand(std::unique_ptr<Command> nextCommand);
 
   bool operator==(const RequestGroupEntry& entry) const
   {

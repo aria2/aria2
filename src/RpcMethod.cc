@@ -48,68 +48,87 @@
 #include "fmt.h"
 #include "DlAbortEx.h"
 #include "a2functional.h"
+#include "util.h"
 
 namespace aria2 {
 
 namespace rpc {
 
-RpcMethod::RpcMethod()
-  : optionParser_(OptionParser::getInstance())
-{}
+RpcMethod::RpcMethod() : optionParser_(OptionParser::getInstance()) {}
 
 RpcMethod::~RpcMethod() {}
 
-SharedHandle<ValueBase> RpcMethod::createErrorResponse
-(const Exception& e, const RpcRequest& req)
+std::unique_ptr<ValueBase> RpcMethod::createErrorResponse(const Exception& e,
+                                                          const RpcRequest& req)
 {
-  SharedHandle<Dict> params = Dict::g();
+  auto params = Dict::g();
   params->put((req.jsonRpc ? "code" : "faultCode"), Integer::g(1));
   params->put((req.jsonRpc ? "message" : "faultString"), std::string(e.what()));
-  return params;
+  return std::move(params);
 }
 
-RpcResponse RpcMethod::execute
-(const RpcRequest& req, DownloadEngine* e)
+void RpcMethod::authorize(RpcRequest& req, DownloadEngine* e)
 {
+  std::string token;
+  // We always treat first parameter as token if it is string and
+  // starts with "token:" and remove it from parameter list, so that
+  // we don't have to add conditionals to all RPCMethod
+  // implementations.
+  if (req.params && !req.params->empty()) {
+    auto t = downcast<String>(req.params->get(0));
+    if (t) {
+      if (util::startsWith(t->s(), "token:")) {
+        token = t->s().substr(6);
+        req.params->pop_front();
+      }
+    }
+  }
+  if (!e || !e->validateToken(token)) {
+    throw DL_ABORT_EX("Unauthorized");
+  }
+}
+
+RpcResponse RpcMethod::execute(RpcRequest req, DownloadEngine* e)
+{
+  auto authorized = RpcResponse::NOTAUTHORIZED;
   try {
-    return RpcResponse(0, process(req, e), req.id);
-  } catch(RecoverableException& ex) {
+    authorize(req, e);
+    authorized = RpcResponse::AUTHORIZED;
+    auto r = process(req, e);
+    return RpcResponse(0, authorized, std::move(r), std::move(req.id));
+  }
+  catch (RecoverableException& ex) {
     A2_LOG_DEBUG_EX(EX_EXCEPTION_CAUGHT, ex);
-    return RpcResponse(1, createErrorResponse(ex, req), req.id);
+    return RpcResponse(1, authorized, createErrorResponse(ex, req),
+                       std::move(req.id));
   }
 }
 
 namespace {
-template<typename InputIterator, typename Pred>
-void gatherOption
-(InputIterator first, InputIterator last,
- Pred pred,
- Option* option,
- const SharedHandle<OptionParser>& optionParser)
+template <typename InputIterator, typename Pred>
+void gatherOption(InputIterator first, InputIterator last, Pred pred,
+                  Option* option,
+                  const std::shared_ptr<OptionParser>& optionParser)
 {
-  for(; first != last; ++first) {
+  for (; first != last; ++first) {
     const std::string& optionName = (*first).first;
-    const Pref* pref = option::k2p(optionName);
-    if(!pref) {
-      throw DL_ABORT_EX
-        (fmt("We don't know how to deal with %s option", optionName.c_str()));
-    }
+    PrefPtr pref = option::k2p(optionName);
     const OptionHandler* handler = optionParser->find(pref);
-    if(!handler || !pred(handler)) {
+    if (!handler || !pred(handler)) {
       // Just ignore the unacceptable options in this context.
       continue;
     }
     const String* opval = downcast<String>((*first).second);
-    if(opval) {
+    if (opval) {
       handler->parse(*option, opval->s());
-    } else if(handler->getCumulative()) {
+    }
+    else if (handler->getCumulative()) {
       // header and index-out option can take array as value
       const List* oplist = downcast<List>((*first).second);
-      if(oplist) {
-        for(List::ValueType::const_iterator argiter = oplist->begin(),
-              eoi = oplist->end(); argiter != eoi; ++argiter) {
-          const String* opval = downcast<String>(*argiter);
-          if(opval) {
+      if (oplist) {
+        for (auto& elem : *oplist) {
+          const String* opval = downcast<String>(elem);
+          if (opval) {
             handler->parse(*option, opval->s());
           }
         }
@@ -121,40 +140,39 @@ void gatherOption
 
 void RpcMethod::gatherRequestOption(Option* option, const Dict* optionsDict)
 {
-  if(optionsDict) {
+  if (optionsDict) {
     gatherOption(optionsDict->begin(), optionsDict->end(),
-                 std::mem_fun(&OptionHandler::getInitialOption),
-                 option, optionParser_);
+                 std::mem_fn(&OptionHandler::getInitialOption), option,
+                 optionParser_);
   }
 }
 
 void RpcMethod::gatherChangeableOption(Option* option, const Dict* optionsDict)
 {
-  if(optionsDict) {
+  if (optionsDict) {
     gatherOption(optionsDict->begin(), optionsDict->end(),
-                 std::mem_fun(&OptionHandler::getChangeOption),
+                 std::mem_fn(&OptionHandler::getChangeOption), option,
+                 optionParser_);
+  }
+}
+
+void RpcMethod::gatherChangeableOptionForReserved(Option* option,
+                                                  const Dict* optionsDict)
+{
+  if (optionsDict) {
+    gatherOption(optionsDict->begin(), optionsDict->end(),
+                 std::mem_fn(&OptionHandler::getChangeOptionForReserved),
                  option, optionParser_);
   }
 }
 
-void RpcMethod::gatherChangeableOptionForReserved
-(Option* option,
- const Dict* optionsDict)
+void RpcMethod::gatherChangeableGlobalOption(Option* option,
+                                             const Dict* optionsDict)
 {
-  if(optionsDict) {
+  if (optionsDict) {
     gatherOption(optionsDict->begin(), optionsDict->end(),
-                 std::mem_fun(&OptionHandler::getChangeOptionForReserved),
-                 option, optionParser_);
-  }
-}
-
-void RpcMethod::gatherChangeableGlobalOption
-(Option* option, const Dict* optionsDict)
-{
-  if(optionsDict) {
-    gatherOption(optionsDict->begin(), optionsDict->end(),
-                 std::mem_fun(&OptionHandler::getChangeGlobalOption),
-                 option, optionParser_);
+                 std::mem_fn(&OptionHandler::getChangeGlobalOption), option,
+                 optionParser_);
   }
 }
 

@@ -38,8 +38,7 @@
 #include "common.h"
 
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -49,7 +48,8 @@ class DiskWriterFactory {
 public:
   virtual ~DiskWriterFactory() {}
 
-  virtual SharedHandle<DiskWriter> newDiskWriter(const std::string& filename)=0;
+  virtual std::unique_ptr<DiskWriter>
+  newDiskWriter(const std::string& filename) = 0;
 };
 
 } // namespace aria2

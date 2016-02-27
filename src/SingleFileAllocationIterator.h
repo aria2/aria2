@@ -41,8 +41,7 @@ namespace aria2 {
 
 class BinaryStream;
 
-class SingleFileAllocationIterator:public FileAllocationIterator
-{
+class SingleFileAllocationIterator : public FileAllocationIterator {
 private:
   BinaryStream* stream_;
 
@@ -51,27 +50,20 @@ private:
   int64_t totalLength_;
 
   unsigned char* buffer_;
+
 public:
-  SingleFileAllocationIterator
-  (BinaryStream* stream,
-   int64_t offset,
-   int64_t totalLength);
+  SingleFileAllocationIterator(BinaryStream* stream, int64_t offset,
+                               int64_t totalLength);
 
   virtual ~SingleFileAllocationIterator();
 
-  virtual void allocateChunk();
+  virtual void allocateChunk() CXX11_OVERRIDE;
 
-  virtual bool finished();
+  virtual bool finished() CXX11_OVERRIDE;
 
-  virtual int64_t getCurrentLength()
-  {
-    return offset_;
-  }
+  virtual int64_t getCurrentLength() CXX11_OVERRIDE { return offset_; }
 
-  virtual int64_t getTotalLength()
-  {
-    return totalLength_;
-  }
+  virtual int64_t getTotalLength() CXX11_OVERRIDE { return totalLength_; }
 
   /**
    * Must be called only once, before calling allocateChunk()

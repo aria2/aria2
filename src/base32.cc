@@ -40,12 +40,9 @@ namespace aria2 {
 namespace base32 {
 
 namespace {
-const char B32TABLE[] = {
-  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-  'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
-  'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-  'Y', 'Z', '2', '3', '4', '5', '6', '7'
-};
+const char B32TABLE[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
+                         'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
+                         'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7'};
 } // namespace
 
 std::string encode(const std::string& src)
@@ -53,14 +50,14 @@ std::string encode(const std::string& src)
   std::string ret;
   size_t count = 0;
   uint64_t buf = 0;
-  for(size_t i = 0; i < src.size(); ++i) {
+  for (const auto& ch : src) {
     buf <<= 8;
-    buf += src[i]&0xffu;
+    buf += ch & 0xffu;
     ++count;
-    if(count == 5) {
+    if (count == 5) {
       char temp[8];
-      for(size_t j = 0; j < 8; ++j) {
-        temp[7-j] = B32TABLE[buf&0x1fu];
+      for (size_t j = 0; j < 8; ++j) {
+        temp[7 - j] = B32TABLE[buf & 0x1fu];
         buf >>= 5;
       }
       ret.append(&temp[0], &temp[8]);
@@ -69,27 +66,30 @@ std::string encode(const std::string& src)
     }
   }
   size_t r = 0;
-  if(count == 1) {
+  if (count == 1) {
     buf <<= 2;
     r = 2;
-  } else if(count == 2) {
+  }
+  else if (count == 2) {
     buf <<= 4;
     r = 4;
-  } else if(count == 3) {
+  }
+  else if (count == 3) {
     buf <<= 1;
     r = 5;
-  } else if(count == 4) {
+  }
+  else if (count == 4) {
     buf <<= 3;
     r = 7;
   }
   char temp[7];
-  for(size_t j = 0; j < r; ++j) {
-    temp[r-1-j] = B32TABLE[buf&0x1fu];
+  for (size_t j = 0; j < r; ++j) {
+    temp[r - 1 - j] = B32TABLE[buf & 0x1fu];
     buf >>= 5;
   }
   ret.append(&temp[0], &temp[r]);
-  if(r) {
-    ret.append(8-r, '=');
+  if (r) {
+    ret.append(8 - r, '=');
   }
   return ret;
 }

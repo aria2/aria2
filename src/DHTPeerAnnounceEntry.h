@@ -38,8 +38,8 @@
 #include "common.h"
 
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "DHTConstants.h"
 #include "PeerAddrEntry.h"
 #include "TimerA2.h"
@@ -55,6 +55,7 @@ private:
   std::vector<PeerAddrEntry> peerAddrEntries_;
 
   Timer lastUpdated_;
+
 public:
   DHTPeerAnnounceEntry(const unsigned char* infoHash);
 
@@ -71,24 +72,17 @@ public:
     return peerAddrEntries_;
   }
 
-  void removeStalePeerAddrEntry(time_t timeout);
+  void removeStalePeerAddrEntry(const std::chrono::seconds& timeout);
 
   bool empty() const;
 
-  const Timer& getLastUpdated() const
-  {
-    return lastUpdated_;
-  }
+  const Timer& getLastUpdated() const { return lastUpdated_; }
 
   void notifyUpdate();
 
-  const unsigned char* getInfoHash() const
-  {
-    return infoHash_;
-  }
+  const unsigned char* getInfoHash() const { return infoHash_; }
 
-  void getPeers(std::vector<SharedHandle<Peer> >& peers) const;
-
+  void getPeers(std::vector<std::shared_ptr<Peer>>& peers) const;
 };
 
 } // namespace aria2

@@ -47,62 +47,44 @@ class BtMessageFactory;
 class BtMessageDispatcher;
 class UTMetadataRequestTracker;
 
-class DefaultExtensionMessageFactory:public ExtensionMessageFactory {
+class DefaultExtensionMessageFactory : public ExtensionMessageFactory {
 private:
-  SharedHandle<PeerStorage> peerStorage_;
+  PeerStorage* peerStorage_;
 
-  SharedHandle<Peer> peer_;
+  std::shared_ptr<Peer> peer_;
 
-  SharedHandle<ExtensionMessageRegistry> registry_;
+  ExtensionMessageRegistry* registry_;
 
-  SharedHandle<DownloadContext> dctx_;
+  DownloadContext* dctx_;
 
   BtMessageFactory* messageFactory_;
 
   BtMessageDispatcher* dispatcher_;
 
   UTMetadataRequestTracker* tracker_;
+
 public:
   DefaultExtensionMessageFactory();
 
-  DefaultExtensionMessageFactory
-  (const SharedHandle<Peer>& peer,
-   const SharedHandle<ExtensionMessageRegistry>& registry);
+  DefaultExtensionMessageFactory(const std::shared_ptr<Peer>& peer,
+                                 ExtensionMessageRegistry* registry);
 
-  virtual ~DefaultExtensionMessageFactory();
+  virtual std::unique_ptr<ExtensionMessage>
+  createMessage(const unsigned char* data, size_t length) CXX11_OVERRIDE;
 
-  virtual SharedHandle<ExtensionMessage>
-  createMessage(const unsigned char* data, size_t length);
+  void setPeerStorage(PeerStorage* peerStorage);
 
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+  void setPeer(const std::shared_ptr<Peer>& peer);
 
-  void setPeer(const SharedHandle<Peer>& peer);
+  void setExtensionMessageRegistry(ExtensionMessageRegistry* registry);
 
-  void setExtensionMessageRegistry
-  (const SharedHandle<ExtensionMessageRegistry>& registry)
-  {
-    registry_ = registry;
-  }
+  void setDownloadContext(DownloadContext* dctx);
 
-  void setDownloadContext(const SharedHandle<DownloadContext>& dctx)
-  {
-    dctx_ = dctx;
-  }
+  void setBtMessageFactory(BtMessageFactory* factory);
 
-  void setBtMessageFactory(BtMessageFactory* factory)
-  {
-    messageFactory_ = factory;
-  }
+  void setBtMessageDispatcher(BtMessageDispatcher* disp);
 
-  void setBtMessageDispatcher(BtMessageDispatcher* disp)
-  {
-    dispatcher_ = disp;
-  }
-
-  void setUTMetadataRequestTracker(UTMetadataRequestTracker* tracker)
-  {
-    tracker_ = tracker;
-  }
+  void setUTMetadataRequestTracker(UTMetadataRequestTracker* tracker);
 };
 
 } // namespace aria2

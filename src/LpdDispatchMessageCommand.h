@@ -36,7 +36,8 @@
 #define D_LPD_DISPATCH_MESSAGE_COMMAND_H
 
 #include "Command.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -44,23 +45,23 @@ class LpdMessageDispatcher;
 class DownloadEngine;
 class BtRuntime;
 
-class LpdDispatchMessageCommand:public Command {
+class LpdDispatchMessageCommand : public Command {
 private:
-  SharedHandle<LpdMessageDispatcher> dispatcher_;
+  std::shared_ptr<LpdMessageDispatcher> dispatcher_;
   DownloadEngine* e_;
   int tryCount_;
-  SharedHandle<BtRuntime> btRuntime_;
+  std::shared_ptr<BtRuntime> btRuntime_;
+
 public:
-  LpdDispatchMessageCommand
-  (cuid_t cuid,
-   const SharedHandle<LpdMessageDispatcher>& dispatcher,
-   DownloadEngine* e);
+  LpdDispatchMessageCommand(
+      cuid_t cuid, const std::shared_ptr<LpdMessageDispatcher>& dispatcher,
+      DownloadEngine* e);
 
   ~LpdDispatchMessageCommand();
 
-  virtual bool execute();
+  virtual bool execute() CXX11_OVERRIDE;
 
-  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
+  void setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime)
   {
     btRuntime_ = btRuntime;
   }

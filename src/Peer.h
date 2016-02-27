@@ -42,7 +42,6 @@
 #include <set>
 #include <algorithm>
 
-#include "SharedHandle.h"
 #include "TimerA2.h"
 #include "BtConstants.h"
 #include "PeerStat.h"
@@ -75,7 +74,7 @@ private:
 
   bool seeder_;
 
-  PeerSessionResource* res_;
+  std::unique_ptr<PeerSessionResource> res_;
 
   // If true, port is assumed not to be a listening port.
   bool incoming_;
@@ -90,60 +89,34 @@ private:
   // allocateSessionResource() is called and res_ is created.
   // Otherwise assertion fails.
   void updateSeeder();
+
 public:
   Peer(std::string ipaddr, uint16_t port, bool incoming = false);
 
   ~Peer();
 
-  const std::string& getIPAddress() const
-  {
-    return ipaddr_;
-  }
+  const std::string& getIPAddress() const { return ipaddr_; }
 
-  uint16_t getPort() const
-  {
-    return port_;
-  }
+  uint16_t getPort() const { return port_; }
 
-  void setPort(uint16_t port)
-  {
-    port_ = port;
-  }
+  void setPort(uint16_t port) { port_ = port; }
 
-  uint16_t getOrigPort() const
-  {
-    return origPort_;
-  }
+  uint16_t getOrigPort() const { return origPort_; }
 
   void usedBy(cuid_t cuid);
 
-  cuid_t usedBy() const
-  {
-    return cuid_;
-  }
+  cuid_t usedBy() const { return cuid_; }
 
-  bool unused() const
-  {
-    return cuid_ == 0;
-  }
+  bool unused() const { return cuid_ == 0; }
 
   // Returns true iff res_ != 0.
-  bool isActive() const
-  {
-    return res_ != 0;
-  }
+  bool isActive() const { return res_.get() != nullptr; }
 
   void setPeerId(const unsigned char* peerId);
 
-  const unsigned char* getPeerId() const
-  {
-    return peerId_;
-  }
+  const unsigned char* getPeerId() const { return peerId_; }
 
-  bool isSeeder() const
-  {
-    return seeder_;
-  }
+  bool isSeeder() const { return seeder_; }
 
   void startDrop();
 
@@ -153,17 +126,11 @@ public:
 
   void releaseSessionResource();
 
-  const Timer& getFirstContactTime() const
-  {
-    return firstContactTime_;
-  }
+  const Timer& getFirstContactTime() const { return firstContactTime_; }
 
   void setFirstContactTime(const Timer& time);
 
-  const Timer& getDropStartTime() const
-  {
-    return dropStartTime_;
-  }
+  const Timer& getDropStartTime() const { return dropStartTime_; }
 
   // Before calling following member functions,  make sure that
   // allocateSessionResource() is called and res_ is created.
@@ -204,9 +171,11 @@ public:
 
   void snubbing(bool b);
 
+  void updateUploadSpeed(int32_t bytes);
+
   void updateUploadLength(int32_t bytes);
 
-  void updateDownloadLength(int32_t bytes);
+  void updateDownload(int32_t bytes);
 
   /**
    * Returns the transfer rate from localhost to remote host.
@@ -282,44 +251,29 @@ public:
 
   int64_t getCompletedLength() const;
 
-  bool isIncomingPeer() const
-  {
-    return incoming_;
-  }
+  bool isIncomingPeer() const { return incoming_; }
 
   void setIncomingPeer(bool incoming);
 
-  bool isLocalPeer() const
-  {
-    return localPeer_;
-  }
+  bool isLocalPeer() const { return localPeer_; }
 
-  void setLocalPeer(bool flag)
-  {
-    localPeer_ = flag;
-  }
+  void setLocalPeer(bool flag) { localPeer_ = flag; }
 
-  bool isDisconnectedGracefully() const
-  {
-    return disconnectedGracefully_;
-  }
+  bool isDisconnectedGracefully() const { return disconnectedGracefully_; }
 
-  void setDisconnectedGracefully(bool f)
-  {
-    disconnectedGracefully_ = f;
-  }
+  void setDisconnectedGracefully(bool f) { disconnectedGracefully_ = f; }
 
   void setBtMessageDispatcher(BtMessageDispatcher* dpt);
 
   size_t countOutstandingUpload() const;
 };
 
-template<typename InputIterator>
+template <typename InputIterator>
 size_t countSeeder(InputIterator first, InputIterator last)
 {
   size_t res = 0;
-  for(; first != last; ++first) {
-    if((*first)->isActive() && (*first)->isSeeder()) {
+  for (; first != last; ++first) {
+    if ((*first)->isActive() && (*first)->isSeeder()) {
       ++res;
     }
   }

@@ -56,205 +56,193 @@ AuthConfigFactory::AuthConfigFactory() {}
 
 AuthConfigFactory::~AuthConfigFactory() {}
 
-SharedHandle<AuthConfig>
-AuthConfigFactory::createAuthConfig
-(const SharedHandle<Request>& request, const Option* op)
+std::unique_ptr<AuthConfig>
+AuthConfigFactory::createAuthConfig(const std::shared_ptr<Request>& request,
+                                    const Option* op)
 {
-  if(request->getProtocol() == "http" || request->getProtocol() == "https") {
-
-    if(op->getAsBool(PREF_HTTP_AUTH_CHALLENGE)) {
-      if(!request->getUsername().empty()) {
-        SharedHandle<BasicCred> bc(new BasicCred(request->getUsername(),
-                                                 request->getPassword(),
-                                                 request->getHost(),
-                                                 request->getPort(),
-                                                 request->getDir(), true));
-        updateBasicCred(bc);
-        return createAuthConfig(request->getUsername(), request->getPassword());
+  if (request->getProtocol() == "http" || request->getProtocol() == "https") {
+    if (op->getAsBool(PREF_HTTP_AUTH_CHALLENGE)) {
+      if (!request->getUsername().empty()) {
+        updateBasicCred(make_unique<BasicCred>(
+            request->getUsername(), request->getPassword(), request->getHost(),
+            request->getPort(), request->getDir(), true));
+        return AuthConfig::create(request->getUsername(),
+                                  request->getPassword());
       }
-      BasicCredSet::iterator i =
-        findBasicCred(request->getHost(), request->getPort(),
-                      request->getDir());
-      if(i == basicCreds_.end()) {
-        return SharedHandle<AuthConfig>();
-      } else {
-        return createAuthConfig((*i)->user_, (*i)->password_);
+      auto i = findBasicCred(request->getHost(), request->getPort(),
+                             request->getDir());
+      if (i == std::end(basicCreds_)) {
+        return nullptr;
       }
-    } else {
-      if(!request->getUsername().empty()) {
-        return createAuthConfig(request->getUsername(), request->getPassword());
-      } else {
-        return
-          createHttpAuthResolver(op)->resolveAuthConfig(request->getHost());
+      else {
+        return AuthConfig::create((*i)->user_, (*i)->password_);
       }
     }
-  } else if(request->getProtocol() == "ftp") {
-    if(!request->getUsername().empty()) {
-      if(request->hasPassword()) {
-        return createAuthConfig(request->getUsername(), request->getPassword());
-      } else {
-        if(!op->getAsBool(PREF_NO_NETRC)) {
+    else {
+      if (!request->getUsername().empty()) {
+        return AuthConfig::create(request->getUsername(),
+                                  request->getPassword());
+      }
+      else {
+        return createHttpAuthResolver(op)
+            ->resolveAuthConfig(request->getHost());
+      }
+    }
+  }
+  else if (request->getProtocol() == "ftp" ||
+           request->getProtocol() == "sftp") {
+    if (!request->getUsername().empty()) {
+      if (request->hasPassword()) {
+        return AuthConfig::create(request->getUsername(),
+                                  request->getPassword());
+      }
+      else {
+        if (!op->getAsBool(PREF_NO_NETRC)) {
           // First, check we have password corresponding to host and
           // username
           NetrcAuthResolver authResolver;
-          authResolver.setNetrc(netrc_);
+          authResolver.setNetrc(netrc_.get());
 
-          SharedHandle<AuthConfig> ac =
-            authResolver.resolveAuthConfig(request->getHost());
-          if(ac && ac->getUser() == request->getUsername()) {
+          auto ac = authResolver.resolveAuthConfig(request->getHost());
+          if (ac && ac->getUser() == request->getUsername()) {
             return ac;
           }
         }
         // We don't have password for host and username. Return
         // password specified by --ftp-passwd
-        return
-          createAuthConfig(request->getUsername(), op->get(PREF_FTP_PASSWD));
+        return AuthConfig::create(request->getUsername(),
+                                  op->get(PREF_FTP_PASSWD));
       }
-    } else {
-      return
-        createFtpAuthResolver(op)->resolveAuthConfig(request->getHost());
     }
-  } else {
-    return SharedHandle<AuthConfig>();
+    else {
+      return createFtpAuthResolver(op)->resolveAuthConfig(request->getHost());
+    }
+  }
+  else {
+    return nullptr;
   }
 }
 
-SharedHandle<AuthConfig>
-AuthConfigFactory::createAuthConfig(const std::string& user, const std::string& password) const
+std::unique_ptr<AuthResolver>
+AuthConfigFactory::createHttpAuthResolver(const Option* op) const
 {
-  SharedHandle<AuthConfig> ac;
-  if(!user.empty()) {
-    ac.reset(new AuthConfig(user, password));
+  std::unique_ptr<AbstractAuthResolver> resolver;
+  if (op->getAsBool(PREF_NO_NETRC)) {
+    resolver = make_unique<DefaultAuthResolver>();
   }
-  return ac;
-}
-
-SharedHandle<AuthResolver> AuthConfigFactory::createHttpAuthResolver
-(const Option* op) const
-{
-  AbstractAuthResolver* resolver;
-  if(op->getAsBool(PREF_NO_NETRC)) {
-    resolver = new DefaultAuthResolver();
-  } else {
-    NetrcAuthResolver* authResolver(new NetrcAuthResolver());
-    authResolver->setNetrc(netrc_);
+  else {
+    auto authResolver = make_unique<NetrcAuthResolver>();
+    authResolver->setNetrc(netrc_.get());
     authResolver->ignoreDefault();
-    resolver = authResolver;
+    resolver = std::move(authResolver);
   }
-  resolver->setUserDefinedAuthConfig
-    (createAuthConfig(op->get(PREF_HTTP_USER), op->get(PREF_HTTP_PASSWD)));
-  return SharedHandle<AuthResolver>(resolver);
+  resolver->setUserDefinedCred(op->get(PREF_HTTP_USER),
+                               op->get(PREF_HTTP_PASSWD));
+  return std::move(resolver);
 }
 
-SharedHandle<AuthResolver> AuthConfigFactory::createFtpAuthResolver
-(const Option* op) const
+std::unique_ptr<AuthResolver>
+AuthConfigFactory::createFtpAuthResolver(const Option* op) const
 {
-  AbstractAuthResolver* resolver;
-  if(op->getAsBool(PREF_NO_NETRC)) {
-    resolver = new DefaultAuthResolver();
-  } else {
-    NetrcAuthResolver* authResolver(new NetrcAuthResolver());
-    authResolver->setNetrc(netrc_);
-    resolver = authResolver;
+  std::unique_ptr<AbstractAuthResolver> resolver;
+  if (op->getAsBool(PREF_NO_NETRC)) {
+    resolver = make_unique<DefaultAuthResolver>();
   }
-  resolver->setUserDefinedAuthConfig
-    (createAuthConfig(op->get(PREF_FTP_USER), op->get(PREF_FTP_PASSWD)));
-  SharedHandle<AuthConfig> defaultAuthConfig
-    (new AuthConfig(AUTH_DEFAULT_USER, AUTH_DEFAULT_PASSWD));
-  resolver->setDefaultAuthConfig(defaultAuthConfig);
-  return SharedHandle<AuthResolver>(resolver);
+  else {
+    auto authResolver = make_unique<NetrcAuthResolver>();
+    authResolver->setNetrc(netrc_.get());
+    resolver = std::move(authResolver);
+  }
+  resolver->setUserDefinedCred(op->get(PREF_FTP_USER),
+                               op->get(PREF_FTP_PASSWD));
+  resolver->setDefaultCred(AUTH_DEFAULT_USER, AUTH_DEFAULT_PASSWD);
+  return std::move(resolver);
 }
 
-void AuthConfigFactory::setNetrc(const SharedHandle<Netrc>& netrc)
+void AuthConfigFactory::setNetrc(std::unique_ptr<Netrc> netrc)
 {
-  netrc_ = netrc;
+  netrc_ = std::move(netrc);
 }
 
-void AuthConfigFactory::updateBasicCred
-(const SharedHandle<BasicCred>& basicCred)
+void AuthConfigFactory::updateBasicCred(std::unique_ptr<BasicCred> basicCred)
 {
-  BasicCredSet::iterator i = basicCreds_.lower_bound(basicCred);
-  if(i != basicCreds_.end() && *(*i) == *basicCred) {
-    *(*i) = *basicCred;
-  } else {
-    basicCreds_.insert(i, basicCred);
+  auto i = basicCreds_.lower_bound(basicCred);
+  if (i != std::end(basicCreds_) && *i == basicCred) {
+    *(*i) = std::move(*basicCred);
+  }
+  else {
+    basicCreds_.insert(i, std::move(basicCred));
   }
 }
 
-bool AuthConfigFactory::activateBasicCred
-(const std::string& host,
- uint16_t port,
- const std::string& path,
- const Option* op)
+bool AuthConfigFactory::activateBasicCred(const std::string& host,
+                                          uint16_t port,
+                                          const std::string& path,
+                                          const Option* op)
 {
-  BasicCredSet::iterator i = findBasicCred(host, port, path);
-  if(i == basicCreds_.end()) {
-    SharedHandle<AuthConfig> authConfig =
-      createHttpAuthResolver(op)->resolveAuthConfig(host);
-    if(!authConfig) {
+  auto i = findBasicCred(host, port, path);
+  if (i == std::end(basicCreds_)) {
+    auto authConfig = createHttpAuthResolver(op)->resolveAuthConfig(host);
+    if (!authConfig) {
       return false;
-    } else {
-      SharedHandle<BasicCred> bc
-        (new BasicCred(authConfig->getUser(), authConfig->getPassword(),
-                       host, port, path, true));
-      basicCreds_.insert(bc);
+    }
+    else {
+      basicCreds_.insert(make_unique<BasicCred>(authConfig->getUser(),
+                                                authConfig->getPassword(), host,
+                                                port, path, true));
       return true;
     }
-  } else {
+  }
+  else {
     (*i)->activate();
     return true;
   }
 }
 
-AuthConfigFactory::BasicCred::BasicCred
-(const std::string& user, const std::string& password,
- const std::string& host, uint16_t port, const std::string& path,
- bool activated):
-  user_(user), password_(password),
-  host_(host), port_(port), path_(path), activated_(activated)
+BasicCred::BasicCred(std::string user, std::string password, std::string host,
+                     uint16_t port, std::string path, bool activated)
+    : user_(std::move(user)),
+      password_(std::move(password)),
+      host_(std::move(host)),
+      port_(port),
+      path_(std::move(path)),
+      activated_(activated)
 {
-  if(path_.empty() || path_[path_.size()-1] != '/') {
+  if (path_.empty() || path_[path_.size() - 1] != '/') {
     path_ += "/";
   }
 }
 
-void AuthConfigFactory::BasicCred::activate()
-{
-  activated_ = true;
-}
+void BasicCred::activate() { activated_ = true; }
 
-bool AuthConfigFactory::BasicCred::isActivated() const
-{
-  return activated_;
-}
+bool BasicCred::isActivated() const { return activated_; }
 
-bool AuthConfigFactory::BasicCred::operator==(const BasicCred& cred) const
+bool BasicCred::operator==(const BasicCred& cred) const
 {
   return host_ == cred.host_ && port_ == cred.port_ && path_ == cred.path_;
 }
 
-bool AuthConfigFactory::BasicCred::operator<(const BasicCred& cred) const
+bool BasicCred::operator<(const BasicCred& cred) const
 {
-  return host_ < cred.host_ ||
-    (!(cred.host_ < host_) && (port_ < cred.port_ ||
-                               (!(cred.port_ < port_) && path_ > cred.path_)));
+  return host_ < cred.host_ || (!(cred.host_ < host_) &&
+                                (port_ < cred.port_ || (!(cred.port_ < port_) &&
+                                                        path_ > cred.path_)));
 }
 
 AuthConfigFactory::BasicCredSet::iterator
-AuthConfigFactory::findBasicCred
-(const std::string& host,
- uint16_t port,
- const std::string& path)
+AuthConfigFactory::findBasicCred(const std::string& host, uint16_t port,
+                                 const std::string& path)
 {
-  SharedHandle<BasicCred> bc(new BasicCred("", "", host, port, path));
-  BasicCredSet::iterator i = basicCreds_.lower_bound(bc);
-  for(; i != basicCreds_.end() && (*i)->host_ == host && (*i)->port_ == port;
-      ++i) {
-    if(util::startsWith(bc->path_, (*i)->path_)) {
+  auto bc = make_unique<BasicCred>("", "", host, port, path);
+  auto i = basicCreds_.lower_bound(bc);
+  for (;
+       i != std::end(basicCreds_) && (*i)->host_ == host && (*i)->port_ == port;
+       ++i) {
+    if (util::startsWith(bc->path_, (*i)->path_)) {
       return i;
     }
   }
-  return basicCreds_.end();
+  return std::end(basicCreds_);
 }
 
 } // namespace aria2

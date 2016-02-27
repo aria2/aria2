@@ -41,8 +41,8 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "error_code.h"
 #include "RequestGroup.h"
 
@@ -52,32 +52,14 @@ class Option;
 class FileEntry;
 class MetadataInfo;
 
-struct DownloadResult
-{
-  SharedHandle<GroupId> gid;
-
-  std::vector<SharedHandle<FileEntry> > fileEntries;
-
-  bool inMemoryDownload;
-
-  uint64_t sessionDownloadLength;
-
-  // milliseconds
-  int64_t sessionTime;
-
-  error_code::Value result;
-
-  // This field contains GIDs. See comment in
-  // RequestGroup.cc::followedByGIDs_.
-  std::vector<a2_gid_t> followedBy;
-
+struct DownloadResult {
   // This field contains GID. See comment in
   // RequestGroup.cc::belongsToGID_.
   a2_gid_t belongsTo;
 
-  SharedHandle<Option> option;
+  uint64_t sessionDownloadLength;
 
-  SharedHandle<MetadataInfo> metadataInfo;
+  std::chrono::milliseconds sessionTime;
 
   int64_t totalLength;
 
@@ -85,15 +67,33 @@ struct DownloadResult
 
   int64_t uploadLength;
 
+  std::shared_ptr<GroupId> gid;
+
+  std::shared_ptr<Option> option;
+
+  std::shared_ptr<MetadataInfo> metadataInfo;
+
+  std::vector<std::shared_ptr<FileEntry>> fileEntries;
+
+  // This field contains GIDs. See comment in
+  // RequestGroup.cc::followedByGIDs_.
+  std::vector<a2_gid_t> followedBy;
+
   std::string bitfield;
 
   std::string infoHash;
 
-  int32_t pieceLength;
+  std::string dir;
 
   size_t numPieces;
 
-  std::string dir;
+  int32_t pieceLength;
+
+  error_code::Value result;
+
+  std::string resultMessage;
+
+  bool inMemoryDownload;
 
   DownloadResult();
   ~DownloadResult();

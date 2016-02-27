@@ -36,7 +36,9 @@
 #define D_DHT_SETUP_H
 
 #include "common.h"
+
 #include <vector>
+#include <memory>
 
 namespace aria2 {
 
@@ -49,7 +51,12 @@ public:
 
   ~DHTSetup();
 
-  void setup(std::vector<Command*>& commands, DownloadEngine* e, int family);
+  // Returns two vector of Commands.  First one contains regular
+  // commands.  Secod one contains so called routine commands, which
+  // executed once per event poll returns.
+  std::pair<std::vector<std::unique_ptr<Command>>,
+            std::vector<std::unique_ptr<Command>>>
+  setup(DownloadEngine* e, int family);
 };
 
 } // namespace aria2

@@ -42,7 +42,9 @@ extern "C" {
 
 #include <time.h>
 
-char * asctime_r (const struct tm*, char*);
+#undef asctime_r
+
+char* asctime_r(const struct tm*, char*);
 
 #ifdef __cplusplus
 }

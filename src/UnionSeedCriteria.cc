@@ -38,44 +38,29 @@
 
 namespace aria2 {
 
-namespace {
-class Reset {
-public:
-  void operator()(const SharedHandle<SeedCriteria>& cri)
-  {
-    cri->reset();
-  }
-};
-} // namespace
-
-namespace {
-class Eval {
-public:
-  bool operator()(const SharedHandle<SeedCriteria>& cri)
-  {
-    return cri->evaluate();
-  }
-};
-} // namespace
-
 UnionSeedCriteria::UnionSeedCriteria() {}
 UnionSeedCriteria::~UnionSeedCriteria() {}
 
 void UnionSeedCriteria::reset()
 {
-  std::for_each(criterion_.begin(), criterion_.end(), Reset());
+  for (const auto& c : criterion_) {
+    c->reset();
+  }
 }
 
 bool UnionSeedCriteria::evaluate()
 {
-  std::vector<SharedHandle<SeedCriteria> >::iterator itr =
-    std::find_if(criterion_.begin(), criterion_.end(), Eval());
-  return itr != criterion_.end();
+  for (const auto& c : criterion_) {
+    if (c->evaluate()) {
+      return true;
+    }
+  }
+  return false;
 }
 
-void UnionSeedCriteria::addSeedCriteria(const SharedHandle<SeedCriteria>& cri)
+void UnionSeedCriteria::addSeedCriteria(std::unique_ptr<SeedCriteria> cri)
 {
-  criterion_.push_back(cri);
+  criterion_.push_back(std::move(cri));
 }
 
 } // namespace aria2

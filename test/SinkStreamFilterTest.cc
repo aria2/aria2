@@ -11,44 +11,39 @@
 
 namespace aria2 {
 
-class SinkStreamFilterTest:public CppUnit::TestFixture {
+class SinkStreamFilterTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(SinkStreamFilterTest);
   CPPUNIT_TEST(testTransform_with_length);
   CPPUNIT_TEST(testTransform_without_length);
   CPPUNIT_TEST_SUITE_END();
 
-  class MockSegment2:public MockSegment {
+  class MockSegment2 : public MockSegment {
   public:
-    MockSegment2(int32_t length):length(length), writtenLength(0) {}
+    MockSegment2(int32_t length) : length(length), writtenLength(0) {}
 
-    virtual int32_t getLength() const
-    {
-      return length;
-    }
+    virtual int64_t getLength() const CXX11_OVERRIDE { return length; }
 
-    virtual int32_t getWrittenLength() const
+    virtual int64_t getWrittenLength() const CXX11_OVERRIDE
     {
       return writtenLength;
     }
 
-    virtual void updateWrittenLength(int32_t bytes)
+    virtual void updateWrittenLength(int64_t bytes) CXX11_OVERRIDE
     {
       writtenLength += bytes;
     }
 
-    int32_t length;
-    int32_t writtenLength;
+    int64_t length;
+    int64_t writtenLength;
   };
 
-  SharedHandle<SinkStreamFilter> filter_;
-  SharedHandle<ByteArrayDiskWriter> writer_;
-  SharedHandle<MockSegment2> segment_;
+  std::shared_ptr<SinkStreamFilter> filter_;
+  std::shared_ptr<ByteArrayDiskWriter> writer_;
+  std::shared_ptr<MockSegment2> segment_;
 
-  void clearWriter()
-  {
-    writer_->setString("");
-  }
+  void clearWriter() { writer_->setString(""); }
+
 public:
   void setUp()
   {
@@ -62,8 +57,7 @@ public:
   void testTransform_without_length();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( SinkStreamFilterTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(SinkStreamFilterTest);
 
 void SinkStreamFilterTest::testTransform_with_length()
 {
@@ -71,9 +65,9 @@ void SinkStreamFilterTest::testTransform_with_length()
   // segment_->getLength()-segment_->getWrittenLength() bytes are
   // written.
   std::string msg("01234567890123456");
-  ssize_t r = filter_->transform
-    (writer_, segment_,
-     reinterpret_cast<const unsigned char*>(msg.c_str()), msg.size());
+  ssize_t r = filter_->transform(
+      writer_, segment_, reinterpret_cast<const unsigned char*>(msg.c_str()),
+      msg.size());
   CPPUNIT_ASSERT_EQUAL((ssize_t)16, r);
 }
 
@@ -82,9 +76,9 @@ void SinkStreamFilterTest::testTransform_without_length()
   // If segment_->getLength() == 0, all incoming bytes are written.
   segment_->length = 0;
   std::string msg("01234567890123456");
-  ssize_t r = filter_->transform
-    (writer_, segment_,
-     reinterpret_cast<const unsigned char*>(msg.c_str()), msg.size());
+  ssize_t r = filter_->transform(
+      writer_, segment_, reinterpret_cast<const unsigned char*>(msg.c_str()),
+      msg.size());
   CPPUNIT_ASSERT_EQUAL((ssize_t)17, r);
 }
 

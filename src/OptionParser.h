@@ -40,22 +40,24 @@
 #include <string>
 #include <vector>
 #include <iosfwd>
+#include <memory>
 
 #include <aria2/aria2.h>
-#include "SharedHandle.h"
+
+#include "prefs.h"
 
 namespace aria2 {
 
 class Option;
 class OptionHandler;
-struct Pref;
 
 class OptionParser {
 private:
   std::vector<OptionHandler*> handlers_;
   // Index of handler in handlers_ for option who has short option name.
   std::vector<size_t> shortOpts_;
-  static SharedHandle<OptionParser> optionParser_;
+  static std::shared_ptr<OptionParser> optionParser_;
+
 public:
   OptionParser();
   ~OptionParser();
@@ -63,8 +65,8 @@ public:
   // Parses options in argv and writes option name and value to out in
   // NAME=VALUE format. Non-option strings are stored in nonopts.
   // Throws Exception when an unrecognized option is found.
-  void parseArg(std::ostream& out, std::vector<std::string>& nonopts,
-                int argc, char* argv[]) const;
+  void parseArg(std::ostream& out, std::vector<std::string>& nonopts, int argc,
+                char* argv[]) const;
 
   void parse(Option& option, std::istream& ios) const;
 
@@ -72,8 +74,7 @@ public:
 
   void parseDefaultValues(Option& option) const;
 
-  void setOptionHandlers
-  (const std::vector<OptionHandler*>& handlers);
+  void setOptionHandlers(const std::vector<OptionHandler*>& handlers);
 
   void addOptionHandler(OptionHandler* handler);
 
@@ -88,7 +89,7 @@ public:
   std::vector<const OptionHandler*> findAll() const;
 
   // Hidden options are not returned.
-  const OptionHandler* find(const Pref* pref) const;
+  const OptionHandler* find(PrefPtr pref) const;
 
   // Hidden options are not returned.
   const OptionHandler* findById(size_t id) const;
@@ -96,8 +97,8 @@ public:
   // Hidden options are not returned.
   const OptionHandler* findByShortName(char shortName) const;
 
-  static const SharedHandle<OptionParser>& getInstance();
-  // Deletes statically allocated instace. Call this at the end of the
+  static const std::shared_ptr<OptionParser>& getInstance();
+  // Deletes statically allocated instance. Call this at the end of the
   // program.
   static void deleteInstance();
 };

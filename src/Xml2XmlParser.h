@@ -55,6 +55,7 @@ public:
   ssize_t parseUpdate(const char* data, size_t size);
   ssize_t parseFinal(const char* data, size_t size);
   int reset();
+
 private:
   ParserStateMachine* psm_;
   SessionData sessionData_;

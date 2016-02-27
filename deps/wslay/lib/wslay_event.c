@@ -135,6 +135,10 @@ static int wslay_event_byte_chunk_init
   memset(*chunk, 0, sizeof(struct wslay_event_byte_chunk));
   if(len) {
     (*chunk)->data = (uint8_t*)malloc(len);
+    if((*chunk)->data == NULL) {
+      free(*chunk);
+      return WSLAY_ERR_NOMEM;
+    }
     (*chunk)->data_length = len;
   }
   return 0;

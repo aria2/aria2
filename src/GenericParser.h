@@ -35,22 +35,18 @@
 #ifndef D_GENERIC_PARSER_H
 #define D_GENERIC_PARSER_H
 
+#include <array>
 #include "common.h"
-#include "SharedHandle.h"
 #include "a2io.h"
 #include "util.h"
 
 namespace aria2 {
 
-template<typename Parser, typename ParserStateMachine>
-class GenericParser {
+template <typename Parser, typename ParserStateMachine> class GenericParser {
 public:
-  GenericParser()
-    : parser_(&psm_)
-  {}
+  GenericParser() : parser_{&psm_} {}
 
-  ~GenericParser()
-  {}
+  ~GenericParser() {}
 
   typedef typename ParserStateMachine::ResultType ResultType;
   typedef ParserStateMachine ParserStateMachineType;
@@ -68,43 +64,45 @@ public:
   // number of bytes processed (>= 0). On error, it will be one of the
   // negative error code. This function also resets underlying parser
   // facility and make it ready to reuse.
-  ResultType
-  parseFinal(const char* data, size_t size, ssize_t& error)
+  ResultType parseFinal(const char* data, size_t size, ssize_t& error)
   {
     ResultType res;
     error = parser_.parseFinal(data, size);
-    if(error < 0) {
+    if (error < 0) {
       res = ParserStateMachine::noResult();
-    } else {
+    }
+    else {
       res = psm_.getResult();
     }
     parser_.reset();
     return res;
   }
+
 private:
   ParserStateMachine psm_;
   Parser parser_;
 };
 
-template<typename Parser>
+template <typename Parser>
 typename Parser::ResultType parseFile(Parser& parser,
                                       const std::string& filename)
 {
   int fd;
   // TODO Overrode a2open(const char*,..) and a2open(const std::wstring&,..)
-  while((fd = a2open(utf8ToWChar(filename).c_str(),
-                     O_BINARY | O_RDONLY, OPEN_MODE)) == -1
-        && errno != EINTR);
-  if(fd == -1) {
+  while ((fd = a2open(utf8ToWChar(filename).c_str(), O_BINARY | O_RDONLY,
+                      OPEN_MODE)) == -1 &&
+         errno != EINTR)
+    ;
+  if (fd == -1) {
     return Parser::ParserStateMachineType::noResult();
   }
-  auto_delete_r<int, int> fdDeleter(fd, close);
-  char buf[4096];
+  auto fdclose = defer(fd, close);
+  std::array<char, 4_k> buf;
   ssize_t nread;
   ssize_t nproc;
-  while((nread = read(fd, buf, sizeof(buf))) > 0) {
-    nproc = parser.parseUpdate(buf, nread);
-    if(nproc < 0) {
+  while ((nread = read(fd, buf.data(), buf.size())) > 0) {
+    nproc = parser.parseUpdate(buf.data(), nread);
+    if (nproc < 0) {
       break;
     }
   }

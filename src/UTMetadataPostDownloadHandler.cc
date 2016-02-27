@@ -50,60 +50,74 @@
 #include "prefs.h"
 #include "Option.h"
 #include "fmt.h"
+#include "RequestGroupMan.h"
 
 namespace aria2 {
 
-bool UTMetadataPostDownloadHandler::Criteria::match
-(const RequestGroup* requestGroup) const
-{
-  const SharedHandle<DownloadContext>& dctx =
-    requestGroup->getDownloadContext();
-  if(dctx->hasAttribute(CTX_ATTR_BT)) {
-    SharedHandle<TorrentAttribute> attrs = bittorrent::getTorrentAttrs(dctx);
-    if(attrs->metadata.empty()) {
-      return true;
+namespace {
+class Criteria : public RequestGroupCriteria {
+public:
+  virtual bool match(const RequestGroup* requestGroup) const CXX11_OVERRIDE
+  {
+    auto& dctx = requestGroup->getDownloadContext();
+    if (dctx->hasAttribute(CTX_ATTR_BT)) {
+      if (bittorrent::getTorrentAttrs(dctx)->metadata.empty()) {
+        return true;
+      }
     }
+    return false;
   }
-  return false;
-}
+};
+} // namespace
 
 UTMetadataPostDownloadHandler::UTMetadataPostDownloadHandler()
 {
-  SharedHandle<Criteria> cri(new Criteria());
-  setCriteria(cri);
+  setCriteria(make_unique<Criteria>());
 }
 
-void UTMetadataPostDownloadHandler::getNextRequestGroups
-(std::vector<SharedHandle<RequestGroup> >& groups, RequestGroup* requestGroup)
+void UTMetadataPostDownloadHandler::getNextRequestGroups(
+    std::vector<std::shared_ptr<RequestGroup>>& groups,
+    RequestGroup* requestGroup) const
 {
-  const SharedHandle<DownloadContext>& dctx =requestGroup->getDownloadContext();
-  SharedHandle<TorrentAttribute> attrs = bittorrent::getTorrentAttrs(dctx);
+  auto& dctx = requestGroup->getDownloadContext();
+  auto attrs = bittorrent::getTorrentAttrs(dctx);
   std::string metadata =
-    util::toString(requestGroup->getPieceStorage()->getDiskAdaptor());
+      util::toString(requestGroup->getPieceStorage()->getDiskAdaptor());
   std::string torrent = bittorrent::metadata2Torrent(metadata, attrs);
 
-  if(requestGroup->getOption()->getAsBool(PREF_BT_SAVE_METADATA)) {
+  if (requestGroup->getOption()->getAsBool(PREF_BT_SAVE_METADATA)) {
     std::string filename =
-      util::applyDir(requestGroup->getOption()->get(PREF_DIR),
-                     util::toHex(attrs->infoHash)+".torrent");
-    if(util::saveAs(filename, torrent)) {
+        util::applyDir(requestGroup->getOption()->get(PREF_DIR),
+                       util::toHex(attrs->infoHash) + ".torrent");
+    if (util::saveAs(filename, torrent)) {
       A2_LOG_NOTICE(fmt(MSG_METADATA_SAVED, filename.c_str()));
-    } else {
+    }
+    else {
       A2_LOG_NOTICE(fmt(MSG_METADATA_NOT_SAVED, filename.c_str()));
     }
   }
-  if(!requestGroup->getOption()->getAsBool(PREF_BT_METADATA_ONLY)) {
-    std::vector<SharedHandle<RequestGroup> > newRgs;
+  if (!requestGroup->getOption()->getAsBool(PREF_BT_METADATA_ONLY)) {
+    std::vector<std::shared_ptr<RequestGroup>> newRgs;
     // Don't adjust announce URI because it has been done when
     // RequestGroup is created with magnet URI.
     createRequestGroupForBitTorrent(newRgs, requestGroup->getOption(),
-                                    std::vector<std::string>(),
-                                    A2STR::NIL, torrent, false);
+                                    std::vector<std::string>(), A2STR::NIL,
+                                    torrent, false);
     requestGroup->followedBy(newRgs.begin(), newRgs.end());
-    if(requestGroup->getMetadataInfo()) {
+    if (requestGroup->getMetadataInfo()) {
       setMetadataInfo(newRgs.begin(), newRgs.end(),
                       requestGroup->getMetadataInfo());
     }
+
+    auto rgman = requestGroup->getRequestGroupMan();
+
+    if (rgman && rgman->getKeepRunning() &&
+        requestGroup->getOption()->getAsBool(PREF_PAUSE_METADATA)) {
+      for (auto& rg : newRgs) {
+        rg->setPauseRequested(true);
+      }
+    }
+
     groups.insert(groups.end(), newRgs.begin(), newRgs.end());
   }
 }

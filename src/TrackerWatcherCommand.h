@@ -38,8 +38,7 @@
 #include "Command.h"
 
 #include <string>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
@@ -66,86 +65,89 @@ public:
   // Stop this request.
   virtual void stop(DownloadEngine* e) = 0;
   // Returns true if processing tracker response is successful.
-  virtual bool processResponse(const SharedHandle<BtAnnounce>& btAnnounce) = 0;
+  virtual bool
+  processResponse(const std::shared_ptr<BtAnnounce>& btAnnounce) = 0;
 };
 
-class HTTPAnnRequest:public AnnRequest {
+class HTTPAnnRequest : public AnnRequest {
 public:
-  HTTPAnnRequest(const SharedHandle<RequestGroup>& rg);
+  HTTPAnnRequest(std::unique_ptr<RequestGroup> rg);
   virtual ~HTTPAnnRequest();
-  virtual bool stopped() const;
-  virtual bool success() const;
-  virtual bool issue(DownloadEngine* e);
-  virtual void stop(DownloadEngine* e);
-  virtual bool processResponse(const SharedHandle<BtAnnounce>& btAnnounce);
+  virtual bool stopped() const CXX11_OVERRIDE;
+  virtual bool success() const CXX11_OVERRIDE;
+  virtual bool issue(DownloadEngine* e) CXX11_OVERRIDE;
+  virtual void stop(DownloadEngine* e) CXX11_OVERRIDE;
+  virtual bool
+  processResponse(const std::shared_ptr<BtAnnounce>& btAnnounce) CXX11_OVERRIDE;
+
 private:
-  SharedHandle<RequestGroup> rg_;
+  std::unique_ptr<RequestGroup> rg_;
 };
 
-class UDPAnnRequest:public AnnRequest {
+class UDPAnnRequest : public AnnRequest {
 public:
-  UDPAnnRequest(const SharedHandle<UDPTrackerRequest>& req);
+  UDPAnnRequest(const std::shared_ptr<UDPTrackerRequest>& req);
   virtual ~UDPAnnRequest();
-  virtual bool stopped() const;
-  virtual bool success() const;
-  virtual bool issue(DownloadEngine* e);
-  virtual void stop(DownloadEngine* e);
-  virtual bool processResponse(const SharedHandle<BtAnnounce>& btAnnounce);
+  virtual bool stopped() const CXX11_OVERRIDE;
+  virtual bool success() const CXX11_OVERRIDE;
+  virtual bool issue(DownloadEngine* e) CXX11_OVERRIDE;
+  virtual void stop(DownloadEngine* e) CXX11_OVERRIDE;
+  virtual bool
+  processResponse(const std::shared_ptr<BtAnnounce>& btAnnounce) CXX11_OVERRIDE;
+
 private:
-  SharedHandle<UDPTrackerRequest> req_;
+  std::shared_ptr<UDPTrackerRequest> req_;
 };
 
-class TrackerWatcherCommand : public Command
-{
+class TrackerWatcherCommand : public Command {
 private:
   RequestGroup* requestGroup_;
 
   DownloadEngine* e_;
 
-  SharedHandle<UDPTrackerClient> udpTrackerClient_;
+  std::shared_ptr<UDPTrackerClient> udpTrackerClient_;
 
-  SharedHandle<PeerStorage> peerStorage_;
+  std::shared_ptr<PeerStorage> peerStorage_;
 
-  SharedHandle<PieceStorage> pieceStorage_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
 
-  SharedHandle<BtRuntime> btRuntime_;
+  std::shared_ptr<BtRuntime> btRuntime_;
 
-  SharedHandle<BtAnnounce> btAnnounce_;
+  std::shared_ptr<BtAnnounce> btAnnounce_;
 
-  SharedHandle<AnnRequest> trackerRequest_;
+  std::unique_ptr<AnnRequest> trackerRequest_;
 
   /**
    * Returns a command for announce request. Returns 0 if no announce request
    * is needed.
    */
-  SharedHandle<AnnRequest>
-  createHTTPAnnRequest(const std::string& uri);
+  std::unique_ptr<AnnRequest> createHTTPAnnRequest(const std::string& uri);
 
-  SharedHandle<AnnRequest>
-  createUDPAnnRequest(const std::string& host, uint16_t port,
-                      uint16_t localPort);
+  std::unique_ptr<AnnRequest> createUDPAnnRequest(const std::string& host,
+                                                  uint16_t port,
+                                                  uint16_t localPort);
 
   void addConnection();
 
-  const SharedHandle<Option>& getOption() const;
+  const std::shared_ptr<Option>& getOption() const;
+
 public:
-  TrackerWatcherCommand(cuid_t cuid,
-                        RequestGroup* requestGroup,
+  TrackerWatcherCommand(cuid_t cuid, RequestGroup* requestGroup,
                         DownloadEngine* e);
 
   virtual ~TrackerWatcherCommand();
 
-  SharedHandle<AnnRequest> createAnnounce(DownloadEngine* e);
+  std::unique_ptr<AnnRequest> createAnnounce(DownloadEngine* e);
 
-  virtual bool execute();
+  virtual bool execute() CXX11_OVERRIDE;
 
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
 
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+  void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage);
 
-  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
+  void setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime);
 
-  void setBtAnnounce(const SharedHandle<BtAnnounce>& btAnnounce);
+  void setBtAnnounce(const std::shared_ptr<BtAnnounce>& btAnnounce);
 };
 
 } // namespace aria2

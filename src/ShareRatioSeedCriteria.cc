@@ -39,11 +39,11 @@
 
 namespace aria2 {
 
-ShareRatioSeedCriteria::ShareRatioSeedCriteria
-(double ratio, const SharedHandle<DownloadContext>& downloadContext)
-  : ratio_(ratio),
-    downloadContext_(downloadContext)
-{}
+ShareRatioSeedCriteria::ShareRatioSeedCriteria(
+    double ratio, const std::shared_ptr<DownloadContext>& downloadContext)
+    : ratio_(ratio), downloadContext_(downloadContext)
+{
+}
 
 ShareRatioSeedCriteria::~ShareRatioSeedCriteria() {}
 
@@ -52,23 +52,23 @@ void ShareRatioSeedCriteria::reset() {}
 bool ShareRatioSeedCriteria::evaluate()
 {
   int64_t completedLength = pieceStorage_->getCompletedLength();
-  if(completedLength == 0) {
+  if (completedLength == 0) {
     return true;
   }
-  int64_t uploadLength = btRuntime_->getUploadLengthAtStartup()+
-    downloadContext_->getNetStat().getSessionUploadLength();
-  return ratio_ <= 1.0*uploadLength/completedLength;
+  int64_t uploadLength =
+      btRuntime_->getUploadLengthAtStartup() +
+      downloadContext_->getNetStat().getSessionUploadLength();
+  return ratio_ <= 1.0 * uploadLength / completedLength;
 }
 
-
-void ShareRatioSeedCriteria::setBtRuntime
-(const SharedHandle<BtRuntime>& btRuntime)
+void ShareRatioSeedCriteria::setBtRuntime(
+    const std::shared_ptr<BtRuntime>& btRuntime)
 {
   btRuntime_ = btRuntime;
 }
 
-void ShareRatioSeedCriteria::setPieceStorage
-(const SharedHandle<PieceStorage>& pieceStorage)
+void ShareRatioSeedCriteria::setPieceStorage(
+    const std::shared_ptr<PieceStorage>& pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }

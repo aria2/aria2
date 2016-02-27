@@ -44,20 +44,20 @@ class HttpConnection;
 
 class HttpDownloadCommand : public DownloadCommand {
 private:
-  SharedHandle<HttpResponse> httpResponse_;
-  SharedHandle<HttpConnection> httpConnection_;
+  std::unique_ptr<HttpResponse> httpResponse_;
+  std::shared_ptr<HttpConnection> httpConnection_;
+
 protected:
-  virtual bool prepareForNextSegment();
-  virtual int64_t getRequestEndOffset() const;
+  virtual bool prepareForNextSegment() CXX11_OVERRIDE;
+  virtual int64_t getRequestEndOffset() const CXX11_OVERRIDE;
+
 public:
-  HttpDownloadCommand(cuid_t cuid,
-                      const SharedHandle<Request>& req,
-                      const SharedHandle<FileEntry>& fileEntry,
+  HttpDownloadCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
+                      const std::shared_ptr<FileEntry>& fileEntry,
                       RequestGroup* requestGroup,
-                      const SharedHandle<HttpResponse>& httpResponse,
-                      const SharedHandle<HttpConnection>& httpConnection,
-                      DownloadEngine* e,
-                      const SharedHandle<SocketCore>& s);
+                      std::unique_ptr<HttpResponse> httpResponse,
+                      const std::shared_ptr<HttpConnection>& httpConnection,
+                      DownloadEngine* e, const std::shared_ptr<SocketCore>& s);
   virtual ~HttpDownloadCommand();
 };
 

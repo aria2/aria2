@@ -36,7 +36,8 @@
 #define D_UT_METADATA_DATA_EXTENSION_MESSAGE_H
 
 #include "UTMetadataExtensionMessage.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -44,59 +45,46 @@ class DownloadContext;
 class PieceStorage;
 class UTMetadataRequestTracker;
 
-class UTMetadataDataExtensionMessage:public UTMetadataExtensionMessage {
+class UTMetadataDataExtensionMessage : public UTMetadataExtensionMessage {
 private:
   size_t totalSize_;
 
   std::string data_;
 
-  SharedHandle<DownloadContext> dctx_;
+  DownloadContext* dctx_;
 
-  SharedHandle<PieceStorage> pieceStorage_;
+  PieceStorage* pieceStorage_;
 
   UTMetadataRequestTracker* tracker_;
+
 public:
   UTMetadataDataExtensionMessage(uint8_t extensionMessageID);
 
-  ~UTMetadataDataExtensionMessage();
+  virtual std::string getPayload() CXX11_OVERRIDE;
 
-  virtual std::string getPayload();
+  virtual std::string toString() const CXX11_OVERRIDE;
 
-  virtual std::string toString() const;
+  virtual void doReceivedAction() CXX11_OVERRIDE;
 
-  virtual void doReceivedAction();
+  void setTotalSize(size_t totalSize);
 
-  void setTotalSize(size_t totalSize)
-  {
-    totalSize_ = totalSize;
-  }
-
-  size_t getTotalSize() const
-  {
-    return totalSize_;
-  }
+  size_t getTotalSize() const;
 
   void setData(const std::string& data);
 
-  template<typename InputIterator>
+  template <typename InputIterator>
   void setData(InputIterator first, InputIterator last)
   {
     data_.assign(first, last);
   }
 
-  const std::string& getData() const
-  {
-    return data_;
-  }
+  const std::string& getData() const;
 
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+  void setPieceStorage(PieceStorage* pieceStorage);
 
-  void setUTMetadataRequestTracker(UTMetadataRequestTracker* tracker)
-  {
-    tracker_ = tracker;
-  }
+  void setUTMetadataRequestTracker(UTMetadataRequestTracker* tracker);
 
-  void setDownloadContext(const SharedHandle<DownloadContext>& dctx);
+  void setDownloadContext(DownloadContext* dctx);
 };
 
 } // namespace aria2

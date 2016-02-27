@@ -36,7 +36,6 @@
 #define D_STAT_CALC_H
 
 #include "common.h"
-#include "SharedHandle.h"
 
 namespace aria2 {
 

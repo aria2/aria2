@@ -38,57 +38,40 @@
 #include "common.h"
 
 #include <deque>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
-template<typename T>
-class SequentialPicker {
+template <typename T> class SequentialPicker {
 private:
-  std::deque<SharedHandle<T> > entries_;
-  SharedHandle<T> pickedEntry_;
+  std::deque<std::unique_ptr<T>> entries_;
+  std::unique_ptr<T> pickedEntry_;
+
 public:
-  bool isPicked() const
-  {
-    return pickedEntry_;
-  }
+  bool isPicked() const { return pickedEntry_.get(); }
 
-  const SharedHandle<T>& getPickedEntry() const
-  {
-    return pickedEntry_;
-  }
+  const std::unique_ptr<T>& getPickedEntry() const { return pickedEntry_; }
 
-  void dropPickedEntry()
-  {
-    pickedEntry_.reset();
-  }
+  void dropPickedEntry() { pickedEntry_.reset(); }
 
-  bool hasNext() const
-  {
-    return !entries_.empty();
-  }
+  bool hasNext() const { return !entries_.empty(); }
 
-  SharedHandle<T> pickNext()
+  T* pickNext()
   {
-    SharedHandle<T> r;
-    if(hasNext()) {
-      r = entries_.front();
+    if (hasNext()) {
+      pickedEntry_ = std::move(entries_.front());
       entries_.pop_front();
-      pickedEntry_ = r;
+      return pickedEntry_.get();
     }
-    return r;
+    return nullptr;
   }
 
-  void pushEntry(const SharedHandle<T>& entry)
+  void pushEntry(std::unique_ptr<T> entry)
   {
-    entries_.push_back(entry);
+    entries_.push_back(std::move(entry));
   }
 
-  size_t countEntryInQueue() const
-  {
-    return entries_.size();
-  }
+  size_t countEntryInQueue() const { return entries_.size(); }
 };
 
 } // namespace aria2

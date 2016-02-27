@@ -46,37 +46,38 @@ namespace aria2 {
 
 class GnuTLSContext : public TLSContext {
 public:
-  GnuTLSContext(TLSSessionSide side);
+  GnuTLSContext(TLSSessionSide side, TLSVersion ver);
 
   virtual ~GnuTLSContext();
 
   // private key `keyfile' must be decrypted.
   virtual bool addCredentialFile(const std::string& certfile,
-                                 const std::string& keyfile);
+                                 const std::string& keyfile) CXX11_OVERRIDE;
+  bool addP12CredentialFile(const std::string& p12file);
 
-  virtual bool addSystemTrustedCACerts();
+  virtual bool addSystemTrustedCACerts() CXX11_OVERRIDE;
 
   // certfile can contain multiple certificates.
-  virtual bool addTrustedCACertFile(const std::string& certfile);
+  virtual bool addTrustedCACertFile(const std::string& certfile) CXX11_OVERRIDE;
 
-  virtual bool good() const;
+  virtual bool good() const CXX11_OVERRIDE;
 
-  virtual TLSSessionSide getSide() const {
-    return side_;
-  }
+  virtual TLSSessionSide getSide() const CXX11_OVERRIDE { return side_; }
 
-  virtual bool getVerifyPeer() const {
-    return verifyPeer_;
-  }
-  virtual void setVerifyPeer(bool verify) {
+  virtual bool getVerifyPeer() const CXX11_OVERRIDE { return verifyPeer_; }
+  virtual void setVerifyPeer(bool verify) CXX11_OVERRIDE
+  {
     verifyPeer_ = verify;
   }
 
   gnutls_certificate_credentials_t getCertCred() const;
 
+  TLSVersion getMinTLSVersion() const { return minTLSVer_; }
+
 private:
   gnutls_certificate_credentials_t certCred_;
   TLSSessionSide side_;
+  TLSVersion minTLSVer_;
   bool good_;
   bool verifyPeer_;
 };

@@ -50,28 +50,20 @@ private:
   uint16_t port_;
 
   Timer lastUpdated_;
+
 public:
-  PeerAddrEntry
-  (const std::string& ipaddr, uint16_t port, Timer updated = Timer());
+  PeerAddrEntry(const std::string& ipaddr, uint16_t port,
+                Timer updated = Timer());
   PeerAddrEntry(const PeerAddrEntry& c);
   ~PeerAddrEntry();
 
   PeerAddrEntry& operator=(const PeerAddrEntry& c);
 
-  const std::string& getIPAddress() const
-  {
-    return ipaddr_;
-  }
+  const std::string& getIPAddress() const { return ipaddr_; }
 
-  uint16_t getPort() const
-  {
-    return port_;
-  }
+  uint16_t getPort() const { return port_; }
 
-  const Timer& getLastUpdated() const
-  {
-    return lastUpdated_;
-  }
+  const Timer& getLastUpdated() const { return lastUpdated_; }
 
   void notifyUpdate();
 

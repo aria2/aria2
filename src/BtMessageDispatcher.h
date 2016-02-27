@@ -38,8 +38,8 @@
 #include "common.h"
 
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "RequestSlot.h"
 
 namespace aria2 {
@@ -51,19 +51,18 @@ class BtMessageDispatcher {
 public:
   virtual ~BtMessageDispatcher() {}
 
-  virtual void addMessageToQueue(const SharedHandle<BtMessage>& btMessage) = 0;
-
-  virtual void
-  addMessageToQueue(const std::vector<SharedHandle<BtMessage> >& btMessages) =0;
+  virtual void addMessageToQueue(std::unique_ptr<BtMessage> btMessage) = 0;
 
   virtual void sendMessages() = 0;
 
-  virtual void doCancelSendingPieceAction
-  (size_t index, int32_t begin, int32_t length) = 0;
+  virtual void doCancelSendingPieceAction(size_t index, int32_t begin,
+                                          int32_t length) = 0;
 
-  virtual void doCancelSendingPieceAction(const SharedHandle<Piece>& piece) = 0;
+  virtual void
+  doCancelSendingPieceAction(const std::shared_ptr<Piece>& piece) = 0;
 
-  virtual void doAbortOutstandingRequestAction(const SharedHandle<Piece>& piece) = 0;
+  virtual void
+  doAbortOutstandingRequestAction(const std::shared_ptr<Piece>& piece) = 0;
 
   virtual void doChokedAction() = 0;
 
@@ -79,12 +78,12 @@ public:
 
   virtual bool isOutstandingRequest(size_t index, size_t blockIndex) = 0;
 
-  virtual RequestSlot getOutstandingRequest
-  (size_t index, int32_t begin, int32_t length) = 0;
+  virtual const RequestSlot* getOutstandingRequest(size_t index, int32_t begin,
+                                                   int32_t length) = 0;
 
-  virtual void removeOutstandingRequest(const RequestSlot& slot) = 0;
+  virtual void removeOutstandingRequest(const RequestSlot* slot) = 0;
 
-  virtual void addOutstandingRequest(const RequestSlot& slot) = 0;
+  virtual void addOutstandingRequest(std::unique_ptr<RequestSlot> slot) = 0;
 
   virtual size_t countOutstandingUpload() = 0;
 };

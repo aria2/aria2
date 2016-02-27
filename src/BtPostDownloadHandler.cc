@@ -52,68 +52,74 @@
 #include "DiskWriter.h"
 #include "AbstractSingleDiskAdaptor.h"
 #include "BencodeDiskWriter.h"
+#include "RequestGroupMan.h"
 
 namespace aria2 {
 
 BtPostDownloadHandler::BtPostDownloadHandler()
 {
-  SharedHandle<RequestGroupCriteria> cri
-    (new ContentTypeRequestGroupCriteria
-     (getBtContentTypes(), getBtExtensions()));
-  setCriteria(cri);
+  setCriteria(make_unique<ContentTypeRequestGroupCriteria>(getBtContentTypes(),
+                                                           getBtExtensions()));
 }
 
-BtPostDownloadHandler::~BtPostDownloadHandler() {}
-
-void BtPostDownloadHandler::getNextRequestGroups
-(std::vector<SharedHandle<RequestGroup> >& groups,
- RequestGroup* requestGroup)
+void BtPostDownloadHandler::getNextRequestGroups(
+    std::vector<std::shared_ptr<RequestGroup>>& groups,
+    RequestGroup* requestGroup) const
 {
   A2_LOG_INFO(fmt("Generating RequestGroups for Torrent file %s",
                   requestGroup->getFirstFilePath().c_str()));
-  SharedHandle<ValueBase> torrent;
-  if(requestGroup->inMemoryDownload()) {
-    const SharedHandle<DiskWriter>& dw =
-      static_pointer_cast<AbstractSingleDiskAdaptor>
-      (requestGroup->getPieceStorage()->getDiskAdaptor())->getDiskWriter();
-    const SharedHandle<bittorrent::BencodeDiskWriter>& bdw =
-      static_pointer_cast<bittorrent::BencodeDiskWriter>(dw);
+  std::unique_ptr<ValueBase> torrent;
+  if (requestGroup->inMemoryDownload()) {
+    auto& dw = static_cast<AbstractSingleDiskAdaptor*>(
+                   requestGroup->getPieceStorage()->getDiskAdaptor().get())
+                   ->getDiskWriter();
+    auto bdw = static_cast<bittorrent::BencodeDiskWriter*>(dw.get());
     int error = bdw->finalize();
-    if(error == 0) {
+    if (error == 0) {
       torrent = bdw->getResult();
     }
-  } else {
+  }
+  else {
     std::string content;
     try {
       requestGroup->getPieceStorage()->getDiskAdaptor()->openExistingFile();
-      content = util::toString(requestGroup->getPieceStorage()
-                               ->getDiskAdaptor());
+      content =
+          util::toString(requestGroup->getPieceStorage()->getDiskAdaptor());
       requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();
-    } catch(Exception& e) {
+    }
+    catch (Exception& e) {
       requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();
       throw;
     }
     ssize_t error;
-    torrent = bittorrent::ValueBaseBencodeParser().parseFinal
-      (content.c_str(), content.size(), error);
+    torrent = bittorrent::ValueBaseBencodeParser().parseFinal(
+        content.c_str(), content.size(), error);
   }
-  if(!torrent) {
+  if (!torrent) {
     throw DL_ABORT_EX2("Could not parse BitTorrent metainfo",
                        error_code::BENCODE_PARSE_ERROR);
   }
-  std::vector<SharedHandle<RequestGroup> > newRgs;
+  std::vector<std::shared_ptr<RequestGroup>> newRgs;
   createRequestGroupForBitTorrent(newRgs, requestGroup->getOption(),
-                                  std::vector<std::string>(),
-                                  "",
-                                  torrent);
-  requestGroup->followedBy(newRgs.begin(), newRgs.end());
-  SharedHandle<MetadataInfo> mi =
-    createMetadataInfoFromFirstFileEntry(requestGroup->getGroupId(),
-                                         requestGroup->getDownloadContext());
-  if(mi) {
-    setMetadataInfo(newRgs.begin(), newRgs.end(), mi);
+                                  std::vector<std::string>(), "",
+                                  torrent.get());
+  requestGroup->followedBy(std::begin(newRgs), std::end(newRgs));
+  auto mi = createMetadataInfoFromFirstFileEntry(
+      requestGroup->getGroupId(), requestGroup->getDownloadContext());
+  if (mi) {
+    setMetadataInfo(std::begin(newRgs), std::end(newRgs), mi);
   }
-  groups.insert(groups.end(), newRgs.begin(), newRgs.end());
+
+  auto rgman = requestGroup->getRequestGroupMan();
+
+  if (rgman && rgman->getKeepRunning() &&
+      requestGroup->getOption()->getAsBool(PREF_PAUSE_METADATA)) {
+    for (auto& rg : newRgs) {
+      rg->setPauseRequested(true);
+    }
+  }
+
+  groups.insert(std::end(groups), std::begin(newRgs), std::end(newRgs));
 }
 
 } // namespace aria2

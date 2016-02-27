@@ -51,24 +51,22 @@ private:
   // Minimum number of peers. This value is used for getting more peers from
   // tracker. 0 means always the number of peers is under minimum.
   int minPeers_;
+
 public:
   BtRuntime();
 
   ~BtRuntime();
 
-  int64_t getUploadLengthAtStartup() const {
-    return uploadLengthAtStartup_;
-  }
+  int64_t getUploadLengthAtStartup() const { return uploadLengthAtStartup_; }
 
-  void setUploadLengthAtStartup(int64_t length) {
+  void setUploadLengthAtStartup(int64_t length)
+  {
     uploadLengthAtStartup_ = length;
   }
 
   bool isHalt() const { return halt_; }
 
-  void setHalt(bool halt) {
-    halt_ = halt;
-  }
+  void setHalt(bool halt) { halt_ = halt; }
 
   int getConnections() const { return connections_; }
 
@@ -97,10 +95,7 @@ public:
 
   void setMaxPeers(int maxPeers);
 
-  int getMaxPeers() const
-  {
-    return maxPeers_;
-  }
+  int getMaxPeers() const { return maxPeers_; }
 
   static const int DEFAULT_MAX_PEERS = 55;
   static const int DEFAULT_MIN_PEERS = 40;

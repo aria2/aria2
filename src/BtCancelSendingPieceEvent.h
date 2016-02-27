@@ -44,9 +44,12 @@ private:
   size_t index_;
   int32_t begin_;
   int32_t length_;
+
 public:
-  BtCancelSendingPieceEvent(size_t index, int32_t begin, int32_t length):
-    index_(index), begin_(begin), length_(length) {}
+  BtCancelSendingPieceEvent(size_t index, int32_t begin, int32_t length)
+      : index_(index), begin_(begin), length_(length)
+  {
+  }
 
   size_t getIndex() const { return index_; }
 

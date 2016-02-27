@@ -46,14 +46,14 @@ private:
   const RangeBtMessage* message_;
   size_t numPiece_;
   int32_t pieceLength_;
+
 public:
-  RangeBtMessageValidator(const RangeBtMessage* message,
-                          size_t numPiece,
+  RangeBtMessageValidator(const RangeBtMessage* message, size_t numPiece,
                           int32_t pieceLength);
 
   ~RangeBtMessageValidator();
 
-  virtual void validate();
+  virtual void validate() CXX11_OVERRIDE;
 };
 
 } // namespace aria2

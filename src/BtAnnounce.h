@@ -38,9 +38,10 @@
 #include "common.h"
 
 #include <string>
+#include <memory>
 
 #include "a2time.h"
-#include "SharedHandle.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -68,7 +69,7 @@ public:
    */
   virtual std::string getAnnounceUrl() = 0;
 
-  virtual SharedHandle<UDPTrackerRequest>
+  virtual std::shared_ptr<UDPTrackerRequest>
   createUDPTrackerRequest(const std::string& remoteAddr, uint16_t remotePort,
                           uint16_t localPort) = 0;
 
@@ -103,8 +104,8 @@ public:
   virtual void processAnnounceResponse(const unsigned char* trackerResponse,
                                        size_t trackerResponseLength) = 0;
 
-  virtual void processUDPTrackerResponse
-  (const SharedHandle<UDPTrackerRequest>& req) = 0;
+  virtual void
+  processUDPTrackerResponse(const std::shared_ptr<UDPTrackerRequest>& req) = 0;
 
   /**
    * Returns true if no more announce is needed.
@@ -116,7 +117,7 @@ public:
    */
   virtual void shuffleAnnounce() = 0;
 
-  virtual void overrideMinInterval(time_t interval) = 0;
+  virtual void overrideMinInterval(std::chrono::seconds interval) = 0;
 
   virtual void setTcpPort(uint16_t port) = 0;
 
@@ -138,7 +139,7 @@ public:
 
   static const std::string PEERS6;
 
-  static const time_t DEFAULT_ANNOUNCE_INTERVAL = 120;
+  constexpr static auto DEFAULT_ANNOUNCE_INTERVAL = 2_min;
 };
 
 } // namespace aria2

@@ -39,63 +39,56 @@
 
 namespace aria2 {
 
-class PiecedSegment:public Segment {
+class PiecedSegment : public Segment {
 private:
-  SharedHandle<Piece> piece_;
+  std::shared_ptr<Piece> piece_;
   /**
    * Piece class has length property but it is a actual length of piece.
    * The last piece likely have shorter length than the other length.
    */
   int32_t pieceLength_;
-  int32_t writtenLength_;
+  int64_t writtenLength_;
 
 public:
-  PiecedSegment(int32_t pieceLength, const SharedHandle<Piece>& piece);
+  PiecedSegment(int32_t pieceLength, const std::shared_ptr<Piece>& piece);
 
   virtual ~PiecedSegment();
 
-  virtual bool complete() const;
+  virtual bool complete() const CXX11_OVERRIDE;
 
-  virtual size_t getIndex() const;
+  virtual size_t getIndex() const CXX11_OVERRIDE;
 
-  virtual int64_t getPosition() const;
+  virtual int64_t getPosition() const CXX11_OVERRIDE;
 
-  virtual int64_t getPositionToWrite() const;
+  virtual int64_t getPositionToWrite() const CXX11_OVERRIDE;
 
-  virtual int32_t getLength() const;
+  virtual int64_t getLength() const CXX11_OVERRIDE;
 
-  virtual int32_t getSegmentLength() const
+  virtual int64_t getSegmentLength() const CXX11_OVERRIDE
   {
     return pieceLength_;
   }
 
-  virtual int32_t getWrittenLength() const
+  virtual int64_t getWrittenLength() const CXX11_OVERRIDE
   {
     return writtenLength_;
   }
 
-  virtual void updateWrittenLength(int32_t bytes);
-
-#ifdef ENABLE_MESSAGE_DIGEST
+  virtual void updateWrittenLength(int64_t bytes) CXX11_OVERRIDE;
 
   // `begin' is a offset inside this segment.
-  virtual bool updateHash
-  (int32_t begin,
-   const unsigned char* data,
-   size_t dataLength);
+  virtual bool updateHash(int64_t begin, const unsigned char* data,
+                          size_t dataLength) CXX11_OVERRIDE;
 
-  virtual bool isHashCalculated() const;
+  virtual bool isHashCalculated() const CXX11_OVERRIDE;
 
-  virtual std::string getDigest();
+  virtual std::string getDigest() CXX11_OVERRIDE;
 
-#endif // ENABLE_MESSAGE_DIGEST
+  virtual void clear(WrDiskCache* diskCache) CXX11_OVERRIDE;
 
-  virtual void clear(WrDiskCache* diskCache);
-
-  virtual SharedHandle<Piece> getPiece() const;
+  virtual std::shared_ptr<Piece> getPiece() const CXX11_OVERRIDE;
 };
 
 } // namespace aria2
 
 #endif // D_PIECED_SEGMENT_H
-

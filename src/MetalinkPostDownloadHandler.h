@@ -39,16 +39,13 @@
 
 namespace aria2 {
 
-class MetalinkPostDownloadHandler:public PostDownloadHandler
-{
+class MetalinkPostDownloadHandler : public PostDownloadHandler {
 public:
   MetalinkPostDownloadHandler();
 
-  virtual ~MetalinkPostDownloadHandler();
-
   virtual void
-  getNextRequestGroups(std::vector<SharedHandle<RequestGroup> >& groups,
-                       RequestGroup* requestGroup);
+  getNextRequestGroups(std::vector<std::shared_ptr<RequestGroup>>& groups,
+                       RequestGroup* requestGroup) const CXX11_OVERRIDE;
 };
 
 } // namespace aria2

@@ -41,8 +41,8 @@
 #include <deque>
 #include <vector>
 #include <map>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "DownloadResult.h"
 #include "TransferStat.h"
 #include "RequestGroup.h"
@@ -60,11 +60,11 @@ class Option;
 class OutputFile;
 class UriListParser;
 class WrDiskCache;
+class OpenedFileCounter;
 
-typedef IndexedList<a2_gid_t,
-                    SharedHandle<RequestGroup> > RequestGroupList;
-typedef IndexedList<a2_gid_t,
-                    SharedHandle<DownloadResult> > DownloadResultList;
+typedef IndexedList<a2_gid_t, std::shared_ptr<RequestGroup>> RequestGroupList;
+typedef IndexedList<a2_gid_t, std::shared_ptr<DownloadResult>>
+    DownloadResultList;
 
 class RequestGroupMan {
 private:
@@ -74,9 +74,16 @@ private:
 
   int maxSimultaneousDownloads_;
 
+  // The number of simultaneous active downloads, excluding seed only
+  // item if PREF_BT_DETACH_SEED_ONLY is true.  We rely on this
+  // variable to maintain the number of concurrent downloads.  If
+  // PREF_BT_DETACH_SEED_ONLY is false, this variable is equal to
+  // requestGroups_.size().
+  size_t numActive_;
+
   const Option* option_;
 
-  SharedHandle<ServerStatMan> serverStatMan_;
+  std::shared_ptr<ServerStatMan> serverStatMan_;
 
   int maxOverallDownloadSpeedLimit_;
 
@@ -100,29 +107,37 @@ private:
   size_t maxDownloadResult_;
 
   // UriListParser for deferred input.
-  SharedHandle<UriListParser> uriListParser_;
+  std::shared_ptr<UriListParser> uriListParser_;
 
-  WrDiskCache* wrDiskCache_;
+  std::unique_ptr<WrDiskCache> wrDiskCache_;
 
-  void formatDownloadResultFull
-  (OutputFile& out,
-   const char* status,
-   const SharedHandle<DownloadResult>& downloadResult) const;
+  std::shared_ptr<OpenedFileCounter> openedFileCounter_;
 
-  std::string formatDownloadResult
-  (const char* status,
-   const SharedHandle<DownloadResult>& downloadResult) const;
+  // The number of stopped downloads so far in total, including
+  // evicted DownloadResults.
+  size_t numStoppedTotal_;
 
-  void configureRequestGroup
-  (const SharedHandle<RequestGroup>& requestGroup) const;
+  // SHA1 hash value of the content of last session serialization.
+  std::string lastSessionHash_;
 
-  void addRequestGroupIndex(const SharedHandle<RequestGroup>& group);
-  void addRequestGroupIndex
-  (const std::vector<SharedHandle<RequestGroup> >& groups);
+  void formatDownloadResultFull(
+      OutputFile& out, const char* status,
+      const std::shared_ptr<DownloadResult>& downloadResult) const;
+
+  std::string formatDownloadResult(
+      const char* status,
+      const std::shared_ptr<DownloadResult>& downloadResult) const;
+
+  void configureRequestGroup(
+      const std::shared_ptr<RequestGroup>& requestGroup) const;
+
+  void addRequestGroupIndex(const std::shared_ptr<RequestGroup>& group);
+  void addRequestGroupIndex(
+      const std::vector<std::shared_ptr<RequestGroup>>& groups);
+
 public:
-  RequestGroupMan(const std::vector<SharedHandle<RequestGroup> >& requestGroups,
-                  int maxSimultaneousDownloads,
-                  const Option* option);
+  RequestGroupMan(std::vector<std::shared_ptr<RequestGroup>> requestGroups,
+                  int maxSimultaneousDownloads, const Option* option);
 
   ~RequestGroupMan();
 
@@ -143,32 +158,29 @@ public:
   // Note that this method does not call addRequestGroupIndex(). This
   // method should be considered as private, but exposed for unit
   // testing purpose.
-  void addRequestGroup(const SharedHandle<RequestGroup>& group);
+  void addRequestGroup(const std::shared_ptr<RequestGroup>& group);
 
-  void addReservedGroup(const std::vector<SharedHandle<RequestGroup> >& groups);
+  void
+  addReservedGroup(const std::vector<std::shared_ptr<RequestGroup>>& groups);
 
-  void addReservedGroup(const SharedHandle<RequestGroup>& group);
+  void addReservedGroup(const std::shared_ptr<RequestGroup>& group);
 
-  void insertReservedGroup
-  (size_t pos, const std::vector<SharedHandle<RequestGroup> >& groups);
+  void
+  insertReservedGroup(size_t pos,
+                      const std::vector<std::shared_ptr<RequestGroup>>& groups);
 
-  void insertReservedGroup(size_t pos, const SharedHandle<RequestGroup>& group);
+  void insertReservedGroup(size_t pos,
+                           const std::shared_ptr<RequestGroup>& group);
 
   size_t countRequestGroup() const;
 
-  const RequestGroupList& getRequestGroups() const
-  {
-    return requestGroups_;
-  }
+  const RequestGroupList& getRequestGroups() const { return requestGroups_; }
 
-  const RequestGroupList& getReservedGroups() const
-  {
-    return reservedGroups_;
-  }
+  const RequestGroupList& getReservedGroups() const { return reservedGroups_; }
 
   // Returns RequestGroup object whose gid is gid. This method returns
   // RequestGroup either in requestGroups_ or reservedGroups_.
-  SharedHandle<RequestGroup> findGroup(a2_gid_t gid) const;
+  std::shared_ptr<RequestGroup> findGroup(a2_gid_t gid) const;
 
   // Changes the position of download denoted by gid.  If how is
   // POS_SET, it moves the download to a position relative to the
@@ -179,8 +191,7 @@ public:
   // beyond the end of the queue, it moves the download to the
   // beginning or the end of the queue respectively.  Returns the
   // destination position.
-  size_t changeReservedGroupPosition(a2_gid_t gid, int pos,
-                                     A2_HOW how);
+  size_t changeReservedGroupPosition(a2_gid_t gid, int pos, OffsetMode how);
 
   bool removeReservedGroup(a2_gid_t gid);
 
@@ -196,31 +207,25 @@ public:
     int inProgress_;
     int waiting_;
     error_code::Value lastErrorResult_;
-  public:
-    DownloadStat(int error,
-                 int inProgress,
-                 int waiting,
-                 error_code::Value lastErrorResult =
-                 error_code::FINISHED):
-      error_(error),
-      inProgress_(inProgress),
-      waiting_(waiting),
-      lastErrorResult_(lastErrorResult) {}
 
-    error_code::Value getLastErrorResult() const
+  public:
+    DownloadStat(int error, int inProgress, int waiting,
+                 error_code::Value lastErrorResult = error_code::FINISHED)
+        : error_(error),
+          inProgress_(inProgress),
+          waiting_(waiting),
+          lastErrorResult_(lastErrorResult)
     {
-      return lastErrorResult_;
     }
+
+    error_code::Value getLastErrorResult() const { return lastErrorResult_; }
 
     bool allCompleted() const
     {
       return error_ == 0 && inProgress_ == 0 && waiting_ == 0;
     }
 
-    int getInProgress() const
-    {
-      return inProgress_;
-    }
+    int getInProgress() const { return inProgress_; }
   };
 
   DownloadStat getDownloadStat() const;
@@ -230,7 +235,7 @@ public:
     return downloadResults_;
   }
 
-  SharedHandle<DownloadResult> findDownloadResult(a2_gid_t gid) const;
+  std::shared_ptr<DownloadResult> findDownloadResult(a2_gid_t gid) const;
 
   // Removes all download results.
   void purgeDownloadResult();
@@ -239,21 +244,22 @@ public:
   // result was removed. Otherwise returns false.
   bool removeDownloadResult(a2_gid_t gid);
 
-  void addDownloadResult(const SharedHandle<DownloadResult>& downloadResult);
+  void addDownloadResult(const std::shared_ptr<DownloadResult>& downloadResult);
 
-  SharedHandle<ServerStat> findServerStat(const std::string& hostname,
-                                          const std::string& protocol) const;
+  std::shared_ptr<ServerStat> findServerStat(const std::string& hostname,
+                                             const std::string& protocol) const;
 
-  SharedHandle<ServerStat> getOrCreateServerStat(const std::string& hostname,
-                                                 const std::string& protocol);
+  std::shared_ptr<ServerStat>
+  getOrCreateServerStat(const std::string& hostname,
+                        const std::string& protocol);
 
-  bool addServerStat(const SharedHandle<ServerStat>& serverStat);
+  bool addServerStat(const std::shared_ptr<ServerStat>& serverStat);
 
   bool loadServerStat(const std::string& filename);
 
   bool saveServerStat(const std::string& filename) const;
 
-  void removeStaleServerStat(time_t timeout);
+  void removeStaleServerStat(const std::chrono::seconds& timeout);
 
   // Returns true if current download speed exceeds
   // maxOverallDownloadSpeedLimit_.  Always returns false if
@@ -285,67 +291,56 @@ public:
     return maxOverallUploadSpeedLimit_;
   }
 
-  void setMaxSimultaneousDownloads(int max)
-  {
-    maxSimultaneousDownloads_ = max;
-  }
+  void setMaxSimultaneousDownloads(int max) { maxSimultaneousDownloads_ = max; }
 
   // Call this function if requestGroups_ queue should be maintained.
   // This function is added to reduce the call of maintenance, but at
   // the same time, it provides fast maintenance reaction.
-  void requestQueueCheck()
-  {
-    queueCheck_ = true;
-  }
+  void requestQueueCheck() { queueCheck_ = true; }
 
-  void clearQueueCheck()
-  {
-    queueCheck_ = false;
-  }
+  void clearQueueCheck() { queueCheck_ = false; }
 
-  bool queueCheckRequested() const
-  {
-    return queueCheck_;
-  }
+  bool queueCheckRequested() const { return queueCheck_; }
 
   // Returns currently used hosts and its use count.
-  void getUsedHosts(std::vector<std::pair<size_t, std::string> >& usedHosts);
+  void getUsedHosts(std::vector<std::pair<size_t, std::string>>& usedHosts);
 
-  const SharedHandle<ServerStatMan>& getServerStatMan() const
+  const std::shared_ptr<ServerStatMan>& getServerStatMan() const
   {
     return serverStatMan_;
   }
 
-  void setMaxDownloadResult(size_t v)
-  {
-    maxDownloadResult_ = v;
-  }
+  void setMaxDownloadResult(size_t v) { maxDownloadResult_ = v; }
 
-  void setUriListParser(const SharedHandle<UriListParser>& uriListParser);
+  void setUriListParser(const std::shared_ptr<UriListParser>& uriListParser);
 
-  NetStat& getNetStat()
-  {
-    return netStat_;
-  }
+  NetStat& getNetStat() { return netStat_; }
 
-  WrDiskCache* getWrDiskCache() const
-  {
-    return wrDiskCache_;
-  }
+  WrDiskCache* getWrDiskCache() const { return wrDiskCache_.get(); }
 
   // Initializes WrDiskCache according to PREF_DISK_CACHE option.  If
   // its value is 0, cache storage will not be initialized.
   void initWrDiskCache();
 
-  void setKeepRunning(bool flag)
+  void setKeepRunning(bool flag) { keepRunning_ = flag; }
+
+  bool getKeepRunning() const { return keepRunning_; }
+
+  size_t getNumStoppedTotal() const { return numStoppedTotal_; }
+
+  void setLastSessionHash(std::string lastSessionHash)
   {
-    keepRunning_ = flag;
+    lastSessionHash_ = std::move(lastSessionHash);
   }
 
-  bool getKeepRunning() const
+  const std::string& getLastSessionHash() const { return lastSessionHash_; }
+
+  const std::shared_ptr<OpenedFileCounter>& getOpenedFileCounter() const
   {
-    return keepRunning_;
+    return openedFileCounter_;
   }
+
+  void decreaseNumActive();
 };
 
 } // namespace aria2

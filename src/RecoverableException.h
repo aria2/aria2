@@ -38,15 +38,15 @@
 
 namespace aria2 {
 
-class RecoverableException:public Exception {
+class RecoverableException : public Exception {
 protected:
-  virtual SharedHandle<Exception> copy() const;
+  virtual std::shared_ptr<Exception> copy() const CXX11_OVERRIDE;
+
 public:
   RecoverableException(const char* file, int line, const std::string& msg);
 
   RecoverableException(const char* file, int line, const std::string& msg,
-                       error_code::Value errorCode,
-                       const Exception& cause);
+                       error_code::Value errorCode, const Exception& cause);
 
   RecoverableException(const char* file, int line, const std::string& msg,
                        const Exception& cause);
@@ -54,12 +54,11 @@ public:
   RecoverableException(const char* file, int line, const std::string& msg,
                        error_code::Value errorCode);
 
-  RecoverableException
-  (const char* file, int line, int errNum, const std::string& msg);
+  RecoverableException(const char* file, int line, int errNum,
+                       const std::string& msg);
 
-  RecoverableException
-  (const char* file, int line, int errNum, const std::string& msg,
-   error_code::Value errorCode);
+  RecoverableException(const char* file, int line, int errNum,
+                       const std::string& msg, error_code::Value errorCode);
 };
 
 } // namespace aria2

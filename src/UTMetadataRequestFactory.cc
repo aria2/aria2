@@ -45,44 +45,45 @@
 #include "LogFactory.h"
 #include "fmt.h"
 #include "ExtensionMessageRegistry.h"
+#include "BtExtendedMessage.h"
 
 namespace aria2 {
 
 UTMetadataRequestFactory::UTMetadataRequestFactory()
-  : dispatcher_(0),
-    messageFactory_(0),
-    tracker_(0),
-    cuid_(0)
-{}
-
-void UTMetadataRequestFactory::create
-(std::vector<SharedHandle<BtMessage> >& msgs, size_t num,
- const SharedHandle<PieceStorage>& pieceStorage)
+    : dctx_{nullptr},
+      dispatcher_{nullptr},
+      messageFactory_{nullptr},
+      tracker_{nullptr},
+      cuid_{0}
 {
-  while(num) {
-    std::vector<size_t> metadataRequests = tracker_->getAllTrackedIndex();
-    SharedHandle<Piece> p =
-      pieceStorage->getMissingPiece(peer_, metadataRequests, cuid_);
-    if(!p) {
+}
+
+std::vector<std::unique_ptr<BtMessage>>
+UTMetadataRequestFactory::create(size_t num, PieceStorage* pieceStorage)
+{
+  auto msgs = std::vector<std::unique_ptr<BtMessage>>{};
+  while (num) {
+    auto metadataRequests = tracker_->getAllTrackedIndex();
+    auto p = pieceStorage->getMissingPiece(peer_, metadataRequests, cuid_);
+    if (!p) {
       A2_LOG_DEBUG("No ut_metadata piece is available to download.");
       break;
     }
     --num;
     A2_LOG_DEBUG(fmt("Creating ut_metadata request index=%lu",
                      static_cast<unsigned long>(p->getIndex())));
-    SharedHandle<UTMetadataRequestExtensionMessage> m
-      (new UTMetadataRequestExtensionMessage
-       (peer_->getExtensionMessageID(ExtensionMessageRegistry::UT_METADATA)));
+    auto m = make_unique<UTMetadataRequestExtensionMessage>(
+        peer_->getExtensionMessageID(ExtensionMessageRegistry::UT_METADATA));
     m->setIndex(p->getIndex());
     m->setDownloadContext(dctx_);
     m->setBtMessageDispatcher(dispatcher_);
     m->setBtMessageFactory(messageFactory_);
     m->setPeer(peer_);
 
-    SharedHandle<BtMessage> msg = messageFactory_->createBtExtendedMessage(m);
-    msgs.push_back(msg);
+    msgs.push_back(messageFactory_->createBtExtendedMessage(std::move(m)));
     tracker_->add(p->getIndex());
   }
+  return msgs;
 }
 
 } // namespace aria2

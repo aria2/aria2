@@ -51,13 +51,10 @@
 
 namespace aria2 {
 
-LpdReceiveMessageCommand::LpdReceiveMessageCommand
-(cuid_t cuid,
- const SharedHandle<LpdMessageReceiver>& receiver,
- DownloadEngine* e)
-  : Command(cuid),
-    receiver_(receiver),
-    e_(e)
+LpdReceiveMessageCommand::LpdReceiveMessageCommand(
+    cuid_t cuid, const std::shared_ptr<LpdMessageReceiver>& receiver,
+    DownloadEngine* e)
+    : Command(cuid), receiver_(receiver), e_(e)
 {
   e_->addSocketForReadCheck(receiver_->getSocket(), this);
 }
@@ -69,43 +66,44 @@ LpdReceiveMessageCommand::~LpdReceiveMessageCommand()
 
 bool LpdReceiveMessageCommand::execute()
 {
-  if(e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
+  if (e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
     return true;
   }
-  for(size_t i = 0; i < 20; ++i) {
-    SharedHandle<LpdMessage> m = receiver_->receiveMessage();
-    if(!m) {
+  for (size_t i = 0; i < 20; ++i) {
+    auto m = receiver_->receiveMessage();
+    if (!m) {
       break;
     }
-    SharedHandle<BtRegistry> reg = e_->getBtRegistry();
-    SharedHandle<DownloadContext> dctx = reg->getDownloadContext(m->infoHash);
-    if(!dctx) {
+    auto& reg = e_->getBtRegistry();
+    auto& dctx = reg->getDownloadContext(m->infoHash);
+    if (!dctx) {
       A2_LOG_DEBUG(fmt("Download Context is null for infohash=%s.",
                        util::toHex(m->infoHash).c_str()));
       continue;
     }
-    if(bittorrent::getTorrentAttrs(dctx)->privateTorrent) {
+    if (bittorrent::getTorrentAttrs(dctx)->privateTorrent) {
       A2_LOG_DEBUG("Ignore LPD message because the torrent is private.");
       continue;
     }
     RequestGroup* group = dctx->getOwnerRequestGroup();
     assert(group);
-    const SharedHandle<BtObject>& btobj = reg->get(group->getGID());
+    auto btobj = reg->get(group->getGID());
     assert(btobj);
-    const SharedHandle<PeerStorage>& peerStorage = btobj->peerStorage;
+    auto& peerStorage = btobj->peerStorage;
     assert(peerStorage);
-    SharedHandle<Peer> peer = m->peer;
-    if(peerStorage->addPeer(peer)) {
+    auto& peer = m->peer;
+    if (peerStorage->addPeer(peer)) {
       A2_LOG_DEBUG(fmt("LPD peer %s:%u local=%d added.",
                        peer->getIPAddress().c_str(), peer->getPort(),
-                       peer->isLocalPeer()?1:0));
-    } else {
+                       peer->isLocalPeer() ? 1 : 0));
+    }
+    else {
       A2_LOG_DEBUG(fmt("LPD peer %s:%u local=%d not added.",
                        peer->getIPAddress().c_str(), peer->getPort(),
-                       peer->isLocalPeer()?1:0));
+                       peer->isLocalPeer() ? 1 : 0));
     }
   }
-  e_->addCommand(this);
+  e_->addCommand(std::unique_ptr<Command>(this));
   return false;
 }
 

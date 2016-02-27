@@ -48,49 +48,49 @@
 #include "bittorrent_helper.h"
 #include "DHTPeerLookupTaskCallback.h"
 #include "DHTQueryMessage.h"
+#include "DHTGetPeersMessage.h"
+#include "DHTAnnouncePeerMessage.h"
+
 #include "fmt.h"
 
 namespace aria2 {
 
-DHTPeerLookupTask::DHTPeerLookupTask
-(const SharedHandle<DownloadContext>& downloadContext,
- uint16_t tcpPort)
-  : DHTAbstractNodeLookupTask<DHTGetPeersReplyMessage>
-    (bittorrent::getInfoHash(downloadContext)),
-    tcpPort_(tcpPort)
-{}
-
-void
-DHTPeerLookupTask::getNodesFromMessage
-(std::vector<SharedHandle<DHTNode> >& nodes,
- const DHTGetPeersReplyMessage* message)
+DHTPeerLookupTask::DHTPeerLookupTask(
+    const std::shared_ptr<DownloadContext>& downloadContext, uint16_t tcpPort)
+    : DHTAbstractNodeLookupTask<DHTGetPeersReplyMessage>(
+          bittorrent::getInfoHash(downloadContext)),
+      tcpPort_(tcpPort)
 {
-  const std::vector<SharedHandle<DHTNode> >& knodes =
-    message->getClosestKNodes();
-  nodes.insert(nodes.end(), knodes.begin(), knodes.end());
 }
 
-void DHTPeerLookupTask::onReceivedInternal
-(const DHTGetPeersReplyMessage* message)
+void DHTPeerLookupTask::getNodesFromMessage(
+    std::vector<std::shared_ptr<DHTNode>>& nodes,
+    const DHTGetPeersReplyMessage* message)
 {
-  SharedHandle<DHTNode> remoteNode = message->getRemoteNode();
+  auto& knodes = message->getClosestKNodes();
+  nodes.insert(std::end(nodes), std::begin(knodes), std::end(knodes));
+}
+
+void DHTPeerLookupTask::onReceivedInternal(
+    const DHTGetPeersReplyMessage* message)
+{
+  std::shared_ptr<DHTNode> remoteNode = message->getRemoteNode();
   tokenStorage_[util::toHex(remoteNode->getID(), DHT_ID_LENGTH)] =
-    message->getToken();
+      message->getToken();
   peerStorage_->addPeer(message->getValues());
   A2_LOG_INFO(fmt("Received %lu peers.",
                   static_cast<unsigned long>(message->getValues().size())));
 }
 
-SharedHandle<DHTMessage> DHTPeerLookupTask::createMessage
-(const SharedHandle<DHTNode>& remoteNode)
+std::unique_ptr<DHTMessage>
+DHTPeerLookupTask::createMessage(const std::shared_ptr<DHTNode>& remoteNode)
 {
   return getMessageFactory()->createGetPeersMessage(remoteNode, getTargetID());
 }
 
-SharedHandle<DHTMessageCallback> DHTPeerLookupTask::createCallback()
+std::unique_ptr<DHTMessageCallback> DHTPeerLookupTask::createCallback()
 {
-  return SharedHandle<DHTPeerLookupTaskCallback>
-    (new DHTPeerLookupTaskCallback(this));
+  return make_unique<DHTPeerLookupTaskCallback>(this);
 }
 
 void DHTPeerLookupTask::onFinish()
@@ -99,31 +99,28 @@ void DHTPeerLookupTask::onFinish()
                    util::toHex(getTargetID(), DHT_ID_LENGTH).c_str()));
   // send announce_peer message to K closest nodes
   size_t num = DHTBucket::K;
-  for(std::deque<SharedHandle<DHTNodeLookupEntry> >::const_iterator i =
-        getEntries().begin(), eoi = getEntries().end();
-      i != eoi && num > 0; ++i) {
-    if(!(*i)->used) {
+  for (auto i = std::begin(getEntries()), eoi = std::end(getEntries());
+       i != eoi && num > 0; ++i) {
+    if (!(*i)->used) {
       continue;
     }
-    const SharedHandle<DHTNode>& node = (*i)->node;
+    auto& node = (*i)->node;
     std::string idHex = util::toHex(node->getID(), DHT_ID_LENGTH);
     std::string token = tokenStorage_[idHex];
-    if(token.empty()) {
+    if (token.empty()) {
       A2_LOG_DEBUG(fmt("Token is empty for ID:%s", idHex.c_str()));
       continue;
     }
-    SharedHandle<DHTMessage> m =
-      getMessageFactory()->createAnnouncePeerMessage
-      (node,
-       getTargetID(), // this is infoHash
-       tcpPort_,
-       token);
-    getMessageDispatcher()->addMessageToQueue(m);
+    getMessageDispatcher()->addMessageToQueue(
+        getMessageFactory()->createAnnouncePeerMessage(
+            node,
+            getTargetID(), // this is infoHash
+            tcpPort_, token));
     --num;
   }
 }
 
-void DHTPeerLookupTask::setPeerStorage(const SharedHandle<PeerStorage>& ps)
+void DHTPeerLookupTask::setPeerStorage(const std::shared_ptr<PeerStorage>& ps)
 {
   peerStorage_ = ps;
 }

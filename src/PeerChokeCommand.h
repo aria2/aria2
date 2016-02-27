@@ -36,7 +36,8 @@
 #define D_PEER_CHOKE_COMMAND_H
 
 #include "Command.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -48,20 +49,20 @@ class PeerChokeCommand : public Command {
 private:
   DownloadEngine* e_;
 
-  SharedHandle<PeerStorage> peerStorage_;
+  std::shared_ptr<PeerStorage> peerStorage_;
 
-  SharedHandle<BtRuntime> btRuntime_;
+  std::shared_ptr<BtRuntime> btRuntime_;
+
 public:
-  PeerChokeCommand(cuid_t cuid,
-                   DownloadEngine* e);
+  PeerChokeCommand(cuid_t cuid, DownloadEngine* e);
 
   virtual ~PeerChokeCommand();
 
-  virtual bool execute();
+  virtual bool execute() CXX11_OVERRIDE;
 
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
 
-  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
+  void setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime);
 };
 
 } // namespace aria2

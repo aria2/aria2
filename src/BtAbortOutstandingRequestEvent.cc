@@ -37,10 +37,11 @@
 
 namespace aria2 {
 
-BtAbortOutstandingRequestEvent::BtAbortOutstandingRequestEvent
-(const SharedHandle<Piece>& piece)
-  : piece_(piece)
-{}
+BtAbortOutstandingRequestEvent::BtAbortOutstandingRequestEvent(
+    const std::shared_ptr<Piece>& piece)
+    : piece_(piece)
+{
+}
 
 BtAbortOutstandingRequestEvent::~BtAbortOutstandingRequestEvent() {}
 

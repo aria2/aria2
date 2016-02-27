@@ -39,25 +39,29 @@
 
 #include <string>
 #include <iosfwd>
-
-#include "SharedHandle.h"
+#include <memory>
 
 namespace aria2 {
 
 class RequestGroupMan;
-class BufferedFile;
+class IOFile;
 
 class SessionSerializer {
 private:
-  SharedHandle<RequestGroupMan> rgman_;
+  RequestGroupMan* rgman_;
   bool saveError_;
   bool saveInProgress_;
   bool saveWaiting_;
-  bool save(BufferedFile& fp) const;
+  bool save(IOFile& fp) const;
+
 public:
-  SessionSerializer(const SharedHandle<RequestGroupMan>& requestGroupMan);
+  SessionSerializer(RequestGroupMan* requestGroupMan);
 
   bool save(const std::string& filename) const;
+
+  // Calculates and returns SHA1 hash of the contents being
+  // serialized.
+  std::string calculateHash() const;
 };
 
 } // namespace aria2

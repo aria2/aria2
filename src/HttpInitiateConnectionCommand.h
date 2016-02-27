@@ -68,15 +68,16 @@ namespace aria2 {
 // calling execute() returns true.
 class HttpInitiateConnectionCommand : public InitiateConnectionCommand {
 protected:
-  virtual Command* createNextCommand
-  (const std::string& hostname, const std::string& addr, uint16_t port,
-   const std::vector<std::string>& resolvedAddresses,
-   const SharedHandle<Request>& proxyRequest);
+  virtual std::unique_ptr<Command> createNextCommand(
+      const std::string& hostname, const std::string& addr, uint16_t port,
+      const std::vector<std::string>& resolvedAddresses,
+      const std::shared_ptr<Request>& proxyRequest) CXX11_OVERRIDE;
+
 public:
-  HttpInitiateConnectionCommand(cuid_t cuid, const SharedHandle<Request>& req,
-                                const SharedHandle<FileEntry>& fileEntry,
-                                RequestGroup* requestGroup,
-                                DownloadEngine* e);
+  HttpInitiateConnectionCommand(cuid_t cuid,
+                                const std::shared_ptr<Request>& req,
+                                const std::shared_ptr<FileEntry>& fileEntry,
+                                RequestGroup* requestGroup, DownloadEngine* e);
 
   virtual ~HttpInitiateConnectionCommand();
 };
@@ -84,5 +85,3 @@ public:
 } // namespace aria2
 
 #endif // D_HTTP_INITIATE_CONNECTION_COMMAND_H
-
-

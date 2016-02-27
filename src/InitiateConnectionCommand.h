@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-class BackupConnectInfo;
+struct BackupConnectInfo;
 class ConnectCommand;
 
 class InitiateConnectionCommand : public AbstractCommand {
@@ -50,7 +50,7 @@ protected:
    * Using nonblocking mode of socket, this funtion returns immediately
    * after send connection packet to the server.
    */
-  virtual bool executeInternal();
+  virtual bool executeInternal() CXX11_OVERRIDE;
 
   // hostname and port are the hostname and port number we are going
   // to connect. If proxy server is used, these values are hostname
@@ -58,28 +58,29 @@ protected:
   // use this address this time.  resolvedAddresses are all addresses
   // resolved.  proxyRequest is set if we are going to use proxy
   // server.
-  virtual Command* createNextCommand
-  (const std::string& hostname, const std::string& addr, uint16_t port,
-   const std::vector<std::string>& resolvedAddresses,
-   const SharedHandle<Request>& proxyRequest) = 0;
+  virtual std::unique_ptr<Command>
+  createNextCommand(const std::string& hostname, const std::string& addr,
+                    uint16_t port,
+                    const std::vector<std::string>& resolvedAddresses,
+                    const std::shared_ptr<Request>& proxyRequest) = 0;
 
-  void setConnectedAddrInfo
-  (const SharedHandle<Request>& req,
-   const std::string& hostname,
-   const SharedHandle<SocketCore>& socket);
+  void setConnectedAddrInfo(const std::shared_ptr<Request>& req,
+                            const std::string& hostname,
+                            const std::shared_ptr<SocketCore>& socket);
 
-  SharedHandle<BackupConnectInfo> createBackupIPv4ConnectCommand
-  (const std::string& hostname, const std::string& ipaddr, uint16_t port,
-   Command* mainCommand);
+  std::shared_ptr<BackupConnectInfo>
+  createBackupIPv4ConnectCommand(const std::string& hostname,
+                                 const std::string& ipaddr, uint16_t port,
+                                 Command* mainCommand);
 
-  void setupBackupConnection
-  (const std::string& hostname, const std::string& addr, uint16_t port,
-   ConnectCommand* c);
+  void setupBackupConnection(const std::string& hostname,
+                             const std::string& addr, uint16_t port,
+                             ConnectCommand* c);
+
 public:
-  InitiateConnectionCommand(cuid_t cuid, const SharedHandle<Request>& req,
-                            const SharedHandle<FileEntry>& fileEntry,
-                            RequestGroup* requestGroup,
-                            DownloadEngine* e);
+  InitiateConnectionCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
+                            const std::shared_ptr<FileEntry>& fileEntry,
+                            RequestGroup* requestGroup, DownloadEngine* e);
 
   virtual ~InitiateConnectionCommand();
 };

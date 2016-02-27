@@ -43,62 +43,63 @@ namespace aria2 {
 
 class PeerStat;
 class StreamFilter;
-#ifdef ENABLE_MESSAGE_DIGEST
 class MessageDigest;
-#endif // ENABLE_MESSAGE_DIGEST
 
 class DownloadCommand : public AbstractCommand {
 private:
-  time_t startupIdleTime_;
+  std::shared_ptr<PeerStat> peerStat_;
+
+  std::unique_ptr<StreamFilter> streamFilter_;
+
+  std::unique_ptr<MessageDigest> messageDigest_;
+
+  std::chrono::seconds startupIdleTime_;
+
   int lowestDownloadSpeedLimit_;
-  SharedHandle<PeerStat> peerStat_;
 
   bool pieceHashValidationEnabled_;
 
-#ifdef ENABLE_MESSAGE_DIGEST
+  bool sinkFilterOnly_;
 
-  SharedHandle<MessageDigest> messageDigest_;
-
-#endif // ENABLE_MESSAGE_DIGEST
-
-  void validatePieceHash(const SharedHandle<Segment>& segment,
+  void validatePieceHash(const std::shared_ptr<Segment>& segment,
                          const std::string& expectedPieceHash,
                          const std::string& actualPieceHash);
 
   void checkLowestDownloadSpeed() const;
 
-  void completeSegment(cuid_t cuid, const SharedHandle<Segment>& segment);
+  void completeSegment(cuid_t cuid, const std::shared_ptr<Segment>& segment);
 
-  SharedHandle<StreamFilter> streamFilter_;
-
-  bool sinkFilterOnly_;
 protected:
-  virtual bool executeInternal();
+  virtual bool executeInternal() CXX11_OVERRIDE;
 
   virtual bool prepareForNextSegment();
 
   // This is file local offset
   virtual int64_t getRequestEndOffset() const = 0;
+
+  // Returns true if socket should be monitored for writing.  The
+  // default implementation is return the return value of
+  // getSocket()->wantWrite().
+  virtual bool shouldEnableWriteCheck();
+
 public:
-  DownloadCommand(cuid_t cuid,
-                  const SharedHandle<Request>& req,
-                  const SharedHandle<FileEntry>& fileEntry,
-                  RequestGroup* requestGroup,
-                  DownloadEngine* e,
-                  const SharedHandle<SocketCore>& s,
-                  const SharedHandle<SocketRecvBuffer>& socketRecvBuffer);
+  DownloadCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
+                  const std::shared_ptr<FileEntry>& fileEntry,
+                  RequestGroup* requestGroup, DownloadEngine* e,
+                  const std::shared_ptr<SocketCore>& s,
+                  const std::shared_ptr<SocketRecvBuffer>& socketRecvBuffer);
   virtual ~DownloadCommand();
 
-  const SharedHandle<StreamFilter>& getStreamFilter() const
+  const std::unique_ptr<StreamFilter>& getStreamFilter() const
   {
     return streamFilter_;
   }
 
-  void installStreamFilter(const SharedHandle<StreamFilter>& streamFilter);
+  void installStreamFilter(std::unique_ptr<StreamFilter> streamFilter);
 
-  void setStartupIdleTime(time_t startupIdleTime)
+  void setStartupIdleTime(std::chrono::seconds startupIdleTime)
   {
-    startupIdleTime_ = startupIdleTime;
+    startupIdleTime_ = std::move(startupIdleTime);
   }
 
   void setLowestDownloadSpeedLimit(int lowestDownloadSpeedLimit)

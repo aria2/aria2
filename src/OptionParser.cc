@@ -38,6 +38,7 @@
 #include <getopt.h>
 
 #include <cstring>
+#include <cassert>
 #include <istream>
 #include <utility>
 
@@ -50,7 +51,6 @@
 #include "OptionHandlerFactory.h"
 #include "DlAbortEx.h"
 #include "error_code.h"
-#include "prefs.h"
 #include "UnknownOptionException.h"
 #include "LogFactory.h"
 #include "fmt.h"
@@ -58,9 +58,9 @@
 namespace aria2 {
 
 OptionParser::OptionParser()
-  : handlers_(option::countOption(), 0),
-    shortOpts_(256)
-{}
+    : handlers_(option::countOption(), nullptr), shortOpts_(256)
+{
+}
 
 OptionParser::~OptionParser()
 {
@@ -68,12 +68,12 @@ OptionParser::~OptionParser()
 }
 
 namespace {
-template<typename InputIterator>
+template <typename InputIterator>
 size_t countPublicOption(InputIterator first, InputIterator last)
 {
   size_t count = 0;
-  for(; first != last; ++first) {
-    if(*first && !(*first)->isHidden()) {
+  for (; first != last; ++first) {
+    if (*first && !(*first)->isHidden()) {
       ++count;
     }
   }
@@ -82,18 +82,18 @@ size_t countPublicOption(InputIterator first, InputIterator last)
 } // namespace
 
 namespace {
-template<typename InputIterator>
-void putOptions(struct option* longOpts, int* plopt,
-                InputIterator first, InputIterator last)
+template <typename InputIterator>
+void putOptions(struct option* longOpts, int* plopt, InputIterator first,
+                InputIterator last)
 {
-  for(; first != last; ++first) {
-    if(*first && !(*first)->isHidden()) {
+  for (; first != last; ++first) {
+    if (*first && !(*first)->isHidden()) {
 #ifdef HAVE_OPTION_CONST_NAME
       (*longOpts).name = (*first)->getName();
 #else // !HAVE_OPTION_CONST_NAME
       (*longOpts).name = strdup((*first)->getName());
 #endif // !HAVE_OPTION_CONST_NAME
-      switch((*first)->getArgType()) {
+      switch ((*first)->getArgType()) {
       case OptionHandler::REQ_ARG:
         (*longOpts).has_arg = required_argument;
         break;
@@ -106,35 +106,37 @@ void putOptions(struct option* longOpts, int* plopt,
       default:
         abort();
       }
-      if((*first)->getShortName() == 0) {
+      if ((*first)->getShortName() == 0) {
         (*longOpts).flag = plopt;
         (*longOpts).val = (*first)->getPref()->i;
-      } else {
-        (*longOpts).flag = 0;
+      }
+      else {
+        (*longOpts).flag = nullptr;
         (*longOpts).val = (*first)->getShortName();
       }
       ++longOpts;
     }
   }
-  (*longOpts).name = 0;
+  (*longOpts).name = nullptr;
   (*longOpts).has_arg = 0;
-  (*longOpts).flag = 0;
+  (*longOpts).flag = nullptr;
   (*longOpts).val = 0;
 }
 } // namespace
 
 namespace {
-template<typename InputIterator>
+template <typename InputIterator>
 std::string createOptstring(InputIterator first, InputIterator last)
 {
   std::string str = "";
-  for(; first != last; ++first) {
-    if(*first && !(*first)->isHidden()) {
-      if((*first)->getShortName() != 0) {
+  for (; first != last; ++first) {
+    if (*first && !(*first)->isHidden()) {
+      if ((*first)->getShortName() != 0) {
         str += (*first)->getShortName();
-        if((*first)->getArgType() == OptionHandler::REQ_ARG) {
+        if ((*first)->getArgType() == OptionHandler::REQ_ARG) {
           str += ":";
-        } else if((*first)->getArgType() == OptionHandler::OPT_ARG) {
+        }
+        else if ((*first)->getArgType() == OptionHandler::OPT_ARG) {
           str += "::";
         }
       }
@@ -144,37 +146,40 @@ std::string createOptstring(InputIterator first, InputIterator last)
 }
 } // namespace
 
-void OptionParser::parseArg
-(std::ostream& out, std::vector<std::string>& nonopts,
- int argc, char* argv[]) const
+void OptionParser::parseArg(std::ostream& out,
+                            std::vector<std::string>& nonopts, int argc,
+                            char* argv[]) const
 {
-  size_t numPublicOption = countPublicOption(handlers_.begin(),
-                                             handlers_.end());
+  size_t numPublicOption =
+      countPublicOption(handlers_.begin(), handlers_.end());
   int lopt;
-  array_ptr<struct option> longOpts(new struct option[numPublicOption+1]);
-  putOptions(longOpts, &lopt, handlers_.begin(), handlers_.end());
+  auto longOpts = make_unique<struct option[]>(numPublicOption + 1);
+  putOptions(longOpts.get(), &lopt, handlers_.begin(), handlers_.end());
   std::string optstring = createOptstring(handlers_.begin(), handlers_.end());
-  while(1) {
-    int c = getopt_long(argc, argv, optstring.c_str(), longOpts, 0);
-    if(c == -1) {
+  while (1) {
+    int c = getopt_long(argc, argv, optstring.c_str(), longOpts.get(), nullptr);
+    if (c == -1) {
       break;
     }
-    const OptionHandler* op = 0;
-    if(c == 0) {
+    const OptionHandler* op = nullptr;
+    if (c == 0) {
       op = findById(lopt);
-    } else if(c != '?') {
+    }
+    else if (c != '?') {
       op = findByShortName(c);
-    } else {
-      assert(c  == '?');
-      if(optind == 1) {
+    }
+    else {
+      assert(c == '?');
+      if (optind == 1) {
         throw DL_ABORT_EX2("Failed to parse command-line options.",
                            error_code::OPTION_ERROR);
       }
-      int optlen = strlen(argv[optind-1]);
-      const char* optstr = argv[optind-1];
-      for(; *optstr == '-'; ++optstr);
+      int optlen = strlen(argv[optind - 1]);
+      const char* optstr = argv[optind - 1];
+      for (; *optstr == '-'; ++optstr)
+        ;
       int optstrlen = strlen(optstr);
-      if(optstrlen+1 >= optlen) {
+      if (optstrlen + 1 >= optlen) {
         // If this is short option form (1 '-' prefix), just throw
         // error here.
         throw DL_ABORT_EX2("Failed to parse command-line options.",
@@ -184,62 +189,62 @@ void OptionParser::parseArg
       // getopt_long() complained because too few arguments.  3)
       // option is ambiguous.
       int ambiguous = 0;
-      for(int i = 1, len = option::countOption(); i < len; ++i) {
-        const Pref* pref = option::i2p(i);
+      for (int i = 1, len = option::countOption(); i < len; ++i) {
+        PrefPtr pref = option::i2p(i);
         const OptionHandler* h = find(pref);
-        if(h && !h->isHidden()) {
-          if(strcmp(pref->k, optstr) == 0) {
+        if (h && !h->isHidden()) {
+          if (strcmp(pref->k, optstr) == 0) {
             // Exact match, this means getopt_long detected error
             // while handling this option.
             throw DL_ABORT_EX2("Failed to parse command-line options.",
                                error_code::OPTION_ERROR);
-          } else if(util::startsWith(pref->k, pref->k+strlen(pref->k),
-                                     optstr, optstr+optstrlen)) {
+          }
+          else if (util::startsWith(pref->k, pref->k + strlen(pref->k), optstr,
+                                    optstr + optstrlen)) {
             ++ambiguous;
           }
         }
       }
-      if(ambiguous == 1) {
+      if (ambiguous == 1) {
         // This is successfully abbreviated option. So it must be case
         // 2).
         throw DL_ABORT_EX2("Failed to parse command-line options.",
                            error_code::OPTION_ERROR);
       }
-      throw UNKNOWN_OPTION_EXCEPTION(argv[optind-1]);
+      throw UNKNOWN_OPTION_EXCEPTION(argv[optind - 1]);
     }
     assert(op);
     out << op->getName() << "=";
-    if(optarg) {
+    if (optarg) {
       out << optarg;
-      if(op->getEraseAfterParse()) {
-        for(char* p = optarg; *p != '\0'; ++p) {
+      if (op->getEraseAfterParse()) {
+        for (char* p = optarg; *p != '\0'; ++p) {
           *p = '*';
         }
       }
     }
     out << "\n";
   }
-  std::copy(argv+optind, argv+argc, std::back_inserter(nonopts));
+  std::copy(argv + optind, argv + argc, std::back_inserter(nonopts));
 }
 
 void OptionParser::parse(Option& option, std::istream& is) const
 {
   std::string line;
-  while(getline(is, line)) {
-    if(line.empty() || line[0] == '#') {
+  while (getline(is, line)) {
+    if (line.empty() || line[0] == '#') {
       continue;
     }
-    std::pair<Sip, Sip> nv;
-    util::divide(nv, line.begin(), line.end(), '=');
-    if(nv.first.first == nv.first.second) {
+    auto nv = util::divide(std::begin(line), std::end(line), '=');
+    if (nv.first.first == nv.first.second) {
       continue;
     }
-    const Pref* pref =
-      option::k2p(std::string(nv.first.first, nv.first.second));
+    PrefPtr pref = option::k2p(std::string(nv.first.first, nv.first.second));
     const OptionHandler* handler = find(pref);
-    if(handler) {
+    if (handler) {
       handler->parse(option, std::string(nv.second.first, nv.second.second));
-    } else {
+    }
+    else {
       A2_LOG_WARN(fmt("Unknown option: %s", line.c_str()));
     }
   }
@@ -247,24 +252,23 @@ void OptionParser::parse(Option& option, std::istream& is) const
 
 void OptionParser::parse(Option& option, const KeyVals& options) const
 {
-  for(KeyVals::const_iterator i = options.begin(), eoi = options.end();
-      i != eoi; ++i) {
-    const Pref* pref = option::k2p((*i).first);
+  for (const auto& o : options) {
+    auto pref = option::k2p(o.first);
     const OptionHandler* handler = find(pref);
-    if(handler) {
-      handler->parse(option, (*i).second);
-    } else {
-      A2_LOG_WARN(fmt("Unknown option: %s", (*i).first.c_str()));
+    if (handler) {
+      handler->parse(option, o.second);
+    }
+    else {
+      A2_LOG_WARN(fmt("Unknown option: %s", o.first.c_str()));
     }
   }
 }
 
-void OptionParser::setOptionHandlers
-(const std::vector<OptionHandler*>& handlers)
+void OptionParser::setOptionHandlers(
+    const std::vector<OptionHandler*>& handlers)
 {
-  for(std::vector<OptionHandler*>::const_iterator i =
-        handlers.begin(), eoi = handlers.end(); i != eoi; ++i) {
-    addOptionHandler(*i);
+  for (const auto& h : handlers) {
+    addOptionHandler(h);
   }
 }
 
@@ -273,17 +277,16 @@ void OptionParser::addOptionHandler(OptionHandler* handler)
   size_t optId = handler->getPref()->i;
   assert(optId < handlers_.size());
   handlers_[optId] = handler;
-  if(handler->getShortName()) {
+  if (handler->getShortName()) {
     shortOpts_[static_cast<unsigned char>(handler->getShortName())] = optId;
   }
 }
 
 void OptionParser::parseDefaultValues(Option& option) const
 {
-  for(std::vector<OptionHandler*>::const_iterator i =
-        handlers_.begin(), eoi = handlers_.end(); i != eoi; ++i) {
-    if(*i && !(*i)->getDefaultValue().empty()) {
-      (*i)->parse(option, (*i)->getDefaultValue());
+  for (const auto& h : handlers_) {
+    if (h && !h->getDefaultValue().empty()) {
+      h->parse(option, h->getDefaultValue());
     }
   }
 }
@@ -291,10 +294,9 @@ void OptionParser::parseDefaultValues(Option& option) const
 std::vector<const OptionHandler*> OptionParser::findByTag(uint32_t tag) const
 {
   std::vector<const OptionHandler*> result;
-  for(std::vector<OptionHandler*>::const_iterator i =
-        handlers_.begin(), eoi = handlers_.end(); i != eoi; ++i) {
-    if(*i && !(*i)->isHidden() && (*i)->hasTag(tag)) {
-      result.push_back(*i);
+  for (const auto& h : handlers_) {
+    if (h && !h->isHidden() && h->hasTag(tag)) {
+      result.push_back(h);
     }
   }
   return result;
@@ -304,14 +306,12 @@ std::vector<const OptionHandler*>
 OptionParser::findByNameSubstring(const std::string& substring) const
 {
   std::vector<const OptionHandler*> result;
-  for(std::vector<OptionHandler*>::const_iterator i =
-        handlers_.begin(), eoi = handlers_.end(); i != eoi; ++i) {
-    if(*i && !(*i)->isHidden()) {
-      size_t nameLen = strlen((*i)->getName());
-      if(std::search((*i)->getName(), (*i)->getName()+nameLen,
-                     substring.begin(), substring.end()) !=
-         (*i)->getName()+nameLen) {
-        result.push_back(*i);
+  for (const auto& h : handlers_) {
+    if (h && !h->isHidden()) {
+      size_t nameLen = strlen(h->getName());
+      if (std::search(h->getName(), h->getName() + nameLen, substring.begin(),
+                      substring.end()) != h->getName() + nameLen) {
+        result.push_back(h);
       }
     }
   }
@@ -321,29 +321,29 @@ OptionParser::findByNameSubstring(const std::string& substring) const
 std::vector<const OptionHandler*> OptionParser::findAll() const
 {
   std::vector<const OptionHandler*> result;
-  for(std::vector<OptionHandler*>::const_iterator i =
-        handlers_.begin(), eoi = handlers_.end(); i != eoi; ++i) {
-    if(*i && !(*i)->isHidden()) {
-      result.push_back(*i);
+  for (const auto& h : handlers_) {
+    if (h && !h->isHidden()) {
+      result.push_back(h);
     }
   }
   return result;
 }
 
-const OptionHandler* OptionParser::find(const Pref* pref) const
+const OptionHandler* OptionParser::find(PrefPtr pref) const
 {
   return findById(pref->i);
 }
 
 const OptionHandler* OptionParser::findById(size_t id) const
 {
-  if(id >= handlers_.size()) {
+  if (id >= handlers_.size()) {
     return handlers_[0];
   }
   const OptionHandler* h = handlers_[id];
-  if(!h || h->isHidden()) {
+  if (!h || h->isHidden()) {
     return handlers_[0];
-  } else {
+  }
+  else {
     return h;
   }
 }
@@ -354,20 +354,18 @@ const OptionHandler* OptionParser::findByShortName(char shortName) const
   return findById(shortOpts_[idx]);
 }
 
-SharedHandle<OptionParser> OptionParser::optionParser_;
+std::shared_ptr<OptionParser> OptionParser::optionParser_;
 
-const SharedHandle<OptionParser>& OptionParser::getInstance()
+const std::shared_ptr<OptionParser>& OptionParser::getInstance()
 {
-  if(!optionParser_) {
-    optionParser_.reset(new OptionParser());
-    optionParser_->setOptionHandlers(OptionHandlerFactory::createOptionHandlers());
+  if (!optionParser_) {
+    optionParser_ = std::make_shared<OptionParser>();
+    optionParser_->setOptionHandlers(
+        OptionHandlerFactory::createOptionHandlers());
   }
   return optionParser_;
 }
 
-void OptionParser::deleteInstance()
-{
-  optionParser_.reset();
-}
+void OptionParser::deleteInstance() { optionParser_.reset(); }
 
 } // namespace aria2

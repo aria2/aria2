@@ -45,18 +45,16 @@
 
 namespace aria2 {
 
-DHTAbstractTask::DHTAbstractTask():
-  finished_(false),
-  routingTable_(0),
-  dispatcher_(0),
-  factory_(0),
-  taskQueue_(0)
-{}
-
-bool DHTAbstractTask::finished()
+DHTAbstractTask::DHTAbstractTask()
+    : finished_(false),
+      routingTable_(nullptr),
+      dispatcher_(nullptr),
+      factory_(nullptr),
+      taskQueue_(nullptr)
 {
-  return finished_;
 }
+
+bool DHTAbstractTask::finished() { return finished_; }
 
 void DHTAbstractTask::setRoutingTable(DHTRoutingTable* routingTable)
 {
@@ -78,7 +76,7 @@ void DHTAbstractTask::setTaskQueue(DHTTaskQueue* taskQueue)
   taskQueue_ = taskQueue;
 }
 
-void DHTAbstractTask::setLocalNode(const SharedHandle<DHTNode>& localNode)
+void DHTAbstractTask::setLocalNode(const std::shared_ptr<DHTNode>& localNode)
 {
   localNode_ = localNode;
 }

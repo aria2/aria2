@@ -46,7 +46,6 @@
 
 namespace aria2 {
 
-
 DHTRegistry::Data DHTRegistry::data_;
 
 DHTRegistry::Data DHTRegistry::data6_;
@@ -65,14 +64,8 @@ void DHTRegistry::clear(DHTRegistry::Data& data)
   data.messageFactory.reset();
 }
 
-void DHTRegistry::clearData()
-{
-  clear(data_);
-}
+void DHTRegistry::clearData() { clear(data_); }
 
-void DHTRegistry::clearData6()
-{
-  clear(data6_);
-}
+void DHTRegistry::clearData6() { clear(data6_); }
 
 } // namespace aria2

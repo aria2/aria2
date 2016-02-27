@@ -36,31 +36,38 @@
 
 namespace aria2 {
 
-SharedHandle<Exception> DlAbortEx::copy() const
+std::shared_ptr<Exception> DlAbortEx::copy() const
 {
-  SharedHandle<Exception> e(new DlAbortEx(*this));
-  return e;
+  return std::make_shared<DlAbortEx>(*this);
 }
 
-DlAbortEx::DlAbortEx(const char* file, int line, const std::string& msg):
-  RecoverableException(file, line, msg) {}
+DlAbortEx::DlAbortEx(const char* file, int line, const std::string& msg)
+    : RecoverableException(file, line, msg)
+{
+}
 
 DlAbortEx::DlAbortEx(const char* file, int line, const std::string& msg,
-                     const Exception& cause):
-  RecoverableException(file, line, msg, cause) {}
+                     const Exception& cause)
+    : RecoverableException(file, line, msg, cause)
+{
+}
 
 DlAbortEx::DlAbortEx(const char* file, int line, const std::string& msg,
-                     error_code::Value code):
-  RecoverableException(file, line, msg, code) {}
+                     error_code::Value code)
+    : RecoverableException(file, line, msg, code)
+{
+}
 
-DlAbortEx::DlAbortEx
-(const char* file, int line, int errNum, const std::string& msg):
-  RecoverableException(file, line, errNum, msg) {}
+DlAbortEx::DlAbortEx(const char* file, int line, int errNum,
+                     const std::string& msg)
+    : RecoverableException(file, line, errNum, msg)
+{
+}
 
-DlAbortEx::DlAbortEx
-(const char* file, int line, int errNum, const std::string& msg,
- error_code::Value errorCode)
-  : RecoverableException(file, line, errNum, msg, errorCode)
-{}
+DlAbortEx::DlAbortEx(const char* file, int line, int errNum,
+                     const std::string& msg, error_code::Value errorCode)
+    : RecoverableException(file, line, errNum, msg, errorCode)
+{
+}
 
 } // namespace aria2

@@ -46,12 +46,14 @@ const std::string DHTMessage::V("v");
 
 const std::string DHTMessage::ID("id");
 
-DHTMessage::DHTMessage(const SharedHandle<DHTNode>& localNode,
-                       const SharedHandle<DHTNode>& remoteNode,
-                       const std::string& transactionID):
-  localNode_(localNode), remoteNode_(remoteNode), transactionID_(transactionID)
+DHTMessage::DHTMessage(const std::shared_ptr<DHTNode>& localNode,
+                       const std::shared_ptr<DHTNode>& remoteNode,
+                       const std::string& transactionID)
+    : localNode_{localNode},
+      remoteNode_{remoteNode},
+      transactionID_{transactionID}
 {
-  if(transactionID.empty()) {
+  if (transactionID.empty()) {
     generateTransactionID();
   }
 }
@@ -60,9 +62,9 @@ DHTMessage::~DHTMessage() {}
 
 void DHTMessage::generateTransactionID()
 {
-  unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
-  util::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
-  transactionID_.assign(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
+  transactionID_.resize(DHT_TRANSACTION_ID_LENGTH);
+  util::generateRandomData(reinterpret_cast<unsigned char*>(&transactionID_[0]),
+                           transactionID_.size());
 }
 
 } // namespace aria2

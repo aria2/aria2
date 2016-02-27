@@ -5,10 +5,10 @@
 
 namespace aria2 {
 
-class MockPieceSelector:public PieceSelector {
+class MockPieceSelector : public PieceSelector {
 public:
-  virtual bool select
-  (size_t& index, const unsigned char* bitfield, size_t nbits) const
+  virtual bool select(size_t& index, const unsigned char* bitfield,
+                      size_t nbits) const CXX11_OVERRIDE
   {
     return false;
   }

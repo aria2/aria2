@@ -41,25 +41,25 @@
 namespace aria2 {
 
 // Allocate disk space using posix_fallocate() system call.
-class FallocFileAllocationIterator:public FileAllocationIterator {
+class FallocFileAllocationIterator : public FileAllocationIterator {
 private:
   BinaryStream* stream_;
   int64_t offset_;
   int64_t totalLength_;
+
 public:
   FallocFileAllocationIterator(BinaryStream* stream, int64_t offset,
                                int64_t totalLength);
 
-  virtual void allocateChunk();
+  virtual void allocateChunk() CXX11_OVERRIDE;
 
-  virtual bool finished();
+  virtual bool finished() CXX11_OVERRIDE;
 
-  virtual int64_t getCurrentLength();
+  virtual int64_t getCurrentLength() CXX11_OVERRIDE;
 
-  virtual int64_t getTotalLength();
+  virtual int64_t getTotalLength() CXX11_OVERRIDE;
 };
 
 } // namespace aria2
 
 #endif // D_FALLOC_FILE_ALLOCATION_ITERATOR_H
-

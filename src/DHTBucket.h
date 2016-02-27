@@ -40,8 +40,8 @@
 #include <string>
 #include <deque>
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "DHTConstants.h"
 #include "TimerA2.h"
 
@@ -58,25 +58,26 @@ private:
 
   unsigned char max_[DHT_ID_LENGTH];
 
-  SharedHandle<DHTNode> localNode_;
+  std::shared_ptr<DHTNode> localNode_;
 
   // sorted in ascending order
-  std::deque<SharedHandle<DHTNode> > nodes_;
+  std::deque<std::shared_ptr<DHTNode>> nodes_;
 
   // a replacement cache. The maximum size is specified by CACHE_SIZE.
   // This is sorted by last time seen.
-  std::deque<SharedHandle<DHTNode> > cachedNodes_;
+  std::deque<std::shared_ptr<DHTNode>> cachedNodes_;
 
   Timer lastUpdated_;
 
-  bool isInRange(const unsigned char* nodeID,
-                 const unsigned char* max, const unsigned char* min) const;
-public:
-  DHTBucket(const SharedHandle<DHTNode>& localNode);
+  bool isInRange(const unsigned char* nodeID, const unsigned char* max,
+                 const unsigned char* min) const;
 
-  DHTBucket(size_t prefixLength,
-            const unsigned char* max, const unsigned char* min,
-            const SharedHandle<DHTNode>& localNode);
+public:
+  DHTBucket(const std::shared_ptr<DHTNode>& localNode);
+
+  DHTBucket(size_t prefixLength, const unsigned char* max,
+            const unsigned char* min,
+            const std::shared_ptr<DHTNode>& localNode);
 
   ~DHTBucket();
 
@@ -86,54 +87,44 @@ public:
 
   void getRandomNodeID(unsigned char* nodeID) const;
 
-  SharedHandle<DHTBucket> split();
+  std::unique_ptr<DHTBucket> split();
 
-  bool isInRange(const SharedHandle<DHTNode>& node) const;
+  bool isInRange(const std::shared_ptr<DHTNode>& node) const;
 
   bool isInRange(const unsigned char* nodeID) const;
 
-  bool addNode(const SharedHandle<DHTNode>& node);
+  bool addNode(const std::shared_ptr<DHTNode>& node);
 
-  void cacheNode(const SharedHandle<DHTNode>& node);
+  void cacheNode(const std::shared_ptr<DHTNode>& node);
 
   bool splitAllowed() const;
 
-  size_t getPrefixLength() const
-  {
-    return prefixLength_;
-  }
+  size_t getPrefixLength() const { return prefixLength_; }
 
-  const unsigned char* getMaxID() const
-  {
-    return max_;
-  }
+  const unsigned char* getMaxID() const { return max_; }
 
-  const unsigned char* getMinID() const
-  {
-    return min_;
-  }
+  const unsigned char* getMinID() const { return min_; }
 
-  size_t countNode() const
-  {
-    return nodes_.size();
-  }
+  size_t countNode() const { return nodes_.size(); }
 
-  const std::deque<SharedHandle<DHTNode> >& getNodes() const
+  const std::deque<std::shared_ptr<DHTNode>>& getNodes() const
   {
     return nodes_;
   }
 
-  void getGoodNodes(std::vector<SharedHandle<DHTNode> >& nodes) const;
+  void getGoodNodes(std::vector<std::shared_ptr<DHTNode>>& nodes) const;
 
-  void dropNode(const SharedHandle<DHTNode>& node);
+  void dropNode(const std::shared_ptr<DHTNode>& node);
 
-  void moveToHead(const SharedHandle<DHTNode>& node);
+  void moveToHead(const std::shared_ptr<DHTNode>& node);
 
-  void moveToTail(const SharedHandle<DHTNode>& node);
+  void moveToTail(const std::shared_ptr<DHTNode>& node);
 
-  bool contains(const SharedHandle<DHTNode>& node) const;
+  bool contains(const std::shared_ptr<DHTNode>& node) const;
 
-  SharedHandle<DHTNode> getNode(const unsigned char* nodeID, const std::string& ipaddr, uint16_t port) const;
+  std::shared_ptr<DHTNode> getNode(const unsigned char* nodeID,
+                                   const std::string& ipaddr,
+                                   uint16_t port) const;
 
   bool operator==(const DHTBucket& bucket) const;
 
@@ -143,13 +134,12 @@ public:
 
   bool containsQuestionableNode() const;
 
-  SharedHandle<DHTNode> getLRUQuestionableNode() const;
+  std::shared_ptr<DHTNode> getLRUQuestionableNode() const;
 
-  const std::deque<SharedHandle<DHTNode> >& getCachedNodes() const
+  const std::deque<std::shared_ptr<DHTNode>>& getCachedNodes() const
   {
     return cachedNodes_;
   }
-
 };
 
 } // namespace aria2

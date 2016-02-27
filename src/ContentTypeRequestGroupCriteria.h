@@ -41,18 +41,18 @@
 
 namespace aria2 {
 
-class ContentTypeRequestGroupCriteria:public RequestGroupCriteria
-{
+class ContentTypeRequestGroupCriteria : public RequestGroupCriteria {
 private:
   const char** contentTypes_;
   const char** extensions_;
+
 public:
   ContentTypeRequestGroupCriteria(const char** contentTypes,
                                   const char** extensions);
 
   virtual ~ContentTypeRequestGroupCriteria();
 
-  virtual bool match(const RequestGroup* requestGroup) const;
+  virtual bool match(const RequestGroup* requestGroup) const CXX11_OVERRIDE;
 };
 
 } // namespace aria2

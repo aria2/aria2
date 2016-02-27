@@ -36,20 +36,22 @@
 #define D_ANON_DISK_WRITER_FACTORY_H
 
 #include "DiskWriterFactory.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
 // DiskwriterFactory class template to create DiskWriter derived
 // object, ignoring filename.
-template<class DiskWriterType>
-class AnonDiskWriterFactory:public DiskWriterFactory {
+template <class DiskWriterType>
+class AnonDiskWriterFactory : public DiskWriterFactory {
 public:
   AnonDiskWriterFactory() {}
   virtual ~AnonDiskWriterFactory() {}
 
-  virtual SharedHandle<DiskWriter> newDiskWriter(const std::string& filename)
+  virtual std::unique_ptr<DiskWriter>
+  newDiskWriter(const std::string& filename) CXX11_OVERRIDE
   {
-    return SharedHandle<DiskWriter>(new DiskWriterType());
+    return make_unique<DiskWriterType>();
   }
 };
 

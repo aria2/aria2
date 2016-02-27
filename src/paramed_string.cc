@@ -41,15 +41,15 @@ namespace paramed_string {
 std::string toBase26(int32_t n, char zero, size_t width)
 {
   std::string res;
-  if(n == 0 && width == 0) {
+  if (n == 0 && width == 0) {
     width = 1;
   }
-  while(n) {
-    res += zero+(n % 26);
+  while (n) {
+    res += zero + (n % 26);
     n /= 26;
   }
-  if(width > res.size()) {
-    res.append(width-res.size(), zero);
+  if (width > res.size()) {
+    res.append(width - res.size(), zero);
   }
   std::reverse(res.begin(), res.end());
   return res;

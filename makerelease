@@ -36,3 +36,5 @@ make distclean
 ./android-make -j3
 ./android-release
 make distclean
+
+# OSX builds are created separately using makerelease-osx.mk

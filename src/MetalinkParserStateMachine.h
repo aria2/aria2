@@ -40,8 +40,8 @@
 #include <string>
 #include <vector>
 #include <stack>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "MetalinkParserController.h"
 #include "MetalinkParserState.h"
 
@@ -51,7 +51,7 @@ class Metalinker;
 
 class MetalinkParserStateMachine : public ParserStateMachine {
 private:
-  SharedHandle<MetalinkParserController> ctrl_;
+  std::unique_ptr<MetalinkParserController> ctrl_;
 
   std::stack<MetalinkParserState*> stateStack_;
 
@@ -71,7 +71,7 @@ private:
   static MetalinkParserState* osState_;
   static MetalinkParserState* verificationState_; // Metalink3Spec
   static MetalinkParserState* hashState_;
-  static MetalinkParserState* piecesState_; // Metalink3Spec
+  static MetalinkParserState* piecesState_;    // Metalink3Spec
   static MetalinkParserState* pieceHashState_; // Metalink3Spec
   static MetalinkParserState* signatureState_;
   static MetalinkParserState* resourcesState_; // Metalink3Spec
@@ -85,33 +85,30 @@ private:
   static MetalinkParserState* languageStateV4_;
   static MetalinkParserState* osStateV4_;
   static MetalinkParserState* hashStateV4_;
-  static MetalinkParserState* piecesStateV4_; // Metalink4Spec
+  static MetalinkParserState* piecesStateV4_;    // Metalink4Spec
   static MetalinkParserState* pieceHashStateV4_; // Metalink4Spec
   static MetalinkParserState* signatureStateV4_;
   static MetalinkParserState* urlStateV4_;
   static MetalinkParserState* metaurlStateV4_;
+
 public:
   MetalinkParserStateMachine();
 
   virtual ~MetalinkParserStateMachine();
 
-  virtual bool needsCharactersBuffering() const;
+  virtual bool needsCharactersBuffering() const CXX11_OVERRIDE;
 
-  virtual bool finished() const;
+  virtual bool finished() const CXX11_OVERRIDE;
 
-  virtual void beginElement
-  (const char* localname,
-   const char* prefix,
-   const char* nsUri,
-   const std::vector<XmlAttr>& attrs);
+  virtual void beginElement(const char* localname, const char* prefix,
+                            const char* nsUri,
+                            const std::vector<XmlAttr>& attrs) CXX11_OVERRIDE;
 
-  virtual void endElement
-  (const char* localname,
-   const char* prefix,
-   const char* nsUri,
-   const std::string& characters);
+  virtual void endElement(const char* localname, const char* prefix,
+                          const char* nsUri,
+                          std::string characters) CXX11_OVERRIDE;
 
-  virtual void reset();
+  virtual void reset() CXX11_OVERRIDE;
 
   void setSkipTagState();
 
@@ -151,7 +148,7 @@ public:
   void setLanguageStateV4();
   void setOSStateV4();
   void setHashStateV4();
-  void setPiecesStateV4(); // Metalink4Spec
+  void setPiecesStateV4();    // Metalink4Spec
   void setPieceHashStateV4(); // Metalink4Spec
   void setSignatureStateV4();
   void setURLStateV4();
@@ -159,15 +156,15 @@ public:
 
   void newEntryTransaction();
 
-  void setFileNameOfEntry(const std::string& filename);
+  void setFileNameOfEntry(std::string filename);
 
   void setFileLengthOfEntry(int64_t length);
 
-  void setVersionOfEntry(const std::string& version);
+  void setVersionOfEntry(std::string version);
 
-  void setLanguageOfEntry(const std::string& language);
+  void setLanguageOfEntry(std::string language);
 
-  void setOSOfEntry(const std::string& os);
+  void setOSOfEntry(std::string os);
 
   void setMaxConnectionsOfEntry(int maxConnections); // Metalink3Spec
 
@@ -177,11 +174,11 @@ public:
 
   void newResourceTransaction();
 
-  void setURLOfResource(const std::string& url);
+  void setURLOfResource(std::string url);
 
-  void setTypeOfResource(const std::string& type);
+  void setTypeOfResource(std::string type);
 
-  void setLocationOfResource(const std::string& location);
+  void setLocationOfResource(std::string location);
 
   void setPriorityOfResource(int priority);
 
@@ -193,9 +190,9 @@ public:
 
   void newChecksumTransaction();
 
-  void setTypeOfChecksum(const std::string& type);
+  void setTypeOfChecksum(std::string type);
 
-  void setHashOfChecksum(const std::string& md);
+  void setHashOfChecksum(std::string md);
 
   void commitChecksumTransaction();
 
@@ -205,9 +202,9 @@ public:
 
   void setLengthOfChunkChecksumV4(size_t length); // Metalink4Spec
 
-  void setTypeOfChunkChecksumV4(const std::string& type); // Metalink4Spec
+  void setTypeOfChunkChecksumV4(std::string type); // Metalink4Spec
 
-  void addHashOfChunkChecksumV4(const std::string& md); // Metalink4Spec
+  void addHashOfChunkChecksumV4(std::string md); // Metalink4Spec
 
   void commitChunkChecksumTransactionV4(); // Metalink4Spec
 
@@ -217,11 +214,11 @@ public:
 
   void setLengthOfChunkChecksum(size_t length); // Metalink3Spec
 
-  void setTypeOfChunkChecksum(const std::string& type); // Metalink3Spec
+  void setTypeOfChunkChecksum(std::string type); // Metalink3Spec
 
   void createNewHashOfChunkChecksum(size_t order); // Metalink3Spec
 
-  void setMessageDigestOfChunkChecksum(const std::string& md); // Metalink3Spec
+  void setMessageDigestOfChunkChecksum(std::string md); // Metalink3Spec
 
   void addHashOfChunkChecksum(); // Metalink3Spec
 
@@ -231,11 +228,11 @@ public:
 
   void newSignatureTransaction();
 
-  void setTypeOfSignature(const std::string& type);
+  void setTypeOfSignature(std::string type);
 
-  void setFileOfSignature(const std::string& file);
+  void setFileOfSignature(std::string file);
 
-  void setBodyOfSignature(const std::string& body);
+  void setBodyOfSignature(std::string body);
 
   void commitSignatureTransaction();
 
@@ -243,34 +240,28 @@ public:
 
   void newMetaurlTransaction();
 
-  void setURLOfMetaurl(const std::string& url);
+  void setURLOfMetaurl(std::string url);
 
-  void setMediatypeOfMetaurl(const std::string& mediatype);
+  void setMediatypeOfMetaurl(std::string mediatype);
 
   void setPriorityOfMetaurl(int priority);
 
-  void setNameOfMetaurl(const std::string& name);
+  void setNameOfMetaurl(std::string name);
 
   void commitMetaurlTransaction();
 
   void cancelMetaurlTransaction();
 
   // Only stores first 10 errors.
-  void logError(const std::string& log);
+  void logError(std::string log);
 
-  const std::vector<std::string>& getErrors() const
-  {
-    return errors_;
-  }
+  const std::vector<std::string>& getErrors() const { return errors_; }
 
   std::string getErrorString() const;
 
-  const SharedHandle<Metalinker>& getResult() const
-  {
-    return ctrl_->getResult();
-  }
+  std::unique_ptr<Metalinker> getResult();
 
-  void setBaseUri(const std::string& uri);
+  void setBaseUri(std::string uri);
 };
 
 } //  namespace aria2

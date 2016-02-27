@@ -38,17 +38,18 @@
 namespace aria2 {
 
 Command::Command(cuid_t cuid)
-  : status_(STATUS_INACTIVE),
-    cuid_(cuid),
-    readEvent_(false),
-    writeEvent_(false),
-    errorEvent_(false),
-    hupEvent_(false)
-{}
+    : cuid_(cuid),
+      status_(STATUS_INACTIVE),
+      readEvent_(false),
+      writeEvent_(false),
+      errorEvent_(false),
+      hupEvent_(false)
+{
+}
 
 void Command::transitStatus()
 {
-  switch(status_) {
+  switch (status_) {
   case STATUS_REALTIME:
     break;
   default:
@@ -56,30 +57,15 @@ void Command::transitStatus()
   }
 }
 
-void Command::setStatus(STATUS status)
-{
-  status_ = status;
-}
+void Command::setStatus(STATUS status) { status_ = status; }
 
-void Command::readEventReceived()
-{
-  readEvent_ = true;
-}
+void Command::readEventReceived() { readEvent_ = true; }
 
-void Command::writeEventReceived()
-{
-  writeEvent_ = true;
-}
+void Command::writeEventReceived() { writeEvent_ = true; }
 
-void Command::errorEventReceived()
-{
-  errorEvent_ = true;
-}
+void Command::errorEventReceived() { errorEvent_ = true; }
 
-void Command::hupEventReceived()
-{
-  hupEvent_ = true;
-}
+void Command::hupEventReceived() { hupEvent_ = true; }
 
 void Command::clearIOEvents()
 {

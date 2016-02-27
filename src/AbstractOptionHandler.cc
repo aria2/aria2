@@ -44,20 +44,19 @@
 
 namespace aria2 {
 
-AbstractOptionHandler::AbstractOptionHandler
-(const Pref* pref,
- const char* description,
- const std::string& defaultValue,
- ARG_TYPE argType,
- char shortName)
-  : pref_(pref),
-    description_(description),
-    defaultValue_(defaultValue),
-    argType_(argType),
-    shortName_(shortName),
-    tags_(0),
-    flags_(0)
-{}
+AbstractOptionHandler::AbstractOptionHandler(PrefPtr pref,
+                                             const char* description,
+                                             const std::string& defaultValue,
+                                             ARG_TYPE argType, char shortName)
+    : pref_(pref),
+      description_(description),
+      defaultValue_(defaultValue),
+      argType_(argType),
+      shortName_(shortName),
+      tags_(0),
+      flags_(0)
+{
+}
 
 AbstractOptionHandler::~AbstractOptionHandler() {}
 
@@ -65,7 +64,8 @@ void AbstractOptionHandler::parse(Option& option, const std::string& arg) const
 {
   try {
     parseArg(option, arg);
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     throw OPTION_HANDLER_EXCEPTION2(pref_, e);
   }
 }
@@ -75,49 +75,38 @@ bool AbstractOptionHandler::hasTag(uint32_t tag) const
   return (tags_ & (1 << tag));
 }
 
-void AbstractOptionHandler::addTag(uint32_t tag)
-{
-  tags_ |= (1 << tag);
-}
+void AbstractOptionHandler::addTag(uint32_t tag) { tags_ |= (1 << tag); }
 
 std::string AbstractOptionHandler::toTagString() const
 {
   std::string s;
-  for(int i = 0; i < MAX_HELP_TAG; ++i) {
-    if(tags_ & (1 << i)) {
+  for (int i = 0; i < MAX_HELP_TAG; ++i) {
+    if (tags_ & (1 << i)) {
       s += strHelpTag(i);
       s += ", ";
     }
   }
-  if(!s.empty()) {
+  if (!s.empty()) {
     s.resize(s.size() - 2);
   }
   return s;
 }
 
-const char* AbstractOptionHandler::getName() const
-{
-  return pref_->k;
-}
+const char* AbstractOptionHandler::getName() const { return pref_->k; }
 
 void AbstractOptionHandler::updateFlags(int flag, bool val)
 {
-  if(val) {
+  if (val) {
     flags_ |= flag;
-  } else {
+  }
+  else {
     flags_ &= ~flag;
   }
 }
 
-bool AbstractOptionHandler::isHidden() const
-{
-  return flags_ & FLAG_HIDDEN;
-}
+bool AbstractOptionHandler::isHidden() const { return flags_ & FLAG_HIDDEN; }
 
-void AbstractOptionHandler::hide()
-{
-  updateFlags(FLAG_HIDDEN, true);
-}
+void AbstractOptionHandler::hide() { updateFlags(FLAG_HIDDEN, true); }
 
 bool AbstractOptionHandler::getEraseAfterParse() const
 {

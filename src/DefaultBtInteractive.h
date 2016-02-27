@@ -67,30 +67,30 @@ class FloodingStat {
 private:
   int chokeUnchokeCount;
   int keepAliveCount;
+
 public:
-  FloodingStat():chokeUnchokeCount(0), keepAliveCount(0) {}
+  FloodingStat() : chokeUnchokeCount(0), keepAliveCount(0) {}
 
-  void incChokeUnchokeCount() {
-    if(chokeUnchokeCount < INT_MAX) {
-      chokeUnchokeCount++;
+  void incChokeUnchokeCount()
+  {
+    if (chokeUnchokeCount < INT_MAX) {
+      ++chokeUnchokeCount;
     }
   }
 
-  void incKeepAliveCount() {
-    if(keepAliveCount < INT_MAX) {
-      keepAliveCount++;
+  void incKeepAliveCount()
+  {
+    if (keepAliveCount < INT_MAX) {
+      ++keepAliveCount;
     }
   }
 
-  int getChokeUnchokeCount() const {
-    return chokeUnchokeCount;
-  }
+  int getChokeUnchokeCount() const { return chokeUnchokeCount; }
 
-  int getKeepAliveCount() const {
-    return keepAliveCount;
-  }
+  int getKeepAliveCount() const { return keepAliveCount; }
 
-  void reset() {
+  void reset()
+  {
     chokeUnchokeCount = 0;
     keepAliveCount = 0;
   }
@@ -100,27 +100,25 @@ class DefaultBtInteractive : public BtInteractive {
 private:
   cuid_t cuid_;
 
-  SharedHandle<DownloadContext> downloadContext_;
+  std::shared_ptr<DownloadContext> downloadContext_;
 
-  SharedHandle<BtRuntime> btRuntime_;
+  std::shared_ptr<BtRuntime> btRuntime_;
 
-  SharedHandle<PieceStorage> pieceStorage_;
+  std::shared_ptr<PieceStorage> pieceStorage_;
 
-  SharedHandle<PeerStorage> peerStorage_;
+  std::shared_ptr<PeerStorage> peerStorage_;
 
-  SharedHandle<Peer> peer_;
+  std::shared_ptr<Peer> peer_;
 
-  SharedHandle<BtMessageReceiver> btMessageReceiver_;
-  SharedHandle<BtMessageDispatcher> dispatcher_;
-  SharedHandle<BtRequestFactory> btRequestFactory_;
-  // Although peerStorage_ is not used in this class, this object
-  // holds the reference so that peerConnection_ is not deleted.
-  SharedHandle<PeerConnection> peerConnection_;
-  SharedHandle<BtMessageFactory> messageFactory_;
-  SharedHandle<ExtensionMessageFactory> extensionMessageFactory_;
-  SharedHandle<ExtensionMessageRegistry> extensionMessageRegistry_;
-  SharedHandle<UTMetadataRequestFactory> utMetadataRequestFactory_;
-  SharedHandle<UTMetadataRequestTracker> utMetadataRequestTracker_;
+  std::unique_ptr<BtMessageReceiver> btMessageReceiver_;
+  std::unique_ptr<BtMessageDispatcher> dispatcher_;
+  std::unique_ptr<BtRequestFactory> btRequestFactory_;
+  std::unique_ptr<PeerConnection> peerConnection_;
+  std::unique_ptr<BtMessageFactory> messageFactory_;
+  std::unique_ptr<ExtensionMessageFactory> extensionMessageFactory_;
+  std::unique_ptr<ExtensionMessageRegistry> extensionMessageRegistry_;
+  std::unique_ptr<UTMetadataRequestFactory> utMetadataRequestFactory_;
+  std::unique_ptr<UTMetadataRequestTracker> utMetadataRequestTracker_;
 
   bool metadataGetMode_;
 
@@ -134,7 +132,7 @@ private:
   Timer inactiveTimer_;
   Timer pexTimer_;
   Timer perSecTimer_;
-  time_t keepAliveInterval_;
+  std::chrono::seconds keepAliveInterval_;
   bool utPexEnabled_;
   bool dhtEnabled_;
 
@@ -148,8 +146,6 @@ private:
 
   std::vector<size_t> haveIndexes_;
   Timer haveLastSent_;
-
-  static const time_t FLOODING_CHECK_INTERVAL = 5;
 
   void addBitfieldMessageToQueue();
   void addAllowedFastMessageToQueue();
@@ -166,106 +162,85 @@ private:
   void addPortMessageToQueue();
 
 public:
-  DefaultBtInteractive(const SharedHandle<DownloadContext>& downloadContext,
-                       const SharedHandle<Peer>& peer);
+  DefaultBtInteractive(const std::shared_ptr<DownloadContext>& downloadContext,
+                       const std::shared_ptr<Peer>& peer);
 
   virtual ~DefaultBtInteractive();
 
-  virtual void initiateHandshake();
+  virtual void initiateHandshake() CXX11_OVERRIDE;
 
-  virtual SharedHandle<BtMessage> receiveHandshake(bool quickReply = false);
+  virtual std::unique_ptr<BtHandshakeMessage>
+  receiveHandshake(bool quickReply = false) CXX11_OVERRIDE;
 
-  virtual SharedHandle<BtMessage> receiveAndSendHandshake();
+  virtual std::unique_ptr<BtHandshakeMessage>
+  receiveAndSendHandshake() CXX11_OVERRIDE;
 
-  virtual void doPostHandshakeProcessing();
+  virtual void doPostHandshakeProcessing() CXX11_OVERRIDE;
 
-  virtual void doInteractionProcessing();
+  virtual void doInteractionProcessing() CXX11_OVERRIDE;
 
-  virtual void cancelAllPiece();
+  virtual void cancelAllPiece() CXX11_OVERRIDE;
 
-  virtual void sendPendingMessage();
+  virtual void sendPendingMessage() CXX11_OVERRIDE;
 
   size_t receiveMessages();
 
-  virtual size_t countPendingMessage();
+  virtual size_t countPendingMessage() CXX11_OVERRIDE;
 
-  virtual bool isSendingMessageInProgress();
+  virtual bool isSendingMessageInProgress() CXX11_OVERRIDE;
 
-  virtual size_t countReceivedMessageInIteration() const;
+  virtual size_t countReceivedMessageInIteration() const CXX11_OVERRIDE;
 
-  virtual size_t countOutstandingRequest();
+  virtual size_t countOutstandingRequest() CXX11_OVERRIDE;
 
-  void setCuid(cuid_t cuid)
+  void setCuid(cuid_t cuid) { cuid_ = cuid; }
+
+  void setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime);
+
+  void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage);
+
+  void setPeerStorage(const std::shared_ptr<PeerStorage>& peerStorage);
+
+  void setPeer(const std::shared_ptr<Peer>& peer);
+
+  void setBtMessageReceiver(std::unique_ptr<BtMessageReceiver> receiver);
+
+  void setDispatcher(std::unique_ptr<BtMessageDispatcher> dispatcher);
+
+  void setBtRequestFactory(std::unique_ptr<BtRequestFactory> factory);
+
+  void setPeerConnection(std::unique_ptr<PeerConnection> peerConnection);
+
+  void setBtMessageFactory(std::unique_ptr<BtMessageFactory> factory);
+
+  void
+  setExtensionMessageFactory(std::unique_ptr<ExtensionMessageFactory> factory);
+
+  void setExtensionMessageRegistry(
+      std::unique_ptr<ExtensionMessageRegistry> registry);
+
+  void setKeepAliveInterval(std::chrono::seconds keepAliveInterval)
   {
-    cuid_ = cuid;
+    keepAliveInterval_ = std::move(keepAliveInterval);
   }
 
-  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
-
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
-
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
-
-  void setPeer(const SharedHandle<Peer>& peer);
-
-  void setBtMessageReceiver(const SharedHandle<BtMessageReceiver>& receiver);
-
-  void setDispatcher(const SharedHandle<BtMessageDispatcher>& dispatcher);
-
-  void setBtRequestFactory(const SharedHandle<BtRequestFactory>& factory);
-
-  void setPeerConnection(const SharedHandle<PeerConnection>& peerConnection);
-
-  void setBtMessageFactory(const SharedHandle<BtMessageFactory>& factory);
-
-  void setExtensionMessageFactory
-  (const SharedHandle<ExtensionMessageFactory>& factory);
-
-  void setExtensionMessageRegistry
-  (const SharedHandle<ExtensionMessageRegistry>& registry)
-  {
-    extensionMessageRegistry_ = registry;
-  }
-
-  void setKeepAliveInterval(time_t keepAliveInterval) {
-    keepAliveInterval_ = keepAliveInterval;
-  }
-
-  void setUTPexEnabled(bool f)
-  {
-    utPexEnabled_ = f;
-  }
+  void setUTPexEnabled(bool f) { utPexEnabled_ = f; }
 
   void setLocalNode(DHTNode* node);
 
-  void setDHTEnabled(bool f)
-  {
-    dhtEnabled_ = f;
-  }
+  void setDHTEnabled(bool f) { dhtEnabled_ = f; }
 
   void setRequestGroupMan(RequestGroupMan* rgman);
 
-  void setUTMetadataRequestTracker
-  (const SharedHandle<UTMetadataRequestTracker>& tracker)
-  {
-    utMetadataRequestTracker_ = tracker;
-  }
+  void setUTMetadataRequestTracker(
+      std::unique_ptr<UTMetadataRequestTracker> tracker);
 
-  void setUTMetadataRequestFactory
-  (const SharedHandle<UTMetadataRequestFactory>& factory)
-  {
-    utMetadataRequestFactory_ = factory;
-  }
+  void setUTMetadataRequestFactory(
+      std::unique_ptr<UTMetadataRequestFactory> factory);
 
-  void enableMetadataGetMode()
-  {
-    metadataGetMode_ = true;
-  }
+  void enableMetadataGetMode() { metadataGetMode_ = true; }
 
-  void setTcpPort(uint16_t port)
-  {
-    tcpPort_ = port;
-  }
+  void setTcpPort(uint16_t port) { tcpPort_ = port; }
 };
 
 } // namespace aria2

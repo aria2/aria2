@@ -10,7 +10,7 @@
 
 namespace aria2 {
 
-class ValueBaseTest:public CppUnit::TestFixture {
+class ValueBaseTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(ValueBaseTest);
   CPPUNIT_TEST(testString);
@@ -20,6 +20,7 @@ class ValueBaseTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testListIter);
   CPPUNIT_TEST(testDowncast);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -33,7 +34,6 @@ public:
   void testDowncast();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(ValueBaseTest);
 
 void ValueBaseTest::testString()
@@ -41,10 +41,10 @@ void ValueBaseTest::testString()
   String s(std::string("aria2"));
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"), s.s());
 
-  unsigned char dataWithNull[] = { 0xf0, '\0', 0x0f };
+  unsigned char dataWithNull[] = {0xf0, '\0', 0x0f};
   String sWithNull(dataWithNull, sizeof(dataWithNull));
-  CPPUNIT_ASSERT(memcmp(dataWithNull, sWithNull.s().c_str(),
-                        sizeof(dataWithNull)) == 0);
+  CPPUNIT_ASSERT(
+      memcmp(dataWithNull, sWithNull.s().c_str(), sizeof(dataWithNull)) == 0);
 
   String zero("");
   CPPUNIT_ASSERT_EQUAL(std::string(""), zero.s());
@@ -52,7 +52,7 @@ void ValueBaseTest::testString()
   String z;
   CPPUNIT_ASSERT_EQUAL(std::string(""), z.s());
 
-  const unsigned char uc[] = { 0x08, 0x19, 0x2a, 0x3b };
+  const unsigned char uc[] = {0x08, 0x19, 0x2a, 0x3b};
   String data(uc, sizeof(uc));
   CPPUNIT_ASSERT_EQUAL(util::toHex(uc, sizeof(uc)),
                        util::toHex(data.uc(), data.s().size()));
@@ -65,7 +65,7 @@ void ValueBaseTest::testDowncast()
   CPPUNIT_ASSERT(x);
   CPPUNIT_ASSERT_EQUAL(static_cast<Integer::ValueType>(100), x->i());
   CPPUNIT_ASSERT(!downcast<String>(&integer));
-  SharedHandle<Integer> si(new Integer(101));
+  std::shared_ptr<Integer> si(new Integer(101));
   const Integer* x2 = downcast<Integer>(si);
   CPPUNIT_ASSERT_EQUAL(static_cast<Integer::ValueType>(101), x2->i());
 
@@ -87,38 +87,41 @@ void ValueBaseTest::testDict()
   Dict dict;
   CPPUNIT_ASSERT(dict.empty());
 
-  dict["ki"] = Integer::g(7);
-  dict["ks"] = String::g("abc");
+  dict.put("ki", Integer::g(7));
+  dict.put("ks", String::g("abc"));
 
   CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), dict.size());
   CPPUNIT_ASSERT(dict.containsKey("ki"));
   CPPUNIT_ASSERT_EQUAL(static_cast<Integer::ValueType>(7),
                        downcast<Integer>(dict["ki"])->i());
   CPPUNIT_ASSERT(dict.containsKey("ks"));
-  CPPUNIT_ASSERT_EQUAL(std::string("abc"),
-                       downcast<String>(dict["ks"])->s());
+  CPPUNIT_ASSERT_EQUAL(std::string("abc"), downcast<String>(dict["ks"])->s());
 
-  CPPUNIT_ASSERT(!dict["kn"]); // This adds kn key with default value.
-  CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), dict.size());
-  CPPUNIT_ASSERT(dict.containsKey("kn"));
+  CPPUNIT_ASSERT(!dict["kn"]); // This does not adds kn key
+  CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), dict.size());
 
-  const Dict& ref = dict;
+  auto& ref = dict;
   ref["kn2"]; // This doesn't add kn2 key.
-  CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), ref.size());
+  CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), ref.size());
   CPPUNIT_ASSERT(!ref.containsKey("kn2"));
 
-  dict.removeKey("kn");
-  CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), dict.size());
-  CPPUNIT_ASSERT(!dict.containsKey("kn"));
+  dict.removeKey("ks");
+  CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), dict.size());
+  CPPUNIT_ASSERT(!dict.containsKey("ks"));
+
+  auto ki = dict.popValue("ki");
+  CPPUNIT_ASSERT_EQUAL(Integer::ValueType{7}, downcast<Integer>(ki)->i());
+  CPPUNIT_ASSERT(dict.empty());
+  CPPUNIT_ASSERT(!dict.containsKey("ki"));
 }
 
 void ValueBaseTest::testDictIter()
 {
   Dict dict;
-  dict["alpha2"] = String::g("alpha2");
-  dict["charlie"] = String::g("charlie");
-  dict["bravo"] = String::g("bravo");
-  dict["alpha"] = String::g("alpha");
+  dict.put("alpha2", String::g("alpha2"));
+  dict.put("charlie", String::g("charlie"));
+  dict.put("bravo", String::g("bravo"));
+  dict.put("alpha", String::g("alpha"));
 
   Dict::ValueType::iterator i = dict.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("alpha"), (*i++).first);
@@ -156,9 +159,7 @@ void ValueBaseTest::testList()
 void ValueBaseTest::testListIter()
 {
   List list;
-  list << String::g("alpha2")
-       << String::g("charlie")
-       << String::g("bravo")
+  list << String::g("alpha2") << String::g("charlie") << String::g("bravo")
        << String::g("alpha");
 
   List::ValueType::iterator i = list.begin();

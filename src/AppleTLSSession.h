@@ -49,6 +49,7 @@ class AppleTLSSession : public TLSSession {
     st_closed,
     st_error
   };
+
 public:
   AppleTLSSession(AppleTLSContext* ctx);
 
@@ -56,36 +57,36 @@ public:
   virtual ~AppleTLSSession();
 
   // Initializes SSL/TLS session. The |sockfd| is the underlying
-  // tranport socket. This function returns TLS_ERR_OK if it
+  // transport socket. This function returns TLS_ERR_OK if it
   // succeeds, or TLS_ERR_ERROR.
-  virtual int init(sock_t sockfd);
+  virtual int init(sock_t sockfd) CXX11_OVERRIDE;
 
   // Sets |hostname| for TLS SNI extension. This is only meaningful for
   // client side session. This function returns TLS_ERR_OK if it
   // succeeds, or TLS_ERR_ERROR.
-  virtual int setSNIHostname(const std::string& hostname);
+  virtual int setSNIHostname(const std::string& hostname) CXX11_OVERRIDE;
 
   // Closes the SSL/TLS session. Don't close underlying transport
   // socket. This function returns TLS_ERR_OK if it succeeds, or
   // TLS_ERR_ERROR.
-  virtual int closeConnection();
+  virtual int closeConnection() CXX11_OVERRIDE;
 
   // Returns TLS_WANT_READ if SSL/TLS session needs more data from
   // remote endpoint to proceed, or TLS_WANT_WRITE if SSL/TLS session
   // needs to write more data to proceed. If SSL/TLS session needs
   // neither read nor write data at the moment, return value is
   // undefined.
-  virtual int checkDirection();
+  virtual int checkDirection() CXX11_OVERRIDE;
 
   // Sends |data| with length |len|. This function returns the number
   // of bytes sent if it succeeds, or TLS_ERR_WOULDBLOCK if the
-  // underlying tranport blocks, or TLS_ERR_ERROR.
-  virtual ssize_t writeData(const void* data, size_t len);
+  // underlying transport blocks, or TLS_ERR_ERROR.
+  virtual ssize_t writeData(const void* data, size_t len) CXX11_OVERRIDE;
 
   // Receives data into |data| with length |len|. This function returns
   // the number of bytes received if it succeeds, or TLS_ERR_WOULDBLOCK
-  // if the underlying tranport blocks, or TLS_ERR_ERROR.
-  virtual ssize_t readData(void* data, size_t len);
+  // if the underlying transport blocks, or TLS_ERR_ERROR.
+  virtual ssize_t readData(void* data, size_t len) CXX11_OVERRIDE;
 
   // Performs client side handshake. The |hostname| is the hostname of
   // the remote endpoint and is used to verify its certificate. This
@@ -93,25 +94,31 @@ public:
   // if the underlying transport blocks, or TLS_ERR_ERROR.
   // When returning TLS_ERR_ERROR, provide certificate validation error
   // in |handshakeErr|.
-  virtual int tlsConnect(const std::string& hostname, std::string& handshakeErr);
+  virtual int tlsConnect(const std::string& hostname, TLSVersion& version,
+                         std::string& handshakeErr) CXX11_OVERRIDE;
 
   // Performs server side handshake. This function returns TLS_ERR_OK
   // if it succeeds, or TLS_ERR_WOULDBLOCK if the underlying transport
   // blocks, or TLS_ERR_ERROR.
-  virtual int tlsAccept();
+  virtual int tlsAccept(TLSVersion& version) CXX11_OVERRIDE;
 
   // Returns last error string
-  virtual std::string getLastErrorString();
+  virtual std::string getLastErrorString() CXX11_OVERRIDE;
+
+  virtual size_t getRecvBufferedLength() CXX11_OVERRIDE { return 0; }
 
 private:
-  static OSStatus SocketWrite(SSLConnectionRef conn, const void* data, size_t* len) {
+  static OSStatus SocketWrite(SSLConnectionRef conn, const void* data,
+                              size_t* len)
+  {
     return ((AppleTLSSession*)conn)->sockWrite(data, len);
   }
-  static OSStatus SocketRead(SSLConnectionRef conn, void* data, size_t* len) {
+
+  static OSStatus SocketRead(SSLConnectionRef conn, void* data, size_t* len)
+  {
     return ((AppleTLSSession*)conn)->sockRead(data, len);
   }
 
-  AppleTLSContext *ctx_;
   SSLContextRef sslCtx_;
   sock_t sockfd_;
   state_t state_;
@@ -121,7 +128,6 @@ private:
   OSStatus sockWrite(const void* data, size_t* len);
   OSStatus sockRead(void* data, size_t* len);
 };
-
 }
 
 #endif // TLS_SESSION_H

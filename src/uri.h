@@ -48,12 +48,12 @@ namespace uri {
 struct UriStruct {
   std::string protocol;
   std::string host;
-  uint16_t port;
   std::string dir;
   std::string file;
   std::string query;
   std::string username;
   std::string password;
+  uint16_t port;
   bool hasPassword;
   bool ipv6LiteralAddress;
 
@@ -81,6 +81,14 @@ std::string getFieldString(const uri_split_result& res, int field,
 std::string construct(const UriStruct& us);
 
 std::string joinUri(const std::string& baseUri, const std::string& uri);
+
+std::string joinPath(const std::string& basePath, const std::string& newPath);
+
+// Normalizes path so that: 1) it does not contain successive / and 2)
+// resolve path component '.' and '..'. If there is not enough path
+// component to resolve '..', those '..' are discarded. The resulting
+// path starts / only if path starts with /.
+std::string normalizePath(std::string path);
 
 } // namespace uri
 

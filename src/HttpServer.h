@@ -40,8 +40,8 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "SocketBuffer.h"
 
 namespace aria2 {
@@ -53,41 +53,46 @@ class DownloadEngine;
 class SocketRecvBuffer;
 class DiskWriter;
 
-enum RequestType {
-  RPC_TYPE_NONE,
-  RPC_TYPE_XML,
-  RPC_TYPE_JSON,
-  RPC_TYPE_JSONP
-};
+namespace util {
+namespace security {
+class HMAC;
+class HMACResult;
+}
+}
+
+enum RequestType { RPC_TYPE_NONE, RPC_TYPE_XML, RPC_TYPE_JSON, RPC_TYPE_JSONP };
 
 // HTTP server class handling RPC request from the client.  It is not
 // intended to be a generic HTTP server.
 class HttpServer {
 private:
-  SharedHandle<SocketCore> socket_;
-  SharedHandle<SocketRecvBuffer> socketRecvBuffer_;
+  static std::unique_ptr<util::security::HMAC> hmac_;
+
+  std::shared_ptr<SocketCore> socket_;
+  std::shared_ptr<SocketRecvBuffer> socketRecvBuffer_;
   SocketBuffer socketBuffer_;
-  SharedHandle<HttpHeaderProcessor> headerProcessor_;
-  SharedHandle<HttpHeader> lastRequestHeader_;
+  std::unique_ptr<HttpHeaderProcessor> headerProcessor_;
+  std::unique_ptr<HttpHeader> lastRequestHeader_;
   int64_t lastContentLength_;
   // How many bytes are consumed. The total number of bytes is
   // lastContentLength_.
   int64_t bodyConsumed_;
   RequestType reqType_;
-  SharedHandle<DiskWriter> lastBody_;
+  std::unique_ptr<DiskWriter> lastBody_;
   bool keepAlive_;
   bool gzip_;
-  std::string username_;
-  std::string password_;
+  std::unique_ptr<util::security::HMACResult> username_;
+  std::unique_ptr<util::security::HMACResult> password_;
   bool acceptsGZip_;
   std::string allowOrigin_;
   bool secure_;
+
 public:
-  HttpServer(const SharedHandle<SocketCore>& socket);
+  HttpServer(const std::shared_ptr<SocketCore>& socket);
 
   ~HttpServer();
 
-  SharedHandle<HttpHeader> receiveRequest();
+  bool receiveRequest();
 
   bool receiveBody();
 
@@ -101,26 +106,18 @@ public:
 
   std::string createQuery() const;
 
-  const SharedHandle<DiskWriter>& getBody() const
-  {
-    return lastBody_;
-  }
+  DiskWriter* getBody() const;
 
-  RequestType getRequestType() const
-  {
-    return reqType_;
-  }
+  RequestType getRequestType() const { return reqType_; }
 
-  void feedResponse(std::string& text, const std::string& contentType);
+  void feedResponse(std::string text, const std::string& contentType);
 
   // Feeds HTTP response with the status code |status| (e.g.,
   // 200). The |headers| is zero or more lines of HTTP header field
   // and each line must end with "\r\n". The |text| is the response
   // body. The |contentType" is the content-type of the response body.
-  void feedResponse(int status,
-                    const std::string& headers = "",
-                    const std::string& text = "",
-                    const std::string& contentType = "");
+  void feedResponse(int status, const std::string& headers = "",
+                    std::string text = "", const std::string& contentType = "");
 
   // Feeds "101 Switching Protocols" response. The |protocol| will
   // appear in Upgrade header field. The |headers| is zero or more
@@ -130,8 +127,8 @@ public:
 
   bool authenticate();
 
-  void setUsernamePassword
-  (const std::string& username, const std::string& password);
+  void setUsernamePassword(const std::string& username,
+                           const std::string& password);
 
   ssize_t sendResponse();
 
@@ -139,10 +136,7 @@ public:
 
   bool supportsPersistentConnection() const;
 
-  bool supportsGZip() const
-  {
-    return gzip_ && acceptsGZip_;
-  }
+  bool supportsGZip() const { return gzip_ && acceptsGZip_; }
 
   void enableKeepAlive() { keepAlive_ = true; }
 
@@ -154,40 +148,28 @@ public:
 
   int64_t getContentLength() const { return lastContentLength_; }
 
-  const SharedHandle<SocketRecvBuffer>& getSocketRecvBuffer() const
+  const std::shared_ptr<SocketRecvBuffer>& getSocketRecvBuffer() const
   {
     return socketRecvBuffer_;
   }
 
-  const std::string& getAllowOrigin() const
-  {
-    return allowOrigin_;
-  }
+  const std::string& getAllowOrigin() const { return allowOrigin_; }
 
   void setAllowOrigin(const std::string& allowOrigin)
   {
     allowOrigin_ = allowOrigin;
   }
 
-  const SharedHandle<SocketCore>& getSocket() const
-  {
-    return socket_;
-  }
+  const std::shared_ptr<SocketCore>& getSocket() const { return socket_; }
 
-  const SharedHandle<HttpHeader>& getRequestHeader() const
+  const std::unique_ptr<HttpHeader>& getRequestHeader() const
   {
     return lastRequestHeader_;
   }
 
-  void setSecure(bool f)
-  {
-    secure_ = f;
-  }
+  void setSecure(bool f) { secure_ = f; }
 
-  bool getSecure() const
-  {
-    return secure_;
-  }
+  bool getSecure() const { return secure_; }
 
   bool wantRead() const;
   bool wantWrite() const;

@@ -42,10 +42,10 @@ namespace aria2 {
 
 AuthConfig::AuthConfig() {}
 
-AuthConfig::AuthConfig(const std::string& user, const std::string& password)
-    : user_(user),
-      password_(password)
-{}
+AuthConfig::AuthConfig(std::string user, std::string password)
+    : user_(std::move(user)), password_(std::move(password))
+{
+}
 
 AuthConfig::~AuthConfig() {}
 
@@ -57,8 +57,19 @@ std::string AuthConfig::getAuthText() const
   return s;
 }
 
+std::unique_ptr<AuthConfig> AuthConfig::create(std::string user,
+                                               std::string password)
+{
+  if (user.empty()) {
+    return nullptr;
+  }
+  else {
+    return make_unique<AuthConfig>(std::move(user), std::move(password));
+  }
+}
+
 std::ostream& operator<<(std::ostream& o,
-                         const SharedHandle<AuthConfig>& authConfig)
+                         const std::shared_ptr<AuthConfig>& authConfig)
 {
   o << authConfig->getAuthText();
   return o;

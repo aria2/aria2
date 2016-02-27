@@ -47,40 +47,38 @@ namespace {
 struct HashTypeEntry {
   std::string hashType;
   int strength;
-  HashTypeEntry(const std::string& hashType, int strength):
-    hashType(hashType), strength(strength) {}
+  HashTypeEntry(std::string hashType, int strength)
+      : hashType(std::move(hashType)), strength(strength)
+  {
+  }
 };
 } // namespace
 
 namespace {
 HashTypeEntry hashTypes[] = {
-  HashTypeEntry("sha-1", 1),
-  HashTypeEntry("sha-224", 2),
-  HashTypeEntry("sha-256", 3),
-  HashTypeEntry("sha-384", 4),
-  HashTypeEntry("sha-512", 5),
-  HashTypeEntry("md5", 0)
+    HashTypeEntry("sha-1", 1),   HashTypeEntry("sha-224", 2),
+    HashTypeEntry("sha-256", 3), HashTypeEntry("sha-384", 4),
+    HashTypeEntry("sha-512", 5), HashTypeEntry("md5", 0),
+    HashTypeEntry("adler32", 0),
 };
 } // namespace aria2
 
-MessageDigest::MessageDigest()
-{}
-
-MessageDigest::~MessageDigest()
-{}
-
-SharedHandle<MessageDigest> MessageDigest::sha1()
+MessageDigest::MessageDigest(std::unique_ptr<MessageDigestImpl> impl)
+    : pImpl_{std::move(impl)}
 {
-  SharedHandle<MessageDigest> md(new MessageDigest());
-  md->pImpl_ = MessageDigestImpl::sha1();
-  return md;
 }
 
-SharedHandle<MessageDigest> MessageDigest::create(const std::string& hashType)
+MessageDigest::~MessageDigest() {}
+
+std::unique_ptr<MessageDigest> MessageDigest::sha1()
 {
-  SharedHandle<MessageDigest> md(new MessageDigest());
-  md->pImpl_ = MessageDigestImpl::create(hashType);
-  return md;
+  return make_unique<MessageDigest>(MessageDigestImpl::sha1());
+}
+
+std::unique_ptr<MessageDigest>
+MessageDigest::create(const std::string& hashType)
+{
+  return make_unique<MessageDigest>(MessageDigestImpl::create(hashType));
 }
 
 bool MessageDigest::supports(const std::string& hashType)
@@ -91,10 +89,9 @@ bool MessageDigest::supports(const std::string& hashType)
 std::vector<std::string> MessageDigest::getSupportedHashTypes()
 {
   std::vector<std::string> rv;
-  for (HashTypeEntry *i = vbegin(hashTypes), *eoi = vend(hashTypes);
-       i != eoi; ++i) {
-    if (MessageDigestImpl::supports(i->hashType)) {
-      rv.push_back(i->hashType);
+  for (const auto& i : hashTypes) {
+    if (MessageDigestImpl::supports(i.hashType)) {
+      rv.push_back(i.hashType);
     }
   }
   return rv;
@@ -102,12 +99,13 @@ std::vector<std::string> MessageDigest::getSupportedHashTypes()
 
 std::string MessageDigest::getSupportedHashTypeString()
 {
-  std::vector<std::string> ht = getSupportedHashTypes();
+  auto ht = getSupportedHashTypes();
   std::stringstream ss;
-  std::copy(ht.begin(), ht.end(), std::ostream_iterator<std::string>(ss, ", "));
-  std::string res = ss.str();
-  if(!res.empty()) {
-    res.erase(ss.str().length()-2);
+  std::copy(std::begin(ht), std::end(ht),
+            std::ostream_iterator<std::string>(ss, ", "));
+  auto res = ss.str();
+  if (!res.empty()) {
+    res.erase(ss.str().length() - 2);
   }
   return res;
 }
@@ -117,38 +115,28 @@ size_t MessageDigest::getDigestLength(const std::string& hashType)
   return MessageDigestImpl::getDigestLength(hashType);
 }
 
-namespace {
-class FindHashTypeEntry {
-private:
-  const std::string& hashType_;
-public:
-  FindHashTypeEntry(const std::string& hashType):hashType_(hashType)
-  {}
-
-  bool operator()(const HashTypeEntry& entry) const
-  {
-    return hashType_ == entry.hashType;
-  }
-};
-} // namespace
-
 bool MessageDigest::isStronger(const std::string& lhs, const std::string& rhs)
 {
-  HashTypeEntry* lEntry = std::find_if(vbegin(hashTypes), vend(hashTypes),
-                                       FindHashTypeEntry(lhs));
-  HashTypeEntry* rEntry = std::find_if(vbegin(hashTypes), vend(hashTypes),
-                                       FindHashTypeEntry(rhs));
-  if(lEntry == vend(hashTypes) || rEntry == vend(hashTypes)) {
+  auto lEntry = std::find_if(
+      std::begin(hashTypes), std::end(hashTypes),
+      [&lhs](const HashTypeEntry& entry) { return lhs == entry.hashType; });
+  auto rEntry = std::find_if(
+      std::begin(hashTypes), std::end(hashTypes),
+      [&rhs](const HashTypeEntry& entry) { return rhs == entry.hashType; });
+  if (lEntry == std::end(hashTypes)) {
     return false;
+  }
+  if (rEntry == std::end(hashTypes)) {
+    return true;
   }
   return lEntry->strength > rEntry->strength;
 }
 
-bool MessageDigest::isValidHash
-(const std::string& hashType, const std::string& hexDigest)
+bool MessageDigest::isValidHash(const std::string& hashType,
+                                const std::string& hexDigest)
 {
-  return util::isHexDigit(hexDigest) &&
-    supports(hashType) && getDigestLength(hashType)*2 == hexDigest.size();
+  return util::isHexDigit(hexDigest) && supports(hashType) &&
+         getDigestLength(hashType) * 2 == hexDigest.size();
 }
 
 std::string MessageDigest::getCanonicalHashType(const std::string& hashType)
@@ -156,11 +144,13 @@ std::string MessageDigest::getCanonicalHashType(const std::string& hashType)
   // This is really backward compatibility for Metalink3.  aria2 only
   // supported sha-1, sha-256 and md5 at Metalink3 era.  So we don't
   // add alias for sha-224, sha-384 and sha-512.
-  if("sha1" == hashType) {
+  if ("sha1" == hashType) {
     return "sha-1";
-  } else if("sha256" == hashType) {
+  }
+  else if ("sha256" == hashType) {
     return "sha-256";
-  } else {
+  }
+  else {
     return hashType;
   }
 }
@@ -170,10 +160,7 @@ size_t MessageDigest::getDigestLength() const
   return pImpl_->getDigestLength();
 }
 
-void MessageDigest::reset()
-{
-  pImpl_->reset();
-}
+void MessageDigest::reset() { pImpl_->reset(); }
 
 MessageDigest& MessageDigest::update(const void* data, size_t length)
 {
@@ -181,18 +168,14 @@ MessageDigest& MessageDigest::update(const void* data, size_t length)
   return *this;
 }
 
-void MessageDigest::digest(unsigned char* md)
-{
-  pImpl_->digest(md);
-}
+void MessageDigest::digest(unsigned char* md) { pImpl_->digest(md); }
 
 std::string MessageDigest::digest()
 {
   size_t length = pImpl_->getDigestLength();
-  array_ptr<unsigned char> buf(new unsigned char[length]);
-  pImpl_->digest(buf);
-  std::string hd(&buf[0], &buf[length]);
-  return hd;
+  auto buf = make_unique<unsigned char[]>(length);
+  pImpl_->digest(buf.get());
+  return std::string(&buf[0], &buf[length]);
 }
 
 } // namespace aria2

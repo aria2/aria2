@@ -45,65 +45,54 @@
 
 namespace aria2 {
 
-SeedCheckCommand::SeedCheckCommand
-(cuid_t cuid,
- RequestGroup* requestGroup,
- DownloadEngine* e,
- const SharedHandle<SeedCriteria>& seedCriteria)
-  : Command(cuid),
-    requestGroup_(requestGroup),
-    e_(e),
-    seedCriteria_(seedCriteria),
-    checkStarted_(false)
+SeedCheckCommand::SeedCheckCommand(cuid_t cuid, RequestGroup* requestGroup,
+                                   DownloadEngine* e,
+                                   std::unique_ptr<SeedCriteria> seedCriteria)
+    : Command(cuid),
+      requestGroup_(requestGroup),
+      e_(e),
+      seedCriteria_(std::move(seedCriteria)),
+      checkStarted_(false)
 {
   setStatusRealtime();
   requestGroup_->increaseNumCommand();
 }
 
-SeedCheckCommand::~SeedCheckCommand()
-{
-  requestGroup_->decreaseNumCommand();
-}
+SeedCheckCommand::~SeedCheckCommand() { requestGroup_->decreaseNumCommand(); }
 
-bool SeedCheckCommand::execute() {
-  if(btRuntime_->isHalt()) {
+bool SeedCheckCommand::execute()
+{
+  if (btRuntime_->isHalt()) {
     return true;
   }
-  if(!seedCriteria_.get()) {
+  if (!seedCriteria_.get()) {
     return false;
   }
-  if(!checkStarted_) {
-    if(pieceStorage_->downloadFinished()) {
+  if (!checkStarted_) {
+    if (pieceStorage_->downloadFinished()) {
       checkStarted_ = true;
       seedCriteria_->reset();
     }
   }
-  if(checkStarted_) {
-    if(seedCriteria_->evaluate()) {
+  if (checkStarted_) {
+    if (seedCriteria_->evaluate()) {
       A2_LOG_NOTICE(MSG_SEEDING_END);
       btRuntime_->setHalt(true);
     }
   }
-  e_->addCommand(this);
+  e_->addCommand(std::unique_ptr<Command>(this));
   return false;
 }
 
-void SeedCheckCommand::setSeedCriteria
-(const SharedHandle<SeedCriteria>& seedCriteria)
-{
-  seedCriteria_ = seedCriteria;
-}
-
-void SeedCheckCommand::setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
+void SeedCheckCommand::setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime)
 {
   btRuntime_ = btRuntime;
 }
 
-void SeedCheckCommand::setPieceStorage
-(const SharedHandle<PieceStorage>& pieceStorage)
+void SeedCheckCommand::setPieceStorage(
+    const std::shared_ptr<PieceStorage>& pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }
-
 
 } // namespace aria2

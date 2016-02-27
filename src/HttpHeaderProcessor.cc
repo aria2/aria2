@@ -75,57 +75,65 @@ enum {
 } // namespace
 
 HttpHeaderProcessor::HttpHeaderProcessor(ParserMode mode)
-  : mode_(mode),
-    state_(mode == CLIENT_PARSER ? PREV_RES_VERSION : PREV_METHOD),
-    lastBytesProcessed_(0),
-    lastFieldHdKey_(HttpHeader::MAX_INTERESTING_HEADER),
-    result_(new HttpHeader())
-{}
+    : mode_(mode),
+      state_(mode == CLIENT_PARSER ? PREV_RES_VERSION : PREV_METHOD),
+      lastBytesProcessed_(0),
+      lastFieldHdKey_(HttpHeader::MAX_INTERESTING_HEADER),
+      result_(new HttpHeader())
+{
+}
 
 HttpHeaderProcessor::~HttpHeaderProcessor() {}
 
 namespace {
-size_t getToken(std::string& buf,
-                const unsigned char* data, size_t length, size_t off)
+size_t getToken(std::string& buf, const unsigned char* data, size_t length,
+                size_t off)
 {
-  size_t j;
-  for(j = off; j < length && !util::isLws(data[j]) && !util::isCRLF(data[j]);
-      ++j);
+  size_t j = off;
+  while (j < length && !util::isLws(data[j]) && !util::isCRLF(data[j])) {
+    ++j;
+  }
   buf.append(&data[off], &data[j]);
-  return j-1;
+  return j - 1;
 }
 } // namespace
 
 namespace {
-size_t getFieldNameToken(std::string& buf,
-                         const unsigned char* data, size_t length, size_t off)
+size_t getFieldNameToken(std::string& buf, const unsigned char* data,
+                         size_t length, size_t off)
 {
-  size_t j;
-  for(j = off; j < length && data[j] != ':' &&
-        !util::isLws(data[j]) && !util::isCRLF(data[j]); ++j);
+  size_t j = off;
+  while (j < length && data[j] != ':' && !util::isLws(data[j]) &&
+         !util::isCRLF(data[j])) {
+    ++j;
+  }
   buf.append(&data[off], &data[j]);
-  return j-1;
+  return j - 1;
 }
 } // namespace
 
 namespace {
-size_t getText(std::string& buf,
-               const unsigned char* data, size_t length, size_t off)
+size_t getText(std::string& buf, const unsigned char* data, size_t length,
+               size_t off)
 {
-  size_t j;
-  for(j = off; j < length && !util::isCRLF(data[j]); ++j);
+  size_t j = off;
+  while (j < length && !util::isCRLF(data[j])) {
+    ++j;
+  }
   buf.append(&data[off], &data[j]);
-  return j-1;
+  return j - 1;
 }
 } // namespace
 
 namespace {
-size_t ignoreText(std::string& buf,
-                  const unsigned char* data, size_t length, size_t off)
+size_t ignoreText(std::string& buf, const unsigned char* data, size_t length,
+                  size_t off)
 {
-  size_t j;
-  for(j = off; j < length && !util::isCRLF(data[j]); ++j);
-  return j-1;
+  size_t j = off;
+  while (j < length && !util::isCRLF(data[j])) {
+    ++j;
+  }
+  return j - 1;
 }
 } // namespace
 
@@ -133,240 +141,326 @@ bool HttpHeaderProcessor::parse(const unsigned char* data, size_t length)
 {
   size_t i;
   lastBytesProcessed_ = 0;
-  for(i = 0; i < length; ++i) {
+  for (i = 0; i < length; ++i) {
     unsigned char c = data[i];
-    switch(state_) {
+    switch (state_) {
     case PREV_METHOD:
-      if(util::isLws(c) || util::isCRLF(c)) {
+      if (util::isLws(c) || util::isCRLF(c)) {
         throw DL_ABORT_EX("Bad Request-Line: missing method");
-      } else {
-        i = getToken(buf_, data, length, i);
-        state_ = METHOD;
       }
+
+      i = getToken(buf_, data, length, i);
+      state_ = METHOD;
       break;
+
     case METHOD:
-      if(util::isLws(c)) {
+      if (util::isLws(c)) {
         result_->setMethod(buf_);
         buf_.clear();
         state_ = PREV_PATH;
-      } else if(util::isCRLF(c)) {
-        throw DL_ABORT_EX("Bad Request-Line: missing request-target");
-      } else {
-        i = getToken(buf_, data, length, i);
+        break;
       }
+
+      if (util::isCRLF(c)) {
+        throw DL_ABORT_EX("Bad Request-Line: missing request-target");
+      }
+
+      i = getToken(buf_, data, length, i);
       break;
+
     case PREV_PATH:
-      if(util::isCRLF(c)) {
+      if (util::isCRLF(c)) {
         throw DL_ABORT_EX("Bad Request-Line: missing request-target");
-      } else if(!util::isLws(c)) {
-        i = getToken(buf_, data, length, i);
-        state_ = PATH;
       }
+
+      if (util::isLws(c)) {
+        break;
+      }
+
+      i = getToken(buf_, data, length, i);
+      state_ = PATH;
       break;
+
     case PATH:
-      if(util::isLws(c)) {
+      if (util::isLws(c)) {
         result_->setRequestPath(buf_);
         buf_.clear();
         state_ = PREV_REQ_VERSION;
-      } else if(util::isCRLF(c)) {
-        throw DL_ABORT_EX("Bad Request-Line: missing HTTP-version");
-      } else {
-        i = getToken(buf_, data, length, i);
+        break;
       }
+
+      if (util::isCRLF(c)) {
+        throw DL_ABORT_EX("Bad Request-Line: missing HTTP-version");
+      }
+
+      i = getToken(buf_, data, length, i);
       break;
+
     case PREV_REQ_VERSION:
-      if(util::isCRLF(c)) {
+      if (util::isCRLF(c)) {
         throw DL_ABORT_EX("Bad Request-Line: missing HTTP-version");
-      } else if(!util::isLws(c)) {
-        i = getToken(buf_, data, length, i);
-        state_ = REQ_VERSION;
       }
+
+      if (util::isLws(c)) {
+        break;
+      }
+
+      i = getToken(buf_, data, length, i);
+      state_ = REQ_VERSION;
       break;
+
     case REQ_VERSION:
-      if(util::isCRLF(c)) {
+      if (util::isCRLF(c)) {
         result_->setVersion(buf_);
         buf_.clear();
-        if(c == '\n') {
-          state_ = PREV_FIELD_NAME;
-        } else {
-          state_ = PREV_EOL;
-        }
-      } else if(util::isLws(c)) {
+        state_ = c == '\n' ? PREV_FIELD_NAME : PREV_EOL;
+        break;
+      }
+
+      if (util::isLws(c)) {
         throw DL_ABORT_EX("Bad Request-Line: LWS after HTTP-version");
-      } else {
-        i = getToken(buf_, data, length, i);
       }
+
+      i = getToken(buf_, data, length, i);
       break;
+
     case PREV_RES_VERSION:
-      if(util::isLws(c) || util::isCRLF(c)) {
+      if (util::isLws(c) || util::isCRLF(c)) {
         throw DL_ABORT_EX("Bad Status-Line: missing HTTP-version");
-      } else {
-        i = getToken(buf_, data, length, i);
-        state_ = RES_VERSION;
       }
+
+      i = getToken(buf_, data, length, i);
+      state_ = RES_VERSION;
       break;
+
     case RES_VERSION:
-      if(util::isLws(c)) {
+      if (util::isLws(c)) {
         result_->setVersion(buf_);
         buf_.clear();
         state_ = PREV_STATUS_CODE;
-      } else if(util::isCRLF(c)) {
+        break;
+      }
+
+      if (util::isCRLF(c)) {
         throw DL_ABORT_EX("Bad Status-Line: missing status-code");
       }
+
       break;
+
     case PREV_STATUS_CODE:
-      if(util::isCRLF(c)) {
+      if (util::isCRLF(c)) {
         throw DL_ABORT_EX("Bad Status-Line: missing status-code");
-      } else if(!util::isLws(c)) {
+      }
+
+      if (!util::isLws(c)) {
         state_ = STATUS_CODE;
         i = getToken(buf_, data, length, i);
       }
+
       break;
+
     case STATUS_CODE:
-      if(util::isLws(c) || util::isCRLF(c)) {
+      if (!util::isLws(c) && !util::isCRLF(c)) {
+        i = getToken(buf_, data, length, i);
+        break;
+      }
+
+      {
         int statusCode = -1;
-        if(buf_.size() == 3 && util::isNumber(buf_.begin(), buf_.end())) {
-          statusCode = (buf_[0]-'0')*100 + (buf_[1]-'0')*10 + (buf_[2]-'0');
+        if (buf_.size() == 3 && util::isNumber(buf_.begin(), buf_.end())) {
+          statusCode =
+              (buf_[0] - '0') * 100 + (buf_[1] - '0') * 10 + (buf_[2] - '0');
         }
-        if(statusCode >= 100) {
-          result_->setStatusCode(statusCode);
-          buf_.clear();
-        } else {
+        if (statusCode < 100) {
           throw DL_ABORT_EX("Bad status code: bad status-code");
         }
-        if(c == '\r') {
-          state_ = PREV_EOL;
-        } else if(c == '\n') {
-          state_ = PREV_FIELD_NAME;
-        } else {
-          state_ = PREV_REASON_PHRASE;
-        }
-      } else {
-        i = getToken(buf_, data, length, i);
+        result_->setStatusCode(statusCode);
+        buf_.clear();
       }
+      if (c == '\r') {
+        state_ = PREV_EOL;
+        break;
+      }
+
+      if (c == '\n') {
+        state_ = PREV_FIELD_NAME;
+        break;
+      }
+
+      state_ = PREV_REASON_PHRASE;
       break;
+
     case PREV_REASON_PHRASE:
-      if(util::isCRLF(c)) {
+      if (util::isCRLF(c)) {
         // The reason-phrase is completely optional.
-        if(c == '\n') {
-          state_ = PREV_FIELD_NAME;
-        } else {
-          state_ = PREV_EOL;
-        }
-      } else if(!util::isLws(c)) {
-        state_ = REASON_PHRASE;
-        i = getText(buf_, data, length, i);
+        state_ = c == '\n' ? PREV_FIELD_NAME : PREV_EOL;
+        break;
       }
+
+      if (util::isLws(c)) {
+        break;
+      }
+
+      state_ = REASON_PHRASE;
+      i = getText(buf_, data, length, i);
       break;
+
     case REASON_PHRASE:
-      if(util::isCRLF(c)) {
+      if (util::isCRLF(c)) {
         result_->setReasonPhrase(buf_);
         buf_.clear();
-        if(c == '\n') {
-          state_ = PREV_FIELD_NAME;
-        } else {
-          state_ = PREV_EOL;
-        }
-      } else {
-        i = getText(buf_, data, length, i);
+        state_ = c == '\n' ? PREV_FIELD_NAME : PREV_EOL;
+        break;
       }
+
+      i = getText(buf_, data, length, i);
       break;
+
     case PREV_EOL:
-      if(c == '\n') {
-        state_ = PREV_FIELD_NAME;
-      } else {
+      if (c != '\n') {
         throw DL_ABORT_EX("Bad HTTP header: missing LF");
       }
+
+      state_ = PREV_FIELD_NAME;
       break;
+
     case PREV_FIELD_NAME:
-      if(util::isLws(c)) {
-        if(lastFieldName_.empty()) {
+      if (util::isLws(c)) {
+        if (lastFieldName_.empty()) {
           throw DL_ABORT_EX("Bad HTTP header: field name starts with LWS");
         }
         // Evil Multi-line header field
         state_ = FIELD_VALUE;
-      } else {
-        if(!lastFieldName_.empty()) {
-          if(lastFieldHdKey_ != HttpHeader::MAX_INTERESTING_HEADER) {
-            result_->put(lastFieldHdKey_, util::strip(buf_));
-          }
-          lastFieldName_.clear();
-          lastFieldHdKey_ = HttpHeader::MAX_INTERESTING_HEADER;
-          buf_.clear();
-        }
-        if(c == '\n') {
-          state_ = HEADERS_COMPLETE;
-        } else if(c == '\r') {
-          state_ = PREV_EOH;
-        } else if(c == ':') {
-          throw DL_ABORT_EX("Bad HTTP header: field name starts with ':'");
-        } else {
-          state_ = FIELD_NAME;
-          i = getFieldNameToken(lastFieldName_, data, length, i);
-        }
+        break;
       }
+
+      if (!lastFieldName_.empty()) {
+        if (lastFieldHdKey_ != HttpHeader::MAX_INTERESTING_HEADER) {
+          result_->put(lastFieldHdKey_, util::strip(buf_));
+        }
+        lastFieldName_.clear();
+        lastFieldHdKey_ = HttpHeader::MAX_INTERESTING_HEADER;
+        buf_.clear();
+      }
+      if (c == '\n') {
+        state_ = HEADERS_COMPLETE;
+        break;
+      }
+
+      if (c == '\r') {
+        state_ = PREV_EOH;
+        break;
+      }
+
+      if (c == ':') {
+        throw DL_ABORT_EX("Bad HTTP header: field name starts with ':'");
+      }
+
+      state_ = FIELD_NAME;
+      i = getFieldNameToken(lastFieldName_, data, length, i);
       break;
+
     case FIELD_NAME:
-      if(util::isLws(c) || util::isCRLF(c)) {
+      if (util::isLws(c) || util::isCRLF(c)) {
         throw DL_ABORT_EX("Bad HTTP header: missing ':'");
-      } else if(c == ':') {
+      }
+
+      if (c == ':') {
         util::lowercase(lastFieldName_);
         lastFieldHdKey_ = idInterestingHeader(lastFieldName_.c_str());
         state_ = PREV_FIELD_VALUE;
-      } else {
-        i = getFieldNameToken(lastFieldName_, data, length, i);
+        break;
       }
+
+      i = getFieldNameToken(lastFieldName_, data, length, i);
       break;
+
     case PREV_FIELD_VALUE:
-      if(c == '\r') {
+      if (c == '\r') {
         state_ = PREV_EOL;
-      } else if(c == '\n') {
-        state_ = PREV_FIELD_NAME;
-      } else if(!util::isLws(c)) {
-        state_ = FIELD_VALUE;
-        if(lastFieldHdKey_ == HttpHeader::MAX_INTERESTING_HEADER) {
-          i = ignoreText(buf_, data, length, i);
-        } else {
-          i = getText(buf_, data, length, i);
-        }
+        break;
       }
+
+      if (c == '\n') {
+        state_ = PREV_FIELD_NAME;
+        break;
+      }
+
+      if (util::isLws(c)) {
+        break;
+      }
+
+      state_ = FIELD_VALUE;
+      if (lastFieldHdKey_ == HttpHeader::MAX_INTERESTING_HEADER) {
+        i = ignoreText(buf_, data, length, i);
+        break;
+      }
+
+      i = getText(buf_, data, length, i);
       break;
+
     case FIELD_VALUE:
-      if(c == '\r') {
+      if (c == '\r') {
         state_ = PREV_EOL;
-      } else if(c == '\n') {
-        state_ = PREV_FIELD_NAME;
-      } else {
-        if(lastFieldHdKey_ == HttpHeader::MAX_INTERESTING_HEADER) {
-          i = ignoreText(buf_, data, length, i);
-        } else {
-          i = getText(buf_, data, length, i);
-        }
+        break;
       }
+
+      if (c == '\n') {
+        state_ = PREV_FIELD_NAME;
+        break;
+      }
+
+      if (lastFieldHdKey_ == HttpHeader::MAX_INTERESTING_HEADER) {
+        i = ignoreText(buf_, data, length, i);
+        break;
+      }
+
+      i = getText(buf_, data, length, i);
       break;
+
     case PREV_EOH:
-      if(c == '\n') {
-        state_ = HEADERS_COMPLETE;
-      } else {
+      if (c != '\n') {
         throw DL_ABORT_EX("Bad HTTP header: "
                           "missing LF at the end of the header");
       }
+
+      state_ = HEADERS_COMPLETE;
       break;
+
     case HEADERS_COMPLETE:
       goto fin;
     }
   }
- fin:
+
+fin:
   // See Apache's documentation
   // http://httpd.apache.org/docs/2.2/en/mod/core.html about size
   // limit of HTTP headers. The page states that the number of request
   // fields rarely exceeds 20.
-  if(lastFieldName_.size() > 1024 || buf_.size() > 8192) {
+  if (lastFieldName_.size() > 1024 || buf_.size() > 8_k) {
     throw DL_ABORT_EX("Too large HTTP header");
   }
+
   lastBytesProcessed_ = i;
   headers_.append(&data[0], &data[i]);
-  return state_ == HEADERS_COMPLETE;
+
+  if (state_ != HEADERS_COMPLETE) {
+    return false;
+  }
+
+  // If both transfer-encoding and (content-length or content-range)
+  // are present, delete content-length and content-range.  RFC 7230
+  // says that sender must not send both transfer-encoding and
+  // content-length.  If both present, transfer-encoding overrides
+  // content-length.  There is no text about transfer-encoding and
+  // content-range.  But there is no reason to send transfer-encoding
+  // when range is set.
+  if (result_->defined(HttpHeader::TRANSFER_ENCODING)) {
+    result_->remove(HttpHeader::CONTENT_LENGTH);
+    result_->remove(HttpHeader::CONTENT_RANGE);
+  }
+
+  return true;
 }
 
 bool HttpHeaderProcessor::parse(const std::string& data)
@@ -391,14 +485,11 @@ void HttpHeaderProcessor::clear()
   headers_.clear();
 }
 
-const SharedHandle<HttpHeader>& HttpHeaderProcessor::getResult() const
+std::unique_ptr<HttpHeader> HttpHeaderProcessor::getResult()
 {
-  return result_;
+  return std::move(result_);
 }
 
-std::string HttpHeaderProcessor::getHeaderString() const
-{
-  return headers_;
-}
+std::string HttpHeaderProcessor::getHeaderString() const { return headers_; }
 
 } // namespace aria2

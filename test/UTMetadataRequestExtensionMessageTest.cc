@@ -20,7 +20,7 @@
 
 namespace aria2 {
 
-class UTMetadataRequestExtensionMessageTest:public CppUnit::TestFixture {
+class UTMetadataRequestExtensionMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(UTMetadataRequestExtensionMessageTest);
   CPPUNIT_TEST(testGetExtensionMessageID);
@@ -30,33 +30,31 @@ class UTMetadataRequestExtensionMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testDoReceivedAction_reject);
   CPPUNIT_TEST(testDoReceivedAction_data);
   CPPUNIT_TEST_SUITE_END();
+
 public:
-  SharedHandle<DownloadContext> dctx_;
-  SharedHandle<WrapExtBtMessageFactory> messageFactory_;
-  SharedHandle<MockBtMessageDispatcher> dispatcher_;
-  SharedHandle<Peer> peer_;
+  std::unique_ptr<DownloadContext> dctx_;
+  std::unique_ptr<WrapExtBtMessageFactory> messageFactory_;
+  std::unique_ptr<MockBtMessageDispatcher> dispatcher_;
+  std::shared_ptr<Peer> peer_;
 
   void setUp()
   {
-    messageFactory_.reset(new WrapExtBtMessageFactory());
-    dispatcher_.reset(new MockBtMessageDispatcher());
-    dctx_.reset(new DownloadContext());
-    SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
-    dctx_->setAttribute(CTX_ATTR_BT, attrs);
-    peer_.reset(new Peer("host", 6880));
+    messageFactory_ = make_unique<WrapExtBtMessageFactory>();
+    dispatcher_ = make_unique<MockBtMessageDispatcher>();
+    dctx_ = make_unique<DownloadContext>();
+    dctx_->setAttribute(CTX_ATTR_BT, make_unique<TorrentAttribute>());
+    peer_ = std::make_shared<Peer>("host", 6880);
     peer_->allocateSessionResource(0, 0);
     peer_->setExtension(ExtensionMessageRegistry::UT_METADATA, 1);
   }
 
-  template<typename T>
-  SharedHandle<T> getFirstDispatchedMessage()
+  template <typename T> const T* getFirstDispatchedMessage()
   {
-    SharedHandle<WrapExtBtMessage> wrapmsg =
-      dynamic_pointer_cast<WrapExtBtMessage>
-      (dispatcher_->messageQueue.front());
-
-    SharedHandle<T> msg = dynamic_pointer_cast<T>(wrapmsg->m_);
-    return msg;
+    CPPUNIT_ASSERT(BtExtendedMessage::ID ==
+                   dispatcher_->messageQueue.front()->getId());
+    auto msg = static_cast<const BtExtendedMessage*>(
+        dispatcher_->messageQueue.front().get());
+    return dynamic_cast<const T*>(msg->getExtensionMessage().get());
   }
 
   void testGetExtensionMessageID();
@@ -66,7 +64,6 @@ public:
   void testDoReceivedAction_reject();
   void testDoReceivedAction_data();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(UTMetadataRequestExtensionMessageTest);
 
@@ -87,8 +84,8 @@ void UTMetadataRequestExtensionMessageTest::testGetBencodedData()
 {
   UTMetadataRequestExtensionMessage msg(1);
   msg.setIndex(99);
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("d8:msg_typei0e5:piecei99ee"), msg.getPayload());
+  CPPUNIT_ASSERT_EQUAL(std::string("d8:msg_typei0e5:piecei99ee"),
+                       msg.getPayload());
 }
 
 void UTMetadataRequestExtensionMessageTest::testToString()
@@ -103,14 +100,13 @@ void UTMetadataRequestExtensionMessageTest::testDoReceivedAction_reject()
 {
   UTMetadataRequestExtensionMessage msg(1);
   msg.setIndex(10);
-  msg.setDownloadContext(dctx_);
+  msg.setDownloadContext(dctx_.get());
   msg.setPeer(peer_);
   msg.setBtMessageFactory(messageFactory_.get());
   msg.setBtMessageDispatcher(dispatcher_.get());
   msg.doReceivedAction();
 
-  SharedHandle<UTMetadataRejectExtensionMessage> m =
-    getFirstDispatchedMessage<UTMetadataRejectExtensionMessage>();
+  auto m = getFirstDispatchedMessage<UTMetadataRejectExtensionMessage>();
 
   CPPUNIT_ASSERT(m);
   CPPUNIT_ASSERT_EQUAL((size_t)10, m->getIndex());
@@ -121,22 +117,21 @@ void UTMetadataRequestExtensionMessageTest::testDoReceivedAction_data()
 {
   UTMetadataRequestExtensionMessage msg(1);
   msg.setIndex(1);
-  msg.setDownloadContext(dctx_);
+  msg.setDownloadContext(dctx_.get());
   msg.setPeer(peer_);
   msg.setBtMessageFactory(messageFactory_.get());
   msg.setBtMessageDispatcher(dispatcher_.get());
 
-  size_t metadataSize = METADATA_PIECE_SIZE*2;
-  SharedHandle<TorrentAttribute> attrs = bittorrent::getTorrentAttrs(dctx_);
+  size_t metadataSize = METADATA_PIECE_SIZE * 2;
+  auto attrs = bittorrent::getTorrentAttrs(dctx_.get());
   std::string first(METADATA_PIECE_SIZE, '0');
   std::string second(METADATA_PIECE_SIZE, '1');
-  attrs->metadata = first+second;
+  attrs->metadata = first + second;
   attrs->metadataSize = metadataSize;
 
   msg.doReceivedAction();
 
-  SharedHandle<UTMetadataDataExtensionMessage> m =
-    getFirstDispatchedMessage<UTMetadataDataExtensionMessage>();
+  auto m = getFirstDispatchedMessage<UTMetadataDataExtensionMessage>();
 
   CPPUNIT_ASSERT(m);
   CPPUNIT_ASSERT_EQUAL((size_t)1, m->getIndex());
@@ -150,7 +145,7 @@ void UTMetadataRequestExtensionMessageTest::testDoReceivedAction_data()
 
   metadataSize += 100;
   std::string third(100, '2');
-  attrs->metadata = first+second+third;
+  attrs->metadata = first + second + third;
   attrs->metadataSize = metadataSize;
 
   msg.doReceivedAction();
@@ -167,7 +162,8 @@ void UTMetadataRequestExtensionMessageTest::testDoReceivedAction_data()
   try {
     msg.doReceivedAction();
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(DlAbortEx& e) {
+  }
+  catch (DlAbortEx& e) {
     // success
   }
 }

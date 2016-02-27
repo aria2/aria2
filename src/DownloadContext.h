@@ -40,8 +40,8 @@
 #include <cassert>
 #include <string>
 #include <vector>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "TimerA2.h"
 #include "A2STR.h"
 #include "ValueBase.h"
@@ -55,14 +55,21 @@ class RequestGroup;
 class Signature;
 class FileEntry;
 
-class DownloadContext
-{
+class DownloadContext {
 private:
-  std::vector<SharedHandle<FileEntry> > fileEntries_;
+  std::unique_ptr<Signature> signature_;
+
+  RequestGroup* ownerRequestGroup_;
+
+  std::vector<std::unique_ptr<ContextAttribute>> attrs_;
+
+  std::vector<std::shared_ptr<FileEntry>> fileEntries_;
 
   std::vector<std::string> pieceHashes_;
 
-  int32_t pieceLength_;
+  NetStat netStat_;
+
+  Timer downloadStopTime_;
 
   std::string pieceHashType_;
 
@@ -70,32 +77,25 @@ private:
 
   std::string hashType_;
 
-  bool checksumVerified_;
-
   std::string basePath_;
+
+  int32_t pieceLength_;
+
+  bool checksumVerified_;
 
   bool knowsTotalLength_;
 
-  RequestGroup* ownerRequestGroup_;
-
-  std::vector<SharedHandle<ContextAttribute> > attrs_;
-
-  NetStat netStat_;
-
-  Timer downloadStopTime_;
-
-  SharedHandle<Signature> signature_;
   // This member variable is required to avoid to use parse Metalink
   // (including both Metalink XML and Metalink/HTTP) twice.
   bool acceptMetalink_;
+
 public:
   DownloadContext();
 
   // Convenient constructor that creates single file download.  path
   // should be escaped with util::escapePath(...).
-  DownloadContext(int32_t pieceLength,
-                  int64_t totalLength,
-                  const std::string& path = A2STR::NIL);
+  DownloadContext(int32_t pieceLength, int64_t totalLength,
+                  std::string path = A2STR::NIL);
 
   ~DownloadContext();
 
@@ -106,10 +106,9 @@ public:
     return pieceHashes_;
   }
 
-  template<typename InputIterator>
-  void setPieceHashes
-  (const std::string& hashType,
-   InputIterator first, InputIterator last)
+  template <typename InputIterator>
+  void setPieceHashes(const std::string& hashType, InputIterator first,
+                      InputIterator last)
   {
     pieceHashType_ = hashType;
     pieceHashes_.assign(first, last);
@@ -123,12 +122,12 @@ public:
 
   void markTotalLengthIsKnown() { knowsTotalLength_ = true; }
 
-  const std::vector<SharedHandle<FileEntry> >& getFileEntries() const
+  const std::vector<std::shared_ptr<FileEntry>>& getFileEntries() const
   {
     return fileEntries_;
   }
 
-  const SharedHandle<FileEntry>& getFirstFileEntry() const
+  const std::shared_ptr<FileEntry>& getFirstFileEntry() const
   {
     assert(!fileEntries_.empty());
     return fileEntries_[0];
@@ -136,12 +135,12 @@ public:
 
   // This function returns first FileEntry whose isRequested() returns
   // true.  If there is no such FileEntry, returns
-  // SharedHandle<FileEntry>().
-  SharedHandle<FileEntry> getFirstRequestedFileEntry() const;
+  // std::shared_ptr<FileEntry>().
+  std::shared_ptr<FileEntry> getFirstRequestedFileEntry() const;
 
   size_t countRequestedFileEntry() const;
 
-  template<typename InputIterator>
+  template <typename InputIterator>
   void setFileEntries(InputIterator first, InputIterator last)
   {
     fileEntries_.assign(first, last);
@@ -169,19 +168,16 @@ public:
 
   void setBasePath(const std::string& basePath);
 
-  const SharedHandle<Signature>& getSignature() const { return signature_; }
+  const std::unique_ptr<Signature>& getSignature() const { return signature_; }
 
-  void setSignature(const SharedHandle<Signature>& signature);
+  void setSignature(std::unique_ptr<Signature> signature);
 
   RequestGroup* getOwnerRequestGroup() { return ownerRequestGroup_; }
 
-  void setOwnerRequestGroup(RequestGroup* owner)
-  {
-    ownerRequestGroup_ = owner;
-  }
+  void setOwnerRequestGroup(RequestGroup* owner) { ownerRequestGroup_ = owner; }
 
   // sgl must be normalized before the call.
-  void setFileFilter(SegList<int>& sgl);
+  void setFileFilter(SegList<int> sgl);
 
   // Sets file path for specified index. index starts from 1. The
   // index is the same used in setFileFilter(). path is not escaped by
@@ -198,15 +194,13 @@ public:
   // Returns true if piece hash(not whole file hash) is available.
   bool isPieceHashVerificationAvailable() const;
 
-  void setChecksumVerified(bool f)
-  {
-    checksumVerified_ = f;
-  }
+  void setChecksumVerified(bool f) { checksumVerified_ = f; }
 
-  void setAttribute
-  (ContextAttributeType key, const SharedHandle<ContextAttribute>& value);
+  void setAttribute(ContextAttributeType key,
+                    std::unique_ptr<ContextAttribute> value);
 
-  const SharedHandle<ContextAttribute>& getAttribute(ContextAttributeType key);
+  const std::unique_ptr<ContextAttribute>&
+  getAttribute(ContextAttributeType key);
 
   bool hasAttribute(ContextAttributeType key) const;
 
@@ -214,40 +208,29 @@ public:
 
   void resetDownloadStopTime();
 
-  const Timer& getDownloadStopTime() const
-  {
-    return downloadStopTime_;
-  }
+  const Timer& getDownloadStopTime() const { return downloadStopTime_; }
 
-  int64_t calculateSessionTime() const;
+  Timer::Clock::duration calculateSessionTime() const;
 
-  // Returns FileEntry at given offset. SharedHandle<FileEntry>() is
+  // Returns FileEntry at given offset. std::shared_ptr<FileEntry>() is
   // returned if no such FileEntry is found.
-  SharedHandle<FileEntry> findFileEntryByOffset(int64_t offset) const;
+  std::shared_ptr<FileEntry> findFileEntryByOffset(int64_t offset) const;
 
   void releaseRuntimeResource();
 
-  void setAcceptMetalink(bool f)
-  {
-    acceptMetalink_ = f;
-  }
-  bool getAcceptMetalink() const
-  {
-    return acceptMetalink_;
-  }
+  void setAcceptMetalink(bool f) { acceptMetalink_ = f; }
+  bool getAcceptMetalink() const { return acceptMetalink_; }
 
-  NetStat& getNetStat()
-  {
-    return netStat_;
-  }
+  NetStat& getNetStat() { return netStat_; }
 
   // This method also updates global download length held by
   // RequestGroupMan via getOwnerRequestGroup().
-  void updateDownloadLength(size_t bytes);
+  void updateDownload(size_t bytes);
 
   // This method also updates global upload length held by
   // RequestGroupMan via getOwnerRequestGroup().
   void updateUploadLength(size_t bytes);
+  void updateUploadSpeed(size_t bytes);
 };
 
 } // namespace aria2

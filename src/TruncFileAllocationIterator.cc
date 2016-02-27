@@ -37,12 +37,12 @@
 
 namespace aria2 {
 
-TruncFileAllocationIterator::TruncFileAllocationIterator
-(BinaryStream* stream, int64_t offset, int64_t totalLength)
-  : stream_(stream),
-    offset_(offset),
-    totalLength_(totalLength)
-{}
+TruncFileAllocationIterator::TruncFileAllocationIterator(BinaryStream* stream,
+                                                         int64_t offset,
+                                                         int64_t totalLength)
+    : stream_(stream), offset_(offset), totalLength_(totalLength)
+{
+}
 
 void TruncFileAllocationIterator::allocateChunk()
 {
@@ -50,19 +50,10 @@ void TruncFileAllocationIterator::allocateChunk()
   offset_ = totalLength_;
 }
 
-bool TruncFileAllocationIterator::finished()
-{
-  return offset_ == totalLength_;
-}
+bool TruncFileAllocationIterator::finished() { return offset_ == totalLength_; }
 
-int64_t TruncFileAllocationIterator::getCurrentLength()
-{
-  return offset_;
-}
+int64_t TruncFileAllocationIterator::getCurrentLength() { return offset_; }
 
-int64_t TruncFileAllocationIterator::getTotalLength()
-{
-  return totalLength_;
-}
+int64_t TruncFileAllocationIterator::getTotalLength() { return totalLength_; }
 
 } // namespace aria2

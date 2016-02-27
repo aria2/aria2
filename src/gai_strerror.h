@@ -34,15 +34,15 @@ extern "C" {
 #endif /* __cplusplus */
 
 #ifdef __MINGW32__
-# undef SIZE_MAX
+#undef SIZE_MAX
 #endif // __MINGW32__
 
 #ifndef EAI_SYSTEM
-# define EAI_SYSTEM       -11   /* System error returned in `errno'.  */
+#define EAI_SYSTEM -11 /* System error returned in `errno'.  */
 #endif
 
 #ifdef HAVE_CONFIG_H
-# include "config.h"
+#include "config.h"
 #endif // HAVE_CONFIG_H
 
 /*
@@ -57,9 +57,9 @@ extern "C" {
  * Functions.
  */
 #ifdef __STDC__
-const char *gai_strerror(int);
+const char* gai_strerror(int);
 #else
-const char *gai_strerror();
+const char* gai_strerror();
 #endif
 
 #ifdef __cplusplus

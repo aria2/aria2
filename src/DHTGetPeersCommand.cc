@@ -55,27 +55,27 @@ namespace aria2 {
 
 namespace {
 
-const time_t GET_PEER_INTERVAL = (15*60);
+constexpr auto GET_PEER_INTERVAL = 15_min;
 // Interval when the size of peer list is low.
-const time_t GET_PEER_INTERVAL_LOW = (5*60);
+constexpr auto GET_PEER_INTERVAL_LOW = 5_min;
 // Interval when the peer list is empty.
-const time_t GET_PEER_INTERVAL_ZERO = 60;
+constexpr auto GET_PEER_INTERVAL_ZERO = 1_min;
 // Interval for retry.
-const time_t GET_PEER_INTERVAL_RETRY = 5;
+constexpr auto GET_PEER_INTERVAL_RETRY = 5_s;
 // Maximum retries. Try more than 5 to drop bad node.
 const int MAX_RETRIES = 10;
 
 } // namespace
 
-DHTGetPeersCommand::DHTGetPeersCommand
-(cuid_t cuid,
- RequestGroup* requestGroup,
- DownloadEngine* e)
-  : Command(cuid),
-    requestGroup_(requestGroup),
-    e_(e),
-    numRetry_(0),
-    lastGetPeerTime_(0)
+DHTGetPeersCommand::DHTGetPeersCommand(cuid_t cuid, RequestGroup* requestGroup,
+                                       DownloadEngine* e)
+    : Command{cuid},
+      requestGroup_{requestGroup},
+      e_{e},
+      taskQueue_{nullptr},
+      taskFactory_{nullptr},
+      numRetry_{0},
+      lastGetPeerTime_{Timer::zero()}
 {
   requestGroup_->increaseNumCommand();
 }
@@ -87,65 +87,65 @@ DHTGetPeersCommand::~DHTGetPeersCommand()
 
 bool DHTGetPeersCommand::execute()
 {
-  if(btRuntime_->isHalt()) {
+  if (btRuntime_->isHalt()) {
     return true;
   }
-  time_t elapsed = lastGetPeerTime_.difference(global::wallclock());
-  if(!task_ &&
-     (elapsed >= GET_PEER_INTERVAL ||
-      (((btRuntime_->lessThanMinPeers() &&
-         ((numRetry_ && elapsed >= GET_PEER_INTERVAL_RETRY) ||
-          elapsed >= GET_PEER_INTERVAL_LOW)) ||
-        (btRuntime_->getConnections() == 0 &&
-         elapsed >= GET_PEER_INTERVAL_ZERO))
-       && !requestGroup_->downloadFinished()))) {
+  auto elapsed = lastGetPeerTime_.difference(global::wallclock());
+  if (!task_ && (elapsed >= GET_PEER_INTERVAL ||
+                 (((btRuntime_->lessThanMinPeers() &&
+                    ((numRetry_ && elapsed >= GET_PEER_INTERVAL_RETRY) ||
+                     elapsed >= GET_PEER_INTERVAL_LOW)) ||
+                   (btRuntime_->getConnections() == 0 &&
+                    elapsed >= GET_PEER_INTERVAL_ZERO)) &&
+                  !requestGroup_->downloadFinished()))) {
     A2_LOG_DEBUG(fmt("Issuing PeerLookup for infoHash=%s",
-                     bittorrent::getInfoHashString
-                     (requestGroup_->getDownloadContext()).c_str()));
-    task_ = taskFactory_->createPeerLookupTask
-      (requestGroup_->getDownloadContext(),
-       e_->getBtRegistry()->getTcpPort(),
-       peerStorage_);
+                     bittorrent::getInfoHashString(
+                         requestGroup_->getDownloadContext()).c_str()));
+    task_ = taskFactory_->createPeerLookupTask(
+        requestGroup_->getDownloadContext(), e_->getBtRegistry()->getTcpPort(),
+        peerStorage_);
     taskQueue_->addPeriodicTask2(task_);
-  } else if(task_ && task_->finished()) {
+  }
+  else if (task_ && task_->finished()) {
     A2_LOG_DEBUG("task finished detected");
     lastGetPeerTime_ = global::wallclock();
-    if(numRetry_ < MAX_RETRIES &&
-       (btRuntime_->getMaxPeers() == 0 ||
-        btRuntime_->getMaxPeers() >
-        static_cast<int>(peerStorage_->countAllPeer()))) {
+    if (numRetry_ < MAX_RETRIES &&
+        (btRuntime_->getMaxPeers() == 0 ||
+         btRuntime_->getMaxPeers() >
+             static_cast<int>(peerStorage_->countAllPeer()))) {
       ++numRetry_;
       A2_LOG_DEBUG(fmt("Too few peers. peers=%lu, max_peers=%d."
                        " Try again(%d)",
                        static_cast<unsigned long>(peerStorage_->countAllPeer()),
-                       btRuntime_->getMaxPeers(),
-                       numRetry_));
-    } else {
+                       btRuntime_->getMaxPeers(), numRetry_));
+    }
+    else {
       numRetry_ = 0;
     }
     task_.reset();
   }
 
-  e_->addCommand(this);
+  e_->addCommand(std::unique_ptr<Command>(this));
   return false;
 }
 
-void DHTGetPeersCommand::setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue)
+void DHTGetPeersCommand::setTaskQueue(DHTTaskQueue* taskQueue)
 {
   taskQueue_ = taskQueue;
 }
 
-void DHTGetPeersCommand::setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory)
+void DHTGetPeersCommand::setTaskFactory(DHTTaskFactory* taskFactory)
 {
   taskFactory_ = taskFactory;
 }
 
-void DHTGetPeersCommand::setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
+void DHTGetPeersCommand::setBtRuntime(
+    const std::shared_ptr<BtRuntime>& btRuntime)
 {
   btRuntime_ = btRuntime;
 }
 
-void DHTGetPeersCommand::setPeerStorage(const SharedHandle<PeerStorage>& ps)
+void DHTGetPeersCommand::setPeerStorage(const std::shared_ptr<PeerStorage>& ps)
 {
   peerStorage_ = ps;
 }

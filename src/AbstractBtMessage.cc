@@ -40,39 +40,41 @@
 namespace aria2 {
 
 AbstractBtMessage::AbstractBtMessage(uint8_t id, const char* name)
-  : BtMessage(id),
-    invalidate_(false),
-    uploading_(false),
-    cuid_(0),
-    name_(name),
-    dispatcher_(0),
-    messageFactory_(0),
-    requestFactory_(0),
-    peerConnection_(0),
-    metadataGetMode_(false)
-{}
+    : BtMessage(id),
+      invalidate_(false),
+      uploading_(false),
+      cuid_(0),
+      name_(name),
+      pieceStorage_(nullptr),
+      dispatcher_(nullptr),
+      messageFactory_(nullptr),
+      requestFactory_(nullptr),
+      peerConnection_(nullptr),
+      metadataGetMode_(false)
+{
+}
 
 AbstractBtMessage::~AbstractBtMessage() {}
 
-void AbstractBtMessage::setPeer(const SharedHandle<Peer>& peer)
+void AbstractBtMessage::setPeer(const std::shared_ptr<Peer>& peer)
 {
   peer_ = peer;
 }
 
 void AbstractBtMessage::validate()
 {
-  if(validator_) {
+  if (validator_) {
     validator_->validate();
   }
 }
 
-void
-AbstractBtMessage::setBtMessageValidator(const SharedHandle<BtMessageValidator>& validator) {
-  validator_ = validator;
+void AbstractBtMessage::setBtMessageValidator(
+    std::unique_ptr<BtMessageValidator> validator)
+{
+  validator_ = std::move(validator);
 }
 
-void AbstractBtMessage::setPieceStorage
-(const SharedHandle<PieceStorage>& pieceStorage)
+void AbstractBtMessage::setPieceStorage(PieceStorage* pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }

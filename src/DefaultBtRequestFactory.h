@@ -51,58 +51,53 @@ class Piece;
 
 class DefaultBtRequestFactory : public BtRequestFactory {
 private:
-  SharedHandle<PieceStorage> pieceStorage_;
-  SharedHandle<Peer> peer_;
+  std::vector<std::unique_ptr<BtRequestMessage>>
+  createRequestMessagesOnEndGame(size_t max);
+
+  PieceStorage* pieceStorage_;
+  std::shared_ptr<Peer> peer_;
   BtMessageDispatcher* dispatcher_;
   BtMessageFactory* messageFactory_;
-  std::deque<SharedHandle<Piece> > pieces_;
+  std::deque<std::shared_ptr<Piece>> pieces_;
   cuid_t cuid_;
+
 public:
   DefaultBtRequestFactory();
 
   virtual ~DefaultBtRequestFactory();
 
-  virtual void addTargetPiece(const SharedHandle<Piece>& piece);
+  virtual void
+  addTargetPiece(const std::shared_ptr<Piece>& piece) CXX11_OVERRIDE;
 
-  virtual void removeTargetPiece(const SharedHandle<Piece>& piece);
+  virtual void
+  removeTargetPiece(const std::shared_ptr<Piece>& piece) CXX11_OVERRIDE;
 
-  virtual void removeAllTargetPiece();
+  virtual void removeAllTargetPiece() CXX11_OVERRIDE;
 
-  virtual size_t countTargetPiece() {
-    return pieces_.size();
-  }
+  virtual size_t countTargetPiece() CXX11_OVERRIDE { return pieces_.size(); }
 
-  virtual size_t countMissingBlock();
+  virtual size_t countMissingBlock() CXX11_OVERRIDE;
 
-  virtual void removeCompletedPiece();
+  virtual void removeCompletedPiece() CXX11_OVERRIDE;
 
-  virtual void doChokedAction();
+  virtual void doChokedAction() CXX11_OVERRIDE;
 
-  virtual void createRequestMessages
-  (std::vector<SharedHandle<BtMessage> >& requests, size_t max);
+  virtual std::vector<std::unique_ptr<BtRequestMessage>>
+  createRequestMessages(size_t max, bool endGame) CXX11_OVERRIDE;
 
-  virtual void createRequestMessagesOnEndGame
-  (std::vector<SharedHandle<BtMessage> >& requests, size_t max);
+  virtual std::vector<size_t> getTargetPieceIndexes() const CXX11_OVERRIDE;
 
-  virtual void getTargetPieceIndexes(std::vector<size_t>& indexes) const;
+  std::deque<std::shared_ptr<Piece>>& getTargetPieces() { return pieces_; }
 
-  std::deque<SharedHandle<Piece> >& getTargetPieces()
-  {
-    return pieces_;
-  }
+  void setPieceStorage(PieceStorage* pieceStorage);
 
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
-
-  void setPeer(const SharedHandle<Peer>& peer);
+  void setPeer(const std::shared_ptr<Peer>& peer);
 
   void setBtMessageDispatcher(BtMessageDispatcher* dispatcher);
 
   void setBtMessageFactory(BtMessageFactory* factory);
 
-  void setCuid(cuid_t cuid)
-  {
-    cuid_ = cuid;
-  }
+  void setCuid(cuid_t cuid) { cuid_ = cuid; }
 };
 
 } // namespace aria2

@@ -44,11 +44,12 @@ public:
   virtual ~ValueValueBaseStructParserState() {}
 
   virtual void beginElement(ValueBaseStructParserStateMachine* psm,
-                            int elementType);
+                            int elementType) CXX11_OVERRIDE;
 
   virtual void endElement(ValueBaseStructParserStateMachine* psm,
-                          int elementType)
-  {}
+                          int elementType) CXX11_OVERRIDE
+  {
+  }
 };
 
 class DictValueBaseStructParserState : public ValueBaseStructParserState {
@@ -56,11 +57,12 @@ public:
   virtual ~DictValueBaseStructParserState() {}
 
   virtual void beginElement(ValueBaseStructParserStateMachine* psm,
-                            int elementType);
+                            int elementType) CXX11_OVERRIDE;
 
   virtual void endElement(ValueBaseStructParserStateMachine* psm,
-                          int elementType)
-  {}
+                          int elementType) CXX11_OVERRIDE
+  {
+  }
 };
 
 class DictKeyValueBaseStructParserState : public ValueBaseStructParserState {
@@ -68,20 +70,21 @@ public:
   virtual ~DictKeyValueBaseStructParserState() {}
 
   virtual void beginElement(ValueBaseStructParserStateMachine* psm,
-                            int elementType)
-  {}
+                            int elementType) CXX11_OVERRIDE
+  {
+  }
 
   virtual void endElement(ValueBaseStructParserStateMachine* psm,
-                          int elementType);
+                          int elementType) CXX11_OVERRIDE;
 };
 
-class DictDataValueBaseStructParserState :
-    public ValueValueBaseStructParserState {
+class DictDataValueBaseStructParserState
+    : public ValueValueBaseStructParserState {
 public:
   virtual ~DictDataValueBaseStructParserState() {}
 
   virtual void endElement(ValueBaseStructParserStateMachine* psm,
-                          int elementType);
+                          int elementType) CXX11_OVERRIDE;
 };
 
 class ArrayValueBaseStructParserState : public ValueBaseStructParserState {
@@ -89,20 +92,21 @@ public:
   virtual ~ArrayValueBaseStructParserState() {}
 
   virtual void beginElement(ValueBaseStructParserStateMachine* psm,
-                            int elementType);
+                            int elementType) CXX11_OVERRIDE;
 
   virtual void endElement(ValueBaseStructParserStateMachine* psm,
-                          int elementType)
-  {}
+                          int elementType) CXX11_OVERRIDE
+  {
+  }
 };
 
-class ArrayDataValueBaseStructParserState :
-    public ValueValueBaseStructParserState {
+class ArrayDataValueBaseStructParserState
+    : public ValueValueBaseStructParserState {
 public:
   virtual ~ArrayDataValueBaseStructParserState() {}
 
   virtual void endElement(ValueBaseStructParserStateMachine* psm,
-                          int elementType);
+                          int elementType) CXX11_OVERRIDE;
 };
 
 class StringValueBaseStructParserState : public ValueBaseStructParserState {
@@ -110,11 +114,12 @@ public:
   virtual ~StringValueBaseStructParserState() {}
 
   virtual void beginElement(ValueBaseStructParserStateMachine* psm,
-                            int elementType)
-  {}
+                            int elementType) CXX11_OVERRIDE
+  {
+  }
 
   virtual void endElement(ValueBaseStructParserStateMachine* psm,
-                          int elementType);
+                          int elementType) CXX11_OVERRIDE;
 };
 
 class NumberValueBaseStructParserState : public ValueBaseStructParserState {
@@ -122,11 +127,12 @@ public:
   virtual ~NumberValueBaseStructParserState() {}
 
   virtual void beginElement(ValueBaseStructParserStateMachine* psm,
-                            int elementType)
-  {}
+                            int elementType) CXX11_OVERRIDE
+  {
+  }
 
   virtual void endElement(ValueBaseStructParserStateMachine* psm,
-                          int elementType);
+                          int elementType) CXX11_OVERRIDE;
 };
 
 class BoolValueBaseStructParserState : public ValueBaseStructParserState {
@@ -134,11 +140,12 @@ public:
   virtual ~BoolValueBaseStructParserState() {}
 
   virtual void beginElement(ValueBaseStructParserStateMachine* psm,
-                            int elementType)
-  {}
+                            int elementType) CXX11_OVERRIDE
+  {
+  }
 
   virtual void endElement(ValueBaseStructParserStateMachine* psm,
-                          int elementType);
+                          int elementType) CXX11_OVERRIDE;
 };
 
 class NullValueBaseStructParserState : public ValueBaseStructParserState {
@@ -146,11 +153,12 @@ public:
   virtual ~NullValueBaseStructParserState() {}
 
   virtual void beginElement(ValueBaseStructParserStateMachine* psm,
-                            int elementType)
-  {}
+                            int elementType) CXX11_OVERRIDE
+  {
+  }
 
   virtual void endElement(ValueBaseStructParserStateMachine* psm,
-                          int elementType);
+                          int elementType) CXX11_OVERRIDE;
 };
 
 } // namespace aria2

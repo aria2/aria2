@@ -38,7 +38,7 @@ namespace aria2 {
 
 namespace global {
 
-// Global clock, this clock is reseted before executeCommand() call to
+// Global clock, this clock is reset before executeCommand() call to
 // reduce the call gettimeofday() system call.
 Timer& wallclock();
 

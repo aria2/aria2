@@ -38,8 +38,8 @@
 #include "common.h"
 
 #include <set>
+#include <memory>
 
-#include "SharedHandle.h"
 #include "a2functional.h"
 #include "error_code.h"
 
@@ -55,20 +55,17 @@ public:
     int64_t goff;
     // data must be len+offset bytes. Thus, the cached data is
     // [data+offset, data+offset+len).
-    unsigned char *data;
+    unsigned char* data;
     size_t offset;
     size_t len;
     // valid memory range from data+offset
     size_t capacity;
-    bool operator<(const DataCell& rhs) const
-    {
-      return goff < rhs.goff;
-    }
+    bool operator<(const DataCell& rhs) const { return goff < rhs.goff; }
   };
 
-  typedef std::set<DataCell*, DerefLess<DataCell*> > DataCellSet;
+  typedef std::set<DataCell*, DerefLess<DataCell*>> DataCellSet;
 
-  WrDiskCacheEntry(const SharedHandle<DiskAdaptor>& diskAdaptor);
+  WrDiskCacheEntry(const std::shared_ptr<DiskAdaptor>& diskAdaptor);
   ~WrDiskCacheEntry();
 
   // Flushes the cached data to the disk and deletes them.
@@ -81,52 +78,26 @@ public:
 
   // Appends into last dataCell in set_ if the region is
   // contagious. Returns the number of copied bytes.
-  size_t append(int64_t goff, const unsigned char *data, size_t len);
+  size_t append(int64_t goff, const unsigned char* data, size_t len);
 
-  size_t getSize() const
-  {
-    return size_;
-  }
-  void setSizeKey(size_t sizeKey)
-  {
-    sizeKey_ = sizeKey;
-  }
-  size_t getSizeKey() const
-  {
-    return sizeKey_;
-  }
-  void setLastUpdate(int64_t clock)
-  {
-    lastUpdate_ = clock;
-  }
-  int64_t getLastUpdate() const
-  {
-    return lastUpdate_;
-  }
+  size_t getSize() const { return size_; }
+  void setSizeKey(size_t sizeKey) { sizeKey_ = sizeKey; }
+  size_t getSizeKey() const { return sizeKey_; }
+  void setLastUpdate(int64_t clock) { lastUpdate_ = clock; }
+  int64_t getLastUpdate() const { return lastUpdate_; }
   bool operator<(const WrDiskCacheEntry& rhs) const
   {
     return sizeKey_ > rhs.sizeKey_ ||
-      (sizeKey_ == rhs.sizeKey_ && lastUpdate_ < rhs.lastUpdate_);
+           (sizeKey_ == rhs.sizeKey_ && lastUpdate_ < rhs.lastUpdate_);
   }
 
-  enum {
-    CACHE_ERR_SUCCESS,
-    CACHE_ERR_ERROR
-  };
+  enum { CACHE_ERR_SUCCESS, CACHE_ERR_ERROR };
 
-  int getError() const
-  {
-    return error_;
-  }
-  error_code::Value getErrorCode() const
-  {
-    return errorCode_;
-  }
+  int getError() const { return error_; }
+  error_code::Value getErrorCode() const { return errorCode_; }
 
-  const DataCellSet& getDataSet() const
-  {
-    return set_;
-  }
+  const DataCellSet& getDataSet() const { return set_; }
+
 private:
   void deleteDataCells();
 
@@ -140,10 +111,9 @@ private:
   int error_;
   error_code::Value errorCode_;
 
-  SharedHandle<DiskAdaptor> diskAdaptor_;
+  std::shared_ptr<DiskAdaptor> diskAdaptor_;
 };
 
 } // namespace aria2
 
 #endif // D_WR_DISK_CACHE_ENTRY_H
-

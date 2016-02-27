@@ -46,7 +46,7 @@ public:
 
   virtual std::string getPayload() = 0;
 
-  virtual uint8_t getExtensionMessageID() = 0;
+  virtual uint8_t getExtensionMessageID() const = 0;
 
   virtual const char* getExtensionName() const = 0;
 

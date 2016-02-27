@@ -55,6 +55,7 @@ private:
    * Returns the return value of stat(...)
    */
   int fillStat(a2_struct_stat& fstat);
+
 public:
   File(const std::string& name);
 
@@ -102,10 +103,7 @@ public:
 
   std::string getDirname() const;
 
-  const std::string& getPath() const
-  {
-    return name_;
-  }
+  const std::string& getPath() const { return name_; }
 
   static bool isDir(const std::string& filename);
 

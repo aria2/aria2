@@ -36,7 +36,8 @@
 #define D_CHECK_INTEGRITY_COMMAND_H
 
 #include "RealtimeCommand.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -44,18 +45,17 @@ class CheckIntegrityEntry;
 
 class CheckIntegrityCommand : public RealtimeCommand {
 private:
-  SharedHandle<CheckIntegrityEntry> entry_;
+  CheckIntegrityEntry* entry_;
+
 public:
-  CheckIntegrityCommand(cuid_t cuid,
-                        RequestGroup* requestGroup,
-                        DownloadEngine* e,
-                        const SharedHandle<CheckIntegrityEntry>& entry);
+  CheckIntegrityCommand(cuid_t cuid, RequestGroup* requestGroup,
+                        DownloadEngine* e, CheckIntegrityEntry* entry);
 
   virtual ~CheckIntegrityCommand();
 
-  virtual bool executeInternal();
+  virtual bool executeInternal() CXX11_OVERRIDE;
 
-  virtual bool handleException(Exception& e);
+  virtual bool handleException(Exception& e) CXX11_OVERRIDE;
 };
 
 } // namespace aria2

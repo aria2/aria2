@@ -46,6 +46,7 @@ namespace aria2 {
 class ARC4Encryptor {
 private:
   RC4_KEY key_;
+
 public:
   ARC4Encryptor();
 

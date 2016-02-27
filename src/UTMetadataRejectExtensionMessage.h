@@ -39,15 +39,15 @@
 
 namespace aria2 {
 
-class UTMetadataRejectExtensionMessage:public UTMetadataExtensionMessage {
+class UTMetadataRejectExtensionMessage : public UTMetadataExtensionMessage {
 public:
   UTMetadataRejectExtensionMessage(uint8_t extensionMessageID);
 
-  virtual std::string getPayload();
+  virtual std::string getPayload() CXX11_OVERRIDE;
 
-  virtual std::string toString() const;
+  virtual std::string toString() const CXX11_OVERRIDE;
 
-  virtual void doReceivedAction();
+  virtual void doReceivedAction() CXX11_OVERRIDE;
 };
 
 } // namespace aria2

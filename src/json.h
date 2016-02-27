@@ -44,41 +44,38 @@ namespace json {
 
 std::string jsonEscape(const std::string& s);
 
-template<typename OutputStream>
+template <typename OutputStream>
 OutputStream& encode(OutputStream& out, const ValueBase* vlb)
 {
-  class JsonValueBaseVisitor:public ValueBaseVisitor {
+  class JsonValueBaseVisitor : public ValueBaseVisitor {
   public:
-    JsonValueBaseVisitor(OutputStream& out):out_(out) {}
+    JsonValueBaseVisitor(OutputStream& out) : out_(out) {}
 
-    virtual void visit(const String& string)
+    virtual void visit(const String& string) CXX11_OVERRIDE
     {
       encodeString(string.s());
     }
 
-    virtual void visit(const Integer& integer)
+    virtual void visit(const Integer& integer) CXX11_OVERRIDE
     {
       out_ << integer.i();
     }
 
-    virtual void visit(const Bool& boolValue)
+    virtual void visit(const Bool& boolValue) CXX11_OVERRIDE
     {
       out_ << (boolValue.val() ? "true" : "false");
     }
 
-    virtual void visit(const Null& nullValue)
-    {
-      out_ << "null";
-    }
+    virtual void visit(const Null& nullValue) CXX11_OVERRIDE { out_ << "null"; }
 
-    virtual void visit(const List& list)
+    virtual void visit(const List& list) CXX11_OVERRIDE
     {
       out_ << "[";
-      List::ValueType::const_iterator i = list.begin();
-      if(!list.empty()) {
+      if (!list.empty()) {
+        auto i = list.begin();
         (*i)->accept(*this);
         ++i;
-        for(List::ValueType::const_iterator eoi = list.end(); i != eoi; ++i){
+        for (auto eoi = list.end(); i != eoi; ++i) {
           out_ << ",";
           (*i)->accept(*this);
         }
@@ -86,16 +83,16 @@ OutputStream& encode(OutputStream& out, const ValueBase* vlb)
       out_ << "]";
     }
 
-    virtual void visit(const Dict& dict)
+    virtual void visit(const Dict& dict) CXX11_OVERRIDE
     {
       out_ << "{";
-      Dict::ValueType::const_iterator i = dict.begin();
-      if(!dict.empty()) {
+      if (!dict.empty()) {
+        auto i = dict.begin();
         encodeString((*i).first);
         out_ << ":";
         (*i).second->accept(*this);
         ++i;
-        for(Dict::ValueType::const_iterator eoi = dict.end(); i != eoi; ++i){
+        for (auto eoi = dict.end(); i != eoi; ++i) {
           out_ << ",";
           encodeString((*i).first);
           out_ << ":";
@@ -104,11 +101,11 @@ OutputStream& encode(OutputStream& out, const ValueBase* vlb)
       }
       out_ << "}";
     }
+
   private:
     void encodeString(const std::string& s)
     {
-      std::string t = jsonEscape(s);
-      out_ << "\"" << t << "\"";
+      out_ << "\"" << jsonEscape(s) << "\"";
     }
     OutputStream& out_;
   };
@@ -117,14 +114,8 @@ OutputStream& encode(OutputStream& out, const ValueBase* vlb)
   return out;
 }
 
-template<typename OutputStream>
-OutputStream& encode(OutputStream& out, const SharedHandle<ValueBase>& vlb)
-{
-  return encode(out, vlb.get());
-}
-
 // Serializes JSON object or array.
-std::string encode(const SharedHandle<ValueBase>& json);
+std::string encode(const ValueBase* json);
 
 struct JsonGetParam {
   std::string request;
@@ -149,6 +140,5 @@ JsonGetParam decodeGetParams(const std::string& query);
 } // namespace json
 
 } // namespace aria2
-
 
 #endif // D_JSON_H

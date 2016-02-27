@@ -47,30 +47,29 @@ namespace aria2 {
 
 namespace bencode2 {
 
-SharedHandle<ValueBase> decode(const unsigned char* data, size_t len)
+std::unique_ptr<ValueBase> decode(const unsigned char* data, size_t len)
 {
   size_t end;
   return decode(data, len, end);
 }
 
-SharedHandle<ValueBase> decode(const std::string& data)
+std::unique_ptr<ValueBase> decode(const std::string& data)
 {
   size_t end;
   return decode(reinterpret_cast<const unsigned char*>(data.c_str()),
                 data.size(), end);
 }
 
-SharedHandle<ValueBase> decode(const unsigned char* data, size_t len,
-                               size_t& end)
+std::unique_ptr<ValueBase> decode(const unsigned char* data, size_t len,
+                                  size_t& end)
 {
   ssize_t error;
   bittorrent::ValueBaseBencodeParser parser;
-  SharedHandle<ValueBase> res =
-    parser.parseFinal(reinterpret_cast<const char*>(data), len, error);
-  if(error < 0) {
-    throw DL_ABORT_EX2(fmt("Bencode decoding failed: error=%d",
-                           static_cast<int>(error)),
-                       error_code::BENCODE_PARSE_ERROR);
+  auto res = parser.parseFinal(reinterpret_cast<const char*>(data), len, error);
+  if (error < 0) {
+    throw DL_ABORT_EX2(
+        fmt("Bencode decoding failed: error=%d", static_cast<int>(error)),
+        error_code::BENCODE_PARSE_ERROR);
   }
   end = error;
   return res;
@@ -78,61 +77,52 @@ SharedHandle<ValueBase> decode(const unsigned char* data, size_t len,
 
 std::string encode(const ValueBase* vlb)
 {
-  class BencodeValueBaseVisitor:public ValueBaseVisitor {
+  class BencodeValueBaseVisitor : public ValueBaseVisitor {
   private:
     std::ostringstream out_;
+
   public:
-    virtual void visit(const String& string)
+    virtual void visit(const String& string) CXX11_OVERRIDE
     {
       const std::string& s = string.s();
       out_ << s.size() << ":";
       out_.write(s.data(), s.size());
     }
 
-    virtual void visit(const Integer& integer)
+    virtual void visit(const Integer& integer) CXX11_OVERRIDE
     {
       out_ << "i" << integer.i() << "e";
     }
 
-    virtual void visit(const Bool& v) {}
-    virtual void visit(const Null& v) {}
+    virtual void visit(const Bool& v) CXX11_OVERRIDE {}
+    virtual void visit(const Null& v) CXX11_OVERRIDE {}
 
-    virtual void visit(const List& list)
+    virtual void visit(const List& list) CXX11_OVERRIDE
     {
       out_ << "l";
-      for(List::ValueType::const_iterator i = list.begin(), eoi = list.end();
-          i != eoi; ++i){
-        (*i)->accept(*this);
+      for (const auto& e : list) {
+        e->accept(*this);
       }
       out_ << "e";
     }
 
-    virtual void visit(const Dict& dict)
+    virtual void visit(const Dict& dict) CXX11_OVERRIDE
     {
       out_ << "d";
-      for(Dict::ValueType::const_iterator i = dict.begin(), eoi = dict.end();
-          i != eoi; ++i){
-        const std::string& key = (*i).first;
+      for (const auto& e : dict) {
+        auto& key = e.first;
         out_ << key.size() << ":";
         out_.write(key.data(), key.size());
-        (*i).second->accept(*this);
+        e.second->accept(*this);
       }
       out_ << "e";
     }
 
-    std::string getResult() const
-    {
-      return out_.str();
-    }
+    std::string getResult() const { return out_.str(); }
   };
   BencodeValueBaseVisitor visitor;
   vlb->accept(visitor);
   return visitor.getResult();
-}
-
-std::string encode(const SharedHandle<ValueBase>& vlb)
-{
-  return encode(vlb.get());
 }
 
 } // namespace bencode2

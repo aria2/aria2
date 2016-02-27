@@ -36,7 +36,8 @@
 #define D_UT_METADATA_REQUEST_EXTENSION_MESSAGE_H
 
 #include "UTMetadataExtensionMessage.h"
-#include "SharedHandle.h"
+
+#include <memory>
 
 namespace aria2 {
 
@@ -45,39 +46,32 @@ class BtMessageDispatcher;
 class BtMessageFactory;
 class Peer;
 
-class UTMetadataRequestExtensionMessage:public UTMetadataExtensionMessage {
+class UTMetadataRequestExtensionMessage : public UTMetadataExtensionMessage {
 private:
-  SharedHandle<DownloadContext> dctx_;
+  DownloadContext* dctx_;
 
-  SharedHandle<Peer> peer_;
+  std::shared_ptr<Peer> peer_;
 
   BtMessageDispatcher* dispatcher_;
 
   BtMessageFactory* messageFactory_;
+
 public:
   UTMetadataRequestExtensionMessage(uint8_t extensionMessageID);
 
-  ~UTMetadataRequestExtensionMessage();
+  virtual std::string getPayload() CXX11_OVERRIDE;
 
-  virtual std::string getPayload();
+  virtual std::string toString() const CXX11_OVERRIDE;
 
-  virtual std::string toString() const;
+  virtual void doReceivedAction() CXX11_OVERRIDE;
 
-  virtual void doReceivedAction();
+  void setDownloadContext(DownloadContext* dctx);
 
-  void setDownloadContext(const SharedHandle<DownloadContext>& dctx);
+  void setBtMessageDispatcher(BtMessageDispatcher* disp);
 
-  void setBtMessageDispatcher(BtMessageDispatcher* disp)
-  {
-    dispatcher_ = disp;
-  }
+  void setBtMessageFactory(BtMessageFactory* factory);
 
-  void setBtMessageFactory(BtMessageFactory* factory)
-  {
-    messageFactory_ = factory;
-  }
-
-  void setPeer(const SharedHandle<Peer>& peer);
+  void setPeer(const std::shared_ptr<Peer>& peer);
 };
 
 } // namespace aria2

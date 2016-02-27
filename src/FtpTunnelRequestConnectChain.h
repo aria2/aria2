@@ -45,19 +45,14 @@ namespace aria2 {
 struct FtpTunnelRequestConnectChain : public ControlChain<ConnectCommand*> {
   FtpTunnelRequestConnectChain() {}
   virtual ~FtpTunnelRequestConnectChain() {}
-  virtual int run(ConnectCommand* t, DownloadEngine* e)
+  virtual int run(ConnectCommand* t, DownloadEngine* e) CXX11_OVERRIDE
   {
-    FtpTunnelRequestCommand* c = new FtpTunnelRequestCommand
-      (t->getCuid(),
-       t->getRequest(),
-       t->getFileEntry(),
-       t->getRequestGroup(),
-       t->getDownloadEngine(),
-       t->getProxyRequest(),
-       t->getSocket());
+    auto c = make_unique<FtpTunnelRequestCommand>(
+        t->getCuid(), t->getRequest(), t->getFileEntry(), t->getRequestGroup(),
+        t->getDownloadEngine(), t->getProxyRequest(), t->getSocket());
     c->setStatus(Command::STATUS_ONESHOT_REALTIME);
     e->setNoWait(true);
-    e->addCommand(c);
+    e->addCommand(std::move(c));
     return 0;
   }
 };

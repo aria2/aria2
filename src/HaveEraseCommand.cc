@@ -40,15 +40,18 @@
 
 namespace aria2 {
 
-HaveEraseCommand::HaveEraseCommand(cuid_t cuid, DownloadEngine* e, time_t interval)
-  :TimeBasedCommand(cuid, e, interval, true) {}
+HaveEraseCommand::HaveEraseCommand(cuid_t cuid, DownloadEngine* e,
+                                   std::chrono::seconds interval)
+    : TimeBasedCommand(cuid, e, std::move(interval), true)
+{
+}
 
 HaveEraseCommand::~HaveEraseCommand() {}
 
 void HaveEraseCommand::preProcess()
 {
-  if(getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
-     getDownloadEngine()->isHaltRequested()) {
+  if (getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
+      getDownloadEngine()->isHaltRequested()) {
     enableExit();
   }
 }
@@ -56,12 +59,11 @@ void HaveEraseCommand::preProcess()
 void HaveEraseCommand::process()
 {
   const RequestGroupList& groups =
-    getDownloadEngine()->getRequestGroupMan()->getRequestGroups();
-  for(RequestGroupList::const_iterator i = groups.begin(),
-        eoi = groups.end(); i != eoi; ++i) {
-    const SharedHandle<PieceStorage>& ps = (*i)->getPieceStorage();
-    if(ps) {
-      ps->removeAdvertisedPiece(5);
+      getDownloadEngine()->getRequestGroupMan()->getRequestGroups();
+  for (auto& group : groups) {
+    const auto& ps = group->getPieceStorage();
+    if (ps) {
+      ps->removeAdvertisedPiece(5_s);
     }
   }
 }
