@@ -29,7 +29,7 @@ RUN apt-get install -y make binutils autoconf automake autotools-dev libtool \
 
 RUN curl -L -O https://gmplib.org/download/gmp/gmp-6.1.0.tar.lz
 RUN curl -L -O http://downloads.sourceforge.net/project/expat/expat/2.1.0/expat-2.1.0.tar.gz
-RUN curl -L -O http://www.sqlite.org/2015/sqlite-autoconf-3100200.tar.gz
+RUN curl -L -O http://www.sqlite.org/2016/sqlite-autoconf-3100200.tar.gz
 RUN curl -L -O http://zlib.net/zlib-1.2.8.tar.xz
 RUN curl -L -O http://c-ares.haxx.se/download/c-ares-1.10.0.tar.gz
 RUN curl -L -O http://libssh2.org/download/libssh2-1.6.0.tar.gz
