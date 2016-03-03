@@ -91,7 +91,7 @@ endif
 # Set up compiler.
 CC = cc
 export CC
-CXX = c++
+CXX = c++ -stdlib=libc++
 export CXX
 
 # Set up compiler/linker flags.
@@ -308,7 +308,7 @@ $(1).%.build: $(1).stamp
 		--prefix=$$(PWD)/$$(ARCH) \
 		$$($(1)_confflags) $$($(1)_confflags_$$(ARCH)) \
 		CFLAGS="$$(CFLAGS) $$($(1)_cflags) -arch $$(ARCH)" \
-		CXXFLAGS="$$(CXXFLAGS) $$($(1)_cxxflags) -arch $$(ARCH) -stdlib=libc++ -std=c++11" \
+		CXXFLAGS="$$(CXXFLAGS) $$($(1)_cxxflags) -arch $$(ARCH) -std=c++11" \
 		LDFLAGS="$(LDFLAGS) $$($(1)_ldflags)" \
 		)
 	$$(MAKE) -C $$(DEST) -sj$(CPUS)
