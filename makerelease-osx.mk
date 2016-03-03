@@ -96,9 +96,9 @@ export CXX
 
 # Set up compiler/linker flags.
 OPTFLAGS ?= -Os
-CFLAGS ?= -mmacosx-version-min=10.7 $(OPTFLAGS)
+CFLAGS ?= -mmacosx-version-min=10.10 $(OPTFLAGS)
 export CFLAGS
-CXXFLAGS ?= -mmacosx-version-min=10.7 $(OPTFLAGS)
+CXXFLAGS ?= -mmacosx-version-min=10.10 $(OPTFLAGS)
 export CXXFLAGS
 LDFLAGS ?= -Wl,-dead_strip
 export LDFLAGS
@@ -135,13 +135,31 @@ gmp_url = https://ftp.gnu.org/gnu/gmp/gmp-$(gmp_version).tar.bz2
 gmp_confflags = --disable-cxx --enable-assembly --with-pic
 gmp_confflags_x86_64 = --enable-fat
 
+libgpgerror_version = 1.21
+libgpgerror_hash = ef1dfb2f8761f019091180596e9e638d8cc37513
+libgpgerror_url = https://gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-$(libgpgerror_version).tar.bz2
+libgpgerror_cflags=$(LTO_FLAGS)
+libgpgerror_ldflags=$(CFLAGS) $(LTO_FLAGS)
+libgpgerror_confflags = --with-pic --disable-languages --disable-doc --disable-nls
+
+libgcrypt_version = 1.6.5
+libgcrypt_hash = c3a5a13e717f7b3e3895650afc1b6e0d3fe9c726
+libgcrypt_url = https://gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-$(libgcrypt_version).tar.bz2
+
+libssh2_version = 1.7.0
+libssh2_hash = 02fef9bdafce3da466b36581a4ff53d519637aca
+libssh2_url = https://www.libssh2.org/download/libssh2-$(libssh2_version).tar.gz
+libssh2_cflags=$(LTO_FLAGS)
+libssh2_ldflags=$(CFLAGS) $(LTO_FLAGS)
+libssh2_confflags = --with-pic
+
 cppunit_version = 1.12.1
 cppunit_hash = f1ab8986af7a1ffa6760f4bacf5622924639bf4a
 cppunit_url = http://sourceforge.net/projects/cppunit/files/cppunit/$(cppunit_version)/cppunit-$(cppunit_version).tar.gz
 
 
 # ARCHLIBS that can be template build
-ARCHLIBS = expat cares sqlite gmp cppunit
+ARCHLIBS = expat cares sqlite gmp libgpgerror libgcrypt libssh2 cppunit
 # NONARCHLIBS that cannot be template build
 NONARCHLIBS = zlib
 
@@ -167,11 +185,12 @@ ARIA2_CONFFLAGS = \
         --with-libz \
         --with-libexpat \
         --with-libcares \
+        --with-libgcrypt \
+        --with-libssh2 \
         --without-libuv \
         --without-gnutls \
         --without-openssl \
         --without-libnettle \
-        --without-libgcrypt \
         --without-libxml2 \
         ARIA2_STATIC=yes
 ARIA2_DOCDIR = $(ARIA2_PREFIX)/share/doc/aria2
@@ -263,8 +282,14 @@ deps::
 
 .PRECIOUS: cares.stamp
 cares.stamp: cares.tar.gz cares.check
-	tar xzf $<
+	tar xf $<
 	mv c-ares-$($(basename $@)_version) $(basename $@)
+	touch $@
+
+.PRECIOUS: libgpgerror.stamp
+libgpgerror.stamp: libgpgerror.tar.gz libgpgerror.check
+	tar xf $<
+	mv libgpg-error-$($(basename $@)_version) $(basename $@)
 	touch $@
 
 # Using (NON)ARCH_template kinda stinks, but real multi-target pattern rules
@@ -302,14 +327,14 @@ $(1).%.build: $(1).stamp
 	$$(eval ARCH := $$(subst .,,$$(suffix $$(DEST))))
 	mkdir -p $$(DEST)
 	( cd $$(DEST) && ../$(1)/configure \
-		--host=$$(ARCH)-apple-darwin11.4.2 \
-		--build=$$(ARCH)-apple-darwin11.4.2 \
 		--enable-static --disable-shared \
 		--prefix=$$(PWD)/$$(ARCH) \
+		--with-gpg-error-prefix=$$(PWD)/$$(ARCH) \
 		$$($(1)_confflags) $$($(1)_confflags_$$(ARCH)) \
 		CFLAGS="$$(CFLAGS) $$($(1)_cflags) -arch $$(ARCH)" \
 		CXXFLAGS="$$(CXXFLAGS) $$($(1)_cxxflags) -arch $$(ARCH) -std=c++11" \
 		LDFLAGS="$(LDFLAGS) $$($(1)_ldflags)" \
+		PKG_CONFIG_PATH=$$(PWD)/$$(ARCH)lib/pkgconfig \
 		)
 	$$(MAKE) -C $$(DEST) -sj$(CPUS)
 	$$(MAKE) -C $$(DEST) -sj$(CPUS) check
@@ -328,7 +353,7 @@ endef
 $(foreach lib,$(ARCHLIBS),$(eval $(call ARCH_template,$(lib))))
 
 .PRECIOUS: aria2.%.build
-aria2.%.build: zlib.%.build expat.%.build gmp.%.build cares.%.build sqlite.%.build cppunit.%.build
+aria2.%.build: zlib.%.build expat.%.build gmp.%.build cares.%.build sqlite.%.build libgpgerror.%.build libgcrypt.%.build libssh2.%.build cppunit.%.build
 	$(eval DEST := $$(basename $$@))
 	$(eval ARCH := $$(subst .,,$$(suffix $$(DEST))))
 	mkdir -p $(DEST)
