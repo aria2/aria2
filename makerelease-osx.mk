@@ -116,21 +116,21 @@ expat_url = http://sourceforge.net/projects/expat/files/expat/$(expat_version)/e
 expat_cflags=$(LTO_FLAGS)
 expat_ldflags=$(CFLAGS) $(LTO_FLAGS)
 
-cares_version = 1.10.0
-cares_hash = e44e6575d5af99cb3a38461486e1ee8b49810eb5
+cares_version = 1.11.0
+cares_hash = 8c20b2680099ac73861a780c731edd59e010383a
 cares_url = http://c-ares.haxx.se/download/c-ares-$(cares_version).tar.gz
 cares_confflags = "--enable-optimize=$(OPTFLAGS)"
 cares_cflags=$(LTO_FLAGS)
 cares_ldflags=$(CFLAGS) $(LTO_FLAGS)
 
-sqlite_version = autoconf-3081002
-sqlite_hash = c2f2c17d3dc4c4e179d35cc04e4420636d48a152
-sqlite_url = http://sqlite.org/2015/sqlite-$(sqlite_version).tar.gz
+sqlite_version = autoconf-3110000
+sqlite_hash = e2d300e4b24af5ecd67a1396488893fa44864e36
+sqlite_url = http://sqlite.org/2016/sqlite-$(sqlite_version).tar.gz
 sqlite_cflags=$(LTO_FLAGS)
 sqlite_ldflags=$(CFLAGS) $(LTO_FLAGS)
 
-gmp_version = 5.1.3
-gmp_hash = b35928e2927b272711fdfbf71b7cfd5f86a6b165
+gmp_version = 6.1.0
+gmp_hash = db38c7b67f8eea9f2e5b8a48d219165b2fdab11f
 gmp_url = https://ftp.gnu.org/gnu/gmp/gmp-$(gmp_version).tar.bz2
 gmp_confflags = --disable-cxx --enable-assembly --with-pic
 gmp_confflags_x86_64 = --enable-fat
