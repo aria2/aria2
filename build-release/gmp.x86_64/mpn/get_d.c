@@ -1,1 +1,0 @@
-../../gmp/mpn/generic/get_d.c

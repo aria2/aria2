@@ -1,4 +1,0 @@
-USEUNIT("..\examples\outline.c");
-USELIB("Release\libexpat_mtd.lib");
-//---------------------------------------------------------------------------
-main

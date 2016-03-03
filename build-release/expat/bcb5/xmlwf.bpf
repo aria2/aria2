@@ -1,7 +1,0 @@
-USEUNIT("..\xmlwf\codepage.c");
-USEUNIT("..\xmlwf\win32filemap.c");
-USEUNIT("..\xmlwf\xmlfile.c");
-USEUNIT("..\xmlwf\xmlwf.c");
-USELIB("Release\libexpat_mtd.lib");
-//---------------------------------------------------------------------------
-main

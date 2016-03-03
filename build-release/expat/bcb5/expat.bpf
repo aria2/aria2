@@ -1,6 +1,0 @@
-USEUNIT("..\lib\xmlparse.c");
-USEUNIT("..\lib\xmlrole.c");
-USEUNIT("..\lib\xmltok.c");
-USEDEF("libexpat_mtd.def");
-//---------------------------------------------------------------------------
-#define DllEntryPoint

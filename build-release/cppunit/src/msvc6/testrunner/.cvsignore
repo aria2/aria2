@@ -1,5 +1,0 @@
-*.Tags.WW
-Debug DebugCrossplatform Release DebugNoTypeInfo ReleaseUnicode DebugUnicode
-*.ncb *.opt *.aps *.clw
-SunWS_cache
-ir.out

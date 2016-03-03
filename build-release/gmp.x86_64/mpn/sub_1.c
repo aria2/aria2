@@ -1,1 +1,0 @@
-../../gmp/mpn/generic/sub_1.c

@@ -1,1 +1,0 @@
-../../gmp/mpn/x86_64/invert_limb.asm

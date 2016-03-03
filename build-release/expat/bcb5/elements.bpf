@@ -1,4 +1,0 @@
-USEUNIT("..\examples\elements.c");
-USELIB("Release\libexpats_mtd.lib");
-//---------------------------------------------------------------------------
-main
