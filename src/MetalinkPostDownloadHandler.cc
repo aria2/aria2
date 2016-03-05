@@ -104,6 +104,9 @@ void MetalinkPostDownloadHandler::getNextRequestGroups(
     Metalink2RequestGroup().generate(newRgs, diskAdaptor,
                                      requestGroup->getOption(), baseUri);
     requestGroup->followedBy(newRgs.begin(), newRgs.end());
+    for (auto& rg : newRgs) {
+      rg->following(requestGroup->getGID());
+    }
     auto mi = createMetadataInfoFromFirstFileEntry(
         requestGroup->getGroupId(), requestGroup->getDownloadContext());
     if (mi) {

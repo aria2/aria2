@@ -104,6 +104,9 @@ void BtPostDownloadHandler::getNextRequestGroups(
                                   std::vector<std::string>(), "",
                                   torrent.get());
   requestGroup->followedBy(std::begin(newRgs), std::end(newRgs));
+  for (auto& rg : newRgs) {
+    rg->following(requestGroup->getGID());
+  }
   auto mi = createMetadataInfoFromFirstFileEntry(
       requestGroup->getGroupId(), requestGroup->getDownloadContext());
   if (mi) {

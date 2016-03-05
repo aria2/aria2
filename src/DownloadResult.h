@@ -79,6 +79,9 @@ struct DownloadResult {
   // RequestGroup.cc::followedByGIDs_.
   std::vector<a2_gid_t> followedBy;
 
+  // The reverse link for followedBy.
+  a2_gid_t following;
+
   std::string bitfield;
 
   std::string infoHash;

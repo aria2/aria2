@@ -131,6 +131,7 @@ RequestGroup::RequestGroup(const std::shared_ptr<GroupId>& gid,
       btRuntime_(nullptr),
       peerStorage_(nullptr),
 #endif // ENABLE_BITTORRENT
+      followingGID_(0),
       lastModifiedTime_(Time::null()),
       timeout_(option->getAsInt(PREF_TIMEOUT)),
       state_(STATE_WAITING),
@@ -1120,6 +1121,7 @@ std::shared_ptr<DownloadResult> RequestGroup::createDownloadResult() const
   res->result = result.first;
   res->resultMessage = result.second;
   res->followedBy = followedByGIDs_;
+  res->following = followingGID_;
   res->belongsTo = belongsToGID_;
   res->option = option_;
   res->metadataInfo = metadataInfo_;

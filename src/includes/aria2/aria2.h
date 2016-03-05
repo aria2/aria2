@@ -808,6 +808,12 @@ public:
    */
   virtual const std::vector<A2Gid>& getFollowedBy() = 0;
   /**
+   * Returns the GID of the download which generated this download.
+   * This is a reverse link of
+   * :func:`DownloadHandle::getFollowedBy()`.
+   */
+  virtual A2Gid getFollowing() = 0;
+  /**
    * Returns the GID of a parent download. Some downloads are a part
    * of another download. For example, if a file in Metalink has
    * BitTorrent resource, the download of ".torrent" is a part of that

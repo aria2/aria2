@@ -117,6 +117,7 @@ void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
                            requestGroup_->followedBy().end(),
                            newRg->getGID()) !=
                  requestGroup_->followedBy().end());
+  CPPUNIT_ASSERT_EQUAL(requestGroup_->getGID(), newRg->following());
   CPPUNIT_ASSERT(!trfile.exists());
 
   results.clear();

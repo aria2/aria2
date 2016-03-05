@@ -2548,6 +2548,10 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
     auto-generated downloads. If there are no such downloads, this key will not
     be included in the response.
 
+  ``following``
+    The reverse link for ``followedBy``.  A download included in
+    ``followedBy`` has this object's GID in its ``following`` value.
+
   ``belongsTo``
     GID of a parent download. Some downloads are a part of another
     download.  For example, if a file in a Metalink has BitTorrent

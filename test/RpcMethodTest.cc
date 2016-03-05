@@ -924,6 +924,7 @@ void RpcMethodTest::testGatherStoppedDownload()
   d->sessionTime = 1_s;
   d->result = error_code::FINISHED;
   d->followedBy = followedBy;
+  d->following = 1;
   d->belongsTo = 2;
   auto entry = Dict::g();
   std::vector<std::string> keys;
@@ -934,6 +935,8 @@ void RpcMethodTest::testGatherStoppedDownload()
                        downcast<String>(followedByRes->get(0))->s());
   CPPUNIT_ASSERT_EQUAL(GroupId::toHex(4),
                        downcast<String>(followedByRes->get(1))->s());
+  CPPUNIT_ASSERT_EQUAL(GroupId::toHex(1),
+                       downcast<String>(entry->get("following"))->s());
   CPPUNIT_ASSERT_EQUAL(GroupId::toHex(2),
                        downcast<String>(entry->get("belongsTo"))->s());
 
@@ -960,6 +963,8 @@ void RpcMethodTest::testGatherProgressCommon()
   }
 
   group->followedBy(followedBy.begin(), followedBy.end());
+  auto leader = GroupId::create();
+  group->following(leader->getNumericId());
   auto parent = GroupId::create();
   group->belongsTo(parent->getNumericId());
 
@@ -972,6 +977,8 @@ void RpcMethodTest::testGatherProgressCommon()
                        downcast<String>(followedByRes->get(0))->s());
   CPPUNIT_ASSERT_EQUAL(GroupId::toHex(followedBy[1]->getGID()),
                        downcast<String>(followedByRes->get(1))->s());
+  CPPUNIT_ASSERT_EQUAL(leader->toHex(),
+                       downcast<String>(entry->get("following"))->s());
   CPPUNIT_ASSERT_EQUAL(parent->toHex(),
                        downcast<String>(entry->get("belongsTo"))->s());
   const List* files = downcast<List>(entry->get("files"));
