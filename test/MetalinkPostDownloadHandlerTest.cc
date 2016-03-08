@@ -83,6 +83,10 @@ void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups()
 #else
   CPPUNIT_ASSERT_EQUAL((size_t)5, groups.size());
 #endif // ENABLE_BITTORRENT
+
+  for (auto& nrg : groups) {
+    CPPUNIT_ASSERT_EQUAL(rg.getGID(), nrg->following());
+  }
 }
 
 void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups_withBaseUri()

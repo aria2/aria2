@@ -125,6 +125,10 @@ private:
   // has the GID of generated RequestGroups. empty list means there is
   // no such RequestGroup.
   std::vector<a2_gid_t> followedByGIDs_;
+  // This is a reverse link against followedByGIDs_.  For example, a
+  // download included in followedByGIDs_ has this download's GID in
+  // followingGID_.
+  a2_gid_t followingGID_;
 
   std::vector<const PreDownloadHandler*> preDownloadHandlers_;
 
@@ -454,6 +458,10 @@ public:
   }
 
   const std::vector<a2_gid_t>& followedBy() const { return followedByGIDs_; }
+
+  void following(a2_gid_t gid) { followingGID_ = gid; }
+
+  a2_gid_t following() const { return followingGID_; }
 
   void belongsTo(a2_gid_t gid) { belongsToGID_ = gid; }
 

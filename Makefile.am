@@ -35,5 +35,5 @@ dist_noinst_DATA = LICENSE.OpenSSL
 clang-format:
 	CLANGFORMAT=`git config --get clangformat.binary`; \
 	test -z $${CLANGFORMAT} && CLANGFORMAT="clang-format"; \
-	$${CLANGFORMAT} -i src/*.{c,cc,h} src/includes/aria2/*.h \
-	examples/*.cc test/*.{cc,h}
+	$${CLANGFORMAT} -i $(top_srcdir)/src/*.{c,cc,h} $(top_srcdir)/src/includes/aria2/*.h \
+	$(top_srcdir)/examples/*.cc $(top_srcdir)/test/*.{cc,h}

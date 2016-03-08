@@ -108,6 +108,7 @@ const char KEY_BITFIELD[] = "bitfield";
 const char KEY_PIECE_LENGTH[] = "pieceLength";
 const char KEY_NUM_PIECES[] = "numPieces";
 const char KEY_FOLLOWED_BY[] = "followedBy";
+const char KEY_FOLLOWING[] = "following";
 const char KEY_BELONGS_TO[] = "belongsTo";
 const char KEY_INFO_HASH[] = "infoHash";
 const char KEY_NUM_SEEDERS[] = "numSeeders";
@@ -664,6 +665,11 @@ void gatherProgressCommon(Dict* entryDict,
       entryDict->put(KEY_FOLLOWED_BY, std::move(list));
     }
   }
+  if (requested_key(keys, KEY_FOLLOWING)) {
+    if (group->following()) {
+      entryDict->put(KEY_FOLLOWING, GroupId::toHex(group->following()));
+    }
+  }
   if (requested_key(keys, KEY_BELONGS_TO)) {
     if (group->belongsTo()) {
       entryDict->put(KEY_BELONGS_TO, GroupId::toHex(group->belongsTo()));
@@ -822,6 +828,11 @@ void gatherStoppedDownload(Dict* entryDict,
         list->append(GroupId::toHex(gid));
       }
       entryDict->put(KEY_FOLLOWED_BY, std::move(list));
+    }
+  }
+  if (requested_key(keys, KEY_FOLLOWING)) {
+    if (ds->following) {
+      entryDict->put(KEY_FOLLOWING, GroupId::toHex(ds->following));
     }
   }
   if (requested_key(keys, KEY_BELONGS_TO)) {

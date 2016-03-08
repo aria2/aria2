@@ -104,11 +104,13 @@ void UTMetadataPostDownloadHandler::getNextRequestGroups(
                                     std::vector<std::string>(), A2STR::NIL,
                                     torrent, false);
     requestGroup->followedBy(newRgs.begin(), newRgs.end());
+    for (auto& rg : newRgs) {
+      rg->following(requestGroup->getGID());
+    }
     if (requestGroup->getMetadataInfo()) {
       setMetadataInfo(newRgs.begin(), newRgs.end(),
                       requestGroup->getMetadataInfo());
     }
-
     auto rgman = requestGroup->getRequestGroupMan();
 
     if (rgman && rgman->getKeepRunning() &&
