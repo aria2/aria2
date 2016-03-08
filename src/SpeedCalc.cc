@@ -90,14 +90,16 @@ int SpeedCalc::calculateNewestSpeed(int seconds)
   removeStaleTimeSlot(now);
 
   int64_t bytesCount(0);
-  auto it=timeSlots_.rbegin();
+  auto it = timeSlots_.rbegin();
   while (it != timeSlots_.rend()) {
-    if (it->first.difference(now) > seconds*1_s) {
+    if (it->first.difference(now) > seconds * 1_s) {
       break;
     }
     bytesCount += (*it++).second;
   }
-  if (it == timeSlots_.rbegin()) return 0;
+  if (it == timeSlots_.rbegin()) {
+    return 0;
+  }
 
   auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
                      (*--it).first.difference(now)).count();

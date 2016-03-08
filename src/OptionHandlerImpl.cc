@@ -620,16 +620,16 @@ void OptimizeConcurrentDownloadsOptionHandler::parseArg(Option& option,
     std::string *sptr = &coeff_a;
     for(;;) {
       try {
-        double dbl=std::stod (*sptr);
-      } catch(std::invalid_argument &ex) {
+        double dbl = std::stod(*sptr);
+      } catch(std::invalid_argument & ex) {
         throw DL_ABORT_EX(fmt("Bad number '%s'", sptr->c_str()));
       }
       option.put(pref,*sptr);
 
-      if(pref==PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFB) {
+      if(pref == PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFB) {
         break;
       }
-      pref=PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFB;
+      pref = PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFB;
       sptr = &coeff_b;
     }
     option.put(pref_, A2_V_TRUE);

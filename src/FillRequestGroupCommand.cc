@@ -84,10 +84,10 @@ bool FillRequestGroupCommand::execute()
 
   // let's make sure we come back here every second or so
   // if we use the optimize-concurrent-download option
-  if(rgman->getOptimizeConcurrentDownloads()) {
+  if (rgman->getOptimizeConcurrentDownloads()) {
     const auto& now = global::wallclock();
-    if(std::chrono::duration_cast<std::chrono::seconds>(lastExecTime.difference(now)) >= 1_s) {
-       lastExecTime=now;
+    if (std::chrono::duration_cast<std::chrono::seconds>(lastExecTime.difference(now)) >= 1_s) {
+       lastExecTime = now;
        rgman->requestQueueCheck();
     }
   }
