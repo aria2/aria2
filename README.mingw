@@ -16,10 +16,8 @@ necessary. The linked libraries are:
 * expat 2.1.0
 * sqlite 3.10.2
 * zlib 1.2.8
-* c-ares 1.10.0 with the dns.patch [1] applied
-* libssh2 1.6.0
-
-[1] http://c-ares.haxx.se/mail/c-ares-archive-2014-05/0008.shtml
+* c-ares 1.11.0
+* libssh2 1.7.0
 
 This build has the following difference from the original release:
 
