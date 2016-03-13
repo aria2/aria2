@@ -189,10 +189,11 @@ bool writeUri(IOFile& fp, InputIterator first, InputIterator last,
 
 namespace {
 bool writeDownloadResult(IOFile& fp, std::set<a2_gid_t>& metainfoCache,
-                         const std::shared_ptr<DownloadResult>& dr)
+                         const std::shared_ptr<DownloadResult>& dr,
+                         bool pauseRequested)
 {
   const std::shared_ptr<MetadataInfo>& mi = dr->metadataInfo;
-  if (dr->belongsTo != 0 || (mi && mi->dataOnly())) {
+  if (dr->belongsTo != 0 || (mi && mi->dataOnly()) || !dr->followedBy.empty()) {
     return true;
   }
   if (!mi) {
@@ -258,6 +259,15 @@ bool writeDownloadResult(IOFile& fp, std::set<a2_gid_t>& metainfoCache,
       }
     }
   }
+
+  // PREF_PAUSE was removed from option, so save it here looking
+  // property separately.
+  if (pauseRequested) {
+    if (!writeOptionLine(fp, PREF_PAUSE, A2_V_TRUE)) {
+      return false;
+    }
+  }
+
   return writeOption(fp, dr->option);
 }
 } // namespace
@@ -270,7 +280,7 @@ bool SessionSerializer::save(IOFile& fp) const
     if (dr->result == error_code::FINISHED ||
         dr->result == error_code::REMOVED) {
       if (dr->option->getAsBool(PREF_FORCE_SAVE)) {
-        if (!writeDownloadResult(fp, metainfoCache, dr)) {
+        if (!writeDownloadResult(fp, metainfoCache, dr, false)) {
           return false;
         }
       }
@@ -280,7 +290,7 @@ bool SessionSerializer::save(IOFile& fp) const
     }
     else if (dr->result == error_code::IN_PROGRESS) {
       if (saveInProgress_) {
-        if (!writeDownloadResult(fp, metainfoCache, dr)) {
+        if (!writeDownloadResult(fp, metainfoCache, dr, false)) {
           return false;
         }
       }
@@ -288,7 +298,7 @@ bool SessionSerializer::save(IOFile& fp) const
     else {
       // error download
       if (saveError_) {
-        if (!writeDownloadResult(fp, metainfoCache, dr)) {
+        if (!writeDownloadResult(fp, metainfoCache, dr, false)) {
           return false;
         }
       }
@@ -303,7 +313,8 @@ bool SessionSerializer::save(IOFile& fp) const
                      dr->result == error_code::REMOVED;
       if ((!stopped && saveInProgress_) ||
           (stopped && dr->option->getAsBool(PREF_FORCE_SAVE))) {
-        if (!writeDownloadResult(fp, metainfoCache, dr)) {
+        if (!writeDownloadResult(fp, metainfoCache, dr,
+                                 rg->isPauseRequested())) {
           return false;
         }
       }
@@ -313,15 +324,9 @@ bool SessionSerializer::save(IOFile& fp) const
     const RequestGroupList& groups = rgman_->getReservedGroups();
     for (const auto& rg : groups) {
       std::shared_ptr<DownloadResult> result = rg->createDownloadResult();
-      if (!writeDownloadResult(fp, metainfoCache, result)) {
+      if (!writeDownloadResult(fp, metainfoCache, result,
+                               rg->isPauseRequested())) {
         return false;
-      }
-      // PREF_PAUSE was removed from option, so save it here looking
-      // property separately.
-      if (rg->isPauseRequested()) {
-        if (!writeOptionLine(fp, PREF_PAUSE, A2_V_TRUE)) {
-          return false;
-        }
       }
     }
   }
