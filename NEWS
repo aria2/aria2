@@ -1,139 +1,40 @@
-aria2 1.20.0
+aria2 1.21.0
 ============
 
 Release Note
 ------------
 
-This release fixes lots of bugs.  See the Changes section below.
-There are new features in this release.  We added "seeder" key in
-aria2.tellStatus RPC response.  We added system.listMethods RPC method
-to return all RPC method supported.  We added --max-mmap-limit option
-to avoid mmap if total file size is greater than given size.
+This release fixes several bugs, see the Changes for details.  We
+added "following" key to the response of aria2.tellStatus RPC method
+as reverse link for followedBy.
 
 Changes
 -------
 
-* src/WinConsoleFile.cc: fix colour
+* SessionSerializer: Fix bug that pause=true is added to wrong item
 
-  Set default foreground/background colour correctly
+  This change also defers writing metadata download to the location
+  where first its follower download is written.
 
-  Patch from kwkam
+* Add "following" to aria2.tellStatus response key as reverse link for
+  followedBy
 
-* configure.ac: fix autoreconf error
+* mingw: Add warning for falloc
 
-  Use m4_ifdef so we do not have to install optional libraries
+* Update ciphers in AppleTLS
 
-  Patch from kwkam
+  Also enable fast start while at it
 
-* Don't inherit file descriptor to child process
+* OSX: Enable libssh2 and sftp
 
-  For non-Mingw32 build, set FD_CLOEXEC to file descriptors which live
-  beyond function scope.  For Mingw32 build, just pass false to
-  bInheritHandles parameter of CreateProcessW.
+  Closes GH-468
 
-* Update Russian version documentation
+* Update OSX dependencies
 
-  Patch from ITriskTI
+  Closes GH-466
 
-* Add "seeder" key to tellStatus RPC response
+* Fix compile error without TLS support
 
-* WinTLS: Fix hang because of buffered received data
+* Add support for using gnutls system wide crypto policy
 
-  WinTLSSession buffers received decrypted data into its own buffer.
-  If read is requested, it copies the data from its buffer.  But if
-  requested buffer size is less than decrypted buffer, some of the
-  data is left in the buffer.  Previously, we had no facility to check
-  the existence of this pending data.  If this data is the last
-  requested data from remote server, we may end up waiting for read
-  event even if we have already data in our buffer, which may cause
-  hang.  This commit fixes this issue by introducing function to
-  return the buffered length in TLSSession.  SocketCore also provides
-  the same function, which delegates to TLSSession object.
-
-* Add --max-mmap-limit option
-
-  Set the maximum file size to enable mmap (see --enable-mmap
-  option). The file size is determined by the sum of all files
-  contained in one download. For example, if a download contains 5
-  files, then file size is the total size of those files. If file size
-  is strictly greater than the size specified in this option, mmap
-  will be disabled.
-
-* mingw: Use SetFileValidData to make --file-allocation=falloc work
-
-* Retry with 504 status code
-
-* Increase DHT transaction ID from 2 to 4 bytes to avoid conflict
-
-* Update wslay
-
-* Add --enable-werror option to configure to enable warning flags
-
-* Don't modify user variables (e.g., CFLAGS, LIBS, etc)
-
-* Improve error message when loading pkcs12 file failed
-
-* Updated dependency and source url's
-
-  The RaspberryPi Dockerfile had some out-of-date dependency packages
-  and was downloading an outdated aria2 source from Sourceforge, which
-  resulted in a build for version 1.19.0.  The new
-  fetch-latest-release-from-GitHub script I've cooked up should always
-  work as long as GitHub doesn't change their API and aria2's platform
-  agnostic releases follow the "{version number}.tar.bz2" naming
-  format.
-
-  Patch from c3mb0
-
-* Reduce delay in tracker request
-
-  We eliminated 1 second delay between completion of name resolution
-  for tracker request and time when it is actually issued.  We also
-  elimited 1 second delay after last torrent download exists and it is
-  told to DHTInteractionCommand.
-
-* Disable IPv6 on non-async NameResolver if configuration wants
-
-* Fix mysterious 1 second delay with async DNS
-
-* Fix bug that UDP port was incorrectly used in UDP tracker announce request
-
-* Refactor HttpRequest
-
-  This also makes comparison performed when replacing builtin header
-  field with user-defined one case-insensitive.
-
-* Send Want-Digest as per RFC 3230
-
-* Try all found address set to bind sockets with --multiple-interface
-
-  Fixes GH-523
-
-* Replace sourceforge references with aria2.github.io
-
-* Add system.listMethods RPC method
-
-  system.listMethods just returns the available RPC method names.  It
-  can be executed without secret token, because it just returns the
-  method names, and does not alter anything.
-
-  See GH-437
-
-* Support content-range from non-compliant server
-
-  See GH-509
-
-* Reduce UDP tracker request timeout
-
-  See GH-507
-
-* Apply --retry-wait when retrying after 404
-
-  Previously, --retry-wait was not used when retrying after 404
-  (--max-file-not-found).  The retry was done without delay.  Also the
-  maximum retry count (--max-retries) was ignored when retrying with
-  404.
-
-  This commit makes --retry-wait apply for retrying with 404 as well.
-  It also combines --max-retries and --max-file-not-found.  When
-  retrying with 404, it is counted toward retry count.
+  Patch from Athmane Madjoudj
