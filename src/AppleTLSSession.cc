@@ -107,8 +107,7 @@ static struct {
 } kSuites[] = {
     // From CipherSuite.h (10.11)
     SUITE(SSL_NULL_WITH_NULL_NULL, 0x0000),
-    SUITE(SSL_RSA_WITH_NULL_MD5, 0x0001),
-    SUITE(SSL_RSA_WITH_NULL_SHA, 0x0002),
+    SUITE(SSL_RSA_WITH_NULL_MD5, 0x0001), SUITE(SSL_RSA_WITH_NULL_SHA, 0x0002),
     SUITE(SSL_RSA_EXPORT_WITH_RC4_40_MD5, 0x0003),
     SUITE(SSL_RSA_WITH_RC4_128_MD5, 0x0004),
     SUITE(SSL_RSA_WITH_RC4_128_SHA, 0x0005),
@@ -174,8 +173,7 @@ static struct {
     SUITE(TLS_ECDH_anon_WITH_AES_128_CBC_SHA, 0xC018),
     SUITE(TLS_ECDH_anon_WITH_AES_256_CBC_SHA, 0xC019),
     SUITE(TLS_NULL_WITH_NULL_NULL, 0x0000),
-    SUITE(TLS_RSA_WITH_NULL_MD5, 0x0001),
-    SUITE(TLS_RSA_WITH_NULL_SHA, 0x0002),
+    SUITE(TLS_RSA_WITH_NULL_MD5, 0x0001), SUITE(TLS_RSA_WITH_NULL_SHA, 0x0002),
     SUITE(TLS_RSA_WITH_RC4_128_MD5, 0x0004),
     SUITE(TLS_RSA_WITH_RC4_128_SHA, 0x0005),
     SUITE(TLS_RSA_WITH_3DES_EDE_CBC_SHA, 0x000A),
@@ -276,8 +274,7 @@ static struct {
     SUITE(SSL_RSA_WITH_IDEA_CBC_MD5, 0xFF81),
     SUITE(SSL_RSA_WITH_DES_CBC_MD5, 0xFF82),
     SUITE(SSL_RSA_WITH_3DES_EDE_CBC_MD5, 0xFF83),
-    SUITE(SSL_NO_SUCH_CIPHERSUITE, 0xFFFF)
-};
+    SUITE(SSL_NO_SUCH_CIPHERSUITE, 0xFFFF)};
 #undef SUITE
 
 static inline std::string suiteToString(const SSLCipherSuite suite)
@@ -294,8 +291,8 @@ static inline std::string suiteToString(const SSLCipherSuite suite)
   return ss.str();
 }
 
-static const char* kBlocked[] = {"NULL", "anon",    "MD5",   "EXPORT", "DES",
-                                 "IDEA", "NO_SUCH", "PSK"};
+static const char* kBlocked[] = {"NULL", "anon", "MD5",     "EXPORT",
+                                 "DES",  "IDEA", "NO_SUCH", "PSK"};
 
 static inline bool isBlockedSuite(SSLCipherSuite suite)
 {
@@ -419,11 +416,10 @@ AppleTLSSession::AppleTLSSession(AppleTLSContext* ctx)
                             (SSLSessionOption)0x4, // kSSLSessionOptionSendOneByteRecord
 #endif
                             true);
-  // False Start, if available
+// False Start, if available
 #if defined(__MAC_10_9)
   (void)SSLSetSessionOption(sslCtx_, kSSLSessionOptionFalseStart, true);
 #endif
-
 
 #if defined(__MAC_10_8)
   if (!ctx->getVerifyPeer()) {
