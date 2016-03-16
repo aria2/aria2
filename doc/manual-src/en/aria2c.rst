@@ -1457,6 +1457,21 @@ Advanced Options
   See `Event Hook`_ for more details about COMMAND.
   Possible Values: ``/path/to/command``
 
+
+.. option:: --optimize-concurrent-downloads[=true|false|<A>:<B>]
+
+  Optimizes the number of concurrent downloads according to the
+  bandwidth available. aria2 uses the download speed observed in the
+  previous downloads to adapt the number of downloads launched in
+  parallel according to the rule N = A + B Log10(speed in Mbps). The
+  coefficients A and B can be customized in the option arguments with
+  A and B separated by a colon. The default values (A=5,B=25) lead to
+  using typically 5 parallel downloads on 1Mbps networks and above 50
+  on 100Mbps networks. The number of parallel downloads remains
+  constrained under the maximum defined by the
+  max-concurrent-downloads parameter.
+  Default: ``false``
+
 .. option:: --piece-length=<LENGTH>
 
   Set a piece length for HTTP/FTP downloads. This is the boundary when
@@ -3191,6 +3206,7 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
   * :option:`max-download-result <--max-download-result>`
   * :option:`max-overall-download-limit <--max-overall-download-limit>`
   * :option:`max-overall-upload-limit <--max-overall-upload-limit>`
+  * :option:`optimize-concurrent-downloads <--optimize-concurrent-downloads>`
   * :option:`save-cookies <--save-cookies>`
   * :option:`save-session <--save-session>`
   * :option:`server-stat-of <--server-stat-of>`
