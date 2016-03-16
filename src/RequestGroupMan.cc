@@ -136,7 +136,7 @@ bool RequestGroupMan::setupOptimizeConcurrentDownloads(void)
 {
     optimizeConcurrentDownloads_ = option_->getAsBool(PREF_OPTIMIZE_CONCURRENT_DOWNLOADS);
     if (optimizeConcurrentDownloads_) {
-      if (option_->defined(PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFA)) { 
+      if (option_->defined(PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFA)) {
         optimizeConcurrentDownloadsCoeffA_ = std::stod(option_->get(PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFA));
         optimizeConcurrentDownloadsCoeffB_ = std::stod(option_->get(PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFB));
       }
@@ -1062,13 +1062,13 @@ int RequestGroupMan::optimizeConcurrentDownloads()
 
   // bring the value in bound between 1 and the defined maximum
   maxConcurrentDownloads = std::min(std::max(1, maxConcurrentDownloads), maxConcurrentDownloads_);
-  
+
   A2_LOG_DEBUG
     (fmt("Max concurrent downloads optimized at %d (%lu currently active) "
          "[optimization speed %sB/s, current speed %sB/s]",
-         maxConcurrentDownloads, numActive_, util::abbrevSize(optimizationSpeed_).c_str(), 
+         maxConcurrentDownloads, numActive_, util::abbrevSize(optimizationSpeed_).c_str(),
          util::abbrevSize(currentSpeed).c_str()));
-  
+
   return maxConcurrentDownloads;
 }
 } // namespace aria2

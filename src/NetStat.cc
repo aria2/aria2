@@ -70,7 +70,7 @@ int NetStat::calculateUploadSpeed() { return uploadSpeed_.calculateSpeed(); }
 
 int NetStat::calculateNewestUploadSpeed(int seconds)
 {
-  return uploadSpeed_.calculateNewestSpeed(seconds); 
+  return uploadSpeed_.calculateNewestSpeed(seconds);
 }
 
 int NetStat::calculateAvgUploadSpeed()
