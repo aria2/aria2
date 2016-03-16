@@ -1549,6 +1549,21 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   для более подробной информации о COMMAND. Возможные
   значения: ``/путь/к/команде``
 
+
+.. option:: --optimize-concurrent-downloads[=true|false|<A>:<B>]
+
+  Оптимизирует количество одновременных загрузок в соответствии с
+  доступной полосой пропускания. aria2 использует скорость загрузки,
+  наблюдаемую в предыдущих загрузках, чтобы адаптировать количество
+  загрузок, запущенных параллельно согласно правилу N = A + B Log10
+  (скорость в Мбит/c). Коэффициенты А и В могут быть настроены в
+  аргументах А и В, разделённых двоеточием. Значения по умолчанию
+  (A=5, B=25) приводят к использованию обычно 5 параллельных загрузок
+  в сетях с 1Мбит/с и более 50 в сетях с 100 Мбит/с. Число параллельных
+  загрузок остаётся ограниченно максимумом, определяемом в параметре
+  :option:`--max-concurrent-downloads`.
+  По умолчанию: ``false``
+
 .. option:: --piece-length=<LENGTH>
 
   Задать длину блока для HTTP/FTP-загрузок. Это является границей, когда
@@ -3293,6 +3308,7 @@ RPC-метод `system.multicall` обрабатывается особым об
   * :option:`max-download-result <--max-download-result>`
   * :option:`max-overall-download-limit <--max-overall-download-limit>`
   * :option:`max-overall-upload-limit <--max-overall-upload-limit>`
+  * :option:`optimize-concurrent-downloads <--optimize-concurrent-downloads>`
   * :option:`save-cookies <--save-cookies>`
   * :option:`save-session <--save-session>`
   * :option:`server-stat-of <--server-stat-of>`
