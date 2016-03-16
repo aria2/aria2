@@ -248,14 +248,15 @@
     "                              concurrent downloads according to the bandwidth\n" \
     "                              available. aria2 uses the download speed observed\n" \
     "                              in the previous downloads to adapt the number of\n" \
-    "                              downloads launched in parallel according to the rule\n" \
-    "                              N = A + B Log10(speed in Mbps). The coefficients\n" \
-    "                              A and B can be customized in the option arguments\n" \
-    "                              with A and B separated by a colon. The default values\n" \
-    "                              (A=5,B=25) lead to using typically 5 parallel\n" \
-    "                              downloads on 1Mbps networks and above 50 on 100Mbps\n" \
-    "                              networks. The number of parallel downloads remains\n" \
-    "                              constrained under the maximum defined by the\n" \
+    "                              downloads launched in parallel according to the\n" \
+    "                              rule N = A + B Log10(speed in Mbps). The\n" \
+    "                              coefficients A and B can be customized in the\n" \
+    "                              option arguments with A and B separated by a\n" \
+    "                              colon. The default values (A=5,B=25) lead to\n" \
+    "                              using typically 5 parallel downloads on 1Mbps\n" \
+    "                              networks and above 50 on 100Mbps networks. The\n" \
+    "                              number of parallel downloads remains constrained\n" \
+    "                              under the maximum defined by the\n" \
     "                              max-concurrent-downloads parameter.")
 #define TEXT_LOAD_COOKIES                                               \
   _(" --load-cookies=FILE          Load Cookies from FILE using the Firefox3 format\n" \
