@@ -417,16 +417,6 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(new OptimizeConcurrentDownloadsOptionHandler
-                      (PREF_OPTIMIZE_CONCURRENT_DOWNLOADS,
-                       TEXT_OPTIMIZE_CONCURRENT_DOWNLOADS,
-                       A2_V_FALSE,
-                       OptionHandler::OPT_ARG));
-    op->addTag(TAG_BASIC);
-    op->setChangeGlobalOption(true);
-    handlers.push_back(op);
-  }
-  {
     OptionHandler* op(new NumberOptionHandler(PREF_MAX_CONNECTION_PER_SERVER,
                                               TEXT_MAX_CONNECTION_PER_SERVER,
                                               "1", 1, 16, 'x'));
@@ -569,6 +559,16 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
                                  NO_DEFAULT_VALUE, PATH_TO_COMMAND));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_HOOK);
+    handlers.push_back(op);
+  }
+  {
+    OptionHandler* op(new OptimizeConcurrentDownloadsOptionHandler
+                      (PREF_OPTIMIZE_CONCURRENT_DOWNLOADS,
+                       TEXT_OPTIMIZE_CONCURRENT_DOWNLOADS,
+                       A2_V_FALSE,
+                       OptionHandler::OPT_ARG));
+    op->addTag(TAG_ADVANCED);
+    op->setChangeGlobalOption(true);
     handlers.push_back(op);
   }
   {
