@@ -77,6 +77,7 @@
 #include "BtRuntime.h"
 #include "BtAnnounce.h"
 #endif // ENABLE_BITTORRENT
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -144,6 +145,8 @@ const char KEY_NUM_WAITING[] = "numWaiting";
 const char KEY_NUM_STOPPED[] = "numStopped";
 const char KEY_NUM_ACTIVE[] = "numActive";
 const char KEY_NUM_STOPPED_TOTAL[] = "numStoppedTotal";
+const char KEY_VERIFIED_LENGTH[] = "verifiedLength";
+const char KEY_VERIFY_PENDING[] = "verifyIntegrityPending";
 } // namespace
 
 namespace {
@@ -793,6 +796,14 @@ void gatherProgress(Dict* entryDict, const std::shared_ptr<RequestGroup>& group,
                              e->getBtRegistry()->get(group->getGID()), keys);
   }
 #endif // ENABLE_BITTORRENT
+  if (e && e->getCheckIntegrityMan()) {
+     if (e->getCheckIntegrityMan()->isPicked(group)) {
+        entryDict->put(KEY_VERIFIED_LENGTH, util::itos(e->getCheckIntegrityMan()->getPickedEntry()->getCurrentLength()));
+     }
+     if (e->getCheckIntegrityMan()->isQueued(group)) {
+        entryDict->put(KEY_VERIFY_PENDING, VLB_TRUE);
+     }
+  }
 }
 } // namespace
 

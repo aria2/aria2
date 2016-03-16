@@ -54,6 +54,7 @@ namespace aria2 {
 
 struct DownloadResult;
 class RequestGroup;
+class CheckIntegrityEntry;
 
 namespace rpc {
 

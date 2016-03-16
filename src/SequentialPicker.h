@@ -43,7 +43,7 @@
 namespace aria2 {
 
 template <typename T> class SequentialPicker {
-private:
+protected:
   std::deque<std::unique_ptr<T>> entries_;
   std::unique_ptr<T> pickedEntry_;
 

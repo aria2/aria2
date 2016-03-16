@@ -32,25 +32,22 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_CHECK_INTEGRITY_MAN_H
-#define D_CHECK_INTEGRITY_MAN_H
-
-#include "common.h"
-#include "SequentialPicker.h"
+#include "CheckIntegrityMan.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
-class CheckIntegrityEntry;
-class RequestGroup;
+bool CheckIntegrityMan::isPicked(std::shared_ptr<RequestGroup> rg) {
+    return pickedEntry_ && rg && pickedEntry_->getRequestGroup() == rg.get();
+}
 
-class CheckIntegrityMan : public SequentialPicker<CheckIntegrityEntry> {
-public:
-    bool isPicked(std::shared_ptr<RequestGroup> rg);
-    bool isQueued(std::shared_ptr<RequestGroup> rg);
-};
+bool CheckIntegrityMan::isQueued(std::shared_ptr<RequestGroup> rg) {
+    bool found = false;
+    for(auto& e : entries_) {
+        if(e && rg && e->getRequestGroup() == rg.get())
+            found = true;
+    }
+    return found;
+}
 
-// typedef SequentialPicker<CheckIntegrityEntry> CheckIntegrityMan;
-
-} // namespace aria2
-
-#endif // D_CHECK_INTEGRITY_MAN_H
+}

@@ -37,6 +37,7 @@
 
 #include "common.h"
 
+#include "Command.h"
 #include <memory>
 
 namespace aria2 {
