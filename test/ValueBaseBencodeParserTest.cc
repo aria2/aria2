@@ -3,6 +3,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "ValueBase.h"
+#include "BencodeParser.h"
 
 namespace aria2 {
 
@@ -76,6 +77,12 @@ void ValueBaseBencodeParserTest::testParseUpdate()
         parser.parseFinal(src.c_str(), src.size(), error);
     CPPUNIT_ASSERT_EQUAL((int64_t)9223372036854775807LL,
                          downcast<Integer>(s)->i());
+  }
+  {
+    // float number, ignored and always 0.
+    std::string src = "i+343243.342E-1333e";
+    auto s = parser.parseFinal(src.c_str(), src.size(), error);
+    CPPUNIT_ASSERT_EQUAL((int64_t)0, downcast<Integer>(s)->i());
   }
   {
     // dict, size 1
@@ -187,6 +194,11 @@ void ValueBaseBencodeParserTest::testParseUpdate()
   checkDecodeError(std::string(51, 'l') + std::string(51, 'e'));
   checkDecodeError(std::string(50, 'l') + "d3:fooi100ee" +
                    std::string(50, 'e'));
+  // float number, but including bad characters
+  checkDecodeError("i-1.134a+33e");
+  checkDecodeError("ixe");
+  // empty number
+  checkDecodeError("ie");
   {
     // ignore trailing garbage at the end of the input.
     std::string src = "5:aria2trail";

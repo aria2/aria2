@@ -55,7 +55,8 @@ enum {
   BENCODE_STRING_LEN,
   BENCODE_STRING,
   BENCODE_NUMBER_SIGN,
-  BENCODE_NUMBER
+  BENCODE_NUMBER,
+  BENCODE_FLOAT_NUMBER_IGNORE,
 };
 } // namespace
 
@@ -216,16 +217,51 @@ ssize_t BencodeParser::parseUpdate(const char* data, size_t size)
       }
       numConsumed_ += j - i;
       if (j != size) {
-        if (data[j] != 'e' || numConsumed_ == 0) {
+        if (numConsumed_ == 0) {
           currentState_ = BENCODE_ERROR;
           return lastError_ = ERR_INVALID_NUMBER;
         }
+
+        auto c = data[j];
+        if (util::isDigit(c) || c == '.' || c == 'E' || c == '+' || c == '-') {
+          // some torrent generator adds floating point number in
+          // scientific notation (e.g., -1.134E+3) in integer field.
+          // In this case, just skip these bytes until we find 'e'.
+          number_ = 0;
+          numConsumed_ = 0;
+          currentState_ = BENCODE_FLOAT_NUMBER_IGNORE;
+
+          i = j;
+
+          break;
+        }
+
+        if (c != 'e') {
+          currentState_ = BENCODE_ERROR;
+          return lastError_ = ERR_INVALID_NUMBER;
+        }
+
         i = j;
+
         onNumberEnd();
       }
       else {
         i = j - 1;
       }
+      break;
+    }
+    case BENCODE_FLOAT_NUMBER_IGNORE: {
+      auto c = data[i];
+      if (util::isDigit(c) || c == '.' || c == 'E' || c == '+' || c == '-') {
+        continue;
+      }
+
+      if (c != 'e') {
+        currentState_ = BENCODE_ERROR;
+        return lastError_ = ERR_INVALID_FLOAT_NUMBER;
+      }
+
+      onNumberEnd();
       break;
     }
     }
