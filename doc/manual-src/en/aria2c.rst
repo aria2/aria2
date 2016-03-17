@@ -1465,11 +1465,11 @@ Advanced Options
   previous downloads to adapt the number of downloads launched in
   parallel according to the rule N = A + B Log10(speed in Mbps). The
   coefficients A and B can be customized in the option arguments with
-  A and B separated by a colon. The default values (A=5,B=25) lead to
+  A and B separated by a colon. The default values (A=5, B=25) lead to
   using typically 5 parallel downloads on 1Mbps networks and above 50
   on 100Mbps networks. The number of parallel downloads remains
   constrained under the maximum defined by the
-  max-concurrent-downloads parameter.
+  :option:`--max-concurrent-downloads` parameter.
   Default: ``false``
 
 .. option:: --piece-length=<LENGTH>
