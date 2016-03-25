@@ -562,11 +562,9 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(new OptimizeConcurrentDownloadsOptionHandler
-                      (PREF_OPTIMIZE_CONCURRENT_DOWNLOADS,
-                       TEXT_OPTIMIZE_CONCURRENT_DOWNLOADS,
-                       A2_V_FALSE,
-                       OptionHandler::OPT_ARG));
+    OptionHandler* op(new OptimizeConcurrentDownloadsOptionHandler(
+        PREF_OPTIMIZE_CONCURRENT_DOWNLOADS, TEXT_OPTIMIZE_CONCURRENT_DOWNLOADS,
+        A2_V_FALSE, OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     op->setChangeGlobalOption(true);
     handlers.push_back(op);

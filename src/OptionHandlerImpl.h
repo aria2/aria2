@@ -264,7 +264,6 @@ public:
   virtual std::string createPossibleValuesString() const CXX11_OVERRIDE;
 };
 
-
 // This class is used to deprecate option and optionally handle its
 // option value using replacing option.
 class DeprecatedOptionHandler : public OptionHandler {
