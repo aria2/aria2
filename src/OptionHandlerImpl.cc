@@ -43,6 +43,7 @@
 #include <sstream>
 #include <iterator>
 #include <vector>
+#include <stdexcept>
 
 #include "util.h"
 #include "DlAbortEx.h"
