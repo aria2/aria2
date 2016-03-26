@@ -62,8 +62,7 @@ class AsyncNameResolver;
 class AsyncNameResolverMan;
 #endif // ENABLE_ASYNC_DNS
 
-class AbstractCommand : public Command
-{
+class AbstractCommand : public Command {
 private:
   std::shared_ptr<Request> req_;
   std::shared_ptr<FileEntry> fileEntry_;
@@ -97,15 +96,9 @@ private:
   bool shouldProcess() const;
 
 public:
-  RequestGroup* getRequestGroup() const
-  {
-    return requestGroup_;
-  }
+  RequestGroup* getRequestGroup() const { return requestGroup_; }
 
-  const std::shared_ptr<Request>& getRequest() const
-  {
-    return req_;
-  }
+  const std::shared_ptr<Request>& getRequest() const { return req_; }
 
   void setRequest(const std::shared_ptr<Request>& request);
 
@@ -113,27 +106,15 @@ public:
   // setRequest(std::shared_ptr<Request>());
   void resetRequest();
 
-  const std::shared_ptr<FileEntry>& getFileEntry() const
-  {
-    return fileEntry_;
-  }
+  const std::shared_ptr<FileEntry>& getFileEntry() const { return fileEntry_; }
 
   void setFileEntry(const std::shared_ptr<FileEntry>& fileEntry);
 
-  DownloadEngine* getDownloadEngine() const
-  {
-    return e_;
-  }
+  DownloadEngine* getDownloadEngine() const { return e_; }
 
-  const std::shared_ptr<SocketCore>& getSocket() const
-  {
-    return socket_;
-  }
+  const std::shared_ptr<SocketCore>& getSocket() const { return socket_; }
 
-  std::shared_ptr<SocketCore>& getSocket()
-  {
-    return socket_;
-  }
+  std::shared_ptr<SocketCore>& getSocket() { return socket_; }
 
   void setSocket(const std::shared_ptr<SocketCore>& s);
 
@@ -155,8 +136,7 @@ public:
   // arguments until resolved address is returned.  Exception is
   // thrown on error. port is used for retrieving cached addresses.
   std::string resolveHostname(std::vector<std::string>& addrs,
-                              const std::string& hostname,
-                              uint16_t port);
+                              const std::string& hostname, uint16_t port);
 
   void tryReserved();
 
@@ -185,10 +165,7 @@ public:
   // check.
   void swapSocket(std::shared_ptr<SocketCore>& socket);
 
-  std::chrono::seconds getTimeout() const
-  {
-    return timeout_;
-  }
+  std::chrono::seconds getTimeout() const { return timeout_; }
 
   void setTimeout(std::chrono::seconds timeout)
   {
@@ -229,10 +206,7 @@ public:
   const std::shared_ptr<SegmentMan>& getSegmentMan() const;
   const std::shared_ptr<PieceStorage>& getPieceStorage() const;
 
-  Timer& getCheckPoint()
-  {
-    return checkPoint_;
-  }
+  Timer& getCheckPoint() { return checkPoint_; }
 
   void checkSocketRecvBuffer();
 
@@ -247,21 +221,15 @@ protected:
 
   // Returns true if the derived class wants to execute
   // executeInternal() unconditionally
-  virtual bool noCheck() const
-  {
-    return false;
-  }
+  virtual bool noCheck() const { return false; }
 
 public:
-  AbstractCommand(cuid_t cuid,
-                  const std::shared_ptr<Request>& req,
-                  const std::shared_ptr<FileEntry>& fileEntry,
-                  RequestGroup* requestGroup,
-                  DownloadEngine* e,
-                  const std::shared_ptr<SocketCore>& s = nullptr,
-                  const std::shared_ptr<SocketRecvBuffer>& socketRecvBuffer =
-                      nullptr,
-                  bool incNumConnection = true);
+  AbstractCommand(
+      cuid_t cuid, const std::shared_ptr<Request>& req,
+      const std::shared_ptr<FileEntry>& fileEntry, RequestGroup* requestGroup,
+      DownloadEngine* e, const std::shared_ptr<SocketCore>& s = nullptr,
+      const std::shared_ptr<SocketRecvBuffer>& socketRecvBuffer = nullptr,
+      bool incNumConnection = true);
 
   virtual ~AbstractCommand();
 

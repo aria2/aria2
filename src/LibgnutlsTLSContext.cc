@@ -37,8 +37,8 @@
 #include <sstream>
 
 #ifdef HAVE_LIBGNUTLS
-# include <gnutls/x509.h>
-# include <gnutls/pkcs12.h>
+#include <gnutls/x509.h>
+#include <gnutls/pkcs12.h>
 #endif // HAVE_LIBGNUTLS
 
 #include "LogFactory.h"
@@ -55,18 +55,16 @@ TLSContext* TLSContext::make(TLSSessionSide side, TLSVersion ver)
 }
 
 GnuTLSContext::GnuTLSContext(TLSSessionSide side, TLSVersion ver)
-  : certCred_(0),
-    side_(side),
-    minTLSVer_(ver),
-    verifyPeer_(true)
+    : certCred_(0), side_(side), minTLSVer_(ver), verifyPeer_(true)
 {
   int r = gnutls_certificate_allocate_credentials(&certCred_);
-  if(r == GNUTLS_E_SUCCESS) {
+  if (r == GNUTLS_E_SUCCESS) {
     good_ = true;
     gnutls_certificate_set_verify_flags(certCred_,
                                         GNUTLS_VERIFY_ALLOW_X509_V1_CA_CRT);
-  } else {
-    good_ =false;
+  }
+  else {
+    good_ = false;
     A2_LOG_ERROR(fmt("gnutls_certificate_allocate_credentials() failed."
                      " Cause: %s",
                      gnutls_strerror(r)));
@@ -75,36 +73,31 @@ GnuTLSContext::GnuTLSContext(TLSSessionSide side, TLSVersion ver)
 
 GnuTLSContext::~GnuTLSContext()
 {
-  if(certCred_) {
+  if (certCred_) {
     gnutls_certificate_free_credentials(certCred_);
   }
 }
 
-bool GnuTLSContext::good() const
-{
-  return good_;
-}
+bool GnuTLSContext::good() const { return good_; }
 
 bool GnuTLSContext::addCredentialFile(const std::string& certfile,
-                                   const std::string& keyfile)
+                                      const std::string& keyfile)
 {
   if (keyfile.empty()) {
     return addP12CredentialFile(certfile);
   }
-  int ret = gnutls_certificate_set_x509_key_file(certCred_,
-                                                 certfile.c_str(),
-                                                 keyfile.c_str(),
-                                                 GNUTLS_X509_FMT_PEM);
-  if(ret == GNUTLS_E_SUCCESS) {
-    A2_LOG_INFO(fmt
-                ("Credential files(cert=%s, key=%s) were successfully added.",
-                 certfile.c_str(), keyfile.c_str()));
+  int ret = gnutls_certificate_set_x509_key_file(
+      certCred_, certfile.c_str(), keyfile.c_str(), GNUTLS_X509_FMT_PEM);
+  if (ret == GNUTLS_E_SUCCESS) {
+    A2_LOG_INFO(
+        fmt("Credential files(cert=%s, key=%s) were successfully added.",
+            certfile.c_str(), keyfile.c_str()));
     return true;
-  } else {
+  }
+  else {
     A2_LOG_ERROR(fmt("Failed to load certificate from %s and"
                      " private key from %s. Cause: %s",
-                     certfile.c_str(), keyfile.c_str(),
-                     gnutls_strerror(ret)));
+                     certfile.c_str(), keyfile.c_str(), gnutls_strerror(ret)));
     return false;
   }
 }
@@ -113,16 +106,21 @@ bool GnuTLSContext::addP12CredentialFile(const std::string& p12file)
   std::stringstream ss;
   BufferedFile(p12file.c_str(), BufferedFile::READ).transfer(ss);
   auto datastr = ss.str();
-  const gnutls_datum_t data = {
-    (unsigned char*)datastr.c_str(),
-    (unsigned int)datastr.length()
-  };
-  int err = gnutls_certificate_set_x509_simple_pkcs12_mem
-    (certCred_, &data, GNUTLS_X509_FMT_DER, "");
+  const gnutls_datum_t data = {(unsigned char*)datastr.c_str(),
+                               (unsigned int)datastr.length()};
+  int err = gnutls_certificate_set_x509_simple_pkcs12_mem(
+      certCred_, &data, GNUTLS_X509_FMT_DER, "");
   if (err != GNUTLS_E_SUCCESS) {
-    A2_LOG_ERROR("Failed to import PKCS12 file. "
-                 "If you meant to use PEM, you'll also have to specify "
-                 "--rpc-private-key. See the manual.");
+    if (side_ == TLS_SERVER) {
+      A2_LOG_ERROR("Failed to import PKCS12 file. "
+                   "If you meant to use PEM, you'll also have to specify "
+                   "--rpc-private-key. See the manual.");
+    }
+    else {
+      A2_LOG_ERROR("Failed to import PKCS12 file. "
+                   "If you meant to use PEM, you'll also have to specify "
+                   "--private-key. See the manual.");
+    }
     return false;
   }
   return true;
@@ -132,11 +130,12 @@ bool GnuTLSContext::addSystemTrustedCACerts()
 {
 #ifdef HAVE_GNUTLS_CERTIFICATE_SET_X509_SYSTEM_TRUST
   int ret = gnutls_certificate_set_x509_system_trust(certCred_);
-  if(ret < 0) {
-    A2_LOG_INFO(fmt(MSG_LOADING_SYSTEM_TRUSTED_CA_CERTS_FAILED,
-                    gnutls_strerror(ret)));
+  if (ret < 0) {
+    A2_LOG_INFO(
+        fmt(MSG_LOADING_SYSTEM_TRUSTED_CA_CERTS_FAILED, gnutls_strerror(ret)));
     return false;
-  } else {
+  }
+  else {
     A2_LOG_INFO(fmt("%d certificate(s) were imported.", ret));
     return true;
   }
@@ -148,14 +147,14 @@ bool GnuTLSContext::addSystemTrustedCACerts()
 
 bool GnuTLSContext::addTrustedCACertFile(const std::string& certfile)
 {
-  int ret = gnutls_certificate_set_x509_trust_file(certCred_,
-                                                   certfile.c_str(),
+  int ret = gnutls_certificate_set_x509_trust_file(certCred_, certfile.c_str(),
                                                    GNUTLS_X509_FMT_PEM);
-  if(ret < 0) {
-    A2_LOG_ERROR(fmt(MSG_LOADING_TRUSTED_CA_CERT_FAILED,
-                     certfile.c_str(), gnutls_strerror(ret)));
+  if (ret < 0) {
+    A2_LOG_ERROR(fmt(MSG_LOADING_TRUSTED_CA_CERT_FAILED, certfile.c_str(),
+                     gnutls_strerror(ret)));
     return false;
-  } else {
+  }
+  else {
     A2_LOG_INFO(fmt("%d certificate(s) were imported.", ret));
     return true;
   }

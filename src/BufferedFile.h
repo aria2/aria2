@@ -42,11 +42,12 @@
 namespace aria2 {
 
 // IOFILE implementation using standard I/O functions.
-class BufferedFile:public IOFile {
+class BufferedFile : public IOFile {
 public:
   BufferedFile(const char* filename, const char* mode);
   BufferedFile(FILE* fp);
   virtual ~BufferedFile();
+
 protected:
   // wrapper for fread. Using 1 for 2nd argument of fread.
   virtual size_t onRead(void* ptr, size_t count) CXX11_OVERRIDE;
@@ -63,6 +64,7 @@ protected:
   virtual bool isError() const CXX11_OVERRIDE;
   virtual bool isEOF() const CXX11_OVERRIDE;
   virtual bool isOpen() const CXX11_OVERRIDE;
+
 private:
   // Don't allow copying;
   BufferedFile(const BufferedFile&);

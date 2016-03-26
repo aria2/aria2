@@ -7,13 +7,14 @@
 
 namespace aria2 {
 
-class HttpHeaderTest:public CppUnit::TestFixture {
+class HttpHeaderTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(HttpHeaderTest);
   CPPUNIT_TEST(testGetRange);
   CPPUNIT_TEST(testFindAll);
   CPPUNIT_TEST(testClearField);
   CPPUNIT_TEST(testFieldContains);
+  CPPUNIT_TEST(testRemove);
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -21,16 +22,18 @@ public:
   void testFindAll();
   void testClearField();
   void testFieldContains();
+  void testRemove();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( HttpHeaderTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(HttpHeaderTest);
 
 void HttpHeaderTest::testGetRange()
 {
   {
     HttpHeader httpHeader;
-    httpHeader.put(HttpHeader::CONTENT_RANGE,
-                   "9223372036854775800-9223372036854775801/9223372036854775807");
+    httpHeader.put(
+        HttpHeader::CONTENT_RANGE,
+        "9223372036854775800-9223372036854775801/9223372036854775807");
 
     Range range = httpHeader.getRange();
 
@@ -40,8 +43,9 @@ void HttpHeaderTest::testGetRange()
   }
   {
     HttpHeader httpHeader;
-    httpHeader.put(HttpHeader::CONTENT_RANGE,
-                   "9223372036854775800-9223372036854775801/9223372036854775807");
+    httpHeader.put(
+        HttpHeader::CONTENT_RANGE,
+        "9223372036854775800-9223372036854775801/9223372036854775807");
 
     Range range = httpHeader.getRange();
 
@@ -100,12 +104,24 @@ void HttpHeaderTest::testGetRange()
     CPPUNIT_ASSERT_EQUAL((int64_t)0, range.entityLength);
   }
   {
+    // Support for non-compliant server
+    HttpHeader httpHeader;
+    httpHeader.put(HttpHeader::CONTENT_RANGE, "bytes=0-1023/1024");
+
+    Range range = httpHeader.getRange();
+
+    CPPUNIT_ASSERT_EQUAL((int64_t)0, range.startByte);
+    CPPUNIT_ASSERT_EQUAL((int64_t)1023, range.endByte);
+    CPPUNIT_ASSERT_EQUAL((int64_t)1024, range.entityLength);
+  }
+  {
     HttpHeader httpHeader;
     httpHeader.put(HttpHeader::CONTENT_RANGE, "bytes 0-/3");
     try {
       httpHeader.getRange();
       CPPUNIT_FAIL("Exception must be thrown");
-    } catch(const DlAbortEx& e) {
+    }
+    catch (const DlAbortEx& e) {
       // success
     }
   }
@@ -115,7 +131,8 @@ void HttpHeaderTest::testGetRange()
     try {
       httpHeader.getRange();
       CPPUNIT_FAIL("Exception must be thrown");
-    } catch(const DlAbortEx& e) {
+    }
+    catch (const DlAbortEx& e) {
       // success
     }
   }
@@ -165,6 +182,19 @@ void HttpHeaderTest::testFieldContains()
   CPPUNIT_ASSERT(h.fieldContains(HttpHeader::SEC_WEBSOCKET_VERSION, "13"));
   CPPUNIT_ASSERT(h.fieldContains(HttpHeader::SEC_WEBSOCKET_VERSION, "8"));
   CPPUNIT_ASSERT(!h.fieldContains(HttpHeader::SEC_WEBSOCKET_VERSION, "6"));
+}
+
+void HttpHeaderTest::testRemove()
+{
+  HttpHeader h;
+  h.put(HttpHeader::CONNECTION, "close");
+  h.put(HttpHeader::TRANSFER_ENCODING, "chunked");
+  h.put(HttpHeader::TRANSFER_ENCODING, "gzip");
+
+  h.remove(HttpHeader::TRANSFER_ENCODING);
+
+  CPPUNIT_ASSERT(!h.defined(HttpHeader::TRANSFER_ENCODING));
+  CPPUNIT_ASSERT(h.defined(HttpHeader::CONNECTION));
 }
 
 } // namespace aria2

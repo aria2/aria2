@@ -51,12 +51,13 @@
 namespace aria2 {
 
 DHTTaskFactoryImpl::DHTTaskFactoryImpl()
-  : routingTable_(nullptr),
-    dispatcher_(nullptr),
-    factory_(nullptr),
-    taskQueue_(nullptr),
-    timeout_(DHT_MESSAGE_TIMEOUT)
-{}
+    : routingTable_(nullptr),
+      dispatcher_(nullptr),
+      factory_(nullptr),
+      taskQueue_(nullptr),
+      timeout_(DHT_MESSAGE_TIMEOUT)
+{
+}
 
 DHTTaskFactoryImpl::~DHTTaskFactoryImpl() {}
 
@@ -78,19 +79,16 @@ DHTTaskFactoryImpl::createNodeLookupTask(const unsigned char* targetID)
   return task;
 }
 
-std::shared_ptr<DHTTask>
-DHTTaskFactoryImpl::createBucketRefreshTask()
+std::shared_ptr<DHTTask> DHTTaskFactoryImpl::createBucketRefreshTask()
 {
   auto task = std::make_shared<DHTBucketRefreshTask>();
   setCommonProperty(task);
   return task;
 }
 
-std::shared_ptr<DHTTask>
-DHTTaskFactoryImpl::createPeerLookupTask
-(const std::shared_ptr<DownloadContext>& ctx,
- uint16_t tcpPort,
- const std::shared_ptr<PeerStorage>& peerStorage)
+std::shared_ptr<DHTTask> DHTTaskFactoryImpl::createPeerLookupTask(
+    const std::shared_ptr<DownloadContext>& ctx, uint16_t tcpPort,
+    const std::shared_ptr<PeerStorage>& peerStorage)
 {
   auto task = std::make_shared<DHTPeerLookupTask>(ctx, tcpPort);
   // TODO this may be not freed by RequestGroup::releaseRuntimeResource()
@@ -106,9 +104,9 @@ DHTTaskFactoryImpl::createPeerAnnounceTask(const unsigned char* infoHash)
   return nullptr;
 }
 
-std::shared_ptr<DHTTask>
-DHTTaskFactoryImpl::createReplaceNodeTask(const std::shared_ptr<DHTBucket>& bucket,
-                                          const std::shared_ptr<DHTNode>& newNode)
+std::shared_ptr<DHTTask> DHTTaskFactoryImpl::createReplaceNodeTask(
+    const std::shared_ptr<DHTBucket>& bucket,
+    const std::shared_ptr<DHTNode>& newNode)
 {
   auto task = std::make_shared<DHTReplaceNodeTask>(bucket, newNode);
   task->setTimeout(timeout_);
@@ -116,7 +114,8 @@ DHTTaskFactoryImpl::createReplaceNodeTask(const std::shared_ptr<DHTBucket>& buck
   return task;
 }
 
-void DHTTaskFactoryImpl::setCommonProperty(const std::shared_ptr<DHTAbstractTask>& task)
+void DHTTaskFactoryImpl::setCommonProperty(
+    const std::shared_ptr<DHTAbstractTask>& task)
 {
   task->setRoutingTable(routingTable_);
   task->setMessageDispatcher(dispatcher_);

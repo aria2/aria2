@@ -44,11 +44,11 @@ namespace aria2 {
 class RequestGroup;
 class Option;
 
-class BtDependency : public Dependency
-{
+class BtDependency : public Dependency {
 private:
   RequestGroup* dependant_;
   std::shared_ptr<RequestGroup> dependee_;
+
 public:
   BtDependency(RequestGroup* dependant,
                const std::shared_ptr<RequestGroup>& dependee);

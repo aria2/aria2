@@ -42,7 +42,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
-char * strptime (const char *buf, const char *format, struct tm *timeptr);
+char* strptime(const char* buf, const char* format, struct tm* timeptr);
 
 #ifdef __cplusplus
 }

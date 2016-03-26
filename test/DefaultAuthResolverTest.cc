@@ -11,8 +11,10 @@ class DefaultAuthResolverTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testResolveAuthConfig_without_userDefined);
   CPPUNIT_TEST(testResolveAuthConfig_with_userDefined);
   CPPUNIT_TEST_SUITE_END();
+
 private:
   std::unique_ptr<DefaultAuthResolver> resolver_;
+
 public:
   void setUp()
   {
@@ -27,8 +29,7 @@ public:
   void testResolveAuthConfig_with_userDefined();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( DefaultAuthResolverTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(DefaultAuthResolverTest);
 
 void DefaultAuthResolverTest::testResolveAuthConfig_without_userDefined()
 {

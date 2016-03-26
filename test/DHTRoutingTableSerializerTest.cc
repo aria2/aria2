@@ -16,25 +16,24 @@
 
 namespace aria2 {
 
-class DHTRoutingTableSerializerTest:public CppUnit::TestFixture {
+class DHTRoutingTableSerializerTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTRoutingTableSerializerTest);
   CPPUNIT_TEST(testSerialize);
   CPPUNIT_TEST(testSerialize6);
   CPPUNIT_TEST_SUITE_END();
+
 private:
   char zero[256];
   char buf[20];
 
-  void checkToLocalnode
-  (std::istream& ss, const std::shared_ptr<DHTNode>& localNode);
+  void checkToLocalnode(std::istream& ss,
+                        const std::shared_ptr<DHTNode>& localNode);
 
   void checkNumNodes(std::istream& ss, size_t expected);
+
 public:
-  void setUp()
-  {
-    memset(zero, 0, sizeof(zero));
-  }
+  void setUp() { memset(zero, 0, sizeof(zero)); }
 
   void tearDown() {}
 
@@ -43,11 +42,10 @@ public:
   void testSerialize6();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(DHTRoutingTableSerializerTest);
 
-void DHTRoutingTableSerializerTest::checkToLocalnode
-(std::istream& ss, const std::shared_ptr<DHTNode>& localNode)
+void DHTRoutingTableSerializerTest::checkToLocalnode(
+    std::istream& ss, const std::shared_ptr<DHTNode>& localNode)
 {
   // header
   ss.read(buf, 8);
@@ -84,8 +82,8 @@ void DHTRoutingTableSerializerTest::checkToLocalnode
   CPPUNIT_ASSERT(memcmp(zero, buf, 4) == 0);
 }
 
-void DHTRoutingTableSerializerTest::checkNumNodes
-(std::istream& ss, size_t expected)
+void DHTRoutingTableSerializerTest::checkNumNodes(std::istream& ss,
+                                                  size_t expected)
 {
   // number of nodes saved
   ss.read(buf, 4);
@@ -101,10 +99,10 @@ void DHTRoutingTableSerializerTest::testSerialize()
   std::shared_ptr<DHTNode> localNode(new DHTNode());
 
   std::vector<std::shared_ptr<DHTNode>> nodes(3);
-  for(size_t i = 0; i < nodes.size(); ++i) {
+  for (size_t i = 0; i < nodes.size(); ++i) {
     nodes[i].reset(new DHTNode());
-    nodes[i]->setIPAddress("192.168.0."+util::uitos(i+1));
-    nodes[i]->setPort(6881+i);
+    nodes[i]->setIPAddress("192.168.0." + util::uitos(i + 1));
+    nodes[i]->setPort(6881 + i);
   }
   nodes[1]->setIPAddress("non-numerical-name");
 
@@ -112,7 +110,8 @@ void DHTRoutingTableSerializerTest::testSerialize()
   s.setLocalNode(localNode);
   s.setNodes(nodes);
 
-  std::string filename = A2_TEST_OUT_DIR"/aria2_DHTRoutingTableSerializerTest_testSerialize";
+  std::string filename =
+      A2_TEST_OUT_DIR "/aria2_DHTRoutingTableSerializerTest_testSerialize";
   s.serialize(filename);
 
   std::ifstream ss(filename.c_str(), std::ios::binary);
@@ -138,9 +137,8 @@ void DHTRoutingTableSerializerTest::testSerialize()
   // 6bytes compact peer info
   ss.read(buf, 6);
   {
-    std::pair<std::string, uint16_t> peer =
-      bittorrent::unpackcompact(reinterpret_cast<const unsigned char*>(buf),
-                                AF_INET);
+    std::pair<std::string, uint16_t> peer = bittorrent::unpackcompact(
+        reinterpret_cast<const unsigned char*>(buf), AF_INET);
     CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer.first);
     CPPUNIT_ASSERT_EQUAL((uint16_t)6881, peer.second);
   }
@@ -198,9 +196,8 @@ void DHTRoutingTableSerializerTest::testSerialize()
   // 6bytes compact peer info
   ss.read(buf, 6);
   {
-    std::pair<std::string, uint16_t> peer =
-      bittorrent::unpackcompact(reinterpret_cast<const unsigned char*>(buf),
-                                AF_INET);
+    std::pair<std::string, uint16_t> peer = bittorrent::unpackcompact(
+        reinterpret_cast<const unsigned char*>(buf), AF_INET);
     CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.3"), peer.first);
     CPPUNIT_ASSERT_EQUAL((uint16_t)6883, peer.second);
   }
@@ -228,10 +225,10 @@ void DHTRoutingTableSerializerTest::testSerialize6()
   std::shared_ptr<DHTNode> localNode(new DHTNode());
 
   std::vector<std::shared_ptr<DHTNode>> nodes(2);
-  for(size_t i = 0; i < nodes.size(); ++i) {
+  for (size_t i = 0; i < nodes.size(); ++i) {
     nodes[i].reset(new DHTNode());
-    nodes[i]->setIPAddress("2001::100"+util::uitos(i+1));
-    nodes[i]->setPort(6881+i);
+    nodes[i]->setIPAddress("2001::100" + util::uitos(i + 1));
+    nodes[i]->setPort(6881 + i);
   }
   nodes[1]->setIPAddress("non-numerical-name");
 
@@ -239,7 +236,8 @@ void DHTRoutingTableSerializerTest::testSerialize6()
   s.setLocalNode(localNode);
   s.setNodes(nodes);
 
-  std::string filename = A2_TEST_OUT_DIR"/aria2_DHTRoutingTableSerializerTest_testSerialize6";
+  std::string filename =
+      A2_TEST_OUT_DIR "/aria2_DHTRoutingTableSerializerTest_testSerialize6";
   s.serialize(filename);
 
   std::ifstream ss(filename.c_str(), std::ios::binary);
@@ -265,9 +263,8 @@ void DHTRoutingTableSerializerTest::testSerialize6()
   // 18 bytes compact peer info
   ss.read(buf, 18);
   {
-    std::pair<std::string, uint16_t> peer =
-      bittorrent::unpackcompact(reinterpret_cast<const unsigned char*>(buf),
-                                AF_INET6);
+    std::pair<std::string, uint16_t> peer = bittorrent::unpackcompact(
+        reinterpret_cast<const unsigned char*>(buf), AF_INET6);
     CPPUNIT_ASSERT_EQUAL(std::string("2001::1001"), peer.first);
     CPPUNIT_ASSERT_EQUAL((uint16_t)6881, peer.second);
   }

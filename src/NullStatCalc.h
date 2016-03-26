@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-class NullStatCalc:public StatCalc {
+class NullStatCalc : public StatCalc {
 public:
   virtual ~NullStatCalc() {}
 

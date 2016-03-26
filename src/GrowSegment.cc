@@ -38,8 +38,10 @@
 
 namespace aria2 {
 
-GrowSegment::GrowSegment(const std::shared_ptr<Piece>& piece):
-  piece_(piece), writtenLength_(0) {}
+GrowSegment::GrowSegment(const std::shared_ptr<Piece>& piece)
+    : piece_(piece), writtenLength_(0)
+{
+}
 
 GrowSegment::~GrowSegment() {}
 
@@ -50,10 +52,7 @@ void GrowSegment::updateWrittenLength(int64_t bytes)
   piece_->setAllBlock();
 }
 
-std::string GrowSegment::getDigest()
-{
-  return A2STR::NIL;
-}
+std::string GrowSegment::getDigest() { return A2STR::NIL; }
 
 void GrowSegment::clear(WrDiskCache* diskCache)
 {
@@ -62,9 +61,6 @@ void GrowSegment::clear(WrDiskCache* diskCache)
   piece_->clearAllBlock(nullptr);
 }
 
-std::shared_ptr<Piece> GrowSegment::getPiece() const
-{
-  return piece_;
-}
+std::shared_ptr<Piece> GrowSegment::getPiece() const { return piece_; }
 
 } // namespace aria2

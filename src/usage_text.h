@@ -33,6 +33,8 @@
  */
 /* copyright --> */
 
+// clang-format off
+
 #define TEXT_DIR                                                        \
   _(" -d, --dir=DIR                The directory to store the downloaded file.")
 #define TEXT_OUT                                                        \
@@ -240,7 +242,22 @@
 #define TEXT_MAX_CONCURRENT_DOWNLOADS                                   \
   _(" -j, --max-concurrent-downloads=N Set maximum number of parallel downloads for\n" \
     "                              every static (HTTP/FTP) URL, torrent and metalink.\n" \
-    "                              See also --split option.")
+    "                              See also --split and --optimize-concurrent-downloads options.")
+#define TEXT_OPTIMIZE_CONCURRENT_DOWNLOADS\
+  _(" --optimize-concurrent-downloads[=true|false|A:B] Optimizes the number of\n" \
+    "                              concurrent downloads according to the bandwidth\n" \
+    "                              available. aria2 uses the download speed observed\n" \
+    "                              in the previous downloads to adapt the number of\n" \
+    "                              downloads launched in parallel according to the\n" \
+    "                              rule N = A + B Log10(speed in Mbps). The\n" \
+    "                              coefficients A and B can be customized in the\n" \
+    "                              option arguments with A and B separated by a\n" \
+    "                              colon. The default values (A=5,B=25) lead to\n" \
+    "                              using typically 5 parallel downloads on 1Mbps\n" \
+    "                              networks and above 50 on 100Mbps networks. The\n" \
+    "                              number of parallel downloads remains constrained\n" \
+    "                              under the maximum defined by the\n" \
+    "                              max-concurrent-downloads parameter.")
 #define TEXT_LOAD_COOKIES                                               \
   _(" --load-cookies=FILE          Load Cookies from FILE using the Firefox3 format\n" \
     "                              and Mozilla/Firefox(1.x/2.x)/Netscape format.")
@@ -453,7 +470,9 @@
     "                              a single byte, then force the download to fail.\n" \
     "                              Specify 0 to disable this option.\n" \
     "                              This options is effective only when using\n" \
-    "                              HTTP/FTP servers.")
+    "                              HTTP/FTP servers. The number of retry attempt is\n" \
+    "                              counted toward --max-tries, so it should be\n" \
+    "                              configured too.")
 #define TEXT_URI_SELECTOR                                               \
   _(" --uri-selector=SELECTOR      Specify URI selection algorithm.\n"  \
     "                              If 'inorder' is given, URI is tried in the order\n" \
@@ -1043,3 +1062,27 @@
     "                              public key when SFTP is used. If this option is\n" \
     "                              not set, which is default, no validation takes\n" \
     "                              place.")
+#define TEXT_SOCKET_RECV_BUFFER_SIZE                                    \
+  _(" --socket-recv-buffer-size=SIZE\n"                                 \
+    "                              Set the maximum socket receive buffer in bytes.\n" \
+    "                              Specifing 0 will disable this option. This value\n" \
+    "                              will be set to socket file descriptor using\n" \
+    "                              SO_RCVBUF socket option with setsockopt() call.")
+#define TEXT_BT_ENABLE_HOOK_AFTER_HASH_CHECK                            \
+  _(" --bt-enable-hook-after-hash-check[=true|false] Allow hook command invocation\n" \
+    "                              after hash check (see -V option) in BitTorrent\n" \
+    "                              download. By default, when hash check succeeds,\n" \
+    "                              the command given by --on-bt-download-complete\n" \
+    "                              is executed. To disable this action, give false\n" \
+    "                              to this option.")
+#define TEXT_MAX_MMAP_LIMIT                                             \
+  _(" --max-mmap-limit=SIZE        Set the maximum file size to enable mmap (see\n" \
+    "                              --enable-mmap option). The file size is\n" \
+    "                              determined by the sum of all files contained in\n" \
+    "                              one download. For example, if a download\n" \
+    "                              contains 5 files, then file size is the total\n" \
+    "                              size of those files. If file size is strictly\n" \
+    "                              greater than the size specified in this option,\n" \
+    "                              mmap will be disabled.")
+
+// clang-format on

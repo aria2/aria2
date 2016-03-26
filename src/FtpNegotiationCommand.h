@@ -92,6 +92,7 @@ public:
     SEQ_FILE_PREPARATION, // File allocation after SIZE command
     SEQ_EXIT
   };
+
 private:
   bool recvGreeting();
   bool sendUser();
@@ -153,14 +154,14 @@ private:
   std::string proxyAddr_;
 
   std::deque<std::string> cwdDirs_;
+
 protected:
   virtual bool executeInternal() CXX11_OVERRIDE;
+
 public:
-  FtpNegotiationCommand(cuid_t cuid,
-                        const std::shared_ptr<Request>& req,
+  FtpNegotiationCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
                         const std::shared_ptr<FileEntry>& fileEntry,
-                        RequestGroup* requestGroup,
-                        DownloadEngine* e,
+                        RequestGroup* requestGroup, DownloadEngine* e,
                         const std::shared_ptr<SocketCore>& s,
                         Seq seq = SEQ_RECV_GREETING,
                         const std::string& baseWorkingDir = "/");

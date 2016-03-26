@@ -62,7 +62,8 @@ private:
 public:
   HttpRequestEntry(std::unique_ptr<HttpRequest> httpRequest);
 
-  const std::unique_ptr<HttpRequest>& getHttpRequest() const {
+  const std::unique_ptr<HttpRequest>& getHttpRequest() const
+  {
     return httpRequest_;
   }
 
@@ -124,7 +125,8 @@ public:
 
   void sendPendingData();
 
-  const std::shared_ptr<SocketRecvBuffer>& getSocketRecvBuffer() const {
+  const std::shared_ptr<SocketRecvBuffer>& getSocketRecvBuffer() const
+  {
     return socketRecvBuffer_;
   }
 };

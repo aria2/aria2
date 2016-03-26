@@ -49,12 +49,12 @@ std::string fmt(const char* fmtTemplate, ...)
   rv = vsnprintf(buf, sizeof(buf), fmtTemplate, ap);
 #ifdef __MINGW32__
   // MINGW32 vsnprintf returns -1 if output is truncated.
-  if(rv < 0 && rv != -1) {
+  if (rv < 0 && rv != -1) {
     // Reachable?
     buf[0] = '\0';
   }
-#else // !__MINGW32__
-  if(rv < 0) {
+#else  // !__MINGW32__
+  if (rv < 0) {
     buf[0] = '\0';
   }
 #endif // !__MINGW32__

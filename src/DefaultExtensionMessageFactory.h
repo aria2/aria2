@@ -47,7 +47,7 @@ class BtMessageFactory;
 class BtMessageDispatcher;
 class UTMetadataRequestTracker;
 
-class DefaultExtensionMessageFactory:public ExtensionMessageFactory {
+class DefaultExtensionMessageFactory : public ExtensionMessageFactory {
 private:
   PeerStorage* peerStorage_;
 
@@ -62,11 +62,12 @@ private:
   BtMessageDispatcher* dispatcher_;
 
   UTMetadataRequestTracker* tracker_;
+
 public:
   DefaultExtensionMessageFactory();
 
-  DefaultExtensionMessageFactory
-  (const std::shared_ptr<Peer>& peer, ExtensionMessageRegistry* registry);
+  DefaultExtensionMessageFactory(const std::shared_ptr<Peer>& peer,
+                                 ExtensionMessageRegistry* registry);
 
   virtual std::unique_ptr<ExtensionMessage>
   createMessage(const unsigned char* data, size_t length) CXX11_OVERRIDE;

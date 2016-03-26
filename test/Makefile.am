@@ -240,16 +240,61 @@ if ENABLE_LIBARIA2
 aria2c_SOURCES += Aria2ApiTest.cc
 endif # ENABLE_LIBARIA2
 
-aria2c_LDADD = ../src/libaria2.la @LIBINTL@ @CPPUNIT_LIBS@
-AM_CPPFLAGS =  -Wall\
-	-I$(top_srcdir)/src\
-	-I$(top_srcdir)/src/includes -I$(top_builddir)/src/includes\
-	-I$(top_srcdir)/lib -I$(top_srcdir)/intl\
-        -DLOCALEDIR=\"$(localedir)\"\
-	-DA2_TEST_DIR=\"$(top_srcdir)/test\"\
-	-DA2_TEST_OUT_DIR=\"${a2_test_outdir}\"\
-	@CPPUNIT_CFLAGS@\
-	@DEFS@
+aria2c_LDADD = \
+	../src/libaria2.la \
+	@LIBINTL@ \
+	@CPPUNIT_LIBS@ \
+	@EXTRALIBS@ \
+	@ZLIB_LIBS@ \
+	@LIBUV_LIBS@ \
+	@XML_LIBS@ \
+	@EXPAT_LIBS@ \
+	@SQLITE3_LIBS@ \
+	@WINTLS_LIBS@ \
+	@LIBGNUTLS_LIBS@ \
+	@OPENSSL_LIBS@ \
+	@LIBNETTLE_LIBS@ \
+	@LIBGMP_LIBS@ \
+	@LIBGCRYPT_LIBS@ \
+	@LIBSSH2_LIBS@ \
+	@LIBCARES_LIBS@ \
+	@WSLAY_LIBS@ \
+	@TCMALLOC_LIBS@ \
+	@JEMALLOC_LIBS@
+
+AM_CPPFLAGS = \
+	-I$(top_srcdir)/src \
+	-I$(top_srcdir)/src/includes -I$(top_builddir)/src/includes \
+	-I$(top_srcdir)/lib -I$(top_srcdir)/intl \
+        -DLOCALEDIR=\"$(localedir)\" \
+	-DA2_TEST_DIR=\"$(top_srcdir)/test\" \
+	-DA2_TEST_OUT_DIR=\"${a2_test_outdir}\" \
+	@CPPUNIT_CFLAGS@ \
+	@DEFS@ \
+	@EXTRACPPFLAGS@ \
+	@ZLIB_CFLAGS@ \
+	@LIBUV_CFLAGS@ \
+	@XML_CPPFLAGS@ \
+	@EXPAT_CFLAGS@ \
+	@SQLITE3_CFLAGS@ \
+	@LIBGNUTLS_CFLAGS@ \
+	@OPENSSL_CFLAGS@ \
+	@LIBNETTLE_CFLAGS@ \
+	@LIBGMP_CFLAGS@ \
+	@LIBGCRYPT_CFLAGS@ \
+	@LIBSSH2_CFLAGS@ \
+	@LIBCARES_CFLAGS@ \
+	@WSLAY_CFLAGS@ \
+	@TCMALLOC_CFLAGS@ \
+	@JEMALLOC_CFLAGS@
+
+AM_LDFLAGS = \
+	@EXTRALDFLAGS@ \
+	@APPLETLS_LDFLAGS@
+
+AM_CFLAGS = @EXTRACFLAGS@
+
+AM_CXXFLAGS = @WARNCXXFLAGS@ @CXX1XCXXFLAGS@ @EXTRACXXFLAGS@
 
 EXTRA_DIST = 4096chunk.txt\
 	chunkChecksumTestFile250.txt\

@@ -43,10 +43,10 @@ namespace aria2 {
 class ZeroBtMessage : public SimpleBtMessage {
 private:
   static const size_t MESSAGE_LENGTH = 5;
+
 protected:
-  template<typename T>
-  static std::unique_ptr<T> create(const unsigned char* data,
-                                   size_t dataLength)
+  template <typename T>
+  static std::unique_ptr<T> create(const unsigned char* data, size_t dataLength)
   {
     bittorrent::assertPayloadLengthEqual(1, dataLength, T::NAME);
     bittorrent::assertID(T::ID, data, T::NAME);

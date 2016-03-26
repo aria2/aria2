@@ -39,13 +39,12 @@
 
 namespace aria2 {
 
-class BtPostDownloadHandler:public PostDownloadHandler
-{
+class BtPostDownloadHandler : public PostDownloadHandler {
 public:
   BtPostDownloadHandler();
 
   virtual void
-  getNextRequestGroups(std::vector<std::shared_ptr<RequestGroup> >& groups,
+  getNextRequestGroups(std::vector<std::shared_ptr<RequestGroup>>& groups,
                        RequestGroup* requestGroup) const CXX11_OVERRIDE;
 };
 

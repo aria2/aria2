@@ -48,8 +48,9 @@ class DHTTask;
 class DHTTaskExecutor {
 private:
   int numConcurrent_;
-  std::vector<std::shared_ptr<DHTTask> > execTasks_;
-  std::deque<std::shared_ptr<DHTTask> > queue_;
+  std::vector<std::shared_ptr<DHTTask>> execTasks_;
+  std::deque<std::shared_ptr<DHTTask>> queue_;
+
 public:
   DHTTaskExecutor(int numConcurrent);
 
@@ -57,25 +58,13 @@ public:
 
   void update();
 
-  void addTask(const std::shared_ptr<DHTTask>& task)
-  {
-    queue_.push_back(task);
-  }
+  void addTask(const std::shared_ptr<DHTTask>& task) { queue_.push_back(task); }
 
-  size_t getExecutingTaskSize() const
-  {
-    return execTasks_.size();
-  }
+  size_t getExecutingTaskSize() const { return execTasks_.size(); }
 
-  int getNumConcurrent() const
-  {
-    return numConcurrent_;
-  }
+  int getNumConcurrent() const { return numConcurrent_; }
 
-  size_t getQueueSize() const
-  {
-    return queue_.size();
-  }
+  size_t getQueueSize() const { return queue_.size(); }
 };
 
 } // namespace aria2

@@ -42,22 +42,24 @@ namespace aria2 {
 
 const char BtAllowedFastMessage::NAME[] = "allowed fast";
 
-BtAllowedFastMessage::BtAllowedFastMessage(size_t index):
-  IndexBtMessage(ID, NAME, index) {}
+BtAllowedFastMessage::BtAllowedFastMessage(size_t index)
+    : IndexBtMessage(ID, NAME, index)
+{
+}
 
-std::unique_ptr<BtAllowedFastMessage> BtAllowedFastMessage::create
-(const unsigned char* data, size_t dataLength)
+std::unique_ptr<BtAllowedFastMessage>
+BtAllowedFastMessage::create(const unsigned char* data, size_t dataLength)
 {
   return IndexBtMessage::create<BtAllowedFastMessage>(data, dataLength);
 }
 
-void BtAllowedFastMessage::doReceivedAction() {
-  if(!getPeer()->isFastExtensionEnabled()) {
-    throw DL_ABORT_EX
-      (fmt("%s received while fast extension is disabled",
-           toString().c_str()));
+void BtAllowedFastMessage::doReceivedAction()
+{
+  if (!getPeer()->isFastExtensionEnabled()) {
+    throw DL_ABORT_EX(fmt("%s received while fast extension is disabled",
+                          toString().c_str()));
   }
-  if(isMetadataGetMode()) {
+  if (isMetadataGetMode()) {
     return;
   }
   getPeer()->addPeerAllowedIndex(getIndex());
@@ -65,11 +67,13 @@ void BtAllowedFastMessage::doReceivedAction() {
 
 namespace {
 struct ThisProgressUpdate : public ProgressUpdate {
-  ThisProgressUpdate(std::shared_ptr<Peer>  peer, size_t index)
-    : peer(std::move(peer)), index(index) {}
+  ThisProgressUpdate(std::shared_ptr<Peer> peer, size_t index)
+      : peer(std::move(peer)), index(index)
+  {
+  }
   virtual void update(size_t length, bool complete) CXX11_OVERRIDE
   {
-    if(complete) {
+    if (complete) {
       peer->addAmAllowedIndex(index);
     }
   }

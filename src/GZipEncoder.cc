@@ -43,12 +43,9 @@
 
 namespace aria2 {
 
-GZipEncoder::GZipEncoder():strm_(nullptr) {}
+GZipEncoder::GZipEncoder() : strm_(nullptr) {}
 
-GZipEncoder::~GZipEncoder()
-{
-  release();
-}
+GZipEncoder::~GZipEncoder() { release(); }
 
 void GZipEncoder::init()
 {
@@ -60,39 +57,38 @@ void GZipEncoder::init()
   strm_->avail_in = 0;
   strm_->next_in = Z_NULL;
 
-  if(Z_OK != deflateInit2
-     (strm_, Z_DEFAULT_COMPRESSION, Z_DEFLATED, 31, 9, Z_DEFAULT_STRATEGY)) {
+  if (Z_OK != deflateInit2(strm_, Z_DEFAULT_COMPRESSION, Z_DEFLATED, 31, 9,
+                           Z_DEFAULT_STRATEGY)) {
     throw DL_ABORT_EX("Initializing z_stream failed.");
   }
 }
 
 void GZipEncoder::release()
 {
-  if(strm_) {
+  if (strm_) {
     deflateEnd(strm_);
     delete strm_;
     strm_ = nullptr;
   }
 }
 
-std::string GZipEncoder::encode
-(const unsigned char* in, size_t length, int flush)
+std::string GZipEncoder::encode(const unsigned char* in, size_t length,
+                                int flush)
 {
   strm_->avail_in = length;
   strm_->next_in = const_cast<unsigned char*>(in);
   std::string out;
   std::array<unsigned char, 4_k> outbuf;
-  while(1) {
+  while (1) {
     strm_->avail_out = outbuf.size();
     strm_->next_out = outbuf.data();
     int ret = ::deflate(strm_, flush);
-    if(ret == Z_STREAM_ERROR) {
-      throw DL_ABORT_EX(fmt("libz::deflate() failed. cause:%s",
-                            strm_->msg));
+    if (ret == Z_STREAM_ERROR) {
+      throw DL_ABORT_EX(fmt("libz::deflate() failed. cause:%s", strm_->msg));
     }
     size_t produced = outbuf.size() - strm_->avail_out;
     out.append(&outbuf[0], &outbuf[produced]);
-    if(strm_->avail_out > 0) {
+    if (strm_->avail_out > 0) {
       break;
     }
   }
@@ -113,8 +109,8 @@ GZipEncoder& GZipEncoder::operator<<(const char* s)
 
 GZipEncoder& GZipEncoder::operator<<(const std::string& s)
 {
-  internalBuf_ += encode
-    (reinterpret_cast<const unsigned char*>(s.data()), s.size());
+  internalBuf_ +=
+      encode(reinterpret_cast<const unsigned char*>(s.data()), s.size());
   return *this;
 }
 

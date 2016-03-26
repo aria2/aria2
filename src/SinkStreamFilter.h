@@ -41,32 +41,27 @@ namespace aria2 {
 
 class WrDiskCache;
 
-class SinkStreamFilter:public StreamFilter {
+class SinkStreamFilter : public StreamFilter {
 private:
   WrDiskCache* wrDiskCache_;
   bool hashUpdate_;
   size_t bytesProcessed_;
+
 public:
   SinkStreamFilter(WrDiskCache* wrDiskCache = nullptr, bool hashUpdate = false);
 
   virtual void init() CXX11_OVERRIDE {}
 
-  virtual ssize_t transform
-  (const std::shared_ptr<BinaryStream>& out,
-   const std::shared_ptr<Segment>& segment,
-   const unsigned char* inbuf, size_t inlen) CXX11_OVERRIDE;
+  virtual ssize_t transform(const std::shared_ptr<BinaryStream>& out,
+                            const std::shared_ptr<Segment>& segment,
+                            const unsigned char* inbuf,
+                            size_t inlen) CXX11_OVERRIDE;
 
-  virtual bool finished() CXX11_OVERRIDE
-  {
-    return true;
-  }
+  virtual bool finished() CXX11_OVERRIDE { return true; }
 
   virtual void release() CXX11_OVERRIDE {}
 
-  virtual const std::string& getName() const CXX11_OVERRIDE
-  {
-    return NAME;
-  }
+  virtual const std::string& getName() const CXX11_OVERRIDE { return NAME; }
 
   static const std::string NAME;
 
@@ -75,8 +70,8 @@ public:
     return bytesProcessed_;
   }
 
-  virtual bool installDelegate(const std::unique_ptr<StreamFilter> filter)
-    CXX11_OVERRIDE
+  virtual bool
+  installDelegate(const std::unique_ptr<StreamFilter> filter) CXX11_OVERRIDE
   {
     return false;
   }

@@ -8,26 +8,26 @@
 
 namespace aria2 {
 
-class GZipFileTest:public CppUnit::TestFixture {
+class GZipFileTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(GZipFileTest);
   CPPUNIT_TEST(testOpen);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void testOpen();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(GZipFileTest);
 
 void GZipFileTest::testOpen()
 {
-  File f(A2_TEST_OUT_DIR"/aria2_GZipFileTest_testOpen");
+  File f(A2_TEST_OUT_DIR "/aria2_GZipFileTest_testOpen");
   f.remove();
   GZipFile fail(f.getPath().c_str(), GZipFile::READ);
   CPPUNIT_ASSERT(!fail);
 
-  GZipFile wr(f.getPath().c_str(),  GZipFile::WRITE);
+  GZipFile wr(f.getPath().c_str(), GZipFile::WRITE);
   CPPUNIT_ASSERT(wr);
   std::string msg = "aria2 rules\nalpha\nbravo\ncharlie";
   wr.write(msg.data(), msg.size());

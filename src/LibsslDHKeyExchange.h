@@ -54,14 +54,14 @@ private:
   BIGNUM* privateKey_;
 
   BIGNUM* publicKey_;
+
 public:
   DHKeyExchange();
 
   ~DHKeyExchange();
 
   void init(const unsigned char* prime, size_t primeBits,
-            const unsigned char* generator,
-            size_t privateKeyBits);
+            const unsigned char* generator, size_t privateKeyBits);
 
   void generatePublicKey();
 

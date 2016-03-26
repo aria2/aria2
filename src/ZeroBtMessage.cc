@@ -38,8 +38,9 @@
 namespace aria2 {
 
 ZeroBtMessage::ZeroBtMessage(uint8_t id, const char* name)
-  : SimpleBtMessage{id, name}
-{}
+    : SimpleBtMessage{id, name}
+{
+}
 
 unsigned char* ZeroBtMessage::createMessage()
 {
@@ -53,14 +54,8 @@ unsigned char* ZeroBtMessage::createMessage()
   return msg;
 }
 
-size_t ZeroBtMessage::getMessageLength()
-{
-  return MESSAGE_LENGTH;
-}
+size_t ZeroBtMessage::getMessageLength() { return MESSAGE_LENGTH; }
 
-std::string ZeroBtMessage::toString() const
-{
-  return getName();
-}
+std::string ZeroBtMessage::toString() const { return getName(); }
 
 } // namespace aria2

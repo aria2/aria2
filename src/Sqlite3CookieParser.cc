@@ -43,39 +43,38 @@
 #include "A2STR.h"
 #include "cookie_helper.h"
 #ifndef HAVE_SQLITE3_OPEN_V2
-# include "File.h"
+#include "File.h"
 #endif // !HAVE_SQLITE3_OPEN_V2
 
 namespace aria2 {
 
-Sqlite3CookieParser::Sqlite3CookieParser(const std::string& filename) : db_(nullptr)
+Sqlite3CookieParser::Sqlite3CookieParser(const std::string& filename)
+    : db_(nullptr)
 {
   int ret;
 #ifdef HAVE_SQLITE3_OPEN_V2
   ret = sqlite3_open_v2(filename.c_str(), &db_, SQLITE_OPEN_READONLY, nullptr);
-#else // !HAVE_SQLITE3_OPEN_V2
-  if(!File(filename).isFile()) {
+#else  // !HAVE_SQLITE3_OPEN_V2
+  if (!File(filename).isFile()) {
     return;
   }
   ret = sqlite3_open(filename.c_str(), &db_);
 #endif // !HAVE_SQLITE3_OPEN_V2
-  if(SQLITE_OK != ret) {
+  if (SQLITE_OK != ret) {
     sqlite3_close(db_);
     db_ = nullptr;
   }
 }
 
-Sqlite3CookieParser::~Sqlite3CookieParser()
-{
-  sqlite3_close(db_);
-}
+Sqlite3CookieParser::~Sqlite3CookieParser() { sqlite3_close(db_); }
 
 namespace {
 std::string toString(const char* str)
 {
-  if(str) {
+  if (str) {
     return str;
-  } else {
+  }
+  else {
     return A2STR::NIL;
   }
 }
@@ -84,12 +83,13 @@ std::string toString(const char* str)
 namespace {
 bool parseTime(int64_t& time, const std::string& s)
 {
-  if(!util::parseLLIntNoThrow(time, s)) {
+  if (!util::parseLLIntNoThrow(time, s)) {
     return false;
   }
-  if(std::numeric_limits<time_t>::max() < time) {
+  if (std::numeric_limits<time_t>::max() < time) {
     time = std::numeric_limits<time_t>::max();
-  } else if(std::numeric_limits<time_t>::min() > time) {
+  }
+  else if (std::numeric_limits<time_t>::min() > time) {
     time = std::numeric_limits<time_t>::min();
   }
   return true;
@@ -99,64 +99,62 @@ bool parseTime(int64_t& time, const std::string& s)
 namespace {
 int cookieRowMapper(void* data, int columns, char** values, char** names)
 {
-  if(columns != 7 || !values[0] || !values[1] || !values[4]) {
+  if (columns != 7 || !values[0] || !values[1] || !values[4]) {
     return 0;
   }
   std::vector<std::unique_ptr<Cookie>>& cookies =
-    *reinterpret_cast<std::vector<std::unique_ptr<Cookie>>*>(data);
+      *reinterpret_cast<std::vector<std::unique_ptr<Cookie>>*>(data);
   size_t val0len = strlen(values[0]);
-  std::string cookieDomain
-    (util::lstripIter(&values[0][0], &values[0][val0len], '.'),
-     &values[0][val0len]);
+  std::string cookieDomain(
+      util::lstripIter(&values[0][0], &values[0][val0len], '.'),
+      &values[0][val0len]);
   std::string cookieName(&values[4][0], &values[4][strlen(values[4])]);
   std::string cookiePath(&values[1][0], &values[1][strlen(values[1])]);
-  if(cookieName.empty() || cookieDomain.empty() ||
-     !cookie::goodPath(cookiePath.begin(), cookiePath.end())) {
+  if (cookieName.empty() || cookieDomain.empty() ||
+      !cookie::goodPath(cookiePath.begin(), cookiePath.end())) {
     return 0;
   }
   int64_t expiryTime;
-  if(!values[3] || !parseTime(expiryTime, values[3])) {
+  if (!values[3] || !parseTime(expiryTime, values[3])) {
     return 0;
   }
   int64_t lastAccessTime;
-  if(!values[6] || !parseTime(lastAccessTime, values[6])) {
+  if (!values[6] || !parseTime(lastAccessTime, values[6])) {
     return 0;
   }
   bool numericHost = util::isNumericHost(cookieDomain);
-  cookies.push_back(make_unique<Cookie>
-                    (std::move(cookieName),
-                     toString(values[5]), // value
-                     expiryTime,
-                     true, // persistent
-                     std::move(cookieDomain),
-                     numericHost ||
-                     (values[0] && values[0][0] != '.'), // hostOnly
-                     std::move(cookiePath),
-                     values[2] && strcmp(values[2], "1") == 0, //secure
-                     false,
-                     lastAccessTime // creation time. Set this later.
-                     ));
+  cookies.push_back(make_unique<Cookie>(
+      std::move(cookieName),
+      toString(values[5]), // value
+      expiryTime,
+      true, // persistent
+      std::move(cookieDomain),
+      numericHost || (values[0] && values[0][0] != '.'), // hostOnly
+      std::move(cookiePath), values[2] && strcmp(values[2], "1") == 0, // secure
+      false,
+      lastAccessTime // creation time. Set this later.
+      ));
   return 0;
 }
 } // namespace
 
 std::vector<std::unique_ptr<Cookie>> Sqlite3CookieParser::parse()
 {
-  if(!db_) {
+  if (!db_) {
     throw DL_ABORT_EX(fmt("SQLite3 database is not opened."));
   }
   auto tcookies = std::vector<std::unique_ptr<Cookie>>{};
   char* sqlite3ErrMsg = nullptr;
-  int ret = sqlite3_exec(db_, getQuery(), cookieRowMapper,
-                         &tcookies, &sqlite3ErrMsg);
+  int ret =
+      sqlite3_exec(db_, getQuery(), cookieRowMapper, &tcookies, &sqlite3ErrMsg);
   std::string errMsg;
-  if(sqlite3ErrMsg) {
+  if (sqlite3ErrMsg) {
     errMsg = sqlite3ErrMsg;
     sqlite3_free(sqlite3ErrMsg);
   }
-  if(SQLITE_OK != ret) {
-    throw DL_ABORT_EX
-      (fmt("Failed to read SQLite3 database: %s", errMsg.c_str()));
+  if (SQLITE_OK != ret) {
+    throw DL_ABORT_EX(
+        fmt("Failed to read SQLite3 database: %s", errMsg.c_str()));
   }
   return tcookies;
 }

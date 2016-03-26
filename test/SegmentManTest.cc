@@ -13,7 +13,7 @@
 
 namespace aria2 {
 
-class SegmentManTest:public CppUnit::TestFixture {
+class SegmentManTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(SegmentManTest);
   CPPUNIT_TEST(testNullBitfield);
@@ -24,19 +24,20 @@ class SegmentManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetPeerStat);
   CPPUNIT_TEST(testGetCleanSegmentIfOwnerIsIdle);
   CPPUNIT_TEST_SUITE_END();
+
 private:
   std::shared_ptr<Option> option_;
   std::shared_ptr<DownloadContext> dctx_;
   std::shared_ptr<DefaultPieceStorage> pieceStorage_;
   std::shared_ptr<SegmentMan> segmentMan_;
+
 public:
   void setUp()
   {
     size_t pieceLength = 1_m;
     uint64_t totalLength = 64_m;
     option_.reset(new Option());
-    dctx_.reset
-      (new DownloadContext(pieceLength, totalLength, "aria2.tar.bz2"));
+    dctx_.reset(new DownloadContext(pieceLength, totalLength, "aria2.tar.bz2"));
     pieceStorage_.reset(new DefaultPieceStorage(dctx_, option_.get()));
     segmentMan_.reset(new SegmentMan(dctx_, pieceStorage_));
   }
@@ -50,16 +51,15 @@ public:
   void testGetCleanSegmentIfOwnerIsIdle();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( SegmentManTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(SegmentManTest);
 
 void SegmentManTest::testNullBitfield()
 {
   Option op;
-  std::shared_ptr<DownloadContext> dctx
-    (new DownloadContext(0, 0, "aria2.tar.bz2"));
-  std::shared_ptr<UnknownLengthPieceStorage> ps
-    (new UnknownLengthPieceStorage(dctx));
+  std::shared_ptr<DownloadContext> dctx(
+      new DownloadContext(0, 0, "aria2.tar.bz2"));
+  std::shared_ptr<UnknownLengthPieceStorage> ps(
+      new UnknownLengthPieceStorage(dctx));
   SegmentMan segmentMan(dctx, ps);
   size_t minSplitSize = dctx->getPieceLength();
 
@@ -82,8 +82,8 @@ void SegmentManTest::testCompleteSegment()
   Option op;
   size_t pieceLength = 1_m;
   uint64_t totalLength = 64_m;
-  std::shared_ptr<DownloadContext> dctx
-    (new DownloadContext(pieceLength, totalLength, "aria2.tar.bz2"));
+  std::shared_ptr<DownloadContext> dctx(
+      new DownloadContext(pieceLength, totalLength, "aria2.tar.bz2"));
   std::shared_ptr<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &op));
 
   SegmentMan segmentMan(dctx, ps);
@@ -96,7 +96,7 @@ void SegmentManTest::testCompleteSegment()
   seg->updateWrittenLength(pieceLength);
   segmentMan.completeSegment(1, seg);
 
-  std::vector<std::shared_ptr<Segment> > segments;
+  std::vector<std::shared_ptr<Segment>> segments;
   segmentMan.getInFlightSegment(segments, 1);
   CPPUNIT_ASSERT_EQUAL((size_t)2, segments.size());
   CPPUNIT_ASSERT_EQUAL((size_t)0, segments[0]->getIndex());
@@ -109,15 +109,14 @@ void SegmentManTest::testGetSegment_sameFileEntry()
   std::shared_ptr<DownloadContext> dctx(new DownloadContext());
   dctx->setPieceLength(2);
   std::shared_ptr<FileEntry> fileEntries[] = {
-    std::shared_ptr<FileEntry>(new FileEntry("file1", 3, 0)),
-    std::shared_ptr<FileEntry>(new FileEntry("file2", 6, 3)),
-    std::shared_ptr<FileEntry>(new FileEntry("file3", 1, 9))
-  };
+      std::shared_ptr<FileEntry>(new FileEntry("file1", 3, 0)),
+      std::shared_ptr<FileEntry>(new FileEntry("file2", 6, 3)),
+      std::shared_ptr<FileEntry>(new FileEntry("file3", 1, 9))};
   dctx->setFileEntries(&fileEntries[0], &fileEntries[3]);
   std::shared_ptr<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &op));
   SegmentMan segman(dctx, ps);
-  size_t minSplitSize =dctx->getPieceLength();
-  std::vector<std::shared_ptr<Segment> > segments;
+  size_t minSplitSize = dctx->getPieceLength();
+  std::vector<std::shared_ptr<Segment>> segments;
   segman.getSegment(segments, 1, minSplitSize, fileEntries[1], 4);
   // See 3 segments are returned, not 4 because the part of file1 is
   // not filled in segment#1

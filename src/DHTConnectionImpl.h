@@ -45,11 +45,12 @@ namespace aria2 {
 
 class SocketCore;
 
-class DHTConnectionImpl:public DHTConnection {
+class DHTConnectionImpl : public DHTConnection {
 private:
   std::shared_ptr<SocketCore> socket_;
 
   int family_;
+
 public:
   DHTConnectionImpl(int family);
 
@@ -77,17 +78,14 @@ public:
   bool bind(uint16_t& port, const std::string& addr);
 
   virtual ssize_t receiveMessage(unsigned char* data, size_t len,
-                                 std::string& host, uint16_t& port)
-    CXX11_OVERRIDE;
+                                 std::string& host,
+                                 uint16_t& port) CXX11_OVERRIDE;
 
   virtual ssize_t sendMessage(const unsigned char* data, size_t len,
-                              const std::string& host, uint16_t port)
-    CXX11_OVERRIDE;
+                              const std::string& host,
+                              uint16_t port) CXX11_OVERRIDE;
 
-  const std::shared_ptr<SocketCore>& getSocket() const
-  {
-    return socket_;
-  }
+  const std::shared_ptr<SocketCore>& getSocket() const { return socket_; }
 };
 
 } // namespace aria2

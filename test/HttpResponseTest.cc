@@ -29,7 +29,7 @@ class HttpResponseTest : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(HttpResponseTest);
   CPPUNIT_TEST(testGetContentLength_null);
   CPPUNIT_TEST(testGetContentLength_contentLength);
-  //CPPUNIT_TEST(testGetContentLength_range);
+  // CPPUNIT_TEST(testGetContentLength_range);
   CPPUNIT_TEST(testGetEntityLength);
   CPPUNIT_TEST(testGetContentType);
   CPPUNIT_TEST(testDetermineFilename_without_ContentDisposition);
@@ -55,11 +55,10 @@ class HttpResponseTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetMetalinKHttpEntries);
   CPPUNIT_TEST(testGetDigest);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
-  void setUp() {
-  }
+  void setUp() {}
 
   void testGetContentLength_null();
   void testGetContentLength_contentLength();
@@ -89,8 +88,7 @@ public:
   void testGetDigest();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( HttpResponseTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(HttpResponseTest);
 
 void HttpResponseTest::testGetContentLength_null()
 {
@@ -124,7 +122,6 @@ void HttpResponseTest::testGetEntityLength()
   httpResponse.getHttpHeader()->put(HttpHeader::CONTENT_RANGE,
                                     "bytes 1-4294967296/4294967297");
   CPPUNIT_ASSERT_EQUAL((int64_t)4294967297LL, httpResponse.getEntityLength());
-
 }
 
 void HttpResponseTest::testGetContentType()
@@ -154,8 +151,8 @@ void HttpResponseTest::testDetermineFilename_without_ContentDisposition()
                        httpResponse.determineFilename());
 }
 
-void HttpResponseTest::testDetermineFilename_with_ContentDisposition_zero_length
-()
+void HttpResponseTest::
+    testDetermineFilename_with_ContentDisposition_zero_length()
 {
   HttpResponse httpResponse;
   auto httpHeader = make_unique<HttpHeader>();
@@ -196,8 +193,7 @@ void HttpResponseTest::testGetRedirectURI_without_Location()
 
   httpResponse.setHttpHeader(make_unique<HttpHeader>());
 
-  CPPUNIT_ASSERT_EQUAL(std::string(""),
-                       httpResponse.getRedirectURI());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), httpResponse.getRedirectURI());
 }
 
 void HttpResponseTest::testGetRedirectURI_with_Location()
@@ -208,9 +204,9 @@ void HttpResponseTest::testGetRedirectURI_with_Location()
                   "http://localhost/download/aria2-1.0.0.tar.bz2");
   httpResponse.setHttpHeader(std::move(httpHeader));
 
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("http://localhost/download/aria2-1.0.0.tar.bz2"),
-     httpResponse.getRedirectURI());
+  CPPUNIT_ASSERT_EQUAL(
+      std::string("http://localhost/download/aria2-1.0.0.tar.bz2"),
+      httpResponse.getRedirectURI());
 }
 
 void HttpResponseTest::testIsRedirect()
@@ -224,9 +220,8 @@ void HttpResponseTest::testIsRedirect()
   httpResponse.getHttpHeader()->setStatusCode(200);
   CPPUNIT_ASSERT(!httpResponse.isRedirect());
 
-  httpResponse.getHttpHeader()->put
-    (HttpHeader::LOCATION,
-     "http://localhost/download/aria2-1.0.0.tar.bz2");
+  httpResponse.getHttpHeader()->put(
+      HttpHeader::LOCATION, "http://localhost/download/aria2-1.0.0.tar.bz2");
 
   CPPUNIT_ASSERT(!httpResponse.isRedirect());
 
@@ -328,7 +323,7 @@ void HttpResponseTest::testGetContentEncodingStreamFilter()
   httpResponse.getHttpHeader()->put(HttpHeader::CONTENT_ENCODING, "gzip");
   {
     std::shared_ptr<StreamFilter> filter =
-      httpResponse.getContentEncodingStreamFilter();
+        httpResponse.getContentEncodingStreamFilter();
     CPPUNIT_ASSERT(filter);
     CPPUNIT_ASSERT_EQUAL(std::string("GZipDecodingStreamFilter"),
                          filter->getName());
@@ -337,7 +332,7 @@ void HttpResponseTest::testGetContentEncodingStreamFilter()
   httpResponse.getHttpHeader()->put(HttpHeader::CONTENT_ENCODING, "deflate");
   {
     std::shared_ptr<StreamFilter> filter =
-      httpResponse.getContentEncodingStreamFilter();
+        httpResponse.getContentEncodingStreamFilter();
     CPPUNIT_ASSERT(filter);
     CPPUNIT_ASSERT_EQUAL(std::string("GZipDecodingStreamFilter"),
                          filter->getName());
@@ -347,7 +342,7 @@ void HttpResponseTest::testGetContentEncodingStreamFilter()
   httpResponse.getHttpHeader()->put(HttpHeader::CONTENT_ENCODING, "bzip2");
   {
     std::shared_ptr<StreamFilter> filter =
-      httpResponse.getContentEncodingStreamFilter();
+        httpResponse.getContentEncodingStreamFilter();
     CPPUNIT_ASSERT(!filter);
   }
 }
@@ -361,7 +356,8 @@ void HttpResponseTest::testValidateResponse()
   try {
     httpResponse.validateResponse();
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     // success
   }
 
@@ -369,10 +365,11 @@ void HttpResponseTest::testValidateResponse()
   httpResponse.validateResponse();
 
   httpResponse.getHttpHeader()->setStatusCode(201);
-  try{
+  try {
     httpResponse.validateResponse();
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     // success
   }
 }
@@ -399,7 +396,8 @@ void HttpResponseTest::testValidateResponse_good_range()
 
   try {
     httpResponse.validateResponse();
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
     CPPUNIT_FAIL("exception must not be thrown.");
   }
@@ -428,7 +426,8 @@ void HttpResponseTest::testValidateResponse_bad_range()
   try {
     httpResponse.validateResponse();
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
   }
 }
 
@@ -455,7 +454,8 @@ void HttpResponseTest::testValidateResponse_chunked()
   // if transfer-encoding is specified, then range validation is skipped.
   try {
     httpResponse.validateResponse();
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     CPPUNIT_FAIL("exception must not be thrown.");
   }
 }
@@ -470,7 +470,8 @@ void HttpResponseTest::testValidateResponse_withIfModifiedSince()
   try {
     httpResponse.validateResponse();
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
   }
   httpRequest = make_unique<HttpRequest>();
   httpRequest->setIfModifiedSinceHeader("Fri, 16 Jul 2010 12:56:59 GMT");
@@ -506,14 +507,16 @@ void HttpResponseTest::testProcessRedirect()
   httpResponse.getHttpHeader()->clearField();
 
   // Give unsupported scheme
-  httpResponse.getHttpHeader()->put
-    (HttpHeader::LOCATION, "unsupported://mirror/aria2-1.0.0.tar.bz2");
+  httpResponse.getHttpHeader()->put(HttpHeader::LOCATION,
+                                    "unsupported://mirror/aria2-1.0.0.tar.bz2");
   try {
     httpResponse.processRedirect();
     CPPUNIT_FAIL("DlRetryEx exception must be thrown.");
-  } catch(DlRetryEx& e) {
+  }
+  catch (DlRetryEx& e) {
     // Success
-  } catch(...) {
+  }
+  catch (...) {
     CPPUNIT_FAIL("DlRetryEx exception must be thrown.");
   }
 }
@@ -528,18 +531,16 @@ void HttpResponseTest::testRetrieveCookie()
   auto request = std::make_shared<Request>();
   request->setUri("http://www.aria2.org/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
-  CookieStorage  st;
+  CookieStorage st;
   httpRequest->setCookieStorage(&st);
   httpResponse.setHttpRequest(std::move(httpRequest));
 
-  httpResponse.getHttpHeader()->put
-    (HttpHeader::SET_COOKIE,
-     "k1=v1; expires=Sun, 10-Jun-2007 11:00:00 GMT;"
-     "path=/; domain=.aria2.org;");
-  httpResponse.getHttpHeader()->put
-    (HttpHeader::SET_COOKIE,
-     "k2=v2; expires=Sun, 01-Jan-38 00:00:00 GMT;"
-     "path=/; domain=.aria2.org;");
+  httpResponse.getHttpHeader()->put(
+      HttpHeader::SET_COOKIE, "k1=v1; expires=Sun, 10-Jun-2007 11:00:00 GMT;"
+                              "path=/; domain=.aria2.org;");
+  httpResponse.getHttpHeader()->put(
+      HttpHeader::SET_COOKIE, "k2=v2; expires=Sun, 01-Jan-38 00:00:00 GMT;"
+                              "path=/; domain=.aria2.org;");
   httpResponse.getHttpHeader()->put(HttpHeader::SET_COOKIE, "k3=v3;");
 
   httpResponse.retrieveCookie();
@@ -607,27 +608,19 @@ void HttpResponseTest::testGetMetalinKHttpEntries()
   httpResponse.setHttpHeader(make_unique<HttpHeader>());
   std::shared_ptr<Option> option(new Option());
 
-  httpResponse.getHttpHeader()->put
-    (HttpHeader::LINK,
-     "<http://uri1/>; rel=duplicate; pri=1; pref; geo=JP");
-  httpResponse.getHttpHeader()->put
-    (HttpHeader::LINK,
-     "<http://uri2/>; rel=duplicate");
-  httpResponse.getHttpHeader()->put
-    (HttpHeader::LINK,
-     "<http://uri3/>;;;;;;;;rel=duplicate;;;;;pri=2;;;;;");
-  httpResponse.getHttpHeader()->put
-    (HttpHeader::LINK,
-     "<http://uri4/>;rel=duplicate;=pri=1;pref");
-  httpResponse.getHttpHeader()->put
-    (HttpHeader::LINK,
-     "<http://describedby>; rel=describedby");
-  httpResponse.getHttpHeader()->put
-    (HttpHeader::LINK,
-     "<http://norel/>");
-  httpResponse.getHttpHeader()->put
-    (HttpHeader::LINK,
-     "<baduri>; rel=duplicate; pri=-1;");
+  httpResponse.getHttpHeader()->put(
+      HttpHeader::LINK, "<http://uri1/>; rel=duplicate; pri=1; pref; geo=JP");
+  httpResponse.getHttpHeader()->put(HttpHeader::LINK,
+                                    "<http://uri2/>; rel=duplicate");
+  httpResponse.getHttpHeader()->put(
+      HttpHeader::LINK, "<http://uri3/>;;;;;;;;rel=duplicate;;;;;pri=2;;;;;");
+  httpResponse.getHttpHeader()->put(HttpHeader::LINK,
+                                    "<http://uri4/>;rel=duplicate;=pri=1;pref");
+  httpResponse.getHttpHeader()->put(HttpHeader::LINK,
+                                    "<http://describedby>; rel=describedby");
+  httpResponse.getHttpHeader()->put(HttpHeader::LINK, "<http://norel/>");
+  httpResponse.getHttpHeader()->put(HttpHeader::LINK,
+                                    "<baduri>; rel=duplicate; pri=-1;");
   std::vector<MetalinkHttpEntry> result;
   httpResponse.getMetalinKHttpEntries(result, option);
   CPPUNIT_ASSERT_EQUAL((size_t)5, result.size());
@@ -673,24 +666,24 @@ void HttpResponseTest::testGetDigest()
   httpResponse.getHttpHeader()->put(HttpHeader::DIGEST,
                                     "SHA-1=82AD8itGL/oYQ5BTPFANiYnp9oE=");
   httpResponse.getHttpHeader()->put(HttpHeader::DIGEST, "NOT_SUPPORTED");
-  httpResponse.getHttpHeader()->put
-    (HttpHeader::DIGEST,
-     "SHA-224=rQdowoLHQJTMVZ3rF7vmYOIzUXlu7F+FcMbPnA==");
-  httpResponse.getHttpHeader()->put
-    (HttpHeader::DIGEST,
-     "SHA-224=6Ik6LNZ1iPy6cbmlKO4NHfvxzaiurmHilMyhGA==");
-  httpResponse.getHttpHeader()->put
-    (HttpHeader::DIGEST,
-     "SHA-256=+D8nGudz3G/kpkVKQeDrI3xD57v0UeQmzGCZOk03nsU=,"
-     "MD5=LJDK2+9ClF8Nz/K5WZd/+A==");
+  httpResponse.getHttpHeader()->put(
+      HttpHeader::DIGEST, "SHA-224=rQdowoLHQJTMVZ3rF7vmYOIzUXlu7F+FcMbPnA==");
+  httpResponse.getHttpHeader()->put(
+      HttpHeader::DIGEST, "SHA-224=6Ik6LNZ1iPy6cbmlKO4NHfvxzaiurmHilMyhGA==");
+  httpResponse.getHttpHeader()->put(
+      HttpHeader::DIGEST,
+      "SHA-256=+D8nGudz3G/kpkVKQeDrI3xD57v0UeQmzGCZOk03nsU=,"
+      "MD5=LJDK2+9ClF8Nz/K5WZd/+A==");
   std::vector<Checksum> result;
   httpResponse.getDigest(result);
   CPPUNIT_ASSERT_EQUAL((size_t)3, result.size());
 
   Checksum c = result[0];
   CPPUNIT_ASSERT_EQUAL(std::string("sha-256"), c.getHashType());
-  CPPUNIT_ASSERT_EQUAL(std::string("f83f271ae773dc6fe4a6454a41e0eb237c43e7bbf451e426cc60993a4d379ec5"),
-                       util::toHex(c.getDigest()));
+  CPPUNIT_ASSERT_EQUAL(
+      std::string(
+          "f83f271ae773dc6fe4a6454a41e0eb237c43e7bbf451e426cc60993a4d379ec5"),
+      util::toHex(c.getDigest()));
 
   c = result[1];
   CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c.getHashType());

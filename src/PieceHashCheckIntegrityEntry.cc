@@ -41,26 +41,26 @@
 
 namespace aria2 {
 
-PieceHashCheckIntegrityEntry::PieceHashCheckIntegrityEntry
-(RequestGroup* requestGroup,
- std::unique_ptr<Command> nextCommand)
-  : CheckIntegrityEntry{requestGroup, std::move(nextCommand)}
-{}
+PieceHashCheckIntegrityEntry::PieceHashCheckIntegrityEntry(
+    RequestGroup* requestGroup, std::unique_ptr<Command> nextCommand)
+    : CheckIntegrityEntry{requestGroup, std::move(nextCommand)}
+{
+}
 
 PieceHashCheckIntegrityEntry::~PieceHashCheckIntegrityEntry() {}
 
 bool PieceHashCheckIntegrityEntry::isValidationReady()
 {
   const std::shared_ptr<DownloadContext>& dctx =
-    getRequestGroup()->getDownloadContext();
+      getRequestGroup()->getDownloadContext();
   return dctx->isPieceHashVerificationAvailable();
 }
 
 void PieceHashCheckIntegrityEntry::initValidator()
 {
-  auto validator = make_unique<IteratableChunkChecksumValidator>
-    (getRequestGroup()->getDownloadContext(),
-     getRequestGroup()->getPieceStorage());
+  auto validator = make_unique<IteratableChunkChecksumValidator>(
+      getRequestGroup()->getDownloadContext(),
+      getRequestGroup()->getPieceStorage());
   validator->init();
   setValidator(std::move(validator));
 }

@@ -39,34 +39,29 @@
 
 namespace aria2 {
 
-class NullSinkStreamFilter:public StreamFilter {
+class NullSinkStreamFilter : public StreamFilter {
 private:
   size_t bytesProcessed_;
+
 public:
-  NullSinkStreamFilter():bytesProcessed_(0) {}
+  NullSinkStreamFilter() : bytesProcessed_(0) {}
 
   virtual void init() CXX11_OVERRIDE {}
 
-  virtual ssize_t transform
-  (const std::shared_ptr<BinaryStream>& out,
-   const std::shared_ptr<Segment>& segment,
-   const unsigned char* inbuf, size_t inlen) CXX11_OVERRIDE
+  virtual ssize_t transform(const std::shared_ptr<BinaryStream>& out,
+                            const std::shared_ptr<Segment>& segment,
+                            const unsigned char* inbuf,
+                            size_t inlen) CXX11_OVERRIDE
   {
     bytesProcessed_ = inlen;
     return bytesProcessed_;
   }
 
-  virtual bool finished() CXX11_OVERRIDE
-  {
-    return true;
-  }
+  virtual bool finished() CXX11_OVERRIDE { return true; }
 
   virtual void release() CXX11_OVERRIDE {}
 
-  virtual const std::string& getName() const CXX11_OVERRIDE
-  {
-    return NAME;
-  }
+  virtual const std::string& getName() const CXX11_OVERRIDE { return NAME; }
 
   static const std::string NAME;
 
@@ -75,8 +70,8 @@ public:
     return bytesProcessed_;
   }
 
-  virtual bool installDelegate(const std::unique_ptr<StreamFilter> filter)
-    CXX11_OVERRIDE
+  virtual bool
+  installDelegate(const std::unique_ptr<StreamFilter> filter) CXX11_OVERRIDE
   {
     return false;
   }

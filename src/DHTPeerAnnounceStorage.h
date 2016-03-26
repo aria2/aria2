@@ -57,23 +57,25 @@ private:
                     const std::shared_ptr<DHTPeerAnnounceEntry>& rhs);
   };
   typedef std::set<std::shared_ptr<DHTPeerAnnounceEntry>, InfoHashLess>
-  DHTPeerAnnounceEntrySet;
+      DHTPeerAnnounceEntrySet;
   DHTPeerAnnounceEntrySet entries_;
 
-  std::shared_ptr<DHTPeerAnnounceEntry> getPeerAnnounceEntry(const unsigned char* infoHash);
+  std::shared_ptr<DHTPeerAnnounceEntry>
+  getPeerAnnounceEntry(const unsigned char* infoHash);
 
   DHTTaskQueue* taskQueue_;
 
   DHTTaskFactory* taskFactory_;
+
 public:
   DHTPeerAnnounceStorage();
 
-  void addPeerAnnounce(const unsigned char* infoHash,
-                       const std::string& ipaddr, uint16_t port);
+  void addPeerAnnounce(const unsigned char* infoHash, const std::string& ipaddr,
+                       uint16_t port);
 
   bool contains(const unsigned char* infoHash) const;
 
-  void getPeers(std::vector<std::shared_ptr<Peer> >& peers,
+  void getPeers(std::vector<std::shared_ptr<Peer>>& peers,
                 const unsigned char* infoHash);
 
   // drop peer announce entry which is not updated in the past
@@ -81,7 +83,8 @@ public:
   void handleTimeout();
 
   // announce peer in every DHT_PEER_ANNOUNCE_PURGE_INTERVAL.
-  // The torrents which are announced in the past DHT_PEER_ANNOUNCE_PURGE_INTERVAL
+  // The torrents which are announced in the past
+  // DHT_PEER_ANNOUNCE_PURGE_INTERVAL
   // are excluded from announce.
   void announcePeer();
 

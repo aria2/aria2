@@ -41,6 +41,7 @@
 #include <algorithm>
 #include <vector>
 #include <memory>
+#include <utility>
 
 #include "TransferStat.h"
 #include "TimeA2.h"
@@ -76,11 +77,7 @@ class PeerStorage;
 
 class RequestGroup {
 public:
-  enum HaltReason {
-    NONE,
-    SHUTDOWN_SIGNAL,
-    USER_REQUEST
-  };
+  enum HaltReason { NONE, SHUTDOWN_SIGNAL, USER_REQUEST };
   enum State {
     // Waiting in the reserved queue
     STATE_WAITING,
@@ -128,6 +125,10 @@ private:
   // has the GID of generated RequestGroups. empty list means there is
   // no such RequestGroup.
   std::vector<a2_gid_t> followedByGIDs_;
+  // This is a reverse link against followedByGIDs_.  For example, a
+  // download included in followedByGIDs_ has this download's GID in
+  // followingGID_.
+  a2_gid_t followingGID_;
 
   std::vector<const PreDownloadHandler*> preDownloadHandlers_;
 
@@ -163,6 +164,8 @@ private:
 
   error_code::Value lastErrorCode_;
 
+  std::string lastErrorMessage_;
+
   bool saveControlFile_;
 
   bool fileAllocationEnabled_;
@@ -195,10 +198,10 @@ private:
   // download didn't finish and error result is available in
   // _uriResults, then last result code is returned.  Otherwise
   // returns error_code::UNKNOWN_ERROR.
-  error_code::Value downloadResult() const;
+  std::pair<error_code::Value, std::string> downloadResult() const;
 
-  void removeDefunctControlFile
-  (const std::shared_ptr<BtProgressInfoFile>& progressInfoFile);
+  void removeDefunctControlFile(
+      const std::shared_ptr<BtProgressInfoFile>& progressInfoFile);
 
 public:
   RequestGroup(const std::shared_ptr<GroupId>& gid,
@@ -259,25 +262,13 @@ public:
 
   void validateTotalLength(int64_t actualTotalLength) const;
 
-  void setNumConcurrentCommand(int num)
-  {
-    numConcurrentCommand_ = num;
-  }
+  void setNumConcurrentCommand(int num) { numConcurrentCommand_ = num; }
 
-  int getNumConcurrentCommand() const
-  {
-    return numConcurrentCommand_;
-  }
+  int getNumConcurrentCommand() const { return numConcurrentCommand_; }
 
-  a2_gid_t getGID() const
-  {
-    return gid_->getNumericId();
-  }
+  a2_gid_t getGID() const { return gid_->getNumericId(); }
 
-  const std::shared_ptr<GroupId>& getGroupId() const
-  {
-    return gid_;
-  }
+  const std::shared_ptr<GroupId>& getGroupId() const { return gid_; }
 
   TransferStat calculateStat() const;
 
@@ -288,7 +279,8 @@ public:
 
   // This function also calls
   // downloadContext->setOwnerRequestGroup(this).
-  void setDownloadContext(const std::shared_ptr<DownloadContext>& downloadContext);
+  void
+  setDownloadContext(const std::shared_ptr<DownloadContext>& downloadContext);
 
   const std::shared_ptr<PieceStorage>& getPieceStorage() const
   {
@@ -297,8 +289,8 @@ public:
 
   void setPieceStorage(const std::shared_ptr<PieceStorage>& pieceStorage);
 
-  void setProgressInfoFile
-  (const std::shared_ptr<BtProgressInfoFile>& progressInfoFile);
+  void setProgressInfoFile(
+      const std::shared_ptr<BtProgressInfoFile>& progressInfoFile);
 
   void increaseStreamCommand();
 
@@ -314,28 +306,21 @@ public:
 
   void decreaseNumCommand();
 
-  int getNumCommand() const
-  {
-    return numCommand_;
-  }
+  int getNumCommand() const { return numCommand_; }
 
-  // TODO is it better to move the following 2 methods to SingleFileDownloadContext?
-  void setDiskWriterFactory(const std::shared_ptr<DiskWriterFactory>& diskWriterFactory);
+  // TODO is it better to move the following 2 methods to
+  // SingleFileDownloadContext?
+  void setDiskWriterFactory(
+      const std::shared_ptr<DiskWriterFactory>& diskWriterFactory);
 
   const std::shared_ptr<DiskWriterFactory>& getDiskWriterFactory() const
   {
     return diskWriterFactory_;
   }
 
-  void setFileAllocationEnabled(bool f)
-  {
-    fileAllocationEnabled_ = f;
-  }
+  void setFileAllocationEnabled(bool f) { fileAllocationEnabled_ = f; }
 
-  bool isFileAllocationEnabled() const
-  {
-    return fileAllocationEnabled_;
-  }
+  bool isFileAllocationEnabled() const { return fileAllocationEnabled_; }
 
   bool needsFileAllocation() const;
 
@@ -344,36 +329,21 @@ public:
    * if a file is already exists and control file exists etc.
    * Always open file with DiskAdaptor::initAndOpenFile()
    */
-  void setPreLocalFileCheckEnabled(bool f)
-  {
-    preLocalFileCheckEnabled_ = f;
-  }
+  void setPreLocalFileCheckEnabled(bool f) { preLocalFileCheckEnabled_ = f; }
 
-  bool isPreLocalFileCheckEnabled() const
-  {
-    return preLocalFileCheckEnabled_;
-  }
+  bool isPreLocalFileCheckEnabled() const { return preLocalFileCheckEnabled_; }
 
   void setHaltRequested(bool f, HaltReason = SHUTDOWN_SIGNAL);
 
   void setForceHaltRequested(bool f, HaltReason = SHUTDOWN_SIGNAL);
 
-  bool isHaltRequested() const
-  {
-    return haltRequested_;
-  }
+  bool isHaltRequested() const { return haltRequested_; }
 
-  bool isForceHaltRequested() const
-  {
-    return forceHaltRequested_;
-  }
+  bool isForceHaltRequested() const { return forceHaltRequested_; }
 
   void setPauseRequested(bool f);
 
-  bool isPauseRequested() const
-  {
-    return pauseRequested_;
-  }
+  bool isPauseRequested() const { return pauseRequested_; }
 
   void dependsOn(const std::shared_ptr<Dependency>& dep);
 
@@ -381,7 +351,8 @@ public:
 
   void releaseRuntimeResource(DownloadEngine* e);
 
-  void postDownloadProcessing(std::vector<std::shared_ptr<RequestGroup> >& groups);
+  void
+  postDownloadProcessing(std::vector<std::shared_ptr<RequestGroup>>& groups);
 
   void addPostDownloadHandler(const PostDownloadHandler* handler);
 
@@ -393,10 +364,10 @@ public:
 
   void clearPreDownloadHandler();
 
-  void processCheckIntegrityEntry
-  (std::vector<std::unique_ptr<Command>>& commands,
-   std::unique_ptr<CheckIntegrityEntry> entry,
-   DownloadEngine* e);
+  void
+  processCheckIntegrityEntry(std::vector<std::unique_ptr<Command>>& commands,
+                             std::unique_ptr<CheckIntegrityEntry> entry,
+                             DownloadEngine* e);
 
   // Initializes pieceStorage_ and segmentMan_.  We guarantee that
   // either both of pieceStorage_ and segmentMan_ are initialized or
@@ -407,7 +378,8 @@ public:
 
   bool downloadFinishedByFileLength();
 
-  void loadAndOpenFile(const std::shared_ptr<BtProgressInfoFile>& progressInfoFile);
+  void
+  loadAndOpenFile(const std::shared_ptr<BtProgressInfoFile>& progressInfoFile);
 
   void shouldCancelDownloadForSafety();
 
@@ -415,10 +387,7 @@ public:
 
   std::shared_ptr<DownloadResult> createDownloadResult() const;
 
-  const std::shared_ptr<Option>& getOption() const
-  {
-    return option_;
-  }
+  const std::shared_ptr<Option>& getOption() const { return option_; }
 
   void reportDownloadFinished();
 
@@ -439,10 +408,7 @@ public:
   void markInMemoryDownload();
 
   // Returns inMemoryDownload flag.
-  bool inMemoryDownload() const
-  {
-    return inMemoryDownload_;
-  }
+  bool inMemoryDownload() const { return inMemoryDownload_; }
 
   void setTimeout(std::chrono::seconds timeout);
 
@@ -458,35 +424,21 @@ public:
   // maxUploadSpeedLimit_ == 0. Otherwise returns false.
   bool doesUploadSpeedExceed();
 
-  int getMaxDownloadSpeedLimit() const
-  {
-    return maxDownloadSpeedLimit_;
-  }
+  int getMaxDownloadSpeedLimit() const { return maxDownloadSpeedLimit_; }
 
-  void setMaxDownloadSpeedLimit(int speed)
-  {
-    maxDownloadSpeedLimit_ = speed;
-  }
+  void setMaxDownloadSpeedLimit(int speed) { maxDownloadSpeedLimit_ = speed; }
 
-  int getMaxUploadSpeedLimit() const
-  {
-    return maxUploadSpeedLimit_;
-  }
+  int getMaxUploadSpeedLimit() const { return maxUploadSpeedLimit_; }
 
-  void setMaxUploadSpeedLimit(int speed)
-  {
-    maxUploadSpeedLimit_ = speed;
-  }
+  void setMaxUploadSpeedLimit(int speed) { maxUploadSpeedLimit_ = speed; }
 
-  void setLastErrorCode(error_code::Value code)
+  void setLastErrorCode(error_code::Value code, const char* message = "")
   {
     lastErrorCode_ = code;
+    lastErrorMessage_ = message;
   }
 
-  error_code::Value getLastErrorCode() const
-  {
-    return lastErrorCode_;
-  }
+  error_code::Value getLastErrorCode() const { return lastErrorCode_; }
 
   void saveControlFile() const;
 
@@ -496,49 +448,35 @@ public:
 
   void disableSaveControlFile() { saveControlFile_ = false; }
 
-  template<typename InputIterator>
+  template <typename InputIterator>
   void followedBy(InputIterator groupFirst, InputIterator groupLast)
   {
     followedByGIDs_.clear();
-    for(; groupFirst != groupLast; ++groupFirst) {
+    for (; groupFirst != groupLast; ++groupFirst) {
       followedByGIDs_.push_back((*groupFirst)->getGID());
     }
   }
 
-  const std::vector<a2_gid_t>& followedBy() const
-  {
-    return followedByGIDs_;
-  }
+  const std::vector<a2_gid_t>& followedBy() const { return followedByGIDs_; }
 
-  void belongsTo(a2_gid_t gid)
-  {
-    belongsToGID_ = gid;
-  }
+  void following(a2_gid_t gid) { followingGID_ = gid; }
 
-  a2_gid_t belongsTo() const
-  {
-    return belongsToGID_;
-  }
+  a2_gid_t following() const { return followingGID_; }
+
+  void belongsTo(a2_gid_t gid) { belongsToGID_ = gid; }
+
+  a2_gid_t belongsTo() const { return belongsToGID_; }
 
   void setRequestGroupMan(RequestGroupMan* requestGroupMan)
   {
     requestGroupMan_ = requestGroupMan;
   }
 
-  RequestGroupMan* getRequestGroupMan()
-  {
-    return requestGroupMan_;
-  }
+  RequestGroupMan* getRequestGroupMan() { return requestGroupMan_; }
 
-  int getResumeFailureCount() const
-  {
-    return resumeFailureCount_;
-  }
+  int getResumeFailureCount() const { return resumeFailureCount_; }
 
-  void increaseResumeFailureCount()
-  {
-    ++resumeFailureCount_;
-  }
+  void increaseResumeFailureCount() { ++resumeFailureCount_; }
 
   bool p2pInvolved() const;
 
@@ -552,22 +490,16 @@ public:
     return metadataInfo_;
   }
 
-  int getState() const
-  {
-    return state_;
-  }
+  int getState() const { return state_; }
 
-  void setState(int state)
-  {
-    state_ = state;
-  }
+  void setState(int state) { state_ = state; }
 
-  bool isSeedOnlyEnabled()
-  {
-    return seedOnly_;
-  }
+  bool isSeedOnlyEnabled() { return seedOnly_; }
 
   void enableSeedOnly();
+
+  // Returns true if this download is now seeding.
+  bool isSeeder() const;
 };
 
 } // namespace aria2

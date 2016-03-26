@@ -56,17 +56,11 @@ using namespace aria2;
 #if defined(__MAC_10_6)
 
 #if defined(__MAC_10_7)
-static const void* query_keys[] = {
-  kSecClass,
-  kSecReturnRef,
-  kSecMatchPolicy,
-  kSecMatchLimit
-};
+static const void* query_keys[] = {kSecClass, kSecReturnRef, kSecMatchPolicy,
+                                   kSecMatchLimit};
 #endif // defined(__MAC_10_7)
 
-template <typename T>
-class CFRef
-{
+template <typename T> class CFRef {
   T ref_;
 
 public:
@@ -74,10 +68,7 @@ public:
 
   CFRef(T ref) : ref_(ref) {}
 
-  ~CFRef()
-  {
-    reset(nullptr);
-  }
+  ~CFRef() { reset(nullptr); }
 
   void reset(T ref)
   {
@@ -87,20 +78,11 @@ public:
     ref_ = ref;
   }
 
-  T get()
-  {
-    return ref_;
-  }
+  T get() { return ref_; }
 
-  const T get() const
-  {
-    return ref_;
-  }
+  const T get() const { return ref_; }
 
-  operator bool() const
-  {
-    return !!ref_;
-  }
+  operator bool() const { return !!ref_; }
 };
 
 static inline bool isWhitespace(char c)
@@ -116,8 +98,7 @@ static inline std::string stripWhitespace(std::string str)
   return str;
 }
 
-struct hash_validator
-{
+struct hash_validator {
   const std::string& hash_;
 
   hash_validator(const std::string& hash) : hash_(hash) {}
@@ -128,14 +109,14 @@ struct hash_validator
   }
 };
 
-struct hash_finder
-{
+struct hash_finder {
   CFDataRef data_;
   const std::string& hash_;
 
   hash_finder(CFDataRef data, const std::string& hash)
-    : data_(data), hash_(hash)
-  {}
+      : data_(data), hash_(hash)
+  {
+  }
 
   inline bool operator()(std::string type) const
   {
@@ -163,8 +144,7 @@ std::string errToString(OSStatus err)
   return rv;
 }
 
-bool checkIdentity(const SecIdentityRef id,
-                   const std::string& fingerPrint,
+bool checkIdentity(const SecIdentityRef id, const std::string& fingerPrint,
                    const std::vector<std::string> supported)
 {
   CFRef<SecCertificateRef> ref;
@@ -235,10 +215,7 @@ bool AppleTLSContext::addTrustedCACertFile(const std::string& certfile)
   return false;
 }
 
-SecIdentityRef AppleTLSContext::getCredentials()
-{
-  return credentials_;
-}
+SecIdentityRef AppleTLSContext::getCredentials() { return credentials_; }
 
 bool AppleTLSContext::tryAsFingerprint(const std::string& fingerprint)
 {
@@ -264,12 +241,8 @@ bool AppleTLSContext::tryAsFingerprint(const std::string& fingerprint)
     A2_LOG_ERROR("Failed to create SecPolicy");
     return false;
   }
-  const void* query_values[] = {
-    kSecClassIdentity,
-    kCFBooleanTrue,
-    policy.get(),
-    kSecMatchLimitAll
-  };
+  const void* query_values[] = {kSecClassIdentity, kCFBooleanTrue, policy.get(),
+                                kSecMatchLimitAll};
   CFRef<CFDictionaryRef> query(CFDictionaryCreate(
       nullptr, query_keys, query_values, 4, nullptr, nullptr));
   if (!query) {
@@ -372,18 +345,12 @@ bool AppleTLSContext::tryAsPKCS12(CFDataRef data, const char* password)
 #if defined(__MAC_10_6)
   CFRef<CFStringRef> passwordRef;
   if (password) {
-    passwordRef.reset(CFStringCreateWithBytes(nullptr,
-                                              (const UInt8*)password,
+    passwordRef.reset(CFStringCreateWithBytes(nullptr, (const UInt8*)password,
                                               strlen(password),
-                                              kCFStringEncodingUTF8,
-                                              false));
+                                              kCFStringEncodingUTF8, false));
   }
-  const void* keys[] = {
-    kSecImportExportPassphrase
-  };
-  const void* values[] = {
-    passwordRef.get()
-  };
+  const void* keys[] = {kSecImportExportPassphrase};
+  const void* values[] = {passwordRef.get()};
   CFRef<CFDictionaryRef> options(
       CFDictionaryCreate(nullptr, keys, values, 1, nullptr, nullptr));
   if (!options) {

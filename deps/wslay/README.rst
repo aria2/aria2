@@ -22,7 +22,7 @@ Wslay supports:
 
 Wslay does not perform any I/O operations for its own. Instead, it
 offers callbacks for them. This makes Wslay independent on any I/O
-frameworks, SSL, sockets, etc.  This makes Wslay protable across
+frameworks, SSL, sockets, etc.  This makes Wslay portable across
 various platforms and the application authors can choose freely I/O
 frameworks.
 
@@ -30,3 +30,31 @@ See Autobahn test reports:
 `server <http://wslay.sourceforge.net/autobahn/reports/servers/index.html>`_
 and
 `client <http://wslay.sourceforge.net/autobahn/reports/clients/index.html>`_.
+
+Requirements
+------------
+
+`Sphinx <http://sphinx.pocoo.org/>`_ is used to generate man pages.
+
+To build and run the unit test programs, the following packages are
+needed:
+
+* cunit >= 2.1
+
+To build and run the example programs, the following packages are
+needed:
+
+* nettle >= 2.4
+
+
+Build from git
+--------------
+
+Building from git is easy, but please be sure that at least autoconf 2.68 is
+used.::
+
+    $ autoreconf -i
+    $ automake
+    $ autoconf
+    $ ./configure
+    $ make

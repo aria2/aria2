@@ -52,7 +52,8 @@ enum BencodeError {
   ERR_PREMATURE_DATA = -4,
   ERR_STRUCTURE_TOO_DEEP = -5,
   ERR_INVALID_STRING_LENGTH = -6,
-  ERR_STRING_LENGTH_OUT_OF_RANGE = -7
+  ERR_STRING_LENGTH_OUT_OF_RANGE = -7,
+  ERR_INVALID_FLOAT_NUMBER = -8,
 };
 
 class BencodeParser {
@@ -72,6 +73,7 @@ public:
   // Resets the internal state of the parser and makes it ready for
   // reuse.
   void reset();
+
 private:
   int pushState(int state);
   int stateTop() const;

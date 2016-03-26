@@ -57,6 +57,7 @@ private:
   std::string version_;
 
   void generateTransactionID();
+
 public:
   DHTMessage(const std::shared_ptr<DHTNode>& localNode,
              const std::shared_ptr<DHTNode>& remoteNode,
@@ -64,20 +65,11 @@ public:
 
   virtual ~DHTMessage();
 
-  const std::string& getTransactionID() const
-  {
-    return transactionID_;
-  }
+  const std::string& getTransactionID() const { return transactionID_; }
 
-  const std::shared_ptr<DHTNode>& getLocalNode() const
-  {
-    return localNode_;
-  }
+  const std::shared_ptr<DHTNode>& getLocalNode() const { return localNode_; }
 
-  const std::shared_ptr<DHTNode>& getRemoteNode() const
-  {
-    return remoteNode_;
-  }
+  const std::shared_ptr<DHTNode>& getRemoteNode() const { return remoteNode_; }
 
   virtual void doReceivedAction() = 0;
 
@@ -91,15 +83,9 @@ public:
 
   virtual std::string toString() const = 0;
 
-  const std::string& getVersion() const
-  {
-    return version_;
-  }
+  const std::string& getVersion() const { return version_; }
 
-  void setVersion(const std::string& version)
-  {
-    version_ = version;
-  }
+  void setVersion(const std::string& version) { version_ = version; }
 
   static const std::string Y;
 

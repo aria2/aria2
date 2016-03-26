@@ -42,29 +42,17 @@ namespace aria2 {
 
 namespace {
 const char* HELP_TAG_NAMES[] = {
-  "#basic",
-  "#advanced",
-  "#http",
-  "#https",
-  "#ftp",
-  "#metalink",
-  "#bittorrent",
-  "#cookie",
-  "#hook",
-  "#file",
-  "#rpc",
-  "#checksum",
-  "#experimental",
-  "#deprecated",
-  "#help"
-};
+    "#basic",    "#advanced",   "#http",         "#https",      "#ftp",
+    "#metalink", "#bittorrent", "#cookie",       "#hook",       "#file",
+    "#rpc",      "#checksum",   "#experimental", "#deprecated", "#help"};
 } // namespace
 
 const char* strHelpTag(uint32_t tag)
 {
-  if(tag >= MAX_HELP_TAG) {
+  if (tag >= MAX_HELP_TAG) {
     return "UNKNOWN";
-  } else {
+  }
+  else {
     return HELP_TAG_NAMES[tag];
   }
 }
@@ -72,8 +60,8 @@ const char* strHelpTag(uint32_t tag)
 uint32_t idHelpTag(const char* tagName)
 {
   uint32_t id = 0;
-  for(auto p : HELP_TAG_NAMES) {
-    if(strcmp(p, tagName) == 0) {
+  for (auto p : HELP_TAG_NAMES) {
+    if (strcmp(p, tagName) == 0) {
       return id;
     }
     ++id;

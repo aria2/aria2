@@ -54,7 +54,7 @@ class DownloadEngine;
 
 class MultiUrlRequestInfo {
 private:
-  std::vector<std::shared_ptr<RequestGroup> > requestGroups_;
+  std::vector<std::shared_ptr<RequestGroup>> requestGroups_;
 
   std::shared_ptr<Option> option_;
 
@@ -69,15 +69,15 @@ private:
   void printMessageForContinue();
   void setupSignalHandlers();
   void resetSignalHandlers();
+
 public:
   /*
    * MultiRequestInfo effectively takes ownership of the
    * requestGroups.
    */
-  MultiUrlRequestInfo
-  (std::vector<std::shared_ptr<RequestGroup> > requestGroups,
-   const std::shared_ptr<Option>& op,
-   const std::shared_ptr<UriListParser>& uriListParser);
+  MultiUrlRequestInfo(std::vector<std::shared_ptr<RequestGroup>> requestGroups,
+                      const std::shared_ptr<Option>& op,
+                      const std::shared_ptr<UriListParser>& uriListParser);
 
   ~MultiUrlRequestInfo();
 

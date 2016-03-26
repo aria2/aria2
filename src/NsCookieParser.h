@@ -51,8 +51,8 @@ public:
 
   ~NsCookieParser();
 
-  std::vector<std::unique_ptr<Cookie>> parse
-  (const std::string& filename, time_t creationTime);
+  std::vector<std::unique_ptr<Cookie>> parse(const std::string& filename,
+                                             time_t creationTime);
 };
 
 } // namespace aria2

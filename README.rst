@@ -1,7 +1,7 @@
 aria2 - The ultra fast download utility
 =======================================
 :Author:    Tatsuhiro Tsujikawa
-:Email:     t-tujikawa_at_users_dot_sourceforge_dot_net
+:Email:     tatsuhiro.t_at_gmail_dot_com
 
 Disclaimer
 ----------
@@ -20,12 +20,12 @@ downloaded from HTTP(S)/FTP/SFTP is uploaded to the BitTorrent
 swarm. Using Metalink's chunk checksums, aria2 automatically validates
 chunks of data while downloading a file like BitTorrent.
 
-The project page is located at http://aria2.sourceforge.net/.
+The project page is located at https://aria2.github.io/.
 
 See `aria2 Online Manual
-<http://aria2.sourceforge.net/manual/en/html/>`_ (`Russian translation
-<http://aria2.sourceforge.net/manual/ru/html/>`_, `Portuguese
-translation <http://aria2.sourceforge.net/manual/pt/html/>`_) to learn
+<https://aria2.github.io/manual/en/html/>`_ (`Russian translation
+<https://aria2.github.io/manual/ru/html/>`_, `Portuguese
+translation <https://aria2.github.io/manual/pt/html/>`_) to learn
 how to use aria2.
 
 Features
@@ -77,6 +77,22 @@ Here is a list of features:
 * Parameterized URI support
 * IPv6 support with Happy Eyeballs
 * Disk cache to reduce disk activity
+
+
+Versioning and release schedule
+-------------------------------
+
+We use 3 numbers for aria2 version: MAJOR.MINOR.PATCH.  We will ship
+MINOR update on 15th of every month.  We may skip a release if we have
+no changes since the last release.  The feature and documentation
+freeze happens 10 days before the release day (5th day of the month)
+for translation teams.  We will raise an issue about the upcoming
+release around that day.
+
+We may release PATCH releases between regular releases if we have
+security issues.
+
+MAJOR version will stay at 1 for the time being.
 
 How to get source code
 ----------------------
@@ -214,6 +230,11 @@ following packages to get autoconf macros:
 
 * libxml2-dev
 * libcppunit-dev
+* autoconf
+* automake
+* autotools-dev
+* autopoint
+* libtool
 
 And run following command to generate configure script and other files
 necessary to build the program::
@@ -395,10 +416,10 @@ Building documentation
 documentation. aria2 man pages will be build when you run ``make`` if
 they are not up-to-date.  You can also build HTML version of aria2 man
 page by ``make html``. The HTML version manual is also available at
-`online <http://aria2.sourceforge.net/manual/en/html/>`_ (`Russian
-translation <http://aria2.sourceforge.net/manual/ru/html/>`_,
+`online <https://aria2.github.io/manual/en/html/>`_ (`Russian
+translation <https://aria2.github.io/manual/ru/html/>`_,
 `Portuguese translation
-<http://aria2.sourceforge.net/manual/pt/html/>`_).
+<https://aria2.github.io/manual/pt/html/>`_).
 
 BitTorrent
 -----------
@@ -534,9 +555,8 @@ documentation to know how to use API.
 References
 ----------
 
-* `aria2 Online Manual <http://aria2.sourceforge.net/manual/en/html/>`_
-* http://aria2.sourceforge.net/
-* https://github.com/tatsuhiro-t/aria2
+* `aria2 Online Manual <https://aria2.github.io/manual/en/html/>`_
+* https://aria2.github.io/
 * `RFC 959 FILE TRANSFER PROTOCOL (FTP) <http://tools.ietf.org/html/rfc959>`_
 * `RFC 1738 Uniform Resource Locators (URL) <http://tools.ietf.org/html/rfc1738>`_
 * `RFC 2428 FTP Extensions for IPv6 and NATs <http://tools.ietf.org/html/rfc2428>`_

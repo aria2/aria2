@@ -7,7 +7,7 @@
 
 namespace aria2 {
 
-class TimeSeedCriteriaTest:public CppUnit::TestFixture {
+class TimeSeedCriteriaTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(TimeSeedCriteriaTest);
   CPPUNIT_TEST(testEvaluate);
@@ -17,10 +17,10 @@ public:
   void testEvaluate();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(TimeSeedCriteriaTest);
 
-void TimeSeedCriteriaTest::testEvaluate() {
+void TimeSeedCriteriaTest::testEvaluate()
+{
   TimeSeedCriteria cri(1_s);
   global::wallclock().reset();
   global::wallclock().advance(2_s);

@@ -50,6 +50,7 @@ private:
   std::vector<std::string> table_;
   std::vector<unsigned char> use_;
   std::shared_ptr<Option> parent_;
+
 public:
   Option();
   ~Option();
@@ -76,16 +77,15 @@ public:
   double getAsDouble(PrefPtr pref) const;
   // Removes |pref| from this object. This function does not modify
   // parent_.
+  void removeLocal(PrefPtr pref);
+  // Removes |pref| from this object from all option hierarchy.
   void remove(PrefPtr pref);
   // Removes all option values from this object. This function does
   // not modify parent_.
   void clear();
   // Returns the option value table of this object. It does not
   // contain option values in parent_ and so forth.
-  const std::vector<std::string>& getTable() const
-  {
-    return table_;
-  }
+  const std::vector<std::string>& getTable() const { return table_; }
   // Copy option values defined in option to this option. parent_ is
   // left unmodified for this object.
   void merge(const Option& option);

@@ -61,9 +61,8 @@ public:
   std::string path_;
   bool activated_;
 
-  BasicCred(std::string user, std::string password,
-            std::string host, uint16_t port, std::string path,
-            bool activated = false);
+  BasicCred(std::string user, std::string password, std::string host,
+            uint16_t port, std::string path, bool activated = false);
 
   void activate();
 
@@ -78,6 +77,7 @@ class AuthConfigFactory {
 public:
   typedef std::set<std::unique_ptr<BasicCred>,
                    DerefLess<std::unique_ptr<BasicCred>>> BasicCredSet;
+
 private:
   std::unique_ptr<Netrc> netrc_;
 
@@ -86,6 +86,7 @@ private:
   std::unique_ptr<AuthResolver> createFtpAuthResolver(const Option* op) const;
 
   BasicCredSet basicCreds_;
+
 public:
   AuthConfigFactory();
 
@@ -95,8 +96,8 @@ public:
   // are used in this method: PREF_HTTP_USER, PREF_HTTP_PASSWD,
   // PREF_FTP_USER, PREF_FTP_PASSWD, PREF_NO_NETRC and
   // PREF_HTTP_AUTH_CHALLENGE.
-  std::unique_ptr<AuthConfig> createAuthConfig
-  (const std::shared_ptr<Request>& request, const Option* op);
+  std::unique_ptr<AuthConfig>
+  createAuthConfig(const std::shared_ptr<Request>& request, const Option* op);
 
   void setNetrc(std::unique_ptr<Netrc> netrc);
 
@@ -106,20 +107,14 @@ public:
   // null, then returns false. Otherwise new BasicCred is created
   // using this AuthConfig object with given host and path "/" and
   // returns true.
-  bool activateBasicCred
-  (const std::string& host,
-   uint16_t port,
-   const std::string& path,
-   const Option* op);
+  bool activateBasicCred(const std::string& host, uint16_t port,
+                         const std::string& path, const Option* op);
 
   // Find a BasicCred using host, port and path and return the
   // iterator pointing to it. If not found, then return
   // basicCreds_.end().
-  BasicCredSet::iterator
-  findBasicCred
-  (const std::string& host,
-   uint16_t port,
-   const std::string& path);
+  BasicCredSet::iterator findBasicCred(const std::string& host, uint16_t port,
+                                       const std::string& path);
 
   // If the same BasicCred is already added, then it is replaced with
   // given basicCred. Otherwise, insert given basicCred to

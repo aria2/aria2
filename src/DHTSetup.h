@@ -51,7 +51,12 @@ public:
 
   ~DHTSetup();
 
-  std::vector<std::unique_ptr<Command>> setup(DownloadEngine* e, int family);
+  // Returns two vector of Commands.  First one contains regular
+  // commands.  Secod one contains so called routine commands, which
+  // executed once per event poll returns.
+  std::pair<std::vector<std::unique_ptr<Command>>,
+            std::vector<std::unique_ptr<Command>>>
+  setup(DownloadEngine* e, int family);
 };
 
 } // namespace aria2

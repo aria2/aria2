@@ -53,13 +53,14 @@
 
 namespace aria2 {
 
-UTMetadataRequestExtensionMessage::UTMetadataRequestExtensionMessage
-(uint8_t extensionMessageID)
-  : UTMetadataExtensionMessage{extensionMessageID},
-    dctx_{nullptr},
-    dispatcher_{nullptr},
-    messageFactory_{nullptr}
-{}
+UTMetadataRequestExtensionMessage::UTMetadataRequestExtensionMessage(
+    uint8_t extensionMessageID)
+    : UTMetadataExtensionMessage{extensionMessageID},
+      dctx_{nullptr},
+      dispatcher_{nullptr},
+      messageFactory_{nullptr}
+{
+}
 
 std::string UTMetadataRequestExtensionMessage::getPayload()
 {
@@ -78,52 +79,53 @@ std::string UTMetadataRequestExtensionMessage::toString() const
 void UTMetadataRequestExtensionMessage::doReceivedAction()
 {
   auto attrs = bittorrent::getTorrentAttrs(dctx_);
-  uint8_t id = peer_->getExtensionMessageID
-    (ExtensionMessageRegistry::UT_METADATA);
-  if(attrs->metadata.empty()) {
+  uint8_t id =
+      peer_->getExtensionMessageID(ExtensionMessageRegistry::UT_METADATA);
+  if (attrs->metadata.empty()) {
     auto m = make_unique<UTMetadataRejectExtensionMessage>(id);
     m->setIndex(getIndex());
-    dispatcher_->addMessageToQueue
-      (messageFactory_->createBtExtendedMessage(std::move(m)));
-  }else if(getIndex()*METADATA_PIECE_SIZE < attrs->metadataSize) {
+    dispatcher_->addMessageToQueue(
+        messageFactory_->createBtExtendedMessage(std::move(m)));
+  }
+  else if (getIndex() * METADATA_PIECE_SIZE < attrs->metadataSize) {
     auto m = make_unique<UTMetadataDataExtensionMessage>(id);
     m->setIndex(getIndex());
     m->setTotalSize(attrs->metadataSize);
-    auto begin = std::begin(attrs->metadata)+getIndex()*METADATA_PIECE_SIZE;
-    auto end =
-      (getIndex()+1)*METADATA_PIECE_SIZE <= attrs->metadata.size()?
-      std::begin(attrs->metadata)+(getIndex()+1)*METADATA_PIECE_SIZE:
-      std::end(attrs->metadata);
+    auto begin = std::begin(attrs->metadata) + getIndex() * METADATA_PIECE_SIZE;
+    auto end = (getIndex() + 1) * METADATA_PIECE_SIZE <= attrs->metadata.size()
+                   ? std::begin(attrs->metadata) +
+                         (getIndex() + 1) * METADATA_PIECE_SIZE
+                   : std::end(attrs->metadata);
     m->setData(begin, end);
-    dispatcher_->addMessageToQueue
-      (messageFactory_->createBtExtendedMessage(std::move(m)));
-  } else {
-    throw DL_ABORT_EX
-      (fmt("Metadata piece index is too big. piece=%lu",
-           static_cast<unsigned long>(getIndex())));
+    dispatcher_->addMessageToQueue(
+        messageFactory_->createBtExtendedMessage(std::move(m)));
+  }
+  else {
+    throw DL_ABORT_EX(fmt("Metadata piece index is too big. piece=%lu",
+                          static_cast<unsigned long>(getIndex())));
   }
 }
 
-void UTMetadataRequestExtensionMessage::setDownloadContext
-(DownloadContext* dctx)
+void UTMetadataRequestExtensionMessage::setDownloadContext(
+    DownloadContext* dctx)
 {
   dctx_ = dctx;
 }
 
-void UTMetadataRequestExtensionMessage::setPeer
-(const std::shared_ptr<Peer>& peer)
+void UTMetadataRequestExtensionMessage::setPeer(
+    const std::shared_ptr<Peer>& peer)
 {
   peer_ = peer;
 }
 
-void UTMetadataRequestExtensionMessage::setBtMessageDispatcher
-(BtMessageDispatcher* disp)
+void UTMetadataRequestExtensionMessage::setBtMessageDispatcher(
+    BtMessageDispatcher* disp)
 {
   dispatcher_ = disp;
 }
 
-void UTMetadataRequestExtensionMessage::setBtMessageFactory
-(BtMessageFactory* factory)
+void UTMetadataRequestExtensionMessage::setBtMessageFactory(
+    BtMessageFactory* factory)
 {
   messageFactory_ = factory;
 }

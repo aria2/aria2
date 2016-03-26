@@ -46,6 +46,7 @@ class Piece;
 class BtAbortOutstandingRequestEvent {
 private:
   std::shared_ptr<Piece> piece_;
+
 public:
   BtAbortOutstandingRequestEvent(const std::shared_ptr<Piece>& piece);
   ~BtAbortOutstandingRequestEvent();

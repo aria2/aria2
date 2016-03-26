@@ -14,8 +14,8 @@ class SegmentTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testUpdateWrittenLength_incompleteLastPiece);
   CPPUNIT_TEST(testClear);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
   void setUp() {}
 
@@ -25,8 +25,7 @@ public:
   void testClear();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( SegmentTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(SegmentTest);
 
 void SegmentTest::testUpdateWrittenLength()
 {

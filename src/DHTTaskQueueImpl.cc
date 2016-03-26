@@ -44,10 +44,11 @@ const size_t NUM_CONCURRENT_TASK = 5;
 } // namespace
 
 DHTTaskQueueImpl::DHTTaskQueueImpl()
-  : periodicTaskQueue1_(NUM_CONCURRENT_TASK),
-    periodicTaskQueue2_(NUM_CONCURRENT_TASK),
-    immediateTaskQueue_(NUM_CONCURRENT_TASK)
-{}
+    : periodicTaskQueue1_(NUM_CONCURRENT_TASK),
+      periodicTaskQueue2_(NUM_CONCURRENT_TASK),
+      immediateTaskQueue_(NUM_CONCURRENT_TASK)
+{
+}
 
 DHTTaskQueueImpl::~DHTTaskQueueImpl() {}
 

@@ -69,8 +69,7 @@ bool compare(const uint8_t* a, const uint8_t* b, size_t length);
 inline bool compare(const char* a, const char* b, size_t length)
 {
   return compare(reinterpret_cast<const uint8_t*>(a),
-                 reinterpret_cast<const uint8_t*>(b),
-                 length * sizeof(char));
+                 reinterpret_cast<const uint8_t*>(b), length * sizeof(char));
 }
 
 /**
@@ -80,18 +79,20 @@ inline bool compare(const char* a, const char* b, size_t length)
  * length, helping to prevent logic errors either during development, or
  * triggering in the wild. Therefore |.getBytes()| use should be avoided.
  */
-class HMACResult
-{
+class HMACResult {
 public:
   HMACResult(const std::string& result) : result_(result), len_(result.length())
-  {}
+  {
+  }
 
   HMACResult(const char* result, size_t length)
-    : result_(result, length), len_(length)
-  {}
+      : result_(result, length), len_(length)
+  {
+  }
 
   HMACResult(const HMACResult& other) : result_(other.result_), len_(other.len_)
-  {}
+  {
+  }
 
   HMACResult& operator=(const HMACResult& other)
   {
@@ -108,20 +109,11 @@ public:
     return compare(result_.data(), other.result_.data(), len_);
   }
 
-  bool operator!=(const HMACResult& other) const
-  {
-    return !(*this == other);
-  }
+  bool operator!=(const HMACResult& other) const { return !(*this == other); }
 
-  size_t length() const
-  {
-    return len_;
-  }
+  size_t length() const { return len_; }
 
-  const std::string& getBytes() const
-  {
-    return result_;
-  }
+  const std::string& getBytes() const { return result_; }
 
 private:
   std::string result_;
@@ -133,8 +125,7 @@ private:
  * algorithms that MessageDigest supports, but at most the SHA-1, SHA-2
  * algorithms as specified in the RFC.
  */
-class HMAC
-{
+class HMAC {
 public:
   /**
    * Constructs a new HMAC. It is recommended to use the |create| or
@@ -157,8 +148,8 @@ public:
   /**
    * Creates a new instance using the specified algorithm and secret.
    */
-  static std::unique_ptr<HMAC>
-  create(const std::string& algorithm, const char* secret, size_t length)
+  static std::unique_ptr<HMAC> create(const std::string& algorithm,
+                                      const char* secret, size_t length)
   {
     if (!supports(algorithm)) {
       return nullptr;
@@ -190,10 +181,7 @@ public:
   /**
    * Creates a new instance using sha-1 and a random secret.
    */
-  static std::unique_ptr<HMAC> createRandom()
-  {
-    return createRandom("sha-1");
-  }
+  static std::unique_ptr<HMAC> createRandom() { return createRandom("sha-1"); }
 
   /**
    * Tells if this implementation supports a specific hash algorithm.
@@ -203,10 +191,7 @@ public:
   /**
    * Tells the length in bytes of the resulting HMAC.
    */
-  size_t length() const
-  {
-    return md_->getDigestLength();
-  }
+  size_t length() const { return md_->getDigestLength(); }
 
   /**
    * Resets the instance, clearing the internal state. The instance can be
@@ -292,11 +277,8 @@ private:
  * Example:
  *   result = PBKDF2(HMAC::create("password"), random_salt, salt_len, 1000);
  */
-HMACResult PBKDF2(HMAC* hmac,
-                  const char* salt,
-                  size_t salt_length,
-                  size_t iterations,
-                  size_t key_length = 0);
+HMACResult PBKDF2(HMAC* hmac, const char* salt, size_t salt_length,
+                  size_t iterations, size_t key_length = 0);
 
 /**
  * Create A PKBDF2-HMAC. See RFC 2898.
@@ -304,9 +286,7 @@ HMACResult PBKDF2(HMAC* hmac,
  * Example:
  *   result = PBKDF2(HMAC::create("password"), random_salt, 1000);
  */
-inline HMACResult PBKDF2(HMAC* hmac,
-                         const std::string& salt,
-                         size_t iterations,
+inline HMACResult PBKDF2(HMAC* hmac, const std::string& salt, size_t iterations,
                          size_t key_length = 0)
 {
   return PBKDF2(hmac, salt.data(), salt.length(), iterations, key_length);

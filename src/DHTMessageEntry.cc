@@ -39,13 +39,13 @@
 
 namespace aria2 {
 
-DHTMessageEntry::DHTMessageEntry
-(std::unique_ptr<DHTMessage> message,
- std::chrono::seconds timeout,
- std::unique_ptr<DHTMessageCallback> callback)
-  : message{std::move(message)},
-    timeout{std::move(timeout)},
-    callback{std::move(callback)}
-{}
+DHTMessageEntry::DHTMessageEntry(std::unique_ptr<DHTMessage> message,
+                                 std::chrono::seconds timeout,
+                                 std::unique_ptr<DHTMessageCallback> callback)
+    : message{std::move(message)},
+      timeout{std::move(timeout)},
+      callback{std::move(callback)}
+{
+}
 
 } // namespace aria2

@@ -42,8 +42,8 @@ AbstractAuthResolver::AbstractAuthResolver() {}
 
 AbstractAuthResolver::~AbstractAuthResolver() {}
 
-void AbstractAuthResolver::setUserDefinedCred
-(std::string user, std::string password)
+void AbstractAuthResolver::setUserDefinedCred(std::string user,
+                                              std::string password)
 {
   userDefinedUser_ = std::move(user);
   userDefinedPassword_ = std::move(password);
@@ -55,8 +55,8 @@ AbstractAuthResolver::getUserDefinedAuthConfig() const
   return AuthConfig::create(userDefinedUser_, userDefinedPassword_);
 }
 
-void AbstractAuthResolver::setDefaultCred
-(std::string user, std::string password)
+void AbstractAuthResolver::setDefaultCred(std::string user,
+                                          std::string password)
 {
   defaultUser_ = std::move(user);
   defaultPassword_ = std::move(password);

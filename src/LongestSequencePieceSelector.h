@@ -39,15 +39,14 @@
 
 namespace aria2 {
 
-class LongestSequencePieceSelector:public PieceSelector {
+class LongestSequencePieceSelector : public PieceSelector {
 public:
   // Returns the last index of longest continuous sequence in candidateIndexes.
   // For example, if indexes of set bits in bitfield are
   // { 1,2,3,4,7,10,11,12,13,14,15,100,112,113,114 }, then
   // returns 15 because { 10, 11, 12, 13, 14, 15 } is the longest sequence.
-  virtual bool select
-  (size_t& index, const unsigned char* bitfield, size_t nbits) const
-    CXX11_OVERRIDE;
+  virtual bool select(size_t& index, const unsigned char* bitfield,
+                      size_t nbits) const CXX11_OVERRIDE;
 };
 
 } // namespace aria2

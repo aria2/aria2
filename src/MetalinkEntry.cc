@@ -48,29 +48,20 @@
 
 namespace aria2 {
 
-MetalinkEntry::MetalinkEntry():
-  sizeKnown(false),
-  maxConnections(-1)
-{}
+MetalinkEntry::MetalinkEntry() : sizeKnown(false), maxConnections(-1) {}
 
 MetalinkEntry::~MetalinkEntry() {}
 
-const std::string& MetalinkEntry::getPath() const
-{
-  return file->getPath();
-}
+const std::string& MetalinkEntry::getPath() const { return file->getPath(); }
 
-int64_t MetalinkEntry::getLength() const
-{
-  return file->getLength();
-}
+int64_t MetalinkEntry::getLength() const { return file->getLength(); }
 
-void MetalinkEntry::setLocationPriority
-(const std::vector<std::string>& locations, int priorityToAdd)
+void MetalinkEntry::setLocationPriority(
+    const std::vector<std::string>& locations, int priorityToAdd)
 {
-  for(auto& res : resources) {
-    if(std::find(std::begin(locations), std::end(locations), res->location)
-       != std::end(locations)) {
+  for (auto& res : resources) {
+    if (std::find(std::begin(locations), std::end(locations), res->location) !=
+        std::end(locations)) {
       res->priority += priorityToAdd;
     }
   }
@@ -79,16 +70,15 @@ void MetalinkEntry::setLocationPriority
 void MetalinkEntry::setProtocolPriority(const std::string& protocol,
                                         int priorityToAdd)
 {
-  for(auto& res : resources) {
-    if(protocol == MetalinkResource::getTypeString(res->type)) {
+  for (auto& res : resources) {
+    if (protocol == MetalinkResource::getTypeString(res->type)) {
       res->priority += priorityToAdd;
     }
   }
 }
 
 namespace {
-template<typename T>
-class PriorityHigher {
+template <typename T> class PriorityHigher {
 public:
   bool operator()(const T& res1, const T& res2)
   {
@@ -97,7 +87,8 @@ public:
 };
 } // namespace
 
-void MetalinkEntry::reorderResourcesByPriority() {
+void MetalinkEntry::reorderResourcesByPriority()
+{
   std::shuffle(std::begin(resources), std::end(resources),
                *SimpleRandomizer::getInstance());
   std::sort(std::begin(resources), std::end(resources),
@@ -111,11 +102,12 @@ void MetalinkEntry::reorderMetaurlsByPriority()
 }
 
 namespace {
-class Supported:public std::unary_function<std::shared_ptr<MetalinkResource>, bool> {
+class Supported
+    : public std::unary_function<std::shared_ptr<MetalinkResource>, bool> {
 public:
   bool operator()(const std::shared_ptr<MetalinkResource>& res) const
   {
-    switch(res->type) {
+    switch (res->type) {
     case MetalinkResource::TYPE_FTP:
     case MetalinkResource::TYPE_HTTP:
 #ifdef ENABLE_SSL
@@ -134,33 +126,32 @@ public:
 
 void MetalinkEntry::dropUnsupportedResource()
 {
-  resources.erase(std::remove_if
-                  (std::begin(resources), std::end(resources),
-                   [](const std::unique_ptr<MetalinkResource>& res)
-                   {
-                     switch(res->type) {
-                     case MetalinkResource::TYPE_FTP:
-                     case MetalinkResource::TYPE_HTTP:
+  resources.erase(
+      std::remove_if(std::begin(resources), std::end(resources),
+                     [](const std::unique_ptr<MetalinkResource>& res) {
+                       switch (res->type) {
+                       case MetalinkResource::TYPE_FTP:
+                       case MetalinkResource::TYPE_HTTP:
 #ifdef ENABLE_SSL
-                     case MetalinkResource::TYPE_HTTPS:
+                       case MetalinkResource::TYPE_HTTPS:
 #endif // ENABLE_SSL
 #ifdef ENABLE_BITTORRENT
-                     case MetalinkResource::TYPE_BITTORRENT:
+                       case MetalinkResource::TYPE_BITTORRENT:
 #endif // ENABLE_BITTORRENT
-                       return false;
-                     default:
-                       return true;
-                     }
-                   }),
-                  std::end(resources));
+                         return false;
+                       default:
+                         return true;
+                       }
+                     }),
+      std::end(resources));
 }
 
-std::vector<std::unique_ptr<FileEntry>> MetalinkEntry::toFileEntry
-(std::vector<std::unique_ptr<MetalinkEntry>> metalinkEntries)
+std::vector<std::unique_ptr<FileEntry>> MetalinkEntry::toFileEntry(
+    std::vector<std::unique_ptr<MetalinkEntry>> metalinkEntries)
 {
   std::vector<std::unique_ptr<FileEntry>> res;
   res.reserve(metalinkEntries.size());
-  for(auto& entry : metalinkEntries) {
+  for (auto& entry : metalinkEntries) {
     res.push_back(entry->popFile());
   }
   return res;
@@ -186,9 +177,6 @@ std::unique_ptr<Signature> MetalinkEntry::popSignature()
   return std::move(signature_);
 }
 
-std::unique_ptr<FileEntry> MetalinkEntry::popFile()
-{
-  return std::move(file);
-}
+std::unique_ptr<FileEntry> MetalinkEntry::popFile() { return std::move(file); }
 
 } // namespace aria2

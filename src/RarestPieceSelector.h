@@ -43,18 +43,17 @@ namespace aria2 {
 
 class PieceStatMan;
 
-class RarestPieceSelector:public PieceSelector {
+class RarestPieceSelector : public PieceSelector {
 private:
   std::shared_ptr<PieceStatMan> pieceStatMan_;
+
 public:
   RarestPieceSelector(const std::shared_ptr<PieceStatMan>& pieceStatMan);
 
-  virtual bool select
-  (size_t& index, const unsigned char* bitfield, size_t nbits) const
-    CXX11_OVERRIDE;
+  virtual bool select(size_t& index, const unsigned char* bitfield,
+                      size_t nbits) const CXX11_OVERRIDE;
 };
 
 } // namespace aria2
 
 #endif // D_RAREST_PIECE_SELECTOR_H
-

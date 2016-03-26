@@ -65,12 +65,11 @@ std::unique_ptr<ValueBase> decode(const unsigned char* data, size_t len,
 {
   ssize_t error;
   bittorrent::ValueBaseBencodeParser parser;
-  auto res =
-    parser.parseFinal(reinterpret_cast<const char*>(data), len, error);
-  if(error < 0) {
-    throw DL_ABORT_EX2(fmt("Bencode decoding failed: error=%d",
-                           static_cast<int>(error)),
-                       error_code::BENCODE_PARSE_ERROR);
+  auto res = parser.parseFinal(reinterpret_cast<const char*>(data), len, error);
+  if (error < 0) {
+    throw DL_ABORT_EX2(
+        fmt("Bencode decoding failed: error=%d", static_cast<int>(error)),
+        error_code::BENCODE_PARSE_ERROR);
   }
   end = error;
   return res;
@@ -78,9 +77,10 @@ std::unique_ptr<ValueBase> decode(const unsigned char* data, size_t len,
 
 std::string encode(const ValueBase* vlb)
 {
-  class BencodeValueBaseVisitor:public ValueBaseVisitor {
+  class BencodeValueBaseVisitor : public ValueBaseVisitor {
   private:
     std::ostringstream out_;
+
   public:
     virtual void visit(const String& string) CXX11_OVERRIDE
     {
@@ -100,7 +100,7 @@ std::string encode(const ValueBase* vlb)
     virtual void visit(const List& list) CXX11_OVERRIDE
     {
       out_ << "l";
-      for(const auto& e: list){
+      for (const auto& e : list) {
         e->accept(*this);
       }
       out_ << "e";
@@ -109,7 +109,7 @@ std::string encode(const ValueBase* vlb)
     virtual void visit(const Dict& dict) CXX11_OVERRIDE
     {
       out_ << "d";
-      for(const auto& e: dict){
+      for (const auto& e : dict) {
         auto& key = e.first;
         out_ << key.size() << ":";
         out_.write(key.data(), key.size());
@@ -118,10 +118,7 @@ std::string encode(const ValueBase* vlb)
       out_ << "e";
     }
 
-    std::string getResult() const
-    {
-      return out_.str();
-    }
+    std::string getResult() const { return out_.str(); }
   };
   BencodeValueBaseVisitor visitor;
   vlb->accept(visitor);

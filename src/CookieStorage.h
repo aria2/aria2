@@ -58,11 +58,9 @@ public:
   DomainNode(std::string label, DomainNode* parent);
   // Stores the matching cookies in |out|. The |now| is used to update
   // the last access time of this node.
-  void findCookie
-  (std::vector<const Cookie*>& out,
-   const std::string& requestHost,
-   const std::string& requestPath,
-   time_t now, bool secure);
+  void findCookie(std::vector<const Cookie*>& out,
+                  const std::string& requestHost,
+                  const std::string& requestPath, time_t now, bool secure);
   // Returns the number of cookies this node has.
   size_t countCookie() const;
   // Add |cookie| using update time |now|. Returns true if the
@@ -104,16 +102,17 @@ public:
   bool getInLru() const;
   void setInLru(bool f);
 
-  template<typename OutputIterator>
+  template <typename OutputIterator>
   OutputIterator dumpCookie(OutputIterator out) const
   {
-    if(cookies_) {
-      for(auto& c : *cookies_) {
+    if (cookies_) {
+      for (auto& c : *cookies_) {
         out++ = c.get();
       }
     }
     return out;
   }
+
 private:
   std::string label_;
   DomainNode* parent_;
@@ -131,6 +130,7 @@ private:
 class CookieStorage {
 public:
   static const size_t MAX_COOKIE_PER_DOMAIN = 50;
+
 private:
   // typedef std::set<std::shared_ptr<DomainEntry>,
   //                  DerefLess<std::shared_ptr<DomainEntry> > > DomainEntrySet;
@@ -147,18 +147,15 @@ public:
   // Returns true if cookie is stored or updated existing cookie.
   // Otherwise, returns false. now is used as creation time and last
   // access time.
-  bool parseAndStore
-  (const std::string& setCookieString,
-   const std::string& requestHost,
-   const std::string& requestPath,
-   time_t now);
+  bool parseAndStore(const std::string& setCookieString,
+                     const std::string& requestHost,
+                     const std::string& requestPath, time_t now);
 
   // Finds cookies matched with given criteria and returns them.
   // Matched cookies' lastAccess_ property is updated.
-  std::vector<const Cookie*>
-  criteriaFind(const std::string& requestHost,
-               const std::string& requestPath,
-               time_t now, bool secure);
+  std::vector<const Cookie*> criteriaFind(const std::string& requestHost,
+                                          const std::string& requestPath,
+                                          time_t now, bool secure);
 
   // Loads Cookies from file denoted by filename.  If compiled with
   // libsqlite3, this method automatically detects the specified file
@@ -180,10 +177,10 @@ public:
   // satisfies.
   bool contains(const Cookie& cookie) const;
 
-  template<typename OutputIterator>
+  template <typename OutputIterator>
   OutputIterator dumpCookie(OutputIterator out) const
   {
-    for(auto& i : lruTracker_) {
+    for (auto& i : lruTracker_) {
       out = i.second->dumpCookie(out);
     }
     return out;
@@ -195,11 +192,12 @@ public:
   size_t getLruTrackerSize() const;
   // Returns root node. Exposed for unittest
   const DomainNode* getRootNode() const;
+
 private:
-  template<typename InputIterator>
+  template <typename InputIterator>
   void storeCookies(InputIterator first, InputIterator last, time_t now)
   {
-    for(; first != last; ++first) {
+    for (; first != last; ++first) {
       store(*first, now);
     }
   }

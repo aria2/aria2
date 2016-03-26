@@ -58,63 +58,66 @@ namespace aria2 {
 
 BtPostDownloadHandler::BtPostDownloadHandler()
 {
-  setCriteria(make_unique<ContentTypeRequestGroupCriteria>
-              (getBtContentTypes(), getBtExtensions()));
+  setCriteria(make_unique<ContentTypeRequestGroupCriteria>(getBtContentTypes(),
+                                                           getBtExtensions()));
 }
 
-void BtPostDownloadHandler::getNextRequestGroups
-(std::vector<std::shared_ptr<RequestGroup> >& groups,
- RequestGroup* requestGroup) const
+void BtPostDownloadHandler::getNextRequestGroups(
+    std::vector<std::shared_ptr<RequestGroup>>& groups,
+    RequestGroup* requestGroup) const
 {
   A2_LOG_INFO(fmt("Generating RequestGroups for Torrent file %s",
                   requestGroup->getFirstFilePath().c_str()));
   std::unique_ptr<ValueBase> torrent;
-  if(requestGroup->inMemoryDownload()) {
-    auto& dw = static_cast<AbstractSingleDiskAdaptor*>
-      (requestGroup->getPieceStorage()->getDiskAdaptor().get())
-      ->getDiskWriter();
+  if (requestGroup->inMemoryDownload()) {
+    auto& dw = static_cast<AbstractSingleDiskAdaptor*>(
+                   requestGroup->getPieceStorage()->getDiskAdaptor().get())
+                   ->getDiskWriter();
     auto bdw = static_cast<bittorrent::BencodeDiskWriter*>(dw.get());
     int error = bdw->finalize();
-    if(error == 0) {
+    if (error == 0) {
       torrent = bdw->getResult();
     }
-  } else {
+  }
+  else {
     std::string content;
     try {
       requestGroup->getPieceStorage()->getDiskAdaptor()->openExistingFile();
-      content = util::toString(requestGroup->getPieceStorage()
-                               ->getDiskAdaptor());
+      content =
+          util::toString(requestGroup->getPieceStorage()->getDiskAdaptor());
       requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();
-    } catch(Exception& e) {
+    }
+    catch (Exception& e) {
       requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();
       throw;
     }
     ssize_t error;
-    torrent = bittorrent::ValueBaseBencodeParser().parseFinal
-      (content.c_str(), content.size(), error);
+    torrent = bittorrent::ValueBaseBencodeParser().parseFinal(
+        content.c_str(), content.size(), error);
   }
-  if(!torrent) {
+  if (!torrent) {
     throw DL_ABORT_EX2("Could not parse BitTorrent metainfo",
                        error_code::BENCODE_PARSE_ERROR);
   }
   std::vector<std::shared_ptr<RequestGroup>> newRgs;
   createRequestGroupForBitTorrent(newRgs, requestGroup->getOption(),
-                                  std::vector<std::string>(),
-                                  "",
+                                  std::vector<std::string>(), "",
                                   torrent.get());
   requestGroup->followedBy(std::begin(newRgs), std::end(newRgs));
-  auto mi =
-    createMetadataInfoFromFirstFileEntry(requestGroup->getGroupId(),
-                                         requestGroup->getDownloadContext());
-  if(mi) {
+  for (auto& rg : newRgs) {
+    rg->following(requestGroup->getGID());
+  }
+  auto mi = createMetadataInfoFromFirstFileEntry(
+      requestGroup->getGroupId(), requestGroup->getDownloadContext());
+  if (mi) {
     setMetadataInfo(std::begin(newRgs), std::end(newRgs), mi);
   }
 
   auto rgman = requestGroup->getRequestGroupMan();
 
-  if(rgman && rgman->getKeepRunning() &&
-     requestGroup->getOption()->getAsBool(PREF_PAUSE_METADATA)) {
-    for(auto& rg : newRgs) {
+  if (rgman && rgman->getKeepRunning() &&
+      requestGroup->getOption()->getAsBool(PREF_PAUSE_METADATA)) {
+    for (auto& rg : newRgs) {
       rg->setPauseRequested(true);
     }
   }

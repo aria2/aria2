@@ -45,17 +45,17 @@ class LpdMessageDispatcher;
 class DownloadEngine;
 class BtRuntime;
 
-class LpdDispatchMessageCommand:public Command {
+class LpdDispatchMessageCommand : public Command {
 private:
   std::shared_ptr<LpdMessageDispatcher> dispatcher_;
   DownloadEngine* e_;
   int tryCount_;
   std::shared_ptr<BtRuntime> btRuntime_;
+
 public:
-  LpdDispatchMessageCommand
-  (cuid_t cuid,
-   const std::shared_ptr<LpdMessageDispatcher>& dispatcher,
-   DownloadEngine* e);
+  LpdDispatchMessageCommand(
+      cuid_t cuid, const std::shared_ptr<LpdMessageDispatcher>& dispatcher,
+      DownloadEngine* e);
 
   ~LpdDispatchMessageCommand();
 

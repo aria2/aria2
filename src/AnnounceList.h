@@ -56,8 +56,8 @@ private:
   bool currentTrackerInitialized_;
 
   void resetIterator();
-  void setCurrentTier
-  (std::deque<std::shared_ptr<AnnounceTier>>::iterator itr);
+  void setCurrentTier(std::deque<std::shared_ptr<AnnounceTier>>::iterator itr);
+
 public:
   AnnounceList();
   AnnounceList(const std::vector<std::vector<std::string>>& announceList);

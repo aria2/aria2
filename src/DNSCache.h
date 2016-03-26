@@ -80,11 +80,11 @@ private:
 
     const std::string& getGoodAddr() const;
 
-    template<typename OutputIterator>
+    template <typename OutputIterator>
     void getAllGoodAddrs(OutputIterator out) const
     {
-      for(auto & elem : addrEntries_) {
-        if(elem.good_) {
+      for (auto& elem : addrEntries_) {
+        if (elem.good_) {
           *out++ = elem.addr_;
         }
       }
@@ -98,8 +98,9 @@ private:
   };
 
   typedef std::set<std::shared_ptr<CacheEntry>,
-                   DerefLess<std::shared_ptr<CacheEntry> > > CacheEntrySet;
+                   DerefLess<std::shared_ptr<CacheEntry>>> CacheEntrySet;
   CacheEntrySet entries_;
+
 public:
   DNSCache();
   DNSCache(const DNSCache& c);
@@ -109,22 +110,22 @@ public:
 
   const std::string& find(const std::string& hostname, uint16_t port) const;
 
-  template<typename OutputIterator>
-  void findAll
-  (OutputIterator out, const std::string& hostname, uint16_t port) const
+  template <typename OutputIterator>
+  void findAll(OutputIterator out, const std::string& hostname,
+               uint16_t port) const
   {
     std::shared_ptr<CacheEntry> target(new CacheEntry(hostname, port));
     auto i = entries_.find(target);
-    if(i != entries_.end()) {
+    if (i != entries_.end()) {
       (*i)->getAllGoodAddrs(out);
     }
   }
 
-  void put
-  (const std::string& hostname, const std::string& ipaddr, uint16_t port);
+  void put(const std::string& hostname, const std::string& ipaddr,
+           uint16_t port);
 
-  void markBad
-  (const std::string& hostname, const std::string& ipaddr, uint16_t port);
+  void markBad(const std::string& hostname, const std::string& ipaddr,
+               uint16_t port);
 
   void remove(const std::string& hostname, uint16_t port);
 };

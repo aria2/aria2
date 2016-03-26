@@ -41,17 +41,17 @@ namespace aria2 {
 
 class DHTFindNodeReplyMessage;
 
-class DHTNodeLookupTask:
-    public DHTAbstractNodeLookupTask<DHTFindNodeReplyMessage> {
+class DHTNodeLookupTask
+    : public DHTAbstractNodeLookupTask<DHTFindNodeReplyMessage> {
 public:
   DHTNodeLookupTask(const unsigned char* targetNodeID);
 
-  virtual void getNodesFromMessage
-  (std::vector<std::shared_ptr<DHTNode> >& nodes,
-   const DHTFindNodeReplyMessage* message) CXX11_OVERRIDE;
+  virtual void
+  getNodesFromMessage(std::vector<std::shared_ptr<DHTNode>>& nodes,
+                      const DHTFindNodeReplyMessage* message) CXX11_OVERRIDE;
 
-  virtual std::unique_ptr<DHTMessage> createMessage
-  (const std::shared_ptr<DHTNode>& remoteNode) CXX11_OVERRIDE;
+  virtual std::unique_ptr<DHTMessage>
+  createMessage(const std::shared_ptr<DHTNode>& remoteNode) CXX11_OVERRIDE;
 
   virtual std::unique_ptr<DHTMessageCallback> createCallback() CXX11_OVERRIDE;
 };

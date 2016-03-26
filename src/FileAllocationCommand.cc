@@ -52,12 +52,13 @@
 
 namespace aria2 {
 
-FileAllocationCommand::FileAllocationCommand
-(cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e,
- FileAllocationEntry* fileAllocationEntry)
-  : RealtimeCommand{cuid, requestGroup, e},
-    fileAllocationEntry_{fileAllocationEntry}
-{}
+FileAllocationCommand::FileAllocationCommand(
+    cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e,
+    FileAllocationEntry* fileAllocationEntry)
+    : RealtimeCommand{cuid, requestGroup, e},
+      fileAllocationEntry_{fileAllocationEntry}
+{
+}
 
 FileAllocationCommand::~FileAllocationCommand()
 {
@@ -66,11 +67,11 @@ FileAllocationCommand::~FileAllocationCommand()
 
 bool FileAllocationCommand::executeInternal()
 {
-  if(getRequestGroup()->isHaltRequested()) {
+  if (getRequestGroup()->isHaltRequested()) {
     return true;
   }
   fileAllocationEntry_->allocateChunk();
-  if(fileAllocationEntry_->finished()) {
+  if (fileAllocationEntry_->finished()) {
     A2_LOG_DEBUG(fmt(MSG_ALLOCATION_COMPLETED,
                      static_cast<long int>(
                          std::chrono::duration_cast<std::chrono::seconds>(
@@ -81,7 +82,8 @@ bool FileAllocationCommand::executeInternal()
     getDownloadEngine()->addCommand(std::move(commands));
     getDownloadEngine()->setNoWait(true);
     return true;
-  } else {
+  }
+  else {
     getDownloadEngine()->addCommand(std::unique_ptr<Command>(this));
     return false;
   }
@@ -89,13 +91,10 @@ bool FileAllocationCommand::executeInternal()
 
 bool FileAllocationCommand::handleException(Exception& e)
 {
-  A2_LOG_ERROR_EX(fmt(MSG_FILE_ALLOCATION_FAILURE,
-                      getCuid()),
-                  e);
-  A2_LOG_ERROR
-    (fmt(MSG_DOWNLOAD_NOT_COMPLETE,
-         getCuid(),
-         getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
+  A2_LOG_ERROR_EX(fmt(MSG_FILE_ALLOCATION_FAILURE, getCuid()), e);
+  A2_LOG_ERROR(
+      fmt(MSG_DOWNLOAD_NOT_COMPLETE, getCuid(),
+          getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
   return true;
 }
 

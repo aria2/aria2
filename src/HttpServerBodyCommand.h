@@ -57,14 +57,13 @@ private:
   Timer timeoutTimer_;
   bool writeCheck_;
 
-  void sendJsonRpcResponse
-  (const rpc::RpcResponse& res,
-   const std::string& callback);
-  void sendJsonRpcBatchResponse
-  (const std::vector<rpc::RpcResponse>& results,
-   const std::string& callback);
+  void sendJsonRpcResponse(const rpc::RpcResponse& res,
+                           const std::string& callback);
+  void sendJsonRpcBatchResponse(const std::vector<rpc::RpcResponse>& results,
+                                const std::string& callback);
   void addHttpServerResponseCommand(bool delayed);
   void updateWriteCheck();
+
 public:
   HttpServerBodyCommand(cuid_t cuid,
                         const std::shared_ptr<HttpServer>& httpServer,

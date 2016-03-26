@@ -42,27 +42,28 @@ namespace aria2 {
 
 class ServerStatMan;
 
-class FeedbackURISelector:public URISelector {
+class FeedbackURISelector : public URISelector {
 private:
   std::shared_ptr<ServerStatMan> serverStatMan_;
 
-  std::string selectRarer
-  (const std::deque<std::string>& uris,
-   const std::vector<std::pair<size_t, std::string> >& usedHosts);
+  std::string
+  selectRarer(const std::deque<std::string>& uris,
+              const std::vector<std::pair<size_t, std::string>>& usedHosts);
 
-  std::string selectFaster
-  (const std::deque<std::string>& uris,
-   const std::vector<std::pair<size_t, std::string> >& usedHosts);
+  std::string
+  selectFaster(const std::deque<std::string>& uris,
+               const std::vector<std::pair<size_t, std::string>>& usedHosts);
+
 public:
   FeedbackURISelector(const std::shared_ptr<ServerStatMan>& serverStatMan);
 
   virtual ~FeedbackURISelector();
 
   // This function expects ignoreHosts are ordered in ascending order.
-  virtual std::string select
-  (FileEntry* fileEntry,
-   const std::vector<std::pair<size_t, std::string> >& usedHosts)
-    CXX11_OVERRIDE;
+  virtual std::string
+  select(FileEntry* fileEntry,
+         const std::vector<std::pair<size_t, std::string>>& usedHosts)
+      CXX11_OVERRIDE;
 };
 
 } // namespace aria2

@@ -44,20 +44,15 @@ namespace aria2 {
 namespace {
 void handleError(gcry_error_t err)
 {
-  throw DL_ABORT_EX
-    (fmt("Exception in libgcrypt routine(ARC4Encryptor class): %s",
-         gcry_strerror(err)));
+  throw DL_ABORT_EX(
+      fmt("Exception in libgcrypt routine(ARC4Encryptor class): %s",
+          gcry_strerror(err)));
 }
 } // namespace
 
-ARC4Encryptor::ARC4Encryptor()
-  : hdl_(nullptr)
-{}
+ARC4Encryptor::ARC4Encryptor() : hdl_(nullptr) {}
 
-ARC4Encryptor::~ARC4Encryptor()
-{
-  gcry_cipher_close(hdl_);
-}
+ARC4Encryptor::~ARC4Encryptor() { gcry_cipher_close(hdl_); }
 
 void ARC4Encryptor::init(const unsigned char* key, size_t keyLength)
 {
@@ -65,32 +60,31 @@ void ARC4Encryptor::init(const unsigned char* key, size_t keyLength)
   int mode = GCRY_CIPHER_MODE_STREAM;
   unsigned int flags = 0;
   gcry_error_t r;
-  if((r = gcry_cipher_open(&hdl_, algo, mode, flags))) {
+  if ((r = gcry_cipher_open(&hdl_, algo, mode, flags))) {
     handleError(r);
   }
-  if((r = gcry_cipher_setkey(hdl_, key, keyLength))) {
+  if ((r = gcry_cipher_setkey(hdl_, key, keyLength))) {
     handleError(r);
   }
-  if((r = gcry_cipher_setiv(hdl_, nullptr, 0))) {
+  if ((r = gcry_cipher_setiv(hdl_, nullptr, 0))) {
     handleError(r);
   }
 }
 
-void ARC4Encryptor::encrypt
-(size_t len,
- unsigned char* out,
- const unsigned char* in)
+void ARC4Encryptor::encrypt(size_t len, unsigned char* out,
+                            const unsigned char* in)
 {
   size_t inlen;
-  if(in == out) {
+  if (in == out) {
     out = const_cast<unsigned char*>(in);
     in = nullptr;
     inlen = 0;
-  } else {
+  }
+  else {
     inlen = len;
   }
   gcry_error_t r;
-  if((r = gcry_cipher_encrypt(hdl_, out, len, in, inlen))) {
+  if ((r = gcry_cipher_encrypt(hdl_, out, len, in, inlen))) {
     handleError(r);
   }
 }

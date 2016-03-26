@@ -49,6 +49,7 @@ private:
   std::string generateToken(const unsigned char* infoHash,
                             const std::string& ipaddr, uint16_t port,
                             const unsigned char* secret) const;
+
 public:
   DHTTokenTracker();
 
@@ -60,8 +61,7 @@ public:
   std::string generateToken(const unsigned char* infoHash,
                             const std::string& ipaddr, uint16_t port) const;
 
-  bool validateToken(const std::string& token,
-                     const unsigned char* infoHash,
+  bool validateToken(const std::string& token, const unsigned char* infoHash,
                      const std::string& ipaddr, uint16_t port) const;
 
   void updateTokenSecret();

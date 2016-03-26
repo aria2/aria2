@@ -46,62 +46,70 @@
 namespace {
 
 #define FOREGROUND_BLACK 0
-#define FOREGROUND_WHITE FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE
+#define FOREGROUND_WHITE FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE
 
 #define BACKGROUND_BLACK 0
-#define BACKGROUND_WHITE BACKGROUND_RED|BACKGROUND_GREEN|BACKGROUND_BLUE
+#define BACKGROUND_WHITE BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE
 
 const WORD kForeground[] = {
-  FOREGROUND_BLACK,                   // black
-  FOREGROUND_RED,                     // red
-  FOREGROUND_GREEN,                   // green
-  FOREGROUND_RED | FOREGROUND_GREEN,  // yellow
-  FOREGROUND_BLUE,                    // blue
-  FOREGROUND_BLUE | FOREGROUND_RED,   // magenta
-  FOREGROUND_BLUE | FOREGROUND_GREEN, // cyan
-  FOREGROUND_WHITE                    // white
+    FOREGROUND_BLACK,                   // black
+    FOREGROUND_RED,                     // red
+    FOREGROUND_GREEN,                   // green
+    FOREGROUND_RED | FOREGROUND_GREEN,  // yellow
+    FOREGROUND_BLUE,                    // blue
+    FOREGROUND_BLUE | FOREGROUND_RED,   // magenta
+    FOREGROUND_BLUE | FOREGROUND_GREEN, // cyan
+    FOREGROUND_WHITE                    // white
 };
 
+const int kForegroundSize = sizeof(kForeground) / sizeof(kForeground[0]);
+
 const WORD kBackground[] = {
-  BACKGROUND_BLACK,                   // black
-  BACKGROUND_RED,                     // red
-  BACKGROUND_GREEN,                   // green
-  BACKGROUND_RED | BACKGROUND_GREEN,  // yellow
-  BACKGROUND_BLUE,                    // blue
-  BACKGROUND_BLUE | BACKGROUND_RED,   // magenta
-  BACKGROUND_BLUE | BACKGROUND_GREEN, // cyan
-  BACKGROUND_WHITE                    // white
+    BACKGROUND_BLACK,                   // black
+    BACKGROUND_RED,                     // red
+    BACKGROUND_GREEN,                   // green
+    BACKGROUND_RED | BACKGROUND_GREEN,  // yellow
+    BACKGROUND_BLUE,                    // blue
+    BACKGROUND_BLUE | BACKGROUND_RED,   // magenta
+    BACKGROUND_BLUE | BACKGROUND_GREEN, // cyan
+    BACKGROUND_WHITE                    // white
 };
+
+const int kBackgroundSize = sizeof(kBackground) / sizeof(kBackground[0]);
 
 } // namespace
 
 namespace aria2 {
 
 WinConsoleFile::WinConsoleFile(DWORD stdHandle)
-  : stdHandle_(stdHandle), bold_(false), underline_(false), reverse_(false),
-    fg_(FOREGROUND_WHITE), bg_(BACKGROUND_BLACK)
+    : stdHandle_(stdHandle),
+      bold_(false),
+      underline_(false),
+      reverse_(false),
+      fg_(7),
+      bg_(0)
 {
   if (supportsColor()) {
     CONSOLE_SCREEN_BUFFER_INFO info;
     GetConsoleScreenBufferInfo(handle(), &info);
-    info.wAttributes &= ~(COMMON_LVB_LEADING_BYTE |
-                          COMMON_LVB_TRAILING_BYTE |
-                          COMMON_LVB_GRID_HORIZONTAL |
-                          COMMON_LVB_GRID_LVERTICAL |
-                          COMMON_LVB_GRID_RVERTICAL |
-                          COMMON_LVB_REVERSE_VIDEO |
-                          COMMON_LVB_UNDERSCORE);
-    fg_ = info.wAttributes & ~(BACKGROUND_BLUE |
-                               BACKGROUND_GREEN |
-                               BACKGROUND_RED |
-                               BACKGROUND_INTENSITY);
-    bg_ = info.wAttributes & ~(FOREGROUND_BLUE |
-                               FOREGROUND_GREEN |
-                               FOREGROUND_RED |
-                               FOREGROUND_INTENSITY);
-    bg_ = (bg_ >>  4) & 0x0F;
     bold_ = info.wAttributes & FOREGROUND_INTENSITY;
     underline_ = info.wAttributes & BACKGROUND_INTENSITY;
+    int fgcolor = info.wAttributes &
+                  (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
+    for (int fg = 0; fg < kForegroundSize; fg++) {
+      if (kForeground[fg] == fgcolor) {
+        fg_ = fg;
+        break;
+      }
+    }
+    int bgcolor = info.wAttributes &
+                  (BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);
+    for (int bg = 0; bg < kBackgroundSize; bg++) {
+      if (kBackground[bg] == bgcolor) {
+        bg_ = bg;
+        break;
+      }
+    }
   }
 
   deffg_ = fg_;
@@ -151,9 +159,7 @@ size_t WinConsoleFile::writeColorful(const std::wstring& str)
   std::vector<wchar_t> buffer;
   buffer.reserve(str.length());
 
-  enum state_ {
-    ePrefix, ePreFin, eNum0, eNum
-  } state = ePrefix;
+  enum state_ { ePrefix, ePreFin, eNum0, eNum } state = ePrefix;
 
   for (const wchar_t ch : str) {
     if (state == ePrefix) {
@@ -166,7 +172,8 @@ size_t WinConsoleFile::writeColorful(const std::wstring& str)
       }
     }
     else if (state == ePreFin) {
-      if (ch == '\033');
+      if (ch == '\033')
+        ;
       else if (ch == '[') {
         state = eNum0;
       }
@@ -196,7 +203,7 @@ size_t WinConsoleFile::writeColorful(const std::wstring& str)
     ++written;
     continue;
 
-out:
+  out:
     cw = 0;
     if (!buffer.empty()) {
       WriteConsoleW(handle(), buffer.data(), buffer.size(), &cw, nullptr);
@@ -207,11 +214,11 @@ out:
       if (args.empty()) {
         args.push_back(0);
       }
-      for (const int a: args) {
+      for (const int a : args) {
         if (a == 0) {
-            fg_ = deffg_;
-            bg_ = defbg_;
-            bold_ = underline_ = reverse_ = false;
+          fg_ = deffg_;
+          bg_ = defbg_;
+          bold_ = underline_ = reverse_ = false;
         }
         else if (30 <= a && a <= 37) {
           fg_ = a - 30;

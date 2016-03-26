@@ -40,11 +40,13 @@ namespace aria2 {
 
 const std::string DHTAnnouncePeerReplyMessage::ANNOUNCE_PEER("announce_peer");
 
-DHTAnnouncePeerReplyMessage::DHTAnnouncePeerReplyMessage
-(const std::shared_ptr<DHTNode>& localNode,
- const std::shared_ptr<DHTNode>& remoteNode,
- const std::string& transactionID):
-  DHTResponseMessage(localNode, remoteNode, transactionID) {}
+DHTAnnouncePeerReplyMessage::DHTAnnouncePeerReplyMessage(
+    const std::shared_ptr<DHTNode>& localNode,
+    const std::shared_ptr<DHTNode>& remoteNode,
+    const std::string& transactionID)
+    : DHTResponseMessage(localNode, remoteNode, transactionID)
+{
+}
 
 DHTAnnouncePeerReplyMessage::~DHTAnnouncePeerReplyMessage() {}
 

@@ -27,7 +27,7 @@ namespace crypto {
  *   - where BYTE_ORDER == LITTLE_ENDIAN or BYTE_ORDER == BIG_ENDIAN
  * Failing to conform will render this implementation utterly incorrect.
  */
-#if defined(_WIN32) || defined(__INTEL_COMPILER) || defined (_MSC_VER)
+#if defined(_WIN32) || defined(__INTEL_COMPILER) || defined(_MSC_VER)
 // Itanium is dead!
 #define LITTLE_ENDIAN 1234
 #define BIG_ENDIAN 4321
@@ -38,7 +38,8 @@ namespace crypto {
 #endif // HAVE_SYS_PARAM_H
 #endif // !  defined(_WIN32) || defined(__INTEL_COMPILER) || defined (_MSC_VER)
 
-#if !defined(LITTLE_ENDIAN) || !defined(BIG_ENDIAN) || !defined(BYTE_ORDER) || (LITTLE_ENDIAN != BYTE_ORDER && BIG_ENDIAN != BYTE_ORDER)
+#if !defined(LITTLE_ENDIAN) || !defined(BIG_ENDIAN) || !defined(BYTE_ORDER) || \
+    (LITTLE_ENDIAN != BYTE_ORDER && BIG_ENDIAN != BYTE_ORDER)
 #error Unsupported byte order/endianess
 #endif
 
@@ -47,12 +48,12 @@ namespace crypto {
 #if (defined(__i386__) || defined(__x86_64__)) && defined(__GNUG__)
 forceinline uint32_t __crypto_bswap32(uint32_t p)
 {
-    __asm__ __volatile__("bswap %0" : "=r"(p) : "0"(p));
-    return p;
+  __asm__ __volatile__("bswap %0" : "=r"(p) : "0"(p));
+  return p;
 }
 #elif defined(__GNUG__)
 #define __crypto_bswap32 __builtin_bswap32
-#else // defined(__GNUG__)
+#else  // defined(__GNUG__)
 forceinline uint32_t __crypto_bswap32(uint32_t n)
 {
   n = ((n << 8) & 0xff00ff00) | ((n >> 8) & 0xff00ff);
@@ -69,7 +70,7 @@ forceinline uint64_t __crypto_bswap64(uint64_t p)
 }
 #elif defined(__GNUG__)
 #define __crypto_bswap64 __builtin_bswap64
-#else // defined(__GNUG__)
+#else  // defined(__GNUG__)
 forceinline uint64_t __crypto_bswap64(uint64_t n)
 {
   n = ((n << 8) & 0xff00ff00ff00ff00) | ((n >> 8) & 0x00ff00ff00ff00ff);
@@ -80,20 +81,17 @@ forceinline uint64_t __crypto_bswap64(uint64_t n)
 
 // Time for an implementation that makes reuse easier.
 namespace {
-template<typename T>
-inline T __crypto_bswap(T n)
+template <typename T> inline T __crypto_bswap(T n)
 {
   static_assert(sizeof(T) != sizeof(T), "Not implemented");
 }
 
-template<>
-inline uint32_t __crypto_bswap(uint32_t n)
+template <> inline uint32_t __crypto_bswap(uint32_t n)
 {
   return __crypto_bswap32(n);
 }
 
-template<>
-inline uint64_t __crypto_bswap(uint64_t n)
+template <> inline uint64_t __crypto_bswap(uint64_t n)
 {
   return __crypto_bswap64(n);
 }

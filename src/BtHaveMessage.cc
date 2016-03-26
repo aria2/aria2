@@ -42,24 +42,24 @@ namespace aria2 {
 
 const char BtHaveMessage::NAME[] = "have";
 
-BtHaveMessage::BtHaveMessage(size_t index):IndexBtMessage(ID, NAME, index) {}
+BtHaveMessage::BtHaveMessage(size_t index) : IndexBtMessage(ID, NAME, index) {}
 
-std::unique_ptr<BtHaveMessage> BtHaveMessage::create
-(const unsigned char* data, size_t dataLength)
+std::unique_ptr<BtHaveMessage> BtHaveMessage::create(const unsigned char* data,
+                                                     size_t dataLength)
 {
   return IndexBtMessage::create<BtHaveMessage>(data, dataLength);
 }
 
 void BtHaveMessage::doReceivedAction()
 {
-  if(isMetadataGetMode()) {
+  if (isMetadataGetMode()) {
     return;
   }
   size_t index = getIndex();
-  if(!getPeer()->hasPiece(index)) {
+  if (!getPeer()->hasPiece(index)) {
     getPeer()->updateBitfield(index, 1);
     getPieceStorage()->addPieceStats(index);
-    if(getPeer()->isSeeder() && getPieceStorage()->downloadFinished()) {
+    if (getPeer()->isSeeder() && getPieceStorage()->downloadFinished()) {
       throw DL_ABORT_EX(MSG_GOOD_BYE_SEEDER);
     }
   }

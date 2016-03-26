@@ -57,68 +57,75 @@ namespace aria2 {
 
 MetalinkPostDownloadHandler::MetalinkPostDownloadHandler()
 {
-  setCriteria(make_unique<ContentTypeRequestGroupCriteria>
-              (getMetalinkContentTypes(), getMetalinkExtensions()));
+  setCriteria(make_unique<ContentTypeRequestGroupCriteria>(
+      getMetalinkContentTypes(), getMetalinkExtensions()));
 }
 
 namespace {
 const std::string& getBaseUri(RequestGroup* requestGroup)
 {
   auto& dctx = requestGroup->getDownloadContext();
-  if(dctx->getFileEntries().empty()) {
+  if (dctx->getFileEntries().empty()) {
     return A2STR::NIL;
-  } else {
+  }
+  else {
     // TODO Check download result for each URI
     auto& entry = dctx->getFirstFileEntry();
     auto& spentUris = entry->getSpentUris();
-    if(spentUris.empty()) {
+    if (spentUris.empty()) {
       auto& remainingUris = entry->getRemainingUris();
-      if(remainingUris.empty()) {
+      if (remainingUris.empty()) {
         return A2STR::NIL;
-      } else {
+      }
+      else {
         return remainingUris.front();
       }
-    } else {
+    }
+    else {
       return spentUris.back();
     }
   }
 }
 } // namespace
 
-void MetalinkPostDownloadHandler::getNextRequestGroups
-(std::vector<std::shared_ptr<RequestGroup>>& groups,
- RequestGroup* requestGroup) const
+void MetalinkPostDownloadHandler::getNextRequestGroups(
+    std::vector<std::shared_ptr<RequestGroup>>& groups,
+    RequestGroup* requestGroup) const
 {
   A2_LOG_DEBUG(fmt("Generating RequestGroups for Metalink file %s",
                    requestGroup->getFirstFilePath().c_str()));
   auto diskAdaptor = requestGroup->getPieceStorage()->getDiskAdaptor();
   try {
     diskAdaptor->openExistingFile();
-    //requestOption.put(PREF_DIR, requestGroup->getDownloadContext()->getDir());
+    // requestOption.put(PREF_DIR,
+    // requestGroup->getDownloadContext()->getDir());
     const std::string& baseUri = getBaseUri(requestGroup);
     std::vector<std::shared_ptr<RequestGroup>> newRgs;
     Metalink2RequestGroup().generate(newRgs, diskAdaptor,
                                      requestGroup->getOption(), baseUri);
     requestGroup->followedBy(newRgs.begin(), newRgs.end());
-    auto mi =
-      createMetadataInfoFromFirstFileEntry(requestGroup->getGroupId(),
-                                           requestGroup->getDownloadContext());
-    if(mi) {
+    for (auto& rg : newRgs) {
+      rg->following(requestGroup->getGID());
+    }
+    auto mi = createMetadataInfoFromFirstFileEntry(
+        requestGroup->getGroupId(), requestGroup->getDownloadContext());
+    if (mi) {
       setMetadataInfo(newRgs.begin(), newRgs.end(), mi);
     }
 
     auto rgman = requestGroup->getRequestGroupMan();
 
-    if(rgman && rgman->getKeepRunning() &&
-       requestGroup->getOption()->getAsBool(PREF_PAUSE_METADATA)) {
-      for(auto& rg : newRgs) {
+    if (rgman && rgman->getKeepRunning() &&
+        requestGroup->getOption()->getAsBool(PREF_PAUSE_METADATA)) {
+      for (auto& rg : newRgs) {
         rg->setPauseRequested(true);
       }
     }
 
     groups.insert(groups.end(), newRgs.begin(), newRgs.end());
     diskAdaptor->closeFile();
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     diskAdaptor->closeFile();
     throw;
   }

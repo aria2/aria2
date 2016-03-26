@@ -49,13 +49,13 @@ namespace aria2 {
 class PeerStorage;
 class Peer;
 
-class UTPexExtensionMessage:public ExtensionMessage {
+class UTPexExtensionMessage : public ExtensionMessage {
 private:
   uint8_t extensionMessageID_;
 
-  std::vector<std::shared_ptr<Peer> > freshPeers_;
+  std::vector<std::shared_ptr<Peer>> freshPeers_;
 
-  std::vector<std::shared_ptr<Peer> > droppedPeers_;
+  std::vector<std::shared_ptr<Peer>> droppedPeers_;
 
   PeerStorage* peerStorage_;
 
@@ -109,17 +109,11 @@ public:
 
   void setMaxFreshPeer(size_t maxFreshPeer);
 
-  size_t getMaxFreshPeer() const
-  {
-    return maxFreshPeer_;
-  }
+  size_t getMaxFreshPeer() const { return maxFreshPeer_; }
 
   void setMaxDroppedPeer(size_t maxDroppedPeer);
 
-  size_t getMaxDroppedPeer() const
-  {
-    return maxDroppedPeer_;
-  }
+  size_t getMaxDroppedPeer() const { return maxDroppedPeer_; }
 
   constexpr static auto DEFAULT_INTERVAL = 1_min;
 };

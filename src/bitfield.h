@@ -51,76 +51,70 @@ namespace bitfield {
 // then 0x80u is returned. nbits = 12, then 0xf0u is returned.
 inline unsigned char lastByteMask(size_t nbits)
 {
-  if(nbits == 0) {
+  if (nbits == 0) {
     return 0;
-  } else {
-    int s = nbits%8;
-    if(s == 0) {
+  }
+  else {
+    int s = nbits % 8;
+    if (s == 0) {
       return 0xffu;
-    } else {
+    }
+    else {
       return -256 >> s;
     }
   }
 }
 
 // Returns true if index-th bits is set. Otherwise returns false.
-template<typename Array>
+template <typename Array>
 inline bool test(const Array& bitfield, size_t nbits, size_t index)
 {
   assert(index < nbits);
-  unsigned char mask = 128 >> (index%8);
-  return (bitfield[index/8]&mask) != 0;
+  unsigned char mask = 128 >> (index % 8);
+  return (bitfield[index / 8] & mask) != 0;
 }
 
 const int cntbits[] = {
-  0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4,
-  1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
-  1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
-  2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
-  1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
-  2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
-  2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
-  3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
-  1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
-  2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
-  2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
-  3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
-  2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
-  3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
-  3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
-  4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8,
+    0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1, 2, 2, 3, 2, 3, 3, 4,
+    2, 3, 3, 4, 3, 4, 4, 5, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
+    2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 1, 2, 2, 3, 2, 3, 3, 4,
+    2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+    2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6,
+    4, 5, 5, 6, 5, 6, 6, 7, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
+    2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5,
+    3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
+    2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6,
+    4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
+    4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8,
 };
 
 inline size_t countBit32(uint32_t n)
 {
-  return
-    cntbits[n&0xffu]+
-    cntbits[(n >> 8)&0xffu]+
-    cntbits[(n >> 16)&0xffu]+
-    cntbits[(n >> 24)&0xffu];
+  return cntbits[n & 0xffu] + cntbits[(n >> 8) & 0xffu] +
+         cntbits[(n >> 16) & 0xffu] + cntbits[(n >> 24) & 0xffu];
 }
 
 // Counts set bit in bitfield.
 inline size_t countSetBit(const unsigned char* bitfield, size_t nbits)
 {
-  if(nbits == 0) {
+  if (nbits == 0) {
     return 0;
   }
   size_t count = 0;
   size_t size = sizeof(uint32_t);
-  size_t len = (nbits+7)/8;
-  if(nbits%32 != 0) {
+  size_t len = (nbits + 7) / 8;
+  if (nbits % 32 != 0) {
     --len;
     count +=
-      countBit32(static_cast<uint32_t>(bitfield[len]&lastByteMask(nbits)));
+        countBit32(static_cast<uint32_t>(bitfield[len] & lastByteMask(nbits)));
   }
-  size_t to = len/size;
-  for(size_t i = 0; i < to; ++i) {
+  size_t to = len / size;
+  for (size_t i = 0; i < to; ++i) {
     uint32_t v;
-    memcpy(&v, &bitfield[i*size], sizeof(v));
+    memcpy(&v, &bitfield[i * size], sizeof(v));
     count += countBit32(v);
   }
-  for(size_t i = len-len%size; i < len; ++i) {
+  for (size_t i = len - len % size; i < len; ++i) {
     count += countBit32(static_cast<uint32_t>(bitfield[i]));
   }
   return count;
@@ -128,21 +122,21 @@ inline size_t countSetBit(const unsigned char* bitfield, size_t nbits)
 
 // Counts set bit in bitfield. This is a bit slower than countSetBit
 // but can accept array template expression as bitfield.
-template<typename Array>
+template <typename Array>
 size_t countSetBitSlow(const Array& bitfield, size_t nbits)
 {
-  if(nbits == 0) {
+  if (nbits == 0) {
     return 0;
   }
   size_t count = 0;
-  size_t to = (nbits+7)/8;
-  if(to > 1) {
-    for(size_t i = 0; i < to - 1; ++i) {
+  size_t to = (nbits + 7) / 8;
+  if (to > 1) {
+    for (size_t i = 0; i < to - 1; ++i) {
       count += cntbits[static_cast<unsigned char>(bitfield[i])];
     }
   }
-  count +=
-    cntbits[static_cast<unsigned char>(bitfield[to - 1])&lastByteMask(nbits)];
+  count += cntbits[static_cast<unsigned char>(bitfield[to - 1]) &
+                   lastByteMask(nbits)];
   return count;
 }
 
@@ -151,12 +145,11 @@ void flipBit(unsigned char* data, size_t length, size_t bitIndex);
 // Stores first set bit index of bitfield to index.  bitfield contains
 // nbits. Returns true if missing bit index is found. Otherwise
 // returns false.
-template<typename Array>
-bool getFirstSetBitIndex
-(size_t& index, const Array& bitfield, size_t nbits)
+template <typename Array>
+bool getFirstSetBitIndex(size_t& index, const Array& bitfield, size_t nbits)
 {
-  for(size_t i = 0; i < nbits; ++i) {
-    if(bitfield::test(bitfield, nbits, i)) {
+  for (size_t i = 0; i < nbits; ++i) {
+    if (bitfield::test(bitfield, nbits, i)) {
       index = i;
       return true;
     }
@@ -166,23 +159,23 @@ bool getFirstSetBitIndex
 
 // Appends first at most n set bit index in bitfield to out.  bitfield
 // contains nbits bits.  Returns the number of appended bit indexes.
-template<typename Array, typename OutputIterator>
-size_t getFirstNSetBitIndex
-(OutputIterator out, size_t n, const Array& bitfield, size_t nbits)
+template <typename Array, typename OutputIterator>
+size_t getFirstNSetBitIndex(OutputIterator out, size_t n, const Array& bitfield,
+                            size_t nbits)
 {
-  if(n == 0) {
+  if (n == 0) {
     return 0;
   }
   const size_t origN = n;
-  for(size_t i = 0; i < nbits; ++i) {
-    if(bitfield::test(bitfield, nbits, i)) {
+  for (size_t i = 0; i < nbits; ++i) {
+    if (bitfield::test(bitfield, nbits, i)) {
       *out++ = i;
-      if(--n == 0) {
+      if (--n == 0) {
         break;
       }
     }
   }
-  return origN-n;
+  return origN - n;
 }
 
 } // namespace bitfield

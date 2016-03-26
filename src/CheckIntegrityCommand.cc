@@ -48,12 +48,13 @@
 
 namespace aria2 {
 
-CheckIntegrityCommand::CheckIntegrityCommand
-(cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e,
- CheckIntegrityEntry* entry)
-  : RealtimeCommand{cuid, requestGroup, e},
-    entry_{entry}
-{}
+CheckIntegrityCommand::CheckIntegrityCommand(cuid_t cuid,
+                                             RequestGroup* requestGroup,
+                                             DownloadEngine* e,
+                                             CheckIntegrityEntry* entry)
+    : RealtimeCommand{cuid, requestGroup, e}, entry_{entry}
+{
+}
 
 CheckIntegrityCommand::~CheckIntegrityCommand()
 {
@@ -62,33 +63,35 @@ CheckIntegrityCommand::~CheckIntegrityCommand()
 
 bool CheckIntegrityCommand::executeInternal()
 {
-  if(getRequestGroup()->isHaltRequested()) {
+  if (getRequestGroup()->isHaltRequested()) {
     return true;
   }
   entry_->validateChunk();
-  if(entry_->finished()) {
+  if (entry_->finished()) {
     // Enable control file saving here. See also
     // RequestGroup::processCheckIntegrityEntry() to know why this is
     // needed.
     getRequestGroup()->enableSaveControlFile();
-    if(getRequestGroup()->downloadFinished()) {
-      A2_LOG_NOTICE
-        (fmt(MSG_VERIFICATION_SUCCESSFUL,
-             getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
+    if (getRequestGroup()->downloadFinished()) {
+      A2_LOG_NOTICE(
+          fmt(MSG_VERIFICATION_SUCCESSFUL,
+              getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
       std::vector<std::unique_ptr<Command>> commands;
       entry_->onDownloadFinished(commands, getDownloadEngine());
       getDownloadEngine()->addCommand(std::move(commands));
-    } else {
-      A2_LOG_ERROR
-        (fmt(MSG_VERIFICATION_FAILED,
-             getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
+    }
+    else {
+      A2_LOG_ERROR(
+          fmt(MSG_VERIFICATION_FAILED,
+              getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
       std::vector<std::unique_ptr<Command>> commands;
       entry_->onDownloadIncomplete(commands, getDownloadEngine());
       getDownloadEngine()->addCommand(std::move(commands));
     }
     getDownloadEngine()->setNoWait(true);
     return true;
-  } else {
+  }
+  else {
     getDownloadEngine()->addCommand(std::unique_ptr<Command>(this));
     return false;
   }
@@ -96,13 +99,10 @@ bool CheckIntegrityCommand::executeInternal()
 
 bool CheckIntegrityCommand::handleException(Exception& e)
 {
-  A2_LOG_ERROR_EX(fmt(MSG_FILE_VALIDATION_FAILURE,
-                   getCuid()),
-                  e);
-  A2_LOG_ERROR
-    (fmt(MSG_DOWNLOAD_NOT_COMPLETE,
-         getCuid(),
-         getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
+  A2_LOG_ERROR_EX(fmt(MSG_FILE_VALIDATION_FAILURE, getCuid()), e);
+  A2_LOG_ERROR(
+      fmt(MSG_DOWNLOAD_NOT_COMPLETE, getCuid(),
+          getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
   return true;
 }
 

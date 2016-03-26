@@ -15,6 +15,8 @@ EXTRA_DIST = config.rpath \
 
 dist_doc_DATA = README README.rst README.html
 
+.PHONY: clang-format
+
 if HAVE_RST2HTML
 README.html: README.rst
 	$(RST2HTML)  $< > $@
@@ -27,3 +29,11 @@ endif # !HAVE_RST2HTML
 
 dist_noinst_DATA = LICENSE.OpenSSL
 
+# Format source files using clang-format.  Don't format source files
+# under deps directory since we are not responsible for thier coding
+# style.
+clang-format:
+	CLANGFORMAT=`git config --get clangformat.binary`; \
+	test -z $${CLANGFORMAT} && CLANGFORMAT="clang-format"; \
+	$${CLANGFORMAT} -i $(top_srcdir)/src/*.{c,cc,h} $(top_srcdir)/src/includes/aria2/*.h \
+	$(top_srcdir)/examples/*.cc $(top_srcdir)/test/*.{cc,h}

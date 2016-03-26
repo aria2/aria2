@@ -54,33 +54,24 @@ IOFile::operator unspecified_bool_type() const
   return ok ? &IOFile::goodState : nullptr;
 }
 
-size_t IOFile::read(void* ptr, size_t count)
-{
-  return onRead(ptr, count);
-}
+size_t IOFile::read(void* ptr, size_t count) { return onRead(ptr, count); }
 
 size_t IOFile::write(const void* ptr, size_t count)
 {
   return onWrite(ptr, count);
 }
 
-size_t IOFile::write(const char* str)
-{
-  return write(str, strlen(str));
-}
+size_t IOFile::write(const char* str) { return write(str, strlen(str)); }
 
-char* IOFile::gets(char* s, int size)
-{
-  return onGets(s, size);
-}
+char* IOFile::gets(char* s, int size) { return onGets(s, size); }
 
 char* IOFile::getsn(char* s, int size)
 {
   char* ptr = gets(s, size);
-  if(ptr) {
+  if (ptr) {
     int len = strlen(ptr);
-    if(ptr[len-1] == '\n') {
-      ptr[len-1] = '\0';
+    if (ptr[len - 1] == '\n') {
+      ptr[len - 1] = '\0';
     }
   }
   return ptr;
@@ -89,44 +80,38 @@ char* IOFile::getsn(char* s, int size)
 std::string IOFile::getLine()
 {
   std::string res;
-  if(eof()) {
+  if (eof()) {
     return res;
   }
   std::array<char, 4_k> buf;
-  while(gets(buf.data(), buf.size())) {
+  while (gets(buf.data(), buf.size())) {
     size_t len = strlen(buf.data());
     bool lineBreak = false;
-    if(buf[len-1] == '\n') {
+    if (buf[len - 1] == '\n') {
       --len;
       lineBreak = true;
     }
     res.append(buf.data(), len);
-    if(lineBreak) {
+    if (lineBreak) {
       break;
     }
   }
   return res;
 }
 
-int IOFile::close()
-{
-  return onClose();
-}
+int IOFile::close() { return onClose(); }
 
-bool IOFile::eof()
-{
-  return !isOpen() || isEOF();
-}
+bool IOFile::eof() { return !isOpen() || isEOF(); }
 
 size_t IOFile::transfer(std::ostream& out)
 {
   size_t count = 0;
   std::array<char, 4_k> buf;
-  while(1) {
+  while (1) {
     size_t r = this->read(buf.data(), buf.size());
     out.write(buf.data(), r);
     count += r;
-    if(r < buf.size()) {
+    if (r < buf.size()) {
       break;
     }
   }
@@ -138,14 +123,8 @@ int IOFile::vprintf(const char* format, va_list va)
   return onVprintf(format, va);
 }
 
-int IOFile::flush()
-{
-  return onFlush();
-}
+int IOFile::flush() { return onFlush(); }
 
-bool IOFile::supportsColor()
-{
-  return onSupportsColor();
-}
+bool IOFile::supportsColor() { return onSupportsColor(); }
 
 } // namespace aria2

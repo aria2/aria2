@@ -39,8 +39,7 @@
 
 namespace aria2 {
 
-class MetalinkPostDownloadHandler:public PostDownloadHandler
-{
+class MetalinkPostDownloadHandler : public PostDownloadHandler {
 public:
   MetalinkPostDownloadHandler();
 

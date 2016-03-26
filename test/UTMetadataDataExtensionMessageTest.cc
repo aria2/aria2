@@ -18,7 +18,7 @@
 
 namespace aria2 {
 
-class UTMetadataDataExtensionMessageTest:public CppUnit::TestFixture {
+class UTMetadataDataExtensionMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(UTMetadataDataExtensionMessageTest);
   CPPUNIT_TEST(testGetExtensionMessageID);
@@ -26,13 +26,13 @@ class UTMetadataDataExtensionMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testToString);
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void testGetExtensionMessageID();
   void testGetBencodedData();
   void testToString();
   void testDoReceivedAction();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(UTMetadataDataExtensionMessageTest);
 
@@ -50,9 +50,9 @@ void UTMetadataDataExtensionMessageTest::testGetBencodedData()
   msg.setIndex(1);
   msg.setTotalSize(data.size());
   msg.setData(data);
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("d8:msg_typei1e5:piecei1e10:total_sizei16384ee")+data,
-     msg.getPayload());
+  CPPUNIT_ASSERT_EQUAL(
+      std::string("d8:msg_typei1e5:piecei1e10:total_sizei16384ee") + data,
+      msg.getPayload());
 }
 
 void UTMetadataDataExtensionMessageTest::testToString()
@@ -79,12 +79,12 @@ void UTMetadataDataExtensionMessageTest::testDoReceivedAction()
 
   std::string piece0 = std::string(METADATA_PIECE_SIZE, '0');
   std::string piece1 = std::string(METADATA_PIECE_SIZE, '1');
-  std::string metadata = piece0+piece1;
+  std::string metadata = piece0 + piece1;
 
   unsigned char infoHash[INFO_HASH_LENGTH];
   message_digest::digest(infoHash, INFO_HASH_LENGTH,
-                         MessageDigest::sha1().get(),
-                         metadata.data(), metadata.size());
+                         MessageDigest::sha1().get(), metadata.data(),
+                         metadata.size());
   {
     auto attrs = make_unique<TorrentAttribute>();
     attrs->infoHash = std::string(&infoHash[0], &infoHash[20]);

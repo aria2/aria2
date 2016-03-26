@@ -83,9 +83,10 @@ void DHKeyExchange::generatePublicKey()
 size_t DHKeyExchange::getPublicKey(unsigned char* out, size_t outLength) const
 {
   if (outLength < keyLength_) {
-    throw DL_ABORT_EX(fmt("Insufficient buffer for public key. expect:%lu, actual:%lu",
-                          static_cast<unsigned long>(keyLength_),
-                          static_cast<unsigned long>(outLength)));
+    throw DL_ABORT_EX(
+        fmt("Insufficient buffer for public key. expect:%lu, actual:%lu",
+            static_cast<unsigned long>(keyLength_),
+            static_cast<unsigned long>(outLength)));
   }
   publicKey_.binary(reinterpret_cast<char*>(out), outLength);
   return keyLength_;
@@ -101,17 +102,20 @@ size_t DHKeyExchange::computeSecret(unsigned char* out, size_t outLength,
                                     size_t peerPublicKeyLength) const
 {
   if (outLength < keyLength_) {
-    throw DL_ABORT_EX(fmt("Insufficient buffer for secret. expect:%lu, actual:%lu",
-                          static_cast<unsigned long>(keyLength_),
-                          static_cast<unsigned long>(outLength)));
+    throw DL_ABORT_EX(
+        fmt("Insufficient buffer for secret. expect:%lu, actual:%lu",
+            static_cast<unsigned long>(keyLength_),
+            static_cast<unsigned long>(outLength)));
   }
   if (prime_.length() < peerPublicKeyLength) {
-    throw DL_ABORT_EX(fmt("peer public key overflows bignum. max:%lu, actual:%lu",
-                          static_cast<unsigned long>(prime_.length()),
-                          static_cast<unsigned long>(peerPublicKeyLength)));
+    throw DL_ABORT_EX(
+        fmt("peer public key overflows bignum. max:%lu, actual:%lu",
+            static_cast<unsigned long>(prime_.length()),
+            static_cast<unsigned long>(peerPublicKeyLength)));
   }
 
-  n peerKey(reinterpret_cast<const char*>(peerPublicKeyData), peerPublicKeyLength);
+  n peerKey(reinterpret_cast<const char*>(peerPublicKeyData),
+            peerPublicKeyLength);
   n secret = peerKey.mul_mod(privateKey_, prime_);
   secret.binary(reinterpret_cast<char*>(out), outLength);
 

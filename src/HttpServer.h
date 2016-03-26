@@ -54,18 +54,13 @@ class SocketRecvBuffer;
 class DiskWriter;
 
 namespace util {
-  namespace security {
-    class HMAC;
-    class HMACResult;
-  }
+namespace security {
+class HMAC;
+class HMACResult;
+}
 }
 
-enum RequestType {
-  RPC_TYPE_NONE,
-  RPC_TYPE_XML,
-  RPC_TYPE_JSON,
-  RPC_TYPE_JSONP
-};
+enum RequestType { RPC_TYPE_NONE, RPC_TYPE_XML, RPC_TYPE_JSON, RPC_TYPE_JSONP };
 
 // HTTP server class handling RPC request from the client.  It is not
 // intended to be a generic HTTP server.
@@ -91,6 +86,7 @@ private:
   bool acceptsGZip_;
   std::string allowOrigin_;
   bool secure_;
+
 public:
   HttpServer(const std::shared_ptr<SocketCore>& socket);
 
@@ -112,10 +108,7 @@ public:
 
   DiskWriter* getBody() const;
 
-  RequestType getRequestType() const
-  {
-    return reqType_;
-  }
+  RequestType getRequestType() const { return reqType_; }
 
   void feedResponse(std::string text, const std::string& contentType);
 
@@ -123,10 +116,8 @@ public:
   // 200). The |headers| is zero or more lines of HTTP header field
   // and each line must end with "\r\n". The |text| is the response
   // body. The |contentType" is the content-type of the response body.
-  void feedResponse(int status,
-                    const std::string& headers = "",
-                    std::string text = "",
-                    const std::string& contentType = "");
+  void feedResponse(int status, const std::string& headers = "",
+                    std::string text = "", const std::string& contentType = "");
 
   // Feeds "101 Switching Protocols" response. The |protocol| will
   // appear in Upgrade header field. The |headers| is zero or more
@@ -136,8 +127,8 @@ public:
 
   bool authenticate();
 
-  void setUsernamePassword
-  (const std::string& username, const std::string& password);
+  void setUsernamePassword(const std::string& username,
+                           const std::string& password);
 
   ssize_t sendResponse();
 
@@ -145,10 +136,7 @@ public:
 
   bool supportsPersistentConnection() const;
 
-  bool supportsGZip() const
-  {
-    return gzip_ && acceptsGZip_;
-  }
+  bool supportsGZip() const { return gzip_ && acceptsGZip_; }
 
   void enableKeepAlive() { keepAlive_ = true; }
 
@@ -165,35 +153,23 @@ public:
     return socketRecvBuffer_;
   }
 
-  const std::string& getAllowOrigin() const
-  {
-    return allowOrigin_;
-  }
+  const std::string& getAllowOrigin() const { return allowOrigin_; }
 
   void setAllowOrigin(const std::string& allowOrigin)
   {
     allowOrigin_ = allowOrigin;
   }
 
-  const std::shared_ptr<SocketCore>& getSocket() const
-  {
-    return socket_;
-  }
+  const std::shared_ptr<SocketCore>& getSocket() const { return socket_; }
 
   const std::unique_ptr<HttpHeader>& getRequestHeader() const
   {
     return lastRequestHeader_;
   }
 
-  void setSecure(bool f)
-  {
-    secure_ = f;
-  }
+  void setSecure(bool f) { secure_ = f; }
 
-  bool getSecure() const
-  {
-    return secure_;
-  }
+  bool getSecure() const { return secure_; }
 
   bool wantRead() const;
   bool wantWrite() const;

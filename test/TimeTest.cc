@@ -9,7 +9,7 @@
 
 namespace aria2 {
 
-class TimeTest:public CppUnit::TestFixture {
+class TimeTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(TimeTest);
   CPPUNIT_TEST(testParseRFC1123);
@@ -20,6 +20,7 @@ class TimeTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testOperatorLess);
   CPPUNIT_TEST(testToHTTPDate);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -34,7 +35,6 @@ public:
   void testOperatorLess();
   void testToHTTPDate();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TimeTest);
 
@@ -70,20 +70,19 @@ void TimeTest::testParseAsctime()
 
 void TimeTest::testParseHTTPDate()
 {
-  CPPUNIT_ASSERT_EQUAL((time_t)1220714793,
-                       Time::parseHTTPDate
-                       ("Sat, 06 Sep 2008 15:26:33 GMT").getTimeFromEpoch());
-  CPPUNIT_ASSERT_EQUAL((time_t)1220714793,
-                       Time::parseHTTPDate
-                       ("Sat, 06-Sep-2008 15:26:33 GMT").getTimeFromEpoch());
-  CPPUNIT_ASSERT_EQUAL((time_t)1220714793,
-                       Time::parseHTTPDate
-                       ("Sat, 06-Sep-08 15:26:33 GMT").getTimeFromEpoch());
-  CPPUNIT_ASSERT_EQUAL((time_t)1220714793,
-                       Time::parseHTTPDate
-                       ("Sun Sep  6 15:26:33 2008").getTimeFromEpoch());
-  CPPUNIT_ASSERT(Time::parseHTTPDate
-                 ("Sat, 2008-09-06 15:26:33 GMT").bad());
+  CPPUNIT_ASSERT_EQUAL(
+      (time_t)1220714793,
+      Time::parseHTTPDate("Sat, 06 Sep 2008 15:26:33 GMT").getTimeFromEpoch());
+  CPPUNIT_ASSERT_EQUAL(
+      (time_t)1220714793,
+      Time::parseHTTPDate("Sat, 06-Sep-2008 15:26:33 GMT").getTimeFromEpoch());
+  CPPUNIT_ASSERT_EQUAL(
+      (time_t)1220714793,
+      Time::parseHTTPDate("Sat, 06-Sep-08 15:26:33 GMT").getTimeFromEpoch());
+  CPPUNIT_ASSERT_EQUAL(
+      (time_t)1220714793,
+      Time::parseHTTPDate("Sun Sep  6 15:26:33 2008").getTimeFromEpoch());
+  CPPUNIT_ASSERT(Time::parseHTTPDate("Sat, 2008-09-06 15:26:33 GMT").bad());
 }
 
 void TimeTest::testOperatorLess()
@@ -95,8 +94,8 @@ void TimeTest::testOperatorLess()
 
 void TimeTest::testToHTTPDate()
 {
-  // This test disabled for MinGW32, because the garbage will be
-  // displayed and it hides real errors.
+// This test disabled for MinGW32, because the garbage will be
+// displayed and it hides real errors.
 #ifndef __MINGW32__
   Time t(1220714793);
   CPPUNIT_ASSERT_EQUAL(std::string("Sat, 06 Sep 2008 15:26:33 GMT"),

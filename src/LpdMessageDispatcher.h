@@ -54,16 +54,17 @@ private:
   Timer timer_;
   std::chrono::seconds interval_;
   std::string request_;
+
 public:
-  LpdMessageDispatcher(
-      const std::string& infoHash, uint16_t port,
-      const std::string& multicastAddr, uint16_t multicastPort,
-      std::chrono::seconds interval = 5_min);
+  LpdMessageDispatcher(const std::string& infoHash, uint16_t port,
+                       const std::string& multicastAddr, uint16_t multicastPort,
+                       std::chrono::seconds interval = 5_min);
 
   ~LpdMessageDispatcher();
 
   // No throw
-  bool init(const std::string& localAddr, unsigned char ttl,unsigned char loop);
+  bool init(const std::string& localAddr, unsigned char ttl,
+            unsigned char loop);
 
   // Returns true if timer_ reached announce interval, which is by
   // default 5mins.
@@ -76,22 +77,16 @@ public:
   // Reset timer_ to the current time.
   void resetAnnounceTimer();
 
-  const std::string& getInfoHash() const
-  {
-    return infoHash_;
-  }
+  const std::string& getInfoHash() const { return infoHash_; }
 
-  uint16_t getPort() const
-  {
-    return port_;
-  }
+  uint16_t getPort() const { return port_; }
 };
 
 namespace bittorrent {
 
-std::string createLpdRequest
-(const std::string& multicastAddress, uint16_t multicastPort,
- const std::string& infoHash, uint16_t port);
+std::string createLpdRequest(const std::string& multicastAddress,
+                             uint16_t multicastPort,
+                             const std::string& infoHash, uint16_t port);
 
 } // namespace bittorrent
 

@@ -80,6 +80,7 @@ private:
   uint16_t udpPort_;
   std::shared_ptr<LpdMessageReceiver> lpdMessageReceiver_;
   std::shared_ptr<UDPTrackerClient> udpTrackerClient_;
+
 public:
   BtRegistry();
 
@@ -93,10 +94,10 @@ public:
 
   BtObject* get(a2_gid_t gid) const;
 
-  template<typename OutputIterator>
+  template <typename OutputIterator>
   OutputIterator getAllDownloadContext(OutputIterator dest)
   {
-    for(auto& kv : pool_) {
+    for (auto& kv : pool_) {
       *dest++ = kv.second->downloadContext;
     }
     return dest;
@@ -106,25 +107,14 @@ public:
 
   bool remove(a2_gid_t gid);
 
-  void setTcpPort(uint16_t port)
-  {
-    tcpPort_ = port;
-  }
-  uint16_t getTcpPort() const
-  {
-    return tcpPort_;
-  }
+  void setTcpPort(uint16_t port) { tcpPort_ = port; }
+  uint16_t getTcpPort() const { return tcpPort_; }
 
-  void setUdpPort(uint16_t port)
-  {
-    udpPort_ = port;
-  }
-  uint16_t getUdpPort() const
-  {
-    return udpPort_;
-  }
+  void setUdpPort(uint16_t port) { udpPort_ = port; }
+  uint16_t getUdpPort() const { return udpPort_; }
 
-  void setLpdMessageReceiver(const std::shared_ptr<LpdMessageReceiver>& receiver);
+  void
+  setLpdMessageReceiver(const std::shared_ptr<LpdMessageReceiver>& receiver);
   const std::shared_ptr<LpdMessageReceiver>& getLpdMessageReceiver() const
   {
     return lpdMessageReceiver_;

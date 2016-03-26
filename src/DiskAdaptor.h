@@ -50,7 +50,7 @@ class FileAllocationIterator;
 class WrDiskCacheEntry;
 class OpenedFileCounter;
 
-class DiskAdaptor:public BinaryStream {
+class DiskAdaptor : public BinaryStream {
 public:
   enum FileAllocationMethod {
     FILE_ALLOC_ADAPTIVE,
@@ -73,7 +73,7 @@ public:
 
   virtual int64_t size() = 0;
 
-  template<typename InputIterator>
+  template <typename InputIterator>
   void setFileEntries(InputIterator first, InputIterator last)
   {
     fileEntries_.assign(first, last);
@@ -119,18 +119,15 @@ public:
     fileAllocationMethod_ = method;
   }
 
-  int getFileAllocationMethod() const
-  {
-    return fileAllocationMethod_;
-  }
+  int getFileAllocationMethod() const { return fileAllocationMethod_; }
 
   // Closes at most |numClose| files if possible. This method is used to
   // ensure that global number of open file stays under certain limit.
   // Returns the number of closed files.
   virtual size_t tryCloseFile(size_t numClose) { return 0; }
 
-  void setOpenedFileCounter
-  (std::shared_ptr<OpenedFileCounter> openedFileCounter)
+  void
+  setOpenedFileCounter(std::shared_ptr<OpenedFileCounter> openedFileCounter)
   {
     openedFileCounter_ = std::move(openedFileCounter);
   }
@@ -141,7 +138,7 @@ public:
   }
 
 private:
-  std::vector<std::shared_ptr<FileEntry> > fileEntries_;
+  std::vector<std::shared_ptr<FileEntry>> fileEntries_;
 
   FileAllocationMethod fileAllocationMethod_;
 

@@ -55,53 +55,55 @@
 
 namespace aria2 {
 
-DHTMessageReceiver::DHTMessageReceiver
-(const std::shared_ptr<DHTMessageTracker>& tracker)
-  : tracker_{tracker},
-    factory_{nullptr},
-    routingTable_{nullptr}
-{}
+DHTMessageReceiver::DHTMessageReceiver(
+    const std::shared_ptr<DHTMessageTracker>& tracker)
+    : tracker_{tracker}, factory_{nullptr}, routingTable_{nullptr}
+{
+}
 
-std::unique_ptr<DHTMessage> DHTMessageReceiver::receiveMessage
-(const std::string& remoteAddr, uint16_t remotePort, unsigned char *data,
- size_t length)
+std::unique_ptr<DHTMessage>
+DHTMessageReceiver::receiveMessage(const std::string& remoteAddr,
+                                   uint16_t remotePort, unsigned char* data,
+                                   size_t length)
 {
   try {
     bool isReply = false;
     auto decoded = bencode2::decode(data, length);
     const Dict* dict = downcast<Dict>(decoded);
-    if(dict) {
+    if (dict) {
       const String* y = downcast<String>(dict->get(DHTMessage::Y));
-      if(y) {
-        if(y->s() == DHTResponseMessage::R || y->s() == DHTUnknownMessage::E) {
+      if (y) {
+        if (y->s() == DHTResponseMessage::R || y->s() == DHTUnknownMessage::E) {
           isReply = true;
         }
-      } else {
+      }
+      else {
         A2_LOG_INFO(fmt("Malformed DHT message. Missing 'y' key. From:%s:%u",
                         remoteAddr.c_str(), remotePort));
         return handleUnknownMessage(data, length, remoteAddr, remotePort);
       }
-    } else {
+    }
+    else {
       A2_LOG_INFO(fmt("Malformed DHT message. This is not a bencoded directory."
                       " From:%s:%u",
                       remoteAddr.c_str(), remotePort));
       return handleUnknownMessage(data, length, remoteAddr, remotePort);
     }
-    if(isReply) {
+    if (isReply) {
       auto p = tracker_->messageArrived(dict, remoteAddr, remotePort);
-      if(!p.first) {
+      if (!p.first) {
         // timeout or malicious? message
         return handleUnknownMessage(data, length, remoteAddr, remotePort);
       }
       onMessageReceived(p.first.get());
-      if(p.second) {
+      if (p.second) {
         p.second->onReceived(p.first.get());
       }
       return std::move(p.first);
-    } else {
-      auto message =
-        factory_->createQueryMessage(dict, remoteAddr, remotePort);
-      if(*message->getLocalNode() == *message->getRemoteNode()) {
+    }
+    else {
+      auto message = factory_->createQueryMessage(dict, remoteAddr, remotePort);
+      if (*message->getLocalNode() == *message->getRemoteNode()) {
         // drop message from localnode
         A2_LOG_INFO("Received DHT message from localnode.");
         return handleUnknownMessage(data, length, remoteAddr, remotePort);
@@ -109,7 +111,8 @@ std::unique_ptr<DHTMessage> DHTMessageReceiver::receiveMessage
       onMessageReceived(message.get());
       return std::move(message);
     }
-  } catch(RecoverableException& e) {
+  }
+  catch (RecoverableException& e) {
     A2_LOG_INFO_EX("Exception thrown while receiving DHT message.", e);
     return handleUnknownMessage(data, length, remoteAddr, remotePort);
   }
@@ -125,19 +128,13 @@ void DHTMessageReceiver::onMessageReceived(DHTMessage* message)
   routingTable_->addGoodNode(message->getRemoteNode());
 }
 
-void DHTMessageReceiver::handleTimeout()
-{
-  tracker_->handleTimeout();
-}
+void DHTMessageReceiver::handleTimeout() { tracker_->handleTimeout(); }
 
-std::unique_ptr<DHTUnknownMessage>
-DHTMessageReceiver::handleUnknownMessage(const unsigned char* data,
-                                         size_t length,
-                                         const std::string& remoteAddr,
-                                         uint16_t remotePort)
+std::unique_ptr<DHTUnknownMessage> DHTMessageReceiver::handleUnknownMessage(
+    const unsigned char* data, size_t length, const std::string& remoteAddr,
+    uint16_t remotePort)
 {
-  auto m =
-    factory_->createUnknownMessage(data, length, remoteAddr, remotePort);
+  auto m = factory_->createUnknownMessage(data, length, remoteAddr, remotePort);
   A2_LOG_INFO(fmt("Message received: %s", m->toString().c_str()));
   return m;
 }

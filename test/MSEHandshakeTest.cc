@@ -16,11 +16,12 @@
 
 namespace aria2 {
 
-class MSEHandshakeTest:public CppUnit::TestFixture {
+class MSEHandshakeTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(MSEHandshakeTest);
   CPPUNIT_TEST(testHandshake);
   CPPUNIT_TEST_SUITE_END();
+
 private:
   std::shared_ptr<DownloadContext> dctx_;
 
@@ -43,11 +44,10 @@ public:
   void testHandshake();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(MSEHandshakeTest);
 
 namespace {
-std::pair<std::shared_ptr<SocketCore>, std::shared_ptr<SocketCore> >
+std::pair<std::shared_ptr<SocketCore>, std::shared_ptr<SocketCore>>
 createSocketPair()
 {
   std::shared_ptr<SocketCore> initiatorSock(new SocketCore());
@@ -57,71 +57,73 @@ createSocketPair()
   receiverServerSock.beginListen();
   receiverServerSock.setBlockingMode();
 
-  std::pair<std::string, uint16_t> receiverAddrInfo;
-  receiverServerSock.getAddrInfo(receiverAddrInfo);
-  initiatorSock->establishConnection("localhost", receiverAddrInfo.second);
+  auto endpoint = receiverServerSock.getAddrInfo();
+  initiatorSock->establishConnection("localhost", endpoint.port);
   initiatorSock->setBlockingMode();
 
-  std::shared_ptr<SocketCore> receiverSock(receiverServerSock.acceptConnection());
+  std::shared_ptr<SocketCore> receiverSock(
+      receiverServerSock.acceptConnection());
   receiverSock->setBlockingMode();
 
-  return std::pair<std::shared_ptr<SocketCore>,
-    std::shared_ptr<SocketCore> >(initiatorSock, receiverSock);
+  return std::pair<std::shared_ptr<SocketCore>, std::shared_ptr<SocketCore>>(
+      initiatorSock, receiverSock);
 }
 } // namespace
 
-void MSEHandshakeTest::doHandshake(const std::shared_ptr<MSEHandshake>& initiator, const std::shared_ptr<MSEHandshake>& receiver)
+void MSEHandshakeTest::doHandshake(
+    const std::shared_ptr<MSEHandshake>& initiator,
+    const std::shared_ptr<MSEHandshake>& receiver)
 {
   initiator->sendPublicKey();
-  while(initiator->getWantWrite()) {
+  while (initiator->getWantWrite()) {
     initiator->send();
   }
-  while(!receiver->receivePublicKey()) {
+  while (!receiver->receivePublicKey()) {
     receiver->read();
   }
   receiver->sendPublicKey();
-  while(receiver->getWantWrite()) {
+  while (receiver->getWantWrite()) {
     receiver->send();
   }
 
-  while(!initiator->receivePublicKey()) {
+  while (!initiator->receivePublicKey()) {
     initiator->read();
   }
   initiator->initCipher(bittorrent::getInfoHash(dctx_));
   initiator->sendInitiatorStep2();
-  while(initiator->getWantWrite()) {
+  while (initiator->getWantWrite()) {
     initiator->send();
   }
 
-  while(!receiver->findReceiverHashMarker()) {
+  while (!receiver->findReceiverHashMarker()) {
     receiver->read();
   }
-  std::vector<std::shared_ptr<DownloadContext> > contexts;
+  std::vector<std::shared_ptr<DownloadContext>> contexts;
   contexts.push_back(dctx_);
-  while(!receiver->receiveReceiverHashAndPadCLength(contexts)) {
+  while (!receiver->receiveReceiverHashAndPadCLength(contexts)) {
     receiver->read();
   }
-  while(!receiver->receivePad()) {
+  while (!receiver->receivePad()) {
     receiver->read();
   }
-  while(!receiver->receiveReceiverIALength()) {
+  while (!receiver->receiveReceiverIALength()) {
     receiver->read();
   }
-  while(!receiver->receiveReceiverIA()) {
+  while (!receiver->receiveReceiverIA()) {
     receiver->read();
   }
   receiver->sendReceiverStep2();
-  while(receiver->getWantWrite()) {
+  while (receiver->getWantWrite()) {
     receiver->send();
   }
 
-  while(!initiator->findInitiatorVCMarker()) {
+  while (!initiator->findInitiatorVCMarker()) {
     initiator->read();
   }
-  while(!initiator->receiveInitiatorCryptoSelectAndPadDLength()) {
+  while (!initiator->receiveInitiatorCryptoSelectAndPadDLength()) {
     initiator->read();
   }
-  while(!initiator->receivePad()) {
+  while (!initiator->receivePad()) {
     initiator->read();
   }
 }
@@ -143,29 +145,37 @@ void MSEHandshakeTest::testHandshake()
     Option op;
     op.put(PREF_BT_MIN_CRYPTO_LEVEL, V_PLAIN);
 
-    std::pair<std::shared_ptr<SocketCore>, std::shared_ptr<SocketCore> > sockPair =
-      createSocketPair();
-    std::shared_ptr<MSEHandshake> initiator = createMSEHandshake(sockPair.first, true, &op);
-    std::shared_ptr<MSEHandshake> receiver = createMSEHandshake(sockPair.second, false, &op);
+    std::pair<std::shared_ptr<SocketCore>, std::shared_ptr<SocketCore>>
+        sockPair = createSocketPair();
+    std::shared_ptr<MSEHandshake> initiator =
+        createMSEHandshake(sockPair.first, true, &op);
+    std::shared_ptr<MSEHandshake> receiver =
+        createMSEHandshake(sockPair.second, false, &op);
 
     doHandshake(initiator, receiver);
 
-    CPPUNIT_ASSERT_EQUAL(MSEHandshake::CRYPTO_PLAIN_TEXT, initiator->getNegotiatedCryptoType());
-    CPPUNIT_ASSERT_EQUAL(MSEHandshake::CRYPTO_PLAIN_TEXT, receiver->getNegotiatedCryptoType());
+    CPPUNIT_ASSERT_EQUAL(MSEHandshake::CRYPTO_PLAIN_TEXT,
+                         initiator->getNegotiatedCryptoType());
+    CPPUNIT_ASSERT_EQUAL(MSEHandshake::CRYPTO_PLAIN_TEXT,
+                         receiver->getNegotiatedCryptoType());
   }
   {
     Option op;
     op.put(PREF_BT_MIN_CRYPTO_LEVEL, V_ARC4);
 
-    std::pair<std::shared_ptr<SocketCore>, std::shared_ptr<SocketCore> > sockPair =
-      createSocketPair();
-    std::shared_ptr<MSEHandshake> initiator = createMSEHandshake(sockPair.first, true, &op);
-    std::shared_ptr<MSEHandshake> receiver = createMSEHandshake(sockPair.second, false, &op);
+    std::pair<std::shared_ptr<SocketCore>, std::shared_ptr<SocketCore>>
+        sockPair = createSocketPair();
+    std::shared_ptr<MSEHandshake> initiator =
+        createMSEHandshake(sockPair.first, true, &op);
+    std::shared_ptr<MSEHandshake> receiver =
+        createMSEHandshake(sockPair.second, false, &op);
 
     doHandshake(initiator, receiver);
 
-    CPPUNIT_ASSERT_EQUAL(MSEHandshake::CRYPTO_ARC4, initiator->getNegotiatedCryptoType());
-    CPPUNIT_ASSERT_EQUAL(MSEHandshake::CRYPTO_ARC4, receiver->getNegotiatedCryptoType());
+    CPPUNIT_ASSERT_EQUAL(MSEHandshake::CRYPTO_ARC4,
+                         initiator->getNegotiatedCryptoType());
+    CPPUNIT_ASSERT_EQUAL(MSEHandshake::CRYPTO_ARC4,
+                         receiver->getNegotiatedCryptoType());
   }
 }
 

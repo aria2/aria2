@@ -63,6 +63,7 @@ class SocketCore {
   friend bool operator==(const SocketCore& s1, const SocketCore& s2);
   friend bool operator!=(const SocketCore& s1, const SocketCore& s2);
   friend bool operator<(const SocketCore& s1, const SocketCore& s2);
+
 private:
   // socket type defined in <sys/socket.h>
   int sockType_;
@@ -72,9 +73,11 @@ private:
   static int protocolFamily_;
   static int ipDscp_;
 
-  static std::vector<std::pair<sockaddr_union, socklen_t> > bindAddrs_;
-  static std::vector<std::vector<std::pair<sockaddr_union, socklen_t> > > bindAddrsList_;
-  static std::vector<std::vector<std::pair<sockaddr_union, socklen_t> > >::iterator bindAddrsListIt_;
+  static std::vector<SockAddr> bindAddrs_;
+  static std::vector<std::vector<SockAddr>> bindAddrsList_;
+  static std::vector<std::vector<SockAddr>>::iterator bindAddrsListIt_;
+
+  static int socketRecvBufferSize_;
 
   bool blocking_;
   int secure_;
@@ -122,7 +125,7 @@ public:
 
   sock_t getSockfd() const { return sockfd_; }
 
-  bool isOpen() const { return sockfd_ != (sock_t) -1; }
+  bool isOpen() const { return sockfd_ != (sock_t)-1; }
 
   void setMulticastInterface(const std::string& localAddr);
 
@@ -130,9 +133,8 @@ public:
 
   void setMulticastLoop(unsigned char loop);
 
-  void joinMulticastGroup
-  (const std::string& multicastAddr, uint16_t multicastPort,
-   const std::string& localAddr);
+  void joinMulticastGroup(const std::string& multicastAddr,
+                          uint16_t multicastPort, const std::string& localAddr);
 
   // Enables TCP_NODELAY socket option if f == true.
   void setTcpNodelay(bool f);
@@ -157,8 +159,8 @@ public:
    */
   void bind(uint16_t port, int flags = AI_PASSIVE);
 
-  void bind
-  (const char* addrp, uint16_t port, int family, int flags = AI_PASSIVE);
+  void bind(const char* addrp, uint16_t port, int family,
+            int flags = AI_PASSIVE);
 
   /**
    * Listens form connection on it.
@@ -167,12 +169,9 @@ public:
   void beginListen();
 
   /**
-   * Stores host address and port of this socket to addrinfo and
-   * returns address family.
-   *
-   * @param addrinfo placeholder to store host address and port.
+   * Returns host address, family and port of this socket.
    */
-  int getAddrInfo(std::pair<std::string, uint16_t>& addrinfo) const;
+  Endpoint getAddrInfo() const;
 
   /**
    * Stores address of this socket to sockaddr.  len must be
@@ -180,8 +179,7 @@ public:
    * stored in sockaddr and actual size of address structure is stored
    * in len.
    */
-  void getAddrInfo
-  (sockaddr_union& sockaddr, socklen_t& len) const;
+  void getAddrInfo(sockaddr_union& sockaddr, socklen_t& len) const;
 
   /**
    * Returns address family of this socket.
@@ -190,12 +188,9 @@ public:
   int getAddressFamily() const;
 
   /**
-   * Stores peer's address and port to peerinfo and returns address
-   * family.
-   *
-   * @param peerinfo placeholder to store peer's address and port.
+   * Returns peer's address, family and port.
    */
-  int getPeerInfo(std::pair<std::string, uint16_t>& peerinfo) const;
+  Endpoint getPeerInfo() const;
 
   /**
    * Accepts incoming connection on this socket.
@@ -264,10 +259,10 @@ public:
     return writeData(msg.c_str(), msg.size());
   }
 
-  ssize_t writeData(const void* data, size_t len,
-                    const std::string& host, uint16_t port);
+  ssize_t writeData(const void* data, size_t len, const std::string& host,
+                    uint16_t port);
 
-  ssize_t writeVector(a2iovec *iov, size_t iovcnt);
+  ssize_t writeVector(a2iovec* iov, size_t iovcnt);
 
   /**
    * Reads up to len bytes from this socket.
@@ -287,9 +282,8 @@ public:
    */
   void readData(void* data, size_t& len);
 
-  ssize_t readDataFrom(void* data, size_t len,
-                       std::pair<std::string /* numerichost */,
-                       uint16_t /* port */>& sender);
+  // sender.addr will be numerihost assigned.
+  ssize_t readDataFrom(void* data, size_t len, Endpoint& sender);
 
 #ifdef ENABLE_SSL
   // Performs TLS server side handshake. If handshake is completed,
@@ -322,17 +316,11 @@ public:
   bool sshGracefulShutdown();
 #endif // HAVE_LIBSSH2
 
-  bool operator==(const SocketCore& s) {
-    return sockfd_ == s.sockfd_;
-  }
+  bool operator==(const SocketCore& s) { return sockfd_ == s.sockfd_; }
 
-  bool operator!=(const SocketCore& s) {
-    return !(*this == s);
-  }
+  bool operator!=(const SocketCore& s) { return !(*this == s); }
 
-  bool operator<(const SocketCore& s) {
-    return sockfd_ < s.sockfd_;
-  }
+  bool operator<(const SocketCore& s) { return sockfd_ < s.sockfd_; }
 
   std::string getSocketError() const;
 
@@ -349,15 +337,25 @@ public:
    */
   bool wantWrite() const;
 
+  // Returns buffered data which are already received.  This data was
+  // already read from socket, and ready to read without reading
+  // socket.
+  size_t getRecvBufferedLength() const;
+
 #ifdef ENABLE_SSL
-  static void setClientTLSContext(const std::shared_ptr<TLSContext>& tlsContext);
-  static void setServerTLSContext(const std::shared_ptr<TLSContext>& tlsContext);
+  static void
+  setClientTLSContext(const std::shared_ptr<TLSContext>& tlsContext);
+  static void
+  setServerTLSContext(const std::shared_ptr<TLSContext>& tlsContext);
 #endif // ENABLE_SSL
 
   static void setProtocolFamily(int protocolFamily)
   {
     protocolFamily_ = protocolFamily;
   }
+
+  static void setSocketRecvBufferSize(int size);
+  static int getSocketRecvBufferSize();
 
   // Bind socket to interface. interface may be specified as a
   // hostname, IP address or interface name like eth0.  If the given
@@ -370,9 +368,14 @@ public:
   static void bindAddress(const std::string& iface);
   static void bindAllAddress(const std::string& ifaces);
 
-  friend void getInterfaceAddress
-  (std::vector<std::pair<sockaddr_union, socklen_t> >& ifAddrs,
-   const std::string& iface, int family, int aiFlags);
+  // Collects IP addresses of given interface iface and stores in
+  // ifAddres. iface may be specified as a hostname, IP address or
+  // interface name like eth0. You can limit the family of IP
+  // addresses to collect using family argument. aiFlags is passed to
+  // getaddrinfo() as hints.ai_flags. No throw.
+  static std::vector<SockAddr> getInterfaceAddress(const std::string& iface,
+                                                   int family = AF_UNSPEC,
+                                                   int aiFlags = 0);
 };
 
 // Set default ai_flags. hints.ai_flags is initialized with this
@@ -383,18 +386,9 @@ void setDefaultAIFlags(int flags);
 // flags|DEFAULT_AI_FLAGS is used as ai_flags.  You can override
 // DEFAULT_AI_FLAGS value by calling setDefaultAIFlags() with new
 // flags.
-int callGetaddrinfo
-(struct addrinfo** resPtr, const char* host, const char* service, int family,
- int sockType, int flags, int protocol);
-
-// Collects IP addresses of given interface iface and stores in
-// ifAddres. iface may be specified as a hostname, IP address or
-// interface name like eth0. You can limit the family of IP addresses
-// to collect using family argument. aiFlags is passed to
-// getaddrinfo() as hints.ai_flags. No throw.
-void getInterfaceAddress
-(std::vector<std::pair<sockaddr_union, socklen_t> >& ifAddrs,
- const std::string& iface, int family = AF_UNSPEC, int aiFlags = 0);
+int callGetaddrinfo(struct addrinfo** resPtr, const char* host,
+                    const char* service, int family, int sockType, int flags,
+                    int protocol);
 
 // Provides functionality of inet_ntop using getnameinfo.  The return
 // value is the exact value of getnameinfo returns. You can get error

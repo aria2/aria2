@@ -44,7 +44,7 @@ extern "C" {
 
 #undef localtime_r
 
-struct tm * localtime_r(const time_t *clock, struct tm *result);
+struct tm* localtime_r(const time_t* clock, struct tm* result);
 
 #ifdef __cplusplus
 }

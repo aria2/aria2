@@ -51,22 +51,22 @@ WebSocketSessionMan::WebSocketSessionMan() {}
 
 WebSocketSessionMan::~WebSocketSessionMan() {}
 
-void WebSocketSessionMan::addSession
-(const std::shared_ptr<WebSocketSession>& wsSession)
+void WebSocketSessionMan::addSession(
+    const std::shared_ptr<WebSocketSession>& wsSession)
 {
   A2_LOG_DEBUG("WebSocket session added.");
   sessions_.insert(wsSession);
 }
 
-void WebSocketSessionMan::removeSession
-(const std::shared_ptr<WebSocketSession>& wsSession)
+void WebSocketSessionMan::removeSession(
+    const std::shared_ptr<WebSocketSession>& wsSession)
 {
   A2_LOG_DEBUG("WebSocket session removed.");
   sessions_.erase(wsSession);
 }
 
-void WebSocketSessionMan::addNotification
-(const std::string& method, const RequestGroup* group)
+void WebSocketSessionMan::addNotification(const std::string& method,
+                                          const RequestGroup* group)
 {
   auto dict = Dict::g();
   dict->put("jsonrpc", "2.0");
@@ -77,12 +77,11 @@ void WebSocketSessionMan::addNotification
   params->append(std::move(eventSpec));
   dict->put("params", std::move(params));
   std::string msg = json::encode(dict.get());
-  for(auto& session : sessions_) {
+  for (auto& session : sessions_) {
     session->addTextMessage(msg, false);
     session->getCommand()->updateWriteCheck();
   }
 }
-
 
 namespace {
 // The string constants for download events.
@@ -97,7 +96,7 @@ const std::string ON_BT_DOWNLOAD_COMPLETE = "aria2.onBtDownloadComplete";
 namespace {
 const std::string& getMethodName(DownloadEvent event)
 {
-  switch(event) {
+  switch (event) {
   case EVENT_ON_DOWNLOAD_START:
     return ON_DOWNLOAD_START;
   case EVENT_ON_DOWNLOAD_PAUSE:

@@ -43,8 +43,7 @@ class MSEHandshake;
 class SocketCore;
 class Peer;
 
-class ReceiverMSEHandshakeCommand:public PeerAbstractCommand
-{
+class ReceiverMSEHandshakeCommand : public PeerAbstractCommand {
 public:
   enum Seq {
     RECEIVER_IDENTIFY_HANDSHAKE,
@@ -57,18 +56,20 @@ public:
     RECEIVER_RECEIVE_IA,
     RECEIVER_SEND_STEP2_PENDING,
   };
+
 private:
   Seq sequence_;
 
   std::unique_ptr<MSEHandshake> mseHandshake_;
 
   void createCommand();
+
 protected:
   virtual bool executeInternal() CXX11_OVERRIDE;
   virtual bool exitBeforeExecute() CXX11_OVERRIDE;
+
 public:
-  ReceiverMSEHandshakeCommand(cuid_t cuid,
-                              const std::shared_ptr<Peer>& peer,
+  ReceiverMSEHandshakeCommand(cuid_t cuid, const std::shared_ptr<Peer>& peer,
                               DownloadEngine* e,
                               const std::shared_ptr<SocketCore>& s);
 

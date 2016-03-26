@@ -49,43 +49,33 @@ namespace aria2 {
 
 class Deleter {
 public:
-  template<class T>
-  void operator()(T* ptr) {
-    delete ptr;
-  }
+  template <class T> void operator()(T* ptr) { delete ptr; }
 };
 
-template<typename T, typename F>
-struct Defer {
-  Defer(T t, F f)
-    : t(t), f(std::move(f))
-  {}
+template <typename T, typename F> struct Defer {
+  Defer(T t, F f) : t(t), f(std::move(f)) {}
 
-  ~Defer()
-  {
-    f(t);
-  }
+  ~Defer() { f(t); }
 
   T t;
   F f;
 };
 
-template<typename T, typename F>
-Defer<T, F> defer(T&& t, F f)
+template <typename T, typename F> Defer<T, F> defer(T&& t, F f)
 {
   return Defer<T, F>(std::forward<T>(t), std::forward<F>(f));
 }
 
-template<typename InputIterator, typename DelimiterType>
+template <typename InputIterator, typename DelimiterType>
 std::string strjoin(InputIterator first, InputIterator last,
                     const DelimiterType& delim)
 {
   std::string result;
-  if(first == last) {
+  if (first == last) {
     return result;
   }
-  InputIterator beforeLast = last-1;
-  for(; first != beforeLast; ++first) {
+  InputIterator beforeLast = last - 1;
+  for (; first != beforeLast; ++first) {
     result += *first;
     result += delim;
   }
@@ -95,16 +85,16 @@ std::string strjoin(InputIterator first, InputIterator last,
 
 // Applies unaryOp through first to last and joins the result with
 // delimiter delim.
-template<typename InputIterator, typename DelimiterType, typename UnaryOp>
+template <typename InputIterator, typename DelimiterType, typename UnaryOp>
 std::string strjoin(InputIterator first, InputIterator last,
                     const DelimiterType& delim, const UnaryOp& unaryOp)
 {
   std::string result;
-  if(first == last) {
+  if (first == last) {
     return result;
   }
-  InputIterator beforeLast = last-1;
-  for(; first != beforeLast; ++first) {
+  InputIterator beforeLast = last - 1;
+  for (; first != beforeLast; ++first) {
     result += unaryOp(*first);
     result += delim;
   }
@@ -112,8 +102,8 @@ std::string strjoin(InputIterator first, InputIterator last,
   return result;
 }
 
-template<typename T>
-class LeastRecentAccess:public std::binary_function<T, T, bool> {
+template <typename T>
+class LeastRecentAccess : public std::binary_function<T, T, bool> {
 public:
   bool operator()(const std::shared_ptr<T>& lhs,
                   const std::shared_ptr<T>& rhs) const
@@ -127,66 +117,56 @@ public:
   }
 };
 
-template<typename T, typename S>
-bool in(T x, S s, S t)
+template <typename T, typename S> bool in(T x, S s, S t)
 {
   return s <= x && x <= t;
 }
 
-template<typename T>
-struct DerefLess {
-  bool operator()(const T& lhs, const T& rhs) const
-  {
-    return *lhs < *rhs;
-  }
+template <typename T> struct DerefLess {
+  bool operator()(const T& lhs, const T& rhs) const { return *lhs < *rhs; }
 };
 
-template<typename T>
-struct DerefEqualTo {
-  bool operator()(const T& lhs, const T& rhs) const
-  {
-    return *lhs == *rhs;
-  }
+template <typename T> struct DerefEqualTo {
+  bool operator()(const T& lhs, const T& rhs) const { return *lhs == *rhs; }
 };
 
-template<typename T>
-struct DerefEqual {
+template <typename T> struct DerefEqual {
   T target;
 
-  DerefEqual(const T& t):target(t) {}
-  bool operator()(const T& other) const
-  {
-    return *target == *other;
-  }
+  DerefEqual(const T& t) : target(t) {}
+  bool operator()(const T& other) const { return *target == *other; }
 };
 
-template<typename T>
-struct DerefEqual<T> derefEqual(const T& t)
-{
+template <typename T> struct DerefEqual<T> derefEqual(const T& t) {
   return DerefEqual<T>(t);
 }
 
-template<typename T>
+template <typename T>
 struct RefLess {
-  bool operator()(const std::shared_ptr<T>& lhs, const std::shared_ptr<T>& rhs) const
+  bool operator()(const std::shared_ptr<T>& lhs,
+                  const std::shared_ptr<T>& rhs) const
   {
     return lhs.get() < rhs.get();
   }
 };
 
-template<typename T, typename... U>
+#if __cplusplus > 201103L
+using std::make_unique;
+#else  // __cplusplus <= 201103L
+template <typename T, typename... U>
 typename std::enable_if<!std::is_array<T>::value, std::unique_ptr<T>>::type
 make_unique(U&&... u)
 {
   return std::unique_ptr<T>(new T(std::forward<U>(u)...));
 }
 
-template<typename T>
+template <typename T>
 typename std::enable_if<std::is_array<T>::value, std::unique_ptr<T>>::type
 make_unique(size_t size)
 {
   return std::unique_ptr<T>(new typename std::remove_extent<T>::type[size]());
 }
+#endif // __cplusplus <= 201103L
 
 // User-defined literals for K, M, and G (powers of 1024)
 

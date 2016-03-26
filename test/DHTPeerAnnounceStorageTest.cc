@@ -14,15 +14,15 @@
 
 namespace aria2 {
 
-class DHTPeerAnnounceStorageTest:public CppUnit::TestFixture {
+class DHTPeerAnnounceStorageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTPeerAnnounceStorageTest);
   CPPUNIT_TEST(testAddAnnounce);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void testAddAnnounce();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DHTPeerAnnounceStorageTest);
 
@@ -39,7 +39,7 @@ void DHTPeerAnnounceStorageTest::testAddAnnounce()
   storage.addPeerAnnounce(infohash2, "192.168.0.3", 6883);
   storage.addPeerAnnounce(infohash2, "192.168.0.4", 6884);
 
-  std::vector<std::shared_ptr<Peer> > peers;
+  std::vector<std::shared_ptr<Peer>> peers;
   storage.getPeers(peers, infohash2);
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());

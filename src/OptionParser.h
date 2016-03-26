@@ -57,6 +57,7 @@ private:
   // Index of handler in handlers_ for option who has short option name.
   std::vector<size_t> shortOpts_;
   static std::shared_ptr<OptionParser> optionParser_;
+
 public:
   OptionParser();
   ~OptionParser();
@@ -64,8 +65,8 @@ public:
   // Parses options in argv and writes option name and value to out in
   // NAME=VALUE format. Non-option strings are stored in nonopts.
   // Throws Exception when an unrecognized option is found.
-  void parseArg(std::ostream& out, std::vector<std::string>& nonopts,
-                int argc, char* argv[]) const;
+  void parseArg(std::ostream& out, std::vector<std::string>& nonopts, int argc,
+                char* argv[]) const;
 
   void parse(Option& option, std::istream& ios) const;
 
@@ -73,8 +74,7 @@ public:
 
   void parseDefaultValues(Option& option) const;
 
-  void setOptionHandlers
-  (const std::vector<OptionHandler*>& handlers);
+  void setOptionHandlers(const std::vector<OptionHandler*>& handlers);
 
   void addOptionHandler(OptionHandler* handler);
 

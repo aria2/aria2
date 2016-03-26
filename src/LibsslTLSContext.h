@@ -39,7 +39,7 @@
 
 #include <string>
 
-# include <openssl/ssl.h>
+#include <openssl/ssl.h>
 
 #include "TLSContext.h"
 #include "DlAbortEx.h"
@@ -60,28 +60,19 @@ public:
   virtual bool addSystemTrustedCACerts() CXX11_OVERRIDE;
 
   // certfile can contain multiple certificates.
-  virtual bool addTrustedCACertFile(const std::string& certfile)
-    CXX11_OVERRIDE;
+  virtual bool addTrustedCACertFile(const std::string& certfile) CXX11_OVERRIDE;
 
   virtual bool good() const CXX11_OVERRIDE;
 
-  virtual TLSSessionSide getSide() const CXX11_OVERRIDE
-  {
-    return side_;
-  }
+  virtual TLSSessionSide getSide() const CXX11_OVERRIDE { return side_; }
 
-  virtual bool getVerifyPeer() const CXX11_OVERRIDE
-  {
-    return verifyPeer_;
-  }
+  virtual bool getVerifyPeer() const CXX11_OVERRIDE { return verifyPeer_; }
   virtual void setVerifyPeer(bool verify) CXX11_OVERRIDE
   {
     verifyPeer_ = verify;
   }
 
-  SSL_CTX* getSSLCtx() const {
-    return sslCtx_;
-  }
+  SSL_CTX* getSSLCtx() const { return sslCtx_; }
 
 private:
   SSL_CTX* sslCtx_;

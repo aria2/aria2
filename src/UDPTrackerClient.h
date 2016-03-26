@@ -50,26 +50,23 @@ namespace aria2 {
 
 struct UDPTrackerRequest;
 
-enum UDPTrackerConnectionState {
-  UDPT_CST_CONNECTING,
-  UDPT_CST_CONNECTED
-};
+enum UDPTrackerConnectionState { UDPT_CST_CONNECTING, UDPT_CST_CONNECTED };
 
 struct UDPTrackerConnection {
   int state;
   int64_t connectionId;
   Timer lastUpdated;
   UDPTrackerConnection()
-    : state(UDPT_CST_CONNECTING),
-      connectionId(UDPT_INITIAL_CONNECTION_ID),
-      lastUpdated(Timer::zero())
-  {}
+      : state(UDPT_CST_CONNECTING),
+        connectionId(UDPT_INITIAL_CONNECTION_ID),
+        lastUpdated(Timer::zero())
+  {
+  }
   UDPTrackerConnection(int state, int64_t connectionId,
                        const Timer& lastUpdated)
-    : state(state),
-      connectionId(connectionId),
-      lastUpdated(lastUpdated)
-  {}
+      : state(state), connectionId(connectionId), lastUpdated(lastUpdated)
+  {
+  }
 };
 
 class UDPTrackerClient {
@@ -77,17 +74,18 @@ public:
   UDPTrackerClient();
   ~UDPTrackerClient();
 
-  int receiveReply
-  (const unsigned char* data, size_t length, const std::string& remoteAddr,
-   uint16_t remotePort, const Timer& now);
+  int receiveReply(std::shared_ptr<UDPTrackerRequest>& req,
+                   const unsigned char* data, size_t length,
+                   const std::string& remoteAddr, uint16_t remotePort,
+                   const Timer& now);
 
   // Creates data frame for the next pending request. This function
   // always processes first entry of pendingRequests_.  If the data is
   // sent successfully, call requestSent(). Otherwise call
   // requestFail().
-  ssize_t createRequest
-  (unsigned char* data, size_t length, std::string& remoteAddr,
-   uint16_t& remotePort, const Timer& now);
+  ssize_t createRequest(unsigned char* data, size_t length,
+                        std::string& remoteAddr, uint16_t& remotePort,
+                        const Timer& now);
 
   // Tells this object that first entry of pendingRequests_ is
   // successfully sent.
@@ -101,17 +99,17 @@ public:
   // Handles timeout for inflight requests.
   void handleTimeout(const Timer& now);
 
-  const std::deque<std::shared_ptr<UDPTrackerRequest> >&
+  const std::deque<std::shared_ptr<UDPTrackerRequest>>&
   getPendingRequests() const
   {
     return pendingRequests_;
   }
-  const std::deque<std::shared_ptr<UDPTrackerRequest> >&
+  const std::deque<std::shared_ptr<UDPTrackerRequest>>&
   getConnectRequests() const
   {
     return connectRequests_;
   }
-  const std::deque<std::shared_ptr<UDPTrackerRequest> >&
+  const std::deque<std::shared_ptr<UDPTrackerRequest>>&
   getInflightRequests() const
   {
     return inflightRequests_;
@@ -120,16 +118,13 @@ public:
   bool noRequest() const
   {
     return pendingRequests_.empty() && connectRequests_.empty() &&
-      getInflightRequests().empty();
+           getInflightRequests().empty();
   }
 
   // Makes all contained requests fail.
   void failAll();
 
-  int getNumWatchers() const
-  {
-    return numWatchers_;
-  }
+  int getNumWatchers() const { return numWatchers_; }
 
   void increaseWatchers();
   void decreaseWatchers();
@@ -138,29 +133,30 @@ public:
   // function.
   void failConnect(const std::string& remoteAddr, uint16_t remotePort,
                    int error);
+
 private:
-  std::shared_ptr<UDPTrackerRequest> findInflightRequest
-  (const std::string& remoteAddr, uint16_t remotePort, int32_t transactionId,
-   bool remove);
+  std::shared_ptr<UDPTrackerRequest>
+  findInflightRequest(const std::string& remoteAddr, uint16_t remotePort,
+                      uint32_t transactionId, bool remove);
 
-  UDPTrackerConnection* getConnectionId
-  (const std::string& remoteAddr, uint16_t remotePort, const Timer& now);
+  UDPTrackerConnection* getConnectionId(const std::string& remoteAddr,
+                                        uint16_t remotePort, const Timer& now);
 
-  std::map<std::pair<std::string, uint16_t>,
-           UDPTrackerConnection> connectionIdCache_;
-  std::deque<std::shared_ptr<UDPTrackerRequest> > inflightRequests_;
-  std::deque<std::shared_ptr<UDPTrackerRequest> > pendingRequests_;
-  std::deque<std::shared_ptr<UDPTrackerRequest> > connectRequests_;
+  std::map<std::pair<std::string, uint16_t>, UDPTrackerConnection>
+      connectionIdCache_;
+  std::deque<std::shared_ptr<UDPTrackerRequest>> inflightRequests_;
+  std::deque<std::shared_ptr<UDPTrackerRequest>> pendingRequests_;
+  std::deque<std::shared_ptr<UDPTrackerRequest>> connectRequests_;
   int numWatchers_;
 };
 
-ssize_t createUDPTrackerConnect
-(unsigned char* data, size_t length, std::string& remoteAddr,
- uint16_t& remotePort, const std::shared_ptr<UDPTrackerRequest>& req);
+ssize_t createUDPTrackerConnect(unsigned char* data, size_t length,
+                                std::string& remoteAddr, uint16_t& remotePort,
+                                const std::shared_ptr<UDPTrackerRequest>& req);
 
-ssize_t createUDPTrackerAnnounce
-(unsigned char* data, size_t length, std::string& remoteAddr,
- uint16_t& remotePort, const std::shared_ptr<UDPTrackerRequest>& req);
+ssize_t createUDPTrackerAnnounce(unsigned char* data, size_t length,
+                                 std::string& remoteAddr, uint16_t& remotePort,
+                                 const std::shared_ptr<UDPTrackerRequest>& req);
 
 const char* getUDPTrackerActionStr(int action);
 

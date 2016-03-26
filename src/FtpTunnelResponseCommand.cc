@@ -41,22 +41,20 @@
 #include "SocketCore.h"
 #include "SocketRecvBuffer.h"
 #ifdef HAVE_LIBSSH2
-# include "SftpNegotiationCommand.h"
+#include "SftpNegotiationCommand.h"
 #endif // HAVE_LIBSSH2
 
 namespace aria2 {
 
-FtpTunnelResponseCommand::FtpTunnelResponseCommand
-(cuid_t cuid,
- const std::shared_ptr<Request>& req,
- const std::shared_ptr<FileEntry>& fileEntry,
- RequestGroup* requestGroup,
- const std::shared_ptr<HttpConnection>& httpConnection,
- DownloadEngine* e,
- const std::shared_ptr<SocketCore>& s)
-  :AbstractProxyResponseCommand(cuid, req, fileEntry, requestGroup,
-                                httpConnection,e, s)
-{}
+FtpTunnelResponseCommand::FtpTunnelResponseCommand(
+    cuid_t cuid, const std::shared_ptr<Request>& req,
+    const std::shared_ptr<FileEntry>& fileEntry, RequestGroup* requestGroup,
+    const std::shared_ptr<HttpConnection>& httpConnection, DownloadEngine* e,
+    const std::shared_ptr<SocketCore>& s)
+    : AbstractProxyResponseCommand(cuid, req, fileEntry, requestGroup,
+                                   httpConnection, e, s)
+{
+}
 
 FtpTunnelResponseCommand::~FtpTunnelResponseCommand() {}
 
@@ -64,17 +62,15 @@ std::unique_ptr<Command> FtpTunnelResponseCommand::getNextCommand()
 {
 #ifdef HAVE_LIBSSH2
   if (getRequest()->getProtocol() == "sftp") {
-    return make_unique<SftpNegotiationCommand>
-      (getCuid(), getRequest(), getFileEntry(),
-       getRequestGroup(), getDownloadEngine(),
-       getSocket());
+    return make_unique<SftpNegotiationCommand>(
+        getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
+        getDownloadEngine(), getSocket());
   }
 #endif // HAVE_LIBSSH2
 
-  return make_unique<FtpNegotiationCommand>
-    (getCuid(), getRequest(), getFileEntry(),
-     getRequestGroup(), getDownloadEngine(),
-     getSocket());
+  return make_unique<FtpNegotiationCommand>(getCuid(), getRequest(),
+                                            getFileEntry(), getRequestGroup(),
+                                            getDownloadEngine(), getSocket());
 }
 
 } // namespace aria2

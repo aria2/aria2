@@ -41,15 +41,15 @@ namespace aria2 {
 
 class StreamFileAllocationEntry : public FileAllocationEntry {
 public:
-  StreamFileAllocationEntry(RequestGroup* requestGroup,
-                            std::unique_ptr<Command> nextCommand =
-                            std::unique_ptr<Command>());
+  StreamFileAllocationEntry(
+      RequestGroup* requestGroup,
+      std::unique_ptr<Command> nextCommand = std::unique_ptr<Command>());
 
   virtual ~StreamFileAllocationEntry();
 
-  virtual void prepareForNextAction
-  (std::vector<std::unique_ptr<Command>>& commands,
-   DownloadEngine* e) CXX11_OVERRIDE;
+  virtual void
+  prepareForNextAction(std::vector<std::unique_ptr<Command>>& commands,
+                       DownloadEngine* e) CXX11_OVERRIDE;
 };
 
 } // namespace aria2

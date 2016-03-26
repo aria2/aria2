@@ -64,10 +64,8 @@ private:
   Timer checkPoint_;
   int numNewConnection_; // the number of the connection to establish.
 public:
-  ActivePeerConnectionCommand(cuid_t cuid,
-                              RequestGroup* requestGroup,
-                              DownloadEngine* e,
-                              std::chrono::seconds interval);
+  ActivePeerConnectionCommand(cuid_t cuid, RequestGroup* requestGroup,
+                              DownloadEngine* e, std::chrono::seconds interval);
 
   virtual ~ActivePeerConnectionCommand();
 

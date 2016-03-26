@@ -40,8 +40,7 @@ namespace aria2 {
 // This class template is used to transit to the next state using
 // T. The main application is embed to the Command classes and get
 // next Command from the previous Command.
-template<typename T>
-struct ControlChain {
+template <typename T> struct ControlChain {
   virtual ~ControlChain() {}
   // Currently, the implementation must returns 0.
   virtual int run(T t, DownloadEngine* e) = 0;

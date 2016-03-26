@@ -37,6 +37,8 @@
 
 #include "common.h"
 
+// clang-format off
+
 #define MSG_SEGMENT_DOWNLOAD_COMPLETED                                  \
   "CUID#%" PRId64 " - The download for one segment completed successfully."
 #define MSG_NO_SEGMENT_AVAILABLE "CUID#%" PRId64 " - No segment available."
@@ -286,4 +288,7 @@
 #define EX_EXCEPTION_CAUGHT _("Exception caught")
 #define EX_TOO_LONG_PAYLOAD _("Max payload length exceeded or invalid. length = %u")
 #define EX_FILE_LENGTH_MISMATCH_BETWEEN_LOCAL_AND_REMOTE _("Invalid file length. Cannot continue download %s: local %s, remote %s")
+
+// clang-format on
+
 #endif // D_MESSAGE_H

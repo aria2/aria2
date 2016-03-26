@@ -17,11 +17,10 @@ class NetrcTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testParse_emptyfile);
   CPPUNIT_TEST(testParse_malformedNetrc);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
-  void setUp() {
-  }
+  void setUp() {}
 
   void testFindAuthenticator();
   void testParse();
@@ -30,27 +29,19 @@ public:
   void testParse_malformedNetrc();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( NetrcTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(NetrcTest);
 
 void NetrcTest::testFindAuthenticator()
 {
   Netrc netrc;
-  netrc.addAuthenticator(make_unique<Authenticator>("host1",
-                                                    "tujikawa",
-                                                    "tujikawapasswd",
-                                                    "tujikawaaccount"));
-  netrc.addAuthenticator(make_unique<Authenticator>("host2",
-                                                    "aria2",
-                                                    "aria2password",
-                                                    "aria2account"));
-  netrc.addAuthenticator(make_unique<Authenticator>(".my.domain",
-                                                    "dmname",
-                                                    "dmpass",
-                                                    "dmaccount"));
-  netrc.addAuthenticator(make_unique<DefaultAuthenticator>("default",
-                                                           "defaultpassword",
-                                                           "defaultaccount"));
+  netrc.addAuthenticator(make_unique<Authenticator>(
+      "host1", "tujikawa", "tujikawapasswd", "tujikawaaccount"));
+  netrc.addAuthenticator(make_unique<Authenticator>(
+      "host2", "aria2", "aria2password", "aria2account"));
+  netrc.addAuthenticator(make_unique<Authenticator>(".my.domain", "dmname",
+                                                    "dmpass", "dmaccount"));
+  netrc.addAuthenticator(make_unique<DefaultAuthenticator>(
+      "default", "defaultpassword", "defaultaccount"));
 
   auto aria2auth = netrc.findAuthenticator("host2");
   CPPUNIT_ASSERT(aria2auth);
@@ -78,7 +69,7 @@ void NetrcTest::testFindAuthenticator()
 void NetrcTest::testParse()
 {
   Netrc netrc;
-  netrc.parse(A2_TEST_DIR"/sample.netrc");
+  netrc.parse(A2_TEST_DIR "/sample.netrc");
   auto itr = std::begin(netrc.getAuthenticators());
 
   const auto& tujikawaauth = *itr;
@@ -110,7 +101,8 @@ void NetrcTest::testParse_fileNotFound()
   try {
     netrc.parse("");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
   }
 }
@@ -118,7 +110,7 @@ void NetrcTest::testParse_fileNotFound()
 void NetrcTest::testParse_emptyfile()
 {
   Netrc netrc;
-  netrc.parse(A2_TEST_DIR"/emptyfile");
+  netrc.parse(A2_TEST_DIR "/emptyfile");
 
   CPPUNIT_ASSERT_EQUAL((size_t)0, netrc.getAuthenticators().size());
 }
@@ -127,9 +119,10 @@ void NetrcTest::testParse_malformedNetrc()
 {
   Netrc netrc;
   try {
-    netrc.parse(A2_TEST_DIR"/malformed.netrc");
+    netrc.parse(A2_TEST_DIR "/malformed.netrc");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
   }
 }

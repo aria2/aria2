@@ -68,16 +68,13 @@ public:
     initAndOpenFile(totalLength);
   }
 
-  virtual int64_t size() CXX11_OVERRIDE
-  {
-    return 0;
-  }
+  virtual int64_t size() CXX11_OVERRIDE { return 0; }
 
-  virtual void writeData(const unsigned char* data, size_t len, int64_t offset)
-    CXX11_OVERRIDE;
+  virtual void writeData(const unsigned char* data, size_t len,
+                         int64_t offset) CXX11_OVERRIDE;
 
-  virtual ssize_t readData(unsigned char* data, size_t len, int64_t offset)
-    CXX11_OVERRIDE
+  virtual ssize_t readData(unsigned char* data, size_t len,
+                           int64_t offset) CXX11_OVERRIDE
   {
     return 0;
   }
@@ -85,6 +82,7 @@ public:
   int finalize();
   RpcRequest getResult();
   int reset();
+
 private:
   XmlRpcRequestParserStateMachine psm_;
   xml::XmlParser parser_;

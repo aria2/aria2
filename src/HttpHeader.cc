@@ -41,9 +41,7 @@
 
 namespace aria2 {
 
-HttpHeader::HttpHeader()
-  : statusCode_(0)
-{}
+HttpHeader::HttpHeader() : statusCode_(0) {}
 
 HttpHeader::~HttpHeader() {}
 
@@ -53,17 +51,17 @@ void HttpHeader::put(int hdKey, const std::string& value)
   table_.insert(vt);
 }
 
-bool HttpHeader::defined(int hdKey) const
-{
-  return table_.count(hdKey);
-}
+void HttpHeader::remove(int hdKey) { table_.erase(hdKey); }
+
+bool HttpHeader::defined(int hdKey) const { return table_.count(hdKey); }
 
 const std::string& HttpHeader::find(int hdKey) const
 {
   auto itr = table_.find(hdKey);
-  if(itr == table_.end()) {
+  if (itr == table_.end()) {
     return A2STR::NIL;
-  } else {
+  }
+  else {
     return (*itr).second;
   }
 }
@@ -72,7 +70,7 @@ std::vector<std::string> HttpHeader::findAll(int hdKey) const
 {
   std::vector<std::string> v;
   auto itrpair = table_.equal_range(hdKey);
-  while(itrpair.first != itrpair.second) {
+  while (itrpair.first != itrpair.second) {
     v.push_back((*itrpair.first).second);
     ++itrpair.first;
   }
@@ -89,120 +87,105 @@ HttpHeader::equalRange(int hdKey) const
 Range HttpHeader::getRange() const
 {
   const auto& rangeStr = find(CONTENT_RANGE);
-  if(rangeStr.empty()) {
+  if (rangeStr.empty()) {
     const std::string& clenStr = find(CONTENT_LENGTH);
-    if(clenStr.empty()) {
+    if (clenStr.empty()) {
       return Range();
-    } else {
+    }
+    else {
       int64_t contentLength;
-      if(!util::parseLLIntNoThrow(contentLength, clenStr) ||
-         contentLength < 0) {
+      if (!util::parseLLIntNoThrow(contentLength, clenStr) ||
+          contentLength < 0) {
         throw DL_ABORT_EX("Content-Length must be positive integer");
-      } else if(contentLength > std::numeric_limits<a2_off_t>::max()) {
-        throw DOWNLOAD_FAILURE_EXCEPTION
-          (fmt(EX_TOO_LARGE_FILE, contentLength));
-      } else if(contentLength == 0) {
+      }
+      else if (contentLength > std::numeric_limits<a2_off_t>::max()) {
+        throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, contentLength));
+      }
+      else if (contentLength == 0) {
         return Range();
-      } else {
+      }
+      else {
         return Range(0, contentLength - 1, contentLength);
       }
     }
   }
-  // we expect that rangeStr looks like 'bytes 100-199/100'
-  // but some server returns '100-199/100', omitting bytes-unit specifier
-  // 'bytes'.
+  // we expect that rangeStr looks like 'bytes 100-199/200' but some
+  // server returns '100-199/200', omitting bytes-unit specifier
+  // 'bytes'.  Moreover, some server may return like
+  // 'bytes=100-199/200'.
   auto byteRangeSpec = std::find(rangeStr.begin(), rangeStr.end(), ' ');
-  if(byteRangeSpec == rangeStr.end()) {
-    // we assume bytes-unit specifier omitted.
-    byteRangeSpec = rangeStr.begin();
-  } else {
-    while(byteRangeSpec != rangeStr.end() &&
-          (*byteRangeSpec == ' ' || *byteRangeSpec == '\t')) {
+  if (byteRangeSpec == rangeStr.end()) {
+    // check for 'bytes=100-199/200' case
+    byteRangeSpec = std::find(rangeStr.begin(), rangeStr.end(), '=');
+    if (byteRangeSpec == rangeStr.end()) {
+      // we assume bytes-unit specifier omitted.
+      byteRangeSpec = rangeStr.begin();
+    }
+    else {
+      ++byteRangeSpec;
+    }
+  }
+  else {
+    while (byteRangeSpec != rangeStr.end() &&
+           (*byteRangeSpec == ' ' || *byteRangeSpec == '\t')) {
       ++byteRangeSpec;
     }
   }
   auto slash = std::find(byteRangeSpec, rangeStr.end(), '/');
-  if(slash == rangeStr.end() || slash+1 == rangeStr.end() ||
-     (byteRangeSpec+1 == slash && *byteRangeSpec == '*') ||
-     (slash+2 == rangeStr.end() && *(slash+1) == '*')) {
+  if (slash == rangeStr.end() || slash + 1 == rangeStr.end() ||
+      (byteRangeSpec + 1 == slash && *byteRangeSpec == '*') ||
+      (slash + 2 == rangeStr.end() && *(slash + 1) == '*')) {
     // If byte-range-resp-spec or instance-length is "*", we returns
     // empty Range. The former is usually sent with 416 (Request range
     // not satisfiable) status.
     return Range();
   }
   auto minus = std::find(byteRangeSpec, slash, '-');
-  if(minus == slash) {
+  if (minus == slash) {
     return Range();
   }
   int64_t startByte, endByte, entityLength;
-  if(!util::parseLLIntNoThrow(startByte, std::string(byteRangeSpec, minus)) ||
-     !util::parseLLIntNoThrow(endByte, std::string(minus+1, slash)) ||
-     !util::parseLLIntNoThrow(entityLength,
-                              std::string(slash+1, rangeStr.end())) ||
-     startByte < 0 || endByte < 0 || entityLength < 0) {
+  if (!util::parseLLIntNoThrow(startByte, std::string(byteRangeSpec, minus)) ||
+      !util::parseLLIntNoThrow(endByte, std::string(minus + 1, slash)) ||
+      !util::parseLLIntNoThrow(entityLength,
+                               std::string(slash + 1, rangeStr.end())) ||
+      startByte < 0 || endByte < 0 || entityLength < 0) {
     throw DL_ABORT_EX("byte-range-spec must be positive");
   }
-  if(startByte > std::numeric_limits<a2_off_t>::max()) {
+  if (startByte > std::numeric_limits<a2_off_t>::max()) {
     throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, startByte));
   }
-  if(endByte > std::numeric_limits<a2_off_t>::max()) {
+  if (endByte > std::numeric_limits<a2_off_t>::max()) {
     throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, endByte));
   }
-  if(entityLength > std::numeric_limits<a2_off_t>::max()) {
+  if (entityLength > std::numeric_limits<a2_off_t>::max()) {
     throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, entityLength));
   }
   return Range(startByte, endByte, entityLength);
 }
 
-void HttpHeader::setVersion(const std::string& version)
-{
-  version_ = version;
-}
+void HttpHeader::setVersion(const std::string& version) { version_ = version; }
 
-void HttpHeader::setMethod(const std::string& method)
-{
-  method_ = method;
-}
+void HttpHeader::setMethod(const std::string& method) { method_ = method; }
 
 void HttpHeader::setRequestPath(const std::string& requestPath)
 {
   requestPath_ = requestPath;
 }
 
-void HttpHeader::clearField()
-{
-  table_.clear();
-}
+void HttpHeader::clearField() { table_.clear(); }
 
-int HttpHeader::getStatusCode() const
-{
-  return statusCode_;
-}
+int HttpHeader::getStatusCode() const { return statusCode_; }
 
-void HttpHeader::setStatusCode(int code)
-{
-  statusCode_ = code;
-}
+void HttpHeader::setStatusCode(int code) { statusCode_ = code; }
 
-const std::string& HttpHeader::getVersion() const
-{
-  return version_;
-}
+const std::string& HttpHeader::getVersion() const { return version_; }
 
-const std::string& HttpHeader::getMethod() const
-{
-  return method_;
-}
+const std::string& HttpHeader::getMethod() const { return method_; }
 
-const std::string& HttpHeader::getRequestPath() const
-{
-  return requestPath_;
-}
+const std::string& HttpHeader::getRequestPath() const { return requestPath_; }
 
-const std::string& HttpHeader::getReasonPhrase() const
-{
-  return reasonPhrase_;
-}
+const std::string& HttpHeader::getReasonPhrase() const { return reasonPhrase_; }
 
 void HttpHeader::setReasonPhrase(const std::string& reasonPhrase)
 {
@@ -213,16 +196,15 @@ bool HttpHeader::fieldContains(int hdKey, const char* value)
 {
   std::pair<std::multimap<int, std::string>::const_iterator,
             std::multimap<int, std::string>::const_iterator> range =
-    equalRange(hdKey);
-  for(auto i = range.first; i != range.second; ++i) {
+      equalRange(hdKey);
+  for (auto i = range.first; i != range.second; ++i) {
     std::vector<Scip> values;
     util::splitIter((*i).second.begin(), (*i).second.end(),
-                    std::back_inserter(values),
-                    ',',
+                    std::back_inserter(values), ',',
                     true // doStrip
                     );
-    for (const auto& v: values) {
-      if(util::strieq(v.first, v.second, value)) {
+    for (const auto& v : values) {
+      if (util::strieq(v.first, v.second, value)) {
         return true;
       }
     }
@@ -234,45 +216,29 @@ bool HttpHeader::isKeepAlive() const
 {
   const std::string& connection = find(CONNECTION);
   return !util::strieq(connection, "close") &&
-    (version_ == "HTTP/1.1" || util::strieq(connection, "keep-alive"));
+         (version_ == "HTTP/1.1" || util::strieq(connection, "keep-alive"));
 }
 
 namespace {
 const char* INTERESTING_HEADER_NAMES[] = {
-  "accept-encoding",
-  "access-control-request-headers",
-  "access-control-request-method",
-  "authorization",
-  "connection",
-  "content-disposition",
-  "content-encoding",
-  "content-length",
-  "content-range",
-  "content-type",
-  "digest",
-  "infohash",
-  "last-modified",
-  "link",
-  "location",
-  "origin",
-  "port",
-  "retry-after",
-  "sec-websocket-key",
-  "sec-websocket-version",
-  "set-cookie",
-  "transfer-encoding",
-  "upgrade",
+    "accept-encoding", "access-control-request-headers",
+    "access-control-request-method", "authorization", "connection",
+    "content-disposition", "content-encoding", "content-length",
+    "content-range", "content-type", "digest", "infohash", "last-modified",
+    "link", "location", "origin", "port", "retry-after", "sec-websocket-key",
+    "sec-websocket-version", "set-cookie", "transfer-encoding", "upgrade",
 };
 } // namespace
 
 int idInterestingHeader(const char* hdName)
 {
   const char** i = std::lower_bound(std::begin(INTERESTING_HEADER_NAMES),
-                                    std::end(INTERESTING_HEADER_NAMES),
-                                    hdName, util::strless);
-  if(i != std::end(INTERESTING_HEADER_NAMES) && strcmp(*i, hdName) == 0 ) {
+                                    std::end(INTERESTING_HEADER_NAMES), hdName,
+                                    util::strless);
+  if (i != std::end(INTERESTING_HEADER_NAMES) && strcmp(*i, hdName) == 0) {
     return i - std::begin(INTERESTING_HEADER_NAMES);
-  } else {
+  }
+  else {
     return HttpHeader::MAX_INTERESTING_HEADER;
   }
 }

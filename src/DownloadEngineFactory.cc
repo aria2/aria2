@@ -57,20 +57,21 @@
 #include "a2io.h"
 #include "DownloadContext.h"
 #include "array_fun.h"
+#include "EvictSocketPoolCommand.h"
 #ifdef HAVE_LIBUV
-# include "LibuvEventPoll.h"
+#include "LibuvEventPoll.h"
 #endif // HAVE_LIBUV
 #ifdef HAVE_EPOLL
-# include "EpollEventPoll.h"
+#include "EpollEventPoll.h"
 #endif // HAVE_EPOLL
 #ifdef HAVE_PORT_ASSOCIATE
-# include "PortEventPoll.h"
+#include "PortEventPoll.h"
 #endif // HAVE_PORT_ASSOCIATE
 #ifdef HAVE_KQUEUE
-# include "KqueueEventPoll.h"
+#include "KqueueEventPoll.h"
 #endif // HAVE_KQUEUE
 #ifdef HAVE_POLL
-# include "PollEventPoll.h"
+#include "PollEventPoll.h"
 #endif // HAVE_POLL
 #include "SelectEventPoll.h"
 #include "DlAbortEx.h"
@@ -89,7 +90,7 @@ std::unique_ptr<EventPoll> createEventPoll(Option* op)
 #ifdef HAVE_LIBUV
   if (pollMethod == V_LIBUV) {
     auto ep = make_unique<LibuvEventPoll>();
-    if(!ep->good()) {
+    if (!ep->good()) {
       throw DL_ABORT_EX("Initializing LibuvEventPoll failed."
                         " Try --event-poll=select");
     }
@@ -98,41 +99,45 @@ std::unique_ptr<EventPoll> createEventPoll(Option* op)
   else
 #endif // HAVE_LIBUV
 #ifdef HAVE_EPOLL
-  if(pollMethod == V_EPOLL) {
+      if (pollMethod == V_EPOLL) {
     auto ep = make_unique<EpollEventPoll>();
-    if(!ep->good()) {
+    if (!ep->good()) {
       throw DL_ABORT_EX("Initializing EpollEventPoll failed."
                         " Try --event-poll=select");
     }
     return std::move(ep);
-  } else
+  }
+  else
 #endif // HAVE_EPLL
 #ifdef HAVE_KQUEUE
-  if(pollMethod == V_KQUEUE) {
+      if (pollMethod == V_KQUEUE) {
     auto kp = make_unique<KqueueEventPoll>();
-    if(!kp->good()) {
+    if (!kp->good()) {
       throw DL_ABORT_EX("Initializing KqueueEventPoll failed."
                         " Try --event-poll=select");
     }
     return std::move(kp);
-  } else
+  }
+  else
 #endif // HAVE_KQUEUE
 #ifdef HAVE_PORT_ASSOCIATE
-  if(pollMethod == V_PORT) {
+      if (pollMethod == V_PORT) {
     auto pp = make_unique<PortEventPoll>();
-    if(!pp->good()) {
+    if (!pp->good()) {
       throw DL_ABORT_EX("Initializing PortEventPoll failed."
                         " Try --event-poll=select");
     }
     return std::move(pp);
-  } else
+  }
+  else
 #endif // HAVE_PORT_ASSOCIATE
 #ifdef HAVE_POLL
-  if(pollMethod == V_POLL) {
+      if (pollMethod == V_POLL) {
     return make_unique<PollEventPoll>();
-  } else
+  }
+  else
 #endif // HAVE_POLL
-  if(pollMethod == V_SELECT) {
+      if (pollMethod == V_SELECT) {
     return make_unique<SelectEventPoll>();
   }
   assert(0);
@@ -140,37 +145,36 @@ std::unique_ptr<EventPoll> createEventPoll(Option* op)
 }
 } // namespace
 
-std::unique_ptr<DownloadEngine>
-DownloadEngineFactory::newDownloadEngine
-(Option* op, std::vector<std::shared_ptr<RequestGroup>> requestGroups)
+std::unique_ptr<DownloadEngine> DownloadEngineFactory::newDownloadEngine(
+    Option* op, std::vector<std::shared_ptr<RequestGroup>> requestGroups)
 {
   const size_t MAX_CONCURRENT_DOWNLOADS =
-    op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS);
+      op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS);
   auto e = make_unique<DownloadEngine>(createEventPoll(op));
   e->setOption(op);
   {
-    auto requestGroupMan = make_unique<RequestGroupMan>
-      (std::move(requestGroups), MAX_CONCURRENT_DOWNLOADS, op);
+    auto requestGroupMan = make_unique<RequestGroupMan>(
+        std::move(requestGroups), MAX_CONCURRENT_DOWNLOADS, op);
     requestGroupMan->initWrDiskCache();
     e->setRequestGroupMan(std::move(requestGroupMan));
   }
   e->setFileAllocationMan(make_unique<FileAllocationMan>());
   e->setCheckIntegrityMan(make_unique<CheckIntegrityMan>());
-  e->addRoutineCommand(make_unique<FillRequestGroupCommand>
-                       (e->newCUID(), e.get()));
-  e->addRoutineCommand(make_unique<FileAllocationDispatcherCommand>
-                       (e->newCUID(), e->getFileAllocationMan().get(),
-                        e.get()));
-  e->addRoutineCommand(make_unique<CheckIntegrityDispatcherCommand>
-                       (e->newCUID(), e->getCheckIntegrityMan().get(),
-                        e.get()));
+  e->addRoutineCommand(
+      make_unique<FillRequestGroupCommand>(e->newCUID(), e.get()));
+  e->addRoutineCommand(make_unique<FileAllocationDispatcherCommand>(
+      e->newCUID(), e->getFileAllocationMan().get(), e.get()));
+  e->addRoutineCommand(make_unique<CheckIntegrityDispatcherCommand>(
+      e->newCUID(), e->getCheckIntegrityMan().get(), e.get()));
+  e->addRoutineCommand(
+      make_unique<EvictSocketPoolCommand>(e->newCUID(), e.get(), 30_s));
 
-  if(op->getAsInt(PREF_AUTO_SAVE_INTERVAL) > 0) {
+  if (op->getAsInt(PREF_AUTO_SAVE_INTERVAL) > 0) {
     e->addRoutineCommand(make_unique<AutoSaveCommand>(
         e->newCUID(), e.get(),
         std::chrono::seconds(op->getAsInt(PREF_AUTO_SAVE_INTERVAL))));
   }
-  if(op->getAsInt(PREF_SAVE_SESSION_INTERVAL) > 0) {
+  if (op->getAsInt(PREF_SAVE_SESSION_INTERVAL) > 0) {
     e->addRoutineCommand(make_unique<SaveSessionCommand>(
         e->newCUID(), e.get(),
         std::chrono::seconds(op->getAsInt(PREF_SAVE_SESSION_INTERVAL))));
@@ -179,18 +183,18 @@ DownloadEngineFactory::newDownloadEngine
       make_unique<HaveEraseCommand>(e->newCUID(), e.get(), 10_s));
   {
     auto stopSec = op->getAsInt(PREF_STOP);
-    if(stopSec > 0) {
+    if (stopSec > 0) {
       e->addRoutineCommand(make_unique<TimedHaltCommand>(
           e->newCUID(), e.get(), std::chrono::seconds(stopSec)));
     }
   }
-  if(op->defined(PREF_STOP_WITH_PROCESS)) {
+  if (op->defined(PREF_STOP_WITH_PROCESS)) {
     unsigned int pid = op->getAsInt(PREF_STOP_WITH_PROCESS);
-    e->addRoutineCommand(make_unique<WatchProcessCommand>(e->newCUID(),
-                                                          e.get(), pid));
+    e->addRoutineCommand(
+        make_unique<WatchProcessCommand>(e->newCUID(), e.get(), pid));
   }
-  if(op->getAsBool(PREF_ENABLE_RPC)) {
-    if(op->get(PREF_RPC_SECRET).empty() && op->get(PREF_RPC_USER).empty()) {
+  if (op->getAsBool(PREF_ENABLE_RPC)) {
+    if (op->get(PREF_RPC_SECRET).empty() && op->get(PREF_RPC_USER).empty()) {
       A2_LOG_WARN("Neither --rpc-secret nor a combination of --rpc-user and "
                   "--rpc-passwd is set. This is insecure. It is extremely "
                   "recommended to specify --rpc-secret with the adequate "
@@ -198,20 +202,20 @@ DownloadEngineFactory::newDownloadEngine
     }
     bool ok = false;
     bool secure = op->getAsBool(PREF_RPC_SECURE);
-    if(secure) {
+    if (secure) {
       A2_LOG_NOTICE("RPC transport will be encrypted.");
     }
-    static int families[] = { AF_INET, AF_INET6 };
-    size_t familiesLength = op->getAsBool(PREF_DISABLE_IPV6)?1:2;
-    for(size_t i = 0; i < familiesLength; ++i) {
-      auto httpListenCommand = make_unique<HttpListenCommand>
-        (e->newCUID(), e.get(), families[i], secure);
-      if(httpListenCommand->bindPort(op->getAsInt(PREF_RPC_LISTEN_PORT))){
+    static int families[] = {AF_INET, AF_INET6};
+    size_t familiesLength = op->getAsBool(PREF_DISABLE_IPV6) ? 1 : 2;
+    for (size_t i = 0; i < familiesLength; ++i) {
+      auto httpListenCommand = make_unique<HttpListenCommand>(
+          e->newCUID(), e.get(), families[i], secure);
+      if (httpListenCommand->bindPort(op->getAsInt(PREF_RPC_LISTEN_PORT))) {
         e->addCommand(std::move(httpListenCommand));
         ok = true;
       }
     }
-    if(!ok) {
+    if (!ok) {
       throw DL_ABORT_EX("Failed to setup RPC server.");
     }
   }

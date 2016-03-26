@@ -66,8 +66,8 @@ class BtMessageFactory {
 public:
   virtual ~BtMessageFactory() {}
 
-  virtual std::unique_ptr<BtMessage>
-  createBtMessage(const unsigned char* msg, size_t msgLength) = 0;
+  virtual std::unique_ptr<BtMessage> createBtMessage(const unsigned char* msg,
+                                                     size_t msgLength) = 0;
 
   virtual std::unique_ptr<BtHandshakeMessage>
   createHandshakeMessage(const unsigned char* msg, size_t msgLength) = 0;

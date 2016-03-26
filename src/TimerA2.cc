@@ -37,19 +37,11 @@
 
 namespace aria2 {
 
-Timer::Timer() : tp_(Clock::now())
-{
-  reset();
-}
+Timer::Timer() : tp_(Clock::now()) { reset(); }
 
-Timer::Timer(const Clock::time_point& tp) : tp_(tp)
-{
-}
+Timer::Timer(const Clock::time_point& tp) : tp_(tp) {}
 
-void Timer::reset()
-{
-  tp_ = Clock::now();
-}
+void Timer::reset() { tp_ = Clock::now(); }
 
 Timer::Clock::duration Timer::difference() const
 {

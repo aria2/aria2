@@ -74,7 +74,7 @@ private:
 
     std::unique_ptr<DHTMessageFactory> messageFactory;
 
-    Data():initialized(false) {}
+    Data() : initialized(false) {}
   };
 
   static Data data_;
@@ -83,50 +83,27 @@ private:
   static void clear(Data& data);
 
   DHTRegistry();
-public:
-  static const Data& getData()
-  {
-    return data_;
-  }
 
-  static Data& getMutableData()
-  {
-    return data_;
-  }
+public:
+  static const Data& getData() { return data_; }
+
+  static Data& getMutableData() { return data_; }
 
   static void clearData();
 
-  static bool isInitialized()
-  {
-    return data_.initialized;
-  }
+  static bool isInitialized() { return data_.initialized; }
 
-  static void setInitialized(bool f)
-  {
-    data_.initialized = f;
-  }
+  static void setInitialized(bool f) { data_.initialized = f; }
 
-  static const Data& getData6()
-  {
-    return data6_;
-  }
+  static const Data& getData6() { return data6_; }
 
-  static Data& getMutableData6()
-  {
-    return data6_;
-  }
+  static Data& getMutableData6() { return data6_; }
 
   static void clearData6();
 
-  static bool isInitialized6()
-  {
-    return data6_.initialized;
-  }
+  static bool isInitialized6() { return data6_.initialized; }
 
-  static void setInitialized6(bool f)
-  {
-    data6_.initialized = f;
-  }
+  static void setInitialized6(bool f) { data6_.initialized = f; }
 };
 
 } // namespace aria2

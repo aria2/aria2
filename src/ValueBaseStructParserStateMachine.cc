@@ -43,46 +43,34 @@
 namespace aria2 {
 
 namespace {
-auto valueState =
-  new ValueValueBaseStructParserState();
-auto dictState =
-  new DictValueBaseStructParserState();
-auto dictKeyState =
-  new DictKeyValueBaseStructParserState();
-auto dictDataState =
-  new DictDataValueBaseStructParserState();
-auto arrayState =
-  new ArrayValueBaseStructParserState();
-auto arrayDataState =
-  new ArrayDataValueBaseStructParserState();
-auto stringState =
-  new StringValueBaseStructParserState();
-auto numberState =
-  new NumberValueBaseStructParserState();
-auto boolState =
-  new BoolValueBaseStructParserState();
-auto nullState =
-  new NullValueBaseStructParserState();
+auto valueState = new ValueValueBaseStructParserState();
+auto dictState = new DictValueBaseStructParserState();
+auto dictKeyState = new DictKeyValueBaseStructParserState();
+auto dictDataState = new DictDataValueBaseStructParserState();
+auto arrayState = new ArrayValueBaseStructParserState();
+auto arrayDataState = new ArrayDataValueBaseStructParserState();
+auto stringState = new StringValueBaseStructParserState();
+auto numberState = new NumberValueBaseStructParserState();
+auto boolState = new BoolValueBaseStructParserState();
+auto nullState = new NullValueBaseStructParserState();
 } // namespace
 
-std::unique_ptr<ValueBase>
-ValueBaseStructParserStateMachine::noResult()
+std::unique_ptr<ValueBase> ValueBaseStructParserStateMachine::noResult()
 {
   return nullptr;
 }
 
 ValueBaseStructParserStateMachine::ValueBaseStructParserStateMachine()
-  : ctrl_{make_unique<rpc::XmlRpcRequestParserController>()}
+    : ctrl_{make_unique<rpc::XmlRpcRequestParserController>()}
 {
   stateStack_.push(valueState);
 }
 
-ValueBaseStructParserStateMachine::~ValueBaseStructParserStateMachine()
-{}
+ValueBaseStructParserStateMachine::~ValueBaseStructParserStateMachine() {}
 
 void ValueBaseStructParserStateMachine::reset()
 {
-  while(!stateStack_.empty()) {
+  while (!stateStack_.empty()) {
     stateStack_.pop();
   }
   stateStack_.push(valueState);
@@ -105,14 +93,14 @@ std::unique_ptr<ValueBase> ValueBaseStructParserStateMachine::getResult()
   return popCurrentFrameValue();
 }
 
-void ValueBaseStructParserStateMachine::charactersCallback
-(const char* data, size_t len)
+void ValueBaseStructParserStateMachine::charactersCallback(const char* data,
+                                                           size_t len)
 {
   sessionData_.str.append(data, len);
 }
 
-void ValueBaseStructParserStateMachine::numberCallback
-(int64_t number, int frac, int exp)
+void ValueBaseStructParserStateMachine::numberCallback(int64_t number, int frac,
+                                                       int exp)
 {
   sessionData_.number.number = number;
   sessionData_.number.frac = frac;
@@ -150,13 +138,10 @@ void ValueBaseStructParserStateMachine::popDictFrame()
   ctrl_->popStructFrame();
 }
 
-void ValueBaseStructParserStateMachine::pushFrame()
-{
-  ctrl_->pushFrame();
-}
+void ValueBaseStructParserStateMachine::pushFrame() { ctrl_->pushFrame(); }
 
-void ValueBaseStructParserStateMachine::setCurrentFrameValue
-(std::unique_ptr<ValueBase> value)
+void ValueBaseStructParserStateMachine::setCurrentFrameValue(
+    std::unique_ptr<ValueBase> value)
 {
   ctrl_->setCurrentFrameValue(std::move(value));
 }

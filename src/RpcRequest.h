@@ -53,13 +53,10 @@ struct RpcRequest {
 
   RpcRequest();
 
-  RpcRequest(std::string methodName,
-             std::unique_ptr<List> params);
+  RpcRequest(std::string methodName, std::unique_ptr<List> params);
 
-  RpcRequest(std::string methodName,
-             std::unique_ptr<List> params,
-             std::unique_ptr<ValueBase> id,
-             bool jsonRpc = false);
+  RpcRequest(std::string methodName, std::unique_ptr<List> params,
+             std::unique_ptr<ValueBase> id, bool jsonRpc = false);
 };
 
 } // namespace rpc

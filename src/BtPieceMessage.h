@@ -61,6 +61,7 @@ private:
   void onWrongPiece(const std::shared_ptr<Piece>& piece);
 
   void pushPieceData(int64_t offset, int32_t length) const;
+
 public:
   BtPieceMessage(size_t index = 0, int32_t begin = 0, int32_t blockLength = 0);
 
@@ -78,7 +79,7 @@ public:
 
   void setBegin(int32_t begin) { begin_ = begin; }
 
-  const unsigned char* getBlock() const { return data_+9; }
+  const unsigned char* getBlock() const { return data_ + 9; }
 
   int32_t getBlockLength() const { return blockLength_; }
 
@@ -92,8 +93,8 @@ public:
 
   void setPeerStorage(PeerStorage* peerStorage);
 
-  static std::unique_ptr<BtPieceMessage> create
-  (const unsigned char* data, size_t dataLength);
+  static std::unique_ptr<BtPieceMessage> create(const unsigned char* data,
+                                                size_t dataLength);
 
   virtual void doReceivedAction() CXX11_OVERRIDE;
 
@@ -107,8 +108,8 @@ public:
 
   virtual void onChokingEvent(const BtChokingEvent& event) CXX11_OVERRIDE;
 
-  virtual void onCancelSendingPieceEvent
-  (const BtCancelSendingPieceEvent& event) CXX11_OVERRIDE;
+  virtual void onCancelSendingPieceEvent(const BtCancelSendingPieceEvent& event)
+      CXX11_OVERRIDE;
 };
 
 } // namespace aria2

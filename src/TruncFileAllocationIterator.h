@@ -43,11 +43,12 @@ namespace aria2 {
 // Use ftruncate() system call or platform-specific counterpart to set
 // file length. This allocator may not allocate file space, it just
 // changes file length information.
-class TruncFileAllocationIterator:public FileAllocationIterator {
+class TruncFileAllocationIterator : public FileAllocationIterator {
 private:
   BinaryStream* stream_;
   int64_t offset_;
   int64_t totalLength_;
+
 public:
   TruncFileAllocationIterator(BinaryStream* stream, int64_t offset,
                               int64_t totalLength);

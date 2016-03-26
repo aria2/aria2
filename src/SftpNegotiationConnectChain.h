@@ -47,13 +47,9 @@ struct SftpNegotiationConnectChain : public ControlChain<ConnectCommand*> {
   virtual ~SftpNegotiationConnectChain() {}
   virtual int run(ConnectCommand* t, DownloadEngine* e) CXX11_OVERRIDE
   {
-    auto c = make_unique<SftpNegotiationCommand>
-      (t->getCuid(),
-       t->getRequest(),
-       t->getFileEntry(),
-       t->getRequestGroup(),
-       t->getDownloadEngine(),
-       t->getSocket());
+    auto c = make_unique<SftpNegotiationCommand>(
+        t->getCuid(), t->getRequest(), t->getFileEntry(), t->getRequestGroup(),
+        t->getDownloadEngine(), t->getSocket());
     c->setStatus(Command::STATUS_ONESHOT_REALTIME);
     e->setNoWait(true);
     e->addCommand(std::move(c));

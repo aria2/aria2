@@ -56,49 +56,47 @@
 
 namespace aria2 {
 
-DHTAutoSaveCommand::DHTAutoSaveCommand
-(cuid_t cuid, DownloadEngine* e, int family, std::chrono::seconds interval)
-  : TimeBasedCommand{cuid, e, std::move(interval)},
-    family_{family},
-    routingTable_{nullptr}
-{}
+DHTAutoSaveCommand::DHTAutoSaveCommand(cuid_t cuid, DownloadEngine* e,
+                                       int family,
+                                       std::chrono::seconds interval)
+    : TimeBasedCommand{cuid, e, std::move(interval)},
+      family_{family},
+      routingTable_{nullptr}
+{
+}
 
 DHTAutoSaveCommand::~DHTAutoSaveCommand() {}
 
 void DHTAutoSaveCommand::preProcess()
 {
-  if(getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
-     getDownloadEngine()->isHaltRequested()) {
+  if (getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
+      getDownloadEngine()->isHaltRequested()) {
     save();
     enableExit();
   }
 }
 
-void DHTAutoSaveCommand::process()
-{
-  save();
-}
+void DHTAutoSaveCommand::process() { save(); }
 
 void DHTAutoSaveCommand::save()
 {
-  std::string dhtFile =
-    getDownloadEngine()->getOption()->
-    get(family_ == AF_INET? PREF_DHT_FILE_PATH : PREF_DHT_FILE_PATH6);
+  std::string dhtFile = getDownloadEngine()->getOption()->get(
+      family_ == AF_INET ? PREF_DHT_FILE_PATH : PREF_DHT_FILE_PATH6);
   A2_LOG_INFO(fmt("Saving DHT routing table to %s.", dhtFile.c_str()));
 
   // Removing tempFile is unnecessary because the file is truncated on
   // open.  But the bug in 1.10.4 creates directory for this path.
   // Because it is directory, opening directory as file fails.  So we
   // first remove it here.
-  File tempFile(dhtFile+"__temp");
+  File tempFile(dhtFile + "__temp");
   tempFile.remove();
 
   File(File(dhtFile).getDirname()).mkdirs();
-  std::vector<std::shared_ptr<DHTNode> > nodes;
-  std::vector<std::shared_ptr<DHTBucket> > buckets;
+  std::vector<std::shared_ptr<DHTNode>> nodes;
+  std::vector<std::shared_ptr<DHTBucket>> buckets;
   routingTable_->getBuckets(buckets);
   for (const auto& b : buckets) {
-    std::vector<std::shared_ptr<DHTNode> > goodNodes;
+    std::vector<std::shared_ptr<DHTNode>> goodNodes;
     b->getGoodNodes(goodNodes);
     nodes.insert(nodes.end(), goodNodes.begin(), goodNodes.end());
   }
@@ -109,7 +107,8 @@ void DHTAutoSaveCommand::save()
 
   try {
     serializer.serialize(dhtFile);
-  } catch(RecoverableException& e) {
+  }
+  catch (RecoverableException& e) {
     A2_LOG_ERROR_EX(fmt("Exception caught while saving DHT routing table to %s",
                         dhtFile.c_str()),
                     e);

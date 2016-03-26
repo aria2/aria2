@@ -40,9 +40,8 @@
 
 namespace aria2 {
 
-template<class DiskWriterFactoryType>
-class MemoryPreDownloadHandler:public PreDownloadHandler
-{
+template <class DiskWriterFactoryType>
+class MemoryPreDownloadHandler : public PreDownloadHandler {
 public:
   virtual void execute(RequestGroup* requestGroup) const CXX11_OVERRIDE
   {

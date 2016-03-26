@@ -45,7 +45,7 @@ namespace aria2 {
 
 class Peer;
 
-class DHTGetPeersReplyMessage:public DHTResponseMessage {
+class DHTGetPeersReplyMessage : public DHTResponseMessage {
 private:
   int family_;
 
@@ -54,11 +54,12 @@ private:
   std::vector<std::shared_ptr<DHTNode>> closestKNodes_;
 
   std::vector<std::shared_ptr<Peer>> values_;
+
 protected:
   virtual std::string toStringOptional() const CXX11_OVERRIDE;
+
 public:
-  DHTGetPeersReplyMessage(int family,
-                          const std::shared_ptr<DHTNode>& localNode,
+  DHTGetPeersReplyMessage(int family, const std::shared_ptr<DHTNode>& localNode,
                           const std::shared_ptr<DHTNode>& remoteNode,
                           const std::string& token,
                           const std::string& transactionID);
@@ -85,10 +86,7 @@ public:
 
   void setValues(std::vector<std::shared_ptr<Peer>> peers);
 
-  const std::string& getToken() const
-  {
-    return token_;
-  }
+  const std::string& getToken() const { return token_; }
 
   static const std::string GET_PEERS;
 

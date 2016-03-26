@@ -81,8 +81,8 @@ public:
   // rhs are not supported. Otherwise returns false.
   static bool isStronger(const std::string& lhs, const std::string& rhs);
 
-  static bool isValidHash
-  (const std::string& hashType, const std::string& hexDigest);
+  static bool isValidHash(const std::string& hashType,
+                          const std::string& hexDigest);
 
   // Returns canonical hash algorithm name of given algostring.  If
   // given algostring is not supported, then returns algostring
@@ -105,6 +105,7 @@ public:
   // Returns raw digest, not hex digest.  This call can only be called
   // once. To reuse this object, call reset().
   std::string digest();
+
 private:
   std::unique_ptr<MessageDigestImpl> pImpl_;
 };

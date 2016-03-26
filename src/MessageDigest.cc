@@ -47,26 +47,26 @@ namespace {
 struct HashTypeEntry {
   std::string hashType;
   int strength;
-  HashTypeEntry(std::string  hashType, int strength):
-    hashType(std::move(hashType)), strength(strength) {}
+  HashTypeEntry(std::string hashType, int strength)
+      : hashType(std::move(hashType)), strength(strength)
+  {
+  }
 };
 } // namespace
 
 namespace {
 HashTypeEntry hashTypes[] = {
-  HashTypeEntry("sha-1", 1),
-  HashTypeEntry("sha-224", 2),
-  HashTypeEntry("sha-256", 3),
-  HashTypeEntry("sha-384", 4),
-  HashTypeEntry("sha-512", 5),
-  HashTypeEntry("md5", 0),
-  HashTypeEntry("adler32", 0),
+    HashTypeEntry("sha-1", 1),   HashTypeEntry("sha-224", 2),
+    HashTypeEntry("sha-256", 3), HashTypeEntry("sha-384", 4),
+    HashTypeEntry("sha-512", 5), HashTypeEntry("md5", 0),
+    HashTypeEntry("adler32", 0),
 };
 } // namespace aria2
 
 MessageDigest::MessageDigest(std::unique_ptr<MessageDigestImpl> impl)
-  : pImpl_{std::move(impl)}
-{}
+    : pImpl_{std::move(impl)}
+{
+}
 
 MessageDigest::~MessageDigest() {}
 
@@ -75,8 +75,8 @@ std::unique_ptr<MessageDigest> MessageDigest::sha1()
   return make_unique<MessageDigest>(MessageDigestImpl::sha1());
 }
 
-std::unique_ptr<MessageDigest> MessageDigest::create
-(const std::string& hashType)
+std::unique_ptr<MessageDigest>
+MessageDigest::create(const std::string& hashType)
 {
   return make_unique<MessageDigest>(MessageDigestImpl::create(hashType));
 }
@@ -104,8 +104,8 @@ std::string MessageDigest::getSupportedHashTypeString()
   std::copy(std::begin(ht), std::end(ht),
             std::ostream_iterator<std::string>(ss, ", "));
   auto res = ss.str();
-  if(!res.empty()) {
-    res.erase(ss.str().length()-2);
+  if (!res.empty()) {
+    res.erase(ss.str().length() - 2);
   }
   return res;
 }
@@ -117,30 +117,26 @@ size_t MessageDigest::getDigestLength(const std::string& hashType)
 
 bool MessageDigest::isStronger(const std::string& lhs, const std::string& rhs)
 {
-  auto lEntry = std::find_if(std::begin(hashTypes), std::end(hashTypes),
-                             [&lhs](const HashTypeEntry& entry)
-                             {
-                               return lhs == entry.hashType;
-                             });
-  auto rEntry = std::find_if(std::begin(hashTypes), std::end(hashTypes),
-                             [&rhs](const HashTypeEntry& entry)
-                             {
-                               return rhs == entry.hashType;
-                             });
-  if(lEntry == std::end(hashTypes)) {
+  auto lEntry = std::find_if(
+      std::begin(hashTypes), std::end(hashTypes),
+      [&lhs](const HashTypeEntry& entry) { return lhs == entry.hashType; });
+  auto rEntry = std::find_if(
+      std::begin(hashTypes), std::end(hashTypes),
+      [&rhs](const HashTypeEntry& entry) { return rhs == entry.hashType; });
+  if (lEntry == std::end(hashTypes)) {
     return false;
   }
-  if(rEntry == std::end(hashTypes)) {
+  if (rEntry == std::end(hashTypes)) {
     return true;
   }
   return lEntry->strength > rEntry->strength;
 }
 
-bool MessageDigest::isValidHash
-(const std::string& hashType, const std::string& hexDigest)
+bool MessageDigest::isValidHash(const std::string& hashType,
+                                const std::string& hexDigest)
 {
-  return util::isHexDigit(hexDigest) &&
-    supports(hashType) && getDigestLength(hashType)*2 == hexDigest.size();
+  return util::isHexDigit(hexDigest) && supports(hashType) &&
+         getDigestLength(hashType) * 2 == hexDigest.size();
 }
 
 std::string MessageDigest::getCanonicalHashType(const std::string& hashType)
@@ -148,11 +144,13 @@ std::string MessageDigest::getCanonicalHashType(const std::string& hashType)
   // This is really backward compatibility for Metalink3.  aria2 only
   // supported sha-1, sha-256 and md5 at Metalink3 era.  So we don't
   // add alias for sha-224, sha-384 and sha-512.
-  if("sha1" == hashType) {
+  if ("sha1" == hashType) {
     return "sha-1";
-  } else if("sha256" == hashType) {
+  }
+  else if ("sha256" == hashType) {
     return "sha-256";
-  } else {
+  }
+  else {
     return hashType;
   }
 }
@@ -162,10 +160,7 @@ size_t MessageDigest::getDigestLength() const
   return pImpl_->getDigestLength();
 }
 
-void MessageDigest::reset()
-{
-  pImpl_->reset();
-}
+void MessageDigest::reset() { pImpl_->reset(); }
 
 MessageDigest& MessageDigest::update(const void* data, size_t length)
 {
@@ -173,10 +168,7 @@ MessageDigest& MessageDigest::update(const void* data, size_t length)
   return *this;
 }
 
-void MessageDigest::digest(unsigned char* md)
-{
-  pImpl_->digest(md);
-}
+void MessageDigest::digest(unsigned char* md) { pImpl_->digest(md); }
 
 std::string MessageDigest::digest()
 {

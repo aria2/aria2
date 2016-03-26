@@ -55,58 +55,60 @@ enum {
   BENCODE_STRING_LEN,
   BENCODE_STRING,
   BENCODE_NUMBER_SIGN,
-  BENCODE_NUMBER
+  BENCODE_NUMBER,
+  BENCODE_FLOAT_NUMBER_IGNORE,
 };
 } // namespace
 
 BencodeParser::BencodeParser(StructParserStateMachine* psm)
-  : psm_(psm),
-    currentState_(BENCODE_INITIAL),
-    strLength_(0),
-    numberSign_(1),
-    number_(0),
-    numConsumed_(0),
-    lastError_(0)
+    : psm_(psm),
+      currentState_(BENCODE_INITIAL),
+      strLength_(0),
+      numberSign_(1),
+      number_(0),
+      numConsumed_(0),
+      lastError_(0)
 {
   stateStack_.push(BENCODE_FINISH);
 }
 
-BencodeParser::~BencodeParser()
-{}
+BencodeParser::~BencodeParser() {}
 
 ssize_t BencodeParser::parseUpdate(const char* data, size_t size)
 {
   size_t i;
-  if(currentState_ == BENCODE_FINISH) {
+  if (currentState_ == BENCODE_FINISH) {
     return 0;
-  } else if(currentState_ == BENCODE_ERROR) {
+  }
+  else if (currentState_ == BENCODE_ERROR) {
     return lastError_;
   }
-  for(i = 0; i < size && currentState_ != BENCODE_FINISH; ++i) {
+  for (i = 0; i < size && currentState_ != BENCODE_FINISH; ++i) {
     char c = data[i];
-    switch(currentState_) {
+    switch (currentState_) {
     case BENCODE_LIST:
-      if(c == 'e') {
+      if (c == 'e') {
         onListEnd();
         break;
-      } else {
+      }
+      else {
         int rv = pushState(currentState_);
-        if(rv < 0) {
+        if (rv < 0) {
           return rv;
         }
         currentState_ = BENCODE_VALUE;
         runBeginCallback(STRUCT_ARRAY_DATA_T);
       }
-      // Fall through
+    // Fall through
     case BENCODE_INITIAL:
     case BENCODE_VALUE:
-      switch(c) {
+      switch (c) {
       case 'd': {
         currentState_ = BENCODE_DICT_KEY;
         runBeginCallback(STRUCT_DICT_T);
         break;
       }
-      case'l':
+      case 'l':
         currentState_ = BENCODE_LIST;
         runBeginCallback(STRUCT_ARRAY_T);
         break;
@@ -118,25 +120,26 @@ ssize_t BencodeParser::parseUpdate(const char* data, size_t size)
         runBeginCallback(STRUCT_NUMBER_T);
         break;
       default:
-        if(util::isDigit(c)) {
+        if (util::isDigit(c)) {
           strLength_ = c - '0';
           numConsumed_ = 1;
           currentState_ = BENCODE_STRING_LEN;
           runBeginCallback(STRUCT_STRING_T);
           break;
-        } else {
+        }
+        else {
           currentState_ = BENCODE_ERROR;
           return lastError_ = ERR_UNEXPECTED_CHAR_BEFORE_VAL;
         }
       }
       break;
     case BENCODE_DICT_KEY: {
-      if(c == 'e') {
+      if (c == 'e') {
         onDictEnd();
         break;
       }
       int rv = pushState(currentState_);
-      if(rv < 0) {
+      if (rv < 0) {
         return rv;
       }
       strLength_ = 0;
@@ -147,8 +150,8 @@ ssize_t BencodeParser::parseUpdate(const char* data, size_t size)
     }
     case BENCODE_STRING_LEN: {
       size_t j;
-      for(j = i; j < size && in(data[j], '0', '9'); ++j) {
-        if((INT64_MAX - (data[j] - '0'))/ 10 < strLength_) {
+      for (j = i; j < size && in(data[j], '0', '9'); ++j) {
+        if ((INT64_MAX - (data[j] - '0')) / 10 < strLength_) {
           currentState_ = BENCODE_ERROR;
           return lastError_ = ERR_STRING_LENGTH_OUT_OF_RANGE;
         }
@@ -156,18 +159,19 @@ ssize_t BencodeParser::parseUpdate(const char* data, size_t size)
         strLength_ += data[j] - '0';
       }
       numConsumed_ += j - i;
-      if(j != size) {
-        if(data[j] != ':' || numConsumed_ == 0) {
+      if (j != size) {
+        if (data[j] != ':' || numConsumed_ == 0) {
           currentState_ = BENCODE_ERROR;
           return lastError_ = ERR_INVALID_STRING_LENGTH;
         }
         i = j;
         currentState_ = BENCODE_STRING;
-        if(strLength_ == 0) {
+        if (strLength_ == 0) {
           runCharactersCallback(nullptr, 0);
           onStringEnd();
         }
-      } else {
+      }
+      else {
         i = j - 1;
       }
       break;
@@ -177,13 +181,13 @@ ssize_t BencodeParser::parseUpdate(const char* data, size_t size)
       runCharactersCallback(&data[i], nread);
       strLength_ -= nread;
       i += nread - 1;
-      if(strLength_ == 0) {
+      if (strLength_ == 0) {
         onStringEnd();
       }
       break;
     }
     case BENCODE_NUMBER_SIGN: {
-      switch(c) {
+      switch (c) {
       case '+':
         numberSign_ = 1;
         currentState_ = BENCODE_NUMBER;
@@ -193,7 +197,7 @@ ssize_t BencodeParser::parseUpdate(const char* data, size_t size)
         currentState_ = BENCODE_NUMBER;
         break;
       default:
-        if(util::isDigit(c)) {
+        if (util::isDigit(c)) {
           number_ = c - '0';
           numConsumed_ = 1;
           currentState_ = BENCODE_NUMBER;
@@ -203,8 +207,8 @@ ssize_t BencodeParser::parseUpdate(const char* data, size_t size)
     }
     case BENCODE_NUMBER: {
       size_t j;
-      for(j = i; j < size && in(data[j], '0', '9'); ++j) {
-        if((INT64_MAX - (data[j] - '0'))/ 10 < number_) {
+      for (j = i; j < size && in(data[j], '0', '9'); ++j) {
+        if ((INT64_MAX - (data[j] - '0')) / 10 < number_) {
           currentState_ = BENCODE_ERROR;
           return lastError_ = ERR_NUMBER_OUT_OF_RANGE;
         }
@@ -212,16 +216,52 @@ ssize_t BencodeParser::parseUpdate(const char* data, size_t size)
         number_ += data[j] - '0';
       }
       numConsumed_ += j - i;
-      if(j != size) {
-        if(data[j] != 'e' || numConsumed_ == 0) {
+      if (j != size) {
+        if (numConsumed_ == 0) {
           currentState_ = BENCODE_ERROR;
           return lastError_ = ERR_INVALID_NUMBER;
         }
+
+        auto c = data[j];
+        if (util::isDigit(c) || c == '.' || c == 'E' || c == '+' || c == '-') {
+          // some torrent generator adds floating point number in
+          // scientific notation (e.g., -1.134E+3) in integer field.
+          // In this case, just skip these bytes until we find 'e'.
+          number_ = 0;
+          numConsumed_ = 0;
+          currentState_ = BENCODE_FLOAT_NUMBER_IGNORE;
+
+          i = j;
+
+          break;
+        }
+
+        if (c != 'e') {
+          currentState_ = BENCODE_ERROR;
+          return lastError_ = ERR_INVALID_NUMBER;
+        }
+
         i = j;
+
         onNumberEnd();
-      } else {
+      }
+      else {
         i = j - 1;
       }
+      break;
+    }
+    case BENCODE_FLOAT_NUMBER_IGNORE: {
+      auto c = data[i];
+      if (util::isDigit(c) || c == '.' || c == 'E' || c == '+' || c == '-') {
+        continue;
+      }
+
+      if (c != 'e') {
+        currentState_ = BENCODE_ERROR;
+        return lastError_ = ERR_INVALID_FLOAT_NUMBER;
+      }
+
+      onNumberEnd();
       break;
     }
     }
@@ -233,9 +273,8 @@ ssize_t BencodeParser::parseFinal(const char* data, size_t len)
 {
   ssize_t rv;
   rv = parseUpdate(data, len);
-  if(rv >= 0) {
-    if(currentState_ != BENCODE_FINISH &&
-       currentState_ != BENCODE_INITIAL) {
+  if (rv >= 0) {
+    if (currentState_ != BENCODE_FINISH && currentState_ != BENCODE_INITIAL) {
       rv = ERR_PREMATURE_DATA;
     }
   }
@@ -247,7 +286,7 @@ void BencodeParser::reset()
   psm_->reset();
   currentState_ = BENCODE_INITIAL;
   lastError_ = 0;
-  while(!stateStack_.empty()) {
+  while (!stateStack_.empty()) {
     stateStack_.pop();
   }
   stateStack_.push(BENCODE_FINISH);
@@ -255,8 +294,8 @@ void BencodeParser::reset()
 
 void BencodeParser::onStringEnd()
 {
-  runEndCallback(stateTop() == BENCODE_DICT_KEY ?
-                 STRUCT_DICT_KEY_T : STRUCT_STRING_T);
+  runEndCallback(stateTop() == BENCODE_DICT_KEY ? STRUCT_DICT_KEY_T
+                                                : STRUCT_STRING_T);
   onValueEnd();
 }
 
@@ -281,7 +320,7 @@ void BencodeParser::onListEnd()
 
 void BencodeParser::onValueEnd()
 {
-  switch(stateTop()) {
+  switch (stateTop()) {
   case BENCODE_DICT_KEY:
     popState();
     pushState(BENCODE_DICT_VAL);
@@ -307,18 +346,16 @@ void BencodeParser::onValueEnd()
 
 int BencodeParser::pushState(int state)
 {
-  if(stateStack_.size() >= 50) {
+  if (stateStack_.size() >= 50) {
     return ERR_STRUCTURE_TOO_DEEP;
-  } else {
+  }
+  else {
     stateStack_.push(state);
     return 0;
   }
 }
 
-int BencodeParser::stateTop() const
-{
-  return stateStack_.top();
-}
+int BencodeParser::stateTop() const { return stateStack_.top(); }
 
 int BencodeParser::popState()
 {

@@ -11,7 +11,7 @@
 
 namespace aria2 {
 
-class DHTPeerAnnounceEntryTest:public CppUnit::TestFixture {
+class DHTPeerAnnounceEntryTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTPeerAnnounceEntryTest);
   CPPUNIT_TEST(testRemoveStalePeerAddrEntry);
@@ -19,13 +19,13 @@ class DHTPeerAnnounceEntryTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testAddPeerAddrEntry);
   CPPUNIT_TEST(testGetPeers);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void testRemoveStalePeerAddrEntry();
   void testEmpty();
   void testAddPeerAddrEntry();
   void testGetPeers();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DHTPeerAnnounceEntryTest);
 
@@ -45,11 +45,12 @@ void DHTPeerAnnounceEntryTest::testRemoveStalePeerAddrEntry()
   CPPUNIT_ASSERT_EQUAL((size_t)2, entry.countPeerAddrEntry());
 
   const std::vector<PeerAddrEntry>& peerAddrEntries =
-    entry.getPeerAddrEntries();
-  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peerAddrEntries[0].getIPAddress());
-  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.3"), peerAddrEntries[1].getIPAddress());
+      entry.getPeerAddrEntries();
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"),
+                       peerAddrEntries[0].getIPAddress());
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.3"),
+                       peerAddrEntries[1].getIPAddress());
 }
-
 
 void DHTPeerAnnounceEntryTest::testEmpty()
 {
@@ -90,7 +91,7 @@ void DHTPeerAnnounceEntryTest::testGetPeers()
 
   DHTPeerAnnounceEntry entry(infohash);
   {
-    std::vector<std::shared_ptr<Peer> > peers;
+    std::vector<std::shared_ptr<Peer>> peers;
     entry.getPeers(peers);
     CPPUNIT_ASSERT_EQUAL((size_t)0, peers.size());
   }
@@ -99,7 +100,7 @@ void DHTPeerAnnounceEntryTest::testGetPeers()
   entry.addPeerAddrEntry(PeerAddrEntry("192.168.0.2", 6882));
 
   {
-    std::vector<std::shared_ptr<Peer> > peers;
+    std::vector<std::shared_ptr<Peer>> peers;
     entry.getPeers(peers);
     CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());
     CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peers[0]->getIPAddress());

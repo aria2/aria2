@@ -51,13 +51,10 @@
 
 namespace aria2 {
 
-LpdReceiveMessageCommand::LpdReceiveMessageCommand
-(cuid_t cuid,
- const std::shared_ptr<LpdMessageReceiver>& receiver,
- DownloadEngine* e)
-  : Command(cuid),
-    receiver_(receiver),
-    e_(e)
+LpdReceiveMessageCommand::LpdReceiveMessageCommand(
+    cuid_t cuid, const std::shared_ptr<LpdMessageReceiver>& receiver,
+    DownloadEngine* e)
+    : Command(cuid), receiver_(receiver), e_(e)
 {
   e_->addSocketForReadCheck(receiver_->getSocket(), this);
 }
@@ -69,22 +66,22 @@ LpdReceiveMessageCommand::~LpdReceiveMessageCommand()
 
 bool LpdReceiveMessageCommand::execute()
 {
-  if(e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
+  if (e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
     return true;
   }
-  for(size_t i = 0; i < 20; ++i) {
+  for (size_t i = 0; i < 20; ++i) {
     auto m = receiver_->receiveMessage();
-    if(!m) {
+    if (!m) {
       break;
     }
     auto& reg = e_->getBtRegistry();
     auto& dctx = reg->getDownloadContext(m->infoHash);
-    if(!dctx) {
+    if (!dctx) {
       A2_LOG_DEBUG(fmt("Download Context is null for infohash=%s.",
                        util::toHex(m->infoHash).c_str()));
       continue;
     }
-    if(bittorrent::getTorrentAttrs(dctx)->privateTorrent) {
+    if (bittorrent::getTorrentAttrs(dctx)->privateTorrent) {
       A2_LOG_DEBUG("Ignore LPD message because the torrent is private.");
       continue;
     }
@@ -95,14 +92,15 @@ bool LpdReceiveMessageCommand::execute()
     auto& peerStorage = btobj->peerStorage;
     assert(peerStorage);
     auto& peer = m->peer;
-    if(peerStorage->addPeer(peer)) {
+    if (peerStorage->addPeer(peer)) {
       A2_LOG_DEBUG(fmt("LPD peer %s:%u local=%d added.",
                        peer->getIPAddress().c_str(), peer->getPort(),
-                       peer->isLocalPeer()?1:0));
-    } else {
+                       peer->isLocalPeer() ? 1 : 0));
+    }
+    else {
       A2_LOG_DEBUG(fmt("LPD peer %s:%u local=%d not added.",
                        peer->getIPAddress().c_str(), peer->getPort(),
-                       peer->isLocalPeer()?1:0));
+                       peer->isLocalPeer() ? 1 : 0));
     }
   }
   e_->addCommand(std::unique_ptr<Command>(this));

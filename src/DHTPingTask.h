@@ -42,7 +42,7 @@ namespace aria2 {
 
 class DHTPingReplyMessage;
 
-class DHTPingTask:public DHTAbstractTask {
+class DHTPingTask : public DHTAbstractTask {
 private:
   std::shared_ptr<DHTNode> remoteNode_;
 
@@ -55,6 +55,7 @@ private:
   std::chrono::seconds timeout_;
 
   void addMessage();
+
 public:
   DHTPingTask(const std::shared_ptr<DHTNode>& remoteNode, int numMaxRetry = 0);
 

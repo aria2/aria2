@@ -10,7 +10,7 @@
 
 namespace aria2 {
 
-class CookieHelperTest:public CppUnit::TestFixture {
+class CookieHelperTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(CookieHelperTest);
   CPPUNIT_TEST(testParseDate);
@@ -19,6 +19,7 @@ class CookieHelperTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testParse);
   CPPUNIT_TEST(testReverseDomainLevel);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void testParseDate();
   void testDomainMatch();
@@ -26,7 +27,6 @@ public:
   void testParse();
   void testReverseDomainLevel();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CookieHelperTest);
 
@@ -87,7 +87,7 @@ void CookieHelperTest::testParse()
   time_t creationDate = 141;
   {
     std::string str = "ID=123456789; expires=Sun, 10-Jun-2007 11:00:00 GMT;"
-      "path=/foo; domain=localhost; secure;httpOnly   ";
+                      "path=/foo; domain=localhost; secure;httpOnly   ";
     auto c = cookie::parse(str, "localhost", "/", creationDate);
     CPPUNIT_ASSERT(c);
     CPPUNIT_ASSERT_EQUAL(std::string("ID"), c->getName());
@@ -126,7 +126,7 @@ void CookieHelperTest::testParse()
     std::string str = "id=; Max-Age=100;";
     auto c = cookie::parse(str, "localhost", "/", creationDate);
     CPPUNIT_ASSERT(c);
-    CPPUNIT_ASSERT_EQUAL((time_t)creationDate+100, c->getExpiryTime());
+    CPPUNIT_ASSERT_EQUAL((time_t)creationDate + 100, c->getExpiryTime());
     CPPUNIT_ASSERT(c->getPersistent());
   }
   {
@@ -149,7 +149,7 @@ void CookieHelperTest::testParse()
     std::string str = "id=; Max-Age=100;expires=Sun, 10-Jun-2007 11:00:00 GMT;";
     auto c = cookie::parse(str, "localhost", "/", creationDate);
     CPPUNIT_ASSERT(c);
-    CPPUNIT_ASSERT_EQUAL((time_t)creationDate+100, c->getExpiryTime());
+    CPPUNIT_ASSERT_EQUAL((time_t)creationDate + 100, c->getExpiryTime());
     CPPUNIT_ASSERT(c->getPersistent());
   }
   {
@@ -171,7 +171,7 @@ void CookieHelperTest::testParse()
   }
   {
     std::string str = "id=; domain=.example.org";
-    CPPUNIT_ASSERT(cookie::parse(str, "www.example.org", "/",creationDate));
+    CPPUNIT_ASSERT(cookie::parse(str, "www.example.org", "/", creationDate));
   }
   {
     // Fails because request host does not domain-match with cookie
@@ -181,27 +181,27 @@ void CookieHelperTest::testParse()
   }
   {
     std::string str = "id=; domain=.";
-    CPPUNIT_ASSERT(!cookie::parse(str, "localhost", "/",creationDate));
+    CPPUNIT_ASSERT(!cookie::parse(str, "localhost", "/", creationDate));
   }
   {
     std::string str = "";
-    CPPUNIT_ASSERT(!cookie::parse(str, "localhost", "/",creationDate));
+    CPPUNIT_ASSERT(!cookie::parse(str, "localhost", "/", creationDate));
   }
   {
     std::string str = "=";
-    CPPUNIT_ASSERT(!cookie::parse(str, "localhost", "/",creationDate));
+    CPPUNIT_ASSERT(!cookie::parse(str, "localhost", "/", creationDate));
   }
   {
     // Use domain last time seen.
     std::string str = "id=;domain=a.example.org;domain=.example.org";
-    auto c = cookie::parse(str, "b.example.org", "/",creationDate);
+    auto c = cookie::parse(str, "b.example.org", "/", creationDate);
     CPPUNIT_ASSERT(c);
     CPPUNIT_ASSERT_EQUAL(std::string("example.org"), c->getDomain());
   }
   {
     // numeric host
     std::string str = "id=;";
-    auto c = cookie::parse(str, "192.168.0.1", "/",creationDate);
+    auto c = cookie::parse(str, "192.168.0.1", "/", creationDate);
     CPPUNIT_ASSERT(c);
     CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), c->getDomain());
     CPPUNIT_ASSERT(c->getHostOnly());
@@ -209,7 +209,7 @@ void CookieHelperTest::testParse()
   {
     // numeric host
     std::string str = "id=; domain=192.168.0.1";
-    auto c = cookie::parse(str, "192.168.0.1", "/",creationDate);
+    auto c = cookie::parse(str, "192.168.0.1", "/", creationDate);
     CPPUNIT_ASSERT(c);
     CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), c->getDomain());
     CPPUNIT_ASSERT(c->getHostOnly());

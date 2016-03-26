@@ -110,13 +110,12 @@ public:
 
   void setHttpRequest(std::unique_ptr<HttpRequest> httpRequest);
 
-  const std::unique_ptr<HttpRequest>& getHttpRequest() const {
+  const std::unique_ptr<HttpRequest>& getHttpRequest() const
+  {
     return httpRequest_;
   }
 
-  void setCuid(cuid_t cuid) {
-    cuid_ = cuid;
-  }
+  void setCuid(cuid_t cuid) { cuid_ = cuid; }
 
   Time getLastModifiedTime() const;
 
@@ -130,7 +129,6 @@ public:
   // several same digest algorithms are available, but they have
   // different value, they are all ignored.
   void getDigest(std::vector<Checksum>& result) const;
-
 };
 
 } // namespace aria2

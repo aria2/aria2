@@ -37,10 +37,11 @@ namespace aria2 {
 
 LpdMessage::LpdMessage() {}
 
-LpdMessage::LpdMessage
-(const std::shared_ptr<Peer>& peer, const std::string& infoHash)
-  : peer(peer), infoHash(infoHash)
-{}
+LpdMessage::LpdMessage(const std::shared_ptr<Peer>& peer,
+                       const std::string& infoHash)
+    : peer(peer), infoHash(infoHash)
+{
+}
 
 LpdMessage::~LpdMessage() {}
 

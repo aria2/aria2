@@ -5,11 +5,12 @@
 
 namespace aria2 {
 
-class DHTUnknownMessageTest:public CppUnit::TestFixture {
+class DHTUnknownMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTUnknownMessageTest);
   CPPUNIT_TEST(testToString);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -17,7 +18,6 @@ public:
 
   void testToString();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DHTUnknownMessageTest);
 
@@ -32,20 +32,23 @@ void DHTUnknownMessageTest::testToString()
     std::string data = "chocolate";
     DHTUnknownMessage msg(localNode,
                           reinterpret_cast<const unsigned char*>(data.c_str()),
-                          data.size(),
-                          ipaddr, port);
+                          data.size(), ipaddr, port);
 
-    CPPUNIT_ASSERT_EQUAL(std::string("dht unknown Remote:192.168.0.1(6881) length=9, first 8 bytes(hex)=63686f636f6c6174"), msg.toString());
+    CPPUNIT_ASSERT_EQUAL(
+        std::string("dht unknown Remote:192.168.0.1(6881) length=9, first 8 "
+                    "bytes(hex)=63686f636f6c6174"),
+        msg.toString());
   }
   {
     // data.size() == 3
     std::string data = "foo";
     DHTUnknownMessage msg(localNode,
                           reinterpret_cast<const unsigned char*>(data.c_str()),
-                          data.size(),
-                          ipaddr, port);
+                          data.size(), ipaddr, port);
 
-    CPPUNIT_ASSERT_EQUAL(std::string("dht unknown Remote:192.168.0.1(6881) length=3, first 8 bytes(hex)=666f6f"), msg.toString());
+    CPPUNIT_ASSERT_EQUAL(std::string("dht unknown Remote:192.168.0.1(6881) "
+                                     "length=3, first 8 bytes(hex)=666f6f"),
+                         msg.toString());
   }
 }
 

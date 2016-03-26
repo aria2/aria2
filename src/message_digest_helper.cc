@@ -49,26 +49,24 @@ namespace aria2 {
 
 namespace message_digest {
 
-std::string digest
-(MessageDigest* ctx,
- const std::shared_ptr<BinaryStream>& bs,
- int64_t offset, int64_t length)
+std::string digest(MessageDigest* ctx, const std::shared_ptr<BinaryStream>& bs,
+                   int64_t offset, int64_t length)
 {
   std::array<unsigned char, 4_k> buf;
   lldiv_t res = lldiv(length, buf.size());
   int64_t iteration = res.quot;
   size_t tail = res.rem;
-  for(int64_t i = 0; i < iteration; ++i) {
+  for (int64_t i = 0; i < iteration; ++i) {
     ssize_t readLength = bs->readData(buf.data(), buf.size(), offset);
-    if((size_t)readLength != buf.size()) {
+    if ((size_t)readLength != buf.size()) {
       throw DL_ABORT_EX(fmt(EX_FILE_READ, "n/a", "data is too short"));
     }
     ctx->update(buf.data(), readLength);
     offset += readLength;
   }
-  if(tail) {
+  if (tail) {
     ssize_t readLength = bs->readData(buf.data(), tail, offset);
-    if((size_t)readLength != tail) {
+    if ((size_t)readLength != tail) {
       throw DL_ABORT_EX(fmt(EX_FILE_READ, "n/a", "data is too short"));
     }
     ctx->update(buf.data(), readLength);
@@ -76,17 +74,15 @@ std::string digest
   return ctx->digest();
 }
 
-void digest
-(unsigned char* md, size_t mdLength,
- MessageDigest* ctx, const void* data, size_t length)
+void digest(unsigned char* md, size_t mdLength, MessageDigest* ctx,
+            const void* data, size_t length)
 {
   size_t reqLength = ctx->getDigestLength();
-  if(mdLength < reqLength) {
-    throw DL_ABORT_EX
-      (fmt("Insufficient space for storing message digest:"
-           " %lu required, but only %lu is allocated",
-           static_cast<unsigned long>(reqLength),
-           static_cast<unsigned long>(mdLength)));
+  if (mdLength < reqLength) {
+    throw DL_ABORT_EX(fmt("Insufficient space for storing message digest:"
+                          " %lu required, but only %lu is allocated",
+                          static_cast<unsigned long>(reqLength),
+                          static_cast<unsigned long>(mdLength)));
   }
   ctx->update(data, length);
   ctx->digest(md);

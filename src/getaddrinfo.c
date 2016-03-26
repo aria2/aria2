@@ -80,22 +80,22 @@
 #endif
 
 #ifdef __MINGW32__
-# include <winsock2.h>
-# undef ERROR
-# include <ws2tcpip.h>
+#include <winsock2.h>
+#undef ERROR
+#include <ws2tcpip.h>
 #endif
 
 #ifdef HAVE_SYS_SOCKET_H
-# include <sys/socket.h>
+#include <sys/socket.h>
 #endif
 #ifdef HAVE_NETINET_IN_H
-# include <netinet/in.h>
+#include <netinet/in.h>
 #endif
 #ifdef HAVE_ARPA_INET_H
-# include <arpa/inet.h>
+#include <arpa/inet.h>
 #endif
 #ifdef HAVE_NETDB_H
-# include <netdb.h>
+#include <netdb.h>
 #endif
 
 #include <sys/types.h>
@@ -106,7 +106,7 @@
 #if !defined(STDC_HEADERS) && defined(HAVE_MEMORY_H)
 #include <memory.h>
 #endif /* not STDC_HEADERS and HAVE_MEMORY_H */
-#else /* not STDC_HEADERS and not HAVE_STRING_H */
+#else  /* not STDC_HEADERS and not HAVE_STRING_H */
 #include <strings.h>
 #endif /* not STDC_HEADERS and not HAVE_STRING_H */
 
@@ -125,15 +125,15 @@
 #ifndef HAVE_MEMCPY
 #define memcpy(d, s, n) bcopy((s), (d), (n))
 #ifdef __STDC__
-void *memchr(const void *, int, size_t);
-int memcmp(const void *, const void *, size_t);
-void *memmove(void *, const void *, size_t);
-void *memset(void *, int, size_t);
-#else /* not __STDC__ */
-char *memchr();
+void* memchr(const void*, int, size_t);
+int memcmp(const void*, const void*, size_t);
+void* memmove(void*, const void*, size_t);
+void* memset(void*, int, size_t);
+#else  /* not __STDC__ */
+char* memchr();
 int memcmp();
-char *memmove();
-char *memset();
+char* memmove();
+char* memset();
 #endif /* not __STDC__ */
 #endif /* not HAVE_MEMCPY */
 
@@ -159,7 +159,7 @@ extern int h_errno;
 /*
  * Error messages for gai_strerror().
  */
-static char *eai_errlist[] = {
+static char* eai_errlist[] = {
     N_("Success"),
 
     /* EAI_ADDRFAMILY */
@@ -193,15 +193,13 @@ static char *eai_errlist[] = {
     N_("ai_socktype not supported"),
 
     /* EAI_SYSTEM */
-    N_("System error returned in errno")
-};
+    N_("System error returned in errno")};
 
 /*
  * Default hints for getaddrinfo().
  */
-static struct addrinfo default_hints = {
-    0, PF_UNSPEC, 0, 0, 0, NULL, NULL, NULL
-};
+static struct addrinfo default_hints = {0, PF_UNSPEC, 0,    0,
+                                        0, NULL,      NULL, NULL};
 
 /*
  * Mutex.
@@ -214,8 +212,8 @@ static pthread_mutex_t gai_mutex = PTHREAD_MUTEX_INITIALIZER;
  * Declaration of static functions.
  */
 #ifdef __STDC__
-static int is_integer(const char *);
-static int is_address(const char *);
+static int is_integer(const char*);
+static int is_address(const char*);
 static int itoa_length(int);
 #else
 static int is_integer();
@@ -226,53 +224,47 @@ static int itoa_length();
 /*
  * gai_strerror().
  */
-const char *
-gai_strerror(ecode)
-    int ecode;
+const char* gai_strerror(ecode) int ecode;
 {
-    if (ecode < 0 || ecode > EAI_SYSTEM)
-	return _("Unknown error");
+  if (ecode < 0 || ecode > EAI_SYSTEM)
+    return _("Unknown error");
 
-    return gettext(eai_errlist[ecode]);
+  return gettext(eai_errlist[ecode]);
 }
 
 /*
  * freeaddrinfo().
  */
-void
-freeaddrinfo(ai)
-    struct addrinfo *ai;
+void freeaddrinfo(ai) struct addrinfo* ai;
 {
-    struct addrinfo *next_ai;
+  struct addrinfo* next_ai;
 
-    while (ai != NULL) {
-	if (ai->ai_canonname != NULL)
-	    free(ai->ai_canonname);
-	if (ai->ai_addr != NULL)
-	    free(ai->ai_addr);
-	next_ai = ai->ai_next;
-	free(ai);
-	ai = next_ai;
-    }
+  while (ai != NULL) {
+    if (ai->ai_canonname != NULL)
+      free(ai->ai_canonname);
+    if (ai->ai_addr != NULL)
+      free(ai->ai_addr);
+    next_ai = ai->ai_next;
+    free(ai);
+    ai = next_ai;
+  }
 }
 
 /*
  * Return 1 if the string `s' represents an integer.
  */
-static int
-is_integer(s)
-    const char *s;
+static int is_integer(s) const char* s;
 {
-    if (*s == '-' || *s == '+')
-	s++;
-    if (*s < '0' || '9' < *s)
-	return 0;
-
+  if (*s == '-' || *s == '+')
     s++;
-    while ('0' <= *s && *s <= '9')
-	s++;
+  if (*s < '0' || '9' < *s)
+    return 0;
 
-    return (*s == '\0');
+  s++;
+  while ('0' <= *s && *s <= '9')
+    s++;
+
+  return (*s == '\0');
 }
 
 /*
@@ -280,329 +272,325 @@ is_integer(s)
  * Unlike inet_addr(), it doesn't permit malformed nortation such
  * as "192.168".
  */
-static int
-is_address(s)
-    const char *s;
+static int is_address(s) const char* s;
 {
-    const static char delimiters[] = {'.', '.', '.', '\0'};
-    int i, j;
-    int octet;
+  const static char delimiters[] = {'.', '.', '.', '\0'};
+  int i, j;
+  int octet;
 
-    for (i = 0; i < 4; i++) {
-	if (*s == '0' && *(s + 1) != delimiters[i])
-	    return 0;
-	for (j = 0, octet = 0; '0' <= *s && *s <= '9' && j < 3; s++, j++)
-	    octet = octet * 10 + (*s - '0');
-	if (j == 0 || octet > 255 || *s != delimiters[i])
-	    return 0;
-	s++;
-    }
+  for (i = 0; i < 4; i++) {
+    if (*s == '0' && *(s + 1) != delimiters[i])
+      return 0;
+    for (j = 0, octet = 0; '0' <= *s && *s <= '9' && j < 3; s++, j++)
+      octet = octet * 10 + (*s - '0');
+    if (j == 0 || octet > 255 || *s != delimiters[i])
+      return 0;
+    s++;
+  }
 
-    return 1;
+  return 1;
 }
 
 /*
  * Calcurate length of the string `s', where `s' is set by
  * sprintf(s, "%d", n).
  */
-static int
-itoa_length(n)
-    int n;
+static int itoa_length(n) int n;
 {
-    int result = 1;
+  int result = 1;
 
-    if (n < 0) {
-	n = -n;
-	result++;
-    }
+  if (n < 0) {
+    n = -n;
+    result++;
+  }
 
-    while (n >= 10) {
-	result++;
-	n /= 10;
-    }
+  while (n >= 10) {
+    result++;
+    n /= 10;
+  }
 
-    return result;
+  return result;
 }
 
 /*
  * getaddrinfo().
  */
-int
-getaddrinfo(nodename, servname, hints, res)
-    const char *nodename;
-    const char *servname;
-    const struct addrinfo *hints;
-    struct addrinfo **res;
+int getaddrinfo(nodename, servname, hints, res) const char* nodename;
+const char* servname;
+const struct addrinfo* hints;
+struct addrinfo** res;
 {
-    struct addrinfo *head_res = NULL;
-    struct addrinfo *tail_res = NULL;
-    struct addrinfo *new_res;
-    struct sockaddr_in *sa_in;
-    struct in_addr **addr_list;
-    struct in_addr *addr_list_buf[2];
-    struct in_addr addr_buf;
-    struct in_addr **ap;
-    struct servent *servent;
-    struct hostent *hostent;
-    const char *canonname = NULL;
-    in_port_t port;
-    int saved_h_errno;
-    int result = 0;
+  struct addrinfo* head_res = NULL;
+  struct addrinfo* tail_res = NULL;
+  struct addrinfo* new_res;
+  struct sockaddr_in* sa_in;
+  struct in_addr** addr_list;
+  struct in_addr* addr_list_buf[2];
+  struct in_addr addr_buf;
+  struct in_addr** ap;
+  struct servent* servent;
+  struct hostent* hostent;
+  const char* canonname = NULL;
+  in_port_t port;
+  int saved_h_errno;
+  int result = 0;
 
 #ifdef ENABLE_PTHREAD
-    pthread_mutex_lock(&gai_mutex);
+  pthread_mutex_lock(&gai_mutex);
 #endif
 
-    saved_h_errno = h_errno;
+  saved_h_errno = h_errno;
 
-    if (nodename == NULL && servname == NULL) {
-	result = EAI_NONAME;
-	goto end;
+  if (nodename == NULL && servname == NULL) {
+    result = EAI_NONAME;
+    goto end;
+  }
+
+  if (hints != NULL) {
+    if (hints->ai_family != PF_INET && hints->ai_family != PF_UNSPEC) {
+      result = EAI_FAMILY;
+      goto end;
+    }
+    if (hints->ai_socktype != SOCK_DGRAM && hints->ai_socktype != SOCK_STREAM &&
+        hints->ai_socktype != 0) {
+      result = EAI_SOCKTYPE;
+      goto end;
+    }
+  }
+  else {
+    hints = &default_hints;
+  }
+
+  if (servname != NULL) {
+    if (is_integer(servname))
+      port = htons(atoi(servname));
+    else {
+      if (hints->ai_flags & AI_NUMERICSERV) {
+        result = EAI_NONAME;
+        goto end;
+      }
+
+      if (hints->ai_socktype == SOCK_DGRAM)
+        servent = getservbyname(servname, "udp");
+      else if (hints->ai_socktype == SOCK_STREAM)
+        servent = getservbyname(servname, "tcp");
+      else if (hints->ai_socktype == 0)
+        servent = getservbyname(servname, "tcp");
+      else {
+        result = EAI_SOCKTYPE;
+        goto end;
+      }
+
+      if (servent == NULL) {
+        result = EAI_SERVICE;
+        goto end;
+      }
+      port = servent->s_port;
+    }
+  }
+  else {
+    port = htons(0);
+  }
+
+  if (nodename != NULL) {
+    if (is_address(nodename)) {
+      addr_buf.s_addr = inet_addr(nodename);
+      addr_list_buf[0] = &addr_buf;
+      addr_list_buf[1] = NULL;
+      addr_list = addr_list_buf;
+
+      if (hints->ai_flags & AI_CANONNAME &&
+          !(hints->ai_flags & AI_NUMERICHOST)) {
+        hostent =
+            gethostbyaddr((char*)&addr_buf, sizeof(struct in_addr), AF_INET);
+        if (hostent != NULL)
+          canonname = hostent->h_name;
+        else
+          canonname = nodename;
+      }
+    }
+    else {
+      if (hints->ai_flags & AI_NUMERICHOST) {
+        result = EAI_NONAME;
+        goto end;
+      }
+
+      hostent = gethostbyname(nodename);
+      if (hostent == NULL) {
+        switch (h_errno) {
+        case HOST_NOT_FOUND:
+        case NO_DATA:
+          result = EAI_NONAME;
+          goto end;
+        case TRY_AGAIN:
+          result = EAI_AGAIN;
+          goto end;
+        default:
+          result = EAI_FAIL;
+          goto end;
+        }
+      }
+      addr_list = (struct in_addr**)hostent->h_addr_list;
+
+      if (hints->ai_flags & AI_CANONNAME)
+        canonname = hostent->h_name;
+    }
+  }
+  else {
+    if (hints->ai_flags & AI_PASSIVE)
+      addr_buf.s_addr = htonl(INADDR_ANY);
+    else
+      addr_buf.s_addr = htonl(0x7F000001);
+    addr_list_buf[0] = &addr_buf;
+    addr_list_buf[1] = NULL;
+    addr_list = addr_list_buf;
+  }
+
+  for (ap = addr_list; *ap != NULL; ap++) {
+    new_res = (struct addrinfo*)malloc(sizeof(struct addrinfo));
+    if (new_res == NULL) {
+      if (head_res != NULL)
+        freeaddrinfo(head_res);
+      result = EAI_MEMORY;
+      goto end;
     }
 
-    if (hints != NULL) {
-	if (hints->ai_family != PF_INET && hints->ai_family != PF_UNSPEC) {
-	    result = EAI_FAMILY;
-	    goto end;
-	}
-	if (hints->ai_socktype != SOCK_DGRAM
-	    && hints->ai_socktype != SOCK_STREAM
-	    && hints->ai_socktype != 0) {
-	    result = EAI_SOCKTYPE;
-	    goto end;
-	}
-    } else {
-	hints = &default_hints;
+    new_res->ai_family = PF_INET;
+    new_res->ai_socktype = hints->ai_socktype;
+    new_res->ai_protocol = hints->ai_protocol;
+    new_res->ai_addr = NULL;
+    new_res->ai_addrlen = sizeof(struct sockaddr_in);
+    new_res->ai_canonname = NULL;
+    new_res->ai_next = NULL;
+
+    new_res->ai_addr = (struct sockaddr*)malloc(sizeof(struct sockaddr_in));
+    if (new_res->ai_addr == NULL) {
+      free(new_res);
+      if (head_res != NULL)
+        freeaddrinfo(head_res);
+      result = EAI_MEMORY;
+      goto end;
     }
 
-    if (servname != NULL) {
-	if (is_integer(servname))
-	    port = htons(atoi(servname));
-	else  {
-	    if (hints->ai_flags & AI_NUMERICSERV) {
-		result = EAI_NONAME;
-		goto end;
-	    }
+    sa_in = (struct sockaddr_in*)new_res->ai_addr;
+    memset(sa_in, 0, sizeof(struct sockaddr_in));
+    sa_in->sin_family = PF_INET;
+    sa_in->sin_port = port;
+    memcpy(&sa_in->sin_addr, *ap, sizeof(struct in_addr));
 
-	    if (hints->ai_socktype == SOCK_DGRAM)
-		servent = getservbyname(servname, "udp");
-	    else if (hints->ai_socktype == SOCK_STREAM)
-		servent = getservbyname(servname, "tcp");
-	    else if (hints->ai_socktype == 0)
-		servent = getservbyname(servname, "tcp");
-	    else {
-		result = EAI_SOCKTYPE;
-		goto end;
-	    }
+    if (head_res == NULL)
+      head_res = new_res;
+    else
+      tail_res->ai_next = new_res;
+    tail_res = new_res;
+  }
 
-	    if (servent == NULL) {
-		result = EAI_SERVICE;
-		goto end;
-	    }
-	    port = servent->s_port;
-	}
-    } else {
-	port = htons(0);
-    }
+  if (canonname != NULL && head_res != NULL) {
+    head_res->ai_canonname = (char*)malloc(strlen(canonname) + 1);
+    if (head_res->ai_canonname != NULL)
+      strcpy(head_res->ai_canonname, canonname);
+  }
 
-    if (nodename != NULL) {
-	if (is_address(nodename)) {
-	    addr_buf.s_addr = inet_addr(nodename);
-	    addr_list_buf[0] = &addr_buf;
-	    addr_list_buf[1] = NULL;
-	    addr_list = addr_list_buf;
+  *res = head_res;
 
-	    if (hints->ai_flags & AI_CANONNAME
-		&& !(hints->ai_flags & AI_NUMERICHOST)) {
-		hostent = gethostbyaddr((char *)&addr_buf,
-		    sizeof(struct in_addr), AF_INET);
-		if (hostent != NULL)
-		    canonname = hostent->h_name;
-		else
-		    canonname = nodename;
-	    }
-	} else {
-	    if (hints->ai_flags & AI_NUMERICHOST) {
-		result = EAI_NONAME;
-		goto end;
-	    }
-
-	    hostent = gethostbyname(nodename);
-	    if (hostent == NULL) {
-		switch (h_errno) {
-		case HOST_NOT_FOUND:
-		case NO_DATA:
-		    result = EAI_NONAME;
-		    goto end;
-		case TRY_AGAIN:
-		    result = EAI_AGAIN;
-		    goto end;
-		default:
-		    result = EAI_FAIL;
-		    goto end;
-                }
-	    }
-	    addr_list = (struct in_addr **)hostent->h_addr_list;
-
-	    if (hints->ai_flags & AI_CANONNAME)
-		canonname = hostent->h_name;
-	}
-    } else {
-	if (hints->ai_flags & AI_PASSIVE)
-	    addr_buf.s_addr = htonl(INADDR_ANY);
-	else
-	    addr_buf.s_addr = htonl(0x7F000001);
-	addr_list_buf[0] = &addr_buf;
-	addr_list_buf[1] = NULL;
-	addr_list = addr_list_buf;
-    }
-
-    for (ap = addr_list; *ap != NULL; ap++) {
-	new_res = (struct addrinfo *)malloc(sizeof(struct addrinfo));
-	if (new_res == NULL) {
-	    if (head_res != NULL)
-		freeaddrinfo(head_res);
-	    result = EAI_MEMORY;
-	    goto end;
-	}
-
-	new_res->ai_family = PF_INET;
-	new_res->ai_socktype = hints->ai_socktype;
-	new_res->ai_protocol = hints->ai_protocol;
-	new_res->ai_addr = NULL;
-	new_res->ai_addrlen = sizeof(struct sockaddr_in);
-	new_res->ai_canonname = NULL;
-	new_res->ai_next = NULL;
-
-	new_res->ai_addr = (struct sockaddr *)
-	    malloc(sizeof(struct sockaddr_in));
-	if (new_res->ai_addr == NULL) {
-	    free(new_res);
-	    if (head_res != NULL)
-		freeaddrinfo(head_res);
-	    result = EAI_MEMORY;
-	    goto end;
-	}
-
-	sa_in = (struct sockaddr_in *)new_res->ai_addr;
-	memset(sa_in, 0, sizeof(struct sockaddr_in));
-	sa_in->sin_family = PF_INET;
-	sa_in->sin_port = port;
-	memcpy(&sa_in->sin_addr, *ap, sizeof(struct in_addr));
-
-	if (head_res == NULL)
-	    head_res = new_res;
-	else
-	    tail_res->ai_next = new_res;
-	tail_res = new_res;
-    }
-
-    if (canonname != NULL && head_res != NULL) {
-	head_res->ai_canonname = (char *)malloc(strlen(canonname) + 1);
-	if (head_res->ai_canonname != NULL)
-	    strcpy(head_res->ai_canonname, canonname);
-    }
-
-    *res = head_res;
-
-  end:
-    h_errno = saved_h_errno;
+end:
+  h_errno = saved_h_errno;
 #ifdef ENABLE_PTHREAD
-    pthread_mutex_unlock(&gai_mutex);
+  pthread_mutex_unlock(&gai_mutex);
 #endif
-    return result;
+  return result;
 }
 
 /*
  * getnameinfo().
  */
-int
-getnameinfo(sa, salen, node, nodelen, serv, servlen, flags)
-    const struct sockaddr *sa;
-    socklen_t salen;
-    char *node;
-    socklen_t nodelen;
-    char *serv;
-    socklen_t servlen;
-    int flags;
+int getnameinfo(sa, salen, node, nodelen, serv, servlen, flags) const
+    struct sockaddr* sa;
+socklen_t salen;
+char* node;
+socklen_t nodelen;
+char* serv;
+socklen_t servlen;
+int flags;
 {
-    const struct sockaddr_in *sa_in = (const struct sockaddr_in *)sa;
-    struct hostent *hostent;
-    struct servent *servent;
-    char *ntoa_address;
-    int saved_h_errno;
-    int result = 0;
+  const struct sockaddr_in* sa_in = (const struct sockaddr_in*)sa;
+  struct hostent* hostent;
+  struct servent* servent;
+  char* ntoa_address;
+  int saved_h_errno;
+  int result = 0;
 
 #ifdef ENABLE_PTHREAD
-    pthread_mutex_lock(&gai_mutex);
+  pthread_mutex_lock(&gai_mutex);
 #endif
 
-    saved_h_errno = h_errno;
+  saved_h_errno = h_errno;
 
-    if (sa_in->sin_family != PF_INET) {
-	result = EAI_FAMILY;
-	goto end;
-    } else if (node == NULL && serv == NULL) {
-	result = EAI_NONAME;
-	goto end;
+  if (sa_in->sin_family != PF_INET) {
+    result = EAI_FAMILY;
+    goto end;
+  }
+  else if (node == NULL && serv == NULL) {
+    result = EAI_NONAME;
+    goto end;
+  }
+
+  if (serv != NULL && servlen > 0) {
+    if (flags & NI_NUMERICSERV)
+      servent = NULL;
+    else if (flags & NI_DGRAM)
+      servent = getservbyport(sa_in->sin_port, "udp");
+    else
+      servent = getservbyport(sa_in->sin_port, "tcp");
+
+    if (servent != NULL) {
+      if (servlen <= strlen(servent->s_name)) {
+        result = EAI_OVERFLOW;
+        goto end;
+      }
+      strcpy(serv, servent->s_name);
     }
-
-    if (serv != NULL && servlen > 0) {
-	if (flags & NI_NUMERICSERV)
-	    servent = NULL;
-	else if (flags & NI_DGRAM)
-	    servent = getservbyport(sa_in->sin_port, "udp");
-	else
-	    servent = getservbyport(sa_in->sin_port, "tcp");
-
-	if (servent != NULL) {
-	    if (servlen <= strlen(servent->s_name)) {
-		result = EAI_OVERFLOW;
-		goto end;
-	    }
-	    strcpy(serv, servent->s_name);
-	} else {
-	    if (servlen <= itoa_length(ntohs(sa_in->sin_port))) {
-		result = EAI_OVERFLOW;
-		goto end;
-	    }
-	    sprintf(serv, "%d", ntohs(sa_in->sin_port));
-	}
+    else {
+      if (servlen <= itoa_length(ntohs(sa_in->sin_port))) {
+        result = EAI_OVERFLOW;
+        goto end;
+      }
+      sprintf(serv, "%d", ntohs(sa_in->sin_port));
     }
+  }
 
-    if (node != NULL && nodelen > 0) {
-	if (flags & NI_NUMERICHOST)
-	    hostent = NULL;
-	else {
-	    hostent = gethostbyaddr((char *)&sa_in->sin_addr,
-		sizeof(struct in_addr), AF_INET);
-	}
-	if (hostent != NULL) {
-	    if (nodelen <= strlen(hostent->h_name)) {
-		result = EAI_OVERFLOW;
-		goto end;
-	    }
-	    strcpy(node, hostent->h_name);
-	} else {
-	    if (flags & NI_NAMEREQD) {
-		result = EAI_NONAME;
-		goto end;
-	    }
-	    ntoa_address = inet_ntoa(sa_in->sin_addr);
-	    if (nodelen <= strlen(ntoa_address)) {
-		result = EAI_OVERFLOW;
-		goto end;
-	    }
-	    strcpy(node, ntoa_address);
-	}
-
+  if (node != NULL && nodelen > 0) {
+    if (flags & NI_NUMERICHOST)
+      hostent = NULL;
+    else {
+      hostent = gethostbyaddr((char*)&sa_in->sin_addr, sizeof(struct in_addr),
+                              AF_INET);
     }
+    if (hostent != NULL) {
+      if (nodelen <= strlen(hostent->h_name)) {
+        result = EAI_OVERFLOW;
+        goto end;
+      }
+      strcpy(node, hostent->h_name);
+    }
+    else {
+      if (flags & NI_NAMEREQD) {
+        result = EAI_NONAME;
+        goto end;
+      }
+      ntoa_address = inet_ntoa(sa_in->sin_addr);
+      if (nodelen <= strlen(ntoa_address)) {
+        result = EAI_OVERFLOW;
+        goto end;
+      }
+      strcpy(node, ntoa_address);
+    }
+  }
 
-  end:
-    h_errno = saved_h_errno;
+end:
+  h_errno = saved_h_errno;
 #ifdef ENABLE_PTHREAD
-    pthread_mutex_unlock(&gai_mutex);
+  pthread_mutex_unlock(&gai_mutex);
 #endif
-    return result;
+  return result;
 }
-

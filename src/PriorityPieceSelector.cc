@@ -37,15 +37,17 @@
 
 namespace aria2 {
 
-PriorityPieceSelector::PriorityPieceSelector
-(const std::shared_ptr<PieceSelector>& selector):
-  selector_(selector) {}
-
-bool PriorityPieceSelector::select
-(size_t& index, const unsigned char* bitfield, size_t nbits) const
+PriorityPieceSelector::PriorityPieceSelector(
+    const std::shared_ptr<PieceSelector>& selector)
+    : selector_(selector)
 {
-  for(auto& p : prioritizedPieces_) {
-    if(bitfield::test(bitfield, nbits, p)) {
+}
+
+bool PriorityPieceSelector::select(size_t& index, const unsigned char* bitfield,
+                                   size_t nbits) const
+{
+  for (auto& p : prioritizedPieces_) {
+    if (bitfield::test(bitfield, nbits, p)) {
       index = p;
       return true;
     }

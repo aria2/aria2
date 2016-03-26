@@ -42,24 +42,23 @@
 namespace aria2 {
 
 namespace {
-template<const nettle_hash* hash>
+template <const nettle_hash* hash>
 class MessageDigestBase : public MessageDigestImpl {
 public:
-  MessageDigestBase() : ctx_(make_unique<char[]>(hash->context_size)) {
+  MessageDigestBase() : ctx_(make_unique<char[]>(hash->context_size))
+  {
     reset();
   }
   virtual ~MessageDigestBase() {}
 
-  static size_t length() {
+  static size_t length() { return hash->digest_size; }
+  virtual size_t getDigestLength() const CXX11_OVERRIDE
+  {
     return hash->digest_size;
   }
-  virtual size_t getDigestLength() const CXX11_OVERRIDE {
-    return hash->digest_size;
-  }
-  virtual void reset() CXX11_OVERRIDE {
-    hash->init(ctx_.get());
-  }
-  virtual void update(const void* data, size_t length) CXX11_OVERRIDE {
+  virtual void reset() CXX11_OVERRIDE { hash->init(ctx_.get()); }
+  virtual void update(const void* data, size_t length) CXX11_OVERRIDE
+  {
     auto bytes = reinterpret_cast<const uint8_t*>(data);
     while (length) {
       size_t l = std::min(length, (size_t)std::numeric_limits<uint32_t>::max());
@@ -68,7 +67,8 @@ public:
       bytes += l;
     }
   }
-  virtual void digest(unsigned char* md) CXX11_OVERRIDE {
+  virtual void digest(unsigned char* md) CXX11_OVERRIDE
+  {
     hash->digest(ctx_.get(), getDigestLength(), md);
   }
 
@@ -91,13 +91,12 @@ std::unique_ptr<MessageDigestImpl> MessageDigestImpl::sha1()
 }
 
 MessageDigestImpl::hashes_t MessageDigestImpl::hashes = {
-  { "sha-1", make_hi<MessageDigestSHA1>() },
-  { "sha-224", make_hi<MessageDigestSHA224>() },
-  { "sha-256", make_hi<MessageDigestSHA256>() },
-  { "sha-384", make_hi<MessageDigestSHA384>() },
-  { "sha-512", make_hi<MessageDigestSHA512>() },
-  { "md5", make_hi<MessageDigestMD5>() },
-  ADLER32_MESSAGE_DIGEST
-};
+    {"sha-1", make_hi<MessageDigestSHA1>()},
+    {"sha-224", make_hi<MessageDigestSHA224>()},
+    {"sha-256", make_hi<MessageDigestSHA256>()},
+    {"sha-384", make_hi<MessageDigestSHA384>()},
+    {"sha-512", make_hi<MessageDigestSHA512>()},
+    {"md5", make_hi<MessageDigestMD5>()},
+    ADLER32_MESSAGE_DIGEST};
 
 } // namespace aria2

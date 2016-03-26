@@ -25,8 +25,7 @@ enum Algorithms {
   algoSHA512 = 0x6,
 };
 
-class Algorithm
-{
+class Algorithm {
 public:
   Algorithm() {}
 
@@ -64,10 +63,7 @@ inline std::unique_ptr<Algorithm> create(const std::string& name)
   return create(lookup(name));
 }
 
-inline uint_fast16_t length(Algorithms algo)
-{
-  return create(algo)->length();
-}
+inline uint_fast16_t length(Algorithms algo) { return create(algo)->length(); }
 
 inline uint_fast16_t length(const std::string& name)
 {
@@ -86,8 +82,8 @@ inline std::string compute(Algorithms algo, const std::string& data)
   return compute(algo, data.data(), data.length());
 }
 
-inline std::string
-compute(const std::string& name, const void* data, uint_fast64_t len)
+inline std::string compute(const std::string& name, const void* data,
+                           uint_fast64_t len)
 {
   return compute(lookup(name), data, len);
 }

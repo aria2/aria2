@@ -45,6 +45,7 @@ namespace aria2 {
 class UnionSeedCriteria : public SeedCriteria {
 private:
   std::vector<std::unique_ptr<SeedCriteria>> criterion_;
+
 public:
   UnionSeedCriteria();
   virtual ~UnionSeedCriteria();

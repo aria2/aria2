@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-class DHTBucketRefreshTask:public DHTAbstractTask {
+class DHTBucketRefreshTask : public DHTAbstractTask {
 private:
   bool forceRefresh_;
 

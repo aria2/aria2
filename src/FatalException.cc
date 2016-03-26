@@ -41,13 +41,16 @@ std::shared_ptr<Exception> FatalException::copy() const
   return std::make_shared<FatalException>(*this);
 }
 
-FatalException::FatalException
-(const char* file, int line, const std::string& msg):
-  Exception(file, line, msg) {}
+FatalException::FatalException(const char* file, int line,
+                               const std::string& msg)
+    : Exception(file, line, msg)
+{
+}
 
-FatalException::FatalException
-(const char* file, int line, const std::string& msg,
- const Exception& cause):
-  Exception(file, line, msg, cause) {}
+FatalException::FatalException(const char* file, int line,
+                               const std::string& msg, const Exception& cause)
+    : Exception(file, line, msg, cause)
+{
+}
 
 } // namespace aria2

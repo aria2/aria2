@@ -6,7 +6,7 @@
 
 namespace aria2 {
 
-class bitfieldTest:public CppUnit::TestFixture {
+class bitfieldTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(bitfieldTest);
   CPPUNIT_TEST(testTest);
@@ -14,8 +14,8 @@ class bitfieldTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCountSetBit);
   CPPUNIT_TEST(testLastByteMask);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
   void testTest();
   void testCountBit32();
@@ -23,12 +23,11 @@ public:
   void testLastByteMask();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( bitfieldTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(bitfieldTest);
 
 void bitfieldTest::testTest()
 {
-  unsigned char bitfield[] = { 0xaa };
+  unsigned char bitfield[] = {0xaa};
 
   CPPUNIT_ASSERT(bitfield::test(bitfield, 8, 0));
   CPPUNIT_ASSERT(!bitfield::test(bitfield, 8, 1));
@@ -42,8 +41,7 @@ void bitfieldTest::testCountBit32()
 
 void bitfieldTest::testCountSetBit()
 {
-  unsigned char bitfield[] = { 0xff, 0xff, 0xff, 0xff,
-                               0xff, 0xff, 0xff, 0xf9 };
+  unsigned char bitfield[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xf9};
   // (nbits+7)/8 == 0 && nbits%32 == 0
   CPPUNIT_ASSERT_EQUAL((size_t)62, bitfield::countSetBit(bitfield, 64));
   CPPUNIT_ASSERT_EQUAL((size_t)62, bitfield::countSetBitSlow(bitfield, 64));

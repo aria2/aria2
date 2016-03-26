@@ -50,41 +50,39 @@
 
 namespace aria2 {
 
-HttpListenCommand::HttpListenCommand(cuid_t cuid, DownloadEngine* e,
-                                     int family, bool secure)
-  : Command(cuid),
-    e_(e),
-    family_(family),
-    secure_(secure)
-{}
+HttpListenCommand::HttpListenCommand(cuid_t cuid, DownloadEngine* e, int family,
+                                     bool secure)
+    : Command(cuid), e_(e), family_(family), secure_(secure)
+{
+}
 
 HttpListenCommand::~HttpListenCommand()
 {
-  if(serverSocket_) {
+  if (serverSocket_) {
     e_->deleteSocketForReadCheck(serverSocket_, this);
   }
 }
 
 bool HttpListenCommand::execute()
 {
-  if(e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
+  if (e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
     return true;
   }
   try {
-    if(serverSocket_->isReadable(0)) {
+    if (serverSocket_->isReadable(0)) {
       std::shared_ptr<SocketCore> socket(serverSocket_->acceptConnection());
       socket->setTcpNodelay(true);
-      std::pair<std::string, uint16_t> peerInfo;
-      socket->getPeerInfo(peerInfo);
+      auto endpoint = socket->getPeerInfo();
 
       A2_LOG_INFO(fmt("RPC: Accepted the connection from %s:%u.",
-                      peerInfo.first.c_str(), peerInfo.second));
+                      endpoint.addr.c_str(), endpoint.port));
 
       e_->setNoWait(true);
-      e_->addCommand(make_unique<HttpServerCommand>
-                     (e_->newCUID(), e_, socket, secure_));
+      e_->addCommand(
+          make_unique<HttpServerCommand>(e_->newCUID(), e_, socket, secure_));
     }
-  } catch(RecoverableException& e) {
+  }
+  catch (RecoverableException& e) {
     A2_LOG_DEBUG_EX(fmt(MSG_ACCEPT_FAILURE, getCuid()), e);
   }
   e_->addCommand(std::unique_ptr<Command>(this));
@@ -93,24 +91,24 @@ bool HttpListenCommand::execute()
 
 bool HttpListenCommand::bindPort(uint16_t port)
 {
-  if(serverSocket_) {
+  if (serverSocket_) {
     e_->deleteSocketForReadCheck(serverSocket_, this);
   }
   serverSocket_ = std::make_shared<SocketCore>();
   const int ipv = (family_ == AF_INET) ? 4 : 6;
   try {
     int flags = 0;
-    if(e_->getOption()->getAsBool(PREF_RPC_LISTEN_ALL)) {
+    if (e_->getOption()->getAsBool(PREF_RPC_LISTEN_ALL)) {
       flags = AI_PASSIVE;
     }
     serverSocket_->bind(nullptr, port, family_, flags);
     serverSocket_->beginListen();
-    A2_LOG_INFO(fmt(MSG_LISTENING_PORT,
-                    getCuid(), port));
+    A2_LOG_INFO(fmt(MSG_LISTENING_PORT, getCuid(), port));
     e_->addSocketForReadCheck(serverSocket_, this);
     A2_LOG_NOTICE(fmt(_("IPv%d RPC: listening on TCP port %u"), ipv, port));
     return true;
-  } catch(RecoverableException& e) {
+  }
+  catch (RecoverableException& e) {
     A2_LOG_ERROR_EX(fmt("IPv%d RPC: failed to bind TCP port %u", ipv, port), e);
     serverSocket_->closeConnection();
   }

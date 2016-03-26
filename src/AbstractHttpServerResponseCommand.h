@@ -57,19 +57,17 @@ private:
   bool writeCheck_;
 
   void updateReadWriteCheck();
+
 protected:
-  DownloadEngine* getDownloadEngine()
-  {
-    return e_;
-  }
+  DownloadEngine* getDownloadEngine() { return e_; }
   // Called after content body is completely sent.
   virtual void afterSend(const std::shared_ptr<HttpServer>& httpServer,
                          DownloadEngine* e) = 0;
+
 public:
-  AbstractHttpServerResponseCommand(cuid_t cuid,
-                                    const std::shared_ptr<HttpServer>& httpServer,
-                                    DownloadEngine* e,
-                                    const std::shared_ptr<SocketCore>& socket);
+  AbstractHttpServerResponseCommand(
+      cuid_t cuid, const std::shared_ptr<HttpServer>& httpServer,
+      DownloadEngine* e, const std::shared_ptr<SocketCore>& socket);
 
   virtual ~AbstractHttpServerResponseCommand();
 

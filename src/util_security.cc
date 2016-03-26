@@ -97,9 +97,9 @@ bool compare(const uint8_t* a, const uint8_t* b, size_t length)
 }
 
 HMAC::HMAC(const std::string& algorithm, const char* secret, size_t length)
-  : blockSize_(getBlockSize(algorithm)),
-    md_(MessageDigest::create(algorithm)),
-    clean_(false)
+    : blockSize_(getBlockSize(algorithm)),
+      md_(MessageDigest::create(algorithm)),
+      clean_(false)
 {
   ipad_.assign(blockSize_, 0x36);
   opad_.assign(blockSize_, 0x5c);
@@ -143,11 +143,8 @@ bool HMAC::supports(const std::string& algorithm)
          canon == "sha-384" || canon == "sha-512";
 }
 
-HMACResult PBKDF2(HMAC* hmac,
-                  const char* salt,
-                  size_t salt_length,
-                  size_t iterations,
-                  size_t key_length)
+HMACResult PBKDF2(HMAC* hmac, const char* salt, size_t salt_length,
+                  size_t iterations, size_t key_length)
 {
   if (!hmac) {
     throw FATAL_EXCEPTION("hmac cannot be null");

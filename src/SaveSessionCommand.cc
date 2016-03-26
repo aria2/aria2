@@ -43,32 +43,33 @@
 
 namespace aria2 {
 
-SaveSessionCommand::SaveSessionCommand
-(cuid_t cuid, DownloadEngine* e, std::chrono::seconds interval)
-  : TimeBasedCommand(cuid, e, std::move(interval), true)
-{}
+SaveSessionCommand::SaveSessionCommand(cuid_t cuid, DownloadEngine* e,
+                                       std::chrono::seconds interval)
+    : TimeBasedCommand(cuid, e, std::move(interval), true)
+{
+}
 
 SaveSessionCommand::~SaveSessionCommand() {}
 
 void SaveSessionCommand::preProcess()
 {
-  if(getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
-     getDownloadEngine()->isHaltRequested()) {
+  if (getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
+      getDownloadEngine()->isHaltRequested()) {
     enableExit();
   }
 }
 
 void SaveSessionCommand::process()
 {
-  const std::string& filename = getDownloadEngine()->getOption()
-    ->get(PREF_SAVE_SESSION);
-  if(!filename.empty()) {
+  const std::string& filename =
+      getDownloadEngine()->getOption()->get(PREF_SAVE_SESSION);
+  if (!filename.empty()) {
     auto& rgman = getDownloadEngine()->getRequestGroupMan();
 
     SessionSerializer sessionSerializer(rgman.get());
 
     auto sessionHash = sessionSerializer.calculateHash();
-    if(rgman->getLastSessionHash() == sessionHash) {
+    if (rgman->getLastSessionHash() == sessionHash) {
       A2_LOG_INFO("No change since last serialization or startup. "
                   "No serialization is necessary this time.");
       return;
@@ -76,12 +77,13 @@ void SaveSessionCommand::process()
 
     rgman->setLastSessionHash(std::move(sessionHash));
 
-    if(sessionSerializer.save(filename)) {
-      A2_LOG_NOTICE(fmt(_("Serialized session to '%s' successfully."),
-                        filename.c_str()));
-    } else {
-      A2_LOG_ERROR(fmt(_("Failed to serialize session to '%s'."),
-                       filename.c_str()));
+    if (sessionSerializer.save(filename)) {
+      A2_LOG_NOTICE(
+          fmt(_("Serialized session to '%s' successfully."), filename.c_str()));
+    }
+    else {
+      A2_LOG_ERROR(
+          fmt(_("Failed to serialize session to '%s'."), filename.c_str()));
     }
   }
 }

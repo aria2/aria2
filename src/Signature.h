@@ -48,6 +48,7 @@ private:
   std::string file_;
 
   std::string body_;
+
 public:
   Signature();
 
@@ -55,24 +56,15 @@ public:
 
   void setType(std::string type);
 
-  const std::string& getType() const
-  {
-    return type_;
-  }
+  const std::string& getType() const { return type_; }
 
   void setFile(std::string file);
 
-  const std::string& getFile() const
-  {
-    return file_;
-  }
+  const std::string& getFile() const { return file_; }
 
   void setBody(std::string body);
 
-  const std::string& getBody() const
-  {
-    return body_;
-  }
+  const std::string& getBody() const { return body_; }
 
   bool save(const std::string& filepath) const;
 };

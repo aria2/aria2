@@ -52,18 +52,19 @@ const std::string Request::METHOD_HEAD = "HEAD";
 
 const std::string Request::DEFAULT_FILE = "index.html";
 
-Request::Request():
-  method_(METHOD_GET),
-  tryCount_(0),
-  redirectCount_(0),
-  supportsPersistentConnection_(true),
-  keepAliveHint_(false),
-  pipeliningHint_(false),
-  maxPipelinedRequest_(1),
-  removalRequested_(false),
-  connectedPort_(0),
-  wakeTime_(global::wallclock())
-{}
+Request::Request()
+    : method_(METHOD_GET),
+      tryCount_(0),
+      redirectCount_(0),
+      supportsPersistentConnection_(true),
+      keepAliveHint_(false),
+      pipeliningHint_(false),
+      maxPipelinedRequest_(1),
+      removalRequested_(false),
+      connectedPort_(0),
+      wakeTime_(global::wallclock())
+{
+}
 
 Request::~Request() {}
 
@@ -71,21 +72,24 @@ namespace {
 std::string removeFragment(const std::string& uri)
 {
   std::string::size_type sharpIndex = uri.find("#");
-  if(sharpIndex == std::string::npos) {
+  if (sharpIndex == std::string::npos) {
     return uri;
-  } else {
+  }
+  else {
     return uri.substr(0, sharpIndex);
   }
 }
 } // namespace
 
-bool Request::setUri(const std::string& uri) {
+bool Request::setUri(const std::string& uri)
+{
   supportsPersistentConnection_ = true;
   uri_ = uri;
   return parseUri(uri_);
 }
 
-bool Request::resetUri() {
+bool Request::resetUri()
+{
   supportsPersistentConnection_ = true;
   setConnectedAddrInfo(A2STR::NIL, A2STR::NIL, 0);
   return parseUri(uri_);
@@ -96,39 +100,43 @@ void Request::setReferer(const std::string& uri)
   referer_ = removeFragment(uri);
 }
 
-bool Request::redirectUri(const std::string& uri) {
+bool Request::redirectUri(const std::string& uri)
+{
   supportsPersistentConnection_ = true;
   ++redirectCount_;
-  if(uri.empty()) {
+  if (uri.empty()) {
     return false;
   }
   std::string redirectedUri;
-  if(util::startsWith(uri, "//")) {
+  if (util::startsWith(uri, "//")) {
     // Network-path reference (according to RFC 3986, Section 4.2)
     // Just complement current protocol.
     redirectedUri = getProtocol();
     redirectedUri += ":";
     redirectedUri += uri;
-  } else {
+  }
+  else {
     std::string::size_type schemeEnd = uri.find("://");
     bool absUri;
-    if(schemeEnd == std::string::npos) {
+    if (schemeEnd == std::string::npos) {
       absUri = false;
-    } else {
+    }
+    else {
       absUri = true;
       // Check that scheme is acceptable one.
-      for(size_t i = 0; i < schemeEnd; ++i) {
+      for (size_t i = 0; i < schemeEnd; ++i) {
         char c = uri[i];
-        if(!util::isAlpha(c) && !util::isDigit(c) &&
-           c != '+' && c != '-' && c != '.') {
+        if (!util::isAlpha(c) && !util::isDigit(c) && c != '+' && c != '-' &&
+            c != '.') {
           absUri = false;
           break;
         }
       }
     }
-    if(absUri) {
+    if (absUri) {
       redirectedUri = uri;
-    } else {
+    }
+    else {
       // rfc2616 requires absolute URI should be provided by Location header
       // field, but some servers don't obey this rule.
       // UPDATE: draft-ietf-httpbis-p2-semantics-18 now allows this.
@@ -138,26 +146,22 @@ bool Request::redirectUri(const std::string& uri) {
   return parseUri(redirectedUri);
 }
 
-bool Request::parseUri(const std::string& srcUri) {
+bool Request::parseUri(const std::string& srcUri)
+{
   currentUri_ = removeFragment(srcUri);
   uri::UriStruct us;
-  if(uri::parse(us, currentUri_)) {
+  if (uri::parse(us, currentUri_)) {
     us_.swap(us);
     return true;
-  } else {
+  }
+  else {
     return false;
   }
 }
 
-void Request::resetRedirectCount()
-{
-  redirectCount_ = 0;
-}
+void Request::resetRedirectCount() { redirectCount_ = 0; }
 
-void Request::setMaxPipelinedRequest(int num)
-{
-  maxPipelinedRequest_ = num;
-}
+void Request::setMaxPipelinedRequest(int num) { maxPipelinedRequest_ = num; }
 
 const std::shared_ptr<PeerStat>& Request::initPeerStat()
 {
@@ -174,23 +178,21 @@ const std::shared_ptr<PeerStat>& Request::initPeerStat()
 
 std::string Request::getURIHost() const
 {
-  if(isIPv6LiteralAddress()) {
+  if (isIPv6LiteralAddress()) {
     std::string s = "[";
     s += getHost();
     s += "]";
     return s;
-  } else {
+  }
+  else {
     return getHost();
   }
 }
 
-void Request::setMethod(const std::string& method)
-{
-  method_ = method;
-}
+void Request::setMethod(const std::string& method) { method_ = method; }
 
-void Request::setConnectedAddrInfo
-(const std::string& hostname, const std::string& addr, uint16_t port)
+void Request::setConnectedAddrInfo(const std::string& hostname,
+                                   const std::string& addr, uint16_t port)
 {
   connectedHostname_ = hostname;
   connectedAddr_ = addr;

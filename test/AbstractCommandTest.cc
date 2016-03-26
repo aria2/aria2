@@ -10,11 +10,12 @@
 
 namespace aria2 {
 
-class AbstractCommandTest:public CppUnit::TestFixture {
+class AbstractCommandTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(AbstractCommandTest);
   CPPUNIT_TEST(testGetProxyUri);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -22,7 +23,6 @@ public:
 
   void testGetProxyUri();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(AbstractCommandTest);
 

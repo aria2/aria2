@@ -38,16 +38,13 @@
 namespace aria2 {
 
 TimeSeedCriteria::TimeSeedCriteria(std::chrono::seconds duration)
-  : duration_(std::move(duration))
+    : duration_(std::move(duration))
 {
 }
 
 TimeSeedCriteria::~TimeSeedCriteria() {}
 
-void TimeSeedCriteria::reset()
-{
-  watch_ = global::wallclock();
-}
+void TimeSeedCriteria::reset() { watch_ = global::wallclock(); }
 
 bool TimeSeedCriteria::evaluate()
 {

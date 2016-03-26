@@ -52,14 +52,15 @@
 
 namespace aria2 {
 
-UTMetadataDataExtensionMessage::UTMetadataDataExtensionMessage
-(uint8_t extensionMessageID)
-  : UTMetadataExtensionMessage{extensionMessageID},
-    totalSize_{0},
-    dctx_{nullptr},
-    pieceStorage_{nullptr},
-    tracker_{nullptr}
-{}
+UTMetadataDataExtensionMessage::UTMetadataDataExtensionMessage(
+    uint8_t extensionMessageID)
+    : UTMetadataExtensionMessage{extensionMessageID},
+      totalSize_{0},
+      dctx_{nullptr},
+      pieceStorage_{nullptr},
+      tracker_{nullptr}
+{
+}
 
 std::string UTMetadataDataExtensionMessage::getPayload()
 {
@@ -67,7 +68,7 @@ std::string UTMetadataDataExtensionMessage::getPayload()
   dict.put("msg_type", Integer::g(1));
   dict.put("piece", Integer::g(getIndex()));
   dict.put("total_size", Integer::g(totalSize_));
-  return bencode2::encode(&dict)+data_;
+  return bencode2::encode(&dict) + data_;
 }
 
 std::string UTMetadataDataExtensionMessage::toString() const
@@ -78,32 +79,34 @@ std::string UTMetadataDataExtensionMessage::toString() const
 
 void UTMetadataDataExtensionMessage::doReceivedAction()
 {
-  if(tracker_->tracks(getIndex())) {
+  if (tracker_->tracks(getIndex())) {
     A2_LOG_DEBUG(fmt("ut_metadata index=%lu found in tracking list",
                      static_cast<unsigned long>(getIndex())));
     tracker_->remove(getIndex());
-    pieceStorage_->getDiskAdaptor()->writeData
-      (reinterpret_cast<const unsigned char*>(data_.c_str()), data_.size(),
-       getIndex()*METADATA_PIECE_SIZE);
+    pieceStorage_->getDiskAdaptor()->writeData(
+        reinterpret_cast<const unsigned char*>(data_.c_str()), data_.size(),
+        getIndex() * METADATA_PIECE_SIZE);
     pieceStorage_->completePiece(pieceStorage_->getPiece(getIndex()));
-    if(pieceStorage_->downloadFinished()) {
+    if (pieceStorage_->downloadFinished()) {
       std::string metadata = util::toString(pieceStorage_->getDiskAdaptor());
       unsigned char infoHash[INFO_HASH_LENGTH];
       message_digest::digest(infoHash, INFO_HASH_LENGTH,
-                             MessageDigest::sha1().get(),
-                             metadata.data(), metadata.size());
-      if(memcmp(infoHash, bittorrent::getInfoHash(dctx_),
-                INFO_HASH_LENGTH) == 0) {
+                             MessageDigest::sha1().get(), metadata.data(),
+                             metadata.size());
+      if (memcmp(infoHash, bittorrent::getInfoHash(dctx_), INFO_HASH_LENGTH) ==
+          0) {
         A2_LOG_INFO("Got ut_metadata");
-      } else {
+      }
+      else {
         A2_LOG_INFO("Got wrong ut_metadata");
-        for(size_t i = 0; i < dctx_->getNumPieces(); ++i) {
+        for (size_t i = 0; i < dctx_->getNumPieces(); ++i) {
           pieceStorage_->markPieceMissing(i);
         }
         throw DL_ABORT_EX("Got wrong ut_metadata");
       }
     }
-  } else {
+  }
+  else {
     A2_LOG_DEBUG(fmt("ut_metadata index=%lu is not tracked",
                      static_cast<unsigned long>(getIndex())));
   }
@@ -129,14 +132,13 @@ const std::string& UTMetadataDataExtensionMessage::getData() const
   return data_;
 }
 
-void UTMetadataDataExtensionMessage::setPieceStorage
-(PieceStorage* pieceStorage)
+void UTMetadataDataExtensionMessage::setPieceStorage(PieceStorage* pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }
 
-void UTMetadataDataExtensionMessage::setUTMetadataRequestTracker
-(UTMetadataRequestTracker* tracker)
+void UTMetadataDataExtensionMessage::setUTMetadataRequestTracker(
+    UTMetadataRequestTracker* tracker)
 {
   tracker_ = tracker;
 }

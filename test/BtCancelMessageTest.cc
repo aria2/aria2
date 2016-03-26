@@ -12,19 +12,19 @@
 
 namespace aria2 {
 
-class BtCancelMessageTest:public CppUnit::TestFixture {
+class BtCancelMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtCancelMessageTest);
   CPPUNIT_TEST(testCreate);
   CPPUNIT_TEST(testCreateMessage);
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST_SUITE_END();
+
 private:
   std::shared_ptr<Peer> peer;
+
 public:
-  void setUp() {
-    peer.reset(new Peer("host", 6969));
-  }
+  void setUp() { peer.reset(new Peer("host", 6969)); }
 
   void testCreate();
   void testCreateMessage();
@@ -35,13 +35,13 @@ public:
     size_t index;
     int32_t begin;
     int32_t length;
-  public:
-    MockBtMessageDispatcher2():index(0),
-                               begin(0),
-                               length(0) {}
 
-    virtual void doCancelSendingPieceAction
-    (size_t index, int32_t begin, int32_t length) CXX11_OVERRIDE {
+  public:
+    MockBtMessageDispatcher2() : index(0), begin(0), length(0) {}
+
+    virtual void doCancelSendingPieceAction(size_t index, int32_t begin,
+                                            int32_t length) CXX11_OVERRIDE
+    {
       this->index = index;
       this->begin = begin;
       this->length = length;
@@ -49,10 +49,10 @@ public:
   };
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(BtCancelMessageTest);
 
-void BtCancelMessageTest::testCreate() {
+void BtCancelMessageTest::testCreate()
+{
   unsigned char msg[17];
   bittorrent::createPeerMessageString(msg, sizeof(msg), 13, 8);
   bittorrent::setIntParam(&msg[5], 12345);
@@ -70,7 +70,8 @@ void BtCancelMessageTest::testCreate() {
     bittorrent::createPeerMessageString(msg, sizeof(msg), 14, 8);
     BtCancelMessage::create(&msg[4], 14);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(...) {
+  }
+  catch (...) {
   }
   // case: id is wrong
   try {
@@ -78,11 +79,13 @@ void BtCancelMessageTest::testCreate() {
     bittorrent::createPeerMessageString(msg, sizeof(msg), 13, 9);
     BtCancelMessage::create(&msg[4], 13);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(...) {
+  }
+  catch (...) {
   }
 }
 
-void BtCancelMessageTest::testCreateMessage() {
+void BtCancelMessageTest::testCreateMessage()
+{
   BtCancelMessage msg;
   msg.setIndex(12345);
   msg.setBegin(256);
@@ -94,10 +97,11 @@ void BtCancelMessageTest::testCreateMessage() {
   bittorrent::setIntParam(&data[13], 1_k);
   unsigned char* rawmsg = msg.createMessage();
   CPPUNIT_ASSERT(memcmp(rawmsg, data, 17) == 0);
-  delete [] rawmsg;
+  delete[] rawmsg;
 }
 
-void BtCancelMessageTest::testDoReceivedAction() {
+void BtCancelMessageTest::testDoReceivedAction()
+{
   BtCancelMessage msg;
   msg.setIndex(1);
   msg.setBegin(32_k);

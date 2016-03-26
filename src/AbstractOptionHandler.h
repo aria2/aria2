@@ -55,17 +55,16 @@ protected:
   char shortName_;
 
   virtual void parseArg(Option& option, const std::string& arg) const = 0;
+
 public:
-  AbstractOptionHandler(PrefPtr pref,
-                         const char* description = NO_DESCRIPTION,
-                         const std::string& defaultValue = NO_DEFAULT_VALUE,
-                         ARG_TYPE argType = REQ_ARG,
-                         char shortName = 0);
+  AbstractOptionHandler(PrefPtr pref, const char* description = NO_DESCRIPTION,
+                        const std::string& defaultValue = NO_DEFAULT_VALUE,
+                        ARG_TYPE argType = REQ_ARG, char shortName = 0);
 
   virtual ~AbstractOptionHandler();
 
-  virtual void parse(Option& option, const std::string& arg) const
-    CXX11_OVERRIDE;
+  virtual void parse(Option& option,
+                     const std::string& arg) const CXX11_OVERRIDE;
 
   virtual bool hasTag(uint32_t tag) const CXX11_OVERRIDE;
 
@@ -85,15 +84,9 @@ public:
     return defaultValue_;
   }
 
-  virtual PrefPtr getPref() const CXX11_OVERRIDE
-  {
-    return pref_;
-  }
+  virtual PrefPtr getPref() const CXX11_OVERRIDE { return pref_; }
 
-  virtual char getShortName() const CXX11_OVERRIDE
-  {
-    return shortName_;
-  }
+  virtual char getShortName() const CXX11_OVERRIDE { return shortName_; }
 
   virtual OptionHandler::ARG_TYPE getArgType() const CXX11_OVERRIDE
   {
@@ -137,6 +130,7 @@ public:
     FLAG_CHANGE_GLOBAL_OPTION = 1 << 5,
     FLAG_CUMULATIVE = 1 << 6
   };
+
 private:
   // bitwise OR of (1 << HelpTag value) defined in help_tags.h.
   uint32_t tags_;

@@ -62,25 +62,13 @@ private:
   bool hupEvent_;
 
 protected:
-  bool readEventEnabled() const
-  {
-    return readEvent_;
-  }
+  bool readEventEnabled() const { return readEvent_; }
 
-  bool writeEventEnabled() const
-  {
-    return writeEvent_;
-  }
+  bool writeEventEnabled() const { return writeEvent_; }
 
-  bool errorEventEnabled() const
-  {
-    return errorEvent_;
-  }
+  bool errorEventEnabled() const { return errorEvent_; }
 
-  bool hupEventEnabled() const
-  {
-    return hupEvent_;
-  }
+  bool hupEventEnabled() const { return hupEvent_; }
 
 public:
   Command(cuid_t cuid);

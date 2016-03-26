@@ -42,13 +42,12 @@
 #include "LogFactory.h"
 #include "DownloadContext.h"
 #include "fmt.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
-FillRequestGroupCommand::FillRequestGroupCommand(cuid_t cuid,
-                                                 DownloadEngine* e):
-  Command(cuid),
-  e_(e)
+FillRequestGroupCommand::FillRequestGroupCommand(cuid_t cuid, DownloadEngine* e)
+    : Command(cuid), e_(e)
 {
   setStatusRealtime();
 }
@@ -57,30 +56,43 @@ FillRequestGroupCommand::~FillRequestGroupCommand() {}
 
 bool FillRequestGroupCommand::execute()
 {
-  if(e_->isHaltRequested()) {
+  if (e_->isHaltRequested()) {
     return true;
   }
   auto& rgman = e_->getRequestGroupMan();
-  if(rgman->queueCheckRequested()) {
-    while(rgman->queueCheckRequested()) {
+  if (rgman->queueCheckRequested()) {
+    while (rgman->queueCheckRequested()) {
       try {
         // During adding RequestGroup,
         // RequestGroupMan::requestQueueCheck() might be called, so
         // first clear it here.
         rgman->clearQueueCheck();
         rgman->fillRequestGroupFromReserver(e_);
-      } catch(RecoverableException& ex) {
+      }
+      catch (RecoverableException& ex) {
         A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, ex);
         // Re-request queue check to fulfill the requests of all
         // downloads, some might come after this exception.
         rgman->requestQueueCheck();
       }
     }
-    if(rgman->downloadFinished()) {
+    if (rgman->downloadFinished()) {
       return true;
     }
   }
   e_->addRoutineCommand(std::unique_ptr<Command>(this));
+
+  // let's make sure we come back here every second or so
+  // if we use the optimize-concurrent-download option
+  if (rgman->getOptimizeConcurrentDownloads()) {
+    const auto& now = global::wallclock();
+    if (std::chrono::duration_cast<std::chrono::seconds>(
+            lastExecTime.difference(now)) >= 1_s) {
+      lastExecTime = now;
+      rgman->requestQueueCheck();
+    }
+  }
+
   return false;
 }
 

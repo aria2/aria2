@@ -11,7 +11,7 @@
 
 namespace aria2 {
 
-class FileTest:public CppUnit::TestFixture {
+class FileTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(FileTest);
   CPPUNIT_TEST(testExists);
@@ -25,11 +25,10 @@ class FileTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testRenameTo);
   CPPUNIT_TEST(testUtime);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
-  void setUp() {
-  }
+  void setUp() {}
 
   void testExists();
   void testIsFile();
@@ -43,11 +42,11 @@ public:
   void testUtime();
 };
 
+CPPUNIT_TEST_SUITE_REGISTRATION(FileTest);
 
-CPPUNIT_TEST_SUITE_REGISTRATION( FileTest );
-
-void FileTest::testExists() {
-  File f(A2_TEST_DIR"/FileTest.cc");
+void FileTest::testExists()
+{
+  File f(A2_TEST_DIR "/FileTest.cc");
   CPPUNIT_ASSERT(f.exists());
 
   File f2("NonExistentFile");
@@ -57,8 +56,9 @@ void FileTest::testExists() {
   CPPUNIT_ASSERT(d1.exists());
 }
 
-void FileTest::testIsFile() {
-  File f(A2_TEST_DIR"/FileTest.cc");
+void FileTest::testIsFile()
+{
+  File f(A2_TEST_DIR "/FileTest.cc");
   CPPUNIT_ASSERT(f.isFile());
 
   File f2("NonExistentFile");
@@ -68,8 +68,9 @@ void FileTest::testIsFile() {
   CPPUNIT_ASSERT(!d1.isFile());
 }
 
-void FileTest::testIsDir() {
-  File f(A2_TEST_DIR"/FileTest.cc");
+void FileTest::testIsDir()
+{
+  File f(A2_TEST_DIR "/FileTest.cc");
   CPPUNIT_ASSERT(!f.isDir());
 
   File f2("NonExistentFile");
@@ -79,11 +80,12 @@ void FileTest::testIsDir() {
   CPPUNIT_ASSERT(d1.isDir());
 }
 
-void FileTest::testRemove() {
+void FileTest::testRemove()
+{
   int fd;
-  std::string name = A2_TEST_OUT_DIR"/aria2_FileTest_testRemove_testregfile";
+  std::string name = A2_TEST_OUT_DIR "/aria2_FileTest_testRemove_testregfile";
   unlink(name.c_str());
-  if((fd = creat(name.c_str(), S_IRUSR|S_IWUSR)) < 0) {
+  if ((fd = creat(name.c_str(), S_IRUSR | S_IWUSR)) < 0) {
     CPPUNIT_FAIL("cannot create test file");
   }
   close(fd);
@@ -94,7 +96,7 @@ void FileTest::testRemove() {
   // delete the file again
   CPPUNIT_ASSERT(!f.remove());
 
-  std::string dir = A2_TEST_OUT_DIR"/aria2_FileTest_testRemove_testdir";
+  std::string dir = A2_TEST_OUT_DIR "/aria2_FileTest_testRemove_testdir";
 #ifdef __MINGW32__
   mkdir(dir.c_str());
 #else
@@ -108,16 +110,18 @@ void FileTest::testRemove() {
   CPPUNIT_ASSERT(!d.remove());
 }
 
-void FileTest::testSize() {
-  File f(A2_TEST_DIR"/4096chunk.txt");
+void FileTest::testSize()
+{
+  File f(A2_TEST_DIR "/4096chunk.txt");
   CPPUNIT_ASSERT_EQUAL((int64_t)4_k, f.size());
 }
 
-void FileTest::testMkdir() {
+void FileTest::testMkdir()
+{
   {
-    std::string dir = A2_TEST_OUT_DIR"/aria2_FileTest_testMkdir/test";
+    std::string dir = A2_TEST_OUT_DIR "/aria2_FileTest_testMkdir/test";
     File d(dir);
-    if(d.exists()) {
+    if (d.exists()) {
       CPPUNIT_ASSERT(d.remove());
     }
     CPPUNIT_ASSERT(!d.exists());
@@ -130,11 +134,12 @@ void FileTest::testMkdir() {
     CPPUNIT_ASSERT(!d.mkdirs());
   }
   {
-    std::string dir = A2_TEST_OUT_DIR"////aria2_FileTest_testMkdir////test2///";
-    std::string nDir = A2_TEST_OUT_DIR"/aria2_FileTest_testMkdir/test2";
+    std::string dir =
+        A2_TEST_OUT_DIR "////aria2_FileTest_testMkdir////test2///";
+    std::string nDir = A2_TEST_OUT_DIR "/aria2_FileTest_testMkdir/test2";
     File d(dir);
     File nd(nDir);
-    if(d.exists()) {
+    if (d.exists()) {
       CPPUNIT_ASSERT(d.remove());
     }
     CPPUNIT_ASSERT(!nd.exists());
@@ -230,12 +235,12 @@ void FileTest::testGetBasename()
 
 void FileTest::testRenameTo()
 {
-  std::string fname = A2_TEST_OUT_DIR"/aria2_FileTest_testRenameTo.txt";
+  std::string fname = A2_TEST_OUT_DIR "/aria2_FileTest_testRenameTo.txt";
   std::ofstream of(fname.c_str(), std::ios::binary);
   of.close();
 
   File f(fname);
-  std::string fnameTo = A2_TEST_OUT_DIR"/aria2_FileTest_testRenameTo_dest.txt";
+  std::string fnameTo = A2_TEST_OUT_DIR "/aria2_FileTest_testRenameTo_dest.txt";
   CPPUNIT_ASSERT(f.renameTo(fnameTo));
   CPPUNIT_ASSERT(f.exists());
   CPPUNIT_ASSERT(!File(fname).exists());
@@ -250,11 +255,11 @@ void FileTest::testRenameTo()
 
 void FileTest::testUtime()
 {
-  File f(A2_TEST_OUT_DIR"/aria2_FileTest_testUTime");
+  File f(A2_TEST_OUT_DIR "/aria2_FileTest_testUTime");
   createFile(f.getPath(), 0);
 
-  time_t atime = (time_t) 100000;
-  time_t mtime = (time_t) 200000;
+  time_t atime = (time_t)100000;
+  time_t mtime = (time_t)200000;
 
   CPPUNIT_ASSERT(f.utime(Time(atime), Time(mtime)));
 
@@ -263,7 +268,7 @@ void FileTest::testUtime()
   CPPUNIT_ASSERT_EQUAL((time_t)atime, (time_t)buf.st_atime);
   CPPUNIT_ASSERT_EQUAL((time_t)mtime, f.getModifiedTime().getTimeFromEpoch());
 
-  File notFound(A2_TEST_OUT_DIR"/aria2_FileTest_testUTime_notFound");
+  File notFound(A2_TEST_OUT_DIR "/aria2_FileTest_testUTime_notFound");
   notFound.remove();
   CPPUNIT_ASSERT(!notFound.utime(Time(atime), Time(mtime)));
 }

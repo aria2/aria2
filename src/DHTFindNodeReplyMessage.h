@@ -40,16 +40,17 @@
 
 namespace aria2 {
 
-class DHTFindNodeReplyMessage:public DHTResponseMessage {
+class DHTFindNodeReplyMessage : public DHTResponseMessage {
 private:
   int family_;
 
   std::vector<std::shared_ptr<DHTNode>> closestKNodes_;
+
 protected:
   virtual std::string toStringOptional() const CXX11_OVERRIDE;
+
 public:
-  DHTFindNodeReplyMessage(int family,
-                          const std::shared_ptr<DHTNode>& localNode,
+  DHTFindNodeReplyMessage(int family, const std::shared_ptr<DHTNode>& localNode,
                           const std::shared_ptr<DHTNode>& remoteNode,
                           const std::string& transactionID);
 

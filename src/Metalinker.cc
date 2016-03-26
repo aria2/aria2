@@ -44,25 +44,24 @@ Metalinker::Metalinker() {}
 Metalinker::~Metalinker() {}
 
 std::vector<std::unique_ptr<MetalinkEntry>>
-Metalinker::queryEntry(const std::string& version,
-                       const std::string& language,
+Metalinker::queryEntry(const std::string& version, const std::string& language,
                        const std::string& os)
 {
   std::vector<std::unique_ptr<MetalinkEntry>> res;
-  for(auto& entry : entries_) {
-    if((!version.empty() && version != entry->version) ||
-       (!language.empty() && !entry->containsLanguage(language)) ||
-       (!os.empty() && !entry->containsOS(os))) {
+  for (auto& entry : entries_) {
+    if ((!version.empty() && version != entry->version) ||
+        (!language.empty() && !entry->containsLanguage(language)) ||
+        (!os.empty() && !entry->containsOS(os))) {
       continue;
     }
     res.push_back(std::move(entry));
   }
-  entries_.erase(std::remove_if(std::begin(entries_), std::end(entries_),
-                                [](const std::unique_ptr<MetalinkEntry>& entry)
-                                {
-                                  return !entry.get();
-                                }),
-                 std::end(entries_));
+  entries_.erase(
+      std::remove_if(std::begin(entries_), std::end(entries_),
+                     [](const std::unique_ptr<MetalinkEntry>& entry) {
+                       return !entry.get();
+                     }),
+      std::end(entries_));
   return res;
 }
 

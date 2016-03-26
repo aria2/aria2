@@ -48,8 +48,8 @@ class DiskWriterFactory {
 public:
   virtual ~DiskWriterFactory() {}
 
-  virtual std::unique_ptr<DiskWriter> newDiskWriter
-  (const std::string& filename)=0;
+  virtual std::unique_ptr<DiskWriter>
+  newDiskWriter(const std::string& filename) = 0;
 };
 
 } // namespace aria2

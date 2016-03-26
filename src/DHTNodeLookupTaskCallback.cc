@@ -42,11 +42,13 @@
 
 namespace aria2 {
 
-DHTNodeLookupTaskCallback::DHTNodeLookupTaskCallback(DHTNodeLookupTask* task):
-  task_(task) {}
+DHTNodeLookupTaskCallback::DHTNodeLookupTaskCallback(DHTNodeLookupTask* task)
+    : task_(task)
+{
+}
 
-void DHTNodeLookupTaskCallback::visit
-(const DHTAnnouncePeerReplyMessage* message)
+void DHTNodeLookupTaskCallback::visit(
+    const DHTAnnouncePeerReplyMessage* message)
 {
   // When wrong message type is received, forced to timeout
   onTimeout(message->getRemoteNode());
@@ -69,11 +71,10 @@ void DHTNodeLookupTaskCallback::visit(const DHTPingReplyMessage* message)
   onTimeout(message->getRemoteNode());
 }
 
-void DHTNodeLookupTaskCallback::onTimeout
-(const std::shared_ptr<DHTNode>& remoteNode)
+void DHTNodeLookupTaskCallback::onTimeout(
+    const std::shared_ptr<DHTNode>& remoteNode)
 {
   task_->onTimeout(remoteNode);
 }
-
 
 } // namespace aria2

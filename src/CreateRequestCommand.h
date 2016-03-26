@@ -45,11 +45,11 @@ namespace aria2 {
 // InitiateConnectionCommandFactory. InitiateConnectionCommandFactory
 // creates Command based on the protocol of selected URI.  If there is
 // no URI available, then throws exceptions.
-class CreateRequestCommand:public AbstractCommand {
+class CreateRequestCommand : public AbstractCommand {
 public:
-  CreateRequestCommand(cuid_t cuid,
-                       RequestGroup* requestGroup,
+  CreateRequestCommand(cuid_t cuid, RequestGroup* requestGroup,
                        DownloadEngine* e);
+
 protected:
   virtual bool executeInternal() CXX11_OVERRIDE;
 };

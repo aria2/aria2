@@ -9,11 +9,12 @@
 
 namespace aria2 {
 
-class SignatureTest:public CppUnit::TestFixture {
+class SignatureTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(SignatureTest);
   CPPUNIT_TEST(testSave);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -22,16 +23,15 @@ public:
   void testSave();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(SignatureTest);
 
 void SignatureTest::testSave()
 {
   Signature sig;
   sig.setBody("SIGNATURE");
-  std::string filepath = A2_TEST_OUT_DIR"/aria2_SignatureTest_testSave";
+  std::string filepath = A2_TEST_OUT_DIR "/aria2_SignatureTest_testSave";
   File outfile(filepath);
-  if(outfile.exists()) {
+  if (outfile.exists()) {
     outfile.remove();
   }
   CPPUNIT_ASSERT(sig.save(filepath));

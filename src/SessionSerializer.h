@@ -53,6 +53,7 @@ private:
   bool saveInProgress_;
   bool saveWaiting_;
   bool save(IOFile& fp) const;
+
 public:
   SessionSerializer(RequestGroupMan* requestGroupMan);
 

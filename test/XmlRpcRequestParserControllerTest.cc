@@ -6,7 +6,7 @@ namespace aria2 {
 
 namespace rpc {
 
-class XmlRpcRequestParserControllerTest:public CppUnit::TestFixture {
+class XmlRpcRequestParserControllerTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(XmlRpcRequestParserControllerTest);
   CPPUNIT_TEST(testPopStructFrame);
@@ -16,6 +16,7 @@ class XmlRpcRequestParserControllerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testPopArrayFrame_noValue);
   CPPUNIT_TEST(testPopArrayFrame_compound);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -28,7 +29,6 @@ public:
   void testPopArrayFrame_noValue();
   void testPopArrayFrame_compound();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(XmlRpcRequestParserControllerTest);
 
@@ -77,7 +77,8 @@ void XmlRpcRequestParserControllerTest::testPopArrayFrame()
   controller.popArrayFrame();
   const List* array = downcast<List>(controller.getCurrentFrameValue());
   CPPUNIT_ASSERT_EQUAL((size_t)1, array->size());
-  CPPUNIT_ASSERT_EQUAL((Integer::ValueType)100, downcast<Integer>(array->get(0))->i());
+  CPPUNIT_ASSERT_EQUAL((Integer::ValueType)100,
+                       downcast<Integer>(array->get(0))->i());
 }
 
 void XmlRpcRequestParserControllerTest::testPopArrayFrame_noValue()
@@ -154,7 +155,8 @@ void XmlRpcRequestParserControllerTest::testPopArrayFrame_compound()
                        downcast<String>(uris->get(1))->s());
   CPPUNIT_ASSERT_EQUAL((Integer::ValueType)120,
                        downcast<Integer>(options->get("timeout"))->i());
-  CPPUNIT_ASSERT_EQUAL(std::string("jp"), downcast<String>(countryList->get(0))->s());
+  CPPUNIT_ASSERT_EQUAL(std::string("jp"),
+                       downcast<String>(countryList->get(0))->s());
 }
 
 } // namespace rpc

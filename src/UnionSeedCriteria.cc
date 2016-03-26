@@ -43,15 +43,15 @@ UnionSeedCriteria::~UnionSeedCriteria() {}
 
 void UnionSeedCriteria::reset()
 {
-  for(const auto& c : criterion_) {
+  for (const auto& c : criterion_) {
     c->reset();
   }
 }
 
 bool UnionSeedCriteria::evaluate()
 {
-  for(const auto& c : criterion_) {
-    if(c->evaluate()) {
+  for (const auto& c : criterion_) {
+    if (c->evaluate()) {
       return true;
     }
   }

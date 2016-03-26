@@ -10,7 +10,7 @@
 
 namespace aria2 {
 
-class WrDiskCacheEntryTest:public CppUnit::TestFixture {
+class WrDiskCacheEntryTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(WrDiskCacheEntryTest);
   CPPUNIT_TEST(testWriteToDisk);
@@ -20,6 +20,7 @@ class WrDiskCacheEntryTest:public CppUnit::TestFixture {
 
   std::shared_ptr<DirectDiskAdaptor> adaptor_;
   ByteArrayDiskWriter* writer_;
+
 public:
   void setUp()
   {
@@ -34,7 +35,7 @@ public:
   void testClear();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( WrDiskCacheEntryTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(WrDiskCacheEntryTest);
 
 void WrDiskCacheEntryTest::testWriteToDisk()
 {
@@ -53,7 +54,7 @@ void WrDiskCacheEntryTest::testAppend()
   cell->goff = 0;
   size_t capacity = 6;
   size_t offset = 2;
-  cell->data = new unsigned char[offset+capacity];
+  cell->data = new unsigned char[offset + capacity];
   memcpy(cell->data, "??foo", 3);
   cell->offset = offset;
   cell->len = 3;
@@ -64,8 +65,7 @@ void WrDiskCacheEntryTest::testAppend()
   CPPUNIT_ASSERT_EQUAL((size_t)6, cell->len);
   CPPUNIT_ASSERT_EQUAL((size_t)6, e.getSize());
 
-  CPPUNIT_ASSERT_EQUAL((size_t)0,
-                       e.append(7, (const unsigned char*)"FOO", 3));
+  CPPUNIT_ASSERT_EQUAL((size_t)0, e.append(7, (const unsigned char*)"FOO", 3));
 }
 
 void WrDiskCacheEntryTest::testClear()

@@ -52,7 +52,7 @@ class RequestGroup;
 class BtRuntime;
 class PeerStorage;
 
-class DHTGetPeersCommand:public Command {
+class DHTGetPeersCommand : public Command {
 private:
   RequestGroup* requestGroup_;
 
@@ -71,6 +71,7 @@ private:
   int numRetry_;
 
   Timer lastGetPeerTime_;
+
 public:
   DHTGetPeersCommand(cuid_t cuid, RequestGroup* requestGroup,
                      DownloadEngine* e);

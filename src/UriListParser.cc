@@ -53,39 +53,44 @@ namespace aria2 {
 
 UriListParser::UriListParser(const std::string& filename)
 #if HAVE_ZLIB
-  : fp_(make_unique<GZipFile>(filename.c_str(), IOFile::READ))
+    : fp_(make_unique<GZipFile>(filename.c_str(), IOFile::READ))
 #else
-  : fp_(make_unique<BufferedFile>(filename.c_str(), IOFile::READ))
+    : fp_(make_unique<BufferedFile>(filename.c_str(), IOFile::READ))
 #endif
-{}
+{
+}
 
 UriListParser::~UriListParser() {}
 
 void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
 {
   const std::shared_ptr<OptionParser>& optparser = OptionParser::getInstance();
-  while(1) {
-    if(!line_.empty() && line_[0] != '#') {
-      util::split(line_.begin(), line_.end(), std::back_inserter(uris),
-                  '\t', true);
+  while (1) {
+    if (!line_.empty() && line_[0] != '#') {
+      util::split(line_.begin(), line_.end(), std::back_inserter(uris), '\t',
+                  true);
       // Read options
       std::stringstream ss;
-      while(1) {
+      while (1) {
         line_ = fp_->getLine();
-        if(line_.empty()) {
-          if(fp_->eof()) {
+        if (line_.empty()) {
+          if (fp_->eof()) {
             break;
-          } else if(!fp_) {
+          }
+          else if (!fp_) {
             throw DL_ABORT_EX("UriListParser:I/O error.");
-          } else {
+          }
+          else {
             continue;
           }
         }
-        if(line_[0] == ' ' || line_[0] == '\t') {
+        if (line_[0] == ' ' || line_[0] == '\t') {
           ss << line_ << "\n";
-        } else if(line_[0] == '#') {
+        }
+        else if (line_[0] == '#') {
           continue;
-        } else {
+        }
+        else {
           break;
         }
       }
@@ -93,10 +98,11 @@ void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
       return;
     }
     line_ = fp_->getLine();
-    if(line_.empty()) {
-      if(fp_->eof()) {
+    if (line_.empty()) {
+      if (fp_->eof()) {
         return;
-      } else if(!fp_) {
+      }
+      else if (!fp_) {
         throw DL_ABORT_EX("UriListParser:I/O error.");
       }
     }

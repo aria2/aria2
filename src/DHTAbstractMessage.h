@@ -46,7 +46,7 @@ class DHTMessageDispatcher;
 class DHTMessageFactory;
 class DHTRoutingTable;
 
-class DHTAbstractMessage:public DHTMessage {
+class DHTAbstractMessage : public DHTMessage {
 private:
   DHTConnection* connection_;
 
@@ -55,6 +55,7 @@ private:
   DHTMessageFactory* factory_;
 
   DHTRoutingTable* routingTable_;
+
 public:
   DHTAbstractMessage(const std::shared_ptr<DHTNode>& localNode,
                      const std::shared_ptr<DHTNode>& remoteNode,
@@ -68,31 +69,19 @@ public:
 
   std::string getBencodedMessage();
 
-  DHTConnection* getConnection() const
-  {
-    return connection_;
-  }
+  DHTConnection* getConnection() const { return connection_; }
 
   void setConnection(DHTConnection* connection);
 
-  DHTMessageDispatcher* getMessageDispatcher() const
-  {
-    return dispatcher_;
-  }
+  DHTMessageDispatcher* getMessageDispatcher() const { return dispatcher_; }
 
   void setMessageDispatcher(DHTMessageDispatcher* dispatcher);
 
-  DHTMessageFactory* getMessageFactory() const
-  {
-    return factory_;
-  }
+  DHTMessageFactory* getMessageFactory() const { return factory_; }
 
   void setMessageFactory(DHTMessageFactory* factory);
 
-  DHTRoutingTable* getRoutingTable() const
-  {
-    return routingTable_;
-  }
+  DHTRoutingTable* getRoutingTable() const { return routingTable_; }
 
   void setRoutingTable(DHTRoutingTable* routingTable);
 };

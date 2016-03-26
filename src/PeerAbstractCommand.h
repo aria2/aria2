@@ -61,23 +61,15 @@ private:
   std::shared_ptr<SocketCore> readCheckTarget_;
   std::shared_ptr<SocketCore> writeCheckTarget_;
   bool noCheck_;
-protected:
-  DownloadEngine* getDownloadEngine() const
-  {
-    return e_;
-  }
 
-  const std::shared_ptr<SocketCore>& getSocket() const
-  {
-    return socket_;
-  }
+protected:
+  DownloadEngine* getDownloadEngine() const { return e_; }
+
+  const std::shared_ptr<SocketCore>& getSocket() const { return socket_; }
 
   void createSocket();
 
-  const std::shared_ptr<Peer>& getPeer() const
-  {
-    return peer_;
-  }
+  const std::shared_ptr<Peer>& getPeer() const { return peer_; }
 
   void setTimeout(std::chrono::seconds timeout)
   {
@@ -85,10 +77,10 @@ protected:
   }
 
   virtual bool prepareForNextPeer(time_t wait);
-  virtual void onAbort() {};
+  virtual void onAbort(){};
   // This function is called when DownloadFailureException is caught right after
   // the invocation of onAbort().
-  virtual void onFailure(const Exception& err) {};
+  virtual void onFailure(const Exception& err){};
   virtual bool exitBeforeExecute() = 0;
   virtual bool executeInternal() = 0;
   void setReadCheckSocket(const std::shared_ptr<SocketCore>& socket);
@@ -98,12 +90,11 @@ protected:
   void setNoCheck(bool check);
   void updateKeepAlive();
   void addCommandSelf();
+
 public:
-  PeerAbstractCommand(cuid_t cuid,
-                      const std::shared_ptr<Peer>& peer,
-                      DownloadEngine* e,
-                      const std::shared_ptr<SocketCore>& s =
-                      std::shared_ptr<SocketCore>());
+  PeerAbstractCommand(
+      cuid_t cuid, const std::shared_ptr<Peer>& peer, DownloadEngine* e,
+      const std::shared_ptr<SocketCore>& s = std::shared_ptr<SocketCore>());
 
   virtual ~PeerAbstractCommand();
 

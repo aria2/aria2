@@ -67,10 +67,8 @@ public:
   virtual void updateWrittenLength(int64_t bytes) = 0;
 
   // `begin' is a offset inside this segment.
-  virtual bool updateHash
-  (int64_t begin,
-   const unsigned char* data,
-   size_t dataLength) = 0;
+  virtual bool updateHash(int64_t begin, const unsigned char* data,
+                          size_t dataLength) = 0;
 
   virtual bool isHashCalculated() const = 0;
 
@@ -89,4 +87,3 @@ public:
 } // namespace aria2
 
 #endif // D_SEGMENT_H
-

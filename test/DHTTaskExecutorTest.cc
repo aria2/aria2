@@ -7,11 +7,12 @@
 
 namespace aria2 {
 
-class DHTTaskExecutorTest:public CppUnit::TestFixture {
+class DHTTaskExecutorTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTTaskExecutorTest);
   CPPUNIT_TEST(testUpdate);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void testUpdate();
 };
@@ -23,13 +24,12 @@ void DHTTaskExecutorTest::testUpdate()
   std::shared_ptr<DHTNode> rn;
   DHTTaskExecutor tex(2);
   std::shared_ptr<MockDHTTask> tasks[] = {
-    std::shared_ptr<MockDHTTask>(new MockDHTTask(rn)),
-    std::shared_ptr<MockDHTTask>(new MockDHTTask(rn)),
-    std::shared_ptr<MockDHTTask>(new MockDHTTask(rn)),
-    std::shared_ptr<MockDHTTask>(new MockDHTTask(rn))
-  };
+      std::shared_ptr<MockDHTTask>(new MockDHTTask(rn)),
+      std::shared_ptr<MockDHTTask>(new MockDHTTask(rn)),
+      std::shared_ptr<MockDHTTask>(new MockDHTTask(rn)),
+      std::shared_ptr<MockDHTTask>(new MockDHTTask(rn))};
   tasks[1]->finished_ = true;
-  for(size_t i = 0; i < arraySize(tasks); ++i) {
+  for (size_t i = 0; i < arraySize(tasks); ++i) {
     tex.addTask(tasks[i]);
   }
   CPPUNIT_ASSERT_EQUAL((size_t)0, tex.getExecutingTaskSize());

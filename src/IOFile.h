@@ -44,10 +44,11 @@ namespace aria2 {
 
 // This is a wrapper base class intended to provide
 // fopen/fclose/fread/fwrite/fgets functionality.
-class IOFile:public OutputFile {
+class IOFile : public OutputFile {
 private:
   typedef void (IOFile::*unspecified_bool_type)() const;
   void goodState() const {}
+
 public:
   IOFile() {}
   virtual ~IOFile() {}
@@ -84,6 +85,7 @@ public:
   static const char WRITE[];
   // Mode for append
   static const char APPEND[];
+
 protected:
   virtual size_t onRead(void* ptr, size_t count) = 0;
   virtual size_t onWrite(const void* ptr, size_t count) = 0;

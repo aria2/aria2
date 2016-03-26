@@ -49,7 +49,7 @@ class SocketCore;
 class DHTConnection;
 class UDPTrackerClient;
 
-class DHTInteractionCommand:public Command {
+class DHTInteractionCommand : public Command {
 private:
   DownloadEngine* e_;
   DHTMessageDispatcher* dispatcher_;
@@ -58,6 +58,7 @@ private:
   std::shared_ptr<SocketCore> readCheckSocket_;
   std::unique_ptr<DHTConnection> connection_;
   std::shared_ptr<UDPTrackerClient> udpTrackerClient_;
+
 public:
   DHTInteractionCommand(cuid_t cuid, DownloadEngine* e);
 
@@ -77,8 +78,8 @@ public:
 
   void setConnection(std::unique_ptr<DHTConnection> connection);
 
-  void setUDPTrackerClient
-  (const std::shared_ptr<UDPTrackerClient>& udpTrackerClient);
+  void setUDPTrackerClient(
+      const std::shared_ptr<UDPTrackerClient>& udpTrackerClient);
 };
 
 } // namespace aria2

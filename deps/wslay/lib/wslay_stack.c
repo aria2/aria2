@@ -40,10 +40,11 @@ struct wslay_stack* wslay_stack_new()
 
 void wslay_stack_free(struct wslay_stack *stack)
 {
+  struct wslay_stack_cell *p;
   if(!stack) {
     return;
   }
-  struct wslay_stack_cell *p = stack->top;
+  p = stack->top;
   while(p) {
     struct wslay_stack_cell *next = p->next;
     free(p);

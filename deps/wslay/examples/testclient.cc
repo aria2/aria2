@@ -496,7 +496,7 @@ int update_reports(const char *host, const char *service)
 
 int main(int argc, char **argv)
 {
-  if(argc < 2) {
+  if(argc < 3) {
     std::cerr << "Usage: " << argv[0] << " HOST SERV" << std::endl;
     exit(EXIT_FAILURE);
   }

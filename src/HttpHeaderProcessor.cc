@@ -75,18 +75,19 @@ enum {
 } // namespace
 
 HttpHeaderProcessor::HttpHeaderProcessor(ParserMode mode)
-  : mode_(mode),
-    state_(mode == CLIENT_PARSER ? PREV_RES_VERSION : PREV_METHOD),
-    lastBytesProcessed_(0),
-    lastFieldHdKey_(HttpHeader::MAX_INTERESTING_HEADER),
-    result_(new HttpHeader())
-{}
+    : mode_(mode),
+      state_(mode == CLIENT_PARSER ? PREV_RES_VERSION : PREV_METHOD),
+      lastBytesProcessed_(0),
+      lastFieldHdKey_(HttpHeader::MAX_INTERESTING_HEADER),
+      result_(new HttpHeader())
+{
+}
 
 HttpHeaderProcessor::~HttpHeaderProcessor() {}
 
 namespace {
-size_t
-getToken(std::string& buf, const unsigned char* data, size_t length, size_t off)
+size_t getToken(std::string& buf, const unsigned char* data, size_t length,
+                size_t off)
 {
   size_t j = off;
   while (j < length && !util::isLws(data[j]) && !util::isCRLF(data[j])) {
@@ -98,10 +99,8 @@ getToken(std::string& buf, const unsigned char* data, size_t length, size_t off)
 } // namespace
 
 namespace {
-size_t getFieldNameToken(std::string& buf,
-                         const unsigned char* data,
-                         size_t length,
-                         size_t off)
+size_t getFieldNameToken(std::string& buf, const unsigned char* data,
+                         size_t length, size_t off)
 {
   size_t j = off;
   while (j < length && data[j] != ':' && !util::isLws(data[j]) &&
@@ -114,8 +113,8 @@ size_t getFieldNameToken(std::string& buf,
 } // namespace
 
 namespace {
-size_t
-getText(std::string& buf, const unsigned char* data, size_t length, size_t off)
+size_t getText(std::string& buf, const unsigned char* data, size_t length,
+               size_t off)
 {
   size_t j = off;
   while (j < length && !util::isCRLF(data[j])) {
@@ -127,9 +126,7 @@ getText(std::string& buf, const unsigned char* data, size_t length, size_t off)
 } // namespace
 
 namespace {
-size_t ignoreText(std::string& buf,
-                  const unsigned char* data,
-                  size_t length,
+size_t ignoreText(std::string& buf, const unsigned char* data, size_t length,
                   size_t off)
 {
   size_t j = off;
@@ -446,7 +443,24 @@ fin:
 
   lastBytesProcessed_ = i;
   headers_.append(&data[0], &data[i]);
-  return state_ == HEADERS_COMPLETE;
+
+  if (state_ != HEADERS_COMPLETE) {
+    return false;
+  }
+
+  // If both transfer-encoding and (content-length or content-range)
+  // are present, delete content-length and content-range.  RFC 7230
+  // says that sender must not send both transfer-encoding and
+  // content-length.  If both present, transfer-encoding overrides
+  // content-length.  There is no text about transfer-encoding and
+  // content-range.  But there is no reason to send transfer-encoding
+  // when range is set.
+  if (result_->defined(HttpHeader::TRANSFER_ENCODING)) {
+    result_->remove(HttpHeader::CONTENT_LENGTH);
+    result_->remove(HttpHeader::CONTENT_RANGE);
+  }
+
+  return true;
 }
 
 bool HttpHeaderProcessor::parse(const std::string& data)
@@ -476,9 +490,6 @@ std::unique_ptr<HttpHeader> HttpHeaderProcessor::getResult()
   return std::move(result_);
 }
 
-std::string HttpHeaderProcessor::getHeaderString() const
-{
-  return headers_;
-}
+std::string HttpHeaderProcessor::getHeaderString() const { return headers_; }
 
 } // namespace aria2

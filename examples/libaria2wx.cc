@@ -38,7 +38,8 @@
 // the main window.
 //
 // Compile and link like this:
-// $ g++ -O2 -Wall -g -std=c++11 `wx-config --cflags` -o libaria2wx libaria2wx.cc `wx-config --libs` -laria2 -pthread
+// $ g++ -O2 -Wall -g -std=c++11 `wx-config --cflags` -o libaria2wx
+// libaria2wx.cc `wx-config --libs` -laria2 -pthread
 #include <iostream>
 #include <chrono>
 #include <thread>
@@ -51,7 +52,7 @@
 
 // Interface to send message to downloader thread from UI thread
 struct Job {
-  virtual ~Job() {};
+  virtual ~Job(){};
   virtual void execute(aria2::Session* session) = 0;
 };
 
@@ -59,15 +60,14 @@ class MainFrame;
 
 // Interface to report back to UI thread from downloader thread
 struct Notification {
-  virtual ~Notification() {};
+  virtual ~Notification(){};
   virtual void notify(MainFrame* frame) = 0;
 };
 
 // std::queue<T> wrapper synchronized by mutex. In this example
 // program, only one thread consumes from the queue, so separating
 // empty() and pop() is not a problem.
-template<typename T>
-class SynchronizedQueue {
+template <typename T> class SynchronizedQueue {
 public:
   SynchronizedQueue() {}
   ~SynchronizedQueue() {}
@@ -88,8 +88,9 @@ public:
     std::lock_guard<std::mutex> l(m_);
     return q_.empty();
   }
+
 private:
-  std::queue<std::unique_ptr<T> > q_;
+  std::queue<std::unique_ptr<T>> q_;
   std::mutex m_;
 };
 
@@ -109,8 +110,9 @@ struct ShutdownJob : public Job {
 // Job to send URI to download and options to downloader thread
 struct AddUriJob : public Job {
   AddUriJob(std::vector<std::string>&& uris, aria2::KeyVals&& options)
-    : uris(uris), options(options)
-  {}
+      : uris(uris), options(options)
+  {
+  }
   virtual void execute(aria2::Session* session)
   {
     // TODO check return value
@@ -148,6 +150,7 @@ public:
   void OnTimer(wxTimerEvent& event);
   void OnAddUri(wxCommandEvent& event);
   void UpdateActiveStatus(const std::vector<DownloadStatus>& v);
+
 private:
   wxTextCtrl* text_;
   wxTimer timer_;
@@ -157,13 +160,9 @@ private:
   DECLARE_EVENT_TABLE()
 };
 
-enum {
-  TIMER_ID = 1
-};
+enum { TIMER_ID = 1 };
 
-enum {
-  MI_ADD_URI = 1
-};
+enum { MI_ADD_URI = 1 };
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 EVT_CLOSE(MainFrame::OnCloseWindow)
@@ -177,6 +176,7 @@ public:
   void OnButton(wxCommandEvent& event);
   wxString GetUri();
   wxString GetOption();
+
 private:
   wxTextCtrl* uriText_;
   wxTextCtrl* optionText_;
@@ -193,7 +193,8 @@ IMPLEMENT_APP(Aria2App)
 
 bool Aria2App::OnInit()
 {
-  if(!wxApp::OnInit()) return false;
+  if (!wxApp::OnInit())
+    return false;
   aria2::libraryInit();
   MainFrame* frame = new MainFrame(wxT("libaria2 GUI example"));
   frame->Show(true);
@@ -207,14 +208,12 @@ int Aria2App::OnExit()
 }
 
 MainFrame::MainFrame(const wxString& title)
-  : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition,
-            wxSize(640, 400)),
-    timer_(this, TIMER_ID),
-    downloaderThread_(downloaderJob, std::ref(jobq_), std::ref(notifyq_))
+    : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(640, 400)),
+      timer_(this, TIMER_ID),
+      downloaderThread_(downloaderJob, std::ref(jobq_), std::ref(notifyq_))
 {
   wxMenu* downloadMenu = new wxMenu;
-  downloadMenu->Append(MI_ADD_URI, wxT("&Add URI"),
-                       wxT("Add URI to download"));
+  downloadMenu->Append(MI_ADD_URI, wxT("&Add URI"), wxT("Add URI to download"));
 
   wxMenuBar* menuBar = new wxMenuBar();
   menuBar->Append(downloadMenu, wxT("&Download"));
@@ -237,35 +236,36 @@ void MainFrame::OnAddUri(wxCommandEvent& WXUNUSED(event))
 {
   AddUriDialog dlg(this);
   int ret = dlg.ShowModal();
-  if(ret == 0) {
-    if(dlg.GetUri().IsEmpty()) {
+  if (ret == 0) {
+    if (dlg.GetUri().IsEmpty()) {
       return;
     }
-    std::vector<std::string> uris = { std::string(dlg.GetUri().mb_str()) };
+    std::vector<std::string> uris = {std::string(dlg.GetUri().mb_str())};
     std::string optstr(dlg.GetOption().mb_str());
     aria2::KeyVals options;
     int keyfirst = 0;
-    for(int i = 0; i < (int)optstr.size(); ++i) {
-      if(optstr[i] == '\n') {
-        keyfirst = i+1;
-      } else if(optstr[i] == '=') {
+    for (int i = 0; i < (int)optstr.size(); ++i) {
+      if (optstr[i] == '\n') {
+        keyfirst = i + 1;
+      }
+      else if (optstr[i] == '=') {
         int j;
-        for(j = i+1; j < (int)optstr.size(); ++j) {
-          if(optstr[j] == '\n') {
+        for (j = i + 1; j < (int)optstr.size(); ++j) {
+          if (optstr[j] == '\n') {
             break;
           }
         }
-        if(i - keyfirst > 0) {
-          options.push_back
-            (std::make_pair(optstr.substr(keyfirst, i - keyfirst),
-                            optstr.substr(i + 1, j - i - 1)));
+        if (i - keyfirst > 0) {
+          options.push_back(
+              std::make_pair(optstr.substr(keyfirst, i - keyfirst),
+                             optstr.substr(i + 1, j - i - 1)));
         }
         keyfirst = j + 1;
         i = j;
       }
     }
-    jobq_.push(std::unique_ptr<Job>(new AddUriJob(std::move(uris),
-                                                  std::move(options))));
+    jobq_.push(std::unique_ptr<Job>(
+        new AddUriJob(std::move(uris), std::move(options))));
   }
 }
 
@@ -281,56 +281,47 @@ void MainFrame::OnCloseWindow(wxCloseEvent& WXUNUSED(event))
 
 void MainFrame::OnTimer(wxTimerEvent& event)
 {
-  while(!notifyq_.empty()) {
+  while (!notifyq_.empty()) {
     std::unique_ptr<Notification> nt = notifyq_.pop();
     nt->notify(this);
   }
 }
 
-template<typename T>
-std::string abbrevsize(T size)
+template <typename T> std::string abbrevsize(T size)
 {
-  if(size >= 1024*1024*1024) {
-    return std::to_string(size/1024/1024/1024)+"G";
-  } else if(size >= 1024*1024) {
-    return std::to_string(size/1024/1024)+"M";
-  } else if(size >= 1024) {
-    return std::to_string(size/1024)+"K";
-  } else {
+  if (size >= 1024 * 1024 * 1024) {
+    return std::to_string(size / 1024 / 1024 / 1024) + "G";
+  }
+  else if (size >= 1024 * 1024) {
+    return std::to_string(size / 1024 / 1024) + "M";
+  }
+  else if (size >= 1024) {
+    return std::to_string(size / 1024) + "K";
+  }
+  else {
     return std::to_string(size);
   }
 }
 
-wxString towxs(const std::string& s)
-{
-  return wxString(s.c_str(), wxConvUTF8);
-}
+wxString towxs(const std::string& s) { return wxString(s.c_str(), wxConvUTF8); }
 
 void MainFrame::UpdateActiveStatus(const std::vector<DownloadStatus>& v)
 {
   text_->Clear();
-  for(auto& a : v) {
-    *text_ << wxT("[")
-           << towxs(aria2::gidToHex(a.gid))
-           << wxT("] ")
-           << towxs(abbrevsize(a.completedLength))
-           << wxT("/")
-           << towxs(abbrevsize(a.totalLength))
-           << wxT("(")
-           << (a.totalLength != 0 ? a.completedLength*100/a.totalLength : 0)
-           << wxT("%)")
-           << wxT(" D:")
-           << towxs(abbrevsize(a.downloadSpeed))
-           << wxT(" U:")
-           << towxs(abbrevsize(a.uploadSpeed))
-           << wxT("\n")
+  for (auto& a : v) {
+    *text_ << wxT("[") << towxs(aria2::gidToHex(a.gid)) << wxT("] ")
+           << towxs(abbrevsize(a.completedLength)) << wxT("/")
+           << towxs(abbrevsize(a.totalLength)) << wxT("(")
+           << (a.totalLength != 0 ? a.completedLength * 100 / a.totalLength : 0)
+           << wxT("%)") << wxT(" D:") << towxs(abbrevsize(a.downloadSpeed))
+           << wxT(" U:") << towxs(abbrevsize(a.uploadSpeed)) << wxT("\n")
            << wxT("File:") << towxs(a.filename) << wxT("\n");
   }
 }
 
 AddUriDialog::AddUriDialog(wxWindow* parent)
-  : wxDialog(parent, wxID_ANY, wxT("Add URI"), wxDefaultPosition,
-             wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
+    : wxDialog(parent, wxID_ANY, wxT("Add URI"), wxDefaultPosition,
+               wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
 {
   wxPanel* panel = new wxPanel(this, wxID_ANY);
   wxBoxSizer* box = new wxBoxSizer(wxVERTICAL);
@@ -339,9 +330,8 @@ AddUriDialog::AddUriDialog(wxWindow* parent)
   uriText_ = new wxTextCtrl(panel, wxID_ANY);
   box->Add(uriText_, wxSizerFlags().Align(wxGROW));
   // Option multi text input
-  box->Add(new wxStaticText
-           (panel, wxID_ANY,
-            wxT("Options (key=value pair per line, e.g. dir=/tmp")));
+  box->Add(new wxStaticText(
+      panel, wxID_ANY, wxT("Options (key=value pair per line, e.g. dir=/tmp")));
   optionText_ = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxDefaultPosition,
                                wxDefaultSize, wxTE_MULTILINE);
   box->Add(optionText_, wxSizerFlags().Align(wxGROW));
@@ -363,38 +353,25 @@ AddUriDialog::AddUriDialog(wxWindow* parent)
 void AddUriDialog::OnButton(wxCommandEvent& event)
 {
   int ret = -1;
-  if(event.GetEventObject() == okBtn_) {
+  if (event.GetEventObject() == okBtn_) {
     ret = 0;
   }
   EndModal(ret);
 }
 
-wxString AddUriDialog::GetUri()
-{
-  return uriText_->GetValue();
-}
+wxString AddUriDialog::GetUri() { return uriText_->GetValue(); }
 
-wxString AddUriDialog::GetOption()
-{
-  return optionText_->GetValue();
-}
+wxString AddUriDialog::GetOption() { return optionText_->GetValue(); }
 
 struct DownloadStatusNotification : public Notification {
-  DownloadStatusNotification(std::vector<DownloadStatus>&& v)
-    : v(v) {}
-  virtual void notify(MainFrame* frame)
-  {
-    frame->UpdateActiveStatus(v);
-  }
+  DownloadStatusNotification(std::vector<DownloadStatus>&& v) : v(v) {}
+  virtual void notify(MainFrame* frame) { frame->UpdateActiveStatus(v); }
   std::vector<DownloadStatus> v;
 };
 
 struct ShutdownNotification : public Notification {
   ShutdownNotification() {}
-  virtual void notify(MainFrame* frame)
-  {
-    frame->Close();
-  }
+  virtual void notify(MainFrame* frame) { frame->Close(); }
 };
 
 int downloaderJob(JobQueue& jobq, NotifyQueue& notifyq)
@@ -406,32 +383,32 @@ int downloaderJob(JobQueue& jobq, NotifyQueue& notifyq)
   config.keepRunning = true;
   session = aria2::sessionNew(aria2::KeyVals(), config);
   auto start = std::chrono::steady_clock::now();
-  for(;;) {
+  for (;;) {
     int rv = aria2::run(session, aria2::RUN_ONCE);
-    if(rv != 1) {
+    if (rv != 1) {
       break;
     }
     auto now = std::chrono::steady_clock::now();
-    auto count = std::chrono::duration_cast<std::chrono::milliseconds>
-      (now - start).count();
-    while(!jobq.empty()) {
+    auto count = std::chrono::duration_cast<std::chrono::milliseconds>(
+                     now - start).count();
+    while (!jobq.empty()) {
       std::unique_ptr<Job> job = jobq.pop();
       job->execute(session);
     }
-    if(count >= 900) {
+    if (count >= 900) {
       start = now;
       std::vector<aria2::A2Gid> gids = aria2::getActiveDownload(session);
       std::vector<DownloadStatus> v;
-      for(auto gid : gids) {
+      for (auto gid : gids) {
         aria2::DownloadHandle* dh = aria2::getDownloadHandle(session, gid);
-        if(dh) {
+        if (dh) {
           DownloadStatus st;
           st.gid = gid;
           st.totalLength = dh->getTotalLength();
           st.completedLength = dh->getCompletedLength();
           st.downloadSpeed = dh->getDownloadSpeed();
           st.uploadSpeed = dh->getUploadSpeed();
-          if(dh->getNumFiles() > 0) {
+          if (dh->getNumFiles() > 0) {
             aria2::FileData file = dh->getFile(1);
             st.filename = file.path;
           }
@@ -439,8 +416,8 @@ int downloaderJob(JobQueue& jobq, NotifyQueue& notifyq)
           aria2::deleteDownloadHandle(dh);
         }
       }
-      notifyq.push(std::unique_ptr<Notification>
-                   (new DownloadStatusNotification(std::move(v))));
+      notifyq.push(std::unique_ptr<Notification>(
+          new DownloadStatusNotification(std::move(v))));
     }
   }
   int rv = aria2::sessionFinal(session);
@@ -449,4 +426,3 @@ int downloaderJob(JobQueue& jobq, NotifyQueue& notifyq)
   notifyq.push(std::unique_ptr<Notification>(new ShutdownNotification()));
   return rv;
 }
-

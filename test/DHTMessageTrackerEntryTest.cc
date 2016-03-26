@@ -12,12 +12,13 @@
 
 namespace aria2 {
 
-class DHTMessageTrackerEntryTest:public CppUnit::TestFixture {
+class DHTMessageTrackerEntryTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTMessageTrackerEntryTest);
   CPPUNIT_TEST(testMatch);
   CPPUNIT_TEST(testHandleTimeout);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -27,7 +28,6 @@ public:
 
   void testHandleTimeout();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DHTMessageTrackerEntryTest);
 
@@ -42,8 +42,7 @@ void DHTMessageTrackerEntryTest::testMatch()
 
     DHTMessageTrackerEntry entry(msg1->getRemoteNode(),
                                  msg1->getTransactionID(),
-                                 msg1->getMessageType(),
-                                 30_s);
+                                 msg1->getMessageType(), 30_s);
 
     CPPUNIT_ASSERT(entry.match(msg1->getTransactionID(),
                                msg1->getRemoteNode()->getIPAddress(),
@@ -51,13 +50,12 @@ void DHTMessageTrackerEntryTest::testMatch()
     CPPUNIT_ASSERT(!entry.match(msg2->getTransactionID(),
                                 msg2->getRemoteNode()->getIPAddress(),
                                 msg2->getRemoteNode()->getPort()));
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
 }
 
-void DHTMessageTrackerEntryTest::testHandleTimeout()
-{
-}
+void DHTMessageTrackerEntryTest::testHandleTimeout() {}
 
 } // namespace aria2

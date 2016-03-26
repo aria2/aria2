@@ -62,7 +62,7 @@ private:
 
 public:
   Cookie();
-  Cookie(std::string name, std::string value, time_t  expiryTime,
+  Cookie(std::string name, std::string value, time_t expiryTime,
          bool persistent, std::string domain, bool hostOnly, std::string path,
          bool secure, bool httpOnly, time_t creationTime);
 
@@ -77,122 +77,71 @@ public:
 
   bool isExpired(time_t base) const;
 
-  const std::string& getName() const
-  {
-    return name_;
-  }
+  const std::string& getName() const { return name_; }
 
   void setName(std::string name);
 
-  template<typename InputIterator>
+  template <typename InputIterator>
   void setName(InputIterator first, InputIterator last)
   {
     name_.assign(first, last);
   }
 
-  const std::string& getValue() const
-  {
-    return value_;
-  }
+  const std::string& getValue() const { return value_; }
 
   void setValue(std::string value);
 
-  template<typename InputIterator>
+  template <typename InputIterator>
   void setValue(InputIterator first, InputIterator last)
   {
     value_.assign(first, last);
   }
 
-  time_t getExpiryTime() const
-  {
-    return expiryTime_;
-  }
+  time_t getExpiryTime() const { return expiryTime_; }
 
-  void setExpiryTime(time_t expiryTime)
-  {
-    expiryTime_ = expiryTime;
-  }
+  void setExpiryTime(time_t expiryTime) { expiryTime_ = expiryTime; }
 
-  bool getPersistent() const
-  {
-    return persistent_;
-  }
+  bool getPersistent() const { return persistent_; }
 
-  void setPersistent(bool persistent)
-  {
-    persistent_ = persistent;
-  }
+  void setPersistent(bool persistent) { persistent_ = persistent; }
 
-  const std::string& getDomain() const
-  {
-    return domain_;
-  }
+  const std::string& getDomain() const { return domain_; }
 
   void setDomain(std::string domain);
 
-  template<typename InputIterator>
+  template <typename InputIterator>
   void setDomain(InputIterator first, InputIterator last)
   {
     domain_.assign(first, last);
   }
 
-  bool getHostOnly() const
-  {
-    return hostOnly_;
-  }
+  bool getHostOnly() const { return hostOnly_; }
 
-  void setHostOnly(bool hostOnly)
-  {
-    hostOnly_ = hostOnly;
-  }
+  void setHostOnly(bool hostOnly) { hostOnly_ = hostOnly; }
 
-  const std::string& getPath() const
-  {
-    return path_;
-  }
+  const std::string& getPath() const { return path_; }
 
   void setPath(std::string path);
 
-  template<typename InputIterator>
+  template <typename InputIterator>
   void setPath(InputIterator first, InputIterator last)
   {
     path_.assign(first, last);
   }
 
-  bool getSecure() const
-  {
-    return secure_;
-  }
+  bool getSecure() const { return secure_; }
 
-  void setSecure(bool secure)
-  {
-    secure_ = secure;
-  }
+  void setSecure(bool secure) { secure_ = secure; }
 
-  bool getHttpOnly() const
-  {
-    return httpOnly_;
-  }
+  bool getHttpOnly() const { return httpOnly_; }
 
-  void setHttpOnly(bool httpOnly)
-  {
-    httpOnly_ = httpOnly;
-  }
+  void setHttpOnly(bool httpOnly) { httpOnly_ = httpOnly; }
 
-  time_t getCreationTime() const
-  {
-    return creationTime_;
-  }
+  time_t getCreationTime() const { return creationTime_; }
 
-  void setCreationTime(time_t creationTime)
-  {
-    creationTime_ = creationTime;
-  }
+  void setCreationTime(time_t creationTime) { creationTime_ = creationTime; }
 
-  time_t getLastAccessTime() const
-  {
-    return lastAccessTime_;
-  }
+  time_t getLastAccessTime() const { return lastAccessTime_; }
 
   void setLastAccessTime(time_t lastAccessTime)
   {

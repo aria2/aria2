@@ -45,13 +45,9 @@ namespace aria2 {
 
 class HttpHeader;
 
-class HttpHeaderProcessor
-{
+class HttpHeaderProcessor {
 public:
-  enum ParserMode {
-    CLIENT_PARSER,
-    SERVER_PARSER
-  };
+  enum ParserMode { CLIENT_PARSER, SERVER_PARSER };
 
   HttpHeaderProcessor(ParserMode mode);
 

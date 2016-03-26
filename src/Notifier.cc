@@ -47,10 +47,10 @@ void Notifier::addDownloadEventListener(DownloadEventListener* listener)
   listeners_.push_back(listener);
 }
 
-void Notifier::notifyDownloadEvent
-(DownloadEvent event, const RequestGroup* group)
+void Notifier::notifyDownloadEvent(DownloadEvent event,
+                                   const RequestGroup* group)
 {
-  for(auto listener : listeners_) {
+  for (auto listener : listeners_) {
     listener->onEvent(event, group);
   }
 }

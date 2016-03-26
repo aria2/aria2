@@ -6,15 +6,15 @@
 
 namespace aria2 {
 
-class SequentialPickerTest:public CppUnit::TestFixture {
+class SequentialPickerTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(SequentialPickerTest);
   CPPUNIT_TEST(testPick);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void testPick();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(SequentialPickerTest);
 

@@ -51,8 +51,8 @@ public:
   DownloadEngineFactory();
 
   std::unique_ptr<DownloadEngine>
-  newDownloadEngine
-  (Option* op, std::vector<std::shared_ptr<RequestGroup>> requestGroups);
+  newDownloadEngine(Option* op,
+                    std::vector<std::shared_ptr<RequestGroup>> requestGroups);
 };
 
 } // namespace aria2

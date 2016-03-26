@@ -36,28 +36,32 @@
 
 namespace aria2 {
 
-Sqlite3MozCookieParser::Sqlite3MozCookieParser(const std::string& filename):
-  Sqlite3CookieParser(filename) {}
+Sqlite3MozCookieParser::Sqlite3MozCookieParser(const std::string& filename)
+    : Sqlite3CookieParser(filename)
+{
+}
 
 Sqlite3MozCookieParser::~Sqlite3MozCookieParser() {}
 
 const char* Sqlite3MozCookieParser::getQuery() const
 {
-  return
-    "SELECT host, path, isSecure, expiry, name, value, lastAccessed"
-    " FROM moz_cookies";
+  return "SELECT host, path, isSecure, expiry, name, value, lastAccessed"
+         " FROM moz_cookies";
 }
 
-Sqlite3ChromiumCookieParser::Sqlite3ChromiumCookieParser
-(const std::string& filename):Sqlite3CookieParser(filename) {}
+Sqlite3ChromiumCookieParser::Sqlite3ChromiumCookieParser(
+    const std::string& filename)
+    : Sqlite3CookieParser(filename)
+{
+}
 
 Sqlite3ChromiumCookieParser::~Sqlite3ChromiumCookieParser() {}
 
 const char* Sqlite3ChromiumCookieParser::getQuery() const
 {
-  return
-    "SELECT host_key, path, secure, expires_utc, name, value, last_access_utc"
-    " FROM cookies";
+  return "SELECT host_key, path, secure, expires_utc, name, value, "
+         "last_access_utc"
+         " FROM cookies";
 }
 
 } // namespace aria2

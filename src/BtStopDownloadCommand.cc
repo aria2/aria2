@@ -46,22 +46,22 @@
 
 namespace aria2 {
 
-BtStopDownloadCommand::BtStopDownloadCommand
-(cuid_t cuid,
- RequestGroup* requestGroup,
- DownloadEngine* e,
- std::chrono::seconds timeout)
-  : TimeBasedCommand(cuid, e, 1_s),
-    requestGroup_(requestGroup),
-    timeout_(std::move(timeout))
-{}
+BtStopDownloadCommand::BtStopDownloadCommand(cuid_t cuid,
+                                             RequestGroup* requestGroup,
+                                             DownloadEngine* e,
+                                             std::chrono::seconds timeout)
+    : TimeBasedCommand(cuid, e, 1_s),
+      requestGroup_(requestGroup),
+      timeout_(std::move(timeout))
+{
+}
 
 void BtStopDownloadCommand::preProcess()
 {
-  if(btRuntime_->isHalt() || pieceStorage_->downloadFinished()) {
+  if (btRuntime_->isHalt() || pieceStorage_->downloadFinished()) {
     enableExit();
   }
-  if(checkPoint_.difference(global::wallclock()) >= timeout_) {
+  if (checkPoint_.difference(global::wallclock()) >= timeout_) {
     A2_LOG_NOTICE(fmt(_("GID#%s Stop downloading torrent due to"
                         " --bt-stop-timeout option."),
                       GroupId::toHex(requestGroup_->getGID()).c_str()));
@@ -74,7 +74,7 @@ void BtStopDownloadCommand::preProcess()
 void BtStopDownloadCommand::process()
 {
   NetStat& stat = requestGroup_->getDownloadContext()->getNetStat();
-  if(stat.calculateDownloadSpeed() > 0) {
+  if (stat.calculateDownloadSpeed() > 0) {
     checkPoint_ = global::wallclock();
   }
 }

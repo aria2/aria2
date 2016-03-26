@@ -42,14 +42,10 @@
 namespace aria2 {
 
 namespace {
-constexpr auto WINDOW_TIME = 15_s;
+constexpr auto WINDOW_TIME = 10_s;
 } // namespace
 
-SpeedCalc::SpeedCalc()
-  : accumulatedLength_(0),
-    bytesWindow_(0),
-    maxSpeed_(0)
-{}
+SpeedCalc::SpeedCalc() : accumulatedLength_(0), bytesWindow_(0), maxSpeed_(0) {}
 
 void SpeedCalc::reset()
 {
@@ -62,8 +58,8 @@ void SpeedCalc::reset()
 
 void SpeedCalc::removeStaleTimeSlot(const Timer& now)
 {
-  while(!timeSlots_.empty()) {
-    if(timeSlots_[0].first.difference(now) <= WINDOW_TIME) {
+  while (!timeSlots_.empty()) {
+    if (timeSlots_[0].first.difference(now) <= WINDOW_TIME) {
       break;
     }
     bytesWindow_ -= timeSlots_[0].second;
@@ -75,28 +71,54 @@ int SpeedCalc::calculateSpeed()
 {
   const auto& now = global::wallclock();
   removeStaleTimeSlot(now);
-  if(timeSlots_.empty()) {
+  if (timeSlots_.empty()) {
     return 0;
   }
   auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
                      timeSlots_[0].first.difference(now)).count();
-  if(elapsed <= 0) {
+  if (elapsed <= 0) {
     elapsed = 1;
   }
-  int speed = bytesWindow_*1000/elapsed;
+  int speed = bytesWindow_ * 1000 / elapsed;
   maxSpeed_ = std::max(speed, maxSpeed_);
   return speed;
+}
+
+int SpeedCalc::calculateNewestSpeed(int seconds)
+{
+  const auto& now = global::wallclock();
+  removeStaleTimeSlot(now);
+
+  int64_t bytesCount(0);
+  auto it = timeSlots_.rbegin();
+  while (it != timeSlots_.rend()) {
+    if (it->first.difference(now) > seconds * 1_s) {
+      break;
+    }
+    bytesCount += (*it++).second;
+  }
+  if (it == timeSlots_.rbegin()) {
+    return 0;
+  }
+
+  auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+                     (*--it).first.difference(now)).count();
+  if (elapsed <= 0) {
+    elapsed = 1;
+  }
+  return bytesCount * (1000. / elapsed);
 }
 
 void SpeedCalc::update(size_t bytes)
 {
   const auto& now = global::wallclock();
   removeStaleTimeSlot(now);
-  if(timeSlots_.empty() ||
-     std::chrono::duration_cast<std::chrono::seconds>(
-         timeSlots_.back().first.difference(now)) >= 1_s) {
+  if (timeSlots_.empty() ||
+      std::chrono::duration_cast<std::chrono::seconds>(
+          timeSlots_.back().first.difference(now)) >= 1_s) {
     timeSlots_.push_back(std::make_pair(now, bytes));
-  } else {
+  }
+  else {
     timeSlots_.back().second += bytes;
   }
   bytesWindow_ += bytes;
@@ -109,10 +131,11 @@ int SpeedCalc::calculateAvgSpeed() const
                           start_.difference(global::wallclock())).count();
   // if milliElapsed is too small, the average speed is rubbish, better
   // return 0
-  if(milliElapsed > 4) {
-    int speed = accumulatedLength_*1000/milliElapsed;
+  if (milliElapsed > 4) {
+    int speed = accumulatedLength_ * 1000 / milliElapsed;
     return speed;
-  } else {
+  }
+  else {
     return 0;
   }
 }

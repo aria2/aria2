@@ -6,17 +6,17 @@
 
 namespace aria2 {
 
-class ParamedStringTest:public CppUnit::TestFixture {
+class ParamedStringTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(ParamedStringTest);
   CPPUNIT_TEST(testExpand);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void testExpand();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( ParamedStringTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(ParamedStringTest);
 
 void ParamedStringTest::testExpand()
 {
@@ -74,7 +74,8 @@ void ParamedStringTest::testExpand()
   try {
     paramed_string::expand(s.begin(), s.end(), std::back_inserter(res));
     CPPUNIT_FAIL("Exception must be thrown.");
-  } catch(const Exception& e) {
+  }
+  catch (const Exception& e) {
   }
 
   // Invalid loop range
@@ -82,7 +83,8 @@ void ParamedStringTest::testExpand()
   try {
     paramed_string::expand(s.begin(), s.end(), std::back_inserter(res));
     CPPUNIT_FAIL("Exception must be thrown.");
-  } catch(const Exception& e) {
+  }
+  catch (const Exception& e) {
   }
 
   // Invalid loop range
@@ -90,7 +92,8 @@ void ParamedStringTest::testExpand()
   try {
     paramed_string::expand(s.begin(), s.end(), std::back_inserter(res));
     CPPUNIT_FAIL("Exception must be thrown.");
-  } catch(const Exception& e) {
+  }
+  catch (const Exception& e) {
   }
 
   // Missing loop step
@@ -98,7 +101,8 @@ void ParamedStringTest::testExpand()
   try {
     paramed_string::expand(s.begin(), s.end(), std::back_inserter(res));
     CPPUNIT_FAIL("Exception must be thrown.");
-  } catch(const Exception& e) {
+  }
+  catch (const Exception& e) {
   }
 
   // Range overflow
@@ -106,7 +110,8 @@ void ParamedStringTest::testExpand()
   try {
     paramed_string::expand(s.begin(), s.end(), std::back_inserter(res));
     CPPUNIT_FAIL("Exception must be thrown.");
-  } catch(const Exception& e) {
+  }
+  catch (const Exception& e) {
   }
 
   // Step overflow
@@ -114,7 +119,8 @@ void ParamedStringTest::testExpand()
   try {
     paramed_string::expand(s.begin(), s.end(), std::back_inserter(res));
     CPPUNIT_FAIL("Exception must be thrown.");
-  } catch(const Exception& e) {
+  }
+  catch (const Exception& e) {
   }
 
   s = "alpha:[c-e]:bravo";
@@ -175,7 +181,8 @@ void ParamedStringTest::testExpand()
   try {
     paramed_string::expand(s.begin(), s.end(), std::back_inserter(res));
     CPPUNIT_FAIL("Exception must be thrown.");
-  } catch(const Exception& e) {
+  }
+  catch (const Exception& e) {
   }
 
   // Invalid loop range
@@ -183,7 +190,8 @@ void ParamedStringTest::testExpand()
   try {
     paramed_string::expand(s.begin(), s.end(), std::back_inserter(res));
     CPPUNIT_FAIL("Exception must be thrown.");
-  } catch(const Exception& e) {
+  }
+  catch (const Exception& e) {
   }
 
   // Combination of {} and []

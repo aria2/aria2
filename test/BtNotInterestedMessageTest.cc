@@ -11,7 +11,7 @@
 
 namespace aria2 {
 
-class BtNotInterestedMessageTest:public CppUnit::TestFixture {
+class BtNotInterestedMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtNotInterestedMessageTest);
   CPPUNIT_TEST(testCreate);
@@ -20,6 +20,7 @@ class BtNotInterestedMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testOnSendComplete);
   CPPUNIT_TEST(testToString);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void testCreate();
   void testCreateMessage();
@@ -28,14 +29,14 @@ public:
   void testToString();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(BtNotInterestedMessageTest);
 
-void BtNotInterestedMessageTest::testCreate() {
+void BtNotInterestedMessageTest::testCreate()
+{
   unsigned char msg[5];
   bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 3);
-  std::shared_ptr<BtNotInterestedMessage> pm
-    (BtNotInterestedMessage::create(&msg[4], 1));
+  std::shared_ptr<BtNotInterestedMessage> pm(
+      BtNotInterestedMessage::create(&msg[4], 1));
   CPPUNIT_ASSERT_EQUAL((uint8_t)3, pm->getId());
 
   // case: payload size is wrong
@@ -44,7 +45,8 @@ void BtNotInterestedMessageTest::testCreate() {
     bittorrent::createPeerMessageString(msg, sizeof(msg), 2, 3);
     BtNotInterestedMessage::create(&msg[4], 2);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(...) {
+  }
+  catch (...) {
   }
   // case: id is wrong
   try {
@@ -52,20 +54,23 @@ void BtNotInterestedMessageTest::testCreate() {
     bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 4);
     BtNotInterestedMessage::create(&msg[4], 1);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(...) {
+  }
+  catch (...) {
   }
 }
 
-void BtNotInterestedMessageTest::testCreateMessage() {
+void BtNotInterestedMessageTest::testCreateMessage()
+{
   BtNotInterestedMessage msg;
   unsigned char data[5];
   bittorrent::createPeerMessageString(data, sizeof(data), 1, 3);
   unsigned char* rawmsg = msg.createMessage();
   CPPUNIT_ASSERT(memcmp(rawmsg, data, 5) == 0);
-  delete [] rawmsg;
+  delete[] rawmsg;
 }
 
-void BtNotInterestedMessageTest::testDoReceivedAction() {
+void BtNotInterestedMessageTest::testDoReceivedAction()
+{
   std::shared_ptr<Peer> peer(new Peer("host", 6969));
   peer->allocateSessionResource(1_k, 1_m);
   peer->peerInterested(true);
@@ -86,7 +91,8 @@ void BtNotInterestedMessageTest::testDoReceivedAction() {
   CPPUNIT_ASSERT_EQUAL(1, peerStorage->getNumChokeExecuted());
 }
 
-void BtNotInterestedMessageTest::testOnSendComplete() {
+void BtNotInterestedMessageTest::testOnSendComplete()
+{
   std::shared_ptr<Peer> peer(new Peer("host", 6969));
   peer->allocateSessionResource(1_k, 1_m);
   peer->amInterested(true);
@@ -98,7 +104,8 @@ void BtNotInterestedMessageTest::testOnSendComplete() {
   CPPUNIT_ASSERT(!peer->amInterested());
 }
 
-void BtNotInterestedMessageTest::testToString() {
+void BtNotInterestedMessageTest::testToString()
+{
   BtNotInterestedMessage msg;
   CPPUNIT_ASSERT_EQUAL(std::string("not interested"), msg.toString());
 }

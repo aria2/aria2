@@ -41,7 +41,7 @@
 #include <random>
 
 #ifdef __MINGW32__
-#  include <wincrypt.h>
+#include <wincrypt.h>
 #endif
 
 namespace aria2 {
@@ -55,11 +55,11 @@ private:
 #ifdef __MINGW32__
   HCRYPTPROV provider_;
 #else
-  std::random_device dev_;
+  std::mt19937 gen_;
 #endif // ! __MINGW32__
 
 public:
-  typedef std::random_device::result_type result_type;
+  typedef std::mt19937::result_type result_type;
 
   static const std::unique_ptr<SimpleRandomizer>& getInstance();
 
@@ -70,12 +70,9 @@ public:
    */
   virtual long int getRandomNumber(long int to) CXX11_OVERRIDE;
 
-  void getRandomBytes(unsigned char *buf, size_t len);
+  void getRandomBytes(unsigned char* buf, size_t len);
 
-  long int operator()(long int to)
-  {
-    return getRandomNumber(to);
-  }
+  long int operator()(long int to) { return getRandomNumber(to); }
 
   result_type operator()()
   {
@@ -94,10 +91,7 @@ public:
     return std::numeric_limits<result_type>::max();
   }
 
-  static double entropy()
-  {
-    return 0.0;
-  }
+  static double entropy() { return 0.0; }
 };
 
 } // namespace aria2

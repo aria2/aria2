@@ -4,7 +4,7 @@
 
 namespace aria2 {
 
-class SegListTest:public CppUnit::TestFixture {
+class SegListTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(SegListTest);
   CPPUNIT_TEST(testNext);
@@ -12,13 +12,13 @@ class SegListTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testClear);
   CPPUNIT_TEST(testNormalize);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void testNext();
   void testPeek();
   void testClear();
   void testNormalize();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(SegListTest);
 
@@ -28,15 +28,15 @@ void SegListTest::testNext()
   sgl.add(-500, -498);
   sgl.add(5, 10);
   sgl.add(1, 5);
-  for(int i = -500; i < -498; ++i) {
+  for (int i = -500; i < -498; ++i) {
     CPPUNIT_ASSERT(sgl.hasNext());
     CPPUNIT_ASSERT_EQUAL(i, sgl.next());
   }
-  for(int i = 5; i < 10; ++i) {
+  for (int i = 5; i < 10; ++i) {
     CPPUNIT_ASSERT(sgl.hasNext());
     CPPUNIT_ASSERT_EQUAL(i, sgl.next());
   }
-  for(int i = 1; i < 5; ++i) {
+  for (int i = 1; i < 5; ++i) {
     CPPUNIT_ASSERT(sgl.hasNext());
     CPPUNIT_ASSERT_EQUAL(i, sgl.next());
   }
@@ -80,11 +80,11 @@ void SegListTest::testNormalize()
   sgl.add(2, 4);
   sgl.add(20, 21);
   sgl.normalize();
-  for(int i = 0; i < 5; ++i) {
+  for (int i = 0; i < 5; ++i) {
     CPPUNIT_ASSERT(sgl.hasNext());
     CPPUNIT_ASSERT_EQUAL(i, sgl.next());
   }
-  for(int i = 10; i < 16; ++i) {
+  for (int i = 10; i < 16; ++i) {
     CPPUNIT_ASSERT(sgl.hasNext());
     CPPUNIT_ASSERT_EQUAL(i, sgl.next());
   }

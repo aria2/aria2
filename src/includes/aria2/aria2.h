@@ -95,7 +95,7 @@ typedef uint64_t A2Gid;
  *
  * The type of Key/Value pairs.
  */
-typedef std::vector<std::pair<std::string, std::string> > KeyVals;
+typedef std::vector<std::pair<std::string, std::string>> KeyVals;
 
 /**
  * @enum
@@ -291,11 +291,8 @@ bool isNull(A2Gid gid);
  * the queue, it is appended at the end of the queue.  This function
  * returns 0 if it succeeds, or negative error code.
  */
-int addUri(Session* session,
-           A2Gid* gid,
-           const std::vector<std::string>& uris,
-           const KeyVals& options,
-           int position = -1);
+int addUri(Session* session, A2Gid* gid, const std::vector<std::string>& uris,
+           const KeyVals& options, int position = -1);
 
 /**
  * @function
@@ -311,10 +308,8 @@ int addUri(Session* session,
  * the queue, it is appended at the end of the queue. This function
  * returns 0 if it succeeds, or negative error code.
  */
-int addMetalink(Session* session,
-                std::vector<A2Gid>* gids,
-                const std::string& metalinkFile,
-                const KeyVals& options,
+int addMetalink(Session* session, std::vector<A2Gid>* gids,
+                const std::string& metalinkFile, const KeyVals& options,
                 int position = -1);
 
 /**
@@ -339,12 +334,9 @@ int addMetalink(Session* session,
  * This function returns 0 if it succeeds, or negative error code.
  *
  */
-int addTorrent(Session* session,
-               A2Gid* gid,
-               const std::string& torrentFile,
+int addTorrent(Session* session, A2Gid* gid, const std::string& torrentFile,
                const std::vector<std::string>& webSeedUris,
-               const KeyVals& options,
-               int position = -1);
+               const KeyVals& options, int position = -1);
 
 /**
  * @function
@@ -352,11 +344,8 @@ int addTorrent(Session* session,
  * Same as :func:`addTorrent()` with an empty vector as the
  * |webSeedUris|.
  */
-int addTorrent(Session* session,
-               A2Gid* gid,
-               const std::string& torrentFile,
-               const KeyVals& options,
-               int position = -1);
+int addTorrent(Session* session, A2Gid* gid, const std::string& torrentFile,
+               const KeyVals& options, int position = -1);
 
 /**
  * @function
@@ -691,7 +680,7 @@ struct BtMetaInfoData {
    * ``announce`` and no ``announce-list``, ``announce`` is converted
    * to ``announce-list`` format.
    */
-  std::vector<std::vector<std::string> > announceList;
+  std::vector<std::vector<std::string>> announceList;
   /**
    * ``comment`` for the torrent. ``comment.utf-8`` is used if
    * available.
@@ -818,6 +807,12 @@ public:
    * downloads, this function returns empty array.
    */
   virtual const std::vector<A2Gid>& getFollowedBy() = 0;
+  /**
+   * Returns the GID of the download which generated this download.
+   * This is a reverse link of
+   * :func:`DownloadHandle::getFollowedBy()`.
+   */
+  virtual A2Gid getFollowing() = 0;
   /**
    * Returns the GID of a parent download. Some downloads are a part
    * of another download. For example, if a file in Metalink has

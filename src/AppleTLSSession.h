@@ -41,8 +41,7 @@
 
 namespace aria2 {
 
-class AppleTLSSession : public TLSSession
-{
+class AppleTLSSession : public TLSSession {
   enum state_t {
     st_constructed,
     st_initialized,
@@ -95,8 +94,7 @@ public:
   // if the underlying transport blocks, or TLS_ERR_ERROR.
   // When returning TLS_ERR_ERROR, provide certificate validation error
   // in |handshakeErr|.
-  virtual int tlsConnect(const std::string& hostname,
-                         TLSVersion& version,
+  virtual int tlsConnect(const std::string& hostname, TLSVersion& version,
                          std::string& handshakeErr) CXX11_OVERRIDE;
 
   // Performs server side handshake. This function returns TLS_ERR_OK
@@ -107,9 +105,11 @@ public:
   // Returns last error string
   virtual std::string getLastErrorString() CXX11_OVERRIDE;
 
+  virtual size_t getRecvBufferedLength() CXX11_OVERRIDE { return 0; }
+
 private:
-  static OSStatus
-  SocketWrite(SSLConnectionRef conn, const void* data, size_t* len)
+  static OSStatus SocketWrite(SSLConnectionRef conn, const void* data,
+                              size_t* len)
   {
     return ((AppleTLSSession*)conn)->sockWrite(data, len);
   }

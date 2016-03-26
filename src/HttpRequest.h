@@ -56,7 +56,6 @@ class AuthConfig;
 
 class HttpRequest {
 private:
-
   static const std::string USER_AGENT;
 
   std::shared_ptr<Request> request_;
@@ -99,20 +98,20 @@ private:
 
   bool acceptGzip_;
 
+  // Don't send Want-Digest header field
+  bool noWantDigest_;
+
   std::pair<std::string, std::string> getProxyAuthString() const;
 
 public:
   HttpRequest();
   ~HttpRequest();
 
-  const std::shared_ptr<Segment>& getSegment() const
-  {
-    return segment_;
-  }
+  const std::shared_ptr<Segment>& getSegment() const { return segment_; }
 
-  void setSegment(const std::shared_ptr<Segment>& segment);
+  void setSegment(std::shared_ptr<Segment> segment);
 
-  void setRequest(const std::shared_ptr<Request>& request);
+  void setRequest(std::shared_ptr<Request> request);
 
   int64_t getEntityLength() const;
 
@@ -142,10 +141,7 @@ public:
    */
   bool isRangeSatisfied(const Range& range) const;
 
-  const std::shared_ptr<Request>& getRequest() const
-  {
-    return request_;
-  }
+  const std::shared_ptr<Request>& getRequest() const { return request_; }
 
   int64_t getStartByte() const;
 
@@ -170,7 +166,7 @@ public:
 
   void disableContentEncoding();
 
-  void setUserAgent(const std::string& userAgent);
+  void setUserAgent(std::string userAgent);
 
   // accepts multiline headers, delimited by LF
   void addHeader(const std::string& headers);
@@ -179,10 +175,7 @@ public:
 
   void addAcceptType(const std::string& type);
 
-  void setAcceptMetalink(bool f)
-  {
-    acceptMetalink_ = f;
-  }
+  void setAcceptMetalink(bool f) { acceptMetalink_ = f; }
 
   void setCookieStorage(CookieStorage* cookieStorage);
 
@@ -195,7 +188,7 @@ public:
    * To use proxy, pass proxy string to Request::setUri() and set it this
    * object.
    */
-  void setProxyRequest(const std::shared_ptr<Request>& proxyRequest);
+  void setProxyRequest(std::shared_ptr<Request> proxyRequest);
 
   /*
    * Returns true if non-Null proxy request is set by setProxyRequest().
@@ -211,44 +204,23 @@ public:
   // createRequest().
   const std::unique_ptr<AuthConfig>& getAuthConfig() const;
 
-  void setFileEntry(const std::shared_ptr<FileEntry>& fileEntry);
+  void setFileEntry(std::shared_ptr<FileEntry> fileEntry);
 
-  const std::shared_ptr<FileEntry>& getFileEntry() const
-  {
-    return fileEntry_;
-  }
+  const std::shared_ptr<FileEntry>& getFileEntry() const { return fileEntry_; }
 
-  void enableNoCache()
-  {
-    noCache_ = true;
-  }
+  void enableNoCache() { noCache_ = true; }
 
-  void disableNoCache()
-  {
-    noCache_ = false;
-  }
+  void disableNoCache() { noCache_ = false; }
 
-  void enableAcceptGZip()
-  {
-    acceptGzip_ = true;
-  }
+  void enableAcceptGZip() { acceptGzip_ = true; }
 
-  void disableAcceptGZip()
-  {
-    acceptGzip_ = false;
-  }
+  void disableAcceptGZip() { acceptGzip_ = false; }
 
-  bool acceptGZip() const
-  {
-    return acceptGzip_;
-  }
+  bool acceptGZip() const { return acceptGzip_; }
 
-  void setEndOffsetOverride(int64_t offset)
-  {
-    endOffsetOverride_ = offset;
-  }
+  void setEndOffsetOverride(int64_t offset) { endOffsetOverride_ = offset; }
 
-  void setIfModifiedSinceHeader(const std::string& hd);
+  void setIfModifiedSinceHeader(std::string value);
 
   const std::string& getIfModifiedSinceHeader() const
   {
@@ -259,6 +231,8 @@ public:
   // request is considered to be conditional if the client sent
   // "If-Modified-Since" or "If-None-Match" request-header field.
   bool conditionalRequest() const;
+
+  void setNoWantDigest(bool b) { noWantDigest_ = b; }
 };
 
 } // namespace aria2

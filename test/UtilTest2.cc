@@ -20,7 +20,7 @@
 
 namespace aria2 {
 
-class UtilTest2:public CppUnit::TestFixture {
+class UtilTest2 : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(UtilTest2);
   CPPUNIT_TEST(testToUpper);
@@ -67,11 +67,10 @@ class UtilTest2:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSecfmt);
   CPPUNIT_TEST(testTlsHostnameMatch);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
-  void setUp() {
-  }
+  void setUp() {}
 
   void testToUpper();
   void testToLower();
@@ -118,49 +117,51 @@ public:
   void testTlsHostnameMatch();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( UtilTest2 );
+CPPUNIT_TEST_SUITE_REGISTRATION(UtilTest2);
 
 class Printer {
 public:
-  template<class T>
-  void operator()(T t) {
-    std::cerr << t << ", ";
-  }
+  template <class T> void operator()(T t) { std::cerr << t << ", "; }
 };
 
-void UtilTest2::testToUpper() {
+void UtilTest2::testToUpper()
+{
   std::string src = "608cabc0f2fa18c260cafd974516865c772363d5";
   std::string upp = "608CABC0F2FA18C260CAFD974516865C772363D5";
 
   CPPUNIT_ASSERT_EQUAL(upp, util::toUpper(src));
 }
 
-void UtilTest2::testToLower() {
+void UtilTest2::testToLower()
+{
   std::string src = "608CABC0F2FA18C260CAFD974516865C772363D5";
   std::string upp = "608cabc0f2fa18c260cafd974516865c772363d5";
 
   CPPUNIT_ASSERT_EQUAL(upp, util::toLower(src));
 }
 
-void UtilTest2::testUppercase() {
+void UtilTest2::testUppercase()
+{
   std::string src = "608cabc0f2fa18c260cafd974516865c772363d5";
   std::string ans = "608CABC0F2FA18C260CAFD974516865C772363D5";
   util::uppercase(src);
   CPPUNIT_ASSERT_EQUAL(ans, src);
 }
 
-void UtilTest2::testLowercase() {
+void UtilTest2::testLowercase()
+{
   std::string src = "608CABC0F2FA18C260CAFD974516865C772363D5";
   std::string ans = "608cabc0f2fa18c260cafd974516865c772363d5";
   util::lowercase(src);
   CPPUNIT_ASSERT_EQUAL(ans, src);
 }
 
-void UtilTest2::testPercentDecode() {
+void UtilTest2::testPercentDecode()
+{
   std::string src = "http://aria2.sourceforge.net/aria2%200.7.0%20docs.html";
-  CPPUNIT_ASSERT_EQUAL(std::string("http://aria2.sourceforge.net/aria2 0.7.0 docs.html"),
-                       util::percentDecode(src.begin(), src.end()));
+  CPPUNIT_ASSERT_EQUAL(
+      std::string("http://aria2.sourceforge.net/aria2 0.7.0 docs.html"),
+      util::percentDecode(src.begin(), src.end()));
 
   std::string src2 = "aria2+aria2";
   CPPUNIT_ASSERT_EQUAL(std::string("aria2+aria2"),
@@ -192,31 +193,36 @@ void UtilTest2::testGetRealSize()
   try {
     util::getRealSize("");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     std::cerr << e.stackTrace();
   }
   try {
     util::getRealSize("foo");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     std::cerr << e.stackTrace();
   }
   try {
     util::getRealSize("-1");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     std::cerr << e.stackTrace();
   }
   try {
     util::getRealSize("9223372036854775807K");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     std::cerr << e.stackTrace();
   }
   try {
     util::getRealSize("9223372036854775807M");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     std::cerr << e.stackTrace();
   }
 }
@@ -239,30 +245,32 @@ void UtilTest2::testToStream()
   std::ostringstream os;
   std::shared_ptr<FileEntry> f1(new FileEntry("aria2.tar.bz2", 12300, 0));
   std::shared_ptr<FileEntry> f2(new FileEntry("aria2.txt", 556, 0));
-  std::deque<std::shared_ptr<FileEntry> > entries;
+  std::deque<std::shared_ptr<FileEntry>> entries;
   entries.push_back(f1);
   entries.push_back(f2);
-  const char* filename = A2_TEST_OUT_DIR"/aria2_UtilTest2_testToStream";
+  const char* filename = A2_TEST_OUT_DIR "/aria2_UtilTest2_testToStream";
   BufferedFile fp(filename, BufferedFile::WRITE);
   util::toStream(entries.begin(), entries.end(), fp);
   fp.close();
-  CPPUNIT_ASSERT_EQUAL(
-                       std::string("Files:\n"
+  CPPUNIT_ASSERT_EQUAL(std::string("Files:\n"
                                    "idx|path/length\n"
-                                   "===+===========================================================================\n"
+                                   "===+======================================="
+                                   "====================================\n"
                                    "  1|aria2.tar.bz2\n"
                                    "   |12KiB (12,300)\n"
-                                   "---+---------------------------------------------------------------------------\n"
+                                   "---+---------------------------------------"
+                                   "------------------------------------\n"
                                    "  2|aria2.txt\n"
                                    "   |556B (556)\n"
-                                   "---+---------------------------------------------------------------------------\n"),
+                                   "---+---------------------------------------"
+                                   "------------------------------------\n"),
                        readFile(filename));
 }
 
 void UtilTest2::testIsNumber()
 {
   std::string s = "000";
-  CPPUNIT_ASSERT_EQUAL(true, util::isNumber(s.begin(),s.end()));
+  CPPUNIT_ASSERT_EQUAL(true, util::isNumber(s.begin(), s.end()));
   s = "a";
   CPPUNIT_ASSERT_EQUAL(false, util::isNumber(s.begin(), s.end()));
   s = "0a";
@@ -303,22 +311,23 @@ void UtilTest2::testIsUppercase()
 
 void UtilTest2::testMkdirs()
 {
-  std::string dir = A2_TEST_OUT_DIR"/aria2-UtilTest2-testMkdirs";
+  std::string dir = A2_TEST_OUT_DIR "/aria2-UtilTest2-testMkdirs";
   File d(dir);
-  if(d.exists()) {
+  if (d.exists()) {
     CPPUNIT_ASSERT(d.remove());
   }
   CPPUNIT_ASSERT(!d.exists());
   util::mkdirs(dir);
   CPPUNIT_ASSERT(d.isDir());
 
-  std::string file = A2_TEST_DIR"/UtilTest2.cc";
+  std::string file = A2_TEST_DIR "/UtilTest2.cc";
   File f(file);
   CPPUNIT_ASSERT(f.isFile());
   try {
     util::mkdirs(file);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(DlAbortEx& ex) {
+  }
+  catch (DlAbortEx& ex) {
     std::cerr << ex.stackTrace() << std::endl;
   }
 }
@@ -328,7 +337,7 @@ void UtilTest2::testConvertBitfield()
   BitfieldMan srcBitfield(384_k, 256_k * 256 + 1);
   BitfieldMan destBitfield(512_k, srcBitfield.getTotalLength());
   srcBitfield.setAllBit();
-  srcBitfield.unsetBit(2);// <- range [768, 1152)
+  srcBitfield.unsetBit(2); // <- range [768, 1152)
   // which corresponds to the index [1,2] in destBitfield
   util::convertBitfield(&destBitfield, &srcBitfield);
 
@@ -374,32 +383,38 @@ void UtilTest2::testParseIntSegments_invalidRange()
   try {
     auto sgl = util::parseIntSegments("-1");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
   }
   try {
     auto sgl = util::parseIntSegments("1-");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
   }
   try {
     auto sgl = util::parseIntSegments("2147483648");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
   }
   try {
     auto sgl = util::parseIntSegments("2147483647-2147483648");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
   }
   try {
     auto sgl = util::parseIntSegments("1-2x");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
   }
   try {
     auto sgl = util::parseIntSegments("3x-4");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
   }
 }
 
@@ -523,7 +538,7 @@ void UtilTest2::testNtoh64()
 #ifdef WORDS_BIGENDIAN
   CPPUNIT_ASSERT_EQUAL(x, ntoh64(x));
   CPPUNIT_ASSERT_EQUAL(x, hton64(x));
-#else // !WORDS_BIGENDIAN
+#else  // !WORDS_BIGENDIAN
   uint64_t y = 0x00ee00ee00ff00ffLL;
   CPPUNIT_ASSERT_EQUAL(y, ntoh64(x));
   CPPUNIT_ASSERT_EQUAL(x, hton64(y));
@@ -532,15 +547,14 @@ void UtilTest2::testNtoh64()
 
 void UtilTest2::testPercentEncode()
 {
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("%3A%2F%3F%23%5B%5D%40%21%25%26%27%28%29%2A%2B%2C%3B%3D"),
-     util::percentEncode(":/?#[]@!%&'()*+,;="));
+  CPPUNIT_ASSERT_EQUAL(
+      std::string("%3A%2F%3F%23%5B%5D%40%21%25%26%27%28%29%2A%2B%2C%3B%3D"),
+      util::percentEncode(":/?#[]@!%&'()*+,;="));
 
-  std::string unreserved =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    "abcdefghijklmnopqrstuvwxyz"
-    "0123456789"
-    "-._~";
+  std::string unreserved = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                           "abcdefghijklmnopqrstuvwxyz"
+                           "0123456789"
+                           "-._~";
   CPPUNIT_ASSERT_EQUAL(unreserved, util::percentEncode(unreserved));
 
   CPPUNIT_ASSERT_EQUAL(std::string("1%5EA%20"), util::percentEncode("1^A "));
@@ -560,34 +574,32 @@ void UtilTest2::testHtmlEscape()
 
 void UtilTest2::testJoinPath()
 {
-  const std::string dir1dir2file[] = { "dir1", "dir2", "file" };
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("dir1/dir2/file"),
-     util::joinPath(std::begin(dir1dir2file), std::end(dir1dir2file)));
+  const std::string dir1dir2file[] = {"dir1", "dir2", "file"};
+  CPPUNIT_ASSERT_EQUAL(
+      std::string("dir1/dir2/file"),
+      util::joinPath(std::begin(dir1dir2file), std::end(dir1dir2file)));
 
-  const std::string dirparentfile[] = { "dir", "..", "file" };
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("file"),
-     util::joinPath(std::begin(dirparentfile), std::end(dirparentfile)));
+  const std::string dirparentfile[] = {"dir", "..", "file"};
+  CPPUNIT_ASSERT_EQUAL(
+      std::string("file"),
+      util::joinPath(std::begin(dirparentfile), std::end(dirparentfile)));
 
-  const std::string dirparentparentfile[] = { "dir", "..", "..", "file" };
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("file"),
-     util::joinPath(std::begin(dirparentparentfile),
-                    std::end(dirparentparentfile)));
+  const std::string dirparentparentfile[] = {"dir", "..", "..", "file"};
+  CPPUNIT_ASSERT_EQUAL(std::string("file"),
+                       util::joinPath(std::begin(dirparentparentfile),
+                                      std::end(dirparentparentfile)));
 
-  const std::string dirdotfile[] = { "dir", ".", "file" };
-  CPPUNIT_ASSERT_EQUAL(std::string("dir/file"),
-                       util::joinPath(std::begin(dirdotfile),
-                                      std::end(dirdotfile)));
+  const std::string dirdotfile[] = {"dir", ".", "file"};
+  CPPUNIT_ASSERT_EQUAL(
+      std::string("dir/file"),
+      util::joinPath(std::begin(dirdotfile), std::end(dirdotfile)));
 
   const std::string empty[] = {};
   CPPUNIT_ASSERT_EQUAL(std::string(""), util::joinPath(&empty[0], &empty[0]));
 
-  const std::string parentdot[] = { "..", "." };
-  CPPUNIT_ASSERT_EQUAL(std::string(""),
-                       util::joinPath(std::begin(parentdot),
-                                      std::end(parentdot)));
+  const std::string parentdot[] = {"..", "."};
+  CPPUNIT_ASSERT_EQUAL(std::string(""), util::joinPath(std::begin(parentdot),
+                                                       std::end(parentdot)));
 }
 
 void UtilTest2::testParseIndexPath()
@@ -598,23 +610,24 @@ void UtilTest2::testParseIndexPath()
   try {
     util::parseIndexPath("1X=foo");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     // success
   }
   try {
     util::parseIndexPath("1=");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     // success
   }
 }
 
 void UtilTest2::testCreateIndexPaths()
 {
-  std::stringstream in
-    ("1=/tmp/myfile\n"
-     "100=/myhome/mypicture.png\n");
-  std::vector<std::pair<size_t, std::string> > m = util::createIndexPaths(in);
+  std::stringstream in("1=/tmp/myfile\n"
+                       "100=/myhome/mypicture.png\n");
+  std::vector<std::pair<size_t, std::string>> m = util::createIndexPaths(in);
   CPPUNIT_ASSERT_EQUAL((size_t)2, m.size());
   CPPUNIT_ASSERT_EQUAL((size_t)1, m[0].first);
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile"), m[0].second);
@@ -647,22 +660,16 @@ void UtilTest2::testGenerateRandomData()
     }
   }
   CPPUNIT_ASSERT_MESSAGE("Should see all kinds of bytes", counts.size() == 256);
-  double sum = accumulate(
-    counts.begin(),
-    counts.end(),
-    0.0,
-    [](double total, const decltype(counts)::value_type & elem) {
-      return total + elem.second;
-    });
+  double sum =
+      accumulate(counts.begin(), counts.end(), 0.0,
+                 [](double total, const decltype(counts)::value_type& elem) {
+                   return total + elem.second;
+                 });
   double mean = sum / counts.size();
   vector<double> diff(counts.size());
-  transform(
-    counts.begin(),
-    counts.end(),
-    diff.begin(),
-    [&](const decltype(counts)::value_type & elem) -> double {
-      return (double)elem.second - mean;
-    });
+  transform(counts.begin(), counts.end(), diff.begin(),
+            [&](const decltype(counts)::value_type& elem)
+                -> double { return (double)elem.second - mean; });
   double sq_sum = inner_product(diff.begin(), diff.end(), diff.begin(), 0.0);
   double stddev = sqrt(sq_sum / counts.size());
   cout << "stddev: " << fixed << stddev << endl;
@@ -701,11 +708,12 @@ void UtilTest2::testParsePrioritizePieceRange()
   //                      |                    |
   //                      file4                |
   constexpr size_t pieceLength = 1_k;
-  std::vector<std::shared_ptr<FileEntry> > entries(4, std::shared_ptr<FileEntry>());
+  std::vector<std::shared_ptr<FileEntry>> entries(4,
+                                                  std::shared_ptr<FileEntry>());
   entries[0].reset(new FileEntry("file1", 1024, 0));
-  entries[1].reset(new FileEntry("file2",2560,entries[0]->getLastOffset()));
-  entries[2].reset(new FileEntry("file3",0,entries[1]->getLastOffset()));
-  entries[3].reset(new FileEntry("file4",3584,entries[2]->getLastOffset()));
+  entries[1].reset(new FileEntry("file2", 2560, entries[0]->getLastOffset()));
+  entries[2].reset(new FileEntry("file3", 0, entries[1]->getLastOffset()));
+  entries[3].reset(new FileEntry("file4", 3584, entries[2]->getLastOffset()));
 
   std::vector<size_t> result;
   util::parsePrioritizePieceRange(result, "head=1", entries, pieceLength);
@@ -748,17 +756,18 @@ void UtilTest2::testParsePrioritizePieceRange()
   CPPUNIT_ASSERT_EQUAL((size_t)3, result[2]);
   CPPUNIT_ASSERT_EQUAL((size_t)6, result[3]);
   result.clear();
-  util::parsePrioritizePieceRange(result, "head=1,tail=1", entries, pieceLength);
+  util::parsePrioritizePieceRange(result, "head=1,tail=1", entries,
+                                  pieceLength);
   CPPUNIT_ASSERT_EQUAL((size_t)4, result.size());
   CPPUNIT_ASSERT_EQUAL((size_t)0, result[0]);
   CPPUNIT_ASSERT_EQUAL((size_t)1, result[1]);
   CPPUNIT_ASSERT_EQUAL((size_t)3, result[2]);
   CPPUNIT_ASSERT_EQUAL((size_t)6, result[3]);
   result.clear();
-  util::parsePrioritizePieceRange(result, "head=300M,tail=300M",
-                                  entries, pieceLength);
+  util::parsePrioritizePieceRange(result, "head=300M,tail=300M", entries,
+                                  pieceLength);
   CPPUNIT_ASSERT_EQUAL((size_t)7, result.size());
-  for(size_t i = 0; i < 7; ++i) {
+  for (size_t i = 0; i < 7; ++i) {
     CPPUNIT_ASSERT_EQUAL(i, result[i]);
   }
   result.clear();
@@ -779,7 +788,7 @@ void UtilTest2::testFixTaintedBasename()
   CPPUNIT_ASSERT_EQUAL(std::string("a%2Fb"), util::fixTaintedBasename("a/b"));
 #ifdef __MINGW32__
   CPPUNIT_ASSERT_EQUAL(std::string("a%5Cb"), util::fixTaintedBasename("a\\b"));
-#else // !__MINGW32__
+#else  // !__MINGW32__
   CPPUNIT_ASSERT_EQUAL(std::string("a\\b"), util::fixTaintedBasename("a\\b"));
 #endif // !__MINGW32__
 }
@@ -812,12 +821,12 @@ void UtilTest2::testDetectDirTraversal()
 void UtilTest2::testEscapePath()
 {
   CPPUNIT_ASSERT_EQUAL(std::string("foo%00bar%00%01"),
-                       util::escapePath(std::string("foo")+(char)0x00+
-                                        std::string("bar")+(char)0x00+
+                       util::escapePath(std::string("foo") + (char)0x00 +
+                                        std::string("bar") + (char)0x00 +
                                         (char)0x01));
 #ifdef __MINGW32__
   CPPUNIT_ASSERT_EQUAL(std::string("foo%5Cbar"), util::escapePath("foo\\bar"));
-#else // !__MINGW32__
+#else  // !__MINGW32__
   CPPUNIT_ASSERT_EQUAL(std::string("foo\\bar"), util::escapePath("foo\\bar"));
 #endif // !__MINGW32__
 }
@@ -842,10 +851,10 @@ void UtilTest2::testIsUtf8String()
 {
   CPPUNIT_ASSERT(util::isUtf8("ascii"));
   // "Hello World" in Japanese UTF-8
-  CPPUNIT_ASSERT(util::isUtf8
-                 (fromHex("e38193e38293e381abe381a1e381afe4b896e7958c")));
+  CPPUNIT_ASSERT(
+      util::isUtf8(fromHex("e38193e38293e381abe381a1e381afe4b896e7958c")));
   // "World" in Shift_JIS
-  CPPUNIT_ASSERT(!util::isUtf8(fromHex("90a28a")+"E"));
+  CPPUNIT_ASSERT(!util::isUtf8(fromHex("90a28a") + "E"));
   // UTF8-2
   CPPUNIT_ASSERT(util::isUtf8(fromHex("c280")));
   CPPUNIT_ASSERT(util::isUtf8(fromHex("dfbf")));

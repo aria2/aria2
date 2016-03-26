@@ -12,11 +12,12 @@
 
 namespace aria2 {
 
-class DHTIDCloserTest:public CppUnit::TestFixture {
+class DHTIDCloserTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTIDCloserTest);
   CPPUNIT_TEST(testOperator);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -24,7 +25,6 @@ public:
 
   void testOperator();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DHTIDCloserTest);
 

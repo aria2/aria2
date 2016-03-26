@@ -71,33 +71,35 @@
 namespace aria2 {
 
 DefaultBtMessageFactory::DefaultBtMessageFactory()
-  : cuid_{0},
-    downloadContext_{nullptr},
-    pieceStorage_{nullptr},
-    peerStorage_{nullptr},
-    dhtEnabled_(false),
-    dispatcher_{nullptr},
-    requestFactory_{nullptr},
-    peerConnection_{nullptr},
-    extensionMessageFactory_{nullptr},
-    localNode_{nullptr},
-    routingTable_{nullptr},
-    taskQueue_{nullptr},
-    taskFactory_{nullptr},
-    metadataGetMode_(false)
-{}
+    : cuid_{0},
+      downloadContext_{nullptr},
+      pieceStorage_{nullptr},
+      peerStorage_{nullptr},
+      dhtEnabled_(false),
+      dispatcher_{nullptr},
+      requestFactory_{nullptr},
+      peerConnection_{nullptr},
+      extensionMessageFactory_{nullptr},
+      localNode_{nullptr},
+      routingTable_{nullptr},
+      taskQueue_{nullptr},
+      taskFactory_{nullptr},
+      metadataGetMode_(false)
+{
+}
 
 std::unique_ptr<BtMessage>
-DefaultBtMessageFactory::createBtMessage
-(const unsigned char* data, size_t dataLength)
+DefaultBtMessageFactory::createBtMessage(const unsigned char* data,
+                                         size_t dataLength)
 {
   auto msg = std::unique_ptr<AbstractBtMessage>{};
-  if(dataLength == 0) {
+  if (dataLength == 0) {
     // keep-alive
     msg = make_unique<BtKeepAliveMessage>();
-  } else {
+  }
+  else {
     uint8_t id = bittorrent::getId(data);
-    switch(id) {
+    switch (id) {
     case BtChokeMessage::ID:
       msg = BtChokeMessage::create(data, dataLength);
       break;
@@ -118,26 +120,25 @@ DefaultBtMessageFactory::createBtMessage
     }
     case BtHaveMessage::ID:
       msg = BtHaveMessage::create(data, dataLength);
-      if(!metadataGetMode_) {
-        msg->setBtMessageValidator(make_unique<IndexBtMessageValidator>
-                                   (static_cast<BtHaveMessage*>(msg.get()),
-                                    downloadContext_->getNumPieces()));
+      if (!metadataGetMode_) {
+        msg->setBtMessageValidator(make_unique<IndexBtMessageValidator>(
+            static_cast<BtHaveMessage*>(msg.get()),
+            downloadContext_->getNumPieces()));
       }
       break;
     case BtBitfieldMessage::ID:
       msg = BtBitfieldMessage::create(data, dataLength);
-      if(!metadataGetMode_) {
-        msg->setBtMessageValidator(make_unique<BtBitfieldMessageValidator>
-                                   (static_cast<BtBitfieldMessage*>(msg.get()),
-                                    downloadContext_->getNumPieces()));
+      if (!metadataGetMode_) {
+        msg->setBtMessageValidator(make_unique<BtBitfieldMessageValidator>(
+            static_cast<BtBitfieldMessage*>(msg.get()),
+            downloadContext_->getNumPieces()));
       }
       break;
     case BtRequestMessage::ID: {
       auto m = BtRequestMessage::create(data, dataLength);
-      if(!metadataGetMode_) {
-        m->setBtMessageValidator
-          (make_unique<RangeBtMessageValidator>
-           (static_cast<BtRequestMessage*>(m.get()),
+      if (!metadataGetMode_) {
+        m->setBtMessageValidator(make_unique<RangeBtMessageValidator>(
+            static_cast<BtRequestMessage*>(m.get()),
             downloadContext_->getNumPieces(),
             pieceStorage_->getPieceLength(m->getIndex())));
       }
@@ -146,10 +147,9 @@ DefaultBtMessageFactory::createBtMessage
     }
     case BtPieceMessage::ID: {
       auto m = BtPieceMessage::create(data, dataLength);
-      if(!metadataGetMode_) {
-        m->setBtMessageValidator
-          (make_unique<BtPieceMessageValidator>
-           (static_cast<BtPieceMessage*>(m.get()),
+      if (!metadataGetMode_) {
+        m->setBtMessageValidator(make_unique<BtPieceMessageValidator>(
+            static_cast<BtPieceMessage*>(m.get()),
             downloadContext_->getNumPieces(),
             pieceStorage_->getPieceLength(m->getIndex())));
       }
@@ -160,10 +160,9 @@ DefaultBtMessageFactory::createBtMessage
     }
     case BtCancelMessage::ID: {
       auto m = BtCancelMessage::create(data, dataLength);
-      if(!metadataGetMode_) {
-        m->setBtMessageValidator
-          (make_unique<RangeBtMessageValidator>
-           (static_cast<BtCancelMessage*>(m.get()),
+      if (!metadataGetMode_) {
+        m->setBtMessageValidator(make_unique<RangeBtMessageValidator>(
+            static_cast<BtCancelMessage*>(m.get()),
             downloadContext_->getNumPieces(),
             pieceStorage_->getPieceLength(m->getIndex())));
       }
@@ -181,10 +180,10 @@ DefaultBtMessageFactory::createBtMessage
     }
     case BtSuggestPieceMessage::ID: {
       auto m = BtSuggestPieceMessage::create(data, dataLength);
-      if(!metadataGetMode_) {
-        m->setBtMessageValidator(make_unique<IndexBtMessageValidator>
-                                 (static_cast<BtSuggestPieceMessage*>(m.get()),
-                                  downloadContext_->getNumPieces()));
+      if (!metadataGetMode_) {
+        m->setBtMessageValidator(make_unique<IndexBtMessageValidator>(
+            static_cast<BtSuggestPieceMessage*>(m.get()),
+            downloadContext_->getNumPieces()));
       }
       msg = std::move(m);
       break;
@@ -197,10 +196,9 @@ DefaultBtMessageFactory::createBtMessage
       break;
     case BtRejectMessage::ID: {
       auto m = BtRejectMessage::create(data, dataLength);
-      if(!metadataGetMode_) {
-        m->setBtMessageValidator
-          (make_unique<RangeBtMessageValidator>
-           (static_cast<BtRejectMessage*>(m.get()),
+      if (!metadataGetMode_) {
+        m->setBtMessageValidator(make_unique<RangeBtMessageValidator>(
+            static_cast<BtRejectMessage*>(m.get()),
             downloadContext_->getNumPieces(),
             pieceStorage_->getPieceLength(m->getIndex())));
       }
@@ -209,19 +207,20 @@ DefaultBtMessageFactory::createBtMessage
     }
     case BtAllowedFastMessage::ID: {
       auto m = BtAllowedFastMessage::create(data, dataLength);
-      if(!metadataGetMode_) {
-        m->setBtMessageValidator(make_unique<IndexBtMessageValidator>
-                                 (static_cast<BtAllowedFastMessage*>(m.get()),
-                                  downloadContext_->getNumPieces()));
+      if (!metadataGetMode_) {
+        m->setBtMessageValidator(make_unique<IndexBtMessageValidator>(
+            static_cast<BtAllowedFastMessage*>(m.get()),
+            downloadContext_->getNumPieces()));
       }
       msg = std::move(m);
       break;
     }
     case BtExtendedMessage::ID: {
-      if(peer_->isExtendedMessagingEnabled()) {
-        msg = BtExtendedMessage::create(extensionMessageFactory_,
-                                        peer_, data, dataLength);
-      } else {
+      if (peer_->isExtendedMessagingEnabled()) {
+        msg = BtExtendedMessage::create(extensionMessageFactory_, peer_, data,
+                                        dataLength);
+      }
+      else {
         throw DL_ABORT_EX("Received extended message from peer during"
                           " a session with extended messaging disabled.");
       }
@@ -244,19 +243,18 @@ void DefaultBtMessageFactory::setCommonProperty(AbstractBtMessage* msg)
   msg->setBtRequestFactory(requestFactory_);
   msg->setBtMessageFactory(this);
   msg->setPeerConnection(peerConnection_);
-  if(metadataGetMode_) {
+  if (metadataGetMode_) {
     msg->enableMetadataGetMode();
   }
 }
 
 std::unique_ptr<BtHandshakeMessage>
-DefaultBtMessageFactory::createHandshakeMessage
-(const unsigned char* data, size_t dataLength)
+DefaultBtMessageFactory::createHandshakeMessage(const unsigned char* data,
+                                                size_t dataLength)
 {
   auto msg = BtHandshakeMessage::create(data, dataLength);
-  msg->setBtMessageValidator(make_unique<BtHandshakeMessageValidator>
-                             (msg.get(),
-                              bittorrent::getInfoHash(downloadContext_)));
+  msg->setBtMessageValidator(make_unique<BtHandshakeMessageValidator>(
+      msg.get(), bittorrent::getInfoHash(downloadContext_)));
   setCommonProperty(msg.get());
   return msg;
 }
@@ -271,21 +269,19 @@ DefaultBtMessageFactory::createHandshakeMessage(const unsigned char* infoHash,
   return msg;
 }
 
-std::unique_ptr<BtRequestMessage>
-DefaultBtMessageFactory::createRequestMessage
-(const std::shared_ptr<Piece>& piece, size_t blockIndex)
+std::unique_ptr<BtRequestMessage> DefaultBtMessageFactory::createRequestMessage(
+    const std::shared_ptr<Piece>& piece, size_t blockIndex)
 {
-  auto msg = make_unique<BtRequestMessage>(piece->getIndex(),
-                                           blockIndex*piece->getBlockLength(),
-                                           piece->getBlockLength(blockIndex),
-                                           blockIndex);
+  auto msg = make_unique<BtRequestMessage>(
+      piece->getIndex(), blockIndex * piece->getBlockLength(),
+      piece->getBlockLength(blockIndex), blockIndex);
   setCommonProperty(msg.get());
   return msg;
 }
 
 std::unique_ptr<BtCancelMessage>
-DefaultBtMessageFactory::createCancelMessage
-(size_t index, int32_t begin, int32_t length)
+DefaultBtMessageFactory::createCancelMessage(size_t index, int32_t begin,
+                                             int32_t length)
 {
   auto msg = make_unique<BtCancelMessage>(index, begin, length);
   setCommonProperty(msg.get());
@@ -293,8 +289,8 @@ DefaultBtMessageFactory::createCancelMessage
 }
 
 std::unique_ptr<BtPieceMessage>
-DefaultBtMessageFactory::createPieceMessage
-(size_t index, int32_t begin, int32_t length)
+DefaultBtMessageFactory::createPieceMessage(size_t index, int32_t begin,
+                                            int32_t length)
 {
   auto msg = make_unique<BtPieceMessage>(index, begin, length);
   msg->setDownloadContext(downloadContext_);
@@ -310,8 +306,7 @@ DefaultBtMessageFactory::createHaveMessage(size_t index)
   return msg;
 }
 
-std::unique_ptr<BtChokeMessage>
-DefaultBtMessageFactory::createChokeMessage()
+std::unique_ptr<BtChokeMessage> DefaultBtMessageFactory::createChokeMessage()
 {
   auto msg = make_unique<BtChokeMessage>();
   setCommonProperty(msg.get());
@@ -345,9 +340,8 @@ DefaultBtMessageFactory::createNotInterestedMessage()
 std::unique_ptr<BtBitfieldMessage>
 DefaultBtMessageFactory::createBitfieldMessage()
 {
-  auto msg = make_unique<BtBitfieldMessage>
-    (pieceStorage_->getBitfield(),
-     pieceStorage_->getBitfieldLength());
+  auto msg = make_unique<BtBitfieldMessage>(pieceStorage_->getBitfield(),
+                                            pieceStorage_->getBitfieldLength());
   setCommonProperty(msg.get());
   return msg;
 }
@@ -377,8 +371,8 @@ DefaultBtMessageFactory::createHaveNoneMessage()
 }
 
 std::unique_ptr<BtRejectMessage>
-DefaultBtMessageFactory::createRejectMessage
-(size_t index, int32_t begin, int32_t length)
+DefaultBtMessageFactory::createRejectMessage(size_t index, int32_t begin,
+                                             int32_t length)
 {
   auto msg = make_unique<BtRejectMessage>(index, begin, length);
   setCommonProperty(msg.get());
@@ -402,8 +396,8 @@ DefaultBtMessageFactory::createPortMessage(uint16_t port)
 }
 
 std::unique_ptr<BtExtendedMessage>
-DefaultBtMessageFactory::createBtExtendedMessage
-(std::unique_ptr<ExtensionMessage> exmsg)
+DefaultBtMessageFactory::createBtExtendedMessage(
+    std::unique_ptr<ExtensionMessage> exmsg)
 {
   auto msg = make_unique<BtExtendedMessage>(std::move(exmsg));
   setCommonProperty(msg.get());
@@ -425,8 +419,8 @@ void DefaultBtMessageFactory::setPeer(const std::shared_ptr<Peer>& peer)
   peer_ = peer;
 }
 
-void DefaultBtMessageFactory::setDownloadContext
-(DownloadContext* downloadContext)
+void DefaultBtMessageFactory::setDownloadContext(
+    DownloadContext* downloadContext)
 {
   downloadContext_ = downloadContext;
 }
@@ -441,14 +435,14 @@ void DefaultBtMessageFactory::setPeerStorage(PeerStorage* peerStorage)
   peerStorage_ = peerStorage;
 }
 
-void DefaultBtMessageFactory::setBtMessageDispatcher
-(BtMessageDispatcher* dispatcher)
+void DefaultBtMessageFactory::setBtMessageDispatcher(
+    BtMessageDispatcher* dispatcher)
 {
   dispatcher_ = dispatcher;
 }
 
-void DefaultBtMessageFactory::setExtensionMessageFactory
-(ExtensionMessageFactory* factory)
+void DefaultBtMessageFactory::setExtensionMessageFactory(
+    ExtensionMessageFactory* factory)
 {
   extensionMessageFactory_ = factory;
 }

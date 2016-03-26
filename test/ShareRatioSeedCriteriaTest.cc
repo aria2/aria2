@@ -9,7 +9,7 @@
 
 namespace aria2 {
 
-class ShareRatioSeedCriteriaTest:public CppUnit::TestFixture {
+class ShareRatioSeedCriteriaTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(ShareRatioSeedCriteriaTest);
   CPPUNIT_TEST(testEvaluate);
@@ -19,10 +19,10 @@ public:
   void testEvaluate();
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(ShareRatioSeedCriteriaTest);
 
-void ShareRatioSeedCriteriaTest::testEvaluate() {
+void ShareRatioSeedCriteriaTest::testEvaluate()
+{
   std::shared_ptr<DownloadContext> dctx(new DownloadContext(1_m, 1000000));
   std::shared_ptr<BtRuntime> btRuntime(new BtRuntime());
   btRuntime->setUploadLengthAtStartup(1000000);

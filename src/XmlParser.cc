@@ -46,13 +46,15 @@ namespace xml {
 bool parseFile(const std::string& filename, ParserStateMachine* psm)
 {
   int fd;
-  if(filename == DEV_STDIN) {
+  if (filename == DEV_STDIN) {
     fd = STDIN_FILENO;
-  } else {
-    while((fd = a2open(utf8ToWChar(filename).c_str(),
-                       O_BINARY | O_RDONLY, OPEN_MODE)) == -1
-          && errno != EINTR);
-    if(fd == -1) {
+  }
+  else {
+    while ((fd = a2open(utf8ToWChar(filename).c_str(), O_BINARY | O_RDONLY,
+                        OPEN_MODE)) == -1 &&
+           errno != EINTR)
+      ;
+    if (fd == -1) {
       return false;
     }
   }
@@ -61,14 +63,14 @@ bool parseFile(const std::string& filename, ParserStateMachine* psm)
   std::array<char, 4_k> buf;
   ssize_t nread;
   bool retval = true;
-  while((nread = read(fd, buf.data(), buf.size())) > 0) {
-    if(ps.parseUpdate(buf.data(), nread) < 0) {
+  while ((nread = read(fd, buf.data(), buf.size())) > 0) {
+    if (ps.parseUpdate(buf.data(), nread) < 0) {
       retval = false;
       break;
     }
   }
-  if(nread == 0 && retval) {
-    if(ps.parseFinal(nullptr, 0) < 0) {
+  if (nread == 0 && retval) {
+    if (ps.parseFinal(nullptr, 0) < 0) {
       retval = false;
     }
   }

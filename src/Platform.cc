@@ -35,29 +35,29 @@
 #include "Platform.h"
 
 #include <stdlib.h> /* _fmode */
-#include <fcntl.h> /*  _O_BINARY */
+#include <fcntl.h>  /*  _O_BINARY */
 
 #include <locale.h> // For setlocale, LC_*
 
 #include <iostream>
 
 #ifdef HAVE_OPENSSL
-# include <openssl/err.h>
-# include <openssl/ssl.h>
+#include <openssl/err.h>
+#include <openssl/ssl.h>
 #endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGCRYPT
-# include <gcrypt.h>
+#include <gcrypt.h>
 #endif // HAVE_LIBGCRYPT
 #ifdef HAVE_LIBGNUTLS
-# include <gnutls/gnutls.h>
+#include <gnutls/gnutls.h>
 #endif // HAVE_LIBGNUTLS
 
 #ifdef ENABLE_ASYNC_DNS
-# include <ares.h>
+#include <ares.h>
 #endif // ENABLE_ASYNC_DNS
 
 #ifdef HAVE_LIBSSH2
-# include <libssh2.h>
+#include <libssh2.h>
 #endif // HAVE_LIBSSH2
 
 #include "a2netcompat.h"
@@ -68,36 +68,104 @@
 #include "OptionParser.h"
 #include "prefs.h"
 #ifdef HAVE_LIBGMP
-# include "a2gmp.h"
+#include "a2gmp.h"
 #endif // HAVE_LIBGMP
 #include "LogFactory.h"
+#include "util.h"
 
 namespace aria2 {
 
 #ifdef HAVE_LIBGNUTLS
 namespace {
-  void gnutls_log_callback(int level, const char *str)
-  {
-    using namespace aria2;
-    // GnuTLS adds a newline. Drop it.
-    std::string msg(str);
-    msg.resize(msg.size() - 1);
-    A2_LOG_DEBUG(fmt("GnuTLS: <%d> %s", level, msg.c_str()));
-  }
+void gnutls_log_callback(int level, const char* str)
+{
+  using namespace aria2;
+  // GnuTLS adds a newline. Drop it.
+  std::string msg(str);
+  msg.resize(msg.size() - 1);
+  A2_LOG_DEBUG(fmt("GnuTLS: <%d> %s", level, msg.c_str()));
+}
 }
 #endif // HAVE_LIBGNUTLS
 
 bool Platform::initialized_ = false;
 
-Platform::Platform()
-{
-  setUp();
-}
+Platform::Platform() { setUp(); }
 
-Platform::~Platform()
+Platform::~Platform() { tearDown(); }
+
+#ifdef __MINGW32__
+namespace {
+bool gainPrivilege(LPCTSTR privName)
 {
-  tearDown();
+  LUID luid;
+  TOKEN_PRIVILEGES tp;
+
+  if (!LookupPrivilegeValue(nullptr, privName, &luid)) {
+    auto errNum = GetLastError();
+    A2_LOG_WARN(fmt("Lookup for privilege name %s failed. cause: %s", privName,
+                    util::formatLastError(errNum).c_str()));
+    return false;
+  }
+
+  tp.PrivilegeCount = 1;
+  tp.Privileges[0].Luid = luid;
+  tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+
+  HANDLE token;
+  if (!OpenProcessToken(GetCurrentProcess(),
+                        TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token)) {
+    auto errNum = GetLastError();
+    A2_LOG_WARN(fmt("Getting process token failed. cause: %s",
+                    util::formatLastError(errNum).c_str()));
+    return false;
+  }
+
+  auto tokenCloser = defer(token, CloseHandle);
+
+  if (!AdjustTokenPrivileges(token, FALSE, &tp, 0, NULL, NULL)) {
+    auto errNum = GetLastError();
+    A2_LOG_WARN(fmt("Gaining privilege %s failed. cause: %s", privName,
+                    util::formatLastError(errNum).c_str()));
+    return false;
+  }
+
+  // Check privilege was really gained
+  DWORD bufsize = 0;
+  GetTokenInformation(token, TokenPrivileges, nullptr, 0, &bufsize);
+  if (bufsize == 0) {
+    A2_LOG_WARN("Checking privilege failed.");
+    return false;
+  }
+
+  auto buf = make_unique<char[]>(bufsize);
+  if (!GetTokenInformation(token, TokenPrivileges, buf.get(), bufsize,
+                           &bufsize)) {
+    auto errNum = GetLastError();
+    A2_LOG_WARN(fmt("Checking privilege failed. cause: %s",
+                    util::formatLastError(errNum).c_str()));
+    return false;
+  }
+
+  auto privs = reinterpret_cast<TOKEN_PRIVILEGES*>(buf.get());
+  for (size_t i = 0; i < privs->PrivilegeCount; ++i) {
+    auto& priv = privs->Privileges[i];
+    if (memcmp(&priv.Luid, &luid, sizeof(luid)) != 0) {
+      continue;
+    }
+    if (priv.Attributes == SE_PRIVILEGE_ENABLED) {
+      return true;
+    }
+
+    break;
+  }
+
+  A2_LOG_WARN(fmt("Gaining privilege %s failed.", privName));
+
+  return false;
 }
+} // namespace
+#endif // __MINGW32__
 
 bool Platform::setUp()
 {
@@ -109,10 +177,10 @@ bool Platform::setUp()
   global::initGmp();
 #endif // HAVE_LIBGMP
 #ifdef ENABLE_NLS
-  setlocale (LC_CTYPE, "");
-  setlocale (LC_MESSAGES, "");
-  bindtextdomain (PACKAGE, LOCALEDIR);
-  textdomain (PACKAGE);
+  setlocale(LC_CTYPE, "");
+  setlocale(LC_MESSAGES, "");
+  bindtextdomain(PACKAGE, LOCALEDIR);
+  textdomain(PACKAGE);
 #endif // ENABLE_NLS
 
 #ifdef HAVE_OPENSSL
@@ -123,7 +191,7 @@ bool Platform::setUp()
   OpenSSL_add_all_algorithms();
 #endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGCRYPT
-  if(!gcry_check_version("1.2.4")) {
+  if (!gcry_check_version("1.2.4")) {
     throw DL_ABORT_EX("gcry_check_version() failed.");
   }
   gcry_control(GCRYCTL_DISABLE_SECMEM, 0);
@@ -132,9 +200,9 @@ bool Platform::setUp()
 #ifdef HAVE_LIBGNUTLS
   {
     int r = gnutls_global_init();
-    if(r != GNUTLS_E_SUCCESS) {
-      throw DL_ABORT_EX(fmt("gnutls_global_init() failed, cause:%s",
-                            gnutls_strerror(r)));
+    if (r != GNUTLS_E_SUCCESS) {
+      throw DL_ABORT_EX(
+          fmt("gnutls_global_init() failed, cause:%s", gnutls_strerror(r)));
     }
 
     gnutls_global_set_log_function(gnutls_log_callback);
@@ -144,7 +212,7 @@ bool Platform::setUp()
 
 #ifdef CARES_HAVE_ARES_LIBRARY_INIT
   int aresErrorCode;
-  if((aresErrorCode = ares_library_init(ARES_LIB_INIT_ALL)) != 0) {
+  if ((aresErrorCode = ares_library_init(ARES_LIB_INIT_ALL)) != 0) {
     global::cerr()->printf("ares_library_init() failed:%s\n",
                            ares_strerror(aresErrorCode));
   }
@@ -171,6 +239,15 @@ bool Platform::setUp()
   (void)_setmode(_fileno(stdin), _O_BINARY);
   (void)_setmode(_fileno(stdout), _O_BINARY);
   (void)_setmode(_fileno(stderr), _O_BINARY);
+
+  // Windows build: --file-allocation=falloc uses SetFileValidData
+  // which requires SE_MANAGE_VOLUME_NAME privilege.  SetFileValidData
+  // has security implications (see
+  // https://msdn.microsoft.com/en-us/library/windows/desktop/aa365544%28v=vs.85%29.aspx).
+  if (!gainPrivilege(SE_MANAGE_VOLUME_NAME)) {
+    A2_LOG_WARN("--file-allocation=falloc will not work properly.");
+  }
+
 #endif // __MINGW32__
 
   return true;
@@ -206,9 +283,6 @@ bool Platform::tearDown()
   return true;
 }
 
-bool Platform::isInitialized()
-{
-  return initialized_;
-}
+bool Platform::isInitialized() { return initialized_; }
 
 } // namespace aria2

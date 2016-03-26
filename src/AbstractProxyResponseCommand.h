@@ -45,6 +45,7 @@ class SocketCore;
 class AbstractProxyResponseCommand : public AbstractCommand {
 private:
   std::shared_ptr<HttpConnection> httpConnection_;
+
 protected:
   virtual bool executeInternal() CXX11_OVERRIDE;
 
@@ -52,15 +53,13 @@ protected:
   {
     return httpConnection_;
   }
+
 public:
-  AbstractProxyResponseCommand
-  (cuid_t cuid,
-   const std::shared_ptr<Request>& req,
-   const std::shared_ptr<FileEntry>& fileEntry,
-   RequestGroup* requestGroup,
-   const std::shared_ptr<HttpConnection>& httpConnection,
-   DownloadEngine* e,
-   const std::shared_ptr<SocketCore>& s);
+  AbstractProxyResponseCommand(
+      cuid_t cuid, const std::shared_ptr<Request>& req,
+      const std::shared_ptr<FileEntry>& fileEntry, RequestGroup* requestGroup,
+      const std::shared_ptr<HttpConnection>& httpConnection, DownloadEngine* e,
+      const std::shared_ptr<SocketCore>& s);
 
   virtual ~AbstractProxyResponseCommand();
 

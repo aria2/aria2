@@ -53,21 +53,21 @@ namespace rpc {
 RpcRequest xmlParseMemory(const char* xml, size_t size)
 {
   XmlRpcRequestParserStateMachine psm;
-  if(xml::XmlParser(&psm).parseFinal(xml, size) < 0) {
+  if (xml::XmlParser(&psm).parseFinal(xml, size) < 0) {
     throw DL_ABORT_EX(MSG_CANNOT_PARSE_XML_RPC_REQUEST);
   }
   std::unique_ptr<List> params;
-  if(downcast<List>(psm.getCurrentFrameValue())) {
+  if (downcast<List>(psm.getCurrentFrameValue())) {
     params.reset(static_cast<List*>(psm.popCurrentFrameValue().release()));
-  } else {
+  }
+  else {
     params = List::g();
   }
   return {psm.getMethodName(), std::move(params)};
 }
 #endif // ENABLE_XML_RPC
 
-RpcResponse createJsonRpcErrorResponse(int code,
-                                       const std::string& msg,
+RpcResponse createJsonRpcErrorResponse(int code, const std::string& msg,
                                        std::unique_ptr<ValueBase> id)
 {
   auto params = Dict::g();
@@ -80,28 +80,28 @@ RpcResponse createJsonRpcErrorResponse(int code,
 RpcResponse processJsonRpcRequest(Dict* jsondict, DownloadEngine* e)
 {
   auto id = jsondict->popValue("id");
-  if(!id) {
+  if (!id) {
     return createJsonRpcErrorResponse(-32600, "Invalid Request.", Null::g());
   }
   const String* methodName = downcast<String>(jsondict->get("method"));
-  if(!methodName) {
+  if (!methodName) {
     return createJsonRpcErrorResponse(-32600, "Invalid Request.",
                                       std::move(id));
   }
   std::unique_ptr<List> params;
   auto tempParams = jsondict->popValue("params");
-  if(downcast<List>(tempParams)) {
+  if (downcast<List>(tempParams)) {
     params.reset(static_cast<List*>(tempParams.release()));
-  } else if(!tempParams) {
+  }
+  else if (!tempParams) {
     params = List::g();
-  } else {
+  }
+  else {
     // TODO No support for Named params
-    return createJsonRpcErrorResponse(-32602, "Invalid params.",
-                                      std::move(id));
+    return createJsonRpcErrorResponse(-32602, "Invalid params.", std::move(id));
   }
   A2_LOG_INFO(fmt("Executing RPC method %s", methodName->s().c_str()));
-  RpcRequest req =
-    {methodName->s(), std::move(params), std::move(id), true};
+  RpcRequest req = {methodName->s(), std::move(params), std::move(id), true};
   return getMethod(methodName->s())->execute(std::move(req), e);
 }
 

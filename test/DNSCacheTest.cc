@@ -4,7 +4,7 @@
 
 namespace aria2 {
 
-class DNSCacheTest:public CppUnit::TestFixture {
+class DNSCacheTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DNSCacheTest);
   CPPUNIT_TEST(testFind);
@@ -14,6 +14,7 @@ class DNSCacheTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE_END();
 
   DNSCache cache_;
+
 public:
   void setUp()
   {
@@ -29,7 +30,6 @@ public:
   void testPutBadAddr();
   void testRemove();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DNSCacheTest);
 

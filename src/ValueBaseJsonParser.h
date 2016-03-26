@@ -44,7 +44,7 @@ namespace aria2 {
 namespace json {
 
 typedef GenericParser<JsonParser, ValueBaseStructParserStateMachine>
-ValueBaseJsonParser;
+    ValueBaseJsonParser;
 
 } // namespace json
 

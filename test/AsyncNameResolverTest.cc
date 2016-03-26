@@ -8,11 +8,12 @@
 
 namespace aria2 {
 
-class AsyncNameResolverTest:public CppUnit::TestFixture {
+class AsyncNameResolverTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(AsyncNameResolverTest);
   CPPUNIT_TEST(testParseAsyncDNSServers);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -20,7 +21,6 @@ public:
 
   void testParseAsyncDNSServers();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(AsyncNameResolverTest);
 
@@ -42,7 +42,7 @@ void AsyncNameResolverTest::testParseAsyncDNSServers()
   CPPUNIT_ASSERT(node);
   CPPUNIT_ASSERT_EQUAL(AF_INET6, node->family);
   CPPUNIT_ASSERT(memcmp(&ans6, &node->addr, sizeof(ans6)) == 0);
-  for(node = root; node;) {
+  for (node = root; node;) {
     ares_addr_node* nextNode = node->next;
     delete node;
     node = nextNode;

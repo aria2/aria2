@@ -49,6 +49,7 @@ class BtHandshakeMessageValidator : public BtMessageValidator {
 private:
   const BtHandshakeMessage* message_;
   unsigned char infoHash_[INFO_HASH_LENGTH];
+
 public:
   BtHandshakeMessageValidator(const BtHandshakeMessage* message,
                               const unsigned char* infoHash);

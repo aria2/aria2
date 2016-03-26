@@ -71,12 +71,14 @@ private:
 
   std::unique_ptr<ChunkChecksum> tChunkChecksum_; // Metalink3Spec
 
-  std::vector<std::pair<size_t, std::string> > tempChunkChecksums_;//Metalink3Spec
+  std::vector<std::pair<size_t, std::string>>
+      tempChunkChecksums_; // Metalink3Spec
 
   std::pair<size_t, std::string> tempHashPair_; // Metalink3Spec
 
   std::unique_ptr<Signature> tSignature_;
   std::string baseUri_;
+
 public:
   MetalinkParserController();
 
@@ -148,7 +150,7 @@ public:
 
   void setLengthOfChunkChecksum(size_t length); // Metalink3Spec
 
-  void addHashOfChunkChecksum(size_t order, std::string md);// Metalink3Spec
+  void addHashOfChunkChecksum(size_t order, std::string md); // Metalink3Spec
 
   void createNewHashOfChunkChecksum(size_t order); // Metalink3Spec
 
@@ -186,10 +188,7 @@ public:
 
   void cancelMetaurlTransaction();
 
-  void setBaseUri(std::string baseUri)
-  {
-    baseUri_ = std::move(baseUri);
-  }
+  void setBaseUri(std::string baseUri) { baseUri_ = std::move(baseUri); }
 };
 
 } // namespace aria2

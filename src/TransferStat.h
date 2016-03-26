@@ -40,9 +40,14 @@
 namespace aria2 {
 
 struct TransferStat {
-  TransferStat():downloadSpeed(0), uploadSpeed(0),
-                 sessionDownloadLength(0), sessionUploadLength(0),
-                 allTimeUploadLength(0) {}
+  TransferStat()
+      : downloadSpeed(0),
+        uploadSpeed(0),
+        sessionDownloadLength(0),
+        sessionUploadLength(0),
+        allTimeUploadLength(0)
+  {
+  }
 
   TransferStat& operator+=(const TransferStat& stat);
   TransferStat& operator-=(const TransferStat& stat);

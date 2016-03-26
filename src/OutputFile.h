@@ -51,7 +51,8 @@ public:
   virtual size_t write(const char* str) = 0;
   virtual int flush() = 0;
   virtual int vprintf(const char* format, va_list va) = 0;
-  inline int printf(const char *format, ...) {
+  inline int printf(const char* format, ...)
+  {
     va_list va;
     va_start(va, format);
     int rv = vprintf(format, va);

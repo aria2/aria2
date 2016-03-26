@@ -50,38 +50,22 @@ namespace aria2 {
 // InOrderURISelector: this is default.
 class ServerStat {
 public:
-  enum STATUS {
-    OK = 0,
-    A2_ERROR,
-    MAX_STATUS
-  };
+  enum STATUS { OK = 0, A2_ERROR, MAX_STATUS };
 
   ServerStat(const std::string& hostname, const std::string& protocol);
 
   ~ServerStat();
 
-  const std::string& getHostname() const
-  {
-    return hostname_;
-  }
+  const std::string& getHostname() const { return hostname_; }
 
-  const std::string& getProtocol() const
-  {
-    return protocol_;
-  }
+  const std::string& getProtocol() const { return protocol_; }
 
-  const Time& getLastUpdated() const
-  {
-    return lastUpdated_;
-  }
+  const Time& getLastUpdated() const { return lastUpdated_; }
 
   // This method doesn't update _lastUpdate.
   void setLastUpdated(const Time& time);
 
-  int getDownloadSpeed() const
-  {
-    return downloadSpeed_;
-  }
+  int getDownloadSpeed() const { return downloadSpeed_; }
 
   // update download speed and update lastUpdated_
   void updateDownloadSpeed(int downloadSpeed);
@@ -89,26 +73,17 @@ public:
   // set download speed. This method doesn't update _lastUpdate.
   void setDownloadSpeed(int downloadSpeed);
 
-  int getSingleConnectionAvgSpeed() const
-  {
-    return singleConnectionAvgSpeed_;
-  }
+  int getSingleConnectionAvgSpeed() const { return singleConnectionAvgSpeed_; }
 
   void updateSingleConnectionAvgSpeed(int downloadSpeed);
   void setSingleConnectionAvgSpeed(int singleConnectionAvgSpeed);
 
-  int getMultiConnectionAvgSpeed() const
-  {
-    return multiConnectionAvgSpeed_;
-  }
+  int getMultiConnectionAvgSpeed() const { return multiConnectionAvgSpeed_; }
 
   void updateMultiConnectionAvgSpeed(int downloadSpeed);
   void setMultiConnectionAvgSpeed(int singleConnectionAvgSpeed);
 
-  int getCounter() const
-  {
-    return counter_;
-  }
+  int getCounter() const { return counter_; }
 
   void increaseCounter();
   void setCounter(int value);
@@ -121,23 +96,14 @@ public:
   // This method doesn't update _lastUpdate.
   void setStatus(const std::string& status);
 
-  STATUS getStatus() const
-  {
-    return status_;
-  }
+  STATUS getStatus() const { return status_; }
 
-  bool isOK() const
-  {
-    return status_ == OK;
-  }
+  bool isOK() const { return status_ == OK; }
 
   // set status OK and update lastUpdated_
   void setOK();
 
-  bool isError() const
-  {
-    return status_ == A2_ERROR;
-  }
+  bool isError() const { return status_ == A2_ERROR; }
 
   // set status ERROR and update lastUpdated_
   void setError();
@@ -147,6 +113,7 @@ public:
   bool operator==(const ServerStat& serverStat) const;
 
   std::string toString() const;
+
 private:
   std::string hostname_;
 
@@ -169,9 +136,9 @@ private:
 
 class ServerStatFaster {
 public:
-  bool operator()
-  (const std::pair<std::shared_ptr<ServerStat>, std::string> lhs,
-   const std::pair<std::shared_ptr<ServerStat>, std::string> rhs) const
+  bool operator()(
+      const std::pair<std::shared_ptr<ServerStat>, std::string> lhs,
+      const std::pair<std::shared_ptr<ServerStat>, std::string> rhs) const
   {
     return lhs.first->getDownloadSpeed() > rhs.first->getDownloadSpeed();
   }

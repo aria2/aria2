@@ -51,9 +51,10 @@ private:
   std::shared_ptr<DownloadContext> downloadContext_;
   std::shared_ptr<BtRuntime> btRuntime_;
   std::shared_ptr<PieceStorage> pieceStorage_;
+
 public:
-  ShareRatioSeedCriteria
-  (double ratio, const std::shared_ptr<DownloadContext>& downloadContext);
+  ShareRatioSeedCriteria(
+      double ratio, const std::shared_ptr<DownloadContext>& downloadContext);
 
   virtual ~ShareRatioSeedCriteria();
 
@@ -61,13 +62,9 @@ public:
 
   virtual bool evaluate() CXX11_OVERRIDE;
 
-  void setRatio(double ratio) {
-    ratio_ = ratio;
-  }
+  void setRatio(double ratio) { ratio_ = ratio; }
 
-  double getRatio() const {
-    return ratio_;
-  }
+  double getRatio() const { return ratio_; }
 
   void setBtRuntime(const std::shared_ptr<BtRuntime>& btRuntime);
 

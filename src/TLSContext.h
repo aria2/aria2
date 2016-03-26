@@ -41,10 +41,7 @@
 
 namespace aria2 {
 
-enum TLSSessionSide {
-  TLS_CLIENT,
-  TLS_SERVER
-};
+enum TLSSessionSide { TLS_CLIENT, TLS_SERVER };
 
 enum TLSVersion {
   TLS_PROTO_NONE,

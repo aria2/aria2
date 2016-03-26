@@ -16,7 +16,7 @@
 
 namespace aria2 {
 
-class UTPexExtensionMessageTest:public CppUnit::TestFixture {
+class UTPexExtensionMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(UTPexExtensionMessageTest);
   CPPUNIT_TEST(testGetExtensionMessageID);
@@ -30,8 +30,10 @@ class UTPexExtensionMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testFreshPeersAreFull);
   CPPUNIT_TEST(testDroppedPeersAreFull);
   CPPUNIT_TEST_SUITE_END();
+
 private:
   std::unique_ptr<MockPeerStorage> peerStorage_;
+
 public:
   void setUp()
   {
@@ -50,7 +52,6 @@ public:
   void testFreshPeersAreFull();
   void testDroppedPeersAreFull();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(UTPexExtensionMessageTest);
 
@@ -73,7 +74,7 @@ void UTPexExtensionMessageTest::testGetBencodedData()
   auto p1 = std::make_shared<Peer>("192.168.0.1", 6881);
   p1->allocateSessionResource(256_k, 1_m);
   p1->setAllBitfield();
-  CPPUNIT_ASSERT(msg.addFreshPeer(p1));// added seeder, check add.f flag
+  CPPUNIT_ASSERT(msg.addFreshPeer(p1)); // added seeder, check add.f flag
   auto p2 = std::make_shared<Peer>("10.1.1.2", 9999);
   CPPUNIT_ASSERT(msg.addFreshPeer(p2));
   auto p3 = std::make_shared<Peer>("192.168.0.2", 6882);
@@ -83,8 +84,8 @@ void UTPexExtensionMessageTest::testGetBencodedData()
   p4->startDrop();
   CPPUNIT_ASSERT(msg.addDroppedPeer(p4));
 
-  auto p5 = std::make_shared<Peer>("1002:1035:4527:3546:7854:1237:3247:3217",
-                                   6881);
+  auto p5 =
+      std::make_shared<Peer>("1002:1035:4527:3546:7854:1237:3247:3217", 6881);
   CPPUNIT_ASSERT(msg.addFreshPeer(p5));
   auto p6 = std::make_shared<Peer>("2001:db8:bd05:1d2:288a:1fc0:1:10ee", 6882);
   p6->startDrop();
@@ -103,17 +104,15 @@ void UTPexExtensionMessageTest::testGetBencodedData()
   bittorrent::packcompact(c5, p5->getIPAddress(), p5->getPort());
   bittorrent::packcompact(c6, p6->getIPAddress(), p6->getPort());
 
-  std::string expected = "d5:added12:"+
-    std::string(&c1[0], &c1[6])+std::string(&c2[0], &c2[6])+
-    "7:added.f2:"+fromHex("0200")+
-    "6:added618:"+std::string(&c5[0], &c5[COMPACT_LEN_IPV6])+
-    "8:added6.f1:"+fromHex("00")+
-    "7:dropped12:"+std::string(&c3[0], &c3[6])+std::string(&c4[0], &c4[6])+
-    "8:dropped618:"+std::string(&c6[0], &c6[COMPACT_LEN_IPV6])+
-    "e";
+  std::string expected =
+      "d5:added12:" + std::string(&c1[0], &c1[6]) +
+      std::string(&c2[0], &c2[6]) + "7:added.f2:" + fromHex("0200") +
+      "6:added618:" + std::string(&c5[0], &c5[COMPACT_LEN_IPV6]) +
+      "8:added6.f1:" + fromHex("00") + "7:dropped12:" +
+      std::string(&c3[0], &c3[6]) + std::string(&c4[0], &c4[6]) +
+      "8:dropped618:" + std::string(&c6[0], &c6[COMPACT_LEN_IPV6]) + "e";
   std::string bd = msg.getPayload();
-  CPPUNIT_ASSERT_EQUAL(util::percentEncode(expected),
-                       util::percentEncode(bd));
+  CPPUNIT_ASSERT_EQUAL(util::percentEncode(expected), util::percentEncode(bd));
 }
 
 void UTPexExtensionMessageTest::testToString()
@@ -122,7 +121,7 @@ void UTPexExtensionMessageTest::testToString()
   std::shared_ptr<Peer> p1(new Peer("192.168.0.1", 6881));
   p1->allocateSessionResource(256_k, 1_m);
   p1->setAllBitfield();
-  msg.addFreshPeer(p1);// added seeder, check add.f flag
+  msg.addFreshPeer(p1); // added seeder, check add.f flag
   std::shared_ptr<Peer> p2(new Peer("10.1.1.2", 9999));
   msg.addFreshPeer(p2);
   std::shared_ptr<Peer> p3(new Peer("192.168.0.2", 6882));
@@ -131,7 +130,8 @@ void UTPexExtensionMessageTest::testToString()
   std::shared_ptr<Peer> p4(new Peer("10.1.1.3", 10000));
   p4->startDrop();
   msg.addDroppedPeer(p4);
-  CPPUNIT_ASSERT_EQUAL(std::string("ut_pex added=2, dropped=2"), msg.toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("ut_pex added=2, dropped=2"),
+                       msg.toString());
 }
 
 void UTPexExtensionMessageTest::testDoReceivedAction()
@@ -140,14 +140,15 @@ void UTPexExtensionMessageTest::testDoReceivedAction()
   std::shared_ptr<Peer> p1(new Peer("192.168.0.1", 6881));
   p1->allocateSessionResource(256_k, 1_m);
   p1->setAllBitfield();
-  msg.addFreshPeer(p1);// added seeder, check add.f flag
-  std::shared_ptr<Peer> p2(new Peer("1002:1035:4527:3546:7854:1237:3247:3217",
-                                 9999));
+  msg.addFreshPeer(p1); // added seeder, check add.f flag
+  std::shared_ptr<Peer> p2(
+      new Peer("1002:1035:4527:3546:7854:1237:3247:3217", 9999));
   msg.addFreshPeer(p2);
   std::shared_ptr<Peer> p3(new Peer("192.168.0.2", 6882));
   p3->startDrop();
   msg.addDroppedPeer(p3);
-  std::shared_ptr<Peer> p4(new Peer("2001:db8:bd05:1d2:288a:1fc0:1:10ee", 10000));
+  std::shared_ptr<Peer> p4(
+      new Peer("2001:db8:bd05:1d2:288a:1fc0:1:10ee", 10000));
   p4->startDrop();
   msg.addDroppedPeer(p4);
   msg.setPeerStorage(peerStorage_.get());
@@ -188,23 +189,23 @@ void UTPexExtensionMessageTest::testCreate()
   bittorrent::packcompact(c1, "192.168.0.1", 6881);
   bittorrent::packcompact(c2, "10.1.1.2", 9999);
   bittorrent::packcompact(c3, "192.168.0.2", 6882);
-  bittorrent::packcompact(c4, "10.1.1.3",10000);
+  bittorrent::packcompact(c4, "10.1.1.3", 10000);
   bittorrent::packcompact(c5, "1002:1035:4527:3546:7854:1237:3247:3217", 6997);
-  bittorrent::packcompact(c6, "2001:db8:bd05:1d2:288a:1fc0:1:10ee",6998);
+  bittorrent::packcompact(c6, "2001:db8:bd05:1d2:288a:1fc0:1:10ee", 6998);
 
-  char id[1] = { 1 };
+  char id[1] = {1};
 
-  std::string data = std::string(&id[0], &id[1])+"d5:added12:"+
-    std::string(&c1[0], &c1[6])+std::string(&c2[0], &c2[6])+
-    "7:added.f2:"+fromHex("0200")+
-    "6:added618:"+std::string(&c5[0], &c5[COMPACT_LEN_IPV6])+
-    "8:added6.f1:"+fromHex("00")+
-    "7:dropped12:"+std::string(&c3[0], &c3[6])+std::string(&c4[0], &c4[6])+
-    "8:dropped618:"+std::string(&c6[0], &c6[COMPACT_LEN_IPV6])+
-    "e";
+  std::string data = std::string(&id[0], &id[1]) + "d5:added12:" +
+                     std::string(&c1[0], &c1[6]) + std::string(&c2[0], &c2[6]) +
+                     "7:added.f2:" + fromHex("0200") + "6:added618:" +
+                     std::string(&c5[0], &c5[COMPACT_LEN_IPV6]) +
+                     "8:added6.f1:" + fromHex("00") + "7:dropped12:" +
+                     std::string(&c3[0], &c3[6]) + std::string(&c4[0], &c4[6]) +
+                     "8:dropped618:" +
+                     std::string(&c6[0], &c6[COMPACT_LEN_IPV6]) + "e";
 
-  auto msg = UTPexExtensionMessage::create
-    (reinterpret_cast<const unsigned char*>(data.c_str()), data.size());
+  auto msg = UTPexExtensionMessage::create(
+      reinterpret_cast<const unsigned char*>(data.c_str()), data.size());
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, msg->getExtensionMessageID());
   CPPUNIT_ASSERT_EQUAL((size_t)3, msg->getFreshPeers().size());
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"),
@@ -223,19 +224,18 @@ void UTPexExtensionMessageTest::testCreate()
   CPPUNIT_ASSERT_EQUAL((uint16_t)6882, msg->getDroppedPeers()[0]->getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("10.1.1.3"),
                        msg->getDroppedPeers()[1]->getIPAddress());
-  CPPUNIT_ASSERT_EQUAL((uint16_t)10000,
-                       msg->getDroppedPeers()[1]->getPort());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)10000, msg->getDroppedPeers()[1]->getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("2001:db8:bd05:1d2:288a:1fc0:1:10ee"),
                        msg->getDroppedPeers()[2]->getIPAddress());
-  CPPUNIT_ASSERT_EQUAL((uint16_t)6998,
-                       msg->getDroppedPeers()[2]->getPort());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)6998, msg->getDroppedPeers()[2]->getPort());
   try {
     // 0 length data
     std::string in = "";
-    UTPexExtensionMessage::create
-      (reinterpret_cast<const unsigned char*>(in.c_str()), in.size());
+    UTPexExtensionMessage::create(
+        reinterpret_cast<const unsigned char*>(in.c_str()), in.size());
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
+  }
+  catch (Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
   }
 }

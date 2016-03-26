@@ -45,8 +45,9 @@
 namespace aria2 {
 
 DHTTaskExecutor::DHTTaskExecutor(int numConcurrent)
-  : numConcurrent_(numConcurrent)
-{}
+    : numConcurrent_(numConcurrent)
+{
+}
 
 DHTTaskExecutor::~DHTTaskExecutor() {}
 
@@ -56,16 +57,17 @@ void DHTTaskExecutor::update()
                                   std::mem_fn(&DHTTask::finished)),
                    execTasks_.end());
   int r;
-  if(static_cast<size_t>(numConcurrent_) > execTasks_.size()) {
-    r = numConcurrent_-execTasks_.size();
-  } else {
+  if (static_cast<size_t>(numConcurrent_) > execTasks_.size()) {
+    r = numConcurrent_ - execTasks_.size();
+  }
+  else {
     r = 0;
   }
-  while(r && !queue_.empty()) {
+  while (r && !queue_.empty()) {
     std::shared_ptr<DHTTask> task = queue_.front();
     queue_.pop_front();
     task->startup();
-    if(!task->finished()) {
+    if (!task->finished()) {
       execTasks_.push_back(task);
       --r;
     }

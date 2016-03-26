@@ -45,23 +45,22 @@
 
 namespace aria2 {
 
-template<typename HashFunc>
-struct HashFuncEntry {
+template <typename HashFunc> struct HashFuncEntry {
   typedef HashFunc HashFuncType;
   std::string hashType;
   HashFunc hashFunc;
-  HashFuncEntry(std::string hashType, const HashFunc& hashFunc):
-    hashType(std::move(hashType)), hashFunc(hashFunc)
-  {}
+  HashFuncEntry(std::string hashType, const HashFunc& hashFunc)
+      : hashType(std::move(hashType)), hashFunc(hashFunc)
+  {
+  }
 };
 
-template<typename HashFunc>
-class FindHashFunc {
+template <typename HashFunc> class FindHashFunc {
 private:
   const std::string& hashType_;
+
 public:
-  FindHashFunc(const std::string& hashType):hashType_(hashType)
-  {}
+  FindHashFunc(const std::string& hashType) : hashType_(hashType) {}
 
   bool operator()(const HashFuncEntry<HashFunc>& entry) const
   {
@@ -69,17 +68,16 @@ public:
   }
 };
 
-template<class HashFuncEntry>
-const typename HashFuncEntry::HashFuncType& getHashFunc
-(HashFuncEntry* first, HashFuncEntry* last, const std::string& hashType)
+template <class HashFuncEntry>
+const typename HashFuncEntry::HashFuncType&
+getHashFunc(HashFuncEntry* first, HashFuncEntry* last,
+            const std::string& hashType)
 {
-  HashFuncEntry* e =
-    std::find_if(first, last,
-                 FindHashFunc<typename HashFuncEntry::HashFuncType>
-                 (hashType));
-  if(e == last) {
-    throw DL_ABORT_EX
-      (fmt("Hash type %s is not supported.", hashType.c_str()));
+  HashFuncEntry* e = std::find_if(
+      first, last,
+      FindHashFunc<typename HashFuncEntry::HashFuncType>(hashType));
+  if (e == last) {
+    throw DL_ABORT_EX(fmt("Hash type %s is not supported.", hashType.c_str()));
   }
   return e->hashFunc;
 }

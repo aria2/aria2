@@ -42,13 +42,9 @@
 
 namespace aria2 {
 
-Time::Time() : tp_(Clock::now()), good_(true)
-{
-}
+Time::Time() : tp_(Clock::now()), good_(true) {}
 
-Time::Time(time_t t) : tp_(Clock::from_time_t(t)), good_(true)
-{
-}
+Time::Time(time_t t) : tp_(Clock::from_time_t(t)), good_(true) {}
 
 void Time::reset()
 {
@@ -56,10 +52,7 @@ void Time::reset()
   good_ = true;
 }
 
-Time::Clock::duration Time::difference() const
-{
-  return Clock::now() - tp_;
-}
+Time::Clock::duration Time::difference() const { return Clock::now() - tp_; }
 
 Time::Clock::duration Time::difference(const Time& time) const
 {
@@ -86,12 +79,12 @@ Time Time::parse(const std::string& datetime, const std::string& format)
   struct tm tm;
   memset(&tm, 0, sizeof(tm));
   char* r = strptime(datetime.c_str(), format.c_str(), &tm);
-  if(r != datetime.c_str()+datetime.size()) {
+  if (r != datetime.c_str() + datetime.size()) {
     return Time::null();
   }
   time_t thetime = timegm(&tm);
-  if(thetime == -1) {
-    if(tm.tm_year >= 2038-1900) {
+  if (thetime == -1) {
+    if (tm.tm_year >= 2038 - 1900) {
       thetime = INT32_MAX;
     }
   }
@@ -126,15 +119,12 @@ Time Time::parseAsctime(const std::string& datetime)
 Time Time::parseHTTPDate(const std::string& datetime)
 {
   Time (*funcs[])(const std::string&) = {
-    &parseRFC1123,
-    &parseRFC1123Alt,
-    &parseRFC850,
-    &parseAsctime,
-    &parseRFC850Ext,
+      &parseRFC1123, &parseRFC1123Alt, &parseRFC850,
+      &parseAsctime, &parseRFC850Ext,
   };
-  for(auto func : funcs) {
+  for (auto func : funcs) {
     Time t = func(datetime);
-    if(t.good()) {
+    if (t.good()) {
       return t;
     }
   }

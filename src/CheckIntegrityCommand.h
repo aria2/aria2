@@ -46,11 +46,10 @@ class CheckIntegrityEntry;
 class CheckIntegrityCommand : public RealtimeCommand {
 private:
   CheckIntegrityEntry* entry_;
+
 public:
-  CheckIntegrityCommand(cuid_t cuid,
-                        RequestGroup* requestGroup,
-                        DownloadEngine* e,
-                        CheckIntegrityEntry* entry);
+  CheckIntegrityCommand(cuid_t cuid, RequestGroup* requestGroup,
+                        DownloadEngine* e, CheckIntegrityEntry* entry);
 
   virtual ~CheckIntegrityCommand();
 

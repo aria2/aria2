@@ -58,6 +58,7 @@ private:
   static void adjustDependentLevels();
 
   LogFactory();
+
 public:
   /**
    * Get logger instance. Returned logger is singleton.
@@ -75,10 +76,7 @@ public:
    * Set flag whether the log is printed in console.
    * If f is false, log is not printed in console.
    */
-  static void setConsoleOutput(bool f)
-  {
-    consoleOutput_ = f;
-  }
+  static void setConsoleOutput(bool f) { consoleOutput_ = f; }
 
   /**
    * Set log level to output to file.
@@ -116,22 +114,22 @@ public:
   static void reconfigure();
 };
 
-#define A2_LOG_DEBUG_ENABLED                                            \
+#define A2_LOG_DEBUG_ENABLED                                                   \
   aria2::LogFactory::getInstance()->levelEnabled(Logger::A2_DEBUG)
 
-#define A2_LOG(level, msg)                                              \
-  {                                                                     \
-    const std::shared_ptr<aria2::Logger>& logger =                  \
-      aria2::LogFactory::getInstance();                                 \
-    if(logger->levelEnabled(level))                                     \
-      logger->log(level, __FILE__, __LINE__, msg);                      \
+#define A2_LOG(level, msg)                                                     \
+  {                                                                            \
+    const std::shared_ptr<aria2::Logger>& logger =                             \
+        aria2::LogFactory::getInstance();                                      \
+    if (logger->levelEnabled(level))                                           \
+      logger->log(level, __FILE__, __LINE__, msg);                             \
   }
-#define A2_LOG_EX(level, msg, ex)                                       \
-  {                                                                     \
-    const std::shared_ptr<aria2::Logger>& logger =                  \
-      aria2::LogFactory::getInstance();                                 \
-    if(logger->levelEnabled(level))                                     \
-      logger->log(level, __FILE__, __LINE__, msg, ex);                  \
+#define A2_LOG_EX(level, msg, ex)                                              \
+  {                                                                            \
+    const std::shared_ptr<aria2::Logger>& logger =                             \
+        aria2::LogFactory::getInstance();                                      \
+    if (logger->levelEnabled(level))                                           \
+      logger->log(level, __FILE__, __LINE__, msg, ex);                         \
   }
 
 #define A2_LOG_DEBUG(msg) A2_LOG(Logger::A2_DEBUG, msg)

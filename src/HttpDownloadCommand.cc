@@ -56,19 +56,18 @@
 
 namespace aria2 {
 
-HttpDownloadCommand::HttpDownloadCommand(cuid_t cuid,
-                                         const std::shared_ptr<Request>& req,
-                                         const std::shared_ptr<FileEntry>& fileEntry,
-                                         RequestGroup* requestGroup,
-                                         std::unique_ptr<HttpResponse> httpResponse,
-                                         const std::shared_ptr<HttpConnection>& httpConnection,
-                                         DownloadEngine* e,
-                                         const std::shared_ptr<SocketCore>& socket)
-  : DownloadCommand(cuid, req, fileEntry, requestGroup, e, socket,
-                    httpConnection->getSocketRecvBuffer()),
-    httpResponse_(std::move(httpResponse)),
-    httpConnection_(httpConnection)
-{}
+HttpDownloadCommand::HttpDownloadCommand(
+    cuid_t cuid, const std::shared_ptr<Request>& req,
+    const std::shared_ptr<FileEntry>& fileEntry, RequestGroup* requestGroup,
+    std::unique_ptr<HttpResponse> httpResponse,
+    const std::shared_ptr<HttpConnection>& httpConnection, DownloadEngine* e,
+    const std::shared_ptr<SocketCore>& socket)
+    : DownloadCommand(cuid, req, fileEntry, requestGroup, e, socket,
+                      httpConnection->getSocketRecvBuffer()),
+      httpResponse_(std::move(httpResponse)),
+      httpConnection_(httpConnection)
+{
+}
 
 HttpDownloadCommand::~HttpDownloadCommand() {}
 
@@ -76,10 +75,9 @@ bool HttpDownloadCommand::prepareForNextSegment()
 {
   bool downloadFinished = getRequestGroup()->downloadFinished();
   if (getRequest()->isPipeliningEnabled() && !downloadFinished) {
-    auto command = make_unique<HttpRequestCommand>
-      (getCuid(), getRequest(), getFileEntry(),
-       getRequestGroup(), httpConnection_,
-       getDownloadEngine(), getSocket());
+    auto command = make_unique<HttpRequestCommand>(
+        getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
+        httpConnection_, getDownloadEngine(), getSocket());
     // Set proxy request here. aria2 sends the HTTP request specialized for
     // proxy.
     if (resolveProxyMethod(getRequest()->getProtocol()) == V_GET) {
@@ -92,15 +90,13 @@ bool HttpDownloadCommand::prepareForNextSegment()
   const std::string& streamFilterName = getStreamFilter()->getName();
   if (getRequest()->isPipeliningEnabled() ||
       (getRequest()->isKeepAliveEnabled() &&
-      (
-       // Make sure that all filters are finished to pool socket
-       (!util::endsWith(streamFilterName, SinkStreamFilter::NAME) &&
-        getStreamFilter()->finished()) ||
-       getRequestEndOffset() ==
-       getFileEntry()->gtoloff(getSegments().front()->getPositionToWrite())
-       )
-       )
-      ) {
+       (
+           // Make sure that all filters are finished to pool socket
+           (!util::endsWith(streamFilterName, SinkStreamFilter::NAME) &&
+            getStreamFilter()->finished()) ||
+           getRequestEndOffset() ==
+               getFileEntry()->gtoloff(
+                   getSegments().front()->getPositionToWrite())))) {
     // TODO What if server sends EOF when non-SinkStreamFilter is
     // used and server didn't send Connection: close? We end up to
     // pool terminated socket.  In HTTP/1.1, keep-alive is default,
@@ -116,13 +112,12 @@ bool HttpDownloadCommand::prepareForNextSegment()
   // of the response with the end byte of segment.
   // If it is the same, HTTP negotiation is necessary for the next request.
   if (!getRequest()->isPipeliningEnabled() &&
-      getRequest()->isPipeliningHint() &&
-      !downloadFinished) {
+      getRequest()->isPipeliningHint() && !downloadFinished) {
     const std::shared_ptr<Segment>& segment = getSegments().front();
 
-    int64_t lastOffset =getFileEntry()->gtoloff
-      (std::min(segment->getPosition()+segment->getLength(),
-                getFileEntry()->getLastOffset()));
+    int64_t lastOffset = getFileEntry()->gtoloff(
+        std::min(segment->getPosition() + segment->getLength(),
+                 getFileEntry()->getLastOffset()));
     auto range = httpResponse_->getHttpHeader()->getRange();
     if (lastOffset == range.endByte + 1) {
       return prepareForRetry(0);
@@ -136,7 +131,7 @@ int64_t HttpDownloadCommand::getRequestEndOffset() const
 {
   auto endByte = httpResponse_->getHttpHeader()->getRange().endByte;
   if (endByte > 0) {
-    return endByte+1;
+    return endByte + 1;
   }
   return endByte;
 }

@@ -48,6 +48,7 @@ class MetalinkEntry;
 class Metalinker {
 private:
   std::vector<std::unique_ptr<MetalinkEntry>> entries_;
+
 public:
   Metalinker();
   ~Metalinker();
@@ -57,8 +58,7 @@ public:
   Metalinker& operator=(const Metalinker&) = delete;
 
   std::vector<std::unique_ptr<MetalinkEntry>>
-  queryEntry(const std::string& version,
-             const std::string& language,
+  queryEntry(const std::string& version, const std::string& language,
              const std::string& os);
 
   const std::vector<std::unique_ptr<MetalinkEntry>>& getEntries() const

@@ -13,12 +13,13 @@
 
 namespace aria2 {
 
-class DHTAnnouncePeerMessageTest:public CppUnit::TestFixture {
+class DHTAnnouncePeerMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTAnnouncePeerMessageTest);
   CPPUNIT_TEST(testGetBencodedMessage);
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   std::shared_ptr<DHTNode> localNode_;
   std::shared_ptr<DHTNode> remoteNode_;
@@ -34,18 +35,17 @@ public:
   void testGetBencodedMessage();
   void testDoReceivedAction();
 
-  class MockDHTMessageFactory2:public MockDHTMessageFactory {
+  class MockDHTMessageFactory2 : public MockDHTMessageFactory {
     virtual std::unique_ptr<DHTAnnouncePeerReplyMessage>
     createAnnouncePeerReplyMessage(const std::shared_ptr<DHTNode>& remoteNode,
                                    const std::string& transactionID)
-      CXX11_OVERRIDE
+        CXX11_OVERRIDE
     {
       return make_unique<DHTAnnouncePeerReplyMessage>(localNode_, remoteNode,
                                                       transactionID);
     }
   };
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DHTAnnouncePeerMessageTest);
 
@@ -111,13 +111,13 @@ void DHTAnnouncePeerMessageTest::testDoReceivedAction()
   msg.doReceivedAction();
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher.messageQueue_.size());
-  auto m = dynamic_cast<DHTAnnouncePeerReplyMessage*>
-    (dispatcher.messageQueue_[0].message_.get());
+  auto m = dynamic_cast<DHTAnnouncePeerReplyMessage*>(
+      dispatcher.messageQueue_[0].message_.get());
   CPPUNIT_ASSERT(*localNode_ == *m->getLocalNode());
   CPPUNIT_ASSERT(*remoteNode_ == *m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(std::string("announce_peer"), m->getMessageType());
   CPPUNIT_ASSERT_EQUAL(transactionID, m->getTransactionID());
-  std::vector<std::shared_ptr<Peer> > peers;
+  std::vector<std::shared_ptr<Peer>> peers;
   peerAnnounceStorage.getPeers(peers, infoHash);
   CPPUNIT_ASSERT_EQUAL((size_t)1, peers.size());
   {

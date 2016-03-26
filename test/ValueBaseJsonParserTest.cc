@@ -8,20 +8,20 @@
 
 namespace aria2 {
 
-class ValueBaseJsonParserTest:public CppUnit::TestFixture {
+class ValueBaseJsonParserTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(ValueBaseJsonParserTest);
   CPPUNIT_TEST(testParseUpdate);
   CPPUNIT_TEST(testParseUpdate_error);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
   void testParseUpdate();
   void testParseUpdate_error();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ValueBaseJsonParserTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(ValueBaseJsonParserTest);
 
 void ValueBaseJsonParserTest::testParseUpdate()
 {
@@ -107,7 +107,7 @@ void ValueBaseJsonParserTest::testParseUpdate()
     auto list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
     auto s = downcast<String>(list->get(0));
-    const unsigned char arr[] = { 0xF0u, 0xA4u, 0xADu, 0xA2u };
+    const unsigned char arr[] = {0xF0u, 0xA4u, 0xADu, 0xA2u};
     CPPUNIT_ASSERT_EQUAL(std::string(std::begin(arr), std::end(arr)), s->s());
   }
   {
@@ -177,13 +177,13 @@ void ValueBaseJsonParserTest::testParseUpdate()
     const Integer* i = downcast<Integer>(list->get(0));
     CPPUNIT_ASSERT_EQUAL((Integer::ValueType)0, i->i());
     const Integer* i1 = downcast<Integer>(list->get(1));
-    CPPUNIT_ASSERT_EQUAL((Integer::ValueType)-1, i1->i());
+    CPPUNIT_ASSERT_EQUAL((Integer::ValueType) - 1, i1->i());
     const Integer* i2 = downcast<Integer>(list->get(2));
     CPPUNIT_ASSERT_EQUAL((Integer::ValueType)1, i2->i());
     const Integer* i3 = downcast<Integer>(list->get(3));
-    CPPUNIT_ASSERT_EQUAL((Integer::ValueType)-1, i3->i());
+    CPPUNIT_ASSERT_EQUAL((Integer::ValueType) - 1, i3->i());
     const Integer* i4 = downcast<Integer>(list->get(4));
-    CPPUNIT_ASSERT_EQUAL((Integer::ValueType)-1, i4->i());
+    CPPUNIT_ASSERT_EQUAL((Integer::ValueType) - 1, i4->i());
   }
   {
     // escape chars: ", \, /, \b, \f, \n, \r, \t
@@ -269,7 +269,7 @@ void ValueBaseJsonParserTest::testParseUpdate_error()
   checkDecodeError("{\"foo\":}");
   // number
   // TODO ValueBaseJsonParser allows leading zeros
-  //checkDecodeError("[00]");
+  // checkDecodeError("[00]");
   // number
   checkDecodeError("[1.]");
   // number
@@ -277,8 +277,9 @@ void ValueBaseJsonParserTest::testParseUpdate_error()
   // bool
   checkDecodeError("[t");
   // too deep structure
-  checkDecodeError(std::string(51, '[')+std::string(51,']'));
-  checkDecodeError(std::string(50, '[')+"{\"foo\":100}"+std::string(50,']'));
+  checkDecodeError(std::string(51, '[') + std::string(51, ']'));
+  checkDecodeError(std::string(50, '[') + "{\"foo\":100}" +
+                   std::string(50, ']'));
 }
 
 } // namespace aria2

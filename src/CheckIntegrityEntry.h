@@ -52,16 +52,18 @@ class CheckIntegrityEntry : public RequestGroupEntry,
                             public ProgressAwareEntry {
 private:
   std::unique_ptr<IteratableValidator> validator_;
+
 protected:
   void setValidator(std::unique_ptr<IteratableValidator> validator);
 
   void proceedFileAllocation(std::vector<std::unique_ptr<Command>>& commands,
                              std::unique_ptr<FileAllocationEntry> entry,
                              DownloadEngine* e);
+
 public:
-  CheckIntegrityEntry(RequestGroup* requestGroup,
-                      std::unique_ptr<Command> nextCommand =
-                      std::unique_ptr<Command>());
+  CheckIntegrityEntry(
+      RequestGroup* requestGroup,
+      std::unique_ptr<Command> nextCommand = std::unique_ptr<Command>());
 
   virtual ~CheckIntegrityEntry();
 
@@ -77,13 +79,13 @@ public:
 
   virtual void initValidator() = 0;
 
-  virtual void onDownloadFinished
-  (std::vector<std::unique_ptr<Command>>& commands,
-   DownloadEngine* e) = 0;
+  virtual void
+  onDownloadFinished(std::vector<std::unique_ptr<Command>>& commands,
+                     DownloadEngine* e) = 0;
 
-  virtual void onDownloadIncomplete
-  (std::vector<std::unique_ptr<Command>>& commands,
-   DownloadEngine* e) = 0;
+  virtual void
+  onDownloadIncomplete(std::vector<std::unique_ptr<Command>>& commands,
+                       DownloadEngine* e) = 0;
 
   void cutTrailingGarbage();
 };

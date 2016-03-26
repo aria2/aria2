@@ -49,6 +49,7 @@ class Segment;
 class StreamFilter {
 private:
   std::unique_ptr<StreamFilter> delegate_;
+
 public:
   StreamFilter(std::unique_ptr<StreamFilter> delegate = nullptr);
 
@@ -76,10 +77,7 @@ public:
 
   virtual bool installDelegate(std::unique_ptr<StreamFilter> filter);
 
-  const std::unique_ptr<StreamFilter>& getDelegate() const
-  {
-    return delegate_;
-  }
+  const std::unique_ptr<StreamFilter>& getDelegate() const { return delegate_; }
 };
 
 } // namespace aria2

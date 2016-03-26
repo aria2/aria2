@@ -11,7 +11,7 @@
 
 namespace aria2 {
 
-class DownloadHandlersTest:public CppUnit::TestFixture {
+class DownloadHandlersTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DownloadHandlersTest);
   CPPUNIT_TEST(testGetMemoryPreDownloadHandler);
@@ -26,13 +26,12 @@ class DownloadHandlersTest:public CppUnit::TestFixture {
 #endif // ENABLE_BITTORRENT
 
   CPPUNIT_TEST_SUITE_END();
+
 private:
   std::shared_ptr<Option> option_;
+
 public:
-  void setUp()
-  {
-    option_ = std::make_shared<Option>();
-  }
+  void setUp() { option_ = std::make_shared<Option>(); }
   void testGetMemoryPreDownloadHandler();
 #ifdef ENABLE_METALINK
   void testGetMetalinkPreDownloadHandler_extension();
@@ -43,16 +42,14 @@ public:
   void testGetBtPreDownloadHandler_extension();
   void testGetBtPreDownloadHandler_contentType();
 #endif // ENABLE_BITTORRENT
-
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( DownloadHandlersTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(DownloadHandlersTest);
 
 void DownloadHandlersTest::testGetMemoryPreDownloadHandler()
 {
-  CPPUNIT_ASSERT(download_handlers::getMemoryPreDownloadHandler()
-                 ->canHandle(nullptr));
+  CPPUNIT_ASSERT(
+      download_handlers::getMemoryPreDownloadHandler()->canHandle(nullptr));
 }
 
 #ifdef ENABLE_METALINK
@@ -92,8 +89,8 @@ void DownloadHandlersTest::testGetMetalinkPreDownloadHandler_contentType()
 
 void DownloadHandlersTest::testGetBtPreDownloadHandler_extension()
 {
-  auto dctx = std::make_shared<DownloadContext>(0, 0,
-                                                A2_TEST_DIR"/test.torrent");
+  auto dctx =
+      std::make_shared<DownloadContext>(0, 0, A2_TEST_DIR "/test.torrent");
   RequestGroup rg(GroupId::create(), option_);
   rg.setDownloadContext(dctx);
 
@@ -101,7 +98,7 @@ void DownloadHandlersTest::testGetBtPreDownloadHandler_extension()
 
   CPPUNIT_ASSERT(handler->canHandle(&rg));
 
-  dctx->getFirstFileEntry()->setPath(A2_TEST_DIR"/test.torrent2");
+  dctx->getFirstFileEntry()->setPath(A2_TEST_DIR "/test.torrent2");
   CPPUNIT_ASSERT(!handler->canHandle(&rg));
 }
 

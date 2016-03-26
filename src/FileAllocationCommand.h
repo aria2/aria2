@@ -49,6 +49,7 @@ class FileAllocationCommand : public RealtimeCommand {
 private:
   FileAllocationEntry* fileAllocationEntry_;
   Timer timer_;
+
 public:
   FileAllocationCommand(cuid_t cuid, RequestGroup* requestGroup,
                         DownloadEngine* e,

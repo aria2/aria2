@@ -50,7 +50,7 @@ class AsyncNameResolverMan;
 #endif // ENABLE_ASYNC_DNS
 struct UDPTrackerRequest;
 
-class NameResolveCommand:public Command {
+class NameResolveCommand : public Command {
 private:
   DownloadEngine* e_;
 
@@ -66,8 +66,8 @@ private:
   std::shared_ptr<UDPTrackerRequest> req_;
   void onShutdown();
   void onFailure();
-  void onSuccess
-  (const std::vector<std::string>& addrs, DownloadEngine* e);
+  void onSuccess(const std::vector<std::string>& addrs, DownloadEngine* e);
+
 public:
   NameResolveCommand(cuid_t cuid, DownloadEngine* e,
                      const std::shared_ptr<UDPTrackerRequest>& req);

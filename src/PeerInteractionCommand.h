@@ -53,7 +53,9 @@ public:
     INITIATOR_SEND_HANDSHAKE,
     INITIATOR_WAIT_HANDSHAKE,
     RECEIVER_WAIT_HANDSHAKE,
-    WIRED};
+    WIRED
+  };
+
 private:
   RequestGroup* requestGroup_;
 
@@ -67,24 +69,23 @@ private:
   std::unique_ptr<BtInteractive> btInteractive_;
 
   const std::shared_ptr<Option>& getOption() const;
+
 protected:
   virtual bool executeInternal() CXX11_OVERRIDE;
   virtual bool prepareForNextPeer(time_t wait) CXX11_OVERRIDE;
   virtual void onAbort() CXX11_OVERRIDE;
   virtual void onFailure(const Exception& err) CXX11_OVERRIDE;
   virtual bool exitBeforeExecute() CXX11_OVERRIDE;
+
 public:
-  PeerInteractionCommand(cuid_t cuid,
-                         RequestGroup* requestGroup,
-                         const std::shared_ptr<Peer>& peer,
-                         DownloadEngine* e,
-                         const std::shared_ptr<BtRuntime>& btRuntime,
-                         const std::shared_ptr<PieceStorage>& pieceStorage,
-                         const std::shared_ptr<PeerStorage>& peerStorage,
-                         const std::shared_ptr<SocketCore>& s,
-                         Seq sequence,
-                         std::unique_ptr<PeerConnection> peerConnection =
-                         nullptr);
+  PeerInteractionCommand(
+      cuid_t cuid, RequestGroup* requestGroup,
+      const std::shared_ptr<Peer>& peer, DownloadEngine* e,
+      const std::shared_ptr<BtRuntime>& btRuntime,
+      const std::shared_ptr<PieceStorage>& pieceStorage,
+      const std::shared_ptr<PeerStorage>& peerStorage,
+      const std::shared_ptr<SocketCore>& s, Seq sequence,
+      std::unique_ptr<PeerConnection> peerConnection = nullptr);
 
   virtual ~PeerInteractionCommand();
 };

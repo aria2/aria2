@@ -44,25 +44,25 @@
 namespace aria2 {
 
 BufferedFile::BufferedFile(const char* filename, const char* mode)
-  :
+    :
 #ifdef __MINGW32__
-  fp_(strcmp(DEV_STDIN, filename) == 0 ?
-      stdin : a2fopen(utf8ToWChar(filename).c_str(),
-                      utf8ToWChar(mode).c_str())),
-#else // !__MINGW32__
-  fp_(a2fopen(filename, mode)),
+      fp_(strcmp(DEV_STDIN, filename) == 0
+              ? stdin
+              : a2fopen(utf8ToWChar(filename).c_str(),
+                        utf8ToWChar(mode).c_str())),
+#else  // !__MINGW32__
+      fp_(a2fopen(filename, mode)),
 #endif // !__MINGW32__
-  supportsColor_(fp_ ? isatty(fileno(fp_)) : false)
-{}
+      supportsColor_(fp_ ? isatty(fileno(fp_)) : false)
+{
+}
 
 BufferedFile::BufferedFile(FILE* fp)
-  : fp_(fp), supportsColor_(fp_ ? isatty(fileno(fp_)) : false)
-{}
-
-BufferedFile::~BufferedFile()
+    : fp_(fp), supportsColor_(fp_ ? isatty(fileno(fp_)) : false)
 {
-  close();
 }
+
+BufferedFile::~BufferedFile() { close(); }
 
 size_t BufferedFile::onRead(void* ptr, size_t count)
 {
@@ -74,10 +74,7 @@ size_t BufferedFile::onWrite(const void* ptr, size_t count)
   return fwrite(ptr, 1, count, fp_);
 }
 
-char* BufferedFile::onGets(char* s, int size)
-{
-  return fgets(s, size, fp_);
-}
+char* BufferedFile::onGets(char* s, int size) { return fgets(s, size, fp_); }
 
 int BufferedFile::onClose()
 {
@@ -94,29 +91,14 @@ int BufferedFile::onVprintf(const char* format, va_list va)
   return vfprintf(fp_, format, va);
 }
 
-int BufferedFile::onFlush()
-{
-  return fflush(fp_);
-}
+int BufferedFile::onFlush() { return fflush(fp_); }
 
-bool BufferedFile::onSupportsColor()
-{
-  return supportsColor_;
-}
+bool BufferedFile::onSupportsColor() { return supportsColor_; }
 
-bool BufferedFile::isError() const
-{
-  return ferror(fp_);
-}
+bool BufferedFile::isError() const { return ferror(fp_); }
 
-bool BufferedFile::isEOF() const
-{
-  return feof(fp_);
-}
+bool BufferedFile::isEOF() const { return feof(fp_); }
 
-bool BufferedFile::isOpen() const
-{
-  return fp_;
-}
+bool BufferedFile::isOpen() const { return fp_; }
 
 } // namespace aria2

@@ -37,7 +37,7 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #ifdef HAVE_UTIME_H
-# include <utime.h>
+#include <utime.h>
 #endif // HAVE_UTIME_H
 #include <unistd.h>
 
@@ -62,78 +62,121 @@ File::~File() {}
 
 File& File::operator=(const File& c)
 {
-  if(this != &c) {
+  if (this != &c) {
     name_ = c.name_;
   }
   return *this;
 }
 
-int File::fillStat(a2_struct_stat& fstat) {
+int File::fillStat(a2_struct_stat& fstat)
+{
   return a2stat(utf8ToWChar(name_).c_str(), &fstat);
 }
 
-bool File::exists() {
+bool File::exists()
+{
   a2_struct_stat fstat;
   return fillStat(fstat) == 0;
 }
 
-bool File::isFile() {
+bool File::isFile()
+{
   a2_struct_stat fstat;
-  if(fillStat(fstat) < 0) {
+  if (fillStat(fstat) < 0) {
     return false;
   }
   return S_ISREG(fstat.st_mode) == 1;
 }
 
-bool File::isDir() {
+bool File::isDir()
+{
   a2_struct_stat fstat;
-  if(fillStat(fstat) < 0) {
+  if (fillStat(fstat) < 0) {
     return false;
   }
   return S_ISDIR(fstat.st_mode) == 1;
 }
 
-bool File::remove() {
-  if(isFile()) {
+bool File::remove()
+{
+  if (isFile()) {
     return a2unlink(utf8ToWChar(name_).c_str()) == 0;
-  } else if(isDir()) {
+  }
+  else if (isDir()) {
     return a2rmdir(utf8ToWChar(name_).c_str()) == 0;
-  } else {
+  }
+  else {
     return false;
   }
 }
 
-int64_t File::size() {
+#ifdef __MINGW32__
+namespace {
+HANDLE openFile(const std::string& filename)
+{
+  DWORD desiredAccess = GENERIC_READ;
+  DWORD sharedMode = FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE;
+  DWORD creationDisp = OPEN_EXISTING;
+  return CreateFileW(utf8ToWChar(filename).c_str(), desiredAccess, sharedMode,
+                     /* lpSecurityAttributes */ nullptr, creationDisp,
+                     FILE_ATTRIBUTE_NORMAL, /* hTemplateFile */ nullptr);
+}
+} // namespace
+#endif // __MINGW32__
+
+int64_t File::size()
+{
+#ifdef __MINGW32__
+  // _wstat cannot be used for symlink.  It always returns 0.  Quoted
+  // from https://msdn.microsoft.com/en-us/library/14h5k7ff.aspx:
+  //
+  //   _wstat does not work with Windows Vista symbolic links. In
+  //   these cases, _wstat will always report a file size of 0. _stat
+  //   does work correctly with symbolic links.
+  auto hn = openFile(name_);
+  if (hn == INVALID_HANDLE_VALUE) {
+    return 0;
+  }
+  LARGE_INTEGER fileSize;
+  const auto rv = GetFileSizeEx(hn, &fileSize);
+  CloseHandle(hn);
+  return rv ? fileSize.QuadPart : 0;
+#else  // !__MINGW32__
   a2_struct_stat fstat;
-  if(fillStat(fstat) < 0) {
+  if (fillStat(fstat) < 0) {
     return 0;
   }
   return fstat.st_size;
+#endif // !__MINGW32__
 }
 
-bool File::mkdirs() {
-  if(isDir()) {
+bool File::mkdirs()
+{
+  if (isDir()) {
     return false;
   }
 #ifdef __MINGW32__
   std::string path = name_;
-  for(std::string::iterator i = path.begin(), eoi = path.end(); i != eoi; ++i) {
-    if(*i == '\\') {
+  for (std::string::iterator i = path.begin(), eoi = path.end(); i != eoi;
+       ++i) {
+    if (*i == '\\') {
       *i = '/';
     }
   }
   std::string::iterator dbegin;
-  if(util::startsWith(path, "//")) {
+  if (util::startsWith(path, "//")) {
     // UNC path
     std::string::size_type hostEnd = path.find('/', 2);
-    if(hostEnd == std::string::npos) {
+    if (hostEnd == std::string::npos) {
       // UNC path with only hostname considered as an error.
       return false;
-    } else if(hostEnd == 2) {
+    }
+    else if (hostEnd == 2) {
       // If path starts with "///", it is not considered as UNC.
       dbegin = path.begin();
-    } else {
-      std::string::iterator i = path.begin()+hostEnd;
+    }
+    else {
+      std::string::iterator i = path.begin() + hostEnd;
       std::string::iterator eoi = path.end();
       // //host/mount/dir/...
       //       |     |
@@ -142,45 +185,48 @@ bool File::mkdirs() {
       //             dbegin (will be)
       // Skip to after first directory part. This is because
       // //host/dir appears to be non-directory and mkdir it fails.
-      for(; i != eoi && *i == '/'; ++i);
-      for(; i != eoi && *i != '/'; ++i);
+      for (; i != eoi && *i == '/'; ++i)
+        ;
+      for (; i != eoi && *i != '/'; ++i)
+        ;
       dbegin = i;
-      A2_LOG_DEBUG(fmt("UNC Prefix %s",
-                       std::string(path.begin(), dbegin).c_str()));
-   }
-  } else {
+      A2_LOG_DEBUG(
+          fmt("UNC Prefix %s", std::string(path.begin(), dbegin).c_str()));
+    }
+  }
+  else {
     dbegin = path.begin();
   }
   std::string::iterator begin = path.begin();
   std::string::iterator end = path.end();
-  for(std::string::iterator i = dbegin; i != end;) {
-#else // !__MINGW32__
+  for (std::string::iterator i = dbegin; i != end;) {
+#else  // !__MINGW32__
   std::string::iterator begin = name_.begin();
   std::string::iterator end = name_.end();
-  for(std::string::iterator i = begin; i != end;) {
+  for (std::string::iterator i = begin; i != end;) {
 #endif // !__MINGW32__
     std::string::iterator j = std::find(i, end, '/');
-    if(std::distance(i, j) == 0) {
+    if (std::distance(i, j) == 0) {
       ++i;
       continue;
     }
     i = j;
-    if(i != end) {
+    if (i != end) {
       ++i;
     }
 #ifdef __MINGW32__
-    if(*(j-1) == ':') {
+    if (*(j - 1) == ':') {
       // This is a drive letter, e.g. C:, so skip it.
       continue;
     }
 #endif // __MINGW32__
     std::string dir(begin, j);
     A2_LOG_DEBUG(fmt("Making directory %s", dir.c_str()));
-    if(File(dir).isDir()) {
+    if (File(dir).isDir()) {
       A2_LOG_DEBUG(fmt("%s exists and is a directory.", dir.c_str()));
       continue;
     }
-    if(a2mkdir(utf8ToWChar(dir).c_str(), DIR_OPEN_MODE) == -1) {
+    if (a2mkdir(utf8ToWChar(dir).c_str(), DIR_OPEN_MODE) == -1) {
       A2_LOG_DEBUG(fmt("Failed to create %s", dir.c_str()));
       return false;
     }
@@ -191,7 +237,7 @@ bool File::mkdirs() {
 mode_t File::mode()
 {
   a2_struct_stat fstat;
-  if(fillStat(fstat) < 0) {
+  if (fillStat(fstat) < 0) {
     return 0;
   }
   return fstat.st_mode;
@@ -200,35 +246,36 @@ mode_t File::mode()
 std::string File::getBasename() const
 {
   std::string::size_type lastSlashIndex =
-    name_.find_last_of(getPathSeparators());
-  if(lastSlashIndex == std::string::npos) {
+      name_.find_last_of(getPathSeparators());
+  if (lastSlashIndex == std::string::npos) {
     return name_;
-  } else {
-    return name_.substr(lastSlashIndex+1);
+  }
+  else {
+    return name_.substr(lastSlashIndex + 1);
   }
 }
 
 std::string File::getDirname() const
 {
   std::string::size_type lastSlashIndex =
-    name_.find_last_of(getPathSeparators());
-  if(lastSlashIndex == std::string::npos) {
-    if(name_.empty()) {
+      name_.find_last_of(getPathSeparators());
+  if (lastSlashIndex == std::string::npos) {
+    if (name_.empty()) {
       return A2STR::NIL;
-    } else {
+    }
+    else {
       return ".";
     }
-  } else if(lastSlashIndex == 0) {
+  }
+  else if (lastSlashIndex == 0) {
     return "/";
-  } else {
+  }
+  else {
     return name_.substr(0, lastSlashIndex);
   }
 }
 
-bool File::isDir(const std::string& filename)
-{
-  return File(filename).isDir();
-}
+bool File::isDir(const std::string& filename) { return File(filename).isDir(); }
 
 bool File::renameTo(const std::string& dest)
 {
@@ -236,18 +283,19 @@ bool File::renameTo(const std::string& dest)
   // MinGW's rename() doesn't delete an existing destination.  Better
   // to use MoveFileEx, which usually provides atomic move in aria2
   // usecase.
-  if(MoveFileExW(utf8ToWChar(name_).c_str(), utf8ToWChar(dest).c_str(),
-                 MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING)) {
+  if (MoveFileExW(utf8ToWChar(name_).c_str(), utf8ToWChar(dest).c_str(),
+                  MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING)) {
     name_ = dest;
     return true;
   }
 
   return false;
-#else // !__MINGW32__
-  if(rename(name_.c_str(), dest.c_str()) == 0) {
+#else  // !__MINGW32__
+  if (rename(name_.c_str(), dest.c_str()) == 0) {
     name_ = dest;
     return true;
-  } else {
+  }
+  else {
     return false;
   }
 #endif // !__MINGW32__
@@ -256,12 +304,10 @@ bool File::renameTo(const std::string& dest)
 bool File::utime(const Time& actime, const Time& modtime) const
 {
 #if defined(HAVE_UTIMES) && !defined(__MINGW32__)
-  struct timeval times[2] = {
-    { actime.getTimeFromEpoch(), 0 },
-    { modtime.getTimeFromEpoch(), 0 }
-  };
+  struct timeval times[2] = {{actime.getTimeFromEpoch(), 0},
+                             {modtime.getTimeFromEpoch(), 0}};
   return utimes(name_.c_str(), times) == 0;
-#else // !HAVE_UTIMES
+#else  // !HAVE_UTIMES
   a2utimbuf ub;
   ub.actime = actime.getTimeFromEpoch();
   ub.modtime = modtime.getTimeFromEpoch();
@@ -272,7 +318,7 @@ bool File::utime(const Time& actime, const Time& modtime) const
 Time File::getModifiedTime()
 {
   a2_struct_stat fstat;
-  if(fillStat(fstat) < 0) {
+  if (fillStat(fstat) < 0) {
     return 0;
   }
   return Time(fstat.st_mtime);
@@ -283,17 +329,19 @@ std::string File::getCurrentDir()
 #ifdef __MINGW32__
   const size_t buflen = 2048;
   wchar_t buf[buflen];
-  if(_wgetcwd(buf, buflen)) {
+  if (_wgetcwd(buf, buflen)) {
     return wCharToUtf8(buf);
-  } else {
+  }
+  else {
     return ".";
   }
-#else // !__MINGW32__
+#else  // !__MINGW32__
   const size_t buflen = 2048;
   char buf[buflen];
-  if(getcwd(buf, buflen)) {
+  if (getcwd(buf, buflen)) {
     return std::string(buf);
-  } else {
+  }
+  else {
     return ".";
   }
 #endif // !__MINGW32__
@@ -303,7 +351,7 @@ const char* File::getPathSeparators()
 {
 #ifdef __MINGW32__
   return "/\\";
-#else // !__MINGW32__
+#else  // !__MINGW32__
   return "/";
 #endif // !__MINGW32__
 }

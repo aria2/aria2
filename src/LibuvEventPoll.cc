@@ -58,32 +58,27 @@
 #include "util.h"
 
 namespace {
-  using namespace aria2;
+using namespace aria2;
 
-  template<typename T>
-  static void close_callback(uv_handle_t* handle)
-  {
-    delete reinterpret_cast<T*>(handle);
-  }
+template <typename T> static void close_callback(uv_handle_t* handle)
+{
+  delete reinterpret_cast<T*>(handle);
+}
 
-#if !defined(UV_VERSION_MINOR) || (UV_VERSION_MAJOR == 0 && UV_VERSION_MINOR <= 10)
+#if !defined(UV_VERSION_MINOR) ||                                              \
+    (UV_VERSION_MAJOR == 0 && UV_VERSION_MINOR <= 10)
 
-  static void timer_callback(uv_timer_t* handle, int status)
-  {
-    uv_stop(handle->loop);
-  }
+static void timer_callback(uv_timer_t* handle, int status)
+{
+  uv_stop(handle->loop);
+}
 
-  static void timer_callback(uv_timer_t* handle)
-  {
-    timer_callback(handle, 0);
-  }
+static void timer_callback(uv_timer_t* handle) { timer_callback(handle, 0); }
 
-#else // !defined(UV_VERSION_MINOR) || (UV_VERSION_MAJOR == 0 && UV_VERSION_MINOR <= 10)
+#else // !defined(UV_VERSION_MINOR) || (UV_VERSION_MAJOR == 0 &&
+// UV_VERSION_MINOR <= 10)
 
-  static void timer_callback(uv_timer_t* handle)
-  {
-    uv_stop(handle->loop);
-  }
+static void timer_callback(uv_timer_t* handle) { uv_stop(handle->loop); }
 
 #endif // !defined(UV_VERSION_MINOR) || UV_VERSION_MINOR <= 10
 }
@@ -91,8 +86,9 @@ namespace {
 namespace aria2 {
 
 LibuvEventPoll::KSocketEntry::KSocketEntry(sock_t s)
-  : SocketEntry<KCommandEvent, KADNSEvent>(s)
-{}
+    : SocketEntry<KCommandEvent, KADNSEvent>(s)
+{
+}
 
 inline int accumulateEvent(int events, const LibuvEventPoll::KEvent& event)
 {
@@ -103,12 +99,12 @@ int LibuvEventPoll::KSocketEntry::getEvents() const
 {
   int events = 0;
 #ifdef ENABLE_ASYNC_DNS
-  events = std::accumulate(adnsEvents_.begin(), adnsEvents_.end(),
-                           std::accumulate(commandEvents_.begin(),
-                                           commandEvents_.end(), 0,
-                                           accumulateEvent),
-                           accumulateEvent);
-#else // !ENABLE_ASYNC_DNS
+  events =
+      std::accumulate(adnsEvents_.begin(), adnsEvents_.end(),
+                      std::accumulate(commandEvents_.begin(),
+                                      commandEvents_.end(), 0, accumulateEvent),
+                      accumulateEvent);
+#else  // !ENABLE_ASYNC_DNS
   events = std::accumulate(commandEvents_.begin(), commandEvents_.end(), 0,
                            accumulateEvent);
 #endif // !ENABLE_ASYNC_DNS
@@ -116,14 +112,11 @@ int LibuvEventPoll::KSocketEntry::getEvents() const
   return events;
 }
 
-LibuvEventPoll::LibuvEventPoll()
-{
-  loop_ = uv_loop_new();
-}
+LibuvEventPoll::LibuvEventPoll() { loop_ = uv_loop_new(); }
 
 LibuvEventPoll::~LibuvEventPoll()
 {
-  for (auto& p: polls_) {
+  for (auto& p : polls_) {
     p.second->close();
   }
   // Actually kill the polls, and timers, if any.
@@ -155,7 +148,8 @@ void LibuvEventPoll::poll(const struct timeval& tv)
     uv_close((uv_handle_t*)timer, close_callback<uv_timer_t>);
   }
   else {
-    while (uv_run(loop_, (uv_run_mode)(UV_RUN_ONCE | UV_RUN_NOWAIT)) > 0) {}
+    while (uv_run(loop_, (uv_run_mode)(UV_RUN_ONCE | UV_RUN_NOWAIT)) > 0) {
+    }
   }
 
 #ifdef ENABLE_ASYNC_DNS
@@ -163,7 +157,7 @@ void LibuvEventPoll::poll(const struct timeval& tv)
   // own timeout and ares may create new sockets or closes socket in
   // their API. So we call ares_process_fd for all ares_channel and
   // re-register their sockets.
-  for (auto& r: nameResolverEntries_) {
+  for (auto& r : nameResolverEntries_) {
     auto& ent = r.second;
     ent.processTimeout();
     ent.removeSocketEvents(this);
@@ -203,27 +197,27 @@ void LibuvEventPoll::pollCallback(KPoll* poll, int status, int events)
   if (status < 0) {
     switch (status) {
 #endif
-      case UV_EAGAIN:
-      case UV_EINTR:
-        return;
-      case UV_EOF:
-      case UV_ECONNABORTED:
-      case UV_ECONNREFUSED:
-      case UV_ECONNRESET:
-      case UV_ENOTCONN:
-      case UV_EPIPE:
-      case UV_ESHUTDOWN:
-        events = IEV_HUP;
-        poll->processEvents(events);
-        poll->stop();
-        uv_stop(loop_);
-        return;
-      default:
-        events = IEV_ERROR;
-        poll->processEvents(events);
-        poll->stop();
-        uv_stop(loop_);
-        return;
+    case UV_EAGAIN:
+    case UV_EINTR:
+      return;
+    case UV_EOF:
+    case UV_ECONNABORTED:
+    case UV_ECONNREFUSED:
+    case UV_ECONNRESET:
+    case UV_ENOTCONN:
+    case UV_EPIPE:
+    case UV_ESHUTDOWN:
+      events = IEV_HUP;
+      poll->processEvents(events);
+      poll->stop();
+      uv_stop(loop_);
+      return;
+    default:
+      events = IEV_ERROR;
+      poll->processEvents(events);
+      poll->stop();
+      uv_stop(loop_);
+      return;
     }
   }
 
@@ -257,7 +251,8 @@ bool LibuvEventPoll::addEvents(sock_t socket,
   return true;
 }
 
-bool LibuvEventPoll::addEvents(sock_t socket, Command* command, EventPoll::EventType events)
+bool LibuvEventPoll::addEvents(sock_t socket, Command* command,
+                               EventPoll::EventType events)
 {
   int pollEvents = translateEvents(events);
   return addEvents(socket, KCommandEvent(command, pollEvents));
@@ -316,28 +311,28 @@ bool LibuvEventPoll::deleteEvents(sock_t socket, Command* command,
 }
 
 #ifdef ENABLE_ASYNC_DNS
-bool LibuvEventPoll::addNameResolver(const std::shared_ptr<AsyncNameResolver>& resolver,
-                                     Command* command)
+bool LibuvEventPoll::addNameResolver(
+    const std::shared_ptr<AsyncNameResolver>& resolver, Command* command)
 {
   auto key = std::make_pair(resolver.get(), command);
   auto itr = nameResolverEntries_.lower_bound(key);
 
-  if(itr != std::end(nameResolverEntries_) && (*itr).first == key) {
+  if (itr != std::end(nameResolverEntries_) && (*itr).first == key) {
     return false;
   }
 
-  itr = nameResolverEntries_.insert
-    (itr, std::make_pair(key, KAsyncNameResolverEntry(resolver, command)));
+  itr = nameResolverEntries_.insert(
+      itr, std::make_pair(key, KAsyncNameResolverEntry(resolver, command)));
   (*itr).second.addSocketEvents(this);
   return true;
 }
 
-bool LibuvEventPoll::deleteNameResolver(const std::shared_ptr<AsyncNameResolver>& resolver,
-                                        Command* command)
+bool LibuvEventPoll::deleteNameResolver(
+    const std::shared_ptr<AsyncNameResolver>& resolver, Command* command)
 {
   auto key = std::make_pair(resolver.get(), command);
   auto itr = nameResolverEntries_.find(key);
-  if(itr == std::end(nameResolverEntries_)) {
+  if (itr == std::end(nameResolverEntries_)) {
     return false;
   }
 

@@ -12,12 +12,13 @@
 
 namespace aria2 {
 
-class DHTPingMessageTest:public CppUnit::TestFixture {
+class DHTPingMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTPingMessageTest);
   CPPUNIT_TEST(testGetBencodedMessage);
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   std::shared_ptr<DHTNode> localNode_;
   std::shared_ptr<DHTNode> remoteNode_;
@@ -33,7 +34,7 @@ public:
   void testGetBencodedMessage();
   void testDoReceivedAction();
 
-  class MockDHTMessageFactory2:public MockDHTMessageFactory {
+  class MockDHTMessageFactory2 : public MockDHTMessageFactory {
   public:
     virtual std::unique_ptr<DHTPingReplyMessage>
     createPingReplyMessage(const std::shared_ptr<DHTNode>& remoteNode,
@@ -42,12 +43,11 @@ public:
     {
       unsigned char id[DHT_ID_LENGTH];
       std::fill(std::begin(id), std::end(id), '0');
-      return make_unique<DHTPingReplyMessage>
-        (localNode_, remoteNode, id, transactionID);
+      return make_unique<DHTPingReplyMessage>(localNode_, remoteNode, id,
+                                              transactionID);
     }
   };
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DHTPingMessageTest);
 
@@ -91,8 +91,8 @@ void DHTPingMessageTest::testDoReceivedAction()
   msg.doReceivedAction();
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher.messageQueue_.size());
-  auto m = dynamic_cast<DHTPingReplyMessage*>
-    (dispatcher.messageQueue_[0].message_.get());
+  auto m = dynamic_cast<DHTPingReplyMessage*>(
+      dispatcher.messageQueue_[0].message_.get());
   CPPUNIT_ASSERT(*localNode_ == *m->getLocalNode());
   CPPUNIT_ASSERT(*remoteNode_ == *m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(std::string("ping"), m->getMessageType());

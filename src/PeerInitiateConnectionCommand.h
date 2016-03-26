@@ -55,6 +55,7 @@ private:
   std::shared_ptr<PieceStorage> pieceStorage_;
 
   bool mseHandshakeEnabled_;
+
 protected:
   virtual bool executeInternal() CXX11_OVERRIDE;
   virtual bool prepareForNextPeer(time_t wait) CXX11_OVERRIDE;
@@ -62,8 +63,7 @@ protected:
   virtual bool exitBeforeExecute() CXX11_OVERRIDE;
 
 public:
-  PeerInitiateConnectionCommand(cuid_t cuid,
-                                RequestGroup* requestGroup,
+  PeerInitiateConnectionCommand(cuid_t cuid, RequestGroup* requestGroup,
                                 const std::shared_ptr<Peer>& peer,
                                 DownloadEngine* e,
                                 const std::shared_ptr<BtRuntime>& btRuntime,

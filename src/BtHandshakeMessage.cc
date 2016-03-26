@@ -45,23 +45,21 @@ namespace aria2 {
 const char BtHandshakeMessage::NAME[] = "handshake";
 
 const unsigned char* BtHandshakeMessage::BT_PSTR =
-  reinterpret_cast<const unsigned char*>("BitTorrent protocol");
+    reinterpret_cast<const unsigned char*>("BitTorrent protocol");
 
-BtHandshakeMessage::BtHandshakeMessage():SimpleBtMessage(ID, NAME)
-{
-  init();
-}
+BtHandshakeMessage::BtHandshakeMessage() : SimpleBtMessage(ID, NAME) { init(); }
 
 BtHandshakeMessage::BtHandshakeMessage(const unsigned char* infoHash,
-                                       const unsigned char* peerId):
-  SimpleBtMessage(ID, NAME)
+                                       const unsigned char* peerId)
+    : SimpleBtMessage(ID, NAME)
 {
   init();
   memcpy(infoHash_, infoHash, INFO_HASH_LENGTH);
   memcpy(peerId_, peerId, PEER_ID_LENGTH);
 }
 
-void BtHandshakeMessage::init() {
+void BtHandshakeMessage::init()
+{
   pstrlen_ = 19;
   pstr_ = new unsigned char[PSTR_LENGTH];
   reserved_ = new unsigned char[RESERVED_LENGTH];
@@ -91,37 +89,33 @@ unsigned char* BtHandshakeMessage::createMessage()
 {
   auto msg = new unsigned char[MESSAGE_LENGTH];
   msg[0] = pstrlen_;
-  memcpy(msg+1, pstr_, PSTR_LENGTH);
-  memcpy(msg+20, reserved_, RESERVED_LENGTH);
-  memcpy(msg+28, infoHash_, INFO_HASH_LENGTH);
-  memcpy(msg+48, peerId_, PEER_ID_LENGTH);
+  memcpy(msg + 1, pstr_, PSTR_LENGTH);
+  memcpy(msg + 20, reserved_, RESERVED_LENGTH);
+  memcpy(msg + 28, infoHash_, INFO_HASH_LENGTH);
+  memcpy(msg + 48, peerId_, PEER_ID_LENGTH);
   return msg;
 }
 
-size_t BtHandshakeMessage::getMessageLength() {
-  return MESSAGE_LENGTH;
-}
+size_t BtHandshakeMessage::getMessageLength() { return MESSAGE_LENGTH; }
 
-std::string BtHandshakeMessage::toString() const {
-  return fmt("%s peerId=%s, reserved=%s",
-             NAME,
+std::string BtHandshakeMessage::toString() const
+{
+  return fmt("%s peerId=%s, reserved=%s", NAME,
              util::percentEncode(peerId_, PEER_ID_LENGTH).c_str(),
              util::toHex(reserved_, RESERVED_LENGTH).c_str());
 }
 
-bool BtHandshakeMessage::isFastExtensionSupported() const {
-  return reserved_[7]&0x04u;
+bool BtHandshakeMessage::isFastExtensionSupported() const
+{
+  return reserved_[7] & 0x04u;
 }
 
 bool BtHandshakeMessage::isExtendedMessagingEnabled() const
 {
-  return reserved_[5]&0x10u;
+  return reserved_[5] & 0x10u;
 }
 
-bool BtHandshakeMessage::isDHTEnabled() const
-{
-  return reserved_[7]&0x01u;
-}
+bool BtHandshakeMessage::isDHTEnabled() const { return reserved_[7] & 0x01u; }
 
 void BtHandshakeMessage::setInfoHash(const unsigned char* infoHash)
 {

@@ -38,12 +38,13 @@
 namespace aria2 {
 
 NetStat::NetStat()
-  : status_(NetStat::IDLE),
-    avgDownloadSpeed_(0),
-    avgUploadSpeed_(0),
-    sessionDownloadLength_(0),
-    sessionUploadLength_(0)
-{}
+    : status_(NetStat::IDLE),
+      avgDownloadSpeed_(0),
+      avgUploadSpeed_(0),
+      sessionDownloadLength_(0),
+      sessionUploadLength_(0)
+{
+}
 
 NetStat::~NetStat() {}
 
@@ -55,14 +56,21 @@ int NetStat::calculateDownloadSpeed()
   return downloadSpeed_.calculateSpeed();
 }
 
+int NetStat::calculateNewestDownloadSpeed(int seconds)
+{
+  return downloadSpeed_.calculateNewestSpeed(seconds);
+}
+
 int NetStat::calculateAvgDownloadSpeed()
 {
   return avgDownloadSpeed_ = downloadSpeed_.calculateAvgSpeed();
 }
 
-int NetStat::calculateUploadSpeed()
+int NetStat::calculateUploadSpeed() { return uploadSpeed_.calculateSpeed(); }
+
+int NetStat::calculateNewestUploadSpeed(int seconds)
 {
-  return uploadSpeed_.calculateSpeed();
+  return uploadSpeed_.calculateNewestSpeed(seconds);
 }
 
 int NetStat::calculateAvgUploadSpeed()
@@ -70,15 +78,22 @@ int NetStat::calculateAvgUploadSpeed()
   return avgUploadSpeed_ = uploadSpeed_.calculateAvgSpeed();
 }
 
-void NetStat::updateDownloadLength(size_t bytes)
+void NetStat::updateDownload(size_t bytes)
 {
   downloadSpeed_.update(bytes);
   sessionDownloadLength_ += bytes;
 }
 
-void NetStat::updateUploadLength(size_t bytes)
+void NetStat::updateUpload(size_t bytes)
 {
   uploadSpeed_.update(bytes);
+  sessionUploadLength_ += bytes;
+}
+
+void NetStat::updateUploadSpeed(size_t bytes) { uploadSpeed_.update(bytes); }
+
+void NetStat::updateUploadLength(size_t bytes)
+{
   sessionUploadLength_ += bytes;
 }
 
@@ -87,10 +102,7 @@ int NetStat::getMaxDownloadSpeed() const
   return downloadSpeed_.getMaxSpeed();
 }
 
-int NetStat::getMaxUploadSpeed() const
-{
-  return uploadSpeed_.getMaxSpeed();
-}
+int NetStat::getMaxUploadSpeed() const { return uploadSpeed_.getMaxSpeed(); }
 
 void NetStat::reset()
 {

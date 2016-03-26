@@ -13,7 +13,7 @@
 
 namespace aria2 {
 
-class MetalinkParserControllerTest:public CppUnit::TestFixture {
+class MetalinkParserControllerTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(MetalinkParserControllerTest);
   CPPUNIT_TEST(testEntryTransaction);
@@ -26,8 +26,8 @@ class MetalinkParserControllerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSignatureTransaction);
 
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
   void setUp() {}
 
@@ -43,8 +43,7 @@ public:
   void testSignatureTransaction();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkParserControllerTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(MetalinkParserControllerTest);
 
 void MetalinkParserControllerTest::testEntryTransaction()
 {
@@ -116,7 +115,8 @@ void MetalinkParserControllerTest::testResourceTransaction_withBaseUri()
   ctrl.setMediatypeOfMetaurl("torrent");
   ctrl.commitMetaurlTransaction();
   ctrl.newMetaurlTransaction();
-  ctrl.setURLOfMetaurl("magnet:?xt=urn:btih:248d0a1cd08284299de78d5c1ed359bb46717d8c");
+  ctrl.setURLOfMetaurl(
+      "magnet:?xt=urn:btih:248d0a1cd08284299de78d5c1ed359bb46717d8c");
   ctrl.setMediatypeOfMetaurl("torrent");
   ctrl.commitMetaurlTransaction();
 #endif // ENABLE_BITTORRENT
@@ -134,8 +134,10 @@ void MetalinkParserControllerTest::testResourceTransaction_withBaseUri()
     CPPUNIT_ASSERT_EQUAL(std::string("http://base/meta/aria2.tar.bz2.torrent"),
                          m->getEntries()[0]->metaurls[0]->url);
 
-    CPPUNIT_ASSERT_EQUAL(std::string("magnet:?xt=urn:btih:248d0a1cd08284299de78d5c1ed359bb46717d8c"),
-                         m->getEntries()[0]->metaurls[1]->url);
+    CPPUNIT_ASSERT_EQUAL(
+        std::string(
+            "magnet:?xt=urn:btih:248d0a1cd08284299de78d5c1ed359bb46717d8c"),
+        m->getEntries()[0]->metaurls[1]->url);
 #endif // ENABLE_BITTORRENT
   }
 }
@@ -168,7 +170,7 @@ void MetalinkParserControllerTest::testMetaurlTransaction()
     CPPUNIT_ASSERT_EQUAL(std::string("mybirthdaycake"), metaurl->name);
     CPPUNIT_ASSERT_EQUAL(999, metaurl->priority);
   }
-#else // !ENABLE_BITTORRENT
+#else  // !ENABLE_BITTORRENT
   {
     auto m = ctrl.getResult();
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
@@ -288,15 +290,15 @@ void MetalinkParserControllerTest::testChunkChecksumTransactionV4()
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), md->getHashType());
     CPPUNIT_ASSERT_EQUAL((int32_t)256_k, md->getPieceLength());
     CPPUNIT_ASSERT_EQUAL((size_t)3, md->countPieceHash());
-    CPPUNIT_ASSERT_EQUAL
-      (std::string("5bd9f7248df0f3a6a86ab6c95f48787d546efa14"),
-       util::toHex(md->getPieceHashes()[0]));
-    CPPUNIT_ASSERT_EQUAL
-      (std::string("9413ee70957a09d55704123687478e07f18c7b29"),
-       util::toHex(md->getPieceHashes()[1]));
-    CPPUNIT_ASSERT_EQUAL
-      (std::string("44213f9f4d59b557314fadcd233232eebcac8012"),
-       util::toHex(md->getPieceHashes()[2]));
+    CPPUNIT_ASSERT_EQUAL(
+        std::string("5bd9f7248df0f3a6a86ab6c95f48787d546efa14"),
+        util::toHex(md->getPieceHashes()[0]));
+    CPPUNIT_ASSERT_EQUAL(
+        std::string("9413ee70957a09d55704123687478e07f18c7b29"),
+        util::toHex(md->getPieceHashes()[1]));
+    CPPUNIT_ASSERT_EQUAL(
+        std::string("44213f9f4d59b557314fadcd233232eebcac8012"),
+        util::toHex(md->getPieceHashes()[2]));
 
     CPPUNIT_ASSERT(!m->getEntries()[1]->chunkChecksum);
 
@@ -307,13 +309,13 @@ void MetalinkParserControllerTest::testChunkChecksumTransactionV4()
 void MetalinkParserControllerTest::testSignatureTransaction()
 {
   static std::string pgpSignature =
-    "-----BEGIN PGP SIGNATURE-----\n"
-    "Version: GnuPG v1.4.9 (GNU/Linux)\n"
-    "\n"
-    "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\n"
-    "ffffffffffffffffffffffff\n"
-    "fffff\n"
-    "-----END PGP SIGNATURE-----\n";
+      "-----BEGIN PGP SIGNATURE-----\n"
+      "Version: GnuPG v1.4.9 (GNU/Linux)\n"
+      "\n"
+      "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\n"
+      "ffffffffffffffffffffffff\n"
+      "fffff\n"
+      "-----END PGP SIGNATURE-----\n";
 
   MetalinkParserController ctrl;
   ctrl.newEntryTransaction();

@@ -1,170 +1,40 @@
-aria2 1.19.1
+aria2 1.21.0
 ============
 
 Release Note
 ------------
 
-This release fixes TLS handshake error with servers which only support
-RSA-SHA1 signature algorithm.  We removed RSA-SHA1 for enchanced
-security, but many users reported there were servers which could not
-talk aria2 1.19.0, so added it again for compatibility reasons.  For
-Windows build, we fixed potential infinite loop bug when TLS is used.
-
-We changed the location where dht.dat and aria2.conf are looked up.
-The aria2 manual page described details.  Basically we now follow XDG
-specification (http://standards.freedesktop.org/basedir-spec/latest/).
-For dht.dat, the default location is $XDG_CACHE_HOME/aria2/ directory.
-For aria2.conf, the default location is $XDG_CONFIG_HOME/aria2/
-directory.  To keep the current user configuration working, if aria2
-detects dht.dat under $HOME/.aria2/ directory, it is used instead.
-Similarly, if aria2.conf exists under $HOME/.aria2/ directory, it is
-used instead.
-
-Previously, we return 500 HTTP status if RPC method execution
-encountered error.  Now it returns with 400 HTTP status with error
-code.  This is more natural because server processed request and found
-an error, and returned error reply correctly.  This is not something
-server crashed or something.  Also, there is RPC libraries which
-throws exception if it sees 5XX status code, where 400 is better
-because we can examine the error.
+This release fixes several bugs, see the Changes for details.  We
+added "following" key to the response of aria2.tellStatus RPC method
+as reverse link for followedBy.
 
 Changes
 -------
 
-* Update README.android
+* SessionSerializer: Fix bug that pause=true is added to wrong item
 
-  Providing some workarounds about CA certificates and standard output
+  This change also defers writing metadata download to the location
+  where first its follower download is written.
 
-  Patch from amtlib-dot-dll
+* Add "following" to aria2.tellStatus response key as reverse link for
+  followedBy
 
-* Return 400 HTTP status code if exception was caught while executing
-  RPC method
+* mingw: Add warning for falloc
 
-  Previously, we returned 500 HTTP status code.  I think the found in
-  RPC level, not in HTTP protocol, so 500 is not appropriate.
+* Update ciphers in AppleTLS
 
-* WinTLS: Fix potential infinite loop
+  Also enable fast start while at it
 
-* Fix on-download-error is executed even if download succeeded
+* OSX: Enable libssh2 and sftp
 
-* Update Dockerfile.mingw
+  Closes GH-468
 
-  Patch from Adam Baxter
+* Update OSX dependencies
 
-* Increase --select-file upper bound to 1m for torrent containing lots
-  of files
+  Closes GH-466
 
-* Fix busy loop with --dry-run and 4xx response for URI listed in
-  metalink
+* Fix compile error without TLS support
 
-  See GH-430
+* Add support for using gnutls system wide crypto policy
 
-* Update sqlite in OSX build to 3.8.10.2
-
-* Make LibuvEventPoll compatible with the latest libuv again
-
-* gnutls: Allow SIGN-RSA-SHA1 for compatibility reason
-
-* Make script compatible with both Python 2 and 3
-
-  Patch from Vasilij Schneidermann
-
-* Make config and cache files conform to XDG
-
-  See http://standards.freedesktop.org/basedir-spec/latest/ for
-  further details.  This implementation decides the default based on
-  whether a file exists at the legacy location, if it doesn't, it
-  picks the XDG-conforming location instead.
-
-  Patch from Vasilij Schneidermann
-
-* ftp, sftp: Fix heap-after-free bug on exception
-
-* ftp: Fix timeout when reusing FTP connection
-
-* Various MinGW-w64 build improvements
-
-  - Fix detection of localtime_r and asctime_r on MinGW-w64
-  - Fix linking with libintl on MinGW-w64
-
-  Patch from David Macek
-
-
-
-aria2 1.19.0
-============
-
-Release Note
-------------
-
-This releases adds SFTP support, and fixes several bugs.  SFTP support
-has been implemented using libssh2.  We added several new options.
---multiple-interface option is like --interface option, but can take
-several interfaces.  They are used in round-robin manner, and it works
-like link aggregation.  Previously, .netrc search path is fixed under
-$HOME directory, and cannot be changed.  In this release, --netrc-path
-option has been added to override the search path.  The runtime bug
-concerning getrandom has been fixed in this release.  Previously if
-download failed because checksum error, aria2 exited with error code 1
-(unknown error).  Now it exits with dedicated error code 32.  We fixed
-long outstanding bug that aria2 crashes when downloading multi-file
-torrent.
-
-Changes
--------
-
-* android: Build and link with zlib
-
-  Previously, we linked with zlib shipped with NDK, but it seems this
-  is not part of NDK API, and thus could break our app.
-
-* Allow netrc-path to be specified in the config file
-
-  Adds --netrc-path to override default .netrc search path.  Patch
-  from Ryan Steinmetz
-
-* Exit with 32 status code if checksum verification failed
-
-* Add SFTP support using libssh2
-
-  aria2 can now download files via sftp protocol: aria2c sftp://....
-  --ssh-host-key-md option is added to specify expected server's
-  fingerprint.
-
-* Added Dockerfile to cross complile aria2 for RaspberryPI (armhf)
-
-  Patch from Igor Khomyakov
-
-* multiple interface support for link aggregation
-
-  Adds --multiple-interface option.  Patch from Sarim Khan
-
-* Run on-bt-download-complete command when -V reports download finished
-
-  Fixes GH-355
-
-* Use dedicated DiskWriter in MultiDiskFileAllocationIterator
-
-  We have to use dedicated DiskWriter instead of
-  (*entryItr_)->getDiskWriter().  This is because
-  SingleFileAllocationIterator cannot reopen file if file is closed by
-  OpenedFileCounter.  Fixes GH-350
-
-* Fix getrandom for system with libc not including errno or systems
-
-  not supporting ENOSYS in the first place.  Fixes GH-347
-
-* Don't send back rpc-secret option value in aria2.getGlobalOption RPC
-  method
-
-* Make libuv default off
-
-  See GH-241 for discussion
-
-* Fixed slow RPC response
-
-  Fxies GH-345
-
-* Fix getrandom interface detection
-
-  Fixes GH-346
+  Patch from Athmane Madjoudj

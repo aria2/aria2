@@ -61,33 +61,29 @@
 #include "array_fun.h"
 #include "MessageDigest.h"
 #ifdef HAVE_ZLIB
-# include "GZipDecodingStreamFilter.h"
+#include "GZipDecodingStreamFilter.h"
 #endif // HAVE_ZLIB
 
 namespace aria2 {
 
-HttpResponse::HttpResponse()
-  : cuid_{0}
-{}
+HttpResponse::HttpResponse() : cuid_{0} {}
 
 void HttpResponse::validateResponse() const
 {
   int statusCode = getStatusCode();
-  switch(statusCode) {
+  switch (statusCode) {
   case 200: // OK
   case 206: // Partial Content
     if (!httpHeader_->defined(HttpHeader::TRANSFER_ENCODING)) {
       // compare the received range against the requested range
       auto responseRange = httpHeader_->getRange();
       if (!httpRequest_->isRangeSatisfied(responseRange)) {
-        throw DL_ABORT_EX2(fmt(EX_INVALID_RANGE_HEADER,
-                               httpRequest_->getStartByte(),
-                               httpRequest_->getEndByte(),
-                               httpRequest_->getEntityLength(),
-                               responseRange.startByte,
-                               responseRange.endByte,
-                               responseRange.entityLength),
-                           error_code::CANNOT_RESUME);
+        throw DL_ABORT_EX2(
+            fmt(EX_INVALID_RANGE_HEADER, httpRequest_->getStartByte(),
+                httpRequest_->getEndByte(), httpRequest_->getEntityLength(),
+                responseRange.startByte, responseRange.endByte,
+                responseRange.entityLength),
+            error_code::CANNOT_RESUME);
       }
     }
     return;
@@ -118,8 +114,8 @@ void HttpResponse::validateResponse() const
 
 std::string HttpResponse::determineFilename() const
 {
-  std::string contentDisposition = util::getContentDispositionFilename
-    (httpHeader_->find(HttpHeader::CONTENT_DISPOSITION));
+  std::string contentDisposition = util::getContentDispositionFilename(
+      httpHeader_->find(HttpHeader::CONTENT_DISPOSITION));
   if (contentDisposition.empty()) {
     auto file = httpRequest_->getFile();
     file = util::percentDecode(file.begin(), file.end());
@@ -129,9 +125,8 @@ std::string HttpResponse::determineFilename() const
     return file;
   }
 
-  A2_LOG_INFO(fmt(MSG_CONTENT_DISPOSITION_DETECTED,
-                  cuid_,
-                  contentDisposition.c_str()));
+  A2_LOG_INFO(
+      fmt(MSG_CONTENT_DISPOSITION_DETECTED, cuid_, contentDisposition.c_str()));
   return contentDisposition;
 }
 
@@ -140,17 +135,15 @@ void HttpResponse::retrieveCookie()
   Time now;
   auto r = httpHeader_->equalRange(HttpHeader::SET_COOKIE);
   for (; r.first != r.second; ++r.first) {
-    httpRequest_->getCookieStorage()->parseAndStore
-      ((*r.first).second,
-       httpRequest_->getHost(),
-       httpRequest_->getDir(),
-       now.getTimeFromEpoch());
+    httpRequest_->getCookieStorage()->parseAndStore(
+        (*r.first).second, httpRequest_->getHost(), httpRequest_->getDir(),
+        now.getTimeFromEpoch());
   }
 }
 
 bool HttpResponse::isRedirect() const
 {
-  switch(getStatusCode()) {
+  switch (getStatusCode()) {
   case 300: // Multiple Choices
   case 301: // Moved Permanently
   case 302: // Found
@@ -166,14 +159,12 @@ void HttpResponse::processRedirect()
 {
   const auto& req = httpRequest_->getRequest();
   if (!req->redirectUri(util::percentEncodeMini(getRedirectURI()))) {
-    throw DL_RETRY_EX(fmt("CUID#%" PRId64
-                          " - Redirect to %s failed. It may not be a valid URI.",
-                          cuid_,
-                          req->getCurrentUri().c_str()));
+    throw DL_RETRY_EX(fmt(
+        "CUID#%" PRId64 " - Redirect to %s failed. It may not be a valid URI.",
+        cuid_, req->getCurrentUri().c_str()));
   }
 
-  A2_LOG_INFO(fmt(MSG_REDIRECT,
-                  cuid_,
+  A2_LOG_INFO(fmt(MSG_REDIRECT, cuid_,
                   httpRequest_->getRequest()->getCurrentUri().c_str()));
 }
 
@@ -220,8 +211,8 @@ std::unique_ptr<StreamFilter>
 HttpResponse::getContentEncodingStreamFilter() const
 {
 #ifdef HAVE_ZLIB
-  if(util::strieq(getContentEncoding(), "gzip") ||
-     util::strieq(getContentEncoding(), "deflate")) {
+  if (util::strieq(getContentEncoding(), "gzip") ||
+      util::strieq(getContentEncoding(), "deflate")) {
     return make_unique<GZipDecodingStreamFilter>();
   }
 #endif // HAVE_ZLIB
@@ -231,7 +222,7 @@ HttpResponse::getContentEncodingStreamFilter() const
 
 int64_t HttpResponse::getContentLength() const
 {
-  if(!httpHeader_) {
+  if (!httpHeader_) {
     return 0;
   }
 
@@ -240,7 +231,7 @@ int64_t HttpResponse::getContentLength() const
 
 int64_t HttpResponse::getEntityLength() const
 {
-  if(!httpHeader_) {
+  if (!httpHeader_) {
     return 0;
   }
 
@@ -249,7 +240,7 @@ int64_t HttpResponse::getEntityLength() const
 
 std::string HttpResponse::getContentType() const
 {
-  if(!httpHeader_) {
+  if (!httpHeader_) {
     return A2STR::NIL;
   }
 
@@ -274,10 +265,7 @@ void HttpResponse::setHttpRequest(std::unique_ptr<HttpRequest> httpRequest)
   httpRequest_ = std::move(httpRequest);
 }
 
-int HttpResponse::getStatusCode() const
-{
-  return httpHeader_->getStatusCode();
-}
+int HttpResponse::getStatusCode() const { return httpHeader_->getStatusCode(); }
 
 Time HttpResponse::getLastModifiedTime() const
 {
@@ -299,11 +287,11 @@ bool parseMetalinkHttpLink(MetalinkHttpEntry& result, const std::string& s)
   }
 
   auto last = std::find(first, s.end(), '>');
-  if(last == s.end()) {
+  if (last == s.end()) {
     return false;
   }
 
-  auto p = util::stripIter(first+1, last);
+  auto p = util::stripIter(first + 1, last);
   if (p.first == p.second) {
     return false;
   }
@@ -323,17 +311,18 @@ bool parseMetalinkHttpLink(MetalinkHttpEntry& result, const std::string& s)
       break;
     }
 
-    if(value.empty()) {
-      if(name == "pref") {
+    if (value.empty()) {
+      if (name == "pref") {
         result.pref = true;
       }
       continue;
     }
 
-    if(name == "rel") {
-      if(value == "duplicate") {
+    if (name == "rel") {
+      if (value == "duplicate") {
         ok = true;
-      } else {
+      }
+      else {
         ok = false;
       }
       continue;
@@ -341,8 +330,8 @@ bool parseMetalinkHttpLink(MetalinkHttpEntry& result, const std::string& s)
 
     if (name == "pri") {
       int32_t priValue;
-      if(util::parseIntNoThrow(priValue, value)) {
-        if(1 <= priValue && priValue <= 999999) {
+      if (util::parseIntNoThrow(priValue, value)) {
+        if (1 <= priValue && priValue <= 999999) {
           result.pri = priValue;
         }
       }
@@ -362,14 +351,14 @@ bool parseMetalinkHttpLink(MetalinkHttpEntry& result, const std::string& s)
 
 // Metalink/HTTP is defined by http://tools.ietf.org/html/rfc6249.
 // Link header field is defined by http://tools.ietf.org/html/rfc5988.
-void HttpResponse::getMetalinKHttpEntries
-(std::vector<MetalinkHttpEntry>& result,
- const std::shared_ptr<Option>& option) const
+void HttpResponse::getMetalinKHttpEntries(
+    std::vector<MetalinkHttpEntry>& result,
+    const std::shared_ptr<Option>& option) const
 {
   auto p = httpHeader_->equalRange(HttpHeader::LINK);
   for (; p.first != p.second; ++p.first) {
     MetalinkHttpEntry e;
-    if(parseMetalinkHttpLink(e, (*p.first).second)) {
+    if (parseMetalinkHttpLink(e, (*p.first).second)) {
       result.push_back(e);
     }
   }
@@ -379,12 +368,12 @@ void HttpResponse::getMetalinKHttpEntries
     if (option->defined(PREF_METALINK_LOCATION)) {
       const std::string& loc = option->get(PREF_METALINK_LOCATION);
       util::split(loc.begin(), loc.end(), std::back_inserter(locs), ',', true);
-      for (auto& l: locs) {
+      for (auto& l : locs) {
         util::lowercase(l);
       }
     }
-    for (auto& r: result) {
-      if(std::find(locs.begin(), locs.end(), r.geo) != locs.end()) {
+    for (auto& r : result) {
+      if (std::find(locs.begin(), locs.end(), r.geo) != locs.end()) {
         r.pri -= 999999;
       }
     }
@@ -412,7 +401,7 @@ void HttpResponse::getDigest(std::vector<Checksum>& result) const
       util::lowercase(hashType);
       digest = base64::decode(digest.begin(), digest.end());
       if (!MessageDigest::supports(hashType) ||
-         MessageDigest::getDigestLength(hashType) != digest.size()) {
+          MessageDigest::getDigestLength(hashType) != digest.size()) {
         continue;
       }
 
@@ -425,8 +414,8 @@ void HttpResponse::getDigest(std::vector<Checksum>& result) const
   for (auto i = result.begin(), eoi = result.end(); i != eoi;) {
     bool ok = true;
     auto j = i + 1;
-    for(; j != eoi; ++j) {
-      if((*i).getHashType() != (*j).getHashType()) {
+    for (; j != eoi; ++j) {
+      if ((*i).getHashType() != (*j).getHashType()) {
         break;
       }
 

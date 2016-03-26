@@ -48,21 +48,21 @@ class SocketCore;
 // remaining header and when all headers are completely sent,
 // execute() creates next Command object, HttpResponseCommand, and
 // returns true.
-class HttpRequestCommand:public AbstractCommand {
+class HttpRequestCommand : public AbstractCommand {
 private:
   std::shared_ptr<Request> proxyRequest_;
 
   std::shared_ptr<HttpConnection> httpConnection_;
+
 protected:
   virtual bool executeInternal() CXX11_OVERRIDE;
+
 public:
-  HttpRequestCommand(cuid_t cuid,
-                     const std::shared_ptr<Request>& req,
+  HttpRequestCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
                      const std::shared_ptr<FileEntry>& fileEntry,
                      RequestGroup* requestGroup,
                      const std::shared_ptr<HttpConnection>& httpConnection,
-                     DownloadEngine* e,
-                     const std::shared_ptr<SocketCore>& s);
+                     DownloadEngine* e, const std::shared_ptr<SocketCore>& s);
   virtual ~HttpRequestCommand();
 
   void setProxyRequest(const std::shared_ptr<Request>& proxyRequest);

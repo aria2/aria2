@@ -48,8 +48,8 @@ class AuthResolver {
 public:
   virtual ~AuthResolver() {}
 
-  virtual std::unique_ptr<AuthConfig> resolveAuthConfig
-  (const std::string& hostname) = 0;
+  virtual std::unique_ptr<AuthConfig>
+  resolveAuthConfig(const std::string& hostname) = 0;
 };
 
 } // namespace aria2

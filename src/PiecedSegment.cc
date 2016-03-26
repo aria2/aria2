@@ -38,62 +38,51 @@
 
 namespace aria2 {
 
-PiecedSegment::PiecedSegment
-(int32_t pieceLength, const std::shared_ptr<Piece>& piece)
-  : piece_(piece),
-    pieceLength_(pieceLength)
+PiecedSegment::PiecedSegment(int32_t pieceLength,
+                             const std::shared_ptr<Piece>& piece)
+    : piece_(piece), pieceLength_(pieceLength)
 {
   size_t index;
   bool t = piece_->getFirstMissingBlockIndexWithoutLock(index);
   assert(t);
-  writtenLength_ = index*piece_->getBlockLength();
+  writtenLength_ = index * piece_->getBlockLength();
 }
 
 PiecedSegment::~PiecedSegment() {}
 
-bool PiecedSegment::complete() const
-{
-  return piece_->pieceComplete();
-}
+bool PiecedSegment::complete() const { return piece_->pieceComplete(); }
 
-size_t PiecedSegment::getIndex() const
-{
-  return piece_->getIndex();
-}
+size_t PiecedSegment::getIndex() const { return piece_->getIndex(); }
 
 int64_t PiecedSegment::getPosition() const
 {
-  return ((int64_t)piece_->getIndex())*pieceLength_;
+  return ((int64_t)piece_->getIndex()) * pieceLength_;
 }
 
 int64_t PiecedSegment::getPositionToWrite() const
 {
-  return getPosition()+writtenLength_;
+  return getPosition() + writtenLength_;
 }
 
-int64_t PiecedSegment::getLength() const
-{
-  return piece_->getLength();
-}
+int64_t PiecedSegment::getLength() const { return piece_->getLength(); }
 
 void PiecedSegment::updateWrittenLength(int64_t bytes)
 {
-  auto newWrittenLength = writtenLength_+bytes;
+  auto newWrittenLength = writtenLength_ + bytes;
   assert(newWrittenLength <= piece_->getLength());
-  for(auto i = writtenLength_/piece_->getBlockLength(),
-        end = newWrittenLength/piece_->getBlockLength(); i < end; ++i) {
+  for (auto i = writtenLength_ / piece_->getBlockLength(),
+            end = newWrittenLength / piece_->getBlockLength();
+       i < end; ++i) {
     piece_->completeBlock(i);
   }
-  if(newWrittenLength == piece_->getLength()) {
-    piece_->completeBlock(piece_->countBlock()-1);
+  if (newWrittenLength == piece_->getLength()) {
+    piece_->completeBlock(piece_->countBlock() - 1);
   }
   writtenLength_ = newWrittenLength;
 }
 
-bool PiecedSegment::updateHash
-(int64_t begin,
- const unsigned char* data,
- size_t dataLength)
+bool PiecedSegment::updateHash(int64_t begin, const unsigned char* data,
+                               size_t dataLength)
 {
   return piece_->updateHash(begin, data, dataLength);
 }
@@ -103,10 +92,7 @@ bool PiecedSegment::isHashCalculated() const
   return piece_->isHashCalculated();
 }
 
-std::string PiecedSegment::getDigest()
-{
-  return piece_->getDigest();
-}
+std::string PiecedSegment::getDigest() { return piece_->getDigest(); }
 
 void PiecedSegment::clear(WrDiskCache* diskCache)
 {
@@ -116,9 +102,6 @@ void PiecedSegment::clear(WrDiskCache* diskCache)
   piece_->destroyHashContext();
 }
 
-std::shared_ptr<Piece> PiecedSegment::getPiece() const
-{
-  return piece_;
-}
+std::shared_ptr<Piece> PiecedSegment::getPiece() const { return piece_; }
 
 } // namespace aria2

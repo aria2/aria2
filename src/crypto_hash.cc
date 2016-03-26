@@ -35,20 +35,17 @@ static forceinline uint64_t ror(uint64_t x, uint64_t n)
 }
 
 // SHA functions
-template<typename T>
-static forceinline T ch(T b, T c, T d)
+template <typename T> static forceinline T ch(T b, T c, T d)
 {
   return d ^ (b & (c ^ d));
 }
 
-template<typename T>
-static forceinline T maj(T b, T c, T d)
+template <typename T> static forceinline T maj(T b, T c, T d)
 {
   return (b & c) | (d & (b | c));
 }
 
-template<typename T>
-static forceinline T par(T b, T c, T d)
+template <typename T> static forceinline T par(T b, T c, T d)
 {
   return b ^ c ^ d;
 }
@@ -78,15 +75,12 @@ using namespace crypto::hash;
 // Our base implementation, doing most of the work, short of |transform|,
 // |digest| and initialization.
 template <typename word_, uint_fast8_t bsize, uint_fast8_t ssize>
-class AlgorithmImpl : public Algorithm
-{
+class AlgorithmImpl : public Algorithm {
 public:
   typedef word_ word_t;
 
 protected:
-  template <uint_fast8_t size>
-  union buffer_t
-  {
+  template <uint_fast8_t size> union buffer_t {
     uint8_t bytes[size * sizeof(word_t)];
     word_t words[size];
   };
@@ -172,7 +166,7 @@ public:
 #if LITTLE_ENDIAN == BYTE_ORDER
       buffer_.words[bsize - 2] = bits;
       buffer_.words[bsize - 1] = bits >> 32;
-#else // LITTLE_ENDIAN != BYTE_ORDER
+#else  // LITTLE_ENDIAN != BYTE_ORDER
       buffer_.words[bsize - 2] = bits >> 32;
       buffer_.words[bsize - 1] = bits;
 #endif // LITTLE_ENDIAN != BYTE_ORDER
@@ -197,14 +191,11 @@ public:
     return rv;
   }
 
-  virtual uint_fast16_t blocksize() const {
-    return sizeof(buffer_);
-  }
+  virtual uint_fast16_t blocksize() const { return sizeof(buffer_); }
 };
 
 // Important! Other than the SHA family, MD5 is actually LE.
-class MD5 : public AlgorithmImpl<uint32_t, 16, 4>
-{
+class MD5 : public AlgorithmImpl<uint32_t, 16, 4> {
 private:
   static const word_t initvec[];
 
@@ -316,15 +307,9 @@ protected:
   }
 
 public:
-  MD5()
-  {
-    reset();
-  }
+  MD5() { reset(); }
 
-  virtual ~MD5()
-  {
-    reset();
-  }
+  virtual ~MD5() { reset(); }
 
   // Since this is LE, and I am lazy, copy-paste overwriting with BE -> LE.
   virtual std::string finalize()
@@ -349,7 +334,7 @@ public:
 #if LITTLE_ENDIAN == BYTE_ORDER
     buffer_.words[14] = bits;
     buffer_.words[15] = bits >> 32;
-#else // LITTLE_ENDIAN != BYTE_ORDER
+#else  // LITTLE_ENDIAN != BYTE_ORDER
     buffer_.words[14] = bits >> 32;
     buffer_.words[15] = bits;
 #endif // LITTLE_ENDIAN != BYTE_ORDER
@@ -374,21 +359,13 @@ public:
     count_ = offset_ = 0;
   }
 
-  virtual inline uint_fast16_t length() const
-  {
-    return 16;
-  }
+  virtual inline uint_fast16_t length() const { return 16; }
 };
 
-const MD5::word_t MD5::initvec[] = {
-  0x67452301,
-  0xefcdab89,
-  0x98badcfe,
-  0x10325476
-};
+const MD5::word_t MD5::initvec[] = {0x67452301, 0xefcdab89, 0x98badcfe,
+                                    0x10325476};
 
-class SHA1 : public AlgorithmImpl<uint32_t, 16, 5>
-{
+class SHA1 : public AlgorithmImpl<uint32_t, 16, 5> {
 private:
   static const word_t initvec[];
 
@@ -440,82 +417,82 @@ protected:
     r1(b, c, d, e, a, w13);
     r1(a, b, c, d, e, w14);
     r1(e, a, b, c, d, w15);
-    w00 = rol((w13 ^ w08 ^ w02 ^ w00), 1),   r1(d, e, a, b, c, w00);
-    w01 = rol((w14 ^ w09 ^ w03 ^ w01), 1),   r1(c, d, e, a, b, w01);
-    w02 = rol((w15 ^ w10 ^ w04 ^ w02), 1),   r1(b, c, d, e, a, w02);
-    w03 = rol((w00 ^ w11 ^ w05 ^ w03), 1),   r1(a, b, c, d, e, w03);
+    w00 = rol((w13 ^ w08 ^ w02 ^ w00), 1), r1(d, e, a, b, c, w00);
+    w01 = rol((w14 ^ w09 ^ w03 ^ w01), 1), r1(c, d, e, a, b, w01);
+    w02 = rol((w15 ^ w10 ^ w04 ^ w02), 1), r1(b, c, d, e, a, w02);
+    w03 = rol((w00 ^ w11 ^ w05 ^ w03), 1), r1(a, b, c, d, e, w03);
 
     // Round 20
-    w04 = rol((w01 ^ w12 ^ w06 ^ w04), 1),   r2(e, a, b, c, d, w04);
-    w05 = rol((w02 ^ w13 ^ w07 ^ w05), 1),   r2(d, e, a, b, c, w05);
-    w06 = rol((w03 ^ w14 ^ w08 ^ w06), 1),   r2(c, d, e, a, b, w06);
-    w07 = rol((w04 ^ w15 ^ w09 ^ w07), 1),   r2(b, c, d, e, a, w07);
-    w08 = rol((w05 ^ w00 ^ w10 ^ w08), 1),   r2(a, b, c, d, e, w08);
-    w09 = rol((w06 ^ w01 ^ w11 ^ w09), 1),   r2(e, a, b, c, d, w09);
-    w10 = rol((w07 ^ w02 ^ w12 ^ w10), 1),   r2(d, e, a, b, c, w10);
-    w11 = rol((w08 ^ w03 ^ w13 ^ w11), 1),   r2(c, d, e, a, b, w11);
-    w12 = rol((w09 ^ w04 ^ w14 ^ w12), 1),   r2(b, c, d, e, a, w12);
-    w13 = rol((w10 ^ w05 ^ w15 ^ w13), 1),   r2(a, b, c, d, e, w13);
+    w04 = rol((w01 ^ w12 ^ w06 ^ w04), 1), r2(e, a, b, c, d, w04);
+    w05 = rol((w02 ^ w13 ^ w07 ^ w05), 1), r2(d, e, a, b, c, w05);
+    w06 = rol((w03 ^ w14 ^ w08 ^ w06), 1), r2(c, d, e, a, b, w06);
+    w07 = rol((w04 ^ w15 ^ w09 ^ w07), 1), r2(b, c, d, e, a, w07);
+    w08 = rol((w05 ^ w00 ^ w10 ^ w08), 1), r2(a, b, c, d, e, w08);
+    w09 = rol((w06 ^ w01 ^ w11 ^ w09), 1), r2(e, a, b, c, d, w09);
+    w10 = rol((w07 ^ w02 ^ w12 ^ w10), 1), r2(d, e, a, b, c, w10);
+    w11 = rol((w08 ^ w03 ^ w13 ^ w11), 1), r2(c, d, e, a, b, w11);
+    w12 = rol((w09 ^ w04 ^ w14 ^ w12), 1), r2(b, c, d, e, a, w12);
+    w13 = rol((w10 ^ w05 ^ w15 ^ w13), 1), r2(a, b, c, d, e, w13);
 
     // Round 30
-    w14 = rol((w11 ^ w06 ^ w00 ^ w14), 1),   r2(e, a, b, c, d, w14);
-    w15 = rol((w12 ^ w07 ^ w01 ^ w15), 1),   r2(d, e, a, b, c, w15);
-    w00 = rol((w13 ^ w08 ^ w02 ^ w00), 1),   r2(c, d, e, a, b, w00);
-    w01 = rol((w14 ^ w09 ^ w03 ^ w01), 1),   r2(b, c, d, e, a, w01);
-    w02 = rol((w15 ^ w10 ^ w04 ^ w02), 1),   r2(a, b, c, d, e, w02);
-    w03 = rol((w00 ^ w11 ^ w05 ^ w03), 1),   r2(e, a, b, c, d, w03);
-    w04 = rol((w01 ^ w12 ^ w06 ^ w04), 1),   r2(d, e, a, b, c, w04);
-    w05 = rol((w02 ^ w13 ^ w07 ^ w05), 1),   r2(c, d, e, a, b, w05);
-    w06 = rol((w03 ^ w14 ^ w08 ^ w06), 1),   r2(b, c, d, e, a, w06);
-    w07 = rol((w04 ^ w15 ^ w09 ^ w07), 1),   r2(a, b, c, d, e, w07);
+    w14 = rol((w11 ^ w06 ^ w00 ^ w14), 1), r2(e, a, b, c, d, w14);
+    w15 = rol((w12 ^ w07 ^ w01 ^ w15), 1), r2(d, e, a, b, c, w15);
+    w00 = rol((w13 ^ w08 ^ w02 ^ w00), 1), r2(c, d, e, a, b, w00);
+    w01 = rol((w14 ^ w09 ^ w03 ^ w01), 1), r2(b, c, d, e, a, w01);
+    w02 = rol((w15 ^ w10 ^ w04 ^ w02), 1), r2(a, b, c, d, e, w02);
+    w03 = rol((w00 ^ w11 ^ w05 ^ w03), 1), r2(e, a, b, c, d, w03);
+    w04 = rol((w01 ^ w12 ^ w06 ^ w04), 1), r2(d, e, a, b, c, w04);
+    w05 = rol((w02 ^ w13 ^ w07 ^ w05), 1), r2(c, d, e, a, b, w05);
+    w06 = rol((w03 ^ w14 ^ w08 ^ w06), 1), r2(b, c, d, e, a, w06);
+    w07 = rol((w04 ^ w15 ^ w09 ^ w07), 1), r2(a, b, c, d, e, w07);
 
     // Round 40
-    w08 = rol((w05 ^ w00 ^ w10 ^ w08), 1),   r3(e, a, b, c, d, w08);
-    w09 = rol((w06 ^ w01 ^ w11 ^ w09), 1),   r3(d, e, a, b, c, w09);
-    w10 = rol((w07 ^ w02 ^ w12 ^ w10), 1),   r3(c, d, e, a, b, w10);
-    w11 = rol((w08 ^ w03 ^ w13 ^ w11), 1),   r3(b, c, d, e, a, w11);
-    w12 = rol((w09 ^ w04 ^ w14 ^ w12), 1),   r3(a, b, c, d, e, w12);
-    w13 = rol((w10 ^ w05 ^ w15 ^ w13), 1),   r3(e, a, b, c, d, w13);
-    w14 = rol((w11 ^ w06 ^ w00 ^ w14), 1),   r3(d, e, a, b, c, w14);
-    w15 = rol((w12 ^ w07 ^ w01 ^ w15), 1),   r3(c, d, e, a, b, w15);
-    w00 = rol((w13 ^ w08 ^ w02 ^ w00), 1),   r3(b, c, d, e, a, w00);
-    w01 = rol((w14 ^ w09 ^ w03 ^ w01), 1),   r3(a, b, c, d, e, w01);
+    w08 = rol((w05 ^ w00 ^ w10 ^ w08), 1), r3(e, a, b, c, d, w08);
+    w09 = rol((w06 ^ w01 ^ w11 ^ w09), 1), r3(d, e, a, b, c, w09);
+    w10 = rol((w07 ^ w02 ^ w12 ^ w10), 1), r3(c, d, e, a, b, w10);
+    w11 = rol((w08 ^ w03 ^ w13 ^ w11), 1), r3(b, c, d, e, a, w11);
+    w12 = rol((w09 ^ w04 ^ w14 ^ w12), 1), r3(a, b, c, d, e, w12);
+    w13 = rol((w10 ^ w05 ^ w15 ^ w13), 1), r3(e, a, b, c, d, w13);
+    w14 = rol((w11 ^ w06 ^ w00 ^ w14), 1), r3(d, e, a, b, c, w14);
+    w15 = rol((w12 ^ w07 ^ w01 ^ w15), 1), r3(c, d, e, a, b, w15);
+    w00 = rol((w13 ^ w08 ^ w02 ^ w00), 1), r3(b, c, d, e, a, w00);
+    w01 = rol((w14 ^ w09 ^ w03 ^ w01), 1), r3(a, b, c, d, e, w01);
 
     // Round 50
-    w02 = rol((w15 ^ w10 ^ w04 ^ w02), 1),   r3(e, a, b, c, d, w02);
-    w03 = rol((w00 ^ w11 ^ w05 ^ w03), 1),   r3(d, e, a, b, c, w03);
-    w04 = rol((w01 ^ w12 ^ w06 ^ w04), 1),   r3(c, d, e, a, b, w04);
-    w05 = rol((w02 ^ w13 ^ w07 ^ w05), 1),   r3(b, c, d, e, a, w05);
-    w06 = rol((w03 ^ w14 ^ w08 ^ w06), 1),   r3(a, b, c, d, e, w06);
-    w07 = rol((w04 ^ w15 ^ w09 ^ w07), 1),   r3(e, a, b, c, d, w07);
-    w08 = rol((w05 ^ w00 ^ w10 ^ w08), 1),   r3(d, e, a, b, c, w08);
-    w09 = rol((w06 ^ w01 ^ w11 ^ w09), 1),   r3(c, d, e, a, b, w09);
-    w10 = rol((w07 ^ w02 ^ w12 ^ w10), 1),   r3(b, c, d, e, a, w10);
-    w11 = rol((w08 ^ w03 ^ w13 ^ w11), 1),   r3(a, b, c, d, e, w11);
+    w02 = rol((w15 ^ w10 ^ w04 ^ w02), 1), r3(e, a, b, c, d, w02);
+    w03 = rol((w00 ^ w11 ^ w05 ^ w03), 1), r3(d, e, a, b, c, w03);
+    w04 = rol((w01 ^ w12 ^ w06 ^ w04), 1), r3(c, d, e, a, b, w04);
+    w05 = rol((w02 ^ w13 ^ w07 ^ w05), 1), r3(b, c, d, e, a, w05);
+    w06 = rol((w03 ^ w14 ^ w08 ^ w06), 1), r3(a, b, c, d, e, w06);
+    w07 = rol((w04 ^ w15 ^ w09 ^ w07), 1), r3(e, a, b, c, d, w07);
+    w08 = rol((w05 ^ w00 ^ w10 ^ w08), 1), r3(d, e, a, b, c, w08);
+    w09 = rol((w06 ^ w01 ^ w11 ^ w09), 1), r3(c, d, e, a, b, w09);
+    w10 = rol((w07 ^ w02 ^ w12 ^ w10), 1), r3(b, c, d, e, a, w10);
+    w11 = rol((w08 ^ w03 ^ w13 ^ w11), 1), r3(a, b, c, d, e, w11);
 
     // Round 60
-    w12 = rol((w09 ^ w04 ^ w14 ^ w12), 1),   r4(e, a, b, c, d, w12);
-    w13 = rol((w10 ^ w05 ^ w15 ^ w13), 1),   r4(d, e, a, b, c, w13);
-    w14 = rol((w11 ^ w06 ^ w00 ^ w14), 1),   r4(c, d, e, a, b, w14);
-    w15 = rol((w12 ^ w07 ^ w01 ^ w15), 1),   r4(b, c, d, e, a, w15);
-    w00 = rol((w13 ^ w08 ^ w02 ^ w00), 1),   r4(a, b, c, d, e, w00);
-    w01 = rol((w14 ^ w09 ^ w03 ^ w01), 1),   r4(e, a, b, c, d, w01);
-    w02 = rol((w15 ^ w10 ^ w04 ^ w02), 1),   r4(d, e, a, b, c, w02);
-    w03 = rol((w00 ^ w11 ^ w05 ^ w03), 1),   r4(c, d, e, a, b, w03);
-    w04 = rol((w01 ^ w12 ^ w06 ^ w04), 1),   r4(b, c, d, e, a, w04);
-    w05 = rol((w02 ^ w13 ^ w07 ^ w05), 1),   r4(a, b, c, d, e, w05);
+    w12 = rol((w09 ^ w04 ^ w14 ^ w12), 1), r4(e, a, b, c, d, w12);
+    w13 = rol((w10 ^ w05 ^ w15 ^ w13), 1), r4(d, e, a, b, c, w13);
+    w14 = rol((w11 ^ w06 ^ w00 ^ w14), 1), r4(c, d, e, a, b, w14);
+    w15 = rol((w12 ^ w07 ^ w01 ^ w15), 1), r4(b, c, d, e, a, w15);
+    w00 = rol((w13 ^ w08 ^ w02 ^ w00), 1), r4(a, b, c, d, e, w00);
+    w01 = rol((w14 ^ w09 ^ w03 ^ w01), 1), r4(e, a, b, c, d, w01);
+    w02 = rol((w15 ^ w10 ^ w04 ^ w02), 1), r4(d, e, a, b, c, w02);
+    w03 = rol((w00 ^ w11 ^ w05 ^ w03), 1), r4(c, d, e, a, b, w03);
+    w04 = rol((w01 ^ w12 ^ w06 ^ w04), 1), r4(b, c, d, e, a, w04);
+    w05 = rol((w02 ^ w13 ^ w07 ^ w05), 1), r4(a, b, c, d, e, w05);
 
     // Round 70
-    w06 = rol((w03 ^ w14 ^ w08 ^ w06), 1),   r4(e, a, b, c, d, w06);
-    w07 = rol((w04 ^ w15 ^ w09 ^ w07), 1),   r4(d, e, a, b, c, w07);
-    w08 = rol((w05 ^ w00 ^ w10 ^ w08), 1),   r4(c, d, e, a, b, w08);
-    w09 = rol((w06 ^ w01 ^ w11 ^ w09), 1),   r4(b, c, d, e, a, w09);
-    w10 = rol((w07 ^ w02 ^ w12 ^ w10), 1),   r4(a, b, c, d, e, w10);
-    w11 = rol((w08 ^ w03 ^ w13 ^ w11), 1),   r4(e, a, b, c, d, w11);
-    w12 = rol((w09 ^ w04 ^ w14 ^ w12), 1),   r4(d, e, a, b, c, w12);
-    w13 = rol((w10 ^ w05 ^ w15 ^ w13), 1),   r4(c, d, e, a, b, w13);
-    w14 = rol((w11 ^ w06 ^ w00 ^ w14), 1),   r4(b, c, d, e, a, w14);
-    w15 = rol((w12 ^ w07 ^ w01 ^ w15), 1),   r4(a, b, c, d, e, w15);
+    w06 = rol((w03 ^ w14 ^ w08 ^ w06), 1), r4(e, a, b, c, d, w06);
+    w07 = rol((w04 ^ w15 ^ w09 ^ w07), 1), r4(d, e, a, b, c, w07);
+    w08 = rol((w05 ^ w00 ^ w10 ^ w08), 1), r4(c, d, e, a, b, w08);
+    w09 = rol((w06 ^ w01 ^ w11 ^ w09), 1), r4(b, c, d, e, a, w09);
+    w10 = rol((w07 ^ w02 ^ w12 ^ w10), 1), r4(a, b, c, d, e, w10);
+    w11 = rol((w08 ^ w03 ^ w13 ^ w11), 1), r4(e, a, b, c, d, w11);
+    w12 = rol((w09 ^ w04 ^ w14 ^ w12), 1), r4(d, e, a, b, c, w12);
+    w13 = rol((w10 ^ w05 ^ w15 ^ w13), 1), r4(c, d, e, a, b, w13);
+    w14 = rol((w11 ^ w06 ^ w00 ^ w14), 1), r4(b, c, d, e, a, w14);
+    w15 = rol((w12 ^ w07 ^ w01 ^ w15), 1), r4(a, b, c, d, e, w15);
 
 #undef r4
 #undef r3
@@ -536,15 +513,9 @@ protected:
   }
 
 public:
-  SHA1()
-  {
-    reset();
-  }
+  SHA1() { reset(); }
 
-  virtual ~SHA1()
-  {
-    reset();
-  }
+  virtual ~SHA1() { reset(); }
 
   virtual void reset()
   {
@@ -553,22 +524,13 @@ public:
     count_ = offset_ = 0;
   }
 
-  virtual inline uint_fast16_t length() const
-  {
-    return 20;
-  }
+  virtual inline uint_fast16_t length() const { return 20; }
 };
 
-const SHA1::word_t SHA1::initvec[] = {
-  0x67452301,
-  0xefcdab89,
-  0x98badcfe,
-  0x10325476,
-  0xc3d2e1f0
-};
+const SHA1::word_t SHA1::initvec[] = {0x67452301, 0xefcdab89, 0x98badcfe,
+                                      0x10325476, 0xc3d2e1f0};
 
-class SHA256 : public AlgorithmImpl<uint32_t, 16, 8>
-{
+class SHA256 : public AlgorithmImpl<uint32_t, 16, 8> {
 private:
   static const word_t initvec[];
 
@@ -590,100 +552,144 @@ protected:
     h = state_.words[7];
     __hash_maybe_memfence;
 
-#define b0(w) \
-  (ror(w, 2) ^ ror(w, 13) ^ ror(w, 22))
-#define b1(w) \
-  (ror(w, 6) ^ ror(w, 11) ^ ror(w, 25))
+#define b0(w) (ror(w, 2) ^ ror(w, 13) ^ ror(w, 22))
+#define b1(w) (ror(w, 6) ^ ror(w, 11) ^ ror(w, 25))
 
-#define s0(w) \
-  (ror(w, 7) ^ ror(w, 18) ^ (w >> 3))
-#define s1(w) \
-  (ror(w, 17) ^ ror(w, 19) ^ (w >> 10))
+#define s0(w) (ror(w, 7) ^ ror(w, 18) ^ (w >> 3))
+#define s1(w) (ror(w, 17) ^ ror(w, 19) ^ (w >> 10))
 
 #define r(a1, a2, a3, a4, a5, a6, a7, a8, k, w)                                \
   a4 += t = a8 + b1(a5) + ch(a5, a6, a7) + k + w;                              \
-  a8 = t + b0(a1) + maj(a1, a2, a3);                                           \
+  a8 = t + b0(a1) + maj(a1, a2, a3);
 
     // Generated code. See sha256-transgen.py
-  // Round 0
-  r(a, b, c, d, e, f, g, h, 0x428a2f98, w00);
-  r(h, a, b, c, d, e, f, g, 0x71374491, w01);
-  r(g, h, a, b, c, d, e, f, 0xb5c0fbcf, w02);
-  r(f, g, h, a, b, c, d, e, 0xe9b5dba5, w03);
-  r(e, f, g, h, a, b, c, d, 0x3956c25b, w04);
-  r(d, e, f, g, h, a, b, c, 0x59f111f1, w05);
-  r(c, d, e, f, g, h, a, b, 0x923f82a4, w06);
-  r(b, c, d, e, f, g, h, a, 0xab1c5ed5, w07);
+    // Round 0
+    r(a, b, c, d, e, f, g, h, 0x428a2f98, w00);
+    r(h, a, b, c, d, e, f, g, 0x71374491, w01);
+    r(g, h, a, b, c, d, e, f, 0xb5c0fbcf, w02);
+    r(f, g, h, a, b, c, d, e, 0xe9b5dba5, w03);
+    r(e, f, g, h, a, b, c, d, 0x3956c25b, w04);
+    r(d, e, f, g, h, a, b, c, 0x59f111f1, w05);
+    r(c, d, e, f, g, h, a, b, 0x923f82a4, w06);
+    r(b, c, d, e, f, g, h, a, 0xab1c5ed5, w07);
 
-  // Round 8
-  r(a, b, c, d, e, f, g, h, 0xd807aa98, w08);
-  r(h, a, b, c, d, e, f, g, 0x12835b01, w09);
-  r(g, h, a, b, c, d, e, f, 0x243185be, w10);
-  r(f, g, h, a, b, c, d, e, 0x550c7dc3, w11);
-  r(e, f, g, h, a, b, c, d, 0x72be5d74, w12);
-  r(d, e, f, g, h, a, b, c, 0x80deb1fe, w13);
-  r(c, d, e, f, g, h, a, b, 0x9bdc06a7, w14);
-  r(b, c, d, e, f, g, h, a, 0xc19bf174, w15);
+    // Round 8
+    r(a, b, c, d, e, f, g, h, 0xd807aa98, w08);
+    r(h, a, b, c, d, e, f, g, 0x12835b01, w09);
+    r(g, h, a, b, c, d, e, f, 0x243185be, w10);
+    r(f, g, h, a, b, c, d, e, 0x550c7dc3, w11);
+    r(e, f, g, h, a, b, c, d, 0x72be5d74, w12);
+    r(d, e, f, g, h, a, b, c, 0x80deb1fe, w13);
+    r(c, d, e, f, g, h, a, b, 0x9bdc06a7, w14);
+    r(b, c, d, e, f, g, h, a, 0xc19bf174, w15);
 
-  // Round 16
-  w00 = s1(w14) + w09 + s0(w01) + w00,   r(a, b, c, d, e, f, g, h, 0xe49b69c1, w00);
-  w01 = s1(w15) + w10 + s0(w02) + w01,   r(h, a, b, c, d, e, f, g, 0xefbe4786, w01);
-  w02 = s1(w00) + w11 + s0(w03) + w02,   r(g, h, a, b, c, d, e, f, 0x0fc19dc6, w02);
-  w03 = s1(w01) + w12 + s0(w04) + w03,   r(f, g, h, a, b, c, d, e, 0x240ca1cc, w03);
-  w04 = s1(w02) + w13 + s0(w05) + w04,   r(e, f, g, h, a, b, c, d, 0x2de92c6f, w04);
-  w05 = s1(w03) + w14 + s0(w06) + w05,   r(d, e, f, g, h, a, b, c, 0x4a7484aa, w05);
-  w06 = s1(w04) + w15 + s0(w07) + w06,   r(c, d, e, f, g, h, a, b, 0x5cb0a9dc, w06);
-  w07 = s1(w05) + w00 + s0(w08) + w07,   r(b, c, d, e, f, g, h, a, 0x76f988da, w07);
+    // Round 16
+    w00 = s1(w14) + w09 + s0(w01) + w00,
+    r(a, b, c, d, e, f, g, h, 0xe49b69c1, w00);
+    w01 = s1(w15) + w10 + s0(w02) + w01,
+    r(h, a, b, c, d, e, f, g, 0xefbe4786, w01);
+    w02 = s1(w00) + w11 + s0(w03) + w02,
+    r(g, h, a, b, c, d, e, f, 0x0fc19dc6, w02);
+    w03 = s1(w01) + w12 + s0(w04) + w03,
+    r(f, g, h, a, b, c, d, e, 0x240ca1cc, w03);
+    w04 = s1(w02) + w13 + s0(w05) + w04,
+    r(e, f, g, h, a, b, c, d, 0x2de92c6f, w04);
+    w05 = s1(w03) + w14 + s0(w06) + w05,
+    r(d, e, f, g, h, a, b, c, 0x4a7484aa, w05);
+    w06 = s1(w04) + w15 + s0(w07) + w06,
+    r(c, d, e, f, g, h, a, b, 0x5cb0a9dc, w06);
+    w07 = s1(w05) + w00 + s0(w08) + w07,
+    r(b, c, d, e, f, g, h, a, 0x76f988da, w07);
 
-  // Round 24
-  w08 = s1(w06) + w01 + s0(w09) + w08,   r(a, b, c, d, e, f, g, h, 0x983e5152, w08);
-  w09 = s1(w07) + w02 + s0(w10) + w09,   r(h, a, b, c, d, e, f, g, 0xa831c66d, w09);
-  w10 = s1(w08) + w03 + s0(w11) + w10,   r(g, h, a, b, c, d, e, f, 0xb00327c8, w10);
-  w11 = s1(w09) + w04 + s0(w12) + w11,   r(f, g, h, a, b, c, d, e, 0xbf597fc7, w11);
-  w12 = s1(w10) + w05 + s0(w13) + w12,   r(e, f, g, h, a, b, c, d, 0xc6e00bf3, w12);
-  w13 = s1(w11) + w06 + s0(w14) + w13,   r(d, e, f, g, h, a, b, c, 0xd5a79147, w13);
-  w14 = s1(w12) + w07 + s0(w15) + w14,   r(c, d, e, f, g, h, a, b, 0x06ca6351, w14);
-  w15 = s1(w13) + w08 + s0(w00) + w15,   r(b, c, d, e, f, g, h, a, 0x14292967, w15);
+    // Round 24
+    w08 = s1(w06) + w01 + s0(w09) + w08,
+    r(a, b, c, d, e, f, g, h, 0x983e5152, w08);
+    w09 = s1(w07) + w02 + s0(w10) + w09,
+    r(h, a, b, c, d, e, f, g, 0xa831c66d, w09);
+    w10 = s1(w08) + w03 + s0(w11) + w10,
+    r(g, h, a, b, c, d, e, f, 0xb00327c8, w10);
+    w11 = s1(w09) + w04 + s0(w12) + w11,
+    r(f, g, h, a, b, c, d, e, 0xbf597fc7, w11);
+    w12 = s1(w10) + w05 + s0(w13) + w12,
+    r(e, f, g, h, a, b, c, d, 0xc6e00bf3, w12);
+    w13 = s1(w11) + w06 + s0(w14) + w13,
+    r(d, e, f, g, h, a, b, c, 0xd5a79147, w13);
+    w14 = s1(w12) + w07 + s0(w15) + w14,
+    r(c, d, e, f, g, h, a, b, 0x06ca6351, w14);
+    w15 = s1(w13) + w08 + s0(w00) + w15,
+    r(b, c, d, e, f, g, h, a, 0x14292967, w15);
 
-  // Round 32
-  w00 = s1(w14) + w09 + s0(w01) + w00,   r(a, b, c, d, e, f, g, h, 0x27b70a85, w00);
-  w01 = s1(w15) + w10 + s0(w02) + w01,   r(h, a, b, c, d, e, f, g, 0x2e1b2138, w01);
-  w02 = s1(w00) + w11 + s0(w03) + w02,   r(g, h, a, b, c, d, e, f, 0x4d2c6dfc, w02);
-  w03 = s1(w01) + w12 + s0(w04) + w03,   r(f, g, h, a, b, c, d, e, 0x53380d13, w03);
-  w04 = s1(w02) + w13 + s0(w05) + w04,   r(e, f, g, h, a, b, c, d, 0x650a7354, w04);
-  w05 = s1(w03) + w14 + s0(w06) + w05,   r(d, e, f, g, h, a, b, c, 0x766a0abb, w05);
-  w06 = s1(w04) + w15 + s0(w07) + w06,   r(c, d, e, f, g, h, a, b, 0x81c2c92e, w06);
-  w07 = s1(w05) + w00 + s0(w08) + w07,   r(b, c, d, e, f, g, h, a, 0x92722c85, w07);
+    // Round 32
+    w00 = s1(w14) + w09 + s0(w01) + w00,
+    r(a, b, c, d, e, f, g, h, 0x27b70a85, w00);
+    w01 = s1(w15) + w10 + s0(w02) + w01,
+    r(h, a, b, c, d, e, f, g, 0x2e1b2138, w01);
+    w02 = s1(w00) + w11 + s0(w03) + w02,
+    r(g, h, a, b, c, d, e, f, 0x4d2c6dfc, w02);
+    w03 = s1(w01) + w12 + s0(w04) + w03,
+    r(f, g, h, a, b, c, d, e, 0x53380d13, w03);
+    w04 = s1(w02) + w13 + s0(w05) + w04,
+    r(e, f, g, h, a, b, c, d, 0x650a7354, w04);
+    w05 = s1(w03) + w14 + s0(w06) + w05,
+    r(d, e, f, g, h, a, b, c, 0x766a0abb, w05);
+    w06 = s1(w04) + w15 + s0(w07) + w06,
+    r(c, d, e, f, g, h, a, b, 0x81c2c92e, w06);
+    w07 = s1(w05) + w00 + s0(w08) + w07,
+    r(b, c, d, e, f, g, h, a, 0x92722c85, w07);
 
-  // Round 40
-  w08 = s1(w06) + w01 + s0(w09) + w08,   r(a, b, c, d, e, f, g, h, 0xa2bfe8a1, w08);
-  w09 = s1(w07) + w02 + s0(w10) + w09,   r(h, a, b, c, d, e, f, g, 0xa81a664b, w09);
-  w10 = s1(w08) + w03 + s0(w11) + w10,   r(g, h, a, b, c, d, e, f, 0xc24b8b70, w10);
-  w11 = s1(w09) + w04 + s0(w12) + w11,   r(f, g, h, a, b, c, d, e, 0xc76c51a3, w11);
-  w12 = s1(w10) + w05 + s0(w13) + w12,   r(e, f, g, h, a, b, c, d, 0xd192e819, w12);
-  w13 = s1(w11) + w06 + s0(w14) + w13,   r(d, e, f, g, h, a, b, c, 0xd6990624, w13);
-  w14 = s1(w12) + w07 + s0(w15) + w14,   r(c, d, e, f, g, h, a, b, 0xf40e3585, w14);
-  w15 = s1(w13) + w08 + s0(w00) + w15,   r(b, c, d, e, f, g, h, a, 0x106aa070, w15);
+    // Round 40
+    w08 = s1(w06) + w01 + s0(w09) + w08,
+    r(a, b, c, d, e, f, g, h, 0xa2bfe8a1, w08);
+    w09 = s1(w07) + w02 + s0(w10) + w09,
+    r(h, a, b, c, d, e, f, g, 0xa81a664b, w09);
+    w10 = s1(w08) + w03 + s0(w11) + w10,
+    r(g, h, a, b, c, d, e, f, 0xc24b8b70, w10);
+    w11 = s1(w09) + w04 + s0(w12) + w11,
+    r(f, g, h, a, b, c, d, e, 0xc76c51a3, w11);
+    w12 = s1(w10) + w05 + s0(w13) + w12,
+    r(e, f, g, h, a, b, c, d, 0xd192e819, w12);
+    w13 = s1(w11) + w06 + s0(w14) + w13,
+    r(d, e, f, g, h, a, b, c, 0xd6990624, w13);
+    w14 = s1(w12) + w07 + s0(w15) + w14,
+    r(c, d, e, f, g, h, a, b, 0xf40e3585, w14);
+    w15 = s1(w13) + w08 + s0(w00) + w15,
+    r(b, c, d, e, f, g, h, a, 0x106aa070, w15);
 
-  // Round 48
-  w00 = s1(w14) + w09 + s0(w01) + w00,   r(a, b, c, d, e, f, g, h, 0x19a4c116, w00);
-  w01 = s1(w15) + w10 + s0(w02) + w01,   r(h, a, b, c, d, e, f, g, 0x1e376c08, w01);
-  w02 = s1(w00) + w11 + s0(w03) + w02,   r(g, h, a, b, c, d, e, f, 0x2748774c, w02);
-  w03 = s1(w01) + w12 + s0(w04) + w03,   r(f, g, h, a, b, c, d, e, 0x34b0bcb5, w03);
-  w04 = s1(w02) + w13 + s0(w05) + w04,   r(e, f, g, h, a, b, c, d, 0x391c0cb3, w04);
-  w05 = s1(w03) + w14 + s0(w06) + w05,   r(d, e, f, g, h, a, b, c, 0x4ed8aa4a, w05);
-  w06 = s1(w04) + w15 + s0(w07) + w06,   r(c, d, e, f, g, h, a, b, 0x5b9cca4f, w06);
-  w07 = s1(w05) + w00 + s0(w08) + w07,   r(b, c, d, e, f, g, h, a, 0x682e6ff3, w07);
+    // Round 48
+    w00 = s1(w14) + w09 + s0(w01) + w00,
+    r(a, b, c, d, e, f, g, h, 0x19a4c116, w00);
+    w01 = s1(w15) + w10 + s0(w02) + w01,
+    r(h, a, b, c, d, e, f, g, 0x1e376c08, w01);
+    w02 = s1(w00) + w11 + s0(w03) + w02,
+    r(g, h, a, b, c, d, e, f, 0x2748774c, w02);
+    w03 = s1(w01) + w12 + s0(w04) + w03,
+    r(f, g, h, a, b, c, d, e, 0x34b0bcb5, w03);
+    w04 = s1(w02) + w13 + s0(w05) + w04,
+    r(e, f, g, h, a, b, c, d, 0x391c0cb3, w04);
+    w05 = s1(w03) + w14 + s0(w06) + w05,
+    r(d, e, f, g, h, a, b, c, 0x4ed8aa4a, w05);
+    w06 = s1(w04) + w15 + s0(w07) + w06,
+    r(c, d, e, f, g, h, a, b, 0x5b9cca4f, w06);
+    w07 = s1(w05) + w00 + s0(w08) + w07,
+    r(b, c, d, e, f, g, h, a, 0x682e6ff3, w07);
 
-  // Round 56
-  w08 = s1(w06) + w01 + s0(w09) + w08,   r(a, b, c, d, e, f, g, h, 0x748f82ee, w08);
-  w09 = s1(w07) + w02 + s0(w10) + w09,   r(h, a, b, c, d, e, f, g, 0x78a5636f, w09);
-  w10 = s1(w08) + w03 + s0(w11) + w10,   r(g, h, a, b, c, d, e, f, 0x84c87814, w10);
-  w11 = s1(w09) + w04 + s0(w12) + w11,   r(f, g, h, a, b, c, d, e, 0x8cc70208, w11);
-  w12 = s1(w10) + w05 + s0(w13) + w12,   r(e, f, g, h, a, b, c, d, 0x90befffa, w12);
-  w13 = s1(w11) + w06 + s0(w14) + w13,   r(d, e, f, g, h, a, b, c, 0xa4506ceb, w13);
-  w14 = s1(w12) + w07 + s0(w15) + w14,   r(c, d, e, f, g, h, a, b, 0xbef9a3f7, w14);
-  w15 = s1(w13) + w08 + s0(w00) + w15,   r(b, c, d, e, f, g, h, a, 0xc67178f2, w15);
+    // Round 56
+    w08 = s1(w06) + w01 + s0(w09) + w08,
+    r(a, b, c, d, e, f, g, h, 0x748f82ee, w08);
+    w09 = s1(w07) + w02 + s0(w10) + w09,
+    r(h, a, b, c, d, e, f, g, 0x78a5636f, w09);
+    w10 = s1(w08) + w03 + s0(w11) + w10,
+    r(g, h, a, b, c, d, e, f, 0x84c87814, w10);
+    w11 = s1(w09) + w04 + s0(w12) + w11,
+    r(f, g, h, a, b, c, d, e, 0x8cc70208, w11);
+    w12 = s1(w10) + w05 + s0(w13) + w12,
+    r(e, f, g, h, a, b, c, d, 0x90befffa, w12);
+    w13 = s1(w11) + w06 + s0(w14) + w13,
+    r(d, e, f, g, h, a, b, c, 0xa4506ceb, w13);
+    w14 = s1(w12) + w07 + s0(w15) + w14,
+    r(c, d, e, f, g, h, a, b, 0xbef9a3f7, w14);
+    w15 = s1(w13) + w08 + s0(w00) + w15,
+    r(b, c, d, e, f, g, h, a, 0xc67178f2, w15);
 
 #undef b0
 #undef b1
@@ -703,15 +709,9 @@ protected:
   }
 
 public:
-  SHA256()
-  {
-    reset();
-  }
+  SHA256() { reset(); }
 
-  virtual ~SHA256()
-  {
-    reset();
-  }
+  virtual ~SHA256() { reset(); }
 
   virtual void reset()
   {
@@ -720,25 +720,14 @@ public:
     count_ = offset_ = 0;
   }
 
-  virtual inline uint_fast16_t length() const
-  {
-    return 32;
-  }
+  virtual inline uint_fast16_t length() const { return 32; }
 };
 
-const SHA256::word_t SHA256::initvec[] = {
-  0x6a09e667,
-  0xbb67ae85,
-  0x3c6ef372,
-  0xa54ff53a,
-  0x510e527f,
-  0x9b05688c,
-  0x1f83d9ab,
-  0x5be0cd19
-};
+const SHA256::word_t SHA256::initvec[] = {0x6a09e667, 0xbb67ae85, 0x3c6ef372,
+                                          0xa54ff53a, 0x510e527f, 0x9b05688c,
+                                          0x1f83d9ab, 0x5be0cd19};
 
-class SHA224 : public SHA256
-{
+class SHA224 : public SHA256 {
 private:
   static const word_t initvec[];
 
@@ -750,15 +739,9 @@ protected:
   }
 
 public:
-  SHA224()
-  {
-    reset();
-  }
+  SHA224() { reset(); }
 
-  virtual ~SHA224()
-  {
-    reset();
-  }
+  virtual ~SHA224() { reset(); }
 
   virtual void reset()
   {
@@ -767,25 +750,14 @@ public:
     count_ = offset_ = 0;
   }
 
-  virtual inline uint_fast16_t length() const
-  {
-    return 28;
-  }
+  virtual inline uint_fast16_t length() const { return 28; }
 };
 
-const SHA224::word_t SHA224::initvec[] = {
-  0xc1059ed8,
-  0x367cd507,
-  0x3070dd17,
-  0xf70e5939,
-  0xffc00b31,
-  0x68581511,
-  0x64f98fa7,
-  0xbefa4fa4
-};
+const SHA224::word_t SHA224::initvec[] = {0xc1059ed8, 0x367cd507, 0x3070dd17,
+                                          0xf70e5939, 0xffc00b31, 0x68581511,
+                                          0x64f98fa7, 0xbefa4fa4};
 
-class SHA512 : public AlgorithmImpl<uint64_t, 16, 8>
-{
+class SHA512 : public AlgorithmImpl<uint64_t, 16, 8> {
 private:
   static const word_t initvec[];
 
@@ -807,15 +779,11 @@ protected:
     h = state_.words[7];
     __hash_maybe_memfence;
 
-#define b0(w) \
-  (ror(w, 28) ^ ror(w, 34) ^ ror(w, 39))
-#define b1(w) \
-  (ror(w, 14) ^ ror(w, 18) ^ ror(w, 41))
+#define b0(w) (ror(w, 28) ^ ror(w, 34) ^ ror(w, 39))
+#define b1(w) (ror(w, 14) ^ ror(w, 18) ^ ror(w, 41))
 
-#define s0(w) \
-  (ror(w, 1) ^ ror(w, 8) ^ (w >> 7))
-#define s1(w) \
-  (ror(w, 19) ^ ror(w, 61) ^ (w >> 6))
+#define s0(w) (ror(w, 1) ^ ror(w, 8) ^ (w >> 7))
+#define s1(w) (ror(w, 19) ^ ror(w, 61) ^ (w >> 6))
 
 #define r(a1, a2, a3, a4, a5, a6, a7, a8, k, w)                                \
   a4 += t = a8 + b1(a5) + ch(a5, a6, a7) + k + w;                              \
@@ -1004,15 +972,9 @@ protected:
   }
 
 public:
-  SHA512()
-  {
-    reset();
-  }
+  SHA512() { reset(); }
 
-  virtual ~SHA512()
-  {
-    reset();
-  }
+  virtual ~SHA512() { reset(); }
 
   virtual void reset()
   {
@@ -1021,25 +983,16 @@ public:
     count_ = offset_ = 0;
   }
 
-  virtual inline uint_fast16_t length() const
-  {
-    return 64;
-  }
+  virtual inline uint_fast16_t length() const { return 64; }
 };
 
 const SHA512::word_t SHA512::initvec[] = {
-  0x6a09e667f3bcc908,
-  0xbb67ae8584caa73b,
-  0x3c6ef372fe94f82b,
-  0xa54ff53a5f1d36f1,
-  0x510e527fade682d1,
-  0x9b05688c2b3e6c1f,
-  0x1f83d9abfb41bd6b,
-  0x5be0cd19137e2179,
+    0x6a09e667f3bcc908, 0xbb67ae8584caa73b, 0x3c6ef372fe94f82b,
+    0xa54ff53a5f1d36f1, 0x510e527fade682d1, 0x9b05688c2b3e6c1f,
+    0x1f83d9abfb41bd6b, 0x5be0cd19137e2179,
 };
 
-class SHA384 : public SHA512
-{
+class SHA384 : public SHA512 {
 private:
   static const word_t initvec[];
 
@@ -1051,15 +1004,9 @@ protected:
   }
 
 public:
-  SHA384()
-  {
-    reset();
-  }
+  SHA384() { reset(); }
 
-  virtual ~SHA384()
-  {
-    reset();
-  }
+  virtual ~SHA384() { reset(); }
 
   virtual void reset()
   {
@@ -1068,22 +1015,13 @@ public:
     count_ = offset_ = 0;
   }
 
-  virtual inline uint_fast16_t length() const
-  {
-    return 48;
-  }
+  virtual inline uint_fast16_t length() const { return 48; }
 };
 
 const SHA384::word_t SHA384::initvec[] = {
-  0xcbbb9d5dc1059ed8,
-  0x629a292a367cd507,
-  0x9159015a3070dd17,
-  0x152fecd8f70e5939,
-  0x67332667ffc00b31,
-  0x8eb44a8768581511,
-  0xdb0c2e0d64f98fa7,
-  0x47b5481dbefa4fa4
-};
+    0xcbbb9d5dc1059ed8, 0x629a292a367cd507, 0x9159015a3070dd17,
+    0x152fecd8f70e5939, 0x67332667ffc00b31, 0x8eb44a8768581511,
+    0xdb0c2e0d64f98fa7, 0x47b5481dbefa4fa4};
 
 namespace {
 // For |all|
@@ -1093,27 +1031,24 @@ static const std::set<std::string> names{
 };
 
 // For fast name |lookup|
-static const std::unordered_map<std::string, Algorithms> mapped {
-  { "md5", algoMD5 },
-  { "sha", algoSHA1 },
-  { "sha1", algoSHA1 },
-  { "sha-1", algoSHA1 },
-  { "sha224", algoSHA224 },
-  { "sha-224", algoSHA224 },
-  { "sha256", algoSHA256 },
-  { "sha-256", algoSHA256 },
-  { "sha384", algoSHA384 },
-  { "sha-384", algoSHA384 },
-  { "sha512", algoSHA512 },
-  { "sha-512", algoSHA512 },
+static const std::unordered_map<std::string, Algorithms> mapped{
+    {"md5", algoMD5},
+    {"sha", algoSHA1},
+    {"sha1", algoSHA1},
+    {"sha-1", algoSHA1},
+    {"sha224", algoSHA224},
+    {"sha-224", algoSHA224},
+    {"sha256", algoSHA256},
+    {"sha-256", algoSHA256},
+    {"sha384", algoSHA384},
+    {"sha-384", algoSHA384},
+    {"sha512", algoSHA512},
+    {"sha-512", algoSHA512},
 };
 static const auto mapped_end = mapped.end();
 } // namespace
 
-const std::set<std::string>& crypto::hash::all()
-{
-  return names;
-}
+const std::set<std::string>& crypto::hash::all() { return names; }
 
 Algorithms crypto::hash::lookup(const std::string& name)
 {

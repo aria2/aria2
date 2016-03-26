@@ -5,13 +5,13 @@
 
 namespace aria2 {
 
-class MockDHTTaskQueue:public DHTTaskQueue {
+class MockDHTTaskQueue : public DHTTaskQueue {
 public:
-  std::deque<std::shared_ptr<DHTTask> > periodicTaskQueue1_;
+  std::deque<std::shared_ptr<DHTTask>> periodicTaskQueue1_;
 
-  std::deque<std::shared_ptr<DHTTask> > periodicTaskQueue2_;
+  std::deque<std::shared_ptr<DHTTask>> periodicTaskQueue2_;
 
-  std::deque<std::shared_ptr<DHTTask> > immediateTaskQueue_;
+  std::deque<std::shared_ptr<DHTTask>> immediateTaskQueue_;
 
   MockDHTTaskQueue() {}
 
@@ -19,20 +19,20 @@ public:
 
   virtual void executeTask() CXX11_OVERRIDE {}
 
-  virtual void addPeriodicTask1(const std::shared_ptr<DHTTask>& task)
-    CXX11_OVERRIDE
+  virtual void
+  addPeriodicTask1(const std::shared_ptr<DHTTask>& task) CXX11_OVERRIDE
   {
     periodicTaskQueue1_.push_back(task);
   }
 
-  virtual void addPeriodicTask2(const std::shared_ptr<DHTTask>& task)
-    CXX11_OVERRIDE
+  virtual void
+  addPeriodicTask2(const std::shared_ptr<DHTTask>& task) CXX11_OVERRIDE
   {
     periodicTaskQueue2_.push_back(task);
   }
 
-  virtual void addImmediateTask(const std::shared_ptr<DHTTask>& task)
-    CXX11_OVERRIDE
+  virtual void
+  addImmediateTask(const std::shared_ptr<DHTTask>& task) CXX11_OVERRIDE
   {
     immediateTaskQueue_.push_back(task);
   }

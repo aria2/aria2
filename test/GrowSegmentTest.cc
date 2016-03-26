@@ -10,8 +10,8 @@ class GrowSegmentTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testUpdateWrittenLength);
   CPPUNIT_TEST(testClear);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
   void setUp() {}
 
@@ -19,8 +19,7 @@ public:
   void testClear();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( GrowSegmentTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(GrowSegmentTest);
 
 void GrowSegmentTest::testUpdateWrittenLength()
 {

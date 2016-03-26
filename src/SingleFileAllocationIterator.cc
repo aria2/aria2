@@ -48,37 +48,37 @@ namespace aria2 {
 constexpr size_t BUFSIZE = 256_k;
 constexpr size_t ALIGNMENT = 512;
 
-SingleFileAllocationIterator::SingleFileAllocationIterator
-(BinaryStream* stream,
- int64_t offset,
- int64_t totalLength)
-  : stream_(stream),
-    offset_(offset),
-    totalLength_(totalLength),
-    buffer_(nullptr)
-{}
+SingleFileAllocationIterator::SingleFileAllocationIterator(BinaryStream* stream,
+                                                           int64_t offset,
+                                                           int64_t totalLength)
+    : stream_(stream),
+      offset_(offset),
+      totalLength_(totalLength),
+      buffer_(nullptr)
+{
+}
 
 SingleFileAllocationIterator::~SingleFileAllocationIterator()
 {
 #ifdef HAVE_POSIX_MEMALIGN
   free(buffer_);
 #else
-  delete [] buffer_;
+  delete[] buffer_;
 #endif // HAVE_POSIX_MEMALIGN
 }
 
 void SingleFileAllocationIterator::init()
 {
   static bool noticeDone = false;
-  if(!noticeDone) {
+  if (!noticeDone) {
     noticeDone = true;
     A2_LOG_NOTICE(_("Allocating disk space. Use --file-allocation=none to"
                     " disable it. See --file-allocation option in man page for"
                     " more details."));
   }
 #ifdef HAVE_POSIX_MEMALIGN
-  buffer_ = reinterpret_cast<unsigned char*>
-    (util::allocateAlignedMemory(ALIGNMENT, BUFSIZE));
+  buffer_ = reinterpret_cast<unsigned char*>(
+      util::allocateAlignedMemory(ALIGNMENT, BUFSIZE));
 #else
   buffer_ = new unsigned char[BUFSIZE];
 #endif // HAVE_POSIX_MEMALIGN
@@ -90,7 +90,7 @@ void SingleFileAllocationIterator::allocateChunk()
   stream_->writeData(buffer_, BUFSIZE, offset_);
   offset_ += BUFSIZE;
 
-  if(totalLength_ < offset_) {
+  if (totalLength_ < offset_) {
     stream_->truncate(totalLength_);
     offset_ = totalLength_;
   }

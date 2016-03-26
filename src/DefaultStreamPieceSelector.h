@@ -41,18 +41,17 @@ namespace aria2 {
 
 class BitfieldMan;
 
-class DefaultStreamPieceSelector:public StreamPieceSelector {
+class DefaultStreamPieceSelector : public StreamPieceSelector {
 public:
   DefaultStreamPieceSelector(BitfieldMan* bitfieldMan);
   virtual ~DefaultStreamPieceSelector();
 
-  virtual bool select
-  (size_t& index,
-   size_t minSplitSize,
-   const unsigned char* ignoreBitfield,
-   size_t length) CXX11_OVERRIDE;
+  virtual bool select(size_t& index, size_t minSplitSize,
+                      const unsigned char* ignoreBitfield,
+                      size_t length) CXX11_OVERRIDE;
 
   virtual void onBitfieldInit() CXX11_OVERRIDE;
+
 private:
   BitfieldMan* bitfieldMan_;
 };

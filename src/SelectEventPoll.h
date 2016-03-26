@@ -42,7 +42,7 @@
 
 #include "a2functional.h"
 #ifdef ENABLE_ASYNC_DNS
-# include "AsyncNameResolver.h"
+#include "AsyncNameResolver.h"
 #endif // ENABLE_ASYNC_DNS
 
 namespace aria2 {
@@ -53,50 +53,37 @@ private:
   private:
     Command* command_;
     int events_;
+
   public:
     CommandEvent(Command* command, int events);
 
-    Command* getCommand() const
-    {
-      return command_;
-    }
+    Command* getCommand() const { return command_; }
 
-    void addEvents(int events)
-    {
-      events_ |= events;
-    }
+    void addEvents(int events) { events_ |= events; }
 
-    void removeEvents(int events)
-    {
-      events_ &= (~events);
-    }
+    void removeEvents(int events) { events_ &= (~events); }
 
-    bool eventsEmpty() const
-    {
-      return events_ == 0;
-    }
+    bool eventsEmpty() const { return events_ == 0; }
 
     bool operator==(const CommandEvent& commandEvent) const
     {
       return command_ == commandEvent.command_;
     }
 
-    int getEvents() const
-    {
-      return events_;
-    }
+    int getEvents() const { return events_; }
 
     void processEvents(int events);
   };
 
-  friend int accumulateEvent
-  (int events, const SelectEventPoll::CommandEvent& event);
+  friend int accumulateEvent(int events,
+                             const SelectEventPoll::CommandEvent& event);
 
   class SocketEntry {
   private:
     sock_t socket_;
 
     std::deque<CommandEvent> commandEvents_;
+
   public:
     SocketEntry(sock_t socket);
 
@@ -119,15 +106,9 @@ private:
 
     int getEvents();
 
-    sock_t getSocket() const
-    {
-      return socket_;
-    }
+    sock_t getSocket() const { return socket_; }
 
-    bool eventEmpty() const
-    {
-      return commandEvents_.empty();
-    }
+    bool eventEmpty() const { return commandEvents_.empty(); }
 
     void processEvents(int events);
   };
@@ -141,8 +122,9 @@ private:
     Command* command_;
 
   public:
-    AsyncNameResolverEntry(const std::shared_ptr<AsyncNameResolver>& nameResolver,
-                           Command* command);
+    AsyncNameResolverEntry(
+        const std::shared_ptr<AsyncNameResolver>& nameResolver,
+        Command* command);
 
     AsyncNameResolverEntry(const AsyncNameResolverEntry&) = delete;
     AsyncNameResolverEntry(AsyncNameResolverEntry&&) = default;
@@ -150,14 +132,14 @@ private:
     bool operator==(const AsyncNameResolverEntry& entry)
     {
       return *nameResolver_ == *entry.nameResolver_ &&
-        command_ == entry.command_;
+             command_ == entry.command_;
     }
 
     bool operator<(const AsyncNameResolverEntry& entry)
     {
       return nameResolver_.get() < entry.nameResolver_.get() ||
-        (nameResolver_.get() == entry.nameResolver_.get() &&
-         command_ < entry.command_);
+             (nameResolver_.get() == entry.nameResolver_.get() &&
+              command_ < entry.command_);
     }
 
     int getFds(fd_set* rfdsPtr, fd_set* wfdsPtr);
@@ -185,6 +167,7 @@ private:
 #endif // __MINGW32__
 
   void updateFdSet();
+
 public:
   SelectEventPoll();
 
@@ -192,20 +175,19 @@ public:
 
   virtual void poll(const struct timeval& tv) CXX11_OVERRIDE;
 
-  virtual bool addEvents(sock_t socket,
-                         Command* command, EventPoll::EventType events)
-    CXX11_OVERRIDE;
+  virtual bool addEvents(sock_t socket, Command* command,
+                         EventPoll::EventType events) CXX11_OVERRIDE;
 
-  virtual bool deleteEvents(sock_t socket,
-                            Command* command, EventPoll::EventType events)
-    CXX11_OVERRIDE;
+  virtual bool deleteEvents(sock_t socket, Command* command,
+                            EventPoll::EventType events) CXX11_OVERRIDE;
 #ifdef ENABLE_ASYNC_DNS
 
-  virtual bool addNameResolver(const std::shared_ptr<AsyncNameResolver>& resolver,
-                               Command* command) CXX11_OVERRIDE;
-  virtual bool deleteNameResolver
-  (const std::shared_ptr<AsyncNameResolver>& resolver, Command* command)
-    CXX11_OVERRIDE;
+  virtual bool
+  addNameResolver(const std::shared_ptr<AsyncNameResolver>& resolver,
+                  Command* command) CXX11_OVERRIDE;
+  virtual bool
+  deleteNameResolver(const std::shared_ptr<AsyncNameResolver>& resolver,
+                     Command* command) CXX11_OVERRIDE;
 #endif // ENABLE_ASYNC_DNS
 };
 

@@ -50,6 +50,7 @@ private:
   int family_;
   std::shared_ptr<SocketCore> serverSocket_;
   bool secure_;
+
 public:
   HttpListenCommand(cuid_t cuid, DownloadEngine* e, int family, bool secure);
 

@@ -37,16 +37,13 @@
 
 namespace aria2 {
 
-PeerStat::PeerStat
-(cuid_t cuid, const std::string& hostname, const::std::string& protocol)
-  : cuid_(cuid),
-    hostname_(hostname),
-    protocol_(protocol)
-{}
+PeerStat::PeerStat(cuid_t cuid, const std::string& hostname,
+                   const ::std::string& protocol)
+    : cuid_(cuid), hostname_(hostname), protocol_(protocol)
+{
+}
 
-PeerStat::PeerStat(cuid_t cuid)
-  : cuid_(cuid)
-{}
+PeerStat::PeerStat(cuid_t cuid) : cuid_(cuid) {}
 
 PeerStat::~PeerStat() {}
 
@@ -63,45 +60,30 @@ int PeerStat::calculateAvgDownloadSpeed()
   return netStat_.calculateAvgDownloadSpeed();
 }
 
-int PeerStat::calculateUploadSpeed()
-{
-  return netStat_.calculateUploadSpeed();
-}
+int PeerStat::calculateUploadSpeed() { return netStat_.calculateUploadSpeed(); }
 
 int PeerStat::calculateAvgUploadSpeed()
 {
   return netStat_.calculateAvgUploadSpeed();
 }
 
-void PeerStat::updateDownloadLength(size_t bytes)
-{
-  netStat_.updateDownloadLength(bytes);
-}
+void PeerStat::updateDownload(size_t bytes) { netStat_.updateDownload(bytes); }
 
-void PeerStat::updateUploadLength(size_t bytes)
-{
-  netStat_.updateUploadLength(bytes);
-}
+void PeerStat::updateUpload(size_t bytes) { netStat_.updateUpload(bytes); }
 
 int PeerStat::getMaxDownloadSpeed() const
 {
   return netStat_.getMaxDownloadSpeed();
 }
 
-int PeerStat::getMaxUploadSpeed() const
-{
-  return netStat_.getMaxUploadSpeed();
-}
+int PeerStat::getMaxUploadSpeed() const { return netStat_.getMaxUploadSpeed(); }
 
 int PeerStat::getAvgDownloadSpeed() const
 {
   return netStat_.getAvgDownloadSpeed();
 }
 
-int PeerStat::getAvgUploadSpeed() const
-{
-  return netStat_.getAvgUploadSpeed();
-}
+int PeerStat::getAvgUploadSpeed() const { return netStat_.getAvgUploadSpeed(); }
 
 uint64_t PeerStat::getSessionDownloadLength() const
 {
@@ -123,29 +105,14 @@ const Timer& PeerStat::getDownloadStartTime() const
   return netStat_.getDownloadStartTime();
 }
 
-NetStat::STATUS PeerStat::getStatus() const
-{
-  return netStat_.getStatus();
-}
+NetStat::STATUS PeerStat::getStatus() const { return netStat_.getStatus(); }
 
-void PeerStat::reset()
-{
-  netStat_.reset();
-}
+void PeerStat::reset() { netStat_.reset(); }
 
-void PeerStat::downloadStart()
-{
-  netStat_.downloadStart();
-}
+void PeerStat::downloadStart() { netStat_.downloadStart(); }
 
-void PeerStat::downloadStop()
-{
-  netStat_.downloadStop();
-}
+void PeerStat::downloadStop() { netStat_.downloadStop(); }
 
-TransferStat PeerStat::toTransferStat()
-{
-  return netStat_.toTransferStat();
-}
+TransferStat PeerStat::toTransferStat() { return netStat_.toTransferStat(); }
 
 } // namespace aria2

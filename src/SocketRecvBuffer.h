@@ -60,31 +60,19 @@ public:
   // buffered data.
   void drain(size_t n);
 
-  const std::shared_ptr<SocketCore>& getSocket() const
-  {
-    return socket_;
-  }
+  const std::shared_ptr<SocketCore>& getSocket() const { return socket_; }
 
-  const unsigned char* getBuffer() const
-  {
-    return pos_;
-  }
+  const unsigned char* getBuffer() const { return pos_; }
 
-  size_t getBufferLength() const
-  {
-    return last_ - pos_;
-  }
+  size_t getBufferLength() const { return last_ - pos_; }
 
-  bool bufferEmpty() const
-  {
-    return pos_ == last_;
-  }
+  bool bufferEmpty() const { return pos_ == last_; }
 
 private:
   std::array<unsigned char, 16_k> buf_;
   std::shared_ptr<SocketCore> socket_;
-  unsigned char *pos_;
-  unsigned char *last_;
+  unsigned char* pos_;
+  unsigned char* last_;
 };
 
 } // namespace aria2

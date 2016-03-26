@@ -37,19 +37,16 @@
 
 namespace aria2 {
 
-ApiCallbackDownloadEventListener::ApiCallbackDownloadEventListener
-(Session* session,
- DownloadEventCallback callback,
- void* userData)
-  : session_(session),
-    callback_(callback),
-    userData_(userData)
-{}
+ApiCallbackDownloadEventListener::ApiCallbackDownloadEventListener(
+    Session* session, DownloadEventCallback callback, void* userData)
+    : session_(session), callback_(callback), userData_(userData)
+{
+}
 
 ApiCallbackDownloadEventListener::~ApiCallbackDownloadEventListener() {}
 
-void ApiCallbackDownloadEventListener::onEvent
-(DownloadEvent event, const RequestGroup* group)
+void ApiCallbackDownloadEventListener::onEvent(DownloadEvent event,
+                                               const RequestGroup* group)
 {
   callback_(session_, event, group->getGID(), userData_);
 }

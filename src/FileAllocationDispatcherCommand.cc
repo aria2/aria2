@@ -43,20 +43,19 @@
 
 namespace aria2 {
 
-FileAllocationDispatcherCommand::FileAllocationDispatcherCommand
-(cuid_t cuid,
- FileAllocationMan* fileAllocMan,
- DownloadEngine* e)
-  : SequentialDispatcherCommand<FileAllocationEntry>{cuid, fileAllocMan, e}
-{}
+FileAllocationDispatcherCommand::FileAllocationDispatcherCommand(
+    cuid_t cuid, FileAllocationMan* fileAllocMan, DownloadEngine* e)
+    : SequentialDispatcherCommand<FileAllocationEntry>{cuid, fileAllocMan, e}
+{
+}
 
-std::unique_ptr<Command> FileAllocationDispatcherCommand::createCommand
-(FileAllocationEntry* entry)
+std::unique_ptr<Command>
+FileAllocationDispatcherCommand::createCommand(FileAllocationEntry* entry)
 {
   cuid_t newCUID = getDownloadEngine()->newCUID();
   A2_LOG_INFO(fmt(MSG_FILE_ALLOCATION_DISPATCH, newCUID));
-  return make_unique<FileAllocationCommand>
-    (newCUID, entry->getRequestGroup(), getDownloadEngine(), entry);
+  return make_unique<FileAllocationCommand>(newCUID, entry->getRequestGroup(),
+                                            getDownloadEngine(), entry);
 }
 
 } // namespace aria2

@@ -43,6 +43,7 @@
 #include <sstream>
 #include <iterator>
 #include <vector>
+#include <stdexcept>
 
 #include "util.h"
 #include "DlAbortEx.h"
@@ -65,29 +66,29 @@
 
 namespace aria2 {
 
-BooleanOptionHandler::BooleanOptionHandler
-(PrefPtr pref,
- const char* description,
- const std::string& defaultValue,
- OptionHandler::ARG_TYPE argType,
- char shortName)
-  : AbstractOptionHandler(pref, description, defaultValue,
-                          argType, shortName)
-{}
+BooleanOptionHandler::BooleanOptionHandler(PrefPtr pref,
+                                           const char* description,
+                                           const std::string& defaultValue,
+                                           OptionHandler::ARG_TYPE argType,
+                                           char shortName)
+    : AbstractOptionHandler(pref, description, defaultValue, argType, shortName)
+{
+}
 
 BooleanOptionHandler::~BooleanOptionHandler() {}
 
-void BooleanOptionHandler::parseArg(Option& option, const std::string& optarg)
-  const
+void BooleanOptionHandler::parseArg(Option& option,
+                                    const std::string& optarg) const
 {
-  if(optarg == "true" ||
-     ((argType_ == OptionHandler::OPT_ARG ||
-       argType_ == OptionHandler::NO_ARG)
-      && optarg.empty())) {
+  if (optarg == "true" || ((argType_ == OptionHandler::OPT_ARG ||
+                            argType_ == OptionHandler::NO_ARG) &&
+                           optarg.empty())) {
     option.put(pref_, A2_V_TRUE);
-  } else if(optarg == "false") {
+  }
+  else if (optarg == "false") {
     option.put(pref_, A2_V_FALSE);
-  } else {
+  }
+  else {
     std::string msg = pref_->k;
     msg += " ";
     msg += _("must be either 'true' or 'false'.");
@@ -100,28 +101,26 @@ std::string BooleanOptionHandler::createPossibleValuesString() const
   return "true, false";
 }
 
-IntegerRangeOptionHandler::IntegerRangeOptionHandler
-(PrefPtr pref,
- const char* description,
- const std::string& defaultValue,
- int32_t min, int32_t max,
- char shortName)
-  : AbstractOptionHandler(pref, description, defaultValue,
-                          OptionHandler::REQ_ARG, shortName),
-    min_(min),
-    max_(max)
-{}
+IntegerRangeOptionHandler::IntegerRangeOptionHandler(
+    PrefPtr pref, const char* description, const std::string& defaultValue,
+    int32_t min, int32_t max, char shortName)
+    : AbstractOptionHandler(pref, description, defaultValue,
+                            OptionHandler::REQ_ARG, shortName),
+      min_(min),
+      max_(max)
+{
+}
 
 IntegerRangeOptionHandler::~IntegerRangeOptionHandler() {}
 
-void IntegerRangeOptionHandler::parseArg
-(Option& option, const std::string& optarg) const
+void IntegerRangeOptionHandler::parseArg(Option& option,
+                                         const std::string& optarg) const
 {
   auto sgl = util::parseIntSegments(optarg);
   sgl.normalize();
-  while(sgl.hasNext()) {
+  while (sgl.hasNext()) {
     int v = sgl.next();
-    if(v < min_ || max_ < v) {
+    if (v < min_ || max_ < v) {
       std::string msg = pref_->k;
       msg += " ";
       msg += _("must be between %d and %d.");
@@ -136,49 +135,50 @@ std::string IntegerRangeOptionHandler::createPossibleValuesString() const
   return fmt("%d-%d", min_, max_);
 }
 
-NumberOptionHandler::NumberOptionHandler
-(PrefPtr pref,
- const char* description,
- const std::string& defaultValue,
- int64_t min,
- int64_t max,
- char shortName)
-  : AbstractOptionHandler(pref, description, defaultValue,
-                          OptionHandler::REQ_ARG, shortName),
-    min_(min),
-    max_(max)
-{}
+NumberOptionHandler::NumberOptionHandler(PrefPtr pref, const char* description,
+                                         const std::string& defaultValue,
+                                         int64_t min, int64_t max,
+                                         char shortName)
+    : AbstractOptionHandler(pref, description, defaultValue,
+                            OptionHandler::REQ_ARG, shortName),
+      min_(min),
+      max_(max)
+{
+}
 
 NumberOptionHandler::~NumberOptionHandler() {}
 
-void NumberOptionHandler::parseArg(Option& option, const std::string& optarg)
-  const
+void NumberOptionHandler::parseArg(Option& option,
+                                   const std::string& optarg) const
 {
   int64_t number;
-  if(util::parseLLIntNoThrow(number, optarg)) {
+  if (util::parseLLIntNoThrow(number, optarg)) {
     parseArg(option, number);
-  } else {
+  }
+  else {
     throw DL_ABORT_EX(fmt("Bad number %s", optarg.c_str()));
   }
 }
 
 void NumberOptionHandler::parseArg(Option& option, int64_t number) const
 {
-  if((min_ == -1 || min_ <= number) && (max_ ==  -1 || number <= max_)) {
+  if ((min_ == -1 || min_ <= number) && (max_ == -1 || number <= max_)) {
     option.put(pref_, util::itos(number));
     return;
   }
 
   std::string msg = pref_->k;
   msg += " ";
-  if(min_ == -1 && max_ != -1) {
+  if (min_ == -1 && max_ != -1) {
     msg += fmt(_("must be smaller than or equal to %" PRId64 "."), max_);
-  } else if(min_ != -1 && max_ != -1) {
-    msg += fmt(_("must be between %" PRId64 " and %" PRId64 "."),
-                min_, max_);
-  } else if(min_ != -1 && max_ == -1) {
+  }
+  else if (min_ != -1 && max_ != -1) {
+    msg += fmt(_("must be between %" PRId64 " and %" PRId64 "."), min_, max_);
+  }
+  else if (min_ != -1 && max_ == -1) {
     msg += fmt(_("must be greater than or equal to %" PRId64 "."), min_);
-  } else {
+  }
+  else {
     msg += _("must be a number.");
   }
   throw DL_ABORT_EX(msg);
@@ -187,71 +187,70 @@ void NumberOptionHandler::parseArg(Option& option, int64_t number) const
 std::string NumberOptionHandler::createPossibleValuesString() const
 {
   std::string values;
-  if(min_ == -1) {
+  if (min_ == -1) {
     values += "*";
-  } else {
+  }
+  else {
     values += util::itos(min_);
   }
   values += "-";
-  if(max_ == -1) {
+  if (max_ == -1) {
     values += "*";
-  } else {
+  }
+  else {
     values += util::itos(max_);
   }
   return values;
 }
 
-UnitNumberOptionHandler::UnitNumberOptionHandler
-(PrefPtr pref,
- const char* description,
- const std::string& defaultValue,
- int64_t min,
- int64_t max,
- char shortName)
-  : NumberOptionHandler(pref, description, defaultValue, min, max,
-                        shortName)
-{}
+UnitNumberOptionHandler::UnitNumberOptionHandler(
+    PrefPtr pref, const char* description, const std::string& defaultValue,
+    int64_t min, int64_t max, char shortName)
+    : NumberOptionHandler(pref, description, defaultValue, min, max, shortName)
+{
+}
 
 UnitNumberOptionHandler::~UnitNumberOptionHandler() {}
 
-void UnitNumberOptionHandler::parseArg
-(Option& option, const std::string& optarg) const
+void UnitNumberOptionHandler::parseArg(Option& option,
+                                       const std::string& optarg) const
 {
   int64_t num = util::getRealSize(optarg);
   NumberOptionHandler::parseArg(option, num);
 }
 
-FloatNumberOptionHandler::FloatNumberOptionHandler
-(PrefPtr pref,
- const char* description,
- const std::string& defaultValue,
- double min,
- double max,
- char shortName)
-  : AbstractOptionHandler(pref, description, defaultValue,
-                          OptionHandler::REQ_ARG, shortName),
-    min_(min),
-    max_(max)
-{}
+FloatNumberOptionHandler::FloatNumberOptionHandler(
+    PrefPtr pref, const char* description, const std::string& defaultValue,
+    double min, double max, char shortName)
+    : AbstractOptionHandler(pref, description, defaultValue,
+                            OptionHandler::REQ_ARG, shortName),
+      min_(min),
+      max_(max)
+{
+}
 
 FloatNumberOptionHandler::~FloatNumberOptionHandler() {}
 
-void FloatNumberOptionHandler::parseArg
-(Option& option, const std::string& optarg) const
+void FloatNumberOptionHandler::parseArg(Option& option,
+                                        const std::string& optarg) const
 {
   double number = strtod(optarg.c_str(), nullptr);
-  if((min_ < 0 || min_ <= number) && (max_ < 0 || number <= max_)) {
+  if ((min_ < 0 || min_ <= number) && (max_ < 0 || number <= max_)) {
     option.put(pref_, optarg);
-  } else {
+  }
+  else {
     std::string msg = pref_->k;
     msg += " ";
-    if(min_ < 0 && max_ >= 0) {
+    if (min_ < 0 && max_ >= 0) {
       msg += fmt(_("must be smaller than or equal to %.1f."), max_);
-    } else if(min_ >= 0 && max_ >= 0) {
+    }
+    else if (min_ >= 0 && max_ >= 0) {
       msg += fmt(_("must be between %.1f and %.1f."), min_, max_);
-    } else if(min_ >= 0 && max_ < 0) {
+    }
+    else if (min_ >= 0 && max_ < 0) {
       msg += fmt(_("must be greater than or equal to %.1f."), min_);
-    } else {
+    }
+    else {
       msg += _("must be a number.");
     }
     throw DL_ABORT_EX(msg);
@@ -261,39 +260,39 @@ void FloatNumberOptionHandler::parseArg
 std::string FloatNumberOptionHandler::createPossibleValuesString() const
 {
   std::string valuesString;
-  if(min_ < 0) {
+  if (min_ < 0) {
     valuesString += "*";
-  } else {
+  }
+  else {
     valuesString += fmt("%.1f", min_);
   }
   valuesString += "-";
-  if(max_ < 0) {
+  if (max_ < 0) {
     valuesString += "*";
-  } else {
+  }
+  else {
     valuesString += fmt("%.1f", max_);
   }
   return valuesString;
 }
 
-DefaultOptionHandler::DefaultOptionHandler
-(PrefPtr pref,
- const char* description,
- const std::string& defaultValue,
- const std::string& possibleValuesString,
- OptionHandler::ARG_TYPE argType,
- char shortName)
-  : AbstractOptionHandler(pref, description, defaultValue, argType,
-                          shortName),
-    possibleValuesString_(possibleValuesString),
-    allowEmpty_(true)
-{}
+DefaultOptionHandler::DefaultOptionHandler(
+    PrefPtr pref, const char* description, const std::string& defaultValue,
+    const std::string& possibleValuesString, OptionHandler::ARG_TYPE argType,
+    char shortName)
+    : AbstractOptionHandler(pref, description, defaultValue, argType,
+                            shortName),
+      possibleValuesString_(possibleValuesString),
+      allowEmpty_(true)
+{
+}
 
 DefaultOptionHandler::~DefaultOptionHandler() {}
 
-void DefaultOptionHandler::parseArg(Option& option, const std::string& optarg)
-  const
+void DefaultOptionHandler::parseArg(Option& option,
+                                    const std::string& optarg) const
 {
-  if(!allowEmpty_ && optarg.empty()) {
+  if (!allowEmpty_ && optarg.empty()) {
     throw DL_ABORT_EX("Empty string is not allowed");
   }
   option.put(pref_, optarg);
@@ -304,29 +303,23 @@ std::string DefaultOptionHandler::createPossibleValuesString() const
   return possibleValuesString_;
 }
 
-void DefaultOptionHandler::setAllowEmpty(bool allow)
-{
-  allowEmpty_ = allow;
-}
+void DefaultOptionHandler::setAllowEmpty(bool allow) { allowEmpty_ = allow; }
 
-CumulativeOptionHandler::CumulativeOptionHandler
-(PrefPtr pref,
- const char* description,
- const std::string& defaultValue,
- const std::string& delim,
- const std::string& possibleValuesString,
- OptionHandler::ARG_TYPE argType,
- char shortName)
-  : AbstractOptionHandler(pref, description, defaultValue, argType,
-                          shortName),
-    delim_(delim),
-    possibleValuesString_(possibleValuesString)
-{}
+CumulativeOptionHandler::CumulativeOptionHandler(
+    PrefPtr pref, const char* description, const std::string& defaultValue,
+    const std::string& delim, const std::string& possibleValuesString,
+    OptionHandler::ARG_TYPE argType, char shortName)
+    : AbstractOptionHandler(pref, description, defaultValue, argType,
+                            shortName),
+      delim_(delim),
+      possibleValuesString_(possibleValuesString)
+{
+}
 
 CumulativeOptionHandler::~CumulativeOptionHandler() {}
 
-void CumulativeOptionHandler::parseArg
-(Option& option, const std::string& optarg) const
+void CumulativeOptionHandler::parseArg(Option& option,
+                                       const std::string& optarg) const
 {
   std::string value = option.get(pref_);
   value += optarg;
@@ -339,18 +332,18 @@ std::string CumulativeOptionHandler::createPossibleValuesString() const
   return possibleValuesString_;
 }
 
-IndexOutOptionHandler::IndexOutOptionHandler
-(PrefPtr pref,
- const char* description,
- char shortName)
-  : AbstractOptionHandler(pref, description, NO_DEFAULT_VALUE,
-                          OptionHandler::REQ_ARG, shortName)
-{}
+IndexOutOptionHandler::IndexOutOptionHandler(PrefPtr pref,
+                                             const char* description,
+                                             char shortName)
+    : AbstractOptionHandler(pref, description, NO_DEFAULT_VALUE,
+                            OptionHandler::REQ_ARG, shortName)
+{
+}
 
 IndexOutOptionHandler::~IndexOutOptionHandler() {}
 
-void IndexOutOptionHandler::parseArg(Option& option, const std::string& optarg)
-  const
+void IndexOutOptionHandler::parseArg(Option& option,
+                                     const std::string& optarg) const
 {
   // See optarg is in the format of "INDEX=PATH"
   util::parseIndexPath(optarg);
@@ -365,41 +358,40 @@ std::string IndexOutOptionHandler::createPossibleValuesString() const
   return "INDEX=PATH";
 }
 
-ChecksumOptionHandler::ChecksumOptionHandler
-(PrefPtr pref,
- const char* description,
- char shortName)
-  : AbstractOptionHandler(pref, description, NO_DEFAULT_VALUE,
-                          OptionHandler::REQ_ARG, shortName)
-{}
+ChecksumOptionHandler::ChecksumOptionHandler(PrefPtr pref,
+                                             const char* description,
+                                             char shortName)
+    : AbstractOptionHandler(pref, description, NO_DEFAULT_VALUE,
+                            OptionHandler::REQ_ARG, shortName)
+{
+}
 
-ChecksumOptionHandler::ChecksumOptionHandler
-(PrefPtr pref,
- const char* description,
- std::vector<std::string> acceptableTypes,
- char shortName)
-  : AbstractOptionHandler(pref, description, NO_DEFAULT_VALUE,
-                          OptionHandler::REQ_ARG, shortName),
-    acceptableTypes_(std::move(acceptableTypes))
-{}
+ChecksumOptionHandler::ChecksumOptionHandler(
+    PrefPtr pref, const char* description,
+    std::vector<std::string> acceptableTypes, char shortName)
+    : AbstractOptionHandler(pref, description, NO_DEFAULT_VALUE,
+                            OptionHandler::REQ_ARG, shortName),
+      acceptableTypes_(std::move(acceptableTypes))
+{
+}
 
 ChecksumOptionHandler::~ChecksumOptionHandler() {}
 
-void ChecksumOptionHandler::parseArg(Option& option, const std::string& optarg)
-  const
+void ChecksumOptionHandler::parseArg(Option& option,
+                                     const std::string& optarg) const
 {
   auto p = util::divide(std::begin(optarg), std::end(optarg), '=');
   std::string hashType(p.first.first, p.first.second);
-  if(!acceptableTypes_.empty() &&
-     std::find(std::begin(acceptableTypes_), std::end(acceptableTypes_),
-               hashType) == std::end(acceptableTypes_)) {
-    throw DL_ABORT_EX(fmt("Checksum type %s is not acceptable",
-                          hashType.c_str()));
+  if (!acceptableTypes_.empty() &&
+      std::find(std::begin(acceptableTypes_), std::end(acceptableTypes_),
+                hashType) == std::end(acceptableTypes_)) {
+    throw DL_ABORT_EX(
+        fmt("Checksum type %s is not acceptable", hashType.c_str()));
   }
   std::string hexDigest(p.second.first, p.second.second);
   util::lowercase(hashType);
   util::lowercase(hexDigest);
-  if(!MessageDigest::isValidHash(hashType, hexDigest)) {
+  if (!MessageDigest::isValidHash(hashType, hexDigest)) {
     throw DL_ABORT_EX(_("Unrecognized checksum"));
   }
   option.put(pref_, optarg);
@@ -410,39 +402,39 @@ std::string ChecksumOptionHandler::createPossibleValuesString() const
   return "HASH_TYPE=HEX_DIGEST";
 }
 
-ParameterOptionHandler::ParameterOptionHandler
-(PrefPtr pref,
- const char* description,
- const std::string& defaultValue,
- std::vector<std::string> validParamValues,
- char shortName)
-  : AbstractOptionHandler(pref, description, defaultValue,
-                          OptionHandler::REQ_ARG, shortName),
-    validParamValues_(std::move(validParamValues))
-{}
+ParameterOptionHandler::ParameterOptionHandler(
+    PrefPtr pref, const char* description, const std::string& defaultValue,
+    std::vector<std::string> validParamValues, char shortName)
+    : AbstractOptionHandler(pref, description, defaultValue,
+                            OptionHandler::REQ_ARG, shortName),
+      validParamValues_(std::move(validParamValues))
+{
+}
 
 ParameterOptionHandler::~ParameterOptionHandler() {}
 
-void ParameterOptionHandler::parseArg(Option& option, const std::string& optarg)
-  const
+void ParameterOptionHandler::parseArg(Option& option,
+                                      const std::string& optarg) const
 {
-  auto itr = std::find(validParamValues_.begin(), validParamValues_.end(), optarg);
-  if(itr == validParamValues_.end()) {
+  auto itr =
+      std::find(validParamValues_.begin(), validParamValues_.end(), optarg);
+  if (itr == validParamValues_.end()) {
     std::string msg = pref_->k;
     msg += " ";
     msg += _("must be one of the following:");
-    if(validParamValues_.size() == 0) {
+    if (validParamValues_.size() == 0) {
       msg += "''";
     }
     else {
-      for (const auto& p: validParamValues_) {
+      for (const auto& p : validParamValues_) {
         msg += "'";
         msg += p;
         msg += "' ";
       }
     }
     throw DL_ABORT_EX(msg);
-  } else {
+  }
+  else {
     option.put(pref_, optarg);
   }
 }
@@ -455,36 +447,34 @@ std::string ParameterOptionHandler::createPossibleValuesString() const
   return util::strip(s.str(), ", ");
 }
 
-HostPortOptionHandler::HostPortOptionHandler
-(PrefPtr pref,
- const char* description,
- const std::string& defaultValue,
- PrefPtr hostOptionName,
- PrefPtr portOptionName,
- char shortName)
-  : AbstractOptionHandler(pref, description, defaultValue,
-                          OptionHandler::REQ_ARG, shortName),
-    hostOptionName_(hostOptionName),
-    portOptionName_(portOptionName)
-{}
+HostPortOptionHandler::HostPortOptionHandler(
+    PrefPtr pref, const char* description, const std::string& defaultValue,
+    PrefPtr hostOptionName, PrefPtr portOptionName, char shortName)
+    : AbstractOptionHandler(pref, description, defaultValue,
+                            OptionHandler::REQ_ARG, shortName),
+      hostOptionName_(hostOptionName),
+      portOptionName_(portOptionName)
+{
+}
 
 HostPortOptionHandler::~HostPortOptionHandler() {}
 
-void HostPortOptionHandler::parseArg(Option& option, const std::string& optarg)
-  const
+void HostPortOptionHandler::parseArg(Option& option,
+                                     const std::string& optarg) const
 {
   std::string uri = "http://";
   uri += optarg;
   Request req;
-  if(!req.setUri(uri)) {
+  if (!req.setUri(uri)) {
     throw DL_ABORT_EX(_("Unrecognized format"));
   }
   option.put(pref_, optarg);
   setHostAndPort(option, req.getHost(), req.getPort());
 }
 
-void HostPortOptionHandler::setHostAndPort
-(Option& option, const std::string& hostname, uint16_t port) const
+void HostPortOptionHandler::setHostAndPort(Option& option,
+                                           const std::string& hostname,
+                                           uint16_t port) const
 {
   option.put(hostOptionName_, hostname);
   option.put(portOptionName_, util::uitos(port));
@@ -495,36 +485,38 @@ std::string HostPortOptionHandler::createPossibleValuesString() const
   return "HOST:PORT";
 }
 
-HttpProxyOptionHandler::HttpProxyOptionHandler
-(PrefPtr pref,
- const char* description,
- const std::string& defaultValue,
- char shortName)
-  : AbstractOptionHandler(pref, description, defaultValue,
-                          OptionHandler::REQ_ARG, shortName),
-    proxyUserPref_(option::k2p(std::string(pref->k)+"-user")),
-    proxyPasswdPref_(option::k2p(std::string(pref->k)+"-passwd"))
-{}
+HttpProxyOptionHandler::HttpProxyOptionHandler(PrefPtr pref,
+                                               const char* description,
+                                               const std::string& defaultValue,
+                                               char shortName)
+    : AbstractOptionHandler(pref, description, defaultValue,
+                            OptionHandler::REQ_ARG, shortName),
+      proxyUserPref_(option::k2p(std::string(pref->k) + "-user")),
+      proxyPasswdPref_(option::k2p(std::string(pref->k) + "-passwd"))
+{
+}
 
 HttpProxyOptionHandler::~HttpProxyOptionHandler() {}
 
-void HttpProxyOptionHandler::parseArg(Option& option, const std::string& optarg)
-  const
+void HttpProxyOptionHandler::parseArg(Option& option,
+                                      const std::string& optarg) const
 {
-  if(optarg.empty()) {
+  if (optarg.empty()) {
     option.put(pref_, optarg);
-  } else {
+  }
+  else {
     std::string uri;
-    if(util::startsWith(optarg, "http://") ||
-       util::startsWith(optarg, "https://") ||
-       util::startsWith(optarg, "ftp://")) {
+    if (util::startsWith(optarg, "http://") ||
+        util::startsWith(optarg, "https://") ||
+        util::startsWith(optarg, "ftp://")) {
       uri = optarg;
-    } else {
+    }
+    else {
       uri = "http://";
       uri += optarg;
     }
     uri::UriStruct us;
-    if(!uri::parse(us, uri)) {
+    if (!uri::parse(us, uri)) {
       throw DL_ABORT_EX(_("unrecognized proxy format"));
     }
     us.protocol = "http";
@@ -537,25 +529,24 @@ std::string HttpProxyOptionHandler::createPossibleValuesString() const
   return "[http://][USER:PASSWORD@]HOST[:PORT]";
 }
 
-LocalFilePathOptionHandler::LocalFilePathOptionHandler
-(PrefPtr pref,
- const char* description,
- const std::string& defaultValue,
- bool acceptStdin,
- char shortName)
-  : AbstractOptionHandler(pref, description, defaultValue,
-                          OptionHandler::REQ_ARG, shortName),
-    acceptStdin_(acceptStdin)
-{}
-
-void LocalFilePathOptionHandler::parseArg
-(Option& option, const std::string& optarg) const
+LocalFilePathOptionHandler::LocalFilePathOptionHandler(
+    PrefPtr pref, const char* description, const std::string& defaultValue,
+    bool acceptStdin, char shortName)
+    : AbstractOptionHandler(pref, description, defaultValue,
+                            OptionHandler::REQ_ARG, shortName),
+      acceptStdin_(acceptStdin)
 {
-  if(acceptStdin_ && optarg == "-") {
+}
+
+void LocalFilePathOptionHandler::parseArg(Option& option,
+                                          const std::string& optarg) const
+{
+  if (acceptStdin_ && optarg == "-") {
     option.put(pref_, DEV_STDIN);
-  } else {
+  }
+  else {
     File f(optarg);
-    if(!f.exists() || f.isDir()) {
+    if (!f.exists() || f.isDir()) {
       throw DL_ABORT_EX(fmt(MSG_NOT_FILE, optarg.c_str()));
     }
     option.put(pref_, optarg);
@@ -564,30 +555,30 @@ void LocalFilePathOptionHandler::parseArg
 
 std::string LocalFilePathOptionHandler::createPossibleValuesString() const
 {
-  if(acceptStdin_) {
+  if (acceptStdin_) {
     return PATH_TO_FILE_STDIN;
-  } else {
+  }
+  else {
     return PATH_TO_FILE;
   }
 }
 
-PrioritizePieceOptionHandler::PrioritizePieceOptionHandler
-(PrefPtr pref,
- const char* description,
- const std::string& defaultValue,
- char shortName)
-  : AbstractOptionHandler(pref, description, defaultValue,
-                          OptionHandler::REQ_ARG, shortName)
-{}
+PrioritizePieceOptionHandler::PrioritizePieceOptionHandler(
+    PrefPtr pref, const char* description, const std::string& defaultValue,
+    char shortName)
+    : AbstractOptionHandler(pref, description, defaultValue,
+                            OptionHandler::REQ_ARG, shortName)
+{
+}
 
-void PrioritizePieceOptionHandler::parseArg
-(Option& option, const std::string& optarg) const
+void PrioritizePieceOptionHandler::parseArg(Option& option,
+                                            const std::string& optarg) const
 {
   // Parse optarg against empty FileEntry list to detect syntax
   // error.
   std::vector<size_t> result;
-  util::parsePrioritizePieceRange
-    (result, optarg, std::vector<std::shared_ptr<FileEntry> >(), 1024);
+  util::parsePrioritizePieceRange(
+      result, optarg, std::vector<std::shared_ptr<FileEntry>>(), 1024);
   option.put(pref_, optarg);
 }
 
@@ -596,15 +587,73 @@ std::string PrioritizePieceOptionHandler::createPossibleValuesString() const
   return "head[=SIZE], tail[=SIZE]";
 }
 
-DeprecatedOptionHandler::DeprecatedOptionHandler
-(OptionHandler* depOptHandler,
- const OptionHandler* repOptHandler,
- bool stillWork,
- std::string additionalMessage)
-  : depOptHandler_(depOptHandler),
-    repOptHandler_(repOptHandler),
-    stillWork_(stillWork),
-    additionalMessage_(std::move(additionalMessage))
+OptimizeConcurrentDownloadsOptionHandler::
+    OptimizeConcurrentDownloadsOptionHandler(PrefPtr pref,
+                                             const char* description,
+                                             const std::string& defaultValue,
+                                             char shortName)
+    : AbstractOptionHandler(pref, description, defaultValue,
+                            OptionHandler::OPT_ARG, shortName)
+{
+}
+
+void OptimizeConcurrentDownloadsOptionHandler::parseArg(
+    Option& option, const std::string& optarg) const
+{
+  if (optarg == "true" || optarg.empty()) {
+    option.put(pref_, A2_V_TRUE);
+  }
+  else if (optarg == "false") {
+    option.put(pref_, A2_V_FALSE);
+  }
+  else {
+    auto p = util::divide(std::begin(optarg), std::end(optarg), ':');
+
+    std::string coeff_b(p.second.first, p.second.second);
+    if (coeff_b.empty()) {
+      std::string msg = pref_->k;
+      msg += " ";
+      msg += _("must be either 'true', 'false' or a pair numeric coefficients "
+               "A and B under the form 'A:B'.");
+      throw DL_ABORT_EX(msg);
+    }
+
+    std::string coeff_a(p.first.first, p.first.second);
+
+    PrefPtr pref = PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFA;
+    std::string* sptr = &coeff_a;
+    for (;;) {
+      try {
+        double dbl = std::stod(*sptr);
+      }
+      catch (std::invalid_argument& ex) {
+        throw DL_ABORT_EX(fmt("Bad number '%s'", sptr->c_str()));
+      }
+      option.put(pref, *sptr);
+
+      if (pref == PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFB) {
+        break;
+      }
+      pref = PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFB;
+      sptr = &coeff_b;
+    }
+    option.put(pref_, A2_V_TRUE);
+  }
+}
+
+std::string
+OptimizeConcurrentDownloadsOptionHandler::createPossibleValuesString() const
+{
+  return "true, false, A:B";
+}
+
+DeprecatedOptionHandler::DeprecatedOptionHandler(
+    OptionHandler* depOptHandler, const OptionHandler* repOptHandler,
+    bool stillWork, std::string additionalMessage)
+    : depOptHandler_(depOptHandler),
+      repOptHandler_(repOptHandler),
+      stillWork_(stillWork),
+      additionalMessage_(std::move(additionalMessage))
 {
   depOptHandler_->addTag(TAG_DEPRECATED);
 }
@@ -615,25 +664,24 @@ DeprecatedOptionHandler::~DeprecatedOptionHandler()
   // We don't delete repOptHandler_.
 }
 
-void DeprecatedOptionHandler::parse(Option& option, const std::string& arg)
-  const
+void DeprecatedOptionHandler::parse(Option& option,
+                                    const std::string& arg) const
 {
-  if(repOptHandler_) {
+  if (repOptHandler_) {
     A2_LOG_WARN(fmt(_("--%s option is deprecated. Use --%s option instead. %s"),
-                    depOptHandler_->getName(),
-                    repOptHandler_->getName(),
+                    depOptHandler_->getName(), repOptHandler_->getName(),
                     additionalMessage_.c_str()));
     repOptHandler_->parse(option, arg);
-  } else if(stillWork_) {
+  }
+  else if (stillWork_) {
     A2_LOG_WARN(fmt(_("--%s option will be deprecated in the future release. "
                       "%s"),
-                    depOptHandler_->getName(),
-                    additionalMessage_.c_str()));
+                    depOptHandler_->getName(), additionalMessage_.c_str()));
     depOptHandler_->parse(option, arg);
-  } else {
+  }
+  else {
     A2_LOG_WARN(fmt(_("--%s option is deprecated. %s"),
-                    depOptHandler_->getName(),
-                    additionalMessage_.c_str()));
+                    depOptHandler_->getName(), additionalMessage_.c_str()));
   }
 }
 
@@ -677,10 +725,7 @@ bool DeprecatedOptionHandler::isHidden() const
   return depOptHandler_->isHidden();
 }
 
-void DeprecatedOptionHandler::hide()
-{
-  depOptHandler_->hide();
-}
+void DeprecatedOptionHandler::hide() { depOptHandler_->hide(); }
 
 PrefPtr DeprecatedOptionHandler::getPref() const
 {

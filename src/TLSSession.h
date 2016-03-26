@@ -41,10 +41,7 @@
 
 namespace aria2 {
 
-enum TLSDirection {
-  TLS_WANT_READ = 1,
-  TLS_WANT_WRITE
-};
+enum TLSDirection { TLS_WANT_READ = 1, TLS_WANT_WRITE };
 
 enum TLSErrorCode {
   TLS_ERR_OK = 0,
@@ -110,13 +107,17 @@ public:
   // Returns last error string
   virtual std::string getLastErrorString() = 0;
 
+  // Returns buffered length, which can be read immediately without
+  // contacting network.
+  virtual size_t getRecvBufferedLength() = 0;
+
 protected:
   TLSSession() {}
+
 private:
   TLSSession(const TLSSession&);
   TLSSession& operator=(const TLSSession&);
 };
-
 }
 
 #endif // TLS_SESSION_H

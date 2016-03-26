@@ -45,6 +45,7 @@ class PieceStatMan {
 private:
   std::vector<size_t> order_;
   std::vector<int> counts_;
+
 public:
   PieceStatMan(size_t pieceNum, bool randomShuffle);
 
@@ -52,25 +53,17 @@ public:
 
   void addPieceStats(size_t index);
 
-  void addPieceStats(const unsigned char* bitfield,
-                     size_t bitfieldLength);
+  void addPieceStats(const unsigned char* bitfield, size_t bitfieldLength);
 
-  void subtractPieceStats(const unsigned char* bitfield,
-                          size_t bitfieldLength);
+  void subtractPieceStats(const unsigned char* bitfield, size_t bitfieldLength);
 
   void updatePieceStats(const unsigned char* newBitfield,
                         size_t newBitfieldLength,
                         const unsigned char* oldBitfield);
 
-  const std::vector<size_t>& getOrder() const
-  {
-    return order_;
-  }
+  const std::vector<size_t>& getOrder() const { return order_; }
 
-  const std::vector<int>& getCounts() const
-  {
-    return counts_;
-  }
+  const std::vector<int>& getCounts() const { return counts_; }
 };
 
 } // namespace aria2

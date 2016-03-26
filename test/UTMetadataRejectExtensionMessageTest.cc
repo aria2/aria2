@@ -9,7 +9,7 @@
 
 namespace aria2 {
 
-class UTMetadataRejectExtensionMessageTest:public CppUnit::TestFixture {
+class UTMetadataRejectExtensionMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(UTMetadataRejectExtensionMessageTest);
   CPPUNIT_TEST(testGetExtensionMessageID);
@@ -17,13 +17,13 @@ class UTMetadataRejectExtensionMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testToString);
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void testGetExtensionMessageID();
   void testGetBencodedReject();
   void testToString();
   void testDoReceivedAction();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(UTMetadataRejectExtensionMessageTest);
 
@@ -37,8 +37,8 @@ void UTMetadataRejectExtensionMessageTest::testGetBencodedReject()
 {
   UTMetadataRejectExtensionMessage msg(1);
   msg.setIndex(1);
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("d8:msg_typei2e5:piecei1ee"), msg.getPayload());
+  CPPUNIT_ASSERT_EQUAL(std::string("d8:msg_typei2e5:piecei1ee"),
+                       msg.getPayload());
 }
 
 void UTMetadataRejectExtensionMessageTest::testToString()
@@ -56,7 +56,8 @@ void UTMetadataRejectExtensionMessageTest::testDoReceivedAction()
   try {
     msg.doReceivedAction();
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(DlAbortEx& e) {
+  }
+  catch (DlAbortEx& e) {
     // success
   }
 }

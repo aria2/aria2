@@ -10,13 +10,15 @@ class MockBtRequestFactory : public BtRequestFactory {
 public:
   virtual ~MockBtRequestFactory() {}
 
-  virtual void addTargetPiece(const std::shared_ptr<Piece>& piece)
-    CXX11_OVERRIDE
-  {}
+  virtual void
+  addTargetPiece(const std::shared_ptr<Piece>& piece) CXX11_OVERRIDE
+  {
+  }
 
-  virtual void removeTargetPiece(const std::shared_ptr<Piece>& piece)
-    CXX11_OVERRIDE
-  {}
+  virtual void
+  removeTargetPiece(const std::shared_ptr<Piece>& piece) CXX11_OVERRIDE
+  {
+  }
 
   virtual void removeAllTargetPiece() CXX11_OVERRIDE {}
 
@@ -28,8 +30,8 @@ public:
 
   virtual void doChokedAction() CXX11_OVERRIDE {}
 
-  virtual std::vector<std::unique_ptr<BtRequestMessage>> createRequestMessages
-  (size_t max, bool endGame) CXX11_OVERRIDE
+  virtual std::vector<std::unique_ptr<BtRequestMessage>>
+  createRequestMessages(size_t max, bool endGame) CXX11_OVERRIDE
   {
     return std::vector<std::unique_ptr<BtRequestMessage>>{};
   }

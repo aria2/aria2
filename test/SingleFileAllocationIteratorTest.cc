@@ -8,27 +8,26 @@
 
 namespace aria2 {
 
-class SingleFileAllocationIteratorTest:public CppUnit::TestFixture {
+class SingleFileAllocationIteratorTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(SingleFileAllocationIteratorTest);
   CPPUNIT_TEST(testAllocate);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
   void setUp() {}
 
   void testAllocate();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( SingleFileAllocationIteratorTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(SingleFileAllocationIteratorTest);
 
 void SingleFileAllocationIteratorTest::testAllocate()
 {
   std::string dir = A2_TEST_OUT_DIR;
   std::string fname = "aria2_SingleFileAllocationIteratorTest_testAllocate";
-  std::string fn = dir+"/"+fname;
+  std::string fn = dir + "/" + fname;
   std::ofstream of(fn.c_str(), std::ios::binary);
   of << "0123456789";
   of.close();
@@ -45,7 +44,7 @@ void SingleFileAllocationIteratorTest::testAllocate()
   SingleFileAllocationIterator itr(&writer, offset, totalLength);
   itr.init();
 
-  while(!itr.finished()) {
+  while (!itr.finished()) {
     itr.allocateChunk();
   }
   File f(fn);

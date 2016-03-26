@@ -35,7 +35,7 @@ includedir=@includedir@
 
 Name: aria2
 Description: High speed download utility library
-URL: http://aria2.sourceforge.net/
+URL: https://aria2.github.io/
 Version: @VERSION@
 Libs: -L${libdir} -laria2
 # TODO Add Requires.private: here

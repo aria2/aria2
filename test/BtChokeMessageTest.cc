@@ -13,7 +13,7 @@
 
 namespace aria2 {
 
-class BtChokeMessageTest:public CppUnit::TestFixture {
+class BtChokeMessageTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtChokeMessageTest);
   CPPUNIT_TEST(testCreate);
@@ -22,12 +22,13 @@ class BtChokeMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testOnSendComplete);
   CPPUNIT_TEST(testToString);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
   std::shared_ptr<Peer> peer;
 
-  void setUp() {
+  void setUp()
+  {
     peer.reset(new Peer("host", 6969));
     peer->allocateSessionResource(1_k, 1_m);
   }
@@ -42,11 +43,12 @@ public:
   public:
     bool doChokedActionCalled;
     bool doChokingActionCalled;
+
   public:
     MockBtMessageDispatcher2()
-      : doChokedActionCalled{false},
-        doChokingActionCalled{false}
-    {}
+        : doChokedActionCalled{false}, doChokingActionCalled{false}
+    {
+    }
 
     virtual void doChokedAction() CXX11_OVERRIDE
     {
@@ -62,8 +64,9 @@ public:
   class MockBtRequestFactory2 : public MockBtRequestFactory {
   public:
     bool doChokedActionCalled;
+
   public:
-    MockBtRequestFactory2():doChokedActionCalled{false} {}
+    MockBtRequestFactory2() : doChokedActionCalled{false} {}
 
     virtual void doChokedAction() CXX11_OVERRIDE
     {
@@ -72,10 +75,10 @@ public:
   };
 };
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(BtChokeMessageTest);
 
-void BtChokeMessageTest::testCreate() {
+void BtChokeMessageTest::testCreate()
+{
   unsigned char msg[5];
   bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 0);
   auto pm = BtChokeMessage::create(&msg[4], 1);
@@ -87,7 +90,8 @@ void BtChokeMessageTest::testCreate() {
     bittorrent::createPeerMessageString(msg, sizeof(msg), 2, 0);
     BtChokeMessage::create(&msg[4], 2);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(...) {
+  }
+  catch (...) {
   }
   // case: id is wrong
   try {
@@ -95,20 +99,23 @@ void BtChokeMessageTest::testCreate() {
     bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 1);
     BtChokeMessage::create(&msg[4], 1);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(...) {
+  }
+  catch (...) {
   }
 }
 
-void BtChokeMessageTest::testCreateMessage() {
+void BtChokeMessageTest::testCreateMessage()
+{
   BtChokeMessage msg;
   unsigned char data[5];
   bittorrent::createPeerMessageString(data, sizeof(data), 1, 0);
   unsigned char* rawmsg = msg.createMessage();
   CPPUNIT_ASSERT(memcmp(rawmsg, data, 5) == 0);
-  delete [] rawmsg;
+  delete[] rawmsg;
 }
 
-void BtChokeMessageTest::testDoReceivedAction() {
+void BtChokeMessageTest::testDoReceivedAction()
+{
   BtChokeMessage msg;
   msg.setPeer(peer);
 
@@ -123,7 +130,8 @@ void BtChokeMessageTest::testDoReceivedAction() {
   CPPUNIT_ASSERT(peer->peerChoking());
 }
 
-void BtChokeMessageTest::testOnSendComplete() {
+void BtChokeMessageTest::testOnSendComplete()
+{
   BtChokeMessage msg;
   msg.setPeer(peer);
 
@@ -137,7 +145,8 @@ void BtChokeMessageTest::testOnSendComplete() {
   CPPUNIT_ASSERT(peer->amChoking());
 }
 
-void BtChokeMessageTest::testToString() {
+void BtChokeMessageTest::testToString()
+{
   BtChokeMessage msg;
   CPPUNIT_ASSERT_EQUAL(std::string("choke"), msg.toString());
 }

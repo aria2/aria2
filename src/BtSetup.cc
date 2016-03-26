@@ -91,15 +91,14 @@ namespace aria2 {
 BtSetup::BtSetup() {}
 
 void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
-                    RequestGroup* requestGroup,
-                    DownloadEngine* e,
+                    RequestGroup* requestGroup, DownloadEngine* e,
                     const Option* option)
 {
-  if(!requestGroup->getDownloadContext()->hasAttribute(CTX_ATTR_BT)){
+  if (!requestGroup->getDownloadContext()->hasAttribute(CTX_ATTR_BT)) {
     return;
   }
   auto torrentAttrs =
-    bittorrent::getTorrentAttrs(requestGroup->getDownloadContext());
+      bittorrent::getTorrentAttrs(requestGroup->getDownloadContext());
   bool metadataGetMode = torrentAttrs->metadata.empty();
   auto& btReg = e->getBtRegistry();
   auto btObject = btReg->get(requestGroup->getGID());
@@ -117,7 +116,7 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
 
     commands.push_back(std::move(c));
   }
-  if(!metadataGetMode) {
+  if (!metadataGetMode) {
     auto c = make_unique<PeerChokeCommand>(e->newCUID(), e);
     c->setPeerStorage(peerStorage);
     c->setBtRuntime(btRuntime);
@@ -135,19 +134,19 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
     commands.push_back(std::move(c));
   }
 
-  if(metadataGetMode || !torrentAttrs->privateTorrent) {
-    if(DHTRegistry::isInitialized()) {
-      auto command = make_unique<DHTGetPeersCommand>
-        (e->newCUID(), requestGroup, e);
+  if (metadataGetMode || !torrentAttrs->privateTorrent) {
+    if (DHTRegistry::isInitialized()) {
+      auto command =
+          make_unique<DHTGetPeersCommand>(e->newCUID(), requestGroup, e);
       command->setTaskQueue(DHTRegistry::getData().taskQueue.get());
       command->setTaskFactory(DHTRegistry::getData().taskFactory.get());
       command->setBtRuntime(btRuntime);
       command->setPeerStorage(peerStorage);
       commands.push_back(std::move(command));
     }
-    if(DHTRegistry::isInitialized6()) {
-      auto command = make_unique<DHTGetPeersCommand>
-        (e->newCUID(), requestGroup, e);
+    if (DHTRegistry::isInitialized6()) {
+      auto command =
+          make_unique<DHTGetPeersCommand>(e->newCUID(), requestGroup, e);
       command->setTaskQueue(DHTRegistry::getData6().taskQueue.get());
       command->setTaskFactory(DHTRegistry::getData6().taskFactory.get());
       command->setBtRuntime(btRuntime);
@@ -155,126 +154,129 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
       commands.push_back(std::move(command));
     }
   }
-  if(!metadataGetMode) {
+  if (!metadataGetMode) {
     auto unionCri = make_unique<UnionSeedCriteria>();
-    if(option->defined(PREF_SEED_TIME)) {
+    if (option->defined(PREF_SEED_TIME)) {
       unionCri->addSeedCriteria(make_unique<TimeSeedCriteria>(
           std::chrono::seconds(option->getAsInt(PREF_SEED_TIME) * 60)));
     }
     {
       double ratio = option->getAsDouble(PREF_SEED_RATIO);
-      if(ratio > 0.0) {
-        auto cri = make_unique<ShareRatioSeedCriteria>
-          (option->getAsDouble(PREF_SEED_RATIO),
-           requestGroup->getDownloadContext());
+      if (ratio > 0.0) {
+        auto cri = make_unique<ShareRatioSeedCriteria>(
+            option->getAsDouble(PREF_SEED_RATIO),
+            requestGroup->getDownloadContext());
         cri->setPieceStorage(pieceStorage);
         cri->setBtRuntime(btRuntime);
 
         unionCri->addSeedCriteria(std::move(cri));
       }
     }
-    if(!unionCri->getSeedCriterion().empty()) {
-      auto c = make_unique<SeedCheckCommand>
-        (e->newCUID(), requestGroup, e, std::move(unionCri));
+    if (!unionCri->getSeedCriterion().empty()) {
+      auto c = make_unique<SeedCheckCommand>(e->newCUID(), requestGroup, e,
+                                             std::move(unionCri));
       c->setPieceStorage(pieceStorage);
       c->setBtRuntime(btRuntime);
       commands.push_back(std::move(c));
     }
   }
-  if(btReg->getTcpPort() == 0) {
-    static int families[] = { AF_INET, AF_INET6 };
-    size_t familiesLength = e->getOption()->getAsBool(PREF_DISABLE_IPV6)?1:2;
-    for(size_t i = 0; i < familiesLength; ++i) {
-      auto command = make_unique<PeerListenCommand>
-        (e->newCUID(), e, families[i]);
+  if (btReg->getTcpPort() == 0) {
+    static int families[] = {AF_INET, AF_INET6};
+    size_t familiesLength =
+        e->getOption()->getAsBool(PREF_DISABLE_IPV6) ? 1 : 2;
+    for (size_t i = 0; i < familiesLength; ++i) {
+      auto command =
+          make_unique<PeerListenCommand>(e->newCUID(), e, families[i]);
       bool ret;
       uint16_t port;
-      if(btReg->getTcpPort()) {
+      if (btReg->getTcpPort()) {
         SegList<int> sgl;
         int usedPort = btReg->getTcpPort();
-        sgl.add(usedPort, usedPort+1);
+        sgl.add(usedPort, usedPort + 1);
         ret = command->bindPort(port, sgl);
-      } else {
-        auto sgl = util::parseIntSegments
-          (e->getOption()->get(PREF_LISTEN_PORT));
+      }
+      else {
+        auto sgl =
+            util::parseIntSegments(e->getOption()->get(PREF_LISTEN_PORT));
         sgl.normalize();
         ret = command->bindPort(port, sgl);
       }
-      if(ret) {
+      if (ret) {
         btReg->setTcpPort(port);
         // Add command to DownloadEngine directly.
         e->addCommand(std::move(command));
       }
     }
-    if(btReg->getTcpPort() == 0) {
+    if (btReg->getTcpPort() == 0) {
       throw DL_ABORT_EX(_("Errors occurred while binding port.\n"));
     }
   }
   btAnnounce->setTcpPort(btReg->getTcpPort());
 
-  if(option->getAsBool(PREF_BT_ENABLE_LPD) &&
-     btReg->getTcpPort() &&
-     (metadataGetMode || !torrentAttrs->privateTorrent)) {
-    if(!btReg->getLpdMessageReceiver()) {
+  if (option->getAsBool(PREF_BT_ENABLE_LPD) && btReg->getTcpPort() &&
+      (metadataGetMode || !torrentAttrs->privateTorrent)) {
+    if (!btReg->getLpdMessageReceiver()) {
       A2_LOG_INFO("Initializing LpdMessageReceiver.");
-      auto receiver = std::make_shared<LpdMessageReceiver>
-        (LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
+      auto receiver = std::make_shared<LpdMessageReceiver>(LPD_MULTICAST_ADDR,
+                                                           LPD_MULTICAST_PORT);
       bool initialized = false;
       const std::string& lpdInterface =
-        e->getOption()->get(PREF_BT_LPD_INTERFACE);
-      if(lpdInterface.empty()) {
-        if(receiver->init("")) {
+          e->getOption()->get(PREF_BT_LPD_INTERFACE);
+      if (lpdInterface.empty()) {
+        if (receiver->init("")) {
           initialized = true;
         }
-      } else {
-        std::vector<std::pair<sockaddr_union, socklen_t> > ifAddrs;
-        getInterfaceAddress(ifAddrs, lpdInterface, AF_INET, AI_NUMERICHOST);
-        for (const auto& i : ifAddrs) {
+      }
+      else {
+        auto ifAddrs = SocketCore::getInterfaceAddress(lpdInterface, AF_INET,
+                                                       AI_NUMERICHOST);
+        for (const auto& soaddr : ifAddrs) {
           char host[NI_MAXHOST];
-          if(inetNtop(AF_INET, &i.first.in.sin_addr, host,
-                      sizeof(host)) == 0 &&
-             receiver->init(host)) {
+          if (inetNtop(AF_INET, &soaddr.su.in.sin_addr, host, sizeof(host)) ==
+                  0 &&
+              receiver->init(host)) {
             initialized = true;
             break;
           }
         }
       }
-      if(initialized) {
+      if (initialized) {
         btReg->setLpdMessageReceiver(receiver);
         A2_LOG_INFO(fmt("LpdMessageReceiver initialized. multicastAddr=%s:%u,"
                         " localAddr=%s",
                         LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT,
                         receiver->getLocalAddress().c_str()));
-        e->addCommand(make_unique<LpdReceiveMessageCommand>
-                      (e->newCUID(), receiver, e));
-      } else {
+        e->addCommand(
+            make_unique<LpdReceiveMessageCommand>(e->newCUID(), receiver, e));
+      }
+      else {
         A2_LOG_INFO("LpdMessageReceiver not initialized.");
       }
     }
-    if(btReg->getLpdMessageReceiver()) {
+    if (btReg->getLpdMessageReceiver()) {
       const unsigned char* infoHash =
-        bittorrent::getInfoHash(requestGroup->getDownloadContext());
+          bittorrent::getInfoHash(requestGroup->getDownloadContext());
       A2_LOG_INFO("Initializing LpdMessageDispatcher.");
-      auto dispatcher = std::make_shared<LpdMessageDispatcher>
-        (std::string(&infoHash[0], &infoHash[INFO_HASH_LENGTH]),
-         btReg->getTcpPort(),
-         LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
-      if(dispatcher->init(btReg->getLpdMessageReceiver()->getLocalAddress(),
-                          /*ttl*/1, /*loop*/1)) {
+      auto dispatcher = std::make_shared<LpdMessageDispatcher>(
+          std::string(&infoHash[0], &infoHash[INFO_HASH_LENGTH]),
+          btReg->getTcpPort(), LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
+      if (dispatcher->init(btReg->getLpdMessageReceiver()->getLocalAddress(),
+                           /*ttl*/ 1, /*loop*/ 1)) {
         A2_LOG_INFO("LpdMessageDispatcher initialized.");
-        auto cmd = make_unique<LpdDispatchMessageCommand>
-          (e->newCUID(), dispatcher, e);
+        auto cmd =
+            make_unique<LpdDispatchMessageCommand>(e->newCUID(), dispatcher, e);
         cmd->setBtRuntime(btRuntime);
         e->addCommand(std::move(cmd));
-      } else {
+      }
+      else {
         A2_LOG_INFO("LpdMessageDispatcher not initialized.");
       }
     }
   }
   auto btStopTimeout = option->getAsInt(PREF_BT_STOP_TIMEOUT);
-  if(btStopTimeout > 0) {
-    auto stopDownloadCommand = make_unique<BtStopDownloadCommand>
-      (e->newCUID(), requestGroup, e, std::chrono::seconds(btStopTimeout));
+  if (btStopTimeout > 0) {
+    auto stopDownloadCommand = make_unique<BtStopDownloadCommand>(
+        e->newCUID(), requestGroup, e, std::chrono::seconds(btStopTimeout));
     stopDownloadCommand->setBtRuntime(btRuntime);
     stopDownloadCommand->setPieceStorage(pieceStorage);
     commands.push_back(std::move(stopDownloadCommand));

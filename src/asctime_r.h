@@ -44,7 +44,7 @@ extern "C" {
 
 #undef asctime_r
 
-char * asctime_r (const struct tm*, char*);
+char* asctime_r(const struct tm*, char*);
 
 #ifdef __cplusplus
 }

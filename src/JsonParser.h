@@ -76,6 +76,7 @@ public:
   // Resets the internal state of the parser and makes it ready for
   // reuse.
   void reset();
+
 private:
   int pushState(int state);
   int stateTop() const;

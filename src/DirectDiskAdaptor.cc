@@ -46,12 +46,12 @@ const std::string& DirectDiskAdaptor::getFilePath()
 size_t DirectDiskAdaptor::utime(const Time& actime, const Time& modtime)
 {
   File f(getFilePath());
-  if(f.isFile() && f.utime(actime, modtime)) {
+  if (f.isFile() && f.utime(actime, modtime)) {
     return 1;
-  } else {
+  }
+  else {
     return 0;
   }
 }
-
 
 } // namespace aria2

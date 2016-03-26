@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-class UTMetadataRejectExtensionMessage:public UTMetadataExtensionMessage {
+class UTMetadataRejectExtensionMessage : public UTMetadataExtensionMessage {
 public:
   UTMetadataRejectExtensionMessage(uint8_t extensionMessageID);
 

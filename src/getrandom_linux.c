@@ -45,7 +45,8 @@
 #include "config.h"
 #include "getrandom_linux.h"
 
-int getrandom_linux(void *buf, size_t buflen) {
+int getrandom_linux(void* buf, size_t buflen)
+{
   int rv = 0;
   uint8_t* p = buf;
 
@@ -57,7 +58,7 @@ int getrandom_linux(void *buf, size_t buflen) {
 #ifdef HAVE_GETRANDOM
     /* libc already has support */
     read = getrandom(p, buflen, 0);
-#else // HAVE_GETRANDOM
+#else  // HAVE_GETRANDOM
     /* libc has no support, make the syscall ourselves */
     read = syscall(SYS_getrandom, p, buflen, 0);
     /* Some libc impl. might mess -ERESTART up */

@@ -45,14 +45,15 @@ class LpdMessageReceiver;
 class DownloadEngine;
 class SocketCore;
 
-class LpdReceiveMessageCommand:public Command {
+class LpdReceiveMessageCommand : public Command {
 private:
   std::shared_ptr<LpdMessageReceiver> receiver_;
   DownloadEngine* e_;
+
 public:
-  LpdReceiveMessageCommand
-  (cuid_t cuid, const std::shared_ptr<LpdMessageReceiver>& receiver,
-   DownloadEngine* e);
+  LpdReceiveMessageCommand(cuid_t cuid,
+                           const std::shared_ptr<LpdMessageReceiver>& receiver,
+                           DownloadEngine* e);
   virtual ~LpdReceiveMessageCommand();
 
   virtual bool execute() CXX11_OVERRIDE;

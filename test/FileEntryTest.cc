@@ -23,6 +23,7 @@ class FileEntryTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testRemoveUri);
   CPPUNIT_TEST(testPutBackRequest);
   CPPUNIT_TEST_SUITE_END();
+
 public:
   void setUp() {}
 
@@ -40,17 +41,15 @@ public:
   void testPutBackRequest();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( FileEntryTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(FileEntryTest);
 
 namespace {
 std::shared_ptr<FileEntry> createFileEntry()
 {
   auto fileEntry = std::make_shared<FileEntry>();
-  fileEntry->setUris(std::vector<std::string>{
-      "http://localhost/aria2.zip",
-      "ftp://localhost/aria2.zip",
-        "http://mirror/aria2.zip" });
+  fileEntry->setUris(std::vector<std::string>{"http://localhost/aria2.zip",
+                                              "ftp://localhost/aria2.zip",
+                                              "http://mirror/aria2.zip"});
   return fileEntry;
 }
 } // namespace
@@ -63,7 +62,6 @@ void FileEntryTest::testRemoveURIWhoseHostnameIs()
   CPPUNIT_ASSERT_EQUAL(std::string("http://mirror/aria2.zip"),
                        fileEntry->getRemainingUris()[0]);
 }
-
 
 void FileEntryTest::testExtractURIResult()
 {
@@ -178,8 +176,8 @@ void FileEntryTest::testGetRequest_withReferer()
   auto fileEntry = createFileEntry();
   InorderURISelector selector{};
   std::vector<std::pair<size_t, std::string>> usedHosts;
-  auto req = fileEntry->getRequest(&selector, true, usedHosts,
-                                   "http://referer");
+  auto req =
+      fileEntry->getRequest(&selector, true, usedHosts, "http://referer");
   CPPUNIT_ASSERT_EQUAL(std::string("http://referer"), req->getReferer());
   // URI is used as referer if "*" is given.
   req = fileEntry->getRequest(&selector, true, usedHosts, "*");
@@ -193,7 +191,7 @@ void FileEntryTest::testReuseUri()
   fileEntry->setMaxConnectionPerServer(3);
   size_t numUris = fileEntry->getRemainingUris().size();
   std::vector<std::pair<size_t, std::string>> usedHosts;
-  for(size_t i = 0; i < numUris; ++i) {
+  for (size_t i = 0; i < numUris; ++i) {
     fileEntry->getRequest(&selector, false, usedHosts);
   }
   CPPUNIT_ASSERT_EQUAL((size_t)0, fileEntry->getRemainingUris().size());
@@ -205,7 +203,7 @@ void FileEntryTest::testReuseUri()
   auto uris = fileEntry->getRemainingUris();
   CPPUNIT_ASSERT_EQUAL(std::string("ftp://localhost/aria2.zip"), uris[0]);
   CPPUNIT_ASSERT_EQUAL(std::string("http://mirror/aria2.zip"), uris[1]);
-  for(size_t i = 0; i < 2; ++i) {
+  for (size_t i = 0; i < 2; ++i) {
     fileEntry->getRequest(&selector, false, usedHosts);
   }
   CPPUNIT_ASSERT_EQUAL((size_t)0, fileEntry->getRemainingUris().size());
@@ -254,7 +252,8 @@ void FileEntryTest::testInsertUri()
   CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/4"), uris[3]);
   // Test for percent-encode
   CPPUNIT_ASSERT(file.insertUri("http://host:80/file<with%2 %20space/"
-                                "file with space;param%?a=/?", 0));
+                                "file with space;param%?a=/?",
+                                0));
 
   CPPUNIT_ASSERT_EQUAL(std::string("http://host:80"
                                    "/file%3Cwith%2%20%20space/"

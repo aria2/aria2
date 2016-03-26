@@ -60,8 +60,8 @@ class ServerStatMan;
 
 class FileEntry {
 public:
-  typedef std::set<std::shared_ptr<Request>, RefLess<Request> >
-  InFlightRequestSet;
+  typedef std::set<std::shared_ptr<Request>, RefLess<Request>>
+      InFlightRequestSet;
 
 private:
   class RequestFaster {
@@ -96,6 +96,7 @@ private:
   bool uniqueProtocol_;
 
   void storePool(const std::shared_ptr<Request>& request);
+
 public:
   FileEntry();
 
@@ -122,41 +123,29 @@ public:
 
   void setOffset(int64_t offset) { offset_ = offset; }
 
-  int64_t getLastOffset() { return offset_+length_; }
+  int64_t getLastOffset() { return offset_ + length_; }
 
   bool isRequested() const { return requested_; }
 
   void setRequested(bool flag) { requested_ = flag; }
 
-  const std::deque<std::string>& getRemainingUris() const
-  {
-    return uris_;
-  }
+  const std::deque<std::string>& getRemainingUris() const { return uris_; }
 
-  std::deque<std::string>& getRemainingUris()
-  {
-    return uris_;
-  }
+  std::deque<std::string>& getRemainingUris() { return uris_; }
 
-  const std::deque<std::string>& getSpentUris() const
-  {
-    return spentUris_;
-  }
+  const std::deque<std::string>& getSpentUris() const { return spentUris_; }
 
   // Exposed for unittest
-  std::deque<std::string>& getSpentUris()
-  {
-    return spentUris_;
-  }
+  std::deque<std::string>& getSpentUris() { return spentUris_; }
 
   size_t setUris(const std::vector<std::string>& uris);
 
-  template<typename InputIterator>
+  template <typename InputIterator>
   size_t addUris(InputIterator first, InputIterator last)
   {
     size_t count = 0;
-    for(; first != last; ++first) {
-      if(addUri(*first)) {
+    for (; first != last; ++first) {
+      if (addUri(*first)) {
         ++count;
       }
     }
@@ -185,24 +174,23 @@ public:
   // returns Request object either because uris_ is empty or all URI
   // are not be usable because maxConnectionPerServer_ limit, then
   // reuse used URIs and do selection again.
-  std::shared_ptr<Request> getRequest
-  (URISelector* selector,
-   bool uriReuse,
-   const std::vector<std::pair<size_t, std::string> >& usedHosts,
-   const std::string& referer = A2STR::NIL,
-   const std::string& method = Request::METHOD_GET);
+  std::shared_ptr<Request>
+  getRequest(URISelector* selector, bool uriReuse,
+             const std::vector<std::pair<size_t, std::string>>& usedHosts,
+             const std::string& referer = A2STR::NIL,
+             const std::string& method = Request::METHOD_GET);
 
   // Finds pooled Request object which is faster than passed one,
   // comparing their PeerStat objects. If such Request is found, it is
   // removed from the pool and returned.
-  std::shared_ptr<Request> findFasterRequest(const std::shared_ptr<Request>& base);
+  std::shared_ptr<Request>
+  findFasterRequest(const std::shared_ptr<Request>& base);
 
   // Finds faster server using ServerStatMan.
-  std::shared_ptr<Request>
-  findFasterRequest
-  (const std::shared_ptr<Request>& base,
-   const std::vector<std::pair<size_t, std::string> >& usedHosts,
-   const std::shared_ptr<ServerStatMan>& serverStatMan);
+  std::shared_ptr<Request> findFasterRequest(
+      const std::shared_ptr<Request>& base,
+      const std::vector<std::pair<size_t, std::string>>& usedHosts,
+      const std::shared_ptr<ServerStatMan>& serverStatMan);
 
   void poolRequest(const std::shared_ptr<Request>& request);
 
@@ -230,25 +218,15 @@ public:
 
   void addURIResult(std::string uri, error_code::Value result);
 
-  const std::deque<URIResult>& getURIResults() const
-  {
-    return uriResults_;
-  }
+  const std::deque<URIResult>& getURIResults() const { return uriResults_; }
 
   // Extracts URIResult whose _result is r and stores them into res.
   // The extracted URIResults are removed from uriResults_.
-  void extractURIResult
-  (std::deque<URIResult>& res, error_code::Value r);
+  void extractURIResult(std::deque<URIResult>& res, error_code::Value r);
 
-  void setMaxConnectionPerServer(int n)
-  {
-    maxConnectionPerServer_ = n;
-  }
+  void setMaxConnectionPerServer(int n) { maxConnectionPerServer_ = n; }
 
-  int getMaxConnectionPerServer() const
-  {
-    return maxConnectionPerServer_;
-  }
+  int getMaxConnectionPerServer() const { return maxConnectionPerServer_; }
 
   // Reuse URIs which have not emitted error so far and whose host
   // component is not included in ignore. The reusable URIs are
@@ -262,42 +240,30 @@ public:
 
   void setOriginalName(std::string originalName);
 
-  const std::string& getOriginalName() const
-  {
-    return originalName_;
-  }
+  const std::string& getOriginalName() const { return originalName_; }
 
   void setSuffixPath(std::string suffixPath);
 
-  const std::string& getSuffixPath() const
-  {
-    return suffixPath_;
-  }
+  const std::string& getSuffixPath() const { return suffixPath_; }
 
   bool removeUri(const std::string& uri);
 
   bool emptyRequestUri() const;
 
-  void setUniqueProtocol(bool f)
-  {
-    uniqueProtocol_ = f;
-  }
+  void setUniqueProtocol(bool f) { uniqueProtocol_ = f; }
 
-  bool isUniqueProtocol() const
-  {
-    return uniqueProtocol_;
-  }
+  bool isUniqueProtocol() const { return uniqueProtocol_; }
 };
 
 // Returns the first FileEntry which isRequested() method returns
 // true.  If no such FileEntry exists, then returns
 // std::shared_ptr<FileEntry>().
-template<typename InputIterator>
-std::shared_ptr<FileEntry> getFirstRequestedFileEntry
-(InputIterator first, InputIterator last)
+template <typename InputIterator>
+std::shared_ptr<FileEntry> getFirstRequestedFileEntry(InputIterator first,
+                                                      InputIterator last)
 {
-  for(; first != last; ++first) {
-    if((*first)->isRequested()) {
+  for (; first != last; ++first) {
+    if ((*first)->isRequested()) {
       return *first;
     }
   }
@@ -306,12 +272,12 @@ std::shared_ptr<FileEntry> getFirstRequestedFileEntry
 
 // Counts the number of files selected in the given iterator range
 // [first, last).
-template<typename InputIterator>
+template <typename InputIterator>
 size_t countRequestedFileEntry(InputIterator first, InputIterator last)
 {
   size_t count = 0;
-  for(; first != last; ++first) {
-    if((*first)->isRequested()) {
+  for (; first != last; ++first) {
+    if ((*first)->isRequested()) {
       ++count;
     }
   }
@@ -319,11 +285,11 @@ size_t countRequestedFileEntry(InputIterator first, InputIterator last)
 }
 
 // Returns true if at least one requested FileEntry has URIs.
-template<typename InputIterator>
+template <typename InputIterator>
 bool isUriSuppliedForRequsetFileEntry(InputIterator first, InputIterator last)
 {
-  for(; first != last; ++first) {
-    if((*first)->isRequested() && !(*first)->getRemainingUris().empty()) {
+  for (; first != last; ++first) {
+    if ((*first)->isRequested() && !(*first)->getRemainingUris().empty()) {
       return true;
     }
   }
@@ -333,29 +299,28 @@ bool isUriSuppliedForRequsetFileEntry(InputIterator first, InputIterator last)
 // Writes filename to given o.  If memory is true, the output is
 // "[MEMORY]" plus the basename of the filename.  If there is no
 // FileEntry, writes "n/a" to o.
-void writeFilePath
-(std::ostream& o,
- const std::shared_ptr<FileEntry>& entry,
- bool memory);
+void writeFilePath(std::ostream& o, const std::shared_ptr<FileEntry>& entry,
+                   bool memory);
 
 // Writes first filename to given o.  If memory is true, the output is
 // "[MEMORY]" plus the basename of the first filename.  If there is no
 // FileEntry, writes "n/a" to o.  If more than 1 FileEntry are in the
 // iterator range [first, last), "(Nmore)" is written at the end where
 // N is the number of files in iterator range [first, last) minus 1.
-template<typename InputIterator>
-void writeFilePath
-(InputIterator first, InputIterator last, std::ostream& o, bool memory)
+template <typename InputIterator>
+void writeFilePath(InputIterator first, InputIterator last, std::ostream& o,
+                   bool memory)
 {
   std::shared_ptr<FileEntry> e = getFirstRequestedFileEntry(first, last);
-  if(!e) {
+  if (!e) {
     o << "n/a";
-  } else {
+  }
+  else {
     writeFilePath(o, e, memory);
-    if(!e->getPath().empty()) {
+    if (!e->getPath().empty()) {
       size_t count = countRequestedFileEntry(first, last);
-      if(count > 1) {
-        o << " (" << count-1 << "more)";
+      if (count > 1) {
+        o << " (" << count - 1 << "more)";
       }
     }
   }

@@ -52,5 +52,4 @@ std::unique_ptr<Dict> parse(const std::string& magnet);
 
 } // namespace aria2
 
-
 #endif // D_MAGNET_H

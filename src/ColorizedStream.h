@@ -46,19 +46,14 @@ namespace aria2 {
 
 namespace colors {
 
-class Color
-{
+class Color {
 private:
   std::string str_;
 
 public:
-  explicit Color(const char* str)
-    : str_(std::string("\033[") + str + "m")
-  {}
+  explicit Color(const char* str) : str_(std::string("\033[") + str + "m") {}
 
-  const std::string& str() const {
-    return str_;
-  }
+  const std::string& str() const { return str_; }
 };
 
 extern const Color black;
@@ -83,23 +78,14 @@ extern const Color clear;
 } // namespace colors
 
 typedef std::char_traits<char> traits_t;
-class ColorizedStreamBuf
-  : public std::basic_streambuf<char, traits_t>
-{
-  enum part_t
-  {
-    eColor,
-    eString
-  };
+class ColorizedStreamBuf : public std::basic_streambuf<char, traits_t> {
+  enum part_t { eColor, eString };
   typedef std::pair<part_t, std::string> elem_t;
   typedef std::deque<elem_t> elems_t;
   elems_t elems;
 
 public:
-  ColorizedStreamBuf()
-  {
-    elems.push_back(std::make_pair(eString, ""));
-  }
+  ColorizedStreamBuf() { elems.push_back(std::make_pair(eString, "")); }
 
   void setColor(const colors::Color& color)
   {
@@ -113,45 +99,28 @@ public:
     return std::char_traits<char>::not_eof(c);
   }
 
-  void append(const std::string& str)
-  {
-    elems.back().second += str;
-  }
+  void append(const std::string& str) { elems.back().second += str; }
 
-  void append(const char* str)
-  {
-    elems.back().second += str;
-  }
+  void append(const char* str) { elems.back().second += str; }
 
   std::string str(bool color) const;
   std::string str(bool color, size_t max) const;
 };
 
-class ColorizedStream: public std::basic_ostream<char, traits_t>
-{
+class ColorizedStream : public std::basic_ostream<char, traits_t> {
 public:
   ColorizedStream()
-    : std::basic_ios<char, traits_t>(&buf),
-      std::basic_ostream<char, traits_t>(&buf)
+      : std::basic_ios<char, traits_t>(&buf),
+        std::basic_ostream<char, traits_t>(&buf)
   {
     init(&buf);
   }
 
-  void setColor(const colors::Color& color)
-  {
-    buf.setColor(color);
-  }
-  void append(const std::string& str) {
-    buf.append(str);
-  }
-  void append(const char* str) {
-    buf.append(str);
-  }
+  void setColor(const colors::Color& color) { buf.setColor(color); }
+  void append(const std::string& str) { buf.append(str); }
+  void append(const char* str) { buf.append(str); }
 
-  std::string str(bool colors) const
-  {
-    return buf.str(colors);
-  }
+  std::string str(bool colors) const { return buf.str(colors); }
   std::string str(bool colors, size_t max) const
   {
     return buf.str(colors, max);
@@ -161,22 +130,21 @@ private:
   ColorizedStreamBuf buf;
 };
 
-inline
-ColorizedStream& operator<<(ColorizedStream& stream, const std::string& str)
+inline ColorizedStream& operator<<(ColorizedStream& stream,
+                                   const std::string& str)
 {
   stream.append(str);
   return stream;
 }
 
-inline
-ColorizedStream& operator<<(ColorizedStream& stream, const char* str)
+inline ColorizedStream& operator<<(ColorizedStream& stream, const char* str)
 {
   stream.append(str);
   return stream;
 }
 
-inline
-ColorizedStream& operator<<(ColorizedStream& stream, const colors::Color& c)
+inline ColorizedStream& operator<<(ColorizedStream& stream,
+                                   const colors::Color& c)
 {
   stream.setColor(c);
   return stream;

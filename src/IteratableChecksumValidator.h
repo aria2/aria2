@@ -45,8 +45,7 @@ class DownloadContext;
 class PieceStorage;
 class MessageDigest;
 
-class IteratableChecksumValidator:public IteratableValidator
-{
+class IteratableChecksumValidator : public IteratableValidator {
 private:
   std::shared_ptr<DownloadContext> dctx_;
 
@@ -55,9 +54,11 @@ private:
   int64_t currentOffset_;
 
   std::unique_ptr<MessageDigest> ctx_;
+
 public:
-  IteratableChecksumValidator(const std::shared_ptr<DownloadContext>& dctx,
-                              const std::shared_ptr<PieceStorage>& pieceStorage);
+  IteratableChecksumValidator(
+      const std::shared_ptr<DownloadContext>& dctx,
+      const std::shared_ptr<PieceStorage>& pieceStorage);
 
   virtual ~IteratableChecksumValidator();
 

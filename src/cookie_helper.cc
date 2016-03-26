@@ -51,51 +51,50 @@ namespace {
 bool isDelimiter(unsigned char c)
 {
   return c == 0x09u || in(c, 0x20u, 0x2fu) || in(c, 0x3bu, 0x40u) ||
-    in(c, 0x5bu, 0x60u) || in(c, 0x7bu, 0x7eu);
+         in(c, 0x5bu, 0x60u) || in(c, 0x7bu, 0x7eu);
 }
 } // namespace
 
 namespace {
-std::string::const_iterator getNextDigit
-(std::string::const_iterator first, std::string::const_iterator last)
+std::string::const_iterator getNextDigit(std::string::const_iterator first,
+                                         std::string::const_iterator last)
 {
-  for(; first != last && in(static_cast<unsigned char>(*first), 0x30u, 0x39u);
-      ++first);
+  for (; first != last && in(static_cast<unsigned char>(*first), 0x30u, 0x39u);
+       ++first)
+    ;
   return first;
 }
 } // namespace
 
 namespace {
-template<typename InputIterator>
+template <typename InputIterator>
 int getInteger(InputIterator first, InputIterator last)
 {
   int res = 0;
   // We assume *dest won't overflow.
-  for(; first != last; ++first) {
+  for (; first != last; ++first) {
     res *= 10;
-    res += (*first)-'0';
+    res += (*first) - '0';
   }
   return res;
 }
 } // namespace
 
-bool parseDate
-(time_t& time,
- std::string::const_iterator first,
- std::string::const_iterator last)
+bool parseDate(time_t& time, std::string::const_iterator first,
+               std::string::const_iterator last)
 {
   // Following algorithm is described in
   // http://tools.ietf.org/html/rfc6265#section-5.1.1
   std::vector<std::string> dateTokens;
-  for(std::string::const_iterator i = first,
-        eoi = last; i != eoi;) {
+  for (std::string::const_iterator i = first, eoi = last; i != eoi;) {
     unsigned char c = *i;
-    if(isDelimiter(c)) {
+    if (isDelimiter(c)) {
       ++i;
       continue;
     }
     std::string::const_iterator s = i;
-    for(; s != eoi && !isDelimiter(static_cast<unsigned char>(*s)); ++s);
+    for (; s != eoi && !isDelimiter(static_cast<unsigned char>(*s)); ++s)
+      ;
     dateTokens.push_back(std::string(i, s));
     i = s;
   }
@@ -109,96 +108,98 @@ bool parseDate
   int minute = 0;
   int second = 0;
   bool foundTime = false;
-  for(std::vector<std::string>::const_iterator i = dateTokens.begin(),
-        eoi = dateTokens.end(); i != eoi; ++i) {
-    if(!foundTime) {
+  for (std::vector<std::string>::const_iterator i = dateTokens.begin(),
+                                                eoi = dateTokens.end();
+       i != eoi; ++i) {
+    if (!foundTime) {
       std::string::const_iterator hEnd;
       std::string::const_iterator mEnd;
       std::string::const_iterator sEnd;
-      hEnd = getNextDigit((*i).begin(),(*i).end());
+      hEnd = getNextDigit((*i).begin(), (*i).end());
       size_t len = std::distance((*i).begin(), hEnd);
-      if(len == 0 || 2 < len || hEnd == (*i).end() || *hEnd != ':') {
+      if (len == 0 || 2 < len || hEnd == (*i).end() || *hEnd != ':') {
         goto NOT_TIME;
       }
-      mEnd = getNextDigit(hEnd+1, (*i).end());
-      len = std::distance(hEnd+1, mEnd);
-      if(len == 0 || 2 < len || mEnd == (*i).end() || *mEnd != ':') {
+      mEnd = getNextDigit(hEnd + 1, (*i).end());
+      len = std::distance(hEnd + 1, mEnd);
+      if (len == 0 || 2 < len || mEnd == (*i).end() || *mEnd != ':') {
         goto NOT_TIME;
       }
-      sEnd = getNextDigit(mEnd+1, (*i).end());
-      len = std::distance(mEnd+1, sEnd);
-      if(len == 0 || 2 < len) {
+      sEnd = getNextDigit(mEnd + 1, (*i).end());
+      len = std::distance(mEnd + 1, sEnd);
+      if (len == 0 || 2 < len) {
         goto NOT_TIME;
       }
       foundTime = true;
       hour = getInteger((*i).begin(), hEnd);
-      minute = getInteger(hEnd+1, mEnd);
-      second = getInteger(mEnd+1, sEnd);
+      minute = getInteger(hEnd + 1, mEnd);
+      second = getInteger(mEnd + 1, sEnd);
       continue;
     NOT_TIME:
       ;
     }
-    if(!foundDayOfMonth) {
+    if (!foundDayOfMonth) {
       std::string::const_iterator j = getNextDigit((*i).begin(), (*i).end());
       size_t len = std::distance((*i).begin(), j);
-      if(1 <= len && len <= 2) {
+      if (1 <= len && len <= 2) {
         foundDayOfMonth = true;
         dayOfMonth = getInteger((*i).begin(), j);
         continue;
       }
     }
-    if(!foundMonth) {
-      static const char MONTH[][12] = {
-        "jan", "feb", "mar", "apr",
-        "may", "jun", "jul", "aug",
-        "sep", "oct", "nov", "dec" };
-      if((*i).size() >= 3) {
+    if (!foundMonth) {
+      static const char MONTH[][12] = {"jan", "feb", "mar", "apr",
+                                       "may", "jun", "jul", "aug",
+                                       "sep", "oct", "nov", "dec"};
+      if ((*i).size() >= 3) {
         bool found = false;
         size_t j;
-        for(j = 0; j < 12; ++j) {
-          if(util::strieq((*i).begin(), (*i).begin()+3,
-                          &MONTH[j][0], &MONTH[j][3])) {
+        for (j = 0; j < 12; ++j) {
+          if (util::strieq((*i).begin(), (*i).begin() + 3, &MONTH[j][0],
+                           &MONTH[j][3])) {
             found = true;
             break;
           }
         }
-        if(found) {
+        if (found) {
           foundMonth = true;
-          month = j+1;
+          month = j + 1;
           continue;
         }
       }
     }
-    if(!foundYear) {
+    if (!foundYear) {
       std::string::const_iterator j = getNextDigit((*i).begin(), (*i).end());
       size_t len = std::distance((*i).begin(), j);
-      if(1 <= len && len <= 4) {
+      if (1 <= len && len <= 4) {
         foundYear = true;
         year = getInteger((*i).begin(), j);
         continue;
       }
     }
   }
-  if(in(year, 70, 99)) {
+  if (in(year, 70, 99)) {
     year += 1900;
-  } else if(in(year, 0, 69)) {
+  }
+  else if (in(year, 0, 69)) {
     year += 2000;
   }
-  if(!foundDayOfMonth || !foundMonth || !foundYear || !foundTime ||
-     !in(dayOfMonth, 1, 31) || year < 1601 || hour > 23 ||
-     minute > 59 || second > 59) {
+  if (!foundDayOfMonth || !foundMonth || !foundYear || !foundTime ||
+      !in(dayOfMonth, 1, 31) || year < 1601 || hour > 23 || minute > 59 ||
+      second > 59) {
     return false;
   }
-  if((month == 4 || month == 6 || month == 9 || month == 11) &&
-     dayOfMonth > 30) {
+  if ((month == 4 || month == 6 || month == 9 || month == 11) &&
+      dayOfMonth > 30) {
     return false;
   }
-  if(month == 2) {
-    if((year%4 == 0 && year%100 != 0) || year%400 == 0) {
-      if(dayOfMonth > 29) {
+  if (month == 2) {
+    if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) {
+      if (dayOfMonth > 29) {
         return false;
       }
-    } else if(dayOfMonth > 28) {
+    }
+    else if (dayOfMonth > 28) {
       return false;
     }
   }
@@ -209,37 +210,37 @@ bool parseDate
   timespec.tm_min = minute;
   timespec.tm_hour = hour;
   timespec.tm_mday = dayOfMonth;
-  timespec.tm_mon = month-1;
-  timespec.tm_year = year-1900;
+  timespec.tm_mon = month - 1;
+  timespec.tm_year = year - 1900;
   time = timegm(&timespec);
 
   return time != -1;
 }
 
-std::unique_ptr<Cookie> parse
-(const std::string& cookieStr,
- const std::string& requestHost,
- const std::string& defaultPath,
- time_t creationTime)
+std::unique_ptr<Cookie> parse(const std::string& cookieStr,
+                              const std::string& requestHost,
+                              const std::string& defaultPath,
+                              time_t creationTime)
 {
   // This implementation is based on the algorithm listed in
   // http://tools.ietf.org/html/rfc6265
   std::string::const_iterator nvEnd = cookieStr.begin();
   std::string::const_iterator end = cookieStr.end();
-  for(; nvEnd != end && *nvEnd != ';'; ++nvEnd);
+  for (; nvEnd != end && *nvEnd != ';'; ++nvEnd)
+    ;
   std::string::const_iterator eq = cookieStr.begin();
-  for(; eq != nvEnd && *eq != '='; ++eq);
-  if(eq == nvEnd) {
+  for (; eq != nvEnd && *eq != '='; ++eq)
+    ;
+  if (eq == nvEnd) {
     return nullptr;
   }
-  std::pair<std::string::const_iterator,
-            std::string::const_iterator> p =
-    util::stripIter(cookieStr.begin(), eq);
-  if(p.first == p.second) {
+  std::pair<std::string::const_iterator, std::string::const_iterator> p =
+      util::stripIter(cookieStr.begin(), eq);
+  if (p.first == p.second) {
     return nullptr;
   }
   Scip cookieName(p.first, p.second);
-  p = util::stripIter(eq+1, nvEnd);
+  p = util::stripIter(eq + 1, nvEnd);
   p = util::stripIter(p.first, p.second, "\"");
   Scip cookieValue(p.first, p.second);
   time_t expiryTime = 0;
@@ -253,105 +254,120 @@ std::unique_ptr<Cookie> parse
   bool secure = false;
   bool httpOnly = false;
 
-  if(nvEnd != end) {
+  if (nvEnd != end) {
     ++nvEnd;
   }
-  for(std::string::const_iterator i = nvEnd; i != end;) {
+  for (std::string::const_iterator i = nvEnd; i != end;) {
     std::string::const_iterator j = std::find(i, end, ';');
     std::string::const_iterator eq = std::find(i, j, '=');
     p = util::stripIter(i, eq);
-    std::pair<std::string::const_iterator,
-              std::string::const_iterator> attrp;
-    if(eq == j) {
+    std::pair<std::string::const_iterator, std::string::const_iterator> attrp;
+    if (eq == j) {
       attrp.first = attrp.second = j;
-    } else {
-      attrp = util::stripIter(eq+1, j);
+    }
+    else {
+      attrp = util::stripIter(eq + 1, j);
     }
     i = j;
-    if(j != end) {
+    if (j != end) {
       ++i;
     }
-    if(util::strieq(p.first, p.second, "expires")) {
-      if(parseDate(expiryTime, attrp.first, attrp.second)) {
+    if (util::strieq(p.first, p.second, "expires")) {
+      if (parseDate(expiryTime, attrp.first, attrp.second)) {
         foundExpires = true;
-      } else {
+      }
+      else {
         return nullptr;
       }
-    } else if(util::strieq(p.first, p.second, "max-age")) {
-      if(attrp.first == attrp.second ||
-         (!in(static_cast<unsigned char>(*attrp.first), 0x30u, 0x39u) &&
-          *attrp.first != '-')) {
+    }
+    else if (util::strieq(p.first, p.second, "max-age")) {
+      if (attrp.first == attrp.second ||
+          (!in(static_cast<unsigned char>(*attrp.first), 0x30u, 0x39u) &&
+           *attrp.first != '-')) {
         return nullptr;
       }
-      for(std::string::const_iterator s = attrp.first+1,
-            eos = attrp.second; s != eos; ++s) {
-        if(!in(static_cast<unsigned char>(*s), 0x30u, 0x39u)) {
+      for (std::string::const_iterator s = attrp.first + 1, eos = attrp.second;
+           s != eos; ++s) {
+        if (!in(static_cast<unsigned char>(*s), 0x30u, 0x39u)) {
           return nullptr;
         }
       }
       int64_t delta;
-      if(util::parseLLIntNoThrow(delta,
-                                 std::string(attrp.first, attrp.second))) {
+      if (util::parseLLIntNoThrow(delta,
+                                  std::string(attrp.first, attrp.second))) {
         foundMaxAge = true;
-        if(delta <= 0) {
+        if (delta <= 0) {
           maxAge = 0;
-        } else {
+        }
+        else {
           int64_t n = creationTime;
           n += delta;
-          if(n < 0 || std::numeric_limits<time_t>::max() < n) {
+          if (n < 0 || std::numeric_limits<time_t>::max() < n) {
             maxAge = std::numeric_limits<time_t>::max();
-          } else {
+          }
+          else {
             maxAge = n;
           }
         }
-      } else {
+      }
+      else {
         return nullptr;
       }
-    } else if(util::strieq(p.first, p.second, "domain")) {
-      if(attrp.first == attrp.second) {
+    }
+    else if (util::strieq(p.first, p.second, "domain")) {
+      if (attrp.first == attrp.second) {
         return nullptr;
       }
       std::string::const_iterator noDot = attrp.first;
       std::string::const_iterator end = attrp.second;
-      for(; noDot != end && *noDot == '.'; ++noDot);
-      if(noDot == end) {
+      for (; noDot != end && *noDot == '.'; ++noDot)
+        ;
+      if (noDot == end) {
         return nullptr;
       }
       cookieDomain.assign(noDot, end);
-    } else if(util::strieq(p.first, p.second, "path")) {
-      if(goodPath(attrp.first, attrp.second)) {
+    }
+    else if (util::strieq(p.first, p.second, "path")) {
+      if (goodPath(attrp.first, attrp.second)) {
         cookiePath.assign(attrp.first, attrp.second);
-      } else {
+      }
+      else {
         cookiePath = defaultPath;
       }
-    } else if(util::strieq(p.first, p.second, "secure")) {
+    }
+    else if (util::strieq(p.first, p.second, "secure")) {
       secure = true;
-    } else if(util::strieq(p.first, p.second, "httponly")) {
+    }
+    else if (util::strieq(p.first, p.second, "httponly")) {
       httpOnly = true;
     }
   }
 
-  if(foundMaxAge) {
+  if (foundMaxAge) {
     expiryTime = maxAge;
     persistent = true;
-  } else if(foundExpires) {
+  }
+  else if (foundExpires) {
     persistent = true;
-  } else {
+  }
+  else {
     expiryTime = std::numeric_limits<time_t>::max();
     persistent = false;
   }
 
   std::string canonicalizedHost = canonicalizeHost(requestHost);
-  if(cookieDomain.empty()) {
+  if (cookieDomain.empty()) {
     hostOnly = true;
     cookieDomain = canonicalizedHost;
-  } else if(domainMatch(canonicalizedHost, cookieDomain)) {
+  }
+  else if (domainMatch(canonicalizedHost, cookieDomain)) {
     hostOnly = util::isNumericHost(canonicalizedHost);
-  } else {
+  }
+  else {
     return nullptr;
   }
 
-  if(cookiePath.empty()) {
+  if (cookiePath.empty()) {
     cookiePath = defaultPath;
   }
 
@@ -371,9 +387,8 @@ std::unique_ptr<Cookie> parse
   return cookie;
 }
 
-bool goodPath
-(std::string::const_iterator first,
- std::string::const_iterator last)
+bool goodPath(std::string::const_iterator first,
+              std::string::const_iterator last)
 {
   return first != last && *first == '/';
 }
@@ -386,40 +401,40 @@ std::string canonicalizeHost(const std::string& host)
 bool domainMatch(const std::string& requestHost, const std::string& domain)
 {
   return requestHost == domain ||
-    (util::endsWith(requestHost, domain) &&
-     requestHost[requestHost.size()-domain.size()-1] == '.' &&
-     !util::isNumericHost(requestHost));
+         (util::endsWith(requestHost, domain) &&
+          requestHost[requestHost.size() - domain.size() - 1] == '.' &&
+          !util::isNumericHost(requestHost));
 }
 
 bool pathMatch(const std::string& requestPath, const std::string& path)
 {
   return requestPath == path ||
-    (util::startsWith(requestPath, path) &&
-     (path[path.size()-1] == '/' || requestPath[path.size()] == '/'));
+         (util::startsWith(requestPath, path) &&
+          (path[path.size() - 1] == '/' || requestPath[path.size()] == '/'));
 }
 
 std::string reverseDomainLevel(const std::string& domain)
 {
   std::string r;
-  if(domain.empty()) {
+  if (domain.empty()) {
     return r;
   }
   r.reserve(domain.size());
   // Cut trailing dots
   std::string::const_iterator s = domain.end() - 1;
-  for(; *s == '.'; --s) {
-    if(s == domain.begin()) {
+  for (; *s == '.'; --s) {
+    if (s == domain.begin()) {
       return r;
     }
   }
   std::string::const_iterator t = s + 1;
-  for(; ; --s) {
-    if(*s == '.') {
+  for (;; --s) {
+    if (*s == '.') {
       r.append(s + 1, t);
       r += '.';
       t = s;
     }
-    if(s == domain.begin()) {
+    if (s == domain.begin()) {
       r.append(s, t);
       break;
     }

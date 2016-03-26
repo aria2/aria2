@@ -39,30 +39,27 @@
 
 namespace aria2 {
 
-class OptionHandlerException:public RecoverableException {
+class OptionHandlerException : public RecoverableException {
 private:
   PrefPtr pref_;
+
 protected:
   virtual std::shared_ptr<Exception> copy() const CXX11_OVERRIDE;
-public:
-  OptionHandlerException(const char* file, int line,
-                         PrefPtr pref);
 
-  OptionHandlerException(const char* file, int line,
-                         PrefPtr pref,
+public:
+  OptionHandlerException(const char* file, int line, PrefPtr pref);
+
+  OptionHandlerException(const char* file, int line, PrefPtr pref,
                          const Exception& cause);
 
   virtual ~OptionHandlerException() throw();
 
-  PrefPtr getPref() const
-  {
-    return pref_;
-  }
+  PrefPtr getPref() const { return pref_; }
 };
 
-#define OPTION_HANDLER_EXCEPTION(arg)                   \
+#define OPTION_HANDLER_EXCEPTION(arg)                                          \
   OptionHandlerException(__FILE__, __LINE__, arg)
-#define OPTION_HANDLER_EXCEPTION2(arg1, arg2)                   \
+#define OPTION_HANDLER_EXCEPTION2(arg1, arg2)                                  \
   OptionHandlerException(__FILE__, __LINE__, arg1, arg2)
 
 } // namespace aria2

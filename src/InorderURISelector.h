@@ -38,16 +38,16 @@
 
 namespace aria2 {
 
-class InorderURISelector:public URISelector {
+class InorderURISelector : public URISelector {
 public:
   InorderURISelector();
 
   virtual ~InorderURISelector();
 
-  virtual std::string select
-  (FileEntry* fileEntry,
-   const std::vector<std::pair<size_t, std::string> >& usedHosts)
-    CXX11_OVERRIDE;
+  virtual std::string
+  select(FileEntry* fileEntry,
+         const std::vector<std::pair<size_t, std::string>>& usedHosts)
+      CXX11_OVERRIDE;
 };
 
 } // namespace aria2

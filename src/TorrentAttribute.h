@@ -45,11 +45,11 @@
 
 namespace aria2 {
 
-struct TorrentAttribute:public ContextAttribute {
+struct TorrentAttribute : public ContextAttribute {
   std::string name;
   BtFileMode mode;
-  std::vector<std::vector<std::string> > announceList;
-  std::vector<std::pair<std::string, uint16_t> > nodes;
+  std::vector<std::vector<std::string>> announceList;
+  std::vector<std::pair<std::string, uint16_t>> nodes;
   // raw hash value 20 bytes.
   std::string infoHash;
   std::string metadata;
@@ -71,4 +71,3 @@ struct TorrentAttribute:public ContextAttribute {
 } // namespace aria2
 
 #endif // D_TORRENT_ATTRIBUTE_H
-

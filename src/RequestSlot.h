@@ -46,23 +46,28 @@ class RequestSlot {
 public:
   RequestSlot(size_t index, int32_t begin, int32_t length, size_t blockIndex,
               std::shared_ptr<Piece> piece = nullptr)
-    : dispatchedTime_(global::wallclock()),
-      index_(index), begin_(begin), length_(length), blockIndex_(blockIndex),
-      piece_(std::move(piece))
-  {}
+      : dispatchedTime_(global::wallclock()),
+        index_(index),
+        begin_(begin),
+        length_(length),
+        blockIndex_(blockIndex),
+        piece_(std::move(piece))
+  {
+  }
 
   RequestSlot()
-    : dispatchedTime_(Timer::zero()),
-      index_(0),
-      begin_(0),
-      length_(0),
-      blockIndex_(0)
-  {}
+      : dispatchedTime_(Timer::zero()),
+        index_(0),
+        begin_(0),
+        length_(0),
+        blockIndex_(0)
+  {
+  }
 
   bool operator==(const RequestSlot& requestSlot) const
   {
-    return index_ == requestSlot.index_ && begin_ == requestSlot.begin_
-      && length_ == requestSlot.length_;
+    return index_ == requestSlot.index_ && begin_ == requestSlot.begin_ &&
+           length_ == requestSlot.length_;
   }
 
   bool operator!=(const RequestSlot& requestSlot) const
@@ -72,9 +77,10 @@ public:
 
   bool operator<(const RequestSlot& requestSlot) const
   {
-    if(index_ == requestSlot.index_) {
+    if (index_ == requestSlot.index_) {
       return begin_ < requestSlot.begin_;
-    } else {
+    }
+    else {
       return index_ < requestSlot.index_;
     }
   }
@@ -93,10 +99,7 @@ public:
   size_t getBlockIndex() const { return blockIndex_; }
   void setBlockIndex(size_t blockIndex) { blockIndex_ = blockIndex; }
 
-  const std::shared_ptr<Piece>& getPiece() const
-  {
-    return piece_;
-  }
+  const std::shared_ptr<Piece>& getPiece() const { return piece_; }
 
   // For unit test
   void setDispatchedTime(Timer t) { dispatchedTime_ = std::move(t); }

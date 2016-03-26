@@ -47,18 +47,16 @@
 
 namespace aria2 {
 
-BtRegistry::BtRegistry()
-  : tcpPort_{0},
-    udpPort_{0}
-{}
+BtRegistry::BtRegistry() : tcpPort_{0}, udpPort_{0} {}
 
 const std::shared_ptr<DownloadContext>&
 BtRegistry::getDownloadContext(a2_gid_t gid) const
 {
   auto res = get(gid);
-  if(res) {
+  if (res) {
     return res->downloadContext;
-  } else {
+  }
+  else {
     return getNull<DownloadContext>();
   }
 }
@@ -66,9 +64,9 @@ BtRegistry::getDownloadContext(a2_gid_t gid) const
 const std::shared_ptr<DownloadContext>&
 BtRegistry::getDownloadContext(const std::string& infoHash) const
 {
-  for(auto& kv : pool_) {
-    if(bittorrent::getTorrentAttrs(kv.second->downloadContext)->infoHash ==
-       infoHash) {
+  for (auto& kv : pool_) {
+    if (bittorrent::getTorrentAttrs(kv.second->downloadContext)->infoHash ==
+        infoHash) {
       return kv.second->downloadContext;
     }
   }
@@ -83,49 +81,45 @@ void BtRegistry::put(a2_gid_t gid, std::unique_ptr<BtObject> obj)
 BtObject* BtRegistry::get(a2_gid_t gid) const
 {
   auto i = pool_.find(gid);
-  if(i == std::end(pool_)) {
+  if (i == std::end(pool_)) {
     return nullptr;
-  } else {
+  }
+  else {
     return (*i).second.get();
   }
 }
 
-bool BtRegistry::remove(a2_gid_t gid)
-{
-  return pool_.erase(gid);
-}
+bool BtRegistry::remove(a2_gid_t gid) { return pool_.erase(gid); }
 
-void BtRegistry::removeAll()
-{
-  pool_.clear();
-}
+void BtRegistry::removeAll() { pool_.clear(); }
 
-void BtRegistry::setLpdMessageReceiver
-(const std::shared_ptr<LpdMessageReceiver>& receiver)
+void BtRegistry::setLpdMessageReceiver(
+    const std::shared_ptr<LpdMessageReceiver>& receiver)
 {
   lpdMessageReceiver_ = receiver;
 }
 
-void BtRegistry::setUDPTrackerClient
-(const std::shared_ptr<UDPTrackerClient>& tracker)
+void BtRegistry::setUDPTrackerClient(
+    const std::shared_ptr<UDPTrackerClient>& tracker)
 {
   udpTrackerClient_ = tracker;
 }
 
-BtObject::BtObject
-(const std::shared_ptr<DownloadContext>& downloadContext,
- const std::shared_ptr<PieceStorage>& pieceStorage,
- const std::shared_ptr<PeerStorage>& peerStorage,
- const std::shared_ptr<BtAnnounce>& btAnnounce,
- const std::shared_ptr<BtRuntime>& btRuntime,
- const std::shared_ptr<BtProgressInfoFile>& btProgressInfoFile)
-  : downloadContext{downloadContext},
-    pieceStorage{pieceStorage},
-    peerStorage{peerStorage},
-    btAnnounce{btAnnounce},
-    btRuntime{btRuntime},
-    btProgressInfoFile{btProgressInfoFile}
-{}
+BtObject::BtObject(
+    const std::shared_ptr<DownloadContext>& downloadContext,
+    const std::shared_ptr<PieceStorage>& pieceStorage,
+    const std::shared_ptr<PeerStorage>& peerStorage,
+    const std::shared_ptr<BtAnnounce>& btAnnounce,
+    const std::shared_ptr<BtRuntime>& btRuntime,
+    const std::shared_ptr<BtProgressInfoFile>& btProgressInfoFile)
+    : downloadContext{downloadContext},
+      pieceStorage{pieceStorage},
+      peerStorage{peerStorage},
+      btAnnounce{btAnnounce},
+      btRuntime{btRuntime},
+      btProgressInfoFile{btProgressInfoFile}
+{
+}
 
 BtObject::BtObject() {}
 

@@ -52,14 +52,12 @@ protected:
   virtual int64_t getRequestEndOffset() const CXX11_OVERRIDE;
 
 public:
-  HttpDownloadCommand(cuid_t cuid,
-                      const std::shared_ptr<Request>& req,
+  HttpDownloadCommand(cuid_t cuid, const std::shared_ptr<Request>& req,
                       const std::shared_ptr<FileEntry>& fileEntry,
                       RequestGroup* requestGroup,
                       std::unique_ptr<HttpResponse> httpResponse,
                       const std::shared_ptr<HttpConnection>& httpConnection,
-                      DownloadEngine* e,
-                      const std::shared_ptr<SocketCore>& s);
+                      DownloadEngine* e, const std::shared_ptr<SocketCore>& s);
   virtual ~HttpDownloadCommand();
 };
 

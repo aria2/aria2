@@ -15,7 +15,7 @@
 
 namespace aria2 {
 
-class BtRegistryTest:public CppUnit::TestFixture {
+class BtRegistryTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtRegistryTest);
   CPPUNIT_TEST(testGetDownloadContext);
@@ -24,8 +24,8 @@ class BtRegistryTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testRemove);
   CPPUNIT_TEST(testRemoveAll);
   CPPUNIT_TEST_SUITE_END();
-private:
 
+private:
 public:
   void testGetDownloadContext();
   void testGetDownloadContext_infoHash();
@@ -34,8 +34,7 @@ public:
   void testRemoveAll();
 };
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION( BtRegistryTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(BtRegistryTest);
 
 void BtRegistryTest::testGetDownloadContext()
 {
@@ -71,10 +70,10 @@ void BtRegistryTest::testGetDownloadContext_infoHash()
     attrs1->infoHash = "hash1";
     auto attrs2 = make_unique<TorrentAttribute>();
     attrs2->infoHash = "hash2";
-    btRegistry.getDownloadContext(1)->setAttribute(CTX_ATTR_BT,
-                                                   std::move(attrs1));
-    btRegistry.getDownloadContext(2)->setAttribute(CTX_ATTR_BT,
-                                                   std::move(attrs2));
+    btRegistry.getDownloadContext(1)
+        ->setAttribute(CTX_ATTR_BT, std::move(attrs1));
+    btRegistry.getDownloadContext(2)
+        ->setAttribute(CTX_ATTR_BT, std::move(attrs2));
   }
   CPPUNIT_ASSERT(btRegistry.getDownloadContext("hash1"));
   CPPUNIT_ASSERT(btRegistry.getDownloadContext("hash1").get() ==
@@ -87,7 +86,7 @@ void BtRegistryTest::testGetAllDownloadContext()
   BtRegistry btRegistry;
   addTwoDownloadContext(btRegistry);
 
-  std::vector<std::shared_ptr<DownloadContext> > result;
+  std::vector<std::shared_ptr<DownloadContext>> result;
   btRegistry.getAllDownloadContext(std::back_inserter(result));
   CPPUNIT_ASSERT_EQUAL((size_t)2, result.size());
 }

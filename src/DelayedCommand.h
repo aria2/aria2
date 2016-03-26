@@ -38,11 +38,9 @@
 
 #include "TimeBasedCommand.h"
 
-namespace aria2
-{
+namespace aria2 {
 
-class DelayedCommand : public TimeBasedCommand
-{
+class DelayedCommand : public TimeBasedCommand {
 private:
   std::unique_ptr<Command> command_;
   bool noWait_;
@@ -61,9 +59,9 @@ public:
 public:
   DelayedCommand(cuid_t cuid, DownloadEngine* e, std::chrono::seconds delay,
                  std::unique_ptr<Command> command, bool noWait)
-    : TimeBasedCommand(cuid, e, std::move(delay)),
-      command_{std::move(command)},
-      noWait_{noWait}
+      : TimeBasedCommand(cuid, e, std::move(delay)),
+        command_{std::move(command)},
+        noWait_{noWait}
   {
   }
 

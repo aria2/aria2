@@ -46,58 +46,55 @@ namespace aria2 {
 
 CheckIntegrityEntry::CheckIntegrityEntry(RequestGroup* requestGroup,
                                          std::unique_ptr<Command> nextCommand)
-  : RequestGroupEntry{requestGroup, std::move(nextCommand)}
-{}
+    : RequestGroupEntry{requestGroup, std::move(nextCommand)}
+{
+}
 
 CheckIntegrityEntry::~CheckIntegrityEntry() {}
 
-void CheckIntegrityEntry::validateChunk()
-{
-  validator_->validateChunk();
-}
+void CheckIntegrityEntry::validateChunk() { validator_->validateChunk(); }
 
 int64_t CheckIntegrityEntry::getTotalLength()
 {
-  if(!validator_) {
+  if (!validator_) {
     return 0;
-  } else {
+  }
+  else {
     return validator_->getTotalLength();
   }
 }
 
 int64_t CheckIntegrityEntry::getCurrentLength()
 {
-  if(!validator_) {
+  if (!validator_) {
     return 0;
-  } else {
+  }
+  else {
     return validator_->getCurrentOffset();
   }
 }
 
-bool CheckIntegrityEntry::finished()
-{
-  return validator_->finished();
-}
+bool CheckIntegrityEntry::finished() { return validator_->finished(); }
 
 void CheckIntegrityEntry::cutTrailingGarbage()
 {
   getRequestGroup()->getPieceStorage()->getDiskAdaptor()->cutTrailingGarbage();
 }
 
-void CheckIntegrityEntry::proceedFileAllocation
-(std::vector<std::unique_ptr<Command>>& commands,
- std::unique_ptr<FileAllocationEntry> entry,
- DownloadEngine* e)
+void CheckIntegrityEntry::proceedFileAllocation(
+    std::vector<std::unique_ptr<Command>>& commands,
+    std::unique_ptr<FileAllocationEntry> entry, DownloadEngine* e)
 {
-  if(getRequestGroup()->needsFileAllocation()) {
+  if (getRequestGroup()->needsFileAllocation()) {
     e->getFileAllocationMan()->pushEntry(std::move(entry));
-  } else {
+  }
+  else {
     entry->prepareForNextAction(commands, e);
   }
 }
 
-void CheckIntegrityEntry::setValidator
-(std::unique_ptr<IteratableValidator> validator)
+void CheckIntegrityEntry::setValidator(
+    std::unique_ptr<IteratableValidator> validator)
 {
   validator_ = std::move(validator);
 }

@@ -42,15 +42,14 @@
 
 namespace aria2 {
 
-PieceStatMan::PieceStatMan(size_t pieceNum, bool randomShuffle):
-  order_(pieceNum),
-  counts_(pieceNum)
+PieceStatMan::PieceStatMan(size_t pieceNum, bool randomShuffle)
+    : order_(pieceNum), counts_(pieceNum)
 {
-  for(size_t i = 0; i < pieceNum; ++i) {
+  for (size_t i = 0; i < pieceNum; ++i) {
     order_[i] = i;
   }
   // we need some randomness in ordering.
-  if(randomShuffle) {
+  if (randomShuffle) {
     std::shuffle(order_.begin(), order_.end(),
                  *SimpleRandomizer::getInstance());
   }
@@ -61,7 +60,7 @@ PieceStatMan::~PieceStatMan() {}
 namespace {
 void inc(int& x)
 {
-  if(x < std::numeric_limits<int>::max()) {
+  if (x < std::numeric_limits<int>::max()) {
     ++x;
   }
 }
@@ -70,7 +69,7 @@ void inc(int& x)
 namespace {
 void sub(int& x)
 {
-  if(x > 0) {
+  if (x > 0) {
     --x;
   }
 }
@@ -79,8 +78,8 @@ void sub(int& x)
 void PieceStatMan::addPieceStats(const unsigned char* bitfield,
                                  size_t bitfieldLength)
 {
-  for(size_t i = 0, nbits = counts_.size(); i < nbits; ++i) {
-    if(bitfield::test(bitfield, nbits, i)) {
+  for (size_t i = 0, nbits = counts_.size(); i < nbits; ++i) {
+    if (bitfield::test(bitfield, nbits, i)) {
       inc(counts_[i]);
     }
   }
@@ -89,8 +88,8 @@ void PieceStatMan::addPieceStats(const unsigned char* bitfield,
 void PieceStatMan::subtractPieceStats(const unsigned char* bitfield,
                                       size_t bitfieldLength)
 {
-  for(size_t i = 0, nbits = counts_.size(); i < nbits; ++i) {
-    if(bitfield::test(bitfield, nbits, i)) {
+  for (size_t i = 0, nbits = counts_.size(); i < nbits; ++i) {
+    if (bitfield::test(bitfield, nbits, i)) {
       sub(counts_[i]);
     }
   }
@@ -100,22 +99,20 @@ void PieceStatMan::updatePieceStats(const unsigned char* newBitfield,
                                     size_t newBitfieldLength,
                                     const unsigned char* oldBitfield)
 {
-  for(size_t i = 0, nbits = counts_.size(); i < nbits; ++i) {
+  for (size_t i = 0, nbits = counts_.size(); i < nbits; ++i) {
     bool inNew = bitfield::test(newBitfield, nbits, i);
     bool inOld = bitfield::test(oldBitfield, nbits, i);
-    if(inNew) {
-      if(!inOld) {
+    if (inNew) {
+      if (!inOld) {
         inc(counts_[i]);
       }
-    } else if(inOld) {
+    }
+    else if (inOld) {
       sub(counts_[i]);
     }
   }
 }
 
-void PieceStatMan::addPieceStats(size_t index)
-{
-  inc(counts_[index]);
-}
+void PieceStatMan::addPieceStats(size_t index) { inc(counts_[index]); }
 
 } // namespace aria2

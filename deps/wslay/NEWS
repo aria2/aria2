@@ -1,41 +1,47 @@
-wslay 0.1.1
+wslay 1.0.0
 ===========
 
 Release Note
 ------------
 
-This release fixes the example programs and tutorial.  It does not
-change library code at all, so the library version has not been
-changed.
+This release fixes several build issues.  Most changes were introduced
+by contributors.  Thank you for all the contributions in this project.
+Because wslay is very stable since the previous release (more than 2
+years ago), we mark this release 1.0.0.
 
 Changes
 -------
 
-* Fixed example source code and tutorial.
+* Fix NULL check in wslay_frame_context_init.
 
-
+  Patch from Witchakorn Kamolpornwijit
 
-wslay 0.1.0
-===========
+* the examples uses epoll and thus only be built on linux
 
-Release Note
-------------
+  Patch from Kazuho Oku
 
-This is the initial release of wslay WebSocket C library.
+* build: allow one to build out-of-tree documentation
 
-Wslay is a WebSocket library written in C. It implements the protocol
-version 13 described in RFC 6455. This library offers 2 levels of API:
-event-based API and frame-based low-level API. For event-based API, it
-is suitable for non-blocking reactor pattern style. You can set
-callbacks in various events. For frame-based API, you can send
-WebSocket frame directly. Wslay only supports data transfer part of
-WebSocket protocol and does not perform opening handshake in HTTP.
+  Patch from Vincent Bernat
 
-Wslay does not perform any I/O operations for its own. Instead, it
-offers callbacks for them. This makes Wslay independent on any I/O
-frameworks, SSL, sockets, etc. This makes Wslay protable across
-various platforms and the application authors can choose freely IO
-frameworks.
+* build: fix `./configure` when nettle is not present
 
-Visit http://wslay.sourceforge.net/ for the API reference and
-tutorial.
+  `PKG_CHECK_MODULES` will fail unless we give it an action to execute
+  on failure. When nettle is not available, we set `have_nettle` to
+  `no`.
+
+  Patch from Vincent Bernat
+
+* Adds the ability to override the version header include with a
+  define.  This enables projects to set the build version from the
+  compile environment and avoid the need to generate the version
+  header.
+
+  Patch from Ben Vanik
+
+* Improve http_handshake in fork-echoserver.
+
+  Patch from Gurjeet Singh
+
+* Don't send any pending control frame other than Close control frame
+  after Close is queued.

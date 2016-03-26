@@ -47,8 +47,7 @@ class SeedCriteria;
 class BtRuntime;
 class PieceStorage;
 
-class SeedCheckCommand : public Command
-{
+class SeedCheckCommand : public Command {
 private:
   RequestGroup* requestGroup_;
   DownloadEngine* e_;
@@ -56,10 +55,9 @@ private:
   std::shared_ptr<BtRuntime> btRuntime_;
   std::unique_ptr<SeedCriteria> seedCriteria_;
   bool checkStarted_;
+
 public:
-  SeedCheckCommand(cuid_t cuid,
-                   RequestGroup* requestGroup,
-                   DownloadEngine* e,
+  SeedCheckCommand(cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e,
                    std::unique_ptr<SeedCriteria> seedCriteria);
 
   virtual ~SeedCheckCommand();

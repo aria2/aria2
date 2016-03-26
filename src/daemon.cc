@@ -45,33 +45,35 @@ int daemon(int nochdir, int noclose)
 #ifdef HAVE_WORKING_FORK
   pid_t pid;
   pid = fork();
-  if(pid == -1) {
+  if (pid == -1) {
     return -1;
-  } else if(pid > 0) {
+  }
+  else if (pid > 0) {
     _exit(EXIT_SUCCESS);
   }
-  if(setsid() == -1) {
+  if (setsid() == -1) {
     return -1;
   }
   pid = fork();
-  if(pid == -1) {
+  if (pid == -1) {
     return -1;
-  } else if(pid > 0) {
+  }
+  else if (pid > 0) {
     _exit(EXIT_SUCCESS);
   }
-  if(nochdir == 0) {
-    if(chdir("/") == -1) {
+  if (nochdir == 0) {
+    if (chdir("/") == -1) {
       return -1;
     }
   }
-  if(noclose == 0) {
-    if(freopen("/dev/null", "r", stdin) == nullptr) {
+  if (noclose == 0) {
+    if (freopen("/dev/null", "r", stdin) == nullptr) {
       return -1;
     }
-    if(freopen("/dev/null", "w", stdout) == nullptr) {
+    if (freopen("/dev/null", "w", stdout) == nullptr) {
       return -1;
     }
-    if(freopen("/dev/null", "w", stderr) == nullptr) {
+    if (freopen("/dev/null", "w", stderr) == nullptr) {
       return -1;
     }
   }

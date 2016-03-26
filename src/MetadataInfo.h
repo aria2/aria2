@@ -48,6 +48,7 @@ class MetadataInfo {
 private:
   std::shared_ptr<GroupId> gid_;
   std::string uri_;
+
 public:
   MetadataInfo(const std::shared_ptr<GroupId>& gid, const std::string& uri);
 
@@ -55,15 +56,9 @@ public:
 
   ~MetadataInfo();
 
-  bool dataOnly() const
-  {
-    return !gid_;
-  }
+  bool dataOnly() const { return !gid_; }
 
-  const std::string& getUri() const
-  {
-    return uri_;
-  }
+  const std::string& getUri() const { return uri_; }
 
   a2_gid_t getGID() const;
 };

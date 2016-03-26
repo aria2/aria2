@@ -52,6 +52,7 @@ public:
   void setDefaultCred(std::string user, std::string password);
 
   std::unique_ptr<AuthConfig> getDefaultAuthConfig() const;
+
 private:
   std::string userDefinedUser_;
   std::string userDefinedPassword_;

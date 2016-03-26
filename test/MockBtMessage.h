@@ -43,59 +43,54 @@ class MockBtMessage : public BtMessage {
 private:
   bool invalidate;
   bool uploading;
-public:
-  MockBtMessage():BtMessage(0) {}
 
-  MockBtMessage(uint8_t id):BtMessage(id) {}
+public:
+  MockBtMessage() : BtMessage(0) {}
+
+  MockBtMessage(uint8_t id) : BtMessage(id) {}
 
   virtual ~MockBtMessage() {}
 
-  virtual bool isInvalidate() CXX11_OVERRIDE {
-    return invalidate;
-  }
+  virtual bool isInvalidate() CXX11_OVERRIDE { return invalidate; }
 
-  void setInvalidate(bool flag) {
-    this->invalidate = flag;
-  }
+  void setInvalidate(bool flag) { this->invalidate = flag; }
 
-  virtual bool isUploading() CXX11_OVERRIDE {
-    return uploading;
-  }
+  virtual bool isUploading() CXX11_OVERRIDE { return uploading; }
 
-  void setUploading(bool flag) {
-    this->uploading = flag;
-  }
+  void setUploading(bool flag) { this->uploading = flag; }
 
-  virtual void doReceivedAction() CXX11_OVERRIDE {
-  }
+  virtual void doReceivedAction() CXX11_OVERRIDE {}
 
   virtual void send() CXX11_OVERRIDE {}
 
   virtual void validate() CXX11_OVERRIDE {}
 
-  virtual void onAbortOutstandingRequestEvent
-  (const BtAbortOutstandingRequestEvent& event) CXX11_OVERRIDE {}
+  virtual void onAbortOutstandingRequestEvent(
+      const BtAbortOutstandingRequestEvent& event) CXX11_OVERRIDE
+  {
+  }
 
-  virtual void onCancelSendingPieceEvent
-  (const BtCancelSendingPieceEvent& event) CXX11_OVERRIDE {}
+  virtual void onCancelSendingPieceEvent(const BtCancelSendingPieceEvent& event)
+      CXX11_OVERRIDE
+  {
+  }
 
   virtual void onChokingEvent(const BtChokingEvent& event) CXX11_OVERRIDE {}
 
   virtual void onQueued() CXX11_OVERRIDE {}
 
   virtual std::string toString() const CXX11_OVERRIDE
-  { return "MockBtMessage"; }
-
+  {
+    return "MockBtMessage";
+  }
 };
 
-template<typename T>
-class WrapBtMessage:public MockBtMessage {
+template <typename T> class WrapBtMessage : public MockBtMessage {
 public:
   std::shared_ptr<T> m_;
 
-  WrapBtMessage(const std::shared_ptr<T>& m):m_(m) {}
+  WrapBtMessage(const std::shared_ptr<T>& m) : m_(m) {}
 };
-
 
 } // namespace aria2
 

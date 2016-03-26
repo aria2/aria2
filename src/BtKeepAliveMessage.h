@@ -42,8 +42,9 @@ namespace aria2 {
 class BtKeepAliveMessage : public SimpleBtMessage {
 private:
   static const size_t MESSAGE_LENGTH = 4;
+
 public:
-  BtKeepAliveMessage():SimpleBtMessage(ID, NAME) {}
+  BtKeepAliveMessage() : SimpleBtMessage(ID, NAME) {}
 
   static const uint8_t ID = 99;
 
@@ -55,10 +56,7 @@ public:
 
   virtual size_t getMessageLength() CXX11_OVERRIDE;
 
-  virtual std::string toString() const CXX11_OVERRIDE
-  {
-    return NAME;
-  }
+  virtual std::string toString() const CXX11_OVERRIDE { return NAME; }
 };
 
 } // namespace aria2

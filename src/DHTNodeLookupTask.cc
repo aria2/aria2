@@ -45,14 +45,14 @@
 
 namespace aria2 {
 
-DHTNodeLookupTask::DHTNodeLookupTask(const unsigned char* targetNodeID):
-  DHTAbstractNodeLookupTask<DHTFindNodeReplyMessage>(targetNodeID)
-{}
+DHTNodeLookupTask::DHTNodeLookupTask(const unsigned char* targetNodeID)
+    : DHTAbstractNodeLookupTask<DHTFindNodeReplyMessage>(targetNodeID)
+{
+}
 
-void
-DHTNodeLookupTask::getNodesFromMessage
-(std::vector<std::shared_ptr<DHTNode> >& nodes,
- const DHTFindNodeReplyMessage* message)
+void DHTNodeLookupTask::getNodesFromMessage(
+    std::vector<std::shared_ptr<DHTNode>>& nodes,
+    const DHTFindNodeReplyMessage* message)
 {
   auto& knodes = message->getClosestKNodes();
   nodes.insert(std::end(nodes), std::begin(knodes), std::end(knodes));

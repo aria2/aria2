@@ -45,6 +45,7 @@ class Checksum {
 private:
   std::string hashType_;
   std::string digest_;
+
 public:
   // digest_ is raw byte array of hash value, not ascii hexadecimal notation.
   Checksum(std::string hashType, std::string digest);
@@ -54,16 +55,10 @@ public:
   bool isEmpty() const;
 
   void setDigest(std::string md);
-  const std::string& getDigest() const
-  {
-    return digest_;
-  }
+  const std::string& getDigest() const { return digest_; }
 
   void setHashType(std::string type);
-  const std::string& getHashType() const
-  {
-    return hashType_;
-  }
+  const std::string& getHashType() const { return hashType_; }
 
   void swap(Checksum& other);
 };

@@ -44,8 +44,7 @@ namespace aria2 {
 class DHTRoutingTable;
 class DHTNode;
 
-class DHTAutoSaveCommand : public TimeBasedCommand
-{
+class DHTAutoSaveCommand : public TimeBasedCommand {
 private:
   int family_;
 
@@ -54,9 +53,10 @@ private:
   DHTRoutingTable* routingTable_;
 
   void save();
+
 public:
-  DHTAutoSaveCommand
-  (cuid_t cuid, DownloadEngine* e, int family, std::chrono::seconds interval);
+  DHTAutoSaveCommand(cuid_t cuid, DownloadEngine* e, int family,
+                     std::chrono::seconds interval);
 
   virtual ~DHTAutoSaveCommand();
 

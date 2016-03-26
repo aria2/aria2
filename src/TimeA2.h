@@ -75,11 +75,7 @@ public:
   void setTimeFromEpoch(time_t sec);
   time_t getTimeFromEpoch() const { return Clock::to_time_t(tp_); }
 
-  template <typename duration>
-  void advance(const duration& t)
-  {
-    tp_ += t;
-  }
+  template <typename duration> void advance(const duration& t) { tp_ += t; }
 
   bool good() const { return good_; }
   bool bad() const { return !good_; }

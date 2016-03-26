@@ -43,7 +43,7 @@ Basic Options
   When ``FILE`` is specified as ``-``, aria2 will read the input from ``stdin``.
   See the `Input File`_ subsection for details.
   See also the :option:`--deferred-input` option.
-  See also the :option:`--save-session-file` option.
+  See also the :option:`--save-session` option.
 
 .. option:: -l, --log=<LOG>
 
@@ -170,8 +170,11 @@ HTTP/FTP/SFTP Options
 
   If aria2 receives "file not found" status from the remote HTTP/FTP
   servers NUM times without getting a single byte, then force the
-  download to fail. Specify ``0`` to disable this option. This options is
-  effective only when using HTTP/FTP servers.
+  download to fail. Specify ``0`` to disable this option. This options
+  is effective only when using HTTP/FTP servers.  The number of retry
+  attempt is counted toward :option:`--max-tries`, so it should be
+  configured too.
+
   Default: ``0``
 
 .. option:: -m, --max-tries=<N>
@@ -638,6 +641,14 @@ BitTorrent Specific Options
   download count (thus it becomes 2), and the next download waiting in
   queue gets started. But be aware that seeding item is still
   recognized as active download in RPC method.  Default: ``false``
+
+.. option:: --bt-enable-hook-after-hash-check[=true|false]
+
+  Allow hook command invocation after hash check (see :option:`-V`
+  option) in BitTorrent download. By default, when hash check
+  succeeds, the command given by :option:`--on-bt-download-complete`
+  is executed. To disable this action, give ``false`` to this option.
+  Default: ``true``
 
 .. option:: --bt-enable-lpd[=true|false]
 
@@ -1207,6 +1218,11 @@ Advanced Options
   and options at startup.
   Default: ``false``
 
+  .. Warning::
+
+    :option:`--deferred-input` option will be disabled when
+    :option:`--save-session` is used together.
+
 .. option:: --disable-ipv6[=true|false]
 
   Disable IPv6. This is useful if you have to use broken DNS and want
@@ -1359,6 +1375,16 @@ Advanced Options
   downloads. Specifying 0 means no download result is kept. Default:
   ``1000``
 
+.. option:: --max-mmap-limit=<SIZE>
+
+  Set the maximum file size to enable mmap (see
+  :option:`--enable-mmap` option). The file size is determined by the
+  sum of all files contained in one download. For example, if a
+  download contains 5 files, then file size is the total size of those
+  files. If file size is strictly greater than the size specified in
+  this option, mmap will be disabled.
+  Default: ``9223372036854775807``
+
 .. option:: --max-resume-failure-tries=<N>
 
   When used with :option:`--always-resume=false, <--always-resume>` aria2 downloads file from
@@ -1430,6 +1456,21 @@ Advanced Options
   specified, command specified in this option is not executed.
   See `Event Hook`_ for more details about COMMAND.
   Possible Values: ``/path/to/command``
+
+
+.. option:: --optimize-concurrent-downloads[=true|false|<A>:<B>]
+
+  Optimizes the number of concurrent downloads according to the
+  bandwidth available. aria2 uses the download speed observed in the
+  previous downloads to adapt the number of downloads launched in
+  parallel according to the rule N = A + B Log10(speed in Mbps). The
+  coefficients A and B can be customized in the option arguments with
+  A and B separated by a colon. The default values (A=5, B=25) lead to
+  using typically 5 parallel downloads on 1Mbps networks and above 50
+  on 100Mbps networks. The number of parallel downloads remains
+  constrained under the maximum defined by the
+  :option:`--max-concurrent-downloads` parameter.
+  Default: ``false``
 
 .. option:: --piece-length=<LENGTH>
 
@@ -1540,22 +1581,30 @@ Advanced Options
     use meta data (e.g., BitTorrent and Metalink). In this case, there
     are some restrictions.
 
-    1. magnet URI, and followed by torrent download
-        GID of BitTorrent meta data download is saved.
-    2. URI to torrent file, and followed by torrent download
-        GID of torrent file download is saved.
-    3. URI to metalink file, and followed by file downloads described in metalink file
-        GID of metalink file download is saved.
-    4. local torrent file
-        GID of torrent download is saved.
-    5. local metalink file
-        Any meaningful GID is not saved.
+    magnet URI, and followed by torrent download
+       GID of BitTorrent meta data download is saved.
+    URI to torrent file, and followed by torrent download
+       GID of torrent file download is saved.
+    URI to metalink file, and followed by file downloads described in metalink file
+       GID of metalink file download is saved.
+    local torrent file
+       GID of torrent download is saved.
+    local metalink file
+       Any meaningful GID is not saved.
 
 .. option:: --save-session-interval=<SEC>
 
   Save error/unfinished downloads to a file specified by
   :option:`--save-session` option every SEC seconds. If ``0`` is
   given, file will be saved only when aria2 exits. Default: ``0``
+
+
+.. option:: --socket-recv-buffer-size=<SIZE>
+
+  Set the maximum socket receive buffer in bytes.  Specifing ``0``
+  will disable this option. This value will be set to socket file
+  descriptor using ``SO_RCVBUF`` socket option with ``setsockopt()``
+  call.  Default: ``0``
 
 .. option:: --stop=<SEC>
 
@@ -1954,6 +2003,7 @@ of URIs. These optional lines must start with white space(s).
   * :option:`always-resume <--always-resume>`
   * :option:`async-dns <--async-dns>`
   * :option:`auto-file-renaming <--auto-file-renaming>`
+  * :option:`bt-enable-hook-after-hash-check <--bt-enable-hook-after-hash-check>`
   * :option:`bt-enable-lpd <--bt-enable-lpd>`
   * :option:`bt-exclude-tracker <--bt-exclude-tracker>`
   * :option:`bt-external-ip <--bt-external-ip>`
@@ -2015,6 +2065,7 @@ of URIs. These optional lines must start with white space(s).
   * :option:`max-connection-per-server <-x>`
   * :option:`max-download-limit <--max-download-limit>`
   * :option:`max-file-not-found <--max-file-not-found>`
+  * :option:`max-mmap-limit <--max-mmap-limit>`
   * :option:`max-resume-failure-tries <--max-resume-failure-tries>`
   * :option:`max-tries <-m>`
   * :option:`max-upload-limit <-u>`
@@ -2203,6 +2254,10 @@ to provide the token as the first parameter as described above.
   interface. Therefore it is recommended to prefer Batch or `system.multicall`
   requests when appropriate.
 
+  `system.listMethods` can be executed without token.  Since it just
+  returns the all available methods, and does not alter anything, it
+  is safe without secret token.
+
 Methods
 ~~~~~~~
 
@@ -2305,7 +2360,7 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
 
     >>> import xmlrpclib
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
-    >>> s.aria2.addTorrent(xmlrpclib.Binary(open('file.torrent').read()))
+    >>> s.aria2.addTorrent(xmlrpclib.Binary(open('file.torrent', mode='rb').read()))
     '2089b05ecca3d829'
 
 .. function:: aria2.addMetalink([secret], metalink[, options[, position]])
@@ -2351,7 +2406,7 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
 
     >>> import xmlrpclib
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
-    >>> s.aria2.addMetalink(xmlrpclib.Binary(open('file.meta4').read()))
+    >>> s.aria2.addMetalink(xmlrpclib.Binary(open('file.meta4', mode='rb').read()))
     ['2089b05ecca3d829']
 
 .. function:: aria2.remove([secret], gid)
@@ -2478,6 +2533,10 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
   ``numSeeders``
     The number of seeders aria2 has connected to. BitTorrent only.
 
+  ``seeder``
+    ``true`` if the local endpoint is a seeder. Otherwise ``false``.
+    BitTorrent only.
+
   ``pieceLength``
     Piece length in bytes.
 
@@ -2492,6 +2551,10 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
     is a string. The error codes are defined in the `EXIT STATUS`_ section.
     This value is only available for stopped/completed downloads.
 
+  ``errorMessage``
+    The (hopefully) human readable error message associated to
+    ``errorCode``.
+
   ``followedBy``
     List of GIDs which are generated as the result of this
     download. For example, when aria2 downloads a Metalink file, it
@@ -2499,6 +2562,10 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
     :option:`--follow-metalink` option). This value is useful to track
     auto-generated downloads. If there are no such downloads, this key will not
     be included in the response.
+
+  ``following``
+    The reverse link for ``followedBy``.  A download included in
+    ``followedBy`` has this object's GID in its ``following`` value.
 
   ``belongsTo``
     GID of a parent download. Some downloads are a part of another
@@ -2768,7 +2835,7 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
     Upload speed(byte/sec) that this client uploads to the peer.
 
   ``seeder``
-    ``true`` is this peer is a seeder. Otherwise ``false``.
+    ``true`` if this peer is a seeder. Otherwise ``false``.
 
   **JSON-RPC Example**
   ::
@@ -3139,6 +3206,7 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
   * :option:`max-download-result <--max-download-result>`
   * :option:`max-overall-download-limit <--max-overall-download-limit>`
   * :option:`max-overall-upload-limit <--max-overall-upload-limit>`
+  * :option:`optimize-concurrent-downloads <--optimize-concurrent-downloads>`
   * :option:`save-cookies <--save-cookies>`
   * :option:`save-session <--save-session>`
   * :option:`server-stat-of <--server-stat-of>`
@@ -3395,10 +3463,40 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
     >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
     >>> mc = xmlrpclib.MultiCall(s)
     >>> mc.aria2.addUri(['http://example.org/file'])
-    >>> mc.aria2.addTorrent(xmlrpclib.Binary(open('file.torrent').read()))
+    >>> mc.aria2.addTorrent(xmlrpclib.Binary(open('file.torrent', mode='rb').read()))
     >>> r = mc()
     >>> tuple(r)
     ('2089b05ecca3d829', 'd2703803b52216d1')
+
+.. function:: system.listMethods()
+
+  This method returns the all available RPC methods in an array of
+  string.  Unlike other methods, this method does not require secret
+  token.  This is safe because this method jsut returns the available
+  method names.
+
+  **JSON-RPC Example**
+  ::
+
+    >>> import urllib2, json
+    >>> from pprint import pprint
+    >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
+    ...                       'method':'system.listMethods'})
+    >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+    >>> pprint(json.loads(c.read()))
+    {u'id': u'qwer',
+     u'jsonrpc': u'2.0',
+     u'result': [u'aria2.addUri',
+                 u'aria2.addTorrent',
+    ...
+
+  **XML-RPC Example**
+  ::
+
+    >>> import xmlrpclib
+    >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+    >>> s.system.listMethods()
+    ['aria2.addUri', 'aria2.addTorrent', ...
 
 Error Handling
 ~~~~~~~~~~~~~~
@@ -4154,7 +4252,7 @@ Encrypt the whole payload using ARC4 (obfuscation):
 
 SEE ALSO
 --------
-Project Web Site: http://aria2.sourceforge.net/
+Project Web Site: https://aria2.github.io/
 
 Metalink Homepage: http://www.metalinker.org/
 
