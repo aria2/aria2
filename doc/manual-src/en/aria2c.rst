@@ -327,6 +327,8 @@ HTTP/FTP/SFTP Options
   :option:`--min-split-size <-k>` option,
   so it will be necessary to specify a reasonable value to
   :option:`--min-split-size <-k>` option.
+  If ``random`` is given, aria2 selects piece randomly. Like
+  ``inorder``, :option:`--min-split-size <-k>` option is honored.
   If ``geom`` is given, at the beginning aria2 selects piece which has
   minimum index like ``inorder``, but it exponentially increasingly
   keeps space from previously selected piece. This will reduce the
