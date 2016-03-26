@@ -88,6 +88,7 @@ extern const std::string V_NOTICE;
 extern const std::string V_WARN;
 extern const std::string V_ERROR;
 extern const std::string V_INORDER;
+extern const std::string A2_V_RANDOM;
 extern const std::string V_FEEDBACK;
 extern const std::string V_ADAPTIVE;
 extern const std::string V_LIBUV;

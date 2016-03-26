@@ -140,6 +140,7 @@ SRCS =  \
 	InitiateConnectionCommand.cc InitiateConnectionCommand.h\
 	InitiateConnectionCommandFactory.cc InitiateConnectionCommandFactory.h\
 	InorderStreamPieceSelector.cc InorderStreamPieceSelector.h\
+	RandomStreamPieceSelector.cc RandomStreamPieceSelector.h\
 	InorderURISelector.cc InorderURISelector.h\
 	IOFile.cc IOFile.h\
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h\

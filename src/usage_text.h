@@ -851,6 +851,9 @@
     "                              --min-split-size option, so it will be necessary\n" \
     "                              to specify a reasonable value to\n"  \
     "                              --min-split-size option.\n"          \
+    "                              If 'random' is given, aria2 selects piece\n" \
+    "                              randomly. Like 'inorder', --min-split-size\n" \
+    "                              option is honored.\n"                \
     "                              If 'geom' is given, at the beginning aria2\n" \
     "                              selects piece which has minimum index like\n" \
     "                              'inorder', but it exponentially increasingly\n" \

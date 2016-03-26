@@ -557,8 +557,7 @@ void RequestGroup::initPieceStorage()
               downloadContext_->getFileEntries().begin(),
               downloadContext_->getFileEntries().end())) {
         // Use LongestSequencePieceSelector when HTTP/FTP/BitTorrent
-        // integrated downloads. Currently multi-file integrated
-        // download is not supported.
+        // integrated downloads.
         A2_LOG_DEBUG("Using LongestSequencePieceSelector");
         ps->setPieceSelector(make_unique<LongestSequencePieceSelector>());
       }

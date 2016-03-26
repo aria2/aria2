@@ -161,8 +161,20 @@ public:
                                     const unsigned char* ignoreBitfield,
                                     size_t ignoreBitfieldLength) const;
 
+  // Just like getInorderMissingUnusedIndex() above, but limit the
+  // search area in [startIndex, endIndex).  |endIndex| is normalized
+  // to min(|endIndex|, blocks_)
+  //
   // affected by filter
-  bool getAllMissingIndexes(unsigned char* misbitfield, size_t mislen) const;
+  bool getInorderMissingUnusedIndex
+  (size_t& index,
+   size_t startIndex, size_t endIndex,
+   int32_t minSplitSize,
+   const unsigned char* ignoreBitfield,
+   size_t ignoreBitfieldLength) const;
+
+  // affected by filter
+  bool getAllMissingIndexes(unsigned char *misbitfield, size_t mislen) const;
 
   // affected by filter
   bool getAllMissingIndexes(unsigned char* misbitfield, size_t mislen,
