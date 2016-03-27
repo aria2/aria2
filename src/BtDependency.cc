@@ -128,6 +128,7 @@ bool BtDependency::resolve()
       // always assumed.
       if (fileEntries.size() == 1 && dependantFileEntries.size() == 1 &&
           dependantFileEntries[0]->getOriginalName().empty()) {
+        // TODO this may be dead code
         copyValues(fileEntries[0], dependantFileEntries[0]);
       }
       else {

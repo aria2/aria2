@@ -262,6 +262,9 @@ void Metalink2RequestGroup::createRequestGroup(
       dctx->getFirstFileEntry()->setUris(uris);
       dctx->getFirstFileEntry()->setMaxConnectionPerServer(maxConn);
       dctx->getFirstFileEntry()->setSuffixPath(entry->file->getPath());
+      if (!entry->metaurls.empty()) {
+        dctx->getFirstFileEntry()->setOriginalName(entry->metaurls[0]->name);
+      }
 
       if (option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)) {
         dctx->getFirstFileEntry()->setUniqueProtocol(true);
