@@ -1320,6 +1320,12 @@ Advanced Options
   Possible Values: ``none``, ``prealloc``, ``trunc``, ``falloc``
   Default: ``prealloc``
 
+  .. Warning::
+
+     Using ``trunc`` seemingly allocates disk space very quickly, but
+     what it actually does is that it sets file length metadata in
+     file system, and does not allocate disk space at all.  This means
+     that it does not help avoiding fragmentation.
 
 .. option:: --force-save[=true|false]
 
