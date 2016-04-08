@@ -1451,6 +1451,26 @@ RpcResponse SystemListMethodsRpcMethod::execute(RpcRequest req,
                      std::move(req.id));
 }
 
+std::unique_ptr<ValueBase>
+SystemListNotificationsRpcMethod::process(const RpcRequest& req,
+                                                DownloadEngine* e)
+{
+  auto list = List::g();
+  for (auto& s : allNotificationsNames()) {
+    list->append(s);
+  }
+
+  return std::move(list);
+}
+
+RpcResponse SystemListNotificationsRpcMethod::execute(RpcRequest req,
+                                                      DownloadEngine* e)
+{
+  auto r = process(req, e);
+  return RpcResponse(0, RpcResponse::AUTHORIZED, std::move(r),
+                     std::move(req.id));
+}
+
 std::unique_ptr<ValueBase> NoSuchMethodRpcMethod::process(const RpcRequest& req,
                                                           DownloadEngine* e)
 {
