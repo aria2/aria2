@@ -435,7 +435,7 @@ clean: clean-dist
 	rm -rf *aria2*
 
 cleaner: clean
-	rm -rf *.build *.check *.stamp $(ARCHLIBS) $(NONARCHLIBS) arch
+	rm -rf *.build *.check *.stamp $(ARCHLIBS) $(NONARCHLIBS) arch *.x86_64
 
 really-clean: cleaner
 	rm -rf *.tar.*
