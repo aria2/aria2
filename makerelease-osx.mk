@@ -129,8 +129,7 @@ sqlite_ldflags=$(CFLAGS) $(LTO_FLAGS)
 gmp_version = 6.1.0
 gmp_hash = db38c7b67f8eea9f2e5b8a48d219165b2fdab11f
 gmp_url = https://ftp.gnu.org/gnu/gmp/gmp-$(gmp_version).tar.bz2
-gmp_confflags = --disable-cxx --enable-assembly --with-pic
-gmp_confflags_x86_64 = --enable-fat
+gmp_confflags = --disable-cxx --enable-assembly --with-pic --enable-fat
 
 libgpgerror_version = 1.21
 libgpgerror_hash = ef1dfb2f8761f019091180596e9e638d8cc37513
