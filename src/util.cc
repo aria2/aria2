@@ -586,10 +586,8 @@ bool parseUIntNoThrow(uint32_t& res, const std::string& s, int base)
 
 bool parseLLIntNoThrow(int64_t& res, const std::string& s, int base)
 {
-  long long int t;
-  if (parseLong(t, strtoll, s, base) &&
-      t >= std::numeric_limits<int64_t>::min() &&
-      t <= std::numeric_limits<int64_t>::max()) {
+  int64_t t;
+  if (parseLong(t, strtoll, s, base)) {
     res = t;
     return true;
   }
