@@ -796,13 +796,22 @@ void gatherProgress(Dict* entryDict, const std::shared_ptr<RequestGroup>& group,
                              e->getBtRegistry()->get(group->getGID()), keys);
   }
 #endif // ENABLE_BITTORRENT
-  if (e && e->getCheckIntegrityMan()) {
-     if (e->getCheckIntegrityMan()->isPicked(group)) {
-        entryDict->put(KEY_VERIFIED_LENGTH, util::itos(e->getCheckIntegrityMan()->getPickedEntry()->getCurrentLength()));
-     }
-     if (e->getCheckIntegrityMan()->isQueued(group)) {
-        entryDict->put(KEY_VERIFY_PENDING, VLB_TRUE);
-     }
+  if (e->getCheckIntegrityMan()) {
+    if (e->getCheckIntegrityMan()->isPicked(
+            [&group](const CheckIntegrityEntry& ent) {
+              return ent.getRequestGroup() == group.get();
+            })) {
+      entryDict->put(
+          KEY_VERIFIED_LENGTH,
+          util::itos(
+              e->getCheckIntegrityMan()->getPickedEntry()->getCurrentLength()));
+    }
+    if (e->getCheckIntegrityMan()->isQueued(
+            [&group](const CheckIntegrityEntry& ent) {
+              return ent.getRequestGroup() == group.get();
+            })) {
+      entryDict->put(KEY_VERIFY_PENDING, VLB_TRUE);
+    }
   }
 }
 } // namespace

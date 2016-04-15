@@ -43,7 +43,7 @@
 namespace aria2 {
 
 template <typename T> class SequentialPicker {
-protected:
+private:
   std::deque<std::unique_ptr<T>> entries_;
   std::unique_ptr<T> pickedEntry_;
 
@@ -72,6 +72,21 @@ public:
   }
 
   size_t countEntryInQueue() const { return entries_.size(); }
+
+  bool isPicked(const std::function<bool(const T&)>& pred) const
+  {
+    return pickedEntry_ && pred(*pickedEntry_);
+  }
+
+  bool isQueued(const std::function<bool(const T&)>& pred) const
+  {
+    for (auto& e : entries_) {
+      if (pred(*e)) {
+        return true;
+      }
+    }
+    return false;
+  }
 };
 
 } // namespace aria2

@@ -41,15 +41,8 @@
 namespace aria2 {
 
 class CheckIntegrityEntry;
-class RequestGroup;
 
-class CheckIntegrityMan : public SequentialPicker<CheckIntegrityEntry> {
-public:
-    bool isPicked(std::shared_ptr<RequestGroup> rg);
-    bool isQueued(std::shared_ptr<RequestGroup> rg);
-};
-
-// typedef SequentialPicker<CheckIntegrityEntry> CheckIntegrityMan;
+typedef SequentialPicker<CheckIntegrityEntry> CheckIntegrityMan;
 
 } // namespace aria2
 

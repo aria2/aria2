@@ -39,7 +39,7 @@ SRCS =  \
 	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
 	CheckIntegrityDispatcherCommand.cc CheckIntegrityDispatcherCommand.h\
 	CheckIntegrityEntry.cc CheckIntegrityEntry.h\
-	CheckIntegrityMan.cc CheckIntegrityMan.h\
+	CheckIntegrityMan.h\
 	Checksum.cc Checksum.h\
 	ChecksumCheckIntegrityEntry.cc ChecksumCheckIntegrityEntry.h\
 	ChunkChecksum.cc ChunkChecksum.h\
