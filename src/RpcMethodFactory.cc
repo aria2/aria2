@@ -68,10 +68,23 @@ std::vector<std::string> rpcMethodNames = {
     "aria2.removeDownloadResult", "aria2.getVersion", "aria2.getSessionInfo",
     "aria2.shutdown", "aria2.forceShutdown", "aria2.getGlobalStat",
     "aria2.saveSession", "system.multicall", "system.listMethods",
+    "system.listNotifications",
 };
 } // namespace
 
 const std::vector<std::string>& allMethodNames() { return rpcMethodNames; }
+
+namespace {
+std::vector<std::string> rpcNotificationsNames = {
+    "aria2.onDownloadStart", "aria2.onDownloadPause", "aria2.onDownloadStop",
+    "aria2.onDownloadComplete", "aria2.onDownloadError",
+    #ifdef ENABLE_BITTORRENT
+    "aria2.onBtDownloadComplete",
+    #endif // ENABLE_BITTORRENT
+};
+} // namespace
+
+const std::vector<std::string>& allNotificationsNames() { return rpcNotificationsNames; }
 
 namespace {
 std::unique_ptr<RpcMethod> createMethod(const std::string& methodName)
@@ -218,6 +231,10 @@ std::unique_ptr<RpcMethod> createMethod(const std::string& methodName)
 
   if (methodName == SystemListMethodsRpcMethod::getMethodName()) {
     return make_unique<SystemListMethodsRpcMethod>();
+  }
+
+  if (methodName == SystemListNotificationsRpcMethod::getMethodName()) {
+    return make_unique<SystemListNotificationsRpcMethod>();
   }
 
   return nullptr;

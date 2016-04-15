@@ -49,6 +49,8 @@ class RpcMethod;
 
 const std::vector<std::string>& allMethodNames();
 
+const std::vector<std::string>& allNotificationsNames();
+
 RpcMethod* getMethod(const std::string& methodName);
 
 } // namespace rpc
