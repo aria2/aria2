@@ -2614,6 +2614,15 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
       ``name``
         name in info dictionary. ``name.utf-8`` is used if available.
 
+  ``verifiedLength``
+    The number of verified number of bytes while the files are being
+    hash checked.  This key exists only when this download is being
+    hash checked.
+
+  ``verifyIntegrityPending``
+    ``true`` if this download is waiting for the hash check in a
+    queue.  This key exists only when this download is in the queue.
+
   **JSON-RPC Example**
 
   The following example gets information about a download with GID#2089b05ecca3d829::
