@@ -80,6 +80,7 @@ class RpcMethodTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testSystemMulticall);
   CPPUNIT_TEST(testSystemMulticall_fail);
   CPPUNIT_TEST(testSystemListMethods);
+  CPPUNIT_TEST(testSystemListNotifications);
   CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -146,6 +147,7 @@ public:
   void testSystemMulticall();
   void testSystemMulticall_fail();
   void testSystemListMethods();
+  void testSystemListNotifications();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(RpcMethodTest);
@@ -1386,6 +1388,24 @@ void RpcMethodTest::testSystemListMethods()
 
   const auto resParams = downcast<List>(res.param);
   auto& allNames = allMethodNames();
+
+  CPPUNIT_ASSERT_EQUAL(allNames.size(), resParams->size());
+
+  for (size_t i = 0; i < allNames.size(); ++i) {
+    const auto s = downcast<String>(resParams->get(i));
+    CPPUNIT_ASSERT(s);
+    CPPUNIT_ASSERT_EQUAL(allNames[i], s->s());
+  }
+}
+
+void RpcMethodTest::testSystemListNotifications()
+{
+  SystemListNotificationsRpcMethod m;
+  auto res = m.execute(createReq("system.listNotifications"), e_.get());
+  CPPUNIT_ASSERT_EQUAL(0, res.code);
+
+  const auto resParams = downcast<List>(res.param);
+  auto& allNames = allNotificationsNames();
 
   CPPUNIT_ASSERT_EQUAL(allNames.size(), resParams->size());
 
