@@ -1,40 +1,37 @@
-aria2 1.21.0
+aria2 1.22.0
 ============
 
 Release Note
 ------------
 
-This release fixes several bugs, see the Changes for details.  We
-added "following" key to the response of aria2.tellStatus RPC method
-as reverse link for followedBy.
+This release adds new feature that manages the number of concurrent
+downloads dynamically.  --stream-piece-selector option gets new value
+"random" which randomizes the piece selection for HTTP/FTP downloads.
+This effectively randomizes the order of files on multi-file Web
+Seeding.  Now all contributor's names are in AUTHORS file.
+Previously, aria2 shows error when it sees floating point number in a
+torrent file because torrent file specification does not allow
+floating point number.  In this release, they are just ignored, and
+aria2 continues to parse the rest of the torrent file as if there is
+nothing wrong.
 
 Changes
 -------
 
-* SessionSerializer: Fix bug that pause=true is added to wrong item
+* Add description about possible fragmentation with
+  --file-allocation=trunc
 
-  This change also defers writing metadata download to the location
-  where first its follower download is written.
+* Make single-entry metalink download with multi-file torrent work
 
-* Add "following" to aria2.tellStatus response key as reverse link for
-  followedBy
+* Add all contributor's names in AUTHORS
 
-* mingw: Add warning for falloc
+* Ignore floating number in torrent file
 
-* Update ciphers in AppleTLS
+* Added support for a dynamic management of the number of concurrent
+  downloads as a function of the overall bandwidth observed
 
-  Also enable fast start while at it
+  This change adds --optimize-concurrent-downloads option.
 
-* OSX: Enable libssh2 and sftp
+  Patch from oliviercommelarbre
 
-  Closes GH-468
-
-* Update OSX dependencies
-
-  Closes GH-466
-
-* Fix compile error without TLS support
-
-* Add support for using gnutls system wide crypto policy
-
-  Patch from Athmane Madjoudj
+* Add --stream-piece-selector=random
