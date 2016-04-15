@@ -138,10 +138,12 @@ bool RequestGroupMan::setupOptimizeConcurrentDownloads(void)
       option_->getAsBool(PREF_OPTIMIZE_CONCURRENT_DOWNLOADS);
   if (optimizeConcurrentDownloads_) {
     if (option_->defined(PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFA)) {
-      optimizeConcurrentDownloadsCoeffA_ =
-          std::stod(option_->get(PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFA));
-      optimizeConcurrentDownloadsCoeffB_ =
-          std::stod(option_->get(PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFB));
+      optimizeConcurrentDownloadsCoeffA_ = strtod(
+          option_->get(PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFA).c_str(),
+          nullptr);
+      optimizeConcurrentDownloadsCoeffB_ = strtod(
+          option_->get(PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFB).c_str(),
+          nullptr);
     }
   }
   return optimizeConcurrentDownloads_;

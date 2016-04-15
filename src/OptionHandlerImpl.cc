@@ -623,10 +623,10 @@ void OptimizeConcurrentDownloadsOptionHandler::parseArg(
     PrefPtr pref = PREF_OPTIMIZE_CONCURRENT_DOWNLOADS_COEFFA;
     std::string* sptr = &coeff_a;
     for (;;) {
-      try {
-        double dbl = std::stod(*sptr);
-      }
-      catch (std::invalid_argument& ex) {
+      char *end;
+      errno = 0;
+      auto dbl = strtod(sptr->c_str(), &end);
+      if (errno != 0 || sptr->c_str() + sptr->size() != end) {
         throw DL_ABORT_EX(fmt("Bad number '%s'", sptr->c_str()));
       }
       option.put(pref, *sptr);
