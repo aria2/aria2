@@ -38,25 +38,23 @@
 
 namespace aria2 {
 
-RandomStreamPieceSelector::RandomStreamPieceSelector
-(BitfieldMan* bitfieldMan)
-  : bitfieldMan_(bitfieldMan)
-{}
+RandomStreamPieceSelector::RandomStreamPieceSelector(BitfieldMan* bitfieldMan)
+    : bitfieldMan_(bitfieldMan)
+{
+}
 
 RandomStreamPieceSelector::~RandomStreamPieceSelector() {}
 
-bool RandomStreamPieceSelector::select
-(size_t& index,
- size_t minSplitSize,
- const unsigned char* ignoreBitfield,
- size_t length)
+bool RandomStreamPieceSelector::select(size_t& index, size_t minSplitSize,
+                                       const unsigned char* ignoreBitfield,
+                                       size_t length)
 {
-  size_t start = SimpleRandomizer::getInstance()->getRandomNumber
-    (bitfieldMan_->countBlock());
+  size_t start = SimpleRandomizer::getInstance()->getRandomNumber(
+      bitfieldMan_->countBlock());
 
-  auto rv = bitfieldMan_->getInorderMissingUnusedIndex
-    (index, start, bitfieldMan_->countBlock(), minSplitSize, ignoreBitfield,
-     length);
+  auto rv = bitfieldMan_->getInorderMissingUnusedIndex(
+      index, start, bitfieldMan_->countBlock(), minSplitSize, ignoreBitfield,
+      length);
   if (rv) {
     return true;
   }

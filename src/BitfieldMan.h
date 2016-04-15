@@ -166,15 +166,13 @@ public:
   // to min(|endIndex|, blocks_)
   //
   // affected by filter
-  bool getInorderMissingUnusedIndex
-  (size_t& index,
-   size_t startIndex, size_t endIndex,
-   int32_t minSplitSize,
-   const unsigned char* ignoreBitfield,
-   size_t ignoreBitfieldLength) const;
+  bool getInorderMissingUnusedIndex(size_t& index, size_t startIndex,
+                                    size_t endIndex, int32_t minSplitSize,
+                                    const unsigned char* ignoreBitfield,
+                                    size_t ignoreBitfieldLength) const;
 
   // affected by filter
-  bool getAllMissingIndexes(unsigned char *misbitfield, size_t mislen) const;
+  bool getAllMissingIndexes(unsigned char* misbitfield, size_t mislen) const;
 
   // affected by filter
   bool getAllMissingIndexes(unsigned char* misbitfield, size_t mislen,
