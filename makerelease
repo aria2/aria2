@@ -11,6 +11,8 @@ PREV_VERSION=$2
 git checkout refs/tags/release-$VERSION
 git log --pretty=fuller --date=short refs/tags/release-$PREV_VERSION..HEAD > ChangeLog
 
+autoreconf -i
+
 ./configure && \
     make dist-bzip2 && make dist-gzip && make dist-xz || echo "error"
 make distclean
@@ -19,7 +21,7 @@ make distclean
 export HOST=i686-w64-mingw32
 export LABEL=win-32bit
 ./mingw-config
-make -j3
+make -j8
 ./mingw-release
 make distclean
 
@@ -27,13 +29,13 @@ make distclean
 export HOST=x86_64-w64-mingw32
 export LABEL=win-64bit
 ./mingw-config
-make -j3
+make -j8
 ./mingw-release
 make distclean
 
 # android
 ./android-config
-./android-make -j3
+./android-make -j8
 ./android-release
 make distclean
 
