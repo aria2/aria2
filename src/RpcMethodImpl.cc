@@ -1453,7 +1453,7 @@ RpcResponse SystemListMethodsRpcMethod::execute(RpcRequest req,
 
 std::unique_ptr<ValueBase>
 SystemListNotificationsRpcMethod::process(const RpcRequest& req,
-                                                DownloadEngine* e)
+                                          DownloadEngine* e)
 {
   auto list = List::g();
   for (auto& s : allNotificationsNames()) {

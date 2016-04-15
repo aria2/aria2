@@ -76,15 +76,19 @@ const std::vector<std::string>& allMethodNames() { return rpcMethodNames; }
 
 namespace {
 std::vector<std::string> rpcNotificationsNames = {
-    "aria2.onDownloadStart", "aria2.onDownloadPause", "aria2.onDownloadStop",
-    "aria2.onDownloadComplete", "aria2.onDownloadError",
-    #ifdef ENABLE_BITTORRENT
+    "aria2.onDownloadStart",      "aria2.onDownloadPause",
+    "aria2.onDownloadStop",       "aria2.onDownloadComplete",
+    "aria2.onDownloadError",
+#ifdef ENABLE_BITTORRENT
     "aria2.onBtDownloadComplete",
-    #endif // ENABLE_BITTORRENT
+#endif // ENABLE_BITTORRENT
 };
 } // namespace
 
-const std::vector<std::string>& allNotificationsNames() { return rpcNotificationsNames; }
+const std::vector<std::string>& allNotificationsNames()
+{
+  return rpcNotificationsNames;
+}
 
 namespace {
 std::unique_ptr<RpcMethod> createMethod(const std::string& methodName)
