@@ -907,6 +907,18 @@ void gatherStoppedDownload(Dict* entryDict,
   if (requested_key(keys, KEY_DIR)) {
     entryDict->put(KEY_DIR, ds->dir);
   }
+
+#ifdef ENABLE_BITTORRENT
+  if (ds->attrs.size() > CTX_ATTR_BT && ds->attrs[CTX_ATTR_BT]) {
+    const auto attrs =
+        static_cast<TorrentAttribute*>(ds->attrs[CTX_ATTR_BT].get());
+    if (requested_key(keys, KEY_BITTORRENT)) {
+      auto btDict = Dict::g();
+      gatherBitTorrentMetadata(btDict.get(), attrs);
+      entryDict->put(KEY_BITTORRENT, std::move(btDict));
+    }
+  }
+#endif // ENABLE_BITTORRENT
 }
 
 std::unique_ptr<ValueBase> GetFilesRpcMethod::process(const RpcRequest& req,

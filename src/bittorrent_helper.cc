@@ -424,7 +424,7 @@ void processRootDictionary(const std::shared_ptr<DownloadContext>& ctx,
     throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_INFO),
                        error_code::BITTORRENT_PARSE_ERROR);
   }
-  auto torrent = make_unique<TorrentAttribute>();
+  auto torrent = std::make_shared<TorrentAttribute>();
 
   // retrieve infoHash
   std::string encodedInfoDict = bencode2::encode(infoDict);

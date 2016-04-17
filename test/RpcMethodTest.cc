@@ -67,6 +67,9 @@ class RpcMethodTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetVersion);
   CPPUNIT_TEST(testNoSuchMethod);
   CPPUNIT_TEST(testGatherStoppedDownload);
+#ifdef ENABLE_BITTORRENT
+  CPPUNIT_TEST(testGatherStoppedDownload_bt);
+#endif // ENABLE_BITTORRENT
   CPPUNIT_TEST(testGatherProgressCommon);
 #ifdef ENABLE_BITTORRENT
   CPPUNIT_TEST(testGatherBitTorrentMetadata);
@@ -134,6 +137,9 @@ public:
   void testGetVersion();
   void testNoSuchMethod();
   void testGatherStoppedDownload();
+#ifdef ENABLE_BITTORRENT
+  void testGatherStoppedDownload_bt();
+#endif // ENABLE_BITTORRENT
   void testGatherProgressCommon();
 #ifdef ENABLE_BITTORRENT
   void testGatherBitTorrentMetadata();
@@ -949,6 +955,29 @@ void RpcMethodTest::testGatherStoppedDownload()
   CPPUNIT_ASSERT_EQUAL((size_t)1, entry->size());
   CPPUNIT_ASSERT(entry->containsKey("gid"));
 }
+
+#ifdef ENABLE_BITTORRENT
+void RpcMethodTest::testGatherStoppedDownload_bt()
+{
+  auto d = std::make_shared<DownloadResult>();
+  d->gid = GroupId::create();
+  d->infoHash = "2089b05ecca3d829cee5497d2703803b52216d19";
+  d->attrs = std::vector<std::shared_ptr<ContextAttribute>>(MAX_CTX_ATTR);
+
+  auto torrentAttr = std::make_shared<TorrentAttribute>();
+  torrentAttr->creationDate = 1000000007;
+  d->attrs[CTX_ATTR_BT] = torrentAttr;
+
+  auto entry = Dict::g();
+  gatherStoppedDownload(entry.get(), d, {});
+
+  auto btDict = downcast<Dict>(entry->get("bittorrent"));
+  CPPUNIT_ASSERT(btDict);
+
+  CPPUNIT_ASSERT_EQUAL((int64_t)1000000007,
+                       downcast<Integer>(btDict->get("creationDate"))->i());
+}
+#endif // ENABLE_BITTORRENT
 
 void RpcMethodTest::testGatherProgressCommon()
 {

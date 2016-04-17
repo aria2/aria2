@@ -165,7 +165,7 @@ void Dict::put(std::string key, std::unique_ptr<ValueBase> vlb)
   auto p = std::make_pair(std::move(key), std::move(vlb));
   auto r = dict_.insert(std::move(p));
   if (!r.second) {
-    (*r.first).second = std::move(vlb);
+    (*r.first).second = std::move(p.second);
   }
 }
 

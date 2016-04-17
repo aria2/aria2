@@ -64,8 +64,8 @@ struct TorrentAttribute : public ContextAttribute {
   ~TorrentAttribute();
 
   // Don't allow copying
-  TorrentAttribute(const TorrentAttribute&);
-  TorrentAttribute& operator=(const TorrentAttribute&);
+  TorrentAttribute(const TorrentAttribute&) = delete;
+  TorrentAttribute& operator=(const TorrentAttribute&) = delete;
 };
 
 } // namespace aria2
