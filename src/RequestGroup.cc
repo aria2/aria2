@@ -1110,6 +1110,7 @@ std::shared_ptr<DownloadResult> RequestGroup::createDownloadResult() const
   TransferStat st = calculateStat();
   auto res = std::make_shared<DownloadResult>();
   res->gid = gid_;
+  res->attrs = downloadContext_->getAttributes();
   res->fileEntries = downloadContext_->getFileEntries();
   res->inMemoryDownload = inMemoryDownload_;
   res->sessionDownloadLength = st.sessionDownloadLength;

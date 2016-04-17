@@ -45,6 +45,7 @@
 
 #include "error_code.h"
 #include "RequestGroup.h"
+#include "ContextAttribute.h"
 
 namespace aria2 {
 
@@ -72,6 +73,8 @@ struct DownloadResult {
   std::shared_ptr<Option> option;
 
   std::shared_ptr<MetadataInfo> metadataInfo;
+
+  std::vector<std::shared_ptr<ContextAttribute>> attrs;
 
   std::vector<std::shared_ptr<FileEntry>> fileEntries;
 
@@ -102,8 +105,8 @@ struct DownloadResult {
   ~DownloadResult();
 
   // Don't allow copying
-  DownloadResult(const DownloadResult& c);
-  DownloadResult& operator=(const DownloadResult& c);
+  DownloadResult(const DownloadResult& c) = delete;
+  DownloadResult& operator=(const DownloadResult& c) = delete;
 };
 
 } // namespace aria2
