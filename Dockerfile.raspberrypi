@@ -80,7 +80,7 @@ RUN mkdir sqlite && cd sqlite && \
     make -s install
 
 RUN mkdir aria && cd aria && \
-    curl -s 'https://api.github.com/repos/tatsuhiro-t/aria2/releases/latest' | \
+    curl -s 'https://api.github.com/repos/aria2/aria2/releases/latest' | \
         grep 'browser_download_url.*[0-9]\.tar\.bz2' | sed -e 's/^[[:space:]]*//' | \
         cut -d ' ' -f 2 | xargs -I % curl -Ls -o - '%' | tar xjf - --strip-components=1 && \
     ./configure \

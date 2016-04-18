@@ -98,11 +98,11 @@ How to get source code
 ----------------------
 
 We maintain the source code at Github:
-https://github.com/tatsuhiro-t/aria2
+https://github.com/aria2/aria2
 
 To get the latest source code, run following command::
 
-    $ git clone https://github.com/tatsuhiro-t/aria2.git
+    $ git clone https://github.com/aria2/aria2.git
 
 This will create aria2 directory in your current directory and source
 files are stored there.

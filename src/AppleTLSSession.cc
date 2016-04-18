@@ -553,7 +553,7 @@ int AppleTLSSession::closeConnection()
 
 int AppleTLSSession::checkDirection()
 {
-  // See: https://github.com/tatsuhiro-t/aria2/pull/61#issuecomment-16051793
+  // See: https://github.com/aria2/aria2/pull/61#issuecomment-16051793
   if (state_ == st_connected) {
     // Need to check read first, as SocketCore kinda expects this
     size_t buffered;

@@ -105,6 +105,6 @@ RUN cd libssh2-1.6.0 && \
     LIBS="-lws2_32" && \
     make install
 
-RUN git clone https://github.com/tatsuhiro-t/aria2
+RUN git clone https://github.com/aria2/aria2
 RUN cd aria2 && autoreconf -i && ./mingw-config && make && \
     $HOST-strip src/aria2c.exe

@@ -102,11 +102,11 @@ Como obter o código fonte
 -------------------------
 
 O código fonte é mantido no Github:
-https://github.com/tatsuhiro-t/aria2
+https://github.com/aria2/aria2
 
 Para obter o último código fonte, execute o seguinte comando::
 
-    $ git clone git://github.com/tatsuhiro-t/aria2.git
+    $ git clone git://github.com/aria2/aria2.git
 
 Aria2 será criado no diretório corrente do seu computador com os arquivos fonte.
 
