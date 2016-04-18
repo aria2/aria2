@@ -867,6 +867,10 @@ std::string formatLastError(int errNum);
 // CreateProcess call.
 void make_fd_cloexec(int fd);
 
+#ifdef __MINGW32__
+bool gainPrivilege(LPCTSTR privName);
+#endif // __MINGW32__
+
 } // namespace util
 
 } // namespace aria2
