@@ -11,7 +11,7 @@
 # $ sudo docker cp $id:/aria2/src/aria2c.exe <dest>
 # $ sudo docker rm -v $id
 
-FROM ubuntu
+FROM ubuntu:wily
 
 MAINTAINER Tatsuhiro Tsujikawa
 
@@ -22,89 +22,92 @@ ENV HOST i686-w64-mingw32
 # downloads.
 # RUN sed -ie 's/archive\.ubuntu/jp.archive.ubuntu/g' /etc/apt/sources.list
 
-RUN apt-get update
-RUN apt-get install -y make binutils autoconf automake autotools-dev libtool \
-    pkg-config git curl dpkg-dev gcc-mingw-w64 \
-    autopoint libcppunit-dev libxml2-dev libgcrypt11-dev lzip
+RUN apt-get update && \
+    apt-get install -y \
+        make binutils autoconf automake autotools-dev libtool \
+        pkg-config git curl dpkg-dev gcc-mingw-w64 \
+        autopoint libcppunit-dev libxml2-dev libgcrypt11-dev lzip
 
-RUN curl -L -O https://gmplib.org/download/gmp/gmp-6.1.0.tar.lz
-RUN curl -L -O http://downloads.sourceforge.net/project/expat/expat/2.1.0/expat-2.1.0.tar.gz
-RUN curl -L -O http://www.sqlite.org/2016/sqlite-autoconf-3100200.tar.gz
-RUN curl -L -O http://zlib.net/zlib-1.2.8.tar.xz
-RUN curl -L -O http://c-ares.haxx.se/download/c-ares-1.10.0.tar.gz
-RUN curl -L -O http://libssh2.org/download/libssh2-1.6.0.tar.gz
+RUN curl -L -O https://gmplib.org/download/gmp/gmp-6.1.0.tar.lz && \
+    curl -L -o gmp-6.1.0.patch https://gmplib.org/repo/gmp-6.1/raw-rev/67d4ee9dead1 && \
+    curl -L -O http://downloads.sourceforge.net/project/expat/expat/2.1.0/expat-2.1.0.tar.gz && \
+    curl -L -O https://www.sqlite.org/2016/sqlite-autoconf-3120100.tar.gz && \
+    curl -L -O http://zlib.net/zlib-1.2.8.tar.xz && \
+    curl -L -O http://c-ares.haxx.se/download/c-ares-1.11.0.tar.gz && \
+    curl -L -O http://libssh2.org/download/libssh2-1.7.0.tar.gz
 
-RUN tar xf gmp-6.1.0.tar.lz
-RUN cd gmp-6.1.0 && \
+RUN tar xf gmp-6.1.0.tar.lz && \
+    cd gmp-6.1.0 && \
+    patch -p1 < ../gmp-6.1.0.patch && \
     ./configure \
-    --disable-shared \
-    --enable-static \
-    --prefix=/usr/local/$HOST \
-    --host=$HOST \
-    --disable-cxx \
-    --enable-fat \
-    CFLAGS="-mtune=generic -O2 -g0" && \
+        --disable-shared \
+        --enable-static \
+        --prefix=/usr/local/$HOST \
+        --host=$HOST \
+        --disable-cxx \
+        --enable-fat \
+        CFLAGS="-mtune=generic -O2 -g0" && \
     make install
 
-RUN tar xf expat-2.1.0.tar.gz
-RUN cd expat-2.1.0 && \
+RUN tar xf expat-2.1.0.tar.gz && \
+    cd expat-2.1.0 && \
     ./configure \
-    --disable-shared \
-    --enable-static \
-    --prefix=/usr/local/$HOST \
-    --host=$HOST \
-    --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` && \
+        --disable-shared \
+        --enable-static \
+        --prefix=/usr/local/$HOST \
+        --host=$HOST \
+        --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` && \
     make install
 
-RUN tar xf sqlite-autoconf-3100200.tar.gz
-RUN cd sqlite-autoconf-3100200 && \
+RUN tar xf sqlite-autoconf-3120100.tar.gz && \
+    cd sqlite-autoconf-3120100 && \
     ./configure \
-    --disable-shared \
-    --enable-static \
-    --prefix=/usr/local/$HOST \
-    --host=$HOST \
-    --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` && \
+        --disable-shared \
+        --enable-static \
+        --prefix=/usr/local/$HOST \
+        --host=$HOST \
+        --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` && \
     make install
 
-RUN tar xf zlib-1.2.8.tar.xz
-RUN cd zlib-1.2.8 && \
+RUN tar xf zlib-1.2.8.tar.xz && \
+    cd zlib-1.2.8 && \
     CC=$HOST-gcc \
     AR=$HOST-ar \
     LD=$HOST-ld \
     RANLIB=$HOST-ranlib \
     STRIP=$HOST-strip \
     ./configure \
-    --prefix=/usr/local/$HOST \
-    --libdir=/usr/local/$HOST/lib \
-    --includedir=/usr/local/$HOST/include \
-    --static && \
+        --prefix=/usr/local/$HOST \
+        --libdir=/usr/local/$HOST/lib \
+        --includedir=/usr/local/$HOST/include \
+        --static && \
     make install
 
-RUN tar xf c-ares-1.10.0.tar.gz
-RUN cd c-ares-1.10.0 && \
+RUN tar xf c-ares-1.11.0.tar.gz && \
+    cd c-ares-1.11.0 && \
     ./configure \
-    --disable-shared \
-    --enable-static \
-    --without-random \
-    --prefix=/usr/local/$HOST \
-    --host=$HOST \
-    --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` \
-    LIBS="-lws2_32" && \
+        --disable-shared \
+        --enable-static \
+        --without-random \
+        --prefix=/usr/local/$HOST \
+        --host=$HOST \
+        --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` \
+        LIBS="-lws2_32" && \
     make install
 
-RUN tar xf libssh2-1.6.0.tar.gz
-RUN cd libssh2-1.6.0 && \
+RUN tar xf libssh2-1.7.0.tar.gz && \
+    cd libssh2-1.7.0 && \
     ./configure \
-    --disable-shared \
-    --enable-static \
-    --prefix=/usr/local/$HOST \
-    --host=$HOST \
-    --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` \
-    --without-openssl \
-    --with-wincng \
-    LIBS="-lws2_32" && \
+        --disable-shared \
+        --enable-static \
+        --prefix=/usr/local/$HOST \
+        --host=$HOST \
+        --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` \
+        --without-openssl \
+        --with-wincng \
+        LIBS="-lws2_32" && \
     make install
 
-RUN git clone https://github.com/aria2/aria2
-RUN cd aria2 && autoreconf -i && ./mingw-config && make && \
+RUN git clone https://github.com/aria2/aria2 && \
+    cd aria2 && autoreconf -i && ./mingw-config && make && \
     $HOST-strip src/aria2c.exe
