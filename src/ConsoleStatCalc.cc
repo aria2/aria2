@@ -124,7 +124,8 @@ void printSizeProgress(ColorizedStream& o,
     o << sizeFormatter(rg->getCompletedLength()) << "B/"
       << sizeFormatter(rg->getTotalLength()) << "B";
     if (rg->getTotalLength() > 0) {
-      o << colors::cyan << "(" << 100 * rg->getCompletedLength() / rg->getTotalLength() << "%)";
+      o << colors::cyan << "("
+        << 100 * rg->getCompletedLength() / rg->getTotalLength() << "%)";
       o << colors::clear;
     }
   }
@@ -139,7 +140,8 @@ void printProgressCompact(ColorizedStream& o, const DownloadEngine* e,
     NetStat& netstat = e->getRequestGroupMan()->getNetStat();
     int dl = netstat.calculateDownloadSpeed();
     int ul = netstat.calculateUploadSpeed();
-    o << colors::magenta << "[" << colors::clear << "DL:" << colors::green << sizeFormatter(dl) << "B" << colors::clear;
+    o << colors::magenta << "[" << colors::clear << "DL:" << colors::green
+      << sizeFormatter(dl) << "B" << colors::clear;
     if (ul) {
       o << " UL:" << colors::cyan << sizeFormatter(ul) << "B" << colors::clear;
     }
@@ -153,7 +155,8 @@ void printProgressCompact(ColorizedStream& o, const DownloadEngine* e,
        ++i, ++cnt) {
     const std::shared_ptr<RequestGroup>& rg = *i;
     TransferStat stat = rg->calculateStat();
-    o << colors::magenta << "[" << colors::clear << "#" << GroupId::toAbbrevHex(rg->getGID()) << " ";
+    o << colors::magenta << "[" << colors::clear << "#"
+      << GroupId::toAbbrevHex(rg->getGID()) << " ";
     printSizeProgress(o, rg, stat, sizeFormatter);
     o << colors::magenta << "]" << colors::clear;
   }
@@ -173,7 +176,8 @@ void printProgress(ColorizedStream& o, const std::shared_ptr<RequestGroup>& rg,
     eta =
         (rg->getTotalLength() - rg->getCompletedLength()) / stat.downloadSpeed;
   }
-  o << colors::magenta << "[" << colors::clear << "#" << GroupId::toAbbrevHex(rg->getGID()) << " ";
+  o << colors::magenta << "[" << colors::clear << "#"
+    << GroupId::toAbbrevHex(rg->getGID()) << " ";
   printSizeProgress(o, rg, stat, sizeFormatter);
   o << " CN:" << rg->getNumConnection();
 #ifdef ENABLE_BITTORRENT
@@ -196,7 +200,7 @@ void printProgress(ColorizedStream& o, const std::shared_ptr<RequestGroup>& rg,
   if (eta > 0) {
     o << " ETA:" << colors::yellow << util::secfmt(eta) << colors::clear;
   }
-  o << colors::magenta  << "]" << colors::clear;
+  o << colors::magenta << "]" << colors::clear;
 }
 } // namespace
 
