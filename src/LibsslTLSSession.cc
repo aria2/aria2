@@ -259,6 +259,15 @@ int OpenSSLTLSSession::tlsConnect(const std::string& hostname,
             continue;
           }
           size_t len = ASN1_STRING_length(altName->d.ia5);
+          if (len == 0) {
+            continue;
+          }
+          if (name[len - 1] == '.') {
+            --len;
+            if (len == 0) {
+              continue;
+            }
+          }
           dnsNames.push_back(std::string(name, len));
         }
         else if (altName->type == GEN_IPADD) {
@@ -289,6 +298,17 @@ int OpenSSLTLSSession::tlsConnect(const std::string& hostname,
       int outlen = ASN1_STRING_to_UTF8(&out, X509_NAME_ENTRY_get_data(entry));
       if (outlen < 0) {
         continue;
+      }
+      if (outlen == 0) {
+        OPENSSL_free(out);
+        continue;
+      }
+      if (out[outlen - 1] == '.') {
+        --outlen;
+        if (outlen == 0) {
+          OPENSSL_free(out);
+          continue;
+        }
       }
       commonName.assign(&out[0], &out[outlen]);
       OPENSSL_free(out);
