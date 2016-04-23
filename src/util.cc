@@ -1341,9 +1341,17 @@ void setGlobalSignalHandler(int sig, sigset_t* mask, signal_handler_t handler,
   sigact.sa_handler = handler;
   sigact.sa_flags = flags;
   sigact.sa_mask = *mask;
-  sigaction(sig, &sigact, nullptr);
+  if (sigaction(sig, &sigact, nullptr) == -1) {
+    auto errNum = errno;
+    A2_LOG_ERROR(fmt("sigaction() failed for signal %d: %s", sig,
+                     safeStrerror(errNum).c_str()));
+  }
 #else
-  signal(sig, handler);
+  if (signal(sig, handler) == SIG_ERR) {
+    auto errNum = errno;
+    A2_LOG_ERROR(fmt("signal() failed for signal %d: %s", sig,
+                     safeStrerror(errNum).c_str()));
+  }
 #endif // HAVE_SIGACTION
 }
 

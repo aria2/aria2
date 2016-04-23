@@ -90,8 +90,14 @@ void putOptions(struct option* longOpts, int* plopt, InputIterator first,
     if (*first && !(*first)->isHidden()) {
 #ifdef HAVE_OPTION_CONST_NAME
       (*longOpts).name = (*first)->getName();
-#else // !HAVE_OPTION_CONST_NAME
+#else  // !HAVE_OPTION_CONST_NAME
       (*longOpts).name = strdup((*first)->getName());
+      if ((*longOpts).name == nullptr) {
+        auto errNum = errno;
+        A2_LOG_ERROR(
+            fmt("strdup() failed: %s", util::safeStrerror(errNum).c_str()));
+        exit(EXIT_FAILURE);
+      }
 #endif // !HAVE_OPTION_CONST_NAME
       switch ((*first)->getArgType()) {
       case OptionHandler::REQ_ARG:
