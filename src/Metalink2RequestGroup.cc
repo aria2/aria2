@@ -228,6 +228,7 @@ void Metalink2RequestGroup::createRequestGroup(
         // make it in-memory download
         torrentRg->addPreDownloadHandler(
             download_handlers::getMemoryPreDownloadHandler());
+        torrentRg->markInMemoryDownload();
         groups.push_back(torrentRg);
       }
     }

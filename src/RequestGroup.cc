@@ -1148,7 +1148,9 @@ std::shared_ptr<DownloadResult> RequestGroup::createDownloadResult() const
 void RequestGroup::reportDownloadFinished()
 {
   A2_LOG_NOTICE(fmt(MSG_FILE_DOWNLOAD_COMPLETED,
-                    downloadContext_->getBasePath().c_str()));
+                    inMemoryDownload()
+                        ? getFirstFilePath().c_str()
+                        : downloadContext_->getBasePath().c_str()));
   uriSelector_->resetCounters();
 #ifdef ENABLE_BITTORRENT
   if (downloadContext_->hasAttribute(CTX_ATTR_BT)) {
