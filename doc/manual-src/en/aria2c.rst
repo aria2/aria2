@@ -1244,13 +1244,14 @@ Advanced Options
 
 .. option:: --download-result=<OPT>
 
-  This option changes the way ``Download Results`` is formatted. If OPT
-  is ``default``, print GID, status, average download speed and
+  This option changes the way ``Download Results`` is formatted. If
+  OPT is ``default``, print GID, status, average download speed and
   path/URI. If multiple files are involved, path/URI of first
   requested file is printed and remaining ones are omitted.  If OPT is
   ``full``, print GID, status, average download speed, percentage of
   progress and path/URI. The percentage of progress and path/URI are
-  printed for each requested file in each row.
+  printed for each requested file in each row.  If OPT is ``hide``,
+  ``Download Results`` is hidden.
   Default: ``default``
 
 .. option:: --dscp=<DSCP>
@@ -1498,6 +1499,12 @@ Advanced Options
 .. option:: --show-console-readout[=true|false]
 
   Show console readout. Default: ``true``
+
+
+.. option:: --stderr[=true|false]
+
+  Redirect all console output that would be otherwise printed in
+  stdout to stderr.  Default: ``false``
 
 .. option:: --summary-interval=<SEC>
 
