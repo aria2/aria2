@@ -121,6 +121,7 @@ const std::string V_NONE("none");
 const std::string V_MEM("mem");
 const std::string V_ALL("all");
 const std::string A2_V_FULL("full");
+const std::string A2_V_HIDE("hide");
 const std::string A2_V_GEOM("geom");
 const std::string V_PREALLOC("prealloc");
 const std::string V_FALLOC("falloc");
@@ -336,7 +337,7 @@ PrefPtr PREF_STREAM_PIECE_SELECTOR = makePref("stream-piece-selector");
 PrefPtr PREF_TRUNCATE_CONSOLE_READOUT = makePref("truncate-console-readout");
 // value: true | false
 PrefPtr PREF_PAUSE = makePref("pause");
-// value: default | full
+// value: default | full | hide
 PrefPtr PREF_DOWNLOAD_RESULT = makePref("download-result");
 // value: true | false
 PrefPtr PREF_HASH_CHECK_ONLY = makePref("hash-check-only");

@@ -78,6 +78,7 @@ extern const std::string V_NONE;
 extern const std::string V_MEM;
 extern const std::string V_ALL;
 extern const std::string A2_V_FULL;
+extern const std::string A2_V_HIDE;
 extern const std::string A2_V_GEOM;
 extern const std::string V_PREALLOC;
 extern const std::string V_FALLOC;
@@ -289,7 +290,7 @@ extern PrefPtr PREF_STREAM_PIECE_SELECTOR;
 extern PrefPtr PREF_TRUNCATE_CONSOLE_READOUT;
 // value: true | false
 extern PrefPtr PREF_PAUSE;
-// value: default | full
+// value: default | full | hide
 extern PrefPtr PREF_DOWNLOAD_RESULT;
 // value: true | false
 extern PrefPtr PREF_HASH_CHECK_ONLY;

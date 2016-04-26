@@ -315,7 +315,8 @@ error_code::Value MultiUrlRequestInfo::getResult()
   if (!serverStatOf.empty()) {
     e_->getRequestGroupMan()->saveServerStat(serverStatOf);
   }
-  if (!option_->getAsBool(PREF_QUIET)) {
+  if (!option_->getAsBool(PREF_QUIET) &&
+      option_->get(PREF_DOWNLOAD_RESULT) != A2_V_HIDE) {
     e_->getRequestGroupMan()->showDownloadResults(
         *global::cout(), option_->get(PREF_DOWNLOAD_RESULT) == A2_V_FULL);
     global::cout()->flush();

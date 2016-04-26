@@ -235,9 +235,9 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(
-        new ParameterOptionHandler(PREF_DOWNLOAD_RESULT, TEXT_DOWNLOAD_RESULT,
-                                   A2_V_DEFAULT, {A2_V_DEFAULT, A2_V_FULL}));
+    OptionHandler* op(new ParameterOptionHandler(
+        PREF_DOWNLOAD_RESULT, TEXT_DOWNLOAD_RESULT, A2_V_DEFAULT,
+        {A2_V_DEFAULT, A2_V_FULL, A2_V_HIDE}));
     op->addTag(TAG_ADVANCED);
     op->setChangeGlobalOption(true);
     handlers.push_back(op);
