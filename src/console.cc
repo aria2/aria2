@@ -47,6 +47,7 @@ namespace global {
 namespace {
 Console consoleCout;
 Console consoleCerr;
+Console consoleCoutBackup;
 };
 
 void initConsole(bool suppress)
@@ -63,6 +64,12 @@ void initConsole(bool suppress)
     consoleCerr = std::make_shared<BufferedFile>(stderr);
 #endif // !__MINGW32__
   }
+}
+
+void redirectStdoutToStderr()
+{
+  consoleCoutBackup = std::move(consoleCout);
+  consoleCout = consoleCerr;
 }
 
 const Console& cout() { return consoleCout; }

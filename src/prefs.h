@@ -324,6 +324,8 @@ extern PrefPtr PREF_MIN_TLS_VERSION;
 extern PrefPtr PREF_SOCKET_RECV_BUFFER_SIZE;
 // value: 1*digit
 extern PrefPtr PREF_MAX_MMAP_LIMIT;
+// value: true | false
+extern PrefPtr PREF_STDERR;
 
 /**
  * FTP related preferences

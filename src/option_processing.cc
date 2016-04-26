@@ -300,6 +300,9 @@ error_code::Value option_processing(Option& op, bool standalone,
     showUsage("", oparser, global::cerr());
     return e.getErrorCode();
   }
+  if (standalone && op.getAsBool(PREF_STDERR)) {
+    global::redirectStdoutToStderr();
+  }
   if (standalone && !op.getAsBool(PREF_ENABLE_RPC) &&
 #ifdef ENABLE_BITTORRENT
       op.blank(PREF_TORRENT_FILE) &&

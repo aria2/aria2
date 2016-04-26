@@ -370,6 +370,8 @@ PrefPtr PREF_MIN_TLS_VERSION = makePref("min-tls-version");
 PrefPtr PREF_SOCKET_RECV_BUFFER_SIZE = makePref("socket-recv-buffer-size");
 // value: 1*digit
 PrefPtr PREF_MAX_MMAP_LIMIT = makePref("max-mmap-limit");
+// value: true | false
+PrefPtr PREF_STDERR = makePref("stderr");
 
 /**
  * FTP related preferences

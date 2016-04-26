@@ -51,6 +51,9 @@ namespace global {
 // output sent to the console objects are discarded.
 void initConsole(bool suppress);
 
+// stdout is redirected to stderr.
+void redirectStdoutToStderr();
+
 const Console& cout();
 const Console& cerr();
 

@@ -1085,5 +1085,8 @@
     "                              size of those files. If file size is strictly\n" \
     "                              greater than the size specified in this option,\n" \
     "                              mmap will be disabled.")
+#define TEXT_STDERR \
+  _(" --stderr[=true|false]        Redirect all console output that would be\n" \
+    "                              otherwise printed in stdout to stderr.")
 
 // clang-format on
