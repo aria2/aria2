@@ -39,6 +39,7 @@
 
 #include <deque>
 #include <memory>
+#include <functional>
 
 namespace aria2 {
 
