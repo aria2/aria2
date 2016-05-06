@@ -190,4 +190,10 @@ void Option::setParent(const std::shared_ptr<Option>& parent)
 
 const std::shared_ptr<Option>& Option::getParent() const { return parent_; }
 
+bool Option::emptyLocal() const
+{
+  size_t dst;
+  return !bitfield::getFirstSetBitIndex(dst, use_, use_.size() * 8);
+}
+
 } // namespace aria2

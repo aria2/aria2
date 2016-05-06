@@ -143,8 +143,7 @@ size_t countSetBitSlow(const Array& bitfield, size_t nbits)
 void flipBit(unsigned char* data, size_t length, size_t bitIndex);
 
 // Stores first set bit index of bitfield to index.  bitfield contains
-// nbits. Returns true if missing bit index is found. Otherwise
-// returns false.
+// nbits. Returns true if set bit is found. Otherwise returns false.
 template <typename Array>
 bool getFirstSetBitIndex(size_t& index, const Array& bitfield, size_t nbits)
 {
