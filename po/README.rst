@@ -21,5 +21,5 @@ Importing PO files from launchpad-export.tar.gz
 The downloaded file is named as launchpad-export.tar.gz at the time of
 this writing.  It includes all PO files translated at launchpad.  To
 import those files, use ``import-po`` script in the top directory. It
-will deflate the tar.gz file and rename PO files and move them to po
+will inflate the tar.gz file and rename PO files and move them to po
 directory and run ``make update-po``.
