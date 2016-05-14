@@ -412,98 +412,10 @@ ssize_t MultiDiskAdaptor::readData(unsigned char* data, size_t len,
 
 void MultiDiskAdaptor::writeCache(const WrDiskCacheEntry* entry)
 {
-  // Write cached data in 4KiB aligned offset. This reduces disk
-  // activity especially on Windows 7 NTFS.
-  unsigned char buf[16_k];
-  size_t buflen = 0;
-  size_t buffoffset = 0;
-  auto& dataSet = entry->getDataSet();
-  if (dataSet.empty()) {
-    return;
+  for (auto& d : entry->getDataSet()) {
+    A2_LOG_DEBUG(fmt("Cache flush goff=%" PRId64 ", len=%lu", d->goff, d->len));
+    writeData(d->data + d->offset, d->len, d->goff);
   }
-  auto dent =
-      findFirstDiskWriterEntry(diskWriterEntries_, (*dataSet.begin())->goff),
-       eod = diskWriterEntries_.cend();
-  auto i = std::begin(dataSet), eoi = std::end(dataSet);
-  size_t celloff = 0;
-  for (; dent != eod; ++dent) {
-    int64_t lstart = 0, lp = 0;
-    auto& fent = (*dent)->getFileEntry();
-    if (fent->getLength() == 0) {
-      continue;
-    }
-    for (; i != eoi;) {
-      if (std::max(fent->getOffset(),
-                   static_cast<int64_t>((*i)->goff + celloff)) <
-          std::min(fent->getLastOffset(),
-                   static_cast<int64_t>((*i)->goff + (*i)->len))) {
-        openIfNot((*dent).get(), &DiskWriterEntry::openFile);
-        if (!(*dent)->isOpen()) {
-          throwOnDiskWriterNotOpened((*dent).get(), (*i)->goff + celloff);
-        }
-      }
-      else {
-        A2_LOG_DEBUG(fmt("%s Cache flush loff=%" PRId64 ", len=%lu",
-                         fent->getPath().c_str(), lstart,
-                         static_cast<unsigned long>(buflen - buffoffset)));
-        (*dent)->getDiskWriter()->writeData(buf + buffoffset,
-                                            buflen - buffoffset, lstart);
-        buflen = buffoffset = 0;
-        break;
-      }
-      int64_t loff = fent->gtoloff((*i)->goff + celloff);
-      if (static_cast<int64_t>(lstart + buflen) < loff) {
-        A2_LOG_DEBUG(fmt("%s Cache flush loff=%" PRId64 ", len=%lu",
-                         fent->getPath().c_str(), lstart,
-                         static_cast<unsigned long>(buflen - buffoffset)));
-        (*dent)->getDiskWriter()->writeData(buf + buffoffset,
-                                            buflen - buffoffset, lstart);
-        lstart = lp = loff;
-        buflen = buffoffset = 0;
-      }
-      // If the position of the cache data is not aligned, offset
-      // buffer so that next write can be aligned.
-      if (buflen == 0) {
-        buflen = buffoffset = loff & 0xfff;
-      }
-      assert((*i)->len > celloff);
-      for (;;) {
-        size_t wlen = std::min(static_cast<int64_t>((*i)->len - celloff),
-                               fent->getLength() - lp);
-        wlen = std::min(wlen, sizeof(buf) - buflen);
-        memcpy(buf + buflen, (*i)->data + (*i)->offset + celloff, wlen);
-        buflen += wlen;
-        celloff += wlen;
-        lp += wlen;
-        if (lp == fent->getLength() || buflen == sizeof(buf)) {
-          A2_LOG_DEBUG(fmt("%s Cache flush loff=%" PRId64 ", len=%lu",
-                           fent->getPath().c_str(), lstart,
-                           static_cast<unsigned long>(buflen - buffoffset)));
-          (*dent)->getDiskWriter()->writeData(buf + buffoffset,
-                                              buflen - buffoffset, lstart);
-          lstart += buflen - buffoffset;
-          lp = lstart;
-          buflen = buffoffset = 0;
-        }
-        if (lp == fent->getLength() || celloff == (*i)->len) {
-          break;
-        }
-      }
-      if (celloff == (*i)->len) {
-        ++i;
-        celloff = 0;
-      }
-    }
-    if (i == eoi) {
-      A2_LOG_DEBUG(fmt("%s Cache flush loff=%" PRId64 ", len=%lu",
-                       fent->getPath().c_str(), lstart,
-                       static_cast<unsigned long>(buflen - buffoffset)));
-      (*dent)->getDiskWriter()->writeData(buf + buffoffset, buflen - buffoffset,
-                                          lstart);
-      break;
-    }
-  }
-  assert(i == eoi);
 }
 
 bool MultiDiskAdaptor::fileExists()
