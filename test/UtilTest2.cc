@@ -66,6 +66,7 @@ class UtilTest2 : public CppUnit::TestFixture {
   CPPUNIT_TEST(testInPrivateAddress);
   CPPUNIT_TEST(testSecfmt);
   CPPUNIT_TEST(testTlsHostnameMatch);
+  CPPUNIT_TEST(testParseDoubleNoThrow);
   CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -115,6 +116,7 @@ public:
   void testInPrivateAddress();
   void testSecfmt();
   void testTlsHostnameMatch();
+  void testParseDoubleNoThrow();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(UtilTest2);
@@ -976,6 +978,23 @@ void UtilTest2::testTlsHostnameMatch()
   CPPUNIT_ASSERT(!util::tlsHostnameMatch("*", ""));
   CPPUNIT_ASSERT(util::tlsHostnameMatch("", ""));
   CPPUNIT_ASSERT(!util::tlsHostnameMatch("xn--*.a.b", "xn--c.a.b"));
+}
+
+void UtilTest2::testParseDoubleNoThrow()
+{
+  double n;
+
+  CPPUNIT_ASSERT(util::parseDoubleNoThrow(n, " 123 "));
+  CPPUNIT_ASSERT_EQUAL(123., n);
+
+  CPPUNIT_ASSERT(util::parseDoubleNoThrow(n, "3.14"));
+  CPPUNIT_ASSERT_EQUAL(3.14, n);
+
+  CPPUNIT_ASSERT(util::parseDoubleNoThrow(n, "-3.14"));
+  CPPUNIT_ASSERT_EQUAL(-3.14, n);
+
+  CPPUNIT_ASSERT(!util::parseDoubleNoThrow(n, ""));
+  CPPUNIT_ASSERT(!util::parseDoubleNoThrow(n, "123x"));
 }
 
 } // namespace aria2

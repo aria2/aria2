@@ -280,6 +280,10 @@ bool parseUIntNoThrow(uint32_t& res, const std::string& s, int base = 10);
 
 bool parseLLIntNoThrow(int64_t& res, const std::string& s, int base = 10);
 
+// Parses |s| as floating point number, and stores the result into
+// |res|.  This function returns true if it succeeds.
+bool parseDoubleNoThrow(double& res, const std::string& s);
+
 SegList<int> parseIntSegments(const std::string& src);
 
 // Parses string which specifies the range of piece index for higher
