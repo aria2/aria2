@@ -79,7 +79,6 @@ void BtBitfieldMessageTest::testCreateMessage()
   auto rawmsg = msg.createMessage();
   CPPUNIT_ASSERT_EQUAL((size_t)7, rawmsg.size());
   CPPUNIT_ASSERT(std::equal(std::begin(rawmsg), std::end(rawmsg), data));
-  CPPUNIT_ASSERT_EQUAL((size_t)7, msg.getMessageLength());
 }
 
 void BtBitfieldMessageTest::testDoReceivedAction()

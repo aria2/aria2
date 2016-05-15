@@ -54,8 +54,6 @@ std::vector<unsigned char> ZeroBtMessage::createMessage()
   return msg;
 }
 
-size_t ZeroBtMessage::getMessageLength() { return MESSAGE_LENGTH; }
-
 std::string ZeroBtMessage::toString() const { return getName(); }
 
 } // namespace aria2

@@ -48,6 +48,4 @@ std::vector<unsigned char> BtKeepAliveMessage::createMessage()
   return std::vector<unsigned char>(MESSAGE_LENGTH);
 }
 
-size_t BtKeepAliveMessage::getMessageLength() { return MESSAGE_LENGTH; }
-
 } // namespace aria2

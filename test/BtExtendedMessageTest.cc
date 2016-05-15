@@ -81,7 +81,6 @@ void BtExtendedMessageTest::testCreateMessage()
   auto rawmsg = msg.createMessage();
   CPPUNIT_ASSERT_EQUAL((size_t)17, rawmsg.size());
   CPPUNIT_ASSERT(std::equal(std::begin(rawmsg), std::end(rawmsg), data));
-  CPPUNIT_ASSERT_EQUAL((size_t)17, msg.getMessageLength());
 }
 
 void BtExtendedMessageTest::testDoReceivedAction()

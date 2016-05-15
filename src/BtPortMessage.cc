@@ -114,8 +114,6 @@ std::vector<unsigned char> BtPortMessage::createMessage()
   return msg;
 }
 
-size_t BtPortMessage::getMessageLength() { return MESSAGE_LENGTH; }
-
 std::string BtPortMessage::toString() const
 {
   return fmt("%s port=%u", NAME, port_);

@@ -53,8 +53,6 @@ std::vector<unsigned char> IndexBtMessage::createMessage()
   return msg;
 }
 
-size_t IndexBtMessage::getMessageLength() { return MESSAGE_LENGTH; }
-
 std::string IndexBtMessage::toString() const
 {
   return fmt("%s index=%lu", getName(), static_cast<unsigned long>(index_));

@@ -113,8 +113,6 @@ std::vector<unsigned char> BtBitfieldMessage::createMessage()
   return msg;
 }
 
-size_t BtBitfieldMessage::getMessageLength() { return 5 + bitfieldLength_; }
-
 std::string BtBitfieldMessage::toString() const
 {
   std::string s = NAME;

@@ -63,8 +63,6 @@ std::vector<unsigned char> RangeBtMessage::createMessage()
   return msg;
 }
 
-size_t RangeBtMessage::getMessageLength() { return MESSAGE_LENGTH; }
-
 std::string RangeBtMessage::toString() const
 {
   return fmt("%s index=%lu, begin=%d, length=%d", getName(),

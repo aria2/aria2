@@ -93,8 +93,6 @@ std::vector<unsigned char> BtHandshakeMessage::createMessage()
   return msg;
 }
 
-size_t BtHandshakeMessage::getMessageLength() { return MESSAGE_LENGTH; }
-
 std::string BtHandshakeMessage::toString() const
 {
   return fmt("%s peerId=%s, reserved=%s", NAME,

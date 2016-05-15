@@ -78,14 +78,6 @@ std::vector<unsigned char> BtExtendedMessage::createMessage()
   return msg;
 }
 
-size_t BtExtendedMessage::getMessageLength()
-{
-  if (!msgLength_) {
-    msgLength_ = 6 + extensionMessage_->getPayload().size();
-  }
-  return msgLength_;
-}
-
 bool BtExtendedMessage::sendPredicate() const
 {
   return getPeer()->isExtendedMessagingEnabled();
