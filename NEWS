@@ -1,37 +1,79 @@
-aria2 1.22.0
+aria2 1.23.0
 ============
 
 Release Note
 ------------
 
-This release adds new feature that manages the number of concurrent
-downloads dynamically.  --stream-piece-selector option gets new value
-"random" which randomizes the piece selection for HTTP/FTP downloads.
-This effectively randomizes the order of files on multi-file Web
-Seeding.  Now all contributor's names are in AUTHORS file.
-Previously, aria2 shows error when it sees floating point number in a
-torrent file because torrent file specification does not allow
-floating point number.  In this release, they are just ignored, and
-aria2 continues to parse the rest of the torrent file as if there is
-nothing wrong.
+This release fixes several bugs reported by users, and adds several
+new features.  Read the following section for details.
 
 Changes
 -------
 
-* Add description about possible fragmentation with
-  --file-allocation=trunc
+* Simplify cache write
 
-* Make single-entry metalink download with multi-file torrent work
+  The previous cache write routine was too complex.  I'm sure I can
+  rewrite it to more elegantly.  But the primary motivation of this
+  complex logic is for disk activity reduction on Windows 7, and I
+  observed it on my old IDE disk.  I checked it again recently, and
+  there is no difference between with and without this complex logic.
+  For this reason, it was removed.  Will revert this change if many of
+  users are not happy with this.
 
-* Add all contributor's names in AUTHORS
+* Allow subsecond value in ns cookie.txt file's expiry time field
 
-* Ignore floating number in torrent file
+  Fixes GH-655
 
-* Added support for a dynamic management of the number of concurrent
-  downloads as a function of the overall bandwidth observed
+* Adjust chromium cookie time
 
-  This change adds --optimize-concurrent-downloads option.
+* import-po: iterate on glob, not ls output
 
-  Patch from oliviercommelarbre
+  Patch from Mingye Wang
 
-* Add --stream-piece-selector=random
+* Add --stderr option to redirect all stdout log output to stderr
+
+  Fixes GH-638
+
+* Add "hide" to --download-result option
+
+  Fixes GH-639
+
+* Fix downloaded metaurl torrent filename
+
+* Add a little bit of color to have a better visual of important
+  informations
+
+  Patch from rotor
+
+* Update README URLs based on HTTP redirects
+
+  Patch from ReadmeCritic
+
+* Relocate from github.com/tatsuhiro-t/aria2 to github.com/aria2/aria2
+
+  Fixes GH-602
+
+* mingw: Defer the falloc warning until falloc is specified by option
+
+  Fixes GH-594
+
+* Add bittorrent key to aria2.tellStopped status
+
+  Fixes GH-612
+
+* Addsystem.listNotifications RPC method
+
+  Merges GH-620
+
+  Patch from Sonny Piers
+
+* Report CheckIntegrity info in tellStatus
+
+  - Adds verifiedLength to tellStatus. Reports the length of data that
+    has been verified of the current RequestGroup being verified.
+  - Adds verifyPending to tellStatus. Reports if the RequestGroup has
+    a verification of integrity pending.
+
+  Closes GH-561
+
+  Patch from Kurt Kartaltepe
