@@ -42,15 +42,15 @@ ZeroBtMessage::ZeroBtMessage(uint8_t id, const char* name)
 {
 }
 
-unsigned char* ZeroBtMessage::createMessage()
+std::vector<unsigned char> ZeroBtMessage::createMessage()
 {
   /**
    * len --- 1, 4bytes
    * id --- ?, 1byte
    * total: 5bytes
    */
-  auto msg = new unsigned char[MESSAGE_LENGTH];
-  bittorrent::createPeerMessageString(msg, MESSAGE_LENGTH, 1, getId());
+  auto msg = std::vector<unsigned char>(MESSAGE_LENGTH);
+  bittorrent::createPeerMessageString(msg.data(), MESSAGE_LENGTH, 1, getId());
   return msg;
 }
 

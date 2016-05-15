@@ -56,7 +56,7 @@ protected:
 public:
   ZeroBtMessage(uint8_t id, const char* name);
 
-  virtual unsigned char* createMessage() CXX11_OVERRIDE;
+  virtual std::vector<unsigned char> createMessage() CXX11_OVERRIDE;
 
   virtual size_t getMessageLength() CXX11_OVERRIDE;
 

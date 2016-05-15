@@ -97,7 +97,7 @@ void BtBitfieldMessage::doReceivedAction()
   }
 }
 
-unsigned char* BtBitfieldMessage::createMessage()
+std::vector<unsigned char> BtBitfieldMessage::createMessage()
 {
   /**
    * len --- 1+bitfieldLength, 4bytes
@@ -106,9 +106,10 @@ unsigned char* BtBitfieldMessage::createMessage()
    * total: 5+bitfieldLength bytes
    */
   const size_t msgLength = 5 + bitfieldLength_;
-  auto msg = new unsigned char[msgLength];
-  bittorrent::createPeerMessageString(msg, msgLength, 1 + bitfieldLength_, ID);
-  memcpy(msg + 5, bitfield_.get(), bitfieldLength_);
+  auto msg = std::vector<unsigned char>(msgLength);
+  bittorrent::createPeerMessageString(msg.data(), msgLength,
+                                      1 + bitfieldLength_, ID);
+  memcpy(msg.data() + 5, bitfield_.get(), bitfieldLength_);
   return msg;
 }
 

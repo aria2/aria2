@@ -213,17 +213,16 @@ void BtPieceMessage::send()
 void BtPieceMessage::pushPieceData(int64_t offset, int32_t length) const
 {
   assert(length <= static_cast<int32_t>(16_k));
-  auto buf = make_unique<unsigned char[]>(length + MESSAGE_HEADER_LENGTH);
-  createMessageHeader(buf.get());
+  auto buf = std::vector<unsigned char>(length + MESSAGE_HEADER_LENGTH);
+  createMessageHeader(buf.data());
   ssize_t r;
   r = getPieceStorage()->getDiskAdaptor()->readData(
-      buf.get() + MESSAGE_HEADER_LENGTH, length, offset);
+      buf.data() + MESSAGE_HEADER_LENGTH, length, offset);
   if (r == length) {
     const auto& peer = getPeer();
     getPeerConnection()->pushBytes(
-        buf.release(), length + MESSAGE_HEADER_LENGTH,
-        make_unique<PieceSendUpdate>(downloadContext_, peer,
-                                     MESSAGE_HEADER_LENGTH));
+        std::move(buf), make_unique<PieceSendUpdate>(downloadContext_, peer,
+                                                     MESSAGE_HEADER_LENGTH));
     peer->updateUploadSpeed(length);
     downloadContext_->updateUploadSpeed(length);
   }

@@ -40,6 +40,7 @@
 #include <string>
 #include <deque>
 #include <memory>
+#include <vector>
 
 namespace aria2 {
 
@@ -77,7 +78,7 @@ private:
 
   class ByteArrayBufEntry : public BufEntry {
   public:
-    ByteArrayBufEntry(unsigned char* bytes, size_t length,
+    ByteArrayBufEntry(std::vector<unsigned char> bytes,
                       std::unique_ptr<ProgressUpdate> progressUpdate);
     virtual ~ByteArrayBufEntry();
     virtual ssize_t send(const std::shared_ptr<SocketCore>& socket,
@@ -87,8 +88,7 @@ private:
     virtual const unsigned char* getData() const CXX11_OVERRIDE;
 
   private:
-    unsigned char* bytes_;
-    size_t length_;
+    std::vector<unsigned char> bytes_;
   };
 
   class StringBufEntry : public BufEntry {
@@ -123,13 +123,11 @@ public:
   SocketBuffer(const SocketBuffer&) = delete;
   SocketBuffer& operator=(const SocketBuffer&) = delete;
 
-  // Feeds data pointed by bytes with length len into queue.  This
-  // object gets ownership of bytes, so caller must not delete or
-  // later bytes after this call. This function doesn't send data.  If
+  // Feeds |bytes| into queue. This function doesn't send data.  If
   // progressUpdate is not null, its update() function will be called
   // each time the data is sent. It will be deleted by this object. It
   // can be null.
-  void pushBytes(unsigned char* bytes, size_t len,
+  void pushBytes(std::vector<unsigned char> bytes,
                  std::unique_ptr<ProgressUpdate> progressUpdate = nullptr);
 
   // Feeds data into queue. This function doesn't send data.  If

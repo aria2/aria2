@@ -66,7 +66,7 @@ public:
 
   virtual void doReceivedAction() CXX11_OVERRIDE;
 
-  virtual unsigned char* createMessage() CXX11_OVERRIDE;
+  virtual std::vector<unsigned char> createMessage() CXX11_OVERRIDE;
 
   virtual size_t getMessageLength() CXX11_OVERRIDE;
 

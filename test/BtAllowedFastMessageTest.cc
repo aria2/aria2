@@ -70,9 +70,9 @@ void BtAllowedFastMessageTest::testCreateMessage()
   unsigned char data[9];
   bittorrent::createPeerMessageString(data, sizeof(data), 5, 17);
   bittorrent::setIntParam(&data[5], 12345);
-  unsigned char* rawmsg = msg.createMessage();
-  CPPUNIT_ASSERT(memcmp(rawmsg, data, 9) == 0);
-  delete[] rawmsg;
+  auto rawmsg = msg.createMessage();
+  CPPUNIT_ASSERT_EQUAL((size_t)9, rawmsg.size());
+  CPPUNIT_ASSERT(std::equal(std::begin(rawmsg), std::end(rawmsg), data));
 }
 
 void BtAllowedFastMessageTest::testDoReceivedAction()

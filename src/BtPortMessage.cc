@@ -100,7 +100,7 @@ void BtPortMessage::doReceivedAction()
   }
 }
 
-unsigned char* BtPortMessage::createMessage()
+std::vector<unsigned char> BtPortMessage::createMessage()
 {
   /**
    * len --- 5, 4bytes
@@ -108,8 +108,8 @@ unsigned char* BtPortMessage::createMessage()
    * port --- port number, 2bytes
    * total: 7bytes
    */
-  auto msg = new unsigned char[MESSAGE_LENGTH];
-  bittorrent::createPeerMessageString(msg, MESSAGE_LENGTH, 3, ID);
+  auto msg = std::vector<unsigned char>(MESSAGE_LENGTH);
+  bittorrent::createPeerMessageString(msg.data(), MESSAGE_LENGTH, 3, ID);
   bittorrent::setShortIntParam(&msg[5], port_);
   return msg;
 }

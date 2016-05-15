@@ -37,6 +37,8 @@
 
 #include "AbstractBtMessage.h"
 
+#include <vector>
+
 namespace aria2 {
 
 struct ProgressUpdate;
@@ -47,7 +49,7 @@ public:
 
   virtual void send() CXX11_OVERRIDE;
 
-  virtual unsigned char* createMessage() = 0;
+  virtual std::vector<unsigned char> createMessage() = 0;
 
   virtual size_t getMessageLength() = 0;
 

@@ -99,9 +99,9 @@ void BtPortMessageTest::testCreateMessage()
   unsigned char data[7];
   bittorrent::createPeerMessageString(data, sizeof(data), 3, 9);
   bittorrent::setShortIntParam(&data[5], 6881);
-  unsigned char* rawmsg = msg.createMessage();
-  CPPUNIT_ASSERT(memcmp(rawmsg, data, 7) == 0);
-  delete[] rawmsg;
+  auto rawmsg = msg.createMessage();
+  CPPUNIT_ASSERT_EQUAL((size_t)7, rawmsg.size());
+  CPPUNIT_ASSERT(std::equal(std::begin(rawmsg), std::end(rawmsg), data));
 }
 
 void BtPortMessageTest::testDoReceivedAction()

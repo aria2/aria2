@@ -47,31 +47,34 @@
 namespace aria2 {
 
 SocketBuffer::ByteArrayBufEntry::ByteArrayBufEntry(
-    unsigned char* bytes, size_t length,
+    std::vector<unsigned char> bytes,
     std::unique_ptr<ProgressUpdate> progressUpdate)
-    : BufEntry(std::move(progressUpdate)), bytes_(bytes), length_(length)
+    : BufEntry(std::move(progressUpdate)), bytes_(std::move(bytes))
 {
 }
 
-SocketBuffer::ByteArrayBufEntry::~ByteArrayBufEntry() { delete[] bytes_; }
+SocketBuffer::ByteArrayBufEntry::~ByteArrayBufEntry() {}
 
 ssize_t
 SocketBuffer::ByteArrayBufEntry::send(const std::shared_ptr<SocketCore>& socket,
                                       size_t offset)
 {
-  return socket->writeData(bytes_ + offset, length_ - offset);
+  return socket->writeData(bytes_.data() + offset, bytes_.size() - offset);
 }
 
 bool SocketBuffer::ByteArrayBufEntry::final(size_t offset) const
 {
-  return length_ <= offset;
+  return bytes_.size() <= offset;
 }
 
-size_t SocketBuffer::ByteArrayBufEntry::getLength() const { return length_; }
+size_t SocketBuffer::ByteArrayBufEntry::getLength() const
+{
+  return bytes_.size();
+}
 
 const unsigned char* SocketBuffer::ByteArrayBufEntry::getData() const
 {
-  return bytes_;
+  return bytes_.data();
 }
 
 SocketBuffer::StringBufEntry::StringBufEntry(
@@ -106,12 +109,12 @@ SocketBuffer::SocketBuffer(std::shared_ptr<SocketCore> socket)
 
 SocketBuffer::~SocketBuffer() {}
 
-void SocketBuffer::pushBytes(unsigned char* bytes, size_t len,
+void SocketBuffer::pushBytes(std::vector<unsigned char> bytes,
                              std::unique_ptr<ProgressUpdate> progressUpdate)
 {
-  if (len > 0) {
-    bufq_.push_back(
-        make_unique<ByteArrayBufEntry>(bytes, len, std::move(progressUpdate)));
+  if (!bytes.empty()) {
+    bufq_.push_back(make_unique<ByteArrayBufEntry>(std::move(bytes),
+                                                   std::move(progressUpdate)));
   }
 }
 
