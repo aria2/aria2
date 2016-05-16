@@ -56,11 +56,10 @@ void SimpleBtMessage::send()
   A2_LOG_INFO(fmt(MSG_SEND_PEER_MESSAGE, getCuid(),
                   getPeer()->getIPAddress().c_str(), getPeer()->getPort(),
                   toString().c_str()));
-  unsigned char* msg = createMessage();
-  size_t msgLength = getMessageLength();
+  auto msg = createMessage();
   A2_LOG_DEBUG(
-      fmt("msglength = %lu bytes", static_cast<unsigned long>(msgLength)));
-  getPeerConnection()->pushBytes(msg, msgLength, getProgressUpdate());
+      fmt("msglength = %lu bytes", static_cast<unsigned long>(msg.size())));
+  getPeerConnection()->pushBytes(std::move(msg), getProgressUpdate());
 }
 
 std::unique_ptr<ProgressUpdate> SimpleBtMessage::getProgressUpdate()

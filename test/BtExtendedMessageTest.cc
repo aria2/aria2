@@ -78,10 +78,9 @@ void BtExtendedMessageTest::testCreateMessage()
   bittorrent::createPeerMessageString(data, sizeof(data), 13, 20);
   *(data + 5) = extendedMessageID;
   memcpy(data + 6, payload.c_str(), payload.size());
-  unsigned char* rawmsg = msg.createMessage();
-  CPPUNIT_ASSERT(memcmp(rawmsg, data, 17) == 0);
-  delete[] rawmsg;
-  CPPUNIT_ASSERT_EQUAL((size_t)17, msg.getMessageLength());
+  auto rawmsg = msg.createMessage();
+  CPPUNIT_ASSERT_EQUAL((size_t)17, rawmsg.size());
+  CPPUNIT_ASSERT(std::equal(std::begin(rawmsg), std::end(rawmsg), data));
 }
 
 void BtExtendedMessageTest::testDoReceivedAction()

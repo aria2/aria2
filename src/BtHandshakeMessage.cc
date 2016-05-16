@@ -81,10 +81,10 @@ BtHandshakeMessage::create(const unsigned char* data, size_t dataLength)
   return msg;
 }
 
-unsigned char* BtHandshakeMessage::createMessage()
+std::vector<unsigned char> BtHandshakeMessage::createMessage()
 {
-  auto msg = new unsigned char[MESSAGE_LENGTH];
-  auto dst = msg;
+  auto msg = std::vector<unsigned char>(MESSAGE_LENGTH);
+  auto dst = msg.data();
   *dst++ = pstrlen_;
   dst = std::copy(std::begin(pstr_), std::end(pstr_), dst);
   dst = std::copy(std::begin(reserved_), std::end(reserved_), dst);
@@ -92,8 +92,6 @@ unsigned char* BtHandshakeMessage::createMessage()
   std::copy(std::begin(peerId_), std::end(peerId_), dst);
   return msg;
 }
-
-size_t BtHandshakeMessage::getMessageLength() { return MESSAGE_LENGTH; }
 
 std::string BtHandshakeMessage::toString() const
 {

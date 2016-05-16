@@ -67,14 +67,15 @@ public:
     CRYPTO_ARC4 = 0x02u
   };
 
+  static constexpr size_t VC_LENGTH = 8U;
+
 private:
-  static const size_t PRIME_BITS = 768U;
-  static const size_t KEY_LENGTH = (PRIME_BITS + 7U) / 8U;
-  static const size_t VC_LENGTH = 8U;
+  static constexpr size_t PRIME_BITS = 768U;
+  static constexpr size_t KEY_LENGTH = (PRIME_BITS + 7U) / 8U;
   // The largest buffering occurs when receiver receives step2
   // handshake.  We believe that IA is less than or equal to
   // BtHandshakeMessage::MESSAGE_LENGTH
-  static const size_t MAX_BUFFER_LENGTH = 636U;
+  static constexpr size_t MAX_BUFFER_LENGTH = 636U;
 
   cuid_t cuid_;
   std::shared_ptr<SocketCore> socket_;
@@ -97,10 +98,10 @@ private:
   size_t markerIndex_;
   uint16_t padLength_;
   uint16_t iaLength_;
-  std::unique_ptr<unsigned char[]> ia_;
+  std::vector<unsigned char> ia_;
   std::unique_ptr<MessageDigest> sha1_;
 
-  void encryptAndSendData(unsigned char* data, size_t length);
+  void encryptAndSendData(std::vector<unsigned char> data);
 
   void createReq1Hash(unsigned char* md) const;
 
@@ -171,7 +172,7 @@ public:
   void sendReceiverStep2();
 
   // returns plain text IA
-  const unsigned char* getIA() const { return ia_.get(); }
+  const unsigned char* getIA() const { return ia_.data(); }
 
   size_t getIALength() const { return iaLength_; }
 

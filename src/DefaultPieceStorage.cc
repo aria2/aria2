@@ -626,7 +626,7 @@ void DefaultPieceStorage::initStorage()
 {
   if (downloadContext_->getFileEntries().size() == 1) {
     A2_LOG_DEBUG("Instantiating DirectDiskAdaptor");
-    auto directDiskAdaptor = make_unique<DirectDiskAdaptor>();
+    auto directDiskAdaptor = std::make_shared<DirectDiskAdaptor>();
     directDiskAdaptor->setTotalLength(downloadContext_->getTotalLength());
     directDiskAdaptor->setFileEntries(
         downloadContext_->getFileEntries().begin(),
@@ -638,7 +638,7 @@ void DefaultPieceStorage::initStorage()
   }
   else {
     A2_LOG_DEBUG("Instantiating MultiDiskAdaptor");
-    auto multiDiskAdaptor = make_unique<MultiDiskAdaptor>();
+    auto multiDiskAdaptor = std::make_shared<MultiDiskAdaptor>();
     multiDiskAdaptor->setFileEntries(downloadContext_->getFileEntries().begin(),
                                      downloadContext_->getFileEntries().end());
     multiDiskAdaptor->setPieceLength(downloadContext_->getPieceLength());
