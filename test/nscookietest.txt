@@ -5,5 +5,5 @@ expired	FALSE	/	FALSE	1000	user	me
 
 192.168.0.1	TRUE	/cgi-bin	FALSE	0	passwd	secret
 badformat
-overflow	FALSE	/	FALSE	9223372036854775807	TAX	1000
-.example.org	TRUE	/	FALSE	2147483647	novalue	
+something	FALSE	/	FALSE	1463304912.5	TAX	1000
+.example.org	TRUE	/	FALSE	2147483647.123	novalue	

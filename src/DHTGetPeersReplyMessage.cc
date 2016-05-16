@@ -35,6 +35,7 @@
 #include "DHTGetPeersReplyMessage.h"
 
 #include <cstring>
+#include <array>
 
 #include "DHTNode.h"
 #include "DHTBucket.h"
@@ -81,24 +82,24 @@ std::unique_ptr<Dict> DHTGetPeersReplyMessage::getResponse()
   rDict->put(TOKEN, token_);
   // TODO want parameter
   if (!closestKNodes_.empty()) {
-    unsigned char buffer[DHTBucket::K * 38];
-    const int clen = bittorrent::getCompactLength(family_);
-    const int unit = clen + 20;
-    size_t offset = 0;
+    std::array<unsigned char, DHTBucket::K * 38> buffer;
+    const auto clen = bittorrent::getCompactLength(family_);
+    const auto unit = clen + DHT_ID_LENGTH;
+    auto last = std::begin(buffer);
     size_t k = 0;
-    for (auto i = std::begin(closestKNodes_), eoi = std::end(closestKNodes_);
-         i != eoi && k < DHTBucket::K; ++i) {
-      memcpy(buffer + offset, (*i)->getID(), DHT_ID_LENGTH);
-      unsigned char compact[COMPACT_LEN_IPV6];
-      int compactlen = bittorrent::packcompact(compact, (*i)->getIPAddress(),
-                                               (*i)->getPort());
+    for (auto i = std::begin(closestKNodes_);
+         i != std::end(closestKNodes_) && k < DHTBucket::K; ++i) {
+      std::array<unsigned char, COMPACT_LEN_IPV6> compact;
+      auto compactlen = bittorrent::packcompact(
+          compact.data(), (*i)->getIPAddress(), (*i)->getPort());
       if (compactlen == clen) {
-        memcpy(buffer + 20 + offset, compact, compactlen);
-        offset += unit;
+        last = std::copy_n((*i)->getID(), DHT_ID_LENGTH, last);
+        last = std::copy_n(std::begin(compact), compactlen, last);
         ++k;
       }
     }
-    rDict->put(family_ == AF_INET ? NODES : NODES6, String::g(buffer, offset));
+    rDict->put(family_ == AF_INET ? NODES : NODES6,
+               String::g(std::begin(buffer), last));
   }
   if (!values_.empty()) {
     // Limit the size of values list.  The maximum size of UDP datagram
@@ -123,16 +124,16 @@ std::unique_ptr<Dict> DHTGetPeersReplyMessage::getResponse()
     // doesn't specify the maximum size of token, reply message
     // template may get bigger than 395 bytes. So we use 25 as maximum
     // number of peer info that a message can carry.
-    static const size_t MAX_VALUES_SIZE = 25;
+    constexpr size_t MAX_VALUES_SIZE = 25;
     auto valuesList = List::g();
-    for (auto i = std::begin(values_), eoi = std::end(values_);
-         i != eoi && valuesList->size() < MAX_VALUES_SIZE; ++i) {
-      unsigned char compact[COMPACT_LEN_IPV6];
-      const int clen = bittorrent::getCompactLength(family_);
-      int compactlen = bittorrent::packcompact(compact, (*i)->getIPAddress(),
-                                               (*i)->getPort());
+    for (auto i = std::begin(values_);
+         i != std::end(values_) && valuesList->size() < MAX_VALUES_SIZE; ++i) {
+      std::array<unsigned char, COMPACT_LEN_IPV6> compact;
+      const auto clen = bittorrent::getCompactLength(family_);
+      auto compactlen = bittorrent::packcompact(
+          compact.data(), (*i)->getIPAddress(), (*i)->getPort());
       if (compactlen == clen) {
-        valuesList->append(String::g(compact, compactlen));
+        valuesList->append(String::g(compact.data(), compactlen));
       }
     }
     rDict->put(VALUES, std::move(valuesList));

@@ -596,6 +596,33 @@ bool parseLLIntNoThrow(int64_t& res, const std::string& s, int base)
   }
 }
 
+bool parseDoubleNoThrow(double& res, const std::string& s)
+{
+  if (s.empty()) {
+    return false;
+  }
+
+  errno = 0;
+  char* endptr;
+  auto d = strtod(s.c_str(), &endptr);
+
+  if (errno == ERANGE) {
+    return false;
+  }
+
+  if (endptr != s.c_str() + s.size()) {
+    for (auto i = std::begin(s) + (endptr - s.c_str()); i != std::end(s); ++i) {
+      if (!isspace(*i)) {
+        return false;
+      }
+    }
+  }
+
+  res = d;
+
+  return true;
+}
+
 SegList<int> parseIntSegments(const std::string& src)
 {
   SegList<int> sgl;

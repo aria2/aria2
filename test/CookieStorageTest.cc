@@ -328,10 +328,10 @@ void CookieStorageTest::testLoad()
   c = cookies[3];
   CPPUNIT_ASSERT_EQUAL(std::string("TAX"), c->getName());
   CPPUNIT_ASSERT_EQUAL(std::string("1000"), c->getValue());
-  CPPUNIT_ASSERT((time_t)INT32_MAX <= c->getExpiryTime());
+  CPPUNIT_ASSERT_EQUAL((time_t)1463304912, c->getExpiryTime());
   CPPUNIT_ASSERT(c->getPersistent());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), c->getPath());
-  CPPUNIT_ASSERT_EQUAL(std::string("overflow"), c->getDomain());
+  CPPUNIT_ASSERT_EQUAL(std::string("something"), c->getDomain());
   CPPUNIT_ASSERT(!c->getSecure());
 }
 

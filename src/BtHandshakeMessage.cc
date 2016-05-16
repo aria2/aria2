@@ -37,15 +37,12 @@
 #include <cstring>
 
 #include "util.h"
-#include "BtConstants.h"
 #include "a2functional.h"
 
 namespace aria2 {
 
+const unsigned char BtHandshakeMessage::BT_PSTR[] = "BitTorrent protocol";
 const char BtHandshakeMessage::NAME[] = "handshake";
-
-const unsigned char* BtHandshakeMessage::BT_PSTR =
-    reinterpret_cast<const unsigned char*>("BitTorrent protocol");
 
 BtHandshakeMessage::BtHandshakeMessage() : SimpleBtMessage(ID, NAME) { init(); }
 
@@ -54,19 +51,17 @@ BtHandshakeMessage::BtHandshakeMessage(const unsigned char* infoHash,
     : SimpleBtMessage(ID, NAME)
 {
   init();
-  memcpy(infoHash_, infoHash, INFO_HASH_LENGTH);
-  memcpy(peerId_, peerId, PEER_ID_LENGTH);
+  std::copy_n(infoHash, infoHash_.size(), std::begin(infoHash_));
+  std::copy_n(peerId, peerId_.size(), std::begin(peerId_));
 }
+
+BtHandshakeMessage::~BtHandshakeMessage() {}
 
 void BtHandshakeMessage::init()
 {
   pstrlen_ = 19;
-  pstr_ = new unsigned char[PSTR_LENGTH];
-  reserved_ = new unsigned char[RESERVED_LENGTH];
-  infoHash_ = new unsigned char[INFO_HASH_LENGTH];
-  peerId_ = new unsigned char[PEER_ID_LENGTH];
-  memcpy(pstr_, BT_PSTR, PSTR_LENGTH);
-  memset(reserved_, 0, RESERVED_LENGTH);
+  std::copy_n(BT_PSTR, pstr_.size(), std::begin(pstr_));
+  std::fill(std::begin(reserved_), std::end(reserved_), 0);
   // fast extension
   reserved_[7] |= 0x04u;
   // extended messaging
@@ -76,23 +71,25 @@ void BtHandshakeMessage::init()
 std::unique_ptr<BtHandshakeMessage>
 BtHandshakeMessage::create(const unsigned char* data, size_t dataLength)
 {
-  auto message = make_unique<BtHandshakeMessage>();
-  message->pstrlen_ = data[0];
-  memcpy(message->pstr_, &data[1], PSTR_LENGTH);
-  memcpy(message->reserved_, &data[20], RESERVED_LENGTH);
-  memcpy(message->infoHash_, &data[28], INFO_HASH_LENGTH);
-  memcpy(message->peerId_, &data[48], PEER_ID_LENGTH);
-  return message;
+  auto msg = make_unique<BtHandshakeMessage>();
+  msg->pstrlen_ = data[0];
+  std::copy_n(&data[1], msg->pstr_.size(), std::begin(msg->pstr_));
+  std::copy_n(&data[20], msg->reserved_.size(), std::begin(msg->reserved_));
+  std::copy_n(&data[28], msg->infoHash_.size(), std::begin(msg->infoHash_));
+  std::copy_n(&data[48], msg->peerId_.size(), std::begin(msg->peerId_));
+
+  return msg;
 }
 
 unsigned char* BtHandshakeMessage::createMessage()
 {
   auto msg = new unsigned char[MESSAGE_LENGTH];
-  msg[0] = pstrlen_;
-  memcpy(msg + 1, pstr_, PSTR_LENGTH);
-  memcpy(msg + 20, reserved_, RESERVED_LENGTH);
-  memcpy(msg + 28, infoHash_, INFO_HASH_LENGTH);
-  memcpy(msg + 48, peerId_, PEER_ID_LENGTH);
+  auto dst = msg;
+  *dst++ = pstrlen_;
+  dst = std::copy(std::begin(pstr_), std::end(pstr_), dst);
+  dst = std::copy(std::begin(reserved_), std::end(reserved_), dst);
+  dst = std::copy(std::begin(infoHash_), std::end(infoHash_), dst);
+  std::copy(std::begin(peerId_), std::end(peerId_), dst);
   return msg;
 }
 
@@ -101,8 +98,8 @@ size_t BtHandshakeMessage::getMessageLength() { return MESSAGE_LENGTH; }
 std::string BtHandshakeMessage::toString() const
 {
   return fmt("%s peerId=%s, reserved=%s", NAME,
-             util::percentEncode(peerId_, PEER_ID_LENGTH).c_str(),
-             util::toHex(reserved_, RESERVED_LENGTH).c_str());
+             util::percentEncode(peerId_.data(), peerId_.size()).c_str(),
+             util::toHex(reserved_.data(), reserved_.size()).c_str());
 }
 
 bool BtHandshakeMessage::isFastExtensionSupported() const
@@ -119,12 +116,12 @@ bool BtHandshakeMessage::isDHTEnabled() const { return reserved_[7] & 0x01u; }
 
 void BtHandshakeMessage::setInfoHash(const unsigned char* infoHash)
 {
-  memcpy(infoHash_, infoHash, INFO_HASH_LENGTH);
+  std::copy_n(infoHash, infoHash_.size(), std::begin(infoHash_));
 }
 
 void BtHandshakeMessage::setPeerId(const unsigned char* peerId)
 {
-  memcpy(peerId_, peerId, PEER_ID_LENGTH);
+  std::copy_n(peerId, peerId_.size(), std::begin(peerId_));
 }
 
 } // namespace aria2
