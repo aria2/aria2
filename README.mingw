@@ -13,7 +13,7 @@ The executable is statically linked, so no extra DLLs are
 necessary. The linked libraries are:
 
 * gmp 6.1.0
-* expat 2.1.0
+* expat 2.1.1
 * sqlite 3.10.2
 * zlib 1.2.8
 * c-ares 1.11.0
