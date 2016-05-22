@@ -83,13 +83,13 @@ PeerConnection::PeerConnection(cuid_t cuid, const std::shared_ptr<Peer>& peer,
 
 PeerConnection::~PeerConnection() {}
 
-void PeerConnection::pushBytes(unsigned char* data, size_t len,
+void PeerConnection::pushBytes(std::vector<unsigned char> data,
                                std::unique_ptr<ProgressUpdate> progressUpdate)
 {
   if (encryptionEnabled_) {
-    encryptor_->encrypt(len, data, data);
+    encryptor_->encrypt(data.size(), data.data(), data.data());
   }
-  socketBuffer_.pushBytes(data, len, std::move(progressUpdate));
+  socketBuffer_.pushBytes(std::move(data), std::move(progressUpdate));
 }
 
 bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength)

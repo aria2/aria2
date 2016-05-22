@@ -27,10 +27,9 @@ void BtKeepAliveMessageTest::testCreateMessage()
   memset(data, 0, sizeof(data));
   BtKeepAliveMessage message;
   CPPUNIT_ASSERT_EQUAL((uint8_t)99, message.getId());
-  CPPUNIT_ASSERT_EQUAL((size_t)4, message.getMessageLength());
-  unsigned char* rawmsg = message.createMessage();
-  CPPUNIT_ASSERT(memcmp(rawmsg, data, 4) == 0);
-  delete[] rawmsg;
+  auto rawmsg = message.createMessage();
+  CPPUNIT_ASSERT_EQUAL((size_t)4, rawmsg.size());
+  CPPUNIT_ASSERT(std::equal(std::begin(rawmsg), std::end(rawmsg), data));
 }
 
 void BtKeepAliveMessageTest::testToString()

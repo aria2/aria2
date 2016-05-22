@@ -30,7 +30,7 @@ RUN apt-get update && \
 
 RUN curl -L -O https://gmplib.org/download/gmp/gmp-6.1.0.tar.lz && \
     curl -L -o gmp-6.1.0.patch https://gmplib.org/repo/gmp-6.1/raw-rev/67d4ee9dead1 && \
-    curl -L -O http://downloads.sourceforge.net/project/expat/expat/2.1.0/expat-2.1.0.tar.gz && \
+    curl -L -O http://downloads.sourceforge.net/project/expat/expat/2.1.1/expat-2.1.1.tar.gz && \
     curl -L -O https://www.sqlite.org/2016/sqlite-autoconf-3120100.tar.gz && \
     curl -L -O http://zlib.net/zlib-1.2.8.tar.xz && \
     curl -L -O http://c-ares.haxx.se/download/c-ares-1.11.0.tar.gz && \
@@ -49,8 +49,8 @@ RUN tar xf gmp-6.1.0.tar.lz && \
         CFLAGS="-mtune=generic -O2 -g0" && \
     make install
 
-RUN tar xf expat-2.1.0.tar.gz && \
-    cd expat-2.1.0 && \
+RUN tar xf expat-2.1.1.tar.gz && \
+    cd expat-2.1.1 && \
     ./configure \
         --disable-shared \
         --enable-static \

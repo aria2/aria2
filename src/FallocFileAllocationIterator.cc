@@ -39,28 +39,11 @@
 
 namespace aria2 {
 
-#ifdef __MINGW32__
-bool FallocFileAllocationIterator::gainPrivilegeAttempted_ = false;
-#endif // __MINGW32__
-
 FallocFileAllocationIterator::FallocFileAllocationIterator(BinaryStream* stream,
                                                            int64_t offset,
                                                            int64_t totalLength)
     : stream_(stream), offset_(offset), totalLength_(totalLength)
 {
-#ifdef __MINGW32__
-  // Windows build: --file-allocation=falloc uses SetFileValidData
-  // which requires SE_MANAGE_VOLUME_NAME privilege.  SetFileValidData
-  // has security implications (see
-  // https://msdn.microsoft.com/en-us/library/windows/desktop/aa365544%28v=vs.85%29.aspx).
-  if (!gainPrivilegeAttempted_) {
-    if (!util::gainPrivilege(SE_MANAGE_VOLUME_NAME)) {
-      A2_LOG_WARN("--file-allocation=falloc will not work properly.");
-    }
-
-    gainPrivilegeAttempted_ = true;
-  }
-#endif // __MINGW32__
 }
 
 void FallocFileAllocationIterator::allocateChunk()

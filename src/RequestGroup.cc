@@ -604,6 +604,35 @@ void RequestGroup::initPieceStorage()
   segmentMan_ =
       std::make_shared<SegmentMan>(downloadContext_, tempPieceStorage);
   pieceStorage_ = tempPieceStorage;
+
+#ifdef __MINGW32__
+  // Windows build: --file-allocation=falloc uses SetFileValidData
+  // which requires SE_MANAGE_VOLUME_NAME privilege.  SetFileValidData
+  // has security implications (see
+  // https://msdn.microsoft.com/en-us/library/windows/desktop/aa365544%28v=vs.85%29.aspx).
+  static auto gainPrivilegeAttempted = false;
+
+  if (!gainPrivilegeAttempted &&
+      pieceStorage_->getDiskAdaptor()->getFileAllocationMethod() ==
+          DiskAdaptor::FILE_ALLOC_FALLOC &&
+      isFileAllocationEnabled()) {
+    if (!util::gainPrivilege(SE_MANAGE_VOLUME_NAME)) {
+      A2_LOG_WARN("--file-allocation=falloc will not work properly.");
+    }
+    else {
+      A2_LOG_DEBUG("SE_MANAGE_VOLUME_NAME privilege acquired");
+
+      A2_LOG_WARN(
+          "--file-allocation=falloc will use SetFileValidData() API, and "
+          "aria2 uses uninitialized disk space which may contain "
+          "confidential data as the download file space. If it is "
+          "undesirable, --file-allocation=prealloc is slower, but safer "
+          "option.");
+    }
+
+    gainPrivilegeAttempted = true;
+  }
+#endif // __MINGW32__
 }
 
 void RequestGroup::dropPieceStorage()

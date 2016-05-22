@@ -47,10 +47,6 @@ private:
   int64_t offset_;
   int64_t totalLength_;
 
-#ifdef __MINGW32__
-  static bool gainPrivilegeAttempted_;
-#endif // __MINGW32__
-
 public:
   FallocFileAllocationIterator(BinaryStream* stream, int64_t offset,
                                int64_t totalLength);
