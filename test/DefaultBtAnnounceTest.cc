@@ -158,7 +158,7 @@ void DefaultBtAnnounceTest::testNoMoreAnnounce()
   CPPUNIT_ASSERT_EQUAL(
       std::string("http://localhost/"
                   "announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%"
-                  "01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&"
+                  "01%23Eg&peer_id=-aria2-ultrafastdltl&uploaded=1572864&"
                   "downloaded=1310720&left=1572864&compact=1&key=fastdltl&"
                   "numwant=50&no_peer_id=1&port=6989&event=started&"
                   "supportcrypto=1"),
@@ -169,7 +169,7 @@ void DefaultBtAnnounceTest::testNoMoreAnnounce()
   CPPUNIT_ASSERT_EQUAL(
       std::string("http://localhost/"
                   "announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%"
-                  "01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&"
+                  "01%23Eg&peer_id=-aria2-ultrafastdltl&uploaded=1572864&"
                   "downloaded=1310720&left=1572864&compact=1&key=fastdltl&"
                   "numwant=50&no_peer_id=1&port=6989&supportcrypto=1"),
       btAnnounce.getAnnounceUrl());
@@ -179,7 +179,7 @@ void DefaultBtAnnounceTest::testNoMoreAnnounce()
   CPPUNIT_ASSERT_EQUAL(
       std::string("http://backup/"
                   "announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%"
-                  "01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&"
+                  "01%23Eg&peer_id=-aria2-ultrafastdltl&uploaded=1572864&"
                   "downloaded=1310720&left=1572864&compact=1&key=fastdltl&"
                   "numwant=50&no_peer_id=1&port=6989&event=started&"
                   "supportcrypto=1"),
@@ -192,7 +192,7 @@ void DefaultBtAnnounceTest::testNoMoreAnnounce()
   CPPUNIT_ASSERT_EQUAL(
       std::string("http://localhost/"
                   "announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%"
-                  "01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&"
+                  "01%23Eg&peer_id=-aria2-ultrafastdltl&uploaded=1572864&"
                   "downloaded=1310720&left=1572864&compact=1&key=fastdltl&"
                   "numwant=50&no_peer_id=1&port=6989&event=completed&"
                   "supportcrypto=1"),
@@ -203,7 +203,7 @@ void DefaultBtAnnounceTest::testNoMoreAnnounce()
   CPPUNIT_ASSERT_EQUAL(
       std::string("http://backup/"
                   "announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%"
-                  "01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&"
+                  "01%23Eg&peer_id=-aria2-ultrafastdltl&uploaded=1572864&"
                   "downloaded=1310720&left=1572864&compact=1&key=fastdltl&"
                   "numwant=50&no_peer_id=1&port=6989&event=completed&"
                   "supportcrypto=1"),
@@ -216,7 +216,7 @@ void DefaultBtAnnounceTest::testNoMoreAnnounce()
   CPPUNIT_ASSERT_EQUAL(
       std::string("http://localhost/"
                   "announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%"
-                  "01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&"
+                  "01%23Eg&peer_id=-aria2-ultrafastdltl&uploaded=1572864&"
                   "downloaded=1310720&left=1572864&compact=1&key=fastdltl&"
                   "numwant=0&no_peer_id=1&port=6989&event=stopped&"
                   "supportcrypto=1"),
@@ -227,7 +227,7 @@ void DefaultBtAnnounceTest::testNoMoreAnnounce()
   CPPUNIT_ASSERT_EQUAL(
       std::string("http://backup/"
                   "announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%"
-                  "01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&"
+                  "01%23Eg&peer_id=-aria2-ultrafastdltl&uploaded=1572864&"
                   "downloaded=1310720&left=1572864&compact=1&key=fastdltl&"
                   "numwant=0&no_peer_id=1&port=6989&event=stopped&"
                   "supportcrypto=1"),
@@ -255,7 +255,7 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl()
   CPPUNIT_ASSERT_EQUAL(
       std::string("http://localhost/"
                   "announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%"
-                  "01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&"
+                  "01%23Eg&peer_id=-aria2-ultrafastdltl&uploaded=1572864&"
                   "downloaded=1310720&left=1572864&compact=1&key=fastdltl&"
                   "numwant=50&no_peer_id=1&port=6989&event=started&"
                   "supportcrypto=1"),
@@ -281,7 +281,7 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl()
   CPPUNIT_ASSERT_EQUAL(
       std::string("http://localhost/"
                   "announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%"
-                  "01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&"
+                  "01%23Eg&peer_id=-aria2-ultrafastdltl&uploaded=1572864&"
                   "downloaded=1310720&left=1572864&compact=1&key=fastdltl&"
                   "numwant=50&no_peer_id=1&port=6989&supportcrypto=1"),
       btAnnounce.getAnnounceUrl());
@@ -296,7 +296,7 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl()
   CPPUNIT_ASSERT_EQUAL(
       std::string("http://localhost/"
                   "announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%"
-                  "01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&"
+                  "01%23Eg&peer_id=-aria2-ultrafastdltl&uploaded=1572864&"
                   "downloaded=1310720&left=1572864&compact=1&key=fastdltl&"
                   "numwant=50&no_peer_id=1&port=6989&event=completed&"
                   "supportcrypto=1"),
@@ -312,7 +312,7 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl()
   CPPUNIT_ASSERT_EQUAL(
       std::string("http://localhost/"
                   "announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%"
-                  "01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&"
+                  "01%23Eg&peer_id=-aria2-ultrafastdltl&uploaded=1572864&"
                   "downloaded=1310720&left=1572864&compact=1&key=fastdltl&"
                   "numwant=0&no_peer_id=1&port=6989&event=stopped&"
                   "supportcrypto=1"),
@@ -339,7 +339,7 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl_withQuery()
       std::string(
           "http://localhost/announce?k=v&"
           "info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%01%23Eg&"
-          "peer_id=%2Daria2%2Dultrafastdltl&"
+          "peer_id=-aria2-ultrafastdltl&"
           "uploaded=1572864&downloaded=1310720&left=1572864&compact=1&"
           "key=fastdltl&numwant=50&no_peer_id=1&port=6989&event=started&"
           "supportcrypto=1"),
@@ -364,7 +364,7 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl_externalIP()
       std::string(
           "http://localhost/announce?"
           "info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%01%23Eg&"
-          "peer_id=%2Daria2%2Dultrafastdltl&"
+          "peer_id=-aria2-ultrafastdltl&"
           "uploaded=1572864&downloaded=1310720&left=1572864&compact=1&"
           "key=fastdltl&numwant=50&no_peer_id=1&port=6989&event=started&"
           "supportcrypto=1&ip=192.168.1.1"),
@@ -395,7 +395,7 @@ void DefaultBtAnnounceTest::testIsAllAnnounceFailed()
   CPPUNIT_ASSERT_EQUAL(
       std::string("http://localhost/"
                   "announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%"
-                  "01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&"
+                  "01%23Eg&peer_id=-aria2-ultrafastdltl&uploaded=1572864&"
                   "downloaded=1310720&left=1572864&compact=1&key=fastdltl&"
                   "numwant=50&no_peer_id=1&port=6989&event=started&"
                   "supportcrypto=1"),
@@ -406,7 +406,7 @@ void DefaultBtAnnounceTest::testIsAllAnnounceFailed()
   CPPUNIT_ASSERT_EQUAL(
       std::string("http://backup/"
                   "announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%"
-                  "01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&"
+                  "01%23Eg&peer_id=-aria2-ultrafastdltl&uploaded=1572864&"
                   "downloaded=1310720&left=1572864&compact=1&key=fastdltl&"
                   "numwant=50&no_peer_id=1&port=6989&event=started&"
                   "supportcrypto=1"),
@@ -442,7 +442,7 @@ void DefaultBtAnnounceTest::testURLOrderInStoppedEvent()
   CPPUNIT_ASSERT_EQUAL(
       std::string("http://localhost1/"
                   "announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%"
-                  "01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&"
+                  "01%23Eg&peer_id=-aria2-ultrafastdltl&uploaded=1572864&"
                   "downloaded=1310720&left=1572864&compact=1&key=fastdltl&"
                   "numwant=50&no_peer_id=1&port=6989&event=started&"
                   "supportcrypto=1"),
@@ -455,7 +455,7 @@ void DefaultBtAnnounceTest::testURLOrderInStoppedEvent()
   CPPUNIT_ASSERT_EQUAL(
       std::string("http://localhost1/"
                   "announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%"
-                  "01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&"
+                  "01%23Eg&peer_id=-aria2-ultrafastdltl&uploaded=1572864&"
                   "downloaded=1310720&left=1572864&compact=1&key=fastdltl&"
                   "numwant=0&no_peer_id=1&port=6989&event=stopped&"
                   "supportcrypto=1"),
@@ -466,7 +466,7 @@ void DefaultBtAnnounceTest::testURLOrderInStoppedEvent()
   CPPUNIT_ASSERT_EQUAL(
       std::string("http://localhost2/"
                   "announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%"
-                  "01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&"
+                  "01%23Eg&peer_id=-aria2-ultrafastdltl&uploaded=1572864&"
                   "downloaded=1310720&left=1572864&compact=1&key=fastdltl&"
                   "numwant=0&no_peer_id=1&port=6989&event=stopped&"
                   "supportcrypto=1"),
@@ -494,7 +494,7 @@ void DefaultBtAnnounceTest::testURLOrderInCompletedEvent()
   CPPUNIT_ASSERT_EQUAL(
       std::string("http://localhost1/"
                   "announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%"
-                  "01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&"
+                  "01%23Eg&peer_id=-aria2-ultrafastdltl&uploaded=1572864&"
                   "downloaded=1310720&left=1572864&compact=1&key=fastdltl&"
                   "numwant=50&no_peer_id=1&port=6989&event=started&"
                   "supportcrypto=1"),
@@ -507,7 +507,7 @@ void DefaultBtAnnounceTest::testURLOrderInCompletedEvent()
   CPPUNIT_ASSERT_EQUAL(
       std::string("http://localhost1/"
                   "announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%"
-                  "01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&"
+                  "01%23Eg&peer_id=-aria2-ultrafastdltl&uploaded=1572864&"
                   "downloaded=1310720&left=1572864&compact=1&key=fastdltl&"
                   "numwant=50&no_peer_id=1&port=6989&event=completed&"
                   "supportcrypto=1"),
@@ -518,7 +518,7 @@ void DefaultBtAnnounceTest::testURLOrderInCompletedEvent()
   CPPUNIT_ASSERT_EQUAL(
       std::string("http://localhost2/"
                   "announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%"
-                  "01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&"
+                  "01%23Eg&peer_id=-aria2-ultrafastdltl&uploaded=1572864&"
                   "downloaded=1310720&left=1572864&compact=1&key=fastdltl&"
                   "numwant=50&no_peer_id=1&port=6989&event=completed&"
                   "supportcrypto=1"),
