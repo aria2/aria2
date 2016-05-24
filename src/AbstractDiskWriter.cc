@@ -373,6 +373,14 @@ void AbstractDiskWriter::ensureMmapWrite(size_t len, int64_t offset)
         return;
       }
 
+      uint32_t filesize_lo = filesize & 0xffffffffu;
+      if (sizeof(off_t) > sizeof(size_t) && (filesize_lo) > 0) {
+        // filesize could overflow in 32bit OS with 64bit off_t type
+        // the filesize will be truncated if provided as a 32bit size_t
+        enableMmap_ = false;
+        return;
+      }
+
       int errNum = 0;
       if (static_cast<int64_t>(len + offset) <= filesize) {
 #ifdef __MINGW32__
