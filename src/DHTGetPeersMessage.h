@@ -36,6 +36,9 @@
 #define D_DHT_GET_PEERS_MESSAGE_H
 
 #include "DHTQueryMessage.h"
+
+#include <vector>
+
 #include "DHTConstants.h"
 #include "A2STR.h"
 
@@ -43,6 +46,8 @@ namespace aria2 {
 
 class DHTPeerAnnounceStorage;
 class DHTTokenTracker;
+class BtRegistry;
+class Peer;
 
 class DHTGetPeersMessage : public DHTQueryMessage {
 private:
@@ -51,6 +56,12 @@ private:
   DHTPeerAnnounceStorage* peerAnnounceStorage_;
 
   DHTTokenTracker* tokenTracker_;
+
+  BtRegistry* btRegistry_;
+
+  int family_;
+
+  void addLocalPeer(std::vector<std::shared_ptr<Peer>>& peers);
 
 protected:
   virtual std::string toStringOptional() const CXX11_OVERRIDE;
@@ -72,6 +83,10 @@ public:
   void setPeerAnnounceStorage(DHTPeerAnnounceStorage* storage);
 
   void setTokenTracker(DHTTokenTracker* tokenTracker);
+
+  void setBtRegistry(BtRegistry* btRegistry);
+
+  void setFamily(int family);
 
   static const std::string GET_PEERS;
 

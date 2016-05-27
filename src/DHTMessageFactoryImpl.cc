@@ -70,7 +70,8 @@ DHTMessageFactoryImpl::DHTMessageFactoryImpl(int family)
       dispatcher_{nullptr},
       routingTable_{nullptr},
       peerAnnounceStorage_{nullptr},
-      tokenTracker_{nullptr}
+      tokenTracker_{nullptr},
+      btRegistry_{nullptr}
 {
 }
 
@@ -409,6 +410,8 @@ DHTMessageFactoryImpl::createGetPeersMessage(
                                            transactionID);
   m->setPeerAnnounceStorage(peerAnnounceStorage_);
   m->setTokenTracker(tokenTracker_);
+  m->setBtRegistry(btRegistry_);
+  m->setFamily(family_);
   setCommonProperty(m.get());
   return m;
 }
@@ -527,6 +530,11 @@ void DHTMessageFactoryImpl::setLocalNode(
     const std::shared_ptr<DHTNode>& localNode)
 {
   localNode_ = localNode;
+}
+
+void DHTMessageFactoryImpl::setBtRegistry(BtRegistry* btRegistry)
+{
+  btRegistry_ = btRegistry;
 }
 
 } // namespace aria2
