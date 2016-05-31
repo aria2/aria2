@@ -373,7 +373,8 @@ void AbstractDiskWriter::ensureMmapWrite(size_t len, int64_t offset)
         return;
       }
 
-      if (static_cast<uint64_t>(std::numeric_limits<size_t>::max()) < static_cast<uint64_t>(filesize)) {
+      if (static_cast<uint64_t>(std::numeric_limits<size_t>::max()) <
+          static_cast<uint64_t>(filesize)) {
         // filesize could overflow in 32bit OS with 64bit off_t type
         // the filesize will be truncated if provided as a 32bit size_t
         enableMmap_ = false;
@@ -398,11 +399,11 @@ void AbstractDiskWriter::ensureMmapWrite(size_t len, int64_t offset)
           errNum = GetLastError();
         }
 #else  // !__MINGW32__
-        void * pa = mmap(nullptr, filesize, PROT_READ | PROT_WRITE, MAP_SHARED, fd_, 0);
+        auto pa =
+            mmap(nullptr, filesize, PROT_READ | PROT_WRITE, MAP_SHARED, fd_, 0);
 
         if (pa == MAP_FAILED) {
           errNum = errno;
-          mapaddr_ = nullptr;
         }
         else {
           mapaddr_ = reinterpret_cast<unsigned char*>(pa);
