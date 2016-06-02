@@ -62,7 +62,8 @@ DefaultPeerStorage::DefaultPeerStorage()
     : maxPeerListSize_(MAX_PEER_LIST_SIZE),
       seederStateChoke_(make_unique<BtSeederStateChoke>()),
       leecherStateChoke_(make_unique<BtLeecherStateChoke>()),
-      lastTransferStatMapUpdated_(Timer::zero())
+      lastTransferStatMapUpdated_(Timer::zero()),
+      forceChokeRound_(false)
 {
 }
 
@@ -284,15 +285,20 @@ void DefaultPeerStorage::returnPeer(const std::shared_ptr<Peer>& peer)
 bool DefaultPeerStorage::chokeRoundIntervalElapsed()
 {
   constexpr auto CHOKE_ROUND_INTERVAL = 10_s;
+  auto forceChokeRound = forceChokeRound_;
+  forceChokeRound_ = false;
+
   if (pieceStorage_->downloadFinished()) {
+    auto interval = forceChokeRound ? 1_s : CHOKE_ROUND_INTERVAL;
     return seederStateChoke_->getLastRound().difference(global::wallclock()) >=
-           CHOKE_ROUND_INTERVAL;
+           interval;
   }
-  else {
-    return leecherStateChoke_->getLastRound().difference(global::wallclock()) >=
-           CHOKE_ROUND_INTERVAL;
-  }
+
+  return leecherStateChoke_->getLastRound().difference(global::wallclock()) >=
+         CHOKE_ROUND_INTERVAL;
 }
+
+void DefaultPeerStorage::scheduleForcedChokeRound() { forceChokeRound_ = true; }
 
 void DefaultPeerStorage::executeChoke()
 {

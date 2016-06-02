@@ -347,29 +347,23 @@ bool PeerInteractionCommand::executeInternal()
       if (btInteractive_->countReceivedMessageInIteration() > 0) {
         updateKeepAlive();
       }
-      if ((getPeer()->amInterested() && !getPeer()->peerChoking()) ||
-          btInteractive_->countOutstandingRequest() ||
-          (getPeer()->peerInterested() && !getPeer()->amChoking())) {
 
-        // Writable check to avoid slow seeding
-        if (btInteractive_->isSendingMessageInProgress()) {
-          setWriteCheckSocket(getSocket());
-        }
+      // Writable check to avoid slow seeding
+      if (btInteractive_->isSendingMessageInProgress()) {
+        setWriteCheckSocket(getSocket());
+      }
 
-        if (getDownloadEngine()
-                ->getRequestGroupMan()
-                ->doesOverallDownloadSpeedExceed() ||
-            requestGroup_->doesDownloadSpeedExceed()) {
-          disableReadCheckSocket();
-          setNoCheck(true);
-        }
-        else {
-          setReadCheckSocket(getSocket());
-        }
+      if (getDownloadEngine()
+              ->getRequestGroupMan()
+              ->doesOverallDownloadSpeedExceed() ||
+          requestGroup_->doesDownloadSpeedExceed()) {
+        disableReadCheckSocket();
+        setNoCheck(true);
       }
       else {
-        disableReadCheckSocket();
+        setReadCheckSocket(getSocket());
       }
+
       done = true;
       break;
     }

@@ -84,6 +84,8 @@ public:
 
   virtual bool chokeRoundIntervalElapsed() CXX11_OVERRIDE { return false; }
 
+  virtual void scheduleForcedChokeRound() CXX11_OVERRIDE {}
+
   virtual void executeChoke() CXX11_OVERRIDE { ++numChokeExecuted_; }
 
   int getNumChokeExecuted() const { return numChokeExecuted_; }
