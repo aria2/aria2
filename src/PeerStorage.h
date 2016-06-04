@@ -113,11 +113,6 @@ public:
 
   virtual bool chokeRoundIntervalElapsed() = 0;
 
-  /**
-   * Schedules choke round forcibly.
-   */
-  virtual void scheduleForcedChokeRound() = 0;
-
   virtual void executeChoke() = 0;
 };
 

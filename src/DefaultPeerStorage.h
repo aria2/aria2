@@ -74,8 +74,6 @@ private:
   std::map<std::string, Timer> badPeers_;
   Timer lastBadPeerCleaned_;
 
-  bool forceChokeRound_;
-
   bool isPeerAlreadyAdded(const std::shared_ptr<Peer>& peer);
   void addUniqPeer(const std::shared_ptr<Peer>& peer);
 
@@ -114,8 +112,6 @@ public:
   virtual void returnPeer(const std::shared_ptr<Peer>& peer) CXX11_OVERRIDE;
 
   virtual bool chokeRoundIntervalElapsed() CXX11_OVERRIDE;
-
-  virtual void scheduleForcedChokeRound() CXX11_OVERRIDE;
 
   virtual void executeChoke() CXX11_OVERRIDE;
 

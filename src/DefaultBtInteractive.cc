@@ -189,7 +189,6 @@ void DefaultBtInteractive::doPostHandshakeProcessing()
   if (!metadataGetMode_) {
     addAllowedFastMessageToQueue();
   }
-  peerStorage_->scheduleForcedChokeRound();
   sendPendingMessage();
 }
 
