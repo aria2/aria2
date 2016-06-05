@@ -225,6 +225,7 @@ void BtLeecherStateChoke::executeChoke(const PeerSet& peerSet)
     p->chokingRequired(true);
 
     if (p->snubbing()) {
+      p->optUnchoking(false);
       continue;
     }
 
