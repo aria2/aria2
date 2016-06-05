@@ -218,10 +218,17 @@ void BtLeecherStateChoke::executeChoke(const PeerSet& peerSet)
 
   std::vector<PeerEntry> peerEntries;
   for (const auto& p : peerSet) {
-    if (p->isActive() && !p->snubbing()) {
-      p->chokingRequired(true);
-      peerEntries.push_back(PeerEntry(p));
+    if (!p->isActive()) {
+      continue;
     }
+
+    p->chokingRequired(true);
+
+    if (p->snubbing()) {
+      continue;
+    }
+
+    peerEntries.push_back(PeerEntry(p));
   }
 
   // planned optimistic unchoke
