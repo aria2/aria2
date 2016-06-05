@@ -59,8 +59,12 @@ void BtInterestedMessage::doReceivedAction()
   if (isMetadataGetMode()) {
     return;
   }
-  getPeer()->peerInterested(true);
-  if (!getPeer()->amChoking()) {
+
+  auto& peer = getPeer();
+
+  peer->peerInterested(true);
+
+  if (peer->amChoking()) {
     peerStorage_->executeChoke();
   }
 }
