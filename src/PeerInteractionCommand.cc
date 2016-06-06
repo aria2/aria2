@@ -360,8 +360,12 @@ bool PeerInteractionCommand::executeInternal()
       break;
     }
   }
-  if (btInteractive_->countPendingMessage() > 0 ||
-      btInteractive_->isSendingMessageInProgress()) {
+  if ((btInteractive_->countPendingMessage() > 0 ||
+       btInteractive_->isSendingMessageInProgress()) &&
+      !getDownloadEngine()
+           ->getRequestGroupMan()
+           ->doesOverallUploadSpeedExceed() &&
+      !requestGroup_->doesUploadSpeedExceed()) {
     setWriteCheckSocket(getSocket());
   }
   else {
