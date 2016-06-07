@@ -96,6 +96,9 @@ private:
 
   std::shared_ptr<Option> option_;
 
+  // options applied on restart
+  std::shared_ptr<Option> pendingOption_;
+
   std::shared_ptr<SegmentMan> segmentMan_;
 
   std::shared_ptr<DownloadContext> downloadContext_;
@@ -177,6 +180,11 @@ private:
   bool forceHaltRequested_;
 
   bool pauseRequested_;
+
+  // restartRequested_ indicates that this download should be
+  // restarted.  Usually, it is used with pauseRequested_ to stop
+  // download first.
+  bool restartRequested_;
 
   // This flag just indicates that the downloaded file is not saved disk but
   // just sits in memory.
@@ -345,6 +353,10 @@ public:
 
   bool isPauseRequested() const { return pauseRequested_; }
 
+  void setRestartRequested(bool f);
+
+  bool isRestartRequested() const { return restartRequested_; }
+
   void dependsOn(const std::shared_ptr<Dependency>& dep);
 
   bool isDependencyResolved();
@@ -500,6 +512,12 @@ public:
 
   // Returns true if this download is now seeding.
   bool isSeeder() const;
+
+  void setPendingOption(std::shared_ptr<Option> option);
+  const std::shared_ptr<Option>& getPendingOption() const
+  {
+    return pendingOption_;
+  }
 };
 
 } // namespace aria2

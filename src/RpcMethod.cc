@@ -147,12 +147,53 @@ void RpcMethod::gatherRequestOption(Option* option, const Dict* optionsDict)
   }
 }
 
-void RpcMethod::gatherChangeableOption(Option* option, const Dict* optionsDict)
+void RpcMethod::gatherChangeableOption(Option* option, Option* pendingOption,
+                                       const Dict* optionsDict)
 {
-  if (optionsDict) {
-    gatherOption(optionsDict->begin(), optionsDict->end(),
-                 std::mem_fn(&OptionHandler::getChangeOption), option,
-                 optionParser_);
+  if (!optionsDict) {
+    return;
+  }
+
+  auto first = optionsDict->begin();
+  auto last = optionsDict->end();
+
+  for (; first != last; ++first) {
+    const auto& optionName = (*first).first;
+    auto pref = option::k2p(optionName);
+    auto handler = optionParser_->find(pref);
+    if (!handler) {
+      // Just ignore the unacceptable options in this context.
+      continue;
+    }
+
+    Option* dst = nullptr;
+    if (handler->getChangeOption()) {
+      dst = option;
+    }
+    else if (handler->getChangeOptionForReserved()) {
+      dst = pendingOption;
+    }
+
+    if (!dst) {
+      continue;
+    }
+
+    const auto opval = downcast<String>((*first).second);
+    if (opval) {
+      handler->parse(*dst, opval->s());
+    }
+    else if (handler->getCumulative()) {
+      // header and index-out option can take array as value
+      const auto oplist = downcast<List>((*first).second);
+      if (oplist) {
+        for (auto& elem : *oplist) {
+          const auto opval = downcast<String>(elem);
+          if (opval) {
+            handler->parse(*dst, opval->s());
+          }
+        }
+      }
+    }
   }
 }
 

@@ -84,6 +84,7 @@
 #include "array_fun.h"
 #include "OpenedFileCounter.h"
 #include "wallclock.h"
+#include "RpcMethodImpl.h"
 #ifdef ENABLE_BITTORRENT
 #include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
@@ -369,8 +370,10 @@ public:
       try {
         group->closeFile();
         if (group->isPauseRequested()) {
-          A2_LOG_NOTICE(fmt(_("Download GID#%s paused"),
-                            GroupId::toHex(group->getGID()).c_str()));
+          if (!group->isRestartRequested()) {
+            A2_LOG_NOTICE(fmt(_("Download GID#%s paused"),
+                              GroupId::toHex(group->getGID()).c_str()));
+          }
           group->saveControlFile();
         }
         else if (group->downloadFinished() &&
@@ -433,9 +436,20 @@ public:
         reservedGroups_.push_front(group->getGID(), group);
         group->releaseRuntimeResource(e_);
         group->setForceHaltRequested(false);
-        util::executeHookByOptName(group, e_->getOption(),
-                                   PREF_ON_DOWNLOAD_PAUSE);
-        notifyDownloadEvent(EVENT_ON_DOWNLOAD_PAUSE, group);
+
+        auto pendingOption = group->getPendingOption();
+        if (pendingOption) {
+          changeOption(group, *pendingOption, e_);
+        }
+
+        if (group->isRestartRequested()) {
+          group->setPauseRequested(false);
+        }
+        else {
+          util::executeHookByOptName(group, e_->getOption(),
+                                     PREF_ON_DOWNLOAD_PAUSE);
+          notifyDownloadEvent(EVENT_ON_DOWNLOAD_PAUSE, group);
+        }
         // TODO Should we have to prepend spend uris to remaining uris
         // in case PREF_REUSE_URI is disabled?
       }
@@ -445,6 +459,10 @@ public:
         executeStopHook(group, e_->getOption(), dr->result);
         group->releaseRuntimeResource(e_);
       }
+
+      group->setRestartRequested(false);
+      group->setPendingOption(nullptr);
+
       return true;
     }
     else {

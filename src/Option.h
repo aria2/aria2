@@ -92,6 +92,8 @@ public:
   // Sets parent Option object for this object.
   void setParent(const std::shared_ptr<Option>& parent);
   const std::shared_ptr<Option>& getParent() const;
+  // Returns true if there is no option stored.
+  bool emptyLocal() const;
 };
 
 } // namespace aria2

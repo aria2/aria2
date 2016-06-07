@@ -986,6 +986,8 @@ void RequestGroup::setForceHaltRequested(bool f, HaltReason haltReason)
 
 void RequestGroup::setPauseRequested(bool f) { pauseRequested_ = f; }
 
+void RequestGroup::setRestartRequested(bool f) { restartRequested_ = f; }
+
 void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
 {
 #ifdef ENABLE_BITTORRENT
@@ -1306,6 +1308,11 @@ bool RequestGroup::isSeeder() const
 #else  // !ENABLE_BITTORRENT
   return false;
 #endif // !ENABLE_BITTORRENT
+}
+
+void RequestGroup::setPendingOption(std::shared_ptr<Option> option)
+{
+  pendingOption_ = std::move(option);
 }
 
 } // namespace aria2

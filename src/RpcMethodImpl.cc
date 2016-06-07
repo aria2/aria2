@@ -1113,10 +1113,22 @@ std::unique_ptr<ValueBase> ChangeOptionRpcMethod::process(const RpcRequest& req,
 
   a2_gid_t gid = str2Gid(gidParam);
   auto group = e->getRequestGroupMan()->findGroup(gid);
-  Option option;
   if (group) {
+    Option option;
+    std::shared_ptr<Option> pendingOption;
     if (group->getState() == RequestGroup::STATE_ACTIVE) {
-      gatherChangeableOption(&option, optsParam);
+      pendingOption = std::make_shared<Option>();
+      gatherChangeableOption(&option, pendingOption.get(), optsParam);
+      if (!pendingOption->emptyLocal()) {
+        group->setPendingOption(pendingOption);
+        // pauseRequestGroup() may fail if group has been told to
+        // stop/pause already.  In that case, we can still apply the
+        // pending options on pause.
+        if (pauseRequestGroup(group, false, false)) {
+          group->setRestartRequested(true);
+          e->setRefreshInterval(std::chrono::milliseconds(0));
+        }
+      }
     }
     else {
       gatherChangeableOptionForReserved(&option, optsParam);

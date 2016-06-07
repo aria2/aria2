@@ -75,7 +75,8 @@ protected:
 
   void gatherRequestOption(Option* option, const Dict* optionsDict);
 
-  void gatherChangeableOption(Option* option, const Dict* optionDict);
+  void gatherChangeableOption(Option* option, Option* pendingOption,
+                              const Dict* optionDict);
 
   void gatherChangeableOptionForReserved(Option* option,
                                          const Dict* optionsDict);
