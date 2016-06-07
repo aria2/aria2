@@ -538,9 +538,13 @@
 #define TEXT_EVENT_POLL                                                 \
   _(" --event-poll=POLL            Specify the method for polling events.")
 #define TEXT_BT_EXTERNAL_IP                                             \
-  _(" --bt-external-ip=IPADDRESS   Specify the external IP address to report to a\n" \
-    "                              BitTorrent tracker. Although this function is\n" \
-    "                              named 'external', it can accept any kind of IP\n" \
+  _(" --bt-external-ip=IPADDRESS   Specify the external IP address to use in\n" \
+    "                              BitTorrent download and DHT. It may be sent to\n" \
+    "                              BitTorrent tracker. For DHT, this option should\n" \
+    "                              be set to report that local node is downloading\n" \
+    "                              a particular torrent. This is critical to use\n" \
+    "                              DHT in a private network. Although this function\n" \
+    "                              is named 'external', it can accept any kind of IP\n" \
     "                              addresses.")
 #define TEXT_HTTP_AUTH_CHALLENGE                                        \
   _(" --http-auth-challenge[=true|false] Send HTTP authorization header only when it\n" \

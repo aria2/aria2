@@ -284,14 +284,14 @@ void DefaultPeerStorage::returnPeer(const std::shared_ptr<Peer>& peer)
 bool DefaultPeerStorage::chokeRoundIntervalElapsed()
 {
   constexpr auto CHOKE_ROUND_INTERVAL = 10_s;
+
   if (pieceStorage_->downloadFinished()) {
     return seederStateChoke_->getLastRound().difference(global::wallclock()) >=
            CHOKE_ROUND_INTERVAL;
   }
-  else {
-    return leecherStateChoke_->getLastRound().difference(global::wallclock()) >=
-           CHOKE_ROUND_INTERVAL;
-  }
+
+  return leecherStateChoke_->getLastRound().difference(global::wallclock()) >=
+         CHOKE_ROUND_INTERVAL;
 }
 
 void DefaultPeerStorage::executeChoke()

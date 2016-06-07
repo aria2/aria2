@@ -340,43 +340,38 @@ bool PeerInteractionCommand::executeInternal()
       break;
     }
     case WIRED:
-      // See the comment for writable check below.
-      disableWriteCheckSocket();
-
       btInteractive_->doInteractionProcessing();
       if (btInteractive_->countReceivedMessageInIteration() > 0) {
         updateKeepAlive();
       }
-      if ((getPeer()->amInterested() && !getPeer()->peerChoking()) ||
-          btInteractive_->countOutstandingRequest() ||
-          (getPeer()->peerInterested() && !getPeer()->amChoking())) {
 
-        // Writable check to avoid slow seeding
-        if (btInteractive_->isSendingMessageInProgress()) {
-          setWriteCheckSocket(getSocket());
-        }
-
-        if (getDownloadEngine()
-                ->getRequestGroupMan()
-                ->doesOverallDownloadSpeedExceed() ||
-            requestGroup_->doesDownloadSpeedExceed()) {
-          disableReadCheckSocket();
-          setNoCheck(true);
-        }
-        else {
-          setReadCheckSocket(getSocket());
-        }
+      if (getDownloadEngine()
+              ->getRequestGroupMan()
+              ->doesOverallDownloadSpeedExceed() ||
+          requestGroup_->doesDownloadSpeedExceed()) {
+        disableReadCheckSocket();
+        setNoCheck(true);
       }
       else {
-        disableReadCheckSocket();
+        setReadCheckSocket(getSocket());
       }
+
       done = true;
       break;
     }
   }
-  if (btInteractive_->countPendingMessage() > 0) {
-    setNoCheck(true);
+  if ((btInteractive_->countPendingMessage() > 0 ||
+       btInteractive_->isSendingMessageInProgress()) &&
+      !getDownloadEngine()
+           ->getRequestGroupMan()
+           ->doesOverallUploadSpeedExceed() &&
+      !requestGroup_->doesUploadSpeedExceed()) {
+    setWriteCheckSocket(getSocket());
   }
+  else {
+    disableWriteCheckSocket();
+  }
+
   addCommandSelf();
   return false;
 }

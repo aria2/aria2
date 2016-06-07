@@ -46,6 +46,10 @@
 #include "DHTTokenTracker.h"
 #include "DHTGetPeersReplyMessage.h"
 #include "util.h"
+#include "BtRegistry.h"
+#include "DownloadContext.h"
+#include "Option.h"
+#include "SocketCore.h"
 
 namespace aria2 {
 
@@ -59,18 +63,61 @@ DHTGetPeersMessage::DHTGetPeersMessage(
     const std::string& transactionID)
     : DHTQueryMessage{localNode, remoteNode, transactionID},
       peerAnnounceStorage_{nullptr},
-      tokenTracker_{nullptr}
+      tokenTracker_{nullptr},
+      btRegistry_{nullptr},
+      family_{AF_INET}
 {
   memcpy(infoHash_, infoHash, DHT_ID_LENGTH);
+}
+
+void DHTGetPeersMessage::addLocalPeer(std::vector<std::shared_ptr<Peer>>& peers)
+{
+  if (!btRegistry_) {
+    return;
+  }
+
+  auto& dctx = btRegistry_->getDownloadContext(
+      std::string(infoHash_, infoHash_ + DHT_ID_LENGTH));
+
+  if (!dctx) {
+    return;
+  }
+
+  auto group = dctx->getOwnerRequestGroup();
+  auto& option = group->getOption();
+  auto& externalIP = option->get(PREF_BT_EXTERNAL_IP);
+
+  if (externalIP.empty()) {
+    return;
+  }
+
+  std::array<uint8_t, sizeof(struct in6_addr)> dst;
+  if (inetPton(family_, externalIP.c_str(), dst.data()) == -1) {
+    return;
+  }
+
+  auto tcpPort = btRegistry_->getTcpPort();
+  if (std::find_if(std::begin(peers), std::end(peers),
+                   [&externalIP, tcpPort](const std::shared_ptr<Peer>& peer) {
+                     return peer->getIPAddress() == externalIP &&
+                            peer->getPort() == tcpPort;
+                   }) != std::end(peers)) {
+    return;
+  }
+
+  peers.push_back(std::make_shared<Peer>(externalIP, tcpPort));
 }
 
 void DHTGetPeersMessage::doReceivedAction()
 {
   std::string token = tokenTracker_->generateToken(
       infoHash_, getRemoteNode()->getIPAddress(), getRemoteNode()->getPort());
-  // Check to see localhost has the contents which has same infohash
   std::vector<std::shared_ptr<Peer>> peers;
   peerAnnounceStorage_->getPeers(peers, infoHash_);
+
+  // Check to see localhost has the contents which has same infohash
+  addLocalPeer(peers);
+
   std::vector<std::shared_ptr<DHTNode>> nodes;
   getRoutingTable()->getClosestKNodes(nodes, infoHash_);
   getMessageDispatcher()->addMessageToQueue(
@@ -101,6 +148,13 @@ void DHTGetPeersMessage::setTokenTracker(DHTTokenTracker* tokenTracker)
 {
   tokenTracker_ = tokenTracker;
 }
+
+void DHTGetPeersMessage::setBtRegistry(BtRegistry* btRegistry)
+{
+  btRegistry_ = btRegistry;
+}
+
+void DHTGetPeersMessage::setFamily(int family) { family_ = family; }
 
 std::string DHTGetPeersMessage::toStringOptional() const
 {

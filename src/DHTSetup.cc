@@ -180,6 +180,7 @@ DHTSetup::setup(DownloadEngine* e, int family)
     factory->setPeerAnnounceStorage(peerAnnounceStorage.get());
     factory->setTokenTracker(tokenTracker.get());
     factory->setLocalNode(localNode);
+    factory->setBtRegistry(e->getBtRegistry().get());
 
     PrefPtr prefEntryPointHost = family == AF_INET ? PREF_DHT_ENTRY_POINT_HOST
                                                    : PREF_DHT_ENTRY_POINT_HOST6;

@@ -83,7 +83,7 @@ void BtInterestedMessageTest::testDoReceivedAction()
   CPPUNIT_ASSERT(!peer->peerInterested());
   msg.doReceivedAction();
   CPPUNIT_ASSERT(peer->peerInterested());
-  CPPUNIT_ASSERT_EQUAL(0, peerStorage->getNumChokeExecuted());
+  CPPUNIT_ASSERT_EQUAL(1, peerStorage->getNumChokeExecuted());
 
   peer->amChoking(false);
   msg.doReceivedAction();

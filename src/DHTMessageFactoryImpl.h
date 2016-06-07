@@ -47,6 +47,7 @@ class DHTPeerAnnounceStorage;
 class DHTTokenTracker;
 class DHTMessage;
 class DHTAbstractMessage;
+class BtRegistry;
 
 class DHTMessageFactoryImpl : public DHTMessageFactory {
 private:
@@ -63,6 +64,8 @@ private:
   DHTPeerAnnounceStorage* peerAnnounceStorage_;
 
   DHTTokenTracker* tokenTracker_;
+
+  BtRegistry* btRegistry_;
 
   // search node in routingTable. If it is not found, create new one.
   std::shared_ptr<DHTNode> getRemoteNode(const unsigned char* id,
@@ -154,6 +157,8 @@ public:
   void setTokenTracker(DHTTokenTracker* tokenTracker);
 
   void setLocalNode(const std::shared_ptr<DHTNode>& localNode);
+
+  void setBtRegistry(BtRegistry* btRegistry);
 };
 
 } // namespace aria2

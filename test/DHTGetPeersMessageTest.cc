@@ -12,6 +12,12 @@
 #include "DHTPeerAnnounceStorage.h"
 #include "DHTRoutingTable.h"
 #include "bencode2.h"
+#include "GroupId.h"
+#include "DownloadContext.h"
+#include "Option.h"
+#include "RequestGroup.h"
+#include "BtRegistry.h"
+#include "TorrentAttribute.h"
 
 namespace aria2 {
 
@@ -102,11 +108,32 @@ void DHTGetPeersMessageTest::testDoReceivedAction()
   factory.setLocalNode(localNode_);
   DHTRoutingTable routingTable(localNode_);
 
+  auto torrentAttrs = std::make_shared<TorrentAttribute>();
+  torrentAttrs->infoHash = std::string(infoHash, infoHash + DHT_ID_LENGTH);
+
+  auto dctx = std::make_shared<DownloadContext>();
+  dctx->setAttribute(CTX_ATTR_BT, torrentAttrs);
+
+  auto option = std::make_shared<Option>();
+  option->put(PREF_BT_EXTERNAL_IP, "192.168.0.1");
+
+  auto gid = GroupId::create();
+  RequestGroup group(gid, option);
+  dctx->setOwnerRequestGroup(&group);
+
+  BtRegistry btReg;
+  btReg.put(
+      gid->getNumericId(),
+      make_unique<BtObject>(dctx, nullptr, nullptr, nullptr, nullptr, nullptr));
+  btReg.setTcpPort(6890);
+
   DHTGetPeersMessage msg(localNode_, remoteNode_, infoHash, transactionID);
   msg.setRoutingTable(&routingTable);
   msg.setTokenTracker(&tokenTracker);
   msg.setMessageDispatcher(&dispatcher);
   msg.setMessageFactory(&factory);
+  msg.setBtRegistry(&btReg);
+  msg.setFamily(AF_INET);
   {
     // localhost has peer contact information for that infohash.
     DHTPeerAnnounceStorage peerAnnounceStorage;
@@ -129,7 +156,7 @@ void DHTGetPeersMessageTest::testDoReceivedAction()
                                                     remoteNode_->getPort()),
                          m->getToken());
     CPPUNIT_ASSERT_EQUAL((size_t)0, m->getClosestKNodes().size());
-    CPPUNIT_ASSERT_EQUAL((size_t)2, m->getValues().size());
+    CPPUNIT_ASSERT_EQUAL((size_t)3, m->getValues().size());
     {
       auto peer = m->getValues()[0];
       CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.100"), peer->getIPAddress());
@@ -140,7 +167,13 @@ void DHTGetPeersMessageTest::testDoReceivedAction()
       CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.101"), peer->getIPAddress());
       CPPUNIT_ASSERT_EQUAL((uint16_t)6889, peer->getPort());
     }
+    {
+      auto peer = m->getValues()[2];
+      CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->getIPAddress());
+      CPPUNIT_ASSERT_EQUAL((uint16_t)6890, peer->getPort());
+    }
   }
+  msg.setBtRegistry(nullptr);
   dispatcher.messageQueue_.clear();
   {
     // localhost doesn't have peer contact information for that infohash.

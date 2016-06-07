@@ -96,8 +96,7 @@ bool DHTGetPeersCommand::execute()
                     ((numRetry_ && elapsed >= GET_PEER_INTERVAL_RETRY) ||
                      elapsed >= GET_PEER_INTERVAL_LOW)) ||
                    (btRuntime_->getConnections() == 0 &&
-                    elapsed >= GET_PEER_INTERVAL_ZERO)) &&
-                  !requestGroup_->downloadFinished()))) {
+                    elapsed >= GET_PEER_INTERVAL_ZERO))))) {
     A2_LOG_DEBUG(fmt("Issuing PeerLookup for infoHash=%s",
                      bittorrent::getInfoHashString(
                          requestGroup_->getDownloadContext()).c_str()));

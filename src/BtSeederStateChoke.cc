@@ -133,9 +133,12 @@ void BtSeederStateChoke::unchoke(
 
   auto r = std::begin(peers);
   for (; r != std::end(peers) && count; ++r, --count) {
-    (*r).getPeer()->chokingRequired(false);
-    A2_LOG_INFO(fmt("RU: %s, ulspd=%d", (*r).getPeer()->getIPAddress().c_str(),
-                    (*r).getUploadSpeed()));
+    auto& peer = (*r).getPeer();
+
+    peer->chokingRequired(false);
+
+    A2_LOG_INFO(fmt("RU: %s:%u, ulspd=%d", peer->getIPAddress().c_str(),
+                    peer->getPort(), (*r).getUploadSpeed()));
   }
 
   if (round_ < 2) {
@@ -143,8 +146,13 @@ void BtSeederStateChoke::unchoke(
                   std::mem_fn(&PeerEntry::disableOptUnchoking));
     if (r != std::end(peers)) {
       std::shuffle(r, std::end(peers), *SimpleRandomizer::getInstance());
-      (*r).getPeer()->optUnchoking(true);
-      A2_LOG_INFO(fmt("POU: %s", (*r).getPeer()->getIPAddress().c_str()));
+
+      auto& peer = (*r).getPeer();
+
+      peer->optUnchoking(true);
+
+      A2_LOG_INFO(
+          fmt("POU: %s:%u", peer->getIPAddress().c_str(), peer->getPort()));
     }
   }
 }
@@ -156,10 +164,17 @@ void BtSeederStateChoke::executeChoke(const PeerSet& peerSet)
 
   std::vector<PeerEntry> peerEntries;
   for (const auto& p : peerSet) {
-    if (p->isActive() && p->peerInterested()) {
-      p->chokingRequired(true);
-      peerEntries.push_back(PeerEntry(p));
+    if (!p->isActive()) {
+      continue;
     }
+
+    p->chokingRequired(true);
+    if (p->peerInterested()) {
+      peerEntries.push_back(PeerEntry(p));
+      continue;
+    }
+
+    p->optUnchoking(false);
   }
 
   unchoke(peerEntries);
