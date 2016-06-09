@@ -668,9 +668,12 @@ BitTorrent Specific Options
 
 .. option:: --bt-external-ip=<IPADDRESS>
 
-  Specify the external IP address to report to a BitTorrent
-  tracker. Although this function is named ``external``, it can accept
-  any kind of IP addresses. IPADDRESS must be a numeric IP address.
+  Specify the external IP address to use in BitTorrent download and DHT.
+  It may be sent to BitTorrent tracker. For DHT, this option should be
+  set to report that local node is downloading a particular torrent.
+  This is critical to use DHT in a private network. Although this
+  function is named ``external``, it can accept any kind of IP
+  addresses.
 
 .. option:: --bt-force-encryption[=true|false]
 
