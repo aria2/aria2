@@ -46,7 +46,7 @@ constexpr size_t PIECE_HASH_LENGTH = 20;
 
 constexpr size_t PEER_ID_LENGTH = 20;
 
-constexpr size_t MAX_BLOCK_LENGTH = 16_k;
+constexpr size_t MAX_BLOCK_LENGTH = 32_k;
 
 constexpr size_t DEFAULT_MAX_OUTSTANDING_REQUEST = 6;
 

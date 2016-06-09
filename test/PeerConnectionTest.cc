@@ -28,7 +28,7 @@ void PeerConnectionTest::testReserveBuffer()
   CPPUNIT_ASSERT_EQUAL((size_t)MAX_BUFFER_CAPACITY, con.getBufferCapacity());
   CPPUNIT_ASSERT_EQUAL((size_t)3, con.getBufferLength());
 
-  constexpr size_t newLength = 32_k;
+  constexpr size_t newLength = 64_k;
   con.reserveBuffer(newLength);
 
   CPPUNIT_ASSERT_EQUAL(newLength, con.getBufferCapacity());

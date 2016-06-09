@@ -212,7 +212,7 @@ void BtPieceMessage::send()
 
 void BtPieceMessage::pushPieceData(int64_t offset, int32_t length) const
 {
-  assert(length <= static_cast<int32_t>(16_k));
+  assert(length <= static_cast<int32_t>(MAX_BLOCK_LENGTH));
   auto buf = std::vector<unsigned char>(length + MESSAGE_HEADER_LENGTH);
   createMessageHeader(buf.data());
   ssize_t r;
