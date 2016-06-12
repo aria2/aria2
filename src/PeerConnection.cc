@@ -150,13 +150,22 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength)
     else {
       assert(resbufOffset_ == resbufLength_);
       if (resbufLength_ != 0) {
-        // Shift buffer so that resbuf_[msgOffset_] moves to
-        // rebuf_[0].
-        memmove(resbuf_.get(), resbuf_.get() + msgOffset_,
-                resbufLength_ - msgOffset_);
-        resbufLength_ -= msgOffset_;
-        resbufOffset_ = resbufLength_;
-        msgOffset_ = 0;
+        if (msgOffset_ == 0 && resbufLength_ == currentPayloadLength_ + 4) {
+          // All bytes in buffer have been processed, so clear it
+          // away.
+          resbufLength_ = 0;
+          resbufOffset_ = 0;
+          msgOffset_ = 0;
+        }
+        else {
+          // Shift buffer so that resbuf_[msgOffset_] moves to
+          // rebuf_[0].
+          memmove(resbuf_.get(), resbuf_.get() + msgOffset_,
+                  resbufLength_ - msgOffset_);
+          resbufLength_ -= msgOffset_;
+          resbufOffset_ = resbufLength_;
+          msgOffset_ = 0;
+        }
       }
       size_t nread;
       // To reduce the amount of copy involved in buffer shift, large
