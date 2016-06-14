@@ -14,7 +14,7 @@ necessary. The linked libraries are:
 
 * gmp 6.1.0
 * expat 2.1.1
-* sqlite 3.10.2
+* sqlite 3.13.0
 * zlib 1.2.8
 * c-ares 1.11.0
 * libssh2 1.7.0
