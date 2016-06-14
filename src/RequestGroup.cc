@@ -150,6 +150,7 @@ RequestGroup::RequestGroup(const std::shared_ptr<GroupId>& gid,
       haltRequested_(false),
       forceHaltRequested_(false),
       pauseRequested_(false),
+      restartRequested_(false),
       inMemoryDownload_(false),
       seedOnly_(false)
 {
