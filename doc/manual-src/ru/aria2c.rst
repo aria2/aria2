@@ -695,10 +695,12 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
 
 .. option:: --bt-external-ip=<IPADDRESS>
 
-  Указать внешний IP-адрес BitTorrent-трекера для отчета.
+  Указать внешний IP-адрес для использования в BitTorrent-загрузке и DHT.
+  Он может быть отправлен BitTorrent-трекеру. Для DHT, этот параметр должен
+  быть задан, чтобы сообщить, что локальный узел загружает конкретный
+  торрент. Это критически важно, чтобы использовать DHT в частной сети.
   Несмотря на то, что эта функция названа ``external`` (``внешний``),
-  она может принимать любой IP-адрес. IPADDRESS должен быть числовым
-  IP-адресом.
+  она может принимать любой IP-адрес.
 
 .. option:: --bt-force-encryption[=true|false]
 
@@ -3262,7 +3264,19 @@ RPC-метод `system.multicall` обрабатывается особым об
 
   Этот метод изменяет динамически параметры загрузки, которая обозначена
   *gid* (строка). *options* является структурой.
-  Доступны следующие параметры для активных загрузок:
+  Доступные параметры перечисленны в подразделе `Входной файл`_,
+  **исключая** следующие:
+
+  * :option:`dry-run <--dry-run>`
+  * :option:`metalink-base-uri <--metalink-base-uri>`
+  * :option:`parameterized-uri <-P>`
+  * :option:`pause <--pause>`
+  * :option:`piece-length <--piece-length>`
+  * :option:`rpc-save-upload-metadata <--rpc-save-upload-metadata>`
+
+  За исключением следующих параметров, изменение других параметров
+  активной загрузки заставляет их перезапуститься (самим перезапуском
+  управляет aria2, и никакого вмешательства пользователя не требуется):
 
   * :option:`bt-max-peers <--bt-max-peers>`
   * :option:`bt-request-peer-speed-limit <--bt-request-peer-speed-limit>`
@@ -3271,15 +3285,6 @@ RPC-метод `system.multicall` обрабатывается особым об
   * :option:`max-download-limit <--max-download-limit>`
   * :option:`max-upload-limit <-u>`
 
-  Для ожидающих или приостановленных загрузок, в дополнение к выше
-  перечисленным параметрам, доступны параметры, перечисленные в подразделе
-  `Входной файл`_, **исключая** следующие параметры:
-  :option:`dry-run <--dry-run>`,
-  :option:`metalink-base-uri <--metalink-base-uri>`,
-  :option:`parameterized-uri <-P>`,
-  :option:`pause <--pause>`,
-  :option:`piece-length <--piece-length>`,
-  :option:`rpc-save-upload-metadata <--rpc-save-upload-metadata>`.
   Этот метод возвращает ``OK``, в случае успеха.
 
   Следующие примеры устанавливают параметр
