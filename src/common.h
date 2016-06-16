@@ -58,7 +58,7 @@
 #endif // _WIN32_WINNT
 #ifdef HAVE_WINSOCK2_H
 #ifndef FD_SETSIZE
-#define FD_SETSIZE 1024
+#define FD_SETSIZE 32768
 #endif // !FD_SETSIZE
 #include <winsock2.h>
 #undef ERROR
