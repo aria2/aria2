@@ -217,7 +217,7 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
 
     // Only accept metadata smaller than 1MiB.  Be aware that broken
     // client can send negative size!
-    if (size > 0 && size <= static_cast<int64_t>(1_m)) {
+    if (size > 0 && size <= static_cast<int64_t>(8_m)) {
       msg->metadataSize_ = size;
     }
   }
