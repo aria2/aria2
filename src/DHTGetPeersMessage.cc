@@ -35,6 +35,7 @@
 #include "DHTGetPeersMessage.h"
 
 #include <cstring>
+#include <array>
 
 #include "DHTNode.h"
 #include "DHTRoutingTable.h"
