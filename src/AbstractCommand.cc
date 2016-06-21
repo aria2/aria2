@@ -380,10 +380,13 @@ bool AbstractCommand::execute()
       return true;
     }
 
-    Timer wakeTime(global::wallclock());
-    wakeTime.advance(
-        std::chrono::seconds(getOption()->getAsInt(PREF_RETRY_WAIT)));
-    req_->setWakeTime(wakeTime);
+    if (err.getErrorCode() == error_code::HTTP_SERVICE_UNAVAILABLE) {
+      Timer wakeTime(global::wallclock());
+      wakeTime.advance(
+          std::chrono::seconds(getOption()->getAsInt(PREF_RETRY_WAIT)));
+      req_->setWakeTime(wakeTime);
+    }
+
     return prepareForRetry(0);
   }
   catch (DownloadFailureException& err) {
