@@ -38,9 +38,10 @@
 #define TEXT_DIR                                                        \
   _(" -d, --dir=DIR                The directory to store the downloaded file.")
 #define TEXT_OUT                                                        \
-  _(" -o, --out=FILE               The file name of the downloaded file. When \n" \
-    "                              the -Z option is used, this option will be \n" \
-    "                              ignored.")
+  _(" -o, --out=FILE               The file name of the downloaded file. It is\n" \
+    "                              always relative to the directory given in -d\n" \
+    "                              option. When the -Z option is used, this option\n" \
+    "                              will be ignored.")
 #define TEXT_LOG                                                        \
   _(" -l, --log=LOG                The file name of the log file. If '-' is\n" \
     "                              specified, log is written to stdout.")

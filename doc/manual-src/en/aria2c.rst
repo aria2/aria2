@@ -232,8 +232,10 @@ HTTP/FTP/SFTP Options
 
 .. option:: -o, --out=<FILE>
 
-  The file name of the downloaded file. When the
-  :option:`--force-sequential <-Z>` option is used, this option is ignored.
+  The file name of the downloaded file.  It is always relative to the
+  directory given in :option:`--dir <-d>` option.  When the
+  :option:`--force-sequential <-Z>` option is used, this option is
+  ignored.
 
   .. note::
 
