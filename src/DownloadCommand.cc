@@ -419,4 +419,8 @@ void DownloadCommand::installStreamFilter(
   sinkFilterOnly_ = util::endsWith(name, SinkStreamFilter::NAME);
 }
 
+// We need to override noCheck() to return true in order to measure
+// download speed to check lowest speed.
+bool DownloadCommand::noCheck() const { return true; }
+
 } // namespace aria2

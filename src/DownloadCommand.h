@@ -72,6 +72,8 @@ private:
 protected:
   virtual bool executeInternal() CXX11_OVERRIDE;
 
+  virtual bool noCheck() const CXX11_OVERRIDE;
+
   virtual bool prepareForNextSegment();
 
   // This is file local offset
