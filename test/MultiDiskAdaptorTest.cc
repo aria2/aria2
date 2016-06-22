@@ -270,18 +270,20 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
   }
 }
 
+namespace {
 void readFile(const std::string& filename, char* buf, int bufLength)
 {
   FILE* f = fopen(filename.c_str(), "r");
   if (f == nullptr) {
     CPPUNIT_FAIL(strerror(errno));
   }
-  int retval = fread(buf, bufLength, 1, f);
+  int retval = fread(buf, 1, bufLength, f);
   fclose(f);
-  if (retval != 1) {
+  if (retval != bufLength) {
     CPPUNIT_FAIL("return value is not 1");
   }
 }
+} // namespace
 
 void MultiDiskAdaptorTest::testWriteData()
 {
