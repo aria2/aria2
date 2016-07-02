@@ -54,7 +54,6 @@ namespace aria2 {
 namespace {
 
 const size_t MAX_PEER_LIST_SIZE = 512;
-const size_t MAX_PEER_LIST_UPDATE = 100;
 
 } // namespace
 
@@ -89,6 +88,14 @@ void DefaultPeerStorage::addUniqPeer(const std::shared_ptr<Peer>& peer)
 
 bool DefaultPeerStorage::addPeer(const std::shared_ptr<Peer>& peer)
 {
+  if (unusedPeers_.size() >= maxPeerListSize_) {
+    A2_LOG_DEBUG(fmt("Adding %s:%u is rejected, since unused peer list is full "
+                     "(%lu peers > %lu)",
+                     peer->getIPAddress().c_str(), peer->getPort(),
+                     static_cast<unsigned long>(unusedPeers_.size()),
+                     static_cast<unsigned long>(maxPeerListSize_)));
+    return false;
+  }
   if (isPeerAlreadyAdded(peer)) {
     A2_LOG_DEBUG(fmt("Adding %s:%u is rejected because it has been already"
                      " added.",
@@ -104,7 +111,7 @@ bool DefaultPeerStorage::addPeer(const std::shared_ptr<Peer>& peer)
   if (peerListSize >= maxPeerListSize_) {
     deleteUnusedPeer(peerListSize - maxPeerListSize_ + 1);
   }
-  unusedPeers_.push_front(peer);
+  unusedPeers_.push_back(peer);
   addUniqPeer(peer);
   A2_LOG_DEBUG(fmt("Now unused peer list contains %lu peers",
                    static_cast<unsigned long>(unusedPeers_.size())));
@@ -114,29 +121,36 @@ bool DefaultPeerStorage::addPeer(const std::shared_ptr<Peer>& peer)
 void DefaultPeerStorage::addPeer(
     const std::vector<std::shared_ptr<Peer>>& peers)
 {
-  size_t added = 0;
-  size_t addMax = std::min(maxPeerListSize_, MAX_PEER_LIST_UPDATE);
-  for (auto itr = std::begin(peers), eoi = std::end(peers);
-       itr != eoi && added < addMax; ++itr) {
-    auto& peer = *itr;
-    if (isPeerAlreadyAdded(peer)) {
-      A2_LOG_DEBUG(fmt("Adding %s:%u is rejected because it has been already"
-                       " added.",
-                       peer->getIPAddress().c_str(), peer->getPort()));
-      continue;
+  if (unusedPeers_.size() < maxPeerListSize_) {
+    for (auto& peer : peers) {
+      if (isPeerAlreadyAdded(peer)) {
+        A2_LOG_DEBUG(fmt("Adding %s:%u is rejected because it has been already"
+                         " added.",
+                         peer->getIPAddress().c_str(), peer->getPort()));
+        continue;
+      }
+      else if (isBadPeer(peer->getIPAddress())) {
+        A2_LOG_DEBUG(fmt("Adding %s:%u is rejected because it is marked bad.",
+                         peer->getIPAddress().c_str(), peer->getPort()));
+        continue;
+      }
+      else {
+        A2_LOG_DEBUG(fmt(MSG_ADDING_PEER, peer->getIPAddress().c_str(),
+                         peer->getPort()));
+      }
+      unusedPeers_.push_back(peer);
+      addUniqPeer(peer);
     }
-    else if (isBadPeer(peer->getIPAddress())) {
-      A2_LOG_DEBUG(fmt("Adding %s:%u is rejected because it is marked bad.",
-                       peer->getIPAddress().c_str(), peer->getPort()));
-      continue;
-    }
-    else {
+  }
+  else {
+    for (auto& peer : peers) {
       A2_LOG_DEBUG(
-          fmt(MSG_ADDING_PEER, peer->getIPAddress().c_str(), peer->getPort()));
+          fmt("Adding %s:%u is rejected, since unused peer list is full "
+              "(%lu peers > %lu)",
+              peer->getIPAddress().c_str(), peer->getPort(),
+              static_cast<unsigned long>(unusedPeers_.size()),
+              static_cast<unsigned long>(maxPeerListSize_)));
     }
-    unusedPeers_.push_front(peer);
-    addUniqPeer(peer);
-    ++added;
   }
   const size_t peerListSize = unusedPeers_.size();
   if (peerListSize > maxPeerListSize_) {
@@ -220,7 +234,10 @@ void DefaultPeerStorage::addBadPeer(const std::string& ipaddr)
 void DefaultPeerStorage::deleteUnusedPeer(size_t delSize)
 {
   for (; delSize > 0 && !unusedPeers_.empty(); --delSize) {
-    onErasingPeer(unusedPeers_.back());
+    auto& peer = unusedPeers_.back();
+    onErasingPeer(peer);
+    A2_LOG_DEBUG(fmt("Remove peer %s:%u", peer->getIPAddress().c_str(),
+                     peer->getOrigPort()));
     unusedPeers_.pop_back();
   }
 }
