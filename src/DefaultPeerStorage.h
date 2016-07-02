@@ -94,6 +94,9 @@ public:
   virtual void
   addPeer(const std::vector<std::shared_ptr<Peer>>& peers) CXX11_OVERRIDE;
 
+  std::shared_ptr<Peer> addAndCheckoutPeer(const std::shared_ptr<Peer>& peer,
+                                           cuid_t cuid);
+
   const std::deque<std::shared_ptr<Peer>>& getUnusedPeers();
 
   virtual const PeerSet& getUsedPeers() CXX11_OVERRIDE;

@@ -160,6 +160,16 @@ void DefaultPeerStorage::addPeer(
                    static_cast<unsigned long>(unusedPeers_.size())));
 }
 
+std::shared_ptr<Peer>
+DefaultPeerStorage::addAndCheckoutPeer(const std::shared_ptr<Peer>& peer,
+                                       cuid_t cuid)
+{
+  unusedPeers_.push_front(peer);
+  addUniqPeer(peer);
+
+  return checkoutPeer(cuid);
+}
+
 void DefaultPeerStorage::addDroppedPeer(const std::shared_ptr<Peer>& peer)
 {
   // Make sure that no duplicated peer exists in droppedPeers_. If

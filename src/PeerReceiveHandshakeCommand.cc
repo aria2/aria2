@@ -136,8 +136,7 @@ bool PeerReceiveHandshakeCommand::executeInternal()
         btRuntime->lessThanMaxPeers()) {
       // TODO addPeer and checkoutPeer must be "atomic", in a sense
       // that the added peer must be checked out.
-      if (peerStorage->addPeer(getPeer()) &&
-          peerStorage->checkoutPeer(getCuid())) {
+      if (peerStorage->addAndCheckoutPeer(getPeer(), getCuid())) {
         getDownloadEngine()->addCommand(make_unique<PeerInteractionCommand>(
             getCuid(), downloadContext->getOwnerRequestGroup(), getPeer(),
             getDownloadEngine(), btRuntime, pieceStorage, peerStorage,

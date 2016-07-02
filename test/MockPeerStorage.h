@@ -38,6 +38,13 @@ public:
     return unusedPeers;
   }
 
+  virtual std::shared_ptr<Peer>
+  addAndCheckoutPeer(const std::shared_ptr<Peer>& peer, cuid_t cuid)
+  {
+    unusedPeers.push_back(peer);
+    return nullptr;
+  }
+
   virtual size_t countAllPeer() const CXX11_OVERRIDE
   {
     return unusedPeers.size() + usedPeers.size();

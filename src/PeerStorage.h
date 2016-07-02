@@ -68,6 +68,12 @@ public:
   virtual void addPeer(const std::vector<std::shared_ptr<Peer>>& peers) = 0;
 
   /**
+   * Adds new peer, and checkout it atomically.
+   */
+  virtual std::shared_ptr<Peer>
+  addAndCheckoutPeer(const std::shared_ptr<Peer>& peer, cuid_t cuid) = 0;
+
+  /**
    * Returns the number of peers, including used and unused ones.
    */
   virtual size_t countAllPeer() const = 0;
