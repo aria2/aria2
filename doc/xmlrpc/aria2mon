@@ -32,11 +32,12 @@ OptionParser.new do |opt|
 
   opt.on("--user USERNAME", "XML-RPC username"){|val| options["user"]=val }
   opt.on("--passwd PASSWORD", "XML-RPC password"){|val| options["passwd"]=val }
+  opt.on("--secret SECRET", "XML-RPC secret authorization token"){|val| options["secret"]=val }
 
   opt.banner=<<EOS
 Usage: #{program_name} [options]
 EOS
-  
+
   args=opt.parse(ARGV)
 end
 
@@ -77,6 +78,7 @@ end
 if not options.has_key?("port") then
   options["port"]="6800"
 end
+secret = if options.has_key?("secret") then "token:"+options["secret"] else nil end
 
 client=XMLRPC::Client.new3({:host => options["server"],
                              :port => options["port"],
@@ -88,8 +90,17 @@ options.delete("server")
 options.delete("port")
 options.delete("user")
 options.delete("passwd")
+options.delete("secret")
 
-result=client.call("aria2.tellActive")
+def client_call client, secret, method, *params
+  if secret.nil?
+    client.call(method, *params)
+  else
+    client.call(method, secret, *params)
+  end
+end
+
+result=client_call(client, secret, "aria2.tellActive")
 
 print "-- Download Progress --\n"
 result.each { |entry|
