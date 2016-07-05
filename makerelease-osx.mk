@@ -107,9 +107,9 @@ zlib_version = 1.2.8
 zlib_hash = a4d316c404ff54ca545ea71a27af7dbc29817088
 zlib_url = http://zlib.net/zlib-$(zlib_version).tar.gz
 
-expat_version = 2.1.0
-expat_hash = b08197d146930a5543a7b99e871cba3da614f6f0
-expat_url = http://sourceforge.net/projects/expat/files/expat/$(expat_version)/expat-$(expat_version).tar.gz
+expat_version = 2.2.0
+expat_hash = 8453bc52324be4c796fd38742ec48470eef358b3
+expat_url = http://sourceforge.net/projects/expat/files/expat/$(expat_version)/expat-$(expat_version).tar.bz2
 expat_cflags=$(LTO_FLAGS)
 expat_ldflags=$(CFLAGS) $(LTO_FLAGS)
 
