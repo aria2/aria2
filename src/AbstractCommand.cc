@@ -304,6 +304,11 @@ bool AbstractCommand::execute()
     }
 
     if (errorEventEnabled()) {
+      // older kernel may report "connection refused" here.
+      auto ss = e_->getRequestGroupMan()->getOrCreateServerStat(
+          req_->getHost(), req_->getProtocol());
+      ss->setError();
+
       throw DL_RETRY_EX(
           fmt(MSG_NETWORK_PROBLEM, socket_->getSocketError().c_str()));
     }
