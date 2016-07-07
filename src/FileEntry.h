@@ -97,6 +97,12 @@ private:
 
   void storePool(const std::shared_ptr<Request>& request);
 
+  std::shared_ptr<Request> getRequestWithInFlightHosts(
+      URISelector* selector, bool uriReuse,
+      const std::vector<std::pair<size_t, std::string>>& usedHosts,
+      const std::string& referer, const std::string& method,
+      const std::vector<std::string>& inFlightHosts);
+
 public:
   FileEntry();
 
