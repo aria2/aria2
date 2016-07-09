@@ -251,11 +251,14 @@ void DefaultBtInteractive::decideChoking()
 {
   if (peer_->shouldBeChoking()) {
     if (!peer_->amChoking()) {
+      peer_->amChoking(true);
+      dispatcher_->doChokingAction();
       dispatcher_->addMessageToQueue(messageFactory_->createChokeMessage());
     }
   }
   else {
     if (peer_->amChoking()) {
+      peer_->amChoking(false);
       dispatcher_->addMessageToQueue(messageFactory_->createUnchokeMessage());
     }
   }

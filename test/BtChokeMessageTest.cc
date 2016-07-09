@@ -19,7 +19,6 @@ class BtChokeMessageTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreate);
   CPPUNIT_TEST(testCreateMessage);
   CPPUNIT_TEST(testDoReceivedAction);
-  CPPUNIT_TEST(testOnSendComplete);
   CPPUNIT_TEST(testToString);
   CPPUNIT_TEST_SUITE_END();
 
@@ -36,7 +35,6 @@ public:
   void testCreate();
   void testCreateMessage();
   void testDoReceivedAction();
-  void testOnSendComplete();
   void testToString();
 
   class MockBtMessageDispatcher2 : public MockBtMessageDispatcher {
@@ -128,21 +126,6 @@ void BtChokeMessageTest::testDoReceivedAction()
 
   CPPUNIT_ASSERT(dispatcher->doChokedActionCalled);
   CPPUNIT_ASSERT(peer->peerChoking());
-}
-
-void BtChokeMessageTest::testOnSendComplete()
-{
-  BtChokeMessage msg;
-  msg.setPeer(peer);
-
-  auto dispatcher = make_unique<MockBtMessageDispatcher2>();
-  msg.setBtMessageDispatcher(dispatcher.get());
-
-  auto pu = std::unique_ptr<ProgressUpdate>{msg.getProgressUpdate()};
-  pu->update(0, true);
-
-  CPPUNIT_ASSERT(dispatcher->doChokingActionCalled);
-  CPPUNIT_ASSERT(peer->amChoking());
 }
 
 void BtChokeMessageTest::testToString()

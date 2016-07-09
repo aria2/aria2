@@ -56,24 +56,4 @@ void BtUnchokeMessage::doReceivedAction()
   getPeer()->peerChoking(false);
 }
 
-bool BtUnchokeMessage::sendPredicate() const { return getPeer()->amChoking(); }
-
-namespace {
-struct ThisProgressUpdate : public ProgressUpdate {
-  ThisProgressUpdate(std::shared_ptr<Peer> peer) : peer(std::move(peer)) {}
-  virtual void update(size_t length, bool complete) CXX11_OVERRIDE
-  {
-    if (complete) {
-      peer->amChoking(false);
-    }
-  }
-  std::shared_ptr<Peer> peer;
-};
-} // namespace
-
-std::unique_ptr<ProgressUpdate> BtUnchokeMessage::getProgressUpdate()
-{
-  return make_unique<ThisProgressUpdate>(getPeer());
-}
-
 } // namespace aria2

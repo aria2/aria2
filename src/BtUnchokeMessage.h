@@ -54,10 +54,6 @@ public:
                                                   size_t dataLength);
 
   virtual void doReceivedAction() CXX11_OVERRIDE;
-
-  virtual bool sendPredicate() const CXX11_OVERRIDE;
-
-  virtual std::unique_ptr<ProgressUpdate> getProgressUpdate() CXX11_OVERRIDE;
 };
 
 } // namespace aria2

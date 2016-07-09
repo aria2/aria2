@@ -15,7 +15,6 @@ class BtUnchokeMessageTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreate);
   CPPUNIT_TEST(testCreateMessage);
   CPPUNIT_TEST(testDoReceivedAction);
-  CPPUNIT_TEST(testOnSendComplete);
   CPPUNIT_TEST(testToString);
   CPPUNIT_TEST_SUITE_END();
 
@@ -26,7 +25,6 @@ public:
   void testCreate();
   void testCreateMessage();
   void testDoReceivedAction();
-  void testOnSendComplete();
   void testToString();
 };
 
@@ -80,20 +78,6 @@ void BtUnchokeMessageTest::testDoReceivedAction()
   CPPUNIT_ASSERT(peer->peerChoking());
   msg.doReceivedAction();
   CPPUNIT_ASSERT(!peer->peerChoking());
-}
-
-void BtUnchokeMessageTest::testOnSendComplete()
-{
-  std::shared_ptr<Peer> peer(new Peer("host", 6969));
-  peer->allocateSessionResource(1_k, 1_m);
-  peer->amChoking(true);
-  BtUnchokeMessage msg;
-  msg.setPeer(peer);
-
-  CPPUNIT_ASSERT(peer->amChoking());
-  std::shared_ptr<ProgressUpdate> pu(msg.getProgressUpdate());
-  pu->update(0, true);
-  CPPUNIT_ASSERT(!peer->amChoking());
 }
 
 void BtUnchokeMessageTest::testToString()
