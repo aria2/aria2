@@ -59,10 +59,6 @@ public:
 
   virtual void doReceivedAction() CXX11_OVERRIDE;
 
-  virtual bool sendPredicate() const CXX11_OVERRIDE;
-
-  virtual std::unique_ptr<ProgressUpdate> getProgressUpdate() CXX11_OVERRIDE;
-
   void setPeerStorage(PeerStorage* peerStorage);
 };
 

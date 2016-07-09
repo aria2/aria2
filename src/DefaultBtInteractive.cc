@@ -363,6 +363,7 @@ void DefaultBtInteractive::decideInterest()
   if (pieceStorage_->hasMissingPiece(peer_)) {
     if (!peer_->amInterested()) {
       A2_LOG_DEBUG(fmt(MSG_PEER_INTERESTED, cuid_));
+      peer_->amInterested(true);
       dispatcher_->addMessageToQueue(
           messageFactory_->createInterestedMessage());
     }
@@ -370,6 +371,7 @@ void DefaultBtInteractive::decideInterest()
   else {
     if (peer_->amInterested()) {
       A2_LOG_DEBUG(fmt(MSG_PEER_NOT_INTERESTED, cuid_));
+      peer_->amInterested(false);
       dispatcher_->addMessageToQueue(
           messageFactory_->createNotInterestedMessage());
     }

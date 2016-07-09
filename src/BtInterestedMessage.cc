@@ -69,29 +69,6 @@ void BtInterestedMessage::doReceivedAction()
   }
 }
 
-bool BtInterestedMessage::sendPredicate() const
-{
-  return !getPeer()->amInterested();
-}
-
-namespace {
-struct ThisProgressUpdate : public ProgressUpdate {
-  ThisProgressUpdate(std::shared_ptr<Peer> peer) : peer(std::move(peer)) {}
-  virtual void update(size_t length, bool complete) CXX11_OVERRIDE
-  {
-    if (complete) {
-      peer->amInterested(true);
-    }
-  }
-  std::shared_ptr<Peer> peer;
-};
-} // namespace
-
-std::unique_ptr<ProgressUpdate> BtInterestedMessage::getProgressUpdate()
-{
-  return make_unique<ThisProgressUpdate>(getPeer());
-}
-
 void BtInterestedMessage::setPeerStorage(PeerStorage* peerStorage)
 {
   peerStorage_ = peerStorage;
