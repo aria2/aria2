@@ -563,17 +563,17 @@ void DefaultBtInteractive::doInteractionProcessing()
   }
   else {
     checkActiveInteraction();
-    decideChoking();
-    detectMessageFlooding();
     if (perSecTimer_.difference(global::wallclock()) >= 1_s) {
       perSecTimer_ = global::wallclock();
       dispatcher_->checkRequestSlotAndDoNecessaryThing();
     }
+    numReceivedMessage_ = receiveMessages();
+    detectMessageFlooding();
+    decideChoking();
+    decideInterest();
     checkHave();
     sendKeepAlive();
-    numReceivedMessage_ = receiveMessages();
     btRequestFactory_->removeCompletedPiece();
-    decideInterest();
     if (!pieceStorage_->downloadFinished()) {
       addRequests();
     }
