@@ -124,7 +124,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength)
         }
         break;
       case (BT_MSG_READ_PAYLOAD):
-        // We chosen the bufferCapacity_ so that whole message,
+        // We chose the bufferCapacity_ so that whole message,
         // including 4 bytes length and payload, in it. So here we
         // just make sure that it happens.
         if (resbufLength_ - msgOffset_ >= 4 + currentPayloadLength_) {
@@ -150,7 +150,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength)
     else {
       assert(resbufOffset_ == resbufLength_);
       if (resbufLength_ != 0) {
-        if (msgOffset_ == 0 && resbufLength_ == currentPayloadLength_ + 4) {
+        if (resbufLength_ - msgOffset_ == currentPayloadLength_ + 4) {
           // All bytes in buffer have been processed, so clear it
           // away.
           resbufLength_ = 0;
