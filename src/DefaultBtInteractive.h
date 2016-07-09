@@ -144,9 +144,6 @@ private:
 
   uint16_t tcpPort_;
 
-  std::vector<size_t> haveIndexes_;
-  Timer haveLastSent_;
-
   void addBitfieldMessageToQueue();
   void addAllowedFastMessageToQueue();
   void addHandshakeExtendedMessageToQueue();

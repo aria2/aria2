@@ -105,8 +105,7 @@ DefaultBtInteractive::DefaultBtInteractive(
       numReceivedMessage_(0),
       maxOutstandingRequest_(DEFAULT_MAX_OUTSTANDING_REQUEST),
       requestGroupMan_(nullptr),
-      tcpPort_(0),
-      haveLastSent_(global::wallclock())
+      tcpPort_(0)
 {
 }
 
@@ -264,37 +263,29 @@ void DefaultBtInteractive::decideChoking()
   }
 }
 
-namespace {
-constexpr auto MAX_HAVE_DELAY_SEC = 10_s;
-} // namespace
-
 void DefaultBtInteractive::checkHave()
 {
-  const size_t MIN_HAVE_PACK_SIZE = 20;
-  pieceStorage_->getAdvertisedPieceIndexes(haveIndexes_, cuid_, haveTimer_);
+  std::vector<size_t> haveIndexes;
+
+  pieceStorage_->getAdvertisedPieceIndexes(haveIndexes, cuid_, haveTimer_);
   haveTimer_ = global::wallclock();
-  if (haveIndexes_.size() >= MIN_HAVE_PACK_SIZE) {
+  // Use bitfield message if it is equal to or less than the total
+  // size of have messages.
+  if (5 + pieceStorage_->getBitfieldLength() <= haveIndexes.size() * 9) {
     if (peer_->isFastExtensionEnabled() &&
         pieceStorage_->allDownloadFinished()) {
       dispatcher_->addMessageToQueue(messageFactory_->createHaveAllMessage());
+
+      return;
     }
-    else {
-      dispatcher_->addMessageToQueue(messageFactory_->createBitfieldMessage());
-    }
-    haveIndexes_.clear();
+
+    dispatcher_->addMessageToQueue(messageFactory_->createBitfieldMessage());
+
+    return;
   }
-  else {
-    if (haveIndexes_.size() >= MIN_HAVE_PACK_SIZE ||
-        haveLastSent_.difference(global::wallclock()) >= MAX_HAVE_DELAY_SEC) {
-      haveLastSent_ = global::wallclock();
-      for (std::vector<size_t>::const_iterator itr = haveIndexes_.begin(),
-                                               eoi = haveIndexes_.end();
-           itr != eoi; ++itr) {
-        dispatcher_->addMessageToQueue(
-            messageFactory_->createHaveMessage(*itr));
-      }
-      haveIndexes_.clear();
-    }
+
+  for (auto idx : haveIndexes) {
+    dispatcher_->addMessageToQueue(messageFactory_->createHaveMessage(idx));
   }
 }
 
