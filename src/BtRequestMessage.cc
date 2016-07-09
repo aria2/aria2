@@ -64,8 +64,7 @@ void BtRequestMessage::doReceivedAction()
   }
   if (getPieceStorage()->hasPiece(getIndex()) &&
       (!getPeer()->amChoking() ||
-       (getPeer()->amChoking() &&
-        getPeer()->isInAmAllowedIndexSet(getIndex())))) {
+       getPeer()->isInAmAllowedIndexSet(getIndex()))) {
     getBtMessageDispatcher()->addMessageToQueue(
         getBtMessageFactory()->createPieceMessage(getIndex(), getBegin(),
                                                   getLength()));
