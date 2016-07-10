@@ -223,30 +223,22 @@ public:
 
   virtual int32_t getPieceLength(size_t index) CXX11_OVERRIDE;
 
-  /**
-   * Adds piece index to advertise to other commands. They send have message
-   * based on this information.
-   */
-  virtual void advertisePiece(cuid_t cuid, size_t index) CXX11_OVERRIDE {}
+  virtual void advertisePiece(cuid_t cuid, size_t index,
+                              Timer registeredTime) CXX11_OVERRIDE
+  {
+  }
 
   /**
-   * Returns piece index which is not advertised by the caller command and
-   * newer than lastCheckTime.
+   * indexes is filled with piece index which is not advertised by the
+   * caller command and newer than lastHaveIndex.
    */
-  virtual void
+  virtual uint64_t
   getAdvertisedPieceIndexes(std::vector<size_t>& indexes, cuid_t myCuid,
-                            const Timer& lastCheckTime) CXX11_OVERRIDE
+                            uint64_t lastHaveIndex) CXX11_OVERRIDE
   {
   }
 
-  /**
-   * Removes have entry if specified seconds have elapsed since its
-   * registration.
-   */
-  virtual void
-  removeAdvertisedPiece(const std::chrono::seconds& elapsed) CXX11_OVERRIDE
-  {
-  }
+  virtual void removeAdvertisedPiece(const Timer& expiry) CXX11_OVERRIDE {}
 
   /**
    * Sets all bits in bitfield to 1.

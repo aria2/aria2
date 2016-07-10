@@ -374,7 +374,8 @@ bool SegmentMan::completeSegment(cuid_t cuid,
                                  const std::shared_ptr<Segment>& segment)
 {
   pieceStorage_->completePiece(segment->getPiece());
-  pieceStorage_->advertisePiece(cuid, segment->getPiece()->getIndex());
+  pieceStorage_->advertisePiece(cuid, segment->getPiece()->getIndex(),
+                                global::wallclock());
   auto itr = std::find_if(usedSegmentEntries_.begin(),
                           usedSegmentEntries_.end(), FindSegmentEntry(segment));
   if (itr == usedSegmentEntries_.end()) {

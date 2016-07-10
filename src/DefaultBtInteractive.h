@@ -124,8 +124,10 @@ private:
 
   DHTNode* localNode_;
 
+  // The last haveIndex we have advertised to the peer.
+  uint64_t lastHaveIndex_;
+
   size_t allowedFastSetSize_;
-  Timer haveTimer_;
   Timer keepAliveTimer_;
   Timer floodingTimer_;
   FloodingStat floodingStat_;

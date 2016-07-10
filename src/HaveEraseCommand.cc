@@ -37,6 +37,7 @@
 #include "RequestGroupMan.h"
 #include "PieceStorage.h"
 #include "RequestGroup.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -58,13 +59,19 @@ void HaveEraseCommand::preProcess()
 
 void HaveEraseCommand::process()
 {
-  const RequestGroupList& groups =
+  // we are making a copy of current wallclock.
+  auto expiry = global::wallclock();
+  expiry.advance(5_s);
+
+  const auto& groups =
       getDownloadEngine()->getRequestGroupMan()->getRequestGroups();
   for (auto& group : groups) {
     const auto& ps = group->getPieceStorage();
-    if (ps) {
-      ps->removeAdvertisedPiece(5_s);
+    if (!ps) {
+      continue;
     }
+
+    ps->removeAdvertisedPiece(expiry);
   }
 }
 

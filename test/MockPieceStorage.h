@@ -241,18 +241,18 @@ public:
 
   void addPieceLengthList(int32_t length) { pieceLengthList.push_back(length); }
 
-  virtual void advertisePiece(cuid_t cuid, size_t index) CXX11_OVERRIDE {}
+  virtual void advertisePiece(cuid_t cuid, size_t index,
+                              Timer registeredTime) CXX11_OVERRIDE
+  {
+  }
 
-  virtual void
+  virtual uint64_t
   getAdvertisedPieceIndexes(std::vector<size_t>& indexes, cuid_t myCuid,
-                            const Timer& lastCheckTime) CXX11_OVERRIDE
+                            uint64_t lastHaveIndex) CXX11_OVERRIDE
   {
   }
 
-  virtual void
-  removeAdvertisedPiece(const std::chrono::seconds& elapsed) CXX11_OVERRIDE
-  {
-  }
+  virtual void removeAdvertisedPiece(const Timer& expiry) CXX11_OVERRIDE {}
 
   virtual void markAllPiecesDone() CXX11_OVERRIDE {}
 

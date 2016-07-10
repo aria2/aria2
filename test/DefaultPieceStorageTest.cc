@@ -39,6 +39,7 @@ class DefaultPieceStorageTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetCompletedLength);
   CPPUNIT_TEST(testGetFilteredCompletedLength);
   CPPUNIT_TEST(testGetNextUsedIndex);
+  CPPUNIT_TEST(testAdvertisePiece);
   CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -77,6 +78,7 @@ public:
   void testGetCompletedLength();
   void testGetFilteredCompletedLength();
   void testGetNextUsedIndex();
+  void testAdvertisePiece();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DefaultPieceStorageTest);
@@ -399,6 +401,60 @@ void DefaultPieceStorageTest::testGetNextUsedIndex()
   CPPUNIT_ASSERT_EQUAL((size_t)2, pss.getNextUsedIndex(0));
   piece = pss.getMissingPiece(0, 1);
   CPPUNIT_ASSERT_EQUAL((size_t)2, pss.getNextUsedIndex(0));
+}
+
+void DefaultPieceStorageTest::testAdvertisePiece()
+{
+  DefaultPieceStorage ps(dctx_, option_.get());
+
+  ps.advertisePiece(1, 100, Timer(10_s));
+  ps.advertisePiece(2, 101, Timer(11_s));
+  ps.advertisePiece(3, 102, Timer(11_s));
+  ps.advertisePiece(1, 103, Timer(12_s));
+  ps.advertisePiece(2, 104, Timer(100_s));
+
+  std::vector<size_t> res, ans;
+  uint64_t lastHaveIndex;
+
+  lastHaveIndex = ps.getAdvertisedPieceIndexes(res, 1, 0);
+  ans = std::vector<size_t>{100, 101, 102, 103, 104};
+
+  CPPUNIT_ASSERT_EQUAL((uint64_t)5, lastHaveIndex);
+  CPPUNIT_ASSERT(ans == res);
+
+  res.clear();
+  lastHaveIndex = ps.getAdvertisedPieceIndexes(res, 1, 3);
+  ans = std::vector<size_t>{103, 104};
+
+  CPPUNIT_ASSERT_EQUAL((uint64_t)5, lastHaveIndex);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, res.size());
+  CPPUNIT_ASSERT(ans == res);
+
+  res.clear();
+  lastHaveIndex = ps.getAdvertisedPieceIndexes(res, 1, 5);
+
+  CPPUNIT_ASSERT_EQUAL((uint64_t)5, lastHaveIndex);
+  CPPUNIT_ASSERT_EQUAL((size_t)0, res.size());
+
+  // remove haves
+
+  ps.removeAdvertisedPiece(Timer(11_s));
+
+  res.clear();
+  lastHaveIndex = ps.getAdvertisedPieceIndexes(res, 1, 0);
+  ans = std::vector<size_t>{103, 104};
+
+  CPPUNIT_ASSERT_EQUAL((uint64_t)5, lastHaveIndex);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, res.size());
+  CPPUNIT_ASSERT(ans == res);
+
+  ps.removeAdvertisedPiece(Timer(300_s));
+
+  res.clear();
+  lastHaveIndex = ps.getAdvertisedPieceIndexes(res, 1, 0);
+
+  CPPUNIT_ASSERT_EQUAL((uint64_t)0, lastHaveIndex);
+  CPPUNIT_ASSERT_EQUAL((size_t)0, res.size());
 }
 
 } // namespace aria2

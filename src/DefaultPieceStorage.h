@@ -55,23 +55,19 @@ class StreamPieceSelector;
 
 #define END_GAME_PIECE_NUM 20
 
-class HaveEntry {
-private:
-  cuid_t cuid_;
-  size_t index_;
-  Timer registeredTime_;
-
-public:
-  HaveEntry(cuid_t cuid, size_t index, const Timer& registeredTime)
-      : cuid_(cuid), index_(index), registeredTime_(registeredTime)
+struct HaveEntry {
+  HaveEntry(uint64_t haveIndex, cuid_t cuid, size_t index, Timer registeredTime)
+      : haveIndex(haveIndex),
+        cuid(cuid),
+        index(index),
+        registeredTime(std::move(registeredTime))
   {
   }
 
-  cuid_t getCuid() const { return cuid_; }
-
-  size_t getIndex() const { return index_; }
-
-  const Timer& getRegisteredTime() const { return registeredTime_; }
+  uint64_t haveIndex;
+  cuid_t cuid;
+  size_t index;
+  Timer registeredTime;
 };
 
 class DefaultPieceStorage : public PieceStorage {
@@ -87,6 +83,10 @@ private:
   bool endGame_;
   size_t endGamePieceNum_;
   const Option* option_;
+
+  // The next unique index on HaveEntry, which is ever strictly
+  // increasing sequence of integer.
+  uint64_t nextHaveIndex_;
   std::deque<HaveEntry> haves_;
 
   std::shared_ptr<PieceStatMan> pieceStatMan_;
@@ -238,14 +238,14 @@ public:
 
   virtual int32_t getPieceLength(size_t index) CXX11_OVERRIDE;
 
-  virtual void advertisePiece(cuid_t cuid, size_t index) CXX11_OVERRIDE;
+  virtual void advertisePiece(cuid_t cuid, size_t index,
+                              Timer registeredTime) CXX11_OVERRIDE;
 
-  virtual void
+  virtual uint64_t
   getAdvertisedPieceIndexes(std::vector<size_t>& indexes, cuid_t myCuid,
-                            const Timer& lastCheckTime) CXX11_OVERRIDE;
+                            uint64_t lastHaveIndex) CXX11_OVERRIDE;
 
-  virtual void
-  removeAdvertisedPiece(const std::chrono::seconds& elapsed) CXX11_OVERRIDE;
+  virtual void removeAdvertisedPiece(const Timer& expiry) CXX11_OVERRIDE;
 
   virtual void markAllPiecesDone() CXX11_OVERRIDE;
 

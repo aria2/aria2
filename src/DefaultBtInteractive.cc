@@ -92,8 +92,8 @@ DefaultBtInteractive::DefaultBtInteractive(
       peer_(peer),
       metadataGetMode_(false),
       localNode_(nullptr),
+      lastHaveIndex_(0),
       allowedFastSetSize_(10),
-      haveTimer_(global::wallclock()),
       keepAliveTimer_(global::wallclock()),
       floodingTimer_(global::wallclock()),
       inactiveTimer_(global::wallclock()),
@@ -172,7 +172,6 @@ DefaultBtInteractive::receiveAndSendHandshake()
 void DefaultBtInteractive::doPostHandshakeProcessing()
 {
   // Set time 0 to haveTimer to cache http/ftp download piece completion
-  haveTimer_ = Timer::zero();
   keepAliveTimer_ = global::wallclock();
   floodingTimer_ = global::wallclock();
   pexTimer_ = Timer::zero();
@@ -267,8 +266,9 @@ void DefaultBtInteractive::checkHave()
 {
   std::vector<size_t> haveIndexes;
 
-  pieceStorage_->getAdvertisedPieceIndexes(haveIndexes, cuid_, haveTimer_);
-  haveTimer_ = global::wallclock();
+  lastHaveIndex_ = pieceStorage_->getAdvertisedPieceIndexes(haveIndexes, cuid_,
+                                                            lastHaveIndex_);
+
   // Use bitfield message if it is equal to or less than the total
   // size of have messages.
   if (5 + pieceStorage_->getBitfieldLength() <= haveIndexes.size() * 9) {

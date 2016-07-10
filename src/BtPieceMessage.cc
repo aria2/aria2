@@ -277,7 +277,8 @@ void BtPieceMessage::onNewPiece(const std::shared_ptr<Piece>& piece)
   A2_LOG_INFO(fmt(MSG_GOT_NEW_PIECE, getCuid(),
                   static_cast<unsigned long>(piece->getIndex())));
   getPieceStorage()->completePiece(piece);
-  getPieceStorage()->advertisePiece(getCuid(), piece->getIndex());
+  getPieceStorage()->advertisePiece(getCuid(), piece->getIndex(),
+                                    global::wallclock());
 }
 
 void BtPieceMessage::onWrongPiece(const std::shared_ptr<Piece>& piece)

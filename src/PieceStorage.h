@@ -235,21 +235,22 @@ public:
    * Adds piece index to advertise to other commands. They send have message
    * based on this information.
    */
-  virtual void advertisePiece(cuid_t cuid, size_t index) = 0;
+  virtual void advertisePiece(cuid_t cuid, size_t index,
+                              Timer registerdTime) = 0;
 
   /**
-   * indexes is filled with piece index which is not advertised by the caller
-   * command and newer than lastCheckTime.
+   * indexes is filled with piece index which is not advertised by the
+   * caller command and newer than lastHaveIndex.
    */
-  virtual void getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
-                                         cuid_t myCuid,
-                                         const Timer& lastCheckTime) = 0;
+  virtual uint64_t getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
+                                             cuid_t myCuid,
+                                             uint64_t lastHaveIndex) = 0;
 
   /**
-   * Removes have entry if specified seconds have elapsed since its
-   * registration.
+   * Removes have entry if its registeredTime is at least as old as
+   * expiry.
    */
-  virtual void removeAdvertisedPiece(const std::chrono::seconds& elapsed) = 0;
+  virtual void removeAdvertisedPiece(const Timer& expiry) = 0;
 
   /**
    * Sets all bits in bitfield to 1.

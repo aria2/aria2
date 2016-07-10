@@ -85,6 +85,10 @@ DefaultPieceStorage::DefaultPieceStorage(
       endGame_(false),
       endGamePieceNum_(END_GAME_PIECE_NUM),
       option_(option),
+      // The DefaultBtInteractive has the default value of
+      // lastHaveIndex of 0, so we need to make nextHaveIndex_ more
+      // than that.
+      nextHaveIndex_(1),
       pieceStatMan_(std::make_shared<PieceStatMan>(
           downloadContext->getNumPieces(), true)),
       pieceSelector_(make_unique<RarestPieceSelector>(pieceStatMan_)),
@@ -698,40 +702,44 @@ int32_t DefaultPieceStorage::getPieceLength(size_t index)
   return bitfieldMan_->getBlockLength(index);
 }
 
-void DefaultPieceStorage::advertisePiece(cuid_t cuid, size_t index)
+void DefaultPieceStorage::advertisePiece(cuid_t cuid, size_t index,
+                                         Timer registeredTime)
 {
-  HaveEntry entry(cuid, index, global::wallclock());
-  haves_.push_front(entry);
+  haves_.emplace_back(nextHaveIndex_++, cuid, index, std::move(registeredTime));
 }
 
-void DefaultPieceStorage::getAdvertisedPieceIndexes(
-    std::vector<size_t>& indexes, cuid_t myCuid, const Timer& lastCheckTime)
+uint64_t DefaultPieceStorage::getAdvertisedPieceIndexes(
+    std::vector<size_t>& indexes, cuid_t myCuid, uint64_t lastHaveIndex)
 {
-  for (std::deque<HaveEntry>::const_iterator itr = haves_.begin(),
-                                             eoi = haves_.end();
-       itr != eoi; ++itr) {
-    const HaveEntry& have = *itr;
-    if (lastCheckTime > have.getRegisteredTime()) {
-      break;
-    }
-    indexes.push_back(have.getIndex());
+  auto it =
+      std::upper_bound(std::begin(haves_), std::end(haves_), lastHaveIndex,
+                       [](uint64_t lastHaveIndex, const HaveEntry& have) {
+                         return lastHaveIndex < have.haveIndex;
+                       });
+
+  if (it == std::end(haves_)) {
+    return lastHaveIndex;
   }
+
+  for (; it != std::end(haves_); ++it) {
+    indexes.push_back((*it).index);
+  }
+
+  return (*(std::end(haves_) - 1)).haveIndex;
 }
 
-void DefaultPieceStorage::removeAdvertisedPiece(
-    const std::chrono::seconds& elapsed)
+void DefaultPieceStorage::removeAdvertisedPiece(const Timer& expiry)
 {
-  auto itr = std::find_if(
-      std::begin(haves_), std::end(haves_), [&elapsed](const HaveEntry& have) {
-        return have.getRegisteredTime().difference(global::wallclock()) >=
-               elapsed;
-      });
+  auto it = std::upper_bound(std::begin(haves_), std::end(haves_), expiry,
+                             [](const Timer& expiry, const HaveEntry& have) {
+                               return expiry < have.registeredTime;
+                             });
 
-  if (itr != std::end(haves_)) {
-    A2_LOG_DEBUG(fmt(MSG_REMOVED_HAVE_ENTRY,
-                     static_cast<unsigned long>(std::end(haves_) - itr)));
-    haves_.erase(itr, std::end(haves_));
-  }
+  A2_LOG_DEBUG(
+      fmt(MSG_REMOVED_HAVE_ENTRY,
+          static_cast<unsigned long>(std::distance(std::begin(haves_), it))));
+
+  haves_.erase(std::begin(haves_), it);
 }
 
 void DefaultPieceStorage::markAllPiecesDone() { bitfieldMan_->setAllBit(); }
