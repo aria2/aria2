@@ -82,6 +82,8 @@ public:
 
   template <typename duration> void advance(const duration& t) { tp_ += t; }
 
+  template <typename duration> void sub(const duration& t) { tp_ -= t; }
+
   const Clock::time_point& getTime() const { return tp_; }
 
   static Timer zero() { return Timer(0_s); }

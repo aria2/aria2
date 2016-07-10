@@ -61,7 +61,7 @@ void HaveEraseCommand::process()
 {
   // we are making a copy of current wallclock.
   auto expiry = global::wallclock();
-  expiry.advance(5_s);
+  expiry.sub(5_s);
 
   const auto& groups =
       getDownloadEngine()->getRequestGroupMan()->getRequestGroups();
