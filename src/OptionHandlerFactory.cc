@@ -1799,7 +1799,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(new NumberOptionHandler(PREF_SEED_TIME, TEXT_SEED_TIME,
+    OptionHandler* op(new FloatNumberOptionHandler(PREF_SEED_TIME, TEXT_SEED_TIME,
                                               NO_DEFAULT_VALUE, 0));
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
