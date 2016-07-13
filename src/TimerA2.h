@@ -54,9 +54,13 @@ public:
   Timer(const Timer& time) = default;
   Timer(Timer&& time) = default;
 
-  template <typename duration> constexpr Timer(const duration& t) : tp_(t) {}
+  template <typename duration>
+  constexpr explicit Timer(const duration& t)
+      : tp_(t)
+  {
+  }
 
-  Timer(const Clock::time_point& tp);
+  explicit Timer(const Clock::time_point& tp);
 
   Timer& operator=(Timer&& timer) = default;
   Timer& operator=(const Timer& timer) = default;

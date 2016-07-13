@@ -37,15 +37,23 @@
 
 namespace aria2 {
 
-Timer::Timer() : tp_(Clock::now()) { reset(); }
+// Add this offset to Timer::Clock::now() so that we can treat 0 value
+// as special case, and normal timeout always applies.
+constexpr auto OFFSET = 24_h;
+
+namespace {
+Timer::Clock::time_point getNow() { return Timer::Clock::now() + OFFSET; }
+} // namespace
+
+Timer::Timer() : tp_(getNow()) { reset(); }
 
 Timer::Timer(const Clock::time_point& tp) : tp_(tp) {}
 
-void Timer::reset() { tp_ = Clock::now(); }
+void Timer::reset() { tp_ = getNow(); }
 
 Timer::Clock::duration Timer::difference() const
 {
-  auto now = Clock::now();
+  auto now = getNow();
   if (now < tp_) {
     return Timer::Clock::duration(0_s);
   }
