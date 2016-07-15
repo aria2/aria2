@@ -43,7 +43,7 @@ aria2c executable was generated using android-ndk-r10d.
 The following libraries were statically linked.
 
 * openssl 1.0.2h
-* expat 2.1.1
+* expat 2.2.0
 * c-ares 1.11.0
 * libssh2 1.7.0
 
