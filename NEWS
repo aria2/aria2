@@ -1,67 +1,70 @@
-aria2 1.24.0
+aria2 1.25.0
 ============
 
 Release Note
 ------------
 
-This release fixes several bugs.  The new functionality is that when
-options which is only applicable in waiting state are submitted to an
-active download via RPC, the download is now automatically restarted
-to reflect the changes.  Previously, those options were just ignored.
+This release fixes many bugs reported so far.  There is no new
+functionality in this release.  We have fixed many performance issues
+in BitTorrent downloads.
 
 Changes
 -------
 
-* BitTorrent: Allow 32KiB request
+* Update third-party libraries for binary releases
 
-  It looks like the 32KiB is the default request size of python
-  bittorrent client.  Previously, aria2 only allowed maximum 16KiB
-  request.
+* Send have message without too much delay
 
-* Don't unchoke peer which is not interested in us
+  Also send bitfield rather than have messages if bitfield message is
+  equal to or less than the sum of have messages which otherwise would
+  be sent.
 
-* Fix bug that evaluation of Peer::amChoking is negated
+* Fix bug that causes bogus EOF connection failure in BitTorrent
+  downloads
 
-* Faster seed/download on fast connection
+* Fix frequent interested/not interested message transmission
 
-* Increase DHT task concurrency to 15
+* Fix frequent choke/unchoke message transmission
 
-  Fix GH-653
+* Try to use available URI if all pooled requests are sleeping
+* Update expat in OSX build
 
-* Fixed mmap failure check with MAP_FAILED flag
+  Closes GH-694
 
-  Fix GH-662
+* aria2mon: Add --secret option
 
-  Patch from suzker
+  Fixes GH-700
 
-* Added file size overflow check for mmap on 32bit os
+* Set server status error on network failure in server performance
+  profile
 
-  Fix GH-662
+* Disable AI_ADDRCONFIG if no IPv4/IPv6 address is configured for any
+  interface
 
-  Patch from suzker
+  Fixes GH-698
 
-* Use standard percent-encode for tracker request query
+* Russian manual: Update aria2c.rst
 
-  Fix GH-659
+  Patch from ITriskTI
 
-* mingw32: Gain privilege before opening files
+* Apply --retry-wait on 503 only
 
-  Fix GH-657
+* Ensure that lowest speed check is done even when download speed is 0
 
-* Restart active download to apply previously not applicable options
+  Fixes GH-686
 
-  Previously, we categorized options that can be used in
-  aria2.changeOption RPC method into 2 categories.  The options in one
-  category can be applied on the fly, meaning that download continues
-  to be active while applying options.  Another category includes
-  options which are only applicable when downloads are waiting or
-  paused.
+* Document that -o is always relative to -d option
 
-  In this change, when active download is ordered to change options
-  which only applicable in waiting or paused state, it is now paused,
-  and then automatically restarted.  Although we have limited number
-  of download concurrency, the pause and restart is done atomically,
-  and the download is inserted at the front of the queue, it is picked
-  up immediately if the concurrency regulation allows.
+  Fixes GH-684
 
-  Fix GH-640 and GH-644
+* Allow larger ut_metadata size
+
+  Fixes GH-681
+
+* mingw: Change FD_SETSIZE to 32768
+
+  Fixes GH-678
+
+* Fix compile error on OS X
+
+  Fixes GH-683
