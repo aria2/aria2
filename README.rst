@@ -393,7 +393,7 @@ environment variable which must fulfill the following conditions:
 
      $NDK/build/tools/make_standalone_toolchain.py \
         --arch arm --api 16 --stl=gnustl \
-         --install-dir $ANDROID_HOME/toolchain
+        --install-dir $ANDROID_HOME/toolchain
 
 * The dependent libraries must be installed under
   ``$ANDROID_HOME/usr/local``.
