@@ -1,7 +1,5 @@
 aria2 - The ultra fast download utility
 =======================================
-:Author:    Tatsuhiro Tsujikawa
-:Email:     tatsuhiro.t_at_gmail_dot_com
 
 Disclaimer
 ----------
@@ -241,7 +239,7 @@ necessary to build the program::
 
     $ autoreconf -i
 
-Also you need `Sphinx <http://sphinx.pocoo.org/>`_ to build man page.
+Also you need `Sphinx <http://sphinx-doc.org/>`_ to build man page.
 
 If you are building aria2 for Mac OS X, take a look at
 the make-release-os.mk GNU Make makefile.
@@ -361,7 +359,7 @@ Cross-compiling Android binary
 In this section, we describe how to build Android binary using Android
 NDK cross-compiler on Debian Linux.
 
-At the time of this writing, android-ndk-r9 should compile aria2
+At the time of this writing, android-ndk-r12b should compile aria2
 without errors.
 
 ``android-config`` script is a configure script wrapper for Android
@@ -385,20 +383,17 @@ by ourselves.
 environment variable which must fulfill the following conditions:
 
 * Android NDK toolchain is installed under
-  ``$ANDROID_HOME/toolchain``.  Refer to "4/ Invoking the compiler
-  (the easy way):" section in Android NDK
-  ``docs/STANDALONE-TOOLCHAIN.html`` to install custom toolchain.
+  ``$ANDROID_HOME/toolchain``.  Refer to `Standalone Toolchain
+  <https://developer.android.com/ndk/guides/standalone_toolchain.html>`_
+  for more details, but it is a bit out of date.
 
-  For example, to install toolchain under ``$ANDROID_HOME/toolchain``,
-  do this::
+  To install toolchain under ``$ANDROID_HOME/toolchain``, do this:
 
-      $NDK/build/tools/make-standalone-toolchain.sh \
-        --install-dir=$ANDROID_HOME/toolchain \
-        --toolchain=arm-linux-androideabi-4.9 \
-        --platform=android-16
+  .. code-block:: text
 
-  You may need to add ``--system=linux-x86_64`` to the above
-  command-line for x86_64 Linux host.
+     $NDK/build/tools/make_standalone_toolchain.py \
+        --arch arm --api 16 --stl=gnustl \
+         --install-dir $ANDROID_HOME/toolchain
 
 * The dependent libraries must be installed under
   ``$ANDROID_HOME/usr/local``.
@@ -412,14 +407,13 @@ After ``android-config``, run ``android-make`` to compile sources.
 Building documentation
 ----------------------
 
-`Sphinx <http://sphinx.pocoo.org/>`_ is used to build the
+`Sphinx <http://sphinx-doc.org/>`_ is used to build the
 documentation. aria2 man pages will be build when you run ``make`` if
 they are not up-to-date.  You can also build HTML version of aria2 man
 page by ``make html``. The HTML version manual is also available at
 `online <https://aria2.github.io/manual/en/html/>`_ (`Russian
-translation <https://aria2.github.io/manual/ru/html/>`_,
-`Portuguese translation
-<https://aria2.github.io/manual/pt/html/>`_).
+translation <https://aria2.github.io/manual/ru/html/>`_, `Portuguese
+translation <https://aria2.github.io/manual/pt/html/>`_).
 
 BitTorrent
 -----------

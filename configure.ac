@@ -1003,9 +1003,6 @@ AC_CHECK_FUNCS([gettimeofday],
 AC_CHECK_FUNCS([strptime],
         [AM_CONDITIONAL([HAVE_STRPTIME], true)],
         [AM_CONDITIONAL([HAVE_STRPTIME], false)])
-AC_CHECK_FUNCS([timegm],
-        [AM_CONDITIONAL([HAVE_TIMEGM], true)],
-        [AM_CONDITIONAL([HAVE_TIMEGM], false)])
 AC_CHECK_FUNCS([daemon], [have_daemon=yes])
 AM_CONDITIONAL([HAVE_DAEMON], [test "x$have_daemon" = "xyes"])
 
@@ -1022,6 +1019,18 @@ case "$host" in
     ;;
   *)
     AM_CONDITIONAL([MINGW_BUILD], false)
+    ;;
+esac
+
+case "$host" in
+  *android*)
+    # timegm is not declared with Android NDK r12b
+    AM_CONDITIONAL([HAVE_TIMEGM], false)
+    ;;
+  *)
+    AC_CHECK_FUNCS([timegm],
+        [AM_CONDITIONAL([HAVE_TIMEGM], true)],
+        [AM_CONDITIONAL([HAVE_TIMEGM], false)])
     ;;
 esac
 
