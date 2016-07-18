@@ -39,6 +39,35 @@ void RequestGroupTest::testGetFirstFilePath()
 
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile"), group.getFirstFilePath());
 
+  // test file renaming
+  option_->put(PREF_AUTO_FILE_RENAMING, "false");
+  try {
+    group.tryAutoFileRenaming();
+  }
+  catch (const Exception& ex) {
+    CPPUNIT_ASSERT_EQUAL(error_code::FILE_ALREADY_EXISTS, ex.getErrorCode());
+
+  }
+
+  option_->put(PREF_AUTO_FILE_RENAMING, "true");
+  group.tryAutoFileRenaming();
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile.1"), group.getFirstFilePath());
+
+  ctx->getFirstFileEntry()->setPath("/tmp/myfile.txt");
+  group.tryAutoFileRenaming();
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile.1.txt"), group.getFirstFilePath());
+
+  ctx->getFirstFileEntry()->setPath("/tmp.txt/myfile");
+  group.tryAutoFileRenaming();
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp.txt/myfile.1"), group.getFirstFilePath());
+
+  ctx->getFirstFileEntry()->setPath("/tmp.txt/myfile.txt");
+  group.tryAutoFileRenaming();
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp.txt/myfile.1.txt"), group.getFirstFilePath());
+
+  // test in-memory
+  ctx->getFirstFileEntry()->setPath("/tmp/myfile");
+
   group.markInMemoryDownload();
 
   CPPUNIT_ASSERT_EQUAL(std::string("[MEMORY]myfile"), group.getFirstFilePath());

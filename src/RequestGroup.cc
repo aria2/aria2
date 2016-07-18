@@ -778,8 +778,16 @@ void RequestGroup::tryAutoFileRenaming()
         fmt("File renaming failed: %s", getFirstFilePath().c_str()),
         error_code::FILE_RENAMING_FAILED);
   }
+  auto fn = filepath;
+  std::string ext;
+  auto idx = fn.find_last_of(".");
+  auto slash = fn.find_last_of("\\/");
+  if (idx != std::string::npos && (slash == std::string::npos || slash < idx)) {
+    ext = fn.substr(idx);
+    fn = fn.substr(0, idx);
+  }
   for (int i = 1; i < 10000; ++i) {
-    auto newfilename = fmt("%s.%d", filepath.c_str(), i);
+    auto newfilename = fmt("%s.%d%s", fn.c_str(), i, ext.c_str());
     File newfile(newfilename);
     File ctrlfile(newfile.getPath() + DefaultBtProgressInfoFile::getSuffix());
     if (!newfile.exists() || (newfile.exists() && ctrlfile.exists())) {
