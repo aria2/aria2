@@ -305,6 +305,10 @@ Context::Context(bool standalone, int argc, char** argv, const KeyVals& options)
     global::cout()->printf("%s\n", MSG_NO_FILES_TO_DOWNLOAD);
   }
   else {
+    if (!requestGroups.empty()) {
+      A2_LOG_NOTICE(fmt("Downloading %" PRId64 " items",
+                        static_cast<uint64_t>(requestGroups.size())));
+    }
     reqinfo = std::make_shared<MultiUrlRequestInfo>(std::move(requestGroups),
                                                     op, uriListParser);
   }
