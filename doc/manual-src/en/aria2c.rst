@@ -939,7 +939,8 @@ BitTorrent Specific Options
 
 .. option:: --seed-time=<MINUTES>
 
-  Specify seeding time in minutes. Also see the :option:`--seed-ratio` option.
+  Specify seeding time in (fractional) minutes. Also see the
+  :option:`--seed-ratio` option.
 
   .. note::
 
