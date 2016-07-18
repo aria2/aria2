@@ -778,8 +778,28 @@ void RequestGroup::tryAutoFileRenaming()
         fmt("File renaming failed: %s", getFirstFilePath().c_str()),
         error_code::FILE_RENAMING_FAILED);
   }
+  auto fn = filepath;
+  std::string ext;
+  const auto idx = fn.find_last_of(".");
+  const auto slash = fn.find_last_of("\\/");
+  // Do extract the extension, as in "file.ext" = "file" and ".ext",
+  // but do not consider ".file" to be a file name without extension instead
+  // of a blank file name and an extension of ".file"
+  if (idx != std::string::npos &&
+      // fn has no path component and starts with a dot, but has no extension
+      // otherwise
+      idx != 0 &&
+      // has a file path component if we found a slash.
+      // if slash == idx - 1 this means a form of "*/.*", so the file name
+      // starts with a dot, has no extension otherwise, and therefore do not
+      // extract an extension either
+      (slash == std::string::npos || slash < idx - 1)
+      ) {
+    ext = fn.substr(idx);
+    fn = fn.substr(0, idx);
+  }
   for (int i = 1; i < 10000; ++i) {
-    auto newfilename = fmt("%s.%d", filepath.c_str(), i);
+    auto newfilename = fmt("%s.%d%s", fn.c_str(), i, ext.c_str());
     File newfile(newfilename);
     File ctrlfile(newfile.getPath() + DefaultBtProgressInfoFile::getSuffix());
     if (!newfile.exists() || (newfile.exists() && ctrlfile.exists())) {

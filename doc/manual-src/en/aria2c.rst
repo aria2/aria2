@@ -1175,7 +1175,8 @@ Advanced Options
 
   Rename file name if the same file already exists.
   This option works only in HTTP(S)/FTP download.
-  The new file name has a dot and a number(1..9999) appended.
+  The new file name has a dot and a number(1..9999) appended after the
+  name, but before the file extension, if any.
   Default: ``true``
 
 .. option:: --auto-save-interval=<SEC>

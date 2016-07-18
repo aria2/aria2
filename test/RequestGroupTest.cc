@@ -14,6 +14,7 @@ class RequestGroupTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(RequestGroupTest);
   CPPUNIT_TEST(testGetFirstFilePath);
+  CPPUNIT_TEST(testTryAutoFileRenaming);
   CPPUNIT_TEST(testCreateDownloadResult);
   CPPUNIT_TEST_SUITE_END();
 
@@ -24,6 +25,7 @@ public:
   void setUp() { option_.reset(new Option()); }
 
   void testGetFirstFilePath();
+  void testTryAutoFileRenaming();
   void testCreateDownloadResult();
 };
 
@@ -42,6 +44,57 @@ void RequestGroupTest::testGetFirstFilePath()
   group.markInMemoryDownload();
 
   CPPUNIT_ASSERT_EQUAL(std::string("[MEMORY]myfile"), group.getFirstFilePath());
+}
+
+void RequestGroupTest::testTryAutoFileRenaming()
+{
+  std::shared_ptr<DownloadContext> ctx(
+      new DownloadContext(1_k, 1_k, "/tmp/myfile"));
+
+  RequestGroup group(GroupId::create(), option_);
+  group.setDownloadContext(ctx);
+
+  option_->put(PREF_AUTO_FILE_RENAMING, "false");
+  try {
+    group.tryAutoFileRenaming();
+  }
+  catch (const Exception& ex) {
+    CPPUNIT_ASSERT_EQUAL(error_code::FILE_ALREADY_EXISTS, ex.getErrorCode());
+
+  }
+
+  option_->put(PREF_AUTO_FILE_RENAMING, "true");
+  group.tryAutoFileRenaming();
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile.1"), group.getFirstFilePath());
+
+  ctx->getFirstFileEntry()->setPath("/tmp/myfile.txt");
+  group.tryAutoFileRenaming();
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile.1.txt"), group.getFirstFilePath());
+
+  ctx->getFirstFileEntry()->setPath("/tmp.txt/myfile");
+  group.tryAutoFileRenaming();
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp.txt/myfile.1"), group.getFirstFilePath());
+
+  ctx->getFirstFileEntry()->setPath("/tmp.txt/myfile.txt");
+  group.tryAutoFileRenaming();
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp.txt/myfile.1.txt"), group.getFirstFilePath());
+
+  ctx->getFirstFileEntry()->setPath(".bashrc");
+  group.tryAutoFileRenaming();
+  CPPUNIT_ASSERT_EQUAL(std::string(".bashrc.1"), group.getFirstFilePath());
+
+  ctx->getFirstFileEntry()->setPath(".bashrc.txt");
+  group.tryAutoFileRenaming();
+  CPPUNIT_ASSERT_EQUAL(std::string(".bashrc.1.txt"), group.getFirstFilePath());
+
+  ctx->getFirstFileEntry()->setPath("/tmp.txt/.bashrc");
+  group.tryAutoFileRenaming();
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp.txt/.bashrc.1"), group.getFirstFilePath());
+
+  ctx->getFirstFileEntry()->setPath("/tmp.txt/.bashrc.txt");
+  group.tryAutoFileRenaming();
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp.txt/.bashrc.1.txt"), group.getFirstFilePath());
+
 }
 
 void RequestGroupTest::testCreateDownloadResult()

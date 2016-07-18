@@ -199,8 +199,6 @@ private:
 
   void initializePostDownloadHandler();
 
-  void tryAutoFileRenaming();
-
   // Returns the result code of this RequestGroup.  If the download
   // finished, then returns error_code::FINISHED.  If the
   // download didn't finish and error result is available in
@@ -218,6 +216,8 @@ public:
   ~RequestGroup();
 
   bool isCheckIntegrityReady();
+
+  void tryAutoFileRenaming();
 
   const std::shared_ptr<SegmentMan>& getSegmentMan() const
   {
