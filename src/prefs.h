@@ -420,7 +420,7 @@ extern PrefPtr PREF_LISTEN_PORT;
 extern PrefPtr PREF_FOLLOW_TORRENT;
 // values: 1*digit *( (,|-) 1*digit)
 extern PrefPtr PREF_SELECT_FILE;
-// values: 1*digit
+// values: 1*digit ['.' [ 1*digit ] ]
 extern PrefPtr PREF_SEED_TIME;
 // values: 1*digit ['.' [ 1*digit ] ]
 extern PrefPtr PREF_SEED_RATIO;

@@ -313,8 +313,8 @@
     "                              To limit the overall upload speed, use\n" \
     "                              --max-overall-upload-limit option.")
 #define TEXT_SEED_TIME                                                  \
-  _(" --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n" \
-    "                              --seed-ratio option.")
+  _(" --seed-time=MINUTES          Specify seeding time in (fractional) minutes.\n" \
+    "                              Also see the --seed-ratio option.")
 #define TEXT_SEED_RATIO                                                 \
   _(" --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n" \
     "                              until share ratio reaches RATIO.\n"  \

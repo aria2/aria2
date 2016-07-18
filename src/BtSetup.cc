@@ -157,8 +157,9 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
   if (!metadataGetMode) {
     auto unionCri = make_unique<UnionSeedCriteria>();
     if (option->defined(PREF_SEED_TIME)) {
-      unionCri->addSeedCriteria(make_unique<TimeSeedCriteria>(
-          std::chrono::seconds(option->getAsInt(PREF_SEED_TIME) * 60)));
+      unionCri->addSeedCriteria(
+          make_unique<TimeSeedCriteria>(std::chrono::seconds(
+              static_cast<int>(option->getAsDouble(PREF_SEED_TIME) * 60))));
     }
     {
       double ratio = option->getAsDouble(PREF_SEED_RATIO);
