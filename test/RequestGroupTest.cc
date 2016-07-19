@@ -41,6 +41,9 @@ void RequestGroupTest::testGetFirstFilePath()
 
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile"), group.getFirstFilePath());
 
+  // test in-memory
+  ctx->getFirstFileEntry()->setPath("/tmp/myfile");
+
   group.markInMemoryDownload();
 
   CPPUNIT_ASSERT_EQUAL(std::string("[MEMORY]myfile"), group.getFirstFilePath());
