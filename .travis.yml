@@ -33,6 +33,7 @@ before_install:
   - $CC --version
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install --force cppunit gettext openssl gnutls libgcrypt gmp nettle libssh2 c-ares sqlite3 ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew link --force cppunit gettext openssl gnutls libgcrypt gmp nettle libssh2 c-ares sqlite3 ; fi
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
   - $CC --version
 before_script:
