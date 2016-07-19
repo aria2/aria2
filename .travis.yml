@@ -1,7 +1,13 @@
 language: cpp
-compiler:
-  - clang
-  - gcc
+matrix:
+  include:
+    - os: linux
+      compiler: gcc
+    - os: linux
+      compiler: clang
+    - os: osx
+      osx_image: xcode7
+      compiler: clang
 sudo: false
 addons:
   apt:
@@ -25,12 +31,15 @@ addons:
     - libcppunit-dev
 before_install:
   - $CC --version
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install --force cppunit gettext openssl gnutls libgcrypt gmp nettle libssh2 c-ares sqlite3 ; fi
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
   - $CC --version
 before_script:
   - autoreconf -i
   - automake
   - autoconf
-  - ./configure
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./configure --without-openssl --without-gnutls --with-appletls; fi
+  - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then ./configure ; fi
 script:
   - make check
