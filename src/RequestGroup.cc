@@ -780,9 +780,21 @@ void RequestGroup::tryAutoFileRenaming()
   }
   auto fn = filepath;
   std::string ext;
-  auto idx = fn.find_last_of(".");
-  auto slash = fn.find_last_of("\\/");
-  if (idx != std::string::npos && (slash == std::string::npos || slash < idx)) {
+  const auto idx = fn.find_last_of(".");
+  const auto slash = fn.find_last_of("\\/");
+  // Do extract the extension, as in "file.ext" = "file" and ".ext",
+  // but do not consider ".file" to be a file name without extension instead
+  // of a blank file name and an extension of ".file"
+  if (idx != std::string::npos &&
+      // fn has no path component and starts with a dot, but has no extension
+      // otherwise
+      idx != 0 &&
+      // has a file path component if we found a slash.
+      // if slash == idx - 1 this means a form of "*/.*", so the file name
+      // starts with a dot, has no extension otherwise, and therefore do not
+      // extract an extension either
+      (slash == std::string::npos || slash < idx - 1)
+      ) {
     ext = fn.substr(idx);
     fn = fn.substr(0, idx);
   }
