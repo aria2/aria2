@@ -6,6 +6,7 @@
 #include <algorithm>
 
 #include "BitfieldMan.h"
+#include "FatalException.h"
 #include "Piece.h"
 #include "DiskAdaptor.h"
 
@@ -250,6 +251,7 @@ public:
   getAdvertisedPieceIndexes(std::vector<size_t>& indexes, cuid_t myCuid,
                             uint64_t lastHaveIndex) CXX11_OVERRIDE
   {
+    throw FATAL_EXCEPTION("Not Implemented!");
   }
 
   virtual void removeAdvertisedPiece(const Timer& expiry) CXX11_OVERRIDE {}

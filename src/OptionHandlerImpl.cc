@@ -625,7 +625,7 @@ void OptimizeConcurrentDownloadsOptionHandler::parseArg(
     for (;;) {
       char* end;
       errno = 0;
-      auto dbl = strtod(sptr->c_str(), &end);
+      strtod(sptr->c_str(), &end);
       if (errno != 0 || sptr->c_str() + sptr->size() != end) {
         throw DL_ABORT_EX(fmt("Bad number '%s'", sptr->c_str()));
       }

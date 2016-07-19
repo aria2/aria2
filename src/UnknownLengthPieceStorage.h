@@ -35,6 +35,7 @@
 #ifndef D_UNKNOWN_LENGTH_PIECE_STORAGE_H
 #define D_UNKNOWN_LENGTH_PIECE_STORAGE_H
 
+#include "FatalException.h"
 #include "PieceStorage.h"
 
 namespace aria2 {
@@ -236,6 +237,7 @@ public:
   getAdvertisedPieceIndexes(std::vector<size_t>& indexes, cuid_t myCuid,
                             uint64_t lastHaveIndex) CXX11_OVERRIDE
   {
+    throw FATAL_EXCEPTION("Not Implemented!");
   }
 
   virtual void removeAdvertisedPiece(const Timer& expiry) CXX11_OVERRIDE {}

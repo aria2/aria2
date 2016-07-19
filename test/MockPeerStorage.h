@@ -39,7 +39,7 @@ public:
   }
 
   virtual std::shared_ptr<Peer>
-  addAndCheckoutPeer(const std::shared_ptr<Peer>& peer, cuid_t cuid)
+  addAndCheckoutPeer(const std::shared_ptr<Peer>& peer, cuid_t cuid) CXX11_OVERRIDE
   {
     unusedPeers.push_back(peer);
     return nullptr;

@@ -84,7 +84,6 @@ std::unique_ptr<Dict> DHTGetPeersReplyMessage::getResponse()
   if (!closestKNodes_.empty()) {
     std::array<unsigned char, DHTBucket::K * 38> buffer;
     const auto clen = bittorrent::getCompactLength(family_);
-    const auto unit = clen + DHT_ID_LENGTH;
     auto last = std::begin(buffer);
     size_t k = 0;
     for (auto i = std::begin(closestKNodes_);
@@ -92,7 +91,9 @@ std::unique_ptr<Dict> DHTGetPeersReplyMessage::getResponse()
       std::array<unsigned char, COMPACT_LEN_IPV6> compact;
       auto compactlen = bittorrent::packcompact(
           compact.data(), (*i)->getIPAddress(), (*i)->getPort());
-      if (compactlen == clen) {
+      auto cclen =
+        static_cast<std::make_unsigned<decltype(clen)>::type>((clen));
+      if (clen >= 0 && compactlen == cclen) {
         last = std::copy_n((*i)->getID(), DHT_ID_LENGTH, last);
         last = std::copy_n(std::begin(compact), compactlen, last);
         ++k;
@@ -132,7 +133,9 @@ std::unique_ptr<Dict> DHTGetPeersReplyMessage::getResponse()
       const auto clen = bittorrent::getCompactLength(family_);
       auto compactlen = bittorrent::packcompact(
           compact.data(), (*i)->getIPAddress(), (*i)->getPort());
-      if (compactlen == clen) {
+      auto cclen =
+        static_cast<std::make_unsigned<decltype(clen)>::type>((clen));
+      if (clen > 0 && compactlen == cclen) {
         valuesList->append(String::g(compact.data(), compactlen));
       }
     }

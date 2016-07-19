@@ -544,7 +544,7 @@ HttpResponseCommand::createHttpDownloadCommand(
   getRequestGroup()->getURISelector()->tuneDownloadCommand(
       getFileEntry()->getRemainingUris(), command.get());
 
-  return std::move(command);
+  return command;
 }
 
 void HttpResponseCommand::poolConnection()

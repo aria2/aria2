@@ -184,8 +184,9 @@ std::shared_ptr<Request> FileEntry::getRequestWithInFlightHosts(
       continue;
     }
 
-    return req;
+    break;
   }
+  return req;
 }
 
 std::shared_ptr<Request> FileEntry::getRequest(
