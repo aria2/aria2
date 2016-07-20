@@ -1,3 +1,4 @@
+/* <!-- copyright */
 /*
  * aria2 - The high speed download utility
  *

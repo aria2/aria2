@@ -1,3 +1,4 @@
+/* <!-- copyright */
 /*
  * aria2 - The high speed download utility
  *
@@ -30,6 +31,8 @@
  * version.  If you delete this exception statement from all source
  * files in the program, then also delete it here.
  */
+ /* copyright --> */
+ 
 #include "LpdMessageDispatcher.h"
 #include "SocketCore.h"
 #include "A2STR.h"
