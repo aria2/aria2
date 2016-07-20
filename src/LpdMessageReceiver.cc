@@ -31,8 +31,8 @@
  * version.  If you delete this exception statement from all source
  * files in the program, then also delete it here.
  */
- /* copyright --> */
- 
+/* copyright --> */
+
 #include "LpdMessageReceiver.h"
 #include "SocketCore.h"
 #include "Logger.h"

@@ -793,8 +793,7 @@ void RequestGroup::tryAutoFileRenaming()
       // if slash == idx - 1 this means a form of "*/.*", so the file name
       // starts with a dot, has no extension otherwise, and therefore do not
       // extract an extension either
-      (slash == std::string::npos || slash < idx - 1)
-      ) {
+      (slash == std::string::npos || slash < idx - 1)) {
     ext = fn.substr(idx);
     fn = fn.substr(0, idx);
   }

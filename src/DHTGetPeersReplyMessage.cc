@@ -92,7 +92,7 @@ std::unique_ptr<Dict> DHTGetPeersReplyMessage::getResponse()
       auto compactlen = bittorrent::packcompact(
           compact.data(), (*i)->getIPAddress(), (*i)->getPort());
       auto cclen =
-        static_cast<std::make_unsigned<decltype(clen)>::type>((clen));
+          static_cast<std::make_unsigned<decltype(clen)>::type>((clen));
       if (clen >= 0 && compactlen == cclen) {
         last = std::copy_n((*i)->getID(), DHT_ID_LENGTH, last);
         last = std::copy_n(std::begin(compact), compactlen, last);
@@ -134,7 +134,7 @@ std::unique_ptr<Dict> DHTGetPeersReplyMessage::getResponse()
       auto compactlen = bittorrent::packcompact(
           compact.data(), (*i)->getIPAddress(), (*i)->getPort());
       auto cclen =
-        static_cast<std::make_unsigned<decltype(clen)>::type>((clen));
+          static_cast<std::make_unsigned<decltype(clen)>::type>((clen));
       if (clen > 0 && compactlen == cclen) {
         valuesList->append(String::g(compact.data(), compactlen));
       }
