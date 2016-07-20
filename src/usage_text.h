@@ -175,7 +175,8 @@
     "                              exists. This option works only in http(s)/ftp\n" \
     "                              download.\n"                         \
     "                              The new file name has a dot and a number(1..9999)\n" \
-    "                              appended.")
+    "                              appended after the name, but before the file\n" \
+    "                              extension, if any.")
 #define TEXT_PARAMETERIZED_URI                                          \
   _(" -P, --parameterized-uri[=true|false] Enable parameterized URI support.\n" \
     "                              You can specify set of parts:\n"     \
