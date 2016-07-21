@@ -1,4 +1,5 @@
 language: cpp
+cache: ccache
 matrix:
   include:
     - os: linux
@@ -32,9 +33,10 @@ addons:
 before_install:
   - $CC --version
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install --force cppunit gettext openssl gnutls libgcrypt gmp nettle libssh2 c-ares sqlite3 ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew link --force cppunit gettext openssl gnutls libgcrypt gmp nettle libssh2 c-ares sqlite3 ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install --force cppunit gettext openssl gnutls libgcrypt gmp nettle libssh2 c-ares sqlite3 ccache ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew link --force cppunit gettext openssl gnutls libgcrypt gmp nettle libssh2 c-ares sqlite3 ccache ; fi
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
+  - if [ "$CXX" = "clang++" ]; then export CXX="$CXX -Qunused-arguments" CC="$CC -Qunused-arguments"; fi
   - $CC --version
 before_script:
   - autoreconf -i
@@ -43,4 +45,4 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./configure --without-openssl --without-gnutls --with-appletls --disable-nls ; fi
   - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then ./configure ; fi
 script:
-  - make check
+  - make CC="ccache $CC" CXX="ccache $CXX" check
