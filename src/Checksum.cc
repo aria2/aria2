@@ -44,7 +44,7 @@ Checksum::Checksum(std::string hashType, std::string digest)
 
 Checksum::Checksum() : hashType_("sha-1") {}
 
-Checksum::~Checksum() {}
+Checksum::~Checksum() = default;
 
 bool Checksum::isEmpty() const { return digest_.empty(); }
 

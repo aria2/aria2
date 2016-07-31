@@ -64,7 +64,7 @@ FtpFinishDownloadCommand::FtpFinishDownloadCommand(
 {
 }
 
-FtpFinishDownloadCommand::~FtpFinishDownloadCommand() {}
+FtpFinishDownloadCommand::~FtpFinishDownloadCommand() = default;
 
 // overrides AbstractCommand::execute().
 // AbstractCommand::_segments is empty.

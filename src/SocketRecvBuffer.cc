@@ -47,7 +47,7 @@ SocketRecvBuffer::SocketRecvBuffer(std::shared_ptr<SocketCore> socket)
 {
 }
 
-SocketRecvBuffer::~SocketRecvBuffer() {}
+SocketRecvBuffer::~SocketRecvBuffer() = default;
 
 ssize_t SocketRecvBuffer::recv()
 {

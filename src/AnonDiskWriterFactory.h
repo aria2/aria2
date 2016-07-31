@@ -45,8 +45,8 @@ namespace aria2 {
 template <class DiskWriterType>
 class AnonDiskWriterFactory : public DiskWriterFactory {
 public:
-  AnonDiskWriterFactory() {}
-  virtual ~AnonDiskWriterFactory() {}
+  AnonDiskWriterFactory() = default;
+  virtual ~AnonDiskWriterFactory() = default;
 
   virtual std::unique_ptr<DiskWriter>
   newDiskWriter(const std::string& filename) CXX11_OVERRIDE

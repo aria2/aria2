@@ -46,7 +46,7 @@ NetStat::NetStat()
 {
 }
 
-NetStat::~NetStat() {}
+NetStat::~NetStat() = default;
 
 /**
  * Returns current download speed in byte per sec.

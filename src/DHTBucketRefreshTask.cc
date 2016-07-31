@@ -49,7 +49,7 @@ namespace aria2 {
 
 DHTBucketRefreshTask::DHTBucketRefreshTask() : forceRefresh_(false) {}
 
-DHTBucketRefreshTask::~DHTBucketRefreshTask() {}
+DHTBucketRefreshTask::~DHTBucketRefreshTask() = default;
 
 void DHTBucketRefreshTask::startup()
 {

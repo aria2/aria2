@@ -55,7 +55,7 @@ PieceStatMan::PieceStatMan(size_t pieceNum, bool randomShuffle)
   }
 }
 
-PieceStatMan::~PieceStatMan() {}
+PieceStatMan::~PieceStatMan() = default;
 
 namespace {
 void inc(int& x)

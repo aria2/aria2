@@ -55,7 +55,7 @@ class WrDiskCache;
 
 class PieceStorage {
 public:
-  virtual ~PieceStorage() {}
+  virtual ~PieceStorage() = default;
 
 #ifdef ENABLE_BITTORRENT
   /**

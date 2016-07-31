@@ -50,7 +50,7 @@ DHTQueryMessage::DHTQueryMessage(const std::shared_ptr<DHTNode>& localNode,
 {
 }
 
-DHTQueryMessage::~DHTQueryMessage() {}
+DHTQueryMessage::~DHTQueryMessage() = default;
 
 const std::string& DHTQueryMessage::getType() const { return Q; }
 

@@ -51,7 +51,7 @@ HttpServerResponseCommand::HttpServerResponseCommand(
 {
 }
 
-HttpServerResponseCommand::~HttpServerResponseCommand() {}
+HttpServerResponseCommand::~HttpServerResponseCommand() = default;
 
 void HttpServerResponseCommand::afterSend(
     const std::shared_ptr<HttpServer>& httpServer, DownloadEngine* e)

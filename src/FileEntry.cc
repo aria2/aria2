@@ -88,7 +88,7 @@ FileEntry::FileEntry()
 {
 }
 
-FileEntry::~FileEntry() {}
+FileEntry::~FileEntry() = default;
 
 FileEntry& FileEntry::operator=(const FileEntry& entry)
 {

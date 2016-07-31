@@ -81,7 +81,7 @@
 
 namespace aria2 {
 
-DownloadEngineFactory::DownloadEngineFactory() {}
+DownloadEngineFactory::DownloadEngineFactory() = default;
 
 namespace {
 std::unique_ptr<EventPoll> createEventPoll(Option* op)

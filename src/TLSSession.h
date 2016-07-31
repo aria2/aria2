@@ -56,7 +56,7 @@ public:
   static TLSSession* make(TLSContext* ctx);
 
   // MUST deallocate all resources
-  virtual ~TLSSession() {}
+  virtual ~TLSSession() = default;
 
   // Initializes SSL/TLS session. The |sockfd| is the underlying
   // transport socket. This function returns TLS_ERR_OK if it
@@ -112,7 +112,7 @@ public:
   virtual size_t getRecvBufferedLength() = 0;
 
 protected:
-  TLSSession() {}
+  TLSSession() = default;
 
 private:
   TLSSession(const TLSSession&);

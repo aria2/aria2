@@ -54,6 +54,6 @@ DownloadResult::DownloadResult()
 {
 }
 
-DownloadResult::~DownloadResult() {}
+DownloadResult::~DownloadResult() = default;
 
 } // namespace aria2

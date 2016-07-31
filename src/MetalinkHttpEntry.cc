@@ -38,7 +38,7 @@ namespace aria2 {
 
 MetalinkHttpEntry::MetalinkHttpEntry() : pri(999999), pref(false) {}
 
-MetalinkHttpEntry::~MetalinkHttpEntry() {}
+MetalinkHttpEntry::~MetalinkHttpEntry() = default;
 
 void MetalinkHttpEntry::swap(MetalinkHttpEntry& other)
 {

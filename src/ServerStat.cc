@@ -61,7 +61,7 @@ ServerStat::ServerStat(const std::string& hostname, const std::string& protocol)
 {
 }
 
-ServerStat::~ServerStat() {}
+ServerStat::~ServerStat() = default;
 
 void ServerStat::setLastUpdated(const Time& time) { lastUpdated_ = time; }
 

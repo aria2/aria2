@@ -78,7 +78,7 @@ BtPieceMessage::BtPieceMessage(size_t index, int32_t begin, int32_t blockLength)
   setUploading(true);
 }
 
-BtPieceMessage::~BtPieceMessage() {}
+BtPieceMessage::~BtPieceMessage() = default;
 
 void BtPieceMessage::setMsgPayload(const unsigned char* data) { data_ = data; }
 

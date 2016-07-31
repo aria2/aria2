@@ -58,7 +58,7 @@ void encodeValue(const ValueBase* value, OutputStream& o)
   public:
     XmlValueBaseVisitor(OutputStream& o) : o_(o) {}
 
-    virtual ~XmlValueBaseVisitor() {}
+    virtual ~XmlValueBaseVisitor() = default;
 
     virtual void visit(const String& v) CXX11_OVERRIDE
     {

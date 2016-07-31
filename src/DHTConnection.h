@@ -43,7 +43,7 @@ namespace aria2 {
 
 class DHTConnection {
 public:
-  virtual ~DHTConnection() {}
+  virtual ~DHTConnection() = default;
 
   virtual ssize_t receiveMessage(unsigned char* data, size_t len,
                                  std::string& host, uint16_t& port) = 0;

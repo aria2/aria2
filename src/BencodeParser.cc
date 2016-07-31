@@ -72,7 +72,7 @@ BencodeParser::BencodeParser(StructParserStateMachine* psm)
   stateStack_.push(BENCODE_FINISH);
 }
 
-BencodeParser::~BencodeParser() {}
+BencodeParser::~BencodeParser() = default;
 
 ssize_t BencodeParser::parseUpdate(const char* data, size_t size)
 {

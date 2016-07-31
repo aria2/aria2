@@ -42,7 +42,7 @@
 namespace aria2 {
 class ExtensionMessage {
 public:
-  virtual ~ExtensionMessage() {}
+  virtual ~ExtensionMessage() = default;
 
   virtual std::string getPayload() = 0;
 

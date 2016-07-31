@@ -48,7 +48,7 @@ class WrDiskCache;
 
 class Segment {
 public:
-  virtual ~Segment() {}
+  virtual ~Segment() = default;
 
   virtual bool complete() const = 0;
 

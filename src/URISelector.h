@@ -47,7 +47,7 @@ class FileEntry;
 
 class URISelector {
 public:
-  virtual ~URISelector() {}
+  virtual ~URISelector() = default;
 
   virtual std::string
   select(FileEntry* fileEntry,

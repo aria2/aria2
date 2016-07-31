@@ -43,7 +43,7 @@ namespace aria2 {
 
 class BtMessageValidator {
 public:
-  virtual ~BtMessageValidator() {}
+  virtual ~BtMessageValidator() = default;
 
   // Throws RecoverableException on error.
   virtual void validate() = 0;

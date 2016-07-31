@@ -43,7 +43,7 @@ class DownloadEngine;
 
 class StatCalc {
 public:
-  virtual ~StatCalc() {}
+  virtual ~StatCalc() = default;
 
   virtual void calculateStat(const DownloadEngine* e) = 0;
 };

@@ -49,7 +49,7 @@ DHTTokenUpdateCommand::DHTTokenUpdateCommand(cuid_t cuid, DownloadEngine* e,
 {
 }
 
-DHTTokenUpdateCommand::~DHTTokenUpdateCommand() {}
+DHTTokenUpdateCommand::~DHTTokenUpdateCommand() = default;
 
 void DHTTokenUpdateCommand::preProcess()
 {

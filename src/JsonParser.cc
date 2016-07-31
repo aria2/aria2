@@ -91,7 +91,7 @@ JsonParser::JsonParser(StructParserStateMachine* psm)
   stateStack_.push(JSON_FINISH);
 }
 
-JsonParser::~JsonParser() {}
+JsonParser::~JsonParser() = default;
 
 namespace {
 bool isSpace(char c) { return util::isLws(c) || util::isCRLF(c); }

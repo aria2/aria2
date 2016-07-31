@@ -75,7 +75,7 @@ FtpInitiateConnectionCommand::FtpInitiateConnectionCommand(
 {
 }
 
-FtpInitiateConnectionCommand::~FtpInitiateConnectionCommand() {}
+FtpInitiateConnectionCommand::~FtpInitiateConnectionCommand() = default;
 
 std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandProxied(
     const std::string& hostname, const std::string& addr, uint16_t port,

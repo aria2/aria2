@@ -76,7 +76,7 @@ FtpConnection::FtpConnection(cuid_t cuid,
 {
 }
 
-FtpConnection::~FtpConnection() {}
+FtpConnection::~FtpConnection() = default;
 
 bool FtpConnection::sendUser()
 {

@@ -51,7 +51,7 @@ private:
 
 public:
   IOFile() {}
-  virtual ~IOFile() {}
+  virtual ~IOFile() = default;
   // Returns true if file is opened and ferror returns 0. Otherwise
   // returns false.
   operator unspecified_bool_type() const;

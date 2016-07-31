@@ -53,7 +53,7 @@ SocketBuffer::ByteArrayBufEntry::ByteArrayBufEntry(
 {
 }
 
-SocketBuffer::ByteArrayBufEntry::~ByteArrayBufEntry() {}
+SocketBuffer::ByteArrayBufEntry::~ByteArrayBufEntry() = default;
 
 ssize_t
 SocketBuffer::ByteArrayBufEntry::send(const std::shared_ptr<SocketCore>& socket,
@@ -107,7 +107,7 @@ SocketBuffer::SocketBuffer(std::shared_ptr<SocketCore> socket)
 {
 }
 
-SocketBuffer::~SocketBuffer() {}
+SocketBuffer::~SocketBuffer() = default;
 
 void SocketBuffer::pushBytes(std::vector<unsigned char> bytes,
                              std::unique_ptr<ProgressUpdate> progressUpdate)

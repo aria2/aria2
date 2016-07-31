@@ -42,7 +42,7 @@ InorderStreamPieceSelector::InorderStreamPieceSelector(BitfieldMan* bitfieldMan)
 {
 }
 
-InorderStreamPieceSelector::~InorderStreamPieceSelector() {}
+InorderStreamPieceSelector::~InorderStreamPieceSelector() = default;
 
 bool InorderStreamPieceSelector::select(size_t& index, size_t minSplitSize,
                                         const unsigned char* ignoreBitfield,

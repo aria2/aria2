@@ -100,7 +100,7 @@ FtpNegotiationCommand::FtpNegotiationCommand(
   setWriteCheckSocket(getSocket());
 }
 
-FtpNegotiationCommand::~FtpNegotiationCommand() {}
+FtpNegotiationCommand::~FtpNegotiationCommand() = default;
 
 bool FtpNegotiationCommand::executeInternal()
 {

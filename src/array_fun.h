@@ -52,7 +52,7 @@ private:
   T array_[N];
 
 public:
-  array_wrapper() {}
+  array_wrapper() = default;
 
   operator T*() { return array_; }
 

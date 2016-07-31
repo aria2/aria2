@@ -69,7 +69,7 @@ HttpDownloadCommand::HttpDownloadCommand(
 {
 }
 
-HttpDownloadCommand::~HttpDownloadCommand() {}
+HttpDownloadCommand::~HttpDownloadCommand() = default;
 
 bool HttpDownloadCommand::prepareForNextSegment()
 {

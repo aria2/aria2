@@ -56,7 +56,7 @@ BtBitfieldMessage::BtBitfieldMessage(const unsigned char* bitfield,
 {
 }
 
-BtBitfieldMessage::~BtBitfieldMessage() {}
+BtBitfieldMessage::~BtBitfieldMessage() = default;
 
 void BtBitfieldMessage::setBitfield(const unsigned char* bitfield,
                                     size_t bitfieldLength)

@@ -66,7 +66,7 @@ private:
   MessageDigestImpl& operator=(const MessageDigestImpl&) = delete;
 
 public:
-  virtual ~MessageDigestImpl() {}
+  virtual ~MessageDigestImpl() = default;
   static std::unique_ptr<MessageDigestImpl> sha1();
 
   inline static std::unique_ptr<MessageDigestImpl>
@@ -101,7 +101,7 @@ public:
   virtual void digest(unsigned char* md) = 0;
 
 protected:
-  MessageDigestImpl() {}
+  MessageDigestImpl() = default;
 };
 
 } // namespace aria2

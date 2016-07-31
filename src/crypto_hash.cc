@@ -98,7 +98,7 @@ protected:
   }
 
 public:
-  AlgorithmImpl() {}
+  AlgorithmImpl() = default;
 
   virtual void update(const void* data, uint64_t len)
   {

@@ -44,6 +44,6 @@ MetalinkResource::MetalinkResource()
 {
 }
 
-MetalinkResource::~MetalinkResource() {}
+MetalinkResource::~MetalinkResource() = default;
 
 } // namespace aria2

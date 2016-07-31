@@ -65,7 +65,7 @@ DHTAutoSaveCommand::DHTAutoSaveCommand(cuid_t cuid, DownloadEngine* e,
 {
 }
 
-DHTAutoSaveCommand::~DHTAutoSaveCommand() {}
+DHTAutoSaveCommand::~DHTAutoSaveCommand() = default;
 
 void DHTAutoSaveCommand::preProcess()
 {

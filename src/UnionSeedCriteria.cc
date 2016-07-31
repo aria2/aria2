@@ -39,7 +39,7 @@
 namespace aria2 {
 
 UnionSeedCriteria::UnionSeedCriteria() {}
-UnionSeedCriteria::~UnionSeedCriteria() {}
+UnionSeedCriteria::~UnionSeedCriteria() = default;
 
 void UnionSeedCriteria::reset()
 {

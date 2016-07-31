@@ -59,7 +59,7 @@ BtDependency::BtDependency(RequestGroup* dependant,
 {
 }
 
-BtDependency::~BtDependency() {}
+BtDependency::~BtDependency() = default;
 
 namespace {
 void copyValues(const std::shared_ptr<FileEntry>& d,

@@ -46,7 +46,7 @@ class AuthConfig;
 
 class AuthResolver {
 public:
-  virtual ~AuthResolver() {}
+  virtual ~AuthResolver() = default;
 
   virtual std::unique_ptr<AuthConfig>
   resolveAuthConfig(const std::string& hostname) = 0;

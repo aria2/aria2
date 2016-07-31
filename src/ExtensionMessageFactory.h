@@ -45,7 +45,7 @@ class ExtensionMessage;
 
 class ExtensionMessageFactory {
 public:
-  virtual ~ExtensionMessageFactory() {}
+  virtual ~ExtensionMessageFactory() = default;
 
   virtual std::unique_ptr<ExtensionMessage>
   createMessage(const unsigned char* data, size_t length) = 0;

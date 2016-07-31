@@ -52,7 +52,7 @@ namespace aria2 {
 
 template <typename SocketEntry> class Event {
 public:
-  virtual ~Event() {}
+  virtual ~Event() = default;
 
   virtual void processEvents(int events) = 0;
 

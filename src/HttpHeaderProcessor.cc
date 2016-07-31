@@ -83,7 +83,7 @@ HttpHeaderProcessor::HttpHeaderProcessor(ParserMode mode)
 {
 }
 
-HttpHeaderProcessor::~HttpHeaderProcessor() {}
+HttpHeaderProcessor::~HttpHeaderProcessor() = default;
 
 namespace {
 size_t getToken(std::string& buf, const unsigned char* data, size_t length,

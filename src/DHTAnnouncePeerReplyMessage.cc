@@ -48,7 +48,7 @@ DHTAnnouncePeerReplyMessage::DHTAnnouncePeerReplyMessage(
 {
 }
 
-DHTAnnouncePeerReplyMessage::~DHTAnnouncePeerReplyMessage() {}
+DHTAnnouncePeerReplyMessage::~DHTAnnouncePeerReplyMessage() = default;
 
 void DHTAnnouncePeerReplyMessage::doReceivedAction() {}
 

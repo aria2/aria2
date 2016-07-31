@@ -60,7 +60,7 @@ MetalinkParserController::MetalinkParserController()
 {
 }
 
-MetalinkParserController::~MetalinkParserController() {}
+MetalinkParserController::~MetalinkParserController() = default;
 
 void MetalinkParserController::reset()
 {

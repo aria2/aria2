@@ -38,7 +38,7 @@ namespace aria2 {
 
 ARC4Encryptor::ARC4Encryptor() {}
 
-ARC4Encryptor::~ARC4Encryptor() {}
+ARC4Encryptor::~ARC4Encryptor() = default;
 
 void ARC4Encryptor::init(const unsigned char* key, size_t keyLength)
 {

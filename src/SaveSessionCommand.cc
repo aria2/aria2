@@ -49,7 +49,7 @@ SaveSessionCommand::SaveSessionCommand(cuid_t cuid, DownloadEngine* e,
 {
 }
 
-SaveSessionCommand::~SaveSessionCommand() {}
+SaveSessionCommand::~SaveSessionCommand() = default;
 
 void SaveSessionCommand::preProcess()
 {

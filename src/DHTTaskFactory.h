@@ -49,7 +49,7 @@ class DHTBucket;
 
 class DHTTaskFactory {
 public:
-  virtual ~DHTTaskFactory() {}
+  virtual ~DHTTaskFactory() = default;
 
   virtual std::shared_ptr<DHTTask>
   createPingTask(const std::shared_ptr<DHTNode>& remoteNode,

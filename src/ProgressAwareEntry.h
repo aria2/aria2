@@ -44,7 +44,7 @@ namespace aria2 {
 
 class ProgressAwareEntry {
 public:
-  virtual ~ProgressAwareEntry() {}
+  virtual ~ProgressAwareEntry() = default;
 
   virtual int64_t getCurrentLength() = 0;
 

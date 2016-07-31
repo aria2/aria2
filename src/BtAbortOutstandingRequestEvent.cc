@@ -43,6 +43,6 @@ BtAbortOutstandingRequestEvent::BtAbortOutstandingRequestEvent(
 {
 }
 
-BtAbortOutstandingRequestEvent::~BtAbortOutstandingRequestEvent() {}
+BtAbortOutstandingRequestEvent::~BtAbortOutstandingRequestEvent() = default;
 
 } // namespace aria2

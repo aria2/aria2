@@ -51,7 +51,7 @@ namespace aria2 {
  */
 class IteratableValidator {
 public:
-  virtual ~IteratableValidator() {}
+  virtual ~IteratableValidator() = default;
 
   virtual void init() = 0;
 

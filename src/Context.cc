@@ -314,6 +314,6 @@ Context::Context(bool standalone, int argc, char** argv, const KeyVals& options)
   }
 }
 
-Context::~Context() {}
+Context::~Context() = default;
 
 } // namespace aria2

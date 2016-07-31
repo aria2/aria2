@@ -57,7 +57,7 @@ DHTBucketTreeNode::DHTBucketTreeNode(std::shared_ptr<DHTBucket> bucket)
   memcpy(maxId_, bucket_->getMaxID(), DHT_ID_LENGTH);
 }
 
-DHTBucketTreeNode::~DHTBucketTreeNode() {}
+DHTBucketTreeNode::~DHTBucketTreeNode() = default;
 
 void DHTBucketTreeNode::resetRelation()
 {

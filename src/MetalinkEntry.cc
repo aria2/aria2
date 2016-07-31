@@ -50,7 +50,7 @@ namespace aria2 {
 
 MetalinkEntry::MetalinkEntry() : sizeKnown(false), maxConnections(-1) {}
 
-MetalinkEntry::~MetalinkEntry() {}
+MetalinkEntry::~MetalinkEntry() = default;
 
 const std::string& MetalinkEntry::getPath() const { return file->getPath(); }
 

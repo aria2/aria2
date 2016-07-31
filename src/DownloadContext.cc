@@ -72,7 +72,7 @@ DownloadContext::DownloadContext(int32_t pieceLength, int64_t totalLength,
       std::make_shared<FileEntry>(std::move(path), totalLength, 0));
 }
 
-DownloadContext::~DownloadContext() {}
+DownloadContext::~DownloadContext() = default;
 
 void DownloadContext::resetDownloadStartTime()
 {

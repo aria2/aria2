@@ -50,7 +50,7 @@ protected:
   virtual std::string format(int64_t size) const = 0;
 
 public:
-  virtual ~SizeFormatter() {}
+  virtual ~SizeFormatter() = default;
 
   std::string operator()(int64_t size) const;
 };
@@ -73,7 +73,7 @@ public:
   ConsoleStatCalc(std::chrono::seconds summaryInterval, bool colorOutput = true,
                   bool humanReadable = true);
 
-  virtual ~ConsoleStatCalc() {}
+  virtual ~ConsoleStatCalc() = default;
 
   virtual void calculateStat(const DownloadEngine* e) CXX11_OVERRIDE;
 

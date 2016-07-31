@@ -56,9 +56,9 @@ namespace aria2 {
 
 File::File(const std::string& name) : name_(name) {}
 
-File::File(const File& c) : name_(c.name_) {}
+File::File(const File& c) = default;
 
-File::~File() {}
+File::~File() = default;
 
 File& File::operator=(const File& c)
 {

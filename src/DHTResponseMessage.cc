@@ -49,7 +49,7 @@ DHTResponseMessage::DHTResponseMessage(
 {
 }
 
-DHTResponseMessage::~DHTResponseMessage() {}
+DHTResponseMessage::~DHTResponseMessage() = default;
 
 const std::string& DHTResponseMessage::getType() const { return R; }
 

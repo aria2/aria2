@@ -54,7 +54,7 @@ const std::string AUTH_DEFAULT_PASSWD("ARIA2USER@");
 
 AuthConfigFactory::AuthConfigFactory() {}
 
-AuthConfigFactory::~AuthConfigFactory() {}
+AuthConfigFactory::~AuthConfigFactory() = default;
 
 std::unique_ptr<AuthConfig>
 AuthConfigFactory::createAuthConfig(const std::shared_ptr<Request>& request,

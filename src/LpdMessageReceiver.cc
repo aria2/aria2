@@ -53,7 +53,7 @@ LpdMessageReceiver::LpdMessageReceiver(const std::string& multicastAddress,
 {
 }
 
-LpdMessageReceiver::~LpdMessageReceiver() {}
+LpdMessageReceiver::~LpdMessageReceiver() = default;
 
 bool LpdMessageReceiver::init(const std::string& localAddr)
 {

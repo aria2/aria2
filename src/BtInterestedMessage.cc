@@ -46,7 +46,7 @@ BtInterestedMessage::BtInterestedMessage()
 {
 }
 
-BtInterestedMessage::~BtInterestedMessage() {}
+BtInterestedMessage::~BtInterestedMessage() = default;
 
 std::unique_ptr<BtInterestedMessage>
 BtInterestedMessage::create(const unsigned char* data, size_t dataLength)

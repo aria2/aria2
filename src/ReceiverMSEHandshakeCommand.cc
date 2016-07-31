@@ -67,7 +67,7 @@ ReceiverMSEHandshakeCommand::ReceiverMSEHandshakeCommand(
   mseHandshake_->setWantRead(true);
 }
 
-ReceiverMSEHandshakeCommand::~ReceiverMSEHandshakeCommand() {}
+ReceiverMSEHandshakeCommand::~ReceiverMSEHandshakeCommand() = default;
 
 bool ReceiverMSEHandshakeCommand::exitBeforeExecute()
 {

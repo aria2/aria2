@@ -109,7 +109,7 @@ DefaultBtInteractive::DefaultBtInteractive(
 {
 }
 
-DefaultBtInteractive::~DefaultBtInteractive() {}
+DefaultBtInteractive::~DefaultBtInteractive() = default;
 
 void DefaultBtInteractive::initiateHandshake()
 {

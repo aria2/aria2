@@ -64,7 +64,7 @@ PeerSessionResource::PeerSessionResource(int32_t pieceLength,
 {
 }
 
-PeerSessionResource::~PeerSessionResource() {}
+PeerSessionResource::~PeerSessionResource() = default;
 
 void PeerSessionResource::amChoking(bool b)
 {

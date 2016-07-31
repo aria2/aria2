@@ -41,7 +41,7 @@ Sqlite3MozCookieParser::Sqlite3MozCookieParser(const std::string& filename)
 {
 }
 
-Sqlite3MozCookieParser::~Sqlite3MozCookieParser() {}
+Sqlite3MozCookieParser::~Sqlite3MozCookieParser() = default;
 
 const char* Sqlite3MozCookieParser::getQuery() const
 {
@@ -55,7 +55,7 @@ Sqlite3ChromiumCookieParser::Sqlite3ChromiumCookieParser(
 {
 }
 
-Sqlite3ChromiumCookieParser::~Sqlite3ChromiumCookieParser() {}
+Sqlite3ChromiumCookieParser::~Sqlite3ChromiumCookieParser() = default;
 
 const char* Sqlite3ChromiumCookieParser::getQuery() const
 {

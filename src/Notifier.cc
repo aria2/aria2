@@ -40,7 +40,7 @@ namespace aria2 {
 
 Notifier::Notifier() {}
 
-Notifier::~Notifier() {}
+Notifier::~Notifier() = default;
 
 void Notifier::addDownloadEventListener(DownloadEventListener* listener)
 {

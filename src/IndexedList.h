@@ -63,7 +63,7 @@ struct IndexedListIterator {
   typedef typename SeqType::difference_type difference_type;
   typedef IndexedListIterator SelfType;
 
-  IndexedListIterator() {}
+  IndexedListIterator() = default;
   IndexedListIterator(const iterator& other) : p(other.p) {}
   IndexedListIterator(const SeqIteratorType& p) : p(p) {}
 
@@ -305,8 +305,8 @@ operator-(const IndexedListIterator<SeqType, ValueType, ReferenceTypeL,
 
 template <typename KeyType, typename ValuePtrType> class IndexedList {
 public:
-  IndexedList() {}
-  ~IndexedList() {}
+  IndexedList() = default;
+  ~IndexedList() = default;
 
   typedef KeyType key_type;
   typedef ValuePtrType value_type;

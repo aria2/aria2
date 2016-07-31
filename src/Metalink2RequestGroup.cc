@@ -69,7 +69,7 @@
 
 namespace aria2 {
 
-Metalink2RequestGroup::Metalink2RequestGroup() {}
+Metalink2RequestGroup::Metalink2RequestGroup() = default;
 
 namespace {
 class AccumulateNonP2PUri {
@@ -97,7 +97,7 @@ public:
 namespace {
 class FindBitTorrentUri {
 public:
-  FindBitTorrentUri() {}
+  FindBitTorrentUri() = default;
 
   bool operator()(const std::shared_ptr<MetalinkResource>& resource)
   {

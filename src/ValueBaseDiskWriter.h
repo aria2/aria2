@@ -48,7 +48,7 @@ template <class ValueBaseParser> class ValueBaseDiskWriter : public DiskWriter {
 public:
   ValueBaseDiskWriter() : parser_(&psm_) {}
 
-  virtual ~ValueBaseDiskWriter() {}
+  virtual ~ValueBaseDiskWriter() = default;
 
   virtual void initAndOpenFile(int64_t totalLength = 0) CXX11_OVERRIDE
   {

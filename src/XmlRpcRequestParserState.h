@@ -50,7 +50,7 @@ class XmlRpcRequestParserStateMachine;
 
 class XmlRpcRequestParserState {
 public:
-  virtual ~XmlRpcRequestParserState() {}
+  virtual ~XmlRpcRequestParserState() = default;
 
   virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,

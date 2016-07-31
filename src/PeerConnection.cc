@@ -81,7 +81,7 @@ PeerConnection::PeerConnection(cuid_t cuid, const std::shared_ptr<Peer>& peer,
 {
 }
 
-PeerConnection::~PeerConnection() {}
+PeerConnection::~PeerConnection() = default;
 
 void PeerConnection::pushBytes(std::vector<unsigned char> data,
                                std::unique_ptr<ProgressUpdate> progressUpdate)

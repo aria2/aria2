@@ -58,7 +58,7 @@ DHTMessage::DHTMessage(const std::shared_ptr<DHTNode>& localNode,
   }
 }
 
-DHTMessage::~DHTMessage() {}
+DHTMessage::~DHTMessage() = default;
 
 void DHTMessage::generateTransactionID()
 {

@@ -56,7 +56,7 @@ DHTReplaceNodeTask::DHTReplaceNodeTask(const std::shared_ptr<DHTBucket>& bucket,
 {
 }
 
-DHTReplaceNodeTask::~DHTReplaceNodeTask() {}
+DHTReplaceNodeTask::~DHTReplaceNodeTask() = default;
 
 void DHTReplaceNodeTask::startup() { sendMessage(); }
 

@@ -74,7 +74,7 @@ ChunkedDecodingStreamFilter::ChunkedDecodingStreamFilter(
 {
 }
 
-ChunkedDecodingStreamFilter::~ChunkedDecodingStreamFilter() {}
+ChunkedDecodingStreamFilter::~ChunkedDecodingStreamFilter() = default;
 
 void ChunkedDecodingStreamFilter::init() {}
 

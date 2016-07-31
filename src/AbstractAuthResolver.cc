@@ -40,7 +40,7 @@ namespace aria2 {
 
 AbstractAuthResolver::AbstractAuthResolver() {}
 
-AbstractAuthResolver::~AbstractAuthResolver() {}
+AbstractAuthResolver::~AbstractAuthResolver() = default;
 
 void AbstractAuthResolver::setUserDefinedCred(std::string user,
                                               std::string password)

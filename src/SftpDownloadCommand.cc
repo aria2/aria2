@@ -58,7 +58,7 @@ SftpDownloadCommand::SftpDownloadCommand(
   setWriteCheckSocket(getSocket());
 }
 
-SftpDownloadCommand::~SftpDownloadCommand() {}
+SftpDownloadCommand::~SftpDownloadCommand() = default;
 
 bool SftpDownloadCommand::prepareForNextSegment()
 {

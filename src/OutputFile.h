@@ -47,7 +47,7 @@ namespace aria2 {
 
 class OutputFile {
 public:
-  virtual ~OutputFile() {}
+  virtual ~OutputFile() = default;
   virtual size_t write(const char* str) = 0;
   virtual int flush() = 0;
   virtual int vprintf(const char* format, va_list va) = 0;

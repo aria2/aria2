@@ -44,7 +44,7 @@ IndexBtMessageValidator::IndexBtMessageValidator(const IndexBtMessage* message,
 {
 }
 
-IndexBtMessageValidator::~IndexBtMessageValidator() {}
+IndexBtMessageValidator::~IndexBtMessageValidator() = default;
 
 void IndexBtMessageValidator::validate()
 {

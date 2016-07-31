@@ -68,7 +68,7 @@ MessageDigest::MessageDigest(std::unique_ptr<MessageDigestImpl> impl)
 {
 }
 
-MessageDigest::~MessageDigest() {}
+MessageDigest::~MessageDigest() = default;
 
 std::unique_ptr<MessageDigest> MessageDigest::sha1()
 {

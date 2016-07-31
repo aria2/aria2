@@ -88,7 +88,7 @@ SftpNegotiationCommand::SftpNegotiationCommand(
   }
 }
 
-SftpNegotiationCommand::~SftpNegotiationCommand() {}
+SftpNegotiationCommand::~SftpNegotiationCommand() = default;
 
 bool SftpNegotiationCommand::executeInternal()
 {

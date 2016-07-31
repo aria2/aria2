@@ -43,7 +43,7 @@ ApiCallbackDownloadEventListener::ApiCallbackDownloadEventListener(
 {
 }
 
-ApiCallbackDownloadEventListener::~ApiCallbackDownloadEventListener() {}
+ApiCallbackDownloadEventListener::~ApiCallbackDownloadEventListener() = default;
 
 void ApiCallbackDownloadEventListener::onEvent(DownloadEvent event,
                                                const RequestGroup* group)

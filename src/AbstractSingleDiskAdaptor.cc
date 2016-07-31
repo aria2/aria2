@@ -51,7 +51,7 @@ AbstractSingleDiskAdaptor::AbstractSingleDiskAdaptor()
 {
 }
 
-AbstractSingleDiskAdaptor::~AbstractSingleDiskAdaptor() {}
+AbstractSingleDiskAdaptor::~AbstractSingleDiskAdaptor() = default;
 
 void AbstractSingleDiskAdaptor::initAndOpenFile()
 {

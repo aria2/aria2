@@ -161,7 +161,7 @@ RequestGroup::RequestGroup(const std::shared_ptr<GroupId>& gid,
   }
 }
 
-RequestGroup::~RequestGroup() {}
+RequestGroup::~RequestGroup() = default;
 
 bool RequestGroup::isCheckIntegrityReady()
 {

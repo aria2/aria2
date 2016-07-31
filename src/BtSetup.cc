@@ -88,7 +88,7 @@
 
 namespace aria2 {
 
-BtSetup::BtSetup() {}
+BtSetup::BtSetup() = default;
 
 void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
                     RequestGroup* requestGroup, DownloadEngine* e,

@@ -45,7 +45,7 @@ BtPieceMessageValidator::BtPieceMessageValidator(const BtPieceMessage* message,
 {
 }
 
-BtPieceMessageValidator::~BtPieceMessageValidator() {}
+BtPieceMessageValidator::~BtPieceMessageValidator() = default;
 
 void BtPieceMessageValidator::validate()
 {

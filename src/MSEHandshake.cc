@@ -92,7 +92,7 @@ MSEHandshake::MSEHandshake(cuid_t cuid,
 {
 }
 
-MSEHandshake::~MSEHandshake() {}
+MSEHandshake::~MSEHandshake() = default;
 
 MSEHandshake::HANDSHAKE_TYPE MSEHandshake::identifyHandshakeType()
 {

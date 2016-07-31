@@ -47,7 +47,7 @@ PieceHashCheckIntegrityEntry::PieceHashCheckIntegrityEntry(
 {
 }
 
-PieceHashCheckIntegrityEntry::~PieceHashCheckIntegrityEntry() {}
+PieceHashCheckIntegrityEntry::~PieceHashCheckIntegrityEntry() = default;
 
 bool PieceHashCheckIntegrityEntry::isValidationReady()
 {

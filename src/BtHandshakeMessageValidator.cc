@@ -50,7 +50,7 @@ BtHandshakeMessageValidator::BtHandshakeMessageValidator(
   memcpy(infoHash_, infoHash, sizeof(infoHash_));
 }
 
-BtHandshakeMessageValidator::~BtHandshakeMessageValidator() {}
+BtHandshakeMessageValidator::~BtHandshakeMessageValidator() = default;
 
 void BtHandshakeMessageValidator::validate()
 {

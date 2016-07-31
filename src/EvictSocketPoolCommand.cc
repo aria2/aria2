@@ -44,7 +44,7 @@ EvictSocketPoolCommand::EvictSocketPoolCommand(cuid_t cuid, DownloadEngine* e,
 {
 }
 
-EvictSocketPoolCommand::~EvictSocketPoolCommand() {}
+EvictSocketPoolCommand::~EvictSocketPoolCommand() = default;
 
 void EvictSocketPoolCommand::preProcess()
 {

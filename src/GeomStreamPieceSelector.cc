@@ -43,7 +43,7 @@ GeomStreamPieceSelector::GeomStreamPieceSelector(BitfieldMan* bitfieldMan,
 {
 }
 
-GeomStreamPieceSelector::~GeomStreamPieceSelector() {}
+GeomStreamPieceSelector::~GeomStreamPieceSelector() = default;
 
 bool GeomStreamPieceSelector::select(size_t& index, size_t minSplitSize,
                                      const unsigned char* ignoreBitfield,

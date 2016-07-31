@@ -43,7 +43,7 @@ namespace aria2 {
 
 HttpHeader::HttpHeader() : statusCode_(0) {}
 
-HttpHeader::~HttpHeader() {}
+HttpHeader::~HttpHeader() = default;
 
 void HttpHeader::put(int hdKey, const std::string& value)
 {

@@ -63,7 +63,7 @@ class Peer;
 
 class DHTMessageFactory {
 public:
-  virtual ~DHTMessageFactory() {}
+  virtual ~DHTMessageFactory() = default;
 
   virtual std::unique_ptr<DHTQueryMessage>
   createQueryMessage(const Dict* dict, const std::string& ipaddr,

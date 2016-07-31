@@ -46,20 +46,9 @@ UriStruct::UriStruct() : port(0), hasPassword(false), ipv6LiteralAddress(false)
 }
 
 UriStruct::UriStruct(const UriStruct& c)
-    : protocol(c.protocol),
-      host(c.host),
-      dir(c.dir),
-      file(c.file),
-      query(c.query),
-      username(c.username),
-      password(c.password),
-      port(c.port),
-      hasPassword(c.hasPassword),
-      ipv6LiteralAddress(c.ipv6LiteralAddress)
-{
-}
+    = default;
 
-UriStruct::~UriStruct() {}
+UriStruct::~UriStruct() = default;
 
 UriStruct& UriStruct::operator=(const UriStruct& c)
 {

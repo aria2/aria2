@@ -52,7 +52,7 @@ DHTConnectionImpl::DHTConnectionImpl(int family)
 {
 }
 
-DHTConnectionImpl::~DHTConnectionImpl() {}
+DHTConnectionImpl::~DHTConnectionImpl() = default;
 
 bool DHTConnectionImpl::bind(uint16_t& port, const std::string& addr,
                              SegList<int>& sgl)

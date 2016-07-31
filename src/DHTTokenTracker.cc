@@ -58,7 +58,7 @@ DHTTokenTracker::DHTTokenTracker(const unsigned char* initialSecret)
   memcpy(secret_[1], initialSecret, SECRET_SIZE);
 }
 
-DHTTokenTracker::~DHTTokenTracker() {}
+DHTTokenTracker::~DHTTokenTracker() = default;
 
 std::string DHTTokenTracker::generateToken(const unsigned char* infoHash,
                                            const std::string& ipaddr,

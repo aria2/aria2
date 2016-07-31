@@ -47,7 +47,7 @@ struct XmlAttr;
 
 class MetalinkParserState {
 public:
-  virtual ~MetalinkParserState() {}
+  virtual ~MetalinkParserState() = default;
 
   virtual void beginElement(MetalinkParserStateMachine* stm,
                             const char* localname, const char* prefix,

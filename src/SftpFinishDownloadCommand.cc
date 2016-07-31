@@ -61,7 +61,7 @@ SftpFinishDownloadCommand::SftpFinishDownloadCommand(
   setWriteCheckSocket(getSocket());
 }
 
-SftpFinishDownloadCommand::~SftpFinishDownloadCommand() {}
+SftpFinishDownloadCommand::~SftpFinishDownloadCommand() = default;
 
 // overrides AbstractCommand::execute().
 // AbstractCommand::_segments is empty.

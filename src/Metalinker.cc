@@ -41,7 +41,7 @@ namespace aria2 {
 
 Metalinker::Metalinker() {}
 
-Metalinker::~Metalinker() {}
+Metalinker::~Metalinker() = default;
 
 std::vector<std::unique_ptr<MetalinkEntry>>
 Metalinker::queryEntry(const std::string& version, const std::string& language,

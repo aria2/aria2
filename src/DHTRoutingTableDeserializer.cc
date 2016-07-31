@@ -58,7 +58,7 @@ DHTRoutingTableDeserializer::DHTRoutingTableDeserializer(int family)
 {
 }
 
-DHTRoutingTableDeserializer::~DHTRoutingTableDeserializer() {}
+DHTRoutingTableDeserializer::~DHTRoutingTableDeserializer() = default;
 
 #define READ_CHECK(fp, ptr, count)                                             \
   if (fp.read((ptr), (count)) != (count)) {                                    \

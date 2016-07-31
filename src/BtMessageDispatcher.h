@@ -49,7 +49,7 @@ class BtMessage;
 
 class BtMessageDispatcher {
 public:
-  virtual ~BtMessageDispatcher() {}
+  virtual ~BtMessageDispatcher() = default;
 
   virtual void addMessageToQueue(std::unique_ptr<BtMessage> btMessage) = 0;
 

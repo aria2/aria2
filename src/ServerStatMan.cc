@@ -54,7 +54,7 @@ namespace aria2 {
 
 ServerStatMan::ServerStatMan() {}
 
-ServerStatMan::~ServerStatMan() {}
+ServerStatMan::~ServerStatMan() = default;
 
 std::shared_ptr<ServerStat>
 ServerStatMan::find(const std::string& hostname,

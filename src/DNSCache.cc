@@ -43,11 +43,9 @@ DNSCache::AddrEntry::AddrEntry(const std::string& addr)
 }
 
 DNSCache::AddrEntry::AddrEntry(const AddrEntry& c)
-    : addr_(c.addr_), good_(c.good_)
-{
-}
+    = default;
 
-DNSCache::AddrEntry::~AddrEntry() {}
+DNSCache::AddrEntry::~AddrEntry() = default;
 
 DNSCache::AddrEntry& DNSCache::AddrEntry::operator=(const AddrEntry& c)
 {
@@ -64,11 +62,9 @@ DNSCache::CacheEntry::CacheEntry(const std::string& hostname, uint16_t port)
 }
 
 DNSCache::CacheEntry::CacheEntry(const CacheEntry& c)
-    : hostname_(c.hostname_), port_(c.port_), addrEntries_(c.addrEntries_)
-{
-}
+    = default;
 
-DNSCache::CacheEntry::~CacheEntry() {}
+DNSCache::CacheEntry::~CacheEntry() = default;
 
 DNSCache::CacheEntry& DNSCache::CacheEntry::operator=(const CacheEntry& c)
 {
@@ -154,9 +150,9 @@ bool DNSCache::CacheEntry::operator==(const CacheEntry& e) const
 
 DNSCache::DNSCache() {}
 
-DNSCache::DNSCache(const DNSCache& c) : entries_(c.entries_) {}
+DNSCache::DNSCache(const DNSCache& c) = default;
 
-DNSCache::~DNSCache() {}
+DNSCache::~DNSCache() = default;
 
 DNSCache& DNSCache::operator=(const DNSCache& c)
 {

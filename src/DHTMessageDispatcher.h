@@ -48,7 +48,7 @@ class DHTMessage;
 
 class DHTMessageDispatcher {
 public:
-  virtual ~DHTMessageDispatcher() {}
+  virtual ~DHTMessageDispatcher() = default;
 
   virtual void
   addMessageToQueue(std::unique_ptr<DHTMessage> message,

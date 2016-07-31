@@ -54,7 +54,7 @@ typedef std::set<std::shared_ptr<Peer>, RefLess<Peer>> PeerSet;
 
 class PeerStorage {
 public:
-  virtual ~PeerStorage() {}
+  virtual ~PeerStorage() = default;
 
   /**
    * Adds new peer to the internal peer list.

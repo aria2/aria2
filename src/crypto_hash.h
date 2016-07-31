@@ -27,9 +27,9 @@ enum Algorithms {
 
 class Algorithm {
 public:
-  Algorithm() {}
+  Algorithm() = default;
 
-  virtual ~Algorithm() {}
+  virtual ~Algorithm() = default;
 
   virtual void update(const void* data, uint64_t len) = 0;
 

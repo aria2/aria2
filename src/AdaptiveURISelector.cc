@@ -72,7 +72,7 @@ AdaptiveURISelector::AdaptiveURISelector(
   resetCounters();
 }
 
-AdaptiveURISelector::~AdaptiveURISelector() {}
+AdaptiveURISelector::~AdaptiveURISelector() = default;
 
 std::string AdaptiveURISelector::select(
     FileEntry* fileEntry,

@@ -51,6 +51,6 @@ MetalinkMetaurl::MetalinkMetaurl(const std::string& url,
 {
 }
 
-MetalinkMetaurl::~MetalinkMetaurl() {}
+MetalinkMetaurl::~MetalinkMetaurl() = default;
 
 } // namespace aria2

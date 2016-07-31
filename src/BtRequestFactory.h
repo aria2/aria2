@@ -47,7 +47,7 @@ class BtRequestMessage;
 
 class BtRequestFactory {
 public:
-  virtual ~BtRequestFactory() {}
+  virtual ~BtRequestFactory() = default;
 
   virtual void addTargetPiece(const std::shared_ptr<Piece>& piece) = 0;
 

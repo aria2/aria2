@@ -43,7 +43,7 @@ namespace aria2 {
 
 class BinaryStream {
 public:
-  virtual ~BinaryStream() {}
+  virtual ~BinaryStream() = default;
 
   virtual void writeData(const unsigned char* data, size_t len,
                          int64_t offset) = 0;

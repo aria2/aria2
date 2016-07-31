@@ -150,7 +150,7 @@ void executeCommand(std::deque<std::unique_ptr<Command>>& commands,
 namespace {
 class GlobalHaltRequestedFinalizer {
 public:
-  GlobalHaltRequestedFinalizer() {}
+  GlobalHaltRequestedFinalizer() = default;
   ~GlobalHaltRequestedFinalizer() { global::globalHaltRequested = 5; }
 };
 } // namespace
@@ -519,7 +519,7 @@ DownloadEngine::SocketPoolEntry::SocketPoolEntry(
 {
 }
 
-DownloadEngine::SocketPoolEntry::~SocketPoolEntry() {}
+DownloadEngine::SocketPoolEntry::~SocketPoolEntry() = default;
 
 bool DownloadEngine::SocketPoolEntry::isTimeout() const
 {

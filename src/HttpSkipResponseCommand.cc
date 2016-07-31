@@ -81,7 +81,7 @@ HttpSkipResponseCommand::HttpSkipResponseCommand(
   checkSocketRecvBuffer();
 }
 
-HttpSkipResponseCommand::~HttpSkipResponseCommand() {}
+HttpSkipResponseCommand::~HttpSkipResponseCommand() = default;
 
 void HttpSkipResponseCommand::installStreamFilter(
     std::unique_ptr<StreamFilter> streamFilter)

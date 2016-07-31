@@ -55,7 +55,7 @@ BtHandshakeMessage::BtHandshakeMessage(const unsigned char* infoHash,
   std::copy_n(peerId, peerId_.size(), std::begin(peerId_));
 }
 
-BtHandshakeMessage::~BtHandshakeMessage() {}
+BtHandshakeMessage::~BtHandshakeMessage() = default;
 
 void BtHandshakeMessage::init()
 {

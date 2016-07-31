@@ -45,10 +45,10 @@ template <typename T> class SingletonHolder {
 private:
   static std::unique_ptr<T> instance_;
 
-  SingletonHolder() {}
+  SingletonHolder() = default;
 
 public:
-  ~SingletonHolder() {}
+  ~SingletonHolder() = default;
 
   static std::unique_ptr<T>& instance() { return instance_; }
 

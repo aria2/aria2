@@ -48,7 +48,7 @@ template <size_t dlen, typename ctx_t, int (*init_fn)(ctx_t*),
 class MessageDigestBase : public MessageDigestImpl {
 public:
   MessageDigestBase() { reset(); }
-  virtual ~MessageDigestBase() {}
+  virtual ~MessageDigestBase() = default;
 
   static size_t length() { return dlen; }
   virtual size_t getDigestLength() const CXX11_OVERRIDE { return dlen; }

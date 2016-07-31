@@ -58,7 +58,7 @@ public:
     EVENT_HUP = 1 << 3,
   };
 
-  virtual ~EventPoll() {}
+  virtual ~EventPoll() = default;
 
   virtual void poll(const struct timeval& tv) = 0;
 

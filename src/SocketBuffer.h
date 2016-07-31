@@ -47,7 +47,7 @@ namespace aria2 {
 class SocketCore;
 
 struct ProgressUpdate {
-  virtual ~ProgressUpdate() {}
+  virtual ~ProgressUpdate() = default;
   virtual void update(size_t length, bool complete) = 0;
 };
 
@@ -59,7 +59,7 @@ private:
         : progressUpdate_(std::move(progressUpdate))
     {
     }
-    virtual ~BufEntry() {}
+    virtual ~BufEntry() = default;
     virtual ssize_t send(const std::shared_ptr<SocketCore>& socket,
                          size_t offset) = 0;
     virtual bool final(size_t offset) const = 0;

@@ -76,7 +76,7 @@ HttpServer::HttpServer(const std::shared_ptr<SocketCore>& socket)
 {
 }
 
-HttpServer::~HttpServer() {}
+HttpServer::~HttpServer() = default;
 
 namespace {
 const char* getStatusString(int status)

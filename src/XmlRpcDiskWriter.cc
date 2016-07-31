@@ -43,7 +43,7 @@ namespace rpc {
 
 XmlRpcDiskWriter::XmlRpcDiskWriter() : parser_(&psm_) {}
 
-XmlRpcDiskWriter::~XmlRpcDiskWriter() {}
+XmlRpcDiskWriter::~XmlRpcDiskWriter() = default;
 
 void XmlRpcDiskWriter::initAndOpenFile(int64_t totalLength) { parser_.reset(); }
 

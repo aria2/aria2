@@ -44,7 +44,7 @@ ByteArrayDiskWriter::ByteArrayDiskWriter(size_t maxLength)
 {
 }
 
-ByteArrayDiskWriter::~ByteArrayDiskWriter() {}
+ByteArrayDiskWriter::~ByteArrayDiskWriter() = default;
 
 void ByteArrayDiskWriter::clear() { buf_.str(A2STR::NIL); }
 

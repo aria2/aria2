@@ -44,11 +44,9 @@ PeerAddrEntry::PeerAddrEntry(const std::string& ipaddr, uint16_t port,
 }
 
 PeerAddrEntry::PeerAddrEntry(const PeerAddrEntry& c)
-    : ipaddr_(c.ipaddr_), port_(c.port_), lastUpdated_(c.lastUpdated_)
-{
-}
+    = default;
 
-PeerAddrEntry::~PeerAddrEntry() {}
+PeerAddrEntry::~PeerAddrEntry() = default;
 
 PeerAddrEntry& PeerAddrEntry::operator=(const PeerAddrEntry& c)
 {

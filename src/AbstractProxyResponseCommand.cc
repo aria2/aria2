@@ -60,7 +60,7 @@ AbstractProxyResponseCommand::AbstractProxyResponseCommand(
 {
 }
 
-AbstractProxyResponseCommand::~AbstractProxyResponseCommand() {}
+AbstractProxyResponseCommand::~AbstractProxyResponseCommand() = default;
 
 bool AbstractProxyResponseCommand::executeInternal()
 {

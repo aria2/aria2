@@ -95,7 +95,7 @@ Exception::Exception(const char* file, int line, int errNum,
 {
 }
 
-Exception::~Exception() throw() {}
+Exception::~Exception() throw() = default;
 
 std::string Exception::stackTrace() const
 {

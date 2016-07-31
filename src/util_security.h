@@ -90,16 +90,9 @@ public:
   {
   }
 
-  HMACResult(const HMACResult& other) : result_(other.result_), len_(other.len_)
-  {
-  }
+  HMACResult(const HMACResult& other) = default;
 
-  HMACResult& operator=(const HMACResult& other)
-  {
-    result_ = other.result_;
-    len_ = other.len_;
-    return *this;
-  }
+  HMACResult& operator=(const HMACResult& other) = default;
 
   bool operator==(const HMACResult& other) const
   {

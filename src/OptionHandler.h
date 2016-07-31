@@ -60,7 +60,7 @@ class Option;
 
 class OptionHandler {
 public:
-  virtual ~OptionHandler() {}
+  virtual ~OptionHandler() = default;
 
   virtual void parse(Option& option, const std::string& arg) const = 0;
 

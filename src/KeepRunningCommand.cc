@@ -44,7 +44,7 @@ KeepRunningCommand::KeepRunningCommand(cuid_t cuid, DownloadEngine* e)
   setStatusRealtime();
 }
 
-KeepRunningCommand::~KeepRunningCommand() {}
+KeepRunningCommand::~KeepRunningCommand() = default;
 
 bool KeepRunningCommand::execute()
 {

@@ -41,7 +41,7 @@ namespace aria2 {
 
 class SeedCriteria {
 public:
-  virtual ~SeedCriteria() {}
+  virtual ~SeedCriteria() = default;
 
   /**
    * Returns true if criteria is met.

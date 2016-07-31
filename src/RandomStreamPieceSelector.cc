@@ -43,7 +43,7 @@ RandomStreamPieceSelector::RandomStreamPieceSelector(BitfieldMan* bitfieldMan)
 {
 }
 
-RandomStreamPieceSelector::~RandomStreamPieceSelector() {}
+RandomStreamPieceSelector::~RandomStreamPieceSelector() = default;
 
 bool RandomStreamPieceSelector::select(size_t& index, size_t minSplitSize,
                                        const unsigned char* ignoreBitfield,

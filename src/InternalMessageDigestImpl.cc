@@ -47,7 +47,7 @@ template <hash::Algorithms algo>
 class MessageDigestBase : public MessageDigestImpl {
 public:
   MessageDigestBase() : ctx_{hash::create(algo)} {}
-  virtual ~MessageDigestBase() {}
+  virtual ~MessageDigestBase() = default;
 
   static size_t length()
   {

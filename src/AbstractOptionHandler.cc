@@ -58,7 +58,7 @@ AbstractOptionHandler::AbstractOptionHandler(PrefPtr pref,
 {
 }
 
-AbstractOptionHandler::~AbstractOptionHandler() {}
+AbstractOptionHandler::~AbstractOptionHandler() = default;
 
 void AbstractOptionHandler::parse(Option& option, const std::string& arg) const
 {

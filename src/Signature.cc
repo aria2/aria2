@@ -40,7 +40,7 @@ namespace aria2 {
 
 Signature::Signature() {}
 
-Signature::~Signature() {}
+Signature::~Signature() = default;
 
 void Signature::setType(std::string type) { type_ = std::move(type); }
 

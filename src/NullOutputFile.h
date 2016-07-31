@@ -41,7 +41,7 @@ namespace aria2 {
 
 class NullOutputFile : public OutputFile {
 public:
-  virtual ~NullOutputFile() {}
+  virtual ~NullOutputFile() = default;
   virtual size_t write(const char* str) CXX11_OVERRIDE { return 0; }
   virtual int flush() CXX11_OVERRIDE { return 0; }
   virtual int vprintf(const char* format, va_list va) CXX11_OVERRIDE

@@ -51,7 +51,7 @@ ChecksumCheckIntegrityEntry::ChecksumCheckIntegrityEntry(
 {
 }
 
-ChecksumCheckIntegrityEntry::~ChecksumCheckIntegrityEntry() {}
+ChecksumCheckIntegrityEntry::~ChecksumCheckIntegrityEntry() = default;
 
 bool ChecksumCheckIntegrityEntry::isValidationReady()
 {

@@ -47,7 +47,7 @@ DHTPeerAnnounceEntry::DHTPeerAnnounceEntry(const unsigned char* infoHash)
   memcpy(infoHash_, infoHash, DHT_ID_LENGTH);
 }
 
-DHTPeerAnnounceEntry::~DHTPeerAnnounceEntry() {}
+DHTPeerAnnounceEntry::~DHTPeerAnnounceEntry() = default;
 
 void DHTPeerAnnounceEntry::addPeerAddrEntry(const PeerAddrEntry& entry)
 {

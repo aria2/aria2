@@ -55,7 +55,7 @@ BtFileAllocationEntry::BtFileAllocationEntry(RequestGroup* requestGroup)
 {
 }
 
-BtFileAllocationEntry::~BtFileAllocationEntry() {}
+BtFileAllocationEntry::~BtFileAllocationEntry() = default;
 
 void BtFileAllocationEntry::prepareForNextAction(
     std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)

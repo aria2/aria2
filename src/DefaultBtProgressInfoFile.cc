@@ -84,7 +84,7 @@ DefaultBtProgressInfoFile::DefaultBtProgressInfoFile(
 {
 }
 
-DefaultBtProgressInfoFile::~DefaultBtProgressInfoFile() {}
+DefaultBtProgressInfoFile::~DefaultBtProgressInfoFile() = default;
 
 void DefaultBtProgressInfoFile::updateFilename()
 {

@@ -55,7 +55,7 @@ DHTNode::DHTNode(const unsigned char* id)
   memcpy(id_, id, DHT_ID_LENGTH);
 }
 
-DHTNode::~DHTNode() {}
+DHTNode::~DHTNode() = default;
 
 void DHTNode::generateID() { util::generateRandomKey(id_); }
 

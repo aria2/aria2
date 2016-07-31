@@ -49,7 +49,7 @@ public:
   {
     reset();
   }
-  virtual ~MessageDigestBase() {}
+  virtual ~MessageDigestBase() = default;
 
   static size_t length() { return hash->digest_size; }
   virtual size_t getDigestLength() const CXX11_OVERRIDE

@@ -62,7 +62,7 @@ public:
     reset();
   }
 
-  virtual ~MessageDigestBase() {}
+  virtual ~MessageDigestBase() = default;
 
   static size_t length() { return ::gcry_md_get_algo_dlen(hash); }
 

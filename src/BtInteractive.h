@@ -45,7 +45,7 @@ class BtHandshakeMessage;
 
 class BtInteractive {
 public:
-  virtual ~BtInteractive() {}
+  virtual ~BtInteractive() = default;
 
   virtual void initiateHandshake() = 0;
 

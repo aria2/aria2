@@ -76,7 +76,7 @@ HttpRequestCommand::HttpRequestCommand(
   setWriteCheckSocket(getSocket());
 }
 
-HttpRequestCommand::~HttpRequestCommand() {}
+HttpRequestCommand::~HttpRequestCommand() = default;
 
 namespace {
 std::unique_ptr<HttpRequest>

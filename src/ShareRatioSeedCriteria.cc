@@ -45,7 +45,7 @@ ShareRatioSeedCriteria::ShareRatioSeedCriteria(
 {
 }
 
-ShareRatioSeedCriteria::~ShareRatioSeedCriteria() {}
+ShareRatioSeedCriteria::~ShareRatioSeedCriteria() = default;
 
 void ShareRatioSeedCriteria::reset() {}
 

@@ -58,7 +58,7 @@ Authenticator::Authenticator(std::string machine, std::string login,
 {
 }
 
-Authenticator::~Authenticator() {}
+Authenticator::~Authenticator() = default;
 
 bool Authenticator::match(const std::string& hostname) const
 {
@@ -92,7 +92,7 @@ DefaultAuthenticator::DefaultAuthenticator(std::string login,
 {
 }
 
-DefaultAuthenticator::~DefaultAuthenticator() {}
+DefaultAuthenticator::~DefaultAuthenticator() = default;
 
 bool DefaultAuthenticator::match(const std::string& hostname) const
 {
@@ -101,7 +101,7 @@ bool DefaultAuthenticator::match(const std::string& hostname) const
 
 Netrc::Netrc() {}
 
-Netrc::~Netrc() {}
+Netrc::~Netrc() = default;
 
 void Netrc::addAuthenticator(std::unique_ptr<Authenticator> authenticator)
 {

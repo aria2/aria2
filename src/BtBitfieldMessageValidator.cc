@@ -44,7 +44,7 @@ BtBitfieldMessageValidator::BtBitfieldMessageValidator(
 {
 }
 
-BtBitfieldMessageValidator::~BtBitfieldMessageValidator() {}
+BtBitfieldMessageValidator::~BtBitfieldMessageValidator() = default;
 
 void BtBitfieldMessageValidator::validate()
 {

@@ -62,7 +62,7 @@ Piece::Piece(size_t index, int64_t length, int32_t blockLength)
 {
 }
 
-Piece::~Piece() {}
+Piece::~Piece() = default;
 
 void Piece::completeBlock(size_t blockIndex)
 {

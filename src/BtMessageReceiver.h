@@ -46,7 +46,7 @@ class BtHandshakeMessage;
 
 class BtMessageReceiver {
 public:
-  virtual ~BtMessageReceiver() {}
+  virtual ~BtMessageReceiver() = default;
 
   virtual std::unique_ptr<BtHandshakeMessage>
   receiveHandshake(bool quickReply = false) = 0;

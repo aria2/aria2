@@ -57,7 +57,7 @@ DHTRoutingTableSerializer::DHTRoutingTableSerializer(int family)
 {
 }
 
-DHTRoutingTableSerializer::~DHTRoutingTableSerializer() {}
+DHTRoutingTableSerializer::~DHTRoutingTableSerializer() = default;
 
 void DHTRoutingTableSerializer::setLocalNode(
     const std::shared_ptr<DHTNode>& localNode)

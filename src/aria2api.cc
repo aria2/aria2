@@ -73,7 +73,7 @@ Session::Session(const KeyVals& options)
 {
 }
 
-Session::~Session() {}
+Session::~Session() = default;
 
 SessionConfig::SessionConfig()
     : keepRunning(false),
@@ -660,7 +660,7 @@ struct RequestGroupDH : public DownloadHandle {
       : group(group), ts(group->calculateStat())
   {
   }
-  virtual ~RequestGroupDH() {}
+  virtual ~RequestGroupDH() = default;
   virtual DownloadStatus getStatus() CXX11_OVERRIDE
   {
     if (group->getState() == RequestGroup::STATE_ACTIVE) {
@@ -796,7 +796,7 @@ struct RequestGroupDH : public DownloadHandle {
 namespace {
 struct DownloadResultDH : public DownloadHandle {
   DownloadResultDH(std::shared_ptr<DownloadResult> dr) : dr(std::move(dr)) {}
-  virtual ~DownloadResultDH() {}
+  virtual ~DownloadResultDH() = default;
   virtual DownloadStatus getStatus() CXX11_OVERRIDE
   {
     switch (dr->result) {

@@ -50,7 +50,7 @@ DHTPeerAnnounceCommand::DHTPeerAnnounceCommand(cuid_t cuid, DownloadEngine* e,
 {
 }
 
-DHTPeerAnnounceCommand::~DHTPeerAnnounceCommand() {}
+DHTPeerAnnounceCommand::~DHTPeerAnnounceCommand() = default;
 
 void DHTPeerAnnounceCommand::preProcess()
 {

@@ -54,7 +54,7 @@ class UDPTrackerClient;
 
 class AnnRequest {
 public:
-  virtual ~AnnRequest() {}
+  virtual ~AnnRequest() = default;
   // Returns true if tracker request is finished, regardless of the
   // outcome.
   virtual bool stopped() const = 0;

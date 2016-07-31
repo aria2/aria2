@@ -66,7 +66,7 @@ Request::Request()
 {
 }
 
-Request::~Request() {}
+Request::~Request() = default;
 
 namespace {
 std::string removeFragment(const std::string& uri)

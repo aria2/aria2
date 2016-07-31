@@ -741,7 +741,7 @@ enum DownloadStatus {
  */
 class DownloadHandle {
 public:
-  virtual ~DownloadHandle() {}
+  virtual ~DownloadHandle() = default;
   /**
    * Returns status of this download.
    */

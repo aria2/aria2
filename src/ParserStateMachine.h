@@ -46,7 +46,7 @@ struct XmlAttr;
 
 class ParserStateMachine {
 public:
-  virtual ~ParserStateMachine() {}
+  virtual ~ParserStateMachine() = default;
 
   virtual bool needsCharactersBuffering() const = 0;
 

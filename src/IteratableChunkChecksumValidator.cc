@@ -65,7 +65,7 @@ IteratableChunkChecksumValidator::IteratableChunkChecksumValidator(
 {
 }
 
-IteratableChunkChecksumValidator::~IteratableChunkChecksumValidator() {}
+IteratableChunkChecksumValidator::~IteratableChunkChecksumValidator() = default;
 
 void IteratableChunkChecksumValidator::validateChunk()
 {

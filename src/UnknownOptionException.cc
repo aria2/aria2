@@ -58,7 +58,7 @@ UnknownOptionException::UnknownOptionException(const char* file, int line,
 {
 }
 
-UnknownOptionException::~UnknownOptionException() throw() {}
+UnknownOptionException::~UnknownOptionException() throw() = default;
 
 std::shared_ptr<Exception> UnknownOptionException::copy() const
 {

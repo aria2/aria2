@@ -45,7 +45,7 @@ namespace aria2 {
 
 class Authenticatable {
 public:
-  virtual ~Authenticatable() {}
+  virtual ~Authenticatable() = default;
 
   virtual bool match(const std::string& hostname) const = 0;
 };

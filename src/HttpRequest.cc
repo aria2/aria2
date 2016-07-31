@@ -72,7 +72,7 @@ HttpRequest::HttpRequest()
 {
 }
 
-HttpRequest::~HttpRequest() {}
+HttpRequest::~HttpRequest() = default;
 
 void HttpRequest::setSegment(std::shared_ptr<Segment> segment)
 {

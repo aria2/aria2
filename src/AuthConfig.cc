@@ -47,7 +47,7 @@ AuthConfig::AuthConfig(std::string user, std::string password)
 {
 }
 
-AuthConfig::~AuthConfig() {}
+AuthConfig::~AuthConfig() = default;
 
 std::string AuthConfig::getAuthText() const
 {

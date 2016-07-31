@@ -51,7 +51,7 @@ HttpProxyRequestCommand::HttpProxyRequestCommand(
 {
 }
 
-HttpProxyRequestCommand::~HttpProxyRequestCommand() {}
+HttpProxyRequestCommand::~HttpProxyRequestCommand() = default;
 
 std::unique_ptr<Command> HttpProxyRequestCommand::getNextCommand()
 {

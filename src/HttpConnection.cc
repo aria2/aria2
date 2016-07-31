@@ -89,7 +89,7 @@ HttpConnection::HttpConnection(
 {
 }
 
-HttpConnection::~HttpConnection() {}
+HttpConnection::~HttpConnection() = default;
 
 std::string HttpConnection::eraseConfidentialInfo(const std::string& request)
 {

@@ -55,7 +55,7 @@ FeedbackURISelector::FeedbackURISelector(
 {
 }
 
-FeedbackURISelector::~FeedbackURISelector() {}
+FeedbackURISelector::~FeedbackURISelector() = default;
 
 std::string FeedbackURISelector::select(
     FileEntry* fileEntry,

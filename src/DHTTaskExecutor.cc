@@ -49,7 +49,7 @@ DHTTaskExecutor::DHTTaskExecutor(int numConcurrent)
 {
 }
 
-DHTTaskExecutor::~DHTTaskExecutor() {}
+DHTTaskExecutor::~DHTTaskExecutor() = default;
 
 void DHTTaskExecutor::update()
 {

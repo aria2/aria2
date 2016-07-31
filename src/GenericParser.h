@@ -46,7 +46,7 @@ template <typename Parser, typename ParserStateMachine> class GenericParser {
 public:
   GenericParser() : parser_{&psm_} {}
 
-  ~GenericParser() {}
+  ~GenericParser() = default;
 
   typedef typename ParserStateMachine::ResultType ResultType;
   typedef ParserStateMachine ParserStateMachineType;

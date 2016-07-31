@@ -57,7 +57,7 @@ IteratableChecksumValidator::IteratableChecksumValidator(
 {
 }
 
-IteratableChecksumValidator::~IteratableChecksumValidator() {}
+IteratableChecksumValidator::~IteratableChecksumValidator() = default;
 
 void IteratableChecksumValidator::validateChunk()
 {

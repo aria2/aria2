@@ -59,7 +59,7 @@ DHTRoutingTable::DHTRoutingTable(const std::shared_ptr<DHTNode>& localNode)
 {
 }
 
-DHTRoutingTable::~DHTRoutingTable() {}
+DHTRoutingTable::~DHTRoutingTable() = default;
 
 bool DHTRoutingTable::addNode(const std::shared_ptr<DHTNode>& node)
 {

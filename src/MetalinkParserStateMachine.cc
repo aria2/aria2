@@ -111,7 +111,7 @@ MetalinkParserStateMachine::MetalinkParserStateMachine()
   stateStack_.push(initialState_);
 }
 
-MetalinkParserStateMachine::~MetalinkParserStateMachine() {}
+MetalinkParserStateMachine::~MetalinkParserStateMachine() = default;
 
 void MetalinkParserStateMachine::reset()
 {

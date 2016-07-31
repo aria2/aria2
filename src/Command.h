@@ -73,7 +73,7 @@ protected:
 public:
   Command(cuid_t cuid);
 
-  virtual ~Command() {}
+  virtual ~Command() = default;
 
   virtual bool execute() = 0;
 

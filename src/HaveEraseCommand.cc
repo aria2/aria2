@@ -47,7 +47,7 @@ HaveEraseCommand::HaveEraseCommand(cuid_t cuid, DownloadEngine* e,
 {
 }
 
-HaveEraseCommand::~HaveEraseCommand() {}
+HaveEraseCommand::~HaveEraseCommand() = default;
 
 void HaveEraseCommand::preProcess()
 {

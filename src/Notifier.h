@@ -47,7 +47,7 @@ namespace aria2 {
 class RequestGroup;
 
 struct DownloadEventListener {
-  virtual ~DownloadEventListener() {}
+  virtual ~DownloadEventListener() = default;
   virtual void onEvent(DownloadEvent event, const RequestGroup* group) = 0;
 };
 

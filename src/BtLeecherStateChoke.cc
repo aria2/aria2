@@ -50,7 +50,7 @@ BtLeecherStateChoke::BtLeecherStateChoke()
 {
 }
 
-BtLeecherStateChoke::~BtLeecherStateChoke() {}
+BtLeecherStateChoke::~BtLeecherStateChoke() = default;
 
 BtLeecherStateChoke::PeerEntry::PeerEntry(const std::shared_ptr<Peer>& peer)
     : peer_(peer),
@@ -63,11 +63,7 @@ BtLeecherStateChoke::PeerEntry::PeerEntry(const std::shared_ptr<Peer>& peer)
 }
 
 BtLeecherStateChoke::PeerEntry::PeerEntry(const PeerEntry& c)
-    : peer_(c.peer_),
-      downloadSpeed_(c.downloadSpeed_),
-      regularUnchoker_(c.regularUnchoker_)
-{
-}
+    = default;
 
 void BtLeecherStateChoke::PeerEntry::swap(PeerEntry& c)
 {
@@ -88,7 +84,7 @@ operator=(const PeerEntry& c)
   return *this;
 }
 
-BtLeecherStateChoke::PeerEntry::~PeerEntry() {}
+BtLeecherStateChoke::PeerEntry::~PeerEntry() = default;
 
 const std::shared_ptr<Peer>& BtLeecherStateChoke::PeerEntry::getPeer() const
 {

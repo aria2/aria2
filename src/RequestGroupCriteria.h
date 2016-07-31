@@ -43,7 +43,7 @@ class RequestGroup;
 
 class RequestGroupCriteria {
 public:
-  virtual ~RequestGroupCriteria() {}
+  virtual ~RequestGroupCriteria() = default;
 
   virtual bool match(const RequestGroup* requestGroup) const = 0;
 };

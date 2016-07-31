@@ -139,7 +139,7 @@ HttpResponseCommand::HttpResponseCommand(
   checkSocketRecvBuffer();
 }
 
-HttpResponseCommand::~HttpResponseCommand() {}
+HttpResponseCommand::~HttpResponseCommand() = default;
 
 bool HttpResponseCommand::executeInternal()
 {

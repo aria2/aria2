@@ -47,7 +47,7 @@ BtRuntime::BtRuntime()
 {
 }
 
-BtRuntime::~BtRuntime() {}
+BtRuntime::~BtRuntime() = default;
 
 void BtRuntime::setMaxPeers(int maxPeers)
 {

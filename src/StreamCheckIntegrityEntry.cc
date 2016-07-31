@@ -48,7 +48,7 @@ StreamCheckIntegrityEntry::StreamCheckIntegrityEntry(
 {
 }
 
-StreamCheckIntegrityEntry::~StreamCheckIntegrityEntry() {}
+StreamCheckIntegrityEntry::~StreamCheckIntegrityEntry() = default;
 
 void StreamCheckIntegrityEntry::onDownloadIncomplete(
     std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)

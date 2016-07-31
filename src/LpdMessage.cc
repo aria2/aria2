@@ -46,6 +46,6 @@ LpdMessage::LpdMessage(const std::shared_ptr<Peer>& peer,
 {
 }
 
-LpdMessage::~LpdMessage() {}
+LpdMessage::~LpdMessage() = default;
 
 } // namespace aria2

@@ -42,7 +42,7 @@ DefaultStreamPieceSelector::DefaultStreamPieceSelector(BitfieldMan* bitfieldMan)
 {
 }
 
-DefaultStreamPieceSelector::~DefaultStreamPieceSelector() {}
+DefaultStreamPieceSelector::~DefaultStreamPieceSelector() = default;
 
 bool DefaultStreamPieceSelector::select(size_t& index, size_t minSplitSize,
                                         const unsigned char* ignoreBitfield,

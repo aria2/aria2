@@ -40,6 +40,6 @@ namespace aria2 {
 
 DiskAdaptor::DiskAdaptor() : fileAllocationMethod_(FILE_ALLOC_ADAPTIVE) {}
 
-DiskAdaptor::~DiskAdaptor() {}
+DiskAdaptor::~DiskAdaptor() = default;
 
 } // namespace aria2

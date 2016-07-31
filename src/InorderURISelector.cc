@@ -40,7 +40,7 @@ namespace aria2 {
 
 InorderURISelector::InorderURISelector() {}
 
-InorderURISelector::~InorderURISelector() {}
+InorderURISelector::~InorderURISelector() = default;
 
 std::string InorderURISelector::select(
     FileEntry* fileEntry,

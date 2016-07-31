@@ -49,7 +49,7 @@ namespace rpc {
 
 WebSocketSessionMan::WebSocketSessionMan() {}
 
-WebSocketSessionMan::~WebSocketSessionMan() {}
+WebSocketSessionMan::~WebSocketSessionMan() = default;
 
 void WebSocketSessionMan::addSession(
     const std::shared_ptr<WebSocketSession>& wsSession)
