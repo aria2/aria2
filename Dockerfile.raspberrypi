@@ -32,7 +32,7 @@ RUN mkdir $LOCAL_DIR && mkdir zlib && cd zlib && \
 
 RUN mkdir -p expat && cd expat && \
     curl -Ls -o - 'http://sourceforge.net/projects/expat/files/latest/download' | \
-        tar xzf - --strip-components=1 && \
+        tar xjf - --strip-components=1 && \
     ./configure \
         --host=$HOST \
         --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` \
