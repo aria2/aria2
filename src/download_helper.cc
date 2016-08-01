@@ -249,7 +249,11 @@ createBtMagnetRequestGroup(const std::string& magnetLink,
   bittorrent::loadMagnet(magnetLink, dctx);
   auto torrentAttrs = bittorrent::getTorrentAttrs(dctx);
   bittorrent::adjustAnnounceUri(torrentAttrs, option);
-  dctx->getFirstFileEntry()->setPath(torrentAttrs->name);
+  // torrentAttrs->name may contain "/", but we use basename of
+  // FileEntry::getPath() to print out in-memory download entry.
+  // Since "/" is treated as separator, we replace it with "-".
+  dctx->getFirstFileEntry()->setPath(
+      util::replace(torrentAttrs->name, "/", "-"));
   rg->setDownloadContext(dctx);
   rg->clearPostDownloadHandler();
   rg->addPostDownloadHandler(
