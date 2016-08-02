@@ -55,6 +55,14 @@ _aria2c()
             COMPREPLY=( $( compgen -W 'default full hide' -- "$cur" ) )
             return 0
             ;;
+        --min-tls-version)
+            COMPREPLY=( $( compgen -W 'SSLv3 TLSv1 TLSv1.1 TLSv1.2' -- "$cur" ) )
+            return 0
+            ;;
+        --console-log-level)
+            COMPREPLY=( $( compgen -W 'debug info notice warn error' -- "$cur" ) )
+            return 0
+            ;;
         --dir)
             _filedir -d
             return 0
