@@ -1335,6 +1335,11 @@ Advanced Options
      file system, and does not allocate disk space at all.  This means
      that it does not help avoiding fragmentation.
 
+  .. note::
+
+    In multi file torrent downloads, the files adjacent forward to the specified files
+    are also allocated if they share the same piece.
+
 .. option:: --force-save[=true|false]
 
   Save download with :option:`--save-session <--save-session>` option
@@ -1518,11 +1523,6 @@ Advanced Options
   Set interval in seconds to output download progress summary.
   Setting ``0`` suppresses the output.
   Default: ``60``
-
-  .. note::
-
-    In multi file torrent downloads, the files adjacent forward to the specified files
-    are also allocated if they share the same piece.
 
 .. option:: -Z, --force-sequential[=true|false]
 
