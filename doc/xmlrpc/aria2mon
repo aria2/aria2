@@ -140,7 +140,7 @@ result.each { |entry|
   end
   print "\n"
 
-  files=client.call("aria2.getFiles",entry['gid'])
+  files=client_call(client,"aria2.getFiles",entry['gid'])
   if files.length > 0 then
     first_file=files.find{|file| file["selected"]=="true"}
     if first_file != nil then
