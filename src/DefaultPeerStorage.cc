@@ -67,6 +67,7 @@ DefaultPeerStorage::DefaultPeerStorage()
 
 DefaultPeerStorage::~DefaultPeerStorage()
 {
+  assert(uniqPeers_.size() == unusedPeers_.size() + usedPeers_.size());
 }
 
 size_t DefaultPeerStorage::countAllPeer() const
