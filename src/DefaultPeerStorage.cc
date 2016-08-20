@@ -164,8 +164,24 @@ std::shared_ptr<Peer>
 DefaultPeerStorage::addAndCheckoutPeer(const std::shared_ptr<Peer>& peer,
                                        cuid_t cuid)
 {
+  if (isPeerAlreadyAdded(peer)) {
+    auto it = std::find_if(std::begin(unusedPeers_), std::end(unusedPeers_),
+                           [&peer](const std::shared_ptr<Peer>& p) {
+                             return p->getIPAddress() == peer->getIPAddress() &&
+                                    p->getOrigPort() == peer->getOrigPort();
+                           });
+    if (it == std::end(unusedPeers_)) {
+      // peer is in usedPeers_.
+      return nullptr;
+    }
+
+    unusedPeers_.erase(it);
+  }
+  else {
+    addUniqPeer(peer);
+  }
+
   unusedPeers_.push_front(peer);
-  addUniqPeer(peer);
 
   return checkoutPeer(cuid);
 }
