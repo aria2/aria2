@@ -19,6 +19,7 @@ class DefaultPeerStorageTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testCountAllPeer);
   CPPUNIT_TEST(testDeleteUnusedPeer);
   CPPUNIT_TEST(testAddPeer);
+  CPPUNIT_TEST(testAddAndCheckoutPeer);
   CPPUNIT_TEST(testIsPeerAvailable);
   CPPUNIT_TEST(testCheckoutPeer);
   CPPUNIT_TEST(testReturnPeer);
@@ -42,6 +43,7 @@ public:
   void testCountAllPeer();
   void testDeleteUnusedPeer();
   void testAddPeer();
+  void testAddAndCheckoutPeer();
   void testIsPeerAvailable();
   void testCheckoutPeer();
   void testReturnPeer();
@@ -119,6 +121,38 @@ void DefaultPeerStorageTest::testAddPeer()
   CPPUNIT_ASSERT_EQUAL(peer1->getIPAddress(),
                        ps.checkoutPeer(1)->getIPAddress());
   CPPUNIT_ASSERT(!ps.addPeer(peer1));
+}
+
+void DefaultPeerStorageTest::testAddAndCheckoutPeer()
+{
+  DefaultPeerStorage ps;
+  auto btRuntime = std::make_shared<BtRuntime>();
+
+  ps.setBtRuntime(btRuntime);
+
+  auto peer1 = std::make_shared<Peer>("192.168.0.1", 6889);
+  // peer2 and peer3 have the same address and port deliberately.
+  auto peer2 = std::make_shared<Peer>("192.168.0.2", 6889);
+  auto peer3 = std::make_shared<Peer>("192.168.0.2", 6889);
+
+  CPPUNIT_ASSERT(ps.addPeer(peer1));
+  CPPUNIT_ASSERT(ps.addPeer(peer2));
+  CPPUNIT_ASSERT_EQUAL((size_t)2, ps.getUnusedPeers().size());
+
+  auto usedPeer = ps.checkoutPeer(1);
+
+  CPPUNIT_ASSERT_EQUAL((size_t)1, ps.getUnusedPeers().size());
+  CPPUNIT_ASSERT_EQUAL(peer1->getIPAddress(), usedPeer->getIPAddress());
+  // Since peer1 is already used, this fails.
+  CPPUNIT_ASSERT(!ps.addAndCheckoutPeer(peer1, 2));
+  CPPUNIT_ASSERT_EQUAL((size_t)1, ps.getUnusedPeers().size());
+
+  // Since peer2 is not used yet, this succeeds.
+  usedPeer = ps.addAndCheckoutPeer(peer3, 2);
+
+  CPPUNIT_ASSERT_EQUAL((size_t)0, ps.getUnusedPeers().size());
+  CPPUNIT_ASSERT_EQUAL(peer2->getIPAddress(), usedPeer->getIPAddress());
+  CPPUNIT_ASSERT_EQUAL(peer3.get(), usedPeer.get());
 }
 
 void DefaultPeerStorageTest::testIsPeerAvailable()
