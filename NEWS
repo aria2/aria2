@@ -1,70 +1,77 @@
-aria2 1.25.0
+aria2 1.26.0
 ============
 
 Release Note
 ------------
 
-This release fixes many bugs reported so far.  There is no new
-functionality in this release.  We have fixed many performance issues
-in BitTorrent downloads.
+This release fixes linking bug with libaria2 enabled.  It also changes
+how aria2 renames the download file name when the same name already
+exists in file system.  In summary, we use numbers before extension
+(e.g., foo.1.txt), rather than after extension (e.g., foo.txt.1).  Now
+--seed-time option can take floating point number to specify
+fractional minutes.
 
 Changes
 -------
 
-* Update third-party libraries for binary releases
+* aria2mon: Replace client.call with local method
 
-* Send have message without too much delay
+  Patch from Florian Gamböck
 
-  Also send bitfield rather than have messages if bitfield message is
-  equal to or less than the sum of have messages which otherwise would
-  be sent.
+* Reorder a note section in aria2c.rst
 
-* Fix bug that causes bogus EOF connection failure in BitTorrent
-  downloads
+  Patch from Artur Petrov
 
-* Fix frequent interested/not interested message transmission
+  Closes GH-722
 
-* Fix frequent choke/unchoke message transmission
+* bash_completion: Add missing options which takes one of pre-defined
+  values
 
-* Try to use available URI if all pooled requests are sleeping
-* Update expat in OSX build
+* Replace "/" with "-" in magnet dn name when used as in-memory
+  download name
 
-  Closes GH-694
+* Fix Dockerfile.raspberrypi to correctly decompress expat archive
 
-* aria2mon: Add --secret option
+  Patch from Char
 
-  Fixes GH-700
+* Enable ccache in travis-ci
 
-* Set server status error on network failure in server performance
-  profile
+  Speeds up the build most of the time.
 
-* Disable AI_ADDRCONFIG if no IPv4/IPv6 address is configured for any
-  interface
+  Closes GH-710
 
-  Fixes GH-698
+* Enable OSX/macOS build for travis
 
-* Russian manual: Update aria2c.rst
+  Closes GH-711
+  Closes GH-666
 
-  Patch from ITriskTI
+* Better auto-renaming
 
-* Apply --retry-wait on 503 only
+  Up until now aria2 file auto renaming worked by just appending a new
+  unique number to the file path, behind the file name extension, if
+  any, changing what most other programs consider the file extension
+  in the process.  Now, aria2 will attempt to insert the number before
+  the file extension, leaving the extension intact, so that e.g. a
+  ".jpg" still is a ".jpg" file and opens in your configured image
+  viewer when clicking it.  If a file has no extension (incl. so
+  called "dot files"), the number will be appended to the file name as
+  usual.
 
-* Ensure that lowest speed check is done even when download speed is 0
+  Note: This is a potentially breaking change that might break third
+  party scripts that rely on aria2 auto file renaming producing a
+  certain format for renamed files. Please fix your scripts
+  accordingly.
 
-  Fixes GH-686
+  Closes GH-709
 
-* Document that -o is always relative to -d option
+* Log number of items loaded from input file
 
-  Fixes GH-684
+* Link external libraries to libaria2 with --enable-libaria2
 
-* Allow larger ut_metadata size
+  Fixes GH-707
 
-  Fixes GH-681
+* Allow seconds for seed-time (fractional minutes)
 
-* mingw: Change FD_SETSIZE to 32768
+  Patch from Sébastien Cabaniols
 
-  Fixes GH-678
-
-* Fix compile error on OS X
-
-  Fixes GH-683
+  Closes GH-704
