@@ -44,6 +44,15 @@
 
 namespace aria2 {
 
+#if !OPENSSL_101_API
+namespace {
+const unsigned char* ASN1_STRING_get0_data(ASN1_STRING* x)
+{
+  return ASN1_STRING_data(x);
+}
+} // namespace
+#endif // !OPENSSL_101_API
+
 TLSSession* TLSSession::make(TLSContext* ctx)
 {
   return new OpenSSLTLSSession(static_cast<OpenSSLTLSContext*>(ctx));
@@ -253,8 +262,7 @@ int OpenSSLTLSSession::tlsConnect(const std::string& hostname,
       for (size_t i = 0; i < n; ++i) {
         const GENERAL_NAME* altName = sk_GENERAL_NAME_value(altNames, i);
         if (altName->type == GEN_DNS) {
-          const char* name =
-              reinterpret_cast<char*>(ASN1_STRING_data(altName->d.ia5));
+          auto name = ASN1_STRING_get0_data(altName->d.ia5);
           if (!name) {
             continue;
           }
@@ -268,7 +276,7 @@ int OpenSSLTLSSession::tlsConnect(const std::string& hostname,
               continue;
             }
           }
-          dnsNames.push_back(std::string(name, len));
+          dnsNames.push_back(std::string(name, name + len));
         }
         else if (altName->type == GEN_IPADD) {
           const unsigned char* ipAddr = altName->d.iPAddress->data;

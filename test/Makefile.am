@@ -243,7 +243,6 @@ endif # ENABLE_LIBARIA2
 aria2c_LDADD = \
 	../src/libaria2.la \
 	@LIBINTL@ \
-	@CPPUNIT_LIBS@ \
 	@EXTRALIBS@ \
 	@ZLIB_LIBS@ \
 	@LIBUV_LIBS@ \
@@ -259,6 +258,7 @@ aria2c_LDADD = \
 	@LIBSSH2_LIBS@ \
 	@LIBCARES_LIBS@ \
 	@WSLAY_LIBS@ \
+	@CPPUNIT_LIBS@ \
 	@TCMALLOC_LIBS@ \
 	@JEMALLOC_LIBS@
 
