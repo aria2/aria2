@@ -7,7 +7,7 @@ matrix:
     - os: linux
       compiler: clang
     - os: osx
-      osx_image: xcode7
+      osx_image: xcode7.3
       compiler: clang
 sudo: false
 addons:
@@ -42,7 +42,7 @@ before_script:
   - autoreconf -i
   - automake
   - autoconf
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./configure --without-openssl --without-gnutls --with-appletls --disable-nls ; fi
-  - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then ./configure ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./configure --without-openssl --without-gnutls --with-appletls --disable-nls CPPFLAGS=-fsanitize=address LDFLAGS=-fsanitize=address; fi
+  - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then ./configure CPPFLAGS=-fsanitize=address LDFLAGS=-fsanitize=address; fi
 script:
   - make CC="ccache $CC" CXX="ccache $CXX" check
