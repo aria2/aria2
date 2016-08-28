@@ -28,7 +28,7 @@
 #  - $ cd build-release
 #  - $ virtualenv .
 #  - $ . bin/activate
-#  - $ pip install sphinx-build
+#  - $ sudo pip install sphinx -build
 #  - $ ln -s ../makerelease-os.mk Makefile
 #  - $ make
 #
