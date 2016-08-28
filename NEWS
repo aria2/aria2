@@ -1,3 +1,24 @@
+aria2 1.26.1
+============
+
+Release Note
+------------
+
+This release fixes the bug that causes assertion failure during
+BitTorrent downloads.
+
+Changes
+-------
+
+* Make assertion hold
+
+  If we have peer which is already used, make addAndCheckoutPeer()
+  fail.  If peer is in unused list, first remove the old entry, and
+  then add new one.  This would make assertion in ~DefaultPeerStorage
+  hold.
+
+
+
 aria2 1.26.0
 ============
 
