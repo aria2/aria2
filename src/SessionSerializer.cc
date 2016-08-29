@@ -286,6 +286,10 @@ bool SessionSerializer::save(IOFile& fp) const
       case error_code::IN_PROGRESS:
         save = saveInProgress_;
         break;
+      case error_code::RESOURCE_NOT_FOUND:
+      case error_code::MAX_FILE_NOT_FOUND:
+        save = dr->option->getAsBool(PREF_SAVE_NOT_FOUND);
+        break;
       default:
         save = saveError_;
         break;

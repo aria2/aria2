@@ -344,6 +344,17 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    OptionHandler* op(new BooleanOptionHandler(
+        PREF_SAVE_NOT_FOUND, TEXT_SAVE_NOT_FOUND, A2_V_TRUE,
+        OptionHandler::OPT_ARG));
+    op->addTag(TAG_ADVANCED);
+    op->setInitialOption(true);
+    op->setChangeOption(true);
+    op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
+    handlers.push_back(op);
+  }
+  {
     OptionHandler* op(
         new BooleanOptionHandler(PREF_FORCE_SEQUENTIAL, TEXT_FORCE_SEQUENTIAL,
                                  A2_V_FALSE, OptionHandler::OPT_ARG, 'Z'));

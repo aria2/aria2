@@ -302,6 +302,8 @@ extern PrefPtr PREF_STOP_WITH_PROCESS;
 extern PrefPtr PREF_ENABLE_MMAP;
 // value: true | false
 extern PrefPtr PREF_FORCE_SAVE;
+// value: true | false
+extern PrefPtr PREF_SAVE_NOT_FOUND;
 // value: 1*digit
 extern PrefPtr PREF_DISK_CACHE;
 // value: string

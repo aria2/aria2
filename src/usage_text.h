@@ -971,6 +971,11 @@
     "                              situations. This may be useful to save\n" \
     "                              BitTorrent seeding which is recognized as\n" \
     "                              completed state.")
+#define TEXT_SAVE_NOT_FOUND                         \
+  _(" --save-not-found[=true|false] Save download with --save-session option even\n" \
+    "                              if the file was not found on the server. This\n" \
+    "                              option also saves control file in that\n" \
+    "                              situations.")
 #define TEXT_DISK_CACHE                         \
   _(" --disk-cache=SIZE            Enable disk cache. If SIZE is 0, the disk cache\n" \
     "                              is disabled. This feature caches the downloaded\n" \

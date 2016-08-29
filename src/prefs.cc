@@ -349,6 +349,8 @@ PrefPtr PREF_STOP_WITH_PROCESS = makePref("stop-with-process");
 PrefPtr PREF_ENABLE_MMAP = makePref("enable-mmap");
 // value: true | false
 PrefPtr PREF_FORCE_SAVE = makePref("force-save");
+// value: true | false
+PrefPtr PREF_SAVE_NOT_FOUND = makePref("save-not-found");
 // value: 1*digit
 PrefPtr PREF_DISK_CACHE = makePref("disk-cache");
 // value: string
