@@ -485,7 +485,7 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
       break;
     }
     if (read < 0) {
-      status_ = SEC_E_INCOMPLETE_MESSAGE;
+      status_ = errno;
       state_ = st_error;
       return TLS_ERR_ERROR;
     }
@@ -640,7 +640,7 @@ restart:
         return TLS_ERR_WOULDBLOCK;
       }
       if (writ <= 0) {
-        status_ = SEC_E_INCOMPLETE_MESSAGE;
+        status_ = errno;
         state_ = st_error;
         return TLS_ERR_ERROR;
       }
@@ -678,7 +678,7 @@ restart:
         break;
       }
       if (read <= 0) {
-        status_ = SEC_E_INCOMPLETE_MESSAGE;
+        status_ = errno;
         state_ = st_error;
         return TLS_ERR_ERROR;
       }
