@@ -1348,6 +1348,13 @@ Advanced Options
   BitTorrent seeding which is recognized as completed state.
   Default: ``false``
 
+.. option:: --save-not-found[=true|false]
+
+  Save download with :option:`--save-session <--save-session>` option
+  even if the file was not found on the server. This option also saves
+  control file in that situations.
+  Default: ``true``
+
 .. option:: --gid=<GID>
 
   Set GID manually. aria2 identifies each download by the ID called
