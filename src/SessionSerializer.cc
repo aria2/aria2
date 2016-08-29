@@ -277,38 +277,28 @@ bool SessionSerializer::save(IOFile& fp) const
   std::set<a2_gid_t> metainfoCache;
   const DownloadResultList& results = rgman_->getDownloadResults();
   for (const auto& dr : results) {
-    if (dr->result == error_code::FINISHED ||
-        dr->result == error_code::REMOVED) {
-      if (dr->option->getAsBool(PREF_FORCE_SAVE)) {
-        if (!writeDownloadResult(fp, metainfoCache, dr, false)) {
-          return false;
-        }
-      }
-      else {
-        continue;
-      }
+    auto save = false;
+    switch (dr->result) {
+      case error_code::FINISHED:
+      case error_code::REMOVED:
+        save = dr->option->getAsBool(PREF_FORCE_SAVE);
+        break;
+      case error_code::IN_PROGRESS:
+        save = saveInProgress_;
+        break;
+      default:
+        save = saveError_;
+        break;
     }
-    else if (dr->result == error_code::IN_PROGRESS) {
-      if (saveInProgress_) {
-        if (!writeDownloadResult(fp, metainfoCache, dr, false)) {
-          return false;
-        }
-      }
-    }
-    else {
-      // error download
-      if (saveError_) {
-        if (!writeDownloadResult(fp, metainfoCache, dr, false)) {
-          return false;
-        }
-      }
+    if (save && !writeDownloadResult(fp, metainfoCache, dr, false)) {
+      return false;
     }
   }
   {
     // Save active downloads.
     const RequestGroupList& groups = rgman_->getRequestGroups();
     for (const auto& rg : groups) {
-      std::shared_ptr<DownloadResult> dr = rg->createDownloadResult();
+      auto dr = rg->createDownloadResult();
       bool stopped = dr->result == error_code::FINISHED ||
                      dr->result == error_code::REMOVED;
       if ((!stopped && saveInProgress_) ||
@@ -321,9 +311,9 @@ bool SessionSerializer::save(IOFile& fp) const
     }
   }
   if (saveWaiting_) {
-    const RequestGroupList& groups = rgman_->getReservedGroups();
+    const auto& groups = rgman_->getReservedGroups();
     for (const auto& rg : groups) {
-      std::shared_ptr<DownloadResult> result = rg->createDownloadResult();
+      auto result = rg->createDownloadResult();
       if (!writeDownloadResult(fp, metainfoCache, result,
                                rg->isPauseRequested())) {
         return false;
