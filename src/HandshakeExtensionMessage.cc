@@ -215,7 +215,7 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
           fmt("Negative metadataSize %" PRId64 " was received", size));
     }
 
-    // Only accept metadata smaller than 1MiB.  Be aware that broken
+    // Only accept metadata up to 8MiB in size.  Be aware that broken
     // client can send negative size!
     if (size > 0 && size <= static_cast<int64_t>(8_m)) {
       msg->metadataSize_ = size;
