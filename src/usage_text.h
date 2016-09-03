@@ -585,7 +585,7 @@
 #define TEXT_ON_DOWNLOAD_START                                          \
   _(" --on-download-start=COMMAND  Set the command to be executed after download\n" \
     "                              got started. aria2 passes 3 arguments to COMMAND:\n" \
-    "                              GID, the nubmer of files and file path. See Event\n" \
+    "                              GID, the number of files and file path. See Event\n" \
     "                              Hook in man page for more details.")
 #define TEXT_ON_DOWNLOAD_PAUSE                                          \
   _(" --on-download-pause=COMMAND  Set the command to be executed after download\n" \
@@ -1077,7 +1077,7 @@
 #define TEXT_SOCKET_RECV_BUFFER_SIZE                                    \
   _(" --socket-recv-buffer-size=SIZE\n"                                 \
     "                              Set the maximum socket receive buffer in bytes.\n" \
-    "                              Specifing 0 will disable this option. This value\n" \
+    "                              Specifying 0 will disable this option. This value\n" \
     "                              will be set to socket file descriptor using\n" \
     "                              SO_RCVBUF socket option with setsockopt() call.")
 #define TEXT_BT_ENABLE_HOOK_AFTER_HASH_CHECK                            \

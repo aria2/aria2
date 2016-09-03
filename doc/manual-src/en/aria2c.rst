@@ -1630,7 +1630,7 @@ Advanced Options
 
 .. option:: --socket-recv-buffer-size=<SIZE>
 
-  Set the maximum socket receive buffer in bytes.  Specifing ``0``
+  Set the maximum socket receive buffer in bytes.  Specifying ``0``
   will disable this option. This value will be set to socket file
   descriptor using ``SO_RCVBUF`` socket option with ``setsockopt()``
   call.  Default: ``0``
