@@ -155,6 +155,7 @@ bool UDPAnnRequest::success() const
 void UDPAnnRequest::stop(DownloadEngine* e)
 {
   if (req_) {
+    req_->user_data = nullptr;
     req_.reset();
   }
 }

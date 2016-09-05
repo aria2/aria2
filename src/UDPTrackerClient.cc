@@ -151,7 +151,6 @@ int UDPTrackerClient::receiveReply(std::shared_ptr<UDPTrackerRequest>& recvReq,
       logInvalidTransaction(remoteAddr, remotePort, action, transactionId);
       return -1;
     }
-    req->state = UDPT_STA_COMPLETE;
 
     auto connectionId = bittorrent::getLLIntParam(data, 8);
     A2_LOG_INFO(
