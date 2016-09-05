@@ -306,7 +306,7 @@ Context::Context(bool standalone, int argc, char** argv, const KeyVals& options)
   }
   else {
     if (!requestGroups.empty()) {
-      A2_LOG_NOTICE(fmt("Downloading %" PRId64 " items",
+      A2_LOG_NOTICE(fmt("Downloading %" PRId64 " item(s)",
                         static_cast<uint64_t>(requestGroups.size())));
     }
     reqinfo = std::make_shared<MultiUrlRequestInfo>(std::move(requestGroups),
