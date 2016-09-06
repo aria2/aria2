@@ -148,7 +148,7 @@ libssh2_hash = 02fef9bdafce3da466b36581a4ff53d519637aca
 libssh2_url = https://www.libssh2.org/download/libssh2-$(libssh2_version).tar.gz
 libssh2_cflags=$(LTO_FLAGS)
 libssh2_ldflags=$(CFLAGS) $(LTO_FLAGS)
-libssh2_confflags = --with-pic --with-libgcrypt --with-libgcrypt-prefix=$(PWD)/arch
+libssh2_confflags = --with-pic --without-openssl --with-libgcrypt --with-libgcrypt-prefix=$(PWD)/arch
 
 cppunit_version = 1.12.1
 cppunit_hash = f1ab8986af7a1ffa6760f4bacf5622924639bf4a
