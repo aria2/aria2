@@ -48,8 +48,7 @@ Option::Option()
 
 Option::~Option() = default;
 
-Option::Option(const Option& option)
-    = default;
+Option::Option(const Option& option) = default;
 
 Option& Option::operator=(const Option& option)
 {

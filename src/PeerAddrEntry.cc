@@ -43,8 +43,7 @@ PeerAddrEntry::PeerAddrEntry(const std::string& ipaddr, uint16_t port,
 {
 }
 
-PeerAddrEntry::PeerAddrEntry(const PeerAddrEntry& c)
-    = default;
+PeerAddrEntry::PeerAddrEntry(const PeerAddrEntry& c) = default;
 
 PeerAddrEntry::~PeerAddrEntry() = default;
 

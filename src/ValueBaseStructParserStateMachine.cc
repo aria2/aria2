@@ -66,7 +66,8 @@ ValueBaseStructParserStateMachine::ValueBaseStructParserStateMachine()
   stateStack_.push(valueState);
 }
 
-ValueBaseStructParserStateMachine::~ValueBaseStructParserStateMachine() = default;
+ValueBaseStructParserStateMachine::~ValueBaseStructParserStateMachine() =
+    default;
 
 void ValueBaseStructParserStateMachine::reset()
 {

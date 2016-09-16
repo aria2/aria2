@@ -62,8 +62,7 @@ BtLeecherStateChoke::PeerEntry::PeerEntry(const std::shared_ptr<Peer>& peer)
 {
 }
 
-BtLeecherStateChoke::PeerEntry::PeerEntry(const PeerEntry& c)
-    = default;
+BtLeecherStateChoke::PeerEntry::PeerEntry(const PeerEntry& c) = default;
 
 void BtLeecherStateChoke::PeerEntry::swap(PeerEntry& c)
 {

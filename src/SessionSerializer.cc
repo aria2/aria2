@@ -279,20 +279,20 @@ bool SessionSerializer::save(IOFile& fp) const
   for (const auto& dr : results) {
     auto save = false;
     switch (dr->result) {
-      case error_code::FINISHED:
-      case error_code::REMOVED:
-        save = dr->option->getAsBool(PREF_FORCE_SAVE);
-        break;
-      case error_code::IN_PROGRESS:
-        save = saveInProgress_;
-        break;
-      case error_code::RESOURCE_NOT_FOUND:
-      case error_code::MAX_FILE_NOT_FOUND:
-        save = saveError_ && dr->option->getAsBool(PREF_SAVE_NOT_FOUND);
-        break;
-      default:
-        save = saveError_;
-        break;
+    case error_code::FINISHED:
+    case error_code::REMOVED:
+      save = dr->option->getAsBool(PREF_FORCE_SAVE);
+      break;
+    case error_code::IN_PROGRESS:
+      save = saveInProgress_;
+      break;
+    case error_code::RESOURCE_NOT_FOUND:
+    case error_code::MAX_FILE_NOT_FOUND:
+      save = saveError_ && dr->option->getAsBool(PREF_SAVE_NOT_FOUND);
+      break;
+    default:
+      save = saveError_;
+      break;
     }
     if (save && !writeDownloadResult(fp, metainfoCache, dr, false)) {
       return false;

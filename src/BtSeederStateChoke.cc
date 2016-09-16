@@ -65,8 +65,7 @@ BtSeederStateChoke::PeerEntry::PeerEntry(const std::shared_ptr<Peer>& peer)
 {
 }
 
-BtSeederStateChoke::PeerEntry::PeerEntry(const PeerEntry& c)
-    = default;
+BtSeederStateChoke::PeerEntry::PeerEntry(const PeerEntry& c) = default;
 
 BtSeederStateChoke::PeerEntry::~PeerEntry() = default;
 

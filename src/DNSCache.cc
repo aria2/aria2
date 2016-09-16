@@ -42,8 +42,7 @@ DNSCache::AddrEntry::AddrEntry(const std::string& addr)
 {
 }
 
-DNSCache::AddrEntry::AddrEntry(const AddrEntry& c)
-    = default;
+DNSCache::AddrEntry::AddrEntry(const AddrEntry& c) = default;
 
 DNSCache::AddrEntry::~AddrEntry() = default;
 
@@ -61,8 +60,7 @@ DNSCache::CacheEntry::CacheEntry(const std::string& hostname, uint16_t port)
 {
 }
 
-DNSCache::CacheEntry::CacheEntry(const CacheEntry& c)
-    = default;
+DNSCache::CacheEntry::CacheEntry(const CacheEntry& c) = default;
 
 DNSCache::CacheEntry::~CacheEntry() = default;
 
