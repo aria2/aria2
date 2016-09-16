@@ -1,77 +1,41 @@
-aria2 1.26.0
+aria2 1.27.0
 ============
 
 Release Note
 ------------
 
-This release fixes linking bug with libaria2 enabled.  It also changes
-how aria2 renames the download file name when the same name already
-exists in file system.  In summary, we use numbers before extension
-(e.g., foo.1.txt), rather than after extension (e.g., foo.txt.1).  Now
---seed-time option can take floating point number to specify
-fractional minutes.
+This release fixes bug which may cause crash if UDP tracker is used.
+It adds new option --save-not-found which prevents downloads failed by
+"not found" error from being saved in session file.
 
 Changes
 -------
 
-* aria2mon: Replace client.call with local method
+* Hard-disable openssl in osx build
 
-  Patch from Florian Gamböck
+  Closes #739
 
-* Reorder a note section in aria2c.rst
+* Fix possible cause of crash if UDP tracker is used
 
-  Patch from Artur Petrov
+* Remove custom ftruncate64 for Android
 
-  Closes GH-722
+  The latest NDK versions support ftruncate64, so building a local
+  copy of ftruncate64 is no longer needed.
 
-* bash_completion: Add missing options which takes one of pre-defined
-  values
+  Also, the arm and x86 builds of ftruncate64 failed when targeting
+  API level 21 or higher, as they include <linux/err.h> which are not
+  present starting from API level 21.
 
-* Replace "/" with "-" in magnet dn name when used as in-memory
-  download name
+  Patch from Fredrik Fornwall
 
-* Fix Dockerfile.raspberrypi to correctly decompress expat archive
+* Fix typo found by Debian's Lintian
 
-  Patch from Char
+* Add --save-not-found option
 
-* Enable ccache in travis-ci
+* Update comment to match code
 
-  Speeds up the build most of the time.
+  Patch from Torbjörn Lönnemark
 
-  Closes GH-710
+* WinTLS: Better errors (from WSA)
 
-* Enable OSX/macOS build for travis
-
-  Closes GH-711
-  Closes GH-666
-
-* Better auto-renaming
-
-  Up until now aria2 file auto renaming worked by just appending a new
-  unique number to the file path, behind the file name extension, if
-  any, changing what most other programs consider the file extension
-  in the process.  Now, aria2 will attempt to insert the number before
-  the file extension, leaving the extension intact, so that e.g. a
-  ".jpg" still is a ".jpg" file and opens in your configured image
-  viewer when clicking it.  If a file has no extension (incl. so
-  called "dot files"), the number will be appended to the file name as
-  usual.
-
-  Note: This is a potentially breaking change that might break third
-  party scripts that rely on aria2 auto file renaming producing a
-  certain format for renamed files. Please fix your scripts
-  accordingly.
-
-  Closes GH-709
-
-* Log number of items loaded from input file
-
-* Link external libraries to libaria2 with --enable-libaria2
-
-  Fixes GH-707
-
-* Allow seconds for seed-time (fractional minutes)
-
-  Patch from Sébastien Cabaniols
-
-  Closes GH-704
+* Compile with openssl 1.1.0
