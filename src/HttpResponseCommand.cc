@@ -184,6 +184,19 @@ bool HttpResponseCommand::executeInternal()
     getPieceStorage()->markAllPiecesDone();
     // Just set checksum verification done.
     ctx->setChecksumVerified(true);
+
+    if (fe->getPath().empty()) {
+      // If path is empty, set default file name or file portion of
+      // URI.  This is the file we used to get modified date.
+      auto& file = getRequest()->getFile();
+      auto suffixPath = util::createSafePath(
+          getRequest()->getFile().empty()
+              ? Request::DEFAULT_FILE
+              : util::percentDecode(std::begin(file), std::end(file)));
+      fe->setPath(util::applyDir(getOption()->get(PREF_DIR), suffixPath));
+      fe->setSuffixPath(suffixPath);
+    }
+
     A2_LOG_NOTICE(fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
                       GroupId::toHex(grp->getGID()).c_str(),
                       grp->getFirstFilePath().c_str()));
