@@ -1,3 +1,21 @@
+aria2 1.27.1
+============
+
+Release Note
+------------
+
+This release fixes the packaging bug that libssl_compat.h is missing
+in the tar balls.
+
+Changes
+-------
+
+* Add missing libssl_compat.h to SRCS
+
+  GH-744
+
+
+
 aria2 1.27.0
 ============
 
