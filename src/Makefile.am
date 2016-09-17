@@ -270,7 +270,8 @@ SRCS =  \
 	XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\
 	OpenedFileCounter.cc OpenedFileCounter.h \
 	SHA1IOFile.cc SHA1IOFile.h \
-	EvictSocketPoolCommand.cc EvictSocketPoolCommand.h
+	EvictSocketPoolCommand.cc EvictSocketPoolCommand.h\
+	libssl_compat.h
 
 if ANDROID
 SRCS += android/android.c
