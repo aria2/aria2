@@ -328,6 +328,8 @@ extern PrefPtr PREF_SOCKET_RECV_BUFFER_SIZE;
 extern PrefPtr PREF_MAX_MMAP_LIMIT;
 // value: true | false
 extern PrefPtr PREF_STDERR;
+// value: true | false
+extern PrefPtr PREF_KEEP_UNFINISHED_DOWNLOAD_RESULT;
 
 /**
  * FTP related preferences

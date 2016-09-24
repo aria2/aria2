@@ -1099,5 +1099,14 @@
 #define TEXT_STDERR \
   _(" --stderr[=true|false]        Redirect all console output that would be\n" \
     "                              otherwise printed in stdout to stderr.")
-
+#define TEXT_KEEP_UNFINISHED_DOWNLOAD_RESULT \
+  _(" --keep-unfinished-download-result[=true|false]\n" \
+    "                              Keep unfinished download results even if doing\n" \
+    "                              so exceeds --max-download-result. This is useful\n" \
+    "                              if all unfinished downloads must be saved in\n" \
+    "                              session file (see --save-session option). Please\n" \
+    "                              keep in mind that there is no upper bound to the\n" \
+    "                              number of unfinished download result to keep.\n" \
+    "                              User should use this option only when they know\n" \
+    "                              the total number of downloads in advance.")
 // clang-format on

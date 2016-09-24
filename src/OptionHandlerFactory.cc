@@ -404,6 +404,15 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    OptionHandler* op(
+        new BooleanOptionHandler(PREF_KEEP_UNFINISHED_DOWNLOAD_RESULT,
+                                 TEXT_KEEP_UNFINISHED_DOWNLOAD_RESULT,
+                                 A2_V_FALSE, OptionHandler::OPT_ARG));
+    op->addTag(TAG_ADVANCED);
+    op->setChangeGlobalOption(true);
+    handlers.push_back(op);
+  }
+  {
     OptionHandler* op(new DefaultOptionHandler(
         PREF_LOG, TEXT_LOG, NO_DEFAULT_VALUE, PATH_TO_FILE_STDOUT,
         OptionHandler::REQ_ARG, 'l'));

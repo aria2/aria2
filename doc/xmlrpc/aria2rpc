@@ -228,6 +228,9 @@ OptionParser.new do |opt|
   opt.on("-l","--log FILE"){|val| options["log"]=val}
   opt.on("--max-download-result NUM"){|val| options["max-download-result"]=val}
   opt.on("--download-result OPT"){|val| options["download-result"]=val}
+  opt.on("--keep-unfinished-download-result [BOOL]",["true","false"]){|val|
+    options["keep-unfinished-download-result"]=val||"true"
+  }
   opt.on("--save-session FILE"){|val| options["save-session"]=val}
   opt.on("--server-stat-of FILE"){|val| options["server-stat-of"]=val}
   opt.on("--save-cookies FILE"){|val| options["save-cookies"]=val}

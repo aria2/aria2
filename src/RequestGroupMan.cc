@@ -920,13 +920,21 @@ void RequestGroupMan::addDownloadResult(
   bool rv = downloadResults_.push_back(dr->gid->getNumericId(), dr);
   assert(rv);
   while (downloadResults_.size() > maxDownloadResult_) {
-    DownloadResultList::iterator i = downloadResults_.begin();
     // Save last encountered error code so that we can report it
     // later.
-    const std::shared_ptr<DownloadResult>& dr = *i;
+    const auto& dr = downloadResults_[0];
     if (dr->belongsTo == 0 && dr->result != error_code::FINISHED) {
       removedLastErrorResult_ = dr->result;
       ++removedErrorResult_;
+
+      // Keep unfinished download result, so that we can save them by
+      // SessionSerializer.
+      if (option_->getAsBool(PREF_KEEP_UNFINISHED_DOWNLOAD_RESULT)) {
+        if (dr->result != error_code::REMOVED ||
+            dr->option->getAsBool(PREF_FORCE_SAVE)) {
+          unfinishedDownloadResults_.push_back(dr);
+        }
+      }
     }
     downloadResults_.pop_front();
   }

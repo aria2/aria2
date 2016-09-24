@@ -71,6 +71,10 @@ private:
   RequestGroupList requestGroups_;
   RequestGroupList reservedGroups_;
   DownloadResultList downloadResults_;
+  // This includes download result which did not finish, and deleted
+  // from downloadResults_.  This is used to save them in
+  // SessionSerializer.
+  std::vector<std::shared_ptr<DownloadResult>> unfinishedDownloadResults_;
 
   int maxConcurrentDownloads_;
 
@@ -260,6 +264,12 @@ public:
   bool removeDownloadResult(a2_gid_t gid);
 
   void addDownloadResult(const std::shared_ptr<DownloadResult>& downloadResult);
+
+  const std::vector<std::shared_ptr<DownloadResult>>&
+  getUnfinishedDownloadResult() const
+  {
+    return unfinishedDownloadResults_;
+  }
 
   std::shared_ptr<ServerStat> findServerStat(const std::string& hostname,
                                              const std::string& protocol) const;
