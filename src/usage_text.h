@@ -795,7 +795,10 @@
     "                              is pushed to the back. Setting big number in this\n" \
     "                              option may result high memory consumption after\n" \
     "                              thousands of downloads. Specifying 0 means no\n" \
-    "                              download result is kept.")
+    "                              download result is kept. Note that unfinished\n" \
+    "                              downloads are kept in memory regardless of this\n" \
+    "                              option value. See\n" \
+    "                              --keep-unfinished-download-result option.")
 #define TEXT_ASYNC_DNS_SERVER                   \
   _(" --async-dns-server=IPADDRESS[,...] Comma separated list of DNS server address\n" \
     "                              used in asynchronous DNS resolver. Usually\n" \
@@ -1106,7 +1109,7 @@
     "                              if all unfinished downloads must be saved in\n" \
     "                              session file (see --save-session option). Please\n" \
     "                              keep in mind that there is no upper bound to the\n" \
-    "                              number of unfinished download result to keep.\n" \
-    "                              User should use this option only when they know\n" \
-    "                              the total number of downloads in advance.")
+    "                              number of unfinished download result to keep. If\n" \
+    "                              that is undesirable, turn this option off.")
+
 // clang-format on

@@ -1398,8 +1398,7 @@ Advanced Options
   downloads must be saved in session file (see
   :option:`--save-session` option).  Please keep in mind that there is
   no upper bound to the number of unfinished download result to keep.
-  User should use this option only when they know the total number of
-  downloads in advance.  Default: ``false``
+  If that is undesirable, turn this option off.  Default: ``true``
 
 .. option:: --max-download-result=<NUM>
 
@@ -1410,8 +1409,10 @@ Advanced Options
   oldest download result is removed from the front of the queue and
   new one is pushed to the back. Setting big number in this option may
   result high memory consumption after thousands of
-  downloads. Specifying 0 means no download result is kept. Default:
-  ``1000``
+  downloads. Specifying 0 means no download result is kept.  Note that
+  unfinished downloads are kept in memory regardless of this option
+  value. See :option:`--keep-unfinished-download-result` option.
+  Default: ``1000``
 
 .. option:: --max-mmap-limit=<SIZE>
 

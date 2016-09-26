@@ -407,7 +407,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     OptionHandler* op(
         new BooleanOptionHandler(PREF_KEEP_UNFINISHED_DOWNLOAD_RESULT,
                                  TEXT_KEEP_UNFINISHED_DOWNLOAD_RESULT,
-                                 A2_V_FALSE, OptionHandler::OPT_ARG));
+                                 A2_V_TRUE, OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     op->setChangeGlobalOption(true);
     handlers.push_back(op);
