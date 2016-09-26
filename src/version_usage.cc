@@ -54,7 +54,7 @@ void showVersion()
 {
   std::cout
       << PACKAGE << _(" version ") << PACKAGE_VERSION << "\n"
-      << "Copyright (C) 2006, 2015 Tatsuhiro Tsujikawa"
+      << "Copyright (C) 2006, 2016 Tatsuhiro Tsujikawa"
       << "\n"
       << "\n"
       << _("This program is free software; you can redistribute it and/or "
