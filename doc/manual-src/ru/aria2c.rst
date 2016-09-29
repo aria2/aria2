@@ -1472,6 +1472,16 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
     :option:`--disable-ipv6`. Если ваша система не имеет :manpage:`getifaddrs(3)`, это
     параметр не принимает имя интерфейса.
 
+.. option:: --keep-unfinished-download-result[=true|false]
+
+  Сохранять результаты незавершённых загрузок, даже если превышено значение
+  :option:`--max-download-result`. Это полезно, если незавершённые загрузки
+  должны сохраняться в файле сессии (см. параметр :option:`--save-session` option).
+  Пожалуйста, имейте в виду, что для сохранения не существует верхней границы
+  для количества результатов незавершённых загрузок. Если это нежелательно,
+  отключите эту опцию.
+  По умолчанию: ``true``
+
 .. option:: --max-download-result=<NUM>
 
   Задать максимальное количество результатов загрузок, которые находятся
@@ -1482,6 +1492,9 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   очереди, а новый добавляется в конец. Указание большого числа в этом
   параметре может привести к высокому потреблению памяти после тысяч
   загрузок. Значение 0 отключит сохранение результата загрузки.
+  Обратите внимание, что незавершённые загрузки хранятся в памяти
+  независимо от этого значения параметра.
+  См. параметр :option:`--keep-unfinished-download-result`.
   По умолчанию: ``1000``
 
 .. option:: --max-mmap-limit=<SIZE>
@@ -3340,6 +3353,7 @@ RPC-метод `system.multicall` обрабатывается особым об
 
   * :option:`bt-max-open-files <--bt-max-open-files>`
   * :option:`download-result <--download-result>`
+  * :option:`keep-unfinished-download-result <--keep-unfinished-download-result>`
   * :option:`log <-l>`
   * :option:`log-level <--log-level>`
   * :option:`max-concurrent-downloads <-j>`
