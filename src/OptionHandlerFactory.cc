@@ -299,21 +299,21 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
 #endif // defined(HAVE_EPOLL)
                                                  {
 #ifdef HAVE_EPOLL
-                                                  V_EPOLL,
+                                                     V_EPOLL,
 #endif // HAVE_EPOLL
 #ifdef HAVE_KQUEUE
-                                                  V_KQUEUE,
+                                                     V_KQUEUE,
 #endif // HAVE_KQUEUE
 #ifdef HAVE_PORT_ASSOCIATE
-                                                  V_PORT,
+                                                     V_PORT,
 #endif // HAVE_PORT_ASSOCIATE
 #ifdef HAVE_LIBUV
-                                                  V_LIBUV,
+                                                     V_LIBUV,
 #endif // HAVE_LIBUV
 #ifdef HAVE_POLL
-                                                  V_POLL,
+                                                     V_POLL,
 #endif // HAVE_POLL
-                                                  V_SELECT}));
+                                                     V_SELECT}));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }

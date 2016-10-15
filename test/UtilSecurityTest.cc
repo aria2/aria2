@@ -24,7 +24,7 @@ static struct hmachash {
               "\x0b\x0b\x0b\x0b\x0b"},
      {20},
      {
-      "\x48\x69\x20\x54\x68\x65\x72\x65" /* "Hi There" */
+         "\x48\x69\x20\x54\x68\x65\x72\x65" /* "Hi There" */
      },
      {8},
      {/* HMAC-SHA-1 */
@@ -48,9 +48,9 @@ static struct hmachash {
      },
      {4},
      {
-      "\x77\x68\x61\x74\x20\x64\x6f\x20\x79\x61\x20\x77\x61\x6e\x74"
-      "\x20\x66\x6f\x72\x20\x6e\x6f\x74\x68\x69\x6e\x67\x3f"
-      /* "what do ya want for nothing?" */
+         "\x77\x68\x61\x74\x20\x64\x6f\x20\x79\x61\x20\x77\x61\x6e\x74"
+         "\x20\x66\x6f\x72\x20\x6e\x6f\x74\x68\x69\x6e\x67\x3f"
+         /* "what do ya want for nothing?" */
      },
      {28},
      {/* HMAC-SHA-1 */
@@ -173,22 +173,22 @@ static struct hmachash {
               "\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"},
      {80, 131},
      {
-      "Test Using Larger Than Block-Size Key and "
-      "Larger Than One Block-Size Data",
-      "\x54\x68\x69\x73\x20\x69\x73\x20\x61\x20\x74\x65\x73\x74\x20"
-      "\x75\x73\x69\x6e\x67\x20\x61\x20\x6c\x61\x72\x67\x65\x72\x20"
-      "\x74\x68\x61\x6e\x20\x62\x6c\x6f\x63\x6b\x2d\x73\x69\x7a\x65"
-      "\x20\x6b\x65\x79\x20\x61\x6e\x64\x20\x61\x20\x6c\x61\x72\x67"
-      "\x65\x72\x20\x74\x68\x61\x6e\x20\x62\x6c\x6f\x63\x6b\x2d\x73"
-      "\x69\x7a\x65\x20\x64\x61\x74\x61\x2e\x20\x54\x68\x65\x20\x6b"
-      "\x65\x79\x20\x6e\x65\x65\x64\x73\x20\x74\x6f\x20\x62\x65\x20"
-      "\x68\x61\x73\x68\x65\x64\x20\x62\x65\x66\x6f\x72\x65\x20\x62"
-      "\x65\x69\x6e\x67\x20\x75\x73\x65\x64\x20\x62\x79\x20\x74\x68"
-      "\x65\x20\x48\x4d\x41\x43\x20\x61\x6c\x67\x6f\x72\x69\x74\x68"
-      "\x6d\x2e"
-      /* "This is a test using a larger than block-size key and a "
-          "larger than block-size data.  The key needs to be hashed "
-          "before being used by the HMAC algorithm." */
+         "Test Using Larger Than Block-Size Key and "
+         "Larger Than One Block-Size Data",
+         "\x54\x68\x69\x73\x20\x69\x73\x20\x61\x20\x74\x65\x73\x74\x20"
+         "\x75\x73\x69\x6e\x67\x20\x61\x20\x6c\x61\x72\x67\x65\x72\x20"
+         "\x74\x68\x61\x6e\x20\x62\x6c\x6f\x63\x6b\x2d\x73\x69\x7a\x65"
+         "\x20\x6b\x65\x79\x20\x61\x6e\x64\x20\x61\x20\x6c\x61\x72\x67"
+         "\x65\x72\x20\x74\x68\x61\x6e\x20\x62\x6c\x6f\x63\x6b\x2d\x73"
+         "\x69\x7a\x65\x20\x64\x61\x74\x61\x2e\x20\x54\x68\x65\x20\x6b"
+         "\x65\x79\x20\x6e\x65\x65\x64\x73\x20\x74\x6f\x20\x62\x65\x20"
+         "\x68\x61\x73\x68\x65\x64\x20\x62\x65\x66\x6f\x72\x65\x20\x62"
+         "\x65\x69\x6e\x67\x20\x75\x73\x65\x64\x20\x62\x79\x20\x74\x68"
+         "\x65\x20\x48\x4d\x41\x43\x20\x61\x6c\x67\x6f\x72\x69\x74\x68"
+         "\x6d\x2e"
+         /* "This is a test using a larger than block-size key and a "
+             "larger than block-size data.  The key needs to be hashed "
+             "before being used by the HMAC algorithm." */
      },
      {73, 152},
      {/* HMAC-SHA-1 */
@@ -342,32 +342,32 @@ static struct pbkdf2 {
      "salt",
      4,
      1,
-     {0x0c, 0x60, 0xc8, 0x0f, 0x96, 0x1f, 0x0e, 0x71, 0xf3, 0xa9, 0xb5, 0x24,
-      0xaf, 0x60, 0x12, 0x06, 0x2f, 0xe0, 0x37, 0xa6},
+     {0x0c, 0x60, 0xc8, 0x0f, 0x96, 0x1f, 0x0e, 0x71, 0xf3, 0xa9,
+      0xb5, 0x24, 0xaf, 0x60, 0x12, 0x06, 0x2f, 0xe0, 0x37, 0xa6},
      20},
     {"password",
      8,
      "salt",
      4,
      1,
-     {0x0c, 0x60, 0xc8, 0x0f, 0x96, 0x1f, 0x0e, 0x71, 0xf3, 0xa9, 0xb5, 0x24,
-      0xaf, 0x60, 0x12, 0x06, 0x2f, 0xe0, 0x37, 0xa6},
+     {0x0c, 0x60, 0xc8, 0x0f, 0x96, 0x1f, 0x0e, 0x71, 0xf3, 0xa9,
+      0xb5, 0x24, 0xaf, 0x60, 0x12, 0x06, 0x2f, 0xe0, 0x37, 0xa6},
      0},
     {"password",
      8,
      "salt",
      4,
      2,
-     {0xea, 0x6c, 0x01, 0x4d, 0xc7, 0x2d, 0x6f, 0x8c, 0xcd, 0x1e, 0xd9, 0x2a,
-      0xce, 0x1d, 0x41, 0xf0, 0xd8, 0xde, 0x89, 0x57},
+     {0xea, 0x6c, 0x01, 0x4d, 0xc7, 0x2d, 0x6f, 0x8c, 0xcd, 0x1e,
+      0xd9, 0x2a, 0xce, 0x1d, 0x41, 0xf0, 0xd8, 0xde, 0x89, 0x57},
      20},
     {"password",
      8,
      "salt",
      4,
      4096,
-     {0x4b, 0x00, 0x79, 0x01, 0xb7, 0x65, 0x48, 0x9a, 0xbe, 0xad, 0x49, 0xd9,
-      0x26, 0xf7, 0x21, 0xd0, 0x65, 0xa4, 0x29, 0xc1},
+     {0x4b, 0x00, 0x79, 0x01, 0xb7, 0x65, 0x48, 0x9a, 0xbe, 0xad,
+      0x49, 0xd9, 0x26, 0xf7, 0x21, 0xd0, 0x65, 0xa4, 0x29, 0xc1},
      20},
     /* Disabled due to #236
     {
@@ -380,15 +380,15 @@ static struct pbkdf2 {
     },
     */
     {
-     "passwordPASSWORDpassword",
-     24,
-     "saltSALTsaltSALTsaltSALTsaltSALTsalt",
-     36,
-     4096,
-     {0x3d, 0x2e, 0xec, 0x4f, 0xe4, 0x1c, 0x84, 0x9b, 0x80, 0xc8, 0xd8, 0x36,
-      0x62, 0xc0, 0xe4, 0x4a, 0x8b, 0x29, 0x1a, 0x96, 0x4c, 0xf2, 0xf0, 0x70,
-      0x38},
-     25,
+        "passwordPASSWORDpassword",
+        24,
+        "saltSALTsaltSALTsaltSALTsaltSALTsalt",
+        36,
+        4096,
+        {0x3d, 0x2e, 0xec, 0x4f, 0xe4, 0x1c, 0x84, 0x9b, 0x80,
+         0xc8, 0xd8, 0x36, 0x62, 0xc0, 0xe4, 0x4a, 0x8b, 0x29,
+         0x1a, 0x96, 0x4c, 0xf2, 0xf0, 0x70, 0x38},
+        25,
     },
     {"pass\0word",
      9,

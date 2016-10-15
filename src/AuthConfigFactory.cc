@@ -84,8 +84,8 @@ AuthConfigFactory::createAuthConfig(const std::shared_ptr<Request>& request,
                                   request->getPassword());
       }
       else {
-        return createHttpAuthResolver(op)
-            ->resolveAuthConfig(request->getHost());
+        return createHttpAuthResolver(op)->resolveAuthConfig(
+            request->getHost());
       }
     }
   }

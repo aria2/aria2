@@ -74,13 +74,12 @@ static int is_digit(char c) { return '0' <= c && c <= '9'; }
 int uri_split(uri_split_result* res, const char* uri)
 {
   int state = URI_BEFORE_SCHEME;
-  const char* scheme_first = NULL, * scheme_last = NULL, * host_first = NULL,
-              * host_last = NULL, * path_first = NULL, * path_last = NULL,
-              * query_first = NULL, * query_last = NULL,
-              * fragment_first = NULL, * fragment_last = NULL,
-              * user_first = NULL, * user_last = NULL, * passwd_first = NULL,
-              * passwd_last = NULL, * last_atmark = NULL, * last_slash = NULL,
-              * p = uri;
+  const char *scheme_first = NULL, *scheme_last = NULL, *host_first = NULL,
+             *host_last = NULL, *path_first = NULL, *path_last = NULL,
+             *query_first = NULL, *query_last = NULL, *fragment_first = NULL,
+             *fragment_last = NULL, *user_first = NULL, *user_last = NULL,
+             *passwd_first = NULL, *passwd_last = NULL, *last_atmark = NULL,
+             *last_slash = NULL, *p = uri;
   int32_t port = -1;
   uint8_t flags = 0;
 

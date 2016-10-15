@@ -44,14 +44,14 @@
 #endif // __MINGW32__
 
 #ifdef __MINGW32__
-#define a2_sockopt_t char *
+#define a2_sockopt_t char*
 #ifndef HAVE_GETADDRINFO
 #define HAVE_GETADDRINFO
 #endif // !HAVE_GETADDRINFO
 #undef HAVE_GAI_STRERROR
 #undef gai_strerror
 #else
-#define a2_sockopt_t void *
+#define a2_sockopt_t void*
 #endif // __MINGW32__
 
 #ifdef HAVE_NETDB_H

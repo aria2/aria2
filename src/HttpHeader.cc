@@ -195,8 +195,8 @@ void HttpHeader::setReasonPhrase(const std::string& reasonPhrase)
 bool HttpHeader::fieldContains(int hdKey, const char* value)
 {
   std::pair<std::multimap<int, std::string>::const_iterator,
-            std::multimap<int, std::string>::const_iterator> range =
-      equalRange(hdKey);
+            std::multimap<int, std::string>::const_iterator>
+      range = equalRange(hdKey);
   for (auto i = range.first; i != range.second; ++i) {
     std::vector<Scip> values;
     util::splitIter((*i).second.begin(), (*i).second.end(),
@@ -221,12 +221,29 @@ bool HttpHeader::isKeepAlive() const
 
 namespace {
 const char* INTERESTING_HEADER_NAMES[] = {
-    "accept-encoding", "access-control-request-headers",
-    "access-control-request-method", "authorization", "connection",
-    "content-disposition", "content-encoding", "content-length",
-    "content-range", "content-type", "digest", "infohash", "last-modified",
-    "link", "location", "origin", "port", "retry-after", "sec-websocket-key",
-    "sec-websocket-version", "set-cookie", "transfer-encoding", "upgrade",
+    "accept-encoding",
+    "access-control-request-headers",
+    "access-control-request-method",
+    "authorization",
+    "connection",
+    "content-disposition",
+    "content-encoding",
+    "content-length",
+    "content-range",
+    "content-type",
+    "digest",
+    "infohash",
+    "last-modified",
+    "link",
+    "location",
+    "origin",
+    "port",
+    "retry-after",
+    "sec-websocket-key",
+    "sec-websocket-version",
+    "set-cookie",
+    "transfer-encoding",
+    "upgrade",
 };
 } // namespace
 

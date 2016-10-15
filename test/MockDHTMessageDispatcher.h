@@ -29,19 +29,20 @@ public:
 public:
   MockDHTMessageDispatcher() {}
 
-  virtual void addMessageToQueue(
-      std::unique_ptr<DHTMessage> message, std::chrono::seconds timeout,
-      std::unique_ptr<DHTMessageCallback>
-          callback = std::unique_ptr<DHTMessageCallback>{}) CXX11_OVERRIDE
+  virtual void
+  addMessageToQueue(std::unique_ptr<DHTMessage> message,
+                    std::chrono::seconds timeout,
+                    std::unique_ptr<DHTMessageCallback> callback =
+                        std::unique_ptr<DHTMessageCallback>{}) CXX11_OVERRIDE
   {
     messageQueue_.push_back(
         Entry(std::move(message), std::move(timeout), std::move(callback)));
   }
 
-  virtual void addMessageToQueue(
-      std::unique_ptr<DHTMessage> message,
-      std::unique_ptr<DHTMessageCallback>
-          callback = std::unique_ptr<DHTMessageCallback>{}) CXX11_OVERRIDE
+  virtual void
+  addMessageToQueue(std::unique_ptr<DHTMessage> message,
+                    std::unique_ptr<DHTMessageCallback> callback =
+                        std::unique_ptr<DHTMessageCallback>{}) CXX11_OVERRIDE
   {
     messageQueue_.push_back(
         Entry(std::move(message), DHT_MESSAGE_TIMEOUT, std::move(callback)));

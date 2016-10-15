@@ -777,7 +777,8 @@ void formatDownloadResultCommon(
   if (downloadResult->sessionTime.count() > 0) {
     o << std::setw(8)
       << util::abbrevSize(downloadResult->sessionDownloadLength * 1000 /
-                          downloadResult->sessionTime.count()) << "B/s";
+                          downloadResult->sessionTime.count())
+      << "B/s";
   }
   else {
     o << std::setw(11);

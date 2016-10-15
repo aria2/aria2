@@ -50,16 +50,14 @@ class DHTMessageDispatcher {
 public:
   virtual ~DHTMessageDispatcher() = default;
 
-  virtual void
-  addMessageToQueue(std::unique_ptr<DHTMessage> message,
-                    std::chrono::seconds timeout,
-                    std::unique_ptr<DHTMessageCallback>
-                        callback = std::unique_ptr<DHTMessageCallback>{}) = 0;
+  virtual void addMessageToQueue(std::unique_ptr<DHTMessage> message,
+                                 std::chrono::seconds timeout,
+                                 std::unique_ptr<DHTMessageCallback> callback =
+                                     std::unique_ptr<DHTMessageCallback>{}) = 0;
 
-  virtual void
-  addMessageToQueue(std::unique_ptr<DHTMessage> message,
-                    std::unique_ptr<DHTMessageCallback>
-                        callback = std::unique_ptr<DHTMessageCallback>{}) = 0;
+  virtual void addMessageToQueue(std::unique_ptr<DHTMessage> message,
+                                 std::unique_ptr<DHTMessageCallback> callback =
+                                     std::unique_ptr<DHTMessageCallback>{}) = 0;
 
   virtual void sendMessages() = 0;
 

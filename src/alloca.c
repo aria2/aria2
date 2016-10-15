@@ -61,7 +61,7 @@ you lose-- must know STACK_DIRECTION at compile - time
 #if defined(CRAY) && defined(CRAY_STACKSEG_END)
     long
     i00afunc();
-#define ADDRESS_FUNCTION(arg) (char*) i00afunc(&(arg))
+#define ADDRESS_FUNCTION(arg) (char*)i00afunc(&(arg))
 #else
 #define ADDRESS_FUNCTION(arg) &(arg)
 #endif
@@ -344,7 +344,7 @@ static long i00afunc(long* address)
 {
   struct stk_stat status;
   struct stk_trailer* trailer;
-  long* block, size;
+  long *block, size;
   long result = 0;
 
   /* We want to iterate through all of the segments.  The first

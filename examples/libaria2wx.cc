@@ -389,8 +389,9 @@ int downloaderJob(JobQueue& jobq, NotifyQueue& notifyq)
       break;
     }
     auto now = std::chrono::steady_clock::now();
-    auto count = std::chrono::duration_cast<std::chrono::milliseconds>(
-                     now - start).count();
+    auto count =
+        std::chrono::duration_cast<std::chrono::milliseconds>(now - start)
+            .count();
     while (!jobq.empty()) {
       std::unique_ptr<Job> job = jobq.pop();
       job->execute(session);

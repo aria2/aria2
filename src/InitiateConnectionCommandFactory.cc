@@ -56,8 +56,7 @@ InitiateConnectionCommandFactory::createInitiateConnectionCommand(
   if (req->getProtocol() == "http"
 #ifdef ENABLE_SSL
       // for SSL
-      ||
-      req->getProtocol() == "https"
+      || req->getProtocol() == "https"
 #endif // ENABLE_SSL
       ) {
 

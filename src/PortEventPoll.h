@@ -77,7 +77,8 @@ private:
 
 private:
   typedef std::set<std::shared_ptr<KSocketEntry>,
-                   DerefLess<std::shared_ptr<KSocketEntry>>> KSocketEntrySet;
+                   DerefLess<std::shared_ptr<KSocketEntry>>>
+      KSocketEntrySet;
   KSocketEntrySet socketEntries_;
 #ifdef ENABLE_ASYNC_DNS
   typedef std::set<std::shared_ptr<KAsyncNameResolverEntry>,

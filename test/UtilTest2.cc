@@ -670,8 +670,9 @@ void UtilTest2::testGenerateRandomData()
   double mean = sum / counts.size();
   vector<double> diff(counts.size());
   transform(counts.begin(), counts.end(), diff.begin(),
-            [&](const decltype(counts)::value_type& elem)
-                -> double { return (double)elem.second - mean; });
+            [&](const decltype(counts)::value_type& elem) -> double {
+              return (double)elem.second - mean;
+            });
   double sq_sum = inner_product(diff.begin(), diff.end(), diff.begin(), 0.0);
   double stddev = sqrt(sq_sum / counts.size());
   cout << "stddev: " << fixed << stddev << endl;

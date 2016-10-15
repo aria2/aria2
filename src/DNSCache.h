@@ -98,7 +98,8 @@ private:
   };
 
   typedef std::set<std::shared_ptr<CacheEntry>,
-                   DerefLess<std::shared_ptr<CacheEntry>>> CacheEntrySet;
+                   DerefLess<std::shared_ptr<CacheEntry>>>
+      CacheEntrySet;
   CacheEntrySet entries_;
 
 public:

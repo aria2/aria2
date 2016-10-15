@@ -88,8 +88,9 @@ DefaultBtMessageReceiver::receiveHandshake(bool quickReply)
     }
     else {
       throw DL_ABORT_EX(
-          fmt("Bad Info Hash %s", util::toHex(peerConnection_->getBuffer() + 28,
-                                              INFO_HASH_LENGTH).c_str()));
+          fmt("Bad Info Hash %s",
+              util::toHex(peerConnection_->getBuffer() + 28, INFO_HASH_LENGTH)
+                  .c_str()));
     }
     if (peerConnection_->getBufferLength() ==
             BtHandshakeMessage::MESSAGE_LENGTH &&

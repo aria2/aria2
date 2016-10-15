@@ -196,7 +196,7 @@ public:
   }
   ulong<dim>& operator*=(const ulong<dim>& rhs)
   {
-    *this = *this* rhs;
+    *this = *this * rhs;
     return *this;
   }
 

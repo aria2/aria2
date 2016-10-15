@@ -109,7 +109,7 @@ void IndexedListTest::testErase()
     CPPUNIT_ASSERT_EQUAL((size_t)(std::distance(i, list.end())), list.size());
 
     int* pp = ++p;
-    for (IndexedList<int, int*>::iterator j = list.begin(); j != list.end();
+    for (IndexedList<int, int *>::iterator j = list.begin(); j != list.end();
          ++j, ++pp) {
       CPPUNIT_ASSERT_EQUAL(*pp, **j);
     }
