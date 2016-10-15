@@ -71,21 +71,23 @@ private:
 };
 
 typedef MessageDigestBase<CC_MD5_DIGEST_LENGTH, CC_MD5_CTX, CC_MD5_Init,
-                          CC_MD5_Update, CC_MD5_Final> MessageDigestMD5;
+                          CC_MD5_Update, CC_MD5_Final>
+    MessageDigestMD5;
 typedef MessageDigestBase<CC_SHA1_DIGEST_LENGTH, CC_SHA1_CTX, CC_SHA1_Init,
-                          CC_SHA1_Update, CC_SHA1_Final> MessageDigestSHA1;
+                          CC_SHA1_Update, CC_SHA1_Final>
+    MessageDigestSHA1;
 typedef MessageDigestBase<CC_SHA224_DIGEST_LENGTH, CC_SHA256_CTX,
-                          CC_SHA224_Init, CC_SHA224_Update,
-                          CC_SHA224_Final> MessageDigestSHA224;
+                          CC_SHA224_Init, CC_SHA224_Update, CC_SHA224_Final>
+    MessageDigestSHA224;
 typedef MessageDigestBase<CC_SHA256_DIGEST_LENGTH, CC_SHA256_CTX,
-                          CC_SHA256_Init, CC_SHA256_Update,
-                          CC_SHA256_Final> MessageDigestSHA256;
+                          CC_SHA256_Init, CC_SHA256_Update, CC_SHA256_Final>
+    MessageDigestSHA256;
 typedef MessageDigestBase<CC_SHA384_DIGEST_LENGTH, CC_SHA512_CTX,
-                          CC_SHA384_Init, CC_SHA384_Update,
-                          CC_SHA384_Final> MessageDigestSHA384;
+                          CC_SHA384_Init, CC_SHA384_Update, CC_SHA384_Final>
+    MessageDigestSHA384;
 typedef MessageDigestBase<CC_SHA512_DIGEST_LENGTH, CC_SHA512_CTX,
-                          CC_SHA512_Init, CC_SHA512_Update,
-                          CC_SHA512_Final> MessageDigestSHA512;
+                          CC_SHA512_Init, CC_SHA512_Update, CC_SHA512_Final>
+    MessageDigestSHA512;
 
 } // namespace
 

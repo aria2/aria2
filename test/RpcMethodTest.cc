@@ -340,14 +340,15 @@ RpcRequest createAddTorrentReq()
 void RpcMethodTest::testAddTorrent()
 {
   File(e_->getOption()->get(PREF_DIR) +
-       "/0a3893293e27ac0490424c06de4d09242215f0a6.torrent").remove();
+       "/0a3893293e27ac0490424c06de4d09242215f0a6.torrent")
+      .remove();
   AddTorrentRpcMethod m;
   {
     // Saving upload metadata is disabled by option.
     auto res = m.execute(createAddTorrentReq(), e_.get());
-    CPPUNIT_ASSERT(
-        !File(e_->getOption()->get(PREF_DIR) +
-              "/0a3893293e27ac0490424c06de4d09242215f0a6.torrent").exists());
+    CPPUNIT_ASSERT(!File(e_->getOption()->get(PREF_DIR) +
+                         "/0a3893293e27ac0490424c06de4d09242215f0a6.torrent")
+                        .exists());
     CPPUNIT_ASSERT_EQUAL(0, res.code);
     CPPUNIT_ASSERT_EQUAL(sizeof(a2_gid_t) * 2,
                          downcast<String>(res.param)->s().size());
@@ -355,9 +356,9 @@ void RpcMethodTest::testAddTorrent()
   e_->getOption()->put(PREF_RPC_SAVE_UPLOAD_METADATA, A2_V_TRUE);
   {
     auto res = m.execute(createAddTorrentReq(), e_.get());
-    CPPUNIT_ASSERT(
-        File(e_->getOption()->get(PREF_DIR) +
-             "/0a3893293e27ac0490424c06de4d09242215f0a6.torrent").exists());
+    CPPUNIT_ASSERT(File(e_->getOption()->get(PREF_DIR) +
+                        "/0a3893293e27ac0490424c06de4d09242215f0a6.torrent")
+                       .exists());
     CPPUNIT_ASSERT_EQUAL(0, res.code);
     a2_gid_t gid;
     CPPUNIT_ASSERT_EQUAL(
@@ -457,7 +458,8 @@ RpcRequest createAddMetalinkReq()
 void RpcMethodTest::testAddMetalink()
 {
   File(e_->getOption()->get(PREF_DIR) +
-       "/c908634fbc257fd56f0114912c2772aeeb4064f4.meta4").remove();
+       "/c908634fbc257fd56f0114912c2772aeeb4064f4.meta4")
+      .remove();
   AddMetalinkRpcMethod m;
   {
     // Saving upload metadata is disabled by option.
@@ -472,9 +474,9 @@ void RpcMethodTest::testAddMetalink()
     CPPUNIT_ASSERT_EQUAL(
         0, GroupId::toNumericId(
                gid2, downcast<String>(resParams->get(1))->s().c_str()));
-    CPPUNIT_ASSERT(
-        !File(e_->getOption()->get(PREF_DIR) +
-              "/c908634fbc257fd56f0114912c2772aeeb4064f4.meta4").exists());
+    CPPUNIT_ASSERT(!File(e_->getOption()->get(PREF_DIR) +
+                         "/c908634fbc257fd56f0114912c2772aeeb4064f4.meta4")
+                        .exists());
   }
   e_->getOption()->put(PREF_RPC_SAVE_UPLOAD_METADATA, A2_V_TRUE);
   {
@@ -489,9 +491,9 @@ void RpcMethodTest::testAddMetalink()
     CPPUNIT_ASSERT_EQUAL(
         0, GroupId::toNumericId(
                gid4, downcast<String>(resParams->get(1))->s().c_str()));
-    CPPUNIT_ASSERT(
-        File(e_->getOption()->get(PREF_DIR) +
-             "/c908634fbc257fd56f0114912c2772aeeb4064f4.meta4").exists());
+    CPPUNIT_ASSERT(File(e_->getOption()->get(PREF_DIR) +
+                        "/c908634fbc257fd56f0114912c2772aeeb4064f4.meta4")
+                       .exists());
 
     auto tar = findReservedGroup(e_->getRequestGroupMan().get(), gid3);
     CPPUNIT_ASSERT(tar);
@@ -1018,8 +1020,10 @@ void RpcMethodTest::testGatherProgressCommon()
   CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"),
                        downcast<String>(file->get("path"))->s());
   CPPUNIT_ASSERT_EQUAL(
-      uris[0], downcast<String>(downcast<Dict>(downcast<List>(file->get("uris"))
-                                                   ->get(0))->get("uri"))->s());
+      uris[0],
+      downcast<String>(
+          downcast<Dict>(downcast<List>(file->get("uris"))->get(0))->get("uri"))
+          ->s());
   CPPUNIT_ASSERT_EQUAL(e_->getOption()->get(PREF_DIR),
                        downcast<String>(entry->get("dir"))->s());
 
@@ -1389,15 +1393,18 @@ void RpcMethodTest::testSystemMulticall()
   CPPUNIT_ASSERT_EQUAL(
       GroupId::toHex(getReservedGroup(rgman.get(), 1)->getGID()),
       downcast<String>(downcast<List>(resParams->get(1))->get(0))->s());
-  CPPUNIT_ASSERT_EQUAL((int64_t)1,
-                       downcast<Integer>(downcast<Dict>(resParams->get(2))
-                                             ->get("faultCode"))->i());
-  CPPUNIT_ASSERT_EQUAL((int64_t)1,
-                       downcast<Integer>(downcast<Dict>(resParams->get(3))
-                                             ->get("faultCode"))->i());
-  CPPUNIT_ASSERT_EQUAL((int64_t)1,
-                       downcast<Integer>(downcast<Dict>(resParams->get(4))
-                                             ->get("faultCode"))->i());
+  CPPUNIT_ASSERT_EQUAL(
+      (int64_t)1,
+      downcast<Integer>(downcast<Dict>(resParams->get(2))->get("faultCode"))
+          ->i());
+  CPPUNIT_ASSERT_EQUAL(
+      (int64_t)1,
+      downcast<Integer>(downcast<Dict>(resParams->get(3))->get("faultCode"))
+          ->i());
+  CPPUNIT_ASSERT_EQUAL(
+      (int64_t)1,
+      downcast<Integer>(downcast<Dict>(resParams->get(4))->get("faultCode"))
+          ->i());
   CPPUNIT_ASSERT(downcast<List>(resParams->get(5)));
   CPPUNIT_ASSERT(downcast<List>(resParams->get(6)));
 }

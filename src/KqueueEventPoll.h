@@ -81,7 +81,8 @@ private:
   KSocketEntrySet socketEntries_;
 #ifdef ENABLE_ASYNC_DNS
   typedef std::map<std::pair<AsyncNameResolver*, Command*>,
-                   KAsyncNameResolverEntry> KAsyncNameResolverEntrySet;
+                   KAsyncNameResolverEntry>
+      KAsyncNameResolverEntrySet;
   KAsyncNameResolverEntrySet nameResolverEntries_;
 #endif // ENABLE_ASYNC_DNS
 

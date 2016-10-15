@@ -115,7 +115,8 @@ private:
 
 #ifdef ENABLE_ASYNC_DNS
   typedef std::map<std::pair<AsyncNameResolver*, Command*>,
-                   KAsyncNameResolverEntry> KAsyncNameResolverEntrySet;
+                   KAsyncNameResolverEntry>
+      KAsyncNameResolverEntrySet;
 #endif // ENABLE_ASYNC_DNS
 
   uv_loop_t* loop_;

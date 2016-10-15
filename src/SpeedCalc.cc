@@ -75,7 +75,8 @@ int SpeedCalc::calculateSpeed()
     return 0;
   }
   auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
-                     timeSlots_[0].first.difference(now)).count();
+                     timeSlots_[0].first.difference(now))
+                     .count();
   if (elapsed <= 0) {
     elapsed = 1;
   }
@@ -102,7 +103,8 @@ int SpeedCalc::calculateNewestSpeed(int seconds)
   }
 
   auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
-                     (*--it).first.difference(now)).count();
+                     (*--it).first.difference(now))
+                     .count();
   if (elapsed <= 0) {
     elapsed = 1;
   }
@@ -128,7 +130,8 @@ void SpeedCalc::update(size_t bytes)
 int SpeedCalc::calculateAvgSpeed() const
 {
   auto milliElapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
-                          start_.difference(global::wallclock())).count();
+                          start_.difference(global::wallclock()))
+                          .count();
   // if milliElapsed is too small, the average speed is rubbish, better
   // return 0
   if (milliElapsed > 4) {

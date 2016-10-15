@@ -329,7 +329,8 @@ bool AbstractCommand::execute()
                              req_->getConnectedPort());
       }
       if (e_->findCachedIPAddress(req_->getConnectedHostname(),
-                                  req_->getConnectedPort()).empty()) {
+                                  req_->getConnectedPort())
+              .empty()) {
         A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - All IP addresses were marked bad."
                          " Removing Entry.",
                          getCuid()));

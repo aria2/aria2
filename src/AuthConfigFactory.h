@@ -76,7 +76,8 @@ public:
 class AuthConfigFactory {
 public:
   typedef std::set<std::unique_ptr<BasicCred>,
-                   DerefLess<std::unique_ptr<BasicCred>>> BasicCredSet;
+                   DerefLess<std::unique_ptr<BasicCred>>>
+      BasicCredSet;
 
 private:
   std::unique_ptr<Netrc> netrc_;

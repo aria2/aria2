@@ -77,8 +77,9 @@ void CookieStorageTest::testStore()
   CPPUNIT_ASSERT_EQUAL((size_t)1, st.size());
   CPPUNIT_ASSERT(st.contains(*goodCookie()));
 
-  auto anotherCookie =
-      []() { return createCookie("k", "v", "mirror", true, "/", true); };
+  auto anotherCookie = []() {
+    return createCookie("k", "v", "mirror", true, "/", true);
+  };
   CPPUNIT_ASSERT(st.store(anotherCookie(), now));
   CPPUNIT_ASSERT_EQUAL((size_t)2, st.size());
   CPPUNIT_ASSERT(st.contains(*anotherCookie()));
@@ -107,8 +108,9 @@ void CookieStorageTest::testStore()
   CPPUNIT_ASSERT_EQUAL((size_t)1, st.size());
   CPPUNIT_ASSERT(st.contains(*anotherCookie()));
 
-  auto fromNumericHost =
-      []() { return createCookie("k", "v", "192.168.1.1", true, "/", false); };
+  auto fromNumericHost = []() {
+    return createCookie("k", "v", "192.168.1.1", true, "/", false);
+  };
   CPPUNIT_ASSERT(st.store(fromNumericHost(), now));
   CPPUNIT_ASSERT_EQUAL((size_t)2, st.size());
   CPPUNIT_ASSERT(st.contains(*fromNumericHost()));

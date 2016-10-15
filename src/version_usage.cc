@@ -67,14 +67,17 @@ void showVersion()
            "This program is distributed in the hope that it will be useful,\n"
            "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
            "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-           "GNU General Public License for more details.\n") << "\n"
-      << _("** Configuration **") << "\n" << _("Enabled Features") << ": "
-      << featureSummary() << "\n" << _("Hash Algorithms") << ": "
-      << MessageDigest::getSupportedHashTypeString() << "\n" << _("Libraries")
-      << ": " << usedLibs() << "\n" << _("Compiler") << ": "
-      << usedCompilerAndPlatform() << "\n" << _("System") << ": "
-      << getOperatingSystemInfo() << "\n"
-      << "\n" << fmt(_("Report bugs to %s"), PACKAGE_BUGREPORT) << "\n"
+           "GNU General Public License for more details.\n")
+      << "\n"
+      << _("** Configuration **") << "\n"
+      << _("Enabled Features") << ": " << featureSummary() << "\n"
+      << _("Hash Algorithms") << ": "
+      << MessageDigest::getSupportedHashTypeString() << "\n"
+      << _("Libraries") << ": " << usedLibs() << "\n"
+      << _("Compiler") << ": " << usedCompilerAndPlatform() << "\n"
+      << _("System") << ": " << getOperatingSystemInfo() << "\n"
+      << "\n"
+      << fmt(_("Report bugs to %s"), PACKAGE_BUGREPORT) << "\n"
       << _("Visit") << " " << PACKAGE_URL << std::endl;
 }
 
@@ -105,8 +108,9 @@ void showUsage(const std::string& keyword,
     out->printf("\n");
     out->printf(_("Options:"));
     out->printf("\n");
-    for (std::vector<const OptionHandler*>::const_iterator i = handlers.begin(),
-                                                           eoi = handlers.end();
+    for (std::vector<const OptionHandler *>::const_iterator
+             i = handlers.begin(),
+             eoi = handlers.end();
          i != eoi; ++i) {
       write(out, *(*i));
       out->printf("\n");
@@ -121,7 +125,7 @@ void showUsage(const std::string& keyword,
       out->printf("\n");
       out->printf(_("Options:"));
       out->printf("\n");
-      for (std::vector<const OptionHandler*>::const_iterator
+      for (std::vector<const OptionHandler *>::const_iterator
                i = handlers.begin(),
                eoi = handlers.end();
            i != eoi; ++i) {

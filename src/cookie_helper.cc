@@ -135,8 +135,7 @@ bool parseDate(time_t& time, std::string::const_iterator first,
       minute = getInteger(hEnd + 1, mEnd);
       second = getInteger(mEnd + 1, sEnd);
       continue;
-    NOT_TIME:
-      ;
+    NOT_TIME:;
     }
     if (!foundDayOfMonth) {
       std::string::const_iterator j = getNextDigit((*i).begin(), (*i).end());

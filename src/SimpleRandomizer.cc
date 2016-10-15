@@ -107,8 +107,7 @@ void SimpleRandomizer::getRandomBytes(unsigned char* buf, size_t len)
          * check out. If the call failed, we'll not take this branch at all
          * and disable support below.
          */
-        ||
-        errno != ENOSYS
+        || errno != ENOSYS
 #endif
         ) {
       if (rv < -1) {

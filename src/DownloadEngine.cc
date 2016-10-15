@@ -431,8 +431,8 @@ std::multimap<std::string, DownloadEngine::SocketPoolEntry>::iterator
 DownloadEngine::findSocketPoolEntry(const std::string& key)
 {
   std::pair<std::multimap<std::string, SocketPoolEntry>::iterator,
-            std::multimap<std::string, SocketPoolEntry>::iterator> range =
-      socketPool_.equal_range(key);
+            std::multimap<std::string, SocketPoolEntry>::iterator>
+      range = socketPool_.equal_range(key);
   for (auto i = range.first, eoi = range.second; i != eoi; ++i) {
     const SocketPoolEntry& e = (*i).second;
     // We assume that if socket is readable it means peer shutdowns

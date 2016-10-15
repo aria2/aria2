@@ -161,24 +161,26 @@ std::string DefaultBtAnnounce::getAnnounceUrl()
   const size_t keyLen = 8;
   std::string uri = announceList_.getAnnounce();
   uri += uriHasQuery(uri) ? "&" : "?";
-  uri += fmt("info_hash=%s&"
-             "peer_id=%s&"
-             "uploaded=%" PRId64 "&"
-             "downloaded=%" PRId64 "&"
-             "left=%" PRId64 "&"
-             "compact=1&"
-             "key=%s&"
-             "numwant=%d&"
-             "no_peer_id=1",
-             util::percentEncode(bittorrent::getInfoHash(downloadContext_),
-                                 INFO_HASH_LENGTH).c_str(),
-             util::percentEncode(bittorrent::getStaticPeerId(), PEER_ID_LENGTH)
-                 .c_str(),
-             stat.getSessionUploadLength(), stat.getSessionDownloadLength(),
-             left, util::percentEncode(bittorrent::getStaticPeerId() +
-                                           PEER_ID_LENGTH - keyLen,
-                                       keyLen).c_str(),
-             numWant);
+  uri +=
+      fmt("info_hash=%s&"
+          "peer_id=%s&"
+          "uploaded=%" PRId64 "&"
+          "downloaded=%" PRId64 "&"
+          "left=%" PRId64 "&"
+          "compact=1&"
+          "key=%s&"
+          "numwant=%d&"
+          "no_peer_id=1",
+          util::percentEncode(bittorrent::getInfoHash(downloadContext_),
+                              INFO_HASH_LENGTH)
+              .c_str(),
+          util::percentEncode(bittorrent::getStaticPeerId(), PEER_ID_LENGTH)
+              .c_str(),
+          stat.getSessionUploadLength(), stat.getSessionDownloadLength(), left,
+          util::percentEncode(
+              bittorrent::getStaticPeerId() + PEER_ID_LENGTH - keyLen, keyLen)
+              .c_str(),
+          numWant);
   if (tcpPort_) {
     uri += fmt("&port=%u", tcpPort_);
   }

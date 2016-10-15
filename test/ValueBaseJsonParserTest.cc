@@ -177,13 +177,13 @@ void ValueBaseJsonParserTest::testParseUpdate()
     const Integer* i = downcast<Integer>(list->get(0));
     CPPUNIT_ASSERT_EQUAL((Integer::ValueType)0, i->i());
     const Integer* i1 = downcast<Integer>(list->get(1));
-    CPPUNIT_ASSERT_EQUAL((Integer::ValueType) - 1, i1->i());
+    CPPUNIT_ASSERT_EQUAL((Integer::ValueType)-1, i1->i());
     const Integer* i2 = downcast<Integer>(list->get(2));
     CPPUNIT_ASSERT_EQUAL((Integer::ValueType)1, i2->i());
     const Integer* i3 = downcast<Integer>(list->get(3));
-    CPPUNIT_ASSERT_EQUAL((Integer::ValueType) - 1, i3->i());
+    CPPUNIT_ASSERT_EQUAL((Integer::ValueType)-1, i3->i());
     const Integer* i4 = downcast<Integer>(list->get(4));
-    CPPUNIT_ASSERT_EQUAL((Integer::ValueType) - 1, i4->i());
+    CPPUNIT_ASSERT_EQUAL((Integer::ValueType)-1, i4->i());
   }
   {
     // escape chars: ", \, /, \b, \f, \n, \r, \t

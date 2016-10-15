@@ -55,8 +55,7 @@ public:
   Timer(Timer&& time) = default;
 
   template <typename duration>
-  constexpr explicit Timer(const duration& t)
-      : tp_(t)
+  constexpr explicit Timer(const duration& t) : tp_(t)
   {
   }
 

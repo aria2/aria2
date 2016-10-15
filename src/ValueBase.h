@@ -87,8 +87,7 @@ public:
   String(const unsigned char* data, size_t length);
 
   template <typename InputIterator>
-  String(InputIterator first, InputIterator last)
-      : str_(first, last)
+  String(InputIterator first, InputIterator last) : str_(first, last)
   {
   }
 

@@ -1032,18 +1032,10 @@ static const std::set<std::string> names{
 
 // For fast name |lookup|
 static const std::unordered_map<std::string, Algorithms> mapped{
-    {"md5", algoMD5},
-    {"sha", algoSHA1},
-    {"sha1", algoSHA1},
-    {"sha-1", algoSHA1},
-    {"sha224", algoSHA224},
-    {"sha-224", algoSHA224},
-    {"sha256", algoSHA256},
-    {"sha-256", algoSHA256},
-    {"sha384", algoSHA384},
-    {"sha-384", algoSHA384},
-    {"sha512", algoSHA512},
-    {"sha-512", algoSHA512},
+    {"md5", algoMD5},        {"sha", algoSHA1},       {"sha1", algoSHA1},
+    {"sha-1", algoSHA1},     {"sha224", algoSHA224},  {"sha-224", algoSHA224},
+    {"sha256", algoSHA256},  {"sha-256", algoSHA256}, {"sha384", algoSHA384},
+    {"sha-384", algoSHA384}, {"sha512", algoSHA512},  {"sha-512", algoSHA512},
 };
 static const auto mapped_end = mapped.end();
 } // namespace
