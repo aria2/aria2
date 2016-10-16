@@ -1,59 +1,43 @@
-aria2 1.27.1
+aria2 1.28.0
 ============
 
 Release Note
 ------------
 
-This release fixes the packaging bug that libssl_compat.h is missing
-in the tar balls.
+This release fixes the bug that file name is not logged with
+--conditional-get option is used.  The new option
+--keep-unfinished-download-result was added to keep incomplete
+downloads in memory regardless of --max-download-result so that we can
+save those downloads with --save-session option.  This option is
+enabled by default.
+
+This release
 
 Changes
 -------
 
-* Add missing libssl_compat.h to SRCS
+* Restore LTLIBINTL in src/Makefile.am
 
-  GH-744
+  Patch from Juan Francisco Cantero Hurtado
 
-
+* Add --keep-unfinished-download-result option
 
-aria2 1.27.0
-============
+  This option keeps unfinished download results even if doing so
+  exceeds --max-download-result.  This is useful if all unfinished
+  downloads must be saved in session file (see --save-session option).
+  Please keep in mind that there is no upper bound to the number of
+  unfinished download result to keep.  This option is enabled by
+  default.
 
-Release Note
-------------
+* Fix -Wexpansion-to-defined warning with clang-3.9
 
-This release fixes bug which may cause crash if UDP tracker is used.
-It adds new option --save-not-found which prevents downloads failed by
-"not found" error from being saved in session file.
+  The error message was:
 
-Changes
--------
+  warning: macro expansion producing 'defined' has undefined behavior
+  [-Wexpansion-to-defined]
 
-* Hard-disable openssl in osx build
+  http://lists.llvm.org/pipermail/cfe-commits/Week-of-Mon-20160118/147239.html
 
-  Closes #739
+* Fix bug that file name is not logged with --conditional-get
 
-* Fix possible cause of crash if UDP tracker is used
-
-* Remove custom ftruncate64 for Android
-
-  The latest NDK versions support ftruncate64, so building a local
-  copy of ftruncate64 is no longer needed.
-
-  Also, the arm and x86 builds of ftruncate64 failed when targeting
-  API level 21 or higher, as they include <linux/err.h> which are not
-  present starting from API level 21.
-
-  Patch from Fredrik Fornwall
-
-* Fix typo found by Debian's Lintian
-
-* Add --save-not-found option
-
-* Update comment to match code
-
-  Patch from Torbjörn Lönnemark
-
-* WinTLS: Better errors (from WSA)
-
-* Compile with openssl 1.1.0
+  GH-742
