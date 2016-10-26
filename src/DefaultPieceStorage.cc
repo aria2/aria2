@@ -119,6 +119,9 @@ DefaultPieceStorage::~DefaultPieceStorage() = default;
 std::shared_ptr<Piece> DefaultPieceStorage::checkOutPiece(size_t index,
                                                           cuid_t cuid)
 {
+  assert(!bitfieldMan_->isFilterEnabled() ||
+         bitfieldMan_->isFilterBitSet(index));
+
   bitfieldMan_->setUseBit(index);
 
   std::shared_ptr<Piece> piece = findUsedPiece(index);
@@ -398,7 +401,9 @@ DefaultPieceStorage::getMissingPiece(size_t minSplitSize,
 std::shared_ptr<Piece> DefaultPieceStorage::getMissingPiece(size_t index,
                                                             cuid_t cuid)
 {
-  if (hasPiece(index) || isPieceUsed(index)) {
+  if (hasPiece(index) || isPieceUsed(index) ||
+      (bitfieldMan_->isFilterEnabled() &&
+       !bitfieldMan_->isFilterBitSet(index))) {
     return nullptr;
   }
   else {
