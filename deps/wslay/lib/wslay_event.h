@@ -56,6 +56,7 @@ enum wslay_event_msg_type {
 struct wslay_event_omsg {
   uint8_t fin;
   uint8_t opcode;
+  uint8_t rsv;
   enum wslay_event_msg_type type;
 
   uint8_t *data;
@@ -135,6 +136,7 @@ struct wslay_event_context {
   struct wslay_event_callbacks callbacks;
   struct wslay_event_frame_user_data frame_user_data;
   void *user_data;
+  uint8_t allowed_rsv_bits;
 };
 
 #endif /* WSLAY_EVENT_H */
