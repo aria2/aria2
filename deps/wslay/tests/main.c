@@ -44,6 +44,7 @@ static int clean_suite1(void)
 int main(void)
 {
    CU_pSuite pSuite = NULL;
+   unsigned int num_tests_failed;
 
    /* initialize the CUnit test registry */
    if (CUE_SUCCESS != CU_initialize_registry())
@@ -93,8 +94,14 @@ int main(void)
                    test_wslay_event_send_fragmented_msg) ||
       !CU_add_test(pSuite, "wslay_event_send_fragmented_msg_with_ctrl",
                    test_wslay_event_send_fragmented_msg_with_ctrl) ||
+      !CU_add_test(pSuite, "wslay_event_send_fragmented_msg_with_rsv1",
+                   test_wslay_event_send_fragmented_msg_with_rsv1) ||
+      !CU_add_test(pSuite, "wslay_event_send_msg_with_rsv1",
+                   test_wslay_event_send_msg_with_rsv1) ||
       !CU_add_test(pSuite, "wslay_event_send_ctrl_msg_first",
                    test_wslay_event_send_ctrl_msg_first) ||
+      !CU_add_test(pSuite, "wslay_event_send_ctrl_msg_with_rsv1",
+                   test_wslay_event_send_ctrl_msg_with_rsv1) ||
       !CU_add_test(pSuite, "wslay_event_queue_close",
                    test_wslay_event_queue_close) ||
       !CU_add_test(pSuite, "wslay_event_queue_close_without_code",
@@ -109,10 +116,14 @@ int main(void)
                    test_wslay_event_callback_failure) ||
       !CU_add_test(pSuite, "wslay_event_no_buffering",
                    test_wslay_event_no_buffering) ||
+      !CU_add_test(pSuite, "wslay_event_recv_text_frame_with_rsv1",
+                   test_wslay_event_recv_text_frame_with_rsv1) ||
       !CU_add_test(pSuite, "wslay_event_frame_too_big",
                    test_wslay_event_frame_too_big) ||
       !CU_add_test(pSuite, "wslay_event_message_too_big",
                    test_wslay_event_message_too_big) ||
+      !CU_add_test(pSuite, "wslay_event_config_set_allowed_rsv_bits",
+                   test_wslay_event_config_set_allowed_rsv_bits) ||
       !CU_add_test(pSuite, "wslay_queue", test_wslay_queue)) {
      CU_cleanup_registry();
      return CU_get_error();
@@ -121,6 +132,12 @@ int main(void)
    /* Run all tests using the CUnit Basic interface */
    CU_basic_set_mode(CU_BRM_VERBOSE);
    CU_basic_run_tests();
+   num_tests_failed = CU_get_number_of_tests_failed();
    CU_cleanup_registry();
-   return CU_get_error();
+   if (CU_get_error() == CUE_SUCCESS) {
+     return (int)num_tests_failed;
+   } else {
+     printf("CUnit Error: %s\n", CU_get_error_msg());
+     return CU_get_error();
+   }
 }

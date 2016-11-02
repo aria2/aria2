@@ -27,7 +27,10 @@
 
 void test_wslay_event_send_fragmented_msg(void);
 void test_wslay_event_send_fragmented_msg_with_ctrl(void);
+void test_wslay_event_send_fragmented_msg_with_rsv1(void);
+void test_wslay_event_send_msg_with_rsv1(void);
 void test_wslay_event_send_ctrl_msg_first(void);
+void test_wslay_event_send_ctrl_msg_with_rsv1(void);
 void test_wslay_event_queue_close(void);
 void test_wslay_event_queue_close_without_code(void);
 void test_wslay_event_recv_close_without_code(void);
@@ -35,7 +38,9 @@ void test_wslay_event_reply_close(void);
 void test_wslay_event_no_more_msg(void);
 void test_wslay_event_callback_failure(void);
 void test_wslay_event_no_buffering(void);
+void test_wslay_event_recv_text_frame_with_rsv1(void);
 void test_wslay_event_frame_too_big(void);
 void test_wslay_event_message_too_big(void);
+void test_wslay_event_config_set_allowed_rsv_bits(void);
 
 #endif /* WSLAY_EVENT_TEST_H */

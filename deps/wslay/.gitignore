@@ -27,3 +27,17 @@ stamp-h1
 INSTALL
 .DS_STORE
 tests/main
+tests/main.log
+tests/main.trs
+tests/test-suite.log
+/compile
+/test-driver
+/build.*
+doc/man
+doc/sphinx/_build
+/CMakeFiles/
+/cmake_install.cmake
+/lib/cmake_install.cmake
+/lib/libwslay.a
+/wslay-config.cmake
+/wslay.cmake

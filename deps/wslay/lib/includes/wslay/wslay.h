@@ -145,10 +145,15 @@ enum wslay_opcode {
 #define wslay_is_ctrl_frame(opcode) ((opcode >> 3) & 1)
 
 /*
- * Macros that returns reserved bits: RSV1, RSV2, RSV3.  These macros
- * assumes that rsv is constructed by ((RSV1 << 2) | (RSV2 << 1) |
- * RSV3)
+ * Macros that represent and return reserved bits: RSV1, RSV2, RSV3.
+ * These macros assume that rsv is constructed by ((RSV1 << 2) |
+ * (RSV2 << 1) | RSV3)
  */
+#define WSLAY_RSV_NONE ((uint8_t) 0)
+#define WSLAY_RSV1_BIT (((uint8_t) 1) << 2)
+#define WSLAY_RSV2_BIT (((uint8_t) 1) << 1)
+#define WSLAY_RSV3_BIT (((uint8_t) 1) << 0)
+
 #define wslay_get_rsv1(rsv) ((rsv >> 2) & 1)
 #define wslay_get_rsv2(rsv) ((rsv >> 1) & 1)
 #define wslay_get_rsv3(rsv) (rsv & 1)
@@ -201,7 +206,7 @@ void wslay_frame_context_free(wslay_frame_context_ptr ctx);
  * 1 if this is masked frame, otherwise 0.  iocb->payload_length is
  * the payload_length of this frame.  iocb->data must point to the
  * payload data to be sent. iocb->data_length must be the length of
- * the data.  This function calls recv_callback function if it needs
+ * the data.  This function calls send_callback function if it needs
  * to send bytes.  This function calls gen_mask_callback function if
  * it needs new mask key.  This function returns the number of payload
  * bytes sent. Please note that it does not include any number of
@@ -408,6 +413,16 @@ int wslay_event_context_client_init
 void wslay_event_context_free(wslay_event_context_ptr ctx);
 
 /*
+ * Sets a bit mask of allowed reserved bits.
+ * Currently only permitted values are WSLAY_RSV1_BIT to allow PMCE
+ * extension (see RFC-7692) or WSLAY_RSV_NONE to disable.
+ *
+ * Default: WSLAY_RSV_NONE
+ */
+void wslay_event_config_set_allowed_rsv_bits(wslay_event_context_ptr ctx,
+                                             uint8_t rsv);
+
+/*
  * Enables or disables buffering of an entire message for non-control
  * frames. If val is 0, buffering is enabled. Otherwise, buffering is
  * disabled. If wslay_event_on_msg_recv_callback is invoked when
@@ -551,6 +566,12 @@ int wslay_event_queue_msg(wslay_event_context_ptr ctx,
                           const struct wslay_event_msg *arg);
 
 /*
+ * Extended version of wslay_event_queue_msg which allows to set reserved bits.
+ */
+int wslay_event_queue_msg_ex(wslay_event_context_ptr ctx,
+                             const struct wslay_event_msg *arg, uint8_t rsv);
+
+/*
  * Specify "source" to generate message.
  */
 union wslay_event_msg_source {
@@ -606,6 +627,13 @@ struct wslay_event_fragmented_msg {
  */
 int wslay_event_queue_fragmented_msg
 (wslay_event_context_ptr ctx, const struct wslay_event_fragmented_msg *arg);
+
+/*
+ * Extended version of wslay_event_queue_fragmented_msg which allows to set
+ * reserved bits.
+ */
+int wslay_event_queue_fragmented_msg_ex(wslay_event_context_ptr ctx,
+    const struct wslay_event_fragmented_msg *arg, uint8_t rsv);
 
 /*
  * Queues close control frame. This function is provided just for

@@ -1,7 +1,7 @@
 Wslay - The WebSocket library
 =============================
 
-Project Web: http://wslay.sourceforge.net/
+Project Web: https://github.com/tatsuhiro-t/wslay
 
 Wslay is a WebSocket library written in C.
 It implements the protocol version 13 described in
@@ -34,7 +34,8 @@ and
 Requirements
 ------------
 
-`Sphinx <http://sphinx.pocoo.org/>`_ is used to generate man pages.
+`Sphinx <http://www.sphinx-doc.org/en/stable/>`_ is used to generate
+man pages.
 
 To build and run the unit test programs, the following packages are
 needed:
