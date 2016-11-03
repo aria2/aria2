@@ -68,6 +68,11 @@ HttpRequestEntry::HttpRequestEntry(std::unique_ptr<HttpRequest> httpRequest)
 {
 }
 
+void HttpRequestEntry::resetHttpHeaderProcessor()
+{
+  proc_ = make_unique<HttpHeaderProcessor>(HttpHeaderProcessor::CLIENT_PARSER);
+}
+
 std::unique_ptr<HttpRequest> HttpRequestEntry::popHttpRequest()
 {
   return std::move(httpRequest_);
@@ -151,9 +156,16 @@ std::unique_ptr<HttpResponse> HttpConnection::receiveResponse()
                   socketRecvBuffer_->getBufferLength())) {
     A2_LOG_INFO(
         fmt(MSG_RECEIVE_RESPONSE, cuid_, proc->getHeaderString().c_str()));
+    auto result = proc->getResult();
+    if (result->getStatusCode() / 100 == 1) {
+      socketRecvBuffer_->drain(proc->getLastBytesProcessed());
+      outstandingHttpRequests_.front()->resetHttpHeaderProcessor();
+      return nullptr;
+    }
+
     auto httpResponse = make_unique<HttpResponse>();
     httpResponse->setCuid(cuid_);
-    httpResponse->setHttpHeader(proc->getResult());
+    httpResponse->setHttpHeader(std::move(result));
     httpResponse->setHttpRequest(
         outstandingHttpRequests_.front()->popHttpRequest());
     socketRecvBuffer_->drain(proc->getLastBytesProcessed());

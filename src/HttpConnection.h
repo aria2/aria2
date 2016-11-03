@@ -62,6 +62,10 @@ private:
 public:
   HttpRequestEntry(std::unique_ptr<HttpRequest> httpRequest);
 
+  // Resets proc_ by recreating the object.  Thus any object obtained
+  // by getHttpRequest() before this call is invalidated.
+  void resetHttpHeaderProcessor();
+
   const std::unique_ptr<HttpRequest>& getHttpRequest() const
   {
     return httpRequest_;
