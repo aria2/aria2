@@ -284,9 +284,8 @@ ssize_t WinTLSSession::writeData(const void* data, size_t len)
                    (uint64_t)len, (uint64_t)writeBuf_.size()));
 
   // Write remaining buffered data, if any.
-  size_t written = 0;
   while (writeBuf_.size()) {
-    written = ::send(sockfd_, writeBuf_.data(), writeBuf_.size(), 0);
+    auto written = ::send(sockfd_, writeBuf_.data(), writeBuf_.size(), 0);
     errno = ::WSAGetLastError();
     if (written < 0 && errno == WSAEINTR) {
       continue;
@@ -385,7 +384,7 @@ ssize_t WinTLSSession::writeData(const void* data, size_t len)
     // Write (or buffer) the message.
     char* p = buf.get();
     while (dl) {
-      written = ::send(sockfd_, p, dl, 0);
+      auto written = ::send(sockfd_, p, dl, 0);
       errno = ::WSAGetLastError();
       if (written < 0 && errno == WSAEINTR) {
         continue;
