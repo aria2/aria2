@@ -100,6 +100,18 @@ public:
 };
 } // namespace wintls
 
+class TLSBuffer : public ::SecBuffer {
+public:
+  TLSBuffer() : ::SecBuffer{}{}
+
+  explicit TLSBuffer(ULONG type, ULONG size, void* data)
+  {
+    cbBuffer = size;
+    BufferType = type;
+    pvBuffer = data;
+  }
+};
+
 class WinTLSSession : public TLSSession {
   enum state_t {
     st_constructed,
@@ -172,16 +184,31 @@ public:
   virtual size_t getRecvBufferedLength() CXX11_OVERRIDE;
 
 private:
+  // Obtains TLS record size limits.  This function returns 0 if it
+  // succeeds, or -1.  status_ and state_ are updated according to the
+  // result.
+  int obtainTLSRecordSizes();
+  // Ensures the buffer size so that maximum TLS record can be sent.
+  void ensureSendBuffer();
+  // Sends TLS record specified in sendRecordBuffers_.  It uses
+  // recordBytesSent_ to track down how many bytes have been sent.
+  // This function returns 0 if it succeeds, or negative error codes.
+  int sendTLSRecord();
+  // Returns the number of bytes in the remaining TLS record size.
+  size_t getLeftTLSRecordSize() const;
+
   std::string hostname_;
   sock_t sockfd_;
   TLSSessionSide side_;
   CredHandle* cred_;
   CtxtHandle handle_;
 
-  // Buffer for already encrypted writes
+  // Buffer for already encrypted writes.  This is only used in
+  // handshake.
   wintls::Buffer writeBuf_;
-  // While the writeBuf_ holds encrypted messages, writeBuffered_ has the
-  // corresponding size of unencrypted data used to produce the messages.
+  // While the sendRecordBuffers_ holds encrypted messages,
+  // writeBuffered_ has the corresponding size of unencrypted data
+  // used to produce the messages.
   size_t writeBuffered_;
   // Buffer for still encrypted reads
   wintls::Buffer readBuf_;
@@ -191,7 +218,16 @@ private:
   state_t state_;
 
   SECURITY_STATUS status_;
-  std::unique_ptr<SecPkgContext_StreamSizes> streamSizes_;
+  // The number of maximum size for TLS record header, body, and
+  // trailer.
+  SecPkgContext_StreamSizes streamSizes_;
+  // Underlying buffer for outgoing TLS record.
+  std::vector<unsigned char> sendBuffer_;
+  // How many bytes has been sent for current TLS record held in
+  // sendRecordBuffers_.
+  size_t recordBytesSent_;
+  // This holds current outgoing TLS record.
+  std::array<TLSBuffer, 4> sendRecordBuffers_;
 };
 
 } // namespace aria2
