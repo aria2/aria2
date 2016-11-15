@@ -1,43 +1,31 @@
-aria2 1.28.0
+aria2 1.29.0
 ============
 
 Release Note
 ------------
 
-This release fixes the bug that file name is not logged with
---conditional-get option is used.  The new option
---keep-unfinished-download-result was added to keep incomplete
-downloads in memory regardless of --max-download-result so that we can
-save those downloads with --save-session option.  This option is
-enabled by default.
-
-This release
+This release fixes several bugs.  See Changes below for detailed bug
+fixes.  This release adds 1xx non-final response support.  Wslay
+library is updated to the latest revision.
 
 Changes
 -------
 
-* Restore LTLIBINTL in src/Makefile.am
+* WinTLS: Fix busy loop on write error
 
-  Patch from Juan Francisco Cantero Hurtado
+  GH-767
 
-* Add --keep-unfinished-download-result option
+* Support 1xx non-final response
 
-  This option keeps unfinished download results even if doing so
-  exceeds --max-download-result.  This is useful if all unfinished
-  downloads must be saved in session file (see --save-session option).
-  Please keep in mind that there is no upper bound to the number of
-  unfinished download result to keep.  This option is enabled by
-  default.
+  GH-763
 
-* Fix -Wexpansion-to-defined warning with clang-3.9
+* Update wslay
 
-  The error message was:
+  GH-764
 
-  warning: macro expansion producing 'defined' has undefined behavior
-  [-Wexpansion-to-defined]
+* Don't download piece which is filtered out (e.g., --select-file)
 
-  http://lists.llvm.org/pipermail/cfe-commits/Week-of-Mon-20160118/147239.html
+  This commit fixes the bug that piece which is not requested by
+  --select-file is downloaded in multi-file Web-Seeding.
 
-* Fix bug that file name is not logged with --conditional-get
-
-  GH-742
+  GH-769
