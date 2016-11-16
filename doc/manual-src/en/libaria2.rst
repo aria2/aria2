@@ -54,12 +54,14 @@ And create aria2 session object::
 :type:`Session` ``session`` is an aria2 session object. You need this
 object through out the download process. Please keep in mind that only
 one :type:`Session` object can be allowed per process due to the heavy
-use of static objects in aria2 code base. :type:`SessionConfig`
-``config`` holds configuration for the session object. The constructor
-initializes it with the default values. In this setup,
-:member:`SessionConfig::keepRunning` is ``false`` which means
-:func:`run()` returns when all downloads are processed, just like
-aria2c utility without RPC enabled.  And
+use of static objects in aria2 code base.  :type:`Session` object is
+not safe for concurrent accesses from multiple threads.  It must be
+used from one thread at a time.  In general, libaria2 is not entirely
+thread-safe.  :type:`SessionConfig` ``config`` holds configuration for
+the session object. The constructor initializes it with the default
+values. In this setup, :member:`SessionConfig::keepRunning` is
+``false`` which means :func:`run()` returns when all downloads are
+processed, just like aria2c utility without RPC enabled.  And
 :member:`SessionConfig::useSignalHandler` is ``true``, which means
 libaria2 will setup signal handlers and catches certain signals to
 halt download process gracefully. We also setup event handler callback
