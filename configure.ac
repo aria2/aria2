@@ -21,7 +21,6 @@ AC_SUBST(LT_REVISION, 0)
 AC_SUBST(LT_AGE, 0)
 
 AC_CONFIG_MACRO_DIR([m4])
-m4_ifdef([AM_PATH_CPPUNIT], [AM_PATH_CPPUNIT(1.10.2)])
 AC_CONFIG_SRCDIR([src/a2io.h])
 AC_CONFIG_HEADERS([config.h])
 
@@ -202,6 +201,9 @@ fi
 
 # Checks for libraries.
 
+# Check availability of cppunit
+PKG_CHECK_MODULES([CPPUNIT], [cppunit >= 1.10.2], [], [])
+
 # Check availability of libz
 if test "x$with_libz" = "xyes"; then
   PKG_CHECK_MODULES([ZLIB], [zlib >= 1.2.3], [have_zlib=yes], [have_zlib=no])
@@ -318,13 +320,7 @@ AM_CONDITIONAL([HAVE_LIBUV], [test "x$have_libuv" = "xyes"])
 
 have_libxml2=no
 if test "x$with_libxml2" = "xyes"; then
-  m4_ifdef([AM_PATH_XML2], [AM_PATH_XML2([2.6.24], [have_libxml2=yes])], [
-    AC_MSG_WARN([configure was generated without libxml2 detection.  libxml2 detection is disabled])
-    XML_CPPFLAGS=
-    XML_LIBS=
-    AC_SUBST([XML_CPPFLAGS])
-    AC_SUBST([XML_LIBS])
-  ])
+  PKG_CHECK_MODULES([LIBXML2],[libxml-2.0 >= 2.6.24],[have_libxml2=yes],[have_libxml2=no])
   if test "x$have_libxml2" = "xyes"; then
     AC_DEFINE([HAVE_LIBXML2], [1], [Define to 1 if you have libxml2.])
   elif test "x$with_libxml2_requested" = "xyes"; then
@@ -334,13 +330,7 @@ fi
 
 have_libexpat=no
 if test "x$with_libexpat" = "xyes" && test "x$have_libxml2" != "xyes"; then
-  m4_ifdef([AM_PATH_LIBEXPAT], [AM_PATH_LIBEXPAT], [
-    AC_MSG_WARN([configure was generated without libexpat detection.  libexpat detection is disabled])
-    EXPAT_CFLAGS=
-    EXPAT_LIBS=
-    AC_SUBST([EXPAT_CFLAGS])
-    AC_SUBST([EXPAT_LIBS])
-  ])
+  PKG_CHECK_MODULES([EXPAT],[expat],[have_libexpat=yes],[have_libexpat=no])
   if test "x$have_libexpat" != "xyes" &&
      test "x$with_libexpat_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([libexpat])
@@ -511,14 +501,12 @@ have_libgcrypt=no
 if test "x$have_openssl" != "xyes"; then
   if test "x$with_libnettle" = "xyes" &&
      test "x$have_nativetls" != "xyes"; then
-    AC_CHECK_LIB([nettle], [nettle_sha1_init],
-                 [have_libnettle=yes], [have_libnettle=no])
+    PKG_CHECK_MODULES([LIBNETTLE], [nettle],
+                      [have_libnettle=yes], [have_libnettle=no])
     if test "x$have_libnettle" = "xyes"; then
-      LIBNETTLE_CFLAGS=
-      LIBNETTLE_LIBS="-lnettle"
-      AC_SUBST([LIBNETTLE_CFLAGS])
-      AC_SUBST([LIBNETTLE_LIBS])
       AC_DEFINE([HAVE_LIBNETTLE], [1], [Define to 1 if you have libnettle.])
+    elif test "x$with_libnettle_requested" = "xyes"; then
+      ARIA2_DEP_NOT_MET([nettle])
     fi
   fi
   if test "x$with_libgmp" = "xyes" &&
@@ -1229,7 +1217,7 @@ CA Bundle:      $ca_bundle
 LibNettle:      $have_libnettle (CFLAGS='$LIBNETTLE_CFLAGS' LIBS='$LIBNETTLE_LIBS')
 LibGmp:         $have_libgmp (CFLAGS='$LIBGMP_CFLAGS' LIBS='$LIBGMP_LIBS')
 LibGcrypt:      $have_libgcrypt (CFLAGS='$LIBGCRYPT_CFLAGS' LIBS='$LIBGCRYPT_LIBS')
-LibXML2:        $have_libxml2 (CFLAGS='$XML_CPPFLAGS' LIBS='$XML_LIBS')
+LibXML2:        $have_libxml2 (CFLAGS='$LIBXML2_CFLAGS' LIBS='$LIBXML2_LIBS')
 LibExpat:       $have_libexpat (CFLAGS='$EXPAT_CFLAGS' LIBS='$EXPAT_LIBS')
 LibCares:       $have_libcares (CFLAGS='$LIBCARES_CFLAGS' LIBS='$LIBCARES_LIBS')
 Zlib:           $have_zlib (CFLAGS='$ZLIB_CFLAGS' LIBS='$ZLIB_LIBS')
