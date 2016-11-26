@@ -44,15 +44,15 @@
 namespace aria2 {
 
 BufferedFile::BufferedFile(const char* filename, const char* mode)
-    :
-#ifdef __MINGW32__
-      fp_(strcmp(DEV_STDIN, filename) == 0
+    : fp_(strcmp(DEV_STDIN, filename) == 0
               ? stdin
-              : a2fopen(utf8ToWChar(filename).c_str(),
-                        utf8ToWChar(mode).c_str())),
+              :
+#ifdef __MINGW32__
+              a2fopen(utf8ToWChar(filename).c_str(), utf8ToWChar(mode).c_str())
 #else  // !__MINGW32__
-      fp_(a2fopen(filename, mode)),
+              a2fopen(filename, mode)
 #endif // !__MINGW32__
+              ),
       supportsColor_(fp_ ? isatty(fileno(fp_)) : false)
 {
 }
