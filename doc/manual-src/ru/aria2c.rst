@@ -690,8 +690,8 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   Разделенный запятыми список URI анонса BitTorrent-трекера,
   которые будут исключены. Вы можете использовать специальное
   значение ``*``, которое соответствует всем URI, таким образом,
-  исключаются все URI анонса. При указании ``*`` в оболочке
-  командной строке, не забывайте, экранировать или брать в кавычки.
+  исключаются все URI анонса. При указании ``*`` в командной
+  оболочке, не забывайте, экранировать или брать в кавычки.
   Смотрите также параметр :option:`--bt-tracker`.
 
 .. option:: --bt-external-ip=<IPADDRESS>
@@ -1476,7 +1476,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
 
   Сохранять результаты незавершённых загрузок, даже если превышено значение
   :option:`--max-download-result`. Это полезно, если незавершённые загрузки
-  должны сохраняться в файле сессии (см. параметр :option:`--save-session` option).
+  должны сохраняться в файле сессии (см. параметр :option:`--save-session`).
   Пожалуйста, имейте в виду, что для сохранения не существует верхней границы
   для количества результатов незавершённых загрузок. Если это нежелательно,
   отключите эту опцию.
@@ -2064,6 +2064,45 @@ aria2.conf
   включены в конфигурационный файл. Рекомендуется изменить режим доступа
   к конфигурационному файлу (например, ``chmod 600 aria2.conf``), так
   другие пользователи не смогут увидеть содержимое файла.
+
+Значения перемененных окружения, таких как ``${HOME}``, подставляются
+командной оболочкой. Это означает, что эти переменные, используемые в файле
+конфигурации, не подставляются. Тем не менее, полезно для обозначения
+домашнего каталога пользователя в конфигурационном файле использовать
+``${HOME}``, чтобы указать путь к файлам. Таким образом, aria2 подставляет
+путь к домашней директории пользователя при найденной переменной
+``${HOME}``, в следующих значениях параметров:
+
+* :option:`ca-certificate <--ca-certificate>`
+* :option:`certificate <--certificate>`
+* :option:`dht-file-path <--dht-file-path>`
+* :option:`dht-file-path6 <--dht-file-path6>`
+* :option:`dir <--dir>`
+* :option:`input-file <--input-file>`
+* :option:`load-cookies <--load-cookies>`
+* :option:`log <--log>`
+* :option:`metalink-file <--metalink-file>`
+* :option:`netrc-path <--netrc-path>`
+* :option:`on-bt-download-complete <--on-bt-download-complete>`
+* :option:`on-download-complete <--on-download-complete>`
+* :option:`on-download-error <--on-download-error>`
+* :option:`on-download-start <--on-download-start>`
+* :option:`on-download-stop <--on-download-stop>`
+* :option:`on-download-pause <--on-download-pause>`
+* :option:`out <--out>`
+* :option:`private-key <--private-key>`
+* :option:`rpc-certificate <--rpc-certificate>`
+* :option:`rpc-private-key <--rpc-private-key>`
+* :option:`save-cookies <--save-cookies>`
+* :option:`save-session <--save-session>`
+* :option:`server-stat-if <--server-stat-if>`
+* :option:`server-stat-of <--server-stat-of>`
+* :option:`torrent-file <--torrent-file>`
+
+Обратите внимание, что подстановка происходит даже в том случае, если
+вышеуказанные параметры используются в командной строке. Это означает, что
+подстановка может происходить 2 раза: сначала командной оболочкой, а затем
+aria2c.
 
 dht.dat
 ~~~~~~~
@@ -4359,7 +4398,6 @@ RPC
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Регулировка скорости загрузки
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. code-block:: console
 
 Одной загрузки:
 
