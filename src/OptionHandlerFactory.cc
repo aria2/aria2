@@ -200,9 +200,10 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(
-        new DefaultOptionHandler(PREF_DIR, TEXT_DIR, File::getCurrentDir(),
-                                 PATH_TO_DIR, OptionHandler::REQ_ARG, 'd'));
+    OptionHandler* op(new LocalFilePathOptionHandler(
+        PREF_DIR, TEXT_DIR, File::getCurrentDir(), /* acceptStdin = */ false,
+        'd',
+        /* mustExist = */ false, PATH_TO_DIR));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_FILE);
     op->setInitialOption(true);
@@ -390,9 +391,9 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(new DefaultOptionHandler(
-        PREF_INPUT_FILE, TEXT_INPUT_FILE, NO_DEFAULT_VALUE, PATH_TO_FILE_STDIN,
-        OptionHandler::REQ_ARG, 'i'));
+    OptionHandler* op(new LocalFilePathOptionHandler(
+        PREF_INPUT_FILE, TEXT_INPUT_FILE, NO_DEFAULT_VALUE,
+        /* acceptStdin = */ true, 'i', /* mustExist = */ false));
     op->addTag(TAG_BASIC);
     handlers.push_back(op);
   }
@@ -413,9 +414,9 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(new DefaultOptionHandler(
-        PREF_LOG, TEXT_LOG, NO_DEFAULT_VALUE, PATH_TO_FILE_STDOUT,
-        OptionHandler::REQ_ARG, 'l'));
+    OptionHandler* op(new LocalFilePathOptionHandler(
+        PREF_LOG, TEXT_LOG, NO_DEFAULT_VALUE, /* acceptStdin = */ false, 'l',
+        /* mustExist = */ false, PATH_TO_FILE_STDOUT));
     op->addTag(TAG_BASIC);
     op->setChangeGlobalOption(true);
     handlers.push_back(op);
@@ -542,41 +543,46 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(new DefaultOptionHandler(
+    OptionHandler* op(new LocalFilePathOptionHandler(
         PREF_ON_DOWNLOAD_COMPLETE, TEXT_ON_DOWNLOAD_COMPLETE, NO_DEFAULT_VALUE,
+        /* acceptStdin = */ false, 0, /* mustExist = */ false,
         PATH_TO_COMMAND));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_HOOK);
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(
-        new DefaultOptionHandler(PREF_ON_DOWNLOAD_ERROR, TEXT_ON_DOWNLOAD_ERROR,
-                                 NO_DEFAULT_VALUE, PATH_TO_COMMAND));
+    OptionHandler* op(new LocalFilePathOptionHandler(
+        PREF_ON_DOWNLOAD_ERROR, TEXT_ON_DOWNLOAD_ERROR, NO_DEFAULT_VALUE,
+        /* acceptStdin = */ false, 0, /* mustExist = */ false,
+        PATH_TO_COMMAND));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_HOOK);
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(
-        new DefaultOptionHandler(PREF_ON_DOWNLOAD_PAUSE, TEXT_ON_DOWNLOAD_PAUSE,
-                                 NO_DEFAULT_VALUE, PATH_TO_COMMAND));
+    OptionHandler* op(new LocalFilePathOptionHandler(
+        PREF_ON_DOWNLOAD_PAUSE, TEXT_ON_DOWNLOAD_PAUSE, NO_DEFAULT_VALUE,
+        /* acceptStdin = */ false, 0, /* mustExist = */ false,
+        PATH_TO_COMMAND));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_HOOK);
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(
-        new DefaultOptionHandler(PREF_ON_DOWNLOAD_START, TEXT_ON_DOWNLOAD_START,
-                                 NO_DEFAULT_VALUE, PATH_TO_COMMAND));
+    OptionHandler* op(new LocalFilePathOptionHandler(
+        PREF_ON_DOWNLOAD_START, TEXT_ON_DOWNLOAD_START, NO_DEFAULT_VALUE,
+        /* acceptStdin = */ false, 0, /* mustExist = */ false,
+        PATH_TO_COMMAND));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_HOOK);
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(
-        new DefaultOptionHandler(PREF_ON_DOWNLOAD_STOP, TEXT_ON_DOWNLOAD_STOP,
-                                 NO_DEFAULT_VALUE, PATH_TO_COMMAND));
+    OptionHandler* op(new LocalFilePathOptionHandler(
+        PREF_ON_DOWNLOAD_STOP, TEXT_ON_DOWNLOAD_STOP, NO_DEFAULT_VALUE,
+        /* acceptStdin = */ false, 0, /* mustExist = */ false,
+        PATH_TO_COMMAND));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_HOOK);
     handlers.push_back(op);
@@ -645,8 +651,9 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(new DefaultOptionHandler(
-        PREF_SAVE_SESSION, TEXT_SAVE_SESSION, NO_DEFAULT_VALUE, PATH_TO_FILE));
+    OptionHandler* op(new LocalFilePathOptionHandler(
+        PREF_SAVE_SESSION, TEXT_SAVE_SESSION, NO_DEFAULT_VALUE,
+        /* acceptStdin = */ false, 0, /* mustExist = */ false));
     op->addTag(TAG_ADVANCED);
     op->setChangeGlobalOption(true);
     handlers.push_back(op);
@@ -741,8 +748,9 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
   {
     OptionHandler* op(
 #ifdef HAVE_APPLETLS
-        new DefaultOptionHandler(PREF_RPC_CERTIFICATE, TEXT_RPC_CERTIFICATE,
-                                 NO_DEFAULT_VALUE)
+        new LocalFilePathOptionHandler(
+            PREF_RPC_CERTIFICATE, TEXT_RPC_CERTIFICATE, NO_DEFAULT_VALUE,
+            /* acceptStdin = */ false, 0, /* mustExist = */ false)
 #else  // HAVE_APPLETLS
         new LocalFilePathOptionHandler(
             PREF_RPC_CERTIFICATE, TEXT_RPC_CERTIFICATE, NO_DEFAULT_VALUE, false)
@@ -884,9 +892,9 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(new DefaultOptionHandler(PREF_OUT, TEXT_OUT,
-                                               NO_DEFAULT_VALUE, PATH_TO_FILE,
-                                               OptionHandler::REQ_ARG, 'o'));
+    OptionHandler* op(new LocalFilePathOptionHandler(
+        PREF_OUT, TEXT_OUT, NO_DEFAULT_VALUE,
+        /* acceptStdin = */ false, 'o', /* mustExist = */ false));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
@@ -937,17 +945,17 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(new DefaultOptionHandler(PREF_SERVER_STAT_IF,
-                                               TEXT_SERVER_STAT_IF,
-                                               NO_DEFAULT_VALUE, PATH_TO_FILE));
+    OptionHandler* op(new LocalFilePathOptionHandler(
+        PREF_SERVER_STAT_IF, TEXT_SERVER_STAT_IF, NO_DEFAULT_VALUE,
+        /* acceptStdin = */ false, 0, /* mustExist = */ false));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(new DefaultOptionHandler(PREF_SERVER_STAT_OF,
-                                               TEXT_SERVER_STAT_OF,
-                                               NO_DEFAULT_VALUE, PATH_TO_FILE));
+    OptionHandler* op(new LocalFilePathOptionHandler(
+        PREF_SERVER_STAT_OF, TEXT_SERVER_STAT_OF, NO_DEFAULT_VALUE,
+        /* acceptStdin = */ false, 0, /* mustExist = */ false));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
     op->setChangeGlobalOption(true);
@@ -1012,14 +1020,14 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
   }
   // HTTP Specific Options
   {
-    OptionHandler* op(new DefaultOptionHandler(PREF_CA_CERTIFICATE,
-                                               TEXT_CA_CERTIFICATE,
+    OptionHandler* op(new LocalFilePathOptionHandler(
+        PREF_CA_CERTIFICATE, TEXT_CA_CERTIFICATE,
 #ifdef CA_BUNDLE
-                                               CA_BUNDLE,
+        CA_BUNDLE,
 #else
-                                               "",
+        "",
 #endif
-                                               PATH_TO_FILE));
+        /* acceptStdin = */ false, 0, /* mustExist = */ false));
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);
     handlers.push_back(op);
@@ -1128,8 +1136,9 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(new DefaultOptionHandler(
-        PREF_LOAD_COOKIES, TEXT_LOAD_COOKIES, NO_DEFAULT_VALUE, PATH_TO_FILE));
+    OptionHandler* op(new LocalFilePathOptionHandler(
+        PREF_LOAD_COOKIES, TEXT_LOAD_COOKIES, NO_DEFAULT_VALUE,
+        /* acceptStdin = */ false, 0, /* mustExist = */ false));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_HTTP);
     op->addTag(TAG_COOKIE);
@@ -1151,8 +1160,9 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(new DefaultOptionHandler(
-        PREF_PRIVATE_KEY, TEXT_PRIVATE_KEY, NO_DEFAULT_VALUE, PATH_TO_FILE));
+    OptionHandler* op(new LocalFilePathOptionHandler(
+        PREF_PRIVATE_KEY, TEXT_PRIVATE_KEY, NO_DEFAULT_VALUE,
+        /* acceptStdin = */ false, 0, /* mustExist = */ false));
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);
     handlers.push_back(op);
@@ -1166,8 +1176,9 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(new DefaultOptionHandler(
-        PREF_SAVE_COOKIES, TEXT_SAVE_COOKIES, NO_DEFAULT_VALUE, PATH_TO_FILE));
+    OptionHandler* op(new LocalFilePathOptionHandler(
+        PREF_SAVE_COOKIES, TEXT_SAVE_COOKIES, NO_DEFAULT_VALUE,
+        /* acceptStdin = */ false, 0, /* mustExist = */ false));
     op->addTag(TAG_HTTP);
     op->addTag(TAG_COOKIE);
     op->setChangeGlobalOption(true);
@@ -1252,9 +1263,9 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(new DefaultOptionHandler(PREF_NETRC_PATH, TEXT_NETRC_PATH,
-                                               util::getHomeDir() + "/.netrc",
-                                               PATH_TO_FILE));
+    OptionHandler* op(new LocalFilePathOptionHandler(
+        PREF_NETRC_PATH, TEXT_NETRC_PATH, util::getHomeDir() + "/.netrc",
+        /* acceptStdin = */ false, 0, /* mustExist = */ false));
     handlers.push_back(op);
   }
   // Proxy options
@@ -1682,16 +1693,16 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(
-        new DefaultOptionHandler(PREF_DHT_FILE_PATH, TEXT_DHT_FILE_PATH,
-                                 util::getDHTFile(false), PATH_TO_FILE));
+    OptionHandler* op(new LocalFilePathOptionHandler(
+        PREF_DHT_FILE_PATH, TEXT_DHT_FILE_PATH, util::getDHTFile(false),
+        /* acceptStdin = */ false, 0, /* mustExist = */ false));
     op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(
-        new DefaultOptionHandler(PREF_DHT_FILE_PATH6, TEXT_DHT_FILE_PATH6,
-                                 util::getDHTFile(true), PATH_TO_FILE));
+    OptionHandler* op(new LocalFilePathOptionHandler(
+        PREF_DHT_FILE_PATH6, TEXT_DHT_FILE_PATH6, util::getDHTFile(true),
+        /* acceptStdin = */ false, 0, /* mustExist = */ false));
     op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);
   }
@@ -1795,9 +1806,11 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(new DefaultOptionHandler(
+    OptionHandler* op(new LocalFilePathOptionHandler(
         PREF_ON_BT_DOWNLOAD_COMPLETE, TEXT_ON_BT_DOWNLOAD_COMPLETE,
-        NO_DEFAULT_VALUE, PATH_TO_COMMAND));
+        NO_DEFAULT_VALUE,
+        /* acceptStdin = */ false, 0, /* mustExist = */ false,
+        PATH_TO_COMMAND));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_HOOK);
     handlers.push_back(op);

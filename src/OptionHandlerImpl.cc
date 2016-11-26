@@ -531,10 +531,13 @@ std::string HttpProxyOptionHandler::createPossibleValuesString() const
 
 LocalFilePathOptionHandler::LocalFilePathOptionHandler(
     PrefPtr pref, const char* description, const std::string& defaultValue,
-    bool acceptStdin, char shortName)
+    bool acceptStdin, char shortName, bool mustExist,
+    const std::string& possibleValuesString)
     : AbstractOptionHandler(pref, description, defaultValue,
                             OptionHandler::REQ_ARG, shortName),
-      acceptStdin_(acceptStdin)
+      possibleValuesString_(possibleValuesString),
+      acceptStdin_(acceptStdin),
+      mustExist_(mustExist)
 {
 }
 
@@ -545,16 +548,22 @@ void LocalFilePathOptionHandler::parseArg(Option& option,
     option.put(pref_, DEV_STDIN);
   }
   else {
-    File f(optarg);
-    if (!f.exists() || f.isDir()) {
-      throw DL_ABORT_EX(fmt(MSG_NOT_FILE, optarg.c_str()));
+    auto path = util::replace(optarg, "${HOME}", util::getHomeDir());
+    if (mustExist_) {
+      File f(path);
+      if (!f.exists() || f.isDir()) {
+        throw DL_ABORT_EX(fmt(MSG_NOT_FILE, optarg.c_str()));
+      }
     }
-    option.put(pref_, optarg);
+    option.put(pref_, path);
   }
 }
 
 std::string LocalFilePathOptionHandler::createPossibleValuesString() const
 {
+  if (!possibleValuesString_.empty()) {
+    return possibleValuesString_;
+  }
   if (acceptStdin_) {
     return PATH_TO_FILE_STDIN;
   }

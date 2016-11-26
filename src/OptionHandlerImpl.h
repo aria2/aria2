@@ -232,13 +232,17 @@ public:
 
 class LocalFilePathOptionHandler : public AbstractOptionHandler {
 private:
+  std::string possibleValuesString_;
   bool acceptStdin_;
+  bool mustExist_;
 
 public:
   LocalFilePathOptionHandler(PrefPtr pref,
                              const char* description = NO_DESCRIPTION,
                              const std::string& defaultValue = NO_DEFAULT_VALUE,
-                             bool acceptStdin = false, char shortName = 0);
+                             bool acceptStdin = false, char shortName = 0,
+                             bool mustExist = true,
+                             const std::string& possibleValuesString = "");
   virtual void parseArg(Option& option,
                         const std::string& optarg) const CXX11_OVERRIDE;
   virtual std::string createPossibleValuesString() const CXX11_OVERRIDE;
