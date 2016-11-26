@@ -331,8 +331,9 @@ fi
 have_libexpat=no
 if test "x$with_libexpat" = "xyes" && test "x$have_libxml2" != "xyes"; then
   PKG_CHECK_MODULES([EXPAT],[expat],[have_libexpat=yes],[have_libexpat=no])
-  if test "x$have_libexpat" != "xyes" &&
-     test "x$with_libexpat_requested" = "xyes"; then
+  if test "x$have_libexpat" = "xyes"; then
+    AC_DEFINE([HAVE_LIBEXPAT], [1], [Define to 1 if you have libexpat.])
+  elif test "x$with_libexpat_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([libexpat])
   fi
 fi
