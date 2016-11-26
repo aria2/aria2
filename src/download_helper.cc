@@ -529,8 +529,10 @@ std::shared_ptr<UriListParser> openUriListParser(const std::string& filename)
     listPath = DEV_STDIN;
   }
   else {
-    if (!File(filename).isFile()) {
-      throw DL_ABORT_EX(fmt(EX_FILE_OPEN, filename.c_str(), "No such file"));
+    auto f = File(filename);
+    if (!f.exists() || f.isDir()) {
+      throw DL_ABORT_EX(fmt(EX_FILE_OPEN, filename.c_str(),
+                            "File not found or it is a directory"));
     }
     listPath = filename;
   }
