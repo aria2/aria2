@@ -375,6 +375,12 @@ void print(Output& o, const std::shared_ptr<DownloadContext>& dctx)
       o.printf(" %s\n", (*i).c_str());
     }
   }
+  if (!torrentAttrs->nodes.empty()) {
+    o.write("Nodes:\n");
+    for (auto& p : torrentAttrs->nodes) {
+      o.printf(" %s:%u\n", p.first.c_str(), p.second);
+    }
+  }
   o.printf("Name: %s\n", torrentAttrs->name.c_str());
   o.printf("Magnet URI: %s\n", torrent2Magnet(torrentAttrs).c_str());
   util::toStream(dctx->getFileEntries().begin(), dctx->getFileEntries().end(),
