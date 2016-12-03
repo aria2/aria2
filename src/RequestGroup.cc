@@ -371,16 +371,28 @@ void RequestGroup::createInitialCommand(
         }
       }
       const auto& nodes = torrentAttrs->nodes;
-      // TODO Are nodes in torrent IPv4 only?
-      if (!torrentAttrs->privateTorrent && !nodes.empty() &&
-          DHTRegistry::isInitialized()) {
-        auto command = make_unique<DHTEntryPointNameResolveCommand>(
-            e->newCUID(), e, nodes);
-        command->setTaskQueue(DHTRegistry::getData().taskQueue.get());
-        command->setTaskFactory(DHTRegistry::getData().taskFactory.get());
-        command->setRoutingTable(DHTRegistry::getData().routingTable.get());
-        command->setLocalNode(DHTRegistry::getData().localNode);
-        e->addCommand(std::move(command));
+      if (!torrentAttrs->privateTorrent && !nodes.empty()) {
+        if (DHTRegistry::isInitialized()) {
+          auto command = make_unique<DHTEntryPointNameResolveCommand>(
+              e->newCUID(), e, AF_INET, nodes);
+          const auto& data = DHTRegistry::getData();
+          command->setTaskQueue(data.taskQueue.get());
+          command->setTaskFactory(data.taskFactory.get());
+          command->setRoutingTable(data.routingTable.get());
+          command->setLocalNode(data.localNode);
+          e->addCommand(std::move(command));
+        }
+
+        if (DHTRegistry::isInitialized6()) {
+          auto command = make_unique<DHTEntryPointNameResolveCommand>(
+              e->newCUID(), e, AF_INET6, nodes);
+          const auto& data = DHTRegistry::getData6();
+          command->setTaskQueue(data.taskQueue.get());
+          command->setTaskFactory(data.taskFactory.get());
+          command->setRoutingTable(data.routingTable.get());
+          command->setLocalNode(data.localNode);
+          e->addCommand(std::move(command));
+        }
       }
     }
     else if (metadataGetMode) {

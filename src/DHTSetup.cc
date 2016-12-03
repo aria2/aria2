@@ -195,7 +195,7 @@ DHTSetup::setup(DownloadEngine* e, int family)
         std::vector<std::pair<std::string, uint16_t>> entryPoints;
         entryPoints.push_back(addr);
         auto command = make_unique<DHTEntryPointNameResolveCommand>(
-            e->newCUID(), e, entryPoints);
+            e->newCUID(), e, family, entryPoints);
         command->setBootstrapEnabled(true);
         command->setTaskQueue(taskQueue.get());
         command->setTaskFactory(taskFactory.get());
