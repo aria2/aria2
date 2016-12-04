@@ -72,6 +72,8 @@ private:
 
   std::deque<std::pair<std::string, uint16_t>> entryPoints_;
 
+  int family_;
+
   int numSuccess_;
 
   bool bootstrapEnabled_;
@@ -85,7 +87,7 @@ private:
 
 public:
   DHTEntryPointNameResolveCommand(
-      cuid_t cuid, DownloadEngine* e,
+      cuid_t cuid, DownloadEngine* e, int family,
       const std::vector<std::pair<std::string, uint16_t>>& entryPoints);
 
   virtual ~DHTEntryPointNameResolveCommand();

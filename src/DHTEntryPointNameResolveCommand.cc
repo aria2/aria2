@@ -57,7 +57,7 @@
 namespace aria2 {
 
 DHTEntryPointNameResolveCommand::DHTEntryPointNameResolveCommand(
-    cuid_t cuid, DownloadEngine* e,
+    cuid_t cuid, DownloadEngine* e, int family,
     const std::vector<std::pair<std::string, uint16_t>>& entryPoints)
     : Command{cuid},
       e_{e},
@@ -68,11 +68,14 @@ DHTEntryPointNameResolveCommand::DHTEntryPointNameResolveCommand(
       taskFactory_{nullptr},
       routingTable_{nullptr},
       entryPoints_(std::begin(entryPoints), std::end(entryPoints)),
+      family_{family},
       numSuccess_{0},
       bootstrapEnabled_{false}
 {
 #ifdef ENABLE_ASYNC_DNS
   configureAsyncNameResolverMan(asyncNameResolverMan_.get(), e_->getOption());
+  asyncNameResolverMan_->setIPv4(family_ == AF_INET);
+  asyncNameResolverMan_->setIPv6(family_ == AF_INET6);
 #endif // ENABLE_ASYNC_DNS
 }
 
@@ -93,28 +96,20 @@ bool DHTEntryPointNameResolveCommand::execute()
     if (e_->getOption()->getAsBool(PREF_ASYNC_DNS)) {
       while (!entryPoints_.empty()) {
         std::string hostname = entryPoints_.front().first;
-        if (util::isNumericHost(hostname)) {
-          ++numSuccess_;
-          std::pair<std::string, uint16_t> p(hostname,
-                                             entryPoints_.front().second);
-          addPingTask(p);
+        std::vector<std::string> res;
+        int rv = resolveHostname(res, hostname);
+        if (rv == 0) {
+          e_->addCommand(std::unique_ptr<Command>(this));
+          return false;
         }
         else {
-          std::vector<std::string> res;
-          int rv = resolveHostname(res, hostname);
-          if (rv == 0) {
-            e_->addCommand(std::unique_ptr<Command>(this));
-            return false;
+          if (rv == 1) {
+            ++numSuccess_;
+            std::pair<std::string, uint16_t> p(res.front(),
+                                               entryPoints_.front().second);
+            addPingTask(p);
           }
-          else {
-            if (rv == 1) {
-              ++numSuccess_;
-              std::pair<std::string, uint16_t> p(res.front(),
-                                                 entryPoints_.front().second);
-              addPingTask(p);
-            }
-            asyncNameResolverMan_->reset(e_, this);
-          }
+          asyncNameResolverMan_->reset(e_, this);
         }
         entryPoints_.pop_front();
       }
@@ -124,9 +119,7 @@ bool DHTEntryPointNameResolveCommand::execute()
     {
       NameResolver res;
       res.setSocktype(SOCK_DGRAM);
-      if (e_->getOption()->getAsBool(PREF_DISABLE_IPV6)) {
-        res.setFamily(AF_INET);
-      }
+      res.setFamily(family_);
       while (!entryPoints_.empty()) {
         std::string hostname = entryPoints_.front().first;
         try {
