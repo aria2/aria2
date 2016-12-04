@@ -1106,7 +1106,7 @@ RPC Options
   extension is '.torrent'. For metalink, it is '.meta4'.  If false is
   given to this option, the downloads added by
   :func:`aria2.addTorrent` or :func:`aria2.addMetalink` will not be
-  saved by :option:`--save-session` option. Default: ``false``
+  saved by :option:`--save-session` option. Default: ``true``
 
 .. option:: --rpc-secret=<TOKEN>
 
