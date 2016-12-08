@@ -1086,7 +1086,7 @@ int RequestGroupMan::optimizeConcurrentDownloads()
   }
 
   if (optimizationSpeed_ <= 0) {
-    return 1;
+    return optimizeConcurrentDownloadsCoeffA_;
   }
 
   // apply the rule
