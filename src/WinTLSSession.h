@@ -102,7 +102,7 @@ public:
 
 class TLSBuffer : public ::SecBuffer {
 public:
-  TLSBuffer() : ::SecBuffer{}{}
+  TLSBuffer() : ::SecBuffer{} {}
 
   explicit TLSBuffer(ULONG type, ULONG size, void* data)
   {
