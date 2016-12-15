@@ -261,7 +261,7 @@ if test "x$with_libuv" = "xyes"; then
         AC_SUBST([LIBUV_LIBS])
       fi
       CPPFLAGS=$save_CPPFLAGS
-      CPPLIBS=$save_LIBS
+      LIBS=$save_LIBS
     ;;
 
     *darwin*)
