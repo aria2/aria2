@@ -226,19 +226,12 @@ if test "x$with_libz" = "xyes"; then
   fi
   if test "x$have_zlib" = "xyes"; then
     AC_DEFINE([HAVE_ZLIB], [1], [Define to 1 if you have zlib.])
-    # Android NDK arch-mips contains gzbuffer symbol but it is missing
-    # in zlib.h
-    save_CFLAGS=$CFLAGS
+    save_CPPFLAGS=$CPPFLAGS
     save_LIBS=$LIBS
-    CFLAGS="$CFLAGS $ZLIB_CFLAGS"
+    CPPFLAGS="$CPPFLAGS $ZLIB_CFLAGS"
     LIBS="$ZLIB_LIBS $LIBS"
-    AC_CHECK_DECL([gzbuffer], [have_decl_gzbuffer=yes], [],
-                  [[#include <zlib.h>]])
-    if test "x$have_decl_gzbuffer" = "xyes"; then
-      AC_CHECK_FUNC([gzbuffer])
-    fi
-    AC_CHECK_FUNCS([gzsetparams])
-    CFLAGS=$save_CFLAGS
+    AC_CHECK_FUNCS([gzbuffer gzsetparams])
+    CPPFLAGS=$save_CPPFLAGS
     LIBS=$save_LIBS
   fi
 fi
