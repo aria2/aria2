@@ -95,58 +95,62 @@ const char VLB_COMPLETE[] = "complete";
 const char VLB_USED[] = "used";
 const char VLB_ZERO[] = "0";
 
-const char KEY_GID[] = "gid";
+const char KEY_AM_CHOKING[] = "amChoking";
+const char KEY_ANNOUNCE_LIST[] = "announceList";
+const char KEY_BELONGS_TO[] = "belongsTo";
+const char KEY_BITFIELD[] = "bitfield";
+const char KEY_BITTORRENT[] = "bittorrent";
+const char KEY_COMMENT[] = "comment";
+const char KEY_COMPLETED_LENGTH[] = "completedLength";
+const char KEY_CONNECTIONS[] = "connections";
+const char KEY_CREATION_DATE[] = "creationDate";
+const char KEY_CURRENT_URI[] = "currentUri";
+const char KEY_DIR[] = "dir";
+const char KEY_DISKSPACE_AVAILABLE[] = "available";
+const char KEY_DISKSPACE_CAPACITY[] = "capacity";
+const char KEY_DISKSPACE_FREE[] = "free";
+const char KEY_DISKSPACE_PATH[] = "path";
+const char KEY_DOWNLOAD_SPEED[] = "downloadSpeed";
+const char KEY_ENABLED_FEATURES[] = "enabledFeatures";
 const char KEY_ERROR_CODE[] = "errorCode";
 const char KEY_ERROR_MESSAGE[] = "errorMessage";
-const char KEY_STATUS[] = "status";
-const char KEY_TOTAL_LENGTH[] = "totalLength";
-const char KEY_COMPLETED_LENGTH[] = "completedLength";
-const char KEY_DOWNLOAD_SPEED[] = "downloadSpeed";
-const char KEY_UPLOAD_SPEED[] = "uploadSpeed";
-const char KEY_UPLOAD_LENGTH[] = "uploadLength";
-const char KEY_CONNECTIONS[] = "connections";
-const char KEY_BITFIELD[] = "bitfield";
-const char KEY_PIECE_LENGTH[] = "pieceLength";
-const char KEY_NUM_PIECES[] = "numPieces";
+const char KEY_FILES[] = "files";
 const char KEY_FOLLOWED_BY[] = "followedBy";
 const char KEY_FOLLOWING[] = "following";
-const char KEY_BELONGS_TO[] = "belongsTo";
-const char KEY_INFO_HASH[] = "infoHash";
-const char KEY_NUM_SEEDERS[] = "numSeeders";
-const char KEY_PEER_ID[] = "peerId";
-const char KEY_IP[] = "ip";
-const char KEY_PORT[] = "port";
-const char KEY_AM_CHOKING[] = "amChoking";
-const char KEY_PEER_CHOKING[] = "peerChoking";
-const char KEY_SEEDER[] = "seeder";
+const char KEY_GID[] = "gid";
 const char KEY_INDEX[] = "index";
-const char KEY_PATH[] = "path";
-const char KEY_SELECTED[] = "selected";
-const char KEY_LENGTH[] = "length";
-const char KEY_URI[] = "uri";
-const char KEY_CURRENT_URI[] = "currentUri";
-const char KEY_VERSION[] = "version";
-const char KEY_ENABLED_FEATURES[] = "enabledFeatures";
-const char KEY_METHOD_NAME[] = "methodName";
-const char KEY_PARAMS[] = "params";
-const char KEY_SESSION_ID[] = "sessionId";
-const char KEY_FILES[] = "files";
-const char KEY_DIR[] = "dir";
-const char KEY_URIS[] = "uris";
-const char KEY_BITTORRENT[] = "bittorrent";
 const char KEY_INFO[] = "info";
-const char KEY_NAME[] = "name";
-const char KEY_ANNOUNCE_LIST[] = "announceList";
-const char KEY_COMMENT[] = "comment";
-const char KEY_CREATION_DATE[] = "creationDate";
+const char KEY_INFO_HASH[] = "infoHash";
+const char KEY_IP[] = "ip";
+const char KEY_LENGTH[] = "length";
+const char KEY_METHOD_NAME[] = "methodName";
 const char KEY_MODE[] = "mode";
-const char KEY_SERVERS[] = "servers";
-const char KEY_NUM_WAITING[] = "numWaiting";
-const char KEY_NUM_STOPPED[] = "numStopped";
+const char KEY_NAME[] = "name";
 const char KEY_NUM_ACTIVE[] = "numActive";
+const char KEY_NUM_PIECES[] = "numPieces";
+const char KEY_NUM_SEEDERS[] = "numSeeders";
+const char KEY_NUM_STOPPED[] = "numStopped";
 const char KEY_NUM_STOPPED_TOTAL[] = "numStoppedTotal";
+const char KEY_NUM_WAITING[] = "numWaiting";
+const char KEY_PARAMS[] = "params";
+const char KEY_PATH[] = "path";
+const char KEY_PEER_CHOKING[] = "peerChoking";
+const char KEY_PEER_ID[] = "peerId";
+const char KEY_PIECE_LENGTH[] = "pieceLength";
+const char KEY_PORT[] = "port";
+const char KEY_SEEDER[] = "seeder";
+const char KEY_SELECTED[] = "selected";
+const char KEY_SERVERS[] = "servers";
+const char KEY_SESSION_ID[] = "sessionId";
+const char KEY_STATUS[] = "status";
+const char KEY_TOTAL_LENGTH[] = "totalLength";
+const char KEY_UPLOAD_LENGTH[] = "uploadLength";
+const char KEY_UPLOAD_SPEED[] = "uploadSpeed";
+const char KEY_URIS[] = "uris";
+const char KEY_URI[] = "uri";
 const char KEY_VERIFIED_LENGTH[] = "verifiedLength";
 const char KEY_VERIFY_PENDING[] = "verifyIntegrityPending";
+const char KEY_VERSION[] = "version";
 } // namespace
 
 namespace {
@@ -1407,6 +1411,72 @@ std::unique_ptr<ValueBase> SaveSessionRpcMethod::process(const RpcRequest& req,
   }
   throw DL_ABORT_EX(
       fmt("Failed to serialize session to '%s'.", filename.c_str()));
+}
+
+std::unique_ptr<ValueBase>
+GetDiskspaceInformationRpcMethod::process(const RpcRequest& req,
+                                          DownloadEngine* e)
+{
+  auto result = Dict::g();
+  const List* gidsParam = checkParam<List>(req, 0);
+  std::map<std::string, uintmax_t> known;
+  std::error_code ec;
+
+  if (gidsParam) {
+    for (auto& elem : *gidsParam) {
+      const String* sgid = downcast<String>(elem);
+      if (sgid) {
+        a2_gid_t gid = str2Gid(sgid);
+        auto group = e->getRequestGroupMan()->findGroup(gid);
+        if (!group) {
+          throw DL_ABORT_EX(
+              fmt("Diskspace information requested for Invalid GID#%s",
+                  GroupId::toHex(gid).c_str()));
+        }
+        auto dctx = group->getDownloadContext();
+        if (!dctx) {
+          throw DL_ABORT_EX(
+              fmt("Diskspace information requested for broken GID#%s",
+                  GroupId::toHex(gid).c_str()));
+        }
+        auto path = dctx->getBasePath();
+        if (path.empty()) {
+          auto option = group->getOption();
+          if (!option->blank(PREF_OUT)) {
+            path = util::applyDir(option->get(PREF_DIR), option->get(PREF_OUT));
+          }
+          else {
+            path = option->get(PREF_DIR);
+          }
+        }
+        auto ds = util::filesystem::space_downwards(path.c_str(), ec);
+        if (ec) {
+          throw DL_ABORT_EX(
+              fmt("Diskspace information returned failure for GID#%s",
+                  GroupId::toHex(gid).c_str()));
+        }
+        auto sizes = Dict::g();
+        sizes->put(KEY_DISKSPACE_PATH, String::g(path));
+        sizes->put(KEY_DISKSPACE_AVAILABLE, Integer::g(ds.available));
+        sizes->put(KEY_DISKSPACE_CAPACITY, Integer::g(ds.capacity));
+        sizes->put(KEY_DISKSPACE_FREE, Integer::g(ds.free));
+        result->put(sgid->s(), std::move(sizes));
+      }
+    }
+  }
+  else {
+    auto ds = util::filesystem::space_downwards(nullptr, ec);
+    if (ec) {
+      throw DL_ABORT_EX("Diskspace information returned failure");
+    }
+    auto sizes = Dict::g();
+    sizes->put(KEY_DISKSPACE_PATH, String::g("."));
+    sizes->put(KEY_DISKSPACE_AVAILABLE, Integer::g(ds.available));
+    sizes->put(KEY_DISKSPACE_CAPACITY, Integer::g(ds.capacity));
+    sizes->put(KEY_DISKSPACE_FREE, Integer::g(ds.free));
+    result->put("aria2", std::move(sizes));
+  }
+  return std::move(result);
 }
 
 std::unique_ptr<ValueBase>
