@@ -53,6 +53,7 @@
 #include <algorithm>
 #include <vector>
 #include <memory>
+#include <system_error>
 
 #include "a2time.h"
 #include "a2netcompat.h"
@@ -874,6 +875,24 @@ void make_fd_cloexec(int fd);
 #ifdef __MINGW32__
 bool gainPrivilege(LPCTSTR privName);
 #endif // __MINGW32__
+
+// Basically std::experimental::filesystem, to be replaced later when the
+// filesystem stdlib becomes stable and gains wide compiler support
+
+namespace filesystem {
+struct space_info {
+  uintmax_t capacity;
+  uintmax_t free;
+  uintmax_t available;
+};
+
+space_info space(const char* path, std::error_code& code);
+
+// Progress downwards in the provided path, yielding a result for the first
+// directory that exists.
+space_info space_downwards(const char* path, std::error_code& code);
+
+} // namespace filesystem
 
 } // namespace util
 
