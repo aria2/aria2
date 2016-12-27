@@ -537,6 +537,10 @@
 #define TEXT_USE_HEAD                                                   \
   _(" --use-head[=true|false]      Use HEAD method for the first request to the HTTP\n" \
     "                              server.")
+#define TEXT_CONTENT_DISPOSITION_DEFAULT_UTF8                          \
+  _(" --content-disposition-default-utf8[=true|false] handle filename in\n" \
+    "                              Content-Disposition header as UTF-8 instead of\n" \
+    "                              ISO-8859-1.")
 #define TEXT_EVENT_POLL                                                 \
   _(" --event-poll=POLL            Specify the method for polling events.")
 #define TEXT_BT_EXTERNAL_IP                                             \

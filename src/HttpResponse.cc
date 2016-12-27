@@ -112,10 +112,12 @@ void HttpResponse::validateResponse() const
                      error_code::HTTP_PROTOCOL_ERROR);
 }
 
-std::string HttpResponse::determineFilename() const
+std::string HttpResponse::determineFilename(
+    bool content_disposition_default_utf8) const
 {
   std::string contentDisposition = util::getContentDispositionFilename(
-      httpHeader_->find(HttpHeader::CONTENT_DISPOSITION));
+      httpHeader_->find(HttpHeader::CONTENT_DISPOSITION),
+      content_disposition_default_utf8);
   if (contentDisposition.empty()) {
     auto file = httpRequest_->getFile();
     file = util::percentDecode(file.begin(), file.end());

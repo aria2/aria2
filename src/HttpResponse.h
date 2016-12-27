@@ -70,7 +70,7 @@ public:
    * this function returns the filename from it.
    * If it is not there, returns the part of filename from the request URL.
    */
-  std::string determineFilename() const;
+  std::string determineFilename(bool content_disposition_default_utf8) const;
 
   void retrieveCookie();
 

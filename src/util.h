@@ -324,9 +324,10 @@ std::string iso8859p1ToUtf8(const std::string& src);
 // |dest|, |*charsetp| and |*charsetlenp| are undefined.
 ssize_t parse_content_disposition(char* dest, size_t destlen,
                                   const char** charsetp, size_t* charsetlenp,
-                                  const char* in, size_t len);
+                                  const char* in, size_t len, bool default_utf8);
 
-std::string getContentDispositionFilename(const std::string& header);
+std::string getContentDispositionFilename(const std::string& header,
+                                          bool default_utf8);
 
 std::string toUpper(std::string src);
 
