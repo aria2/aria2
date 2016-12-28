@@ -113,11 +113,11 @@ void HttpResponse::validateResponse() const
 }
 
 std::string HttpResponse::determineFilename(
-    bool content_disposition_default_utf8) const
+    bool contentDispositionUTF8) const
 {
   std::string contentDisposition = util::getContentDispositionFilename(
       httpHeader_->find(HttpHeader::CONTENT_DISPOSITION),
-      content_disposition_default_utf8);
+      contentDispositionUTF8);
   if (contentDisposition.empty()) {
     auto file = httpRequest_->getFile();
     file = util::percentDecode(file.begin(), file.end());
