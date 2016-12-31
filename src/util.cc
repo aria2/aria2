@@ -1125,7 +1125,8 @@ ssize_t parse_content_disposition(char* dest, size_t destlen,
     case CD_VALUE_CHARS:
       if (inRFC5987AttrChar(*p)) {
         if (charset == CD_ENC_UTF8) {
-          if (utf8dfa(&dfa_state, &dfa_code, *p) == UTF8_REJECT) {
+          if (utf8dfa(&dfa_state, &dfa_code, static_cast<unsigned char>(*p)) ==
+              UTF8_REJECT) {
             return -1;
           }
         }
