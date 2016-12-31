@@ -1211,6 +1211,12 @@ Advanced Options
   Set log level to output to console.  LEVEL is either ``debug``,
   ``info``, ``notice``, ``warn`` or ``error``.  Default: ``notice``
 
+.. option:: --content-disposition-default-utf8[=true|false]
+
+  Handle quoted string in Content-Disposition header as UTF-8 instead
+  of ISO-8859-1, for example, the filename parameter, but not the
+  extended version filename*.  Default: ``false``
+
 .. option:: -D, --daemon[=true|false]
 
   Run as daemon. The current working directory will be changed to ``/``
@@ -2104,6 +2110,7 @@ of URIs. These optional lines must start with white space(s).
   * :option:`checksum <--checksum>`
   * :option:`conditional-get <--conditional-get>`
   * :option:`connect-timeout <--connect-timeout>`
+  * :option:`content-disposition-default-utf8 <--content-disposition-default-utf8>`
   * :option:`continue <-c>`
   * :option:`dir <-d>`
   * :option:`dry-run <--dry-run>`
