@@ -261,8 +261,8 @@ bool HttpResponseCommand::executeInternal()
     int64_t totalLength = httpResponse->getEntityLength();
     fe->setLength(totalLength);
     if (fe->getPath().empty()) {
-      auto suffixPath = util::createSafePath(httpResponse->determineFilename());
-
+      auto suffixPath = util::createSafePath(httpResponse->determineFilename(
+          getOption()->getAsBool(PREF_CONTENT_DISPOSITION_DEFAULT_UTF8)));
       fe->setPath(util::applyDir(getOption()->get(PREF_DIR), suffixPath));
       fe->setSuffixPath(suffixPath);
     }

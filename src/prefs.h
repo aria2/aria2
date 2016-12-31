@@ -380,6 +380,8 @@ extern PrefPtr PREF_HTTP_AUTH_CHALLENGE;
 extern PrefPtr PREF_HTTP_NO_CACHE;
 // value: true | false
 extern PrefPtr PREF_HTTP_ACCEPT_GZIP;
+// value: true | false
+extern PrefPtr PREF_CONTENT_DISPOSITION_DEFAULT_UTF8;
 
 /**;
  * Proxy related preferences

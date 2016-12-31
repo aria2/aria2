@@ -879,7 +879,7 @@ typedef enum {
 
 ssize_t parse_content_disposition(char* dest, size_t destlen,
                                   const char** charsetp, size_t* charsetlenp,
-                                  const char* in, size_t len)
+                                  const char* in, size_t len, bool defaultUTF8)
 {
   const char *p = in, *eop = in + len, *mark_first = nullptr,
              *mark_last = nullptr;
@@ -891,7 +891,7 @@ ssize_t parse_content_disposition(char* dest, size_t destlen,
   /* To suppress warnings */
   char* dp = dest;
   size_t dlen = destlen;
-  uint32_t dfa_state = 0;
+  uint32_t dfa_state = UTF8_ACCEPT;
   uint32_t dfa_code = 0;
   uint8_t pctval = 0;
 
@@ -981,6 +981,10 @@ ssize_t parse_content_disposition(char* dest, size_t destlen,
       if (*p == '"') {
         quoted_seen = 0;
         state = CD_QUOTED_STRING;
+        if (defaultUTF8) {
+          dfa_state = UTF8_ACCEPT;
+          dfa_code = 0;
+        }
       }
       else if (inRFC2616HttpToken(*p)) {
         if (in_file_parm) {
@@ -1011,16 +1015,25 @@ ssize_t parse_content_disposition(char* dest, size_t destlen,
         quoted_seen = 1;
       }
       else if (*p == '"' && quoted_seen == 0) {
+        if (defaultUTF8 && dfa_state != UTF8_ACCEPT) {
+          return -1;
+        }
         if (in_file_parm) {
           flags |= CD_FILENAME_FOUND;
         }
         state = CD_AFTER_VALUE;
       }
       else {
-        /* TEXT which is OCTET except CTLs, but including LWS. We only
-           accept ISO-8859-1 chars. */
+        /* TEXT which is OCTET except CTLs, but including LWS. Accept
+           ISO-8859-1 chars, or UTF-8 if defaultUTF8 is set */
         quoted_seen = 0;
-        if (!isIso8859p1(*p)) {
+        if (defaultUTF8) {
+          if (utf8dfa(&dfa_state, &dfa_code, (unsigned char)*p) ==
+              UTF8_REJECT) {
+            return -1;
+          }
+        }
+        else if (!isIso8859p1(*p)) {
           return -1;
         }
         if (in_file_parm) {
@@ -1204,7 +1217,8 @@ ssize_t parse_content_disposition(char* dest, size_t destlen,
   }
 }
 
-std::string getContentDispositionFilename(const std::string& header)
+std::string getContentDispositionFilename(const std::string& header,
+                                          bool defaultUTF8)
 {
   std::array<char, 1_k> cdval;
   size_t cdvallen = cdval.size();
@@ -1212,13 +1226,14 @@ std::string getContentDispositionFilename(const std::string& header)
   size_t charsetlen;
   ssize_t rv =
       parse_content_disposition(cdval.data(), cdvallen, &charset, &charsetlen,
-                                header.c_str(), header.size());
+                                header.c_str(), header.size(), defaultUTF8);
   if (rv == -1) {
     return "";
   }
 
   std::string res;
-  if (!charset || strieq(charset, charset + charsetlen, "iso-8859-1")) {
+  if ((charset && strieq(charset, charset + charsetlen, "iso-8859-1")) ||
+      (!charset && !defaultUTF8)) {
     res = iso8859p1ToUtf8(cdval.data(), rv);
   }
   else {

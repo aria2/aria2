@@ -427,6 +427,9 @@ PrefPtr PREF_HTTP_AUTH_CHALLENGE = makePref("http-auth-challenge");
 PrefPtr PREF_HTTP_NO_CACHE = makePref("http-no-cache");
 // value: true | false
 PrefPtr PREF_HTTP_ACCEPT_GZIP = makePref("http-accept-gzip");
+// value: true | false
+PrefPtr PREF_CONTENT_DISPOSITION_DEFAULT_UTF8 =
+    makePref("content-disposition-default-utf8");
 
 /**
  * Proxy related preferences
