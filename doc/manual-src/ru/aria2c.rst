@@ -1168,7 +1168,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   Если параметр задан как false, то загрузки, добавленные с помощью
   :func:`aria2.addTorrent` или :func:`aria2.addMetalink`, не будут
   сохраняться при помощи параметра :option:`--save-session`.
-  По умолчанию: ``false``
+  По умолчанию: ``true``
 
 .. option:: --rpc-secret=<TOKEN>
 
@@ -1281,6 +1281,12 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   Задать уровень вывода событий на консоль. LEVEL может
   быть: ``debug``, ``info``, ``notice``, ``warn`` или ``error``.
   По умолчанию: ``notice``
+
+.. option:: --content-disposition-default-utf8[=true|false]
+
+  Обрабатывать строку в кавычках в заголовке Content-Disposition как
+  UTF-8 вместо ISO-8859-1, например, параметр filename,
+  но не расширенную версию filename*. По умолчанию: ``false``
 
 .. option:: -D, --daemon[=true|false]
 
@@ -2214,6 +2220,7 @@ URI. Эти дополнительные строки должны начина�
   * :option:`checksum <--checksum>`
   * :option:`conditional-get <--conditional-get>`
   * :option:`connect-timeout <--connect-timeout>`
+  * :option:`content-disposition-default-utf8 <--content-disposition-default-utf8>`
   * :option:`continue <-c>`
   * :option:`dir <-d>`
   * :option:`dry-run <--dry-run>`
