@@ -101,18 +101,7 @@ void SimpleRandomizer::getRandomBytes(unsigned char* buf, size_t len)
   static bool have_random_support = true;
   if (have_random_support) {
     auto rv = getrandom_linux(buf, len);
-    if (rv != -1
-#ifdef ENOSYS
-        /* If the system does not know ENOSYS at this point, just leave the
-         * check out. If the call failed, we'll not take this branch at all
-         * and disable support below.
-         */
-        || errno != ENOSYS
-#endif
-        ) {
-      if (rv < -1) {
-        A2_LOG_ERROR(fmt("Failed to produce randomness: %d", errno));
-      }
+    if (rv != -1) {
       // getrandom is not supposed to fail, ever, so, we want to assert here.
       assert(rv >= 0 && (size_t)rv == len);
       return;
