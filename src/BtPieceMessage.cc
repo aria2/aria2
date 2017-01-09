@@ -151,7 +151,9 @@ void BtPieceMessage::doReceivedAction()
   }
 }
 
-size_t BtPieceMessage::MESSAGE_HEADER_LENGTH = 13;
+namespace {
+constexpr size_t MESSAGE_HEADER_LENGTH = 13;
+} // namespace
 
 void BtPieceMessage::createMessageHeader(unsigned char* msgHeader) const
 {

@@ -37,32 +37,33 @@
 namespace aria2 {
 
 namespace {
-const char* METALINK_EXTENSIONS[] = {".metalink", // Metalink3Spec
-                                     ".meta4",    // Metalink4Spec
-                                     nullptr};
+constexpr const char* METALINK_EXTENSIONS[] = {".metalink", // Metalink3Spec
+                                               ".meta4",    // Metalink4Spec
+                                               nullptr};
 } // namespace
 
-const char** getMetalinkExtensions() { return METALINK_EXTENSIONS; }
+const char* const* getMetalinkExtensions() { return METALINK_EXTENSIONS; }
 
 namespace {
-const char* METALINK_CONTENT_TYPES[] = {
+constexpr const char* METALINK_CONTENT_TYPES[] = {
     "application/metalink4+xml", // Metalink4Spec
     "application/metalink+xml",  // Metalink3Spec
     nullptr};
 } // namespace
 
-const char** getMetalinkContentTypes() { return METALINK_CONTENT_TYPES; }
+const char* const* getMetalinkContentTypes() { return METALINK_CONTENT_TYPES; }
 
 namespace {
-const char* BT_EXTENSIONS[] = {".torrent", nullptr};
+constexpr const char* BT_EXTENSIONS[] = {".torrent", nullptr};
 } // namespace
 
-const char** getBtExtensions() { return BT_EXTENSIONS; }
+const char* const* getBtExtensions() { return BT_EXTENSIONS; }
 
 namespace {
-const char* BT_CONTENT_TYPES[] = {"application/x-bittorrent", nullptr};
+constexpr const char* BT_CONTENT_TYPES[] = {"application/x-bittorrent",
+                                            nullptr};
 } // namespace
 
-const char** getBtContentTypes() { return BT_CONTENT_TYPES; }
+const char* const* getBtContentTypes() { return BT_CONTENT_TYPES; }
 
 } // namespace aria2

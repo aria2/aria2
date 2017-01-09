@@ -220,7 +220,7 @@ bool HttpHeader::isKeepAlive() const
 }
 
 namespace {
-const char* INTERESTING_HEADER_NAMES[] = {
+constexpr const char* INTERESTING_HEADER_NAMES[] = {
     "accept-encoding",
     "access-control-request-headers",
     "access-control-request-method",
@@ -249,9 +249,9 @@ const char* INTERESTING_HEADER_NAMES[] = {
 
 int idInterestingHeader(const char* hdName)
 {
-  const char** i = std::lower_bound(std::begin(INTERESTING_HEADER_NAMES),
-                                    std::end(INTERESTING_HEADER_NAMES), hdName,
-                                    util::strless);
+  auto i = std::lower_bound(std::begin(INTERESTING_HEADER_NAMES),
+                            std::end(INTERESTING_HEADER_NAMES), hdName,
+                            util::strless);
   if (i != std::end(INTERESTING_HEADER_NAMES) && strcmp(*i, hdName) == 0) {
     return i - std::begin(INTERESTING_HEADER_NAMES);
   }

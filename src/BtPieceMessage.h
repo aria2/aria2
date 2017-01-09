@@ -52,8 +52,6 @@ private:
   DownloadContext* downloadContext_;
   PeerStorage* peerStorage_;
 
-  static size_t MESSAGE_HEADER_LENGTH;
-
   bool checkPieceHash(const std::shared_ptr<Piece>& piece);
 
   void onNewPiece(const std::shared_ptr<Piece>& piece);
