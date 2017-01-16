@@ -71,6 +71,13 @@ public:
   bool exists();
 
   /**
+   * Tests whether the file or directory denoted by name exists.  If
+   * file does not exist, or file status could not be retrieved, this
+   * function stores error message to |err|.
+   */
+  bool exists(std::string& err);
+
+  /**
    * Tests whether the file denoted by name is a regular file.
    */
   bool isFile();

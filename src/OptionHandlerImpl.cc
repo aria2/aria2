@@ -551,7 +551,11 @@ void LocalFilePathOptionHandler::parseArg(Option& option,
     auto path = util::replace(optarg, "${HOME}", util::getHomeDir());
     if (mustExist_) {
       File f(path);
-      if (!f.exists() || f.isDir()) {
+      std::string err;
+      if (!f.exists(err)) {
+        throw DL_ABORT_EX(err);
+      }
+      if (f.isDir()) {
         throw DL_ABORT_EX(fmt(MSG_NOT_FILE, optarg.c_str()));
       }
     }
