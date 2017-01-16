@@ -79,7 +79,7 @@ bool File::exists()
   return fillStat(fstat) == 0;
 }
 
-bool File::exists(std::string &err)
+bool File::exists(std::string& err)
 {
   a2_struct_stat fstat;
   if (fillStat(fstat) != 0) {
