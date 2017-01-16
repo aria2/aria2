@@ -12,10 +12,10 @@ Debian Linux.
 The executable is statically linked, so no extra DLLs are
 necessary. The linked libraries are:
 
-* gmp 6.1.1
+* gmp 6.1.2
 * expat 2.2.0
-* sqlite 3.15.2
-* zlib 1.2.8
+* sqlite 3.16.2
+* zlib 1.2.11
 * c-ares 1.12.0
 * libssh2 1.8.0
 

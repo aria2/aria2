@@ -44,7 +44,7 @@ The following libraries were statically linked.
 
 * openssl 1.0.2j
 * expat 2.2.0
-* zlib 1.2.8
+* zlib 1.2.11
 * c-ares 1.12.0
 * libssh2 1.8.0
 
