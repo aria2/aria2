@@ -1,121 +1,31 @@
-aria2 1.30.0
+aria2 1.31.0
 ============
 
 Release Note
 ------------
 
-This release fixes several bugs.  See Changes below for detailed bug
-fixes.  This release adds an ability to expand `${HOME}` to user's
-home directory in several options.  It would be useful when used in
-configuration file.  -S option against torrent file now prints out DHT
-nodes.
+This release fixes assertion error in
+SimpleRandomizer::getRandomBytes.  It adds new option
+content-disposition-default-utf8.
 
 Changes
 -------
 
-* mingw: Use sqlite 3.15.2
+* Better error message when local file status cannot be retrieved
 
-* Fix bug that --disable-websocket causes build error
+  GH-836
 
-* Fix bug that lower bound of optimize-concurrent-downloads becomes 1
+* Fix assertion failure in SimpleRandomizer::getRandomBytes
 
-  GH-798
+  errno might not be initialized to 0, and we may get both rv == -1
+  and errno != ENOSYS.  This leads to assertion failure.  Since
+  getrandom_linux always returns -1 on failure, checking errno is
+  useless in this function.
 
-* Print DHT nodes with -S option
+  GH-823
 
-  GH-795
+* Add option content-disposition-default-utf8
 
-* Take into account address family when resolving DHT node address
+  Patch from JimmyZ
 
-  GH-794
-
-* Allow block device file to -i option
-
-  GH-785
-
-* Expand `${HOME}` to user's home directory in several options
-
-  The following options implement this substitution:
-
-  * --ca-certificate
-  * --certificate
-  * --dht-file-path
-  * --dht-file-path6
-  * --dir
-  * --input-file
-  * --load-cookies
-  * --log
-  * --metalink-file
-  * --netrc-path
-  * --on-bt-download-complete
-  * --on-download-complete
-  * --on-download-error
-  * --on-download-start
-  * --on-download-stop
-  * --on-download_pause
-  * --out
-  * --private-key
-  * --rpc-certificate
-  * --rpc-private-key
-  * --save-cookies
-  * --save-session
-  * --server-stat-if
-  * --server-stat-of
-  * --torrent-file
-
-  GH-780
-
-* Document that libaria2 is not thread safe
-
-  GH-775
-
-* configure: Use pkg-config to find libs whenever possible
-
-  Use pkg-config to find cppunit, libxml2 and expat. All those
-  libraries provide pkg-config files, and in all of those cases the
-  pkg-config macro is superior to the custom macros used currently.
-
-  The advantages of pkg-config files include:
-
-  - Explicit static linking support via --static. Currently, e.g.
-    'xml2-config --libs' prints all libraries needed for static
-    linking when doing dynamic linking unnecessary, resulting in
-    unnecessary direct deps.
-
-  - Better cross-build support. You don't have to build the additional
-    *-config tools for target.
-
-  - Better multilib support. Per-ABI pkgconfig directories are
-    commonly supported while packages usually fail to look for
-    per-CHOST *-config variants.
-
-  - Better override support. The current macros allow little to no
-    result overrides, the pkg-config macros let you pass FOO_CFLAGS
-    and FOO_LIBS manually.
-
-  - Cleaner version checks. The code used in libxml.m4 is really
-    creepy.
-
-  Patch from Michał Górny
-
-  GH-773
-
-* WinTLS: Rewrite writeData
-
-  We re-wrote WinTLSSession::writeData.  The major points are:
-
-  * Buffer is now preallocated once handshake is finished.
-    Previously, they are allocated each time when we send one TLS
-    record.
-
-  * Schannel uses header, body and trailer for each secBuffer.  Now we
-    send them off at once using WSASend which is windows counterpart
-    of sendv.  Previously, we do memmove if some of them are
-    truncated.
-
-  * We don't try to send application data in
-    WinTLSSession::closeConnection, since semantically we need same
-    application data used to create TLS record before.  Using 0 length
-    data to finish sending buffered data looks like a hack.
-
-  GH-772
+  GH-813
