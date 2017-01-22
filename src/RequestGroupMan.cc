@@ -1106,7 +1106,7 @@ int RequestGroupMan::optimizeConcurrentDownloads()
   A2_LOG_DEBUG(
       fmt("Max concurrent downloads optimized at %d (%lu currently active) "
           "[optimization speed %sB/s, current speed %sB/s]",
-          maxConcurrentDownloads, numActive_,
+          maxConcurrentDownloads, static_cast<unsigned long>(numActive_),
           util::abbrevSize(optimizationSpeed_).c_str(),
           util::abbrevSize(currentSpeed).c_str()));
 
