@@ -51,6 +51,8 @@ PATH=$TOOLCHAIN/bin:$PATH
     --with-libcares \
     --with-libz \
     --with-libssh2 \
+    CC="$TOOLCHAIN"/bin/arm-linux-androideabi-clang \
+    CXX="$TOOLCHAIN"/bin/arm-linux-androideabi-clang++ \
     CXXFLAGS="-Os -g" \
     CFLAGS="-Os -g" \
     CPPFLAGS="-fPIE" \
