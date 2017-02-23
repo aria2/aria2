@@ -425,21 +425,29 @@ void AbstractDiskWriter::ensureMmapWrite(size_t len, int64_t offset)
 #endif // HAVE_MMAP || __MINGW32__
 }
 
+namespace {
+// Returns true if |errNum| indicates that disk is full.
+bool isDiskFullError(int errNum)
+{
+  return
+#ifdef __MINGW32__
+      errNum == ERROR_DISK_FULL || errNum == ERROR_HANDLE_DISK_FULL
+#else  // !__MINGW32__
+      errNum == ENOSPC
+#endif // !__MINGW32__
+      ;
+}
+} // namespace
+
 void AbstractDiskWriter::writeData(const unsigned char* data, size_t len,
                                    int64_t offset)
 {
   ensureMmapWrite(len, offset);
   if (writeDataInternal(data, len, offset) < 0) {
     int errNum = fileError();
-    if (
-// If the error indicates disk full situation, throw
-// DownloadFailureException and abort download instantly.
-#ifdef __MINGW32__
-        errNum == ERROR_DISK_FULL || errNum == ERROR_HANDLE_DISK_FULL
-#else  // !__MINGW32__
-        errNum == ENOSPC
-#endif // !__MINGW32__
-        ) {
+    // If the error indicates disk full situation, throw
+    // DownloadFailureException and abort download instantly.
+    if (isDiskFullError(errNum)) {
       throw DOWNLOAD_FAILURE_EXCEPTION3(
           errNum,
           fmt(EX_FILE_WRITE, filename_.c_str(), fileStrerror(errNum).c_str()),
@@ -546,16 +554,19 @@ void AbstractDiskWriter::allocate(int64_t offset, int64_t length, bool sparse)
     ;
   int errNum = errno;
   if (r == -1) {
-    throw DL_ABORT_EX3(errNum, fmt("fallocate failed. cause: %s",
-                                   util::safeStrerror(errNum).c_str()),
-                       error_code::FILE_IO_ERROR);
+    throw DL_ABORT_EX3(
+        errNum,
+        fmt("fallocate failed. cause: %s", util::safeStrerror(errNum).c_str()),
+        isDiskFullError(errNum) ? error_code::NOT_ENOUGH_DISK_SPACE
+                                : error_code::FILE_IO_ERROR);
   }
 #elif HAVE_POSIX_FALLOCATE
   int r = posix_fallocate(fd_, offset, length);
   if (r != 0) {
     throw DL_ABORT_EX3(r, fmt("posix_fallocate failed. cause: %s",
                               util::safeStrerror(r).c_str()),
-                       error_code::FILE_IO_ERROR);
+                       isDiskFullError(r) ? error_code::NOT_ENOUGH_DISK_SPACE
+                                          : error_code::FILE_IO_ERROR);
   }
 #else
 #error "no *_fallocate function available."

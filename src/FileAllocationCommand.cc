@@ -92,6 +92,7 @@ bool FileAllocationCommand::executeInternal()
 
 bool FileAllocationCommand::handleException(Exception& e)
 {
+  getRequestGroup()->setLastErrorCode(e.getErrorCode(), e.what());
   A2_LOG_ERROR_EX(fmt(MSG_FILE_ALLOCATION_FAILURE, getCuid()), e);
   A2_LOG_ERROR(
       fmt(MSG_DOWNLOAD_NOT_COMPLETE, getCuid(),
