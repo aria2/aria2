@@ -60,28 +60,28 @@ StreamFileAllocationEntry::~StreamFileAllocationEntry() = default;
 void StreamFileAllocationEntry::prepareForNextAction(
     std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
 {
-  auto& option = getRequestGroup()->getOption();
+  auto rg = getRequestGroup();
+  auto& dctx = rg->getDownloadContext();
+  auto& ps = rg->getPieceStorage();
+  auto diskAdaptor = ps->getDiskAdaptor();
+  auto& option = rg->getOption();
 
   // For DownloadContext::resetDownloadStartTime(), see also
   // RequestGroup::createInitialCommand()
-  getRequestGroup()->getDownloadContext()->resetDownloadStartTime();
+  dctx->resetDownloadStartTime();
   if (option->getAsBool(PREF_ENABLE_MMAP) &&
       option->get(PREF_FILE_ALLOCATION) != V_NONE &&
-      getRequestGroup()->getPieceStorage()->getDiskAdaptor()->size() <=
-          option->getAsLLInt(PREF_MAX_MMAP_LIMIT)) {
-    getRequestGroup()->getPieceStorage()->getDiskAdaptor()->enableMmap();
+      diskAdaptor->size() <= option->getAsLLInt(PREF_MAX_MMAP_LIMIT)) {
+    diskAdaptor->enableMmap();
   }
   if (getNextCommand()) {
     // Reset download start time of PeerStat because it is started
     // before file allocation begins.
-    const std::shared_ptr<DownloadContext>& dctx =
-        getRequestGroup()->getDownloadContext();
-    const std::vector<std::shared_ptr<FileEntry>>& fileEntries =
-        dctx->getFileEntries();
+    const auto& fileEntries = dctx->getFileEntries();
     for (auto& f : fileEntries) {
       const auto& reqs = f->getInFlightRequests();
       for (auto& req : reqs) {
-        const std::shared_ptr<PeerStat>& peerStat = req->getPeerStat();
+        const auto& peerStat = req->getPeerStat();
         if (peerStat) {
           peerStat->downloadStart();
         }
@@ -92,10 +92,10 @@ void StreamFileAllocationEntry::prepareForNextAction(
     e->setNoWait(true);
     commands.push_back(popNextCommand());
     // try remaining uris
-    getRequestGroup()->createNextCommandWithAdj(commands, e, -1);
+    rg->createNextCommandWithAdj(commands, e, -1);
   }
   else {
-    getRequestGroup()->createNextCommandWithAdj(commands, e, 0);
+    rg->createNextCommandWithAdj(commands, e, 0);
   }
 }
 

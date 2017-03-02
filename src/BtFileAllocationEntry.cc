@@ -60,30 +60,30 @@ BtFileAllocationEntry::~BtFileAllocationEntry() = default;
 void BtFileAllocationEntry::prepareForNextAction(
     std::vector<std::unique_ptr<Command>>& commands, DownloadEngine* e)
 {
-  auto& option = getRequestGroup()->getOption();
+  auto rg = getRequestGroup();
+  auto& dctx = rg->getDownloadContext();
+  auto& ps = rg->getPieceStorage();
+  auto diskAdaptor = ps->getDiskAdaptor();
+  auto& option = rg->getOption();
 
-  BtSetup().setup(commands, getRequestGroup(), e, option.get());
+  BtSetup().setup(commands, rg, e, option.get());
   if (option->getAsBool(PREF_ENABLE_MMAP) &&
       option->get(PREF_FILE_ALLOCATION) != V_NONE &&
-      getRequestGroup()->getPieceStorage()->getDiskAdaptor()->size() <=
-          option->getAsLLInt(PREF_MAX_MMAP_LIMIT)) {
-    getRequestGroup()->getPieceStorage()->getDiskAdaptor()->enableMmap();
+      diskAdaptor->size() <= option->getAsLLInt(PREF_MAX_MMAP_LIMIT)) {
+    diskAdaptor->enableMmap();
   }
-  if (!getRequestGroup()->downloadFinished()) {
+  if (!rg->downloadFinished()) {
     // For DownloadContext::resetDownloadStartTime(), see also
     // RequestGroup::createInitialCommand()
-    getRequestGroup()->getDownloadContext()->resetDownloadStartTime();
-    const std::vector<std::shared_ptr<FileEntry>>& fileEntries =
-        getRequestGroup()->getDownloadContext()->getFileEntries();
+    dctx->resetDownloadStartTime();
+    const auto& fileEntries = dctx->getFileEntries();
     if (isUriSuppliedForRequsetFileEntry(std::begin(fileEntries),
                                          std::end(fileEntries))) {
-      getRequestGroup()->createNextCommandWithAdj(commands, e, 0);
+      rg->createNextCommandWithAdj(commands, e, 0);
     }
   }
   else {
 #ifdef __MINGW32__
-    const std::shared_ptr<DiskAdaptor>& diskAdaptor =
-        getRequestGroup()->getPieceStorage()->getDiskAdaptor();
     if (!diskAdaptor->isReadOnlyEnabled()) {
       // On Windows, if aria2 opens files with GENERIC_WRITE access
       // right, some programs cannot open them aria2 is seeding. To
@@ -96,7 +96,7 @@ void BtFileAllocationEntry::prepareForNextAction(
       diskAdaptor->openFile();
     }
 #endif // __MINGW32__
-    getRequestGroup()->enableSeedOnly();
+    rg->enableSeedOnly();
   }
 }
 
