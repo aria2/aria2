@@ -362,7 +362,7 @@ void SocketCore::bind(const struct sockaddr* addr, socklen_t addrlen)
 
 void SocketCore::beginListen()
 {
-  if (listen(sockfd_, 1) == -1) {
+  if (listen(sockfd_, 1024) == -1) {
     int errNum = SOCKET_ERRNO;
     throw DL_ABORT_EX(fmt(EX_SOCKET_LISTEN, errorMsg(errNum).c_str()));
   }
