@@ -17,7 +17,7 @@ ENV TOOL_BIN_DIR /tools/arm-bcm2708/gcc-linaro-$HOST-raspbian-x64/bin
 ENV PATH ${TOOL_BIN_DIR}:$PATH
 
 RUN mkdir $LOCAL_DIR && mkdir zlib && cd zlib && \
-   curl -Ls -o - 'http://zlib.net/zlib-1.2.8.tar.gz'  | \
+   curl -Ls -o - 'http://zlib.net/zlib-1.2.11.tar.gz'  | \
         tar xzf - --strip-components=1 && \
    prefix=${LOCAL_DIR} \
    CC=$HOST-gcc \
@@ -31,7 +31,7 @@ RUN mkdir $LOCAL_DIR && mkdir zlib && cd zlib && \
    make -s install
 
 RUN mkdir -p expat && cd expat && \
-    curl -Ls -o - 'http://sourceforge.net/projects/expat/files/latest/download' | \
+    curl -Ls -o - 'https://sourceforge.net/projects/expat/files/expat/2.2.0/expat-2.2.0.tar.bz2/download' | \
         tar xjf - --strip-components=1 && \
     ./configure \
         --host=$HOST \
