@@ -81,6 +81,13 @@ void BtFileAllocationEntry::prepareForNextAction(
                                          std::end(fileEntries))) {
       rg->createNextCommandWithAdj(commands, e, 0);
     }
+
+    try {
+      rg->saveControlFile();
+    }
+    catch (RecoverableException& e) {
+      A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
+    }
   }
   else {
 #ifdef __MINGW32__
