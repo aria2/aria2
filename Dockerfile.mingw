@@ -16,7 +16,7 @@ FROM ubuntu:wily
 MAINTAINER Tatsuhiro Tsujikawa
 
 # Change HOST to x86_64-w64-mingw32 to build 64-bit binary
-ENV HOST i686-w64-mingw32
+ENV HOST x86_64-w64-mingw32
 
 # It would be better to use nearest ubuntu archive mirror for faster
 # downloads.
