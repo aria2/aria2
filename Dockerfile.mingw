@@ -1,3 +1,26 @@
+#Debian Preinstallation
+#
+# sudo apt-get install libgnutls28-dev nettle-dev libgmp-dev libssh2-1-dev libc-ares-dev libxml2-dev zlib1g-dev libsqlite3-dev pkg-config libxml2-dev libcppunit-dev autoconf automake autotools-dev autopoint libtool
+#
+# sudo apt-get install \
+#     apt-transport-https \
+#     ca-certificates \
+#     curl \
+#     software-properties-common
+#
+# curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+#
+# sudo add-apt-repository \
+#   "deb [arch=amd64] https://download.docker.com/linux/debian \
+#   $(lsb_release -cs) \
+#   stable"
+#
+# sudo apt-get update
+#
+# sudo apt-get install docker-ce
+#
+#
+
 # Dockerfile to build aria2 Windows binary using debian mingw-w64
 # cross compiler chain.
 #
