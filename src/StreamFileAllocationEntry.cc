@@ -46,6 +46,7 @@
 #include "FileEntry.h"
 #include "PieceStorage.h"
 #include "DiskAdaptor.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
@@ -96,6 +97,15 @@ void StreamFileAllocationEntry::prepareForNextAction(
   }
   else {
     rg->createNextCommandWithAdj(commands, e, 0);
+  }
+
+  if (!rg->allDownloadFinished()) {
+    try {
+      rg->saveControlFile();
+    }
+    catch (RecoverableException& e) {
+      A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
+    }
   }
 }
 
