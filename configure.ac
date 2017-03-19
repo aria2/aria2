@@ -1099,31 +1099,6 @@ AM_CONDITIONAL([ENABLE_LIBARIA2], [test "x$enable_libaria2" = "xyes"])
 
 AC_SUBST([bashcompletiondir])
 
-case "$host" in
-  *android*)
-    android=yes
-    LIBS="$LIBS -lstdc++ -lsupc++"
-    case "$host" in
-      arm-*)
-        android_arm=yes
-        ;;
-      mipsel-*)
-        android_mips=yes
-        ;;
-      i686-*)
-        android_x86=yes
-        ;;
-    esac
-    ;;
-  *)
-    ;;
-esac
-
-AM_CONDITIONAL([ANDROID], [test "x$android" = "xyes"])
-AM_CONDITIONAL([ANDROID_ARM], [test "x$android_arm" = "xyes"])
-AM_CONDITIONAL([ANDROID_MIPS], [test "x$android_mips" = "xyes"])
-AM_CONDITIONAL([ANDROID_X86], [test "x$android_x86" = "xyes"])
-
 if test "x$ARIA2_STATIC" = "xyes"; then
   # -static-libgcc and -static-libstdc++ are linker flags and not for
   # libtool.

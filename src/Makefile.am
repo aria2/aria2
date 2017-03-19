@@ -273,10 +273,6 @@ SRCS =  \
 	EvictSocketPoolCommand.cc EvictSocketPoolCommand.h\
 	libssl_compat.h
 
-if ANDROID
-SRCS += android/android.c
-endif # ANDROID
-
 if MINGW_BUILD
 SRCS += WinConsoleFile.cc WinConsoleFile.h
 endif # MINGW_BUILD
