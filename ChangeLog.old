@@ -2300,7 +2300,7 @@
 
 	Fixed the bug that segments are not filled to
 	Request::getMaxPipelinedRequest().
-	Make sure that trailing data of transfer encoding is read propery,
+	Make sure that trailing data of transfer encoding is read property,
 	after file data is received.
 	* src/AbstractCommand.cc
 	* src/DownloadCommand.cc
@@ -6119,7 +6119,7 @@
 
 2010-01-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
-	Added following sentance to the help message of --out option:
+	Added following sentence to the help message of --out option:
 	--out option is ignored when -Z is used.
 	* doc/aria2c.1.txt
 	* src/usage_text.h
@@ -8458,7 +8458,7 @@
 
 2009-07-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
-	Added 'errorCode' to the reponse of tellStatus xml-rpc method.
+	Added 'errorCode' to the response of tellStatus xml-rpc method.
 	This key is only available for stopped/completed downloads and its
 	value is the error code defined in EXIT STATUS in man page.
 	* src/XmlRpcMethodImpl.cc
@@ -10020,7 +10020,7 @@
 
 2009-05-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
-	Removed tellAll XML-RPC command because its reponse tends to be
+	Removed tellAll XML-RPC command because its response tends to be
 	big if stopped/waiting downloads pile up.
 	* src/XmlRpcMethodFactory.cc
 	* src/XmlRpcMethodImpl.cc
@@ -10455,7 +10455,7 @@
 	DefaultBtContext::setFileFileter().
 	PieceStorage::setFileFilter(), DiskAdaptor::addDownloadEntry()
 	functions are removed because they are no longer used.  Creating
-	filter in BitfieldMan is done in new funtion
+	filter in BitfieldMan is done in new function
 	PieceStorage::setupFileFilter()	
 	* src/BtContext.cc
 	* src/BtContext.h
@@ -10513,7 +10513,7 @@
 2009-05-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	The information for files, URIs, peers are removed from the
-	reponse of TellaActive, TellStatus command because they tend to be
+	response of TellaActive, TellStatus command because they tend to be
 	large. Instead they can be retrieved by the dedicated commands:
 	getFiles, getUris and getPeers respectively.
 	* src/XmlRpcMethodFactory.cc
@@ -10737,7 +10737,7 @@
 	
 2009-05-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
-	Added xml-rpc functionality. Currently only addURI commad is
+	Added xml-rpc functionality. Currently only addURI command is
 	supported. To enable xml-rpc, run aria2 with
 	--enable-http-server. This option name is temporal and will be
 	changed. The feature that reports download progress in html format
@@ -13042,7 +13042,7 @@
 
 	Fixed the bug that BitTorrent download doesn't finish when REJECT
 	message is received before CHOKE message.  The old implementation
-	doen't clear the use-bit of the piece when recieved REJECT
+	doen't clear the use-bit of the piece when received REJECT
 	message.
 	* src/DefaultBtMessageDispatcher.cc
 	* test/DefaultBtMessageDispatcherTest.cc
@@ -13876,7 +13876,7 @@
 2008-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that metalink file is not processed if Content-Type
-	field has a paramter.
+	field has a parameter.
 	* src/HttpResponse.cc
 	* src/HttpResponse.h
 	* test/HttpResponseTest.cc
@@ -13906,7 +13906,7 @@
 
 2008-11-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
-	Added usege for proxy.
+	Added usage for proxy.
 	* doc/aria2c.1.txt
 
 2008-11-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
@@ -14004,7 +14004,7 @@
 2008-11-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added the ability to pool proxy connection.
-	The conneciton in FTP with proxy-method=GET is not pooled.
+	The connection in FTP with proxy-method=GET is not pooled.
 	Proxy-Connection header will not be sent when sending CONNECT method.
 	* src/DownloadEngine.cc
 	* src/DownloadEngine.h
@@ -14147,7 +14147,7 @@
 
 2008-11-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
-	Corrected catched exception type.
+	Corrected caught exception type.
 	* src/ServerStatMan.cc
 
 2008-11-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
@@ -14403,7 +14403,7 @@
 2008-10-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed the bug that aria2 aborts when a request larger than 16KiB is
-	recieved.
+	received.
 	In this fix, if a request larger than 16KiB length is received, aria2
 	disconnects the peer.
 	* src/BtConstants.h
@@ -14674,7 +14674,7 @@
 
 	Fixed the bug that aria2 downloads faster than max-download-limit when
 	downloading file using both HTTP(or FTP) and BitTorrent, because aria2
-	evaluates speed separatly(HTTP and BiTorrent) against max-download-limit
+	evaluates speed separately(HTTP and BiTorrent) against max-download-limit
 	, instead of sum of them.
 	* src/ActivePeerConnectionCommand.cc
 	* src/DefaultBtInteractive.cc
@@ -14934,7 +14934,7 @@
 
 2008-09-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
-	If establishing conneciton to a server is failed, then mark error on
+	If establishing connection to a server is failed, then mark error on
 	its ServerStat.
 	Added the cause of error to log when error event occurred.
 	Moved message string to message.h for translation.
@@ -15163,7 +15163,7 @@
 
 2008-09-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
-	Added a constuctor that receives struct timeval.
+	Added a constructor that receives struct timeval.
 	Added operator<.
 	* src/TimeA2.cc
 	* src/TimeA2.h
@@ -15178,7 +15178,7 @@
 
 2008-09-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
-	Implmented the functions to parse date.
+	Implemented the functions to parse date.
 	* src/TimeA2.cc
 	* src/TimeA2.h
 	* test/TimeTest.cc
@@ -15410,7 +15410,7 @@
 
 2008-08-24  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
-	Added sqlite3 depenency and Firefox3 cookie support.
+	Added sqlite3 dependency and Firefox3 cookie support.
 	* README
 	
 2008-08-24  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
@@ -17791,7 +17791,7 @@
 
 2008-05-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
-	Print usage when no URL is specifed or bad command-line option is
+	Print usage when no URL is specified or bad command-line option is
 	specified.
 	* src/HelpItemFactory.cc
 	* src/help_tags.h
@@ -18050,7 +18050,7 @@
 
 	Rewritten Exception class. Throw exception object, not its pointer and
 	catch by reference, so that remove problematic delete operator for
-	catched exception.
+	caught exception.
 	* src/Exception.cc
 	* src/Exception.h
 	* test/ExceptionTest.cc
@@ -18181,7 +18181,7 @@
 2008-04-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Use the default value pulled from Option object in HelpItemFactory.
-	except options whose defualt value is embedded in a usage text.
+	except options whose default value is embedded in a usage text.
 	* src/HelpItemFactory.cc
 	* src/HelpItemFactory.h
 	* src/option_processing.cc
@@ -18275,7 +18275,7 @@
 	Added --header option. You can specify any number of additional HTTP headers
 	like:
 	aria2 --header="X-A: 300" --header="X-B: 900" http://host/file
-	Unlike other commad-line option, you can use --header option multiple times.
+	Unlike other command-line option, you can use --header option multiple times.
 	* src/HelpItemFactory.cc
 	* src/HttpRequest.{cc, h}
 	* src/HttpRequestCommand.cc
@@ -18339,13 +18339,13 @@
 	Implemented auto protocol detection.
 	Now you can do:
 	aria2c -Z http://host/file file1.torrent file2.metalink
-	(Note: -Z option is required for auto protcol detection.)
+	(Note: -Z option is required for auto protocol detection.)
 	Then aria2c downloads 3 files simultaneously:
 	1. http://host/file
 	2. file1.torrent <-- read local torrent file
 	3. file2.metalink <-- read local Metalink file.
 
-	Same thing goes with -i option. Assume your uris.txt contans:
+	Same thing goes with -i option. Assume your uris.txt contains:
 	http://host/file
 	file1.torrent
 	file2.metalink
@@ -19471,7 +19471,7 @@
 	Fixed the bug that EX_TOO_LONG_PAYLOAD exception is thrown if just
 	payload length(4bytes) are received. This happens because lenbufLength
 	is not updated in this particular case and successive call of
-	receiveMessage() overwrites payload length with bytes recieved which
+	receiveMessage() overwrites payload length with bytes received which
 	are payload body.
 	* src/PeerConnection.{h, cc}
 	* src/message.h
@@ -20637,12 +20637,12 @@
 	* src/PeerListenCommand.{h, cc}
 	
 	Now an exception thrown while parsing tracker response is now logged.
-	If DlAbortEx is catched, then btAnnounce->resetAnnounce() immediately
+	If DlAbortEx is caught, then btAnnounce->resetAnnounce() immediately
 	called, which means no retry is made in this case, assuming a tracker
 	has a problem.
 	* src/TrackerWatcherCommand.cc
 	
-	Fixed: downloading a file whose length is unkown fails.
+	Fixed: downloading a file whose length is unknown fails.
 	* src/DownloadCommand.cc
 
 	Simplified prepareForNextSegment()
@@ -21629,7 +21629,7 @@
 	* src/common.h (OPEN_MODE): New definition.
 	* src/File.cc
 	* src/Util.cc
-	* src/Directry.cc
+	* src/Directory.cc
 	* src/AbstractDiskWriter.cc
 
 	Change the level of log message "download aborted" to debug:
@@ -21715,7 +21715,7 @@
 	is 80 or 443:
 	* src/HttpRequest.cc (getHostText): Suppress port number in http
 	request header if port is 80 or 443.
-	(createProxyRequest): Allways send port number.
+	(createProxyRequest): Always send port number.
 
 2007-03-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
@@ -21923,7 +21923,7 @@
 	HttpResponse class.
 	* src/HttpRequest.h, src/HttpRequest.cc: New class.
 	* src/HttpResponse.h, src/HttpResponse.cc: New class.
-	* src/HttpConnection.cc: Contruction of http request were moved to
+	* src/HttpConnection.cc: Construction of http request were moved to
 	HttpRequest class.
 	* src/HttpResponseCommand.h, src/HttpResponseCommand.cc: Refactored.
 	* src/HttpRequestCommand.cc (executeInternal): Rewritten.
@@ -23385,7 +23385,7 @@
 	(sendStatistics): Use pieceStorage, btRuntime.
 	(afterEachIteration): New function.
 	* src/AnnounceList: AnnounceTier->AnnounceTierHandle.
-	* src/Directry.h
+	* src/Directory.h
 	(Directory): New function.
 	(DirectoryHandle): New type definition.
 	* src/BtProgressInfoFile.h: New file.
@@ -23464,7 +23464,7 @@
 	(peerStorage): New variable.
 	(pieceStorage): New variable.
 	(setBtContext): New function.
-	* src/Directry.cc
+	* src/Directory.cc
 	(Directory): New function.
 	(createDir): Do nothing if name.size() == 0.
 	* src/AnnounceList.h
@@ -23748,7 +23748,7 @@
 	* src/SegmentMan.h
 	(SegmentEntryHandle): New type definition.
 	(SegmentEntries): Now holds SegmentEntryHandle.
-	(findSlowerSegmentEntry): New funtion.
+	(findSlowerSegmentEntry): New function.
 	* src/SegmentMan.cc
 	(save): Updated according to the changes in SegmentEntries.
 	(read): Updated according to the changes in SegmentEntries.
@@ -25644,7 +25644,7 @@
 	list as "peers":
 	
 	* src/TrackerUpdateCommand.cc
-	(execute): Added a check to see wether the type of peers is Data*.
+	(execute): Added a check to see whether the type of peers is Data*.
 
 2006-05-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
@@ -25724,7 +25724,7 @@
 	(getMissingIndex): Don't call getMissingIndexRandomly() if max is 0.
 	(getMissingUnusedIndex): Don't call getMissingIndexRandomly() if max is
 	0.
-	(getMissingIndex): Dont't call getMissingIndexRandomly() if max is 0.
+	(getMissingIndex): Don't't call getMissingIndexRandomly() if max is 0.
 	* src/TorrentMan.h
 	(UsedPieces): Removed.
 	(Pieces): New type definition.
@@ -26803,7 +26803,7 @@
 	(getActivePeers): New function.
 	(deleteActivePeer): New function.
 	* src/TorrentMan.cc
-	(addPeer): deleteOldErrorPeers is moved to the begining of the function
+	(addPeer): deleteOldErrorPeers is moved to the beginning of the function
 	* src/PeerAbstractCommand.cc
 	(onAbort): Use peer->resetStatus().
 	* src/main.cc
@@ -26954,7 +26954,7 @@
 	* src/main.cc (handler): Removed the check to see e->diskWriter != NULL
 	(torrentHandler): Removed the check to see diskAdaptor != NULL.
 
-	* src/AbstractDiskWriter.cc (openExistingFile): Updated messsage.
+	* src/AbstractDiskWriter.cc (openExistingFile): Updated message.
 	(createFile): Updated message.
 	
 2006-04-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
@@ -27272,7 +27272,7 @@
 	(getCompletedLength): New function.
 
 	* src/TorrentMan.h [FileEntry](Constructor): Updated signature.
-	Initalized newly added variables.
+	Initialized newly added variables.
 	[FileEntry](offset): New variable.
 	[FileEntry](extracted): New variable.
 	[FileEntry](requested): New variable.
@@ -27329,7 +27329,7 @@
 	(getName): New function.
 	* src/TorrentMan.h (getMultiFileEntries): New function.
 	(getName): New function.
-	* src/main.cc (main): Use above 2 funtion. 
+	* src/main.cc (main): Use above 2 function. 
 	
 	* Release 0.3.2
 	
@@ -27454,7 +27454,7 @@
 	* src/TorrentMan.cc: Remove downloadedSize == 0 check from save().
 	Instead, added a check for whether setup method has executed
 	successfully.
-	* src/TorrentMan.h: Added member vaiable setupComplete. Updated
+	* src/TorrentMan.h: Added member variable setupComplete. Updated
 	DEFAULT_ANNOUNCE_INTERVAL and DEFAULT_ANNOUNCE_MIN_INTERVAL to 300.
 	* src/Makefile.am: Updated.
 	* src/messageDigest.h: Added. This is a macro calculating SHA1 digest
@@ -27575,7 +27575,7 @@
 	* BitfieldMan.cc: fixed memory leak.
 	* TorrentMan.cc: initialized storeDir to ".".
 	* TorrentMan.cc: fixed memory leak.
-	* TorrentMan.cc: corrected file paths of splitted files.
+	* TorrentMan.cc: corrected file paths of split files.
 	* PeerAbstractCommand.cc: casted timeout to long long int.
 	* main.cc: added delete(req) and delete(te->diskWriter).
 	* RequestSlot.cc: casted timeout value to long long int.
@@ -27726,7 +27726,7 @@
 	* HttpConnection.cc: Added Referer support.
 	* main.cc: Added referer command-line option.
 	* main.cc: Added rety-wait command-line option.
-	* Exception.h: Fixed formating bug in Exception::setMsg()
+	* Exception.h: Fixed formatting bug in Exception::setMsg()
 	* SocketCore.{h,cc}:
 	* Socket.{h, cc}:
 	* Request.cc:

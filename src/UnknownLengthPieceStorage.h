@@ -136,7 +136,7 @@ public:
   virtual std::shared_ptr<Piece> getPiece(size_t index) CXX11_OVERRIDE;
 
   /**
-   * Tells that the download of the specfied piece completes.
+   * Tells that the download of the specified piece completes.
    */
   virtual void
   completePiece(const std::shared_ptr<Piece>& piece) CXX11_OVERRIDE;

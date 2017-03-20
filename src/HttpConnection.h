@@ -101,7 +101,7 @@ public:
    * If segment.sp+segment.ds > 0 then Range header is added.
    * This method is used in HTTP/HTTP downloading and FTP downloading via
    * HTTP proxy(GET method).
-   * @param segment indicates starting postion of the file for downloading
+   * @param segment indicates starting position of the file for downloading
    */
   void sendRequest(std::unique_ptr<HttpRequest> httpRequest);
 

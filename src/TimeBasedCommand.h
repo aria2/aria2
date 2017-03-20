@@ -54,7 +54,7 @@ private:
    * setting exit_ to true if this command's job has finished and you want to
    * delete this command.
    * The exit_ variable is evaluated  after preProcess(), process(),
-   * postProcess(), and terminate processing immediately and excute() returns
+   * postProcess(), and terminate processing immediately and execute() returns
    * true.
    */
   bool exit_;
@@ -70,18 +70,18 @@ protected:
 
 public:
   /**
-   * preProcess() is called each time when excute() is called.
+   * preProcess() is called each time when execute() is called.
    */
   virtual void preProcess(){};
 
   /**
-   * process() is called only when excute() is called and specified time has
+   * process() is called only when execute() is called and specified time has
    * elapsed.
    */
   virtual void process() = 0;
 
   /**
-   * postProcess() is called each time when excute() is called.
+   * postProcess() is called each time when execute() is called.
    */
   virtual void postProcess(){};
 

@@ -47,7 +47,7 @@ protected:
   /**
    * Connect to the server.
    * This method just send connection request to the server.
-   * Using nonblocking mode of socket, this funtion returns immediately
+   * Using nonblocking mode of socket, this function returns immediately
    * after send connection packet to the server.
    */
   virtual bool executeInternal() CXX11_OVERRIDE;

@@ -293,7 +293,7 @@ std::string usedCompilerAndPlatform()
 
   rv << "\n  built by   " << BUILD;
   if (strcmp(BUILD, TARGET)) {
-    rv << "\n  targetting " << TARGET;
+    rv << "\n  targeting " << TARGET;
   }
   rv << "\n  on         " << __DATE__ << " " << __TIME__;
 

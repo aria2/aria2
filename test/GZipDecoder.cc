@@ -55,7 +55,7 @@ void GZipDecoder::init()
   strm_->avail_in = 0;
   strm_->next_in = Z_NULL;
 
-  // initalize z_stream with gzip/zlib format auto detection enabled.
+  // initialize z_stream with gzip/zlib format auto detection enabled.
   if (Z_OK != inflateInit2(strm_, 47)) {
     throw DL_ABORT_EX("Initializing z_stream failed.");
   }

@@ -30,7 +30,7 @@ endif # !HAVE_RST2HTML
 dist_noinst_DATA = LICENSE.OpenSSL
 
 # Format source files using clang-format.  Don't format source files
-# under deps directory since we are not responsible for thier coding
+# under deps directory since we are not responsible for their coding
 # style.
 clang-format:
 	CLANGFORMAT=`git config --get clangformat.binary`; \
