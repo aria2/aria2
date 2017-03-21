@@ -39,7 +39,7 @@ for file in "$WORK_DIR"/*.po; do
     # copy file to po directory
     echo "Moving \`$file' to \`$dst'..."
     mv "$file" "$dst"
-    # Upate LINGUAS here too.
+    # Update LINGUAS here too.
     echo -n " ${bn%.po}" >> "$PO_DIR"/LINGUAS
 done
 

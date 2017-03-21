@@ -157,7 +157,7 @@ public:
   virtual void markPieceMissing(size_t index) = 0;
 
   /**
-   * Tells that the download of the specfied piece completes.
+   * Tells that the download of the specified piece completes.
    */
   virtual void completePiece(const std::shared_ptr<Piece>& piece) = 0;
 

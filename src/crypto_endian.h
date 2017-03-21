@@ -40,7 +40,7 @@ namespace crypto {
 
 #if !defined(LITTLE_ENDIAN) || !defined(BIG_ENDIAN) || !defined(BYTE_ORDER) || \
     (LITTLE_ENDIAN != BYTE_ORDER && BIG_ENDIAN != BYTE_ORDER)
-#error Unsupported byte order/endianess
+#error Unsupported byte order/endianness
 #endif
 
 // Lets spend some quality time mucking around with byte swap and endian-ness.

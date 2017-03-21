@@ -123,7 +123,7 @@ public:
   // blocks, or SSH_ERR_ERROR.
   int sftpStat(int64_t& totalLength, time_t& mtime);
 
-  // Moves file postion to |pos|.
+  // Moves file position to |pos|.
   void sftpSeek(int64_t pos);
 
   // Returns last error string

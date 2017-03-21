@@ -117,7 +117,7 @@ public:
   int64_t getTotalLength() const;
 
   /**
-   * Returs true when the download has finished.
+   * Returns true when the download has finished.
    * If downloadStarted is false or the number of the segments of this object
    * holds is 0, then returns false.
    */
