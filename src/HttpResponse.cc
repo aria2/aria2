@@ -165,8 +165,8 @@ void HttpResponse::processRedirect()
         cuid_, req->getCurrentUri().c_str()));
   }
 
-  A2_LOG_INFO(fmt(MSG_REDIRECT, cuid_,
-                  httpRequest_->getRequest()->getCurrentUri().c_str()));
+  A2_LOG_NOTICE(fmt(MSG_REDIRECT, cuid_,
+                    httpRequest_->getRequest()->getCurrentUri().c_str()));
 }
 
 const std::string& HttpResponse::getRedirectURI() const
