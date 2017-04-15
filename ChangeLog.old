@@ -2300,7 +2300,7 @@
 
 	Fixed the bug that segments are not filled to
 	Request::getMaxPipelinedRequest().
-	Make sure that trailing data of transfer encoding is read property,
+	Make sure that trailing data of transfer encoding is read properly,
 	after file data is received.
 	* src/AbstractCommand.cc
 	* src/DownloadCommand.cc
@@ -25724,7 +25724,7 @@
 	(getMissingIndex): Don't call getMissingIndexRandomly() if max is 0.
 	(getMissingUnusedIndex): Don't call getMissingIndexRandomly() if max is
 	0.
-	(getMissingIndex): Don't't call getMissingIndexRandomly() if max is 0.
+	(getMissingIndex): Don't call getMissingIndexRandomly() if max is 0.
 	* src/TorrentMan.h
 	(UsedPieces): Removed.
 	(Pieces): New type definition.
