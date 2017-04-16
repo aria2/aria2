@@ -8,7 +8,9 @@ Control File (\*.aria2) Format
 ------------------------------
 
 The control file uses a binary format to store progress information of
-a download. Here is the diagram for each field::
+a download. Here is the diagram for each field:
+
+.. code-block:: text
 
      0                   1                   2                   3
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -45,7 +47,7 @@ a download. Here is the diagram for each field::
 
 ``EXT`` (EXTENSION): 4 bytes
    If LSB is 1(i.e. ``EXT[3]&1 == 1``), aria2 checks whether the saved
-   !InfoHash and current downloading one are the same. If they are not
+   InfoHash and current downloading one are the same. If they are not
    the same, an exception is thrown. This is called "infoHashCheck"
    extension.
 
@@ -104,7 +106,9 @@ aria2 saves IPv4 DHT routing table in
 ``dht.dat`` and ``dht6.dat`` files use same binary encoding and have
 following fields. All multi byte integers are in network byte
 order. ``RSV`` (RESERVED) fields are reserved for future use. For now
-they should be all zeros::
+they should be all zeros:
+
+.. code-block:: text
 
      0                   1                   2                   3
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1

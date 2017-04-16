@@ -4124,7 +4124,9 @@ Specify the output file name
 
 To specify the output file name for BitTorrent downloads, you need to know
 the index of file in the torrent (see :option:`--show-files <-S>`). For
-example, the output looks like this::
+example, the output looks like this:
+
+.. code-block:: text
 
   idx|path/length
   ===+======================
