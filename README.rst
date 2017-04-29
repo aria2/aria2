@@ -359,7 +359,7 @@ Cross-compiling Android binary
 In this section, we describe how to build Android binary using Android
 NDK cross-compiler on Debian Linux.
 
-At the time of this writing, android-ndk-r12b should compile aria2
+At the time of this writing, android-ndk-r14b should compile aria2
 without errors.
 
 ``android-config`` script is a configure script wrapper for Android
