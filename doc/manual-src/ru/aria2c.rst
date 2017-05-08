@@ -2677,7 +2677,7 @@ RPC-метод `system.multicall` обрабатывается особым об
 .. function:: aria2.unpauseAll([secret])
 
   Этот метод эквивалентен по вызову :func:`aria2.unpause`, для каждой
-  активной/ожидающей закачки. Этот метод возвращает ``OK``.
+  приостановлено закачки. Этот метод возвращает ``OK``.
 
 .. function:: aria2.tellStatus([secret], gid[, keys])
 

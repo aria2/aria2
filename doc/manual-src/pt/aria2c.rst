@@ -11,7 +11,7 @@ SINOPSE
 .. index::   double:  Descrição; Sumário
              double: Resumo; Executivo
              triple: O que; Por que; Porque
-    	        
+
 
 DESCRIÇÃO
 ---------
@@ -88,7 +88,7 @@ Opções Comuns
 
    Continua o download a partir de um download parcial, anteriormente
    interrompido.  Use esta opção para retormar um download iniciado a partir
-   de um browser (navegador) ou outro programa que faz baixa de arquivos 
+   de um browser (navegador) ou outro programa que faz baixa de arquivos
    sequencialmente desde o início.
    Atualmente esta opção só é aplicavel a download de HTTP, HTTPS e FTP.
 
@@ -98,8 +98,8 @@ Opções Comuns
    ``#``. Por exemplo, digitar ``--help=#http`` para obter a explicação do uso das
    opções do tema ``#http``. Se digitar um termo que não é tema, haverá exibição
    das opções que incluem o termo informado.
-   Valores disponíveis para temas podem ser: ``#basic``, ``#advanced``, 
-   ``#http``, ``#https``, ``#ftp``, 
+   Valores disponíveis para temas podem ser: ``#basic``, ``#advanced``,
+   ``#http``, ``#https``, ``#ftp``,
    ``#metalink``, ``#bittorrent``, ``#cookie``, ``#hook``, ``#file``, ``#rpc``,
    ``#checksum``, ``#experimental``, ``#deprecated``, ``#help``, ``#all``
    Padrão: ``#basic``
@@ -121,25 +121,25 @@ Opções HTTP / FTP
   Ver também seção `VARIÁVEIS DE AMBIENTE`_  section.
 
   .. note::
-    
+
     Se usuário e senha são embutidos na URI do proxy eles também podem ser
     especificados através das opções
-    *--{http,https,ftp,all}-proxy-{usuário,senha}*, 
+    *--{http,https,ftp,all}-proxy-{usuário,senha}*,
     aqueles que aparecerem por último assumem a precedência.
-    Por exemplo, quando temos: 
-    ``http-proxy-user=meunome``, ``http-proxy-passwd=minhasenha`` 
+    Por exemplo, quando temos:
+    ``http-proxy-user=meunome``, ``http-proxy-passwd=minhasenha``
     em aria2.conf e especificamos ``--http-proxy="http://svrproxy"`` na
-    linha de comando, então obtemos como proxy HTTP ``http://svrproxy`` 
+    linha de comando, então obtemos como proxy HTTP ``http://svrproxy``
     com o usuário ``meunome`` e senha ``minhasenha``.
 
     Outro exemplo: quando especificamos na linha de comando:
-    ``--http-proxy="http://usuário:senha@svrproxy" --http-proxy-user="meunome" 
-    --http-proxy-passwd="minhasenha"``, então obtemos proxy HTTP 
+    ``--http-proxy="http://usuário:senha@svrproxy" --http-proxy-user="meunome"
+    --http-proxy-passwd="minhasenha"``, então obtemos proxy HTTP
     ``http://svrproxy`` com usuário ``meunome`` e senha ``minhasenha``.
 
     Mais um exemplo: se especificamos na linha de comando:
-    ``--http-proxy-user="meunome" --http-proxy-passwd="minhasenha" 
-    --http-proxy="http://utilizador:acesso@svrproxy"``, então obtemos 
+    ``--http-proxy-user="meunome" --http-proxy-passwd="minhasenha"
+    --http-proxy="http://utilizador:acesso@svrproxy"``, então obtemos
     o proxy HTTP ``http://svrproxy`` com o usuário ``utilizador``
     e a senha ``acesso``.
 
@@ -169,9 +169,9 @@ Opções HTTP / FTP
 
 .. option:: --dry-run[=true|false]
 
-  Se ``true`` é informado, aria2 apenas verifica se o arquivo remoto está 
+  Se ``true`` é informado, aria2 apenas verifica se o arquivo remoto está
   disponível para download dos dados. Esta opção tem efeito em downloads de
-  servidores HTTP, HTTPS e FTP.  Downloads de BitTorrent serão cancelados se for 
+  servidores HTTP, HTTPS e FTP.  Downloads de BitTorrent serão cancelados se for
   especificado ``true``.
   Padrão: ``false``
 
@@ -208,12 +208,12 @@ Opções HTTP / FTP
 
   aria2 não divide menos que 2 * TAMANHO o intervalo de bytes.  Por exemplo,
   considere download de um arquivo de 20MiB. Se o TAMANHO é 10M, aria2 pode
-  dividir o arquivo em 2 intervalos de [0-10MiB) e [10MiB-20MiB) e executar o 
+  dividir o arquivo em 2 intervalos de [0-10MiB) e [10MiB-20MiB) e executar o
   download usando 2 fontes (logicamente se a opção :option:`--split <-s>` >= 2).
   Se o TAMANHO é 15M, desde que 2 * 15M > 20Mib, aria2 não dividirá o arquivo e
-  fará o download de 1 fonte.  Pde ser anexado ``K`` ou ``M`` 
+  fará o download de 1 fonte.  Pde ser anexado ``K`` ou ``M``
   (1K = 1024, 1M = 1024K).
-  Valores Possíveis: ``1M`` -``1024M`` 
+  Valores Possíveis: ``1M`` -``1024M``
   Padrão: ``20M``
 
 .. option:: -n, --no-netrc[=true|false]
@@ -222,7 +222,7 @@ Opções HTTP / FTP
   Padrão: Suporte a netrc é habilitado por padrão.
 
   .. note::
-    
+
     arquivo netrc é lido somente no início se a opção :option:`--no-netrc <-n>` é
     ``false``.
     Portanto se a opção :option:`--no-netrc <-n>` é ``true`` no início, não haverá
@@ -238,14 +238,14 @@ Opções HTTP / FTP
 
   .. note::
 
-    Para endereço de rede com blocos CIDR, ambos endereços IPv4 ou IPv6 funcionam. 
-    Implementação atual, não resolve nome host em URI para comparar com endereço 
-    especificado na opção :option:`--no-proxy`. Portanto só será efetiva se a URI 
+    Para endereço de rede com blocos CIDR, ambos endereços IPv4 ou IPv6 funcionam.
+    Implementação atual, não resolve nome host em URI para comparar com endereço
+    especificado na opção :option:`--no-proxy`. Portanto só será efetiva se a URI
     possuir números de endereço IP.
 
 .. option:: -o, --out=<ARQUIVO>
 
-  O nome do arquivo baixado. Quando a opção :option:`--force-sequential <-Z>` é 
+  O nome do arquivo baixado. Quando a opção :option:`--force-sequential <-Z>` é
   utilizada esta opção será ignorada.
 
   .. note::
@@ -275,7 +275,7 @@ Opções HTTP / FTP
 
 .. option:: --reuse-uri[=true|false]
 
-  Reutilizar uma URI já utilizada. Se não habilitada as URIs já utilizadas serão 
+  Reutilizar uma URI já utilizada. Se não habilitada as URIs já utilizadas serão
   abandonadas.
   Padrão: ``true``
 
@@ -292,7 +292,7 @@ Opções HTTP / FTP
   Para carregar dados já salvos utilizar opção :option:`--server-stat-if`.
   Ver subseção `Perfil Performance Servidor`_ abaixo,
   para o formato do arquivo.
-    
+
 
 .. option:: --server-stat-if=<ARQUIVO>
 
@@ -320,7 +320,7 @@ Opções HTTP / FTP
   Padrão: ``5``
 
   .. note::
-    
+
     Some Metalinks regulate the number of servers to connect.  aria2
     strictly respects them.  This means that if Metalink defines the
     maxconnections attribute lower than N, then aria2 uses the
@@ -382,7 +382,7 @@ Opções Específicas de HTTP e HTTPS
   Utilizar o certificado do ARQUIVO FILE para verificar os Servidores.
   O certificado precisa estar no formato PEM e pode conter múltiplos
   certificados CA.
-  
+
   Utilizar a opção :option:`--check-certificate` para habilitar a verificação.
 
   .. note::
@@ -408,11 +408,11 @@ Opções Específicas de HTTP e HTTPS
 .. option:: --http-accept-gzip[=true|false]
 
   Envia cabeçalho requisição ``Accept: deflate, gzip`` e faz (inflate) se
-  o servidor remoto responder com  ``Content-Encoding: gzip`` ou 
+  o servidor remoto responder com  ``Content-Encoding: gzip`` ou
   ``Content-Encoding: deflate``.  Padrão: ``false``
 
   .. note::
-    
+
     Alguns servidores respondem com ``Content-Encoding: gzip`` para arquivos
     que são gzip. aria2 faz inflate destes por causa do cabeçalho de resposta.
 
@@ -478,7 +478,7 @@ Opções Específicas de HTTP e HTTPS
 
   Define a referência. Afeta todas URIs. Se ``*`` é usado, cada URI requisitada é usada
   como referência (referer). Pode ser útil quando usado em conjunto com a opção
-  :option:`--parameterized-uri`. 
+  :option:`--parameterized-uri`.
 
 .. option:: --enable-http-keep-alive[=true|false]
 
@@ -491,7 +491,7 @@ Opções Específicas de HTTP e HTTPS
   Padrão: ``false``
 
   .. note::
-    
+
     Da perspectiva de performance, não há vantagem em habilitar esta opção.
 
 .. option:: --header=<HEADER>
@@ -513,14 +513,14 @@ Opções Específicas de HTTP e HTTPS
 
   .. note::
 
-    Se aria2 é compilado sem libsqlite3, então não havera suporte aos formatos 
+    Se aria2 é compilado sem libsqlite3, então não havera suporte aos formatos
     de cookie Firefox3 e Chromium / Google Chrome.
 
 .. option:: --save-cookies=<ARQUIVO>
 
-  Salva Cookies para o ARQUIVO no formato Mozilla / Firefox(1.x/2.x) / 
+  Salva Cookies para o ARQUIVO no formato Mozilla / Firefox(1.x/2.x) /
   Netscape.  Se ARQUIVO já existe, será sobreposto.  Cookies da Sessão também
-  serão salvos e seus valores de expiração serão tratados como 0.  
+  serão salvos e seus valores de expiração serão tratados como 0.
   Valores Possíveis: ``/caminho/do/arquivo``
 
 .. option:: --use-head[=true|false]
@@ -607,13 +607,13 @@ Opções Comuns de BitTorrent / Metalink
   Imprimir a lista de arquivos do ".torrent", ".meta4" e ".metalink" e termina.
   No caso de arquivo ".torrent", informações adicionais são impressas.
   (infohash, tamanho pedaço, etc).
-  
+
 Opções Específicas de BitTorrent
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. option:: --bt-enable-lpd[=true|false]
 
-  Habilita Descobrir Peer Local.  Se indicador particular é configurado 
+  Habilita Descobrir Peer Local.  Se indicador particular é configurado
   no torrent, aria2 não usa esta funcionalidade mesmo que ``true`` foi
   informato.
   Padrão: ``false``
@@ -622,7 +622,7 @@ Opções Específicas de BitTorrent
 
   Lista separada por vírgulas, de trackers de URI BitTorrent que devem ser
   removidas.  Pode ser usado o valor especial ``*`` para especificar todas
-  URIs; isso irá excluir todas URIs de "announce".  Quando especificar ``*`` 
+  URIs; isso irá excluir todas URIs de "announce".  Quando especificar ``*``
   em uma linha de comando do shell, lembre-se de forçar o escape or delimite
   com aspas, apóstrofo ou em linux com crase caracter `.
   Ver também opção :option: `--bt-tracker`.
@@ -635,7 +635,7 @@ Opções Específicas de BitTorrent
 
 .. option:: --bt-hash-check-seed[=true|false]
 
- Se ``true`` é informado, após o check do hash usando a opção :option: 
+ Se ``true`` é informado, após o check do hash usando a opção :option:
  `--check-integrity <-V>` e o arquivo esta completo, continue o arquivo seed.
  Se desejar verificar o arquivo e efetuar o download somente quando ele estiver
  imcompleto ou danificado, defina esta opção para ``false``.  Esta opção
@@ -692,23 +692,23 @@ Opções Específicas de BitTorrent
 
    Remove os arquivos não selecionados quando o download do BitTorrent estiver
    completo. Para selecionar arquivo(s) use a opção :option:`--select-file`.
-   Se não for usada esta opção, é assumido que todos os arquivos serão 
-   selecionados. Use esta opção com critério pois ela realmente remove 
+   Se não for usada esta opção, é assumido que todos os arquivos serão
+   selecionados. Use esta opção com critério pois ela realmente remove
    arquivo(s) do seu disco.
    Padrão: ``false``
 
 .. option:: --bt-require-crypto[=true|false]
 
   Se true é informado, aria2 não aceita nem estabelece conexão com handshake de
-  BitTorrent (protocolo \19BitTorrent). Em vez disso aria2 usa 
+  BitTorrent (protocolo \19BitTorrent). Em vez disso aria2 usa
   (Obfuscation handshake.
-  Padrão: ``false`` 
+  Padrão: ``false``
 
 .. option:: --bt-request-peer-speed-limit=<VELOCIDADE>
 
   Se a velocidade total de download do torrent é menor que a <VELOCIDADE>,
   aria2 temporariamente incrementa o número de peers para tentar maior
-  velocidade de download.  Configurando esta opção com sua velocidade 
+  velocidade de download.  Configurando esta opção com sua velocidade
   preferida pode incrementar a velocidade de download em alguns casos. Pode
   ser anexado ``K`` ou ``M`` (1K = 1024, 1M = 1024K).
   Padrão: ``50K``
@@ -719,7 +719,7 @@ Opções Específicas de BitTorrent
   se URI usada é de BitTorrent Magnet.  O nome do arquivo é codificado em hash
   em hexadecimal com sufixo de ".torrent". O diretório onde será salvo o
   o metadado, é o mesmo onde aponta o download do arquivo. Se o arquivo já
-  existe, o metadado não será salvo. Ver tambémn a opção :option: 
+  existe, o metadado não será salvo. Ver tambémn a opção :option:
   `--bt-metadata-only`.
   Padrão: ``false``
 
@@ -730,9 +730,9 @@ Opções Específicas de BitTorrent
 
 .. option:: --bt-stop-timeout=<SEGUNDOS>
 
-  Interrompe o download do BitTorrent se a velocidade do for zero por 
-  consecutivos SEGUNDOS. Se ``0`` é informado, esta funcionalidade é 
-  desabilitada.  
+  Interrompe o download do BitTorrent se a velocidade do for zero por
+  consecutivos SEGUNDOS. Se ``0`` é informado, esta funcionalidade é
+  desabilitada.
   Padrão: ``0``
 
 .. option:: --bt-tracker=<URI>[,...]
@@ -815,7 +815,7 @@ Opções Específicas de BitTorrent
 .. option:: --enable-dht6[=true|false]
 
    Habilita funcionalidade DHT IPv6. Se identificador particular é usado em um
-   torrent, aria2 não usa DHT para aquele download mesmo que ``true`` foi  
+   torrent, aria2 não usa DHT para aquele download mesmo que ``true`` foi
    informado. Usar opção :option:`--dht-listen-port` para especificar número(s)
    de porta(s) para ser(em) ouvida(s). Ver também opção :option:`
    --dht-listen-addr6`
@@ -823,14 +823,14 @@ Opções Específicas de BitTorrent
 
 .. option:: --enable-peer-exchange[=true|false]
 
-  Habilita extensão Peer Exchange.  Se um indicador particular é usado nesse 
+  Habilita extensão Peer Exchange.  Se um indicador particular é usado nesse
   torrent, essa funcionalidade será desabilitada para o download, mesmo que
   ``true`` foi informado.
   Padrão: ``true``
 
 .. option:: --follow-torrent=true|false|mem
 
-  Se ``true`` ou ``mem`` é especificado, quando um arquivo cujo sufixo é 
+  Se ``true`` ou ``mem`` é especificado, quando um arquivo cujo sufixo é
   ``.torrent`` ou o tipo de conteúdo é ``application/x-bittorrent`` é baixado,
   aria2 faz o parse como arquivo torrent e executa o download dos arquivos
   mencionados nele.
@@ -843,7 +843,7 @@ Opções Específicas de BitTorrent
 
   Define o caminho do arquivo com índice=INDEX. O arquivo índice pode ser
   localizado usando-se a opção :option:`--show-files <-S>`. PATH é o caminho
-  relativo ao caminho especificado na opção :option:`--dir <-d>`. 
+  relativo ao caminho especificado na opção :option:`--dir <-d>`.
   Esta opção pode ser usada múltiplas vezes. Com esta opção pode-se especificar
   o nome dos arquivos que serão baixados pelo BitTorrent.
 
@@ -862,7 +862,7 @@ Opções Específicas de BitTorrent
 .. option:: --max-overall-upload-limit=<VELOCIDADE>
 
   Define a velocidade máxima geral de upload em bytes/seg.  ``0`` significa
-  irrestrito.  Pode anexar ``K`` ou ``M`` (1K = 1024, 1M = 1024K).  Para 
+  irrestrito.  Pode anexar ``K`` ou ``M`` (1K = 1024, 1M = 1024K).  Para
   limitar a velocidade de upload por torrent, usar opção
   :option:`--max-upload-limit <-u>`.
   Padrão: ``0``
@@ -870,7 +870,7 @@ Opções Específicas de BitTorrent
 .. option:: -u, --max-upload-limit=<VELOCIDADE>
 
   Define a velocidade máxima para cada torrent em bytes/seg.  ``0`` significa
-  irrestrito.  Pode anexar ``K`` ou ``M`` (1K = 1024, 1M = 1024K).  Para 
+  irrestrito.  Pode anexar ``K`` ou ``M`` (1K = 1024, 1M = 1024K).  Para
   limitar a velocidade global de upload de torrent, usar opção
   :option:`--max-overall-upload-limit`.
   Padrão: ``0``
@@ -889,7 +889,7 @@ Opções Específicas de BitTorrent
   RATIO.
   You are strongly encouraged to specify equals or more than ``1.0`` here.
   Specify ``0.0`` if you intend to do seeding regardless of share ratio.
-  If :option:`--seed-time` option is specified along with this option, 
+  If :option:`--seed-time` option is specified along with this option,
   seeding ends when at least one of the conditions is satisfied.
   Padrão: ``1.0``
 
@@ -899,8 +899,8 @@ Opções Específicas de BitTorrent
   :option:`--seed-ratio`.
 
   .. note::
-    
-    Especificando :option:`--seed-time=0 <--seed-time>` desabilita o (seeding) 
+
+    Especificando :option:`--seed-time=0 <--seed-time>` desabilita o (seeding)
     após o download ter sido completado.
 
 .. option:: -T, --torrent-file=<TORRENT_FILE>
@@ -914,11 +914,11 @@ Opções Específicas de Metalink
 
 .. option:: --follow-metalink=true|false|mem
 
-  If ``true`` or ``mem`` is specified, when a file whose suffix is ``.meta4`` 
-  or ``.metalink`` or content type of ``application/metalink4+xml`` or 
+  If ``true`` or ``mem`` is specified, when a file whose suffix is ``.meta4``
+  or ``.metalink`` or content type of ``application/metalink4+xml`` or
   ``application/metalink+xml`` is downloaded, aria2 parses it as a metalink
   file and downloads files mentioned in it.
-  If ``mem`` is specified, a metalink file is not written to the disk, 
+  If ``mem`` is specified, a metalink file is not written to the disk,
   but is just kept in memory.
   If ``false`` is specified, the action mentioned above is not taken.
   Padrão: ``true``
@@ -931,7 +931,7 @@ Opções Específicas de Metalink
 
 .. option:: -M, --metalink-file=<METALINK_FILE>
 
-  The file path to ".meta4" and ".metalink" file. Reads input from stdin when 
+  The file path to ".meta4" and ".metalink" file. Reads input from stdin when
   ``-`` is specified.  You are not required to use this option because you can
   specify ".metalink" files without :option:`--metalink-file <-M>`.
 
@@ -958,7 +958,7 @@ Opções Específicas de Metalink
   The possible values are ``http``, ``https``, ``ftp`` and ``none``.
   Specify ``none`` to disable this feature.
   Padrão: ``none``
- 
+
 .. option:: --metalink-enable-unique-protocol[=true|false]
 
   If ``true`` is given and several protocols are available for a mirror in a
@@ -1054,7 +1054,7 @@ Opções Avançadas
 .. option:: --allow-overwrite[=true|false]
 
   Reiniciar o download desde o início se o correspondente arquivo de controle
-  não existir.  Ver também a opção :option:`--auto-file-renaming`.  
+  não existir.  Ver também a opção :option:`--auto-file-renaming`.
   Padrão: ``false``
 
 .. option:: --allow-piece-length-change[=true|false]
@@ -1086,7 +1086,7 @@ Opções Avançadas
   usados pelo resolvedor. Normalmente o resolvedor de DNS assíncronos faz a
   leitura dos endereços a partir do arquivo ``/etc/resolv.conf``.
   Quando essa opção é usada é feito uso dos servidores DNS especificados na
-  opção em detrimento do conteúdo do arquivo ``/etc/resolv.conf``. 
+  opção em detrimento do conteúdo do arquivo ``/etc/resolv.conf``.
   Podem ser usados ambos endereços IPv4 e IPv6. Essa opção é útil
   quando o sistema não possui ``/etc/resolv.conf`` e o usuário não tem
   permissão para criá-lo.
@@ -1339,7 +1339,7 @@ Opções Avançadas
   Padrão: ``1M``
 
   .. note::
-    
+
     The possible usecase of :option:`--piece-length`
     option is change the request range in one HTTP pipelined request.
     To enable HTTP pipelining use
@@ -1456,7 +1456,7 @@ Opções Avançadas
 
   Truncar a linha da console para ajustar-se a uma linha.
   Padrão: ``true``
- 
+
 .. option:: -v, --version
 
   Exibe o número da versão, copyright e informação da configuração e sai.
@@ -1488,7 +1488,7 @@ apontar para o mesmo arquivo que será baixado ou o download falhará.
 
 Pode-se especificar um número arbitrátio de URIs de BitTorrent Magnet URI.
 Nove que eles sempre serão tratados como downloads separados.
-São suportados Hash de Info de 40 characters  e Hast de Info Base32 de 32 
+São suportados Hash de Info de 40 characters  e Hast de Info Base32 de 32
 characters. Múltiplos parâmetros ``tr`` são suportados.  Devido a URI
 BitTorrent Magnet poder conter o caracter ``&``, é altamente recomendável
 delimitar a URI com apóstrofo single(``'``) ou aspas double(``"``).
@@ -1496,7 +1496,7 @@ delimitar a URI com apóstrofo single(``'``) ou aspas double(``"``).
 estiver ausente.  Ver http://www.bittorrent.org/beps/bep_0009.html
 para maiores detalhes sobre URI BitTorrent Magnet.
 
-Pode-se também especificar um número arbitrário de arquivos torrent e 
+Pode-se também especificar um número arbitrário de arquivos torrent e
 Documentos Metalink armazenados em um dispositivo local. Note que sempre serão
 tratados como download distintos. Tanto Metalink4 quanto Metalink da versão 3
 são suportados.
@@ -1504,14 +1504,14 @@ são suportados.
 Pode-se especificar arquivo torrent usando a opção -T e URI. Fazendo isso
 o download será baixado do servidor swarm e HTTP, HTTPS e FTP ao mesmo tempo,
 enquanto os dados do HTTP, HTTPS e FTP serão uploaded para o swarm torrent.
-Para torrent de um arquivo a URI deve ser completa e apontar inclusive o 
+Para torrent de um arquivo a URI deve ser completa e apontar inclusive o
 recurso ou se a URI terminar com / o nome do torrent será adicionado. Para
 múltiplos torrents, name e caminho serão adicionados para formar a URI, para
 cada um dos arquivos.
 
 .. note::
 
-  Certifique-se que a URI seja delimitada por apóstrofo single(``'``) ou 
+  Certifique-se que a URI seja delimitada por apóstrofo single(``'``) ou
   aspas double(``"``) se a URI contiver ``&`` ou qualquer outro caracter que
   tenha significado especial para o shell.
 
@@ -1528,7 +1528,7 @@ retomar do ponto onde foi interrompida a transferência.
 Interação com Eventos (Hook)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-aria2 possui opções para especificar comando arbitrário após um evento 
+aria2 possui opções para especificar comando arbitrário após um evento
 específico ocorrer. Atualmente as seguintes opções estão disponíveis:
 
 :option:`--on-bt-download-complete`,
@@ -1543,10 +1543,10 @@ executado. Estes argumentos são: GID, o número de arquivos e o caminho dos
 arquivos.  Para downloads HTTP, HTTPS e FTP normalmente o número de arquivos é 1.
 BitTorrent podem conter múltiplos arquivos. Se o número de arquivos é maior
 que 1, o caminho do arquivo é o primeiro.  Em outras palavras, este é o valor
-da chave path da primeira estrutura se aquela chave for verdadeira como 
+da chave path da primeira estrutura se aquela chave for verdadeira como
 resposta do método da função :func:`aria2.getFiles` RPC.
 Se for necessário todos os caminhos dos arquivos, considere usar o método
-JSON-RPC/XML-RPC.  Lembre-se que o caminho do arquivo pode ser modificado 
+JSON-RPC/XML-RPC.  Lembre-se que o caminho do arquivo pode ser modificado
 durante o download no HTTP por causa do redirecionamento ou Disposição do
 Conteúdo do Cabeçalho.
 
@@ -1660,11 +1660,11 @@ retorno ou saída com base no último erro encontrado.
   Se URI Magnet URI está errada.
 
 28
-  Se opção está errada ou não é reconhecida ou argumento inválido de uma opção 
+  Se opção está errada ou não é reconhecida ou argumento inválido de uma opção
   foi informado.
 
 29
-  Se o servidor remoto não pode manusear uma requisição devido a sobrecarga 
+  Se o servidor remoto não pode manusear uma requisição devido a sobrecarga
   temporária ou manutenção.
 
 30
@@ -1672,7 +1672,7 @@ retorno ou saída com base no último erro encontrado.
 
 .. note::
 
-  Um erro ocorrido em um download completado não será reportado como um 
+  Um erro ocorrido em um download completado não será reportado como um
   status de saida nem como código de retorno (exit status).
 
 .. index:: double: Variáveis; Ambiente
@@ -1703,13 +1703,13 @@ aria2 reconhece as seguintes variáveis de ambiente.
   A opção linha de comando :option:`--all-proxy` sobrepõe este valor.
 
 .. note::
-  
+
   Apesar de aria2 aceitar os esquemas ``ftp://`` e ``https://`` para proxy de
   URI, aria2 assume que ``http://`` é especificado e não troca o comportamento
   com base no esquema especificado.
 
 ``no_proxy [DOMÍNIO,...]``
-  Especifica nome de servidores, separados por vírgula, domínios e endereços 
+  Especifica nome de servidores, separados por vírgula, domínios e endereços
   de rede com ou sem blocos CIDR para os quais não será usado proxy.
   Sobrepõe o valor no-proxy do arquivo de configuração.
   A opção linha de comando :option:`--no-proxy` sobrepõe este valor.
@@ -1760,11 +1760,11 @@ tabela de rota do IPv6 DHT está em ``$HOME/.aria2/dht6.dat``.
 Netrc
 ~~~~~
 
-Por padrão, o suporte a Netrc está habilitado para HTTP, HTTPS e FTP.  Para 
-desabilitar o suporte a netrc especificar :option:`--no-netrc <-n>`.  Seu 
+Por padrão, o suporte a Netrc está habilitado para HTTP, HTTPS e FTP.  Para
+desabilitar o suporte a netrc especificar :option:`--no-netrc <-n>`.  Seu
 arquivo .netrc precisa ter as permissões corretas (600).
 
-Se o nome do servidor inicia com ``.``, aria2 executa pesquisa domínio ao 
+Se o nome do servidor inicia com ``.``, aria2 executa pesquisa domínio ao
 invés de pesquisa exata. Isto é uma extensão de aria2. Exemplo de pesquisa
 de domínio, imagine as seguinte entrada no arquivo .netrc::
 
@@ -1776,7 +1776,7 @@ de domínio, imagine as seguinte entrada no arquivo .netrc::
 
 Mais exemplos de pesquisa domínio: ``nobrasil.net`` não executa pesquisa
 domínio ``.nobrasil.net``. ``dobrasil.org`` não faz pesquisa domínio ``.dobrasil.org``
-pois tem maior amplitude hierárquica por causa do ponto precedente ``.``.  Se 
+pois tem maior amplitude hierárquica por causa do ponto precedente ``.``.  Se
 desejar utilizar ``dobrasil.org``, especificar ``dobrasil.org``.
 
 .. index:: triple:   aria2; arquivo; controle
@@ -1795,7 +1795,7 @@ estará no "diretório topo" do torrent com o sufixo ``.aria2``.  O nome do
 torrent).
 
 Normalmente um arquivo controle é apagado quando o download se completa.  Se
-aria2 detecta que o download não pode ser retomado (por exemplo, quando faz 
+aria2 detecta que o download não pode ser retomado (por exemplo, quando faz
 download de um servidor HTTP que não suporta retomar o processamento de um
 ponto mas sempre do início), o arquivo de controle não será criado.
 
@@ -1814,7 +1814,7 @@ download.  Podem ser especificados múltiplas URIs para cada simples entidade:
 separar as entidades por um caracter TAB ou espaço.
 
 Cada linha é tratada como se fosse especificada através de um argumento da linha
-de comando. Entretando estas linhas são afetadas pela opção 
+de comando. Entretando estas linhas são afetadas pela opção
 :option:`--force-sequential <-Z>` e pela opção :option:`--parameterized-uri <-P>`
 
 Quando as URIs do arquivo de entrada são diretamente lidas pelo aria2, as URIs
@@ -1829,7 +1829,7 @@ URI. Estas linhas opcionais precisam iniciar com um ou mais espaços.
 
 .. hlist::
   :columns: 3
- 
+
   * :option:`all-proxy <--all-proxy>`
   * :option:`all-proxy-passwd <--all-proxy-passwd>`
   * :option:`all-proxy-user <--all-proxy-user>`
@@ -1934,7 +1934,7 @@ URI. Estas linhas opcionais precisam iniciar com um ou mais espaços.
   * :option:`uri-selector <--uri-selector>`
   * :option:`use-head <--use-head>`
   * :option:`user-agent <-U>`
-  
+
 Estas opções possuem exatamente o mesmo significado das opções existentes na
 linha de comando, mas aplicam-se apenas a URI a que pertencem.
 Por favor perceba que dentro de um arquivo, elas não terão o prefixo ``--``.
@@ -1949,7 +1949,7 @@ Por exemplo, o conteúdo do arquivo de entrada uri.txt é::
 
 Se aria2 é executado com as opções ``-i uri.txt -d /tmp``, então o
 ``arquivo.iso`` será salvo como ``/imagens_iso/arquivo.img`` e será baixado
-dos servidores ``http://servidor/arquivo.iso`` e  
+dos servidores ``http://servidor/arquivo.iso`` e
 ``http://espelho/arquivo.iso``.
 O arquivo ``ba`` e baixado de ``http://fu/ba`` e salvo como ``/tmp/ba``.
 
@@ -1972,7 +1972,7 @@ delimitados por virgula. Atualmente esta é a lista de nomes reconhecidos:
   Protocolo para este perfil, como ftp, http, https. http é requerido.
 
 ``dl_speed``
-  Velocidade média de download observada no download prévio, em bytes por 
+  Velocidade média de download observada no download prévio, em bytes por
   segundo.  Requerido.
 
 ``sc_avg_speed``
@@ -2017,9 +2017,9 @@ INTERFACE RPC
 
 aria2 provê o serviço JSON-RPC sobre HTTP e XML-RPC sobre HTTP e eles
 basicamente possuem a mesma funcionalidade.  aria2 também provê JSON-RPC
-sobre WebSocket que utiliza o mesmo formato, do método e assinatura e 
-de resposta do formato JSON-RPC sobre HTTP, mas adicionalmente possui 
-notificações iniciadas pelo servidor. 
+sobre WebSocket que utiliza o mesmo formato, do método e assinatura e
+de resposta do formato JSON-RPC sobre HTTP, mas adicionalmente possui
+notificações iniciadas pelo servidor.
 Ver detalhes na seção `JSON-RPC sobre WebSocket`_ .
 
 O caminho requisitado do interface JSON-RPC (sobre HTTP e sobre
@@ -2280,7 +2280,7 @@ Python versão 2.7.
 
 .. function:: aria2.unpauseAll()
 
-  This method is equal to calling :func:`aria2.unpause` for every active/waiting
+  This method is equal to calling :func:`aria2.unpause` for every paused
   download. This methods returns ``OK`` for success.
 
 .. function:: aria2.tellStatus(gid[, keys])
@@ -2343,7 +2343,7 @@ Python versão 2.7.
 
   ``errorCode``
     The last error code occurred in this download. The value is of type
-    string. The error codes are defined in `CÓDIGO DE RETORNO ou SAÍDA`_ 
+    string. The error codes are defined in `CÓDIGO DE RETORNO ou SAÍDA`_
     section. This value is only available for stopped/completed downloads.
 
   ``followedBy``
@@ -2689,7 +2689,7 @@ Python versão 2.7.
 
 .. function:: aria2.getServers(gid)
 
-  This method returns currently connected HTTP, HTTPS, FTP servers of the 
+  This method returns currently connected HTTP, HTTPS, FTP servers of the
   download denoted by *gid*. *gid* is of type string. The response
   is of type array and its element is of type struct and it contains
   following keys. The value type is string.
@@ -3260,7 +3260,7 @@ de erro em (faultString).
 Opções
 ~~~~~~
 
-Same options for :option:`--input-file <-i>` list are available. 
+Same options for :option:`--input-file <-i>` list are available.
 Ver subseção `Arquivo de Entrada`_ para lista completa de opções.
 
 In the option struct, name element is option name(without preceding
@@ -3338,7 +3338,7 @@ JSON-RPC usando HTTP GET
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 The JSON-RPC interface also supports request via HTTP GET.
-The encoding scheme in GET parameters is based on JSON-RPC over HTTP 
+The encoding scheme in GET parameters is based on JSON-RPC over HTTP
 Specification [2008-1-15(RC1)]. The encoding of GET parameters are follows::
 
   /jsonrpc?method=METHOD_NAME&id=ID&params=BASE64_ENCODED_PARAMS
@@ -3392,67 +3392,67 @@ Para enviar uma requisição RPC para um servidor RPC, enviar strings serializad
 JSON num frame Text. A resposta do servidor RPC será entregue também em um frame
 Text.
 
-O servidor RPC ira enviar a notificação ao cliente. A notificação é 
+O servidor RPC ira enviar a notificação ao cliente. A notificação é
 unidirecional, portanto o cliente que receber a notificação não pode
 responde-la. Esse método de assinatura de notificação é muito usual mas
 não provê uma identificação de chave. Os valores associados pelos parâmetros
 chave são os dados que a notificação porta. O formato desses valores
 variam dependendo do método de notificação. Os seguintes métodos de notificação
-são definidos: 
+são definidos:
 
 
 .. function:: aria2.onDownloadStart(event)
 
-  
+
   Essa notificação será enviada quando e se o download for iniciado.
   *event* é o tipo de estrutura e pode conter as seguintes chaves:
   O formato do valor é string.
-  
+
   ``gid``
     GID do download.
-  
+
 
 .. function:: aria2.onDownloadPause(event)
 
-  
+
   Esta notificação será enviada se o download for pausado.  *event*
   tem a mesma estrutura do argumento *event* do método da função
   :func:`aria2.onDownloadStart`.
-  
+
 
 .. function:: aria2.onDownloadStop(event)
 
-  
+
   Essa notificação será enviada se o download for interrompido pelo usuário.
   *event* tem a mesma estrutura do argumento *event* do método da função
   :func:`aria2.onDownloadStart`.
-  
+
 
 .. function:: aria2.onDownloadComplete(event)
 
-  
-  Esta notificação será enviada quando o download for completado.  Para 
+
+  Esta notificação será enviada quando o download for completado.  Para
   downloads BitTorrent, esta notificação será enviada quando for completado e
   o (seed) terminar. O *event* tem a mesma estrutura do *event* do método da
   função :func:`aria2.onDownloadStart`.
-  
+
 
 .. function:: aria2.onDownloadError(event)
 
-  
+
   Esta notificação será enviada se o download for interrompido por causa de
   um erro.
   O *event* tem a mesma estrutura do *event* do método da função
   :func:`aria2.onDownloadStart`.
-  
+
 
 .. function:: aria2.onBtDownloadComplete(event)
 
-  
+
   Esta notificação será enviada se o download for completado para o
-  BitTorrent (mas o seeding pode não ter sido concluído).  O *event* tem a 
+  BitTorrent (mas o seeding pode não ter sido concluído).  O *event* tem a
   mesma estrutura do *event* do método da função :func:`aria2.onDownloadStart`.
-  
+
 Exemplo Cliente XML-RPC Ruby
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -3463,15 +3463,15 @@ imprime a resposta do processamento:
 .. code-block:: ruby
 
   #!/usr/bin/env ruby
-  
+
   require 'xmlrpc/client'
   require 'pp'
-  
+
   client=XMLRPC::Client.new2("http://localhost:6800/rpc")
-  
+
   options={ "dir" => "/downloads" }
   result=client.call("aria2.addUri", [ "http://localhost/aria2.tar.bz2" ], options)
-  
+
   pp result
 
 
@@ -3480,7 +3480,7 @@ interagir com aria2::
 
   import xmlrpclib
   from pprint import pprint
-  
+
   s = xmlrpclib.ServerProxy("http://localhost:6800/rpc")
   r = s.aria2.addUri(["http://localhost/aria2.tar.bz2"], {"dir":"/downloads"})
   pprint(r)
@@ -3508,7 +3508,7 @@ Entenda o que estes números e strings significam.
   será exibida a somatória do tamanho do arquivo.
 
 ``SEEDING``
-  Taxa compartilhamento ratio. O cliente está funcionando. Após término do 
+  Taxa compartilhamento ratio. O cliente está funcionando. Após término do
   download do BitTorrent, ``SIZE`` será substituído por ``SEEDING``.
 
 ``CN``
@@ -3529,7 +3529,7 @@ Entenda o que estes números e strings significam.
 ``TOTAL SPD``
   A soma das velocidades de download para todos downloads paralelos.
 
-Quando aria2 está alocando o espaço para arquivo ou validando o checksum, 
+Quando aria2 está alocando o espaço para arquivo ou validando o checksum,
 adicionalmente exibirá o progresso:
 
 FileAlloc
@@ -3552,7 +3552,7 @@ Download de arquivo
 
 .. note::
 
-  Para parar o download, pressione :kbd:`Ctrl-C`. Posteriormente pode ser 
+  Para parar o download, pressione :kbd:`Ctrl-C`. Posteriormente pode ser
   retomado o mesmo download no mesmo diretório. Podem ser modificadas as URIs
   pois elas apontam para o mesmo arquivo.
 
@@ -3598,7 +3598,7 @@ Para HTTP:
 
 .. code-block:: console
 
-  $ aria2c --http-proxy="http://svrproxy:8080" 
+  $ aria2c --http-proxy="http://svrproxy:8080"
   --no-proxy="localhost,127.0.0.1,192.168.0.0/16" "http://servidor/arquivo"
 
   a máscara de rede /16 quer dizer que para toda a rede 192.168 também não
@@ -3612,7 +3612,7 @@ Para FTP:
 
 
 .. note::
-  
+
   Ver :option:`--http-proxy`, :option:`--https-proxy`, :option:`--ftp-proxy`,
   :option:`--all-proxy` e :option:`--no-proxy` para detalhes.  Proxy pode ser
   especificado nas variáveis de ambiente. Ver seção `VARIÁVEIS DE AMBIENTE`_ .
@@ -3621,14 +3621,14 @@ Proxy com autenticação / autorização
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code-block:: console
 
-  $ aria2c --http-proxy="http://usuário:senha@svrproxy:8080" 
+  $ aria2c --http-proxy="http://usuário:senha@svrproxy:8080"
   "http://servidor/arquivo"
 
 
 .. code-block:: console
 
-  $ aria2c --http-proxy="http://svrproxy:8080" 
-  --http-proxy-user="usuário" --http-proxy-passwd="senha" 
+  $ aria2c --http-proxy="http://svrproxy:8080"
+  --http-proxy-user="usuário" --http-proxy-passwd="senha"
   "http://servidor/arquivo"
 
 
@@ -3650,7 +3650,7 @@ Download arquivos com Metalink local
 .. note::
 
   Para parar o download, pressione :kbd:`Ctrl-C`.
-  A transferência pode ser retomada executando aria2c com o mesmo argumento 
+  A transferência pode ser retomada executando aria2c com o mesmo argumento
   no mesmo diretório
 
 Download diversos arquivos Metalink local
@@ -3773,7 +3773,7 @@ Modificar porta escuta para peer de entrada
 
 .. note::
 
-  Já que aria2 não configura o firewall ou porta de roteamento para portas 
+  Já que aria2 não configura o firewall ou porta de roteamento para portas
   de encaminhamento, isto deve ser explicitado manualmente por você.
 
 Especificar condição para para o programa torrent após término do download
@@ -3785,7 +3785,7 @@ Especificar condição para para o programa torrent após término do download
 
 .. note::
 
-  No exemplo acima, o programa termina após transcorrer 120 minutos após 
+  No exemplo acima, o programa termina após transcorrer 120 minutos após
   término do download ou taxa chegar a 1.0.
 
 Controlar velocidade upload Torrent
@@ -3814,7 +3814,7 @@ Habilitar IPv6 DHT
 
 .. note::
 
-  Se aria2c não foi compilado com c-ares, a opção :option:`--enable-async-dns6` 
+  Se aria2c não foi compilado com c-ares, a opção :option:`--enable-async-dns6`
   não é necessária. aria2 compartilha a mesma porta ente IPv4 e IPv6 DHT.
 
 Adicionar e remover rastreador URI
@@ -3846,7 +3846,7 @@ Continuar download iniciado por navegadores ou outros programas
   Quando desejar continuar ou retomar um download cujo processamento foi
   interrompido, seja em navegador ou qualquer outro programa utilize
   o aria2c para retomar este download do ponto onde parou.
-  
+
 .. code-block:: console
 
   $ aria2c -c -s2 "http://servidor/arquivodedownloadparcial.zip"
@@ -3861,14 +3861,14 @@ Autenticação certificado para Cliente SSL/TLS
 .. note::
 
   O arquivo especificado na opção :option:`--private-key` não pode estar
-  criptografado.  O comportamento do processo fica indefinido quando o 
+  criptografado.  O comportamento do processo fica indefinido quando o
   arquivo estiver criptografado.
 
 Verificar peer em SSL/TLS usando certificados CA
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code-block:: console
 
-  $ aria2c --ca-certificate=/path/para/ca-certificates.crt 
+  $ aria2c --ca-certificate=/path/para/ca-certificates.crt
   --check-certificate https://servidor/arquivo
 
 
@@ -3879,7 +3879,7 @@ Controlar velocidade de download
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Quando for necessário o controle da utilização da banda disponível, pode ser
-utilizado a opção abaixo. Atenção o sufixo K ou M deve ser em letra maiúscula. 
+utilizado a opção abaixo. Atenção o sufixo K ou M deve ser em letra maiúscula.
 
 .. code-block:: console
 
@@ -3893,7 +3893,7 @@ Reparar um download danificado
   $ aria2c -V arquivo.metalink
 
 .. note::
-  
+
   Reparar downloads danificados pode ser mais eficiente usando
   BitTorrent ou Metalink com a opção verificação (checksums).
 
@@ -3936,7 +3936,7 @@ Verificar validação checksum
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code-block:: console
 
-  $ aria2c --checksum=sha-1=0192ba11326fe2298c8cb4de616f4d4140213837 
+  $ aria2c --checksum=sha-1=0192ba11326fe2298c8cb4de616f4d4140213837
   http://dobrasil.org/arquivo
 
 
@@ -3989,7 +3989,7 @@ este programa; caso não tenha, escrevá para Free Software Foundation, Inc.,
 Adicionalmente, como uma exceção especial, os detentores do direito autoral
 autorizam a permissão para compilar programas que possuem ligação com
 parte do código com a biblioteca OpenSSL sob certas condições como descritas
-em cada arquivo fonte e autorizam a distribuição das das combinações das 
+em cada arquivo fonte e autorizam a distribuição das das combinações das
 ligações incluindo ambas.
 Devem ser obedecidos todos os detalhes da Licença Pública GNU Genérica
 em relação a OpenSSL.  Caso haja modificação nos arquivos com esta exceção
