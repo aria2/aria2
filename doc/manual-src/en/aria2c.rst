@@ -57,6 +57,25 @@ Basic Options
   See also the :option:`--split <-s>` option.
   Default: ``5``
 
+  .. note::
+
+     :option:`--max-concurrent-downloads` limits the number of items
+     which are downloaded concurrently.  :option:`--split <-s>` and
+     :option:`--min-split-size <-k>` affect the number of connections
+     inside each item.  Imagine that you have an input file (see
+     :option:`--input-file <-i>` option) like this:
+
+     .. code-block:: text
+
+	http://example.com/foo
+	http://example.com/bar
+
+     Here is 2 download items.  aria2 can download these items
+     concurrently if the value more than or equal 2 is given to
+     :option:`--max-concurrent-downloads`.  In each download item, you
+     can configure the number of connections using :option:`--split
+     <-s>` and/or :option:`--min-split-size <-k>`, etc.
+
 .. option:: -V, --check-integrity[=true|false]
 
   Check file integrity by validating piece hashes or a hash of entire
