@@ -2563,7 +2563,7 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
 
 .. function:: aria2.unpauseAll([secret])
 
-  This method is equal to calling :func:`aria2.unpause` for every active/waiting
+  This method is equal to calling :func:`aria2.unpause` for every paused
   download. This methods returns ``OK``.
 
 .. function:: aria2.tellStatus([secret], gid[, keys])
