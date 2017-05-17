@@ -30,7 +30,7 @@ RUN apt-get update && \
 
 RUN curl -L -O https://gmplib.org/download/gmp/gmp-6.1.2.tar.lz && \
     curl -L -O http://downloads.sourceforge.net/project/expat/expat/2.2.0/expat-2.2.0.tar.bz2 && \
-    curl -L -O https://www.sqlite.org/2017/sqlite-autoconf-3160200.tar.gz && \
+    curl -L -O https://www.sqlite.org/2017/sqlite-autoconf-3180000.tar.gz && \
     curl -L -O http://zlib.net/zlib-1.2.11.tar.gz && \
     curl -L -O https://c-ares.haxx.se/download/c-ares-1.12.0.tar.gz && \
     curl -L -O http://libssh2.org/download/libssh2-1.8.0.tar.gz
@@ -57,8 +57,8 @@ RUN tar xf expat-2.2.0.tar.bz2 && \
         --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` && \
     make install
 
-RUN tar xf sqlite-autoconf-3160200.tar.gz && \
-    cd sqlite-autoconf-3160200 && \
+RUN tar xf sqlite-autoconf-3180000.tar.gz && \
+    cd sqlite-autoconf-3180000 && \
     ./configure \
         --disable-shared \
         --enable-static \
