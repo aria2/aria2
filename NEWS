@@ -1,31 +1,62 @@
-aria2 1.31.0
+aria2 1.32.0
 ============
 
 Release Note
 ------------
 
-This release fixes assertion error in
-SimpleRandomizer::getRandomBytes.  It adds new option
-content-disposition-default-utf8.
+This release fixes several minor bugs, and spelling mistakes.
 
 Changes
 -------
 
-* Better error message when local file status cannot be retrieved
+* Clarify --max-concurrent-downloads option
 
-  GH-836
+  GH-833
 
-* Fix assertion failure in SimpleRandomizer::getRandomBytes
+* Fix compile error with toolchain which lacks IPV6_TCLASS
 
-  errno might not be initialized to 0, and we may get both rv == -1
-  and errno != ENOSYS.  This leads to assertion failure.  Since
-  getrandom_linux always returns -1 on failure, checking errno is
-  useless in this function.
+  GH-895
 
-  GH-823
+* Log directed URI in notice log level
 
-* Add option content-disposition-default-utf8
+  GH-884
 
-  Patch from JimmyZ
+* Fix typo
 
-  GH-813
+  Patch from Tse Kit Yam
+
+  GH-879, GH-899
+
+* Spelling fixes
+
+  Patch from klemens
+
+  GH-870
+
+* Remove unused Android parts
+
+  These parts where unused after merging
+  https://github.com/aria2/aria2/pull/736
+
+  Patch from Fredrik Fornwall
+
+  GH-868
+
+* Save control file early
+
+  GH-859
+
+* Update links in Dockerfile.raspberrypi
+
+  Some links used in Dockerfile.raspberrypi are not accessible
+  anymore, because they were pointing to old versions of some source
+  packages and new versions were released.  This commit fixes this by
+  changing the links to point to the newest versions.
+
+  Patch from Michał Leśniewski
+
+  GH-860
+
+* Propagate disk full error on pre-allocation to last error code
+
+  GH-856
