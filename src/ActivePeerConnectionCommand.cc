@@ -107,9 +107,9 @@ bool ActivePeerConnectionCommand::execute()
       int numConnection = 0;
       if (pieceStorage_->downloadFinished()) {
         if (btRuntime_->getMaxPeers() > btRuntime_->getConnections()) {
-          numConnection =
-              std::min(numNewConnection_, btRuntime_->getMaxPeers() -
-                                              btRuntime_->getConnections());
+          numConnection = std::min(numNewConnection_,
+                                   btRuntime_->getMaxPeers() -
+                                       btRuntime_->getConnections());
         }
       }
       else {

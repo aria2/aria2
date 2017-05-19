@@ -107,9 +107,9 @@ int GnuTLSSession::init(sock_t sockfd)
 
   rv_ = gnutls_init(&sslSession_, flags);
 #else  // GNUTLS_VERSION_NUMBER >= 0x030000
-  rv_ = gnutls_init(&sslSession_, tlsContext_->getSide() == TLS_CLIENT
-                                      ? GNUTLS_CLIENT
-                                      : GNUTLS_SERVER);
+  rv_ = gnutls_init(&sslSession_,
+                    tlsContext_->getSide() == TLS_CLIENT ? GNUTLS_CLIENT
+                                                         : GNUTLS_SERVER);
 #endif // GNUTLS_VERSION_NUMBER >= 0x030000
   if (rv_ != GNUTLS_E_SUCCESS) {
     return TLS_ERR_ERROR;

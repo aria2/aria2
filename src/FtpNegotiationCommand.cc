@@ -87,8 +87,9 @@ FtpNegotiationCommand::FtpNegotiationCommand(
     : AbstractCommand(cuid, req, fileEntry, requestGroup, e, socket),
       sequence_(seq),
       ftp_(std::make_shared<FtpConnection>(
-          cuid, socket, req, e->getAuthConfigFactory()->createAuthConfig(
-                                 req, requestGroup->getOption().get()),
+          cuid, socket, req,
+          e->getAuthConfigFactory()->createAuthConfig(
+              req, requestGroup->getOption().get()),
           getOption().get())),
       pasvPort_(0)
 {

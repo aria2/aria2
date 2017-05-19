@@ -274,10 +274,10 @@ void BtRequestMessageTest::testValidate_lengthTooLong()
     CPPUNIT_FAIL("exception must be thrown.");
   }
   catch (DlAbortEx& e) {
-    CPPUNIT_ASSERT_EQUAL("Length too long: " +
-                             util::uitos(MAX_BLOCK_LENGTH + 1) + " > " +
-                             util::uitos(MAX_BLOCK_LENGTH / 1024) + "KB",
-                         std::string(e.what()));
+    CPPUNIT_ASSERT_EQUAL(
+        "Length too long: " + util::uitos(MAX_BLOCK_LENGTH + 1) + " > " +
+            util::uitos(MAX_BLOCK_LENGTH / 1024) + "KB",
+        std::string(e.what()));
   }
 }
 

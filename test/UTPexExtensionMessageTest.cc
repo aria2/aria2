@@ -108,8 +108,9 @@ void UTPexExtensionMessageTest::testGetBencodedData()
       "d5:added12:" + std::string(&c1[0], &c1[6]) +
       std::string(&c2[0], &c2[6]) + "7:added.f2:" + fromHex("0200") +
       "6:added618:" + std::string(&c5[0], &c5[COMPACT_LEN_IPV6]) +
-      "8:added6.f1:" + fromHex("00") + "7:dropped12:" +
-      std::string(&c3[0], &c3[6]) + std::string(&c4[0], &c4[6]) +
+      "8:added6.f1:" + fromHex("00") +
+      "7:dropped12:" + std::string(&c3[0], &c3[6]) +
+      std::string(&c4[0], &c4[6]) +
       "8:dropped618:" + std::string(&c6[0], &c6[COMPACT_LEN_IPV6]) + "e";
   std::string bd = msg.getPayload();
   CPPUNIT_ASSERT_EQUAL(util::percentEncode(expected), util::percentEncode(bd));
@@ -195,14 +196,15 @@ void UTPexExtensionMessageTest::testCreate()
 
   char id[1] = {1};
 
-  std::string data = std::string(&id[0], &id[1]) + "d5:added12:" +
-                     std::string(&c1[0], &c1[6]) + std::string(&c2[0], &c2[6]) +
-                     "7:added.f2:" + fromHex("0200") + "6:added618:" +
-                     std::string(&c5[0], &c5[COMPACT_LEN_IPV6]) +
-                     "8:added6.f1:" + fromHex("00") + "7:dropped12:" +
-                     std::string(&c3[0], &c3[6]) + std::string(&c4[0], &c4[6]) +
-                     "8:dropped618:" +
-                     std::string(&c6[0], &c6[COMPACT_LEN_IPV6]) + "e";
+  std::string data =
+      std::string(&id[0], &id[1]) +
+      "d5:added12:" + std::string(&c1[0], &c1[6]) +
+      std::string(&c2[0], &c2[6]) + "7:added.f2:" + fromHex("0200") +
+      "6:added618:" + std::string(&c5[0], &c5[COMPACT_LEN_IPV6]) +
+      "8:added6.f1:" + fromHex("00") +
+      "7:dropped12:" + std::string(&c3[0], &c3[6]) +
+      std::string(&c4[0], &c4[6]) +
+      "8:dropped618:" + std::string(&c6[0], &c6[COMPACT_LEN_IPV6]) + "e";
 
   auto msg = UTPexExtensionMessage::create(
       reinterpret_cast<const unsigned char*>(data.c_str()), data.size());

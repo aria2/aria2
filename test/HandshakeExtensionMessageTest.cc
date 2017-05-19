@@ -113,10 +113,12 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
   msg.doReceivedAction();
 
   CPPUNIT_ASSERT_EQUAL((uint16_t)6889, peer->getPort());
-  CPPUNIT_ASSERT_EQUAL((uint8_t)1, peer->getExtensionMessageID(
-                                       ExtensionMessageRegistry::UT_PEX));
-  CPPUNIT_ASSERT_EQUAL((uint8_t)3, peer->getExtensionMessageID(
-                                       ExtensionMessageRegistry::UT_METADATA));
+  CPPUNIT_ASSERT_EQUAL(
+      (uint8_t)1,
+      peer->getExtensionMessageID(ExtensionMessageRegistry::UT_PEX));
+  CPPUNIT_ASSERT_EQUAL(
+      (uint8_t)3,
+      peer->getExtensionMessageID(ExtensionMessageRegistry::UT_METADATA));
   CPPUNIT_ASSERT(peer->isSeeder());
   auto attrs = bittorrent::getTorrentAttrs(dctx);
   CPPUNIT_ASSERT_EQUAL((size_t)1_k, attrs->metadataSize);

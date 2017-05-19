@@ -108,9 +108,8 @@ void showUsage(const std::string& keyword,
     out->printf("\n");
     out->printf(_("Options:"));
     out->printf("\n");
-    for (std::vector<const OptionHandler *>::const_iterator
-             i = handlers.begin(),
-             eoi = handlers.end();
+    for (std::vector<const OptionHandler*>::const_iterator i = handlers.begin(),
+                                                           eoi = handlers.end();
          i != eoi; ++i) {
       write(out, *(*i));
       out->printf("\n");
@@ -125,7 +124,7 @@ void showUsage(const std::string& keyword,
       out->printf("\n");
       out->printf(_("Options:"));
       out->printf("\n");
-      for (std::vector<const OptionHandler *>::const_iterator
+      for (std::vector<const OptionHandler*>::const_iterator
                i = handlers.begin(),
                eoi = handlers.end();
            i != eoi; ++i) {

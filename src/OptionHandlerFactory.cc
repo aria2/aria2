@@ -319,14 +319,14 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(
-        new ParameterOptionHandler(PREF_FILE_ALLOCATION, TEXT_FILE_ALLOCATION,
-                                   V_PREALLOC, {V_NONE, V_PREALLOC, V_TRUNC,
+    OptionHandler* op(new ParameterOptionHandler(
+        PREF_FILE_ALLOCATION, TEXT_FILE_ALLOCATION, V_PREALLOC,
+        {V_NONE, V_PREALLOC, V_TRUNC,
 #ifdef HAVE_SOME_FALLOCATE
-                                                V_FALLOC
+         V_FALLOC
 #endif // HAVE_SOME_FALLOCATE
-                                               },
-                                   'a'));
+        },
+        'a'));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_FILE);
     op->setInitialOption(true);

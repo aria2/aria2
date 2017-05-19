@@ -141,9 +141,9 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_UTPex()
 
   std::string data = getExtensionMessageID(ExtensionMessageRegistry::UT_PEX) +
                      "d5:added12:" + std::string(&c1[0], &c1[6]) +
-                     std::string(&c2[0], &c2[6]) + "7:added.f2:207:dropped12:" +
-                     std::string(&c3[0], &c3[6]) + std::string(&c4[0], &c4[6]) +
-                     "e";
+                     std::string(&c2[0], &c2[6]) +
+                     "7:added.f2:207:dropped12:" + std::string(&c3[0], &c3[6]) +
+                     std::string(&c4[0], &c4[6]) + "e";
 
   auto m = createMessage<UTPexExtensionMessage>(data);
   CPPUNIT_ASSERT_EQUAL(

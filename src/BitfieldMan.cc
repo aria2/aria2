@@ -173,10 +173,10 @@ bool BitfieldMan::hasMissingPiece(const unsigned char* peerBitfield,
 bool BitfieldMan::getFirstMissingUnusedIndex(size_t& index) const
 {
   if (filterEnabled_) {
-    return bitfield::getFirstSetBitIndex(index, ~array(bitfield_) &
-                                                    ~array(useBitfield_) &
-                                                    array(filterBitfield_),
-                                         blocks_);
+    return bitfield::getFirstSetBitIndex(
+        index,
+        ~array(bitfield_) & ~array(useBitfield_) & array(filterBitfield_),
+        blocks_);
   }
   else {
     return bitfield::getFirstSetBitIndex(
@@ -305,8 +305,9 @@ bool BitfieldMan::getSparseMissingUnusedIndex(
 {
   if (filterEnabled_) {
     return aria2::getSparseMissingUnusedIndex(
-        index, minSplitSize, array(ignoreBitfield) | ~array(filterBitfield_) |
-                                 array(bitfield_) | array(useBitfield_),
+        index, minSplitSize,
+        array(ignoreBitfield) | ~array(filterBitfield_) | array(bitfield_) |
+            array(useBitfield_),
         useBitfield_, blockLength_, blocks_);
   }
   else {
@@ -361,8 +362,9 @@ bool BitfieldMan::getGeomMissingUnusedIndex(size_t& index, int32_t minSplitSize,
 {
   if (filterEnabled_) {
     return aria2::getGeomMissingUnusedIndex(
-        index, minSplitSize, array(ignoreBitfield) | ~array(filterBitfield_) |
-                                 array(bitfield_) | array(useBitfield_),
+        index, minSplitSize,
+        array(ignoreBitfield) | ~array(filterBitfield_) | array(bitfield_) |
+            array(useBitfield_),
         useBitfield_, blockLength_, blocks_, base, offsetIndex);
   }
   else {
@@ -497,8 +499,9 @@ bool BitfieldMan::getAllMissingIndexes(unsigned char* misbitfield, size_t len,
     return false;
   }
   if (filterEnabled_) {
-    return copyBitfield(misbitfield, ~array(bitfield_) & array(peerBitfield) &
-                                         array(filterBitfield_),
+    return copyBitfield(misbitfield,
+                        ~array(bitfield_) & array(peerBitfield) &
+                            array(filterBitfield_),
                         blocks_);
   }
   else {
@@ -523,8 +526,9 @@ bool BitfieldMan::getAllMissingUnusedIndexes(unsigned char* misbitfield,
                         blocks_);
   }
   else {
-    return copyBitfield(misbitfield, ~array(bitfield_) & ~array(useBitfield_) &
-                                         array(peerBitfield),
+    return copyBitfield(misbitfield,
+                        ~array(bitfield_) & ~array(useBitfield_) &
+                            array(peerBitfield),
                         blocks_);
   }
 }
