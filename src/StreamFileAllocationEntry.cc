@@ -99,7 +99,8 @@ void StreamFileAllocationEntry::prepareForNextAction(
     rg->createNextCommandWithAdj(commands, e, 0);
   }
 
-  if (!rg->allDownloadFinished()) {
+  if (option->getAsInt(PREF_AUTO_SAVE_INTERVAL) != 0 &&
+      !rg->allDownloadFinished()) {
     try {
       rg->saveControlFile();
     }

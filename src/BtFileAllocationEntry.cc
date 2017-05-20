@@ -82,11 +82,13 @@ void BtFileAllocationEntry::prepareForNextAction(
       rg->createNextCommandWithAdj(commands, e, 0);
     }
 
-    try {
-      rg->saveControlFile();
-    }
-    catch (RecoverableException& e) {
-      A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
+    if (option->getAsInt(PREF_AUTO_SAVE_INTERVAL) != 0) {
+      try {
+        rg->saveControlFile();
+      }
+      catch (RecoverableException& e) {
+        A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
+      }
     }
   }
   else {
