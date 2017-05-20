@@ -514,6 +514,8 @@ extern PrefPtr PREF_BT_DETACH_SEED_ONLY;
 extern PrefPtr PREF_BT_FORCE_ENCRYPTION;
 // values: true | false
 extern PrefPtr PREF_BT_ENABLE_HOOK_AFTER_HASH_CHECK;
+// values: true | false
+extern PrefPtr PREF_BT_LOAD_SAVED_METADATA;
 
 /**
  * Metalink related preferences
