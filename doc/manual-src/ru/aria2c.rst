@@ -743,6 +743,14 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   лишь на BitTorrent-загрузки.
   По умолчанию: ``true``
 
+.. option:: --bt-load-saved-metadata[=true|false]
+
+  Прежде, чем получить метаданные торрента из DHT при загрузке
+  magnet-ссылки, сначала попытаться считать файл, сохранённый параметром
+  :option:`--bt-save-metadata`. Если попытка успешна, то пропустить
+  загрузку метаданных из DHT.
+  По умолчанию: ``false``
+
 .. option:: --bt-lpd-interface=<INTERFACE>
 
   Использовать для поиска локальных пиров заданный интерфейс. Если этот
@@ -2221,6 +2229,7 @@ URI. Эти дополнительные строки должны начина�
   * :option:`bt-external-ip <--bt-external-ip>`
   * :option:`bt-force-encryption <--bt-force-encryption>`
   * :option:`bt-hash-check-seed <--bt-hash-check-seed>`
+  * :option:`bt-load-saved-metadata <--bt-load-saved-metadata>`
   * :option:`bt-max-peers <--bt-max-peers>`
   * :option:`bt-metadata-only <--bt-metadata-only>`
   * :option:`bt-min-crypto-level <--bt-min-crypto-level>`
