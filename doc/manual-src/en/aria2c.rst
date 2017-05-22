@@ -713,6 +713,14 @@ BitTorrent Specific Options
  option to ``false``.  This option has effect only on BitTorrent download.
  Default: ``true``
 
+.. option:: --bt-load-saved-metadata[=true|false]
+
+  Before getting torrent metadata from DHT when downloading with
+  magnet link, first try to read file saved by
+  :option:`--bt-save-metadata` option.  If it is successful, then skip
+  downloading metadata from DHT.
+  Default: ``false``
+
 .. option:: --bt-lpd-interface=<INTERFACE>
 
   Use given interface for Local Peer Discovery. If this option is not
@@ -2111,6 +2119,7 @@ of URIs. These optional lines must start with white space(s).
   * :option:`bt-external-ip <--bt-external-ip>`
   * :option:`bt-force-encryption <--bt-force-encryption>`
   * :option:`bt-hash-check-seed <--bt-hash-check-seed>`
+  * :option:`bt-load-saved-metadata <--bt-load-saved-metadata>`
   * :option:`bt-max-peers <--bt-max-peers>`
   * :option:`bt-metadata-only <--bt-metadata-only>`
   * :option:`bt-min-crypto-level <--bt-min-crypto-level>`

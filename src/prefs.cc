@@ -563,6 +563,8 @@ PrefPtr PREF_BT_FORCE_ENCRYPTION = makePref("bt-force-encryption");
 // values: true | false
 PrefPtr PREF_BT_ENABLE_HOOK_AFTER_HASH_CHECK =
     makePref("bt-enable-hook-after-hash-check");
+// values: true | false
+PrefPtr PREF_BT_LOAD_SAVED_METADATA = makePref("bt-load-saved-metadata");
 
 /**
  * Metalink related preferences

@@ -1117,4 +1117,12 @@
     "                              number of unfinished download result to keep. If\n" \
     "                              that is undesirable, turn this option off.")
 
+#define TEXT_BT_LOAD_SAVED_METADATA \
+  _(" --bt-load-saved-metadata[=true|false]\n" \
+    "                              Before getting torrent metadata from DHT when\n" \
+    "                              downloading with magnet link, first try to read\n" \
+    "                              file saved by --bt-save-metadata option. If it is\n" \
+    "                              successful, then skip downloading metadata from\n" \
+    "                              DHT.")
+
 // clang-format on
