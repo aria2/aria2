@@ -103,8 +103,8 @@ export LDFLAGS
 LTO_FLAGS = -flto -ffunction-sections -fdata-sections
 
 # Dependency versions
-zlib_version = 1.2.8
-zlib_hash = a4d316c404ff54ca545ea71a27af7dbc29817088
+zlib_version = 1.2.11
+zlib_hash = e6d119755acdf9104d7ba236b1242696940ed6dd
 zlib_url = http://zlib.net/zlib-$(zlib_version).tar.gz
 
 expat_version = 2.2.0
@@ -113,21 +113,21 @@ expat_url = http://sourceforge.net/projects/expat/files/expat/$(expat_version)/e
 expat_cflags=$(LTO_FLAGS)
 expat_ldflags=$(CFLAGS) $(LTO_FLAGS)
 
-cares_version = 1.11.0
-cares_hash = 8c20b2680099ac73861a780c731edd59e010383a
-cares_url = http://c-ares.haxx.se/download/c-ares-$(cares_version).tar.gz
+cares_version = 1.12.0
+cares_hash = 8abfce61d2d788fb60a3441d05275162a460cbed
+cares_url = https://c-ares.haxx.se/download/c-ares-$(cares_version).tar.gz
 cares_confflags = "--enable-optimize=$(OPTFLAGS)"
 cares_cflags=$(LTO_FLAGS)
 cares_ldflags=$(CFLAGS) $(LTO_FLAGS)
 
-sqlite_version = autoconf-3110000
-sqlite_hash = e2d300e4b24af5ecd67a1396488893fa44864e36
-sqlite_url = http://sqlite.org/2016/sqlite-$(sqlite_version).tar.gz
+sqlite_version = autoconf-3190300
+sqlite_hash = 58f2cabffb3ff4761a3ac7f834d9db7b46307c1f
+sqlite_url = https://sqlite.org/2017/sqlite-$(sqlite_version).tar.gz
 sqlite_cflags=$(LTO_FLAGS)
 sqlite_ldflags=$(CFLAGS) $(LTO_FLAGS)
 
-gmp_version = 6.1.0
-gmp_hash = db38c7b67f8eea9f2e5b8a48d219165b2fdab11f
+gmp_version = 6.1.2
+gmp_hash = 366ded6a44cd108ba6b3f5b9a252eab3f3a95cdf
 gmp_url = https://ftp.gnu.org/gnu/gmp/gmp-$(gmp_version).tar.bz2
 gmp_confflags = --disable-cxx --enable-assembly --with-pic --enable-fat
 
@@ -143,12 +143,13 @@ libgcrypt_hash = c3a5a13e717f7b3e3895650afc1b6e0d3fe9c726
 libgcrypt_url = https://gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-$(libgcrypt_version).tar.bz2
 libgcrypt_confflags=--with-gpg-error-prefix=$(PWD)/arch --disable-O-flag-munging --disable-asm --disable-amd64-as-feature-detection
 
-libssh2_version = 1.7.0
-libssh2_hash = 02fef9bdafce3da466b36581a4ff53d519637aca
+libssh2_version = 1.8.0
+libssh2_hash = baf2d1fb338eee531ba9b6b121c64235e089e0f5
 libssh2_url = https://www.libssh2.org/download/libssh2-$(libssh2_version).tar.gz
 libssh2_cflags=$(LTO_FLAGS)
 libssh2_ldflags=$(CFLAGS) $(LTO_FLAGS)
-libssh2_confflags = --with-pic --without-openssl --with-libgcrypt --with-libgcrypt-prefix=$(PWD)/arch
+libssh2_confflags = --with-pic --without-openssl --with-libgcrypt=$(PWD)/arch --with-libgcrypt-prefix=$(PWD)/arch
+libssh2_nocheck = yes
 
 cppunit_version = 1.12.1
 cppunit_hash = f1ab8986af7a1ffa6760f4bacf5622924639bf4a
@@ -330,7 +331,7 @@ $(1).%.build: $(1).stamp
 		PKG_CONFIG_PATH=$$(PWD)/arch/lib/pkgconfig \
 		)
 	$$(MAKE) -C $$(DEST) -sj$(CPUS)
-	$$(MAKE) -C $$(DEST) -sj$(CPUS) check
+	if test -z '$$($(1)_nocheck)'; then $$(MAKE) -C $$(DEST) -sj$(CPUS) check; fi
 	$$(MAKE) -C $$(DEST) -s install
 	touch $$@
 
