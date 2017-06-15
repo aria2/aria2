@@ -441,7 +441,7 @@ AppleTLSSession::AppleTLSSession(AppleTLSContext* ctx)
     return;
   }
   for (const auto& suite : enabled) {
-    A2_LOG_INFO(
+    A2_LOG_DEBUG(
         fmt("AppleTLS: Enabled suite %s", suiteToString(suite).c_str()));
   }
   if (SSLSetEnabledCiphers(sslCtx_, &enabled[0], enabled.size()) != noErr) {
