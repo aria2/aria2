@@ -381,8 +381,7 @@ $(ARIA2_DOCS): aria2.x86_64.build
 $(ARIA2_DIST).tar.bz2: aria2.build $(ARIA2_DOCS) $(ARIA2_CHANGELOG)
 	find $(ARIA2_PREFIX) -exec touch "{}" \;
 	tar -cf $@ \
-		--use-compress-program=bzip2 \
-		--options='compression-level=9' \
+		--use-compress-program="bzip2 -9" \
 		$(ARIA2)
 
 $(ARIA2_DIST).pkg: aria2.build $(ARIA2_DOCS) $(ARIA2_CHANGELOG)
@@ -412,7 +411,7 @@ $(ARIA2_DIST).dmg: $(ARIA2_DIST).pkg
 	-rm -rf dmg
 	mkdir -p dmg/Docs
 	cp -av $(ARIA2_DIST).pkg dmg/aria2.pkg
-	find $(ARIA2_PREFIX)/share/doc/aria2 -type f -depth 1 -exec cp -av "{}" dmg/Docs \;
+	find $(ARIA2_PREFIX)/share/doc/aria2 -maxdepth 1 -type f -exec cp -av "{}" dmg/Docs \;
 	rm -rf dmg/Docs/README dmg/Docs/README.rst
 	cp $(SRCDIR)/osx-package/DS_Store dmg/.DS_Store
 	hdiutil create $@.uncompressed \
