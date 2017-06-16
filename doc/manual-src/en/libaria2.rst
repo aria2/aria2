@@ -98,7 +98,7 @@ representing aria2 options. For example, specify an option
 ``file-allocation`` to ``none``::
 
     aria2::KeyVals options;
-    options.push_back(aria2::KeyVals("file-allocation", "none"));
+    options.push_back(std::pair<std::string, std::string> ("file-allocation", "none"));
 
 The first argument of :func:`sessionNew()` is analogous to the
 command-line argument to aria2c program. In the example program, we
