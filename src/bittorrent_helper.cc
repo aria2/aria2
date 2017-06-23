@@ -88,6 +88,7 @@ const char C_COMMENT_UTF8[] = "comment.utf-8";
 const char C_CREATED_BY[] = "created by";
 
 const char DEFAULT_PEER_ID_PREFIX[] = "aria2-";
+const char DEFAULT_PEER_AGENT[] = "aria2/" PACKAGE_VERSION;
 } // namespace
 
 const std::string MULTI("multi");
@@ -693,6 +694,7 @@ std::string generatePeerId(const std::string& peerIdPrefix)
 
 namespace {
 std::string peerId;
+std::string peerAgent;
 } // namespace
 
 const std::string& generateStaticPeerId(const std::string& peerIdPrefix)
@@ -703,7 +705,16 @@ const std::string& generateStaticPeerId(const std::string& peerIdPrefix)
   return peerId;
 }
 
+const std::string& generateStaticPeerAgent(const std::string& peerAgentNew)
+{
+  if (peerAgent.empty()) {
+    peerAgent = peerAgentNew;
+  }
+  return peerAgent;
+}
+
 void setStaticPeerId(const std::string& newPeerId) { peerId = newPeerId; }
+void setStaticPeerAgent(const std::string& newPeerAgent) { peerAgent = newPeerAgent; }
 
 // If PeerID is not generated, it is created with default peerIdPrefix
 // (aria2-).
@@ -716,6 +727,16 @@ const unsigned char* getStaticPeerId()
   else {
     return reinterpret_cast<const unsigned char*>(peerId.data());
   }
+}
+
+// If PeerAgent is not generated, it is created with default agent
+// aria2/PACKAGE_VERSION
+const std::string& getStaticPeerAgent()
+{
+  if (peerAgent.empty()) {
+    generateStaticPeerAgent(DEFAULT_PEER_AGENT);
+  }
+  return peerAgent;
 }
 
 uint8_t getId(const unsigned char* msg) { return msg[0]; }

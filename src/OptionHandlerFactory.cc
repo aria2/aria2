@@ -1854,6 +1854,12 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    OptionHandler* op(new DefaultOptionHandler(
+        PREF_PEER_AGENT, TEXT_PEER_AGENT, "aria2/" PACKAGE_VERSION));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
     OptionHandler* op(new FloatNumberOptionHandler(
         PREF_SEED_TIME, TEXT_SEED_TIME, NO_DEFAULT_VALUE, 0));
     op->addTag(TAG_BITTORRENT);

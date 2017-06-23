@@ -199,7 +199,7 @@ void DefaultBtInteractive::addPortMessageToQueue()
 void DefaultBtInteractive::addHandshakeExtendedMessageToQueue()
 {
   auto m = make_unique<HandshakeExtensionMessage>();
-  m->setClientVersion("aria2/" PACKAGE_VERSION);
+  m->setClientVersion(bittorrent::getStaticPeerAgent());
   m->setTCPPort(tcpPort_);
   m->setExtensions(extensionMessageRegistry_->getExtensions());
   auto attrs = bittorrent::getTorrentAttrs(downloadContext_);

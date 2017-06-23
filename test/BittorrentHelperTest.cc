@@ -42,6 +42,7 @@ class BittorrentHelperTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetPieceLength);
   CPPUNIT_TEST(testGetInfoHashAsString);
   CPPUNIT_TEST(testGetPeerId);
+  CPPUNIT_TEST(testGetPeerAgent);
   CPPUNIT_TEST(testComputeFastSet);
   CPPUNIT_TEST(testGetFileEntries_multiFileUrlList);
   CPPUNIT_TEST(testGetFileEntries_singleFileUrlList);
@@ -100,6 +101,7 @@ public:
   void testGetPieceLength();
   void testGetInfoHashAsString();
   void testGetPeerId();
+  void testGetPeerAgent();
   void testComputeFastSet();
   void testGetFileEntries_multiFileUrlList();
   void testGetFileEntries_singleFileUrlList();
@@ -323,6 +325,13 @@ void BittorrentHelperTest::testGetPeerId()
   std::string peerId = generatePeerId("aria2-");
   CPPUNIT_ASSERT(peerId.find("aria2-") == 0);
   CPPUNIT_ASSERT_EQUAL((size_t)20, peerId.size());
+}
+
+void BittorrentHelperTest::testGetPeerAgent()
+{
+  std::string peerAgent = generateStaticPeerAgent("aria2/-1.-1.-1");
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2/-1.-1.-1"), peerAgent);
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2/-1.-1.-1"), bittorrent::getStaticPeerAgent());
 }
 
 void BittorrentHelperTest::testComputeFastSet()

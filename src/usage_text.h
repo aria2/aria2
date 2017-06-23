@@ -331,6 +331,8 @@
     "                              bytes are specified, only first 20 bytes are\n" \
     "                              used. If less than 20 bytes are specified, random\n" \
     "                              byte data are added to make its length 20 bytes.")
+#define TEXT_PEER_AGENT                                                 \
+  _(" --peer-agent=PEER_AGENT  Set client reported during Extended torrent handshakes")
 #define TEXT_ENABLE_PEER_EXCHANGE                                       \
   _(" --enable-peer-exchange[=true|false] Enable Peer Exchange extension.")
 #define TEXT_ENABLE_DHT                                         \
