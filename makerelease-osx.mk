@@ -113,8 +113,8 @@ expat_url = http://sourceforge.net/projects/expat/files/expat/$(expat_version)/e
 expat_cflags=$(LTO_FLAGS)
 expat_ldflags=$(CFLAGS) $(LTO_FLAGS)
 
-cares_version = 1.12.0
-cares_hash = 8abfce61d2d788fb60a3441d05275162a460cbed
+cares_version = 1.13.0
+cares_hash = dde50284cc3d505fb2463ff6276e61d5531b1d68
 cares_url = https://c-ares.haxx.se/download/c-ares-$(cares_version).tar.gz
 cares_confflags = "--enable-optimize=$(OPTFLAGS)"
 cares_cflags=$(LTO_FLAGS)
