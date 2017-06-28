@@ -170,7 +170,7 @@ PREV_TAG := $(shell git describe --abbrev=0 $(THIS_TAG)~1)
 # Aria2 setup
 ARIA2 := aria2-$(VERSION)
 ARIA2_PREFIX := $(PWD)/$(ARIA2)
-ARIA2_DIST := $(PWD)/$(ARIA2)-osx-darwin
+ARIA2_DIST := $(PWD)/$(ARIA2)-osx-darwin$(BUILD)
 ARIA2_CONFFLAGS = \
         --enable-static \
         --disable-shared \
