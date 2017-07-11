@@ -954,6 +954,15 @@ BitTorrent Specific Options
   replaced by major, minor and patch version number respectively.  For
   instance, aria2 version 1.18.8 has prefix ID ``A2-1-18-8-``.
 
+.. option:: --peer-agent=<PEER_AGENT>
+
+  Specify the string used during the bitorrent extended handshake
+  for the peer's client version.
+
+  Default: ``aria2/$MAJOR.$MINOR.$PATCH``, $MAJOR, $MINOR and $PATCH are
+  replaced by major, minor and patch version number respectively.  For
+  instance, aria2 version 1.18.8 has peer agent ``aria2/1.18.8``.
+
 .. option:: --seed-ratio=<RATIO>
 
   Specify share ratio. Seed completed torrents until share ratio reaches
