@@ -134,14 +134,20 @@ std::string generatePeerId(const std::string& peerIdPrefix);
 // uses generatePeerId(peerIdPrefix) to produce Peer ID.
 const std::string& generateStaticPeerId(const std::string& peerIdPrefix);
 
+const std::string& generateStaticPeerAgent(const std::string& peerAgent);
+
 // Returns Peer ID statically stored by generateStaticPeerId().  If
 // Peer ID is not stored yet, this function calls
 // generateStaticPeerId("aria2-")
 const unsigned char* getStaticPeerId();
 
+const std::string& getStaticPeerAgent();
+
 // Set newPeerId as a static Peer ID. newPeerId must be 20-byte
 // length.
 void setStaticPeerId(const std::string& newPeerId);
+
+void setStaticPeerAgent(const std::string& newPeerAgent);
 
 // Computes fast set index and returns them.
 std::vector<size_t> computeFastSet(const std::string& ipaddr, size_t numPieces,

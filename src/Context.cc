@@ -166,6 +166,7 @@ Context::Context(bool standalone, int argc, char** argv, const KeyVals& options)
   }
 #ifdef ENABLE_BITTORRENT
   bittorrent::generateStaticPeerId(op->get(PREF_PEER_ID_PREFIX));
+  bittorrent::generateStaticPeerAgent(op->get(PREF_PEER_AGENT));
 #endif // ENABLE_BITTORRENT
   LogFactory::setLogFile(op->get(PREF_LOG));
   LogFactory::setLogLevel(op->get(PREF_LOG_LEVEL));
