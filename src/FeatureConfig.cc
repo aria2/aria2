@@ -291,11 +291,11 @@ std::string usedCompilerAndPlatform()
 
 #endif // !defined(__GNUG__)
 
-  rv << "\n  built by   " << BUILD;
+  rv << "\n  built by  " << BUILD;
   if (strcmp(BUILD, TARGET)) {
     rv << "\n  targeting " << TARGET;
   }
-  rv << "\n  on         " << __DATE__ << " " << __TIME__;
+  rv << "\n  on        " << __DATE__ << " " << __TIME__;
 
   return rv.str();
 }
