@@ -65,22 +65,10 @@ template <typename T> static void close_callback(uv_handle_t* handle)
   delete reinterpret_cast<T*>(handle);
 }
 
-#if !defined(UV_VERSION_MINOR) ||                                              \
-    (UV_VERSION_MAJOR == 0 && UV_VERSION_MINOR <= 10)
-
-static void timer_callback(uv_timer_t* handle, int status)
+static void timer_callback(uv_timer_t* handle)
 {
   uv_stop(handle->loop);
 }
-
-static void timer_callback(uv_timer_t* handle) { timer_callback(handle, 0); }
-
-#else // !defined(UV_VERSION_MINOR) || (UV_VERSION_MAJOR == 0 &&
-// UV_VERSION_MINOR <= 10)
-
-static void timer_callback(uv_timer_t* handle) { uv_stop(handle->loop); }
-
-#endif // !defined(UV_VERSION_MINOR) || UV_VERSION_MINOR <= 10
 }
 
 namespace aria2 {
@@ -112,7 +100,10 @@ int LibuvEventPoll::KSocketEntry::getEvents() const
   return events;
 }
 
-LibuvEventPoll::LibuvEventPoll() { loop_ = uv_loop_new(); }
+LibuvEventPoll::LibuvEventPoll()
+{
+  loop_ = uv_loop_new();
+}
 
 LibuvEventPoll::~LibuvEventPoll()
 {
@@ -189,14 +180,8 @@ int LibuvEventPoll::translateEvents(EventPoll::EventType events)
 
 void LibuvEventPoll::pollCallback(KPoll* poll, int status, int events)
 {
-#if HAVE_UV_LAST_ERROR
-  if (status == -1) {
-    uv_err_t err = uv_last_error(loop_);
-    switch (err.code) {
-#else
   if (status < 0) {
     switch (status) {
-#endif
     case UV_EAGAIN:
     case UV_EINTR:
       return;

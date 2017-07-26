@@ -238,77 +238,10 @@ fi
 
 have_libuv=no
 if test "x$with_libuv" = "xyes"; then
-  case "$host" in
-    *mingw*|*msvc*)
-      libuv_cflags="-D_WIN32_WINNT=0x0600"
-      save_CPPFLAGS=$CPPFLAGS
-      save_LIBS=$LIBS
-      CPPFLAGS="$CPPFLAGS $libuv_cflags"
-      AC_SEARCH_LIBS([uv_poll_init_socket], [uv], [
-                      AC_CHECK_HEADER([uv.h], [have_libuv=yes], [have_libuv=no])
-                      ], [have_libuv=no])
-      if test "x$have_libuv" = "xyes"; then
-        LIBUV_CFLAGS=$libuv_cflags
-        LIBUV_LIBS=-luv
-        AC_SUBST([LIBUV_CFLAGS])
-        AC_SUBST([LIBUV_LIBS])
-      fi
-      CPPFLAGS=$save_CPPFLAGS
-      LIBS=$save_LIBS
-    ;;
-
-    *darwin*)
-      libuv_ldflags="-framework Foundation -framework CoreServices -framework ApplicationServices"
-      save_LDFLAGS=$LDFLAGS
-      save_LIBS=$LIBS
-      LDFLAGS="$LDFLAGS $libuv_ldflags"
-      AC_SEARCH_LIBS([uv_poll_init_socket], [uv], [
-                      AC_CHECK_HEADER([uv.h], [have_libuv=yes], [have_libuv=no])
-                      ], [have_libuv=no], [-lm])
-      if test "x$have_libuv" = "xyes"; then
-        LIBUV_CFLAGS=
-        LIBUV_LIBS="$libuv_ldflags -luv -lm"
-        AC_SUBST([LIBUV_CFLAGS])
-        AC_SUBST([LIBUV_LIBS])
-      fi
-      LDFLAGS=$save_LDFLAGS
-      LIBS=$save_LIBS
-      ;;
-
-    *)
-      dnl Yeah, sucks that luv does not bring a pkg-config or config-tool
-      AC_MSG_CHECKING([for libuv])
-      save_LIBS=$LIBS
-      for combo in "" "-lrt" "-ldl -lrt" "-ldl -lrt -lpthread" "-lkvm"; do
-        LIBS="-luv $combo $save_LIBS -lm"
-        AC_LINK_IFELSE([AC_LANG_SOURCE([
-extern "C" int uv_poll_init_socket(void);
-int main() { return uv_poll_init_socket(); }
-                       ])], [
-                        AC_MSG_RESULT(-luv $combo -lm)
-                        AC_CHECK_HEADER([uv.h], [have_libuv=yes], [have_libuv=no])
-                        ], [have_libuv=no])
-        if test "x$have_libuv" = "xyes"; then
-          LIBUV_CFLAGS=
-          LIBUV_LIBS="-luv $combo -lm"
-          AC_SUBST([LIBUV_CFLAGS])
-          AC_SUBST([LIBUV_LIBS])
-          break;
-        fi
-      done
-      LIBS=$save_LIBS
-      if test "x$have_libuv" != "xyes"; then
-        AC_MSG_RESULT("no")
-      fi
-    ;;
-  esac
-
+  PKG_CHECK_MODULES([LIBUV], [libuv >= 1.13],
+                    [have_libuv=yes], [have_libuv=no])
   if test "x$have_libuv" = "xyes"; then
     AC_DEFINE([HAVE_LIBUV], [1], [Define to 1 if you have libuv.])
-    save_LIBS=$LIBS
-    LIBS="$LIBUV_LIBS $LIBS"
-    AC_CHECK_FUNCS([uv_last_error])
-    LIBS=$save_LIBS
   elif test "x$with_libuv_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([libuv])
   fi
