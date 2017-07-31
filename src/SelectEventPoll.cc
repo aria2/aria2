@@ -174,11 +174,6 @@ void SelectEventPoll::poll(const struct timeval& tv)
 
   memcpy(&rfds, &rfdset_, sizeof(fd_set));
   memcpy(&wfds, &wfdset_, sizeof(fd_set));
-#ifdef __MINGW32__
-  fd_set efds;
-  FD_ZERO(&efds);
-  FD_SET(dummySocket_, &efds);
-#endif // __MINGW32__
 #ifdef ENABLE_ASYNC_DNS
 
   for (auto& i : nameResolverEntries_) {
@@ -195,7 +190,11 @@ void SelectEventPoll::poll(const struct timeval& tv)
   do {
     struct timeval ttv = tv;
 #ifdef __MINGW32__
-    retval = select(fdmax_ + 1, &rfds, &wfds, &efds, &ttv);
+    // winsock will report non-blocking connect() errors in exceptfds, unlike
+    // posix, which will mark such sockets as writable.
+    // So just pass in our write socket set to exceptfds, too, to get connect()
+    // error notifications on Windows.
+    retval = select(fdmax_ + 1, &rfds, &wfds, &wfds, &ttv);
 #else // !__MINGW32__
     retval = select(fdmax_ + 1, &rfds, &wfds, nullptr, &ttv);
 #endif // !__MINGW32__
@@ -215,7 +214,8 @@ void SelectEventPoll::poll(const struct timeval& tv)
   }
   else if (retval == -1) {
     int errNum = errno;
-    A2_LOG_INFO(fmt("select error: %s", util::safeStrerror(errNum).c_str()));
+    A2_LOG_INFO(fmt("select error: %s, fdmax: %d",
+                    util::safeStrerror(errNum).c_str(), fdmax_));
   }
 #ifdef ENABLE_ASYNC_DNS
 
@@ -240,13 +240,16 @@ void checkFdCountMingw(const fd_set& fdset)
 
 void SelectEventPoll::updateFdSet()
 {
+  FD_ZERO(&rfdset_);
+  FD_ZERO(&wfdset_);
 #ifdef __MINGW32__
+  FD_SET(dummySocket_, &rfdset_);
+  FD_SET(dummySocket_, &wfdset_);
   fdmax_ = dummySocket_;
 #else  // !__MINGW32__
   fdmax_ = 0;
 #endif // !__MINGW32__
-  FD_ZERO(&rfdset_);
-  FD_ZERO(&wfdset_);
+
   for (auto& i : socketEntries_) {
     auto& e = i.second;
     sock_t fd = e.getSocket();
