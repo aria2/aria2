@@ -151,6 +151,11 @@ private:
   fd_set rfdset_;
   fd_set wfdset_;
   sock_t fdmax_;
+#ifdef __MINGW32__
+  // Winsock select() doesn't work if no socket is in FD_SET. We add
+  // this dummy socket to work around this problem
+  sock_t dummySocket_;
+#endif // __MINGW32__
 
   typedef std::map<sock_t, SocketEntry> SocketEntrySet;
   SocketEntrySet socketEntries_;
@@ -160,12 +165,6 @@ private:
       AsyncNameResolverEntrySet;
   AsyncNameResolverEntrySet nameResolverEntries_;
 #endif // ENABLE_ASYNC_DNS
-
-#ifdef __MINGW32__
-  // Winsock select() doesn't work if no socket is in FD_SET. We add
-  // this dummy socket to work around this problem
-  sock_t dummySocket_;
-#endif // __MINGW32__
 
   void updateFdSet();
 
