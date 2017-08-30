@@ -722,7 +722,9 @@ struct RequestGroupDH : public DownloadHandle {
   {
     return group->getNumConnection();
   }
-  virtual int getErrorCode() CXX11_OVERRIDE { return 0; }
+  virtual int getErrorCode() CXX11_OVERRIDE {
+    return group->getLastErrorCode();
+  }
   virtual const std::vector<A2Gid>& getFollowedBy() CXX11_OVERRIDE
   {
     return group->followedBy();
