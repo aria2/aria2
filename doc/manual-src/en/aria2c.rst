@@ -4136,10 +4136,6 @@ Download a file via torrent and HTTP/FTP server in parallel
 
   $ aria2c -Ttest.torrent "http://host1/file" "ftp://host2/file"
 
-.. note::
-
-  Downloading a multi-file torrent while also using HTTP/FTP is not supported.
-
 Only download specific files (usually called "selected download")
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code-block:: console
