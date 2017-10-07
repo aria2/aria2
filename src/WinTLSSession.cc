@@ -514,18 +514,14 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
       return TLS_ERR_ERROR;
     }
 
-    // Decrypted message successfully.
-    bool ate = false;
-    for (auto& buf : bufs) {
-      if (buf.BufferType == SECBUFFER_DATA && buf.cbBuffer > 0) {
-        decBuf_.write(buf.pvBuffer, buf.cbBuffer);
-      }
-      else if (buf.BufferType == SECBUFFER_EXTRA && buf.cbBuffer > 0) {
-        readBuf_.eat(readBuf_.size() - buf.cbBuffer);
-        ate = true;
-      }
+    // Decrypted message successfully.  Inspired from curl schannel.c.
+    if (bufs[1].BufferType == SECBUFFER_DATA && bufs[1].cbBuffer > 0) {
+      decBuf_.write(bufs[1].pvBuffer, bufs[1].cbBuffer);
     }
-    if (!ate) {
+    if (bufs[3].BufferType == SECBUFFER_EXTRA && bufs[3].cbBuffer > 0) {
+      readBuf_.eat(readBuf_.size() - bufs[3].cbBuffer);
+    }
+    else {
       readBuf_.clear();
     }
 
