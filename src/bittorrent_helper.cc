@@ -714,7 +714,10 @@ const std::string& generateStaticPeerAgent(const std::string& peerAgentNew)
 }
 
 void setStaticPeerId(const std::string& newPeerId) { peerId = newPeerId; }
-void setStaticPeerAgent(const std::string& newPeerAgent) { peerAgent = newPeerAgent; }
+void setStaticPeerAgent(const std::string& newPeerAgent)
+{
+  peerAgent = newPeerAgent;
+}
 
 // If PeerID is not generated, it is created with default peerIdPrefix
 // (aria2-).

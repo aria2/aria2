@@ -331,7 +331,8 @@ void BittorrentHelperTest::testGetPeerAgent()
 {
   std::string peerAgent = generateStaticPeerAgent("aria2/-1.-1.-1");
   CPPUNIT_ASSERT_EQUAL(std::string("aria2/-1.-1.-1"), peerAgent);
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2/-1.-1.-1"), bittorrent::getStaticPeerAgent());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2/-1.-1.-1"),
+                       bittorrent::getStaticPeerAgent());
 }
 
 void BittorrentHelperTest::testComputeFastSet()

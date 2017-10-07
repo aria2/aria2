@@ -65,10 +65,7 @@ template <typename T> static void close_callback(uv_handle_t* handle)
   delete reinterpret_cast<T*>(handle);
 }
 
-static void timer_callback(uv_timer_t* handle)
-{
-  uv_stop(handle->loop);
-}
+static void timer_callback(uv_timer_t* handle) { uv_stop(handle->loop); }
 }
 
 namespace aria2 {
@@ -100,10 +97,7 @@ int LibuvEventPoll::KSocketEntry::getEvents() const
   return events;
 }
 
-LibuvEventPoll::LibuvEventPoll()
-{
-  loop_ = uv_loop_new();
-}
+LibuvEventPoll::LibuvEventPoll() { loop_ = uv_loop_new(); }
 
 LibuvEventPoll::~LibuvEventPoll()
 {
