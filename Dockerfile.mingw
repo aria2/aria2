@@ -11,7 +11,7 @@
 # $ sudo docker cp $id:/aria2/src/aria2c.exe <dest>
 # $ sudo docker rm -v $id
 
-FROM ubuntu:wily
+FROM ubuntu:16.04
 
 MAINTAINER Tatsuhiro Tsujikawa
 
