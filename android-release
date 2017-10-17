@@ -49,7 +49,7 @@ if [ -z "$VERSION" ]; then
     exit 1
 fi
 
-DIST_DIR=aria2-$VERSION-android-build1
+DIST_DIR=aria2-$VERSION-android-arm-build1
 arm-linux-androideabi-strip src/aria2c
 mkdir $DIST_DIR
 cp AUTHORS COPYING ChangeLog LICENSE.OpenSSL NEWS README.html README.android \
