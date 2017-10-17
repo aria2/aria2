@@ -1,62 +1,89 @@
-aria2 1.32.0
+aria2 1.33.0
 ============
 
 Release Note
 ------------
 
-This release fixes several minor bugs, and spelling mistakes.
+This release fixes several bugs, and add new features.
 
 Changes
 -------
 
-* Clarify --max-concurrent-downloads option
+* Include arm in a filename of android zip
 
-  GH-833
+* Upgrade base image of Dockerfile.mingw to ubuntu:16.04
 
-* Fix compile error with toolchain which lacks IPV6_TCLASS
+* wintls: Potential fix for undecrypted read
 
-  GH-895
+  GH-1021
 
-* Log directed URI in notice log level
+* libaria2: Return last error code from DownloadHandle::getErrorCode
 
-  GH-884
+  GH-991
 
-* Fix typo
+* Windows: pass writefds also as exceptfds to select()
 
-  Patch from Tse Kit Yam
+  winsock notifies connect() failures on exceptfds instead of
+  writefds.
 
-  GH-879, GH-899
+  Fixes GH-969
+  Fixes GH-975
 
-* Spelling fixes
+* libuv: use pkg-config
 
-  Patch from klemens
+* FeatureConfig: align text
 
-  GH-870
+* Update Dockerfile.mingw
 
-* Remove unused Android parts
+  avoid docker cache when using git
 
-  These parts where unused after merging
-  https://github.com/aria2/aria2/pull/736
+  Patch from qweaszxcdf
 
-  Patch from Fredrik Fornwall
+  GH-970
 
-  GH-868
+* Add --peer-agent option
 
-* Save control file early
+  Add --peer-agent for setting the version/user agent used in the
+  extended handshake protocol for bittorrent.
 
-  GH-859
+  Patch from Kurt Kartaltepe
 
-* Update links in Dockerfile.raspberrypi
+  GH-947
 
-  Some links used in Dockerfile.raspberrypi are not accessible
-  anymore, because they were pointing to old versions of some source
-  packages and new versions were released.  This commit fixes this by
-  changing the links to point to the newest versions.
+* OSX: Allow to specify a build
 
-  Patch from Michał Leśniewski
+* OSX: update c-ares
 
-  GH-860
+* [Docs, libaria2] Fix type of obj pushed into options vector
 
-* Propagate disk full error on pre-allocation to last error code
+  aria::KeyVals is a vector of pair of std strings, therefore the type
+  of object being pushed should be std::pair<std::string,
+  std::string>, however in the docs, the type of the said object is
+  KeyVals.  If one follows the docs, their code will fail to compile.
 
-  GH-856
+  Patch from geetam
+
+  GH-941
+
+* AppleTLS: Silence cipher suite selection
+
+* Unbreak build OSX build
+
+* Update macOS versions
+
+* Add --bt-load-saved-metadata option
+
+  Before getting torrent metadata from DHT when downloading with
+  magnet link, first try to read file saved by --bt-save-metadata
+  option. If it is successful, then skip downloading metadata from
+  DHT.  By default, this feature is turned off.
+
+  GH-909
+
+* Fix regression in bfc54d0b9a694e5d87efd8ed11b5393bc4b66f93
+
+  Don't save control file if --auto-save-interval is 0.
+
+  GH-917
+
+* Fix infinite loop bug when file is not found
