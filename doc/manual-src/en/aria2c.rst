@@ -76,7 +76,7 @@ Basic Options
      can configure the number of connections using :option:`--split
      <-s>` and/or :option:`--min-split-size <-k>`, etc.
 
-.. option:: -V, --check-integrity[=true|false]
+.. option:: -V, --check-integrity [true|false]
 
   Check file integrity by validating piece hashes or a hash of entire
   file.  This option has effect only in BitTorrent, Metalink downloads
@@ -90,7 +90,7 @@ Basic Options
   of entire file are provided, only piece hashes are used. Default:
   ``false``
 
-.. option:: -c, --continue[=true|false]
+.. option:: -c, --continue [true|false]
 
    Continue downloading a partially downloaded file.
    Use this option to resume a download started by a web browser or another
@@ -164,7 +164,7 @@ HTTP/FTP/SFTP Options
   option makes no effect and :option:`--timeout <-t>` option is used instead.
   Default: ``60``
 
-.. option:: --dry-run[=true|false]
+.. option:: --dry-run [true|false]
 
   If ``true`` is given, aria2 just checks whether the remote file is
   available and doesn't download data. This option has effect on
@@ -223,7 +223,7 @@ HTTP/FTP/SFTP Options
        Permission of the .netrc file must be 600.  Otherwise, the file
        will be ignored.
 
-.. option:: -n, --no-netrc[=true|false]
+.. option:: -n, --no-netrc [true|false]
 
   Disables netrc support. netrc support is enabled by default.
 
@@ -276,13 +276,13 @@ HTTP/FTP/SFTP Options
   option.
   Default: ``get``
 
-.. option:: -R, --remote-time[=true|false]
+.. option:: -R, --remote-time [true|false]
 
   Retrieve timestamp of the remote file from the remote HTTP/FTP
   server and if it is available, apply it to the local file.
   Default: ``false``
 
-.. option:: --reuse-uri[=true|false]
+.. option:: --reuse-uri [true|false]
 
   Reuse already used URIs if no unused URIs are left.
   Default: ``true``
@@ -426,12 +426,12 @@ HTTP Specific Options
     Alternatively PKCS12 files are also supported. PEM files, however, are not
     supported.
 
-.. option:: --check-certificate[=true|false]
+.. option:: --check-certificate [true|false]
 
   Verify the peer using certificates specified in :option:`--ca-certificate` option.
   Default: ``true``
 
-.. option:: --http-accept-gzip[=true|false]
+.. option:: --http-accept-gzip [true|false]
 
   Send ``Accept: deflate, gzip`` request header and inflate response if
   remote server responds with ``Content-Encoding: gzip`` or
@@ -443,7 +443,7 @@ HTTP Specific Options
     itself is gzipped file. aria2 inflates them anyway because of the
     response header.
 
-.. option:: --http-auth-challenge[=true|false]
+.. option:: --http-auth-challenge [true|false]
 
   Send HTTP authorization header only when it is requested by the
   server. If ``false`` is set, then authorization header is always sent
@@ -451,7 +451,7 @@ HTTP Specific Options
   embedded in URI, authorization header is always sent to the server
   regardless of this option.  Default: ``false``
 
-.. option:: --http-no-cache[=true|false]
+.. option:: --http-no-cache [true|false]
 
    Send ``Cache-Control: no-cache`` and ``Pragma: no-cache`` header to avoid
    cached content.  If ``false`` is given, these headers are not sent
@@ -510,12 +510,12 @@ HTTP Specific Options
   This may be useful when used together with the
   :option:`--parameterized-uri <-P>` option.
 
-.. option:: --enable-http-keep-alive[=true|false]
+.. option:: --enable-http-keep-alive [true|false]
 
   Enable HTTP/1.1 persistent connection.
   Default: ``true``
 
-.. option:: --enable-http-pipelining[=true|false]
+.. option:: --enable-http-pipelining [true|false]
 
   Enable HTTP/1.1 pipelining.
   Default: ``false``
@@ -552,7 +552,7 @@ HTTP Specific Options
   are also saved and their expiry values are treated as 0.  Possible
   Values: ``/path/to/file``
 
-.. option:: --use-head[=true|false]
+.. option:: --use-head [true|false]
 
   Use HEAD method for the first request to the HTTP server.
   Default: ``false``
@@ -579,7 +579,7 @@ FTP/SFTP Specific Options
   option.
   Default: ``ARIA2USER@``
 
-.. option:: -p, --ftp-pasv[=true|false]
+.. option:: -p, --ftp-pasv [true|false]
 
   Use the passive mode in FTP.
   If ``false`` is given, the active mode will be used.
@@ -613,7 +613,7 @@ FTP/SFTP Specific Options
 
     This option is ignored for SFTP transfer.
 
-.. option:: --ftp-reuse-connection[=true|false]
+.. option:: --ftp-reuse-connection [true|false]
 
   Reuse connection in FTP.
   Default: ``true``
@@ -646,7 +646,7 @@ BitTorrent/Metalink Options
     A single piece may include several files or part of files, and aria2
     writes the piece to the appropriate files.
 
-.. option:: -S, --show-files[=true|false]
+.. option:: -S, --show-files [true|false]
 
   Print file listing of ".torrent", ".meta4" and ".metalink" file and exit.
   In case of ".torrent" file, additional information
@@ -655,7 +655,7 @@ BitTorrent/Metalink Options
 BitTorrent Specific Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. option:: --bt-detach-seed-only[=true|false]
+.. option:: --bt-detach-seed-only [true|false]
 
   Exclude seed only downloads when counting concurrent active
   downloads (See :option:`-j` option).  This means that if ``-j3`` is
@@ -665,7 +665,7 @@ BitTorrent Specific Options
   queue gets started. But be aware that seeding item is still
   recognized as active download in RPC method.  Default: ``false``
 
-.. option:: --bt-enable-hook-after-hash-check[=true|false]
+.. option:: --bt-enable-hook-after-hash-check [true|false]
 
   Allow hook command invocation after hash check (see :option:`-V`
   option) in BitTorrent download. By default, when hash check
@@ -673,7 +673,7 @@ BitTorrent Specific Options
   is executed. To disable this action, give ``false`` to this option.
   Default: ``true``
 
-.. option:: --bt-enable-lpd[=true|false]
+.. option:: --bt-enable-lpd [true|false]
 
   Enable Local Peer Discovery.  If a private flag is set in a torrent,
   aria2 doesn't use this feature for that download even if ``true`` is
@@ -696,7 +696,7 @@ BitTorrent Specific Options
   function is named ``external``, it can accept any kind of IP
   addresses.
 
-.. option:: --bt-force-encryption[=true|false]
+.. option:: --bt-force-encryption [true|false]
 
   Requires BitTorrent message payload encryption with arc4.  This is a
   shorthand of :option:`--bt-require-crypto`
@@ -705,7 +705,7 @@ BitTorrent Specific Options
   legacy BitTorrent handshake and only use Obfuscation handshake and
   always encrypt message payload.  Default: ``false``
 
-.. option:: --bt-hash-check-seed[=true|false]
+.. option:: --bt-hash-check-seed [true|false]
 
  If ``true`` is given, after hash check using :option:`--check-integrity <-V>` option and
  file is complete, continue to seed file. If you want to check file
@@ -713,7 +713,7 @@ BitTorrent Specific Options
  option to ``false``.  This option has effect only on BitTorrent download.
  Default: ``true``
 
-.. option:: --bt-load-saved-metadata[=true|false]
+.. option:: --bt-load-saved-metadata [true|false]
 
   Before getting torrent metadata from DHT when downloading with
   magnet link, first try to read file saved by
@@ -740,7 +740,7 @@ BitTorrent Specific Options
   unlimited.  See also :option:`--bt-request-peer-speed-limit` option.
   Default: ``55``
 
-.. option:: --bt-metadata-only[=true|false]
+.. option:: --bt-metadata-only [true|false]
 
   Download meta data only. The file(s) described in meta data will not
   be downloaded. This option has effect only when BitTorrent Magnet
@@ -764,7 +764,7 @@ BitTorrent Specific Options
   last SIZE bytes of each file. SIZE can include ``K`` or ``M`` (1K = 1024,
   1M = 1024K). If SIZE is omitted, SIZE=1M is used.
 
-.. option:: --bt-remove-unselected-file[=true|false]
+.. option:: --bt-remove-unselected-file [true|false]
 
    Removes the unselected files when download is completed in
    BitTorrent. To select files, use
@@ -774,7 +774,7 @@ BitTorrent Specific Options
    disk.
    Default: ``false``
 
-.. option:: --bt-require-crypto[=true|false]
+.. option:: --bt-require-crypto [true|false]
 
   If ``true`` is given, aria2 doesn't accept and establish connection with legacy
   BitTorrent handshake(\\19BitTorrent protocol).
@@ -790,7 +790,7 @@ BitTorrent Specific Options
   You can append ``K`` or ``M`` (1K = 1024, 1M = 1024K).
   Default: ``50K``
 
-.. option:: --bt-save-metadata[=true|false]
+.. option:: --bt-save-metadata [true|false]
 
   Save meta data as ".torrent" file. This option has effect only when
   BitTorrent Magnet URI is used.  The file name is hex encoded info
@@ -799,7 +799,7 @@ BitTorrent Specific Options
   exists, meta data is not saved. See also :option:`--bt-metadata-only`
   option. Default: ``false``
 
-.. option:: --bt-seed-unverified[=true|false]
+.. option:: --bt-seed-unverified [true|false]
 
   Seed previously downloaded files without verifying piece hashes.
   Default: ``false``
@@ -876,20 +876,20 @@ BitTorrent Specific Options
 
   Set timeout in seconds. Default: ``10``
 
-.. option:: --enable-dht[=true|false]
+.. option:: --enable-dht [true|false]
 
   Enable IPv4 DHT functionality. It also enables UDP tracker
   support. If a private flag is set in a torrent, aria2 doesn't use
   DHT for that download even if ``true`` is given.  Default: ``true``
 
-.. option:: --enable-dht6[=true|false]
+.. option:: --enable-dht6 [true|false]
 
    Enable IPv6 DHT functionality. If a private flag is set in a
    torrent, aria2 doesn't use DHT for that download even if ``true`` is
    given. Use :option:`--dht-listen-port` option to specify port number to
    listen on. See also :option:`--dht-listen-addr6` option.
 
-.. option:: --enable-peer-exchange[=true|false]
+.. option:: --enable-peer-exchange [true|false]
 
   Enable Peer Exchange extension. If a private flag is set in a torrent, this
   feature is disabled for that download even if ``true`` is given.
@@ -1037,7 +1037,7 @@ Metalink Specific Options
   Specify ``none`` to disable this feature.
   Default: ``none``
 
-.. option:: --metalink-enable-unique-protocol[=true|false]
+.. option:: --metalink-enable-unique-protocol [true|false]
 
   If ``true`` is given and several protocols are available for a mirror in a
   metalink file, aria2 uses one of them.
@@ -1048,19 +1048,19 @@ Metalink Specific Options
 RPC Options
 ~~~~~~~~~~~
 
-.. option:: --enable-rpc[=true|false]
+.. option:: --enable-rpc [true|false]
 
   Enable JSON-RPC/XML-RPC server.  It is strongly recommended to set
   secret authorization token using :option:`--rpc-secret` option.  See
   also :option:`--rpc-listen-port` option.  Default: ``false``
 
-.. option:: --pause[=true|false]
+.. option:: --pause [true|false]
 
   Pause download after added. This option is effective only when
   :option:`--enable-rpc=true <--enable-rpc>` is given.
   Default: ``false``
 
-.. option:: --pause-metadata[=true|false]
+.. option:: --pause-metadata [true|false]
 
   Pause downloads created as a result of metadata download. There are
   3 types of metadata downloads in aria2: (1) downloading .torrent
@@ -1071,7 +1071,7 @@ RPC Options
   :option:`--enable-rpc=true <--enable-rpc>` is given.
   Default: ``false``
 
-.. option:: --rpc-allow-origin-all[=true|false]
+.. option:: --rpc-allow-origin-all [true|false]
 
   Add Access-Control-Allow-Origin header field with value ``*`` to the
   RPC response.
@@ -1103,7 +1103,7 @@ RPC Options
     Alternatively PKCS12 files are also supported. PEM files, however, are not
     supported.
 
-.. option:: --rpc-listen-all[=true|false]
+.. option:: --rpc-listen-all [true|false]
 
   Listen incoming JSON-RPC/XML-RPC requests on all network interfaces. If false
   is given, listen only on local loopback interface.  Default: ``false``
@@ -1134,7 +1134,7 @@ RPC Options
   decrypted and in PEM format. Use :option:`--rpc-secure` option to
   enable encryption. See also :option:`--rpc-certificate` option.
 
-.. option:: --rpc-save-upload-metadata[=true|false]
+.. option:: --rpc-save-upload-metadata [true|false]
 
   Save the uploaded torrent or metalink meta data in the directory
   specified by :option:`--dir` option. The file name consists of SHA-1
@@ -1149,7 +1149,7 @@ RPC Options
    Set RPC secret authorization token. Read :ref:`rpc_auth` to know
    how this option value is used.
 
-.. option:: --rpc-secure[=true|false]
+.. option:: --rpc-secure [true|false]
 
   RPC transport will be encrypted by SSL/TLS.  The RPC clients must
   use https scheme to access the server. For WebSocket client, use wss
@@ -1169,20 +1169,20 @@ RPC Options
 
 Advanced Options
 ~~~~~~~~~~~~~~~~
-.. option:: --allow-overwrite[=true|false]
+.. option:: --allow-overwrite [true|false]
 
   Restart download from scratch if the corresponding control file
   doesn't exist.  See also :option:`--auto-file-renaming` option.  Default:
   ``false``
 
-.. option:: --allow-piece-length-change[=true|false]
+.. option:: --allow-piece-length-change [true|false]
 
   If false is given, aria2 aborts download when a piece length is different
   from one in a control file.
   If true is given, you can proceed but some download progress will be lost.
   Default: ``false``
 
-.. option:: --always-resume[=true|false]
+.. option:: --always-resume [true|false]
 
   Always resume download. If ``true`` is given, aria2 always tries to
   resume download and if resume is not possible, aborts download.  If
@@ -1192,7 +1192,7 @@ Advanced Options
   downloads file from scratch.  See :option:`--max-resume-failure-tries`
   option. Default: ``true``
 
-.. option:: --async-dns[=true|false]
+.. option:: --async-dns [true|false]
 
   Enable asynchronous DNS.
   Default: ``true``
@@ -1207,7 +1207,7 @@ Advanced Options
   option is useful when the system does not have ``/etc/resolv.conf`` and
   user does not have the permission to create it.
 
-.. option:: --auto-file-renaming[=true|false]
+.. option:: --auto-file-renaming [true|false]
 
   Rename file name if the same file already exists.
   This option works only in HTTP(S)/FTP download.
@@ -1223,7 +1223,7 @@ Advanced Options
   The possible values are between ``0`` to ``600``.
   Default: ``60``
 
-.. option:: --conditional-get[=true|false]
+.. option:: --conditional-get [true|false]
 
   Download file only when the local file is older than remote
   file. This function only works with HTTP(S) downloads only.  It does
@@ -1247,19 +1247,19 @@ Advanced Options
   Set log level to output to console.  LEVEL is either ``debug``,
   ``info``, ``notice``, ``warn`` or ``error``.  Default: ``notice``
 
-.. option:: --content-disposition-default-utf8[=true|false]
+.. option:: --content-disposition-default-utf8 [true|false]
 
   Handle quoted string in Content-Disposition header as UTF-8 instead
   of ISO-8859-1, for example, the filename parameter, but not the
   extended version filename*.  Default: ``false``
 
-.. option:: -D, --daemon[=true|false]
+.. option:: -D, --daemon [true|false]
 
   Run as daemon. The current working directory will be changed to ``/``
   and standard input, standard output and standard error will be
   redirected to ``/dev/null``. Default: ``false``
 
-.. option:: --deferred-input[=true|false]
+.. option:: --deferred-input [true|false]
 
   If ``true`` is given, aria2 does not read all URIs and options from file
   specified by :option:`--input-file <-i>` option at startup,
@@ -1274,7 +1274,7 @@ Advanced Options
     :option:`--deferred-input` option will be disabled when
     :option:`--save-session` is used together.
 
-.. option:: --disable-ipv6[=true|false]
+.. option:: --disable-ipv6 [true|false]
 
   Disable IPv6. This is useful if you have to use broken DNS and want
   to avoid terribly slow AAAA record lookup. Default: ``false``
@@ -1327,12 +1327,12 @@ Advanced Options
 
   This option is only available on systems supporting the rlimit API.
 
-.. option:: --enable-color[=true|false]
+.. option:: --enable-color [true|false]
 
   Enable color output for a terminal.
   Default: ``true``
 
-.. option:: --enable-mmap[=true|false]
+.. option:: --enable-mmap [true|false]
 
    Map files into memory. This option may not work if the file space
    is not pre-allocated. See :option:`--file-allocation`.
@@ -1382,7 +1382,7 @@ Advanced Options
     In multi file torrent downloads, the files adjacent forward to the specified files
     are also allocated if they share the same piece.
 
-.. option:: --force-save[=true|false]
+.. option:: --force-save [true|false]
 
   Save download with :option:`--save-session <--save-session>` option
   even if the download is completed or removed. This option also saves
@@ -1390,7 +1390,7 @@ Advanced Options
   BitTorrent seeding which is recognized as completed state.
   Default: ``false``
 
-.. option:: --save-not-found[=true|false]
+.. option:: --save-not-found [true|false]
 
   Save download with :option:`--save-session <--save-session>` option
   even if the file was not found on the server. This option also saves
@@ -1408,14 +1408,14 @@ Advanced Options
   :option:`--save-session <--save-session>` option. If this option is
   not used, new GID is generated by aria2.
 
-.. option:: --hash-check-only[=true|false]
+.. option:: --hash-check-only [true|false]
 
   If ``true`` is given, after hash check using
   :option:`--check-integrity <-V>` option,
   abort download whether or not download is complete.
   Default: ``false``
 
-.. option:: --human-readable[=true|false]
+.. option:: --human-readable [true|false]
 
   Print sizes and speed in human readable format (e.g., 1.2Ki, 3.4Mi)
   in the console readout. Default: ``true``
@@ -1433,7 +1433,7 @@ Advanced Options
     system doesn't have :manpage:`getifaddrs(3)`, this option doesn't accept interface
     name.
 
-.. option:: --keep-unfinished-download-result[=true|false]
+.. option:: --keep-unfinished-download-result [true|false]
 
   Keep unfinished download results even if doing so exceeds
   :option:`--max-download-result`.  This is useful if all unfinished
@@ -1539,7 +1539,7 @@ Advanced Options
   Possible Values: ``/path/to/command``
 
 
-.. option:: --optimize-concurrent-downloads[=true|false|<A>:<B>]
+.. option:: --optimize-concurrent-downloads [true|false|<A>:<B>]
 
   Optimizes the number of concurrent downloads according to the
   bandwidth available. aria2 uses the download speed observed in the
@@ -1568,12 +1568,12 @@ Advanced Options
     To enable HTTP pipelining use
     :option:`--enable-http-pipelining`.
 
-.. option:: --show-console-readout[=true|false]
+.. option:: --show-console-readout [true|false]
 
   Show console readout. Default: ``true``
 
 
-.. option:: --stderr[=true|false]
+.. option:: --stderr [true|false]
 
   Redirect all console output that would be otherwise printed in
   stdout to stderr.  Default: ``false``
@@ -1584,7 +1584,7 @@ Advanced Options
   Setting ``0`` suppresses the output.
   Default: ``60``
 
-.. option:: -Z, --force-sequential[=true|false]
+.. option:: -Z, --force-sequential [true|false]
 
   Fetch URIs in the command-line sequentially and download each URI in a
   separate session, like the usual command-line download utilities.
@@ -1604,7 +1604,7 @@ Advanced Options
   limit the overall download speed, use :option:`--max-overall-download-limit`
   option.  Default: ``0``
 
-.. option:: --no-conf[=true|false]
+.. option:: --no-conf [true|false]
 
   Disable loading aria2.conf file.
 
@@ -1614,7 +1614,7 @@ Advanced Options
   You can append ``K`` or ``M`` (1K = 1024, 1M = 1024K).
   Default: ``5M``
 
-.. option:: -P, --parameterized-uri[=true|false]
+.. option:: -P, --parameterized-uri [true|false]
 
   Enable parameterized URI support.
   You can specify set of parts: ``http://{sv1,sv2,sv3}/foo.iso``.
@@ -1625,19 +1625,19 @@ Advanced Options
   -Z option is required.
   Default: ``false``
 
-.. option:: -q, --quiet[=true|false]
+.. option:: -q, --quiet [true|false]
 
   Make aria2 quiet (no console output).
   Default: ``false``
 
-.. option:: --realtime-chunk-checksum[=true|false]
+.. option:: --realtime-chunk-checksum [true|false]
 
    Validate chunk of data by calculating checksum while downloading a file if
    chunk checksums are provided.
    Default: ``true``
 
 
-.. option:: --remove-control-file[=true|false]
+.. option:: --remove-control-file [true|false]
 
    Remove control file before download. Using with
    :option:`--allow-overwrite=true, <--allow-overwrite>` download always starts from
@@ -1701,7 +1701,7 @@ Advanced Options
   can fork aria2 with its own pid and when parent process exits for
   some reason, aria2 can detect it and shutdown itself.
 
-.. option:: --truncate-console-readout[=true|false]
+.. option:: --truncate-console-readout [true|false]
 
   Truncate console readout to fit in a single line.
   Default: ``true``

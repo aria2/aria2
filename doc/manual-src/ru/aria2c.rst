@@ -79,7 +79,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
      количество соединений, используя :option:`--split <-s>`
      и/или :option:`--min-split-size <-k>`.
 
-.. option:: -V, --check-integrity[=true|false]
+.. option:: -V, --check-integrity [true|false]
 
   Проверить целостность файла путем подтверждения хэшей блоков или хэша
   полного файла. Этот параметр влияет лишь на BitTorrent, Metalink
@@ -92,7 +92,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   использоваться только хэши блоков.
   По умолчанию: ``false``
 
-.. option:: -c, --continue[=true|false]
+.. option:: -c, --continue [true|false]
 
   Продолжить загрузку частично загруженного файла.
   Используйте этот параметр, чтобы  возобновить загрузку,
@@ -171,7 +171,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   используется параметр :option:`--timeout <-t>`.
   По умолчанию: ``60``
 
-.. option:: --dry-run[=true|false]
+.. option:: --dry-run [true|false]
 
   Если задано ``true``, aria2 только проверяет, является ли удаленный
   файл доступным и не загружает данные. Этот параметр влияет на
@@ -236,7 +236,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
        Права доступа к файлу .netrc должны быть равны 600. Иначе, файл
        будет проигнорирован.
 
-.. option:: -n, --no-netrc[=true|false]
+.. option:: -n, --no-netrc [true|false]
 
   Отключить поддержку netrc. Поддержка netrc по умолчанию
   включена.
@@ -287,13 +287,13 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   не обращая внимания на этот параметр.
   По умолчанию: ``get``
 
-.. option:: -R, --remote-time[=true|false]
+.. option:: -R, --remote-time [true|false]
 
   Извлекать временную метку файла с удаленного HTTP/FTP-сервера и,
   если это доступно, применить ее к локальному файлу.
   По умолчанию: ``false``
 
-.. option:: --reuse-uri[=true|false]
+.. option:: --reuse-uri [true|false]
 
   Повторно использовать уже использованные URI, если
   не осталось неиспользованных URI.
@@ -442,13 +442,13 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
     Альтернативные PKCS12-файлы также поддерживаются. PEM-файлы, однако,
     не поддерживаются.
 
-.. option:: --check-certificate[=true|false]
+.. option:: --check-certificate [true|false]
 
   Проверять каждый из используемых сертификатов, которые
   указаны в параметре :option:`--ca-certificate`.
   По умолчанию: ``true``
 
-.. option:: --http-accept-gzip[=true|false]
+.. option:: --http-accept-gzip [true|false]
 
   Посылать ``Accept: deflate, gzip`` в запросе-заголовке и добавлять в ответ,
   если удаленный сервер ответит ``Content-Encoding: gzip`` или
@@ -461,7 +461,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
     по себе сжаты (gzipped). aria2 добавляет их, так или иначе, из-за заголовка
     ответа.
 
-.. option:: --http-auth-challenge[=true|false]
+.. option:: --http-auth-challenge [true|false]
 
   Отправлять заголовок HTTP-авторизации только тогда, когда он запрошен
   с сервера. Если задано ``false``, тогда заголовок авторизации всегда
@@ -470,7 +470,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   отправляется на сервер, независимо от этого параметра.
   По умолчанию: ``false``
 
-.. option:: --http-no-cache[=true|false]
+.. option:: --http-no-cache [true|false]
 
   Отправлять заголовок ``Cache-Control: no-cache`` и ``Pragma: no-cache``,
   чтобы избежать кэширования содержимого. Если задано ``false``, то эти
@@ -532,12 +532,12 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   Это может быть полезно при использовании вместе с параметром
   :option:`--parameterized-uri <-P>`.
 
-.. option:: --enable-http-keep-alive[=true|false]
+.. option:: --enable-http-keep-alive [true|false]
 
   Включить HTTP/1.1 постоянное соединение.
   По умолчанию: ``true``
 
-.. option:: --enable-http-pipelining[=true|false]
+.. option:: --enable-http-pipelining [true|false]
 
   Включить конвейерную обработку HTTP/1.1.
   По умолчанию: ``false``
@@ -573,7 +573,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   сохранится, и значение ее окончания будет трактоваться как 0.
   Возможные значения: ``/путь/к/файлу``
 
-.. option:: --use-head[=true|false]
+.. option:: --use-head [true|false]
 
   Использовать метод HEAD для первого запроса к HTTP серверу.
   По умолчанию: ``false``
@@ -600,7 +600,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   Если нет, используется пароль, указанный в этом параметре.
   По умолчанию: ``ARIA2USER@``
 
-.. option:: -p, --ftp-pasv[=true|false]
+.. option:: -p, --ftp-pasv [true|false]
 
   Использовать пассивный режим FTP. Если задано ``false``,
   то будет использован активный режим.
@@ -635,7 +635,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
 
     Этот параметр игнорируется для SFTP-передачи.
 
-.. option:: --ftp-reuse-connection[=true|false]
+.. option:: --ftp-reuse-connection [true|false]
 
   Повторно использовать FTP соединение.
   По умолчанию: ``true``
@@ -669,7 +669,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
     данных может включать несколько файлов или часть файла, и aria2 запишет блок
     данных соответствующего файла.
 
-.. option:: -S, --show-files[=true|false]
+.. option:: -S, --show-files [true|false]
 
   Вывести список файлов из ".torrent", ".meta4" или ".metalink" и
   завершить работу. Для файла .torrent будет выведена более детальная
@@ -678,7 +678,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
 Специфические параметры BitTorrent
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. option:: --bt-detach-seed-only[=true|false]
+.. option:: --bt-detach-seed-only [true|false]
 
   Исключить только раздачи при подсчёте одновременных активных загрузок
   (смотрите параметр :option:`-j`). Это значит, что если задано ``-j3``
@@ -688,7 +688,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   загрузка стартует. Но знайте, что в RPC-методе сидирующий элемент всё
   ещё признаётся как активная загрузка. По умолчанию: ``false``
 
-.. option:: --bt-enable-hook-after-hash-check[=true|false]
+.. option:: --bt-enable-hook-after-hash-check [true|false]
 
   Позволяет перехватить команду вызова (управление) после проверки хэша
   (см. параметр :option:`-V`) в BitTorrent-загрузке. По умолчанию, когда
@@ -697,7 +697,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   Укажите для этого параметра ``false``, чтобы отключить это действие.
   По умолчанию: ``true``
 
-.. option:: --bt-enable-lpd[=true|false]
+.. option:: --bt-enable-lpd [true|false]
 
   Включить поиск локальных пиров. Если в torrent-файле установлен
   приватный признак, то aria2 не будет использовать эту возможность,
@@ -722,7 +722,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   Несмотря на то, что эта функция названа ``external`` (``внешний``),
   она может принимать любой IP-адрес.
 
-.. option:: --bt-force-encryption[=true|false]
+.. option:: --bt-force-encryption [true|false]
 
   Требовать шифрование при помощи arc4 полезной нагрузки
   BitTorrent-сообщения. Это сокращение :option:`--bt-require-crypto`
@@ -733,7 +733,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   полезная нагрузка.
   По умолчанию: ``false``
 
-.. option:: --bt-hash-check-seed[=true|false]
+.. option:: --bt-hash-check-seed [true|false]
 
   Если задано ``true``, то после проверки хэша с использованием параметра
   :option:`--check-integrity <-V>`, и когда файл
@@ -743,7 +743,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   лишь на BitTorrent-загрузки.
   По умолчанию: ``true``
 
-.. option:: --bt-load-saved-metadata[=true|false]
+.. option:: --bt-load-saved-metadata [true|false]
 
   Прежде, чем получить метаданные торрента из DHT при загрузке
   magnet-ссылки, сначала попытаться считать файл, сохранённый параметром
@@ -770,7 +770,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   :option:`--bt-request-peer-speed-limit`.
   По умолчанию: ``55``
 
-.. option:: --bt-metadata-only[=true|false]
+.. option:: --bt-metadata-only [true|false]
 
   Загрузить только метаданные. Файл(ы), описывающий метаданные не
   должен быть загружен. Этот параметр эффективен, только если
@@ -799,7 +799,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   (1K = 1024, 1M = 1024K). Если SIZE пропущено, то будет использовано
   по умолчанию значение: SIZE=1M.
 
-.. option:: --bt-remove-unselected-file[=true|false]
+.. option:: --bt-remove-unselected-file [true|false]
 
    Удалить невыбранные файлы, когда завершена загрузка в
    BitTorrent. Чтобы выбрать файлы, используйте параметр
@@ -809,7 +809,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
    так как это фактически удалит файлы с вашего диска.
    По умолчанию: ``false``
 
-.. option:: --bt-require-crypto[=true|false]
+.. option:: --bt-require-crypto [true|false]
 
   Если задано ``true``, aria2 не принимает и не устанавливает соединение с
   традиционным BitTorrent-рукопожатием (handshake) (\\19BitTorrent протокол).
@@ -825,7 +825,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   скорость загрузки. Вы можете добавить ``K`` или ``M`` (1K = 1024, 1M = 1024K).
   По умолчанию: ``50K``
 
-.. option:: --bt-save-metadata[=true|false]
+.. option:: --bt-save-metadata [true|false]
 
   Сохранить метаданные как файл ".torrent". Этот параметр
   эффективен только если используется BitTorrent Magnet-ссылка.
@@ -836,7 +836,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   :option:`--bt-metadata-only`.
   По умолчанию: ``false``
 
-.. option:: --bt-seed-unverified[=true|false]
+.. option:: --bt-seed-unverified [true|false]
 
   Раздавать первоначально загруженные файлы без проверки хэшей блоков.
   По умолчанию: ``false``
@@ -922,7 +922,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   Задать время ожидания в секундах.
   По умолчанию: ``10``
 
-.. option:: --enable-dht[=true|false]
+.. option:: --enable-dht [true|false]
 
   Включить функцию IPv4 DHT. Это также включает поддержку
   UDP-трекера. Если в torrent-файле задан приватный признак,
@@ -930,7 +930,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   установлен ``true``.
   По умолчанию: ``true``
 
-.. option:: --enable-dht6[=true|false]
+.. option:: --enable-dht6 [true|false]
 
   Включить IPv6 DHT функциональность. Если в torrent-файле задан
   приватный признак, aria2 не будет использовать DHT для загрузки,
@@ -939,7 +939,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   прослушиваемого порта. Смотрите также  параметр
   :option:`--dht-listen-addr6`.
 
-.. option:: --enable-peer-exchange[=true|false]
+.. option:: --enable-peer-exchange [true|false]
 
   Включить расширение BitTorrent-протокола для обмена списками участников.
   Если в torrent-файле задан приватный признак, то эта возможность будет
@@ -1094,7 +1094,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   и ``none``. Указать ``none`` для отключения этой возможности.
   По умолчанию: ``none``
 
-.. option:: --metalink-enable-unique-protocol[=true|false]
+.. option:: --metalink-enable-unique-protocol [true|false]
 
   Если задано ``true``, а в metalink-файле доступно несколько
   протоколов, то aria2 использует один из них. Используйте параметр
@@ -1105,19 +1105,19 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
 Параметры RPC
 ~~~~~~~~~~~~~
 
-.. option:: --enable-rpc[=true|false]
+.. option:: --enable-rpc [true|false]
 
   Включить JSON-RPC/XML-RPC-сервер. Настоятельно рекомендуется указать
   секретный маркер авторизации, используя параметр :option:`--rpc-secret`.
   Смотрите также параметр :option:`--rpc-listen-port`. По умолчанию: ``false``
 
-.. option:: --pause[=true|false]
+.. option:: --pause [true|false]
 
   Приостановка загрузки после добавления. Этот параметр действенен
   только, когда задан :option:`--enable-rpc=true. <--enable-rpc>`
   По умолчанию: ``false``
 
-.. option:: --pause-metadata[=true|false]
+.. option:: --pause-metadata [true|false]
 
   Приостановить загрузки, созданные в результате загрузки метаданных.
   Есть 3 типа метаданных загрузок в aria2: (1) загрузка .torrent-файла.
@@ -1128,7 +1128,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   :option:`--enable-rpc=true <--enable-rpc>`.
   По умолчанию: ``false``
 
-.. option:: --rpc-allow-origin-all[=true|false]
+.. option:: --rpc-allow-origin-all [true|false]
 
   Добавить заголовок Access-Control-Allow-Origin со значением ``*`` в RPC-ответе.
   По умолчанию: ``false``
@@ -1159,7 +1159,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
     Альтернативные PKCS12-файлы также поддерживаются. PEM-файлы, однако,
     не поддерживаются.
 
-.. option:: --rpc-listen-all[=true|false]
+.. option:: --rpc-listen-all [true|false]
 
   Слушать входящие JSON-RPC/XML-RPC-запросы на всех сетевых интерфейсах.
   Если указано ``false``, слушать только на локальном петлевом
@@ -1196,7 +1196,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   :option:`--rpc-secure` для включения шифрования.
   Смотрите также параметр :option:`--rpc-certificate`.
 
-.. option:: --rpc-save-upload-metadata[=true|false]
+.. option:: --rpc-save-upload-metadata [true|false]
 
   Сохранить загруженные метаданные torrent или metalink в каталоге,
   заданном параметром :option:`--dir`. Имя файла содержит
@@ -1212,7 +1212,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
    Задать секретный маркер RPC-авторизации. Читайте :ref:`rpc_auth`,
    чтобы узнать, как использовать значение этого параметра.
 
-.. option:: --rpc-secure[=true|false]
+.. option:: --rpc-secure [true|false]
 
   RPC-транспорт будет зашифрован с использованием SSL/TLS. RPC-клиенты должны
   использовать https-схему для доступа к серверу. Для WebSocket-клиента,
@@ -1232,14 +1232,14 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
 
 Дополнительные параметры
 ~~~~~~~~~~~~~~~~~~~~~~~~
-.. option:: --allow-overwrite[=true|false]
+.. option:: --allow-overwrite [true|false]
 
   Повторно запустить загрузку с нуля, если соответствующий контрольный
   файл отсутствует. Смотрите также параметр
   :option:`--auto-file-renaming`.
   По умолчанию: ``false``
 
-.. option:: --allow-piece-length-change[=true|false]
+.. option:: --allow-piece-length-change [true|false]
 
   Если задано ``false``, aria2 прерывает загрузку, когда длина блока
   отлична от той, которая находится в контрольном файле. Если задано
@@ -1247,7 +1247,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   будет потерян.
   По умолчанию: ``false``
 
-.. option:: --always-resume[=true|false]
+.. option:: --always-resume [true|false]
 
   Всегда возобновлять загрузку. Если задано ``true``, aria2 всегда пытается
   возобновить загрузку и если это не возможно, прерывает ее.
@@ -1259,7 +1259,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   :option:`--max-resume-failure-tries`.
   По умолчанию: ``true``
 
-.. option:: --async-dns[=true|false]
+.. option:: --async-dns [true|false]
 
   Включить асинхронный DNS.
   По умолчанию: ``true``
@@ -1274,7 +1274,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   Этот параметр полезен, когда в системе нет ``/etc/resolv.conf`` и у
   пользователя нет прав на его создание.
 
-.. option:: --auto-file-renaming[=true|false]
+.. option:: --auto-file-renaming [true|false]
 
   Переименовать файл, если такой уже существует.
   Этот параметр работает только для HTTP(S)/FTP-загрузок.
@@ -1291,7 +1291,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   Возможные значения: от ``0`` до ``600``.
   По умолчанию: ``60``
 
-.. option:: --conditional-get[=true|false]
+.. option:: --conditional-get [true|false]
 
   Загружать файл только когда локальный файл старше, чем удаленный.
   Эта функция работает только для HTTP(S)-загрузок. Это не работает,
@@ -1319,20 +1319,20 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   быть: ``debug``, ``info``, ``notice``, ``warn`` или ``error``.
   По умолчанию: ``notice``
 
-.. option:: --content-disposition-default-utf8[=true|false]
+.. option:: --content-disposition-default-utf8 [true|false]
 
   Обрабатывать строку в кавычках в заголовке Content-Disposition как
   UTF-8 вместо ISO-8859-1, например, параметр filename,
   но не расширенную версию filename*. По умолчанию: ``false``
 
-.. option:: -D, --daemon[=true|false]
+.. option:: -D, --daemon [true|false]
 
   Запустить как демон (фоновый процесс). Текущий рабочий каталог
   будет заменен на ``/``, а стандартный ввод, стандартный вывод,
   стандартный вывод ошибок будут перенаправлены на ``/dev/null``.
   По умолчанию: ``false``
 
-.. option:: --deferred-input[=true|false]
+.. option:: --deferred-input [true|false]
 
   Если задано ``true``, aria2 при запуске не считывает все URI и параметры
   из файла, указанного в параметре :option:`--input-file <-i>`, а
@@ -1347,7 +1347,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
     параметр :option:`--deferred-input` будет заблокирован, если
     используется вместе с :option:`--save-session`.
 
-.. option:: --disable-ipv6[=true|false]
+.. option:: --disable-ipv6 [true|false]
 
   Отключить IPv6. Это полезно, если вы используете поврежденный DNS
   и хотите избежать ужасно медленного поиска AAAA-записи.
@@ -1403,12 +1403,12 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
 
   Этот параметр доступен только в системах, поддерживающих API rlimit.
 
-.. option:: --enable-color[=true|false]
+.. option:: --enable-color [true|false]
 
   Включить цветной вывод для терминала.
   По умолчанию: ``true``
 
-.. option:: --enable-mmap[=true|false]
+.. option:: --enable-mmap [true|false]
 
    Отображение файлов в память. Этот параметр может не работать,
    если место под файл предварительно не выделено.
@@ -1460,7 +1460,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
     В загрузках многофайлового торрента, по определенным смежным файлам также,
     которые размещены в части одного блока.
 
-.. option:: --force-save[=true|false]
+.. option:: --force-save [true|false]
 
   Сохранить загрузку с параметром :option:`--save-session <--save-session>`,
   даже если загрузка будет завершена или удалена. В этих ситуациях параметр
@@ -1469,7 +1469,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   состояние как завершенное.
   По умолчанию: ``false``
 
-.. option:: --save-not-found[=true|false]
+.. option:: --save-not-found [true|false]
 
   Сохранить загрузку с параметром :option:`--save-session <--save-session>`,
   даже если файл не был найден на сервере. В этой ситуации параметр
@@ -1488,14 +1488,14 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   :option:`--save-session <--save-session>`. Если этот параметр не
   использован, то новый GID будет сгенерирован aria2.
 
-.. option:: --hash-check-only[=true|false]
+.. option:: --hash-check-only [true|false]
 
   Если задано ``true``, то после проверки хэша, используя параметр
   :option:`--check-integrity <-V>`, загрузка прервётся, в любом
   случае загрузка завершится.
   По умолчанию: ``false``
 
-.. option:: --human-readable[=true|false]
+.. option:: --human-readable [true|false]
 
   Выводить размеры и скорость в удобочитаемом формате
   (например, 1.2Ки, 3.4Ми) на консольный индикатор.
@@ -1515,7 +1515,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
     :option:`--disable-ipv6`. Если ваша система не имеет :manpage:`getifaddrs(3)`, это
     параметр не принимает имя интерфейса.
 
-.. option:: --keep-unfinished-download-result[=true|false]
+.. option:: --keep-unfinished-download-result [true|false]
 
   Сохранять результаты незавершённых загрузок, даже если превышено значение
   :option:`--max-download-result`. Это полезно, если незавершённые загрузки
@@ -1630,7 +1630,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   значения: ``/путь/к/команде``
 
 
-.. option:: --optimize-concurrent-downloads[=true|false|<A>:<B>]
+.. option:: --optimize-concurrent-downloads [true|false|<A>:<B>]
 
   Оптимизирует количество одновременных загрузок в соответствии с
   доступной полосой пропускания. aria2 использует скорость загрузки,
@@ -1659,13 +1659,13 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
     HTTP-запросе. Для включения конвейерной обработки HTTP используйте
     :option:`--enable-http-pipelining`.
 
-.. option:: --show-console-readout[=true|false]
+.. option:: --show-console-readout [true|false]
 
   Показывать консольный индикатор.
   По умолчанию: ``true``
 
 
-.. option:: --stderr[=true|false]
+.. option:: --stderr [true|false]
 
   Перенаправить весь вывод консоли в stderr (стандартный поток ошибок),
   иначе будет использован stdout (стандартный поток вывода).
@@ -1677,7 +1677,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   загрузки. Установка ``0`` запрещает вывод.
   По умолчанию: ``60``
 
-.. option:: -Z, --force-sequential[=true|false]
+.. option:: -Z, --force-sequential [true|false]
 
   Получить URI в последовательности командной строки и загрузить каждое
   URI в отдельной сессии, как в обычных утилитах загрузки командной
@@ -1700,7 +1700,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   :option:`--max-overall-download-limit`.
   По умолчанию: ``0``
 
-.. option:: --no-conf[=true|false]
+.. option:: --no-conf [true|false]
 
   Отключить загрузку файла aria2.conf.
 
@@ -1710,7 +1710,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   Вы можете добавить ``K`` или ``M`` (1K = 1024, 1M = 1024K).
   По умолчанию: ``5M``
 
-.. option:: -P, --parameterized-uri[=true|false]
+.. option:: -P, --parameterized-uri [true|false]
 
   Включить поддержку параметризованных URI. Вы можете указать набор
   частей: ``http://{sv1,sv2,sv3}/foo.iso``. Также вы можете указать
@@ -1720,19 +1720,19 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   во втором приведенном выше примере, то необходим  параметр -Z.
   По умолчанию: ``false``
 
-.. option:: -q, --quiet[=true|false]
+.. option:: -q, --quiet [true|false]
 
   Сделать aria2 молчаливой (без консольного вывода).
   По умолчанию: ``false``
 
-.. option:: --realtime-chunk-checksum[=true|false]
+.. option:: --realtime-chunk-checksum [true|false]
 
   Подтверждать правильность блока данных путем вычисления контрольной суммы
   во время загрузки файла, если предусмотрена контрольная сумма блоков.
   По умолчанию: ``true``
 
 
-.. option:: --remove-control-file[=true|false]
+.. option:: --remove-control-file [true|false]
 
   Удалять контрольный файл перед загрузкой. При использовании с
   :option:`--allow-overwrite=true <--allow-overwrite>` файл
@@ -1798,7 +1798,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
   идентификационным номером и когда он (процесс) завершится по какой-то
   причине, aria2 может обнаружить это и самостоятельно завершить работу.
 
-.. option:: --truncate-console-readout[=true|false]
+.. option:: --truncate-console-readout [true|false]
 
   Укорачивать консольный индикатор, чтобы он поместился в
   одну строку.
