@@ -168,12 +168,12 @@ void Netrc::parse(const std::string& path)
          iter != eoi; ++iter) {
       if (state == GET_TOKEN) {
         if (util::streq((*iter).first, (*iter).second, "machine")) {
-          storeAuthenticator(std::move(authenticator));
+          storeAuthenticator(authenticator);
           authenticator = make_unique<Authenticator>();
           state = SET_MACHINE;
         }
         else if (util::streq((*iter).first, (*iter).second, "default")) {
-          storeAuthenticator(std::move(authenticator));
+          storeAuthenticator(authenticator);
           authenticator = make_unique<DefaultAuthenticator>();
         }
         else {
@@ -220,7 +220,7 @@ void Netrc::parse(const std::string& path)
   if (state != GET_TOKEN) {
     throw DL_ABORT_EX("Netrc:parse error. EOF reached where a token expected.");
   }
-  storeAuthenticator(std::move(authenticator));
+  storeAuthenticator(authenticator);
 }
 
 void Netrc::storeAuthenticator(std::unique_ptr<Authenticator> authenticator)

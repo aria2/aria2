@@ -158,7 +158,11 @@ int GZipFile::onVprintf(const char* format, va_list va)
       while (static_cast<ssize_t>(buflen_) < len) {
         buflen_ *= 2;
       }
-      buf_ = reinterpret_cast<char*>(realloc(buf_, buflen_));
+      char* buf = reinterpret_cast<char*>(realloc(buf_, buflen_));
+      if (!buf) {
+        return -1;
+      }
+      buf_ = buf;
     }
     else if (len < 0) {
       return len;
