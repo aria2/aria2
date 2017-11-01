@@ -525,24 +525,20 @@ void AbstractDiskWriter::allocate(int64_t offset, int64_t length, bool sparse)
         fileStrerror(errNum).c_str()));
   }
 #elif defined(__APPLE__) && defined(__MACH__)
-  auto toalloc = offset + length - size();
-  while (toalloc > 0) {
-    fstore_t fstore = {
-        F_ALLOCATECONTIG | F_ALLOCATEALL, F_PEOFPOSMODE, 0,
-        // Allocate in 1GB chunks or else some OSX versions may choke.
-        std::min(toalloc, (int64_t)1 << 30), 0};
+  const auto toalloc = offset + length - size();
+  fstore_t fstore = {
+      F_ALLOCATECONTIG | F_ALLOCATEALL, F_PEOFPOSMODE,
+      0, toalloc, 0};
+  if (fcntl(fd_, F_PREALLOCATE, &fstore) == -1) {
+    // Retry non-contig.
+    fstore.fst_flags = F_ALLOCATEALL;
     if (fcntl(fd_, F_PREALLOCATE, &fstore) == -1) {
-      // Retry non-contig.
-      fstore.fst_flags = F_ALLOCATEALL;
-      if (fcntl(fd_, F_PREALLOCATE, &fstore) == -1) {
-        int err = errno;
-        throw DL_ABORT_EX3(
-            err, fmt("fcntl(F_PREALLOCATE) of %" PRId64 " failed. cause: %s",
-                     fstore.fst_length, util::safeStrerror(err).c_str()),
-            error_code::FILE_IO_ERROR);
-      }
+      int err = errno;
+      throw DL_ABORT_EX3(
+          err, fmt("fcntl(F_PREALLOCATE) of %" PRId64 " failed. cause: %s",
+                   fstore.fst_length, util::safeStrerror(err).c_str()),
+          error_code::FILE_IO_ERROR);
     }
-    toalloc -= fstore.fst_bytesalloc;
   }
   // This forces the allocation on disk.
   ftruncate(fd_, offset + length);
