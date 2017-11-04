@@ -55,8 +55,8 @@ public:
 
 private:
   DWORD stdHandle_;
-  bool bold_;
-  bool underline_;
+  bool bold_, defbold_;
+  bool underline_, defunderline_;
   bool reverse_;
   WORD fg_, deffg_;
   WORD bg_, defbg_;
