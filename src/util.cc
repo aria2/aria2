@@ -1441,7 +1441,13 @@ std::string getXDGDir(const std::string& environmentVariable,
 {
   std::string filename;
   const char* p = getenv(environmentVariable.c_str());
-  if (p && p[0] == '/') {
+  if (p &&
+#ifndef __MINGW32__
+      p[0] == '/'
+#else // __MINGW32__
+      p[0] && p[1] == ':'
+#endif // __MINGW32__
+  ) {
     filename = p;
   }
   else {
