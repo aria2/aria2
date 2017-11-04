@@ -168,7 +168,7 @@ int translateEvents(EventPoll::EventType events)
 
 bool PortEventPoll::addEvents(sock_t socket, const PortEventPoll::KEvent& event)
 {
-  std::shared_ptr<KSocketEntry> socketEntry(new KSocketEntry(socket));
+  auto socketEntry = std::make_shared<KSocketEntry>(socket);
   KSocketEntrySet::iterator i = socketEntries_.lower_bound(socketEntry);
   int r = 0;
   int errNum = 0;
@@ -220,7 +220,7 @@ bool PortEventPoll::addEvents(sock_t socket, Command* command, int events,
 bool PortEventPoll::deleteEvents(sock_t socket,
                                  const PortEventPoll::KEvent& event)
 {
-  std::shared_ptr<KSocketEntry> socketEntry(new KSocketEntry(socket));
+  auto socketEntry = std::make_shared<KSocketEntry>(socket);
   KSocketEntrySet::iterator i = socketEntries_.find(socketEntry);
   if (i == socketEntries_.end()) {
     A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
@@ -271,8 +271,7 @@ bool PortEventPoll::deleteEvents(sock_t socket, Command* command,
 bool PortEventPoll::addNameResolver(
     const std::shared_ptr<AsyncNameResolver>& resolver, Command* command)
 {
-  std::shared_ptr<KAsyncNameResolverEntry> entry(
-      new KAsyncNameResolverEntry(resolver, command));
+  auto entry = std::make_shared<KAsyncNameResolverEntry>(resolver, command);
   KAsyncNameResolverEntrySet::iterator itr = nameResolverEntries_.find(entry);
   if (itr == nameResolverEntries_.end()) {
     nameResolverEntries_.insert(entry);
@@ -287,8 +286,7 @@ bool PortEventPoll::addNameResolver(
 bool PortEventPoll::deleteNameResolver(
     const std::shared_ptr<AsyncNameResolver>& resolver, Command* command)
 {
-  std::shared_ptr<KAsyncNameResolverEntry> entry(
-      new KAsyncNameResolverEntry(resolver, command));
+  auto entry = std::make_shared<KAsyncNameResolverEntry>(resolver, command);
   KAsyncNameResolverEntrySet::iterator itr = nameResolverEntries_.find(entry);
   if (itr == nameResolverEntries_.end()) {
     return false;
