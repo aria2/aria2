@@ -90,28 +90,31 @@ WinConsoleFile::WinConsoleFile(DWORD stdHandle)
       bg_(0)
 {
   if (supportsColor()) {
+    int color;
     CONSOLE_SCREEN_BUFFER_INFO info;
     GetConsoleScreenBufferInfo(handle(), &info);
     bold_ = info.wAttributes & FOREGROUND_INTENSITY;
     underline_ = info.wAttributes & BACKGROUND_INTENSITY;
-    int fgcolor = info.wAttributes &
-                  (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
+    color = info.wAttributes &
+            (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
     for (int fg = 0; fg < kForegroundSize; fg++) {
-      if (kForeground[fg] == fgcolor) {
+      if (kForeground[fg] == color) {
         fg_ = fg;
         break;
       }
     }
-    int bgcolor = info.wAttributes &
-                  (BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);
+    color = info.wAttributes &
+            (BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);
     for (int bg = 0; bg < kBackgroundSize; bg++) {
-      if (kBackground[bg] == bgcolor) {
+      if (kBackground[bg] == color) {
         bg_ = bg;
         break;
       }
     }
   }
 
+  defbold_ = bold_;
+  defunderline_ = underline_;
   deffg_ = fg_;
   defbg_ = bg_;
 }
@@ -216,9 +219,11 @@ size_t WinConsoleFile::writeColorful(const std::wstring& str)
       }
       for (const int a : args) {
         if (a == 0) {
+          bold_ = defbold_;
+          underline_ = defunderline_;
+          reverse_ = false;
           fg_ = deffg_;
           bg_ = defbg_;
-          bold_ = underline_ = reverse_ = false;
         }
         else if (30 <= a && a <= 37) {
           fg_ = a - 30;
