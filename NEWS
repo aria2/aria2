@@ -1,3 +1,24 @@
+aria2 1.33.1
+============
+
+Release Note
+------------
+
+This release fixes a bug that causes high CPU usage in mingw build.
+
+Changes
+-------
+
+* mingw: Fix high CPU usage in BitTorrent downloads
+
+  This commit fixes high CPU usage in BitTorrent downloads.  Only
+  mingw build is affected by this bug.
+
+  Thank you kwkam for identifying the cause of the issue, and helping
+  debugging this patch.
+
+
+
 aria2 1.33.0
 ============
 
