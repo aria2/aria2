@@ -162,11 +162,7 @@ public:
     return totalLength_;
   }
 
-  virtual int64_t getCompletedLength() CXX11_OVERRIDE
-  {
-    // TODO we have to return actual completed length here?
-    return totalLength_;
-  }
+  virtual int64_t getCompletedLength() CXX11_OVERRIDE;
 
   virtual int64_t getFilteredCompletedLength() CXX11_OVERRIDE
   {
