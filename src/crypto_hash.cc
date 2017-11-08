@@ -1055,22 +1055,22 @@ std::unique_ptr<Algorithm> crypto::hash::create(Algorithms algo)
 {
   switch (algo) {
   case algoMD5:
-    return std::unique_ptr<MD5>(new MD5());
+    return make_unique<MD5>();
 
   case algoSHA1:
-    return std::unique_ptr<SHA1>(new SHA1());
+    return make_unique<SHA1>();
 
   case algoSHA224:
-    return std::unique_ptr<SHA224>(new SHA224());
+    return make_unique<SHA224>();
 
   case algoSHA256:
-    return std::unique_ptr<SHA256>(new SHA256());
+    return make_unique<SHA256>();
 
   case algoSHA384:
-    return std::unique_ptr<SHA384>(new SHA384());
+    return make_unique<SHA384>();
 
   case algoSHA512:
-    return std::unique_ptr<SHA512>(new SHA512());
+    return make_unique<SHA512>();
 
   default:
     throw std::domain_error("Invalid hash algorithm");
