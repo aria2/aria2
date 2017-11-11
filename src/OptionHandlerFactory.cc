@@ -514,7 +514,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
   {
     OptionHandler* op(new ParameterOptionHandler(
         PREF_MIN_TLS_VERSION, TEXT_MIN_TLS_VERSION, A2_V_TLS10,
-        {A2_V_SSL3, A2_V_TLS10, A2_V_TLS11, A2_V_TLS12}));
+        {A2_V_SSL3, A2_V_TLS10, A2_V_TLS11, A2_V_TLS12, A2_V_TLS13}));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }

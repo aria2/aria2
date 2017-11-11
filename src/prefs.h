@@ -111,6 +111,7 @@ extern const std::string A2_V_SSL3;
 extern const std::string A2_V_TLS10;
 extern const std::string A2_V_TLS11;
 extern const std::string A2_V_TLS12;
+extern const std::string A2_V_TLS13;
 
 extern PrefPtr PREF_VERSION;
 extern PrefPtr PREF_HELP;

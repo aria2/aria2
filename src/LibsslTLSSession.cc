@@ -217,6 +217,12 @@ int OpenSSLTLSSession::handshake(TLSVersion& version)
     break;
 #endif // TLS1_2_VERSION
 
+#ifdef TLS1_3_VERSION
+  case TLS1_3_VERSION:
+    version = TLS_PROTO_TLS13;
+    break;
+#endif //TLS1_3_VERSION
+
   default:
     version = TLS_PROTO_NONE;
     break;
