@@ -66,7 +66,7 @@ template <typename T> static void close_callback(uv_handle_t* handle)
 }
 
 static void timer_callback(uv_timer_t* handle) { uv_stop(handle->loop); }
-}
+} // namespace
 
 namespace aria2 {
 

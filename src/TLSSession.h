@@ -118,6 +118,6 @@ private:
   TLSSession(const TLSSession&);
   TLSSession& operator=(const TLSSession&);
 };
-}
+} // namespace aria2
 
 #endif // TLS_SESSION_H

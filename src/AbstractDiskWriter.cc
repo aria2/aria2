@@ -119,7 +119,7 @@ void AbstractDiskWriter::openFile(int64_t totalLength)
 #else  // !__MINGW32__
         e.getErrNum() == ENOENT
 #endif // !__MINGW32__
-        ) {
+    ) {
       initAndOpenFile(totalLength);
     }
     else {
@@ -201,9 +201,10 @@ HANDLE openFileWithFlags(const std::string& filename, int flags,
                    FILE_ATTRIBUTE_NORMAL, /* hTemplateFile */ 0);
   if (hn == INVALID_HANDLE_VALUE) {
     int errNum = GetLastError();
-    throw DL_ABORT_EX3(errNum, fmt(EX_FILE_OPEN, filename.c_str(),
-                                   fileStrerror(errNum).c_str()),
-                       errCode);
+    throw DL_ABORT_EX3(
+        errNum,
+        fmt(EX_FILE_OPEN, filename.c_str(), fileStrerror(errNum).c_str()),
+        errCode);
   }
   return hn;
 }
@@ -217,9 +218,10 @@ int openFileWithFlags(const std::string& filename, int flags,
     ;
   if (fd < 0) {
     int errNum = errno;
-    throw DL_ABORT_EX3(errNum, fmt(EX_FILE_OPEN, filename.c_str(),
-                                   util::safeStrerror(errNum).c_str()),
-                       errCode);
+    throw DL_ABORT_EX3(
+        errNum,
+        fmt(EX_FILE_OPEN, filename.c_str(), util::safeStrerror(errNum).c_str()),
+        errCode);
   }
   util::make_fd_cloexec(fd);
 #if defined(__APPLE__) && defined(__MACH__)
@@ -454,9 +456,10 @@ void AbstractDiskWriter::writeData(const unsigned char* data, size_t len,
           error_code::NOT_ENOUGH_DISK_SPACE);
     }
     else {
-      throw DL_ABORT_EX3(errNum, fmt(EX_FILE_WRITE, filename_.c_str(),
-                                     fileStrerror(errNum).c_str()),
-                         error_code::FILE_IO_ERROR);
+      throw DL_ABORT_EX3(
+          errNum,
+          fmt(EX_FILE_WRITE, filename_.c_str(), fileStrerror(errNum).c_str()),
+          error_code::FILE_IO_ERROR);
     }
   }
 }
@@ -467,9 +470,10 @@ ssize_t AbstractDiskWriter::readData(unsigned char* data, size_t len,
   ssize_t ret;
   if ((ret = readDataInternal(data, len, offset)) < 0) {
     int errNum = fileError();
-    throw DL_ABORT_EX3(errNum, fmt(EX_FILE_READ, filename_.c_str(),
-                                   fileStrerror(errNum).c_str()),
-                       error_code::FILE_IO_ERROR);
+    throw DL_ABORT_EX3(
+        errNum,
+        fmt(EX_FILE_READ, filename_.c_str(), fileStrerror(errNum).c_str()),
+        error_code::FILE_IO_ERROR);
   }
   return ret;
 }
@@ -526,17 +530,17 @@ void AbstractDiskWriter::allocate(int64_t offset, int64_t length, bool sparse)
   }
 #elif defined(__APPLE__) && defined(__MACH__)
   const auto toalloc = offset + length - size();
-  fstore_t fstore = {
-      F_ALLOCATECONTIG | F_ALLOCATEALL, F_PEOFPOSMODE,
-      0, toalloc, 0};
+  fstore_t fstore = {F_ALLOCATECONTIG | F_ALLOCATEALL, F_PEOFPOSMODE, 0,
+                     toalloc, 0};
   if (fcntl(fd_, F_PREALLOCATE, &fstore) == -1) {
     // Retry non-contig.
     fstore.fst_flags = F_ALLOCATEALL;
     if (fcntl(fd_, F_PREALLOCATE, &fstore) == -1) {
       int err = errno;
       throw DL_ABORT_EX3(
-          err, fmt("fcntl(F_PREALLOCATE) of %" PRId64 " failed. cause: %s",
-                   fstore.fst_length, util::safeStrerror(err).c_str()),
+          err,
+          fmt("fcntl(F_PREALLOCATE) of %" PRId64 " failed. cause: %s",
+              fstore.fst_length, util::safeStrerror(err).c_str()),
           error_code::FILE_IO_ERROR);
     }
   }
@@ -559,10 +563,11 @@ void AbstractDiskWriter::allocate(int64_t offset, int64_t length, bool sparse)
 #elif HAVE_POSIX_FALLOCATE
   int r = posix_fallocate(fd_, offset, length);
   if (r != 0) {
-    throw DL_ABORT_EX3(r, fmt("posix_fallocate failed. cause: %s",
-                              util::safeStrerror(r).c_str()),
-                       isDiskFullError(r) ? error_code::NOT_ENOUGH_DISK_SPACE
-                                          : error_code::FILE_IO_ERROR);
+    throw DL_ABORT_EX3(
+        r,
+        fmt("posix_fallocate failed. cause: %s", util::safeStrerror(r).c_str()),
+        isDiskFullError(r) ? error_code::NOT_ENOUGH_DISK_SPACE
+                           : error_code::FILE_IO_ERROR);
   }
 #else
 #error "no *_fallocate function available."

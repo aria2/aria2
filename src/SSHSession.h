@@ -135,6 +135,6 @@ private:
   LIBSSH2_SFTP_HANDLE* sftph_;
   sock_t fd_;
 };
-}
+} // namespace aria2
 
 #endif // SSH_SESSION_H

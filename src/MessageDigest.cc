@@ -61,7 +61,7 @@ HashTypeEntry hashTypes[] = {
     HashTypeEntry("sha-512", 5), HashTypeEntry("md5", 0),
     HashTypeEntry("adler32", 0),
 };
-} // namespace aria2
+} // namespace
 
 MessageDigest::MessageDigest(std::unique_ptr<MessageDigestImpl> impl)
     : pImpl_{std::move(impl)}

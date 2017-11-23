@@ -57,8 +57,8 @@ namespace util {
 namespace security {
 class HMAC;
 class HMACResult;
-}
-}
+} // namespace security
+} // namespace util
 
 enum RequestType { RPC_TYPE_NONE, RPC_TYPE_XML, RPC_TYPE_JSON, RPC_TYPE_JSONP };
 

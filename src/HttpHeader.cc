@@ -202,7 +202,7 @@ bool HttpHeader::fieldContains(int hdKey, const char* value)
     util::splitIter((*i).second.begin(), (*i).second.end(),
                     std::back_inserter(values), ',',
                     true // doStrip
-                    );
+    );
     for (const auto& v : values) {
       if (util::strieq(v.first, v.second, value)) {
         return true;

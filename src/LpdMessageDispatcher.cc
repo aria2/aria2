@@ -121,4 +121,4 @@ std::string createLpdRequest(const std::string& multicastAddress,
 
 } // namespace bittorrent
 
-} // namespac aria2
+} // namespace aria2

@@ -55,6 +55,6 @@ struct DHTNodeLookupEntry {
   bool operator==(const DHTNodeLookupEntry& entry) const;
 };
 
-} // namespace aria2;
+} // namespace aria2
 
 #endif // D_DHT_NODE_LOOKUP_ENTRY_H

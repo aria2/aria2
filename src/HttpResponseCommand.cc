@@ -279,9 +279,8 @@ bool HttpResponseCommand::executeInternal()
       // we ignore content-length when inflate is required
       fe->setLength(0);
       if (req->getMethod() == Request::METHOD_GET &&
-          (totalLength != 0 ||
-           !httpResponse->getHttpHeader()->defined(
-               HttpHeader::CONTENT_LENGTH))) {
+          (totalLength != 0 || !httpResponse->getHttpHeader()->defined(
+                                   HttpHeader::CONTENT_LENGTH))) {
         // DownloadContext::knowsTotalLength() == true only when
         // server says the size of file is 0 explicitly.
         getDownloadContext()->markTotalLengthIsUnknown();
@@ -422,9 +421,8 @@ bool HttpResponseCommand::handleOtherEncoding(
       httpResponse.get(), getContentEncodingStreamFilter(httpResponse.get()));
   // If chunked transfer-encoding is specified, we have to read end of
   // chunk markers(0\r\n\r\n, for example).
-  bool chunkedUsed =
-      streamFilter &&
-      streamFilter->getName() == ChunkedDecodingStreamFilter::NAME;
+  bool chunkedUsed = streamFilter && streamFilter->getName() ==
+                                         ChunkedDecodingStreamFilter::NAME;
 
   // For zero-length file, check existing file comparing its size
   if (!chunkedUsed && getDownloadContext()->knowsTotalLength() &&

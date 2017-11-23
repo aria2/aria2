@@ -612,7 +612,7 @@ restart:
     // ... and start sending it
     state_ = st_handshake_write;
   }
-  // Fall through
+    // Fall through
 
   case st_handshake_write_last:
   case st_handshake_write: {
@@ -644,7 +644,7 @@ restart:
     // Have to read one or more response messages.
     state_ = st_handshake_read;
   }
-  // Fall through
+    // Fall through
 
   case st_handshake_read: {
   read:
@@ -764,7 +764,7 @@ restart:
       goto restart;
     }
   }
-  // Fall through
+    // Fall through
 
   case st_handshake_done:
     if (obtainTLSRecordSizes() != 0) {

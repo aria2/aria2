@@ -48,7 +48,7 @@ namespace {
 Console consoleCout;
 Console consoleCerr;
 Console consoleCoutBackup;
-};
+}; // namespace
 
 void initConsole(bool suppress)
 {

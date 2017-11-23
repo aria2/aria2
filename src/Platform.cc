@@ -85,7 +85,7 @@ void gnutls_log_callback(int level, const char* str)
   msg.resize(msg.size() - 1);
   A2_LOG_DEBUG(fmt("GnuTLS: <%d> %s", level, msg.c_str()));
 }
-}
+} // namespace
 #endif // HAVE_LIBGNUTLS
 
 bool Platform::initialized_ = false;

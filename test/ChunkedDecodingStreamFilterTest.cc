@@ -209,10 +209,9 @@ void ChunkedDecodingStreamFilterTest::testTransform()
 void ChunkedDecodingStreamFilterTest::testTransform_withoutTrailer()
 {
   CPPUNIT_ASSERT_EQUAL(
-      (ssize_t)0,
-      filter_->transform(writer_, segment_,
-                         reinterpret_cast<const unsigned char*>("0\r\n\r\n"),
-                         5));
+      (ssize_t)0, filter_->transform(
+                      writer_, segment_,
+                      reinterpret_cast<const unsigned char*>("0\r\n\r\n"), 5));
   CPPUNIT_ASSERT(filter_->finished());
 }
 

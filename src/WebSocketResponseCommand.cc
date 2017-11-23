@@ -55,8 +55,8 @@ WebSocketResponseCommand::~WebSocketResponseCommand() = default;
 void WebSocketResponseCommand::afterSend(
     const std::shared_ptr<HttpServer>& httpServer, DownloadEngine* e)
 {
-  auto wsSession = std::make_shared<WebSocketSession>(
-      httpServer->getSocket(), getDownloadEngine());
+  auto wsSession = std::make_shared<WebSocketSession>(httpServer->getSocket(),
+                                                      getDownloadEngine());
   auto command = make_unique<WebSocketInteractionCommand>(
       getCuid(), wsSession, e, wsSession->getSocket());
   wsSession->setCommand(command.get());

@@ -755,7 +755,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
         new LocalFilePathOptionHandler(
             PREF_RPC_CERTIFICATE, TEXT_RPC_CERTIFICATE, NO_DEFAULT_VALUE, false)
 #endif // HAVE_APPLETLS
-            );
+    );
     op->addTag(TAG_RPC);
     handlers.push_back(op);
   }
@@ -1041,7 +1041,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
         new LocalFilePathOptionHandler(PREF_CERTIFICATE, TEXT_CERTIFICATE,
                                        NO_DEFAULT_VALUE, false)
 #endif // HAVE_APPLETLS
-            );
+    );
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);
     handlers.push_back(op);
@@ -1480,10 +1480,10 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    OptionHandler* op(new DefaultOptionHandler(PREF_BT_EXCLUDE_TRACKER,
-                                               TEXT_BT_EXCLUDE_TRACKER,
-                                               NO_DESCRIPTION, "URI,... "
-                                                               "or *"));
+    OptionHandler* op(new DefaultOptionHandler(
+        PREF_BT_EXCLUDE_TRACKER, TEXT_BT_EXCLUDE_TRACKER, NO_DESCRIPTION,
+        "URI,... "
+        "or *"));
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);

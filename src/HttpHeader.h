@@ -163,6 +163,6 @@ public:
 
 int idInterestingHeader(const char* hdName);
 
-} // namespace
+} // namespace aria2
 
 #endif // D_HTTP_HEADER_H

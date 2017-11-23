@@ -125,15 +125,14 @@ OpenSSLTLSContext::OpenSSLTLSContext(TLSSessionSide side, TLSVersion minVer)
   };
 
   // Disable SSLv2 and enable all workarounds for buggy servers
-  SSL_CTX_set_options(sslCtx_,
-                      SSL_OP_ALL | SSL_OP_NO_SSLv2 | ver_opts
+  SSL_CTX_set_options(sslCtx_, SSL_OP_ALL | SSL_OP_NO_SSLv2 | ver_opts
 #ifdef SSL_OP_SINGLE_ECDH_USE
-                          | SSL_OP_SINGLE_ECDH_USE
+                                   | SSL_OP_SINGLE_ECDH_USE
 #endif // SSL_OP_SINGLE_ECDH_USE
 #ifdef SSL_OP_NO_COMPRESSION
-                          | SSL_OP_NO_COMPRESSION
+                                   | SSL_OP_NO_COMPRESSION
 #endif // SSL_OP_NO_COMPRESSION
-                      );
+  );
   SSL_CTX_set_mode(sslCtx_, SSL_MODE_AUTO_RETRY);
   SSL_CTX_set_mode(sslCtx_, SSL_MODE_ENABLE_PARTIAL_WRITE);
 #ifdef SSL_MODE_RELEASE_BUFFERS

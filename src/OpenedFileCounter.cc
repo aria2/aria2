@@ -67,9 +67,8 @@ void OpenedFileCounter::ensureMaxOpenFileLimit(size_t numNewFiles)
   auto& requestGroups = rgman_->getRequestGroups();
 
   auto mark = std::begin(requestGroups);
-  std::advance(
-      mark,
-      SimpleRandomizer::getInstance()->getRandomNumber(requestGroups.size()));
+  std::advance(mark, SimpleRandomizer::getInstance()->getRandomNumber(
+                         requestGroups.size()));
 
   auto closeFun = [&left](const std::shared_ptr<RequestGroup>& group) {
     auto& ps = group->getPieceStorage();

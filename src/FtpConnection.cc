@@ -235,9 +235,9 @@ bool FtpConnection::sendPort(const std::shared_ptr<SocketCore>& serverSocket)
 bool FtpConnection::sendRest(const std::shared_ptr<Segment>& segment)
 {
   if (socketBuffer_.sendBufferIsEmpty()) {
-    std::string request = fmt("REST %" PRId64 "\r\n",
-                              segment ? segment->getPositionToWrite()
-                                      : static_cast<int64_t>(0LL));
+    std::string request =
+        fmt("REST %" PRId64 "\r\n", segment ? segment->getPositionToWrite()
+                                            : static_cast<int64_t>(0LL));
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST, cuid_, request.c_str()));
     socketBuffer_.pushStr(std::move(request));
   }

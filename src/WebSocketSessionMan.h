@@ -69,6 +69,6 @@ private:
 
 } // namespace rpc
 
-} // aria2
+} // namespace aria2
 
 #endif // D_WEB_SOCKET_SESSION_MAN_H

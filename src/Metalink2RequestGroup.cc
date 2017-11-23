@@ -139,9 +139,10 @@ void Metalink2RequestGroup::generate(
     const std::shared_ptr<Option>& option, const std::string& baseUri)
 {
   std::vector<std::shared_ptr<RequestGroup>> tempgroups;
-  createRequestGroup(tempgroups, metalink::parseAndQuery(binaryStream.get(),
-                                                         option.get(), baseUri),
-                     option);
+  createRequestGroup(
+      tempgroups,
+      metalink::parseAndQuery(binaryStream.get(), option.get(), baseUri),
+      option);
   auto mi = std::make_shared<MetadataInfo>();
   setMetadataInfo(std::begin(tempgroups), std::end(tempgroups), mi);
   groups.insert(std::end(groups), std::begin(tempgroups), std::end(tempgroups));

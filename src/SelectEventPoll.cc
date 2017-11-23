@@ -199,7 +199,7 @@ void SelectEventPoll::poll(const struct timeval& tv)
     // winsock will report non-blocking connect() errors in efds,
     // unlike posix, which will mark such sockets as writable.
     retval = select(fdmax_ + 1, &rfds, &wfds, &efds, &ttv);
-#else // !__MINGW32__
+#else  // !__MINGW32__
     retval = select(fdmax_ + 1, &rfds, &wfds, nullptr, &ttv);
 #endif // !__MINGW32__
   } while (retval == -1 && errno == EINTR);

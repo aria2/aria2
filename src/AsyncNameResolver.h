@@ -73,7 +73,7 @@ public:
                     ,
                     ares_addr_node* servers
 #endif // HAVE_ARES_ADDR_NODE
-                    );
+  );
 
   ~AsyncNameResolver();
 

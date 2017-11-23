@@ -47,7 +47,7 @@ class ValueBase;
 
 namespace rpc {
 class XmlRpcRequestParserController;
-} // namespace rpc;
+} // namespace rpc
 
 class ValueBaseStructParserState;
 

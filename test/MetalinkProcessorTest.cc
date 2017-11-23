@@ -140,7 +140,7 @@ void MetalinkProcessorTest::testParseFileV4()
                        mu->url);
   CPPUNIT_ASSERT_EQUAL(2, mu->priority);
   CPPUNIT_ASSERT_EQUAL(std::string("torrent"), mu->mediatype);
-#else // !ENABLE_BITTORRENT
+#else  // !ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL((size_t)0, e->metaurls.size());
 #endif // !ENABLE_BITTORRENT
 }

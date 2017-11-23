@@ -62,6 +62,6 @@ public:
 
 } // namespace rpc
 
-} // aria2
+} // namespace aria2
 
 #endif // D_NULL_WEB_SOCKET_SESSION_MAN_H

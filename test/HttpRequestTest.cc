@@ -625,8 +625,9 @@ void HttpRequestTest::testCreateRequest_wantDigest()
                              "Cache-Control: no-cache\r\n"
                              "Connection: close\r\n"
                              "Want-Digest: " +
-                             wantDigest + "\r\n"
-                                          "\r\n";
+                             wantDigest +
+                             "\r\n"
+                             "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 }

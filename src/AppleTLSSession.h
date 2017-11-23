@@ -128,6 +128,6 @@ private:
   OSStatus sockWrite(const void* data, size_t* len);
   OSStatus sockRead(void* data, size_t* len);
 };
-}
+} // namespace aria2
 
 #endif // TLS_SESSION_H

@@ -128,10 +128,11 @@ int main(int argc, char** argv)
         if (dh) {
           std::cerr << "    [" << aria2::gidToHex(gid) << "] "
                     << dh->getCompletedLength() << "/" << dh->getTotalLength()
-                    << "(" << (dh->getTotalLength() > 0
-                                   ? (100 * dh->getCompletedLength() /
-                                      dh->getTotalLength())
-                                   : 0)
+                    << "("
+                    << (dh->getTotalLength() > 0
+                            ? (100 * dh->getCompletedLength() /
+                               dh->getTotalLength())
+                            : 0)
                     << "%)"
                     << " D:" << dh->getDownloadSpeed() / 1024
                     << "KiB/s, U:" << dh->getUploadSpeed() / 1024 << "KiB/s"

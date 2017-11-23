@@ -93,7 +93,7 @@ void AsyncNameResolverMan::startAsyncFamily(const std::string& hostname,
                                           ,
                                           e->getAsyncDNSServers()
 #endif // HAVE_ARES_ADDR_NODE
-                                              );
+      );
   asyncNameResolver_[numResolver_]->resolve(hostname);
   setNameResolverCheck(numResolver_, e, command);
 }
