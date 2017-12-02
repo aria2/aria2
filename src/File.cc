@@ -122,9 +122,9 @@ bool File::remove()
 
 #ifdef __MINGW32__
 namespace {
-HANDLE openFile(const std::string& filename)
+HANDLE openFile(const std::string& filename, bool readOnly = true)
 {
-  DWORD desiredAccess = GENERIC_READ;
+  DWORD desiredAccess = GENERIC_READ | (readOnly ? 0 : GENERIC_WRITE);
   DWORD sharedMode = FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE;
   DWORD creationDisp = OPEN_EXISTING;
   return CreateFileW(utf8ToWChar(filename).c_str(), desiredAccess, sharedMode,
@@ -317,12 +317,50 @@ bool File::utime(const Time& actime, const Time& modtime) const
   struct timeval times[2] = {{actime.getTimeFromEpoch(), 0},
                              {modtime.getTimeFromEpoch(), 0}};
   return utimes(name_.c_str(), times) == 0;
-#else  // !HAVE_UTIMES
+#elif defined(__MINGW32__)
+  auto hn = openFile(name_, false);
+  if (hn == INVALID_HANDLE_VALUE) {
+    auto errNum = GetLastError();
+    A2_LOG_ERROR(fmt(EX_FILE_OPEN, name_.c_str(),
+                     util::formatLastError(errNum).c_str()));
+    return false;
+  }
+  // Use SetFileTime because Windows _wutime takes DST into
+  // consideration.
+  //
+  // std::chrono::time_point::time_since_epoch returns the amount of
+  // time between it and epoch Jan 1, 1970.  OTOH, FILETIME structure
+  // expects the epoch as Jan 1, 1601.  The resolution is 100
+  // nanoseconds.
+  constexpr auto offset = 116444736000000000LL;
+  uint64_t at = std::chrono::duration_cast<std::chrono::nanoseconds>(
+                    actime.getTime().time_since_epoch())
+                        .count() /
+                    100 +
+                offset;
+  uint64_t mt = std::chrono::duration_cast<std::chrono::nanoseconds>(
+                    modtime.getTime().time_since_epoch())
+                        .count() /
+                    100 +
+                offset;
+  FILETIME att{static_cast<DWORD>(at & 0xffffffff),
+               static_cast<DWORD>(at >> 32)};
+  FILETIME mtt{static_cast<DWORD>(mt & 0xffffffff),
+               static_cast<DWORD>(mt >> 32)};
+  auto rv = SetFileTime(hn, nullptr, &att, &mtt);
+  if (!rv) {
+    auto errNum = GetLastError();
+    A2_LOG_ERROR(fmt("SetFileTime failed, cause: %s",
+                     util::formatLastError(errNum).c_str()));
+  }
+  CloseHandle(hn);
+  return rv;
+#else  // !defined(HAVE_UTIMES) && !defined(__MINGW32__)
   a2utimbuf ub;
   ub.actime = actime.getTimeFromEpoch();
   ub.modtime = modtime.getTimeFromEpoch();
   return a2utime(utf8ToWChar(name_).c_str(), &ub) == 0;
-#endif // !HAVE_UTIMES
+#endif // !defined(HAVE_UTIMES) && !defined(__MINGW32__)
 }
 
 Time File::getModifiedTime()
