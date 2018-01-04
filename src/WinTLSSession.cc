@@ -213,8 +213,10 @@ int WinTLSSession::closeConnection()
         return rv;
       }
 
-      // Alright data is sent or buffered
-      if (rv - len != 0) {
+      // Ignore error here because we probably don't handle those
+      // errors gracefully.  Just shutdown connection.  If rv is
+      // positive, then data is sent or buffered
+      if (rv > 0 && rv - len != 0) {
         return TLS_ERR_WOULDBLOCK;
       }
     }
