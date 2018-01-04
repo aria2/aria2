@@ -1,3 +1,4 @@
+dist: trusty
 language: cpp
 cache: ccache
 matrix:
@@ -9,14 +10,13 @@ matrix:
     - os: osx
       osx_image: xcode8.3
       compiler: clang
-sudo: false
+sudo: required
 addons:
   apt:
     sources:
     - ubuntu-toolchain-r-test
     packages:
-    - g++-4.9
-    - libstdc++-4.9-dev
+    - g++-7
     - autoconf
     - automake
     - autotools-dev
@@ -33,9 +33,10 @@ addons:
 before_install:
   - $CC --version
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install --force cppunit gettext openssl gnutls libgcrypt gmp nettle libssh2 c-ares sqlite3 ccache ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew link --force cppunit gettext openssl gnutls libgcrypt gmp nettle libssh2 c-ares sqlite3 ccache ; fi
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
+  # gmp is already installed
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install --force cppunit gettext openssl libssh2 c-ares sqlite3 ccache ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew link --force cppunit gettext openssl libssh2 c-ares sqlite3 ccache ; fi
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-7" CC="gcc-7"; fi
   - if [ "$CXX" = "clang++" ]; then export CXX="$CXX -Qunused-arguments" CC="$CC -Qunused-arguments"; fi
   - $CC --version
 before_script:
@@ -43,6 +44,6 @@ before_script:
   - automake
   - autoconf
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./configure --without-openssl --without-gnutls --with-appletls --disable-nls CPPFLAGS=-fsanitize=address LDFLAGS=-fsanitize=address; fi
-  - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then ./configure CPPFLAGS=-fsanitize=address LDFLAGS=-fsanitize=address; fi
+  - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then ./configure CPPFLAGS=-fsanitize=address LDFLAGS="-fsanitize=address -fuse-ld=gold"; fi
 script:
   - make CC="ccache $CC" CXX="ccache $CXX" check
