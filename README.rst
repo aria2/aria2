@@ -169,11 +169,11 @@ JSON-RPC over WebSocket  libnettle or libgcrypt or OpenSSL
 A user can have one of the following configurations for SSL and crypto
 libraries:
 
-* libgcrypt
-* libnettle
 * OpenSSL
 * GnuTLS + libgcrypt
 * GnuTLS + libnettle
+* Apple TLS (OSX only)
+* Windows TLS (Windows only)
 
 You can disable BitTorrent and Metalink support by providing
 ``--disable-bittorrent`` and ``--disable-metalink`` to the configure
