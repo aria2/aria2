@@ -386,8 +386,16 @@ ssize_t WinTLSSession::writeData(const void* data, size_t len)
                 static_cast<char*>(sendRecordBuffers_[1].pvBuffer));
     status_ = ::EncryptMessage(&handle_, 0, &desc, 0);
     if (status_ != SEC_E_OK) {
-      A2_LOG_ERROR(fmt("WinTLS: Failed to encrypt a message! %s",
-                       getLastErrorString().c_str()));
+      if (state_ != st_closing) {
+        A2_LOG_ERROR(fmt("WinTLS: Failed to encrypt a message! %s",
+                         getLastErrorString().c_str()));
+      } else {
+        // On closing state, don't log this message in error level
+        // because it seems that the encryption tends to fail in that
+        // state.
+        A2_LOG_DEBUG(fmt("WinTLS: Failed to encrypt a message! %s",
+                         getLastErrorString().c_str()));
+      }
       state_ = st_error;
       return TLS_ERR_ERROR;
     }
