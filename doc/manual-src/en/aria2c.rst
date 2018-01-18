@@ -1505,7 +1505,7 @@ Advanced Options
 
 .. option:: --on-download-complete=<COMMAND>
 
-  Set the command to be executed after download completed.  See
+  Set the command to be executed after download completed.
   See `Event Hook`_ for more details about COMMAND.
   See also :option:`--on-download-stop` option.
   Possible Values: ``/path/to/command``
