@@ -80,6 +80,12 @@ int BufferedFile::onClose()
 {
   int rv = 0;
   if (fp_) {
+    fflush(fp_);
+#ifndef __MINGW32__
+    fsync(fileno(fp_));
+#else  // __MINGW32__
+    _commit(fileno(fp_));
+#endif // __MINGW32__
     rv = fclose(fp_);
     fp_ = nullptr;
   }
