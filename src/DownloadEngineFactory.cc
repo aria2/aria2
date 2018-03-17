@@ -206,8 +206,9 @@ std::unique_ptr<DownloadEngine> DownloadEngineFactory::newDownloadEngine(
       A2_LOG_NOTICE("RPC transport will be encrypted.");
     }
     static int families[] = {AF_INET, AF_INET6};
-    size_t familiesLength = op->getAsBool(PREF_DISABLE_IPV6) ? 1 : 2;
-    for (size_t i = 0; i < familiesLength; ++i) {
+    size_t familiesStart = op->getAsBool(PREF_DISABLE_IPV4) ? 1 : 0;
+    size_t familiesEnd = op->getAsBool(PREF_DISABLE_IPV6) ? 1 : 2;
+    for (size_t i = familiesStart; i < familiesEnd; ++i) {
       auto httpListenCommand = make_unique<HttpListenCommand>(
           e->newCUID(), e.get(), families[i], secure);
       if (httpListenCommand->bindPort(op->getAsInt(PREF_RPC_LISTEN_PORT))) {

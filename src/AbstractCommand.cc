@@ -808,6 +808,9 @@ std::string AbstractCommand::resolveHostname(std::vector<std::string>& addrs,
   {
     NameResolver res;
     res.setSocktype(SOCK_STREAM);
+    if (e_->getOption()->getAsBool(PREF_DISABLE_IPV4)) {
+      res.setFamily(AF_INET6);
+    }
     if (e_->getOption()->getAsBool(PREF_DISABLE_IPV6)) {
       res.setFamily(AF_INET);
     }

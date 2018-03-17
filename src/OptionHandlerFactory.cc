@@ -212,6 +212,13 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    OptionHandler* op(new BooleanOptionHandler(PREF_DISABLE_IPV4,
+                                               TEXT_DISABLE_IPV4, A2_V_FALSE,
+                                               OptionHandler::OPT_ARG));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
     OptionHandler* op(new BooleanOptionHandler(PREF_DISABLE_IPV6,
                                                TEXT_DISABLE_IPV6,
 #if defined(__MINGW32__) && !defined(__MINGW64__)

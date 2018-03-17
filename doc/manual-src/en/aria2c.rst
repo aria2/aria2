@@ -1274,6 +1274,10 @@ Advanced Options
     :option:`--deferred-input` option will be disabled when
     :option:`--save-session` is used together.
 
+.. option:: --disable-ipv4 [true|false]
+
+  Disable IPv4. Default: ``false``
+
 .. option:: --disable-ipv6 [true|false]
 
   Disable IPv6. This is useful if you have to use broken DNS and want

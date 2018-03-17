@@ -302,6 +302,8 @@ PrefPtr PREF_INTERFACE = makePref("interface");
 // value: string
 PrefPtr PREF_MULTIPLE_INTERFACE = makePref("multiple-interface");
 // value: true | false
+PrefPtr PREF_DISABLE_IPV4 = makePref("disable-ipv4");
+// value: true | false
 PrefPtr PREF_DISABLE_IPV6 = makePref("disable-ipv6");
 // value: true | false
 PrefPtr PREF_HUMAN_READABLE = makePref("human-readable");

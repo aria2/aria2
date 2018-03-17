@@ -1348,6 +1348,11 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
     параметр :option:`--deferred-input` будет заблокирован, если
     используется вместе с :option:`--save-session`.
 
+.. option:: --disable-ipv4 [true|false]
+
+  Отключить IPv4.
+  По умолчанию: ``false``
+
 .. option:: --disable-ipv6 [true|false]
 
   Отключить IPv6. Это полезно, если вы используете поврежденный DNS

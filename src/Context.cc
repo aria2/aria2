@@ -218,6 +218,9 @@ Context::Context(bool standalone, int argc, char** argv, const KeyVals& options)
   }
 #endif // defined(HAVE_SYS_RESOURCE_H) && defined(RLIMIT_NOFILE)
 
+  if (op->getAsBool(PREF_DISABLE_IPV4)) {
+    SocketCore::setProtocolFamily(AF_INET6);
+  }
   if (op->getAsBool(PREF_DISABLE_IPV6)) {
     SocketCore::setProtocolFamily(AF_INET);
   }

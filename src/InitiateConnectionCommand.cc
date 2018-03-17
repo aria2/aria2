@@ -137,7 +137,8 @@ InitiateConnectionCommand::createBackupIPv4ConnectCommand(
   // fashion.
   std::shared_ptr<BackupConnectInfo> info;
   char buf[sizeof(in6_addr)];
-  if (inetPton(AF_INET6, ipaddr.c_str(), &buf) == -1) {
+  if (inetPton(AF_INET6, ipaddr.c_str(), &buf) == -1 ||
+      getOption()->getAsBool(PREF_DISABLE_IPV4)) {
     return info;
   }
   A2_LOG_INFO("Searching IPv4 address for backup connection attempt");

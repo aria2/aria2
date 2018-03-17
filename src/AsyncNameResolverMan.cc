@@ -216,7 +216,7 @@ void configureAsyncNameResolverMan(AsyncNameResolverMan* asyncNameResolverMan,
   if (!net::getIPv4AddrConfigured() && !net::getIPv6AddrConfigured()) {
     net::checkAddrconfig();
   }
-  if (!net::getIPv4AddrConfigured()) {
+  if (!net::getIPv4AddrConfigured() || option->getAsBool(PREF_DISABLE_IPV4)) {
     asyncNameResolverMan->setIPv4(false);
   }
   if (!net::getIPv6AddrConfigured() || option->getAsBool(PREF_DISABLE_IPV6)) {

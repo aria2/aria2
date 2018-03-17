@@ -640,6 +640,8 @@
     "                              specify interface name, IP address and hostname.\n" \
     "                              If --interface is used, this option will be\n" \
     "                              ignored.")
+#define TEXT_DISABLE_IPV4                               \
+  _(" --disable-ipv4[=true|false]  Disable IPv4.")
 #define TEXT_DISABLE_IPV6                               \
   _(" --disable-ipv6[=true|false]  Disable IPv6.")
 #define TEXT_BT_SAVE_METADATA                                           \

@@ -183,9 +183,11 @@ void BtSetup::setup(std::vector<std::unique_ptr<Command>>& commands,
   }
   if (btReg->getTcpPort() == 0) {
     static int families[] = {AF_INET, AF_INET6};
-    size_t familiesLength =
+    size_t familiesStart =
+        e->getOption()->getAsBool(PREF_DISABLE_IPV4) ? 1 : 0;
+    size_t familiesEnd =
         e->getOption()->getAsBool(PREF_DISABLE_IPV6) ? 1 : 2;
-    for (size_t i = 0; i < familiesLength; ++i) {
+    for (size_t i = familiesStart; i < familiesEnd; ++i) {
       auto command =
           make_unique<PeerListenCommand>(e->newCUID(), e, families[i]);
       bool ret;

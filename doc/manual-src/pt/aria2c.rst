@@ -1145,6 +1145,10 @@ Opções Avançadas
   and options at startup.
   Padrão: ``false``
 
+.. option:: --disable-ipv4 [true|false]
+
+  Disable IPv4. Padrão: ``false``
+
 .. option:: --disable-ipv6 [true|false]
 
   Disable IPv6. This is useful if you have to use broken DNS and want

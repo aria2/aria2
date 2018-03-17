@@ -255,6 +255,8 @@ extern PrefPtr PREF_INTERFACE;
 // value: string
 extern PrefPtr PREF_MULTIPLE_INTERFACE;
 // value: true | false
+extern PrefPtr PREF_DISABLE_IPV4;
+// value: true | false
 extern PrefPtr PREF_DISABLE_IPV6;
 // value: true | false
 extern PrefPtr PREF_HUMAN_READABLE;

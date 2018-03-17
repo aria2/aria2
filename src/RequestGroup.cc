@@ -346,11 +346,13 @@ void RequestGroup::createInitialCommand(
             downloadContext_, pieceStorage_, peerStorage, btAnnounce, btRuntime,
             (progressInfoFile ? progressInfoFile : progressInfoFile_)));
 
-    if (option_->getAsBool(PREF_ENABLE_DHT) ||
+    if ((!e->getOption()->getAsBool(PREF_DISABLE_IPV4) &&
+        option_->getAsBool(PREF_ENABLE_DHT)) ||
         (!e->getOption()->getAsBool(PREF_DISABLE_IPV6) &&
          option_->getAsBool(PREF_ENABLE_DHT6))) {
 
-      if (option_->getAsBool(PREF_ENABLE_DHT)) {
+      if (!e->getOption()->getAsBool(PREF_DISABLE_IPV4) &&
+          option_->getAsBool(PREF_ENABLE_DHT)) {
         std::vector<std::unique_ptr<Command>> c, rc;
         std::tie(c, rc) = DHTSetup().setup(e, AF_INET);
 
