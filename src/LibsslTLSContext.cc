@@ -112,6 +112,8 @@ OpenSSLTLSContext::OpenSSLTLSContext(TLSSessionSide side, TLSVersion minVer)
 
   long ver_opts = 0;
   switch (minVer) {
+  case TLS_PROTO_TLS13:
+    ver_opts |= SSL_OP_NO_TLSv1_2;
   case TLS_PROTO_TLS12:
     ver_opts |= SSL_OP_NO_TLSv1_1;
   // fall through

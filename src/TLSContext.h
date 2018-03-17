@@ -49,6 +49,7 @@ enum TLSVersion {
   TLS_PROTO_TLS10,
   TLS_PROTO_TLS11,
   TLS_PROTO_TLS12,
+  TLS_PROTO_TLS13,
 };
 
 class TLSContext {

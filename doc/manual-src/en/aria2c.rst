@@ -1477,7 +1477,7 @@ Advanced Options
 .. option:: --min-tls-version=<VERSION>
 
   Specify minimum SSL/TLS version to enable.
-  Possible Values: ``SSLv3``, ``TLSv1``, ``TLSv1.1``, ``TLSv1.2``
+  Possible Values: ``SSLv3``, ``TLSv1``, ``TLSv1.1``, ``TLSv1.2``, ``TLSv1.3``
   Default: ``TLSv1``
 
 .. option:: --multiple-interface=<INTERFACES>

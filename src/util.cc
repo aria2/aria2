@@ -2135,6 +2135,9 @@ TLSVersion toTLSVersion(const std::string& ver)
   if (ver == A2_V_TLS12) {
     return TLS_PROTO_TLS12;
   }
+  if (ver == A2_V_TLS13) {
+    return TLS_PROTO_TLS13;
+  }
   return TLS_PROTO_TLS10;
 }
 #endif // ENABLE_SSL

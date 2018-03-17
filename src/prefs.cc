@@ -154,6 +154,7 @@ const std::string A2_V_SSL3("SSLv3");
 const std::string A2_V_TLS10("TLSv1");
 const std::string A2_V_TLS11("TLSv1.1");
 const std::string A2_V_TLS12("TLSv1.2");
+const std::string A2_V_TLS13("TLSv1.3");
 
 PrefPtr PREF_VERSION = makePref("version");
 PrefPtr PREF_HELP = makePref("help");
