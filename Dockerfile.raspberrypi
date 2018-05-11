@@ -55,7 +55,7 @@ RUN mkdir c-ares && cd c-ares && \
     make -s install
 
 RUN mkdir gmp && cd gmp && \
-    curl -Ls -o - 'https://gmplib.org/download/gmp/gmp-6.1.0.tar.lz' | \
+    curl -Ls -o - 'ftp://ftp.gnu.org/gnu/gmp/gmp-6.1.0.tar.lz' | \
         lzip -d | tar xf - --strip-components=1 && \
     ./configure \
         --disable-shared \
