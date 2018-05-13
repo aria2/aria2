@@ -32,9 +32,6 @@
 #  - $ ln -s ../makerelease-os.mk Makefile
 #  - $ make
 #
-# To make an both builds use instead:
-#  - $ make multi
-#
 # If you haven't checkout out a release tag, you need to specify NON_RELEASE.
 # $ export NON_RELEASE=1
 # to generate a dist with git commit
