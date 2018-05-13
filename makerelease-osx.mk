@@ -202,14 +202,14 @@ ARIA2_CHANGELOG = $(ARIA2_DOCDIR)/Changelog
 define ARIA2_DISTXML
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <installer-gui-script minSpecVersion="1">
-	<title>aria1 $(VERSION)</title>
+	<title>aria2 $(VERSION)</title>
 	<welcome file="README.html"/>
 	<pkg-ref id="aria2"/>
 	<pkg-ref id="aria2.paths"/>
-	<options customize="never" require-scripts="false" rootVolumeOnly="true"/>
+	<options require-scripts="false" rootVolumeOnly="true"/>
 	<volume-check>
 		<allowed-os-versions>
-			<os-version min="10.7"/>
+			<os-version min="10.10"/>
 		</allowed-os-versions>
 	</volume-check>
 	<domains enable_anywhere="false" enable_currentUserHome="false" enable_localSystem="true"/>
@@ -220,10 +220,10 @@ define ARIA2_DISTXML
 		</line>
 	</choices-outline>
 	<choice id="default"/>
-	<choice id="aria2" visible="false">
+	<choice id="aria2" start_visible="false" title="aria2" description="aria2 binary and manual pages">
 		<pkg-ref id="aria2"/>
 	</choice>
-	<choice id="aria2.paths" visible="false">
+	<choice id="aria2.paths" title="path_helper additions" description="add aria2 binary and manual directories to PATH and MANPATH environment variables">
 		<pkg-ref id="aria2.paths"/>
 	</choice>
 	<pkg-ref id="aria2" version="$(VERSION)" onConclusion="none">out.pkg</pkg-ref>
