@@ -5,18 +5,18 @@ aria2 Windows build is provided in 2 flavors: 32bit version and 64bit
 version. The executable was compiled using mingw-w64 cross compiler on
 Debian Linux.
 
-* gcc-mingw-w64               6.3.0-14+19.3
-* binutils-mingw-w64-i686     2.28-5+7.4+b4
-* binutils-mingw-w64-x86-64   2.28-5+7.4+b4
+* gcc-mingw-w64               7.3.0-18+20.3
+* binutils-mingw-w64-i686     2.30-13+8.1
+* binutils-mingw-w64-x86-64   2.30-13+8.1
 
 The executable is statically linked, so no extra DLLs are
 necessary. The linked libraries are:
 
 * gmp 6.1.2
-* expat 2.2.4
-* sqlite 3.20.1
+* expat 2.2.5
+* sqlite 3.23.1
 * zlib 1.2.11
-* c-ares 1.13.0
+* c-ares 1.14.0
 * libssh2 1.8.0
 
 This build has the following difference from the original release:
