@@ -242,7 +242,7 @@ bool File::mkdirs()
     }
   }
   return true;
-}
+} // namespace aria2
 
 mode_t File::mode()
 {

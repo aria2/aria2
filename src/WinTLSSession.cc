@@ -389,7 +389,8 @@ ssize_t WinTLSSession::writeData(const void* data, size_t len)
       if (state_ != st_closing) {
         A2_LOG_ERROR(fmt("WinTLS: Failed to encrypt a message! %s",
                          getLastErrorString().c_str()));
-      } else {
+      }
+      else {
         // On closing state, don't log this message in error level
         // because it seems that the encryption tends to fail in that
         // state.
