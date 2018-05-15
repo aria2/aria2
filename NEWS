@@ -1,89 +1,52 @@
-aria2 1.33.0
+aria2 1.34.0
 ============
 
 Release Note
 ------------
 
-This release fixes several bugs, and add new features.
+This release fixes several bugs.  See Changes for details.
 
 Changes
 -------
 
-* Include arm in a filename of android zip
+* mingw: Use SetFileTime to avoid DST adjustment
 
-* Upgrade base image of Dockerfile.mingw to ubuntu:16.04
+  GH-1079
 
-* wintls: Potential fix for undecrypted read
+* UnknownLengthPieceStorage: return piece length
 
-  GH-1021
+  show something in console status when downloading items
+  with unknown content length
 
-* libaria2: Return last error code from DownloadHandle::getErrorCode
+  Patch from kwkam
 
-  GH-991
+  GH-1065
 
-* Windows: pass writefds also as exceptfds to select()
+* WinConsoleFile: fix colour properly
 
-  winsock notifies connect() failures on exceptfds instead of
-  writefds.
+  Patch from kwkam
 
-  Fixes GH-969
-  Fixes GH-975
+  GH-1058
 
-* libuv: use pkg-config
+* util: also detect xdg_* env variables on windows
 
-* FeatureConfig: align text
+  so if people like to keep FHS they could define XDG_* for it
 
-* Update Dockerfile.mingw
+  Patch from kwkam
 
-  avoid docker cache when using git
+  GH-1057
 
-  Patch from qweaszxcdf
+* MacOS: Allocate once (apfs compat)
 
-  GH-970
+* Fix bug that signal handler does not work with libaria2
 
-* Add --peer-agent option
+  This commit fixes the bug that signal handler does not work with
+  libaria2 when aria2::RUN_ONCE is passed to aria2::run().
 
-  Add --peer-agent for setting the version/user agent used in the
-  extended handshake protocol for bittorrent.
+  GH-1053
 
-  Patch from Kurt Kartaltepe
+* Retry on HTTP 502
 
-  GH-947
+  Patch from nicolov
 
-* OSX: Allow to specify a build
-
-* OSX: update c-ares
-
-* [Docs, libaria2] Fix type of obj pushed into options vector
-
-  aria::KeyVals is a vector of pair of std strings, therefore the type
-  of object being pushed should be std::pair<std::string,
-  std::string>, however in the docs, the type of the said object is
-  KeyVals.  If one follows the docs, their code will fail to compile.
-
-  Patch from geetam
-
-  GH-941
-
-* AppleTLS: Silence cipher suite selection
-
-* Unbreak build OSX build
-
-* Update macOS versions
-
-* Add --bt-load-saved-metadata option
-
-  Before getting torrent metadata from DHT when downloading with
-  magnet link, first try to read file saved by --bt-save-metadata
-  option. If it is successful, then skip downloading metadata from
-  DHT.  By default, this feature is turned off.
-
-  GH-909
-
-* Fix regression in bfc54d0b9a694e5d87efd8ed11b5393bc4b66f93
-
-  Don't save control file if --auto-save-interval is 0.
-
-  GH-917
-
-* Fix infinite loop bug when file is not found
+  GH-1038
