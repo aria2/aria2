@@ -19,6 +19,8 @@
 #include <memory>
 #include <stdint.h>
 
+#include "a2functional.h"
+
 namespace bignum {
 
 template <size_t dim> class ulong {
@@ -31,17 +33,17 @@ private:
   std::unique_ptr<char_t[]> buf_;
 
 public:
-  inline ulong() : buf_(make_unique<char_t[]>(dim)) {}
-  inline ulong(size_t t) : buf_(make_unique<char_t[]>(dim))
+  inline ulong() : buf_(aria2::make_unique<char_t[]>(dim)) {}
+  inline ulong(size_t t) : buf_(aria2::make_unique<char_t[]>(dim))
   {
     memcpy(buf_.get(), (char_t*)&t, sizeof(t));
   }
-  inline ulong(const ulong<dim>& rhs) : buf_(make_unique<char_t[]>(dim))
+  inline ulong(const ulong<dim>& rhs) : buf_(aria2::make_unique<char_t[]>(dim))
   {
     memcpy(buf_.get(), rhs.buf_.get(), dim);
   }
   explicit inline ulong(const char_t* data, size_t size)
-      : buf_(make_unique<char_t[]>(dim))
+      : buf_(aria2::make_unique<char_t[]>(dim))
   {
     if (size > dim) {
       throw std::bad_alloc();
