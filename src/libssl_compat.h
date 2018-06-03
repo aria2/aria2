@@ -44,6 +44,7 @@
 #endif // !defined(LIBRESSL_VERSION_NUMBER)
 
 #define OPENSSL_101_API                                                        \
-  (!LIBRESSL_IN_USE && OPENSSL_VERSION_NUMBER >= 0x1010000fL)
+  ((!LIBRESSL_IN_USE && OPENSSL_VERSION_NUMBER >= 0x1010000fL) || \
+  (LIBRESSL_IN_USE && LIBRESSL_VERSION_NUMBER >= 0x20700000L))
 
 #endif // LIBSSL_COMPAT_H
