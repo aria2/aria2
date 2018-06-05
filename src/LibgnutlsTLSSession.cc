@@ -341,6 +341,9 @@ int GnuTLSSession::tlsConnect(const std::string& hostname, TLSVersion& version,
             commonName.assign(altName, altNameLen);
           }
         }
+        else {
+          commonName.assign(altName, altNameLen);
+        }
       }
     }
     if (!net::verifyHostname(hostname, dnsNames, ipAddrs, commonName)) {
