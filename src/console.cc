@@ -35,9 +35,9 @@
 #include "console.h"
 #include "NullOutputFile.h"
 #ifdef __MINGW32__
-#include "WinConsoleFile.h"
+#  include "WinConsoleFile.h"
 #else // !__MINGW32__
-#include "BufferedFile.h"
+#  include "BufferedFile.h"
 #endif // !__MINGW32__
 
 namespace aria2 {

@@ -46,9 +46,9 @@
 #include "fmt.h"
 
 #ifdef HAVE_GETRANDOM_INTERFACE
-#include <errno.h>
-#include <linux/errno.h>
-#include "getrandom_linux.h"
+#  include <errno.h>
+#  include <linux/errno.h>
+#  include "getrandom_linux.h"
 #endif
 
 namespace aria2 {
@@ -97,7 +97,7 @@ void SimpleRandomizer::getRandomBytes(unsigned char* buf, size_t len)
   BOOL r = CryptGenRandom(provider_, len, reinterpret_cast<BYTE*>(buf));
   assert(r);
 #else // ! __MINGW32__
-#if defined(HAVE_GETRANDOM_INTERFACE)
+#  if defined(HAVE_GETRANDOM_INTERFACE)
   static bool have_random_support = true;
   if (have_random_support) {
     auto rv = getrandom_linux(buf, len);
@@ -111,7 +111,7 @@ void SimpleRandomizer::getRandomBytes(unsigned char* buf, size_t len)
                 "implement this feature (ENOSYS)");
   }
 // Fall through to generic implementation
-#endif // defined(HAVE_GETRANDOM_INTERFACE)
+#  endif // defined(HAVE_GETRANDOM_INTERFACE)
   auto ubuf = reinterpret_cast<result_type*>(buf);
   size_t q = len / sizeof(result_type);
   auto dis = std::uniform_int_distribution<result_type>();
@@ -121,7 +121,7 @@ void SimpleRandomizer::getRandomBytes(unsigned char* buf, size_t len)
   const size_t r = len % sizeof(result_type);
   auto last = dis(gen_);
   memcpy(ubuf, &last, r);
-#endif // ! __MINGW32__
+#endif   // ! __MINGW32__
 }
 
 } // namespace aria2

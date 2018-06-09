@@ -37,8 +37,8 @@
 #include <sstream>
 
 #ifdef HAVE_LIBGNUTLS
-#include <gnutls/x509.h>
-#include <gnutls/pkcs12.h>
+#  include <gnutls/x509.h>
+#  include <gnutls/pkcs12.h>
 #endif // HAVE_LIBGNUTLS
 
 #include "LogFactory.h"

@@ -5,7 +5,7 @@
 #include "RpcRequest.h"
 #include "RecoverableException.h"
 #ifdef ENABLE_XML_RPC
-#include "XmlRpcRequestParserStateMachine.h"
+#  include "XmlRpcRequestParserStateMachine.h"
 #endif // ENABLE_XML_RPC
 
 namespace aria2 {

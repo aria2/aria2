@@ -78,7 +78,7 @@
 #include "Checksum.h"
 #include "ChecksumCheckIntegrityEntry.h"
 #ifdef HAVE_ZLIB
-#include "GZipDecodingStreamFilter.h"
+#  include "GZipDecodingStreamFilter.h"
 #endif // HAVE_ZLIB
 
 namespace aria2 {

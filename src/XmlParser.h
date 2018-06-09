@@ -61,9 +61,9 @@ struct SessionData {
 } // namespace aria2
 
 #ifdef HAVE_LIBXML2
-#include "Xml2XmlParser.h"
+#  include "Xml2XmlParser.h"
 #elif HAVE_LIBEXPAT
-#include "ExpatXmlParser.h"
+#  include "ExpatXmlParser.h"
 #endif
 
 namespace aria2 {

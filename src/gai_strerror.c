@@ -29,20 +29,20 @@
 #include "gai_strerror.h"
 
 #ifdef ENABLE_NLS
-#include <libintl.h>
+#  include <libintl.h>
 #endif
 
 #ifdef ENABLE_NLS
-#define _(string) gettext(string)
-#ifdef gettext_noop
-#define N_(string) gettext_noop(string)
+#  define _(string) gettext(string)
+#  ifdef gettext_noop
+#    define N_(string) gettext_noop(string)
+#  else
+#    define N_(string) (string)
+#  endif
 #else
-#define N_(string) (string)
-#endif
-#else
-#define gettext(string) (string)
-#define _(string) (string)
-#define N_(string) (string)
+#  define gettext(string) (string)
+#  define _(string) (string)
+#  define N_(string) (string)
 #endif
 
 /*

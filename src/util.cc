@@ -36,21 +36,21 @@
 
 #ifdef __sun
 // For opensolaris, just include signal.h which includes sys/signal.h
-#ifdef HAVE_SIGNAL_H
-#include <signal.h>
-#endif // HAVE_SIGNAL_H
-#else  // !__sun
-#ifdef HAVE_SYS_SIGNAL_H
-#include <sys/signal.h>
-#endif // HAVE_SYS_SIGNAL_H
-#ifdef HAVE_SIGNAL_H
-#include <signal.h>
-#endif // HAVE_SIGNAL_H
-#endif // !__sun
+#  ifdef HAVE_SIGNAL_H
+#    include <signal.h>
+#  endif // HAVE_SIGNAL_H
+#else    // !__sun
+#  ifdef HAVE_SYS_SIGNAL_H
+#    include <sys/signal.h>
+#  endif // HAVE_SYS_SIGNAL_H
+#  ifdef HAVE_SIGNAL_H
+#    include <signal.h>
+#  endif // HAVE_SIGNAL_H
+#endif   // !__sun
 
 #include <sys/types.h>
 #ifdef HAVE_PWD_H
-#include <pwd.h>
+#  include <pwd.h>
 #endif // HAVE_PWD_H
 
 #include <array>
@@ -91,7 +91,7 @@
 
 // For libc6 which doesn't define ULLONG_MAX properly because of broken limits.h
 #ifndef ULLONG_MAX
-#define ULLONG_MAX 18446744073709551615ULL
+#  define ULLONG_MAX 18446744073709551615ULL
 #endif // ULLONG_MAX
 
 namespace aria2 {
@@ -1749,12 +1749,12 @@ std::string getHomeDir()
   if (p) {
     return p;
   }
-#ifdef HAVE_PWD_H
+#  ifdef HAVE_PWD_H
   auto pw = getpwuid(geteuid());
   if (pw && pw->pw_dir) {
     return pw->pw_dir;
   }
-#endif // HAVE_PWD_H
+#  endif // HAVE_PWD_H
   return A2STR::NIL;
 }
 
@@ -1894,7 +1894,7 @@ void sleep(long seconds)
 #elif defined(HAVE_USLEEP)
   ::usleep(seconds * 1000000);
 #else
-#error no sleep function is available (nanosleep?)
+#  error no sleep function is available (nanosleep?)
 #endif
 }
 
@@ -1935,7 +1935,7 @@ void usleep(long microseconds)
   if (msec)
     Sleep(msec);
 #else
-#error no usleep function is available (nanosleep?)
+#  error no usleep function is available (nanosleep?)
 #endif
 }
 

@@ -22,9 +22,9 @@
 #include "FileEntry.h"
 #include "RpcMethodFactory.h"
 #ifdef ENABLE_BITTORRENT
-#include "BtRegistry.h"
-#include "BtRuntime.h"
-#include "bittorrent_helper.h"
+#  include "BtRegistry.h"
+#  include "BtRuntime.h"
+#  include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
 
 namespace aria2 {

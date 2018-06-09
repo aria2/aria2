@@ -40,7 +40,7 @@
 #include "util.h"
 #include "json.h"
 #ifdef HAVE_ZLIB
-#include "GZipEncoder.h"
+#  include "GZipEncoder.h"
 #endif // HAVE_ZLIB
 
 namespace aria2 {

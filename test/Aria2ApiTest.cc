@@ -79,11 +79,11 @@ void Aria2ApiTest::testAddMetalink()
   KeyVals options;
 #ifdef ENABLE_METALINK
   CPPUNIT_ASSERT_EQUAL(0, addMetalink(session_, &gids, metalinkPath, options));
-#ifdef ENABLE_BITTORRENT
+#  ifdef ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL((size_t)2, gids.size());
-#else  // !ENABLE_BITTORRENT
+#  else  // !ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL((size_t)1, gids.size());
-#endif // !ENABLE_BITTORRENT
+#  endif // !ENABLE_BITTORRENT
 
   gids.clear();
   options.push_back(KeyVals::value_type("file-allocation", "foo"));

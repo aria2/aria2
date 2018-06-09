@@ -38,13 +38,13 @@
 #include "common.h"
 
 #ifdef USE_INTERNAL_ARC4
-#include "InternalARC4Encryptor.h"
+#  include "InternalARC4Encryptor.h"
 #elif HAVE_LIBNETTLE
-#include "LibnettleARC4Encryptor.h"
+#  include "LibnettleARC4Encryptor.h"
 #elif HAVE_LIBGCRYPT
-#include "LibgcryptARC4Encryptor.h"
+#  include "LibgcryptARC4Encryptor.h"
 #elif HAVE_OPENSSL
-#include "LibsslARC4Encryptor.h"
+#  include "LibsslARC4Encryptor.h"
 #endif
 
 #endif // D_ARC4_ENCRYPTOR_H

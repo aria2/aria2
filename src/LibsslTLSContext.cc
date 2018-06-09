@@ -146,7 +146,7 @@ OpenSSLTLSContext::OpenSSLTLSContext(TLSSessionSide side, TLSVersion minVer)
   }
 
 #if OPENSSL_VERSION_NUMBER >= 0x0090800fL
-#ifndef OPENSSL_NO_ECDH
+#  ifndef OPENSSL_NO_ECDH
   auto ecdh = EC_KEY_new_by_curve_name(NID_X9_62_prime256v1);
   if (ecdh == nullptr) {
     A2_LOG_WARN(fmt("Failed to enable ECDHE cipher suites. Cause: %s",
@@ -156,8 +156,8 @@ OpenSSLTLSContext::OpenSSLTLSContext(TLSSessionSide side, TLSVersion minVer)
     SSL_CTX_set_tmp_ecdh(sslCtx_, ecdh);
     EC_KEY_free(ecdh);
   }
-#endif // OPENSSL_NO_ECDH
-#endif // OPENSSL_VERSION_NUMBER >= 0x0090800fL
+#  endif // OPENSSL_NO_ECDH
+#endif   // OPENSSL_VERSION_NUMBER >= 0x0090800fL
 }
 
 OpenSSLTLSContext::~OpenSSLTLSContext() { SSL_CTX_free(sslCtx_); }

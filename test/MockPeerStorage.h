@@ -1,11 +1,11 @@
 #ifndef D_MOCK_PEER_STORAGE_H
-#define D_MOCK_PEER_STORAGE_H
+#  define D_MOCK_PEER_STORAGE_H
 
-#include "PeerStorage.h"
+#  include "PeerStorage.h"
 
-#include <algorithm>
+#  include <algorithm>
 
-#include "Peer.h"
+#  include "Peer.h"
 
 namespace aria2 {
 

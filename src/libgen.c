@@ -38,9 +38,9 @@
 #include <libgen.h>
 
 #if defined(__CYGWIN__) || defined(__DJGPP__) || defined(__MINGW32__)
-#define IS_PATH_SEPARATOR(c) (((c) == '/') || ((c) == '\\'))
+#  define IS_PATH_SEPARATOR(c) (((c) == '/') || ((c) == '\\'))
 #else
-#define IS_PATH_SEPARATOR(c) ((c) == '/')
+#  define IS_PATH_SEPARATOR(c) ((c) == '/')
 #endif
 
 /* per http://www.scit.wlv.ac.uk/cgi-bin/mansec?3C+basename */

@@ -64,9 +64,9 @@
 #include "download_handlers.h"
 #include "SimpleRandomizer.h"
 #ifdef ENABLE_BITTORRENT
-#include "bittorrent_helper.h"
-#include "BtConstants.h"
-#include "ValueBaseBencodeParser.h"
+#  include "bittorrent_helper.h"
+#  include "BtConstants.h"
+#  include "ValueBaseBencodeParser.h"
 #endif // ENABLE_BITTORRENT
 
 namespace aria2 {

@@ -86,7 +86,7 @@
 #include "wallclock.h"
 #include "RpcMethodImpl.h"
 #ifdef ENABLE_BITTORRENT
-#include "bittorrent_helper.h"
+#  include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
 
 namespace aria2 {

@@ -61,8 +61,8 @@
 #include "download_handlers.h"
 #include "RequestGroupCriteria.h"
 #ifdef ENABLE_BITTORRENT
-#include "BtDependency.h"
-#include "download_helper.h"
+#  include "BtDependency.h"
+#  include "download_helper.h"
 #endif // ENABLE_BITTORRENT
 #include "Checksum.h"
 #include "ChunkChecksum.h"

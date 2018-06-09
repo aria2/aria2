@@ -14,9 +14,9 @@
 #include "FileEntry.h"
 #include "array_fun.h"
 #ifdef ENABLE_BITTORRENT
-#include "MockPeerStorage.h"
-#include "BtRuntime.h"
-#include "bittorrent_helper.h"
+#  include "MockPeerStorage.h"
+#  include "BtRuntime.h"
+#  include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
 
 namespace aria2 {
@@ -27,10 +27,10 @@ class DefaultBtProgressInfoFileTest : public CppUnit::TestFixture {
 #ifdef ENABLE_BITTORRENT
   CPPUNIT_TEST(testSave);
   CPPUNIT_TEST(testLoad);
-#ifndef WORDS_BIGENDIAN
+#  ifndef WORDS_BIGENDIAN
   CPPUNIT_TEST(testLoad_compat);
-#endif // !WORDS_BIGENDIAN
-#endif // ENABLE_BITTORRENT
+#  endif // !WORDS_BIGENDIAN
+#endif   // ENABLE_BITTORRENT
   CPPUNIT_TEST(testSave_nonBt);
   CPPUNIT_TEST(testLoad_nonBt);
 #ifndef WORDS_BIGENDIAN
@@ -89,10 +89,10 @@ public:
 #ifdef ENABLE_BITTORRENT
   void testSave();
   void testLoad();
-#ifndef WORDS_BIGENDIAN
+#  ifndef WORDS_BIGENDIAN
   void testLoad_compat();
-#endif // !WORDS_BIGENDIAN
-#endif // ENABLE_BITTORRENT
+#  endif // !WORDS_BIGENDIAN
+#endif   // ENABLE_BITTORRENT
   void testSave_nonBt();
   void testLoad_nonBt();
 #ifndef WORDS_BIGENDIAN
@@ -111,7 +111,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DefaultBtProgressInfoFileTest);
 
 // Because load.aria2 is made for little endian systems, exclude
 // testLoad_compat() for big endian systems.
-#ifndef WORDS_BIGENDIAN
+#  ifndef WORDS_BIGENDIAN
 void DefaultBtProgressInfoFileTest::testLoad_compat()
 {
   initializeMembers(1_k, 80_k);
@@ -159,7 +159,7 @@ void DefaultBtProgressInfoFileTest::testLoad_compat()
   CPPUNIT_ASSERT_EQUAL((size_t)2, piece2->getIndex());
   CPPUNIT_ASSERT_EQUAL((int64_t)512, piece2->getLength());
 }
-#endif // !WORDS_BIGENDIAN
+#  endif // !WORDS_BIGENDIAN
 
 void DefaultBtProgressInfoFileTest::testLoad()
 {

@@ -40,7 +40,7 @@
 #include "Logger.h"
 #include "a2functional.h"
 #ifdef HAVE_FALLOCATE
-#include "FallocFileAllocationIterator.h"
+#  include "FallocFileAllocationIterator.h"
 #endif // HAVE_FALLOCATE
 
 namespace aria2 {

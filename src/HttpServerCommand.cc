@@ -54,7 +54,7 @@
 #include "MessageDigest.h"
 #include "message_digest_helper.h"
 #ifdef ENABLE_WEBSOCKET
-#include "WebSocketResponseCommand.h"
+#  include "WebSocketResponseCommand.h"
 #endif // ENABLE_WEBSOCKET
 
 namespace aria2 {

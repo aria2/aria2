@@ -47,7 +47,7 @@
 #include "UDPTrackerClient.h"
 #include "BtRegistry.h"
 #ifdef ENABLE_ASYNC_DNS
-#include "AsyncNameResolverMan.h"
+#  include "AsyncNameResolverMan.h"
 #endif // ENABLE_ASYNC_DNS
 
 namespace aria2 {

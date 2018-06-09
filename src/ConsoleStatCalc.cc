@@ -35,10 +35,10 @@
 #include "ConsoleStatCalc.h"
 
 #ifdef HAVE_TERMIOS_H
-#include <termios.h>
+#  include <termios.h>
 #endif // HAVE_TERMIOS_H
 #ifdef HAVE_SYS_IOCTL_H
-#include <sys/ioctl.h>
+#  include <sys/ioctl.h>
 #endif // HAVE_SYS_IOCTL_H
 #include <unistd.h>
 
@@ -66,9 +66,9 @@
 #include "Option.h"
 
 #ifdef ENABLE_BITTORRENT
-#include "bittorrent_helper.h"
-#include "PeerStorage.h"
-#include "BtRegistry.h"
+#  include "bittorrent_helper.h"
+#  include "PeerStorage.h"
+#  include "BtRegistry.h"
 #endif // ENABLE_BITTORRENT
 
 namespace aria2 {
@@ -302,19 +302,19 @@ void ConsoleStatCalc::calculateStat(const DownloadEngine* e)
 
   if (isTTY_) {
 #ifndef __MINGW32__
-#ifdef HAVE_TERMIOS_H
+#  ifdef HAVE_TERMIOS_H
     struct winsize size;
     if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) == 0) {
       cols = std::max(0, (int)size.ws_col - 1);
     }
-#endif // HAVE_TERMIOS_H
-#else  // __MINGW32__
+#  endif // HAVE_TERMIOS_H
+#else    // __MINGW32__
     CONSOLE_SCREEN_BUFFER_INFO info;
     if (::GetConsoleScreenBufferInfo(::GetStdHandle(STD_OUTPUT_HANDLE),
                                      &info)) {
       cols = std::max(0, info.dwSize.X - 2);
     }
-#endif // !__MINGW32__
+#endif   // !__MINGW32__
     std::string line(cols, ' ');
     global::cout()->printf("\r%s\r", line.c_str());
   }

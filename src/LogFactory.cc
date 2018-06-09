@@ -38,7 +38,7 @@
 #include "RecoverableException.h"
 
 #ifdef HAVE_LIBGNUTLS
-#include <gnutls/gnutls.h>
+#  include <gnutls/gnutls.h>
 #endif // HAVE_LIBGNUTLS
 
 namespace aria2 {

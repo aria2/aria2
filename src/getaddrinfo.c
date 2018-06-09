@@ -76,66 +76,66 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#  include "config.h"
 #endif
 
 #ifdef __MINGW32__
-#include <winsock2.h>
-#undef ERROR
-#include <ws2tcpip.h>
+#  include <winsock2.h>
+#  undef ERROR
+#  include <ws2tcpip.h>
 #endif
 
 #ifdef HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
+#  include <sys/socket.h>
 #endif
 #ifdef HAVE_NETINET_IN_H
-#include <netinet/in.h>
+#  include <netinet/in.h>
 #endif
 #ifdef HAVE_ARPA_INET_H
-#include <arpa/inet.h>
+#  include <arpa/inet.h>
 #endif
 #ifdef HAVE_NETDB_H
-#include <netdb.h>
+#  include <netdb.h>
 #endif
 
 #include <sys/types.h>
 #include <stdio.h>
 
 #if defined(STDC_HEADERS) || defined(HAVE_STRING_H)
-#include <string.h>
-#if !defined(STDC_HEADERS) && defined(HAVE_MEMORY_H)
-#include <memory.h>
-#endif /* not STDC_HEADERS and HAVE_MEMORY_H */
-#else  /* not STDC_HEADERS and not HAVE_STRING_H */
-#include <strings.h>
+#  include <string.h>
+#  if !defined(STDC_HEADERS) && defined(HAVE_MEMORY_H)
+#    include <memory.h>
+#  endif /* not STDC_HEADERS and HAVE_MEMORY_H */
+#else    /* not STDC_HEADERS and not HAVE_STRING_H */
+#  include <strings.h>
 #endif /* not STDC_HEADERS and not HAVE_STRING_H */
 
 #ifdef HAVE_STDLIB_H
-#include <stdlib.h>
+#  include <stdlib.h>
 #endif
 
 #ifdef ENABLE_PTHREAD
-#include <pthread.h>
+#  include <pthread.h>
 #endif
 
 #ifdef ENABLE_NLS
-#include <libintl.h>
+#  include <libintl.h>
 #endif
 
 #ifndef HAVE_MEMCPY
-#define memcpy(d, s, n) bcopy((s), (d), (n))
-#ifdef __STDC__
+#  define memcpy(d, s, n) bcopy((s), (d), (n))
+#  ifdef __STDC__
 void* memchr(const void*, int, size_t);
 int memcmp(const void*, const void*, size_t);
 void* memmove(void*, const void*, size_t);
 void* memset(void*, int, size_t);
-#else  /* not __STDC__ */
+#  else  /* not __STDC__ */
 char* memchr();
 int memcmp();
 char* memmove();
 char* memset();
-#endif /* not __STDC__ */
-#endif /* not HAVE_MEMCPY */
+#  endif /* not __STDC__ */
+#endif   /* not HAVE_MEMCPY */
 
 #ifndef H_ERRNO_DECLARED
 extern int h_errno;
@@ -144,16 +144,16 @@ extern int h_errno;
 #include "getaddrinfo.h"
 
 #ifdef ENABLE_NLS
-#define _(string) gettext(string)
-#ifdef gettext_noop
-#define N_(string) gettext_noop(string)
+#  define _(string) gettext(string)
+#  ifdef gettext_noop
+#    define N_(string) gettext_noop(string)
+#  else
+#    define N_(string) (string)
+#  endif
 #else
-#define N_(string) (string)
-#endif
-#else
-#define gettext(string) (string)
-#define _(string) (string)
-#define N_(string) (string)
+#  define gettext(string) (string)
+#  define _(string) (string)
+#  define N_(string) (string)
 #endif
 
 /*

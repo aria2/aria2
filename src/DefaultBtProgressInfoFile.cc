@@ -57,9 +57,9 @@
 #include "BufferedFile.h"
 #include "SHA1IOFile.h"
 #ifdef ENABLE_BITTORRENT
-#include "PeerStorage.h"
-#include "BtRuntime.h"
-#include "bittorrent_helper.h"
+#  include "PeerStorage.h"
+#  include "BtRuntime.h"
+#  include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
 
 namespace aria2 {

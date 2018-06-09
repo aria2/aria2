@@ -39,7 +39,7 @@
 #include <sstream>
 
 #ifdef __MAC_10_6
-#include <Security/SecImportExport.h>
+#  include <Security/SecImportExport.h>
 #endif
 
 #include "LogFactory.h"
@@ -55,10 +55,10 @@ using namespace aria2;
 
 #if defined(__MAC_10_6)
 
-#if defined(__MAC_10_7)
+#  if defined(__MAC_10_7)
 static const void* query_keys[] = {kSecClass, kSecReturnRef, kSecMatchPolicy,
                                    kSecMatchLimit};
-#endif // defined(__MAC_10_7)
+#  endif // defined(__MAC_10_7)
 
 template <typename T> class CFRef {
   T ref_;
@@ -278,7 +278,7 @@ bool AppleTLSContext::tryAsFingerprint(const std::string& fingerprint)
   return false;
 
 #else // defined(__MAC_10_7)
-#if defined(__MAC_10_6)
+#  if defined(__MAC_10_6)
 
   CFRef<SecIdentitySearchRef> search;
   SecIdentitySearchRef raw_search;
@@ -304,14 +304,14 @@ bool AppleTLSContext::tryAsFingerprint(const std::string& fingerprint)
       fmt("Failed to lookup %s in your KeyChain", fingerprint.c_str()));
   return false;
 
-#else // defined(__MAC_10_6)
+#  else // defined(__MAC_10_6)
 
   A2_LOG_ERROR("Your system does not support creditials via fingerprints; "
                "Upgrade to OSX 10.6 or later");
   return false;
 
-#endif // defined(__MAC_10_6)
-#endif // defined(__MAC_10_7)
+#  endif // defined(__MAC_10_6)
+#endif   // defined(__MAC_10_7)
 }
 
 bool AppleTLSContext::tryAsPKCS12(const std::string& certfile)

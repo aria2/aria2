@@ -41,7 +41,7 @@
 #include <random>
 
 #ifdef __MINGW32__
-#include <wincrypt.h>
+#  include <wincrypt.h>
 #endif
 
 namespace aria2 {

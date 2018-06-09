@@ -41,7 +41,8 @@ namespace aria2 {
 
 #ifdef HAVE_ZLIB
 
-#define ADLER32_MESSAGE_DIGEST {"adler32", make_hi<Adler32MessageDigestImpl>()},
+#  define ADLER32_MESSAGE_DIGEST                                               \
+    {"adler32", make_hi<Adler32MessageDigestImpl>()},
 
 class Adler32MessageDigestImpl : public MessageDigestImpl {
 public:
@@ -58,7 +59,7 @@ private:
 
 #else // !HAVE_ZLIB
 
-#define ADLER32_MESSAGE_DIGEST
+#  define ADLER32_MESSAGE_DIGEST
 
 #endif // !HAVE_ZLIB
 

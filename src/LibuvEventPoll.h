@@ -46,7 +46,7 @@
 #include "a2functional.h"
 
 #ifdef ENABLE_ASYNC_DNS
-#include "AsyncNameResolver.h"
+#  include "AsyncNameResolver.h"
 #endif // ENABLE_ASYNC_DNS
 
 namespace aria2 {

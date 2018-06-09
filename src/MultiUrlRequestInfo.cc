@@ -66,15 +66,15 @@
 #include "Notifier.h"
 #include "console.h"
 #ifdef ENABLE_WEBSOCKET
-#include "WebSocketSessionMan.h"
+#  include "WebSocketSessionMan.h"
 #else // !ENABLE_WEBSOCKET
-#include "NullWebSocketSessionMan.h"
+#  include "NullWebSocketSessionMan.h"
 #endif // !ENABLE_WEBSOCKET
 #ifdef ENABLE_SSL
-#include "TLSContext.h"
+#  include "TLSContext.h"
 #endif // ENABLE_SSL
 #ifdef ENABLE_ASYNC_DNS
-#include "AsyncNameResolver.h"
+#  include "AsyncNameResolver.h"
 #endif // ENABLE_ASYNC_DNS
 
 namespace aria2 {
@@ -389,10 +389,10 @@ void MultiUrlRequestInfo::setupSignalHandlers()
 #ifdef HAVE_SIGACTION
   sigaddset(&mask_, SIGINT);
   sigaddset(&mask_, SIGTERM);
-#ifdef SIGHUP
+#  ifdef SIGHUP
   sigaddset(&mask_, SIGHUP);
-#endif // SIGHUP
-#endif // HAVE_SIGACTION
+#  endif // SIGHUP
+#endif   // HAVE_SIGACTION
 
 #ifdef SIGHUP
   util::setGlobalSignalHandler(SIGHUP, &mask_, handler, 0);

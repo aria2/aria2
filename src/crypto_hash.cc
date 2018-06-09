@@ -12,11 +12,11 @@
 
 // Compiler hints
 #if defined(__GNUG__)
-#define likely(x) __builtin_expect(!!(x), 1)
-#define unlikely(x) __builtin_expect(!!(x), 0)
+#  define likely(x) __builtin_expect(!!(x), 1)
+#  define unlikely(x) __builtin_expect(!!(x), 0)
 #else // ! __GNUG_
-#define likely(x) (x)
-#define unlikely(x) (x)
+#  define likely(x) (x)
+#  define unlikely(x) (x)
 #endif // ! __GNUG__
 
 // Basic operations
@@ -52,9 +52,9 @@ template <typename T> static forceinline T par(T b, T c, T d)
 }
 
 #ifdef __GNUG__
-#define __hash_maybe_memfence __asm__("" ::: "memory")
+#  define __hash_maybe_memfence __asm__("" ::: "memory")
 #else // __GNUG__
-#define __hash_maybe_memfence
+#  define __hash_maybe_memfence
 #endif // __GNUG__
 
 // Template for the |::transform|s

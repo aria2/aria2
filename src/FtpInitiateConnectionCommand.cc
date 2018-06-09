@@ -61,8 +61,8 @@
 #include "FtpTunnelRequestConnectChain.h"
 #include "HttpRequestConnectChain.h"
 #ifdef HAVE_LIBSSH2
-#include "SftpNegotiationConnectChain.h"
-#include "SftpNegotiationCommand.h"
+#  include "SftpNegotiationConnectChain.h"
+#  include "SftpNegotiationCommand.h"
 #endif // HAVE_LIBSSH2
 
 namespace aria2 {

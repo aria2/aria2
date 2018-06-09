@@ -91,7 +91,7 @@ GnuTLSSession::~GnuTLSSession()
 #if (GNUTLS_VERSION_NUMBER >= 0x030103 &&                                      \
      GNUTLS_VERSION_NUMBER <= 0x030112) ||                                     \
     (GNUTLS_VERSION_NUMBER >= 0x030200 && GNUTLS_VERSION_NUMBER <= 0x030208)
-#define A2_DISABLE_OCSP 1
+#  define A2_DISABLE_OCSP 1
 #endif
 
 int GnuTLSSession::init(sock_t sockfd)
@@ -99,11 +99,11 @@ int GnuTLSSession::init(sock_t sockfd)
 #if GNUTLS_VERSION_NUMBER >= 0x030000
   unsigned int flags =
       tlsContext_->getSide() == TLS_CLIENT ? GNUTLS_CLIENT : GNUTLS_SERVER;
-#ifdef A2_DISABLE_OCSP
+#  ifdef A2_DISABLE_OCSP
   if (tlsContext_->getSide() == TLS_CLIENT) {
     flags |= GNUTLS_NO_EXTENSIONS;
   }
-#endif // A2_DISABLE_OCSP
+#  endif // A2_DISABLE_OCSP
 
   rv_ = gnutls_init(&sslSession_, flags);
 #else  // GNUTLS_VERSION_NUMBER >= 0x030000

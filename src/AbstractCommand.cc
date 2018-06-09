@@ -68,8 +68,8 @@
 #include "SocketRecvBuffer.h"
 #include "ChecksumCheckIntegrityEntry.h"
 #ifdef ENABLE_ASYNC_DNS
-#include "AsyncNameResolver.h"
-#include "AsyncNameResolverMan.h"
+#  include "AsyncNameResolver.h"
+#  include "AsyncNameResolverMan.h"
 #endif // ENABLE_ASYNC_DNS
 
 namespace aria2 {

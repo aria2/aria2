@@ -61,7 +61,7 @@
 #include "array_fun.h"
 #include "MessageDigest.h"
 #ifdef HAVE_ZLIB
-#include "GZipDecodingStreamFilter.h"
+#  include "GZipDecodingStreamFilter.h"
 #endif // HAVE_ZLIB
 
 namespace aria2 {

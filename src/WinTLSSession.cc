@@ -44,17 +44,17 @@
 #include "util.h"
 
 #ifndef SECBUFFER_ALERT
-#define SECBUFFER_ALERT 17
+#  define SECBUFFER_ALERT 17
 #endif
 
 #ifndef SZ_ALG_MAX_SIZE
-#define SZ_ALG_MAX_SIZE 64
+#  define SZ_ALG_MAX_SIZE 64
 #endif
 #ifndef SECPKGCONTEXT_CIPHERINFO_V1
-#define SECPKGCONTEXT_CIPHERINFO_V1 1
+#  define SECPKGCONTEXT_CIPHERINFO_V1 1
 #endif
 #ifndef SECPKG_ATTR_CIPHER_INFO
-#define SECPKG_ATTR_CIPHER_INFO 0x64
+#  define SECPKG_ATTR_CIPHER_INFO 0x64
 #endif
 
 namespace {

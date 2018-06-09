@@ -41,7 +41,7 @@
 #include "SocketCore.h"
 #include "SocketRecvBuffer.h"
 #ifdef HAVE_LIBSSH2
-#include "SftpNegotiationCommand.h"
+#  include "SftpNegotiationCommand.h"
 #endif // HAVE_LIBSSH2
 
 namespace aria2 {

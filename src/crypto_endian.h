@@ -12,11 +12,11 @@
 namespace crypto {
 
 #if defined(__GNUG__)
-#define forceinline __attribute__((always_inline)) inline
+#  define forceinline __attribute__((always_inline)) inline
 #elif defined(_MSC_VER)
-#define forceinline __forceinline
+#  define forceinline __forceinline
 #else // ! _MSC_VER
-#define forceinline inline
+#  define forceinline inline
 #endif // ! _MSC_VER
 
 /* In order for this implementation to work your system (or you yourself) must
@@ -29,18 +29,18 @@ namespace crypto {
  */
 #if defined(_WIN32) || defined(__INTEL_COMPILER) || defined(_MSC_VER)
 // Itanium is dead!
-#define LITTLE_ENDIAN 1234
-#define BIG_ENDIAN 4321
-#define BYTE_ORDER LITTLE_ENDIAN
+#  define LITTLE_ENDIAN 1234
+#  define BIG_ENDIAN 4321
+#  define BYTE_ORDER LITTLE_ENDIAN
 #else // !  defined(_WIN32) || defined(__INTEL_COMPILER) || defined (_MSC_VER)
-#ifdef HAVE_SYS_PARAM_H
-#include <sys/param.h>
-#endif // HAVE_SYS_PARAM_H
+#  ifdef HAVE_SYS_PARAM_H
+#    include <sys/param.h>
+#  endif // HAVE_SYS_PARAM_H
 #endif // !  defined(_WIN32) || defined(__INTEL_COMPILER) || defined (_MSC_VER)
 
 #if !defined(LITTLE_ENDIAN) || !defined(BIG_ENDIAN) || !defined(BYTE_ORDER) || \
     (LITTLE_ENDIAN != BYTE_ORDER && BIG_ENDIAN != BYTE_ORDER)
-#error Unsupported byte order/endianness
+#  error Unsupported byte order/endianness
 #endif
 
 // Lets spend some quality time mucking around with byte swap and endian-ness.
@@ -52,7 +52,7 @@ forceinline uint32_t __crypto_bswap32(uint32_t p)
   return p;
 }
 #elif defined(__GNUG__)
-#define __crypto_bswap32 __builtin_bswap32
+#  define __crypto_bswap32 __builtin_bswap32
 #else  // defined(__GNUG__)
 forceinline uint32_t __crypto_bswap32(uint32_t n)
 {
@@ -69,7 +69,7 @@ forceinline uint64_t __crypto_bswap64(uint64_t p)
   return p;
 }
 #elif defined(__GNUG__)
-#define __crypto_bswap64 __builtin_bswap64
+#  define __crypto_bswap64 __builtin_bswap64
 #else  // defined(__GNUG__)
 forceinline uint64_t __crypto_bswap64(uint64_t n)
 {
@@ -99,11 +99,11 @@ template <> inline uint64_t __crypto_bswap(uint64_t n)
 
 // __crypto_le and __crypto_be depending on byte order
 #if LITTLE_ENDIAN == BYTE_ORDER
-#define __crypto_be(n) __crypto_bswap(n)
-#define __crypto_le(n) (n)
+#  define __crypto_be(n) __crypto_bswap(n)
+#  define __crypto_le(n) (n)
 #else // LITTLE_ENDIAN != WORD_ORDER
-#define __crypto_be(n) (n)
-#define __crypto_le(n) __crypto_bswap(n)
+#  define __crypto_be(n) (n)
+#  define __crypto_le(n) __crypto_bswap(n)
 #endif // LITTLE_ENDIAN != WORD_ORDER
 
 } // namespace crypto

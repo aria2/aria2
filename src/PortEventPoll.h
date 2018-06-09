@@ -38,7 +38,7 @@
 #include "EventPoll.h"
 
 #ifdef HAVE_PORT_H
-#include <port.h>
+#  include <port.h>
 #endif // HAVE_PORT_H
 
 #include <set>
@@ -46,7 +46,7 @@
 #include "Event.h"
 #include "a2functional.h"
 #ifdef ENABLE_ASYNC_DNS
-#include "AsyncNameResolver.h"
+#  include "AsyncNameResolver.h"
 #endif // ENABLE_ASYNC_DNS
 
 namespace aria2 {

@@ -35,7 +35,7 @@
 #include "SelectEventPoll.h"
 
 #ifdef __MINGW32__
-#include <cassert>
+#  include <cassert>
 #endif // __MINGW32__
 #include <cstring>
 #include <algorithm>

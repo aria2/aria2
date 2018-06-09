@@ -15,7 +15,7 @@
 #include "util.h"
 #include "FileEntry.h"
 #ifdef ENABLE_BITTORRENT
-#include "bittorrent_helper.h"
+#  include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
 
 namespace aria2 {
@@ -215,11 +215,11 @@ void DownloadHelperTest::testCreateRequestGroupForUri_Metalink()
 
 // group1: http://alpha/file, ...
 // group2-7: 6 file entry in Metalink and 1 torrent file download
-#ifdef ENABLE_BITTORRENT
+#  ifdef ENABLE_BITTORRENT
     CPPUNIT_ASSERT_EQUAL((size_t)7, result.size());
-#else  // !ENABLE_BITTORRENT
+#  else  // !ENABLE_BITTORRENT
     CPPUNIT_ASSERT_EQUAL((size_t)6, result.size());
-#endif // !ENABLE_BITTORRENT
+#  endif // !ENABLE_BITTORRENT
 
     std::shared_ptr<RequestGroup> group = result[0];
     auto xuris = group->getDownloadContext()->getFirstFileEntry()->getUris();
@@ -349,11 +349,11 @@ void DownloadHelperTest::testCreateRequestGroupForMetalink()
 
     createRequestGroupForMetalink(result, option_);
 
-#ifdef ENABLE_BITTORRENT
+#  ifdef ENABLE_BITTORRENT
     CPPUNIT_ASSERT_EQUAL((size_t)6, result.size());
-#else  // !ENABLE_BITTORRENT
+#  else  // !ENABLE_BITTORRENT
     CPPUNIT_ASSERT_EQUAL((size_t)5, result.size());
-#endif // !ENABLE_BITTORRENT
+#  endif // !ENABLE_BITTORRENT
     std::shared_ptr<RequestGroup> group = result[0];
     auto uris = group->getDownloadContext()->getFirstFileEntry()->getUris();
     std::sort(uris.begin(), uris.end());

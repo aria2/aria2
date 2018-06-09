@@ -58,9 +58,9 @@
 #include "fmt.h"
 
 #ifdef __APPLE__
-#import <sys/types.h>
-#import <sys/sysctl.h>
-#define MIBSIZE 4
+#  import <sys/types.h>
+#  import <sys/sysctl.h>
+#  define MIBSIZE 4
 #endif
 
 namespace aria2 {

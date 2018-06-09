@@ -37,8 +37,8 @@
 #include <stdlib.h>
 
 #ifdef __MINGW32__
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#  define WIN32_LEAN_AND_MEAN
+#  include <windows.h>
 #endif // __MINGW32__
 
 #include "asctime_r.h"

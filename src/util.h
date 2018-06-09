@@ -65,11 +65,11 @@
 #include "prefs.h"
 
 #ifdef ENABLE_SSL
-#include "TLSContext.h"
+#  include "TLSContext.h"
 #endif // ENABLE_SSL
 
 #ifndef HAVE_SIGACTION
-#define sigset_t int
+#  define sigset_t int
 #endif // HAVE_SIGACTION
 
 namespace aria2 {
@@ -105,8 +105,8 @@ std::string wCharToUtf8(const std::wstring& wsrc);
 // replace any backslash '\' in |src| with '/' and returns it.
 std::string toForwardSlash(const std::string& src);
 #else // !__MINGW32__
-#define utf8ToWChar(src) src
-#define utf8ToNative(src) src
+#  define utf8ToWChar(src) src
+#  define utf8ToNative(src) src
 #endif // !__MINGW32__
 
 namespace util {

@@ -48,7 +48,7 @@
 #define paramErr -50
 
 #ifndef errSSLServerAuthCompleted
-#define errSSLServerAuthCompleted -9841
+#  define errSSLServerAuthCompleted -9841
 #endif
 
 namespace {

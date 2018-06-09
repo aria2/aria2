@@ -43,7 +43,7 @@
 #include "A2STR.h"
 #include "cookie_helper.h"
 #ifndef HAVE_SQLITE3_OPEN_V2
-#include "File.h"
+#  include "File.h"
 #endif // !HAVE_SQLITE3_OPEN_V2
 
 namespace aria2 {

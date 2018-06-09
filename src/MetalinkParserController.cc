@@ -50,7 +50,7 @@
 #include "ChunkChecksum.h"
 #include "MessageDigest.h"
 #ifdef ENABLE_BITTORRENT
-#include "magnet.h"
+#  include "magnet.h"
 #endif // ENABLE_BITTORRENT
 
 namespace aria2 {

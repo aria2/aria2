@@ -61,8 +61,8 @@
 #include "JsonDiskWriter.h"
 #include "ValueBaseJsonParser.h"
 #ifdef ENABLE_XML_RPC
-#include "XmlRpcRequestParserStateMachine.h"
-#include "XmlRpcDiskWriter.h"
+#  include "XmlRpcRequestParserStateMachine.h"
+#  include "XmlRpcDiskWriter.h"
 #endif // ENABLE_XML_RPC
 
 namespace aria2 {

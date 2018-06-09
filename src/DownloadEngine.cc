@@ -68,10 +68,10 @@
 #include "fmt.h"
 #include "wallclock.h"
 #ifdef ENABLE_BITTORRENT
-#include "BtRegistry.h"
+#  include "BtRegistry.h"
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_WEBSOCKET
-#include "WebSocketSessionMan.h"
+#  include "WebSocketSessionMan.h"
 #endif // ENABLE_WEBSOCKET
 #include "Option.h"
 #include "util_security.h"

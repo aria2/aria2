@@ -38,37 +38,37 @@
 #include <cstring>
 
 #ifdef HAVE_ZLIB
-#include <zlib.h>
+#  include <zlib.h>
 #endif // HAVE_ZLIB
 #ifdef HAVE_LIBXML2
-#include <libxml/xmlversion.h>
+#  include <libxml/xmlversion.h>
 #endif // HAVE_LIBXML2
 #ifdef HAVE_LIBEXPAT
-#include <expat.h>
+#  include <expat.h>
 #endif // HAVE_LIBEXPAT
 #ifdef HAVE_SQLITE3
-#include <sqlite3.h>
+#  include <sqlite3.h>
 #endif // HAVE_SQLITE3
 #ifdef HAVE_LIBGNUTLS
-#include <gnutls/gnutls.h>
+#  include <gnutls/gnutls.h>
 #endif // HAVE_LIBGNUTLS
 #ifdef HAVE_OPENSSL
-#include <openssl/opensslv.h>
+#  include <openssl/opensslv.h>
 #endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGMP
-#include <gmp.h>
+#  include <gmp.h>
 #endif // HAVE_LIBGMP
 #ifdef HAVE_LIBGCRYPT
-#include <gcrypt.h>
+#  include <gcrypt.h>
 #endif // HAVE_LIBGCRYPT
 #ifdef HAVE_LIBCARES
-#include <ares.h>
+#  include <ares.h>
 #endif // HAVE_LIBCARES
 #ifdef HAVE_SYS_UTSNAME_H
-#include <sys/utsname.h>
+#  include <sys/utsname.h>
 #endif // HAVE_SYS_UTSNAME_H
 #ifdef HAVE_LIBSSH2
-#include <libssh2.h>
+#  include <libssh2.h>
 #endif // HAVE_LIBSSH2
 #include "util.h"
 
@@ -252,11 +252,11 @@ std::string usedCompilerAndPlatform()
   std::stringstream rv;
 #if defined(__clang_version__)
 
-#ifdef __apple_build_version__
+#  ifdef __apple_build_version__
   rv << "Apple LLVM ";
-#else  // !__apple_build_version__
+#  else  // !__apple_build_version__
   rv << "clang ";
-#endif // !__apple_build_version__
+#  endif // !__apple_build_version__
   rv << __clang_version__;
 
 #elif defined(__INTEL_COMPILER)
@@ -266,23 +266,23 @@ std::string usedCompilerAndPlatform()
 #elif defined(__MINGW64_VERSION_STR)
 
   rv << "mingw-w64 " << __MINGW64_VERSION_STR;
-#ifdef __MINGW64_VERSION_STATE
+#  ifdef __MINGW64_VERSION_STATE
   rv << " (" << __MINGW64_VERSION_STATE << ")";
-#endif // __MINGW64_VERSION_STATE
+#  endif // __MINGW64_VERSION_STATE
   rv << " / gcc " << __VERSION__;
 
 #elif defined(__GNUG__)
 
-#ifdef __MINGW32__
+#  ifdef __MINGW32__
   rv << "mingw ";
-#ifdef __MINGW32_MAJOR_VERSION
+#    ifdef __MINGW32_MAJOR_VERSION
   rv << (int)__MINGW32_MAJOR_VERSION;
-#endif // __MINGW32_MAJOR_VERSION
-#ifdef __MINGW32_MINOR_VERSION
+#    endif // __MINGW32_MAJOR_VERSION
+#    ifdef __MINGW32_MINOR_VERSION
   rv << "." << (int)__MINGW32_MINOR_VERSION;
-#endif // __MINGW32_MINOR_VERSION
+#    endif // __MINGW32_MINOR_VERSION
   rv << " / ";
-#endif // __MINGW32__
+#  endif   // __MINGW32__
   rv << "gcc " << __VERSION__;
 
 #else // !defined(__GNUG__)
@@ -348,13 +348,13 @@ std::string getOperatingSystemInfo()
   if (ovi.szCSDVersion[0]) {
     rv << " (" << ovi.szCSDVersion << ")";
   }
-#ifdef _WIN64
+#  ifdef _WIN64
   rv << " (x86_64)";
-#endif // _WIN64
+#  endif // _WIN64
   rv << " (" << ovi.dwMajorVersion << "." << ovi.dwMinorVersion << ")";
   return rv.str();
 #else //! _WIN32
-#ifdef HAVE_SYS_UTSNAME_H
+#  ifdef HAVE_SYS_UTSNAME_H
   struct utsname name;
   if (!uname(&name)) {
     if (!strstr(name.version, name.sysname) ||
@@ -367,9 +367,9 @@ std::string getOperatingSystemInfo()
     }
     return name.version;
   }
-#endif // HAVE_SYS_UTSNAME_H
+#  endif // HAVE_SYS_UTSNAME_H
   return "Unknown system";
-#endif // !_WIN32
+#endif   // !_WIN32
 }
 
 } // namespace aria2

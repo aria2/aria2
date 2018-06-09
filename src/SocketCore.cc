@@ -35,12 +35,12 @@
 #include "SocketCore.h"
 
 #ifdef HAVE_IPHLPAPI_H
-#include <iphlpapi.h>
+#  include <iphlpapi.h>
 #endif // HAVE_IPHLPAPI_H
 
 #include <unistd.h>
 #ifdef HAVE_IFADDRS_H
-#include <ifaddrs.h>
+#  include <ifaddrs.h>
 #endif // HAVE_IFADDRS_H
 
 #include <cerrno>
@@ -59,44 +59,44 @@
 #include "LogFactory.h"
 #include "A2STR.h"
 #ifdef ENABLE_SSL
-#include "TLSContext.h"
-#include "TLSSession.h"
+#  include "TLSContext.h"
+#  include "TLSSession.h"
 #endif // ENABLE_SSL
 #ifdef HAVE_LIBSSH2
-#include "SSHSession.h"
+#  include "SSHSession.h"
 #endif // HAVE_LIBSSH2
 
 namespace aria2 {
 
 #ifndef __MINGW32__
-#define SOCKET_ERRNO (errno)
+#  define SOCKET_ERRNO (errno)
 #else
-#define SOCKET_ERRNO (WSAGetLastError())
+#  define SOCKET_ERRNO (WSAGetLastError())
 #endif // __MINGW32__
 
 #ifdef __MINGW32__
-#define A2_EINPROGRESS WSAEWOULDBLOCK
-#define A2_EWOULDBLOCK WSAEWOULDBLOCK
-#define A2_EINTR WSAEINTR
-#define A2_WOULDBLOCK(e) (e == WSAEWOULDBLOCK)
+#  define A2_EINPROGRESS WSAEWOULDBLOCK
+#  define A2_EWOULDBLOCK WSAEWOULDBLOCK
+#  define A2_EINTR WSAEINTR
+#  define A2_WOULDBLOCK(e) (e == WSAEWOULDBLOCK)
 #else // !__MINGW32__
-#define A2_EINPROGRESS EINPROGRESS
-#ifndef EWOULDBLOCK
-#define EWOULDBLOCK EAGAIN
-#endif // EWOULDBLOCK
-#define A2_EWOULDBLOCK EWOULDBLOCK
-#define A2_EINTR EINTR
-#if EWOULDBLOCK == EAGAIN
-#define A2_WOULDBLOCK(e) (e == EWOULDBLOCK)
-#else // EWOULDBLOCK != EAGAIN
-#define A2_WOULDBLOCK(e) (e == EWOULDBLOCK || e == EAGAIN)
-#endif // EWOULDBLOCK != EAGAIN
-#endif // !__MINGW32__
+#  define A2_EINPROGRESS EINPROGRESS
+#  ifndef EWOULDBLOCK
+#    define EWOULDBLOCK EAGAIN
+#  endif // EWOULDBLOCK
+#  define A2_EWOULDBLOCK EWOULDBLOCK
+#  define A2_EINTR EINTR
+#  if EWOULDBLOCK == EAGAIN
+#    define A2_WOULDBLOCK(e) (e == EWOULDBLOCK)
+#  else // EWOULDBLOCK != EAGAIN
+#    define A2_WOULDBLOCK(e) (e == EWOULDBLOCK || e == EAGAIN)
+#  endif // EWOULDBLOCK != EAGAIN
+#endif   // !__MINGW32__
 
 #ifdef __MINGW32__
-#define CLOSE(X) ::closesocket(X)
+#  define CLOSE(X) ::closesocket(X)
 #else
-#define CLOSE(X) close(X)
+#  define CLOSE(X) close(X)
 #endif // __MINGW32__
 
 namespace {
@@ -655,12 +655,12 @@ void SocketCore::closeConnection()
 }
 
 #ifndef __MINGW32__
-#define CHECK_FD(fd)                                                           \
-  if (fd < 0 || FD_SETSIZE <= fd) {                                            \
-    logger_->warn("Detected file descriptor >= FD_SETSIZE or < 0. "            \
-                  "Download may slow down or fail.");                          \
-    return false;                                                              \
-  }
+#  define CHECK_FD(fd)                                                         \
+    if (fd < 0 || FD_SETSIZE <= fd) {                                          \
+      logger_->warn("Detected file descriptor >= FD_SETSIZE or < 0. "          \
+                    "Download may slow down or fail.");                        \
+      return false;                                                            \
+    }
 #endif // !__MINGW32__
 
 bool SocketCore::isWritable(time_t timeout)
@@ -681,9 +681,9 @@ bool SocketCore::isWritable(time_t timeout)
   }
   throw DL_RETRY_EX(fmt(EX_SOCKET_CHECK_WRITABLE, errorMsg(errNum).c_str()));
 #else // !HAVE_POLL
-#ifndef __MINGW32__
+#  ifndef __MINGW32__
   CHECK_FD(sockfd_);
-#endif // !__MINGW32__
+#  endif // !__MINGW32__
   fd_set fds;
   FD_ZERO(&fds);
   FD_SET(sockfd_, &fds);
@@ -705,7 +705,7 @@ bool SocketCore::isWritable(time_t timeout)
     return false;
   }
   throw DL_RETRY_EX(fmt(EX_SOCKET_CHECK_WRITABLE, errorMsg(errNum).c_str()));
-#endif // !HAVE_POLL
+#endif   // !HAVE_POLL
 }
 
 bool SocketCore::isReadable(time_t timeout)
@@ -726,9 +726,9 @@ bool SocketCore::isReadable(time_t timeout)
   }
   throw DL_RETRY_EX(fmt(EX_SOCKET_CHECK_READABLE, errorMsg(errNum).c_str()));
 #else // !HAVE_POLL
-#ifndef __MINGW32__
+#  ifndef __MINGW32__
   CHECK_FD(sockfd_);
-#endif // !__MINGW32__
+#  endif // !__MINGW32__
   fd_set fds;
   FD_ZERO(&fds);
   FD_SET(sockfd_, &fds);
@@ -750,7 +750,7 @@ bool SocketCore::isReadable(time_t timeout)
     return false;
   }
   throw DL_RETRY_EX(fmt(EX_SOCKET_CHECK_READABLE, errorMsg(errNum).c_str()));
-#endif // !HAVE_POLL
+#endif   // !HAVE_POLL
 }
 
 ssize_t SocketCore::writeVector(a2iovec* iov, size_t iovcnt)

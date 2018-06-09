@@ -51,7 +51,7 @@
 #include "cookie_helper.h"
 #include "BufferedFile.h"
 #ifdef HAVE_SQLITE3
-#include "Sqlite3CookieParserImpl.h"
+#  include "Sqlite3CookieParserImpl.h"
 #endif // HAVE_SQLITE3
 
 namespace aria2 {

@@ -36,9 +36,9 @@
 #define D_LOCK_H
 
 #if defined(_WIN32)
-#include <windows.h>
+#  include <windows.h>
 #elif defined(ENABLE_PTHREAD)
-#include <pthread.h>
+#  include <pthread.h>
 #endif
 
 namespace aria2 {

@@ -46,7 +46,7 @@
 #include "OptionParser.h"
 
 #if HAVE_ZLIB
-#include "GZipFile.h"
+#  include "GZipFile.h"
 #endif
 
 namespace aria2 {

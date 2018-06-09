@@ -37,7 +37,7 @@
 #include <unistd.h>
 
 #ifdef __MINGW32__
-#include <shellapi.h>
+#  include <shellapi.h>
 #endif // __MINGW32__
 
 #include <aria2/aria2.h>

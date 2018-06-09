@@ -38,7 +38,7 @@
 #include "AdaptiveFileAllocationIterator.h"
 #include "TruncFileAllocationIterator.h"
 #ifdef HAVE_SOME_FALLOCATE
-#include "FallocFileAllocationIterator.h"
+#  include "FallocFileAllocationIterator.h"
 #endif // HAVE_SOME_FALLOCATE
 #include "DiskWriter.h"
 #include "DefaultDiskWriterFactory.h"

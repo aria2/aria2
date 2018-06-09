@@ -34,27 +34,27 @@ extern "C" {
 #endif /* __cplusplus */
 
 #ifdef __MINGW32__
-#undef SIZE_MAX
+#  undef SIZE_MAX
 #endif // __MINGW32__
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#  include "config.h"
 #endif // HAVE_CONFIG_H
 
 #ifdef __MINGW32__
-#ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x501
-#endif // _WIN32_WINNT
-#include <winsock2.h>
-#undef ERROR
-#include <ws2tcpip.h>
+#  ifndef _WIN32_WINNT
+#    define _WIN32_WINNT 0x501
+#  endif // _WIN32_WINNT
+#  include <winsock2.h>
+#  undef ERROR
+#  include <ws2tcpip.h>
 #endif // __MINGW32__
 
 #ifdef HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
+#  include <sys/socket.h>
 #endif // HAVE_SYS_SOCKET_H
 #ifdef HAVE_NETDB_H
-#include <netdb.h>
+#  include <netdb.h>
 #endif // HAVE_NETDB_H
 
 #include <sys/types.h>
@@ -65,88 +65,88 @@ extern "C" {
  * <netdb.h> might defines some of them.
  */
 #ifdef EAI_ADDRFAMILY
-#undef EAI_ADDRFAMILY
+#  undef EAI_ADDRFAMILY
 #endif
 #ifdef EAI_AGAIN
-#undef EAI_AGAIN
+#  undef EAI_AGAIN
 #endif
 #ifdef EAI_BADFLAGS
-#undef EAI_BADFLAGS
+#  undef EAI_BADFLAGS
 #endif
 #ifdef EAI_FAIL
-#undef EAI_FAIL
+#  undef EAI_FAIL
 #endif
 #ifdef EAI_FAMILY
-#undef EAI_FAMILY
+#  undef EAI_FAMILY
 #endif
 #ifdef EAI_MEMORY
-#undef EAI_MEMORY
+#  undef EAI_MEMORY
 #endif
 #ifdef EAI_NONAME
-#undef EAI_NONAME
+#  undef EAI_NONAME
 #endif
 #ifdef EAI_OVERFLOW
-#undef EAI_OVERFLOW
+#  undef EAI_OVERFLOW
 #endif
 #ifdef EAI_SERVICE
-#undef EAI_SERVICE
+#  undef EAI_SERVICE
 #endif
 #ifdef EAI_SOCKTYPE
-#undef EAI_SOCKTYPE
+#  undef EAI_SOCKTYPE
 #endif
 #ifdef EAI_SYSTEM
-#undef EAI_SYSTEM
+#  undef EAI_SYSTEM
 #endif
 
 #ifdef AI_PASSIVE
-#undef AI_PASSIVE
+#  undef AI_PASSIVE
 #endif
 #ifdef AI_CANONNAME
-#undef AI_CANONNAME
+#  undef AI_CANONNAME
 #endif
 #ifdef AI_NUMERICHOST
-#undef AI_NUMERICHOST
+#  undef AI_NUMERICHOST
 #endif
 #ifdef AI_NUMERICSERV
-#undef AI_NUMERICSERV
+#  undef AI_NUMERICSERV
 #endif
 #ifdef AI_V4MAPPED
-#undef AI_V4MAPPED
+#  undef AI_V4MAPPED
 #endif
 #ifdef AI_ALL
-#undef AI_ALL
+#  undef AI_ALL
 #endif
 #ifdef AI_ADDRCONFIG
-#undef AI_ADDRCONFIG
+#  undef AI_ADDRCONFIG
 #endif
 #ifdef AI_DEFAULT
-#undef AI_DEFAULT
+#  undef AI_DEFAULT
 #endif
 
 #ifdef NI_NOFQDN
-#undef NI_NOFQDN
+#  undef NI_NOFQDN
 #endif
 #ifdef NI_NUMERICHOST
-#undef NI_NUMERICHOST
+#  undef NI_NUMERICHOST
 #endif
 #ifdef NI_NAMEREQD
-#undef NI_NAMEREQD
+#  undef NI_NAMEREQD
 #endif
 #ifdef NI_NUMERICSERV
-#undef NI_NUMERICSERV
+#  undef NI_NUMERICSERV
 #endif
 #ifdef NI_NUMERICSCOPE
-#undef NI_NUMERICSCOPE
+#  undef NI_NUMERICSCOPE
 #endif
 
 #ifdef NI_DGRAM
-#undef NI_DGRAM
+#  undef NI_DGRAM
 #endif
 #ifdef NI_MAXHOST
-#undef NI_MAXHOST
+#  undef NI_MAXHOST
 #endif
 #ifdef NI_MAXSERV
-#undef NI_MAXSERV
+#  undef NI_MAXSERV
 #endif
 
 /*
@@ -154,11 +154,11 @@ extern "C" {
  * <netdb.h> might declares all or some of them.
  */
 #if defined(HAVE_GETADDRINFO) || defined(HAVE_GETNAMEINFO)
-#define addrinfo my_addrinfo
-#define gai_strerror my_gai_strerror
-#define freeaddrinfo my_freeaddrinfo
-#define getaddrinfo my_getaddrinfo
-#define getnameinfo my_getnameinfo
+#  define addrinfo my_addrinfo
+#  define gai_strerror my_gai_strerror
+#  define freeaddrinfo my_freeaddrinfo
+#  define getaddrinfo my_getaddrinfo
+#  define getnameinfo my_getnameinfo
 #endif
 
 /* <from linux's netdb.h> */
@@ -172,17 +172,17 @@ extern "C" {
   0x0020 /* Use configuration of this host to choose                           \
             returned address type..  */
 #ifdef __USE_GNU
-#define AI_IDN                                                                 \
-  0x0040                   /* IDN encode input (assuming it is encoded         \
-                              in the current locale's character set)           \
-                              before looking it up. */
-#define AI_CANONIDN 0x0080 /* Translate canonical name from IDN format. */
-#define AI_IDN_ALLOW_UNASSIGNED                                                \
-  0x0100 /* Don't reject unassigned Unicode                                    \
-            code points.  */
-#define AI_IDN_USE_STD3_ASCII_RULES                                            \
-  0x0200 /* Validate strings according to                                      \
-            STD3 rules.  */
+#  define AI_IDN                                                               \
+    0x0040                   /* IDN encode input (assuming it is encoded       \
+                                in the current locale's character set)         \
+                                before looking it up. */
+#  define AI_CANONIDN 0x0080 /* Translate canonical name from IDN format. */
+#  define AI_IDN_ALLOW_UNASSIGNED                                              \
+    0x0100 /* Don't reject unassigned Unicode                                  \
+              code points.  */
+#  define AI_IDN_USE_STD3_ASCII_RULES                                          \
+    0x0200 /* Validate strings according to                                    \
+              STD3 rules.  */
 #endif
 #define AI_NUMERICSERV 0x0400 /* Don't use name resolution.  */
 
@@ -200,12 +200,12 @@ extern "C" {
 #define EAI_SYSTEM -11    /* System error returned in `errno'.  */
 #define EAI_OVERFLOW -12  /* Argument buffer overflow.  */
 #ifdef __USE_GNU
-#define EAI_INPROGRESS -100  /* Processing request in progress.  */
-#define EAI_CANCELED -101    /* Request canceled.  */
-#define EAI_NOTCANCELED -102 /* Request not canceled.  */
-#define EAI_ALLDONE -103     /* All requests done.  */
-#define EAI_INTR -104        /* Interrupted by a signal.  */
-#define EAI_IDN_ENCODE -105  /* IDN encoding failed.  */
+#  define EAI_INPROGRESS -100  /* Processing request in progress.  */
+#  define EAI_CANCELED -101    /* Request canceled.  */
+#  define EAI_NOTCANCELED -102 /* Request not canceled.  */
+#  define EAI_ALLDONE -103     /* All requests done.  */
+#  define EAI_INTR -104        /* Interrupted by a signal.  */
+#  define EAI_IDN_ENCODE -105  /* IDN encoding failed.  */
 #endif
 
 #define NI_MAXHOST 1025
@@ -217,13 +217,13 @@ extern "C" {
 #define NI_NAMEREQD 8    /* Don't return numeric addresses.  */
 #define NI_DGRAM 16      /* Look up UDP service rather than TCP.  */
 #ifdef __USE_GNU
-#define NI_IDN 32 /* Convert name from IDN format.  */
-#define NI_IDN_ALLOW_UNASSIGNED                                                \
-  64 /* Don't reject unassigned Unicode                                        \
-        code points.  */
-#define NI_IDN_USE_STD3_ASCII_RULES                                            \
-  128 /* Validate strings according to                                         \
-         STD3 rules.  */
+#  define NI_IDN 32 /* Convert name from IDN format.  */
+#  define NI_IDN_ALLOW_UNASSIGNED                                              \
+    64 /* Don't reject unassigned Unicode                                      \
+          code points.  */
+#  define NI_IDN_USE_STD3_ASCII_RULES                                          \
+    128 /* Validate strings according to                                       \
+           STD3 rules.  */
 #endif
 /* </from linux's netdb.h> */
 
@@ -233,10 +233,10 @@ extern "C" {
  * Address families and Protocol families.
  */
 #ifndef AF_UNSPEC
-#define AF_UNSPEC AF_INET
+#  define AF_UNSPEC AF_INET
 #endif
 #ifndef PF_UNSPEC
-#define PF_UNSPEC PF_INET
+#  define PF_UNSPEC PF_INET
 #endif
 
 /* Nexenta OS(GNU/Solaris OS) defines `struct addrinfo' in netdb.h */

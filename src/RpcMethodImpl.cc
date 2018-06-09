@@ -70,12 +70,12 @@
 #include "message_digest_helper.h"
 #include "OpenedFileCounter.h"
 #ifdef ENABLE_BITTORRENT
-#include "bittorrent_helper.h"
-#include "BtRegistry.h"
-#include "PeerStorage.h"
-#include "Peer.h"
-#include "BtRuntime.h"
-#include "BtAnnounce.h"
+#  include "bittorrent_helper.h"
+#  include "BtRegistry.h"
+#  include "PeerStorage.h"
+#  include "Peer.h"
+#  include "BtRuntime.h"
+#  include "BtAnnounce.h"
 #endif // ENABLE_BITTORRENT
 #include "CheckIntegrityEntry.h"
 

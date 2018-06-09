@@ -38,12 +38,12 @@
 #include "MemoryBufferPreDownloadHandler.h"
 #include "a2functional.h"
 #ifdef ENABLE_METALINK
-#include "MetalinkPostDownloadHandler.h"
+#  include "MetalinkPostDownloadHandler.h"
 #endif // ENABLE_METALINK
 #ifdef ENABLE_BITTORRENT
-#include "BtPostDownloadHandler.h"
-#include "MemoryBencodePreDownloadHandler.h"
-#include "UTMetadataPostDownloadHandler.h"
+#  include "BtPostDownloadHandler.h"
+#  include "MemoryBencodePreDownloadHandler.h"
+#  include "UTMetadataPostDownloadHandler.h"
 #endif // ENABLE_BITTORRENT
 
 namespace aria2 {

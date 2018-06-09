@@ -46,9 +46,9 @@
 #include "fmt.h"
 
 #ifdef KEVENT_UDATA_INTPTR_T
-#define PTR_TO_UDATA(X) (reinterpret_cast<intptr_t>(X))
+#  define PTR_TO_UDATA(X) (reinterpret_cast<intptr_t>(X))
 #else // !KEVENT_UDATA_INTPTR_T
-#define PTR_TO_UDATA(X) (X)
+#  define PTR_TO_UDATA(X) (X)
 #endif // !KEVENT_UDATA_INTPTR_T
 
 namespace aria2 {

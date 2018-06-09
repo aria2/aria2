@@ -31,15 +31,15 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #ifndef HAVE_CONFIG_H
-#include "config.h"
+#  include "config.h"
 #endif // HAVE_CONFIG_H
 
 #ifndef HAVE_LOCALTIME_R
-#include "localtime_r.h"
+#  include "localtime_r.h"
 #endif // HAVE_LOCALTIME_R
 
 #ifndef HAVE_TIMEGM
-#include "timegm.h"
+#  include "timegm.h"
 #endif // HAVE_TIMEGM
 
 #include <stddef.h>
@@ -50,11 +50,11 @@
 #include <stdlib.h>
 
 #ifdef HAVE_ALLOCA_H
-#include <alloca.h>
+#  include <alloca.h>
 #endif // HAVE_ALLOCA_H
 
 #ifdef HAVE_MALLOC_H
-#include <malloc.h>
+#  include <malloc.h>
 #endif // HAVE_MALLOC_H
 
 #include "strptime.h"
