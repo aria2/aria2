@@ -28,6 +28,7 @@ BraceWrapping:
   AfterObjCDeclaration: false
   AfterStruct:     false
   AfterUnion:      false
+  AfterExternBlock: false
   BeforeCatch:     true
   BeforeElse:      true
   IndentBraces:    false
@@ -57,6 +58,7 @@ ForEachMacros:
   - foreach
   - Q_FOREACH
   - BOOST_FOREACH
+IncludeBlocks:   Preserve
 IncludeCategories:
   - Regex:           '^"(llvm|llvm-c|clang|clang-c)/'
     Priority:        2
@@ -66,6 +68,7 @@ IncludeCategories:
     Priority:        1
 IncludeIsMainRegex: '$'
 IndentCaseLabels: false
+IndentPPDirectives: None
 IndentWidth:     2
 IndentWrappedFunctionNames: false
 JavaScriptQuotes: Leave
@@ -86,6 +89,10 @@ PenaltyBreakString: 1000
 PenaltyExcessCharacter: 1000000
 PenaltyReturnTypeOnItsOwnLine: 60
 PointerAlignment: Left
+RawStringFormats:
+  - Delimiter:       pb
+    Language:        TextProto
+    BasedOnStyle:    google
 ReflowComments:  true
 SortIncludes:    false
 SortUsingDeclarations: true
