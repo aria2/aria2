@@ -141,10 +141,6 @@ enum DownloadEvent {
  */
 struct SegmentInfo {
   /**
-   * The constructor fills default values for all members.
-   */
-  SegmentInfo();
-  /**
    * The index of a piece. 
    * The default value is ``0``.
    */
