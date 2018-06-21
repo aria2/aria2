@@ -320,4 +320,9 @@ void DownloadContext::updateUploadLength(size_t bytes)
   }
 }
 
+void DownloadContext::completedSegment(const std::shared_ptr<Segment>& segment) const
+{
+  ownerRequestGroup_->completedSegment(segment);
+}
+
 } // namespace aria2

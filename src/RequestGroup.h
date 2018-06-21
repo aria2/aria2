@@ -70,6 +70,7 @@ struct DownloadResult;
 class URISelector;
 class URIResult;
 class RequestGroupMan;
+class Segment;
 #ifdef ENABLE_BITTORRENT
 class BtRuntime;
 class PeerStorage;
@@ -240,6 +241,10 @@ public:
 
   void createNextCommand(std::vector<std::unique_ptr<Command>>& commands,
                          DownloadEngine* e);
+                        
+  // This method will be called by corresponding DownloadContext 
+  // if a Segment get downloaded
+  void completedSegment(const std::shared_ptr<Segment>& segment) const;
 
   bool downloadFinished() const;
 

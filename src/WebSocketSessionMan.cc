@@ -66,7 +66,8 @@ void WebSocketSessionMan::removeSession(
 }
 
 void WebSocketSessionMan::addNotification(const std::string& method,
-                                          const RequestGroup* group)
+                                          const RequestGroup* group,
+                                          const Segment* segment)
 {
   auto dict = Dict::g();
   dict->put("jsonrpc", "2.0");
@@ -89,6 +90,7 @@ const std::string ON_DOWNLOAD_START = "aria2.onDownloadStart";
 const std::string ON_DOWNLOAD_PAUSE = "aria2.onDownloadPause";
 const std::string ON_DOWNLOAD_STOP = "aria2.onDownloadStop";
 const std::string ON_DOWNLOAD_COMPLETE = "aria2.onDownloadComplete";
+const std::string ON_SEGMENT_COMPLETE = "aria2.onSegmentComplete";
 const std::string ON_DOWNLOAD_ERROR = "aria2.onDownloadError";
 const std::string ON_BT_DOWNLOAD_COMPLETE = "aria2.onBtDownloadComplete";
 } // namespace
@@ -105,6 +107,8 @@ const std::string& getMethodName(DownloadEvent event)
     return ON_DOWNLOAD_STOP;
   case EVENT_ON_DOWNLOAD_COMPLETE:
     return ON_DOWNLOAD_COMPLETE;
+  case EVENT_ON_SEGMENT_COMPLETE:
+    return ON_SEGMENT_COMPLETE;
   case EVENT_ON_DOWNLOAD_ERROR:
     return ON_DOWNLOAD_ERROR;
   case EVENT_ON_BT_DOWNLOAD_COMPLETE:
@@ -119,9 +123,10 @@ const std::string& getMethodName(DownloadEvent event)
 } // namespace
 
 void WebSocketSessionMan::onEvent(DownloadEvent event,
-                                  const RequestGroup* group)
+                                  const RequestGroup* group,
+                                  const Segment* segment)
 {
-  addNotification(getMethodName(event), group);
+  addNotification(getMethodName(event), group, segment);
 }
 
 } // namespace rpc

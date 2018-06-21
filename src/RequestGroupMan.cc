@@ -248,6 +248,16 @@ void notifyDownloadEvent(DownloadEvent event,
   }
 }
 
+void notifyDownloadSegmentEvent(DownloadEvent event,
+                                const std::shared_ptr<RequestGroup>& group,
+                                const std::shared_ptr<Segment>& segment)
+{
+  // Check NULL to make unit test easier.
+  if (SingletonHolder<Notifier>::instance()) {
+    SingletonHolder<Notifier>::instance()->notifyDownloadSegmentEvent(event, group, segment);
+  }
+}
+
 } // namespace
 
 namespace {
@@ -1112,4 +1122,11 @@ int RequestGroupMan::optimizeConcurrentDownloads()
 
   return maxConcurrentDownloads;
 }
+
+void RequestGroupMan::completedSegment(const std::shared_ptr<RequestGroup>& group,
+                                       const std::shared_ptr<Segment>& segment) const
+{
+  notifyDownloadSegmentEvent(EVENT_ON_SEGMENT_COMPLETE, group, segment);
+}
+
 } // namespace aria2

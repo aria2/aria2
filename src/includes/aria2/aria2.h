@@ -120,6 +120,10 @@ enum DownloadEvent {
    */
   EVENT_ON_DOWNLOAD_COMPLETE,
   /**
+   * Indicating a segment has completed.
+   */
+  EVENT_ON_SEGMENT_COMPLETE,
+  /**
    * Indicating download has stopped because of the error.
    */
   EVENT_ON_DOWNLOAD_ERROR,
@@ -131,6 +135,33 @@ enum DownloadEvent {
 };
 
 /**
+ * @struct
+ *
+ * The segment information.
+ */
+struct SegmentInfo {
+  /**
+   * The constructor fills default values for all members.
+   */
+  SegmentInfo();
+  /**
+   * The index of a piece. 
+   * The default value is ``0``.
+   */
+  size_t index;
+  /**
+   * Specify the beginning offset of file.
+   * The default value is ``0``.
+   */
+  int64_t position;
+  /**
+   * Specify number of bytes containing in the segment.
+   * The default value is ``0``.
+   */
+  int64_t length;
+};
+
+/**
  * @functypedef
  *
  * Callback function invoked when download event occurred. The |event|
@@ -138,12 +169,15 @@ enum DownloadEvent {
  * |gid| refers to the download which this event was fired on. The
  * |userData| is a pointer specified in
  * :member:`SessionConfig::userData`.
+ * |segmentInfo| will be non-default values if the event
+ * is `aria2::EVENT_ON_SEGMENT_COMPLETE`.
  *
  * At the moment, the return value is ignored, but the implementation
  * of this callback should return 0 for compatibility.
  */
 typedef int (*DownloadEventCallback)(Session* session, DownloadEvent event,
-                                     A2Gid gid, void* userData);
+                                     A2Gid gid, void* userData, 
+                                     SegmentInfo* segmentInfo);
 
 /**
  * @struct

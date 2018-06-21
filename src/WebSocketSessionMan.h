@@ -59,9 +59,12 @@ public:
   ~WebSocketSessionMan();
   void addSession(const std::shared_ptr<WebSocketSession>& wsSession);
   void removeSession(const std::shared_ptr<WebSocketSession>& wsSession);
-  void addNotification(const std::string& method, const RequestGroup* group);
+  void addNotification(const std::string& method,
+                       const RequestGroup* group, 
+                       const Segment* segment = nullptr);
   virtual void onEvent(DownloadEvent event,
-                       const RequestGroup* group) CXX11_OVERRIDE;
+                       const RequestGroup* group,
+                       const Segment* segment = nullptr) CXX11_OVERRIDE;
 
 private:
   WebSocketSessions sessions_;
