@@ -1002,7 +1002,7 @@
 #define TEXT_GID                                \
   _(" --gid=GID                    Set GID manually. aria2 identifies each\n" \
     "                              download by the ID called GID. The GID must be\n" \
-    "                              hex string of 16 characters, thus [0-9a-zA-Z]\n" \
+    "                              hex string of 16 characters, thus [0-9a-fA-F]\n" \
     "                              are allowed and leading zeros must not be\n" \
     "                              stripped. The GID all 0 is reserved and must\n" \
     "                              not be used. The GID must be unique, otherwise\n" \
