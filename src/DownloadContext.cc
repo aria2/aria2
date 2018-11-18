@@ -54,7 +54,11 @@ DownloadContext::DownloadContext()
       pieceLength_(0),
       checksumVerified_(false),
       knowsTotalLength_(true),
+#ifdef ENABLE_METALINK
       acceptMetalink_(true)
+#else  // !ENABLE_METALINK
+      acceptMetalink_(false)
+#endif // !ENABLE_METALINK
 {
 }
 
@@ -66,7 +70,11 @@ DownloadContext::DownloadContext(int32_t pieceLength, int64_t totalLength,
       pieceLength_(pieceLength),
       checksumVerified_(false),
       knowsTotalLength_(true),
+#ifdef ENABLE_METALINK
       acceptMetalink_(true)
+#else  // !ENABLE_METALINK
+      acceptMetalink_(false)
+#endif // !ENABLE_METALINK
 {
   fileEntries_.push_back(
       std::make_shared<FileEntry>(std::move(path), totalLength, 0));
