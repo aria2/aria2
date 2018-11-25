@@ -673,10 +673,6 @@ if HAVE_KQUEUE
 SRCS += KqueueEventPoll.cc KqueueEventPoll.h
 endif # HAVE_KQUEUE
 
-if HAVE_GETRANDOM_INTERFACE
-SRCS += getrandom_linux.c getrandom_linux.h
-endif # HAVE_GETRANDOM_INTERFACE
-
 if HAVE_LIBUV
 SRCS += LibuvEventPoll.cc LibuvEventPoll.h
 endif # HAVE_LIBUV
