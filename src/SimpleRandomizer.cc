@@ -45,12 +45,6 @@
 #include "LogFactory.h"
 #include "fmt.h"
 
-#ifdef HAVE_GETRANDOM_INTERFACE
-#  include <errno.h>
-#  include <linux/errno.h>
-#  include "getrandom_linux.h"
-#endif
-
 namespace aria2 {
 
 std::unique_ptr<SimpleRandomizer> SimpleRandomizer::randomizer_;
@@ -96,22 +90,7 @@ void SimpleRandomizer::getRandomBytes(unsigned char* buf, size_t len)
 #ifdef __MINGW32__
   BOOL r = CryptGenRandom(provider_, len, reinterpret_cast<BYTE*>(buf));
   assert(r);
-#else // ! __MINGW32__
-#  if defined(HAVE_GETRANDOM_INTERFACE)
-  static bool have_random_support = true;
-  if (have_random_support) {
-    auto rv = getrandom_linux(buf, len);
-    if (rv != -1) {
-      // getrandom is not supposed to fail, ever, so, we want to assert here.
-      assert(rv >= 0 && (size_t)rv == len);
-      return;
-    }
-    have_random_support = false;
-    A2_LOG_INFO("Disabled getrandom support, because kernel does not "
-                "implement this feature (ENOSYS)");
-  }
-// Fall through to generic implementation
-#  endif // defined(HAVE_GETRANDOM_INTERFACE)
+#else  // ! __MINGW32__
   auto ubuf = reinterpret_cast<result_type*>(buf);
   size_t q = len / sizeof(result_type);
   auto dis = std::uniform_int_distribution<result_type>();
@@ -121,7 +100,7 @@ void SimpleRandomizer::getRandomBytes(unsigned char* buf, size_t len)
   const size_t r = len % sizeof(result_type);
   auto last = dis(gen_);
   memcpy(ubuf, &last, r);
-#endif   // ! __MINGW32__
+#endif // ! __MINGW32__
 }
 
 } // namespace aria2
