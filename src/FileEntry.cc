@@ -90,17 +90,6 @@ FileEntry::FileEntry()
 
 FileEntry::~FileEntry() = default;
 
-FileEntry& FileEntry::operator=(const FileEntry& entry)
-{
-  if (this != &entry) {
-    path_ = entry.path_;
-    length_ = entry.length_;
-    offset_ = entry.offset_;
-    requested_ = entry.requested_;
-  }
-  return *this;
-}
-
 bool FileEntry::operator<(const FileEntry& fileEntry) const
 {
   return offset_ < fileEntry.offset_;

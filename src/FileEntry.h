@@ -111,8 +111,6 @@ public:
 
   ~FileEntry();
 
-  FileEntry& operator=(const FileEntry& entry);
-
   std::string getBasename() const;
 
   std::string getDirname() const;
