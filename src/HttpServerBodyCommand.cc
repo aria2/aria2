@@ -184,6 +184,32 @@ bool HttpServerBodyCommand::execute()
         httpServer_->getContentLength() == 0) {
       timeoutTimer_ = global::wallclock();
 
+      if (httpServer_->getMethod() == "OPTIONS") {
+        // Response to Preflight Request.
+        // See http://www.w3.org/TR/cors/
+        auto& header = httpServer_->getRequestHeader();
+        std::string accessControlHeaders;
+        if (!header->find(HttpHeader::ORIGIN).empty() &&
+            !header->find(HttpHeader::ACCESS_CONTROL_REQUEST_METHOD)
+                  .empty() &&
+            !httpServer_->getAllowOrigin().empty()) {
+          accessControlHeaders +=
+              "Access-Control-Allow-Methods: POST, GET, OPTIONS\r\n"
+              "Access-Control-Max-Age: 1728000\r\n";
+          const std::string& accReqHeaders =
+              header->find(HttpHeader::ACCESS_CONTROL_REQUEST_HEADERS);
+          if (!accReqHeaders.empty()) {
+            // We allow all headers requested.
+            accessControlHeaders += "Access-Control-Allow-Headers: ";
+            accessControlHeaders += accReqHeaders;
+            accessControlHeaders += "\r\n";
+          }
+        }
+        httpServer_->feedResponse(200, accessControlHeaders);
+        addHttpServerResponseCommand(false);
+        return true;
+      }
+
       if (httpServer_->receiveBody()) {
         std::string reqPath = httpServer_->getRequestPath();
         reqPath.erase(std::find(reqPath.begin(), reqPath.end(), '#'),
@@ -191,32 +217,6 @@ bool HttpServerBodyCommand::execute()
         std::string query(std::find(reqPath.begin(), reqPath.end(), '?'),
                           reqPath.end());
         reqPath.erase(reqPath.size() - query.size(), query.size());
-
-        if (httpServer_->getMethod() == "OPTIONS") {
-          // Response to Preflight Request.
-          // See http://www.w3.org/TR/cors/
-          auto& header = httpServer_->getRequestHeader();
-          std::string accessControlHeaders;
-          if (!header->find(HttpHeader::ORIGIN).empty() &&
-              !header->find(HttpHeader::ACCESS_CONTROL_REQUEST_METHOD)
-                   .empty() &&
-              !httpServer_->getAllowOrigin().empty()) {
-            accessControlHeaders +=
-                "Access-Control-Allow-Methods: POST, GET, OPTIONS\r\n"
-                "Access-Control-Max-Age: 1728000\r\n";
-            const std::string& accReqHeaders =
-                header->find(HttpHeader::ACCESS_CONTROL_REQUEST_HEADERS);
-            if (!accReqHeaders.empty()) {
-              // We allow all headers requested.
-              accessControlHeaders += "Access-Control-Allow-Headers: ";
-              accessControlHeaders += accReqHeaders;
-              accessControlHeaders += "\r\n";
-            }
-          }
-          httpServer_->feedResponse(200, accessControlHeaders);
-          addHttpServerResponseCommand(false);
-          return true;
-        }
 
         // Do something for requestpath and body
         switch (httpServer_->getRequestType()) {
