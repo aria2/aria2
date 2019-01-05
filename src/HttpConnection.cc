@@ -102,11 +102,17 @@ std::string HttpConnection::eraseConfidentialInfo(const std::string& request)
   std::string result;
   std::string line;
   while (getline(istr, line)) {
-    if (util::startsWith(line, "Authorization: Basic")) {
-      result += "Authorization: Basic ********\n";
+    if (util::istartsWith(line, "Authorization: ")) {
+      result += "Authorization: <snip>\n";
     }
-    else if (util::startsWith(line, "Proxy-Authorization: Basic")) {
-      result += "Proxy-Authorization: Basic ********\n";
+    else if (util::istartsWith(line, "Proxy-Authorization: ")) {
+      result += "Proxy-Authorization: <snip>\n";
+    }
+    else if (util::istartsWith(line, "Cookie: ")) {
+      result += "Cookie: <snip>\n";
+    }
+    else if (util::istartsWith(line, "Set-Cookie: ")) {
+      result += "Set-Cookie: <snip>\n";
     }
     else {
       result += line;
@@ -154,8 +160,8 @@ std::unique_ptr<HttpResponse> HttpConnection::receiveResponse()
   const auto& proc = outstandingHttpRequests_.front()->getHttpHeaderProcessor();
   if (proc->parse(socketRecvBuffer_->getBuffer(),
                   socketRecvBuffer_->getBufferLength())) {
-    A2_LOG_INFO(
-        fmt(MSG_RECEIVE_RESPONSE, cuid_, proc->getHeaderString().c_str()));
+    A2_LOG_INFO(fmt(MSG_RECEIVE_RESPONSE, cuid_,
+                    eraseConfidentialInfo(proc->getHeaderString()).c_str()));
     auto result = proc->getResult();
     if (result->getStatusCode() / 100 == 1) {
       socketRecvBuffer_->drain(proc->getLastBytesProcessed());
