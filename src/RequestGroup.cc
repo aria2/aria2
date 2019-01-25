@@ -812,7 +812,7 @@ void RequestGroup::tryAutoFileRenaming()
   for (int i = 1; i < 10000; ++i) {
     auto newfilename = fmt("%s.%d%s", fn.c_str(), i, ext.c_str());
     File newfile(newfilename);
-    File ctrlfile(newfile.getPath() + DefaultBtProgressInfoFile::getSuffix());
+    File ctrlfile(newfile.getPath() + '.' + DefaultBtProgressInfoFile::getSuffix());
     if (!newfile.exists() || (newfile.exists() && ctrlfile.exists())) {
       downloadContext_->getFirstFileEntry()->setPath(newfile.getPath());
       return;

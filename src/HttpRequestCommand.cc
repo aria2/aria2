@@ -159,7 +159,7 @@ bool HttpRequestCommand::executeInternal()
           path = getFileEntry()->getPath();
         }
 
-        File ctrlfile(path + DefaultBtProgressInfoFile::getSuffix());
+        File ctrlfile(path + '.' + DefaultBtProgressInfoFile::getSuffix());
         File file(path);
 
         if (!ctrlfile.exists() && file.exists()) {

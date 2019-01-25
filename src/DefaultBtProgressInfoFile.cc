@@ -69,7 +69,7 @@ std::string createFilename(const std::shared_ptr<DownloadContext>& dctx,
                            const std::string& suffix)
 {
   std::string t = dctx->getBasePath();
-  t += suffix;
+  t ='.'+ t + suffix;
   return t;
 }
 } // namespace
