@@ -788,12 +788,6 @@ restart:
     A2_LOG_INFO(
         fmt("WinTLS: connected with: %s", getCipherSuite(&handle_).c_str()));
     switch (getProtocolVersion(&handle_)) {
-    case 0x300:
-      version = TLS_PROTO_SSL3;
-      break;
-    case 0x301:
-      version = TLS_PROTO_TLS10;
-      break;
     case 0x302:
       version = TLS_PROTO_TLS11;
       break;
@@ -801,8 +795,8 @@ restart:
       version = TLS_PROTO_TLS12;
       break;
     default:
-      version = TLS_PROTO_NONE;
-      break;
+      assert(0);
+      abort();
     }
     return TLS_ERR_OK;
   }

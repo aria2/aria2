@@ -35,6 +35,7 @@
 
 #include "WinTLSContext.h"
 
+#include <cassert>
 #include <sstream>
 
 #include "BufferedFile.h"
@@ -74,52 +75,34 @@ WinTLSContext::WinTLSContext(TLSSessionSide side, TLSVersion ver)
   credentials_.grbitEnabledProtocols = 0;
   if (side_ == TLS_CLIENT) {
     switch (ver) {
-    case TLS_PROTO_SSL3:
-      credentials_.grbitEnabledProtocols |= SP_PROT_SSL3_CLIENT;
-    // fall through
-    case TLS_PROTO_TLS10:
-      credentials_.grbitEnabledProtocols |= SP_PROT_TLS1_CLIENT;
-    // fall through
     case TLS_PROTO_TLS11:
       credentials_.grbitEnabledProtocols |= SP_PROT_TLS1_1_CLIENT;
     // fall through
     case TLS_PROTO_TLS12:
       credentials_.grbitEnabledProtocols |= SP_PROT_TLS1_2_CLIENT;
-    // fall through
-    default:
       break;
+    default:
+      assert(0);
+      abort();
     }
   }
   else {
     switch (ver) {
-    case TLS_PROTO_SSL3:
-      credentials_.grbitEnabledProtocols |= SP_PROT_SSL3_SERVER;
-    // fall through
-    case TLS_PROTO_TLS10:
-      credentials_.grbitEnabledProtocols |= SP_PROT_TLS1_SERVER;
-    // fall through
     case TLS_PROTO_TLS11:
       credentials_.grbitEnabledProtocols |= SP_PROT_TLS1_1_SERVER;
     // fall through
     case TLS_PROTO_TLS12:
       credentials_.grbitEnabledProtocols |= SP_PROT_TLS1_2_SERVER;
-    // fall through
-    default:
       break;
+    default:
+      assert(0);
+      abort();
     }
   }
 
-  switch (ver) {
-  case TLS_PROTO_SSL3:
-    // User explicitly wanted SSLv3 and therefore weak ciphers.
-    credentials_.dwMinimumCipherStrength = WEAK_CIPHER_BITS;
-    break;
-
-  default:
-    // Strong protocol versions: Use a minimum strength, which might be later
-    // refined using SCH_USE_STRONG_CRYPTO in the flags.
-    credentials_.dwMinimumCipherStrength = STRONG_CIPHER_BITS;
-  }
+  // Strong protocol versions: Use a minimum strength, which might be later
+  // refined using SCH_USE_STRONG_CRYPTO in the flags.
+  credentials_.dwMinimumCipherStrength = STRONG_CIPHER_BITS;
 
   setVerifyPeer(side_ == TLS_CLIENT);
 }

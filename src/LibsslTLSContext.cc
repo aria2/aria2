@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "LibsslTLSContext.h"
 
+#include <cassert>
 #include <sstream>
 
 #include <openssl/err.h>
@@ -112,16 +113,21 @@ OpenSSLTLSContext::OpenSSLTLSContext(TLSSessionSide side, TLSVersion minVer)
 
   long ver_opts = 0;
   switch (minVer) {
+#ifdef TLS1_3_VERSION
+  case TLS_PROTO_TLS13:
+    ver_opts |= SSL_OP_NO_TLSv1_2;
+    // fall through
+#endif // TLS1_3_VERSION
   case TLS_PROTO_TLS12:
     ver_opts |= SSL_OP_NO_TLSv1_1;
   // fall through
   case TLS_PROTO_TLS11:
     ver_opts |= SSL_OP_NO_TLSv1;
-  // fall through
-  case TLS_PROTO_TLS10:
     ver_opts |= SSL_OP_NO_SSLv3;
-  default:
     break;
+  default:
+    assert(0);
+    abort();
   };
 
   // Disable SSLv2 and enable all workarounds for buggy servers

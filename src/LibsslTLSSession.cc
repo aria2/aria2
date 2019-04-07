@@ -195,16 +195,6 @@ int OpenSSLTLSSession::handshake(TLSVersion& version)
   }
 
   switch (SSL_version(ssl_)) {
-  case SSL3_VERSION:
-    version = TLS_PROTO_SSL3;
-    break;
-
-#ifdef TLS1_VERSION
-  case TLS1_VERSION:
-    version = TLS_PROTO_TLS10;
-    break;
-#endif // TLS1_VERSION
-
 #ifdef TLS1_1_VERSION
   case TLS1_1_VERSION:
     version = TLS_PROTO_TLS11;
@@ -216,6 +206,12 @@ int OpenSSLTLSSession::handshake(TLSVersion& version)
     version = TLS_PROTO_TLS12;
     break;
 #endif // TLS1_2_VERSION
+
+#ifdef TLS1_3_VERSION
+  case TLS1_3_VERSION:
+    version = TLS_PROTO_TLS13;
+    break;
+#endif // TLS1_3_VERSION
 
   default:
     version = TLS_PROTO_NONE;
