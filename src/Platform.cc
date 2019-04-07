@@ -44,6 +44,7 @@
 #ifdef HAVE_OPENSSL
 #  include <openssl/err.h>
 #  include <openssl/ssl.h>
+#  include "libssl_compat.h"
 #endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGCRYPT
 #  include <gcrypt.h>
@@ -111,11 +112,13 @@ bool Platform::setUp()
 #endif // ENABLE_NLS
 
 #ifdef HAVE_OPENSSL
+#if !OPENSSL_101_API
   // for SSL initialization
   SSL_load_error_strings();
   SSL_library_init();
   // Need this to "decrypt" p12 files.
   OpenSSL_add_all_algorithms();
+#endif // !OPENSSL_101_API
 #endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGCRYPT
   if (!gcry_check_version("1.2.4")) {
