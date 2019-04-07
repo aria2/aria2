@@ -112,14 +112,14 @@ bool Platform::setUp()
 #endif // ENABLE_NLS
 
 #ifdef HAVE_OPENSSL
-#if !OPENSSL_101_API
+#  if !OPENSSL_101_API
   // for SSL initialization
   SSL_load_error_strings();
   SSL_library_init();
   // Need this to "decrypt" p12 files.
   OpenSSL_add_all_algorithms();
-#endif // !OPENSSL_101_API
-#endif // HAVE_OPENSSL
+#  endif // !OPENSSL_101_API
+#endif   // HAVE_OPENSSL
 #ifdef HAVE_LIBGCRYPT
   if (!gcry_check_version("1.2.4")) {
     throw DL_ABORT_EX("gcry_check_version() failed.");

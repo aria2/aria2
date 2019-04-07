@@ -62,7 +62,7 @@ error_code::Value main(int argc, char** argv)
   }
   std::vector<std::unique_ptr<char>> winArgStrs;
   winArgStrs.reserve(winArgc);
-  auto pargv = make_unique<char* []>(winArgc);
+  auto pargv = make_unique<char*[]>(winArgc);
   for (int i = 0; i < winArgc; ++i) {
     winArgStrs.emplace_back(strdup(wCharToUtf8(winArgv[i]).c_str()));
     pargv[i] = winArgStrs.back().get();
