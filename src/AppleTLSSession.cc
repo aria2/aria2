@@ -376,12 +376,6 @@ AppleTLSSession::AppleTLSSession(AppleTLSContext* ctx)
 
 #if defined(__MAC_10_8)
   switch (ctx->getMinTLSVersion()) {
-  case TLS_PROTO_SSL3:
-    (void)SSLSetProtocolVersionMin(sslCtx_, kSSLProtocol3);
-    break;
-  case TLS_PROTO_TLS10:
-    (void)SSLSetProtocolVersionMin(sslCtx_, kTLSProtocol1);
-    break;
   case TLS_PROTO_TLS11:
     (void)SSLSetProtocolVersionMin(sslCtx_, kTLSProtocol11);
     break;
@@ -394,12 +388,6 @@ AppleTLSSession::AppleTLSSession(AppleTLSContext* ctx)
 #else
   (void)SSLSetProtocolVersionEnabled(sslCtx_, kSSLProtocolAll, false);
   switch (ctx->getMinTLSVersion()) {
-  case TLS_PROTO_SSL3:
-    (void)SSLSetProtocolVersionEnabled(sslCtx_, kSSLProtocol3, true);
-  // fall through
-  case TLS_PROTO_TLS10:
-    (void)SSLSetProtocolVersionEnabled(sslCtx_, kTLSProtocol1, true);
-  // fall through
   case TLS_PROTO_TLS11:
     (void)SSLSetProtocolVersionEnabled(sslCtx_, kTLSProtocol11, true);
   // fall through
@@ -748,12 +736,6 @@ int AppleTLSSession::tlsConnect(const std::string& hostname,
                   protoToString(proto), suiteToString(suite).c_str()));
 
   switch (proto) {
-  case kSSLProtocol3:
-    version = TLS_PROTO_SSL3;
-    break;
-  case kTLSProtocol1:
-    version = TLS_PROTO_TLS10;
-    break;
   case kTLSProtocol11:
     version = TLS_PROTO_TLS11;
     break;

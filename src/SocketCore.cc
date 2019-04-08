@@ -971,23 +971,29 @@ bool SocketCore::tlsHandshake(TLSContext* tlsctx, const std::string& hostname)
       if (!hostname.empty()) {
         ss << ")";
       }
-      auto peerInfo = ss.str();
 
-      // 2. Issue any warnings
+      std::string tlsVersion;
       switch (ver) {
-      case TLS_PROTO_NONE:
-        A2_LOG_WARN(fmt(MSG_WARN_UNKNOWN_TLS_CONNECTION, peerInfo.c_str()));
+      case TLS_PROTO_TLS11:
+        tlsVersion = A2_V_TLS11;
         break;
-      case TLS_PROTO_SSL3:
-        A2_LOG_WARN(
-            fmt(MSG_WARN_OLD_TLS_CONNECTION, "SSLv3", peerInfo.c_str()));
+      case TLS_PROTO_TLS12:
+        tlsVersion = A2_V_TLS12;
+        break;
+      case TLS_PROTO_TLS13:
+        tlsVersion = A2_V_TLS13;
         break;
       default:
-        A2_LOG_DEBUG(fmt("Securely connected to %s", peerInfo.c_str()));
-        break;
+        assert(0);
+        abort();
       }
 
-      // 3. We're connected now!
+      auto peerInfo = ss.str();
+
+      A2_LOG_DEBUG(fmt("Securely connected to %s with %s", peerInfo.c_str(),
+                       tlsVersion.c_str()));
+
+      // 2. We're connected now!
       secure_ = A2_TLS_CONNECTED;
       return true;
     }
