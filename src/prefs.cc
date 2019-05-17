@@ -359,6 +359,14 @@ PrefPtr PREF_SAVE_SESSION_INTERVAL = makePref("save-session-interval");
 PrefPtr PREF_ENABLE_COLOR = makePref("enable-color");
 // value: string
 PrefPtr PREF_RPC_SECRET = makePref("rpc-secret");
+// value: string
+PrefPtr PREF_AWS_ACCESS_KEY_ID  = makePref("aws-s3-access-key");
+// value: string
+PrefPtr PREF_AWS_SECRET_ACCESS_KEY = makePref("aws-s3-secret-key");
+// value: string
+PrefPtr PREF_AWS_S3_BUCKET_NAME = makePref("aws-s3-bucket-name");
+// value: string
+PrefPtr PREF_AWS_S3_REGION = makePref("aws-s3-region");
 // values: 1*digit
 PrefPtr PREF_DSCP = makePref("dscp");
 // values: true | false

@@ -44,3 +44,4 @@ compile
 main.log
 main.trs
 test-suite.log
+.vscode

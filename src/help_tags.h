@@ -55,7 +55,8 @@ enum HelpTag {
   TAG_EXPERIMENTAL,
   TAG_DEPRECATED,
   TAG_HELP,
-  MAX_HELP_TAG
+  TAG_S3,
+  MAX_HELP_TAG,
 };
 
 #define STR_TAG_ALL "#all"

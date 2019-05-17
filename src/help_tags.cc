@@ -44,7 +44,7 @@ namespace {
 constexpr const char* HELP_TAG_NAMES[] = {
     "#basic",    "#advanced",   "#http",         "#https",      "#ftp",
     "#metalink", "#bittorrent", "#cookie",       "#hook",       "#file",
-    "#rpc",      "#checksum",   "#experimental", "#deprecated", "#help"};
+    "#rpc",      "#checksum",   "#experimental", "#deprecated", "#help", "#s3"};
 } // namespace
 
 const char* strHelpTag(uint32_t tag)

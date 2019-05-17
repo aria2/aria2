@@ -800,6 +800,39 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     op->setAllowEmpty(false);
     handlers.push_back(op);
   }
+
+  {
+    auto op = new DefaultOptionHandler(PREF_AWS_ACCESS_KEY_ID);
+    op->addTag(TAG_S3);
+    op->setEraseAfterParse(true);
+    op->setAllowEmpty(false);
+    handlers.push_back(op);
+  }
+
+  {
+    auto op = new DefaultOptionHandler(PREF_AWS_SECRET_ACCESS_KEY);
+    op->addTag(TAG_S3);
+    op->setEraseAfterParse(true);
+    op->setAllowEmpty(false);
+    handlers.push_back(op);
+  }
+
+  {
+    auto op = new DefaultOptionHandler(PREF_AWS_S3_BUCKET_NAME);
+    op->addTag(TAG_S3);
+    op->setEraseAfterParse(true);
+    op->setAllowEmpty(false);
+    handlers.push_back(op);
+  }
+
+  {
+    auto op = new DefaultOptionHandler(PREF_AWS_S3_REGION);
+    op->addTag(TAG_S3);
+    op->setEraseAfterParse(true);
+    op->setAllowEmpty(true);
+    handlers.push_back(op);
+  }
+
   {
     OptionHandler* op(new BooleanOptionHandler(
         PREF_RPC_SECURE, TEXT_RPC_SECURE, A2_V_FALSE, OptionHandler::OPT_ARG));
