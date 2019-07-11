@@ -59,7 +59,7 @@ DHTPeerAnnounceStorage::DHTPeerAnnounceStorage()
 
 bool DHTPeerAnnounceStorage::InfoHashLess::
 operator()(const std::shared_ptr<DHTPeerAnnounceEntry>& lhs,
-           const std::shared_ptr<DHTPeerAnnounceEntry>& rhs)
+           const std::shared_ptr<DHTPeerAnnounceEntry>& rhs) const
 {
   return memcmp(lhs->getInfoHash(), rhs->getInfoHash(), DHT_ID_LENGTH) < 0;
 }

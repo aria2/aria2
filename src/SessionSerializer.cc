@@ -143,7 +143,7 @@ namespace {
 template <typename T> class Unique {
   typedef T type;
   struct PointerCmp {
-    inline bool operator()(const type* x, const type* y) { return *x < *y; }
+    inline bool operator()(const type* x, const type* y) const { return *x < *y; }
   };
   std::set<const type*, PointerCmp> known;
 
