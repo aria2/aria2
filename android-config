@@ -35,12 +35,15 @@ if [ -z "$ANDROID_HOME" ]; then
     echo 'No $ANDROID_HOME specified.'
     exit 1
 fi
+if [ -z "$NDK" ]; then
+    echo 'No $NDK specified.'
+    exit 1
+fi
 PREFIX=$ANDROID_HOME/usr/local
-TOOLCHAIN=$ANDROID_HOME/toolchain
-PATH=$TOOLCHAIN/bin:$PATH
+TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64
 
 ./configure \
-    --host=arm-linux-androideabi \
+    --host=aarch64-linux-android \
     --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` \
     --disable-nls \
     --without-gnutls \
@@ -51,10 +54,15 @@ PATH=$TOOLCHAIN/bin:$PATH
     --with-libcares \
     --with-libz \
     --with-libssh2 \
-    CC="$TOOLCHAIN"/bin/arm-linux-androideabi-clang \
-    CXX="$TOOLCHAIN"/bin/arm-linux-androideabi-clang++ \
+    AR=$TOOLCHAIN/bin/aarch64-linux-android-ar \
+    AS=$TOOLCHAIN/bin/aarch64-linux-android-as \
+    CC=$TOOLCHAIN/bin/aarch64-linux-android29-clang \
+    CXX=$TOOLCHAIN/bin/aarch64-linux-android29-clang++ \
+    LD=$TOOLCHAIN/bin/aarch64-linux-android-ld \
+    RANLIB=$TOOLCHAIN/bin/aarch64-linux-android-ranlib \
+    STRIP=$TOOLCHAIN/bin/aarch64-linux-android-strip \
     CXXFLAGS="-Os -g" \
     CFLAGS="-Os -g" \
     CPPFLAGS="-fPIE" \
-    LDFLAGS="-fPIE -pie -L$PREFIX/lib" \
+    LDFLAGS="-fPIE -pie -L$PREFIX/lib -static-libstdc++" \
     PKG_CONFIG_LIBDIR="$PREFIX/lib/pkgconfig"

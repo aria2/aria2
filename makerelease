@@ -4,6 +4,10 @@ if [ -z "$ANDROID_HOME" ]; then
     echo 'No $ANDROID_HOME specified.'
     exit 1
 fi
+if [ -z "$NDK" ]; then
+    echo 'No $NDK specified.'
+    exit 1
+fi
 
 VERSION=$1
 PREV_VERSION=$2

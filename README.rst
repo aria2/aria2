@@ -359,7 +359,7 @@ Cross-compiling Android binary
 In this section, we describe how to build Android binary using Android
 NDK cross-compiler on Debian Linux.
 
-At the time of this writing, android-ndk-r14b should compile aria2
+At the time of this writing, Android NDK r20 should compile aria2
 without errors.
 
 ``android-config`` script is a configure script wrapper for Android
@@ -376,33 +376,17 @@ When building the above libraries, make sure that disable shared
 library and enable only static library. We are going to link those
 libraries statically.
 
-We use zlib which comes with Android NDK, so we don't have to build it
-by ourselves.
+``android-config`` assumes that ``$ANDROID_HOME`` and ``$NDK``
+environment variables are defined.
 
-``android-config`` assumes the existence of ``$ANDROID_HOME``
-environment variable which must fulfill the following conditions:
+We currently use Android NDK r20.  ``$NDK`` should point to the
+directory to Anroid NDK.  The build tools will be found under
+``$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/``.
 
-* Android NDK toolchain is installed under
-  ``$ANDROID_HOME/toolchain``.  Refer to `Standalone Toolchain
-  <https://developer.android.com/ndk/guides/standalone_toolchain.html>`_
-  for more details, but it is a bit out of date.
+All the dependent libraries must be installed under
+``$ANDROID_HOME/usr/local``.
 
-  To install toolchain under ``$ANDROID_HOME/toolchain``, do this:
-
-  .. code-block:: text
-
-     $NDK/build/tools/make_standalone_toolchain.py \
-        --arch arm --api 16 --stl=gnustl \
-        --install-dir $ANDROID_HOME/toolchain
-
-* The dependent libraries must be installed under
-  ``$ANDROID_HOME/usr/local``.
-
-Before running ``android-config`` and ``android-make``,
-``$ANDROID_HOME`` environment variable must be set to point to the
-correct path.
-
-After ``android-config``, run ``android-make`` to compile sources.
+After ``android-config``, run ``make`` to compile sources.
 
 Building documentation
 ----------------------

@@ -147,7 +147,7 @@
 // # define a2fseek(fp, offset, origin): No fseek64 and not used in aria2
 #  define a2fstat(fd, buf) fstat64(fd, buf)
 // # define a2ftell(fd): No ftell64 and not used in aria2
-#  define a2_struct_stat struct stat
+#  define a2_struct_stat struct stat64
 #  define a2stat(path, buf) stat64(path, buf)
 #  define a2mkdir(path, openMode) mkdir(path, openMode)
 #  define a2utimbuf utimbuf
