@@ -63,8 +63,7 @@ HOST=i686-w64-mingw32
     --prefix=/usr/local/$HOST \
     --host=$HOST \
     --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` \
-    --without-openssl \
-    --with-wincng \
+    --with-crypto=wincng \
     LIBS="-lws2_32"
 
 HOST=x86_64-w64-mingw32
