@@ -53,12 +53,12 @@
 
 namespace {
 #if !defined(__MAC_10_8)
-static const SSLProtocol kTLSProtocol11 = 7;
-static const SSLProtocol kTLSProtocol12 = 8;
+static const SSLProtocol kTLSProtocol11 = (SSLProtocol)7;
+static const SSLProtocol kTLSProtocol12 = (SSLProtocol)8;
 #endif
 
 #if !defined(__MAC_10_13)
-static const SSLProtocol kTLSProtocol13 = 10;
+static const SSLProtocol kTLSProtocol13 = (SSLProtocol)10;
 #endif
 
 #ifndef CIPHER_NO_DHPARAM
