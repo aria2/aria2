@@ -7,7 +7,7 @@ EXTRA_DIST = config.rpath \
 	     script-helper \
 	     makerelease \
 	     mingw-config mingw-release mingw-build-memo \
-	     android-config android-make \
+	     android-config \
 	     makerelease-osx.mk osx-package/DS_Store osx-package/etc/paths.d/aria2c osx-package/etc/manpaths.d/aria2 \
 	     Dockerfile.mingw \
 	     Dockerfile.raspberrypi \
