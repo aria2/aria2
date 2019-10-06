@@ -39,7 +39,7 @@ make distclean
 
 # android
 ./android-config
-./android-make -j8
+make -j8
 ./android-release
 make distclean
 
