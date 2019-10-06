@@ -56,7 +56,7 @@ _aria2c()
             return 0
             ;;
         --min-tls-version)
-            COMPREPLY=( $( compgen -W 'SSLv3 TLSv1 TLSv1.1 TLSv1.2' -- "$cur" ) )
+            COMPREPLY=( $( compgen -W 'TLSv1.1 TLSv1.2 TLSv1.3' -- "$cur" ) )
             return 0
             ;;
         --console-log-level)
