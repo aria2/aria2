@@ -89,10 +89,11 @@ CXX = c++ -stdlib=libc++
 export CXX
 
 # Set up compiler/linker flags.
+PLATFORMFLAGS ?= -mmacosx-version-min=10.10
 OPTFLAGS ?= -Os
-CFLAGS ?= -mmacosx-version-min=10.10 $(OPTFLAGS)
+CFLAGS ?= $(PLATFORMFLAGS) $(OPTFLAGS)
 export CFLAGS
-CXXFLAGS ?= -mmacosx-version-min=10.10 $(OPTFLAGS)
+CXXFLAGS ?= $(PLATFORMFLAGS) $(OPTFLAGS)
 export CXXFLAGS
 LDFLAGS ?= -Wl,-dead_strip
 export LDFLAGS
@@ -101,56 +102,63 @@ LTO_FLAGS = -flto -ffunction-sections -fdata-sections
 
 # Dependency versions
 zlib_version = 1.2.11
-zlib_hash = e6d119755acdf9104d7ba236b1242696940ed6dd
+zlib_hash = c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1
 zlib_url = http://zlib.net/zlib-$(zlib_version).tar.gz
 
-expat_version = 2.2.0
-expat_hash = 8453bc52324be4c796fd38742ec48470eef358b3
-expat_url = http://sourceforge.net/projects/expat/files/expat/$(expat_version)/expat-$(expat_version).tar.bz2
-expat_cflags=$(LTO_FLAGS)
+expat_version = 2.2.8
+expat_hash = bd507cba42716ca9afe46dd3687fb0d46c09347517beb9770f53a435d2c67ea0
+expat_url = https://github.com/libexpat/libexpat/releases/download/R_2_2_8/expat-2.2.8.tar.gz
+expat_cflags=$(CFLAGS) $(LTO_FLAGS)
 expat_ldflags=$(CFLAGS) $(LTO_FLAGS)
 
-cares_version = 1.13.0
-cares_hash = dde50284cc3d505fb2463ff6276e61d5531b1d68
+cares_version = 1.15.0
+cares_hash = 6cdb97871f2930530c97deb7cf5c8fa4be5a0b02c7cea6e7c7667672a39d6852
 cares_url = https://c-ares.haxx.se/download/c-ares-$(cares_version).tar.gz
 cares_confflags = "--enable-optimize=$(OPTFLAGS)"
-cares_cflags=$(LTO_FLAGS)
+cares_cflags=$(CFLAGS) $(LTO_FLAGS)
 cares_ldflags=$(CFLAGS) $(LTO_FLAGS)
 
-sqlite_version = autoconf-3190300
-sqlite_hash = 58f2cabffb3ff4761a3ac7f834d9db7b46307c1f
-sqlite_url = https://sqlite.org/2017/sqlite-$(sqlite_version).tar.gz
-sqlite_cflags=$(LTO_FLAGS)
+sqlite_version = autoconf-3300000
+sqlite_hash = e0a8cf4c7a87455e55e10413d16f358ca121ccec687fe1301eac95e2d340fc58
+sqlite_url = https://sqlite.org/2019/sqlite-$(sqlite_version).tar.gz
+sqlite_cflags=$(CFLAGS) $(LTO_FLAGS)
 sqlite_ldflags=$(CFLAGS) $(LTO_FLAGS)
 
 gmp_version = 6.1.2
-gmp_hash = 366ded6a44cd108ba6b3f5b9a252eab3f3a95cdf
+gmp_hash = 5275bb04f4863a13516b2f39392ac5e272f5e1bb8057b18aec1c9b79d73d8fb2
 gmp_url = https://ftp.gnu.org/gnu/gmp/gmp-$(gmp_version).tar.bz2
 gmp_confflags = --disable-cxx --enable-assembly --with-pic --enable-fat
+gmp_cflags=$(CFLAGS)
+gmp_cxxflags=$(CXXFLAGS)
 
-libgpgerror_version = 1.21
-libgpgerror_hash = ef1dfb2f8761f019091180596e9e638d8cc37513
+libgpgerror_version = 1.36
+libgpgerror_hash = babd98437208c163175c29453f8681094bcaf92968a15cafb1a276076b33c97c
 libgpgerror_url = https://gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-$(libgpgerror_version).tar.bz2
-libgpgerror_cflags=$(LTO_FLAGS)
+libgpgerror_cflags=$(CFLAGS) $(LTO_FLAGS)
 libgpgerror_ldflags=$(CFLAGS) $(LTO_FLAGS)
 libgpgerror_confflags = --with-pic --disable-languages --disable-doc --disable-nls
 
-libgcrypt_version = 1.6.5
-libgcrypt_hash = c3a5a13e717f7b3e3895650afc1b6e0d3fe9c726
+libgcrypt_version = 1.8.5
+libgcrypt_hash = 3b4a2a94cb637eff5bdebbcaf46f4d95c4f25206f459809339cdada0eb577ac3
 libgcrypt_url = https://gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-$(libgcrypt_version).tar.bz2
 libgcrypt_confflags=--with-gpg-error-prefix=$(PWD)/arch --disable-O-flag-munging --disable-asm --disable-amd64-as-feature-detection
+libgcrypt_cflags=$(PLATFORMFLAGS)
+libgcrypt_cxxflags=$(PLATFORMFLAGS)
 
-libssh2_version = 1.8.0
-libssh2_hash = baf2d1fb338eee531ba9b6b121c64235e089e0f5
+libssh2_version = 1.9.0
+libssh2_hash = d5fb8bd563305fd1074dda90bd053fb2d29fc4bce048d182f96eaa466dfadafd
 libssh2_url = https://www.libssh2.org/download/libssh2-$(libssh2_version).tar.gz
-libssh2_cflags=$(LTO_FLAGS)
+libssh2_cflags=$(CFLAGS) $(LTO_FLAGS)
+libssh2_cxxflags=$(CXXFLAGS) $(LTO_FLAGS)
 libssh2_ldflags=$(CFLAGS) $(LTO_FLAGS)
 libssh2_confflags = --with-pic --without-openssl --with-libgcrypt=$(PWD)/arch --with-libgcrypt-prefix=$(PWD)/arch
 libssh2_nocheck = yes
 
 cppunit_version = 1.12.1
-cppunit_hash = f1ab8986af7a1ffa6760f4bacf5622924639bf4a
+cppunit_hash = ac28a04c8e6c9217d910b0ae7122832d28d9917fa668bcc9e0b8b09acb4ea44a
 cppunit_url = http://sourceforge.net/projects/cppunit/files/cppunit/$(cppunit_version)/cppunit-$(cppunit_version).tar.gz
+cppunit_cflags=$(CFLAGS) $(LTO_FLAGS)
+cppunit_cxxflags=$(CXXFLAGS) $(LTO_FLAGS)
 
 
 # ARCHLIBS that can be template build
@@ -262,7 +270,7 @@ deps::
 
 .PRECIOUS: %.check
 %.check: %.tar.gz
-	@if test "$$(shasum -a1 $< | awk '{print $$1}')" != "$($(basename $@)_hash)"; then \
+	@if test "$$(shasum -a256 $< | awk '{print $$1}')" != "$($(basename $@)_hash)"; then \
 		echo "Invalid $@ hash"; \
 		rm -f $<; \
 		exit 1; \
@@ -322,8 +330,8 @@ $(1).%.build: $(1).stamp
 		--enable-static --disable-shared \
 		--prefix=$(PWD)/arch \
 		$$($(1)_confflags) \
-		CFLAGS="$$(CFLAGS) $$($(1)_cflags) -arch $$(ARCH)" \
-		CXXFLAGS="$$(CXXFLAGS) $$($(1)_cxxflags) -arch $$(ARCH) -std=c++11" \
+		CFLAGS="$$($(1)_cflags) -arch $$(ARCH)" \
+		CXXFLAGS="$$($(1)_cxxflags) -arch $$(ARCH) -std=c++11" \
 		LDFLAGS="$(LDFLAGS) $$($(1)_ldflags)" \
 		PKG_CONFIG_PATH=$$(PWD)/arch/lib/pkgconfig \
 		)
@@ -377,7 +385,7 @@ $(ARIA2_DOCS): aria2.x86_64.build
 
 $(ARIA2_DIST).tar.bz2: aria2.build $(ARIA2_DOCS) $(ARIA2_CHANGELOG)
 	find $(ARIA2_PREFIX) -exec touch "{}" \;
-	tar -cf $@ \
+	gtar -cf $@ \
 		--use-compress-program="bzip2 -9" \
 		$(ARIA2)
 
