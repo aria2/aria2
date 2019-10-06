@@ -1,4 +1,4 @@
-aria2 1.34.0
+aria2 1.35.0
 ============
 
 Release Note
@@ -9,44 +9,45 @@ This release fixes several bugs.  See Changes for details.
 Changes
 -------
 
-* mingw: Use SetFileTime to avoid DST adjustment
+* Update mingw build dependencies
 
-  GH-1079
+  GH-1469
 
-* UnknownLengthPieceStorage: return piece length
+* Update android build dependencies
 
-  show something in console status when downloading items
-  with unknown content length
+  Update android build dependencies.  Use android NDK r20 and build
+  aarch64 binary.
 
-  Patch from kwkam
+  GH-1467
 
-  GH-1065
+* Drop SSLv3.0 and TLSv1.0 and add TLSv1.3
 
-* WinConsoleFile: fix colour properly
+  TLSv1.3 support is added for GNUTLS and OpenSSL.
 
-  Patch from kwkam
+  GH-1385
 
-  GH-1058
+* Platform: Fix compilation without deprecated OpenSSL APIs
 
-* util: also detect xdg_* env variables on windows
+  Patch from Rosen Penev
 
-  so if people like to keep FHS they could define XDG_* for it
+  GH-1315
 
-  Patch from kwkam
+* Remove linux getrandom and use C++ stdlib instead
 
-  GH-1057
+  GH-1306
 
-* MacOS: Allocate once (apfs compat)
+* Don't send Accept Metalink header if Metalink is disabled
 
-* Fix bug that signal handler does not work with libaria2
+  GH-1300
 
-  This commit fixes the bug that signal handler does not work with
-  libaria2 when aria2::RUN_ONCE is passed to aria2::run().
+* gnutls: Fix bug that commonName is always empty
 
-  GH-1053
+  GH-1214
 
-* Retry on HTTP 502
+* Fix openssl API version logic for libressl 2.7.x
 
-  Patch from nicolov
+  Patch from Ben Chaney
 
-  GH-1038
+  GH-1213
+
+* Fix build failure when InternalDHKeyExchange is used
