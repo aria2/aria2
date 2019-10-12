@@ -110,6 +110,8 @@ void NetStat::reset()
   uploadSpeed_.reset();
   downloadStartTime_ = global::wallclock();
   status_ = IDLE;
+  sessionDownloadLength_ = 0;
+  sessionUploadLength_ = 0;
 }
 
 void NetStat::downloadStart()
