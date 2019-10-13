@@ -59,14 +59,20 @@ Sqlite3ChromiumCookieParser::~Sqlite3ChromiumCookieParser() = default;
 
 const char* Sqlite3ChromiumCookieParser::getQuery() const
 {
-  // chrome's time is microsecond resolution, and its epoc is Jan 1
-  // 00:00:00 +0000 1601, so we have to convert it to second from UNIX
-  // epoc.  11644473600 is the second between chrome's epoc and UNIX
-  // epoc.  e.g., date +%s -d 'Jan 1 00:00:00 +0000 1601'
-  return "SELECT host_key, path, secure, expires_utc / 1000000 - 11644473600 "
-         "as expires_utc, name, value, "
-         "last_access_utc / 1000000 - 11644473600 as last_access_utc"
-         " FROM cookies";
+  // Chrome stores time in microsecond resolution, and its epoch is Jan 1
+  // 00:00:00 +0000 1601, so we have to convert it to seconds from UNIX epoch.
+  // 11644473600 is the number of seconds between Chrome's epoch and the UNIX
+  // epoch, e.g. `date +%s -d 'Jan 1 00:00:00 +0000 1601'`
+
+  // Ideally, the SQLite3 cookie parser API would first run an identification
+  // process to determine the format and version of the cookie store, but it's
+  // not currently designed that way. The following query is specifically for
+  // Chromium cookie stores with latest_compatible_db_version = 11.
+  return ""
+    "   SELECT host_key, path, is_secure, expires_utc / 1000000 - 11644473600 "
+    "       as expires_utc, name, value, "
+    "       last_access_utc / 1000000 - 11644473600 as last_access_utc "
+    "   FROM cookies";
 }
 
 } // namespace aria2
