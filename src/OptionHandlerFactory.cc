@@ -258,7 +258,9 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
 #endif // ENABLE_ASYNC_DNS
   {
     OptionHandler* op(new BooleanOptionHandler(PREF_ENABLE_COLOR,
-                                               TEXT_ENABLE_COLOR, A2_V_TRUE,
+                                               TEXT_ENABLE_COLOR,
+                                               getenv("NO_COLOR") ?
+                                               A2_V_FALSE : A2_V_TRUE,
                                                OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
