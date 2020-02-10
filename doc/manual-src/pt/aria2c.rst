@@ -584,7 +584,7 @@ Opções Específicas de FTP
 Opções Comuns de BitTorrent / Metalink
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. option:: --select-file=<INDEX>...
+.. option:: --select-files=<INDEX>...
 
   Define arquivo para download através da especificação de seu index.
   Para achar o index do arquivo use a opção :option:`--show-files <-S>`.
@@ -691,7 +691,7 @@ Opções Específicas de BitTorrent
 .. option:: --bt-remove-unselected-file [true|false]
 
    Remove os arquivos não selecionados quando o download do BitTorrent estiver
-   completo. Para selecionar arquivo(s) use a opção :option:`--select-file`.
+   completo. Para selecionar arquivo(s) use a opção :option:`--select-files`.
    Se não for usada esta opção, é assumido que todos os arquivos serão 
    selecionados. Use esta opção com critério pois ela realmente remove 
    arquivo(s) do seu disco.
@@ -1927,7 +1927,7 @@ URI. Estas linhas opcionais precisam iniciar com um ou mais espaços.
   * :option:`rpc-save-upload-metadata <--rpc-save-upload-metadata>`
   * :option:`seed-ratio <--seed-ratio>`
   * :option:`seed-time <--seed-time>`
-  * :option:`select-file <--select-file>`
+  * :option:`select-files <--select-files>`
   * :option:`split <-s>`
   * :option:`stream-piece-selector <--stream-piece-selector>`
   * :option:`timeout <-t>`
@@ -2548,8 +2548,8 @@ Python versão 2.7.
     of partially completed piece.
 
   ``selected``
-    ``true`` if this file is selected by :option:`--select-file` option. If
-    :option:`--select-file` is not specified or this is single torrent or no
+    ``true`` if this file is selected by :option:`--select-files` option. If
+    :option:`--select-files` is not specified or this is single torrent or no
     torrent download, this value is always ``true``. Otherwise ``false``.
 
   ``uris``
@@ -3009,7 +3009,7 @@ Python versão 2.7.
   :option:`index-out <-O>`,
   :option:`out <-o>`,
   :option:`pause <--pause>` and
-  :option:`select-file <--select-file>`.
+  :option:`select-files <--select-files>`.
 
   Using :option:`log <-l>` option, you can dynamically start logging or
   change log file. To stop logging, give empty string("") as a parameter
@@ -3504,7 +3504,7 @@ Entenda o que estes números e strings significam.
   N significa GID, o qual é um ID único para cada download.
 
 ``SIZE``
-  Tamanho Total e Tamanho em bytes. Se a :option:`--select-file` é usada,
+  Tamanho Total e Tamanho em bytes. Se a :option:`--select-files` é usada,
   será exibida a somatória do tamanho do arquivo.
 
 ``SEEDING``
@@ -3664,7 +3664,7 @@ Download só arquivos selecionados usando index
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code-block:: console
 
-  $ aria2c --select-file=1-4,8 arquivo.metalink
+  $ aria2c --select-files=1-4,8 arquivo.metalink
 
 .. note::
 
@@ -3734,7 +3734,7 @@ Download arquivos selecionados usando index(chamado "download seletivo")
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code-block:: console
 
-  $ aria2c --select-file=1-4,8 arquivo.torrent
+  $ aria2c --select-files=1-4,8 arquivo.torrent
 
 .. note::
 

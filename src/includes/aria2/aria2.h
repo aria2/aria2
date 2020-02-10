@@ -468,7 +468,7 @@ KeyVals getGlobalOptions(Session* session);
  * :option:`index-out <-O>`,
  * :option:`out <-o>`,
  * :option:`pause <--pause>` and
- * :option:`select-file <--select-file>`.
+ * :option:`select-files <--select-files>`.
  *
  * The options which are not applicable or unknown, they are just
  * ignored.
@@ -637,8 +637,8 @@ struct FileData {
    */
   int64_t completedLength;
   /**
-   * true if this file is selected by ``select-file`` option. If
-   * ``select-file`` is not specified or this is single torrent or no
+   * true if this file is selected by ``select-files`` option. If
+   * ``select-files`` is not specified or this is single torrent or no
    * torrent download, this value is always true.
    */
   bool selected;

@@ -100,7 +100,7 @@ OptionParser.new do |opt|
   opt.on("--reuse-uri [BOOL]",["true","false"]){|val|
     options["reuse-uri"]=val||"true"
   }
-  opt.on("--select-file INDEXES"){|val| options["select-file"]=val}
+  opt.on("--select-files INDEXES"){|val| options["select-files"]=val}
   opt.on("--bt-enable-lpd [BOOL]",["true","false"]){|val|
     options["bt-enable-lpd"]=val||"true"
   }
