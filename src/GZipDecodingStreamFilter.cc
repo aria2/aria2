@@ -47,6 +47,7 @@ GZipDecodingStreamFilter::GZipDecodingStreamFilter(
     std::unique_ptr<StreamFilter> delegate)
     : StreamFilter{std::move(delegate)},
       strm_{nullptr},
+      outbuf_(),
       finished_{false},
       bytesProcessed_{0}
 {
@@ -57,6 +58,8 @@ GZipDecodingStreamFilter::~GZipDecodingStreamFilter() { release(); }
 void GZipDecodingStreamFilter::init()
 {
   finished_ = false;
+  outbuf_.reserve(OUTBUF_CAPACITY);
+  outbuf_.resize(0);
   release();
   strm_ = new z_stream();
   strm_->zalloc = Z_NULL;
@@ -87,42 +90,51 @@ GZipDecodingStreamFilter::transform(const std::shared_ptr<BinaryStream>& out,
 {
   bytesProcessed_ = 0;
   ssize_t outlen = 0;
-  if (inlen == 0) {
-    return outlen;
-  }
 
   strm_->avail_in = inlen;
   strm_->next_in = const_cast<unsigned char*>(inbuf);
 
-  unsigned char outbuf[OUTBUF_LENGTH];
-  while (1) {
-    strm_->avail_out = OUTBUF_LENGTH;
-    strm_->next_out = outbuf;
+  while (bytesProcessed_ < inlen) {
+    // inflate into outbuf_, if empty!
+    if (outbuf_.empty()) {
+      outbuf_.resize(OUTBUF_CAPACITY);
+      strm_->avail_out = outbuf_.size();
+      strm_->next_out = outbuf_.data();
 
-    int ret = ::inflate(strm_, Z_NO_FLUSH);
+      int ret = ::inflate(strm_, Z_NO_FLUSH);
+      if (ret == Z_STREAM_END) {
+        finished_ = true;
+      }
+      else if (ret != Z_OK && ret != Z_BUF_ERROR) {
+        throw DL_ABORT_EX(fmt("libz::inflate() failed. cause:%s", strm_->msg));
+      }
 
-    if (ret == Z_STREAM_END) {
-      finished_ = true;
+      assert(inlen >= strm_->avail_in);
+      bytesProcessed_ = strm_->next_in - inbuf;
+      outbuf_.resize(strm_->next_out - outbuf_.data());
+      if (outbuf_.empty())
+        break;
     }
-    else if (ret != Z_OK && ret != Z_BUF_ERROR) {
-      throw DL_ABORT_EX(fmt("libz::inflate() failed. cause:%s", strm_->msg));
+
+    // flush outbuf_
+    outlen += getDelegate()->transform(out, segment, outbuf_.data(),
+                                       outbuf_.size());
+    size_t processedlen = getDelegate()->getBytesProcessed();
+    if (processedlen == outbuf_.size()) {
+      outbuf_.clear();
     }
-
-    size_t produced = OUTBUF_LENGTH - strm_->avail_out;
-
-    outlen += getDelegate()->transform(out, segment, outbuf, produced);
-    if (strm_->avail_out > 0) {
+    else {
+      // segment download finished
+      outbuf_.erase(outbuf_.begin(), outbuf_.begin() + processedlen);
       break;
     }
   }
-  assert(inlen >= strm_->avail_in);
-  bytesProcessed_ = inlen - strm_->avail_in;
   return outlen;
 }
 
 bool GZipDecodingStreamFilter::finished()
 {
-  return finished_ && getDelegate()->finished();
+  return finished_ && outbuf_.empty() && getDelegate()->finished();
 }
 
 const std::string& GZipDecodingStreamFilter::getName() const { return NAME; }
