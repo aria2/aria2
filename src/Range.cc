@@ -36,10 +36,11 @@
 
 namespace aria2 {
 
-Range::Range() : startByte(0), endByte(0), entityLength(0) {}
+Range::Range() : startByte(0), endByte(0), entityLength(0), isDefined(false) {}
 
 Range::Range(int64_t startByte, int64_t endByte, int64_t entityLength)
-    : startByte(startByte), endByte(endByte), entityLength(entityLength)
+    : startByte(startByte), endByte(endByte), entityLength(entityLength),
+      isDefined(true)
 {
 }
 
@@ -53,6 +54,7 @@ Range& Range::operator=(const Range& c)
     startByte = c.startByte;
     endByte = c.endByte;
     entityLength = c.entityLength;
+    isDefined = c.isDefined;
   }
   return *this;
 }
@@ -60,7 +62,7 @@ Range& Range::operator=(const Range& c)
 bool Range::operator==(const Range& range) const
 {
   return startByte == range.startByte && endByte == range.endByte &&
-         entityLength == range.entityLength;
+         entityLength == range.entityLength && isDefined == range.isDefined;
 }
 
 bool Range::operator!=(const Range& range) const { return !(*this == range); }

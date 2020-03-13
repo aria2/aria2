@@ -73,18 +73,18 @@ void HttpResponse::validateResponse() const
   int statusCode = getStatusCode();
   switch (statusCode) {
   case 200: // OK
-  case 206: // Partial Content
-    if (!httpHeader_->defined(HttpHeader::TRANSFER_ENCODING)) {
-      // compare the received range against the requested range
-      auto responseRange = httpHeader_->getRange();
-      if (!httpRequest_->isRangeSatisfied(responseRange)) {
-        throw DL_ABORT_EX2(
-            fmt(EX_INVALID_RANGE_HEADER, httpRequest_->getStartByte(),
-                httpRequest_->getEndByte(), httpRequest_->getEntityLength(),
-                responseRange.startByte, responseRange.endByte,
-                responseRange.entityLength),
-            error_code::CANNOT_RESUME);
-      }
+  case 206: { // Partial Content
+    // compare the received range against the requested range
+    auto responseRange = httpHeader_->getRange();
+    if (responseRange.isDefined &&
+        !httpRequest_->isRangeSatisfied(responseRange)) {
+      throw DL_ABORT_EX2(
+          fmt(EX_INVALID_RANGE_HEADER, httpRequest_->getStartByte(),
+              httpRequest_->getEndByte(), httpRequest_->getEntityLength(),
+              responseRange.startByte, responseRange.endByte,
+              responseRange.entityLength),
+          error_code::CANNOT_RESUME);
+    }
     }
     return;
   case 304: // Not Modified
@@ -228,6 +228,15 @@ int64_t HttpResponse::getContentLength() const
   }
 
   return httpHeader_->getRange().getContentLength();
+}
+
+bool HttpResponse::isEntityLengthKnown() const
+{
+  if (!httpHeader_) {
+    return false;
+  }
+
+  return httpHeader_->getRange().isDefined;
 }
 
 int64_t HttpResponse::getEntityLength() const

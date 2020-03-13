@@ -272,12 +272,12 @@ bool HttpResponseCommand::executeInternal()
     // update last modified time
     updateLastModifiedTime(httpResponse->getLastModifiedTime());
 
-    if (totalLength == 0 || shouldInflateContentEncoding(httpResponse.get())) {
-      // we ignore content-length when inflate is required
+    if (!httpResponse->isEntityLengthKnown() || totalLength == 0 ||
+        shouldInflateContentEncoding(httpResponse.get())) {
+      // we ignore totalLength when inflate is required
       fe->setLength(0);
       if (req->getMethod() == Request::METHOD_GET &&
-          (totalLength != 0 || !httpResponse->getHttpHeader()->defined(
-                                   HttpHeader::CONTENT_LENGTH))) {
+          !httpResponse->isEntityLengthKnown()) {
         // DownloadContext::knowsTotalLength() == true only when
         // server says the size of file is 0 explicitly.
         getDownloadContext()->markTotalLengthIsUnknown();
@@ -499,7 +499,7 @@ bool HttpResponseCommand::skipResponseBody(
   // set command's status to real time so that avoid read check blocking
   if (getRequest()->getMethod() == Request::METHOD_HEAD ||
       (httpResponsePtr->getEntityLength() == 0 &&
-       !httpResponsePtr->isTransferEncodingSpecified())) {
+       httpResponsePtr->isEntityLengthKnown())) {
     command->setStatusRealtime();
     // If entity length == 0, then socket read/write check must be disabled.
     command->disableSocketCheck();

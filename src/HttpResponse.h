@@ -97,6 +97,8 @@ public:
 
   int64_t getContentLength() const;
 
+  bool isEntityLengthKnown() const;
+
   int64_t getEntityLength() const;
 
   // Returns type "/" subtype. The parameter is removed.

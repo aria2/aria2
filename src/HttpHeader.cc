@@ -102,7 +102,7 @@ Range HttpHeader::getRange() const
         throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, contentLength));
       }
       else if (contentLength == 0) {
-        return Range();
+        return Range(0, 0, 0);
       }
       else {
         return Range(0, contentLength - 1, contentLength);

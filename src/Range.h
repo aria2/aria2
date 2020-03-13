@@ -45,6 +45,7 @@ struct Range {
   int64_t startByte;
   int64_t endByte;
   int64_t entityLength;
+  bool isDefined;
 
   Range();
 
