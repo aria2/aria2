@@ -457,7 +457,6 @@ fin:
   // when range is set.
   if (result_->defined(HttpHeader::TRANSFER_ENCODING)) {
     result_->remove(HttpHeader::CONTENT_LENGTH);
-    result_->remove(HttpHeader::CONTENT_RANGE);
   }
 
   return true;
