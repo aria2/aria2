@@ -74,6 +74,10 @@ void HttpResponse::validateResponse() const
   switch (statusCode) {
   case 200: // OK
   case 206: { // Partial Content
+    if (statusCode == 206 && !httpHeader_->defined(HttpHeader::CONTENT_RANGE)) {
+      throw DL_ABORT_EX2("Content-Range header not specified in 206 response",
+                         error_code::HTTP_PROTOCOL_ERROR);
+    }
     // compare the received range against the requested range
     auto responseRange = httpHeader_->getRange();
     if (responseRange.isDefined &&
