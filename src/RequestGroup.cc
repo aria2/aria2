@@ -210,7 +210,7 @@ std::pair<error_code::Value, std::string> RequestGroup::downloadResult() const
 void RequestGroup::closeFile()
 {
   if (pieceStorage_) {
-    pieceStorage_->flushWrDiskCacheEntry();
+    pieceStorage_->flushWrDiskCacheEntry(true);
     pieceStorage_->getDiskAdaptor()->closeFile();
   }
 }
@@ -1290,6 +1290,9 @@ bool RequestGroup::doesUploadSpeedExceed()
 void RequestGroup::saveControlFile() const
 {
   if (saveControlFile_) {
+    if (pieceStorage_) {
+      pieceStorage_->flushWrDiskCacheEntry(false);
+    }
     progressInfoFile_->save();
   }
 }

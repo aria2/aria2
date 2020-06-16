@@ -226,8 +226,9 @@ public:
 
   virtual WrDiskCache* getWrDiskCache() = 0;
 
-  // Flushes write disk cache for in-flight piece and evicts them.
-  virtual void flushWrDiskCacheEntry() = 0;
+  // Flushes write disk cache for in-flight piece
+  // and optionally releases the associated cache entries.
+  virtual void flushWrDiskCacheEntry(bool releaseEntries) = 0;
 
   virtual int32_t getPieceLength(size_t index) = 0;
 

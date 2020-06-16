@@ -228,7 +228,7 @@ public:
 
   virtual WrDiskCache* getWrDiskCache() CXX11_OVERRIDE { return 0; }
 
-  virtual void flushWrDiskCacheEntry() CXX11_OVERRIDE {}
+  virtual void flushWrDiskCacheEntry(bool releaseEntries) CXX11_OVERRIDE {}
 
   void setDiskAdaptor(const std::shared_ptr<DiskAdaptor>& adaptor)
   {
