@@ -590,4 +590,16 @@ void AbstractDiskWriter::dropCache(int64_t len, int64_t offset)
 #endif // HAVE_POSIX_FADVISE
 }
 
+void AbstractDiskWriter::flushOSBuffers()
+{
+  if (fd_ == A2_BAD_FD) {
+    return;
+  }
+#ifdef __MINGW32__
+  FlushFileBuffers(fd_);
+#else // !__MINGW32__
+  fsync(fd_);
+#endif // __MINGW32__
+}
+
 } // namespace aria2

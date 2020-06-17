@@ -85,6 +85,9 @@ public:
 
   // Drops cache in range [offset, offset + len)
   virtual void dropCache(int64_t len, int64_t offset) {}
+
+  // Force physical write of data from OS buffer cache.
+  virtual void flushOSBuffers() {}
 };
 
 } // namespace aria2
