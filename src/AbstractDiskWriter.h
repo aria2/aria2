@@ -100,6 +100,8 @@ public:
   virtual void enableMmap() CXX11_OVERRIDE;
 
   virtual void dropCache(int64_t len, int64_t offset) CXX11_OVERRIDE;
+
+  virtual void flushOSBuffers() CXX11_OVERRIDE;
 };
 
 } // namespace aria2

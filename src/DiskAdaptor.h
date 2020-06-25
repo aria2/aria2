@@ -114,6 +114,9 @@ public:
   // Writes cached data to the underlying disk.
   virtual void writeCache(const WrDiskCacheEntry* entry) = 0;
 
+  // Force physical write of data from OS buffer cache.
+  virtual void flushOSBuffers() {};
+
   void setFileAllocationMethod(FileAllocationMethod method)
   {
     fileAllocationMethod_ = method;

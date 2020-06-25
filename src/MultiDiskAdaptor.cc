@@ -419,6 +419,17 @@ void MultiDiskAdaptor::writeCache(const WrDiskCacheEntry* entry)
   }
 }
 
+void MultiDiskAdaptor::flushOSBuffers()
+{
+  for (auto& dwent : openedDiskWriterEntries_) {
+    auto& dw = dwent->getDiskWriter();
+    if (!dw) {
+      continue;
+    }
+    dw->flushOSBuffers();
+  }
+}
+
 bool MultiDiskAdaptor::fileExists()
 {
   return std::find_if(std::begin(getFileEntries()), std::end(getFileEntries()),

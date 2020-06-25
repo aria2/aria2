@@ -72,6 +72,8 @@ public:
 
   virtual void writeCache(const WrDiskCacheEntry* entry) CXX11_OVERRIDE;
 
+  virtual void flushOSBuffers() CXX11_OVERRIDE;
+
   virtual bool fileExists() CXX11_OVERRIDE;
 
   virtual int64_t size() CXX11_OVERRIDE;

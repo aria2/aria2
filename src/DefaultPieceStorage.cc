@@ -685,7 +685,7 @@ std::shared_ptr<DiskAdaptor> DefaultPieceStorage::getDiskAdaptor()
 
 WrDiskCache* DefaultPieceStorage::getWrDiskCache() { return wrDiskCache_; }
 
-void DefaultPieceStorage::flushWrDiskCacheEntry()
+void DefaultPieceStorage::flushWrDiskCacheEntry(bool releaseEntries)
 {
   if (!wrDiskCache_) {
     return;
@@ -697,7 +697,9 @@ void DefaultPieceStorage::flushWrDiskCacheEntry()
     auto ce = piece->getWrDiskCacheEntry();
     if (ce) {
       piece->flushWrCache(wrDiskCache_);
-      piece->releaseWrCache(wrDiskCache_);
+      if (releaseEntries) {
+        piece->releaseWrCache(wrDiskCache_);
+      }
     }
   }
 }

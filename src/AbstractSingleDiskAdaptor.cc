@@ -103,6 +103,11 @@ void AbstractSingleDiskAdaptor::writeCache(const WrDiskCacheEntry* entry)
   }
 }
 
+void AbstractSingleDiskAdaptor::flushOSBuffers()
+{
+  diskWriter_->flushOSBuffers();
+}
+
 bool AbstractSingleDiskAdaptor::fileExists()
 {
   return File(getFilePath()).exists();
