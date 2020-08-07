@@ -183,11 +183,12 @@ bool ServerStat::operator==(const ServerStat& serverStat) const
 std::string ServerStat::toString() const
 {
   return fmt("host=%s, protocol=%s, dl_speed=%d, sc_avg_speed=%d,"
-             " mc_avg_speed=%d, last_updated=%ld, counter=%d, status=%s",
+             " mc_avg_speed=%d, last_updated=%" PRId64
+             ", counter=%d, status=%s",
              getHostname().c_str(), getProtocol().c_str(), getDownloadSpeed(),
              getSingleConnectionAvgSpeed(), getMultiConnectionAvgSpeed(),
-             getLastUpdated().getTimeFromEpoch(), getCounter(),
-             STATUS_STRING[getStatus()]);
+             static_cast<int64_t>(getLastUpdated().getTimeFromEpoch()),
+             getCounter(), STATUS_STRING[getStatus()]);
 }
 
 } // namespace aria2
