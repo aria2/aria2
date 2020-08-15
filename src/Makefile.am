@@ -139,6 +139,7 @@ SRCS =  \
 	IndexedList.h\
 	InitiateConnectionCommand.cc InitiateConnectionCommand.h\
 	InitiateConnectionCommandFactory.cc InitiateConnectionCommandFactory.h\
+	InorderPieceSelector.cc InorderPieceSelector.h\
 	InorderStreamPieceSelector.cc InorderStreamPieceSelector.h\
 	RandomStreamPieceSelector.cc RandomStreamPieceSelector.h\
 	InorderURISelector.cc InorderURISelector.h\

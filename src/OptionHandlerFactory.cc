@@ -1582,6 +1582,16 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    OptionHandler* op(new ParameterOptionHandler(
+          PREF_BT_PIECE_SELECTOR, TEXT_BT_PIECE_SELECTOR, A2_V_DEFAULT,
+          {A2_V_DEFAULT, V_INORDER}));
+    op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
+    op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
+    handlers.push_back(op);
+  }
+  {
     OptionHandler* op(new PrioritizePieceOptionHandler(
         PREF_BT_PRIORITIZE_PIECE, TEXT_BT_PRIORITIZE_PIECE));
     op->addTag(TAG_BITTORRENT);

@@ -753,6 +753,15 @@ BitTorrent Specific Options
   one which satisfies the given level.
   Default: ``plain``
 
+.. option:: --bt-piece-selector=<SELECTOR>
+
+  Specify the piece selection algorithm used for BitTorrent downloads.
+  If unspecified or 'default' is given, aria2 prioritizes downloads of the
+  rarest pieces, that is the ones that are held by the least amount of peers.
+  This is the optimal behavior for the BitTorrent swarm.
+  If 'inorder' is given, aria2 tries to download pieces in order. This allows
+  playing media files while downloading them.
+
 .. option:: --bt-prioritize-piece=head[=<SIZE>],tail[=<SIZE>]
 
   Try to download first and last pieces of each file first. This is
@@ -2132,6 +2141,7 @@ of URIs. These optional lines must start with white space(s).
   * :option:`bt-max-peers <--bt-max-peers>`
   * :option:`bt-metadata-only <--bt-metadata-only>`
   * :option:`bt-min-crypto-level <--bt-min-crypto-level>`
+  * :option:`bt-piece-selector <--bt-piece-selector>`
   * :option:`bt-prioritize-piece <--bt-prioritize-piece>`
   * :option:`bt-remove-unselected-file <--bt-remove-unselected-file>`
   * :option:`bt-request-peer-speed-limit <--bt-request-peer-speed-limit>`

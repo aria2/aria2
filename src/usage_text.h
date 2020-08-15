@@ -618,6 +618,17 @@
   _(" --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is 0 in\n" \
     "                              consecutive SEC seconds. If 0 is given, this\n" \
     "                              feature is disabled.")
+#define TEXT_BT_PIECE_SELECTOR                                          \
+  _(" --bt-piece-selector=SELECTOR Specify the piece selection algorithm used for\n" \
+    "                              BitTorrent downloads.\n"             \
+    "                              If unspecified or 'default' is given, aria2\n" \
+    "                              prioritizes downloads of the rarest pieces, that\n" \
+    "                              is the ones that are held by the least amount of\n" \
+    "                              peers. This is the optimal behavior for the\n" \
+    "                              BitTorrent swarm.\n"                 \
+    "                              If 'inorder' is given, aria2 tries to download\n" \
+    "                              pieces in order. This allows playing media files\n" \
+    "                              while downloading them.")
 #define TEXT_BT_PRIORITIZE_PIECE                                        \
   _(" --bt-prioritize-piece=head[=SIZE],tail[=SIZE] Try to download first and last\n" \
     "                              pieces of each file first. This is useful for\n" \
