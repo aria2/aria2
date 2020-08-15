@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import subprocess
-from StringIO import StringIO
+from io import StringIO
 import re
 import sys
 
@@ -19,7 +19,7 @@ def get_all_options(cmd):
     stdoutdata, stderrdata = proc.communicate()
     cur_option = None
     opts = {}
-    for line in StringIO(stdoutdata):
+    for line in StringIO(stdoutdata.decode('utf-8')):
         match = opt_pattern.match(line)
         if match:
             long_opt = match.group(2)
@@ -35,8 +35,8 @@ def get_all_options(cmd):
     if cur_option:
         opts[cur_option.long_opt] = cur_option
 
-    # for opt in opts.itervalues():
-    #     print opt.short_opt, opt.long_opt, opt.optional, opt.values
+    # for opt in opts.values():
+    #     print(opt.short_opt, opt.long_opt, opt.optional, opt.values)
 
     return opts
 
@@ -77,7 +77,7 @@ _aria2c()
 """)
     bool_opts = []
     nonbool_opts = []
-    for opt in opts.itervalues():
+    for opt in opts.values():
         if opt.values == ['true', 'false']:
             bool_opts.append(opt)
         else:
@@ -105,7 +105,7 @@ _aria2c()
         output_value_case(out, opt.long_opt, opt.values)
     # Complete directory
     dir_opts = []
-    for opt in opts.itervalues():
+    for opt in opts.values():
         if opt.values and opt.values[0] == '/path/to/directory':
             dir_opts.append(opt)
     # Complete file
@@ -123,7 +123,7 @@ _aria2c()
             COMPREPLY=( $( compgen -W '\
 """)
     bool_values = [ 'true', 'false' ]
-    for opt in opts.itervalues():
+    for opt in opts.values():
         out.write(opt.long_opt)
         out.write(' ')
         # Options which takes optional argument needs "=" between
@@ -159,8 +159,8 @@ complete -F _aria2c aria2c
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print "Generates aria2c(1) bash_completion using `aria2c --help=#all'"
-        print "Usage: make_bash_completion.py /path/to/aria2c"
+        print("Generates aria2c(1) bash_completion using `aria2c --help=#all'")
+        print("Usage: make_bash_completion.py /path/to/aria2c")
         exit(1)
     opts = get_all_options(sys.argv[1])
     output_case(sys.stdout, opts)
