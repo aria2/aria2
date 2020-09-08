@@ -3,40 +3,49 @@
 #
 # $ sudo docker build -t aria2-mingw - < Dockerfile.mingw
 #
-# After successful build, windows binary is located at
-# /aria2/src/aria2c.exe.  You can copy the binary using following
-# commands:
+# After successful build, windows binary is located at '/aria2/src/aria2c.exe'.
+# You can copy the binary using following commands:
 #
 # $ id=$(sudo docker create aria2-mingw)
 # $ sudo docker cp $id:/aria2/src/aria2c.exe <dest>
 # $ sudo docker rm -v $id
 
-FROM ubuntu:19.04
+FROM ubuntu:20.04
 
-MAINTAINER Tatsuhiro Tsujikawa
+LABEL MAINTAINER="Tatsuhiro Tsujikawa"
 
-# Change HOST to x86_64-w64-mingw32 to build 64-bit binary
+# Choose 'i686-w64-mingw32' to build 32-bit binary or 'x86_64-w64-mingw32' to build 64-bit.
 ENV HOST i686-w64-mingw32
+# ENV HOST x86_64-w64-mingw32
 
-# It would be better to use nearest ubuntu archive mirror for faster
-# downloads.
-# RUN sed -ie 's/archive\.ubuntu/jp.archive.ubuntu/g' /etc/apt/sources.list
+## It would be better to use nearest ubuntu archive mirror for faster downloads.
+# RUN echo "deb http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse" > /etc/apt/sources.list && \
+#     echo "deb http://archive.ubuntu.com/ubuntu/ focal-updates main restricted universe multiverse" >> /etc/apt/sources.list && \
+#     echo "deb http://archive.ubuntu.com/ubuntu/ focal-backports main restricted universe multiverse" >> /etc/apt/sources.list && \
+#     echo "deb http://security.ubuntu.com/ubuntu/ focal-security main restricted universe multiverse" >> /etc/apt/sources.list
+
+## You may also manually set preferred DNS server.
+# RUN echo "nameserver 1.1.1.1" > /etc/resolv.conf
+
+RUN DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \ 
+    apt install -y tzdata
 
 RUN apt-get update && \
     apt-get install -y \
         make binutils autoconf automake autotools-dev libtool \
         pkg-config git curl dpkg-dev gcc-mingw-w64 g++-mingw-w64 \
-        autopoint libcppunit-dev libxml2-dev libgcrypt11-dev lzip
+        autopoint libcppunit-dev libxml2-dev libgcrypt20-dev lzip
 
-RUN curl -L -O https://gmplib.org/download/gmp/gmp-6.1.2.tar.lz && \
-    curl -L -O https://github.com/libexpat/libexpat/releases/download/R_2_2_7/expat-2.2.7.tar.bz2 && \
-    curl -L -O https://www.sqlite.org/2019/sqlite-autoconf-3290000.tar.gz && \
+RUN curl -L -O https://gmplib.org/download/gmp/gmp-6.2.0.tar.lz && \
+    curl -L -O https://github.com/libexpat/libexpat/releases/download/R_2_2_9/expat-2.2.9.tar.bz2 && \
+    curl -L -O https://www.sqlite.org/2020/sqlite-autoconf-3330000.tar.gz && \
     curl -L -O http://zlib.net/zlib-1.2.11.tar.gz && \
-    curl -L -O https://c-ares.haxx.se/download/c-ares-1.15.0.tar.gz && \
+    curl -L -O https://c-ares.haxx.se/download/c-ares-1.16.1.tar.gz && \
     curl -L -O https://www.libssh2.org/download/libssh2-1.9.0.tar.gz
 
-RUN tar xf gmp-6.1.2.tar.lz && \
-    cd gmp-6.1.2 && \
+RUN tar xf gmp-6.2.0.tar.lz && \
+    cd gmp-6.2.0 && \
     ./configure \
         --disable-shared \
         --enable-static \
@@ -45,27 +54,27 @@ RUN tar xf gmp-6.1.2.tar.lz && \
         --disable-cxx \
         --enable-fat \
         CFLAGS="-mtune=generic -O2 -g0" && \
-    make install
+    make install -j$(nproc)
 
-RUN tar xf expat-2.2.7.tar.bz2 && \
-    cd expat-2.2.7 && \
+RUN tar xf expat-2.2.9.tar.bz2 && \
+    cd expat-2.2.9 && \
     ./configure \
         --disable-shared \
         --enable-static \
         --prefix=/usr/local/$HOST \
         --host=$HOST \
         --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` && \
-    make install
+    make install -j$(nproc)
 
-RUN tar xf sqlite-autoconf-3290000.tar.gz && \
-    cd sqlite-autoconf-3290000 && \
+RUN tar xf sqlite-autoconf-3330000.tar.gz && \
+    cd sqlite-autoconf-3330000 && \
     ./configure \
         --disable-shared \
         --enable-static \
         --prefix=/usr/local/$HOST \
         --host=$HOST \
         --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` && \
-    make install
+    make install -j$(nproc)
 
 RUN tar xf zlib-1.2.11.tar.gz && \
     cd zlib-1.2.11 && \
@@ -79,10 +88,10 @@ RUN tar xf zlib-1.2.11.tar.gz && \
         --libdir=/usr/local/$HOST/lib \
         --includedir=/usr/local/$HOST/include \
         --static && \
-    make install
+    make install -j$(nproc)
 
-RUN tar xf c-ares-1.15.0.tar.gz && \
-    cd c-ares-1.15.0 && \
+RUN tar xf c-ares-1.16.1.tar.gz && \
+    cd c-ares-1.16.1 && \
     ./configure \
         --disable-shared \
         --enable-static \
@@ -91,7 +100,7 @@ RUN tar xf c-ares-1.15.0.tar.gz && \
         --host=$HOST \
         --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` \
         LIBS="-lws2_32" && \
-    make install
+    make install -j$(nproc)
 
 RUN tar xf libssh2-1.9.0.tar.gz && \
     cd libssh2-1.9.0 && \
@@ -104,8 +113,22 @@ RUN tar xf libssh2-1.9.0.tar.gz && \
         --without-openssl \
         --with-wincng \
         LIBS="-lws2_32" && \
-    make install
-ADD https://api.github.com/repos/aria2/aria2/git/refs/heads/master version.json
-RUN git clone https://github.com/aria2/aria2 && \
-    cd aria2 && autoreconf -i && ./mingw-config && make && \
+    make install -j$(nproc)
+
+# ADD https://api.github.com/repos/aria2/aria2/git/refs/heads/master version.json
+
+## You may compile the latest master branch or a certain release
+# Build master branch
+RUN git clone https://github.com/aria2/aria2.git && \
+    cd aria2 && \
+    autoreconf -i && ./mingw-config && \
+    make -j$(nproc) && \
     $HOST-strip src/aria2c.exe
+
+## Build from release
+# RUN curl -L -O https://github.com/aria2/aria2/releases/download/release-1.35.0/aria2-1.35.0.tar.gz && \
+#     tar xf aria2-1.35.0.tar.gz && \
+#     cd aria2-1.35.0 && \
+#     autoreconf -i && ./mingw-config && \
+#     make -j$(nproc) && \
+#     $HOST-strip src/aria2c.exe
