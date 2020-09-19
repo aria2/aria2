@@ -3,8 +3,9 @@
 #
 # $ sudo docker build -t aria2-mingw - < Dockerfile.mingw
 #
-# After successful build, windows binary is located at '/aria2/src/aria2c.exe'.
-# You can copy the binary using following commands:
+# After successful build, windows binary is located at
+# /aria2/src/aria2c.exe.  You can copy the binary using following
+# commands:
 #
 # $ id=$(sudo docker create aria2-mingw)
 # $ sudo docker cp $id:/aria2/src/aria2c.exe <dest>
@@ -14,9 +15,8 @@ FROM ubuntu:20.04
 
 LABEL MAINTAINER="Tatsuhiro Tsujikawa"
 
-## Choose 'i686-w64-mingw32' to build 32-bit binary or 'x86_64-w64-mingw32' to build 64-bit.
+# Change HOST to x86_64-w64-mingw32 to build 64-bit binary
 ENV HOST i686-w64-mingw32
-# ENV HOST x86_64-w64-mingw32
 
 ## It would be better to use nearest ubuntu archive mirror for faster downloads.
 # RUN echo "deb http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse" > /etc/apt/sources.list && \
@@ -27,9 +27,7 @@ ENV HOST i686-w64-mingw32
 ## You may also manually set preferred DNS server.
 # RUN echo "nameserver 1.1.1.1" > /etc/resolv.conf
 
-RUN DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \ 
-    apt-get install -y tzdata
+ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && \
     apt-get install -y \
@@ -115,20 +113,7 @@ RUN tar xf libssh2-1.9.0.tar.gz && \
         LIBS="-lws2_32" && \
     make install -j$(nproc)
 
-# ADD https://api.github.com/repos/aria2/aria2/git/refs/heads/master version.json
-
-## You may compile the latest master branch or a certain release
-## Build master branch
+ADD https://api.github.com/repos/aria2/aria2/git/refs/heads/master version.json
 RUN git clone https://github.com/aria2/aria2.git && \
-    cd aria2 && \
-    autoreconf -i && ./mingw-config && \
-    make -j$(nproc) && \
+    cd aria2 && autoreconf -i && ./mingw-config && make && \
     $HOST-strip src/aria2c.exe
-
-## Build from release
-# RUN curl -L -O https://github.com/aria2/aria2/releases/download/release-1.35.0/aria2-1.35.0.tar.gz && \
-#     tar xf aria2-1.35.0.tar.gz && \
-#     cd aria2-1.35.0 && \
-#     autoreconf -i && ./mingw-config && \
-#     make -j$(nproc) && \
-#     $HOST-strip src/aria2c.exe
