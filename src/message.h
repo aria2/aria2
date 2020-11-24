@@ -47,6 +47,7 @@
 #define MSG_SENDING_REQUEST "CUID#%" PRId64 " - Requesting:\n%s"
 #define MSG_RECEIVE_RESPONSE "CUID#%" PRId64 " - Response received:\n%s"
 #define MSG_DOWNLOAD_ABORTED "CUID#%" PRId64 " - Download aborted. URI=%s"
+#define MSG_RETRY_WAITING "CUID#%" PRId64 " - Waiting (%d sec) for retry of the download. URI=%s"
 #define MSG_RESTARTING_DOWNLOAD "CUID#%" PRId64 " - Restarting the download. URI=%s"
 #define MSG_TORRENT_DOWNLOAD_ABORTED "CUID#%" PRId64 " - Download aborted."
 #define MSG_MAX_TRY                                                     \
