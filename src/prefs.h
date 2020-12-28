@@ -485,6 +485,8 @@ extern PrefPtr PREF_INDEX_OUT;
 extern PrefPtr PREF_BT_TRACKER_INTERVAL;
 // values: 1*digit
 extern PrefPtr PREF_BT_STOP_TIMEOUT;
+// values: default | inorder
+extern PrefPtr PREF_BT_PIECE_SELECTOR;
 // values: head[=SIZE]|tail[=SIZE], ...
 extern PrefPtr PREF_BT_PRIORITIZE_PIECE;
 // values: true | false
