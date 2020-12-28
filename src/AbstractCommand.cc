@@ -386,7 +386,10 @@ bool AbstractCommand::execute()
       return true;
     }
 
-    if (err.getErrorCode() == error_code::HTTP_SERVICE_UNAVAILABLE) {
+    if (err.getErrorCode() == error_code::HTTP_SERVICE_UNAVAILABLE ||
+        err.getErrorCode() == error_code::RESOURCE_NOT_FOUND) {
+      A2_LOG_DEBUG(fmt(MSG_RETRY_WAITING, getCuid(), getOption()->getAsInt(PREF_RETRY_WAIT),
+        req_->getUri().c_str()));
       Timer wakeTime(global::wallclock());
       wakeTime.advance(
           std::chrono::seconds(getOption()->getAsInt(PREF_RETRY_WAIT)));
