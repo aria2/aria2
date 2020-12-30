@@ -37,6 +37,7 @@
 
 #include "StreamFilter.h"
 #include <zlib.h>
+#include <vector>
 
 #include "a2functional.h"
 
@@ -47,11 +48,13 @@ class GZipDecodingStreamFilter : public StreamFilter {
 private:
   z_stream* strm_;
 
+  std::vector<unsigned char> outbuf_;
+
   bool finished_;
 
   size_t bytesProcessed_;
 
-  static const size_t OUTBUF_LENGTH = 16_k;
+  static const size_t OUTBUF_CAPACITY = 16_k;
 
 public:
   GZipDecodingStreamFilter(std::unique_ptr<StreamFilter> delegate = nullptr);
