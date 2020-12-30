@@ -7,6 +7,10 @@
 *.he
 depcomp
 *.m4
+!m4/aria2_arg.m4
+!m4/ax_check_compile_flag.m4
+!m4/ax_cxx_compile_stdcxx_11.m4
+!m4/fallocate.m4
 Makefile
 Makefile.in
 missing
