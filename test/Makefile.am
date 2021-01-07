@@ -17,6 +17,7 @@ aria2c_SOURCES = AllTest.cc\
 	RequestGroupTest.cc\
 	UtilTest1.cc\
 	UtilTest2.cc\
+	UtilFsTest.cc\
 	UtilSecurityTest.cc\
 	UriListParserTest.cc\
 	HttpHeaderProcessorTest.cc\
