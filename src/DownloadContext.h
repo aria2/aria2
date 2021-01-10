@@ -54,6 +54,7 @@ namespace aria2 {
 class RequestGroup;
 class Signature;
 class FileEntry;
+class Segment;
 
 class DownloadContext {
 private:
@@ -233,6 +234,10 @@ public:
   // RequestGroupMan via getOwnerRequestGroup().
   void updateUploadLength(size_t bytes);
   void updateUploadSpeed(size_t bytes);
+  
+  // This method will be called by corresponding SegmentMan 
+  // if a Segment get downloaded
+  void completedSegment(const std::shared_ptr<Segment>& segment) const;
 };
 
 } // namespace aria2

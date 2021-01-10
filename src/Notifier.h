@@ -45,24 +45,37 @@
 namespace aria2 {
 
 class RequestGroup;
+class Segment;
 
 struct DownloadEventListener {
   virtual ~DownloadEventListener() = default;
-  virtual void onEvent(DownloadEvent event, const RequestGroup* group) = 0;
+  virtual void onEvent(DownloadEvent event,
+                       const RequestGroup* group,
+                       const Segment* segment = nullptr) = 0;
 };
 
 class Notifier {
 public:
   Notifier();
   ~Notifier();
+
   void addDownloadEventListener(DownloadEventListener* listener);
   // Notifies the download event to all listeners.
-  void notifyDownloadEvent(DownloadEvent event, const RequestGroup* group);
+  void notifyDownloadEvent(DownloadEvent event,
+                           const RequestGroup* group, 
+                           const Segment* segment=nullptr);
 
   void notifyDownloadEvent(DownloadEvent event,
                            const std::shared_ptr<RequestGroup>& group)
   {
     notifyDownloadEvent(event, group.get());
+  }
+  
+  void notifyDownloadSegmentEvent(DownloadEvent event,
+                                  const std::shared_ptr<RequestGroup>& group,
+                                  const std::shared_ptr<Segment>& segment)
+  {
+    notifyDownloadEvent(event, group.get(), segment.get());
   }
 
 private:

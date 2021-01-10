@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "ApiCallbackDownloadEventListener.h"
 #include "RequestGroup.h"
+#include "Segment.h"
 
 namespace aria2 {
 
@@ -46,9 +47,16 @@ ApiCallbackDownloadEventListener::ApiCallbackDownloadEventListener(
 ApiCallbackDownloadEventListener::~ApiCallbackDownloadEventListener() = default;
 
 void ApiCallbackDownloadEventListener::onEvent(DownloadEvent event,
-                                               const RequestGroup* group)
+                                               const RequestGroup* group,
+                                               const Segment* segment)
 {
-  callback_(session_, event, group->getGID(), userData_);
+  struct SegmentInfo info;
+  if (segment) {
+    info.index = segment->getIndex();
+    info.position = segment->getPosition();
+    info.length = segment->getLength();
+  }
+  callback_(session_, event, group->getGID(), userData_, &info);
 }
 
 } // namespace aria2
