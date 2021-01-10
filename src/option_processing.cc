@@ -182,7 +182,6 @@ error_code::Value option_processing(Option& op, bool standalone,
     std::stringstream cmdstream;
     {
       // first evaluate --no-conf and --conf-path options.
-      Option op;
       if (argc == 0) {
         oparser->parse(op, options);
       }
