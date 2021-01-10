@@ -472,7 +472,7 @@ PrefPtr PREF_LISTEN_PORT = makePref("listen-port");
 // values: true | false | mem
 PrefPtr PREF_FOLLOW_TORRENT = makePref("follow-torrent");
 // values: 1*digit * = makePref(  = makePref(,|-) 1*digit);
-PrefPtr PREF_SELECT_FILE = makePref("select-file");
+PrefPtr PREF_SELECT_FILE = makePref("select-files");
 // values: 1*digit
 PrefPtr PREF_SEED_TIME = makePref("seed-time");
 // values: 1*digit ['.' [ 1*digit ] ]

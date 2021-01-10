@@ -274,7 +274,7 @@
     "                              information will be listed in case of torrent\n" \
     "                              file.")
 #define TEXT_SELECT_FILE                                                \
-  _(" --select-file=INDEX...       Set file to download by specifying its index.\n" \
+  _(" --select-files=INDEX...       Set file to download by specifying its index.\n" \
     "                              You can find the file index using the\n" \
     "                              --show-files option. Multiple indexes can be\n" \
     "                              specified by using ',', for example: \"3,6\".\n" \
@@ -938,7 +938,7 @@
 #define TEXT_BT_REMOVE_UNSELECTED_FILE                                  \
   _(" --bt-remove-unselected-file[=true|false] Removes the unselected files when\n" \
     "                              download is completed in BitTorrent. To\n" \
-    "                              select files, use --select-file option. If\n" \
+    "                              select files, use --select-files option. If\n" \
     "                              it is not used, all files are assumed to be\n" \
     "                              selected. Please use this option with care\n" \
     "                              because it will actually remove files from\n" \

@@ -622,11 +622,11 @@ void gatherProgressCommon(Dict* entryDict,
     entryDict->put(KEY_GID, GroupId::toHex(group->getGID()).c_str());
   }
   if (requested_key(keys, KEY_TOTAL_LENGTH)) {
-    // This is "filtered" total length if --select-file is used.
+    // This is "filtered" total length if --select-files is used.
     entryDict->put(KEY_TOTAL_LENGTH, util::itos(group->getTotalLength()));
   }
   if (requested_key(keys, KEY_COMPLETED_LENGTH)) {
-    // This is "filtered" total length if --select-file is used.
+    // This is "filtered" total length if --select-files is used.
     entryDict->put(KEY_COMPLETED_LENGTH,
                    util::itos(group->getCompletedLength()));
   }

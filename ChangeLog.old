@@ -10974,7 +10974,7 @@
 	
 2009-05-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
-	Fixed the bug that aria2 aborts when --select-file is used.  This
+	Fixed the bug that aria2 aborts when --select-files is used.  This
 	bug was introduced in r1199.
 	* src/MultiDiskAdaptor.cc
 	
@@ -12064,13 +12064,13 @@
 
 2009-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
-	Documented select-file option in Input File section.
+	Documented select-files option in Input File section.
 	Documented --http-auth-challenge option.
 	* doc/aria2c.1.txt
 	
 2009-02-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
-	Now select-file can be specified in the uri list(-i list).
+	Now select-files can be specified in the uri list(-i list).
 	* src/BtContext.cc
 	* src/BtContext.h
 	* src/RequestGroup.cc
@@ -14361,7 +14361,7 @@
 2008-10-22 Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed the bug that causes segmentation fault when accessing files which
-	don't exist or are not included in --select-file option while
+	don't exist or are not included in --select-files option while
 	validating chunk checksum.
 	* src/MultiDiskAdaptor.cc
 
@@ -20236,7 +20236,7 @@
 2007-11-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Preallocate non-requested file which is adjacent forward to requested
-	file('requested' files means the files given in --select-file option)
+	file('requested' files means the files given in --select-files option)
 	if they share a same piece.
 	This fixes long pause in the file system which doesn't support sparse
 	files like FAT32 while downloading.
@@ -20283,7 +20283,7 @@
 	* test/OptionHandlerTest.cc
 
 	Added IntegerRangeOptionHandler. Used for --listen-port and
-	--select-file. Now --listen-port accepts range of port.
+	--select-files. Now --listen-port accepts range of port.
 	* src/OptionHandlerFactory.cc
 	* src/version_usage.cc
 	* src/OptionHandlerImpl.h
@@ -21395,7 +21395,7 @@
 	a metalink file.
 	Added selective download mode to metalink.
 	* src/main.cc
-	(showUsage): Updated to denote that -S and --select-file options are
+	(showUsage): Updated to denote that -S and --select-files options are
 	applicable to metalink.
 	* src/FileEntry.h
 	(operator=): New function.
@@ -26763,7 +26763,7 @@
 	
 2006-04-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
-	To add --select-file command-line option:
+	To add --select-files command-line option:
 	
 	* src/Util.cc
 	(unfoldRange): New function.
@@ -26771,7 +26771,7 @@
 	(unfoldSubRange): New function
 	* src/main.cc
 	(showUsage): Added help message.
-	(main): Added --select-file command-line option. Updated the layout of
+	(main): Added --select-files command-line option. Updated the layout of
 	file listing.
 	* src/common.h
 	(Integers): New definition.
