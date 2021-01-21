@@ -303,7 +303,7 @@ Context::Context(bool standalone, int argc, char** argv, const KeyVals& options)
 
   if (standalone && !op->getAsBool(PREF_ENABLE_RPC) && requestGroups.empty() &&
       !uriListParser) {
-    global::cout()->printf("%s\n", MSG_NO_FILES_TO_DOWNLOAD);
+    A2_LOG_NOTICE(MSG_NO_FILES_TO_DOWNLOAD);
   }
   else {
     if (!requestGroups.empty()) {
