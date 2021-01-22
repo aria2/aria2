@@ -81,7 +81,7 @@ bool LongestSequencePieceSelector::select(size_t& index,
     }
     nextIndex = endindex;
   }
-  if (mendindex - mstartindex > 0) {
+  if (mendindex != mstartindex) {
     index = mendindex - 1;
     return true;
   }
