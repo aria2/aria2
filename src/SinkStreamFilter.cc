@@ -41,6 +41,7 @@
 #include "Segment.h"
 #include "WrDiskCache.h"
 #include "Piece.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
@@ -81,8 +82,13 @@ ssize_t SinkStreamFilter::transform(const std::shared_ptr<BinaryStream>& out,
         size_t capacity = std::max(len, static_cast<size_t>(4_k));
         auto dataCopy = new unsigned char[capacity];
         memcpy(dataCopy, inbuf + alen, len);
-        piece->updateWrCache(wrDiskCache_, dataCopy, 0, len, capacity,
-                             segment->getPositionToWrite() + alen);
+        try {
+          piece->updateWrCache(wrDiskCache_, dataCopy, 0, len, capacity,
+                               segment->getPositionToWrite() + alen);
+        } catch (RecoverableException& e) {
+          delete[] dataCopy;
+          throw;
+        }
       }
     }
     else {
