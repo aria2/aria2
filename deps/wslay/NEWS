@@ -1,47 +1,82 @@
-wslay 1.0.0
+wslay 1.1.1
 ===========
 
 Release Note
 ------------
 
-This release fixes several build issues.  Most changes were introduced
-by contributors.  Thank you for all the contributions in this project.
-Because wslay is very stable since the previous release (more than 2
-years ago), we mark this release 1.0.0.
+This release fixes the bug that eof is not evaluated after the
+invocation of read_callback.
 
 Changes
 -------
 
-* Fix NULL check in wslay_frame_context_init.
+* Check for eof when read_callback returns 0 (GH-47)
 
-  Patch from Witchakorn Kamolpornwijit
+  Patch from Robert Bragg
 
-* the examples uses epoll and thus only be built on linux
+
 
-  Patch from Kazuho Oku
+wslay 1.1.0
+===========
 
-* build: allow one to build out-of-tree documentation
+Release Note
+------------
 
-  Patch from Vincent Bernat
+This release adds CMake build support and the ability to set and
+verify reserved bits.  Build issue with nettle >= 3.4 was fixed.
 
-* build: fix `./configure` when nettle is not present
+Changes
+-------
 
-  `PKG_CHECK_MODULES` will fail unless we give it an action to execute
-  on failure. When nettle is not available, we set `have_nettle` to
-  `no`.
+* Fix compilation of examples
 
-  Patch from Vincent Bernat
+  Since 3.4 nettle defines base64_encode_raw like this:
 
-* Adds the ability to override the version header include with a
-  define.  This enables projects to set the build version from the
-  compile environment and avoid the need to generate the version
-  header.
+      void base64_encode_raw(char *dst, size_t length, const uint8_t *src);
 
-  Patch from Ben Vanik
+  So examples have to be adjusted. More read at
+  https://git.lysator.liu.se/nettle/nettle/blob/nettle_3.4_release_20171119/NEWS#L49-53
 
-* Improve http_handshake in fork-echoserver.
+  Patch from Sergey Avseyev
 
-  Patch from Gurjeet Singh
+* check for 0 length before memcpy:
 
-* Don't send any pending control frame other than Close control frame
-  after Close is queued.
+  .../wslay/lib/wslay_event.c:304:7: runtime error: null pointer passed as argument 2, which is declared to never be null
+
+  Patch from Anders Bakken
+
+* Skip UTF-8 validation for PMCE fragments
+
+  If the message was marked with rsv1 on the initial frame then we
+  should skip utf-8 validation on subsequent continuation frames as
+  well.
+
+  Added test for this case.
+
+  Found by autobahn wstest tool.
+
+  Patch from Isaac Boukris
+
+* Allow RSV1 bit in event-based API for PMCE - RFC 7692
+
+  Add a new function wslay_event_set_allowed_rsv_bits which only accpet
+  RSV1 for now (or 0 to disable).
+
+  Skip UTF-8 validation on frames with RSV1 set as it is too early for that.
+
+  Add extended versions of wslay_event_queue_msg functions which also
+  take the reserved bits to set for this message.
+
+  Patch from Isaac Boukris
+
+* fixed missing malloc guard
+
+  Patch from Jakub Piskorz
+
+* Fix argc check.
+
+  Patch from Anders Bakken
+
+* CMake support
+
+  Patch from wonder-mice

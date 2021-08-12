@@ -42,5 +42,12 @@ void test_wslay_frame_send_1byte_masked(void);
 void test_wslay_frame_send_zero_payloadlen(void);
 void test_wslay_frame_send_too_large_payload(void);
 void test_wslay_frame_send_ctrl_frame_too_large_payload(void);
+void test_wslay_frame_write(void);
+void test_wslay_frame_write_fragmented(void);
+void test_wslay_frame_write_interleaved_ctrl_frame(void);
+void test_wslay_frame_write_1byte_masked(void);
+void test_wslay_frame_write_zero_payloadlen(void);
+void test_wslay_frame_write_too_large_payload(void);
+void test_wslay_frame_write_ctrl_frame_too_large_payload(void);
 
 #endif /* WSLAY_FRAME_TEST_H */

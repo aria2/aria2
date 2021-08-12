@@ -1,7 +1,7 @@
 Wslay - The WebSocket library
 =============================
 
-Project Web: https://github.com/tatsuhiro-t/wslay
+Project Web: https://tatsuhiro-t.github.io/wslay/
 
 Wslay is a WebSocket library written in C.
 It implements the protocol version 13 described in

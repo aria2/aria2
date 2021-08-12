@@ -32,8 +32,8 @@
 
 struct scripted_data_feed {
   uint8_t data[8192];
-  uint8_t* datamark;
-  uint8_t* datalimit;
+  uint8_t *datamark;
+  uint8_t *datalimit;
   size_t feedseq[8192];
   size_t seqidx;
 };
@@ -49,44 +49,43 @@ struct my_user_data {
 };
 
 static void scripted_data_feed_init(struct scripted_data_feed *df,
-                                    const uint8_t *data, size_t data_length)
-{
+                                    const uint8_t *data, size_t data_length) {
   memset(df, 0, sizeof(struct scripted_data_feed));
-  memcpy(df->data, data, data_length);
+  if (data_length) {
+    memcpy(df->data, data, data_length);
+  }
   df->datamark = df->data;
-  df->datalimit = df->data+data_length;
+  df->datalimit = df->data + data_length;
   df->feedseq[0] = data_length;
 }
 
-static ssize_t scripted_read_callback
-(wslay_event_context_ptr ctx,
- uint8_t *data, size_t len, const union wslay_event_msg_source *source,
- int *eof, void *user_data)
-{
-  struct scripted_data_feed *df = (struct scripted_data_feed*)source->data;
+static ssize_t
+scripted_read_callback(wslay_event_context_ptr ctx, uint8_t *data, size_t len,
+                       const union wslay_event_msg_source *source, int *eof,
+                       void *user_data) {
+  struct scripted_data_feed *df = (struct scripted_data_feed *)source->data;
   size_t wlen = df->feedseq[df->seqidx] > len ? len : df->feedseq[df->seqidx];
   memcpy(data, df->datamark, wlen);
   df->datamark += wlen;
-  if(wlen <= len) {
+  if (wlen <= len) {
     ++df->seqidx;
   } else {
     df->feedseq[df->seqidx] -= wlen;
   }
-  if(df->datamark == df->datalimit) {
+  if (df->datamark == df->datalimit) {
     *eof = 1;
   }
   return wlen;
 }
 
 static ssize_t scripted_recv_callback(wslay_event_context_ptr ctx,
-                                      uint8_t* data, size_t len, int flags,
-                                      void *user_data)
-{
-  struct scripted_data_feed *df = ((struct my_user_data*)user_data)->df;
+                                      uint8_t *data, size_t len, int flags,
+                                      void *user_data) {
+  struct scripted_data_feed *df = ((struct my_user_data *)user_data)->df;
   size_t wlen = df->feedseq[df->seqidx] > len ? len : df->feedseq[df->seqidx];
   memcpy(data, df->datamark, wlen);
   df->datamark += wlen;
-  if(wlen <= len) {
+  if (wlen <= len) {
     ++df->seqidx;
   } else {
     df->feedseq[df->seqidx] -= wlen;
@@ -96,45 +95,38 @@ static ssize_t scripted_recv_callback(wslay_event_context_ptr ctx,
 
 static ssize_t accumulator_send_callback(wslay_event_context_ptr ctx,
                                          const uint8_t *buf, size_t len,
-                                         int flags, void* user_data)
-{
-  struct accumulator *acc = ((struct my_user_data*)user_data)->acc;
-  assert(acc->length+len < sizeof(acc->buf));
-  memcpy(acc->buf+acc->length, buf, len);
+                                         int flags, void *user_data) {
+  struct accumulator *acc = ((struct my_user_data *)user_data)->acc;
+  assert(acc->length + len < sizeof(acc->buf));
+  memcpy(acc->buf + acc->length, buf, len);
   acc->length += len;
   return len;
 }
 
 static ssize_t one_accumulator_send_callback(wslay_event_context_ptr ctx,
                                              const uint8_t *buf, size_t len,
-                                             int flags, void* user_data)
-{
-  struct accumulator *acc = ((struct my_user_data*)user_data)->acc;
+                                             int flags, void *user_data) {
+  struct accumulator *acc = ((struct my_user_data *)user_data)->acc;
   assert(len > 0);
-  memcpy(acc->buf+acc->length, buf, 1);
+  memcpy(acc->buf + acc->length, buf, 1);
   acc->length += 1;
   return 1;
 }
 
-static ssize_t fail_recv_callback(wslay_event_context_ptr ctx,
-                                  uint8_t* data, size_t len, int flags,
-                                  void *user_data)
-{
+static ssize_t fail_recv_callback(wslay_event_context_ptr ctx, uint8_t *data,
+                                  size_t len, int flags, void *user_data) {
   wslay_event_set_error(ctx, WSLAY_ERR_CALLBACK_FAILURE);
   return -1;
 }
 
 static ssize_t fail_send_callback(wslay_event_context_ptr ctx,
                                   const uint8_t *buf, size_t len, int flags,
-                                  void* user_data)
-{
+                                  void *user_data) {
   wslay_event_set_error(ctx, WSLAY_ERR_CALLBACK_FAILURE);
   return -1;
 }
 
-
-void test_wslay_event_send_fragmented_msg(void)
-{
+void test_wslay_event_send_fragmented_msg(void) {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
   struct my_user_data ud;
@@ -142,11 +134,8 @@ void test_wslay_event_send_fragmented_msg(void)
   const char msg[] = "Hello";
   struct scripted_data_feed df;
   struct wslay_event_fragmented_msg arg;
-  const uint8_t ans[] = {
-    0x01, 0x03, 0x48, 0x65, 0x6c,
-    0x80, 0x02, 0x6c, 0x6f
-  };
-  scripted_data_feed_init(&df, (const uint8_t*)msg, sizeof(msg)-1);
+  const uint8_t ans[] = {0x01, 0x03, 0x48, 0x65, 0x6c, 0x80, 0x02, 0x6c, 0x6f};
+  scripted_data_feed_init(&df, (const uint8_t *)msg, sizeof(msg) - 1);
   df.feedseq[0] = 3;
   df.feedseq[1] = 2;
   memset(&callbacks, 0, sizeof(callbacks));
@@ -166,8 +155,33 @@ void test_wslay_event_send_fragmented_msg(void)
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_send_fragmented_msg_with_ctrl(void)
-{
+void test_wslay_event_send_fragmented_msg_empty_data(void) {
+  wslay_event_context_ptr ctx;
+  struct wslay_event_callbacks callbacks;
+  struct my_user_data ud;
+  struct accumulator acc;
+  struct scripted_data_feed df;
+  struct wslay_event_fragmented_msg arg;
+  const uint8_t ans[] = {0x81, 0x00};
+  scripted_data_feed_init(&df, NULL, 0);
+  memset(&callbacks, 0, sizeof(callbacks));
+  callbacks.send_callback = accumulator_send_callback;
+  memset(&acc, 0, sizeof(acc));
+  ud.acc = &acc;
+  wslay_event_context_server_init(&ctx, &callbacks, &ud);
+
+  memset(&arg, 0, sizeof(arg));
+  arg.opcode = WSLAY_TEXT_FRAME;
+  arg.source.data = &df;
+  arg.read_callback = scripted_read_callback;
+  CU_ASSERT(0 == wslay_event_queue_fragmented_msg(ctx, &arg));
+  CU_ASSERT(0 == wslay_event_send(ctx));
+  CU_ASSERT_EQUAL(2, acc.length);
+  CU_ASSERT(0 == memcmp(ans, acc.buf, acc.length));
+  wslay_event_context_free(ctx);
+}
+
+void test_wslay_event_send_fragmented_msg_with_ctrl(void) {
   int i;
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
@@ -178,11 +192,11 @@ void test_wslay_event_send_fragmented_msg_with_ctrl(void)
   struct wslay_event_fragmented_msg arg;
   struct wslay_event_msg ctrl_arg;
   const uint8_t ans[] = {
-    0x01, 0x03, 0x48, 0x65, 0x6c, /* "Hel" */
-    0x89, 0x00, /* unmasked ping */
-    0x80, 0x02, 0x6c, 0x6f /* "lo" */
+      0x01, 0x03, 0x48, 0x65, 0x6c, /* "Hel" */
+      0x89, 0x00,                   /* unmasked ping */
+      0x80, 0x02, 0x6c, 0x6f        /* "lo" */
   };
-  scripted_data_feed_init(&df, (const uint8_t*)msg, sizeof(msg)-1);
+  scripted_data_feed_init(&df, (const uint8_t *)msg, sizeof(msg) - 1);
   df.feedseq[0] = 3;
   df.feedseq[1] = 2;
   memset(&callbacks, 0, sizeof(callbacks));
@@ -205,7 +219,7 @@ void test_wslay_event_send_fragmented_msg_with_ctrl(void)
   ctrl_arg.msg_length = 0;
   CU_ASSERT(0 == wslay_event_queue_msg(ctx, &ctrl_arg));
   CU_ASSERT(2 == wslay_event_get_queued_msg_count(ctx));
-  for(i = 0; i < 10; ++i) {
+  for (i = 0; i < 10; ++i) {
     CU_ASSERT(0 == wslay_event_send(ctx));
   }
   CU_ASSERT(0 == wslay_event_get_queued_msg_count(ctx));
@@ -214,8 +228,7 @@ void test_wslay_event_send_fragmented_msg_with_ctrl(void)
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_send_fragmented_msg_with_rsv1(void)
-{
+void test_wslay_event_send_fragmented_msg_with_rsv1(void) {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
   struct my_user_data ud;
@@ -223,11 +236,8 @@ void test_wslay_event_send_fragmented_msg_with_rsv1(void)
   const char msg[] = "Hello";
   struct scripted_data_feed df;
   struct wslay_event_fragmented_msg arg;
-  const uint8_t ans[] = {
-    0x41, 0x03, 0x48, 0x65, 0x6c,
-    0x80, 0x02, 0x6c, 0x6f
-  };
-  scripted_data_feed_init(&df, (const uint8_t*)msg, sizeof(msg)-1);
+  const uint8_t ans[] = {0x41, 0x03, 0x48, 0x65, 0x6c, 0x80, 0x02, 0x6c, 0x6f};
+  scripted_data_feed_init(&df, (const uint8_t *)msg, sizeof(msg) - 1);
   df.feedseq[0] = 3;
   df.feedseq[1] = 2;
   memset(&callbacks, 0, sizeof(callbacks));
@@ -249,8 +259,7 @@ void test_wslay_event_send_fragmented_msg_with_rsv1(void)
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_send_msg_with_rsv1(void)
-{
+void test_wslay_event_send_msg_with_rsv1(void) {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
   struct my_user_data ud;
@@ -258,7 +267,7 @@ void test_wslay_event_send_msg_with_rsv1(void)
   const char msg[] = "Hello";
   struct wslay_event_msg arg;
   const uint8_t ans[] = {
-    0xc1, 0x05, 0x48, 0x65, 0x6c, 0x6c, 0x6f /* "Hello" */
+      0xc1, 0x05, 0x48, 0x65, 0x6c, 0x6c, 0x6f /* "Hello" */
   };
 
   memset(&callbacks, 0, sizeof(callbacks));
@@ -270,7 +279,7 @@ void test_wslay_event_send_msg_with_rsv1(void)
 
   memset(&arg, 0, sizeof(arg));
   arg.opcode = WSLAY_TEXT_FRAME;
-  arg.msg = (const uint8_t*)msg;
+  arg.msg = (const uint8_t *)msg;
   arg.msg_length = 5;
   CU_ASSERT(0 == wslay_event_queue_msg_ex(ctx, &arg, WSLAY_RSV1_BIT));
   CU_ASSERT(0 == wslay_event_send(ctx));
@@ -279,8 +288,7 @@ void test_wslay_event_send_msg_with_rsv1(void)
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_send_ctrl_msg_first(void)
-{
+void test_wslay_event_send_ctrl_msg_first(void) {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
   struct my_user_data ud;
@@ -288,8 +296,8 @@ void test_wslay_event_send_ctrl_msg_first(void)
   const char msg[] = "Hello";
   struct wslay_event_msg arg;
   const uint8_t ans[] = {
-    0x89, 0x00, /* unmasked ping */
-    0x81, 0x05, 0x48, 0x65, 0x6c, 0x6c, 0x6f /* "Hello" */
+      0x89, 0x00,                              /* unmasked ping */
+      0x81, 0x05, 0x48, 0x65, 0x6c, 0x6c, 0x6f /* "Hello" */
   };
   memset(&callbacks, 0, sizeof(callbacks));
   callbacks.send_callback = accumulator_send_callback;
@@ -302,7 +310,7 @@ void test_wslay_event_send_ctrl_msg_first(void)
   arg.msg_length = 0;
   CU_ASSERT(0 == wslay_event_queue_msg(ctx, &arg));
   arg.opcode = WSLAY_TEXT_FRAME;
-  arg.msg = (const uint8_t*)msg;
+  arg.msg = (const uint8_t *)msg;
   arg.msg_length = 5;
   CU_ASSERT(0 == wslay_event_queue_msg(ctx, &arg));
   CU_ASSERT(0 == wslay_event_send(ctx));
@@ -311,8 +319,7 @@ void test_wslay_event_send_ctrl_msg_first(void)
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_send_ctrl_msg_with_rsv1(void)
-{
+void test_wslay_event_send_ctrl_msg_with_rsv1(void) {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
   struct wslay_event_msg arg;
@@ -331,15 +338,14 @@ void test_wslay_event_send_ctrl_msg_with_rsv1(void)
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_queue_close(void)
-{
+void test_wslay_event_queue_close(void) {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
   struct my_user_data ud;
   struct accumulator acc;
   const char msg[] = "H";
   const uint8_t ans[] = {
-    0x88, 0x03, 0x03, 0xf1, 0x48 /* "H" */
+      0x88, 0x03, 0x03, 0xf1, 0x48 /* "H" */
   };
   memset(&callbacks, 0, sizeof(callbacks));
   callbacks.send_callback = accumulator_send_callback;
@@ -347,7 +353,7 @@ void test_wslay_event_queue_close(void)
   ud.acc = &acc;
   wslay_event_context_server_init(&ctx, &callbacks, &ud);
   CU_ASSERT(0 == wslay_event_queue_close(ctx, WSLAY_CODE_MESSAGE_TOO_BIG,
-                                         (const uint8_t*)msg, 1));
+                                         (const uint8_t *)msg, 1));
   CU_ASSERT(0 == wslay_event_send(ctx));
   CU_ASSERT(5 == acc.length);
   CU_ASSERT(0 == memcmp(ans, acc.buf, acc.length));
@@ -355,14 +361,13 @@ void test_wslay_event_queue_close(void)
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_queue_close_without_code(void)
-{
+void test_wslay_event_queue_close_without_code(void) {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
   struct my_user_data ud;
   struct accumulator acc;
-  const uint8_t ans[] = { 0x88, 0x00 };
-  struct wslay_event_msg ping = { WSLAY_PING, NULL, 0 };
+  const uint8_t ans[] = {0x88, 0x00};
+  struct wslay_event_msg ping = {WSLAY_PING, NULL, 0};
   memset(&callbacks, 0, sizeof(callbacks));
   callbacks.send_callback = accumulator_send_callback;
   memset(&acc, 0, sizeof(acc));
@@ -375,19 +380,17 @@ void test_wslay_event_queue_close_without_code(void)
   CU_ASSERT(2 == acc.length);
   CU_ASSERT(0 == memcmp(ans, acc.buf, acc.length));
   CU_ASSERT(1 == wslay_event_get_close_sent(ctx));
-  CU_ASSERT(WSLAY_CODE_NO_STATUS_RCVD ==
-            wslay_event_get_status_code_sent(ctx));
+  CU_ASSERT(WSLAY_CODE_NO_STATUS_RCVD == wslay_event_get_status_code_sent(ctx));
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_recv_close_without_code(void)
-{
+void test_wslay_event_recv_close_without_code(void) {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
   struct my_user_data ud;
-  const uint8_t msg[] = { 0x88u, 0x00 };
+  const uint8_t msg[] = {0x88u, 0x00};
   struct scripted_data_feed df;
-  scripted_data_feed_init(&df, (const uint8_t*)msg, sizeof(msg));
+  scripted_data_feed_init(&df, (const uint8_t *)msg, sizeof(msg));
   memset(&callbacks, 0, sizeof(callbacks));
   callbacks.recv_callback = scripted_recv_callback;
   ud.df = &df;
@@ -399,23 +402,22 @@ void test_wslay_event_recv_close_without_code(void)
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_reply_close(void)
-{
+void test_wslay_event_reply_close(void) {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
   struct my_user_data ud;
   struct accumulator acc;
   /* Masked close frame with code = 1009, reason = "Hello" */
-  const uint8_t msg[] = { 0x88u, 0x87u, 0x00u, 0x00u, 0x00u, 0x00u,
-                          0x03, 0xf1, /* 1009 */
-                          0x48, 0x65, 0x6c, 0x6c, 0x6f /* "Hello" */
+  const uint8_t msg[] = {
+      0x88u, 0x87u, 0x00u, 0x00u, 0x00u, 0x00u, 0x03, 0xf1, /* 1009 */
+      0x48,  0x65,  0x6c,  0x6c,  0x6f                      /* "Hello" */
   };
-  const uint8_t ans[] = { 0x88u, 0x07u,
-                          0x03, 0xf1, /* 1009 */
-                          0x48, 0x65, 0x6c, 0x6c, 0x6f /* "Hello" */
+  const uint8_t ans[] = {
+      0x88u, 0x07u, 0x03, 0xf1,      /* 1009 */
+      0x48,  0x65,  0x6c, 0x6c, 0x6f /* "Hello" */
   };
   struct scripted_data_feed df;
-  scripted_data_feed_init(&df, (const uint8_t*)msg, sizeof(msg));
+  scripted_data_feed_init(&df, (const uint8_t *)msg, sizeof(msg));
   memset(&callbacks, 0, sizeof(callbacks));
   callbacks.send_callback = accumulator_send_callback;
   callbacks.recv_callback = scripted_recv_callback;
@@ -445,8 +447,7 @@ void test_wslay_event_reply_close(void)
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_no_more_msg(void)
-{
+void test_wslay_event_no_more_msg(void) {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
   memset(&callbacks, 0, sizeof(callbacks));
@@ -456,8 +457,7 @@ void test_wslay_event_no_more_msg(void)
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_callback_failure(void)
-{
+void test_wslay_event_callback_failure(void) {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
   memset(&callbacks, 0, sizeof(callbacks));
@@ -472,9 +472,8 @@ void test_wslay_event_callback_failure(void)
 
 static void no_buffering_callback(wslay_event_context_ptr ctx,
                                   const struct wslay_event_on_msg_recv_arg *arg,
-                                  void *user_data)
-{
-  if(arg->opcode == WSLAY_PING) {
+                                  void *user_data) {
+  if (arg->opcode == WSLAY_PING) {
     CU_ASSERT(3 == arg->msg_length);
     CU_ASSERT(0 == memcmp("Foo", arg->msg, arg->msg_length));
   } else {
@@ -483,18 +482,17 @@ static void no_buffering_callback(wslay_event_context_ptr ctx,
   }
 }
 
-void test_wslay_event_no_buffering(void)
-{
+void test_wslay_event_no_buffering(void) {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
   struct my_user_data ud;
   const uint8_t msg[] = {
-    0x01, 0x03, 0x48, 0x65, 0x6c, /* "Hel" */
-    0x89, 0x03, 0x46, 0x6f, 0x6f, /* ping with "Foo" */
-    0x80, 0x02, 0x6c, 0x6f, /* "lo" */
+      0x01, 0x03, 0x48, 0x65, 0x6c, /* "Hel" */
+      0x89, 0x03, 0x46, 0x6f, 0x6f, /* ping with "Foo" */
+      0x80, 0x02, 0x6c, 0x6f,       /* "lo" */
   };
   struct scripted_data_feed df;
-  scripted_data_feed_init(&df, (const uint8_t*)msg, sizeof(msg));
+  scripted_data_feed_init(&df, (const uint8_t *)msg, sizeof(msg));
   memset(&callbacks, 0, sizeof(callbacks));
   ud.df = &df;
   callbacks.recv_callback = scripted_recv_callback;
@@ -510,35 +508,33 @@ void test_wslay_event_no_buffering(void)
 static void
 text_rsv1_on_msg_recv_callback(wslay_event_context_ptr ctx,
                                const struct wslay_event_on_msg_recv_arg *arg,
-                               void *user_data)
-{
+                               void *user_data) {
   CU_ASSERT(WSLAY_TEXT_FRAME == arg->opcode);
   CU_ASSERT(WSLAY_RSV1_BIT == arg->rsv);
 }
 
-void test_wslay_event_recv_text_frame_with_rsv1(void)
-{
+void test_wslay_event_recv_text_frame_with_rsv1(void) {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
   struct my_user_data ud;
   const uint8_t msg[] = {
-    0xc1, 0x07, 0xf2, 0x48, 0xcd, 0xc9, 0xc9, 0x07, 0x00 // "Hello" pm-deflate
+      0xc1, 0x07, 0xf2, 0x48, 0xcd, 0xc9, 0xc9, 0x07, 0x00 // "Hello" pm-deflate
   };
   const uint8_t fragmented[] = {
-    0x41, 0x03, 0xf2, 0x48, 0xcd, // First fragment
-    0x80, 0x04, 0xc9, 0xc9, 0x07, 0x00 // Second fragment, RSV1 bit off
+      0x41, 0x03, 0xf2, 0x48, 0xcd,      // First fragment
+      0x80, 0x04, 0xc9, 0xc9, 0x07, 0x00 // Second fragment, RSV1 bit off
   };
   const uint8_t bad_fragment[] = {
-    0x41, 0x03, 0xf2, 0x48, 0xcd,
-    0xc0, 0x04, 0xc9, 0xc9, 0x07, 0x00 // RSV1 bit on
+      0x41, 0x03, 0xf2, 0x48, 0xcd, 0xc0,
+      0x04, 0xc9, 0xc9, 0x07, 0x00 // RSV1 bit on
   };
   const uint8_t pingmsg[] = {
-    0xc9, 0x03, 0x46, 0x6f, 0x6f /* ping with "Foo" */
+      0xc9, 0x03, 0x46, 0x6f, 0x6f /* ping with "Foo" */
   };
   struct scripted_data_feed df;
 
   /* Message marked with RSV1 should skip UTF-8 validation */
-  scripted_data_feed_init(&df, (const uint8_t*)msg, sizeof(msg));
+  scripted_data_feed_init(&df, (const uint8_t *)msg, sizeof(msg));
   memset(&callbacks, 0, sizeof(callbacks));
   ud.df = &df;
   callbacks.recv_callback = scripted_recv_callback;
@@ -551,7 +547,7 @@ void test_wslay_event_recv_text_frame_with_rsv1(void)
 
   /* UTF-8 validation is skipped for continuation frames if the
    * initial frame was marked with RSV1 bit */
-  scripted_data_feed_init(&df, (const uint8_t*)fragmented, sizeof(fragmented));
+  scripted_data_feed_init(&df, (const uint8_t *)fragmented, sizeof(fragmented));
   memset(&callbacks, 0, sizeof(callbacks));
   ud.df = &df;
   callbacks.recv_callback = scripted_recv_callback;
@@ -563,7 +559,7 @@ void test_wslay_event_recv_text_frame_with_rsv1(void)
   wslay_event_context_free(ctx);
 
   /* disallow RSV1 */
-  scripted_data_feed_init(&df, (const uint8_t*)msg, sizeof(msg));
+  scripted_data_feed_init(&df, (const uint8_t *)msg, sizeof(msg));
   wslay_event_context_client_init(&ctx, &callbacks, &ud);
   CU_ASSERT(0 == wslay_event_recv(ctx));
   /* Close frame must be queued */
@@ -571,8 +567,8 @@ void test_wslay_event_recv_text_frame_with_rsv1(void)
   wslay_event_context_free(ctx);
 
   /* RSV1 is not allowed in continuation frame */
-  scripted_data_feed_init(&df, (const uint8_t*)bad_fragment,
-                                sizeof(bad_fragment));
+  scripted_data_feed_init(&df, (const uint8_t *)bad_fragment,
+                          sizeof(bad_fragment));
   wslay_event_context_client_init(&ctx, &callbacks, &ud);
   wslay_event_config_set_allowed_rsv_bits(ctx, WSLAY_RSV1_BIT);
   CU_ASSERT(0 == wslay_event_recv(ctx));
@@ -581,7 +577,7 @@ void test_wslay_event_recv_text_frame_with_rsv1(void)
   wslay_event_context_free(ctx);
 
   /* RSV1 is not allowed in ping frame */
-  scripted_data_feed_init(&df, (const uint8_t*)pingmsg, sizeof(pingmsg));
+  scripted_data_feed_init(&df, (const uint8_t *)pingmsg, sizeof(pingmsg));
   wslay_event_context_client_init(&ctx, &callbacks, &ud);
   wslay_event_config_set_allowed_rsv_bits(ctx, WSLAY_RSV1_BIT);
   CU_ASSERT(0 == wslay_event_recv(ctx));
@@ -590,21 +586,21 @@ void test_wslay_event_recv_text_frame_with_rsv1(void)
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_frame_too_big(void)
-{
+void test_wslay_event_frame_too_big(void) {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
   struct my_user_data ud;
   struct accumulator acc;
   /* Masked text frame */
-  const uint8_t msg[] = { 0x81, 0x85, 0x00, 0x00, 0x00, 0x00,
-                          0x48, 0x65, 0x6c, 0x6c, 0x6f /* "Hello" */
+  const uint8_t msg[] = {
+      0x81, 0x85, 0x00, 0x00, 0x00, 0x00,
+      0x48, 0x65, 0x6c, 0x6c, 0x6f /* "Hello" */
   };
-  const uint8_t ans[] = { 0x88, 0x02,
-                          0x03, 0xf1 /* 1009 */
+  const uint8_t ans[] = {
+      0x88, 0x02, 0x03, 0xf1 /* 1009 */
   };
   struct scripted_data_feed df;
-  scripted_data_feed_init(&df, (const uint8_t*)msg, sizeof(msg));
+  scripted_data_feed_init(&df, (const uint8_t *)msg, sizeof(msg));
   memset(&callbacks, 0, sizeof(callbacks));
   callbacks.send_callback = accumulator_send_callback;
   callbacks.recv_callback = scripted_recv_callback;
@@ -623,23 +619,23 @@ void test_wslay_event_frame_too_big(void)
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_message_too_big(void)
-{
+void test_wslay_event_message_too_big(void) {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
   struct my_user_data ud;
   struct accumulator acc;
   /* Masked text 2 frames */
-  const uint8_t msg[] = { 0x01, 0x85, 0x00, 0x00, 0x00, 0x00,
-                          0x48, 0x65, 0x6c, 0x6c, 0x6f, /* "Hello" */
-                          0x80, 0x85, 0x00, 0x00, 0x00, 0x00,
-                          0x48, 0x65, 0x6c, 0x6c, 0x6f /* "Hello" */
+  const uint8_t msg[] = {
+      0x01, 0x85, 0x00, 0x00, 0x00, 0x00,
+      0x48, 0x65, 0x6c, 0x6c, 0x6f, /* "Hello" */
+      0x80, 0x85, 0x00, 0x00, 0x00, 0x00,
+      0x48, 0x65, 0x6c, 0x6c, 0x6f /* "Hello" */
   };
-  const uint8_t ans[] = { 0x88, 0x02,
-                          0x03, 0xf1 /* 1009 */
+  const uint8_t ans[] = {
+      0x88, 0x02, 0x03, 0xf1 /* 1009 */
   };
   struct scripted_data_feed df;
-  scripted_data_feed_init(&df, (const uint8_t*)msg, sizeof(msg));
+  scripted_data_feed_init(&df, (const uint8_t *)msg, sizeof(msg));
   memset(&callbacks, 0, sizeof(callbacks));
   callbacks.send_callback = accumulator_send_callback;
   callbacks.recv_callback = scripted_recv_callback;
@@ -658,8 +654,7 @@ void test_wslay_event_message_too_big(void)
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_config_set_allowed_rsv_bits(void)
-{
+void test_wslay_event_config_set_allowed_rsv_bits(void) {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
 
@@ -681,5 +676,166 @@ void test_wslay_event_config_set_allowed_rsv_bits(void)
 
   CU_ASSERT(WSLAY_RSV_NONE == ctx->allowed_rsv_bits);
 
+  wslay_event_context_free(ctx);
+}
+
+void test_wslay_event_write_fragmented_msg(void) {
+  wslay_event_context_ptr ctx;
+  struct wslay_event_callbacks callbacks;
+  const char msg[] = "Hello";
+  struct scripted_data_feed df;
+  struct wslay_event_fragmented_msg arg;
+  const uint8_t ans[] = {0x01, 0x03, 0x48, 0x65, 0x6c, 0x80, 0x02, 0x6c, 0x6f};
+  uint8_t buf[1024];
+  scripted_data_feed_init(&df, (const uint8_t *)msg, sizeof(msg) - 1);
+  df.feedseq[0] = 3;
+  df.feedseq[1] = 2;
+  memset(&callbacks, 0, sizeof(callbacks));
+  wslay_event_context_server_init(&ctx, &callbacks, NULL);
+
+  memset(&arg, 0, sizeof(arg));
+  arg.opcode = WSLAY_TEXT_FRAME;
+  arg.source.data = &df;
+  arg.read_callback = scripted_read_callback;
+  CU_ASSERT(0 == wslay_event_queue_fragmented_msg(ctx, &arg));
+  CU_ASSERT(sizeof(ans) == wslay_event_write(ctx, buf, sizeof(buf)));
+  CU_ASSERT(0 == memcmp(ans, buf, sizeof(ans)));
+  wslay_event_context_free(ctx);
+}
+
+void test_wslay_event_write_fragmented_msg_empty_data(void) {
+  wslay_event_context_ptr ctx;
+  struct wslay_event_callbacks callbacks;
+  struct scripted_data_feed df;
+  struct wslay_event_fragmented_msg arg;
+  const uint8_t ans[] = {0x81, 0x00};
+  uint8_t buf[1024];
+  scripted_data_feed_init(&df, NULL, 0);
+  memset(&callbacks, 0, sizeof(callbacks));
+  callbacks.send_callback = accumulator_send_callback;
+  wslay_event_context_server_init(&ctx, &callbacks, NULL);
+
+  memset(&arg, 0, sizeof(arg));
+  arg.opcode = WSLAY_TEXT_FRAME;
+  arg.source.data = &df;
+  arg.read_callback = scripted_read_callback;
+  CU_ASSERT(0 == wslay_event_queue_fragmented_msg(ctx, &arg));
+  CU_ASSERT(sizeof(ans) == wslay_event_write(ctx, buf, sizeof(buf)));
+  CU_ASSERT(0 == memcmp(ans, buf, sizeof(ans)));
+  wslay_event_context_free(ctx);
+}
+
+void test_wslay_event_write_fragmented_msg_with_ctrl(void) {
+  wslay_event_context_ptr ctx;
+  struct wslay_event_callbacks callbacks;
+  const char msg[] = "Hello";
+  struct scripted_data_feed df;
+  struct wslay_event_fragmented_msg arg;
+  struct wslay_event_msg ctrl_arg;
+  const uint8_t ans[] = {
+      0x01, 0x03, 0x48, 0x65, 0x6c, /* "Hel" */
+      0x89, 0x00,                   /* unmasked ping */
+      0x80, 0x02, 0x6c, 0x6f        /* "lo" */
+  };
+  uint8_t buf[1024];
+  scripted_data_feed_init(&df, (const uint8_t *)msg, sizeof(msg) - 1);
+  df.feedseq[0] = 3;
+  df.feedseq[1] = 2;
+  memset(&callbacks, 0, sizeof(callbacks));
+  wslay_event_context_server_init(&ctx, &callbacks, NULL);
+
+  memset(&arg, 0, sizeof(arg));
+  arg.opcode = WSLAY_TEXT_FRAME;
+  arg.source.data = &df;
+  arg.read_callback = scripted_read_callback;
+  CU_ASSERT(0 == wslay_event_queue_fragmented_msg(ctx, &arg));
+  CU_ASSERT(1 == wslay_event_get_queued_msg_count(ctx));
+  CU_ASSERT(0 == wslay_event_get_queued_msg_length(ctx));
+  CU_ASSERT(4 == wslay_event_write(ctx, buf, 4));
+
+  memset(&ctrl_arg, 0, sizeof(ctrl_arg));
+  ctrl_arg.opcode = WSLAY_PING;
+  ctrl_arg.msg_length = 0;
+  CU_ASSERT(0 == wslay_event_queue_msg(ctx, &ctrl_arg));
+  CU_ASSERT(2 == wslay_event_get_queued_msg_count(ctx));
+  CU_ASSERT(7 == wslay_event_write(ctx, buf + 4, sizeof(buf) - 4));
+  CU_ASSERT(0 == wslay_event_get_queued_msg_count(ctx));
+  CU_ASSERT(0 == memcmp(ans, buf, sizeof(ans)));
+  wslay_event_context_free(ctx);
+}
+
+void test_wslay_event_write_fragmented_msg_with_rsv1(void) {
+  wslay_event_context_ptr ctx;
+  struct wslay_event_callbacks callbacks;
+  const char msg[] = "Hello";
+  struct scripted_data_feed df;
+  struct wslay_event_fragmented_msg arg;
+  const uint8_t ans[] = {0x41, 0x03, 0x48, 0x65, 0x6c, 0x80, 0x02, 0x6c, 0x6f};
+  uint8_t buf[1024];
+  scripted_data_feed_init(&df, (const uint8_t *)msg, sizeof(msg) - 1);
+  df.feedseq[0] = 3;
+  df.feedseq[1] = 2;
+  memset(&callbacks, 0, sizeof(callbacks));
+  callbacks.send_callback = accumulator_send_callback;
+  wslay_event_context_server_init(&ctx, &callbacks, NULL);
+  wslay_event_config_set_allowed_rsv_bits(ctx, WSLAY_RSV1_BIT);
+
+  memset(&arg, 0, sizeof(arg));
+  arg.opcode = WSLAY_TEXT_FRAME;
+  arg.source.data = &df;
+  arg.read_callback = scripted_read_callback;
+  CU_ASSERT(0 ==
+            wslay_event_queue_fragmented_msg_ex(ctx, &arg, WSLAY_RSV1_BIT));
+  CU_ASSERT(sizeof(ans) == wslay_event_write(ctx, buf, sizeof(buf)));
+  CU_ASSERT(0 == memcmp(ans, buf, sizeof(ans)));
+  wslay_event_context_free(ctx);
+}
+
+void test_wslay_event_write_msg_with_rsv1(void) {
+  wslay_event_context_ptr ctx;
+  struct wslay_event_callbacks callbacks;
+  const char msg[] = "Hello";
+  struct wslay_event_msg arg;
+  const uint8_t ans[] = {
+      0xc1, 0x05, 0x48, 0x65, 0x6c, 0x6c, 0x6f /* "Hello" */
+  };
+  uint8_t buf[1024];
+  memset(&callbacks, 0, sizeof(callbacks));
+  wslay_event_context_server_init(&ctx, &callbacks, NULL);
+  wslay_event_config_set_allowed_rsv_bits(ctx, WSLAY_RSV1_BIT);
+
+  memset(&arg, 0, sizeof(arg));
+  arg.opcode = WSLAY_TEXT_FRAME;
+  arg.msg = (const uint8_t *)msg;
+  arg.msg_length = 5;
+  CU_ASSERT(0 == wslay_event_queue_msg_ex(ctx, &arg, WSLAY_RSV1_BIT));
+  CU_ASSERT(sizeof(ans) == wslay_event_write(ctx, buf, sizeof(buf)));
+  CU_ASSERT(0 == memcmp(ans, buf, sizeof(ans)));
+  wslay_event_context_free(ctx);
+}
+
+void test_wslay_event_write_ctrl_msg_first(void) {
+  wslay_event_context_ptr ctx;
+  struct wslay_event_callbacks callbacks;
+  const char msg[] = "Hello";
+  struct wslay_event_msg arg;
+  const uint8_t ans[] = {
+      0x89, 0x00,                              /* unmasked ping */
+      0x81, 0x05, 0x48, 0x65, 0x6c, 0x6c, 0x6f /* "Hello" */
+  };
+  uint8_t buf[1024];
+  memset(&callbacks, 0, sizeof(callbacks));
+  wslay_event_context_server_init(&ctx, &callbacks, NULL);
+
+  memset(&arg, 0, sizeof(arg));
+  arg.opcode = WSLAY_PING;
+  arg.msg_length = 0;
+  CU_ASSERT(0 == wslay_event_queue_msg(ctx, &arg));
+  arg.opcode = WSLAY_TEXT_FRAME;
+  arg.msg = (const uint8_t *)msg;
+  arg.msg_length = 5;
+  CU_ASSERT(0 == wslay_event_queue_msg(ctx, &arg));
+  CU_ASSERT(sizeof(ans) == wslay_event_write(ctx, buf, sizeof(buf)));
+  CU_ASSERT(0 == memcmp(ans, buf, sizeof(ans)));
   wslay_event_context_free(ctx);
 }
