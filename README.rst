@@ -359,7 +359,7 @@ Cross-compiling Android binary
 In this section, we describe how to build Android binary using Android
 NDK cross-compiler on Debian Linux.
 
-At the time of this writing, Android NDK r20 should compile aria2
+At the time of this writing, Android NDK r21e should compile aria2
 without errors.
 
 ``android-config`` script is a configure script wrapper for Android
@@ -379,7 +379,7 @@ libraries statically.
 ``android-config`` assumes that ``$ANDROID_HOME`` and ``$NDK``
 environment variables are defined.
 
-We currently use Android NDK r20.  ``$NDK`` should point to the
+We currently use Android NDK r21e.  ``$NDK`` should point to the
 directory to Anroid NDK.  The build tools will be found under
 ``$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/``.
 

@@ -42,10 +42,10 @@ aria2c executable was generated using android-ndk-r14b.
 
 The following libraries were statically linked.
 
-* openssl 1.1.1c
-* expat 2.2.7
+* openssl 1.1.1k
+* expat 2.4.1
 * zlib 1.2.11
-* c-ares 1.15.0
+* c-ares 1.17.2
 * libssh2 1.9.0
 
 Since Android does not have ``/etc/resolv.conf``, c-ares (asynchronous
