@@ -28,6 +28,8 @@ This build has the following difference from the original release:
 Known Issues
 ------------
 
+* TLSv1.3 does not work.
+
 * --file-allocation=falloc uses SetFileValidData function to allocate
     disk space without filling zero.  But it has security
     implications.  Refer to
