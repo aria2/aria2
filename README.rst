@@ -421,7 +421,7 @@ multi-file mode
 
 Before download starts, a complete directory structure is created if
 needed. By default, aria2 opens at most 100 files mentioned in
-.torrent file, and directly writes to and reads from these files. 
+.torrent file, and directly writes to and reads from these files.
 The number of files to open simultaneously can be controlled by
 ``--bt-max-open-files`` option.
 
