@@ -40,7 +40,7 @@ TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64
 PATH=$TOOLCHAIN/bin:$PATH
 
 # cd to the directory where this script exists.
-cd $(dirname $0)
+cd "$(dirname "$0")"
 . ./script-helper
 
 get_version
@@ -52,8 +52,8 @@ fi
 
 DIST_DIR=aria2-$VERSION-aarch64-linux-android-build1
 aarch64-linux-android-strip src/aria2c
-mkdir $DIST_DIR
+mkdir "$DIST_DIR"
 cp AUTHORS COPYING ChangeLog LICENSE.OpenSSL NEWS README.html README.android \
-    src/aria2c $DIST_DIR
-zip -9 -r $DIST_DIR.zip $DIST_DIR
-rm -rf $DIST_DIR
+    src/aria2c "$DIST_DIR"
+zip -9 -r "$DIST_DIR.zip" "$DIST_DIR"
+rm -rf "$DIST_DIR"
