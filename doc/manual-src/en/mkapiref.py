@@ -130,7 +130,7 @@ def make_api_ref(infiles):
                 if doctype == '@function':
                     functions.append(process_function('function', infile))
                 if doctype == '@functypedef':
-                    types.append(process_function('c:type', infile))
+                    types.append(process_function('type', infile))
                 elif doctype == '@typedef':
                     types.append(process_typedef(infile))
                 elif doctype in ['@class', '@struct', '@union']:
@@ -238,6 +238,7 @@ def process_function(domain, infile):
     func_proto = ''.join(func_proto)
     func_proto = re.sub(r';\n$', '', func_proto)
     func_proto = re.sub(r'\s+', ' ', func_proto)
+    func_proto = re.sub(r'typedef ', '', func_proto)
     return FunctionDoc(func_proto, content, domain)
 
 def process_typedef(infile):
@@ -254,6 +255,7 @@ def process_typedef(infile):
     typedef = ''.join(lines)
     typedef = re.sub(r';\n$', '', typedef)
     typedef = re.sub(r'\s+', ' ', typedef)
+    typedef = re.sub(r'typedef ', '', typedef)
     return TypedefDoc(typedef.split()[-1], content)
 
 def read_content(infile):
