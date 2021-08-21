@@ -1,4 +1,4 @@
-aria2 1.35.0
+aria2 1.36.0
 ============
 
 Release Note
@@ -9,45 +9,32 @@ This release fixes several bugs.  See Changes for details.
 Changes
 -------
 
-* Update mingw build dependencies
+* Update wslay
 
-  GH-1469
+* Bump Windows build dependencies
 
-* Update android build dependencies
+* Bump android build dependencies
 
-  Update android build dependencies.  Use android NDK r20 and build
-  aarch64 binary.
+* Fix segfault when time_t is 64bit on 32bit arch
 
-  GH-1467
+  Patch from Natanael Copa
 
-* Drop SSLv3.0 and TLSv1.0 and add TLSv1.3
+  GH-1666
 
-  TLSv1.3 support is added for GNUTLS and OpenSSL.
+* Updates the make_bash_completion script to Python3.
 
-  GH-1385
+  Patch from sleepymac
 
-* Platform: Fix compilation without deprecated OpenSSL APIs
+  GH-1672
 
-  Patch from Rosen Penev
+* Prevent corrupt downloads after app and/or system crash
 
-  GH-1315
+  Patch from Ali MJ Al-Nasrawy
 
-* Remove linux getrandom and use C++ stdlib instead
+  GH-1644
 
-  GH-1306
+* Reset sessionDownloadLength and sessionUploadLength on download start
 
-* Don't send Accept Metalink header if Metalink is disabled
+  GH-1486
 
-  GH-1300
-
-* gnutls: Fix bug that commonName is always empty
-
-  GH-1214
-
-* Fix openssl API version logic for libressl 2.7.x
-
-  Patch from Ben Chaney
-
-  GH-1213
-
-* Fix build failure when InternalDHKeyExchange is used
+* AppleTLS: Add TLSv1.3 support
