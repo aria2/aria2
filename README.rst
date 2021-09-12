@@ -380,7 +380,7 @@ libraries statically.
 environment variables are defined.
 
 We currently use Android NDK r21e.  ``$NDK`` should point to the
-directory to Anroid NDK.  The build tools will be found under
+directory to Android NDK.  The build tools will be found under
 ``$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/``.
 
 All the dependent libraries must be installed under

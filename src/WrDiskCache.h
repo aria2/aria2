@@ -52,7 +52,7 @@ public:
   // Adds the cache entry |ent| to the storage. The size of cached
   // data of ent is added to total_.
   bool add(WrDiskCacheEntry* ent);
-  // Removes the cache entry |ent| from the stroage. The size of
+  // Removes the cache entry |ent| from the storage. The size of
   // cached data of ent is subtracted from total_.
   bool remove(WrDiskCacheEntry* ent);
   // Updates the already added entry |ent|. The |delta| means how many

@@ -238,7 +238,7 @@ endef
 export ARIA2_DISTXML
 
 
-# Detect numer of CPUs to be used with make -j
+# Detect number of CPUs to be used with make -j
 CPUS = $(shell sysctl hw.ncpu | cut -d" " -f2)
 
 

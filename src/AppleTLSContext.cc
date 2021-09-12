@@ -131,7 +131,7 @@ struct hash_finder {
 
 std::string errToString(OSStatus err)
 {
-  std::string rv = "Unkown error";
+  std::string rv = "Unknown error";
   CFRef<CFStringRef> cerr(SecCopyErrorMessageString(err, nullptr));
   if (!cerr) {
     return rv;
