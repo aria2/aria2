@@ -62,7 +62,7 @@ public:
   virtual void closeFile() = 0;
 
   /**
-   * Opens a file.  If the file doesnot exists, an exception may be
+   * Opens a file.  If the file does not exist, an exception may be
    * thrown.
    */
   virtual void openExistingFile(int64_t totalLength = 0) = 0;

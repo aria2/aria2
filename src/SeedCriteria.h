@@ -49,7 +49,7 @@ public:
   virtual bool evaluate() = 0;
 
   /**
-   * Used for reseting status.
+   * Used for resetting status.
    */
   virtual void reset() = 0;
 };

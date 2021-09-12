@@ -275,7 +275,7 @@ error_code::Value option_processing(Option& op, bool standalone,
     // we must clear eof bit and seek to the beginning of the buffer.
     cmdstream.clear();
     cmdstream.seekg(0, std::ios::beg);
-    // finaly let's parse and store command-iine options.
+    // finally let's parse and store command-line options.
     op.setParent(confOption);
     oparser->parse(op, cmdstream);
     oparser->parse(op, options);

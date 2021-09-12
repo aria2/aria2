@@ -61,7 +61,7 @@ public:
   bool parse(const std::string& data);
 
   /**
-   * Retruns the number of bytes processed in the last invocation of
+   * Returns the number of bytes processed in the last invocation of
    * parse().
    */
   size_t getLastBytesProcessed() const;
