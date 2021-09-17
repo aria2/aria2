@@ -451,7 +451,7 @@ HTTP(S)/FTP, они тут же могут выгружаться в BitTorrent-
 
 .. option:: --http-accept-gzip [true|false]
 
-  Посылать ``Accept: deflate, gzip`` в запросе-заголовке и добавлять в ответ,
+  Посылать ``Accept-Encoding: deflate, gzip`` в запросе-заголовке и добавлять в ответ,
   если удаленный сервер ответит ``Content-Encoding: gzip`` или
   ``Content-Encoding: deflate``.
   По умолчанию: 'false
