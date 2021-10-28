@@ -37,11 +37,25 @@
 
 #include "common.h"
 
+#ifdef HAVE_OPENSSL
+#  include <openssl/opensslv.h>
+#  if OPENSSL_VERSION_NUMBER >= 0x30000000L
+#    include <openssl/provider.h>
+#  endif // OPENSSL_VERSION_NUMBER >= 0x30000000L
+#endif   // HAVE_OPENSSL
+
 namespace aria2 {
 
 class Platform {
 private:
   static bool initialized_;
+
+#ifdef HAVE_OPENSSL
+#  if OPENSSL_VERSION_NUMBER >= 0x30000000L
+  static OSSL_PROVIDER* legacy_provider_;
+  static OSSL_PROVIDER* default_provider_;
+#  endif // OPENSSL_VERSION_NUMBER >= 0x30000000L
+#endif   // HAVE_OPENSSL
 
 public:
   Platform();

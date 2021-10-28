@@ -39,13 +39,22 @@
 
 #include <cstdlib>
 
-#include <openssl/rc4.h>
+#include <openssl/opensslv.h>
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+#  include <openssl/evp.h>
+#else // !(OPENSSL_VERSION_NUMBER >= 0x30000000L)
+#  include <openssl/rc4.h>
+#endif // !(OPENSSL_VERSION_NUMBER >= 0x30000000L)
 
 namespace aria2 {
 
 class ARC4Encryptor {
 private:
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+  EVP_CIPHER_CTX* ctx_;
+#else  // !(OPENSSL_VERSION_NUMBER >= 0x30000000L)
   RC4_KEY key_;
+#endif // !(OPENSSL_VERSION_NUMBER >= 0x30000000L)
 
 public:
   ARC4Encryptor();

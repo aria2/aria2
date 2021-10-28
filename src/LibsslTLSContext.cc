@@ -151,7 +151,8 @@ OpenSSLTLSContext::OpenSSLTLSContext(TLSSessionSide side, TLSVersion minVer)
                      ERR_error_string(ERR_get_error(), nullptr)));
   }
 
-#if OPENSSL_VERSION_NUMBER >= 0x0090800fL
+#if OPENSSL_VERSION_NUMBER < 0x30000000L &&                                    \
+    OPENSSL_VERSION_NUMBER >= 0x0090800fL
 #  ifndef OPENSSL_NO_ECDH
   auto ecdh = EC_KEY_new_by_curve_name(NID_X9_62_prime256v1);
   if (ecdh == nullptr) {
@@ -163,7 +164,8 @@ OpenSSLTLSContext::OpenSSLTLSContext(TLSSessionSide side, TLSVersion minVer)
     EC_KEY_free(ecdh);
   }
 #  endif // OPENSSL_NO_ECDH
-#endif   // OPENSSL_VERSION_NUMBER >= 0x0090800fL
+#endif   // OPENSSL_VERSION_NUMBER < 0x30000000L && OPENSSL_VERSION_NUMBER >=
+         // 0x0090800fL
 }
 
 OpenSSLTLSContext::~OpenSSLTLSContext() { SSL_CTX_free(sslCtx_); }
