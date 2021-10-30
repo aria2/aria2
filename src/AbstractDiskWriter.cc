@@ -597,7 +597,7 @@ void AbstractDiskWriter::flushOSBuffers()
   }
 #ifdef __MINGW32__
   FlushFileBuffers(fd_);
-#else // !__MINGW32__
+#else  // !__MINGW32__
   fsync(fd_);
 #endif // __MINGW32__
 }

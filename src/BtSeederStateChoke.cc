@@ -79,8 +79,8 @@ void BtSeederStateChoke::PeerEntry::swap(PeerEntry& c)
   swap(uploadSpeed_, c.uploadSpeed_);
 }
 
-BtSeederStateChoke::PeerEntry& BtSeederStateChoke::PeerEntry::
-operator=(const PeerEntry& c)
+BtSeederStateChoke::PeerEntry&
+BtSeederStateChoke::PeerEntry::operator=(const PeerEntry& c)
 {
   if (this != &c) {
     peer_ = c.peer_;

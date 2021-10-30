@@ -72,8 +72,8 @@ void BtLeecherStateChoke::PeerEntry::swap(PeerEntry& c)
   swap(regularUnchoker_, c.regularUnchoker_);
 }
 
-BtLeecherStateChoke::PeerEntry& BtLeecherStateChoke::PeerEntry::
-operator=(const PeerEntry& c)
+BtLeecherStateChoke::PeerEntry&
+BtLeecherStateChoke::PeerEntry::operator=(const PeerEntry& c)
 {
   if (this != &c) {
     peer_ = c.peer_;
@@ -130,8 +130,8 @@ void swap(BtLeecherStateChoke::PeerEntry& a, BtLeecherStateChoke::PeerEntry& b)
   a.swap(b);
 }
 
-bool BtLeecherStateChoke::PeerFilter::
-operator()(const PeerEntry& peerEntry) const
+bool BtLeecherStateChoke::PeerFilter::operator()(
+    const PeerEntry& peerEntry) const
 {
   return peerEntry.getPeer()->amChoking() == amChoking_ &&
          peerEntry.getPeer()->peerInterested() == peerInterested_;

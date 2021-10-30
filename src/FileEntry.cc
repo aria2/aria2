@@ -51,9 +51,9 @@
 
 namespace aria2 {
 
-bool FileEntry::RequestFaster::
-operator()(const std::shared_ptr<Request>& lhs,
-           const std::shared_ptr<Request>& rhs) const
+bool FileEntry::RequestFaster::operator()(
+    const std::shared_ptr<Request>& lhs,
+    const std::shared_ptr<Request>& rhs) const
 {
   if (!lhs->getPeerStat()) {
     return false;
