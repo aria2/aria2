@@ -69,10 +69,8 @@ void ARC4Encryptor::init(const unsigned char* key, size_t keyLength)
 
   ctx_ = EVP_CIPHER_CTX_new();
 
-  unsigned int keylen = keyLength;
-
   OSSL_PARAM params[] = {
-      OSSL_PARAM_construct_uint(OSSL_CIPHER_PARAM_KEYLEN, &keylen),
+      OSSL_PARAM_construct_size_t(OSSL_CIPHER_PARAM_KEYLEN, &keyLength),
       OSSL_PARAM_construct_end(),
   };
 
