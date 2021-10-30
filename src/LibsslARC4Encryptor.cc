@@ -53,7 +53,6 @@ ARC4Encryptor::~ARC4Encryptor()
     EVP_CIPHER_CTX_free(ctx_);
   }
 }
-
 #else  // !(OPENSSL_VERSION_NUMBER >= 0x30000000L)
 ARC4Encryptor::ARC4Encryptor() {}
 
