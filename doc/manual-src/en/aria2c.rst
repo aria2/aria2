@@ -1357,9 +1357,10 @@ Advanced Options
   If you are using newer file systems such as ext4
   (with extents support), btrfs, xfs or NTFS(MinGW build only), ``falloc`` is
   your best choice. It allocates large(few GiB)
-  files almost instantly. Don't use ``falloc`` with
-  legacy file systems such as ext3 and FAT32 because it takes
-  almost same time as ``prealloc`` and it blocks aria2
+  files almost instantly. Note that btrfs disables compression when
+  pre-allocating, use ``trunc`` or ``none`` if you want compression.
+  Don't use ``falloc`` with legacy file systems such as ext3 and FAT32
+  because it takes almost same time as ``prealloc`` and it blocks aria2
   entirely until allocation finishes. ``falloc`` may
   not be available if your system doesn't have
   :manpage:`posix_fallocate(3)` function.

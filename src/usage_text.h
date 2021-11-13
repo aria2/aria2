@@ -138,12 +138,15 @@
     "                              the file.\n"                         \
     "                              If you are using newer file systems such as ext4\n" \
     "                              (with extents support), btrfs, xfs or NTFS\n" \
-    "                              (MinGW build only), 'falloc' is your best\n"   \
+    "                              (MinGW build only), 'falloc' is your best\n" \
     "                              choice. It allocates large(few GiB) files\n" \
-    "                              almost instantly. Don't use 'falloc' with legacy\n" \
-    "                              file systems such as ext3 and FAT32 because it\n" \
-    "                              takes almost same time as 'prealloc' and it\n" \
-    "                              blocks aria2 entirely until allocation finishes.\n" \
+    "                              almost instantly. Note that btrfs disables\n" \
+    "                              compression when pre-allocating, use ``trunc``\n" \
+    "                              or ``none`` if you want compression. Don't use\n" \
+    "                              'falloc' with legacy file systems such as ext3\n" \
+    "                              and FAT32 because it takes almost same time as\n" \
+    "                              'prealloc' and it blocks aria2 entirely until\n" \
+    "                              allocation finishes.\n" \
     "                              'falloc' may not be available if your system\n" \
     "                              doesn't have posix_fallocate() function.\n" \
     "                              'trunc' uses ftruncate() system call or\n" \
