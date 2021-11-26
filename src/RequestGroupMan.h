@@ -61,6 +61,7 @@ class OutputFile;
 class UriListParser;
 class WrDiskCache;
 class OpenedFileCounter;
+class Segment;
 
 typedef IndexedList<a2_gid_t, std::shared_ptr<RequestGroup>> RequestGroupList;
 typedef IndexedList<a2_gid_t, std::shared_ptr<DownloadResult>>
@@ -213,6 +214,11 @@ public:
   }
 
   bool setupOptimizeConcurrentDownloads();
+  
+  // This method will be called by corresponding RequestGroup 
+  // if a segment get downloaded
+  void completedSegment(const std::shared_ptr<RequestGroup>& group,
+                        const std::shared_ptr<Segment>& segment) const;
 
   void showDownloadResults(OutputFile& o, bool full) const;
 

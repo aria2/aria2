@@ -882,6 +882,11 @@ void RequestGroup::createNextCommand(
   }
 }
 
+void RequestGroup::completedSegment(const std::shared_ptr<Segment>& segment) const
+{
+  requestGroupMan_->completedSegment(requestGroupMan_->findGroup(this->gid_->getNumericId()), segment);
+}
+
 std::string RequestGroup::getFirstFilePath() const
 {
   assert(downloadContext_);

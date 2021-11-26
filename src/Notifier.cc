@@ -48,10 +48,11 @@ void Notifier::addDownloadEventListener(DownloadEventListener* listener)
 }
 
 void Notifier::notifyDownloadEvent(DownloadEvent event,
-                                   const RequestGroup* group)
+                                   const RequestGroup* group,
+                                   const Segment* segment)
 {
   for (auto listener : listeners_) {
-    listener->onEvent(event, group);
+    listener->onEvent(event, group, segment);
   }
 }
 
