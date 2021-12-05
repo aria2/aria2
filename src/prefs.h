@@ -388,6 +388,7 @@ extern PrefPtr PREF_CONTENT_DISPOSITION_DEFAULT_UTF8;
 extern PrefPtr PREF_HTTP_PROXY;
 extern PrefPtr PREF_HTTPS_PROXY;
 extern PrefPtr PREF_FTP_PROXY;
+extern PrefPtr PREF_BT_UDP_SOCKS_PROXY;
 extern PrefPtr PREF_ALL_PROXY;
 // values: comma separated hostname or domain
 extern PrefPtr PREF_NO_PROXY;
@@ -399,6 +400,8 @@ extern PrefPtr PREF_HTTPS_PROXY_USER;
 extern PrefPtr PREF_HTTPS_PROXY_PASSWD;
 extern PrefPtr PREF_FTP_PROXY_USER;
 extern PrefPtr PREF_FTP_PROXY_PASSWD;
+extern PrefPtr PREF_BT_UDP_SOCKS_PROXY_USER;
+extern PrefPtr PREF_BT_UDP_SOCKS_PROXY_PASSWD;
 extern PrefPtr PREF_ALL_PROXY_USER;
 extern PrefPtr PREF_ALL_PROXY_PASSWD;
 

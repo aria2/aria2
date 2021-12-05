@@ -230,6 +230,20 @@ public:
   virtual std::string createPossibleValuesString() const CXX11_OVERRIDE;
 };
 
+class SocksProxyOptionHandler : public AbstractOptionHandler {
+private:
+  PrefPtr proxyUserPref_;
+  PrefPtr proxyPasswdPref_;
+
+public:
+  SocksProxyOptionHandler(PrefPtr pref, const char* description,
+                          const std::string& defaultValue, char shortName = 0);
+  virtual ~SocksProxyOptionHandler();
+  virtual void parseArg(Option& option,
+                        const std::string& optarg) const CXX11_OVERRIDE;
+  virtual std::string createPossibleValuesString() const CXX11_OVERRIDE;
+};
+
 class LocalFilePathOptionHandler : public AbstractOptionHandler {
 private:
   std::string possibleValuesString_;

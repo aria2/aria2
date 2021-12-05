@@ -83,6 +83,9 @@
     "                              previously defined proxy, use \"\".\n" \
     "                              See also the --all-proxy option.\n"     \
     "                              This affects all ftp downloads.")
+#define TEXT_BT_UDP_SOCKS_PROXY                                                 \
+  _(" --bt-udp-socks-proxy=PROXY   Use a SOCKS5 proxy server for UDP in BitTorrent.\n"\
+    "                              This affects DHT and connecting UDP trackers in BitTorrent.")
 #define TEXT_ALL_PROXY                                                  \
   _(" --all-proxy=PROXY            Use a proxy server for all protocols. To override\n" \
     "                              a previously defined proxy, use \"\".\n" \
@@ -690,6 +693,10 @@
   _(" --ftp-proxy-user=USER        Set user for --ftp-proxy.")
 #define TEXT_FTP_PROXY_PASSWD                                           \
   _(" --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy.")
+#define TEXT_BT_UDP_SOCKS_PROXY_USER                                    \
+  _(" --bt-udp-socks-proxy-user=USER Set user for --http-proxy.")
+#define TEXT_BT_UDP_SOCKS_PROXY_PASSWD                                  \
+  _(" --bt-udp-socks-proxy-passwd=PASSWD Set password for --http-proxy.")
 #define TEXT_REMOVE_CONTROL_FILE                \
   _(" --remove-control-file[=true|false] Remove control file before download. Using\n" \
     "                              with --allow-overwrite=true, download always\n" \
