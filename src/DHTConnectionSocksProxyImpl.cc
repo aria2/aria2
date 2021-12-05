@@ -38,13 +38,14 @@
 #include <cstring>
 
 #include "SocketCore.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
 DHTConnectionSocksProxyImpl::DHTConnectionSocksProxyImpl(int family)
     : DHTConnectionImpl(family),
       family_(family),
-      proxySocket_(std::make_unique<SocketCore>())
+      proxySocket_(make_unique<SocketCore>())
 {
 }
 
