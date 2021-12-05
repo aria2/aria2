@@ -165,7 +165,7 @@ ssize_t DHTConnectionSocksProxyImpl::receiveMessage(unsigned char* data,
                                                     uint16_t& port)
 {
   Endpoint remoteEndpoint;
-  size_t resLen = len + family_ == AF_INET ? 10 : 22;
+  size_t resLen = len + (family_ == AF_INET ? 10 : 22);
   std::string buf;
   buf.resize(resLen);
   ssize_t length = getSocket()->readDataFrom(&buf[0], resLen, remoteEndpoint);
@@ -175,14 +175,14 @@ ssize_t DHTConnectionSocksProxyImpl::receiveMessage(unsigned char* data,
 
   // unencapsulate SOCKS5 UDP header if has
   if (length > (family_ == AF_INET ? 10 : 22) &&
-      buf.substr(0, 3) == "\x00\x00\x00" &&
+      buf.substr(0, 3) == std::string("\x00\x00\x00", 3) &&
       buf[3] == (family_ == AF_INET ? '\x01' : '\x04')) {
     if (family_ == AF_INET) {
       char addrBuf[20];
       inetNtop(AF_INET, &buf[4], addrBuf, 20);
       host = std::string(addrBuf);
       port = ntohs(*(reinterpret_cast<uint16_t*>(&buf[8])));
-      memcpy(data, buf.c_str(), length - 10);
+      memcpy(data, &buf[10], length - 10);
       return length - 10;
     }
     else {
@@ -190,7 +190,7 @@ ssize_t DHTConnectionSocksProxyImpl::receiveMessage(unsigned char* data,
       inetNtop(AF_INET6, &buf[4], addrBuf, 50);
       host = std::string(addrBuf);
       port = ntohs(*(reinterpret_cast<uint16_t*>(&buf[20])));
-      memcpy(data, buf.c_str(), length - 22);
+      memcpy(data, &buf[22], length - 22);
       return length - 22;
     }
   }
