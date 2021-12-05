@@ -170,6 +170,7 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	DHTMessageTrackerEntryTest.cc\
 	DHTMessageTrackerTest.cc\
 	DHTConnectionImplTest.cc\
+	DHTConnectionSocksProxyImplTest.cc\
 	DHTPingMessageTest.cc\
 	DHTPingReplyMessageTest.cc\
 	DHTFindNodeMessageTest.cc\
