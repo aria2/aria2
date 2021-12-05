@@ -159,7 +159,7 @@ DHTSetup::setup(DownloadEngine* e, int family)
                           "server for UDP proxy for DHT and UDP trackers");
       }
       A2_LOG_DEBUG(fmt("Connected to SOCKS5 relay server %s:%u for UDP proxy",
-                       host, port));
+                       host.c_str(), port));
     }
     auto tracker = std::make_shared<DHTMessageTracker>();
     auto routingTable = make_unique<DHTRoutingTable>(localNode);
