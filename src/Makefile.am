@@ -503,6 +503,7 @@ SRCS += \
 	DHTBucketTree.cc DHTBucketTree.h\
 	DHTConnection.h\
 	DHTConnectionImpl.cc DHTConnectionImpl.h\
+	DHTConnectionSocksProxyImpl.cc DHTConnectionSocksProxyImpl.h\
 	DHTConstants.h\
 	DHTEntryPointNameResolveCommand.cc DHTEntryPointNameResolveCommand.h\
 	DHTFindNodeMessage.cc DHTFindNodeMessage.h\

@@ -41,6 +41,7 @@
 #include "util.h"
 #include "DHTNode.h"
 #include "DHTConnectionImpl.h"
+#include "DHTConnectionSocksProxyImpl.h"
 #include "DHTRoutingTable.h"
 #include "DHTMessageFactoryImpl.h"
 #include "DHTMessageTracker.h"
@@ -113,7 +114,7 @@ DHTSetup::setup(DownloadEngine* e, int family)
     }
 
     uint16_t port;
-    auto connection = make_unique<DHTConnectionImpl>(family);
+    auto connection = make_unique<DHTConnectionSocksProxyImpl>(family);
     {
       port = e->getBtRegistry()->getUdpPort();
       const std::string& addr = e->getOption()->get(
@@ -139,6 +140,16 @@ DHTSetup::setup(DownloadEngine* e, int family)
     }
     A2_LOG_DEBUG(fmt("Initialized local node ID=%s",
                      util::toHex(localNode->getID(), DHT_ID_LENGTH).c_str()));
+    {
+      if (!connection->startProxy("127.0.0.1", 8000, "", "",
+                                  localNode->getIPAddress(),
+                                  localNode->getPort())) {
+        throw DL_ABORT_EX("Error occurred while connecting to SOCKS5 relay "
+                          "server for UDP proxy for DHT and UDP trackers");
+      }
+    }
+    A2_LOG_DEBUG(fmt("Connected to SOCKS5 relay server %s:%u for UDP proxy",
+                     "127.0.0.1", 8000));
     auto tracker = std::make_shared<DHTMessageTracker>();
     auto routingTable = make_unique<DHTRoutingTable>(localNode);
     auto factory = make_unique<DHTMessageFactoryImpl>(family);
