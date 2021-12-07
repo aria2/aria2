@@ -35,9 +35,10 @@
 #ifndef D_DHT_CONNECTION_SOCKS_PROXY_IMPL_H
 #define D_DHT_CONNECTION_SOCKS_PROXY_IMPL_H
 
-#include "DHTConnectionImpl.h"
-
 #include <memory>
+
+#include "DHTConnectionImpl.h"
+#include "SocksProxySocket.h"
 
 namespace aria2 {
 
@@ -45,7 +46,7 @@ class SocketCore;
 
 class DHTConnectionSocksProxyImpl : public DHTConnectionImpl {
 private:
-  std::unique_ptr<SocketCore> proxySocket_;
+  std::unique_ptr<SocksProxySocket> socket_;
   int family_;
   std::string bndAddr_;
   uint16_t bndPort_;
@@ -58,9 +59,10 @@ public:
   // Connect to SOCKS5 server to start UDP proxy.
   // Leave user and passwd empty to indicate no authentication.
   // Leave listen host and port empty / 0 to indicate no receiving from proxy.
+  // MUST call the method before any receiveMessage/sendMessage.
   bool startProxy(const std::string& host, uint16_t port,
                   const std::string& user, const std::string& passwd,
-                  const std::string& listenHost, uint16_t listenPort);
+                  const std::string& listenAddr, uint16_t listenPort);
 
   virtual ssize_t receiveMessage(unsigned char* data, size_t len,
                                  std::string& host,
