@@ -109,10 +109,10 @@ char SocksProxySocket::authByUserpass(const std::string& user,
   return res[1];
 }
 
-size_t SocksProxySocket::startUdpProxy(const std::string& listenAddr,
-                                       uint16_t listenPort,
-                                       std::string* bndAddrPtr,
-                                       uint16_t* bndPortPtr)
+ssize_t
+SocksProxySocket::startUdpAssociate(const std::string& listenAddr,
+                                    uint16_t listenPort,
+                                    std::pair<std::string*, uint16_t*> bnd)
 {
   std::stringstream req;
   req << C_SOCKS_VER << C_CMD_UDP_ASSOCIATE << 0;
@@ -188,12 +188,12 @@ size_t SocksProxySocket::startUdpProxy(const std::string& listenAddr,
     return -1;
   }
 
-  size_t i = bndAddrs_.size();
+  ssize_t i = static_cast<ssize_t>(bndAddrs_.size());
   bndAddrs_.push_back(bndAddr);
   bndPorts_.push_back(bndPort);
-  if (bndAddrPtr && bndPortPtr) {
-    *bndAddrPtr = bndAddr;
-    *bndPortPtr = bndPort;
+  if (bnd.first && bnd.second) {
+    *(bnd.first) = bndAddr;
+    *(bnd.second) = bndPort;
   }
   return i;
 }

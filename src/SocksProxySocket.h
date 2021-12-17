@@ -89,9 +89,8 @@ public:
   // Leave listen host and port empty / 0 to indicate no receiving from proxy.
   // Returns -1 when error, otherwise the index to get the bnd addr and port.
   // Set bndAddrPtr and bndPortPtr to directly get the result bnd addr and port.
-  size_t startUdpProxy(const std::string& listenAddr, uint16_t listenPort,
-                       std::string* bndAddrPtr = nullptr,
-                       uint16_t* bndPortPtr = nullptr);
+  ssize_t startUdpAssociate(const std::string& listenAddr, uint16_t listenPort,
+                            std::pair<std::string*, uint16_t*> bnd = {});
 
   // Get bnd addr and port via index i.
   // i is not checked and should be got from start*Proxy methods.

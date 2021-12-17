@@ -86,8 +86,8 @@ bool DHTConnectionSocksProxyImpl::startProxy(const std::string& host,
   }
 
   // UDP associate
-  size_t i =
-      socket_->startUdpProxy(listenAddr, listenPort, &bndAddr_, &bndPort_);
+  ssize_t i = socket_->startUdpAssociate(listenAddr, listenPort,
+                                         std::make_pair(&bndAddr_, &bndPort_));
   if (i < 0) {
     return false;
   }
