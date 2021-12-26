@@ -115,7 +115,7 @@ SocksProxySocket::startUdpAssociate(const std::string& listenAddr,
                                     std::pair<std::string*, uint16_t*> bnd)
 {
   std::stringstream req;
-  req << C_SOCKS_VER << C_CMD_UDP_ASSOCIATE << 0;
+  req << C_SOCKS_VER << C_CMD_UDP_ASSOCIATE << '\x00';
   if (family_ == AF_INET) {
     if (!listenAddr.empty()) {
       char addrBuf[10];
@@ -177,8 +177,8 @@ SocksProxySocket::startUdpAssociate(const std::string& listenAddr,
   }
   else if (res[3] == C_ADDR_DOMAIN) {
     // 2 more bytes to hold port temporarily.
-    bndAddr = std::string(res[4] + 2, 0);
-    resLen = res[4] + 2;
+    size_t resLen = res[4] + 2;
+    bndAddr = std::string(resLen, '\x00');
     socket_->readData(&bndAddr[0], resLen);
     bndPort = ntohs(*reinterpret_cast<uint16_t*>(&bndAddr[0] + res[4]));
     bndAddr.resize(res[4]);
