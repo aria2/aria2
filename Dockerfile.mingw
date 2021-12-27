@@ -1,17 +1,33 @@
 # Dockerfile to build aria2 Windows binary using ubuntu mingw-w64
 # cross compiler chain.
 #
-# $ sudo docker build -t aria2-mingw - < Dockerfile.mingw
+# $ sudo docker build -t aria2-mingw -f Dockerfile.mingw .
 #
 # After successful build, windows binary is located at
-# /aria2/src/aria2c.exe.  You can copy the binary using following
-# commands:
+# /aria2/src/aria2c.exe.  You can copy the binary to the current dir
+# using following command (replace $PWD with any other full path if desired):
 #
-# $ id=$(sudo docker create aria2-mingw)
-# $ sudo docker cp $id:/aria2/src/aria2c.exe <dest>
-# $ sudo docker rm -v $id
+# $ sudo docker run --rm -v $PWD:/output aria2-mingw
 
-FROM ubuntu:20.04
+# Additional arguments can be set with --build-arg. For example, to build local source code instead of
+# the latest master on github, set SOURCE=local:
+#
+# $ sudo docker build -t aria2-mingw -f Dockerfile.mingw --build-arg SOURCE=local .
+#
+# Available build parameters:
+# SOURCE       - "git" (default) to use Aria2 code from github. "local" to copy current directory.
+# GIT_TAG      - if SOURCE=git (default), set which branch or tag to download.
+# LIBARIA2     - disable (default) / enable -- should the libaria2 library be built
+# ARIA2_STATIC - yes (default) / no -- compile as a dynamic or static code
+#
+# Note that LIBARIA2 and ARIA2_STATIC params might not work for older versions.
+#
+ARG SOURCE=git
+ARG GIT_TAG=master
+ARG LIBARIA2=disable
+ARG ARIA2_STATIC=yes
+
+FROM ubuntu:20.04 as build_base
 
 MAINTAINER Tatsuhiro Tsujikawa
 
@@ -109,7 +125,38 @@ RUN tar xf libssh2-1.9.0.tar.gz && \
         --with-wincng \
         LIBS="-lws2_32" && \
     make install
-ADD https://api.github.com/repos/aria2/aria2/git/refs/heads/master version.json
-RUN git clone https://github.com/aria2/aria2 && \
-    cd aria2 && autoreconf -i && ./mingw-config && make && \
-    $HOST-strip src/aria2c.exe
+
+
+#
+# The above "build_base" stage builds common steps,
+# before copying/downloading aria2 source code. The following
+# two steps will either copy sources from the local dir,
+# or will download a specific tag/branch from github.
+# The last stage will use the needed stage, running the delayed steps.
+#
+ARG SOURCE GIT_TAG LIBARIA2 ARIA2_STATIC
+FROM build_base as build_local
+ONBUILD COPY . /aria2
+
+
+ARG SOURCE GIT_TAG LIBARIA2 ARIA2_STATIC
+FROM build_base as build_git
+ONBUILD ADD https://api.github.com/repos/aria2/aria2/git/refs/heads/${GIT_TAG} version.json
+ONBUILD RUN echo "Downloading '${GIT_TAG}' from https://github.com/aria2/aria2" && \
+            git clone https://github.com/aria2/aria2 --depth 1 --branch "${GIT_TAG}"
+
+
+ARG SOURCE GIT_TAG LIBARIA2 ARIA2_STATIC
+FROM build_${SOURCE}
+RUN cd /aria2 && \
+    autoreconf -i \
+    export LIBARIA2=${LIBARIA2} && \
+    export ARIA2_STATIC=${ARIA2_STATIC} && \
+    ./mingw-config && \
+    make \
+    (test -f /aria2/src/aria2c.exe && $HOST-strip /aria2/src/aria2c.exe) && \
+    (test -f /aria2/src/main.o && $HOST-strip /aria2/src/main.o)
+
+CMD test ! -d /output && \
+    echo 'The /output dir is not set. Use "docker run -v $PWD:/output ..." to copy build results into the current dir. To explore this container, append "bash" at the end of docker run command.' || \
+    cp -v /aria2/src/aria2c.exe* /aria2/src/main.o /output

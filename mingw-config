@@ -35,6 +35,12 @@
 # build on Debian Linux using mingw-w64. Some environment variables
 # can be adjusted to change build settings:
 #
+# LIBARIA2: must be "enable" or "disable" (default). If enabled,
+#       enabled, builds libaria2 lib, either static or dynamic depending
+#       on the ARIA2_STATIC setting.
+#
+# ARIA2_STATIC: must be "yes" (default) or "no".
+#
 # HOST: cross-compile to build programs to run on HOST. It defaults to
 #       i686-w64-mingw32. To build 64 bit binary, specify
 #       x86_64-w64-mingw32.
@@ -55,6 +61,8 @@
 # * libssh2
 # * cppunit
 
+test -z "$LIBARIA2" && LIBARIA2=disable
+test -z "$ARIA2_STATIC" && ARIA2_STATIC=yes
 test -z "$HOST" && HOST=i686-w64-mingw32
 test -z "$PREFIX" && PREFIX=/usr/local/$HOST
 
@@ -75,7 +83,8 @@ test -z "$PREFIX" && PREFIX=/usr/local/$HOST
     --without-libgcrypt \
     --without-libnettle \
     --with-cppunit-prefix=$PREFIX \
-    ARIA2_STATIC=yes \
+    --${LIBARIA2}-libaria2 \
+    ARIA2_STATIC=${ARIA2_STATIC} \
     CPPFLAGS="-I$PREFIX/include" \
     LDFLAGS="-L$PREFIX/lib" \
     PKG_CONFIG="/usr/bin/pkg-config" \
