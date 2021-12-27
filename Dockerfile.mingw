@@ -149,11 +149,11 @@ ONBUILD RUN echo "Downloading '${GIT_TAG}' from https://github.com/aria2/aria2" 
 ARG SOURCE GIT_TAG LIBARIA2 ARIA2_STATIC
 FROM build_${SOURCE}
 RUN cd /aria2 && \
-    autoreconf -i \
+    autoreconf -i && \
     export LIBARIA2=${LIBARIA2} && \
     export ARIA2_STATIC=${ARIA2_STATIC} && \
     ./mingw-config && \
-    make \
+    make && \
     (test -f /aria2/src/aria2c.exe && $HOST-strip /aria2/src/aria2c.exe) && \
     (test -f /aria2/src/main.o && $HOST-strip /aria2/src/main.o)
 
