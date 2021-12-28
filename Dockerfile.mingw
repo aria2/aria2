@@ -19,20 +19,31 @@
 # GIT_TAG      - if SOURCE=git (default), set which branch or tag to download.
 # LIBARIA2     - disable (default) / enable -- should the libaria2 library be built
 # ARIA2_STATIC - yes (default) / no -- compile as a dynamic or static code
+# HOST         - By default uses i686-w64-mingw32.  Set to x86_64-w64-mingw32 to build 64-bit binary
 #
 # Note that LIBARIA2 and ARIA2_STATIC params might not work for older versions.
 #
+
 ARG SOURCE=git
 ARG GIT_TAG=master
 ARG LIBARIA2=disable
 ARG ARIA2_STATIC=yes
+ARG HOST=i686-w64-mingw32
 
 FROM ubuntu:20.04 as build_base
+ARG SOURCE GIT_TAG LIBARIA2 ARIA2_STATIC HOST
 
 MAINTAINER Tatsuhiro Tsujikawa
 
-# Change HOST to x86_64-w64-mingw32 to build 64-bit binary
-ENV HOST i686-w64-mingw32
+# Preserve HOST as an ENV var just in case Docker user will want to use it again
+ENV HOST=${HOST}
+
+RUN echo "Build configuration:" && \
+    echo "  - SOURCE='${SOURCE}'" && \
+    echo "  - GIT_TAG='${GIT_TAG}'" && \
+    echo "  - LIBARIA2='${LIBARIA2}'" && \
+    echo "  - ARIA2_STATIC='${ARIA2_STATIC}'" && \
+    echo "  - HOST='${HOST}'"
 
 # It would be better to use nearest ubuntu archive mirror for faster
 # downloads.
@@ -59,8 +70,8 @@ RUN tar xf gmp-6.2.1.tar.lz && \
     ./configure \
         --disable-shared \
         --enable-static \
-        --prefix=/usr/local/$HOST \
-        --host=$HOST \
+        --prefix=/usr/local/${HOST} \
+        --host=${HOST} \
         --disable-cxx \
         --enable-fat \
         CFLAGS="-mtune=generic -O2 -g0" && \
@@ -71,8 +82,8 @@ RUN tar xf expat-2.4.1.tar.bz2 && \
     ./configure \
         --disable-shared \
         --enable-static \
-        --prefix=/usr/local/$HOST \
-        --host=$HOST \
+        --prefix=/usr/local/${HOST} \
+        --host=${HOST} \
         --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` && \
     make install
 
@@ -81,22 +92,22 @@ RUN tar xf sqlite-autoconf-3360000.tar.gz && \
     ./configure \
         --disable-shared \
         --enable-static \
-        --prefix=/usr/local/$HOST \
-        --host=$HOST \
+        --prefix=/usr/local/${HOST} \
+        --host=${HOST} \
         --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` && \
     make install
 
 RUN tar xf zlib-1.2.11.tar.gz && \
     cd zlib-1.2.11 && \
-    CC=$HOST-gcc \
-    AR=$HOST-ar \
-    LD=$HOST-ld \
-    RANLIB=$HOST-ranlib \
-    STRIP=$HOST-strip \
+    CC=${HOST}-gcc \
+    AR=${HOST}-ar \
+    LD=${HOST}-ld \
+    RANLIB=${HOST}-ranlib \
+    STRIP=${HOST}-strip \
     ./configure \
-        --prefix=/usr/local/$HOST \
-        --libdir=/usr/local/$HOST/lib \
-        --includedir=/usr/local/$HOST/include \
+        --prefix=/usr/local/${HOST} \
+        --libdir=/usr/local/${HOST}/lib \
+        --includedir=/usr/local/${HOST}/include \
         --static && \
     make install
 
@@ -106,8 +117,8 @@ RUN tar xf c-ares-1.17.2.tar.gz && \
         --disable-shared \
         --enable-static \
         --without-random \
-        --prefix=/usr/local/$HOST \
-        --host=$HOST \
+        --prefix=/usr/local/${HOST} \
+        --host=${HOST} \
         --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` \
         LIBS="-lws2_32" && \
     make install
@@ -118,8 +129,8 @@ RUN tar xf libssh2-1.9.0.tar.gz && \
     ./configure \
         --disable-shared \
         --enable-static \
-        --prefix=/usr/local/$HOST \
-        --host=$HOST \
+        --prefix=/usr/local/${HOST} \
+        --host=${HOST} \
         --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` \
         --without-openssl \
         --with-wincng \
@@ -134,28 +145,37 @@ RUN tar xf libssh2-1.9.0.tar.gz && \
 # or will download a specific tag/branch from github.
 # The last stage will use the needed stage, running the delayed steps.
 #
-ARG SOURCE GIT_TAG LIBARIA2 ARIA2_STATIC
 FROM build_base as build_local
+ARG SOURCE GIT_TAG LIBARIA2 ARIA2_STATIC HOST
 ONBUILD COPY . /aria2
 
 
-ARG SOURCE GIT_TAG LIBARIA2 ARIA2_STATIC
 FROM build_base as build_git
+ARG SOURCE GIT_TAG LIBARIA2 ARIA2_STATIC HOST
 ONBUILD ADD https://api.github.com/repos/aria2/aria2/git/refs/heads/${GIT_TAG} version.json
 ONBUILD RUN echo "Downloading '${GIT_TAG}' from https://github.com/aria2/aria2" && \
             git clone https://github.com/aria2/aria2 --depth 1 --branch "${GIT_TAG}"
 
-
-ARG SOURCE GIT_TAG LIBARIA2 ARIA2_STATIC
 FROM build_${SOURCE}
+ARG SOURCE GIT_TAG LIBARIA2 ARIA2_STATIC HOST
+
 RUN cd /aria2 && \
     autoreconf -i && \
     export LIBARIA2=${LIBARIA2} && \
     export ARIA2_STATIC=${ARIA2_STATIC} && \
+    export HOST=${HOST} && \
+    export PREFIX=/usr/local/${HOST} && \
     ./mingw-config && \
     make && \
-    (test -f /aria2/src/aria2c.exe && $HOST-strip /aria2/src/aria2c.exe) && \
-    (test -f /aria2/src/main.o && $HOST-strip /aria2/src/main.o)
+    (test -f /aria2/src/aria2c.exe && ${HOST}-strip /aria2/src/aria2c.exe) && \
+    (test -f /aria2/src/main.o && ${HOST}-strip /aria2/src/main.o)
+
+RUN echo "Finished build configuration:" && \
+    echo "  - SOURCE='${SOURCE}'" && \
+    echo "  - GIT_TAG='${GIT_TAG}'" && \
+    echo "  - LIBARIA2='${LIBARIA2}'" && \
+    echo "  - ARIA2_STATIC='${ARIA2_STATIC}'" && \
+    echo "  - HOST='${HOST}'"
 
 CMD test ! -d /output && \
     echo 'The /output dir is not set. Use "docker run -v $PWD:/output ..." to copy build results into the current dir. To explore this container, append "bash" at the end of docker run command.' || \
