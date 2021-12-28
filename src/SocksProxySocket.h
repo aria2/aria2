@@ -93,7 +93,12 @@ public:
   // Username/Password authentication.
   // user and pass should not be empty.
   // Returns status replied from proxy server. 0 is OK.
-  char authByUserpass(const std::string& user, const std::string& passwd);
+  int authByUserpass(const std::string& user, const std::string& passwd);
+
+  // Helper to negotiate and auth by username/password authentication, or skip
+  // it if not required.
+  // Leave either user or pass empty to force no authentication.
+  bool authByUserpassOrNone(const std::string& user, const std::string& passwd);
 
   // Create an UDP association to start UDP proxy.
   // Leave listen host and port empty / 0 to indicate no receiving from proxy.

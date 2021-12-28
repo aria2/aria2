@@ -93,8 +93,8 @@ int SocksProxySocket::negotiateAuth(std::vector<SocksProxyAuthMethod> expected)
   return authMethod;
 }
 
-char SocksProxySocket::authByUserpass(const std::string& user,
-                                      const std::string& passwd)
+int SocksProxySocket::authByUserpass(const std::string& user,
+                                     const std::string& passwd)
 {
   std::stringstream req;
   req << C_AUTH_USERPASS_VER;
@@ -109,6 +109,33 @@ char SocksProxySocket::authByUserpass(const std::string& user,
     socket_->closeConnection();
   }
   return res[1];
+}
+
+bool SocksProxySocket::authByUserpassOrNone(const std::string& user,
+                                            const std::string& passwd)
+{
+  bool noAuth = user.empty() || passwd.empty();
+  if (noAuth) {
+    int authMethod =
+        negotiateAuth(std::vector<SocksProxyAuthMethod>{SOCKS_AUTH_NO_AUTH});
+    if (authMethod < 0) {
+      return false;
+    }
+  }
+  else {
+    int authMethod = negotiateAuth(std::vector<SocksProxyAuthMethod>{
+        SOCKS_AUTH_NO_AUTH, SOCKS_AUTH_USERPASS});
+    if (authMethod < 0) {
+      return false;
+    }
+    if (authMethod == SOCKS_AUTH_USERPASS) {
+      int status = authByUserpass(user, passwd);
+      if (status != 0) {
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 void SocksProxySocket::sendCmd(SocksProxyCmd cmd, const std::string& dstAddr,
