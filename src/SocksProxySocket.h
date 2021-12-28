@@ -58,8 +58,20 @@ private:
   // The socket is not shared because as it is used as some kind of controller,
   // when it is closed, all related proxy connections are closed.
   std::unique_ptr<SocketCore> socket_;
-  std::vector<std::string> bndAddrs_;
-  std::vector<uint16_t> bndPorts_;
+
+  enum SocksProxyCmd {
+    SOCKS_CMD_CONNECT = 1,
+    SOCKS_CMD_BIND = 2,
+    SOCKS_CMD_UDP_ASSOCIATE = 3,
+  };
+
+  // When allowEmtpy is true, allow dst* to be empty.
+  void sendCmd(SocksProxyCmd cmd, const std::string& dstAddr, uint16_t dstPort,
+               bool allowEmpty);
+  // Returns status replied from proxy server. 0 is OK. > 0 with error messages.
+  // < 0 for invalid replies from server.
+  // bndFamily may be AF_INET + AF_INET6 to indicate domain format.
+  int receiveReply(int& bndFamily, std::string& bndAddr, uint16_t& bndPort);
 
 public:
   SocksProxySocket(int family);
@@ -75,10 +87,8 @@ public:
 
   // Negotiate authentication that returns selected auth method in 0-255.
   // When no auth method is selected, return -1.
-  // Auth methods in expected should be from enum SocksProxyAuthMethod,
-  // which has its auth handlers.
   // Returned auth method SHOULD be in expected but it is not checked.
-  int negotiateAuth(std::vector<uint8_t> expected);
+  int negotiateAuth(std::vector<SocksProxyAuthMethod> expected);
 
   // Username/Password authentication.
   // user and pass should not be empty.
@@ -87,17 +97,9 @@ public:
 
   // Create an UDP association to start UDP proxy.
   // Leave listen host and port empty / 0 to indicate no receiving from proxy.
-  // Returns -1 when error, otherwise the index to get the bnd addr and port.
-  // Set bndAddrPtr and bndPortPtr to directly get the result bnd addr and port.
-  ssize_t startUdpAssociate(const std::string& listenAddr, uint16_t listenPort,
-                            std::pair<std::string*, uint16_t*> bnd = {});
-
-  // Get bnd addr and port via index i.
-  // i is not checked and should be got from start*Proxy methods.
-  std::pair<std::string, uint16_t> getBnd(size_t i)
-  {
-    return std::make_pair(bndAddrs_[i], bndPorts_[i]);
-  }
+  // Returns status replied from proxy server. 0 is OK.
+  int startUdpAssociate(const std::string& listenAddr, uint16_t listenPort,
+                        std::string& bndAddr, uint16_t& bndPort);
 };
 
 } // namespace aria2

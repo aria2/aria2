@@ -63,15 +63,15 @@ bool DHTConnectionSocksProxyImpl::startProxy(const std::string& host,
   // Authentication negotiation
   bool noAuth = user.empty() || passwd.empty();
   if (noAuth) {
-    int authMethod =
-        socket_->negotiateAuth(std::vector<uint8_t>{SOCKS_AUTH_NO_AUTH});
+    int authMethod = socket_->negotiateAuth(
+        std::vector<SocksProxyAuthMethod>{SOCKS_AUTH_NO_AUTH});
     if (authMethod < 0) {
       return false;
     }
   }
   else {
-    int authMethod = socket_->negotiateAuth(
-        std::vector<uint8_t>{SOCKS_AUTH_NO_AUTH, SOCKS_AUTH_USERPASS});
+    int authMethod = socket_->negotiateAuth(std::vector<SocksProxyAuthMethod>{
+        SOCKS_AUTH_NO_AUTH, SOCKS_AUTH_USERPASS});
     if (authMethod < 0) {
       return false;
     }
@@ -86,9 +86,9 @@ bool DHTConnectionSocksProxyImpl::startProxy(const std::string& host,
   }
 
   // UDP associate
-  ssize_t i = socket_->startUdpAssociate(listenAddr, listenPort,
-                                         std::make_pair(&bndAddr_, &bndPort_));
-  if (i < 0) {
+  int i =
+      socket_->startUdpAssociate(listenAddr, listenPort, bndAddr_, bndPort_);
+  if (i != 0) {
     return false;
   }
   return true;

@@ -45,14 +45,16 @@ const char C_SOCKS_VER = '\x05';
 const char C_AUTH_NONE = '\xff';
 const char C_AUTH_USERPASS_VER = '\x01';
 const char C_AUTH_USERPASS_OK = '\x00';
-const char C_CMD_UDP_ASSOCIATE = '\x03';
-const char C_ADDR_INET = '\x01';
-const char C_ADDR_DOMAIN = '\x03';
-const char C_ADDR_INET6 = '\x04';
 const char C_OK = '\x00';
 } // namespace
 
 namespace aria2 {
+
+enum SocksProxyAddrType {
+  SOCKS_ADDR_INET = 1,
+  SOCKS_ADDR_DOMAIN = 3,
+  SOCKS_ADDR_INET6 = 4,
+};
 
 SocksProxySocket::SocksProxySocket(int family) : family_(family) {}
 
@@ -70,13 +72,13 @@ void SocksProxySocket::establish(std::unique_ptr<SocketCore> socket)
   socket_ = std::move(socket);
 }
 
-int SocksProxySocket::negotiateAuth(std::vector<uint8_t> expected)
+int SocksProxySocket::negotiateAuth(std::vector<SocksProxyAuthMethod> expected)
 {
   std::stringstream req;
   req << C_SOCKS_VER;
   req << static_cast<char>(expected.size());
   for (auto c : expected) {
-    req << c;
+    req << static_cast<char>(c);
   }
   socket_->writeData(req.str());
 
@@ -109,77 +111,81 @@ char SocksProxySocket::authByUserpass(const std::string& user,
   return res[1];
 }
 
-ssize_t
-SocksProxySocket::startUdpAssociate(const std::string& listenAddr,
-                                    uint16_t listenPort,
-                                    std::pair<std::string*, uint16_t*> bnd)
+void SocksProxySocket::sendCmd(SocksProxyCmd cmd, const std::string& dstAddr,
+                               uint16_t dstPort, bool allowEmpty)
 {
   std::stringstream req;
-  req << C_SOCKS_VER << C_CMD_UDP_ASSOCIATE << '\x00';
+  req << C_SOCKS_VER << static_cast<char>(cmd) << '\x00';
   if (family_ == AF_INET) {
-    if (!listenAddr.empty()) {
+    if (!allowEmpty || !dstAddr.empty()) {
       char addrBuf[10];
-      net::getBinAddr(addrBuf, listenAddr);
-      req << C_ADDR_INET << std::string(addrBuf, 4);
+      net::getBinAddr(addrBuf, dstAddr);
+      req << static_cast<char>(SOCKS_ADDR_INET) << std::string(addrBuf, 4);
     }
     else {
       req << std::string(4, '\x00');
     }
   }
   else {
-    if (!listenAddr.empty()) {
+    if (!allowEmpty || !dstAddr.empty()) {
       char addrBuf[20];
-      net::getBinAddr(addrBuf, listenAddr);
-      req << C_ADDR_INET6 << std::string(addrBuf, 16);
+      net::getBinAddr(addrBuf, dstAddr);
+      req << static_cast<char>(SOCKS_ADDR_INET6) << std::string(addrBuf, 16);
     }
     else {
       req << std::string(16, '\x00');
     }
   }
-  if (listenPort) {
-    uint16_t listenPortBuf = htons(listenPort);
+  if (dstPort) {
+    uint16_t listenPortBuf = htons(dstPort);
     req << std::string(reinterpret_cast<const char*>(&listenPortBuf), 2);
   }
   else {
     req << std::string(2, '\x00');
   }
   socket_->writeData(req.str());
+}
 
+int SocksProxySocket::receiveReply(int& bndFamily, std::string& bndAddr,
+                                   uint16_t& bndPort)
+{
   char res[5];
   size_t resLen = sizeof(res);
   socket_->readData(res, resLen);
-  if (res[1] != C_OK) {
+  int rep = res[1];
+  if (rep != C_OK) {
     socket_->closeConnection();
-    return -1;
+    return rep;
   }
 
-  std::string bndAddr;
-  uint16_t bndPort;
-  if (res[3] == C_ADDR_INET) {
+  if (res[3] == SOCKS_ADDR_INET) {
     char addrBuf[6];
     addrBuf[0] = res[4];
     size_t addrLen = sizeof(addrBuf) - 1;
     socket_->readData(addrBuf + 1, addrLen);
     char addrStrBuf[20];
     inetNtop(AF_INET, addrBuf, addrStrBuf, 20);
+    bndFamily = AF_INET;
     bndAddr = std::string(addrStrBuf);
     bndPort = ntohs(*reinterpret_cast<uint16_t*>(addrBuf + 4));
   }
-  else if (res[3] == C_ADDR_INET6) {
+  else if (res[3] == SOCKS_ADDR_INET6) {
     char addrBuf[18];
     addrBuf[0] = res[4];
     size_t addrLen = sizeof(addrBuf) - 1;
     socket_->readData(addrBuf + 1, addrLen);
     char addrStrBuf[50];
     inetNtop(AF_INET6, addrBuf, addrStrBuf, 50);
+    bndFamily = AF_INET6;
     bndAddr = std::string(addrStrBuf);
     bndPort = ntohs(*reinterpret_cast<uint16_t*>(addrBuf + 16));
   }
-  else if (res[3] == C_ADDR_DOMAIN) {
+  else if (res[3] == SOCKS_ADDR_DOMAIN) {
     // 2 more bytes to hold port temporarily.
     size_t resLen = res[4] + 2;
     bndAddr = std::string(resLen, '\x00');
     socket_->readData(&bndAddr[0], resLen);
+    bndFamily = AF_INET + AF_INET6;
     bndPort = ntohs(*reinterpret_cast<uint16_t*>(&bndAddr[0] + res[4]));
     bndAddr.resize(res[4]);
   }
@@ -187,15 +193,26 @@ SocksProxySocket::startUdpAssociate(const std::string& listenAddr,
     socket_->closeConnection();
     return -1;
   }
+  return rep;
+}
 
-  ssize_t i = static_cast<ssize_t>(bndAddrs_.size());
-  bndAddrs_.push_back(bndAddr);
-  bndPorts_.push_back(bndPort);
-  if (bnd.first && bnd.second) {
-    *(bnd.first) = bndAddr;
-    *(bnd.second) = bndPort;
+int SocksProxySocket::startUdpAssociate(const std::string& listenAddr,
+                                        uint16_t listenPort,
+                                        std::string& bndAddr, uint16_t& bndPort)
+{
+  sendCmd(SOCKS_CMD_UDP_ASSOCIATE, listenAddr, listenPort, true);
+
+  int bFamily;
+  std::string bAddr;
+  uint16_t bPort;
+  int rep = receiveReply(bFamily, bAddr, bPort);
+  if (rep != C_OK) {
+    return rep;
   }
-  return i;
+
+  bndAddr = bAddr;
+  bndPort = bPort;
+  return rep;
 }
 
 } // namespace aria2
