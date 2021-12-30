@@ -195,9 +195,9 @@ CMD set -e ; \
         mkdir -p /output/bin ; \
         cp -v /usr/local/${HOST}/bin/aria2c.exe /output/bin ; \
         if [ "${LIBARIA2}" = "enable" ] ; then \
-            mkdir -p /output/lib
+            mkdir -p /output/lib ; \
             cp -v /usr/local/${HOST}/lib/*.a /usr/local/${HOST}/lib/*.la /output/lib ; \
-            mkdir -p /output/include/aria2
+            mkdir -p /output/include/aria2 ; \
             cp -v /usr/local/${HOST}/include/aria2/*.h /output/include/aria2 ; \
         fi \
     fi
