@@ -17,6 +17,7 @@
 # Available build parameters:
 # SOURCE       - "git" (default) to use Aria2 code from github. "local" to copy current directory.
 # GIT_TAG      - if SOURCE=git (default), set which branch or tag to download.
+# GITHUB_REPO  - Specify github repo to download from. Uses aria2/aria2 by default.
 # LIBARIA2     - disable (default) / enable -- should the libaria2 library be built
 # ARIA2_STATIC - yes (default) / no -- compile as a dynamic or static code
 # HOST         - By default uses i686-w64-mingw32.  Set to x86_64-w64-mingw32 to build 64-bit binary
@@ -26,12 +27,13 @@
 
 ARG SOURCE=git
 ARG GIT_TAG=master
+ARG GITHUB_REPO=aria2/aria2
 ARG LIBARIA2=disable
 ARG ARIA2_STATIC=yes
 ARG HOST=i686-w64-mingw32
 
 FROM ubuntu:20.04 as build_base
-ARG SOURCE GIT_TAG LIBARIA2 ARIA2_STATIC HOST
+ARG SOURCE GIT_TAG GITHUB_REPO LIBARIA2 ARIA2_STATIC HOST
 
 MAINTAINER Tatsuhiro Tsujikawa
 
@@ -39,6 +41,7 @@ MAINTAINER Tatsuhiro Tsujikawa
 # plus they will be available if the container is executed with  "docker run ... bash"
 ENV SOURCE=${SOURCE} \
     GIT_TAG=${GIT_TAG} \
+    GITHUB_REPO=${GITHUB_REPO} \
     LIBARIA2=${LIBARIA2} \
     ARIA2_STATIC=${ARIA2_STATIC} \
     HOST=${HOST}
@@ -46,6 +49,7 @@ ENV SOURCE=${SOURCE} \
 RUN echo "Build configuration:" && \
     echo "  - SOURCE='${SOURCE}'" && \
     echo "  - GIT_TAG='${GIT_TAG}'" && \
+    echo "  - GITHUB_REPO='${GITHUB_REPO}'" && \
     echo "  - LIBARIA2='${LIBARIA2}'" && \
     echo "  - ARIA2_STATIC='${ARIA2_STATIC}'" && \
     echo "  - HOST='${HOST}'"
@@ -151,18 +155,18 @@ RUN tar xf libssh2-1.9.0.tar.gz && \
 # The last stage will use the needed stage, running the delayed steps.
 #
 FROM build_base as build_local
-ARG SOURCE GIT_TAG LIBARIA2 ARIA2_STATIC HOST
+ARG SOURCE GIT_TAG GITHUB_REPO LIBARIA2 ARIA2_STATIC HOST
 ONBUILD COPY . /aria2
 
 
 FROM build_base as build_git
-ARG SOURCE GIT_TAG LIBARIA2 ARIA2_STATIC HOST
-ONBUILD ADD https://api.github.com/repos/aria2/aria2/git/refs/heads/${GIT_TAG} version.json
-ONBUILD RUN echo "Downloading '${GIT_TAG}' from https://github.com/aria2/aria2" && \
-            git clone https://github.com/aria2/aria2 --depth 1 --branch "${GIT_TAG}"
+ARG SOURCE GIT_TAG GITHUB_REPO LIBARIA2 ARIA2_STATIC HOST
+ONBUILD ADD https://api.github.com/repos/${GITHUB_REPO}/git/refs/heads/${GIT_TAG} version.json
+ONBUILD RUN echo "Downloading '${GIT_TAG}' from https://github.com/${GITHUB_REPO}" && \
+            git clone https://github.com/${GITHUB_REPO} --depth 1 --branch "${GIT_TAG}"
 
 FROM build_${SOURCE}
-ARG SOURCE GIT_TAG LIBARIA2 ARIA2_STATIC HOST
+ARG SOURCE GIT_TAG GITHUB_REPO LIBARIA2 ARIA2_STATIC HOST
 
 RUN ln -s /usr/local/${HOST} /usr/local/mingw && \
     cd /aria2 && \
@@ -179,6 +183,7 @@ RUN ln -s /usr/local/${HOST} /usr/local/mingw && \
 RUN echo "Finished build configuration:" && \
     echo "  - SOURCE='${SOURCE}'" && \
     echo "  - GIT_TAG='${GIT_TAG}'" && \
+    echo "  - GITHUB_REPO='${GITHUB_REPO}'" && \
     echo "  - LIBARIA2='${LIBARIA2}'" && \
     echo "  - ARIA2_STATIC='${ARIA2_STATIC}'" && \
     echo "  - HOST='${HOST}'"
