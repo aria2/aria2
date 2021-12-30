@@ -192,7 +192,7 @@ CMD set -e ; \
     if [ ! -d /output ] ; then \
         echo 'The /output dir is not set. Use "docker run -v <path>:/output ..." to copy build results into the <path> dir. To explore this container, append "bash" at the end of docker run command.' ; \
     else \
-        mkdir -p /output/bin
+        mkdir -p /output/bin ; \
         cp -v /usr/local/${HOST}/bin/aria2c.exe /output/bin ; \
         if [ "${LIBARIA2}" = "enable" ] ; then \
             mkdir -p /output/lib
