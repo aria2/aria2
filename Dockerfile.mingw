@@ -35,8 +35,13 @@ ARG SOURCE GIT_TAG LIBARIA2 ARIA2_STATIC HOST
 
 MAINTAINER Tatsuhiro Tsujikawa
 
-# Preserve HOST as an ENV var just in case Docker user will want to use it again
-ENV HOST=${HOST}
+# Preserve all build params as ENV vars. This way CMD below will work properly,
+# plus they will be available if the container is executed with  "docker run ... bash"
+ENV SOURCE=${SOURCE} \
+    GIT_TAG=${GIT_TAG} \
+    LIBARIA2=${LIBARIA2} \
+    ARIA2_STATIC=${ARIA2_STATIC} \
+    HOST=${HOST}
 
 RUN echo "Build configuration:" && \
     echo "  - SOURCE='${SOURCE}'" && \
@@ -160,7 +165,6 @@ FROM build_${SOURCE}
 ARG SOURCE GIT_TAG LIBARIA2 ARIA2_STATIC HOST
 
 RUN ln -s /usr/local/${HOST} /usr/local/mingw && \
-    mkdir -p /usr/local/mingw/lib && \
     cd /aria2 && \
     autoreconf -i && \
     export LIBARIA2=${LIBARIA2} && \
@@ -169,8 +173,8 @@ RUN ln -s /usr/local/${HOST} /usr/local/mingw && \
     export PREFIX=/usr/local/${HOST} && \
     ./mingw-config && \
     make && \
-    (test -f /aria2/src/aria2c.exe && ${HOST}-strip /aria2/src/aria2c.exe) && \
-    (test -f /aria2/src/main.o && ${HOST}-strip /aria2/src/main.o)
+    make install && \
+    ${HOST}-strip /usr/local/${HOST}/bin/aria2c.exe
 
 RUN echo "Finished build configuration:" && \
     echo "  - SOURCE='${SOURCE}'" && \
@@ -179,6 +183,21 @@ RUN echo "Finished build configuration:" && \
     echo "  - ARIA2_STATIC='${ARIA2_STATIC}'" && \
     echo "  - HOST='${HOST}'"
 
-CMD test ! -d /output && \
-    echo 'The /output dir is not set. Use "docker run -v $PWD:/output ..." to copy build results into the current dir. To explore this container, append "bash" at the end of docker run command.' || \
-    cp -v /aria2/src/aria2c.exe* /aria2/src/main.o /output
+# Define default command to simplify copying the build artifacts out of the container.
+# Requires the user to provide the /output volume with the docker run -v <path>:/output ...
+# By default, aria2c.exe will be copied to the <path>/bin.
+# If the container is built with LIBARIA2 enabled, it will also copy the aria2.h file
+# to <path>/include/aria2/aria2.h, and all *.la and *.a files to <path>/lib/ dir.
+CMD set -e ; \
+    if [ ! -d /output ] ; then \
+        echo 'The /output dir is not set. Use "docker run -v <path>:/output ..." to copy build results into the <path> dir. To explore this container, append "bash" at the end of docker run command.' ; \
+    else \
+        mkdir -p /output/bin
+        cp -v /usr/local/${HOST}/bin/aria2c.exe /output/bin ; \
+        if [ "${LIBARIA2}" = "enable" ] ; then \
+            mkdir -p /output/lib
+            cp -v /usr/local/${HOST}/lib/*.a /usr/local/${HOST}/lib/*.la /output/lib ; \
+            mkdir -p /output/include/aria2
+            cp -v /usr/local/${HOST}/include/aria2/*.h /output/include/aria2 ; \
+        fi \
+    fi
