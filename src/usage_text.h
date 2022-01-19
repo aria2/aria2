@@ -142,7 +142,7 @@
     "                              choice. It allocates large(few GiB) files\n" \
     "                              almost instantly. Don't use 'falloc' with legacy\n" \
     "                              file systems such as ext3 and FAT32 because it\n" \
-    "                              takes almost same time as 'prealloc' and it\n" \
+    "                              takes almost the same time as 'prealloc' and it\n" \
     "                              blocks aria2 entirely until allocation finishes.\n" \
     "                              'falloc' may not be available if your system\n" \
     "                              doesn't have posix_fallocate() function.\n" \
