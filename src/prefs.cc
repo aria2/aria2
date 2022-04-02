@@ -429,7 +429,8 @@ PrefPtr PREF_HTTP_ACCEPT_GZIP = makePref("http-accept-gzip");
 // value: true | false
 PrefPtr PREF_CONTENT_DISPOSITION_DEFAULT_UTF8 =
     makePref("content-disposition-default-utf8");
-
+// value: true | false
+PrefPtr PREF_NO_WANT_DIGEST_HEADER = makePref("no-want-digest-header");
 /**
  * Proxy related preferences
  */

@@ -1206,6 +1206,15 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    OptionHandler* op(new BooleanOptionHandler(
+        PREF_NO_WANT_DIGEST_HEADER, TEXT_NO_WANT_DIGEST_HEADER, A2_V_FALSE, OptionHandler::OPT_ARG));
+    op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
+    op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
+    handlers.push_back(op);
+  }
+  {
     OptionHandler* op(new DefaultOptionHandler(
         PREF_USER_AGENT, TEXT_USER_AGENT, "aria2/" PACKAGE_VERSION, A2STR::NIL,
         OptionHandler::REQ_ARG, 'U'));

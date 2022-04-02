@@ -557,6 +557,10 @@ HTTP Specific Options
   Use HEAD method for the first request to the HTTP server.
   Default: ``false``
 
+.. option:: --no-want-digest-header [true|false]
+
+  Whether to disable Want-Digest header when doing requests.
+  Default: ``false``
 
 .. option:: -U, --user-agent=<USER_AGENT>
 
