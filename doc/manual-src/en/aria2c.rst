@@ -433,7 +433,7 @@ HTTP Specific Options
 
 .. option:: --http-accept-gzip [true|false]
 
-  Send ``Accept: deflate, gzip`` request header and inflate response if
+  Send ``Accept-Encoding: deflate, gzip`` request header and inflate response if
   remote server responds with ``Content-Encoding: gzip`` or
   ``Content-Encoding: deflate``.  Default: ``false``
 

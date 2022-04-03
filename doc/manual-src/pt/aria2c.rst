@@ -407,7 +407,7 @@ Opções Específicas de HTTP e HTTPS
 
 .. option:: --http-accept-gzip [true|false]
 
-  Envia cabeçalho requisição ``Accept: deflate, gzip`` e faz (inflate) se
+  Envia cabeçalho requisição ``Accept-Encoding: deflate, gzip`` e faz (inflate) se
   o servidor remoto responder com  ``Content-Encoding: gzip`` ou 
   ``Content-Encoding: deflate``.  Padrão: ``false``
 
