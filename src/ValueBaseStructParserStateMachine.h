@@ -106,6 +106,8 @@ public:
   void pushBoolState();
   void pushNullState();
 
+  void setAllowEmptyMemberName(bool b);
+
 private:
   std::unique_ptr<rpc::XmlRpcRequestParserController> ctrl_;
   std::stack<ValueBaseStructParserState*> stateStack_;

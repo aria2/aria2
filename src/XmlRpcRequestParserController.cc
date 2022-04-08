@@ -54,7 +54,7 @@ void XmlRpcRequestParserController::popStructFrame()
   Dict* dict = downcast<Dict>(parentFrame.value_);
   assert(dict);
   frameStack_.pop();
-  if (currentFrame_.validMember()) {
+  if (currentFrame_.validMember(allowEmptyMemberName_)) {
     dict->put(std::move(currentFrame_.name_), std::move(currentFrame_.value_));
   }
   currentFrame_ = std::move(parentFrame);
@@ -108,6 +108,11 @@ void XmlRpcRequestParserController::reset()
 void XmlRpcRequestParserController::setMethodName(std::string methodName)
 {
   methodName_ = std::move(methodName);
+}
+
+void XmlRpcRequestParserController::setAllowEmptyMemberName(bool b)
+{
+  allowEmptyMemberName_ = b;
 }
 
 } // namespace rpc

@@ -42,9 +42,14 @@
 
 namespace aria2 {
 
-template <typename Parser, typename ParserStateMachine> class GenericParser {
+template <typename Parser, typename ParserStateMachine,
+          bool allowEmptyName = false>
+class GenericParser {
 public:
-  GenericParser() : parser_{&psm_} {}
+  GenericParser() : parser_{&psm_}
+  {
+    psm_.setAllowEmptyMemberName(allowEmptyName);
+  }
 
   ~GenericParser() = default;
 
