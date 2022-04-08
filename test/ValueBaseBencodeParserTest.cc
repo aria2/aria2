@@ -208,6 +208,16 @@ void ValueBaseBencodeParserTest::testParseUpdate()
     // Get trailing garbage position
     CPPUNIT_ASSERT_EQUAL((ssize_t)7, error);
   }
+  {
+    // dict, empty member name
+    std::string src = "d0:i123ee";
+    std::shared_ptr<ValueBase> d =
+        parser.parseFinal(src.c_str(), src.size(), error);
+    Dict* dict = downcast<Dict>(d);
+    CPPUNIT_ASSERT(dict);
+    CPPUNIT_ASSERT(dict->get(""));
+    CPPUNIT_ASSERT_EQUAL((int64_t)123, downcast<Integer>(dict->get(""))->i());
+  }
 }
 
 } // namespace aria2
