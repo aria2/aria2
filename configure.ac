@@ -660,7 +660,6 @@ esac
 
 # Checks for header files.
 AC_FUNC_ALLOCA
-AC_CHECK_INCLUDES_DEFAULT
 AC_PROG_EGREP
 
 AC_CHECK_HEADERS([argz.h \
