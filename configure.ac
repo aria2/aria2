@@ -754,6 +754,7 @@ AC_CHECK_FUNCS([__argz_count \
                 atexit \
                 ftruncate \
                 getcwd \
+                getentropy \
                 gethostbyaddr \
                 gethostbyname \
                 getifaddrs \
