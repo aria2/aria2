@@ -62,5 +62,4 @@ jobs:
           CPPFLAGS="-fsanitize=address" LDFLAGS="-fsanitize=address"
     - name: Build aria2
       run: |
-        make
-        make check
+        make -j$(nproc) check
