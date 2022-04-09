@@ -343,9 +343,12 @@ fi
 
 have_wintls=no
 if test "x$with_wintls" = "xyes"; then
-  AC_HAVE_LIBRARY([crypt32],[have_wintls_libs=yes],[have_wintls_libs=no])
-  AC_HAVE_LIBRARY([secur32],[have_wintls_libs=$have_wintls_libs],[have_wintls_libs=no])
-  AC_HAVE_LIBRARY([advapi32],[have_wintls_libs=$have_wintls_libs],[have_wintls_libs=no])
+  AC_CHECK_LIB([crypt32],[main],[have_wintls_libs=yes],[have_wintls_libs=no],[])ac_cv_lib_crypt32=ac_cv_lib_crypt32_main
+
+  AC_CHECK_LIB([secur32],[main],[have_wintls_libs=$have_wintls_libs],[have_wintls_libs=no],[])ac_cv_lib_secur32=ac_cv_lib_secur32_main
+
+  AC_CHECK_LIB([advapi32],[main],[have_wintls_libs=$have_wintls_libs],[have_wintls_libs=no],[])ac_cv_lib_advapi32=ac_cv_lib_advapi32_main
+
   AC_CHECK_HEADER([wincrypt.h], [have_wintls_headers=yes], [have_wintls_headers=no], [[
 #ifdef HAVE_WINDOWS_H
 # include <windows.h>
@@ -657,7 +660,8 @@ esac
 
 # Checks for header files.
 AC_FUNC_ALLOCA
-AC_HEADER_STDC
+AC_CHECK_INCLUDES_DEFAULT
+AC_PROG_EGREP
 
 AC_CHECK_HEADERS([argz.h \
                   arpa/inet.h \
@@ -709,7 +713,8 @@ AC_TYPE_MODE_T
 AC_TYPE_OFF_T
 AC_TYPE_SIZE_T
 AC_TYPE_SSIZE_T
-AC_HEADER_TIME
+AC_CHECK_HEADERS_ONCE([sys/time.h])
+
 AC_STRUCT_TM
 AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
