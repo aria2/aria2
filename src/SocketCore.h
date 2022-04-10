@@ -163,6 +163,11 @@ public:
             int flags = AI_PASSIVE);
 
   /**
+   * Bind to an existing file descriptor.
+   */
+  void bindExistingFd(int fd);
+
+  /**
    * Listens form connection on it.
    * Call bind(uint16_t) before calling this function.
    */
