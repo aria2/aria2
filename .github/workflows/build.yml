@@ -12,7 +12,7 @@ jobs:
         compiler: [gcc, clang]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Linux setup
       if: runner.os == 'Linux'
       run: |
