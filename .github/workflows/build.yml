@@ -62,4 +62,4 @@ jobs:
           CPPFLAGS="-fsanitize=address" LDFLAGS="-fsanitize=address"
     - name: Build aria2
       run: |
-        make -j$(nproc) check
+        make -j"$(nproc 2> /dev/null || sysctl -n hw.ncpu)" check
