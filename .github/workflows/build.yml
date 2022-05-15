@@ -8,11 +8,11 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-20.04, macos-10.15]
+        os: [ubuntu-20.04, macos-11]
         compiler: [gcc, clang]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Linux setup
       if: runner.os == 'Linux'
       run: |
