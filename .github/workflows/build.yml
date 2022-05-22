@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-20.04, macos-11]
+        os: [ubuntu-22.04, macos-11]
         compiler: [gcc, clang]
 
     steps:
@@ -17,7 +17,8 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get install \
-          g++-8 \
+          g++-11 \
+          clang-12 \
           autoconf \
           automake \
           autotools-dev \
@@ -35,16 +36,26 @@ jobs:
       run: |
         brew install cppunit gettext openssl libssh2 c-ares sqlite3 \
           autoconf automake pkg-config libtool
-    - name: Setup clang
-      if: matrix.compiler == 'clang'
+    - name: Setup clang (Linux)
+      if: runner.os == 'Linux' && matrix.compiler == 'clang'
+      run: |
+        echo 'CC=clang-12' >> $GITHUB_ENV
+        echo 'CXX=clang++-12' >> $GITHUB_ENV
+    - name: Setup clang (MacOS)
+      if: runner.os == 'macOS' && matrix.compiler == 'clang'
       run: |
         echo 'CC=clang' >> $GITHUB_ENV
         echo 'CXX=clang++' >> $GITHUB_ENV
-    - name: Setup gcc
+    - name: Setup gcc (Linux)
       if: runner.os == 'Linux' && matrix.compiler == 'gcc'
       run: |
-        echo 'CC=gcc-8' >> $GITHUB_ENV
-        echo 'CXX=g++-8' >> $GITHUB_ENV
+        echo 'CC=gcc-11' >> $GITHUB_ENV
+        echo 'CXX=g++-11' >> $GITHUB_ENV
+    - name: Setup gcc (MacOS)
+      if: runner.os == 'macOS' && matrix.compiler == 'gcc'
+      run: |
+        echo 'CC=gcc' >> $GITHUB_ENV
+        echo 'CXX=g++' >> $GITHUB_ENV
     - name: Libtool
       run: |
         autoreconf -i
