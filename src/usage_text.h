@@ -64,6 +64,22 @@
   _(" --retry-wait=SEC             Set the seconds to wait between retries. \n" \
     "                              With SEC > 0, aria2 will retry download when the\n" \
     "                              HTTP server returns 503 response.")
+#define TEXT_RETRY_ON_400                                                 \
+  _(" --retry-on-400[=true|false]  Configure whether retry or not when\n" \
+    "                              HTTP server returns 400 Bad Request.\n" \
+    "                              Only effective if retry-wait > 0.")
+#define TEXT_RETRY_ON_403                                                 \
+  _(" --retry-on-403[=true|false]  Configure whether retry or not when\n" \
+    "                              HTTP server returns 403 Forbidden.\n" \
+    "                              Only effective if retry-wait > 0.")
+#define TEXT_RETRY_ON_406                                                 \
+  _(" --retry-on-406[=true|false]  Configure whether retry or not when\n" \
+    "                              HTTP server returns 406 Not Acceptable.\n" \
+    "                              Only effective if retry-wait > 0.")
+#define TEXT_RETRY_ON_UNKNOWN                                                 \
+  _(" --retry-on-unknown[=true|false] Configure whether retry or not when\n" \
+    "                              HTTP server returns unknown status code.\n" \
+    "                              Only effective if retry-wait > 0.")
 #define TEXT_TIMEOUT                                            \
   _(" -t, --timeout=SEC            Set timeout in seconds.")
 #define TEXT_MAX_TRIES                                                  \
@@ -547,6 +563,14 @@
     "                              Content-Disposition header as UTF-8 instead of\n" \
     "                              ISO-8859-1, for example, the filename parameter,\n" \
     "                              but not the extended version filename*.")
+#define TEXT_HTTP_WANT_DIGEST                          \
+  _(" --http-want-digest[=true|false] Send Want-Digest HTTP requser header\n" \
+    "                              with only limited hash algorithms:\n" \
+    "                              SHA-512, SHA-256, and SHA-1.\n" \
+    "                              The Want-Digest HTTP header is primarily used\n" \
+    "                              in a HTTP request, to ask the responder to\n" \
+    "                              provide a digest of the requested resource\n" \
+    "                              using the Digest response header")
 #define TEXT_EVENT_POLL                                                 \
   _(" --event-poll=POLL            Specify the method for polling events.")
 #define TEXT_BT_EXTERNAL_IP                                             \

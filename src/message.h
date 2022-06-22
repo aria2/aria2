@@ -93,8 +93,8 @@
 #define MSG_CONTENT_DISPOSITION_DETECTED                        \
   "CUID#%" PRId64 " - Content-Disposition detected. Use %s as filename"
 #define MSG_PEER_BANNED "CUID#%" PRId64 " - Peer %s:%d banned."
-#define MSG_LISTENING_PORT                                      \
-  "CUID#%" PRId64 " - Using port %d for accepting new connections"
+#define MSG_LISTENING_RPC                                       \
+  "CUID#%" PRId64 " - Using %s for accepting new connections"
 #define MSG_BIND_FAILURE "CUID#%" PRId64 " - An error occurred while binding port=%d"
 #define MSG_INCOMING_PEER_CONNECTION                            \
   "CUID#%" PRId64 " - Incoming connection, adding new command CUID#%" PRId64 ""
@@ -211,6 +211,7 @@
 #define MSG_REMOVING_UNSELECTED_FILE _("GID#%s - Removing unselected file.")
 #define MSG_FILE_REMOVED _("File %s removed.")
 #define MSG_FILE_COULD_NOT_REMOVED _("File %s could not be removed.")
+#define MSG_STRANGE_RANGE_HEADER "CUID#%" PRId64 " Strange range header. Request: %" PRId64 "-%" PRId64 "/%" PRId64 ", Response: %" PRId64 "-%" PRId64 "/%" PRId64 ""
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")

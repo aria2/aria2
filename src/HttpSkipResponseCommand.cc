@@ -204,7 +204,7 @@ bool HttpSkipResponseCommand::processResponse()
   auto statusCode = httpResponse_->getStatusCode();
   if (statusCode >= 400) {
     switch (statusCode) {
-    case 401:
+    case 401: // Unauthorized
       if (getOption()->getAsBool(PREF_HTTP_AUTH_CHALLENGE) &&
           !httpResponse_->getHttpRequest()->authenticationUsed() &&
           getDownloadEngine()->getAuthConfigFactory()->activateBasicCred(
@@ -213,15 +213,41 @@ bool HttpSkipResponseCommand::processResponse()
         return prepareForRetry(0);
       }
       throw DL_ABORT_EX2(EX_AUTH_FAILED, error_code::HTTP_AUTH_FAILED);
-    case 404:
+    case 404: // Not Found
       if (getOption()->getAsInt(PREF_MAX_FILE_NOT_FOUND) == 0) {
         throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
                            error_code::RESOURCE_NOT_FOUND);
       }
       throw DL_RETRY_EX2(MSG_RESOURCE_NOT_FOUND,
                          error_code::RESOURCE_NOT_FOUND);
-    case 502:
-    case 503:
+    case 400: // Bad Request
+      if (getOption()->getAsBool(PREF_RETRY_ON_400)
+          && getOption()->getAsInt(PREF_RETRY_WAIT) > 0) {
+        throw DL_RETRY_EX2(fmt(EX_BAD_STATUS, statusCode),
+                          error_code::HTTP_PROTOCOL_ERROR);
+      }
+      break;
+    case 403: // Forbidden
+      if (getOption()->getAsBool(PREF_RETRY_ON_403)
+          && getOption()->getAsInt(PREF_RETRY_WAIT) > 0) {
+        throw DL_RETRY_EX2(fmt(EX_BAD_STATUS, statusCode),
+                          error_code::HTTP_PROTOCOL_ERROR);
+      }
+      break;
+    case 406: // Not Acceptable
+      if (getOption()->getAsBool(PREF_RETRY_ON_406)
+          && getOption()->getAsInt(PREF_RETRY_WAIT) > 0) {
+        throw DL_RETRY_EX2(fmt(EX_BAD_STATUS, statusCode),
+                          error_code::HTTP_PROTOCOL_ERROR);
+      }
+      break;
+    case 408: // Request Timeout
+    case 429: // Too Many Requests
+    case 502: // Bad Gateway
+    case 503: // Service Unavailable
+    case 507: // Insufficient Storage
+    case 520: // https://github.com/aria2/aria2/issues/1229
+    case 521: // https://github.com/aria2/aria2/issues/1229
       // Only retry if pretry-wait > 0. Hammering 'busy' server is not
       // a good idea.
       if (getOption()->getAsInt(PREF_RETRY_WAIT) > 0) {
@@ -230,12 +256,16 @@ bool HttpSkipResponseCommand::processResponse()
       }
       throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, statusCode),
                          error_code::HTTP_SERVICE_UNAVAILABLE);
-    case 504:
+    case 504: // Gateway Timeout
       // This is Gateway Timeout, so try again
       throw DL_RETRY_EX2(fmt(EX_BAD_STATUS, statusCode),
                          error_code::HTTP_SERVICE_UNAVAILABLE);
     };
-
+    if (getOption()->getAsBool(PREF_RETRY_ON_UNKNOWN)
+        && getOption()->getAsInt(PREF_RETRY_WAIT) > 0) {
+      throw DL_RETRY_EX2(fmt(EX_BAD_STATUS, statusCode),
+                        error_code::HTTP_PROTOCOL_ERROR);
+    }
     throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, statusCode),
                        error_code::HTTP_PROTOCOL_ERROR);
   }

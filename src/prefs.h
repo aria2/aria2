@@ -279,6 +279,14 @@ extern PrefPtr PREF_ENABLE_ASYNC_DNS6;
 extern PrefPtr PREF_MAX_DOWNLOAD_RESULT;
 // value: 1*digit
 extern PrefPtr PREF_RETRY_WAIT;
+// value: true | false
+extern PrefPtr PREF_RETRY_ON_400;
+// value: true | false
+extern PrefPtr PREF_RETRY_ON_403;
+// value: true | false
+extern PrefPtr PREF_RETRY_ON_406;
+// value: true | false
+extern PrefPtr PREF_RETRY_ON_UNKNOWN;
 // value: string
 extern PrefPtr PREF_ASYNC_DNS_SERVER;
 // value: true | false
@@ -381,6 +389,8 @@ extern PrefPtr PREF_HTTP_NO_CACHE;
 extern PrefPtr PREF_HTTP_ACCEPT_GZIP;
 // value: true | false
 extern PrefPtr PREF_CONTENT_DISPOSITION_DEFAULT_UTF8;
+// value: true | false
+extern PrefPtr PREF_HTTP_WANT_DIGEST;
 // value: true | false
 extern PrefPtr PREF_NO_WANT_DIGEST_HEADER;
 

@@ -49,7 +49,7 @@ private:
   void clear();
 
 public:
-  ByteArrayDiskWriter(size_t maxLength = 5_m);
+  ByteArrayDiskWriter(size_t maxLength = 15_m);
   virtual ~ByteArrayDiskWriter();
 
   virtual void initAndOpenFile(int64_t totalLength = 0) CXX11_OVERRIDE;

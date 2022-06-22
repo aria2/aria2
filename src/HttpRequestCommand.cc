@@ -90,6 +90,7 @@ createHttpRequest(const std::shared_ptr<Request>& req,
 {
   auto httpRequest = make_unique<HttpRequest>();
   httpRequest->setUserAgent(option->get(PREF_USER_AGENT));
+  httpRequest->setNoWantDigest(!option->getAsBool(PREF_HTTP_WANT_DIGEST));
   httpRequest->setRequest(req);
   httpRequest->setFileEntry(fileEntry);
   httpRequest->setSegment(segment);

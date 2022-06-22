@@ -52,7 +52,7 @@ namespace aria2 {
 
 HttpListenCommand::HttpListenCommand(cuid_t cuid, DownloadEngine* e, int family,
                                      bool secure)
-    : Command(cuid), e_(e), family_(family), secure_(secure)
+    : Command(cuid), e_(e), fd_(fd), family_(AF_INET), port_(0), secure_(secure)
 {
 }
 
@@ -89,27 +89,34 @@ bool HttpListenCommand::execute()
   return false;
 }
 
-bool HttpListenCommand::bindPort(uint16_t port)
+bool HttpListenCommand::listen()
 {
   if (serverSocket_) {
     e_->deleteSocketForReadCheck(serverSocket_, this);
   }
   serverSocket_ = std::make_shared<SocketCore>();
-  const int ipv = (family_ == AF_INET) ? 4 : 6;
+  std::string sListen;
   try {
-    int flags = 0;
-    if (e_->getOption()->getAsBool(PREF_RPC_LISTEN_ALL)) {
-      flags = AI_PASSIVE;
+    if (fd_ < 0) {
+      int flags = 0;
+      const int ipv = (family_ == AF_INET) ? 4 : 6;
+      sListen = fmt("TCP/IPv%d port %u", ipv, port_);
+      if (e_->getOption()->getAsBool(PREF_RPC_LISTEN_ALL)) {
+        flags = AI_PASSIVE;
+      }
+      serverSocket_->bind(nullptr, port_, family_, flags);
+    } else {
+      sListen = fmt("file descriptor fd=%d", fd_);
+      serverSocket_->bindExistingFd(fd_);
     }
-    serverSocket_->bind(nullptr, port, family_, flags);
     serverSocket_->beginListen();
-    A2_LOG_INFO(fmt(MSG_LISTENING_PORT, getCuid(), port));
+    A2_LOG_INFO(fmt(MSG_LISTENING_RPC, getCuid(), sListen.c_str()));
     e_->addSocketForReadCheck(serverSocket_, this);
-    A2_LOG_NOTICE(fmt(_("IPv%d RPC: listening on TCP port %u"), ipv, port));
+    A2_LOG_NOTICE(fmt(_("RPC: listening on %s"), sListen.c_str()));
     return true;
   }
   catch (RecoverableException& e) {
-    A2_LOG_ERROR_EX(fmt("IPv%d RPC: failed to bind TCP port %u", ipv, port), e);
+    A2_LOG_ERROR_EX(fmt("RPC: failed to listen on %s", sListen.c_str()), e);
     serverSocket_->closeConnection();
   }
   return false;
