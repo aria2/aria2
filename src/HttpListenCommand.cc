@@ -51,6 +51,12 @@
 namespace aria2 {
 
 HttpListenCommand::HttpListenCommand(cuid_t cuid, DownloadEngine* e, int family,
+                                     uint16_t port, bool secure)
+    : Command(cuid), e_(e), fd_(-1), family_(family), port_(port), secure_(secure)
+{
+}
+
+HttpListenCommand::HttpListenCommand(cuid_t cuid, DownloadEngine* e, int fd,
                                      bool secure)
     : Command(cuid), e_(e), fd_(fd), family_(AF_INET), port_(0), secure_(secure)
 {
