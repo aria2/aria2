@@ -37,7 +37,7 @@
 #define WIN_TLS_SESSION_H
 
 #include <vector>
-
+#include <array>
 #include "common.h"
 #include "TLSSession.h"
 #include "WinTLSContext.h"
