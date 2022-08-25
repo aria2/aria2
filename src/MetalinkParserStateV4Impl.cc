@@ -47,7 +47,7 @@ namespace aria2 {
 const char METALINK4_NAMESPACE_URI[] = "urn:ietf:params:xml:ns:metalink";
 
 namespace {
-bool checkNsUri(const char* nsUri)
+bool isMetalink4Ns(const char* nsUri)
 {
   return nsUri && strcmp(nsUri, METALINK4_NAMESPACE_URI) == 0;
 }
@@ -57,7 +57,7 @@ void MetalinkMetalinkParserStateV4::beginElement(
     MetalinkParserStateMachine* psm, const char* localname, const char* prefix,
     const char* nsUri, const std::vector<XmlAttr>& attrs)
 {
-  if (checkNsUri(nsUri) && strcmp(localname, "file") != 0) {
+  if (!isMetalink4Ns(nsUri) || strcmp(localname, "file") != 0) {
     psm->setSkipTagState();
     return;
   }
@@ -83,7 +83,7 @@ void FileMetalinkParserStateV4::beginElement(MetalinkParserStateMachine* psm,
                                              const char* nsUri,
                                              const std::vector<XmlAttr>& attrs)
 {
-  if (!checkNsUri(nsUri)) {
+  if (!isMetalink4Ns(nsUri)) {
     psm->setSkipTagState();
   }
   else if (strcmp(localname, "size") == 0) {
@@ -293,7 +293,7 @@ void PiecesMetalinkParserStateV4::beginElement(
     MetalinkParserStateMachine* psm, const char* localname, const char* prefix,
     const char* nsUri, const std::vector<XmlAttr>& attrs)
 {
-  if (checkNsUri(nsUri) && strcmp(localname, "hash") == 0) {
+  if (isMetalink4Ns(nsUri) && strcmp(localname, "hash") == 0) {
     psm->setPieceHashStateV4();
   }
   else {
