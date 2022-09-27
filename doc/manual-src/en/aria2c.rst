@@ -500,7 +500,7 @@ HTTP Specific Options
 
   Use the private key in FILE.
   The private key must be decrypted and in PEM format.
-  The behavior when encrypted one is given is undefined.
+  An encrypted key may cause undefined behavior.
   See also :option:`--certificate` option.
 
 .. option:: --referer=<REFERER>
@@ -4287,8 +4287,8 @@ Alternatively, if PEM files are supported, use a command like the following:
 
 .. note::
 
-  The file specified in :option:`--private-key` must be decrypted. The behavior when
-  encrypted one is given is undefined.
+  The file specified in :option:`--private-key` must be decrypted; an encrypted
+  key may cause undefined behavior.
 
 Verify SSL/TLS servers using given CA certificates
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
