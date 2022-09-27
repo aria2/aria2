@@ -746,7 +746,7 @@ BitTorrent Specific Options
 
 .. option:: --bt-metadata-only [true|false]
 
-  Download meta data only. The file(s) described in meta data will not
+  Download metadata only. The file(s) described in metadata will not
   be downloaded. This option has effect only when BitTorrent Magnet
   URI is used. See also :option:`--bt-save-metadata` option.  Default: ``false``
 
@@ -796,11 +796,11 @@ BitTorrent Specific Options
 
 .. option:: --bt-save-metadata [true|false]
 
-  Save meta data as ".torrent" file. This option has effect only when
+  Save metadata as ".torrent" file. This option has effect only when
   BitTorrent Magnet URI is used.  The file name is hex encoded info
   hash with suffix ".torrent". The directory to be saved is the same
   directory where download file is saved. If the same file already
-  exists, meta data is not saved. See also :option:`--bt-metadata-only`
+  exists, metadata is not saved. See also :option:`--bt-metadata-only`
   option. Default: ``false``
 
 .. option:: --bt-seed-unverified [true|false]
@@ -1140,9 +1140,9 @@ RPC Options
 
 .. option:: --rpc-save-upload-metadata [true|false]
 
-  Save the uploaded torrent or metalink meta data in the directory
+  Save the uploaded torrent or metalink metadata in the directory
   specified by :option:`--dir` option. The file name consists of SHA-1
-  hash hex string of meta data plus extension. For torrent, the
+  hash hex string of metadata plus extension. For torrent, the
   extension is '.torrent'. For metalink, it is '.meta4'.  If false is
   given to this option, the downloads added by
   :func:`aria2.addTorrent` or :func:`aria2.addMetalink` will not be
@@ -1656,7 +1656,7 @@ Advanced Options
   the file name.
   Please note that downloads added by
   :func:`aria2.addTorrent` and :func:`aria2.addMetalink` RPC method
-  and whose meta data could not be saved as a file are not saved.
+  and whose metadata could not be saved as a file are not saved.
   Downloads removed using :func:`aria2.remove` and
   :func:`aria2.forceRemove` will not be saved. GID is also saved with
   :option:`gid <--gid>`, but there are some restrictions, see below.
@@ -1664,11 +1664,11 @@ Advanced Options
   .. note::
 
     Normally, GID of the download itself is saved. But some downloads
-    use meta data (e.g., BitTorrent and Metalink). In this case, there
+    use metadata (e.g., BitTorrent and Metalink). In this case, there
     are some restrictions.
 
     magnet URI, and followed by torrent download
-       GID of BitTorrent meta data download is saved.
+       GID of BitTorrent metadata download is saved.
     URI to torrent file, and followed by torrent download
        GID of torrent file download is saved.
     URI to metalink file, and followed by file downloads described in metalink file
