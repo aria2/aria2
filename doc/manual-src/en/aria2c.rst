@@ -334,29 +334,30 @@ HTTP/FTP/SFTP Options
 
 .. option:: --stream-piece-selector=<SELECTOR>
 
-  Specify piece selection algorithm used in HTTP/FTP download. Piece
-  means fixed length segment which is downloaded in parallel in
-  segmented download. If ``default`` is given, aria2 selects piece so
-  that it reduces the number of establishing connection. This is
-  reasonable default behavior because establishing connection is an
-  expensive operation.  If ``inorder`` is given, aria2 selects piece
-  which has minimum index. Index=0 means first of the file. This will
-  be useful to view movie while downloading it.
-  :option:`--enable-http-pipelining` option may
-  be useful to reduce re-connection overhead.  Please note that aria2
-  honors
-  :option:`--min-split-size <-k>` option,
-  so it will be necessary to specify a reasonable value to
-  :option:`--min-split-size <-k>` option.
-  If ``random`` is given, aria2 selects piece randomly. Like
-  ``inorder``, :option:`--min-split-size <-k>` option is honored.
-  If ``geom`` is given, at the beginning aria2 selects piece which has
-  minimum index like ``inorder``, but it exponentially increasingly
-  keeps space from previously selected piece. This will reduce the
-  number of establishing connection and at the same time it will
-  download the beginning part of the file first. This will be useful
-  to view movie while downloading it.
-  Default: ``default``
+  Specify piece selection algorithm used in HTTP/FTP download. A piece is a
+  fixed length segment which is downloaded in parallel in a segmented download.
+  Default: ``default``.
+
+  default
+    Select a piece to reduce the number of connections established.
+    This is reasonable default behavior because establishing a connection is an
+    expensive operation.
+  inorder
+    Select a piece closest to the beginning of the file. This is useful for
+    viewing movies while downloading. :option:`--enable-http-pipelining` option
+    may be useful to reduce re-connection overhead. Note that aria2 honors
+    :option:`--min-split-size <-k>` option, so it will be necessary to specify
+    a reasonable value to :option:`--min-split-size <-k>` option.
+  random
+    Select a piece randomly. Like ``inorder``, :option:`--min-split-size <-k>`
+    option is honored.
+  geom
+    When starting to download a file, select a piece closest to the beginning
+    of the file like ``inorder``, but then exponentially increases space
+    between pieces.
+    This reduces the number of connections established, while
+    at the same time downloads the beginning part of the file first. This is
+    useful for viewing movies while downloading.
 
 .. option:: -t, --timeout=<SEC>
 
