@@ -522,8 +522,7 @@ HTTP Specific Options
 
   .. note::
 
-    In performance perspective, there is usually no advantage to enable
-    this option.
+    There is usually no performance gain from enabling this option.
 
 .. option:: --header=<HEADER>
 
