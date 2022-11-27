@@ -109,11 +109,10 @@
     "                              0 表示 aria2 没有最低速度限制。您可以附加 K 或 M(1K = 1024，1M = 1024K)。\n" \
     "                              此选项不会影响BitTorrent下载。")
 #define TEXT_MAX_OVERALL_DOWNLOAD_LIMIT                                 \
-  _(" --max-overall-download-limit=SPEED Set max overall download speed in bytes/sec.\n" \
-    "                              0 means unrestricted.\n"             \
-    "                              You can append K or M(1K = 1024, 1M = 1024K).\n" \
-    "                              To limit the download speed per download, use\n" \
-    "                              --max-download-limit option.")
+  _(" --max-overall-download-limit=SPEED 设置最大总下载速度(以字节/秒为单位)\n" \
+    "                              0 表示无限制。\n"             \
+    "                              您可以附加 K 或 M(1K = 1024，1M = 1024K)。\n" \
+    "                              要限制每次下载的下载速度，请使用 --max-download-limit 选项。")
 #define TEXT_MAX_DOWNLOAD_LIMIT                                         \
   _(" --max-download-limit=SPEED   Set max download speed per each download in\n" \
     "                              bytes/sec. 0 means unrestricted.\n"  \
@@ -1100,8 +1099,7 @@
     "                              greater than the size specified in this option,\n" \
     "                              mmap will be disabled.")
 #define TEXT_STDERR \
-  _(" --stderr[=true|false]        Redirect all console output that would be\n" \
-    "                              otherwise printed in stdout to stderr.")
+  _(" --stderr[=true|false]        将原本会在标准输出中打印的所有控制台输出重定向到 stderr。")
 #define TEXT_KEEP_UNFINISHED_DOWNLOAD_RESULT \
   _(" --keep-unfinished-download-result[=true|false]\n" \
     "                              Keep unfinished download results even if doing\n" \
@@ -1114,10 +1112,8 @@
 
 #define TEXT_BT_LOAD_SAVED_METADATA \
   _(" --bt-load-saved-metadata[=true|false]\n" \
-    "                              Before getting torrent metadata from DHT when\n" \
-    "                              downloading with magnet link, first try to read\n" \
-    "                              file saved by --bt-save-metadata option. If it is\n" \
-    "                              successful, then skip downloading metadata from\n" \
-    "                              DHT.")
+    "                              在使用磁力链接下载时从DHT获取种子元数据之前，\n" \
+    "                              首先尝试读取由--bt-save-metadata选项保存的文件. \n" \
+    "                              如果成功，则跳过从DHT下载元数据。")
 
 // clang-format on
