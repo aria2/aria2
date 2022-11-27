@@ -36,7 +36,7 @@
 // clang-format off
 
 #define TEXT_DIR                                                        \
-  _(" -d, --dir=DIR                The directory to store the downloaded file.")
+  _(" -d, --dir=DIR                存储下载文件的目录.")
 #define TEXT_OUT                                                        \
   _(" -o, --out=FILE               The file name of the downloaded file. It is\n" \
     "                              always relative to the directory given in -d\n" \
