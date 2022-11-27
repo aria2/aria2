@@ -155,9 +155,9 @@
     "                              one in a control file. If true is given, you can\n" \
     "                              proceed but some download progress will be lost.")
 #define TEXT_FORCE_SEQUENTIAL                                           \
-  _(" -Z, --force-sequential[=true|false] Fetch URIs in the command-line sequentially\n" \
-    "                              and download each URI in a separate session, like\n" \
-    "                              the usual command-line download utilities.")
+  _(" -Z, --force-sequential[=true|false] 按顺序在命令行中获取 URI，
+    "                                     并在单独的会话中下载每个 URI，\n"\
+    "                                     就像通常的命令行下载实用程序一样。")
 #define TEXT_AUTO_FILE_RENAMING                                         \
   _(" --auto-file-renaming[=true|false] Rename file name if the same file already\n" \
     "                              exists. This option works only in http(s)/ftp\n" \
