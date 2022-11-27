@@ -56,13 +56,12 @@
     "                              与同一主机的连接数受 --max-connection-pre-server 选项的限制。\n" \
     "                              另请参阅 --min-split-size 选项")
 #define TEXT_RETRY_WAIT                                                 \
-  _(" --retry-wait=SEC             Set the seconds to wait between retries. \n" \
-    "                              With SEC > 0, aria2 will retry download when the\n" \
-    "                              HTTP server returns 503 response.")
+  _(" --retry-wait=SEC             设置重试之间等待的秒数。\n" \
+    "                              当 SEC > 0 时，aria2将在HTTP返回503响应时重新下载")
 #define TEXT_TIMEOUT                                            \
-  _(" -t, --timeout=SEC            Set timeout in seconds.")
+  _(" -t, --timeout=SEC            设置超时（以秒为单位）。")
 #define TEXT_MAX_TRIES                                                  \
-  _(" -m, --max-tries=N            Set number of tries. 0 means unlimited.")
+  _(" -m, --max-tries=N            设置尝试次数。0 表示无限制。")
 #define TEXT_HTTP_PROXY                                                 \
   _(" --http-proxy=PROXY           Use a proxy server for HTTP. To override a\n"\
     "                              previously defined proxy, use \"\".\n"   \
@@ -87,32 +86,28 @@
     "                              options.\n"                          \
     "                              This affects all downloads.")
 #define TEXT_HTTP_USER                                                  \
-  _(" --http-user=USER             Set HTTP user. This affects all URLs.")
+  _(" --http-user=USER             设置 HTTP 用户。这会影响所有URLs。")
 #define TEXT_HTTP_PASSWD                                                \
-  _(" --http-passwd=PASSWD         Set HTTP password. This affects all URLs.")
+  _(" --http-passwd=PASSWD         设置 HTTP 密码。这会影响所有URLs。")
 #define TEXT_PROXY_METHOD                                               \
-  _(" --proxy-method=METHOD        Set the method to use in proxy request.")
+  _(" --proxy-method=METHOD        设置要在代理请求中使用的方法。")
 #define TEXT_REFERER                                                    \
-  _(" --referer=REFERER            Set an http referrrer (Referer). This affects\n" \
-    "                              all http/https downloads. If \"*\" is given,\n" \
-    "                              the download URI is also used as the referrer.\n" \
-    "                              This may be useful when used together with\n" \
-    "                              the -P option.")
+  _(" --referer=REFERER            设置一个Http引用者(Peferer)。\n" \
+    "                              这会影响所有 http/https 下载。\n" \
+    "                              如果给定，则下载URL也应作引用。\n" \
+    "                              当与 -P 选项一起使用时，这可能很有用。")
 #define TEXT_FTP_USER                                                   \
-  _(" --ftp-user=USER              Set FTP user. This affects all URLs.")
+  _(" --ftp-user=USER              设置 FTP 用户。这会影响所有URLs。")
 #define TEXT_FTP_PASSWD                                                 \
-  _(" --ftp-passwd=PASSWD          Set FTP password. This affects all URLs.")
+  _(" --ftp-passwd=PASSWD          设置 FTP 密码。这会影响所有网址。")
 #define TEXT_FTP_TYPE                                           \
-  _(" --ftp-type=TYPE              Set FTP transfer type.")
+  _(" --ftp-type=TYPE              设置 FTP 传输类型。")
 #define TEXT_FTP_PASV                                                   \
-  _(" -p, --ftp-pasv[=true|false]  Use the passive mode in FTP. If false is given,\n" \
-    "                              the active mode will be used.")
+  _(" -p, --ftp-pasv[=true|false]  在FTP中使用被动模式。如果给出false，则将使用活动模式。")
 #define TEXT_LOWEST_SPEED_LIMIT                                         \
-  _(" --lowest-speed-limit=SPEED   Close connection if download speed is lower than\n" \
-    "                              or equal to this value(bytes per sec).\n" \
-    "                              0 means aria2 does not have a lowest speed limit.\n" \
-    "                              You can append K or M(1K = 1024, 1M = 1024K).\n" \
-    "                              This option does not affect BitTorrent downloads.")
+  _(" --lowest-speed-limit=SPEED   如果下载速度低于或等于此值（每秒字节数），则关闭连接。\n" \
+    "                              0 表示 aria2 没有最低速度限制。您可以附加 K 或 M(1K = 1024，1M = 1024K)。\n" \
+    "                              此选项不会影响BitTorrent下载。")
 #define TEXT_MAX_OVERALL_DOWNLOAD_LIMIT                                 \
   _(" --max-overall-download-limit=SPEED Set max overall download speed in bytes/sec.\n" \
     "                              0 means unrestricted.\n"             \
