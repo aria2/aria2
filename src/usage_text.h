@@ -114,11 +114,10 @@
     "                              您可以附加 K 或 M(1K = 1024，1M = 1024K)。\n" \
     "                              要限制每次下载的下载速度，请使用 --max-download-limit 选项。")
 #define TEXT_MAX_DOWNLOAD_LIMIT                                         \
-  _(" --max-download-limit=SPEED   Set max download speed per each download in\n" \
-    "                              bytes/sec. 0 means unrestricted.\n"  \
-    "                              You can append K or M(1K = 1024, 1M = 1024K).\n" \
-    "                              To limit the overall download speed, use\n" \
-    "                              --max-overall-download-limit option.")
+  _(" --max-download-limit=SPEED   设置每次下载的最大下载速度（以字节/秒为单位）。\n" \
+    "                              0 表示无限制。\n"  \
+    "                              您可以附加 K 或 M(1K = 1024，1M = 1024K)。\n" \
+    "                              要限制整体下载速度，请使用 --max-total--download-limit 选项。")
 #define TEXT_FILE_ALLOCATION                                            \
   _(" --file-allocation=METHOD     Specify file allocation method.\n"   \
     "                              'none' doesn't pre-allocate file space. 'prealloc'\n" \
