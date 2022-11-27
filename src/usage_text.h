@@ -36,30 +36,25 @@
 // clang-format off
 
 #define TEXT_DIR                                                        \
-  _(" -d, --dir=DIR                存储下载文件的目录.")
+  _(" -d, --dir=DIR                存储下载文件的目录。")
 #define TEXT_OUT                                                        \
-  _(" -o, --out=FILE               The file name of the downloaded file. It is\n" \
-    "                              always relative to the directory given in -d\n" \
-    "                              option. When the -Z option is used, this option\n" \
-    "                              will be ignored.")
+  _(" -o, --out=FILE               下载文件的文件名。\n" \
+    "                              它始终相对于 -d 选项中给出的目录。\n" \
+    "                              使用 -Z 打开时，将忽略此选项。")
 #define TEXT_LOG                                                        \
-  _(" -l, --log=LOG                The file name of the log file. If '-' is\n" \
-    "                              specified, log is written to stdout.")
+  _(" -l, --log=LOG                日志文件的文件名。\n" \
+    "                              如果指定了 "-", 则日志将写入标准输出。")
 #define TEXT_DAEMON                                                     \
   _(" -D, --daemon[=true|false]    Run as daemon. The current working directory will\n" \
     "                              be changed to \"/\" and standard input, standard\n" \
     "                              output and standard error will be redirected to\n" \
     "                              \"/dev/null\".")
 #define TEXT_SPLIT                                                      \
-  _(" -s, --split=N                Download a file using N connections. If more\n" \
-    "                              than N URIs are given, first N URIs are used and\n" \
-    "                              remaining URLs are used for backup. If less than\n" \
-    "                              N URIs are given, those URLs are used more than\n" \
-    "                              once so that N connections total are made\n" \
-    "                              simultaneously. The number of connections to the\n" \
-    "                              same host is restricted by the \n"        \
-    "                              --max-connection-per-server option. See also the\n" \
-    "                              --min-split-size option.")
+  _(" -s, --split=N                使用N个连接下载文件。\n" \
+    "                              如果给出的URL超过N个，则使用前N个URL，其余URL用于备份。\n" \
+    "                              如果给出的URL少于N个，则多次使用这些URL，以便于同时建立N个连接。\n" \
+    "                              与同一主机的连接数受 --max-connection-pre-server 选项的限制。\n" \
+    "                              另请参阅 --min-split-size 选项")
 #define TEXT_RETRY_WAIT                                                 \
   _(" --retry-wait=SEC             Set the seconds to wait between retries. \n" \
     "                              With SEC > 0, aria2 will retry download when the\n" \
