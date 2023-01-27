@@ -6,7 +6,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [debian-11, macos-11]
+        os: [ubuntu-22.04, macos-11]
         compiler: [gcc, clang]
 
     runs-on: ${{ matrix.os }}
@@ -31,8 +31,8 @@ jobs:
           libsqlite3-dev \
           libssh2-1-dev \
           libcppunit-dev \
-          python \
-          python-docutils
+          python3 \
+          python3-docutils
     - name: MacOS setup
       if: runner.os == 'macOS'
       run: |
