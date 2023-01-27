@@ -31,7 +31,9 @@ jobs:
           libsqlite3-dev \
           libssh2-1-dev \
           libcppunit-dev \
-          rst2html
+          rst2html \
+          python \
+          python-docutils
     - name: MacOS setup
       if: runner.os == 'macOS'
       run: |
