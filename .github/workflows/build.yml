@@ -75,7 +75,8 @@ jobs:
       run: |
         make -j"$(nproc 2> /dev/null || sysctl -n hw.ncpu)" check
         - name: Upload Release Asset
-    - uses: actions/upload-release-asset@v1
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
