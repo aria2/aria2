@@ -1,0 +1,27 @@
+name: Makefile CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: autoreconf
+      run: autoreconf -i
+      
+    - name: configure with binary
+      run: ./configure ARIA2_STATIC=yes
+
+    - name: Install dependencies
+      run: make
+    
+    - name: list
+      run: ls -a 
