@@ -13,6 +13,24 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    
+    - name: linux deps
+      run: |
+        sudo apt-get install \
+          g++-11 \
+          clang-12 \
+          autoconf \
+          automake \
+          autotools-dev \
+          autopoint \
+          libtool \
+          pkg-config \
+          libssl-dev \
+          libc-ares-dev \
+          zlib1g-dev \
+          libsqlite3-dev \
+          libssh2-1-dev \
+          libcppunit-dev
 
     - name: autoreconf
       run: autoreconf -i
