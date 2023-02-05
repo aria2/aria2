@@ -23,5 +23,11 @@ jobs:
     - name: Install dependencies
       run: make
     
-    - name: list
-      run: ls -a 
+    - name: aria2 binary upload
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        # Artifact name
+        #name: # optional, default is artifact
+        # A file, directory or wildcard pattern that describes what to upload
+        path: ./src/aria2c
+        # The desired behavior if no files are found using the provided path.
