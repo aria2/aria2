@@ -29,7 +29,7 @@
 #  - $ virtualenv .
 #  - $ . bin/activate
 #  - $ pip install -U sphinx
-#  - $ ln -s ../makerelease-os.mk Makefile
+#  - $ ln -s ../makerelease-osx.mk Makefile
 #  - $ make
 #
 # If you haven't checkout out a release tag, you need to specify NON_RELEASE.
