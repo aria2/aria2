@@ -103,7 +103,7 @@ LTO_FLAGS = -flto -ffunction-sections -fdata-sections
 # Dependency versions
 zlib_version = 1.2.11
 zlib_hash = c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1
-zlib_url = http://zlib.net/zlib-$(zlib_version).tar.gz
+zlib_url = http://zlib.net/fossils/zlib-$(zlib_version).tar.gz
 
 expat_version = 2.2.8
 expat_hash = bd507cba42716ca9afe46dd3687fb0d46c09347517beb9770f53a435d2c67ea0
