@@ -1,0 +1,81 @@
+
+
+add_subdirectory(includes)
+
+
+########### next target ###############
+set(HFILES 
+  wslay_frame.h
+  wslay_event.h
+  wslay_queue.h
+  wslay_net.h
+  wslay_macro.h
+)
+
+set(OBJECTS
+  wslay_frame.c
+  wslay_event.c
+	wslay_queue.c 
+	wslay_net.c
+)
+
+
+set(wslay_STAT_SRCS ${HFILES} ${OBJECTS})
+
+set(WSLAY_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/includes)
+
+
+add_library(wslay STATIC ${wslay_STAT_SRCS})
+target_compile_definitions(wslay PUBLIC PACKAGE_VERSION="${PROJECT_VERSION}")
+target_compile_definitions(wslay PUBLIC PACKAGE="${PROJECT_NAME}")
+target_include_directories(wslay PUBLIC ${WSLAY_INCLUDE_DIR})
+target_include_directories(wslay INTERFACE ${WSLAY_INCLUDE_DIR})
+
+
+########### install files ###############
+
+
+
+
+#original Makefile.am contents follow:
+
+## Wslay - The WebSocket Library
+#
+## Copyright (c) 2011, 2012 Tatsuhiro Tsujikawa
+#
+## Permission is hereby granted, free of charge, to any person obtaining
+## a copy of this software and associated documentation files (the
+## "Software"), to deal in the Software without restriction, including
+## without limitation the rights to use, copy, modify, merge, publish,
+## distribute, sublicense, and/or sell copies of the Software, and to
+## permit persons to whom the Software is furnished to do so, subject to
+## the following conditions:
+#
+## The above copyright notice and this permission notice shall be
+## included in all copies or substantial portions of the Software.
+#
+## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+## EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+## MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+## NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+## LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+## OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+## WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#SUBDIRS = includes
+#
+#AM_CFLAGS = -Wall
+#AM_CPPFLAGS = @DEFS@ -I$(srcdir)/includes -I$(builddir)/includes
+#
+#DISTCLEANFILES = $(pkgconfig_DATA)
+#
+#noinst_LTLIBRARIES = libwslay.la
+#
+#OBJECTS = wslay_frame.c wslay_event.c\
+#	wslay_queue.c wslay_net.c
+#
+#HFILES = wslay_frame.h wslay_event.h\
+#	wslay_queue.h wslay_net.h wslay_macro.h
+#
+#libwslay_la_SOURCES = $(HFILES) $(OBJECTS)
+#libwslay_la_LDFLAGS = -no-undefined \
+#	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
