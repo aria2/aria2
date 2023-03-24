@@ -541,6 +541,14 @@ endif()
 if(ENABLE_XML_RPC)
   set(aria2_SRCS
     ${aria2_SRCS}
+
+	  XmlRpcDiskWriter.cc
+    XmlRpcDiskWriter.h
+	  XmlRpcRequestParserState.h
+	  XmlRpcRequestParserStateImpl.cc
+    XmlRpcRequestParserStateImpl.h
+	  XmlRpcRequestParserStateMachine.cc
+    XmlRpcRequestParserStateMachine.h
   )
 endif()
 
