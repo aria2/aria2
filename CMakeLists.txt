@@ -27,9 +27,9 @@ config_h_add_compile_definitions(PACKAGE_URL="${PROJECT_HOMEPAGE_URL}")
 config_h_add_compile_definitions(PACKAGE_BUGREPORT="https://github.com/aria2/aria2/issues")
 config_h_add_compile_definitions(PACKAGE_VERSION="${PROJECT_VERSION}")
 config_h_add_compile_definitions(VERSION="${PROJECT_VERSION}")
-config_h_add_compile_definitions(HOST="${CMAKE_HOST_SYSTEM_PROCESSOR}")
-config_h_add_compile_definitions(BUILD="${CMAKE_HOST_SYSTEM_PROCESSOR}")
-config_h_add_compile_definitions(TARGET="${CMAKE_SYSTEM_PROCESSOR}")
+config_h_add_compile_definitions(HOST="${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM}")
+config_h_add_compile_definitions(BUILD="${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM}")
+config_h_add_compile_definitions(TARGET="${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM}-${CMAKE_CXX_COMPILER_TARGET}")
 
 if(WIN32)
   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -D_POSIX_C_SOURCE=1)
@@ -902,14 +902,14 @@ add_compile_definitions(HAVE_CONFIG_H)
 add_subdirectory(lib)
 add_subdirectory(deps)
 add_subdirectory(src)
+add_subdirectory(doc)
+add_subdirectory(test)
 
-# add_subdirectory(doc)
-# add_subdirectory(test)
 message(STATUS "summary of build options: \n\
 
-Build:          ${CMAKE_HOST_SYSTEM_PROCESSOR}
-Host:           ${CMAKE_HOST_SYSTEM_PROCESSOR}
-Target:         ${CMAKE_SYSTEM_PROCESSOR}
+Build:          ${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM}-${CMAKE_CXX_COMPILER_ID}
+Host:           ${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM}
+Target:         ${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM}-${CMAKE_CXX_COMPILER_TARGET}
 Install prefix: ${CMAKE_INSTALL_PREFIX}
 CC:             ${CMAKE_C_COMPILER}
 CXX:            ${CMAKE_CXX_COMPILER}

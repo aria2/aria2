@@ -1,14 +1,12 @@
 
-include_directories(${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} )
-
 add_subdirectory(manual-src)
 
 
 ########### install files ###############
 
-install(FILES  xmlrpc/aria2mon  	xmlrpc/aria2rpc  	xmlrpc/README.txt DESTINATION )
-install(FILES  bash_completion/README.txt DESTINATION )
-install(FILES  bash_completion/aria2c DESTINATION )
+install(FILES  xmlrpc/aria2mon  	xmlrpc/aria2rpc  	xmlrpc/README.txt DESTINATION ${CMAKE_INSTALL_DOCDIR}/xmlrpc)
+install(FILES  bash_completion/README.txt DESTINATION ${CMAKE_INSTALL_DOCDIR}/bash_completion)
+install(FILES  bash_completion/aria2c DESTINATION  ${CMAKE_INSTALL_DOCDIR}/bash_completion)
 
 
 
