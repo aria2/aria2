@@ -26,8 +26,7 @@ set(WSLAY_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/includes)
 
 
 add_library(wslay STATIC ${wslay_STAT_SRCS})
-target_compile_definitions(wslay PUBLIC PACKAGE_VERSION="${PROJECT_VERSION}")
-target_compile_definitions(wslay PUBLIC PACKAGE="${PROJECT_NAME}")
+
 target_include_directories(wslay PUBLIC ${WSLAY_INCLUDE_DIR})
 target_include_directories(wslay INTERFACE ${WSLAY_INCLUDE_DIR})
 

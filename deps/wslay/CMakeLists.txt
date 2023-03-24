@@ -1,5 +1,26 @@
 project(wslay LANGUAGES CXX C VERSION 1.1.1)
 
+include(GenerateConfigH)
+
+config_h_add_compile_definitions(PACKAGE="${PROJECT_NAME}")
+config_h_add_compile_definitions(PACKAGE_NAME="${PROJECT_NAME}")
+config_h_add_compile_definitions(PACKAGE_STRING="${PROJECT_NAME} ${PROJECT_VERSION}")
+config_h_add_compile_definitions(PACKAGE_TARNAME="${PROJECT_NAME}")
+config_h_add_compile_definitions(PACKAGE_URL="${PROJECT_HOMEPAGE_URL}")
+config_h_add_compile_definitions(PACKAGE_BUGREPORT="t-tujikawa@users.sourceforge.net")
+config_h_add_compile_definitions(PACKAGE_VERSION="${PROJECT_VERSION}")
+config_h_add_compile_definitions(VERSION="${PROJECT_VERSION}")
+config_h_add_compile_definitions(HOST="${CMAKE_HOST_SYSTEM_PROCESSOR}")
+config_h_add_compile_definitions(BUILD="${CMAKE_HOST_SYSTEM_PROCESSOR}")
+config_h_add_compile_definitions(TARGET="${CMAKE_SYSTEM_PROCESSOR}")
+
+add_link_options(${EXTRALIBS})
+
+config_h_generate_header(config)
+# pickup the generated config.h
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+add_compile_definitions(HAVE_CONFIG_H)
+
 add_subdirectory(lib)
 add_subdirectory(tests)
 

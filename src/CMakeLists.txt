@@ -2,26 +2,21 @@
 
 add_subdirectory(includes)
 
-
-########### next target ###############
-
+# ########## next target ###############
 set(aria2c_SRCS main.cc)
 
 add_library(main OBJECT ${aria2c_SRCS})
 
-target_compile_definitions(main PUBLIC PACKAGE_VERSION="${PROJECT_VERSION}")
-target_compile_definitions(main PUBLIC PACKAGE="${PROJECT_NAME}")
 target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/includes)
 target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(aria2c $<TARGET_OBJECTS:main>)
-target_link_libraries(aria2c PUBLIC main)
+target_link_libraries(aria2c main)
 install(TARGETS aria2c ${INSTALL_TARGETS_DEFAULT_ARGS})
 
-
-########### next target ###############
+# ########## next target ###############
 set(aria2_SRCS
-	a2algo.h
+  a2algo.h
   a2functional.h
   a2io.h
   a2iterator.h
@@ -34,8 +29,8 @@ set(aria2_SRCS
   AbstractCommand.h
   AbstractDiskWriter.cc
   AbstractDiskWriter.h
-  AbstractHttpServerResponseCommand.cc 
-  AbstractHttpServerResponseCommand.h 
+  AbstractHttpServerResponseCommand.cc
+  AbstractHttpServerResponseCommand.h
   AbstractOptionHandler.cc
   AbstractOptionHandler.h
   AbstractProxyRequestCommand.cc
@@ -211,7 +206,7 @@ set(aria2_SRCS
   GroupId.h
   GrowSegment.cc
   GrowSegment.h
-  HashFuncEntry.h 
+  HashFuncEntry.h
   HaveEraseCommand.cc
   HaveEraseCommand.h
   help_tags.cc
@@ -274,7 +269,7 @@ set(aria2_SRCS
   JsonDiskWriter.h
   JsonParser.cc
   JsonParser.h
-  Lock.h 
+  Lock.h
   LogFactory.cc
   LogFactory.h
   Logger.cc
@@ -475,9 +470,9 @@ set(aria2_SRCS
   XmlRpcRequestParserController.cc
   XmlRpcRequestParserController.h
   OpenedFileCounter.cc
-  OpenedFileCounter.h 
+  OpenedFileCounter.h
   SHA1IOFile.cc
-  SHA1IOFile.h 
+  SHA1IOFile.h
   EvictSocketPoolCommand.cc
   EvictSocketPoolCommand.h
   libssl_compat.h
@@ -495,7 +490,7 @@ endif()
 if(ENABLE_WEBSOCKET)
   set(aria2_SRCS
     ${aria2_SRCS}
-    
+
     WebSocketInteractionCommand.cc
     WebSocketInteractionCommand.h
     WebSocketResponseCommand.cc
@@ -513,96 +508,89 @@ else()
   )
 endif()
 
-
-if (HAVE_SOME_XMLLIB)
+if(HAVE_SOME_XMLLIB)
   set(aria2_SRCS
     ${aria2_SRCS}
 
     ParserStateMachine.h
-  	XmlAttr.cc 
-  	XmlAttr.h
-  	XmlParser.cc 
-  	XmlParser.h
+    XmlAttr.cc
+    XmlAttr.h
+    XmlParser.cc
+    XmlParser.h
   )
 endif()
 
-if (HAVE_LIBXML2)
+if(HAVE_LIBXML2)
   set(aria2_SRCS
     ${aria2_SRCS}
-     
+
     Xml2XmlParser.cc
     Xml2XmlParser.h
   )
 endif()
 
-if (HAVE_LIBEXPAT)
+if(HAVE_LIBEXPAT)
   set(aria2_SRCS
     ${aria2_SRCS}
 
-   ExpatXmlParser.cc
-   ExpatXmlParser.h
+    ExpatXmlParser.cc
+    ExpatXmlParser.h
   )
 endif()
 
-if (ENABLE_XML_RPC)
+if(ENABLE_XML_RPC)
   set(aria2_SRCS
     ${aria2_SRCS}
-  
-
   )
-
 endif()
 
-if (HAVE_SOME_FALLOCATE)
+if(HAVE_SOME_FALLOCATE)
   set(aria2_SRCS
     ${aria2_SRCS}
 
     FallocFileAllocationIterator.cc
     FallocFileAllocationIterator.h
   )
-  
 endif()
 
-if (HAVE_EPOLL)
+if(HAVE_EPOLL)
   set(aria2_SRCS
     ${aria2_SRCS}
 
     EpollEventPoll.cc
     EpollEventPoll.h
   )
-
 endif()
 
-if (ENABLE_SSL)
+if(ENABLE_SSL)
   set(aria2_SRCS
     ${aria2_SRCS}
-    
+
     TLSContext.h
     TLSSession.h
   )
 endif()
 
-if (USE_APPLE_MD)
+if(USE_APPLE_MD)
   set(aria2_SRCS
     ${aria2_SRCS}
-    
+
     AppleMessageDigestImpl.cc
   )
-
 endif()
 
-if (HAVE_APPLETLS)
+if(HAVE_APPLETLS)
   set(aria2_SRCS
     ${aria2_SRCS}
 
     AppleTLSContext.cc
-    AppleTLSContext.h 
-  	AppleTLSSession.cc
-  	AppleTLSSession.h
+    AppleTLSContext.h
+    AppleTLSSession.cc
+    AppleTLSSession.h
   )
 endif()
 
-if (HAVE_WINTLS)
+if(HAVE_WINTLS)
   set(aria2_SRCS
     ${aria2_SRCS}
 
@@ -622,7 +610,7 @@ if(USE_INTERNAL_BIGNUM)
   )
 endif()
 
-if (USE_INTERNAL_ARC4)
+if(USE_INTERNAL_ARC4)
   set(aria2_SRCS
     ${aria2_SRCS}
 
@@ -631,36 +619,38 @@ if (USE_INTERNAL_ARC4)
   )
 endif()
 
-if (USE_INTERNAL_MD)
+if(USE_INTERNAL_MD)
   set(aria2_SRCS
     ${aria2_SRCS}
-    
+
     InternalMessageDigestImpl.cc
-	  crypto_hash.cc 
-	  crypto_hash.h
+    crypto_hash.cc
+    crypto_hash.h
   )
 endif()
 
-if (HAVE_LIBGNUTLS)
+if(HAVE_LIBGNUTLS)
   set(aria2_SRCS
-    
-   	LibgnutlsTLSContext.cc 
-   	LibgnutlsTLSContext.h
+    ${aria2_SRCS}
+
+    LibgnutlsTLSContext.cc
+    LibgnutlsTLSContext.h
     LibgnutlsTLSSession.cc
     LibgnutlsTLSSession.h
   )
 endif()
 
-if (HAVE_LIBGCRYPT)
+if(HAVE_LIBGCRYPT)
   set(aria2_SRCS
     ${aria2_SRCS}
 
-  	LibgcryptARC4Encryptor.cc
-  	LibgcryptARC4Encryptor.h
+    LibgcryptARC4Encryptor.cc
+    LibgcryptARC4Encryptor.h
     LibgcryptDHKeyExchange.cc
     LibgcryptDHKeyExchange.h
   )
-  if (USE_LIBGCRYPT_MD)
+
+  if(USE_LIBGCRYPT_MD)
     set(aria2_SRCS
       ${aria2_SRCS}
 
@@ -669,14 +659,15 @@ if (HAVE_LIBGCRYPT)
   endif()
 endif()
 
-if (HAVE_LIBNETTLE)
+if(HAVE_LIBNETTLE)
   set(aria2_SRCS
     ${aria2_SRCS}
 
     LibnettleARC4Encryptor.cc
     LibnettleARC4Encryptor.h
   )
-  if (USE_LIBNETTLE_MD)
+
+  if(USE_LIBNETTLE_MD)
     set(aria2_SRCS
       ${aria2_SRCS}
 
@@ -685,7 +676,7 @@ if (HAVE_LIBNETTLE)
   endif()
 endif()
 
-if (HAVE_LIBGMP)
+if(HAVE_LIBGMP)
   set(aria2_SRCS
     ${aria2_SRCS}
 
@@ -696,7 +687,7 @@ if (HAVE_LIBGMP)
   )
 endif()
 
-if (HAVE_OPENSSL)
+if(HAVE_OPENSSL)
   set(aria2_SRCS
     ${aria2_SRCS}
 
@@ -705,7 +696,8 @@ if (HAVE_OPENSSL)
     LibsslDHKeyExchange.cc
     LibsslDHKeyExchange.h
   )
-  if (NOT HAVE_APPLETLS)
+
+  if(NOT HAVE_APPLETLS)
     set(aria2_SRCS
       ${aria2_SRCS}
 
@@ -715,427 +707,428 @@ if (HAVE_OPENSSL)
       LibsslTLSSession.h
     )
   endif()
-  if (USE_OPENSSL_MD)
+
+  if(USE_OPENSSL_MD)
     set(aria2_SRCS
       ${aria2_SRCS}
-    
+
       LibsslMessageDigestImpl.cc
-    ) 
+    )
   endif()
 endif()
 
-if (HAVE_ZLIB)
+if(HAVE_ZLIB)
   set(aria2_SRCS
     ${aria2_SRCS}
-    
+
     GZipDecodingStreamFilter.cc
     GZipDecodingStreamFilter.h
-	  GZipEncoder.cc
-	  GZipEncoder.h
-	  GZipFile.cc
-	  GZipFile.h
-	  Adler32MessageDigestImpl.cc
-	  Adler32MessageDigestImpl.h
+    GZipEncoder.cc
+    GZipEncoder.h
+    GZipFile.cc
+    GZipFile.h
+    Adler32MessageDigestImpl.cc
+    Adler32MessageDigestImpl.h
   )
 endif()
 
-if (HAVE_SQLITE3)
+if(HAVE_SQLITE3)
   set(aria2_SRCS
     ${aria2_SRCS}
-    
+
     Sqlite3CookieParser.cc
     Sqlite3CookieParser.h
-	  Sqlite3CookieParserImpl.cc
-	  Sqlite3CookieParserImpl.h
+    Sqlite3CookieParserImpl.cc
+    Sqlite3CookieParserImpl.h
   )
 endif()
 
-if (HAVE_LIBSSH2)
+if(HAVE_LIBSSH2)
   set(aria2_SRCS
     ${aria2_SRCS}
-    
+
     SSHSession.cc
-    SSHSession.h 
-	  SftpNegotiationCommand.cc
-	  SftpNegotiationCommand.h 
-	  SftpNegotiationConnectChain.h
-  	SftpDownloadCommand.cc
-  	SftpDownloadCommand.h
-	  SftpFinishDownloadCommand.cc
-	  SftpFinishDownloadCommand.h
+    SSHSession.h
+    SftpNegotiationCommand.cc
+    SftpNegotiationCommand.h
+    SftpNegotiationConnectChain.h
+    SftpDownloadCommand.cc
+    SftpDownloadCommand.h
+    SftpFinishDownloadCommand.cc
+    SftpFinishDownloadCommand.h
   )
 endif()
 
-if (ENABLE_ASYNC_DNS)
+if(ENABLE_ASYNC_DNS)
   set(aria2_SRCS
     ${aria2_SRCS}
-  
+
     AsyncNameResolver.cc
     AsyncNameResolver.h
-	  AsyncNameResolverMan.cc
-	  AsyncNameResolverMan.h
+    AsyncNameResolverMan.cc
+    AsyncNameResolverMan.h
   )
 endif()
 
-if (ENABLE_BITTORRENT)
+if(ENABLE_BITTORRENT)
   set(aria2_SRCS
     ${aria2_SRCS}
 
     AbstractBtMessage.cc
     AbstractBtMessage.h
-	  ActivePeerConnectionCommand.cc
-	  ActivePeerConnectionCommand.h
-	  AnnounceList.h
-	  AnnounceList.cc
-	  AnnounceTier.cc
-	  AnnounceTier.h
-	  ARC4Encryptor.h
+    ActivePeerConnectionCommand.cc
+    ActivePeerConnectionCommand.h
+    AnnounceList.h
+    AnnounceList.cc
+    AnnounceTier.cc
+    AnnounceTier.h
+    ARC4Encryptor.h
     bencode2.cc
     bencode2.h
-	  BencodeDiskWriter.h
+    BencodeDiskWriter.h
     BencodeDiskWriterFactory.h
-	  BencodeParser.cc
-	  BencodeParser.h
-	  bittorrent_helper.cc
-	  bittorrent_helper.h
-	  BtAbortOutstandingRequestEvent.cc
-	  BtAbortOutstandingRequestEvent.h
-	  BtAllowedFastMessage.cc
-	  BtAllowedFastMessage.h
-	  BtAnnounce.cc
-	  BtAnnounce.h
-	  BtBitfieldMessage.cc
-	  BtBitfieldMessage.h
-	  BtBitfieldMessageValidator.cc
-	  BtBitfieldMessageValidator.h
-	  BtCancelMessage.cc
-	  BtCancelMessage.h
-	  BtCancelSendingPieceEvent.h
+    BencodeParser.cc
+    BencodeParser.h
+    bittorrent_helper.cc
+    bittorrent_helper.h
+    BtAbortOutstandingRequestEvent.cc
+    BtAbortOutstandingRequestEvent.h
+    BtAllowedFastMessage.cc
+    BtAllowedFastMessage.h
+    BtAnnounce.cc
+    BtAnnounce.h
+    BtBitfieldMessage.cc
+    BtBitfieldMessage.h
+    BtBitfieldMessageValidator.cc
+    BtBitfieldMessageValidator.h
+    BtCancelMessage.cc
+    BtCancelMessage.h
+    BtCancelSendingPieceEvent.h
     BtCheckIntegrityEntry.cc
     BtCheckIntegrityEntry.h
-	  BtChokeMessage.cc
-	  BtChokeMessage.h
-	  BtChokingEvent.h
+    BtChokeMessage.cc
+    BtChokeMessage.h
+    BtChokingEvent.h
     BtConstants.h
-	  BtDependency.cc
-	  BtDependency.h
-	  BtExtendedMessage.cc
-	  BtExtendedMessage.h
-	  BtFileAllocationEntry.cc
-	  BtFileAllocationEntry.h
-	  BtHandshakeMessage.cc
-	  BtHandshakeMessage.h
-	  BtHandshakeMessageValidator.cc
-	  BtHandshakeMessageValidator.h
-	  BtHaveAllMessage.cc
-	  BtHaveAllMessage.h
-	  BtHaveMessage.cc
-	  BtHaveMessage.h
-	  BtHaveNoneMessage.cc
-	  BtHaveNoneMessage.h
-	  BtInteractive.h
+    BtDependency.cc
+    BtDependency.h
+    BtExtendedMessage.cc
+    BtExtendedMessage.h
+    BtFileAllocationEntry.cc
+    BtFileAllocationEntry.h
+    BtHandshakeMessage.cc
+    BtHandshakeMessage.h
+    BtHandshakeMessageValidator.cc
+    BtHandshakeMessageValidator.h
+    BtHaveAllMessage.cc
+    BtHaveAllMessage.h
+    BtHaveMessage.cc
+    BtHaveMessage.h
+    BtHaveNoneMessage.cc
+    BtHaveNoneMessage.h
+    BtInteractive.h
     BtInterestedMessage.cc
     BtInterestedMessage.h
-	  BtKeepAliveMessage.cc
-	  BtKeepAliveMessage.h
-	  BtLeecherStateChoke.cc
-	  BtLeecherStateChoke.h
-	  BtMessage.h
+    BtKeepAliveMessage.cc
+    BtKeepAliveMessage.h
+    BtLeecherStateChoke.cc
+    BtLeecherStateChoke.h
+    BtMessage.h
     BtMessageDispatcher.h
-	  BtMessageFactory.h
+    BtMessageFactory.h
     BtMessageReceiver.h
-	  BtMessageValidator.h
+    BtMessageValidator.h
     BtNotInterestedMessage.cc
     BtNotInterestedMessage.h
-	  BtPieceMessage.cc
-	  BtPieceMessage.h
-	  BtPieceMessageValidator.cc
-	  BtPieceMessageValidator.h
-	  BtPortMessage.cc
-	  BtPortMessage.h
-	  BtPostDownloadHandler.cc
-	  BtPostDownloadHandler.h
-	  BtRegistry.cc
-	  BtRegistry.h
-	  BtRejectMessage.cc
-	  BtRejectMessage.h
-	  BtRequestFactory.h
+    BtPieceMessage.cc
+    BtPieceMessage.h
+    BtPieceMessageValidator.cc
+    BtPieceMessageValidator.h
+    BtPortMessage.cc
+    BtPortMessage.h
+    BtPostDownloadHandler.cc
+    BtPostDownloadHandler.h
+    BtRegistry.cc
+    BtRegistry.h
+    BtRejectMessage.cc
+    BtRejectMessage.h
+    BtRequestFactory.h
     BtRequestMessage.cc
     BtRequestMessage.h
-	  BtRuntime.cc
-	  BtRuntime.h
-	  BtSeederStateChoke.cc
-	  BtSeederStateChoke.h
-	  BtSetup.cc
-	  BtSetup.h
-	  BtStopDownloadCommand.cc
-	  BtStopDownloadCommand.h
-	  BtSuggestPieceMessage.cc
-	  BtSuggestPieceMessage.h
-	  BtUnchokeMessage.cc
-	  BtUnchokeMessage.h
-	  DefaultBtAnnounce.cc
-	  DefaultBtAnnounce.h
-	  DefaultBtInteractive.cc
-	  DefaultBtInteractive.h
-	  DefaultBtMessageDispatcher.cc
-	  DefaultBtMessageDispatcher.h
-	  DefaultBtMessageFactory.cc
-	  DefaultBtMessageFactory.h
-	  DefaultBtMessageReceiver.cc
-	  DefaultBtMessageReceiver.h
-	  DefaultBtRequestFactory.cc
-	  DefaultBtRequestFactory.h
-	  DefaultExtensionMessageFactory.cc
-	  DefaultExtensionMessageFactory.h
-	  DefaultPeerStorage.cc
-	  DefaultPeerStorage.h
-	  DHKeyExchange.h
+    BtRuntime.cc
+    BtRuntime.h
+    BtSeederStateChoke.cc
+    BtSeederStateChoke.h
+    BtSetup.cc
+    BtSetup.h
+    BtStopDownloadCommand.cc
+    BtStopDownloadCommand.h
+    BtSuggestPieceMessage.cc
+    BtSuggestPieceMessage.h
+    BtUnchokeMessage.cc
+    BtUnchokeMessage.h
+    DefaultBtAnnounce.cc
+    DefaultBtAnnounce.h
+    DefaultBtInteractive.cc
+    DefaultBtInteractive.h
+    DefaultBtMessageDispatcher.cc
+    DefaultBtMessageDispatcher.h
+    DefaultBtMessageFactory.cc
+    DefaultBtMessageFactory.h
+    DefaultBtMessageReceiver.cc
+    DefaultBtMessageReceiver.h
+    DefaultBtRequestFactory.cc
+    DefaultBtRequestFactory.h
+    DefaultExtensionMessageFactory.cc
+    DefaultExtensionMessageFactory.h
+    DefaultPeerStorage.cc
+    DefaultPeerStorage.h
+    DHKeyExchange.h
     DHTAbstractMessage.cc
     DHTAbstractMessage.h
-	  DHTAbstractNodeLookupTask.h
+    DHTAbstractNodeLookupTask.h
     DHTAbstractTask.cc
     DHTAbstractTask.h
     DHTAnnouncePeerMessage.cc
-	  DHTAnnouncePeerMessage.h
-	  DHTAnnouncePeerReplyMessage.cc
-	  DHTAnnouncePeerReplyMessage.h
-	  DHTAutoSaveCommand.cc
-	  DHTAutoSaveCommand.h
-	  DHTBucket.cc
-	  DHTBucket.h
-	  DHTBucketRefreshCommand.cc
-	  DHTBucketRefreshCommand.h
-	  DHTBucketRefreshTask.cc
-	  DHTBucketRefreshTask.h
-	  DHTBucketTree.cc
-	  DHTBucketTree.h
-	  DHTConnection.h
+    DHTAnnouncePeerMessage.h
+    DHTAnnouncePeerReplyMessage.cc
+    DHTAnnouncePeerReplyMessage.h
+    DHTAutoSaveCommand.cc
+    DHTAutoSaveCommand.h
+    DHTBucket.cc
+    DHTBucket.h
+    DHTBucketRefreshCommand.cc
+    DHTBucketRefreshCommand.h
+    DHTBucketRefreshTask.cc
+    DHTBucketRefreshTask.h
+    DHTBucketTree.cc
+    DHTBucketTree.h
+    DHTConnection.h
     DHTConnectionImpl.cc
     DHTConnectionImpl.h
-	  DHTConstants.h
+    DHTConstants.h
     DHTEntryPointNameResolveCommand.cc
     DHTEntryPointNameResolveCommand.h
-	  DHTFindNodeMessage.cc
-	  DHTFindNodeMessage.h
-	  DHTFindNodeReplyMessage.cc
-	  DHTFindNodeReplyMessage.h
-	  DHTGetPeersCommand.cc
-	  DHTGetPeersCommand.h
-	  DHTGetPeersMessage.cc
-	  DHTGetPeersMessage.h
-	  DHTGetPeersReplyMessage.cc
-	  DHTGetPeersReplyMessage.h
-	  DHTIDCloser.h
+    DHTFindNodeMessage.cc
+    DHTFindNodeMessage.h
+    DHTFindNodeReplyMessage.cc
+    DHTFindNodeReplyMessage.h
+    DHTGetPeersCommand.cc
+    DHTGetPeersCommand.h
+    DHTGetPeersMessage.cc
+    DHTGetPeersMessage.h
+    DHTGetPeersReplyMessage.cc
+    DHTGetPeersReplyMessage.h
+    DHTIDCloser.h
     DHTInteractionCommand.cc
     DHTInteractionCommand.h
-	  DHTMessage.cc
-	  DHTMessage.h
-	  DHTMessageCallback.h
+    DHTMessage.cc
+    DHTMessage.h
+    DHTMessageCallback.h
     DHTMessageDispatcher.h
-	  DHTMessageDispatcherImpl.cc
-	  DHTMessageDispatcherImpl.h
-	  DHTMessageEntry.cc
-	  DHTMessageEntry.h
-	  DHTMessageFactory.h
+    DHTMessageDispatcherImpl.cc
+    DHTMessageDispatcherImpl.h
+    DHTMessageEntry.cc
+    DHTMessageEntry.h
+    DHTMessageFactory.h
     DHTMessageFactoryImpl.cc
     DHTMessageFactoryImpl.h
-	  DHTMessageReceiver.cc
-	  DHTMessageReceiver.h
-	  DHTMessageTracker.cc
-	  DHTMessageTracker.h
-	  DHTMessageTrackerEntry.cc
-	  DHTMessageTrackerEntry.h
-	  DHTNode.cc
-	  DHTNode.h
-	  DHTNodeLookupEntry.cc
-	  DHTNodeLookupEntry.h
-	  DHTNodeLookupTask.cc
-	  DHTNodeLookupTask.h
-	  DHTNodeLookupTaskCallback.cc
-	  DHTNodeLookupTaskCallback.h
-	  DHTPeerAnnounceCommand.cc
-	  DHTPeerAnnounceCommand.h
-	  DHTPeerAnnounceEntry.cc
-	  DHTPeerAnnounceEntry.h
-	  DHTPeerAnnounceStorage.cc
-	  DHTPeerAnnounceStorage.h
-	  DHTPeerLookupTask.cc
-	  DHTPeerLookupTask.h
-	  DHTPeerLookupTaskCallback.cc
-	  DHTPeerLookupTaskCallback.h
-	  DHTPingMessage.cc
-	  DHTPingMessage.h
-	  DHTPingReplyMessage.cc
-	  DHTPingReplyMessage.h
-	  DHTPingReplyMessageCallback.h
+    DHTMessageReceiver.cc
+    DHTMessageReceiver.h
+    DHTMessageTracker.cc
+    DHTMessageTracker.h
+    DHTMessageTrackerEntry.cc
+    DHTMessageTrackerEntry.h
+    DHTNode.cc
+    DHTNode.h
+    DHTNodeLookupEntry.cc
+    DHTNodeLookupEntry.h
+    DHTNodeLookupTask.cc
+    DHTNodeLookupTask.h
+    DHTNodeLookupTaskCallback.cc
+    DHTNodeLookupTaskCallback.h
+    DHTPeerAnnounceCommand.cc
+    DHTPeerAnnounceCommand.h
+    DHTPeerAnnounceEntry.cc
+    DHTPeerAnnounceEntry.h
+    DHTPeerAnnounceStorage.cc
+    DHTPeerAnnounceStorage.h
+    DHTPeerLookupTask.cc
+    DHTPeerLookupTask.h
+    DHTPeerLookupTaskCallback.cc
+    DHTPeerLookupTaskCallback.h
+    DHTPingMessage.cc
+    DHTPingMessage.h
+    DHTPingReplyMessage.cc
+    DHTPingReplyMessage.h
+    DHTPingReplyMessageCallback.h
     DHTPingTask.cc
     DHTPingTask.h
-	  DHTQueryMessage.cc
-	  DHTQueryMessage.h
-	  DHTRegistry.cc
-	  DHTRegistry.h
-	  DHTReplaceNodeTask.cc
-	  DHTReplaceNodeTask.h
-	  DHTResponseMessage.cc
-	  DHTResponseMessage.h
-	  DHTRoutingTable.cc
-	  DHTRoutingTable.h
-	  DHTRoutingTableDeserializer.cc
-	  DHTRoutingTableDeserializer.h
-	  DHTRoutingTableSerializer.cc
-	  DHTRoutingTableSerializer.h
-	  DHTSetup.cc
-	  DHTSetup.h
-	  DHTTask.h
+    DHTQueryMessage.cc
+    DHTQueryMessage.h
+    DHTRegistry.cc
+    DHTRegistry.h
+    DHTReplaceNodeTask.cc
+    DHTReplaceNodeTask.h
+    DHTResponseMessage.cc
+    DHTResponseMessage.h
+    DHTRoutingTable.cc
+    DHTRoutingTable.h
+    DHTRoutingTableDeserializer.cc
+    DHTRoutingTableDeserializer.h
+    DHTRoutingTableSerializer.cc
+    DHTRoutingTableSerializer.h
+    DHTSetup.cc
+    DHTSetup.h
+    DHTTask.h
     DHTTaskExecutor.cc
     DHTTaskExecutor.h
-	  DHTTaskFactory.h
+    DHTTaskFactory.h
     DHTTaskFactoryImpl.cc
     DHTTaskFactoryImpl.h
-	  DHTTaskQueue.h
+    DHTTaskQueue.h
     DHTTaskQueueImpl.cc
     DHTTaskQueueImpl.h
-	  DHTTokenTracker.cc
-	  DHTTokenTracker.h
-	  DHTTokenUpdateCommand.cc
-	  DHTTokenUpdateCommand.h
-	  DHTUnknownMessage.cc
-	  DHTUnknownMessage.h
-	  ExtensionMessage.h
+    DHTTokenTracker.cc
+    DHTTokenTracker.h
+    DHTTokenUpdateCommand.cc
+    DHTTokenUpdateCommand.h
+    DHTUnknownMessage.cc
+    DHTUnknownMessage.h
+    ExtensionMessage.h
     ExtensionMessageFactory.h
-	  ExtensionMessageRegistry.cc
-	  ExtensionMessageRegistry.h
-	  HandshakeExtensionMessage.cc
-	  HandshakeExtensionMessage.h
-	  IndexBtMessage.cc
-	  IndexBtMessage.h
-	  IndexBtMessageValidator.cc
-	  IndexBtMessageValidator.h
-	  InitiatorMSEHandshakeCommand.cc
-	  InitiatorMSEHandshakeCommand.h
-	  LpdDispatchMessageCommand.cc
-	  LpdDispatchMessageCommand.h
-	  LpdMessage.cc
-	  LpdMessage.h
-	  LpdMessageDispatcher.cc
-	  LpdMessageDispatcher.h
-	  LpdMessageReceiver.cc
-	  LpdMessageReceiver.h
-	  LpdReceiveMessageCommand.cc
-	  LpdReceiveMessageCommand.h
-	  magnet.cc
-	  magnet.h
-	  MemoryBencodePreDownloadHandler.h
+    ExtensionMessageRegistry.cc
+    ExtensionMessageRegistry.h
+    HandshakeExtensionMessage.cc
+    HandshakeExtensionMessage.h
+    IndexBtMessage.cc
+    IndexBtMessage.h
+    IndexBtMessageValidator.cc
+    IndexBtMessageValidator.h
+    InitiatorMSEHandshakeCommand.cc
+    InitiatorMSEHandshakeCommand.h
+    LpdDispatchMessageCommand.cc
+    LpdDispatchMessageCommand.h
+    LpdMessage.cc
+    LpdMessage.h
+    LpdMessageDispatcher.cc
+    LpdMessageDispatcher.h
+    LpdMessageReceiver.cc
+    LpdMessageReceiver.h
+    LpdReceiveMessageCommand.cc
+    LpdReceiveMessageCommand.h
+    magnet.cc
+    magnet.h
+    MemoryBencodePreDownloadHandler.h
     MSEHandshake.cc
     MSEHandshake.h
-	  NameResolveCommand.cc
-	  NameResolveCommand.h
-	  Peer.cc
-	  Peer.h
-	  PeerAbstractCommand.cc
-	  PeerAbstractCommand.h
-	  PeerAddrEntry.cc
-	  PeerAddrEntry.h
-	  PeerChokeCommand.cc
-	  PeerChokeCommand.h
-	  PeerConnection.cc
-	  PeerConnection.h
-	  PeerInitiateConnectionCommand.cc
-	  PeerInitiateConnectionCommand.h
-	  PeerInteractionCommand.cc
-	  PeerInteractionCommand.h
-	  PeerListenCommand.cc
-	  PeerListenCommand.h
-	  PeerReceiveHandshakeCommand.cc
-	  PeerReceiveHandshakeCommand.h
-	  PeerSessionResource.cc
-	  PeerSessionResource.h
-	  PeerStorage.h
+    NameResolveCommand.cc
+    NameResolveCommand.h
+    Peer.cc
+    Peer.h
+    PeerAbstractCommand.cc
+    PeerAbstractCommand.h
+    PeerAddrEntry.cc
+    PeerAddrEntry.h
+    PeerChokeCommand.cc
+    PeerChokeCommand.h
+    PeerConnection.cc
+    PeerConnection.h
+    PeerInitiateConnectionCommand.cc
+    PeerInitiateConnectionCommand.h
+    PeerInteractionCommand.cc
+    PeerInteractionCommand.h
+    PeerListenCommand.cc
+    PeerListenCommand.h
+    PeerReceiveHandshakeCommand.cc
+    PeerReceiveHandshakeCommand.h
+    PeerSessionResource.cc
+    PeerSessionResource.h
+    PeerStorage.h
     PriorityPieceSelector.cc
     PriorityPieceSelector.h
-	  RangeBtMessage.cc
-	  RangeBtMessage.h
-	  RangeBtMessageValidator.cc
-	  RangeBtMessageValidator.h
-	  ReceiverMSEHandshakeCommand.cc
-	  ReceiverMSEHandshakeCommand.h
-	  RequestSlot.cc
-	  RequestSlot.h
-	  SeedCheckCommand.cc
-	  SeedCheckCommand.h
-	  SeedCriteria.h
+    RangeBtMessage.cc
+    RangeBtMessage.h
+    RangeBtMessageValidator.cc
+    RangeBtMessageValidator.h
+    ReceiverMSEHandshakeCommand.cc
+    ReceiverMSEHandshakeCommand.h
+    RequestSlot.cc
+    RequestSlot.h
+    SeedCheckCommand.cc
+    SeedCheckCommand.h
+    SeedCriteria.h
     ShareRatioSeedCriteria.cc
     ShareRatioSeedCriteria.h
-	  SimpleBtMessage.cc
-	  SimpleBtMessage.h
-	  TimeSeedCriteria.cc
-	  TimeSeedCriteria.h
-	  TrackerWatcherCommand.cc
-	  TrackerWatcherCommand.h
-	  UDPTrackerClient.cc
-	  UDPTrackerClient.h
-	  UDPTrackerRequest.cc
-	  UDPTrackerRequest.h
-	  UnionSeedCriteria.cc
-	  UnionSeedCriteria.h
-	  UTMetadataDataExtensionMessage.cc
-	  UTMetadataDataExtensionMessage.h
-	  UTMetadataExtensionMessage.cc
-	  UTMetadataExtensionMessage.h
-	  UTMetadataPostDownloadHandler.cc
-	  UTMetadataPostDownloadHandler.h
-	  UTMetadataRejectExtensionMessage.cc
-	  UTMetadataRejectExtensionMessage.h
-	  UTMetadataRequestExtensionMessage.cc
+    SimpleBtMessage.cc
+    SimpleBtMessage.h
+    TimeSeedCriteria.cc
+    TimeSeedCriteria.h
+    TrackerWatcherCommand.cc
+    TrackerWatcherCommand.h
+    UDPTrackerClient.cc
+    UDPTrackerClient.h
+    UDPTrackerRequest.cc
+    UDPTrackerRequest.h
+    UnionSeedCriteria.cc
+    UnionSeedCriteria.h
+    UTMetadataDataExtensionMessage.cc
+    UTMetadataDataExtensionMessage.h
+    UTMetadataExtensionMessage.cc
+    UTMetadataExtensionMessage.h
+    UTMetadataPostDownloadHandler.cc
+    UTMetadataPostDownloadHandler.h
+    UTMetadataRejectExtensionMessage.cc
+    UTMetadataRejectExtensionMessage.h
+    UTMetadataRequestExtensionMessage.cc
     UTMetadataRequestExtensionMessage.h
-	  UTMetadataRequestFactory.cc
-	  UTMetadataRequestFactory.h
-	  UTMetadataRequestTracker.cc
-	  UTMetadataRequestTracker.h
-	  UTPexExtensionMessage.cc
-	  UTPexExtensionMessage.h
-	  ValueBaseBencodeParser.h
+    UTMetadataRequestFactory.cc
+    UTMetadataRequestFactory.h
+    UTMetadataRequestTracker.cc
+    UTMetadataRequestTracker.h
+    UTPexExtensionMessage.cc
+    UTPexExtensionMessage.h
+    ValueBaseBencodeParser.h
     XORCloser.h
-	  ZeroBtMessage.cc
-	  ZeroBtMessage.h
+    ZeroBtMessage.cc
+    ZeroBtMessage.h
   )
 endif()
 
-if (ENABLE_METALINK)
+if(ENABLE_METALINK)
   set(aria2_SRCS
     ${aria2_SRCS}
 
-	  Metalink2RequestGroup.cc
-	  Metalink2RequestGroup.h
-	  MetalinkEntry.cc
-	  MetalinkEntry.h
-	  Metalinker.cc
-	  Metalinker.h
-	  MetalinkMetaurl.cc
-	  MetalinkMetaurl.h
-	  MetalinkParserController.cc
-	  MetalinkParserController.h
-	  MetalinkParserState.cc
-	  MetalinkParserState.h
-	  MetalinkParserStateImpl.cc
-	  MetalinkParserStateImpl.h
-	  MetalinkParserStateMachine.cc
-	  MetalinkParserStateMachine.h
-	  MetalinkParserStateV3Impl.cc
-	  MetalinkParserStateV3Impl.h
-	  MetalinkParserStateV4Impl.cc
-	  MetalinkParserStateV4Impl.h
-	  MetalinkPostDownloadHandler.cc
-	  MetalinkPostDownloadHandler.h
-	  MetalinkResource.cc
-	  MetalinkResource.h
-	  metalink_helper.cc
-	  metalink_helper.h
+    Metalink2RequestGroup.cc
+    Metalink2RequestGroup.h
+    MetalinkEntry.cc
+    MetalinkEntry.h
+    Metalinker.cc
+    Metalinker.h
+    MetalinkMetaurl.cc
+    MetalinkMetaurl.h
+    MetalinkParserController.cc
+    MetalinkParserController.h
+    MetalinkParserState.cc
+    MetalinkParserState.h
+    MetalinkParserStateImpl.cc
+    MetalinkParserStateImpl.h
+    MetalinkParserStateMachine.cc
+    MetalinkParserStateMachine.h
+    MetalinkParserStateV3Impl.cc
+    MetalinkParserStateV3Impl.h
+    MetalinkParserStateV4Impl.cc
+    MetalinkParserStateV4Impl.h
+    MetalinkPostDownloadHandler.cc
+    MetalinkPostDownloadHandler.h
+    MetalinkResource.cc
+    MetalinkResource.h
+    metalink_helper.cc
+    metalink_helper.h
   )
 endif()
 
-if (NOT HAVE_ASCTIME_R)
+if(NOT HAVE_ASCTIME_R)
   set(aria2_SRCS
     ${aria2_SRCS}
 
@@ -1144,7 +1137,7 @@ if (NOT HAVE_ASCTIME_R)
   )
 endif()
 
-if (NOT HAVE_BASENAME)
+if(NOT HAVE_BASENAME)
   set(aria2_SRCS
     ${aria2_SRCS}
 
@@ -1153,7 +1146,7 @@ if (NOT HAVE_BASENAME)
   )
 endif()
 
-if (NOT HAVE_GETADDRINFO)
+if(NOT HAVE_GETADDRINFO)
   set(aria2_SRCS
     ${aria2_SRCS}
 
@@ -1162,16 +1155,16 @@ if (NOT HAVE_GETADDRINFO)
   )
 endif()
 
-if (NOT HAVE_GAI_STRERROR)
+if(NOT HAVE_GAI_STRERROR)
   set(aria2_SRCS
     ${aria2_SRCS}
-    
+
     gai_strerror.c
     gai_strerror.h
   )
 endif()
 
-if (NOT HAVE_GETTIMEOFDAY)
+if(NOT HAVE_GETTIMEOFDAY)
   set(aria2_SRCS
     ${aria2_SRCS}
 
@@ -1180,7 +1173,7 @@ if (NOT HAVE_GETTIMEOFDAY)
   )
 endif()
 
-if (NOT HAVE_LOCALTIME_R)
+if(NOT HAVE_LOCALTIME_R)
   set(aria2_SRCS
     ${aria2_SRCS}
 
@@ -1189,7 +1182,7 @@ if (NOT HAVE_LOCALTIME_R)
   )
 endif()
 
-if (NOT HAVE_STRPTIME)
+if(NOT HAVE_STRPTIME)
   set(aria2_SRCS
     ${aria2_SRCS}
 
@@ -1198,7 +1191,7 @@ if (NOT HAVE_STRPTIME)
   )
 endif()
 
-if (NOT HAVE_TIMEGM)
+if(NOT HAVE_TIMEGM)
   set(aria2_SRCS
     ${aria2_SRCS}
 
@@ -1207,7 +1200,7 @@ if (NOT HAVE_TIMEGM)
   )
 endif()
 
-if (NOT HAVE_DAEMON)
+if(NOT HAVE_DAEMON)
   set(aria2_SRCS
     ${aria2_SRCS}
 
@@ -1216,7 +1209,7 @@ if (NOT HAVE_DAEMON)
   )
 endif()
 
-if (HAVE_POLL)
+if(HAVE_POLL)
   set(aria2_SRCS
     ${aria2_SRCS}
 
@@ -1225,7 +1218,7 @@ if (HAVE_POLL)
   )
 endif()
 
-if (HAVE_PORT_ASSOCIATE)
+if(HAVE_PORT_ASSOCIATE)
   set(aria2_SRCS
     ${aria2_SRCS}
 
@@ -1234,7 +1227,7 @@ if (HAVE_PORT_ASSOCIATE)
   )
 endif()
 
-if (HAVE_KQUEUE)
+if(HAVE_KQUEUE)
   set(aria2_SRCS
     ${aria2_SRCS}
 
@@ -1243,7 +1236,7 @@ if (HAVE_KQUEUE)
   )
 endif()
 
-if (HAVE_LIBUV)
+if(HAVE_LIBUV)
   set(aria2_SRCS
     ${aria2_SRCS}
 
@@ -1252,25 +1245,28 @@ if (HAVE_LIBUV)
   )
 endif()
 
-if (ENABLE_LIBARIA2)
+if(ENABLE_LIBARIA2)
   set(aria2_SRCS
     ${aria2_SRCS}
 
     ApiCallbackDownloadEventListener.cc
     ApiCallbackDownloadEventListener.h
-	  aria2api.cc
-	  aria2api.h 
-	  KeepRunningCommand.cc
-	  KeepRunningCommand.h
+    aria2api.cc
+    aria2api.h
+    KeepRunningCommand.cc
+    KeepRunningCommand.h
   )
-  add_library(aria2 SHARED ${aria2_SRCS})
+
+  set(LIBARIA2_BUILD_MODE SHARED)
+
+# add_library(aria2 SHARED ${aria2_SRCS})
 else()
-  add_library(aria2 STATIC ${aria2_SRCS})
+  set(LIBARIA2_BUILD_MODE STATIC)
+
+  # add_library(aria2 STATIC ${aria2_SRCS})
 endif()
 
-
-target_compile_definitions(aria2 PUBLIC PACKAGE_VERSION="${PROJECT_VERSION}")
-target_compile_definitions(aria2 PUBLIC PACKAGE="${PROJECT_NAME}")
+add_library(aria2 ${LIBARIA2_BUILD_MODE} ${aria2_SRCS})
 
 target_include_directories(aria2 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/includes)
 target_include_directories(aria2 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
@@ -1278,178 +1274,172 @@ target_include_directories(aria2 INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/includes)
 
 if(HAVE_ZLIB)
   target_include_directories(aria2 PUBLIC ${ZLIB_INCLUDE_DIRS})
-  target_link_libraries(aria2 INTERFACE ZLIB::ZLIB)
+  target_link_libraries(aria2 ZLIB::ZLIB)
 endif()
 
 if(HAVE_LIBUV)
   target_include_directories(aria2 PUBLIC ${LIBUV_INCLUDE_DIRS})
-  target_link_libraries(aria2 INTERFACE LIBUV::LIBUV)
+  target_link_libraries(aria2 LIBUV::LIBUV)
 endif()
 
 if(HAVE_LIBXML2)
   target_include_directories(aria2 PUBLIC ${LIBXML2_INCLUDE_DIR})
-  target_link_libraries(aria2 INTERFACE LibXml2::LibXml2)
+  target_link_libraries(aria2 LibXml2::LibXml2)
 endif()
 
 if(HAVE_LIBEXPAT)
   target_include_directories(aria2 PUBLIC ${EXPAT_INCLUDE_DIRS})
-  target_link_libraries(aria2 INTERFACE EXPAT::EXPAT)
+  target_link_libraries(aria2 EXPAT::EXPAT)
 endif()
 
 if(HAVE_SQLITE3)
   target_include_directories(aria2 PUBLIC ${SQLite3_INCLUDE_DIRS})
-  target_link_libraries(aria2 INTERFACE SQLite::SQLite3)
+  target_link_libraries(aria2 SQLite::SQLite3)
 endif()
 
 if(HAVE_APPLETLS)
-  target_link_libraries(aria2 INTERFACE ${APPLETLS_LD_FLAGS})
+  target_link_libraries(aria2 ${APPLETLS_LD_FLAGS})
 endif()
 
 if(HAVE_WINTLS)
-  target_link_libraries(aria2 INTERFACE ${WINTLS_LIBS})
+  target_link_libraries(aria2 ${WINTLS_LIBS})
 endif()
 
 if(HAVE_LIBGNUTLS)
   target_include_directories(aria2 PUBLIC ${GNUTLS_INCLUDE_DIR})
   target_compile_definitions(aria2 PUBLIC ${LIBGNUTLS_CFLAGS})
-  target_link_libraries(aria2 INTERFACE GnuTLS::GnuTLS)
+  target_link_libraries(aria2 GnuTLS::GnuTLS)
 endif()
 
 if(HAVE_OPENSSL)
   target_include_directories(aria2 PUBLIC ${OPENSSL_INCLUDE_DIR})
-  target_link_libraries(aria2 INTERFACE OpenSSL::SSL)
+  target_link_libraries(aria2 OpenSSL::SSL)
+
   # target_link_libraries(aria2 INTERFACE OpenSSL::Crypto)
 endif()
 
 if(HAVE_LIBNETTLE)
   target_include_directories(aria2 PUBLIC ${NETTLE_INCLUDE_DIR})
-  target_link_libraries(aria2 INTERFACE Nettle::Nettle)
+  target_link_libraries(aria2 Nettle::Nettle)
 endif()
 
 if(HAVE_LIBGMP)
   target_include_directories(aria2 PUBLIC ${GMP_INCLUDE_DIR})
-  target_link_libraries(aria2 INTERFACE GMP::GMP)
+  target_link_libraries(aria2 GMP::GMP)
 endif()
 
 if(HAVE_LIBGCRYPT)
   target_include_directories(aria2 PUBLIC ${LibGcrypt_INCLUDE_DIR})
-  target_link_libraries(aria2 INTERFACE LibGcrypt::LibGcrypt)
+  target_link_libraries(aria2 LibGcrypt::LibGcrypt)
 endif()
 
 if(HAVE_LIBSSH2)
   target_include_directories(aria2 PUBLIC ${LIBSSH2_INCLUDE_DIR})
-  target_link_libraries(aria2 INTERFACE LibSSH2::LibSSH2)
+  target_link_libraries(aria2 LibSSH2::LibSSH2)
 endif()
 
 if(HAVE_LIBCARES)
   target_include_directories(aria2 PUBLIC ${LIBCARES_INCLUDE_DIR})
-  target_link_libraries(aria2 INTERFACE Libcares::Libcares)
+  target_link_libraries(aria2 Libcares::Libcares)
 endif()
 
 if(ENABLE_WEBSOCKET)
   target_include_directories(aria2 PUBLIC ${WSLAY_INCLUDE_DIR})
-  target_link_libraries(aria2 INTERFACE wslay)
+  target_link_libraries(aria2 wslay)
 endif()
 
 set_target_properties(aria2 PROPERTIES VERSION 0.0.0 SOVERSION 1)
 install(TARGETS aria2 ${INSTALL_TARGETS_DEFAULT_ARGS})
 
-target_link_libraries(aria2c PUBLIC aria2)
+target_link_libraries(aria2c aria2)
 
-
-########### next target ###############
+# ########## next target ###############
 
 # add_library(aria2_static STATIC ${aria2_SRCS})
 
+# ########## install files ###############
+install(FILES libaria2.pc DESTINATION lib)
 
-########### install files ###############
+# original Makefile.am contents follow:
 
-install(FILES  libaria2.pc DESTINATION lib)
-
-
-
-#original Makefile.am contents follow:
-
-#SUBDIRS = includes
-#bin_PROGRAMS = aria2c
-#aria2c_SOURCES = main.cc
+# SUBDIRS = includes
+# bin_PROGRAMS = aria2c
+# aria2c_SOURCES = main.cc
 #
 
-
-
-#AR = @AR@
+# AR = @AR@
 #
-#if ENABLE_LIBARIA2
-#pkgconfigdir = $(libdir)/pkgconfig
-#pkgconfig_DATA = libaria2.pc
-#DISTCLEANFILES = $(pkgconfig_DATA)
+# if ENABLE_LIBARIA2
+# pkgconfigdir = $(libdir)/pkgconfig
+# pkgconfig_DATA = libaria2.pc
+# DISTCLEANFILES = $(pkgconfig_DATA)
 #
-#lib_LTLIBRARIES = libaria2.la
-#SRCS += \
-#	ApiCallbackDownloadEventListener.cc ApiCallbackDownloadEventListener.h\
-#	aria2api.cc aria2api.h \
-#	KeepRunningCommand.cc KeepRunningCommand.h
-#else # !ENABLE_LIBARIA2
-#noinst_LTLIBRARIES = libaria2.la
-#endif # !ENABLE_LIBARIA2
+# lib_LTLIBRARIES = libaria2.la
+# SRCS += \
+# ApiCallbackDownloadEventListener.cc ApiCallbackDownloadEventListener.h\
+# aria2api.cc aria2api.h \
+# KeepRunningCommand.cc KeepRunningCommand.h
+# else # !ENABLE_LIBARIA2
+# noinst_LTLIBRARIES = libaria2.la
+# endif # !ENABLE_LIBARIA2
 #
-#libaria2_la_SOURCES = $(SRCS)
+# libaria2_la_SOURCES = $(SRCS)
 #
 #
-#AM_CPPFLAGS = \
-#	-I$(top_srcdir)/lib -I$(top_srcdir)/intl\
-#	-I$(srcdir)/includes -I$(builddir)/includes\
-#	-DLOCALEDIR=\"@localedir@\" @DEFS@ \
-#	@EXTRACPPFLAGS@ \
-#	@ZLIB_CFLAGS@ \
-#	@LIBUV_CFLAGS@ \
-#	@LIBXML2_CFLAGS@ \
-#	@EXPAT_CFLAGS@ \
-#	@SQLITE3_CFLAGS@ \
-#	@LIBGNUTLS_CFLAGS@ \
-#	@OPENSSL_CFLAGS@ \
-#	@LIBNETTLE_CFLAGS@ \
-#	@LIBGMP_CFLAGS@ \
-#	@LIBGCRYPT_CFLAGS@ \
-#	@LIBSSH2_CFLAGS@ \
-#	@LIBCARES_CFLAGS@ \
-#	@WSLAY_CFLAGS@ \
-#	@TCMALLOC_CFLAGS@ \
-#	@JEMALLOC_CFLAGS@
+# AM_CPPFLAGS = \
+# -I$(top_srcdir)/lib -I$(top_srcdir)/intl\
+# -I$(srcdir)/includes -I$(builddir)/includes\
+# -DLOCALEDIR=\"@localedir@\" @DEFS@ \
+# @EXTRACPPFLAGS@ \
+# @ZLIB_CFLAGS@ \
+# @LIBUV_CFLAGS@ \
+# @LIBXML2_CFLAGS@ \
+# @EXPAT_CFLAGS@ \
+# @SQLITE3_CFLAGS@ \
+# @LIBGNUTLS_CFLAGS@ \
+# @OPENSSL_CFLAGS@ \
+# @LIBNETTLE_CFLAGS@ \
+# @LIBGMP_CFLAGS@ \
+# @LIBGCRYPT_CFLAGS@ \
+# @LIBSSH2_CFLAGS@ \
+# @LIBCARES_CFLAGS@ \
+# @WSLAY_CFLAGS@ \
+# @TCMALLOC_CFLAGS@ \
+# @JEMALLOC_CFLAGS@
 #
-#AM_LDFLAGS = \
-#	@EXTRALDFLAGS@ \
-#	@APPLETLS_LDFLAGS@
+# AM_LDFLAGS = \
+# @EXTRALDFLAGS@ \
+# @APPLETLS_LDFLAGS@
 #
-#EXTLDADD = @ALLOCA@ \
-#	@EXTRALIBS@ \
-#	@ZLIB_LIBS@ \
-#	@LIBUV_LIBS@ \
-#	@LIBXML2_LIBS@ \
-#	@EXPAT_LIBS@ \
-#	@SQLITE3_LIBS@ \
-#	@WINTLS_LIBS@ \
-#	@LIBGNUTLS_LIBS@ \
-#	@OPENSSL_LIBS@ \
-#	@LIBNETTLE_LIBS@ \
-#	@LIBGMP_LIBS@ \
-#	@LIBGCRYPT_LIBS@ \
-#	@LIBSSH2_LIBS@ \
-#	@LIBCARES_LIBS@ \
-#	@WSLAY_LIBS@ \
-#	@TCMALLOC_LIBS@ \
-#	@JEMALLOC_LIBS@ \
-#	@LTLIBINTL@
+# EXTLDADD = @ALLOCA@ \
+# @EXTRALIBS@ \
+# @ZLIB_LIBS@ \
+# @LIBUV_LIBS@ \
+# @LIBXML2_LIBS@ \
+# @EXPAT_LIBS@ \
+# @SQLITE3_LIBS@ \
+# @WINTLS_LIBS@ \
+# @LIBGNUTLS_LIBS@ \
+# @OPENSSL_LIBS@ \
+# @LIBNETTLE_LIBS@ \
+# @LIBGMP_LIBS@ \
+# @LIBGCRYPT_LIBS@ \
+# @LIBSSH2_LIBS@ \
+# @LIBCARES_LIBS@ \
+# @WSLAY_LIBS@ \
+# @TCMALLOC_LIBS@ \
+# @JEMALLOC_LIBS@ \
+# @LTLIBINTL@
 #
-#LDADD = libaria2.la
+# LDADD = libaria2.la
 #
-#if ENABLE_LIBARIA2
-#libaria2_la_LIBADD = $(EXTLDADD)
-#else # !ENABLE_LIBARIA2
-#LDADD += $(EXTLDADD)
-#endif # !ENABLE_LIBARIA2
+# if ENABLE_LIBARIA2
+# libaria2_la_LIBADD = $(EXTLDADD)
+# else # !ENABLE_LIBARIA2
+# LDADD += $(EXTLDADD)
+# endif # !ENABLE_LIBARIA2
 #
-#AM_CFLAGS = @EXTRACFLAGS@
+# AM_CFLAGS = @EXTRACFLAGS@
 #
-#AM_CXXFLAGS = @WARNCXXFLAGS@ @CXX1XCXXFLAGS@ @EXTRACXXFLAGS@
+# AM_CXXFLAGS = @WARNCXXFLAGS@ @CXX1XCXXFLAGS@ @EXTRACXXFLAGS@
 #
