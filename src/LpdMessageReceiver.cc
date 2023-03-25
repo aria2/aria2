@@ -59,7 +59,7 @@ bool LpdMessageReceiver::init(const std::string& localAddr)
 {
   try {
     socket_ = std::make_shared<SocketCore>(SOCK_DGRAM);
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
     // Binding multicast address fails under Windows.
     socket_->bindWithFamily(multicastPort_, AF_INET);
 #else  // !__MINGW32__

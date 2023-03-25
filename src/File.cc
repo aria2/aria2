@@ -39,7 +39,9 @@
 #ifdef HAVE_UTIME_H
 #  include <utime.h>
 #endif // HAVE_UTIME_H
-#include <unistd.h>
+#ifndef NO_UNIX
+#  include <unistd.h>
+#endif
 
 #include <vector>
 #include <cstring>
@@ -120,7 +122,7 @@ bool File::remove()
   }
 }
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 namespace {
 HANDLE openFile(const std::string& filename, bool readOnly = true)
 {
@@ -136,7 +138,7 @@ HANDLE openFile(const std::string& filename, bool readOnly = true)
 
 int64_t File::size()
 {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   // _wstat cannot be used for symlink.  It always returns 0.  Quoted
   // from https://msdn.microsoft.com/en-us/library/14h5k7ff.aspx:
   //
@@ -165,7 +167,7 @@ bool File::mkdirs()
   if (isDir()) {
     return false;
   }
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   std::string path = name_;
   for (std::string::iterator i = path.begin(), eoi = path.end(); i != eoi;
        ++i) {
@@ -224,7 +226,7 @@ bool File::mkdirs()
     if (i != end) {
       ++i;
     }
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
     if (*(j - 1) == ':') {
       // This is a drive letter, e.g. C:, so skip it.
       continue;
@@ -289,7 +291,7 @@ bool File::isDir(const std::string& filename) { return File(filename).isDir(); }
 
 bool File::renameTo(const std::string& dest)
 {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   // MinGW's rename() doesn't delete an existing destination.  Better
   // to use MoveFileEx, which usually provides atomic move in aria2
   // usecase.
@@ -374,7 +376,7 @@ Time File::getModifiedTime()
 
 std::string File::getCurrentDir()
 {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   const size_t buflen = 2048;
   wchar_t buf[buflen];
   if (_wgetcwd(buf, buflen)) {
@@ -397,7 +399,7 @@ std::string File::getCurrentDir()
 
 const char* File::getPathSeparators()
 {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   return "/\\";
 #else  // !__MINGW32__
   return "/";

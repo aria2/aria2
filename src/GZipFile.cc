@@ -50,7 +50,7 @@ GZipFile::GZipFile(const char* filename, const char* mode)
       strcmp(DEV_STDIN, filename) == 0
           ? stdin
           :
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
           a2fopen(utf8ToWChar(filename).c_str(), utf8ToWChar(mode).c_str())
 #else  // !__MINGW32__
           a2fopen(filename, mode)

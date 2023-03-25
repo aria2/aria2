@@ -34,7 +34,9 @@
 /* copyright --> */
 #include "Context.h"
 
-#include <unistd.h>
+#ifndef NO_UNIX
+#  include <unistd.h>
+#endif
 #include <getopt.h>
 
 #ifdef HAVE_SYS_RESOURCE_H

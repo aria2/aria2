@@ -97,7 +97,7 @@ void FileTest::testRemove()
   CPPUNIT_ASSERT(!f.remove());
 
   std::string dir = A2_TEST_OUT_DIR "/aria2_FileTest_testRemove_testdir";
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   mkdir(dir.c_str());
 #else
   mkdir(dir.c_str(), 0777);
@@ -183,7 +183,7 @@ void FileTest::testGetDirname()
     File f("");
     CPPUNIT_ASSERT_EQUAL(std::string(""), f.getDirname());
   }
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   {
     File f("c:\\foo\\bar");
     CPPUNIT_ASSERT_EQUAL(std::string("c:\\foo"), f.getDirname());
@@ -221,7 +221,7 @@ void FileTest::testGetBasename()
     File f("");
     CPPUNIT_ASSERT_EQUAL(std::string(""), f.getBasename());
   }
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   {
     File f("c:\\foo\\bar");
     CPPUNIT_ASSERT_EQUAL(std::string("bar"), f.getBasename());

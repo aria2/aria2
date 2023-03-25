@@ -35,6 +35,9 @@
  * $ export LD_LIBRARY_PATH=../lib/.libs
  * $ ./a.out 9000
  */
+
+#include "config.h"
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>

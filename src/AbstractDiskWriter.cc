@@ -34,7 +34,9 @@
 /* copyright --> */
 #include "AbstractDiskWriter.h"
 
-#include <unistd.h>
+#ifndef NO_UNIX
+#  include <unistd.h>
+#endif
 #ifdef HAVE_MMAP
 #  include <sys/mman.h>
 #endif // HAVE_MMAP
@@ -54,12 +56,16 @@
 #include "error_code.h"
 #include "LogFactory.h"
 
+#if defined(_MSC_VER)
+#  include <winioctl.h>
+#endif
+
 namespace aria2 {
 
 AbstractDiskWriter::AbstractDiskWriter(const std::string& filename)
     : filename_(filename),
       fd_(A2_BAD_FD),
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
       mapView_(0),
 #else  // !__MINGW32__
 #endif // !__MINGW32__
@@ -78,7 +84,7 @@ namespace {
 // the value of GetLastError(). Otherwise, return errno.
 int fileError()
 {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   return GetLastError();
 #else  // !__MINGW32__
   return errno;
@@ -92,7 +98,7 @@ namespace {
 // errno.
 std::string fileStrerror(int errNum)
 {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   auto msg = util::formatLastError(errNum);
   if (msg.empty()) {
     char buf[256];
@@ -113,7 +119,7 @@ void AbstractDiskWriter::openFile(int64_t totalLength)
   }
   catch (RecoverableException& e) {
     if (
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
         e.getErrNum() == ERROR_FILE_NOT_FOUND ||
         e.getErrNum() == ERROR_PATH_NOT_FOUND
 #else  // !__MINGW32__
@@ -133,7 +139,7 @@ void AbstractDiskWriter::closeFile()
 #if defined(HAVE_MMAP) || defined(__MINGW32__)
   if (mapaddr_) {
     int errNum = 0;
-#  ifdef __MINGW32__
+#  if defined(__MINGW32__) || defined(_MSC_VER)
     if (!UnmapViewOfFile(mapaddr_)) {
       errNum = GetLastError();
     }
@@ -157,7 +163,7 @@ void AbstractDiskWriter::closeFile()
   }
 #endif // HAVE_MMAP || defined __MINGW32__
   if (fd_ != A2_BAD_FD) {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
     CloseHandle(fd_);
 #else  // !__MINGW32__
     close(fd_);
@@ -167,7 +173,7 @@ void AbstractDiskWriter::closeFile()
 }
 
 namespace {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 HANDLE openFileWithFlags(const std::string& filename, int flags,
                          error_code::Value errCode)
 {
@@ -265,7 +271,7 @@ ssize_t AbstractDiskWriter::writeDataInternal(const unsigned char* data,
     ssize_t writtenLength = 0;
     seek(offset);
     while ((size_t)writtenLength < len) {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
       DWORD nwrite;
       if (WriteFile(fd_, data + writtenLength, len - writtenLength, &nwrite,
                     0)) {
@@ -303,7 +309,7 @@ ssize_t AbstractDiskWriter::readDataInternal(unsigned char* data, size_t len,
   }
   else {
     seek(offset);
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
     DWORD nread;
     if (ReadFile(fd_, data, len, &nread, 0)) {
       return nread;
@@ -323,7 +329,7 @@ ssize_t AbstractDiskWriter::readDataInternal(unsigned char* data, size_t len,
 void AbstractDiskWriter::seek(int64_t offset)
 {
   assert(offset >= 0);
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   LARGE_INTEGER fileLength;
   fileLength.QuadPart = offset;
   if (SetFilePointerEx(fd_, fileLength, 0, FILE_BEGIN) == 0)
@@ -345,7 +351,7 @@ void AbstractDiskWriter::ensureMmapWrite(size_t len, int64_t offset)
     if (mapaddr_) {
       if (static_cast<int64_t>(len + offset) > maplen_) {
         int errNum = 0;
-#  ifdef __MINGW32__
+#  if defined(__MINGW32__) || defined(_MSC_VER)
         if (!UnmapViewOfFile(mapaddr_)) {
           errNum = GetLastError();
         }
@@ -385,7 +391,7 @@ void AbstractDiskWriter::ensureMmapWrite(size_t len, int64_t offset)
 
       int errNum = 0;
       if (static_cast<int64_t>(len + offset) <= filesize) {
-#  ifdef __MINGW32__
+#  if defined(__MINGW32__) || defined(_MSC_VER)
         mapView_ = CreateFileMapping(fd_, 0, PAGE_READWRITE, filesize >> 32,
                                      filesize & 0xffffffffu, 0);
         if (mapView_) {
@@ -432,7 +438,7 @@ namespace {
 bool isDiskFullError(int errNum)
 {
   return
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
       errNum == ERROR_DISK_FULL || errNum == ERROR_HANDLE_DISK_FULL
 #else  // !__MINGW32__
       errNum == ENOSPC
@@ -483,7 +489,7 @@ void AbstractDiskWriter::truncate(int64_t length)
   if (fd_ == A2_BAD_FD) {
     throw DL_ABORT_EX("File not yet opened.");
   }
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   // Since mingw32's ftruncate cannot handle over 2GB files, we use
   // SetEndOfFile instead.
   seek(length);
@@ -505,7 +511,7 @@ void AbstractDiskWriter::allocate(int64_t offset, int64_t length, bool sparse)
     throw DL_ABORT_EX("File not yet opened.");
   }
   if (sparse) {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
     DWORD bytesReturned;
     if (!DeviceIoControl(fd_, FSCTL_SET_SPARSE, 0, 0, 0, 0, &bytesReturned,
                          0)) {
@@ -517,7 +523,7 @@ void AbstractDiskWriter::allocate(int64_t offset, int64_t length, bool sparse)
     return;
   }
 #ifdef HAVE_SOME_FALLOCATE
-#  ifdef __MINGW32__
+#  if defined(__MINGW32__) || defined(_MSC_VER)
   truncate(offset + length);
   if (!SetFileValidData(fd_, offset + length)) {
     auto errNum = fileError();
@@ -595,7 +601,7 @@ void AbstractDiskWriter::flushOSBuffers()
   if (fd_ == A2_BAD_FD) {
     return;
   }
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   FlushFileBuffers(fd_);
 #else  // !__MINGW32__
   fsync(fd_);

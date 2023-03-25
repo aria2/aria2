@@ -34,7 +34,7 @@
  */
 /* copyright --> */
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 #  ifdef _WIN32_WINNT
 #    undef _WIN32_WINNT
 #  endif // _WIN32_WINNT

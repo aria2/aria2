@@ -32,7 +32,7 @@ config_h_add_compile_definitions(BUILD="${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_H
 config_h_add_compile_definitions(TARGET="${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM}-${CMAKE_CXX_COMPILER_TARGET}")
 
 if(WIN32)
-  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -D_POSIX_C_SOURCE=1)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_POSIX_C_SOURCE=1")
   set(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} -Wl,--dynamicbase -Wl,--nxcompat)
   set(CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} -Wl,--dynamicbase -Wl,--nxcompat)
   set(CMAKE_STATIC_LINKER_FLAGS_LINKER_FLAGS ${CMAKE_STATIC_LINKER_FLAGS} -Wl,--dynamicbase -Wl,--nxcompat)
@@ -79,6 +79,16 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
 # using Intel C++
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   # using Visual Studio C++
+  # config_h_add_compile_definitions(__MSVC__=1) # USE _MSC_VER
+  add_compile_definitions(NOMINMAX)
+  config_h_add_compile_macro("__restrict__ __restrict") 
+  config_h_add_compile_macro("__attribute__(unused) /*Empty*/")
+endif()
+
+if(WIN32 AND NOT MINGW)
+  set(NO_UNIX)
+  config_h_add_compile_macro("mode_t int")
+  config_h_add_compile_definitions(NO_UNIX=1)
 endif()
 
 if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
@@ -350,6 +360,8 @@ if(WITH_OPENSSL)
 
   if(OPENSSL_FOUND AND NOT HAVE_SSL)
     set(HAVE_OPENSSL yes CACHE BOOL "Define is you have openssl" FORCE)
+    set(OPENSSL_CFLAGS "")
+    set(OPENSSL_LIBS ${OPENSSL_LIBRARIES})
     config_h_add_compile_definitions(HAVE_OPENSSL=1)
 
     set(save_CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})

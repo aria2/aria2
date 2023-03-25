@@ -208,7 +208,7 @@ void Metalink2RequestGroupTest::testGenerate_groupByMetaurl()
 
 void Metalink2RequestGroupTest::testGenerate_dosDirTraversal()
 {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 #  ifdef ENABLE_BITTORRENT
   std::vector<std::shared_ptr<RequestGroup>> groups;
   option_->put(PREF_DIR, "/tmp");

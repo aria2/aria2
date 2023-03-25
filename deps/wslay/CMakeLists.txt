@@ -33,6 +33,27 @@ include(CheckIncludeFiles)
 include(CheckTypeSize)
 include(CheckFunctionExists)
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+# using Clang
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  # using GCC
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -pipe)
+
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+# using Intel C++
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  # using Visual Studio C++
+  # config_h_add_compile_definitions(__MSVC__=1) # USE _MSC_VER
+  add_compile_definitions(NOMINMAX)
+  config_h_add_compile_macro("__restrict__ __restrict") 
+  config_h_add_compile_macro("__attribute__(unused) /*Empty*/")
+endif()
+
+if(WIN32 AND NOT MINGW)
+  set(NO_UNIX)
+  config_h_add_compile_definitions(NO_UNIX=1)
+endif()
+
 
 if(ENABLE_WERROR)
     add_compile_options(-Wall -Werror -Wformat-security)

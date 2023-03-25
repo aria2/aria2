@@ -79,7 +79,7 @@
 #  include "config.h"
 #endif
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 #  include <winsock2.h>
 #  undef ERROR
 #  include <ws2tcpip.h>

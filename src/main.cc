@@ -34,9 +34,11 @@
 /* copyright --> */
 #include "common.h"
 
-#include <unistd.h>
+#ifndef NO_UNIX
+#  include <unistd.h>
+#endif
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 #  include <shellapi.h>
 #endif // __MINGW32__
 
@@ -53,7 +55,7 @@ namespace aria2 {
 
 error_code::Value main(int argc, char** argv)
 {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   int winArgc;
   auto winArgv = CommandLineToArgvW(GetCommandLineW(), &winArgc);
   if (winArgv == nullptr) {

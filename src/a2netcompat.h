@@ -37,13 +37,13 @@
 
 #include "a2io.h"
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 #  ifdef HAVE_WS2TCPIP_H
 #    include <ws2tcpip.h>
 #  endif // HAVE_WS2TCPIP_H
 #endif   // __MINGW32__
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 #  define a2_sockopt_t char*
 #  ifndef HAVE_GETADDRINFO
 #    define HAVE_GETADDRINFO
@@ -95,6 +95,7 @@
 
 #ifdef HAVE_WINSOCK2_H
 #  define sock_t SOCKET
+#  include <ws2def.h>
 #else
 #  define sock_t int
 #endif
@@ -105,7 +106,7 @@
 
 #define DEFAULT_AI_FLAGS AI_ADDRCONFIG
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 #  ifndef SHUT_WR
 #    define SHUT_WR SD_SEND
 #  endif // !SHUT_WR
@@ -141,7 +142,7 @@ struct Endpoint {
 #  define A2_IOV_MAX A2_DEFAULT_IOV_MAX
 #endif
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 typedef WSABUF a2iovec;
 #  define A2IOVEC_BASE buf
 #  define A2IOVEC_LEN len

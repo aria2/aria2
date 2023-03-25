@@ -619,7 +619,7 @@ void RequestGroup::initPieceStorage()
       std::make_shared<SegmentMan>(downloadContext_, tempPieceStorage);
   pieceStorage_ = tempPieceStorage;
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   // Windows build: --file-allocation=falloc uses SetFileValidData
   // which requires SE_MANAGE_VOLUME_NAME privilege.  SetFileValidData
   // has security implications (see

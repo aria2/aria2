@@ -182,7 +182,7 @@ bool Platform::setUp()
   }
 #endif // HAVE_WINSOCK2_H
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   (void)_setmode(_fileno(stdin), _O_BINARY);
   (void)_setmode(_fileno(stdout), _O_BINARY);
   (void)_setmode(_fileno(stderr), _O_BINARY);

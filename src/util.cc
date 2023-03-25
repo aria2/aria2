@@ -96,7 +96,7 @@
 
 namespace aria2 {
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 namespace {
 int utf8ToWChar(wchar_t* out, size_t outLength, const char* src)
 {
@@ -1742,7 +1742,7 @@ void setGlobalSignalHandler(int sig, sigset_t* mask, signal_handler_t handler,
 #endif // HAVE_SIGACTION
 }
 
-#ifndef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 std::string getHomeDir()
 {
   const char* p = getenv("HOME");
@@ -1789,7 +1789,7 @@ std::string getXDGDir(const std::string& environmentVariable,
   std::string filename;
   const char* p = getenv(environmentVariable.c_str());
   if (p &&
-#ifndef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
       p[0] == '/'
 #else  // __MINGW32__
       p[0] && p[1] == ':'
@@ -2112,7 +2112,7 @@ std::string applyDir(const std::string& dir, const std::string& relPath)
       s += relPath;
     }
   }
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   for (std::string::iterator i = s.begin(), eoi = s.end(); i != eoi; ++i) {
     if (*i == '\\') {
       *i = '/';
@@ -2179,7 +2179,7 @@ bool detectDirTraversal(const std::string& s)
 std::string escapePath(const std::string& s)
 {
 // We don't escape '/' because we use it as a path separator.
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   static const char WIN_INVALID_PATH_CHARS[] = {'"', '*', ':',  '<',
                                                 '>', '?', '\\', '|'};
 #endif // __MINGW32__
@@ -2187,7 +2187,7 @@ std::string escapePath(const std::string& s)
   for (auto cc : s) {
     unsigned char c = cc;
     if (in(c, 0x00u, 0x1fu) || c == 0x7fu
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
         || std::find(std::begin(WIN_INVALID_PATH_CHARS),
                      std::end(WIN_INVALID_PATH_CHARS),
                      c) != std::end(WIN_INVALID_PATH_CHARS)
@@ -2234,7 +2234,7 @@ void executeHook(const std::string& command, a2_gid_t gid, size_t numFiles,
 {
   const std::string gidStr = GroupId::toHex(gid);
   const std::string numFilesStr = util::uitos(numFiles);
-#ifndef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   A2_LOG_INFO(fmt("Executing user command: %s %s %s %s", command.c_str(),
                   gidStr.c_str(), numFilesStr.c_str(), firstFilename.c_str()));
   pid_t cpid = fork();
@@ -2483,7 +2483,7 @@ TLSVersion toTLSVersion(const std::string& ver)
 }
 #endif // ENABLE_SSL
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 std::string formatLastError(int errNum)
 {
   std::array<char, 4_k> buf;
@@ -2502,7 +2502,7 @@ std::string formatLastError(int errNum)
 
 void make_fd_cloexec(int fd)
 {
-#ifndef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   int flags;
 
   // TODO from linux man page, fcntl() with F_GETFD or F_SETFD does
@@ -2519,7 +2519,7 @@ void make_fd_cloexec(int fd)
 #endif // !__MINGW32__
 }
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 bool gainPrivilege(LPCTSTR privName)
 {
   LUID luid;

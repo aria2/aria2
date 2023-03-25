@@ -40,7 +40,9 @@
 #ifdef HAVE_SYS_IOCTL_H
 #  include <sys/ioctl.h>
 #endif // HAVE_SYS_IOCTL_H
-#include <unistd.h>
+#ifndef NO_UNIX
+#  include <unistd.h>
+#endif
 
 #include <cstdio>
 #include <iomanip>
@@ -272,7 +274,7 @@ ConsoleStatCalc::ConsoleStatCalc(std::chrono::seconds summaryInterval,
     : summaryInterval_(std::move(summaryInterval)),
       readoutVisibility_(true),
       truncate_(true),
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
       isTTY_(true),
 #else  // !__MINGW32__
       isTTY_(isatty(STDOUT_FILENO) == 1),
@@ -301,7 +303,7 @@ void ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   unsigned short int cols = 79;
 
   if (isTTY_) {
-#ifndef __MINGW32__
+#if efined(__MINGW32__) || defined(_MSC_VER)
 #  ifdef HAVE_TERMIOS_H
     struct winsize size;
     if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) == 0) {

@@ -37,7 +37,9 @@
 #include "common.h"
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
+#ifndef NO_UNIX
+#  include <unistd.h>
+#endif
 #include <fcntl.h>
 #include <cerrno>
 #ifdef HAVE_POLL_H
@@ -120,7 +122,7 @@
 #  define DEV_STDOUT "/dev/stdout"
 #endif // HAVE_WINSOCK2_H
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 #  define a2lseek(fd, offset, origin) _lseeki64(fd, offset, origin)
 #  define a2fseek(fd, offset, origin) _fseeki64(fd, offset, origin)
 #  define a2fstat(fd, buf) _fstati64(fd, buf)
@@ -190,7 +192,7 @@ extern int ftruncate64(int fd, off64_t length);
 #define OPEN_MODE S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH
 #define DIR_OPEN_MODE S_IRWXU | S_IRWXG | S_IRWXO
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 #  define A2_BAD_FD INVALID_HANDLE_VALUE
 #else // !__MINGW32__
 #  define A2_BAD_FD -1

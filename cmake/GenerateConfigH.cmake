@@ -2,6 +2,10 @@ function(config_h_add_compile_definitions definitions)
     set(${PROJECT_NAME}_CONFIG_H_definitions ${${PROJECT_NAME}_CONFIG_H_definitions} ${definitions} PARENT_SCOPE)
 endfunction()
 
+function(config_h_add_compile_macro definitions)
+    set(${PROJECT_NAME}_CONFIG_H_macros ${${PROJECT_NAME}_CONFIG_H_macros} ${definitions} PARENT_SCOPE)
+endfunction()
+
 function(config_h_generate_header name)
     write_file(${CMAKE_CURRENT_BINARY_DIR}/${name}.h.cmake.in "/* config.h.in.  Generated from cmake*/\n")
     foreach(def ${${PROJECT_NAME}_CONFIG_H_definitions})
@@ -18,5 +22,10 @@ function(config_h_generate_header name)
         endif()
         write_file(${CMAKE_CURRENT_BINARY_DIR}/${name}.h.cmake.in "#define ${def_name} @${def_name}_config_h_val@\n" APPEND)
     endforeach()
+
+    foreach(macro ${${PROJECT_NAME}_CONFIG_H_macros})
+        write_file(${CMAKE_CURRENT_BINARY_DIR}/${name}.h.cmake.in "#define ${macro} \n" APPEND)
+    endforeach()
+
     configure_file(${CMAKE_CURRENT_BINARY_DIR}/${name}.h.cmake.in ${name}.h)
 endfunction()

@@ -1282,6 +1282,7 @@ target_include_directories(aria2 INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/includes)
 
 if(HAVE_ZLIB)
   target_include_directories(aria2 PUBLIC ${ZLIB_INCLUDE_DIRS})
+  target_include_directories(main PUBLIC ${LIBXML2_INCLUDE_DIR})
   target_link_libraries(aria2 ZLIB::ZLIB)
 endif()
 
@@ -1292,16 +1293,19 @@ endif()
 
 if(HAVE_LIBXML2)
   target_include_directories(aria2 PUBLIC ${LIBXML2_INCLUDE_DIR})
+  target_include_directories(main PUBLIC ${LIBXML2_INCLUDE_DIR})
   target_link_libraries(aria2 LibXml2::LibXml2)
 endif()
 
 if(HAVE_LIBEXPAT)
   target_include_directories(aria2 PUBLIC ${EXPAT_INCLUDE_DIRS})
+  target_include_directories(main PUBLIC ${EXPAT_INCLUDE_DIRS})
   target_link_libraries(aria2 EXPAT::EXPAT)
 endif()
 
 if(HAVE_SQLITE3)
   target_include_directories(aria2 PUBLIC ${SQLite3_INCLUDE_DIRS})
+  target_include_directories(main PUBLIC ${SQLite3_INCLUDE_DIRS})
   target_link_libraries(aria2 SQLite::SQLite3)
 endif()
 
@@ -1316,11 +1320,15 @@ endif()
 if(HAVE_LIBGNUTLS)
   target_include_directories(aria2 PUBLIC ${GNUTLS_INCLUDE_DIR})
   target_compile_definitions(aria2 PUBLIC ${LIBGNUTLS_CFLAGS})
+  target_include_directories(main PUBLIC ${GNUTLS_INCLUDE_DIR})
+  target_compile_definitions(main PUBLIC ${LIBGNUTLS_CFLAGS})
   target_link_libraries(aria2 GnuTLS::GnuTLS)
 endif()
 
 if(HAVE_OPENSSL)
   target_include_directories(aria2 PUBLIC ${OPENSSL_INCLUDE_DIR})
+  target_include_directories(main PUBLIC ${OPENSSL_INCLUDE_DIR})
+
   target_link_libraries(aria2 OpenSSL::SSL)
 
   # target_link_libraries(aria2 INTERFACE OpenSSL::Crypto)
@@ -1328,21 +1336,25 @@ endif()
 
 if(HAVE_LIBNETTLE)
   target_include_directories(aria2 PUBLIC ${NETTLE_INCLUDE_DIR})
+  target_include_directories(main PUBLIC ${NETTLE_INCLUDE_DIR})
   target_link_libraries(aria2 Nettle::Nettle)
 endif()
 
 if(HAVE_LIBGMP)
   target_include_directories(aria2 PUBLIC ${GMP_INCLUDE_DIR})
+  target_include_directories(main PUBLIC ${GMP_INCLUDE_DIR})
   target_link_libraries(aria2 GMP::GMP)
 endif()
 
 if(HAVE_LIBGCRYPT)
   target_include_directories(aria2 PUBLIC ${LibGcrypt_INCLUDE_DIR})
+  target_include_directories(main PUBLIC ${LibGcrypt_INCLUDE_DIR})
   target_link_libraries(aria2 LibGcrypt::LibGcrypt)
 endif()
 
 if(HAVE_LIBSSH2)
   target_include_directories(aria2 PUBLIC ${LIBSSH2_INCLUDE_DIR})
+  target_include_directories(main PUBLIC ${LIBSSH2_INCLUDE_DIR})
   target_link_libraries(aria2 LibSSH2::LibSSH2)
 endif()
 
@@ -1353,6 +1365,7 @@ endif()
 
 if(ENABLE_WEBSOCKET)
   target_include_directories(aria2 PUBLIC ${WSLAY_INCLUDE_DIR})
+  target_include_directories(main PUBLIC ${WSLAY_INCLUDE_DIR})
   target_link_libraries(aria2 wslay)
 endif()
 

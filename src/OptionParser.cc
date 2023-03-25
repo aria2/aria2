@@ -34,7 +34,9 @@
 /* copyright --> */
 #include "OptionParser.h"
 
-#include <unistd.h>
+#ifndef NO_UNIX
+#  include <unistd.h>
+#endif
 #include <getopt.h>
 
 #include <cstring>
