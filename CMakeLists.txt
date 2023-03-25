@@ -11,12 +11,13 @@ project(
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
 
 # ####### Set compiler flags ########
-set(CMAKE_CXX_STANDARD_REQUIRED true)
-set(CMAKE_C_STANDARD_REQUIRED true)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_C_EXTENSIONS OFF)
 
-#include(GenerateExportHeader)
 include(GenerateConfigH)
 
 config_h_add_compile_definitions(PACKAGE="${PROJECT_NAME}")
@@ -83,6 +84,7 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   add_compile_definitions(NOMINMAX)
   config_h_add_compile_macro("__restrict__ __restrict") 
   config_h_add_compile_macro("__attribute__(unused) /*Empty*/")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:__cplusplus")
 endif()
 
 if(WIN32 AND NOT MINGW)
@@ -262,9 +264,10 @@ if(WIN32)
     ws2tcpip.h
     mmsystem.h
     io.h
-    iphlpapi.
+    iphlpapi.h
     winioctl.h
     share.h
+    sys/utime.h
   )
 
   foreach(header ${_check_headers})
@@ -282,6 +285,15 @@ if(WIN32)
   endforeach()
 
   unset(_check_headers)
+
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    # Cake can't find them but they absolutly exist
+    set(HAVE_IPHLPAPI_H true)
+    set(HAVE_WINIOCTL_H true)
+    config_h_add_compile_definitions(HAVE_IPHLPAPI_H)
+    config_h_add_compile_definitions(HAVE_WINIOCTL_H)
+    
+  endif()
 
 else()
   set(WIN_BUILD no)

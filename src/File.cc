@@ -54,6 +54,15 @@
 #include "LogFactory.h"
 #include "fmt.h"
 
+#if defined(_MSC_VER)
+#  if !defined(S_ISREG) && defined(S_IFMT) && defined(S_IFREG)
+#    define S_ISREG(m) (((m) & S_IFMT) == S_IFREG)
+#  endif
+#  if !defined(S_ISDIR) && defined(S_IFMT) && defined(S_IFDIR)
+#    define S_ISDIR(m) (((m) & S_IFMT) == S_IFDIR)
+#  endif
+#endif
+
 namespace aria2 {
 
 File::File(const std::string& name) : name_(name) {}

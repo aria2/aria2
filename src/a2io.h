@@ -54,6 +54,9 @@
 #ifdef HAVE_SHARE_H
 #  include <share.h>
 #endif // HAVE_SHARE_H
+#ifdef HAVE_SYS_UTIME_H
+#  include <sys/utime.h>
+#endif
 
 // in some platforms following definitions are missing:
 #ifndef EINPROGRESS
