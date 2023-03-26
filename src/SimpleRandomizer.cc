@@ -38,8 +38,6 @@
 #ifndef NO_UNIX
 #  include <unistd.h>
 #endif
-#  include <unistd.h>
-#endif
 #include <cstdlib>
 #include <cassert>
 #include <cstring>

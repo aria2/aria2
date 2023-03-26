@@ -70,7 +70,7 @@
 
 namespace aria2 {
 
-#if defined(__MINGW32__) || defined(_MSC_VER)
+#if !defined(__MINGW32__) && !defined(_MSC_VER)
 #  define SOCKET_ERRNO (errno)
 #else
 #  define SOCKET_ERRNO (WSAGetLastError())
@@ -104,7 +104,7 @@ namespace aria2 {
 namespace {
 std::string errorMsg(int errNum)
 {
-#if defined(__MINGW32__) || defined(_MSC_VER)
+#if !defined(__MINGW32__) && !defined(_MSC_VER)
   return util::safeStrerror(errNum);
 #else
   auto msg = util::formatLastError(errNum);
@@ -656,7 +656,7 @@ void SocketCore::closeConnection()
   }
 }
 
-#if defined(__MINGW32__) || defined(_MSC_VER)
+#if !defined(__MINGW32__) && !defined(_MSC_VER)
 #  define CHECK_FD(fd)                                                         \
     if (fd < 0 || FD_SETSIZE <= fd) {                                          \
       logger_->warn("Detected file descriptor >= FD_SETSIZE or < 0. "          \
@@ -683,7 +683,7 @@ bool SocketCore::isWritable(time_t timeout)
   }
   throw DL_RETRY_EX(fmt(EX_SOCKET_CHECK_WRITABLE, errorMsg(errNum).c_str()));
 #else // !HAVE_POLL
-#  ifn defined(__MINGW32__) || defined(_MSC_VER)
+#  if !defined(__MINGW32__) && !defined(_MSC_VER)
   CHECK_FD(sockfd_);
 #  endif // !__MINGW32__
   fd_set fds;
@@ -728,7 +728,7 @@ bool SocketCore::isReadable(time_t timeout)
   }
   throw DL_RETRY_EX(fmt(EX_SOCKET_CHECK_READABLE, errorMsg(errNum).c_str()));
 #else // !HAVE_POLL
-#  ifn defined(__MINGW32__) || defined(_MSC_VER)
+#  if !defined(__MINGW32__) && !defined(_MSC_VER)
   CHECK_FD(sockfd_);
 #  endif // !__MINGW32__
   fd_set fds;

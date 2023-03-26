@@ -262,13 +262,13 @@ void SelectEventPoll::updateFdSet()
   for (auto& i : socketEntries_) {
     auto& e = i.second;
     sock_t fd = e.getSocket();
-#if defined(__MINGW32__) || defined(_MSC_VER)
+#if !defined(__MINGW32__) && !defined(_MSC_VER)
     if (fd < 0 || FD_SETSIZE <= fd) {
       A2_LOG_WARN("Detected file descriptor >= FD_SETSIZE or < 0. "
                   "Download may slow down or fail.");
       continue;
     }
-#endif // !__MINGW32__
+#endif // !__MINGW32__ && !_MSC_VER
     int events = e.getEvents();
     if (events & EventPoll::EVENT_READ) {
 #if defined(__MINGW32__) || defined(_MSC_VER)

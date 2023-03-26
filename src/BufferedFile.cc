@@ -81,7 +81,7 @@ int BufferedFile::onClose()
   int rv = 0;
   if (fp_) {
     fflush(fp_);
-#if defined(__MINGW32__)
+#if !defined(__MINGW32__) && !defined(_MSC_VER)
     fsync(fileno(fp_));
 #else  // __MINGW32__
     _commit(fileno(fp_));

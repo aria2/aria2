@@ -1742,7 +1742,7 @@ void setGlobalSignalHandler(int sig, sigset_t* mask, signal_handler_t handler,
 #endif // HAVE_SIGACTION
 }
 
-#if defined(__MINGW32__) || defined(_MSC_VER)
+#if !defined(__MINGW32__) && !defined(_MSC_VER)
 std::string getHomeDir()
 {
   const char* p = getenv("HOME");
@@ -1789,7 +1789,7 @@ std::string getXDGDir(const std::string& environmentVariable,
   std::string filename;
   const char* p = getenv(environmentVariable.c_str());
   if (p &&
-#if defined(__MINGW32__) || defined(_MSC_VER)
+#if !defined(__MINGW32__) && !defined(_MSC_VER)
       p[0] == '/'
 #else  // __MINGW32__
       p[0] && p[1] == ':'
@@ -2234,7 +2234,7 @@ void executeHook(const std::string& command, a2_gid_t gid, size_t numFiles,
 {
   const std::string gidStr = GroupId::toHex(gid);
   const std::string numFilesStr = util::uitos(numFiles);
-#if defined(__MINGW32__) || defined(_MSC_VER)
+#if !defined(__MINGW32__) && !defined(_MSC_VER)
   A2_LOG_INFO(fmt("Executing user command: %s %s %s %s", command.c_str(),
                   gidStr.c_str(), numFilesStr.c_str(), firstFilename.c_str()));
   pid_t cpid = fork();
@@ -2502,7 +2502,7 @@ std::string formatLastError(int errNum)
 
 void make_fd_cloexec(int fd)
 {
-#if defined(__MINGW32__) || defined(_MSC_VER)
+#if !defined(__MINGW32__) && !defined(_MSC_VER)
   int flags;
 
   // TODO from linux man page, fcntl() with F_GETFD or F_SETFD does
