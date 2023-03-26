@@ -41,6 +41,10 @@
 #include <deque>
 #include <algorithm>
 
+#if defined(_MSC_VER) // for std::back_inserter
+#  include <iterator>
+#endif
+
 #include "RpcRequest.h"
 #include "ValueBase.h"
 #include "TorrentAttribute.h"
