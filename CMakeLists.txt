@@ -38,12 +38,14 @@ config_h_add_compile_definitions(BUILD="${BUILD_ID}")
 config_h_add_compile_definitions(TARGET="${TARGET_ID}")
 
 if(WIN32)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_POSIX_C_SOURCE=1")
-  set(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} -Wl,--dynamicbase -Wl,--nxcompat)
-  set(CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} -Wl,--dynamicbase -Wl,--nxcompat)
-  set(CMAKE_STATIC_LINKER_FLAGS_LINKER_FLAGS ${CMAKE_STATIC_LINKER_FLAGS} -Wl,--dynamicbase -Wl,--nxcompat)
 
-  if(MINGW)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_POSIX_C_SOURCE=1")
+  
+  if(MSVC)
+    # set(EXTRALIBS ws2_32 wsock32 gdi32 iphlpapi psapi ${EXTRALIBS})
+    set(EXTRALDFLAGS ${EXTRALDFLAGS} /DYNAMICBASE /NXCOMPAT)
+
+  else() # MINGW
     set(EXTRALIBS "-lws2_32 -lwsock32 -lgdi32 -liphlpapi -lpsapi ${EXTRALIBS}")
     set(EXTRALDFLAGS "${EXTRALDFLAGS} -Wl,--dynamicbase -Wl,--nxcompat")
   endif()
@@ -157,8 +159,19 @@ include(CheckLibraryExists)
 include(CheckSymbolExists)
 include(CheckCXXSymbolExists)
 include(CheckIncludeFiles)
+include(CheckIncludeFileCXX)
 include(CheckTypeSize)
 include(CheckFunctionExists)
+
+if(WIN32)
+  if(MSVC)
+    set(a2_extra_windows_flags "/D WIN32_LEAN_AND_MEAN /FI windows.h")
+  else()
+    set(a2_extra_windows_flags "-DWIN32_LEAN_AND_MEAN -include windows.h")
+  endif()
+
+  set(CMAKE_REQUIRED_FLAGS ${a2_extra_windows_flags})
+endif()
 
 find_package(CPPUNIT)
 
@@ -267,6 +280,7 @@ endif()
 
 if(WIN32)
   set(WIN_BUILD yes)
+
   set(_check_headers
     windows.h
     winsock2.h
@@ -285,7 +299,10 @@ if(WIN32)
     string(REPLACE "/" "_" header_var ${header_var})
     set(header_var "HAVE_${header_var}")
     set(${header_var})
-    check_include_file(${header} ${header_var})
+    check_include_file_cxx(${header} ${header_var})
+    if(NOT ${header_var})
+      check_include_file(${header} ${header_var})
+    endif()
 
     if(${header_var})
       config_h_add_compile_definitions(${header_var})
@@ -328,14 +345,14 @@ if(WITH_WINTLS)
     find_library(HAVE_WINTLS_LIBS crypt32)
     find_library(HAVE_WINTLS_LIBS secur32)
     find_library(HAVE_WINTLS_LIBS advapi32)
-    check_include_file(wincrypt.h HAVE_WINTLS_HEADERS)
-    check_include_file(security.h HAVE_WINTLS_HEADERS)
+    check_include_file_cxx(wincrypt.h HAVE_WINTLS_HEADERS)
+    check_include_file_cxx(security.h HAVE_WINTLS_HEADERS)
 
     if(HAVE_WINTLS_LIBS AND HAVE_WINTLS_HEADERS)
       set(HAVE_WINTLS yes CACHE BOOL "Define if you have Windows TLS support" FORCE)
       config_h_add_compile_definitions(HAVE_WINTLS=1)
       config_h_add_compile_definitions(SECURITY_WIN32=1) # Use security.h in WIN32 mode
-      set(WINTLS_LIBS "-lcrypt32 -lsecur32 -ladvapi32")
+      set(WINTLS_LIBS crypt32 secur32 advapi32)
       set(HAVE_SSL yes CACHE BOOL "Have SSL support" FORCE)
       set(HAVE_NATIVETLS yes CACHE BOOL "Have Native TLS" FORCE)
       message(STATUS "Enable Windows native SSL/TLS support")
@@ -663,7 +680,8 @@ foreach(header ${_check_headers})
   string(REPLACE "/" "_" header_var ${header_var})
   set(header_var "HAVE_${header_var}")
   set(${header_var})
-  check_include_file(${header} ${header_var})
+  
+  check_include_file_cxx(${header} ${header_var})
 
   if(${header_var})
     config_h_add_compile_definitions(${header_var})
@@ -673,7 +691,7 @@ endforeach()
 
 unset(_check_headers)
 
-check_include_file(stdbool.h HAVE_STDBOOL_H)
+check_include_file_cxx(stdbool.h HAVE_STDBOOL_H)
 
 if(HAVE_STDBOOL_H)
   config_h_add_compile_definitions(HAVE_STDBOOL_H=1)
@@ -696,6 +714,11 @@ if(HAVE_A2_STRUCT_TIMESPEC)
 endif()
 
 find_package(Gettext)
+
+set(a2_symbol_check_headers "")
+if(WIN32)
+  set(a2_symbol_check_headers "stdlib.h;memory.h;string.h;math.h")
+endif()
 
 set(_check_funcs
   __argz_count
@@ -750,7 +773,8 @@ foreach(func ${_check_funcs})
   string(TOUPPER ${func} func_var)
   set(func_var "HAVE_${func_var}")
   set(${func_var})
-  check_function_exists(${func} ${func_var})
+
+  check_cxx_symbol_exists(${func} "${a2_symbol_check_headers}" ${func_var})
 
   if(${func_var})
     config_h_add_compile_definitions(${func_var})
@@ -759,6 +783,7 @@ foreach(func ${_check_funcs})
 endforeach()
 
 unset(_check_funcs)
+unset(a2_symbol_check_headers)
 
 if(WITH_TCMALLOC AND WITH_JEMALLOC)
   message(FATAL_ERROR "Cannot use both, tcmalloc and jemalloc!")
@@ -785,18 +810,18 @@ if(WITH_JEMALLOC)
 endif()
 
 if(ENABLE_EPOLL)
-  check_function_exists(epoll_create HAVE_EPOLL)
+  check_cxx_symbol_exists(epoll_create "" HAVE_EPOLL)
 
   if(HAVE_EPOLL)
     config_h_add_compile_definitions(HAVE_EPOLL=1)
   endif()
 endif()
 
-check_function_exists(posix_fallocate HAVE_POSIX_FALLOCATE)
+check_cxx_symbol_exists(posix_fallocate "" HAVE_POSIX_FALLOCATE)
 if(HAVE_POSIX_FALLOCATE)
   config_h_add_compile_definitions(HAVE_POSIX_FALLOCATE=1)
 endif()
-check_function_exists(fallocate HAVE_FALLOCATE)
+check_cxx_symbol_exists(fallocate "" HAVE_FALLOCATE)
 if(HAVE_FALLOCATE)
   config_h_add_compile_definitions(HAVE_FALLOCATE=1)
 endif()
@@ -820,6 +845,11 @@ if(HAVE_LOCALTIME_R)
   config_h_add_compile_definitions(HAVE_LOCALTIME_R=1)
 endif()
 
+set(a2_symbol_check_headers "")
+if(WIN32)
+  set(a2_symbol_check_headers "stdlib.h;memory.h;string.h;math.h;ws2tcpip.h" )
+endif()
+
 set(_check_funcs
   basename
   gai_strerror
@@ -836,7 +866,7 @@ foreach(func ${_check_funcs})
   string(TOUPPER ${func} func_var)
   set(func_var "HAVE_${func_var}")
   set(${func_var})
-  check_function_exists(${func} ${func_var})
+  check_cxx_symbol_exists(${func} "${a2_symbol_check_headers}" ${func_var})
 
   if(${func_var})
     config_h_add_compile_definitions(${func_var})
@@ -845,6 +875,7 @@ foreach(func ${_check_funcs})
 endforeach()
 
 unset(_check_funcs)
+unset(a2_symbol_check_headers)
 
 if(NOT HAVE_GAI_STRERR AND HAVE_WS2TCPIP_H AND (WIN32 AND NOT MINGW))
   set(HAVE_GAI_STRERROR true) # It's there in ws2tcpip.h

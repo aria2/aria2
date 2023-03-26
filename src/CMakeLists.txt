@@ -1277,8 +1277,8 @@ if(ENABLE_LIBARIA2)
 
   set(LIBARIA2_BUILD_MODE SHARED)
 
-  if(WIN_BUILD)
-    set(EXTRALDFLAGS "${EXTRALDFLAGS} -no-undefined")
+  if(WIN_BUILD AND NOT MSVC)
+    set(EXTRALDFLAGS ${EXTRALDFLAGS} -no-undefined)
   endif()
 
 else()
@@ -1396,17 +1396,18 @@ endif()
 if(ARIA2_STATIC)
   set(EXTRALDFLAGS "${EXTRALDFLAGS} -all-static")
   if(MINGW OR MSVC OR APPLE)
+    # Do nothing
   else()
     set(EXTRALDFLAGS "${EXTRALDFLAGS} -lpthread -ldl -lrt")
   endif()
 endif()
 
 set_target_properties(aria2 PROPERTIES VERSION 0.0.0 SOVERSION 1)
-target_link_libraries(aria2 ${EXTRALDFLAGS})
+target_link_options(aria2 PUBLIC ${EXTRALDFLAGS})
 install(TARGETS aria2 ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 target_link_libraries(aria2c aria2)
-target_link_libraries(aria2c ${EXTRALDFLAGS})
+target_link_options(aria2c PUBLIC ${EXTRALDFLAGS})
 
 # ########## next target ###############
 
