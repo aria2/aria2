@@ -166,7 +166,7 @@ void AbstractDiskWriter::closeFile()
 #if defined(__MINGW32__) || defined(_MSC_VER)
     CloseHandle(fd_);
 #else  // !__MINGW32__
-    close(fd_);
+    a2_close(fd_);
 #endif // !__MINGW32__
     fd_ = A2_BAD_FD;
   }
@@ -319,7 +319,7 @@ ssize_t AbstractDiskWriter::readDataInternal(unsigned char* data, size_t len,
     }
 #else  // !__MINGW32__
     ssize_t ret = 0;
-    while ((ret = read(fd_, data, len)) == -1 && errno == EINTR)
+    while ((ret = a2_read(fd_, data, len)) == -1 && errno == EINTR)
       ;
     return ret;
 #endif // !__MINGW32__

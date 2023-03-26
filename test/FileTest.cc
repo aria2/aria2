@@ -88,7 +88,7 @@ void FileTest::testRemove()
   if ((fd = creat(name.c_str(), S_IRUSR | S_IWUSR)) < 0) {
     CPPUNIT_FAIL("cannot create test file");
   }
-  close(fd);
+  a2_close(fd);
   File f(name);
   CPPUNIT_ASSERT(f.isFile());
   CPPUNIT_ASSERT(f.remove());

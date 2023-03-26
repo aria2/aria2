@@ -57,7 +57,7 @@ GZipFile::GZipFile(const char* filename, const char* mode)
 #endif // !__MINGW32__
       ;
   if (fp) {
-    int fd = dup(fileno(fp));
+    int fd = a2_dup(a2_fileno(fp));
     if (fd != -1) {
       fp_ = gzdopen(fd, mode);
       if (fp_) {
@@ -70,7 +70,7 @@ GZipFile::GZipFile(const char* filename, const char* mode)
 #endif
       }
       else {
-        ::close(fd);
+        ::a2_close(fd);
       }
     }
     fclose(fp);

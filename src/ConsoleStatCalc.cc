@@ -277,7 +277,7 @@ ConsoleStatCalc::ConsoleStatCalc(std::chrono::seconds summaryInterval,
 #if defined(__MINGW32__) || defined(_MSC_VER)
       isTTY_(true),
 #else  // !__MINGW32__
-      isTTY_(isatty(STDOUT_FILENO) == 1),
+      isTTY_(a2_isatty(STDOUT_FILENO) == 1),
 #endif // !__MINGW32__
       colorOutput_(colorOutput)
 {
