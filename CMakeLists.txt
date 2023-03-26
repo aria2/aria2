@@ -29,8 +29,8 @@ config_h_add_compile_definitions(PACKAGE_BUGREPORT="https://github.com/aria2/ari
 config_h_add_compile_definitions(PACKAGE_VERSION="${PROJECT_VERSION}")
 config_h_add_compile_definitions(VERSION="${PROJECT_VERSION}")
 config_h_add_compile_definitions(HOST="${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM}")
-config_h_add_compile_definitions(BUILD="${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM}")
-config_h_add_compile_definitions(TARGET="${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM}-${CMAKE_CXX_COMPILER_TARGET}")
+config_h_add_compile_definitions(BUILD="${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM}-${CMAKE_CXX_COMPILER_ID}")
+config_h_add_compile_definitions(TARGET="${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM}-${CMAKE_CXX_COMPILER_ID}")
 
 if(WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_POSIX_C_SOURCE=1")
@@ -84,7 +84,8 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   add_compile_definitions(NOMINMAX)
   config_h_add_compile_macro("__restrict__ __restrict") 
   config_h_add_compile_macro("__attribute__(unused) /*Empty*/")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:__cplusplus")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:__cplusplus /Zc:__STDC__")
+  # add_compile_definitions("__STDC__=1")  # even with the /Zc:__STDC__ flag the compiler will not define this in C++ mode
 endif()
 
 if(WIN32 AND NOT MINGW)
@@ -375,6 +376,7 @@ if(WITH_OPENSSL)
     set(OPENSSL_CFLAGS "")
     set(OPENSSL_LIBS ${OPENSSL_LIBRARIES})
     config_h_add_compile_definitions(HAVE_OPENSSL=1)
+    set(HAVE_SSL yes CACHE BOOL "Have SSL support" FORCE)
 
     set(save_CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
     set(save_CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES})
@@ -702,6 +704,7 @@ set(_check_funcs
   memchr
   memmove
   mempcpy
+  memcpy
   memset
   mkdir
   mmap
@@ -835,6 +838,13 @@ endforeach()
 
 unset(_check_funcs)
 
+if(NOT HAVE_GAI_STRERR AND HAVE_WS2TCPIP_H AND (WIN32 AND NOT MINGW))
+  set(HAVE_GAI_STRERROR true) # It's there in ws2tcpip.h
+  config_h_add_compile_definitions(HAVE_GAI_STRERROR)
+  set(HAVE_GETADDRINFO true) # It's there in ws2tcpip.h
+  config_h_add_compile_definitions(HAVE_GETADDRINFO)
+endif()
+
 if(HAVE_KQUEUE)
   message(STATUS "Checking whether struct kevent.udata is intptr_t")
   set(_tmp_src
@@ -933,7 +943,7 @@ message(STATUS "summary of build options: \n\
 
 Build:          ${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM}-${CMAKE_CXX_COMPILER_ID}
 Host:           ${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM}
-Target:         ${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM}-${CMAKE_CXX_COMPILER_TARGET}
+Target:         ${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM}-${CMAKE_CXX_COMPILER_ID}
 Install prefix: ${CMAKE_INSTALL_PREFIX}
 CC:             ${CMAKE_C_COMPILER}
 CXX:            ${CMAKE_CXX_COMPILER}

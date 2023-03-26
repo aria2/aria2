@@ -36,8 +36,8 @@
 
 #ifndef NO_UNIX
 #  include <unistd.h>
-#  include <getopt.h>
 #endif
+#include <getopt.h>
 
 
 #ifdef HAVE_SYS_RESOURCE_H

@@ -5,13 +5,11 @@ add_subdirectory(includes)
 # ########## next target ###############
 set(aria2c_SRCS main.cc)
 
-add_library(main OBJECT ${aria2c_SRCS})
+add_executable(aria2c ${aria2c_SRCS})
 
-target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/includes)
-target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(aria2c PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/includes)
+target_include_directories(aria2c PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_executable(aria2c $<TARGET_OBJECTS:main>)
-target_link_libraries(aria2c main)
 install(TARGETS aria2c ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 # ########## next target ###############
@@ -1154,7 +1152,7 @@ if(NOT HAVE_BASENAME)
   )
 endif()
 
-if(NOT HAVE_GETADDRINFO)
+if(NOT HAVE_GETADDRINFO OR MSVC)
   set(aria2_SRCS
     ${aria2_SRCS}
 
@@ -1253,6 +1251,18 @@ if(HAVE_LIBUV)
   )
 endif()
 
+if(WIN32 AND NOT MINGW)
+  set(aria2_SRCS
+    ${aria2_SRCS}
+
+    getopt/getopt.c
+    getopt/getopt.h
+  )
+
+  set(USE_MINGW_GETOPT true)
+
+endif()
+
 if(ENABLE_LIBARIA2)
   set(aria2_SRCS
     ${aria2_SRCS}
@@ -1267,6 +1277,10 @@ if(ENABLE_LIBARIA2)
 
   set(LIBARIA2_BUILD_MODE SHARED)
 
+  if(MSVC)
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+  endif()
+
 # add_library(aria2 SHARED ${aria2_SRCS})
 else()
   set(LIBARIA2_BUILD_MODE STATIC)
@@ -1280,32 +1294,39 @@ target_include_directories(aria2 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/includes)
 target_include_directories(aria2 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(aria2 INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/includes)
 
+if(USE_MINGW_GETOPT)
+  target_include_directories(aria2 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/getopt)
+  target_include_directories(aria2c PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/getopt)
+endif()
+
+
 if(HAVE_ZLIB)
   target_include_directories(aria2 PUBLIC ${ZLIB_INCLUDE_DIRS})
-  target_include_directories(main PUBLIC ${LIBXML2_INCLUDE_DIR})
+  target_include_directories(aria2c PUBLIC ${ZLIB_INCLUDE_DIRS})
   target_link_libraries(aria2 ZLIB::ZLIB)
 endif()
 
 if(HAVE_LIBUV)
   target_include_directories(aria2 PUBLIC ${LIBUV_INCLUDE_DIRS})
+  target_include_directories(aria2c PUBLIC ${LIBUV_INCLUDE_DIRS})
   target_link_libraries(aria2 LIBUV::LIBUV)
 endif()
 
 if(HAVE_LIBXML2)
   target_include_directories(aria2 PUBLIC ${LIBXML2_INCLUDE_DIR})
-  target_include_directories(main PUBLIC ${LIBXML2_INCLUDE_DIR})
+  target_include_directories(aria2c PUBLIC ${LIBXML2_INCLUDE_DIR})
   target_link_libraries(aria2 LibXml2::LibXml2)
 endif()
 
 if(HAVE_LIBEXPAT)
   target_include_directories(aria2 PUBLIC ${EXPAT_INCLUDE_DIRS})
-  target_include_directories(main PUBLIC ${EXPAT_INCLUDE_DIRS})
+  target_include_directories(aria2c PUBLIC ${EXPAT_INCLUDE_DIRS})
   target_link_libraries(aria2 EXPAT::EXPAT)
 endif()
 
 if(HAVE_SQLITE3)
   target_include_directories(aria2 PUBLIC ${SQLite3_INCLUDE_DIRS})
-  target_include_directories(main PUBLIC ${SQLite3_INCLUDE_DIRS})
+  target_include_directories(aria2c PUBLIC ${SQLite3_INCLUDE_DIRS})
   target_link_libraries(aria2 SQLite::SQLite3)
 endif()
 
@@ -1320,14 +1341,14 @@ endif()
 if(HAVE_LIBGNUTLS)
   target_include_directories(aria2 PUBLIC ${GNUTLS_INCLUDE_DIR})
   target_compile_definitions(aria2 PUBLIC ${LIBGNUTLS_CFLAGS})
-  target_include_directories(main PUBLIC ${GNUTLS_INCLUDE_DIR})
-  target_compile_definitions(main PUBLIC ${LIBGNUTLS_CFLAGS})
+  target_include_directories(aria2c PUBLIC ${GNUTLS_INCLUDE_DIR})
+  target_compile_definitions(aria2c PUBLIC ${LIBGNUTLS_CFLAGS})
   target_link_libraries(aria2 GnuTLS::GnuTLS)
 endif()
 
 if(HAVE_OPENSSL)
   target_include_directories(aria2 PUBLIC ${OPENSSL_INCLUDE_DIR})
-  target_include_directories(main PUBLIC ${OPENSSL_INCLUDE_DIR})
+  target_include_directories(aria2c PUBLIC ${OPENSSL_INCLUDE_DIR})
 
   target_link_libraries(aria2 OpenSSL::SSL)
 
@@ -1336,36 +1357,37 @@ endif()
 
 if(HAVE_LIBNETTLE)
   target_include_directories(aria2 PUBLIC ${NETTLE_INCLUDE_DIR})
-  target_include_directories(main PUBLIC ${NETTLE_INCLUDE_DIR})
+  target_include_directories(aria2c PUBLIC ${NETTLE_INCLUDE_DIR})
   target_link_libraries(aria2 Nettle::Nettle)
 endif()
 
 if(HAVE_LIBGMP)
   target_include_directories(aria2 PUBLIC ${GMP_INCLUDE_DIR})
-  target_include_directories(main PUBLIC ${GMP_INCLUDE_DIR})
+  target_include_directories(aria2c PUBLIC ${GMP_INCLUDE_DIR})
   target_link_libraries(aria2 GMP::GMP)
 endif()
 
 if(HAVE_LIBGCRYPT)
   target_include_directories(aria2 PUBLIC ${LibGcrypt_INCLUDE_DIR})
-  target_include_directories(main PUBLIC ${LibGcrypt_INCLUDE_DIR})
+  target_include_directories(aria2c PUBLIC ${LibGcrypt_INCLUDE_DIR})
   target_link_libraries(aria2 LibGcrypt::LibGcrypt)
 endif()
 
 if(HAVE_LIBSSH2)
   target_include_directories(aria2 PUBLIC ${LIBSSH2_INCLUDE_DIR})
-  target_include_directories(main PUBLIC ${LIBSSH2_INCLUDE_DIR})
+  target_include_directories(aria2c PUBLIC ${LIBSSH2_INCLUDE_DIR})
   target_link_libraries(aria2 LibSSH2::LibSSH2)
 endif()
 
 if(HAVE_LIBCARES)
   target_include_directories(aria2 PUBLIC ${LIBCARES_INCLUDE_DIR})
+  target_include_directories(aria2c PUBLIC ${LIBCARES_INCLUDE_DIR})
   target_link_libraries(aria2 Libcares::Libcares)
 endif()
 
 if(ENABLE_WEBSOCKET)
   target_include_directories(aria2 PUBLIC ${WSLAY_INCLUDE_DIR})
-  target_include_directories(main PUBLIC ${WSLAY_INCLUDE_DIR})
+  target_include_directories(aria2c PUBLIC ${WSLAY_INCLUDE_DIR})
   target_link_libraries(aria2 wslay)
 endif()
 
