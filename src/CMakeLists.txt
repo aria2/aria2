@@ -1277,15 +1277,17 @@ if(ENABLE_LIBARIA2)
 
   set(LIBARIA2_BUILD_MODE SHARED)
 
-  if(MSVC)
-    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+  if(WIN_BUILD)
+    set(EXTRALDFLAGS "${EXTRALDFLAGS} -no-undefined")
   endif()
 
-# add_library(aria2 SHARED ${aria2_SRCS})
 else()
   set(LIBARIA2_BUILD_MODE STATIC)
 
-  # add_library(aria2 STATIC ${aria2_SRCS})
+endif()
+
+if(MSVC)
+  set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()
 
 add_library(aria2 ${LIBARIA2_BUILD_MODE} ${aria2_SRCS})
@@ -1391,17 +1393,27 @@ if(ENABLE_WEBSOCKET)
   target_link_libraries(aria2 wslay)
 endif()
 
+if(ARIA2_STATIC)
+  set(EXTRALDFLAGS "${EXTRALDFLAGS} -all-static")
+  if(MINGW OR MSVC OR APPLE)
+  else()
+    set(EXTRALDFLAGS "${EXTRALDFLAGS} -lpthread -ldl -lrt")
+  endif()
+endif()
+
 set_target_properties(aria2 PROPERTIES VERSION 0.0.0 SOVERSION 1)
+target_link_libraries(aria2 ${EXTRALDFLAGS})
 install(TARGETS aria2 ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 target_link_libraries(aria2c aria2)
+target_link_libraries(aria2c ${EXTRALDFLAGS})
 
 # ########## next target ###############
 
 # add_library(aria2_static STATIC ${aria2_SRCS})
 
 # ########## install files ###############
-install(FILES libaria2.pc DESTINATION lib)
+install(FILES libaria2.pc DESTINATION lib/pkgconfig)
 
 # original Makefile.am contents follow:
 

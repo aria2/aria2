@@ -27,10 +27,15 @@ config_h_add_compile_definitions(PACKAGE_TARNAME="${PROJECT_NAME}")
 config_h_add_compile_definitions(PACKAGE_URL="${PROJECT_HOMEPAGE_URL}")
 config_h_add_compile_definitions(PACKAGE_BUGREPORT="https://github.com/aria2/aria2/issues")
 config_h_add_compile_definitions(PACKAGE_VERSION="${PROJECT_VERSION}")
+
+set(BUILD_ID "${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM}-${CMAKE_CXX_COMPILER_ID}")
+set(HOST_ID "${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM}")
+set(TARGET_ID "${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM}-${CMAKE_CXX_COMPILER_ID}")
+
 config_h_add_compile_definitions(VERSION="${PROJECT_VERSION}")
-config_h_add_compile_definitions(HOST="${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM}")
-config_h_add_compile_definitions(BUILD="${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM}-${CMAKE_CXX_COMPILER_ID}")
-config_h_add_compile_definitions(TARGET="${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM}-${CMAKE_CXX_COMPILER_ID}")
+config_h_add_compile_definitions(HOST="${HOST_ID}")
+config_h_add_compile_definitions(BUILD="${BUILD_ID}")
+config_h_add_compile_definitions(TARGET="${TARGET_ID}")
 
 if(WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_POSIX_C_SOURCE=1")
@@ -38,7 +43,10 @@ if(WIN32)
   set(CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} -Wl,--dynamicbase -Wl,--nxcompat)
   set(CMAKE_STATIC_LINKER_FLAGS_LINKER_FLAGS ${CMAKE_STATIC_LINKER_FLAGS} -Wl,--dynamicbase -Wl,--nxcompat)
 
-  set(EXTRALIBS -lws2_32 -lwsock32 -lgdi32 -liphlpapi -lpsapi ${EXTRALIBS})
+  if(MINGW)
+    set(EXTRALIBS "-lws2_32 -lwsock32 -lgdi32 -liphlpapi -lpsapi ${EXTRALIBS}")
+    set(EXTRALDFLAGS "${EXTRALDFLAGS} -Wl,--dynamicbase -Wl,--nxcompat")
+  endif()
 endif()
 
 option(WITH_LIBUV "Build with libuv" off)
@@ -131,10 +139,10 @@ else()
 endif()
 
 if(ARIA2_STATIC)
-  if(WIN32)
+  if(MINGW)
     # Define _USE_32BIT_TIME_T because 32bit library of MinGW-w64
     # does not implement many 64bit version functions.
-    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -D_USE_32BIT_TIME_T)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_USE_32BIT_TIME_T")
   endif()
 endif()
 
@@ -917,7 +925,7 @@ endif()
 
 if(ARIA2_STATIC)
   if(NOT WIN32 AND NOT APPLE)
-    set(EXTRALIBS -lpthread -ldl -lrt ${EXTRALIBS})
+    set(EXTRALIBS "-lpthread -ldl -lrt ${EXTRALIBS}")
   endif()
 endif()
 
@@ -941,9 +949,9 @@ add_subdirectory(test)
 
 message(STATUS "summary of build options: \n\
 
-Build:          ${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM}-${CMAKE_CXX_COMPILER_ID}
-Host:           ${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM}
-Target:         ${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM}-${CMAKE_CXX_COMPILER_ID}
+Build:          ${BUILD_ID}
+Host:           ${HOST_ID}
+Target:         ${TARGET_ID}
 Install prefix: ${CMAKE_INSTALL_PREFIX}
 CC:             ${CMAKE_C_COMPILER}
 CXX:            ${CMAKE_CXX_COMPILER}
@@ -1029,8 +1037,8 @@ add_custom_target(clang-format
 )
 
 # ########## install files ###############
-install(FILES README README.rst README.html DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-install(FILES LICENSE.OpenSSL DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+install(FILES README README.rst README.html TYPE DOC)
+install(FILES LICENSE.OpenSSL DESTINATION TYPE DOC)
 
 # original Makefile.am contents follow:
 
