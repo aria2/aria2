@@ -56,7 +56,7 @@ extern "C" {
 /*
  * Functions.
  */
-#ifdef __STDC__
+#if defined(__STDC__) || defined(_MSC_VER)
 const char* gai_strerror(int);
 #else
 const char* gai_strerror();

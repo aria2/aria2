@@ -117,6 +117,11 @@ typedef SSIZE_T ssize_t;
 #endif
 
 
+#if defined(_MSC_VER)
+#  define strdup    _strdup
+#  define wdscup    _wcsdup
+#endif
+
 namespace util {
 
 extern const char DEFAULT_STRIP_CHARSET[];

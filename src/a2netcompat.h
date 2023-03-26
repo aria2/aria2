@@ -84,7 +84,9 @@
 
 #ifndef HAVE_GETADDRINFO
 #  include "getaddrinfo.h"
-#  define HAVE_GAI_STRERROR
+#  ifndef HAVE_GAI_STRERROR
+#    define HAVE_GAI_STRERROR
+#  endif
 #endif // HAVE_GETADDRINFO
 
 #ifndef HAVE_GAI_STRERROR

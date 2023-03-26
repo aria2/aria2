@@ -41,7 +41,7 @@ extern "C" {
 #  include "config.h"
 #endif // HAVE_CONFIG_H
 
-#if defined(__MINGW32__) || defined(__MSVC__)
+#if defined(__MINGW32__) || defined(_MSC_VER)
 #  ifndef _WIN32_WINNT
 #    define _WIN32_WINNT 0x501
 #  endif // _WIN32_WINNT
@@ -240,7 +240,7 @@ extern "C" {
 #endif
 
 /* Nexenta OS(GNU/Solaris OS) defines `struct addrinfo' in netdb.h */
-#if !defined(__MINGW32__) && !defined(__sun) && !defined(_MSC_VER)
+#if !defined(__MINGW32__) && !defined(__sun) // && !defined(_MSC_VER)
 
 /*
  * struct addrinfo.
@@ -261,7 +261,7 @@ struct addrinfo {
 /*
  * Functions.
  */
-#ifdef __STDC__
+#if defined(__STDC__) || defined(_MSC_VER)
 const char* gai_strerror(int);
 void freeaddrinfo(struct addrinfo*);
 int getaddrinfo(const char*, const char*, const struct addrinfo*,
