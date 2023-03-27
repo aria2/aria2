@@ -27,12 +27,12 @@ config_h_add_compile_definitions(PACKAGE_TARNAME="${PROJECT_NAME}")
 config_h_add_compile_definitions(PACKAGE_URL="${PROJECT_HOMEPAGE_URL}")
 config_h_add_compile_definitions(PACKAGE_BUGREPORT="https://github.com/aria2/aria2/issues")
 config_h_add_compile_definitions(PACKAGE_VERSION="${PROJECT_VERSION}")
-
-set(BUILD_ID "${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM}-${CMAKE_CXX_COMPILER_ID}")
-set(HOST_ID "${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM}")
-set(TARGET_ID "${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM}-${CMAKE_CXX_COMPILER_ID}")
-
 config_h_add_compile_definitions(VERSION="${PROJECT_VERSION}")
+
+set(BUILD_ID "${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM_NAME}-${CMAKE_CXX_COMPILER_ID}")
+set(HOST_ID "${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM_NAME}")
+set(TARGET_ID "${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM_NAME}-${CMAKE_CXX_COMPILER_ID}")
+
 config_h_add_compile_definitions(HOST="${HOST_ID}")
 config_h_add_compile_definitions(BUILD="${BUILD_ID}")
 config_h_add_compile_definitions(TARGET="${TARGET_ID}")
@@ -43,10 +43,10 @@ if(WIN32)
   
   if(MSVC)
     # set(EXTRALIBS ws2_32 wsock32 gdi32 iphlpapi psapi ${EXTRALIBS})
-    set(EXTRALDFLAGS ${EXTRALDFLAGS} /DYNAMICBASE /NXCOMPAT)
+    set(EXTRALDFLAGS "${EXTRALDFLAGS} /DYNAMICBASE /NXCOMPAT")
 
   else() # MINGW
-    set(EXTRALIBS "-lws2_32 -lwsock32 -lgdi32 -liphlpapi -lpsapi ${EXTRALIBS}")
+    list(APPEND EXTRALIBS -lws2_32 -lwsock32 -lgdi32 -liphlpapi -lpsapi ${EXTRALIBS})
     set(EXTRALDFLAGS "${EXTRALDFLAGS} -Wl,--dynamicbase -Wl,--nxcompat")
   endif()
 endif()
@@ -84,7 +84,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 # using Clang
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   # using GCC
-  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -pipe)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe")
 
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
 # using Intel C++
@@ -105,7 +105,7 @@ if(WIN32 AND NOT MINGW)
 endif()
 
 if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
-  set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} -pipe)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pipe")
 endif()
 
 option(ARIA2_STATIC "Set 'on' to build a statically linked aria2" off)
@@ -171,6 +171,8 @@ if(WIN32)
   endif()
 
   set(CMAKE_REQUIRED_FLAGS ${a2_extra_windows_flags})
+elseif(UNIX)
+  set(CMAKE_REQUIRED_FLAGS "-D_GNU_SOURCE")
 endif()
 
 find_package(CPPUNIT)
@@ -278,6 +280,9 @@ else()
   set(HAVE_OSX no CACHE BOOL "On Mac OS X" FORCE)
 endif()
 
+
+set(a2_found_headers)
+
 if(WIN32)
   set(WIN_BUILD yes)
 
@@ -300,11 +305,9 @@ if(WIN32)
     set(header_var "HAVE_${header_var}")
     set(${header_var})
     check_include_file_cxx(${header} ${header_var})
-    if(NOT ${header_var})
-      check_include_file(${header} ${header_var})
-    endif()
 
     if(${header_var})
+      list(APPEND a2_found_headers ${header})
       config_h_add_compile_definitions(${header_var})
     else()
     endif()
@@ -339,14 +342,23 @@ if(WITH_APPLETLS)
 endif()
 
 set(HAVE_WINTLS no CACHE BOOL "Define if you have Windows TLS support" FORCE)
-
+set(HAVE_WINTLS_LIBS false)
+set(HAVE_WINTLS_HEADERS false)
 if(WITH_WINTLS)
   if(WIN32)
     find_library(HAVE_WINTLS_LIBS crypt32)
     find_library(HAVE_WINTLS_LIBS secur32)
     find_library(HAVE_WINTLS_LIBS advapi32)
-    check_include_file_cxx(wincrypt.h HAVE_WINTLS_HEADERS)
-    check_include_file_cxx(security.h HAVE_WINTLS_HEADERS)
+    check_include_file_cxx(wincrypt.h HAVE_WINCRYPT_H)
+    if(HAVE_WINCRYPT_H)
+      list(APPEND a2_found_headers wincrypt.h)
+    endif()
+    check_include_file_cxx(security.h HAVE_SECURITY_H)
+    if(HAVE_SECURITY_H)
+      list(APPEND a2_found_headers security.h)
+    endif()
+
+    set(HAVE_WINTLS_HEADERS (HAVE_WINCRYPT_H AND HAVE_SECURITY_H) )
 
     if(HAVE_WINTLS_LIBS AND HAVE_WINTLS_HEADERS)
       set(HAVE_WINTLS yes CACHE BOOL "Define if you have Windows TLS support" FORCE)
@@ -643,8 +655,11 @@ set(_check_headers
   langinfo.h
   libintl.h
   limits.h
+  libgen.h
   locale.h
   malloc.h
+  math.h
+  memory.h
   netdb.h
   netinet/in.h
   netinet/tcp.h
@@ -654,12 +669,16 @@ set(_check_headers
   stddef.h
   stdint.h
   stdio_ext.h
-  stdlib.h
+  stdlib.h 
   string.h
   strings.h
+  sys/epoll.h
+  sys/event.h
   sys/ioctl.h
+  sys/mman.h
   sys/param.h
   sys/resource.h
+  sys/stat.h
   sys/signal.h
   sys/socket.h
   sys/time.h
@@ -667,11 +686,12 @@ set(_check_headers
   sys/uio.h
   sys/utsname.h
   termios.h
+  time.h
   unistd.h
   utime.h
   wchar.h
   ifaddrs.h
-  pwd.h
+  pwd.h 
 )
 
 foreach(header ${_check_headers})
@@ -684,6 +704,7 @@ foreach(header ${_check_headers})
   check_include_file_cxx(${header} ${header_var})
 
   if(${header_var})
+    list(APPEND a2_found_headers ${header})
     config_h_add_compile_definitions(${header_var})
   else()
   endif()
@@ -694,6 +715,7 @@ unset(_check_headers)
 check_include_file_cxx(stdbool.h HAVE_STDBOOL_H)
 
 if(HAVE_STDBOOL_H)
+  list(APPEND a2_found_headers stdbool.h)
   config_h_add_compile_definitions(HAVE_STDBOOL_H=1)
 endif()
 
@@ -704,7 +726,7 @@ else()
 endif()
 
 set(save_CMAKE_EXTRA_INCLUDE_FILES ${CMAKE_EXTRA_INCLUDE_FILES})
-set(CMAKE_EXTRA_INCLUDE_FILES "time.h")
+set(CMAKE_EXTRA_INCLUDE_FILES ${a2_found_headers})
 check_type_size("struct timespec" HAVE_A2_STRUCT_TIMESPEC LANGUAGE CXX)
 set(CMAKE_EXTRA_INCLUDE_FILES ${save_CMAKE_EXTRA_INCLUDE_FILES})
 
@@ -715,11 +737,8 @@ endif()
 
 find_package(Gettext)
 
-set(a2_symbol_check_headers "")
-if(WIN32)
-  set(a2_symbol_check_headers "stdlib.h;memory.h;string.h;math.h")
-endif()
-
+set(save_CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
+set(CMAKE_REQUIRED_LIBRARIES m ${CMAKE_REQUIRED_LIBRARIES})
 set(_check_funcs
   __argz_count
   __argz_next
@@ -774,7 +793,12 @@ foreach(func ${_check_funcs})
   set(func_var "HAVE_${func_var}")
   set(${func_var})
 
-  check_cxx_symbol_exists(${func} "${a2_symbol_check_headers}" ${func_var})
+  check_cxx_symbol_exists(${func} "${a2_found_headers}" ${func_var})
+  if(NOT ${func_var})
+    message(STATUS "Retrying with check_function_exists ...")
+    unset(${func_var} CACHE)
+    check_function_exists(${func} ${func_var})
+  endif()
 
   if(${func_var})
     config_h_add_compile_definitions(${func_var})
@@ -783,7 +807,7 @@ foreach(func ${_check_funcs})
 endforeach()
 
 unset(_check_funcs)
-unset(a2_symbol_check_headers)
+set(CMAKE_REQUIRED_LIBRARIES ${save_CMAKE_REQUIRED_LIBRARIES})
 
 if(WITH_TCMALLOC AND WITH_JEMALLOC)
   message(FATAL_ERROR "Cannot use both, tcmalloc and jemalloc!")
@@ -810,18 +834,29 @@ if(WITH_JEMALLOC)
 endif()
 
 if(ENABLE_EPOLL)
-  check_cxx_symbol_exists(epoll_create "" HAVE_EPOLL)
+  check_cxx_symbol_exists(epoll_create "${a2_found_headers}" HAVE_EPOLL)
 
   if(HAVE_EPOLL)
     config_h_add_compile_definitions(HAVE_EPOLL=1)
   endif()
 endif()
 
-check_cxx_symbol_exists(posix_fallocate "" HAVE_POSIX_FALLOCATE)
+check_cxx_symbol_exists(posix_fallocate "${a2_found_headers}" HAVE_POSIX_FALLOCATE)
+if(NOT HAVE_POSIX_FALLOCATE)
+  message(STATUS "Retrying with check_function_exists ...")
+  unset(HAVE_POSIX_FALLOCATE CACHE)
+  check_function_exists(posix_fallocate HAVE_POSIX_FALLOCATE)
+endif()
 if(HAVE_POSIX_FALLOCATE)
   config_h_add_compile_definitions(HAVE_POSIX_FALLOCATE=1)
 endif()
-check_cxx_symbol_exists(fallocate "" HAVE_FALLOCATE)
+
+check_cxx_symbol_exists(fallocate "${a2_found_headers}" HAVE_FALLOCATE)
+if(NOT HAVE_FALLOCATE)
+  message(STATUS "Retrying with check_function_exists ...")
+  unset(HAVE_FALLOCATE CACHE)
+  check_function_exists(fallocate HAVE_FALLOCATE)
+endif()
 if(HAVE_FALLOCATE)
   config_h_add_compile_definitions(HAVE_FALLOCATE=1)
 endif()
@@ -833,21 +868,16 @@ else()
   set(HAVE_SOME_FALLOCATE no CACHE BOOL "if there is some fallocate support" FORCE)
 endif()
 
-check_cxx_symbol_exists(asctime_r time.h HAVE_ASCTIME_R)
+check_cxx_symbol_exists(asctime_r "${a2_found_headers}" HAVE_ASCTIME_R)
 
 if(HAVE_ASCTIME_R)
   config_h_add_compile_definitions(HAVE_ASCTIME_R=1)
 endif()
 
-check_cxx_symbol_exists(localtime_r time.h HAVE_LOCALTIME_R)
+check_cxx_symbol_exists(localtime_r "${a2_found_headers}" HAVE_LOCALTIME_R)
 
 if(HAVE_LOCALTIME_R)
   config_h_add_compile_definitions(HAVE_LOCALTIME_R=1)
-endif()
-
-set(a2_symbol_check_headers "")
-if(WIN32)
-  set(a2_symbol_check_headers "stdlib.h;memory.h;string.h;math.h;ws2tcpip.h" )
 endif()
 
 set(_check_funcs
@@ -866,7 +896,13 @@ foreach(func ${_check_funcs})
   string(TOUPPER ${func} func_var)
   set(func_var "HAVE_${func_var}")
   set(${func_var})
-  check_cxx_symbol_exists(${func} "${a2_symbol_check_headers}" ${func_var})
+
+  check_cxx_symbol_exists(${func} "${a2_found_headers}" ${func_var})
+  if(NOT ${func_var})
+    message(STATUS "Retrying with check_function_exists ...")
+    unset(${func_var} CACHE)
+    check_function_exists(${func} ${func_var})
+  endif()
 
   if(${func_var})
     config_h_add_compile_definitions(${func_var})
@@ -875,7 +911,6 @@ foreach(func ${_check_funcs})
 endforeach()
 
 unset(_check_funcs)
-unset(a2_symbol_check_headers)
 
 if(NOT HAVE_GAI_STRERR AND HAVE_WS2TCPIP_H AND (WIN32 AND NOT MINGW))
   set(HAVE_GAI_STRERROR true) # It's there in ws2tcpip.h
@@ -911,14 +946,14 @@ int main(int argc, char* argv[]) {
 endif()
 
 set(save_CMAKE_EXTRA_INCLUDE_FILES ${CMAKE_EXTRA_INCLUDE_FILES})
-set(CMAKE_EXTRA_INCLUDE_FILES sys/types.h sys/socket.h netinet/in.h)
-check_type_size("struct sockaddr_in.sin_len" HAVE_SOCKADDR_IN_SIN_LEN)
+set(CMAKE_EXTRA_INCLUDE_FILES  ${a2_found_headers})
+check_type_size("((struct sockaddr_in*)0)->sin_len" HAVE_SOCKADDR_IN_SIN_LEN)
 
 if(HAVE_SOCKADDR_IN_SIN_LEN)
   config_h_add_compile_definitions(HAVE_SOCKADDR_IN_SIN_LEN=1)
 endif()
 
-check_type_size("struct sockaddr_in6.sin6_len" HAVE_SOCKADDR_IN6_SIN6_LEN)
+check_type_size("((struct sockaddr_in6*)0)->sin6_len" HAVE_SOCKADDR_IN6_SIN6_LEN)
 
 if(HAVE_SOCKADDR_IN6_SIN6_LEN)
   config_h_add_compile_definitions(HAVE_SOCKADDR_IN6_SIN6_LEN=1)
@@ -956,7 +991,7 @@ endif()
 
 if(ARIA2_STATIC)
   if(NOT WIN32 AND NOT APPLE)
-    set(EXTRALIBS "-lpthread -ldl -lrt ${EXTRALIBS}")
+    set(EXTRALIBS -lpthread -ldl -lrt ${EXTRALIBS})
   endif()
 endif()
 

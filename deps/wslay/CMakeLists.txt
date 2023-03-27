@@ -18,9 +18,16 @@ config_h_add_compile_definitions(PACKAGE_URL="${PROJECT_HOMEPAGE_URL}")
 config_h_add_compile_definitions(PACKAGE_BUGREPORT="t-tujikawa@users.sourceforge.net")
 config_h_add_compile_definitions(PACKAGE_VERSION="${PROJECT_VERSION}")
 config_h_add_compile_definitions(VERSION="${PROJECT_VERSION}")
-config_h_add_compile_definitions(HOST="${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM}")
-config_h_add_compile_definitions(BUILD="${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM}")
-config_h_add_compile_definitions(TARGET="${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM}-${CMAKE_CXX_COMPILER_TARGET}")
+
+set(BUILD_ID "${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM_NAME}-${CMAKE_CXX_COMPILER_ID}")
+set(HOST_ID "${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM_NAME}")
+set(TARGET_ID "${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM_NAME}-${CMAKE_CXX_COMPILER_ID}")
+
+
+config_h_add_compile_definitions(HOST="${HOST_ID}")
+config_h_add_compile_definitions(BUILD="${BUILD_ID}")
+config_h_add_compile_definitions(TARGET="${TARGET_ID}")
+
 set(PACKAGE_VERSION ${PROJECT_VERSION})
 
 option(ENABLE_WERROR "Builld with werror" off)
@@ -37,7 +44,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 # using Clang
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   # using GCC
-  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -pipe)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe")
 
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
 # using Intel C++
@@ -84,6 +91,8 @@ if(WIN32)
     set(CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES} -lws2_32)
 endif()
 
+set(wslay_found_headers ${a2_found_headers}) #inherit from parent project if possible
+
 set(_check_headers
     arpa/inet.h
     netinet/in.h
@@ -92,6 +101,7 @@ set(_check_headers
     stdlib.h
     string.h
     unistd.h
+    memory.h
 )
 
 foreach(header ${_check_headers})
@@ -103,6 +113,7 @@ foreach(header ${_check_headers})
     check_include_file(${header} ${header_var})
 
     if(${header_var})
+        list(APPEND wslay_found_headers ${header})
         config_h_add_compile_definitions(${header_var})
     endif()
 endforeach()
@@ -118,11 +129,14 @@ if(WIN32)
     endif()
 endif()
 
+set(save_CMAKE_EXTRA_INCLUDE_FILES ${CMAKE_EXTRA_INCLUDE_FILES})
+set(CMAKE_EXTRA_INCLUDE_FILES ${wslay_found_headers})
 check_type_size(ptrdiff_t PTRDIFF_T LANGUAGE CXX)
 if(PTRDIFF_T)
     set(HAVE_PTRDIFF_T true)
     config_h_add_compile_definitions(HAVE_PTRDIFF_T)
 endif()
+set(CMAKE_EXTRA_INCLUDE_FILES save_CMAKE_EXTRA_INCLUDE_FILES)
 
 set(_check_funcs
     memmove
@@ -136,7 +150,7 @@ foreach(func ${_check_funcs})
   string(TOUPPER ${func} func_var)
   set(func_var "HAVE_${func_var}")
   set(${func_var})
-  check_function_exists(${func} ${func_var})
+  check_cxx_symbol_exists(${func} ${wslay_found_headers} ${func_var})
 
   if(${func_var})
     config_h_add_compile_definitions(${func_var})
