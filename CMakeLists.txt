@@ -37,13 +37,14 @@ config_h_add_compile_definitions(HOST="${HOST_ID}")
 config_h_add_compile_definitions(BUILD="${BUILD_ID}")
 config_h_add_compile_definitions(TARGET="${TARGET_ID}")
 
+
 if(WIN32)
 
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_POSIX_C_SOURCE=1")
   
   if(MSVC)
     # set(EXTRALIBS ws2_32 wsock32 gdi32 iphlpapi psapi ${EXTRALIBS})
-    set(EXTRALDFLAGS "${EXTRALDFLAGS} /DYNAMICBASE /NXCOMPAT")
+    list(APPEND EXTRALDFLAGS /DYNAMICBASE /NXCOMPAT)
 
   else() # MINGW
     list(APPEND EXTRALIBS -lws2_32 -lwsock32 -lgdi32 -liphlpapi -lpsapi ${EXTRALIBS})
