@@ -353,12 +353,18 @@ if(WITH_WINTLS)
     if(HAVE_WINCRYPT_H)
       list(APPEND a2_found_headers wincrypt.h)
     endif()
+
+    list(APPEND CMAKE_REQUIRED_DEFINITIONS "/D SECURITY_WIN32")
     check_include_file_cxx(security.h HAVE_SECURITY_H)
     if(HAVE_SECURITY_H)
       list(APPEND a2_found_headers security.h)
+    else()
+      list(POP_BACK CMAKE_REQUIRED_DEFINITIONS)
     endif()
-
-    set(HAVE_WINTLS_HEADERS (HAVE_WINCRYPT_H AND HAVE_SECURITY_H) )
+    
+    if(HAVE_WINCRYPT_H AND HAVE_SECURITY_H)
+      set(HAVE_WINTLS_HEADERS true)
+    endif()
 
     if(HAVE_WINTLS_LIBS AND HAVE_WINTLS_HEADERS)
       set(HAVE_WINTLS yes CACHE BOOL "Define if you have Windows TLS support" FORCE)
@@ -420,32 +426,32 @@ if(WITH_OPENSSL)
     set(CMAKE_REQUIRED_LIBRARIES ${OPENSSL_LIBRARIES})
     set(CMAKE_REQUIRED_INCLUDES ${OPENSSL_INCLUDE_DIR})
 
-    check_cxx_symbol_exists(EVP_DigestInit_ex evp.h HAVE_EVP_DIGESTINIT_EX)
+    check_cxx_symbol_exists(EVP_DigestInit_ex openssl/evp.h HAVE_EVP_DIGESTINIT_EX)
 
     if(HAVE_EVP_DIGESTINIT_EX)
       set(HAVE_OLD_OPENSSL yes CACHE BOOL "Define if you have old openssl" FORCE)
       config_h_add_compile_definitions(HAVE_OLD_OPENSSL=1)
     endif()
 
-    check_cxx_symbol_exists(EVP_sha224 evp.h HAVE_EVP_SHA224)
+    check_cxx_symbol_exists(EVP_sha224 openssl/evp.h HAVE_EVP_SHA224)
 
     if(HAVE_EVP_SHA224)
       config_h_add_compile_definitions(HAVE_EVP_SHA224)
     endif()
 
-    check_cxx_symbol_exists(EVP_sha256 evp.h HAVE_EVP_SHA256)
+    check_cxx_symbol_exists(EVP_sha256 openssl/evp.h HAVE_EVP_SHA256)
 
     if(HAVE_EVP_SHA256)
       config_h_add_compile_definitions(HAVE_EVP_SHA256)
     endif()
 
-    check_cxx_symbol_exists(EVP_sha384 evp.h HAVE_EVP_SHA384)
+    check_cxx_symbol_exists(EVP_sha384 openssl/evp.h HAVE_EVP_SHA384)
 
     if(HAVE_EVP_SHA384)
       config_h_add_compile_definitions(HAVE_EVP_SHA384)
     endif()
 
-    check_cxx_symbol_exists(EVP_sha512 evp.h HAVE_EVP_SHA512)
+    check_cxx_symbol_exists(EVP_sha512 openssl/evp.h HAVE_EVP_SHA512)
 
     if(HAVE_EVP_SHA512)
       config_h_add_compile_definitions(HAVE_EVP_SHA512)
@@ -539,13 +545,15 @@ if(WITH_LIBCARES)
     set(CMAKE_REQUIRED_INCLUDES ${LIBCARES_INCLUDE_DIR})
     set(CMAKE_EXTRA_INCLUDE_FILES ares.h)
     check_type_size(ares_addr_node ARES_ADDR_NODE LANGUAGE CXX)
-    check_type_size(ares_set_servers ARES_SET_SERVERS LANGUAGE C)
+   
 
     if(ARES_ADDR_NODE)
       config_h_add_compile_definitions(HAVE_ARES_ADDR_NODE)
     endif()
 
-    if(ARES_SET_SERVERS)
+    check_cxx_symbol_exists(ares_set_servers ares.h HAVE_ARES_SET_SERVERS)
+
+    if(HAVE_ARES_SET_SERVERS)
       config_h_add_compile_definitions(HAVE_ARES_SET_SERVERS)
     endif()
 
@@ -738,7 +746,11 @@ endif()
 find_package(Gettext)
 
 set(save_CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
-set(CMAKE_REQUIRED_LIBRARIES m ${CMAKE_REQUIRED_LIBRARIES})
+if(WIN32)
+  # No exta libs needed
+else()
+  list(APPEND CMAKE_REQUIRED_LIBRARIES m)
+endif()
 set(_check_funcs
   __argz_count
   __argz_next
@@ -793,12 +805,8 @@ foreach(func ${_check_funcs})
   set(func_var "HAVE_${func_var}")
   set(${func_var})
 
-  check_cxx_symbol_exists(${func} "${a2_found_headers}" ${func_var})
-  if(NOT ${func_var})
-    message(STATUS "Retrying with check_function_exists ...")
-    unset(${func_var} CACHE)
-    check_function_exists(${func} ${func_var})
-  endif()
+  # check_cxx_symbol_exists(${func} "${a2_found_headers}" ${func_var})
+  check_symbol_exists(${func} "${a2_found_headers}" ${func_var})
 
   if(${func_var})
     config_h_add_compile_definitions(${func_var})
@@ -897,12 +905,7 @@ foreach(func ${_check_funcs})
   set(func_var "HAVE_${func_var}")
   set(${func_var})
 
-  check_cxx_symbol_exists(${func} "${a2_found_headers}" ${func_var})
-  if(NOT ${func_var})
-    message(STATUS "Retrying with check_function_exists ...")
-    unset(${func_var} CACHE)
-    check_function_exists(${func} ${func_var})
-  endif()
+  check_symbol_exists(${func} "${a2_found_headers}" ${func_var})
 
   if(${func_var})
     config_h_add_compile_definitions(${func_var})
