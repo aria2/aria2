@@ -228,7 +228,7 @@ extern int ftruncate64(int fd, off64_t length);
 #  define a2_fileno  fileno
 #  define a2_read    read
 #  define a2_close   close
-#  define a2_dub     dup
+#  define a2_dup     dup
 #endif // !_MSC_VER
 
 #endif // D_A2IO_H
