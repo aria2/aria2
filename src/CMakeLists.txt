@@ -1301,7 +1301,8 @@ endif()
 
 target_include_directories(aria2 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/includes)
 target_include_directories(aria2 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_include_directories(aria2 INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/includes)
+target_include_directories(aria2static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/includes)
+target_include_directories(aria2static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 if(USE_MINGW_GETOPT)
   target_include_directories(aria2 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/getopt)
