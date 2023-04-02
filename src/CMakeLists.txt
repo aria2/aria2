@@ -1259,6 +1259,8 @@ if(WIN32 AND NOT MINGW)
     getopt/getopt.h
   )
 
+
+
   set(USE_MINGW_GETOPT true)
 
 endif()
@@ -1291,7 +1293,13 @@ endif()
 
 add_library(aria2 SHARED ${aria2_SRCS})
 add_library(aria2static STATIC ${aria2_SRCS})
-set_target_properties(aria2 aria2static PROPERTIES OUTPUT_NAME aria2)
+set_target_properties(aria2 PROPERTIES OUTPUT_NAME aria2)
+
+if(NOT WIN32) 
+  # on windows .libs are both static and dynamic
+  # so keep the name aria2static on windows
+  set_target_properties(aria2static PROPERTIES OUTPUT_NAME aria2)
+endif()
 
 if(ARIA2C_LINK_SHARED)
   set(ARIA2C_LINK_TARGET aria2)
@@ -1306,7 +1314,7 @@ target_include_directories(aria2static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 if(USE_MINGW_GETOPT)
   target_include_directories(aria2 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/getopt)
-  target_include_directories(aria2c PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/getopt)
+  target_include_directories(aria2static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/getopt)
 endif()
 
 
@@ -1428,14 +1436,12 @@ endif()
 
 set_target_properties(aria2 PROPERTIES VERSION 0.0.0 SOVERSION 1)
 target_link_options(aria2 PUBLIC ${EXTRALDFLAGS})
+target_link_options(aria2static PUBLIC ${EXTRALDFLAGS})
 install(TARGETS aria2 ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 target_link_libraries(aria2c PRIVATE ${ARIA2C_LINK_TARGET})
 target_link_options(aria2c PUBLIC ${EXTRALDFLAGS})
 
-# ########## next target ###############
-
-# add_library(aria2_static STATIC ${aria2_SRCS})
 
 # ########## install files ###############
 install(FILES libaria2.pc DESTINATION lib/pkgconfig)

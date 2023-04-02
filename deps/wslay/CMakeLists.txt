@@ -44,7 +44,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 # using Clang
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   # using GCC
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe" CACHE STRING "")
 
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
 # using Intel C++
@@ -68,7 +68,7 @@ endif()
 
 find_package(Sphinx)
 if(Sphinx_FOUND)
-    set(HAVE_SPHINX_BUILD true)
+    set(HAVE_SPHINX_BUILD true CACHE BOOL "")
 endif()
 
 if(NOT NETTLE_FOUND) 
@@ -77,12 +77,12 @@ if(NOT NETTLE_FOUND)
 endif()
 
 if(NETTLE_FOUND)
-    set(HAVE_NETTLE true)
+    set(HAVE_NETTLE true CACHE BOOL "")
 endif()
 
 find_package(CUnit)
 if(CUnit_FOUND)
-    set(HAVE_CUNIT true)
+    set(HAVE_CUNIT true CACHE BOOL "")
 endif()
 
 if(WIN32)
@@ -133,7 +133,7 @@ set(save_CMAKE_EXTRA_INCLUDE_FILES ${CMAKE_EXTRA_INCLUDE_FILES})
 set(CMAKE_EXTRA_INCLUDE_FILES ${wslay_found_headers})
 check_type_size(ptrdiff_t PTRDIFF_T LANGUAGE CXX)
 if(PTRDIFF_T)
-    set(HAVE_PTRDIFF_T true)
+    set(HAVE_PTRDIFF_T yes CACHE BOOL "")
     config_h_add_compile_definitions(HAVE_PTRDIFF_T)
 endif()
 set(CMAKE_EXTRA_INCLUDE_FILES save_CMAKE_EXTRA_INCLUDE_FILES)

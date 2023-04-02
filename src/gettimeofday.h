@@ -36,7 +36,7 @@
 #ifndef _D_GETTIMEOFDAY_H
 #define _D_GETTIMEOFDAY_H 1
 
-#if defined(__MINGW32__) || defined(_MSC_VER)
+#if defined(__MINGW32__)
 #  undef SIZE_MAX
 #endif // __MINGW32__
 

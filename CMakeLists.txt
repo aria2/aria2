@@ -92,12 +92,10 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
 # using Intel C++
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   # using Visual Studio C++
-  # config_h_add_compile_definitions(__MSVC__=1) # USE _MSC_VER
   add_compile_definitions(NOMINMAX)
-  config_h_add_compile_macro("__restrict__ __restrict") 
+  config_h_add_compile_macro("__restrict__ __restrict")
   config_h_add_compile_macro("__attribute__(unused) /*Empty*/")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:__cplusplus /Zc:__STDC__")
-  # add_compile_definitions("__STDC__=1")  # even with the /Zc:__STDC__ flag the compiler will not define this in C++ mode
 endif()
 
 if(WIN32 AND NOT MINGW)
@@ -191,31 +189,40 @@ if(WITH_LIBZ)
 
   if(ZLIB_FOUND)
     set(HAVE_ZLIB yes CACHE BOOL "Define if you have zlib" FORCE)
-    set(ZLIB_CFLAGS "")
-    set(ZLIB_LIBS ${ZLIB_LIBRARIES})
+    set(ZLIB_CFLAGS "" CACHE STRING "")
+    set(ZLIB_LIBS ${ZLIB_LIBRARIES} CACHE STRING "")
     config_h_add_compile_definitions(HAVE_ZLIB=1)
 
-    set(save_CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
-    set(save_CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES})
-    set(CMAKE_REQUIRED_LIBRARIES ${ZLIB_LIBRARIES})
-    set(CMAKE_REQUIRED_INCLUDES ${ZLIB_INCLUDE_DIRS})
+    if(NOT TARGET ${ZLIB_LIBRARY})
 
-    check_cxx_symbol_exists(gzbuffer zlib.h HAVE_GZBUFFER)
+      set(save_CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
+      set(save_CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES})
+      set(CMAKE_REQUIRED_LIBRARIES ${ZLIB_LIBRARIES})
+      set(CMAKE_REQUIRED_INCLUDES ${ZLIB_INCLUDE_DIRS})
+
+      check_cxx_symbol_exists(gzbuffer zlib.h HAVE_GZBUFFER)
+
+      check_cxx_symbol_exists(gzsetparams zlib.h HAVE_GZSETPARAMS)
+
+      set(CMAKE_REQUIRED_LIBRARIES ${save_CMAKE_REQUIRED_LIBRARIES})
+      set(CMAKE_REQUIRED_INCLUDES ${save_CMAKE_REQUIRED_INCLUDES})
+    else()
+      # ZLIB is a target, presumably as an import becaseu aria2 is a subproject
+      # assume everything is in place unless parent project said otherwise
+      set(HAVE_GZBUFFER yes CACHE BOOL "")
+      set(HAVE_GZSETPARAMS yes CACHE BOOL "")
+    endif()
 
     if(HAVE_GZBUFFER)
       config_h_add_compile_definitions(HAVE_GZBUFFER)
     endif()
 
-    check_cxx_symbol_exists(gzsetparams zlib.h HAVE_GZSETPARAMS)
-
     if(HAVE_GZSETPARAMS)
       config_h_add_compile_definitions(HAVE_GZSETPARAMS)
     endif()
 
-    set(CMAKE_REQUIRED_LIBRARIES ${save_CMAKE_REQUIRED_LIBRARIES})
-    set(CMAKE_REQUIRED_INCLUDES ${save_CMAKE_REQUIRED_INCLUDES})
 
-    set(aria2_LIBS ${ZLIB_LIBRARIES} ${aria2_LIBS})
+    set(aria2_LIBS ${ZLIB_LIBRARIES} ${aria2_LIBS} CACHE STRING "")
   endif()
 endif()
 
@@ -225,8 +232,8 @@ if(WITH_LIBUV)
 
   if(LIBUV_FOUND)
     set(HAVE_LIBUV yes CACHE BOOL "Define if you have libuv" FORCE)
-    set(LIBUV_CFLAGS "")
-    set(LIBUV_LIBS ${LIBUV_LIBRARIES})
+    set(LIBUV_CFLAGS "" CACHE STRING "")
+    set(LIBUV_LIBS ${LIBUV_LIBRARIES} CACHE STRING "")
     config_h_add_compile_definitions(HAVE_LIBUV=1)
   endif()
 endif()
@@ -237,8 +244,8 @@ if(WITH_LIBXML2)
 
   if(LibXml2_FOUND)
     set(HAVE_LIBXML2 yes CACHE BOOL "Define if you have libxml2" FORCE)
-    set(LIBXML2_CFLAGS "")
-    set(LIBXML2_LIBS ${LIBXML2_LIBRARIES})
+    set(LIBXML2_CFLAGS "" CACHE STRING "")
+    set(LIBXML2_LIBS ${LIBXML2_LIBRARIES} CACHE STRING "")
     config_h_add_compile_definitions(HAVE_LIBXML2=1)
   endif()
 endif()
@@ -250,8 +257,8 @@ if(WITH_LIBEXPAT)
 
   if(EXPAT_FOUND AND NOT HAVE_LIBXML2)
     set(HAVE_LIBEXPAT yes CACHE BOOL "Define if you have libexpat" FORCE)
-    set(LIBEXPAT_CFLAGS "")
-    set(LIBEXPAT_LIBS ${EXPAT_LIBRARIES})
+    set(LIBEXPAT_CFLAGS "" CACHE STRING "")
+    set(LIBEXPAT_LIBS ${EXPAT_LIBRARIES} CACHE STRING "")
     config_h_add_compile_definitions(HAVE_LIBEXPAT=1)
   endif()
 endif()
@@ -262,23 +269,30 @@ if(WITH_SQLITE3)
 
   if(SQLite3_FOUND)
     set(HAVE_SQLITE3 yes CACHE BOOL "Define if you have sqlite3" FORCE)
-    set(SQLITE3_CFLAGS "")
-    set(SQLITE3_LIBS ${SQLite3_LIBRARIES})
+    set(SQLITE3_CFLAGS "" CACHE STRING "")
+    set(SQLITE3_LIBS ${SQLite3_LIBRARIES} CACHE STRING "")
     config_h_add_compile_definitions(HAVE_SQLITE3=1)
 
-    set(save_CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
-    set(save_CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES})
-    set(CMAKE_REQUIRED_LIBRARIES ${SQLite3_LIBRARIES})
-    set(CMAKE_REQUIRED_INCLUDES ${SQLite3_INCLUDE_DIRS})
+    if(NOT TARGET ${SQLite3_LIBRARY})
+      set(save_CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
+      set(save_CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES})
+      set(CMAKE_REQUIRED_LIBRARIES ${SQLite3_LIBRARIES})
+      set(CMAKE_REQUIRED_INCLUDES ${SQLite3_INCLUDE_DIRS})
 
-    check_cxx_symbol_exists(sqlite3_open_v2 sqlite3.h HAVE_SQLITE3_OPEN_V2)
+      check_cxx_symbol_exists(sqlite3_open_v2 sqlite3.h HAVE_SQLITE3_OPEN_V2)
+
+      set(CMAKE_REQUIRED_LIBRARIES ${save_CMAKE_REQUIRED_LIBRARIES})
+      set(CMAKE_REQUIRED_INCLUDES ${save_CMAKE_REQUIRED_INCLUDES})
+    else()
+      # the libary is a target defined by a parent project
+      # it is up to them to define if it's not here
+      set(HAVE_SQLITE3_OPEN_V2 yes CACHE BOOL "")
+    endif()
 
     if(HAVE_SQLITE3_OPEN_V2)
       config_h_add_compile_definitions(HAVE_SQLITE3_OPEN_V2)
     endif()
 
-    set(CMAKE_REQUIRED_LIBRARIES ${save_CMAKE_REQUIRED_LIBRARIES})
-    set(CMAKE_REQUIRED_INCLUDES ${save_CMAKE_REQUIRED_INCLUDES})
   endif()
 endif()
 
@@ -324,8 +338,8 @@ if(WIN32)
 
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     # Cake can't find them but they absolutly exist
-    set(HAVE_IPHLPAPI_H true)
-    set(HAVE_WINIOCTL_H true)
+    set(HAVE_IPHLPAPI_H true CACHE BOOL "")
+    set(HAVE_WINIOCTL_H true CACHE BOOL "")
     config_h_add_compile_definitions(HAVE_IPHLPAPI_H)
     config_h_add_compile_definitions(HAVE_WINIOCTL_H)
     
@@ -359,8 +373,8 @@ function(a2_wrap_find_library var_name lib)
 endfunction()
 
 set(HAVE_WINTLS no CACHE BOOL "Define if you have Windows TLS support" FORCE)
-set(HAVE_WINTLS_LIBS false)
-set(HAVE_WINTLS_HEADERS false)
+set(HAVE_WINTLS_LIBS no CACHE BOOL "" FORCE)
+set(HAVE_WINTLS_HEADERS no CACHE BOOL "" FORCE)
 if(WITH_WINTLS)
   if(WIN32)
     a2_wrap_find_library(HAVE_CRYPT32 crypt32)
@@ -368,7 +382,7 @@ if(WITH_WINTLS)
     a2_wrap_find_library(HAVE_ADVAPI32 advapi32)
 
     if(HAVE_CRYPT32 AND HAVE_SECURE32 AND HAVE_ADVAPI32)
-      set(HAVE_WINTLS_LIBS true)
+      set(HAVE_WINTLS_LIBS yes CACHE BOOL "" FORCE)
     endif()
 
     check_include_file_cxx(wincrypt.h HAVE_WINCRYPT_H)
@@ -389,14 +403,14 @@ if(WITH_WINTLS)
     endif()
     
     if(HAVE_WINCRYPT_H AND HAVE_SECURITY_H)
-      set(HAVE_WINTLS_HEADERS true)
+      set(HAVE_WINTLS_HEADERS yes CACHE BOOL "" FORCE)
     endif()
 
     if(HAVE_WINTLS_LIBS AND HAVE_WINTLS_HEADERS)
       set(HAVE_WINTLS yes CACHE BOOL "Define if you have Windows TLS support" FORCE)
       config_h_add_compile_definitions(HAVE_WINTLS=1)
       config_h_add_compile_definitions(SECURITY_WIN32=1) # Use security.h in WIN32 mode
-      set(WINTLS_LIBS crypt32 secur32 advapi32)
+      set(WINTLS_LIBS crypt32 secur32 advapi32 CACHE STRING "")
       set(HAVE_SSL yes CACHE BOOL "Have SSL support" FORCE)
       set(HAVE_NATIVETLS yes CACHE BOOL "Have Native TLS" FORCE)
       message(STATUS "Enable Windows native SSL/TLS support")
@@ -411,8 +425,8 @@ if(WITH_GNUTLS)
 
   if(GNUTLS_FOUND AND NOT HAVE_SSL)
     set(HAVE_LIBGNUTLS yes CACHE BOOL "Define if you have libguntls" FORCE)
-    set(LIBGNUTLS_CFLAGS "${GNUTLS_DEFINITIONS}")
-    set(LIBGNUTLS_LIBS ${GNUTLS_LIBRARIES})
+    set(LIBGNUTLS_CFLAGS "${GNUTLS_DEFINITIONS}" CACHE STRING "")
+    set(LIBGNUTLS_LIBS ${GNUTLS_LIBRARIES} CACHE STRING "")
     config_h_add_compile_definitions(HAVE_LIBGNUTLS=1)
     set(HAVE_SSL yes CACHE BOOL "Have SSL support" FORCE)
 
@@ -442,8 +456,8 @@ if(WITH_OPENSSL)
 
   if(OPENSSL_FOUND AND NOT HAVE_SSL)
     set(HAVE_OPENSSL yes CACHE BOOL "Define is you have openssl" FORCE)
-    set(OPENSSL_CFLAGS "")
-    set(OPENSSL_LIBS ${OPENSSL_LIBRARIES})
+    set(OPENSSL_CFLAGS "" CACHE STRING "")
+    set(OPENSSL_LIBS ${OPENSSL_LIBRARIES} CACHE STRING "")
     config_h_add_compile_definitions(HAVE_OPENSSL=1)
     set(HAVE_SSL yes CACHE BOOL "Have SSL support" FORCE)
 
@@ -498,8 +512,8 @@ if(NOT HAVE_OPENSSL)
 
     if(NETTLE_FOUND AND NOT HAVE_NATIVETLS)
       set(HAVE_LIBNETTLE yes CACHE BOOL "Define if you have libnettle" FORCE)
-      set(LIBNETTLE_CFLAGS "")
-      set(LIBNETTLE_LIBS ${NETTLE_LIBRARIES})
+      set(LIBNETTLE_CFLAGS "" CACHE STRING "")
+      set(LIBNETTLE_LIBS ${NETTLE_LIBRARIES} CACHE STRING "")
       config_h_add_compile_definitions(HAVE_LIBNETTLE=1)
     endif()
   endif()
@@ -508,8 +522,8 @@ if(NOT HAVE_OPENSSL)
     find_package(GMP)
 
     if(GMP_FOUND AND(HAVE_LIBNETTLE OR HAVE_NATIVETLS) AND ENABLE_BITTORRENT)
-      set(LIBGMP_LIBS ${GMP_LIBRARIES})
-      set(LIBGMP_CFLAGS "")
+      set(LIBGMP_LIBS ${GMP_LIBRARIES} CACHE STRING "")
+      set(LIBGMP_CFLAGS "" CACHE STRING "")
       set(HAVE_LIBGMP yes CACHE BOOL "Define if you have GNU Multiple Precision Arithmetis Library (GMP)" FORCE)
       config_h_add_compile_definitions(HAVE_LIBGMP=1)
       set(save_CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
@@ -531,8 +545,8 @@ if(NOT HAVE_OPENSSL)
     find_package(LibGcrypt)
 
     if(LibGcrypt_FOUND AND NOT HAVE_NATIVETLS AND NOT HAVE_LIBNETTLE)
-      set(LIBGCRYPT_CFLAGS "")
-      set(LIBGCRYPT_LIBS ${LibGcrypt_LIBRARIES})
+      set(LIBGCRYPT_CFLAGS "" CACHE STRING "")
+      set(LIBGCRYPT_LIBS ${LibGcrypt_LIBRARIES} CACHE STRING "")
       set(HAVE_LIBGCRYPT yes CACHE BOOL "Define is you have LibGcrypt" FORCE)
       config_h_add_compile_definitions(HAVE_LIBGCRYPT=1)
     endif()
@@ -546,8 +560,8 @@ if(WITH_LIBSSH2)
 
   if(LIBSSH2_FOUND)
     set(HAVE_LIBSSH2 yes CACHE BOOL "Define if you have LibSSH2" FORCE)
-    set(LIBSSH2_CFLAGS "")
-    set(LIBSSH2_LIBS ${LIBSSH2_LIBRARIES})
+    set(LIBSSH2_CFLAGS "" CACHE STRING "")
+    set(LIBSSH2_LIBS ${LIBSSH2_LIBRARIES} CACHE STRING "")
     config_h_add_compile_definitions(HAVE_LIBSSH2=1)
   endif()
 endif()
@@ -559,8 +573,8 @@ if(WITH_LIBCARES)
 
   if(LIBCARES_FOUND)
     set(HAVE_LIBCARES yes CACHE BOOL "Define if you hae libcares" FORCE)
-    set(LIBCARES_CFLAGS "")
-    set(LIBCARES_LIBS ${LIBCARES_LIBRARIES})
+    set(LIBCARES_CFLAGS "" CACHE STRING "")
+    set(LIBCARES_LIBS ${LIBCARES_LIBRARIES} CACHE STRING "")
     config_h_add_compile_definitions(HAVE_LIBCARES=1)
 
     set(save_CMAKE_EXTRA_INCLUDE_FILES ${CMAKE_EXTRA_INCLUDE_FILES})
@@ -624,9 +638,9 @@ if(ENABLE_SSL)
 endif()
 
 if(HAVE_LIBGMP OR HAVE_LIBGCRYPT OR HAVE_OPENSSL)
-  set(USE_INTERNAL_BIGNUM no)
+  set(USE_INTERNAL_BIGNUM no CACHE BOOL "")
 else()
-  set(USE_INTERNAL_BIGNUM yes)
+  set(USE_INTERNAL_BIGNUM yes CACHE BOOL "")
 endif()
 
 if(USE_INTERNAL_BIGNUM)
@@ -634,9 +648,9 @@ if(USE_INTERNAL_BIGNUM)
 endif()
 
 if(HAVE_LIBNETTLE OR HAVE_LIBGCRYPT OR HAVE_OPENSSL)
-  set(USE_INTERNAL_ARC4 no)
+  set(USE_INTERNAL_ARC4 no CACHE BOOL "")
 else()
-  set(USE_INTERNAL_ARC4 yes)
+  set(USE_INTERNAL_ARC4 yes CACHE BOOL "")
 endif()
 
 if(USE_INTERNAL_ARC4)
@@ -761,11 +775,11 @@ endif()
 
 set(save_CMAKE_EXTRA_INCLUDE_FILES ${CMAKE_EXTRA_INCLUDE_FILES})
 set(CMAKE_EXTRA_INCLUDE_FILES ${a2_found_headers})
-check_type_size("struct timespec" HAVE_A2_STRUCT_TIMESPEC LANGUAGE CXX)
+check_type_size("struct timespec" A2_STRUCT_TIMESPEC LANGUAGE CXX)
 set(CMAKE_EXTRA_INCLUDE_FILES ${save_CMAKE_EXTRA_INCLUDE_FILES})
 
-if(HAVE_A2_STRUCT_TIMESPEC)
-  set(HAVE_A2_STRUCT_TIMESPEC true)
+if(A2_STRUCT_TIMESPEC)
+  set(HAVE_A2_STRUCT_TIMESPEC true CACHE BOOL "")
   config_h_add_compile_definitions(HAVE_A2_STRUCT_TIMESPEC)
 endif()
 
@@ -942,9 +956,9 @@ endforeach()
 unset(_check_funcs)
 
 if(NOT HAVE_GAI_STRERR AND HAVE_WS2TCPIP_H AND (WIN32 AND NOT MINGW))
-  set(HAVE_GAI_STRERROR true) # It's there in ws2tcpip.h
+  set(HAVE_GAI_STRERROR yes CACHE BOOL "") # It's there in ws2tcpip.h
   config_h_add_compile_definitions(HAVE_GAI_STRERROR)
-  set(HAVE_GETADDRINFO true) # It's there in ws2tcpip.h
+  set(HAVE_GETADDRINFO yes CACHE BOOL "") # It's there in ws2tcpip.h
   config_h_add_compile_definitions(HAVE_GETADDRINFO)
 endif()
 
@@ -1020,7 +1034,7 @@ endif()
 
 if(ARIA2_STATIC)
   if(NOT WIN32 AND NOT APPLE)
-    set(EXTRALIBS -lpthread -ldl -lrt ${EXTRALIBS})
+    set(EXTRALIBS -lpthread -ldl -lrt ${EXTRALIBS} CACHE STRING "")
   endif()
 endif()
 
