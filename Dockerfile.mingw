@@ -33,7 +33,7 @@ RUN apt-get update && \
 RUN curl -L -O https://gmplib.org/download/gmp/gmp-6.2.1.tar.lz && \
     curl -L -O https://github.com/libexpat/libexpat/releases/download/R_2_4_1/expat-2.4.1.tar.bz2 && \
     curl -L -O https://www.sqlite.org/2021/sqlite-autoconf-3360000.tar.gz && \
-    curl -L -O http://zlib.net/zlib-1.2.11.tar.gz && \
+    curl -L -O http://zlib.net/fossils/zlib-1.2.11.tar.gz && \
     curl -L -O https://c-ares.haxx.se/download/c-ares-1.17.2.tar.gz && \
     curl -L -O https://www.libssh2.org/download/libssh2-1.9.0.tar.gz && \
     curl -L -O https://github.com/libssh2/libssh2/commit/ba149e804ef653cc05ed9803dfc94519ce9328f7.patch
