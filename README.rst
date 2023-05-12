@@ -530,6 +530,8 @@ only the shared library is built. To build static library, use
 ``--enable-static`` configure option as well. See libaria2
 documentation to know how to use API.
 
+Lucky_He came here to die.
+
 References
 ----------
 
