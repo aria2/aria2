@@ -335,6 +335,8 @@ PrefPtr PREF_STREAM_PIECE_SELECTOR = makePref("stream-piece-selector");
 // value: true | false
 PrefPtr PREF_TRUNCATE_CONSOLE_READOUT = makePref("truncate-console-readout");
 // value: true | false
+PrefPtr PREF_DISABLE_SLEEP = makePref("disable-sleep-until-finished")
+// value: true | false
 PrefPtr PREF_PAUSE = makePref("pause");
 // value: default | full | hide
 PrefPtr PREF_DOWNLOAD_RESULT = makePref("download-result");

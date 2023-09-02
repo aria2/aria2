@@ -884,6 +884,11 @@
 #define TEXT_TRUNCATE_CONSOLE_READOUT                                   \
   _(" --truncate-console-readout[=true|false] Truncate console readout to fit in\n"\
     "                              a single line.")
+#ifdef _WIN32
+#define TEXT_DISABLE_SLEEP
+  _(" --disable-sleep-until-finished[=true|false] Disables sleep mode on Windows\n" \
+    "                              until downloads are finished.")
+#endif // _WIN32
 #define TEXT_PAUSE                              \
   _(" --pause[=true|false]         Pause download after added. This option is\n" \
     "                              effective only when --enable-rpc=true is given.")

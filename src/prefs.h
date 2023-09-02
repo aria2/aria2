@@ -288,6 +288,8 @@ extern PrefPtr PREF_STREAM_PIECE_SELECTOR;
 // value: true | false
 extern PrefPtr PREF_TRUNCATE_CONSOLE_READOUT;
 // value: true | false
+extern PrefPtr PREF_DISABLE_SLEEP;
+// value: true | false
 extern PrefPtr PREF_PAUSE;
 // value: default | full | hide
 extern PrefPtr PREF_DOWNLOAD_RESULT;

@@ -69,11 +69,7 @@ error_code::Value main(int argc, char** argv)
     pargv[i] = winArgStrs.back().get();
   }
 
-  SetThreadExecutionState(ES_CONTINUOUS | ES_SYSTEM_REQUIRED);
-
   Context context(true, winArgc, pargv.get(), KeyVals());
-
-  SetThreadExecutionState(ES_CONTINUOUS);
 #else  // !__MINGW32__
   Context context(true, argc, argv, KeyVals());
 #endif // !__MINGW32__
