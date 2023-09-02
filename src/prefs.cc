@@ -334,8 +334,10 @@ PrefPtr PREF_SHOW_CONSOLE_READOUT = makePref("show-console-readout");
 PrefPtr PREF_STREAM_PIECE_SELECTOR = makePref("stream-piece-selector");
 // value: true | false
 PrefPtr PREF_TRUNCATE_CONSOLE_READOUT = makePref("truncate-console-readout");
+#ifdef _WIN32
 // value: true | false
-PrefPtr PREF_DISABLE_SLEEP = makePref("disable-sleep-until-finished")
+PrefPtr PREF_DISABLE_SLEEP = makePref("disable-sleep-until-finished");
+#endif // _WIN32
 // value: true | false
 PrefPtr PREF_PAUSE = makePref("pause");
 // value: default | full | hide

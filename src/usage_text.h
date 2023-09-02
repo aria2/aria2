@@ -885,7 +885,7 @@
   _(" --truncate-console-readout[=true|false] Truncate console readout to fit in\n"\
     "                              a single line.")
 #ifdef _WIN32
-#define TEXT_DISABLE_SLEEP
+#define TEXT_DISABLE_SLEEP \
   _(" --disable-sleep-until-finished[=true|false] Disables sleep mode on Windows\n" \
     "                              until downloads are finished.")
 #endif // _WIN32
