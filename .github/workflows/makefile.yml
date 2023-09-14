@@ -41,7 +41,7 @@ jobs:
       run: ./configure ARIA2_STATIC=yes
 
     - name: Install dependencies
-      run: make
+      run: make $(nproc)
     
     - name: aria2 binary upload
       uses: actions/upload-artifact@v3.1.2
