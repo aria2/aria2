@@ -106,6 +106,20 @@ void SimpleRandomizer::getRandomBytes(unsigned char* buf, size_t len)
   auto iter = len / blocklen;
   auto p = buf;
 
+#if !HAVE_GETENTROPY
+  auto getentropy = [this](void *buffer, size_t length) {
+    auto buf = reinterpret_cast<unsigned int*>(buffer);
+    auto dis = std::uniform_int_distribution<unsigned int>();
+    for (size_t q = length / sizeof(unsigned int); q > 0; --q, ++buf) {
+      *buf = dis(gen_);
+    }
+    const size_t r = length % sizeof(unsigned int);
+    auto last = dis(gen_);
+    memcpy(buf, &last, r);
+    return 0;
+  };
+#endif // !HAVE_GETENTROPY
+
   for (size_t i = 0; i < iter; ++i) {
     auto rv = getentropy(p, blocklen);
     if (rv != 0) {
@@ -128,7 +142,7 @@ void SimpleRandomizer::getRandomBytes(unsigned char* buf, size_t len)
     assert(0);
     abort();
   }
-#endif // ! __MINGW32__
+#endif // !__MINGW32__ && !__APPLE__
 }
 
 } // namespace aria2
