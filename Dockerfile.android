@@ -40,7 +40,7 @@ RUN curl -L -O https://dl.google.com/android/repository/android-ndk-$NDK_VERSION
    rm android-ndk-$NDK_VERSION-linux.zip
 
 # aria2 version
-ENV ARIA2_VERSION master
+ARG ARIA2_VERSION=master
 
 # Library versions
 ENV OPENSSL_VERSION=1.1.1w
@@ -122,7 +122,7 @@ RUN ./configure \
 
 # Build aria2
 WORKDIR /root/build
-RUN git clone https://github.com/aria2/aria2 -b $ARIA2_VERSION --depth 1
+RUN git clone -b $ARIA2_VERSION --depth 1 https://github.com/aria2/aria2
 
 WORKDIR /root/build/aria2
 RUN autoreconf -i && \
