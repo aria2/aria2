@@ -8,6 +8,10 @@ jobs:
       matrix:
         os: [ubuntu-22.04, macos-11]
         compiler: [gcc, clang]
+        crypto: [openssl, gnutls]
+        exclude:
+        - os: macos-11
+          crypto: gnutls
 
     runs-on: ${{ matrix.os }}
 
@@ -26,6 +30,7 @@ jobs:
           libtool \
           pkg-config \
           libssl-dev \
+          libgnutls28-dev \
           libc-ares-dev \
           zlib1g-dev \
           libsqlite3-dev \
@@ -59,18 +64,29 @@ jobs:
     - name: Libtool
       run: |
         autoreconf -i
-    - name: Configure autotools (Linux)
-      if: runner.os == 'Linux'
+    - name: Setup compiler flags
       run: |
-        ./configure \
-          CPPFLAGS="-fsanitize=address" LDFLAGS="-fsanitize=address"
+        asanflags="-fsanitize=address,undefined -fno-sanitize-recover=undefined"
+
+        CPPFLAGS="$asanflags -g3"
+        LDFLAGS="$asanflags"
+
+        echo 'CPPFLAGS='"$CPPFLAGS" >> $GITHUB_ENV
+        echo 'LDFLAGS='"$LDFLAGS" >> $GITHUB_ENV
+    - name: Configure autotools (Linux, gnutls)
+      if: runner.os == 'Linux' && matrix.crypto == 'gnutls'
+      run: |
+        ./configure --with-gnutls --without-openssl
+    - name: Configure autotools (Linux, openssl)
+      if: runner.os == 'Linux' && matrix.crypto == 'openssl'
+      run: |
+        ./configure --without-gnutls --with-openssl
     - name: Configure autotools (macOS)
       if: runner.os == 'macOS'
       run: |
         ./configure \
           --without-openssl --without-gnutls --with-appletls \
-          --disable-nls \
-          CPPFLAGS="-fsanitize=address" LDFLAGS="-fsanitize=address"
+          --disable-nls
     - name: Build aria2
       run: |
         make -j"$(nproc 2> /dev/null || sysctl -n hw.ncpu)" check
