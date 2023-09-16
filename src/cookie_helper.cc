@@ -302,7 +302,7 @@ std::unique_ptr<Cookie> parse(const std::string& cookieStr,
           int64_t n = creationTime;
 
           if (n > std::numeric_limits<int64_t>::max() - delta) {
-            maxAge = std::numeric_limits<int64_t>::max();
+            maxAge = std::numeric_limits<time_t>::max();
           } else {
             n += delta;
 
