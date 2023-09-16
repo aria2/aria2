@@ -45,6 +45,14 @@
 #  include <Security/SecRandom.h>
 #endif // __APPLE__
 
+#ifdef HAVE_LIBGNUTLS
+#  include <gnutls/crypto.h>
+#endif // HAVE_LIBGNUTLS
+
+#ifdef HAVE_OPENSSL
+#  include <openssl/rand.h>
+#endif // HAVE_OPENSSL
+
 #include "a2time.h"
 #include "a2functional.h"
 #include "LogFactory.h"
@@ -101,7 +109,19 @@ void SimpleRandomizer::getRandomBytes(unsigned char* buf, size_t len)
 #elif defined(__APPLE__)
   auto rv = SecRandomCopyBytes(kSecRandomDefault, len, buf);
   assert(errSecSuccess == rv);
-#else  // !__MINGW32__ && !__APPLE__
+#elif defined(HAVE_LIBGNUTLS)
+  auto rv = gnutls_rnd(GNUTLS_RND_RANDOM, buf, len);
+  if (rv != 0) {
+    assert(0 == rv);
+    abort();
+  }
+#elif defined(HAVE_OPENSSL)
+  auto rv = RAND_bytes(buf, len);
+  if (rv != 1) {
+    assert(1 == rv);
+    abort();
+  }
+#else
   constexpr static size_t blocklen = 256;
   auto iter = len / blocklen;
   auto p = buf;
@@ -128,7 +148,7 @@ void SimpleRandomizer::getRandomBytes(unsigned char* buf, size_t len)
     assert(0);
     abort();
   }
-#endif // ! __MINGW32__
+#endif // !__MINGW32__ && !__APPLE__ && !HAVE_OPENSSL && !HAVE_LIBGNUTLS
 }
 
 } // namespace aria2
