@@ -934,17 +934,9 @@ case "$host" in
     ;;
 esac
 
-case "$host" in
-  *android*)
-    # timegm is not declared with Android NDK r12b
-    AM_CONDITIONAL([HAVE_TIMEGM], false)
-    ;;
-  *)
-    AC_CHECK_FUNCS([timegm],
-        [AM_CONDITIONAL([HAVE_TIMEGM], true)],
-        [AM_CONDITIONAL([HAVE_TIMEGM], false)])
-    ;;
-esac
+AC_CHECK_FUNCS([timegm],
+    [AM_CONDITIONAL([HAVE_TIMEGM], true)],
+    [AM_CONDITIONAL([HAVE_TIMEGM], false)])
 
 AC_CHECK_FUNCS([port_associate], [have_port_associate=yes])
 AM_CONDITIONAL([HAVE_PORT_ASSOCIATE], [test "x$have_port_associate" = "xyes"])
