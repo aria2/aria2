@@ -102,8 +102,7 @@ void MetalinkEntry::reorderMetaurlsByPriority()
 }
 
 namespace {
-class Supported
-    : public std::unary_function<std::shared_ptr<MetalinkResource>, bool> {
+class Supported {
 public:
   bool operator()(const std::shared_ptr<MetalinkResource>& res) const
   {

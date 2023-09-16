@@ -352,7 +352,7 @@ public:
 } // namespace
 
 namespace {
-class OrderByPathDepthDesc : public std::binary_function<Cookie, Cookie, bool> {
+class OrderByPathDepthDesc {
 public:
   bool operator()(const CookiePathDivider& lhs,
                   const CookiePathDivider& rhs) const
