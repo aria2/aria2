@@ -662,7 +662,7 @@ bool BitfieldMan::isUseBitSet(size_t index) const
 void BitfieldMan::setBitfield(const unsigned char* bitfield,
                               size_t bitfieldLength)
 {
-  if (bitfieldLength_ != bitfieldLength) {
+  if (bitfieldLength_ == 0 || bitfieldLength_ != bitfieldLength) {
     return;
   }
   memcpy(bitfield_, bitfield, bitfieldLength_);
