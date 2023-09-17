@@ -17,7 +17,7 @@ WORKDIR /root
 RUN apt-get update && \
     apt-get install -y  --no-install-recommends \
       unzip bzip2 make binutils autoconf automake autotools-dev autopoint \
-      libtool pkg-config git curl ca-certificates && \
+      libtool pkg-config git dpkg-dev curl ca-certificates && \
     rm -rf /var/cache/apt/*
 
 # NDK version
