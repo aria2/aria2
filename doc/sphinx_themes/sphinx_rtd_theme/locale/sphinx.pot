@@ -1,22 +1,22 @@
 # Translations template for sphinx_rtd_theme.
-# Copyright (C) 2021 ORGANIZATION
+# Copyright (C) 2023 ORGANIZATION
 # This file is distributed under the same license as the sphinx_rtd_theme
 # project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: sphinx_rtd_theme 1.0.0rc1\n"
+"Project-Id-Version: sphinx_rtd_theme 1.2.0rc4\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-08-17 10:02-0600\n"
+"POT-Creation-Date: 2023-02-06 15:36+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.11.0\n"
 
 #. This is an ARIA section label for page links, including previous/next page
 #. link and links to GitHub/GitLab/etc.
@@ -92,7 +92,7 @@ msgid "Built with %(sphinx_web)s using a"
 msgstr ""
 
 #. "theme" refers to a theme for Sphinx, which alters the appearance of the
-#. generated documenation
+#. generated documentation
 #: sphinx_rtd_theme/footer.html:55
 msgid "theme"
 msgstr ""
@@ -125,18 +125,18 @@ msgstr ""
 msgid "Copyright"
 msgstr ""
 
-#: sphinx_rtd_theme/layout.html:147 sphinx_rtd_theme/layout.html:149
+#: sphinx_rtd_theme/layout.html:143
 msgid "Logo"
 msgstr ""
 
 #. This is an ARIA section label for the main navigation menu
-#: sphinx_rtd_theme/layout.html:173
+#: sphinx_rtd_theme/layout.html:166
 msgid "Navigation menu"
 msgstr ""
 
 #. This is an ARIA section label for the navigation menu that is visible when
 #. viewing the page on mobile devices
-#: sphinx_rtd_theme/layout.html:195
+#: sphinx_rtd_theme/layout.html:188
 msgid "Mobile navigation menu"
 msgstr ""
 
