@@ -5,39 +5,52 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 # 
 # Translators:
-# Anthony <aj@ohess.org>, 2020
-# 王赛 <wangsai@bootcss.com>, 2020
+# 王赛 <wangsai@bootcss.com>, 2019
+# Anthony <aj@ohess.org>, 2022
+# JY3, 2022
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: sphinx_rtd_theme 0.4.3.dev0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-08-17 10:02-0600\n"
+"POT-Creation-Date: 2023-02-06 15:36+0100\n"
 "PO-Revision-Date: 2019-07-16 21:44+0000\n"
-"Last-Translator: 王赛 <wangsai@bootcss.com>, 2020\n"
+"Last-Translator: JY3, 2022\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/readthedocs/teams/101354/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.11.0\n"
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+#. This is an ARIA section label for page links, including previous/next page
+#. link and links to GitHub/GitLab/etc.
+#: sphinx_rtd_theme/breadcrumbs.html:22
+msgid "Page navigation"
+msgstr "页面导航"
+
 #: sphinx_rtd_theme/breadcrumbs.html:37 sphinx_rtd_theme/breadcrumbs.html:39
 msgid "Edit on GitHub"
-msgstr "在 GitHub 上修改"
+msgstr "在 GitHub 上编辑"
 
 #: sphinx_rtd_theme/breadcrumbs.html:44 sphinx_rtd_theme/breadcrumbs.html:46
 msgid "Edit on Bitbucket"
-msgstr "在 Bitbucket 上修改"
+msgstr "在 Bitbucket 上编辑"
 
 #: sphinx_rtd_theme/breadcrumbs.html:51 sphinx_rtd_theme/breadcrumbs.html:53
 msgid "Edit on GitLab"
-msgstr "在 GitLab 上修改"
+msgstr "在 GitLab 上编辑"
 
 #: sphinx_rtd_theme/breadcrumbs.html:56 sphinx_rtd_theme/breadcrumbs.html:58
 msgid "View page source"
 msgstr "查看页面源码"
+
+#. This is an ARIA section label for sequential page links, such as previous
+#. and next page links.
+#: sphinx_rtd_theme/breadcrumbs.html:67
+msgid "Sequential page navigation"
+msgstr "顺序式页面导航"
 
 #: sphinx_rtd_theme/breadcrumbs.html:69 sphinx_rtd_theme/footer.html:6
 msgid "Previous"
@@ -47,6 +60,21 @@ msgstr "上一页"
 msgid "Next"
 msgstr "下一页"
 
+#. This is an ARIA section label for the footer section of the page.
+#: sphinx_rtd_theme/footer.html:4
+msgid "Footer"
+msgstr "页脚"
+
+#: sphinx_rtd_theme/footer.html:21
+#, python-format
+msgid "&#169; <a href=\"%(path)s\">Copyright</a> %(copyright)s."
+msgstr "&#169; <a href=\"%(path)s\">版权所有</a> %(copyright)s。"
+
+#: sphinx_rtd_theme/footer.html:23
+#, python-format
+msgid "&#169; Copyright %(copyright)s."
+msgstr "&#169; 版权所有 %(copyright)s。"
+
 #. Build is a noun, not a verb
 #: sphinx_rtd_theme/footer.html:30
 msgid "Build"
@@ -55,7 +83,7 @@ msgstr "构建"
 #. the phrase "revision" comes from Git, referring to a commit
 #: sphinx_rtd_theme/footer.html:36
 msgid "Revision"
-msgstr "修订"
+msgstr "版本"
 
 #: sphinx_rtd_theme/footer.html:41
 #, python-format
@@ -68,10 +96,10 @@ msgstr "最后更新时间 %(last_updated)s。"
 #: sphinx_rtd_theme/footer.html:53
 #, python-format
 msgid "Built with %(sphinx_web)s using a"
-msgstr "利用 %(sphinx_web)s 构建，使用了 "
+msgstr "利用 %(sphinx_web)s 构建，使用的 "
 
 #. "theme" refers to a theme for Sphinx, which alters the appearance of the
-#. generated documenation
+#. generated documentation
 #: sphinx_rtd_theme/footer.html:55
 msgid "theme"
 msgstr "主题"
@@ -81,12 +109,12 @@ msgstr "主题"
 #: sphinx_rtd_theme/footer.html:57
 #, python-format
 msgid "provided by %(readthedocs_web)s"
-msgstr "由 %(readthedocs_web)s开发"
+msgstr "由 %(readthedocs_web)s 开发"
 
 #: sphinx_rtd_theme/layout.html:97
 #, python-format
 msgid "Search within %(docstitle)s"
-msgstr "在 %(docstitle)s中搜索"
+msgstr "在 %(docstitle)s 中搜索"
 
 #: sphinx_rtd_theme/layout.html:105
 msgid "About these documents"
@@ -104,9 +132,20 @@ msgstr "搜索"
 msgid "Copyright"
 msgstr "版权所有"
 
-#: sphinx_rtd_theme/layout.html:147 sphinx_rtd_theme/layout.html:149
+#: sphinx_rtd_theme/layout.html:143
 msgid "Logo"
 msgstr "Logo"
+
+#. This is an ARIA section label for the main navigation menu
+#: sphinx_rtd_theme/layout.html:166
+msgid "Navigation menu"
+msgstr "导航菜单"
+
+#. This is an ARIA section label for the navigation menu that is visible when
+#. viewing the page on mobile devices
+#: sphinx_rtd_theme/layout.html:188
+msgid "Mobile navigation menu"
+msgstr "移动版导航菜单"
 
 #: sphinx_rtd_theme/search.html:31
 msgid "Please activate JavaScript to enable the search functionality."
@@ -125,15 +164,15 @@ msgstr "您的搜索没有匹配到任何文档。请确保所有单词拼写正
 
 #: sphinx_rtd_theme/searchbox.html:4
 msgid "Search docs"
-msgstr "在文档中搜索"
+msgstr "搜索文档"
 
 #: sphinx_rtd_theme/versions.html:3 sphinx_rtd_theme/versions.html:11
 msgid "Versions"
-msgstr "版本列表"
+msgstr "版本"
 
 #: sphinx_rtd_theme/versions.html:17
 msgid "Downloads"
-msgstr "下载链接"
+msgstr "下载"
 
 #. The phrase "Read the Docs" is not translated
 #: sphinx_rtd_theme/versions.html:24
@@ -142,17 +181,8 @@ msgstr "托管于 Read the Docs"
 
 #: sphinx_rtd_theme/versions.html:26
 msgid "Project Home"
-msgstr "项目首页"
+msgstr "项目主页"
 
 #: sphinx_rtd_theme/versions.html:29
 msgid "Builds"
 msgstr "构建"
-
-#~ msgid "Docs"
-#~ msgstr "文档"
-
-#~ msgid "Free document hosting provided by"
-#~ msgstr "此文档免费托管于"
-
-#~ msgid "Documentation Home"
-#~ msgstr "文档首页"

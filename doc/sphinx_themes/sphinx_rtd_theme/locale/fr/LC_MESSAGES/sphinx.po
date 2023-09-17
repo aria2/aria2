@@ -6,23 +6,24 @@
 # 
 # Translators:
 # Anthony <aj@ohess.org>, 2020
-# Nicolas Friedli <nicolas.friedli@gmail.com>, 2021
 # Radina Matic <radina.matic@gmail.com>, 2021
+# Jérémie Tarot <silopolis@gmail.com>, 2023
+# CapitainFlam, 2023
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: sphinx_rtd_theme 0.4.3.dev0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-08-17 10:02-0600\n"
+"POT-Creation-Date: 2023-02-06 15:36+0100\n"
 "PO-Revision-Date: 2019-07-16 21:44+0000\n"
-"Last-Translator: Radina Matic <radina.matic@gmail.com>, 2021\n"
+"Last-Translator: CapitainFlam, 2023\n"
 "Language-Team: French (https://www.transifex.com/readthedocs/teams/101354/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.11.0\n"
 "Language: fr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #: sphinx_rtd_theme/breadcrumbs.html:37 sphinx_rtd_theme/breadcrumbs.html:39
 msgid "Edit on GitHub"
@@ -48,6 +49,21 @@ msgstr "Précédent"
 msgid "Next"
 msgstr "Suivant"
 
+#. This is an ARIA section label for the footer section of the page.
+#: sphinx_rtd_theme/footer.html:4
+msgid "Footer"
+msgstr "Pied de page"
+
+#: sphinx_rtd_theme/footer.html:21
+#, python-format
+msgid "&#169; <a href=\"%(path)s\">Copyright</a> %(copyright)s."
+msgstr "&#169; <a href=\"%(path)s\">Droits d'auteur</a> %(copyright)s."
+
+#: sphinx_rtd_theme/footer.html:23
+#, python-format
+msgid "&#169; Copyright %(copyright)s."
+msgstr "&#169; Droits d'auteur %(copyright)s."
+
 #. Build is a noun, not a verb
 #: sphinx_rtd_theme/footer.html:30
 msgid "Build"
@@ -72,7 +88,7 @@ msgid "Built with %(sphinx_web)s using a"
 msgstr "Compilé avec %(sphinx_web)s en utilisant un"
 
 #. "theme" refers to a theme for Sphinx, which alters the appearance of the
-#. generated documenation
+#. generated documentation
 #: sphinx_rtd_theme/footer.html:55
 msgid "theme"
 msgstr "thème"
@@ -105,7 +121,7 @@ msgstr "Rechercher"
 msgid "Copyright"
 msgstr "Droits d'auteur"
 
-#: sphinx_rtd_theme/layout.html:147 sphinx_rtd_theme/layout.html:149
+#: sphinx_rtd_theme/layout.html:143
 msgid "Logo"
 msgstr "Logo"
 
@@ -151,12 +167,3 @@ msgstr "Accueil du projet"
 #: sphinx_rtd_theme/versions.html:29
 msgid "Builds"
 msgstr "Compilations"
-
-#~ msgid "Docs"
-#~ msgstr "Docs"
-
-#~ msgid "Free document hosting provided by"
-#~ msgstr "Hébergement gratuit de documents fourni par"
-
-#~ msgid "Documentation Home"
-#~ msgstr "Accueil de la documentation"
