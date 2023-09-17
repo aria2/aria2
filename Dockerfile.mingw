@@ -103,8 +103,6 @@ RUN tar xf libssh2-1.11.0.tar.bz2 && \
         --prefix=/usr/local/$HOST \
         --host=$HOST \
         --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` \
-        --without-openssl \
-        --with-wincng \
         LIBS="-lws2_32" && \
     make -j$(nproc) install
 
