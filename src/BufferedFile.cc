@@ -86,7 +86,9 @@ int BufferedFile::onClose()
 #else  // __MINGW32__
     _commit(fileno(fp_));
 #endif // __MINGW32__
-    rv = fclose(fp_);
+    if (fp_ != stdin && fp_ != stderr) {
+      rv = fclose(fp_);
+    }
     fp_ = nullptr;
   }
   return rv;
