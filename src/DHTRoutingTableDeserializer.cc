@@ -196,8 +196,8 @@ void DHTRoutingTableDeserializer::deserialize(const std::string& filename)
 
     nodes.push_back(node);
   }
-  localNode_ = localNode;
-  nodes_ = nodes;
+  localNode_ = std::move(localNode);
+  nodes_ = std::move(nodes);
   A2_LOG_INFO("DHT routing table was loaded successfully");
 }
 
