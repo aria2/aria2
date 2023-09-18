@@ -289,6 +289,10 @@ void DefaultBtProgressInfoFile::load()
     pieceLength = ntohl(pieceLength);
   }
 
+  if (pieceLength == 0) {
+    throw DL_ABORT_EX("piece length must not be 0");
+  }
+
   uint64_t totalLength;
   READ_CHECK(fp, &totalLength, sizeof(totalLength));
   if (version >= 1) {

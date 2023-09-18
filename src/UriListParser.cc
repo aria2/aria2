@@ -77,7 +77,7 @@ void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
           if (fp_->eof()) {
             break;
           }
-          else if (!fp_) {
+          else if (!*fp_) {
             throw DL_ABORT_EX("UriListParser:I/O error.");
           }
           else {
@@ -102,7 +102,7 @@ void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
       if (fp_->eof()) {
         return;
       }
-      else if (!fp_) {
+      else if (!*fp_) {
         throw DL_ABORT_EX("UriListParser:I/O error.");
       }
     }
