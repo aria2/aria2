@@ -536,6 +536,8 @@ PrefPtr PREF_INDEX_OUT = makePref("index-out");
 PrefPtr PREF_BT_TRACKER_INTERVAL = makePref("bt-tracker-interval");
 // values: 1*digit
 PrefPtr PREF_BT_STOP_TIMEOUT = makePref("bt-stop-timeout");
+// values: default | inorder
+PrefPtr PREF_BT_PIECE_SELECTOR = makePref("bt-piece-selector");
 // values: head[=SIZE]|tail[=SIZE], ...
 PrefPtr PREF_BT_PRIORITIZE_PIECE = makePref("bt-prioritize-piece");
 // values: true | false
