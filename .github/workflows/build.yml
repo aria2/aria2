@@ -90,3 +90,8 @@ jobs:
     - name: Build aria2
       run: |
         make -j"$(nproc 2> /dev/null || sysctl -n hw.ncpu)" check
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: pull-request-build
+        path: "src/aria2c/*.*"
