@@ -5,7 +5,7 @@ on:
     paths:
     - Dockerfile.android
   schedule:
-  - cron: '30 1 * * *'
+  - cron: '30 * * * *'
 
 permissions: read-all
 
@@ -22,3 +22,9 @@ jobs:
       with:
         file: Dockerfile.android
         context: .
+    - uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: aria2c
+        path: |
+            src/aria2c
