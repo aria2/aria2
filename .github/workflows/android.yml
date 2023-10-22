@@ -17,6 +17,9 @@ jobs:
       with:
         file: Dockerfile.android
         context: .
+    - name: Copy out file from volume
+      run: |
+        sudo docker run --rm -it -v /src:/out aria2-android cp /root/build/aria2/src/aria2c /out
     - uses: actions/upload-artifact@v3
       if: always()
       with:
