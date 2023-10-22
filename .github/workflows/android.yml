@@ -1,11 +1,6 @@
 name: android
 
-on:
-  push:
-    paths:
-    - Dockerfile.android
-  schedule:
-  - cron: '30 * * * *'
+on: [push, pull_request]
 
 permissions: read-all
 
@@ -22,12 +17,9 @@ jobs:
       with:
         file: Dockerfile.android
         context: .
-    - name: Copy out file from volume
-      run: |
-        sudo cp /root/build/aria2/src/aria2c /home/
     - uses: actions/upload-artifact@v3
       if: always()
       with:
-        name: aria2c-${{ runner.os }}-${{ matrix.crypto }}
+        name: aria2c
         path: |
-            /home/aria2c
+            ${{ github.workspace }}
