@@ -25,6 +25,6 @@ jobs:
     - uses: actions/upload-artifact@v3
       if: always()
       with:
-        name: aria2c
+        name: aria2c-${{ runner.os }}-${{ matrix.crypto }}
         path: |
-            src/aria2c
+            /root/build/aria2/src
