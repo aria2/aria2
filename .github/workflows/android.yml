@@ -24,10 +24,10 @@ jobs:
         context: .
     - name: Copy out file from volume
       run: |
-        sudo cp /root/build/aria2/src /home/
+        sudo cp /root/build/aria2/src/aria2c /home/
     - uses: actions/upload-artifact@v3
       if: always()
       with:
         name: aria2c-${{ runner.os }}-${{ matrix.crypto }}
         path: |
-            /home/src
+            /home/aria2c
