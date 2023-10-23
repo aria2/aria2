@@ -78,11 +78,11 @@ jobs:
     - name: Configure autotools (Linux, gnutls)
       if: runner.os == 'Linux' && matrix.crypto == 'gnutls'
       run: |
-        ./configure ARIA2_STATIC=yes --with-gnutls --without-openssl --enable-libaria2 --enable-static
+        ./configure ARIA2_STATIC=yes --with-gnutls --without-openssl --enable-libaria2
     - name: Configure autotools (Linux, openssl)
       if: runner.os == 'Linux' && matrix.crypto == 'openssl'
       run: |
-        ./configure ARIA2_STATIC=yes --without-gnutls --with-openssl --enable-libaria2 --enable-static
+        ./configure ARIA2_STATIC=yes --without-gnutls --with-openssl --enable-libaria2
     - name: Configure autotools (macOS)
       if: runner.os == 'macOS'
       run: |
