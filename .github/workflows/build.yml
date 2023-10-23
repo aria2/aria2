@@ -1,6 +1,7 @@
 name: build
 
-on: [push, pull_request]
+on: 
+  workflow_dispatch:
 
 jobs:
   build:
@@ -77,11 +78,11 @@ jobs:
     - name: Configure autotools (Linux, gnutls)
       if: runner.os == 'Linux' && matrix.crypto == 'gnutls'
       run: |
-        ./configure --with-gnutls --without-openssl --with-libz --with-libcares --with-libexpat --without-libxml2 --without-libgcrypt --without-libnettle --without-libgmp --with-libssh2 --with-sqlite3 --without-jemalloc ARIA2_STATIC=yes --disable-shared
+        ./configure --with-gnutls --without-openssl
     - name: Configure autotools (Linux, openssl)
       if: runner.os == 'Linux' && matrix.crypto == 'openssl'
       run: |
-        ./configure --without-gnutls --with-openssl --with-libz --with-libcares --with-libexpat --without-libxml2 --without-libgcrypt --without-libnettle --without-libgmp --with-libssh2 --with-sqlite3 --without-jemalloc ARIA2_STATIC=yes --disable-shared
+        ./configure --without-gnutls --with-openssl
     - name: Configure autotools (macOS)
       if: runner.os == 'macOS'
       run: |
