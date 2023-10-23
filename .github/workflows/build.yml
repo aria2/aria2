@@ -35,7 +35,8 @@ jobs:
           zlib1g-dev \
           libsqlite3-dev \
           libssh2-1-dev \
-          libcppunit-dev
+          libcppunit-dev \
+          libunistring-dev
     - name: MacOS setup
       if: runner.os == 'macOS'
       run: |
