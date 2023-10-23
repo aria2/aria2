@@ -70,7 +70,7 @@ jobs:
       run: |
         asanflags="-fsanitize=address,undefined -fno-sanitize-recover=undefined"
 
-        CPPFLAGS="$asanflags -g3"
+        CPPFLAGS="$asanflags -g3 -s"
         LDFLAGS="$asanflags"
 
         echo 'CPPFLAGS='"$CPPFLAGS" >> $GITHUB_ENV
@@ -92,7 +92,6 @@ jobs:
     - name: Build aria2
       run: |
         make -j"$(nproc 2> /dev/null || sysctl -n hw.ncpu)" check
-        strip --strip-all src/aria2c
     - uses: actions/upload-artifact@v3
       if: always()
       with:
