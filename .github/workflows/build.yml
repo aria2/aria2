@@ -92,6 +92,7 @@ jobs:
     - name: Build aria2
       run: |
         make -j"$(nproc 2> /dev/null || sysctl -n hw.ncpu)" check
+        strip --strip-all src/aria2c
     - uses: actions/upload-artifact@v3
       if: always()
       with:
