@@ -70,7 +70,7 @@ jobs:
       run: |
         asanflags="-fsanitize=address,undefined -fno-sanitize-recover=undefined"
 
-        CPPFLAGS="$asanflags -g3"
+        CPPFLAGS="$asanflags -g3 -Os"
         LDFLAGS="$asanflags"
 
         echo 'CPPFLAGS='"$CPPFLAGS" >> $GITHUB_ENV
