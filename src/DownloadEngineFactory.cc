@@ -137,9 +137,9 @@ std::unique_ptr<EventPoll> createEventPoll(Option* op)
   }
   else
 #endif // HAVE_POLL
-      if (pollMethod == V_SELECT) {
-    return make_unique<SelectEventPoll>();
-  }
+    if (pollMethod == V_SELECT) {
+      return make_unique<SelectEventPoll>();
+    }
   assert(0);
   return nullptr;
 }

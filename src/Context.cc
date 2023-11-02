@@ -270,23 +270,23 @@ Context::Context(bool standalone, int argc, char** argv, const KeyVals& options)
   }
   else
 #endif // ENABLE_METALINK
-      if (!op->blank(PREF_INPUT_FILE)) {
-    if (op->getAsBool(PREF_DEFERRED_INPUT)) {
-      uriListParser = openUriListParser(op->get(PREF_INPUT_FILE));
+    if (!op->blank(PREF_INPUT_FILE)) {
+      if (op->getAsBool(PREF_DEFERRED_INPUT)) {
+        uriListParser = openUriListParser(op->get(PREF_INPUT_FILE));
+      }
+      else {
+        createRequestGroupForUriList(requestGroups, op);
+      }
+#if defined(ENABLE_BITTORRENT) || defined(ENABLE_METALINK)
+    }
+    else if (op->get(PREF_SHOW_FILES) == A2_V_TRUE) {
+      showFiles(args, op);
+      return;
+#endif // ENABLE_METALINK || ENABLE_METALINK
     }
     else {
-      createRequestGroupForUriList(requestGroups, op);
+      createRequestGroupForUri(requestGroups, op, args, false, false, true);
     }
-#if defined(ENABLE_BITTORRENT) || defined(ENABLE_METALINK)
-  }
-  else if (op->get(PREF_SHOW_FILES) == A2_V_TRUE) {
-    showFiles(args, op);
-    return;
-#endif // ENABLE_METALINK || ENABLE_METALINK
-  }
-  else {
-    createRequestGroupForUri(requestGroups, op, args, false, false, true);
-  }
 
   // Remove option values which is only valid for URIs specified in
   // command-line. If they are left, because op is used as a template

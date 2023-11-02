@@ -179,8 +179,7 @@ public:
 };
 #else  // !ENABLE_ASYNC_DNS
 template <typename SocketEntry, typename EventPoll>
-class ADNSEvent : public Event<SocketEntry> {
-};
+class ADNSEvent : public Event<SocketEntry> {};
 #endif // !ENABLE_ASYNC_DNS
 
 template <typename CommandEvent, typename ADNSEvent> class SocketEntry {
@@ -362,8 +361,7 @@ public:
   }
 };
 #else  // !ENABLE_ASYNC_DNS
-template <typename EventPoll> class AsyncNameResolverEntry {
-};
+template <typename EventPoll> class AsyncNameResolverEntry {};
 #endif // !ENABLE_ASYNC_DNS
 
 } // namespace aria2

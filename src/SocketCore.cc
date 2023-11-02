@@ -863,38 +863,39 @@ void SocketCore::readData(void* data, size_t& len)
   }
   else
 #endif // HAVE_LIBSSH2
-      if (!secure_) {
-    // Cast for Windows recv()
-    while ((ret = recv(sockfd_, reinterpret_cast<char*>(data), len, 0)) == -1 &&
-           SOCKET_ERRNO == A2_EINTR)
-      ;
-    int errNum = SOCKET_ERRNO;
-    if (ret == -1) {
-      if (!A2_WOULDBLOCK(errNum)) {
-        throw DL_RETRY_EX(fmt(EX_SOCKET_RECV, errorMsg(errNum).c_str()));
-      }
-      wantRead_ = true;
-      ret = 0;
-    }
-  }
-  else {
-#ifdef ENABLE_SSL
-    ret = tlsSession_->readData(data, len);
-    if (ret < 0) {
-      if (ret != TLS_ERR_WOULDBLOCK) {
-        throw DL_RETRY_EX(
-            fmt(EX_SOCKET_RECV, tlsSession_->getLastErrorString().c_str()));
-      }
-      if (tlsSession_->checkDirection() == TLS_WANT_READ) {
+    if (!secure_) {
+      // Cast for Windows recv()
+      while ((ret = recv(sockfd_, reinterpret_cast<char*>(data), len, 0)) ==
+                 -1 &&
+             SOCKET_ERRNO == A2_EINTR)
+        ;
+      int errNum = SOCKET_ERRNO;
+      if (ret == -1) {
+        if (!A2_WOULDBLOCK(errNum)) {
+          throw DL_RETRY_EX(fmt(EX_SOCKET_RECV, errorMsg(errNum).c_str()));
+        }
         wantRead_ = true;
+        ret = 0;
       }
-      else {
-        wantWrite_ = true;
-      }
-      ret = 0;
     }
+    else {
+#ifdef ENABLE_SSL
+      ret = tlsSession_->readData(data, len);
+      if (ret < 0) {
+        if (ret != TLS_ERR_WOULDBLOCK) {
+          throw DL_RETRY_EX(
+              fmt(EX_SOCKET_RECV, tlsSession_->getLastErrorString().c_str()));
+        }
+        if (tlsSession_->checkDirection() == TLS_WANT_READ) {
+          wantRead_ = true;
+        }
+        else {
+          wantWrite_ = true;
+        }
+        ret = 0;
+      }
 #endif // ENABLE_SSL
-  }
+    }
 
   len = ret;
 }
