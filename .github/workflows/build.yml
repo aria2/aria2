@@ -21,8 +21,8 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get install \
-          g++-11 \
-          clang-12 \
+          g++-12 \
+          clang-15 \
           autoconf \
           automake \
           autotools-dev \
@@ -44,8 +44,8 @@ jobs:
     - name: Setup clang (Linux)
       if: runner.os == 'Linux' && matrix.compiler == 'clang'
       run: |
-        echo 'CC=clang-12' >> $GITHUB_ENV
-        echo 'CXX=clang++-12' >> $GITHUB_ENV
+        echo 'CC=clang-15' >> $GITHUB_ENV
+        echo 'CXX=clang++-15' >> $GITHUB_ENV
     - name: Setup clang (MacOS)
       if: runner.os == 'macOS' && matrix.compiler == 'clang'
       run: |
@@ -54,8 +54,8 @@ jobs:
     - name: Setup gcc (Linux)
       if: runner.os == 'Linux' && matrix.compiler == 'gcc'
       run: |
-        echo 'CC=gcc-11' >> $GITHUB_ENV
-        echo 'CXX=g++-11' >> $GITHUB_ENV
+        echo 'CC=gcc-12' >> $GITHUB_ENV
+        echo 'CXX=g++-12' >> $GITHUB_ENV
     - name: Setup gcc (MacOS)
       if: runner.os == 'macOS' && matrix.compiler == 'gcc'
       run: |
