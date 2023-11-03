@@ -57,6 +57,7 @@
 #include "DownloadContext.h"
 #include "BufferedFile.h"
 #include "SHA1IOFile.h"
+#include "BtConstants.h"
 #ifdef ENABLE_BITTORRENT
 #  include "PeerStorage.h"
 #  include "BtRuntime.h"
