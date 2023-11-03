@@ -9,9 +9,12 @@ jobs:
         os: [ubuntu-22.04, macos-11]
         compiler: [gcc, clang]
         crypto: [openssl, gnutls]
+        bittorrent: [with-bt, without-bt]
         exclude:
         - os: macos-11
           crypto: gnutls
+        - crypto: openssl
+          bittorrent: without-bt
 
     runs-on: ${{ matrix.os }}
 
@@ -73,14 +76,20 @@ jobs:
 
         echo 'CPPFLAGS='"$CPPFLAGS" >> $GITHUB_ENV
         echo 'LDFLAGS='"$LDFLAGS" >> $GITHUB_ENV
+    - name: Disable BitTorrent
+      if: matrix.bittorrent == 'without-bt'
+      run: |
+        FEATURE_FLAGS="$FEATURE_FLAGS --disable-bittorrent"
+
+        echo 'FEATURE_FLAGS='"$FEATURE_FLAGS" >> $GITHUB_ENV
     - name: Configure autotools (Linux, gnutls)
       if: runner.os == 'Linux' && matrix.crypto == 'gnutls'
       run: |
-        ./configure --with-gnutls --without-openssl
+        ./configure --with-gnutls --without-openssl $FEATURE_FLAGS
     - name: Configure autotools (Linux, openssl)
       if: runner.os == 'Linux' && matrix.crypto == 'openssl'
       run: |
-        ./configure --without-gnutls --with-openssl
+        ./configure --without-gnutls --with-openssl $FEATURE_FLAGS
     - name: Configure autotools (macOS)
       if: runner.os == 'macOS'
       run: |
