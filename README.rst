@@ -241,8 +241,11 @@ necessary to build the program::
 
 Also, you need `Sphinx <http://sphinx-doc.org/>`_ to build the man page.
 
-If you are building aria2 for Mac OS X, take a look at
-the makerelease-osx.mk GNU Make makefile.
+If you are building aria2 for macOS, take a look at
+the GNU Make makefiles for the correct architecture: 
+
+* Intel (x86_64): `makerelease-macOS-intel.mk`
+* M1/Apple Silicon (arm64): `makerelease-macOS-m1.mk`
 
 The quickest way to build aria2 is first to run configure script::
 
