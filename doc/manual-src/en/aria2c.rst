@@ -334,29 +334,30 @@ HTTP/FTP/SFTP Options
 
 .. option:: --stream-piece-selector=<SELECTOR>
 
-  Specify piece selection algorithm used in HTTP/FTP download. Piece
-  means fixed length segment which is downloaded in parallel in
-  segmented download. If ``default`` is given, aria2 selects piece so
-  that it reduces the number of establishing connection. This is
-  reasonable default behavior because establishing connection is an
-  expensive operation.  If ``inorder`` is given, aria2 selects piece
-  which has minimum index. Index=0 means first of the file. This will
-  be useful to view movie while downloading it.
-  :option:`--enable-http-pipelining` option may
-  be useful to reduce re-connection overhead.  Please note that aria2
-  honors
-  :option:`--min-split-size <-k>` option,
-  so it will be necessary to specify a reasonable value to
-  :option:`--min-split-size <-k>` option.
-  If ``random`` is given, aria2 selects piece randomly. Like
-  ``inorder``, :option:`--min-split-size <-k>` option is honored.
-  If ``geom`` is given, at the beginning aria2 selects piece which has
-  minimum index like ``inorder``, but it exponentially increasingly
-  keeps space from previously selected piece. This will reduce the
-  number of establishing connection and at the same time it will
-  download the beginning part of the file first. This will be useful
-  to view movie while downloading it.
-  Default: ``default``
+  Specify piece selection algorithm used in HTTP/FTP download. A piece is a
+  fixed length segment which is downloaded in parallel in a segmented download.
+  Default: ``default``.
+
+  default
+    Select a piece to reduce the number of connections established.
+    This is reasonable default behavior because establishing a connection is an
+    expensive operation.
+  inorder
+    Select a piece closest to the beginning of the file. This is useful for
+    viewing movies while downloading. :option:`--enable-http-pipelining` option
+    may be useful to reduce re-connection overhead. Note that aria2 honors
+    :option:`--min-split-size <-k>` option, so it will be necessary to specify
+    a reasonable value to :option:`--min-split-size <-k>` option.
+  random
+    Select a piece randomly. Like ``inorder``, :option:`--min-split-size <-k>`
+    option is honored.
+  geom
+    When starting to download a file, select a piece closest to the beginning
+    of the file like ``inorder``, but then exponentially increases space
+    between pieces.
+    This reduces the number of connections established, while
+    at the same time downloads the beginning part of the file first. This is
+    useful for viewing movies while downloading.
 
 .. option:: -t, --timeout=<SEC>
 
@@ -500,7 +501,7 @@ HTTP Specific Options
 
   Use the private key in FILE.
   The private key must be decrypted and in PEM format.
-  The behavior when encrypted one is given is undefined.
+  An encrypted key may cause undefined behavior.
   See also :option:`--certificate` option.
 
 .. option:: --referer=<REFERER>
@@ -522,8 +523,7 @@ HTTP Specific Options
 
   .. note::
 
-    In performance perspective, there is usually no advantage to enable
-    this option.
+    There is usually no performance gain from enabling this option.
 
 .. option:: --header=<HEADER>
 
@@ -746,7 +746,7 @@ BitTorrent Specific Options
 
 .. option:: --bt-metadata-only [true|false]
 
-  Download meta data only. The file(s) described in meta data will not
+  Download metadata only. The file(s) described in metadata will not
   be downloaded. This option has effect only when BitTorrent Magnet
   URI is used. See also :option:`--bt-save-metadata` option.  Default: ``false``
 
@@ -796,11 +796,11 @@ BitTorrent Specific Options
 
 .. option:: --bt-save-metadata [true|false]
 
-  Save meta data as ".torrent" file. This option has effect only when
+  Save metadata as ".torrent" file. This option has effect only when
   BitTorrent Magnet URI is used.  The file name is hex encoded info
   hash with suffix ".torrent". The directory to be saved is the same
   directory where download file is saved. If the same file already
-  exists, meta data is not saved. See also :option:`--bt-metadata-only`
+  exists, metadata is not saved. See also :option:`--bt-metadata-only`
   option. Default: ``false``
 
 .. option:: --bt-seed-unverified [true|false]
@@ -1140,9 +1140,9 @@ RPC Options
 
 .. option:: --rpc-save-upload-metadata [true|false]
 
-  Save the uploaded torrent or metalink meta data in the directory
+  Save the uploaded torrent or metalink metadata in the directory
   specified by :option:`--dir` option. The file name consists of SHA-1
-  hash hex string of meta data plus extension. For torrent, the
+  hash hex string of metadata plus extension. For torrent, the
   extension is '.torrent'. For metalink, it is '.meta4'.  If false is
   given to this option, the downloads added by
   :func:`aria2.addTorrent` or :func:`aria2.addMetalink` will not be
@@ -1487,7 +1487,7 @@ Advanced Options
 .. option:: --multiple-interface=<INTERFACES>
 
   Comma separated list of interfaces to bind sockets to. Requests will
-  be splited among the interfaces to achieve link aggregation. You can
+  be split among the interfaces to achieve link aggregation. You can
   specify interface name, IP address and hostname. If
   :option:`--interface` is used, this option will be ignored.
   Possible Values: interface, IP address, hostname
@@ -1656,7 +1656,7 @@ Advanced Options
   the file name.
   Please note that downloads added by
   :func:`aria2.addTorrent` and :func:`aria2.addMetalink` RPC method
-  and whose meta data could not be saved as a file are not saved.
+  and whose metadata could not be saved as a file are not saved.
   Downloads removed using :func:`aria2.remove` and
   :func:`aria2.forceRemove` will not be saved. GID is also saved with
   :option:`gid <--gid>`, but there are some restrictions, see below.
@@ -1664,11 +1664,11 @@ Advanced Options
   .. note::
 
     Normally, GID of the download itself is saved. But some downloads
-    use meta data (e.g., BitTorrent and Metalink). In this case, there
+    use metadata (e.g., BitTorrent and Metalink). In this case, there
     are some restrictions.
 
     magnet URI, and followed by torrent download
-       GID of BitTorrent meta data download is saved.
+       GID of BitTorrent metadata download is saved.
     URI to torrent file, and followed by torrent download
        GID of torrent file download is saved.
     URI to metalink file, and followed by file downloads described in metalink file
@@ -4288,8 +4288,8 @@ Alternatively, if PEM files are supported, use a command like the following:
 
 .. note::
 
-  The file specified in :option:`--private-key` must be decrypted. The behavior when
-  encrypted one is given is undefined.
+  The file specified in :option:`--private-key` must be decrypted; an encrypted
+  key may cause undefined behavior.
 
 Verify SSL/TLS servers using given CA certificates
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
