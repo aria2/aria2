@@ -210,7 +210,7 @@ void createPeerMessageString(unsigned char* msg, size_t msgLength,
                              size_t payloadLength, uint8_t messageId);
 
 /**
- * Creates compact form(packed addresss + 2bytes port) and stores the
+ * Creates compact form(packed address + 2bytes port) and stores the
  * results in compact.  This function looks addr and if it is IPv4
  * address, it stores 6bytes in compact and if it is IPv6, it stores
  * 18bytes in compact.  So compact must be at least 18 bytes and

@@ -179,7 +179,7 @@ void Netrc::parse(const std::string& path)
         else {
           if (!authenticator) {
             throw DL_ABORT_EX(
-                fmt("Netrc:parse error. %s encounterd where 'machine'"
+                fmt("Netrc:parse error. %s encountered where 'machine'"
                     " or 'default' expected.",
                     std::string((*iter).first, (*iter).second).c_str()));
           }

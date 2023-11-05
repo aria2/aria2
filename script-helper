@@ -29,7 +29,7 @@
 # version.  If you delete this exception statement from all source
 # files in the program, then also delete it here.
 
-get_version () {
-  VERSION=`grep AC_INIT configure.ac | sed '/AC_INIT/ s/AC_INIT(\[aria2\],\[\([^]]\+\)\],.*/\1/'`
+get_version() {
+  VERSION=$(grep AC_INIT configure.ac | sed '/AC_INIT/ s/AC_INIT(\[aria2\],\[\([^]]\+\)\],.*/\1/')
   echo "Version: $VERSION"
 }
