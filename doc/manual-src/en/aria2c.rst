@@ -633,7 +633,7 @@ FTP/SFTP Specific Options
 
 BitTorrent/Metalink Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. option:: --select-file=<INDEX>...
+.. option:: --select-files=<INDEX>...
 
   Set file to download by specifying its index.
   You can find the file index using the :option:`--show-files <-S>` option.
@@ -772,7 +772,7 @@ BitTorrent Specific Options
 
    Removes the unselected files when download is completed in
    BitTorrent. To select files, use
-   :option:`--select-file` option. If it is
+   :option:`--select-files` option. If it is
    not used, all files are assumed to be selected. Please use this
    option with care because it will actually remove files from your
    disk.
@@ -2220,7 +2220,7 @@ of URIs. These optional lines must start with white space(s).
   * :option:`rpc-save-upload-metadata <--rpc-save-upload-metadata>`
   * :option:`seed-ratio <--seed-ratio>`
   * :option:`seed-time <--seed-time>`
-  * :option:`select-file <--select-file>`
+  * :option:`select-files <--select-files>`
   * :option:`split <-s>`
   * :option:`ssh-host-key-md <--ssh-host-key-md>`
   * :option:`stream-piece-selector <--stream-piece-selector>`
@@ -2889,8 +2889,8 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
     in :func:`aria2.tellStatus` also includes partially completed pieces.
 
   ``selected``
-    ``true`` if this file is selected by :option:`--select-file` option. If
-    :option:`--select-file` is not specified or this is single-file torrent or
+    ``true`` if this file is selected by :option:`--select-files` option. If
+    :option:`--select-files` is not specified or this is single-file torrent or
     not a torrent download at all, this value is always ``true``. Otherwise
     ``false``.
 
@@ -3354,7 +3354,7 @@ For information on the *secret* parameter, see :ref:`rpc_auth`.
   :option:`index-out <-O>`,
   :option:`out <-o>`,
   :option:`pause <--pause>` and
-  :option:`select-file <--select-file>`.
+  :option:`select-files <--select-files>`.
 
   With the :option:`log <-l>` option, you can dynamically start logging or
   change log file. To stop logging, specify an empty string("") as the parameter
@@ -3920,7 +3920,7 @@ This section describes what these numbers and strings mean.
 
 ``X/Y(Z%)``
   Completed length, the total file length and its progress. If
-  :option:`--select-file` is used, this is the sum of selected files.
+  :option:`--select-files` is used, this is the sum of selected files.
 
 ``SEED``
   Share ratio when the aria2 is seeding a finished torrent.
@@ -4077,7 +4077,7 @@ Download only selected files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code-block:: console
 
-  $ aria2c --select-file=1-4,8 file.metalink
+  $ aria2c --select-files=1-4,8 file.metalink
 
 .. note::
 
@@ -4144,7 +4144,7 @@ Only download specific files (usually called "selected download")
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code-block:: console
 
-  $ aria2c --select-file=1-4,8 file.torrent
+  $ aria2c --select-files=1-4,8 file.torrent
 
 .. note::
 
