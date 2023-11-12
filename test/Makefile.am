@@ -62,7 +62,6 @@ aria2c_SOURCES = AllTest.cc\
 	SequentialPickerTest.cc\
 	RarestPieceSelectorTest.cc\
 	PieceStatManTest.cc\
-	InorderPieceSelector.h\
 	LongestSequencePieceSelectorTest.cc\
 	a2algoTest.cc\
 	bitfieldTest.cc\
@@ -207,6 +206,7 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	MockExtensionMessageFactory.h\
 	MockPieceStorage.h\
 	BittorrentHelperTest.cc\
+	InorderPieceSelectorTest.cc\
 	PriorityPieceSelectorTest.cc\
 	MockPieceSelector.h\
 	extension_message_test_helper.h\

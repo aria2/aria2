@@ -8,8 +8,6 @@
 #include "Peer.h"
 #include "Option.h"
 #include "FileEntry.h"
-#include "RarestPieceSelector.h"
-#include "InorderPieceSelector.h"
 #include "DownloadContext.h"
 #include "bittorrent_helper.h"
 #include "DiskAdaptor.h"
@@ -46,19 +44,18 @@ private:
   std::shared_ptr<DownloadContext> dctx_;
   std::shared_ptr<Peer> peer;
   std::shared_ptr<Option> option_;
-  std::unique_ptr<PieceSelector> pieceSelector_;
 
 public:
   void setUp()
   {
     option_ = std::make_shared<Option>();
     option_->put(PREF_DIR, ".");
+    option_->put(PREF_BT_PIECE_SELECTOR, V_INORDER);
     dctx_ = std::make_shared<DownloadContext>();
     bittorrent::load(A2_TEST_DIR "/test.torrent", dctx_, option_);
     peer = std::make_shared<Peer>("192.168.0.1", 6889);
     peer->allocateSessionResource(dctx_->getPieceLength(),
                                   dctx_->getTotalLength());
-    pieceSelector_ = make_unique<InorderPieceSelector>();
   }
 
   void testGetTotalLength();
@@ -93,7 +90,6 @@ void DefaultPieceStorageTest::testGetTotalLength()
 void DefaultPieceStorageTest::testGetMissingPiece()
 {
   DefaultPieceStorage pss(dctx_, option_.get());
-  pss.setPieceSelector(std::move(pieceSelector_));
   peer->setAllBitfield();
 
   auto piece = pss.getMissingPiece(peer, 1);
@@ -113,7 +109,6 @@ void DefaultPieceStorageTest::testGetMissingPiece()
 void DefaultPieceStorageTest::testGetMissingPiece_many()
 {
   DefaultPieceStorage pss(dctx_, option_.get());
-  pss.setPieceSelector(std::move(pieceSelector_));
   peer->setAllBitfield();
   std::vector<std::shared_ptr<Piece>> pieces;
   pss.getMissingPiece(pieces, 2, peer, 1);
@@ -133,7 +128,6 @@ void DefaultPieceStorageTest::testGetMissingPiece_many()
 void DefaultPieceStorageTest::testGetMissingPiece_excludedIndexes()
 {
   DefaultPieceStorage pss(dctx_, option_.get());
-  pss.setPieceSelector(std::move(pieceSelector_));
   pss.setEndGamePieceNum(0);
 
   peer->setAllBitfield();
@@ -156,7 +150,6 @@ void DefaultPieceStorageTest::testGetMissingPiece_excludedIndexes()
 void DefaultPieceStorageTest::testGetMissingPiece_manyWithExcludedIndexes()
 {
   DefaultPieceStorage pss(dctx_, option_.get());
-  pss.setPieceSelector(std::move(pieceSelector_));
   peer->setAllBitfield();
   std::vector<size_t> excludedIndexes;
   excludedIndexes.push_back(1);
@@ -175,7 +168,6 @@ void DefaultPieceStorageTest::testGetMissingPiece_manyWithExcludedIndexes()
 void DefaultPieceStorageTest::testGetMissingFastPiece()
 {
   DefaultPieceStorage pss(dctx_, option_.get());
-  pss.setPieceSelector(std::move(pieceSelector_));
   pss.setEndGamePieceNum(0);
 
   peer->setAllBitfield();
@@ -192,7 +184,6 @@ void DefaultPieceStorageTest::testGetMissingFastPiece()
 void DefaultPieceStorageTest::testGetMissingFastPiece_excludedIndexes()
 {
   DefaultPieceStorage pss(dctx_, option_.get());
-  pss.setPieceSelector(std::move(pieceSelector_));
   pss.setEndGamePieceNum(0);
 
   peer->setAllBitfield();
@@ -224,7 +215,6 @@ void DefaultPieceStorageTest::testHasMissingPiece()
 void DefaultPieceStorageTest::testCompletePiece()
 {
   DefaultPieceStorage pss(dctx_, option_.get());
-  pss.setPieceSelector(std::move(pieceSelector_));
   pss.setEndGamePieceNum(0);
 
   peer->setAllBitfield();

@@ -56,6 +56,7 @@
 #include "Option.h"
 #include "fmt.h"
 #include "RarestPieceSelector.h"
+#include "InorderPieceSelector.h"
 #include "DefaultStreamPieceSelector.h"
 #include "InorderStreamPieceSelector.h"
 #include "RandomStreamPieceSelector.h"
@@ -91,7 +92,6 @@ DefaultPieceStorage::DefaultPieceStorage(
       nextHaveIndex_(1),
       pieceStatMan_(std::make_shared<PieceStatMan>(
           downloadContext->getNumPieces(), true)),
-      pieceSelector_(make_unique<RarestPieceSelector>(pieceStatMan_)),
       wrDiskCache_(nullptr)
 {
   const std::string& pieceSelectorOpt =
@@ -111,6 +111,13 @@ DefaultPieceStorage::DefaultPieceStorage(
   else if (pieceSelectorOpt == A2_V_GEOM) {
     streamPieceSelector_ =
         make_unique<GeomStreamPieceSelector>(bitfieldMan_.get(), 1.5);
+  }
+
+  const std::string& btPieceSelectorOpt = option_->get(PREF_BT_PIECE_SELECTOR);
+  if (btPieceSelectorOpt.empty() || btPieceSelectorOpt == A2_V_DEFAULT) {
+    pieceSelector_ = make_unique<RarestPieceSelector>(pieceStatMan_);
+  } else if (btPieceSelectorOpt == V_INORDER) {
+    pieceSelector_ = make_unique<InorderPieceSelector>();
   }
 }
 
