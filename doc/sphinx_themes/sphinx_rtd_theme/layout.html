@@ -28,12 +28,17 @@
     <link rel="stylesheet" href="{{ pathto('_static/' + style, 1) }}" type="text/css" />
     <link rel="stylesheet" href="{{ pathto('_static/pygments.css', 1) }}" type="text/css" />
   {%- endif %}
-  {%- for css in css_files %}
-    {{ css_tag(css) }}
+  {%- for css_file in css_files %}
+    {%- if css_file|attr("filename") %}
+      {{ css_tag(css_file) }}
+    {%- else %}
+      <link rel="stylesheet" href="{{ pathto(css_file, 1)|escape }}" type="text/css" />
+    {%- endif %}
   {%- endfor %}
 
-  {%- for cssfile in extra_css_files %}
-    {{ css_tag(cssfile) }}
+  {# "extra_css_files" is a theme option and it's always a string #}
+  {%- for css_file in extra_css_files %}
+    <link rel="stylesheet" href="{{ pathto(css_file, 1)|escape }}" type="text/css" />
   {%- endfor -%}
 
   {#- FAVICON

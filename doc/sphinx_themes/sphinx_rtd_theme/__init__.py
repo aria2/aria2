@@ -12,7 +12,7 @@ from sphinx.locale import _
 from sphinx.util.logging import getLogger
 
 
-__version__ = '2.0.0rc3'
+__version__ = '2.0.0rc5'
 __version_full__ = __version__
 
 logger = getLogger(__name__)
