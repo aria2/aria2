@@ -9,7 +9,7 @@ git log --pretty=fuller --date=short refs/tags/release-$PREV_VERSION..HEAD > Cha
 autoreconf -i
 
 ./configure && \
-    make dist-bzip2 && make dist-gzip && make dist-xz || echo "error"
+    make dist-bzip2 && make dist-gzip && make dist-xz
 make distclean
 
 release_mingw()
@@ -21,7 +21,7 @@ release_mingw()
 
     docker build \
 	   --build-arg HOST=$HOST \
-	   --build-arg ARIA2_VERSION=$VERSION \
+	   --build-arg ARIA2_VERSION=release-$VERSION \
 	   --build-arg ARIA2_REF=refs/tags/release-$VERSION \
 	   -t aria2-mingw-$HOST - < Dockerfile.mingw
 
@@ -43,7 +43,7 @@ release_mingw x86_64-w64-mingw32 win-64bit
 mkdir -p android-out
 
 docker build \
-       --build-arg ARIA2_VERSION=$VERSION \
+       --build-arg ARIA2_VERSION=release-$VERSION \
        -t aria2-android - < Dockerfile.android
 
 docker run --rm -it -v $PWD/android-out:/out aria2-android \
