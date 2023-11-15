@@ -26,7 +26,8 @@ RUN apt-get update && \
         make binutils autoconf automake autotools-dev libtool \
         patch ca-certificates \
         pkg-config git curl dpkg-dev gcc-mingw-w64 g++-mingw-w64 \
-        autopoint libcppunit-dev libxml2-dev libgcrypt20-dev lzip
+        autopoint libcppunit-dev libxml2-dev libgcrypt20-dev lzip \
+        python3-docutils
 
 RUN curl -L -O https://gmplib.org/download/gmp/gmp-6.3.0.tar.xz && \
     curl -L -O https://github.com/libexpat/libexpat/releases/download/R_2_5_0/expat-2.5.0.tar.bz2 && \
