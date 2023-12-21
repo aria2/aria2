@@ -1,0 +1,28 @@
+name: window
+
+on:
+  workflow_dispatch:
+permissions: write-all
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build and export
+      run: |
+        sudo docker build -t aria2-mingw - < Dockerfile.mingw
+        sudo docker run -t -d aria2-mingw
+        container_id=$(docker ps -q)
+        sudo docker cp "$container_id":./aria2/src/aria2c.exe ./aria2c.exe
+      env:
+          repository: ${{ github.repository }}
+    - name: Release
+      uses: softprops/action-gh-release@v0.1.15
+      with:
+        files: |
+          ./aria2c.exe
+        name: Download
+        tag_name: all
+        body: Download Here
