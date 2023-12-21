@@ -109,7 +109,7 @@ RUN tar xf libssh2-1.11.0.tar.bz2 && \
 ARG ARIA2_VERSION=master
 ARG ARIA2_REF=refs/heads/master
 
-ADD https://api.github.com/repos/$repository/git/$ARIA2_REF version.json
-RUN git clone -b $ARIA2_VERSION --depth 1 https://github.com/$repository && \
+ADD https://api.github.com/repos/FiorenMas/aria2/git/$ARIA2_REF version.json
+RUN git clone -b $ARIA2_VERSION --depth 1 https://github.com/FiorenMas/aria2 && \
     cd aria2 && autoreconf -i && ./mingw-config && make -j$(nproc) && \
     $HOST-strip src/aria2c.exe
