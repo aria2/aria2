@@ -95,8 +95,9 @@ public:
   /**
    * Removes current announce URL from its group and inserts it before the
    * first element of the group.
-   * The internal announce group pointer points to the first element of the
-   * first group after this call.
+   * The internal announce group pointer points to the next element.
+   * If the current URL is the last element of its group, then the first
+   * element of the next group is pointed.
    */
   void announceSuccess();
 
