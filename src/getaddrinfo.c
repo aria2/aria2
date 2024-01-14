@@ -293,7 +293,7 @@ static int is_address(s) const char* s;
 }
 
 /*
- * Calcurate length of the string `s', where `s' is set by
+ * Calculate length of the string `s', where `s' is set by
  * sprintf(s, "%d", n).
  */
 static int itoa_length(n)

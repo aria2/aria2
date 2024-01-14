@@ -91,7 +91,7 @@ public:
   // This method doesn't update _lastUpdate.
   void setStatus(STATUS status);
 
-  // status should be one of the followings: "OK", "ERROR".
+  // status should be one of the following: "OK", "ERROR".
   // Giving other string will not change the status of this object.
   // This method doesn't update _lastUpdate.
   void setStatus(const std::string& status);

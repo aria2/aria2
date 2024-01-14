@@ -66,7 +66,7 @@ public:
 
   /**
    * Returns filename.
-   * If content-disposition header is privided in response header,
+   * If content-disposition header is provided in response header,
    * this function returns the filename from it.
    * If it is not there, returns the part of filename from the request URL.
    */
