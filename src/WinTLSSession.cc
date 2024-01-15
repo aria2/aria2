@@ -440,7 +440,7 @@ ssize_t WinTLSSession::readData(void* data, size_t len)
 
   // Can be filled from decBuffer entirely?
   if (decBuf_.size() >= len) {
-    A2_LOG_DEBUG("WinTLS: Fullfilling req from buffer");
+    A2_LOG_DEBUG("WinTLS: Fulfilling req from buffer");
     memcpy(data, decBuf_.data(), len);
     decBuf_.eat(len);
     return len;

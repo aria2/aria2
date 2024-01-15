@@ -74,7 +74,7 @@ void RequestTest::testSetUri2()
 
   CPPUNIT_ASSERT(v);
 
-  // referer is unchaged
+  // referer is unchanged
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com:8080"),
                        req.getReferer());
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req.getProtocol());
@@ -124,7 +124,7 @@ void RequestTest::testRedirectUri()
   // See redirect count is incremented.
   CPPUNIT_ASSERT_EQUAL(2, req.getRedirectCount());
 
-  // Give abosulute path
+  // Give absolute path
   CPPUNIT_ASSERT(req.redirectUri("/abspath/to/file"));
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.co.jp/abspath/to/file"),
                        req.getCurrentUri());

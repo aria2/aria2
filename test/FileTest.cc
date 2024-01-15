@@ -129,7 +129,7 @@ void FileTest::testMkdir()
     CPPUNIT_ASSERT(d.mkdirs());
 
     CPPUNIT_ASSERT(d.exists());
-    // this test failes because d.mkdir returns false when the directory is
+    // this test fails because d.mkdir returns false when the directory is
     // already exists.
     CPPUNIT_ASSERT(!d.mkdirs());
   }
@@ -147,7 +147,7 @@ void FileTest::testMkdir()
     CPPUNIT_ASSERT(d.mkdirs());
 
     CPPUNIT_ASSERT(nd.exists());
-    // this test failes because d.mkdir returns false when the directory is
+    // this test fails because d.mkdir returns false when the directory is
     // already exists.
     CPPUNIT_ASSERT(!d.mkdirs());
   }

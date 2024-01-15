@@ -98,7 +98,7 @@
 #define TEXT_PROXY_METHOD                                               \
   _(" --proxy-method=METHOD        Set the method to use in proxy request.")
 #define TEXT_REFERER                                                    \
-  _(" --referer=REFERER            Set an http referrrer (Referer). This affects\n" \
+  _(" --referer=REFERER            Set an http referrer (Referer). This affects\n" \
     "                              all http/https downloads. If \"*\" is given,\n" \
     "                              the download URI is also used as the referrer.\n" \
     "                              This may be useful when used together with\n" \

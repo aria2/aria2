@@ -82,7 +82,7 @@ void UriSplitTest::testUriSplit()
 
   // According to RFC 3986, @ in userinfo is illegal. But many people
   // have e-mail account as username and don't understand
-  // percent-encoding and keep getting erros putting it in URI in
+  // percent-encoding and keep getting errors putting it in URI in
   // unecoded form. Because of this, we support @ in username.
   uri = "http://user@foo.com:pass@aria2.sf.net/path/";
   memset(&res, 0, sizeof(res));

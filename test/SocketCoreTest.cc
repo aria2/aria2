@@ -227,7 +227,7 @@ void SocketCoreTest::testVerifyHostname()
     CPPUNIT_ASSERT(net::verifyHostname("::1", dnsNames, ipAddrs, commonName));
   }
   {
-    // If iPAddress is privided, don't match with commonName
+    // If iPAddress is provided, don't match with commonName
     std::vector<std::string> dnsNames, ipAddrs;
     unsigned char binAddr[16];
     size_t len;
