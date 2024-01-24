@@ -451,12 +451,12 @@ void HttpResponseTest::testValidateResponse_chunked()
                                     "bytes 0-10485760/10485761");
   httpResponse.getHttpHeader()->put(HttpHeader::TRANSFER_ENCODING, "chunked");
 
-  // if transfer-encoding is specified, then range validation is skipped.
+  // if transfer-encoding is specified, range validation is still necessary.
   try {
     httpResponse.validateResponse();
+    CPPUNIT_FAIL("exception must be thrown.");
   }
   catch (Exception& e) {
-    CPPUNIT_FAIL("exception must not be thrown.");
   }
 }
 

@@ -452,12 +452,9 @@ fin:
   // are present, delete content-length and content-range.  RFC 7230
   // says that sender must not send both transfer-encoding and
   // content-length.  If both present, transfer-encoding overrides
-  // content-length.  There is no text about transfer-encoding and
-  // content-range.  But there is no reason to send transfer-encoding
-  // when range is set.
+  // content-length.
   if (result_->defined(HttpHeader::TRANSFER_ENCODING)) {
     result_->remove(HttpHeader::CONTENT_LENGTH);
-    result_->remove(HttpHeader::CONTENT_RANGE);
   }
 
   return true;
