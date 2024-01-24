@@ -23,6 +23,7 @@ jobs:
     - name: Linux setup
       if: runner.os == 'Linux'
       run: |
+        sudo apt-get update
         sudo apt-get install \
           g++-12 \
           clang-15 \
