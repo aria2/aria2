@@ -93,8 +93,8 @@
 #define MSG_CONTENT_DISPOSITION_DETECTED                        \
   "CUID#%" PRId64 " - Content-Disposition detected. Use %s as filename"
 #define MSG_PEER_BANNED "CUID#%" PRId64 " - Peer %s:%d banned."
-#define MSG_LISTENING_PORT                                      \
-  "CUID#%" PRId64 " - Using port %d for accepting new connections"
+#define MSG_LISTENING_RPC                                       \
+  "CUID#%" PRId64 " - Using %s for accepting new connections"
 #define MSG_BIND_FAILURE "CUID#%" PRId64 " - An error occurred while binding port=%d"
 #define MSG_INCOMING_PEER_CONNECTION                            \
   "CUID#%" PRId64 " - Incoming connection, adding new command CUID#%" PRId64 ""
