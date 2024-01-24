@@ -738,6 +738,14 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
+#if _WIN32
+  {
+    OptionHandler* op(new BooleanOptionHandler(
+        PREF_DISABLE_SLEEP, TEXT_DISABLE_SLEEP, A2_V_FALSE, OptionHandler::OPT_ARG));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+#endif // _WIN32
   {
     OptionHandler* op(new BooleanOptionHandler(
         PREF_RPC_ALLOW_ORIGIN_ALL, TEXT_RPC_ALLOW_ORIGIN_ALL, A2_V_FALSE,
