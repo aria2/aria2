@@ -78,12 +78,26 @@ void HttpResponse::validateResponse() const
       // compare the received range against the requested range
       auto responseRange = httpHeader_->getRange();
       if (!httpRequest_->isRangeSatisfied(responseRange)) {
-        throw DL_ABORT_EX2(
-            fmt(EX_INVALID_RANGE_HEADER, httpRequest_->getStartByte(),
-                httpRequest_->getEndByte(), httpRequest_->getEntityLength(),
-                responseRange.startByte, responseRange.endByte,
-                responseRange.entityLength),
-            error_code::CANNOT_RESUME);
+        if (  httpRequest_->getEndByte() > 0 &&
+              httpRequest_->getEndByte() <= responseRange.endByte){
+          // Some servers return full length of file as endByte
+          // regardless of what was requested.
+          // If server offers more, ignore for a while and hope for the best.
+
+          A2_LOG_WARN( fmt(MSG_STRANGE_RANGE_HEADER, cuid_,
+                  httpRequest_->getStartByte(),
+                  httpRequest_->getEndByte(), httpRequest_->getEntityLength(),
+                  responseRange.startByte, responseRange.endByte,
+                  responseRange.entityLength));
+
+        } else {
+          throw DL_ABORT_EX2(
+              fmt(EX_INVALID_RANGE_HEADER, httpRequest_->getStartByte(),
+                  httpRequest_->getEndByte(), httpRequest_->getEntityLength(),
+                  responseRange.startByte, responseRange.endByte,
+                  responseRange.entityLength),
+              error_code::CANNOT_RESUME);
+        }
       }
     }
     return;
