@@ -1245,6 +1245,16 @@ ssize_t parse_content_disposition(char* dest, size_t destlen,
   *charsetp = nullptr;
   *charsetlenp = 0;
 
+  /*
+   * Ignore trailing ';' in Content-Disposition header; this is not
+   * compliant with RFC 6266, but many servers send it anyway (e.g. CloudFront)
+   */
+  if (len > 0 && *eop == ';') {
+    A2_LOG_INFO("Non-compliant Content-Disposition header (trailing ';') - "
+                "will ignore it");
+    eop--;
+  }
+
   for (; p != eop; ++p) {
     switch (state) {
     case CD_BEFORE_DISPOSITION_TYPE:
