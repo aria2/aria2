@@ -273,7 +273,7 @@ std::string usedCompilerAndPlatform()
 
 #elif defined(__GNUG__)
 
-#  ifdef __MINGW32__
+#  if defined(__MINGW32__) || defined(_MSC_VER)
   rv << "mingw ";
 #    ifdef __MINGW32_MAJOR_VERSION
   rv << (int)__MINGW32_MAJOR_VERSION;

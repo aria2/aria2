@@ -68,10 +68,18 @@ void DHKeyExchange::init(const unsigned char* prime, size_t primeBits,
   generator_ = n(gen.c_str(), gen.length());
 
   size_t pbytes = (privateKeyBits + 7) / 8;
+#if defined(_MSC_VER)
+  // MSVC will not compile dynamic arrays
+  unsigned char* buf = new unsigned char[pbytes];
+#else
   unsigned char buf[pbytes];
+#endif
   util::generateRandomData(buf, pbytes);
   privateKey_ = n(reinterpret_cast<char*>(buf), pbytes);
-
+#if defined(_MSC_VER)
+  // clean up memory
+  delete[] buf;
+#endif
   keyLength_ = (primeBits + 7) / 8;
 }
 

@@ -485,7 +485,7 @@ void DefaultPieceStorage::completePiece(const std::shared_ptr<Piece>& piece)
 #ifdef ENABLE_BITTORRENT
     if (downloadContext_->hasAttribute(CTX_ATTR_BT)) {
       if (!bittorrent::getTorrentAttrs(downloadContext_)->metadata.empty()) {
-#  ifdef __MINGW32__
+#  if defined(__MINGW32__) || defined(_MSC_VER)
         // On Windows, if aria2 opens files with GENERIC_WRITE access
         // right, some programs cannot open them aria2 is seeding. To
         // avoid this situation, re-open the files with read-only

@@ -54,10 +54,20 @@
 #endif // HAVE_ALLOCA_H
 
 #ifdef HAVE_MALLOC_H
+#  if defined(_MSC_VER)
+//   pull in alloca _alloca def
+#    define _CRT_INTERNAL_NONSTDC_NAMES 1 
+#  endif
 #  include <malloc.h>
 #endif // HAVE_MALLOC_H
 
 #include "strptime.h"
+
+#if defined(_MSC_VER)
+#  define tzname    _tzname
+#  define strncasecmp _strnicmp
+#  define strcasecmp _stricmp
+#endif
 
 static const char* abb_weekdays[] = {"Sun", "Mon", "Tue", "Wed",
                                      "Thu", "Fri", "Sat", NULL};

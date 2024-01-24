@@ -44,3 +44,6 @@ compile
 main.log
 main.trs
 test-suite.log
+compile_commands.json
+/build
+/.cache

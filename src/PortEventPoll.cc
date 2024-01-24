@@ -85,7 +85,7 @@ PortEventPoll::PortEventPoll()
 PortEventPoll::~PortEventPoll()
 {
   if (port_ != -1) {
-    int r = close(port_);
+    int r = a2_sclose(port_);
     int errNum = errno;
     if (r == -1) {
       A2_LOG_ERROR(fmt("Error occurred while closing port %d: %s", port_,

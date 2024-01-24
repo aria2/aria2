@@ -151,7 +151,7 @@ private:
   fd_set rfdset_;
   fd_set wfdset_;
   sock_t fdmax_;
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   // Winsock select() doesn't work if no socket is in FD_SET. We add
   // this dummy socket to work around this problem
   sock_t dummySocket_;

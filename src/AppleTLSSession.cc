@@ -694,7 +694,7 @@ OSStatus AppleTLSSession::sockRead(void* data, size_t* len)
   uint8_t* buffer = static_cast<uint8_t*>(data);
   *len = 0;
   while (remain) {
-    ssize_t r = read(sockfd_, buffer, remain);
+    ssize_t r = a2_read(sockfd_, buffer, remain);
     if (r == 0) {
       return errSSLClosedGraceful;
     }

@@ -92,7 +92,7 @@ void BtFileAllocationEntry::prepareForNextAction(
     }
   }
   else {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
     if (!diskAdaptor->isReadOnlyEnabled()) {
       // On Windows, if aria2 opens files with GENERIC_WRITE access
       // right, some programs cannot open them aria2 is seeding. To

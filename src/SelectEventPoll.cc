@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "SelectEventPoll.h"
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 #  include <cassert>
 #endif // __MINGW32__
 #include <cstring>
@@ -153,7 +153,7 @@ void SelectEventPoll::AsyncNameResolverEntry::process(fd_set* rfdsPtr,
 
 SelectEventPoll::SelectEventPoll()
 {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   dummySocket_ = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
   assert(dummySocket_ != (sock_t)-1);
 #endif // __MINGW32__
@@ -162,7 +162,7 @@ SelectEventPoll::SelectEventPoll()
 
 SelectEventPoll::~SelectEventPoll()
 {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   ::closesocket(dummySocket_);
 #endif // __MINGW32__
 }
@@ -175,7 +175,7 @@ void SelectEventPoll::poll(const struct timeval& tv)
   memcpy(&rfds, &rfdset_, sizeof(fd_set));
   memcpy(&wfds, &wfdset_, sizeof(fd_set));
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   fd_set efds;
   memcpy(&efds, &wfdset_, sizeof(fd_set));
 #endif // __MINGW32__
@@ -195,7 +195,7 @@ void SelectEventPoll::poll(const struct timeval& tv)
   int retval;
   do {
     struct timeval ttv = tv;
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
     // winsock will report non-blocking connect() errors in efds,
     // unlike posix, which will mark such sockets as writable.
     retval = select(fdmax_ + 1, &rfds, &wfds, &efds, &ttv);
@@ -213,7 +213,7 @@ void SelectEventPoll::poll(const struct timeval& tv)
       if (FD_ISSET(e.getSocket(), &wfds)) {
         events |= EventPoll::EVENT_WRITE;
       }
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
       if (FD_ISSET(e.getSocket(), &efds)) {
         events |= EventPoll::EVENT_ERROR;
       }
@@ -235,7 +235,7 @@ void SelectEventPoll::poll(const struct timeval& tv)
 #endif // ENABLE_ASYNC_DNS
 }
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 namespace {
 void checkFdCountMingw(const fd_set& fdset)
 {
@@ -251,7 +251,7 @@ void SelectEventPoll::updateFdSet()
 {
   FD_ZERO(&rfdset_);
   FD_ZERO(&wfdset_);
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   FD_SET(dummySocket_, &rfdset_);
   FD_SET(dummySocket_, &wfdset_);
   fdmax_ = dummySocket_;
@@ -262,22 +262,22 @@ void SelectEventPoll::updateFdSet()
   for (auto& i : socketEntries_) {
     auto& e = i.second;
     sock_t fd = e.getSocket();
-#ifndef __MINGW32__
+#if !defined(__MINGW32__) && !defined(_MSC_VER)
     if (fd < 0 || FD_SETSIZE <= fd) {
       A2_LOG_WARN("Detected file descriptor >= FD_SETSIZE or < 0. "
                   "Download may slow down or fail.");
       continue;
     }
-#endif // !__MINGW32__
+#endif // !__MINGW32__ && !_MSC_VER
     int events = e.getEvents();
     if (events & EventPoll::EVENT_READ) {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
       checkFdCountMingw(rfdset_);
 #endif // __MINGW32__
       FD_SET(fd, &rfdset_);
     }
     if (events & EventPoll::EVENT_WRITE) {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
       checkFdCountMingw(wfdset_);
 #endif // __MINGW32__
       FD_SET(fd, &wfdset_);

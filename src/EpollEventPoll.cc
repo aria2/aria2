@@ -91,7 +91,7 @@ EpollEventPoll::EpollEventPoll()
 EpollEventPoll::~EpollEventPoll()
 {
   if (epfd_ != -1) {
-    int r = close(epfd_);
+    int r = a2_close(epfd_);
     int errNum = errno;
     if (r == -1) {
       A2_LOG_ERROR(fmt("Error occurred while closing epoll file descriptor"

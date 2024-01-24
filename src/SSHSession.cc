@@ -145,6 +145,7 @@ ssize_t SSHSession::writeData(const void* data, size_t len)
 {
   // net implemented yet
   assert(0);
+  return 0; // MSVC needs a return value even if it's unreached
 }
 
 ssize_t SSHSession::readData(void* data, size_t len)

@@ -26,6 +26,9 @@
 // $ g++ -Wall -O2 -g -o testclient testclient.cc -L../lib/.libs -I../lib/includes -lwslay -lnettle
 // $ export LD_LIBRARY_PATH=../lib/.libs
 // $ ./a.out localhost 9001
+
+#include "config.h"
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>

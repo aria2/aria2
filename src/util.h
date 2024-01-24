@@ -37,7 +37,9 @@
 
 #include "common.h"
 
-#include <sys/time.h>
+#ifdef HAVE_SYS_TIME_H
+#  include <sys/time.h>
+#endif
 #include <limits.h>
 #include <stdint.h>
 
@@ -95,7 +97,7 @@ inline uint64_t ntoh64(uint64_t x) { return byteswap64(x); }
 inline uint64_t hton64(uint64_t x) { return byteswap64(x); }
 #endif // !WORDS_BIGENDIAN
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 std::wstring utf8ToWChar(const std::string& src);
 
 std::wstring utf8ToWChar(const char* str);
@@ -108,6 +110,17 @@ std::string toForwardSlash(const std::string& src);
 #  define utf8ToWChar(src) src
 #  define utf8ToNative(src) src
 #endif // !__MINGW32__
+
+#if defined(_MSC_VER)
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+#endif
+
+
+#if defined(_MSC_VER)
+#  define strdup    _strdup
+#  define wdscup    _wcsdup
+#endif
 
 namespace util {
 
@@ -863,7 +876,7 @@ bool tlsHostnameMatch(const std::string& pattern, const std::string& hostname);
 TLSVersion toTLSVersion(const std::string& ver);
 #endif // ENABLE_SSL
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 // Formats error message for error code errNum, which is the return
 // value of GetLastError().  On error, this function returns empty
 // string.
@@ -875,7 +888,7 @@ std::string formatLastError(int errNum);
 // CreateProcess call.
 void make_fd_cloexec(int fd);
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 bool gainPrivilege(LPCTSTR privName);
 #endif // __MINGW32__
 

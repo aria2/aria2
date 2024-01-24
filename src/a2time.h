@@ -36,7 +36,10 @@
 #define D_A2TIME_H
 
 #include <time.h>
-#include <sys/time.h>
+
+#ifdef HAVE_SYS_TIME_H
+#  include <sys/time.h>
+#endif
 
 #include <chrono>
 
@@ -60,7 +63,7 @@
 #  include "asctime_r.h"
 #endif // HAVE_ASCTIME_R
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 #  define suseconds_t uint64_t
 #endif
 

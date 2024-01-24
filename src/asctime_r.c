@@ -36,14 +36,14 @@
 #include <time.h>
 #include <stdlib.h>
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 #  define WIN32_LEAN_AND_MEAN
 #  include <windows.h>
 #endif // __MINGW32__
 
 #include "asctime_r.h"
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 
 static CRITICAL_SECTION asctime_r_cs;
 

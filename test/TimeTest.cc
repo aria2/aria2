@@ -96,7 +96,7 @@ void TimeTest::testToHTTPDate()
 {
 // This test disabled for MinGW32, because the garbage will be
 // displayed and it hides real errors.
-#ifndef __MINGW32__
+#if !defined(__MINGW32__) && !defined(_MSC_VER)
   Time t(1220714793);
   CPPUNIT_ASSERT_EQUAL(std::string("Sat, 06 Sep 2008 15:26:33 GMT"),
                        t.toHTTPDate());

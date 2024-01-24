@@ -34,7 +34,9 @@
 /* copyright --> */
 #include "daemon.h"
 
-#include <unistd.h>
+#ifndef NO_UNIX
+#  include <unistd.h>
+#endif
 #include <cstdio>
 #include <cstdlib>
 

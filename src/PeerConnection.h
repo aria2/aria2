@@ -37,7 +37,9 @@
 
 #include "common.h"
 
-#include <unistd.h>
+#ifndef NO_UNIX
+#  include <unistd.h>
+#endif
 #include <memory>
 
 #include "SocketBuffer.h"

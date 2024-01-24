@@ -101,11 +101,11 @@ typename Parser::ResultType parseFile(Parser& parser,
   if (fd == -1) {
     return Parser::ParserStateMachineType::noResult();
   }
-  auto fdclose = defer(fd, close);
+  auto fdclose = defer(fd, a2_close);
   std::array<char, 4_k> buf;
   ssize_t nread;
   ssize_t nproc;
-  while ((nread = read(fd, buf.data(), buf.size())) > 0) {
+  while ((nread = a2_read(fd, buf.data(), buf.size())) > 0) {
     nproc = parser.parseUpdate(buf.data(), nread);
     if (nproc < 0) {
       break;

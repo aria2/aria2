@@ -34,7 +34,9 @@
 /* copyright --> */
 #include "RequestGroupMan.h"
 
-#include <unistd.h>
+#ifndef NO_UNIX
+#  include <unistd.h>
+#endif
 #include <cstring>
 #include <iomanip>
 #include <sstream>

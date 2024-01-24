@@ -39,7 +39,7 @@
 #  include "config.h"
 #endif
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 #  ifdef malloc
 #    undef malloc
 #  endif
@@ -48,7 +48,12 @@
 #  endif
 #endif // __MINGW32__
 
-#ifdef __MINGW32__
+#if defined(_MSC_VER)
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+#endif
+
+#if defined(__MINGW32__) || defined(_MSC_VER)
 #  define WIN32_LEAN_AND_MEAN
 #  ifndef WINVER
 #    define WINVER 0x501

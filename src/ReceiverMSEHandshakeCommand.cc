@@ -32,6 +32,11 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
+
+#if defined(_MSC_VER) // for std::back_inserter
+#  include <iterator>
+#endif
+
 #include "ReceiverMSEHandshakeCommand.h"
 #include "PeerReceiveHandshakeCommand.h"
 #include "PeerConnection.h"

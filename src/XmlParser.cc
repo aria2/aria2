@@ -58,12 +58,12 @@ bool parseFile(const std::string& filename, ParserStateMachine* psm)
       return false;
     }
   }
-  auto fdclose = defer(fd, close);
+  auto fdclose = defer(fd, a2_close);
   XmlParser ps(psm);
   std::array<char, 4_k> buf;
   ssize_t nread;
   bool retval = true;
-  while ((nread = read(fd, buf.data(), buf.size())) > 0) {
+  while ((nread = a2_read(fd, buf.data(), buf.size())) > 0) {
     if (ps.parseUpdate(buf.data(), nread) < 0) {
       retval = false;
       break;

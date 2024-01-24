@@ -231,7 +231,7 @@ int MultiUrlRequestInfo::prepare()
     auto authConfigFactory = make_unique<AuthConfigFactory>();
     File netrccf(option_->get(PREF_NETRC_PATH));
     if (!option_->getAsBool(PREF_NO_NETRC) && netrccf.isFile()) {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
       // Windows OS does not have permission, so set it to 0.
       mode_t mode = 0;
 #else  // !__MINGW32__
