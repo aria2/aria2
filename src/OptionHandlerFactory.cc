@@ -1382,6 +1382,37 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    OptionHandler* op(new SocksProxyOptionHandler(
+        PREF_BT_UDP_SOCKS_PROXY, TEXT_BT_UDP_SOCKS_PROXY, NO_DEFAULT_VALUE));
+    op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
+    op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
+    handlers.push_back(op);
+  }
+  {
+    OptionHandler* op(new DefaultOptionHandler(PREF_BT_UDP_SOCKS_PROXY_PASSWD,
+                                               TEXT_BT_UDP_SOCKS_PROXY_PASSWD,
+                                               NO_DEFAULT_VALUE));
+    op->addTag(TAG_BITTORRENT);
+    op->setEraseAfterParse(true);
+    op->setInitialOption(true);
+    op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
+    handlers.push_back(op);
+  }
+  {
+    OptionHandler* op(new DefaultOptionHandler(PREF_BT_UDP_SOCKS_PROXY_USER,
+                                               TEXT_BT_UDP_SOCKS_PROXY_USER,
+                                               NO_DEFAULT_VALUE));
+    op->addTag(TAG_BITTORRENT);
+    op->setEraseAfterParse(true);
+    op->setInitialOption(true);
+    op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
+    handlers.push_back(op);
+  }
+  {
     OptionHandler* op(new HttpProxyOptionHandler(PREF_ALL_PROXY, TEXT_ALL_PROXY,
                                                  NO_DEFAULT_VALUE));
     op->addTag(TAG_FTP);

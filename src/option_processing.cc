@@ -263,6 +263,7 @@ error_code::Value option_processing(Option& op, bool standalone,
     overrideWithEnv(*confOption, oparser, PREF_HTTP_PROXY, "http_proxy");
     overrideWithEnv(*confOption, oparser, PREF_HTTPS_PROXY, "https_proxy");
     overrideWithEnv(*confOption, oparser, PREF_FTP_PROXY, "ftp_proxy");
+    overrideWithEnv(*confOption, oparser, PREF_BT_UDP_SOCKS_PROXY, "bt_udp_sokcs_proxy");
     overrideWithEnv(*confOption, oparser, PREF_ALL_PROXY, "all_proxy");
     overrideWithEnv(*confOption, oparser, PREF_NO_PROXY, "no_proxy");
     if (!standalone) {
