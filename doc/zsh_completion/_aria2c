@@ -1,0 +1,42 @@
+#compdef aria2c
+_aria2c_files_stdout() {
+  _alternative 'stdout:stdout:((-\:stdout))' 'files:file:_files'
+}
+
+local options=(
+  '(- : *)'{-v,--version}"[Print the version number and exit]"
+  '(- : *)'{-h,--help}"[Print usage and exit]:TAG or KEYWORD:(#basic #advanced #http #https #ftp #metalink #bittorrent #cookie #hook #file #rpc #checksum #experimental #deprecated #help #all)"
+  {-l,--log}"[The file name of the log file]:LOG:_aria2c_files_stdout"
+  {-d,--dir}"[The directory to store the downloaded file]:DIR:_dirs"
+  {-o,--out}"[The file name of the downloaded file]:FILE:_files"
+  {-s,--split}"[Download a file using N connections]:N"
+  --file-allocation"[Specify file allocation method]:METHOD:(none prealloc trunc falloc)"
+  {-V,--check-integrity}"[Check file integrity by validating piece]:bool:(true false)"
+  {-c,--continue}"[Continue downloading a partially downloaded]:bool:(true false)"
+  {-i,--input-file}"[Downloads URIs found in FILE]:FILE:_aria2c_files_stdout"
+  {-j,--max-concurrent-downloads}"[Set maximum number of parallel downloads for every static (HTTP/FTP) URL, torrent and metalink]:N"
+  {-Z,--force-sequential}"[Fetch URIs in the command-line sequentially]:bool:(true false)"
+  {-x,--max-connection-per-server}"[The maximum number of connections to one server for each download]:NUM"
+  {-k,--min-split-size}"[aria2 does not split less than 2*SIZE byte range]:SIZE"
+  --ftp-user"[Set FTP user. This affects all URLs]:USER:_users"
+  --ftp-passwd"[Set FTP password. This affects all URLs]:PASSWD"
+  --http-user"[Set HTTP user. This affects all URLs]:USER:_users"
+  --http-passwd"[Set HTTP password. This affects all URLs]:PASSWD"
+  --load-cookies"[Load Cookies from FILE using the Firefox3 format and Mozilla/Firefox(1.x/2.x)/Netscape format]:FILE:_files"
+  '(- : *)'{-S,--show-files}"[Print file listing of .torrent, .meta4 and .metalink file and exit]:bool:(true false)"
+  --max-overall-upload-limit"[Set max overall upload speed in bytes/sec, 0 means unrestricted]:SPEED"
+  {-u,--max-upload-limit}"[Set max upload speed per each torrent in bytes/sec, 0 means unrestricted]:SPEED"
+  {-T,--torrent-file}"[The path to the .torrent file]:TORRENT_FILE:_files"
+  --listen-port"[Set TCP port number for BitTorrent downloads]:PORT"
+  --enable-dht"[Enable IPv4 DHT functionality. It also enables]:bool:(true false)"
+  --dht-listen-port"[Set UDP listening port used by DHT(IPv4, IPv6)]:PORT"
+  --enable-dht6"[Enable IPv6 DHT functionality]:bool:(true false)"
+  --dht-listen-addr6"[Specify address to bind socket for IPv6 DHT]:ADDR"
+  {-M,--metalink-file}"[The file path to the .meta4 and .metalink file]:METALINK_FILE:_aria2c_files_stdout"
+  --enable-rpc
+  --rpc-secret"[a combination of --rpc-user and --rpc-passwd]:secret:_users"
+  --rpc-user"[Set rpc user. This affects all URLs]:USER:_users"
+  --rpc-passwd"[Set rpc password. This affects all URLs]:PASSWD"
+)
+
+_arguments -S -s $options "*::URI | MAGNET | TORRENT_FILE | METALINK_FILE:{_alternative urls:url:_urls files:file:_files}"
