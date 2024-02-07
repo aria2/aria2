@@ -1,0 +1,5 @@
+version: "1"
+rules:
+  - base: master
+    upstream: aria2:master    # change `wei` to the owner of upstream repo
+    mergeMethod: hardreset
