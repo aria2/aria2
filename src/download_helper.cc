@@ -445,7 +445,13 @@ public:
         }
       }
     }
+    
 #endif // ENABLE_METALINK
+//TOOD: ifdef of ENABLE aria2
+    else if (!ignoreLocalPath_ && detector_.guessAria2ControlFile(uri))
+    {
+      
+    }
     else {
       if (throwOnError_) {
         throw DL_ABORT_EX(fmt(MSG_UNRECOGNIZED_URI, uri.c_str()));

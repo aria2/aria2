@@ -46,6 +46,7 @@
 #ifdef ENABLE_BITTORRENT
 #  include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
+#include "DefaultBtProgressInfoFile.h"
 
 namespace aria2 {
 
@@ -105,6 +106,18 @@ bool ProtocolDetector::guessMetalinkFile(const std::string& uri) const
   else {
     return false;
   }
+}
+
+bool ProtocolDetector::guessAria2ControlFile(const std::string& uri) const
+{
+  File control_file(uri);
+  if(!control_file.isFile())
+  {
+      return false;
+  }
+
+  const auto control_file_suffix = DefaultBtProgressInfoFile::getSuffix();
+  return control_file.getExtension() == control_file_suffix;
 }
 
 } // namespace aria2

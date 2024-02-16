@@ -60,6 +60,10 @@ public:
   // Returns true if ProtocolDetector thinks uri is a path of Metalink XML
   // file, otherwise return false.
   bool guessMetalinkFile(const std::string& uri) const;
+
+  // Returns true if ProtocolDetector thinks uri is a path to aria2 control
+  // file, otherwise return false
+  bool guessAria2ControlFile(const std::string& uri) const;
 };
 
 } // namespace aria2
