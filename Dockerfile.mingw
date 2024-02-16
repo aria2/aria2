@@ -1,7 +1,8 @@
 # Dockerfile to build aria2 Windows binary using ubuntu mingw-w64
 # cross compiler chain.
 #
-# $ sudo docker build -t aria2-mingw - < Dockerfile.mingw
+# $ sudo docker build -t aria2-mingw -f Dockerfile.mingw .
+# Be aware that there's a dot at the end of the command  ↑
 #
 # After successful build, windows binary is located at
 # /aria2/src/aria2c.exe.  You can copy the binary using following
@@ -25,15 +26,15 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         make binutils autoconf automake autotools-dev libtool \
         patch ca-certificates \
-        pkg-config git curl dpkg-dev gcc-mingw-w64 g++-mingw-w64 \
+        pkg-config git curl dpkg-dev mingw-w64 \
         autopoint libcppunit-dev libxml2-dev libgcrypt20-dev lzip \
         python3-docutils
 
 RUN curl -L -O https://gmplib.org/download/gmp/gmp-6.3.0.tar.xz && \
-    curl -L -O https://github.com/libexpat/libexpat/releases/download/R_2_5_0/expat-2.5.0.tar.bz2 && \
-    curl -L -O https://www.sqlite.org/2023/sqlite-autoconf-3430100.tar.gz && \
+    curl -L -O https://github.com/libexpat/libexpat/releases/download/R_2_6_0/expat-2.6.0.tar.bz2 && \
+    curl -L -O https://www.sqlite.org/2024/sqlite-autoconf-3450100.tar.gz && \
     curl -L -O https://github.com/madler/zlib/releases/download/v1.3.1/zlib-1.3.1.tar.gz && \
-    curl -L -O https://c-ares.org/download/c-ares-1.19.1.tar.gz && \
+    curl -L -O https://c-ares.org/download/c-ares-1.26.0.tar.gz && \
     curl -L -O https://libssh2.org/download/libssh2-1.11.0.tar.bz2
 
 RUN tar xf gmp-6.3.0.tar.xz && \
@@ -48,8 +49,8 @@ RUN tar xf gmp-6.3.0.tar.xz && \
         CFLAGS="-mtune=generic -O2 -g0" && \
     make -j$(nproc) install
 
-RUN tar xf expat-2.5.0.tar.bz2 && \
-    cd expat-2.5.0 && \
+RUN tar xf expat-2.6.0.tar.bz2 && \
+    cd expat-2.6.0 && \
     ./configure \
         --disable-shared \
         --enable-static \
@@ -58,8 +59,8 @@ RUN tar xf expat-2.5.0.tar.bz2 && \
         --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` && \
     make -j$(nproc) install
 
-RUN tar xf sqlite-autoconf-3430100.tar.gz && \
-    cd sqlite-autoconf-3430100 && \
+RUN tar xf sqlite-autoconf-3450100.tar.gz && \
+    cd sqlite-autoconf-3450100 && \
     ./configure \
         --disable-shared \
         --enable-static \
@@ -82,8 +83,8 @@ RUN tar xf zlib-1.3.1.tar.gz && \
         --static && \
     make -j$(nproc) install
 
-RUN tar xf c-ares-1.19.1.tar.gz && \
-    cd c-ares-1.19.1 && \
+RUN tar xf c-ares-1.26.0.tar.gz && \
+    cd c-ares-1.26.0 && \
     ./configure \
         --disable-shared \
         --enable-static \
@@ -105,10 +106,7 @@ RUN tar xf libssh2-1.11.0.tar.bz2 && \
         LIBS="-lws2_32" && \
     make -j$(nproc) install
 
-ARG ARIA2_VERSION=master
-ARG ARIA2_REF=refs/heads/master
+COPY . /aria2
 
-ADD https://api.github.com/repos/aria2/aria2/git/$ARIA2_REF version.json
-RUN git clone -b $ARIA2_VERSION --depth 1 https://github.com/aria2/aria2 && \
-    cd aria2 && autoreconf -i && ./mingw-config && make -j$(nproc) && \
+RUN cd aria2 && autoreconf -i && ./mingw-config && make -j$(nproc) && \
     $HOST-strip src/aria2c.exe
