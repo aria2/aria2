@@ -64,10 +64,12 @@
 #include "download_handlers.h"
 #include "SimpleRandomizer.h"
 #ifdef ENABLE_BITTORRENT
-#  include "bittorrent_helper.h"
 #  include "BtConstants.h"
 #  include "ValueBaseBencodeParser.h"
 #endif // ENABLE_BITTORRENT
+// TODO ENABLE CONTROLFILE
+#include "TorrentAttribute.h"
+#include "bittorrent_helper.h"
 
 namespace aria2 {
 
@@ -450,7 +452,13 @@ public:
 //TOOD: ifdef of ENABLE aria2
     else if (!ignoreLocalPath_ && detector_.guessAria2ControlFile(uri))
     {
+      // Extract hash and construct a magnet to feed into createBtMagentRequestGroup
+
+      auto torrent_attribute = std::make_unique<const TorrentAttribute>();
+      // torrent_attribute->infoHash = the hash from the file
+      const auto magent = aria2::bittorrent::torrent2Magnet(torrent_attribute.get());
       
+      requestGroups_.push_back(createBtMagnetRequestGroup(magent, option_));
     }
     else {
       if (throwOnError_) {

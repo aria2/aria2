@@ -111,6 +111,7 @@ bool ProtocolDetector::guessMetalinkFile(const std::string& uri) const
 bool ProtocolDetector::guessAria2ControlFile(const std::string& uri) const
 {
   File control_file(uri);
+
   if(!control_file.isFile())
   {
       return false;

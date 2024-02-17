@@ -73,7 +73,7 @@ void ProtocolDetectorTest::testGuessAria2ControlFile()
   const ProtocolDetector detector;
   CPPUNIT_ASSERT(detector.guessAria2ControlFile(A2_TEST_DIR "/control_file.aria2"));
   CPPUNIT_ASSERT(!detector.guessAria2ControlFile(A2_TEST_DIR));
-  CPPUNIT_ASSERT(detector.guessAria2ControlFile(A2_TEST_DIR "/control_file.aria"));
+  CPPUNIT_ASSERT(!detector.guessAria2ControlFile(A2_TEST_DIR "/control_file.aria"));
 }
 
 } // namespace aria2
