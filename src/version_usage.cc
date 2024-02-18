@@ -85,7 +85,7 @@ void showUsage(const std::string& keyword,
                const std::shared_ptr<OptionParser>& oparser, const Console& out)
 {
   out->printf(_("Usage: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE |"
-                " METALINK_FILE]..."));
+                " METALINK_FILE | CONTROL_FILE]..."));
   out->printf("\n");
   if (keyword.empty()) {
     // Very short version of usage.
@@ -139,7 +139,7 @@ void showUsage(const std::string& keyword,
     }
   }
   if (keyword == strHelpTag(TAG_BASIC)) {
-    out->printf("URI, MAGNET, TORRENT_FILE, METALINK_FILE:\n");
+    out->printf("URI, MAGNET, TORRENT_FILE, METALINK_FILE, CONTROL_FILE:\n");
     out->printf(
         _(" You can specify multiple HTTP(S)/FTP URIs. Unless you specify -Z "
           "option, all\n"

@@ -1482,7 +1482,7 @@ Algumas opções usam ``K`` e ``M`` para convenientemente representar
 transparente (maiúsculas e minúsculas), portanto podem ser usados
 `k`` ou ``K`` e ``m`` ou ``M``.
 
-URI, MAGNET, TORRENT_FILE, METALINK_FILE
+URI, MAGNET, TORRENT_FILE, METALINK_FILE, CONTROL_FILE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Podemos especificar múltiplas URIs em uma linha de comando.  A menos que seja
