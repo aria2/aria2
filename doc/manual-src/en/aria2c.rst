@@ -3,7 +3,7 @@ aria2c(1)
 
 SYNOPSIS
 --------
-**aria2c** [<OPTIONS>] [<URI>|<MAGNET>|<TORRENT_FILE>|<METALINK_FILE>|<CONTROL_FILE>] ...
+**aria2c** [<OPTIONS>] [<URI>|<MAGNET>|<TORRENT_FILE>|<METALINK_FILE>|<ARIA2_CONTROL_FILE>] ...
 
 DESCRIPTION
 -----------
@@ -1736,7 +1736,7 @@ Some options takes ``K`` and ``M`` to conveniently represent 1024 and
 case-insensitive way. In other words, ``k`` and ``m`` can be used as
 well as ``K`` and ``M`` respectively.
 
-URI, MAGNET, TORRENT_FILE, METALINK_FILE, CONTROL_FILE
+URI, MAGNET, TORRENT_FILE, METALINK_FILE, ARIA2_CONTROL_FILE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can specify multiple URIs in command-line.  Unless you specify
