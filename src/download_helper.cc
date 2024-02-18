@@ -67,10 +67,11 @@
 #  include "BtConstants.h"
 #  include "ValueBaseBencodeParser.h"
 #endif // ENABLE_BITTORRENT
-// TODO ENABLE CONTROLFILE
-#include "TorrentAttribute.h"
-#include "bittorrent_helper.h"
-#include "DefaultBtProgressInfoFile.h"
+#ifdef ENABLE_CONTROL_FILE
+#  include "TorrentAttribute.h"
+#  include "bittorrent_helper.h"
+#  include "DefaultBtProgressInfoFile.h"
+#endif // ENABLE_CONTROL_FILE
 
 namespace aria2 {
 
@@ -450,7 +451,7 @@ public:
     }
     
 #endif // ENABLE_METALINK
-//TOOD: ifdef of ENABLE aria2
+#ifdef  ENABLE_CONTROL_FILE
     else if (!ignoreLocalPath_ && detector_.guessAria2ControlFile(uri))
     {
       // Extract hash and construct a magnet to feed into createBtMagentRequestGroup
@@ -471,6 +472,7 @@ public:
       }
     }
   }
+#endif // ENABLE_CONTROL_FILE
 };
 } // namespace
 

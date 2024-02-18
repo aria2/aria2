@@ -46,7 +46,9 @@
 #ifdef ENABLE_BITTORRENT
 #  include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
-#include "DefaultBtProgressInfoFile.h"
+#ifdef ENABLE_CONTROL_FILE
+# include "DefaultBtProgressInfoFile.h"
+#endif // ENABLE_CONTROL_FILE
 
 namespace aria2 {
 
@@ -91,6 +93,22 @@ bool ProtocolDetector::guessTorrentMagnet(const std::string& uri) const
 #endif // !ENABLE_BITTORRENT
 }
 
+bool ProtocolDetector::guessAria2ControlFile(const std::string& uri) const
+{
+#ifdef ENABLE_CONTROL_FILE
+  File control_file(uri);
+
+  if(!control_file.isFile())
+  {
+      return false;
+  }
+
+  return control_file.getExtension() == DefaultBtProgressInfoFile::getSuffix();
+#else //  !ENABLE_CONTROL_FILE
+  return false;
+#endif // !ENABLE_CONTROL_FILE
+}
+
 bool ProtocolDetector::guessMetalinkFile(const std::string& uri) const
 {
   BufferedFile fp(uri.c_str(), BufferedFile::READ);
@@ -106,19 +124,6 @@ bool ProtocolDetector::guessMetalinkFile(const std::string& uri) const
   else {
     return false;
   }
-}
-
-bool ProtocolDetector::guessAria2ControlFile(const std::string& uri) const
-{
-  File control_file(uri);
-
-  if(!control_file.isFile())
-  {
-      return false;
-  }
-
-  const auto control_file_suffix = DefaultBtProgressInfoFile::getSuffix();
-  return control_file.getExtension() == control_file_suffix;
 }
 
 } // namespace aria2

@@ -256,7 +256,7 @@ std::array<unsigned char, INFO_HASH_LENGTH> DefaultBtProgressInfoFile::getInfoHa
     throw DL_ABORT_EX(fmt(EX_SEGMENT_FILE_READ, control_file.c_str()));
   }
   
-  auto version = getControlFileVersion(fp, control_file);
+  const auto version = getControlFileVersion(fp, control_file);
 
   unsigned char extension[4];
   READ_CHECK_STATIC(fp, extension, sizeof(extension), control_file);
@@ -289,7 +289,7 @@ void DefaultBtProgressInfoFile::load()
     throw DL_ABORT_EX(fmt(EX_SEGMENT_FILE_READ, filename_.c_str()));
   }
 
-  auto version = getControlFileVersion(fp, filename_);
+  const auto version = getControlFileVersion(fp, filename_);
 
   unsigned char extension[4];
   READ_CHECK(fp, extension, sizeof(extension));
