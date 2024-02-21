@@ -64,12 +64,12 @@
 #include "download_handlers.h"
 #include "SimpleRandomizer.h"
 #ifdef ENABLE_BITTORRENT
+#  include "bittorrent_helper.h"
 #  include "BtConstants.h"
 #  include "ValueBaseBencodeParser.h"
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_CONTROL_FILE
 #  include "TorrentAttribute.h"
-#  include "bittorrent_helper.h"
 #  include "DefaultBtProgressInfoFile.h"
 #endif // ENABLE_CONTROL_FILE
 
