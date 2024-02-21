@@ -259,6 +259,8 @@ extern PrefPtr PREF_DISABLE_IPV6;
 extern PrefPtr PREF_HUMAN_READABLE;
 // value: true | false
 extern PrefPtr PREF_REMOVE_CONTROL_FILE;
+// value: a string
+extern PrefPtr PREF_CONTROL_FILE_BASE_DIRECTORY;
 // value: true | false
 extern PrefPtr PREF_ALWAYS_RESUME;
 // value: 1*digit

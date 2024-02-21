@@ -440,7 +440,7 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
   {
     OptionHandler* op(new NumberOptionHandler(PREF_MAX_CONNECTION_PER_SERVER,
                                               TEXT_MAX_CONNECTION_PER_SERVER,
-                                              "1", 1, 16, 'x'));
+                                              "1", 1, 2048, 'x'));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
@@ -648,6 +648,14 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
     op->setChangeOptionForReserved(true);
+    handlers.push_back(op);
+  }
+  {
+    OptionHandler* op(new LocalFilePathOptionHandler(
+        PREF_CONTROL_FILE_BASE_DIRECTORY, CONTROL_FILE_BASE_DIRECTORY, NO_DEFAULT_VALUE,
+        /* acceptStdin = */ false, 0, /* mustExist = */ false));
+    op->addTag(TAG_ADVANCED);
+    op->setChangeGlobalOption(true);
     handlers.push_back(op);
   }
   {
