@@ -652,6 +652,14 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
   }
   {
     OptionHandler* op(new LocalFilePathOptionHandler(
+        PREF_CONTROL_FILE_BASE_DIRECTORY, CONTROL_FILE_BASE_DIRECTORY, NO_DEFAULT_VALUE,
+        /* acceptStdin = */ false, 0, /* mustExist = */ false));
+    op->addTag(TAG_ADVANCED);
+    op->setChangeGlobalOption(true);
+    handlers.push_back(op);
+  }
+  {
+    OptionHandler* op(new LocalFilePathOptionHandler(
         PREF_SAVE_SESSION, TEXT_SAVE_SESSION, NO_DEFAULT_VALUE,
         /* acceptStdin = */ false, 0, /* mustExist = */ false));
     op->addTag(TAG_ADVANCED);

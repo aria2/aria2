@@ -306,6 +306,8 @@ PrefPtr PREF_DISABLE_IPV6 = makePref("disable-ipv6");
 PrefPtr PREF_HUMAN_READABLE = makePref("human-readable");
 // value: true | false
 PrefPtr PREF_REMOVE_CONTROL_FILE = makePref("remove-control-file");
+// value: string
+PrefPtr PREF_CONTROL_FILE_BASE_DIRECTORY = makePref("control-file-base-directory");
 // value: true | false
 PrefPtr PREF_ALWAYS_RESUME = makePref("always-resume");
 // value: 1*digit

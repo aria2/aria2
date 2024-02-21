@@ -698,6 +698,8 @@
     "                              with --allow-overwrite=true, download always\n" \
     "                              starts from scratch. This will be useful for\n" \
     "                              users behind proxy server which disables resume.")
+#define CONTROL_FILE_BASE_DIRECTORY                                           \
+  _(" --control-file-base-directory=DIR    The directory to store the control file.")
 #define TEXT_ALWAYS_RESUME                      \
   _(" --always-resume[=true|false] Always resume download. If true is given, aria2\n" \
     "                              always tries to resume download and if resume is\n" \
