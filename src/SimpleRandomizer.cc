@@ -35,7 +35,9 @@
 #include "SimpleRandomizer.h"
 
 #include <sys/types.h>
-#include <unistd.h>
+#ifndef NO_UNIX
+#  include <unistd.h>
+#endif
 #include <cstdlib>
 #include <cassert>
 #include <cstring>
@@ -74,7 +76,7 @@ namespace {
 std::random_device rd;
 } // namespace
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 SimpleRandomizer::SimpleRandomizer()
 {
   BOOL r = ::CryptAcquireContext(&provider_, 0, 0, PROV_RSA_FULL,
@@ -87,7 +89,7 @@ SimpleRandomizer::SimpleRandomizer() : gen_(rd()) {}
 
 SimpleRandomizer::~SimpleRandomizer()
 {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   CryptReleaseContext(provider_, 0);
 #endif
 }
@@ -100,7 +102,7 @@ long int SimpleRandomizer::getRandomNumber(long int to)
 
 void SimpleRandomizer::getRandomBytes(unsigned char* buf, size_t len)
 {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   BOOL r = CryptGenRandom(provider_, len, reinterpret_cast<BYTE*>(buf));
   if (!r) {
     assert(r);

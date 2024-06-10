@@ -368,7 +368,7 @@ int FtpConnection::receiveResponse()
   }
 }
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 #  define LONGLONG_PRINTF "%I64d"
 #  define ULONGLONG_PRINTF "%I64u"
 #  define LONGLONG_SCANF "%I64d"

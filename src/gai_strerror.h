@@ -33,7 +33,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__)
 #  undef SIZE_MAX
 #endif // __MINGW32__
 
@@ -56,7 +56,7 @@ extern "C" {
 /*
  * Functions.
  */
-#ifdef __STDC__
+#if defined(__STDC__) || defined(_MSC_VER)
 const char* gai_strerror(int);
 #else
 const char* gai_strerror();

@@ -34,7 +34,9 @@
 /* copyright --> */
 #include "OptionParser.h"
 
-#include <unistd.h>
+#ifndef NO_UNIX
+#  include <unistd.h>
+#endif
 #include <getopt.h>
 
 #include <cstring>
@@ -196,7 +198,7 @@ void OptionParser::parseArg(std::ostream& out,
       // option is ambiguous.
       int ambiguous = 0;
       for (int i = 1, len = option::countOption(); i < len; ++i) {
-        PrefPtr pref = option::i2p(i);
+        PrefPtr pref = aria2::option::i2p(i);
         const OptionHandler* h = find(pref);
         if (h && !h->isHidden()) {
           if (strcmp(pref->k, optstr) == 0) {

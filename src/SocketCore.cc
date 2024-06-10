@@ -38,7 +38,9 @@
 #  include <iphlpapi.h>
 #endif // HAVE_IPHLPAPI_H
 
-#include <unistd.h>
+#ifndef NO_UNIX
+#  include <unistd.h>
+#endif
 #ifdef HAVE_IFADDRS_H
 #  include <ifaddrs.h>
 #endif // HAVE_IFADDRS_H
@@ -68,13 +70,13 @@
 
 namespace aria2 {
 
-#ifndef __MINGW32__
+#if !defined(__MINGW32__) && !defined(_MSC_VER)
 #  define SOCKET_ERRNO (errno)
 #else
 #  define SOCKET_ERRNO (WSAGetLastError())
 #endif // __MINGW32__
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 #  define A2_EINPROGRESS WSAEWOULDBLOCK
 #  define A2_EWOULDBLOCK WSAEWOULDBLOCK
 #  define A2_EINTR WSAEINTR
@@ -93,7 +95,7 @@ namespace aria2 {
 #  endif // EWOULDBLOCK != EAGAIN
 #endif   // !__MINGW32__
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 #  define CLOSE(X) ::closesocket(X)
 #else
 #  define CLOSE(X) close(X)
@@ -102,7 +104,7 @@ namespace aria2 {
 namespace {
 std::string errorMsg(int errNum)
 {
-#ifndef __MINGW32__
+#if !defined(__MINGW32__) && !defined(_MSC_VER)
   return util::safeStrerror(errNum);
 #else
   auto msg = util::formatLastError(errNum);
@@ -595,7 +597,7 @@ void SocketCore::applyIpDscp()
 
 void SocketCore::setNonBlockingMode()
 {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   static u_long flag = 1;
   if (::ioctlsocket(sockfd_, FIONBIO, &flag) == -1) {
     int errNum = SOCKET_ERRNO;
@@ -614,7 +616,7 @@ void SocketCore::setNonBlockingMode()
 
 void SocketCore::setBlockingMode()
 {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
   static u_long flag = 0;
   if (::ioctlsocket(sockfd_, FIONBIO, &flag) == -1) {
     int errNum = SOCKET_ERRNO;
@@ -654,7 +656,7 @@ void SocketCore::closeConnection()
   }
 }
 
-#ifndef __MINGW32__
+#if !defined(__MINGW32__) && !defined(_MSC_VER)
 #  define CHECK_FD(fd)                                                         \
     if (fd < 0 || FD_SETSIZE <= fd) {                                          \
       logger_->warn("Detected file descriptor >= FD_SETSIZE or < 0. "          \
@@ -681,7 +683,7 @@ bool SocketCore::isWritable(time_t timeout)
   }
   throw DL_RETRY_EX(fmt(EX_SOCKET_CHECK_WRITABLE, errorMsg(errNum).c_str()));
 #else // !HAVE_POLL
-#  ifndef __MINGW32__
+#  if !defined(__MINGW32__) && !defined(_MSC_VER)
   CHECK_FD(sockfd_);
 #  endif // !__MINGW32__
   fd_set fds;
@@ -726,7 +728,7 @@ bool SocketCore::isReadable(time_t timeout)
   }
   throw DL_RETRY_EX(fmt(EX_SOCKET_CHECK_READABLE, errorMsg(errNum).c_str()));
 #else // !HAVE_POLL
-#  ifndef __MINGW32__
+#  if !defined(__MINGW32__) && !defined(_MSC_VER)
   CHECK_FD(sockfd_);
 #  endif // !__MINGW32__
   fd_set fds;
@@ -759,7 +761,7 @@ ssize_t SocketCore::writeVector(a2iovec* iov, size_t iovcnt)
   wantRead_ = false;
   wantWrite_ = false;
   if (!secure_) {
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
     DWORD nsent;
     int rv = WSASend(sockfd_, iov, iovcnt, &nsent, 0, 0, 0);
     if (rv == 0) {
@@ -1573,7 +1575,7 @@ bool ipv4AddrConfigured = true;
 bool ipv6AddrConfigured = true;
 } // namespace
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 namespace {
 const uint32_t APIPA_IPV4_BEGIN = 2851995649u; // 169.254.0.1
 const uint32_t APIPA_IPV4_END = 2852061183u;   // 169.254.255.255

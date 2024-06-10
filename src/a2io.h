@@ -37,7 +37,9 @@
 #include "common.h"
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
+#ifndef NO_UNIX
+#  include <unistd.h>
+#endif
 #include <fcntl.h>
 #include <cerrno>
 #ifdef HAVE_POLL_H
@@ -52,6 +54,9 @@
 #ifdef HAVE_SHARE_H
 #  include <share.h>
 #endif // HAVE_SHARE_H
+#ifdef HAVE_SYS_UTIME_H
+#  include <sys/utime.h>
+#endif
 
 // in some platforms following definitions are missing:
 #ifndef EINPROGRESS
@@ -120,7 +125,7 @@
 #  define DEV_STDOUT "/dev/stdout"
 #endif // HAVE_WINSOCK2_H
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 #  define a2lseek(fd, offset, origin) _lseeki64(fd, offset, origin)
 #  define a2fseek(fd, offset, origin) _fseeki64(fd, offset, origin)
 #  define a2fstat(fd, buf) _fstati64(fd, buf)
@@ -141,6 +146,9 @@
 #  define a2open(path, flags, mode) _wsopen(path, flags, _SH_DENYNO, mode)
 #  define a2fopen(path, mode) _wfsopen(path, mode, _SH_DENYNO)
 // # define a2ftruncate(fd, length): We don't use ftruncate in Mingw build
+#  ifndef off_t 
+#  define off_t _off_t
+#  endif
 #  define a2_off_t off_t
 #elif defined(__ANDROID__) || defined(ANDROID)
 #  define a2lseek(fd, offset, origin) lseek64(fd, offset, origin)
@@ -190,10 +198,37 @@ extern int ftruncate64(int fd, off64_t length);
 #define OPEN_MODE S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH
 #define DIR_OPEN_MODE S_IRWXU | S_IRWXG | S_IRWXO
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 #  define A2_BAD_FD INVALID_HANDLE_VALUE
 #else // !__MINGW32__
 #  define A2_BAD_FD -1
 #endif // !__MINGW32__
+
+#if defined(_MSC_VER)
+//  Present with their _ prefixes on MSVC
+#  define O_RDONLY        _O_RDONLY
+#  define O_WRONLY        _O_WRONLY
+#  define O_RDWR          _O_RDWR
+#  define O_APPEND        _O_APPEND
+#  define O_CREAT         _O_CREAT
+#  define O_EXCL          _O_EXCL
+#  define O_TRUNC         _O_TRUNC
+
+#  define STDIN_FILENO    _fileno(stdin)
+#endif
+
+#if defined(_MSC_VER)
+#  define a2_isatty  _isatty
+#  define a2_fileno  _fileno
+#  define a2_read    _read
+#  define a2_close   _close
+#  define a2_dup     _dup
+#else
+#  define a2_isatty  isatty
+#  define a2_fileno  fileno
+#  define a2_read    read
+#  define a2_close   close
+#  define a2_dup     dup
+#endif // !_MSC_VER
 
 #endif // D_A2IO_H

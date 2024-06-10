@@ -79,7 +79,7 @@
 #  include "config.h"
 #endif
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
 #  include <winsock2.h>
 #  undef ERROR
 #  include <ws2tcpip.h>
@@ -124,7 +124,7 @@
 
 #ifndef HAVE_MEMCPY
 #  define memcpy(d, s, n) bcopy((s), (d), (n))
-#  ifdef __STDC__
+#  if defined(__STDC__) || defined(_MSC_VER)
 void* memchr(const void*, int, size_t);
 int memcmp(const void*, const void*, size_t);
 void* memmove(void*, const void*, size_t);
@@ -136,6 +136,10 @@ char* memmove();
 char* memset();
 #  endif /* not __STDC__ */
 #endif   /* not HAVE_MEMCPY */
+
+#if defined(_MSC_VER)
+#  define H_ERRNO_DECLARED 1
+#endif
 
 #ifndef H_ERRNO_DECLARED
 extern int h_errno;
@@ -154,6 +158,11 @@ extern int h_errno;
 #  define gettext(string) (string)
 #  define _(string) (string)
 #  define N_(string) (string)
+#endif
+
+#if defined(_MSC_VER)
+# include <stdint.h>
+# define in_port_t uint16_t
 #endif
 
 /*
@@ -211,7 +220,7 @@ static pthread_mutex_t gai_mutex = PTHREAD_MUTEX_INITIALIZER;
 /*
  * Declaration of static functions.
  */
-#ifdef __STDC__
+#if defined(__STDC__) || defined(_MSC_VER)
 static int is_integer(const char*);
 static int is_address(const char*);
 static int itoa_length(int);
@@ -496,7 +505,9 @@ struct addrinfo** res;
   *res = head_res;
 
 end:
+#if !defined(_MSC_VER) // h_errno >> WSAGetLastError() ; not editable
   h_errno = saved_h_errno;
+#endif
 #ifdef ENABLE_PTHREAD
   pthread_mutex_unlock(&gai_mutex);
 #endif
@@ -590,7 +601,9 @@ int flags;
   }
 
 end:
+#if !defined(_MSC_VER) // h_errno >> WSAGetLastError() ; not editable
   h_errno = saved_h_errno;
+#endif
 #ifdef ENABLE_PTHREAD
   pthread_mutex_unlock(&gai_mutex);
 #endif

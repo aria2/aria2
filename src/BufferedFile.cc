@@ -47,18 +47,18 @@ BufferedFile::BufferedFile(const char* filename, const char* mode)
     : fp_(strcmp(DEV_STDIN, filename) == 0
               ? stdin
               :
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
               a2fopen(utf8ToWChar(filename).c_str(), utf8ToWChar(mode).c_str())
 #else  // !__MINGW32__
               a2fopen(filename, mode)
 #endif // !__MINGW32__
               ),
-      supportsColor_(fp_ ? isatty(fileno(fp_)) : false)
+      supportsColor_(fp_ ? a2_isatty(a2_fileno(fp_)) : false)
 {
 }
 
 BufferedFile::BufferedFile(FILE* fp)
-    : fp_(fp), supportsColor_(fp_ ? isatty(fileno(fp_)) : false)
+    : fp_(fp), supportsColor_(fp_ ? a2_isatty(a2_fileno(fp_)) : false)
 {
 }
 
@@ -81,10 +81,10 @@ int BufferedFile::onClose()
   int rv = 0;
   if (fp_) {
     fflush(fp_);
-#ifndef __MINGW32__
-    fsync(fileno(fp_));
+#if !defined(__MINGW32__) && !defined(_MSC_VER)
+    fsync(a2_fileno(fp_));
 #else  // __MINGW32__
-    _commit(fileno(fp_));
+    _commit(a2_fileno(fp_));
 #endif // __MINGW32__
     if (fp_ != stdin && fp_ != stderr) {
       rv = fclose(fp_);

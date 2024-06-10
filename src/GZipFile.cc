@@ -50,14 +50,14 @@ GZipFile::GZipFile(const char* filename, const char* mode)
       strcmp(DEV_STDIN, filename) == 0
           ? stdin
           :
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(_MSC_VER)
           a2fopen(utf8ToWChar(filename).c_str(), utf8ToWChar(mode).c_str())
 #else  // !__MINGW32__
           a2fopen(filename, mode)
 #endif // !__MINGW32__
       ;
   if (fp) {
-    int fd = dup(fileno(fp));
+    int fd = a2_dup(a2_fileno(fp));
     if (fd != -1) {
       fp_ = gzdopen(fd, mode);
       if (fp_) {
@@ -70,7 +70,7 @@ GZipFile::GZipFile(const char* filename, const char* mode)
 #endif
       }
       else {
-        ::close(fd);
+        ::a2_close(fd);
       }
     }
     fclose(fp);
