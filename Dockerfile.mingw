@@ -33,7 +33,7 @@ RUN curl -L -O https://gmplib.org/download/gmp/gmp-6.3.0.tar.xz && \
     curl -L -O https://github.com/libexpat/libexpat/releases/download/R_2_5_0/expat-2.5.0.tar.bz2 && \
     curl -L -O https://www.sqlite.org/2023/sqlite-autoconf-3430100.tar.gz && \
     curl -L -O https://github.com/madler/zlib/releases/download/v1.3.1/zlib-1.3.1.tar.gz && \
-    curl -L -O https://c-ares.org/download/c-ares-1.19.1.tar.gz && \
+    curl -L -O https://github.com/c-ares/c-ares/releases/download/cares-1_19_1/c-ares-1.19.1.tar.gz && \
     curl -L -O https://libssh2.org/download/libssh2-1.11.0.tar.bz2
 
 RUN tar xf gmp-6.3.0.tar.xz && \
