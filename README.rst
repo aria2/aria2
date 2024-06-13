@@ -162,10 +162,6 @@ JSON-RPC over WebSocket  libnettle or libgcrypt or OpenSSL
   If none of the optional dependencies are installed, an internal
   implementation that only supports md5 and sha1 will be used.
 
-  On Windows, there is SSL implementation available that is based on
-  the native Windows capabilities and it will be preferred, unless
-  aria2 is configured with ``--without-wintls``.
-
 A user can have one of the following configurations for SSL and crypto
 libraries:
 
