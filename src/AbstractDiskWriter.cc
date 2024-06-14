@@ -258,7 +258,7 @@ ssize_t AbstractDiskWriter::writeDataInternal(const unsigned char* data,
                                               size_t len, int64_t offset)
 {
   if (mapaddr_) {
-    memcpy(mapaddr_ + offset, data, len);
+    std::copy_n(data, len, mapaddr_ + offset);
     return len;
   }
   else {
@@ -298,7 +298,7 @@ ssize_t AbstractDiskWriter::readDataInternal(unsigned char* data, size_t len,
       return 0;
     }
     auto readlen = std::min(maplen_ - offset, static_cast<int64_t>(len));
-    memcpy(data, mapaddr_ + offset, readlen);
+    std::copy_n(mapaddr_ + offset, readlen, data);
     return readlen;
   }
   else {

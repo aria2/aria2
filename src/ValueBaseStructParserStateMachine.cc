@@ -213,4 +213,9 @@ void ValueBaseStructParserStateMachine::pushNullState()
   stateStack_.push(nullState);
 }
 
+void ValueBaseStructParserStateMachine::setAllowEmptyMemberName(bool b)
+{
+  ctrl_->setAllowEmptyMemberName(b);
+}
+
 } // namespace aria2

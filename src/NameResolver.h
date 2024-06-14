@@ -50,7 +50,7 @@ public:
   NameResolver();
 
   /**
-   * Reolved addresses are pushed into addresses.
+   * Resolved addresses are pushed into addresses.
    */
   void resolve(std::vector<std::string>& resolvedAddresses,
                const std::string& hostname);

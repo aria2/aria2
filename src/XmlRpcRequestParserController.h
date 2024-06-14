@@ -52,7 +52,10 @@ private:
     std::unique_ptr<ValueBase> value_;
     std::string name_;
 
-    bool validMember() const { return value_ && !name_.empty(); }
+    bool validMember(bool allowEmptyMemberName) const
+    {
+      return value_ && (allowEmptyMemberName || !name_.empty());
+    }
 
     void reset()
     {
@@ -67,7 +70,11 @@ private:
 
   std::string methodName_;
 
+  bool allowEmptyMemberName_;
+
 public:
+  XmlRpcRequestParserController() : allowEmptyMemberName_(false) {}
+
   void pushFrame();
 
   // Pops StateFrame p from frameStack_ and set p[currentFrame_.name_]
@@ -89,6 +96,8 @@ public:
   void setMethodName(std::string methodName);
 
   const std::string& getMethodName() const { return methodName_; }
+
+  void setAllowEmptyMemberName(bool b);
 
   void reset();
 };

@@ -3,22 +3,17 @@ aria2 Windows build
 
 aria2 Windows build is provided in 2 flavors: 32bit version and 64bit
 version. The executable was compiled using mingw-w64 cross compiler on
-Debian Linux.
-
-* gcc-mingw-w64               10.2.1-6+24.2
-* g++-mingw-w64               10.2.1-6+24.2
-* binutils-mingw-w64-i686     2.35.2-2+8.11+b3
-* binutils-mingw-w64-x86-64   2.35.2-2+8.11+b3
+Ubuntu Linux.
 
 The executable is statically linked, so no extra DLLs are
 necessary. The linked libraries are:
 
-* gmp 6.2.1
-* expat 2.4.1
-* sqlite 3.36.0
-* zlib 1.2.11
-* c-ares 1.17.2
-* libssh2 1.9.0 (+ https://github.com/libssh2/libssh2/commit/ba149e804ef653cc05ed9803dfc94519ce9328f7.patch)
+* gmp 6.3.0
+* expat 2.5.0
+* sqlite 3.43.1
+* zlib 1.3.1
+* c-ares 1.19.1
+* libssh2 1.11.0
 
 This build has the following difference from the original release:
 

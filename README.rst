@@ -20,7 +20,7 @@ chunks of data while downloading a file like BitTorrent.
 
 The project page is located at https://aria2.github.io/.
 
-See `aria2 Online Manual
+See the `aria2 Online Manual
 <https://aria2.github.io/manual/en/html/>`_ (`Russian translation
 <https://aria2.github.io/manual/ru/html/>`_, `Portuguese
 translation <https://aria2.github.io/manual/pt/html/>`_) to learn
@@ -47,7 +47,7 @@ Here is a list of features:
 * Verify peer using given trusted CA certificate in HTTPS
 * Client certificate authentication in HTTPS
 * Chunked transfer encoding support
-* Load Cookies from file using the Firefox3 format, Chromium/Google Chrome
+* Load Cookies from the file using the Firefox3 format, Chromium/Google Chrome
   and the Mozilla/Firefox
   (1.x/2.x)/Netscape format.
 * Save Cookies in the Mozilla/Firefox (1.x/2.x)/Netscape format.
@@ -58,7 +58,7 @@ Here is a list of features:
 * BitTorrent extensions: Fast extension, DHT, PEX, MSE/PSE,
   Multi-Tracker, UDP tracker
 * BitTorrent `WEB-Seeding <http://getright.com/seedtorrent.html>`_.
-  aria2 requests chunks more than piece size to reduce the request
+  aria2 requests chunk more than piece size to reduce the request
   overhead. It also supports pipelined requests with piece size.
 * BitTorrent Local Peer Discovery
 * Rename/change the directory structure of BitTorrent downloads
@@ -80,17 +80,17 @@ Here is a list of features:
 Versioning and release schedule
 -------------------------------
 
-We use 3 numbers for aria2 version: MAJOR.MINOR.PATCH.  We will ship
-MINOR update on 15th of every month.  We may skip a release if we have
-no changes since the last release.  The feature and documentation
-freeze happens 10 days before the release day (5th day of the month)
+We use 3 numbers for the aria2 version: MAJOR.MINOR.PATCH.  We will ship
+MINOR updates on the 15th of every month.  We may skip a release if we have
+had no changes since the last release.  The feature and documentation
+freeze happens 10 days before the release day (the 5th day of the month)
 for translation teams.  We will raise an issue about the upcoming
 release around that day.
 
 We may release PATCH releases between regular releases if we have
 security issues.
 
-MAJOR version will stay at 1 for the time being.
+The MAJOR version will stay at 1 for the time being.
 
 How to get source code
 ----------------------
@@ -98,11 +98,11 @@ How to get source code
 We maintain the source code at Github:
 https://github.com/aria2/aria2
 
-To get the latest source code, run following command::
+To get the latest source code, run the following command::
 
     $ git clone https://github.com/aria2/aria2.git
 
-This will create aria2 directory in your current directory and source
+This will create an aria2 directory in your current directory and source
 files are stored there.
 
 Dependency
@@ -134,8 +134,8 @@ JSON-RPC over WebSocket  libnettle or libgcrypt or OpenSSL
 
 .. note::
 
-  On Apple OSX the OS-level SSL/TLS support will be preferred. Hence
-  neither GnuTLS nor OpenSSL are required on that platform. If you'd
+  On Apple OSX, OS-level SSL/TLS support will be preferred. Hence
+  neither GnuTLS nor OpenSSL is required on that platform. If you'd
   like to disable this behavior, run configure with
   ``--without-appletls``.
 
@@ -143,15 +143,15 @@ JSON-RPC over WebSocket  libnettle or libgcrypt or OpenSSL
   If you prefer OpenSSL, run configure with ``--without-gnutls``
   ``--with-openssl``.
 
-  On Windows there is SSL implementation available that is based on
+  On Windows, there is SSL implementation available that is based on
   the native Windows SSL capabilities (Schannel) and it will be
-  preferred.  Hence neither GnuTLS nor OpenSSL are required on that
+  preferred.  Hence neither GnuTLS nor OpenSSL is required on that
   platform.  If you'd like to disable this behavior, run configure
   with ``--without-wintls``.
 
 .. note::
 
-  On Apple OSX the OS-level checksum support will be preferred,
+  On Apple OSX, the OS-level checksum support will be preferred,
   unless aria2 is configured with ``--without-appletls``.
 
   libnettle has precedence over libgcrypt if both libraries are
@@ -162,7 +162,7 @@ JSON-RPC over WebSocket  libnettle or libgcrypt or OpenSSL
   If none of the optional dependencies are installed, an internal
   implementation that only supports md5 and sha1 will be used.
 
-  On Windows there is SSL implementation available that is based on
+  On Windows, there is SSL implementation available that is based on
   the native Windows capabilities and it will be preferred, unless
   aria2 is configured with ``--without-wintls``.
 
@@ -179,20 +179,20 @@ You can disable BitTorrent and Metalink support by providing
 ``--disable-bittorrent`` and ``--disable-metalink`` to the configure
 script respectively.
 
-In order to enable async DNS support, you need c-ares.
+To enable async DNS support, you need c-ares.
 
 * c-ares: http://c-ares.haxx.se/
 
 How to build
 ------------
 
-aria2 is primarily written in C++. Initially it was written based on
-C++98/C++03 standard features. We are now migrating aria2 to C++11
-standard. The current source code requires C++11 aware compiler. For
+aria2 is primarily written in C++. Initially, it was written based on
+C++98/C++03 standard features. We are now migrating aria2 to the C++11
+standard. The current source code requires a C++11 aware compiler. For
 well-known compilers, such as g++ and clang, the ``-std=c++11`` or
 ``-std=c++0x`` flag must be supported.
 
-In order to build aria2 from the source package, you need following
+To build aria2 from the source package, you need the following
 development packages (package name may vary depending on the
 distribution you use):
 
@@ -223,8 +223,8 @@ You can use libexpat1-dev instead of libxml2-dev:
 On Fedora you need the following packages: gcc, gcc-c++, kernel-devel,
 libgcrypt-devel, libxml2-devel, openssl-devel, gettext-devel, cppunit
 
-If you downloaded source code from git repository, you have to install
-following packages to get autoconf macros:
+If you downloaded source code from a git repository, you have to install
+the following packages to get autoconf macros:
 
 * libxml2-dev
 * libcppunit-dev
@@ -234,17 +234,17 @@ following packages to get autoconf macros:
 * autopoint
 * libtool
 
-And run following command to generate configure script and other files
+And run the following command to generate configure script and other files
 necessary to build the program::
 
     $ autoreconf -i
 
-Also you need `Sphinx <http://sphinx-doc.org/>`_ to build man page.
+Also, you need `Sphinx <http://sphinx-doc.org/>`_ to build the man page.
 
 If you are building aria2 for Mac OS X, take a look at
 the makerelease-osx.mk GNU Make makefile.
 
-The quickest way to build aria2 is first run configure script::
+The quickest way to build aria2 is first to run configure script::
 
     $ ./configure
 
@@ -269,7 +269,7 @@ If you build with OpenSSL or the recent version of GnuTLS which has
 ``gnutls_certificate_set_x509_system_trust()`` function and the
 library is properly configured to locate the system-wide CA
 certificates store, aria2 will automatically load those certificates
-at the startup. If it is not the case, I recommend to supply the path
+at the startup. If it is not the case, I recommend supplying the path
 to the CA bundle file. For example, in Debian the path to CA bundle
 file is '/etc/ssl/certs/ca-certificates.crt' (in ca-certificates
 package). This may vary depending on your distribution. You can give
@@ -280,9 +280,9 @@ it to configure script using ``--with-ca-bundle option``::
 
 Without ``--with-ca-bundle`` option, you will encounter the error when
 accessing HTTPS servers because the certificate cannot be verified
-without CA bundle. In such case, you can specify the CA bundle file
-using aria2's ``--ca-certificate`` option.  If you don't have CA bundle
-file installed, then the last resort is disable the certificate
+without the CA bundle. In such a case, you can specify the CA bundle file
+using aria2's ``--ca-certificate`` option.  If you don't have the CA bundle
+file installed, then the last resort is to disable the certificate
 validation using ``--check-certificate=false``.
 
 Using the native OSX (AppleTLS) and/or Windows (WinTLS) implementation
@@ -295,7 +295,7 @@ the directory ``$prefix/share/doc/aria2/bash_completion``.  To change
 the install directory of the file, use ``--with-bashcompletiondir``
 option.
 
-After a ``make`` the executable is located at ``src/aria2c``.
+After a ``make``, the executable is located at ``src/aria2c``.
 
 aria2 uses CppUnit for automated unit testing. To run the unit test::
 
@@ -309,20 +309,20 @@ mingw-w64 (http://mingw-w64.org/doku.php) cross-compiler on Debian
 Linux. The MinGW (http://www.mingw.org/) may not be able to build
 aria2.
 
-The easiest way to build Windows binary is use Dockerfile.mingw.  See
-Dockerfile.mingw how to build binary.  If you cannot use Dockerfile,
-then continue to read following paragraphs.
+The easiest way to build Windows binary is using Dockerfile.mingw.  See
+Dockerfile.mingw how to build a binary.  If you cannot use Dockerfile,
+then continue to read the following paragraphs.
 
 Basically, after compiling and installing depended libraries, you can
 do cross-compile just passing appropriate ``--host`` option and
-specifying ``CPPFLAGS``, ``LDFLAGS`` and ``PKG_CONFIG_LIBDIR``
-variables to configure. For convenience and lowering our own
-development cost, we provide easier way to configure the build
+specifying ``CPPFLAGS``, ``LDFLAGS``, and ``PKG_CONFIG_LIBDIR``
+variables to configure. For convenience and to lower our own
+development cost, we provide an easier way to configure the build
 settings.
 
 ``mingw-config`` script is a configure script wrapper for mingw-w64.
 We use it to create official Windows build.  This script assumes
-following libraries have been built for cross-compile:
+the following libraries have been built for cross-compile:
 
 * c-ares
 * expat
@@ -335,7 +335,7 @@ Some environment variables can be adjusted to change build settings:
 
 ``HOST``
   cross-compile to build programs to run on ``HOST``. It defaults to
-  ``i686-w64-mingw32``. To build 64bit binary, specify
+  ``i686-w64-mingw32``. To build a 64bit binary, specify
   ``x86_64-w64-mingw32``.
 
 ``PREFIX``
@@ -345,7 +345,7 @@ Some environment variables can be adjusted to change build settings:
   ``LDFLAGS``. ``$PREFIX/lib/pkgconfig`` will be set to
   ``PKG_CONFIG_LIBDIR``.
 
-For example, to build 64bit binary do this::
+For example, to build a 64bit binary do this::
 
     $ HOST=x86_64-w64-mingw32 ./mingw-config
 
@@ -363,7 +363,7 @@ At the time of this writing, Android NDK r21e should compile aria2
 without errors.
 
 ``android-config`` script is a configure script wrapper for Android
-build.  We use it to create official Android build.  This script
+build.  We use it to create an official Android build.  This script
 assumes the following libraries have been built for cross-compile:
 
 * c-ares
@@ -380,7 +380,7 @@ libraries statically.
 environment variables are defined.
 
 We currently use Android NDK r21e.  ``$NDK`` should point to the
-directory to Anroid NDK.  The build tools will be found under
+directory to Android NDK.  The build tools will be found under
 ``$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/``.
 
 All the dependent libraries must be installed under
@@ -391,10 +391,10 @@ After ``android-config``, run ``make`` to compile sources.
 Building documentation
 ----------------------
 
-`Sphinx <http://sphinx-doc.org/>`_ is used to build the
+`Sphinx <http://sphinx-doc.org/>`_ is used to building the
 documentation. aria2 man pages will be build when you run ``make`` if
-they are not up-to-date.  You can also build HTML version of aria2 man
-page by ``make html``. The HTML version manual is also available at
+they are not up-to-date.  You can also build an HTML version of the aria2
+man page by ``make html``. The HTML version manual is also available
 `online <https://aria2.github.io/manual/en/html/>`_ (`Russian
 translation <https://aria2.github.io/manual/ru/html/>`_, `Portuguese
 translation <https://aria2.github.io/manual/pt/html/>`_).
@@ -407,8 +407,8 @@ About file names
 The file name of the downloaded file is determined as follows:
 
 single-file mode
-    If "name" key is present in .torrent file, file name is the value
-    of "name" key. Otherwise, file name is the base name of .torrent
+    If "name" key is present in .torrent file, the file name is the value
+    of "name" key. Otherwise, the file name is the base name of .torrent
     file appended by ".file". For example, .torrent file is
     "test.torrent", then file name is "test.torrent.file".  The
     directory to store the downloaded file can be specified by -d
@@ -421,7 +421,7 @@ multi-file mode
 
 Before download starts, a complete directory structure is created if
 needed. By default, aria2 opens at most 100 files mentioned in
-.torrent file, and directly writes to and reads from these files. 
+.torrent file, and directly writes to and reads from these files.
 The number of files to open simultaneously can be controlled by
 ``--bt-max-open-files`` option.
 
@@ -432,14 +432,14 @@ aria2 supports mainline compatible DHT. By default, the routing table
 for IPv4 DHT is saved to ``$XDG_CACHE_HOME/aria2/dht.dat`` and the
 routing table for IPv6 DHT is saved to
 ``$XDG_CACHE_HOME/aria2/dht6.dat`` unless files exist at
-``$HOME/.aria2/dht.dat`` or ``$HOME/.aria2/dht6.dat``. aria2 uses same
-port number to listen on for both IPv4 and IPv6 DHT.
+``$HOME/.aria2/dht.dat`` or ``$HOME/.aria2/dht6.dat``. aria2 uses the
+same port number to listen on for both IPv4 and IPv6 DHT.
 
 UDP tracker
 ~~~~~~~~~~~
 
 UDP tracker support is enabled when IPv4 DHT is enabled.  The port
-number of UDP tracker is shared with DHT. Use ``--dht-listen-port``
+number of the UDP tracker is shared with DHT. Use ``--dht-listen-port``
 option to change the port number.
 
 Other things should be noted
@@ -453,9 +453,9 @@ Other things should be noted
 * aria2 doesn't configure port-forwarding automatically. Please
   configure your router or firewall manually.
 * The maximum number of peers is 55. This limit may be exceeded when
-  download rate is low. This download rate can be adjusted using
+  the download rate is low. This download rate can be adjusted using
   ``--bt-request-peer-speed-limit`` option.
-* As of release 0.10.0, aria2 stops sending request message after
+* As of release 0.10.0, aria2 stops sending request messages after
   selective download completes.
 
 Metalink
@@ -465,46 +465,46 @@ The current implementation supports HTTP(S)/FTP/SFTP/BitTorrent.  The
 other P2P protocols are ignored. Both Metalink4 (RFC 5854) and
 Metalink version 3.0 documents are supported.
 
-For checksum verification, md5, sha-1, sha-224, sha-256, sha-384 and
+For checksum verification, md5, sha-1, sha-224, sha-256, sha-384, and
 sha-512 are supported. If multiple hash algorithms are provided, aria2
-uses stronger one. If whole file checksum verification fails, aria2
-doesn't retry the download and just exits with non-zero return code.
+uses a stronger one. If whole file checksum verification fails, aria2
+doesn't retry the download and just exits with a non-zero return code.
 
 The supported user preferences are version, language, location,
-protocol and os.
+protocol, and os.
 
-If chunk checksums are provided in Metalink file, aria2 automatically
+If chunk checksums are provided in the Metalink file, aria2 automatically
 validates chunks of data during download. This behavior can be turned
 off by a command-line option.
 
-If signature is included in a Metalink file, aria2 saves it as a file
+If a signature is included in a Metalink file, aria2 saves it as a file
 after the completion of the download.  The file name is download
-file name + ".sig". If same file already exists, the signature file is
+file name + ".sig". If the same file already exists, the signature file is
 not saved.
 
-In Metalink4, multi-file torrent could appear in metalink:metaurl
+In Metalink4, a multi-file torrent could appear in metalink:metaurl
 element.  Since aria2 cannot download 2 same torrents at the same
-time, aria2 groups files in metalink:file element which has same
-BitTorrent metaurl and downloads them from a single BitTorrent swarm.
-This is basically multi-file torrent download with file selection, so
-the adjacent files which is not in Metalink document but shares same
-piece with selected file are also created.
+time, aria2 groups files in metalink:file element which has the same
+BitTorrent metaurl, and downloads them from a single BitTorrent swarm.
+This is a basically multi-file torrent download with file selection, so
+the adjacent files which are not in Metalink document but share the same
+piece with the selected file are also created.
 
 If relative URI is specified in metalink:url or metalink:metaurl
 element, aria2 uses the URI of Metalink file as base URI to resolve
-the relative URI. If relative URI is found in Metalink file which is
-read from local disk, aria2 uses the value of ``--metalink-base-uri``
+the relative URI. If relative URI is found in the Metalink file which is
+read from the local disk, aria2 uses the value of ``--metalink-base-uri``
 option as base URI. If this option is not specified, the relative URI
 will be ignored.
 
 Metalink/HTTP
 -------------
 
-The current implementation only uses rel=duplicate links only.  aria2
+The current implementation only uses rel=duplicate links.  aria2
 understands Digest header fields and check whether it matches the
-digest value from other sources. If it differs, drop connection.
+digest value from other sources. If it differs, drop the connection.
 aria2 also uses this digest value to perform checksum verification
-after download finished. aria2 recognizes geo value. To tell aria2
+after the download is finished. aria2 recognizes geo value. To tell aria2
 which location you prefer, you can use ``--metalink-location`` option.
 
 netrc
@@ -523,10 +523,10 @@ defined in RFC 6455. The supported protocol version is 13.
 libaria2
 --------
 
-The libaria2 is a C++ library which offers aria2 functionality to the
+The libaria2 is a C++ library that offers aria2 functionality to the
 client code. Currently, libaria2 is not built by default. To enable
 libaria2, use ``--enable-libaria2`` configure option.  By default,
-only the shared library is built. To build static library, use
+only the shared library is built. To build a static library, use
 ``--enable-static`` configure option as well. See libaria2
 documentation to know how to use API.
 

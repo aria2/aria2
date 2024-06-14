@@ -10,11 +10,11 @@
 {%- set sphinx_writer = 'writer-html5' if html5_doctype else 'writer-html4' -%}
 
 {# Build sphinx_version_info tuple from sphinx_version string in pure Jinja #}
-{%- set (_ver_major, _ver_minor, _ver_bugfix) = sphinx_version.split('.') | map('int') -%}
-{%- set sphinx_version_info = (_ver_major, _ver_minor, _ver_bugfix) -%}
+{%- set (_ver_major, _ver_minor) = (sphinx_version.split('.') | list)[:2] | map('int') -%}
+{%- set sphinx_version_info = (_ver_major, _ver_minor, -1) -%}
 
 <!DOCTYPE html>
-<html class="{{ sphinx_writer }}" lang="{{ lang_attr }}" >
+<html class="{{ sphinx_writer }}" lang="{{ lang_attr }}"{% if sphinx_version_info >= (7, 2) %} data-content_root="{{ content_root }}"{% endif %}>
 <head>
   <meta charset="utf-8" />
   {{- metatags }}
@@ -28,26 +28,27 @@
     <link rel="stylesheet" href="{{ pathto('_static/' + style, 1) }}" type="text/css" />
     <link rel="stylesheet" href="{{ pathto('_static/pygments.css', 1) }}" type="text/css" />
   {%- endif %}
-  {%- for css in css_files %}
-    {%- if css|attr("rel") %}
-      <link rel="{{ css.rel }}" href="{{ pathto(css.filename, 1) }}" type="text/css"{% if css.title is not none %} title="{{ css.title }}"{% endif %} />
+  {%- for css_file in css_files %}
+    {%- if css_file|attr("filename") %}
+      {{ css_tag(css_file) }}
     {%- else %}
-      <link rel="stylesheet" href="{{ pathto(css, 1) }}" type="text/css" />
+      <link rel="stylesheet" href="{{ pathto(css_file, 1)|escape }}" type="text/css" />
     {%- endif %}
   {%- endfor %}
 
-  {%- for cssfile in extra_css_files %}
-    <link rel="stylesheet" href="{{ pathto(cssfile, 1) }}" type="text/css" />
+  {# "extra_css_files" is a theme option and it's always a string #}
+  {%- for css_file in extra_css_files %}
+    <link rel="stylesheet" href="{{ pathto(css_file, 1)|escape }}" type="text/css" />
   {%- endfor -%}
 
-  {#- FAVICON #}
-  {%- if favicon %}
-    {%- if sphinx_version_info < (4, 0) -%}
-    <link rel="shortcut icon" href="{{ pathto('_static/' + favicon, 1) }}"/>
-    {%- else %}
-    <link rel="shortcut icon" href="{{ favicon_url }}"/>
-    {%- endif %}
-  {%- endif -%}
+  {#- FAVICON
+      favicon_url is the only context var necessary since Sphinx 4.
+      In Sphinx<4, we use favicon but need to prepend path info.
+  #}
+  {%- set _favicon_url = favicon_url | default(pathto('_static/' + (favicon or ""), 1)) %}
+  {%- if favicon_url or favicon %}
+    <link rel="shortcut icon" href="{{ _favicon_url }}"/>
+  {%- endif %}
 
   {#- CANONICAL URL (deprecated) #}
   {%- if theme_canonical_url and not pageurl %}
@@ -133,22 +134,15 @@
         <div class="wy-side-nav-search" {% if theme_style_nav_header_background %} style="background: {{theme_style_nav_header_background}}" {% endif %}>
           {%- block sidebartitle %}
 
-          {%- if logo and theme_logo_only %}
-            <a href="{{ pathto(master_doc) }}">
-          {%- else %}
-            <a href="{{ pathto(master_doc) }}" class="icon icon-home"> {{ project }}
-          {%- endif %}
-
-          {%- if logo %}
-            {#- Not strictly valid HTML, but it's the only way to display/scale
-                it properly, without weird scripting or heaps of work
-            #}
-            {%- if sphinx_version_info < (4, 0) -%}
-            <img src="{{ pathto('_static/' + logo, 1) }}" class="logo" alt="{{ _('Logo') }}"/>
-            {%- else %}
-            <img src="{{ logo_url }}" class="logo" alt="{{ _('Logo') }}"/>
+          {# the logo helper function was removed in Sphinx 6 and deprecated since Sphinx 4 #}
+          {# the master_doc variable was renamed to root_doc in Sphinx 4 (master_doc still exists in later Sphinx versions) #}
+          {%- set _logo_url = logo_url|default(pathto('_static/' + (logo or ""), 1)) %}
+          {%- set _root_doc = root_doc|default(master_doc) %}
+          <a href="{{ pathto(_root_doc) }}"{% if not theme_logo_only %} class="icon icon-home"{% endif %}>
+            {% if not theme_logo_only %}{{ project }}{% endif %}
+            {%- if logo or logo_url %}
+              <img src="{{ _logo_url }}" class="logo" alt="{{ _('Logo') }}"/>
             {%- endif %}
-          {%- endif %}
           </a>
 
           {%- if theme_display_version %}

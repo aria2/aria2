@@ -103,7 +103,7 @@ void PortEventPoll::poll(const struct timeval& tv)
   int res;
   uint_t nget = 1;
   // If port_getn was interrupted by signal, it can consume events but
-  // not updat nget!. For this very annoying bug, we have to check
+  // not update nget!. For this very annoying bug, we have to check
   // actually event is filled or not.
   portEvents_[0].portev_user = (void*)-1;
   res = port_getn(port_, portEvents_, portEventsSize_, &nget, &timeout);

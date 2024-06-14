@@ -142,7 +142,8 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength)
     resbufOffset_ = i;
     if (done) {
       if (data) {
-        memcpy(data, resbuf_.get() + msgOffset_ + 4, currentPayloadLength_);
+        std::copy_n(resbuf_.get() + msgOffset_ + 4, currentPayloadLength_,
+                    data);
       }
       dataLength = currentPayloadLength_;
       return true;
@@ -220,7 +221,7 @@ bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
     }
   }
   size_t writeLength = std::min(resbufLength_, dataLength);
-  memcpy(data, resbuf_.get(), writeLength);
+  std::copy_n(resbuf_.get(), writeLength, data);
   dataLength = writeLength;
   if (retval && !peek) {
     resbufLength_ = 0;
@@ -249,7 +250,7 @@ void PeerConnection::enableEncryption(std::unique_ptr<ARC4Encryptor> encryptor,
 void PeerConnection::presetBuffer(const unsigned char* data, size_t length)
 {
   size_t nwrite = std::min(bufferCapacity_, length);
-  memcpy(resbuf_.get(), data, nwrite);
+  std::copy_n(data, nwrite, resbuf_.get());
   resbufLength_ = length;
 }
 
@@ -280,7 +281,7 @@ void PeerConnection::reserveBuffer(size_t minSize)
   if (bufferCapacity_ < minSize) {
     bufferCapacity_ = minSize;
     auto buf = make_unique<unsigned char[]>(bufferCapacity_);
-    memcpy(buf.get(), resbuf_.get(), resbufLength_);
+    std::copy_n(resbuf_.get(), resbufLength_, buf.get());
     resbuf_ = std::move(buf);
   }
 }

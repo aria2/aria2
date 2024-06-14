@@ -84,7 +84,7 @@ public:
   static void setLogLevel(Logger::LEVEL level);
 
   /**
-   * Set log level to output to file by string represention of log
+   * Set log level to output to file by string representation of log
    * level.  Possible values are: debug, info, notice, warn, error
    */
   static void setLogLevel(const std::string& level);
@@ -95,7 +95,7 @@ public:
   static void setConsoleLogLevel(Logger::LEVEL level);
 
   /**
-   * Set log level to output to console by string represention of log
+   * Set log level to output to console by string representation of log
    * level.  Possible values are: debug, info, notice, warn, error
    */
   static void setConsoleLogLevel(const std::string& level);

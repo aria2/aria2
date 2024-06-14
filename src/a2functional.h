@@ -102,8 +102,7 @@ std::string strjoin(InputIterator first, InputIterator last,
   return result;
 }
 
-template <typename T>
-class LeastRecentAccess : public std::binary_function<T, T, bool> {
+template <typename T> class LeastRecentAccess {
 public:
   bool operator()(const std::shared_ptr<T>& lhs,
                   const std::shared_ptr<T>& rhs) const

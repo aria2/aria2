@@ -8,6 +8,7 @@ The aria2 contributor's list extracted from commit logs [1]:
 
 103yiran
 Alexander Amanuel
+Alexander Egorenkov
 Ali MJ Al-Nasrawy
 Anthony Bryan
 Artur Petrov
@@ -15,10 +16,14 @@ Athmane Madjoudj
 Ben Chaney
 Char
 Cristian Rodríguez
+Dan Church
 Dan Fandrich
 David Macek
+Emmanuel Engelhart
+FH0
 Florian Gamböck
 Fredrik Fornwall
+Hernan Martinez
 ITriskTI
 Igor Khomyakov
 Jarda Snajdr
@@ -30,9 +35,11 @@ Michał Górny
 Michał Leśniewski
 Mingye Wang
 Natanael Copa
+Nikita Ofitserov
 Nils Maier
 ORiON-
 ReadmeCritic
+Richard Nias
 Rosen Penev
 Ross Smith II
 Ryan Steinmetz
@@ -46,8 +53,10 @@ Torbjörn Lönnemark
 Tse Kit Yam
 Vasilij Schneidermann
 Zoltan Toth-Czifra
+a1346054
 amtlib-dot-dll
 c3mb0
+carsonzhu
 diadistis
 eric1932
 geetam
@@ -59,11 +68,13 @@ luokar
 mozillazg
 multisnow
 nicolov
+nkh0472
 oliviercommelarbre
 qweaszxcdf
 rotor
 sleepymac
 suzker
 tcely
+yixinBC
 
 [1] https://gist.github.com/tatsuhiro-t/deaffeb064652104ad11

@@ -1,14 +1,5 @@
 #!/bin/sh -e
 
-if [ -z "$ANDROID_HOME" ]; then
-    echo 'No $ANDROID_HOME specified.'
-    exit 1
-fi
-if [ -z "$NDK" ]; then
-    echo 'No $NDK specified.'
-    exit 1
-fi
-
 VERSION=$1
 PREV_VERSION=$2
 
@@ -18,29 +9,48 @@ git log --pretty=fuller --date=short refs/tags/release-$PREV_VERSION..HEAD > Cha
 autoreconf -i
 
 ./configure && \
-    make dist-bzip2 && make dist-gzip && make dist-xz || echo "error"
+    make dist-bzip2 && make dist-gzip && make dist-xz
 make distclean
+
+release_mingw()
+{
+    export HOST=$1
+    export LABEL=$2
+
+    mkdir -p mingw-out
+
+    docker build \
+	   --build-arg HOST=$HOST \
+	   --build-arg ARIA2_VERSION=release-$VERSION \
+	   --build-arg ARIA2_REF=refs/tags/release-$VERSION \
+	   -t aria2-mingw-$HOST - < Dockerfile.mingw
+
+    docker run --rm -it -v $PWD/mingw-out:/out aria2-mingw-$HOST \
+	   cp /aria2/src/aria2c.exe /out
+
+    ./mingw-release
+
+    rm -rf mingw-out
+}
 
 # mingw 32bit
-export HOST=i686-w64-mingw32
-export LABEL=win-32bit
-./mingw-config
-make -j8
-./mingw-release
-make distclean
+release_mingw i686-w64-mingw32 win-32bit
 
 # mingw 64bit
-export HOST=x86_64-w64-mingw32
-export LABEL=win-64bit
-./mingw-config
-make -j8
-./mingw-release
-make distclean
+release_mingw x86_64-w64-mingw32 win-64bit
 
 # android
-./android-config
-make -j8
+mkdir -p android-out
+
+docker build \
+       --build-arg ARIA2_VERSION=release-$VERSION \
+       -t aria2-android - < Dockerfile.android
+
+docker run --rm -it -v $PWD/android-out:/out aria2-android \
+       cp /root/build/aria2/src/aria2c /out
+
 ./android-release
-make distclean
+
+rm -rf android-out
 
 # OSX builds are created separately using makerelease-osx.mk

@@ -33,7 +33,7 @@ echo -n "en@quot en@boldquot" > "$PO_DIR"/LINGUAS
 for file in "$WORK_DIR"/*.po; do
     # First remove useless '\r' in messages
     sed -i -e 's/\\r//' "$file"
-    bn=`basename "$file"`
+    bn=$(basename "$file")
     bn=${bn#aria2-}
     dst="$PO_DIR"/"$bn"
     # copy file to po directory

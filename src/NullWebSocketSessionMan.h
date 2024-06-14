@@ -48,8 +48,7 @@ class RequestGroup;
 
 namespace rpc {
 
-class WebSocketSession {
-};
+class WebSocketSession {};
 
 class WebSocketSessionMan {
 public:

@@ -64,8 +64,8 @@ BitfieldMan::BitfieldMan(int32_t blockLength, int64_t totalLength)
     bitfieldLength_ = blocks_ / 8 + (blocks_ % 8 ? 1 : 0);
     bitfield_ = new unsigned char[bitfieldLength_];
     useBitfield_ = new unsigned char[bitfieldLength_];
-    memset(bitfield_, 0, bitfieldLength_);
-    memset(useBitfield_, 0, bitfieldLength_);
+    std::fill_n(bitfield_, bitfieldLength_, 0);
+    std::fill_n(useBitfield_, bitfieldLength_, 0);
     updateCache();
   }
 }
@@ -85,11 +85,11 @@ BitfieldMan::BitfieldMan(const BitfieldMan& bitfieldMan)
       blockLength_(bitfieldMan.blockLength_),
       filterEnabled_(bitfieldMan.filterEnabled_)
 {
-  memcpy(bitfield_, bitfieldMan.bitfield_, bitfieldLength_);
-  memcpy(useBitfield_, bitfieldMan.useBitfield_, bitfieldLength_);
+  std::copy_n(bitfieldMan.bitfield_, bitfieldLength_, bitfield_);
+  std::copy_n(bitfieldMan.useBitfield_, bitfieldLength_, useBitfield_);
   if (filterEnabled_) {
     filterBitfield_ = new unsigned char[bitfieldLength_];
-    memcpy(filterBitfield_, bitfieldMan.filterBitfield_, bitfieldLength_);
+    std::copy_n(bitfieldMan.filterBitfield_, bitfieldLength_, filterBitfield_);
   }
   updateCache();
 }
@@ -105,16 +105,17 @@ BitfieldMan& BitfieldMan::operator=(const BitfieldMan& bitfieldMan)
 
     delete[] bitfield_;
     bitfield_ = new unsigned char[bitfieldLength_];
-    memcpy(bitfield_, bitfieldMan.bitfield_, bitfieldLength_);
+    std::copy_n(bitfieldMan.bitfield_, bitfieldLength_, bitfield_);
 
     delete[] useBitfield_;
     useBitfield_ = new unsigned char[bitfieldLength_];
-    memcpy(useBitfield_, bitfieldMan.useBitfield_, bitfieldLength_);
+    std::copy_n(bitfieldMan.useBitfield_, bitfieldLength_, useBitfield_);
 
     delete[] filterBitfield_;
     if (filterEnabled_) {
       filterBitfield_ = new unsigned char[bitfieldLength_];
-      memcpy(filterBitfield_, bitfieldMan.filterBitfield_, bitfieldLength_);
+      std::copy_n(bitfieldMan.filterBitfield_, bitfieldLength_,
+                  filterBitfield_);
     }
     else {
       filterBitfield_ = nullptr;
@@ -662,17 +663,17 @@ bool BitfieldMan::isUseBitSet(size_t index) const
 void BitfieldMan::setBitfield(const unsigned char* bitfield,
                               size_t bitfieldLength)
 {
-  if (bitfieldLength_ != bitfieldLength) {
+  if (bitfieldLength_ == 0 || bitfieldLength_ != bitfieldLength) {
     return;
   }
-  memcpy(bitfield_, bitfield, bitfieldLength_);
-  memset(useBitfield_, 0, bitfieldLength_);
+  std::copy_n(bitfield, bitfieldLength_, bitfield_);
+  std::fill_n(useBitfield_, bitfieldLength_, 0);
   updateCache();
 }
 
 void BitfieldMan::clearAllBit()
 {
-  memset(bitfield_, 0, bitfieldLength_);
+  std::fill_n(bitfield_, bitfieldLength_, 0);
   updateCache();
 }
 
@@ -686,7 +687,7 @@ void BitfieldMan::setAllBit()
 
 void BitfieldMan::clearAllUseBit()
 {
-  memset(useBitfield_, 0, bitfieldLength_);
+  std::fill_n(useBitfield_, bitfieldLength_, 0);
   updateCache();
 }
 
@@ -706,7 +707,7 @@ void BitfieldMan::ensureFilterBitfield()
 {
   if (!filterBitfield_) {
     filterBitfield_ = new unsigned char[bitfieldLength_];
-    memset(filterBitfield_, 0, bitfieldLength_);
+    std::fill_n(filterBitfield_, bitfieldLength_, 0);
   }
 }
 

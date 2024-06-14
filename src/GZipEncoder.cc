@@ -87,7 +87,7 @@ std::string GZipEncoder::encode(const unsigned char* in, size_t length,
       throw DL_ABORT_EX(fmt("libz::deflate() failed. cause:%s", strm_->msg));
     }
     size_t produced = outbuf.size() - strm_->avail_out;
-    out.append(&outbuf[0], &outbuf[produced]);
+    out.append(outbuf.data(), outbuf.data() + produced);
     if (strm_->avail_out > 0) {
       break;
     }

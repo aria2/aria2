@@ -6,19 +6,20 @@
 # 
 # Translators:
 # Anthony <aj@ohess.org>, 2021
+# Peyman M., 2022
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: sphinx_rtd_theme 0.4.3.dev0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-08-17 10:02-0600\n"
+"POT-Creation-Date: 2023-02-06 15:36+0100\n"
 "PO-Revision-Date: 2019-07-16 21:44+0000\n"
-"Last-Translator: Anthony <aj@ohess.org>, 2021\n"
+"Last-Translator: Peyman M., 2022\n"
 "Language-Team: Persian (Iran) (https://www.transifex.com/readthedocs/teams/101354/fa_IR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.11.0\n"
 "Language: fa_IR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
@@ -80,7 +81,7 @@ msgid "Built with %(sphinx_web)s using a"
 msgstr "ساخته شده با %(sphinx_web)s"
 
 #. "theme" refers to a theme for Sphinx, which alters the appearance of the
-#. generated documenation
+#. generated documentation
 #: sphinx_rtd_theme/footer.html:55
 msgid "theme"
 msgstr "پوسته"
@@ -113,7 +114,7 @@ msgstr "جستجوی"
 msgid "Copyright"
 msgstr "کپی رایت"
 
-#: sphinx_rtd_theme/layout.html:147 sphinx_rtd_theme/layout.html:149
+#: sphinx_rtd_theme/layout.html:143
 msgid "Logo"
 msgstr "آرم"
 

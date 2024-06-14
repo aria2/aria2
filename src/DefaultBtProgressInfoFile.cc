@@ -36,6 +36,7 @@
 
 #include <cstring>
 #include <cstdio>
+#include <array>
 
 #include "PieceStorage.h"
 #include "Piece.h"
@@ -56,6 +57,7 @@
 #include "DownloadContext.h"
 #include "BufferedFile.h"
 #include "SHA1IOFile.h"
+#include "BtConstants.h"
 #ifdef ENABLE_BITTORRENT
 #  include "PeerStorage.h"
 #  include "BtRuntime.h"
@@ -263,21 +265,21 @@ void DefaultBtProgressInfoFile::load()
   if (version >= 1) {
     infoHashLength = ntohl(infoHashLength);
   }
-  if (infoHashLength == 0 && infoHashCheckEnabled) {
+  if (infoHashLength > INFO_HASH_LENGTH ||
+      (infoHashLength != INFO_HASH_LENGTH && infoHashCheckEnabled)) {
     throw DL_ABORT_EX(fmt("Invalid info hash length: %d", infoHashLength));
   }
   if (infoHashLength > 0) {
-    auto savedInfoHash = make_unique<unsigned char[]>((size_t)infoHashLength);
-    READ_CHECK(fp, savedInfoHash.get(), infoHashLength);
+    std::array<unsigned char, INFO_HASH_LENGTH> savedInfoHash;
+    READ_CHECK(fp, savedInfoHash.data(), infoHashLength);
 #ifdef ENABLE_BITTORRENT
     if (infoHashCheckEnabled) {
       const unsigned char* infoHash = bittorrent::getInfoHash(dctx_);
-      if (infoHashLength != INFO_HASH_LENGTH ||
-          memcmp(savedInfoHash.get(), infoHash, INFO_HASH_LENGTH) != 0) {
+      if (memcmp(savedInfoHash.data(), infoHash, INFO_HASH_LENGTH) != 0) {
         throw DL_ABORT_EX(
             fmt("info hash mismatch. expected: %s, actual: %s",
                 util::toHex(infoHash, INFO_HASH_LENGTH).c_str(),
-                util::toHex(savedInfoHash.get(), infoHashLength).c_str()));
+                util::toHex(savedInfoHash.data(), infoHashLength).c_str()));
       }
     }
 #endif // ENABLE_BITTORRENT
@@ -287,6 +289,10 @@ void DefaultBtProgressInfoFile::load()
   READ_CHECK(fp, &pieceLength, sizeof(pieceLength));
   if (version >= 1) {
     pieceLength = ntohl(pieceLength);
+  }
+
+  if (pieceLength == 0) {
+    throw DL_ABORT_EX("piece length must not be 0");
   }
 
   uint64_t totalLength;

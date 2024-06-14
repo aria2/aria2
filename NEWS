@@ -1,40 +1,7 @@
-aria2 1.36.0
+aria2 1.37.0
 ============
 
 Release Note
 ------------
 
-This release fixes several bugs.  See Changes for details.
-
-Changes
--------
-
-* Update wslay
-
-* Bump Windows build dependencies
-
-* Bump android build dependencies
-
-* Fix segfault when time_t is 64bit on 32bit arch
-
-  Patch from Natanael Copa
-
-  GH-1666
-
-* Updates the make_bash_completion script to Python3.
-
-  Patch from sleepymac
-
-  GH-1672
-
-* Prevent corrupt downloads after app and/or system crash
-
-  Patch from Ali MJ Al-Nasrawy
-
-  GH-1644
-
-* Reset sessionDownloadLength and sessionUploadLength on download start
-
-  GH-1486
-
-* AppleTLS: Add TLSv1.3 support
+See https://github.com/aria2/aria2/releases/tag/release-1.37.0

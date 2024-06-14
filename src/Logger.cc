@@ -133,8 +133,8 @@ void writeHeader(Output& fp, Logger::LEVEL level, const char* sourceFile,
   size_t dateLength =
       strftime(datestr, sizeof(datestr), "%Y-%m-%d %H:%M:%S", &tm);
   assert(dateLength <= (size_t)20);
-  fp.printf("%s.%06ld [%s] [%s:%d] ", datestr, tv.tv_usec, levelToString(level),
-            sourceFile, lineNum);
+  fp.printf("%s.%06ld [%s] [%s:%d] ", datestr, (unsigned long)tv.tv_usec,
+            levelToString(level), sourceFile, lineNum);
 }
 } // namespace
 

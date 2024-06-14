@@ -300,12 +300,19 @@ std::unique_ptr<Cookie> parse(const std::string& cookieStr,
         }
         else {
           int64_t n = creationTime;
-          n += delta;
-          if (n < 0 || std::numeric_limits<time_t>::max() < n) {
+
+          if (n > std::numeric_limits<int64_t>::max() - delta) {
             maxAge = std::numeric_limits<time_t>::max();
           }
           else {
-            maxAge = n;
+            n += delta;
+
+            if (n < 0 || std::numeric_limits<time_t>::max() < n) {
+              maxAge = std::numeric_limits<time_t>::max();
+            }
+            else {
+              maxAge = n;
+            }
           }
         }
       }

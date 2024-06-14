@@ -36,7 +36,7 @@ test -z "$BUILD_VER" && BUILD_VER=1
 test -z "$LABEL" && LABEL=$HOST
 
 # cd to the directory where this script exists.
-cd $(dirname $0)
+cd "$(dirname "$0")"
 . ./script-helper
 
 get_version
@@ -48,9 +48,8 @@ fi
 
 DIST_DIR=aria2-${VERSION}-${LABEL}-build${BUILD_VER}
 
-/usr/bin/$HOST-strip src/aria2c.exe
-mkdir $DIST_DIR
+mkdir "$DIST_DIR"
 cp AUTHORS COPYING ChangeLog LICENSE.OpenSSL NEWS README.html README.mingw \
-    src/aria2c.exe $DIST_DIR
-zip -9 -r $DIST_DIR.zip $DIST_DIR
-rm -rf $DIST_DIR
+    mingw-out/aria2c.exe "$DIST_DIR"
+zip -9 -r "$DIST_DIR.zip" "$DIST_DIR"
+rm -rf "$DIST_DIR"

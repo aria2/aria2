@@ -122,7 +122,7 @@ bool AbstractHttpServerResponseCommand::execute()
   else {
     if (timeoutTimer_.difference(global::wallclock()) >= 30_s) {
       A2_LOG_INFO(fmt("CUID#%" PRId64
-                      " - HttpServer: Timeout while trasmitting response.",
+                      " - HttpServer: Timeout while transmitting response.",
                       getCuid()));
       return true;
     }

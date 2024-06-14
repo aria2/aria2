@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
 
   // By default, SocketCore uses AF_UNSPEC for getaddrinfo hints to
   // resolve address. Sometime SocketCore::bind() and
-  // SocketCore::establishConnection() use difference protocl family
+  // SocketCore::establishConnection() use difference protocol family
   // and latter cannot connect to former. To avoid this situation, we
   // limit protocol family to AF_INET for unit tests.
   aria2::SocketCore::setProtocolFamily(AF_INET);

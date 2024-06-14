@@ -1,0 +1,148 @@
+# vim: ft=dockerfile:
+# Dockerfile to build aria2 android binary
+#
+# $ sudo docker build -t aria2-android - < Dockerfile.android
+#
+# After successful build, android binary is located under
+# /root/build/aria2.  You can copy the binary using docker cp.  For
+# example, to copy aria2c binary to host file system location
+# /path/to/dest, do this:
+#
+# $ sudo docker run --rm -it -v /path/to/dest:/out aria2-android cp /root/build/aria2/src/aria2c /out
+
+FROM ubuntu:22.04
+MAINTAINER Tatsuhiro Tsujikawa
+
+WORKDIR /root
+RUN apt-get update && \
+    apt-get install -y  --no-install-recommends \
+      unzip bzip2 make binutils autoconf automake autotools-dev autopoint \
+      libtool pkg-config git dpkg-dev curl ca-certificates \
+      python3-docutils && \
+    rm -rf /var/cache/apt/*
+
+# NDK version
+ENV NDK_VERSION=r25c
+ENV NDK=/root/android-ndk-$NDK_VERSION
+ENV TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64 \
+    HOST=aarch64-linux-android \
+    API=33
+ENV AR=$TOOLCHAIN/bin/llvm-ar \
+    CC=$TOOLCHAIN/bin/$HOST$API-clang \
+    CXX=$TOOLCHAIN/bin/$HOST$API-clang++ \
+    LD=$TOOLCHAIN/bin/ld \
+    RANDLIB=$TOOLCHAIN/bin/llvm-ranlib \
+    STRIP=$TOOLCHAIN/bin/llvm-strip \
+    PREFIX=/root/usr/local
+
+# Download NDK
+RUN curl -L -O https://dl.google.com/android/repository/android-ndk-$NDK_VERSION-linux.zip && \
+   unzip -q android-ndk-$NDK_VERSION-linux.zip && \
+   rm android-ndk-$NDK_VERSION-linux.zip
+
+# aria2 version
+ARG ARIA2_VERSION=master
+
+# Library versions
+ENV OPENSSL_VERSION=1.1.1w
+ENV OPENSSL_ARCHIVE=openssl-$OPENSSL_VERSION.tar.gz
+ENV OPENSSL_URI=https://www.openssl.org/source/$OPENSSL_ARCHIVE
+
+ENV LIBEXPAT_VERSION=2.5.0
+ENV LIBEXPAT_ARCHIVE=expat-$LIBEXPAT_VERSION.tar.bz2
+ENV LIBEXPAT_URI=https://github.com/libexpat/libexpat/releases/download/R_2_5_0/$LIBEXPAT_ARCHIVE
+
+ENV ZLIB_VERSION=1.3.1
+ENV ZLIB_ARCHIVE=zlib-$ZLIB_VERSION.tar.gz
+ENV ZLIB_URI=https://github.com/madler/zlib/releases/download/v1.3.1/$ZLIB_ARCHIVE
+
+ENV CARES_VERSION=1.21.0
+ENV CARES_ARCHIVE=c-ares-$CARES_VERSION.tar.gz
+ENV CARES_URI=https://github.com/c-ares/c-ares/releases/download/cares-1_21_0/$CARES_ARCHIVE
+
+ENV LIBSSH2_VERSION=1.11.0
+ENV LIBSSH2_ARCHIVE=libssh2-$LIBSSH2_VERSION.tar.bz2
+ENV LIBSSH2_URI=https://libssh2.org/download/$LIBSSH2_ARCHIVE
+
+# Build OpenSSL
+WORKDIR /root/build
+RUN curl -L -O $OPENSSL_URI && tar xf $OPENSSL_ARCHIVE && rm $OPENSSL_ARCHIVE
+
+WORKDIR /root/build/openssl-$OPENSSL_VERSION
+RUN export ANDROID_NDK_HOME=$NDK PATH=$TOOLCHAIN/bin:$PATH && \
+    ./Configure no-shared --prefix=$PREFIX android-arm64 && \
+    make -j$(nproc) && make install_sw
+
+# Build libexpat
+WORKDIR /root/build
+RUN curl -L -O $LIBEXPAT_URI && tar xf $LIBEXPAT_ARCHIVE && rm $LIBEXPAT_ARCHIVE
+
+WORKDIR /root/build/expat-$LIBEXPAT_VERSION
+RUN ./configure \
+      --host=$HOST \
+      --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` \
+      --prefix=$PREFIX \
+      --disable-shared && \
+    make -j$(nproc) install
+
+# Build zlib
+WORKDIR /root/build
+RUN curl -L -O $ZLIB_URI && tar xf $ZLIB_ARCHIVE && rm $ZLIB_ARCHIVE
+
+WORKDIR /root/build/zlib-$ZLIB_VERSION
+RUN ./configure \
+      --prefix=$PREFIX \
+      --libdir=$PREFIX/lib \
+      --includedir=$PREFIX/include \
+      --static && \
+    make -j$(nproc) install
+
+# Build c-ares
+WORKDIR /root/build
+RUN curl -L -O $CARES_URI && tar xf $CARES_ARCHIVE && rm $CARES_ARCHIVE
+
+WORKDIR /root/build/c-ares-$CARES_VERSION
+RUN ./configure \
+      --host=$HOST \
+      --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` \
+      --prefix=$PREFIX \
+      --disable-shared && \
+    make -j$(nproc) install
+
+# Build libssh2
+WORKDIR /root/build
+RUN curl -L -O $LIBSSH2_URI && tar xf $LIBSSH2_ARCHIVE && rm $LIBSSH2_ARCHIVE
+
+WORKDIR /root/build/libssh2-$LIBSSH2_VERSION
+RUN ./configure \
+      --host=$HOST \
+      --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` \
+      --prefix=$PREFIX \
+      --disable-shared && \
+    make -j$(nproc) install
+
+# Build aria2
+WORKDIR /root/build
+RUN git clone -b $ARIA2_VERSION --depth 1 https://github.com/aria2/aria2
+
+WORKDIR /root/build/aria2
+RUN autoreconf -i && \
+    ./configure \
+      --host=$HOST \
+      --build=`dpkg-architecture -qDEB_BUILD_GNU_TYPE` \
+      --disable-nls \
+      --without-gnutls \
+      --with-openssl \
+      --without-sqlite3 \
+      --without-libxml2 \
+      --with-libexpat \
+      --with-libcares \
+      --with-libz \
+      --with-libssh2 \
+      CXXFLAGS="-Os -g" \
+      CFLAGS="-Os -g" \
+      CPPFLAGS="-fPIE" \
+      LDFLAGS="-fPIE -pie -L$PREFIX/lib -static-libstdc++" \
+      PKG_CONFIG_LIBDIR="$PREFIX/lib/pkgconfig" && \
+    make -j$(nproc) && \
+    $STRIP src/aria2c
