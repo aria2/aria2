@@ -697,9 +697,9 @@
 #define TEXT_FTP_PROXY_PASSWD                                           \
   _(" --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy.")
 #define TEXT_BT_UDP_SOCKS_PROXY_USER                                    \
-  _(" --bt-udp-socks-proxy-user=USER Set user for --http-proxy.")
+  _(" --bt-udp-socks-proxy-user=USER Set user for --bt-udp-socks-proxy.")
 #define TEXT_BT_UDP_SOCKS_PROXY_PASSWD                                  \
-  _(" --bt-udp-socks-proxy-passwd=PASSWD Set password for --http-proxy.")
+  _(" --bt-udp-socks-proxy-passwd=PASSWD Set password for --bt-udp-socks-proxy.")
 #define TEXT_REMOVE_CONTROL_FILE                \
   _(" --remove-control-file[=true|false] Remove control file before download. Using\n" \
     "                              with --allow-overwrite=true, download always\n" \
