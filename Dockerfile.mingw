@@ -83,8 +83,8 @@ RUN tar xf zlib-1.3.1.tar.gz && \
         --static && \
     make -j$(nproc) install
 
-RUN tar xf c-ares-1.26.0.tar.gz && \
-    cd c-ares-1.26.0 && \
+RUN tar xf c-ares-1.30.0.tar.gz && \
+    cd c-ares-1.30.0 && \
     ./configure \
         --disable-shared \
         --enable-static \
