@@ -58,7 +58,7 @@ ENV ZLIB_URI=https://github.com/madler/zlib/releases/download/v1.3.1/$ZLIB_ARCHI
 
 ENV CARES_VERSION=1.21.0
 ENV CARES_ARCHIVE=c-ares-$CARES_VERSION.tar.gz
-ENV CARES_URI=https://c-ares.haxx.se/download/$CARES_ARCHIVE
+ENV CARES_URI=https://github.com/c-ares/c-ares/releases/download/cares-1_21_0/$CARES_ARCHIVE
 
 ENV LIBSSH2_VERSION=1.11.0
 ENV LIBSSH2_ARCHIVE=libssh2-$LIBSSH2_VERSION.tar.bz2
