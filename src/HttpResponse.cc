@@ -74,7 +74,7 @@ void HttpResponse::validateResponse() const
   switch (statusCode) {
   case 200: // OK
   case 206: // Partial Content
-    if (!httpHeader_->defined(HttpHeader::TRANSFER_ENCODING)) {
+    {
       // compare the received range against the requested range
       auto responseRange = httpHeader_->getRange();
       if (!httpRequest_->isRangeSatisfied(responseRange)) {
