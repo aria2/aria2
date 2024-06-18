@@ -360,6 +360,18 @@ void SocketCore::bind(const struct sockaddr* addr, socklen_t addrlen)
   sockfd_ = fd;
 }
 
+void SocketCore::bindExistingFd(int fd)
+{
+  std::string error;
+  if (fd < 0) {
+    error = fmt("Invalid file descriptor fd=%d", fd);
+    throw DL_ABORT_EX(fmt(EX_SOCKET_BIND, error.c_str()));
+  }
+  util::make_fd_cloexec(fd);
+  applySocketBufferSize(fd);
+  sockfd_ = fd;
+}
+
 void SocketCore::beginListen()
 {
   if (listen(sockfd_, 1024) == -1) {

@@ -35,6 +35,9 @@
 #include "DownloadEngineFactory.h"
 
 #include <algorithm>
+#ifdef HAVE_SYSTEMD
+#include <systemd/sd-daemon.h>
+#endif // HAVE_SYSTEMD
 
 #include "Option.h"
 #include "RequestGroup.h"
@@ -205,14 +208,31 @@ std::unique_ptr<DownloadEngine> DownloadEngineFactory::newDownloadEngine(
     if (secure) {
       A2_LOG_NOTICE("RPC transport will be encrypted.");
     }
-    static int families[] = {AF_INET, AF_INET6};
-    size_t familiesLength = op->getAsBool(PREF_DISABLE_IPV6) ? 1 : 2;
-    for (size_t i = 0; i < familiesLength; ++i) {
-      auto httpListenCommand = make_unique<HttpListenCommand>(
-          e->newCUID(), e.get(), families[i], secure);
-      if (httpListenCommand->bindPort(op->getAsInt(PREF_RPC_LISTEN_PORT))) {
-        e->addCommand(std::move(httpListenCommand));
-        ok = true;
+#ifdef HAVE_SYSTEMD
+    int fds = sd_listen_fds(1);
+    if (0 < fds) {
+      for (int fd = SD_LISTEN_FDS_START; fd < SD_LISTEN_FDS_START + fds; fd++) {
+        auto httpListenCommand = make_unique<HttpListenCommand>(
+            e->newCUID(), e.get(), fd, secure);
+        if (httpListenCommand->listen()) {
+          e->addCommand(std::move(httpListenCommand));
+          ok = true;
+        }
+      }
+    } else
+#endif // HAVE_SYSTEMD
+    {
+      static int families[] = {AF_INET, AF_INET6};
+      size_t familiesLength = op->getAsBool(PREF_DISABLE_IPV6) ? 1 : 2;
+      for (size_t i = 0; i < familiesLength; ++i) {
+        auto httpListenCommand = make_unique<HttpListenCommand>(
+            e->newCUID(), e.get(), families[i],
+            op->getAsInt(PREF_RPC_LISTEN_PORT),
+            secure);
+        if (httpListenCommand->listen()) {
+          e->addCommand(std::move(httpListenCommand));
+          ok = true;
+        }
       }
     }
     if (!ok) {
