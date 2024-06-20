@@ -255,6 +255,7 @@ SRCS =  \
 	uri_split.c uri_split.h\
 	usage_text.h\
 	util.cc util.h\
+	util_fs.cc\
 	util_security.cc util_security.h\
 	ValueBase.cc ValueBase.h\
 	ValueBaseDiskWriter.h\

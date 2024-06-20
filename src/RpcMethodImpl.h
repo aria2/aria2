@@ -516,6 +516,15 @@ public:
   static const char* getMethodName() { return "aria2.saveSession"; }
 };
 
+class GetDiskspaceInformationRpcMethod : public RpcMethod {
+protected:
+  virtual std::unique_ptr<ValueBase> process(const RpcRequest& req,
+                                             DownloadEngine* e) CXX11_OVERRIDE;
+
+public:
+  static const char* getMethodName() { return "aria2.getDiskspaceInformation"; }
+};
+
 class SystemMulticallRpcMethod : public RpcMethod {
 protected:
   virtual std::unique_ptr<ValueBase> process(const RpcRequest& req,
