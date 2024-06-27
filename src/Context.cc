@@ -221,6 +221,12 @@ Context::Context(bool standalone, int argc, char** argv, const KeyVals& options)
   if (op->getAsBool(PREF_DISABLE_IPV6)) {
     SocketCore::setProtocolFamily(AF_INET);
   }
+#ifdef _WIN32
+  if (op->getAsBool(PREF_DISABLE_SLEEP)) {
+    if (!SetThreadExecutionState(ES_CONTINUOUS | ES_SYSTEM_REQUIRED))
+		A2_LOG_WARN("--disable-sleep-until-finished: Failed to disable sleep mode.");
+  }
+#endif // _WIN32
   SocketCore::setIpDscp(op->getAsInt(PREF_DSCP));
   SocketCore::setSocketRecvBufferSize(
       op->getAsInt(PREF_SOCKET_RECV_BUFFER_SIZE));
@@ -313,6 +319,11 @@ Context::Context(bool standalone, int argc, char** argv, const KeyVals& options)
     reqinfo = std::make_shared<MultiUrlRequestInfo>(std::move(requestGroups),
                                                     op, uriListParser);
   }
+#ifdef _WIN32
+  if (op->getAsBool(PREF_DISABLE_SLEEP)) {
+    SetThreadExecutionState(ES_CONTINUOUS);
+  }
+#endif // _WIN32
 }
 
 Context::~Context() = default;

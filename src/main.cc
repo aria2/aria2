@@ -38,6 +38,7 @@
 
 #ifdef __MINGW32__
 #  include <shellapi.h>
+#  include <winbase.h>
 #endif // __MINGW32__
 
 #include <aria2/aria2.h>
