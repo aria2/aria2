@@ -47,7 +47,7 @@
 namespace aria2 {
 
 struct AsyncNameResolverSocketEntry {
-  int fd;
+  ares_socket_t fd;
   int events;
 };
 
@@ -89,7 +89,7 @@ public:
 
   STATUS getStatus() const { return status_; }
 
-  int getFds(fd_set* rfdsPtr, fd_set* wfdsPtr) const;
+  ares_socket_t getFds(fd_set* rfdsPtr, fd_set* wfdsPtr) const;
 
   void process(fd_set* rfdsPtr, fd_set* wfdsPtr);
 
@@ -108,7 +108,7 @@ public:
 
   const std::string& getHostname() const { return hostname_; }
 
-  void handle_sock_state(int sock, int read, int write);
+  void handle_sock_state(ares_socket_t sock, int read, int write);
 };
 
 } // namespace aria2

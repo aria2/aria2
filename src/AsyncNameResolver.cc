@@ -71,7 +71,7 @@ void callback(void* arg, int status, int timeouts, ares_addrinfo* result)
 }
 
 namespace {
-void sock_state_cb(void* arg, int fd, int read, int write)
+void sock_state_cb(void* arg, ares_socket_t fd, int read, int write)
 {
   auto resolver = static_cast<AsyncNameResolver*>(arg);
 
@@ -79,7 +79,7 @@ void sock_state_cb(void* arg, int fd, int read, int write)
 }
 } // namespace
 
-void AsyncNameResolver::handle_sock_state(int fd, int read, int write)
+void AsyncNameResolver::handle_sock_state(ares_socket_t fd, int read, int write)
 {
   int events = 0;
 
@@ -142,9 +142,9 @@ void AsyncNameResolver::resolve(const std::string& name)
   ares_getaddrinfo(channel_, name.c_str(), nullptr, &hints, callback, this);
 }
 
-int AsyncNameResolver::getFds(fd_set* rfdsPtr, fd_set* wfdsPtr) const
+ares_socket_t AsyncNameResolver::getFds(fd_set* rfdsPtr, fd_set* wfdsPtr) const
 {
-  auto nfds = 0;
+  ares_socket_t nfds = 0;
 
   for (const auto& ent : socks_) {
     if (ent.events & EventPoll::EVENT_READ) {
