@@ -503,18 +503,10 @@ fi
 
 have_libcares=no
 if test "x$with_libcares" = "xyes"; then
-  PKG_CHECK_MODULES([LIBCARES], [libcares >= 1.7.0], [have_libcares=yes],
+  PKG_CHECK_MODULES([LIBCARES], [libcares >= 1.16.0], [have_libcares=yes],
                     [have_libcares=no])
   if test "x$have_libcares" = "xyes"; then
     AC_DEFINE([HAVE_LIBCARES], [1], [Define to 1 if you have libcares.])
-    save_LIBS=$LIBS
-    save_CPPFLAGS=$CPPFLAGS
-    LIBS="$LIBCARES_LIBS $LIBS"
-    CPPFLAGS="$LIBCARES_CFLAGS $CPPFLAGS"
-    AC_CHECK_TYPES([ares_addr_node], [], [], [[#include <ares.h>]])
-    AC_CHECK_FUNCS([ares_set_servers])
-    LIBS=$save_LIBS
-    CPPFLAGS=$save_CPPFLAGS
 
     # -DCARES_STATICLIB is appended by pkg-config file libcares.pc
   else

@@ -40,10 +40,11 @@
 #include "LogFactory.h"
 #include "SocketCore.h"
 #include "util.h"
+#include "EventPoll.h"
 
 namespace aria2 {
 
-void callback(void* arg, int status, int timeouts, struct hostent* host)
+void callback(void* arg, int status, int timeouts, ares_addrinfo* result)
 {
   AsyncNameResolver* resolverPtr = reinterpret_cast<AsyncNameResolver*>(arg);
   if (status != ARES_SUCCESS) {
@@ -51,12 +52,15 @@ void callback(void* arg, int status, int timeouts, struct hostent* host)
     resolverPtr->status_ = AsyncNameResolver::STATUS_ERROR;
     return;
   }
-  for (char** ap = host->h_addr_list; *ap; ++ap) {
+  for (auto ap = result->nodes; ap; ap = ap->ai_next) {
     char addrstring[NI_MAXHOST];
-    if (inetNtop(host->h_addrtype, *ap, addrstring, sizeof(addrstring)) == 0) {
+    auto rv = getnameinfo(ap->ai_addr, ap->ai_addrlen, addrstring,
+                          sizeof(addrstring), nullptr, 0, NI_NUMERICHOST);
+    if (rv == 0) {
       resolverPtr->resolvedAddresses_.push_back(addrstring);
     }
   }
+  ares_freeaddrinfo(result);
   if (resolverPtr->resolvedAddresses_.empty()) {
     resolverPtr->error_ = "no address returned or address conversion failed";
     resolverPtr->status_ = AsyncNameResolver::STATUS_ERROR;
@@ -66,24 +70,63 @@ void callback(void* arg, int status, int timeouts, struct hostent* host)
   }
 }
 
-AsyncNameResolver::AsyncNameResolver(int family
-#ifdef HAVE_ARES_ADDR_NODE
-                                     ,
-                                     ares_addr_node* servers
-#endif // HAVE_ARES_ADDR_NODE
-                                     )
+namespace {
+void sock_state_cb(void* arg, int fd, int read, int write)
+{
+  auto resolver = static_cast<AsyncNameResolver*>(arg);
+
+  resolver->handle_sock_state(fd, read, write);
+}
+} // namespace
+
+void AsyncNameResolver::handle_sock_state(int fd, int read, int write)
+{
+  int events = 0;
+
+  if (read) {
+    events |= EventPoll::EVENT_READ;
+  }
+
+  if (write) {
+    events |= EventPoll::EVENT_WRITE;
+  }
+
+  auto it = std::find_if(
+      std::begin(socks_), std::end(socks_),
+      [fd](const AsyncNameResolverSocketEntry& ent) { return ent.fd == fd; });
+  if (it == std::end(socks_)) {
+    if (!events) {
+      return;
+    }
+
+    socks_.emplace_back(AsyncNameResolverSocketEntry{fd, events});
+
+    return;
+  }
+
+  if (!events) {
+    socks_.erase(it);
+    return;
+  }
+
+  (*it).events = events;
+}
+
+AsyncNameResolver::AsyncNameResolver(int family, const std::string& servers)
     : status_(STATUS_READY), family_(family)
 {
+  ares_options opts{};
+  opts.sock_state_cb = sock_state_cb;
+  opts.sock_state_cb_data = this;
+
   // TODO evaluate return value
-  ares_init(&channel_);
-#if defined(HAVE_ARES_SET_SERVERS) && defined(HAVE_ARES_ADDR_NODE)
-  if (servers) {
-    // ares_set_servers has been added since c-ares 1.7.1
-    if (ares_set_servers(channel_, servers) != ARES_SUCCESS) {
-      A2_LOG_DEBUG("ares_set_servers failed");
+  ares_init_options(&channel_, &opts, ARES_OPT_SOCK_STATE_CB);
+
+  if (!servers.empty()) {
+    if (ares_set_servers_csv(channel_, servers.c_str()) != ARES_SUCCESS) {
+      A2_LOG_DEBUG("ares_set_servers_csv failed");
     }
   }
-#endif // HAVE_ARES_SET_SERVERS && HAVE_ARES_ADDR_NODE
 }
 
 AsyncNameResolver::~AsyncNameResolver() { ares_destroy(channel_); }
@@ -92,25 +135,58 @@ void AsyncNameResolver::resolve(const std::string& name)
 {
   hostname_ = name;
   status_ = STATUS_QUERYING;
-  ares_gethostbyname(channel_, name.c_str(), family_, callback, this);
+
+  ares_addrinfo_hints hints{};
+  hints.ai_family = family_;
+
+  ares_getaddrinfo(channel_, name.c_str(), nullptr, &hints, callback, this);
 }
 
 int AsyncNameResolver::getFds(fd_set* rfdsPtr, fd_set* wfdsPtr) const
 {
-  return ares_fds(channel_, rfdsPtr, wfdsPtr);
+  auto nfds = 0;
+
+  for (const auto& ent : socks_) {
+    if (ent.events & EventPoll::EVENT_READ) {
+      FD_SET(ent.fd, rfdsPtr);
+      nfds = std::max(nfds, ent.fd + 1);
+    }
+
+    if (ent.events & EventPoll::EVENT_WRITE) {
+      FD_SET(ent.fd, wfdsPtr);
+      nfds = std::max(nfds, ent.fd + 1);
+    }
+  }
+
+  return nfds;
 }
 
 void AsyncNameResolver::process(fd_set* rfdsPtr, fd_set* wfdsPtr)
 {
-  ares_process(channel_, rfdsPtr, wfdsPtr);
+  for (const auto& ent : socks_) {
+    ares_socket_t readfd = ARES_SOCKET_BAD;
+    ares_socket_t writefd = ARES_SOCKET_BAD;
+
+    if (FD_ISSET(ent.fd, rfdsPtr) && (ent.events & EventPoll::EVENT_READ)) {
+      readfd = ent.fd;
+    }
+
+    if (FD_ISSET(ent.fd, wfdsPtr) && (ent.events & EventPoll::EVENT_WRITE)) {
+      writefd = ent.fd;
+    }
+
+    if (readfd != ARES_SOCKET_BAD || writefd != ARES_SOCKET_BAD) {
+      process(readfd, writefd);
+    }
+  }
 }
 
 #ifdef HAVE_LIBCARES
 
-int AsyncNameResolver::getsock(sock_t* sockets) const
+const std::vector<AsyncNameResolverSocketEntry>&
+AsyncNameResolver::getsock() const
 {
-  return ares_getsock(channel_, reinterpret_cast<ares_socket_t*>(sockets),
-                      ARES_GETSOCK_MAXNUM);
+  return socks_;
 }
 
 void AsyncNameResolver::process(ares_socket_t readfd, ares_socket_t writefd)
@@ -124,42 +200,5 @@ bool AsyncNameResolver::operator==(const AsyncNameResolver& resolver) const
 {
   return this == &resolver;
 }
-
-void AsyncNameResolver::reset()
-{
-  hostname_ = A2STR::NIL;
-  resolvedAddresses_.clear();
-  status_ = STATUS_READY;
-  ares_destroy(channel_);
-  // TODO evaluate return value
-  ares_init(&channel_);
-}
-
-#ifdef HAVE_ARES_ADDR_NODE
-
-ares_addr_node* parseAsyncDNSServers(const std::string& serversOpt)
-{
-  std::vector<std::string> servers;
-  util::split(std::begin(serversOpt), std::end(serversOpt),
-              std::back_inserter(servers), ',', true /* doStrip */);
-  ares_addr_node root;
-  root.next = nullptr;
-  ares_addr_node* tail = &root;
-  for (const auto& s : servers) {
-    auto node = make_unique<ares_addr_node>();
-
-    size_t len = net::getBinAddr(&node->addr, s.c_str());
-    if (len != 0) {
-      node->next = nullptr;
-      node->family = (len == 4 ? AF_INET : AF_INET6);
-      tail->next = node.release();
-      tail = tail->next;
-    }
-  }
-
-  return root.next;
-}
-
-#endif // HAVE_ARES_ADDR_NODE
 
 } // namespace aria2

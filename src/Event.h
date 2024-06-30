@@ -293,16 +293,12 @@ private:
 
   Command* command_;
 
-  size_t socketsSize_;
-
-  sock_t sockets_[ARES_GETSOCK_MAXNUM];
+  std::vector<sock_t> sockets_;
 
 public:
   AsyncNameResolverEntry(std::shared_ptr<AsyncNameResolver> nameResolver,
                          Command* command)
-      : nameResolver_(std::move(nameResolver)),
-        command_(command),
-        socketsSize_(0)
+      : nameResolver_(std::move(nameResolver)), command_(command)
   {
   }
 
@@ -323,33 +319,27 @@ public:
 
   void addSocketEvents(EventPoll* e)
   {
-    socketsSize_ = 0;
-    int mask = nameResolver_->getsock(sockets_);
-    if (mask == 0) {
-      return;
-    }
-    size_t i;
-    for (i = 0; i < ARES_GETSOCK_MAXNUM; ++i) {
+    const auto& socks = nameResolver_->getsock();
+    sockets_.resize(socks.size());
+    auto sock_it = std::begin(sockets_);
+
+    for (const auto& ent : socks) {
       int events = 0;
-      if (ARES_GETSOCK_READABLE(mask, i)) {
+      if (ent.events & EventPoll::EVENT_READ) {
         events |= EventPoll::IEV_READ;
       }
-      if (ARES_GETSOCK_WRITABLE(mask, i)) {
+      if (ent.events & EventPoll::EVENT_WRITE) {
         events |= EventPoll::IEV_WRITE;
       }
-      if (events == 0) {
-        // assume no further sockets are returned.
-        break;
-      }
-      e->addEvents(sockets_[i], command_, events, nameResolver_);
+      e->addEvents(ent.fd, command_, events, nameResolver_);
+      *sock_it++ = ent.fd;
     }
-    socketsSize_ = i;
   }
 
   void removeSocketEvents(EventPoll* e)
   {
-    for (size_t i = 0; i < socketsSize_; ++i) {
-      e->deleteEvents(sockets_[i], command_, nameResolver_);
+    for (auto fd : sockets_) {
+      e->deleteEvents(fd, command_, nameResolver_);
     }
   }
 

@@ -137,10 +137,6 @@ private:
 
   CUIDCounter cuidCounter_;
 
-#ifdef HAVE_ARES_ADDR_NODE
-  ares_addr_node* asyncDNSServers_;
-#endif // HAVE_ARES_ADDR_NODE
-
   std::unique_ptr<DNSCache> dnsCache_;
 
   std::unique_ptr<AuthConfigFactory> authConfigFactory_;
@@ -325,12 +321,6 @@ public:
   void setRefreshInterval(std::chrono::milliseconds interval);
 
   const std::string getSessionId() const { return sessionId_; }
-
-#ifdef HAVE_ARES_ADDR_NODE
-  void setAsyncDNSServers(ares_addr_node* asyncDNSServers);
-
-  ares_addr_node* getAsyncDNSServers() const { return asyncDNSServers_; }
-#endif // HAVE_ARES_ADDR_NODE
 
 #ifdef ENABLE_WEBSOCKET
   void setWebSocketSessionMan(std::unique_ptr<rpc::WebSocketSessionMan> wsman);
