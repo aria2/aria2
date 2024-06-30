@@ -129,8 +129,8 @@ SelectEventPoll::AsyncNameResolverEntry::AsyncNameResolverEntry(
 {
 }
 
-int SelectEventPoll::AsyncNameResolverEntry::getFds(fd_set* rfdsPtr,
-                                                    fd_set* wfdsPtr)
+ares_socket_t SelectEventPoll::AsyncNameResolverEntry::getFds(fd_set* rfdsPtr,
+                                                              fd_set* wfdsPtr)
 {
   return nameResolver_->getFds(rfdsPtr, wfdsPtr);
 }
@@ -184,7 +184,7 @@ void SelectEventPoll::poll(const struct timeval& tv)
 
   for (auto& i : nameResolverEntries_) {
     auto& entry = i.second;
-    int fd = entry.getFds(&rfds, &wfds);
+    auto fd = entry.getFds(&rfds, &wfds);
     // TODO force error if fd == 0
     if (fdmax_ < fd) {
       fdmax_ = fd;
