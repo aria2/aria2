@@ -143,7 +143,7 @@ int SSHSession::checkDirection()
 
 ssize_t SSHSession::writeData(const void* data, size_t len)
 {
-  // net implemented yet
+  // not implemented yet
   assert(0);
 }
 
