@@ -6,12 +6,12 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-22.04, macos-11]
+        os: [ubuntu-22.04, macos-14]
         compiler: [gcc, clang]
         crypto: [openssl, gnutls]
         bittorrent: [with-bt, without-bt]
         exclude:
-        - os: macos-11
+        - os: macos-14
           crypto: gnutls
         - crypto: openssl
           bittorrent: without-bt

@@ -30,20 +30,20 @@ public:
   typedef std::make_unsigned<char_t>::type uchar_t;
 
 private:
-  std::unique_ptr<char_t[]> buf_;
+  std::unique_ptr<uchar_t[]> buf_;
 
 public:
-  inline ulong() : buf_(aria2::make_unique<char_t[]>(dim)) {}
-  inline ulong(size_t t) : buf_(aria2::make_unique<char_t[]>(dim))
+  inline ulong() : buf_(aria2::make_unique<uchar_t[]>(dim)) {}
+  inline ulong(size_t t) : buf_(aria2::make_unique<uchar_t[]>(dim))
   {
-    memcpy(buf_.get(), (char_t*)&t, sizeof(t));
+    memcpy(buf_.get(), (uchar_t*)&t, sizeof(t));
   }
-  inline ulong(const ulong<dim>& rhs) : buf_(aria2::make_unique<char_t[]>(dim))
+  inline ulong(const ulong<dim>& rhs) : buf_(aria2::make_unique<uchar_t[]>(dim))
   {
     memcpy(buf_.get(), rhs.buf_.get(), dim);
   }
-  explicit inline ulong(const char_t* data, size_t size)
-      : buf_(aria2::make_unique<char_t[]>(dim))
+  explicit inline ulong(const uchar_t* data, size_t size)
+      : buf_(aria2::make_unique<uchar_t[]>(dim))
   {
     if (size > dim) {
       throw std::bad_alloc();
@@ -73,8 +73,8 @@ public:
     const auto b2 = rhs.buf_.get();
     for (ssize_t i = dim - 1; i >= 0; --i) {
       for (ssize_t j = 1; j >= 0; --j) {
-        char_t t = ((uchar_t)(b1[i] << 4 * (1 - j))) >> 4;
-        char_t r = ((uchar_t)(b2[i] << 4 * (1 - j))) >> 4;
+        uchar_t t = ((uchar_t)(b1[i] << 4 * (1 - j))) >> 4;
+        uchar_t r = ((uchar_t)(b2[i] << 4 * (1 - j))) >> 4;
         if (t != r) {
           return t > r;
         }
@@ -101,8 +101,8 @@ public:
     bool base = false;
     for (size_t i = 0; i < dim; ++i) {
       for (ssize_t j = 0; j < 2; ++j) {
-        char_t t = ((uchar_t)(b1[i] << 4 * (1 - j))) >> 4;
-        char_t r = ((uchar_t)(b2[i] << 4 * (1 - j))) >> 4;
+        uchar_t t = ((uchar_t)(b1[i] << 4 * (1 - j))) >> 4;
+        uchar_t r = ((uchar_t)(b2[i] << 4 * (1 - j))) >> 4;
         if (base) {
           t++;
         }
@@ -144,8 +144,8 @@ public:
     bool base = false;
     for (size_t i = 0; i < dim; ++i) {
       for (ssize_t j = 0; j < 2; ++j) {
-        char_t t = ((uchar_t)(b1[i] << 4 * (1 - j))) >> 4;
-        char_t r = ((uchar_t)(b2[i] << 4 * (1 - j))) >> 4;
+        uchar_t t = ((uchar_t)(b1[i] << 4 * (1 - j))) >> 4;
+        uchar_t r = ((uchar_t)(b2[i] << 4 * (1 - j))) >> 4;
         if (base) {
           t--;
         }
@@ -238,14 +238,14 @@ public:
     return rv;
   }
 
-  std::unique_ptr<char_t[]> binary() const
+  std::unique_ptr<uchar_t[]> binary() const
   {
     ulong<dim> c = *this;
-    std::unique_ptr<char_t[]> rv;
+    std::unique_ptr<uchar_t[]> rv;
     rv.swap(c.buf_);
     return rv;
   }
-  void binary(char_t* buf, size_t len) const
+  void binary(uchar_t* buf, size_t len) const
   {
     memcpy(buf, buf_.get(), std::min(dim, len));
   }
@@ -258,8 +258,8 @@ private:
     size_t rv = dim * 2;
     const auto b = buf_.get();
     for (ssize_t i = dim - 1; i >= 0; --i) {
-      char_t f = b[i] >> 4;
-      char_t s = (b[i] << 4) >> 4;
+      uchar_t f = b[i] >> 4;
+      uchar_t s = (b[i] << 4) >> 4;
       if (!f && !s) {
         rv -= 2;
         continue;
@@ -282,8 +282,8 @@ private:
     const size_t d2 = digits / 2;
     for (size_t i = d2; i < dim; ++i) {
       for (size_t j = 0; j < 2; ++j) {
-        char_t c = ((uchar_t)(bt[(dim - 1) - i] << 4 * (1 - j))) >> 4;
-        char_t r = c << (npar * (1 - j) * 4 + (1 - npar) * j * 4);
+        uchar_t c = ((uchar_t)(bt[(dim - 1) - i] << 4 * (1 - j))) >> 4;
+        uchar_t r = c << (npar * (1 - j) * 4 + (1 - npar) * j * 4);
         ssize_t idx = i - d2 - npar * j;
         if (idx >= 0) {
           b[(dim - 1) - idx] += r;
