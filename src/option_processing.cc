@@ -148,7 +148,7 @@ void showCandidates(const std::string& unknownOption,
       continue;
     }
     // cost values are borrowed from git, help.c.
-    int sim = levenshtein(optstr, pref->k, 0, 2, 1, 4);
+    int sim = levenshtein(optstr, pref->k, 0, 2, 1, 3);
     cands.push_back(std::make_pair(sim, pref));
   }
   if (cands.empty()) {
