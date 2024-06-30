@@ -104,9 +104,6 @@ DownloadEngine::DownloadEngine(std::unique_ptr<EventPoll> eventPoll)
 #ifdef ENABLE_BITTORRENT
       btRegistry_(make_unique<BtRegistry>()),
 #endif // ENABLE_BITTORRENT
-#ifdef HAVE_ARES_ADDR_NODE
-      asyncDNSServers_(nullptr),
-#endif // HAVE_ARES_ADDR_NODE
       dnsCache_(make_unique<DNSCache>()),
       option_(nullptr)
 {
@@ -115,12 +112,7 @@ DownloadEngine::DownloadEngine(std::unique_ptr<EventPoll> eventPoll)
   sessionId_.assign(&sessionId[0], &sessionId[sizeof(sessionId)]);
 }
 
-DownloadEngine::~DownloadEngine()
-{
-#ifdef HAVE_ARES_ADDR_NODE
-  setAsyncDNSServers(nullptr);
-#endif // HAVE_ARES_ADDR_NODE
-}
+DownloadEngine::~DownloadEngine() {}
 
 namespace {
 void executeCommand(std::deque<std::unique_ptr<Command>>& commands,
@@ -611,19 +603,6 @@ void DownloadEngine::setCheckIntegrityMan(
 {
   checkIntegrityMan_ = std::move(ciman);
 }
-
-#ifdef HAVE_ARES_ADDR_NODE
-void DownloadEngine::setAsyncDNSServers(ares_addr_node* asyncDNSServers)
-{
-  ares_addr_node* node = asyncDNSServers_;
-  while (node) {
-    ares_addr_node* next = node->next;
-    delete node;
-    node = next;
-  }
-  asyncDNSServers_ = asyncDNSServers;
-}
-#endif // HAVE_ARES_ADDR_NODE
 
 #ifdef ENABLE_WEBSOCKET
 void DownloadEngine::setWebSocketSessionMan(
