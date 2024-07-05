@@ -67,6 +67,7 @@ ARIA2_ARG_WITHOUT([libz])
 ARIA2_ARG_WITH([tcmalloc])
 ARIA2_ARG_WITH([jemalloc])
 ARIA2_ARG_WITHOUT([libssh2])
+ARIA2_ARG_WITHOUT([systemd])
 
 ARIA2_ARG_DISABLE([ssl])
 ARIA2_ARG_DISABLE([bittorrent])
@@ -501,6 +502,19 @@ if test "x$with_libssh2" = "xyes"; then
   fi
 fi
 
+have_systemd=no
+if test "x$with_systemd" = "xyes"; then
+  PKG_CHECK_MODULES([SYSTEMD], [libsystemd], [have_systemd=yes], [have_systemd=no])
+  if test "x$have_systemd" = "xyes"; then
+    AC_DEFINE([HAVE_SYSTEMD], [1], [Define to 1 if you have systemd.])
+  else
+    AC_MSG_WARN([$SYSTEMD_PKG_ERRORS])
+    if test "x$with_systemd_requested" = "xyes"; then
+      ARIA2_DEP_NOT_MET([systemd])
+    fi
+  fi
+fi
+
 have_libcares=no
 if test "x$with_libcares" = "xyes"; then
   PKG_CHECK_MODULES([LIBCARES], [libcares >= 1.16.0], [have_libcares=yes],
@@ -643,6 +657,9 @@ AM_CONDITIONAL([HAVE_SQLITE3], [test "x$have_sqlite3" = "xyes"])
 
 # Set conditional for libssh2
 AM_CONDITIONAL([HAVE_LIBSSH2], [test "x$have_libssh2" = "xyes"])
+
+# Set conditional for systemd
+AM_CONDITIONAL([HAVE_SYSTEMD], [test "x$have_systemd" = "xyes"])
 
 case "$host" in
   *solaris*)
@@ -1105,6 +1122,7 @@ LibExpat:       $have_libexpat (CFLAGS='$EXPAT_CFLAGS' LIBS='$EXPAT_LIBS')
 LibCares:       $have_libcares (CFLAGS='$LIBCARES_CFLAGS' LIBS='$LIBCARES_LIBS')
 Zlib:           $have_zlib (CFLAGS='$ZLIB_CFLAGS' LIBS='$ZLIB_LIBS')
 Libssh2:        $have_libssh2 (CFLAGS='$LIBSSH2_CFLAGS' LIBS='$LIBSSH2_LIBS')
+Systemd:        $have_systemd (CFLAGS='$SYSTEMD_CFLAGS' LIBS='$SYSTEMD_LIBS')
 Tcmalloc:       $have_tcmalloc (CFLAGS='$TCMALLOC_CFLAGS' LIBS='$TCMALLOC_LIBS')
 Jemalloc:       $have_jemalloc (CFLAGS='$JEMALLOC_CFLAGS' LIBS='$JEMALLOC_LIBS')
 Epoll:          $have_epoll
