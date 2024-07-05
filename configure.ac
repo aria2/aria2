@@ -92,6 +92,11 @@ AC_ARG_WITH([bashcompletiondir],
                  [Directory to install bash_completion file]),
   [bashcompletiondir=$withval], [bashcompletiondir=$docdir/bash_completion])
 
+AC_ARG_WITH([zshcompletiondir],
+  AS_HELP_STRING([--with-zshcompletiondir=DIR],
+                 [Directory to install zsh_completion file]),
+  [zshcompletiondir=$withval], [zshcompletiondir=$docdir/zsh_completion])
+
 AC_ARG_VAR([ARIA2_STATIC], [Set 'yes' to build a statically linked aria2])
 
 AC_ARG_ENABLE([gnutls-system-crypto-policy],
@@ -1115,5 +1120,6 @@ Message Digest: $use_md
 WebSocket:      $enable_websocket (CFLAGS='$WSLAY_CFLAGS' LIBS='$WSLAY_LIBS')
 Libaria2:       $enable_libaria2 (shared=${enable_shared} static=${enable_static})
 bash_completion dir: $bashcompletiondir
+zsh_completion dir: $zshcompletiondir
 Static build:   $ARIA2_STATIC
 ])
