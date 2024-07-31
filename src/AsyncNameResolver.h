@@ -46,9 +46,14 @@
 
 namespace aria2 {
 
+struct AsyncNameResolverSocketEntry {
+  ares_socket_t fd;
+  int events;
+};
+
 class AsyncNameResolver {
   friend void callback(void* arg, int status, int timeouts,
-                       struct hostent* host);
+                       ares_addrinfo* result);
 
 public:
   enum STATUS {
@@ -59,6 +64,7 @@ public:
   };
 
 private:
+  std::vector<AsyncNameResolverSocketEntry> socks_;
   STATUS status_;
   int family_;
   ares_channel channel_;
@@ -68,12 +74,7 @@ private:
   std::string hostname_;
 
 public:
-  AsyncNameResolver(int family
-#ifdef HAVE_ARES_ADDR_NODE
-                    ,
-                    ares_addr_node* servers
-#endif // HAVE_ARES_ADDR_NODE
-  );
+  AsyncNameResolver(int family, const std::string& servers);
 
   ~AsyncNameResolver();
 
@@ -88,14 +89,14 @@ public:
 
   STATUS getStatus() const { return status_; }
 
-  int getFds(fd_set* rfdsPtr, fd_set* wfdsPtr) const;
+  ares_socket_t getFds(fd_set* rfdsPtr, fd_set* wfdsPtr) const;
 
   void process(fd_set* rfdsPtr, fd_set* wfdsPtr);
 
   int getFamily() const { return family_; }
 #ifdef HAVE_LIBCARES
 
-  int getsock(sock_t* sockets) const;
+  const std::vector<AsyncNameResolverSocketEntry>& getsock() const;
 
   void process(ares_socket_t readfd, ares_socket_t writefd);
 
@@ -105,16 +106,10 @@ public:
 
   void setAddr(const std::string& addrString);
 
-  void reset();
-
   const std::string& getHostname() const { return hostname_; }
+
+  void handle_sock_state(ares_socket_t sock, int read, int write);
 };
-
-#ifdef HAVE_ARES_ADDR_NODE
-
-ares_addr_node* parseAsyncDNSServers(const std::string& serversOpt);
-
-#endif // HAVE_ARES_ADDR_NODE
 
 } // namespace aria2
 

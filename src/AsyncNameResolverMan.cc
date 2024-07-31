@@ -88,12 +88,7 @@ void AsyncNameResolverMan::startAsyncFamily(const std::string& hostname,
                                             Command* command)
 {
   asyncNameResolver_[numResolver_] =
-      std::make_shared<AsyncNameResolver>(family
-#ifdef HAVE_ARES_ADDR_NODE
-                                          ,
-                                          e->getAsyncDNSServers()
-#endif // HAVE_ARES_ADDR_NODE
-      );
+      std::make_shared<AsyncNameResolver>(family, servers_);
   asyncNameResolver_[numResolver_]->resolve(hostname);
   setNameResolverCheck(numResolver_, e, command);
 }
@@ -222,6 +217,7 @@ void configureAsyncNameResolverMan(AsyncNameResolverMan* asyncNameResolverMan,
   if (!net::getIPv6AddrConfigured() || option->getAsBool(PREF_DISABLE_IPV6)) {
     asyncNameResolverMan->setIPv6(false);
   }
+  asyncNameResolverMan->setServers(option->get(PREF_ASYNC_DNS_SERVER));
 }
 
 } // namespace aria2

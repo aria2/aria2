@@ -272,11 +272,6 @@ int MultiUrlRequestInfo::prepare()
     clTlsContext->setVerifyPeer(option_->getAsBool(PREF_CHECK_CERTIFICATE));
     SocketCore::setClientTLSContext(clTlsContext);
 #endif
-#ifdef HAVE_ARES_ADDR_NODE
-    ares_addr_node* asyncDNSServers =
-        parseAsyncDNSServers(option_->get(PREF_ASYNC_DNS_SERVER));
-    e_->setAsyncDNSServers(asyncDNSServers);
-#endif // HAVE_ARES_ADDR_NODE
 
     std::string serverStatIf = option_->get(PREF_SERVER_STAT_IF);
     if (!serverStatIf.empty()) {

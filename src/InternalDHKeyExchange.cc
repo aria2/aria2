@@ -55,7 +55,7 @@ void DHKeyExchange::init(const unsigned char* prime, size_t primeBits,
   if (pr.empty()) {
     throw DL_ABORT_EX("No valid prime supplied");
   }
-  prime_ = n(pr.c_str(), pr.length());
+  prime_ = n(reinterpret_cast<const unsigned char*>(pr.c_str()), pr.length());
 
   std::string gen = reinterpret_cast<const char*>(generator);
   if (gen.length() % 2) {
@@ -65,12 +65,13 @@ void DHKeyExchange::init(const unsigned char* prime, size_t primeBits,
   if (gen.empty()) {
     throw DL_ABORT_EX("No valid generator supplied");
   }
-  generator_ = n(gen.c_str(), gen.length());
+  generator_ =
+      n(reinterpret_cast<const unsigned char*>(gen.c_str()), gen.length());
 
   size_t pbytes = (privateKeyBits + 7) / 8;
   unsigned char buf[pbytes];
   util::generateRandomData(buf, pbytes);
-  privateKey_ = n(reinterpret_cast<char*>(buf), pbytes);
+  privateKey_ = n(buf, pbytes);
 
   keyLength_ = (primeBits + 7) / 8;
 }
@@ -88,7 +89,7 @@ size_t DHKeyExchange::getPublicKey(unsigned char* out, size_t outLength) const
             static_cast<unsigned long>(keyLength_),
             static_cast<unsigned long>(outLength)));
   }
-  publicKey_.binary(reinterpret_cast<char*>(out), outLength);
+  publicKey_.binary(out, outLength);
   return keyLength_;
 }
 
@@ -114,10 +115,9 @@ size_t DHKeyExchange::computeSecret(unsigned char* out, size_t outLength,
             static_cast<unsigned long>(peerPublicKeyLength)));
   }
 
-  n peerKey(reinterpret_cast<const char*>(peerPublicKeyData),
-            peerPublicKeyLength);
+  n peerKey(peerPublicKeyData, peerPublicKeyLength);
   n secret = peerKey.mul_mod(privateKey_, prime_);
-  secret.binary(reinterpret_cast<char*>(out), outLength);
+  secret.binary(out, outLength);
 
   return outLength;
 }

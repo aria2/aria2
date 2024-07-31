@@ -79,6 +79,8 @@ public:
   // Resets state. Also removes resolvers from DownloadEngine.
   void reset(DownloadEngine* e, Command* command);
 
+  void setServers(std::string servers) { servers_ = std::move(servers); }
+
 private:
   void startAsyncFamily(const std::string& hostname, int family,
                         DownloadEngine* e, Command* command);
@@ -88,6 +90,7 @@ private:
                                 Command* command);
 
   std::shared_ptr<AsyncNameResolver> asyncNameResolver_[2];
+  std::string servers_;
   size_t numResolver_;
   int resolverCheck_;
   bool ipv4_;
