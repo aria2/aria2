@@ -122,3 +122,9 @@ jobs:
     - name: Build aria2
       run: |
         make -j"$(nproc 2> /dev/null || sysctl -n hw.ncpu)" check
+        
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v4.3.1
+      with:
+        name: aria2-${{ matrix.host }}
+        path: ./aria2c
