@@ -126,5 +126,5 @@ jobs:
     - name: Upload build artifact
       uses: actions/upload-artifact@v4.3.1
       with:
-        name: aria2-${{ matrix.host }}
-        path: ./aria2c
+        name: aria2-${{ matrix.os }}-${{ matrix.compiler }}-${{ matrix.crypto }}-${{ matrix.bittorrent }}
+        path: ./src/aria2c
