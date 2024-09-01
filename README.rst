@@ -233,6 +233,7 @@ the following packages to get autoconf macros:
 * autotools-dev
 * autopoint
 * libtool
+* liblzma-dev
 
 And run the following command to generate configure script and other files
 necessary to build the program::
