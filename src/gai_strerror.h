@@ -33,10 +33,6 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#ifdef __MINGW32__
-#  undef SIZE_MAX
-#endif // __MINGW32__
-
 #ifndef EAI_SYSTEM
 #  define EAI_SYSTEM -11 /* System error returned in `errno'.  */
 #endif
