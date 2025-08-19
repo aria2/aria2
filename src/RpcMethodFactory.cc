@@ -88,6 +88,7 @@ std::vector<std::string> rpcMethodNames = {
     "aria2.forceShutdown",
     "aria2.getGlobalStat",
     "aria2.saveSession",
+    "aria2.getDiskspaceInformation",
     "system.multicall",
     "system.listMethods",
     "system.listNotifications",
@@ -249,6 +250,10 @@ std::unique_ptr<RpcMethod> createMethod(const std::string& methodName)
 
   if (methodName == SaveSessionRpcMethod::getMethodName()) {
     return make_unique<SaveSessionRpcMethod>();
+  }
+
+  if (methodName == GetDiskspaceInformationRpcMethod::getMethodName()) {
+    return make_unique<GetDiskspaceInformationRpcMethod>();
   }
 
   if (methodName == SystemMulticallRpcMethod::getMethodName()) {
