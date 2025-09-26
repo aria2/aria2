@@ -361,7 +361,7 @@ std::string getDHTFile(bool ipv6);
 
 int64_t getRealSize(const std::string& sizeWithUnit);
 
-std::string abbrevSize(int64_t size);
+std::string abbrevSize(int64_t size, bool useSI = false);
 
 template <typename InputIterator, typename Output>
 void toStream(InputIterator first, InputIterator last, Output& os)

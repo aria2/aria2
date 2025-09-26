@@ -85,6 +85,7 @@
 #include "OpenedFileCounter.h"
 #include "wallclock.h"
 #include "RpcMethodImpl.h"
+
 #ifdef ENABLE_BITTORRENT
 #  include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
@@ -714,6 +715,7 @@ void RequestGroupMan::showDownloadResults(OutputFile& o, bool full) const
   std::string line(pathRowSize, '=');
   o.printf("%s\n", line.c_str());
   bool useColor = o.supportsColor() && option_->getAsBool(PREF_ENABLE_COLOR);
+  bool useSI = option_->getAsBool(PREF_USE_SI_UNITS);
   int ok = 0;
   int err = 0;
   int inpr = 0;
@@ -742,10 +744,10 @@ void RequestGroupMan::showDownloadResults(OutputFile& o, bool full) const
       ++err;
     }
     if (full) {
-      formatDownloadResultFull(o, status, dr);
+      formatDownloadResultFull(o, status, dr, useSI);
     }
     else {
-      o.write(formatDownloadResult(status, dr).c_str());
+      o.write(formatDownloadResult(status, dr, useSI).c_str());
       o.write("\n");
     }
   }
@@ -770,14 +772,15 @@ void RequestGroupMan::showDownloadResults(OutputFile& o, bool full) const
 namespace {
 void formatDownloadResultCommon(
     std::ostream& o, const char* status,
-    const std::shared_ptr<DownloadResult>& downloadResult)
+    const std::shared_ptr<DownloadResult>& downloadResult,
+    bool useSI)
 {
   o << std::setw(3) << downloadResult->gid->toAbbrevHex() << "|" << std::setw(4)
     << status << "|";
   if (downloadResult->sessionTime.count() > 0) {
     o << std::setw(8)
       << util::abbrevSize(downloadResult->sessionDownloadLength * 1000 /
-                          downloadResult->sessionTime.count())
+                          downloadResult->sessionTime.count(), useSI)
       << "B/s";
   }
   else {
@@ -790,7 +793,8 @@ void formatDownloadResultCommon(
 
 void RequestGroupMan::formatDownloadResultFull(
     OutputFile& out, const char* status,
-    const std::shared_ptr<DownloadResult>& downloadResult) const
+    const std::shared_ptr<DownloadResult>& downloadResult,
+    bool useSI) const
 {
   BitfieldMan bt(downloadResult->pieceLength, downloadResult->totalLength);
   bt.setBitfield(
@@ -805,7 +809,7 @@ void RequestGroupMan::formatDownloadResultFull(
     }
     std::stringstream o;
     if (head) {
-      formatDownloadResultCommon(o, status, downloadResult);
+      formatDownloadResultCommon(o, status, downloadResult, useSI);
       head = false;
     }
     else {
@@ -825,7 +829,7 @@ void RequestGroupMan::formatDownloadResultFull(
   }
   if (head) {
     std::stringstream o;
-    formatDownloadResultCommon(o, status, downloadResult);
+    formatDownloadResultCommon(o, status, downloadResult, useSI);
     o << "  -|n/a\n";
     out.write(o.str().c_str());
   }
@@ -833,10 +837,11 @@ void RequestGroupMan::formatDownloadResultFull(
 
 std::string RequestGroupMan::formatDownloadResult(
     const char* status,
-    const std::shared_ptr<DownloadResult>& downloadResult) const
+    const std::shared_ptr<DownloadResult>& downloadResult,
+    bool useSI) const
 {
   std::stringstream o;
-  formatDownloadResultCommon(o, status, downloadResult);
+  formatDownloadResultCommon(o, status, downloadResult, useSI);
   const std::vector<std::shared_ptr<FileEntry>>& fileEntries =
       downloadResult->fileEntries;
   writeFilePath(fileEntries.begin(), fileEntries.end(), o,
@@ -1103,12 +1108,14 @@ int RequestGroupMan::optimizeConcurrentDownloads()
   maxConcurrentDownloads =
       std::min(std::max(1, maxConcurrentDownloads), maxConcurrentDownloads_);
 
+  bool useSI = option_->getAsBool(PREF_USE_SI_UNITS);
+
   A2_LOG_DEBUG(
       fmt("Max concurrent downloads optimized at %d (%lu currently active) "
           "[optimization speed %sB/s, current speed %sB/s]",
           maxConcurrentDownloads, static_cast<unsigned long>(numActive_),
-          util::abbrevSize(optimizationSpeed_).c_str(),
-          util::abbrevSize(currentSpeed).c_str()));
+          util::abbrevSize(optimizationSpeed_, useSI).c_str(),
+          util::abbrevSize(currentSpeed, useSI).c_str()));
 
   return maxConcurrentDownloads;
 }
