@@ -84,10 +84,31 @@ ChunkedDecodingStreamFilter::transform(const std::shared_ptr<BinaryStream>& out,
                                        const unsigned char* inbuf, size_t inlen)
 {
   ssize_t outlen = 0;
-  size_t i;
   bytesProcessed_ = 0;
-  for (i = 0; i < inlen; ++i) {
-    unsigned char c = inbuf[i];
+  while (bytesProcessed_ < inlen) {
+    if (state_ == CHUNKS_COMPLETE) {
+      break;
+    }
+    if (state_ == CHUNK) {
+      int64_t readlen = std::min(chunkRemaining_,
+                                 static_cast<int64_t>(inlen - bytesProcessed_));
+      outlen += getDelegate()->transform(out, segment, inbuf + bytesProcessed_,
+                                         readlen);
+      int64_t processedlen = getDelegate()->getBytesProcessed();
+      bytesProcessed_ += processedlen;
+      chunkRemaining_ -= processedlen;
+      if (chunkRemaining_ == 0) {
+        state_ = PREV_CHUNK_CR;
+      }
+      if (processedlen < readlen) {
+        // segment download finished
+        break;
+      }
+      continue;
+    }
+    // The following states consume single char
+    unsigned char c = inbuf[bytesProcessed_];
+    bytesProcessed_++;
     switch (state_) {
     case PREV_CHUNK_SIZE:
       if (util::isHexDigit(c)) {
@@ -136,17 +157,6 @@ ChunkedDecodingStreamFilter::transform(const std::shared_ptr<BinaryStream>& out,
                           "missing LF at the end of chunk size");
       }
       break;
-    case CHUNK: {
-      int64_t readlen =
-          std::min(chunkRemaining_, static_cast<int64_t>(inlen - i));
-      outlen += getDelegate()->transform(out, segment, inbuf + i, readlen);
-      chunkRemaining_ -= readlen;
-      i += readlen - 1;
-      if (chunkRemaining_ == 0) {
-        state_ = PREV_CHUNK_CR;
-      }
-      break;
-    }
     case PREV_CHUNK_CR:
       if (c == '\r') {
         state_ = PREV_CHUNK_LF;
@@ -203,15 +213,12 @@ ChunkedDecodingStreamFilter::transform(const std::shared_ptr<BinaryStream>& out,
                           "missing LF at the end of chunks");
       }
       break;
-    case CHUNKS_COMPLETE:
-      goto fin;
     default:
       // unreachable
       assert(0);
     }
   }
-fin:
-  bytesProcessed_ += i;
+
   return outlen;
 }
 

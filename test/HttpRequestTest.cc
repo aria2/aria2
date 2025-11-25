@@ -527,6 +527,7 @@ void HttpRequestTest::testCreateRequest_query()
       "Pragma: no-cache\r\n"
       "Cache-Control: no-cache\r\n"
       "Connection: close\r\n"
+      "Range: bytes=0-\r\n"
       "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -624,6 +625,7 @@ void HttpRequestTest::testCreateRequest_wantDigest()
                              "Pragma: no-cache\r\n"
                              "Cache-Control: no-cache\r\n"
                              "Connection: close\r\n"
+                             "Range: bytes=0-\r\n"
                              "Want-Digest: " +
                              wantDigest +
                              "\r\n"
@@ -781,6 +783,7 @@ void HttpRequestTest::testUserAgent()
                              "Pragma: no-cache\r\n"
                              "Cache-Control: no-cache\r\n"
                              "Connection: close\r\n"
+                             "Range: bytes=0-\r\n"
                              "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -818,6 +821,7 @@ void HttpRequestTest::testAddHeader()
                              "Pragma: no-cache\r\n"
                              "Cache-Control: no-cache\r\n"
                              "Connection: close\r\n"
+                             "Range: bytes=0-\r\n"
                              "X-ARIA2: v0.13\r\n"
                              "X-ARIA2-DISTRIBUTE: enabled\r\n"
                              "Accept: text/html\r\n"
@@ -847,6 +851,7 @@ void HttpRequestTest::testAcceptMetalink()
       "Pragma: no-cache\r\n"
       "Cache-Control: no-cache\r\n"
       "Connection: close\r\n"
+      "Range: bytes=0-\r\n"
       "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -876,6 +881,7 @@ void HttpRequestTest::testEnableAcceptEncoding()
                                  "Pragma: no-cache\r\n"
                                  "Cache-Control: no-cache\r\n"
                                  "Connection: close\r\n"
+                                 "Range: bytes=0-\r\n"
                                  "\r\n";
 
   std::string expectedText = expectedTextHead;
