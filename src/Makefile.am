@@ -231,6 +231,7 @@ SRCS =  \
 	SocketBuffer.cc SocketBuffer.h\
 	SocketCore.cc SocketCore.h\
 	SocketRecvBuffer.cc SocketRecvBuffer.h\
+	SocksProxySocket.cc SocksProxySocket.h\
 	SpeedCalc.cc SpeedCalc.h\
 	StatCalc.h\
 	StreamCheckIntegrityEntry.cc StreamCheckIntegrityEntry.h\
@@ -503,6 +504,7 @@ SRCS += \
 	DHTBucketTree.cc DHTBucketTree.h\
 	DHTConnection.h\
 	DHTConnectionImpl.cc DHTConnectionImpl.h\
+	DHTConnectionSocksProxyImpl.cc DHTConnectionSocksProxyImpl.h\
 	DHTConstants.h\
 	DHTEntryPointNameResolveCommand.cc DHTEntryPointNameResolveCommand.h\
 	DHTFindNodeMessage.cc DHTFindNodeMessage.h\

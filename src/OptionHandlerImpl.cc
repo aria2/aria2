@@ -529,6 +529,48 @@ std::string HttpProxyOptionHandler::createPossibleValuesString() const
   return "[http://][USER:PASSWORD@]HOST[:PORT]";
 }
 
+SocksProxyOptionHandler::SocksProxyOptionHandler(
+    PrefPtr pref, const char* description, const std::string& defaultValue,
+    char shortName)
+    : AbstractOptionHandler(pref, description, defaultValue,
+                            OptionHandler::REQ_ARG, shortName),
+      proxyUserPref_(option::k2p(std::string(pref->k) + "-user")),
+      proxyPasswdPref_(option::k2p(std::string(pref->k) + "-passwd"))
+{
+}
+
+SocksProxyOptionHandler::~SocksProxyOptionHandler() = default;
+
+void SocksProxyOptionHandler::parseArg(Option& option,
+                                       const std::string& optarg) const
+{
+  if (optarg.empty()) {
+    option.put(pref_, optarg);
+  }
+  else {
+    std::string uri;
+    if (util::startsWith(optarg, "socks://") ||
+        util::startsWith(optarg, "socks5://")) {
+      uri = optarg;
+    }
+    else {
+      uri = "socks://";
+      uri += optarg;
+    }
+    uri::UriStruct us;
+    if (!uri::parse(us, uri)) {
+      throw DL_ABORT_EX(_("unrecognized proxy format"));
+    }
+    us.protocol = "socks";
+    option.put(pref_, uri::construct(us));
+  }
+}
+
+std::string SocksProxyOptionHandler::createPossibleValuesString() const
+{
+  return "[socks[5]://][USER:PASSWORD@]HOST[:PORT]";
+}
+
 LocalFilePathOptionHandler::LocalFilePathOptionHandler(
     PrefPtr pref, const char* description, const std::string& defaultValue,
     bool acceptStdin, char shortName, bool mustExist,
