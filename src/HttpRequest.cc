@@ -53,6 +53,7 @@
 #include "Request.h"
 #include "DownloadHandlerConstants.h"
 #include "MessageDigest.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
@@ -124,7 +125,7 @@ bool HttpRequest::isRangeSatisfied(const Range& range) const
     return true;
   }
   return getStartByte() == range.startByte &&
-         (getEndByte() == 0 || getEndByte() == range.endByte) &&
+         (getEndByte() == 0 || getEndByte() <= range.endByte) &&
          (fileEntry_->getLength() == 0 ||
           fileEntry_->getLength() == range.entityLength);
 }

@@ -211,6 +211,7 @@
 #define MSG_REMOVING_UNSELECTED_FILE _("GID#%s - Removing unselected file.")
 #define MSG_FILE_REMOVED _("File %s removed.")
 #define MSG_FILE_COULD_NOT_REMOVED _("File %s could not be removed.")
+#define MSG_STRANGE_RANGE_HEADER "CUID#%" PRId64 " Strange range header. Request: %" PRId64 "-%" PRId64 "/%" PRId64 ", Response: %" PRId64 "-%" PRId64 "/%" PRId64 ""
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")
