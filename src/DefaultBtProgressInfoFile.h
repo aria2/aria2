@@ -36,6 +36,7 @@
 #define D_DEFAULT_BT_PROGRESS_INFO_FILE_H
 
 #include "BtProgressInfoFile.h"
+#include "prefs.h"
 
 #include <memory>
 
