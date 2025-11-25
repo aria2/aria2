@@ -149,6 +149,7 @@ void HttpServerBodyCommand::addHttpServerResponseCommand(bool delayed)
   auto resp = make_unique<HttpServerResponseCommand>(getCuid(), httpServer_, e_,
                                                      socket_);
   if (delayed) {
+    e_->deleteSocketForWriteCheck(socket_, resp.get());
     e_->addCommand(
         make_unique<DelayedCommand>(getCuid(), e_, 1_s, std::move(resp), true));
     return;
