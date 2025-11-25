@@ -2108,6 +2108,9 @@ std::string applyDir(const std::string& dir, const std::string& relPath)
       s += relPath;
     }
     else {
+      while (s.back() == '/' || s.back() == '\\') {
+        s.pop_back();
+      }
       s += "/";
       s += relPath;
     }
