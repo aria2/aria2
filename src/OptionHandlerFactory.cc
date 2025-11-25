@@ -1993,6 +1993,16 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
 
+  // SI units option
+  {
+    OptionHandler* op(
+        new BooleanOptionHandler(PREF_USE_SI_UNITS, TEXT_USE_SI_UNITS,
+                                 A2_V_FALSE, OptionHandler::NO_ARG));
+    op->addTag(TAG_BASIC);
+    op->setInitialOption(true);
+    op->setChangeGlobalOption(true);
+    handlers.push_back(op);
+  }
   return handlers;
 }
 

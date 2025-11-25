@@ -542,6 +542,12 @@ extern PrefPtr PREF_METALINK_ENABLE_UNIQUE_PROTOCOL;
 // values: a string
 extern PrefPtr PREF_METALINK_BASE_URI;
 
+/**
+ * Units related (IEC/SI)
+ */
+// values: true | false
+extern PrefPtr PREF_USE_SI_UNITS;
+
 } // namespace aria2
 
 #endif // D_PREFS_H

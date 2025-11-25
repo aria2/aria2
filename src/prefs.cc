@@ -592,4 +592,10 @@ PrefPtr PREF_METALINK_ENABLE_UNIQUE_PROTOCOL =
     makePref("metalink-enable-unique-protocol");
 PrefPtr PREF_METALINK_BASE_URI = makePref("metalink-base-uri");
 
+/**
+ * Units related (IEC/SI)
+ */
+// values: true | false
+PrefPtr PREF_USE_SI_UNITS = makePref("si-units");
+
 } // namespace aria2

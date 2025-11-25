@@ -1129,5 +1129,8 @@
     "                              file saved by --bt-save-metadata option. If it is\n" \
     "                              successful, then skip downloading metadata from\n" \
     "                              DHT.")
+#define TEXT_USE_SI_UNITS \
+  _(" --si-units[=true|false]\n"\
+      "Use SI units (kB, MB, GB) instead of IEC units (KiB, MiB, GiB).")
 
 // clang-format on

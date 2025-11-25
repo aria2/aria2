@@ -132,11 +132,13 @@ private:
 
   void formatDownloadResultFull(
       OutputFile& out, const char* status,
-      const std::shared_ptr<DownloadResult>& downloadResult) const;
+      const std::shared_ptr<DownloadResult>& downloadResult,
+      bool useSI = false) const;
 
-  std::string formatDownloadResult(
-      const char* status,
-      const std::shared_ptr<DownloadResult>& downloadResult) const;
+  std::string
+  formatDownloadResult(const char* status,
+                       const std::shared_ptr<DownloadResult>& downloadResult,
+                       bool useSI = false) const;
 
   void configureRequestGroup(
       const std::shared_ptr<RequestGroup>& requestGroup) const;

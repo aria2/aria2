@@ -35,6 +35,7 @@
 #ifndef D_CONSOLE_STAT_CALC_H
 #define D_CONSOLE_STAT_CALC_H
 
+#include "Option.h"
 #include "StatCalc.h"
 
 #include <string>
@@ -70,8 +71,8 @@ private:
   bool colorOutput_;
 
 public:
-  ConsoleStatCalc(std::chrono::seconds summaryInterval, bool colorOutput = true,
-                  bool humanReadable = true);
+  ConsoleStatCalc(std::chrono::seconds summaryInterval, bool useSI = false,
+                  bool colorOutput = true, bool humanReadable = true);
 
   virtual ~ConsoleStatCalc() = default;
 
