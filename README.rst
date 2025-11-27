@@ -388,6 +388,72 @@ All the dependent libraries must be installed under
 
 After ``android-config``, run ``make`` to compile sources.
 
+Building on MacOS
+-----------------
+
+To build aria2 on MacOS, you'll need to install the dependencies first.
+Before beginning, make sure `brew <https://brew.sh/>`_ is installed on your system.
+
+Build aria2 on MacOS
+~~~~~~~~~~~~~~~~~~~~
+
+.. note::
+  If you need to add more dependencies, repeat steps ``3`` and ``4`` after installing them.
+
+1. Install Command Line Tools for MacOS::
+
+    $ xcode-select --install
+
+2. Install dependencies with ``brew``::
+
+    $ brew install automake
+    $ brew install autoconf
+    $ brew install libtool
+    $ brew install pkg-config
+    $ brew install docutils
+    $ brew install libxml2
+
+3. Setup environment variables::
+
+    $ export PATH=${PATH}:/usr/local/opt/gettext/bin
+    $ export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
+    $ export LDFLAGS="-L/usr/local/opt/libxml2/lib"
+    $ export CPPFLAGS="-I/usr/local/opt/libxml2/include"
+
+4. Configure and compile::
+
+    $ autoreconf -i
+    $ automake
+    $ autoconf
+    $ ./configure
+    $ make -j
+
+Running Tests on MacOS
+~~~~~~~~~~~~~~~~~~~~~~
+
+1. Install dependencies and run steps ``3`` and ``4`` from `Build aria2 on MacOS`_::
+
+    $ brew install cppunit
+
+2. Run tests::
+
+    $ make check -j
+
+Building Documentation on MacOS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1. Install dependencies and run steps ``3`` and ``4`` from `Build aria2 on MacOS`_::
+
+    $ brew install sphinx-doc
+
+2. Build docs::
+
+    $ make
+
+3. [Optional] Build HTML version::
+
+    $ make html
+
 Building documentation
 ----------------------
 
