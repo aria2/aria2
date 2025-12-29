@@ -407,6 +407,15 @@ void RequestGroup::createInitialCommand(
     }
 
     removeDefunctControlFile(progressInfoFile);
+    // Check if user requested to remove control file
+    if (!option_->getAsBool(PREF_DRY_RUN) &&
+        option_->getAsBool(PREF_REMOVE_CONTROL_FILE) &&
+        progressInfoFile->exists()) {
+      progressInfoFile->removeFile();
+      A2_LOG_NOTICE(fmt(_("Removed control file for %s because it is requested by"
+                          " user."),
+                        progressInfoFile->getFilename().c_str()));
+    }
     {
       int64_t actualFileSize = pieceStorage_->getDiskAdaptor()->size();
       if (actualFileSize == downloadContext_->getTotalLength()) {
@@ -431,7 +440,8 @@ void RequestGroup::createInitialCommand(
     else if (pieceStorage_->getDiskAdaptor()->fileExists()) {
       if (!option_->getAsBool(PREF_CHECK_INTEGRITY) &&
           !option_->getAsBool(PREF_ALLOW_OVERWRITE) &&
-          !option_->getAsBool(PREF_BT_SEED_UNVERIFIED)) {
+          !option_->getAsBool(PREF_BT_SEED_UNVERIFIED) &&
+          !option_->getAsBool(PREF_REMOVE_CONTROL_FILE)) {
         // TODO we need this->haltRequested = true?
         throw DOWNLOAD_FAILURE_EXCEPTION2(
             fmt(MSG_FILE_ALREADY_EXISTS,
