@@ -1,0 +1,90 @@
+name: build-arm64
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-arm64:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Setup dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          gcc-aarch64-linux-gnu \
+          g++-aarch64-linux-gnu \
+          binutils-aarch64-linux-gnu \
+          autoconf \
+          automake \
+          autotools-dev \
+          autopoint \
+          libtool \
+          pkg-config \
+          libssl-dev \
+          libgnutls28-dev \
+          libc-ares-dev \
+          zlib1g-dev \
+          libsqlite3-dev \
+          libssh2-1-dev \
+          qemu-user-static \
+          binfmt-support
+
+    - name: Setup environment
+      run: |
+        echo "CC=aarch64-linux-gnu-gcc" >> $GITHUB_ENV
+        echo "CXX=aarch64-linux-gnu-g++" >> $GITHUB_ENV
+        echo "LD=aarch64-linux-gnu-ld" >> $GITHUB_ENV
+        echo "AR=aarch64-linux-gnu-ar" >> $GITHUB_ENV
+        echo "RANLIB=aarch64-linux-gnu-ranlib" >> $GITHUB_ENV
+        echo "STRIP=aarch64-linux-gnu-strip" >> $GITHUB_ENV
+        echo "PKG_CONFIG_PATH=/usr/lib/aarch64-linux-gnu/pkgconfig:/usr/share/pkgconfig" >> $GITHUB_ENV
+
+    - name: Autoreconf
+      run: |
+        autoreconf -i
+
+    - name: Configure for ARM64
+      run: |
+        ./configure \
+          --build=$(dpkg-architecture -qDEB_BUILD_GNU_TYPE) \
+          --host=aarch64-linux-gnu \
+          --prefix=/usr/local \
+          --with-openssl \
+          --without-gnutls \
+          --disable-nls
+
+    - name: Build aria2
+      run: |
+        make -j$(nproc)
+
+    - name: Create package
+      run: |
+        DEST=aria2-arm64-linux
+        mkdir -p $DEST
+        cp src/aria2c $DEST/
+        aarch64-linux-gnu-strip $DEST/aria2c
+        tar -czf aria2-arm64-linux.tar.gz $DEST/
+
+    - name: Upload to Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: aria2-arm64-linux.tar.gz
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: aria2-arm64-linux
+        path: aria2-arm64-linux/
+
