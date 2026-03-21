@@ -573,9 +573,9 @@ bool parseIntNoThrow(int32_t& res, const std::string& s, int base)
 
 bool parseUIntNoThrow(uint32_t& res, const std::string& s, int base)
 {
-  long int t;
-  if (parseLong(t, strtol, s, base) && t >= 0 &&
-      t <= std::numeric_limits<int32_t>::max()) {
+  unsigned long t;
+  if (parseLong(t, strtoul, s, base) && t >= 0 &&
+      t <= static_cast<unsigned long>(std::numeric_limits<uint32_t>::max())) {
     res = t;
     return true;
   }
