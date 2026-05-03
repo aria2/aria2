@@ -219,8 +219,8 @@ bool ServerStatMan::load(const std::string& filename)
       }
       sstat->setCounter(uintval);
     }
-    int32_t intval;
-    if (!util::parseIntNoThrow(intval, m[S_LAST_UPDATED])) {
+    int64_t intval;
+    if (!util::parseLLIntNoThrow(intval, m[S_LAST_UPDATED])) {
       continue;
     }
     sstat->setLastUpdated(Time(intval));
