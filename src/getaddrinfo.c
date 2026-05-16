@@ -488,9 +488,10 @@ struct addrinfo** res;
   }
 
   if (canonname != NULL && head_res != NULL) {
-    head_res->ai_canonname = (char*)malloc(strlen(canonname) + 1);
+    size_t canonname_len = strlen(canonname) + 1;
+    head_res->ai_canonname = (char*)malloc(canonname_len);
     if (head_res->ai_canonname != NULL)
-      strcpy(head_res->ai_canonname, canonname);
+      memcpy(head_res->ai_canonname, canonname, canonname_len);
   }
 
   *res = head_res;
@@ -550,14 +551,14 @@ int flags;
         result = EAI_OVERFLOW;
         goto end;
       }
-      strcpy(serv, servent->s_name);
+      memcpy(serv, servent->s_name, strlen(servent->s_name) + 1);
     }
     else {
       if (servlen <= itoa_length(ntohs(sa_in->sin_port))) {
         result = EAI_OVERFLOW;
         goto end;
       }
-      sprintf(serv, "%d", ntohs(sa_in->sin_port));
+      snprintf(serv, servlen, "%d", ntohs(sa_in->sin_port));
     }
   }
 
@@ -573,7 +574,7 @@ int flags;
         result = EAI_OVERFLOW;
         goto end;
       }
-      strcpy(node, hostent->h_name);
+      memcpy(node, hostent->h_name, strlen(hostent->h_name) + 1);
     }
     else {
       if (flags & NI_NAMEREQD) {
@@ -585,7 +586,7 @@ int flags;
         result = EAI_OVERFLOW;
         goto end;
       }
-      strcpy(node, ntoa_address);
+      memcpy(node, ntoa_address, strlen(ntoa_address) + 1);
     }
   }
 
