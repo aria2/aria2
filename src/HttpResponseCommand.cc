@@ -307,11 +307,47 @@ bool HttpResponseCommand::executeInternal()
   updateLastModifiedTime(httpResponse->getLastModifiedTime());
 
   if (grp->getTotalLength() == 0) {
-    // Since total length is unknown, the file size in previously
-    // failed download could be larger than the size this time.
-    // Also we can't resume in this case too.  So truncate the file
-    // anyway.
-    getPieceStorage()->getDiskAdaptor()->truncate(0);
+    // Unknown total length (chunked / no Content-Length / live stream).
+    //
+    // Historically this branch called
+    //
+    //   getPieceStorage()->getDiskAdaptor()->truncate(0);
+    //
+    // with the rationale that the file produced by a previously failed
+    // attempt might be larger than what this attempt will produce, and
+    // that we cannot resume in this case anyway.
+    //
+    // For live streams (and any chunked download that aborts mid-way
+    // and is retried) that unconditional truncate is catastrophic: it
+    // destroys every byte we already wrote to disk during the previous
+    // attempt, and only the tail bytes delivered by the retry survive.
+    // Users have reported this for years as data-loss bug
+    // https://github.com/aria2/aria2/issues/1948.
+    //
+    // Instead, we preserve everything already on disk and, on a retry,
+    // restore the in-flight GrowSegment's writtenLength from the memo
+    // so the new HttpDownloadCommand keeps appending after the bytes
+    // we already have rather than overwriting from offset 0.
+    //
+    // The restore is performed here (rather than in
+    // SegmentMan::checkoutSegment) because earlier in the retry path
+    // CreateRequestCommand::executeInternal() needs
+    // segment->getPositionToWrite() to be 0 so it can locate the
+    // (single, unknown-length) FileEntry via
+    // DownloadContext::findFileEntryByOffset(0).
+    if (auto sm = getSegmentMan()) {
+      for (auto& seg : getSegments()) {
+        const int64_t memoLen = sm->getMemorizedWrittenLength(seg->getIndex());
+        if (memoLen > seg->getWrittenLength()) {
+          A2_LOG_DEBUG(fmt("Resuming unknown-length download: "
+                           "restoring writtenLength=%" PRId64
+                           " (was %" PRId64 ") on segment#%lu",
+                           memoLen, seg->getWrittenLength(),
+                           static_cast<unsigned long>(seg->getIndex())));
+          seg->updateWrittenLength(memoLen - seg->getWrittenLength());
+        }
+      }
+    }
     auto teFilter = getTransferEncodingStreamFilter(
         httpResponse.get(), getContentEncodingStreamFilter(httpResponse.get()));
     getDownloadEngine()->addCommand(createHttpDownloadCommand(

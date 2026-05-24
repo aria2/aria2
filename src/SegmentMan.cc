@@ -184,7 +184,27 @@ SegmentMan::checkoutSegment(cuid_t cuid, const std::shared_ptr<Piece>& piece)
       }
     }
   }
+  // For GrowSegment (piece->getLength() == 0, i.e. unknown-length /
+  // chunked / live-stream downloads) the writtenLength is intentionally
+  // *not* restored here. Doing so would make
+  // segment->getPositionToWrite() report the previous attempt's offset
+  // before the new request is built, and
+  // CreateRequestCommand::executeInternal() would then call
+  // DownloadContext::findFileEntryByOffset() with an offset that no
+  // unknown-length FileEntry covers, crashing the process.
+  // The restore happens later, in HttpResponseCommand, right before
+  // dispatching the new HttpDownloadCommand, via
+  // SegmentMan::getMemorizedWrittenLength(). See issue #1948.
   return segment;
+}
+
+int64_t SegmentMan::getMemorizedWrittenLength(size_t index) const
+{
+  auto positr = segmentWrittenLengthMemo_.find(index);
+  if (positr == segmentWrittenLengthMemo_.end()) {
+    return -1;
+  }
+  return (*positr).second;
 }
 
 void SegmentMan::getInFlightSegment(

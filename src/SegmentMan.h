@@ -154,6 +154,12 @@ public:
   std::shared_ptr<Segment> getCleanSegmentIfOwnerIsIdle(cuid_t cuid,
                                                         size_t index);
 
+  // Returns the memoized writtenLength for the segment with the given
+  // index, or -1 if no entry exists. Used by HttpResponseCommand to
+  // append on a retried unknown-length (chunked / live-stream)
+  // download instead of overwriting from offset 0. See issue #1948.
+  int64_t getMemorizedWrittenLength(size_t index) const;
+
   /**
    * Updates download status.
    */
