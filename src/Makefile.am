@@ -110,6 +110,7 @@ SRCS =  \
 	FtpTunnelRequestCommand.cc FtpTunnelRequestCommand.h\
 	FtpTunnelRequestConnectChain.h\
 	FtpTunnelResponseCommand.cc FtpTunnelResponseCommand.h\
+	FtpSocksProxyConnectChain.h\
 	GenericParser.h\
 	GeomStreamPieceSelector.cc GeomStreamPieceSelector.h\
 	GroupId.cc GroupId.h\
@@ -126,6 +127,7 @@ SRCS =  \
 	HttpProxyRequestCommand.cc HttpProxyRequestCommand.h\
 	HttpProxyRequestConnectChain.h\
 	HttpProxyResponseCommand.cc HttpProxyResponseCommand.h\
+	HttpSocksProxyConnectChain.h\
 	HttpRequest.cc HttpRequest.h\
 	HttpRequestCommand.cc HttpRequestCommand.h\
 	HttpRequestConnectChain.h\
@@ -228,6 +230,7 @@ SRCS =  \
 	SingleFileAllocationIterator.cc SingleFileAllocationIterator.h\
 	SingletonHolder.h\
 	SinkStreamFilter.cc SinkStreamFilter.h\
+	SocksProxyCommand.cc SocksProxyCommand.h\
 	SocketBuffer.cc SocketBuffer.h\
 	SocketCore.cc SocketCore.h\
 	SocketRecvBuffer.cc SocketRecvBuffer.h\

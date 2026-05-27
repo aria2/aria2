@@ -285,7 +285,7 @@ void OptionHandlerTest::testHttpProxyOptionHandler()
   }
   catch (Exception& e) {
   }
-  CPPUNIT_ASSERT_EQUAL(std::string("[http://][USER:PASSWORD@]HOST[:PORT]"),
+  CPPUNIT_ASSERT_EQUAL(std::string("[http://|socks5://|socks5h://][USER:PASSWORD@]HOST[:PORT]"),
                        handler.createPossibleValuesString());
 
   handler.parse(option, "http://user%40:passwd%40@proxy:8080");
@@ -294,6 +294,26 @@ void OptionHandlerTest::testHttpProxyOptionHandler()
 
   handler.parse(option, "http://[::1]:8080");
   CPPUNIT_ASSERT_EQUAL(std::string("http://[::1]:8080/"),
+                       option.get(PREF_HTTP_PROXY));
+
+  handler.parse(option, "socks5://proxy:9050");
+  CPPUNIT_ASSERT_EQUAL(std::string("socks5://proxy:9050/"),
+                       option.get(PREF_HTTP_PROXY));
+
+  handler.parse(option, "socks5://proxy:1080");
+  CPPUNIT_ASSERT_EQUAL(std::string("socks5://proxy/"),
+                       option.get(PREF_HTTP_PROXY));
+
+  handler.parse(option, "socks5h://proxy:9050");
+  CPPUNIT_ASSERT_EQUAL(std::string("socks5://proxy:9050/"),
+                       option.get(PREF_HTTP_PROXY));
+
+  handler.parse(option, "socks5h://proxy:1080");
+  CPPUNIT_ASSERT_EQUAL(std::string("socks5://proxy/"),
+                       option.get(PREF_HTTP_PROXY));
+
+  handler.parse(option, "socks5://user:pass@proxy:9050");
+  CPPUNIT_ASSERT_EQUAL(std::string("socks5://user:pass@proxy:9050/"),
                        option.get(PREF_HTTP_PROXY));
 }
 

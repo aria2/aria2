@@ -55,6 +55,7 @@
 #include "ConnectCommand.h"
 #include "HttpRequestConnectChain.h"
 #include "HttpProxyRequestConnectChain.h"
+#include "HttpSocksProxyConnectChain.h"
 
 namespace aria2 {
 
@@ -78,7 +79,10 @@ std::unique_ptr<Command> HttpInitiateConnectionCommand::createNextCommand(
         getDownloadEngine()->popPooledSocket(
             getRequest()->getHost(), getRequest()->getPort(),
             proxyRequest->getHost(), proxyRequest->getPort());
-    std::string proxyMethod = resolveProxyMethod(getRequest()->getProtocol());
+    bool isSocksProxy = proxyRequest->getProtocol() == "socks5";
+    std::string proxyMethod = isSocksProxy
+                                  ? V_TUNNEL
+                                  : resolveProxyMethod(getRequest()->getProtocol());
     if (!pooledSocket) {
       A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER, getCuid(), addr.c_str(), port));
       createSocket();
@@ -88,7 +92,10 @@ std::unique_ptr<Command> HttpInitiateConnectionCommand::createNextCommand(
       auto c = make_unique<ConnectCommand>(
           getCuid(), getRequest(), proxyRequest, getFileEntry(),
           getRequestGroup(), getDownloadEngine(), getSocket());
-      if (proxyMethod == V_TUNNEL) {
+      if (isSocksProxy) {
+        c->setControlChain(std::make_shared<HttpSocksProxyConnectChain>());
+      }
+      else if (proxyMethod == V_TUNNEL) {
         c->setControlChain(std::make_shared<HttpProxyRequestConnectChain>());
       }
       else if (proxyMethod == V_GET) {
