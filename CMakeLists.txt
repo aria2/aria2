@@ -173,8 +173,181 @@ if(NOT enable_ssl)
     set(openssl NO)
 endif()
 
+
+set(have_appletls FALSE)
+set(have_ssl FALSE)
+set(have_nativetls FALSE)
+
 if(appletls)
     message("Whether to enable Mac OS X native SSL/TLS")
     if(osx)
         message("Define to 1 if you have Apple TLS")
         add_compile_definitions(HAVE_APPLETLS=1)
+        set(APPLETLS_LDFLAGS "-framework CoreFoundation -framework Security")
+        # here somehow I have to pass this variable to the config.h.in file with @...@ symbols #
+        set(have_appletls TRUE)
+        set(have_ssl TRUE)
+        set(have_nativetls TRUE)
+    else()
+        if(appletls)
+            message("ARIA2_DEP_NOT_MET")
+        endif()
+    endif()
+endif()
+
+include(CheckLibraryExists)
+
+set(have_wintls FALSE)
+if(wintls)  ## the build is about windows
+    find_package(crypt32 REQUIRED)
+    if(crypt32_FOUND)
+        check_library_exists(crypt32 main "" have_wintls_libs)
+    endif()
+
+    find_package(secur32 REQUIRED)
+    if(secur32_FOUND)
+        check_library_exists(secur32 main "" have_wintls_libs)
+    endif()
+
+    find_package(advapi32 REQUIRED)
+    if(advapi32_FOUND)
+        check_library_exists(advapi32 main "" have_wintls_libs)
+    endif()
+
+    include(CheckCSourceCompiles)
+    check_c_source_compiles("
+        #include <windows.h>
+        #include <wincrypt.h>
+
+        #ifndef SECURITY_WIN32
+        #define SECURITY_WIN32 1
+        #endif
+
+        #include <security.h>
+
+
+        int main(void) {
+            return 0;
+        }
+    " HAVE_WINTLS_HEADERS)
+
+    if(HAVE_WINTLS_HEADERS)
+        set(have_wintls_headers YES)
+    else()
+        set(have_wintls_headers NO)
+    endif()
+
+    if(have_wintls_libs AND have_wintls_headers)
+        add_compile_definitions(SECURITY_WIN32=1)
+        message("Use security.h in WIN32 mode")
+        set(WINTLS_LIBS "-lcrypt32 -lsecur32 -ladvapi32")
+        # here somehow I have to pass this variable to the config.h.in file with @...@ symbols #
+        set(have_wintls TRUE)
+        set(have_ssl TRUE)
+        set(have_nativetls TRUE)
+    else()
+        set(have_wintls FALSE)
+    endif()
+
+    if(NOT wintls)
+        message("ARIA2_DEP_NOT_MET[wintls]")
+    endif()
+endif()
+
+set(have_libgnutls FALSE)
+if(gnutls AND NOT have_ssl)
+    pkg_check_modules(LIBGNUTLS REQUIRED "gnutls >= 2.2.0")
+    if(LIBGNUTLS_FOUND)
+        set(have_libgnutls TRUE)
+    endif()
+    if(have_libgnutls)
+        set(have_ssl TRUE)
+        add_compile_definitions(HAVE_LIBGNUTLS=1)
+        message("Define to 1 if you have libgnutls")
+        check_library_exists(${LIBGNUTLS_LIBRARIES} gnutls_certificate_set_x509_system_trust "" gnuTLSFuncFound)
+        if(NOT gnuTLSFuncFound)
+            message(WARNING "The gnutls_certificate_set_x509_system_trust() cannot be found")
+        endif()
+    else()
+        if(gnutls)
+            message("ARIA2_DEP_NOT_MET([gnutls])")
+        endif()
+    endif()
+endif()
+
+set(have_openssl FALSE)
+if(openssl AND NOT have_ssl)
+    find_package(OpenSSL 0.9.8 REQUIRED)
+    if(OpenSSL_FOUND)
+        message(STATUS "The openssl library found, with version ${OpenSSL_VERSION}")
+        set(have_openssl TRUE)
+    else()
+        message(WARNING "The openssl library was not found. Try install it first")
+    endif()
+    if(have_openssl)
+        set(have_ssl TRUE)
+        add_compile_definitions(HAVE_OPENSSL=1)
+        message(STATUS "Define to 1 if you have openssl")
+
+        # something here with the libs
+
+        check_library_exists(${OPENSSL_LIBRARIES} EVP_DigestInit_ex "" have_digestinit_ex)
+        if(NOT have_digestint_ex)
+            add_compile_definitions(HAVE_OLD_OPENSSL=1)
+            message(STATUS "Define to 1 if you have old openssl")
+        endif()
+
+        check_library_exists(${OPENSSL_LIBRARIES} EVP_sha224 "" have_evp_sha224)
+        check_library_exists(${OPENSSL_LIBRARIES} EVP_sha256 "" have_evp_sha256)
+        check_library_exists(${OPENSSL_LIBRARIES} EVP_sha384 "" have_evp_sha384)
+        check_library_exists(${OPENSSL_LIBRARIES} EVP_sha512 "" have_evp_sha512)
+
+        # again something here with the libs
+    else()
+        message(WARNING "Cannot find openssl in the system. Try install it first")
+    endif()
+endif()
+
+set(have_libnettle FALSE)
+set(have_libgmp FALSE)
+set(have_libcrypt FALSE)
+
+if(NOT have_openssl)
+    if(libnettle AND NOT nativetls)
+        pkg_check_module(LIBNETTLE REQUIRED "libnettle8t64 > 1.1.1")  # den tha paiksei auto. Thelei allo tropo
+        if(LIBNETTLE)
+            add_compile_definitions(HAVE_LIBNETTLE=1)    
+            message(STATUS "Define to 1 if you have libnettle")
+        else()
+            message(WARNING "ARIA2_DEP_NOT_MET")
+        endif()
+    endif()
+
+    if(libgmp AND (libnettle OR have_nativetls) AND bittorrent)  # native_tls has to be placed into some other places in the code
+        find_package(gmp REQUIRED)
+        if(gmp_FOUND)
+            check_library_exists(gmp __gmpz_init "" have_libgmp)
+        endif()
+
+        if(have_libgmp)
+            # define here the LIBGMP_CFLAGS and etc
+            #
+            #
+        else()
+            message(WARNING "libgmp not found. Try install it first")
+            message(WARNING "ARIA2_DEP_NOT_MET")
+        endif()
+    endif()
+endif()
+
+
+
+
+
+
+
+        
+    
+
+
+
