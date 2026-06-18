@@ -23,7 +23,7 @@ option(wintls "" FALSE)
 option(gnutls "" FALSE)
 option(libnettle "" FALSE)
 option(libgmp "" FALSE)
-option(libcrypt "" FALSE)
+option(libgcrypt "" FALSE)
 option(openssl "" FALSE)
 option(sqlite3 "" FALSE)
 option(libxml2 "" FALSE)
@@ -314,7 +314,7 @@ set(have_libcrypt FALSE)
 
 if(NOT have_openssl)
     if(libnettle AND NOT nativetls)
-        pkg_check_module(LIBNETTLE REQUIRED "libnettle8t64 > 1.1.1")  # den tha paiksei auto. Thelei allo tropo
+        pkg_check_modules(LIBNETTLE REQUIRED "libnettle8t64 > 1.1.1")  # den tha paiksei auto. Thelei allo tropo
         if(LIBNETTLE)
             add_compile_definitions(HAVE_LIBNETTLE=1)    
             message(STATUS "Define to 1 if you have libnettle")
@@ -333,21 +333,35 @@ if(NOT have_openssl)
             # define here the LIBGMP_CFLAGS and etc
             #
             #
+            add_compile_definitions(HAVE_LIBGMP=1)
+            message(STATUS "Define to 1 if you have libgmp")
         else()
             message(WARNING "libgmp not found. Try install it first")
             message(WARNING "ARIA2_DEP_NOT_MET")
         endif()
     endif()
+
+    if(libgcrypt AND NOT have_nativetls AND NOT have_libnettle)
+    #
+    #
+    endif()
+endif()
+
+set(have_libssh2 FALSE)
+if(libssh2)
+    pkg_check_modules(LIBSSH2 REQUIRED "libssh2")
+    if(LIBSSH2_FOUND)
+        set(have_libssh2 TRUE)
+        add_compile_definitions(HAVE_LIBSSH2=1)
+        message(STATUS "Define to 1 if you have libssh2.")
+    else()
+        message(WARNING "The libssh2 library is missing")
+        
+        if(LIBSSH2_REQUESTED)
+            message(WARNING "ARIA2_DEP_NOT_MET([libssh2])")
+        endif()
+    endif()
 endif()
 
 
-
-
-
-
-
-        
-    
-
-
-
+set(have_libcares FALSE)
