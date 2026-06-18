@@ -339,6 +339,11 @@ public:
 
   void setUriListParser(const std::shared_ptr<UriListParser>& uriListParser);
 
+  const std::shared_ptr<UriListParser>& getUriListParser() const
+  {
+    return uriListParser_;
+  }
+
   NetStat& getNetStat() { return netStat_; }
 
   WrDiskCache* getWrDiskCache() const { return wrDiskCache_.get(); }
