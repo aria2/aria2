@@ -365,3 +365,263 @@ endif()
 
 
 set(have_libcares FALSE)
+find_package(libcares2 REQUIRED)
+if(libcares2_FOUND)
+    set(have_libcares TRUE)
+    add_compile_definitions(HAVE_LIBCARES=1)
+    message(STATUS "Define to 1 if you have libcares")
+else()
+    message(WARNING "libcares couldn't find in the system. Try install it first")
+    message(WARNING "ARIA2_DEP_NOT_METq([libcares)")
+endif()
+
+set(use_md "")
+if(have_appletls)
+    set(use_md "apple")
+    add_compile_definitions(USE_APPLE_MD=1)
+    message(STATUS "What message digest implementation to use")
+elseif(have_libnettle)
+    add_compile_definitions(USE_LIBNETTLE_MD=1)
+    message(STATUS "What message digest implementation to use")
+    set(use_md "libnettle")
+elseif(have_libcrypt)
+    add_compile_definitions(USE_LIBCRYPT_MD=1)
+    message(STATUS "What message digest implementation to use")
+    set(use_md "libcrypt")
+elseif(have_openssl)
+    add_compile_definitions(USE_OPENSSL_MD=1)
+    message(STATUS "What message digest implementation to use")
+    set(use_md "openssl")
+else()
+    add_compile_definitions(USE_INTERNAL_MD=1)
+    message(STATUS "What message digest implementation to use")
+    set(use_md "internal")
+endif()
+
+if(have_ssl)
+    add_compile_definitions(ENABLE_SSL=1)
+    message("Define to 1 if ssl support is enabled")
+    set(ENABLE_SSL true)
+else()
+    set(have_ssl no)
+    set(ENABLE_SSL false)
+endif()
+
+# this can be done more clearlyl with a list of the variables that I want to check if they
+# are true or false.
+
+if(have_osx)
+    set(HAVE_OSX TRUE)
+endif()
+
+if(have_appletls)
+    set(HAVE_APPLETLS TRUE)
+endif()
+
+if(have_wintls)
+    set(HAVE_WINTLS TRUE)
+endif()
+
+if(use_md STREQUAL "apple")
+    set(USE_APPLE_MD TRUE)
+elseif(use_md STREQUAL "windows")
+    set(USE_WINDOWS_MD TRUE)
+elseif(use_md STREQUAL "libnettle")
+    set(USE_LIBNETTLE_MD TRUE)
+elseif(use_md STREQUAL "libgcrypt")
+    set(USE_LIBGCRYPT TRUE)
+elseif(use_md STREQUAL "openssl")
+    set(USE_OPENSSL_MD TRUE)
+elseif(use_md STREQUAL "internal")
+    set(USE_INTERNAL_MD TRUE)
+endif()
+
+if(have_libgnutls)
+    set(HAVE_LIBGNUTLS TRUE)
+endif()
+
+if(have_libnettle)
+    set(HAVE_LIBNETTLE TRUE)
+endif()
+
+if(have_libgmp)
+    set(HAVE_LIBGMP TRUE)
+endif()
+
+if(libgcrypt)
+    set(HAVE_LIBGCRYPT TRUE)
+endif()
+
+if(have_openssl)
+    set(HAVE_OPENSSL TRUE)
+endif()
+
+
+if(have_libgmp OR have_libgcrypt OR have_openssl)
+    set(USE_INTERNAL_BIGNUM FALSE)
+else()
+    add_compile_definitions(USE_INTERNAL_BIGNUM=1)
+    message("Define to 1 if the internal BIGNUM support is enabled")
+    set(USE_INTERNAL_BIGNUM TRUE)
+endif()
+
+if(have_libnettle OR have_libgcrypt OR have_openssl)
+    set(USE_INTERNAL_ARC4 FALSE)
+else()
+    add_compile_definitions(USE_INTERNAL_ARC4=1)
+    set(USE_INTERNAL_ARC4 TRUE)
+endif()
+
+if(enable_bittorrent)
+    add_compile_definitions(ENABLE_BITTORRENT=1)
+    message("Define to 1 if BitTorrent support is enabled")
+    set(ENABLE_BITTORRENT TRUE)
+else()
+    if(bittorrent)
+        message(WARNING "ARIA2_FET_NOT_SUPPORTED[bittorrent")
+    endif()
+    set(enable_bittorrent FALSE)
+    set(ENABLE_BITTORRENT FALSE)
+endif()
+
+if((have_libxml2 OR have_libexpat) AND enable_metalink)
+    add_compile_definitions(ENABLE_METALINK=1)
+    message("Define to 1 if Metalink support is enabled")
+    set(ENABLE_METALINK TRUE)
+else()
+    if(metalink)
+        message(WARNING "ARIA2_FET_NOT_SUPPORTED[metalink]")
+    endif()
+    set(enable_metalink FALSE)
+    set(ENABLE_METALINK FALSE)
+endif()
+
+if(have_libxml2 OR have_libexpat)
+    set(HAVE_SOME_XMLLIB)
+endif()
+
+if(have_libxml2 OR have_libexpat)
+    set(enable_xml_rpc TRUE)
+else()
+    set(enable_xml_rpc FALSE)
+endif()
+
+if(enable_xml_rpc)
+    add_compile_definitions(ENABLE_XML_RPC=1)
+    message("Define to 1 if XML-RPC support is enabled.")
+endif()
+
+if(enable_xml_rpc)
+    set(ENABLE_XML_RPC TRUE)
+endif()
+
+if(have_libxml2)
+    set(HAVE_LIBXML2 TRUE)
+endif()
+
+if(have_libexpat)
+    set(HAVE_LIBEXPAT TRUE)
+endif()
+
+if(have_libcares)
+    add_compile_definitions(ENABLE_ASYNC_DNS=1)
+    message("Define to 1 asynchronous DNS support is enabled")
+    set(ENABLE_ASYNC_DNS TRUE)
+else()
+    set(ENABLE_ASYNC_DNS FALSE)
+endif()
+
+if(have_zlib)
+    set(HAVE_ZLIB TRUE)
+endif()
+
+if(have_sqlite3)
+    set(HAVE_SQLITE3 TRUE)
+endif()
+
+if(have_libssh2)
+    set(HAVE_LIBSSH2 TRUE)
+endif()
+
+if(CMAKE_HOST_SOLARIS)
+    #
+    #
+    #
+endif()
+
+check_include_files("argz.h; arpa/inet.h; fcntl.h; float.h; inttypes.h; langinfo.h; libintl.h; limits.h; locale.h; malloc.h; netdb.h; netinet/in.h; netinet/tcp.h; poll.h; port.h; signal.h; stddef.h; stdint.h; stdio_ext.h; stdlib.h; string.h; 
+                     strings.h; sys/ioctl.h; sys/param.h; sys/resource.h; sys/signal.h; sys/socket.h; sys/time.h; sys/types.h; sys/uio.h; sys/utsname.h; termios.h; unistd.h; utime.h; wchar.h; ifaddrs.h; pwd.h;"
+                     HAVE_HEADER_FILES)
+
+
+
+# from line 720 of configure.ac file
+
+include(CheckTypeSize)
+
+# in order to be able to find the c struct, I have to enable C language
+# set(CMAKE_C_STANDARD 11)
+# set(CMAKE_C_STANDARD_REQUIRED TRUE)
+# now it will be able to find the c struct
+include(CheckStructHasMember)
+check_struct_has_member(
+    "struct timespec"
+    tv_sec
+    time.h
+    have_timespec
+)
+if(have_timespec)
+    add_compile_definitions(HAVE_A2_STRUCT_TIMESPEC=1)
+    message("Define to 1 if the system has the type 'struct timespec'")
+endif()
+
+
+find_package(Gettext 0.19 REQUIRED)  # apt-get install gettext, if doesn't exist in the system
+if(Gettext_FOUND)
+    message(STATUS "The gettext was found")
+endif()
+
+include(CheckSymbolExists)
+include(CheckCXXSymbolExists)
+check_cxx_symbol_exists(error_at_line "error.h" HAVE_ERROR_AT_LINE)
+if(HAVE_ERROR_AT_LINE)
+    message("The error_at_line function was found")
+endif()
+
+check_cxx_symbol_exists(memcmp "cstring" HAVE_MEMCMP)
+if(HAVE_MEMCMP)
+    message("The memcmp function was found")
+endif()
+
+check_cxx_symbol_exists(mktime "ctime" HAVE_MKTIME)
+if(HAVE_MKTIME)
+    message(STATUS "The mktime was found")
+endif()
+
+check_cxx_symbol_exists(stat "sys/stat.h" HAVE_STAT)
+if(HAVE_STAT)
+    message(STATUS "The stat was found")
+endif()
+
+check_cxx_symbol_exists(strftime "ctime" HAVE_STRFTIME)
+if(HAVE_STRFTIME)
+    message(STATUS "The strftime was found")
+endif()
+
+check_cxx_symbol_exists(vprintf cstdio HAVE_VPRINTF )
+if(HAVE_VPRINTF)
+    message(STATUS "The vrpintf was found")
+endif()
+
+check_cxx_symbol_exists(fork unistd.h HAVE_FORK)
+if(HAVE_FORK)
+    message(STATUS "The fork has been found")
+endif()
+
+check_cxx_symbol_exists(strtod stdlib.h HAVE_STRTOD)
+if(HAVE_STRTOD)
+    message(STATUS "The strtod has been found")
+endif()
+
+
+# From the line 772 AC_CHECK_FUNCS()
