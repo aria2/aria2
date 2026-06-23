@@ -625,3 +625,228 @@ endif()
 
 
 # From the line 772 AC_CHECK_FUNCS()
+check_symbol_exists(__argz_count "argz.h" HAVE_ARGZ_COUNT)
+if(HAVE_ARGZ_COUNT)
+    message(STATUS "The argz_count function has been found")
+endif()
+
+check_cxx_symbol_exists(__argz_count "argz.h" HAVE_ARGZ_COUNT)
+if(HAVE_ARGZ_COUNT)
+    message("The argz has been found")
+endif()
+
+check_cxx_symbol_exists(__argz_next "argz.h" HAVE_ARGZ_NEXT)
+if(HAVE_ARGZ_NEXT)
+    message("The argz_next has been found")
+endif()
+
+check_cxx_symbol_exists(__argz_stringify "argz.h" HAVE_STRINGIFY)
+if(HAVE_STRINGIFY)
+    message("The __argz_stringify has been found")
+endif()
+
+check_cxx_symbol_exists(atexit stdlib.h HAVE_ATEXIT)
+if(HAVE_ATEXIT)
+    message("The atexit has been found")
+endif()
+
+check_cxx_symbol_exists(ftruncate unistd.h HAVE_FTRUNCATE)
+if(HAVE_FTRUNCATE)
+    message("the ftruncate has been found")
+endif()
+
+check_cxx_symbol_exists(getcwd unistd.h HAVE_GETCWD)
+if(HAVE_GETWD)
+    message("The getcwd has been found")
+endif()
+
+check_cxx_symbol_exists(getentropy unistd.h HAVE_ENTROPY)
+if(HAVE_ENTROPY)
+    message("The getentropy has been found")
+endif()
+
+check_cxx_symbol_exists(gethostbyaddr netdb.h HAVE_HOSTBYADDR)
+if(HAVE_HOSTBYADDR)
+    message("The gethostbyaddr has been found")
+endif()
+
+check_cxx_symbol_exists(gethostbyname netdb.h HAVE_HOSTBYNAME)
+if(HAVE_HOSTBYNAME)
+    message("The gethostbyname has been found")
+endif()
+
+check_cxx_symbol_exists(getifaddrs ifaddrs.h HAVE_IFADDRS)
+if(HAVE_IFADDRS)
+    message("The getifaddrs has been found")
+endif()
+
+check_cxx_symbol_exists(getpagesize unistd.h HAVE_PAGESIZE)
+if(HAVE_PAGESIZE)
+    message("The getpagesize function has been found")
+endif()
+
+check_symbol_exists(memchr string.h HAVE_MEMCHR)
+if(HAVE_MEMCHR)
+    message("The memchr has been found")
+endif()
+
+check_cxx_symbol_exists(memmove string.h HAVE_MEMMOVE)
+if(HAVE_MEMMOVE)
+    message("The memmove has been found")
+endif()
+
+check_cxx_symbol_exists(mempcpy string.h HAVE_MEMPCPY)
+if(HAVE_MEMPCPY)
+    message("The mempcpy has been found")
+endif()
+
+check_cxx_symbol_exists(memset string.h HAVE_MEMSET)
+if(HAVE_MEMSET)
+    message("The memset has been found")
+endif()
+
+check_cxx_symbol_exists(mkdir "sys/stat.h" HAVE_MKDIR)
+if(HAVE_MKDIR)
+    message("The mkdir has been found")
+endif()
+
+check_cxx_symbol_exists(mmap "sys/mman.h" HAVE_MMAP)
+if(HAVE_MMAP)
+    message("The mmap has been found")
+endif()
+
+check_cxx_symbol_exists(munmap "sys/mman.h" HAVE_MUNMAP)
+if(HAVE_MUNMAP)
+    message("The munmap has been found")
+endif()
+
+check_cxx_symbol_exists(nl_langinfo langinfo.h HAVE_LANGINFO)
+if(HAVE_LANGINFO)
+    message("The nl_langinfo has been found")
+endif()
+
+check_cxx_symbol_exists(posix_fadvise fcntl.h HAVE_POSIXFADVISE)
+if(HAVE_POSIXFADVISE)
+    message("The posix_fadvise has been found")
+endif()
+
+check_cxx_symbol_exists(posix_memalign stdlib.h HAVE_POSIXMEMALIGN)
+if(HAVE_POSIXMEMALIGN)
+    message("The posix_memalign has been found")
+endif()
+
+check_cxx_symbol_exists(pow "tgmath.h" HAVE_POW)
+if(HAVE_POW)
+    message("The pow has been found")
+endif()
+
+check_cxx_symbol_exists(putenv stdlib.h HAVE_PUTENV)
+if(HAVE_PUTENV)
+    message("The putenv has been found")
+endif()
+
+check_cxx_symbol_exists(rmdir unistd.h HAVE_RMDIR)
+if(HAVE_RMDIR)
+    message("The rmdir has been found")
+endif()
+
+check_cxx_symbol_exists(select "sys/select.h" HAVE_SELECT)
+if(HAVE_SELECT)
+    message("The select has been found")
+endif()
+
+check_cxx_symbol_exists(setlocale locale.h HAVE_LOCALE)
+if(HAVE_LOCALE)
+    message("The setlocale has been found")
+endif()
+
+check_cxx_symbol_exists(sigaction signal.h HAVE_SIGACTION)
+if(HAVE_SIGACTION)
+    message("The sigaction has been found")
+endif()
+
+check_cxx_symbol_exists(sleep unistd.h HAVE_SLEEP)
+if(HAVE_SLEEP)
+    message("The sleep has been found")
+endif()
+
+check_cxx_symbol_exists(socket "sys/socket.h" HAVE_SOCKET)
+if(HAVE_SOCKET)
+    message("The socket has been found")
+endif()
+
+check_cxx_symbol_exists(stpcpy string.h HAVE_STPCPY)
+if(HAVE_STPCPY)
+    message("The stpcpy has been found")
+endif()
+
+check_cxx_symbol_exists(strcasecmp strings.h HAVE_STRCASECMP)
+if(HAVE_STRCASECMP)
+    message("The strcasecmp has been found")
+endif()
+
+check_symbol_exists(strchr string.h HAVE_STRCHR)
+if(HAVE_STRCHR)
+    message("The strchr has been found")
+endif()
+
+check_cxx_symbol_exists(strcspn string.h HAVE_STRCSPN)
+if(HAVE_STRCSPN)
+    message("The strcspn has been found")
+endif()
+
+check_cxx_symbol_exists(strdup string.h HAVE_STRDUP)
+if(HAVE_STRDUP)
+    message("The strdup has been found")
+endif()
+
+check_cxx_symbol_exists(strerror string.h HAVE_STRERROR)
+if(HAVE_STRERROR)
+    message("The strerror has been found")
+endif()
+
+check_cxx_symbol_exists(strncasecmp strings.h HAVE_STRNCASECMP)
+if(HAVE_STRNCASECMP)
+    message("The strncasecmp has been found")
+endif()
+
+check_symbol_exists(strstr string.h HAVE_STRSTR)
+if(HAVE_STRSTR)
+    message("The strstr has been found")
+endif()
+
+check_cxx_symbol_exists(strtol stdlib.h HAVE_STRTOL)
+if(HAVE_STRTOL)
+    message("The strtol has been found")
+endif()
+
+check_cxx_symbol_exists(strtoul stdlib.h HAVE_STRTOUL)
+if(HAVE_STRTOUL)
+    message("The strtoul has been found")
+endif()
+
+check_cxx_symbol_exists(tzset time.h HAVE_TZSET)
+if(HAVE_TZSET)
+    message("The tzset has been found")
+endif()
+
+check_cxx_symbol_exists(unsetenv stdlib.h HAVE_UNSETENV)
+if(HAVE_UNSETENV)
+    message("The unsetenv has been found")
+endif()
+
+check_cxx_symbol_exists(usleep unistd.h HAVE_USLEEP)
+if(HAVE_USLEEP)
+    message("The usleep has been found")
+endif()
+
+check_cxx_symbol_exists(utime utime.h HAVE_UTIME)
+if(HAVE_UTIME)
+    message("The utime has been found")
+endif()
+
+check_cxx_symbol_exists(utimes "sys/time.h" HAVE_UTIMES)
+if(HAVE_UTIMES)
+    message("The utimes has been found")
+endif()
+
