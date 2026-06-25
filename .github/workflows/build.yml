@@ -1,8 +1,30 @@
 name: build
 
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
+  build-windows:
+    strategy:
+      matrix:
+        host: [i686-w64-mingw32, x86_64-w64-mingw32]
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build aria2
+        run: |
+          docker build --build-arg HOST=${{ matrix.host }} -t aria2-mingw -f ./Dockerfile.mingw .
+          docker run --rm -v .:/out aria2-mingw cp /aria2/src/aria2c.exe /out
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4.3.1
+        with:
+          name: aria2-${{ matrix.host }}
+          path: ./aria2c.exe
+  
+
   build:
     strategy:
       matrix:
@@ -100,3 +122,10 @@ jobs:
     - name: Build aria2
       run: |
         make -j"$(nproc 2> /dev/null || sysctl -n hw.ncpu)" check
+        strip ./src/aria2c
+        
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v4.3.1
+      with:
+        name: aria2-${{ matrix.os }}-${{ matrix.compiler }}-${{ matrix.crypto }}-${{ matrix.bittorrent }}
+        path: ./src/aria2c
