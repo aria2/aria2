@@ -390,10 +390,15 @@ std::unique_ptr<ValueBase> removeDownload(const RpcRequest& req,
                                           DownloadEngine* e, bool forceRemove)
 {
   const String* gidParam = checkRequiredParam<String>(req, 0);
+  const Bool* removeFilesParam = checkParam<Bool>(req, 1);
+  bool removeFiles = removeFilesParam && removeFilesParam->val();
 
   a2_gid_t gid = str2Gid(gidParam);
   auto group = e->getRequestGroupMan()->findGroup(gid);
   if (group) {
+    if (removeFiles) {
+      e->getRequestGroupMan()->markRemoveFiles(gid);
+    }
     if (group->getState() == RequestGroup::STATE_ACTIVE) {
       if (forceRemove) {
         group->setForceHaltRequested(true, RequestGroup::USER_REQUEST);
@@ -405,6 +410,10 @@ std::unique_ptr<ValueBase> removeDownload(const RpcRequest& req,
     }
     else {
       if (group->isDependencyResolved()) {
+        if (removeFiles) {
+          e->getRequestGroupMan()->removeFilesForGroup(group);
+          e->getRequestGroupMan()->takeRemoveFilesMark(gid);
+        }
         e->getRequestGroupMan()->removeReservedGroup(gid);
       }
       else {
@@ -1097,9 +1106,11 @@ std::unique_ptr<ValueBase>
 RemoveDownloadResultRpcMethod::process(const RpcRequest& req, DownloadEngine* e)
 {
   const String* gidParam = checkRequiredParam<String>(req, 0);
+  const Bool* removeFilesParam = checkParam<Bool>(req, 1);
+  bool removeFiles = removeFilesParam && removeFilesParam->val();
 
   a2_gid_t gid = str2Gid(gidParam);
-  if (!e->getRequestGroupMan()->removeDownloadResult(gid)) {
+  if (!e->getRequestGroupMan()->removeDownloadResult(gid, removeFiles)) {
     throw DL_ABORT_EX(fmt("Could not remove download result of GID#%s",
                           GroupId::toHex(gid).c_str()));
   }
