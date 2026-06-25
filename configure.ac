@@ -20,6 +20,17 @@ AC_SUBST(LT_CURRENT, 0)
 AC_SUBST(LT_REVISION, 0)
 AC_SUBST(LT_AGE, 0)
 
+dnl Check for sed -i flag for in-place editing
+case "$host_os" in
+  darwin*)
+    SED_I_BAK="''"
+    ;;
+  *)
+    SED_I_BAK=""
+    ;;
+esac
+AC_SUBST(SED_I_BAK)
+
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([src/a2io.h])
 AC_CONFIG_HEADERS([config.h])
