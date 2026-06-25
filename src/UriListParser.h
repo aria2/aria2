@@ -53,6 +53,10 @@ private:
 
   std::string line_;
 
+  bool stdinPipe_{false};
+
+  int pollFd_{-1};
+
 public:
   UriListParser(const std::string& filename);
 
@@ -61,6 +65,11 @@ public:
   void parseNext(std::vector<std::string>& uris, Option& op);
 
   bool hasNext();
+
+  // Returns true if a line is ready to be read without blocking.
+  // Always true for regular files; for pipes/terminals uses poll(0
+  // timeout).
+  bool inputReady() const;
 };
 
 } // namespace aria2

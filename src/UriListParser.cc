@@ -37,6 +37,7 @@
 #include <cstring>
 #include <sstream>
 
+#include "a2io.h"
 #include "util.h"
 #include "Option.h"
 #include "OptionHandlerFactory.h"
@@ -58,6 +59,18 @@ UriListParser::UriListParser(const std::string& filename)
     : fp_(make_unique<BufferedFile>(filename.c_str(), IOFile::READ))
 #endif
 {
+  // Detect if we are reading from stdin pipe/terminal so we can avoid
+  // blocking the event loop when no data is available yet.
+  struct stat st{};
+  if (filename == "-" || filename == DEV_STDIN) {
+    pollFd_ = STDIN_FILENO;
+  }
+  if (pollFd_ != -1) {
+    if (::fstat(pollFd_, &st) == 0 &&
+        (S_ISFIFO(st.st_mode) || S_ISCHR(st.st_mode))) {
+      stdinPipe_ = true;
+    }
+  }
 }
 
 UriListParser::~UriListParser() = default;
@@ -116,6 +129,20 @@ bool UriListParser::hasNext()
     fp_->close();
   }
   return rv;
+}
+
+bool UriListParser::inputReady() const
+{
+  if (!stdinPipe_) {
+    return true;
+  }
+#ifdef HAVE_POLL
+  struct pollfd pfd{pollFd_, POLLIN, 0};
+  return ::poll(&pfd, 1, 0) > 0;
+#else
+  // Without poll we cannot check non-blocking; assume ready.
+  return true;
+#endif // HAVE_POLL
 }
 
 } // namespace aria2
