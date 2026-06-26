@@ -1857,20 +1857,25 @@ int64_t getRealSize(const std::string& sizeWithUnit)
   return v * mult;
 }
 
-std::string abbrevSize(int64_t size)
+std::string abbrevSize(int64_t size, bool useSI)
 {
-  static const char* UNITS[] = {"", "Ki", "Mi", "Gi"};
+  static const char* IEC_UNITS[] = {"", "Ki", "Mi", "Gi"};
+  static const char* SI_UNITS[] = {"", "K", "M", "G"}; 
+
+  const char** units = useSI ? SI_UNITS : IEC_UNITS;
+  int64_t divisor = useSI ? 1000 : 1024;
+
   int64_t t = size;
   size_t uidx = 0;
   int r = 0;
-  while (t >= static_cast<int64_t>(1_k) &&
-         uidx + 1 < sizeof(UNITS) / sizeof(UNITS[0])) {
-    lldiv_t d = lldiv(t, 1_k);
+  while (t >= divisor &&
+        uidx + 1 < sizeof(units)) {
+    lldiv_t d = lldiv(t, divisor);
     t = d.quot;
     r = d.rem;
     ++uidx;
   }
-  if (uidx + 1 < sizeof(UNITS) / sizeof(UNITS[0]) && t >= 922) {
+  if (uidx + 1 < sizeof(units) && t >= 922) {
     ++uidx;
     r = t;
     t = 0;
@@ -1879,9 +1884,9 @@ std::string abbrevSize(int64_t size)
   res += itos(t, true);
   if (t < 10 && uidx > 0) {
     res += ".";
-    res += itos(r * 10 / 1_k);
+    res += itos(r * 10 / divisor);
   }
-  res += UNITS[uidx];
+  res += units[uidx];
   return res;
 }
 

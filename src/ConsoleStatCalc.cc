@@ -80,10 +80,15 @@ std::string SizeFormatter::operator()(int64_t size) const
 
 namespace {
 class AbbrevSizeFormatter : public SizeFormatter {
+private:
+  bool useSI_;
+
+public:
+  explicit AbbrevSizeFormatter(bool useSI) : useSI_{useSI} {}
 protected:
   virtual std::string format(int64_t size) const CXX11_OVERRIDE
   {
-    return util::abbrevSize(size);
+    return util::abbrevSize(size, useSI_);
   }
 };
 } // namespace
@@ -267,7 +272,7 @@ void printProgressSummary(const RequestGroupList& groups, size_t cols,
 }
 } // namespace
 
-ConsoleStatCalc::ConsoleStatCalc(std::chrono::seconds summaryInterval,
+ConsoleStatCalc::ConsoleStatCalc(std::chrono::seconds summaryInterval, bool useSI,
                                  bool colorOutput, bool humanReadable)
     : summaryInterval_(std::move(summaryInterval)),
       readoutVisibility_(true),
@@ -278,9 +283,10 @@ ConsoleStatCalc::ConsoleStatCalc(std::chrono::seconds summaryInterval,
       isTTY_(isatty(STDOUT_FILENO) == 1),
 #endif // !__MINGW32__
       colorOutput_(colorOutput)
-{
+{ 
+
   if (humanReadable) {
-    sizeFormatter_ = make_unique<AbbrevSizeFormatter>();
+    sizeFormatter_ = make_unique<AbbrevSizeFormatter>(useSI);
   }
   else {
     sizeFormatter_ = make_unique<PlainSizeFormatter>();
