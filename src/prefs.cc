@@ -439,6 +439,7 @@ PrefPtr PREF_HTTP_PROXY = makePref("http-proxy");
 PrefPtr PREF_HTTPS_PROXY = makePref("https-proxy");
 PrefPtr PREF_FTP_PROXY = makePref("ftp-proxy");
 PrefPtr PREF_ALL_PROXY = makePref("all-proxy");
+PrefPtr PREF_BT_UDP_SOCKS_PROXY = makePref("bt-udp-socks-proxy");
 // values: comma separated hostname or domain
 PrefPtr PREF_NO_PROXY = makePref("no-proxy");
 // values: get | tunnel
@@ -449,6 +450,8 @@ PrefPtr PREF_HTTPS_PROXY_USER = makePref("https-proxy-user");
 PrefPtr PREF_HTTPS_PROXY_PASSWD = makePref("https-proxy-passwd");
 PrefPtr PREF_FTP_PROXY_USER = makePref("ftp-proxy-user");
 PrefPtr PREF_FTP_PROXY_PASSWD = makePref("ftp-proxy-passwd");
+PrefPtr PREF_BT_UDP_SOCKS_PROXY_USER = makePref("bt-udp-socks-proxy-user");
+PrefPtr PREF_BT_UDP_SOCKS_PROXY_PASSWD = makePref("bt-udp-socks-proxy-passwd");
 PrefPtr PREF_ALL_PROXY_USER = makePref("all-proxy-user");
 PrefPtr PREF_ALL_PROXY_PASSWD = makePref("all-proxy-passwd");
 

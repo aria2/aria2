@@ -88,6 +88,9 @@ uint16_t getDefaultPort(const std::string& protocol)
   else if (protocol == "sftp") {
     return 22;
   }
+  else if (protocol == "socks") {
+    return 1080;
+  }
   else {
     return 0;
   }

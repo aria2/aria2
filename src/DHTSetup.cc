@@ -41,6 +41,7 @@
 #include "util.h"
 #include "DHTNode.h"
 #include "DHTConnectionImpl.h"
+#include "DHTConnectionSocksProxyImpl.h"
 #include "DHTRoutingTable.h"
 #include "DHTMessageFactoryImpl.h"
 #include "DHTMessageTracker.h"
@@ -113,7 +114,10 @@ DHTSetup::setup(DownloadEngine* e, int family)
     }
 
     uint16_t port;
-    auto connection = make_unique<DHTConnectionImpl>(family);
+    const std::string& proxyUri = e->getOption()->get(PREF_BT_UDP_SOCKS_PROXY);
+    auto connection = proxyUri.empty()
+                          ? make_unique<DHTConnectionImpl>(family)
+                          : make_unique<DHTConnectionSocksProxyImpl>(family);
     {
       port = e->getBtRegistry()->getUdpPort();
       const std::string& addr = e->getOption()->get(
@@ -139,6 +143,24 @@ DHTSetup::setup(DownloadEngine* e, int family)
     }
     A2_LOG_DEBUG(fmt("Initialized local node ID=%s",
                      util::toHex(localNode->getID(), DHT_ID_LENGTH).c_str()));
+    if (!proxyUri.empty()) {
+      auto c = static_cast<DHTConnectionSocksProxyImpl*>(connection.get());
+      const std::string& user =
+          e->getOption()->get(PREF_BT_UDP_SOCKS_PROXY_USER);
+      const std::string& passwd =
+          e->getOption()->get(PREF_BT_UDP_SOCKS_PROXY_PASSWD);
+      uri::UriStruct us;
+      uri::parse(us, proxyUri);
+      const std::string& host = us.host;
+      uint16_t port = us.port;
+      if (!c->startProxy(host, port, user, passwd, localNode->getIPAddress(),
+                         localNode->getPort())) {
+        throw DL_ABORT_EX("Error occurred while connecting to SOCKS5 relay "
+                          "server for UDP proxy for DHT and UDP trackers");
+      }
+      A2_LOG_DEBUG(fmt("Connected to SOCKS5 relay server %s:%u for UDP proxy",
+                       host.c_str(), port));
+    }
     auto tracker = std::make_shared<DHTMessageTracker>();
     auto routingTable = make_unique<DHTRoutingTable>(localNode);
     auto factory = make_unique<DHTMessageFactoryImpl>(family);
