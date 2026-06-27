@@ -120,6 +120,8 @@ public:
 
   Time getModifiedTime();
 
+  std::string getExtension() const;
+
   // Returns the current working directory.  If the current working
   // directory cannot be retrieved or its length is larger than 2048,
   // returns ".".

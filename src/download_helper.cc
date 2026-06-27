@@ -68,6 +68,10 @@
 #  include "BtConstants.h"
 #  include "ValueBaseBencodeParser.h"
 #endif // ENABLE_BITTORRENT
+#ifdef ENABLE_CONTROL_FILE
+#  include "TorrentAttribute.h"
+#  include "DefaultBtProgressInfoFile.h"
+#endif // ENABLE_CONTROL_FILE
 
 namespace aria2 {
 
@@ -445,7 +449,20 @@ public:
         }
       }
     }
+    
 #endif // ENABLE_METALINK
+#ifdef  ENABLE_CONTROL_FILE
+    else if (!ignoreLocalPath_ && detector_.guessAria2ControlFile(uri))
+    {
+      // Extract hash and construct a magnet to feed into createBtMagentRequestGroup
+      const auto infoHash = DefaultBtProgressInfoFile::getInfoHash(uri);
+
+      auto torrent_attribute = std::make_unique<TorrentAttribute>();
+      torrent_attribute->infoHash = std::string(std::begin(infoHash), std::end(infoHash));
+      const auto magent = aria2::bittorrent::torrent2Magnet(torrent_attribute.get());
+      
+      requestGroups_.push_back(createBtMagnetRequestGroup(magent, option_));
+    }
     else {
       if (throwOnError_) {
         throw DL_ABORT_EX(fmt(MSG_UNRECOGNIZED_URI, uri.c_str()));
@@ -455,6 +472,7 @@ public:
       }
     }
   }
+#endif // ENABLE_CONTROL_FILE
 };
 } // namespace
 
