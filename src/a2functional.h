@@ -169,37 +169,37 @@ make_unique(size_t size)
 
 // User-defined literals for K, M, and G (powers of 1024)
 
-constexpr unsigned long long operator"" _k(unsigned long long k)
+constexpr unsigned long long operator""_k(unsigned long long k)
 {
   return k * 1024;
 }
 
-constexpr unsigned long long operator"" _m(unsigned long long m)
+constexpr unsigned long long operator""_m(unsigned long long m)
 {
   return m * 1024 * 1024;
 }
 
-constexpr unsigned long long operator"" _g(unsigned long long g)
+constexpr unsigned long long operator""_g(unsigned long long g)
 {
   return g * 1024 * 1024 * 1024;
 }
 
-constexpr std::chrono::hours operator"" _h(unsigned long long h)
+constexpr std::chrono::hours operator""_h(unsigned long long h)
 {
   return std::chrono::hours(h);
 }
 
-constexpr std::chrono::minutes operator"" _min(unsigned long long min)
+constexpr std::chrono::minutes operator""_min(unsigned long long min)
 {
   return std::chrono::minutes(min);
 }
 
-constexpr std::chrono::seconds operator"" _s(unsigned long long s)
+constexpr std::chrono::seconds operator""_s(unsigned long long s)
 {
   return std::chrono::seconds(s);
 }
 
-constexpr std::chrono::milliseconds operator"" _ms(unsigned long long ms)
+constexpr std::chrono::milliseconds operator""_ms(unsigned long long ms)
 {
   return std::chrono::milliseconds(ms);
 }
