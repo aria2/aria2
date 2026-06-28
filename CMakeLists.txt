@@ -315,7 +315,7 @@ set(have_libcrypt FALSE)
 if(NOT have_openssl)
     if(libnettle AND NOT nativetls)
         pkg_check_modules(LIBNETTLE REQUIRED "libnettle8t64 > 1.1.1")  # den tha paiksei auto. Thelei allo tropo
-        if(LIBNETTLE)
+        if(LIBNETTLE_FOUND)
             add_compile_definitions(HAVE_LIBNETTLE=1)    
             message(STATUS "Define to 1 if you have libnettle")
         else()
@@ -354,6 +354,10 @@ if(libssh2)
         set(have_libssh2 TRUE)
         add_compile_definitions(HAVE_LIBSSH2=1)
         message(STATUS "Define to 1 if you have libssh2.")
+
+        # if(ARIA2_STATIC)
+        #     set(LIBSSH2_CFLAGS "-DLIBSSH2_API")
+        # endif()
     else()
         message(WARNING "The libssh2 library is missing")
         
@@ -849,4 +853,228 @@ check_cxx_symbol_exists(utimes "sys/time.h" HAVE_UTIMES)
 if(HAVE_UTIMES)
     message("The utimes has been found")
 endif()
+
+
+if(tcmalloc AND jemalloc)
+    message(ERROR "Cannot use both, tcmalloc and jemalloc!")
+endif()
+
+set(have_tcmalloc FALSE)
+if(tcmalloc)
+    pkg_check_modules(TCMALLOC libtcmalloc REQUIRED)
+    if(NOT TCMALLOC_FOUND)
+        check_library_exists(tcmalloc_minimal malloc "" have_tcmalloc)
+        if(have_tcmalloc)
+            # some commands here
+            # ...
+            # ...
+        else()
+            if(have_tcmalloc)
+                message(WARNING "ARIA2_DEP_NOT_MET: tc_malloc_minimal")
+            endif()
+        endif()
+    endif()
+endif()
+
+set(have_jmalloc FALSE)
+if(jemalloc)
+    pkg_check_modules(JEMALLOC jemalloc REQUIRED)
+    if(NOT JEMALLOC_FOUND)
+        check_library_exists(jemalloc malloc "" have_jemalloc)
+        if(have_jemalloc)
+            # some commands here
+            # ...
+            # ...
+        else()
+            if(jemalloc)
+                message(WARNING "ARIA2_DEP_NOT_MET")
+            endif()
+        endif()
+    endif()
+endif()
+
+set(have_epoll FALSE)
+if(epoll)
+    check_symbol_exists(epoll_create "sys/epoll.h" have_epoll)
+    if(have_epoll)
+        add_compile_definitions(HAVE_EPOLL=1)
+        message(STATUS "Define to 1 if epoll is available")
+    endif()
+endif()
+
+check_symbol_exists(posix_fallocate "fcntl.h" HAVE_POSIX_FALLOCATE)
+if(HAVE_POSIX_FALLOCATE)
+   message("The fallocate has been found")
+endif()
+
+if(HAVE_POSIX_FALLOCATE OR HAVE_FALLOCATE OR HAVE_OSX OR WIN_BUILD)
+   add_compile_definitions(HAVE_SOME_FALLOCATE=1)
+   message(STATUS "Define to 1 if *_fallocate is available")
+endif()
+
+# need one more with the AM_CONDITIONAL line 890
+
+check_symbol_exists(basename libgen.h HAVE_BASENAME)
+if(HAVE_BASENAME)
+   message("The basename has been found")
+endif()
+
+check_symbol_exists(gai_strerror "netdb.h" HAVE_GAI_STRERROR)
+if(HAVE_GAI_STRERROR)
+   message("The gai has been found")
+endif()
+
+check_symbol_exists(getaddrinfo "netdb.h" HAVE_GETADDRINFO)
+if(HAVE_GETADDRINFO)
+   message("the getaddrinfo has been found")
+endif()
+
+check_symbol_exists(gettimeofday "sys/time.h" HAVE_GETTIMEOFDAY)
+if(HAVE_GETTIMEOFDAY)
+   message("the gettimeofday is present")
+endif()
+
+check_symbol_exists(strptime "time.h" HAVE_STRPTIME)
+if(HAVE_STRPTIME)
+   message("The strptime is present")
+endif()
+
+check_symbol_exists(daemon unistd.h HAVE_DAEMON)
+if(HAVE_DAEMON)
+   message("The daemon is present")
+endif()
+# TODO: missing the header file to find the pol function
+check_symbol_exists(pol have_poll)
+if(have_poll)
+    # write into the config.h.in file the HAVE_POLL=true
+    # the respective of AM_CONDITIONAL([HAVE_POLL], [test "x$have_poll" = "yes"])
+endif()
+
+if(MINGW)
+    # set the AM_CONDITIONALS in the config.h.in
+endif()
+
+check_cxx_symbol_exists(timegm time.h HAVE_TIMEGM)
+if(HAVE_TIMEGM)
+    message("The timegm has been found")
+endif()
+
+# TODO: this library cannot be found, yet
+check_cxx_symbol_exists(port_associate port.h HAVE_PORT_ASSOCIATE)
+if(HAVE_PORT_ASSOCIATE)
+    message("The port_associate has been found")
+endif()
+
+#==========================#
+set(oldIncludeHeaders "${CMAKE_REQUIRED_INCLUDES}")
+
+set(CMAKE_REQUIRED_INCLUDES "${CMAKE_REQUIRED_INCLUDES} /usr/include/kqueue")
+check_cxx_symbol_exists(kqueue "sys/event.h" HAVE_KQUEUE)
+if(HAVE_KQUEUE)
+    message("The kqueue has been found.")
+else()
+    message("Try installing it with the command: sudo apt install libkqueue-dev")
+    message("Possible location where it might be located is: /usr/include/kqueue/sys/event.h")
+    message("and not at the /usr/include. So I have to include the /usr/include/kqueue/ path in")
+    message("in order to find the header  (event.h)")
+endif()
+
+
+include(CheckCXXSourceCompiles)
+set(keventCode [==[
+        #include <sys/time.h>
+        #include <sys/types.h>
+        #include <sys/event.h>
+
+        struct kevent event;
+
+        int main() {
+            event.udata = reinterpret_cast<intptr_r>(&event);
+            return 0;
+        }
+    ]==]
+)
+
+if(HAVE_KQUEUE)
+    message(STATUS "Whether struct kevent.udata is intrptr_t")
+    check_cxx_source_compiles("${keventCode}" kevent_udata_intptr_t)
+    if(kevent_udata_intptr_t)
+      add_compile_definitions(KEVENT_UDATA_INTPTR_T=1)
+        message(STATUS "Define to 1 if struct kevent.udata is intptr_t")
+    endif()
+endif()
+
+set(CMAKE_REQUIRED_INCLUDES "${oldIncludeHeaders}")
+#==========================#
+
+check_struct_has_member(
+    "struct sockaddr_in"
+    sin_len
+    "sys/types.h; sys/socket.h; netinet/in.h"
+    HAVE_SIN_LEN
+    LANGUAGE CXX
+)
+
+if(HAVE_SIN_LEN)
+    add_compile_definitions(HAVE_SOCKADDR_IN_SIN_LEN=1)
+    message("Define to 1 if struct sockaddr_in has sin_len member.")
+endif()
+
+check_struct_has_member(
+    "struct sockaddr_in6"
+    sin6_len
+    "sys/types.h; sys/socket.h; netinet/in.h"
+    HAVE_SIN6_LEN
+    LANGUAGE CXX
+)
+
+if(HAVE_SIN6_LEN)
+    add_compile_definitions(HAVE_SOCKADDR_IN6_SIN6_LEN=1)
+    message("Define to 1 if struct sockaddr_in6 has sin6_len member.")
+endif()
+
+message(STATUS "Whether struct option.name is assignable from const char*")
+
+set(nameAssignableFromConst [==[
+        #include <unistd.h>
+        #include <getopt.h>
+
+        int main() {
+            const char* s = "const char";
+            option op;
+            op.name = s;
+            return 0;
+        }
+    ]==]
+)
+
+check_cxx_source_compiles("${nameAssignableFromConst}" have_option_const_name)
+if(have_option_const_name)
+    message(STATUS "The option.name is assignable from const char*")
+    add_compile_definitions(HAVE_OPTION_CONST_NAME=1)
+    message(STATUS "Define 1 if struct option.name is const char*")
+endif()
+
+
+if(websocket)
+    add_subdirectory(deps/wslay)
+    add_compile_definitions(ENABLE_WEBSOCKET=1)
+    message(STATUS "Define 1 if WebSocket support is enabled")
+
+    set(WSLAY_CFLAGS "${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/includes" "${CMAKE_CURRENT_LIST_DIR}/deps/wslay/lib/includes")
+    # TODO:  Should check in the future as currently this is not enabled.
+    set(WSLAY_LIBS "${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/libwslay.la")
+endif()
+
+if(websocket)
+    # set the ENABLED_WEBSOCKET with the configure_file() cmake command
+endif()
+
+if(libaria2)
+    # set the ENABLE_LIBARIA2  with the configure_file() cmake command
+endif()
+
+# line 1051 
+# AC_SUBST([bashcompletiondir]) check this again
+
 
