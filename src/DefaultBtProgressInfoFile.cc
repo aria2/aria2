@@ -68,9 +68,17 @@ namespace aria2 {
 
 namespace {
 std::string createFilename(const std::shared_ptr<DownloadContext>& dctx,
-                           const std::string& suffix)
+                           const std::string& suffix,
+                           const std::string& baseDirectory)
 {
   std::string t = dctx->getBasePath();
+  if (!baseDirectory.empty()) {
+    t = baseDirectory;
+    if (baseDirectory.back() != *File::getPathSeparators()) {
+      t += File::getPathSeparators();
+    }
+    t += File(dctx->getBasePath()).getBasename();
+  }
   t += suffix;
   return t;
 }
@@ -82,7 +90,8 @@ DefaultBtProgressInfoFile::DefaultBtProgressInfoFile(
     : dctx_(dctx),
       pieceStorage_(pieceStorage),
       option_(option),
-      filename_(createFilename(dctx_, getSuffix()))
+      filename_(createFilename(dctx_, getSuffix(),
+                               option->get(PREF_CONTROL_FILE_BASE_DIRECTORY)))
 {
 }
 
@@ -90,7 +99,7 @@ DefaultBtProgressInfoFile::~DefaultBtProgressInfoFile() = default;
 
 void DefaultBtProgressInfoFile::updateFilename()
 {
-  filename_ = createFilename(dctx_, getSuffix());
+  filename_ = createFilename(dctx_, getSuffix(), "");
 }
 
 bool DefaultBtProgressInfoFile::isTorrentDownload()
