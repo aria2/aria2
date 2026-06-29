@@ -13,8 +13,7 @@ set(EXTRALDFLAGS)
 set(EXTRALIBS)
 
 if(MSVC) # check if the host is about to run in windows with mingw compiler
-    EXTRALIBS
-
+    # EXTRALIBS
 endif()
 
 option(libuv "" TRUE)
@@ -30,8 +29,8 @@ option(libxml2 "" FALSE)
 option(libexpat "" FALSE)
 option(libcares "" FALSE)
 option(libz "" FALSE)
-option(tcmalloc "" TRUE)
-option(jemalloc "" TRUE)
+option(tcmalloc "" FALSE)
+option(jemalloc "" FALSE)
 option(libssh2 "" FALSE)
 
 option(ssl "" FALSE)
@@ -101,7 +100,7 @@ if(libz)
 endif()
 
 if(libuv)
-    find_package(libuv 1.13 REQUIRED)
+    pkg_check_modules(LIBUV REQUIRED "libuv >= 1.13")
     if(LIBUV_FOUND)
         message(STATUS "The libuv found, with version ${LIBUV_VERSION}")
     else()
@@ -126,7 +125,6 @@ if(libexpat)
         message(STATUS "The EXPAT lib found, with version ${EXPAT_VERSION}")
         message(STATUS "Define to 1 if you have libexpat")
         add_compile_definitions(HAVE_LIBEXPAT=1)
-        endif()
     else()
         message(WARNING "EXPAT library is not installd. Try install it first")
     endif()
@@ -369,14 +367,16 @@ endif()
 
 
 set(have_libcares FALSE)
-find_package(libcares2 REQUIRED)
-if(libcares2_FOUND)
-    set(have_libcares TRUE)
-    add_compile_definitions(HAVE_LIBCARES=1)
-    message(STATUS "Define to 1 if you have libcares")
-else()
-    message(WARNING "libcares couldn't find in the system. Try install it first")
-    message(WARNING "ARIA2_DEP_NOT_METq([libcares)")
+if(libcares)
+    pkg_check_modules(LIBCARES2 "libcares > 1.16.0")
+    if(libcares2_FOUND)
+        set(have_libcares TRUE)
+        add_compile_definitions(HAVE_LIBCARES=1)
+        message(STATUS "Define to 1 if you have libcares")
+    else()
+        message(WARNING "libcares couldn't find in the system. Try install it first")
+        message(WARNING "ARIA2_DEP_NOT_MET([libcares)")
+    endif()
 endif()
 
 set(use_md "")
@@ -934,7 +934,8 @@ if(HAVE_GETTIMEOFDAY)
    message("the gettimeofday is present")
 endif()
 
-check_symbol_exists(strptime "time.h" HAVE_STRPTIME)
+set(localStrptimeLocation ${CMAKE_CURRENT_SOURCE_DIR}/src)
+check_symbol_exists(strptime "${localStrptimeLocation}/strptime.h" HAVE_STRPTIME)
 if(HAVE_STRPTIME)
    message("The strptime is present")
 endif()
@@ -943,8 +944,8 @@ check_symbol_exists(daemon unistd.h HAVE_DAEMON)
 if(HAVE_DAEMON)
    message("The daemon is present")
 endif()
-# TODO: missing the header file to find the pol function
-check_symbol_exists(pol have_poll)
+
+check_symbol_exists(poll "poll.h" have_poll)
 if(have_poll)
     # write into the config.h.in file the HAVE_POLL=true
     # the respective of AM_CONDITIONAL([HAVE_POLL], [test "x$have_poll" = "yes"])
@@ -1077,4 +1078,46 @@ endif()
 # line 1051 
 # AC_SUBST([bashcompletiondir]) check this again
 
+if(ARIA2_STATIC)
+    set(EXTRALDFLAGS "${EXTRALDFLAGS} -all-static")
+    if(NOT MSVC OR CMAKE_HOST_SYSTEM_NAME NOT STREQUAL "Mingw" OR CMAKE_HOST_SYSTEM_NAME NOT STREQUAL "Darwin")
+        set(EXTRALIBS "${EXTRALIBS} -lpthread -ldl -lrt")
+    endif()
+endif()
+
+if(WIN_BUILD AND libaria2)
+    # Creating dll needs this
+    set(EXTRALDFLAGS "${EXTRALDFLAGS} -no-undefined")
+endif()
+
+
+
+# TODO: the respective substitution should be done with cofigure_file() command
+# AC_SUBST([EXTRACFLAGS])
+# AC_SUBST([EXTRACXXFLAGS])
+# AC_SUBST([EXTRACPPFLAGS])
+# AC_SUBST([EXTRALDFLAGS])
+# AC_SUBST([EXTRALIBS])
+
+
+# I should check this, with foreach() loop, in the test project I have
+if(werror)
+    include(CheckCompilerFlags)
+    check_compiler_flag(CXX -Wall HAVE_WALL_FLAG)
+    check_compiler_flag(CXX -Werror HAVE_WERROR_FLAG)
+    check_compiler_flag(CXX -Wformat-security HAVE_FORMAT_SECURITY)
+
+    if(HAVE_WALL_FLAG)
+        set(CXXFLAGS "${CXXFLAGS} -Wall")
+    endif()
+
+    if(HAVE_WERROR_FLAG)
+        set(CXXFLAGS "${CXXFLAGS} -Werror")
+    endif()
+
+    if(HAVE_FORMAT_SECURITY)
+        set(CXXFLAGS "${CXXFLAGS} -Wformat-security")
+    endif()
+
+endif()
 
